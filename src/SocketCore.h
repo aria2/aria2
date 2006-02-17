@@ -84,12 +84,11 @@ public:
   // this socket.
   void peekData(char* data, int& len, int timeout = 5);
   
-#ifdef HAVE_LIBSSL
   /**
-   * Makes this socket SSL endpoint
+   * Makes this socket secure.
+   * If the system has not OpenSSL, then this method do nothing.
    */
   void initiateSecureConnection();
-#endif // HAVE_LIB_SSL
 };
 
 #endif // _D_SOCKET_CORE_H_

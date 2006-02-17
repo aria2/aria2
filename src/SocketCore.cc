@@ -193,9 +193,9 @@ void SocketCore::peekData(char* data, int& len, int timeout) {
   }
 }
 
-#ifdef HAVE_LIBSSL
-// for SSL
 void SocketCore::initiateSecureConnection() {
+#ifdef HAVE_LIBSSL
+  // for SSL
   if(!secure) {
     sslCtx = SSL_CTX_new(SSLv23_client_method());
     if(sslCtx == NULL) {
@@ -215,5 +215,6 @@ void SocketCore::initiateSecureConnection() {
     }
     secure = true;
   }
-}
 #endif // HAVE_LIBSSL
+}
+

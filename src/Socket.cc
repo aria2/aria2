@@ -81,9 +81,6 @@ void Socket::peekData(char* data, int& len, int timeout) {
   core->peekData(data, len, timeout);
 }
 
-#ifdef HAVE_LIBSSL
-// for SSL
 void Socket::initiateSecureConnection() {
   core->initiateSecureConnection();
 }
-#endif // HAVE_LIBSSL

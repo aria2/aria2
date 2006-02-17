@@ -76,10 +76,11 @@ public:
   // this socket.
   void peekData(char* data, int& len, int timeout = 5);
 
-#ifdef HAVE_LIBSSL
-  // for SSL
+  /**
+   * Makes this socket secure.
+   * If the system has not OpenSSL, then this method do nothing.
+   */
   void initiateSecureConnection();
-#endif // HAVE_LIBSSL
 };
 
 #endif // _D_SOCKET_H_
