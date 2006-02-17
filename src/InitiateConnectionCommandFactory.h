@@ -24,6 +24,7 @@
 
 #include "Request.h"
 #include "DownloadEngine.h"
+#include "common.h"
 
 class InitiateConnectionCommandFactory {
 public:

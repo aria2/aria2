@@ -25,7 +25,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define MAX_BUFSIZE 8192
+#define MAX_BUFSIZE (1024*1024)
 
 ChunkedEncoding::ChunkedEncoding() {
   strbufSize = 4096;
@@ -161,11 +161,11 @@ void ChunkedEncoding::addBuffer(const char* inbuf, int inlen) {
     if(strlen(strbuf)+inlen+1 > MAX_BUFSIZE) {
       throw new DlAbortEx(EX_TOO_LARGE_CHUNK, strlen(strbuf)+inlen+1);
     }
-    char* temp = new char[strlen(strbuf)+inlen+1];
+    strbufSize = strlen(strbuf)+inlen+1;
+    char* temp = new char[strbufSize];
     memcpy(temp, strbuf, strlen(strbuf)+1);
     delete [] strbuf;
     strbuf = temp;
-    strbufSize = strlen(strbuf);
   }
   int origlen = strlen(strbuf);
   memcpy(strbuf+origlen, inbuf, inlen);

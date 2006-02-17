@@ -26,6 +26,10 @@
 
 Request::Request():port(0), retryCount(0) {
   defaultPorts["http"] = 80;
+#ifdef HAVE_LIBSSL
+  // for SSL
+  defaultPorts["https"] = 443;
+#endif // HAVE_LIBSSL
   seg.sp = 0;
   seg.ep = 0;
   seg.ds = 0;

@@ -32,8 +32,14 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include <errno.h>
+#include "message.h"
 
-SocketCore::SocketCore():sockfd(-1), use(1) {}
+SocketCore::SocketCore():sockfd(-1), use(1), secure(false)
+#ifdef HAVE_LIBSSL
+  // for SSL
+			 , sslCtx(NULL), ssl(NULL)
+#endif // HAVE_LIBSSL
+{}
 
 SocketCore::~SocketCore() {
   closeConnection();
@@ -87,10 +93,25 @@ void SocketCore::setNonBlockingMode() {
 }
 
 void SocketCore::closeConnection() {
+#ifdef HAVE_LIBSSL
+  // for SSL
+  if(secure) {
+    SSL_shutdown(ssl);
+  }
+#endif // HAVE_LIBSSL
   if(sockfd != -1) {
     close(sockfd);
     sockfd = -1;
   }
+#ifdef HAVE_LIBSSL
+  // for SSL
+  if(secure) {
+    SSL_free(ssl);
+    SSL_CTX_free(sslCtx);
+    ssl = NULL;
+    sslCtx = NULL;
+  }
+#endif // HAVE_LIBSSL
 }
 
 bool SocketCore::isWritable(int timeout) {
@@ -134,19 +155,65 @@ bool SocketCore::isReadable(int timeout) {
 }
 
 void SocketCore::writeData(const char* data, int len, int timeout) {
-  if(!isWritable(timeout) || send(sockfd, data, (size_t)len, 0) != len) {
+  if(!isWritable(timeout) ||
+     !secure && send(sockfd, data, (size_t)len, 0) != len
+#ifdef HAVE_LIBSSL
+     // for SSL
+     // TODO handling len == 0 case required
+     || secure && SSL_write(ssl, data, len) != len
+#endif // HAVE_LIBSSL
+     ) {
     throw new DlRetryEx(strerror(errno));
   }
 }
 
 void SocketCore::readData(char* data, int& len, int timeout) {
-  if(!isReadable(timeout) || (len = recv(sockfd, data, (size_t)len, 0)) < 0) {
+  if(!isReadable(timeout) ||
+     !secure && (len = recv(sockfd, data, (size_t)len, 0)) < 0
+#ifdef HAVE_LIBSSL
+     // for SSL
+     // TODO handling len == 0 case required
+     || secure && (len = SSL_read(ssl, data, len)) < 0
+#endif // HAVE_LIBSSL
+     ) {
     throw new DlRetryEx(strerror(errno));
   }
 }
 
 void SocketCore::peekData(char* data, int& len, int timeout) {
-  if(!isReadable(timeout) || (len = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0) {
+  if(!isReadable(timeout) ||
+     !secure && (len = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
+#ifdef HAVE_LIBSSL
+     // for SSL
+     // TODO handling len == 0 case required
+     || secure && (len == SSL_peek(ssl, data, len)) < 0
+#endif // HAVE_LIBSSL
+     ) {
     throw new DlRetryEx(strerror(errno));
   }
 }
+
+#ifdef HAVE_LIBSSL
+// for SSL
+void SocketCore::initiateSecureConnection() {
+  if(!secure) {
+    sslCtx = SSL_CTX_new(SSLv23_client_method());
+    if(sslCtx == NULL) {
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+    }
+    SSL_CTX_set_mode(sslCtx, SSL_MODE_AUTO_RETRY);
+    ssl = SSL_new(sslCtx);
+    if(ssl == NULL) {
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+    }
+    if(SSL_set_fd(ssl, sockfd) == 0) {
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+    }
+     // TODO handling return value == 0 case required
+    if(SSL_connect(ssl) <= 0) {
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+    }
+    secure = true;
+  }
+}
+#endif // HAVE_LIBSSL

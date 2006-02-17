@@ -37,6 +37,12 @@ extern char* optarg;
 extern int optind, opterr, optopt;
 #include <getopt.h>
 
+#ifdef HAVE_LIBSSL
+// for SSL
+# include <openssl/err.h>
+# include <openssl/ssl.h>
+#endif // HAVE_LIBSSL
+
 using namespace std;
 
 void clearRequest(Request* req) {
@@ -243,6 +249,11 @@ int main(int argc, char* argv[]) {
       exit(1);
     }
   }
+#ifdef HAVE_LIBSSL
+  // for SSL initialization
+  SSL_load_error_strings();
+  SSL_library_init();
+#endif // HAVE_LIBSSL
   SimpleLogger* logger;
   if(stdoutLog) {
     logger = new SimpleLogger(stdout);

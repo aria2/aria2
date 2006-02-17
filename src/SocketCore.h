@@ -23,6 +23,12 @@
 #define _D_SOCKET_CORE_H_
 
 #include <string>
+#include "common.h"
+
+#ifdef HAVE_LIBSSL
+// for SSL
+# include <openssl/ssl.h>
+#endif // HAVE_LIBSSL
 
 using namespace std;
 
@@ -33,6 +39,12 @@ private:
   int sockfd;
   // reference counter for this object.
   int use;
+  bool secure;
+#ifdef HAVE_LIBSSL
+  // for SSL
+  SSL_CTX* sslCtx;
+  SSL* ssl;
+#endif // HAVE_LIBSSL
 public:
   SocketCore();
   ~SocketCore();
@@ -71,6 +83,13 @@ public:
   // Reads up to len bytes from this socket, but bytes are not removed from
   // this socket.
   void peekData(char* data, int& len, int timeout = 5);
+  
+#ifdef HAVE_LIBSSL
+  /**
+   * Makes this socket SSL endpoint
+   */
+  void initiateSecureConnection();
+#endif // HAVE_LIB_SSL
 };
 
 #endif // _D_SOCKET_CORE_H_

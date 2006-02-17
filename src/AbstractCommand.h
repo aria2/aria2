@@ -26,6 +26,7 @@
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "SegmentMan.h"
+#include "common.h"
 
 class AbstractCommand : public Command {
 private:

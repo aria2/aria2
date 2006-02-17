@@ -51,5 +51,5 @@
 #define EX_BAD_STATUS "The response status is not successful. status = %d"
 #define EX_TOO_LARGE_FILE "Too large file size. size = %d"
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED "Transfer encoding %s is not supported."
-
+#define EX_SSL_INIT_FAILURE "SSL initialization failed."
 #endif // _D_MESSAGE_H_

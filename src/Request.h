@@ -25,6 +25,7 @@
 #include <map>
 #include <Segment.h>
 #include "CookieBox.h"
+#include "common.h"
 
 using namespace std;
 

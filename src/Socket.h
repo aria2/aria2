@@ -24,6 +24,7 @@
 
 #include <string>
 #include "SocketCore.h"
+#include "common.h"
 
 using namespace std;
 
@@ -74,6 +75,11 @@ public:
   // Reads up to len bytes from this socket, but bytes are not removed from
   // this socket.
   void peekData(char* data, int& len, int timeout = 5);
+
+#ifdef HAVE_LIBSSL
+  // for SSL
+  void initiateSecureConnection();
+#endif // HAVE_LIBSSL
 };
 
 #endif // _D_SOCKET_H_

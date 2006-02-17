@@ -48,10 +48,11 @@ bool DownloadCommand::executeInternal(Segment seg) {
     char infbuf[infbufSize];
     te->inflate(infbuf, infbufSize, buf, bufSize);
     e->diskWriter->writeData(infbuf, infbufSize, seg.sp+seg.ds);
+    seg.ds += infbufSize;
   } else {
     e->diskWriter->writeData(buf, bufSize, seg.sp+seg.ds);
+    seg.ds += bufSize;
   }
-  seg.ds += bufSize;
   
   if(te != NULL && te->finished()
      || te == NULL && seg.ds >= seg.ep-seg.sp+1

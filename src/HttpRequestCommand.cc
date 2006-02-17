@@ -36,6 +36,12 @@ HttpRequestCommand::~HttpRequestCommand() {}
 
 bool HttpRequestCommand::executeInternal(Segment seg) {
   socket->setNonBlockingMode();
+#ifdef HAVE_LIBSSL
+  // for SSL
+  if(req->getProtocol() == "https") {
+    socket->initiateSecureConnection();
+  }
+#endif // HAVE_LIBSSL
   HttpConnection httpConnection(cuid, socket, e->option, e->logger);
   // set seg to request in order to remember the request range
   req->seg = seg;

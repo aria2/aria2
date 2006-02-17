@@ -133,6 +133,7 @@ void HttpResponseCommand::createHttpDownloadCommand(string transferEncoding) {
     throw new DlAbortEx(EX_TRANSFER_ENCODING_NOT_SUPPORTED, transferEncoding.c_str());
   } else {
     if(enc != NULL) {
+      command->transferEncoding = transferEncoding;
       enc->init();
     }
     e->commands.push(command);

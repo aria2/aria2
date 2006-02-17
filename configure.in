@@ -31,5 +31,7 @@ AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([getpagesize gethostbyname gettimeofday memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
 
+AC_CHECK_LIB([ssl], [SSL_library_init])
+
 AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
 AC_OUTPUT
