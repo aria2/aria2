@@ -1,0 +1,4 @@
+* Add HTTP POST support
+* Add HTTPS support using OpenSSL
+* Add expires handling for Cookie
+* Add FTP support
