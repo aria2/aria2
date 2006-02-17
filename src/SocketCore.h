@@ -19,26 +19,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_SOCKET_H_
-#define _D_SOCKET_H_
+#ifndef _D_SOCKET_CORE_H_
+#define _D_SOCKET_CORE_H_
 
 #include <string>
-#include "SocketCore.h"
 
 using namespace std;
 
-class Socket {
+class SocketCore {
+  friend class Socket;
 private:
   // socket endpoint descriptor
-  SocketCore* core;
+  int sockfd;
+  // reference counter for this object.
+  int use;
 public:
-  Socket();
-  Socket(const Socket& s);
-  ~Socket();
-
-  Socket& operator=(const Socket& s);
-
-  int getSockfd() const { return core->sockfd; }
+  SocketCore();
+  ~SocketCore();
 
   /**
    * Connects to the server named host and the destination port is port.
@@ -53,11 +50,11 @@ public:
   // Closes the connection which this socket object has
   void closeConnection();
 
-  // examines whether the socket of this Socket object is available for writing.
+  // examines whether the socket of this SocketCore object is available for writing.
   // returns true if the socket is available for writing, otherwise returns false.
   bool isWritable(int timeout);
 
-  // examines whether the socket of this Socket object is available for reading.
+  // examines whether the socket of this SocketCore object is available for reading.
   // returns true if the socket is available for reading, otherwise returns false.
   bool isReadable(int timeout);
 
@@ -76,4 +73,4 @@ public:
   void peekData(char* data, int& len, int timeout = 5);
 };
 
-#endif // _D_SOCKET_H_
+#endif // _D_SOCKET_CORE_H_

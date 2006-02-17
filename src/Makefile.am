@@ -1,6 +1,7 @@
 bin_PROGRAMS = aria2c
 aria2c_SOURCES = main.cc
 SRCS =  Socket.cc Socket.h\
+	SocketCore.cc SocketCore.h\
 	Command.h\
 	AbstractCommand.cc AbstractCommand.h\
 	InitiateConnectionCommandFactory.cc InitiateConnectionCommandFactory.h\

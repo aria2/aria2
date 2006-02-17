@@ -51,6 +51,7 @@ ARFLAGS = cru
 libaria2c_a_AR = $(AR) $(ARFLAGS)
 libaria2c_a_LIBADD =
 am__objects_1 = libaria2c_a-Socket.$(OBJEXT) \
+	libaria2c_a-SocketCore.$(OBJEXT) \
 	libaria2c_a-AbstractCommand.$(OBJEXT) \
 	libaria2c_a-InitiateConnectionCommandFactory.$(OBJEXT) \
 	libaria2c_a-DownloadCommand.$(OBJEXT) \
@@ -180,6 +181,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 aria2c_SOURCES = main.cc
 SRCS = Socket.cc Socket.h\
+	SocketCore.cc SocketCore.h\
 	Command.h\
 	AbstractCommand.cc AbstractCommand.h\
 	InitiateConnectionCommandFactory.cc InitiateConnectionCommandFactory.h\
@@ -317,6 +319,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Socket.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Util.Po@am__quote@
 
 .cc.o:
@@ -346,6 +349,20 @@ libaria2c_a-Socket.obj: Socket.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Socket.cc' object='libaria2c_a-Socket.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Socket.obj `if test -f 'Socket.cc'; then $(CYGPATH_W) 'Socket.cc'; else $(CYGPATH_W) '$(srcdir)/Socket.cc'; fi`
+
+libaria2c_a-SocketCore.o: SocketCore.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SocketCore.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" -c -o libaria2c_a-SocketCore.o `test -f 'SocketCore.cc' || echo '$(srcdir)/'`SocketCore.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" "$(DEPDIR)/libaria2c_a-SocketCore.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SocketCore.cc' object='libaria2c_a-SocketCore.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SocketCore.o `test -f 'SocketCore.cc' || echo '$(srcdir)/'`SocketCore.cc
+
+libaria2c_a-SocketCore.obj: SocketCore.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SocketCore.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" -c -o libaria2c_a-SocketCore.obj `if test -f 'SocketCore.cc'; then $(CYGPATH_W) 'SocketCore.cc'; else $(CYGPATH_W) '$(srcdir)/SocketCore.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" "$(DEPDIR)/libaria2c_a-SocketCore.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SocketCore.cc' object='libaria2c_a-SocketCore.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SocketCore.obj `if test -f 'SocketCore.cc'; then $(CYGPATH_W) 'SocketCore.cc'; else $(CYGPATH_W) '$(srcdir)/SocketCore.cc'; fi`
 
 libaria2c_a-AbstractCommand.o: AbstractCommand.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-AbstractCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-AbstractCommand.Tpo" -c -o libaria2c_a-AbstractCommand.o `test -f 'AbstractCommand.cc' || echo '$(srcdir)/'`AbstractCommand.cc; \

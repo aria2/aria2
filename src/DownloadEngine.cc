@@ -104,15 +104,15 @@ void DownloadEngine::waitData() {
   FD_ZERO(&wfds);
   int max = 0;
   for(vector<Socket*>::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
-    FD_SET((*itr)->sockfd, &rfds);
-    if(max < (*itr)->sockfd) {
-      max = (*itr)->sockfd;
+    FD_SET((*itr)->getSockfd(), &rfds);
+    if(max < (*itr)->getSockfd()) {
+      max = (*itr)->getSockfd();
     }
   }
   for(vector<Socket*>::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
-    FD_SET((*itr)->sockfd, &wfds);
-    if(max < (*itr)->sockfd) {
-      max = (*itr)->sockfd;
+    FD_SET((*itr)->getSockfd(), &wfds);
+    if(max < (*itr)->getSockfd()) {
+      max = (*itr)->getSockfd();
     }
   }
   tv.tv_sec = 1;
