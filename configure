@@ -857,6 +857,7 @@ if test -n "$ac_init_help"; then
 Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-ssl            enalbe SSL support if libssl is installed. Default: yes
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
 
@@ -1972,6 +1973,16 @@ fi
 else
   RANLIB="$ac_cv_prog_RANLIB"
 fi
+
+
+# Checks for arguments.
+# Check whether --enable-ssl or --disable-ssl was given.
+if test "${enable_ssl+set}" = set; then
+  enableval="$enable_ssl"
+  enable_ssl=$enableval
+else
+  enable_ssl=yes
+fi;
 
 # Checks for programs.
 ac_ext=cc
@@ -3534,9 +3545,84 @@ fi
 
 
 # Checks for libraries.
+if test "x$enable_ssl" = "xyes"; then
+
+
+echo "$as_me:$LINENO: checking for SSL_library_init in -lssl" >&5
+echo $ECHO_N "checking for SSL_library_init in -lssl... $ECHO_C" >&6
+if test "${ac_cv_lib_ssl_SSL_library_init+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lssl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char SSL_library_init ();
+int
+main ()
+{
+SSL_library_init ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_ssl_SSL_library_init=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_ssl_SSL_library_init=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_ssl_SSL_library_init" >&5
+echo "${ECHO_T}$ac_cv_lib_ssl_SSL_library_init" >&6
+if test $ac_cv_lib_ssl_SSL_library_init = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSSL 1
+_ACEOF
+
+  LIBS="-lssl $LIBS"
+
+fi
+
+fi
 
 # Checks for header files.
-
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -5334,80 +5420,6 @@ _ACEOF
 
 fi
 done
-
-
-
-echo "$as_me:$LINENO: checking for SSL_library_init in -lssl" >&5
-echo $ECHO_N "checking for SSL_library_init in -lssl... $ECHO_C" >&6
-if test "${ac_cv_lib_ssl_SSL_library_init+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lssl  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char SSL_library_init ();
-int
-main ()
-{
-SSL_library_init ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_ssl_SSL_library_init=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_ssl_SSL_library_init=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_ssl_SSL_library_init" >&5
-echo "${ECHO_T}$ac_cv_lib_ssl_SSL_library_init" >&6
-if test $ac_cv_lib_ssl_SSL_library_init = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBSSL 1
-_ACEOF
-
-  LIBS="-lssl $LIBS"
-
-fi
 
 
                               ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile"

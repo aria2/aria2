@@ -8,11 +8,18 @@ AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_RANLIB
+
+# Checks for arguments.
+AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is installed. Default: yes], [enable_ssl=$enableval], [enable_ssl=yes])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
 
 # Checks for libraries.
+if test "x$enable_ssl" = "xyes"; then
+   AC_CHECK_LIB([ssl], [SSL_library_init])
+fi
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -30,8 +37,6 @@ AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([getpagesize gethostbyname gettimeofday memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
-
-AC_CHECK_LIB([ssl], [SSL_library_init])
 
 AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
 AC_OUTPUT
