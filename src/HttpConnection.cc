@@ -130,7 +130,7 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
   }
   // OK, i got all headers.
   logger->info(MSG_RECEIVE_RESPONSE, cuid, header.c_str());
-  unsigned int p, np;
+  string::size_type p, np;
   p = np = 0;
   np = header.find("\r\n", p);
   if(np == string::npos) {

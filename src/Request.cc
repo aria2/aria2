@@ -63,7 +63,7 @@ bool Request::parseUrl(string url) {
   if(url.find_first_not_of(SAFE_CHARS) != string::npos) {
     return false;
   }
-  unsigned int hp = url.find("://");
+  string::size_type hp = url.find("://");
   if(hp == string::npos) return false;
   protocol = url.substr(0, hp);
   int defPort;
@@ -72,7 +72,7 @@ bool Request::parseUrl(string url) {
   }
   hp += 3;
   if(url.size() <= hp) return false;
-  unsigned int hep = url.find("/", hp);
+  string::size_type hep = url.find("/", hp);
   if(hep == string::npos) {
     hep = url.size();
   }
@@ -90,7 +90,7 @@ bool Request::parseUrl(string url) {
     // If port is not specified, then we leave it 0.
     port = defPort;
   }
-  unsigned int direp = url.find_last_of("/");
+  string::size_type direp = url.find_last_of("/");
   if(direp == string::npos || direp <= hep) {
     dir = "/";
     direp = hep;

@@ -54,8 +54,8 @@ string Util::llitos(long long int value, bool comma)
 }
 
 string Util::trim(string src) {
-  unsigned int sp = src.find_first_not_of(" ");
-  unsigned int ep = src.find_last_not_of(" ");
+  string::size_type sp = src.find_first_not_of(" ");
+  string::size_type ep = src.find_last_not_of(" ");
   if(sp == string::npos || ep == string::npos) {
     return "";
   } else {
@@ -66,7 +66,7 @@ string Util::trim(string src) {
 void Util::split(pair<string, string>& hp, string src, char delim) {
   hp.first = "";
   hp.second = "";
-  unsigned int p = src.find(delim);
+  string::size_type p = src.find(delim);
   if(p == string::npos) {
     hp.first = src;
     hp.second = "";
@@ -93,9 +93,9 @@ long long int Util::difftv(struct timeval tv1, struct timeval tv2) {
 }
 
 void Util::slice(vector<string>& result, string src, char delim) {
-  int p = 0;
+  string::size_type p = 0;
   while(1) {
-    unsigned int np = src.find(delim, p);
+    string::size_type np = src.find(delim, p);
     if(np == string::npos) {
       string term = trim(src.substr(p));
       if(term.size() > 0) {
