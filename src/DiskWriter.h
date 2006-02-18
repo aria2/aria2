@@ -23,6 +23,7 @@
 #define _D_DISK_WRITER_H_
 
 #include <string>
+#include "common.h"
 
 using namespace std;
 
