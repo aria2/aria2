@@ -1,0 +1,19 @@
+2006-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* Added --enable-ssl option to configure script.
+	* Make Request-URI an absolute path. Some servers cannot permit
+	absoluteURI as Request-URI.
+	* Added Referer support.
+	* Added referer command-line option.
+	* Added rety-wait command-line option.
+	* Fixed formating bug in Exception::setMsg()
+	* Added HTTPS support.
+	* Added SocketCore. Socket is now handle class for SocketCore.
+	* Fixed bug in ChunkedEncoding: expanding buffer size is wrong
+	* Fixed bug in DownloadCommand: In Chunked Encoding, it wrongly
+	adds to Segment.ds buff length from the socket.
+
+2006-02-17  Tatsuhiro Tsujikawa <tsujikawa at rednoah dot com>
+	
+	* Release 0.1.0
+	
