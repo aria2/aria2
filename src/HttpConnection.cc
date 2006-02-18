@@ -53,6 +53,7 @@ string HttpConnection::getHost(const string& host, int port) {
 
 string HttpConnection::createRequest(const Request* req, const Segment& segment) {
   string request = string("GET ")+
+    // some servers cannot permit absolute URI as requet URI.
     //req->getCurrentUrl()+
     (req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()+
     string(" HTTP/1.1\r\n")+
