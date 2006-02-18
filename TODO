@@ -4,3 +4,4 @@
 * Add SSL server cert verification
 * Add SSL client cert support
 * Better HTTP status handling
+* Download files listed in a specifed file.
