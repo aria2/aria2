@@ -90,7 +90,7 @@ void showVersion() {
   cout << "along with this program; if not, write to the Free Software" << endl;
   cout << "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA" << endl;
   cout << endl;
-  cout << "Contact Info: Tasuhiro Tsujikawa <tujikawa at rednoah dot com>" << endl;
+  cout << "Contact Info: Tasuhiro Tsujikawa <tujikawa at users dot sourceforge dot net>" << endl;
   cout << endl;
 
 }
@@ -117,6 +117,8 @@ void showUsage() {
   cout << "                            this option in order to use HTTP authentication" << endl;
   cout << "                            as well as --http-proxy option." << endl;
   cout << " --referer                  Set Referer. This affects to all URLs." << endl;
+  cout << " --retry-wait               Set amount of time in second between requests" << endl;
+  cout << "                            for errors. Specify a value between 0 and 60." << endl;
   cout << " -v, --version              Print the version number and exit." << endl;
   cout << " -h, --help                 Print this message and exit." << endl;
   cout << "URL:" << endl;
@@ -143,6 +145,7 @@ int main(int argc, char* argv[]) {
 
   int c;
   Option* op = new Option();
+  op->put("retry_wait", "5");
 
   while(1) {
     int optIndex = 0;
@@ -160,6 +163,7 @@ int main(int argc, char* argv[]) {
       { "http-proxy-passwd", required_argument, &lopt, 5 },
       { "http-auth-scheme", required_argument, &lopt, 6 },
       { "referer", required_argument, &lopt, 7 },
+      { "retry-wait", required_argument, &lopt, 8 },
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
@@ -182,7 +186,7 @@ int main(int argc, char* argv[]) {
 	  exit(1);
 	}
 	op->put("http_proxy_host", proxy.first);
-	op->put("http_proxy_port", proxy.second);
+	op->put("http_proxy_port", Util::itos(port));
 	op->put("http_proxy_enabled", "true");
 	break;
       }
@@ -209,6 +213,16 @@ int main(int argc, char* argv[]) {
       case 7:
 	referer = optarg;
 	break;
+      case 8: {
+	int wait = (int)strtol(optarg, NULL, 10);
+	if(!(0 <= wait && wait <= 60)) {
+	  cerr << "retry-wait must be between 0 and 60." << endl;
+	  showUsage();
+	  exit(1);
+	}
+	op->put("retry-wait", Util::itos(wait));
+	break;
+      }
       }
       break;
     }

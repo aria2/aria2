@@ -36,12 +36,11 @@ HttpResponseCommand::~HttpResponseCommand() {}
 bool HttpResponseCommand::executeInternal(Segment seg) {
   if(SEGMENT_EQUAL(req->seg, seg) == false) {
     e->logger->info(MSG_SEGMENT_CHANGED, cuid);
-    return prepareForRetry();
+    return prepareForRetry(0);
   }
   HttpHeader headers;
   HttpConnection httpConnection(cuid, socket, e->option, e->logger);
   int status = httpConnection.receiveResponse(headers);
-
   // check HTTP status number
   checkResponse(status, seg);
   retrieveCookie(headers);
@@ -80,7 +79,7 @@ bool HttpResponseCommand::handleRedirect(string url, const HttpHeader& headers) 
   req->redirectUrl(url);
   e->logger->info(MSG_REDIRECT, cuid, url.c_str());
   e->noWait = true;
-  return prepareForRetry();
+  return prepareForRetry(0);
 }
 
 bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
@@ -102,7 +101,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     e->segmentMan->load();
     e->diskWriter->openExistingFile(e->segmentMan->getFilePath());
     // send request again to the server with Range header
-    return prepareForRetry();
+    return prepareForRetry(0);
   } else {
     Segment seg;
     e->segmentMan->getSegment(seg, cuid);	
@@ -147,3 +146,4 @@ void HttpResponseCommand::retrieveCookie(const HttpHeader& headers) {
     req->cookieBox->add(c);
   }
 }
+  

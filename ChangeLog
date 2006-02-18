@@ -1,5 +1,9 @@
 2006-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* Added Referer support.
+	* Added referer command-line option.
+	* Added rety-wait command-line option.
+	* Fixed formating bug in Exception::setMsg()
 	* Added HTTPS support.
 	* Added SocketCore. Socket is now handle class for SocketCore.
 	* Fixed bug in ChunkedEncoding: expanding buffer size is wrong

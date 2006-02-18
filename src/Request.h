@@ -74,6 +74,7 @@ public:
   bool resetUrl();
   void resetRetryCount();
   void addRetryCount();
+  int getRetryCount();
   bool noMoreRetry();
 
   string getUrl() const { return url; }

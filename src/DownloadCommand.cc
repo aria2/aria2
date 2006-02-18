@@ -24,7 +24,6 @@
 #include "Util.h"
 #include "DlRetryEx.h"
 #include "HttpInitiateConnectionCommand.h"
-#include "SleepCommand.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 
@@ -72,18 +71,15 @@ bool DownloadCommand::executeInternal(Segment seg) {
   
 }
 
-bool DownloadCommand::prepareForRetry() {
-  req->resetUrl();
-  Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
-  SleepCommand* scom = new SleepCommand(cuid, e, command);
-  e->commands.push(scom);
-  return true;
+bool DownloadCommand::prepareForRetry(int wait) {
+  //req->resetUrl();
+  return AbstractCommand::prepareForRetry(wait);
 }
 
 bool DownloadCommand::prepareForNextSegment() {
   req->resetUrl();
   if(!e->segmentMan->finished()) {
-    return AbstractCommand::prepareForRetry();
+    return AbstractCommand::prepareForRetry(0);
   } else {
     return true;
   }

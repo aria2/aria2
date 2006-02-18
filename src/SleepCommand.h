@@ -30,9 +30,10 @@ class SleepCommand:public Command {
 private:
   DownloadEngine* engine;
   Command* nextCommand;
+  int wait;
   struct timeval checkPoint;
 public:
-  SleepCommand(int cuid, DownloadEngine* e, Command* nextCommand);
+  SleepCommand(int cuid, DownloadEngine* e, Command* nextCommand, int wait);
   ~SleepCommand();
   bool execute();
 };

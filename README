@@ -25,3 +25,7 @@ $ ./configure
 $ make
 
 The executable is aria2c in src directory.
+
+4. SSL
+------
+You need OpenSSL library(0.9.7b or higher) to enable HTTPS support.

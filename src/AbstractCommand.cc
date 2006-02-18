@@ -26,6 +26,7 @@
 #include <sys/time.h>
 #include "Util.h"
 #include "message.h"
+#include "SleepCommand.h"
 
 #define TIMEOUT_SEC 5
 
@@ -91,28 +92,34 @@ bool AbstractCommand::execute() {
     }
     return executeInternal(seg);
   } catch(DlAbortEx* err) {
-    e->logger->error(MSG_DOWNLOAD_ABORTED, err);
+    e->logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     onError(err);
     delete(err);
     req->resetUrl();
     return true;
   } catch(DlRetryEx* err) {
-    e->logger->error(MSG_RESTARTING_DOWNLOAD, err);
+    e->logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
     onError(err);
     delete(err);
-    req->resetUrl();
+    //req->resetUrl();
     req->addRetryCount();
     if(req->noMoreRetry()) {
-      e->logger->error(MSG_MAX_RETRY);
+      e->logger->error(MSG_MAX_RETRY, cuid);
       return true;
     } else {
-      return prepareForRetry();
+      return prepareForRetry(e->option->getAsInt("retry_wait"));
     }
   }
 }
 
-bool AbstractCommand::prepareForRetry() {
-  e->commands.push(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e));
+bool AbstractCommand::prepareForRetry(int wait) {
+  Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
+  if(wait == 0) {
+    e->commands.push(command);
+  } else {
+    SleepCommand* scom = new SleepCommand(cuid, e, command, wait);
+    e->commands.push(scom);
+  }
   return true;
 }
 

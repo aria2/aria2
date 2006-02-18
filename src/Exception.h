@@ -31,13 +31,10 @@ class Exception {
 private:
   string msg;
 protected:
-  void setMsg(string msgsrc, ...) {
-    va_list ap;
-    va_start(ap, msgsrc);
+  void setMsg(string msgsrc, va_list ap) {
     char buf[256];
     vsnprintf(buf, sizeof(buf), msgsrc.c_str(), ap);
     msg = buf;
-    va_end(ap);
   }
 public:
   Exception() {}

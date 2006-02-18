@@ -32,7 +32,7 @@ class DownloadCommand : public AbstractCommand {
 protected:
   bool executeInternal(Segment segment);
 
-  bool prepareForRetry();
+  bool prepareForRetry(int wait);
   bool prepareForNextSegment();
 
 public:
