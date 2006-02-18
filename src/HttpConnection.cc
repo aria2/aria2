@@ -56,7 +56,6 @@ string HttpConnection::createRequest(const Request* req, const Segment& segment)
     //req->getCurrentUrl()+
     (req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()+
     string(" HTTP/1.1\r\n")+
-    "Referer: "+req->getPreviousUrl()+"\r\n"+
     "User-Agent: aria2\r\n"+
     "Connection: close\r\n"+
     "Accept: */*\r\n"+
@@ -70,6 +69,10 @@ string HttpConnection::createRequest(const Request* req, const Segment& segment)
     request += "Authorization: Basic "+
       Base64::encode(option->get("http_user")+":"+option->get("http_passwd"))+"\r\n";
   }
+  if(req->getPreviousUrl().size()) {
+    request += "Referer: "+req->getPreviousUrl()+"\r\n";
+  }
+
   string cookiesValue;
   vector<Cookie> cookies = req->cookieBox->criteriaFind(req->getHost(), req->getDir(), req->getProtocol() == "https" ? true : false);
   for(vector<Cookie>::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
