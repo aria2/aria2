@@ -53,8 +53,8 @@ string HttpConnection::getHost(const string& host, int port) {
 
 string HttpConnection::createRequest(const Request* req, const Segment& segment) {
   string request = string("GET ")+
-    req->getCurrentUrl()+
-    //(req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()+
+    //req->getCurrentUrl()+
+    (req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()+
     string(" HTTP/1.1\r\n")+
     "Referer: "+req->getPreviousUrl()+"\r\n"+
     "User-Agent: aria2\r\n"+

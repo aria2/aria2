@@ -1,5 +1,7 @@
 2006-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* Make Request-URI an absolute path. Some servers cannot permit
+	absoluteURI as Request-URI.
 	* Added Referer support.
 	* Added referer command-line option.
 	* Added rety-wait command-line option.
