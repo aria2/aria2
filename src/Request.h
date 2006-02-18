@@ -41,6 +41,14 @@ class Request {
 private:
   string url;
   string currentUrl;
+  /**
+   * URL previously requested to the server. This is used as Referer
+   */
+  string previousUrl;
+  /**
+   * URL used as Referer in the initial request
+   */
+  string referer;
   string protocol;
   string host;
   int port;
@@ -70,6 +78,10 @@ public:
 
   string getUrl() const { return url; }
   string getCurrentUrl() const { return currentUrl; }
+  string getPreviousUrl() const { return previousUrl; }
+  void setPreviousUrl(string url) { previousUrl = url; }
+  string getReferer() const { return referer; }
+  void setReferer(string url) { referer = previousUrl = url; }
   string getProtocol() const { return protocol; }
   string getHost() const { return host; }
   int getPort() const { return port; }

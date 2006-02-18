@@ -1,6 +1,5 @@
 * Add HTTP POST support
 * Add expires handling for Cookie
-* Add Referer support
 * Fix no wait retry in HttpInitiateConnectionCommand, HttpRequestCommand, HttpResponseCommand, except for redirection.
 * Add FTP support
 * Add SSL server cert verification

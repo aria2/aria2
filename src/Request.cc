@@ -45,10 +45,12 @@ bool Request::setUrl(string url) {
 }
 
 bool Request::resetUrl() {
+  previousUrl = referer;
   return setUrl(url);
 }
 
 bool Request::redirectUrl(string url) {
+  previousUrl = currentUrl;
   return parseUrl(url);
 }
 

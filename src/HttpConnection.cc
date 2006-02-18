@@ -56,7 +56,7 @@ string HttpConnection::createRequest(const Request* req, const Segment& segment)
     req->getCurrentUrl()+
     //(req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()+
     string(" HTTP/1.1\r\n")+
-    "Referer: \r\n"+
+    "Referer: "+req->getPreviousUrl()+"\r\n"+
     "User-Agent: aria2\r\n"+
     "Connection: close\r\n"+
     "Accept: */*\r\n"+

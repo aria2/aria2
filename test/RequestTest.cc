@@ -16,6 +16,7 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl9);
   CPPUNIT_TEST(testSetUrl10);
   CPPUNIT_TEST(testRedirectUrl);
+  CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testResetUrl);
   CPPUNIT_TEST(testSafeChar);
   CPPUNIT_TEST_SUITE_END();
@@ -32,6 +33,7 @@ public:
   void testSetUrl9();
   void testSetUrl10();
   void testRedirectUrl();
+  void testRedirectUrl2();
   void testResetUrl();
   void testSafeChar();
 };
@@ -46,6 +48,7 @@ void RequestTest::testSetUrl1() {
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/"), req.getUrl());
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/"), req.getCurrentUrl());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
@@ -56,8 +59,14 @@ void RequestTest::testSetUrl1() {
 void RequestTest::testSetUrl2() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com:8080/index.html");
+  req.setReferer("http://aria.rednoah.com:8080");
 
   CPPUNIT_ASSERT(v);
+
+  // referer is unchaged
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080"), req.getReferer());
+  // previousUrl must equal to referer;
+  CPPUNIT_ASSERT_EQUAL(req.getReferer(), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
@@ -152,6 +161,8 @@ void RequestTest::testRedirectUrl() {
 		       req.getUrl());
   // currentUrl must be updated
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.co.jp/"), req.getCurrentUrl());
+  // previousUrl must be updated
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080/aria2/index.html"), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.co.jp"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(80, req.getPort());
@@ -159,10 +170,30 @@ void RequestTest::testRedirectUrl() {
   CPPUNIT_ASSERT_EQUAL(string(""), req.getFile());
 }
 
+void RequestTest::testRedirectUrl2() {
+  Request req;
+  bool v = req.setUrl("http://aria.rednoah.com/download.html");
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getPreviousUrl());
+  req.setReferer("http://aria.rednoah.com/");
+  // previousUrl is updated when referer is specified
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/"), req.getPreviousUrl());
+  bool v2 = req.redirectUrl("http://aria.rednoah.com/403.html");
+
+  // previousUrl is updated
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/download.html"), req.getPreviousUrl());
+  // referer is unchagned
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/"), req.getReferer());
+
+  bool v3 = req.redirectUrl("http://aria.rednoah.com/error.html");
+
+  // previousUrl is update
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/403.html"), req.getPreviousUrl());
+}
+  
 void RequestTest::testResetUrl() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
-  
+  req.setReferer("http://aria.rednoah.com:8080/");
   bool v2 = req.redirectUrl("ftp://aria.rednoah.co.jp/");
 
   bool v3 = req.resetUrl();
@@ -170,6 +201,10 @@ void RequestTest::testResetUrl() {
   // currentUrl must equal to url
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080/aria2/index.html"), req.getUrl());
   CPPUNIT_ASSERT_EQUAL(req.getUrl(), req.getCurrentUrl());
+  // previousUrl must equal to referer
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080/"), req.getPreviousUrl());
+  // referer is unchanged
+  CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080/"), req.getReferer());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());

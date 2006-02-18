@@ -60,8 +60,9 @@ void handler(int signal) {
   exit(0);
 }
 
-void addCommand(int cuid, const char* url, vector<Request*> requests) {
+void addCommand(int cuid, const char* url, string referer, vector<Request*> requests) {
   Request* req = new Request();
+  req->setReferer(referer);
   if(req->setUrl(url)) {
     e->commands.push(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e));
     requests.push_back(req);
@@ -112,7 +113,10 @@ void showUsage() {
   cout << " --http-proxy-user=USER     Set HTTP proxy user. This affects to all URLs" << endl;
   cout << " --http-proxy-passwd=PASSWD Set HTTP proxy password. This affects to all URLs." << endl;
   cout << " --http-auth-scheme=SCHEME  Set HTTP authentication scheme. Currently, BASIC" << endl;
-  cout << "                            is the only supported scheme." << endl;
+  cout << "                            is the only supported scheme. You MUST specify" << endl;
+  cout << "                            this option in order to use HTTP authentication" << endl;
+  cout << "                            as well as --http-proxy option." << endl;
+  cout << " --referer                  Set Referer. This affects to all URLs." << endl;
   cout << " -v, --version              Print the version number and exit." << endl;
   cout << " -h, --help                 Print this message and exit." << endl;
   cout << "URL:" << endl;
@@ -135,6 +139,7 @@ int main(int argc, char* argv[]) {
   string ufilename;
   int split = 0;
   bool daemonMode = false;
+  string referer;
 
   int c;
   Option* op = new Option();
@@ -154,6 +159,7 @@ int main(int argc, char* argv[]) {
       { "http-proxy-user", required_argument, &lopt, 4 },
       { "http-proxy-passwd", required_argument, &lopt, 5 },
       { "http-auth-scheme", required_argument, &lopt, 6 },
+      { "referer", required_argument, &lopt, 7 },
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
@@ -199,6 +205,9 @@ int main(int argc, char* argv[]) {
 	} else {
 	  cerr << "Currently, supported authentication scheme is BASIC." << endl;
 	}
+	break;
+      case 7:
+	referer = optarg;
 	break;
       }
       break;
@@ -274,11 +283,11 @@ int main(int argc, char* argv[]) {
   vector<Request*> requests;
   if(split > 0) {
     for(int i = 1; i <= split; i++) {
-      addCommand(i, argv[optind], requests);
+      addCommand(i, argv[optind], referer, requests);
     }
   } else {
     for(int i = 1; optind < argc; i++) {
-      addCommand(i, argv[optind++], requests); 
+      addCommand(i, argv[optind++], referer, requests); 
     }
   }
 
