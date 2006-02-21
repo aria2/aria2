@@ -1,0 +1,84 @@
+/* <!-- copyright */
+/*
+ * aria2 - a simple utility for downloading files faster
+ *
+ * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+/* copyright --> */
+#include "FtpInitiateConnectionCommand.h"
+#include "FtpNegotiationCommand.h"
+#include "HttpRequestCommand.h"
+#include "FtpTunnelRequestCommand.h"
+#include "DlAbortEx.h"
+#include "message.h"
+
+FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e):AbstractCommand(cuid, req, e) {}
+
+FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
+
+bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
+  if(!e->segmentMan->downloadStarted) {
+    e->segmentMan->filename = req->getFile();
+    bool segFileExists = e->segmentMan->segmentFileExists();
+    if(segFileExists) {
+      e->segmentMan->load();
+      e->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+      e->segmentMan->downloadStarted = true;
+    } else {
+      e->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
+    }
+  }
+
+  socket = new Socket();
+  Command* command;
+  if(useHttpProxy()) {
+    e->logger->info(MSG_CONNECTING_TO_SERVER, cuid,
+		    e->option->get("http_proxy_host").c_str(),
+		    e->option->getAsInt("http_proxy_port"));
+    socket->establishConnection(e->option->get("http_proxy_host"),
+				e->option->getAsInt("http_proxy_port"));
+    
+    if(useHttpProxyGet()) {
+      command = new HttpRequestCommand(cuid, req, e, socket);
+    } else if(useHttpProxyConnect()) {
+      command = new FtpTunnelRequestCommand(cuid, req, e, socket);
+    } else {
+      // TODO
+      throw new DlAbortEx("ERROR");
+    }
+  } else {
+    e->logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
+		    req->getPort());
+    socket->establishConnection(req->getHost(), req->getPort());
+    command = new FtpNegotiationCommand(cuid, req, e, socket);
+  }
+  e->commands.push(command);
+  return true;
+}
+
+bool FtpInitiateConnectionCommand::useHttpProxy() const {
+  return e->option->defined("http_proxy_enabled") &&
+    e->option->get("http_proxy_enabled") == "true";
+}
+
+bool FtpInitiateConnectionCommand::useHttpProxyGet() const {
+  return useHttpProxy() && e->option->get("ftp_via_http_proxy") == "get";
+}
+
+bool FtpInitiateConnectionCommand::useHttpProxyConnect() const {
+  return useHttpProxy() && e->option->get("ftp_via_http_proxy") == "tunnel";
+}
