@@ -147,6 +147,15 @@ int main(int argc, char* argv[]) {
   Option* op = new Option();
   op->put("retry_wait", "5");
 
+  // TODO warning! Delete username/password line when commit
+  op->put("ftp_user", "anonymous");
+  op->put("ftp_passwd", "IE60USER@");
+  op->put("ftp_type", "I");
+
+  op->put("ftp_pasv_enabled", "true");
+  op->put("ftp_via_http_proxy", "tunnel");
+  op->put("http_abs_uri_request_enabled", "true");
+
   while(1) {
     int optIndex = 0;
     int lopt;

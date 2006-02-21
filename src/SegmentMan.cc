@@ -123,7 +123,7 @@ void SegmentMan::updateSegment(const Segment& segment) {
 }
 
 
-bool SegmentMan::segmentFileExists() {
+bool SegmentMan::segmentFileExists() const {
   if(!isSplittable) {
     return false;
   }
@@ -154,14 +154,17 @@ void SegmentMan::load() {
   }
 }
 
-void SegmentMan::save() {
-  if(!isSplittable) {
+void SegmentMan::save() const {
+  if(!isSplittable || totalSize == 0) {
     return;
   }
   string segFilename = getSegmentFilePath();
   logger->info(MSG_SAVING_SEGMENT_FILE, segFilename.c_str());
   FILE* segFile = openSegFile(segFilename, "w");
-  for(vector<Segment>::iterator itr = segments.begin(); itr != segments.end(); itr++) {
+  if(fwrite(&totalSize, sizeof(totalSize), 1, segFile) < 1) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  for(vector<Segment>::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
     if(fwrite(&*itr, sizeof(Segment), 1, segFile) < 1) {
       throw new DlAbortEx(strerror(errno));
     }
@@ -170,7 +173,7 @@ void SegmentMan::save() {
   logger->info(MSG_SAVED_SEGMENT_FILE);
 }
 
-FILE* SegmentMan::openSegFile(string segFilename, string mode) {
+FILE* SegmentMan::openSegFile(string segFilename, string mode) const {
   FILE* segFile = fopen(segFilename.c_str(), mode.c_str());
   if(segFile == NULL) {
     throw new DlAbortEx(strerror(errno));
@@ -180,6 +183,9 @@ FILE* SegmentMan::openSegFile(string segFilename, string mode) {
 
 void SegmentMan::read(FILE* file) {
   assert(file != NULL);
+  if(fread(&totalSize, sizeof(totalSize), 1, file) < 1) {
+    throw new DlAbortEx(strerror(errno));
+  }
   while(1) {
     Segment seg;
     if(fread(&seg, sizeof(Segment), 1, file) < 1) {
@@ -193,7 +199,7 @@ void SegmentMan::read(FILE* file) {
   }
 }
 
-void SegmentMan::remove() {
+void SegmentMan::remove() const {
   if(!isSplittable) {
     return;
   }
@@ -203,11 +209,11 @@ void SegmentMan::remove() {
   }
 }
 
-bool SegmentMan::finished() {
+bool SegmentMan::finished() const {
   if(!downloadStarted || segments.size() == 0) {
     return false;
   }
-  for(vector<Segment>::iterator itr = segments.begin(); itr != segments.end(); itr++) {
+  for(vector<Segment>::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
     if(!(*itr).finish) {
       return false;
     }
@@ -215,15 +221,15 @@ bool SegmentMan::finished() {
   return true;
 }
 
-void SegmentMan::removeIfFinished() {
+void SegmentMan::removeIfFinished() const {
   if(finished()) {
     remove();
   }
 }
 
-long long int SegmentMan::getDownloadedSize() {
+long long int SegmentMan::getDownloadedSize() const {
   long long int size = 0;
-  for(vector<Segment>::iterator itr = segments.begin(); itr != segments.end(); itr++) {
+  for(vector<Segment>::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
     size += (*itr).ds;
   }
   return size;

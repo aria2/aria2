@@ -10,6 +10,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testTrim);
   CPPUNIT_TEST(testSplit);
   CPPUNIT_TEST(testSlice);
+  CPPUNIT_TEST(testEndsWith);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -20,6 +21,7 @@ public:
   void testTrim();
   void testSplit();
   void testSlice();
+  void testEndsWith();
 };
 
 
@@ -74,4 +76,38 @@ void UtilTest::testSlice() {
   CPPUNIT_ASSERT_EQUAL(string("name1=value1"), *itr++);
   CPPUNIT_ASSERT_EQUAL(string("name2=value2"), *itr++);
   CPPUNIT_ASSERT_EQUAL(string("name3=value3"), *itr++);
+}
+
+void UtilTest::testEndsWith() {
+  string target = "abcdefg";
+  string part = "fg";
+  CPPUNIT_ASSERT(Util::endsWith(target, part));
+
+  target = "abdefg";
+  part = "g";
+  CPPUNIT_ASSERT(Util::endsWith(target, part));
+
+  target = "abdefg";
+  part = "eg";
+  CPPUNIT_ASSERT(!Util::endsWith(target, part));
+
+  target = "g";
+  part = "eg";
+  CPPUNIT_ASSERT(!Util::endsWith(target, part));
+
+  target = "g";
+  part = "g";
+  CPPUNIT_ASSERT(Util::endsWith(target, part));
+
+  target = "g";
+  part = "";
+  CPPUNIT_ASSERT(Util::endsWith(target, part));
+
+  target = "";
+  part = "";
+  CPPUNIT_ASSERT(Util::endsWith(target, part));
+
+  target = "";
+  part = "g";
+  CPPUNIT_ASSERT(!Util::endsWith(target, part));
 }

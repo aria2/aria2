@@ -22,14 +22,13 @@
 #include "Request.h"
 #include "Util.h"
 
-#define MAX_RETRY_COUNT 5
-
-Request::Request():port(0), retryCount(0) {
+Request::Request():port(0), tryCount(0) {
   defaultPorts["http"] = 80;
 #ifdef HAVE_LIBSSL
   // for SSL
   defaultPorts["https"] = 443;
 #endif // HAVE_LIBSSL
+  defaultPorts["ftp"] = 21;
   seg.sp = 0;
   seg.ep = 0;
   seg.ds = 0;
@@ -101,16 +100,4 @@ bool Request::parseUrl(string url) {
     file = url.substr(direp+1);
   }
   return true;
-}
-
-void Request::resetRetryCount() {
-  this->retryCount = 0;
-}
-
-void Request::addRetryCount() {
-  retryCount++;
-}
-
-bool Request::noMoreRetry() {
-  return retryCount >= MAX_RETRY_COUNT;
 }

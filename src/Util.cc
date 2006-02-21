@@ -108,3 +108,14 @@ void Util::slice(vector<string>& result, string src, char delim) {
     result.push_back(trim(term));
   } 
 }
+
+bool Util::endsWith(string target, string part) {
+  if(target.size() < part.size()) {
+    return false;
+  }
+  if(target.compare(target.size()-part.size(), part.size(), part, 0, part.size()) == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}

@@ -49,6 +49,8 @@ public:
   static void slice(vector<string>& result, string src, char delim);
   
   static string trim(string src);
+
+  static bool endsWith(string target, string part);
 };
 
 #endif // _D_UTIL_H_

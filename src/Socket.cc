@@ -30,6 +30,10 @@ Socket::Socket(const Socket& s) {
   core->use++;
 }
 
+Socket::Socket(SocketCore* core) {
+  this->core = core;
+}
+
 Socket::~Socket() {
   core->use--;
   if(core->use == 0) {
@@ -49,38 +53,54 @@ Socket& Socket::operator=(const Socket& s) {
   return *this;
 }
 
-void Socket::establishConnection(string host, int port) {
+void Socket::beginListen() const {
+  core->beginListen();
+}
+
+void Socket::getAddrInfo(pair<string, int>& addrinfo) const {
+  core->getAddrInfo(addrinfo);
+}
+
+Socket* Socket::acceptConnection() const {
+  return new Socket(core->acceptConnection());
+}
+
+void Socket::establishConnection(string host, int port) const {
   core->establishConnection(host, port);
 }
 
-void Socket::setNonBlockingMode() {
-  core->setNonBlockingMode();
+void Socket::setBlockingMode() const {
+  core->setBlockingMode();
 }
 
-void Socket::closeConnection() {
+void Socket::closeConnection() const {
   core->closeConnection();
 }
 
-bool Socket::isWritable(int timeout) {
+bool Socket::isWritable(int timeout) const {
   return core->isWritable(timeout);
 }
 
-bool Socket::isReadable(int timeout) {
+bool Socket::isReadable(int timeout) const {
   return core->isReadable(timeout);
 }
 
-void Socket::writeData(const char* data, int len, int timeout) {
+void Socket::writeData(const char* data, int len, int timeout) const {
   core->writeData(data, len, timeout);
 }
 
-void Socket::readData(char* data, int& len, int timeout) {
+void Socket::writeData(string str, int timeout) const {
+  core->writeData(str.c_str(), str.size(), timeout);
+}
+
+void Socket::readData(char* data, int& len, int timeout) const {
   core->readData(data, len, timeout);
 }
 
-void Socket::peekData(char* data, int& len, int timeout) {
+void Socket::peekData(char* data, int& len, int timeout) const {
   core->peekData(data, len, timeout);
 }
 
-void Socket::initiateSecureConnection() {
+void Socket::initiateSecureConnection() const {
   core->initiateSecureConnection();
 }

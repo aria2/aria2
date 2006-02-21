@@ -37,11 +37,18 @@ protected:
   Request* req;
   DownloadEngine* e;
   Socket* socket;
+
+  virtual bool prepareForRetry(int wait);
+  virtual void onAbort(Exception* e);
+  virtual bool executeInternal(Segment segment) = 0;
+
+  void setReadCheckSocket(Socket* socket);
+  void setWriteCheckSocket(Socket* socket);
+private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
-  virtual bool prepareForRetry(int wait);
-  virtual void onError(Exception* e);
-  virtual bool executeInternal(Segment segment) = 0;
+  Socket* readCheckTarget;
+  Socket* writeCheckTarget;
 public:
   AbstractCommand(int cuid, Request* req, DownloadEngine* e, Socket* s= NULL);
   virtual ~AbstractCommand();

@@ -34,28 +34,91 @@
 #include <errno.h>
 #include "message.h"
 
-SocketCore::SocketCore():sockfd(-1), use(1), secure(false)
+SocketCore::SocketCore():sockfd(-1) {
+  init();
+}
+
+SocketCore::SocketCore(int sockfd):sockfd(sockfd) {
+  init();
+}
+
+void SocketCore::init() {
+  use = 1;
+  secure = false;
 #ifdef HAVE_LIBSSL
   // for SSL
-			 , sslCtx(NULL), ssl(NULL)
+  sslCtx = NULL;
+  ssl = NULL;
 #endif // HAVE_LIBSSL
-{}
+}
 
 SocketCore::~SocketCore() {
   closeConnection();
 }
 
-void SocketCore::establishConnection(string host, int port) {
+void SocketCore::beginListen() {
+  closeConnection();
+  //sockfd = socket(AF_UNSPEC, SOCK_STREAM, PF_UNSPEC);
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if(sockfd >= 0) {
-    socklen_t sockopt = 1;
-    if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(int)) < 0) {
-      close(sockfd);
-      sockfd = -1;
+  if(sockfd == -1) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  socklen_t sockopt = 1;
+  if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
+    close(sockfd);
+    sockfd = -1;
+    throw new DlAbortEx(strerror(errno));
+  }
+
+  struct sockaddr_in sockaddr;
+  memset((char*)&sockaddr, 0, sizeof(sockaddr));
+  sockaddr.sin_family = AF_INET;
+  sockaddr.sin_addr.s_addr = INADDR_ANY;
+  sockaddr.sin_port = htons(0);
+  
+  if(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1) {
+    throw new DlAbortEx(strerror(errno));
+  }
+
+  if(listen(sockfd, 1) == -1) {
+    throw new DlAbortEx(strerror(errno));
+  }
+}
+
+SocketCore* SocketCore::acceptConnection() const {
+  struct sockaddr_in sockaddr;
+  socklen_t len = sizeof(sockaddr);
+  memset((char*)&sockaddr, 0, sizeof(sockaddr));
+  int fd;
+  if((fd = accept(sockfd, (struct sockaddr*)&sockaddr, &len)) == -1) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  SocketCore* s = new SocketCore(fd);
+  return s;
+}
+
+void SocketCore::getAddrInfo(pair<string, int>& addrinfo) const {
+  struct sockaddr_in listenaddr;
+  memset((char*)&listenaddr, 0, sizeof(listenaddr));
+  socklen_t len = sizeof(listenaddr);
+  if(getsockname(sockfd, (struct sockaddr*)&listenaddr, &len) == -1) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  addrinfo.first = inet_ntoa(listenaddr.sin_addr);
+  addrinfo.second = ntohs(listenaddr.sin_port);
+}
+
+void SocketCore::establishConnection(string host, int port) {
+  closeConnection();
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if(sockfd == -1) {
       throw new DlAbortEx(strerror(errno));
-    }
-  } else {
-      throw new DlAbortEx(strerror(errno));
+  }
+  socklen_t sockopt = 1;
+  if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
+    close(sockfd);
+    sockfd = -1;
+    throw new DlAbortEx(strerror(errno));
   }
 
   struct sockaddr_in sockaddr;
@@ -87,7 +150,7 @@ void SocketCore::establishConnection(string host, int port) {
   }
 }
 
-void SocketCore::setNonBlockingMode() {
+void SocketCore::setBlockingMode() const {
   int flags = fcntl(sockfd, F_GETFL, 0);
   fcntl(sockfd, F_SETFL, flags&~O_NONBLOCK);
 }
@@ -95,7 +158,7 @@ void SocketCore::setNonBlockingMode() {
 void SocketCore::closeConnection() {
 #ifdef HAVE_LIBSSL
   // for SSL
-  if(secure) {
+  if(secure && ssl != NULL) {
     SSL_shutdown(ssl);
   }
 #endif // HAVE_LIBSSL
@@ -105,7 +168,7 @@ void SocketCore::closeConnection() {
   }
 #ifdef HAVE_LIBSSL
   // for SSL
-  if(secure) {
+  if(secure && ssl != NULL) {
     SSL_free(ssl);
     SSL_CTX_free(sslCtx);
     ssl = NULL;
@@ -114,7 +177,7 @@ void SocketCore::closeConnection() {
 #endif // HAVE_LIBSSL
 }
 
-bool SocketCore::isWritable(int timeout) {
+bool SocketCore::isWritable(int timeout) const {
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd, &fds);
@@ -130,11 +193,15 @@ bool SocketCore::isWritable(int timeout) {
     // time out
     return false;
   } else {
-    throw new DlRetryEx(strerror(errno));
+    if(errno == EINPROGRESS) {
+      return false;
+    } else {
+      throw new DlRetryEx(strerror(errno));
+    }
   }
 }
 
-bool SocketCore::isReadable(int timeout) {
+bool SocketCore::isReadable(int timeout) const {
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd, &fds);
@@ -150,11 +217,15 @@ bool SocketCore::isReadable(int timeout) {
     // time out
     return false;
   } else {
-    throw new DlRetryEx(strerror(errno));
+    if(errno == EINPROGRESS) {
+      return false;
+    } else {
+      throw new DlRetryEx(strerror(errno));
+    }
   }
 }
 
-void SocketCore::writeData(const char* data, int len, int timeout) {
+void SocketCore::writeData(const char* data, int len, int timeout) const {
   if(!isWritable(timeout) ||
      !secure && send(sockfd, data, (size_t)len, 0) != len
 #ifdef HAVE_LIBSSL
@@ -167,7 +238,7 @@ void SocketCore::writeData(const char* data, int len, int timeout) {
   }
 }
 
-void SocketCore::readData(char* data, int& len, int timeout) {
+void SocketCore::readData(char* data, int& len, int timeout) const {
   if(!isReadable(timeout) ||
      !secure && (len = recv(sockfd, data, (size_t)len, 0)) < 0
 #ifdef HAVE_LIBSSL
@@ -180,7 +251,7 @@ void SocketCore::readData(char* data, int& len, int timeout) {
   }
 }
 
-void SocketCore::peekData(char* data, int& len, int timeout) {
+void SocketCore::peekData(char* data, int& len, int timeout) const {
   if(!isReadable(timeout) ||
      !secure && (len = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
 #ifdef HAVE_LIBSSL

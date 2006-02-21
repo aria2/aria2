@@ -1,3 +1,9 @@
+2006-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* Fixed timeout bug in AbstractCommand
+	* Added totalSize entry to .aria2 file. No compatibility for
+	version 0.1.0's.
+	
 2006-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Added --enable-ssl option to configure script.

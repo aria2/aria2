@@ -27,9 +27,7 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 
-DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {
-  AbstractCommand::checkSocketIsReadable = true;
-}
+DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {}
 
 DownloadCommand::~DownloadCommand() {}
 
@@ -83,4 +81,9 @@ bool DownloadCommand::prepareForNextSegment() {
   } else {
     return true;
   }
+}
+
+void DownloadCommand::onAbort(Exception* ex) {
+  e->logger->debug(MSG_UNREGISTER_CUID, cuid);
+  e->segmentMan->unregisterId(cuid);
 }

@@ -28,13 +28,14 @@
 #include "message.h"
 #include "SleepCommand.h"
 
-#define TIMEOUT_SEC 5
+#define TIMEOUT_SEC 60
 
 AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):
   Command(cuid), req(req), e(e), checkSocketIsReadable(false), checkSocketIsWritable(false) {
+
   if(s != NULL) {
     socket = new Socket(*s);
-    e->addSocketForReadCheck(socket);
+    setReadCheckSocket(socket);
   } else {
     socket = NULL;
   }
@@ -43,8 +44,8 @@ AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, Sock
 }
 
 AbstractCommand::~AbstractCommand() {
-  e->deleteSocketForReadCheck(socket);
-  e->deleteSocketForWriteCheck(socket);
+  setReadCheckSocket(NULL);
+  setWriteCheckSocket(NULL);
   if(socket != NULL) {
     delete(socket);
   }
@@ -58,6 +59,7 @@ bool AbstractCommand::isTimeoutDetected() {
   struct timeval now;
   gettimeofday(&now, NULL);
   if(checkPoint.tv_sec == 0 && checkPoint.tv_usec == 0) {
+    checkPoint = now;
     return false;
   } else {
     long long int elapsed = Util::difftv(now, checkPoint);
@@ -71,12 +73,11 @@ bool AbstractCommand::isTimeoutDetected() {
 
 bool AbstractCommand::execute() {
   try {
-    if(checkSocketIsReadable && !socket->isReadable(0)
-       || checkSocketIsWritable && !socket->isWritable(0)) {
+    if(checkSocketIsReadable && !readCheckTarget->isReadable(0)
+       || checkSocketIsWritable && !writeCheckTarget->isWritable(0)) {
       if(isTimeoutDetected()) {
 	throw new DlRetryEx(EX_TIME_OUT);
       }
-      updateCheckPoint();
       e->commands.push(this);
       return false;
     }
@@ -93,17 +94,16 @@ bool AbstractCommand::execute() {
     return executeInternal(seg);
   } catch(DlAbortEx* err) {
     e->logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
-    onError(err);
+    onAbort(err);
     delete(err);
     req->resetUrl();
     return true;
   } catch(DlRetryEx* err) {
     e->logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
-    onError(err);
     delete(err);
     //req->resetUrl();
-    req->addRetryCount();
-    if(req->noMoreRetry()) {
+    req->addTryCount();
+    if(req->noMoreTry()) {
       e->logger->error(MSG_MAX_RETRY, cuid);
       return true;
     } else {
@@ -123,5 +123,49 @@ bool AbstractCommand::prepareForRetry(int wait) {
   return true;
 }
 
-void AbstractCommand::onError(Exception* e) {
+void AbstractCommand::onAbort(Exception* e) {
+}
+
+void AbstractCommand::setReadCheckSocket(Socket* socket) {
+  if(socket == NULL) {
+    if(checkSocketIsReadable) {
+      e->deleteSocketForReadCheck(readCheckTarget);
+      checkSocketIsReadable = false;
+      readCheckTarget = NULL;
+    }
+  } else {
+    if(checkSocketIsReadable) {
+      if(readCheckTarget != socket) {
+	e->deleteSocketForReadCheck(readCheckTarget);
+	e->addSocketForReadCheck(socket);
+	readCheckTarget = socket;
+      }
+    } else {
+      e->addSocketForReadCheck(socket);
+      checkSocketIsReadable = true;
+      readCheckTarget = socket;
+    }
+  }
+}
+
+void AbstractCommand::setWriteCheckSocket(Socket* socket) {
+  if(socket == NULL) {
+    if(checkSocketIsWritable) {
+      e->deleteSocketForWriteCheck(writeCheckTarget);
+      checkSocketIsWritable = false;
+      writeCheckTarget = NULL;
+    }
+  } else {
+    if(checkSocketIsWritable) {
+      if(writeCheckTarget != socket) {
+	e->deleteSocketForWriteCheck(writeCheckTarget);
+	e->addSocketForWriteCheck(socket);
+	writeCheckTarget = socket;
+      }
+    } else {
+      e->addSocketForWriteCheck(socket);
+      checkSocketIsWritable = true;
+      writeCheckTarget = socket;
+    }
+  }
 }

@@ -12,7 +12,14 @@ SRCS =  Socket.cc Socket.h\
 	HttpProxyRequestCommand.cc HttpProxyRequestCommand.h\
 	HttpProxyResponseCommand.cc HttpProxyResponseCommand.h\
 	HttpDownloadCommand.cc HttpDownloadCommand.h\
+	HttpHeader.cc HttpHeader.h\
 	HttpConnection.cc HttpConnection.h\
+	FtpConnection.cc FtpConnection.h\
+	FtpInitiateConnectionCommand.cc FtpInitiateConnectionCommand.h\
+	FtpNegotiationCommand.cc FtpNegotiationCommand.h\
+	FtpDownloadCommand.cc FtpDownloadCommand.h\
+	FtpTunnelRequestCommand.cc FtpTunnelRequestCommand.h\
+	FtpTunnelResponseCommand.cc FtpTunnelResponseCommand.h\
 	SleepCommand.cc SleepCommand.h\
 	DownloadEngine.cc DownloadEngine.h\
 	Segment.h\

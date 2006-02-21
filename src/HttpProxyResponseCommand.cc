@@ -22,19 +22,24 @@
 #include "HttpProxyResponseCommand.h"
 #include "HttpRequestCommand.h"
 #include "DlRetryEx.h"
-#include "HttpConnection.h"
 #include "message.h"
 
 HttpProxyResponseCommand::HttpProxyResponseCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {
-  AbstractCommand::checkSocketIsReadable = true;
+  http = new HttpConnection(cuid, socket, req, e->option, e->logger);
 }
 
-HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
+HttpProxyResponseCommand::~HttpProxyResponseCommand() {
+  delete http;
+}
 
 bool HttpProxyResponseCommand::executeInternal(Segment segment) {
   HttpHeader headers;
-  HttpConnection httpConnection(cuid, socket, e->option, e->logger);
-  int status = httpConnection.receiveResponse(headers);
+  int status = http->receiveResponse(headers);
+  if(status == 0) {
+    // we didn't receive all of headers yet.
+    e->commands.push(this);
+    return false;
+  }
   if(status != 200) {
     throw new DlRetryEx(EX_PROXY_CONNECTION_FAILED);
   }
