@@ -11,6 +11,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSplit);
   CPPUNIT_TEST(testSlice);
   CPPUNIT_TEST(testEndsWith);
+  CPPUNIT_TEST(testReplace);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -22,6 +23,7 @@ public:
   void testSplit();
   void testSlice();
   void testEndsWith();
+  void testReplace();
 };
 
 
@@ -110,4 +112,12 @@ void UtilTest::testEndsWith() {
   target = "";
   part = "g";
   CPPUNIT_ASSERT(!Util::endsWith(target, part));
+}
+
+void UtilTest::testReplace() {
+  CPPUNIT_ASSERT_EQUAL(string("abc\n"), Util::replace("abc\r\n", "\r", ""));
+  CPPUNIT_ASSERT_EQUAL(string("abc"), Util::replace("abc\r\n", "\r\n", ""));
+  CPPUNIT_ASSERT_EQUAL(string(""), Util::replace("", "\r\n", ""));
+  CPPUNIT_ASSERT_EQUAL(string("abc"), Util::replace("abc", "", "a"));
+  CPPUNIT_ASSERT_EQUAL(string("xbc"), Util::replace("abc", "a", "x"));
 }

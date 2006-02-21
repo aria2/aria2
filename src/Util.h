@@ -51,6 +51,8 @@ public:
   static string trim(string src);
 
   static bool endsWith(string target, string part);
+
+  static string replace(string target, string oldstr, string newstr);
 };
 
 #endif // _D_UTIL_H_

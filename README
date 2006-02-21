@@ -1,4 +1,4 @@
-aria2 - a simple utility for downloading files faster.
+aria2 - a simple utility for downloading files.
 
 1. Disclaimer
 -------------
@@ -11,10 +11,12 @@ aria2 has segmented downloading engine in its core. By segmented downloading,
 it can download files very much faster than ordinary browsers.
 
 aria2 is in very early development stage. Currently it has following features:
-* HTTP GET support
+* HTTP/HTTPS GET support
 * HTTP Proxy support
 * HTTP BASIC authentication support
 * HTTP Proxy authentication support
+* FTP support(active, passive mode)
+* FTP through HTTP proxy(GET command or tunneling)
 * Segmented download
 * Cookie support(currently aria2 ignores "expires")
 * It can run as a daemon process.

@@ -31,7 +31,7 @@ HttpConnection::HttpConnection(int cuid, const Socket* socket, const Request* re
 
 void HttpConnection::sendRequest(const Segment& segment) const {
   string request = createRequest(segment);
-  logger->info(MSG_SENDING_HTTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request.c_str(), request.size());
 }
 
@@ -46,7 +46,7 @@ void HttpConnection::sendProxyRequest() const {
 		     option->get(PREF_HTTP_PROXY_PORT))+"\r\n";
   }
   request += "\r\n";
-  logger->info(MSG_SENDING_HTTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request.c_str(), request.size());
 }
 

@@ -32,13 +32,13 @@ FtpConnection::~FtpConnection() {}
 
 void FtpConnection::sendUser() const {
   string request = "USER "+option->get(PREF_FTP_USER)+"\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendPass() const {
   string request = "PASS "+option->get(PREF_FTP_PASSWD)+"\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, "PASS ********");
+  logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
   socket->writeData(request);
 }
 
@@ -50,25 +50,25 @@ void FtpConnection::sendType() const {
     type = "I";
   }
   string request = "TYPE "+type+"\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendCwd() const {
   string request = "CWD "+req->getDir()+"\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendSize() const {
   string request = "SIZE "+req->getFile()+"\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendPasv() const {
   string request = "PASV\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
@@ -87,7 +87,7 @@ Socket* FtpConnection::sendPort() const {
       Util::itos(ipaddr[0])+","+Util::itos(ipaddr[1])+","+
       Util::itos(ipaddr[2])+","+Util::itos(ipaddr[3])+","+
       Util::itos(addrinfo.second/256)+","+Util::itos(addrinfo.second%256)+"\r\n";
-    logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
     socket->writeData(request);
   } catch (Exception* ex) {
     delete serverSocket;
@@ -98,13 +98,13 @@ Socket* FtpConnection::sendPort() const {
 
 void FtpConnection::sendRest(const Segment& segment) const {
   string request = "REST "+Util::llitos(segment.sp+segment.ds)+"\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendRetr() const {
   string request = "RETR "+req->getFile()+"\r\n";
-  logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 

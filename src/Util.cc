@@ -119,3 +119,21 @@ bool Util::endsWith(string target, string part) {
     return false;
   }
 }
+
+string Util::replace(string target, string oldstr, string newstr) {
+  if(target == "" || oldstr == "" ) {
+    return target;
+  }
+  string result;
+  string::size_type p = 0;
+  string::size_type np = target.find(oldstr);
+  while(np != string::npos) {
+    result += target.substr(p, np-p)+newstr;
+    p = np+oldstr.size();
+    np = target.find(oldstr, p);
+  }
+  result += target.substr(p);
+
+  return result;
+}
+

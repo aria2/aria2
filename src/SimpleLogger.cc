@@ -20,6 +20,8 @@
  */
 /* copyright --> */
 #include "SimpleLogger.h"
+#include "Util.h"
+#include <time.h>
 #include <stdarg.h>
 
 SimpleLogger::SimpleLogger(string filename) {
@@ -50,9 +52,13 @@ void SimpleLogger::writeLog(int level, string msg, va_list ap, Exception* e) con
   default:
     levelStr = "INFO";
   }
-  vfprintf(file, string(levelStr+" - "+msg+"\n").c_str(), ap);
+  time_t now = time(NULL);
+  char datestr[26];
+  ctime_r(&now, datestr);
+  datestr[strlen(datestr)-1] = '\0';
+  vfprintf(file, string(string(datestr)+" - "+levelStr+" - "+Util::replace(msg, "\r", "")+"\n").c_str(), ap);
   if(e != NULL) {
-    fprintf(file, string(levelStr+" - exception: "+e->getMsg()+"\n").c_str());
+    fprintf(file, string(string(datestr)+" - "+levelStr+" - exception: "+Util::replace(e->getMsg(), "\r", "")+"\n").c_str());
   }
   fflush(stdout);
 }
