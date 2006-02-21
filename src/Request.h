@@ -29,8 +29,6 @@
 
 using namespace std;
 
-#define MAX_TRY_COUNT 5
-
 #define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
 "0123456789"\
@@ -77,7 +75,7 @@ public:
   void resetTryCount() { tryCount = 0; }
   void addTryCount() { tryCount++; }
   int getTryCount() const { return tryCount; }
-  bool noMoreTry() const { return tryCount >= MAX_TRY_COUNT; }
+  //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
 
   string getUrl() const { return url; }
   string getCurrentUrl() const { return currentUrl; }

@@ -20,11 +20,11 @@
  */
 /* copyright --> */
 #include "HttpConnection.h"
-#include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "Util.h"
 #include "Base64.h"
 #include "message.h"
+#include "prefs.h"
 
 HttpConnection::HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger):
   cuid(cuid), socket(socket), req(req), option(op), logger(logger) {}
@@ -36,12 +36,14 @@ void HttpConnection::sendRequest(const Segment& segment) const {
 }
 
 void HttpConnection::sendProxyRequest() const {
-  string request = string("CONNECT ")+req->getHost()+":"+Util::llitos(req->getPort())+
+  string request =
+    string("CONNECT ")+req->getHost()+":"+Util::llitos(req->getPort())+
     string(" HTTP/1.1\r\n")+
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n";
   if(useProxyAuth()) {
     request += "Proxy-Authorization: Basic "+
-      Base64::encode(option->get("http_proxy_user")+":"+option->get("http_proxy_passwd"))+"\r\n";
+      Base64::encode(option->get(PREF_HTTP_PROXY_USER)+":"+
+		     option->get(PREF_HTTP_PROXY_PORT))+"\r\n";
   }
   request += "\r\n";
   logger->info(MSG_SENDING_HTTP_REQUEST, cuid, request.c_str());
@@ -65,11 +67,13 @@ string HttpConnection::createRequest(const Segment& segment) const {
     "Pragma: no-cache\r\n"+
     "Cache-Control: no-cache\r\n";
   if(segment.sp+segment.ds > 0) {
-    request += "Range: bytes="+Util::llitos(segment.sp+segment.ds)+"-"+Util::llitos(segment.ep)+"\r\n";
+    request += "Range: bytes="+
+      Util::llitos(segment.sp+segment.ds)+"-"+Util::llitos(segment.ep)+"\r\n";
   }
-  if(option->get("http_auth_scheme") == "BASIC") {
+  if(option->get(PREF_HTTP_AUTH_SCHEME) == V_BASIC) {
     request += "Authorization: Basic "+
-      Base64::encode(option->get("http_user")+":"+option->get("http_passwd"))+"\r\n";
+      Base64::encode(option->get(PREF_HTTP_USER)+":"+
+		     option->get(PREF_HTTP_PASSWD))+"\r\n";
   }
   if(req->getPreviousUrl().size()) {
     request += "Referer: "+req->getPreviousUrl()+"\r\n";
@@ -135,11 +139,9 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
 }
 
 bool HttpConnection::useProxy() const {
-  return option->defined("http_proxy_enabled") &&
-    option->get("http_proxy_enabled") == "true";
+  return option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
 }
 
 bool HttpConnection::useProxyAuth() const {
-  return option->defined("http_proxy_auth_enabled") &&
-    option->get("http_proxy_auth_enabled") == "true";
+  return option->get(PREF_HTTP_PROXY_AUTH_ENABLED) == V_TRUE;
 }

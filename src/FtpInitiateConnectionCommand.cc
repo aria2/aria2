@@ -25,6 +25,7 @@
 #include "FtpTunnelRequestCommand.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "prefs.h"
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e):AbstractCommand(cuid, req, e) {}
 
@@ -47,10 +48,10 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
   Command* command;
   if(useHttpProxy()) {
     e->logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		    e->option->get("http_proxy_host").c_str(),
-		    e->option->getAsInt("http_proxy_port"));
-    socket->establishConnection(e->option->get("http_proxy_host"),
-				e->option->getAsInt("http_proxy_port"));
+		    e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
+		    e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+    socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
+				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     
     if(useHttpProxyGet()) {
       command = new HttpRequestCommand(cuid, req, e, socket);
@@ -71,14 +72,13 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
 }
 
 bool FtpInitiateConnectionCommand::useHttpProxy() const {
-  return e->option->defined("http_proxy_enabled") &&
-    e->option->get("http_proxy_enabled") == "true";
+  return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
 }
 
 bool FtpInitiateConnectionCommand::useHttpProxyGet() const {
-  return useHttpProxy() && e->option->get("ftp_via_http_proxy") == "get";
+  return useHttpProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET;
 }
 
 bool FtpInitiateConnectionCommand::useHttpProxyConnect() const {
-  return useHttpProxy() && e->option->get("ftp_via_http_proxy") == "tunnel";
+  return useHttpProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_TUNNEL;
 }

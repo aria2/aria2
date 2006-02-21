@@ -21,6 +21,7 @@
 /* copyright --> */
 #include "HttpResponseCommand.h"
 #include "DlAbortEx.h"
+#include "DlRetryEx.h"
 #include "HttpDownloadCommand.h"
 #include "HttpInitiateConnectionCommand.h"
 #include "message.h"
@@ -77,7 +78,7 @@ void HttpResponseCommand::checkResponse(int status, const Segment& segment) {
     if(!(status < 400 && status >= 300 ||
 	 (segment.sp+segment.ds == 0 && status == 200)
 	 || (segment.sp+segment.ds > 0 &&  status == 206))) {
-      throw new DlAbortEx(EX_BAD_STATUS, status);
+      throw new DlRetryEx(EX_BAD_STATUS, status);
     }
 }
 
@@ -90,7 +91,7 @@ bool HttpResponseCommand::handleRedirect(string url, const HttpHeader& headers) 
 
 bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   long long int size = headers.getFirstAsLLInt("Content-Length");
-  if(size == LONG_LONG_MAX || size == LONG_LONG_MIN || size < 0) {
+  if(size == LONG_LONG_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
   e->segmentMan->isSplittable = !(size == 0);

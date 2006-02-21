@@ -20,12 +20,11 @@
  */
 /* copyright --> */
 #include "DownloadEngine.h"
+#include "Util.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "DlAbortEx.h"
-#include "Util.h"
 
 using namespace std;
 

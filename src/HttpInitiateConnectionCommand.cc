@@ -24,6 +24,7 @@
 #include "HttpProxyRequestCommand.h"
 #include "Util.h"
 #include "message.h"
+#include "prefs.h"
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e):AbstractCommand(cuid, req, e) {}
 
@@ -35,10 +36,10 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
   Command* command;
   if(useProxy()) {
     e->logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		    e->option->get("http_proxy_host").c_str(),
-		    e->option->getAsInt("http_proxy_port"));
-    socket->establishConnection(e->option->get("http_proxy_host"),
-				e->option->getAsInt("http_proxy_port"));
+		    e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
+		    e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+    socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
+				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     command = new HttpProxyRequestCommand(cuid, req, e, socket);
 
   } else {
@@ -52,6 +53,5 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
 }
 
 bool HttpInitiateConnectionCommand::useProxy() {
-  return e->option->defined("http_proxy_enabled") &&
-    e->option->get("http_proxy_enabled") == "true";
+  return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
 }

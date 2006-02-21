@@ -22,26 +22,34 @@
 #include "FtpConnection.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "DlRetryEx.h"
 #include "message.h"
+#include "prefs.h"
 
 FtpConnection::FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger):cuid(cuid), socket(socket), req(req), option(op), logger(logger) {}
 
 FtpConnection::~FtpConnection() {}
 
 void FtpConnection::sendUser() const {
-  string request = "USER "+option->get("ftp_user")+"\r\n";
+  string request = "USER "+option->get(PREF_FTP_USER)+"\r\n";
   logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendPass() const {
-  string request = "PASS "+option->get("ftp_passwd")+"\r\n";
+  string request = "PASS "+option->get(PREF_FTP_PASSWD)+"\r\n";
   logger->info(MSG_SENDING_FTP_REQUEST, cuid, "PASS ********");
   socket->writeData(request);
 }
 
 void FtpConnection::sendType() const {
-  string request = "TYPE "+option->get("ftp_type")+"\r\n";
+  string type;
+  if(option->get(PREF_FTP_TYPE) == V_ASCII) {
+    type = "A";
+  } else {
+    type = "I";
+  }
+  string request = "TYPE "+type+"\r\n";
   logger->info(MSG_SENDING_FTP_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
@@ -143,7 +151,7 @@ bool FtpConnection::bulkReceiveResponse(pair<int, string>& response) {
   if(strbuf.size() >= 4) {
     status = getStatus(strbuf);
     if(status == 0) {
-      throw new DlAbortEx(EX_INVALID_RESPONSE);
+      throw new DlRetryEx(EX_INVALID_RESPONSE);
     }
   } else {
     return false;
@@ -197,7 +205,7 @@ int FtpConnection::receivePasvResponse(pair<string, int>& dest) {
 	// port number
 	dest.second = 256*p1+p2;
       } else {
-	throw new DlAbortEx(EX_INVALID_RESPONSE);
+	throw new DlRetryEx(EX_INVALID_RESPONSE);
       }
     }
     return response.first;

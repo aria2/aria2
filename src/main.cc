@@ -27,6 +27,7 @@
 #include "DefaultDiskWriter.h"
 #include "Util.h"
 #include "InitiateConnectionCommandFactory.h"
+#include "prefs.h"
 #include <vector>
 #include <algorithm>
 #include <signal.h>
@@ -96,7 +97,9 @@ void showVersion() {
 }
 
 void showUsage() {
+  cout << endl;
   cout << "Usage: " << PACKAGE_NAME << " [options] URL ..." << endl;
+  cout << endl;
   cout << "Options:" << endl;
   cout << " -d, --dir=DIR              The directory to store downloaded file." << endl;
   cout << " -o, --out=FILE             The file name for downloaded file." << endl;
@@ -106,31 +109,47 @@ void showUsage() {
   cout << " -s, --split=N              Download a file using s connections. s must be" << endl;
   cout << "                            between 1 and 5. If this option is specified the" << endl;
   cout << "                            first URL is used, and the other URLs are ignored." << endl;
+  cout << " --retry-wait=SEC           Set amount of time in second between requests" << endl;
+  cout << "                            for errors. Specify a value between 0 and 60." << endl;
+  cout << " -t, --timeout=SEC          Set timeout in second." << endl;
   cout << " --http-proxy=HOST:PORT     Use HTTP proxy server. This affects to all" << endl;
   cout << "                            URLs." << endl;
   cout << " --http-user=USER           Set HTTP user. This affects to all URLs." << endl;
   cout << " --http-passwd=PASSWD       Set HTTP password. This affects to all URLs." << endl;
   cout << " --http-proxy-user=USER     Set HTTP proxy user. This affects to all URLs" << endl;
   cout << " --http-proxy-passwd=PASSWD Set HTTP proxy password. This affects to all URLs." << endl;
-  cout << " --http-auth-scheme=SCHEME  Set HTTP authentication scheme. Currently, BASIC" << endl;
+  cout << " --http-auth-scheme=SCHEME  Set HTTP authentication scheme. Currently, basic" << endl;
   cout << "                            is the only supported scheme. You MUST specify" << endl;
   cout << "                            this option in order to use HTTP authentication" << endl;
   cout << "                            as well as --http-proxy option." << endl;
-  cout << " --referer                  Set Referer. This affects to all URLs." << endl;
-  cout << " --retry-wait               Set amount of time in second between requests" << endl;
-  cout << "                            for errors. Specify a value between 0 and 60." << endl;
+  cout << " --referer=REFERER          Set Referer. This affects to all URLs." << endl;
+  cout << " --ftp-user=USER            Set FTP user. This affects to all URLs." << endl;
+  cout << "                            Default: anonymous" << endl;
+  cout << " --ftp-passwd=PASSWD        Set FTP password. This affects to all URLs." << endl;
+  cout << "                            Default: ARIA2USER@" << endl;
+  cout << " --ftp-type=TYPE            Set FTP transfer type. TYPE is either 'binary'" << endl;
+  cout << "                            or 'ascii'." << endl;
+  cout << "                            Default: binary" << endl;
+  cout << " -p, --ftp-pasv             Use passive mode in FTP." << endl;
+  cout << " --ftp-via-http-proxy=WAY   Use HTTP proxy in FTP. WAY is either 'get' or" << endl;
+  cout << "                            'tunnel'." << endl;
   cout << " -v, --version              Print the version number and exit." << endl;
   cout << " -h, --help                 Print this message and exit." << endl;
+  cout << endl;
   cout << "URL:" << endl;
   cout << " You can specify multiple URLs. All URLs must point to the same file" << endl;
-  cout << " or a download fails." << endl;
+  cout << " or downloading fails." << endl;
+  cout << endl;
   cout << "Examples:" << endl;
   cout << " Download a file by 1 connection:" << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip" << endl;
   cout << " Download a file by 2 connections:" << endl;
   cout << "  aria2c -s 2 http://AAA.BBB.CCC/file.zip" << endl;
-  cout << " Download a file by 2 connections, each connects to a different server." << endl;
+  cout << " Download a file by 2 connections, each connects to a different server:" << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip" << endl;
+  cout << " You can mix up different protocols:" << endl;
+  cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
+  cout << endl;
   cout << "Reports bugs to <tujikawa at rednoah dot com>" << endl;
 }
 
@@ -145,16 +164,13 @@ int main(int argc, char* argv[]) {
 
   int c;
   Option* op = new Option();
-  op->put("retry_wait", "5");
-
-  // TODO warning! Delete username/password line when commit
-  op->put("ftp_user", "anonymous");
-  op->put("ftp_passwd", "IE60USER@");
-  op->put("ftp_type", "I");
-
-  op->put("ftp_pasv_enabled", "true");
-  op->put("ftp_via_http_proxy", "tunnel");
-  op->put("http_abs_uri_request_enabled", "true");
+  op->put(PREF_RETRY_WAIT, "5");
+  op->put(PREF_TIMEOUT, "60");
+  op->put(PREF_FTP_USER, "anonymous");
+  op->put(PREF_FTP_PASSWD, "ARIA2USER@");
+  op->put(PREF_FTP_TYPE, V_BINARY);
+  op->put(PREF_FTP_PASV_ENABLED, V_TRUE);
+  op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
 
   while(1) {
     int optIndex = 0;
@@ -165,6 +181,7 @@ int main(int argc, char* argv[]) {
       { "out", required_argument, NULL, 'o' },
       { "log", required_argument, NULL, 'l' },
       { "split", required_argument, NULL, 's' },
+      { "timeout", required_argument, NULL, 't' },
       { "http-proxy", required_argument, &lopt, 1 },
       { "http-user", required_argument, &lopt, 2 },
       { "http-passwd", required_argument, &lopt, 3 },
@@ -173,11 +190,16 @@ int main(int argc, char* argv[]) {
       { "http-auth-scheme", required_argument, &lopt, 6 },
       { "referer", required_argument, &lopt, 7 },
       { "retry-wait", required_argument, &lopt, 8 },
+      { "ftp-user", required_argument, &lopt, 9 },
+      { "ftp-passwd", required_argument, &lopt, 10 },
+      { "ftp-type", required_argument, &lopt, 11 },
+      { "ftp-pasv", no_argument, NULL, 'p' },
+      { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:vh", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:vh", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -194,29 +216,29 @@ int main(int argc, char* argv[]) {
 	  showUsage();
 	  exit(1);
 	}
-	op->put("http_proxy_host", proxy.first);
-	op->put("http_proxy_port", Util::itos(port));
-	op->put("http_proxy_enabled", "true");
+	op->put(PREF_HTTP_PROXY_HOST, proxy.first);
+	op->put(PREF_HTTP_PROXY_PORT, Util::itos(port));
+	op->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
 	break;
       }
       case 2:
-	op->put("http_user", optarg);
+	op->put(PREF_HTTP_USER, optarg);
 	break;
       case 3:
-	op->put("http_passwd", optarg);
+	op->put(PREF_HTTP_PASSWD, optarg);
 	break;
       case 4:
-	op->put("http_proxy_user", optarg);
-	op->put("http_proxy_auth_enabled", "true");
+	op->put(PREF_HTTP_PROXY_USER, optarg);
+	op->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
 	break;
       case 5: 
-	op->put("http_proxy_passwd", optarg);
+	op->put(PREF_HTTP_PROXY_PASSWD, optarg);
 	break;
       case 6:
-	if(string("BASIC") == optarg) {
-	  op->put("http_auth_scheme", "BASIC");
+	if(string(V_BASIC) == optarg) {
+	  op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
 	} else {
-	  cerr << "Currently, supported authentication scheme is BASIC." << endl;
+	  cerr << "Currently, supported authentication scheme is basic." << endl;
 	}
 	break;
       case 7:
@@ -229,9 +251,33 @@ int main(int argc, char* argv[]) {
 	  showUsage();
 	  exit(1);
 	}
-	op->put("retry-wait", Util::itos(wait));
+	op->put(PREF_RETRY_WAIT, Util::itos(wait));
 	break;
       }
+      case 9:
+	op->put(PREF_FTP_USER, optarg);
+	break;
+      case 10:
+	op->put(PREF_FTP_PASSWD, optarg);
+	break;
+      case 11:
+	if(string(optarg) == V_BINARY || string(optarg) == V_ASCII) {
+	  op->put(PREF_FTP_TYPE, optarg);
+	} else {
+	  cerr << "ftp-type must be either 'binary' or 'ascii'." << endl;
+	  showUsage();
+	  exit(1);
+	}
+	break;
+      case 12:
+	if(string(optarg) == V_GET || string(optarg) == V_TUNNEL) {
+	  op->put(PREF_FTP_VIA_HTTP_PROXY, optarg);
+	} else {
+	  cerr << "ftp-via-http-proxy must be either 'get' or 'tunnel'." << endl;
+	  showUsage();
+	  exit(1);
+	}
+	break;
       }
       break;
     }
@@ -253,11 +299,25 @@ int main(int argc, char* argv[]) {
       break;
     case 's':
       split = (int)strtol(optarg, NULL, 10);
-      if(!(1 < split && split < 5)) {
+      if(!(1 <= split && split <= 5)) {
 	cerr << "split must be between 1 and 5." << endl;
 	showUsage();
 	exit(1);
       }
+      break;
+    case 't': {
+      int timeout = (int)strtol(optarg, NULL, 10);
+      if(1 <= timeout && timeout <= 600) {
+	op->put(PREF_TIMEOUT, Util::itos(timeout));
+      } else {
+	cerr << "timeout must be between 1 and 600" << endl;
+	showUsage();
+	exit(1);
+      }
+      break;
+    }
+    case 'p':
+      op->put(PREF_FTP_PASV_ENABLED, V_TRUE);
       break;
     case 'v':
       showVersion();

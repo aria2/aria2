@@ -32,7 +32,7 @@
 #define MSG_RECEIVE_RESPONSE "CUID#%d - Response received:\n%s"
 #define MSG_DOWNLOAD_ABORTED "CUID#%d - Download aborted."
 #define MSG_RESTARTING_DOWNLOAD "CUID#%d - Restarting the download."
-#define MSG_MAX_RETRY "CUID#%d - The retry count reached its max value. Download aborted."
+#define MSG_MAX_TRY "CUID#%d - %d times attempted, but no success. Download aborted."
 #define MSG_UNREGISTER_CUID "CUID#%d - Unregistering cuid from segmentManager."
 
 #define MSG_SEGMENT_FILE_EXISTS "The segment file %s exists."

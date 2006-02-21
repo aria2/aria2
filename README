@@ -7,7 +7,7 @@ You must use this program at your own risk.
 
 2. About aria2
 --------------
-aria2 has segmented downloading engine in its core. By segmented downloding,
+aria2 has segmented downloading engine in its core. By segmented downloading,
 it can download files very much faster than ordinary browsers.
 
 aria2 is in very early development stage. Currently it has following features:

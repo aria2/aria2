@@ -27,8 +27,7 @@
 #include "Util.h"
 #include "message.h"
 #include "SleepCommand.h"
-
-#define TIMEOUT_SEC 60
+#include "prefs.h"
 
 AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):
   Command(cuid), req(req), e(e), checkSocketIsReadable(false), checkSocketIsWritable(false) {
@@ -63,7 +62,7 @@ bool AbstractCommand::isTimeoutDetected() {
     return false;
   } else {
     long long int elapsed = Util::difftv(now, checkPoint);
-    if(elapsed >= TIMEOUT_SEC*1000000) {
+    if(elapsed >= e->option->getAsInt(PREF_TIMEOUT)*1000000) {
       return true;
     } else {
       return false;
@@ -103,11 +102,11 @@ bool AbstractCommand::execute() {
     delete(err);
     //req->resetUrl();
     req->addTryCount();
-    if(req->noMoreTry()) {
-      e->logger->error(MSG_MAX_RETRY, cuid);
+    if(req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRY)) {
+      e->logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
       return true;
     } else {
-      return prepareForRetry(e->option->getAsInt("retry_wait"));
+      return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
     }
   }
 }
