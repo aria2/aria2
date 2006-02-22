@@ -68,10 +68,6 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
     if(req->getFile() != e->segmentMan->filename) {
       throw new DlAbortEx(EX_FILENAME_MISMATCH, req->getFile().c_str(), e->segmentMan->filename.c_str());
     }
-    long long int size = headers.getFirstAsLLInt("Content-Length");
-    if(e->segmentMan->totalSize != size) {
-      throw new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
-    }
     createHttpDownloadCommand();
     return true;
   }
@@ -102,10 +98,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   bool segFileExists = e->segmentMan->segmentFileExists();
   e->segmentMan->downloadStarted = true;
   if(segFileExists) {
+    e->segmentMan->load();
     e->diskWriter->openExistingFile(e->segmentMan->getFilePath());
-    if(e->segmentMan->totalSize != size) {
-      return new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
-    }
     // send request again to the server with Range header
     return prepareForRetry(0);
   } else {

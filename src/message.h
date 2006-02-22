@@ -52,9 +52,9 @@
 #define EX_CONNECTION_FAILED "Connection failed."
 #define EX_FILENAME_MISMATCH "The requested filename and the previously registered one are not same. %s != %s"
 #define EX_BAD_STATUS "The response status is not successful. status = %d"
-#define EX_TOO_LARGE_FILE "Too large file size. size = %d"
+#define EX_TOO_LARGE_FILE "Too large file size. size = %lld"
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED "Transfer encoding %s is not supported."
 #define EX_SSL_INIT_FAILURE "SSL initialization failed."
-#define EX_SIZE_MISMATCH "Size mismatch %d != %d"
+#define EX_SIZE_MISMATCH "Size mismatch %lld != %lld"
 
 #endif // _D_MESSAGE_H_

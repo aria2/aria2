@@ -107,8 +107,8 @@ void showUsage() {
   cout << "                              log is written to stdout." << endl;
   cout << " -D, --daemon                 Run as daemon." << endl;
   cout << " -s, --split=N                Download a file using s connections. s must be" << endl;
-  cout << "                              between 1 and 5. If this option is specified the" << endl;
-  cout << "                              first URL is used, and the other URLs are ignored." << endl;
+  cout << "                              between 1 and 5. This option affects all URLs." << endl;
+  cout << "                              Thus, aria2 connects to each URL with N connections." << endl;
   cout << " --retry-wait=SEC             Set amount of time in second between requests" << endl;
   cout << "                              for errors. Specify a value between 0 and 60." << endl;
   cout << "                              Default: 5" << endl;
@@ -163,7 +163,7 @@ int main(int argc, char* argv[]) {
   string logfile;
   string dir;
   string ufilename;
-  int split = 0;
+  int split = 1;
   bool daemonMode = false;
   string referer;
 
@@ -393,7 +393,6 @@ int main(int argc, char* argv[]) {
   } else {
     logger = new SimpleLogger("/dev/null");
   }
-
   e = new DownloadEngine();
   e->logger = logger;
   e->option = op;
@@ -404,16 +403,11 @@ int main(int argc, char* argv[]) {
   e->segmentMan->logger = logger;
   e->segmentMan->option = op;
   vector<Request*> requests;
-  if(split > 0) {
-    for(int i = 1; i <= split; i++) {
-      addCommand(i, argv[optind], referer, requests);
-    }
-  } else {
-    for(int i = 1; optind < argc; i++) {
-      addCommand(i, argv[optind++], referer, requests); 
+  for(int i = 1; optind+i-1 < argc; i++) {
+    for(int s = 1; s <= split; s++) {
+      addCommand(split*(i-1)+s, argv[optind+i-1], referer, requests); 
     }
   }
-
   struct sigaction sigact;
   sigact.sa_handler = handler;
   sigact.sa_flags = 0;

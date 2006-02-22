@@ -1,3 +1,9 @@
+2006-02-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* main.cc: -s option now affects all URLs in command-line arguemtns.
+	* HttpResponseCommand.cc: Fixed bug that segment file is not loaded.
+	* message.h: Change file size related %d to %lld.
+
 2006-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* FtpInitiateConnectionCommand.{h,cc}:
