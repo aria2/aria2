@@ -113,7 +113,7 @@ int FtpConnection::getStatus(string response) const {
   // When the response is not like "%d %*s",
   // we return 0.
   if(response.find_first_not_of("0123456789") != 3
-     || response.find(" ") != 3) {
+     || !(response.find(" ") == 3 || response.find("-") == 3)) {
     return 0;
   }
   if(sscanf(response.c_str(), "%d %*s", &status) == 1) {

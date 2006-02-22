@@ -71,8 +71,11 @@ am__objects_1 = libaria2c_a-Socket.$(OBJEXT) \
 	libaria2c_a-FtpTunnelResponseCommand.$(OBJEXT) \
 	libaria2c_a-SleepCommand.$(OBJEXT) \
 	libaria2c_a-DownloadEngine.$(OBJEXT) \
-	libaria2c_a-SegmentMan.$(OBJEXT) libaria2c_a-Util.$(OBJEXT) \
-	libaria2c_a-Request.$(OBJEXT) \
+	libaria2c_a-SegmentMan.$(OBJEXT) \
+	libaria2c_a-SegmentSplitter.$(OBJEXT) \
+	libaria2c_a-SplitFirstSegmentSplitter.$(OBJEXT) \
+	libaria2c_a-SplitSlowestSegmentSplitter.$(OBJEXT) \
+	libaria2c_a-Util.$(OBJEXT) libaria2c_a-Request.$(OBJEXT) \
 	libaria2c_a-SimpleLogger.$(OBJEXT) \
 	libaria2c_a-ChunkedEncoding.$(OBJEXT) \
 	libaria2c_a-DefaultDiskWriter.$(OBJEXT) \
@@ -211,6 +214,9 @@ SRCS = Socket.cc Socket.h\
 	DownloadEngine.cc DownloadEngine.h\
 	Segment.h\
 	SegmentMan.cc SegmentMan.h\
+	SegmentSplitter.cc SegmentSplitter.h\
+	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h\
+	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h\
 	Util.cc Util.h\
 	Request.cc Request.h\
 	common.h\
@@ -337,10 +343,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SegmentMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Socket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SocketCore.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Util.Po@am__quote@
 
 .cc.o:
@@ -664,6 +673,48 @@ libaria2c_a-SegmentMan.obj: SegmentMan.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SegmentMan.cc' object='libaria2c_a-SegmentMan.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SegmentMan.obj `if test -f 'SegmentMan.cc'; then $(CYGPATH_W) 'SegmentMan.cc'; else $(CYGPATH_W) '$(srcdir)/SegmentMan.cc'; fi`
+
+libaria2c_a-SegmentSplitter.o: SegmentSplitter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SegmentSplitter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" -c -o libaria2c_a-SegmentSplitter.o `test -f 'SegmentSplitter.cc' || echo '$(srcdir)/'`SegmentSplitter.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SegmentSplitter.cc' object='libaria2c_a-SegmentSplitter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SegmentSplitter.o `test -f 'SegmentSplitter.cc' || echo '$(srcdir)/'`SegmentSplitter.cc
+
+libaria2c_a-SegmentSplitter.obj: SegmentSplitter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SegmentSplitter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" -c -o libaria2c_a-SegmentSplitter.obj `if test -f 'SegmentSplitter.cc'; then $(CYGPATH_W) 'SegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SegmentSplitter.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SegmentSplitter.cc' object='libaria2c_a-SegmentSplitter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SegmentSplitter.obj `if test -f 'SegmentSplitter.cc'; then $(CYGPATH_W) 'SegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SegmentSplitter.cc'; fi`
+
+libaria2c_a-SplitFirstSegmentSplitter.o: SplitFirstSegmentSplitter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitFirstSegmentSplitter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" -c -o libaria2c_a-SplitFirstSegmentSplitter.o `test -f 'SplitFirstSegmentSplitter.cc' || echo '$(srcdir)/'`SplitFirstSegmentSplitter.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitFirstSegmentSplitter.cc' object='libaria2c_a-SplitFirstSegmentSplitter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitFirstSegmentSplitter.o `test -f 'SplitFirstSegmentSplitter.cc' || echo '$(srcdir)/'`SplitFirstSegmentSplitter.cc
+
+libaria2c_a-SplitFirstSegmentSplitter.obj: SplitFirstSegmentSplitter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitFirstSegmentSplitter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" -c -o libaria2c_a-SplitFirstSegmentSplitter.obj `if test -f 'SplitFirstSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitFirstSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitFirstSegmentSplitter.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitFirstSegmentSplitter.cc' object='libaria2c_a-SplitFirstSegmentSplitter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitFirstSegmentSplitter.obj `if test -f 'SplitFirstSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitFirstSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitFirstSegmentSplitter.cc'; fi`
+
+libaria2c_a-SplitSlowestSegmentSplitter.o: SplitSlowestSegmentSplitter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitSlowestSegmentSplitter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" -c -o libaria2c_a-SplitSlowestSegmentSplitter.o `test -f 'SplitSlowestSegmentSplitter.cc' || echo '$(srcdir)/'`SplitSlowestSegmentSplitter.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitSlowestSegmentSplitter.cc' object='libaria2c_a-SplitSlowestSegmentSplitter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitSlowestSegmentSplitter.o `test -f 'SplitSlowestSegmentSplitter.cc' || echo '$(srcdir)/'`SplitSlowestSegmentSplitter.cc
+
+libaria2c_a-SplitSlowestSegmentSplitter.obj: SplitSlowestSegmentSplitter.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitSlowestSegmentSplitter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" -c -o libaria2c_a-SplitSlowestSegmentSplitter.obj `if test -f 'SplitSlowestSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitSlowestSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitSlowestSegmentSplitter.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitSlowestSegmentSplitter.cc' object='libaria2c_a-SplitSlowestSegmentSplitter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitSlowestSegmentSplitter.obj `if test -f 'SplitSlowestSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitSlowestSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitSlowestSegmentSplitter.cc'; fi`
 
 libaria2c_a-Util.o: Util.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Util.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Util.Tpo" -c -o libaria2c_a-Util.o `test -f 'Util.cc' || echo '$(srcdir)/'`Util.cc; \

@@ -52,6 +52,7 @@ bool SegmentMan::getSegment(Segment& seg, int cuid) {
     seg.sp = 0;
     seg.ep = totalSize == 0 ? 0 : totalSize-1;
     seg.ds = 0;
+    seg.speed = 0;
     seg.finish = false;
     segments.push_back(seg);
     return true;
@@ -81,35 +82,7 @@ bool SegmentMan::getSegment(Segment& seg, int cuid) {
       return true;
     }
   }
-  for(vector<Segment>::iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    Segment& s = *itr;
-    if(s.finish) {
-      continue;
-    }
-    if(s.ep-(s.sp+s.ds) > option->getAsLLInt(PREF_MIN_SEGMENT_SIZE)) {
-      long long int nep = (s.ep-(s.sp+s.ds))/2+(s.sp+s.ds);
-      //nseg = { cuid, nep+1, s.ep, 0, false };
-      seg.cuid = cuid;
-      seg.sp = nep+1;
-      seg.ep = s.ep;
-      seg.ds = 0;
-      seg.finish = false;
-      s.ep = nep;
-      logger->debug("return new segment { "
-		    "sp = "+Util::llitos(seg.sp)+", "+
-		    "ep = "+Util::llitos(seg.ep)+", "
-		    "ds = "+Util::llitos(seg.ds)+" } to "+
-		    "cuid "+Util::llitos(cuid));
-      logger->debug("update segment { "
-		    "sp = "+Util::llitos(s.sp)+", "+
-		    "ep = "+Util::llitos(s.ep)+", "
-		    "ds = "+Util::llitos(s.ds)+" } of "+
-		    "cuid "+Util::llitos(s.cuid));
-      segments.push_back(seg);
-      return true;
-    }
-  }
-  return false;
+  return splitter->splitSegment(seg, cuid, segments);
 }
 
 void SegmentMan::updateSegment(const Segment& segment) {

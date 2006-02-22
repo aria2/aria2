@@ -22,6 +22,7 @@
 #include "HttpInitiateConnectionCommand.h"
 #include "DownloadEngine.h"
 #include "SegmentMan.h"
+#include "SplitSlowestSegmentSplitter.h"
 #include "SimpleLogger.h"
 #include "common.h"
 #include "DefaultDiskWriter.h"
@@ -106,7 +107,7 @@ void showUsage() {
   cout << " -l, --log=LOG                The file path to store log. If '-' is specified," << endl;
   cout << "                              log is written to stdout." << endl;
   cout << " -D, --daemon                 Run as daemon." << endl;
-  cout << " -s, --split=N                Download a file using s connections. s must be" << endl;
+  cout << " -s, --split=N                Download a file using N connections. N must be" << endl;
   cout << "                              between 1 and 5. This option affects all URLs." << endl;
   cout << "                              Thus, aria2 connects to each URL with N connections." << endl;
   cout << " --retry-wait=SEC             Set amount of time in second between requests" << endl;
@@ -138,6 +139,7 @@ void showUsage() {
   cout << " -p, --ftp-pasv               Use passive mode in FTP." << endl;
   cout << " --ftp-via-http-proxy=WAY     Use HTTP proxy in FTP. WAY is either 'get' or" << endl;
   cout << "                              'tunnel'." << endl;
+  cout << "                              Default: tunnel" << endl;
   cout << " -v, --version                Print the version number and exit." << endl;
   cout << " -h, --help                   Print this message and exit." << endl;
   cout << endl;
@@ -176,7 +178,6 @@ int main(int argc, char* argv[]) {
   op->put(PREF_FTP_USER, "anonymous");
   op->put(PREF_FTP_PASSWD, "ARIA2USER@");
   op->put(PREF_FTP_TYPE, V_BINARY);
-  op->put(PREF_FTP_PASV_ENABLED, V_TRUE);
   op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
 
   while(1) {
@@ -393,6 +394,9 @@ int main(int argc, char* argv[]) {
   } else {
     logger = new SimpleLogger("/dev/null");
   }
+  SegmentSplitter* splitter = new SplitSlowestSegmentSplitter();
+  splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
+  splitter->logger = logger;
   e = new DownloadEngine();
   e->logger = logger;
   e->option = op;
@@ -402,6 +406,7 @@ int main(int argc, char* argv[]) {
   e->segmentMan->ufilename = ufilename;
   e->segmentMan->logger = logger;
   e->segmentMan->option = op;
+  e->segmentMan->splitter = splitter;
   vector<Request*> requests;
   for(int i = 1; optind+i-1 < argc; i++) {
     for(int s = 1; s <= split; s++) {

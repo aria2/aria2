@@ -24,6 +24,9 @@ SRCS =  Socket.cc Socket.h\
 	DownloadEngine.cc DownloadEngine.h\
 	Segment.h\
 	SegmentMan.cc SegmentMan.h\
+	SegmentSplitter.cc SegmentSplitter.h\
+	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h\
+	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h\
 	Util.cc Util.h\
 	Request.cc Request.h\
 	common.h\

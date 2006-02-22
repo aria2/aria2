@@ -27,6 +27,7 @@
 #include "Logger.h"
 #include "Segment.h"
 #include "Option.h"
+#include "SegmentSplitter.h"
 
 using namespace std;
 
@@ -64,7 +65,7 @@ public:
   /**
    * Holds segments.
    */
-  vector<Segment> segments;
+  Segments segments;
   /**
    * Respresents the file name of the downloaded file.
    * If the URL does not contain file name part(http://www.rednoah.com/, for 
@@ -83,6 +84,7 @@ public:
 
   const Logger* logger;
   const Option* option;
+  SegmentSplitter* splitter;
 
   SegmentMan();
   ~SegmentMan();

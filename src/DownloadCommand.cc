@@ -27,7 +27,10 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 
-DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {}
+DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s), lastSize(0) {
+  sw.tv_sec = 0;
+  sw.tv_usec = 0;
+}
 
 DownloadCommand::~DownloadCommand() {}
 
@@ -49,6 +52,20 @@ bool DownloadCommand::executeInternal(Segment seg) {
   } else {
     e->diskWriter->writeData(buf, bufSize, seg.sp+seg.ds);
     seg.ds += bufSize;
+  }
+  // calculate downloading speed
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  if(sw.tv_sec == 0 && sw.tv_usec == 0) {
+    sw = now;
+    lastSize = seg.ds;
+  } else {
+    long long int diff = Util::difftv(now, sw);
+    if(diff >= 1000000) {
+      seg.speed = (int)((seg.ds-lastSize)/(diff/1000000.0));
+      sw = now;
+      lastSize = seg.ds;
+    }
   }
   
   if(te != NULL && te->finished()

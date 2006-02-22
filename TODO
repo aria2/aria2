@@ -5,5 +5,4 @@
 * Better HTTP status handling
 * Download files listed in a specifed file.
 * check MD5 checksum
-* Apply "split longest remianing time first" algorithm to SegmentMan.
-* split algorithm must be separate class.
+* Add the feature which adds or removes URLs on-the-fly.

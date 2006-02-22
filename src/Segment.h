@@ -22,6 +22,10 @@
 #ifndef _D_SEGMENT_H_
 #define _D_SEGMENT_H_
 
+#include <vector>
+
+using namespace std;
+
 /**
  * Segment represents a download segment.
  * sp, ep is a offset from a begining of a file.
@@ -36,8 +40,11 @@ typedef struct {
   long long int sp;
   long long int ep;
   long long int ds;
+  int speed;
   bool finish;
 } Segment;
+
+typedef vector<Segment> Segments;
 
 #define SEGMENT_EQUAL(X, Y) (X.cuid == Y.cuid && X.sp == Y.sp && X.ep == Y.ep && X.ds == Y.ds && X.finish == Y.finish ? true : false)
 

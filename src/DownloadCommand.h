@@ -29,6 +29,9 @@
 using namespace std;
 
 class DownloadCommand : public AbstractCommand {
+private:
+  struct timeval sw;
+  long long int lastSize;
 protected:
   bool executeInternal(Segment segment);
 

@@ -1,5 +1,14 @@
 2006-02-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* SplitSlowestSegmentSplitter.{h,cc}: This class provies algorithm
+	that splits slowest segment of SegmentMan::commands vector.
+	This is the default split algorithm of aria2.
+	* SplitFirstSegmentSplitter.{h,cc}: This class provides algorithm
+	that splits first segment of SegmentMan::commands vector.
+	* SegmentSplitter.{h,cc}: Added. This class provides split algorithm.
+	* DownloadCommand.{h,cc}: Added downloading speed calculation.
+	* Segment.h:
+	* SegmentMan.cc: Added speed field to Segment.h
 	* main.cc: -s option now affects all URLs in command-line arguemtns.
 	* HttpResponseCommand.cc: Fixed bug that segment file is not loaded.
 	* message.h: Change file size related %d to %lld.
