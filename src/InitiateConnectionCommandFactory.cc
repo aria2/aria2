@@ -21,6 +21,7 @@
 /* copyright --> */
 #include "InitiateConnectionCommandFactory.h"
 #include "HttpInitiateConnectionCommand.h"
+#include "FtpInitiateConnectionCommand.h"
 
 Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e) {
   if(req->getProtocol() == "http"
@@ -30,6 +31,8 @@ Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int c
 #endif // HAVE_LIBSSL
      ) {
     return new HttpInitiateConnectionCommand(cuid, req, e);
+  } else if(req->getProtocol() == "ftp") {
+    return new FtpInitiateConnectionCommand(cuid, req, e);
   } else {
     // these protocols are not supported yet
     return NULL;

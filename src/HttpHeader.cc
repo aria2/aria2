@@ -19,22 +19,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "Option.h"
+#include "HttpHeader.h"
 
-Option::Option() {}
-
-Option::~Option() {}
-
-void Option::put(const string& name, const string& value) {
-  table[name] = value;
+void HttpHeader::put(const string& name, const string& value) {
+  multimap<string, string>::value_type vt(name, value);
+  table.insert(vt);
 }
 
-bool Option::defined(const string& name) const {
+bool HttpHeader::defined(const string& name) const {
   return table.count(name) == 1;
 }
 
-string Option::get(const string& name) const {
-  map<string, string>::const_iterator itr = table.find(name);
+string HttpHeader::getFirst(const string& name) const {
+  multimap<string, string>::const_iterator itr = table.find(name);
   if(itr == table.end()) {
     return "";
   } else {
@@ -42,8 +39,16 @@ string Option::get(const string& name) const {
   }
 }
 
-int Option::getAsInt(const string& name) const {
-  map<string, string>::const_iterator itr = table.find(name);
+vector<string> HttpHeader::get(const string& name) const {
+  vector<string> v;
+  for(multimap<string, string>::const_iterator itr = table.find(name); itr != table.end(); itr++) {
+    v.push_back((*itr).second);
+  }
+  return v;
+}
+
+int HttpHeader::getFirstAsInt(const string& name) const {
+  multimap<string, string>::const_iterator itr = table.find(name);
   if(itr == table.end()) {
     return 0;
   } else {
@@ -51,11 +56,11 @@ int Option::getAsInt(const string& name) const {
   }
 }
 
-long long int Option::getAsLLInt(const string& name) const {
-  map<string, string>::const_iterator itr = table.find(name);
+long long int HttpHeader::getFirstAsLLInt(const string& name) const {
+  multimap<string, string>::const_iterator itr = table.find(name);
   if(itr == table.end()) {
     return 0;
   } else {
-    return (int)strtoll((*itr).second.c_str(), NULL, 10);
+    return strtoll((*itr).second.c_str(), NULL, 10);
   }
 }

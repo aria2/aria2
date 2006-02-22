@@ -19,34 +19,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_SEGMENT_H_
-#define _D_SEGMENT_H_
+#include "SegmentSplitter.h"
+#include "Util.h"
 
-#include <vector>
-
-using namespace std;
-
-/**
- * Segment represents a download segment.
- * sp, ep is a offset from a begining of a file.
- * Therefore, if a file size is x, then 0 <= sp <= ep <= x-1.
- * sp, ep is used in Http Range header.
- * e.g. Range: bytes=sp-ep
- * ds is downloaded bytes.
- * If a download of this segement is complete, finish must be set to true.
- */
-typedef struct {
-  int cuid;
-  long long int sp;
-  long long int ep;
-  long long int ds;
-  int speed;
-  bool finish;
-} Segment;
-
-typedef vector<Segment> Segments;
-
-#define SEGMENT_EQUAL(X, Y) (X.cuid == Y.cuid && X.sp == Y.sp && X.ep == Y.ep && X.ds == Y.ds && X.finish == Y.finish ? true : false)
-
-#endif // _D_SEGMENT_H_
-
+void SegmentSplitter::split(Segment& seg, int cuid, Segment& s) const {
+  long long int nep = (s.ep-(s.sp+s.ds))/2+(s.sp+s.ds);
+  seg.cuid = cuid;
+  seg.sp = nep+1;
+  seg.ep = s.ep;
+  seg.ds = 0;
+  seg.speed = s.speed;
+  seg.finish = false;
+  s.ep = nep;
+  logger->debug("return new segment { "
+		"sp = "+Util::llitos(seg.sp)+", "+
+		"ep = "+Util::llitos(seg.ep)+", "+
+		"ds = "+Util::llitos(seg.ds)+", "+
+		"speed = "+Util::itos(seg.speed)+" } to "+
+		"cuid "+Util::llitos(cuid));
+  logger->debug("update segment { "
+		"sp = "+Util::llitos(s.sp)+", "+
+		"ep = "+Util::llitos(s.ep)+", "+
+		"ds = "+Util::llitos(s.ds)+", "+
+		"speed = "+Util::itos(s.speed)+" } of "+
+		"cuid "+Util::llitos(s.cuid));
+}

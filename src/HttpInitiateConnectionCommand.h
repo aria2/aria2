@@ -27,6 +27,8 @@
 class HttpInitiateConnectionCommand : public AbstractCommand {
 private:
   bool useProxy();
+  bool useProxyGet();
+  bool useProxyTunnel();
 protected:
   /**
    * Connect to the server.

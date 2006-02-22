@@ -32,6 +32,7 @@ class Socket {
 private:
   // socket endpoint descriptor
   SocketCore* core;
+  Socket(SocketCore* core);
 public:
   Socket();
   Socket(const Socket& s);
@@ -41,46 +42,51 @@ public:
 
   int getSockfd() const { return core->sockfd; }
 
+  void beginListen() const;
+  void getAddrInfo(pair<string, int>& addrinfo) const;
+  Socket* acceptConnection() const;
+
   /**
    * Connects to the server named host and the destination port is port.
    * This method make socket non-blocking mode.
-   * To make the socket blocking mode, call setNonBlockingMode() after
+   * To make the socket blocking mode, call setBlockingMode() after
    * the connection is established.
    */
-  void establishConnection(string host, int port);
+  void establishConnection(string host, int port) const;
 
-  void setNonBlockingMode();
+  void setBlockingMode() const;
 
   // Closes the connection which this socket object has
-  void closeConnection();
+  void closeConnection() const;
 
   // examines whether the socket of this Socket object is available for writing.
   // returns true if the socket is available for writing, otherwise returns false.
-  bool isWritable(int timeout);
+  bool isWritable(int timeout) const;
 
   // examines whether the socket of this Socket object is available for reading.
   // returns true if the socket is available for reading, otherwise returns false.
-  bool isReadable(int timeout);
+  bool isReadable(int timeout) const;
 
   // writes characters into the socket. data is a pointer pointing the first
   // byte of the data and len is the length of the data.
-  void writeData(const char* data, int len, int timeout = 5);
+  void writeData(const char* data, int len, int timeout = 5) const;
+  void writeData(string str, int timeout = 5) const;
 
   // Reads up to len bytes from this socket.
   // data is a pointer pointing the first
   // byte of the data, which must be allocated before this method is called.
   // len is the size of the allocated memory. When this method returns
   // successfully, len is replaced by the size of the read data.
-  void readData(char* data, int& len, int timeout = 5);
+  void readData(char* data, int& len, int timeout = 5) const;
   // Reads up to len bytes from this socket, but bytes are not removed from
   // this socket.
-  void peekData(char* data, int& len, int timeout = 5);
+  void peekData(char* data, int& len, int timeout = 5) const;
 
   /**
    * Makes this socket secure.
    * If the system has not OpenSSL, then this method do nothing.
    */
-  void initiateSecureConnection();
+  void initiateSecureConnection() const;
 };
 
 #endif // _D_SOCKET_H_

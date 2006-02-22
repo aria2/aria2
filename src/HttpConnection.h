@@ -27,30 +27,33 @@
 #include "Request.h"
 #include "Option.h"
 #include "Logger.h"
+#include "HttpHeader.h"
 #include <map>
 #include <string>
 
 using namespace std;
 
-typedef multimap<string, string> HttpHeader;
+//typedef multimap<string, string> HttpHeader;
 
 class HttpConnection {
 private:
-  string getHost(const string& host, int port);
-  string createRequest(const Request* req, const Segment& segment);
-  bool useProxy();
-  bool useProxyAuth();
-  bool useBasicAuth();
+  string getHost(const string& host, int port) const;
+  string createRequest(const Segment& segment) const;
+  bool useProxy() const;
+  bool useProxyAuth() const;
+  bool useProxyGet() const;
+  string getProxyAuthString() const;
   int cuid;
-  Socket* socket;
+  const Socket* socket;
+  const Request* req;
   const Option* option;
-  Logger* logger;
+  const Logger* logger;
+  string header;
 public:
+  HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger);
 
-  HttpConnection(int cuid, Socket* socket, const Option* op, Logger* logger);
-
-  void sendRequest(const Request* req, const Segment& segment);
-  void sendProxyRequest(const Request* req);
+  void sendRequest(const Segment& segment) const;
+  void sendProxyRequest() const;
   int receiveResponse(HttpHeader& headers);
 };
 

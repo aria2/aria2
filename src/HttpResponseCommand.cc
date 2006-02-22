@@ -21,6 +21,7 @@
 /* copyright --> */
 #include "HttpResponseCommand.h"
 #include "DlAbortEx.h"
+#include "DlRetryEx.h"
 #include "HttpDownloadCommand.h"
 #include "HttpInitiateConnectionCommand.h"
 #include "message.h"
@@ -28,10 +29,12 @@
 
 HttpResponseCommand::HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):
   AbstractCommand(cuid, req, e, s) {
-  AbstractCommand::checkSocketIsReadable = true;
+  http = new HttpConnection(cuid, socket, req, e->option, e->logger);
 }
 
-HttpResponseCommand::~HttpResponseCommand() {}
+HttpResponseCommand::~HttpResponseCommand() {
+  delete http;
+}
 
 bool HttpResponseCommand::executeInternal(Segment seg) {
   if(SEGMENT_EQUAL(req->seg, seg) == false) {
@@ -39,22 +42,25 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
     return prepareForRetry(0);
   }
   HttpHeader headers;
-  HttpConnection httpConnection(cuid, socket, e->option, e->logger);
-  int status = httpConnection.receiveResponse(headers);
+  int status = http->receiveResponse(headers);
+  if(status == 0) {
+    // didn't receive header fully
+    e->commands.push(this);
+    return false;
+  }
   // check HTTP status number
   checkResponse(status, seg);
   retrieveCookie(headers);
   // check whether Location header exists. If it does, update request object
   // with redirected URL.
   // then establish a connection to the new host and port
-  if(headers.count("Location")) {
-    return handleRedirect((*headers.find("Location")).second, headers);
+  if(headers.defined("Location")) {
+    return handleRedirect(headers.getFirst("Location"), headers);
   }
   if(!e->segmentMan->downloadStarted) {
     string transferEncoding;
-    headers.find("Transfer-Encoding");
-    if(headers.count("Transfer-Encoding")) {
-      return handleOtherEncoding((*headers.find("Transfer-Encoding")).second, headers);
+    if(headers.defined("Transfer-Encoding")) {
+      return handleOtherEncoding(headers.getFirst("Transfer-Encoding"), headers);
     } else {
       return handleDefaultEncoding(headers);
     }
@@ -71,7 +77,7 @@ void HttpResponseCommand::checkResponse(int status, const Segment& segment) {
     if(!(status < 400 && status >= 300 ||
 	 (segment.sp+segment.ds == 0 && status == 200)
 	 || (segment.sp+segment.ds > 0 &&  status == 206))) {
-      throw new DlAbortEx(EX_BAD_STATUS, status);
+      throw new DlRetryEx(EX_BAD_STATUS, status);
     }
 }
 
@@ -83,18 +89,12 @@ bool HttpResponseCommand::handleRedirect(string url, const HttpHeader& headers) 
 }
 
 bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
-  long long int size;
-  if(headers.count("Content-Length") == 0) {
-    size = 0;
-  } else {
-    size = STRTOLL((*headers.find("Content-Length")).second.c_str());
-    if(size == LONG_LONG_MAX || size == LONG_LONG_MIN) {
-      throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
-    }
+  long long int size = headers.getFirstAsLLInt("Content-Length");
+  if(size == LONG_LONG_MAX || size < 0) {
+    throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
   e->segmentMan->isSplittable = !(size == 0);
   e->segmentMan->filename = req->getFile();
-  e->segmentMan->totalSize = size;
   bool segFileExists = e->segmentMan->segmentFileExists();
   e->segmentMan->downloadStarted = true;
   if(segFileExists) {
@@ -103,8 +103,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     // send request again to the server with Range header
     return prepareForRetry(0);
   } else {
-    Segment seg;
-    e->segmentMan->getSegment(seg, cuid);	
+    e->segmentMan->totalSize = size;
     e->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
     createHttpDownloadCommand();
     return true;
@@ -140,9 +139,10 @@ void HttpResponseCommand::createHttpDownloadCommand(string transferEncoding) {
 }
 
 void HttpResponseCommand::retrieveCookie(const HttpHeader& headers) {
-  for(HttpHeader::const_iterator itr = headers.find("Set-Cookie"); itr != headers.end(); itr++) {
+  vector<string> v = headers.get("Set-Cookie");
+  for(vector<string>::const_iterator itr = v.begin(); itr != v.end(); itr++) {
     Cookie c;
-    req->cookieBox->parse(c, (*itr).second);
+    req->cookieBox->parse(c, *itr);
     req->cookieBox->add(c);
   }
 }

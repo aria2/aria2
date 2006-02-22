@@ -23,8 +23,11 @@
 #define _D_HTTP_PROXY_RESPONSE_COMMAND_H_
 
 #include "AbstractCommand.h"
+#include "HttpConnection.h"
 
 class HttpProxyResponseCommand : public AbstractCommand {
+private:
+  HttpConnection* http;
 protected:
   bool executeInternal(Segment segment);
 public:

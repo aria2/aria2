@@ -29,12 +29,15 @@
 using namespace std;
 
 class DownloadCommand : public AbstractCommand {
+private:
+  struct timeval sw;
+  long long int lastSize;
 protected:
   bool executeInternal(Segment segment);
 
   bool prepareForRetry(int wait);
   bool prepareForNextSegment();
-
+  void onAbort(Exception* ex);
 public:
   DownloadCommand(int cuid, Request* req, DownloadEngine* e, Socket* s);
   virtual ~DownloadCommand();

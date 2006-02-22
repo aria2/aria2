@@ -108,3 +108,32 @@ void Util::slice(vector<string>& result, string src, char delim) {
     result.push_back(trim(term));
   } 
 }
+
+bool Util::endsWith(string target, string part) {
+  if(target.size() < part.size()) {
+    return false;
+  }
+  if(target.compare(target.size()-part.size(), part.size(), part, 0, part.size()) == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+string Util::replace(string target, string oldstr, string newstr) {
+  if(target == "" || oldstr == "" ) {
+    return target;
+  }
+  string result;
+  string::size_type p = 0;
+  string::size_type np = target.find(oldstr);
+  while(np != string::npos) {
+    result += target.substr(p, np-p)+newstr;
+    p = np+oldstr.size();
+    np = target.find(oldstr, p);
+  }
+  result += target.substr(p);
+
+  return result;
+}
+

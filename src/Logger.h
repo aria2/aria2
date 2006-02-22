@@ -29,12 +29,12 @@ using namespace std;
 class Logger {
 public:
   virtual ~Logger() {}
-  virtual void debug(string msg, ...) = 0;
-  virtual void debug(string msg, Exception* ex, ...) = 0;
-  virtual void info(string msg, ...) = 0;
-  virtual void info(string msg, Exception* ex, ...) = 0;
-  virtual void error(string msg, ...) = 0;
-  virtual void error(string msg, Exception* ex, ...) = 0;
+  virtual void debug(string msg, ...) const = 0;
+  virtual void debug(string msg, Exception* ex, ...) const = 0;
+  virtual void info(string msg, ...) const = 0;
+  virtual void info(string msg, Exception* ex, ...) const = 0;
+  virtual void error(string msg, ...) const = 0;
+  virtual void error(string msg, Exception* ex, ...) const = 0;
 };
 
 #endif // _D_LOGGER_H_

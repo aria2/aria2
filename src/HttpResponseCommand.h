@@ -33,6 +33,7 @@ private:
   bool handleOtherEncoding(string transferEncoding, const HttpHeader& headers);
   void createHttpDownloadCommand(string transferEncoding = "");
   void retrieveCookie(const HttpHeader& headers);
+  HttpConnection* http;
 protected:
   bool executeInternal(Segment segment);
 public:

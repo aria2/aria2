@@ -24,17 +24,16 @@
 #include "HttpProxyResponseCommand.h"
 
 HttpProxyRequestCommand::HttpProxyRequestCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {
-  AbstractCommand::checkSocketIsWritable = true;
-  e->deleteSocketForReadCheck(socket);
-  e->addSocketForWriteCheck(socket);
+  setReadCheckSocket(NULL);
+  setWriteCheckSocket(socket);
 }
 
 HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 
 bool HttpProxyRequestCommand::executeInternal(Segment segment) {
-  socket->setNonBlockingMode();
-  HttpConnection httpConnection(cuid, socket, e->option, e->logger);
-  httpConnection.sendProxyRequest(req);
+  socket->setBlockingMode();
+  HttpConnection httpConnection(cuid, socket, req, e->option, e->logger);
+  httpConnection.sendProxyRequest();
 
   HttpProxyResponseCommand* command = new HttpProxyResponseCommand(cuid, req, e, socket);
   e->commands.push(command);

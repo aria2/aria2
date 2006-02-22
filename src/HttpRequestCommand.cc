@@ -27,22 +27,21 @@
 #include "HttpConnection.h"
 
 HttpRequestCommand::HttpRequestCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {
-  AbstractCommand::checkSocketIsWritable = true;
-  e->deleteSocketForReadCheck(socket);
-  e->addSocketForWriteCheck(socket);
+  setReadCheckSocket(NULL);
+  setWriteCheckSocket(socket);
 }
 
 HttpRequestCommand::~HttpRequestCommand() {}
 
 bool HttpRequestCommand::executeInternal(Segment seg) {
-  socket->setNonBlockingMode();
+  socket->setBlockingMode();
   if(req->getProtocol() == "https") {
     socket->initiateSecureConnection();
   }
-  HttpConnection httpConnection(cuid, socket, e->option, e->logger);
+  HttpConnection http(cuid, socket, req, e->option, e->logger);
   // set seg to request in order to remember the request range
   req->seg = seg;
-  httpConnection.sendRequest(req, seg);
+  http.sendRequest(seg);
 
   HttpResponseCommand* command = new HttpResponseCommand(cuid, req, e, socket);
   e->commands.push(command);

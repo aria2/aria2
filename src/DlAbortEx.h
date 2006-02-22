@@ -26,10 +26,10 @@
 class DlAbortEx:public Exception {
 public:
   DlAbortEx():Exception() {}
-  DlAbortEx(string msg, ...):Exception() {
+  DlAbortEx(const char* msg, ...):Exception() {
     va_list ap;
     va_start(ap, msg);
-    setMsg(msg, ap);
+    setMsg(string(msg), ap);
     va_end(ap);
   }
 };

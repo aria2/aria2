@@ -37,7 +37,7 @@ public:
   static string llitos(long long int value, bool comma = false);
   static string itos(int value, bool comma = false);
   /**
-   * Computes difference in milli second between tv1 and tv2,
+   * Computes difference in micro-seconds between tv1 and tv2,
    * assuming tv1 is newer than tv2.
    * If tv1 is older than tv2, then this method returns 0.
    */
@@ -49,6 +49,10 @@ public:
   static void slice(vector<string>& result, string src, char delim);
   
   static string trim(string src);
+
+  static bool endsWith(string target, string part);
+
+  static string replace(string target, string oldstr, string newstr);
 };
 
 #endif // _D_UTIL_H_

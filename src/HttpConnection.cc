@@ -20,55 +20,67 @@
  */
 /* copyright --> */
 #include "HttpConnection.h"
-#include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "Util.h"
 #include "Base64.h"
 #include "message.h"
+#include "prefs.h"
 
-HttpConnection::HttpConnection(int cuid, Socket* socket, const Option* op, Logger* logger):cuid(cuid), socket(socket),option(op),logger(logger) {}
+HttpConnection::HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger):
+  cuid(cuid), socket(socket), req(req), option(op), logger(logger) {}
 
-void HttpConnection::sendRequest(const Request* req, const Segment& segment) {
-  string request = createRequest(req, segment);
-  logger->info(MSG_SENDING_HTTP_REQUEST, cuid, request.c_str());
+void HttpConnection::sendRequest(const Segment& segment) const {
+  string request = createRequest(segment);
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request.c_str(), request.size());
 }
 
-void HttpConnection::sendProxyRequest(const Request* req) {
-  string request = string("CONNECT ")+req->getHost()+":"+Util::llitos(req->getPort())+
+void HttpConnection::sendProxyRequest() const {
+  string request =
+    string("CONNECT ")+req->getHost()+":"+Util::llitos(req->getPort())+
     string(" HTTP/1.1\r\n")+
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n";
   if(useProxyAuth()) {
-    request += "Proxy-Authorization: Basic "+
-      Base64::encode(option->get("http_proxy_user")+":"+option->get("http_proxy_passwd"))+"\r\n";
+    request += getProxyAuthString();
   }
   request += "\r\n";
-  logger->info(MSG_SENDING_HTTP_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request.c_str(), request.size());
 }
 
-string HttpConnection::getHost(const string& host, int port) {
+string HttpConnection::getProxyAuthString() const {
+  return "Proxy-Authorization: Basic "+
+    Base64::encode(option->get(PREF_HTTP_PROXY_USER)+":"+
+		   option->get(PREF_HTTP_PROXY_PORT))+"\r\n";
+}
+
+string HttpConnection::getHost(const string& host, int port) const {
   return host+(port == 80 || port == 443 ? "" : ":"+Util::llitos(port));
 }
 
-string HttpConnection::createRequest(const Request* req, const Segment& segment) {
+string HttpConnection::createRequest(const Segment& segment) const {
   string request = string("GET ")+
-    // some servers cannot permit absolute URI as requet URI.
-    //req->getCurrentUrl()+
-    (req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()+
+    (req->getProtocol() == "ftp" || useProxy() && useProxyGet() ?
+     req->getCurrentUrl() :
+     ((req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()))+
     string(" HTTP/1.1\r\n")+
     "User-Agent: aria2\r\n"+
     "Connection: close\r\n"+
-    "Accept: */*\r\n"+
+    "Accept: */*\r\n"+        /* */
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n"+
     "Pragma: no-cache\r\n"+
     "Cache-Control: no-cache\r\n";
   if(segment.sp+segment.ds > 0) {
-    request += "Range: bytes="+Util::llitos(segment.sp+segment.ds)+"-"+Util::llitos(segment.ep)+"\r\n";
+    request += "Range: bytes="+
+      Util::llitos(segment.sp+segment.ds)+"-"+Util::llitos(segment.ep)+"\r\n";
   }
-  if(option->get("http_auth_scheme") == "BASIC") {
+  if(useProxy() && useProxyAuth() && useProxyGet()) {
+    request += getProxyAuthString();
+  }
+  if(option->get(PREF_HTTP_AUTH_SCHEME) == V_BASIC) {
     request += "Authorization: Basic "+
-      Base64::encode(option->get("http_user")+":"+option->get("http_passwd"))+"\r\n";
+      Base64::encode(option->get(PREF_HTTP_USER)+":"+
+		     option->get(PREF_HTTP_PASSWD))+"\r\n";
   }
   if(req->getPreviousUrl().size()) {
     request += "Referer: "+req->getPreviousUrl()+"\r\n";
@@ -87,48 +99,34 @@ string HttpConnection::createRequest(const Request* req, const Segment& segment)
 }
 
 int HttpConnection::receiveResponse(HttpHeader& headers) {
-  string header;
-  char* buf = NULL;
-  try {
-    // read a line of the header      
-    int bufSize = 256;
-    // TODO limit iteration count
-    while(1) {
-      bufSize += 256;
-      if(bufSize > 2048) {
-	throw new DlAbortEx(EX_INVALID_HEADER);
-      }
-      buf = new char[bufSize];
-      int tbufSize = bufSize-1;
-      socket->peekData(buf, tbufSize);
-      if(tbufSize > 0) {
-	buf[tbufSize] = '\0';
-      }
-      header = buf;
-      char* p;
-      if((p = strstr(buf, "\r\n")) == buf) {
-	throw new DlAbortEx(EX_NO_HEADER);
-      }
-      if((p = strstr(buf, "\r\n\r\n")) != NULL) {
-	*(p+4) = '\0';
-	header = buf;
-	tbufSize = header.size();
-	socket->readData(buf, tbufSize);
-	delete [] buf;
-	buf = NULL;
-	break;
+  char buf[512];
+  while(socket->isReadable(0)) {
+    int size = sizeof(buf)-1;
+    socket->peekData(buf, size);
+    if(size == 0) {
+      throw new DlRetryEx(EX_INVALID_RESPONSE);
+    }
+    buf[size] = '\0';
+    int hlenTemp = header.size();
+    header += buf;
+    string::size_type p;
+    if((p = header.find("\r\n\r\n")) == string::npos) {
+      socket->readData(buf, size);
+    } else {
+      if(Util::endsWith(header, "\r\n\r\n")) {
+	socket->readData(buf, size);
       } else {
-	delete [] buf;
-	buf = NULL;
+	header.erase(p+4);
+	size = p+4-hlenTemp;
+	socket->readData(buf, size);
       }
+      break;
     }
-  } catch(Exception* e) {
-    if(buf != NULL) {
-      delete [] buf;
-    }
-    throw;
   }
-  // OK, i got all headers.
+  if(!Util::endsWith(header, "\r\n\r\n")) {
+    return 0;
+  }
+  // OK, we got all headers.
   logger->info(MSG_RECEIVE_RESPONSE, cuid, header.c_str());
   string::size_type p, np;
   p = np = 0;
@@ -145,19 +143,19 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
     p = np+2;
     pair<string, string> hp;
     Util::split(hp, line, ':');
-    HttpHeader::value_type nh(hp.first, hp.second);
-    headers.insert(nh);
+    headers.put(hp.first, hp.second);
   }
-  // TODO rewrite this using strtoul
   return (int)strtol(status.c_str(), NULL, 10);
 }
 
-bool HttpConnection::useProxy() {
-  return option->defined("http_proxy_enabled") &&
-    option->get("http_proxy_enabled") == "true";
+bool HttpConnection::useProxy() const {
+  return option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
 }
 
-bool HttpConnection::useProxyAuth() {
-  return option->defined("http_proxy_auth_enabled") &&
-    option->get("http_proxy_auth_enabled") == "true";
+bool HttpConnection::useProxyAuth() const {
+  return option->get(PREF_HTTP_PROXY_AUTH_ENABLED) == V_TRUE;
+}
+
+bool HttpConnection::useProxyGet() const {
+  return option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
 }

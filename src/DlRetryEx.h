@@ -26,7 +26,7 @@
 class DlRetryEx:public Exception {
 public:
   DlRetryEx():Exception() {}
-  DlRetryEx(string msg, ...):Exception() {
+  DlRetryEx(const char* msg, ...):Exception() {
     va_list ap;
     va_start(ap, msg);
     setMsg(msg, ap);

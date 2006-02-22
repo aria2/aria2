@@ -20,12 +20,11 @@
  */
 /* copyright --> */
 #include "DownloadEngine.h"
+#include "Util.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "DlAbortEx.h"
-#include "Util.h"
 
 using namespace std;
 
@@ -51,30 +50,31 @@ void DownloadEngine::run() {
     }
     if(!noWait && !commands.empty()) {
       waitData();
-      long long int dlSize = segmentMan->getDownloadedSize();
-
-      struct timeval now;
-      gettimeofday(&now, NULL);
-      if(cp.tv_sec == 0 && cp.tv_usec == 0) {
-	cp = now;
-	psize = dlSize;
-      } else {
-	long long int elapsed = Util::difftv(now, cp);
-	if(elapsed >= 500000) {
-	  int nspeed = (int)((dlSize-psize)/(elapsed/1000000.0));
-	  speed = (nspeed+speed)/2;
-	  cp = now;
-	  psize = dlSize;
-	  cout << "\r                                                                            ";
-	  cout << "\rProgress " << Util::llitos(dlSize, true) << " Bytes/" <<
-	    Util::llitos(segmentMan->totalSize, true) << " Bytes " <<
-	    (segmentMan->totalSize == 0 ? 0 : (dlSize*100)/segmentMan->totalSize) << "% " <<
-	    speed/1000.0 << "KB/s " <<
-	    "(" << commands.size() << " connections)" << flush;
-	}
-      }
     }
     noWait = false;
+
+    long long int dlSize = segmentMan->getDownloadedSize();
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    if(cp.tv_sec == 0 && cp.tv_usec == 0) {
+      cp = now;
+      psize = dlSize;
+    } else {
+      long long int elapsed = Util::difftv(now, cp);
+      if(elapsed >= 500000) {
+	int nspeed = (int)((dlSize-psize)/(elapsed/1000000.0));
+	speed = (nspeed+speed)/2;
+	cp = now;
+	psize = dlSize;
+	cout << "\r                                                                            ";
+	cout << "\rProgress " << Util::llitos(dlSize, true) << " Bytes/" <<
+	  Util::llitos(segmentMan->totalSize, true) << " Bytes " <<
+	  (segmentMan->totalSize == 0 ? 0 : (dlSize*100)/segmentMan->totalSize) << "% " <<
+	  speed/1000.0 << "KB/s " <<
+	  "(" << commands.size() << " connections)" << flush;
+      }
+    }
+
   }
   segmentMan->removeIfFinished();
   diskWriter->closeFile();
@@ -99,7 +99,7 @@ void DownloadEngine::waitData() {
   fd_set wfds;
   struct timeval tv;
   int retval;
-  
+
   FD_ZERO(&rfds);
   FD_ZERO(&wfds);
   int max = 0;
@@ -110,6 +110,7 @@ void DownloadEngine::waitData() {
     }
   }
   for(vector<Socket*>::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
+
     FD_SET((*itr)->getSockfd(), &wfds);
     if(max < (*itr)->getSockfd()) {
       max = (*itr)->getSockfd();
@@ -118,7 +119,7 @@ void DownloadEngine::waitData() {
   tv.tv_sec = 1;
   tv.tv_usec = 0;
 
-  retval = select(max+1, &rfds, &wfds, NULL, &tv);
+  retval = select(max+1, &rfds, /*&wfds*/NULL, NULL, &tv);
 }
 
 bool DownloadEngine::addSocket(vector<Socket*>& sockets, Socket* socket) {

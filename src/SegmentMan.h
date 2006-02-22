@@ -26,6 +26,8 @@
 #include "common.h"
 #include "Logger.h"
 #include "Segment.h"
+#include "Option.h"
+#include "SegmentSplitter.h"
 
 using namespace std;
 
@@ -37,7 +39,7 @@ using namespace std;
 class SegmentMan {
 private:
   void read(FILE* file);
-  FILE* openSegFile(string segFilename, string mode);
+  FILE* openSegFile(string segFilename, string mode) const;
 public:
   /**
    * The total number of bytes to download.
@@ -63,7 +65,7 @@ public:
   /**
    * Holds segments.
    */
-  vector<Segment> segments;
+  Segments segments;
   /**
    * Respresents the file name of the downloaded file.
    * If the URL does not contain file name part(http://www.rednoah.com/, for 
@@ -80,7 +82,9 @@ public:
    */
   string ufilename;
 
-  Logger* logger;
+  const Logger* logger;
+  const Option* option;
+  SegmentSplitter* splitter;
 
   SegmentMan();
   ~SegmentMan();
@@ -89,13 +93,13 @@ public:
    * Returns dir+"/"+filename.
    * If filename is empty, then returns dir+"/"+"inex.html";
    */
-  string getFilePath() {
+  string getFilePath() const {
     return (dir == "" ? "." : dir)+"/"+
       (ufilename == "" ? 
        (filename == "" ? "index.html" : filename) : ufilename);
   }
 
-  string getSegmentFilePath() {
+  string getSegmentFilePath() const {
     return getFilePath()+SEGMENT_FILE_EXTENSION;
   }
 
@@ -129,7 +133,7 @@ public:
    * The file name of the segment data is filename appended by ".aria2".
    * If isSplittable is false, then returns simply false without any operation.
    */
-  bool segmentFileExists();
+  bool segmentFileExists() const;
   /**
    * Loads the segment data file.
    * If isSplittable is false, then returns without any operation.
@@ -139,26 +143,26 @@ public:
    * Saves the segment data file.
    * If isSplittable is false, then returns without any operation.
    */
-  void save();
+  void save() const;
   /**
    * Removes the segment data file.
    * If isSplittable is false, then returns without any operation.
    */
-  void remove();
+  void remove() const;
   /**
    * Returs true when the download has finished.
    * If downloadStarted is false or the number of the segments of this object
    * holds is 0, then returns false.
    */
-  bool finished();
+  bool finished() const;
   /**
    * if finished() is true, then call remove()
    */
-  void removeIfFinished();
+  void removeIfFinished() const;
   /**
    * Returns the total number of bytes to be downloaded.
    */
-  long long int getDownloadedSize();
+  long long int getDownloadedSize() const;
 };
 
 #endif // _D_SEGMENT_MAN_H_

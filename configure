@@ -5321,7 +5321,8 @@ done
 
 
 
-for ac_func in getpagesize gethostbyname gettimeofday memset mkdir rmdir select socket strcasecmp strerror strstr strtol
+
+for ac_func in getpagesize gethostbyname gettimeofday inet_ntoa memset mkdir rmdir select socket strcasecmp strerror strstr strtol
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5

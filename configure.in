@@ -36,7 +36,7 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([getpagesize gethostbyname gettimeofday memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
+AC_CHECK_FUNCS([getpagesize gethostbyname gettimeofday inet_ntoa memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
 
 AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
 AC_OUTPUT

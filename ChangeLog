@@ -1,17 +1,67 @@
+2006-02-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* Release 0.2.0
+	* main.cc:
+	* HttpInitiateConnectionCommand.{h,cc}:
+	* prefs.h:
+	* HttpConnection.{h,cc}: added --http-proxy-method option.
+	We can now use GET command in http proxy.
+
+2006-02-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
+	* SplitSlowestSegmentSplitter.{h,cc}: This class provies algorithm
+	that splits slowest segment of SegmentMan::commands vector.
+	This is the default split algorithm of aria2.
+	* SplitFirstSegmentSplitter.{h,cc}: This class provides algorithm
+	that splits first segment of SegmentMan::commands vector.
+	* SegmentSplitter.{h,cc}: Added. This class provides split algorithm.
+	* DownloadCommand.{h,cc}: Added downloading speed calculation.
+	* Segment.h:
+	* SegmentMan.cc: Added speed field to Segment.h
+	* main.cc: -s option now affects all URLs in command-line arguemtns.
+	* HttpResponseCommand.cc: Fixed bug that segment file is not loaded.
+	* message.h: Change file size related %d to %lld.
+
+2006-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* FtpInitiateConnectionCommand.{h,cc}:
+	* FtpNegotiationCommand.{h,cc}:
+	* FtpDownloadCommand.{h,cc}:
+	* FtpConnection.{h,cc}: Added FTP support
+	* SimpleLogger.cc: Log message now includes time information.
+	* main.cc: The value of --http-auth-scheme option is chagned from
+	'BASIC' to 'basic'
+	* main.cc: Added --timeout command-line option.
+	* main.cc: Added --min-segment-size command-line option.
+	* main.cc: Added --max-retries command-line option.
+	* prefs.h: option string constants are now defined in prefs.h
+	
+2006-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* AbstractCommand.cc: Fixed timeout bug in AbstractCommand
+	* SegmentMan.cc: Added totalSize entry to .aria2 file. No compatibility
+	with version 0.1.0's one.
+	
 2006-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	* Added --enable-ssl option to configure script.
-	* Make Request-URI an absolute path. Some servers cannot permit
-	absoluteURI as Request-URI.
-	* Added Referer support.
-	* Added referer command-line option.
-	* Added rety-wait command-line option.
-	* Fixed formating bug in Exception::setMsg()
-	* Added HTTPS support.
-	* Added SocketCore. Socket is now handle class for SocketCore.
-	* Fixed bug in ChunkedEncoding: expanding buffer size is wrong
-	* Fixed bug in DownloadCommand: In Chunked Encoding, it wrongly
-	adds to Segment.ds buff length from the socket.
+	* configure.in: Added --enable-ssl option to configure script.
+	* HttpConnection.cc: Make Request-URI an absolute path. Some servers
+	cannot permit absoluteURI as Request-URI.
+	* HttpConnection.cc: Added Referer support.
+	* main.cc: Added referer command-line option.
+	* main.cc: Added rety-wait command-line option.
+	* Exception.h: Fixed formating bug in Exception::setMsg()
+	* SocketCore.{h,cc}:
+	* Socket.{h, cc}:
+	* Request.cc:
+	* InitiateConnectionCommandFactory.cc:
+	* HttpRequestCommand.cc: Added HTTPS support.
+	* SocketCore.{h,cc}: Added SocketCore. Socket becomes a handle class
+	for SocketCore.
+	* ChunkedEncoding.cc: Fixed bug in ChunkedEncoding: expanding buffer
+	size is wrong
+	* DownloadCommand.cc: Fixed bug in DownloadCommand: In Chunked
+	Encoding, it wrongly adds to Segment.ds buff length from the socket.
 
 2006-02-17  Tatsuhiro Tsujikawa <tsujikawa at rednoah dot com>
 	

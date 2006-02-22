@@ -19,48 +19,47 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_DOWNLOAD_ENGINE_H_
-#define _D_DOWNLOAD_ENGINE_H_
+#ifndef _D_FTP_CONNECTION_H_
+#define _D_FTP_CONNECTION_H_
 
-#include <queue>
-#include <vector>
-#include "Command.h"
 #include "Socket.h"
-#include "SegmentMan.h"
-#include "common.h"
-#include "Logger.h"
-#include "DiskWriter.h"
 #include "Option.h"
+#include "Logger.h"
+#include "Segment.h"
+#include "Request.h"
+#include <utility>
 
 using namespace std;
 
-class DownloadEngine {
+class FtpConnection {
 private:
-  void waitData();
-  vector<Socket*> rsockets;
-  vector<Socket*> wsockets;
-
-  bool addSocket(vector<Socket*>& sockets, Socket* socket);
-  bool deleteSocket(vector<Socket*>& sockets, Socket* socket);
-public:
-  bool noWait;
-  queue<Command*> commands;
-  SegmentMan* segmentMan;
-  DiskWriter* diskWriter;
-  const Logger* logger;
+  int cuid;
+  const Socket* socket;
+  const Request* req;
   const Option* option;
+  const Logger* logger;
 
-  DownloadEngine();
-  ~DownloadEngine();
+  string strbuf;
 
-  void run();
+  int getStatus(string response) const;
+  bool isEndOfResponse(int status, string response) const;
+  bool bulkReceiveResponse(pair<int, string>& response);
+public:
+  FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger);
+  ~FtpConnection();
+  void sendUser() const;
+  void sendPass() const;
+  void sendType() const;
+  void sendCwd() const;
+  void sendSize() const;
+  void sendPasv() const;
+  Socket* sendPort() const;
+  void sendRest(const Segment& segment) const;
+  void sendRetr() const;
 
-  bool addSocketForReadCheck(Socket* socket);
-  bool deleteSocketForReadCheck(Socket* socket);
-  bool addSocketForWriteCheck(Socket* socket);
-  bool deleteSocketForWriteCheck(Socket* socket);
-  
+  int receiveResponse();
+  int receiveSizeResponse(long long int& size);
+  int receivePasvResponse(pair<string, int>& dest);
 };
 
-#endif // _D_DOWNLOAD_ENGINE_H_
-
+#endif // _D_FTP_CONNECTION_H_

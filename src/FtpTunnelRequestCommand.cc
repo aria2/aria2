@@ -19,34 +19,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_SEGMENT_H_
-#define _D_SEGMENT_H_
+#include "FtpTunnelRequestCommand.h"
+#include "FtpTunnelResponseCommand.h"
+#include "HttpConnection.h"
 
-#include <vector>
+FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {
+  setReadCheckSocket(NULL);
+  setWriteCheckSocket(NULL);
+}
 
-using namespace std;
+FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
 
-/**
- * Segment represents a download segment.
- * sp, ep is a offset from a begining of a file.
- * Therefore, if a file size is x, then 0 <= sp <= ep <= x-1.
- * sp, ep is used in Http Range header.
- * e.g. Range: bytes=sp-ep
- * ds is downloaded bytes.
- * If a download of this segement is complete, finish must be set to true.
- */
-typedef struct {
-  int cuid;
-  long long int sp;
-  long long int ep;
-  long long int ds;
-  int speed;
-  bool finish;
-} Segment;
+bool FtpTunnelRequestCommand::executeInternal(Segment segment) {
+  socket->setBlockingMode();
+  HttpConnection httpConnection(cuid, socket, req, e->option, e->logger);
+  httpConnection.sendProxyRequest();
 
-typedef vector<Segment> Segments;
-
-#define SEGMENT_EQUAL(X, Y) (X.cuid == Y.cuid && X.sp == Y.sp && X.ep == Y.ep && X.ds == Y.ds && X.finish == Y.finish ? true : false)
-
-#endif // _D_SEGMENT_H_
-
+  FtpTunnelResponseCommand* command = new FtpTunnelResponseCommand(cuid, req, e, socket);
+  e->commands.push(command);
+  return true;
+}

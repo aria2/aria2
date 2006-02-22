@@ -20,6 +20,8 @@
  */
 /* copyright --> */
 #include "SimpleLogger.h"
+#include "Util.h"
+#include <time.h>
 #include <stdarg.h>
 
 SimpleLogger::SimpleLogger(string filename) {
@@ -36,7 +38,8 @@ SimpleLogger::~SimpleLogger() {
   }
 }
 
-void SimpleLogger::writeLog(int level, string msg, va_list ap, Exception* e) {
+void SimpleLogger::writeLog(int level, string msg, va_list ap, Exception* e) const
+{
   string levelStr;
   switch(level) {
   case DEBUG:
@@ -49,21 +52,25 @@ void SimpleLogger::writeLog(int level, string msg, va_list ap, Exception* e) {
   default:
     levelStr = "INFO";
   }
-  vfprintf(file, string(levelStr+" - "+msg+"\n").c_str(), ap);
+  time_t now = time(NULL);
+  char datestr[26];
+  ctime_r(&now, datestr);
+  datestr[strlen(datestr)-1] = '\0';
+  vfprintf(file, string(string(datestr)+" - "+levelStr+" - "+Util::replace(msg, "\r", "")+"\n").c_str(), ap);
   if(e != NULL) {
-    fprintf(file, string(levelStr+" - exception: "+e->getMsg()+"\n").c_str());
+    fprintf(file, string(string(datestr)+" - "+levelStr+" - exception: "+Util::replace(e->getMsg(), "\r", "")+"\n").c_str());
   }
   fflush(stdout);
 }
 
-void SimpleLogger::debug(string msg, ...) {
+void SimpleLogger::debug(string msg, ...) const {
   va_list ap;
   va_start(ap, msg);
   writeLog(DEBUG, msg, ap);
   va_end(ap);
 }
 
-void SimpleLogger::debug(string msg, Exception* e, ...) {
+void SimpleLogger::debug(string msg, Exception* e, ...) const {
   va_list ap;
   va_start(ap, e);
   writeLog(DEBUG, msg, ap, e);
@@ -71,14 +78,14 @@ void SimpleLogger::debug(string msg, Exception* e, ...) {
 }
 
   
-void SimpleLogger::info(string msg, ...) {
+void SimpleLogger::info(string msg, ...) const {
   va_list ap;
   va_start(ap, msg);
   writeLog(INFO, msg, ap);
   va_end(ap);
 }
 
-void SimpleLogger::info(string msg, Exception* e, ...) {
+void SimpleLogger::info(string msg, Exception* e, ...) const {
   va_list ap;
   va_start(ap, e);
   writeLog(INFO, msg, ap, e);
@@ -86,14 +93,14 @@ void SimpleLogger::info(string msg, Exception* e, ...) {
 }
 
   
-void SimpleLogger::error(string msg, ...) {
+void SimpleLogger::error(string msg, ...) const {
   va_list ap;
   va_start(ap, msg);
   writeLog(ERROR, msg, ap);
   va_end(ap);
 }
 
-void SimpleLogger::error(string msg, Exception* e, ...) {
+void SimpleLogger::error(string msg, Exception* e, ...) const {
   va_list ap;
   va_start(ap, e);
   writeLog(ERROR, msg, ap, e);

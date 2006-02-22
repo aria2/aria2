@@ -19,32 +19,44 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "HttpInitiateConnectionCommand.h"
+#include "FtpInitiateConnectionCommand.h"
+#include "FtpNegotiationCommand.h"
 #include "HttpRequestCommand.h"
-#include "HttpProxyRequestCommand.h"
-#include "Util.h"
+#include "FtpTunnelRequestCommand.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
 
-HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e):AbstractCommand(cuid, req, e) {}
+FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e):AbstractCommand(cuid, req, e) {}
 
-HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
+FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
 
-bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
+bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
+  if(!e->segmentMan->downloadStarted) {
+    e->segmentMan->filename = req->getFile();
+    bool segFileExists = e->segmentMan->segmentFileExists();
+    if(segFileExists) {
+      e->segmentMan->load();
+      e->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+      e->segmentMan->downloadStarted = true;
+    } else {
+      e->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
+    }
+  }
+
   socket = new Socket();
-  // socket->establishConnection(...);
   Command* command;
-  if(useProxy()) {
+  if(useHttpProxy()) {
     e->logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 		    e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
 		    e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
-    if(useProxyTunnel()) {
-      command = new HttpProxyRequestCommand(cuid, req, e, socket);
-    } else if(useProxyGet()) {
+    
+    if(useHttpProxyGet()) {
       command = new HttpRequestCommand(cuid, req, e, socket);
+    } else if(useHttpProxyConnect()) {
+      command = new FtpTunnelRequestCommand(cuid, req, e, socket);
     } else {
       // TODO
       throw new DlAbortEx("ERROR");
@@ -53,20 +65,20 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
     e->logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		    req->getPort());
     socket->establishConnection(req->getHost(), req->getPort());
-    command = new HttpRequestCommand(cuid, req, e, socket);
+    command = new FtpNegotiationCommand(cuid, req, e, socket);
   }
   e->commands.push(command);
   return true;
 }
 
-bool HttpInitiateConnectionCommand::useProxy() {
+bool FtpInitiateConnectionCommand::useHttpProxy() const {
   return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
 }
 
-bool HttpInitiateConnectionCommand::useProxyGet() {
-  return e->option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
+bool FtpInitiateConnectionCommand::useHttpProxyGet() const {
+  return useHttpProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET;
 }
 
-bool HttpInitiateConnectionCommand::useProxyTunnel() {
-  return e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL;
+bool FtpInitiateConnectionCommand::useHttpProxyConnect() const {
+  return useHttpProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_TUNNEL;
 }

@@ -55,7 +55,7 @@ private:
   string dir;
   string file;
   map<string, int> defaultPorts;
-  int retryCount;
+  int tryCount;
   bool parseUrl(string url);
 public:
   Segment seg;
@@ -72,15 +72,14 @@ public:
   // Returns true if parsing goes successful, otherwise returns false.
   bool redirectUrl(string url);
   bool resetUrl();
-  void resetRetryCount();
-  void addRetryCount();
-  int getRetryCount();
-  bool noMoreRetry();
+  void resetTryCount() { tryCount = 0; }
+  void addTryCount() { tryCount++; }
+  int getTryCount() const { return tryCount; }
+  //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
 
   string getUrl() const { return url; }
   string getCurrentUrl() const { return currentUrl; }
   string getPreviousUrl() const { return previousUrl; }
-  void setPreviousUrl(string url) { previousUrl = url; }
   string getReferer() const { return referer; }
   void setReferer(string url) { referer = previousUrl = url; }
   string getProtocol() const { return protocol; }
