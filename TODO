@@ -4,3 +4,4 @@
 * Add SSL client cert support
 * Better HTTP status handling
 * Download files listed in a specifed file.
+* check MD5 checksum

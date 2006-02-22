@@ -8,6 +8,8 @@
 	* main.cc: The value of --http-auth-scheme option is chagned from
 	'BASIC' to 'basic'
 	* main.cc: Added --timeout command-line option.
+	* main.cc: Added --min-segment-size command-line option.
+	* main.cc: Added --max-retries command-line option.
 	* prefs.h: option string constants are now defined in prefs.h
 	
 2006-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>

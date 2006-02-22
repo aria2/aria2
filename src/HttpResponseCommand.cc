@@ -65,9 +65,12 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
       return handleDefaultEncoding(headers);
     }
   } else {
-    // TODO we must check headers["size"] == e->segmentMan->totalSize here
     if(req->getFile() != e->segmentMan->filename) {
       throw new DlAbortEx(EX_FILENAME_MISMATCH, req->getFile().c_str(), e->segmentMan->filename.c_str());
+    }
+    long long int size = headers.getFirstAsLLInt("Content-Length");
+    if(e->segmentMan->totalSize != size) {
+      throw new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
     }
     createHttpDownloadCommand();
     return true;
@@ -99,9 +102,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   bool segFileExists = e->segmentMan->segmentFileExists();
   e->segmentMan->downloadStarted = true;
   if(segFileExists) {
-
     e->diskWriter->openExistingFile(e->segmentMan->getFilePath());
-    // we must check headers["size"] == e->segmentMan->totalSize here
     if(e->segmentMan->totalSize != size) {
       return new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
     }

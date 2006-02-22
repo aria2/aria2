@@ -47,8 +47,8 @@ public:
   queue<Command*> commands;
   SegmentMan* segmentMan;
   DiskWriter* diskWriter;
-  Logger* logger;
-  Option* option;
+  const Logger* logger;
+  const Option* option;
 
   DownloadEngine();
   ~DownloadEngine();

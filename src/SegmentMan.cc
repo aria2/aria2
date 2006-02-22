@@ -28,6 +28,7 @@
 #include "Util.h"
 #include "File.h"
 #include "message.h"
+#include "prefs.h"
 
 SegmentMan::SegmentMan():totalSize(0),isSplittable(true),downloadStarted(false),dir(".") {}
 
@@ -85,7 +86,7 @@ bool SegmentMan::getSegment(Segment& seg, int cuid) {
     if(s.finish) {
       continue;
     }
-    if(s.ep-(s.sp+s.ds) > 524288) {
+    if(s.ep-(s.sp+s.ds) > option->getAsLLInt(PREF_MIN_SEGMENT_SIZE)) {
       long long int nep = (s.ep-(s.sp+s.ds))/2+(s.sp+s.ds);
       //nseg = { cuid, nep+1, s.ep, 0, false };
       seg.cuid = cuid;

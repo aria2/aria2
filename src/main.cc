@@ -101,40 +101,45 @@ void showUsage() {
   cout << "Usage: " << PACKAGE_NAME << " [options] URL ..." << endl;
   cout << endl;
   cout << "Options:" << endl;
-  cout << " -d, --dir=DIR              The directory to store downloaded file." << endl;
-  cout << " -o, --out=FILE             The file name for downloaded file." << endl;
-  cout << " -l, --log=LOG              The file path to store log. If '-' is specified," << endl;
-  cout << "                            log is written to stdout." << endl;
-  cout << " -D, --daemon               Run as daemon." << endl;
-  cout << " -s, --split=N              Download a file using s connections. s must be" << endl;
-  cout << "                            between 1 and 5. If this option is specified the" << endl;
-  cout << "                            first URL is used, and the other URLs are ignored." << endl;
-  cout << " --retry-wait=SEC           Set amount of time in second between requests" << endl;
-  cout << "                            for errors. Specify a value between 0 and 60." << endl;
-  cout << " -t, --timeout=SEC          Set timeout in second." << endl;
-  cout << " --http-proxy=HOST:PORT     Use HTTP proxy server. This affects to all" << endl;
-  cout << "                            URLs." << endl;
-  cout << " --http-user=USER           Set HTTP user. This affects to all URLs." << endl;
-  cout << " --http-passwd=PASSWD       Set HTTP password. This affects to all URLs." << endl;
-  cout << " --http-proxy-user=USER     Set HTTP proxy user. This affects to all URLs" << endl;
-  cout << " --http-proxy-passwd=PASSWD Set HTTP proxy password. This affects to all URLs." << endl;
-  cout << " --http-auth-scheme=SCHEME  Set HTTP authentication scheme. Currently, basic" << endl;
-  cout << "                            is the only supported scheme. You MUST specify" << endl;
-  cout << "                            this option in order to use HTTP authentication" << endl;
-  cout << "                            as well as --http-proxy option." << endl;
-  cout << " --referer=REFERER          Set Referer. This affects to all URLs." << endl;
-  cout << " --ftp-user=USER            Set FTP user. This affects to all URLs." << endl;
-  cout << "                            Default: anonymous" << endl;
-  cout << " --ftp-passwd=PASSWD        Set FTP password. This affects to all URLs." << endl;
-  cout << "                            Default: ARIA2USER@" << endl;
-  cout << " --ftp-type=TYPE            Set FTP transfer type. TYPE is either 'binary'" << endl;
-  cout << "                            or 'ascii'." << endl;
-  cout << "                            Default: binary" << endl;
-  cout << " -p, --ftp-pasv             Use passive mode in FTP." << endl;
-  cout << " --ftp-via-http-proxy=WAY   Use HTTP proxy in FTP. WAY is either 'get' or" << endl;
-  cout << "                            'tunnel'." << endl;
-  cout << " -v, --version              Print the version number and exit." << endl;
-  cout << " -h, --help                 Print this message and exit." << endl;
+  cout << " -d, --dir=DIR                The directory to store downloaded file." << endl;
+  cout << " -o, --out=FILE               The file name for downloaded file." << endl;
+  cout << " -l, --log=LOG                The file path to store log. If '-' is specified," << endl;
+  cout << "                              log is written to stdout." << endl;
+  cout << " -D, --daemon                 Run as daemon." << endl;
+  cout << " -s, --split=N                Download a file using s connections. s must be" << endl;
+  cout << "                              between 1 and 5. If this option is specified the" << endl;
+  cout << "                              first URL is used, and the other URLs are ignored." << endl;
+  cout << " --retry-wait=SEC             Set amount of time in second between requests" << endl;
+  cout << "                              for errors. Specify a value between 0 and 60." << endl;
+  cout << "                              Default: 5" << endl;
+  cout << " -t, --timeout=SEC            Set timeout in second. Default: 60" << endl;
+  cout << " -m, --max-tries=N            Set number of tries. 0 means unlimited." << endl;
+  cout << "                              Default: 5" << endl;
+  cout << " --min-segment-size=SIZE[K|M] Set minimum segment size. You can append" << endl;
+  cout << "                              K or M(1K = 1024, 1M = 1024K)." << endl;
+  cout << " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all" << endl;
+  cout << "                              URLs." << endl;
+  cout << " --http-user=USER             Set HTTP user. This affects to all URLs." << endl;
+  cout << " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs." << endl;
+  cout << " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs" << endl;
+  cout << " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all URLs." << endl;
+  cout << " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic" << endl;
+  cout << "                              is the only supported scheme. You MUST specify" << endl;
+  cout << "                              this option in order to use HTTP authentication" << endl;
+  cout << "                              as well as --http-proxy option." << endl;
+  cout << " --referer=REFERER            Set Referer. This affects to all URLs." << endl;
+  cout << " --ftp-user=USER              Set FTP user. This affects to all URLs." << endl;
+  cout << "                              Default: anonymous" << endl;
+  cout << " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs." << endl;
+  cout << "                              Default: ARIA2USER@" << endl;
+  cout << " --ftp-type=TYPE              Set FTP transfer type. TYPE is either 'binary'" << endl;
+  cout << "                              or 'ascii'." << endl;
+  cout << "                              Default: binary" << endl;
+  cout << " -p, --ftp-pasv               Use passive mode in FTP." << endl;
+  cout << " --ftp-via-http-proxy=WAY     Use HTTP proxy in FTP. WAY is either 'get' or" << endl;
+  cout << "                              'tunnel'." << endl;
+  cout << " -v, --version                Print the version number and exit." << endl;
+  cout << " -h, --help                   Print this message and exit." << endl;
   cout << endl;
   cout << "URL:" << endl;
   cout << " You can specify multiple URLs. All URLs must point to the same file" << endl;
@@ -166,6 +171,8 @@ int main(int argc, char* argv[]) {
   Option* op = new Option();
   op->put(PREF_RETRY_WAIT, "5");
   op->put(PREF_TIMEOUT, "60");
+  op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
+  op->put(PREF_MAX_TRIES, "5");
   op->put(PREF_FTP_USER, "anonymous");
   op->put(PREF_FTP_PASSWD, "ARIA2USER@");
   op->put(PREF_FTP_TYPE, V_BINARY);
@@ -182,6 +189,7 @@ int main(int argc, char* argv[]) {
       { "log", required_argument, NULL, 'l' },
       { "split", required_argument, NULL, 's' },
       { "timeout", required_argument, NULL, 't' },
+      { "max-retries", required_argument, NULL, 'm' },
       { "http-proxy", required_argument, &lopt, 1 },
       { "http-user", required_argument, &lopt, 2 },
       { "http-passwd", required_argument, &lopt, 3 },
@@ -195,11 +203,12 @@ int main(int argc, char* argv[]) {
       { "ftp-type", required_argument, &lopt, 11 },
       { "ftp-pasv", no_argument, NULL, 'p' },
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
+      { "min-segment-size", required_argument, &lopt, 13 },
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:vh", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vh", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -278,6 +287,26 @@ int main(int argc, char* argv[]) {
 	  exit(1);
 	}
 	break;
+      case 13: {
+	string::size_type p = string(optarg).find_first_of("KM");
+	int mult = 1;
+	if(p != string::npos) {
+	  if(optarg[p] == 'K') {
+	    mult = 1024;
+	  } else if(optarg[p] == 'M') {
+	    mult = 1024*1024;
+	  }
+	  optarg[p] = '\0';
+	}
+	long long int size = strtoll(optarg, NULL, 10)*mult;
+	if(size <= 0) {
+	  cerr << "min-segment-size invalid" << endl;
+	  showUsage();
+	  exit(1);
+	}
+	op->put(PREF_MIN_SEGMENT_SIZE, Util::llitos(size));
+	break;
+      }
       }
       break;
     }
@@ -314,6 +343,16 @@ int main(int argc, char* argv[]) {
 	showUsage();
 	exit(1);
       }
+      break;
+    }
+    case 'm': {
+      int retries = (int)strtol(optarg, NULL, 10);
+      if(retries < 0) {
+	cerr << "max-retires invalid" << endl;
+	showUsage();
+	exit(1);
+      }
+      op->put(PREF_MAX_TRIES, Util::itos(retries));
       break;
     }
     case 'p':
@@ -363,6 +402,7 @@ int main(int argc, char* argv[]) {
   e->segmentMan->dir = dir;
   e->segmentMan->ufilename = ufilename;
   e->segmentMan->logger = logger;
+  e->segmentMan->option = op;
   vector<Request*> requests;
   if(split > 0) {
     for(int i = 1; i <= split; i++) {

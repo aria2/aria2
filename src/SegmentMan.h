@@ -26,6 +26,7 @@
 #include "common.h"
 #include "Logger.h"
 #include "Segment.h"
+#include "Option.h"
 
 using namespace std;
 
@@ -81,6 +82,7 @@ public:
   string ufilename;
 
   const Logger* logger;
+  const Option* option;
 
   SegmentMan();
   ~SegmentMan();

@@ -102,7 +102,8 @@ bool AbstractCommand::execute() {
     delete(err);
     //req->resetUrl();
     req->addTryCount();
-    if(req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRY)) {
+    if(e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
+       req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRIES)) {
       e->logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
       return true;
     } else {

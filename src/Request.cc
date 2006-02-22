@@ -79,14 +79,12 @@ bool Request::parseUrl(string url) {
   Util::split(hostAndPort, url.substr(hp, hep-hp), ':');
   host = hostAndPort.first;
   if(hostAndPort.second != "") {
-    // TODO rewrite this using strtoul function. If strtoul fails,
-    // return false.
     port = (int)strtol(hostAndPort.second.c_str(), NULL, 10);
     if(!(0 < port && port <= 65535)) {
       return false;
     }
   } else {
-    // If port is not specified, then we leave it 0.
+    // If port is not specified, then we set it to default port of its protocol..
     port = defPort;
   }
   string::size_type direp = url.find_last_of("/");

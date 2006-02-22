@@ -36,7 +36,9 @@
 // values: 1*digit
 #define PREF_TIMEOUT "timeout"
 // values: 1*digit
-#define PREF_MAX_TRY "max_try"
+#define PREF_MAX_TRIES "max_try"
+// values: 1*digit
+#define PREF_MIN_SEGMENT_SIZE "min_segment_size"
 
 /**
  * FTP related preferences

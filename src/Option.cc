@@ -50,3 +50,12 @@ int Option::getAsInt(const string& name) const {
     return (int)strtol((*itr).second.c_str(), NULL, 10);
   }
 }
+
+long long int Option::getAsLLInt(const string& name) const {
+  map<string, string>::const_iterator itr = table.find(name);
+  if(itr == table.end()) {
+    return 0;
+  } else {
+    return (int)strtoll((*itr).second.c_str(), NULL, 10);
+  }
+}
