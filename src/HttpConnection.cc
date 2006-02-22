@@ -41,13 +41,17 @@ void HttpConnection::sendProxyRequest() const {
     string(" HTTP/1.1\r\n")+
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n";
   if(useProxyAuth()) {
-    request += "Proxy-Authorization: Basic "+
-      Base64::encode(option->get(PREF_HTTP_PROXY_USER)+":"+
-		     option->get(PREF_HTTP_PROXY_PORT))+"\r\n";
+    request += getProxyAuthString();
   }
   request += "\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request.c_str(), request.size());
+}
+
+string HttpConnection::getProxyAuthString() const {
+  return "Proxy-Authorization: Basic "+
+    Base64::encode(option->get(PREF_HTTP_PROXY_USER)+":"+
+		   option->get(PREF_HTTP_PROXY_PORT))+"\r\n";
 }
 
 string HttpConnection::getHost(const string& host, int port) const {
@@ -56,7 +60,7 @@ string HttpConnection::getHost(const string& host, int port) const {
 
 string HttpConnection::createRequest(const Segment& segment) const {
   string request = string("GET ")+
-    (req->getProtocol() == "ftp" ?
+    (req->getProtocol() == "ftp" || useProxy() && useProxyGet() ?
      req->getCurrentUrl() :
      ((req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()))+
     string(" HTTP/1.1\r\n")+
@@ -69,6 +73,9 @@ string HttpConnection::createRequest(const Segment& segment) const {
   if(segment.sp+segment.ds > 0) {
     request += "Range: bytes="+
       Util::llitos(segment.sp+segment.ds)+"-"+Util::llitos(segment.ep)+"\r\n";
+  }
+  if(useProxy() && useProxyAuth() && useProxyGet()) {
+    request += getProxyAuthString();
   }
   if(option->get(PREF_HTTP_AUTH_SCHEME) == V_BASIC) {
     request += "Authorization: Basic "+
@@ -96,6 +103,9 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
   while(socket->isReadable(0)) {
     int size = sizeof(buf)-1;
     socket->peekData(buf, size);
+    if(size == 0) {
+      throw new DlRetryEx(EX_INVALID_RESPONSE);
+    }
     buf[size] = '\0';
     int hlenTemp = header.size();
     header += buf;
@@ -144,4 +154,8 @@ bool HttpConnection::useProxy() const {
 
 bool HttpConnection::useProxyAuth() const {
   return option->get(PREF_HTTP_PROXY_AUTH_ENABLED) == V_TRUE;
+}
+
+bool HttpConnection::useProxyGet() const {
+  return option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
 }

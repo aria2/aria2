@@ -1,5 +1,14 @@
-2006-02-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+2006-02-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* Release 0.2.0
+	* main.cc:
+	* HttpInitiateConnectionCommand.{h,cc}:
+	* prefs.h:
+	* HttpConnection.{h,cc}: added --http-proxy-method option.
+	We can now use GET command in http proxy.
+
+2006-02-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
 	* SplitSlowestSegmentSplitter.{h,cc}: This class provies algorithm
 	that splits slowest segment of SegmentMan::commands vector.
 	This is the default split algorithm of aria2.

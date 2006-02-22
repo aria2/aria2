@@ -124,6 +124,9 @@ void showUsage() {
   cout << " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs." << endl;
   cout << " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs" << endl;
   cout << " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all URLs." << endl;
+  cout << " --http-proxy-method=METHOD   Set the method to use in proxy request." << endl;
+  cout << "                              METHOD is either 'get' or 'tunnel'." << endl;
+  cout << "                              Default: tunnel" << endl;
   cout << " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic" << endl;
   cout << "                              is the only supported scheme. You MUST specify" << endl;
   cout << "                              this option in order to use HTTP authentication" << endl;
@@ -137,7 +140,7 @@ void showUsage() {
   cout << "                              or 'ascii'." << endl;
   cout << "                              Default: binary" << endl;
   cout << " -p, --ftp-pasv               Use passive mode in FTP." << endl;
-  cout << " --ftp-via-http-proxy=WAY     Use HTTP proxy in FTP. WAY is either 'get' or" << endl;
+  cout << " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or" << endl;
   cout << "                              'tunnel'." << endl;
   cout << "                              Default: tunnel" << endl;
   cout << " -v, --version                Print the version number and exit." << endl;
@@ -175,6 +178,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_TIMEOUT, "60");
   op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
   op->put(PREF_MAX_TRIES, "5");
+  op->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
   op->put(PREF_FTP_USER, "anonymous");
   op->put(PREF_FTP_PASSWD, "ARIA2USER@");
   op->put(PREF_FTP_TYPE, V_BINARY);
@@ -205,6 +209,7 @@ int main(int argc, char* argv[]) {
       { "ftp-pasv", no_argument, NULL, 'p' },
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { "min-segment-size", required_argument, &lopt, 13 },
+      { "http-proxy-method", required_argument, &lopt, 14 },
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
@@ -308,6 +313,15 @@ int main(int argc, char* argv[]) {
 	op->put(PREF_MIN_SEGMENT_SIZE, Util::llitos(size));
 	break;
       }
+      case 14:
+	if(string(optarg) == V_GET || string(optarg) == V_TUNNEL) {
+	  op->put(PREF_HTTP_PROXY_METHOD, optarg);
+	} else {
+	  cerr << "http-proxy-method must be either 'get' or 'tunnel'." << endl;
+	  showUsage();
+	  exit(1);
+	}
+	break;
       }
       break;
     }

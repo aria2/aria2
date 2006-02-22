@@ -72,6 +72,8 @@
 #define PREF_HTTP_PROXY_PASSWD "http_proxy_passwd"
 #define PREF_HTTP_PROXY_HOST "http_proxy_host"
 #define PREF_HTTP_PROXY_PORT "http_proxy_port"
+// values: get | tunnel
+#define PREF_HTTP_PROXY_METHOD "http_proxy_method"
 // values: true | false
 #define PREF_HTTP_PROXY_ENABLED "http_proxy_enabled"
 // values: true | false

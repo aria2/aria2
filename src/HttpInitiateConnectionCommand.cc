@@ -23,6 +23,7 @@
 #include "HttpRequestCommand.h"
 #include "HttpProxyRequestCommand.h"
 #include "Util.h"
+#include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
 
@@ -40,8 +41,14 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
 		    e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
-    command = new HttpProxyRequestCommand(cuid, req, e, socket);
-
+    if(useProxyTunnel()) {
+      command = new HttpProxyRequestCommand(cuid, req, e, socket);
+    } else if(useProxyGet()) {
+      command = new HttpRequestCommand(cuid, req, e, socket);
+    } else {
+      // TODO
+      throw new DlAbortEx("ERROR");
+    }
   } else {
     e->logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		    req->getPort());
@@ -54,4 +61,12 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
 
 bool HttpInitiateConnectionCommand::useProxy() {
   return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
+}
+
+bool HttpInitiateConnectionCommand::useProxyGet() {
+  return e->option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
+}
+
+bool HttpInitiateConnectionCommand::useProxyTunnel() {
+  return e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL;
 }

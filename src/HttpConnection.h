@@ -41,6 +41,8 @@ private:
   string createRequest(const Segment& segment) const;
   bool useProxy() const;
   bool useProxyAuth() const;
+  bool useProxyGet() const;
+  string getProxyAuthString() const;
   int cuid;
   const Socket* socket;
   const Request* req;
