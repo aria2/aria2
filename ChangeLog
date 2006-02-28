@@ -12,6 +12,8 @@
 	* DownloadCommand.h: added #include directive of sys/time.h.
 	* *.h: added #include directive of common.h to all base classes.
 	subclasses' one was removed.
+	* common.h: defined LONG_LONG_MAX and LONG_LONG_MIN if a compiler
+	does not define these macros.
 	
 2006-02-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

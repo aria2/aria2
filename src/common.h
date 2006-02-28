@@ -26,4 +26,9 @@
 # include <config.h>
 #endif
 
+#ifndef LONG_LONG_MAX
+# define LONG_LONG_MAX      9223372036854775807LL
+# define LONG_LONG_MIN      (-LONG_LONG_MAX - 1LL)
+#endif // LONG_LONG_MAX
+
 using namespace std;
