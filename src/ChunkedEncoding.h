@@ -23,7 +23,6 @@
 #define _D_CHUNKED_ENCODING_H_
 
 #include "TransferEncoding.h"
-#include "common.h"
 
 class ChunkedEncoding:public TransferEncoding {
 private:

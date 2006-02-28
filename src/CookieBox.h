@@ -22,6 +22,7 @@
 #ifndef _D_COOKIE_BOX_H_
 #define _D_COOKIE_BOX_H_
 
+#include "common.h"
 #include <string>
 #include <vector>
 

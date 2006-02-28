@@ -68,10 +68,8 @@ vector<Cookie> CookieBox::criteriaFind(string host, string dir, bool secure) con
   for(vector<Cookie>::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
     const Cookie& c = *itr;
     if((secure || !c.secure && !secure) &&
-       c.domain.size() <= host.size() &&
-       c.path.size() <= dir.size() && 
-       c.domain.compare(0, c.domain.size(), host, host.size()-c.domain.size(), c.domain.size()) == 0 &&
-       c.path.compare(0, c.path.size(), dir, 0, c.path.size()) == 0) {
+       Util::endsWith(host, c.domain) &&
+       Util::startsWith(dir, c.path)) {
       // TODO we currently ignore expire date.
       result.push_back(c);
     }

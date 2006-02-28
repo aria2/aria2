@@ -22,6 +22,8 @@
 #ifndef _D_PREFS_H_
 #define _D_PREFS_H_
 
+#include "common.h"
+
 /**
  * Constants
  */

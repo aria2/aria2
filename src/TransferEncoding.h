@@ -22,6 +22,8 @@
 #ifndef _D_TRANSFER_ENCODING_H_
 #define _D_TRANSFER_ENCODING_H_
 
+#include "common.h"
+
 class TransferEncoding {
 public:
   virtual ~TransferEncoding() {}

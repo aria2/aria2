@@ -22,6 +22,7 @@
 #ifndef _D_UTIL_H_
 #define _D_UTIL_H_
 
+#include "common.h"
 #include <string>
 #include <utility>
 #include <vector>
@@ -49,6 +50,8 @@ public:
   static void slice(vector<string>& result, string src, char delim);
   
   static string trim(string src);
+
+  static bool startsWith(string target, string part);
 
   static bool endsWith(string target, string part);
 

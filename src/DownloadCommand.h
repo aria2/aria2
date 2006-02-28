@@ -24,6 +24,7 @@
 
 #include "AbstractCommand.h"
 #include "TransferEncoding.h"
+#include <sys/time.h>
 #include <string>
 
 using namespace std;

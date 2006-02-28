@@ -22,6 +22,8 @@
 #ifndef _D_MESSAGE_H_
 #define _D_MESSAGE_H_
 
+#include "common.h"
+
 #define MSG_DOWNLOAD_COMPLETED "CUID#%d - The download for one segment completed successfully."
 #define MSG_NO_SEGMENT_AVAILABLE "CUID#%d - No segment available."
 #define MSG_CONNECTING_TO_SERVER "CUID#%d - Connecting to %s:%d"

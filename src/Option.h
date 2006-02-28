@@ -22,6 +22,7 @@
 #ifndef _D_OPTION_H_
 #define _D_OPTION_H_
 
+#include "common.h"
 #include <string>
 #include <map>
 

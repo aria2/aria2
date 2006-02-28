@@ -27,6 +27,7 @@
 #include "Logger.h"
 #include "Segment.h"
 #include "Request.h"
+#include "common.h"
 #include <utility>
 
 using namespace std;

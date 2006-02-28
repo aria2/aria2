@@ -21,8 +21,10 @@
 /* copyright --> */
 #ifndef _D_LOGGER_H_
 #define _D_LOGGER_H_
+
 #include <string>
 #include "Exception.h"
+#include "common.h"
 
 using namespace std;
 

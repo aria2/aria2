@@ -22,6 +22,7 @@
 #ifndef _BASE64_H_
 #define _BASE64_H_
 #include <string>
+#include "common.h"
 using namespace std;
 
 class Base64

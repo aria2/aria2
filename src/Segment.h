@@ -22,6 +22,7 @@
 #ifndef _D_SEGMENT_H_
 #define _D_SEGMENT_H_
 
+#include "common.h"
 #include <vector>
 
 using namespace std;

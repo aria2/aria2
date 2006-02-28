@@ -26,7 +26,7 @@
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "SegmentMan.h"
-#include "common.h"
+#include <sys/time.h>
 
 class AbstractCommand : public Command {
 private:

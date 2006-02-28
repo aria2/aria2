@@ -12,6 +12,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSlice);
   CPPUNIT_TEST(testEndsWith);
   CPPUNIT_TEST(testReplace);
+  CPPUNIT_TEST(testStartsWith);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -24,6 +25,7 @@ public:
   void testSlice();
   void testEndsWith();
   void testReplace();
+  void testStartsWith();
 };
 
 
@@ -120,4 +122,38 @@ void UtilTest::testReplace() {
   CPPUNIT_ASSERT_EQUAL(string(""), Util::replace("", "\r\n", ""));
   CPPUNIT_ASSERT_EQUAL(string("abc"), Util::replace("abc", "", "a"));
   CPPUNIT_ASSERT_EQUAL(string("xbc"), Util::replace("abc", "a", "x"));
+}
+
+void UtilTest::testStartsWith() {
+  string target;
+  string part;
+
+  target = "abcdefg";
+  part = "abc";
+  CPPUNIT_ASSERT(Util::startsWith(target, part));
+
+  target = "abcdefg";
+  part = "abx";
+  CPPUNIT_ASSERT(!Util::startsWith(target, part));
+
+  target = "abcdefg";
+  part = "bcd";
+  CPPUNIT_ASSERT(!Util::startsWith(target, part));
+
+  target = "";
+  part = "a";
+  CPPUNIT_ASSERT(!Util::startsWith(target, part));
+
+  target = "";
+  part = "";
+  CPPUNIT_ASSERT(Util::startsWith(target, part));
+  
+  target = "a";
+  part = "";
+  CPPUNIT_ASSERT(Util::startsWith(target, part));
+
+  target = "a";
+  part = "a";
+  CPPUNIT_ASSERT(Util::startsWith(target, part));
+
 }

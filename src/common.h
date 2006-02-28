@@ -21,6 +21,7 @@
 /* copyright --> */
 #include <iostream>
 #include <assert.h>
+#include <limits.h>
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif

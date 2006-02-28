@@ -24,6 +24,7 @@
 
 #include "Segment.h"
 #include "Logger.h"
+#include "common.h"
 
 class SegmentSplitter {
 protected:

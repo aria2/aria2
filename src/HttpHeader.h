@@ -22,6 +22,7 @@
 #ifndef _D_HTTP_HEADER_H_
 #define _D_HTTP_HEADER_H_
 
+#include "common.h"
 #include <map>
 #include <vector>
 #include <string>

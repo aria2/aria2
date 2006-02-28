@@ -129,6 +129,7 @@ void SocketCore::establishConnection(string host, int port) {
     // ok
   } else {
     struct addrinfo ai;
+    memset((char*)&ai, 0, sizeof(ai));
     ai.ai_flags = 0;
     ai.ai_family = PF_INET;
     ai.ai_socktype = SOCK_STREAM;

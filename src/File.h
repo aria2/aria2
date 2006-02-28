@@ -22,6 +22,7 @@
 #ifndef _D_FILE_H_
 #define _D_FILE_H_
 
+#include "common.h"
 #include <string>
 
 using namespace std;

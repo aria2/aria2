@@ -22,7 +22,9 @@
 #ifndef _D_EXCEPTION_H_
 #define _D_EXCEPTION_H_
 
+#include "common.h"
 #include <string>
+#include <stdio.h>
 #include <stdarg.h>
 
 using namespace std;

@@ -22,6 +22,8 @@
 #ifndef _D_COMMAND_H_
 #define _D_COMMAND_H_
 
+#include "common.h"
+
 class Command {
 protected:
   int cuid;

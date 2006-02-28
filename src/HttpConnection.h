@@ -28,6 +28,7 @@
 #include "Option.h"
 #include "Logger.h"
 #include "HttpHeader.h"
+#include "common.h"
 #include <map>
 #include <string>
 

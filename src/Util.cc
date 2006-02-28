@@ -73,14 +73,6 @@ void Util::split(pair<string, string>& hp, string src, char delim) {
   } else {
     hp.first = trim(src.substr(0, p));
     hp.second = trim(src.substr(p+1));
-    /*
-    unsigned int p2 = src.find_first_not_of(" ", p+1);
-    if(p2 == string::npos) {
-      hp.second = "";
-    } else {
-      hp.second = src.substr(p2);
-    }
-    */
   }
 }
 
@@ -109,11 +101,28 @@ void Util::slice(vector<string>& result, string src, char delim) {
   } 
 }
 
+bool Util::startsWith(string target, string part) {
+  if(target.size() < part.size()) {
+    return false;
+  }
+  if(part == "") {
+    return true;
+  }
+  if(target.find(part) == 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 bool Util::endsWith(string target, string part) {
   if(target.size() < part.size()) {
     return false;
   }
-  if(target.compare(target.size()-part.size(), part.size(), part, 0, part.size()) == 0) {
+  if(part == "") {
+    return true;
+  }
+  if(target.find(part) == target.size()-part.size()) {
     return true;
   } else {
     return false;
