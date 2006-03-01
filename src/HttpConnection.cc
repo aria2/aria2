@@ -39,6 +39,8 @@ void HttpConnection::sendProxyRequest() const {
   string request =
     string("CONNECT ")+req->getHost()+":"+Util::llitos(req->getPort())+
     string(" HTTP/1.1\r\n")+
+    "User-Agent: aria2\r\n"+
+    "Proxy-Connection: close\r\n"+
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n";
   if(useProxyAuth()) {
     request += getProxyAuthString();
@@ -51,7 +53,7 @@ void HttpConnection::sendProxyRequest() const {
 string HttpConnection::getProxyAuthString() const {
   return "Proxy-Authorization: Basic "+
     Base64::encode(option->get(PREF_HTTP_PROXY_USER)+":"+
-		   option->get(PREF_HTTP_PROXY_PORT))+"\r\n";
+		   option->get(PREF_HTTP_PROXY_PASSWD))+"\r\n";
 }
 
 string HttpConnection::getHost(const string& host, int port) const {
@@ -75,6 +77,7 @@ string HttpConnection::createRequest(const Segment& segment) const {
       Util::llitos(segment.sp+segment.ds)+"-"+Util::llitos(segment.ep)+"\r\n";
   }
   if(useProxy() && useProxyAuth() && useProxyGet()) {
+    request += "Proxy-Connection: close\r\n";
     request += getProxyAuthString();
   }
   if(option->get(PREF_HTTP_AUTH_SCHEME) == V_BASIC) {

@@ -52,47 +52,107 @@ public:
   SocketCore();
   ~SocketCore();
 
+  /**
+   * Creates a socket and listens form connection on it.
+   */
   void beginListen();
+
+  /**
+   * Stores host address and port of this socket to addrinfo.
+   * @param addrinfo placeholder to store host address and port.
+   */
   void getAddrInfo(pair<string, int>& addrinfo) const;
+
+  /**
+   * Accepts incoming connection on this socket.
+   * You must call beginListen() before calling this method.
+   * @return accepted socket. The caller must delete it after using it.
+   */
   SocketCore* acceptConnection() const;
+
   /**
    * Connects to the server named host and the destination port is port.
-   * This method make socket non-blocking mode.
-   * To make the socket blocking mode, call setBlockingMode() after
+   * This method makes socket non-blocking mode.
+   * To make the socket blocking mode again, call setBlockingMode() after
    * the connection is established.
+   * @param host hostname or ip address to connect to
+   * @param port service port number to connect to
    */
   void establishConnection(string host, int port);
 
+  /**
+   * Makes this socket blocking mode.
+   */
   void setBlockingMode() const;
 
-  // Closes the connection which this socket object has
+  /**
+   * Closes the connection of this socket.
+   */
   void closeConnection();
 
-  // examines whether the socket of this SocketCore object is available for writing.
-  // returns true if the socket is available for writing, otherwise returns false.
+  /**
+   * Checks whether this socket is available for writing.
+   * @param timeout the amount of time elapsed before the checking are timed
+   * out.
+   * @return true if the socket is available for writing,
+   * otherwise returns false.
+   */
   bool isWritable(int timeout) const;
 
-  // examines whether the socket of this SocketCore object is available for reading.
-  // returns true if the socket is available for reading, otherwise returns false.
+  /**
+   * Checks whether this socket is available for reading.
+   * @param timeout the amount of time elapsed before the checking are timed
+   * out.
+   * @return true if the socket is available for reading,
+   * otherwise returns false.
+   */
   bool isReadable(int timeout) const;
 
-  // writes characters into the socket. data is a pointer pointing the first
-  // byte of the data and len is the length of the data.
+  /**
+   * Writes characters into this socket. data is a pointer pointing the first
+   * byte of the data and len is the length of data.
+   * This method internally calls isWritable(). The parmeter timeout is used
+   * for this method call.
+   * @param data data to write
+   * @param len length of data
+   * @param timeout the amount of time elapsed before isWritable()
+   * are timed out.
+   */
   void writeData(const char* data, int len, int timeout = 5) const;
 
-  // Reads up to len bytes from this socket.
-  // data is a pointer pointing the first
-  // byte of the data, which must be allocated before this method is called.
-  // len is the size of the allocated memory. When this method returns
-  // successfully, len is replaced by the size of the read data.
+  /**
+   * Reads up to len bytes from this socket.
+   * data is a pointer pointing the first
+   * byte of the data, which must be allocated before this method is called.
+   * len is the size of the allocated memory. When this method returns
+   * successfully, len is replaced by the size of the read data.
+   * This method internally calls isReadable(). The parameter timeout is used
+   * for this method call.
+   * @param data holder to store data.
+   * @param len the maximum size data can store. This method assigns
+   * the number of bytes read to len.
+   * @param timeout the amount of time elapsed before isReadable() are timed
+   * out.
+   */
   void readData(char* data, int& len, int timeout = 5) const;
-  // Reads up to len bytes from this socket, but bytes are not removed from
-  // this socket.
+
+  /**
+   * Reads up to len bytes from this socket, but bytes are not removed from
+   * this socket.
+   * This method internally calls isReadable(). The parameter timeout is used
+   * for this method call.
+   * @param data holder to store data.
+   * @param len the maximum size data can store. This method assigns
+   * the number of bytes read to len.
+   * @param timeout the amount of time elapsed before isReadable() are timed
+   * out.
+   */
   void peekData(char* data, int& len, int timeout = 5) const;
   
   /**
    * Makes this socket secure.
    * If the system has not OpenSSL, then this method do nothing.
+   * connection must be established  before calling this method.
    */
   void initiateSecureConnection() ;
 };

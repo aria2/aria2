@@ -30,8 +30,10 @@ using namespace std;
 
 class Socket {
 private:
-  // socket endpoint descriptor
   SocketCore* core;
+  /**
+   * This method doesn't increment the use count of core.
+   */
   Socket(SocketCore* core);
 public:
   Socket();
@@ -40,51 +42,74 @@ public:
 
   Socket& operator=(const Socket& s);
 
+  /**
+   * Returns socket descriptor of this socket.
+   * @returns socket descriptor of this socket.
+   */
   int getSockfd() const { return core->sockfd; }
 
+  /**
+   * @see SocketCore::beginListen()
+   */
   void beginListen() const;
+  
+  /**
+   * @see SocketCore::getAddrInfo()
+   */
   void getAddrInfo(pair<string, int>& addrinfo) const;
+
+  /**
+   * @see SocketCore::acceptConnection()
+   */
   Socket* acceptConnection() const;
 
   /**
-   * Connects to the server named host and the destination port is port.
-   * This method make socket non-blocking mode.
-   * To make the socket blocking mode, call setBlockingMode() after
-   * the connection is established.
+   * @see SocketCore::establishConnection()
    */
   void establishConnection(string host, int port) const;
 
+  /**
+   * @see SocketCore::setBlockingMode()
+   */
   void setBlockingMode() const;
 
-  // Closes the connection which this socket object has
+  /**
+   * @see SocketCore::closeConnection()
+   */
   void closeConnection() const;
 
-  // examines whether the socket of this Socket object is available for writing.
-  // returns true if the socket is available for writing, otherwise returns false.
+  /**
+   * @see SocketCore::isWritable()
+   */
   bool isWritable(int timeout) const;
 
-  // examines whether the socket of this Socket object is available for reading.
-  // returns true if the socket is available for reading, otherwise returns false.
+  /**
+   * @see SocketCore::isReadable()
+   */
   bool isReadable(int timeout) const;
 
-  // writes characters into the socket. data is a pointer pointing the first
-  // byte of the data and len is the length of the data.
+  /**
+   * @see SocketCore::writeData()
+   */
   void writeData(const char* data, int len, int timeout = 5) const;
+  /**
+   * A covenient function that can take string class parameter and
+   * internally calls SocketCore::writeData().
+   */
   void writeData(string str, int timeout = 5) const;
 
-  // Reads up to len bytes from this socket.
-  // data is a pointer pointing the first
-  // byte of the data, which must be allocated before this method is called.
-  // len is the size of the allocated memory. When this method returns
-  // successfully, len is replaced by the size of the read data.
+  /**
+   * @see SocketCore::readData()
+   */
   void readData(char* data, int& len, int timeout = 5) const;
-  // Reads up to len bytes from this socket, but bytes are not removed from
-  // this socket.
+
+  /**
+   * @see SocketCore::peekData()
+   */
   void peekData(char* data, int& len, int timeout = 5) const;
 
   /**
-   * Makes this socket secure.
-   * If the system has not OpenSSL, then this method do nothing.
+   * @see SocketCore::initiateSecureConnection()
    */
   void initiateSecureConnection() const;
 };

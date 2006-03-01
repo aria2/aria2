@@ -5,6 +5,10 @@
 	unregister its cuid from SegmentMan.	
 	* DownloadEngine.cc: .aria2 file was written when a downloading
 	failed with errors.
+	* HttpConnection.cc: Added "Proxy-Connection" header to proxy request.
+	Added "User-Agent" header to CONNECT proxy request.
+	Fixed "Proxy-Authorization" header. Now proxy authorization works
+	properly.
 	
 2006-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
