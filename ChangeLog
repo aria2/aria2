@@ -12,6 +12,7 @@
 	* Logger.h:
 	* SimpleLogger.{h,cc}: Changed the type of msg to const char*.
 	* ChunkedEncoding.cc: Added #include directive for strings.h
+	* Release 0.2.1
 	
 2006-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
