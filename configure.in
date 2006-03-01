@@ -16,8 +16,6 @@ AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is 
 AC_PROG_CXX
 AC_PROG_CC
 
-AC_CHECK_TOOL(AR, [ar], [:], $PATH:/usr/ccs/bin)
-
 # Checks for libraries.
 if test "x$enable_ssl" = "xyes"; then
    AC_CHECK_LIB([ssl], [SSL_library_init])
