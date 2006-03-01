@@ -31,4 +31,6 @@
 # define LONG_LONG_MIN      (-LONG_LONG_MAX - 1LL)
 #endif // LONG_LONG_MAX
 
+#define USER_AGENT "aria2"
+
 using namespace std;

@@ -39,7 +39,7 @@ void HttpConnection::sendProxyRequest() const {
   string request =
     string("CONNECT ")+req->getHost()+":"+Util::llitos(req->getPort())+
     string(" HTTP/1.1\r\n")+
-    "User-Agent: aria2\r\n"+
+    "User-Agent: "+USER_AGENT+"\r\n"+
     "Proxy-Connection: close\r\n"+
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n";
   if(useProxyAuth()) {
@@ -66,7 +66,7 @@ string HttpConnection::createRequest(const Segment& segment) const {
      req->getCurrentUrl() :
      ((req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()))+
     string(" HTTP/1.1\r\n")+
-    "User-Agent: aria2\r\n"+
+    "User-Agent: "+USER_AGENT+"\r\n"+
     "Connection: close\r\n"+
     "Accept: */*\r\n"+        /* */
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n"+

@@ -127,7 +127,7 @@ bool FtpConnection::isEndOfResponse(int status, string response) const {
   if(response.size() <= 4) {
     return false;
   }
-  // if forth character of buf is '-', then multi line response is expected.
+  // if 4th character of buf is '-', then multi line response is expected.
   if(response.at(3) == '-') {
     // multi line response
     string::size_type p;
