@@ -78,11 +78,12 @@ void DownloadEngine::run() {
     }
 
   }
-  segmentMan->removeIfFinished();
   diskWriter->closeFile();
   if(segmentMan->finished()) {
+    segmentMan->remove();
     cout << "\nThe download was complete. <" << segmentMan->getFilePath() << ">" << endl;
   } else {
+    segmentMan->save();
     cout << "\nThe download was not complete because of errors. Check the log." << endl;
   }
 }

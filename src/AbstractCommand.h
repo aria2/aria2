@@ -39,7 +39,7 @@ protected:
   Socket* socket;
 
   virtual bool prepareForRetry(int wait);
-  virtual void onAbort(Exception* e);
+  virtual void onAbort(Exception* ex);
   virtual bool executeInternal(Segment segment) = 0;
 
   void setReadCheckSocket(Socket* socket);

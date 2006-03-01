@@ -99,8 +99,3 @@ bool DownloadCommand::prepareForNextSegment() {
     return true;
   }
 }
-
-void DownloadCommand::onAbort(Exception* ex) {
-  e->logger->debug(MSG_UNREGISTER_CUID, cuid);
-  e->segmentMan->unregisterId(cuid);
-}

@@ -99,11 +99,14 @@ bool AbstractCommand::execute() {
     return true;
   } catch(DlRetryEx* err) {
     e->logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
-    delete(err);
-    //req->resetUrl();
     req->addTryCount();
-    if(e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
-       req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRIES)) {
+    bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
+      req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRIES);
+    if(isAbort) {
+      onAbort(err);
+    }
+    delete(err);
+    if(isAbort) {
       e->logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
       return true;
     } else {
@@ -123,7 +126,9 @@ bool AbstractCommand::prepareForRetry(int wait) {
   return true;
 }
 
-void AbstractCommand::onAbort(Exception* e) {
+void AbstractCommand::onAbort(Exception* ex) {
+  e->logger->debug(MSG_UNREGISTER_CUID, cuid);
+  e->segmentMan->unregisterId(cuid);
 }
 
 void AbstractCommand::setReadCheckSocket(Socket* socket) {
