@@ -3556,7 +3556,8 @@ else
   ac_cv_prog_AR="$AR" # Let the user override the test.
 else
 as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
+as_dummy="$PATH:/usr/ccs/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -3594,7 +3595,8 @@ else
   ac_cv_prog_ac_ct_AR="$ac_ct_AR" # Let the user override the test.
 else
 as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
+as_dummy="$PATH:/usr/ccs/bin"
+for as_dir in $as_dummy
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -3607,6 +3609,7 @@ do
 done
 done
 
+  test -z "$ac_cv_prog_ac_ct_AR" && ac_cv_prog_ac_ct_AR=":"
 fi
 fi
 ac_ct_AR=$ac_cv_prog_ac_ct_AR
