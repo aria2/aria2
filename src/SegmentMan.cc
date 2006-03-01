@@ -46,7 +46,7 @@ bool SegmentMan::getSegment(Segment& seg, int cuid) {
   //Segment s = { 0, 0, 0, false };
 
   if(segments.empty()) {
-    logger->debug("assign new segment { sp = 0, ep = "+(totalSize == 0 ? "0" : Util::llitos(totalSize-1))+" } to cuid "+Util::llitos(cuid));
+    logger->debug(string("assign new segment { sp = 0, ep = "+(totalSize == 0 ? "0" : Util::llitos(totalSize-1))+" } to cuid "+Util::llitos(cuid)).c_str());
     //seg = { cuid, 0, totalSize == 0 ? 0 : totalSize-1, 0, false };
     seg.cuid = cuid;
     seg.sp = 0;

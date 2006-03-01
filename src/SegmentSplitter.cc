@@ -31,16 +31,16 @@ void SegmentSplitter::split(Segment& seg, int cuid, Segment& s) const {
   seg.speed = s.speed;
   seg.finish = false;
   s.ep = nep;
-  logger->debug("return new segment { "
+  logger->debug(string("return new segment { "
 		"sp = "+Util::llitos(seg.sp)+", "+
 		"ep = "+Util::llitos(seg.ep)+", "+
 		"ds = "+Util::llitos(seg.ds)+", "+
 		"speed = "+Util::itos(seg.speed)+" } to "+
-		"cuid "+Util::llitos(cuid));
-  logger->debug("update segment { "
+		"cuid "+Util::llitos(cuid)).c_str());
+  logger->debug(string("update segment { "
 		"sp = "+Util::llitos(s.sp)+", "+
 		"ep = "+Util::llitos(s.ep)+", "+
 		"ds = "+Util::llitos(s.ds)+", "+
 		"speed = "+Util::itos(s.speed)+" } of "+
-		"cuid "+Util::llitos(s.cuid));
+		"cuid "+Util::llitos(s.cuid)).c_str());
 }

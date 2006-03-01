@@ -38,7 +38,7 @@ SimpleLogger::~SimpleLogger() {
   }
 }
 
-void SimpleLogger::writeLog(int level, string msg, va_list ap, Exception* e) const
+void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e) const
 {
   string levelStr;
   switch(level) {
@@ -63,14 +63,14 @@ void SimpleLogger::writeLog(int level, string msg, va_list ap, Exception* e) con
   fflush(stdout);
 }
 
-void SimpleLogger::debug(string msg, ...) const {
+void SimpleLogger::debug(const char* msg, ...) const {
   va_list ap;
   va_start(ap, msg);
   writeLog(DEBUG, msg, ap);
   va_end(ap);
 }
 
-void SimpleLogger::debug(string msg, Exception* e, ...) const {
+void SimpleLogger::debug(const char* msg, Exception* e, ...) const {
   va_list ap;
   va_start(ap, e);
   writeLog(DEBUG, msg, ap, e);
@@ -78,14 +78,14 @@ void SimpleLogger::debug(string msg, Exception* e, ...) const {
 }
 
   
-void SimpleLogger::info(string msg, ...) const {
+void SimpleLogger::info(const char* msg, ...) const {
   va_list ap;
   va_start(ap, msg);
   writeLog(INFO, msg, ap);
   va_end(ap);
 }
 
-void SimpleLogger::info(string msg, Exception* e, ...) const {
+void SimpleLogger::info(const char* msg, Exception* e, ...) const {
   va_list ap;
   va_start(ap, e);
   writeLog(INFO, msg, ap, e);
@@ -93,14 +93,14 @@ void SimpleLogger::info(string msg, Exception* e, ...) const {
 }
 
   
-void SimpleLogger::error(string msg, ...) const {
+void SimpleLogger::error(const char* msg, ...) const {
   va_list ap;
   va_start(ap, msg);
   writeLog(ERROR, msg, ap);
   va_end(ap);
 }
 
-void SimpleLogger::error(string msg, Exception* e, ...) const {
+void SimpleLogger::error(const char* msg, Exception* e, ...) const {
   va_list ap;
   va_start(ap, e);
   writeLog(ERROR, msg, ap, e);

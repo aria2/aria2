@@ -9,6 +9,8 @@
 	Added "User-Agent" header to CONNECT proxy request.
 	Fixed "Proxy-Authorization" header. Now proxy authorization works
 	properly.
+	* Logger.h:
+	* SimpleLogger.{h,cc}: Changed the type of msg to const char*.
 	
 2006-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

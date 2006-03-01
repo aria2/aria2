@@ -30,19 +30,19 @@ private:
     DEBUG,
     INFO,
     ERROR};
-  void writeLog(int level, string msg, va_list ap, Exception* e = NULL) const;
+  void writeLog(int level, const char* msg, va_list ap, Exception* e = NULL) const;
   FILE* file;
 public:
   SimpleLogger(string filename);
   SimpleLogger(FILE* logfile);
   ~SimpleLogger();
 
-  void debug(string msg, ...) const;
-  void debug(string msg, Exception* ex, ...) const;
-  void info(string msg, ...) const;
-  void info(string msg, Exception* ex, ...) const;
-  void error(string msg, ...) const;
-  void error(string msg, Exception* ex, ...) const;
+  void debug(const char* msg, ...) const;
+  void debug(const char* msg, Exception* ex, ...) const;
+  void info(const char* msg, ...) const;
+  void info(const char* msg, Exception* ex, ...) const;
+  void error(const char* msg, ...) const;
+  void error(const char* msg, Exception* ex, ...) const;
 };
 
 #endif // _D_SIMPLE_LOGGER_H_
