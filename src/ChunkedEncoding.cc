@@ -23,6 +23,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include <string.h>
+#include <strings.h>
 #include <errno.h>
 
 #define MAX_BUFSIZE (1024*1024)

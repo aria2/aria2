@@ -16,6 +16,8 @@ AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is 
 AC_PROG_CXX
 AC_PROG_CC
 
+AC_CHECK_TOOL(AR, ar)
+
 # Checks for libraries.
 if test "x$enable_ssl" = "xyes"; then
    AC_CHECK_LIB([ssl], [SSL_library_init])
@@ -23,7 +25,7 @@ fi
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h string.h sys/socket.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h string.h sys/socket.h sys/time.h unistd.h limits.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -36,7 +38,7 @@ AC_FUNC_ERROR_AT_LINE
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([getpagesize gethostbyname gettimeofday inet_ntoa memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
+AC_CHECK_FUNCS([getpagesize gettimeofday inet_ntoa memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
 
 AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
 AC_OUTPUT
