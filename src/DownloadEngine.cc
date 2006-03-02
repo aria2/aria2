@@ -38,9 +38,7 @@ DownloadEngine::~DownloadEngine() {
 }
 
 void DownloadEngine::run() {
-  struct timeval cp = { 0, 0 };
-  int  speed = 0;
-  long long int psize = 0;
+  initStatistics();
   while(!commands.empty()) {
     int max = commands.size();
     for(int i = 0; i < max; i++) {
@@ -54,48 +52,40 @@ void DownloadEngine::run() {
       waitData();
     }
     noWait = false;
-
-    long long int dlSize = segmentMan->getDownloadedSize();
-    struct timeval now;
-    gettimeofday(&now, NULL);
-    if(cp.tv_sec == 0 && cp.tv_usec == 0) {
-      cp = now;
-      psize = dlSize;
-    } else {
-      long long int elapsed = Util::difftv(now, cp);
-      if(elapsed >= 500000) {
-	int nspeed = (int)((dlSize-psize)/(elapsed/1000000.0));
-	speed = (nspeed+speed)/2;
-	cp = now;
-	psize = dlSize;
-	cout << "\r                                                                            ";
-	cout << "\rProgress " << Util::llitos(dlSize, true) << " Bytes/" <<
-	  Util::llitos(segmentMan->totalSize, true) << " Bytes " <<
-	  (segmentMan->totalSize == 0 ? 0 : (dlSize*100)/segmentMan->totalSize) << "% " <<
-	  speed/1000.0 << "KB/s " <<
-	  "(" << commands.size() << " connections)" << flush;
-      }
-    }
-
+    calculateStatistics();
   }
   diskWriter->closeFile();
   if(segmentMan->finished()) {
     segmentMan->remove();
-    cout << "\nThe download was complete. <" << segmentMan->getFilePath() << ">" << endl;
   } else {
     segmentMan->save();
-    cout << "\nThe download was not complete because of errors. Check the log." << endl;
   }
 }
 
-// void DownloadEngine::shortSleep() {
-//   int wait = rpm == 0 ? 0 : 4096*1000/rpm;
-//   struct timeval tv;
-//   int retval;
-//   tv.tv_sec = 0;
-//   tv.tv_usec = wait*1000;
-//   retval = select(0, NULL, NULL, NULL, &tv);
-// }
+void DownloadEngine::initStatistics() {
+  cp.tv_sec = cp.tv_usec = 0;
+  speed = 0;
+  psize = 0;
+}
+
+void DownloadEngine::calculateStatistics() {
+  long long int dlSize = segmentMan->getDownloadedSize();
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  if(cp.tv_sec == 0 && cp.tv_usec == 0) {
+    cp = now;
+    psize = dlSize;
+  } else {
+    long long int elapsed = Util::difftv(now, cp);
+    if(elapsed >= 500000) {
+      int nspeed = (int)((dlSize-psize)/(elapsed/1000000.0));
+      speed = (nspeed+speed)/2;
+      cp = now;
+      psize = dlSize;
+      sendStatistics(dlSize, segmentMan->totalSize);
+    }
+  }
+}
 
 void DownloadEngine::waitData() {
   fd_set rfds;

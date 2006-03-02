@@ -22,6 +22,7 @@ SRCS =  Socket.cc Socket.h\
 	FtpTunnelResponseCommand.cc FtpTunnelResponseCommand.h\
 	SleepCommand.cc SleepCommand.h\
 	DownloadEngine.cc DownloadEngine.h\
+	ConsoleDownloadEngine.cc ConsoleDownloadEngine.h\
 	Segment.h\
 	SegmentMan.cc SegmentMan.h\
 	SegmentSplitter.cc SegmentSplitter.h\

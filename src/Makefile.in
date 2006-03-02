@@ -71,6 +71,7 @@ am__objects_1 = libaria2c_a-Socket.$(OBJEXT) \
 	libaria2c_a-FtpTunnelResponseCommand.$(OBJEXT) \
 	libaria2c_a-SleepCommand.$(OBJEXT) \
 	libaria2c_a-DownloadEngine.$(OBJEXT) \
+	libaria2c_a-ConsoleDownloadEngine.$(OBJEXT) \
 	libaria2c_a-SegmentMan.$(OBJEXT) \
 	libaria2c_a-SegmentSplitter.$(OBJEXT) \
 	libaria2c_a-SplitFirstSegmentSplitter.$(OBJEXT) \
@@ -212,6 +213,7 @@ SRCS = Socket.cc Socket.h\
 	FtpTunnelResponseCommand.cc FtpTunnelResponseCommand.h\
 	SleepCommand.cc SleepCommand.h\
 	DownloadEngine.cc DownloadEngine.h\
+	ConsoleDownloadEngine.cc ConsoleDownloadEngine.h\
 	Segment.h\
 	SegmentMan.cc SegmentMan.h\
 	SegmentSplitter.cc SegmentSplitter.h\
@@ -320,6 +322,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-ChunkedEncoding.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-CookieBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-DownloadCommand.Po@am__quote@
@@ -659,6 +662,20 @@ libaria2c_a-DownloadEngine.obj: DownloadEngine.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DownloadEngine.cc' object='libaria2c_a-DownloadEngine.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-DownloadEngine.obj `if test -f 'DownloadEngine.cc'; then $(CYGPATH_W) 'DownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/DownloadEngine.cc'; fi`
+
+libaria2c_a-ConsoleDownloadEngine.o: ConsoleDownloadEngine.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ConsoleDownloadEngine.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" -c -o libaria2c_a-ConsoleDownloadEngine.o `test -f 'ConsoleDownloadEngine.cc' || echo '$(srcdir)/'`ConsoleDownloadEngine.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConsoleDownloadEngine.cc' object='libaria2c_a-ConsoleDownloadEngine.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ConsoleDownloadEngine.o `test -f 'ConsoleDownloadEngine.cc' || echo '$(srcdir)/'`ConsoleDownloadEngine.cc
+
+libaria2c_a-ConsoleDownloadEngine.obj: ConsoleDownloadEngine.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ConsoleDownloadEngine.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" -c -o libaria2c_a-ConsoleDownloadEngine.obj `if test -f 'ConsoleDownloadEngine.cc'; then $(CYGPATH_W) 'ConsoleDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/ConsoleDownloadEngine.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConsoleDownloadEngine.cc' object='libaria2c_a-ConsoleDownloadEngine.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ConsoleDownloadEngine.obj `if test -f 'ConsoleDownloadEngine.cc'; then $(CYGPATH_W) 'ConsoleDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/ConsoleDownloadEngine.cc'; fi`
 
 libaria2c_a-SegmentMan.o: SegmentMan.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SegmentMan.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SegmentMan.Tpo" -c -o libaria2c_a-SegmentMan.o `test -f 'SegmentMan.cc' || echo '$(srcdir)/'`SegmentMan.cc; \

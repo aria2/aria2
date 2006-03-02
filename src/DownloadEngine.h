@@ -42,6 +42,13 @@ private:
 
   bool addSocket(vector<Socket*>& sockets, Socket* socket);
   bool deleteSocket(vector<Socket*>& sockets, Socket* socket);
+  struct timeval cp;
+  long long int psize;
+  void initStatistics();
+  void calculateStatistics();
+protected:
+  int speed;
+  virtual void sendStatistics(long long int currentSize, long long int totalSize) {};
 public:
   bool noWait;
   queue<Command*> commands;
@@ -51,7 +58,7 @@ public:
   const Option* option;
 
   DownloadEngine();
-  ~DownloadEngine();
+  virtual ~DownloadEngine();
 
   void run();
 

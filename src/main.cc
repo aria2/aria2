@@ -20,7 +20,7 @@
  */
 /* copyright --> */
 #include "HttpInitiateConnectionCommand.h"
-#include "DownloadEngine.h"
+#include "ConsoleDownloadEngine.h"
 #include "SegmentMan.h"
 #include "SplitSlowestSegmentSplitter.h"
 #include "SimpleLogger.h"
@@ -411,7 +411,7 @@ int main(int argc, char* argv[]) {
   SegmentSplitter* splitter = new SplitSlowestSegmentSplitter();
   splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
   splitter->logger = logger;
-  e = new DownloadEngine();
+  e = new ConsoleDownloadEngine();
   e->logger = logger;
   e->option = op;
   e->diskWriter = new DefaultDiskWriter();
@@ -434,6 +434,12 @@ int main(int argc, char* argv[]) {
   sigaction(SIGINT, &sigact, NULL);
 
   e->run();
+
+  if(e->segmentMan->finished()) {
+    cout << "\nThe download was complete. <" << e->segmentMan->getFilePath() << ">" << endl;
+  } else {
+    cout << "\nThe download was not complete because of errors. Check the log." << endl;
+  }
   
   for_each(requests.begin(), requests.end(), clearRequest);
   requests.clear();
