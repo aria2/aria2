@@ -8,6 +8,8 @@ AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_RANLIB
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.12.1)
 
 # Checks for arguments.
 AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is installed. Default: yes], [enable_ssl=$enableval], [enable_ssl=yes])
@@ -38,5 +40,5 @@ AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([getpagesize gettimeofday inet_ntoa memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
 
-AC_CONFIG_FILES([Makefile src/Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile test/Makefile po/Makefile.in m4/Makefile ])
 AC_OUTPUT

@@ -54,7 +54,7 @@ void clearRequest(Request* req) {
 DownloadEngine* e;
 
 void handler(int signal) {
-  cout << "\nSIGINT signal received." << endl;
+  cout << _("\nSIGINT signal received.") << endl;
   e->segmentMan->save();
   if(e->diskWriter != NULL) {
     e->diskWriter->closeFile();
@@ -69,7 +69,7 @@ void addCommand(int cuid, const char* url, string referer, vector<Request*> requ
     e->commands.push(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e));
     requests.push_back(req);
   } else {
-    cerr << "Unrecognized URL or unsupported protocol: " << req->getUrl() << endl;
+    cerr << _("Unrecognized URL or unsupported protocol: ") << req->getUrl() << endl;
     delete(req);
   }
 }
@@ -99,65 +99,65 @@ void showVersion() {
 
 void showUsage() {
   cout << endl;
-  cout << "Usage: " << PACKAGE_NAME << " [options] URL ..." << endl;
+  cout << _("Usage: ") << PACKAGE_NAME << _(" [options] URL ...") << endl;
   cout << endl;
-  cout << "Options:" << endl;
-  cout << " -d, --dir=DIR                The directory to store downloaded file." << endl;
-  cout << " -o, --out=FILE               The file name for downloaded file." << endl;
-  cout << " -l, --log=LOG                The file path to store log. If '-' is specified," << endl;
-  cout << "                              log is written to stdout." << endl;
-  cout << " -D, --daemon                 Run as daemon." << endl;
-  cout << " -s, --split=N                Download a file using N connections. N must be" << endl;
-  cout << "                              between 1 and 5. This option affects all URLs." << endl;
-  cout << "                              Thus, aria2 connects to each URL with N connections." << endl;
-  cout << " --retry-wait=SEC             Set amount of time in second between requests" << endl;
-  cout << "                              for errors. Specify a value between 0 and 60." << endl;
-  cout << "                              Default: 5" << endl;
-  cout << " -t, --timeout=SEC            Set timeout in second. Default: 60" << endl;
-  cout << " -m, --max-tries=N            Set number of tries. 0 means unlimited." << endl;
-  cout << "                              Default: 5" << endl;
-  cout << " --min-segment-size=SIZE[K|M] Set minimum segment size. You can append" << endl;
+  cout << _("Options:") << endl;
+  cout << _(" -d, --dir=DIR                The directory to store downloaded file.") << endl;
+  cout << _(" -o, --out=FILE               The file name for downloaded file.") << endl;
+  cout << _(" -l, --log=LOG                The file path to store log. If '-' is specified,") << endl;
+  cout << _("                              log is written to stdout.") << endl;
+  cout << _(" -D, --daemon                 Run as daemon.") << endl;
+  cout << _(" -s, --split=N                Download a file using N connections. N must be") << endl;
+  cout << _("                              between 1 and 5. This option affects all URLs.") << endl;
+  cout << _("                              Thus, aria2 connects to each URL with N connections.") << endl;
+  cout << _(" --retry-wait=SEC             Set amount of time in second between requests") << endl;
+  cout << _("                              for errors. Specify a value between 0 and 60.") << endl;
+  cout <<   "                              Default: 5" << endl;
+  cout << _(" -t, --timeout=SEC            Set timeout in second. Default: 60") << endl;
+  cout << _(" -m, --max-tries=N            Set number of tries. 0 means unlimited.") << endl;
+  cout <<   "                              Default: 5" << endl;
+  cout << _(" --min-segment-size=SIZE[K|M] Set minimum segment size. You can append") << endl;
   cout << "                              K or M(1K = 1024, 1M = 1024K)." << endl;
-  cout << " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all" << endl;
-  cout << "                              URLs." << endl;
-  cout << " --http-user=USER             Set HTTP user. This affects to all URLs." << endl;
-  cout << " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs." << endl;
-  cout << " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs" << endl;
-  cout << " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all URLs." << endl;
-  cout << " --http-proxy-method=METHOD   Set the method to use in proxy request." << endl;
-  cout << "                              METHOD is either 'get' or 'tunnel'." << endl;
-  cout << "                              Default: tunnel" << endl;
-  cout << " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic" << endl;
-  cout << "                              is the only supported scheme. You MUST specify" << endl;
-  cout << "                              this option in order to use HTTP authentication" << endl;
-  cout << "                              as well as --http-proxy option." << endl;
-  cout << " --referer=REFERER            Set Referer. This affects to all URLs." << endl;
-  cout << " --ftp-user=USER              Set FTP user. This affects to all URLs." << endl;
-  cout << "                              Default: anonymous" << endl;
-  cout << " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs." << endl;
-  cout << "                              Default: ARIA2USER@" << endl;
-  cout << " --ftp-type=TYPE              Set FTP transfer type. TYPE is either 'binary'" << endl;
-  cout << "                              or 'ascii'." << endl;
-  cout << "                              Default: binary" << endl;
-  cout << " -p, --ftp-pasv               Use passive mode in FTP." << endl;
-  cout << " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or" << endl;
-  cout << "                              'tunnel'." << endl;
-  cout << "                              Default: tunnel" << endl;
-  cout << " -v, --version                Print the version number and exit." << endl;
-  cout << " -h, --help                   Print this message and exit." << endl;
+  cout << _(" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all") << endl;
+  cout << _("                              URLs.") << endl;
+  cout << _(" --http-user=USER             Set HTTP user. This affects to all URLs.") << endl;
+  cout << _(" --http-passwd=PASSWD         Set HTTP password. This affects to all URLs.") << endl;
+  cout << _(" --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs") << endl;
+  cout << _(" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all URLs.") << endl;
+  cout << _(" --http-proxy-method=METHOD   Set the method to use in proxy request.") << endl;
+  cout << _("                              METHOD is either 'get' or 'tunnel'.") << endl;
+  cout <<   "                              Default: tunnel" << endl;
+  cout << _(" --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic") << endl;
+  cout << _("                              is the only supported scheme. You MUST specify") << endl;
+  cout << _("                              this option in order to use HTTP authentication") << endl;
+  cout << _("                              as well as --http-proxy option.") << endl;
+  cout << _(" --referer=REFERER            Set Referer. This affects to all URLs.") << endl;
+  cout << _(" --ftp-user=USER              Set FTP user. This affects to all URLs.") << endl;
+  cout << _("                              Default: anonymous") << endl;
+  cout << _(" --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.") << endl;
+  cout << _("                              Default: ARIA2USER@") << endl;
+  cout << _(" --ftp-type=TYPE              Set FTP transfer type. TYPE is either 'binary'") << endl;
+  cout << _("                              or 'ascii'.") << endl;
+  cout << _("                              Default: binary") << endl;
+  cout << _(" -p, --ftp-pasv               Use passive mode in FTP.") << endl;
+  cout << _(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or") << endl;
+  cout << _("                              'tunnel'.") << endl;
+  cout <<   "                              Default: tunnel" << endl;
+  cout << _(" -v, --version                Print the version number and exit.") << endl;
+  cout << _(" -h, --help                   Print this message and exit.") << endl;
   cout << endl;
-  cout << "URL:" << endl;
-  cout << " You can specify multiple URLs. All URLs must point to the same file" << endl;
-  cout << " or downloading fails." << endl;
+  cout << _("URL:") << endl;
+  cout << _(" You can specify multiple URLs. All URLs must point to the same file") << endl;
+  cout << _(" or downloading fails.") << endl;
   cout << endl;
-  cout << "Examples:" << endl;
-  cout << " Download a file by 1 connection:" << endl;
+  cout << _("Examples:") << endl;
+  cout << _(" Download a file by 1 connection:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip" << endl;
-  cout << " Download a file by 2 connections:" << endl;
+  cout << _(" Download a file by 2 connections:") << endl;
   cout << "  aria2c -s 2 http://AAA.BBB.CCC/file.zip" << endl;
-  cout << " Download a file by 2 connections, each connects to a different server:" << endl;
+  cout << _(" Download a file by 2 connections, each connects to a different server:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip" << endl;
-  cout << " You can mix up different protocols:" << endl;
+  cout << _(" You can mix up different protocols:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
   cout << endl;
   cout << "Reports bugs to <tujikawa at rednoah dot com>" << endl;
@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
 	int port = (int)strtol(proxy.second.c_str(), NULL, 10);
 	if(proxy.first.empty() || proxy.second.empty() ||
 	   !(0 < port && port <= 65535)) {
-	  cerr << "unrecognized proxy format" << endl;
+	  cerr << _("unrecognized proxy format") << endl;
 	  showUsage();
 	  exit(1);
 	}
@@ -253,7 +253,7 @@ int main(int argc, char* argv[]) {
 	if(string(V_BASIC) == optarg) {
 	  op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
 	} else {
-	  cerr << "Currently, supported authentication scheme is basic." << endl;
+	  cerr << _("Currently, supported authentication scheme is basic.") << endl;
 	}
 	break;
       case 7:
@@ -262,7 +262,7 @@ int main(int argc, char* argv[]) {
       case 8: {
 	int wait = (int)strtol(optarg, NULL, 10);
 	if(!(0 <= wait && wait <= 60)) {
-	  cerr << "retry-wait must be between 0 and 60." << endl;
+	  cerr << _("retry-wait must be between 0 and 60.") << endl;
 	  showUsage();
 	  exit(1);
 	}
@@ -279,7 +279,7 @@ int main(int argc, char* argv[]) {
 	if(string(optarg) == V_BINARY || string(optarg) == V_ASCII) {
 	  op->put(PREF_FTP_TYPE, optarg);
 	} else {
-	  cerr << "ftp-type must be either 'binary' or 'ascii'." << endl;
+	  cerr << _("ftp-type must be either 'binary' or 'ascii'.") << endl;
 	  showUsage();
 	  exit(1);
 	}
@@ -288,7 +288,7 @@ int main(int argc, char* argv[]) {
 	if(string(optarg) == V_GET || string(optarg) == V_TUNNEL) {
 	  op->put(PREF_FTP_VIA_HTTP_PROXY, optarg);
 	} else {
-	  cerr << "ftp-via-http-proxy must be either 'get' or 'tunnel'." << endl;
+	  cerr << _("ftp-via-http-proxy must be either 'get' or 'tunnel'.") << endl;
 	  showUsage();
 	  exit(1);
 	}
@@ -306,7 +306,7 @@ int main(int argc, char* argv[]) {
 	}
 	long long int size = strtoll(optarg, NULL, 10)*mult;
 	if(size <= 0) {
-	  cerr << "min-segment-size invalid" << endl;
+	  cerr << _("min-segment-size invalid") << endl;
 	  showUsage();
 	  exit(1);
 	}
@@ -317,7 +317,7 @@ int main(int argc, char* argv[]) {
 	if(string(optarg) == V_GET || string(optarg) == V_TUNNEL) {
 	  op->put(PREF_HTTP_PROXY_METHOD, optarg);
 	} else {
-	  cerr << "http-proxy-method must be either 'get' or 'tunnel'." << endl;
+	  cerr << _("http-proxy-method must be either 'get' or 'tunnel'.") << endl;
 	  showUsage();
 	  exit(1);
 	}
@@ -344,7 +344,7 @@ int main(int argc, char* argv[]) {
     case 's':
       split = (int)strtol(optarg, NULL, 10);
       if(!(1 <= split && split <= 5)) {
-	cerr << "split must be between 1 and 5." << endl;
+	cerr << _("split must be between 1 and 5.") << endl;
 	showUsage();
 	exit(1);
       }
@@ -354,7 +354,7 @@ int main(int argc, char* argv[]) {
       if(1 <= timeout && timeout <= 600) {
 	op->put(PREF_TIMEOUT, Util::itos(timeout));
       } else {
-	cerr << "timeout must be between 1 and 600" << endl;
+	cerr << _("timeout must be between 1 and 600") << endl;
 	showUsage();
 	exit(1);
       }
@@ -363,7 +363,7 @@ int main(int argc, char* argv[]) {
     case 'm': {
       int retries = (int)strtol(optarg, NULL, 10);
       if(retries < 0) {
-	cerr << "max-retires invalid" << endl;
+	cerr << _("max-retires invalid") << endl;
 	showUsage();
 	exit(1);
       }
@@ -385,7 +385,7 @@ int main(int argc, char* argv[]) {
     }
   }
   if(optind == argc) {
-    cerr << "specify at least one URL" << endl;
+    cerr << _("specify at least one URL") << endl;
     showUsage();
     exit(1);
   }
@@ -436,9 +436,9 @@ int main(int argc, char* argv[]) {
   e->run();
 
   if(e->segmentMan->finished()) {
-    cout << "\nThe download was complete. <" << e->segmentMan->getFilePath() << ">" << endl;
+    cout << _("\nThe download was complete. <") << e->segmentMan->getFilePath() << ">" << endl;
   } else {
-    cout << "\nThe download was not complete because of errors. Check the log." << endl;
+    cout << _("\nThe download was not complete because of errors. Check the log.") << endl;
   }
   
   for_each(requests.begin(), requests.end(), clearRequest);

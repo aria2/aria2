@@ -1,0 +1,402 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"PO-Revision-Date: 2006-03-02 19:19+0900\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/tujikawa/aria2/src/message.h:27
+msgid "CUID#%d - The download for one segment completed successfully."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:28
+msgid "CUID#%d - No segment available."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:29
+msgid "CUID#%d - Connecting to %s:%d"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:30
+msgid "CUID#%d - The segment changed. We send the request again with new Range header."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:31
+msgid "CUID#%d - Redirecting to %s"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:32
+msgid ""
+"CUID#%d - Requesting:\n"
+"%s"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:33
+msgid ""
+"CUID#%d - Response received:\n"
+"%s"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:34
+msgid "CUID#%d - Download aborted."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:35
+msgid "CUID#%d - Restarting the download."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:36
+msgid "CUID#%d - %d times attempted, but no success. Download aborted."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:37
+msgid "CUID#%d - Unregistering cuid from segmentManager."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:39
+msgid "The segment file %s exists."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:40
+msgid "The segment file %s does not exist."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:41
+msgid "Saving the segment file %s"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:42
+msgid "The segment file was saved successfully."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:43
+msgid "Loading the segment file %s."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:44
+msgid "The segment file was loaded successfully."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:46
+msgid "Timeout."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:47
+msgid "Invalid chunk size."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:48
+msgid "Too large chunk. size = %d"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:49
+msgid "Invalid header."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:50
+msgid "Invalid response."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:51
+msgid "No header found."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:52
+msgid "No status header."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:53
+msgid "Proxy connection failed."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:54
+msgid "Connection failed."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:55
+msgid "The requested filename and the previously registered one are not same. %s != %s"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:56
+msgid "The response status is not successful. status = %d"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:57
+msgid "Too large file size. size = %lld"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:58
+msgid "Transfer encoding %s is not supported."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:59
+msgid "SSL initialization failed."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/message.h:60
+msgid "Size mismatch %lld != %lld"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:57
+msgid "\nSIGINT signal received."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:72
+msgid "Unrecognized URL or unsupported protocol: "
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:102
+msgid "Usage: "
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:102
+msgid " [options] URL ..."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:104
+msgid "Options:"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:105
+msgid " -d, --dir=DIR                The directory to store downloaded file."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:106
+msgid " -o, --out=FILE               The file name for downloaded file."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:107
+msgid " -l, --log=LOG                The file path to store log. If '-' is specified,"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:108
+msgid "                              log is written to stdout."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:109
+msgid " -D, --daemon                 Run as daemon."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:110
+msgid " -s, --split=N                Download a file using N connections. N must be"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:111
+msgid "                              between 1 and 5. This option affects all URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:112
+msgid "                              Thus, aria2 connects to each URL with N connections."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:113
+msgid " --retry-wait=SEC             Set amount of time in second between requests"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:114
+msgid "                              for errors. Specify a value between 0 and 60."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:116
+msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:117
+msgid " -m, --max-tries=N            Set number of tries. 0 means unlimited."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:119
+msgid " --min-segment-size=SIZE[K|M] Set minimum segment size. You can append"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:121
+msgid " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:122
+msgid "                              URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:123
+msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:124
+msgid " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:125
+msgid " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:126
+msgid " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:127
+msgid " --http-proxy-method=METHOD   Set the method to use in proxy request."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:128
+msgid "                              METHOD is either 'get' or 'tunnel'."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:130
+msgid " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:131
+msgid "                              is the only supported scheme. You MUST specify"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:132
+msgid "                              this option in order to use HTTP authentication"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:133
+msgid "                              as well as --http-proxy option."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:134
+msgid " --referer=REFERER            Set Referer. This affects to all URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:135
+msgid " --ftp-user=USER              Set FTP user. This affects to all URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:136
+msgid "                              Default: anonymous"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:137
+msgid " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:138
+msgid "                              Default: ARIA2USER@"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:139
+msgid " --ftp-type=TYPE              Set FTP transfer type. TYPE is either 'binary'"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:140
+msgid "                              or 'ascii'."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:141
+msgid "                              Default: binary"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:142
+msgid " -p, --ftp-pasv               Use passive mode in FTP."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:143
+msgid " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:144
+msgid "                              'tunnel'."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:146
+msgid " -v, --version                Print the version number and exit."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:147
+msgid " -h, --help                   Print this message and exit."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:149
+msgid "URL:"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:150
+msgid " You can specify multiple URLs. All URLs must point to the same file"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:151
+msgid " or downloading fails."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:153
+msgid "Examples:"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:154
+msgid " Download a file by 1 connection:"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:156
+msgid " Download a file by 2 connections:"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:158
+msgid " Download a file by 2 connections, each connects to a different server:"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:160
+msgid " You can mix up different protocols:"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:230
+msgid "unrecognized proxy format"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:256
+msgid "Currently, supported authentication scheme is basic."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:265
+msgid "retry-wait must be between 0 and 60."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:282
+msgid "ftp-type must be either 'binary' or 'ascii'."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:291
+msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:309
+msgid "min-segment-size invalid"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:320
+msgid "http-proxy-method must be either 'get' or 'tunnel'."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:347
+msgid "split must be between 1 and 5."
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:357
+msgid "timeout must be between 1 and 600"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:366
+msgid "max-retires invalid"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:388
+msgid "specify at least one URL"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:439
+msgid "\nThe download was complete. <"
+msgstr ""
+
+#: /home/tujikawa/aria2/src/main.cc:441
+msgid "\nThe download was not complete because of errors. Check the log."
+msgstr ""

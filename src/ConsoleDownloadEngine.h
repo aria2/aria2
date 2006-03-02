@@ -19,21 +19,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include <iostream>
-#include <assert.h>
-#include <limits.h>
-#include <gettext.h>
-#define _(String) gettext (String)
+#ifndef _D_CONSOLE_DOWNLOAD_ENGINE_H_
+#define _D_CONSOLE_DOWNLOAD_ENGINE_H_
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include "DownloadEngine.h"
 
-#ifndef LONG_LONG_MAX
-# define LONG_LONG_MAX      9223372036854775807LL
-# define LONG_LONG_MIN      (-LONG_LONG_MAX - 1LL)
-#endif // LONG_LONG_MAX
+class ConsoleDownloadEngine : public DownloadEngine {
+protected:
+  void sendStatistics(long long int currentSize, long long int totalSize);
+public:
+  ConsoleDownloadEngine();
+  ~ConsoleDownloadEngine();
+};
 
-#define USER_AGENT "aria2"
-
-using namespace std;
+#endif // _D_CONSOLE_DOWNLOAD_ENGINE_H_

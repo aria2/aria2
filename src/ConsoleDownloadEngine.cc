@@ -19,21 +19,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include <iostream>
-#include <assert.h>
-#include <limits.h>
-#include <gettext.h>
-#define _(String) gettext (String)
+#include "ConsoleDownloadEngine.h"
+#include "Util.h"
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+ConsoleDownloadEngine::ConsoleDownloadEngine() {}
 
-#ifndef LONG_LONG_MAX
-# define LONG_LONG_MAX      9223372036854775807LL
-# define LONG_LONG_MIN      (-LONG_LONG_MAX - 1LL)
-#endif // LONG_LONG_MAX
+ConsoleDownloadEngine::~ConsoleDownloadEngine() {}
 
-#define USER_AGENT "aria2"
-
-using namespace std;
+void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long int totalSize) {
+  cout << "\r                                                                            ";
+  cout << "\rProgress " <<
+    Util::llitos(currentSize, true) << " Bytes/" <<
+    Util::llitos(totalSize, true) << " Bytes " <<
+    (totalSize == 0 ? 0 : (currentSize*100)/totalSize) << "% " <<
+    speed/1000.0 << "KB/s " <<
+    "(" << commands.size() << " connections)" << flush;
+}

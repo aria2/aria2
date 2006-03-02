@@ -929,3 +929,11 @@ AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
+m4_include([m4/gettext.m4])
+m4_include([m4/iconv.m4])
+m4_include([m4/lib-ld.m4])
+m4_include([m4/lib-link.m4])
+m4_include([m4/lib-prefix.m4])
+m4_include([m4/nls.m4])
+m4_include([m4/po.m4])
+m4_include([m4/progtest.m4])
