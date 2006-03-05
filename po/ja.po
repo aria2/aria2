@@ -1,14 +1,14 @@
 # Japanese translations for aria2c package
 # aria2c パッケージに対する英訳.
-# Copyright (C) 2006 Free Software Foundation, Inc.
-# Tatsuhiro Tsujikawa <tujikawa@rednoah.com>, 2006.
+# Copyright (C) 2006 Tatsuhiro Tsujikawa
+# Tatsuhiro Tsujikawa <tujikawa at rednoah dot com>, 2006.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-03-02 19:29+0900\n"
-"PO-Revision-Date: 2006-03-02 19:29+0900\n"
+"POT-Creation-Date: 2006-03-05 15:17+0900\n"
+"PO-Revision-Date: 2006-03-05 15:21+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,17 +19,17 @@ msgstr ""
 #: src/message.h:27
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr ""
+msgstr "CUID#%d - 1 セグメントのダウンロードが完了."
 
 #: src/message.h:28
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr ""
+msgstr "CUID#%d - 利用可能なセグメントはありません."
 
 #: src/message.h:29
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr ""
+msgstr "CUID#%d - %s:%d に接続しています."
 
 #: src/message.h:30
 #, c-format
@@ -37,11 +37,13 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
+"CUID#%d - セグメントが変更されています. 新たな Range ヘッダーで再リクエストを"
+"発行します."
 
 #: src/message.h:31
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr ""
+msgstr "CUID#%d - %s にリダイレクトします."
 
 #: src/message.h:32
 #, c-format
@@ -49,6 +51,8 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
+"CUID#%d - リクエスト:\n"
+"%s"
 
 #: src/message.h:33
 #, c-format
@@ -56,119 +60,506 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
+"CUID#%d - サーバーからのレスポンス:\n"
+"%s"
 
 #: src/message.h:34
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr ""
+msgstr "CUID#%d - ダウンロードを中止します."
 
 #: src/message.h:35
 #, c-format
 msgid "CUID#%d - Restarting the download."
-msgstr ""
+msgstr "CUID#%d - ダウンロードシーケンスを再開します."
 
 #: src/message.h:36
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 msgstr ""
+"CUID#%d - %d 回ダウンロードを行いましたがすべて失敗しました. ダウンロードを中"
+"止します."
 
 #: src/message.h:37
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr ""
+msgstr "CUID#%d - cuid をセグメントマネジャーから削除します."
 
 #: src/message.h:39
 #, c-format
 msgid "The segment file %s exists."
-msgstr ""
+msgstr "セグメントファイル %s が存在します."
 
 #: src/message.h:40
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr ""
+msgstr "セグメントファイル %s が存在しません."
 
 #: src/message.h:41
 #, c-format
 msgid "Saving the segment file %s"
-msgstr ""
+msgstr "セグメントファイル %s を保存しています."
 
 #: src/message.h:42
 msgid "The segment file was saved successfully."
-msgstr ""
+msgstr "セグメントファイルの保存が完了しました."
 
 #: src/message.h:43
 #, c-format
 msgid "Loading the segment file %s."
-msgstr ""
+msgstr "セグメントファイル %s をロードしています."
 
 #: src/message.h:44
 msgid "The segment file was loaded successfully."
-msgstr ""
+msgstr "セグメントファイルのロードが完了しました."
 
 #: src/message.h:46
 msgid "Timeout."
-msgstr ""
+msgstr "タイムアウトしました."
 
 #: src/message.h:47
 msgid "Invalid chunk size."
-msgstr ""
+msgstr "chunk サイズが不正です."
 
 #: src/message.h:48
 #, c-format
 msgid "Too large chunk. size = %d"
-msgstr ""
+msgstr "chunk サイズ (%d) が大きすぎます."
 
 #: src/message.h:49
 msgid "Invalid header."
-msgstr ""
+msgstr "ヘッダーが不正です."
 
 #: src/message.h:50
 msgid "Invalid response."
-msgstr ""
+msgstr "サーバーから不正なレスポンスを受け取りました."
 
 #: src/message.h:51
 msgid "No header found."
-msgstr ""
+msgstr "ヘッダーが見つかりません."
 
 #: src/message.h:52
 msgid "No status header."
-msgstr ""
+msgstr "status ヘッダーが見つかりません."
 
 #: src/message.h:53
 msgid "Proxy connection failed."
-msgstr ""
+msgstr "Proxy 接続に失敗しました."
 
 #: src/message.h:54
 msgid "Connection failed."
-msgstr ""
+msgstr "接続に失敗しました."
 
 #: src/message.h:55
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. %s != "
 "%s"
-msgstr ""
+msgstr "リクエストしたファイル名 (%s) と登録済みファイル名 (%s) が異なります."
 
 #: src/message.h:56
 #, c-format
 msgid "The response status is not successful. status = %d"
-msgstr ""
+msgstr "レスポンスのステータス (%d) が異常です."
 
 #: src/message.h:57
 #, c-format
 msgid "Too large file size. size = %lld"
-msgstr ""
+msgstr "ファイルサイズ (%lld) が大きすぎます."
 
 #: src/message.h:58
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr ""
+msgstr "トランスファー・エンコーディング %s はサポートされていません."
 
 #: src/message.h:59
 msgid "SSL initialization failed."
-msgstr ""
+msgstr "SSL 初期化に失敗しました."
 
 #: src/message.h:60
 #, c-format
 msgid "Size mismatch %lld != %lld"
+msgstr "サイズが合いません (%lld != %lld)"
+
+#: src/message.h:61
+msgid "Got EOF from the server."
+msgstr "サーバーから EOF を受けとりました."
+
+#: src/main.cc:57
+msgid ""
+"\n"
+"SIGINT signal received."
 msgstr ""
+"\n"
+"SIGINT シグナルを受け取りました."
+
+#: src/main.cc:72
+#, c-format
+msgid "Unrecognized URL or unsupported protocol: %s\n"
+msgstr ""
+"%s は, 理解できない URL フォーマット, または, サポートされないプロトコルで"
+"す.\n"
+
+#: src/main.cc:78
+msgid " version "
+msgstr " バージョン "
+
+#: src/main.cc:82
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program; if not, write to the Free Software\n"
+"Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
+msgstr ""
+"このプログラムはフリーソフトウェアです。あなたはこれを、フリーソフトウェ\n"
+"ア財団によって発行された GNU 一般公衆利用許諾契約書(バージョン2か、希\n"
+"望によってはそれ以降のバージョンのうちどれか)の定める条件の下で再頒布\n"
+"または改変することができます。\n"
+"\n"
+"このプログラムは有用であることを願って頒布されますが、*全くの無保証* \n"
+"です。商業可能性の保証や特定の目的への適合性は、言外に示されたものも含\n"
+"め全く存在しません。詳しくはGNU 一般公衆利用許諾契約書をご覧ください。\n"
+"\n"
+"あなたはこのプログラムと共に、GNU 一般公衆利用許諾契約書の複製物を一部\n"
+"受け取ったはずです。もし受け取っていなければ、フリーソフトウェア財団ま\n"
+"で請求してください(宛先は the Free Software Foundation, Inc., 59\n"
+"Temple Place, Suite 330, Boston, MA 02111-1307 USA)。\n"
+"(訳: http://www.opensource.jp/gpl/gpl.ja.html.euc-jp)\n"
+
+#: src/main.cc:96
+#, c-format
+msgid "Contact Info: %s\n"
+msgstr "連絡先: %s\n"
+
+#: src/main.cc:102
+#, c-format
+msgid "Usage: %s [options] URL ...\n"
+msgstr "使い方: %s [オプション] URL ...\n"
+
+#: src/main.cc:104
+msgid "Options:"
+msgstr "オプション:"
+
+#: src/main.cc:105
+msgid " -d, --dir=DIR                The directory to store downloaded file."
+msgstr ""
+" -d, --dir=DIR                ダウンロードしたファイルを保存するディレクトリ."
+
+#: src/main.cc:106
+msgid " -o, --out=FILE               The file name for downloaded file."
+msgstr ""
+" -o, --out=FILE               ダウンロードしたファイルの保存先ファイル名."
+
+#: src/main.cc:107
+msgid ""
+" -l, --log=LOG                The file path to store log. If '-' is "
+"specified,\n"
+"                              log is written to stdout."
+msgstr ""
+" -l, --log=LOG                ログを保存するパス. '-' を指定した場合, 標準出"
+"力\n"
+"                              に出力します."
+
+#: src/main.cc:109
+msgid " -D, --daemon                 Run as daemon."
+msgstr " -D, --daemon                 デーモンとして起動します."
+
+#: src/main.cc:110
+msgid ""
+" -s, --split=N                Download a file using N connections. N must "
+"be\n"
+"                              between 1 and 5. This option affects all "
+"URLs.\n"
+"                              Thus, aria2 connects to each URL with\n"
+"                              N connections."
+msgstr ""
+" -s, --split=N                N 個のコネクションを使ってファイルをダウンロー"
+"ド\n"
+"                              します. N は 1 から 5 の数字を指定してくださ"
+"い.\n"
+"                              このオプションはすべての URL 引数に影響しま"
+"す.\n"
+"                              つまり, それぞれの URL に対して N 個のコネク"
+"ショ\n"
+"                              ンを確立します."
+
+#: src/main.cc:114
+msgid ""
+" --retry-wait=SEC             Set amount of time in second between requests\n"
+"                              for errors. Specify a value between 0 and 60.\n"
+"                              Default: 5"
+msgstr ""
+" --retry-wait=SEC             エラーによる再試行時の待ち時間を秒単位で指定し"
+"ま\n"
+"                              す. 0 - 60 の値を指定してください.\n"
+"                              デフォルト値: 5"
+
+#: src/main.cc:117
+msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
+msgstr ""
+" -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します.\n"
+"                              デフォルト値: 60"
+
+#: src/main.cc:118
+msgid ""
+" -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
+"                              Default: 5"
+msgstr ""
+" -m, --max-tries=N            試行回数を指定します. 0 を指定すると何度でも試"
+"行\n"
+"                              します. デフォルト値: 5"
+
+#: src/main.cc:120
+msgid ""
+" --min-segment-size=SIZE[K|M] Set minimum segment size. You can append\n"
+"                              K or M(1K = 1024, 1M = 1024K). This\n"
+"                              value must be greater than or equal to\n"
+"                              1024."
+msgstr ""
+" --min-segment-size=SIZE[K|M] 最小のセグメント・サイズを指定します. K または "
+"M\n"
+"                              を付加することができます (1k = 1024, 1M = "
+"1024K).\n"
+"                              1024 以上の値を指定してください."
+
+#: src/main.cc:124
+msgid ""
+" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
+"                              URLs."
+msgstr ""
+" --http-proxy=HOST:PORT       HTTP プロキシ・サーバーを指定します. このオプ"
+"シ\n"
+"                              ョンはすべての URL に影響します."
+
+#: src/main.cc:126
+msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
+msgstr ""
+" --http-user=USER             HTTP での認証ユーザーを指定します. このオプショ"
+"ン\n"
+"                              はすべての URL に影響します."
+
+#: src/main.cc:127
+msgid ""
+" --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
+msgstr ""
+" --http-passwd=PASSWD         HTTP での認証パスワードを指定します. このオプ"
+"ショ\n"
+"                              ンはすべての URL に影響します."
+
+#: src/main.cc:128
+msgid ""
+" --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
+msgstr ""
+" --http-proxy-user=USER       HTTP プロキシ・サーバーでの認証で使うユーザーを"
+"指\n"
+"                              定します. このオプションはすべての URL に影響し"
+"ま\n"
+"                              す."
+
+#: src/main.cc:129
+msgid ""
+" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
+"URLs."
+msgstr ""
+" --http-proxy-passwd=PASSWD   HTTP プロキシ・サーバーでの認証で使うパスワード"
+"を\n"
+"                              指定します. このオプションはすべての URL に影響"
+"し\n"
+"                              ます."
+
+#: src/main.cc:130
+msgid ""
+" --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
+"                              METHOD is either 'get' or 'tunnel'.\n"
+"                              Default: tunnel"
+msgstr ""
+" --http-proxy-method=METHOD   HTTP プロキシ・リクエストで使うメソッドを指定し"
+"ま\n"
+"                              す. 'get' または 'tunnel' を指定してください.\n"
+"                              デフォルト値: tunnel"
+
+#: src/main.cc:133
+msgid ""
+" --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
+"basic\n"
+"                              is the only supported scheme. You MUST "
+"specify\n"
+"                              this option in order to use HTTP "
+"authentication\n"
+"                              as well as --http-user and --http-passwd."
+msgstr ""
+" --http-auth-scheme=SCHEME    HTTP での認証方法を指定します. 現在サポートされ"
+"て\n"
+"                              いるのは basic です. HTTP 認証を使うには, この"
+"オ\n"
+"                              プションおよび, --http-user, --http-passwd を指"
+"定\n"
+"                              する必要があります."
+
+#: src/main.cc:137
+msgid " --referer=REFERER            Set Referer. This affects to all URLs."
+msgstr ""
+" --referer=REFERER            リファラーを指定します. このオプションはすべて"
+"の\n"
+"                               URL に影響します."
+
+#: src/main.cc:138
+msgid ""
+" --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
+"                              Default: anonymous"
+msgstr ""
+" --ftp-user=USER              FTP での認証ユーザーを指定します. このオプショ"
+"ン\n"
+"                              はすべての URL に影響します.\n"
+"                              デフォルト値: anonymous"
+
+#: src/main.cc:140
+msgid ""
+" --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
+"                              Default: ARIA2USER@"
+msgstr ""
+" --ftp-passwd=PASSWD          FTP での認証パスワードを指定します. このオプ"
+"ショ\n"
+"                              ンはすべての URL に影響します.\n"
+"                              デフォルト値: ARIA2USER@"
+
+#: src/main.cc:142
+msgid ""
+" --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
+"'binary'\n"
+"                              or 'ascii'.\n"
+"                              Default: binary"
+msgstr ""
+" --ftp-type=TYPE              FTP 転送モードを指定します. 'binary' または\n"
+"                              'ascii' を指定してください. デフォルト値: "
+"binary"
+
+#: src/main.cc:145
+msgid " -p, --ftp-pasv               Use passive mode in FTP."
+msgstr " -p, --ftp-pasv               FTP で passive モードを使用します."
+
+#: src/main.cc:146
+msgid ""
+" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
+"or\n"
+"                              'tunnel'.\n"
+"                              Default: tunnel"
+msgstr ""
+" --ftp-via-http-proxy=METHOD  FTP で HTTP プロキシ・サーバーを使用する際の方"
+"法\n"
+"                              を指定します. 'get' または 'tunnel' を指定して"
+"く\n"
+"                              ださい. デフォルト値: tunnel"
+
+#: src/main.cc:149
+msgid " -v, --version                Print the version number and exit."
+msgstr " -v, --version                バージョン番号を表示し, 終了します."
+
+#: src/main.cc:150
+msgid " -h, --help                   Print this message and exit."
+msgstr ""
+" -h, --help                   このヘルプメッセージを表示し, 終了します."
+
+#: src/main.cc:153
+msgid ""
+" You can specify multiple URLs. All URLs must point to the same file\n"
+" or downloading fails."
+msgstr ""
+" 複数の URL を指定できます. ただし, すべての URL が同じファイルを指していなけ"
+"れ\n"
+" ばなりません. さもなくばダウンロードは失敗します."
+
+#: src/main.cc:156
+msgid "Examples:"
+msgstr "例:"
+
+#: src/main.cc:157
+msgid " Download a file by 1 connection:"
+msgstr " 1 コネクションでのダウンロード:"
+
+#: src/main.cc:159
+msgid " Download a file by 2 connections:"
+msgstr " 2 コネクションでのダウンロード:"
+
+#: src/main.cc:161
+msgid " Download a file by 2 connections, each connects to a different server:"
+msgstr " 二つの異なるサーバーに接続してダウンロード:"
+
+#: src/main.cc:163
+msgid " You can mix up different protocols:"
+msgstr " 異なるプロトコルを混合させてダウンロード:"
+
+#: src/main.cc:166
+#, c-format
+msgid "Reports bugs to %s"
+msgstr "バグレポートはこちらへ: %s"
+
+#: src/main.cc:240
+msgid "unrecognized proxy format"
+msgstr "理解できないProxyフォーマットです."
+
+#: src/main.cc:266
+msgid "Currently, supported authentication scheme is basic."
+msgstr "現在サポートされている認証方法は basic です."
+
+#: src/main.cc:275
+msgid "retry-wait must be between 0 and 60."
+msgstr "retry-wait は 0 から 60 の間で指定してください."
+
+#: src/main.cc:292
+msgid "ftp-type must be either 'binary' or 'ascii'."
+msgstr "ftp-type は 'binary' または 'ascii' を指定してください."
+
+#: src/main.cc:301
+msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
+msgstr "ftp-via-http-proxy は 'get' または 'tunnel' を指定してください."
+
+#: src/main.cc:319
+msgid "min-segment-size invalid"
+msgstr "min-segment-size が不正です."
+
+#: src/main.cc:330
+msgid "http-proxy-method must be either 'get' or 'tunnel'."
+msgstr "http-proxy-method は 'get' または 'tunnel' を指定してください."
+
+#: src/main.cc:357
+msgid "split must be between 1 and 5."
+msgstr "split は 1 - 5 の値を指定してください."
+
+#: src/main.cc:367
+msgid "timeout must be between 1 and 600"
+msgstr "timeout は 1 - 600 の値を指定してください."
+
+#: src/main.cc:376
+msgid "max-tries invalid"
+msgstr "max-tries が不正です."
+
+#: src/main.cc:398
+msgid "specify at least one URL"
+msgstr "一個以上の URL を指定してください."
+
+#: src/main.cc:449
+#, c-format
+msgid ""
+"\n"
+"The download was complete. <%s>\n"
+msgstr ""
+"\n"
+"<%s> のダウンロードが完了しました.\n"
+
+#: src/main.cc:451
+msgid ""
+"\n"
+"The download was not complete because of errors. Check the log.\n"
+msgstr ""
+"\n"
+"ダウンロードはエラーのため完了していません. ログを確認してください.\n"

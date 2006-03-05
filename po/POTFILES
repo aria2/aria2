@@ -1,1 +1,2 @@
-     ../src/message.h
+     ../src/message.h \
+     ../src/main.cc

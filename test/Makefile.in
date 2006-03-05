@@ -162,6 +162,7 @@ infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
@@ -182,7 +183,7 @@ aria2c_SOURCES = AllTest.cc\
 	UtilTest.cc\
 	CookieBoxTest.cc
 
-aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -Wall -D_FILE_OFFSET_BITS=64
+aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 aria2c_LDADD = ../src/libaria2c.a
 all: all-am

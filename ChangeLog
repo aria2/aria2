@@ -1,3 +1,24 @@
+2006-03-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* main.cc: correct help message for --http-auth-scheme.
+	* main.cc: changed e-mail address for bug reports.
+	* ja.po: added japanese translation.
+
+2006-03-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* SimpleLogger.cc: flush log file instead of stdout.
+
+2006-03-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* main.cc: Fixed command-line option: max-tries
+	* HttpResponseCommand.cc: Make the request re-sent only if req->seg.sp
+	does not equal to seg.sp.
+	* DownloadCommand.cc: If EOF is got from the server and the total size
+	of file is not zero, then throw DlRetryEx.
+	* main.cc: Set the minium value of min-segment-size to 1024.
+	* HttpResponseCommand.cc: Fixed the bug that http segmented downloading
+	fails because of a regression since 0.2.0 release.
+	
 2006-03-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* HttpConnection.cc:

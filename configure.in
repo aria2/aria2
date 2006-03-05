@@ -11,6 +11,10 @@ AC_PROG_RANLIB
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.12.1)
 
+# Set localedir
+localedir=${datadir}/locale
+AC_SUBST(localedir)
+
 # Checks for arguments.
 AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is installed. Default: yes], [enable_ssl=$enableval], [enable_ssl=yes])
 

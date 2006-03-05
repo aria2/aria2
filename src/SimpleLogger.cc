@@ -23,6 +23,7 @@
 #include "Util.h"
 #include <time.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 SimpleLogger::SimpleLogger(string filename) {
   file = fopen(filename.c_str(), "a");
@@ -60,7 +61,7 @@ void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e
   if(e != NULL) {
     fprintf(file, string(string(datestr)+" - "+levelStr+" - exception: "+Util::replace(e->getMsg(), "\r", "")+"\n").c_str());
   }
-  fflush(stdout);
+  fflush(file);
 }
 
 void SimpleLogger::debug(const char* msg, ...) const {

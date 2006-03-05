@@ -49,7 +49,8 @@ $(POFILES) $(GMOFILES) \
 $(DISTFILES.extra1) $(DISTFILES.extra2) $(DISTFILES.extra3)
 
 POTFILES = \
-     ../src/message.h
+     ../src/message.h \
+     ../src/main.cc
 
 CATALOGS =  ja.gmo
 

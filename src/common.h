@@ -19,14 +19,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
+#ifndef _D_COMMON_H_
+#define _D_COMMON_H_
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 #include <iostream>
 #include <assert.h>
 #include <limits.h>
-#include <gettext.h>
-#define _(String) gettext (String)
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
+#if ENABLE_NLS
+#  include <gettext.h>
+#  define _(String) gettext (String)
+#else
+#  define _(String) (String)
 #endif
 
 #ifndef LONG_LONG_MAX
@@ -37,3 +42,5 @@
 #define USER_AGENT "aria2"
 
 using namespace std;
+
+#endif // _D_COMMON_H_

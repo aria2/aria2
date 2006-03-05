@@ -143,6 +143,7 @@ infodir = ${prefix}/info
 install_sh = /home/tujikawa/aria2/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
+localedir = ${prefix}/share/locale
 localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 mkdir_p = mkdir -p --

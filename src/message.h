@@ -58,5 +58,6 @@
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED _("Transfer encoding %s is not supported.")
 #define EX_SSL_INIT_FAILURE _("SSL initialization failed.")
 #define EX_SIZE_MISMATCH _("Size mismatch %lld != %lld")
+#define EX_GOT_EOF _("Got EOF from the server.")
 
 #endif // _D_MESSAGE_H_

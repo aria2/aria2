@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-03-02 19:29+0900\n"
+"POT-Creation-Date: 2006-03-05 15:17+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,4 +171,284 @@ msgstr ""
 #: src/message.h:60
 #, c-format
 msgid "Size mismatch %lld != %lld"
+msgstr ""
+
+#: src/message.h:61
+msgid "Got EOF from the server."
+msgstr ""
+
+#: src/main.cc:57
+msgid ""
+"\n"
+"SIGINT signal received."
+msgstr ""
+
+#: src/main.cc:72
+#, c-format
+msgid "Unrecognized URL or unsupported protocol: %s\n"
+msgstr ""
+
+#: src/main.cc:78
+msgid " version "
+msgstr ""
+
+#: src/main.cc:82
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program; if not, write to the Free Software\n"
+"Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
+msgstr ""
+
+#: src/main.cc:96
+#, c-format
+msgid "Contact Info: %s\n"
+msgstr ""
+
+#: src/main.cc:102
+#, c-format
+msgid "Usage: %s [options] URL ...\n"
+msgstr ""
+
+#: src/main.cc:104
+msgid "Options:"
+msgstr ""
+
+#: src/main.cc:105
+msgid " -d, --dir=DIR                The directory to store downloaded file."
+msgstr ""
+
+#: src/main.cc:106
+msgid " -o, --out=FILE               The file name for downloaded file."
+msgstr ""
+
+#: src/main.cc:107
+msgid ""
+" -l, --log=LOG                The file path to store log. If '-' is "
+"specified,\n"
+"                              log is written to stdout."
+msgstr ""
+
+#: src/main.cc:109
+msgid " -D, --daemon                 Run as daemon."
+msgstr ""
+
+#: src/main.cc:110
+msgid ""
+" -s, --split=N                Download a file using N connections. N must "
+"be\n"
+"                              between 1 and 5. This option affects all "
+"URLs.\n"
+"                              Thus, aria2 connects to each URL with\n"
+"                              N connections."
+msgstr ""
+
+#: src/main.cc:114
+msgid ""
+" --retry-wait=SEC             Set amount of time in second between requests\n"
+"                              for errors. Specify a value between 0 and 60.\n"
+"                              Default: 5"
+msgstr ""
+
+#: src/main.cc:117
+msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
+msgstr ""
+
+#: src/main.cc:118
+msgid ""
+" -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
+"                              Default: 5"
+msgstr ""
+
+#: src/main.cc:120
+msgid ""
+" --min-segment-size=SIZE[K|M] Set minimum segment size. You can append\n"
+"                              K or M(1K = 1024, 1M = 1024K). This\n"
+"                              value must be greater than or equal to\n"
+"                              1024."
+msgstr ""
+
+#: src/main.cc:124
+msgid ""
+" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
+"                              URLs."
+msgstr ""
+
+#: src/main.cc:126
+msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
+msgstr ""
+
+#: src/main.cc:127
+msgid ""
+" --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
+msgstr ""
+
+#: src/main.cc:128
+msgid ""
+" --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
+msgstr ""
+
+#: src/main.cc:129
+msgid ""
+" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
+"URLs."
+msgstr ""
+
+#: src/main.cc:130
+msgid ""
+" --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
+"                              METHOD is either 'get' or 'tunnel'.\n"
+"                              Default: tunnel"
+msgstr ""
+
+#: src/main.cc:133
+msgid ""
+" --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
+"basic\n"
+"                              is the only supported scheme. You MUST "
+"specify\n"
+"                              this option in order to use HTTP "
+"authentication\n"
+"                              as well as --http-user and --http-passwd."
+msgstr ""
+
+#: src/main.cc:137
+msgid " --referer=REFERER            Set Referer. This affects to all URLs."
+msgstr ""
+
+#: src/main.cc:138
+msgid ""
+" --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
+"                              Default: anonymous"
+msgstr ""
+
+#: src/main.cc:140
+msgid ""
+" --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
+"                              Default: ARIA2USER@"
+msgstr ""
+
+#: src/main.cc:142
+msgid ""
+" --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
+"'binary'\n"
+"                              or 'ascii'.\n"
+"                              Default: binary"
+msgstr ""
+
+#: src/main.cc:145
+msgid " -p, --ftp-pasv               Use passive mode in FTP."
+msgstr ""
+
+#: src/main.cc:146
+msgid ""
+" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
+"or\n"
+"                              'tunnel'.\n"
+"                              Default: tunnel"
+msgstr ""
+
+#: src/main.cc:149
+msgid " -v, --version                Print the version number and exit."
+msgstr ""
+
+#: src/main.cc:150
+msgid " -h, --help                   Print this message and exit."
+msgstr ""
+
+#: src/main.cc:153
+msgid ""
+" You can specify multiple URLs. All URLs must point to the same file\n"
+" or downloading fails."
+msgstr ""
+
+#: src/main.cc:156
+msgid "Examples:"
+msgstr ""
+
+#: src/main.cc:157
+msgid " Download a file by 1 connection:"
+msgstr ""
+
+#: src/main.cc:159
+msgid " Download a file by 2 connections:"
+msgstr ""
+
+#: src/main.cc:161
+msgid " Download a file by 2 connections, each connects to a different server:"
+msgstr ""
+
+#: src/main.cc:163
+msgid " You can mix up different protocols:"
+msgstr ""
+
+#: src/main.cc:166
+#, c-format
+msgid "Reports bugs to %s"
+msgstr ""
+
+#: src/main.cc:240
+msgid "unrecognized proxy format"
+msgstr ""
+
+#: src/main.cc:266
+msgid "Currently, supported authentication scheme is basic."
+msgstr ""
+
+#: src/main.cc:275
+msgid "retry-wait must be between 0 and 60."
+msgstr ""
+
+#: src/main.cc:292
+msgid "ftp-type must be either 'binary' or 'ascii'."
+msgstr ""
+
+#: src/main.cc:301
+msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
+msgstr ""
+
+#: src/main.cc:319
+msgid "min-segment-size invalid"
+msgstr ""
+
+#: src/main.cc:330
+msgid "http-proxy-method must be either 'get' or 'tunnel'."
+msgstr ""
+
+#: src/main.cc:357
+msgid "split must be between 1 and 5."
+msgstr ""
+
+#: src/main.cc:367
+msgid "timeout must be between 1 and 600"
+msgstr ""
+
+#: src/main.cc:376
+msgid "max-tries invalid"
+msgstr ""
+
+#: src/main.cc:398
+msgid "specify at least one URL"
+msgstr ""
+
+#: src/main.cc:449
+#, c-format
+msgid ""
+"\n"
+"The download was complete. <%s>\n"
+msgstr ""
+
+#: src/main.cc:451
+msgid ""
+"\n"
+"The download was not complete because of errors. Check the log.\n"
 msgstr ""

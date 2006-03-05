@@ -67,10 +67,12 @@ bool DownloadCommand::executeInternal(Segment seg) {
       lastSize = seg.ds;
     }
   }
-  
+  if(e->segmentMan->totalSize != 0 && bufSize == 0) {
+    throw new DlRetryEx(EX_GOT_EOF);
+  }
   if(te != NULL && te->finished()
      || te == NULL && seg.ds >= seg.ep-seg.sp+1
-     || e->segmentMan->totalSize == 0 && bufSize == 0) {
+     || bufSize == 0) {
     if(te != NULL) te->end();
     e->logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
     seg.ds = seg.ep-seg.sp+1;
