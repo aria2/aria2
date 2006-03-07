@@ -48,7 +48,9 @@ SRCS =  Socket.cc Socket.h\
 	CookieBox.cc CookieBox.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
-aria2c_LDADD = libaria2c.a
-FLAGS =  -I../lib -Wall -D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\"
+aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@
+FLAGS =  -Wall
+INCLUDES = -I../lib -I../intl -I$(top_srcdir)/intl
+DEFS = -D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
 libaria2c_a_CXXFLAGS = $(FLAGS)
 aria2c_CXXFLAGS = $(FLAGS)
