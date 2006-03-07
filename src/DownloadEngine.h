@@ -31,6 +31,7 @@
 #include "Logger.h"
 #include "DiskWriter.h"
 #include "Option.h"
+#include <sys/time.h>
 
 using namespace std;
 

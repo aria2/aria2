@@ -1,5 +1,7 @@
-2006-03-07  gettextize  <bug-gnu-gettext@gnu.org>
+2006-03-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* DownloadEngine.h: included sys/time.h
+	* DownloadEngine.cc: remove sys/time.h
 	* Makefile.am (SUBDIRS): Add intl.
 	* configure.in (AC_CONFIG_FILES): Add intl/Makefile.
 
