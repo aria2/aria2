@@ -122,7 +122,7 @@ bool Util::endsWith(string target, string part) {
   if(part == "") {
     return true;
   }
-  if(target.find(part) == target.size()-part.size()) {
+  if(target.rfind(part) == target.size()-part.size()) {
     return true;
   } else {
     return false;

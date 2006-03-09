@@ -37,7 +37,7 @@ HttpResponseCommand::~HttpResponseCommand() {
 }
 
 bool HttpResponseCommand::executeInternal(Segment seg) {
-  if(SEGMENT_EQUAL(req->seg, seg) == false) {
+  if(req->seg.sp != seg.sp) {
     e->logger->info(MSG_SEGMENT_CHANGED, cuid);
     return prepareForRetry(0);
   }
@@ -104,6 +104,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     return prepareForRetry(0);
   } else {
     e->segmentMan->totalSize = size;
+    Segment seg;
+    e->segmentMan->getSegment(seg, cuid);	
     e->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
     createHttpDownloadCommand();
     return true;
