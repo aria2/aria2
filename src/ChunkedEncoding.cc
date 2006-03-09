@@ -31,7 +31,7 @@
 ChunkedEncoding::ChunkedEncoding() {
   strbufSize = 4096;
   strbuf = new char[strbufSize];
-  strbuf[0] = '\0';
+  strbufTail = strbuf;
   state = READ_SIZE;
   chunkSize = 0;
 }
@@ -76,21 +76,21 @@ void ChunkedEncoding::inflate(char* outbuf, int& outlen, const char* inbuf, int 
     } else {
       break;
     }
-    // Was all bytes in strbuf examined?
-    if(strbuf+strlen(strbuf) <= p) {
+    // all bytes in strbuf were examined?
+    if(strbufTail <= p) {
       break;
     }
   }
-  if(strbuf+strlen(strbuf) <= p) {
-    // make strbuf NULL-string 
-    strbuf[0] = '\0';
+  if(strbufTail <= p) {
+    strbufTail = strbuf;
   } else {
-    // copy string between [p, strbuf+strlen(strbuf)+1], +1 is for NULL
-    // character.
+    // copy string between [p, strbufTail]
+    int unreadSize = strbufTail-p;
     char* temp = new char[strbufSize];
-    memcpy(temp, p, strbuf+strlen(strbuf)-p+1);
+    memcpy(temp, p, unreadSize);
     delete [] strbuf;
     strbuf = temp;
+    strbufTail = strbuf+unreadSize;
   }
   outlen = clen;
 }
@@ -103,8 +103,8 @@ int ChunkedEncoding::readData(char** pp, char* buf, int& len, int maxlen) {
     return readDataEOL(pp);
   }
   int wsize;
-  if(strlen(*pp) < (unsigned long int)chunkSize) {
-    wsize = strlen(*pp) <= (unsigned int)maxlen-len ? strlen(*pp) : maxlen-len;
+  if(strbufTail-*pp < chunkSize) {
+    wsize = strbufTail-*pp <= maxlen-len ? strbufTail-*pp : maxlen-len;
   } else {
     wsize = chunkSize <= maxlen-len ? chunkSize : maxlen-len;
   }
@@ -112,7 +112,6 @@ int ChunkedEncoding::readData(char** pp, char* buf, int& len, int maxlen) {
   chunkSize -= wsize;
   len += wsize;
   *pp += wsize;
-
   if(chunkSize == 0) {
     return readDataEOL(pp);
   } else {
@@ -121,54 +120,62 @@ int ChunkedEncoding::readData(char** pp, char* buf, int& len, int maxlen) {
 }
 
 int ChunkedEncoding::readDataEOL(char** pp) {
-  if(strstr(*pp, "\r\n") == *pp) {
+  char* np = (char*)memchr(*pp, '\n', strbufTail-*pp);
+  char* rp = (char*)memchr(*pp, '\r', strbufTail-*pp);
+  if(np != NULL && rp != NULL && np-rp == 1 && *pp == rp) {
     *pp += 2;
     return 0;
-  } else if(strlen(*pp) < 2) {
+  } else if(strbufTail-*pp < 2) {
     return -1;
   } else {
     throw new DlAbortEx(EX_INVALID_CHUNK_SIZE);
   }  
 }
 
-// strbuf is NULL terminated string, and inlen is strlen(strbuf).
-// therefore, strbuf[inlen] = '\0'
 int ChunkedEncoding::readChunkSize(char** pp) {
   // we read chunk-size from *pp
-  char* p = strstr(*pp, "\r\n");
-  // \r\n is not found. Return -1
-  if(p == NULL) {
+  char* p;
+  char* np = (char*)memchr(*pp, '\n', strbufTail-*pp);
+  char* rp = (char*)memchr(*pp, '\r', strbufTail-*pp);
+  if(np == NULL || rp == NULL ||  np-rp != 1) {
+    // \r\n is not found. Return -1
     return -1;
   }
+  p = rp;
+
   // We ignore chunk-extension
-  char* exsp = index(*pp, ';');
+  char* exsp = (char*)memchr(*pp, ';', strbufTail-*pp);
   if(exsp == NULL) {
     exsp = p;
   }
   // TODO check invalid characters in buffer
-  chunkSize = strtol(*pp, NULL, 16);
+  char* temp = new char[exsp-*pp+1];
+  memcpy(temp, *pp, exsp-*pp);
+  temp[exsp-*pp] = '\0';
+
+  chunkSize = strtol(temp, NULL, 16);
   if(chunkSize < 0) {
     throw new DlAbortEx(EX_INVALID_CHUNK_SIZE);
   } else if(errno == ERANGE && (chunkSize == LONG_MAX || chunkSize == LONG_MIN)) {
     throw new DlAbortEx(strerror(errno));
   }
   *pp = p+2;
-
   return 0;
 }
 
 void ChunkedEncoding::addBuffer(const char* inbuf, int inlen) {
-  if(strlen(strbuf)+inlen >= (unsigned int)strbufSize) {
-    if(strlen(strbuf)+inlen+1 > MAX_BUFSIZE) {
-      throw new DlAbortEx(EX_TOO_LARGE_CHUNK, strlen(strbuf)+inlen+1);
+  int realbufSize = strbufTail-strbuf;
+  if(realbufSize+inlen >= strbufSize) {
+    if(realbufSize+inlen > MAX_BUFSIZE) {
+      throw new DlAbortEx(EX_TOO_LARGE_CHUNK, realbufSize+inlen);
     }
-    strbufSize = strlen(strbuf)+inlen+1;
+    strbufSize = realbufSize+inlen;
     char* temp = new char[strbufSize];
-    memcpy(temp, strbuf, strlen(strbuf)+1);
+    memcpy(temp, strbuf, realbufSize);
     delete [] strbuf;
     strbuf = temp;
+    strbufTail = strbuf+realbufSize;
   }
-  int origlen = strlen(strbuf);
-  memcpy(strbuf+origlen, inbuf, inlen);
-  strbuf[origlen+inlen] = '\0';
+  memcpy(strbufTail, inbuf, inlen);
+  strbufTail += inlen;
 }

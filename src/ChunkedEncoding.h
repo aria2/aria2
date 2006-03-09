@@ -35,6 +35,7 @@ private:
   int state;
   char* strbuf;
   int strbufSize;
+  char* strbufTail;
 
   int readChunkSize(char** pp);
   int readData(char** pp, char* buf, int& len, int maxlen);
