@@ -2,14 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(aria2c, 0.2.1, tujikawa@rednoah.com)
+AC_INIT(aria2c, 0.3.0, tujikawa@rednoah.com)
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
 AC_CONFIG_HEADERS([config.h])
-AC_PROG_RANLIB
-AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.12.1)
 
 # Set localedir
 localedir=${datadir}/locale
@@ -21,6 +18,9 @@ AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is 
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+AC_PROG_YACC
 
 # Checks for libraries.
 if test "x$enable_ssl" = "xyes"; then
@@ -28,21 +28,36 @@ if test "x$enable_ssl" = "xyes"; then
 fi
 
 # Checks for header files.
+AC_FUNC_ALLOCA
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h string.h sys/socket.h sys/time.h unistd.h limits.h])
+AC_CHECK_HEADERS([argz.h arpa/inet.h fcntl.h inttypes.h langinfo.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/param.h sys/socket.h sys/time.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
+AC_C_INLINE
 AC_TYPE_SIZE_T
 AC_HEADER_TIME
+AC_STRUCT_TM
+AC_C_VOLATILE
 
 # Checks for library functions.
+AM_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION(0.12.1)
 AC_FUNC_ERROR_AT_LINE
+
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_FUNC_MMAP
+AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([getpagesize gettimeofday inet_ntoa memset mkdir rmdir select socket strcasecmp strerror strstr strtol])
-
-AC_CONFIG_FILES([Makefile src/Makefile test/Makefile po/Makefile.in m4/Makefile  intl/Makefile ])
+AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify getcwd getpagesize gettimeofday inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo rmdir select setlocale socket stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul])
+AC_CONFIG_FILES([Makefile
+		src/Makefile
+		test/Makefile
+		po/Makefile.in
+		m4/Makefile
+		intl/Makefile])
 AC_OUTPUT

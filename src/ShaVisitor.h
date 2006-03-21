@@ -27,11 +27,15 @@
 #include "Dictionary.h"
 #include "List.h"
 #include "common.h"
+#ifdef HAVE_LIBSSL
 #include <openssl/evp.h>
+#endif // HAVE_LIBSSL
 
 class ShaVisitor : public MetaEntryVisitor {
 private:
+#ifdef HAVE_LIBSSL
   EVP_MD_CTX ctx;
+#endif // HAVE_LIBSSL
 public:
   ShaVisitor();
   ~ShaVisitor();

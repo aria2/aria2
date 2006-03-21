@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-03-21 23:10+0900\n"
+"POT-Creation-Date: 2006-03-22 00:47+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -370,11 +370,11 @@ msgid ""
 "                              Default: tunnel"
 msgstr ""
 
-#: src/main.cc:181
+#: src/main.cc:182
 msgid " --torrent-file=TORRENT_FILE  The file path to .torrent file."
 msgstr ""
 
-#: src/main.cc:182
+#: src/main.cc:183
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -383,93 +383,97 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:186
+#: src/main.cc:188
 msgid " -v, --version                Print the version number and exit."
 msgstr ""
 
-#: src/main.cc:187
+#: src/main.cc:189
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 
-#: src/main.cc:190
+#: src/main.cc:192
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
 msgstr ""
 
-#: src/main.cc:193
+#: src/main.cc:195
 msgid "Examples:"
 msgstr ""
 
-#: src/main.cc:194
+#: src/main.cc:196
 msgid " Download a file by 1 connection:"
 msgstr ""
 
-#: src/main.cc:196
+#: src/main.cc:198
 msgid " Download a file by 2 connections:"
 msgstr ""
 
-#: src/main.cc:198
+#: src/main.cc:200
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr ""
 
-#: src/main.cc:200
+#: src/main.cc:202
 msgid " You can mix up different protocols:"
 msgstr ""
 
-#: src/main.cc:202
-msgid " Download a torrent"
+#: src/main.cc:205
+msgid " Download a torrent:"
 msgstr ""
 
-#: src/main.cc:205
+#: src/main.cc:207
+msgid " Download a torrent using local .torrent file:"
+msgstr ""
+
+#: src/main.cc:211
 #, c-format
 msgid "Reports bugs to %s"
 msgstr ""
 
-#: src/main.cc:284
+#: src/main.cc:296
 msgid "unrecognized proxy format"
 msgstr ""
 
-#: src/main.cc:310
+#: src/main.cc:322
 msgid "Currently, supported authentication scheme is basic."
 msgstr ""
 
-#: src/main.cc:319
+#: src/main.cc:331
 msgid "retry-wait must be between 0 and 60."
 msgstr ""
 
-#: src/main.cc:336
+#: src/main.cc:348
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr ""
 
-#: src/main.cc:345
+#: src/main.cc:357
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:363
+#: src/main.cc:375
 msgid "min-segment-size invalid"
 msgstr ""
 
-#: src/main.cc:374
+#: src/main.cc:386
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:388
+#: src/main.cc:400
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:414
+#: src/main.cc:426
 msgid "split must be between 1 and 5."
 msgstr ""
 
-#: src/main.cc:424
+#: src/main.cc:436
 msgid "timeout must be between 1 and 600"
 msgstr ""
 
-#: src/main.cc:433
+#: src/main.cc:445
 msgid "max-tries invalid"
 msgstr ""
 
-#: src/main.cc:456
+#: src/main.cc:468
 msgid "specify at least one URL"
 msgstr ""

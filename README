@@ -50,6 +50,8 @@ multi-file mode:
     The directory to store the top directory of downloaded files can be
     specified by -d option.
 
-Note: -o option is used to change the filename of downloaded .torrent file.
-
-This version only supports compact peers list format.
+Note:
+*  -o option is used to change the filename of downloaded .torrent file.
+* This version only supports compact peers list format.
+* The ports aria2c uses are 6881-6999.
+* The maxmum number of peers are 55.

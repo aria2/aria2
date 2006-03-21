@@ -178,11 +178,13 @@ void showUsage() {
   cout << _(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or\n"
 	    "                              'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
+#ifdef HAVE_LIBSSL
   cout << _(" --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
 	    "                              enter BitTorrent mode even if the filename of\n"
 	    "                              downloaded file ends with .torrent.\n"
 	    "                              Default: true") << endl;
+#endif // HAVE_LIBSSL
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
   cout << endl;
@@ -199,9 +201,13 @@ void showUsage() {
   cout << "  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip" << endl;
   cout << _(" You can mix up different protocols:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
-  cout << _(" Download a torrent") << endl;
+#ifdef HAVE_LIBSSL
+  cout << _(" Download a torrent:") << endl;
   cout << "  aria2c -o test.torret http://AAA.BBB.CCC/file.torrent" << endl;
+  cout << _(" Download a torrent using local .torrent file:") << endl;
+  cout << "  aria2c --torrent-file test.torrent" << endl;
   cout << endl;
+#endif // HAVE_LIBSSL
   printf(_("Reports bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
 }
@@ -221,7 +227,11 @@ int main(int argc, char* argv[]) {
   bool daemonMode = false;
   string referer;
   string torrentFile;
+#ifdef HAVE_LIBSSL
   bool followTorrent = true;
+#else
+  bool followTorrent = false;
+#endif // HAVE_LIBSSL
 
   int c;
   Option* op = new Option();
@@ -262,8 +272,10 @@ int main(int argc, char* argv[]) {
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { "min-segment-size", required_argument, &lopt, 13 },
       { "http-proxy-method", required_argument, &lopt, 14 },
+#ifdef HAVE_LIBSSL
       { "torrent-file", required_argument, &lopt, 15 },
       { "follow-torrent", required_argument, &lopt, 16 },
+#endif // HAVE_LIBSSL
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }

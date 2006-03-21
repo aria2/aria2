@@ -23,15 +23,20 @@
 #include "Util.h"
 
 ShaVisitor::ShaVisitor() {
+#ifdef HAVE_LIBSSL
   EVP_MD_CTX_init(&ctx);
   EVP_DigestInit_ex(&ctx, EVP_sha1(), NULL);
+#endif // HAVE_LIBSSL
 }
 
 ShaVisitor::~ShaVisitor() {
+#ifdef HAVE_LIBSSL
   EVP_MD_CTX_cleanup(&ctx);
+#endif // HAVE_LIBSSL
 }
 
 void ShaVisitor::visit(const Data* d) {
+#ifdef HAVE_LIBSSL
   if(d->isNumber()) {
     EVP_DigestUpdate(&ctx, "i", 1);
   } else {
@@ -43,9 +48,11 @@ void ShaVisitor::visit(const Data* d) {
   if(d->isNumber()) {
     EVP_DigestUpdate(&ctx, "e", 1);
   }
+#endif // HAVE_LIBSSL
 }
 
 void ShaVisitor::visit(const Dictionary* d) {
+#ifdef HAVE_LIBSSL
   EVP_DigestUpdate(&ctx, "d", 1);
   const vector<string>& v = d->getOrder();
   for(vector<string>::const_iterator itr = v.begin(); itr != v.end(); itr++) {
@@ -57,14 +64,17 @@ void ShaVisitor::visit(const Dictionary* d) {
     this->visit(e);
   }
   EVP_DigestUpdate(&ctx, "e", 1);
+#endif // HAVE_LIBSSL
 }
 
 void ShaVisitor::visit(const List* l) {
+#ifdef HAVE_LIBSSL
   EVP_DigestUpdate(&ctx, "l", 1);
   for(MetaList::const_iterator itr = l->getList().begin(); itr != l->getList().end(); itr++) {
     this->visit(*itr);
   }
   EVP_DigestUpdate(&ctx, "e", 1);
+#endif // HAVE_LIBSSL
 }
 
 void ShaVisitor::visit(const MetaEntry* e) {
@@ -78,5 +88,7 @@ void ShaVisitor::visit(const MetaEntry* e) {
 }
 
 void ShaVisitor::getHash(unsigned char* hashValue, int& len) {
+#ifdef HAVE_LIBSSL
   EVP_DigestFinal_ex(&ctx, hashValue, (unsigned int*)&len);
+#endif // HAVE_LIBSSL
 }

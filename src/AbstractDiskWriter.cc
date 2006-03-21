@@ -27,7 +27,9 @@
 #include <fcntl.h>
 #include "DlAbortEx.h"
 #include "File.h"
+#ifdef HAVE_LIBSSL
 #include <openssl/evp.h>
+#endif // HAVE_LIBSSL
 #include "Util.h"
 
 AbstractDiskWriter::AbstractDiskWriter():fd(0) {}
@@ -82,6 +84,7 @@ int AbstractDiskWriter::readDataInternal(char* data, int len) {
 }
 
 string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
+#ifdef HAVE_LIBSSL
   EVP_MD_CTX ctx;
   EVP_MD_CTX_init(&ctx);
   EVP_DigestInit_ex(&ctx, EVP_sha1(), NULL);
@@ -112,6 +115,9 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
     EVP_MD_CTX_cleanup(&ctx);
     throw new DlAbortEx(strerror(errno));
   }
+#else
+  return "";
+#endif // HASHVALUE
 }
 
 void AbstractDiskWriter::seek(long long int offset) {
