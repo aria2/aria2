@@ -56,6 +56,15 @@ public:
   static bool endsWith(string target, string part);
 
   static string replace(string target, string oldstr, string newstr);
+
+  static string urlencode(const unsigned char* target, int len);
+
+  static string toHex(const unsigned char* src, int len);
+
+  static FILE* openFile(string filename, string mode);
+
+  static void rangedFileCopy(string destFile, string src, long long int srcOffset, long long int length);
+
 };
 
 #endif // _D_UTIL_H_

@@ -30,10 +30,3 @@ DefaultDiskWriter::~DefaultDiskWriter() {}
 void DefaultDiskWriter::initAndOpenFile(string filename) {
   createFile(filename);
 }
-
-void DefaultDiskWriter::writeData(const char* data, int len, long long int offset) {
-  if(offset != lseek(fd, offset, SEEK_SET)) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  writeDataInternal(data, len);
-}

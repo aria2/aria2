@@ -27,7 +27,7 @@
 #include "prefs.h"
 
 HttpConnection::HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger):
-  cuid(cuid), socket(socket), req(req), option(op), logger(logger) {}
+  cuid(cuid), socket(socket), req(req), option(op), logger(logger), headerBufLength(0) {}
 
 void HttpConnection::sendRequest(const Segment& segment) const {
   string request = createRequest(segment);
@@ -101,39 +101,60 @@ string HttpConnection::createRequest(const Segment& segment) const {
   return request;
 }
 
-int HttpConnection::receiveResponse(HttpHeader& headers) {
-  char buf[512];
-  while(socket->isReadable(0)) {
-    int size = sizeof(buf)-1;
-    socket->peekData(buf, size);
-    if(size == 0) {
-      throw new DlRetryEx(EX_INVALID_RESPONSE);
+int HttpConnection::findEndOfHeader(const char* buf, const char* substr, int bufLength) const {
+  const char* p = buf;
+  while(bufLength > p-buf && bufLength-(p-buf) >= (int)strlen(substr)) {
+    if(memcmp(p, substr, strlen(substr)) == 0) {
+      return p-buf;
     }
-    buf[size] = '\0';
-    int hlenTemp = header.size();
-    header += buf;
-    string::size_type p;
-    if((p = header.find("\r\n\r\n")) == string::npos) {
-      socket->readData(buf, size);
-    } else {
-      if(Util::endsWith(header, "\r\n\r\n")) {
-	socket->readData(buf, size);
-      } else {
-	header.erase(p+4);
-	size = p+4-hlenTemp;
-	socket->readData(buf, size);
-      }
-      break;
-    }
+    p++;
   }
-  if(!Util::endsWith(header, "\r\n\r\n")) {
+  return -1;
+}
+
+int HttpConnection::receiveResponse(HttpHeader& headers) {
+  //char buf[512];
+  string header;
+  int delimiterSwith = 0;
+  char* delimiters[] = { "\r\n", "\n" };
+
+  int size = HEADERBUF_SIZE-headerBufLength;
+  if(size < 0) {
+    // TODO too large header
+    throw new DlRetryEx("too large header > 4096");
+  }
+  socket->peekData(headerBuf+headerBufLength, size);
+  if(size == 0) {
+    throw new DlRetryEx(EX_INVALID_RESPONSE);
+  }
+  //buf[size] = '\0';
+  int hlenTemp = headerBufLength+size;
+  //header += buf;
+  //string::size_type p;
+  int eohIndex;
+  if((eohIndex = findEndOfHeader(headerBuf, "\r\n\r\n", hlenTemp)) == -1 &&
+     (eohIndex = findEndOfHeader(headerBuf, "\n\n", hlenTemp)) == -1) {
+    socket->readData(headerBuf+headerBufLength, size);
+  } else {
+    if(eohIndex[headerBuf] == '\n') {
+      // for crapping non-standard HTTP server
+      delimiterSwith = 1;
+    } else {
+      delimiterSwith = 0;
+    }
+    headerBuf[eohIndex+strlen(delimiters[delimiterSwith])*2] = '\0';
+    header = headerBuf;
+    size = eohIndex+strlen(delimiters[delimiterSwith])*2-headerBufLength;
+    socket->readData(headerBuf+headerBufLength, size);
+  }
+  if(!Util::endsWith(header, "\r\n\r\n") && !Util::endsWith(header, "\n\n")) {
     return 0;
   }
   // OK, we got all headers.
   logger->info(MSG_RECEIVE_RESPONSE, cuid, header.c_str());
   string::size_type p, np;
   p = np = 0;
-  np = header.find("\r\n", p);
+  np = header.find(delimiters[delimiterSwith], p);
   if(np == string::npos) {
     throw new DlRetryEx(EX_NO_STATUS_HEADER);
   }
@@ -141,7 +162,7 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
   string status = header.substr(9, 3);
   p = np+2;
   // retreive status name-value pairs, then push these into map
-  while((np = header.find("\r\n", p)) != string::npos && np != p) {
+  while((np = header.find(delimiters[delimiterSwith], p)) != string::npos && np != p) {
     string line = header.substr(p, np-p);
     p = np+2;
     pair<string, string> hp;

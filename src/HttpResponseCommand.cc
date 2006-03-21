@@ -26,6 +26,9 @@
 #include "HttpInitiateConnectionCommand.h"
 #include "message.h"
 #include "Util.h"
+#include "TrackerDownloadCommand.h"
+// TODO
+#include "TorrentDownloadEngine.h"
 
 HttpResponseCommand::HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):
   AbstractCommand(cuid, req, e, s) {
@@ -89,6 +92,15 @@ bool HttpResponseCommand::handleRedirect(string url, const HttpHeader& headers) 
 }
 
 bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
+  // TODO quick and dirty way 
+  if(req->isTorrent) {
+    long long int size = headers.getFirstAsLLInt("Content-Length");
+    e->segmentMan->totalSize = size;
+    e->segmentMan->isSplittable = false;
+    createHttpDownloadCommand();
+    return true;
+  }
+
   long long int size = headers.getFirstAsLLInt("Content-Length");
   if(size == LONG_LONG_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
@@ -126,16 +138,22 @@ bool HttpResponseCommand::handleOtherEncoding(string transferEncoding, const Htt
 }
 
 void HttpResponseCommand::createHttpDownloadCommand(string transferEncoding) {
-  HttpDownloadCommand* command = new HttpDownloadCommand(cuid, req, e, socket);
-  TransferEncoding* enc = NULL;
-  if(transferEncoding.size() && (enc = command->getTransferEncoding(transferEncoding)) == NULL) {
-    delete(command);
-    throw new DlAbortEx(EX_TRANSFER_ENCODING_NOT_SUPPORTED, transferEncoding.c_str());
-  } else {
-    if(enc != NULL) {
-      command->transferEncoding = transferEncoding;
-      enc->init();
+  if(!req->isTorrent) {
+    HttpDownloadCommand* command = new HttpDownloadCommand(cuid, req, e, socket);
+    TransferEncoding* enc = NULL;
+    if(transferEncoding.size() && (enc = command->getTransferEncoding(transferEncoding)) == NULL) {
+      delete(command);
+      throw new DlAbortEx(EX_TRANSFER_ENCODING_NOT_SUPPORTED, transferEncoding.c_str());
+    } else {
+      if(enc != NULL) {
+	command->transferEncoding = transferEncoding;
+	enc->init();
+      }
+      e->commands.push(command);
     }
+  } else {
+    // TODO
+    TrackerDownloadCommand* command = new TrackerDownloadCommand(cuid, req, (TorrentDownloadEngine*)e, socket);
     e->commands.push(command);
   }
 }

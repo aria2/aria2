@@ -21,9 +21,6 @@
 /* copyright --> */
 #include "HttpRequestCommand.h"
 #include "HttpResponseCommand.h"
-#include "HttpInitiateConnectionCommand.h"
-#include "Socket.h"
-#include "Util.h"
 #include "HttpConnection.h"
 
 HttpRequestCommand::HttpRequestCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {
@@ -43,7 +40,11 @@ bool HttpRequestCommand::executeInternal(Segment seg) {
   req->seg = seg;
   http.sendRequest(seg);
 
-  HttpResponseCommand* command = new HttpResponseCommand(cuid, req, e, socket);
+  Command* command = getNextCommand();
   e->commands.push(command);
   return true;
+}
+
+Command* HttpRequestCommand::getNextCommand() const {
+  return new HttpResponseCommand(cuid, req, e, socket);
 }

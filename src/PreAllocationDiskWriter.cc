@@ -20,15 +20,16 @@
  */
 /* copyright --> */
 #include "PreAllocationDiskWriter.h"
+#include "DlAbortEx.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
-#include "DlAbortEx.h"
 
-PreAllocationDiskWriter::PreAllocationDiskWriter(unsigned long int size):AbstractDiskWriter(),size(size) {}
+PreAllocationDiskWriter::PreAllocationDiskWriter(long long int totalLength)
+  :AbstractDiskWriter(),totalLength(totalLength) {}
 
 PreAllocationDiskWriter::~PreAllocationDiskWriter() {}
 
@@ -36,34 +37,32 @@ void PreAllocationDiskWriter::initAndOpenFile(string filename) {
   createFile(filename, O_DIRECT);
   
   int pageSize = getpagesize();
+  int bufSize = pageSize*4;
   char* buf;
-  int size = pageSize*4;
-  int rt = posix_memalign((void**)&buf, pageSize, size);
+  int rt = posix_memalign((void**)&buf, pageSize, bufSize);
   if(rt != 0) {
     throw new DlAbortEx(strerror(rt));
   }
-  memset(buf, 0, size);
-  int x = size/4096;
-  int r = size%4096;
-  for(int i = 0; i < x; i++) {
-    if(write(fd, buf, size) < 0) {
-      free(buf);
-      throw new DlAbortEx(strerror(errno));
+  try {
+    memset(buf, 0, bufSize);
+    long long int x = totalLength/bufSize;
+    int r = totalLength%bufSize;
+    for(long long int i = 0; i < x; i++) {
+      if(write(fd, buf, bufSize) < 0) {
+	throw new DlAbortEx(strerror(errno));
+      }
     }
-  }
-  free(buf);
-  closeFile();
-  openExistingFile(filename);
-  char cbuf[4096];
-  memset(cbuf, 0, sizeof(cbuf));
-  if(write(fd, cbuf, r) < 0) {
-    throw new DlAbortEx(strerror(errno));
+    closeFile();
+    openExistingFile(filename);
+    if(r > 0) {
+      seek(totalLength-r);
+      if(write(fd, buf, r) < 0) {
+	throw new DlAbortEx(strerror(errno));
+      }
+    }
+    free(buf);
+  } catch(Exception* ex) {
+    free(buf);
+    throw;
   }
 }
-
-void PreAllocationDiskWriter::writeData(const char* data, int len, unsigned long int offset) {
-  int x = lseek(fd, offset, SEEK_SET);
-  // TODO check the return value of write
-  writeDataInternal(data, len);
-}
-

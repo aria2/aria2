@@ -41,11 +41,41 @@ SRCS =  Socket.cc Socket.h\
 	ChunkedEncoding.cc ChunkedEncoding.h\
 	DiskWriter.h\
 	DefaultDiskWriter.cc DefaultDiskWriter.h\
+	PreAllocationDiskWriter.cc PreAllocationDiskWriter.h\
 	AbstractDiskWriter.cc AbstractDiskWriter.h\
 	File.cc File.h\
 	Option.cc Option.h\
 	Base64.cc Base64.h\
-	CookieBox.cc CookieBox.h
+	CookieBox.cc CookieBox.h\
+	MetaEntry.h\
+	Data.cc Data.h\
+	Dictionary.cc Dictionary.h\
+	List.cc List.h\
+	MetaFileUtil.cc MetaFileUtil.h\
+	MetaEntryVisitor.h\
+	ShaVisitor.cc ShaVisitor.h\
+	TrackerInitCommand.cc TrackerInitCommand.h\
+	TrackerDownloadCommand.cc TrackerDownloadCommand.h\
+	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
+	TorrentMan.cc TorrentMan.h\
+	PeerConnection.cc PeerConnection.h\
+	PeerMessageUtil.cc PeerMessageUtil.h\
+	PeerAbstractCommand.cc PeerAbstractCommand.h\
+	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
+	PeerInteractionCommand.cc PeerInteractionCommand.h\
+	Peer.cc Peer.h\
+	BitfieldMan.cc BitfieldMan.h\
+	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
+	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
+	PeerListenCommand.cc PeerListenCommand.h\
+	PendingMessage.cc PendingMessage.h\
+	PeerMessage.cc PeerMessage.h\
+	HandshakeMessage.h\
+	Piece.cc Piece.h\
+	RequestSlot.cc RequestSlot.h\
+	RequestSlotMan.cc RequestSlotMan.h\
+	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
+	Directory.cc Directory.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@

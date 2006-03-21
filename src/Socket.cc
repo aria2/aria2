@@ -53,12 +53,16 @@ Socket& Socket::operator=(const Socket& s) {
   return *this;
 }
 
-void Socket::beginListen() const {
-  core->beginListen();
+void Socket::beginListen(int port) const {
+  core->beginListen(port);
 }
 
 void Socket::getAddrInfo(pair<string, int>& addrinfo) const {
   core->getAddrInfo(addrinfo);
+}
+
+void Socket::getPeerInfo(pair<string, int>& peerinfo) const {
+  core->getPeerInfo(peerinfo);
 }
 
 Socket* Socket::acceptConnection() const {

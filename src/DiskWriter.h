@@ -64,6 +64,12 @@ public:
    * @param position the offset of this binary stream
    */
   virtual void writeData(const char* data, int len, long long int position = 0) = 0;
+
+  virtual int readData(char* data, int len, long long int position) = 0;
+
+  virtual string sha1Sum(long long int offset, long long int length) = 0;
+
+  virtual void seek(long long int offset) = 0;
 };
 
 #endif // _D_DISK_WRITER_H_

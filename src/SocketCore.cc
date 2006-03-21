@@ -56,7 +56,7 @@ SocketCore::~SocketCore() {
   closeConnection();
 }
 
-void SocketCore::beginListen() {
+void SocketCore::beginListen(int port) {
   closeConnection();
   //sockfd = socket(AF_UNSPEC, SOCK_STREAM, PF_UNSPEC);
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -74,7 +74,7 @@ void SocketCore::beginListen() {
   memset((char*)&sockaddr, 0, sizeof(sockaddr));
   sockaddr.sin_family = AF_INET;
   sockaddr.sin_addr.s_addr = INADDR_ANY;
-  sockaddr.sin_port = htons(0);
+  sockaddr.sin_port = htons(port);
   
   if(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1) {
     throw new DlAbortEx(strerror(errno));
@@ -93,6 +93,7 @@ SocketCore* SocketCore::acceptConnection() const {
   if((fd = accept(sockfd, (struct sockaddr*)&sockaddr, &len)) == -1) {
     throw new DlAbortEx(strerror(errno));
   }
+
   SocketCore* s = new SocketCore(fd);
   return s;
 }
@@ -106,6 +107,17 @@ void SocketCore::getAddrInfo(pair<string, int>& addrinfo) const {
   }
   addrinfo.first = inet_ntoa(listenaddr.sin_addr);
   addrinfo.second = ntohs(listenaddr.sin_port);
+}
+
+void SocketCore::getPeerInfo(pair<string, int>& peerinfo) const {
+  struct sockaddr_in peerin;
+  memset(&peerin, 0, sizeof(peerin));
+  int len = sizeof(peerin);
+  if(getpeername(sockfd, (struct sockaddr*)&peerin, (socklen_t*)&len) < 0) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  peerinfo.first = inet_ntoa(peerin.sin_addr);
+  peerinfo.second = ntohs(peerin.sin_port);
 }
 
 void SocketCore::establishConnection(string host, int port) {
@@ -134,7 +146,6 @@ void SocketCore::establishConnection(string host, int port) {
     ai.ai_family = PF_INET;
     ai.ai_socktype = SOCK_STREAM;
     ai.ai_protocol = 0; 
-    ai.ai_addr = (struct sockaddr*)&sockaddr;
     struct addrinfo* res;
     int ec;
     if((ec = getaddrinfo(host.c_str(), NULL, &ai, &res)) != 0) {
@@ -227,8 +238,7 @@ bool SocketCore::isReadable(int timeout) const {
 }
 
 void SocketCore::writeData(const char* data, int len, int timeout) const {
-  if(!isWritable(timeout) ||
-     !secure && send(sockfd, data, (size_t)len, 0) != len
+  if(!secure && send(sockfd, data, (size_t)len, 0) != len
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required
@@ -240,8 +250,7 @@ void SocketCore::writeData(const char* data, int len, int timeout) const {
 }
 
 void SocketCore::readData(char* data, int& len, int timeout) const {
-  if(!isReadable(timeout) ||
-     !secure && (len = recv(sockfd, data, (size_t)len, 0)) < 0
+  if(!secure && (len = recv(sockfd, data, (size_t)len, 0)) < 0
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required
@@ -253,8 +262,7 @@ void SocketCore::readData(char* data, int& len, int timeout) const {
 }
 
 void SocketCore::peekData(char* data, int& len, int timeout) const {
-  if(!isReadable(timeout) ||
-     !secure && (len = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
+  if(!secure && (len = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required

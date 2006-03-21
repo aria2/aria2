@@ -41,6 +41,8 @@
 #define PREF_MAX_TRIES "max_try"
 // values: 1*digit
 #define PREF_MIN_SEGMENT_SIZE "min_segment_size"
+// values: 1*digit
+#define PREF_AUTO_SAVE_INTERVAL "auto_save_interval"
 
 /**
  * FTP related preferences

@@ -26,14 +26,12 @@
 
 class PreAllocationDiskWriter:public AbstractDiskWriter {
 private:
-  unsigned long int size;
+  long long int totalLength;
 public:
-  PreAllocationDiskWriter(unsigned long int size);
+  PreAllocationDiskWriter(long long int totalLength);
   ~PreAllocationDiskWriter();
 
   void initAndOpenFile(string filename);
-
-  void writeData(const char* data, int len, unsigned long int position);
 };
 
 #endif // _D_PRE_ALLOCATION_DISK_WRITER_H_

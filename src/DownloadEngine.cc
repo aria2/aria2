@@ -29,7 +29,7 @@
 
 using namespace std;
 
-DownloadEngine::DownloadEngine():noWait(false) {}
+DownloadEngine::DownloadEngine():noWait(false), segmentMan(NULL) {}
 
 DownloadEngine::~DownloadEngine() {
   assert(rsockets.empty());
@@ -47,43 +47,23 @@ void DownloadEngine::run() {
 	delete(com);
       }
     }
+    shortSleep();
     if(!noWait && !commands.empty()) {
       waitData();
     }
     noWait = false;
     calculateStatistics();
   }
-  diskWriter->closeFile();
-  if(segmentMan->finished()) {
-    segmentMan->remove();
-  } else {
-    segmentMan->save();
-  }
+  onEndOfRun();
 }
 
-void DownloadEngine::initStatistics() {
-  cp.tv_sec = cp.tv_usec = 0;
-  speed = 0;
-  psize = 0;
-}
-
-void DownloadEngine::calculateStatistics() {
-  long long int dlSize = segmentMan->getDownloadedSize();
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(cp.tv_sec == 0 && cp.tv_usec == 0) {
-    cp = now;
-    psize = dlSize;
-  } else {
-    long long int elapsed = Util::difftv(now, cp);
-    if(elapsed >= 500000) {
-      int nspeed = (int)((dlSize-psize)/(elapsed/1000000.0));
-      speed = (nspeed+speed)/2;
-      cp = now;
-      psize = dlSize;
-      sendStatistics(dlSize, segmentMan->totalSize);
-    }
-  }
+void DownloadEngine::shortSleep() const {
+  struct timeval tv;
+  tv.tv_sec = 0;
+  tv.tv_usec = 1000;
+  fd_set rfds;
+  FD_ZERO(&rfds);
+  select(0, &rfds, NULL, NULL, &tv);
 }
 
 void DownloadEngine::waitData() {

@@ -20,6 +20,11 @@
  */
 /* copyright --> */
 #include "Util.h"
+#include "DlAbortEx.h"
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 string Util::itos(int value, bool comma) {
   string str = llitos(value, comma);
@@ -144,5 +149,72 @@ string Util::replace(string target, string oldstr, string newstr) {
   result += target.substr(p);
 
   return result;
+}
+
+string Util::urlencode(const unsigned char* target, int len) {
+  string dest;
+  for(int i = 0; i < len; i++) {
+    if(!('0' <= target[i] && target[i] <= '9' ||
+	 'A' <= target[i] && target[i] <= 'Z' ||
+	 'a' <= target[i] && target[i] <= 'z' ||
+	 '$' == target[i] || '-' == target[i] ||
+	 '_' == target[i] || '.' == target[i] ||
+	 '+' == target[i] || '!' == target[i] ||
+	 '*' == target[i] || '\'' == target[i] ||
+	 '(' == target[i] || ')' == target[i] ||
+	 ',' == target[i])) {
+      char temp[4];
+      sprintf(temp, "%%%02x", target[i]);
+      temp[sizeof(temp)-1] = '\0';
+      dest.append(temp);
+    } else {
+      dest += target[i];
+    }
+  }
+  return dest;
+}
+
+string Util::toHex(const unsigned char* src, int len) {
+  char* temp = new char[len*2+1];
+  for(int i = 0; i < len; i++) {
+    sprintf(temp+i*2, "%02x", src[i]);
+  }
+  temp[len*2] = '\0';
+  string hex = temp;
+  delete [] temp;
+  return hex;
+}
+
+FILE* Util::openFile(string filename, string mode) {
+  FILE* file = fopen(filename.c_str(), mode.c_str());
+  return file;
+}
+
+void Util::rangedFileCopy(string dest, string src, long long int srcOffset, long long int length) {
+  int destFd;
+  if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR)) < 0) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  int srcFd;
+  if((srcFd = open(src.c_str(), O_RDONLY, S_IRUSR|S_IWUSR)) < 0) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  int BUF_SIZE = 16*1024;
+  char buf[BUF_SIZE];
+  int x = length/BUF_SIZE+(length%BUF_SIZE ? 1 : 0);
+  for(int i = 0; i < x; i++) {
+    int readLength;
+    if((readLength = read(srcFd, buf, BUF_SIZE)) == -1) {
+      throw new DlAbortEx(strerror(errno));
+    }
+    if(write(destFd, buf, readLength) == -1) {
+      throw new DlAbortEx(strerror(errno));
+    }
+  }
+  close(srcFd);
+  close(destFd);
 }
 

@@ -41,15 +41,13 @@ private:
   vector<Socket*> rsockets;
   vector<Socket*> wsockets;
 
+  void shortSleep() const;
   bool addSocket(vector<Socket*>& sockets, Socket* socket);
   bool deleteSocket(vector<Socket*>& sockets, Socket* socket);
-  struct timeval cp;
-  long long int psize;
-  void initStatistics();
-  void calculateStatistics();
 protected:
-  int speed;
-  virtual void sendStatistics(long long int currentSize, long long int totalSize) {};
+  virtual void initStatistics() = 0;
+  virtual void calculateStatistics() = 0;
+  virtual void onEndOfRun() = 0;
 public:
   bool noWait;
   queue<Command*> commands;

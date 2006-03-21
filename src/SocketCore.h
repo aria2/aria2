@@ -54,14 +54,22 @@ public:
 
   /**
    * Creates a socket and listens form connection on it.
+   * @param port port to listen. If 0 is specified, os automaticaly
+   * choose avaiable port.
    */
-  void beginListen();
+  void beginListen(int port = 0);
 
   /**
    * Stores host address and port of this socket to addrinfo.
    * @param addrinfo placeholder to store host address and port.
    */
   void getAddrInfo(pair<string, int>& addrinfo) const;
+  
+  /**
+   * Stores peer's address and port to peerinfo.
+   * @param peerinfo placeholder to store peer's address and port.
+   */
+  void getPeerInfo(pair<string, int>& peerinfo) const;
 
   /**
    * Accepts incoming connection on this socket.
@@ -118,7 +126,7 @@ public:
    * @param timeout the amount of time elapsed before isWritable()
    * are timed out.
    */
-  void writeData(const char* data, int len, int timeout = 5) const;
+  void writeData(const char* data, int len, int timeout = 0) const;
 
   /**
    * Reads up to len bytes from this socket.
@@ -134,7 +142,7 @@ public:
    * @param timeout the amount of time elapsed before isReadable() are timed
    * out.
    */
-  void readData(char* data, int& len, int timeout = 5) const;
+  void readData(char* data, int& len, int timeout = 0) const;
 
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from
@@ -147,7 +155,7 @@ public:
    * @param timeout the amount of time elapsed before isReadable() are timed
    * out.
    */
-  void peekData(char* data, int& len, int timeout = 5) const;
+  void peekData(char* data, int& len, int timeout = 0) const;
   
   /**
    * Makes this socket secure.

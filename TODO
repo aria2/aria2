@@ -6,3 +6,7 @@
 * Download files listed in a specifed file.
 * check MD5 checksum
 * Add the feature which adds or removes URLs on-the-fly.
+* Tracker UDP protocol
+* no-compact peers format
+* Add port range command-line option
+* Add max peers command-line option

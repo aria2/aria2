@@ -35,6 +35,15 @@
 #define MSG_RESTARTING_DOWNLOAD _("CUID#%d - Restarting the download.")
 #define MSG_MAX_TRY _("CUID#%d - %d times attempted, but no success. Download aborted.")
 #define MSG_UNREGISTER_CUID _("CUID#%d - Unregistering cuid from segmentManager.")
+#define MSG_SEND_PEER_MESSAGE "CUID#%d - To: %s:%d %s"
+#define MSG_SEND_PEER_MESSAGE_WITH_INDEX "CUID#%d - To: %s:%d %s index=%d"
+#define MSG_SEND_PEER_MESSAGE_WITH_BITFIELD "CUID#%d - To: %s:%d %s %s"
+#define MSG_SEND_PEER_MESSAGE_WITH_INDEX_BEGIN_LENGTH "CUID#%d - To: %s:%d %s index=%d, begin=%d, length=%d"
+#define MSG_RECEIVE_PEER_MESSAGE "CUID#%d - From: %s:%d %s"
+#define MSG_GOT_NEW_PIECE "CUID#%d - we got new piece. index=%d"
+#define MSG_GOT_WRONG_PIECE "CUID#%d - we got wrong piece. index=%d"
+
+#define MSG_TRACKER_WARNING_MESSAGE "CUID#%d - Tracker returned warning message: %s"
 
 #define MSG_SEGMENT_FILE_EXISTS _("The segment file %s exists.")
 #define MSG_SEGMENT_FILE_DOES_NOT_EXIST _("The segment file %s does not exist.")
@@ -59,5 +68,6 @@
 #define EX_SSL_INIT_FAILURE _("SSL initialization failed.")
 #define EX_SIZE_MISMATCH _("Size mismatch %lld != %lld")
 #define EX_GOT_EOF _("Got EOF from the server.")
-
+#define EX_EOF_FROM_PEER "Got EOF from peer."
+#define EX_MULFORMED_META_INFO "Mulformed meta info."
 #endif // _D_MESSAGE_H_

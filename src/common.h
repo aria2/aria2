@@ -41,6 +41,8 @@
 
 #define USER_AGENT "aria2"
 
+#define BITFIELD_LEN_FROM_PIECES(X) (X/8+(X%8? 1 : 0))
+
 using namespace std;
 
 #endif // _D_COMMON_H_

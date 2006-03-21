@@ -51,12 +51,17 @@ public:
   /**
    * @see SocketCore::beginListen()
    */
-  void beginListen() const;
+  void beginListen(int port = 0) const;
   
   /**
    * @see SocketCore::getAddrInfo()
    */
   void getAddrInfo(pair<string, int>& addrinfo) const;
+
+  /**
+   * @see SocketCore::getPeerInfo();
+   */
+  void getPeerInfo(pair<string, int>& peerinfo) const;
 
   /**
    * @see SocketCore::acceptConnection()

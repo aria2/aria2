@@ -62,3 +62,11 @@ bool File::remove() {
     return false;
   }
 }
+
+long long int File::size() {
+  struct stat fstat;
+  if(fillStat(fstat) < 0) {
+    return 0;
+  }
+  return fstat.st_size;
+}

@@ -58,6 +58,8 @@ public:
    * If name denotes a directory, it must be empty in order to delete.
    */
   bool remove();
+
+  long long int size();
 };
 
 #endif // _D_FILE_H_

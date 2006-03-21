@@ -25,8 +25,15 @@
 #include "DownloadEngine.h"
 
 class ConsoleDownloadEngine : public DownloadEngine {
+private:
+  struct timeval cp;
+  long long int psize;
+  int speed;
 protected:
   void sendStatistics(long long int currentSize, long long int totalSize);
+  void initStatistics();
+  void calculateStatistics();
+  void onEndOfRun();
 public:
   ConsoleDownloadEngine();
   ~ConsoleDownloadEngine();

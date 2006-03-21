@@ -21,7 +21,9 @@
 /* copyright --> */
 #include "HttpInitiateConnectionCommand.h"
 #include "ConsoleDownloadEngine.h"
+#include "TorrentConsoleDownloadEngine.h"
 #include "SegmentMan.h"
+#include "TorrentMan.h"
 #include "SplitSlowestSegmentSplitter.h"
 #include "SimpleLogger.h"
 #include "common.h"
@@ -29,8 +31,13 @@
 #include "Util.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "prefs.h"
+#include "TrackerInitCommand.h"
+#include "PeerListenCommand.h"
+#include "TorrentAutoSaveCommand.h"
+#include "SleepCommand.h"
 #include <vector>
 #include <algorithm>
+#include <time.h>
 #include <signal.h>
 #include <unistd.h>
 #include <libgen.h>
@@ -47,11 +54,20 @@ extern int optind, opterr, optopt;
 
 using namespace std;
 
+void printDownloadCompeleteMessage(string filename) {
+  printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
+}
+
+void printDownloadAbortMessage() {
+  printf(_("\nThe download was not complete because of errors. Check the log.\n"));
+}
+
 void clearRequest(Request* req) {
   delete(req);
 }
 
 DownloadEngine* e;
+TorrentDownloadEngine* te;
 
 void handler(int signal) {
   cout << _("\nSIGINT signal received.") << endl;
@@ -59,6 +75,22 @@ void handler(int signal) {
   if(e->diskWriter != NULL) {
     e->diskWriter->closeFile();
   }
+  exit(0);
+}
+
+void torrentHandler(int signal) {
+  cout << _("\nSIGINT signal received.") << endl;
+  if(te->torrentMan->diskWriter != NULL) {
+    te->torrentMan->diskWriter->closeFile();
+  }
+  if(te->torrentMan->downloadComplete()) {
+    te->torrentMan->remove();
+    te->torrentMan->fixFilename();
+    printDownloadCompeleteMessage(te->torrentMan->getFilePath());
+  } else {
+    te->torrentMan->save();
+  }
+
   exit(0);
 }
 
@@ -146,6 +178,11 @@ void showUsage() {
   cout << _(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or\n"
 	    "                              'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
+  cout << _(" --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
+  cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
+	    "                              enter BitTorrent mode even if the filename of\n"
+	    "                              downloaded file ends with .torrent.\n"
+	    "                              Default: true") << endl;
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
   cout << endl;
@@ -162,6 +199,8 @@ void showUsage() {
   cout << "  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip" << endl;
   cout << _(" You can mix up different protocols:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
+  cout << _(" Download a torrent") << endl;
+  cout << "  aria2c -o test.torret http://AAA.BBB.CCC/file.torrent" << endl;
   cout << endl;
   printf(_("Reports bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
@@ -181,6 +220,8 @@ int main(int argc, char* argv[]) {
   int split = 1;
   bool daemonMode = false;
   string referer;
+  string torrentFile;
+  bool followTorrent = true;
 
   int c;
   Option* op = new Option();
@@ -193,6 +234,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_FTP_PASSWD, "ARIA2USER@");
   op->put(PREF_FTP_TYPE, V_BINARY);
   op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
+  op->put(PREF_AUTO_SAVE_INTERVAL, "60");
 
   while(1) {
     int optIndex = 0;
@@ -220,6 +262,8 @@ int main(int argc, char* argv[]) {
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { "min-segment-size", required_argument, &lopt, 13 },
       { "http-proxy-method", required_argument, &lopt, 14 },
+      { "torrent-file", required_argument, &lopt, 15 },
+      { "follow-torrent", required_argument, &lopt, 16 },
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
@@ -332,6 +376,19 @@ int main(int argc, char* argv[]) {
 	  exit(1);
 	}
 	break;
+      case 15:
+	torrentFile = string(optarg);
+	break;
+      case 16:
+	if(string(optarg) == "on") {
+	  followTorrent = true;
+	} else if(string(optarg) == "off") {
+	  followTorrent = false;
+	} else {
+	  cerr << _("follow-torrent must be either 'true' or 'false'.") << endl;
+	  showUsage();
+	  exit(1);
+	}
       }
       break;
     }
@@ -394,10 +451,12 @@ int main(int argc, char* argv[]) {
       exit(1);
     }
   }
-  if(optind == argc) {
-    cerr << _("specify at least one URL") << endl;
-    showUsage();
-    exit(1);
+  if(torrentFile.empty()) {
+    if(optind == argc) {
+      cerr << _("specify at least one URL") << endl;
+      showUsage();
+      exit(1);
+    }
   }
   if(daemonMode) {
     if(daemon(1, 1) < 0) {
@@ -410,6 +469,7 @@ int main(int argc, char* argv[]) {
   SSL_load_error_strings();
   SSL_library_init();
 #endif // HAVE_LIBSSL
+  srandom(time(NULL));
   SimpleLogger* logger;
   if(stdoutLog) {
     logger = new SimpleLogger(stdout);
@@ -420,43 +480,120 @@ int main(int argc, char* argv[]) {
   }
   SegmentSplitter* splitter = new SplitSlowestSegmentSplitter();
   splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
-  splitter->logger = logger;
-  e = new ConsoleDownloadEngine();
-  e->logger = logger;
-  e->option = op;
-  e->diskWriter = new DefaultDiskWriter();
-  e->segmentMan = new SegmentMan();
-  e->segmentMan->dir = dir;
-  e->segmentMan->ufilename = ufilename;
-  e->segmentMan->logger = logger;
-  e->segmentMan->option = op;
-  e->segmentMan->splitter = splitter;
-  vector<Request*> requests;
-  for(int i = 1; optind+i-1 < argc; i++) {
-    for(int s = 1; s <= split; s++) {
+
+  struct sigaction sigactIgn;
+  sigactIgn.sa_handler = SIG_IGN;
+  sigactIgn.sa_flags = 0;
+  sigemptyset(&sigactIgn.sa_mask);
+  sigaction(SIGPIPE, &sigactIgn, NULL);  
+
+  bool readyToTorrentMode = false;
+  string downloadedTorrentFile;
+  if(torrentFile.empty()) {
+    struct sigaction sigact;
+    sigact.sa_handler = handler;
+    sigact.sa_flags = 0;
+    sigemptyset(&sigact.sa_mask);
+    sigaction(SIGINT, &sigact, NULL);
+  
+    splitter->logger = logger;
+    e = new ConsoleDownloadEngine();
+    e->logger = logger;
+    e->option = op;
+    e->diskWriter = new DefaultDiskWriter();
+    e->segmentMan = new SegmentMan();
+    e->segmentMan->dir = dir;
+    e->segmentMan->ufilename = ufilename;
+    e->segmentMan->logger = logger;
+    e->segmentMan->option = op;
+    e->segmentMan->splitter = splitter;
+    
+    vector<Request*> requests;
+    for(int i = 1; optind+i-1 < argc; i++) {
+      for(int s = 1; s <= split; s++) {
       addCommand(split*(i-1)+s, argv[optind+i-1], referer, requests); 
+      }
+    }
+    e->run();
+    
+    if(e->segmentMan->finished()) {
+      printDownloadCompeleteMessage(e->segmentMan->getFilePath());
+      if(Util::endsWith(e->segmentMan->getFilePath(), ".torrent")) {
+	downloadedTorrentFile = e->segmentMan->getFilePath();
+	readyToTorrentMode = true;
+      }
+    } else {
+      printDownloadAbortMessage();
+    }
+    
+    for_each(requests.begin(), requests.end(), clearRequest);
+    requests.clear();
+
+    delete(e->segmentMan);
+    delete(e->diskWriter);
+    delete(e);
+  }
+  if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
+    try {
+      op->put(PREF_MAX_TRIES, "0");
+      struct sigaction sigact;
+      sigact.sa_handler = torrentHandler;
+      sigact.sa_flags = 0;
+      sigemptyset(&sigact.sa_mask);
+      sigaction(SIGINT, &sigact, NULL);
+      Request* req = new Request();
+      req->isTorrent = true;
+      req->setTrackerEvent(Request::STARTED);
+      te = new TorrentConsoleDownloadEngine();
+      te->logger = logger;
+      te->option = op;
+      te->diskWriter = new DefaultDiskWriter();
+      te->segmentMan = new SegmentMan();
+      te->segmentMan->logger = logger;
+      te->segmentMan->option = op;
+      te->segmentMan->splitter = splitter;
+      te->torrentMan = new TorrentMan();
+      te->torrentMan->setStoreDir(dir);
+      te->torrentMan->logger = logger;
+      te->torrentMan->setup(torrentFile.empty() ? 
+			    downloadedTorrentFile : torrentFile);
+
+      PeerListenCommand* listenCommand =
+	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
+      int port = listenCommand->bindPort(6881, 6999);
+      if(port == -1) {
+	printf("an error occurred while binding port.\n");
+	exit(1);
+      }
+      te->torrentMan->setPort(port);
+      te->commands.push(listenCommand);
+      te->commands.push(new TrackerInitCommand(te->torrentMan->getNewCuid(),
+					       req, te));
+      int autoSaveCommandCuid = te->torrentMan->getNewCuid();
+      te->commands.push(new SleepCommand(autoSaveCommandCuid, te,
+					 new TorrentAutoSaveCommand(autoSaveCommandCuid, te, op->getAsInt(PREF_AUTO_SAVE_INTERVAL)),
+					 op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+      te->run();
+      
+      if(te->torrentMan->downloadComplete()) {
+	printDownloadCompeleteMessage(te->torrentMan->getFilePath());
+      } else {
+	printDownloadAbortMessage();
+      }
+      
+      delete(te->segmentMan);
+      delete(te->torrentMan);
+      delete(te);
+    } catch(Exception* ex) {
+      cerr << ex->getMsg() << endl;
+      delete ex;
+      exit(1);
     }
   }
-  struct sigaction sigact;
-  sigact.sa_handler = handler;
-  sigact.sa_flags = 0;
-  sigemptyset(&sigact.sa_mask);
-  sigaction(SIGINT, &sigact, NULL);
 
-  e->run();
-
-  if(e->segmentMan->finished()) {
-    printf(_("\nThe download was complete. <%s>\n"), e->segmentMan->getFilePath().c_str());
-  } else {
-    printf(_("\nThe download was not complete because of errors. Check the log.\n"));
-  }
-  
-  for_each(requests.begin(), requests.end(), clearRequest);
-  requests.clear();
   delete(logger);
-  delete(e->segmentMan);
-  delete(e->option);
-  delete(e->diskWriter);
-  delete(e);
+  delete(op);
+  delete(splitter);
+
   return 0;
 }

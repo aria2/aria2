@@ -31,6 +31,7 @@ protected:
   void createFile(string filename, int addFlags = 0);
 
   void writeDataInternal(const char* data, int len);
+  int readDataInternal(char* data, int len);
 public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
@@ -38,6 +39,14 @@ public:
   void closeFile();
 
   void openExistingFile(string filename);
+
+  string sha1Sum(long long int offset, long long int length);
+
+  void seek(long long int offset);
+
+  void writeData(const char* data, int len, long long int offset);
+
+  int readData(char* data, int len, long long int offset);
 };
 
 #endif // _D_ABSTRACT_DISK_WRITER_H_

@@ -35,3 +35,37 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     speed/1000.0 << "KB/s " <<
     "(" << commands.size() << " connections)" << flush;
 }
+
+void ConsoleDownloadEngine::initStatistics() {
+  cp.tv_sec = cp.tv_usec = 0;
+  speed = 0;
+  psize = 0;
+}
+
+void ConsoleDownloadEngine::calculateStatistics() {
+  long long int dlSize = segmentMan->getDownloadedSize();
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  if(cp.tv_sec == 0 && cp.tv_usec == 0) {
+    cp = now;
+    psize = dlSize;
+  } else {
+    long long int elapsed = Util::difftv(now, cp);
+    if(elapsed >= 500000) {
+      int nspeed = (int)((dlSize-psize)/(elapsed/1000000.0));
+      speed = (nspeed+speed)/2;
+      cp = now;
+      psize = dlSize;
+      sendStatistics(dlSize, segmentMan->totalSize);
+    }
+  }
+}
+
+void ConsoleDownloadEngine::onEndOfRun() {
+  diskWriter->closeFile();
+  if(segmentMan->finished()) {
+    segmentMan->remove();
+  } else {
+    segmentMan->save();
+  }
+}

@@ -14,6 +14,7 @@ class FileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsFile);
   CPPUNIT_TEST(testIsDir);
   CPPUNIT_TEST(testRemove);
+  CPPUNIT_TEST(testSize);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -25,6 +26,7 @@ public:
   void testIsFile();
   void testIsDir();
   void testRemove();
+  void testSize();
 };
 
 
@@ -85,4 +87,9 @@ void FileTest::testRemove() {
   CPPUNIT_ASSERT(!d.exists());
   // delete the directory again
   CPPUNIT_ASSERT(!d.remove());
+}
+
+void FileTest::testSize() {
+  File f("4096chunk.txt");
+  CPPUNIT_ASSERT_EQUAL(4096, (int)f.size());
 }

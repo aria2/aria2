@@ -33,10 +33,13 @@
 
 using namespace std;
 
+#define HEADERBUF_SIZE 4096
+
 class HttpConnection {
 private:
   string getHost(const string& host, int port) const;
   string createRequest(const Segment& segment) const;
+  int findEndOfHeader(const char* buf, const char* substr, int bufLength) const;
   bool useProxy() const;
   bool useProxyAuth() const;
   bool useProxyGet() const;
@@ -46,7 +49,8 @@ private:
   const Request* req;
   const Option* option;
   const Logger* logger;
-  string header;
+  char headerBuf[HEADERBUF_SIZE+1];
+  int headerBufLength;
 public:
   HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger);
 

@@ -22,7 +22,7 @@
 #include "Request.h"
 #include "Util.h"
 
-Request::Request():port(0), tryCount(0) {
+Request::Request():port(0), tryCount(0), isTorrent(false) {
   defaultPorts["http"] = 80;
 #ifdef HAVE_LIBSSL
   // for SSL

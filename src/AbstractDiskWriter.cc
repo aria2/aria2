@@ -27,6 +27,8 @@
 #include <fcntl.h>
 #include "DlAbortEx.h"
 #include "File.h"
+#include <openssl/evp.h>
+#include "Util.h"
 
 AbstractDiskWriter::AbstractDiskWriter():fd(0) {}
 
@@ -49,7 +51,7 @@ void AbstractDiskWriter::openExistingFile(string filename) {
     throw new DlAbortEx(strerror(errno));
   }
 
-  if((fd = open(filename.c_str(), O_WRONLY, S_IRUSR|S_IWUSR)) < 0) {
+  if((fd = open(filename.c_str(), O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
     throw new DlAbortEx(strerror(errno));
   }
 }
@@ -60,7 +62,7 @@ void AbstractDiskWriter::createFile(string filename, int addFlags) {
 //   if(filename.empty()) {
 //     filename = "index.html";
 //   }
-  if((fd = open(filename.c_str(), O_CREAT|O_WRONLY|O_TRUNC|addFlags, S_IRUSR|S_IWUSR)) < 0) {
+  if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|addFlags, S_IRUSR|S_IWUSR)) < 0) {
     throw new DlAbortEx(strerror(errno));
   }  
 }
@@ -69,4 +71,61 @@ void AbstractDiskWriter::writeDataInternal(const char* data, int len) {
   if(write(fd, data, len) < 0) {
     throw new DlAbortEx(strerror(errno));
   }
+}
+
+int AbstractDiskWriter::readDataInternal(char* data, int len) {
+  int ret;
+  if((ret = read(fd, data, len)) < 0) {
+    throw new DlAbortEx(strerror(errno));
+  }
+  return ret;
+}
+
+string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
+  EVP_MD_CTX ctx;
+  EVP_MD_CTX_init(&ctx);
+  EVP_DigestInit_ex(&ctx, EVP_sha1(), NULL);
+
+  try {
+    int BUFSIZE = 4096;
+    char buf[BUFSIZE];
+    for(int i = 0; i < length/BUFSIZE; i++) {
+      if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
+	throw "error";
+      }
+      EVP_DigestUpdate(&ctx, buf, BUFSIZE);
+      offset += BUFSIZE;
+    }
+    int r = length%BUFSIZE;
+    if(r > 0) {
+      if(r != readData(buf, r, offset)) {
+	throw "error";
+      }
+      EVP_DigestUpdate(&ctx, buf, r);
+    }
+    unsigned char hashValue[20];
+    int len;
+    EVP_DigestFinal_ex(&ctx, hashValue, (unsigned int*)&len);
+    EVP_MD_CTX_cleanup(&ctx);
+    return Util::toHex(hashValue, 20);
+  } catch(string ex) {
+    EVP_MD_CTX_cleanup(&ctx);
+    throw new DlAbortEx(strerror(errno));
+  }
+}
+
+void AbstractDiskWriter::seek(long long int offset) {
+  if(offset != lseek(fd, offset, SEEK_SET)) {
+    throw new DlAbortEx(strerror(errno));
+  }
+}
+
+void AbstractDiskWriter::writeData(const char* data, int len, long long int offset) {
+  seek(offset);
+  writeDataInternal(data, len);
+}
+
+int AbstractDiskWriter::readData(char* data, int len, long long int offset) {
+  seek(offset);
+  return readDataInternal(data, len);
 }

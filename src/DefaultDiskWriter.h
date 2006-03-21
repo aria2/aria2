@@ -30,8 +30,6 @@ public:
   ~DefaultDiskWriter();
 
   void initAndOpenFile(string filename);
-
-  void writeData(const char* data, int len, long long int position);
 };
 
 #endif // _D_DEFAULT_DISK_WRITER_H_

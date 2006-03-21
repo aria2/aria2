@@ -56,10 +56,12 @@ private:
   string file;
   map<string, int> defaultPorts;
   int tryCount;
+  int trackerEvent;
   bool parseUrl(string url);
 public:
   Segment seg;
   CookieBox* cookieBox;
+  bool isTorrent;
 public:
   Request();
   virtual ~Request();
@@ -87,6 +89,17 @@ public:
   int getPort() const { return port; }
   string getDir() const { return dir; }
   string getFile() const { return file;}
+
+  void setTrackerEvent(int event) { trackerEvent = event; }
+  int getTrackerEvent() const { return trackerEvent; }
+
+  enum TRACKER_EVENT {
+    AUTO,
+    STARTED,
+    STOPPED,
+    COMPLETED
+  };
+
 };
 
 #endif // _D_REQUEST_H_
