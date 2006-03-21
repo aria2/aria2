@@ -130,12 +130,12 @@ bool TorrentMan::isEndGame() const {
   return bitfield->countMissingBlock() <= END_GAME_PIECE_NUM;
 }
 
-Piece TorrentMan::getMissingPiece(const unsigned char* peerBitfield, int length) {
+Piece TorrentMan::getMissingPiece(const Peer* peer) {
   int index = -1;
   if(isEndGame()) {
-    index = bitfield->getMissingIndex(peerBitfield, length);
+    index = bitfield->getMissingIndex(peer->getBitfield(), peer->getBitfieldLength());
   } else {
-    index = bitfield->getMissingUnusedIndex(peerBitfield, length);
+    index = bitfield->getMissingUnusedIndex(peer->getBitfield(), peer->getBitfieldLength());
   }
   if(index == -1) {
     return Piece::nullPiece;
@@ -308,7 +308,7 @@ void TorrentMan::setup(string metaInfoFile) {
     name = topName->toString();
   } else {
     char* basec = strdup(metaInfoFile.c_str());
-    name = string(basename(basec));
+    name = string(basename(basec))+".file";
     free(basec);
   }
 

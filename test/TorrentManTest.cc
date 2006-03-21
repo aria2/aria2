@@ -33,11 +33,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TorrentManTest );
 
 Peers createPeers() {
   Peers peers;
-  Peer* peer1 = new Peer("192.168.0.1", 6881);
+  Peer* peer1 = new Peer("192.168.0.1", 6881, 512*1024, 5242870);
   peer1->entryId = 1;
-  Peer* peer2 = new Peer("192.168.0.2", 6881);
+  Peer* peer2 = new Peer("192.168.0.2", 6881, 512*1024, 5242870);
   peer2->entryId = 2;
-  Peer* peer3 = new Peer("192.168.0.3", 6881);
+  Peer* peer3 = new Peer("192.168.0.3", 6881, 512*1024, 5242870);
   peer3->entryId = 3;
   peers.push_back(peer1);
   peers.push_back(peer2);
@@ -93,10 +93,10 @@ void TorrentManTest::testGetPeer() {
   TorrentMan tm;
   Peers peers = createPeers();
   tm.updatePeers(peers);
-  CPPUNIT_ASSERT(tm.getPeer(1) != Peer::nullPeer);
-  CPPUNIT_ASSERT(tm.getPeer(2) != Peer::nullPeer);
-  CPPUNIT_ASSERT(tm.getPeer(3) != Peer::nullPeer);
-  CPPUNIT_ASSERT(tm.getPeer(4) == Peer::nullPeer);
+  CPPUNIT_ASSERT(tm.getPeer() != Peer::nullPeer);
+  CPPUNIT_ASSERT(tm.getPeer() != Peer::nullPeer);
+  CPPUNIT_ASSERT(tm.getPeer() != Peer::nullPeer);
+  CPPUNIT_ASSERT(tm.getPeer() == Peer::nullPeer);
 }
 
 void TorrentManTest::testGetMissingPiece() {
@@ -108,12 +108,12 @@ void TorrentManTest::testGetMissingPiece() {
 
   unsigned char peerBitfield[2] = { 0xff, 0xff };
   Piece piece1 = tm.getMissingPiece(peerBitfield, 2);
-  CPPUNIT_ASSERT_EQUAL(0, piece1.index);
-  CPPUNIT_ASSERT_EQUAL(512*1024, piece1.length);
+  CPPUNIT_ASSERT_EQUAL(0, piece1.getIndex());
+  CPPUNIT_ASSERT_EQUAL(512*1024, piece1.getLength());
 
   Piece piece2 = tm.getMissingPiece(peerBitfield, 2);
-  CPPUNIT_ASSERT_EQUAL(1, piece2.index);
-  CPPUNIT_ASSERT_EQUAL(512*1024, piece2.length);
+  CPPUNIT_ASSERT_EQUAL(1, piece2.getIndex());
+  CPPUNIT_ASSERT_EQUAL(512*1024, piece2.getLength());
  
   tm.completePiece(piece1);
 
@@ -149,8 +149,8 @@ void TorrentManTest::testCancelPiece() {
 
   unsigned char peerBitfield[2] = { 0xff, 0xff };
   Piece piece = tm.getMissingPiece(peerBitfield, 2);
-  CPPUNIT_ASSERT_EQUAL(0, piece.index);
-  CPPUNIT_ASSERT_EQUAL(512*1024, piece.length);
+  CPPUNIT_ASSERT_EQUAL(0, piece.getIndex());
+  CPPUNIT_ASSERT_EQUAL(512*1024, piece.getLength());
 
   tm.cancelPiece(piece);
   int len = tm.getBitfieldLength();

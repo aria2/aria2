@@ -97,7 +97,8 @@ bool PeerAbstractCommand::execute() {
     onAbort(err);
     delete(err);
     return prepareForNextPeer(0);
-  } catch(DlRetryEx* err) {
+  }
+  /*catch(DlRetryEx* err) {
     e->logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
     peer->tryCount++;
     bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
@@ -114,6 +115,7 @@ bool PeerAbstractCommand::execute() {
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
     }
   }
+  */
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented

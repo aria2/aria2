@@ -20,6 +20,7 @@ aria2 is in very early development stage. Currently it has following features:
 * Segmented download
 * Cookie support(currently aria2 ignores "expires")
 * It can run as a daemon process.
+* BitTorrent protocol support
 
 3. How to build
 ---------------
@@ -30,4 +31,25 @@ The executable is aria2c in src directory.
 
 4. SSL
 ------
-You need OpenSSL library(0.9.7b or higher) to enable HTTPS support.
+You need OpenSSL library(0.9.7b or higher) to enable HTTPS and BitTorrent
+support.
+
+5. BitTorrrent
+--------------
+The filename of the downloaded file is determined as follows:
+
+single-file mode:
+    If "name" key is present in .torrent file, filename is the value of "name"
+    key. Otherwise, filename is the basename of .torrent file appended by
+    ".file". For example, .torrent file is "test.torrrent", then filename is
+    "test.torrent.file".
+    The directory to store the downloaded file can be specified by -d option.
+multi-file mode:
+    The complete directory/file structure mentioned in .torrent file is
+    created.
+    The directory to store the top directory of downloaded files can be
+    specified by -d option.
+
+Note: -o option is used to change the filename of downloaded .torrent file.
+
+This version only supports compact peers list format.

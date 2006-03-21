@@ -119,7 +119,7 @@ public:
   bool isPeerAvailable() const;
   int deleteOldErrorPeers(int maxNum);
 
-  Piece getMissingPiece(const unsigned char* peerBitfield, int len);
+  Piece getMissingPiece(const Peer* peer);
   void completePiece(const Piece& piece);
   void cancelPiece(const Piece& piece);
   void updatePiece(const Piece& piece);

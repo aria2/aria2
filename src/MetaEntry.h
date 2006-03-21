@@ -22,7 +22,6 @@
 #ifndef _D_META_ENTRY_H_
 #define _D_META_ENTRY_H_
 
-//#include "MetaEntryVisitor.h"
 #include "common.h"
 
 class MetaEntryVisitor;

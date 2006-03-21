@@ -102,7 +102,6 @@ bool PeerInteractionCommand::executeInternal() {
       }
       receiveMessage();
     }
-    //detectTimeoutAndDuplicateBlock();
     requestSlotMan->deleteTimedoutRequestSlot(piece);
     requestSlotMan->deleteCompletedRequestSlot(piece);
     sendInterest();
@@ -255,41 +254,6 @@ void PeerInteractionCommand::onGotWrongPiece() {
   e->torrentMan->updatePiece(piece);
 }
 
-/*
-const RequestSlot& PeerInteractionCommand::getRequestSlot(int index, int begin, int length) const {
-  for(RequestSlots::const_iterator itr = requestSlots.begin(); itr != requestSlots.end(); itr++) {
-    const RequestSlot& slot = *itr;
-    if(slot.index == index && slot.begin == begin && slot.length == length) {
-      return slot;
-    }
-  }
-  return RequestSlot::nullSlot;
-}
-*/
-/*
-bool PeerInteractionCommand::deleteRequestSlot(const RequestSlot& slot) {
-  for(RequestSlots::iterator itr = requestSlots.begin(); itr != requestSlots.end(); itr++) {
-    if(slot.index == itr->index && slot.begin == itr->begin && slot.length == itr->length) {
-      requestSlots.erase(itr);
-      return true;
-    }
-  }
-  return false;  
-}
-*/
-/*
-void PeerInteractionCommand::deleteAllRequestSlot() {
-  if(!Piece::isNull(piece)) {
-    for(RequestSlots::const_iterator itr = requestSlots.begin(); itr != requestSlots.end(); itr++) {
-      if(itr->index == piece.getIndex()) {
-	piece.cancelBlock(itr->blockIndex);
-      }
-    }
-    e->torrentMan->updatePiece(piece);
-  }
-  requestSlots.clear();
-}
-*/
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInteractionCommand::prepareForNextPeer(int wait) {
   if(e->torrentMan->isPeerAvailable()) {
@@ -306,38 +270,9 @@ bool PeerInteractionCommand::prepareForRetry(int wait) {
   e->commands.push(this);
   return false;
 }
-/*
-void PeerInteractionCommand::detectTimeoutAndDuplicateBlock() {
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  for(RequestSlots::iterator itr = requestSlots.begin(); itr != requestSlots.end();) {
-    const RequestSlot& slot = *itr;
-    if(slot.isTimeout(120) || piece.hasBlock(slot.blockIndex)) {
-      e->logger->debug("CUID#%d - deleting requestslot blockIndex %d", cuid, slot.blockIndex);
-      if(slot.isTimeout(120)) {
-	e->logger->debug("CUID#%d - because of timeout", cuid);
-      } else {
-	e->logger->debug("CUID#%d - because of duplicate block", cuid);
-      }
-      piece.cancelBlock(slot.blockIndex);
-      e->torrentMan->updatePiece(piece);
-      // send cancel message
-      PendingMessage pendingMessage =
-	PendingMessage::createCancelMessage(piece.getIndex(),
-					    slot.blockIndex*piece.getBlockLength(),
-					    piece.getBlockLength(slot.blockIndex),
-					    peerConnection);
-      pendingMessages.push_back(pendingMessage);
-      itr = requestSlots.erase(itr);
-    } else {
-      itr++;
-    }
-  }
-}
-*/
+
 Piece PeerInteractionCommand::getNewPieceAndSendInterest() {
-  Piece piece = e->torrentMan->getMissingPiece(peer->getBitfield(),
-					 peer->getBitfieldLength());
+  Piece piece = e->torrentMan->getMissingPiece(peer);
   if(Piece::isNull(piece)) {
     e->logger->debug("CUID#%d - try to send not-interested", cuid);
     PendingMessage pendingMessage(PeerMessage::NOT_INTERESTED, peerConnection);
@@ -346,7 +281,6 @@ Piece PeerInteractionCommand::getNewPieceAndSendInterest() {
     e->logger->debug("CUID#%d - try to send interested", cuid);
     PendingMessage pendingMessage(PeerMessage::INTERESTED, peerConnection);
     pendingMessages.push_back(pendingMessage);
-    //piecefield = new BitfieldMan(16*1024, piece.length);
   }
   return piece;
 }
