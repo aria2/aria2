@@ -203,7 +203,7 @@ void showUsage() {
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
 #ifdef HAVE_LIBSSL
   cout << _(" Download a torrent:") << endl;
-  cout << "  aria2c -o test.torret http://AAA.BBB.CCC/file.torrent" << endl;
+  cout << "  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
   cout << _(" Download a torrent using local .torrent file:") << endl;
   cout << "  aria2c --torrent-file test.torrent" << endl;
   cout << endl;
