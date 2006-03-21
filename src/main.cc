@@ -392,9 +392,9 @@ int main(int argc, char* argv[]) {
 	torrentFile = string(optarg);
 	break;
       case 16:
-	if(string(optarg) == "on") {
+	if(string(optarg) == "true") {
 	  followTorrent = true;
-	} else if(string(optarg) == "off") {
+	} else if(string(optarg) == "false") {
 	  followTorrent = false;
 	} else {
 	  cerr << _("follow-torrent must be either 'true' or 'false'.") << endl;
