@@ -218,9 +218,11 @@ void TorrentMan::completePiece(const Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
+  if(!hasPiece(piece.getIndex())) {
+    addDownloadedSize(piece.getLength());
+  }
   bitfield->setBit(piece.getIndex());
   bitfield->unsetUseBit(piece.getIndex());
-  addDownloadedSize(piece.getLength());
   deleteUsedPiece(piece);
   if(!isEndGame()) {
     reduceUsedPieces(100);
