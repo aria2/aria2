@@ -31,17 +31,26 @@ MetaEntry* MetaFileUtil::parseMetaFile(string file) {
   int len = f.size();
   char* buf = new char[len];
   FILE* fp = fopen(file.c_str(), "r+");
-  if(fp == NULL) {
-    throw new DlAbortEx("cannot open metainfo file");
-  }
-  if(fread(buf, len, 1, fp) != 1) {
+  try {
+    if(fp == NULL) {
+      throw new DlAbortEx("cannot open metainfo file");
+    }
+    if(fread(buf, len, 1, fp) != 1) {
+      fclose(fp);
+      throw new DlAbortEx("cannot read metainfo");
+    }
     fclose(fp);
-    throw new DlAbortEx("cannot read metainfo");
+    fp = NULL;
+    MetaEntry* entry = bdecoding(buf, len);
+    delete [] buf;
+    return entry;
+  } catch(Exception* ex) {
+    delete [] buf;
+    if(fp != NULL) {
+      fclose(fp);
+    }
+    throw;
   }
-  fclose(fp);
-  MetaEntry* entry = bdecoding(buf, len);
-  delete [] buf;
-  return entry;
 }
 
 MetaEntry* MetaFileUtil::bdecoding(const char* buf, int len) {
@@ -88,16 +97,21 @@ Dictionary* MetaFileUtil::parseDictionaryTree(const char** pp, const char* end) 
     throw new DlAbortEx("mulformed metainfo");
   }
   Dictionary* dic = new Dictionary();
-  while(1) {
-    if(**pp == 'e') {
-      (*pp)++;
-      break;
+  try {
+    while(1) {
+      if(**pp == 'e') {
+	(*pp)++;
+	break;
+      }
+      string name = decodeWordAsString(pp, end);
+      MetaEntry* e = bdecodingR(pp, end);
+      dic->put(name, e);
     }
-    string name = decodeWordAsString(pp, end);
-    MetaEntry* e = bdecodingR(pp, end);
-    dic->put(name, e);
+    return dic;
+  } catch(Exception* ex) {
+    delete dic;
+    throw;
   }
-  return dic;
 }
 
 List* MetaFileUtil::parseListTree(const char** pp, const char* end) {
@@ -105,15 +119,20 @@ List* MetaFileUtil::parseListTree(const char** pp, const char* end) {
     throw new DlAbortEx("mulformed metainfo");
   }
   List* lis = new List();
-  while(1) {
-    if(**pp == 'e') {
-      (*pp)++;
-      break;
+  try {
+    while(1) {
+      if(**pp == 'e') {
+	(*pp)++;
+	break;
+      }
+      MetaEntry* e = bdecodingR(pp, end);
+      lis->add(e);
     }
-    MetaEntry* e = bdecodingR(pp, end);
-    lis->add(e);
+    return lis;
+  } catch(Exception* ex) {
+    delete lis;
+    throw;
   }
-  return lis;
 }
 
 Data* MetaFileUtil::decodeInt(const char** pp, const char* end) {

@@ -46,6 +46,7 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
 PeerInteractionCommand::~PeerInteractionCommand() {
   delete peerConnection;
   delete requestSlotMan;
+  e->torrentMan->unadvertisePiece(cuid);
 }
 
 bool PeerInteractionCommand::executeInternal() {
@@ -378,14 +379,18 @@ void PeerInteractionCommand::beforeSocketCheck() {
       PendingMessage pendingMessage(PeerMessage::BITFIELD, peerConnection);
       pendingMessages.push_back(pendingMessage);
     } else {
-      for(vector<int>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
-	PendingMessage pendingMessage = PendingMessage::createHaveMessage(*itr, peerConnection);
-	pendingMessages.push_back(pendingMessage);
+      if(pendingMessages.size() == 0) {
+	for(vector<int>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+	  peerConnection->sendHave(*itr);
+	}
+      } else {
+	for(vector<int>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+	  PendingMessage pendingMessage = PendingMessage::createHaveMessage(*itr, peerConnection);
+	  pendingMessages.push_back(pendingMessage);
+	}
       }
     }
-    if(indexes.size() == 0) {
-      keepAlive();
-    }
+    keepAlive();
   }
 }
 

@@ -27,17 +27,21 @@
 #include <fcntl.h>
 #include "DlAbortEx.h"
 #include "File.h"
-#ifdef HAVE_LIBSSL
-#include <openssl/evp.h>
-#endif // HAVE_LIBSSL
 #include "Util.h"
 
-AbstractDiskWriter::AbstractDiskWriter():fd(0) {}
+AbstractDiskWriter::AbstractDiskWriter():fd(0) {
+#ifdef HAVE_LIBSSL
+  EVP_MD_CTX_init(&ctx);
+#endif // HAVE_LIBSSL
+}
 
 AbstractDiskWriter::~AbstractDiskWriter() {
   if(fd != 0) {
     close(fd);
   }
+#ifdef HAVE_LIBSSL
+  EVP_MD_CTX_cleanup(&ctx);
+#endif // HAVE_LIBSSL
 }
 
 void AbstractDiskWriter::closeFile() {
@@ -85,12 +89,9 @@ int AbstractDiskWriter::readDataInternal(char* data, int len) {
 
 string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
 #ifdef HAVE_LIBSSL
-  EVP_MD_CTX ctx;
-  EVP_MD_CTX_init(&ctx);
   EVP_DigestInit_ex(&ctx, EVP_sha1(), NULL);
-
   try {
-    int BUFSIZE = 4096;
+    int BUFSIZE = 16*1024;
     char buf[BUFSIZE];
     for(int i = 0; i < length/BUFSIZE; i++) {
       if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
@@ -109,10 +110,8 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
     unsigned char hashValue[20];
     int len;
     EVP_DigestFinal_ex(&ctx, hashValue, (unsigned int*)&len);
-    EVP_MD_CTX_cleanup(&ctx);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
-    EVP_MD_CTX_cleanup(&ctx);
     throw new DlAbortEx(strerror(errno));
   }
 #else

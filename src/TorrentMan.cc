@@ -61,6 +61,9 @@ void TorrentMan::updatePeers(const Peers& peers) {
 }
 
 bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
+  if(peers.size() >= MAX_PEER_LIST_SIZE) {
+    return false;
+  }
   if(duplicate) {
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
@@ -446,9 +449,9 @@ void TorrentMan::read(FILE* file) {
     if(fread(&uploadedSize, sizeof(uploadedSize), 1, file) < 1) {
       throw new DlAbortEx(strerror(errno));
     }
-    delete savedBitfield;
+    delete [] savedBitfield;
   } catch(Exception* ex) {
-    delete savedBitfield;
+    delete [] savedBitfield;
     throw;
   }
 }

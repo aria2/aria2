@@ -23,10 +23,17 @@
 #define _D_ABSTRACT_DISK_WRITER_H_
 
 #include "DiskWriter.h"
+#ifdef HAVE_LIBSSL
+#include <openssl/evp.h>
+#endif // HAVE_LIBSSL
 
 class AbstractDiskWriter:public DiskWriter {
 protected:
   int fd;
+
+#ifdef HAVE_LIBSSL
+  EVP_MD_CTX ctx;
+#endif // HAVE_LIBSSL
 
   void createFile(string filename, int addFlags = 0);
 

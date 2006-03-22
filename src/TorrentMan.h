@@ -29,6 +29,7 @@
 #include "DiskWriter.h"
 #include "Piece.h"
 #include "Directory.h"
+#include <deque>
 #include <vector>
 #include <map>
 #include <string>
@@ -45,6 +46,7 @@ using namespace std;
 #define DEFAULT_ANNOUNCE_INTERVAL 1800
 #define DEFAULT_ANNOUNCE_MIN_INTERVAL 120
 #define MAX_PEERS 55
+#define MAX_PEER_LIST_SIZE 250
 #define END_GAME_PIECE_NUM 20
 
 class FileEntry {
@@ -55,10 +57,10 @@ public:
   ~FileEntry() {}
 };
 
-typedef vector<Peer*> Peers;
+typedef deque<Peer*> Peers;
 typedef multimap<int, int> Haves;
 typedef vector<FileEntry> MultiFileEntries;
-typedef vector<Piece> UsedPieces;
+typedef deque<Piece> UsedPieces;
 
 class TorrentMan {
 private:
@@ -207,6 +209,9 @@ public:
 
   void setPort(int port) { this->port = port; }
   int getPort() const { return port; }
+
+  int countUsedPiece() const { return usedPieces.size(); }
+  int countAdvertisedPiece() const { return haves.size(); }
 
   enum FILE_MODE {
     SINGLE,

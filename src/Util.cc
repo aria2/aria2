@@ -204,10 +204,20 @@ void Util::rangedFileCopy(string dest, string src, long long int srcOffset, long
   }
   int BUF_SIZE = 16*1024;
   char buf[BUF_SIZE];
-  int x = length/BUF_SIZE+(length%BUF_SIZE ? 1 : 0);
+  int x = length/BUF_SIZE;
+  int r = length%BUF_SIZE;
   for(int i = 0; i < x; i++) {
     int readLength;
-    if((readLength = read(srcFd, buf, BUF_SIZE)) == -1) {
+    if((readLength = read(srcFd, buf, BUF_SIZE)) == -1 || readLength != BUF_SIZE) {
+      throw new DlAbortEx(strerror(errno));
+    }
+    if(write(destFd, buf, readLength) == -1) {
+      throw new DlAbortEx(strerror(errno));
+    }
+  }
+  if(r > 0) {
+    int readLength;
+    if((readLength = read(srcFd, buf, r)) == -1 || readLength != r) {
       throw new DlAbortEx(strerror(errno));
     }
     if(write(destFd, buf, readLength) == -1) {
