@@ -24,7 +24,7 @@
 
 #include "common.h"
 #include <map>
-#include <vector>
+#include <deque>
 #include <string>
 
 using namespace std;
@@ -39,7 +39,7 @@ public:
   void put(const string& name, const string& value);
   bool defined(const string& name) const;
   string getFirst(const string& name) const;
-  vector<string> get(const string& name) const;
+  Strings get(const string& name) const;
   int getFirstAsInt(const string& name) const;
   long long int getFirstAsLLInt(const string& name) const;
 };

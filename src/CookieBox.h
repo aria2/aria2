@@ -24,7 +24,7 @@
 
 #include "common.h"
 #include <string>
-#include <vector>
+#include <deque>
 
 using namespace std;
 
@@ -49,9 +49,11 @@ public:
   }
 };
 
+typedef deque<Cookie> Cookies;
+
 class CookieBox {
 private:
-  vector<Cookie> cookies;
+  Cookies cookies;
   void setField(Cookie& cookie, string name, string value) const;
 public:
   CookieBox();
@@ -60,7 +62,7 @@ public:
   void add(const Cookie& cookie);
   void add(string cookieStr);
   void parse(Cookie& cookie, string cookieStr) const;
-  vector<Cookie> criteriaFind(string host, string dir, bool secure) const;
+  Cookies criteriaFind(string host, string dir, bool secure) const;
 };
 
 #endif // _D_COOKIE_BOX_H_

@@ -24,11 +24,11 @@
 
 #include "common.h"
 #include <string>
-#include <vector>
+#include <deque>
 
 class Directory {
 
-typedef vector<Directory*> Files;
+typedef deque<Directory*> Files;
 
 private:
   string name;

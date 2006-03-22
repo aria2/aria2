@@ -79,6 +79,6 @@ int Piece::getMissingUnusedBlockIndex() const {
   return blockIndex;
 }
 
-vector<int> Piece::getAllMissingBlockIndexes() const {
+BlockIndexes Piece::getAllMissingBlockIndexes() const {
   return bitfield->getAllMissingIndexes();
 }

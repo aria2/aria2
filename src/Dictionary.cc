@@ -52,6 +52,6 @@ void Dictionary::accept(MetaEntryVisitor* v) const {
   v->visit(this);
 }
 
-const vector<string>& Dictionary::getOrder() const {
+const Order& Dictionary::getOrder() const {
   return order;
 }

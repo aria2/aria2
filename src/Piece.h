@@ -45,7 +45,7 @@ public:
   Piece& operator=(const Piece& piece);
 
   int getMissingUnusedBlockIndex() const;
-  vector<int> getAllMissingBlockIndexes() const;
+  BlockIndexes getAllMissingBlockIndexes() const;
   void completeBlock(int blockIndex);
   void cancelBlock(int blockIndex);
   int countCompleteBlock() const {

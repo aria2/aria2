@@ -23,7 +23,7 @@
 #define _D_DOWNLOAD_ENGINE_H_
 
 #include <queue>
-#include <vector>
+#include <deque>
 #include "Command.h"
 #include "Socket.h"
 #include "SegmentMan.h"
@@ -35,22 +35,25 @@
 
 using namespace std;
 
+typedef deque<Socket*> Sockets;
+typedef queue<Command*> Commands;
+
 class DownloadEngine {
 private:
   void waitData();
-  vector<Socket*> rsockets;
-  vector<Socket*> wsockets;
+  Sockets rsockets;
+  Sockets wsockets;
 
   void shortSleep() const;
-  bool addSocket(vector<Socket*>& sockets, Socket* socket);
-  bool deleteSocket(vector<Socket*>& sockets, Socket* socket);
+  bool addSocket(Sockets& sockets, Socket* socket);
+  bool deleteSocket(Sockets& sockets, Socket* socket);
 protected:
   virtual void initStatistics() = 0;
   virtual void calculateStatistics() = 0;
   virtual void onEndOfRun() = 0;
 public:
   bool noWait;
-  queue<Command*> commands;
+  Commands commands;
   SegmentMan* segmentMan;
   DiskWriter* diskWriter;
   const Logger* logger;

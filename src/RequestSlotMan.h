@@ -29,11 +29,11 @@
 #include "PeerConnection.h"
 #include "PendingMessage.h"
 #include "TorrentMan.h"
-#include <vector>
+#include <deque>
 
 #define DEFAULT_TIME_OUT 120
 
-typedef vector<RequestSlot> RequestSlots;
+typedef deque<RequestSlot> RequestSlots;
 
 class RequestSlotMan {
 private:

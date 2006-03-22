@@ -39,8 +39,8 @@ string HttpHeader::getFirst(const string& name) const {
   }
 }
 
-vector<string> HttpHeader::get(const string& name) const {
-  vector<string> v;
+Strings HttpHeader::get(const string& name) const {
+  Strings v;
   for(multimap<string, string>::const_iterator itr = table.find(name); itr != table.end(); itr++) {
     v.push_back((*itr).second);
   }

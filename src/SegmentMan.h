@@ -22,7 +22,6 @@
 #ifndef _D_SEGMENT_MAN_H_
 #define _D_SEGMENT_MAN_H_
 
-#include <vector>
 #include "common.h"
 #include "Logger.h"
 #include "Segment.h"

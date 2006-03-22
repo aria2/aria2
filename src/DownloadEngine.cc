@@ -75,14 +75,13 @@ void DownloadEngine::waitData() {
   FD_ZERO(&rfds);
   FD_ZERO(&wfds);
   int max = 0;
-  for(vector<Socket*>::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
+  for(Sockets::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
     FD_SET((*itr)->getSockfd(), &rfds);
     if(max < (*itr)->getSockfd()) {
       max = (*itr)->getSockfd();
     }
   }
-  for(vector<Socket*>::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
-
+  for(Sockets::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
     FD_SET((*itr)->getSockfd(), &wfds);
     if(max < (*itr)->getSockfd()) {
       max = (*itr)->getSockfd();
@@ -94,10 +93,10 @@ void DownloadEngine::waitData() {
   retval = select(max+1, &rfds, /*&wfds*/NULL, NULL, &tv);
 }
 
-bool DownloadEngine::addSocket(vector<Socket*>& sockets, Socket* socket) {
-  vector<Socket*>::iterator itr = find(sockets.begin(),
-				       sockets.end(),
-				       socket);
+bool DownloadEngine::addSocket(Sockets& sockets, Socket* socket) {
+  Sockets::iterator itr = find(sockets.begin(),
+			       sockets.end(),
+			       socket);
   if(itr == sockets.end()) {
     sockets.push_back(socket);
     return true;
@@ -106,10 +105,10 @@ bool DownloadEngine::addSocket(vector<Socket*>& sockets, Socket* socket) {
   }
 }
 
-bool DownloadEngine::deleteSocket(vector<Socket*>& sockets, Socket* socket) {
-  vector<Socket*>::iterator itr = find(sockets.begin(),
-				       sockets.end(),
-				       socket);
+bool DownloadEngine::deleteSocket(Sockets& sockets, Socket* socket) {
+  Sockets::iterator itr = find(sockets.begin(),
+			       sockets.end(),
+			       socket);
   if(itr != sockets.end()) {
     sockets.erase(itr);
     return true;

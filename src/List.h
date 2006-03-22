@@ -23,11 +23,11 @@
 #define _D_LIST_H_
 
 #include "MetaEntry.h"
-#include <vector>
+#include <deque>
 
 using namespace std;
 
-typedef vector<MetaEntry*> MetaList;
+typedef deque<MetaEntry*> MetaList;
 
 class List : public MetaEntry {
 private:

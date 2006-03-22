@@ -54,18 +54,18 @@ void CookieBox::setField(Cookie& cookie, string name, string value) const {
 
 void CookieBox::parse(Cookie& cookie, string cookieStr) const {
   cookie.clear();
-  vector<string> terms;
+  Strings terms;
   Util::slice(terms, cookieStr, ';');
-  for(vector<string>::iterator itr = terms.begin(); itr != terms.end(); itr++) {
+  for(Strings::iterator itr = terms.begin(); itr != terms.end(); itr++) {
     pair<string, string> nv;
     Util::split(nv, *itr, '=');
     setField(cookie, nv.first, nv.second);
   }
 }
 
-vector<Cookie> CookieBox::criteriaFind(string host, string dir, bool secure) const {
-  vector<Cookie> result;
-  for(vector<Cookie>::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
+Cookies CookieBox::criteriaFind(string host, string dir, bool secure) const {
+  Cookies result;
+  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
     const Cookie& c = *itr;
     if((secure || !c.secure && !secure) &&
        Util::endsWith(host, c.domain) &&

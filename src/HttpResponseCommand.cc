@@ -159,8 +159,8 @@ void HttpResponseCommand::createHttpDownloadCommand(string transferEncoding) {
 }
 
 void HttpResponseCommand::retrieveCookie(const HttpHeader& headers) {
-  vector<string> v = headers.get("Set-Cookie");
-  for(vector<string>::const_iterator itr = v.begin(); itr != v.end(); itr++) {
+  Strings v = headers.get("Set-Cookie");
+  for(Strings::const_iterator itr = v.begin(); itr != v.end(); itr++) {
     Cookie c;
     req->cookieBox->parse(c, *itr);
     req->cookieBox->add(c);

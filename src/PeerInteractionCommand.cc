@@ -317,9 +317,9 @@ void PeerInteractionCommand::createRequestPendingMessage(int blockIndex) {
 void PeerInteractionCommand::sendMessages() {
   if(!Piece::isNull(piece) && !peer->peerChoking) {
     if(e->torrentMan->isEndGame()) {
-      vector<int> missingBlockIndexes = piece.getAllMissingBlockIndexes();
+      BlockIndexes missingBlockIndexes = piece.getAllMissingBlockIndexes();
       if(requestSlotMan->isEmpty()) {
-	for(vector<int>::const_iterator itr = missingBlockIndexes.begin();
+	for(PieceIndexes::const_iterator itr = missingBlockIndexes.begin();
 	    itr != missingBlockIndexes.end(); itr++) {
 	  createRequestPendingMessage(*itr);
 	}
@@ -374,17 +374,17 @@ void PeerInteractionCommand::beforeSocketCheck() {
   if(sequence == WIRED) {
     e->torrentMan->unadvertisePiece(cuid);
 
-    vector<int> indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
+    PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
     if(indexes.size() >= 20) {
       PendingMessage pendingMessage(PeerMessage::BITFIELD, peerConnection);
       pendingMessages.push_back(pendingMessage);
     } else {
       if(pendingMessages.size() == 0) {
-	for(vector<int>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+	for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
 	  peerConnection->sendHave(*itr);
 	}
       } else {
-	for(vector<int>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+	for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
 	  PendingMessage pendingMessage = PendingMessage::createHaveMessage(*itr, peerConnection);
 	  pendingMessages.push_back(pendingMessage);
 	}

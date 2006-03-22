@@ -23,7 +23,9 @@
 #define _D_BITFIELD_MAN_H_
 
 #include "common.h"
-#include <vector>
+#include <deque>
+
+typedef deque<int> BlockIndexes;
 
 class BitfieldMan {
 private:
@@ -63,7 +65,7 @@ public:
   int getFirstMissingUnusedIndex(const unsigned char* bitfield, int len) const;
   int getFirstMissingUnusedIndex() const;
   int getMissingUnusedIndex(const unsigned char* bitfield, int len) const;
-  vector<int> getAllMissingIndexes() const;
+  BlockIndexes getAllMissingIndexes() const;
   int countMissingBlock() const;
   bool setUseBit(int index);
   bool unsetUseBit(int index);

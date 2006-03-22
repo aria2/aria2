@@ -26,7 +26,6 @@
 #include "PeerConnection.h"
 #include "PendingMessage.h"
 #include "RequestSlotMan.h"
-#include <vector>
 
 using namespace std;
 

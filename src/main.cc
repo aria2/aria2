@@ -35,7 +35,7 @@
 #include "PeerListenCommand.h"
 #include "TorrentAutoSaveCommand.h"
 #include "SleepCommand.h"
-#include <vector>
+#include <deque>
 #include <algorithm>
 #include <time.h>
 #include <signal.h>
@@ -53,6 +53,8 @@ extern int optind, opterr, optopt;
 #endif // HAVE_LIBSSL
 
 using namespace std;
+
+typedef deque<Request*> Requests;
 
 void printDownloadCompeleteMessage(string filename) {
   printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
@@ -94,7 +96,7 @@ void torrentHandler(int signal) {
   exit(0);
 }
 
-void addCommand(int cuid, const char* url, string referer, vector<Request*> requests) {
+void addCommand(int cuid, const char* url, string referer, Requests requests) {
   Request* req = new Request();
   req->setReferer(referer);
   if(req->setUrl(url)) {
@@ -520,7 +522,7 @@ int main(int argc, char* argv[]) {
     e->segmentMan->option = op;
     e->segmentMan->splitter = splitter;
     
-    vector<Request*> requests;
+    Requests requests;
     for(int i = 1; optind+i-1 < argc; i++) {
       for(int s = 1; s <= split; s++) {
       addCommand(split*(i-1)+s, argv[optind+i-1], referer, requests); 

@@ -24,7 +24,7 @@
 
 #include "common.h"
 #include "PeerConnection.h"
-#include <vector>
+#include <deque>
 
 class PendingMessage {
 private:
@@ -66,6 +66,6 @@ public:
   static PendingMessage createHaveMessage(int index, PeerConnection* peerConnectioin);
 };
 
-typedef vector<PendingMessage> PendingMessages;
+typedef deque<PendingMessage> PendingMessages;
 
 #endif // _D_PENDING_MESSAGE_H_

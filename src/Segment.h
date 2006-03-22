@@ -23,7 +23,7 @@
 #define _D_SEGMENT_H_
 
 #include "common.h"
-#include <vector>
+#include <deque>
 
 using namespace std;
 
@@ -45,7 +45,7 @@ typedef struct {
   bool finish;
 } Segment;
 
-typedef vector<Segment> Segments;
+typedef deque<Segment> Segments;
 
 #define SEGMENT_EQUAL(X, Y) (X.cuid == Y.cuid && X.sp == Y.sp && X.ep == Y.ep && X.ds == Y.ds && X.finish == Y.finish ? true : false)
 

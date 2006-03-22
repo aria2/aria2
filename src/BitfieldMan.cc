@@ -185,8 +185,8 @@ int BitfieldMan::getFirstMissingUnusedIndex() const {
   return -1;
 }
 
-vector<int> BitfieldMan::getAllMissingIndexes() const {
-  vector<int> missingIndexes;
+BlockIndexes BitfieldMan::getAllMissingIndexes() const {
+  BlockIndexes missingIndexes;
   for(int i = 0; i < bitfieldLength; i++) {
     unsigned char bit = ~bitfield[i];
     for(int bs = 7; bs >= 0 && i*8+7-bs < blocks; bs--) {

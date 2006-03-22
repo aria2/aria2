@@ -89,7 +89,7 @@ long long int Util::difftv(struct timeval tv1, struct timeval tv2) {
 	  tv1.tv_usec-tv2.tv_usec);
 }
 
-void Util::slice(vector<string>& result, string src, char delim) {
+void Util::slice(Strings& result, string src, char delim) {
   string::size_type p = 0;
   while(1) {
     string::size_type np = src.find(delim, p);

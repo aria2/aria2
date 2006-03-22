@@ -24,17 +24,18 @@
 
 #include "MetaEntry.h"
 #include <map>
-#include <vector>
+#include <deque>
 #include <string>
 
 using namespace std;
 
 typedef map<string, MetaEntry*> MetaTable;
+typedef deque<string> Order;
 
 class Dictionary : public MetaEntry {
 private:
   MetaTable table;
-  vector<string> order;
+  Order order;
   void clearTable();
 public:
   Dictionary();
@@ -44,7 +45,7 @@ public:
   void put(string name, MetaEntry* entry);
 
   void accept(MetaEntryVisitor* v) const;
-  const vector<string>& getOrder() const;
+  const Order& getOrder() const;
   
 };
 

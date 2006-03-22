@@ -90,8 +90,8 @@ string HttpConnection::createRequest(const Segment& segment) const {
   }
 
   string cookiesValue;
-  vector<Cookie> cookies = req->cookieBox->criteriaFind(req->getHost(), req->getDir(), req->getProtocol() == "https" ? true : false);
-  for(vector<Cookie>::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
+  Cookies cookies = req->cookieBox->criteriaFind(req->getHost(), req->getDir(), req->getProtocol() == "https" ? true : false);
+  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
     cookiesValue += (*itr).toString()+";";
   }
   if(cookiesValue.size()) {

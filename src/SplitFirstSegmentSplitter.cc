@@ -22,7 +22,7 @@
 #include "SplitFirstSegmentSplitter.h"
 
 bool SplitFirstSegmentSplitter::splitSegment(Segment& seg, int cuid, Segments& segments) {
-  for(vector<Segment>::iterator itr = segments.begin(); itr != segments.end(); itr++) {
+  for(Segments::iterator itr = segments.begin(); itr != segments.end(); itr++) {
     Segment& s = *itr;
     if(s.finish) {
       continue;

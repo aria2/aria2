@@ -30,7 +30,6 @@
 #include "Piece.h"
 #include "Directory.h"
 #include <deque>
-#include <vector>
 #include <map>
 #include <string>
 
@@ -59,15 +58,16 @@ public:
 
 typedef deque<Peer*> Peers;
 typedef multimap<int, int> Haves;
-typedef vector<FileEntry> MultiFileEntries;
+typedef deque<FileEntry> MultiFileEntries;
 typedef deque<Piece> UsedPieces;
+typedef deque<int> PieceIndexes;
 
 class TorrentMan {
 private:
   Peers peers;
   BitfieldMan* bitfield;
   unsigned char infoHash[INFO_HASH_LENGTH];
-  vector<string> pieceHashes;
+  deque<string> pieceHashes;
   int peerEntryIdCounter;
   int cuidCounter;
   long long int downloadedSize;
@@ -151,8 +151,8 @@ public:
     haves.insert(vt);
   }
 
-  vector<int> getAdvertisedPieceIndexes(int myCuid) const {
-    vector<int> indexes;
+  PieceIndexes getAdvertisedPieceIndexes(int myCuid) const {
+    PieceIndexes indexes;
     for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
       const Haves::value_type& have = *itr;
       if(have.first == myCuid) {

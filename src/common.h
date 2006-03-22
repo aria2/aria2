@@ -27,6 +27,8 @@
 #include <iostream>
 #include <assert.h>
 #include <limits.h>
+#include <string>
+#include <deque>
 #if ENABLE_NLS
 #  include <gettext.h>
 #  define _(String) gettext (String)
@@ -44,5 +46,7 @@
 #define BITFIELD_LEN_FROM_PIECES(X) (X/8+(X%8? 1 : 0))
 
 using namespace std;
+
+typedef deque<string> Strings;
 
 #endif // _D_COMMON_H_

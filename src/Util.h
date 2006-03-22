@@ -25,7 +25,7 @@
 #include "common.h"
 #include <string>
 #include <utility>
-#include <vector>
+#include <deque>
 #include <sys/time.h>
 
 using namespace std;
@@ -47,7 +47,7 @@ public:
    * Take a string src which is a deliminated list and add its elements
    * into result. result is not cleared before conversion begins.
    */
-  static void slice(vector<string>& result, string src, char delim);
+  static void slice(Strings& result, string src, char delim);
   
   static string trim(string src);
 

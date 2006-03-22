@@ -54,8 +54,8 @@ void ShaVisitor::visit(const Data* d) {
 void ShaVisitor::visit(const Dictionary* d) {
 #ifdef HAVE_LIBSSL
   EVP_DigestUpdate(&ctx, "d", 1);
-  const vector<string>& v = d->getOrder();
-  for(vector<string>::const_iterator itr = v.begin(); itr != v.end(); itr++) {
+  const Order& v = d->getOrder();
+  for(Order::const_iterator itr = v.begin(); itr != v.end(); itr++) {
     string lenStr = Util::llitos(itr->size());
     EVP_DigestUpdate(&ctx, lenStr.c_str(), lenStr.size());
     EVP_DigestUpdate(&ctx, ":", 1);

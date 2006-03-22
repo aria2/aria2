@@ -22,8 +22,8 @@
 #include "SplitSlowestSegmentSplitter.h"
 
 bool SplitSlowestSegmentSplitter::splitSegment(Segment& seg, int cuid, Segments& segments) {
-  vector<Segment>::iterator slowest = segments.end();;
-  for(vector<Segment>::iterator itr = segments.begin(); itr != segments.end(); itr++) {
+  Segments::iterator slowest = segments.end();;
+  for(Segments::iterator itr = segments.begin(); itr != segments.end(); itr++) {
     Segment& s = *itr;
     if(s.finish) {
       continue;
