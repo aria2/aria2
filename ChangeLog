@@ -29,6 +29,7 @@
 	* PendingMessage.cc: make HAVE messages sent only when peer does not
 	have the piece.
 	* Peer.{h,cc}: added hasPiece(int index).
+	* main.cc: corrected addCommand.
 	
 2006-03-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

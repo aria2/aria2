@@ -96,7 +96,7 @@ void torrentHandler(int signal) {
   exit(0);
 }
 
-void addCommand(int cuid, const char* url, string referer, Requests requests) {
+void addCommand(int cuid, const char* url, string referer, Requests& requests) {
   Request* req = new Request();
   req->setReferer(referer);
   if(req->setUrl(url)) {
@@ -539,7 +539,6 @@ int main(int argc, char* argv[]) {
     } else {
       printDownloadAbortMessage();
     }
-    
     for_each(requests.begin(), requests.end(), clearRequest);
     requests.clear();
 
