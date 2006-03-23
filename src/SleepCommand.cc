@@ -36,7 +36,7 @@ SleepCommand::~SleepCommand() {
 bool SleepCommand::execute() {
   struct timeval now;
   gettimeofday(&now, NULL);
-  if(Util::difftv(now, checkPoint) >= wait*1000000) {
+  if(Util::difftv(now, checkPoint) >= ((long long int)wait)*1000000) {
     engine->commands.push(nextCommand);
     nextCommand = NULL;
     return true;

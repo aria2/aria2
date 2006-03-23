@@ -361,7 +361,7 @@ void PeerInteractionCommand::keepAlive() {
   } else {
     struct timeval now;
     gettimeofday(&now, NULL);
-    if(Util::difftv(now, keepAliveCheckPoint) >= 120*1000000) {
+    if(Util::difftv(now, keepAliveCheckPoint) >= (long long int)120*1000000) {
       if(pendingMessages.empty()) {
 	peerConnection->sendKeepAlive();
       }

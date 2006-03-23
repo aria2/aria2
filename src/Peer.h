@@ -109,6 +109,8 @@ public:
 
   bool shouldChoke() const;
 
+  bool hasPiece(int index) const;
+
   static Peer* nullPeer;
 };
 

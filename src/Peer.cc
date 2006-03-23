@@ -46,3 +46,7 @@ bool Peer::shouldChoke() const {
     return peerDownload >= peerUpload+pieceLength*4;
   }
 }
+
+bool Peer::hasPiece(int index) const {
+  return bitfield->isBitSet(index);
+}

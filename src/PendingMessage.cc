@@ -25,7 +25,9 @@ bool PendingMessage::processMessage() {
   bool retval = true;
   switch(peerMessageId) {
   case PeerMessage::HAVE:
-    peerConnection->sendHave(index);
+    if(!peerConnection->getPeer()->hasPiece(index)) {
+      peerConnection->sendHave(index);
+    }
     break;
   case PeerMessage::BITFIELD:
     peerConnection->sendBitfield();

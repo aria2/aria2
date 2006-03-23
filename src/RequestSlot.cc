@@ -55,7 +55,7 @@ void RequestSlot::setDispatchedTime() {
 bool RequestSlot::isTimeout(int timeoutSec) const {
   struct timeval now;
   gettimeofday(&now, NULL);
-  return Util::difftv(now, dispatchedTime) > timeoutSec*1000000;
+  return Util::difftv(now, dispatchedTime) > ((long long int)timeoutSec)*1000000;
 }
 
 bool RequestSlot::isNull(const RequestSlot& requestSlot) {

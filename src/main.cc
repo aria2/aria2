@@ -525,7 +525,7 @@ int main(int argc, char* argv[]) {
     Requests requests;
     for(int i = 1; optind+i-1 < argc; i++) {
       for(int s = 1; s <= split; s++) {
-      addCommand(split*(i-1)+s, argv[optind+i-1], referer, requests); 
+	addCommand(split*(i-1)+s, argv[optind+i-1], referer, requests); 
       }
     }
     e->run();
@@ -594,9 +594,10 @@ int main(int argc, char* argv[]) {
       } else {
 	printDownloadAbortMessage();
       }
-      
+      delete(req);
       delete(te->segmentMan);
       delete(te->torrentMan);
+      delete(te->diskWriter);
       delete(te);
     } catch(Exception* ex) {
       cerr << ex->getMsg() << endl;

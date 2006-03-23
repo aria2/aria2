@@ -36,7 +36,9 @@ Request::Request():port(0), tryCount(0), isTorrent(false) {
   cookieBox = new CookieBox();
 }
 
-Request::~Request() {}
+Request::~Request() {
+  delete cookieBox;
+}
 
 bool Request::setUrl(string url) {
   this->url = url;

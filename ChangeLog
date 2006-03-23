@@ -12,6 +12,23 @@
 	to Constructor. Also, moved digest cleanup to Destructor.
 	* MetaFileUtil.cc: fixed memory leak
 	* replaced std::vector with std::deque.
+	* AbstractCommand.cc: casted timeout value to long long int.
+	* ChunkedEncoding.cc: fixed memory leak.
+	* PeerInteractionCommand.cc: casted timeout value to long long int.
+	* SleepCommand.cc: casted timeout value to long long int.
+	* Data.cc: fixed memory leak.
+	* Data.cc: fixed toLLInt().
+	* BitfieldMan.cc: fixed memory leak.
+	* TorrentMan.cc: initialized storeDir to ".".
+	* TorrentMan.cc: fixed memory leak.
+	* TorrentMan.cc: corrected file paths of splitted files.
+	* PeerAbstractCommand.cc: casted timeout to long long int.
+	* main.cc: added delete(req) and delete(te->diskWriter).
+	* RequestSlot.cc: casted timeout value to long long int.
+	* Request.cc: fixed memory leak.
+	* PendingMessage.cc: make HAVE messages sent only when peer does not
+	have the piece.
+	* Peer.{h,cc}: added hasPiece(int index).
 	
 2006-03-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

@@ -44,7 +44,9 @@ string Data::toString() const {
     char* temp = new char[len+1];
     memcpy(temp, data, len);
     temp[len] = '\0';
-    return string(temp);
+    string str(temp);
+    delete [] temp;
+    return str;
   }
 }
 
@@ -68,7 +70,7 @@ long long int Data::toLLInt() const {
   if(len == 0) {
     return 0;
   } else {
-    return strtoll(data, NULL, 10);
+    return strtoll(toString().c_str(), NULL, 10);
   }
 }
 

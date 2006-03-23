@@ -154,6 +154,7 @@ int ChunkedEncoding::readChunkSize(char** pp) {
   temp[exsp-*pp] = '\0';
 
   chunkSize = strtol(temp, NULL, 16);
+  delete [] temp;
   if(chunkSize < 0) {
     throw new DlAbortEx(EX_INVALID_CHUNK_SIZE);
   } else if(errno == ERANGE && (chunkSize == LONG_MAX || chunkSize == LONG_MIN)) {

@@ -37,11 +37,12 @@ TorrentMan::TorrentMan():bitfield(NULL),
 			 peerEntryIdCounter(0), cuidCounter(0),
 			 downloadedSize(0), uploadedSize(0),
 			 deltaDownload(0), deltaUpload(0),
+			 storeDir("."),
 			 multiFileTopDir(NULL),
 			 interval(DEFAULT_ANNOUNCE_INTERVAL),
 			 minInterval(DEFAULT_ANNOUNCE_MIN_INTERVAL),
 			 complete(0), incomplete(0),
-			 connections(0) {}
+			 connections(0), diskWriter(NULL) {}
 
 TorrentMan::~TorrentMan() {
   if(bitfield != NULL) {
@@ -52,6 +53,9 @@ TorrentMan::~TorrentMan() {
   }
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     delete *itr;
+  }
+  if(diskWriter != NULL) {
+    delete diskWriter;
   }
 }
 
@@ -316,7 +320,6 @@ void TorrentMan::setup(string metaInfoFile) {
     name = string(basename(basec))+".file";
     free(basec);
   }
-
   List* files = (List*)infoDic->get("files");
   if(files == NULL) {
     // single-file mode;
@@ -356,7 +359,6 @@ void TorrentMan::setup(string metaInfoFile) {
   announce = ((Data*)topDic->get("announce"))->toString();
   pieceLength = ((Data*)infoDic->get("piece length"))->toInt();
   pieces = totalSize/pieceLength+(totalSize%pieceLength ? 1 : 0);
-    
   Data* piecesHashData = (Data*)infoDic->get("pieces");
   if(piecesHashData->getLen() != pieces*20) {
     throw new DlAbortEx("the number of pieces is wrong.");
@@ -388,7 +390,7 @@ string TorrentMan::getPieceHash(int index) const {
 }
 
 string TorrentMan::getFilePath() const {
-  return (storeDir == "" ? "." : storeDir)+"/"+name;
+  return storeDir+"/"+name;
 }
 
 string TorrentMan::getTempFilePath() const {
@@ -499,11 +501,13 @@ void TorrentMan::renameSingleFile() const {
 }
 
 void TorrentMan::splitMultiFile() const {
-  multiFileTopDir->createDir((storeDir == "" ? "." : storeDir), true);
+  logger->info("creating directories");
+  multiFileTopDir->createDir(storeDir, true);
   long long int offset = 0;
+  logger->info("splitting file");
   for(MultiFileEntries::const_iterator itr = multiFileEntries.begin();
       itr != multiFileEntries.end(); itr++) {
-    Util::rangedFileCopy(itr->path, getTempFilePath(), offset, itr->length);
+    Util::rangedFileCopy(storeDir+"/"+itr->path, getTempFilePath(), offset, itr->length);
     offset += itr->length;
   }
   unlink(getTempFilePath().c_str());

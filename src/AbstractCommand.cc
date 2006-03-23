@@ -62,7 +62,7 @@ bool AbstractCommand::isTimeoutDetected() {
     return false;
   } else {
     long long int elapsed = Util::difftv(now, checkPoint);
-    if(elapsed >= e->option->getAsInt(PREF_TIMEOUT)*1000000) {
+    if(elapsed >= e->option->getAsLLInt(PREF_TIMEOUT)*1000000) {
       return true;
     } else {
       return false;
