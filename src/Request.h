@@ -97,7 +97,8 @@ public:
     AUTO,
     STARTED,
     STOPPED,
-    COMPLETED
+    COMPLETED,
+    AFTER_COMPLETED
   };
 
 };

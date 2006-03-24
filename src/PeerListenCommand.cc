@@ -52,9 +52,6 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
 }
 
 bool PeerListenCommand::execute() {
-  if(e->torrentMan->downloadComplete()) {
-    return true;
-  }
   for(int i = 0; i < 3 && socket->isReadable(0); i++) {
     Socket* peerSocket = NULL;
     try {

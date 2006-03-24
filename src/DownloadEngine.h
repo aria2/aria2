@@ -51,6 +51,7 @@ protected:
   virtual void initStatistics() = 0;
   virtual void calculateStatistics() = 0;
   virtual void onEndOfRun() = 0;
+  virtual void afterEachIteration() {}
 public:
   bool noWait;
   Commands commands;

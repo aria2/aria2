@@ -34,35 +34,23 @@ PreAllocationDiskWriter::PreAllocationDiskWriter(long long int totalLength)
 PreAllocationDiskWriter::~PreAllocationDiskWriter() {}
 
 void PreAllocationDiskWriter::initAndOpenFile(string filename) {
-  createFile(filename, O_DIRECT);
+  createFile(filename);
   
-  int pageSize = getpagesize();
-  int bufSize = pageSize*4;
-  char* buf;
-  int rt = posix_memalign((void**)&buf, pageSize, bufSize);
-  if(rt != 0) {
-    throw new DlAbortEx(strerror(rt));
+  int bufSize = 4096;
+  char buf[4096];
+
+  memset(buf, 0, bufSize);
+  long long int x = totalLength/bufSize;
+  int r = totalLength%bufSize;
+  for(long long int i = 0; i < x; i++) {
+    if(write(fd, buf, bufSize) < 0) {
+      throw new DlAbortEx(strerror(errno));
+    }
   }
-  try {
-    memset(buf, 0, bufSize);
-    long long int x = totalLength/bufSize;
-    int r = totalLength%bufSize;
-    for(long long int i = 0; i < x; i++) {
-      if(write(fd, buf, bufSize) < 0) {
+  if(r > 0) {
+    seek(totalLength-r);
+    if(write(fd, buf, r) < 0) {
 	throw new DlAbortEx(strerror(errno));
-      }
     }
-    closeFile();
-    openExistingFile(filename);
-    if(r > 0) {
-      seek(totalLength-r);
-      if(write(fd, buf, r) < 0) {
-	throw new DlAbortEx(strerror(errno));
-      }
-    }
-    free(buf);
-  } catch(Exception* ex) {
-    free(buf);
-    throw;
   }
 }

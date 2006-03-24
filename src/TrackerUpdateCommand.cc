@@ -40,10 +40,7 @@ TrackerUpdateCommand::~TrackerUpdateCommand() {
 }
 
 bool TrackerUpdateCommand::execute() {
-  if(req->getTrackerEvent() == Request::COMPLETED) {
-    return true;
-  }
-  e->torrentMan->deleteOldErrorPeers(25);
+  //e->torrentMan->deleteOldErrorPeers(25);
 
   Dictionary* response = (Dictionary*)trackerResponse;
   Data* failureReason = (Data*)response->get("failure reason");
@@ -110,7 +107,7 @@ bool TrackerUpdateCommand::execute() {
   }
   */
   while(e->torrentMan->isPeerAvailable() &&
-	e->torrentMan->connections < MAX_PEERS) {
+	e->torrentMan->connections < MAX_PEER_UPDATE) {
     Peer* peer = e->torrentMan->getPeer();
     int newCuid =  e->torrentMan->getNewCuid();
     peer->cuid = newCuid;

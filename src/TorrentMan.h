@@ -42,9 +42,11 @@ using namespace std;
 
 #define IS_NULL_PIECE(X) (X.index == 0 && X.length == 0)
 
-#define DEFAULT_ANNOUNCE_INTERVAL 1800
+#define DEFAULT_ANNOUNCE_INTERVAL 120
 #define DEFAULT_ANNOUNCE_MIN_INTERVAL 120
 #define MAX_PEERS 55
+#define MAX_PEER_UPDATE 15
+
 #define MAX_PEER_LIST_SIZE 250
 #define END_GAME_PIECE_NUM 20
 
@@ -203,9 +205,10 @@ public:
   void save() const;
   void remove() const;
 
-  void renameSingleFile() const;
+  void copySingleFile() const;
   void splitMultiFile() const;
   void fixFilename() const;
+  void deleteTempFile() const;
 
   void setPort(int port) { this->port = port; }
   int getPort() const { return port; }

@@ -63,6 +63,8 @@ public:
 
   static FILE* openFile(string filename, string mode);
 
+  static void fileCopy(string destFile, string src);
+
   static void rangedFileCopy(string destFile, string src, long long int srcOffset, long long int length);
 
 };

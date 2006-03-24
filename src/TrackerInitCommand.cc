@@ -31,7 +31,11 @@ TrackerInitCommand::~TrackerInitCommand() {}
 
 bool TrackerInitCommand::execute() {
   if(e->torrentMan->downloadComplete()) {
-    req->setTrackerEvent(Request::COMPLETED);
+    if(req->getTrackerEvent() == Request::COMPLETED) {
+      req->setTrackerEvent(Request::AFTER_COMPLETED);
+    } else {
+      req->setTrackerEvent(Request::COMPLETED);
+    }
   }
   string event;
   switch(req->getTrackerEvent()) {

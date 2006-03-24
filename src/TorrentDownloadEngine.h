@@ -26,13 +26,18 @@
 #include "TorrentMan.h"
 
 class TorrentDownloadEngine : public DownloadEngine {
+private:
+  bool filenameFixed;
 protected:
   void onEndOfRun();
+  void afterEachIteration();
 public:
-  TorrentDownloadEngine() {}
+  TorrentDownloadEngine():filenameFixed(false) {}
   virtual ~TorrentDownloadEngine() {}
 
   TorrentMan* torrentMan;
+
+  bool isFilenameFixed() const { return filenameFixed; }
 };
 
 #endif // _D_TORRENT_DOWNLOAD_ENGINE_H_

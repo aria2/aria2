@@ -336,7 +336,6 @@ void TorrentMan::setup(string metaInfoFile) {
 	itr++) {
       Dictionary* fileDic = (Dictionary*)(*itr);
       Data* lengthData = (Data*)fileDic->get("length");
-      //length += strtoll(data->toString().c_str(), NULL, 10);
       length += lengthData->toLLInt();
       List* path = (List*)fileDic->get("path");
       const MetaList& paths = path->getList();
@@ -490,25 +489,30 @@ void TorrentMan::remove() const {
 
 void TorrentMan::fixFilename() const {
   if(fileMode == SINGLE) {
-    renameSingleFile();
+    copySingleFile();
   } else {
     splitMultiFile();
   }
 }
 
-void TorrentMan::renameSingleFile() const {
-  rename(getTempFilePath().c_str(), getFilePath().c_str());
+void TorrentMan::copySingleFile() const {
+  logger->info("writing file %s", getFilePath().c_str());
+  Util::fileCopy(getFilePath(), getTempFilePath());
 }
 
 void TorrentMan::splitMultiFile() const {
   logger->info("creating directories");
   multiFileTopDir->createDir(storeDir, true);
   long long int offset = 0;
-  logger->info("splitting file");
   for(MultiFileEntries::const_iterator itr = multiFileEntries.begin();
       itr != multiFileEntries.end(); itr++) {
-    Util::rangedFileCopy(storeDir+"/"+itr->path, getTempFilePath(), offset, itr->length);
+    string dest = storeDir+"/"+itr->path;
+    logger->info("writing file %s", dest.c_str());
+    Util::rangedFileCopy(dest, getTempFilePath(), offset, itr->length);
     offset += itr->length;
   }
+}
+
+void TorrentMan::deleteTempFile() const {
   unlink(getTempFilePath().c_str());
 }

@@ -73,9 +73,6 @@ bool PeerAbstractCommand::isTimeoutDetected() {
 
 bool PeerAbstractCommand::execute() {
   try {
-    if(e->torrentMan->downloadComplete()) {
-      return true;
-    }
     beforeSocketCheck();
     if(checkSocketIsReadable && !readCheckTarget->isReadable(0)
        || checkSocketIsWritable && !writeCheckTarget->isWritable(0)) {

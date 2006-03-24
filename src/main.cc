@@ -85,9 +85,9 @@ void torrentHandler(int signal) {
   if(te->torrentMan->diskWriter != NULL) {
     te->torrentMan->diskWriter->closeFile();
   }
-  if(te->torrentMan->downloadComplete()) {
+  if(te->torrentMan->downloadComplete() && te->isFilenameFixed()) {
     te->torrentMan->remove();
-    te->torrentMan->fixFilename();
+    te->torrentMan->deleteTempFile();
     printDownloadCompeleteMessage(te->torrentMan->getFilePath());
   } else {
     te->torrentMan->save();
@@ -223,7 +223,7 @@ int main(int argc, char* argv[]) {
 #endif // ENABLE_NLS
   bool stdoutLog = false;
   string logfile;
-  string dir;
+  string dir = ".";
   string ufilename;
   int split = 1;
   bool daemonMode = false;
@@ -575,7 +575,7 @@ int main(int argc, char* argv[]) {
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
       int port = listenCommand->bindPort(6881, 6999);
       if(port == -1) {
-	printf("an error occurred while binding port.\n");
+	printf("Errors occurred while binding port.\n");
 	exit(1);
       }
       te->torrentMan->setPort(port);

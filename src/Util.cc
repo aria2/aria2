@@ -21,6 +21,7 @@
 /* copyright --> */
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "File.h"
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -190,41 +191,58 @@ FILE* Util::openFile(string filename, string mode) {
   return file;
 }
 
+void Util::fileCopy(string dest, string src) {
+  File file(src);
+  rangedFileCopy(dest, src, 0, file.size());
+}
+
 void Util::rangedFileCopy(string dest, string src, long long int srcOffset, long long int length) {
-  int destFd;
-  if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR)) < 0) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  int srcFd;
-  if((srcFd = open(src.c_str(), O_RDONLY, S_IRUSR|S_IWUSR)) < 0) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  int BUF_SIZE = 16*1024;
-  char buf[BUF_SIZE];
-  int x = length/BUF_SIZE;
-  int r = length%BUF_SIZE;
-  for(int i = 0; i < x; i++) {
-    int readLength;
-    if((readLength = read(srcFd, buf, BUF_SIZE)) == -1 || readLength != BUF_SIZE) {
+  int bufSize = 4096;
+  char buf[bufSize];
+  int destFd = -1;
+  int srcFd = -1;
+  try {
+    if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR)) == -1) {
       throw new DlAbortEx(strerror(errno));
     }
-    if(write(destFd, buf, readLength) == -1) {
+    if((srcFd = open(src.c_str(), O_RDONLY, S_IRUSR|S_IWUSR)) == -1) {
       throw new DlAbortEx(strerror(errno));
     }
+    if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
+      throw new DlAbortEx(strerror(errno));
+    }
+    int x = length/bufSize;
+    int r = length%bufSize;
+    for(int i = 0; i < x; i++) {
+      int readLength;
+      if((readLength = read(srcFd, buf, bufSize)) == -1 || readLength != bufSize) {
+	throw new DlAbortEx(strerror(errno));
+      }
+      if(write(destFd, buf, readLength) == -1) {
+	throw new DlAbortEx(strerror(errno));
+      }
+    }
+    if(r > 0) {
+      int readLength;
+      if((readLength = read(srcFd, buf, r)) == -1 || readLength != r) {
+	throw new DlAbortEx(strerror(errno));
+      }
+      if(write(destFd, buf, r) == -1) {
+	throw new DlAbortEx(strerror(errno));
+      }
+    }
+    close(srcFd);
+    close(destFd);
+    srcFd = -1;
+    destFd = -1;
+  } catch(Exception* e) {
+    if(srcFd != -1) {
+      close(srcFd);
+    }
+    if(destFd != -1) {
+      close(destFd);
+    }
+    throw;
   }
-  if(r > 0) {
-    int readLength;
-    if((readLength = read(srcFd, buf, r)) == -1 || readLength != r) {
-      throw new DlAbortEx(strerror(errno));
-    }
-    if(write(destFd, buf, readLength) == -1) {
-      throw new DlAbortEx(strerror(errno));
-    }
-  }
-  close(srcFd);
-  close(destFd);
 }
 

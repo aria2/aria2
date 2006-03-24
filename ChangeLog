@@ -1,3 +1,49 @@
+2006-03-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* Request.h: Added AFTER_COMPLETED event.
+	* TorrentDownloadEngine.cc: Prints "Download complete" message
+	instead of downloaded size and progress(%) after download completes.
+	* PeerInteractionCommand.cc: After download completes, sends unchoke
+	message to the peer if it is interested in what localhost has
+	downloaded.
+	* TorrentMan.cc: In single-file mode, copy temporary file to the final
+	destination instead of just renaming it.
+	* TorrentMan.cc: Added deleteTempFile().
+	* PeerAbstractCommand.cc: do not stop execution after download
+	completes. This makes localhost a seeder.
+	* Util.{h,cc}: Added fileCopy().
+	* PeerListenCommand.cc: do not stop execution after download completes.
+	This makes localhost a seeder.
+	* main.cc: Do not call TorrentMan::fixFilename() in torrentHandler.
+	Added TorrentMan::deleteTempFile() to torrentHandler.
+	Initialized the variable dir as ".".
+	* TorrentMan.h: Changed DEFAULT_ANNOUNCE_INTERVAL to 120 seconds.
+	Deleted renameSingleFile().
+	Added copySingleFile(), deleteTempFile().
+	* DownloadEngine.h: Added virtual function afterEachIteration().
+	* TorrentDownloadEngine.cc: Move a call to TorrentMan::fixFilename()
+	in onEndOfRun() to afterEachIteration().
+	In onEndOfRun(), changed if condition to check whether filenameFixed is
+	true.
+	* Util.cc: Implemented fileCopy() using rangedFileCopy().
+	In rangedFileCopy(), added try-catch block to properly close file
+	descriptors.
+	* TorrentDownloadEngine.cc: Added a member variable filenameFixed.
+	Added afterEachIteration(), isFilenameFixed().
+	* Peer.cc: Changed choking strategy.
+	* PreAllocationDiskWriter.cc: Drop O_DIRECT flag.
+	* TrackerInitCommand.cc: Send completed event only once.
+	* DownloadEngine.cc: Added a call to afterEachIteration().
+	* TrackerUpdateCommand.cc: Do not stop execution after download
+	completes.
+	* TorrentMan.h: Defined MAX_PEER_UPDATE as 15. aria2 attempts to
+	connect the peers at most MAX_PEER_UPDATE when a peer list is
+	received from a tracker.
+	* TrackerUpdateCommand.cc: Implemented above mentioned behavior.
+	Decreased the number of failure peers to delete to 0(just comment out
+	the line).
+	* Release 0.3.1
+	
 2006-03-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* PeerInteractionCommand.cc: added a call to 
@@ -34,7 +80,8 @@
 2006-03-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* BitTorrent protocol support added.
-
+	* Release 0.3.0
+	
 2006-03-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* SocketCore.cc: remove the assignment of addrinfo.ai_addr.

@@ -23,10 +23,19 @@
 
 void TorrentDownloadEngine::onEndOfRun() {
   torrentMan->diskWriter->closeFile();
-  if(torrentMan->downloadComplete()) {
+  if(filenameFixed && torrentMan->downloadComplete()) {
     torrentMan->remove();
-    torrentMan->fixFilename();
   } else {
     torrentMan->save();
+  }
+}
+
+void TorrentDownloadEngine::afterEachIteration() {
+  if(!filenameFixed && torrentMan->downloadComplete()) {
+    torrentMan->diskWriter->closeFile();
+    torrentMan->save();
+    torrentMan->fixFilename();
+    filenameFixed = true;
+    torrentMan->diskWriter->openExistingFile(torrentMan->getTempFilePath());
   }
 }

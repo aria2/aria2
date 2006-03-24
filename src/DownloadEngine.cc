@@ -47,6 +47,7 @@ void DownloadEngine::run() {
 	delete(com);
       }
     }
+    afterEachIteration();
     shortSleep();
     if(!noWait && !commands.empty()) {
       waitData();

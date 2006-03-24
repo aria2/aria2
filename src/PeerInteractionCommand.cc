@@ -124,6 +124,13 @@ void PeerInteractionCommand::syncPiece() {
 }
 
 void PeerInteractionCommand::decideChoking() {
+  if(e->torrentMan->downloadComplete()) {
+    if(peer->amChocking && peer->peerInterested) {
+      PendingMessage pendingMessage(PeerMessage::UNCHOKE, peerConnection);
+      pendingMessages.push_back(pendingMessage);
+    }
+    return;
+  }
   if(peer->shouldChoke()) {
     if(!peer->amChocking) {
       PendingMessage pendingMessage(PeerMessage::CHOKE, peerConnection);

@@ -50,6 +50,9 @@ multi-file mode:
     The directory to store the top directory of downloaded files can be
     specified by -d option.
 
+In both mode, aria2 needs at least 2 times more disk space than the file size
+itself because it creates complete temporary file.
+
 Note:
 *  -o option is used to change the filename of downloaded .torrent file.
 * This version only supports compact peers list format.
