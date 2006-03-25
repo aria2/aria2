@@ -134,7 +134,6 @@ void SocketCore::establishConnection(string host, int port) {
     ai.ai_family = PF_INET;
     ai.ai_socktype = SOCK_STREAM;
     ai.ai_protocol = 0; 
-    ai.ai_addr = (struct sockaddr*)&sockaddr;
     struct addrinfo* res;
     int ec;
     if((ec = getaddrinfo(host.c_str(), NULL, &ai, &res)) != 0) {
