@@ -65,9 +65,6 @@ void TorrentMan::updatePeers(const Peers& peers) {
 }
 
 bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
-  if(peers.size() >= MAX_PEER_LIST_SIZE) {
-    return false;
-  }
   if(duplicate) {
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
@@ -76,6 +73,12 @@ bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
       }
     }
   } else {
+    if(peers.size() >= MAX_PEER_LIST_SIZE) {
+      deleteOldErrorPeers(100);
+      if(peers.size() >= MAX_PEER_LIST_SIZE) {
+	return false;
+      }
+    }
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
       if(p->ipaddr == peer->ipaddr && p->port == peer->port) {

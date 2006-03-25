@@ -1,3 +1,11 @@
+2006-03-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* TorrentMan.cc: When adding new peer with duplicate = true, if the
+	number of peer list is equal to or grater than MAX_PEER_LIST, delete
+	at most 100 failure entry from the list. If with duplicate = false,
+	MAX_PEER_LIST is not checked.
+	* PeerListenCommand.cc: Fixed the argument order of log message.
+
 2006-03-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Request.h: Added AFTER_COMPLETED event.

@@ -76,7 +76,7 @@ bool PeerListenCommand::execute() {
       }
       delete peerSocket;
     } catch(Exception* ex) {
-      e->logger->error("CUID#%d - error in accepting connection", cuid, ex);
+      e->logger->error("CUID#%d - error in accepting connection", ex, cuid);
       delete ex;
       if(peerSocket != NULL) {
 	delete peerSocket;
