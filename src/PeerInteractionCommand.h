@@ -37,7 +37,9 @@ private:
   PendingMessages pendingMessages;
   Piece piece;
   struct timeval keepAliveCheckPoint;
+  struct timeval chokeCheckPoint;
   void receiveMessage();
+  void checkLongTimePeerChoking();
   void syncPiece();
   void detectTimeoutAndDuplicateBlock();
   void decideChoking();

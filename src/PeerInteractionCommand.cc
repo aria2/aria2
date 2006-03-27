@@ -41,6 +41,8 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
   piece = Piece::nullPiece;
   keepAliveCheckPoint.tv_sec = 0;
   keepAliveCheckPoint.tv_usec = 0;
+  chokeCheckPoint.tv_sec = 0;
+  chokeCheckPoint.tv_usec = 0;
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
@@ -95,6 +97,7 @@ bool PeerInteractionCommand::executeInternal() {
     break;
   }
   case WIRED:
+    checkLongTimePeerChoking();
     syncPiece();
     decideChoking();
     for(int i = 0; i < 10; i++) {
@@ -114,6 +117,28 @@ bool PeerInteractionCommand::executeInternal() {
   }
   e->commands.push(this);
   return false;
+}
+
+void PeerInteractionCommand::checkLongTimePeerChoking() {
+  if(e->torrentMan->downloadComplete()) {
+    return;
+  }    
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  if(chokeCheckPoint.tv_sec == 0 && chokeCheckPoint.tv_usec == 0) {
+    if(peer->amInterested && peer->peerChoking) {
+      chokeCheckPoint = now;
+    }
+  } else {
+    if(peer->amInterested && peer->peerChoking) {
+      if(Util::difftv(now, chokeCheckPoint) >= 5*60*1000000) {
+	throw new DlAbortEx("too long choking");
+      }
+    } else {
+      chokeCheckPoint.tv_sec = 0;
+      chokeCheckPoint.tv_usec = 0;
+    }
+  }
 }
 
 void PeerInteractionCommand::syncPiece() {

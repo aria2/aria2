@@ -39,6 +39,7 @@ TorrentMan::TorrentMan():bitfield(NULL),
 			 deltaDownload(0), deltaUpload(0),
 			 storeDir("."),
 			 multiFileTopDir(NULL),
+			 setupComplete(false),
 			 interval(DEFAULT_ANNOUNCE_INTERVAL),
 			 minInterval(DEFAULT_ANNOUNCE_MIN_INTERVAL),
 			 complete(0), incomplete(0),
@@ -65,9 +66,6 @@ void TorrentMan::updatePeers(const Peers& peers) {
 }
 
 bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
-  if(peers.size() >= MAX_PEER_LIST_SIZE) {
-    return false;
-  }
   if(duplicate) {
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
@@ -76,6 +74,12 @@ bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
       }
     }
   } else {
+    if(peers.size() >= MAX_PEER_LIST_SIZE) {
+      deleteOldErrorPeers(100);
+      if(peers.size() >= MAX_PEER_LIST_SIZE) {
+	return false;
+      }
+    }
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
       if(p->ipaddr == peer->ipaddr && p->port == peer->port) {
@@ -378,6 +382,7 @@ void TorrentMan::setup(string metaInfoFile) {
   } else {
     diskWriter->initAndOpenFile(getTempFilePath());
   }
+  setupComplete = true;
 }
 
 bool TorrentMan::hasPiece(int index) const {
@@ -458,7 +463,7 @@ void TorrentMan::read(FILE* file) {
 }
 
 void TorrentMan::save() const {
-  if(downloadedSize == 0) {
+  if(!setupComplete) {
     return;
   }
   string segFilename = getSegmentFilePath();

@@ -13,7 +13,10 @@ localedir=${datadir}/locale
 AC_SUBST(localedir)
 
 # Checks for arguments.
-AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is installed. Default: yes], [enable_ssl=$enableval], [enable_ssl=yes])
+#AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is installed. Default: yes], [enable_ssl=$enableval], [enable_ssl=yes])
+AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$enableval], [with_gnutls=yes])
+AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$enableval], [with_openssl=yes])
+
 
 # Checks for programs.
 AC_PROG_CXX
@@ -23,9 +26,41 @@ AC_PROG_RANLIB
 AC_PROG_YACC
 
 # Checks for libraries.
-if test "x$enable_ssl" = "xyes"; then
-   AC_CHECK_LIB([ssl], [SSL_library_init])
+if test "x$with_gnutls" = "xyes"; then
+  AM_PATH_LIBGNUTLS([1.2.9], [have_libgnutls=yes])
+  if test "x$have_libgnutls" = "xyes"; then
+    AC_DEFINE([HAVE_LIBGNUTLS], [1], [Define to 1 if you have libgnutls.])
+  fi
 fi
+
+if test "x$have_libgnutls" = "xyes"; then
+  AM_PATH_LIBGCRYPT([1.2.2], [have_libgcrypt=yes])
+  if test "x$have_libgcrypt" = "xyes"; then
+    AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
+  fi
+fi
+
+if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
+#  AC_CHECK_LIB([ssl], [SSL_library_init], [have_openssl=yes])
+#  if test "x$have_openssl" = "xyes"; then
+#    AC_DEFINE([HAVE_LIBSSL], [1], [Define to 1 if you have openssl.])
+#    OPENSSL_LIBS="-lssl"
+#    OPENSSL_CFLAGS=""
+#    AC_SUBST(OPENSSL_LIBS)
+#    AC_SUBST(OPENSSL_CFLAGS)
+#  fi
+  AM_PATH_OPENSSL
+fi
+
+if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
+  AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
+fi
+
+if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
+  AC_DEFINE([ENABLE_SHA1DIGEST], [1], [Define to 1 if SHA1 Digest support is enabled.])
+  AC_DEFINE([ENABLE_BITTORRENT], [1], [Define to 1 if BitTorrent support is enabled.])
+fi
+
 
 # Checks for header files.
 AC_FUNC_ALLOCA

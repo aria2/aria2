@@ -19,33 +19,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "HttpDownloadCommand.h"
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <algorithm>
-#include "DlRetryEx.h"
-#include "HttpRequestCommand.h"
-#include "Util.h"
-#include "ChunkedEncoding.h"
+#include "TrackerWatcherCommand.h"
+#include "SleepCommand.h"
+#include "TrackerInitCommand.h"
 
-using namespace std;
+TrackerWatcherCommand::TrackerWatcherCommand(int cuid, Request* req,
+					     TorrentDownloadEngine* e):
+  Command(cuid), req(req), e(e) {}
 
-HttpDownloadCommand::HttpDownloadCommand(int cuid, Request* req,
-					 DownloadEngine* e,
-					 Socket* socket):
-  DownloadCommand(cuid, req, e, socket)
-{
-  ChunkedEncoding* ce = new ChunkedEncoding();
-  transferEncodings["chunked"] = ce;
-}
+TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
-HttpDownloadCommand::~HttpDownloadCommand() {
-  for(map<string, TransferEncoding*>::iterator itr = transferEncodings.begin(); itr != transferEncodings.end(); itr++) {
-    delete((*itr).second);
-  }
-}
+bool TrackerWatcherCommand::execute() {
+  Command* command = new TrackerInitCommand(e->torrentMan->getNewCuid(),
+					    req,
+					    e);
+  e->logger->info("CUID#%d - creating new tracker request command #%d", cuid,
+		  command->getCuid());
+  e->commands.push(command);
 
-TransferEncoding* HttpDownloadCommand::getTransferEncoding(string name) {
-  return transferEncodings[name];
+  SleepCommand* slpCommand = new SleepCommand(cuid, e, this,
+					      e->torrentMan->minInterval);
+  e->commands.push(slpCommand);
+  return false;
 }

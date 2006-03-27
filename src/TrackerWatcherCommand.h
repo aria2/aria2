@@ -19,33 +19,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "HttpDownloadCommand.h"
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <algorithm>
-#include "DlRetryEx.h"
-#include "HttpRequestCommand.h"
-#include "Util.h"
-#include "ChunkedEncoding.h"
+#ifndef _D_TRACKER_WATCHER_COMMAND_H_
+#define _D_TRACKER_WATCHER_COMMAND_H_
 
-using namespace std;
+#include "Command.h"
+#include "TorrentDownloadEngine.h"
+#include "Request.h"
 
-HttpDownloadCommand::HttpDownloadCommand(int cuid, Request* req,
-					 DownloadEngine* e,
-					 Socket* socket):
-  DownloadCommand(cuid, req, e, socket)
-{
-  ChunkedEncoding* ce = new ChunkedEncoding();
-  transferEncodings["chunked"] = ce;
-}
+class TrackerWatcherCommand : public Command {
+private:
+  Request* req;
+  TorrentDownloadEngine* e;
+public:
+  TrackerWatcherCommand(int cuid, Request* req, TorrentDownloadEngine* e);
+  ~TrackerWatcherCommand();
 
-HttpDownloadCommand::~HttpDownloadCommand() {
-  for(map<string, TransferEncoding*>::iterator itr = transferEncodings.begin(); itr != transferEncodings.end(); itr++) {
-    delete((*itr).second);
-  }
-}
+  bool execute();
+};
 
-TransferEncoding* HttpDownloadCommand::getTransferEncoding(string name) {
-  return transferEncodings[name];
-}
+#endif // _D_TRACKER_WATCHER_COMMAND_H_

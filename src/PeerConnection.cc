@@ -61,7 +61,7 @@ void PeerConnection::sendKeepAlive() const {
    */
   char msg[4];
   memset(msg, 0, sizeof(msg));
-  writeOutgoingMessageLog("keep-alive");
+  writeOutgoingMessageLog("keep alive");
   socket->writeData(msg, sizeof(msg));
 }
 

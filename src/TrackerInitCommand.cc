@@ -34,7 +34,11 @@ bool TrackerInitCommand::execute() {
     if(req->getTrackerEvent() == Request::COMPLETED) {
       req->setTrackerEvent(Request::AFTER_COMPLETED);
     } else {
-      req->setTrackerEvent(Request::COMPLETED);
+      if(req->getTrackerEvent() == Request::STARTED) {
+	req->setTrackerEvent(Request::AFTER_COMPLETED);
+      } else if(req->getTrackerEvent() != Request::AFTER_COMPLETED) {
+	req->setTrackerEvent(Request::COMPLETED);
+      }
     }
   }
   string event;

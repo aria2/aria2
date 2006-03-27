@@ -25,10 +25,10 @@
 
 Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e) {
   if(req->getProtocol() == "http"
-#ifdef HAVE_LIBSSL
+#ifdef ENABLE_SSL
      // for SSL
      || req->getProtocol() == "https"
-#endif // HAVE_LIBSSL
+#endif // ENABLE_SSL
      ) {
     return new HttpInitiateConnectionCommand(cuid, req, e);
   } else if(req->getProtocol() == "ftp") {

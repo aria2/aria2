@@ -23,58 +23,58 @@
 #include "Util.h"
 
 ShaVisitor::ShaVisitor() {
-#ifdef HAVE_LIBSSL
-  EVP_MD_CTX_init(&ctx);
-  EVP_DigestInit_ex(&ctx, EVP_sha1(), NULL);
-#endif // HAVE_LIBSSL
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestInit(ctx);
+  sha1DigestReset(ctx);
+#endif // ENABLE_SHA1DIGEST
 }
 
 ShaVisitor::~ShaVisitor() {
-#ifdef HAVE_LIBSSL
-  EVP_MD_CTX_cleanup(&ctx);
-#endif // HAVE_LIBSSL
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestFree(ctx);
+#endif // ENABLE_SHA1DIGEST
 }
 
 void ShaVisitor::visit(const Data* d) {
-#ifdef HAVE_LIBSSL
+#ifdef ENABLE_SHA1DIGEST
   if(d->isNumber()) {
-    EVP_DigestUpdate(&ctx, "i", 1);
+    sha1DigestUpdate(ctx, "i", 1);
   } else {
     string lenStr = Util::llitos(d->getLen());
-    EVP_DigestUpdate(&ctx, lenStr.c_str(), lenStr.size());
-    EVP_DigestUpdate(&ctx, ":", 1);
+    sha1DigestUpdate(ctx, lenStr.c_str(), lenStr.size());
+    sha1DigestUpdate(ctx, ":", 1);
   }
-  EVP_DigestUpdate(&ctx, d->getData(), d->getLen());
+  sha1DigestUpdate(ctx, d->getData(), d->getLen());
   if(d->isNumber()) {
-    EVP_DigestUpdate(&ctx, "e", 1);
+    sha1DigestUpdate(ctx, "e", 1);
   }
-#endif // HAVE_LIBSSL
+#endif // ENABLE_SHA1DIGEST
 }
 
 void ShaVisitor::visit(const Dictionary* d) {
-#ifdef HAVE_LIBSSL
-  EVP_DigestUpdate(&ctx, "d", 1);
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestUpdate(ctx, "d", 1);
   const Order& v = d->getOrder();
   for(Order::const_iterator itr = v.begin(); itr != v.end(); itr++) {
     string lenStr = Util::llitos(itr->size());
-    EVP_DigestUpdate(&ctx, lenStr.c_str(), lenStr.size());
-    EVP_DigestUpdate(&ctx, ":", 1);
-    EVP_DigestUpdate(&ctx, itr->c_str(), itr->size());
+    sha1DigestUpdate(ctx, lenStr.c_str(), lenStr.size());
+    sha1DigestUpdate(ctx, ":", 1);
+    sha1DigestUpdate(ctx, itr->c_str(), itr->size());
     const MetaEntry* e = d->get(*itr);
     this->visit(e);
   }
-  EVP_DigestUpdate(&ctx, "e", 1);
-#endif // HAVE_LIBSSL
+  sha1DigestUpdate(ctx, "e", 1);
+#endif // ENABLE_SHA1DIGEST
 }
 
 void ShaVisitor::visit(const List* l) {
-#ifdef HAVE_LIBSSL
-  EVP_DigestUpdate(&ctx, "l", 1);
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestUpdate(ctx, "l", 1);
   for(MetaList::const_iterator itr = l->getList().begin(); itr != l->getList().end(); itr++) {
     this->visit(*itr);
   }
-  EVP_DigestUpdate(&ctx, "e", 1);
-#endif // HAVE_LIBSSL
+  sha1DigestUpdate(ctx, "e", 1);
+#endif // ENABLE_SHA1DIGEST
 }
 
 void ShaVisitor::visit(const MetaEntry* e) {
@@ -88,7 +88,8 @@ void ShaVisitor::visit(const MetaEntry* e) {
 }
 
 void ShaVisitor::getHash(unsigned char* hashValue, int& len) {
-#ifdef HAVE_LIBSSL
-  EVP_DigestFinal_ex(&ctx, hashValue, (unsigned int*)&len);
-#endif // HAVE_LIBSSL
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestFinal(ctx, hashValue);
+  len = 20;
+#endif // ENABLE_SHA1DIGEST
 }

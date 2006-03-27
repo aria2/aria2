@@ -30,18 +30,18 @@
 #include "Util.h"
 
 AbstractDiskWriter::AbstractDiskWriter():fd(0) {
-#ifdef HAVE_LIBSSL
-  EVP_MD_CTX_init(&ctx);
-#endif // HAVE_LIBSSL
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestInit(ctx);
+#endif // ENABLE_SHA1DIGEST
 }
 
 AbstractDiskWriter::~AbstractDiskWriter() {
   if(fd != 0) {
     close(fd);
   }
-#ifdef HAVE_LIBSSL
-  EVP_MD_CTX_cleanup(&ctx);
-#endif // HAVE_LIBSSL
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestFree(ctx);
+#endif // ENABLE_SHA1DIGEST
 }
 
 void AbstractDiskWriter::closeFile() {
@@ -88,8 +88,8 @@ int AbstractDiskWriter::readDataInternal(char* data, int len) {
 }
 
 string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
-#ifdef HAVE_LIBSSL
-  EVP_DigestInit_ex(&ctx, EVP_sha1(), NULL);
+#ifdef ENABLE_SHA1DIGEST
+  sha1DigestReset(ctx);
   try {
     int BUFSIZE = 16*1024;
     char buf[BUFSIZE];
@@ -97,7 +97,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
       if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
 	throw "error";
       }
-      EVP_DigestUpdate(&ctx, buf, BUFSIZE);
+      sha1DigestUpdate(ctx, buf, BUFSIZE);
       offset += BUFSIZE;
     }
     int r = length%BUFSIZE;
@@ -105,18 +105,17 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
       if(r != readData(buf, r, offset)) {
 	throw "error";
       }
-      EVP_DigestUpdate(&ctx, buf, r);
+      sha1DigestUpdate(ctx, buf, r);
     }
     unsigned char hashValue[20];
-    int len;
-    EVP_DigestFinal_ex(&ctx, hashValue, (unsigned int*)&len);
+    sha1DigestFinal(ctx, hashValue);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
     throw new DlAbortEx(strerror(errno));
   }
 #else
   return "";
-#endif // HASHVALUE
+#endif // ENABLE_SHA1DIGEST
 }
 
 void AbstractDiskWriter::seek(long long int offset) {

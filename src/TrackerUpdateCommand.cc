@@ -20,10 +20,8 @@
  */
 /* copyright --> */
 #include "TrackerUpdateCommand.h"
-#include "TrackerInitCommand.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "PeerListenCommand.h"
-#include "SleepCommand.h"
 #include "Dictionary.h"
 #include "Data.h"
 #include "DlAbortEx.h"
@@ -40,8 +38,6 @@ TrackerUpdateCommand::~TrackerUpdateCommand() {
 }
 
 bool TrackerUpdateCommand::execute() {
-  //e->torrentMan->deleteOldErrorPeers(25);
-
   Dictionary* response = (Dictionary*)trackerResponse;
   Data* failureReason = (Data*)response->get("failure reason");
   if(failureReason != NULL) {
@@ -49,7 +45,7 @@ bool TrackerUpdateCommand::execute() {
   }
   Data* warningMessage = (Data*)response->get("warning message");
   if(warningMessage != NULL) {
-    e->logger->info(MSG_TRACKER_WARNING_MESSAGE, cuid, warningMessage->toString().c_str());
+    e->logger->warn(MSG_TRACKER_WARNING_MESSAGE, cuid, warningMessage->toString().c_str());
   }
   Data* trackerId = (Data*)response->get("tracker id");
   if(trackerId != NULL) {
@@ -77,35 +73,29 @@ bool TrackerUpdateCommand::execute() {
     e->logger->debug("CUID#%d - incomplete:%d", cuid, e->torrentMan->incomplete);
   } 
   Data* peers = (Data*)response->get("peers");
-  for(int i = 0; i < peers->getLen(); i += 6) {
-    unsigned int ipaddr1 = (unsigned char)*(peers->getData()+i);
-    unsigned int ipaddr2 = (unsigned char)*(peers->getData()+i+1);
-    unsigned int ipaddr3 = (unsigned char)*(peers->getData()+i+2);
-    unsigned int ipaddr4 = (unsigned char)*(peers->getData()+i+3);
-    //unsigned short int nPort = 0;
-    //memcpy(&nPort, peers->getData()+i+4, 2);
-    unsigned int port = ntohs(*(unsigned short int*)(peers->getData()+i+4));
-    //unsigned int port = ntohs(nPort);
-    char ipaddr[16];
-
-    snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
-	     ipaddr1, ipaddr2, ipaddr3, ipaddr4);
-    Peer* peer = new Peer(ipaddr, port, e->torrentMan->pieceLength,
-			  e->torrentMan->totalSize);
-    if(e->torrentMan->addPeer(peer)) {
-      e->logger->debug("CUID#%d - adding peer %s:%d", cuid,
-		       peer->ipaddr.c_str(), peer->port);
-    } else {
-      delete peer;
+  if(peers != NULL) {
+    for(int i = 0; i < peers->getLen(); i += 6) {
+      unsigned int ipaddr1 = (unsigned char)*(peers->getData()+i);
+      unsigned int ipaddr2 = (unsigned char)*(peers->getData()+i+1);
+      unsigned int ipaddr3 = (unsigned char)*(peers->getData()+i+2);
+      unsigned int ipaddr4 = (unsigned char)*(peers->getData()+i+3);
+      unsigned int port = ntohs(*(unsigned short int*)(peers->getData()+i+4));
+      char ipaddr[16];
+      
+      snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
+	       ipaddr1, ipaddr2, ipaddr3, ipaddr4);
+      Peer* peer = new Peer(ipaddr, port, e->torrentMan->pieceLength,
+			    e->torrentMan->totalSize);
+      if(e->torrentMan->addPeer(peer)) {
+	e->logger->debug("CUID#%d - adding peer %s:%d", cuid,
+			 peer->ipaddr.c_str(), peer->port);
+      } else {
+	delete peer;
+      }
     }
+  } else {
+    e->logger->info("CUID#%d - no peer list received.", cuid);
   }
-  /*
-  if(req->getTrackerEvent() == Request::STARTED) {
-    PeerListenCommand* command = new PeerListenCommand(e->torrentMan->getNewCuid(), e);
-    e->commands.push(command);
-    e->logger->debug("CUID#%d - adding listen command", cuid);
-  }
-  */
   while(e->torrentMan->isPeerAvailable() &&
 	e->torrentMan->connections < MAX_PEER_UPDATE) {
     Peer* peer = e->torrentMan->getPeer();
@@ -115,9 +105,8 @@ bool TrackerUpdateCommand::execute() {
     e->commands.push(command);
     e->logger->debug("CUID#%d - adding new command CUID#%d", cuid, newCuid);
   }
-  req->setTrackerEvent(Request::AUTO);
-  TrackerInitCommand* command = new TrackerInitCommand(cuid, req, e);
-  SleepCommand* slpCommand = new SleepCommand(cuid, e, command, e->torrentMan->minInterval);
-  e->commands.push(slpCommand);
+  if(req->getTrackerEvent() == Request::STARTED) {
+    req->setTrackerEvent(Request::AUTO);
+  }
   return true;
 }

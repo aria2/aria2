@@ -34,7 +34,7 @@
 #include "TrackerInitCommand.h"
 #include "PeerListenCommand.h"
 #include "TorrentAutoSaveCommand.h"
-#include "SleepCommand.h"
+#include "TrackerWatcherCommand.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -51,6 +51,9 @@ extern int optind, opterr, optopt;
 # include <openssl/err.h>
 # include <openssl/ssl.h>
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/gnutls.h>
+#endif // HAVE_LIBGNUTLS
 
 using namespace std;
 
@@ -180,13 +183,13 @@ void showUsage() {
   cout << _(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or\n"
 	    "                              'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
-#ifdef HAVE_LIBSSL
+#ifdef ENABLE_BITTORRENT
   cout << _(" --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
 	    "                              enter BitTorrent mode even if the filename of\n"
 	    "                              downloaded file ends with .torrent.\n"
 	    "                              Default: true") << endl;
-#endif // HAVE_LIBSSL
+#endif // ENABLE_BITTORRENT
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
   cout << endl;
@@ -203,13 +206,13 @@ void showUsage() {
   cout << "  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip" << endl;
   cout << _(" You can mix up different protocols:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
-#ifdef HAVE_LIBSSL
+#ifdef ENABLE_BITTORRENT
   cout << _(" Download a torrent:") << endl;
   cout << "  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
   cout << _(" Download a torrent using local .torrent file:") << endl;
   cout << "  aria2c --torrent-file test.torrent" << endl;
   cout << endl;
-#endif // HAVE_LIBSSL
+#endif // ENABLE_BITTORRENT
   printf(_("Reports bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
 }
@@ -229,11 +232,11 @@ int main(int argc, char* argv[]) {
   bool daemonMode = false;
   string referer;
   string torrentFile;
-#ifdef HAVE_LIBSSL
+#ifdef ENABLE_BITTORRENT
   bool followTorrent = true;
 #else
   bool followTorrent = false;
-#endif // HAVE_LIBSSL
+#endif // ENABLE_BITTORRENT
 
   int c;
   Option* op = new Option();
@@ -274,10 +277,10 @@ int main(int argc, char* argv[]) {
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { "min-segment-size", required_argument, &lopt, 13 },
       { "http-proxy-method", required_argument, &lopt, 14 },
-#ifdef HAVE_LIBSSL
+#ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, &lopt, 15 },
       { "follow-torrent", required_argument, &lopt, 16 },
-#endif // HAVE_LIBSSL
+#endif // ENABLE_BITTORRENT
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
@@ -483,6 +486,9 @@ int main(int argc, char* argv[]) {
   SSL_load_error_strings();
   SSL_library_init();
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  gnutls_global_init();
+#endif // HAVE_LIBGNUTLS
   srandom(time(NULL));
   SimpleLogger* logger;
   if(stdoutLog) {
@@ -548,7 +554,7 @@ int main(int argc, char* argv[]) {
   }
   if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
     try {
-      op->put(PREF_MAX_TRIES, "0");
+      //op->put(PREF_MAX_TRIES, "0");
       struct sigaction sigact;
       sigact.sa_handler = torrentHandler;
       sigact.sa_flags = 0;
@@ -580,12 +586,11 @@ int main(int argc, char* argv[]) {
       }
       te->torrentMan->setPort(port);
       te->commands.push(listenCommand);
-      te->commands.push(new TrackerInitCommand(te->torrentMan->getNewCuid(),
-					       req, te));
-      int autoSaveCommandCuid = te->torrentMan->getNewCuid();
-      te->commands.push(new SleepCommand(autoSaveCommandCuid, te,
-					 new TorrentAutoSaveCommand(autoSaveCommandCuid, te, op->getAsInt(PREF_AUTO_SAVE_INTERVAL)),
-					 op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+      te->commands.push(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
+						  req, te));
+      te->commands.push(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
+						   te,
+						   op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
       te->run();
       
       if(te->torrentMan->downloadComplete()) {
@@ -609,5 +614,8 @@ int main(int argc, char* argv[]) {
   delete(op);
   delete(splitter);
 
+#ifdef HAVE_LIBGNUTLS
+  gnutls_global_deinit();
+#endif // HAVE_LIBGNUTLS
   return 0;
 }

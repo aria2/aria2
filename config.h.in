@@ -8,9 +8,18 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* Define to 1 if BitTorrent support is enabled. */
+#undef ENABLE_BITTORRENT
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
+
+/* Define to 1 if SHA1 Digest support is enabled. */
+#undef ENABLE_SHA1DIGEST
+
+/* Define to 1 if ssl support is enabled. */
+#undef ENABLE_SSL
 
 /* Define to 1 if you have `alloca', as a function or macro. */
 #undef HAVE_ALLOCA
@@ -90,10 +99,16 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
+/* Define to 1 if you have libgcrypt. */
+#undef HAVE_LIBGCRYPT
+
+/* Define to 1 if you have libgnutls. */
+#undef HAVE_LIBGNUTLS
+
 /* Define to 1 if you have the <libintl.h> header file. */
 #undef HAVE_LIBINTL_H
 
-/* Define to 1 if you have the `ssl' library (-lssl). */
+/* Define to 1 if you have openssl. */
 #undef HAVE_LIBSSL
 
 /* Define to 1 if you have the <limits.h> header file. */

@@ -1,3 +1,71 @@
+2006-03-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* configure.in: Added gnutls support. Added several CPP macros.
+	* m4/openssl.m4: Added.
+	* src/SocketCore.{h,cc}: Drop const quarifier from writeData(),
+	readData(), peekData(). Added gnutls support.
+	* src/HttpDownloadCommand.cc: Removed SleepCommand.h
+	* src/TrackerWatcherCommand.{h,cc}: Added. This command creates
+	TrackerInitCommand periodicaly(TorrentMan::minInterval).
+	* src/TorrentMan.cc: Remove downloadedSize == 0 check from save().
+	Instead, added a check for whether setup method has executed
+	successfully.
+	* src/TorrentMan.h: Added member vaiable setupComplete. Updated
+	DEFAULT_ANNOUNCE_INTERVAL and DEFAULT_ANNOUNCE_MIN_INTERVAL to 300.
+	* src/Makefile.am: Updated.
+	* src/messageDigest.h: Added. This is a macro calculating SHA1 digest
+	using whether OpenSSL or gcrypt, depending on the result of configure
+	script.
+	* src/ShaVisitor.{h,cc}: Removed direct	dependency on OpenSSL by using
+	messageDigest.h. 
+	* src/TorrentAutoSaveCommand.h: Removed unused variable cuid.
+	* src/PeerListenCommand.cc: Added log about port binded successfully.
+	Fixed memory leak.
+	* src/main.cc: Added gnutls support. Replaced LIB_SSL with
+	ENABLE_BITTORRENT where they are not related to OpenSSL but BitTorrent.
+	Removed instantiation of TrackerInitCommand. Instead,
+	TrackerWatcherCommand is instantiated and pushed to the command queue.
+	* src/InitiateConnectionCommandFactory.cc: Replaced HAVE_LIBSSL with
+	ENABLE_SSL.
+	* src/Request.cc: Replaced HAVE_LIBSSL with ENABLE_SSL.
+	* src/RequestSlotMan.cc:
+	(deleteCompletedRequestSlot)
+	If a piece is already acquired by another command, delete the request
+	slots for the piece.
+	* src/TrackerUpdateCommand.cc:
+	(execute)
+	Changed log level of MSG_TRACKER_WARNING_MESSAGE from info to warn.
+	Added a check whether peer list is null.
+	Fixed the bug that causes sending completed event to the tracker
+	several times.
+	* src/TrackerInitCommand.cc:
+	(execute)
+	Fixed the bug that causes sending completed event to the tracker
+	several times.
+	* src/AbstractDiskWriter.{h,cc}: Removed direct dependency on OpenSSL
+	by using messageDigest.h.
+	
+	
+2006-03-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* PeerConnection.cc: Replaced log message "keep-alive" with
+	"keep alive".
+	* PeerInteractionCommand.{h,cc}: Close connection if peer is choking
+	localhost long time.
+	* TorrentMan.cc: When adding new peer with duplicate = true, if the
+	number of peer list is equal to or grater than MAX_PEER_LIST, delete
+	at most 100 failure entry from the list. If with duplicate = false,
+	MAX_PEER_LIST is not checked.
+	* PeerListenCommand.cc: Fixed the argument order of log message.
+
+2006-03-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* Logger.h: Moved enum LEVEL from SimpleLogger.h to here.
+	Added warn().
+	* SimpleLogger.h: Moved enum LEVEL to Logger.h.
+	Implemented warn().
+	Defined 2 macros(WRITE_LOG, WRITE_LOG_EX) to avoid duplicated code.
+	
 2006-03-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Request.h: Added AFTER_COMPLETED event.

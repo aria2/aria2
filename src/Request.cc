@@ -24,10 +24,10 @@
 
 Request::Request():port(0), tryCount(0), isTorrent(false) {
   defaultPorts["http"] = 80;
-#ifdef HAVE_LIBSSL
+#ifdef ENABLE_SSL
   // for SSL
   defaultPorts["https"] = 443;
-#endif // HAVE_LIBSSL
+#endif // ENABLE_SSL
   defaultPorts["ftp"] = 21;
   seg.sp = 0;
   seg.ep = 0;

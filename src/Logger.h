@@ -35,8 +35,17 @@ public:
   virtual void debug(const char* msg, Exception* ex, ...) const = 0;
   virtual void info(const char* msg, ...) const = 0;
   virtual void info(const char* msg, Exception* ex, ...) const = 0;
+  virtual void warn(const char* msg, ...) const = 0;
+  virtual void warn(const char* msg, Exception* ex, ...) const = 0;
   virtual void error(const char*  msg, ...) const = 0;
   virtual void error(const char* msg, Exception* ex, ...) const = 0;
+
+  enum LEVEL {
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR
+  };
 };
 
 #endif // _D_LOGGER_H_

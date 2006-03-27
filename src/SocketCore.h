@@ -30,6 +30,9 @@
 // for SSL
 # include <openssl/ssl.h>
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+# include <gnutls/gnutls.h>
+#endif // HAVE_LIBGNUTLS
 
 using namespace std;
 
@@ -46,6 +49,19 @@ private:
   SSL_CTX* sslCtx;
   SSL* ssl;
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  gnutls_session_t sslSession;
+  gnutls_certificate_credentials_t sslXcred;
+  char* peekBuf;
+  int peekBufLength;
+  int peekBufMax;
+
+  int shiftPeekData(char* data, int len);
+  void addPeekData(char* data, int len);
+  int gnutlsRecv(char* data, int len);
+  int gnutlsPeek(char* data, int len);
+#endif // HAVE_LIBGNUTLS
+
   void init();
   SocketCore(int sockfd);
 public:
@@ -126,7 +142,7 @@ public:
    * @param timeout the amount of time elapsed before isWritable()
    * are timed out.
    */
-  void writeData(const char* data, int len, int timeout = 0) const;
+  void writeData(const char* data, int len, int timeout = 0);
 
   /**
    * Reads up to len bytes from this socket.
@@ -142,7 +158,7 @@ public:
    * @param timeout the amount of time elapsed before isReadable() are timed
    * out.
    */
-  void readData(char* data, int& len, int timeout = 0) const;
+  void readData(char* data, int& len, int timeout = 0);
 
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from
@@ -155,7 +171,7 @@ public:
    * @param timeout the amount of time elapsed before isReadable() are timed
    * out.
    */
-  void peekData(char* data, int& len, int timeout = 0) const;
+  void peekData(char* data, int& len, int timeout = 0);
   
   /**
    * Makes this socket secure.

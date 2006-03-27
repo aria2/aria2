@@ -68,7 +68,8 @@ void RequestSlotMan::deleteTimedoutRequestSlot(Piece& piece) {
 void RequestSlotMan::deleteCompletedRequestSlot(const Piece& piece) {
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end();) {
-    if(Piece::isNull(piece) || piece.hasBlock(itr->getBlockIndex())) {
+    if(Piece::isNull(piece) || piece.hasBlock(itr->getBlockIndex()) ||
+       torrentMan->hasPiece(piece.getIndex())) {
       logger->debug("CUID#%d - deleting requestslot blockIndex %d because the block is already acquired.", cuid,
 		    itr->getBlockIndex());
       PendingMessage pendingMessage =

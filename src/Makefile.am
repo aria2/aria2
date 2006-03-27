@@ -75,12 +75,14 @@ SRCS =  Socket.cc Socket.h\
 	RequestSlot.cc RequestSlot.h\
 	RequestSlotMan.cc RequestSlotMan.h\
 	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
-	Directory.cc Directory.h
+	Directory.cc Directory.h\
+	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
+	messageDigest.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
-aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@
-FLAGS =  -Wall
-INCLUDES = -I../lib -I../intl -I$(top_srcdir)/intl
-DEFS = -D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
-libaria2c_a_CXXFLAGS = $(FLAGS)
-aria2c_CXXFLAGS = $(FLAGS)
+aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@
+AM_CPPFLAGS =  -Wall\
+	-I../lib -I../intl -I$(top_srcdir)/intl\
+	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@\
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@

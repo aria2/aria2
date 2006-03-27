@@ -48,9 +48,10 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/codeset.m4 \
 	$(top_srcdir)/m4/inttypes_h.m4 $(top_srcdir)/m4/lcmessage.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
 	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
-	$(top_srcdir)/m4/ulonglong.m4 $(top_srcdir)/configure.in
+	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/stdint_h.m4 \
+	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/ulonglong.m4 \
+	$(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -61,68 +62,48 @@ AR = ar
 ARFLAGS = cru
 libaria2c_a_AR = $(AR) $(ARFLAGS)
 libaria2c_a_LIBADD =
-am__objects_1 = libaria2c_a-Socket.$(OBJEXT) \
-	libaria2c_a-SocketCore.$(OBJEXT) \
-	libaria2c_a-AbstractCommand.$(OBJEXT) \
-	libaria2c_a-InitiateConnectionCommandFactory.$(OBJEXT) \
-	libaria2c_a-DownloadCommand.$(OBJEXT) \
-	libaria2c_a-HttpInitiateConnectionCommand.$(OBJEXT) \
-	libaria2c_a-HttpRequestCommand.$(OBJEXT) \
-	libaria2c_a-HttpResponseCommand.$(OBJEXT) \
-	libaria2c_a-HttpProxyRequestCommand.$(OBJEXT) \
-	libaria2c_a-HttpProxyResponseCommand.$(OBJEXT) \
-	libaria2c_a-HttpDownloadCommand.$(OBJEXT) \
-	libaria2c_a-HttpHeader.$(OBJEXT) \
-	libaria2c_a-HttpConnection.$(OBJEXT) \
-	libaria2c_a-FtpConnection.$(OBJEXT) \
-	libaria2c_a-FtpInitiateConnectionCommand.$(OBJEXT) \
-	libaria2c_a-FtpNegotiationCommand.$(OBJEXT) \
-	libaria2c_a-FtpDownloadCommand.$(OBJEXT) \
-	libaria2c_a-FtpTunnelRequestCommand.$(OBJEXT) \
-	libaria2c_a-FtpTunnelResponseCommand.$(OBJEXT) \
-	libaria2c_a-SleepCommand.$(OBJEXT) \
-	libaria2c_a-DownloadEngine.$(OBJEXT) \
-	libaria2c_a-ConsoleDownloadEngine.$(OBJEXT) \
-	libaria2c_a-SegmentMan.$(OBJEXT) \
-	libaria2c_a-SegmentSplitter.$(OBJEXT) \
-	libaria2c_a-SplitFirstSegmentSplitter.$(OBJEXT) \
-	libaria2c_a-SplitSlowestSegmentSplitter.$(OBJEXT) \
-	libaria2c_a-Util.$(OBJEXT) libaria2c_a-Request.$(OBJEXT) \
-	libaria2c_a-SimpleLogger.$(OBJEXT) \
-	libaria2c_a-ChunkedEncoding.$(OBJEXT) \
-	libaria2c_a-DefaultDiskWriter.$(OBJEXT) \
-	libaria2c_a-PreAllocationDiskWriter.$(OBJEXT) \
-	libaria2c_a-AbstractDiskWriter.$(OBJEXT) \
-	libaria2c_a-File.$(OBJEXT) libaria2c_a-Option.$(OBJEXT) \
-	libaria2c_a-Base64.$(OBJEXT) libaria2c_a-CookieBox.$(OBJEXT) \
-	libaria2c_a-Data.$(OBJEXT) libaria2c_a-Dictionary.$(OBJEXT) \
-	libaria2c_a-List.$(OBJEXT) libaria2c_a-MetaFileUtil.$(OBJEXT) \
-	libaria2c_a-ShaVisitor.$(OBJEXT) \
-	libaria2c_a-TrackerInitCommand.$(OBJEXT) \
-	libaria2c_a-TrackerDownloadCommand.$(OBJEXT) \
-	libaria2c_a-TrackerUpdateCommand.$(OBJEXT) \
-	libaria2c_a-TorrentMan.$(OBJEXT) \
-	libaria2c_a-PeerConnection.$(OBJEXT) \
-	libaria2c_a-PeerMessageUtil.$(OBJEXT) \
-	libaria2c_a-PeerAbstractCommand.$(OBJEXT) \
-	libaria2c_a-PeerInitiateConnectionCommand.$(OBJEXT) \
-	libaria2c_a-PeerInteractionCommand.$(OBJEXT) \
-	libaria2c_a-Peer.$(OBJEXT) libaria2c_a-BitfieldMan.$(OBJEXT) \
-	libaria2c_a-TorrentDownloadEngine.$(OBJEXT) \
-	libaria2c_a-TorrentConsoleDownloadEngine.$(OBJEXT) \
-	libaria2c_a-PeerListenCommand.$(OBJEXT) \
-	libaria2c_a-PendingMessage.$(OBJEXT) \
-	libaria2c_a-PeerMessage.$(OBJEXT) libaria2c_a-Piece.$(OBJEXT) \
-	libaria2c_a-RequestSlot.$(OBJEXT) \
-	libaria2c_a-RequestSlotMan.$(OBJEXT) \
-	libaria2c_a-TorrentAutoSaveCommand.$(OBJEXT) \
-	libaria2c_a-Directory.$(OBJEXT)
+am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
+	AbstractCommand.$(OBJEXT) \
+	InitiateConnectionCommandFactory.$(OBJEXT) \
+	DownloadCommand.$(OBJEXT) \
+	HttpInitiateConnectionCommand.$(OBJEXT) \
+	HttpRequestCommand.$(OBJEXT) HttpResponseCommand.$(OBJEXT) \
+	HttpProxyRequestCommand.$(OBJEXT) \
+	HttpProxyResponseCommand.$(OBJEXT) \
+	HttpDownloadCommand.$(OBJEXT) HttpHeader.$(OBJEXT) \
+	HttpConnection.$(OBJEXT) FtpConnection.$(OBJEXT) \
+	FtpInitiateConnectionCommand.$(OBJEXT) \
+	FtpNegotiationCommand.$(OBJEXT) FtpDownloadCommand.$(OBJEXT) \
+	FtpTunnelRequestCommand.$(OBJEXT) \
+	FtpTunnelResponseCommand.$(OBJEXT) SleepCommand.$(OBJEXT) \
+	DownloadEngine.$(OBJEXT) ConsoleDownloadEngine.$(OBJEXT) \
+	SegmentMan.$(OBJEXT) SegmentSplitter.$(OBJEXT) \
+	SplitFirstSegmentSplitter.$(OBJEXT) \
+	SplitSlowestSegmentSplitter.$(OBJEXT) Util.$(OBJEXT) \
+	Request.$(OBJEXT) SimpleLogger.$(OBJEXT) \
+	ChunkedEncoding.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
+	PreAllocationDiskWriter.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
+	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
+	CookieBox.$(OBJEXT) Data.$(OBJEXT) Dictionary.$(OBJEXT) \
+	List.$(OBJEXT) MetaFileUtil.$(OBJEXT) ShaVisitor.$(OBJEXT) \
+	TrackerInitCommand.$(OBJEXT) TrackerDownloadCommand.$(OBJEXT) \
+	TrackerUpdateCommand.$(OBJEXT) TorrentMan.$(OBJEXT) \
+	PeerConnection.$(OBJEXT) PeerMessageUtil.$(OBJEXT) \
+	PeerAbstractCommand.$(OBJEXT) \
+	PeerInitiateConnectionCommand.$(OBJEXT) \
+	PeerInteractionCommand.$(OBJEXT) Peer.$(OBJEXT) \
+	BitfieldMan.$(OBJEXT) TorrentDownloadEngine.$(OBJEXT) \
+	TorrentConsoleDownloadEngine.$(OBJEXT) \
+	PeerListenCommand.$(OBJEXT) PendingMessage.$(OBJEXT) \
+	PeerMessage.$(OBJEXT) Piece.$(OBJEXT) RequestSlot.$(OBJEXT) \
+	RequestSlotMan.$(OBJEXT) TorrentAutoSaveCommand.$(OBJEXT) \
+	Directory.$(OBJEXT) TrackerWatcherCommand.$(OBJEXT)
 am_libaria2c_a_OBJECTS = $(am__objects_1)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
-am_aria2c_OBJECTS = aria2c-main.$(OBJEXT)
+am_aria2c_OBJECTS = main.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 aria2c_DEPENDENCIES = libaria2c.a @ALLOCA@
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -166,7 +147,7 @@ CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
-DEFS = -D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
+DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
@@ -186,6 +167,12 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 LDFLAGS = @LDFLAGS@
+LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
+LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
+LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
+LIBGNUTLS_CFLAGS = @LIBGNUTLS_CFLAGS@
+LIBGNUTLS_CONFIG = @LIBGNUTLS_CONFIG@
+LIBGNUTLS_LIBS = @LIBGNUTLS_LIBS@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
@@ -198,6 +185,8 @@ MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LIBS = @OPENSSL_LIBS@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -333,15 +322,20 @@ SRCS = Socket.cc Socket.h\
 	RequestSlot.cc RequestSlot.h\
 	RequestSlotMan.cc RequestSlotMan.h\
 	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
-	Directory.cc Directory.h
+	Directory.cc Directory.h\
+	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
+	messageDigest.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
-aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@
-FLAGS = -Wall
-INCLUDES = -I../lib -I../intl -I$(top_srcdir)/intl
-libaria2c_a_CXXFLAGS = $(FLAGS)
-aria2c_CXXFLAGS = $(FLAGS)
+aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@
+
+AM_CPPFLAGS = -Wall\
+	-I../lib -I../intl -I$(top_srcdir)/intl\
+	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@\
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
+
 all: all-am
 
 .SUFFIXES:
@@ -416,70 +410,71 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/alloca.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-AbstractCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Base64.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-BitfieldMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-ChunkedEncoding.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-CookieBox.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Data.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Dictionary.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Directory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-DownloadCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-DownloadEngine.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-File.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-FtpConnection.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpConnection.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpHeader.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpRequestCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-HttpResponseCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-List.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-MetaFileUtil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Option.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Peer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PeerConnection.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PeerListenCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PeerMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PeerMessageUtil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PendingMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Piece.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Request.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-RequestSlot.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-RequestSlotMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SegmentMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SegmentSplitter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-ShaVisitor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SimpleLogger.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SleepCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Socket.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SocketCore.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-TorrentMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-TrackerInitCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaria2c_a-Util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dictionary.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Directory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpInitiateConnectionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpNegotiationCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpDownloadCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpInitiateConnectionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyRequestCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerConnection.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInitiateConnectionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInteractionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PendingMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreAllocationDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlotMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentSplitter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Socket.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitFirstSegmentSplitter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitSlowestSegmentSplitter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentAutoSaveCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentConsoleDownloadEngine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentDownloadEngine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerDownloadCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerInitCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -494,902 +489,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-libaria2c_a-Socket.o: Socket.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Socket.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Socket.Tpo" -c -o libaria2c_a-Socket.o `test -f 'Socket.cc' || echo '$(srcdir)/'`Socket.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Socket.Tpo" "$(DEPDIR)/libaria2c_a-Socket.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Socket.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Socket.cc' object='libaria2c_a-Socket.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Socket.o `test -f 'Socket.cc' || echo '$(srcdir)/'`Socket.cc
-
-libaria2c_a-Socket.obj: Socket.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Socket.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Socket.Tpo" -c -o libaria2c_a-Socket.obj `if test -f 'Socket.cc'; then $(CYGPATH_W) 'Socket.cc'; else $(CYGPATH_W) '$(srcdir)/Socket.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Socket.Tpo" "$(DEPDIR)/libaria2c_a-Socket.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Socket.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Socket.cc' object='libaria2c_a-Socket.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Socket.obj `if test -f 'Socket.cc'; then $(CYGPATH_W) 'Socket.cc'; else $(CYGPATH_W) '$(srcdir)/Socket.cc'; fi`
-
-libaria2c_a-SocketCore.o: SocketCore.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SocketCore.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" -c -o libaria2c_a-SocketCore.o `test -f 'SocketCore.cc' || echo '$(srcdir)/'`SocketCore.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" "$(DEPDIR)/libaria2c_a-SocketCore.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SocketCore.cc' object='libaria2c_a-SocketCore.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SocketCore.o `test -f 'SocketCore.cc' || echo '$(srcdir)/'`SocketCore.cc
-
-libaria2c_a-SocketCore.obj: SocketCore.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SocketCore.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" -c -o libaria2c_a-SocketCore.obj `if test -f 'SocketCore.cc'; then $(CYGPATH_W) 'SocketCore.cc'; else $(CYGPATH_W) '$(srcdir)/SocketCore.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo" "$(DEPDIR)/libaria2c_a-SocketCore.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SocketCore.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SocketCore.cc' object='libaria2c_a-SocketCore.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SocketCore.obj `if test -f 'SocketCore.cc'; then $(CYGPATH_W) 'SocketCore.cc'; else $(CYGPATH_W) '$(srcdir)/SocketCore.cc'; fi`
-
-libaria2c_a-AbstractCommand.o: AbstractCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-AbstractCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-AbstractCommand.Tpo" -c -o libaria2c_a-AbstractCommand.o `test -f 'AbstractCommand.cc' || echo '$(srcdir)/'`AbstractCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-AbstractCommand.Tpo" "$(DEPDIR)/libaria2c_a-AbstractCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-AbstractCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AbstractCommand.cc' object='libaria2c_a-AbstractCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-AbstractCommand.o `test -f 'AbstractCommand.cc' || echo '$(srcdir)/'`AbstractCommand.cc
-
-libaria2c_a-AbstractCommand.obj: AbstractCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-AbstractCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-AbstractCommand.Tpo" -c -o libaria2c_a-AbstractCommand.obj `if test -f 'AbstractCommand.cc'; then $(CYGPATH_W) 'AbstractCommand.cc'; else $(CYGPATH_W) '$(srcdir)/AbstractCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-AbstractCommand.Tpo" "$(DEPDIR)/libaria2c_a-AbstractCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-AbstractCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AbstractCommand.cc' object='libaria2c_a-AbstractCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-AbstractCommand.obj `if test -f 'AbstractCommand.cc'; then $(CYGPATH_W) 'AbstractCommand.cc'; else $(CYGPATH_W) '$(srcdir)/AbstractCommand.cc'; fi`
-
-libaria2c_a-InitiateConnectionCommandFactory.o: InitiateConnectionCommandFactory.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-InitiateConnectionCommandFactory.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Tpo" -c -o libaria2c_a-InitiateConnectionCommandFactory.o `test -f 'InitiateConnectionCommandFactory.cc' || echo '$(srcdir)/'`InitiateConnectionCommandFactory.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Tpo" "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Po"; else rm -f "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='InitiateConnectionCommandFactory.cc' object='libaria2c_a-InitiateConnectionCommandFactory.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-InitiateConnectionCommandFactory.o `test -f 'InitiateConnectionCommandFactory.cc' || echo '$(srcdir)/'`InitiateConnectionCommandFactory.cc
-
-libaria2c_a-InitiateConnectionCommandFactory.obj: InitiateConnectionCommandFactory.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-InitiateConnectionCommandFactory.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Tpo" -c -o libaria2c_a-InitiateConnectionCommandFactory.obj `if test -f 'InitiateConnectionCommandFactory.cc'; then $(CYGPATH_W) 'InitiateConnectionCommandFactory.cc'; else $(CYGPATH_W) '$(srcdir)/InitiateConnectionCommandFactory.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Tpo" "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Po"; else rm -f "$(DEPDIR)/libaria2c_a-InitiateConnectionCommandFactory.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='InitiateConnectionCommandFactory.cc' object='libaria2c_a-InitiateConnectionCommandFactory.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-InitiateConnectionCommandFactory.obj `if test -f 'InitiateConnectionCommandFactory.cc'; then $(CYGPATH_W) 'InitiateConnectionCommandFactory.cc'; else $(CYGPATH_W) '$(srcdir)/InitiateConnectionCommandFactory.cc'; fi`
-
-libaria2c_a-DownloadCommand.o: DownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-DownloadCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-DownloadCommand.Tpo" -c -o libaria2c_a-DownloadCommand.o `test -f 'DownloadCommand.cc' || echo '$(srcdir)/'`DownloadCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-DownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-DownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-DownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DownloadCommand.cc' object='libaria2c_a-DownloadCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-DownloadCommand.o `test -f 'DownloadCommand.cc' || echo '$(srcdir)/'`DownloadCommand.cc
-
-libaria2c_a-DownloadCommand.obj: DownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-DownloadCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-DownloadCommand.Tpo" -c -o libaria2c_a-DownloadCommand.obj `if test -f 'DownloadCommand.cc'; then $(CYGPATH_W) 'DownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/DownloadCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-DownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-DownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-DownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DownloadCommand.cc' object='libaria2c_a-DownloadCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-DownloadCommand.obj `if test -f 'DownloadCommand.cc'; then $(CYGPATH_W) 'DownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/DownloadCommand.cc'; fi`
-
-libaria2c_a-HttpInitiateConnectionCommand.o: HttpInitiateConnectionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpInitiateConnectionCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Tpo" -c -o libaria2c_a-HttpInitiateConnectionCommand.o `test -f 'HttpInitiateConnectionCommand.cc' || echo '$(srcdir)/'`HttpInitiateConnectionCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpInitiateConnectionCommand.cc' object='libaria2c_a-HttpInitiateConnectionCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpInitiateConnectionCommand.o `test -f 'HttpInitiateConnectionCommand.cc' || echo '$(srcdir)/'`HttpInitiateConnectionCommand.cc
-
-libaria2c_a-HttpInitiateConnectionCommand.obj: HttpInitiateConnectionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpInitiateConnectionCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Tpo" -c -o libaria2c_a-HttpInitiateConnectionCommand.obj `if test -f 'HttpInitiateConnectionCommand.cc'; then $(CYGPATH_W) 'HttpInitiateConnectionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpInitiateConnectionCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpInitiateConnectionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpInitiateConnectionCommand.cc' object='libaria2c_a-HttpInitiateConnectionCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpInitiateConnectionCommand.obj `if test -f 'HttpInitiateConnectionCommand.cc'; then $(CYGPATH_W) 'HttpInitiateConnectionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpInitiateConnectionCommand.cc'; fi`
-
-libaria2c_a-HttpRequestCommand.o: HttpRequestCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpRequestCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Tpo" -c -o libaria2c_a-HttpRequestCommand.o `test -f 'HttpRequestCommand.cc' || echo '$(srcdir)/'`HttpRequestCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpRequestCommand.cc' object='libaria2c_a-HttpRequestCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpRequestCommand.o `test -f 'HttpRequestCommand.cc' || echo '$(srcdir)/'`HttpRequestCommand.cc
-
-libaria2c_a-HttpRequestCommand.obj: HttpRequestCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpRequestCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Tpo" -c -o libaria2c_a-HttpRequestCommand.obj `if test -f 'HttpRequestCommand.cc'; then $(CYGPATH_W) 'HttpRequestCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpRequestCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpRequestCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpRequestCommand.cc' object='libaria2c_a-HttpRequestCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpRequestCommand.obj `if test -f 'HttpRequestCommand.cc'; then $(CYGPATH_W) 'HttpRequestCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpRequestCommand.cc'; fi`
-
-libaria2c_a-HttpResponseCommand.o: HttpResponseCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpResponseCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Tpo" -c -o libaria2c_a-HttpResponseCommand.o `test -f 'HttpResponseCommand.cc' || echo '$(srcdir)/'`HttpResponseCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpResponseCommand.cc' object='libaria2c_a-HttpResponseCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpResponseCommand.o `test -f 'HttpResponseCommand.cc' || echo '$(srcdir)/'`HttpResponseCommand.cc
-
-libaria2c_a-HttpResponseCommand.obj: HttpResponseCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpResponseCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Tpo" -c -o libaria2c_a-HttpResponseCommand.obj `if test -f 'HttpResponseCommand.cc'; then $(CYGPATH_W) 'HttpResponseCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpResponseCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpResponseCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpResponseCommand.cc' object='libaria2c_a-HttpResponseCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpResponseCommand.obj `if test -f 'HttpResponseCommand.cc'; then $(CYGPATH_W) 'HttpResponseCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpResponseCommand.cc'; fi`
-
-libaria2c_a-HttpProxyRequestCommand.o: HttpProxyRequestCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpProxyRequestCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Tpo" -c -o libaria2c_a-HttpProxyRequestCommand.o `test -f 'HttpProxyRequestCommand.cc' || echo '$(srcdir)/'`HttpProxyRequestCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpProxyRequestCommand.cc' object='libaria2c_a-HttpProxyRequestCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpProxyRequestCommand.o `test -f 'HttpProxyRequestCommand.cc' || echo '$(srcdir)/'`HttpProxyRequestCommand.cc
-
-libaria2c_a-HttpProxyRequestCommand.obj: HttpProxyRequestCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpProxyRequestCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Tpo" -c -o libaria2c_a-HttpProxyRequestCommand.obj `if test -f 'HttpProxyRequestCommand.cc'; then $(CYGPATH_W) 'HttpProxyRequestCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpProxyRequestCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpProxyRequestCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpProxyRequestCommand.cc' object='libaria2c_a-HttpProxyRequestCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpProxyRequestCommand.obj `if test -f 'HttpProxyRequestCommand.cc'; then $(CYGPATH_W) 'HttpProxyRequestCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpProxyRequestCommand.cc'; fi`
-
-libaria2c_a-HttpProxyResponseCommand.o: HttpProxyResponseCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpProxyResponseCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Tpo" -c -o libaria2c_a-HttpProxyResponseCommand.o `test -f 'HttpProxyResponseCommand.cc' || echo '$(srcdir)/'`HttpProxyResponseCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpProxyResponseCommand.cc' object='libaria2c_a-HttpProxyResponseCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpProxyResponseCommand.o `test -f 'HttpProxyResponseCommand.cc' || echo '$(srcdir)/'`HttpProxyResponseCommand.cc
-
-libaria2c_a-HttpProxyResponseCommand.obj: HttpProxyResponseCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpProxyResponseCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Tpo" -c -o libaria2c_a-HttpProxyResponseCommand.obj `if test -f 'HttpProxyResponseCommand.cc'; then $(CYGPATH_W) 'HttpProxyResponseCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpProxyResponseCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpProxyResponseCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpProxyResponseCommand.cc' object='libaria2c_a-HttpProxyResponseCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpProxyResponseCommand.obj `if test -f 'HttpProxyResponseCommand.cc'; then $(CYGPATH_W) 'HttpProxyResponseCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpProxyResponseCommand.cc'; fi`
-
-libaria2c_a-HttpDownloadCommand.o: HttpDownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpDownloadCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Tpo" -c -o libaria2c_a-HttpDownloadCommand.o `test -f 'HttpDownloadCommand.cc' || echo '$(srcdir)/'`HttpDownloadCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpDownloadCommand.cc' object='libaria2c_a-HttpDownloadCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpDownloadCommand.o `test -f 'HttpDownloadCommand.cc' || echo '$(srcdir)/'`HttpDownloadCommand.cc
-
-libaria2c_a-HttpDownloadCommand.obj: HttpDownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpDownloadCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Tpo" -c -o libaria2c_a-HttpDownloadCommand.obj `if test -f 'HttpDownloadCommand.cc'; then $(CYGPATH_W) 'HttpDownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpDownloadCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpDownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpDownloadCommand.cc' object='libaria2c_a-HttpDownloadCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpDownloadCommand.obj `if test -f 'HttpDownloadCommand.cc'; then $(CYGPATH_W) 'HttpDownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/HttpDownloadCommand.cc'; fi`
-
-libaria2c_a-HttpHeader.o: HttpHeader.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpHeader.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpHeader.Tpo" -c -o libaria2c_a-HttpHeader.o `test -f 'HttpHeader.cc' || echo '$(srcdir)/'`HttpHeader.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpHeader.Tpo" "$(DEPDIR)/libaria2c_a-HttpHeader.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpHeader.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpHeader.cc' object='libaria2c_a-HttpHeader.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpHeader.o `test -f 'HttpHeader.cc' || echo '$(srcdir)/'`HttpHeader.cc
-
-libaria2c_a-HttpHeader.obj: HttpHeader.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpHeader.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpHeader.Tpo" -c -o libaria2c_a-HttpHeader.obj `if test -f 'HttpHeader.cc'; then $(CYGPATH_W) 'HttpHeader.cc'; else $(CYGPATH_W) '$(srcdir)/HttpHeader.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpHeader.Tpo" "$(DEPDIR)/libaria2c_a-HttpHeader.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpHeader.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpHeader.cc' object='libaria2c_a-HttpHeader.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpHeader.obj `if test -f 'HttpHeader.cc'; then $(CYGPATH_W) 'HttpHeader.cc'; else $(CYGPATH_W) '$(srcdir)/HttpHeader.cc'; fi`
-
-libaria2c_a-HttpConnection.o: HttpConnection.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpConnection.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpConnection.Tpo" -c -o libaria2c_a-HttpConnection.o `test -f 'HttpConnection.cc' || echo '$(srcdir)/'`HttpConnection.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpConnection.Tpo" "$(DEPDIR)/libaria2c_a-HttpConnection.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpConnection.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpConnection.cc' object='libaria2c_a-HttpConnection.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpConnection.o `test -f 'HttpConnection.cc' || echo '$(srcdir)/'`HttpConnection.cc
-
-libaria2c_a-HttpConnection.obj: HttpConnection.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-HttpConnection.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-HttpConnection.Tpo" -c -o libaria2c_a-HttpConnection.obj `if test -f 'HttpConnection.cc'; then $(CYGPATH_W) 'HttpConnection.cc'; else $(CYGPATH_W) '$(srcdir)/HttpConnection.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-HttpConnection.Tpo" "$(DEPDIR)/libaria2c_a-HttpConnection.Po"; else rm -f "$(DEPDIR)/libaria2c_a-HttpConnection.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='HttpConnection.cc' object='libaria2c_a-HttpConnection.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-HttpConnection.obj `if test -f 'HttpConnection.cc'; then $(CYGPATH_W) 'HttpConnection.cc'; else $(CYGPATH_W) '$(srcdir)/HttpConnection.cc'; fi`
-
-libaria2c_a-FtpConnection.o: FtpConnection.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpConnection.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpConnection.Tpo" -c -o libaria2c_a-FtpConnection.o `test -f 'FtpConnection.cc' || echo '$(srcdir)/'`FtpConnection.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpConnection.Tpo" "$(DEPDIR)/libaria2c_a-FtpConnection.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpConnection.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpConnection.cc' object='libaria2c_a-FtpConnection.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpConnection.o `test -f 'FtpConnection.cc' || echo '$(srcdir)/'`FtpConnection.cc
-
-libaria2c_a-FtpConnection.obj: FtpConnection.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpConnection.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpConnection.Tpo" -c -o libaria2c_a-FtpConnection.obj `if test -f 'FtpConnection.cc'; then $(CYGPATH_W) 'FtpConnection.cc'; else $(CYGPATH_W) '$(srcdir)/FtpConnection.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpConnection.Tpo" "$(DEPDIR)/libaria2c_a-FtpConnection.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpConnection.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpConnection.cc' object='libaria2c_a-FtpConnection.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpConnection.obj `if test -f 'FtpConnection.cc'; then $(CYGPATH_W) 'FtpConnection.cc'; else $(CYGPATH_W) '$(srcdir)/FtpConnection.cc'; fi`
-
-libaria2c_a-FtpInitiateConnectionCommand.o: FtpInitiateConnectionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpInitiateConnectionCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Tpo" -c -o libaria2c_a-FtpInitiateConnectionCommand.o `test -f 'FtpInitiateConnectionCommand.cc' || echo '$(srcdir)/'`FtpInitiateConnectionCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpInitiateConnectionCommand.cc' object='libaria2c_a-FtpInitiateConnectionCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpInitiateConnectionCommand.o `test -f 'FtpInitiateConnectionCommand.cc' || echo '$(srcdir)/'`FtpInitiateConnectionCommand.cc
-
-libaria2c_a-FtpInitiateConnectionCommand.obj: FtpInitiateConnectionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpInitiateConnectionCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Tpo" -c -o libaria2c_a-FtpInitiateConnectionCommand.obj `if test -f 'FtpInitiateConnectionCommand.cc'; then $(CYGPATH_W) 'FtpInitiateConnectionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpInitiateConnectionCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpInitiateConnectionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpInitiateConnectionCommand.cc' object='libaria2c_a-FtpInitiateConnectionCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpInitiateConnectionCommand.obj `if test -f 'FtpInitiateConnectionCommand.cc'; then $(CYGPATH_W) 'FtpInitiateConnectionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpInitiateConnectionCommand.cc'; fi`
-
-libaria2c_a-FtpNegotiationCommand.o: FtpNegotiationCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpNegotiationCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Tpo" -c -o libaria2c_a-FtpNegotiationCommand.o `test -f 'FtpNegotiationCommand.cc' || echo '$(srcdir)/'`FtpNegotiationCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpNegotiationCommand.cc' object='libaria2c_a-FtpNegotiationCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpNegotiationCommand.o `test -f 'FtpNegotiationCommand.cc' || echo '$(srcdir)/'`FtpNegotiationCommand.cc
-
-libaria2c_a-FtpNegotiationCommand.obj: FtpNegotiationCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpNegotiationCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Tpo" -c -o libaria2c_a-FtpNegotiationCommand.obj `if test -f 'FtpNegotiationCommand.cc'; then $(CYGPATH_W) 'FtpNegotiationCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpNegotiationCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpNegotiationCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpNegotiationCommand.cc' object='libaria2c_a-FtpNegotiationCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpNegotiationCommand.obj `if test -f 'FtpNegotiationCommand.cc'; then $(CYGPATH_W) 'FtpNegotiationCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpNegotiationCommand.cc'; fi`
-
-libaria2c_a-FtpDownloadCommand.o: FtpDownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpDownloadCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Tpo" -c -o libaria2c_a-FtpDownloadCommand.o `test -f 'FtpDownloadCommand.cc' || echo '$(srcdir)/'`FtpDownloadCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpDownloadCommand.cc' object='libaria2c_a-FtpDownloadCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpDownloadCommand.o `test -f 'FtpDownloadCommand.cc' || echo '$(srcdir)/'`FtpDownloadCommand.cc
-
-libaria2c_a-FtpDownloadCommand.obj: FtpDownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpDownloadCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Tpo" -c -o libaria2c_a-FtpDownloadCommand.obj `if test -f 'FtpDownloadCommand.cc'; then $(CYGPATH_W) 'FtpDownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpDownloadCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpDownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpDownloadCommand.cc' object='libaria2c_a-FtpDownloadCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpDownloadCommand.obj `if test -f 'FtpDownloadCommand.cc'; then $(CYGPATH_W) 'FtpDownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpDownloadCommand.cc'; fi`
-
-libaria2c_a-FtpTunnelRequestCommand.o: FtpTunnelRequestCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpTunnelRequestCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Tpo" -c -o libaria2c_a-FtpTunnelRequestCommand.o `test -f 'FtpTunnelRequestCommand.cc' || echo '$(srcdir)/'`FtpTunnelRequestCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpTunnelRequestCommand.cc' object='libaria2c_a-FtpTunnelRequestCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpTunnelRequestCommand.o `test -f 'FtpTunnelRequestCommand.cc' || echo '$(srcdir)/'`FtpTunnelRequestCommand.cc
-
-libaria2c_a-FtpTunnelRequestCommand.obj: FtpTunnelRequestCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpTunnelRequestCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Tpo" -c -o libaria2c_a-FtpTunnelRequestCommand.obj `if test -f 'FtpTunnelRequestCommand.cc'; then $(CYGPATH_W) 'FtpTunnelRequestCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpTunnelRequestCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpTunnelRequestCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpTunnelRequestCommand.cc' object='libaria2c_a-FtpTunnelRequestCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpTunnelRequestCommand.obj `if test -f 'FtpTunnelRequestCommand.cc'; then $(CYGPATH_W) 'FtpTunnelRequestCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpTunnelRequestCommand.cc'; fi`
-
-libaria2c_a-FtpTunnelResponseCommand.o: FtpTunnelResponseCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpTunnelResponseCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Tpo" -c -o libaria2c_a-FtpTunnelResponseCommand.o `test -f 'FtpTunnelResponseCommand.cc' || echo '$(srcdir)/'`FtpTunnelResponseCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpTunnelResponseCommand.cc' object='libaria2c_a-FtpTunnelResponseCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpTunnelResponseCommand.o `test -f 'FtpTunnelResponseCommand.cc' || echo '$(srcdir)/'`FtpTunnelResponseCommand.cc
-
-libaria2c_a-FtpTunnelResponseCommand.obj: FtpTunnelResponseCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-FtpTunnelResponseCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Tpo" -c -o libaria2c_a-FtpTunnelResponseCommand.obj `if test -f 'FtpTunnelResponseCommand.cc'; then $(CYGPATH_W) 'FtpTunnelResponseCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpTunnelResponseCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Tpo" "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-FtpTunnelResponseCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FtpTunnelResponseCommand.cc' object='libaria2c_a-FtpTunnelResponseCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-FtpTunnelResponseCommand.obj `if test -f 'FtpTunnelResponseCommand.cc'; then $(CYGPATH_W) 'FtpTunnelResponseCommand.cc'; else $(CYGPATH_W) '$(srcdir)/FtpTunnelResponseCommand.cc'; fi`
-
-libaria2c_a-SleepCommand.o: SleepCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SleepCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SleepCommand.Tpo" -c -o libaria2c_a-SleepCommand.o `test -f 'SleepCommand.cc' || echo '$(srcdir)/'`SleepCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SleepCommand.Tpo" "$(DEPDIR)/libaria2c_a-SleepCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SleepCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SleepCommand.cc' object='libaria2c_a-SleepCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SleepCommand.o `test -f 'SleepCommand.cc' || echo '$(srcdir)/'`SleepCommand.cc
-
-libaria2c_a-SleepCommand.obj: SleepCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SleepCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SleepCommand.Tpo" -c -o libaria2c_a-SleepCommand.obj `if test -f 'SleepCommand.cc'; then $(CYGPATH_W) 'SleepCommand.cc'; else $(CYGPATH_W) '$(srcdir)/SleepCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SleepCommand.Tpo" "$(DEPDIR)/libaria2c_a-SleepCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SleepCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SleepCommand.cc' object='libaria2c_a-SleepCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SleepCommand.obj `if test -f 'SleepCommand.cc'; then $(CYGPATH_W) 'SleepCommand.cc'; else $(CYGPATH_W) '$(srcdir)/SleepCommand.cc'; fi`
-
-libaria2c_a-DownloadEngine.o: DownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-DownloadEngine.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-DownloadEngine.Tpo" -c -o libaria2c_a-DownloadEngine.o `test -f 'DownloadEngine.cc' || echo '$(srcdir)/'`DownloadEngine.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-DownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-DownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-DownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DownloadEngine.cc' object='libaria2c_a-DownloadEngine.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-DownloadEngine.o `test -f 'DownloadEngine.cc' || echo '$(srcdir)/'`DownloadEngine.cc
-
-libaria2c_a-DownloadEngine.obj: DownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-DownloadEngine.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-DownloadEngine.Tpo" -c -o libaria2c_a-DownloadEngine.obj `if test -f 'DownloadEngine.cc'; then $(CYGPATH_W) 'DownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/DownloadEngine.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-DownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-DownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-DownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DownloadEngine.cc' object='libaria2c_a-DownloadEngine.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-DownloadEngine.obj `if test -f 'DownloadEngine.cc'; then $(CYGPATH_W) 'DownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/DownloadEngine.cc'; fi`
-
-libaria2c_a-ConsoleDownloadEngine.o: ConsoleDownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ConsoleDownloadEngine.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" -c -o libaria2c_a-ConsoleDownloadEngine.o `test -f 'ConsoleDownloadEngine.cc' || echo '$(srcdir)/'`ConsoleDownloadEngine.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConsoleDownloadEngine.cc' object='libaria2c_a-ConsoleDownloadEngine.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ConsoleDownloadEngine.o `test -f 'ConsoleDownloadEngine.cc' || echo '$(srcdir)/'`ConsoleDownloadEngine.cc
-
-libaria2c_a-ConsoleDownloadEngine.obj: ConsoleDownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ConsoleDownloadEngine.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" -c -o libaria2c_a-ConsoleDownloadEngine.obj `if test -f 'ConsoleDownloadEngine.cc'; then $(CYGPATH_W) 'ConsoleDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/ConsoleDownloadEngine.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ConsoleDownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ConsoleDownloadEngine.cc' object='libaria2c_a-ConsoleDownloadEngine.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ConsoleDownloadEngine.obj `if test -f 'ConsoleDownloadEngine.cc'; then $(CYGPATH_W) 'ConsoleDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/ConsoleDownloadEngine.cc'; fi`
-
-libaria2c_a-SegmentMan.o: SegmentMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SegmentMan.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SegmentMan.Tpo" -c -o libaria2c_a-SegmentMan.o `test -f 'SegmentMan.cc' || echo '$(srcdir)/'`SegmentMan.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SegmentMan.Tpo" "$(DEPDIR)/libaria2c_a-SegmentMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SegmentMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SegmentMan.cc' object='libaria2c_a-SegmentMan.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SegmentMan.o `test -f 'SegmentMan.cc' || echo '$(srcdir)/'`SegmentMan.cc
-
-libaria2c_a-SegmentMan.obj: SegmentMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SegmentMan.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SegmentMan.Tpo" -c -o libaria2c_a-SegmentMan.obj `if test -f 'SegmentMan.cc'; then $(CYGPATH_W) 'SegmentMan.cc'; else $(CYGPATH_W) '$(srcdir)/SegmentMan.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SegmentMan.Tpo" "$(DEPDIR)/libaria2c_a-SegmentMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SegmentMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SegmentMan.cc' object='libaria2c_a-SegmentMan.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SegmentMan.obj `if test -f 'SegmentMan.cc'; then $(CYGPATH_W) 'SegmentMan.cc'; else $(CYGPATH_W) '$(srcdir)/SegmentMan.cc'; fi`
-
-libaria2c_a-SegmentSplitter.o: SegmentSplitter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SegmentSplitter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" -c -o libaria2c_a-SegmentSplitter.o `test -f 'SegmentSplitter.cc' || echo '$(srcdir)/'`SegmentSplitter.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SegmentSplitter.cc' object='libaria2c_a-SegmentSplitter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SegmentSplitter.o `test -f 'SegmentSplitter.cc' || echo '$(srcdir)/'`SegmentSplitter.cc
-
-libaria2c_a-SegmentSplitter.obj: SegmentSplitter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SegmentSplitter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" -c -o libaria2c_a-SegmentSplitter.obj `if test -f 'SegmentSplitter.cc'; then $(CYGPATH_W) 'SegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SegmentSplitter.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SegmentSplitter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SegmentSplitter.cc' object='libaria2c_a-SegmentSplitter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SegmentSplitter.obj `if test -f 'SegmentSplitter.cc'; then $(CYGPATH_W) 'SegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SegmentSplitter.cc'; fi`
-
-libaria2c_a-SplitFirstSegmentSplitter.o: SplitFirstSegmentSplitter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitFirstSegmentSplitter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" -c -o libaria2c_a-SplitFirstSegmentSplitter.o `test -f 'SplitFirstSegmentSplitter.cc' || echo '$(srcdir)/'`SplitFirstSegmentSplitter.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitFirstSegmentSplitter.cc' object='libaria2c_a-SplitFirstSegmentSplitter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitFirstSegmentSplitter.o `test -f 'SplitFirstSegmentSplitter.cc' || echo '$(srcdir)/'`SplitFirstSegmentSplitter.cc
-
-libaria2c_a-SplitFirstSegmentSplitter.obj: SplitFirstSegmentSplitter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitFirstSegmentSplitter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" -c -o libaria2c_a-SplitFirstSegmentSplitter.obj `if test -f 'SplitFirstSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitFirstSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitFirstSegmentSplitter.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitFirstSegmentSplitter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitFirstSegmentSplitter.cc' object='libaria2c_a-SplitFirstSegmentSplitter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitFirstSegmentSplitter.obj `if test -f 'SplitFirstSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitFirstSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitFirstSegmentSplitter.cc'; fi`
-
-libaria2c_a-SplitSlowestSegmentSplitter.o: SplitSlowestSegmentSplitter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitSlowestSegmentSplitter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" -c -o libaria2c_a-SplitSlowestSegmentSplitter.o `test -f 'SplitSlowestSegmentSplitter.cc' || echo '$(srcdir)/'`SplitSlowestSegmentSplitter.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitSlowestSegmentSplitter.cc' object='libaria2c_a-SplitSlowestSegmentSplitter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitSlowestSegmentSplitter.o `test -f 'SplitSlowestSegmentSplitter.cc' || echo '$(srcdir)/'`SplitSlowestSegmentSplitter.cc
-
-libaria2c_a-SplitSlowestSegmentSplitter.obj: SplitSlowestSegmentSplitter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SplitSlowestSegmentSplitter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" -c -o libaria2c_a-SplitSlowestSegmentSplitter.obj `if test -f 'SplitSlowestSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitSlowestSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitSlowestSegmentSplitter.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo" "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SplitSlowestSegmentSplitter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SplitSlowestSegmentSplitter.cc' object='libaria2c_a-SplitSlowestSegmentSplitter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SplitSlowestSegmentSplitter.obj `if test -f 'SplitSlowestSegmentSplitter.cc'; then $(CYGPATH_W) 'SplitSlowestSegmentSplitter.cc'; else $(CYGPATH_W) '$(srcdir)/SplitSlowestSegmentSplitter.cc'; fi`
-
-libaria2c_a-Util.o: Util.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Util.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Util.Tpo" -c -o libaria2c_a-Util.o `test -f 'Util.cc' || echo '$(srcdir)/'`Util.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Util.Tpo" "$(DEPDIR)/libaria2c_a-Util.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Util.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Util.cc' object='libaria2c_a-Util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Util.o `test -f 'Util.cc' || echo '$(srcdir)/'`Util.cc
-
-libaria2c_a-Util.obj: Util.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Util.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Util.Tpo" -c -o libaria2c_a-Util.obj `if test -f 'Util.cc'; then $(CYGPATH_W) 'Util.cc'; else $(CYGPATH_W) '$(srcdir)/Util.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Util.Tpo" "$(DEPDIR)/libaria2c_a-Util.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Util.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Util.cc' object='libaria2c_a-Util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Util.obj `if test -f 'Util.cc'; then $(CYGPATH_W) 'Util.cc'; else $(CYGPATH_W) '$(srcdir)/Util.cc'; fi`
-
-libaria2c_a-Request.o: Request.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Request.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Request.Tpo" -c -o libaria2c_a-Request.o `test -f 'Request.cc' || echo '$(srcdir)/'`Request.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Request.Tpo" "$(DEPDIR)/libaria2c_a-Request.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Request.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Request.cc' object='libaria2c_a-Request.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Request.o `test -f 'Request.cc' || echo '$(srcdir)/'`Request.cc
-
-libaria2c_a-Request.obj: Request.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Request.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Request.Tpo" -c -o libaria2c_a-Request.obj `if test -f 'Request.cc'; then $(CYGPATH_W) 'Request.cc'; else $(CYGPATH_W) '$(srcdir)/Request.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Request.Tpo" "$(DEPDIR)/libaria2c_a-Request.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Request.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Request.cc' object='libaria2c_a-Request.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Request.obj `if test -f 'Request.cc'; then $(CYGPATH_W) 'Request.cc'; else $(CYGPATH_W) '$(srcdir)/Request.cc'; fi`
-
-libaria2c_a-SimpleLogger.o: SimpleLogger.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SimpleLogger.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-SimpleLogger.Tpo" -c -o libaria2c_a-SimpleLogger.o `test -f 'SimpleLogger.cc' || echo '$(srcdir)/'`SimpleLogger.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SimpleLogger.Tpo" "$(DEPDIR)/libaria2c_a-SimpleLogger.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SimpleLogger.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SimpleLogger.cc' object='libaria2c_a-SimpleLogger.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SimpleLogger.o `test -f 'SimpleLogger.cc' || echo '$(srcdir)/'`SimpleLogger.cc
-
-libaria2c_a-SimpleLogger.obj: SimpleLogger.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-SimpleLogger.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-SimpleLogger.Tpo" -c -o libaria2c_a-SimpleLogger.obj `if test -f 'SimpleLogger.cc'; then $(CYGPATH_W) 'SimpleLogger.cc'; else $(CYGPATH_W) '$(srcdir)/SimpleLogger.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-SimpleLogger.Tpo" "$(DEPDIR)/libaria2c_a-SimpleLogger.Po"; else rm -f "$(DEPDIR)/libaria2c_a-SimpleLogger.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='SimpleLogger.cc' object='libaria2c_a-SimpleLogger.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-SimpleLogger.obj `if test -f 'SimpleLogger.cc'; then $(CYGPATH_W) 'SimpleLogger.cc'; else $(CYGPATH_W) '$(srcdir)/SimpleLogger.cc'; fi`
-
-libaria2c_a-ChunkedEncoding.o: ChunkedEncoding.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ChunkedEncoding.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Tpo" -c -o libaria2c_a-ChunkedEncoding.o `test -f 'ChunkedEncoding.cc' || echo '$(srcdir)/'`ChunkedEncoding.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Tpo" "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ChunkedEncoding.cc' object='libaria2c_a-ChunkedEncoding.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ChunkedEncoding.o `test -f 'ChunkedEncoding.cc' || echo '$(srcdir)/'`ChunkedEncoding.cc
-
-libaria2c_a-ChunkedEncoding.obj: ChunkedEncoding.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ChunkedEncoding.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Tpo" -c -o libaria2c_a-ChunkedEncoding.obj `if test -f 'ChunkedEncoding.cc'; then $(CYGPATH_W) 'ChunkedEncoding.cc'; else $(CYGPATH_W) '$(srcdir)/ChunkedEncoding.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Tpo" "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ChunkedEncoding.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ChunkedEncoding.cc' object='libaria2c_a-ChunkedEncoding.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ChunkedEncoding.obj `if test -f 'ChunkedEncoding.cc'; then $(CYGPATH_W) 'ChunkedEncoding.cc'; else $(CYGPATH_W) '$(srcdir)/ChunkedEncoding.cc'; fi`
-
-libaria2c_a-DefaultDiskWriter.o: DefaultDiskWriter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-DefaultDiskWriter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Tpo" -c -o libaria2c_a-DefaultDiskWriter.o `test -f 'DefaultDiskWriter.cc' || echo '$(srcdir)/'`DefaultDiskWriter.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Tpo" "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DefaultDiskWriter.cc' object='libaria2c_a-DefaultDiskWriter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-DefaultDiskWriter.o `test -f 'DefaultDiskWriter.cc' || echo '$(srcdir)/'`DefaultDiskWriter.cc
-
-libaria2c_a-DefaultDiskWriter.obj: DefaultDiskWriter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-DefaultDiskWriter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Tpo" -c -o libaria2c_a-DefaultDiskWriter.obj `if test -f 'DefaultDiskWriter.cc'; then $(CYGPATH_W) 'DefaultDiskWriter.cc'; else $(CYGPATH_W) '$(srcdir)/DefaultDiskWriter.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Tpo" "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-DefaultDiskWriter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DefaultDiskWriter.cc' object='libaria2c_a-DefaultDiskWriter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-DefaultDiskWriter.obj `if test -f 'DefaultDiskWriter.cc'; then $(CYGPATH_W) 'DefaultDiskWriter.cc'; else $(CYGPATH_W) '$(srcdir)/DefaultDiskWriter.cc'; fi`
-
-libaria2c_a-PreAllocationDiskWriter.o: PreAllocationDiskWriter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PreAllocationDiskWriter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Tpo" -c -o libaria2c_a-PreAllocationDiskWriter.o `test -f 'PreAllocationDiskWriter.cc' || echo '$(srcdir)/'`PreAllocationDiskWriter.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Tpo" "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreAllocationDiskWriter.cc' object='libaria2c_a-PreAllocationDiskWriter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PreAllocationDiskWriter.o `test -f 'PreAllocationDiskWriter.cc' || echo '$(srcdir)/'`PreAllocationDiskWriter.cc
-
-libaria2c_a-PreAllocationDiskWriter.obj: PreAllocationDiskWriter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PreAllocationDiskWriter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Tpo" -c -o libaria2c_a-PreAllocationDiskWriter.obj `if test -f 'PreAllocationDiskWriter.cc'; then $(CYGPATH_W) 'PreAllocationDiskWriter.cc'; else $(CYGPATH_W) '$(srcdir)/PreAllocationDiskWriter.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Tpo" "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PreAllocationDiskWriter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PreAllocationDiskWriter.cc' object='libaria2c_a-PreAllocationDiskWriter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PreAllocationDiskWriter.obj `if test -f 'PreAllocationDiskWriter.cc'; then $(CYGPATH_W) 'PreAllocationDiskWriter.cc'; else $(CYGPATH_W) '$(srcdir)/PreAllocationDiskWriter.cc'; fi`
-
-libaria2c_a-AbstractDiskWriter.o: AbstractDiskWriter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-AbstractDiskWriter.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Tpo" -c -o libaria2c_a-AbstractDiskWriter.o `test -f 'AbstractDiskWriter.cc' || echo '$(srcdir)/'`AbstractDiskWriter.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Tpo" "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AbstractDiskWriter.cc' object='libaria2c_a-AbstractDiskWriter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-AbstractDiskWriter.o `test -f 'AbstractDiskWriter.cc' || echo '$(srcdir)/'`AbstractDiskWriter.cc
-
-libaria2c_a-AbstractDiskWriter.obj: AbstractDiskWriter.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-AbstractDiskWriter.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Tpo" -c -o libaria2c_a-AbstractDiskWriter.obj `if test -f 'AbstractDiskWriter.cc'; then $(CYGPATH_W) 'AbstractDiskWriter.cc'; else $(CYGPATH_W) '$(srcdir)/AbstractDiskWriter.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Tpo" "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Po"; else rm -f "$(DEPDIR)/libaria2c_a-AbstractDiskWriter.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AbstractDiskWriter.cc' object='libaria2c_a-AbstractDiskWriter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-AbstractDiskWriter.obj `if test -f 'AbstractDiskWriter.cc'; then $(CYGPATH_W) 'AbstractDiskWriter.cc'; else $(CYGPATH_W) '$(srcdir)/AbstractDiskWriter.cc'; fi`
-
-libaria2c_a-File.o: File.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-File.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-File.Tpo" -c -o libaria2c_a-File.o `test -f 'File.cc' || echo '$(srcdir)/'`File.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-File.Tpo" "$(DEPDIR)/libaria2c_a-File.Po"; else rm -f "$(DEPDIR)/libaria2c_a-File.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='File.cc' object='libaria2c_a-File.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-File.o `test -f 'File.cc' || echo '$(srcdir)/'`File.cc
-
-libaria2c_a-File.obj: File.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-File.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-File.Tpo" -c -o libaria2c_a-File.obj `if test -f 'File.cc'; then $(CYGPATH_W) 'File.cc'; else $(CYGPATH_W) '$(srcdir)/File.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-File.Tpo" "$(DEPDIR)/libaria2c_a-File.Po"; else rm -f "$(DEPDIR)/libaria2c_a-File.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='File.cc' object='libaria2c_a-File.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-File.obj `if test -f 'File.cc'; then $(CYGPATH_W) 'File.cc'; else $(CYGPATH_W) '$(srcdir)/File.cc'; fi`
-
-libaria2c_a-Option.o: Option.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Option.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Option.Tpo" -c -o libaria2c_a-Option.o `test -f 'Option.cc' || echo '$(srcdir)/'`Option.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Option.Tpo" "$(DEPDIR)/libaria2c_a-Option.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Option.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Option.cc' object='libaria2c_a-Option.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Option.o `test -f 'Option.cc' || echo '$(srcdir)/'`Option.cc
-
-libaria2c_a-Option.obj: Option.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Option.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Option.Tpo" -c -o libaria2c_a-Option.obj `if test -f 'Option.cc'; then $(CYGPATH_W) 'Option.cc'; else $(CYGPATH_W) '$(srcdir)/Option.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Option.Tpo" "$(DEPDIR)/libaria2c_a-Option.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Option.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Option.cc' object='libaria2c_a-Option.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Option.obj `if test -f 'Option.cc'; then $(CYGPATH_W) 'Option.cc'; else $(CYGPATH_W) '$(srcdir)/Option.cc'; fi`
-
-libaria2c_a-Base64.o: Base64.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Base64.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Base64.Tpo" -c -o libaria2c_a-Base64.o `test -f 'Base64.cc' || echo '$(srcdir)/'`Base64.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Base64.Tpo" "$(DEPDIR)/libaria2c_a-Base64.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Base64.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Base64.cc' object='libaria2c_a-Base64.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Base64.o `test -f 'Base64.cc' || echo '$(srcdir)/'`Base64.cc
-
-libaria2c_a-Base64.obj: Base64.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Base64.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Base64.Tpo" -c -o libaria2c_a-Base64.obj `if test -f 'Base64.cc'; then $(CYGPATH_W) 'Base64.cc'; else $(CYGPATH_W) '$(srcdir)/Base64.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Base64.Tpo" "$(DEPDIR)/libaria2c_a-Base64.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Base64.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Base64.cc' object='libaria2c_a-Base64.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Base64.obj `if test -f 'Base64.cc'; then $(CYGPATH_W) 'Base64.cc'; else $(CYGPATH_W) '$(srcdir)/Base64.cc'; fi`
-
-libaria2c_a-CookieBox.o: CookieBox.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-CookieBox.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-CookieBox.Tpo" -c -o libaria2c_a-CookieBox.o `test -f 'CookieBox.cc' || echo '$(srcdir)/'`CookieBox.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-CookieBox.Tpo" "$(DEPDIR)/libaria2c_a-CookieBox.Po"; else rm -f "$(DEPDIR)/libaria2c_a-CookieBox.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CookieBox.cc' object='libaria2c_a-CookieBox.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-CookieBox.o `test -f 'CookieBox.cc' || echo '$(srcdir)/'`CookieBox.cc
-
-libaria2c_a-CookieBox.obj: CookieBox.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-CookieBox.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-CookieBox.Tpo" -c -o libaria2c_a-CookieBox.obj `if test -f 'CookieBox.cc'; then $(CYGPATH_W) 'CookieBox.cc'; else $(CYGPATH_W) '$(srcdir)/CookieBox.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-CookieBox.Tpo" "$(DEPDIR)/libaria2c_a-CookieBox.Po"; else rm -f "$(DEPDIR)/libaria2c_a-CookieBox.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CookieBox.cc' object='libaria2c_a-CookieBox.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-CookieBox.obj `if test -f 'CookieBox.cc'; then $(CYGPATH_W) 'CookieBox.cc'; else $(CYGPATH_W) '$(srcdir)/CookieBox.cc'; fi`
-
-libaria2c_a-Data.o: Data.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Data.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Data.Tpo" -c -o libaria2c_a-Data.o `test -f 'Data.cc' || echo '$(srcdir)/'`Data.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Data.Tpo" "$(DEPDIR)/libaria2c_a-Data.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Data.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Data.cc' object='libaria2c_a-Data.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Data.o `test -f 'Data.cc' || echo '$(srcdir)/'`Data.cc
-
-libaria2c_a-Data.obj: Data.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Data.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Data.Tpo" -c -o libaria2c_a-Data.obj `if test -f 'Data.cc'; then $(CYGPATH_W) 'Data.cc'; else $(CYGPATH_W) '$(srcdir)/Data.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Data.Tpo" "$(DEPDIR)/libaria2c_a-Data.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Data.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Data.cc' object='libaria2c_a-Data.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Data.obj `if test -f 'Data.cc'; then $(CYGPATH_W) 'Data.cc'; else $(CYGPATH_W) '$(srcdir)/Data.cc'; fi`
-
-libaria2c_a-Dictionary.o: Dictionary.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Dictionary.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Dictionary.Tpo" -c -o libaria2c_a-Dictionary.o `test -f 'Dictionary.cc' || echo '$(srcdir)/'`Dictionary.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Dictionary.Tpo" "$(DEPDIR)/libaria2c_a-Dictionary.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Dictionary.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Dictionary.cc' object='libaria2c_a-Dictionary.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Dictionary.o `test -f 'Dictionary.cc' || echo '$(srcdir)/'`Dictionary.cc
-
-libaria2c_a-Dictionary.obj: Dictionary.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Dictionary.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Dictionary.Tpo" -c -o libaria2c_a-Dictionary.obj `if test -f 'Dictionary.cc'; then $(CYGPATH_W) 'Dictionary.cc'; else $(CYGPATH_W) '$(srcdir)/Dictionary.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Dictionary.Tpo" "$(DEPDIR)/libaria2c_a-Dictionary.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Dictionary.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Dictionary.cc' object='libaria2c_a-Dictionary.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Dictionary.obj `if test -f 'Dictionary.cc'; then $(CYGPATH_W) 'Dictionary.cc'; else $(CYGPATH_W) '$(srcdir)/Dictionary.cc'; fi`
-
-libaria2c_a-List.o: List.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-List.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-List.Tpo" -c -o libaria2c_a-List.o `test -f 'List.cc' || echo '$(srcdir)/'`List.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-List.Tpo" "$(DEPDIR)/libaria2c_a-List.Po"; else rm -f "$(DEPDIR)/libaria2c_a-List.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='List.cc' object='libaria2c_a-List.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-List.o `test -f 'List.cc' || echo '$(srcdir)/'`List.cc
-
-libaria2c_a-List.obj: List.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-List.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-List.Tpo" -c -o libaria2c_a-List.obj `if test -f 'List.cc'; then $(CYGPATH_W) 'List.cc'; else $(CYGPATH_W) '$(srcdir)/List.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-List.Tpo" "$(DEPDIR)/libaria2c_a-List.Po"; else rm -f "$(DEPDIR)/libaria2c_a-List.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='List.cc' object='libaria2c_a-List.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-List.obj `if test -f 'List.cc'; then $(CYGPATH_W) 'List.cc'; else $(CYGPATH_W) '$(srcdir)/List.cc'; fi`
-
-libaria2c_a-MetaFileUtil.o: MetaFileUtil.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-MetaFileUtil.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-MetaFileUtil.Tpo" -c -o libaria2c_a-MetaFileUtil.o `test -f 'MetaFileUtil.cc' || echo '$(srcdir)/'`MetaFileUtil.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-MetaFileUtil.Tpo" "$(DEPDIR)/libaria2c_a-MetaFileUtil.Po"; else rm -f "$(DEPDIR)/libaria2c_a-MetaFileUtil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='MetaFileUtil.cc' object='libaria2c_a-MetaFileUtil.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-MetaFileUtil.o `test -f 'MetaFileUtil.cc' || echo '$(srcdir)/'`MetaFileUtil.cc
-
-libaria2c_a-MetaFileUtil.obj: MetaFileUtil.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-MetaFileUtil.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-MetaFileUtil.Tpo" -c -o libaria2c_a-MetaFileUtil.obj `if test -f 'MetaFileUtil.cc'; then $(CYGPATH_W) 'MetaFileUtil.cc'; else $(CYGPATH_W) '$(srcdir)/MetaFileUtil.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-MetaFileUtil.Tpo" "$(DEPDIR)/libaria2c_a-MetaFileUtil.Po"; else rm -f "$(DEPDIR)/libaria2c_a-MetaFileUtil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='MetaFileUtil.cc' object='libaria2c_a-MetaFileUtil.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-MetaFileUtil.obj `if test -f 'MetaFileUtil.cc'; then $(CYGPATH_W) 'MetaFileUtil.cc'; else $(CYGPATH_W) '$(srcdir)/MetaFileUtil.cc'; fi`
-
-libaria2c_a-ShaVisitor.o: ShaVisitor.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ShaVisitor.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-ShaVisitor.Tpo" -c -o libaria2c_a-ShaVisitor.o `test -f 'ShaVisitor.cc' || echo '$(srcdir)/'`ShaVisitor.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ShaVisitor.Tpo" "$(DEPDIR)/libaria2c_a-ShaVisitor.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ShaVisitor.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ShaVisitor.cc' object='libaria2c_a-ShaVisitor.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ShaVisitor.o `test -f 'ShaVisitor.cc' || echo '$(srcdir)/'`ShaVisitor.cc
-
-libaria2c_a-ShaVisitor.obj: ShaVisitor.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-ShaVisitor.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-ShaVisitor.Tpo" -c -o libaria2c_a-ShaVisitor.obj `if test -f 'ShaVisitor.cc'; then $(CYGPATH_W) 'ShaVisitor.cc'; else $(CYGPATH_W) '$(srcdir)/ShaVisitor.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-ShaVisitor.Tpo" "$(DEPDIR)/libaria2c_a-ShaVisitor.Po"; else rm -f "$(DEPDIR)/libaria2c_a-ShaVisitor.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ShaVisitor.cc' object='libaria2c_a-ShaVisitor.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-ShaVisitor.obj `if test -f 'ShaVisitor.cc'; then $(CYGPATH_W) 'ShaVisitor.cc'; else $(CYGPATH_W) '$(srcdir)/ShaVisitor.cc'; fi`
-
-libaria2c_a-TrackerInitCommand.o: TrackerInitCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TrackerInitCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Tpo" -c -o libaria2c_a-TrackerInitCommand.o `test -f 'TrackerInitCommand.cc' || echo '$(srcdir)/'`TrackerInitCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Tpo" "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TrackerInitCommand.cc' object='libaria2c_a-TrackerInitCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TrackerInitCommand.o `test -f 'TrackerInitCommand.cc' || echo '$(srcdir)/'`TrackerInitCommand.cc
-
-libaria2c_a-TrackerInitCommand.obj: TrackerInitCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TrackerInitCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Tpo" -c -o libaria2c_a-TrackerInitCommand.obj `if test -f 'TrackerInitCommand.cc'; then $(CYGPATH_W) 'TrackerInitCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TrackerInitCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Tpo" "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TrackerInitCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TrackerInitCommand.cc' object='libaria2c_a-TrackerInitCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TrackerInitCommand.obj `if test -f 'TrackerInitCommand.cc'; then $(CYGPATH_W) 'TrackerInitCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TrackerInitCommand.cc'; fi`
-
-libaria2c_a-TrackerDownloadCommand.o: TrackerDownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TrackerDownloadCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Tpo" -c -o libaria2c_a-TrackerDownloadCommand.o `test -f 'TrackerDownloadCommand.cc' || echo '$(srcdir)/'`TrackerDownloadCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TrackerDownloadCommand.cc' object='libaria2c_a-TrackerDownloadCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TrackerDownloadCommand.o `test -f 'TrackerDownloadCommand.cc' || echo '$(srcdir)/'`TrackerDownloadCommand.cc
-
-libaria2c_a-TrackerDownloadCommand.obj: TrackerDownloadCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TrackerDownloadCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Tpo" -c -o libaria2c_a-TrackerDownloadCommand.obj `if test -f 'TrackerDownloadCommand.cc'; then $(CYGPATH_W) 'TrackerDownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TrackerDownloadCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Tpo" "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TrackerDownloadCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TrackerDownloadCommand.cc' object='libaria2c_a-TrackerDownloadCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TrackerDownloadCommand.obj `if test -f 'TrackerDownloadCommand.cc'; then $(CYGPATH_W) 'TrackerDownloadCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TrackerDownloadCommand.cc'; fi`
-
-libaria2c_a-TrackerUpdateCommand.o: TrackerUpdateCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TrackerUpdateCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Tpo" -c -o libaria2c_a-TrackerUpdateCommand.o `test -f 'TrackerUpdateCommand.cc' || echo '$(srcdir)/'`TrackerUpdateCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Tpo" "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TrackerUpdateCommand.cc' object='libaria2c_a-TrackerUpdateCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TrackerUpdateCommand.o `test -f 'TrackerUpdateCommand.cc' || echo '$(srcdir)/'`TrackerUpdateCommand.cc
-
-libaria2c_a-TrackerUpdateCommand.obj: TrackerUpdateCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TrackerUpdateCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Tpo" -c -o libaria2c_a-TrackerUpdateCommand.obj `if test -f 'TrackerUpdateCommand.cc'; then $(CYGPATH_W) 'TrackerUpdateCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TrackerUpdateCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Tpo" "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TrackerUpdateCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TrackerUpdateCommand.cc' object='libaria2c_a-TrackerUpdateCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TrackerUpdateCommand.obj `if test -f 'TrackerUpdateCommand.cc'; then $(CYGPATH_W) 'TrackerUpdateCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TrackerUpdateCommand.cc'; fi`
-
-libaria2c_a-TorrentMan.o: TorrentMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentMan.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentMan.Tpo" -c -o libaria2c_a-TorrentMan.o `test -f 'TorrentMan.cc' || echo '$(srcdir)/'`TorrentMan.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentMan.Tpo" "$(DEPDIR)/libaria2c_a-TorrentMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentMan.cc' object='libaria2c_a-TorrentMan.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentMan.o `test -f 'TorrentMan.cc' || echo '$(srcdir)/'`TorrentMan.cc
-
-libaria2c_a-TorrentMan.obj: TorrentMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentMan.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentMan.Tpo" -c -o libaria2c_a-TorrentMan.obj `if test -f 'TorrentMan.cc'; then $(CYGPATH_W) 'TorrentMan.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentMan.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentMan.Tpo" "$(DEPDIR)/libaria2c_a-TorrentMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentMan.cc' object='libaria2c_a-TorrentMan.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentMan.obj `if test -f 'TorrentMan.cc'; then $(CYGPATH_W) 'TorrentMan.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentMan.cc'; fi`
-
-libaria2c_a-PeerConnection.o: PeerConnection.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerConnection.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerConnection.Tpo" -c -o libaria2c_a-PeerConnection.o `test -f 'PeerConnection.cc' || echo '$(srcdir)/'`PeerConnection.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerConnection.Tpo" "$(DEPDIR)/libaria2c_a-PeerConnection.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerConnection.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerConnection.cc' object='libaria2c_a-PeerConnection.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerConnection.o `test -f 'PeerConnection.cc' || echo '$(srcdir)/'`PeerConnection.cc
-
-libaria2c_a-PeerConnection.obj: PeerConnection.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerConnection.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerConnection.Tpo" -c -o libaria2c_a-PeerConnection.obj `if test -f 'PeerConnection.cc'; then $(CYGPATH_W) 'PeerConnection.cc'; else $(CYGPATH_W) '$(srcdir)/PeerConnection.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerConnection.Tpo" "$(DEPDIR)/libaria2c_a-PeerConnection.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerConnection.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerConnection.cc' object='libaria2c_a-PeerConnection.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerConnection.obj `if test -f 'PeerConnection.cc'; then $(CYGPATH_W) 'PeerConnection.cc'; else $(CYGPATH_W) '$(srcdir)/PeerConnection.cc'; fi`
-
-libaria2c_a-PeerMessageUtil.o: PeerMessageUtil.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerMessageUtil.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Tpo" -c -o libaria2c_a-PeerMessageUtil.o `test -f 'PeerMessageUtil.cc' || echo '$(srcdir)/'`PeerMessageUtil.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Tpo" "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerMessageUtil.cc' object='libaria2c_a-PeerMessageUtil.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerMessageUtil.o `test -f 'PeerMessageUtil.cc' || echo '$(srcdir)/'`PeerMessageUtil.cc
-
-libaria2c_a-PeerMessageUtil.obj: PeerMessageUtil.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerMessageUtil.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Tpo" -c -o libaria2c_a-PeerMessageUtil.obj `if test -f 'PeerMessageUtil.cc'; then $(CYGPATH_W) 'PeerMessageUtil.cc'; else $(CYGPATH_W) '$(srcdir)/PeerMessageUtil.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Tpo" "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerMessageUtil.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerMessageUtil.cc' object='libaria2c_a-PeerMessageUtil.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerMessageUtil.obj `if test -f 'PeerMessageUtil.cc'; then $(CYGPATH_W) 'PeerMessageUtil.cc'; else $(CYGPATH_W) '$(srcdir)/PeerMessageUtil.cc'; fi`
-
-libaria2c_a-PeerAbstractCommand.o: PeerAbstractCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerAbstractCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Tpo" -c -o libaria2c_a-PeerAbstractCommand.o `test -f 'PeerAbstractCommand.cc' || echo '$(srcdir)/'`PeerAbstractCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerAbstractCommand.cc' object='libaria2c_a-PeerAbstractCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerAbstractCommand.o `test -f 'PeerAbstractCommand.cc' || echo '$(srcdir)/'`PeerAbstractCommand.cc
-
-libaria2c_a-PeerAbstractCommand.obj: PeerAbstractCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerAbstractCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Tpo" -c -o libaria2c_a-PeerAbstractCommand.obj `if test -f 'PeerAbstractCommand.cc'; then $(CYGPATH_W) 'PeerAbstractCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerAbstractCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerAbstractCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerAbstractCommand.cc' object='libaria2c_a-PeerAbstractCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerAbstractCommand.obj `if test -f 'PeerAbstractCommand.cc'; then $(CYGPATH_W) 'PeerAbstractCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerAbstractCommand.cc'; fi`
-
-libaria2c_a-PeerInitiateConnectionCommand.o: PeerInitiateConnectionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerInitiateConnectionCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Tpo" -c -o libaria2c_a-PeerInitiateConnectionCommand.o `test -f 'PeerInitiateConnectionCommand.cc' || echo '$(srcdir)/'`PeerInitiateConnectionCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerInitiateConnectionCommand.cc' object='libaria2c_a-PeerInitiateConnectionCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerInitiateConnectionCommand.o `test -f 'PeerInitiateConnectionCommand.cc' || echo '$(srcdir)/'`PeerInitiateConnectionCommand.cc
-
-libaria2c_a-PeerInitiateConnectionCommand.obj: PeerInitiateConnectionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerInitiateConnectionCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Tpo" -c -o libaria2c_a-PeerInitiateConnectionCommand.obj `if test -f 'PeerInitiateConnectionCommand.cc'; then $(CYGPATH_W) 'PeerInitiateConnectionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerInitiateConnectionCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerInitiateConnectionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerInitiateConnectionCommand.cc' object='libaria2c_a-PeerInitiateConnectionCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerInitiateConnectionCommand.obj `if test -f 'PeerInitiateConnectionCommand.cc'; then $(CYGPATH_W) 'PeerInitiateConnectionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerInitiateConnectionCommand.cc'; fi`
-
-libaria2c_a-PeerInteractionCommand.o: PeerInteractionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerInteractionCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Tpo" -c -o libaria2c_a-PeerInteractionCommand.o `test -f 'PeerInteractionCommand.cc' || echo '$(srcdir)/'`PeerInteractionCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerInteractionCommand.cc' object='libaria2c_a-PeerInteractionCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerInteractionCommand.o `test -f 'PeerInteractionCommand.cc' || echo '$(srcdir)/'`PeerInteractionCommand.cc
-
-libaria2c_a-PeerInteractionCommand.obj: PeerInteractionCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerInteractionCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Tpo" -c -o libaria2c_a-PeerInteractionCommand.obj `if test -f 'PeerInteractionCommand.cc'; then $(CYGPATH_W) 'PeerInteractionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerInteractionCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerInteractionCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerInteractionCommand.cc' object='libaria2c_a-PeerInteractionCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerInteractionCommand.obj `if test -f 'PeerInteractionCommand.cc'; then $(CYGPATH_W) 'PeerInteractionCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerInteractionCommand.cc'; fi`
-
-libaria2c_a-Peer.o: Peer.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Peer.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Peer.Tpo" -c -o libaria2c_a-Peer.o `test -f 'Peer.cc' || echo '$(srcdir)/'`Peer.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Peer.Tpo" "$(DEPDIR)/libaria2c_a-Peer.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Peer.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Peer.cc' object='libaria2c_a-Peer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Peer.o `test -f 'Peer.cc' || echo '$(srcdir)/'`Peer.cc
-
-libaria2c_a-Peer.obj: Peer.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Peer.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Peer.Tpo" -c -o libaria2c_a-Peer.obj `if test -f 'Peer.cc'; then $(CYGPATH_W) 'Peer.cc'; else $(CYGPATH_W) '$(srcdir)/Peer.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Peer.Tpo" "$(DEPDIR)/libaria2c_a-Peer.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Peer.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Peer.cc' object='libaria2c_a-Peer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Peer.obj `if test -f 'Peer.cc'; then $(CYGPATH_W) 'Peer.cc'; else $(CYGPATH_W) '$(srcdir)/Peer.cc'; fi`
-
-libaria2c_a-BitfieldMan.o: BitfieldMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-BitfieldMan.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-BitfieldMan.Tpo" -c -o libaria2c_a-BitfieldMan.o `test -f 'BitfieldMan.cc' || echo '$(srcdir)/'`BitfieldMan.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-BitfieldMan.Tpo" "$(DEPDIR)/libaria2c_a-BitfieldMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-BitfieldMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='BitfieldMan.cc' object='libaria2c_a-BitfieldMan.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-BitfieldMan.o `test -f 'BitfieldMan.cc' || echo '$(srcdir)/'`BitfieldMan.cc
-
-libaria2c_a-BitfieldMan.obj: BitfieldMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-BitfieldMan.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-BitfieldMan.Tpo" -c -o libaria2c_a-BitfieldMan.obj `if test -f 'BitfieldMan.cc'; then $(CYGPATH_W) 'BitfieldMan.cc'; else $(CYGPATH_W) '$(srcdir)/BitfieldMan.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-BitfieldMan.Tpo" "$(DEPDIR)/libaria2c_a-BitfieldMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-BitfieldMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='BitfieldMan.cc' object='libaria2c_a-BitfieldMan.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-BitfieldMan.obj `if test -f 'BitfieldMan.cc'; then $(CYGPATH_W) 'BitfieldMan.cc'; else $(CYGPATH_W) '$(srcdir)/BitfieldMan.cc'; fi`
-
-libaria2c_a-TorrentDownloadEngine.o: TorrentDownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentDownloadEngine.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Tpo" -c -o libaria2c_a-TorrentDownloadEngine.o `test -f 'TorrentDownloadEngine.cc' || echo '$(srcdir)/'`TorrentDownloadEngine.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentDownloadEngine.cc' object='libaria2c_a-TorrentDownloadEngine.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentDownloadEngine.o `test -f 'TorrentDownloadEngine.cc' || echo '$(srcdir)/'`TorrentDownloadEngine.cc
-
-libaria2c_a-TorrentDownloadEngine.obj: TorrentDownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentDownloadEngine.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Tpo" -c -o libaria2c_a-TorrentDownloadEngine.obj `if test -f 'TorrentDownloadEngine.cc'; then $(CYGPATH_W) 'TorrentDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentDownloadEngine.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentDownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentDownloadEngine.cc' object='libaria2c_a-TorrentDownloadEngine.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentDownloadEngine.obj `if test -f 'TorrentDownloadEngine.cc'; then $(CYGPATH_W) 'TorrentDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentDownloadEngine.cc'; fi`
-
-libaria2c_a-TorrentConsoleDownloadEngine.o: TorrentConsoleDownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentConsoleDownloadEngine.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Tpo" -c -o libaria2c_a-TorrentConsoleDownloadEngine.o `test -f 'TorrentConsoleDownloadEngine.cc' || echo '$(srcdir)/'`TorrentConsoleDownloadEngine.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentConsoleDownloadEngine.cc' object='libaria2c_a-TorrentConsoleDownloadEngine.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentConsoleDownloadEngine.o `test -f 'TorrentConsoleDownloadEngine.cc' || echo '$(srcdir)/'`TorrentConsoleDownloadEngine.cc
-
-libaria2c_a-TorrentConsoleDownloadEngine.obj: TorrentConsoleDownloadEngine.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentConsoleDownloadEngine.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Tpo" -c -o libaria2c_a-TorrentConsoleDownloadEngine.obj `if test -f 'TorrentConsoleDownloadEngine.cc'; then $(CYGPATH_W) 'TorrentConsoleDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentConsoleDownloadEngine.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Tpo" "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentConsoleDownloadEngine.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentConsoleDownloadEngine.cc' object='libaria2c_a-TorrentConsoleDownloadEngine.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentConsoleDownloadEngine.obj `if test -f 'TorrentConsoleDownloadEngine.cc'; then $(CYGPATH_W) 'TorrentConsoleDownloadEngine.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentConsoleDownloadEngine.cc'; fi`
-
-libaria2c_a-PeerListenCommand.o: PeerListenCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerListenCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerListenCommand.Tpo" -c -o libaria2c_a-PeerListenCommand.o `test -f 'PeerListenCommand.cc' || echo '$(srcdir)/'`PeerListenCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerListenCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerListenCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerListenCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerListenCommand.cc' object='libaria2c_a-PeerListenCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerListenCommand.o `test -f 'PeerListenCommand.cc' || echo '$(srcdir)/'`PeerListenCommand.cc
-
-libaria2c_a-PeerListenCommand.obj: PeerListenCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerListenCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerListenCommand.Tpo" -c -o libaria2c_a-PeerListenCommand.obj `if test -f 'PeerListenCommand.cc'; then $(CYGPATH_W) 'PeerListenCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerListenCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerListenCommand.Tpo" "$(DEPDIR)/libaria2c_a-PeerListenCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerListenCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerListenCommand.cc' object='libaria2c_a-PeerListenCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerListenCommand.obj `if test -f 'PeerListenCommand.cc'; then $(CYGPATH_W) 'PeerListenCommand.cc'; else $(CYGPATH_W) '$(srcdir)/PeerListenCommand.cc'; fi`
-
-libaria2c_a-PendingMessage.o: PendingMessage.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PendingMessage.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PendingMessage.Tpo" -c -o libaria2c_a-PendingMessage.o `test -f 'PendingMessage.cc' || echo '$(srcdir)/'`PendingMessage.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PendingMessage.Tpo" "$(DEPDIR)/libaria2c_a-PendingMessage.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PendingMessage.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PendingMessage.cc' object='libaria2c_a-PendingMessage.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PendingMessage.o `test -f 'PendingMessage.cc' || echo '$(srcdir)/'`PendingMessage.cc
-
-libaria2c_a-PendingMessage.obj: PendingMessage.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PendingMessage.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PendingMessage.Tpo" -c -o libaria2c_a-PendingMessage.obj `if test -f 'PendingMessage.cc'; then $(CYGPATH_W) 'PendingMessage.cc'; else $(CYGPATH_W) '$(srcdir)/PendingMessage.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PendingMessage.Tpo" "$(DEPDIR)/libaria2c_a-PendingMessage.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PendingMessage.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PendingMessage.cc' object='libaria2c_a-PendingMessage.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PendingMessage.obj `if test -f 'PendingMessage.cc'; then $(CYGPATH_W) 'PendingMessage.cc'; else $(CYGPATH_W) '$(srcdir)/PendingMessage.cc'; fi`
-
-libaria2c_a-PeerMessage.o: PeerMessage.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerMessage.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerMessage.Tpo" -c -o libaria2c_a-PeerMessage.o `test -f 'PeerMessage.cc' || echo '$(srcdir)/'`PeerMessage.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerMessage.Tpo" "$(DEPDIR)/libaria2c_a-PeerMessage.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerMessage.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerMessage.cc' object='libaria2c_a-PeerMessage.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerMessage.o `test -f 'PeerMessage.cc' || echo '$(srcdir)/'`PeerMessage.cc
-
-libaria2c_a-PeerMessage.obj: PeerMessage.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-PeerMessage.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-PeerMessage.Tpo" -c -o libaria2c_a-PeerMessage.obj `if test -f 'PeerMessage.cc'; then $(CYGPATH_W) 'PeerMessage.cc'; else $(CYGPATH_W) '$(srcdir)/PeerMessage.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-PeerMessage.Tpo" "$(DEPDIR)/libaria2c_a-PeerMessage.Po"; else rm -f "$(DEPDIR)/libaria2c_a-PeerMessage.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerMessage.cc' object='libaria2c_a-PeerMessage.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-PeerMessage.obj `if test -f 'PeerMessage.cc'; then $(CYGPATH_W) 'PeerMessage.cc'; else $(CYGPATH_W) '$(srcdir)/PeerMessage.cc'; fi`
-
-libaria2c_a-Piece.o: Piece.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Piece.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Piece.Tpo" -c -o libaria2c_a-Piece.o `test -f 'Piece.cc' || echo '$(srcdir)/'`Piece.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Piece.Tpo" "$(DEPDIR)/libaria2c_a-Piece.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Piece.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Piece.cc' object='libaria2c_a-Piece.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Piece.o `test -f 'Piece.cc' || echo '$(srcdir)/'`Piece.cc
-
-libaria2c_a-Piece.obj: Piece.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Piece.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Piece.Tpo" -c -o libaria2c_a-Piece.obj `if test -f 'Piece.cc'; then $(CYGPATH_W) 'Piece.cc'; else $(CYGPATH_W) '$(srcdir)/Piece.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Piece.Tpo" "$(DEPDIR)/libaria2c_a-Piece.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Piece.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Piece.cc' object='libaria2c_a-Piece.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Piece.obj `if test -f 'Piece.cc'; then $(CYGPATH_W) 'Piece.cc'; else $(CYGPATH_W) '$(srcdir)/Piece.cc'; fi`
-
-libaria2c_a-RequestSlot.o: RequestSlot.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-RequestSlot.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-RequestSlot.Tpo" -c -o libaria2c_a-RequestSlot.o `test -f 'RequestSlot.cc' || echo '$(srcdir)/'`RequestSlot.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-RequestSlot.Tpo" "$(DEPDIR)/libaria2c_a-RequestSlot.Po"; else rm -f "$(DEPDIR)/libaria2c_a-RequestSlot.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RequestSlot.cc' object='libaria2c_a-RequestSlot.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-RequestSlot.o `test -f 'RequestSlot.cc' || echo '$(srcdir)/'`RequestSlot.cc
-
-libaria2c_a-RequestSlot.obj: RequestSlot.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-RequestSlot.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-RequestSlot.Tpo" -c -o libaria2c_a-RequestSlot.obj `if test -f 'RequestSlot.cc'; then $(CYGPATH_W) 'RequestSlot.cc'; else $(CYGPATH_W) '$(srcdir)/RequestSlot.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-RequestSlot.Tpo" "$(DEPDIR)/libaria2c_a-RequestSlot.Po"; else rm -f "$(DEPDIR)/libaria2c_a-RequestSlot.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RequestSlot.cc' object='libaria2c_a-RequestSlot.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-RequestSlot.obj `if test -f 'RequestSlot.cc'; then $(CYGPATH_W) 'RequestSlot.cc'; else $(CYGPATH_W) '$(srcdir)/RequestSlot.cc'; fi`
-
-libaria2c_a-RequestSlotMan.o: RequestSlotMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-RequestSlotMan.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-RequestSlotMan.Tpo" -c -o libaria2c_a-RequestSlotMan.o `test -f 'RequestSlotMan.cc' || echo '$(srcdir)/'`RequestSlotMan.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-RequestSlotMan.Tpo" "$(DEPDIR)/libaria2c_a-RequestSlotMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-RequestSlotMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RequestSlotMan.cc' object='libaria2c_a-RequestSlotMan.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-RequestSlotMan.o `test -f 'RequestSlotMan.cc' || echo '$(srcdir)/'`RequestSlotMan.cc
-
-libaria2c_a-RequestSlotMan.obj: RequestSlotMan.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-RequestSlotMan.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-RequestSlotMan.Tpo" -c -o libaria2c_a-RequestSlotMan.obj `if test -f 'RequestSlotMan.cc'; then $(CYGPATH_W) 'RequestSlotMan.cc'; else $(CYGPATH_W) '$(srcdir)/RequestSlotMan.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-RequestSlotMan.Tpo" "$(DEPDIR)/libaria2c_a-RequestSlotMan.Po"; else rm -f "$(DEPDIR)/libaria2c_a-RequestSlotMan.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RequestSlotMan.cc' object='libaria2c_a-RequestSlotMan.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-RequestSlotMan.obj `if test -f 'RequestSlotMan.cc'; then $(CYGPATH_W) 'RequestSlotMan.cc'; else $(CYGPATH_W) '$(srcdir)/RequestSlotMan.cc'; fi`
-
-libaria2c_a-TorrentAutoSaveCommand.o: TorrentAutoSaveCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentAutoSaveCommand.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Tpo" -c -o libaria2c_a-TorrentAutoSaveCommand.o `test -f 'TorrentAutoSaveCommand.cc' || echo '$(srcdir)/'`TorrentAutoSaveCommand.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Tpo" "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentAutoSaveCommand.cc' object='libaria2c_a-TorrentAutoSaveCommand.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentAutoSaveCommand.o `test -f 'TorrentAutoSaveCommand.cc' || echo '$(srcdir)/'`TorrentAutoSaveCommand.cc
-
-libaria2c_a-TorrentAutoSaveCommand.obj: TorrentAutoSaveCommand.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-TorrentAutoSaveCommand.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Tpo" -c -o libaria2c_a-TorrentAutoSaveCommand.obj `if test -f 'TorrentAutoSaveCommand.cc'; then $(CYGPATH_W) 'TorrentAutoSaveCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentAutoSaveCommand.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Tpo" "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Po"; else rm -f "$(DEPDIR)/libaria2c_a-TorrentAutoSaveCommand.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentAutoSaveCommand.cc' object='libaria2c_a-TorrentAutoSaveCommand.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-TorrentAutoSaveCommand.obj `if test -f 'TorrentAutoSaveCommand.cc'; then $(CYGPATH_W) 'TorrentAutoSaveCommand.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentAutoSaveCommand.cc'; fi`
-
-libaria2c_a-Directory.o: Directory.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Directory.o -MD -MP -MF "$(DEPDIR)/libaria2c_a-Directory.Tpo" -c -o libaria2c_a-Directory.o `test -f 'Directory.cc' || echo '$(srcdir)/'`Directory.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Directory.Tpo" "$(DEPDIR)/libaria2c_a-Directory.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Directory.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Directory.cc' object='libaria2c_a-Directory.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Directory.o `test -f 'Directory.cc' || echo '$(srcdir)/'`Directory.cc
-
-libaria2c_a-Directory.obj: Directory.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -MT libaria2c_a-Directory.obj -MD -MP -MF "$(DEPDIR)/libaria2c_a-Directory.Tpo" -c -o libaria2c_a-Directory.obj `if test -f 'Directory.cc'; then $(CYGPATH_W) 'Directory.cc'; else $(CYGPATH_W) '$(srcdir)/Directory.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaria2c_a-Directory.Tpo" "$(DEPDIR)/libaria2c_a-Directory.Po"; else rm -f "$(DEPDIR)/libaria2c_a-Directory.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Directory.cc' object='libaria2c_a-Directory.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaria2c_a_CXXFLAGS) $(CXXFLAGS) -c -o libaria2c_a-Directory.obj `if test -f 'Directory.cc'; then $(CYGPATH_W) 'Directory.cc'; else $(CYGPATH_W) '$(srcdir)/Directory.cc'; fi`
-
-aria2c-main.o: main.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-main.o -MD -MP -MF "$(DEPDIR)/aria2c-main.Tpo" -c -o aria2c-main.o `test -f 'main.cc' || echo '$(srcdir)/'`main.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-main.Tpo" "$(DEPDIR)/aria2c-main.Po"; else rm -f "$(DEPDIR)/aria2c-main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cc' object='aria2c-main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-main.o `test -f 'main.cc' || echo '$(srcdir)/'`main.cc
-
-aria2c-main.obj: main.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-main.obj -MD -MP -MF "$(DEPDIR)/aria2c-main.Tpo" -c -o aria2c-main.obj `if test -f 'main.cc'; then $(CYGPATH_W) 'main.cc'; else $(CYGPATH_W) '$(srcdir)/main.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-main.Tpo" "$(DEPDIR)/aria2c-main.Po"; else rm -f "$(DEPDIR)/aria2c-main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='main.cc' object='aria2c-main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-main.obj `if test -f 'main.cc'; then $(CYGPATH_W) 'main.cc'; else $(CYGPATH_W) '$(srcdir)/main.cc'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

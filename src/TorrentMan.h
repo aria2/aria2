@@ -42,8 +42,8 @@ using namespace std;
 
 #define IS_NULL_PIECE(X) (X.index == 0 && X.length == 0)
 
-#define DEFAULT_ANNOUNCE_INTERVAL 120
-#define DEFAULT_ANNOUNCE_MIN_INTERVAL 120
+#define DEFAULT_ANNOUNCE_INTERVAL 300
+#define DEFAULT_ANNOUNCE_MIN_INTERVAL 300
 #define MAX_PEERS 55
 #define MAX_PEER_UPDATE 15
 
@@ -83,6 +83,7 @@ private:
   UsedPieces usedPieces;
   Directory* multiFileTopDir;
   MultiFileEntries multiFileEntries;
+  bool setupComplete;
 
   FILE* openSegFile(string segFilename, string mode) const;
   void read(FILE* file);

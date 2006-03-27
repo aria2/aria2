@@ -26,10 +26,6 @@
 
 class SimpleLogger:public Logger {
 private:
-  enum LEVEL {
-    DEBUG,
-    INFO,
-    ERROR};
   void writeLog(int level, const char* msg, va_list ap, Exception* e = NULL) const;
   FILE* file;
 public:
@@ -41,6 +37,8 @@ public:
   void debug(const char* msg, Exception* ex, ...) const;
   void info(const char* msg, ...) const;
   void info(const char* msg, Exception* ex, ...) const;
+  void warn(const char* msg, ...) const;
+  void warn(const char* msg, Exception* ex, ...) const;
   void error(const char* msg, ...) const;
   void error(const char* msg, Exception* ex, ...) const;
 };

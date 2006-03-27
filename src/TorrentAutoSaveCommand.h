@@ -27,7 +27,6 @@
 
 class TorrentAutoSaveCommand : public Command {
 private:
-  int cuid;
   TorrentDownloadEngine* e;
   int interval;
 public:

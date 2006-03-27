@@ -50,10 +50,20 @@ void SocketCore::init() {
   sslCtx = NULL;
   ssl = NULL;
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  sslSession = NULL;
+  sslXcred = NULL;
+  peekBufMax = 4096;
+  peekBuf = new char[peekBufMax];
+  peekBufLength = 0;
+#endif //HAVE_LIBGNUTLS
 }
 
 SocketCore::~SocketCore() {
   closeConnection();
+#ifdef HAVE_LIBGNUTLS
+  delete [] peekBuf;
+#endif // HAVE_LIBGNUTLS
 }
 
 void SocketCore::beginListen(int port) {
@@ -170,23 +180,32 @@ void SocketCore::setBlockingMode() const {
 void SocketCore::closeConnection() {
 #ifdef HAVE_LIBSSL
   // for SSL
-  if(secure && ssl != NULL) {
+  if(secure) {
     SSL_shutdown(ssl);
   }
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  if(secure) {
+    gnutls_bye(sslSession, GNUTLS_SHUT_RDWR);
+  }
+#endif // HAVE_LIBGNUTLS
   if(sockfd != -1) {
     close(sockfd);
     sockfd = -1;
   }
 #ifdef HAVE_LIBSSL
   // for SSL
-  if(secure && ssl != NULL) {
+  if(secure) {
     SSL_free(ssl);
     SSL_CTX_free(sslCtx);
-    ssl = NULL;
-    sslCtx = NULL;
   }
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  if(secure) {
+    gnutls_deinit(sslSession);
+    gnutls_certificate_free_credentials(sslXcred);
+  }
+#endif // HAVE_LIBGNUTLS
 }
 
 bool SocketCore::isWritable(int timeout) const {
@@ -214,6 +233,11 @@ bool SocketCore::isWritable(int timeout) const {
 }
 
 bool SocketCore::isReadable(int timeout) const {
+#ifdef HAVE_LIBGNUTLS
+  if(peekBufLength > 0) {
+    return true;
+  }
+#endif // HAVE_LIBGNUTLS
   fd_set fds;
   FD_ZERO(&fds);
   FD_SET(sockfd, &fds);
@@ -237,41 +261,145 @@ bool SocketCore::isReadable(int timeout) const {
   }
 }
 
-void SocketCore::writeData(const char* data, int len, int timeout) const {
-  if(!secure && send(sockfd, data, (size_t)len, 0) != len
+void SocketCore::writeData(const char* data, int len, int timeout) {
+  int ret = 0;
+  if(!secure && (ret = send(sockfd, data, (size_t)len, 0)) != len
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required
-     || secure && SSL_write(ssl, data, len) != len
+     || secure && (ret = SSL_write(ssl, data, len)) != len
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+     || secure && (ret = gnutls_record_send(sslSession, data, len)) != len
+#endif // HAVE_LIBGNUTLS
      ) {
-    throw new DlRetryEx(strerror(errno));
+    const char* errorMsg;
+#ifdef HAVE_LIBGNUTLS
+    if(secure) {
+      errorMsg = gnutls_strerror(ret);
+    } else {
+      errorMsg = strerror(errno);
+    }
+#else // HAVE_LIBGNUTLS
+    errorMsg = strerror(errno);
+#endif
+    throw new DlRetryEx(errorMsg);
   }
 }
 
-void SocketCore::readData(char* data, int& len, int timeout) const {
-  if(!secure && (len = recv(sockfd, data, (size_t)len, 0)) < 0
+void SocketCore::readData(char* data, int& len, int timeout) {
+  int ret = 0;
+  if(!secure && (ret = recv(sockfd, data, (size_t)len, 0)) < 0
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required
-     || secure && (len = SSL_read(ssl, data, len)) < 0
+     || secure && (ret = SSL_read(ssl, data, len)) < 0
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+     || secure && (ret = gnutlsRecv(data, len)) < 0
+#endif // HAVE_LIBGNUTLS
      ) {
-    throw new DlRetryEx(strerror(errno));
+    const char* errorMsg;
+#ifdef HAVE_LIBGNUTLS
+    if(secure) {
+      errorMsg = gnutls_strerror(ret);
+    } else {
+      errorMsg = strerror(errno);
+    }
+#else // HAVE_LIBGNUTLS
+    errorMsg = strerror(errno);
+#endif
+    throw new DlRetryEx(errorMsg);
+  }
+  len = ret;
+}
+
+void SocketCore::peekData(char* data, int& len, int timeout) {
+  int ret = 0;
+  if(!secure && (ret = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
+#ifdef HAVE_LIBSSL
+     // for SSL
+     // TODO handling len == 0 case required
+     || secure && (ret = SSL_peek(ssl, data, len)) < 0
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+     || secure && (ret = gnutlsPeek(data, len)) < 0
+#endif // HAVE_LIBGNUTLS
+     ) {
+    const char* errorMsg;
+#ifdef HAVE_LIBGNUTLS
+    if(secure) {
+      errorMsg = gnutls_strerror(ret);
+    } else {
+      errorMsg = strerror(errno);
+    }
+#else // HAVE_LIBGNUTLS
+    errorMsg = strerror(errno);
+#endif
+    throw new DlRetryEx(errorMsg);
+  }
+  len = ret;
+}
+
+#ifdef HAVE_LIBGNUTLS
+int SocketCore::shiftPeekData(char* data, int len) {
+  if(peekBufLength <= len) {
+    memcpy(data, peekBuf, peekBufLength);
+    int ret = peekBufLength;
+    peekBufLength = 0;
+    return ret;
+  } else {
+    memcpy(data, peekBuf, len);
+    char* temp = new char[peekBufMax];
+    memcpy(temp, peekBuf+len, peekBufLength-len);
+    delete [] peekBuf;
+    peekBuf = temp;
+    peekBufLength -= len;
+    return len;
+  }
+
+}
+
+void SocketCore::addPeekData(char* data, int len) {
+  if(peekBufLength+len > peekBufMax) {
+    char* temp = new char[peekBufMax+len];
+    memcpy(temp, peekBuf, peekBufLength);
+    delete [] peekBuf;
+    peekBuf = temp;
+    peekBufMax = peekBufLength+len;
+  }
+  memcpy(peekBuf+peekBufLength, data, len);
+  peekBufLength += len;
+}
+
+int SocketCore::gnutlsRecv(char* data, int len) {
+  int plen = shiftPeekData(data, len);
+  if(plen < len) {
+    int ret = gnutls_record_recv(sslSession, data+plen, len-plen);
+    if(ret < 0) {
+      throw new DlRetryEx(gnutls_strerror(ret));
+    }
+    return plen+ret;
+  } else {
+    return plen;
   }
 }
 
-void SocketCore::peekData(char* data, int& len, int timeout) const {
-  if(!secure && (len = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
-#ifdef HAVE_LIBSSL
-     // for SSL
-     // TODO handling len == 0 case required
-     || secure && (len == SSL_peek(ssl, data, len)) < 0
-#endif // HAVE_LIBSSL
-     ) {
-    throw new DlRetryEx(strerror(errno));
+int SocketCore::gnutlsPeek(char* data, int len) {
+  if(peekBufLength >= len) {
+    memcpy(data, peekBuf, len);
+    return len;
+  } else {
+    memcpy(data, peekBuf, peekBufLength);
+    int ret = gnutls_record_recv(sslSession, data+peekBufLength, len-peekBufLength);
+    if(ret < 0) {
+      throw new DlRetryEx(gnutls_strerror(ret));
+    }
+    addPeekData(data+peekBufLength, ret);
+    return peekBufLength;
   }
 }
+#endif // HAVE_LIBGNUTLS
 
 void SocketCore::initiateSecureConnection() {
 #ifdef HAVE_LIBSSL
@@ -296,5 +424,26 @@ void SocketCore::initiateSecureConnection() {
     secure = true;
   }
 #endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  if(!secure) {
+    const int cert_type_priority[3] = { GNUTLS_CRT_X509,
+					GNUTLS_CRT_OPENPGP, 0
+    };
+    // while we do not support X509 certificate, most web servers require
+    // X509 stuff.
+    gnutls_certificate_allocate_credentials (&sslXcred);
+    gnutls_init(&sslSession, GNUTLS_CLIENT);
+    gnutls_set_default_priority(sslSession);
+    gnutls_kx_set_priority(sslSession, cert_type_priority);
+    // put the x509 credentials to the current session
+    gnutls_credentials_set(sslSession, GNUTLS_CRD_CERTIFICATE, sslXcred);
+    gnutls_transport_set_ptr(sslSession, (gnutls_transport_ptr_t)sockfd);
+    int ret = gnutls_handshake(sslSession);
+    if(ret < 0) {
+      throw new DlAbortEx(gnutls_strerror(ret));
+    }
+    secure = true;
+  }
+#endif // HAVE_LIBGNUTLS
 }
 

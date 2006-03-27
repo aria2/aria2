@@ -25,6 +25,18 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#define WRITE_LOG(LEVEL, MSG) \
+va_list ap;\
+va_start(ap, MSG);\
+writeLog(Logger::LEVEL, MSG, ap);\
+va_end(ap);
+
+#define WRITE_LOG_EX(LEVEL, MSG, EX) \
+va_list ap;\
+va_start(ap, EX);\
+writeLog(Logger::LEVEL, MSG, ap, EX);\
+va_end(ap);
+
 SimpleLogger::SimpleLogger(string filename) {
   file = fopen(filename.c_str(), "a");
 }
@@ -43,13 +55,16 @@ void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e
 {
   string levelStr;
   switch(level) {
-  case DEBUG:
+  case Logger::DEBUG:
     levelStr = "DEBUG";
     break;
-  case ERROR:
+  case Logger::WARN:
+    levelStr = "WARN";
+    break;
+  case Logger::ERROR:
     levelStr = "ERROR";
     break;
-  case INFO:
+  case Logger::INFO:
   default:
     levelStr = "INFO";
   }
@@ -65,47 +80,35 @@ void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e
 }
 
 void SimpleLogger::debug(const char* msg, ...) const {
-  va_list ap;
-  va_start(ap, msg);
-  writeLog(DEBUG, msg, ap);
-  va_end(ap);
+  WRITE_LOG(DEBUG, msg);
 }
 
 void SimpleLogger::debug(const char* msg, Exception* e, ...) const {
-  va_list ap;
-  va_start(ap, e);
-  writeLog(DEBUG, msg, ap, e);
-  va_end(ap);
+  WRITE_LOG_EX(DEBUG, msg, e);
 }
 
-  
 void SimpleLogger::info(const char* msg, ...) const {
-  va_list ap;
-  va_start(ap, msg);
-  writeLog(INFO, msg, ap);
-  va_end(ap);
+  WRITE_LOG(INFO, msg);
 }
 
 void SimpleLogger::info(const char* msg, Exception* e, ...) const {
-  va_list ap;
-  va_start(ap, e);
-  writeLog(INFO, msg, ap, e);
-  va_end(ap);
+  WRITE_LOG_EX(INFO, msg, e);
 }
 
-  
+void SimpleLogger::warn(const char* msg, ...) const {
+  WRITE_LOG(WARN, msg);
+}
+
+void SimpleLogger::warn(const char* msg, Exception* e, ...) const {
+  WRITE_LOG_EX(WARN, msg, e);
+}
+
 void SimpleLogger::error(const char* msg, ...) const {
-  va_list ap;
-  va_start(ap, msg);
-  writeLog(ERROR, msg, ap);
-  va_end(ap);
+  WRITE_LOG(ERROR, msg);
 }
 
 void SimpleLogger::error(const char* msg, Exception* e, ...) const {
-  va_list ap;
-  va_start(ap, e);
-  writeLog(ERROR, msg, ap, e);
-  va_end(ap);
+  WRITE_LOG_EX(ERROR, msg, e);
 }
 
   

@@ -29,10 +29,13 @@ $ make
 
 The executable is aria2c in src directory.
 
-4. SSL
-------
-You need OpenSSL library(0.9.7b or higher) to enable HTTPS and BitTorrent
-support.
+4. Dependency
+-------------
+In order to enable HTTPS support, you need GNUTLS or OpenSSL.
+In order to enable BitTorrent support, you need GCRYPT(if you choose GNUTLS)
+or OpenSSL.
+
+GNUTLS has precedence over OpenSSL if both libraries are installed.
 
 5. BitTorrrent
 --------------
@@ -57,4 +60,4 @@ Note:
 *  -o option is used to change the filename of downloaded .torrent file.
 * This version only supports compact peers list format.
 * The ports aria2c uses are 6881-6999.
-* The maxmum number of peers are 55.
+* The maximum number of peers is 55.
