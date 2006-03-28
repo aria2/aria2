@@ -19,54 +19,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_REQUEST_SLOT_MAN_H_
-#define _D_REQUEST_SLOT_MAN_H_
+#ifndef _D_SEND_MESSAGE_QUEUE_H_
+#define _D_SEND_MESSAGE_QUEUE_H_
 
-#include "RequestSlot.h"
 #include "common.h"
-#include "PeerMessage.h"
-#include "Logger.h"
-#include "PeerConnection.h"
-#include "PendingMessage.h"
-#include "TorrentMan.h"
-#include <deque>
+#include "RequestSlotMan.h"
 
-#define DEFAULT_TIME_OUT 120
-
-typedef deque<RequestSlot> RequestSlots;
-
-class RequestSlotMan {
+class SendMessageQueue {
 private:
   int cuid;
-  RequestSlots requestSlots;
-  int timeout;
-  PendingMessages* pendingMessages;
-  PeerConnection* peerConnection;
-  TorrentMan* torrentMan;
+  RequestSlotMan* requestSlotMan;
+  PendingMessages pendingMessages;
   const Logger* logger;
 public:
-  RequestSlotMan(int cuid,
-		 PendingMessages* pendingMessages,
-		 PeerConnection* peerConnection,
-		 TorrentMan* torrentMan,
-		 const Logger* logger):cuid(cuid), timeout(DEFAULT_TIME_OUT),
-  pendingMessages(pendingMessages), peerConnection(peerConnection),
-  torrentMan(torrentMan), logger(logger) {}
-  ~RequestSlotMan() {}
+  SendMessageQueue(int cuid, PeerConnection* peerConnection,
+		   TorrentMan* torrentMan, const Logger* logger);
+  ~SendMessageQueue();
 
-  void addRequestSlot(const RequestSlot& requestSlot);
+  void send();
+
+  void addPendingMessage(const PendingMessage& pendingMessage);
+  void deletePendingPieceMessage(const PeerMessage* cancelMessage);
+  void deletePendingRequestMessage();
+  
   void deleteRequestSlot(const RequestSlot& requestSlot);
-  void deleteAllRequestSlot(Piece& piece);
-
   void deleteTimeoutRequestSlot(Piece& piece);
   void deleteCompletedRequestSlot(const Piece& piece);
-
   RequestSlot getCorrespoindingRequestSlot(const PeerMessage* pieceMessage) const;
-  bool isEmpty() { return requestSlots.empty(); }
-  int countRequestSlot() const { return requestSlots.size(); }
 
-  void setTimeout(int timeout) { this->timeout = timeout; }
-  int getTimeout() const { return timeout; }
+  void cancelAllRequest();
+  void cancelAllRequest(Piece& piece);
+
+  int countPendingMessage() const;
+  int countRequestSlot() const;
 };
 
-#endif // _D_REQUEST_SLOT_MAN_H_
+#endif // _D_SEND_MESSAGE_QUEUE_H_

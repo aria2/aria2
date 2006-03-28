@@ -83,5 +83,10 @@
 // values: true | false
 #define PREF_HTTP_PROXY_AUTH_ENABLED "http_proxy_auth_enabled"
 
+/**
+ * BitTorrent related preferences
+ */
+// values: 1*digit
+#define PREF_PEER_CONNECTION_TIMEOUT "peer_connection_timeout"
 
 #endif // _D_PREFS_H_

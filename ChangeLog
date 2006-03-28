@@ -1,3 +1,81 @@
+2006-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added new class SendMessageQueue that includes PendingMessages and
+	RequestSlotMan.
+
+	* src/SendMessageQueue.h: New class.
+	* src/SendMessageQueue.cc: New class.
+	* src/PendingMessage.h: Added new member variable blockIndex and its
+	accessors.
+	(createRequestMessage): Updated.
+	* src/PendingMessage.cc (createRequestMessage): Updated.
+	* src/PeerInteractionCommand.cc (executeInternal): Updated with
+	SendMessageQueue.
+	(checkLongTimePeerChoking): Updated with SendMessageQueue.
+	(receiveMessage): Updated with SendMessageQueue.
+	(deletePendingPieceMessage): Removed.
+	(getNewPieceAndSendInterest): Updated with SendMessageQueue.
+	(sendInterest): Updated with SendMessageQueue.
+	(createRequestPendingMessage): Updated with SendMessageQueue.
+	(sendMessages): Updated with SendMessageQueue.
+	(onAbort): Updated with SendMessageQueue.
+	(keepAlive): Updated with SendMessageQueue.
+	(beforeSocketCheck): Updated SendMessageQueue.
+
+	* src/PeerInteractionCommand (sendMessages): Shuffle
+	missingBLockIndexes before using it.
+	
+	Added its own timeout for peer connection.
+	
+	* src/PeerAbstractCommand.h: Added member variable timeout and its
+	setter.
+	* src/prefs.h: Added PREF_PEER_CONNECTION_TIMEOUT.
+	* src/PeerInteractionCommand.cc (PeerInteractionCommand):
+	Added setTimeout() call.
+	(executeInternal): Added setTimeout() call.
+	* src/PeerAbstractCommand.cc (PeerAbstractCommand):
+	Added timeout.
+	(isTimeoutDetected): Updated.
+	* src/main.cc (main): Added PREF_PEER_CONNECTION_TIMEOUT entry to
+	option.
+	
+	Added *simple* message flooding checker.
+	
+	* src/PeerInteractionCommand.cc (executeInternal):
+	Added detectMessageFlooding() call.
+	(detectMessageFlooding): New function.
+	(receiveMessage): Count up CHOKE, UNCHOKE, HAVE message.
+	(beforeSocketCheck): Added detectMessageFlooding() call.
+	* src/PeerInteractionCommand.h: Added sendMessageQueue,
+	chokeUnchokeCount, haveCount, detectMessageFlooding().
+	Removed deletePendingPieceMessage(), getRequestSlot(),
+	deleteRequestSlot(), deleteAllRequestSlot().
+	
+	* src/PeerInteractionCommand.cc (beforeSocketCheck):
+	Added checkLongTimePeerChoking() call.
+
+	* src/RequestSlotMan.h: Renamed deleteTimeoutRequestSlot().
+
+	* src/TorrentMan.cc (addPeer): Delete at most MAX_PEER_LIST_SIZE peers
+	if duplicate == false.
+
+	The parameter "uploaded" and "downloaded" in the tracker request are
+	the size since the client sent the "started" event to the tracker.
+	
+	* src/TorrentMan.cc (setup): Assigned saved downloaded Size and
+	uploaded size to preDownloadedSize, preUploadedSize respectively.
+	* src/TorrentMan.h: Added preDownloadedSize, preUploadedSize,
+	getSessionDownloadedSize(), getSessionUploadedSize().
+	* src/TrackerInitCommand.cc (execute): Use getSessionDownloadedSize(),
+	getSessionUploadedSize() instead of getDownloadedSize(),
+	getUploadedSize().
+	
+	* src/PendingMessage.cc (processMessage): Do not send request message
+	if the peer is choking the client.
+
+	* src/TrackerUpdateCommand.cc (execute): Check wtheher minInterval is
+	less than interval.
+	
 2006-03-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* configure.in: Added gnutls support. Added several CPP macros.
@@ -28,23 +106,19 @@
 	* src/InitiateConnectionCommandFactory.cc: Replaced HAVE_LIBSSL with
 	ENABLE_SSL.
 	* src/Request.cc: Replaced HAVE_LIBSSL with ENABLE_SSL.
-	* src/RequestSlotMan.cc:
-	(deleteCompletedRequestSlot)
+	* src/RequestSlotMan.cc (deleteCompletedRequestSlot):
 	If a piece is already acquired by another command, delete the request
 	slots for the piece.
-	* src/TrackerUpdateCommand.cc:
-	(execute)
+	* src/TrackerUpdateCommand.cc (execute):
 	Changed log level of MSG_TRACKER_WARNING_MESSAGE from info to warn.
 	Added a check whether peer list is null.
 	Fixed the bug that causes sending completed event to the tracker
 	several times.
-	* src/TrackerInitCommand.cc:
-	(execute)
+	* src/TrackerInitCommand.cc (execute):
 	Fixed the bug that causes sending completed event to the tracker
 	several times.
 	* src/AbstractDiskWriter.{h,cc}: Removed direct dependency on OpenSSL
 	by using messageDigest.h.
-	
 	
 2006-03-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

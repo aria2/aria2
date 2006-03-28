@@ -10,3 +10,7 @@
 * no-compact peers format
 * Add port range command-line option
 * Add max peers command-line option
+* Distinguish seeder from leecher
+* time out for connecting peers
+* ignore incoming connection from localhost.
+* do not connect to localhost

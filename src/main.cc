@@ -242,6 +242,7 @@ int main(int argc, char* argv[]) {
   Option* op = new Option();
   op->put(PREF_RETRY_WAIT, "5");
   op->put(PREF_TIMEOUT, "60");
+  op->put(PREF_PEER_CONNECTION_TIMEOUT, "30");
   op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
   op->put(PREF_MAX_TRIES, "5");
   op->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);

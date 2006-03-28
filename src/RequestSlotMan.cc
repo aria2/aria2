@@ -48,7 +48,7 @@ void RequestSlotMan::deleteAllRequestSlot(Piece& piece) {
   requestSlots.clear();
 }
 
-void RequestSlotMan::deleteTimedoutRequestSlot(Piece& piece) {
+void RequestSlotMan::deleteTimeoutRequestSlot(Piece& piece) {
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end();) {
     if(itr->isTimeout(timeout)) {

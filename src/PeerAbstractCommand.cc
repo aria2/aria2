@@ -38,7 +38,7 @@ PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEn
   }
   this->checkPoint.tv_sec = 0;
   this->checkPoint.tv_usec = 0;
-
+  timeout = e->option->getAsInt(PREF_TIMEOUT);
   e->torrentMan->connections++;
 }
 
@@ -63,7 +63,7 @@ bool PeerAbstractCommand::isTimeoutDetected() {
     return false;
   } else {
     long long int elapsed = Util::difftv(now, checkPoint);
-    if(elapsed >= e->option->getAsLLInt(PREF_TIMEOUT)*1000000) {
+    if(elapsed >= ((long long int)timeout)*1000000) {
       return true;
     } else {
       return false;

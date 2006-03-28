@@ -24,8 +24,7 @@
 
 #include "PeerAbstractCommand.h"
 #include "PeerConnection.h"
-#include "PendingMessage.h"
-#include "RequestSlotMan.h"
+#include "SendMessageQueue.h"
 
 using namespace std;
 
@@ -33,12 +32,15 @@ class PeerInteractionCommand : public PeerAbstractCommand {
 private:
   int sequence;
   PeerConnection* peerConnection;
-  RequestSlotMan* requestSlotMan;
-  PendingMessages pendingMessages;
+  SendMessageQueue* sendMessageQueue;
   Piece piece;
   struct timeval keepAliveCheckPoint;
   struct timeval chokeCheckPoint;
+  struct timeval freqCheckPoint;
+  int chokeUnchokeCount;
+  int haveCount;
   void receiveMessage();
+  void detectMessageFlooding();
   void checkLongTimePeerChoking();
   void syncPiece();
   void detectTimeoutAndDuplicateBlock();
@@ -46,10 +48,6 @@ private:
   void sendInterest();
   void sendMessages();
   void createRequestPendingMessage(int blockIndex);
-  void deletePendingMessage(PeerMessage* cancelMessage);
-  const RequestSlot& getRequestSlot(int index, int begin, int length) const;
-  bool deleteRequestSlot(const RequestSlot& slot);
-  void deleteAllRequestSlot();
   bool checkPieceHash(const Piece& piece);
   void erasePieceOnDisk(const Piece& piece);
   void keepAlive();

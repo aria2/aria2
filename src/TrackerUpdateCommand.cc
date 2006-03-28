@@ -62,6 +62,9 @@ bool TrackerUpdateCommand::execute() {
     e->torrentMan->minInterval = minInterval->toInt();
     e->logger->debug("CUID#%d - min interval:%d", cuid, e->torrentMan->minInterval);
   }
+  if(e->torrentMan->minInterval > e->torrentMan->interval) {
+    e->torrentMan->minInterval = e->torrentMan->interval;
+  }
   Data* complete = (Data*)response->get("complete");
   if(complete != NULL) {
     e->torrentMan->complete = complete->toInt();

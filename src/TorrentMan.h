@@ -74,6 +74,8 @@ private:
   int cuidCounter;
   long long int downloadedSize;
   long long int uploadedSize;
+  long long int preDownloadedSize;
+  long long int preUploadedSize;
   int deltaDownload;
   int deltaUpload;
   int fileMode;
@@ -185,6 +187,13 @@ public:
   void addUploadedSize(int size) { uploadedSize += size; }
   long long int getUploadedSize() const { return uploadedSize; }
   void setUploadedSize(long long int size) { uploadedSize = size; }
+
+  long long int getSessionDownloadedSize() const {
+    return downloadedSize-preDownloadedSize;
+  }
+  long long int getSessionUploadedSize() const {
+    return uploadedSize-preUploadedSize;
+  }
 
   void setFileMode(int mode) {
     fileMode = mode;

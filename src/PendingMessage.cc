@@ -72,7 +72,9 @@ bool PendingMessage::processMessage() {
     }
     break;
   case PeerMessage::REQUEST:
-    peerConnection->sendRequest(index, begin, length);
+    if(!peerConnection->getPeer()->peerChoking) {
+      peerConnection->sendRequest(index, begin, length);
+    }
     break;
   case PeerMessage::CANCEL:
     peerConnection->sendCancel(index, begin, length);
@@ -83,11 +85,14 @@ bool PendingMessage::processMessage() {
   return retval;
 }
 
-PendingMessage PendingMessage::createRequestMessage(int index, int begin, int length, PeerConnection* peerConnection) {
+PendingMessage PendingMessage::createRequestMessage(const Piece& piece,
+						    int blockIndex,
+						    PeerConnection* peerConnection) {
   PendingMessage pendingMessage(PeerMessage::REQUEST, peerConnection);
-  pendingMessage.setIndex(index);
-  pendingMessage.setBegin(begin);
-  pendingMessage.setLength(length);
+  pendingMessage.setIndex(piece.getIndex());
+  pendingMessage.setBegin(blockIndex*piece.getBlockLength());
+  pendingMessage.setLength(piece.getBlockLength(blockIndex));
+  pendingMessage.setBlockIndex(blockIndex);
   return pendingMessage;
 }
 

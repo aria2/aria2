@@ -32,6 +32,7 @@ private:
   int index;
   int begin;
   int length;
+  int blockIndex;
   long long int pieceDataOffset;
   int leftPieceDataLength;
   bool inProgress;
@@ -58,9 +59,11 @@ public:
   int getBegin() const { return begin; }
   void setLength(int length) { this->length = length; }
   int getLength() const { return length; }
+  void setBlockIndex(int blockIndex) { this->blockIndex = blockIndex; }
+  int getBlockIndex() const { return blockIndex; }
   bool processMessage();
 
-  static PendingMessage createRequestMessage(int index, int begin, int length, PeerConnection* peerConnection);
+  static PendingMessage createRequestMessage(const Piece& piece, int blockIndex, PeerConnection* peerConnection);
   static PendingMessage createCancelMessage(int index, int begin, int length, PeerConnection* peerConnection);
   static PendingMessage createPieceMessage(int index, int begin, int length, int pieceLength, PeerConnection* peerConnection);
   static PendingMessage createHaveMessage(int index, PeerConnection* peerConnectioin);

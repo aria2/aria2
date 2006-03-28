@@ -57,8 +57,8 @@ bool TrackerInitCommand::execute() {
     "info_hash="+Util::urlencode(e->torrentMan->getInfoHash(), 20)+"&"+
     "peer_id="+e->torrentMan->peerId+"&"+
     "port="+Util::itos(e->torrentMan->getPort())+"&"+
-    "uploaded="+Util::llitos(e->torrentMan->getUploadedSize())+"&"+
-    "downloaded="+Util::llitos(e->torrentMan->getDownloadedSize())+"&"+
+    "uploaded="+Util::llitos(e->torrentMan->getSessionUploadedSize())+"&"+
+    "downloaded="+Util::llitos(e->torrentMan->getSessionDownloadedSize())+"&"+
     "left="+(e->torrentMan->totalSize-e->torrentMan->getDownloadedSize() <= 0
 	     ? "0" : Util::llitos(e->torrentMan->totalSize-e->torrentMan->getDownloadedSize()))+"&"+
     "compact=1";

@@ -32,11 +32,12 @@ private:
   void updateCheckPoint();
   bool isTimeoutDetected();
   struct timeval checkPoint;
+  int timeout;
 protected:
   TorrentDownloadEngine* e;
   Socket* socket;
   Peer* peer;
-
+  void setTimeout(int timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(int wait);
   virtual bool prepareForRetry(int wait);
   virtual void onAbort(Exception* ex);

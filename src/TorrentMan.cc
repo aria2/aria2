@@ -36,6 +36,7 @@
 TorrentMan::TorrentMan():bitfield(NULL),
 			 peerEntryIdCounter(0), cuidCounter(0),
 			 downloadedSize(0), uploadedSize(0),
+			 preDownloadedSize(0), preUploadedSize(0),
 			 deltaDownload(0), deltaUpload(0),
 			 storeDir("."),
 			 multiFileTopDir(NULL),
@@ -74,12 +75,7 @@ bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
       }
     }
   } else {
-    if(peers.size() >= MAX_PEER_LIST_SIZE) {
-      deleteOldErrorPeers(100);
-      if(peers.size() >= MAX_PEER_LIST_SIZE) {
-	return false;
-      }
-    }
+    deleteOldErrorPeers(MAX_PEER_LIST_SIZE);
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
       if(p->ipaddr == peer->ipaddr && p->port == peer->port) {
@@ -455,6 +451,8 @@ void TorrentMan::read(FILE* file) {
     if(fread(&uploadedSize, sizeof(uploadedSize), 1, file) < 1) {
       throw new DlAbortEx(strerror(errno));
     }
+    preDownloadedSize = downloadedSize;
+    preUploadedSize = uploadedSize;
     delete [] savedBitfield;
   } catch(Exception* ex) {
     delete [] savedBitfield;

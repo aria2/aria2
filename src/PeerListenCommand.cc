@@ -59,9 +59,9 @@ bool PeerListenCommand::execute() {
     Socket* peerSocket = NULL;
     try {
       peerSocket = socket->acceptConnection();
+      pair<string, int> peerInfo;
+      peerSocket->getPeerInfo(peerInfo);
       if(e->torrentMan->connections < MAX_PEERS) {
-	pair<string, int> peerInfo;
-	peerSocket->getPeerInfo(peerInfo);
 	Peer* peer = new Peer(peerInfo.first, peerInfo.second,
 			      e->torrentMan->pieceLength,
 			      e->torrentMan->totalSize);
