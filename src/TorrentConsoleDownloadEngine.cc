@@ -52,15 +52,15 @@ void TorrentConsoleDownloadEngine::initStatistics() {
   lastElapsed = 0;
   gettimeofday(&cp[0], NULL);
   gettimeofday(&cp[1], NULL);
-  sessionDownloadSize[0] = 0;
-  sessionDownloadSize[1] = 0;
-  sessionUploadSize[0] = 0;
-  sessionUploadSize[1] = 0;
+  sessionDownloadLengthArray[0] = 0;
+  sessionDownloadLengthArray[1] = 0;
+  sessionUploadLengthArray[0] = 0;
+  sessionUploadLengthArray[1] = 0;
   currentCp = 0;
 }
 
-int TorrentConsoleDownloadEngine::calculateSpeed(long long int sessionSize, long long int elapsed) {
-  int nowSpeed = (int)(sessionSize/(elapsed/1000000.0));
+int TorrentConsoleDownloadEngine::calculateSpeed(long long int sessionLength, long long int elapsed) {
+  int nowSpeed = (int)(sessionLength/(elapsed/1000000.0));
   return nowSpeed;
 }
 
@@ -69,13 +69,13 @@ void TorrentConsoleDownloadEngine::calculateStatistics() {
   gettimeofday(&now, NULL);
   long long int elapsed = Util::difftv(now, cp[currentCp]);
 
-  sessionDownloadSize[0] += torrentMan->getDeltaDownloadLength();
-  sessionUploadSize[0] += torrentMan->getDeltaUploadLength();
-  sessionDownloadSize[1] += torrentMan->getDeltaDownloadLength();
-  sessionUploadSize[1] += torrentMan->getDeltaUploadLength();
+  sessionDownloadLengthArray[0] += torrentMan->getDeltaDownloadLength();
+  sessionUploadLengthArray[0] += torrentMan->getDeltaUploadLength();
+  sessionDownloadLengthArray[1] += torrentMan->getDeltaDownloadLength();
+  sessionUploadLengthArray[1] += torrentMan->getDeltaUploadLength();
 
-  downloadSpeed = calculateSpeed(sessionDownloadSize[currentCp], elapsed);
-  uploadSpeed = calculateSpeed(sessionUploadSize[currentCp], elapsed);
+  downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
+  uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
 
   torrentMan->resetDeltaDownloadLength();
   torrentMan->resetDeltaUploadLength();
@@ -86,8 +86,8 @@ void TorrentConsoleDownloadEngine::calculateStatistics() {
   }
 
   if(elapsed > 15*1000000) {
-    sessionDownloadSize[currentCp] = 0;
-    sessionUploadSize[currentCp] = 0;
+    sessionDownloadLengthArray[currentCp] = 0;
+    sessionUploadLengthArray[currentCp] = 0;
     cp[currentCp] = now;
     lastElapsed = 0;
     currentCp = currentCp ? 0 : 1;

@@ -32,15 +32,15 @@ private:
   long long int sessionUploadSize;
   */
   struct timeval cp[2];
-  long long int sessionDownloadSize[2];
-  long long int sessionUploadSize[2];
+  long long int sessionDownloadLengthArray[2];
+  long long int sessionUploadLengthArray[2];
   int currentCp;
 
   int downloadSpeed;
   int uploadSpeed;
   long long int lastElapsed;
   void printStatistics();
-  int calculateSpeed(long long int sessionSize, long long int elapsed);
+  int calculateSpeed(long long int sessionLength, long long int elapsed);
 protected:
   void initStatistics();
   void calculateStatistics();

@@ -192,10 +192,10 @@ public:
   long long int getUploadLength() const { return uploadLength; }
   void setUploadLength(long long int length) { uploadLength = length; }
 
-  long long int getSessionDownloadedSize() const {
+  long long int getSessionDownloadLength() const {
     return downloadLength-preDownloadLength;
   }
-  long long int getSessionUploadedSize() const {
+  long long int getSessionUploadLength() const {
     return uploadLength-preUploadLength;
   }
 
