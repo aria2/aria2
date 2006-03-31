@@ -69,15 +69,15 @@ void TorrentConsoleDownloadEngine::calculateStatistics() {
   gettimeofday(&now, NULL);
   long long int elapsed = Util::difftv(now, cp[currentCp]);
 
-  sessionDownloadSize[0] += torrentMan->getDeltaDownload();
+  sessionDownloadSize[0] += torrentMan->getDeltaDownloadLength();
   sessionUploadSize[0] += torrentMan->getDeltaUpload();
-  sessionDownloadSize[1] += torrentMan->getDeltaDownload();
+  sessionDownloadSize[1] += torrentMan->getDeltaDownloadLength();
   sessionUploadSize[1] += torrentMan->getDeltaUpload();
 
   downloadSpeed = calculateSpeed(sessionDownloadSize[currentCp], elapsed);
   uploadSpeed = calculateSpeed(sessionUploadSize[currentCp], elapsed);
 
-  torrentMan->resetDeltaDownload();
+  torrentMan->resetDeltaDownloadLength();
   torrentMan->resetDeltaUpload();
 
   if(elapsed-lastElapsed >= 1000000) {

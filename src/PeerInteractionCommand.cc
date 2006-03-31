@@ -278,7 +278,7 @@ void PeerInteractionCommand::receiveMessage() {
 	e->torrentMan->updatePiece(piece);
 	e->logger->debug("CUID#%d - setting piece bit index=%d", cuid,
 			 slot.getBlockIndex());
-	e->torrentMan->addDeltaDownload(message->getBlockLength());
+	e->torrentMan->addDeltaDownloadLength(message->getBlockLength());
 	if(piece.pieceComplete()) {
 	  if(checkPieceHash(piece)) {
 	    onGotNewPiece();
