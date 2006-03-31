@@ -170,7 +170,7 @@ void PeerInteractionCommand::checkLongTimePeerChoking() {
     }
   } else {
     if(peer->amInterested && peer->peerChoking) {
-      if(Util::difftv(now, chokeCheckPoint) >= 3*60*1000000) {
+      if(Util::difftv(now, chokeCheckPoint) >= MAX_PEER_CHOKING_INTERVAL*1000000) {
 	throw new DlAbortEx("too long choking");
       }
     } else {

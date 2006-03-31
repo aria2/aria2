@@ -28,6 +28,8 @@
 
 using namespace std;
 
+#define MAX_PEER_CHOKING_INTERVAL (3*60)
+
 class PeerInteractionCommand : public PeerAbstractCommand {
 private:
   int sequence;
