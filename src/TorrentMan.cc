@@ -35,7 +35,7 @@
 
 TorrentMan::TorrentMan():bitfield(NULL),
 			 peerEntryIdCounter(0), cuidCounter(0),
-			 downloadedSize(0), uploadedSize(0),
+			 downloadLength(0), uploadedSize(0),
 			 preDownloadedSize(0), preUploadedSize(0),
 			 deltaDownload(0), deltaUpload(0),
 			 storeDir("."),
@@ -226,7 +226,7 @@ void TorrentMan::completePiece(const Piece& piece) {
     return;
   }
   if(!hasPiece(piece.getIndex())) {
-    addDownloadedSize(piece.getLength());
+    addDownloadLength(piece.getLength());
   }
   bitfield->setBit(piece.getIndex());
   bitfield->unsetUseBit(piece.getIndex());
@@ -302,7 +302,7 @@ void TorrentMan::setup(string metaInfoFile) {
   }
 
   uploadedSize = 0;
-  downloadedSize = 0;
+  downloadLength = 0;
   Dictionary* topDic = (Dictionary*)MetaFileUtil::parseMetaFile(metaInfoFile);
   const Dictionary* infoDic = (const Dictionary*)topDic->get("info");
   ShaVisitor v;
@@ -445,13 +445,13 @@ void TorrentMan::read(FILE* file) {
       throw new DlAbortEx(strerror(errno));
     }
     setBitfield(savedBitfield, bitfield->getBitfieldLength());
-    if(fread(&downloadedSize, sizeof(downloadedSize), 1, file) < 1) {
+    if(fread(&downloadLength, sizeof(downloadLength), 1, file) < 1) {
       throw new DlAbortEx(strerror(errno));
     }
     if(fread(&uploadedSize, sizeof(uploadedSize), 1, file) < 1) {
       throw new DlAbortEx(strerror(errno));
     }
-    preDownloadedSize = downloadedSize;
+    preDownloadedSize = downloadLength;
     preUploadedSize = uploadedSize;
     delete [] savedBitfield;
   } catch(Exception* ex) {
@@ -473,7 +473,7 @@ void TorrentMan::save() const {
   if(fwrite(bitfield->getBitfield(), bitfield->getBitfieldLength(), 1, file) < 1) {
     throw new DlAbortEx(strerror(errno));
   }
-  if(fwrite(&downloadedSize, sizeof(downloadedSize), 1, file) < 1) {
+  if(fwrite(&downloadLength, sizeof(downloadLength), 1, file) < 1) {
     throw new DlAbortEx(strerror(errno));
   }
   if(fwrite(&uploadedSize, sizeof(uploadedSize), 1, file) < 1) {

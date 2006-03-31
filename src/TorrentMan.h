@@ -73,7 +73,7 @@ private:
   deque<string> pieceHashes;
   int peerEntryIdCounter;
   int cuidCounter;
-  long long int downloadedSize;
+  long long int downloadLength;
   long long int uploadedSize;
   long long int preDownloadedSize;
   long long int preUploadedSize;
@@ -181,16 +181,16 @@ public:
   int getDeltaUpload() const { return deltaUpload; }
   void resetDeltaUpload() { deltaUpload = 0; }
 
-  void addDownloadedSize(int size) { downloadedSize += size; }
-  long long int getDownloadedSize() const { return downloadedSize; }
-  void setDownloadedSize(long long int size) { downloadedSize = size; }
+  void addDownloadLength(int deltaLength) { downloadLength += deltaLength; }
+  long long int getDownloadLength() const { return downloadLength; }
+  void setDownloadLength(long long int length) { downloadLength = length; }
 
   void addUploadedSize(int size) { uploadedSize += size; }
   long long int getUploadedSize() const { return uploadedSize; }
   void setUploadedSize(long long int size) { uploadedSize = size; }
 
   long long int getSessionDownloadedSize() const {
-    return downloadedSize-preDownloadedSize;
+    return downloadLength-preDownloadedSize;
   }
   long long int getSessionUploadedSize() const {
     return uploadedSize-preUploadedSize;

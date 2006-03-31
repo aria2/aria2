@@ -33,10 +33,10 @@ void TorrentConsoleDownloadEngine::printStatistics() {
     printf("Download Completed ");
   } else {
     printf("%s/%sB %d%% DW:%.2f",
-	   Util::llitos(torrentMan->getDownloadedSize(), true).c_str(),
+	   Util::llitos(torrentMan->getDownloadLength(), true).c_str(),
 	   Util::llitos(torrentMan->totalSize, true).c_str(),
 	   (torrentMan->totalSize == 0 ?
-	    0 : (int)((torrentMan->getDownloadedSize()*100)/torrentMan->totalSize)),
+	    0 : (int)((torrentMan->getDownloadLength()*100)/torrentMan->totalSize)),
 	   downloadSpeed/1000.0);
   }
   printf(" UP:%.2f(%s) %dpeers",

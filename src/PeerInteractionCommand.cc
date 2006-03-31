@@ -81,7 +81,7 @@ bool PeerInteractionCommand::executeInternal() {
 		    peer->ipaddr.c_str(), peer->port,
 		    handshakeMessage->toString().c_str());
     delete handshakeMessage;
-    if(e->torrentMan->getDownloadedSize() > 0) {
+    if(e->torrentMan->getDownloadLength() > 0) {
       peerConnection->sendBitfield();
     }
     sequence = WIRED;
@@ -98,7 +98,7 @@ bool PeerInteractionCommand::executeInternal() {
 		    handshakeMessage->toString().c_str());
     delete handshakeMessage;
     peerConnection->sendHandshake();
-    if(e->torrentMan->getDownloadedSize() > 0) {
+    if(e->torrentMan->getDownloadLength() > 0) {
       peerConnection->sendBitfield();
     }
     sequence = WIRED;    

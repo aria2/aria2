@@ -59,8 +59,8 @@ bool TrackerInitCommand::execute() {
     "port="+Util::itos(e->torrentMan->getPort())+"&"+
     "uploaded="+Util::llitos(e->torrentMan->getSessionUploadedSize())+"&"+
     "downloaded="+Util::llitos(e->torrentMan->getSessionDownloadedSize())+"&"+
-    "left="+(e->torrentMan->totalSize-e->torrentMan->getDownloadedSize() <= 0
-	     ? "0" : Util::llitos(e->torrentMan->totalSize-e->torrentMan->getDownloadedSize()))+"&"+
+    "left="+(e->torrentMan->totalSize-e->torrentMan->getDownloadLength() <= 0
+	     ? "0" : Util::llitos(e->torrentMan->totalSize-e->torrentMan->getDownloadLength()))+"&"+
     "compact=1";
   if(!event.empty()) {
     url += string("&")+"event="+event;
