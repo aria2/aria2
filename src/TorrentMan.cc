@@ -281,7 +281,7 @@ void TorrentMan::initBitfield() {
   if(bitfield != NULL) {
     delete bitfield;
   }
-  bitfield = new BitfieldMan(pieceLength, totalSize);
+  bitfield = new BitfieldMan(pieceLength, totalLength);
 }
 
 void TorrentMan::setBitfield(unsigned char* bitfield, int bitfieldLength) {
@@ -325,7 +325,7 @@ void TorrentMan::setup(string metaInfoFile) {
     // single-file mode;
     setFileMode(SINGLE);
     Data* length = (Data*)infoDic->get("length");
-    totalSize = length->toLLInt();
+    totalLength = length->toLLInt();
   } else {
     long long int length = 0;
     // multi-file mode
@@ -353,11 +353,11 @@ void TorrentMan::setup(string metaInfoFile) {
       FileEntry fileEntry(filePath, lengthData->toLLInt());
       multiFileEntries.push_back(fileEntry);
     }
-    totalSize = length;
+    totalLength = length;
   }
   announce = ((Data*)topDic->get("announce"))->toString();
   pieceLength = ((Data*)infoDic->get("piece length"))->toInt();
-  pieces = totalSize/pieceLength+(totalSize%pieceLength ? 1 : 0);
+  pieces = totalLength/pieceLength+(totalLength%pieceLength ? 1 : 0);
   Data* piecesHashData = (Data*)infoDic->get("pieces");
   if(piecesHashData->getLen() != pieces*20) {
     throw new DlAbortEx("the number of pieces is wrong.");
@@ -371,7 +371,7 @@ void TorrentMan::setup(string metaInfoFile) {
   initBitfield();
   delete topDic;
 
-  diskWriter = new PreAllocationDiskWriter(totalSize);
+  diskWriter = new PreAllocationDiskWriter(totalLength);
   if(segmentFileExists()) {
     load();
     diskWriter->openExistingFile(getTempFilePath());

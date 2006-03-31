@@ -73,6 +73,7 @@ private:
   deque<string> pieceHashes;
   int peerEntryIdCounter;
   int cuidCounter;
+  long long int totalLength;
   long long int downloadLength;
   long long int uploadLength;
   long long int preDownloadLength;
@@ -99,7 +100,6 @@ private:
 public:
   int pieceLength;
   int pieces;
-  long long int totalSize;
   string peerId;
   string announce;
   string trackerId;
@@ -172,6 +172,9 @@ public:
   void unadvertisePiece(int cuid) {
     haves.erase(cuid);
   }
+
+  long long int getTotalLength() const { return totalLength; }
+  void setTotalLength(long long int length) { totalLength = length; }
 
   void addDeltaDownload(int size) { deltaDownload += size; }
   int getDeltaDownload() const { return deltaDownload; }

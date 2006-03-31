@@ -67,7 +67,7 @@ bool PeerListenCommand::execute() {
 	 e->torrentMan->connections < MAX_PEERS) {
 	Peer* peer = new Peer(peerInfo.first, peerInfo.second,
 			      e->torrentMan->pieceLength,
-			      e->torrentMan->totalSize);
+			      e->torrentMan->getTotalLength());
 	if(e->torrentMan->addPeer(peer, true)) {
 	  int newCuid =  e->torrentMan->getNewCuid();
 	  peer->cuid = newCuid;

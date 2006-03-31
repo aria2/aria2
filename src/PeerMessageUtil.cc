@@ -134,14 +134,14 @@ void PeerMessageUtil::checkBegin(const PeerMessage* message, int pieceLength) {
   }
 }
 
-void PeerMessageUtil::checkPieceOffset(const PeerMessage* message, int pieceLength, int pieces, long long int totalSize) {
+void PeerMessageUtil::checkPieceOffset(const PeerMessage* message, int pieceLength, int pieces, long long int totalLength) {
   if(!(0 <= message->getBegin() && 0 < message->getLength())) {
     throw new DlAbortEx("invalid offset, begin = %d, length = %d", message->getBegin(), message->getLength());
   }
   int offset = message->getBegin()+message->getLength();
   int currentPieceLength;
   if(message->getIndex()+1 == pieces) {
-    currentPieceLength = pieceLength-(pieces*pieceLength-totalSize);
+    currentPieceLength = pieceLength-(pieces*pieceLength-totalLength);
   } else {
     currentPieceLength = pieceLength;
   }
@@ -168,7 +168,7 @@ void PeerMessageUtil::checkBitfield(const PeerMessage* message, int pieces) {
   }
 }
 
-void PeerMessageUtil::checkIntegrity(const PeerMessage* message, int pieceLength, int pieces, long long int totalSize) {
+void PeerMessageUtil::checkIntegrity(const PeerMessage* message, int pieceLength, int pieces, long long int totalLength) {
   // 0 <= index < pieces
   // 0 <= begin < pieceLength
   // 0 < begin+length <= pieceLength
@@ -192,7 +192,7 @@ void PeerMessageUtil::checkIntegrity(const PeerMessage* message, int pieceLength
     checkIndex(message, pieces);
     checkBegin(message, pieceLength);
     checkLength(message);
-    checkPieceOffset(message, pieceLength, pieces, totalSize);
+    checkPieceOffset(message, pieceLength, pieces, totalLength);
     break;
   case PeerMessage::PIECE:
     checkIndex(message, pieces);

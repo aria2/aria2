@@ -88,7 +88,7 @@ bool TrackerUpdateCommand::execute() {
       snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
 	       ipaddr1, ipaddr2, ipaddr3, ipaddr4);
       Peer* peer = new Peer(ipaddr, port, e->torrentMan->pieceLength,
-			    e->torrentMan->totalSize);
+			    e->torrentMan->getTotalLength());
       if(e->torrentMan->addPeer(peer)) {
 	e->logger->debug("CUID#%d - adding peer %s:%d", cuid,
 			 peer->ipaddr.c_str(), peer->port);

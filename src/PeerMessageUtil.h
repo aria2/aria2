@@ -39,11 +39,11 @@ private:
   static void checkIndex(const PeerMessage* message, int pieces);
   static void checkBegin(const PeerMessage* message, int pieceLength);
   static void checkLength(const PeerMessage* message);
-  static void checkPieceOffset(const PeerMessage* message, int pieceLength, int pieces, long long int totalSize);
+  static void checkPieceOffset(const PeerMessage* message, int pieceLength, int pieces, long long int totalLength);
   static void checkBitfield(const PeerMessage* message, int pieces);
 public:
   static PeerMessage* createPeerMessage(const char* msg, int len);
-  static void checkIntegrity(const PeerMessage* message, int pieceLength, int pieces, long long int totalSize);
+  static void checkIntegrity(const PeerMessage* message, int pieceLength, int pieces, long long int totalLength);
   static HandshakeMessage* createHandshakeMessage(const char* msg);
   static void checkHandshake(const HandshakeMessage* message, const unsigned char* infoHash);
 };

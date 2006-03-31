@@ -342,7 +342,7 @@ PeerMessage* PeerConnection::receiveMessage() {
   PeerMessage* peerMessage = PeerMessageUtil::createPeerMessage(resbuf,	currentPayloadLength);
   try {
     PeerMessageUtil::checkIntegrity(peerMessage, torrentMan->pieceLength,
-				    torrentMan->pieces, torrentMan->totalSize);
+				    torrentMan->pieces, torrentMan->getTotalLength());
   } catch(Exception* e) {
     delete peerMessage;
     throw;
