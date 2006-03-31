@@ -74,7 +74,7 @@ private:
   int peerEntryIdCounter;
   int cuidCounter;
   long long int downloadLength;
-  long long int uploadedSize;
+  long long int uploadLength;
   long long int preDownloadedSize;
   long long int preUploadedSize;
   int deltaDownload;
@@ -185,15 +185,15 @@ public:
   long long int getDownloadLength() const { return downloadLength; }
   void setDownloadLength(long long int length) { downloadLength = length; }
 
-  void addUploadedSize(int size) { uploadedSize += size; }
-  long long int getUploadedSize() const { return uploadedSize; }
-  void setUploadedSize(long long int size) { uploadedSize = size; }
+  void addUploadLength(int deltaLength) { uploadLength += deltaLength; }
+  long long int getUploadLength() const { return uploadLength; }
+  void setUploadLength(long long int length) { uploadLength = length; }
 
   long long int getSessionDownloadedSize() const {
     return downloadLength-preDownloadedSize;
   }
   long long int getSessionUploadedSize() const {
-    return uploadedSize-preUploadedSize;
+    return uploadLength-preUploadedSize;
   }
 
   void setFileMode(int mode) {

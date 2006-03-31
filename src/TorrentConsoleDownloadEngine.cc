@@ -41,7 +41,7 @@ void TorrentConsoleDownloadEngine::printStatistics() {
   }
   printf(" UP:%.2f(%s) %dpeers",
 	 uploadSpeed/1000.0,
-	 Util::llitos(torrentMan->getUploadedSize(), true).c_str(),
+	 Util::llitos(torrentMan->getUploadLength(), true).c_str(),
 	 torrentMan->connections);
   fflush(stdout);	 
 }

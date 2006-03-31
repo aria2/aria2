@@ -255,7 +255,7 @@ void PeerInteractionCommand::receiveMessage() {
 					       e->torrentMan->pieceLength,
 					       peerConnection);
 	sendMessageQueue->addPendingMessage(pendingMessage);
-	e->torrentMan->addUploadedSize(message->getLength());
+	e->torrentMan->addUploadLength(message->getLength());
 	e->torrentMan->addDeltaUpload(message->getLength());
       }
       break;
