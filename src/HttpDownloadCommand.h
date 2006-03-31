@@ -37,7 +37,7 @@ class HttpDownloadCommand:public DownloadCommand {
 private:
   map<string, TransferEncoding*> transferEncodings;
 public:
-  HttpDownloadCommand(int cuid, Request* req, DownloadEngine* e, Socket* s);
+  HttpDownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
   ~HttpDownloadCommand();
 
   TransferEncoding* getTransferEncoding(string transferEncoding);

@@ -51,7 +51,7 @@ private:
   Socket* readCheckTarget;
   Socket* writeCheckTarget;
 public:
-  PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, Socket* s = NULL);
+  PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s = NULL);
   virtual ~PeerAbstractCommand();
   bool execute();
 };

@@ -25,9 +25,6 @@
 #include "PeerAbstractCommand.h"
 
 class PeerInitiateConnectionCommand : public PeerAbstractCommand {
-private:
-  bool useProxy();
-  bool useProxyTunnel();
 protected:
   bool executeInternal();
   bool prepareForRetry(int wait);

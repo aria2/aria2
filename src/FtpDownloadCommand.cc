@@ -21,7 +21,7 @@
 /* copyright --> */
 #include "FtpDownloadCommand.h"
 
-FtpDownloadCommand::FtpDownloadCommand(int cuid, Request* req, DownloadEngine* e, Socket* dataSocket, Socket* ctrlSocket):
+FtpDownloadCommand::FtpDownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* dataSocket, const Socket* ctrlSocket):
   DownloadCommand(cuid, req, e, dataSocket)
 {
   this->ctrlSocket = new Socket(*ctrlSocket);

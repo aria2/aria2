@@ -38,7 +38,7 @@ private:
 protected:
   bool executeInternal(Segment segment);
 public:
-  TrackerDownloadCommand(int cuid, Request* req, TorrentDownloadEngine* e, Socket* s);
+  TrackerDownloadCommand(int cuid, Request* req, TorrentDownloadEngine* e, const Socket* s);
   ~TrackerDownloadCommand();
 
   TransferEncoding* getTransferEncoding(string transferEncoding);

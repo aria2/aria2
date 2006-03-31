@@ -30,7 +30,7 @@
 // TODO
 #include "TorrentDownloadEngine.h"
 
-HttpResponseCommand::HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):
+HttpResponseCommand::HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
   AbstractCommand(cuid, req, e, s) {
   http = new HttpConnection(cuid, socket, req, e->option, e->logger);
 }

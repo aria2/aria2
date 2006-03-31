@@ -23,7 +23,7 @@
 #include "HttpConnection.h"
 #include "HttpProxyResponseCommand.h"
 
-HttpProxyRequestCommand::HttpProxyRequestCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):AbstractCommand(cuid, req, e, s) {
+HttpProxyRequestCommand::HttpProxyRequestCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s) {
   setReadCheckSocket(NULL);
   setWriteCheckSocket(socket);
 }

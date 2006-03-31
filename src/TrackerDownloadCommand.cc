@@ -29,7 +29,7 @@
 
 TrackerDownloadCommand::TrackerDownloadCommand(int cuid, Request* req,
 					       TorrentDownloadEngine* e,
-					       Socket* s)
+					       const Socket* s)
   :AbstractCommand(cuid, req, e, s), len(0) {
   resSize = 256;
   res = new char[resSize];

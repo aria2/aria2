@@ -30,7 +30,7 @@
 
 PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
 					       TorrentDownloadEngine* e,
-					       Socket* s, int sequence)
+					       const Socket* s, int sequence)
   :PeerAbstractCommand(cuid, peer, e, s), sequence(sequence) {
   if(sequence == INITIATOR_SEND_HANDSHAKE) {
     setReadCheckSocket(NULL);

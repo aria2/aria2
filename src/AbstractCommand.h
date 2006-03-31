@@ -50,7 +50,7 @@ private:
   Socket* readCheckTarget;
   Socket* writeCheckTarget;
 public:
-  AbstractCommand(int cuid, Request* req, DownloadEngine* e, Socket* s= NULL);
+  AbstractCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s= NULL);
   virtual ~AbstractCommand();
   bool execute();
 };

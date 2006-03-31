@@ -27,7 +27,7 @@
 #include "message.h"
 #include "prefs.h"
 
-PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, Socket* s):
+PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s):
   Command(cuid), e(e), peer(peer), checkSocketIsReadable(false), checkSocketIsWritable(false) {
 
   if(s != NULL) {

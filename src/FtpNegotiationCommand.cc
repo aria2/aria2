@@ -26,7 +26,7 @@
 #include "message.h"
 #include "prefs.h"
 
-FtpNegotiationCommand::FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):
+FtpNegotiationCommand::FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
   AbstractCommand(cuid, req, e, s),
   dataSocket(NULL), serverSocket(NULL), sequence(SEQ_RECV_GREETING)
 {

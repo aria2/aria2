@@ -64,11 +64,3 @@ bool PeerInitiateConnectionCommand::prepareForRetry(int wait) {
   e->commands.push(command);
   return true;
 }
-
-bool PeerInitiateConnectionCommand::useProxy() {
-  return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
-}
-
-bool PeerInitiateConnectionCommand::useProxyTunnel() {
-  return e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL;
-}

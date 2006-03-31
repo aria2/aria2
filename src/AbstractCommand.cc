@@ -29,7 +29,7 @@
 #include "SleepCommand.h"
 #include "prefs.h"
 
-AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, Socket* s):
+AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
   Command(cuid), req(req), e(e), checkSocketIsReadable(false), checkSocketIsWritable(false) {
 
   if(s != NULL) {

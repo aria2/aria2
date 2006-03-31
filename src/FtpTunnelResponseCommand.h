@@ -31,7 +31,7 @@ private:
 protected:
     bool executeInternal(Segment segment);
 public:
-  FtpTunnelResponseCommand(int cuid, Request* req, DownloadEngine* e, Socket* s);
+  FtpTunnelResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
   ~FtpTunnelResponseCommand();
 };
 

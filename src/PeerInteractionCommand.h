@@ -62,7 +62,7 @@ protected:
   void onAbort(Exception* ex);
   void beforeSocketCheck();
 public:
-  PeerInteractionCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, Socket* s, int sequence);
+  PeerInteractionCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s, int sequence);
   ~PeerInteractionCommand();
 
   enum Seq {

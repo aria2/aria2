@@ -80,7 +80,7 @@ private:
 protected:
   bool executeInternal(Segment segment);
 public:
-  FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e, Socket* s);
+  FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
   ~FtpNegotiationCommand();
 };
 
