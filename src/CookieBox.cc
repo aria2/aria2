@@ -30,13 +30,13 @@ void CookieBox::add(const Cookie& cookie) {
   cookies.push_back(cookie);
 }
 
-void CookieBox::add(string cookieStr) {
+void CookieBox::add(const string& cookieStr) {
   Cookie c;
   parse(c, cookieStr);
   cookies.push_back(c);
 }
 
-void CookieBox::setField(Cookie& cookie, string name, string value) const {
+void CookieBox::setField(Cookie& cookie, const string& name, const string& value) const {
   if(name.size() == string("secure").size() &&
      strcasecmp(name.c_str(), "secure") == 0) {
     cookie.secure = true;
@@ -52,7 +52,7 @@ void CookieBox::setField(Cookie& cookie, string name, string value) const {
   }
 }
 
-void CookieBox::parse(Cookie& cookie, string cookieStr) const {
+void CookieBox::parse(Cookie& cookie, const string& cookieStr) const {
   cookie.clear();
   Strings terms;
   Util::slice(terms, cookieStr, ';');
@@ -63,7 +63,7 @@ void CookieBox::parse(Cookie& cookie, string cookieStr) const {
   }
 }
 
-Cookies CookieBox::criteriaFind(string host, string dir, bool secure) const {
+Cookies CookieBox::criteriaFind(const string& host, const string& dir, bool secure) const {
   Cookies result;
   for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
     const Cookie& c = *itr;

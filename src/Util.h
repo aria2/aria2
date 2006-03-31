@@ -34,7 +34,7 @@ using namespace std;
 
 class Util {
 public:
-  static void split(pair<string, string>& hp, string src, char delim);
+  static void split(pair<string, string>& hp, const string& src, char delim);
   static string llitos(long long int value, bool comma = false);
   static string itos(int value, bool comma = false);
   /**
@@ -47,26 +47,27 @@ public:
    * Take a string src which is a deliminated list and add its elements
    * into result. result is not cleared before conversion begins.
    */
-  static void slice(Strings& result, string src, char delim);
+  static void slice(Strings& result, const string& src, char delim);
   
-  static string trim(string src);
+  static string trim(const string& src);
 
-  static bool startsWith(string target, string part);
+  static bool startsWith(const string& target, const string& part);
 
-  static bool endsWith(string target, string part);
+  static bool endsWith(const string& target, const string& part);
 
-  static string replace(string target, string oldstr, string newstr);
+  static string replace(const string& target, const string& oldstr, const string& newstr);
 
   static string urlencode(const unsigned char* target, int len);
 
   static string toHex(const unsigned char* src, int len);
 
-  static FILE* openFile(string filename, string mode);
+  static FILE* openFile(const string& filename, const string& mode);
 
-  static void fileCopy(string destFile, string src);
+  static void fileCopy(const string& destFile, const string& src);
 
-  static void rangedFileCopy(string destFile, string src, long long int srcOffset, long long int length);
+  static void rangedFileCopy(const string& destFile, const string& src, long long int srcOffset, long long int length);
 
+  static bool isPowerOf(int num, int base);
 };
 
 #endif // _D_UTIL_H_

@@ -59,7 +59,7 @@ string Util::llitos(long long int value, bool comma)
   return str;
 }
 
-string Util::trim(string src) {
+string Util::trim(const string& src) {
   string::size_type sp = src.find_first_not_of(" ");
   string::size_type ep = src.find_last_not_of(" ");
   if(sp == string::npos || ep == string::npos) {
@@ -69,7 +69,7 @@ string Util::trim(string src) {
   }
 }
 
-void Util::split(pair<string, string>& hp, string src, char delim) {
+void Util::split(pair<string, string>& hp, const string& src, char delim) {
   hp.first = "";
   hp.second = "";
   string::size_type p = src.find(delim);
@@ -90,7 +90,7 @@ long long int Util::difftv(struct timeval tv1, struct timeval tv2) {
 	  tv1.tv_usec-tv2.tv_usec);
 }
 
-void Util::slice(Strings& result, string src, char delim) {
+void Util::slice(Strings& result, const string& src, char delim) {
   string::size_type p = 0;
   while(1) {
     string::size_type np = src.find(delim, p);
@@ -107,7 +107,7 @@ void Util::slice(Strings& result, string src, char delim) {
   } 
 }
 
-bool Util::startsWith(string target, string part) {
+bool Util::startsWith(const string& target, const string& part) {
   if(target.size() < part.size()) {
     return false;
   }
@@ -121,7 +121,7 @@ bool Util::startsWith(string target, string part) {
   }
 }
 
-bool Util::endsWith(string target, string part) {
+bool Util::endsWith(const string& target, const string& part) {
   if(target.size() < part.size()) {
     return false;
   }
@@ -135,7 +135,7 @@ bool Util::endsWith(string target, string part) {
   }
 }
 
-string Util::replace(string target, string oldstr, string newstr) {
+string Util::replace(const string& target, const string& oldstr, const string& newstr) {
   if(target == "" || oldstr == "" ) {
     return target;
   }
@@ -186,17 +186,17 @@ string Util::toHex(const unsigned char* src, int len) {
   return hex;
 }
 
-FILE* Util::openFile(string filename, string mode) {
+FILE* Util::openFile(const string& filename, const string& mode) {
   FILE* file = fopen(filename.c_str(), mode.c_str());
   return file;
 }
 
-void Util::fileCopy(string dest, string src) {
+void Util::fileCopy(const string& dest, const string& src) {
   File file(src);
   rangedFileCopy(dest, src, 0, file.size());
 }
 
-void Util::rangedFileCopy(string dest, string src, long long int srcOffset, long long int length) {
+void Util::rangedFileCopy(const string& dest, const string& src, long long int srcOffset, long long int length) {
   int bufSize = 4096;
   char buf[bufSize];
   int destFd = -1;
@@ -246,3 +246,15 @@ void Util::rangedFileCopy(string dest, string src, long long int srcOffset, long
   }
 }
 
+bool Util::isPowerOf(int num, int base) {
+  if(base <= 0) { return false; }
+  if(base == 1) { return true; }
+
+  while(num%base == 0) {
+    num /= base;
+    if(num == 1) {
+      return true;
+    }
+  }
+  return false;
+}

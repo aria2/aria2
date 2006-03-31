@@ -42,8 +42,8 @@ private:
 
   string strbuf;
 
-  int getStatus(string response) const;
-  bool isEndOfResponse(int status, string response) const;
+  int getStatus(const string& response) const;
+  bool isEndOfResponse(int status, const string& response) const;
   bool bulkReceiveResponse(pair<int, string>& response);
 public:
   FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger);

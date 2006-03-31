@@ -24,6 +24,11 @@
 
 	* src/SendMessageQueue.cc (cancelAllRequest): Fixed.
 
+	* src/Util.cc (isPowerOf): New function.
+	* src/Util.h (isPowerOf): New function.
+	* src/PeerMessageUtil.cc (checkLength): Added a check for length
+	whether or not it is power of 2.
+	
 2006-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added new class SendMessageQueue that includes PendingMessages and

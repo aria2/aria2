@@ -35,18 +35,11 @@
 
 using namespace std;
 
-#define DEFAULT_BLOCK_LEN 16*1024;
-#define MAX_BLOCK_LEN 128*1024;
-
 #define INFO_HASH_LENGTH 20
-
-#define IS_NULL_PIECE(X) (X.index == 0 && X.length == 0)
-
 #define DEFAULT_ANNOUNCE_INTERVAL 300
 #define DEFAULT_ANNOUNCE_MIN_INTERVAL 300
 #define MAX_PEERS 55
 #define MAX_PEER_UPDATE 15
-
 #define MAX_PEER_LIST_SIZE 250
 #define END_GAME_PIECE_NUM 20
 #define MAX_PEER_ERROR 5

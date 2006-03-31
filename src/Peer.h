@@ -45,9 +45,7 @@ public:
   int cuid;
 private:
   char peerId[PEER_ID_LENGTH];
-  //unsigned char* bitfield;
   BitfieldMan* bitfield;
-  //int bitfieldLength;
   long long int peerUpload;
   long long int peerDownload;
   int pieceLength;
@@ -58,7 +56,7 @@ public:
     amChocking(true), amInterested(false),
     peerChoking(true), peerInterested(false),
     tryCount(0), error(0), cuid(0),
-    bitfield(NULL),// bitfieldLength(0),
+    bitfield(NULL),
     peerUpload(0), peerDownload(0),
     pieceLength(pieceLength), totalLength(totalLength) {
     this->bitfield = new BitfieldMan(pieceLength, totalLength);
@@ -66,7 +64,7 @@ public:
 
   ~Peer() {
     if(bitfield != NULL) {
-      delete /*[]*/ bitfield;
+      delete bitfield;
     }
   }
 
@@ -77,21 +75,9 @@ public:
   
   void setBitfield(const unsigned char* bitfield, int bitfieldLength) {
     this->bitfield->setBitfield(bitfield, bitfieldLength);
-    /*
-    if(this->bitfield != NULL) {
-      delete [] this->bitfield;
-    }
-    this->bitfieldLength = bitfieldLength;
-    this->bitfield = new unsigned char[this->bitfieldLength];
-    memcpy(this->bitfield, bitfield, this->bitfieldLength);
-    */
   }
   const unsigned char* getBitfield() const { return bitfield->getBitfield(); }
   int getBitfieldLength() const { return bitfield->getBitfieldLength(); }
-
-  /*
-  void initBitfield(int pieces);
-  */
 
   /**
    * operation = 1: set index-th bit 1

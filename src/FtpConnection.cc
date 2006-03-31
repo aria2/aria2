@@ -108,7 +108,7 @@ void FtpConnection::sendRetr() const {
   socket->writeData(request);
 }
 
-int FtpConnection::getStatus(string response) const {
+int FtpConnection::getStatus(const string& response) const {
   int status;
   // When the response is not like "%d %*s",
   // we return 0.
@@ -123,7 +123,7 @@ int FtpConnection::getStatus(string response) const {
   }
 }
 
-bool FtpConnection::isEndOfResponse(int status, string response) const {
+bool FtpConnection::isEndOfResponse(int status, const string& response) const {
   if(response.size() <= 4) {
     return false;
   }

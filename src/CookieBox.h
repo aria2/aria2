@@ -37,7 +37,7 @@ public:
   string domain;
   bool secure;
 public:
-  Cookie(string name, string value, string expires, string path, string domain, bool secure):name(name), value(value), expires(expires), path(path), domain(domain), secure(secure) {}
+  Cookie(const string& name, const string& value, const string& expires, const string& path, const string& domain, bool secure):name(name), value(value), expires(expires), path(path), domain(domain), secure(secure) {}
   Cookie():secure(false) {}
   ~Cookie() {}
   string toString() const {
@@ -54,15 +54,15 @@ typedef deque<Cookie> Cookies;
 class CookieBox {
 private:
   Cookies cookies;
-  void setField(Cookie& cookie, string name, string value) const;
+  void setField(Cookie& cookie, const string& name, const string& value) const;
 public:
   CookieBox();
   ~CookieBox();
   void clear();
   void add(const Cookie& cookie);
-  void add(string cookieStr);
-  void parse(Cookie& cookie, string cookieStr) const;
-  Cookies criteriaFind(string host, string dir, bool secure) const;
+  void add(const string& cookieStr);
+  void parse(Cookie& cookie, const string& cookieStr) const;
+  Cookies criteriaFind(const string& host, const string& dir, bool secure) const;
 };
 
 #endif // _D_COOKIE_BOX_H_

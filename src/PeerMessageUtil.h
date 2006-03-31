@@ -24,6 +24,8 @@
 
 #include "PeerConnection.h"
 
+#define MAX_BLOCK_LENGTH (128*1024)
+
 class PeerMessageUtil {
 private:
   PeerMessageUtil() {}

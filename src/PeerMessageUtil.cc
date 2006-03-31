@@ -151,8 +151,13 @@ void PeerMessageUtil::checkPieceOffset(const PeerMessage* message, int pieceLeng
 }
 
 void PeerMessageUtil::checkLength(const PeerMessage* message) {
-  if(message->getLength() > 128*1024) {
-    throw new DlAbortEx("too large length %d > 128KB", message->getLength());
+  if(message->getLength() > MAX_BLOCK_LENGTH) {
+    throw new DlAbortEx("too large length %d > %dKB", message->getLength(),
+			MAX_BLOCK_LENGTH/1024);
+  }
+  if(!Util::isPowerOf(message->getLength(), 2)) {
+    throw new DlAbortEx("invalid length %d, which is not power of 2",
+			message->getLength());
   }
 }
 

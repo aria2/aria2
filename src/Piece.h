@@ -25,7 +25,7 @@
 #include "BitfieldMan.h"
 #include "common.h"
 
-#define BLOCK_LENGTH 16*1024
+#define BLOCK_LENGTH (16*1024)
 
 class Piece {
 private:
