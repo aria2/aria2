@@ -36,7 +36,7 @@
 TorrentMan::TorrentMan():bitfield(NULL),
 			 peerEntryIdCounter(0), cuidCounter(0),
 			 downloadLength(0), uploadLength(0),
-			 preDownloadLength(0), preUploadedSize(0),
+			 preDownloadLength(0), preUploadLength(0),
 			 deltaDownload(0), deltaUpload(0),
 			 storeDir("."),
 			 multiFileTopDir(NULL),
@@ -452,7 +452,7 @@ void TorrentMan::read(FILE* file) {
       throw new DlAbortEx(strerror(errno));
     }
     preDownloadLength = downloadLength;
-    preUploadedSize = uploadLength;
+    preUploadLength = uploadLength;
     delete [] savedBitfield;
   } catch(Exception* ex) {
     delete [] savedBitfield;

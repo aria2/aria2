@@ -76,7 +76,7 @@ private:
   long long int downloadLength;
   long long int uploadLength;
   long long int preDownloadLength;
-  long long int preUploadedSize;
+  long long int preUploadLength;
   int deltaDownload;
   int deltaUpload;
   int fileMode;
@@ -193,7 +193,7 @@ public:
     return downloadLength-preDownloadLength;
   }
   long long int getSessionUploadedSize() const {
-    return uploadLength-preUploadedSize;
+    return uploadLength-preUploadLength;
   }
 
   void setFileMode(int mode) {
