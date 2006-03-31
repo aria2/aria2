@@ -110,7 +110,7 @@ void SendMessageQueue::cancelAllRequest() {
 
 void SendMessageQueue::cancelAllRequest(Piece& piece) {
   deletePendingRequestMessage();
-  requestSlotMan->deleteAllRequestSlot(Piece::nullPiece);
+  requestSlotMan->deleteAllRequestSlot(piece);
 }
 
 int SendMessageQueue::countPendingMessage() const {

@@ -57,11 +57,13 @@ bool PendingMessage::processMessage() {
     }
     break;
   case PeerMessage::PIECE:
-    if(!peerConnection->getPeer()->amChocking) {
+    if((!peerConnection->getPeer()->amChocking &&
+	peerConnection->getPeer()->peerInterested) || inProgress) {
       if(!inProgress) {
 	peerConnection->sendPieceHeader(index, begin, length);
 	peerConnection->getPeer()->addPeerDownload(length);
       }
+      inProgress = false;
       int writtenLength = peerConnection->sendPieceData(pieceDataOffset, leftPieceDataLength);
       if(writtenLength != leftPieceDataLength) {
 	inProgress = true;

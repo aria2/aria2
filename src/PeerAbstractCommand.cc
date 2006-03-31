@@ -125,7 +125,11 @@ bool PeerAbstractCommand::prepareForRetry(int wait) {
 }
 
 void PeerAbstractCommand::onAbort(Exception* ex) {
-  peer->error = 1;
+  if(peer->isSeeder()) {
+    peer->error++;
+  } else {
+    peer->error += MAX_PEER_ERROR;
+  }
   peer->tryCount = 0;
   peer->cuid = 0;
   peer->amChocking = true;

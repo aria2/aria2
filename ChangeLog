@@ -1,3 +1,29 @@
+2006-03-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/PeerInteractionCommand.cc (checkInactiveConnection): New function
+	(detectMessageFlooding): Updated.
+	(checkLongTimePeerChoking): Updated.
+	(getNewPieceAndSendInterest): Added debug log.
+	* src/PeerInteractionCommand.h: New function checkInactiveConnection()
+	
+	* src/TorrentMan.cc (deleteOldErrorPeers): Updated.
+	(getPeer): Updated.
+	* src/TorrentMan.h: Added MAX_PEER_ERROR.
+	
+	* src/PeerAbstractCommand.cc (onAbort): Increment error counter.
+
+	* src/PeerListenCommand.cc (execute): Close connection if incoming peer
+	is localhost.
+
+	* src/main.cc (main): Updated PREF_PEER_CONNECTION_TIMEOUT to 60.
+
+	* src/PendingMessage.cc (processMessage): Not to send piece message
+	if peer is not interested in the pieces localhost has.
+
+	* src/Peer.cc (shouldChoke): Updated.
+
+	* src/SendMessageQueue.cc (cancelAllRequest): Fixed.
+
 2006-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added new class SendMessageQueue that includes PendingMessages and

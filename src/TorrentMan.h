@@ -49,6 +49,7 @@ using namespace std;
 
 #define MAX_PEER_LIST_SIZE 250
 #define END_GAME_PIECE_NUM 20
+#define MAX_PEER_ERROR 5
 
 class FileEntry {
 public:

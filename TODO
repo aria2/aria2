@@ -11,6 +11,5 @@
 * Add port range command-line option
 * Add max peers command-line option
 * Distinguish seeder from leecher
-* time out for connecting peers
-* ignore incoming connection from localhost.
-* do not connect to localhost
+* file selection in multi-file mode
+* try to use ftruncate to allocate file.

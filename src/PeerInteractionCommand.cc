@@ -107,6 +107,7 @@ bool PeerInteractionCommand::executeInternal() {
   case WIRED:
     detectMessageFlooding();
     checkLongTimePeerChoking();
+    checkInactiveConnection();
     syncPiece();
     decideChoking();
     for(int i = 0; i < 10; i++) {
@@ -128,6 +129,16 @@ bool PeerInteractionCommand::executeInternal() {
   return false;
 }
 
+void PeerInteractionCommand::checkInactiveConnection() {
+  if((!peer->amInterested && !peer->peerInterested &&
+     e->torrentMan->connections >= MAX_PEER_LIST_SIZE) ||
+     (!peer->amInterested && e->torrentMan->connections >= MAX_PEER_LIST_SIZE &&
+      e->torrentMan->isEndGame())) {
+    throw new DlAbortEx("marked as inactive connection.");
+  }
+  
+}
+
 void PeerInteractionCommand::detectMessageFlooding() {
   struct timeval now;
   gettimeofday(&now, NULL);
@@ -135,7 +146,7 @@ void PeerInteractionCommand::detectMessageFlooding() {
     freqCheckPoint = now;
   } else {
     if(Util::difftv(now, freqCheckPoint) >= 5*1000000) {
-      if(chokeUnchokeCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 0.3
+      if(chokeUnchokeCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 0.4
 	 || haveCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 20.0) {
 	throw new DlAbortEx("flooding detected.");
       } else {
@@ -159,7 +170,7 @@ void PeerInteractionCommand::checkLongTimePeerChoking() {
     }
   } else {
     if(peer->amInterested && peer->peerChoking) {
-      if(Util::difftv(now, chokeCheckPoint) >= 5*60*1000000) {
+      if(Util::difftv(now, chokeCheckPoint) >= 3*60*1000000) {
 	throw new DlAbortEx("too long choking");
       }
     } else {
@@ -325,6 +336,7 @@ Piece PeerInteractionCommand::getNewPieceAndSendInterest() {
     PendingMessage pendingMessage(PeerMessage::NOT_INTERESTED, peerConnection);
     sendMessageQueue->addPendingMessage(pendingMessage);
   } else {
+    e->logger->debug("CUID#%d - starting download for piece #%d", cuid, piece.getIndex());
     e->logger->debug("CUID#%d - try to send interested", cuid);
     PendingMessage pendingMessage(PeerMessage::INTERESTED, peerConnection);
     sendMessageQueue->addPendingMessage(pendingMessage);
@@ -404,6 +416,7 @@ void PeerInteractionCommand::beforeSocketCheck() {
     e->torrentMan->unadvertisePiece(cuid);
     detectMessageFlooding();
     checkLongTimePeerChoking();
+    checkInactiveConnection();
 
     PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
     if(indexes.size() >= 20) {

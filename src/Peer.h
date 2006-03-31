@@ -111,6 +111,8 @@ public:
 
   bool hasPiece(int index) const;
 
+  bool isSeeder() const;
+
   static Peer* nullPeer;
 };
 

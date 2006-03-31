@@ -40,6 +40,10 @@ bool Peer::shouldChoke() const {
   if(peerDownload <= pieceLength*10) {
     return false;
   }
+  // we are always optimistic.
+  if(amInterested && peerInterested) {
+    return false;
+  }
   if(amChocking) {
     return !(peerDownload+pieceLength*5 < peerUpload);
   } else {
@@ -49,4 +53,8 @@ bool Peer::shouldChoke() const {
 
 bool Peer::hasPiece(int index) const {
   return bitfield->isBitSet(index);
+}
+
+bool Peer::isSeeder() const {
+  return bitfield->isAllBitSet();
 }

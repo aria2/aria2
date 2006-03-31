@@ -109,7 +109,7 @@ int TorrentMan::deleteOldErrorPeers(int maxNum) {
   int counter = 0;
   for(Peers::iterator itr = peers.begin(); itr != peers.end();) {
     Peer* p = *itr;
-    if(p->error != 0 && p->cuid == 0) {
+    if(p->error >= MAX_PEER_ERROR && p->cuid == 0) {
       delete p;
       itr = peers.erase(itr);
       counter++;
@@ -126,7 +126,7 @@ int TorrentMan::deleteOldErrorPeers(int maxNum) {
 Peer* TorrentMan::getPeer() const {
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peer* p = *itr;
-    if(p->cuid == 0 && p->error == 0) {
+    if(p->cuid == 0 && p->error < MAX_PEER_ERROR) {
       return p;
     }
   }

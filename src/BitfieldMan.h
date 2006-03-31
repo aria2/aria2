@@ -87,6 +87,9 @@ public:
 
   void clearAllBit();
   void setAllBit();
+
+  void addFilter(long long int offset, long long int length);
+  void clearFilter();
 };
 
 #endif // _D_BITFIELD_MAN_H_
