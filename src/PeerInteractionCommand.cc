@@ -256,7 +256,7 @@ void PeerInteractionCommand::receiveMessage() {
 					       peerConnection);
 	sendMessageQueue->addPendingMessage(pendingMessage);
 	e->torrentMan->addUploadLength(message->getLength());
-	e->torrentMan->addDeltaUpload(message->getLength());
+	e->torrentMan->addDeltaUploadLength(message->getLength());
       }
       break;
     case PeerMessage::CANCEL:

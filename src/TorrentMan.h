@@ -79,7 +79,7 @@ private:
   long long int preDownloadLength;
   long long int preUploadLength;
   int deltaDownloadLength;
-  int deltaUpload;
+  int deltaUploadLength;
   int fileMode;
   string storeDir;
   int port;
@@ -176,13 +176,13 @@ public:
   long long int getTotalLength() const { return totalLength; }
   void setTotalLength(long long int length) { totalLength = length; }
 
-  void addDeltaDownloadLength(int size) { deltaDownloadLength += size; }
+  void addDeltaDownloadLength(int length) { deltaDownloadLength += length; }
   int getDeltaDownloadLength() const { return deltaDownloadLength; }
   void resetDeltaDownloadLength() { deltaDownloadLength = 0; }
 
-  void addDeltaUpload(int size) { deltaUpload += size; }
-  int getDeltaUpload() const { return deltaUpload; }
-  void resetDeltaUpload() { deltaUpload = 0; }
+  void addDeltaUploadLength(int length) { deltaUploadLength += length; }
+  int getDeltaUploadLength() const { return deltaUploadLength; }
+  void resetDeltaUploadLength() { deltaUploadLength = 0; }
 
   void addDownloadLength(int deltaLength) { downloadLength += deltaLength; }
   long long int getDownloadLength() const { return downloadLength; }
