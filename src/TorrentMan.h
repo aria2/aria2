@@ -75,7 +75,7 @@ private:
   int cuidCounter;
   long long int downloadLength;
   long long int uploadLength;
-  long long int preDownloadedSize;
+  long long int preDownloadLength;
   long long int preUploadedSize;
   int deltaDownload;
   int deltaUpload;
@@ -190,7 +190,7 @@ public:
   void setUploadLength(long long int length) { uploadLength = length; }
 
   long long int getSessionDownloadedSize() const {
-    return downloadLength-preDownloadedSize;
+    return downloadLength-preDownloadLength;
   }
   long long int getSessionUploadedSize() const {
     return uploadLength-preUploadedSize;
