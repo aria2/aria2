@@ -1,10 +1,24 @@
+2006-04-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Attempt to add the ability to listing file entries in a .torrent file.
+	This feature is not yet complete.
+	
+	* src/prefs.h (PREF_TORRENT_SHOW_FILES): New definition
+	* src/TorrentMan.cc (getMultiFileEntries): New function.
+	(getName): New function.
+	* src/TorrentMan.h (getMultiFileEntries): New function.
+	(getName): New function.
+	* src/main.cc (main): Use above 2 funtion. 
+	
+	* Release 0.3.2
+	
 2006-03-31  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/PeerInteractionCommand.cc (checkInactiveConnection): New function
-	(detectMessageFlooding): Updated.
-	(checkLongTimePeerChoking): Updated.
+	(detectMessageFlooding): Updated threshold value.
+	(checkLongTimePeerChoking): Updated timeout value.
 	(getNewPieceAndSendInterest): Added debug log.
-	* src/PeerInteractionCommand.h: New function checkInactiveConnection()
+	* src/PeerInteractionCommand.h (checkInactiveConnection): New function
 	
 	* src/TorrentMan.cc (deleteOldErrorPeers): Updated.
 	(getPeer): Updated.

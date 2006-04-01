@@ -381,6 +381,14 @@ void TorrentMan::setup(string metaInfoFile) {
   setupComplete = true;
 }
 
+const MultiFileEntries& TorrentMan::getMultiFileEntries() const {
+  return multiFileEntries;
+}
+
+string TorrentMan::getName() const {
+  return name;
+}
+
 bool TorrentMan::hasPiece(int index) const {
   return bitfield->isBitSet(index);
 }

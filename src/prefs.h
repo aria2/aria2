@@ -88,5 +88,7 @@
  */
 // values: 1*digit
 #define PREF_PEER_CONNECTION_TIMEOUT "peer_connection_timeout"
+// values: true | false
+#define PREF_TORRENT_SHOW_FILES "torrent_show_files"
 
 #endif // _D_PREFS_H_

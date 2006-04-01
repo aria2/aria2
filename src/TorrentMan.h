@@ -223,6 +223,9 @@ public:
   int countUsedPiece() const { return usedPieces.size(); }
   int countAdvertisedPiece() const { return haves.size(); }
 
+  const MultiFileEntries& getMultiFileEntries() const;
+  string getName() const;
+
   enum FILE_MODE {
     SINGLE,
     MULTI

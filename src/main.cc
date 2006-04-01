@@ -577,7 +577,25 @@ int main(int argc, char* argv[]) {
       te->torrentMan->logger = logger;
       te->torrentMan->setup(torrentFile.empty() ? 
 			    downloadedTorrentFile : torrentFile);
-
+      if(op->get(PREF_TORRENT_SHOW_FILES) == V_TRUE) {
+	cout << "File listing:" << endl;
+	switch(te->torrentMan->getFileMode()) {
+	case TorrentMan::SINGLE:
+	  printf("%s %s\nBytes", te->torrentMan->getName().c_str(),
+		 Util::llitos(te->torrentMan->getTotalLength(), true).c_str());
+	  break;
+	case TorrentMan::MULTI: {
+	  const MultiFileEntries& entries = te->torrentMan->getMultiFileEntries();
+	  for(MultiFileEntries::const_iterator itr = entries.begin();
+	      itr != entries.end(); itr++) {
+	    printf("%s %s\nBytes", itr->path.c_str(),
+		   Util::llitos(itr->length, true).c_str());
+	  break;
+	  }
+	}
+	}
+	exit(0);
+      }
       PeerListenCommand* listenCommand =
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
       int port = listenCommand->bindPort(6881, 6999);

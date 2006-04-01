@@ -336,7 +336,7 @@ Piece PeerInteractionCommand::getNewPieceAndSendInterest() {
     PendingMessage pendingMessage(PeerMessage::NOT_INTERESTED, peerConnection);
     sendMessageQueue->addPendingMessage(pendingMessage);
   } else {
-    e->logger->debug("CUID#%d - starting download for piece #%d", cuid, piece.getIndex());
+    e->logger->debug("CUID#%d - starting download for piece index=%d", cuid, piece.getIndex());
     e->logger->debug("CUID#%d - try to send interested", cuid);
     PendingMessage pendingMessage(PeerMessage::INTERESTED, peerConnection);
     sendMessageQueue->addPendingMessage(pendingMessage);
