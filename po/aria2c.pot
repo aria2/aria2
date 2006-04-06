@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-04-01 23:40+0900\n"
+"POT-Creation-Date: 2006-04-06 21:52+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -430,50 +430,50 @@ msgstr ""
 msgid "Reports bugs to %s"
 msgstr ""
 
-#: src/main.cc:302
+#: src/main.cc:305
 msgid "unrecognized proxy format"
 msgstr ""
 
-#: src/main.cc:328
+#: src/main.cc:331
 msgid "Currently, supported authentication scheme is basic."
 msgstr ""
 
-#: src/main.cc:337
+#: src/main.cc:340
 msgid "retry-wait must be between 0 and 60."
 msgstr ""
 
-#: src/main.cc:354
+#: src/main.cc:357
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr ""
 
-#: src/main.cc:363
+#: src/main.cc:366
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:381
+#: src/main.cc:384
 msgid "min-segment-size invalid"
 msgstr ""
 
-#: src/main.cc:392
+#: src/main.cc:395
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:406
+#: src/main.cc:409
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:432
+#: src/main.cc:442
 msgid "split must be between 1 and 5."
 msgstr ""
 
-#: src/main.cc:442
+#: src/main.cc:452
 msgid "timeout must be between 1 and 600"
 msgstr ""
 
-#: src/main.cc:451
+#: src/main.cc:461
 msgid "max-tries invalid"
 msgstr ""
 
-#: src/main.cc:474
+#: src/main.cc:484
 msgid "specify at least one URL"
 msgstr ""
