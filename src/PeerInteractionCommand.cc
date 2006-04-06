@@ -50,6 +50,7 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
   freqCheckPoint.tv_usec = 0;
   chokeUnchokeCount = 0;
   haveCount = 0;
+  keepAliveCount = 0;
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
@@ -147,11 +148,13 @@ void PeerInteractionCommand::detectMessageFlooding() {
   } else {
     if(Util::difftv(now, freqCheckPoint) >= 5*1000000) {
       if(chokeUnchokeCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 0.4
-	 || haveCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 20.0) {
+	 || haveCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 20.0
+	 || keepAliveCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 1.0) {
 	throw new DlAbortEx("flooding detected.");
       } else {
 	chokeUnchokeCount = 0;
 	haveCount = 0;
+	keepAliveCount = 0;
 	freqCheckPoint = now;
       }
     }
@@ -220,6 +223,7 @@ void PeerInteractionCommand::receiveMessage() {
   try {
     switch(message->getId()) {
     case PeerMessage::KEEP_ALIVE:
+      keepAliveCount++;
       break;
     case PeerMessage::CHOKE:
       if(!peer->peerChoking) {

@@ -17,6 +17,15 @@ aria2c_SOURCES = AllTest.cc\
 	PeerMessageUtilTest.cc\
 	BitfieldManTest.cc\
 	DefaultDiskWriterTest.cc
-aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
-aria2c_LDFLAGS = ${CPPUNIT_LIBS}
-aria2c_LDADD = ../src/libaria2c.a
+#aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
+#aria2c_LDFLAGS = ${CPPUNIT_LIBS}
+
+aria2c_LDADD = ../src/libaria2c.a\
+	 ${CPPUNIT_LIBS} @LIBGNUTLS_LIBS@\
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@
+AM_CPPFLAGS =  -Wall\
+	${CPPUNIT_CFLAGS}\
+	-I ../src\
+	-I../lib -I../intl -I$(top_srcdir)/intl\
+	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@\
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@

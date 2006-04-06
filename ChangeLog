@@ -1,3 +1,121 @@
+2006-04-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To print ETA:
+
+	* src/TorrentDownloadEngine.cc (afterEachIteration): Added download
+	completion handling when dealing with
+	TorrentMan::isPartialDownloadingMode() == true.
+	* src/TorrentDownloadEngine.h (onPartialDownloadingCompletes):
+	New function.
+	* src/TorrentConsoleDownloadEngine.h (startup): New variable.
+	(sessionDownloadLength): New variable.
+	(avgSpeed): New variable.
+	(eta): New variable.
+	* src/TorrentConsoleDownloadEngine.cc (initStatistics): Initialized
+	new variables: eta, avgSpeed, startup.
+	(calculateSpeed): Calculate average speed and ETA.
+	(printStatistics): Added ETA.
+
+	* src/Util.h (secfmt): New function.
+	* src/Util.cc (secfmt): New function.
+	
+2006-04-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To detect "keep alive" flooding:
+
+	* src/PeerInteractionCommand.h (keepAliveCount): New variable
+	* src/PeerInteractionCommand.cc (Constructor): Initialized new
+	variable: keepAliveCount.
+	(detectMessageFlooding): Added "keep alive" flooding detection.
+	(receiveMessage): Increase keepAliveCount when "keep alive" message
+	received.
+	
+	To add the ability to download only specified files in multi-file
+	torrent:
+
+	* src/BitfieldMan.h (filterBitfield): New variable.
+	(filterEnabled): New variable.
+	(setFilterBit): New function.
+	(enableFilter): New function.
+	(disableFilter): New function.
+	(isFilterEnabled): New function.
+	(getFilteredTotalLength): New function.
+	(getCompletedLength): New function.
+	* src/BitfieldMan.cc (Constructor): Initialized new variable:
+	filterBitfield, filterEnabled.
+	(CopyConstructor): Added filterBitfield and filterEnabled.
+	(operator==): Added filterBitfield and filterEnabled.
+	(Destructor): Added filterBitfield.
+	(getMissingIndex): Use filterBitfield.
+	(getMissingUnusedIndex): Use filterBitfield.
+	(getFirstMissingUnusedIndex): Use filterBitfield.
+	(getFirstMissingUnusedIndex): Use filterBitfield.
+	(getAllMissingIndexes): Use filterBitfield.
+	(countMissingBlock): Use filterBitfield.
+	(countBlock): Use filterBitfield.
+	(setBitInternal): Added new argument on.
+	(setUseBit): Use setBitInternal.
+	(unsetUseBit): Use setBitInternal.
+	(setBit): Use setBitInternal.
+	(unsetBit): Use setBitInternal.
+	(isAllBitSet): Use filterBitfield.
+	(setFilterBit): New function.
+	(addFilter): New function.
+	(enableFilter): New function.
+	(disableFilter): New function.
+	(clearFilter): New function.
+	(isFilterEnabled): New function.
+	(getFilteredTotalLength): New function.
+	(getCompletedLength): New function.
+
+	* src/TorrentMan.h [FileEntry](Constructor): Updated signature.
+	Initalized newly added variables.
+	[FileEntry](offset): New variable.
+	[FileEntry](extracted): New variable.
+	[FileEntry](requested): New variable.
+	(readFileEntry): New function.
+	(option): New variable.
+	(splitMultiFile): Removed const qualifier.
+	(fixFilename): Removed const qualifier.
+	(readFileEntryFromMetaInfoFile): New function.
+	(finishPartialDownloadingMode): New function.
+	(isPartialDownloadingMode): New function.
+	(setFileEntriesToDownload): New function.
+	(getCompletedLength): New function.
+	(getPartialTotalLength): New function.
+	* src/TorrentMan.cc (readFileEntry): New function.
+	(setup): Use readFileEntry. If no-preallocation option is specified,
+	use DefaultDiskWriter.
+	(readFileEntryFromMetaInfoFile): New function.
+	(fixFilename): Removed const qualifier.
+	(splitMultiFile): Removed const qualifier.
+	(setFileEntriesToDownload): New function.
+	(isPartialDownloadingMode): New function.
+	(finishPartialDownloadingMode): New function.
+	(getCompletedLength): New function.
+	(getPartialTotalLength): New function.
+	
+	* src/TorrentConsoleDownloadEngine.h (partialDownloadLengthDiff):
+	New variable.
+	(partialTotalLength): New variable.
+	(downloadLength): New variable.
+	(totalLength): New variable.
+	* src/TorrentConsoleDownloadEngine.cc (onPartialDownloadingCompletes):
+	Added log.
+	(initStatistics): Initialized new variables: partialDownloadLengthDiff,
+	partialTotalLength, downloadLength, totalLength.
+	(calculate): Calculate downloadLength and totalLength.
+	
+	* src/prefs.h :New definition PREF_NO_PREALLOCATION
+
+	* src/main.cc (addCommand): Changed argument signature.
+	(main): Added new variable: args. Added new option "torrent-show-files"
+	"no-preallocation". Usage is not updated yet.
+	
+2006-04-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/PeerMessage.cc (setBitfield): Fixed invalid memory de-allocation.
+
 2006-04-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Attempt to add the ability to listing file entries in a .torrent file.

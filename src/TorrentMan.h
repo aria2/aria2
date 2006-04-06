@@ -29,6 +29,8 @@
 #include "DiskWriter.h"
 #include "Piece.h"
 #include "Directory.h"
+#include "Dictionary.h"
+#include "Option.h"
 #include <deque>
 #include <map>
 #include <string>
@@ -48,7 +50,12 @@ class FileEntry {
 public:
   string path;
   long long int length;
-  FileEntry(string path, long long int length):path(path), length(length) {}
+  long long int offset;
+  bool extracted;
+  bool requested;
+  FileEntry(string path, long long int length, long long int offset):
+    path(path), length(length), offset(offset),
+    extracted(false), requested(true) {}
   ~FileEntry() {}
 };
 
@@ -90,6 +97,7 @@ private:
   void deleteUsedPiece(const Piece& piece);
   int deleteUsedPiecesByFillRate(int fillRate, int toDelete);
   void reduceUsedPieces(int max);
+  void readFileEntry(const Dictionary* infoDic, const string& defaultName);
 public:
   int pieceLength;
   int pieces;
@@ -108,6 +116,7 @@ public:
 
   const Logger* logger;
   DiskWriter* diskWriter;
+  const Option* option;
 
   int getNewCuid() { return ++cuidCounter; }
 
@@ -213,8 +222,8 @@ public:
   void remove() const;
 
   void copySingleFile() const;
-  void splitMultiFile() const;
-  void fixFilename() const;
+  void splitMultiFile();
+  void fixFilename();
   void deleteTempFile() const;
 
   void setPort(int port) { this->port = port; }
@@ -223,8 +232,19 @@ public:
   int countUsedPiece() const { return usedPieces.size(); }
   int countAdvertisedPiece() const { return haves.size(); }
 
+  void readFileEntryFromMetaInfoFile(const string& metaInfoFile);
   const MultiFileEntries& getMultiFileEntries() const;
   string getName() const;
+
+  //bool unextractedFileEntryExists() const;
+
+  void finishPartialDownloadingMode();
+  bool isPartialDownloadingMode() const;
+
+  void setFileEntriesToDownload(const Strings& filePaths);
+
+  long long int getCompletedLength() const;
+  long long int getPartialTotalLength() const;
 
   enum FILE_MODE {
     SINGLE,

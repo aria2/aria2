@@ -39,7 +39,7 @@ void ShaVisitorTest::testVisit() {
   ShaVisitor v;
   Data d("test", 4);
   d.accept(&v);
-  unsigned char md[EVP_MAX_MD_SIZE];
+  unsigned char md[20];
   int len = 0;
   v.getHash(md, len);
   string hashHex = hexHash(md, len);
@@ -51,7 +51,7 @@ void ShaVisitorTest::testVisitCompound() {
   ShaVisitor v;
   MetaEntry* e = MetaFileUtil::parseMetaFile("test.torrent");
   e->accept(&v);
-  unsigned char md[EVP_MAX_MD_SIZE];
+  unsigned char md[20];
   int len = 0;
   v.getHash(md, len);
   string hashHex = hexHash(md, len);

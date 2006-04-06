@@ -68,6 +68,8 @@ public:
   static void rangedFileCopy(const string& destFile, const string& src, long long int srcOffset, long long int length);
 
   static bool isPowerOf(int num, int base);
+
+  static string secfmt(int sec);
 };
 
 #endif // _D_UTIL_H_

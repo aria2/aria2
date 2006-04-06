@@ -31,10 +31,10 @@ The executable is aria2c in src directory.
 
 4. Dependency
 -------------
-In order to enable HTTPS support, you need GNUTLS or OpenSSL.
-In order to enable BitTorrent support, you need GNUTLS+GCRYPT or OpenSSL.
+In order to enable HTTPS support, you need GNU TLS or OpenSSL.
+In order to enable BitTorrent support, you need GNU TLS+libgcrypt or OpenSSL.
 
-GNUTLS has precedence over OpenSSL if both libraries are installed.
+GNU TLS has precedence over OpenSSL if both libraries are installed.
 If you prefer OpenSSL, run configure with "--without-gnutls".
 
 5. BitTorrrent

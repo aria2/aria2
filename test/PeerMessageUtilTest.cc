@@ -62,14 +62,14 @@ void PeerMessageUtilTest::testCreatePeerMessageKeepAlive() {
   char msg[4];
   memset(msg, 0, sizeof(msg));
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(NULL, 0);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::KEEP_ALIVE, pm->id);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::KEEP_ALIVE, pm->getId());
 }
 
 void PeerMessageUtilTest::testCreatePeerMessageChoke() {
   char msg[5];
   createNLengthMessage(msg, sizeof(msg), 1, 0);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 1);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::CHOKE, pm->id);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::CHOKE, pm->getId());
 
   try {
     char msg[6];
@@ -84,7 +84,7 @@ void PeerMessageUtilTest::testCreatePeerMessageUnchoke() {
   char msg[5];
   createNLengthMessage(msg, sizeof(msg), 1, 1);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 1);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::UNCHOKE, pm->id);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::UNCHOKE, pm->getId());
 
   try {
     char msg[6];
@@ -99,7 +99,7 @@ void PeerMessageUtilTest::testCreatePeerMessageInterested() {
   char msg[5];
   createNLengthMessage(msg, sizeof(msg), 1, 2);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 1);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::INTERESTED, pm->id);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::INTERESTED, pm->getId());
 
   try {
     char msg[6];
@@ -114,7 +114,7 @@ void PeerMessageUtilTest::testCreatePeerMessageNotInterested() {
   char msg[5];
   createNLengthMessage(msg, sizeof(msg), 1, 3);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 1);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::NOT_INTERESTED, pm->id);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::NOT_INTERESTED, pm->getId());
 
   try {
     char msg[6];
@@ -130,8 +130,8 @@ void PeerMessageUtilTest::testCreatePeerMessageHave() {
   createNLengthMessage(msg, sizeof(msg), 5, 4);
   setIntParam(&msg[5], 100);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 5);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::HAVE, pm->id);
-  CPPUNIT_ASSERT_EQUAL(100, pm->index);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::HAVE, pm->getId());
+  CPPUNIT_ASSERT_EQUAL(100, pm->getIndex());
 
   try {
     char msg[8];
@@ -153,10 +153,10 @@ void PeerMessageUtilTest::testCreatePeerMessageBitfield() {
   char* msg = new char[msgLen];
   createNLengthMessage(msg, msgLen, 3, 5);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 3);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::BITFIELD, pm->id);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0, pm->bitfield[0]);
-  CPPUNIT_ASSERT_EQUAL((unsigned char)0, pm->bitfield[1]);
-  CPPUNIT_ASSERT_EQUAL(2, pm->bitfieldLen);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::BITFIELD, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0, pm->getBitfield()[0]);
+  CPPUNIT_ASSERT_EQUAL((unsigned char)0, pm->getBitfield()[1]);
+  CPPUNIT_ASSERT_EQUAL(2, pm->getBitfieldLength());
 
   try {
     int msgLen = 5;
@@ -174,10 +174,10 @@ void PeerMessageUtilTest::testCreatePeerMessageRequest() {
   setIntParam(&msg[9], 16*1024);
   setIntParam(&msg[13], 16*1024-1);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 13);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::REQUEST, pm->id);
-  CPPUNIT_ASSERT_EQUAL(1, pm->index);
-  CPPUNIT_ASSERT_EQUAL(16*1024, pm->begin);
-  CPPUNIT_ASSERT_EQUAL(16*1024-1, pm->length);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::REQUEST, pm->getId());
+  CPPUNIT_ASSERT_EQUAL(1, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL(16*1024, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL(16*1024-1, pm->getLength());
 
   try {
     char msg[13];
@@ -195,12 +195,12 @@ void PeerMessageUtilTest::testCreatePeerMessagePiece() {
   setIntParam(&msg[5], 1);
   setIntParam(&msg[9], 16*1024);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 19);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::PIECE, pm->id);
-  CPPUNIT_ASSERT_EQUAL(1, pm->index);
-  CPPUNIT_ASSERT_EQUAL(16*1024, pm->begin);
-  CPPUNIT_ASSERT_EQUAL(10, pm->blockLen);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::PIECE, pm->getId());
+  CPPUNIT_ASSERT_EQUAL(1, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL(16*1024, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL(10, pm->getBlockLength());
   for(int i = 0; i < 10; i++) {
-    CPPUNIT_ASSERT_EQUAL((char)0, pm->block[i]);
+    CPPUNIT_ASSERT_EQUAL((char)0, pm->getBlock()[i]);
   }
 
   try {
@@ -220,10 +220,10 @@ void PeerMessageUtilTest::testCreatePeerMessageCancel() {
   setIntParam(&msg[9], 16*1024);
   setIntParam(&msg[13], 16*1024-1);
   PeerMessage* pm = PeerMessageUtil::createPeerMessage(&msg[4], 13);
-  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::CANCEL, pm->id);
-  CPPUNIT_ASSERT_EQUAL(1, pm->index);
-  CPPUNIT_ASSERT_EQUAL(16*1024, pm->begin);
-  CPPUNIT_ASSERT_EQUAL(16*1024-1, pm->length);
+  CPPUNIT_ASSERT_EQUAL((int)PeerMessage::CANCEL, pm->getId());
+  CPPUNIT_ASSERT_EQUAL(1, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL(16*1024, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL(16*1024-1, pm->getLength());
 
   try {
     char msg[13];
@@ -237,8 +237,8 @@ void PeerMessageUtilTest::testCreatePeerMessageCancel() {
 
 void PeerMessageUtilTest::testCheckIntegrityHave() {
   PeerMessage* pm = new PeerMessage();
-  pm->id = PeerMessage::HAVE;
-  pm->index = 119;
+  pm->setId(PeerMessage::HAVE);
+  pm->setIndex(119);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
   } catch(Exception* ex) {
@@ -246,7 +246,7 @@ void PeerMessageUtilTest::testCheckIntegrityHave() {
     CPPUNIT_FAIL("");
   } 
  
-  pm->index = 120;
+  pm->setIndex(120);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
     CPPUNIT_FAIL("exception must be throwed.");
@@ -256,62 +256,68 @@ void PeerMessageUtilTest::testCheckIntegrityHave() {
 
 void PeerMessageUtilTest::testCheckIntegrityBitfield() {
   PeerMessage* pm = new PeerMessage();
-  pm->id = PeerMessage::BITFIELD;
-  pm->bitfieldLen = 15;
-  pm->bitfield = new unsigned char[pm->bitfieldLen];
-  memset(pm->bitfield, 1, pm->bitfieldLen);
+  pm->setId(PeerMessage::BITFIELD);
+  int bitfieldLength = 15;
+  unsigned char* bitfield = new unsigned char[bitfieldLength];
+  memset(bitfield, 0xff, bitfieldLength);
+  pm->setBitfield(bitfield, bitfieldLength);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
   } catch(Exception* ex) {
     cerr << ex->getMsg() << endl;
     CPPUNIT_FAIL("");
   }
-
-  pm->bitfieldLen = 16;
-  pm->bitfield = new unsigned char[pm->bitfieldLen];
-  memset(pm->bitfield, 1, pm->bitfieldLen);
+  delete [] bitfield;
+  bitfieldLength = 16;
+  bitfield = new unsigned char[bitfieldLength];
+  memset(bitfield, 0xff, bitfieldLength);
+  pm->setBitfield(bitfield, bitfieldLength);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
     CPPUNIT_FAIL("exception must be throwed.");
   } catch(Exception* ex) {
   }
-
-  pm->bitfieldLen = 14;
-  pm->bitfield = new unsigned char[pm->bitfieldLen];
-  memset(pm->bitfield, 1, pm->bitfieldLen);
+  delete [] bitfield;
+  bitfieldLength = 14;
+  bitfield = new unsigned char[bitfieldLength];
+  memset(bitfield, 0xff, bitfieldLength);
+  pm->setBitfield(bitfield, bitfieldLength);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
     CPPUNIT_FAIL("exception must be throwed.");
   } catch(Exception* ex) {
   }
-  
-  pm->bitfieldLen = 15;
-  pm->bitfield = new unsigned char[pm->bitfieldLen];
-  memset(pm->bitfield, 1, pm->bitfieldLen);
-  pm->bitfield[pm->bitfieldLen-1] &= 0xfe;
+  delete [] bitfield;
+  bitfieldLength = 15;
+  bitfield = new unsigned char[bitfieldLength];
+  memset(bitfield, 0xff, bitfieldLength);
+  bitfield[bitfieldLength-1] &= 0xfe;
+  pm->setBitfield(bitfield, bitfieldLength);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 119, 256*1024*120);
   } catch(Exception* ex) {
     cerr << ex->getMsg() << endl;
     CPPUNIT_FAIL("");
   }
-
-  pm->bitfieldLen = 15;
-  pm->bitfield = new unsigned char[pm->bitfieldLen];
-  memset(pm->bitfield, 1, pm->bitfieldLen);
+  delete [] bitfield;
+  bitfieldLength = 15;
+  bitfield = new unsigned char[bitfieldLength];
+  memset(bitfield, 0xff, bitfieldLength);
+  pm->setBitfield(bitfield, bitfieldLength);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 119, 256*1024*120);
     CPPUNIT_FAIL("exception must be throwed.");
   } catch(Exception* ex) {
   }  
+  delete [] bitfield;
 }
 
 void PeerMessageUtilTest::testCheckIntegrityRequest() {
   PeerMessage* pm = new PeerMessage();
-  pm->id = PeerMessage::REQUEST;
-  pm->index = 119;
-  pm->begin = 0;
-  pm->length = 16*1024;
+  pm->setId(PeerMessage::REQUEST);
+  pm->setIndex(119);
+  pm->setBegin(0);
+  pm->setLength(16*1024);
 
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
@@ -320,33 +326,24 @@ void PeerMessageUtilTest::testCheckIntegrityRequest() {
     CPPUNIT_FAIL("");
   }
 
-  pm->begin = 256*1024;
-  pm->length = 16*1024;
+  pm->setBegin(256*1024);
+  pm->setLength(16*1024);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
     CPPUNIT_FAIL("exception must be throwed.");
   } catch(Exception* ex) {}
 
-  pm->begin = 0;
-  pm->length = 256*1024+1;
+  pm->setBegin(0);
+  pm->setLength(256*1024);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
     CPPUNIT_FAIL("exception must be throwed.");
   } catch(Exception* ex) {}
 
-  pm->begin = 0;
-  pm->length = 256*1024;
+  pm->setBegin(0);
+  pm->setLength(5);
   try {
     PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120);
-  } catch(Exception* ex) {
-    cerr << ex->getMsg() << endl;
-    CPPUNIT_FAIL("");
-  }
-
-  pm->begin = 0;
-  pm->length = 256*1024;
-  try {
-    PeerMessageUtil::checkIntegrity(pm, 256*1024, 120, 256*1024*120-1);
     CPPUNIT_FAIL("exception must be throwed.");
   } catch(Exception* ex) {}
 }

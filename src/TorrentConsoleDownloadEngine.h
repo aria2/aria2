@@ -39,11 +39,21 @@ private:
   int downloadSpeed;
   int uploadSpeed;
   long long int lastElapsed;
+  long long int partialDownloadLengthDiff;
+  long long int partialTotalLength;
+  struct timeval startup;
+  long long int sessionDownloadLength;
+  int avgSpeed;
+  int eta;
+  long long int downloadLength;
+  long long int totalLength;
+
   void printStatistics();
   int calculateSpeed(long long int sessionLength, long long int elapsed);
 protected:
   void initStatistics();
   void calculateStatistics();
+  void onPartialDownloadingCompletes();
 public:
   TorrentConsoleDownloadEngine();
   ~TorrentConsoleDownloadEngine();

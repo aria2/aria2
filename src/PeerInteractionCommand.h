@@ -41,6 +41,7 @@ private:
   struct timeval freqCheckPoint;
   int chokeUnchokeCount;
   int haveCount;
+  int keepAliveCount;
   void receiveMessage();
   void detectMessageFlooding();
   void checkLongTimePeerChoking();

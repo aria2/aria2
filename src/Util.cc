@@ -258,3 +258,24 @@ bool Util::isPowerOf(int num, int base) {
   }
   return false;
 }
+
+string Util::secfmt(int sec) {
+  string str;
+  if(sec >= 3600) {
+    str = itos(sec/3600)+"h";
+    sec %= 3600;
+  }
+  if(sec >= 60) {
+    int min = sec/60;
+    if(min < 10) {
+      str += "0";
+    }
+    str += itos(min)+"m";
+    sec %= 60;
+  }
+  if(sec < 10) {
+    str += "0";
+  }
+  str += itos(sec)+"s";
+  return str;
+}

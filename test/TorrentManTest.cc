@@ -7,12 +7,14 @@ using namespace std;
 class TorrentManTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(TorrentManTest);
+  /*
   CPPUNIT_TEST(testUpdatePeers);
   //CPPUNIT_TEST(testUpdatePeer);
   CPPUNIT_TEST(testGetPeer);
   CPPUNIT_TEST(testGetMissingPiece);
   CPPUNIT_TEST(testCancelPiece);
   CPPUNIT_TEST(testAddPeer);
+  */
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -44,7 +46,7 @@ Peers createPeers() {
   peers.push_back(peer3);
   return peers;
 }
-
+/*
 void TorrentManTest::testUpdatePeers() {
   TorrentMan tm;
   Peers peers = createPeers();
@@ -58,7 +60,7 @@ void TorrentManTest::testUpdatePeers() {
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.3"), (*itr)->ipaddr);
   itr++;
 }
-
+*/
 /*
 void TorrentManTest::testUpdatePeer() {
   TorrentMan tm;
@@ -88,7 +90,7 @@ void TorrentManTest::testUpdatePeer() {
   itr++;
 }
 */
-
+/*
 void TorrentManTest::testGetPeer() {
   TorrentMan tm;
   Peers peers = createPeers();
@@ -186,3 +188,4 @@ void TorrentManTest::testAddPeer() {
   CPPUNIT_ASSERT_EQUAL(5, (int)tm.getPeers().size());
 
 }
+*/

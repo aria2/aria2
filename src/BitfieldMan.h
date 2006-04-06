@@ -33,12 +33,15 @@ private:
   long long int totalLength;
   unsigned char* bitfield;
   unsigned char* useBitfield;
+  unsigned char* filterBitfield;
   int bitfieldLength;
   int blocks;
-
+  bool filterEnabled;
   int countSetBit(const unsigned char* bitfield, int len) const;
   int getMissingIndexRandomly(const unsigned char* bitfield, int len, int randMax) const;
   bool isBitSetInternal(const unsigned char* bitfield, int index) const;
+  bool setBitInternal(unsigned char* bitfield, int index, bool on);
+  bool setFilterBit(int index);
 public:
   BitfieldMan(int blockLength, long long int totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);
@@ -61,11 +64,29 @@ public:
   }
   long long int getTotalLength() const { return totalLength; }
 
+  /**
+   * affected by filter
+   */
   int getMissingIndex(const unsigned char* bitfield, int len) const;
+  /**
+   * affected by filter
+   */
   int getFirstMissingUnusedIndex(const unsigned char* bitfield, int len) const;
+  /**
+   * affected by filter
+   */
   int getFirstMissingUnusedIndex() const;
+  /**
+   * affected by filter
+   */
   int getMissingUnusedIndex(const unsigned char* bitfield, int len) const;
+  /**
+   * affected by filter
+   */
   BlockIndexes getAllMissingIndexes() const;
+  /**
+   * affected by filter
+   */
   int countMissingBlock() const;
   bool setUseBit(int index);
   bool unsetUseBit(int index);
@@ -76,12 +97,18 @@ public:
   bool isBitSet(int index) const;
   bool isUseBitSet(int index) const;
 
+  /**
+   * affected by filter
+   */
   bool isAllBitSet() const;
 
   const unsigned char* getBitfield() const { return bitfield; }
   int getBitfieldLength() const { return bitfieldLength; }
 
-  int countBlock() const { return blocks; }
+  /**
+   * affected by filter
+   */
+  int countBlock() const;
 
   void setBitfield(const unsigned char* bitfield, int bitfieldLength);
 
@@ -90,6 +117,15 @@ public:
 
   void addFilter(long long int offset, long long int length);
   void clearFilter();
+  
+  void enableFilter();
+  void disableFilter();
+  bool isFilterEnabled() const;
+  long long int getFilteredTotalLength() const;
+  /**
+   * affected by filter
+   */
+  long long int getCompletedLength() const;
 };
 
 #endif // _D_BITFIELD_MAN_H_

@@ -99,7 +99,7 @@ void torrentHandler(int signal) {
   exit(0);
 }
 
-void addCommand(int cuid, const char* url, string referer, Requests& requests) {
+void addCommand(int cuid, const string& url, string referer, Requests& requests) {
   Request* req = new Request();
   req->setReferer(referer);
   if(req->setUrl(url)) {
@@ -232,6 +232,7 @@ int main(int argc, char* argv[]) {
   bool daemonMode = false;
   string referer;
   string torrentFile;
+  Strings args;
 #ifdef ENABLE_BITTORRENT
   bool followTorrent = true;
 #else
@@ -281,6 +282,8 @@ int main(int argc, char* argv[]) {
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, &lopt, 15 },
       { "follow-torrent", required_argument, &lopt, 16 },
+      { "torrent-show-files", no_argument, &lopt, 17 },
+      { "no-preallocation", no_argument, &lopt, 18 },
 #endif // ENABLE_BITTORRENT
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
@@ -407,6 +410,13 @@ int main(int argc, char* argv[]) {
 	  showUsage();
 	  exit(1);
 	}
+	break;
+      case 17:
+	op->put(PREF_TORRENT_SHOW_FILES, V_TRUE);
+	break;
+      case 18:
+	op->put(PREF_NO_PREALLOCATION, V_TRUE);
+	break;
       }
       break;
     }
@@ -482,6 +492,11 @@ int main(int argc, char* argv[]) {
       exit(1);
     }
   }
+  
+  for(int i = 1; optind+i-1 < argc; i++) {
+    args.push_back(argv[optind+i-1]);
+  }
+
 #ifdef HAVE_LIBSSL
   // for SSL initialization
   SSL_load_error_strings();
@@ -530,11 +545,14 @@ int main(int argc, char* argv[]) {
     e->segmentMan->splitter = splitter;
     
     Requests requests;
-    for(int i = 1; optind+i-1 < argc; i++) {
+    int cuidCounter = 1;
+    for(Strings::const_iterator itr = args.begin(); itr != args.end(); itr++) {
       for(int s = 1; s <= split; s++) {
-	addCommand(split*(i-1)+s, argv[optind+i-1], referer, requests); 
+	addCommand(cuidCounter, *itr, referer, requests); 
+	cuidCounter++;
       }
     }
+
     e->run();
     
     if(e->segmentMan->finished()) {
@@ -575,26 +593,34 @@ int main(int argc, char* argv[]) {
       te->torrentMan = new TorrentMan();
       te->torrentMan->setStoreDir(dir);
       te->torrentMan->logger = logger;
-      te->torrentMan->setup(torrentFile.empty() ? 
-			    downloadedTorrentFile : torrentFile);
+      te->torrentMan->option = op;
+      string targetTorrentFile = torrentFile.empty() ?
+	downloadedTorrentFile : torrentFile;
       if(op->get(PREF_TORRENT_SHOW_FILES) == V_TRUE) {
-	cout << "File listing:" << endl;
+	te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
+	cout << "Files:" << endl;
 	switch(te->torrentMan->getFileMode()) {
 	case TorrentMan::SINGLE:
-	  printf("%s %s\nBytes", te->torrentMan->getName().c_str(),
+	  printf("%s %s Bytes\n", te->torrentMan->getName().c_str(),
 		 Util::llitos(te->torrentMan->getTotalLength(), true).c_str());
 	  break;
 	case TorrentMan::MULTI: {
 	  const MultiFileEntries& entries = te->torrentMan->getMultiFileEntries();
 	  for(MultiFileEntries::const_iterator itr = entries.begin();
 	      itr != entries.end(); itr++) {
-	    printf("%s %s\nBytes", itr->path.c_str(),
+	    printf("%s %s Bytes\n", itr->path.c_str(),
 		   Util::llitos(itr->length, true).c_str());
-	  break;
 	  }
+	  break;
 	}
 	}
 	exit(0);
+      } else {
+	te->torrentMan->setup(targetTorrentFile);
+	if(!torrentFile.empty() && !args.empty() &&
+	   te->torrentMan->getFileMode() == TorrentMan::MULTI) {
+	  te->torrentMan->setFileEntriesToDownload(args);
+	}
       }
       PeerListenCommand* listenCommand =
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);

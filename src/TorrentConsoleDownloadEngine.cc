@@ -26,21 +26,26 @@ TorrentConsoleDownloadEngine::TorrentConsoleDownloadEngine() {}
 
 TorrentConsoleDownloadEngine::~TorrentConsoleDownloadEngine() {}
 
+void TorrentConsoleDownloadEngine::onPartialDownloadingCompletes() {
+  printf("Download of specified files has completed. Continue normal download operation.\n");
+}
+
 void TorrentConsoleDownloadEngine::printStatistics() {
   printf("\r                                                                             ");
   printf("\r");
   if(torrentMan->downloadComplete()) {
     printf("Download Completed ");
   } else {
-    printf("%s/%sB %d%% DW:%.2f",
-	   Util::llitos(torrentMan->getDownloadLength(), true).c_str(),
-	   Util::llitos(torrentMan->getTotalLength(), true).c_str(),
-	   (torrentMan->getTotalLength() == 0 ?
-	    0 : (int)((torrentMan->getDownloadLength()*100)/torrentMan->getTotalLength())),
-	   downloadSpeed/1000.0);
+    printf("%s/%sB %d%% %s D:%.2f",
+	   Util::llitos(downloadLength, true).c_str(),
+	   Util::llitos(totalLength, true).c_str(),
+	   (totalLength == 0 ?
+	    0 : (int)((downloadLength*100)/totalLength)),
+	   avgSpeed == 0 ? "-" : Util::secfmt(eta).c_str(),
+	   downloadSpeed/1024.0);
   }
-  printf(" UP:%.2f(%s) %dpeers",
-	 uploadSpeed/1000.0,
+  printf(" U:%.2f(%s) %dpeers",
+	 uploadSpeed/1024.0,
 	 Util::llitos(torrentMan->getUploadLength(), true).c_str(),
 	 torrentMan->connections);
   fflush(stdout);	 
@@ -52,11 +57,21 @@ void TorrentConsoleDownloadEngine::initStatistics() {
   lastElapsed = 0;
   gettimeofday(&cp[0], NULL);
   gettimeofday(&cp[1], NULL);
+  gettimeofday(&startup, NULL);
   sessionDownloadLengthArray[0] = 0;
   sessionDownloadLengthArray[1] = 0;
   sessionUploadLengthArray[0] = 0;
   sessionUploadLengthArray[1] = 0;
   currentCp = 0;
+  eta = 0;
+  avgSpeed = 0;
+  sessionDownloadLength = 0;
+  downloadLength = 0;
+  totalLength = 0;
+  if(torrentMan->isPartialDownloadingMode()) {
+    partialDownloadLengthDiff = torrentMan->getDownloadLength()-torrentMan->getCompletedLength();
+    partialTotalLength = torrentMan->getPartialTotalLength();
+  }
 }
 
 int TorrentConsoleDownloadEngine::calculateSpeed(long long int sessionLength, long long int elapsed) {
@@ -74,11 +89,27 @@ void TorrentConsoleDownloadEngine::calculateStatistics() {
   sessionDownloadLengthArray[1] += torrentMan->getDeltaDownloadLength();
   sessionUploadLengthArray[1] += torrentMan->getDeltaUploadLength();
 
+  sessionDownloadLength += torrentMan->getDeltaDownloadLength();
+
   downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
   uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
 
   torrentMan->resetDeltaDownloadLength();
   torrentMan->resetDeltaUploadLength();
+
+  if(torrentMan->isPartialDownloadingMode()) {
+    downloadLength = torrentMan->getDownloadLength()-partialDownloadLengthDiff;
+    totalLength = partialTotalLength;
+  } else {
+    downloadLength = torrentMan->getDownloadLength();
+    totalLength = torrentMan->getTotalLength();
+  }
+  
+  avgSpeed = calculateSpeed(sessionDownloadLength,
+			    Util::difftv(now, startup));
+  if(avgSpeed != 0) {
+    eta = (totalLength-downloadLength)/avgSpeed;
+  }
 
   if(elapsed-lastElapsed >= 1000000) {
     printStatistics();

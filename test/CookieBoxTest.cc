@@ -61,9 +61,9 @@ void CookieBoxTest::testCriteriaFind() {
   box.add(c3);
   box.add(c4);
 
-  vector<Cookie> result1 = box.criteriaFind("rednoah.com", "/downloads", false);
+  Cookies result1 = box.criteriaFind("rednoah.com", "/downloads", false);
   CPPUNIT_ASSERT_EQUAL(2, (int)result1.size());
-  vector<Cookie>::iterator itr = result1.begin();
+  Cookies::iterator itr = result1.begin();
   CPPUNIT_ASSERT_EQUAL(string("SESSIONID1=1"), (*itr).toString());
   itr++;
   CPPUNIT_ASSERT_EQUAL(string("SESSIONID2=2"), (*itr).toString());

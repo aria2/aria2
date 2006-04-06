@@ -35,7 +35,15 @@ void TorrentDownloadEngine::afterEachIteration() {
     torrentMan->diskWriter->closeFile();
     torrentMan->save();
     torrentMan->fixFilename();
-    filenameFixed = true;
+    if(torrentMan->isPartialDownloadingMode()) {
+      torrentMan->finishPartialDownloadingMode();
+      onPartialDownloadingCompletes();
+      if(torrentMan->downloadComplete()) {
+	filenameFixed = true;
+      }
+    } else {
+      filenameFixed = true;
+    }
     torrentMan->diskWriter->openExistingFile(torrentMan->getTempFilePath());
   }
 }

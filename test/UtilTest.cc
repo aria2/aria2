@@ -70,13 +70,13 @@ void UtilTest::testSplit() {
 }
 
 void UtilTest::testSlice() {
-  vector<string> v1;
+  Strings v1;
   Util::slice(v1, "name1=value1; name2=value2; name3=value3;", ';');
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   v1.clear();
   Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';');
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
-  vector<string>::iterator itr = v1.begin();
+  Strings::iterator itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(string("name1=value1"), *itr++);
   CPPUNIT_ASSERT_EQUAL(string("name2=value2"), *itr++);
   CPPUNIT_ASSERT_EQUAL(string("name3=value3"), *itr++);

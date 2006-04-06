@@ -56,20 +56,17 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = aria2c-AllTest.$(OBJEXT) \
-	aria2c-RequestTest.$(OBJEXT) \
-	aria2c-ChunkedEncodingTest.$(OBJEXT) aria2c-FileTest.$(OBJEXT) \
-	aria2c-OptionTest.$(OBJEXT) aria2c-Base64Test.$(OBJEXT) \
-	aria2c-UtilTest.$(OBJEXT) aria2c-CookieBoxTest.$(OBJEXT) \
-	aria2c-DataTest.$(OBJEXT) aria2c-DictionaryTest.$(OBJEXT) \
-	aria2c-ListTest.$(OBJEXT) aria2c-MetaFileUtilTest.$(OBJEXT) \
-	aria2c-ShaVisitorTest.$(OBJEXT) \
-	aria2c-TorrentManTest.$(OBJEXT) \
-	aria2c-PeerMessageUtilTest.$(OBJEXT) \
-	aria2c-BitfieldManTest.$(OBJEXT) \
-	aria2c-DefaultDiskWriterTest.$(OBJEXT)
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
+	ChunkedEncodingTest.$(OBJEXT) FileTest.$(OBJEXT) \
+	OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) UtilTest.$(OBJEXT) \
+	CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
+	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
+	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
+	TorrentManTest.$(OBJEXT) PeerMessageUtilTest.$(OBJEXT) \
+	BitfieldManTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
-aria2c_DEPENDENCIES = ../src/libaria2c.a
+am__DEPENDENCIES_1 =
+aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -225,9 +222,19 @@ aria2c_SOURCES = AllTest.cc\
 	BitfieldManTest.cc\
 	DefaultDiskWriterTest.cc
 
-aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
-aria2c_LDFLAGS = ${CPPUNIT_LIBS}
-aria2c_LDADD = ../src/libaria2c.a
+#aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
+#aria2c_LDFLAGS = ${CPPUNIT_LIBS}
+aria2c_LDADD = ../src/libaria2c.a\
+	 ${CPPUNIT_LIBS} @LIBGNUTLS_LIBS@\
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@
+
+AM_CPPFLAGS = -Wall\
+	${CPPUNIT_CFLAGS}\
+	-I ../src\
+	-I../lib -I../intl -I$(top_srcdir)/intl\
+	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@\
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
+
 all: all-am
 
 .SUFFIXES:
@@ -274,23 +281,23 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-AllTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-Base64Test.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-BitfieldManTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-ChunkedEncodingTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-CookieBoxTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-DataTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-DefaultDiskWriterTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-DictionaryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-FileTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-ListTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-MetaFileUtilTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-OptionTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-PeerMessageUtilTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-RequestTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-ShaVisitorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-TorrentManTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aria2c-UtilTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncodingTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriterTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ListTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtilTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -305,244 +312,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-aria2c-AllTest.o: AllTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-AllTest.o -MD -MP -MF "$(DEPDIR)/aria2c-AllTest.Tpo" -c -o aria2c-AllTest.o `test -f 'AllTest.cc' || echo '$(srcdir)/'`AllTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-AllTest.Tpo" "$(DEPDIR)/aria2c-AllTest.Po"; else rm -f "$(DEPDIR)/aria2c-AllTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AllTest.cc' object='aria2c-AllTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-AllTest.o `test -f 'AllTest.cc' || echo '$(srcdir)/'`AllTest.cc
-
-aria2c-AllTest.obj: AllTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-AllTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-AllTest.Tpo" -c -o aria2c-AllTest.obj `if test -f 'AllTest.cc'; then $(CYGPATH_W) 'AllTest.cc'; else $(CYGPATH_W) '$(srcdir)/AllTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-AllTest.Tpo" "$(DEPDIR)/aria2c-AllTest.Po"; else rm -f "$(DEPDIR)/aria2c-AllTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='AllTest.cc' object='aria2c-AllTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-AllTest.obj `if test -f 'AllTest.cc'; then $(CYGPATH_W) 'AllTest.cc'; else $(CYGPATH_W) '$(srcdir)/AllTest.cc'; fi`
-
-aria2c-RequestTest.o: RequestTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-RequestTest.o -MD -MP -MF "$(DEPDIR)/aria2c-RequestTest.Tpo" -c -o aria2c-RequestTest.o `test -f 'RequestTest.cc' || echo '$(srcdir)/'`RequestTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-RequestTest.Tpo" "$(DEPDIR)/aria2c-RequestTest.Po"; else rm -f "$(DEPDIR)/aria2c-RequestTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RequestTest.cc' object='aria2c-RequestTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-RequestTest.o `test -f 'RequestTest.cc' || echo '$(srcdir)/'`RequestTest.cc
-
-aria2c-RequestTest.obj: RequestTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-RequestTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-RequestTest.Tpo" -c -o aria2c-RequestTest.obj `if test -f 'RequestTest.cc'; then $(CYGPATH_W) 'RequestTest.cc'; else $(CYGPATH_W) '$(srcdir)/RequestTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-RequestTest.Tpo" "$(DEPDIR)/aria2c-RequestTest.Po"; else rm -f "$(DEPDIR)/aria2c-RequestTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='RequestTest.cc' object='aria2c-RequestTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-RequestTest.obj `if test -f 'RequestTest.cc'; then $(CYGPATH_W) 'RequestTest.cc'; else $(CYGPATH_W) '$(srcdir)/RequestTest.cc'; fi`
-
-aria2c-ChunkedEncodingTest.o: ChunkedEncodingTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-ChunkedEncodingTest.o -MD -MP -MF "$(DEPDIR)/aria2c-ChunkedEncodingTest.Tpo" -c -o aria2c-ChunkedEncodingTest.o `test -f 'ChunkedEncodingTest.cc' || echo '$(srcdir)/'`ChunkedEncodingTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-ChunkedEncodingTest.Tpo" "$(DEPDIR)/aria2c-ChunkedEncodingTest.Po"; else rm -f "$(DEPDIR)/aria2c-ChunkedEncodingTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ChunkedEncodingTest.cc' object='aria2c-ChunkedEncodingTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-ChunkedEncodingTest.o `test -f 'ChunkedEncodingTest.cc' || echo '$(srcdir)/'`ChunkedEncodingTest.cc
-
-aria2c-ChunkedEncodingTest.obj: ChunkedEncodingTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-ChunkedEncodingTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-ChunkedEncodingTest.Tpo" -c -o aria2c-ChunkedEncodingTest.obj `if test -f 'ChunkedEncodingTest.cc'; then $(CYGPATH_W) 'ChunkedEncodingTest.cc'; else $(CYGPATH_W) '$(srcdir)/ChunkedEncodingTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-ChunkedEncodingTest.Tpo" "$(DEPDIR)/aria2c-ChunkedEncodingTest.Po"; else rm -f "$(DEPDIR)/aria2c-ChunkedEncodingTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ChunkedEncodingTest.cc' object='aria2c-ChunkedEncodingTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-ChunkedEncodingTest.obj `if test -f 'ChunkedEncodingTest.cc'; then $(CYGPATH_W) 'ChunkedEncodingTest.cc'; else $(CYGPATH_W) '$(srcdir)/ChunkedEncodingTest.cc'; fi`
-
-aria2c-FileTest.o: FileTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-FileTest.o -MD -MP -MF "$(DEPDIR)/aria2c-FileTest.Tpo" -c -o aria2c-FileTest.o `test -f 'FileTest.cc' || echo '$(srcdir)/'`FileTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-FileTest.Tpo" "$(DEPDIR)/aria2c-FileTest.Po"; else rm -f "$(DEPDIR)/aria2c-FileTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FileTest.cc' object='aria2c-FileTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-FileTest.o `test -f 'FileTest.cc' || echo '$(srcdir)/'`FileTest.cc
-
-aria2c-FileTest.obj: FileTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-FileTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-FileTest.Tpo" -c -o aria2c-FileTest.obj `if test -f 'FileTest.cc'; then $(CYGPATH_W) 'FileTest.cc'; else $(CYGPATH_W) '$(srcdir)/FileTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-FileTest.Tpo" "$(DEPDIR)/aria2c-FileTest.Po"; else rm -f "$(DEPDIR)/aria2c-FileTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FileTest.cc' object='aria2c-FileTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-FileTest.obj `if test -f 'FileTest.cc'; then $(CYGPATH_W) 'FileTest.cc'; else $(CYGPATH_W) '$(srcdir)/FileTest.cc'; fi`
-
-aria2c-OptionTest.o: OptionTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-OptionTest.o -MD -MP -MF "$(DEPDIR)/aria2c-OptionTest.Tpo" -c -o aria2c-OptionTest.o `test -f 'OptionTest.cc' || echo '$(srcdir)/'`OptionTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-OptionTest.Tpo" "$(DEPDIR)/aria2c-OptionTest.Po"; else rm -f "$(DEPDIR)/aria2c-OptionTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='OptionTest.cc' object='aria2c-OptionTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-OptionTest.o `test -f 'OptionTest.cc' || echo '$(srcdir)/'`OptionTest.cc
-
-aria2c-OptionTest.obj: OptionTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-OptionTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-OptionTest.Tpo" -c -o aria2c-OptionTest.obj `if test -f 'OptionTest.cc'; then $(CYGPATH_W) 'OptionTest.cc'; else $(CYGPATH_W) '$(srcdir)/OptionTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-OptionTest.Tpo" "$(DEPDIR)/aria2c-OptionTest.Po"; else rm -f "$(DEPDIR)/aria2c-OptionTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='OptionTest.cc' object='aria2c-OptionTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-OptionTest.obj `if test -f 'OptionTest.cc'; then $(CYGPATH_W) 'OptionTest.cc'; else $(CYGPATH_W) '$(srcdir)/OptionTest.cc'; fi`
-
-aria2c-Base64Test.o: Base64Test.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-Base64Test.o -MD -MP -MF "$(DEPDIR)/aria2c-Base64Test.Tpo" -c -o aria2c-Base64Test.o `test -f 'Base64Test.cc' || echo '$(srcdir)/'`Base64Test.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-Base64Test.Tpo" "$(DEPDIR)/aria2c-Base64Test.Po"; else rm -f "$(DEPDIR)/aria2c-Base64Test.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Base64Test.cc' object='aria2c-Base64Test.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-Base64Test.o `test -f 'Base64Test.cc' || echo '$(srcdir)/'`Base64Test.cc
-
-aria2c-Base64Test.obj: Base64Test.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-Base64Test.obj -MD -MP -MF "$(DEPDIR)/aria2c-Base64Test.Tpo" -c -o aria2c-Base64Test.obj `if test -f 'Base64Test.cc'; then $(CYGPATH_W) 'Base64Test.cc'; else $(CYGPATH_W) '$(srcdir)/Base64Test.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-Base64Test.Tpo" "$(DEPDIR)/aria2c-Base64Test.Po"; else rm -f "$(DEPDIR)/aria2c-Base64Test.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='Base64Test.cc' object='aria2c-Base64Test.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-Base64Test.obj `if test -f 'Base64Test.cc'; then $(CYGPATH_W) 'Base64Test.cc'; else $(CYGPATH_W) '$(srcdir)/Base64Test.cc'; fi`
-
-aria2c-UtilTest.o: UtilTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-UtilTest.o -MD -MP -MF "$(DEPDIR)/aria2c-UtilTest.Tpo" -c -o aria2c-UtilTest.o `test -f 'UtilTest.cc' || echo '$(srcdir)/'`UtilTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-UtilTest.Tpo" "$(DEPDIR)/aria2c-UtilTest.Po"; else rm -f "$(DEPDIR)/aria2c-UtilTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='UtilTest.cc' object='aria2c-UtilTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-UtilTest.o `test -f 'UtilTest.cc' || echo '$(srcdir)/'`UtilTest.cc
-
-aria2c-UtilTest.obj: UtilTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-UtilTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-UtilTest.Tpo" -c -o aria2c-UtilTest.obj `if test -f 'UtilTest.cc'; then $(CYGPATH_W) 'UtilTest.cc'; else $(CYGPATH_W) '$(srcdir)/UtilTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-UtilTest.Tpo" "$(DEPDIR)/aria2c-UtilTest.Po"; else rm -f "$(DEPDIR)/aria2c-UtilTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='UtilTest.cc' object='aria2c-UtilTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-UtilTest.obj `if test -f 'UtilTest.cc'; then $(CYGPATH_W) 'UtilTest.cc'; else $(CYGPATH_W) '$(srcdir)/UtilTest.cc'; fi`
-
-aria2c-CookieBoxTest.o: CookieBoxTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-CookieBoxTest.o -MD -MP -MF "$(DEPDIR)/aria2c-CookieBoxTest.Tpo" -c -o aria2c-CookieBoxTest.o `test -f 'CookieBoxTest.cc' || echo '$(srcdir)/'`CookieBoxTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-CookieBoxTest.Tpo" "$(DEPDIR)/aria2c-CookieBoxTest.Po"; else rm -f "$(DEPDIR)/aria2c-CookieBoxTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CookieBoxTest.cc' object='aria2c-CookieBoxTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-CookieBoxTest.o `test -f 'CookieBoxTest.cc' || echo '$(srcdir)/'`CookieBoxTest.cc
-
-aria2c-CookieBoxTest.obj: CookieBoxTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-CookieBoxTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-CookieBoxTest.Tpo" -c -o aria2c-CookieBoxTest.obj `if test -f 'CookieBoxTest.cc'; then $(CYGPATH_W) 'CookieBoxTest.cc'; else $(CYGPATH_W) '$(srcdir)/CookieBoxTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-CookieBoxTest.Tpo" "$(DEPDIR)/aria2c-CookieBoxTest.Po"; else rm -f "$(DEPDIR)/aria2c-CookieBoxTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='CookieBoxTest.cc' object='aria2c-CookieBoxTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-CookieBoxTest.obj `if test -f 'CookieBoxTest.cc'; then $(CYGPATH_W) 'CookieBoxTest.cc'; else $(CYGPATH_W) '$(srcdir)/CookieBoxTest.cc'; fi`
-
-aria2c-DataTest.o: DataTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-DataTest.o -MD -MP -MF "$(DEPDIR)/aria2c-DataTest.Tpo" -c -o aria2c-DataTest.o `test -f 'DataTest.cc' || echo '$(srcdir)/'`DataTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-DataTest.Tpo" "$(DEPDIR)/aria2c-DataTest.Po"; else rm -f "$(DEPDIR)/aria2c-DataTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DataTest.cc' object='aria2c-DataTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-DataTest.o `test -f 'DataTest.cc' || echo '$(srcdir)/'`DataTest.cc
-
-aria2c-DataTest.obj: DataTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-DataTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-DataTest.Tpo" -c -o aria2c-DataTest.obj `if test -f 'DataTest.cc'; then $(CYGPATH_W) 'DataTest.cc'; else $(CYGPATH_W) '$(srcdir)/DataTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-DataTest.Tpo" "$(DEPDIR)/aria2c-DataTest.Po"; else rm -f "$(DEPDIR)/aria2c-DataTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DataTest.cc' object='aria2c-DataTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-DataTest.obj `if test -f 'DataTest.cc'; then $(CYGPATH_W) 'DataTest.cc'; else $(CYGPATH_W) '$(srcdir)/DataTest.cc'; fi`
-
-aria2c-DictionaryTest.o: DictionaryTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-DictionaryTest.o -MD -MP -MF "$(DEPDIR)/aria2c-DictionaryTest.Tpo" -c -o aria2c-DictionaryTest.o `test -f 'DictionaryTest.cc' || echo '$(srcdir)/'`DictionaryTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-DictionaryTest.Tpo" "$(DEPDIR)/aria2c-DictionaryTest.Po"; else rm -f "$(DEPDIR)/aria2c-DictionaryTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DictionaryTest.cc' object='aria2c-DictionaryTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-DictionaryTest.o `test -f 'DictionaryTest.cc' || echo '$(srcdir)/'`DictionaryTest.cc
-
-aria2c-DictionaryTest.obj: DictionaryTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-DictionaryTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-DictionaryTest.Tpo" -c -o aria2c-DictionaryTest.obj `if test -f 'DictionaryTest.cc'; then $(CYGPATH_W) 'DictionaryTest.cc'; else $(CYGPATH_W) '$(srcdir)/DictionaryTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-DictionaryTest.Tpo" "$(DEPDIR)/aria2c-DictionaryTest.Po"; else rm -f "$(DEPDIR)/aria2c-DictionaryTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DictionaryTest.cc' object='aria2c-DictionaryTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-DictionaryTest.obj `if test -f 'DictionaryTest.cc'; then $(CYGPATH_W) 'DictionaryTest.cc'; else $(CYGPATH_W) '$(srcdir)/DictionaryTest.cc'; fi`
-
-aria2c-ListTest.o: ListTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-ListTest.o -MD -MP -MF "$(DEPDIR)/aria2c-ListTest.Tpo" -c -o aria2c-ListTest.o `test -f 'ListTest.cc' || echo '$(srcdir)/'`ListTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-ListTest.Tpo" "$(DEPDIR)/aria2c-ListTest.Po"; else rm -f "$(DEPDIR)/aria2c-ListTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ListTest.cc' object='aria2c-ListTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-ListTest.o `test -f 'ListTest.cc' || echo '$(srcdir)/'`ListTest.cc
-
-aria2c-ListTest.obj: ListTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-ListTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-ListTest.Tpo" -c -o aria2c-ListTest.obj `if test -f 'ListTest.cc'; then $(CYGPATH_W) 'ListTest.cc'; else $(CYGPATH_W) '$(srcdir)/ListTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-ListTest.Tpo" "$(DEPDIR)/aria2c-ListTest.Po"; else rm -f "$(DEPDIR)/aria2c-ListTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ListTest.cc' object='aria2c-ListTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-ListTest.obj `if test -f 'ListTest.cc'; then $(CYGPATH_W) 'ListTest.cc'; else $(CYGPATH_W) '$(srcdir)/ListTest.cc'; fi`
-
-aria2c-MetaFileUtilTest.o: MetaFileUtilTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-MetaFileUtilTest.o -MD -MP -MF "$(DEPDIR)/aria2c-MetaFileUtilTest.Tpo" -c -o aria2c-MetaFileUtilTest.o `test -f 'MetaFileUtilTest.cc' || echo '$(srcdir)/'`MetaFileUtilTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-MetaFileUtilTest.Tpo" "$(DEPDIR)/aria2c-MetaFileUtilTest.Po"; else rm -f "$(DEPDIR)/aria2c-MetaFileUtilTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='MetaFileUtilTest.cc' object='aria2c-MetaFileUtilTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-MetaFileUtilTest.o `test -f 'MetaFileUtilTest.cc' || echo '$(srcdir)/'`MetaFileUtilTest.cc
-
-aria2c-MetaFileUtilTest.obj: MetaFileUtilTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-MetaFileUtilTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-MetaFileUtilTest.Tpo" -c -o aria2c-MetaFileUtilTest.obj `if test -f 'MetaFileUtilTest.cc'; then $(CYGPATH_W) 'MetaFileUtilTest.cc'; else $(CYGPATH_W) '$(srcdir)/MetaFileUtilTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-MetaFileUtilTest.Tpo" "$(DEPDIR)/aria2c-MetaFileUtilTest.Po"; else rm -f "$(DEPDIR)/aria2c-MetaFileUtilTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='MetaFileUtilTest.cc' object='aria2c-MetaFileUtilTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-MetaFileUtilTest.obj `if test -f 'MetaFileUtilTest.cc'; then $(CYGPATH_W) 'MetaFileUtilTest.cc'; else $(CYGPATH_W) '$(srcdir)/MetaFileUtilTest.cc'; fi`
-
-aria2c-ShaVisitorTest.o: ShaVisitorTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-ShaVisitorTest.o -MD -MP -MF "$(DEPDIR)/aria2c-ShaVisitorTest.Tpo" -c -o aria2c-ShaVisitorTest.o `test -f 'ShaVisitorTest.cc' || echo '$(srcdir)/'`ShaVisitorTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-ShaVisitorTest.Tpo" "$(DEPDIR)/aria2c-ShaVisitorTest.Po"; else rm -f "$(DEPDIR)/aria2c-ShaVisitorTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ShaVisitorTest.cc' object='aria2c-ShaVisitorTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-ShaVisitorTest.o `test -f 'ShaVisitorTest.cc' || echo '$(srcdir)/'`ShaVisitorTest.cc
-
-aria2c-ShaVisitorTest.obj: ShaVisitorTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-ShaVisitorTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-ShaVisitorTest.Tpo" -c -o aria2c-ShaVisitorTest.obj `if test -f 'ShaVisitorTest.cc'; then $(CYGPATH_W) 'ShaVisitorTest.cc'; else $(CYGPATH_W) '$(srcdir)/ShaVisitorTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-ShaVisitorTest.Tpo" "$(DEPDIR)/aria2c-ShaVisitorTest.Po"; else rm -f "$(DEPDIR)/aria2c-ShaVisitorTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ShaVisitorTest.cc' object='aria2c-ShaVisitorTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-ShaVisitorTest.obj `if test -f 'ShaVisitorTest.cc'; then $(CYGPATH_W) 'ShaVisitorTest.cc'; else $(CYGPATH_W) '$(srcdir)/ShaVisitorTest.cc'; fi`
-
-aria2c-TorrentManTest.o: TorrentManTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-TorrentManTest.o -MD -MP -MF "$(DEPDIR)/aria2c-TorrentManTest.Tpo" -c -o aria2c-TorrentManTest.o `test -f 'TorrentManTest.cc' || echo '$(srcdir)/'`TorrentManTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-TorrentManTest.Tpo" "$(DEPDIR)/aria2c-TorrentManTest.Po"; else rm -f "$(DEPDIR)/aria2c-TorrentManTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentManTest.cc' object='aria2c-TorrentManTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-TorrentManTest.o `test -f 'TorrentManTest.cc' || echo '$(srcdir)/'`TorrentManTest.cc
-
-aria2c-TorrentManTest.obj: TorrentManTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-TorrentManTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-TorrentManTest.Tpo" -c -o aria2c-TorrentManTest.obj `if test -f 'TorrentManTest.cc'; then $(CYGPATH_W) 'TorrentManTest.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentManTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-TorrentManTest.Tpo" "$(DEPDIR)/aria2c-TorrentManTest.Po"; else rm -f "$(DEPDIR)/aria2c-TorrentManTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TorrentManTest.cc' object='aria2c-TorrentManTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-TorrentManTest.obj `if test -f 'TorrentManTest.cc'; then $(CYGPATH_W) 'TorrentManTest.cc'; else $(CYGPATH_W) '$(srcdir)/TorrentManTest.cc'; fi`
-
-aria2c-PeerMessageUtilTest.o: PeerMessageUtilTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-PeerMessageUtilTest.o -MD -MP -MF "$(DEPDIR)/aria2c-PeerMessageUtilTest.Tpo" -c -o aria2c-PeerMessageUtilTest.o `test -f 'PeerMessageUtilTest.cc' || echo '$(srcdir)/'`PeerMessageUtilTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-PeerMessageUtilTest.Tpo" "$(DEPDIR)/aria2c-PeerMessageUtilTest.Po"; else rm -f "$(DEPDIR)/aria2c-PeerMessageUtilTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerMessageUtilTest.cc' object='aria2c-PeerMessageUtilTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-PeerMessageUtilTest.o `test -f 'PeerMessageUtilTest.cc' || echo '$(srcdir)/'`PeerMessageUtilTest.cc
-
-aria2c-PeerMessageUtilTest.obj: PeerMessageUtilTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-PeerMessageUtilTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-PeerMessageUtilTest.Tpo" -c -o aria2c-PeerMessageUtilTest.obj `if test -f 'PeerMessageUtilTest.cc'; then $(CYGPATH_W) 'PeerMessageUtilTest.cc'; else $(CYGPATH_W) '$(srcdir)/PeerMessageUtilTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-PeerMessageUtilTest.Tpo" "$(DEPDIR)/aria2c-PeerMessageUtilTest.Po"; else rm -f "$(DEPDIR)/aria2c-PeerMessageUtilTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='PeerMessageUtilTest.cc' object='aria2c-PeerMessageUtilTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-PeerMessageUtilTest.obj `if test -f 'PeerMessageUtilTest.cc'; then $(CYGPATH_W) 'PeerMessageUtilTest.cc'; else $(CYGPATH_W) '$(srcdir)/PeerMessageUtilTest.cc'; fi`
-
-aria2c-BitfieldManTest.o: BitfieldManTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-BitfieldManTest.o -MD -MP -MF "$(DEPDIR)/aria2c-BitfieldManTest.Tpo" -c -o aria2c-BitfieldManTest.o `test -f 'BitfieldManTest.cc' || echo '$(srcdir)/'`BitfieldManTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-BitfieldManTest.Tpo" "$(DEPDIR)/aria2c-BitfieldManTest.Po"; else rm -f "$(DEPDIR)/aria2c-BitfieldManTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='BitfieldManTest.cc' object='aria2c-BitfieldManTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-BitfieldManTest.o `test -f 'BitfieldManTest.cc' || echo '$(srcdir)/'`BitfieldManTest.cc
-
-aria2c-BitfieldManTest.obj: BitfieldManTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-BitfieldManTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-BitfieldManTest.Tpo" -c -o aria2c-BitfieldManTest.obj `if test -f 'BitfieldManTest.cc'; then $(CYGPATH_W) 'BitfieldManTest.cc'; else $(CYGPATH_W) '$(srcdir)/BitfieldManTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-BitfieldManTest.Tpo" "$(DEPDIR)/aria2c-BitfieldManTest.Po"; else rm -f "$(DEPDIR)/aria2c-BitfieldManTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='BitfieldManTest.cc' object='aria2c-BitfieldManTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-BitfieldManTest.obj `if test -f 'BitfieldManTest.cc'; then $(CYGPATH_W) 'BitfieldManTest.cc'; else $(CYGPATH_W) '$(srcdir)/BitfieldManTest.cc'; fi`
-
-aria2c-DefaultDiskWriterTest.o: DefaultDiskWriterTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-DefaultDiskWriterTest.o -MD -MP -MF "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Tpo" -c -o aria2c-DefaultDiskWriterTest.o `test -f 'DefaultDiskWriterTest.cc' || echo '$(srcdir)/'`DefaultDiskWriterTest.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Tpo" "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Po"; else rm -f "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DefaultDiskWriterTest.cc' object='aria2c-DefaultDiskWriterTest.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-DefaultDiskWriterTest.o `test -f 'DefaultDiskWriterTest.cc' || echo '$(srcdir)/'`DefaultDiskWriterTest.cc
-
-aria2c-DefaultDiskWriterTest.obj: DefaultDiskWriterTest.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -MT aria2c-DefaultDiskWriterTest.obj -MD -MP -MF "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Tpo" -c -o aria2c-DefaultDiskWriterTest.obj `if test -f 'DefaultDiskWriterTest.cc'; then $(CYGPATH_W) 'DefaultDiskWriterTest.cc'; else $(CYGPATH_W) '$(srcdir)/DefaultDiskWriterTest.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Tpo" "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Po"; else rm -f "$(DEPDIR)/aria2c-DefaultDiskWriterTest.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='DefaultDiskWriterTest.cc' object='aria2c-DefaultDiskWriterTest.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(aria2c_CXXFLAGS) $(CXXFLAGS) -c -o aria2c-DefaultDiskWriterTest.obj `if test -f 'DefaultDiskWriterTest.cc'; then $(CYGPATH_W) 'DefaultDiskWriterTest.cc'; else $(CYGPATH_W) '$(srcdir)/DefaultDiskWriterTest.cc'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

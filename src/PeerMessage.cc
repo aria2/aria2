@@ -24,7 +24,7 @@
 
 void PeerMessage::setBitfield(const unsigned char* bitfield, int bitfieldLength) {
   if(this->bitfield != NULL) {
-    delete [] bitfield;
+    delete [] this->bitfield;
   }
   this->bitfieldLength = bitfieldLength;
   this->bitfield = new unsigned char[this->bitfieldLength];
@@ -33,7 +33,7 @@ void PeerMessage::setBitfield(const unsigned char* bitfield, int bitfieldLength)
 
 void PeerMessage::setBlock(const char* block, int blockLength) {
   if(this->block != NULL) {
-    delete [] block;
+    delete [] this->block;
   }
   this->blockLength = blockLength;
   this->block = new char[this->blockLength];

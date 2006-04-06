@@ -29,6 +29,8 @@
 #include "File.h"
 #include "message.h"
 #include "PreAllocationDiskWriter.h"
+#include "DefaultDiskWriter.h"
+#include "prefs.h"
 #include <errno.h>
 #include <libgen.h>
 #include <string.h>
@@ -295,28 +297,12 @@ bool TorrentMan::downloadComplete() const {
   return bitfield->isAllBitSet();
 }
 
-void TorrentMan::setup(string metaInfoFile) {
-  peerId = "-A2****-";
-  for(int i = 0; i < 12; i++) {
-    peerId += Util::itos((int)(((double)10)*random()/(RAND_MAX+1.0)));
-  }
-
-  uploadLength = 0;
-  downloadLength = 0;
-  Dictionary* topDic = (Dictionary*)MetaFileUtil::parseMetaFile(metaInfoFile);
-  const Dictionary* infoDic = (const Dictionary*)topDic->get("info");
-  ShaVisitor v;
-  infoDic->accept(&v);
-  unsigned char md[20];
-  int len;
-  v.getHash(md, len);
-  setInfoHash(md);
-
+void TorrentMan::readFileEntry(const Dictionary* infoDic, const string& defaultName) {
   Data* topName = (Data*)infoDic->get("name");
   if(topName != NULL) {
     name = topName->toString();
   } else {
-    char* basec = strdup(metaInfoFile.c_str());
+    char* basec = strdup(defaultName.c_str());
     name = string(basename(basec))+".file";
     free(basec);
   }
@@ -328,6 +314,7 @@ void TorrentMan::setup(string metaInfoFile) {
     totalLength = length->toLLInt();
   } else {
     long long int length = 0;
+    long long int offset = 0;
     // multi-file mode
     setFileMode(MULTI);
     multiFileTopDir = new Directory(name);
@@ -350,11 +337,33 @@ void TorrentMan::setup(string metaInfoFile) {
       }
       Data* lastpath = (Data*)paths.back();
       filePath.append("/").append(lastpath->toString());
-      FileEntry fileEntry(filePath, lengthData->toLLInt());
+      FileEntry fileEntry(filePath, lengthData->toLLInt(), offset);
       multiFileEntries.push_back(fileEntry);
+      offset += fileEntry.length;
     }
     totalLength = length;
   }
+}
+
+void TorrentMan::setup(string metaInfoFile) {
+  peerId = "-A2****-";
+  for(int i = 0; i < 12; i++) {
+    peerId += Util::itos((int)(((double)10)*random()/(RAND_MAX+1.0)));
+  }
+
+  uploadLength = 0;
+  downloadLength = 0;
+  Dictionary* topDic = (Dictionary*)MetaFileUtil::parseMetaFile(metaInfoFile);
+  const Dictionary* infoDic = (const Dictionary*)topDic->get("info");
+  ShaVisitor v;
+  infoDic->accept(&v);
+  unsigned char md[20];
+  int len;
+  v.getHash(md, len);
+  setInfoHash(md);
+
+  readFileEntry(infoDic, metaInfoFile);
+
   announce = ((Data*)topDic->get("announce"))->toString();
   pieceLength = ((Data*)infoDic->get("piece length"))->toInt();
   pieces = totalLength/pieceLength+(totalLength%pieceLength ? 1 : 0);
@@ -371,7 +380,11 @@ void TorrentMan::setup(string metaInfoFile) {
   initBitfield();
   delete topDic;
 
-  diskWriter = new PreAllocationDiskWriter(totalLength);
+  if(option->get(PREF_NO_PREALLOCATION) == V_TRUE) {
+    diskWriter = new DefaultDiskWriter();
+  } else {
+    diskWriter = new PreAllocationDiskWriter(totalLength);
+  }
   if(segmentFileExists()) {
     load();
     diskWriter->openExistingFile(getTempFilePath());
@@ -383,6 +396,12 @@ void TorrentMan::setup(string metaInfoFile) {
 
 const MultiFileEntries& TorrentMan::getMultiFileEntries() const {
   return multiFileEntries;
+}
+
+void TorrentMan::readFileEntryFromMetaInfoFile(const string& metaInfoFile) {
+  Dictionary* topDic = (Dictionary*)MetaFileUtil::parseMetaFile(metaInfoFile);
+  const Dictionary* infoDic = (const Dictionary*)topDic->get("info");
+  readFileEntry(infoDic, metaInfoFile);
 }
 
 string TorrentMan::getName() const {
@@ -498,7 +517,7 @@ void TorrentMan::remove() const {
   }
 }
 
-void TorrentMan::fixFilename() const {
+void TorrentMan::fixFilename() {
   if(fileMode == SINGLE) {
     copySingleFile();
   } else {
@@ -511,19 +530,78 @@ void TorrentMan::copySingleFile() const {
   Util::fileCopy(getFilePath(), getTempFilePath());
 }
 
-void TorrentMan::splitMultiFile() const {
+void TorrentMan::splitMultiFile() {
   logger->info("creating directories");
   multiFileTopDir->createDir(storeDir, true);
   long long int offset = 0;
-  for(MultiFileEntries::const_iterator itr = multiFileEntries.begin();
+  for(MultiFileEntries::iterator itr = multiFileEntries.begin();
       itr != multiFileEntries.end(); itr++) {
-    string dest = storeDir+"/"+itr->path;
-    logger->info("writing file %s", dest.c_str());
-    Util::rangedFileCopy(dest, getTempFilePath(), offset, itr->length);
+    if(!itr->extracted && itr->requested) {
+      string dest = storeDir+"/"+itr->path;
+      logger->info("writing file %s", dest.c_str());
+      Util::rangedFileCopy(dest, getTempFilePath(), offset, itr->length);
+      itr->extracted = true;
+    }
     offset += itr->length;
   }
 }
 
 void TorrentMan::deleteTempFile() const {
   unlink(getTempFilePath().c_str());
+}
+
+// bool TorrentMan::unextractedFileEntryExists() const {
+//   if(fileMode == SINGLE) {
+//     return false;
+//   }
+//   for(MultiFileEntries::const_iterator itr = multiFileEntries.begin();
+//       itr != multiFileEntries.end(); itr++) {
+//     if(!itr->extracted) {
+//       return true;
+//     }
+//   }
+// }
+
+void TorrentMan::setFileEntriesToDownload(const Strings& filePaths) {
+  if(fileMode != MULTI) {
+    throw new DlAbortEx("only multi-mode supports partial downloading mode.");
+  }
+  // clear all requested flags in multiFileEntries.
+  for(MultiFileEntries::iterator itr = multiFileEntries.begin();
+      itr != multiFileEntries.end(); itr++) {
+    itr->requested = false;
+  }
+  for(Strings::const_iterator pitr = filePaths.begin();
+      pitr != filePaths.end(); pitr++) {
+    bool found = false;
+    for(MultiFileEntries::iterator itr = multiFileEntries.begin();
+	itr != multiFileEntries.end(); itr++) {
+      if(*pitr == itr->path) {
+	itr->requested = true;
+	found = true;
+	bitfield->addFilter(itr->offset, itr->length);
+	break;
+      }
+    }
+    if(!found) {
+      throw new DlAbortEx("no such file entry <%s>", (*pitr).c_str());
+    }
+  }
+  bitfield->enableFilter();
+}
+
+bool TorrentMan::isPartialDownloadingMode() const {
+  return bitfield->isFilterEnabled();
+}
+
+void TorrentMan::finishPartialDownloadingMode() {
+  bitfield->clearFilter();
+}
+
+long long int TorrentMan::getCompletedLength() const {
+  return bitfield->getCompletedLength();
+}
+
+long long int TorrentMan::getPartialTotalLength() const {
+  return bitfield->getFilteredTotalLength();
 }
