@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-04-06 21:52+0900\n"
+"POT-Creation-Date: 2006-04-12 22:55+0900\n"
 "PO-Revision-Date: 2006-03-22 00:48+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -547,50 +547,50 @@ msgstr " ローカル .torrent ファイルを使ってダウンロード:"
 msgid "Reports bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
-#: src/main.cc:305
+#: src/main.cc:307
 msgid "unrecognized proxy format"
 msgstr "理解できないProxyフォーマットです."
 
-#: src/main.cc:331
+#: src/main.cc:333
 msgid "Currently, supported authentication scheme is basic."
 msgstr "現在サポートされている認証方法は basic です."
 
-#: src/main.cc:340
+#: src/main.cc:342
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait は 0 から 60 の間で指定してください."
 
-#: src/main.cc:357
+#: src/main.cc:359
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type は 'binary' または 'ascii' を指定してください."
 
-#: src/main.cc:366
+#: src/main.cc:368
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:384
+#: src/main.cc:386
 msgid "min-segment-size invalid"
 msgstr "min-segment-size が不正です."
 
-#: src/main.cc:395
+#: src/main.cc:397
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:409
+#: src/main.cc:411
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent は 'true' または 'false を指定してください."
 
-#: src/main.cc:442
+#: src/main.cc:454
 msgid "split must be between 1 and 5."
 msgstr "split は 1 - 5 の値を指定してください."
 
-#: src/main.cc:452
+#: src/main.cc:464
 msgid "timeout must be between 1 and 600"
 msgstr "timeout は 1 - 600 の値を指定してください."
 
-#: src/main.cc:461
+#: src/main.cc:473
 msgid "max-tries invalid"
 msgstr "max-tries が不正です."
 
-#: src/main.cc:484
+#: src/main.cc:496
 msgid "specify at least one URL"
 msgstr "一個以上の URL を指定してください."
