@@ -61,7 +61,7 @@ string PeerMessage::toString() const {
     return "piece index="+Util::itos(index)+", begin="+Util::itos(begin)+
       ", length="+Util::itos(blockLength);
   case CANCEL:
-    return "calcel index="+Util::itos(index)+", begin="+Util::itos(begin)+
+    return "cancel index="+Util::itos(index)+", begin="+Util::itos(begin)+
       ", length="+Util::itos(length);
   case KEEP_ALIVE:
     return "keep alive";

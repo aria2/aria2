@@ -28,7 +28,7 @@
  * Constants
  */
 #define V_TRUE "true"
-//#define V_FALSE "false"
+#define V_FALSE "false"
 
 /**
  * General preferences
@@ -92,4 +92,7 @@
 #define PREF_TORRENT_SHOW_FILES "torrent_show_files"
 // values: true | false
 #define PREF_NO_PREALLOCATION "no_preallocation"
+// values: true | false
+#define PREF_DIRECT_FILE_MAPPING "direct_file_mapping"
+
 #endif // _D_PREFS_H_

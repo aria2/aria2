@@ -44,6 +44,12 @@ AbstractDiskWriter::~AbstractDiskWriter() {
 #endif // ENABLE_SHA1DIGEST
 }
 
+void AbstractDiskWriter::openFile(const string& filename) {
+  if((fd = open(filename.c_str(), O_CREAT|O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
+    throw new DlAbortEx(strerror(errno));
+  }  
+}
+
 void AbstractDiskWriter::closeFile() {
   if(fd != 0) {
     close(fd);

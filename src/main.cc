@@ -252,6 +252,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_FTP_TYPE, V_BINARY);
   op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
   op->put(PREF_AUTO_SAVE_INTERVAL, "60");
+  op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
 
   while(1) {
     int optIndex = 0;
@@ -284,6 +285,7 @@ int main(int argc, char* argv[]) {
       { "follow-torrent", required_argument, &lopt, 16 },
       { "torrent-show-files", no_argument, &lopt, 17 },
       { "no-preallocation", no_argument, &lopt, 18 },
+      { "direct-file-mapping", required_argument, &lopt, 19 },
 #endif // ENABLE_BITTORRENT
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
@@ -417,6 +419,16 @@ int main(int argc, char* argv[]) {
       case 18:
 	op->put(PREF_NO_PREALLOCATION, V_TRUE);
 	break;
+      case 19:
+	if(string(optarg) == "true") {
+	  op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
+	} else if(string(optarg) == "false") {
+	  op->put(PREF_DIRECT_FILE_MAPPING, V_FALSE);
+	} else {
+	  cerr << "direct-file-mapping must be either 'true' or 'false'." << endl;
+	  showUsage();
+	  exit(1);
+	}
       }
       break;
     }
@@ -621,6 +633,7 @@ int main(int argc, char* argv[]) {
 	   te->torrentMan->getFileMode() == TorrentMan::MULTI) {
 	  te->torrentMan->setFileEntriesToDownload(args);
 	}
+	te->torrentMan->setupDiskWriter();
       }
       PeerListenCommand* listenCommand =
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);

@@ -43,6 +43,7 @@ public:
    * If tv1 is older than tv2, then this method returns 0.
    */
   static long long int difftv(struct timeval tv1, struct timeval tv2);
+  static int difftvsec(struct timeval tv1, struct timeval tv2);
   /**
    * Take a string src which is a deliminated list and add its elements
    * into result. result is not cleared before conversion begins.

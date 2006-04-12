@@ -151,6 +151,7 @@ public:
   }
 
   void setup(string metaInfoFile);
+  void setupDiskWriter();
 
   string getPieceHash(int index) const;
 
@@ -237,7 +238,8 @@ public:
   string getName() const;
 
   //bool unextractedFileEntryExists() const;
-
+  
+  void setAllMultiFileRequestedState(bool state);
   void finishPartialDownloadingMode();
   bool isPartialDownloadingMode() const;
 
@@ -245,6 +247,8 @@ public:
 
   long long int getCompletedLength() const;
   long long int getPartialTotalLength() const;
+
+  void onDownloadComplete();
 
   enum FILE_MODE {
     SINGLE,

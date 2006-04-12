@@ -13,3 +13,4 @@
 * Distinguish seeder from leecher
 * file selection in multi-file mode
 * try to use ftruncate to allocate file.
+* fix TorrentMan::getFilePath()

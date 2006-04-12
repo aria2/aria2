@@ -90,6 +90,13 @@ long long int Util::difftv(struct timeval tv1, struct timeval tv2) {
 	  tv1.tv_usec-tv2.tv_usec);
 }
 
+int Util::difftvsec(struct timeval tv1, struct timeval tv2) {
+  if(tv1.tv_sec < tv2.tv_sec) {
+    return 0;
+  }
+  return tv1.tv_sec-tv2.tv_sec;
+}
+
 void Util::slice(Strings& result, const string& src, char delim) {
   string::size_type p = 0;
   while(1) {

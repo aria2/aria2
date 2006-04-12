@@ -74,15 +74,15 @@ void TorrentConsoleDownloadEngine::initStatistics() {
   }
 }
 
-int TorrentConsoleDownloadEngine::calculateSpeed(long long int sessionLength, long long int elapsed) {
-  int nowSpeed = (int)(sessionLength/(elapsed/1000000.0));
+int TorrentConsoleDownloadEngine::calculateSpeed(long long int sessionLength, int elapsed) {
+  int nowSpeed = (int)(sessionLength/(elapsed*1.0));
   return nowSpeed;
 }
 
 void TorrentConsoleDownloadEngine::calculateStatistics() {
   struct timeval now;
   gettimeofday(&now, NULL);
-  long long int elapsed = Util::difftv(now, cp[currentCp]);
+  int elapsed = Util::difftvsec(now, cp[currentCp]);
 
   sessionDownloadLengthArray[0] += torrentMan->getDeltaDownloadLength();
   sessionUploadLengthArray[0] += torrentMan->getDeltaUploadLength();
@@ -91,8 +91,6 @@ void TorrentConsoleDownloadEngine::calculateStatistics() {
 
   sessionDownloadLength += torrentMan->getDeltaDownloadLength();
 
-  downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
-  uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
 
   torrentMan->resetDeltaDownloadLength();
   torrentMan->resetDeltaUploadLength();
@@ -105,18 +103,23 @@ void TorrentConsoleDownloadEngine::calculateStatistics() {
     totalLength = torrentMan->getTotalLength();
   }
   
-  avgSpeed = calculateSpeed(sessionDownloadLength,
-			    Util::difftv(now, startup));
-  if(avgSpeed != 0) {
-    eta = (totalLength-downloadLength)/avgSpeed;
-  }
 
-  if(elapsed-lastElapsed >= 1000000) {
+  if(elapsed-lastElapsed >= 1) {
+    downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
+    uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
+    avgSpeed = calculateSpeed(sessionDownloadLength,
+			      Util::difftvsec(now, startup));
+    if(avgSpeed < 0) {
+      avgSpeed = 0;
+    } else if(avgSpeed != 0) {
+      eta = (totalLength-downloadLength)/avgSpeed;
+    }
+
     printStatistics();
     lastElapsed = elapsed;
   }
 
-  if(elapsed > 15*1000000) {
+  if(elapsed > 15) {
     sessionDownloadLengthArray[currentCp] = 0;
     sessionUploadLengthArray[currentCp] = 0;
     cp[currentCp] = now;

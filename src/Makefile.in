@@ -98,7 +98,7 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	PeerMessage.$(OBJEXT) Piece.$(OBJEXT) RequestSlot.$(OBJEXT) \
 	RequestSlotMan.$(OBJEXT) TorrentAutoSaveCommand.$(OBJEXT) \
 	Directory.$(OBJEXT) TrackerWatcherCommand.$(OBJEXT) \
-	SendMessageQueue.$(OBJEXT)
+	SendMessageQueue.$(OBJEXT) MultiDiskWriter.$(OBJEXT)
 am_libaria2c_a_OBJECTS = $(am__objects_1)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -326,7 +326,8 @@ SRCS = Socket.cc Socket.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	messageDigest.h\
-	SendMessageQueue.cc SendMessageQueue.h
+	SendMessageQueue.cc SendMessageQueue.h\
+	MultiDiskWriter.cc MultiDiskWriter.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -443,6 +444,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@

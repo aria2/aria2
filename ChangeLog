@@ -1,3 +1,51 @@
+2006-04-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add the ability to download multi torrent into respective files
+	directly:
+	
+	* src/DiskWriter.h (openFile): New function.
+	(seek): Removed.
+	* src/MultiDiskWriter.h: New class.
+	* src/MultiDiskWriter.cc: New class.
+	* src/AbstractDiskWriter.h (seek): Changed its scope from public to
+	protected.
+	(openFile): New function.
+	* src/AbstractDiskWriter.cc (openFile): New function.
+	* src/prefs.h (V_FALSE): New definition.
+	(PREF_DIRECT_FILE_MAPPING): New definition.
+	* src/TorrentMan.h (setupDiskWriter): New function.
+	(setAllMultiFileRequestedState): New function.
+	(onDownloadComplete): New function.
+	* src/TorrentMan.cc : Included MultiDiskWriter.h
+	(setupDiskWriter): New function.
+	(getFilePath): Updated.
+	(getTempFilePath): Updated.
+	(getSegmentFilePath): Updated.
+	(fixFilename): Updated.
+	(deleteTempFile): Updated.
+	(setAllMultiFileRequestedState): New function.
+	(setFileEntriesToDownload): Use setAllMultiFileRequestedState().
+	(finishPartialDownloadingMode): Reset requested flags.
+	(onDownloadComplete): New function.
+	* src/main.cc: Added --direct-file-mapping option.
+	Use TorretMan::setupDiskWriter().
+	* src/TorrentDownloadEngine.cc (afterEachIteration): Use TorrentMan::
+	onDownloadComplete().
+	
+	
+	To fix ETA bug:
+
+	* src/Util.h (difftvsec): New function.
+	* src/Util.cc (difftvsec): New function.
+	* src/TorrentConsoleDownloadEngine.cc (calculateSpeed): Use int for the
+	type of "elapsed" instead of long long int.
+	(calculateStatistics): Use Util::difftvsec instead of Util::difftv.
+	The updates of statistics takes place every 1 seconds.
+	* src/TorrentConsoleDownloadEngine.h (lastElapsed): Changed its type.
+	(calculateSpeed): Changed its argument signature.
+	
+	* src/PeerMessage.cc (toString): Fixed message.
+	
 2006-04-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To print ETA:

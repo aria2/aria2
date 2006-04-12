@@ -39,17 +39,20 @@ protected:
 
   void writeDataInternal(const char* data, int len);
   int readDataInternal(char* data, int len);
+
+  void seek(long long int offset);
+
 public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
+
+  void openFile(const string& filename);
 
   void closeFile();
 
   void openExistingFile(string filename);
 
   string sha1Sum(long long int offset, long long int length);
-
-  void seek(long long int offset);
 
   void writeData(const char* data, int len, long long int offset);
 

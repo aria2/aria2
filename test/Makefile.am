@@ -16,7 +16,8 @@ aria2c_SOURCES = AllTest.cc\
 	TorrentManTest.cc\
 	PeerMessageUtilTest.cc\
 	BitfieldManTest.cc\
-	DefaultDiskWriterTest.cc
+	DefaultDiskWriterTest.cc\
+	MultiDiskWriterTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 

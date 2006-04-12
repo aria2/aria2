@@ -78,7 +78,8 @@ SRCS =  Socket.cc Socket.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	messageDigest.h\
-	SendMessageQueue.cc SendMessageQueue.h
+	SendMessageQueue.cc SendMessageQueue.h\
+	MultiDiskWriter.cc MultiDiskWriter.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

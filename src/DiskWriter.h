@@ -41,6 +41,8 @@ public:
    */
   virtual void initAndOpenFile(string filename) = 0;
 
+  virtual void openFile(const string& filename) = 0;
+
   /**
    * Closes this output stream.
    */
@@ -69,7 +71,6 @@ public:
 
   virtual string sha1Sum(long long int offset, long long int length) = 0;
 
-  virtual void seek(long long int offset) = 0;
 };
 
 #endif // _D_DISK_WRITER_H_

@@ -38,7 +38,7 @@ private:
 
   int downloadSpeed;
   int uploadSpeed;
-  long long int lastElapsed;
+  int lastElapsed;
   long long int partialDownloadLengthDiff;
   long long int partialTotalLength;
   struct timeval startup;
@@ -49,7 +49,7 @@ private:
   long long int totalLength;
 
   void printStatistics();
-  int calculateSpeed(long long int sessionLength, long long int elapsed);
+  int calculateSpeed(long long int sessionLength, int elapsed);
 protected:
   void initStatistics();
   void calculateStatistics();

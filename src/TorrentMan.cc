@@ -30,6 +30,7 @@
 #include "message.h"
 #include "PreAllocationDiskWriter.h"
 #include "DefaultDiskWriter.h"
+#include "MultiDiskWriter.h"
 #include "prefs.h"
 #include <errno.h>
 #include <libgen.h>
@@ -379,17 +380,33 @@ void TorrentMan::setup(string metaInfoFile) {
 
   initBitfield();
   delete topDic;
+}
 
-  if(option->get(PREF_NO_PREALLOCATION) == V_TRUE) {
-    diskWriter = new DefaultDiskWriter();
+void TorrentMan::setupDiskWriter() {
+  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
+    if(segmentFileExists()) {
+      load();
+    }
+    if(fileMode == SINGLE) {
+      diskWriter = new DefaultDiskWriter();
+    } else {
+      diskWriter = new MultiDiskWriter();
+      ((MultiDiskWriter*)diskWriter)->setMultiFileEntries(multiFileEntries, pieceLength);
+      multiFileTopDir->createDir(storeDir, true);
+    }
+    diskWriter->openFile(getFilePath());
   } else {
-    diskWriter = new PreAllocationDiskWriter(totalLength);
-  }
-  if(segmentFileExists()) {
-    load();
-    diskWriter->openExistingFile(getTempFilePath());
-  } else {
-    diskWriter->initAndOpenFile(getTempFilePath());
+    if(option->get(PREF_NO_PREALLOCATION) == V_TRUE) {
+      diskWriter = new DefaultDiskWriter();
+    } else {
+      diskWriter = new PreAllocationDiskWriter(totalLength);
+    }
+    if(segmentFileExists()) {
+      load();
+      diskWriter->openExistingFile(getTempFilePath());
+    } else {
+      diskWriter->initAndOpenFile(getTempFilePath());
+    }
   }
   setupComplete = true;
 }
@@ -417,15 +434,27 @@ string TorrentMan::getPieceHash(int index) const {
 }
 
 string TorrentMan::getFilePath() const {
-  return storeDir+"/"+name;
+  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE && fileMode == MULTI) {
+    return storeDir;
+  } else {
+    return storeDir+"/"+name;
+  }
 }
 
 string TorrentMan::getTempFilePath() const {
-  return getFilePath()+".a2tmp";
+  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
+    return getFilePath();
+  } else {
+    return getFilePath()+".a2tmp";
+  }
 }
 
 string TorrentMan::getSegmentFilePath() const {
-  return getFilePath()+".aria2";
+  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE && fileMode == MULTI) {
+    return storeDir+"/"+name+".aria2";
+  } else {
+    return getFilePath()+".aria2";
+  }
 }
 
 bool TorrentMan::segmentFileExists() const {
@@ -518,10 +547,14 @@ void TorrentMan::remove() const {
 }
 
 void TorrentMan::fixFilename() {
-  if(fileMode == SINGLE) {
-    copySingleFile();
+  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
+    // nothing to do here
   } else {
-    splitMultiFile();
+    if(fileMode == SINGLE) {
+      copySingleFile();
+    } else {
+      splitMultiFile();
+    }
   }
 }
 
@@ -547,7 +580,11 @@ void TorrentMan::splitMultiFile() {
 }
 
 void TorrentMan::deleteTempFile() const {
-  unlink(getTempFilePath().c_str());
+  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
+    // nothing to do here
+  } else {
+    unlink(getTempFilePath().c_str());
+  }
 }
 
 // bool TorrentMan::unextractedFileEntryExists() const {
@@ -567,10 +604,7 @@ void TorrentMan::setFileEntriesToDownload(const Strings& filePaths) {
     throw new DlAbortEx("only multi-mode supports partial downloading mode.");
   }
   // clear all requested flags in multiFileEntries.
-  for(MultiFileEntries::iterator itr = multiFileEntries.begin();
-      itr != multiFileEntries.end(); itr++) {
-    itr->requested = false;
-  }
+  setAllMultiFileRequestedState(false);
   for(Strings::const_iterator pitr = filePaths.begin();
       pitr != filePaths.end(); pitr++) {
     bool found = false;
@@ -594,8 +628,19 @@ bool TorrentMan::isPartialDownloadingMode() const {
   return bitfield->isFilterEnabled();
 }
 
+void TorrentMan::setAllMultiFileRequestedState(bool state) {
+  for(MultiFileEntries::iterator itr = multiFileEntries.begin();
+      itr != multiFileEntries.end(); itr++) {
+    itr->requested = state;
+  }  
+}
+
 void TorrentMan::finishPartialDownloadingMode() {
   bitfield->clearFilter();
+  setAllMultiFileRequestedState(true);
+  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE && fileMode == MULTI) {
+    ((MultiDiskWriter*)diskWriter)->setMultiFileEntries(multiFileEntries, pieceLength);
+  }
 }
 
 long long int TorrentMan::getCompletedLength() const {
@@ -604,4 +649,14 @@ long long int TorrentMan::getCompletedLength() const {
 
 long long int TorrentMan::getPartialTotalLength() const {
   return bitfield->getFilteredTotalLength();
+}
+
+void TorrentMan::onDownloadComplete() {
+  diskWriter->closeFile();
+  save();
+  fixFilename();
+  if(isPartialDownloadingMode()) {
+    finishPartialDownloadingMode();
+  }
+  diskWriter->openFile(getTempFilePath());
 }
