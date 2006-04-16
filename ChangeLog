@@ -1,3 +1,71 @@
+2006-04-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/TorrentConsoleDownloadEngine.cc
+	(onPartialDownloadingCompletes): Renamed as
+	onSelectiveDownloadingCompletes.
+	(onSelectiveDownloadingCompletes): Updated message.
+
+	To add DiskAdaptor which abstract DiskWriter family:
+
+	* src/PeerConnection.cc: Use diskAdaptor instead of diskWriter.
+	* src/PeerInteractionCommand.cc: Use diskAdaptor instead of diskWriter.
+	* src/BitfieldMan.cc (isAllBitSet): bug fix.
+	* src/TorrentMan.cc : Included CopyDiskAdaptor.h, DirectDiskAdaptor.h,
+	MultiDiskAdaptor.h.
+	(readFileEntry): Changed its arguments.
+	(setup): setupDiskWriter is merged into this function.
+	(setupDiskWriter): Removed.
+	(setFileFilter): New function.
+	(readFileEntryFromMetaInfoFile): Updated according to the changes
+	made in readFileEntry.
+	(getFilePath): Removed.
+	(getTempFilePath): Removed.
+	(getSegmentFilePath): Updated due to the removal of getFilePath.
+	(fixFilename): Removed.
+	(copySingleFile): Removed.
+	(splitMultiFile): Removed.
+	(deleteTempFile): Removed.
+	(setFileEntriesToDownload): Removed.
+	(isPartialDownloadingMode): Renamed as isSelectiveDownloadingMode.
+	(isSelectiveDownloadingMode): New function.
+	(setAllMultiFileRequestedState): Removed.
+	(finishPartialDownloadingMode): Renamed as
+	finishSelectiveDownloadingMode.
+	(finishSelectiveDownloadingMode): New function.
+	(getPartialTotalLength): Renamed as getSelectedTotalLength.
+	(getSelectedTotalLength): New function.
+	(onDownloadComplete): Use diskAdaptor.
+	* src/MultiDiskWriter.cc (Constructor): Added the argument pieceLength
+	(Range): Removed.
+	(setMultiFileEntries): Renamed as setFileEntries.
+	(setFileEntries): New function.
+	* src/MultiDiskWriter.h [DiskWriterEntry](enabled): Removed.
+	(pieceLength): New variable.
+	* src/main.cc (printDownloadCompeleteMessage): New function.
+	(torrentHandler): Use diskAdaptor instead of diskWriter.
+	(main): Renamed torrent-show-files to show-files.
+	Rewritten file contents listing.
+	* src/TorrentMan.h (FileEntry): Removed.
+	(multiFileTopDir): Removed.
+	(multiFileEntries): Removed.
+	(diskWriter): Removed.
+	(diskAdaptor): New variable.
+	* src/DefaultDiskWriter.h (totalLength): New variable.
+	* src/DefaultDiskWriter.cc (initAndOpenFile): Added ftruncate.
+	* src/TorrentDownloadEngine.cc (onEndOfRun): Use diskAdaptor instead of
+	diskWriter.
+	* src/TorrentConsoleDownloadEngine.h
+	(partialDownloadLengthDiff): Renamed as selectedDownloadLengthDiff.
+	(partialTotalLength): Renamed as selectedTotalLength.
+	* src/AbstractDiskWriter.cc (openFile): If file exists, call
+	openExistingFile, otherwise call initAndOpenFile.
+	(closeFile): fd > 0, not fd != 0.
+	
+	* src/prefs.h (PREF_TORRENT_SHOW_FILES): Renamed as PREF_SHOW_FILES
+	(PREF_SHOW_FILES): New definition.
+	
+	
+
 2006-04-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add the ability to download multi torrent into respective files

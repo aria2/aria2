@@ -36,7 +36,7 @@ AbstractDiskWriter::AbstractDiskWriter():fd(0) {
 }
 
 AbstractDiskWriter::~AbstractDiskWriter() {
-  if(fd != 0) {
+  if(fd > 0) {
     close(fd);
   }
 #ifdef ENABLE_SHA1DIGEST
@@ -45,13 +45,16 @@ AbstractDiskWriter::~AbstractDiskWriter() {
 }
 
 void AbstractDiskWriter::openFile(const string& filename) {
-  if((fd = open(filename.c_str(), O_CREAT|O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
-    throw new DlAbortEx(strerror(errno));
-  }  
+  File f(filename);
+  if(f.exists()) {
+    openExistingFile(filename);
+  } else {
+    initAndOpenFile(filename);
+  }
 }
 
 void AbstractDiskWriter::closeFile() {
-  if(fd != 0) {
+  if(fd > 0) {
     close(fd);
     fd = 0;
   }

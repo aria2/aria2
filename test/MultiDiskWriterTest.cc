@@ -25,14 +25,14 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MultiDiskWriterTest );
 
-MultiFileEntries createEntries() {
+FileEntries createEntries() {
   FileEntry entry1("file1.txt", 15, 0);
   FileEntry entry2("file2.txt", 7, 15);
   FileEntry entry3("file3.txt", 3, 22);
   unlink("file1.txt");
   unlink("file2.txt");
   unlink("file3.txt");
-  MultiFileEntries entries;
+  FileEntries entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
   entries.push_back(entry3);
@@ -52,8 +52,8 @@ void readFile(const string& filename, char* buf, int bufLength) {
 }
 
 void MultiDiskWriterTest::testWriteData() {
-  MultiDiskWriter dw;
-  dw.setMultiFileEntries(createEntries(), 2);
+  MultiDiskWriter dw(2);
+  dw.setFileEntries(createEntries());
 
   dw.openFile(".");
   string msg = "12345";
@@ -97,12 +97,12 @@ void MultiDiskWriterTest::testReadData() {
   FileEntry entry1("file1r.txt", 15, 0);
   FileEntry entry2("file2r.txt", 7, 15);
   FileEntry entry3("file3r.txt", 3, 22);
-  MultiFileEntries entries;
+  FileEntries entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
   entries.push_back(entry3);
-  MultiDiskWriter dw;
-  dw.setMultiFileEntries(entries, 2);
+  MultiDiskWriter dw(2);
+  dw.setFileEntries(entries);
 
   dw.openFile(".");
   char buf[128];
@@ -124,12 +124,12 @@ void MultiDiskWriterTest::testSha1Sum() {
   FileEntry entry1("file1r.txt", 15, 0);
   FileEntry entry2("file2r.txt", 7, 15);
   FileEntry entry3("file3r.txt", 3, 22);
-  MultiFileEntries entries;
+  FileEntries entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
   entries.push_back(entry3);
-  MultiDiskWriter dw;
-  dw.setMultiFileEntries(entries, 2);
+  MultiDiskWriter dw(2);
+  dw.setFileEntries(entries);
 
   dw.openFile(".");
   string sha1sum = dw.sha1Sum(0, 25);

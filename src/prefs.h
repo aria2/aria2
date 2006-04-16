@@ -89,7 +89,7 @@
 // values: 1*digit
 #define PREF_PEER_CONNECTION_TIMEOUT "peer_connection_timeout"
 // values: true | false
-#define PREF_TORRENT_SHOW_FILES "torrent_show_files"
+#define PREF_SHOW_FILES "show_files"
 // values: true | false
 #define PREF_NO_PREALLOCATION "no_preallocation"
 // values: true | false

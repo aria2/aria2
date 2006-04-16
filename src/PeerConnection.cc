@@ -216,14 +216,14 @@ void PeerConnection::sendPiece(int index, int begin, int length) const {
   int iteration = length/BUF_SIZE;
   long long int pieceOffset = ((long long int)index*torrentMan->pieceLength)+begin;
   for(int i = 0; i < iteration; i++) {
-    if(torrentMan->diskWriter->readData(buf, BUF_SIZE, pieceOffset+i*BUF_SIZE) < BUF_SIZE) {
+    if(torrentMan->diskAdaptor->readData(buf, BUF_SIZE, pieceOffset+i*BUF_SIZE) < BUF_SIZE) {
       throw new DlAbortEx("piece reading failed.");
     }
     socket->writeData(buf, BUF_SIZE);
   }
   int rem = length%BUF_SIZE;
   if(rem > 0) {
-    if(torrentMan->diskWriter->readData(buf, rem, pieceOffset+iteration*BUF_SIZE) < rem) {
+    if(torrentMan->diskAdaptor->readData(buf, rem, pieceOffset+iteration*BUF_SIZE) < rem) {
       throw new DlAbortEx("piece reading failed.");
     }
     socket->writeData(buf, rem);
@@ -259,7 +259,7 @@ int PeerConnection::sendPieceData(long long int offset, int length) const {
     if(!isWritable) {
       return writtenLength;
     }
-    if(torrentMan->diskWriter->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
+    if(torrentMan->diskAdaptor->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
       throw new DlAbortEx("piece reading failed.");
     }
     socket->writeData(buf, BUF_SIZE);
@@ -268,7 +268,7 @@ int PeerConnection::sendPieceData(long long int offset, int length) const {
   if(socket->isWritable(0)) {
     int rem = length%BUF_SIZE;
     if(rem > 0) {
-      if(torrentMan->diskWriter->readData(buf, rem, offset+iteration*BUF_SIZE) < rem) {
+      if(torrentMan->diskAdaptor->readData(buf, rem, offset+iteration*BUF_SIZE) < rem) {
 	throw new DlAbortEx("piece reading failed.");
       }
       socket->writeData(buf, rem);

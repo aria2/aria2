@@ -25,8 +25,11 @@
 #include "AbstractDiskWriter.h"
 
 class DefaultDiskWriter:public AbstractDiskWriter {
+private:
+  long long int totalLength;
 public:
   DefaultDiskWriter();
+  DefaultDiskWriter(long long int totalLength);
   ~DefaultDiskWriter();
 
   void initAndOpenFile(string filename);

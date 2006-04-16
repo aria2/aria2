@@ -32,6 +32,9 @@
 #include "DefaultDiskWriter.h"
 #include "MultiDiskWriter.h"
 #include "prefs.h"
+#include "CopyDiskAdaptor.h"
+#include "DirectDiskAdaptor.h"
+#include "MultiDiskAdaptor.h"
 #include <errno.h>
 #include <libgen.h>
 #include <string.h>
@@ -42,25 +45,21 @@ TorrentMan::TorrentMan():bitfield(NULL),
 			 preDownloadLength(0), preUploadLength(0),
 			 deltaDownloadLength(0), deltaUploadLength(0),
 			 storeDir("."),
-			 multiFileTopDir(NULL),
 			 setupComplete(false),
 			 interval(DEFAULT_ANNOUNCE_INTERVAL),
 			 minInterval(DEFAULT_ANNOUNCE_MIN_INTERVAL),
 			 complete(0), incomplete(0),
-			 connections(0), diskWriter(NULL) {}
+			 connections(0), diskAdaptor(NULL) {}
 
 TorrentMan::~TorrentMan() {
   if(bitfield != NULL) {
     delete bitfield;
   }
-  if(multiFileTopDir != NULL) {
-    delete multiFileTopDir;
-  }
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     delete *itr;
   }
-  if(diskWriter != NULL) {
-    delete diskWriter;
+  if(diskAdaptor != NULL) {
+    delete diskAdaptor;
   }
 }
 
@@ -298,7 +297,7 @@ bool TorrentMan::downloadComplete() const {
   return bitfield->isAllBitSet();
 }
 
-void TorrentMan::readFileEntry(const Dictionary* infoDic, const string& defaultName) {
+void TorrentMan::readFileEntry(FileEntries& fileEntries, Directory** pTopDir, const Dictionary* infoDic, const string& defaultName) {
   Data* topName = (Data*)infoDic->get("name");
   if(topName != NULL) {
     name = topName->toString();
@@ -313,12 +312,14 @@ void TorrentMan::readFileEntry(const Dictionary* infoDic, const string& defaultN
     setFileMode(SINGLE);
     Data* length = (Data*)infoDic->get("length");
     totalLength = length->toLLInt();
+    FileEntry fileEntry(name, totalLength, 0);
+    fileEntries.push_back(fileEntry);
   } else {
     long long int length = 0;
     long long int offset = 0;
     // multi-file mode
     setFileMode(MULTI);
-    multiFileTopDir = new Directory(name);
+    *pTopDir = new Directory(name);
     const MetaList& metaList = files->getList();
     for(MetaList::const_iterator itr = metaList.begin(); itr != metaList.end();
 	itr++) {
@@ -327,7 +328,7 @@ void TorrentMan::readFileEntry(const Dictionary* infoDic, const string& defaultN
       length += lengthData->toLLInt();
       List* path = (List*)fileDic->get("path");
       const MetaList& paths = path->getList();
-      Directory* parentDir = multiFileTopDir;
+      Directory* parentDir = *pTopDir;
       string filePath = name;
       for(int i = 0; i < (int)paths.size()-1; i++) {
 	Data* subpath = (Data*)paths.at(i);
@@ -339,14 +340,14 @@ void TorrentMan::readFileEntry(const Dictionary* infoDic, const string& defaultN
       Data* lastpath = (Data*)paths.back();
       filePath.append("/").append(lastpath->toString());
       FileEntry fileEntry(filePath, lengthData->toLLInt(), offset);
-      multiFileEntries.push_back(fileEntry);
+      fileEntries.push_back(fileEntry);
       offset += fileEntry.length;
     }
     totalLength = length;
   }
 }
 
-void TorrentMan::setup(string metaInfoFile) {
+void TorrentMan::setup(string metaInfoFile, const Strings& targetFilePaths) {
   peerId = "-A2****-";
   for(int i = 0; i < 12; i++) {
     peerId += Util::itos((int)(((double)10)*random()/(RAND_MAX+1.0)));
@@ -363,7 +364,9 @@ void TorrentMan::setup(string metaInfoFile) {
   v.getHash(md, len);
   setInfoHash(md);
 
-  readFileEntry(infoDic, metaInfoFile);
+  FileEntries fileEntries;
+  Directory* topDir = NULL;
+  readFileEntry(fileEntries, &topDir, infoDic, metaInfoFile);
 
   announce = ((Data*)topDic->get("announce"))->toString();
   pieceLength = ((Data*)infoDic->get("piece length"))->toInt();
@@ -380,45 +383,54 @@ void TorrentMan::setup(string metaInfoFile) {
 
   initBitfield();
   delete topDic;
-}
 
-void TorrentMan::setupDiskWriter() {
   if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
-    if(segmentFileExists()) {
-      load();
-    }
     if(fileMode == SINGLE) {
-      diskWriter = new DefaultDiskWriter();
+      diskAdaptor = new DirectDiskAdaptor(new DefaultDiskWriter(totalLength));
     } else {
-      diskWriter = new MultiDiskWriter();
-      ((MultiDiskWriter*)diskWriter)->setMultiFileEntries(multiFileEntries, pieceLength);
-      multiFileTopDir->createDir(storeDir, true);
+      diskAdaptor = new MultiDiskAdaptor(new MultiDiskWriter(pieceLength));
     }
-    diskWriter->openFile(getFilePath());
   } else {
-    if(option->get(PREF_NO_PREALLOCATION) == V_TRUE) {
-      diskWriter = new DefaultDiskWriter();
-    } else {
-      diskWriter = new PreAllocationDiskWriter(totalLength);
-    }
-    if(segmentFileExists()) {
-      load();
-      diskWriter->openExistingFile(getTempFilePath());
-    } else {
-      diskWriter->initAndOpenFile(getTempFilePath());
-    }
+    diskAdaptor = new CopyDiskAdaptor(new DefaultDiskWriter(totalLength));
+    ((CopyDiskAdaptor*)diskAdaptor)->setTempFilename(name+".a2tmp");
+  }
+  diskAdaptor->setStoreDir(storeDir);
+  diskAdaptor->setTopDir(topDir);
+  diskAdaptor->setFileEntries(fileEntries);
+  setFileFilter(targetFilePaths);
+  if(segmentFileExists()) {
+    load();
+    diskAdaptor->openExistingFile();
+  } else {
+    diskAdaptor->initAndOpenFile();
   }
   setupComplete = true;
 }
 
-const MultiFileEntries& TorrentMan::getMultiFileEntries() const {
-  return multiFileEntries;
+void TorrentMan::setFileFilter(const Strings& filePaths) {
+  if(fileMode != MULTI || filePaths.empty()) {
+    return;
+  }
+  diskAdaptor->removeAllDownloadEntry();
+  for(Strings::const_iterator pitr = filePaths.begin();
+      pitr != filePaths.end(); pitr++) {
+    if(!diskAdaptor->addDownloadEntry(*pitr)) {
+      throw new DlAbortEx("no such file entry <%s>", (*pitr).c_str());
+    }
+    FileEntry fileEntry = diskAdaptor->getFileEntryFromPath(*pitr);
+    bitfield->addFilter(fileEntry.offset, fileEntry.length);
+  }
+  bitfield->enableFilter();
 }
 
-void TorrentMan::readFileEntryFromMetaInfoFile(const string& metaInfoFile) {
+FileEntries TorrentMan::readFileEntryFromMetaInfoFile(const string& metaInfoFile) {
   Dictionary* topDic = (Dictionary*)MetaFileUtil::parseMetaFile(metaInfoFile);
   const Dictionary* infoDic = (const Dictionary*)topDic->get("info");
-  readFileEntry(infoDic, metaInfoFile);
+  FileEntries fileEntries;
+  Directory* topDir;
+  readFileEntry(fileEntries, &topDir, infoDic, metaInfoFile);
+  delete topDir;
+  return fileEntries;
 }
 
 string TorrentMan::getName() const {
@@ -433,28 +445,8 @@ string TorrentMan::getPieceHash(int index) const {
   return pieceHashes.at(index);
 }
 
-string TorrentMan::getFilePath() const {
-  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE && fileMode == MULTI) {
-    return storeDir;
-  } else {
-    return storeDir+"/"+name;
-  }
-}
-
-string TorrentMan::getTempFilePath() const {
-  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
-    return getFilePath();
-  } else {
-    return getFilePath()+".a2tmp";
-  }
-}
-
 string TorrentMan::getSegmentFilePath() const {
-  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE && fileMode == MULTI) {
-    return storeDir+"/"+name+".aria2";
-  } else {
-    return getFilePath()+".aria2";
-  }
+  return storeDir+"/"+name+".aria2";
 }
 
 bool TorrentMan::segmentFileExists() const {
@@ -546,117 +538,27 @@ void TorrentMan::remove() const {
   }
 }
 
-void TorrentMan::fixFilename() {
-  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
-    // nothing to do here
-  } else {
-    if(fileMode == SINGLE) {
-      copySingleFile();
-    } else {
-      splitMultiFile();
-    }
-  }
-}
-
-void TorrentMan::copySingleFile() const {
-  logger->info("writing file %s", getFilePath().c_str());
-  Util::fileCopy(getFilePath(), getTempFilePath());
-}
-
-void TorrentMan::splitMultiFile() {
-  logger->info("creating directories");
-  multiFileTopDir->createDir(storeDir, true);
-  long long int offset = 0;
-  for(MultiFileEntries::iterator itr = multiFileEntries.begin();
-      itr != multiFileEntries.end(); itr++) {
-    if(!itr->extracted && itr->requested) {
-      string dest = storeDir+"/"+itr->path;
-      logger->info("writing file %s", dest.c_str());
-      Util::rangedFileCopy(dest, getTempFilePath(), offset, itr->length);
-      itr->extracted = true;
-    }
-    offset += itr->length;
-  }
-}
-
-void TorrentMan::deleteTempFile() const {
-  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
-    // nothing to do here
-  } else {
-    unlink(getTempFilePath().c_str());
-  }
-}
-
-// bool TorrentMan::unextractedFileEntryExists() const {
-//   if(fileMode == SINGLE) {
-//     return false;
-//   }
-//   for(MultiFileEntries::const_iterator itr = multiFileEntries.begin();
-//       itr != multiFileEntries.end(); itr++) {
-//     if(!itr->extracted) {
-//       return true;
-//     }
-//   }
-// }
-
-void TorrentMan::setFileEntriesToDownload(const Strings& filePaths) {
-  if(fileMode != MULTI) {
-    throw new DlAbortEx("only multi-mode supports partial downloading mode.");
-  }
-  // clear all requested flags in multiFileEntries.
-  setAllMultiFileRequestedState(false);
-  for(Strings::const_iterator pitr = filePaths.begin();
-      pitr != filePaths.end(); pitr++) {
-    bool found = false;
-    for(MultiFileEntries::iterator itr = multiFileEntries.begin();
-	itr != multiFileEntries.end(); itr++) {
-      if(*pitr == itr->path) {
-	itr->requested = true;
-	found = true;
-	bitfield->addFilter(itr->offset, itr->length);
-	break;
-      }
-    }
-    if(!found) {
-      throw new DlAbortEx("no such file entry <%s>", (*pitr).c_str());
-    }
-  }
-  bitfield->enableFilter();
-}
-
-bool TorrentMan::isPartialDownloadingMode() const {
+bool TorrentMan::isSelectiveDownloadingMode() const {
   return bitfield->isFilterEnabled();
 }
 
-void TorrentMan::setAllMultiFileRequestedState(bool state) {
-  for(MultiFileEntries::iterator itr = multiFileEntries.begin();
-      itr != multiFileEntries.end(); itr++) {
-    itr->requested = state;
-  }  
-}
-
-void TorrentMan::finishPartialDownloadingMode() {
+void TorrentMan::finishSelectiveDownloadingMode() {
   bitfield->clearFilter();
-  setAllMultiFileRequestedState(true);
-  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE && fileMode == MULTI) {
-    ((MultiDiskWriter*)diskWriter)->setMultiFileEntries(multiFileEntries, pieceLength);
-  }
+  diskAdaptor->addAllDownloadEntry();
 }
 
 long long int TorrentMan::getCompletedLength() const {
   return bitfield->getCompletedLength();
 }
 
-long long int TorrentMan::getPartialTotalLength() const {
+long long int TorrentMan::getSelectedTotalLength() const {
   return bitfield->getFilteredTotalLength();
 }
 
 void TorrentMan::onDownloadComplete() {
-  diskWriter->closeFile();
   save();
-  fixFilename();
-  if(isPartialDownloadingMode()) {
-    finishPartialDownloadingMode();
+  diskAdaptor->onDownloadComplete();
+  if(isSelectiveDownloadingMode()) {
+    finishSelectiveDownloadingMode();
   }
-  diskWriter->openFile(getTempFilePath());
 }

@@ -19,25 +19,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "TorrentDownloadEngine.h"
+#ifndef _D_FILE_ENTRY_H_
+#define _D_FILE_ENTRY_H_
 
-void TorrentDownloadEngine::onEndOfRun() {
-  torrentMan->diskAdaptor->closeFile();
-  if(filenameFixed && torrentMan->downloadComplete()) {
-    torrentMan->remove();
-  } else {
-    torrentMan->save();
-  }
-}
+#include "common.h"
 
-void TorrentDownloadEngine::afterEachIteration() {
-  if(!filenameFixed && torrentMan->downloadComplete()) {
-    if(torrentMan->isSelectiveDownloadingMode()) {
-      onSelectiveDownloadingCompletes();
-    }
-    torrentMan->onDownloadComplete();
-    if(torrentMan->downloadComplete()) {
-      filenameFixed = true;
-    }
-  }
-}
+class FileEntry {
+public:
+  string path;
+  long long int length;
+  long long int offset;
+  bool extracted;
+  bool requested;
+  FileEntry(string path, long long int length, long long int offset):
+    path(path), length(length), offset(offset),
+    extracted(false), requested(true) {}
+  ~FileEntry() {}
+};
+
+typedef deque<FileEntry> FileEntries;
+
+#endif // _D_FILE_ENTRY_H_

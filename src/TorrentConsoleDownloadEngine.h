@@ -26,11 +26,6 @@
 
 class TorrentConsoleDownloadEngine : public TorrentDownloadEngine {
 private:
-  /*
-  struct timeval cp;
-  long long int sessionDownloadSize;
-  long long int sessionUploadSize;
-  */
   struct timeval cp[2];
   long long int sessionDownloadLengthArray[2];
   long long int sessionUploadLengthArray[2];
@@ -39,11 +34,15 @@ private:
   int downloadSpeed;
   int uploadSpeed;
   int lastElapsed;
-  long long int partialDownloadLengthDiff;
-  long long int partialTotalLength;
+  long long int selectedDownloadLengthDiff;
+  long long int selectedTotalLength;
+  // The time when startup
   struct timeval startup;
+  // The number of bytes downloaded since startup
   long long int sessionDownloadLength;
+  // The average speed(bytes per second) since startup
   int avgSpeed;
+  // The estimated remaining time to complete the download.
   int eta;
   long long int downloadLength;
   long long int totalLength;
@@ -53,7 +52,7 @@ private:
 protected:
   void initStatistics();
   void calculateStatistics();
-  void onPartialDownloadingCompletes();
+  void onSelectiveDownloadingCompletes();
 public:
   TorrentConsoleDownloadEngine();
   ~TorrentConsoleDownloadEngine();

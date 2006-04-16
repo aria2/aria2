@@ -98,7 +98,9 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	PeerMessage.$(OBJEXT) Piece.$(OBJEXT) RequestSlot.$(OBJEXT) \
 	RequestSlotMan.$(OBJEXT) TorrentAutoSaveCommand.$(OBJEXT) \
 	Directory.$(OBJEXT) TrackerWatcherCommand.$(OBJEXT) \
-	SendMessageQueue.$(OBJEXT) MultiDiskWriter.$(OBJEXT)
+	SendMessageQueue.$(OBJEXT) MultiDiskWriter.$(OBJEXT) \
+	DiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
+	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT)
 am_libaria2c_a_OBJECTS = $(am__objects_1)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -327,7 +329,12 @@ SRCS = Socket.cc Socket.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	messageDigest.h\
 	SendMessageQueue.cc SendMessageQueue.h\
-	MultiDiskWriter.cc MultiDiskWriter.h
+	MultiDiskWriter.cc MultiDiskWriter.h\
+	DiskAdaptor.cc DiskAdaptor.h\
+	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
+	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
+	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
+	FileEntry.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -420,10 +427,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dictionary.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Directory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
@@ -444,6 +454,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@

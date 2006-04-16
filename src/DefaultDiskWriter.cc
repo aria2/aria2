@@ -23,10 +23,15 @@
 #include "DlAbortEx.h"
 #include <errno.h>
 
-DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter() {}
+DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter(), totalLength(0) {}
+
+DefaultDiskWriter::DefaultDiskWriter(long long int totalLength):AbstractDiskWriter(), totalLength(totalLength) {}
 
 DefaultDiskWriter::~DefaultDiskWriter() {}
 
 void DefaultDiskWriter::initAndOpenFile(string filename) {
   createFile(filename);
+  if(totalLength > 0) {
+    ftruncate(fd, totalLength);
+  }
 }

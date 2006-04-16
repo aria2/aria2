@@ -30,17 +30,12 @@ class DiskWriterEntry {
 public:
   FileEntry fileEntry;
   DiskWriter* diskWriter;
-  bool enabled;
 public:
-  DiskWriterEntry(const FileEntry& fileEntry, bool enabled):fileEntry(fileEntry), enabled(enabled) {
-    if(enabled) {
-      diskWriter = new DefaultDiskWriter();
-    }
+  DiskWriterEntry(const FileEntry& fileEntry):fileEntry(fileEntry) {
+    diskWriter = new DefaultDiskWriter(this->fileEntry.length);
   }
   ~DiskWriterEntry() {
-    if(enabled) {
-      delete diskWriter;
-    }
+    delete diskWriter;
   }
 };
 
@@ -49,7 +44,7 @@ typedef deque<DiskWriterEntry*> DiskWriterEntries;
 class MultiDiskWriter : public DiskWriter {
 private:
   DiskWriterEntries diskWriterEntries;
-
+  int pieceLength;
   bool isInRange(const DiskWriterEntry* entry, long long int offset) const;
   int calculateLength(const DiskWriterEntry* entry, long long int fileOffset, int rem) const;
   void clearEntries();
@@ -59,10 +54,10 @@ private:
 #endif // ENABLE_SHA1DIGEST
 
 public:
-  MultiDiskWriter();
+  MultiDiskWriter(int pieceLength);
   virtual ~MultiDiskWriter();
 
-  void setMultiFileEntries(const MultiFileEntries& multiFileEntries, int pieceLength);
+  void setFileEntries(const FileEntries& fileEntries);
 
   virtual void openFile(const string& filename);
   virtual void initAndOpenFile(string filename);

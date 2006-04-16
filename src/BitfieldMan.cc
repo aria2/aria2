@@ -261,7 +261,7 @@ bool BitfieldMan::unsetBit(int index) {
 
 bool BitfieldMan::isAllBitSet() const {
   if(filterEnabled) {
-    for(int i = 0; i < bitfieldLength-1; i++) {
+    for(int i = 0; i < bitfieldLength; i++) {
       if((bitfield[i]&filterBitfield[i]) != filterBitfield[i]) {
 	return false;
       }

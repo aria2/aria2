@@ -31,7 +31,7 @@ private:
 protected:
   void onEndOfRun();
   void afterEachIteration();
-  virtual void onPartialDownloadingCompletes() = 0;
+  virtual void onSelectiveDownloadingCompletes() = 0;
 public:
   TorrentDownloadEngine():filenameFixed(false) {}
   virtual ~TorrentDownloadEngine() {}

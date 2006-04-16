@@ -274,9 +274,9 @@ void PeerInteractionCommand::receiveMessage() {
 	  ((long long int)message->getIndex())*e->torrentMan->pieceLength+message->getBegin();
 	e->logger->debug("CUID#%d - write block length = %d, offset=%lld",
 			 cuid, message->getBlockLength(), offset);      
-	e->torrentMan->diskWriter->writeData(message->getBlock(),
-					     message->getBlockLength(),
-					     offset);
+	e->torrentMan->diskAdaptor->writeData(message->getBlock(),
+					      message->getBlockLength(),
+					      offset);
 	piece.completeBlock(slot.getBlockIndex());
 	sendMessageQueue->deleteRequestSlot(slot);
 	e->torrentMan->updatePiece(piece);
@@ -444,7 +444,7 @@ void PeerInteractionCommand::beforeSocketCheck() {
 
 bool PeerInteractionCommand::checkPieceHash(const Piece& piece) {
   long long int offset = ((long long int)piece.getIndex())*e->torrentMan->pieceLength;
-  return e->torrentMan->diskWriter->sha1Sum(offset, piece.getLength()) ==
+  return e->torrentMan->diskAdaptor->sha1Sum(offset, piece.getLength()) ==
     e->torrentMan->getPieceHash(piece.getIndex());
 }
 
@@ -454,11 +454,11 @@ void PeerInteractionCommand::erasePieceOnDisk(const Piece& piece) {
   memset(buf, 0, BUFSIZE);
   long long int offset = ((long long int)piece.getIndex())*e->torrentMan->pieceLength;
   for(int i = 0; i < piece.getLength()/BUFSIZE; i++) {
-    e->torrentMan->diskWriter->writeData(buf, BUFSIZE, offset);
+    e->torrentMan->diskAdaptor->writeData(buf, BUFSIZE, offset);
     offset += BUFSIZE;
   }
   int r = piece.getLength()%BUFSIZE;
   if(r > 0) {
-    e->torrentMan->diskWriter->writeData(buf, r, offset);
+    e->torrentMan->diskAdaptor->writeData(buf, r, offset);
   }
 }

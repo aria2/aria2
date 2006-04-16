@@ -63,6 +63,10 @@ void printDownloadCompeleteMessage(string filename) {
   printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
 }
 
+void printDownloadCompeleteMessage() {
+  printf("\nThe download was complete.\n");
+}
+
 void printDownloadAbortMessage() {
   printf(_("\nThe download was not complete because of errors. Check the log.\n"));
 }
@@ -85,13 +89,13 @@ void handler(int signal) {
 
 void torrentHandler(int signal) {
   cout << _("\nSIGINT signal received.") << endl;
-  if(te->torrentMan->diskWriter != NULL) {
-    te->torrentMan->diskWriter->closeFile();
+  if(te->torrentMan->diskAdaptor != NULL) {
+    te->torrentMan->diskAdaptor->closeFile();
   }
   if(te->torrentMan->downloadComplete() && te->isFilenameFixed()) {
     te->torrentMan->remove();
-    te->torrentMan->deleteTempFile();
-    printDownloadCompeleteMessage(te->torrentMan->getFilePath());
+    //te->torrentMan->deleteTempFile();
+    printDownloadCompeleteMessage();
   } else {
     te->torrentMan->save();
   }
@@ -283,7 +287,7 @@ int main(int argc, char* argv[]) {
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, &lopt, 15 },
       { "follow-torrent", required_argument, &lopt, 16 },
-      { "torrent-show-files", no_argument, &lopt, 17 },
+      { "show-files", no_argument, &lopt, 17 },
       { "no-preallocation", no_argument, &lopt, 18 },
       { "direct-file-mapping", required_argument, &lopt, 19 },
 #endif // ENABLE_BITTORRENT
@@ -414,7 +418,7 @@ int main(int argc, char* argv[]) {
 	}
 	break;
       case 17:
-	op->put(PREF_TORRENT_SHOW_FILES, V_TRUE);
+	op->put(PREF_SHOW_FILES, V_TRUE);
 	break;
       case 18:
 	op->put(PREF_NO_PREALLOCATION, V_TRUE);
@@ -608,32 +612,21 @@ int main(int argc, char* argv[]) {
       te->torrentMan->option = op;
       string targetTorrentFile = torrentFile.empty() ?
 	downloadedTorrentFile : torrentFile;
-      if(op->get(PREF_TORRENT_SHOW_FILES) == V_TRUE) {
-	te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
+      if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+	FileEntries fileEntries = te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
 	cout << "Files:" << endl;
-	switch(te->torrentMan->getFileMode()) {
-	case TorrentMan::SINGLE:
-	  printf("%s %s Bytes\n", te->torrentMan->getName().c_str(),
-		 Util::llitos(te->torrentMan->getTotalLength(), true).c_str());
-	  break;
-	case TorrentMan::MULTI: {
-	  const MultiFileEntries& entries = te->torrentMan->getMultiFileEntries();
-	  for(MultiFileEntries::const_iterator itr = entries.begin();
-	      itr != entries.end(); itr++) {
-	    printf("%s %s Bytes\n", itr->path.c_str(),
-		   Util::llitos(itr->length, true).c_str());
-	  }
-	  break;
-	}
+	for(FileEntries::const_iterator itr = fileEntries.begin();
+	    itr != fileEntries.end(); itr++) {
+	  printf("%s %s Bytes\n", itr->path.c_str(),
+		 Util::llitos(itr->length, true).c_str());
 	}
 	exit(0);
       } else {
-	te->torrentMan->setup(targetTorrentFile);
-	if(!torrentFile.empty() && !args.empty() &&
-	   te->torrentMan->getFileMode() == TorrentMan::MULTI) {
-	  te->torrentMan->setFileEntriesToDownload(args);
+	Strings targetFiles;
+	if(!torrentFile.empty() && !args.empty()) {
+	  targetFiles = args;
 	}
-	te->torrentMan->setupDiskWriter();
+	te->torrentMan->setup(targetTorrentFile, targetFiles);
       }
       PeerListenCommand* listenCommand =
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
@@ -652,7 +645,7 @@ int main(int argc, char* argv[]) {
       te->run();
       
       if(te->torrentMan->downloadComplete()) {
-	printDownloadCompeleteMessage(te->torrentMan->getFilePath());
+	printDownloadCompeleteMessage();
       } else {
 	printDownloadAbortMessage();
       }

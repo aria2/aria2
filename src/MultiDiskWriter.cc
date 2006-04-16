@@ -24,7 +24,7 @@
 #include "Util.h"
 #include <errno.h>
 
-MultiDiskWriter::MultiDiskWriter() {
+MultiDiskWriter::MultiDiskWriter(int pieceLength):pieceLength(pieceLength) {
 #ifdef ENABLE_SHA1DIGEST
   sha1DigestInit(ctx);
 #endif // ENABLE_SHA1DIGEST
@@ -37,63 +37,26 @@ MultiDiskWriter::~MultiDiskWriter() {
 #endif // ENABLE_SHA1DIGEST
 }
 
-typedef struct {
-  long long int blockOffset;
-  long long int length;
-} Range;
-
-typedef deque<Range> Ranges;
-
 void MultiDiskWriter::clearEntries() {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    if((*itr)->enabled) {
-      (*itr)->diskWriter->closeFile();
-    }
     delete *itr;
   }
   diskWriterEntries.clear();
 }
 
-void MultiDiskWriter::setMultiFileEntries(const MultiFileEntries& multiFileEntries, int pieceLength) {
+void MultiDiskWriter::setFileEntries(const FileEntries& fileEntries) {
   clearEntries();
-  Ranges ranges;
-  for(MultiFileEntries::const_iterator itr = multiFileEntries.begin();
-      itr != multiFileEntries.end(); itr++) {
-    if(itr->requested) {
-      Range range;
-      range.blockOffset = (itr->offset/pieceLength)*pieceLength;
-      range.length = ((itr->offset+itr->length)/pieceLength+
-	((itr->offset+itr->length)%pieceLength ? 1 : 0))*pieceLength-range.blockOffset;
-      ranges.push_back(range);
-    }		
-  }
-  Ranges::const_iterator ritr = ranges.begin();
-  for(MultiFileEntries::const_iterator itr = multiFileEntries.begin();
-      itr != multiFileEntries.end(); itr++) {
-    DiskWriterEntry* entry;
-    if(ritr != ranges.end() &&
-       //       !(ritr->blockOffset+ritr->length-1 < itr->offset ||
-       //	 itr->offset+itr->length-1 < ritr->blockOffset)) {
-       itr->offset < ritr->blockOffset+ritr->length &&
-       ritr->blockOffset < itr->offset+itr->length) {
-
-      entry = new DiskWriterEntry(*itr, true);
-      for(;ritr->blockOffset+ritr->length <= itr->offset+itr->length &&
-	    ritr != ranges.end(); ritr++);
-    } else {
-      entry = new DiskWriterEntry(*itr, false);
-    }
-    diskWriterEntries.push_back(entry);
+  for(FileEntries::const_iterator itr = fileEntries.begin();
+      itr != fileEntries.end(); itr++) {
+    diskWriterEntries.push_back(new DiskWriterEntry(*itr));
   }
 }
 
 void MultiDiskWriter::openFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    if((*itr)->enabled) {
-      (*itr)->diskWriter->openFile(filename+"/"+(*itr)->fileEntry.path);
-    }
+    (*itr)->diskWriter->openFile(filename+"/"+(*itr)->fileEntry.path);
   }
 }
 
@@ -101,27 +64,21 @@ void MultiDiskWriter::openFile(const string& filename) {
 void MultiDiskWriter::initAndOpenFile(string filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    if((*itr)->enabled) {
-      (*itr)->diskWriter->initAndOpenFile(filename+"/"+(*itr)->fileEntry.path);
-    }
+    (*itr)->diskWriter->initAndOpenFile(filename+"/"+(*itr)->fileEntry.path);
   }
 }
 
 void MultiDiskWriter::closeFile() {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    if((*itr)->enabled) {
-      (*itr)->diskWriter->closeFile();
-    }
+    (*itr)->diskWriter->closeFile();
   }
 }
 
 void MultiDiskWriter::openExistingFile(string filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    if((*itr)->enabled) {
-      (*itr)->diskWriter->openExistingFile(filename+"/"+(*itr)->fileEntry.path);
-    }
+    (*itr)->diskWriter->openExistingFile(filename+"/"+(*itr)->fileEntry.path);
   }
 }
 
@@ -133,9 +90,6 @@ void MultiDiskWriter::writeData(const char* data, int len, long long int positio
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || writing) {
-      if(!(*itr)->enabled) {
-	throw new DlAbortEx("invalid offset or length. offset = %lld", offset);
-      }
       int writeLength = calculateLength(*itr, fileOffset, rem);
       (*itr)->diskWriter->writeData(data+(len-rem), writeLength, fileOffset);
       rem -= writeLength;
@@ -174,9 +128,6 @@ int MultiDiskWriter::readData(char* data, int len, long long int position) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || reading) {
-      if(!(*itr)->enabled) {
-	throw new DlAbortEx("invalid offset or length. offset = %lld", offset);
-      }
       int readLength = calculateLength((*itr), fileOffset, rem);
       totalReadLength += (*itr)->diskWriter->readData(data+(len-rem), readLength, fileOffset);
       rem -= readLength;
@@ -223,9 +174,6 @@ string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
     for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
 	itr != diskWriterEntries.end() && rem != 0; itr++) {
       if(isInRange(*itr, offset) || reading) {
-	if(!(*itr)->enabled) {
-	  throw new DlAbortEx("invalid offset or length. offset = %lld", offset);
-	}
 	int readLength = calculateLength((*itr), fileOffset, rem);
 	hashUpdate(*itr, fileOffset, readLength);
 	rem -= readLength;

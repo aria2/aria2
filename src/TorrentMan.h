@@ -28,9 +28,10 @@
 #include "BitfieldMan.h"
 #include "DiskWriter.h"
 #include "Piece.h"
-#include "Directory.h"
 #include "Dictionary.h"
 #include "Option.h"
+#include "FileEntry.h"
+#include "DiskAdaptor.h"
 #include <deque>
 #include <map>
 #include <string>
@@ -46,22 +47,8 @@ using namespace std;
 #define END_GAME_PIECE_NUM 20
 #define MAX_PEER_ERROR 5
 
-class FileEntry {
-public:
-  string path;
-  long long int length;
-  long long int offset;
-  bool extracted;
-  bool requested;
-  FileEntry(string path, long long int length, long long int offset):
-    path(path), length(length), offset(offset),
-    extracted(false), requested(true) {}
-  ~FileEntry() {}
-};
-
 typedef deque<Peer*> Peers;
 typedef multimap<int, int> Haves;
-typedef deque<FileEntry> MultiFileEntries;
 typedef deque<Piece> UsedPieces;
 typedef deque<int> PieceIndexes;
 
@@ -85,8 +72,6 @@ private:
   int port;
   Haves haves;
   UsedPieces usedPieces;
-  Directory* multiFileTopDir;
-  MultiFileEntries multiFileEntries;
   bool setupComplete;
 
   FILE* openSegFile(string segFilename, string mode) const;
@@ -97,7 +82,8 @@ private:
   void deleteUsedPiece(const Piece& piece);
   int deleteUsedPiecesByFillRate(int fillRate, int toDelete);
   void reduceUsedPieces(int max);
-  void readFileEntry(const Dictionary* infoDic, const string& defaultName);
+  void readFileEntry(FileEntries& fileEntries, Directory** pTopDir, const Dictionary* infoDic, const string& defaultName);
+  void setFileFilter(const Strings& filePaths);
 public:
   int pieceLength;
   int pieces;
@@ -115,7 +101,7 @@ public:
   ~TorrentMan();
 
   const Logger* logger;
-  DiskWriter* diskWriter;
+  DiskAdaptor* diskAdaptor;
   const Option* option;
 
   int getNewCuid() { return ++cuidCounter; }
@@ -150,8 +136,7 @@ public:
     return infoHash;
   }
 
-  void setup(string metaInfoFile);
-  void setupDiskWriter();
+  void setup(string metaInfoFile, const Strings& targetFilePaths);
 
   string getPieceHash(int index) const;
 
@@ -213,8 +198,6 @@ public:
   string getStoreDir() const { return storeDir; }
   void setStoreDir(string dir) { storeDir = dir; }
 
-  string getFilePath() const;
-  string getTempFilePath() const;
   string getSegmentFilePath() const;
 
   bool segmentFileExists() const;  
@@ -233,20 +216,14 @@ public:
   int countUsedPiece() const { return usedPieces.size(); }
   int countAdvertisedPiece() const { return haves.size(); }
 
-  void readFileEntryFromMetaInfoFile(const string& metaInfoFile);
-  const MultiFileEntries& getMultiFileEntries() const;
+  FileEntries readFileEntryFromMetaInfoFile(const string& metaInfoFile);
   string getName() const;
 
-  //bool unextractedFileEntryExists() const;
-  
-  void setAllMultiFileRequestedState(bool state);
-  void finishPartialDownloadingMode();
-  bool isPartialDownloadingMode() const;
-
-  void setFileEntriesToDownload(const Strings& filePaths);
+  void finishSelectiveDownloadingMode();
+  bool isSelectiveDownloadingMode() const;
 
   long long int getCompletedLength() const;
-  long long int getPartialTotalLength() const;
+  long long int getSelectedTotalLength() const;
 
   void onDownloadComplete();
 

@@ -11,6 +11,14 @@
 * Add port range command-line option
 * Add max peers command-line option
 * Distinguish seeder from leecher
-* file selection in multi-file mode
+
+0.4.0 release
+* Add selective downloading mode
 * try to use ftruncate to allocate file.
-* fix TorrentMan::getFilePath()
+* test all download mode
+* Add loggerfactory
+* Add SIGTERM signal handler
+
+0.4.1 release
+* Add port command-line option
+* Add estimated remaining time to normal HTTP/FTP downloading status ouput

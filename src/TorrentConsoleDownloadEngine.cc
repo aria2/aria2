@@ -26,8 +26,9 @@ TorrentConsoleDownloadEngine::TorrentConsoleDownloadEngine() {}
 
 TorrentConsoleDownloadEngine::~TorrentConsoleDownloadEngine() {}
 
-void TorrentConsoleDownloadEngine::onPartialDownloadingCompletes() {
-  printf("Download of specified files has completed. Continue normal download operation.\n");
+void TorrentConsoleDownloadEngine::onSelectiveDownloadingCompletes() {
+  printf("\nDownload of selected files has completed.\n");
+  fflush(stdout);
 }
 
 void TorrentConsoleDownloadEngine::printStatistics() {
@@ -68,9 +69,9 @@ void TorrentConsoleDownloadEngine::initStatistics() {
   sessionDownloadLength = 0;
   downloadLength = 0;
   totalLength = 0;
-  if(torrentMan->isPartialDownloadingMode()) {
-    partialDownloadLengthDiff = torrentMan->getDownloadLength()-torrentMan->getCompletedLength();
-    partialTotalLength = torrentMan->getPartialTotalLength();
+  if(torrentMan->isSelectiveDownloadingMode()) {
+    selectedDownloadLengthDiff = torrentMan->getDownloadLength()-torrentMan->getCompletedLength();
+    selectedTotalLength = torrentMan->getSelectedTotalLength();
   }
 }
 
@@ -95,9 +96,9 @@ void TorrentConsoleDownloadEngine::calculateStatistics() {
   torrentMan->resetDeltaDownloadLength();
   torrentMan->resetDeltaUploadLength();
 
-  if(torrentMan->isPartialDownloadingMode()) {
-    downloadLength = torrentMan->getDownloadLength()-partialDownloadLengthDiff;
-    totalLength = partialTotalLength;
+  if(torrentMan->isSelectiveDownloadingMode()) {
+    downloadLength = torrentMan->getDownloadLength()-selectedDownloadLengthDiff;
+    totalLength = selectedTotalLength;
   } else {
     downloadLength = torrentMan->getDownloadLength();
     totalLength = torrentMan->getTotalLength();
