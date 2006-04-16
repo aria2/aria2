@@ -60,11 +60,17 @@
 	* src/AbstractDiskWriter.cc (openFile): If file exists, call
 	openExistingFile, otherwise call initAndOpenFile.
 	(closeFile): fd > 0, not fd != 0.
+	* src/DirectDiskAdaptor.h: New class.
+	* src/DirectDiskAdaptor.cc: New class.
+	* src/MultiDiskAdaptor.h: New class.
+	* src/MultiDiskAdaptor.cc: New class.
+	* src/CopyDiskAdaptor.h: New class.
+	* src/CopyDiskAdaptor.cc: New class.
+	* src/DiskAdaptor.h: New class.
+	* src/DiskAdaptor.cc: New class.
 	
 	* src/prefs.h (PREF_TORRENT_SHOW_FILES): Renamed as PREF_SHOW_FILES
 	(PREF_SHOW_FILES): New definition.
-	
-	
 
 2006-04-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
