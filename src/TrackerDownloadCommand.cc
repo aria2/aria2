@@ -76,7 +76,7 @@ bool TrackerDownloadCommand::executeInternal(Segment seg) {
      || te == NULL && len == e->segmentMan->totalSize
      || bufSize == 0) {
     if(te != NULL) te->end();
-    e->logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
+    logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
     MetaEntry* entry = MetaFileUtil::bdecoding(res, len);
     e->commands.push(new TrackerUpdateCommand(cuid, req, (TorrentDownloadEngine*)e, entry));
     return true;

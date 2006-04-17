@@ -20,13 +20,14 @@
  */
 /* copyright --> */
 #include "SendMessageQueue.h"
+#include "LogFactory.h"
 
 SendMessageQueue::SendMessageQueue(int cuid, PeerConnection* peerConnection,
-				   TorrentMan* torrentMan,
-				   const Logger* logger)
-  :cuid(cuid), logger(logger) {
+				   TorrentMan* torrentMan)
+  :cuid(cuid) {
   requestSlotMan = new RequestSlotMan(cuid, &pendingMessages, peerConnection,
-				      torrentMan, logger);
+				      torrentMan);
+  logger = LogFactory::getInstance();
 }
 
 SendMessageQueue::~SendMessageQueue() {

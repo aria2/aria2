@@ -48,10 +48,7 @@ public:
   RequestSlotMan(int cuid,
 		 PendingMessages* pendingMessages,
 		 PeerConnection* peerConnection,
-		 TorrentMan* torrentMan,
-		 const Logger* logger):cuid(cuid), timeout(DEFAULT_TIME_OUT),
-  pendingMessages(pendingMessages), peerConnection(peerConnection),
-  torrentMan(torrentMan), logger(logger) {}
+		 TorrentMan* torrentMan);
   ~RequestSlotMan() {}
 
   void addRequestSlot(const RequestSlot& requestSlot);

@@ -84,7 +84,8 @@ SRCS =  Socket.cc Socket.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	FileEntry.h
+	FileEntry.h\
+	LogFactory.cc LogFactory.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

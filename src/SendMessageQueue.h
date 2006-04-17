@@ -33,7 +33,7 @@ private:
   const Logger* logger;
 public:
   SendMessageQueue(int cuid, PeerConnection* peerConnection,
-		   TorrentMan* torrentMan, const Logger* logger);
+		   TorrentMan* torrentMan);
   ~SendMessageQueue();
 
   void send();

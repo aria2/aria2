@@ -21,16 +21,19 @@
 /* copyright --> */
 #include "SegmentMan.h"
 #include "DlAbortEx.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <errno.h>
 #include "Util.h"
 #include "File.h"
 #include "message.h"
 #include "prefs.h"
+#include "LogFactory.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
 
-SegmentMan::SegmentMan():totalSize(0),isSplittable(true),downloadStarted(false),dir(".") {}
+SegmentMan::SegmentMan():totalSize(0),isSplittable(true),downloadStarted(false),dir(".") {
+  logger = LogFactory::getInstance();
+}
 
 SegmentMan::~SegmentMan() {}
 

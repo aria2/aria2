@@ -47,9 +47,9 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
   socket = new Socket();
   Command* command;
   if(useHttpProxy()) {
-    e->logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		    e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
-		    e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+    logger->info(MSG_CONNECTING_TO_SERVER, cuid,
+		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
+		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     
@@ -62,8 +62,8 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
       throw new DlAbortEx("ERROR");
     }
   } else {
-    e->logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
-		    req->getPort());
+    logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
+		 req->getPort());
     socket->establishConnection(req->getHost(), req->getPort());
     command = new FtpNegotiationCommand(cuid, req, e, socket);
   }

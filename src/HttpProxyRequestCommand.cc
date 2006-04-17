@@ -32,7 +32,7 @@ HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 
 bool HttpProxyRequestCommand::executeInternal(Segment segment) {
   socket->setBlockingMode();
-  HttpConnection httpConnection(cuid, socket, req, e->option, e->logger);
+  HttpConnection httpConnection(cuid, socket, req, e->option);
   httpConnection.sendProxyRequest();
 
   HttpProxyResponseCommand* command = new HttpProxyResponseCommand(cuid, req, e, socket);

@@ -46,7 +46,7 @@ private:
   bool isEndOfResponse(int status, const string& response) const;
   bool bulkReceiveResponse(pair<int, string>& response);
 public:
-  FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger);
+  FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op);
   ~FtpConnection();
   void sendUser() const;
   void sendPass() const;

@@ -35,7 +35,7 @@ bool HttpRequestCommand::executeInternal(Segment seg) {
   if(req->getProtocol() == "https") {
     socket->initiateSecureConnection();
   }
-  HttpConnection http(cuid, socket, req, e->option, e->logger);
+  HttpConnection http(cuid, socket, req, e->option);
   // set seg to request in order to remember the request range
   req->seg = seg;
   http.sendRequest(seg);

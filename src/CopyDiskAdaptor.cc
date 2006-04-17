@@ -41,7 +41,7 @@ void CopyDiskAdaptor::fixFilename() {
       itr != fileEntries.end(); itr++) {
     if(!itr->extracted && itr->requested) {
       string dest = storeDir+"/"+itr->path;
-      //logger->info("writing file %s", dest.c_str());
+      logger->info("writing file %s", dest.c_str());
       Util::rangedFileCopy(dest, getFilePath(), offset, itr->length);
       itr->extracted = true;
     }

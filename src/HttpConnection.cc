@@ -25,9 +25,12 @@
 #include "Base64.h"
 #include "message.h"
 #include "prefs.h"
+#include "LogFactory.h"
 
-HttpConnection::HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger):
-  cuid(cuid), socket(socket), req(req), option(op), logger(logger), headerBufLength(0) {}
+HttpConnection::HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op):
+  cuid(cuid), socket(socket), req(req), option(op), headerBufLength(0) {
+  logger = LogFactory::getInstance();
+}
 
 void HttpConnection::sendRequest(const Segment& segment) const {
   string request = createRequest(segment);

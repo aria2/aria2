@@ -73,6 +73,7 @@ private:
   Haves haves;
   UsedPieces usedPieces;
   bool setupComplete;
+  const Logger* logger;
 
   FILE* openSegFile(string segFilename, string mode) const;
   void read(FILE* file);
@@ -100,7 +101,6 @@ public:
   TorrentMan();
   ~TorrentMan();
 
-  const Logger* logger;
   DiskAdaptor* diskAdaptor;
   const Option* option;
 

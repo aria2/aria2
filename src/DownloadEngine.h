@@ -48,6 +48,7 @@ private:
   bool addSocket(Sockets& sockets, Socket* socket);
   bool deleteSocket(Sockets& sockets, Socket* socket);
 protected:
+  const Logger* logger;
   virtual void initStatistics() = 0;
   virtual void calculateStatistics() = 0;
   virtual void onEndOfRun() = 0;
@@ -57,7 +58,6 @@ public:
   Commands commands;
   SegmentMan* segmentMan;
   DiskWriter* diskWriter;
-  const Logger* logger;
   const Option* option;
 
   DownloadEngine();

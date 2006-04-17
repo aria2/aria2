@@ -22,10 +22,10 @@
 #include "PeerAbstractCommand.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
-#include <sys/time.h>
 #include "Util.h"
 #include "message.h"
 #include "prefs.h"
+#include <sys/time.h>
 
 PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s):
   Command(cuid), e(e), peer(peer), checkSocketIsReadable(false), checkSocketIsWritable(false) {
@@ -90,13 +90,13 @@ bool PeerAbstractCommand::execute() {
     //e->torrentMan->updatePeer(peer);
     return returnValue;
   } catch(Exception* err) {
-    e->logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
+    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     onAbort(err);
     delete(err);
     return prepareForNextPeer(0);
   }
   /*catch(DlRetryEx* err) {
-    e->logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
+    logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
     peer->tryCount++;
     bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
       peer->tryCount >= e->option->getAsInt(PREF_MAX_TRIES);
@@ -106,7 +106,7 @@ bool PeerAbstractCommand::execute() {
     }
     delete(err);
     if(isAbort) {
-      e->logger->error(MSG_MAX_TRY, cuid, tryCount);
+      logger->error(MSG_MAX_TRY, cuid, tryCount);
       return true;
     } else {
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
@@ -136,7 +136,7 @@ void PeerAbstractCommand::onAbort(Exception* ex) {
   peer->amInterested = false;
   peer->peerChoking = true;
   peer->peerInterested = false;
-  e->logger->debug("CUID#%d - peer %s:%d banned.", cuid, peer->ipaddr.c_str(), peer->port);
+  logger->debug("CUID#%d - peer %s:%d banned.", cuid, peer->ipaddr.c_str(), peer->port);
 }
 
 void PeerAbstractCommand::setReadCheckSocket(Socket* socket) {

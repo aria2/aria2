@@ -21,6 +21,18 @@
 /* copyright --> */
 #include "DiskAdaptor.h"
 #include "DlAbortEx.h"
+#include "LogFactory.h"
+
+DiskAdaptor::DiskAdaptor(DiskWriter* diskWriter):diskWriter(diskWriter), topDir(NULL) {
+  logger = LogFactory::getInstance();
+}
+
+DiskAdaptor::~DiskAdaptor() {
+  delete diskWriter;
+  if(topDir != NULL) {
+    delete topDir;
+  }
+}
 
 void DiskAdaptor::openFile() {
   diskWriter->openFile(getFilePath());

@@ -35,6 +35,7 @@
 #include "CopyDiskAdaptor.h"
 #include "DirectDiskAdaptor.h"
 #include "MultiDiskAdaptor.h"
+#include "LogFactory.h"
 #include <errno.h>
 #include <libgen.h>
 #include <string.h>
@@ -49,7 +50,9 @@ TorrentMan::TorrentMan():bitfield(NULL),
 			 interval(DEFAULT_ANNOUNCE_INTERVAL),
 			 minInterval(DEFAULT_ANNOUNCE_MIN_INTERVAL),
 			 complete(0), incomplete(0),
-			 connections(0), diskAdaptor(NULL) {}
+			 connections(0), diskAdaptor(NULL) {
+  logger = LogFactory::getInstance();
+}
 
 TorrentMan::~TorrentMan() {
   if(bitfield != NULL) {

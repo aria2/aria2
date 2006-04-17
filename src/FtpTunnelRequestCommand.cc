@@ -32,7 +32,7 @@ FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
 
 bool FtpTunnelRequestCommand::executeInternal(Segment segment) {
   socket->setBlockingMode();
-  HttpConnection httpConnection(cuid, socket, req, e->option, e->logger);
+  HttpConnection httpConnection(cuid, socket, req, e->option);
   httpConnection.sendProxyRequest();
 
   FtpTunnelResponseCommand* command = new FtpTunnelResponseCommand(cuid, req, e, socket);

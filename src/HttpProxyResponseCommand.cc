@@ -25,7 +25,7 @@
 #include "message.h"
 
 HttpProxyResponseCommand::HttpProxyResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s) {
-  http = new HttpConnection(cuid, socket, req, e->option, e->logger);
+  http = new HttpConnection(cuid, socket, req, e->option);
 }
 
 HttpProxyResponseCommand::~HttpProxyResponseCommand() {

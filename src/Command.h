@@ -23,12 +23,16 @@
 #define _D_COMMAND_H_
 
 #include "common.h"
+#include "LogFactory.h"
 
 class Command {
 protected:
   int cuid;
+  const Logger* logger;
 public:
-  Command(int cuid):cuid(cuid) {}
+  Command(int cuid):cuid(cuid) {
+    logger = LogFactory::getInstance();
+  }
   virtual ~Command() {}
   virtual bool execute() = 0;
 

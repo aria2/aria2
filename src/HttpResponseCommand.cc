@@ -32,7 +32,7 @@
 
 HttpResponseCommand::HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
   AbstractCommand(cuid, req, e, s) {
-  http = new HttpConnection(cuid, socket, req, e->option, e->logger);
+  http = new HttpConnection(cuid, socket, req, e->option);
 }
 
 HttpResponseCommand::~HttpResponseCommand() {
@@ -41,7 +41,7 @@ HttpResponseCommand::~HttpResponseCommand() {
 
 bool HttpResponseCommand::executeInternal(Segment seg) {
   if(req->seg.sp != seg.sp) {
-    e->logger->info(MSG_SEGMENT_CHANGED, cuid);
+    logger->info(MSG_SEGMENT_CHANGED, cuid);
     return prepareForRetry(0);
   }
   HttpHeader headers;
@@ -86,7 +86,7 @@ void HttpResponseCommand::checkResponse(int status, const Segment& segment) {
 
 bool HttpResponseCommand::handleRedirect(string url, const HttpHeader& headers) {
   req->redirectUrl(url);
-  e->logger->info(MSG_REDIRECT, cuid, url.c_str());
+  logger->info(MSG_REDIRECT, cuid, url.c_str());
   e->noWait = true;
   return prepareForRetry(0);
 }

@@ -30,7 +30,7 @@ FtpNegotiationCommand::FtpNegotiationCommand(int cuid, Request* req, DownloadEng
   AbstractCommand(cuid, req, e, s),
   dataSocket(NULL), serverSocket(NULL), sequence(SEQ_RECV_GREETING)
 {
-  ftp = new FtpConnection(cuid, socket, req, e->option, e->logger);
+  ftp = new FtpConnection(cuid, socket, req, e->option);
   setReadCheckSocket(NULL);
   setWriteCheckSocket(socket);
 }
@@ -221,9 +221,9 @@ bool FtpNegotiationCommand::recvPasv() {
   // make a data connection to the server.
   dataSocket = new Socket();
 
-  e->logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		  dest.first.c_str(),
-		  dest.second);
+  logger->info(MSG_CONNECTING_TO_SERVER, cuid,
+	       dest.first.c_str(),
+	       dest.second);
   dataSocket->establishConnection(dest.first, dest.second);
 
   setReadCheckSocket(NULL);

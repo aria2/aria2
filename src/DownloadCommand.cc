@@ -74,7 +74,7 @@ bool DownloadCommand::executeInternal(Segment seg) {
      || te == NULL && seg.ds >= seg.ep-seg.sp+1
      || bufSize == 0) {
     if(te != NULL) te->end();
-    e->logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
+    logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
     seg.ds = seg.ep-seg.sp+1;
     seg.finish = true;
     e->segmentMan->updateSegment(seg);

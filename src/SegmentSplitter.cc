@@ -21,6 +21,11 @@
 /* copyright --> */
 #include "SegmentSplitter.h"
 #include "Util.h"
+#include "LogFactory.h"
+
+SegmentSplitter::SegmentSplitter() {
+  logger = LogFactory::getInstance();
+}
 
 void SegmentSplitter::split(Segment& seg, int cuid, Segment& s) const {
   long long int nep = (s.ep-(s.sp+s.ds))/2+(s.sp+s.ds);

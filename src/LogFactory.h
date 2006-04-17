@@ -19,25 +19,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_SEGMENT_SPLITTER_H_
-#define _D_SEGMENT_SPLITTER_H_
+#ifndef _D_LOG_FACTORY_H_
+#define _D_LOG_FACTORY_H_
 
-#include "Segment.h"
-#include "Logger.h"
 #include "common.h"
+#include "Logger.h"
 
-class SegmentSplitter {
-protected:
-  long long int minSegmentSize;
-  const Logger* logger;
-  
-  void split(Segment& seg, int cuid, Segment& s) const;
+class LogFactory {
+private:
+  static string filename;
+  static Logger* logger;
 public:
-  SegmentSplitter();
-  virtual ~SegmentSplitter() {}
-  virtual bool splitSegment(Segment& newSegment, int cuid, Segments& segments) = 0;
-  void setMinSegmentSize(long long int size) { minSegmentSize = size; }
-  long long int getMinSegmentSize() const { return minSegmentSize; }
+  /**
+   * Get logger instance. Returned logger is singleton.
+   * This function is not thread-safe.
+   */
+  static Logger* getInstance();
+
+  /**
+   * Set a filename to write log.
+   */
+  static void setLogFile(const string& name) {
+    filename = name;
+  }
 };
 
-#endif // _D_SEGMENT_SPLITTER_H_
+#endif // _D_LOG_FACTORY_H_

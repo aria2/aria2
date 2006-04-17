@@ -25,8 +25,11 @@
 #include "DlRetryEx.h"
 #include "message.h"
 #include "prefs.h"
+#include "LogFactory.h"
 
-FtpConnection::FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger):cuid(cuid), socket(socket), req(req), option(op), logger(logger) {}
+FtpConnection::FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op):cuid(cuid), socket(socket), req(req), option(op) {
+  logger = LogFactory::getInstance();
+}
 
 FtpConnection::~FtpConnection() {}
 

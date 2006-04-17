@@ -24,14 +24,17 @@
 #include "DlAbortEx.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "LogFactory.h"
 #include <netinet/in.h>
 
 PeerConnection::PeerConnection(int cuid, const Socket* socket,
-			       const Option* op, const Logger* logger,
+			       const Option* op,
 			       Peer* peer, TorrentMan* torrentMan)
   :cuid(cuid), socket(socket), option(op), logger(logger), peer(peer),
    torrentMan(torrentMan),
-   resbufLength(0), currentPayloadLength(0), lenbufLength(0) {}
+   resbufLength(0), currentPayloadLength(0), lenbufLength(0) {
+  logger = LogFactory::getInstance();
+}
 
 PeerConnection::~PeerConnection() {}
 

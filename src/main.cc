@@ -25,7 +25,7 @@
 #include "SegmentMan.h"
 #include "TorrentMan.h"
 #include "SplitSlowestSegmentSplitter.h"
-#include "SimpleLogger.h"
+#include "LogFactory.h"
 #include "common.h"
 #include "DefaultDiskWriter.h"
 #include "Util.h"
@@ -533,14 +533,12 @@ int main(int argc, char* argv[]) {
   gnutls_global_init();
 #endif // HAVE_LIBGNUTLS
   srandom(time(NULL));
-  SimpleLogger* logger;
   if(stdoutLog) {
-    logger = new SimpleLogger(stdout);
+    LogFactory::setLogFile("/dev/stdout");
   } else if(logfile.size()) {
-    logger = new SimpleLogger(logfile);
-  } else {
-    logger = new SimpleLogger("/dev/null");
+    LogFactory::setLogFile(logfile);
   }
+  
   SegmentSplitter* splitter = new SplitSlowestSegmentSplitter();
   splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
 
@@ -552,15 +550,12 @@ int main(int argc, char* argv[]) {
     setSignalHander(SIGINT, handler);
     setSignalHander(SIGTERM, handler);
 
-    splitter->logger = logger;
     e = new ConsoleDownloadEngine();
-    e->logger = logger;
     e->option = op;
     e->diskWriter = new DefaultDiskWriter();
     e->segmentMan = new SegmentMan();
     e->segmentMan->dir = dir;
     e->segmentMan->ufilename = ufilename;
-    e->segmentMan->logger = logger;
     e->segmentMan->option = op;
     e->segmentMan->splitter = splitter;
     
@@ -601,16 +596,13 @@ int main(int argc, char* argv[]) {
       req->isTorrent = true;
       req->setTrackerEvent(Request::STARTED);
       te = new TorrentConsoleDownloadEngine();
-      te->logger = logger;
       te->option = op;
       te->diskWriter = new DefaultDiskWriter();
       te->segmentMan = new SegmentMan();
-      te->segmentMan->logger = logger;
       te->segmentMan->option = op;
       te->segmentMan->splitter = splitter;
       te->torrentMan = new TorrentMan();
       te->torrentMan->setStoreDir(dir);
-      te->torrentMan->logger = logger;
       te->torrentMan->option = op;
       string targetTorrentFile = torrentFile.empty() ?
 	downloadedTorrentFile : torrentFile;
@@ -662,11 +654,9 @@ int main(int argc, char* argv[]) {
       exit(1);
     }
   }
-
-  delete(logger);
   delete(op);
   delete(splitter);
-
+  delete(LogFactory::getInstance());
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
 #endif // HAVE_LIBGNUTLS

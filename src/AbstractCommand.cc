@@ -23,11 +23,11 @@
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "InitiateConnectionCommandFactory.h"
-#include <sys/time.h>
 #include "Util.h"
 #include "message.h"
 #include "SleepCommand.h"
 #include "prefs.h"
+#include <sys/time.h>
 
 AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
   Command(cuid), req(req), e(e), checkSocketIsReadable(false), checkSocketIsWritable(false) {
@@ -86,19 +86,19 @@ bool AbstractCommand::execute() {
       // get segment information in order to set Range header.
       if(!e->segmentMan->getSegment(seg, cuid)) {
 	// no segment available
-	e->logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
+	logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
 	return true;
       }
     }
     return executeInternal(seg);
   } catch(DlAbortEx* err) {
-    e->logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
+    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     onAbort(err);
     delete(err);
     req->resetUrl();
     return true;
   } catch(DlRetryEx* err) {
-    e->logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
+    logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
     req->addTryCount();
     bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
       req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRIES);
@@ -107,7 +107,7 @@ bool AbstractCommand::execute() {
     }
     delete(err);
     if(isAbort) {
-      e->logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
+      logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
       return true;
     } else {
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
@@ -127,7 +127,7 @@ bool AbstractCommand::prepareForRetry(int wait) {
 }
 
 void AbstractCommand::onAbort(Exception* ex) {
-  e->logger->debug(MSG_UNREGISTER_CUID, cuid);
+  logger->debug(MSG_UNREGISTER_CUID, cuid);
   e->segmentMan->unregisterId(cuid);
 }
 

@@ -23,8 +23,7 @@
 #include "PeerInteractionCommand.h"
 
 PeerListenCommand::PeerListenCommand(int cuid, TorrentDownloadEngine* e)
-  :Command(cuid), e(e), socket(NULL) {
-}
+  :Command(cuid), e(e), socket(NULL) {}
 
 PeerListenCommand::~PeerListenCommand() {
   if(socket != NULL) {
@@ -40,12 +39,12 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
     try {
       socket = new Socket();
       socket->beginListen(port);
-      e->logger->info("CUID#%d - using port %d for accepting new connections",
-		      cuid, port);
+      logger->info("CUID#%d - using port %d for accepting new connections",
+		   cuid, port);
       return port;
     } catch(Exception* ex) {
-      e->logger->error("CUID#%d - an error occurred while binding port=%d",
-		       ex, cuid, port);
+      logger->error("CUID#%d - an error occurred while binding port=%d",
+		    ex, cuid, port);
       delete ex;
       delete socket;
       socket = NULL;
@@ -75,14 +74,14 @@ bool PeerListenCommand::execute() {
 	    new PeerInteractionCommand(newCuid, peer, e, peerSocket,
 				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
 	  e->commands.push(command);
-	  e->logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
+	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
 	} else {
 	  delete peer;
 	}
       }
       delete peerSocket;
     } catch(Exception* ex) {
-      e->logger->error("CUID#%d - error in accepting connection", ex, cuid);
+      logger->error("CUID#%d - error in accepting connection", ex, cuid);
       delete ex;
       if(peerSocket != NULL) {
 	delete peerSocket;

@@ -57,7 +57,7 @@ private:
   void writeOutgoingMessageLog(const char* msg, int index, int begin, int length) const;
 public:
   PeerConnection(int cuid, const Socket* socket, const Option* op,
-		 const Logger* logger, Peer* peer, TorrentMan* torrenMan);
+		 Peer* peer, TorrentMan* torrenMan);
   ~PeerConnection();
 
   void sendHandshake() const;

@@ -36,9 +36,9 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
   // socket->establishConnection(...);
   Command* command;
   if(useProxy()) {
-    e->logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		    e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
-		    e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+    logger->info(MSG_CONNECTING_TO_SERVER, cuid,
+		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
+		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     if(useProxyTunnel()) {
@@ -50,8 +50,8 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
       throw new DlAbortEx("ERROR");
     }
   } else {
-    e->logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
-		    req->getPort());
+    logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
+		 req->getPort());
     socket->establishConnection(req->getHost(), req->getPort());
     command = new HttpRequestCommand(cuid, req, e, socket);
   }

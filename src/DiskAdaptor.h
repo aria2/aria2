@@ -26,6 +26,7 @@
 #include "FileEntry.h"
 #include "Directory.h"
 #include "DiskWriter.h"
+#include "Logger.h"
 
 class DiskAdaptor {
 protected:
@@ -33,15 +34,11 @@ protected:
   string storeDir;
   FileEntries fileEntries;
   const Directory* topDir;
+  const Logger* logger;
   virtual string getFilePath() const = 0;
 public:
-  DiskAdaptor(DiskWriter* diskWriter):diskWriter(diskWriter), topDir(NULL) {}
-  virtual ~DiskAdaptor() {
-    delete diskWriter;
-    if(topDir != NULL) {
-      delete topDir;
-    }
-  }
+  DiskAdaptor(DiskWriter* diskWriter);
+  virtual ~DiskAdaptor();
 
   virtual void openFile();
   virtual void closeFile();

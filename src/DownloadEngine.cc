@@ -21,6 +21,7 @@
 /* copyright --> */
 #include "DownloadEngine.h"
 #include "Util.h"
+#include "LogFactory.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -29,7 +30,9 @@
 
 using namespace std;
 
-DownloadEngine::DownloadEngine():noWait(false), segmentMan(NULL) {}
+DownloadEngine::DownloadEngine():noWait(false), segmentMan(NULL) {
+  logger = LogFactory::getInstance();
+}
 
 DownloadEngine::~DownloadEngine() {
   assert(rsockets.empty());

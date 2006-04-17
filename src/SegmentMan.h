@@ -37,6 +37,8 @@ using namespace std;
  */
 class SegmentMan {
 private:
+  const Logger* logger;
+
   void read(FILE* file);
   FILE* openSegFile(string segFilename, string mode) const;
 public:
@@ -81,7 +83,6 @@ public:
    */
   string ufilename;
 
-  const Logger* logger;
   const Option* option;
   SegmentSplitter* splitter;
 

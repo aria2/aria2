@@ -29,6 +29,7 @@
 #include "Logger.h"
 #include "HttpHeader.h"
 #include "common.h"
+#include "Logger.h"
 #include <string>
 
 using namespace std;
@@ -52,7 +53,7 @@ private:
   char headerBuf[HEADERBUF_SIZE+1];
   int headerBufLength;
 public:
-  HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op, const Logger* logger);
+  HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op);
 
   /**
    * Sends Http request.

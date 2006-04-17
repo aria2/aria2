@@ -25,7 +25,8 @@
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid, Request* req,
 					     TorrentDownloadEngine* e):
-  Command(cuid), req(req), e(e) {}
+  Command(cuid), req(req), e(e) {
+}
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
@@ -34,8 +35,8 @@ bool TrackerWatcherCommand::execute() {
   Command* command = new TrackerInitCommand(e->torrentMan->getNewCuid(),
 					    req,
 					    e);
-  e->logger->info("CUID#%d - creating new tracker request command #%d", cuid,
-		  command->getCuid());
+  logger->info("CUID#%d - creating new tracker request command #%d", cuid,
+	       command->getCuid());
   e->commands.push(command);
 
   SleepCommand* slpCommand = new SleepCommand(cuid, e, this,

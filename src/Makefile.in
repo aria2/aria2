@@ -100,7 +100,8 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	Directory.$(OBJEXT) TrackerWatcherCommand.$(OBJEXT) \
 	SendMessageQueue.$(OBJEXT) MultiDiskWriter.$(OBJEXT) \
 	DiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
-	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT)
+	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
+	LogFactory.$(OBJEXT)
 am_libaria2c_a_OBJECTS = $(am__objects_1)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -334,7 +335,8 @@ SRCS = Socket.cc Socket.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	FileEntry.h
+	FileEntry.h\
+	LogFactory.cc LogFactory.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -453,6 +455,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriter.Po@am__quote@

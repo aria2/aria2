@@ -20,6 +20,19 @@
  */
 /* copyright --> */
 #include "RequestSlotMan.h"
+#include "LogFactory.h"
+
+RequestSlotMan::RequestSlotMan(int cuid,
+			       PendingMessages* pendingMessages,
+			       PeerConnection* peerConnection,
+			       TorrentMan* torrentMan):
+  cuid(cuid),
+  timeout(DEFAULT_TIME_OUT),
+  pendingMessages(pendingMessages),
+  peerConnection(peerConnection),
+  torrentMan(torrentMan) {
+  logger = LogFactory::getInstance();
+}
 
 void RequestSlotMan::addRequestSlot(const RequestSlot& requestSlot) {
   requestSlots.push_back(requestSlot);

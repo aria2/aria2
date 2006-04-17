@@ -37,10 +37,8 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
-  peerConnection = new PeerConnection(cuid, socket, e->option, e->logger,
-				      peer, e->torrentMan);
-  sendMessageQueue = new SendMessageQueue(cuid, peerConnection, e->torrentMan,
-					  e->logger);
+  peerConnection = new PeerConnection(cuid, socket, e->option, peer, e->torrentMan);
+  sendMessageQueue = new SendMessageQueue(cuid, peerConnection, e->torrentMan);
   piece = Piece::nullPiece;
   keepAliveCheckPoint.tv_sec = 0;
   keepAliveCheckPoint.tv_usec = 0;
@@ -78,9 +76,9 @@ bool PeerInteractionCommand::executeInternal() {
       break;
     }
     peer->setPeerId(handshakeMessage->peerId);
-    e->logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		    peer->ipaddr.c_str(), peer->port,
-		    handshakeMessage->toString().c_str());
+    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
+		 peer->ipaddr.c_str(), peer->port,
+		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
     if(e->torrentMan->getDownloadLength() > 0) {
       peerConnection->sendBitfield();
@@ -94,9 +92,9 @@ bool PeerInteractionCommand::executeInternal() {
       break;
     }
     peer->setPeerId(handshakeMessage->peerId);
-    e->logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		    peer->ipaddr.c_str(), peer->port,
-		    handshakeMessage->toString().c_str());
+    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
+		 peer->ipaddr.c_str(), peer->port,
+		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
     peerConnection->sendHandshake();
     if(e->torrentMan->getDownloadLength() > 0) {
@@ -217,9 +215,9 @@ void PeerInteractionCommand::receiveMessage() {
   if(message == NULL) {
     return;
   }
-  e->logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		  peer->ipaddr.c_str(), peer->port,
-		  message->toString().c_str());
+  logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
+	       peer->ipaddr.c_str(), peer->port,
+	       message->toString().c_str());
   try {
     switch(message->getId()) {
     case PeerMessage::KEEP_ALIVE:
@@ -272,16 +270,16 @@ void PeerInteractionCommand::receiveMessage() {
       if(!Piece::isNull(piece) && !RequestSlot::isNull(slot)) {
 	long long int offset =
 	  ((long long int)message->getIndex())*e->torrentMan->pieceLength+message->getBegin();
-	e->logger->debug("CUID#%d - write block length = %d, offset=%lld",
-			 cuid, message->getBlockLength(), offset);      
+	logger->debug("CUID#%d - write block length = %d, offset=%lld",
+		      cuid, message->getBlockLength(), offset);      
 	e->torrentMan->diskAdaptor->writeData(message->getBlock(),
 					      message->getBlockLength(),
 					      offset);
 	piece.completeBlock(slot.getBlockIndex());
 	sendMessageQueue->deleteRequestSlot(slot);
 	e->torrentMan->updatePiece(piece);
-	e->logger->debug("CUID#%d - setting piece bit index=%d", cuid,
-			 slot.getBlockIndex());
+	logger->debug("CUID#%d - setting piece bit index=%d", cuid,
+		      slot.getBlockIndex());
 	e->torrentMan->addDeltaDownloadLength(message->getBlockLength());
 	if(piece.pieceComplete()) {
 	  if(checkPieceHash(piece)) {
@@ -302,14 +300,14 @@ void PeerInteractionCommand::receiveMessage() {
 }
 
 void PeerInteractionCommand::onGotNewPiece() {
-  e->logger->info(MSG_GOT_NEW_PIECE, cuid, piece.getIndex());
+  logger->info(MSG_GOT_NEW_PIECE, cuid, piece.getIndex());
   e->torrentMan->completePiece(piece);
   e->torrentMan->advertisePiece(cuid, piece.getIndex());
   piece = Piece::nullPiece;
 }
 
 void PeerInteractionCommand::onGotWrongPiece() {
-  e->logger->error(MSG_GOT_WRONG_PIECE, cuid, piece.getIndex());
+  logger->error(MSG_GOT_WRONG_PIECE, cuid, piece.getIndex());
   erasePieceOnDisk(piece);
   piece.clearAllBlock();
   e->torrentMan->updatePiece(piece);
@@ -336,12 +334,12 @@ Piece PeerInteractionCommand::getNewPieceAndSendInterest() {
   sendMessageQueue->cancelAllRequest();
   Piece piece = e->torrentMan->getMissingPiece(peer);
   if(Piece::isNull(piece)) {
-    e->logger->debug("CUID#%d - try to send not-interested", cuid);
+    logger->debug("CUID#%d - try to send not-interested", cuid);
     PendingMessage pendingMessage(PeerMessage::NOT_INTERESTED, peerConnection);
     sendMessageQueue->addPendingMessage(pendingMessage);
   } else {
-    e->logger->debug("CUID#%d - starting download for piece index=%d", cuid, piece.getIndex());
-    e->logger->debug("CUID#%d - try to send interested", cuid);
+    logger->debug("CUID#%d - starting download for piece index=%d", cuid, piece.getIndex());
+    logger->debug("CUID#%d - try to send interested", cuid);
     PendingMessage pendingMessage(PeerMessage::INTERESTED, peerConnection);
     sendMessageQueue->addPendingMessage(pendingMessage);
   }

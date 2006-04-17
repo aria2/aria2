@@ -1,3 +1,50 @@
+2006-04-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add LogFactory which creates singleton logger:
+	
+	* src/LogFactory.h: New class.
+	* src/LogFactory.cc: New class.
+	* src/Command.h (logger): New variable.
+	(Constructor): Use LogFactory.
+	* src/AbstractCommand.cc: Use Command::logger
+	* src/PeerConnection.cc (Constructor): Deleted the argument logger.
+	Use LogFactory.
+	* src/SegmentSplitter.h : Made logger protected.
+	* src/SegmentSplitter.cc (Constructor): Use LogFactory.
+	* src/SegmentMan.cc (Constructor): Use LogFactory.
+	* src/DownloadEngine.h : Made logger protected.
+	* src/DownloadEngine.cc (Constructor): Use LogFactory.
+	* src/PeerInteractionCommand.cc : Use Command::logger.
+	* src/HttpResponseCommand.cc : Use Command::logger.
+	* src/SegmentMan.h : Made logger private.
+	* src/TorrentMan.h : Made logger private.
+	* src/TorrentMan.cc : Use LogFactory.
+	* src/FtpNegotiateCommand.cc : Use Command::logger.
+	* src/HttpConnection.h (Constructor): Deleted the argument logger.
+	* src/HttpConnection.cc (Constructor): Deleted the argument logger.
+	Use LogFactory.
+	* src/FtpConnection.h (Constructor): Deleted the argument logger.
+	* src/FtpConnection.cc (Constructor): Deleted the argument logger.
+	Use LogFactory.
+	* src/DownloadCommand.cc : Use Command::logger.
+	* src/PeerAbstractCommand.cc : Use Command::logger.
+	* src/PeerListenCommand.cc : Use Command::logger.
+	* src/PeerInitiateConnectionCommand.cc : Use Command::logger.
+	* src/HttpInitiateConnectionCommand.cc : Use Command::logger.
+	* src/FtpInitiateConnectionCommand.cc : Use Command::logger.
+	* src/TrackerWatcherCommand.cc : Use Command::logger.
+	* src/TrackerUpdateCommand.cc : Use Command::logger.
+	* src/TrackerDownloadCommand.cc : Use Command::logger.
+	* src/RequestSlotMan.cc (Constructor): Deleted the argument logger.
+	Use LogFactory.
+	* src/SendMessageQueue.h (Constructor): Deleted the argument logger.
+	* src/SendMessageQueue.cc (Constructor): Deleted the argument logger.
+	Use LogFactory.
+	* src/main.cc (main): Use LogFactory.
+	* src/DiskAdaptor.h (logger): New variable.
+	* src/DiskAdaptor.cc (Constructor): Use LogFactory.
+	* src/CopyDiskAdaptor.cc (fixFilename): Added a log message.
+
 2006-04-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/TrackerInitCommand.cc (TrackerInitCommand): Added a "key"

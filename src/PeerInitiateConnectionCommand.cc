@@ -38,8 +38,8 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   // socket->establishConnection(...);
 
   Command* command;
-  e->logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
-		  peer->port);
+  logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
+	       peer->port);
   socket->establishConnection(peer->ipaddr, peer->port);
   command = new PeerInteractionCommand(cuid, peer, e, socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
 
