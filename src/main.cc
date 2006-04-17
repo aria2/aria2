@@ -71,6 +71,14 @@ void printDownloadAbortMessage() {
   printf(_("\nThe download was not complete because of errors. Check the log.\n"));
 }
 
+void setSignalHander(int signal, void (*handler)(int)) {
+  struct sigaction sigact;
+  sigact.sa_handler = handler;
+  sigact.sa_flags = 0;
+  sigemptyset(&sigact.sa_mask);
+  sigaction(signal, &sigact, NULL);
+}
+
 void clearRequest(Request* req) {
   delete(req);
 }
@@ -79,16 +87,19 @@ DownloadEngine* e;
 TorrentDownloadEngine* te;
 
 void handler(int signal) {
-  cout << _("\nSIGINT signal received.") << endl;
+  printf(_("\nstopping application...\n"));
+  fflush(stdout);
   e->segmentMan->save();
   if(e->diskWriter != NULL) {
     e->diskWriter->closeFile();
   }
+  printf("done\n");
   exit(0);
 }
 
 void torrentHandler(int signal) {
-  cout << _("\nSIGINT signal received.") << endl;
+  printf(_("\nstopping application...\n"));
+  fflush(stdout);
   if(te->torrentMan->diskAdaptor != NULL) {
     te->torrentMan->diskAdaptor->closeFile();
   }
@@ -99,7 +110,7 @@ void torrentHandler(int signal) {
   } else {
     te->torrentMan->save();
   }
-
+  printf("done\n");
   exit(0);
 }
 
@@ -533,21 +544,14 @@ int main(int argc, char* argv[]) {
   SegmentSplitter* splitter = new SplitSlowestSegmentSplitter();
   splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
 
-  struct sigaction sigactIgn;
-  sigactIgn.sa_handler = SIG_IGN;
-  sigactIgn.sa_flags = 0;
-  sigemptyset(&sigactIgn.sa_mask);
-  sigaction(SIGPIPE, &sigactIgn, NULL);  
+  setSignalHander(SIGPIPE, SIG_IGN);
 
   bool readyToTorrentMode = false;
   string downloadedTorrentFile;
   if(torrentFile.empty()) {
-    struct sigaction sigact;
-    sigact.sa_handler = handler;
-    sigact.sa_flags = 0;
-    sigemptyset(&sigact.sa_mask);
-    sigaction(SIGINT, &sigact, NULL);
-  
+    setSignalHander(SIGINT, handler);
+    setSignalHander(SIGTERM, handler);
+
     splitter->logger = logger;
     e = new ConsoleDownloadEngine();
     e->logger = logger;
@@ -590,11 +594,9 @@ int main(int argc, char* argv[]) {
   if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
     try {
       //op->put(PREF_MAX_TRIES, "0");
-      struct sigaction sigact;
-      sigact.sa_handler = torrentHandler;
-      sigact.sa_flags = 0;
-      sigemptyset(&sigact.sa_mask);
-      sigaction(SIGINT, &sigact, NULL);
+      setSignalHander(SIGINT, torrentHandler);
+      setSignalHander(SIGTERM, torrentHandler);
+
       Request* req = new Request();
       req->isTorrent = true;
       req->setTrackerEvent(Request::STARTED);

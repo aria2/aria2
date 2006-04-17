@@ -427,9 +427,11 @@ FileEntries TorrentMan::readFileEntryFromMetaInfoFile(const string& metaInfoFile
   Dictionary* topDic = (Dictionary*)MetaFileUtil::parseMetaFile(metaInfoFile);
   const Dictionary* infoDic = (const Dictionary*)topDic->get("info");
   FileEntries fileEntries;
-  Directory* topDir;
+  Directory* topDir = NULL;
   readFileEntry(fileEntries, &topDir, infoDic, metaInfoFile);
-  delete topDir;
+  if(topDir != NULL) {
+    delete topDir;
+  }
   return fileEntries;
 }
 

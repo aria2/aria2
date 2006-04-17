@@ -61,7 +61,8 @@ bool TrackerInitCommand::execute() {
     "downloaded="+Util::llitos(e->torrentMan->getSessionDownloadLength())+"&"+
     "left="+(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength() <= 0
 	     ? "0" : Util::llitos(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength()))+"&"+
-    "compact=1";
+    "compact=1"+"&"+
+    "key="+e->torrentMan->peerId;
   if(!event.empty()) {
     url += string("&")+"event="+event;
   }

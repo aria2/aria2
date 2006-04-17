@@ -13,11 +13,9 @@
 * Distinguish seeder from leecher
 
 0.4.0 release
-* Add selective downloading mode
 * try to use ftruncate to allocate file.
-* test all download mode
 * Add loggerfactory
-* Add SIGTERM signal handler
+* add log message when download completes
 
 0.4.1 release
 * Add port command-line option

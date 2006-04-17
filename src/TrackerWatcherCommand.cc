@@ -30,6 +30,7 @@ TrackerWatcherCommand::TrackerWatcherCommand(int cuid, Request* req,
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
+  req->resetTryCount();
   Command* command = new TrackerInitCommand(e->torrentMan->getNewCuid(),
 					    req,
 					    e);
