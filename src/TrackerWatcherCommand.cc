@@ -21,7 +21,8 @@
 /* copyright --> */
 #include "TrackerWatcherCommand.h"
 #include "SleepCommand.h"
-#include "TrackerInitCommand.h"
+#include "InitiateConnectionCommandFactory.h"
+#include "Util.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid, Request* req,
 					     TorrentDownloadEngine* e):
@@ -31,14 +32,55 @@ TrackerWatcherCommand::TrackerWatcherCommand(int cuid, Request* req,
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
-  req->resetTryCount();
-  Command* command = new TrackerInitCommand(e->torrentMan->getNewCuid(),
-					    req,
-					    e);
-  logger->info("CUID#%d - creating new tracker request command #%d", cuid,
-	       command->getCuid());
-  e->commands.push(command);
-
+  if(e->torrentMan->trackers == 0) {
+    req->resetTryCount();
+    
+    if(e->torrentMan->downloadComplete()) {
+      if(req->getTrackerEvent() == Request::COMPLETED) {
+	req->setTrackerEvent(Request::AFTER_COMPLETED);
+      } else {
+	if(req->getTrackerEvent() == Request::STARTED) {
+	  req->setTrackerEvent(Request::AFTER_COMPLETED);
+	} else if(req->getTrackerEvent() != Request::AFTER_COMPLETED) {
+	  req->setTrackerEvent(Request::COMPLETED);
+	}
+      }
+    }
+    string event;
+    switch(req->getTrackerEvent()) {
+    case Request::STARTED:
+      event = "started";
+      break;
+    case Request::STOPPED:
+      event = "stopped";
+      break;
+    case Request::COMPLETED:
+      event = "completed";
+      break;
+    }
+    string url = e->torrentMan->announce+"?"+
+      "info_hash="+Util::urlencode(e->torrentMan->getInfoHash(), 20)+"&"+
+      "peer_id="+e->torrentMan->peerId+"&"+
+      "port="+Util::itos(e->torrentMan->getPort())+"&"+
+      "uploaded="+Util::llitos(e->torrentMan->getSessionUploadLength())+"&"+
+      "downloaded="+Util::llitos(e->torrentMan->getSessionDownloadLength())+"&"+
+      "left="+(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength() <= 0
+	       ? "0" : Util::llitos(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength()))+"&"+
+      "compact=1"+"&"+
+      "key="+e->torrentMan->peerId;
+    if(!event.empty()) {
+      url += string("&")+"event="+event;
+    }
+    if(!e->torrentMan->trackerId.empty()) {
+      url += string("&")+"trackerid="+e->torrentMan->trackerId;
+    }
+    req->setUrl(url);
+    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), req, e);
+    e->commands.push(command);
+    e->torrentMan->trackers++;
+    logger->info("CUID#%d - creating new tracker request command #%d", cuid,
+		 command->getCuid());
+  }
   SleepCommand* slpCommand = new SleepCommand(cuid, e, this,
 					      e->torrentMan->minInterval);
   e->commands.push(slpCommand);

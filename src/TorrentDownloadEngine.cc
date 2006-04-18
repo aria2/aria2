@@ -35,9 +35,11 @@ void TorrentDownloadEngine::afterEachIteration() {
     if(torrentMan->isSelectiveDownloadingMode()) {
       onSelectiveDownloadingCompletes();
     }
+    logger->info("The download was complete.");
     torrentMan->onDownloadComplete();
     if(torrentMan->downloadComplete()) {
       filenameFixed = true;
     }
   }
+  torrentMan->processTrackerResponse();
 }

@@ -31,10 +31,11 @@
 #include "Util.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "prefs.h"
-#include "TrackerInitCommand.h"
 #include "PeerListenCommand.h"
 #include "TorrentAutoSaveCommand.h"
 #include "TrackerWatcherCommand.h"
+#include "CompactTrackerResponseProcessor.h"
+#include "ByteArrayDiskWriter.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -93,7 +94,7 @@ void handler(int signal) {
   if(e->diskWriter != NULL) {
     e->diskWriter->closeFile();
   }
-  printf("done\n");
+  printf(_("done\n"));
   exit(0);
 }
 
@@ -110,7 +111,7 @@ void torrentHandler(int signal) {
   } else {
     te->torrentMan->save();
   }
-  printf("done\n");
+  printf(_("done\n"));
   exit(0);
 }
 
@@ -152,6 +153,8 @@ void showVersion() {
 
 void showUsage() {
   printf(_("Usage: %s [options] URL ...\n"), PACKAGE_NAME);
+  printf(_("       %s [options] -T TORRENT_FILE FILE ...\n"), PACKAGE_NAME);
+
   cout << endl;
   cout << _("Options:") << endl;
   cout << _(" -d, --dir=DIR                The directory to store downloaded file.") << endl;
@@ -199,11 +202,16 @@ void showUsage() {
 	    "                              'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
 #ifdef ENABLE_BITTORRENT
-  cout << _(" --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
+  cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
 	    "                              enter BitTorrent mode even if the filename of\n"
 	    "                              downloaded file ends with .torrent.\n"
 	    "                              Default: true") << endl;
+  cout << _(" -S, --show-files             Print the file listing in .torrent file and exit.") << endl;
+  cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
+	    "                              mentioned in .torrent file.\n"
+	    "                              Default: true") << endl;
+  cout << _(" --listen-port                Set port number to listen to for peer connection.") << endl;
 #endif // ENABLE_BITTORRENT
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
@@ -211,6 +219,10 @@ void showUsage() {
   cout << "URL:" << endl;
   cout << _(" You can specify multiple URLs. All URLs must point to the same file\n"
 	    " or downloading fails.") << endl;
+  cout << endl;
+  cout << "FILE:" << endl;
+  cout << _(" Specify files in multi-file torrent to download. Use conjunction with\n"
+	    " -T option.") << endl;
   cout << endl;
   cout << _("Examples:") << endl;
   cout << _(" Download a file by 1 connection:") << endl;
@@ -226,9 +238,11 @@ void showUsage() {
   cout << "  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
   cout << _(" Download a torrent using local .torrent file:") << endl;
   cout << "  aria2c --torrent-file test.torrent" << endl;
+  cout << _(" Download only selected files:") << endl;
+  cout << "  aria2c --torrent-file test.torrent dir/file1.zip dir/file2.zip" << endl;
   cout << endl;
 #endif // ENABLE_BITTORRENT
-  printf(_("Reports bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
+  printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
 }
 
@@ -247,6 +261,7 @@ int main(int argc, char* argv[]) {
   bool daemonMode = false;
   string referer;
   string torrentFile;
+  int listenPort = -1;
   Strings args;
 #ifdef ENABLE_BITTORRENT
   bool followTorrent = true;
@@ -296,9 +311,10 @@ int main(int argc, char* argv[]) {
       { "min-segment-size", required_argument, &lopt, 13 },
       { "http-proxy-method", required_argument, &lopt, 14 },
 #ifdef ENABLE_BITTORRENT
-      { "torrent-file", required_argument, &lopt, 15 },
+      { "torrent-file", required_argument, NULL, 'T' },
+      { "listen-port", required_argument, &lopt, 15 },
       { "follow-torrent", required_argument, &lopt, 16 },
-      { "show-files", no_argument, &lopt, 17 },
+      { "show-files", no_argument, NULL, 'S' },
       { "no-preallocation", no_argument, &lopt, 18 },
       { "direct-file-mapping", required_argument, &lopt, 19 },
 #endif // ENABLE_BITTORRENT
@@ -306,7 +322,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vh", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -415,7 +431,12 @@ int main(int argc, char* argv[]) {
 	}
 	break;
       case 15:
-	torrentFile = string(optarg);
+	listenPort = (int)strtol(optarg, NULL, 10);
+	if(!(1024 <= listenPort && listenPort <= 65535)) {
+	  cerr << _("listen-port must be between 1024 and 65535.") << endl;
+	  showUsage();
+	  exit(1);
+	}
 	break;
       case 16:
 	if(string(optarg) == "true") {
@@ -427,9 +448,6 @@ int main(int argc, char* argv[]) {
 	  showUsage();
 	  exit(1);
 	}
-	break;
-      case 17:
-	op->put(PREF_SHOW_FILES, V_TRUE);
 	break;
       case 18:
 	op->put(PREF_NO_PREALLOCATION, V_TRUE);
@@ -495,6 +513,12 @@ int main(int argc, char* argv[]) {
     case 'p':
       op->put(PREF_FTP_PASV_ENABLED, V_TRUE);
       break;
+    case 'S':
+      op->put(PREF_SHOW_FILES, V_TRUE);
+      break;
+    case 'T':
+      torrentFile = string(optarg);
+      break;
     case 'v':
       showVersion();
       exit(0);
@@ -515,7 +539,7 @@ int main(int argc, char* argv[]) {
   }
   if(daemonMode) {
     if(daemon(1, 1) < 0) {
-      perror("daemon failed");
+      perror(_("daemon failed"));
       exit(1);
     }
   }
@@ -597,18 +621,23 @@ int main(int argc, char* argv[]) {
       req->setTrackerEvent(Request::STARTED);
       te = new TorrentConsoleDownloadEngine();
       te->option = op;
-      te->diskWriter = new DefaultDiskWriter();
+      ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
+      te->diskWriter = byteArrayDiskWriter;
       te->segmentMan = new SegmentMan();
       te->segmentMan->option = op;
       te->segmentMan->splitter = splitter;
       te->torrentMan = new TorrentMan();
       te->torrentMan->setStoreDir(dir);
       te->torrentMan->option = op;
+      CompactTrackerResponseProcessor* responseProcessor =
+	new CompactTrackerResponseProcessor(byteArrayDiskWriter, te, req);
+      te->torrentMan->setTrackerResponseProcessor(responseProcessor);
       string targetTorrentFile = torrentFile.empty() ?
 	downloadedTorrentFile : torrentFile;
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	FileEntries fileEntries = te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
-	cout << "Files:" << endl;
+	FileEntries fileEntries =
+	  te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
+	cout << _("Files:") << endl;
 	for(FileEntries::const_iterator itr = fileEntries.begin();
 	    itr != fileEntries.end(); itr++) {
 	  printf("%s %s Bytes\n", itr->path.c_str(),
@@ -624,9 +653,14 @@ int main(int argc, char* argv[]) {
       }
       PeerListenCommand* listenCommand =
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
-      int port = listenCommand->bindPort(6881, 6999);
+      int port;
+      if(listenPort == -1) {
+	port = listenCommand->bindPort(6881, 6999);
+      } else {
+	port = listenCommand->bindPort(listenPort, listenPort);
+      }
       if(port == -1) {
-	printf("Errors occurred while binding port.\n");
+	printf(_("Errors occurred while binding port.\n"));
 	exit(1);
       }
       te->torrentMan->setPort(port);
@@ -644,6 +678,7 @@ int main(int argc, char* argv[]) {
 	printDownloadAbortMessage();
       }
       delete(req);
+      delete(responseProcessor);
       delete(te->segmentMan);
       delete(te->torrentMan);
       delete(te->diskWriter);

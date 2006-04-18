@@ -45,7 +45,7 @@ void TorrentConsoleDownloadEngine::printStatistics() {
 	   avgSpeed == 0 ? "-" : Util::secfmt(eta).c_str(),
 	   downloadSpeed/1024.0);
   }
-  printf(" U:%.2f(%s) %dpeers",
+  printf(" U:%.2f(%s) %d peers",
 	 uploadSpeed/1024.0,
 	 Util::llitos(torrentMan->getUploadLength(), true).c_str(),
 	 torrentMan->connections);
@@ -76,7 +76,7 @@ void TorrentConsoleDownloadEngine::initStatistics() {
 }
 
 int TorrentConsoleDownloadEngine::calculateSpeed(long long int sessionLength, int elapsed) {
-  int nowSpeed = (int)(sessionLength/(elapsed*1.0));
+  int nowSpeed = (int)(sessionLength/elapsed);
   return nowSpeed;
 }
 

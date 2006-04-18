@@ -11,11 +11,10 @@
 * Add port range command-line option
 * Add max peers command-line option
 * Distinguish seeder from leecher
+* Add Mainline-compatible DHT support
+* Add Message stream encryption support
+* Add announce-list support
 
 0.4.0 release
 * try to use ftruncate to allocate file.
-* add log message when download completes
 
-0.4.1 release
-* Add port command-line option
-* Add estimated remaining time to normal HTTP/FTP downloading status ouput

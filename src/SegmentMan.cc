@@ -212,3 +212,9 @@ long long int SegmentMan::getDownloadedSize() const {
   return size;
 }
 
+void SegmentMan::init() {
+  totalSize = 0;
+  isSplittable = false;
+  downloadStarted = false;
+  segments.clear();
+}

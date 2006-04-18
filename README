@@ -21,6 +21,7 @@ aria2 is in very early development stage. Currently it has following features:
 * Cookie support(currently aria2 ignores "expires")
 * It can run as a daemon process.
 * BitTorrent protocol support
+* Selective download in multi-file torrent
 
 3. How to build
 ---------------
@@ -53,11 +54,22 @@ multi-file mode:
     The directory to store the top directory of downloaded files can be
     specified by -d option.
 
-In both mode, aria2 needs at least 2 times more disk space than the file size
-itself because it creates complete temporary file.
+In the default behavior, before download starts, complete directory structure
+is created if needed. Then aria2 opens all files mentioned in .torrent file,
+directly writes to and reads from these files.
+NOTE: Even in selective download, all files are opened.
+
+If "--direct-file-mapping" option set to be false, aria2 creates temporary
+file in the store directory. The length of this file is the sum of length of
+the files in .torrent file, so at least 2 times more disk space than the file
+size itself is required. Writing and reading is done against this file.
+After download completes, aria2 creates complete directory structure if needed,
+and copies whole file or a part of it to the destination.
 
 Note:
 *  -o option is used to change the filename of downloaded .torrent file.
 * This version only supports compact peers list format.
 * The ports aria2c uses are 6881-6999.
 * The maximum number of peers is 55.
+* After selective download completes, aria2 is going to download rest of the
+files.

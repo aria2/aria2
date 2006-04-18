@@ -54,9 +54,6 @@ SRCS =  Socket.cc Socket.h\
 	MetaFileUtil.cc MetaFileUtil.h\
 	MetaEntryVisitor.h\
 	ShaVisitor.cc ShaVisitor.h\
-	TrackerInitCommand.cc TrackerInitCommand.h\
-	TrackerDownloadCommand.cc TrackerDownloadCommand.h\
-	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	TorrentMan.cc TorrentMan.h\
 	PeerConnection.cc PeerConnection.h\
 	PeerMessageUtil.cc PeerMessageUtil.h\
@@ -85,7 +82,9 @@ SRCS =  Socket.cc Socket.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 	FileEntry.h\
-	LogFactory.cc LogFactory.h
+	LogFactory.cc LogFactory.h\
+	CompactTrackerResponseProcessor.cc CompactTrackerResponseProcessor.h\
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

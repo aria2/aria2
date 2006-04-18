@@ -50,7 +50,7 @@ TorrentMan::TorrentMan():bitfield(NULL),
 			 interval(DEFAULT_ANNOUNCE_INTERVAL),
 			 minInterval(DEFAULT_ANNOUNCE_MIN_INTERVAL),
 			 complete(0), incomplete(0),
-			 connections(0), diskAdaptor(NULL) {
+			 connections(0), trackers(0), diskAdaptor(NULL) {
   logger = LogFactory::getInstance();
 }
 
@@ -394,7 +394,7 @@ void TorrentMan::setup(string metaInfoFile, const Strings& targetFilePaths) {
       diskAdaptor = new MultiDiskAdaptor(new MultiDiskWriter(pieceLength));
     }
   } else {
-    diskAdaptor = new CopyDiskAdaptor(new DefaultDiskWriter(totalLength));
+    diskAdaptor = new CopyDiskAdaptor(new PreAllocationDiskWriter(totalLength));
     ((CopyDiskAdaptor*)diskAdaptor)->setTempFilename(name+".a2tmp");
   }
   diskAdaptor->setStoreDir(storeDir);
@@ -565,5 +565,12 @@ void TorrentMan::onDownloadComplete() {
   diskAdaptor->onDownloadComplete();
   if(isSelectiveDownloadingMode()) {
     finishSelectiveDownloadingMode();
+  }
+}
+
+void TorrentMan::processTrackerResponse() {
+  if(responseProcessor->isFeeded()) {
+    responseProcessor->execute();
+    responseProcessor->resetTrackerResponse();
   }
 }

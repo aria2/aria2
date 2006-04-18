@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-04-12 22:55+0900\n"
-"PO-Revision-Date: 2006-03-22 00:48+0900\n"
+"POT-Creation-Date: 2006-04-19 02:02+0900\n"
+"PO-Revision-Date: 2006-04-19 02:03+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -185,7 +185,7 @@ msgstr "サイズが合いません (%lld != %lld)"
 msgid "Got EOF from the server."
 msgstr "サーバーから EOF を受けとりました."
 
-#: src/main.cc:63
+#: src/main.cc:64
 #, c-format
 msgid ""
 "\n"
@@ -194,7 +194,7 @@ msgstr ""
 "\n"
 "<%s> のダウンロードが完了しました.\n"
 
-#: src/main.cc:67
+#: src/main.cc:72
 msgid ""
 "\n"
 "The download was not complete because of errors. Check the log.\n"
@@ -202,26 +202,30 @@ msgstr ""
 "\n"
 "ダウンロードはエラーのため完了していません. ログを確認してください.\n"
 
-#: src/main.cc:78 src/main.cc:87
+#: src/main.cc:91 src/main.cc:102
 msgid ""
 "\n"
-"SIGINT signal received."
+"stopping application...\n"
 msgstr ""
 "\n"
-"SIGINT シグナルを受け取りました."
+"アプリケーションを終了しています...\n"
 
-#: src/main.cc:109
+#: src/main.cc:97 src/main.cc:114
+msgid "done\n"
+msgstr "完了\n"
+
+#: src/main.cc:125
 #, c-format
 msgid "Unrecognized URL or unsupported protocol: %s\n"
 msgstr ""
 "%s は, 理解できない URL フォーマット, または, サポートされないプロトコルで"
 "す.\n"
 
-#: src/main.cc:115
+#: src/main.cc:131
 msgid " version "
 msgstr " バージョン "
 
-#: src/main.cc:119
+#: src/main.cc:135
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -252,31 +256,36 @@ msgstr ""
 "Temple Place, Suite 330, Boston, MA 02111-1307 USA)。\n"
 "(訳: http://www.opensource.jp/gpl/gpl.ja.html.euc-jp)\n"
 
-#: src/main.cc:133
+#: src/main.cc:149
 #, c-format
 msgid "Contact Info: %s\n"
 msgstr "連絡先: %s\n"
 
-#: src/main.cc:139
+#: src/main.cc:155
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
 msgstr "使い方: %s [オプション] URL ...\n"
 
-#: src/main.cc:141
+#: src/main.cc:156
+#, c-format
+msgid "       %s [options] -T TORRENT_FILE FILE ...\n"
+msgstr "        %s [オプション] -T TORRENT_FILE FILE ...\n"
+
+#: src/main.cc:159
 msgid "Options:"
 msgstr "オプション:"
 
-#: src/main.cc:142
+#: src/main.cc:160
 msgid " -d, --dir=DIR                The directory to store downloaded file."
 msgstr ""
 " -d, --dir=DIR                ダウンロードしたファイルを保存するディレクトリ."
 
-#: src/main.cc:143
+#: src/main.cc:161
 msgid " -o, --out=FILE               The file name for downloaded file."
 msgstr ""
 " -o, --out=FILE               ダウンロードしたファイルの保存先ファイル名."
 
-#: src/main.cc:144
+#: src/main.cc:162
 msgid ""
 " -l, --log=LOG                The file path to store log. If '-' is "
 "specified,\n"
@@ -286,11 +295,11 @@ msgstr ""
 "力\n"
 "                              に出力します."
 
-#: src/main.cc:146
+#: src/main.cc:164
 msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 デーモンとして起動します."
 
-#: src/main.cc:147
+#: src/main.cc:165
 msgid ""
 " -s, --split=N                Download a file using N connections. N must "
 "be\n"
@@ -309,7 +318,7 @@ msgstr ""
 "ショ\n"
 "                              ンを確立します."
 
-#: src/main.cc:151
+#: src/main.cc:169
 msgid ""
 " --retry-wait=SEC             Set amount of time in second between requests\n"
 "                              for errors. Specify a value between 0 and 60.\n"
@@ -320,13 +329,13 @@ msgstr ""
 "                              す. 0 - 60 の値を指定してください.\n"
 "                              デフォルト値: 5"
 
-#: src/main.cc:154
+#: src/main.cc:172
 msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
 msgstr ""
 " -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します.\n"
 "                              デフォルト値: 60"
 
-#: src/main.cc:155
+#: src/main.cc:173
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
@@ -335,7 +344,7 @@ msgstr ""
 "行\n"
 "                              します. デフォルト値: 5"
 
-#: src/main.cc:157
+#: src/main.cc:175
 msgid ""
 " --min-segment-size=SIZE[K|M] Set minimum segment size. You can append\n"
 "                              K or M(1K = 1024, 1M = 1024K). This\n"
@@ -348,7 +357,7 @@ msgstr ""
 "1024K).\n"
 "                              1024 以上の値を指定してください."
 
-#: src/main.cc:161
+#: src/main.cc:179
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
 "                              URLs."
@@ -357,14 +366,14 @@ msgstr ""
 "シ\n"
 "                              ョンはすべての URL に影響します."
 
-#: src/main.cc:163
+#: src/main.cc:181
 msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
 msgstr ""
 " --http-user=USER             HTTP での認証ユーザーを指定します. このオプショ"
 "ン\n"
 "                              はすべての URL に影響します."
 
-#: src/main.cc:164
+#: src/main.cc:182
 msgid ""
 " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
 msgstr ""
@@ -372,7 +381,7 @@ msgstr ""
 "ショ\n"
 "                              ンはすべての URL に影響します."
 
-#: src/main.cc:165
+#: src/main.cc:183
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
 msgstr ""
@@ -382,7 +391,7 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/main.cc:166
+#: src/main.cc:184
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
 "URLs."
@@ -393,7 +402,7 @@ msgstr ""
 "し\n"
 "                              ます."
 
-#: src/main.cc:167
+#: src/main.cc:185
 msgid ""
 " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 "                              METHOD is either 'get' or 'tunnel'.\n"
@@ -404,7 +413,7 @@ msgstr ""
 "                              す. 'get' または 'tunnel' を指定してください.\n"
 "                              デフォルト値: tunnel"
 
-#: src/main.cc:170
+#: src/main.cc:188
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -422,14 +431,14 @@ msgstr ""
 "定\n"
 "                              する必要があります."
 
-#: src/main.cc:174
+#: src/main.cc:192
 msgid " --referer=REFERER            Set Referer. This affects to all URLs."
 msgstr ""
 " --referer=REFERER            リファラーを指定します. このオプションはすべて"
 "の\n"
 "                               URL に影響します."
 
-#: src/main.cc:175
+#: src/main.cc:193
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
 "                              Default: anonymous"
@@ -439,7 +448,7 @@ msgstr ""
 "                              はすべての URL に影響します.\n"
 "                              デフォルト値: anonymous"
 
-#: src/main.cc:177
+#: src/main.cc:195
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
 "                              Default: ARIA2USER@"
@@ -449,7 +458,7 @@ msgstr ""
 "                              ンはすべての URL に影響します.\n"
 "                              デフォルト値: ARIA2USER@"
 
-#: src/main.cc:179
+#: src/main.cc:197
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
@@ -460,11 +469,11 @@ msgstr ""
 "                              'ascii' を指定してください. デフォルト値: "
 "binary"
 
-#: src/main.cc:182
+#: src/main.cc:200
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
 msgstr " -p, --ftp-pasv               FTP で passive モードを使用します."
 
-#: src/main.cc:183
+#: src/main.cc:201
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
@@ -477,11 +486,11 @@ msgstr ""
 "く\n"
 "                              ださい. デフォルト値: tunnel"
 
-#: src/main.cc:187
-msgid " --torrent-file=TORRENT_FILE  The file path to .torrent file."
-msgstr " --torrent-file=TORRENT_FILE  .torrent ファイルのパスを指定."
+#: src/main.cc:205
+msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
+msgstr " -T, --torrent-file=TORRENT_FILE  .torrent ファイルのパスを指定."
 
-#: src/main.cc:188
+#: src/main.cc:206
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -496,16 +505,43 @@ msgstr ""
 "                              は, BitTorrent モードに入りません.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:193
+#: src/main.cc:210
+msgid ""
+" -S, --show-files             Print the file listing in .torrent file and "
+"exit."
+msgstr ""
+" -S, --show-files             .torrent ファイルに記載のファイルリストを出力"
+"し\n"
+"                              終了します."
+
+#: src/main.cc:211
+msgid ""
+" --direct-file-mapping=true|false Directly read from and write to each file\n"
+"                              mentioned in .torrent file.\n"
+"                              Default: true"
+msgstr ""
+" --direct-file-mapping=true|false .torrent ファイル記載のファイルに直接読み書"
+"き\n"
+"                              します.\n"
+"                              デフォルト値: true"
+
+#: src/main.cc:214
+msgid ""
+" --listen-port                Set port number to listen to for peer "
+"connection."
+msgstr ""
+" --listen-port                ピアからの接続を受け付けるポート番号を指定."
+
+#: src/main.cc:216
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
-#: src/main.cc:194
+#: src/main.cc:217
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 " -h, --help                   このヘルプメッセージを表示し, 終了します."
 
-#: src/main.cc:197
+#: src/main.cc:220
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
@@ -514,83 +550,112 @@ msgstr ""
 "れ\n"
 " ばなりません. さもなくばダウンロードは失敗します."
 
-#: src/main.cc:200
+#: src/main.cc:224
+msgid ""
+" Specify files in multi-file torrent to download. Use conjunction with\n"
+" -T option."
+msgstr ""
+" multi-file torrent のとき, ダウンロードするファイルを指定. -T オプションと共"
+"に\n"
+" 使用する."
+
+#: src/main.cc:227
 msgid "Examples:"
 msgstr "例:"
 
-#: src/main.cc:201
+#: src/main.cc:228
 msgid " Download a file by 1 connection:"
 msgstr " 1 コネクションでのダウンロード:"
 
-#: src/main.cc:203
+#: src/main.cc:230
 msgid " Download a file by 2 connections:"
 msgstr " 2 コネクションでのダウンロード:"
 
-#: src/main.cc:205
+#: src/main.cc:232
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr " 二つの異なるサーバーに接続してダウンロード:"
 
-#: src/main.cc:207
+#: src/main.cc:234
 msgid " You can mix up different protocols:"
 msgstr " 異なるプロトコルを混合させてダウンロード:"
 
-#: src/main.cc:210
+#: src/main.cc:237
 msgid " Download a torrent:"
 msgstr "torrent をダウンロード:"
 
-#: src/main.cc:212
+#: src/main.cc:239
 msgid " Download a torrent using local .torrent file:"
 msgstr " ローカル .torrent ファイルを使ってダウンロード:"
 
-#: src/main.cc:216
+#: src/main.cc:241
+msgid " Download only selected files:"
+msgstr " ファイルを指定してダウンロード:"
+
+#: src/main.cc:245
 #, c-format
-msgid "Reports bugs to %s"
+msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
-#: src/main.cc:307
+#: src/main.cc:338
 msgid "unrecognized proxy format"
 msgstr "理解できないProxyフォーマットです."
 
-#: src/main.cc:333
+#: src/main.cc:364
 msgid "Currently, supported authentication scheme is basic."
 msgstr "現在サポートされている認証方法は basic です."
 
-#: src/main.cc:342
+#: src/main.cc:373
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait は 0 から 60 の間で指定してください."
 
-#: src/main.cc:359
+#: src/main.cc:390
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type は 'binary' または 'ascii' を指定してください."
 
-#: src/main.cc:368
+#: src/main.cc:399
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:386
+#: src/main.cc:417
 msgid "min-segment-size invalid"
 msgstr "min-segment-size が不正です."
 
-#: src/main.cc:397
+#: src/main.cc:428
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:411
+#: src/main.cc:436
+msgid "listen-port must be between 1024 and 65535."
+msgstr "listen-port は 1024 - 65535 の値を指定してください."
+
+#: src/main.cc:447
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent は 'true' または 'false を指定してください."
 
-#: src/main.cc:454
+#: src/main.cc:487
 msgid "split must be between 1 and 5."
 msgstr "split は 1 - 5 の値を指定してください."
 
-#: src/main.cc:464
+#: src/main.cc:497
 msgid "timeout must be between 1 and 600"
 msgstr "timeout は 1 - 600 の値を指定してください."
 
-#: src/main.cc:473
+#: src/main.cc:506
 msgid "max-tries invalid"
 msgstr "max-tries が不正です."
 
-#: src/main.cc:496
+#: src/main.cc:535
 msgid "specify at least one URL"
 msgstr "一個以上の URL を指定してください."
+
+#: src/main.cc:542
+msgid "daemon failed"
+msgstr "デーモン起動に失敗"
+
+#: src/main.cc:640
+msgid "Files:"
+msgstr "ファイル:"
+
+#: src/main.cc:663
+msgid "Errors occurred while binding port.\n"
+msgstr "ポートをバインド中にエラーが発生しました.\n"

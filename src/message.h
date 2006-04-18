@@ -43,7 +43,7 @@
 #define MSG_GOT_NEW_PIECE "CUID#%d - we got new piece. index=%d"
 #define MSG_GOT_WRONG_PIECE "CUID#%d - we got wrong piece. index=%d"
 
-#define MSG_TRACKER_WARNING_MESSAGE "CUID#%d - Tracker returned warning message: %s"
+#define MSG_TRACKER_WARNING_MESSAGE "Tracker returned warning message: %s"
 
 #define MSG_SEGMENT_FILE_EXISTS _("The segment file %s exists.")
 #define MSG_SEGMENT_FILE_DOES_NOT_EXIST _("The segment file %s does not exist.")

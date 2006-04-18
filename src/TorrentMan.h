@@ -32,6 +32,7 @@
 #include "Option.h"
 #include "FileEntry.h"
 #include "DiskAdaptor.h"
+#include "CompactTrackerResponseProcessor.h"
 #include <deque>
 #include <map>
 #include <string>
@@ -74,6 +75,7 @@ private:
   UsedPieces usedPieces;
   bool setupComplete;
   const Logger* logger;
+  CompactTrackerResponseProcessor* responseProcessor;
 
   FILE* openSegFile(string segFilename, string mode) const;
   void read(FILE* file);
@@ -97,6 +99,8 @@ public:
   int complete;
   int incomplete;
   int connections;
+  // The number of tracker request command currently in the command queue.
+  int trackers;
 public:
   TorrentMan();
   ~TorrentMan();
@@ -226,6 +230,15 @@ public:
   long long int getSelectedTotalLength() const;
 
   void onDownloadComplete();
+
+  void setTrackerResponseProcessor(CompactTrackerResponseProcessor* proc) {
+    this->responseProcessor = proc;
+  }
+  CompactTrackerResponseProcessor* getTrackerResponseProcessor() const {
+    return this->responseProcessor;
+  }
+
+  void processTrackerResponse();  
 
   enum FILE_MODE {
     SINGLE,

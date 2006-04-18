@@ -1,3 +1,63 @@
+2006-04-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add a readout of estimated remaining time to normal HTTP/FTP
+	downloads:
+	
+	* src/ConsoleDownloadEngine.h (startup): New variable.
+	(startupLength): New variable.
+	(isStartupLengthSet): New variable.
+	(avgSpeed): New variable.
+	(eta): New variable.
+	* src/ConsoleDownloadEngine.cc (sendStatistics): Added a readout of
+	estimated remaining time.
+	(initStatistics): Initialized newly added variables.
+	(calculateStatistics): Calculate average speed and estimated remaining
+	time.
+
+	To decouple TorrentDownloadEngine from HttpResponseCommand:
+
+	* src/TrackerDownloadCommand.h: Removed.
+	* src/TrackerDownloadCommand.cc: Removed.
+	* src/TrackerInitCommand.h: Removed.
+	* src/TrackerInitCommand.cc: Removed.
+	* src/TrackerUpdateCommand.h: Removed.
+	* src/TrackerUpdateCommand.cc: Removed.
+	* src/TrackerWatcherCommand.cc (execute): The construction of request
+	url written in TrackerInitCommand was moved here. Do not create
+	tracker request command if torretnMan->trackers != 0.
+	* src/CompactTrackerResponseProcessor.h: New class.
+	* src/CompactTrackerResponseProcessor.cc: New class.
+	* src/message.h (MSG_TRACKER_WARNING_MESSAGE): Updated.
+	* src/HttpResponseCommand.cc (createHttpDownloadCommand):
+	Decoupled TorrentDownloadEngine from this.
+	* src/SegmentMan.h (init): New function.
+	* src/SegmentMan.cc (init): New function.
+	* src/TorrentMan.h (responseProcessor): New variable.
+	(trackers): New variable.
+	(setTrackerResponseProcessor): New function.
+	(getTrackerResponseProcessor): New function.
+	(processTrackerResponse): New function.
+	* src/TorrentMan.cc (Constructor): Initialized new variable trackers.
+	(processTrackerResponse): New function.
+	* src/main.cc (main): Use ByteArrayDiskWriter and
+	CompactTrackerResponseProcessor.
+	* src/TorrentDownloadEngine.cc (afterEachIteration): Call torrentMan->
+	processTrackerResponse().
+	
+	* src/TorrentConsoleDownloadEngine.cc (printStatistics): Updated a
+	readout.
+
+	* src/TorrentDownloadEngine.cc (afterEachIteration): Added log message
+	which indicates download has completed.
+
+	* src/AbstractDiskWriter.cc (Destructor): fd >= 0, not fd >0
+	(closeFile): fd >= 0, not fd > 0
+
+	* src/main.cc (main): Added short cut for show-files.
+	Added short cut for torrent-file.
+	Added new command-line option listen-port.
+	Updated i18n messages.
+	
 2006-04-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add LogFactory which creates singleton logger:

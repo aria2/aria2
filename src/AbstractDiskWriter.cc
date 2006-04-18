@@ -36,7 +36,7 @@ AbstractDiskWriter::AbstractDiskWriter():fd(0) {
 }
 
 AbstractDiskWriter::~AbstractDiskWriter() {
-  if(fd > 0) {
+  if(fd >= 0) {
     close(fd);
   }
 #ifdef ENABLE_SHA1DIGEST
@@ -54,9 +54,9 @@ void AbstractDiskWriter::openFile(const string& filename) {
 }
 
 void AbstractDiskWriter::closeFile() {
-  if(fd > 0) {
+  if(fd >= 0) {
     close(fd);
-    fd = 0;
+    fd = -1;
   }
 }
 

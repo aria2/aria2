@@ -19,24 +19,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_TRACKER_UPDATE_COMMAND_H_
-#define _D_TRACKER_UPDATE_COMMAND_H_
+#ifndef _D_COMPACT_TRACKER_RESPONSE_PROCESSOR_H_
+#define _D_COMPACT_TRACKER_RESPONSE_PROCESSOR_H_
 
-#include "Command.h"
+#include "common.h"
+#include "ByteArrayDiskWriter.h"
 #include "Request.h"
-#include "TorrentDownloadEngine.h"
-#include "MetaEntry.h"
 
-class TrackerUpdateCommand : public Command {
+class TorrentDownloadEngine;
+class Logger;
+
+class CompactTrackerResponseProcessor {
 private:
-  Request* req;
+  ByteArrayDiskWriter* diskWriter;
   TorrentDownloadEngine* e;
-  MetaEntry* trackerResponse;
+  Request* req;
+  const Logger* logger;
 public:
-  TrackerUpdateCommand(int cuid, Request* req, TorrentDownloadEngine* e, MetaEntry* trackerResponse);
-  ~TrackerUpdateCommand();
+  CompactTrackerResponseProcessor(ByteArrayDiskWriter* diskWriter,
+				  TorrentDownloadEngine* e,
+				  Request* req);
+  ~CompactTrackerResponseProcessor();
 
-  bool execute();
+  bool isFeeded() const;
+  void execute();
+  void resetTrackerResponse();
 };
 
-#endif // _D_TRACKER_UPDATE_COMMAND_H_
+#endif // _D_COMPACT_TRACKER_RESPONSE_PROCESSOR_H_

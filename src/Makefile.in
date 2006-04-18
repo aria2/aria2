@@ -86,10 +86,8 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
 	CookieBox.$(OBJEXT) Data.$(OBJEXT) Dictionary.$(OBJEXT) \
 	List.$(OBJEXT) MetaFileUtil.$(OBJEXT) ShaVisitor.$(OBJEXT) \
-	TrackerInitCommand.$(OBJEXT) TrackerDownloadCommand.$(OBJEXT) \
-	TrackerUpdateCommand.$(OBJEXT) TorrentMan.$(OBJEXT) \
-	PeerConnection.$(OBJEXT) PeerMessageUtil.$(OBJEXT) \
-	PeerAbstractCommand.$(OBJEXT) \
+	TorrentMan.$(OBJEXT) PeerConnection.$(OBJEXT) \
+	PeerMessageUtil.$(OBJEXT) PeerAbstractCommand.$(OBJEXT) \
 	PeerInitiateConnectionCommand.$(OBJEXT) \
 	PeerInteractionCommand.$(OBJEXT) Peer.$(OBJEXT) \
 	BitfieldMan.$(OBJEXT) TorrentDownloadEngine.$(OBJEXT) \
@@ -101,7 +99,8 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	SendMessageQueue.$(OBJEXT) MultiDiskWriter.$(OBJEXT) \
 	DiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
-	LogFactory.$(OBJEXT)
+	LogFactory.$(OBJEXT) CompactTrackerResponseProcessor.$(OBJEXT) \
+	ByteArrayDiskWriter.$(OBJEXT)
 am_libaria2c_a_OBJECTS = $(am__objects_1)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -305,9 +304,6 @@ SRCS = Socket.cc Socket.h\
 	MetaFileUtil.cc MetaFileUtil.h\
 	MetaEntryVisitor.h\
 	ShaVisitor.cc ShaVisitor.h\
-	TrackerInitCommand.cc TrackerInitCommand.h\
-	TrackerDownloadCommand.cc TrackerDownloadCommand.h\
-	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	TorrentMan.cc TorrentMan.h\
 	PeerConnection.cc PeerConnection.h\
 	PeerMessageUtil.cc PeerMessageUtil.h\
@@ -336,7 +332,9 @@ SRCS = Socket.cc Socket.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 	FileEntry.h\
-	LogFactory.cc LogFactory.h
+	LogFactory.cc LogFactory.h\
+	CompactTrackerResponseProcessor.cc CompactTrackerResponseProcessor.h\
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -426,7 +424,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactTrackerResponseProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
@@ -488,9 +488,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerDownloadCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerInitCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@

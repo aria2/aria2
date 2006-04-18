@@ -89,6 +89,9 @@ public:
   SegmentMan();
   ~SegmentMan();
   
+  // Initializes totalSize, isSplittable, downloadStarted.
+  void init();
+
   /**
    * Returns dir+"/"+filename.
    * If filename is empty, then returns dir+"/"+"inex.html";

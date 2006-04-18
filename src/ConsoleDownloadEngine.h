@@ -29,6 +29,15 @@ private:
   struct timeval cp;
   long long int psize;
   int speed;
+  // The time when startup
+  struct timeval startup;
+  // The number of bytes downloaded at startup
+  long long int startupLength;
+  bool isStartupLengthSet;
+  // The average speed(bytes per second) since startup
+  int avgSpeed;
+  // The estimated remaining time to complete the download.
+  int eta;
 protected:
   void sendStatistics(long long int currentSize, long long int totalSize);
   void initStatistics();
