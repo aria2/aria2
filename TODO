@@ -14,7 +14,3 @@
 * Add Mainline-compatible DHT support
 * Add Message stream encryption support
 * Add announce-list support
-
-0.4.0 release
-* try to use ftruncate to allocate file.
-
