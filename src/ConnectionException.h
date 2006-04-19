@@ -27,7 +27,7 @@
 class ConnectionException:public DlAbortEx {
 public:
   ConnectionException():DlAbortEx() {}
-  ConnectionException(string msg):DlAbortEx() {}
+  ConnectionException(const string& msg):DlAbortEx() {}
 };
 
 #endif // _D_CONNECTION_EXCEPTION_H_

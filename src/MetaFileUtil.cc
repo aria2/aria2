@@ -26,7 +26,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-MetaEntry* MetaFileUtil::parseMetaFile(string file) {
+MetaEntry* MetaFileUtil::parseMetaFile(const string& file) {
   File f(file);
   int len = f.size();
   char* buf = new char[len];

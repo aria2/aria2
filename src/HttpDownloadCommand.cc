@@ -46,6 +46,6 @@ HttpDownloadCommand::~HttpDownloadCommand() {
   }
 }
 
-TransferEncoding* HttpDownloadCommand::getTransferEncoding(string name) {
+TransferEncoding* HttpDownloadCommand::getTransferEncoding(const string& name) {
   return transferEncodings[name];
 }

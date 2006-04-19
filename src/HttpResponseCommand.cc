@@ -84,7 +84,7 @@ void HttpResponseCommand::checkResponse(int status, const Segment& segment) {
   }
 }
 
-bool HttpResponseCommand::handleRedirect(string url, const HttpHeader& headers) {
+bool HttpResponseCommand::handleRedirect(const string& url, const HttpHeader& headers) {
   req->redirectUrl(url);
   logger->info(MSG_REDIRECT, cuid, url.c_str());
   e->noWait = true;
@@ -126,7 +126,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   }
 }
 
-bool HttpResponseCommand::handleOtherEncoding(string transferEncoding, const HttpHeader& headers) {
+bool HttpResponseCommand::handleOtherEncoding(const string& transferEncoding, const HttpHeader& headers) {
   // we ignore content-length when transfer-encoding is set
   e->segmentMan->downloadStarted = true;
   e->segmentMan->isSplittable = false;
@@ -139,7 +139,7 @@ bool HttpResponseCommand::handleOtherEncoding(string transferEncoding, const Htt
   return true;
 }
 
-void HttpResponseCommand::createHttpDownloadCommand(string transferEncoding) {
+void HttpResponseCommand::createHttpDownloadCommand(const string& transferEncoding) {
   
   HttpDownloadCommand* command = new HttpDownloadCommand(cuid, req, e, socket);
   TransferEncoding* enc = NULL;

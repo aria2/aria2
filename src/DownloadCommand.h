@@ -42,7 +42,7 @@ public:
   DownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
   virtual ~DownloadCommand();
 
-  virtual TransferEncoding* getTransferEncoding(string transferEncoding) = 0;
+  virtual TransferEncoding* getTransferEncoding(const string& transferEncoding) = 0;
 
   string transferEncoding;
 

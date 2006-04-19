@@ -41,8 +41,8 @@ public:
   Dictionary();
   ~Dictionary();
 
-  const MetaEntry* get(string name) const;
-  void put(string name, MetaEntry* entry);
+  const MetaEntry* get(const string& name) const;
+  void put(const string& name, MetaEntry* entry);
 
   void accept(MetaEntryVisitor* v) const;
   const Order& getOrder() const;

@@ -130,7 +130,7 @@ void SocketCore::getPeerInfo(pair<string, int>& peerinfo) const {
   peerinfo.second = ntohs(peerin.sin_port);
 }
 
-void SocketCore::establishConnection(string host, int port) {
+void SocketCore::establishConnection(const string& host, int port) {
   closeConnection();
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if(sockfd == -1) {

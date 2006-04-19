@@ -41,7 +41,7 @@ private:
   const Logger* logger;
 
   void read(FILE* file);
-  FILE* openSegFile(string segFilename, string mode) const;
+  FILE* openSegFile(const string& segFilename, const string& mode) const;
 public:
   /**
    * The total number of bytes to download.

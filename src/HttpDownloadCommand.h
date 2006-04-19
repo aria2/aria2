@@ -40,7 +40,7 @@ public:
   HttpDownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
   ~HttpDownloadCommand();
 
-  TransferEncoding* getTransferEncoding(string transferEncoding);
+  TransferEncoding* getTransferEncoding(const string& transferEncoding);
 };
 
 #endif // _D_HTTP_DOWNLOAD_COMMAND_H_

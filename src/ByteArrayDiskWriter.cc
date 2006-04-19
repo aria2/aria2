@@ -42,12 +42,7 @@ void ByteArrayDiskWriter::init() {
   bufLength = 0;
 }
 
-void ByteArrayDiskWriter::reset() {
-  clear();
-  init();
-}
-
-void ByteArrayDiskWriter::initAndOpenFile(string filename) {
+void ByteArrayDiskWriter::initAndOpenFile(const string& filename) {
   openFile(filename);
 }
 
@@ -60,7 +55,7 @@ void ByteArrayDiskWriter::closeFile() {
   clear();
 }
 
-void ByteArrayDiskWriter::openExistingFile(string filename) {
+void ByteArrayDiskWriter::openExistingFile(const string& filename) {
   openFile(filename);
 }
 

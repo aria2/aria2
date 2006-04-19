@@ -33,6 +33,6 @@ FtpDownloadCommand::~FtpDownloadCommand() {
   }
 }
 
-TransferEncoding* FtpDownloadCommand::getTransferEncoding(string name) {
+TransferEncoding* FtpDownloadCommand::getTransferEncoding(const string& name) {
   return NULL;
 }

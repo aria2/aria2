@@ -350,7 +350,7 @@ void TorrentMan::readFileEntry(FileEntries& fileEntries, Directory** pTopDir, co
   }
 }
 
-void TorrentMan::setup(string metaInfoFile, const Strings& targetFilePaths) {
+void TorrentMan::setup(const string& metaInfoFile, const Strings& targetFilePaths) {
   peerId = "-A2****-";
   for(int i = 0; i < 12; i++) {
     peerId += Util::itos((int)(((double)10)*random()/(RAND_MAX+1.0)));
@@ -466,7 +466,7 @@ bool TorrentMan::segmentFileExists() const {
   }
 }
 
-FILE* TorrentMan::openSegFile(string segFilename, string mode) const {
+FILE* TorrentMan::openSegFile(const string& segFilename, const string& mode) const {
   FILE* segFile = fopen(segFilename.c_str(), mode.c_str());
   if(segFile == NULL) {
     throw new DlAbortEx(strerror(errno));

@@ -40,7 +40,7 @@ Request::~Request() {
   delete cookieBox;
 }
 
-bool Request::setUrl(string url) {
+bool Request::setUrl(const string& url) {
   this->url = url;
   return parseUrl(url);
 }
@@ -50,12 +50,12 @@ bool Request::resetUrl() {
   return setUrl(url);
 }
 
-bool Request::redirectUrl(string url) {
+bool Request::redirectUrl(const string& url) {
   previousUrl = currentUrl;
   return parseUrl(url);
 }
 
-bool Request::parseUrl(string url) {
+bool Request::parseUrl(const string& url) {
   currentUrl = url;
   host = "";
   port = 0;

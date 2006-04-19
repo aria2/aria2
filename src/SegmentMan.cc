@@ -150,7 +150,7 @@ void SegmentMan::save() const {
   logger->info(MSG_SAVED_SEGMENT_FILE);
 }
 
-FILE* SegmentMan::openSegFile(string segFilename, string mode) const {
+FILE* SegmentMan::openSegFile(const string& segFilename, const string& mode) const {
   FILE* segFile = fopen(segFilename.c_str(), mode.c_str());
   if(segFile == NULL) {
     throw new DlAbortEx(strerror(errno));

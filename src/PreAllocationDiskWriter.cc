@@ -33,7 +33,7 @@ PreAllocationDiskWriter::PreAllocationDiskWriter(long long int totalLength)
 
 PreAllocationDiskWriter::~PreAllocationDiskWriter() {}
 
-void PreAllocationDiskWriter::initAndOpenFile(string filename) {
+void PreAllocationDiskWriter::initAndOpenFile(const string& filename) {
   createFile(filename);
   int bufSize = 4096;
   char buf[4096];

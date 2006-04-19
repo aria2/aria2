@@ -31,7 +31,7 @@ public:
   long long int offset;
   bool extracted;
   bool requested;
-  FileEntry(string path, long long int length, long long int offset):
+  FileEntry(const string& path, long long int length, long long int offset):
     path(path), length(length), offset(offset),
     extracted(false), requested(true) {}
   ~FileEntry() {}

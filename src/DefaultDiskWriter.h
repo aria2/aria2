@@ -32,7 +32,7 @@ public:
   DefaultDiskWriter(long long int totalLength);
   ~DefaultDiskWriter();
 
-  void initAndOpenFile(string filename);
+  void initAndOpenFile(const string& filename);
 };
 
 #endif // _D_DEFAULT_DISK_WRITER_H_

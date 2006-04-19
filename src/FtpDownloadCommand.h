@@ -31,7 +31,7 @@ public:
   FtpDownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* dataSocket, const Socket* ctrlSocket);
   ~FtpDownloadCommand();
 
-  TransferEncoding* getTransferEncoding(string name);
+  TransferEncoding* getTransferEncoding(const string& name);
 };
 
 #endif // _D_FTP_DOWNLOAD_COMMAND_H_

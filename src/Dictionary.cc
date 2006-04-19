@@ -34,7 +34,7 @@ void Dictionary::clearTable() {
   }
 }
 
-const MetaEntry* Dictionary::get(string name) const {
+const MetaEntry* Dictionary::get(const string& name) const {
   MetaTable::const_iterator itr = table.find(name);
   if(itr == table.end()) {
     return NULL;
@@ -43,7 +43,7 @@ const MetaEntry* Dictionary::get(string name) const {
   }
 }
 
-void Dictionary::put(string name, MetaEntry* entry) {
+void Dictionary::put(const string& name, MetaEntry* entry) {
   table[name] = entry;
   order.push_back(name);
 }

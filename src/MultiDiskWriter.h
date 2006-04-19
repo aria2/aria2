@@ -60,9 +60,9 @@ public:
   void setFileEntries(const FileEntries& fileEntries);
 
   virtual void openFile(const string& filename);
-  virtual void initAndOpenFile(string filename);
+  virtual void initAndOpenFile(const string& filename);
   virtual void closeFile();
-  virtual void openExistingFile(string filename);
+  virtual void openExistingFile(const string& filename);
   virtual void writeData(const char* data, int len, long long int position = 0);
   virtual int readData(char* data, int len, long long int position);
   virtual string sha1Sum(long long int offset, long long int length);

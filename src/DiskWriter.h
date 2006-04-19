@@ -39,7 +39,7 @@ public:
    * If the file exists, then it is truncated to 0 length.
    * @param filename the file name to be opened.
    */
-  virtual void initAndOpenFile(string filename) = 0;
+  virtual void initAndOpenFile(const string& filename) = 0;
 
   virtual void openFile(const string& filename) = 0;
 
@@ -54,7 +54,7 @@ public:
    *
    * @param filename the file name to be opened.
    */
-  virtual void openExistingFile(string filename) = 0;
+  virtual void openExistingFile(const string& filename) = 0;
 
   /*
    * Writes len bytes from data to this binary stream at offset position.

@@ -43,7 +43,7 @@ private:
   static string decodeWordAsString(const char** pp, const char* end);
 
 public:
-  static MetaEntry* parseMetaFile(string file);
+  static MetaEntry* parseMetaFile(const string& file);
   static MetaEntry* bdecoding(const char* buf, int len);
 };
 

@@ -69,7 +69,7 @@ Socket* Socket::acceptConnection() const {
   return new Socket(core->acceptConnection());
 }
 
-void Socket::establishConnection(string host, int port) const {
+void Socket::establishConnection(const string& host, int port) const {
   core->establishConnection(host, port);
 }
 
@@ -93,7 +93,7 @@ void Socket::writeData(const char* data, int len, int timeout) const {
   core->writeData(data, len, timeout);
 }
 
-void Socket::writeData(string str, int timeout) const {
+void Socket::writeData(const string& str, int timeout) const {
   core->writeData(str.c_str(), str.size(), timeout);
 }
 

@@ -31,7 +31,7 @@ public:
   PreAllocationDiskWriter(long long int totalLength);
   ~PreAllocationDiskWriter();
 
-  void initAndOpenFile(string filename);
+  void initAndOpenFile(const string& filename);
 };
 
 #endif // _D_PRE_ALLOCATION_DISK_WRITER_H_

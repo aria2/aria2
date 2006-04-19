@@ -59,7 +59,7 @@ void AbstractDiskWriter::closeFile() {
   }
 }
 
-void AbstractDiskWriter::openExistingFile(string filename) {
+void AbstractDiskWriter::openExistingFile(const string& filename) {
   File f(filename);
   if(!f.isFile()) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), "file not found");
@@ -70,7 +70,7 @@ void AbstractDiskWriter::openExistingFile(string filename) {
   }
 }
 
-void AbstractDiskWriter::createFile(string filename, int addFlags) {
+void AbstractDiskWriter::createFile(const string& filename, int addFlags) {
   // TODO proper filename handling needed
   assert(filename.size());
 //   if(filename.empty()) {

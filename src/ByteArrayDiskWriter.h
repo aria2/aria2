@@ -36,13 +36,13 @@ public:
   ByteArrayDiskWriter();
   virtual ~ByteArrayDiskWriter();
 
-  virtual void initAndOpenFile(string filename);
+  virtual void initAndOpenFile(const string& filename);
 
   virtual void openFile(const string& filename);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(string filename);
+  virtual void openExistingFile(const string& filename);
 
   // position is ignored
   virtual void writeData(const char* data, int len, long long int position = 0);
@@ -56,7 +56,6 @@ public:
   int getByteArrayLength() const {
     return bufLength;
   }
-  void reset();
 };
 
 #endif // _D_BYTE_ARRAY_DISK_WRITER_H_

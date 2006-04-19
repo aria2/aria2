@@ -57,7 +57,7 @@ private:
   map<string, int> defaultPorts;
   int tryCount;
   int trackerEvent;
-  bool parseUrl(string url);
+  bool parseUrl(const string& url);
 public:
   Segment seg;
   CookieBox* cookieBox;
@@ -68,11 +68,11 @@ public:
 
   // Parses URL and sets url, host, port, dir, file fields.
   // Returns true if parsing goes successful, otherwise returns false.
-  bool setUrl(string url);
+  bool setUrl(const string& url);
   // Parses URL and sets host, port, dir, file fields.
   // url field are not altered by this method.
   // Returns true if parsing goes successful, otherwise returns false.
-  bool redirectUrl(string url);
+  bool redirectUrl(const string& url);
   bool resetUrl();
   void resetTryCount() { tryCount = 0; }
   void addTryCount() { tryCount++; }
@@ -83,7 +83,7 @@ public:
   string getCurrentUrl() const { return currentUrl; }
   string getPreviousUrl() const { return previousUrl; }
   string getReferer() const { return referer; }
-  void setReferer(string url) { referer = previousUrl = url; }
+  void setReferer(const string& url) { referer = previousUrl = url; }
   string getProtocol() const { return protocol; }
   string getHost() const { return host; }
   int getPort() const { return port; }

@@ -76,7 +76,7 @@ private:
   bool setupComplete;
   const Logger* logger;
 
-  FILE* openSegFile(string segFilename, string mode) const;
+  FILE* openSegFile(const string& segFilename, const string& mode) const;
   void read(FILE* file);
 
   Piece findUsedPiece(int index) const;
@@ -141,7 +141,7 @@ public:
     return infoHash;
   }
 
-  void setup(string metaInfoFile, const Strings& targetFilePaths);
+  void setup(const string& metaInfoFile, const Strings& targetFilePaths);
 
   string getPieceHash(int index) const;
 
@@ -201,7 +201,7 @@ public:
   }
 
   string getStoreDir() const { return storeDir; }
-  void setStoreDir(string dir) { storeDir = dir; }
+  void setStoreDir(const string& dir) { storeDir = dir; }
 
   string getSegmentFilePath() const;
 

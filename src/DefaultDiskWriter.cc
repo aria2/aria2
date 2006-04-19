@@ -29,7 +29,7 @@ DefaultDiskWriter::DefaultDiskWriter(long long int totalLength):AbstractDiskWrit
 
 DefaultDiskWriter::~DefaultDiskWriter() {}
 
-void DefaultDiskWriter::initAndOpenFile(string filename) {
+void DefaultDiskWriter::initAndOpenFile(const string& filename) {
   createFile(filename);
   if(totalLength > 0) {
     ftruncate(fd, totalLength);

@@ -32,8 +32,8 @@ private:
   static string part_decode(const string& subCrypted);
   static char getValue(char ch);
 public:
-  static string encode(string plain);
-  static string decode(string crypted);
+  static string encode(const string& plain);
+  static string decode(const string& crypted);
 };
 
 #endif // _BASE64_H_

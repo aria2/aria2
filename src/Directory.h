@@ -34,10 +34,10 @@ private:
   string name;
   Files files;
 public:
-  Directory(string name);
+  Directory(const string& name);
   ~Directory();
 
-  void createDir(string parentDir, bool recursive) const;
+  void createDir(const string& parentDir, bool recursive) const;
   void addFile(Directory* directory);
 };
 

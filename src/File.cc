@@ -24,7 +24,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-File::File(string name):name(name) {}
+File::File(const string& name):name(name) {}
 
 File::~File() {}
 

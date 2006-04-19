@@ -35,7 +35,7 @@ private:
   string name;
   int fillStat(struct stat& fstat);
 public:
-  File(string name);
+  File(const string& name);
   ~File();
 
   /**

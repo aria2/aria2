@@ -61,7 +61,7 @@ void MultiDiskWriter::openFile(const string& filename) {
 }
 
 // filename is a directory which is specified by the user in the option.
-void MultiDiskWriter::initAndOpenFile(string filename) {
+void MultiDiskWriter::initAndOpenFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
     (*itr)->diskWriter->initAndOpenFile(filename+"/"+(*itr)->fileEntry.path);
@@ -75,7 +75,7 @@ void MultiDiskWriter::closeFile() {
   }
 }
 
-void MultiDiskWriter::openExistingFile(string filename) {
+void MultiDiskWriter::openExistingFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
     (*itr)->diskWriter->openExistingFile(filename+"/"+(*itr)->fileEntry.path);

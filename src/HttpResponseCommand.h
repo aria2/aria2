@@ -28,10 +28,10 @@
 class HttpResponseCommand : public AbstractCommand {
 private:
   void checkResponse(int status, const Segment& segment);
-  bool handleRedirect(string url, const HttpHeader& headers);
+  bool handleRedirect(const string& url, const HttpHeader& headers);
   bool handleDefaultEncoding(const HttpHeader& headers);
-  bool handleOtherEncoding(string transferEncoding, const HttpHeader& headers);
-  void createHttpDownloadCommand(string transferEncoding = "");
+  bool handleOtherEncoding(const string& transferEncoding, const HttpHeader& headers);
+  void createHttpDownloadCommand(const string& transferEncoding = "");
   void retrieveCookie(const HttpHeader& headers);
   HttpConnection* http;
 protected:

@@ -60,8 +60,9 @@ string Base64::part_encode(const string& subplain)
   return crypted;
 }
 
-string Base64::encode(string plain)
+string Base64::encode(const string& plainSrc)
 {
+  string plain = plainSrc;
   int remainder = plain.size() % 3;
   if( remainder ) remainder = 3-remainder;
   for(int i = 0; i < remainder; ++i) plain += (char)0;
@@ -112,7 +113,7 @@ string Base64::part_decode(const string& subCrypted)
   return plain;
 }
 
-string Base64::decode(string crypted)
+string Base64::decode(const string& crypted)
 {
   string plain;
   int sIndex = 0;

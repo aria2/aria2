@@ -35,7 +35,7 @@ protected:
   MessageDigestContext ctx;
 #endif // ENABLE_SHA1DIGEST
 
-  void createFile(string filename, int addFlags = 0);
+  void createFile(const string& filename, int addFlags = 0);
 
   void writeDataInternal(const char* data, int len);
   int readDataInternal(char* data, int len);
@@ -50,7 +50,7 @@ public:
 
   void closeFile();
 
-  void openExistingFile(string filename);
+  void openExistingFile(const string& filename);
 
   string sha1Sum(long long int offset, long long int length);
 

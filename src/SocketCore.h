@@ -102,7 +102,7 @@ public:
    * @param host hostname or ip address to connect to
    * @param port service port number to connect to
    */
-  void establishConnection(string host, int port);
+  void establishConnection(const string& host, int port);
 
   /**
    * Makes this socket blocking mode.

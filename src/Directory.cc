@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-Directory::Directory(string name):name(name) {}
+Directory::Directory(const string& name):name(name) {}
 
 Directory::~Directory() {
   for(Files::iterator itr = files.begin(); itr != files.end(); itr++) {
@@ -34,7 +34,7 @@ Directory::~Directory() {
   }
 }
 
-void Directory::createDir(string parentDir, bool recursive) const {
+void Directory::createDir(const string& parentDir, bool recursive) const {
   string path = parentDir+"/"+name;
   File f(path);
   if(f.exists()) {

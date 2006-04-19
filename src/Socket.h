@@ -71,7 +71,7 @@ public:
   /**
    * @see SocketCore::establishConnection()
    */
-  void establishConnection(string host, int port) const;
+  void establishConnection(const string& host, int port) const;
 
   /**
    * @see SocketCore::setBlockingMode()
@@ -101,7 +101,7 @@ public:
    * A covenient function that can take string class parameter and
    * internally calls SocketCore::writeData().
    */
-  void writeData(string str, int timeout = 5) const;
+  void writeData(const string& str, int timeout = 5) const;
 
   /**
    * @see SocketCore::readData()
