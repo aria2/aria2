@@ -32,11 +32,9 @@ private:
 
   void init();
   void clear();
-  void expandBuffer(int newSize);
 public:
   ByteArrayDiskWriter();
   virtual ~ByteArrayDiskWriter();
-
 
   virtual void initAndOpenFile(string filename);
 
@@ -48,8 +46,7 @@ public:
 
   // position is ignored
   virtual void writeData(const char* data, int len, long long int position = 0);
-  // not implemented yet
-  virtual int readData(char* data, int len, long long int position) { return 0; }
+  virtual int readData(char* data, int len, long long int position);
   // not implemented yet
   virtual string sha1Sum(long long int offset, long long int length) { return ""; }
 

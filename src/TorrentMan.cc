@@ -567,10 +567,3 @@ void TorrentMan::onDownloadComplete() {
     finishSelectiveDownloadingMode();
   }
 }
-
-void TorrentMan::processTrackerResponse() {
-  if(responseProcessor->isFeeded()) {
-    responseProcessor->execute();
-    responseProcessor->resetTrackerResponse();
-  }
-}

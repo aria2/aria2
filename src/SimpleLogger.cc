@@ -21,9 +21,12 @@
 /* copyright --> */
 #include "SimpleLogger.h"
 #include "Util.h"
+#include "DlAbortEx.h"
+#include "message.h"
 #include <time.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <errno.h>
 
 #define WRITE_LOG(LEVEL, MSG) \
 va_list ap;\
@@ -37,20 +40,29 @@ va_start(ap, EX);\
 writeLog(Logger::LEVEL, MSG, ap, EX);\
 va_end(ap);
 
-SimpleLogger::SimpleLogger(string filename) {
-  file = fopen(filename.c_str(), "a");
-}
+SimpleLogger::SimpleLogger():file(NULL) {}
 
 SimpleLogger::SimpleLogger(FILE* logfile) {
   file = logfile;
 }
 
 SimpleLogger::~SimpleLogger() {
+  closeFile();
+}
+
+void SimpleLogger::openFile(const string& filename) {
+  file = fopen(filename.c_str(), "a");
+  if(file == NULL) {
+    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
+  }
+}
+
+void SimpleLogger::closeFile() {
   if(file != NULL) {
     fclose(file);
   }
 }
-
+  
 void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e) const
 {
   string levelStr;

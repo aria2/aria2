@@ -74,11 +74,14 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
 }
 
 void HttpResponseCommand::checkResponse(int status, const Segment& segment) {
-    if(!(status < 400 && status >= 300 ||
-	 (segment.sp+segment.ds == 0 && status == 200)
-	 || (segment.sp+segment.ds > 0 &&  status == 206))) {
-      throw new DlRetryEx(EX_BAD_STATUS, status);
-    }
+  if(status == 401) {
+    throw new DlAbortEx(EX_AUTH_FAILED);
+  }
+  if(!(300 <= status && status < 400 ||
+       (segment.sp+segment.ds == 0 && status == 200)
+       || (segment.sp+segment.ds > 0 &&  status == 206))) {
+    throw new DlRetryEx(EX_BAD_STATUS, status);
+  }
 }
 
 bool HttpResponseCommand::handleRedirect(string url, const HttpHeader& headers) {
@@ -95,6 +98,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     e->segmentMan->totalSize = size;
     e->segmentMan->isSplittable = false;
     e->segmentMan->downloadStarted = true;
+    e->segmentMan->diskWriter->initAndOpenFile("/tmp/aria2"+Util::itos(getpid()));
     createHttpDownloadCommand();
     return true;
   }
@@ -109,14 +113,14 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   e->segmentMan->downloadStarted = true;
   if(segFileExists) {
     e->segmentMan->load();
-    e->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+    e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
     // send request again to the server with Range header
     return prepareForRetry(0);
   } else {
     e->segmentMan->totalSize = size;
     Segment seg;
     e->segmentMan->getSegment(seg, cuid);	
-    e->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
+    e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
     createHttpDownloadCommand();
     return true;
   }
@@ -130,7 +134,7 @@ bool HttpResponseCommand::handleOtherEncoding(string transferEncoding, const Htt
   e->segmentMan->totalSize = 0;
   Segment seg;
   e->segmentMan->getSegment(seg, cuid);	
-  e->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
+  e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
   createHttpDownloadCommand(transferEncoding);
   return true;
 }

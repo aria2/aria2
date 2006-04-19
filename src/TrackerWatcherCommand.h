@@ -24,14 +24,12 @@
 
 #include "Command.h"
 #include "TorrentDownloadEngine.h"
-#include "Request.h"
 
 class TrackerWatcherCommand : public Command {
 private:
-  Request* req;
   TorrentDownloadEngine* e;
 public:
-  TrackerWatcherCommand(int cuid, Request* req, TorrentDownloadEngine* e);
+  TrackerWatcherCommand(int cuid, TorrentDownloadEngine* e);
   ~TrackerWatcherCommand();
 
   bool execute();

@@ -29,7 +29,6 @@
 #include "SegmentMan.h"
 #include "common.h"
 #include "Logger.h"
-#include "DiskWriter.h"
 #include "Option.h"
 #include <sys/time.h>
 
@@ -57,7 +56,6 @@ public:
   bool noWait;
   Commands commands;
   SegmentMan* segmentMan;
-  DiskWriter* diskWriter;
   const Option* option;
 
   DownloadEngine();

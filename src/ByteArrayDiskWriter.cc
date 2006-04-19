@@ -20,6 +20,7 @@
  */
 /* copyright --> */
 #include "ByteArrayDiskWriter.h"
+#include "Util.h"
 
 ByteArrayDiskWriter::ByteArrayDiskWriter():buf(NULL) {
 }
@@ -65,16 +66,23 @@ void ByteArrayDiskWriter::openExistingFile(string filename) {
 
 void ByteArrayDiskWriter::writeData(const char* data, int dataLength, long long int position) {
   if(bufLength+dataLength >= maxBufLength) {
-    expandBuffer(bufLength+dataLength);
+    maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
   }
   memcpy(buf+bufLength, data, dataLength);
   bufLength += dataLength;
 }
 
-void ByteArrayDiskWriter::expandBuffer(int newSize) {
-  char* newbuf = new char[newSize];
-  memcpy(newbuf, buf, bufLength);
-  delete [] buf;
-  buf = newbuf;
-  maxBufLength = newSize;
+int ByteArrayDiskWriter::readData(char* data, int len, long long int position) {
+  if(position >= bufLength) {
+    return 0;
+  }
+  int readLength;
+  if(position+len <= bufLength) {
+    readLength = len;
+  } else {
+    readLength = bufLength-position;
+  }
+  memcpy(data, buf+position, readLength);
+  return readLength;
 }
+

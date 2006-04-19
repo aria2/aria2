@@ -34,10 +34,7 @@ void Peer::updateBitfield(int index, int operation) {
 #define THRESHOLD 1024*1024*2
 
 bool Peer::shouldChoke() const {
-  if(bitfield->countBlock()*0.7 < bitfield->countMissingBlock()) {
-    return false;
-  }
-  if(peerDownload <= pieceLength*10) {
+  if(bitfield->countBlock()*0.95 < bitfield->countMissingBlock()) {
     return false;
   }
   // we are always optimistic.

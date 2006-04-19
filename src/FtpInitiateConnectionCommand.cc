@@ -37,10 +37,10 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
     bool segFileExists = e->segmentMan->segmentFileExists();
     if(segFileExists) {
       e->segmentMan->load();
-      e->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
       e->segmentMan->downloadStarted = true;
     } else {
-      e->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
+      e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
     }
   }
 

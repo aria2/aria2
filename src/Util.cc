@@ -286,3 +286,11 @@ string Util::secfmt(int sec) {
   str += itos(sec)+"s";
   return str;
 }
+
+int Util::expandBuffer(char** pbuf, int curLength, int newLength) {
+  char* newbuf = new char[newLength];
+  memcpy(newbuf, *pbuf, curLength);
+  delete [] *pbuf;
+  *pbuf = newbuf;
+  return newLength;
+}

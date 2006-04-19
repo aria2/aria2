@@ -27,6 +27,7 @@
 #include "Segment.h"
 #include "Option.h"
 #include "SegmentSplitter.h"
+#include "DiskWriter.h"
 
 using namespace std;
 
@@ -85,11 +86,13 @@ public:
 
   const Option* option;
   SegmentSplitter* splitter;
+  DiskWriter* diskWriter;
 
   SegmentMan();
   ~SegmentMan();
   
   // Initializes totalSize, isSplittable, downloadStarted.
+  // Clears command queue. Also, closes diskWriter.
   void init();
 
   /**

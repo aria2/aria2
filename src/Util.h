@@ -71,6 +71,8 @@ public:
   static bool isPowerOf(int num, int base);
 
   static string secfmt(int sec);
+
+  static int expandBuffer(char** pbuf, int curLength, int newLength);
 };
 
 #endif // _D_UTIL_H_

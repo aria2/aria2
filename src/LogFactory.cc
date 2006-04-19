@@ -27,11 +27,13 @@ Logger* LogFactory::logger = NULL;
 
 Logger* LogFactory::getInstance() {
   if(logger == NULL) {
+    SimpleLogger* slogger = new SimpleLogger();
     if(filename.empty()) {
-      logger = new SimpleLogger("/dev/null");
+      slogger->openFile("/dev/null");
     } else {
-      logger = new SimpleLogger(filename);
+      slogger->openFile(filename);
     }
+    logger = slogger;
   }
   return logger;
 }

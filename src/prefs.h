@@ -68,6 +68,8 @@
 // values: basic
 #define PREF_HTTP_AUTH_SCHEME "http_auth_scheme"
 #  define V_BASIC "basic"
+// values: true | false
+#define PREF_HTTP_AUTH_ENABLED "http_auth_enabled"
 
 /** 
  * HTTP proxy related preferences

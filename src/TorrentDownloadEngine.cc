@@ -41,5 +41,4 @@ void TorrentDownloadEngine::afterEachIteration() {
       filenameFixed = true;
     }
   }
-  torrentMan->processTrackerResponse();
 }

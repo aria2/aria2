@@ -83,10 +83,12 @@ string HttpConnection::createRequest(const Segment& segment) const {
     request += "Proxy-Connection: close\r\n";
     request += getProxyAuthString();
   }
-  if(option->get(PREF_HTTP_AUTH_SCHEME) == V_BASIC) {
-    request += "Authorization: Basic "+
-      Base64::encode(option->get(PREF_HTTP_USER)+":"+
-		     option->get(PREF_HTTP_PASSWD))+"\r\n";
+  if(option->get(PREF_HTTP_AUTH_ENABLED) == V_TRUE) {
+    if(option->get(PREF_HTTP_AUTH_SCHEME) == V_BASIC) {
+      request += "Authorization: Basic "+
+	Base64::encode(option->get(PREF_HTTP_USER)+":"+
+		       option->get(PREF_HTTP_PASSWD))+"\r\n";
+    }
   }
   if(req->getPreviousUrl().size()) {
     request += "Referer: "+req->getPreviousUrl()+"\r\n";

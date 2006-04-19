@@ -67,7 +67,11 @@
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED _("Transfer encoding %s is not supported.")
 #define EX_SSL_INIT_FAILURE _("SSL initialization failed.")
 #define EX_SIZE_MISMATCH _("Size mismatch %lld != %lld")
+#define EX_AUTH_FAILED "Authorization failed."
 #define EX_GOT_EOF _("Got EOF from the server.")
 #define EX_EOF_FROM_PEER "Got EOF from peer."
 #define EX_MULFORMED_META_INFO "Mulformed meta info."
+
+#define EX_FILE_OPEN "Error occurred while opening <%s>, cause: %s"
+
 #endif // _D_MESSAGE_H_

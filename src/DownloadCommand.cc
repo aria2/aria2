@@ -47,10 +47,10 @@ bool DownloadCommand::executeInternal(Segment seg) {
     int infbufSize = 4096;
     char infbuf[infbufSize];
     te->inflate(infbuf, infbufSize, buf, bufSize);
-    e->diskWriter->writeData(infbuf, infbufSize, seg.sp+seg.ds);
+    e->segmentMan->diskWriter->writeData(infbuf, infbufSize, seg.sp+seg.ds);
     seg.ds += infbufSize;
   } else {
-    e->diskWriter->writeData(buf, bufSize, seg.sp+seg.ds);
+    e->segmentMan->diskWriter->writeData(buf, bufSize, seg.sp+seg.ds);
     seg.ds += bufSize;
   }
   // calculate downloading speed

@@ -83,7 +83,7 @@ SRCS =  Socket.cc Socket.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 	FileEntry.h\
 	LogFactory.cc LogFactory.h\
-	CompactTrackerResponseProcessor.cc CompactTrackerResponseProcessor.h\
+	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)

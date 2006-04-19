@@ -217,4 +217,5 @@ void SegmentMan::init() {
   isSplittable = false;
   downloadStarted = false;
   segments.clear();
+  diskWriter->closeFile();
 }

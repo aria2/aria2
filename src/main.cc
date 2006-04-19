@@ -34,7 +34,7 @@
 #include "PeerListenCommand.h"
 #include "TorrentAutoSaveCommand.h"
 #include "TrackerWatcherCommand.h"
-#include "CompactTrackerResponseProcessor.h"
+#include "TrackerUpdateCommand.h"
 #include "ByteArrayDiskWriter.h"
 #include <deque>
 #include <algorithm>
@@ -91,9 +91,7 @@ void handler(int signal) {
   printf(_("\nstopping application...\n"));
   fflush(stdout);
   e->segmentMan->save();
-  if(e->diskWriter != NULL) {
-    e->diskWriter->closeFile();
-  }
+  e->segmentMan->diskWriter->closeFile();
   printf(_("done\n"));
   exit(0);
 }
@@ -101,9 +99,7 @@ void handler(int signal) {
 void torrentHandler(int signal) {
   printf(_("\nstopping application...\n"));
   fflush(stdout);
-  if(te->torrentMan->diskAdaptor != NULL) {
-    te->torrentMan->diskAdaptor->closeFile();
-  }
+  te->torrentMan->diskAdaptor->closeFile();
   if(te->torrentMan->downloadComplete() && te->isFilenameFixed()) {
     te->torrentMan->remove();
     //te->torrentMan->deleteTempFile();
@@ -276,6 +272,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_PEER_CONNECTION_TIMEOUT, "60");
   op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
   op->put(PREF_MAX_TRIES, "5");
+  op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
   op->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
   op->put(PREF_FTP_USER, "anonymous");
   op->put(PREF_FTP_PASSWD, "ARIA2USER@");
@@ -346,6 +343,7 @@ int main(int argc, char* argv[]) {
       }
       case 2:
 	op->put(PREF_HTTP_USER, optarg);
+	op->put(PREF_HTTP_AUTH_ENABLED, V_TRUE);
 	break;
       case 3:
 	op->put(PREF_HTTP_PASSWD, optarg);
@@ -562,7 +560,15 @@ int main(int argc, char* argv[]) {
   } else if(logfile.size()) {
     LogFactory::setLogFile(logfile);
   }
-  
+  // make sure logger is configured properly.
+  try {
+    LogFactory::getInstance();
+  } catch(Exception* ex) {
+    cerr << ex->getMsg() << endl;
+    delete ex;
+    exit(1);
+  }
+
   SegmentSplitter* splitter = new SplitSlowestSegmentSplitter();
   splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
 
@@ -576,8 +582,8 @@ int main(int argc, char* argv[]) {
 
     e = new ConsoleDownloadEngine();
     e->option = op;
-    e->diskWriter = new DefaultDiskWriter();
     e->segmentMan = new SegmentMan();
+    e->segmentMan->diskWriter = new DefaultDiskWriter();
     e->segmentMan->dir = dir;
     e->segmentMan->ufilename = ufilename;
     e->segmentMan->option = op;
@@ -607,7 +613,7 @@ int main(int argc, char* argv[]) {
     requests.clear();
 
     delete(e->segmentMan);
-    delete(e->diskWriter);
+    delete(e->segmentMan->diskWriter);
     delete(e);
   }
   if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
@@ -622,16 +628,14 @@ int main(int argc, char* argv[]) {
       te = new TorrentConsoleDownloadEngine();
       te->option = op;
       ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
-      te->diskWriter = byteArrayDiskWriter;
       te->segmentMan = new SegmentMan();
+      te->segmentMan->diskWriter = byteArrayDiskWriter;
       te->segmentMan->option = op;
       te->segmentMan->splitter = splitter;
       te->torrentMan = new TorrentMan();
       te->torrentMan->setStoreDir(dir);
       te->torrentMan->option = op;
-      CompactTrackerResponseProcessor* responseProcessor =
-	new CompactTrackerResponseProcessor(byteArrayDiskWriter, te, req);
-      te->torrentMan->setTrackerResponseProcessor(responseProcessor);
+      te->torrentMan->req = req;
       string targetTorrentFile = torrentFile.empty() ?
 	downloadedTorrentFile : torrentFile;
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
@@ -666,7 +670,9 @@ int main(int argc, char* argv[]) {
       te->torrentMan->setPort(port);
       te->commands.push(listenCommand);
       te->commands.push(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
-						  req, te));
+						  te));
+      te->commands.push(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
+						 te));
       te->commands.push(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
 						   te,
 						   op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
@@ -678,10 +684,9 @@ int main(int argc, char* argv[]) {
 	printDownloadAbortMessage();
       }
       delete(req);
-      delete(responseProcessor);
       delete(te->segmentMan);
+      delete(te->segmentMan->diskWriter);
       delete(te->torrentMan);
-      delete(te->diskWriter);
       delete(te);
     } catch(Exception* ex) {
       cerr << ex->getMsg() << endl;

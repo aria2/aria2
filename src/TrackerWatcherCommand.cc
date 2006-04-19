@@ -24,30 +24,30 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "Util.h"
 
-TrackerWatcherCommand::TrackerWatcherCommand(int cuid, Request* req,
+TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 					     TorrentDownloadEngine* e):
-  Command(cuid), req(req), e(e) {
+  Command(cuid), e(e) {
 }
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
-  if(e->torrentMan->trackers == 0) {
-    req->resetTryCount();
+  if(e->torrentMan->trackers == 0 && e->torrentMan->connections < 30) {
+    e->torrentMan->req->resetTryCount();
     
     if(e->torrentMan->downloadComplete()) {
-      if(req->getTrackerEvent() == Request::COMPLETED) {
-	req->setTrackerEvent(Request::AFTER_COMPLETED);
+      if(e->torrentMan->req->getTrackerEvent() == Request::COMPLETED) {
+	e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
       } else {
-	if(req->getTrackerEvent() == Request::STARTED) {
-	  req->setTrackerEvent(Request::AFTER_COMPLETED);
-	} else if(req->getTrackerEvent() != Request::AFTER_COMPLETED) {
-	  req->setTrackerEvent(Request::COMPLETED);
+	if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {
+	  e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
+	} else if(e->torrentMan->req->getTrackerEvent() != Request::AFTER_COMPLETED) {
+	  e->torrentMan->req->setTrackerEvent(Request::COMPLETED);
 	}
       }
     }
     string event;
-    switch(req->getTrackerEvent()) {
+    switch(e->torrentMan->req->getTrackerEvent()) {
     case Request::STARTED:
       event = "started";
       break;
@@ -74,8 +74,8 @@ bool TrackerWatcherCommand::execute() {
     if(!e->torrentMan->trackerId.empty()) {
       url += string("&")+"trackerid="+e->torrentMan->trackerId;
     }
-    req->setUrl(url);
-    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), req, e);
+    e->torrentMan->req->setUrl(url);
+    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), e->torrentMan->req, e);
     e->commands.push(command);
     e->torrentMan->trackers++;
     logger->info("CUID#%d - creating new tracker request command #%d", cuid,

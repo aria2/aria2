@@ -29,10 +29,12 @@ private:
   void writeLog(int level, const char* msg, va_list ap, Exception* e = NULL) const;
   FILE* file;
 public:
-  SimpleLogger(string filename);
+  SimpleLogger();
   SimpleLogger(FILE* logfile);
   ~SimpleLogger();
 
+  void openFile(const string& filename);
+  void closeFile();
   void debug(const char* msg, ...) const;
   void debug(const char* msg, Exception* ex, ...) const;
   void info(const char* msg, ...) const;

@@ -1,3 +1,66 @@
+2006-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add TrackerUpdateCommand with which replaces
+	CompactTrackerResponseProcessor:
+	
+	* src/TrackerWatcherCommand.h (req): Removed.
+	* src/TrackerWatcherCommand.cc (execute): Send a request to tracker
+	if the number of peer connections are less than 30.
+	* src/ByteArrayDiskWriter.h (readData): Implemented.
+	* src/SegmentMan.h (diskWriter): New function.
+	* src/SegmentMan.cc (init): Added a call to diskWriter->closeFile()
+	* src/main.cc : Removed #include "CompactTrackerResponseProcessor.h"
+	(main): Use TrackerUpdateCommand.
+	* src/TorrentMan.h (CompactTrackerResponseProcessor): Removed.
+	(req): New variable.
+	(setTrackerResponseProcessor): Removed.
+	(getTrackerResponseProcessor): Removed.
+	(processTrackerResponse): Removed.
+	* src/DownloadEngine.h (diskWriter): Removed.
+	* src/TorrentDownloadEngine.cc (afterEachIteration): Removed a call
+	to torrentMan->processTrackerResponse().
+	
+	To add Util::expandBuffer:
+	
+	* src/ByteArrayDiskWriter.h (expandBuffer): Removed.
+	* src/ByteArrayDiskWriter.cc (writeData): Use Util::expandBuffer().
+	* src/Util.h (expandBuffer): New function.
+
+	To fix the bug that causes segmentation fault when "-l ." is specified
+	in command-line option:
+
+	* src/SimpleLogger.h (SimpleLogger): Removed "filename" argument.
+	(openFile): New function.
+	(closeFile): New function.
+	* src/SimpleLogger.cc (SimpleLogger): Removed fopen.
+	(~SimpleLogger): Call closeFile();
+	* src/LogFactory.cc (getInstance): Added a call to slogger->openFile().
+	* src/main.cc (main): Added a check to see logger is configured
+	properly.
+	
+	To enable HTTP authentication without specifying "--http-auth-scheme"
+	
+	* src/prefs.h (PREF_HTTP_AUTH_ENABLED): New definition.
+	* src/HttpConnection.cc (createRequest): Send Authorization header
+	if PREF_HTTP_AUTH_ENABLED == V_TRUE.
+	* src/main.cc (main): Preset PREF_HTTP_AUTH_SCHEME to V_TRUE
+	If "--http-user" is specified, set PREF_HTTP_AUTH_ENABLED to V_TRUE
+
+	* src/Peer.cc (shouldChoke): Updated algorithm.
+	
+	* src/message.h (EX_AUTH_FAILED): New definition.
+	(EX_FILE_OPEN): New definition.
+	* src/HttpResponseCommand.cc (checkResponse): Throw DlAbortEx
+	if status == 401.
+	(handleDefaultEncoding): Added a call to diskWriter->initAndOpenFile()
+	if req->isTorrent == true.
+
+	* src/main.cc (handler): Removed the check to see e->diskWriter != NULL
+	(torrentHandler): Removed the check to see diskAdaptor != NULL.
+
+	* src/AbstractDiskWriter.cc (openExistingFile): Updated messsage.
+	(createFile): Updated message.
+	
 2006-04-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add a readout of estimated remaining time to normal HTTP/FTP

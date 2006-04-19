@@ -20,14 +20,15 @@
  */
 /* copyright --> */
 #include "AbstractDiskWriter.h"
+#include "DlAbortEx.h"
+#include "File.h"
+#include "Util.h"
+#include "message.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
-#include "DlAbortEx.h"
-#include "File.h"
-#include "Util.h"
 
 AbstractDiskWriter::AbstractDiskWriter():fd(0) {
 #ifdef ENABLE_SHA1DIGEST
@@ -36,9 +37,7 @@ AbstractDiskWriter::AbstractDiskWriter():fd(0) {
 }
 
 AbstractDiskWriter::~AbstractDiskWriter() {
-  if(fd >= 0) {
-    close(fd);
-  }
+  closeFile();
 #ifdef ENABLE_SHA1DIGEST
   sha1DigestFree(ctx);
 #endif // ENABLE_SHA1DIGEST
@@ -63,11 +62,11 @@ void AbstractDiskWriter::closeFile() {
 void AbstractDiskWriter::openExistingFile(string filename) {
   File f(filename);
   if(!f.isFile()) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), "file not found");
   }
 
   if((fd = open(filename.c_str(), O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
 }
 
@@ -78,7 +77,7 @@ void AbstractDiskWriter::createFile(string filename, int addFlags) {
 //     filename = "index.html";
 //   }
   if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|addFlags, S_IRUSR|S_IWUSR)) < 0) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }  
 }
 

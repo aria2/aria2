@@ -82,7 +82,7 @@ void ConsoleDownloadEngine::calculateStatistics() {
 }
 
 void ConsoleDownloadEngine::onEndOfRun() {
-  diskWriter->closeFile();
+  segmentMan->diskWriter->closeFile();
   if(segmentMan->finished()) {
     segmentMan->remove();
   } else {
