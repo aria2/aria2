@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-04-21 00:25+0900\n"
+"POT-Creation-Date: 2006-04-21 01:04+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -543,8 +543,7 @@ msgstr ""
 
 #: src/main.cc:205
 msgid ""
-" -S, --show-files             Print the file listing in .torrent file and "
-"exit."
+" -S, --show-files             Print file listing of .torrent file and exit."
 msgstr ""
 
 #: src/main.cc:206
@@ -612,71 +611,75 @@ msgstr ""
 msgid " Download only selected files:"
 msgstr ""
 
-#: src/main.cc:240
+#: src/main.cc:238
+msgid " Print file listing of .torrent file:"
+msgstr ""
+
+#: src/main.cc:242
 #, c-format
 msgid "Report bugs to %s"
 msgstr ""
 
-#: src/main.cc:334
+#: src/main.cc:336
 msgid "unrecognized proxy format"
 msgstr ""
 
-#: src/main.cc:361
+#: src/main.cc:363
 msgid "Currently, supported authentication scheme is basic."
 msgstr ""
 
-#: src/main.cc:370
+#: src/main.cc:372
 msgid "retry-wait must be between 0 and 60."
 msgstr ""
 
-#: src/main.cc:387
+#: src/main.cc:389
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr ""
 
-#: src/main.cc:396
+#: src/main.cc:398
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:414
+#: src/main.cc:416
 msgid "min-segment-size invalid"
 msgstr ""
 
-#: src/main.cc:425
+#: src/main.cc:427
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:433
+#: src/main.cc:435
 msgid "listen-port must be between 1024 and 65535."
 msgstr ""
 
-#: src/main.cc:444
+#: src/main.cc:446
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:484
+#: src/main.cc:486
 msgid "split must be between 1 and 5."
 msgstr ""
 
-#: src/main.cc:494
+#: src/main.cc:496
 msgid "timeout must be between 1 and 600"
 msgstr ""
 
-#: src/main.cc:503
+#: src/main.cc:505
 msgid "max-tries invalid"
 msgstr ""
 
-#: src/main.cc:532
+#: src/main.cc:534
 msgid "specify at least one URL"
 msgstr ""
 
-#: src/main.cc:539
+#: src/main.cc:541
 msgid "daemon failed"
 msgstr ""
 
-#: src/main.cc:643
+#: src/main.cc:645
 msgid "Files:"
 msgstr ""
 
-#: src/main.cc:666
+#: src/main.cc:668
 msgid "Errors occurred while binding port.\n"
 msgstr ""

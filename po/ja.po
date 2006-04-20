@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-04-21 00:25+0900\n"
-"PO-Revision-Date: 2006-04-21 00:42+0900\n"
+"POT-Creation-Date: 2006-04-21 01:04+0900\n"
+"PO-Revision-Date: 2006-04-21 01:08+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -657,11 +657,9 @@ msgstr ""
 
 #: src/main.cc:205
 msgid ""
-" -S, --show-files             Print the file listing in .torrent file and "
-"exit."
+" -S, --show-files             Print file listing of .torrent file and exit."
 msgstr ""
-" -S, --show-files             .torrent ファイルに記載のファイルリストを出力"
-"し\n"
+" -S, --show-files             .torrent ファイルに含まれるファイルリストを出力し\n"
 "                              終了します."
 
 #: src/main.cc:206
@@ -705,9 +703,8 @@ msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option."
 msgstr ""
-" multi-file torrent のとき, ダウンロードするファイルを指定. -T オプションと共"
-"に\n"
-" 使用する."
+" multi-file torrent のとき, ダウンロードするファイルを指定します. -T オプション\n"
+" と共に使用します."
 
 #: src/main.cc:222
 msgid "Examples:"
@@ -741,71 +738,75 @@ msgstr " ローカル .torrent ファイルを使ってダウンロード:"
 msgid " Download only selected files:"
 msgstr " ファイルを指定してダウンロード:"
 
-#: src/main.cc:240
+#: src/main.cc:238
+msgid " Print file listing of .torrent file:"
+msgstr " この .torrent ファイルに含まれるファイルリストを表示:"
+
+#: src/main.cc:242
 #, c-format
 msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
-#: src/main.cc:334
+#: src/main.cc:336
 msgid "unrecognized proxy format"
 msgstr "理解できないProxyフォーマットです."
 
-#: src/main.cc:361
+#: src/main.cc:363
 msgid "Currently, supported authentication scheme is basic."
 msgstr "現在サポートされている認証方法は basic です."
 
-#: src/main.cc:370
+#: src/main.cc:372
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait は 0 から 60 の間で指定してください."
 
-#: src/main.cc:387
+#: src/main.cc:389
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type は 'binary' または 'ascii' を指定してください."
 
-#: src/main.cc:396
+#: src/main.cc:398
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:414
+#: src/main.cc:416
 msgid "min-segment-size invalid"
 msgstr "min-segment-size が不正です."
 
-#: src/main.cc:425
+#: src/main.cc:427
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:433
+#: src/main.cc:435
 msgid "listen-port must be between 1024 and 65535."
 msgstr "listen-port は 1024 - 65535 の値を指定してください."
 
-#: src/main.cc:444
+#: src/main.cc:446
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent は 'true' または 'false を指定してください."
 
-#: src/main.cc:484
+#: src/main.cc:486
 msgid "split must be between 1 and 5."
 msgstr "split は 1 - 5 の値を指定してください."
 
-#: src/main.cc:494
+#: src/main.cc:496
 msgid "timeout must be between 1 and 600"
 msgstr "timeout は 1 - 600 の値を指定してください."
 
-#: src/main.cc:503
+#: src/main.cc:505
 msgid "max-tries invalid"
 msgstr "max-tries が不正です."
 
-#: src/main.cc:532
+#: src/main.cc:534
 msgid "specify at least one URL"
 msgstr "一個以上の URL を指定してください."
 
-#: src/main.cc:539
+#: src/main.cc:541
 msgid "daemon failed"
 msgstr "デーモン起動に失敗"
 
-#: src/main.cc:643
+#: src/main.cc:645
 msgid "Files:"
 msgstr "ファイル:"
 
-#: src/main.cc:666
+#: src/main.cc:668
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"

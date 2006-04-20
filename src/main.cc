@@ -202,7 +202,7 @@ void showUsage() {
 	    "                              enter BitTorrent mode even if the filename of\n"
 	    "                              downloaded file ends with .torrent.\n"
 	    "                              Default: true") << endl;
-  cout << _(" -S, --show-files             Print the file listing in .torrent file and exit.") << endl;
+  cout << _(" -S, --show-files             Print file listing of .torrent file and exit.") << endl;
   cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
@@ -232,9 +232,11 @@ void showUsage() {
   cout << _(" Download a torrent:") << endl;
   cout << "  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
   cout << _(" Download a torrent using local .torrent file:") << endl;
-  cout << "  aria2c --torrent-file test.torrent" << endl;
+  cout << "  aria2c -T test.torrent" << endl;
   cout << _(" Download only selected files:") << endl;
-  cout << "  aria2c --torrent-file test.torrent dir/file1.zip dir/file2.zip" << endl;
+  cout << "  aria2c -T test.torrent dir/file1.zip dir/file2.zip" << endl;
+  cout << _(" Print file listing of .torrent file:") << endl;
+  cout << "  aria2c -T test.torrent -S" << endl;  
   cout << endl;
 #endif // ENABLE_BITTORRENT
   printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
