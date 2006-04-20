@@ -40,10 +40,10 @@
 #define MSG_SEND_PEER_MESSAGE_WITH_BITFIELD "CUID#%d - To: %s:%d %s %s"
 #define MSG_SEND_PEER_MESSAGE_WITH_INDEX_BEGIN_LENGTH "CUID#%d - To: %s:%d %s index=%d, begin=%d, length=%d"
 #define MSG_RECEIVE_PEER_MESSAGE "CUID#%d - From: %s:%d %s"
-#define MSG_GOT_NEW_PIECE "CUID#%d - we got new piece. index=%d"
-#define MSG_GOT_WRONG_PIECE "CUID#%d - we got wrong piece. index=%d"
+#define MSG_GOT_NEW_PIECE _("CUID#%d - we got new piece. index=%d")
+#define MSG_GOT_WRONG_PIECE _("CUID#%d - we got wrong piece. index=%d")
 
-#define MSG_TRACKER_WARNING_MESSAGE "Tracker returned warning message: %s"
+#define MSG_TRACKER_WARNING_MESSAGE _("Tracker returned warning message: %s")
 
 #define MSG_SEGMENT_FILE_EXISTS _("The segment file %s exists.")
 #define MSG_SEGMENT_FILE_DOES_NOT_EXIST _("The segment file %s does not exist.")
@@ -54,7 +54,7 @@
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
-#define EX_TOO_LARGE_CHUNK _("Too large chunk. size = %d")
+#define EX_TOO_LARGE_CHUNK _("Too large chunk. size=%d")
 #define EX_INVALID_HEADER _("Invalid header.")
 #define EX_INVALID_RESPONSE _("Invalid response.")
 #define EX_NO_HEADER _("No header found.")
@@ -62,16 +62,41 @@
 #define EX_PROXY_CONNECTION_FAILED _("Proxy connection failed.")
 #define EX_CONNECTION_FAILED _("Connection failed.")
 #define EX_FILENAME_MISMATCH _("The requested filename and the previously registered one are not same. %s != %s")
-#define EX_BAD_STATUS _("The response status is not successful. status = %d")
-#define EX_TOO_LARGE_FILE _("Too large file size. size = %lld")
+#define EX_BAD_STATUS _("The response status is not successful. status=%d")
+#define EX_TOO_LARGE_FILE _("Too large file size. size=%lld")
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED _("Transfer encoding %s is not supported.")
 #define EX_SSL_INIT_FAILURE _("SSL initialization failed.")
 #define EX_SIZE_MISMATCH _("Size mismatch %lld != %lld")
-#define EX_AUTH_FAILED "Authorization failed."
+#define EX_AUTH_FAILED _("Authorization failed.")
 #define EX_GOT_EOF _("Got EOF from the server.")
-#define EX_EOF_FROM_PEER "Got EOF from peer."
-#define EX_MULFORMED_META_INFO "Mulformed meta info."
+#define EX_EOF_FROM_PEER _("Got EOF from peer.")
+#define EX_MULFORMED_META_INFO _("Mulformed meta info.")
 
-#define EX_FILE_OPEN "Error occurred while opening <%s>, cause: %s"
+#define EX_FILE_OPEN _("Failed to open the file %s, cause: %s")
+#define EX_FILE_WRITE _("Failed to write into the file %s, cause: %s")
+#define EX_FILE_READ _("Failed to read from the file %s, cause: %s")
+#define EX_FILE_SHA1SUM _("Failed to calculate SHA1 digest of or a part of the file %s, cause: %s")
+#define EX_FILE_SEEK _("Failed to seek the file %s, cause: %s")
+#define EX_FILE_OFFSET_OUT_OF_RANGE _("The offset is out of range, offset=%lld")
+#define EX_NOT_DIRECTORY _("%s is not a directory.")
+#define EX_MAKE_DIR _("Failed to make the directory %s, cause: %s")
+#define EX_SEGMENT_FILE_OPEN _("Failed to open the segment file %s, cause: %s")
+#define EX_SEGMENT_FILE_WRITE _("Failed to write into the segment file %s, cause: %s")
+#define EX_SEGMENT_FILE_READ _("Failed to read from the segment file %s, cause: %s")
+
+#define EX_SOCKET_OPEN _("Failed to open a socket, cause: %s")
+#define EX_SOCKET_SET_OPT _("Failed to set a socket option, cause: %s")
+#define EX_SOCKET_BIND _("Failed to bind a socket, cause: %s")
+#define EX_SOCKET_LISTEN _("Failed to listen to a socket, cause: %s")
+#define EX_SOCKET_ACCEPT _("Failed to accept a peer connection, cause: %s")
+#define EX_SOCKET_GET_NAME _("Failed to get the name of socket, cause: %s")
+#define EX_SOCKET_GET_PEER _("Failed to get the name of connected peer, cause: %s")
+#define EX_RESOLVE_HOSTNAME _("Failed to resolve the hostname %s, cause: %s")
+#define EX_SOCKET_CONNECT _("Failed to connect to the host %s, cause: %s")
+#define EX_SOCKET_CHECK_WRITABLE _("Failed to check whether the socket is writable, cause: %s")
+#define EX_SOCKET_CHECK_READABLE _("Failed to check whether the socket is readable, cause: %s")
+#define EX_SOCKET_SEND _("Failed to send data, cause: %s")
+#define EX_SOCKET_RECV _("Failed to receive data, cause: %s")
+#define EX_SOCKET_PEEK _("Failed to peek data, cause: %s")
 
 #endif // _D_MESSAGE_H_

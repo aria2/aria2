@@ -122,8 +122,14 @@ void SegmentMan::load() {
   string segFilename = getSegmentFilePath();
   logger->info(MSG_LOADING_SEGMENT_FILE, segFilename.c_str());
   FILE* segFile = openSegFile(segFilename, "r+");
-  read(segFile);
-  fclose(segFile);
+  try {
+    read(segFile);
+    fclose(segFile);
+  } catch(string ex) {
+    fclose(segFile);
+    throw new DlAbortEx(EX_SEGMENT_FILE_READ,
+			segFilename.c_str(), strerror(errno));
+  }
   logger->info(MSG_LOADED_SEGMENT_FILE);
   for(Segments::iterator itr = segments.begin(); itr != segments.end();
       itr++) {
@@ -138,22 +144,29 @@ void SegmentMan::save() const {
   string segFilename = getSegmentFilePath();
   logger->info(MSG_SAVING_SEGMENT_FILE, segFilename.c_str());
   FILE* segFile = openSegFile(segFilename, "w");
-  if(fwrite(&totalSize, sizeof(totalSize), 1, segFile) < 1) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  for(Segments::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    if(fwrite(&*itr, sizeof(Segment), 1, segFile) < 1) {
-      throw new DlAbortEx(strerror(errno));
+  try {
+    if(fwrite(&totalSize, sizeof(totalSize), 1, segFile) < 1) {
+      throw string("writeError");
     }
+    for(Segments::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
+      if(fwrite(&*itr, sizeof(Segment), 1, segFile) < 1) {
+	throw string("writeError");
+      }
+    }
+    fclose(segFile);
+    logger->info(MSG_SAVED_SEGMENT_FILE);
+  } catch(string ex) {
+    fclose(segFile);
+    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
+			segFilename.c_str(), strerror(errno));
   }
-  fclose(segFile);
-  logger->info(MSG_SAVED_SEGMENT_FILE);
 }
 
 FILE* SegmentMan::openSegFile(const string& segFilename, const string& mode) const {
   FILE* segFile = fopen(segFilename.c_str(), mode.c_str());
   if(segFile == NULL) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SEGMENT_FILE_OPEN,
+			segFilename.c_str(), strerror(errno));
   }
   return segFile;
 }
@@ -161,13 +174,13 @@ FILE* SegmentMan::openSegFile(const string& segFilename, const string& mode) con
 void SegmentMan::read(FILE* file) {
   assert(file != NULL);
   if(fread(&totalSize, sizeof(totalSize), 1, file) < 1) {
-    throw new DlAbortEx(strerror(errno));
+    throw string("readError");
   }
   while(1) {
     Segment seg;
     if(fread(&seg, sizeof(Segment), 1, file) < 1) {
       if(ferror(file)) {
-	throw new DlAbortEx(strerror(errno));
+	throw string("readError");
       } else if(feof(file)) {
 	break;
       }

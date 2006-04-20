@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-04-20 02:49+0900\n"
+"POT-Creation-Date: 2006-04-21 00:25+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,6 +77,21 @@ msgstr ""
 msgid "CUID#%d - Unregistering cuid from segmentManager."
 msgstr ""
 
+#: src/message.h:43
+#, c-format
+msgid "CUID#%d - we got new piece. index=%d"
+msgstr ""
+
+#: src/message.h:44
+#, c-format
+msgid "CUID#%d - we got wrong piece. index=%d"
+msgstr ""
+
+#: src/message.h:46
+#, c-format
+msgid "Tracker returned warning message: %s"
+msgstr ""
+
 #: src/message.h:48
 #, c-format
 msgid "The segment file %s exists."
@@ -115,7 +130,7 @@ msgstr ""
 
 #: src/message.h:57
 #, c-format
-msgid "Too large chunk. size = %d"
+msgid "Too large chunk. size=%d"
 msgstr ""
 
 #: src/message.h:58
@@ -151,12 +166,12 @@ msgstr ""
 
 #: src/message.h:65
 #, c-format
-msgid "The response status is not successful. status = %d"
+msgid "The response status is not successful. status=%d"
 msgstr ""
 
 #: src/message.h:66
 #, c-format
-msgid "Too large file size. size = %lld"
+msgid "Too large file size. size=%lld"
 msgstr ""
 
 #: src/message.h:67
@@ -173,8 +188,145 @@ msgstr ""
 msgid "Size mismatch %lld != %lld"
 msgstr ""
 
+#: src/message.h:70
+msgid "Authorization failed."
+msgstr ""
+
 #: src/message.h:71
 msgid "Got EOF from the server."
+msgstr ""
+
+#: src/message.h:72
+msgid "Got EOF from peer."
+msgstr ""
+
+#: src/message.h:73
+msgid "Mulformed meta info."
+msgstr ""
+
+#: src/message.h:75
+#, c-format
+msgid "Failed to open the file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:76
+#, c-format
+msgid "Failed to write into the file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:77
+#, c-format
+msgid "Failed to read from the file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:78
+#, c-format
+msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:79
+#, c-format
+msgid "Failed to seek the file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:80
+#, c-format
+msgid "The offset is out of range, offset=%lld"
+msgstr ""
+
+#: src/message.h:81
+#, c-format
+msgid "%s is not a directory."
+msgstr ""
+
+#: src/message.h:82
+#, c-format
+msgid "Failed to make the directory %s, cause: %s"
+msgstr ""
+
+#: src/message.h:83
+#, c-format
+msgid "Failed to open the segment file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:84
+#, c-format
+msgid "Failed to write into the segment file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:85
+#, c-format
+msgid "Failed to read from the segment file %s, cause: %s"
+msgstr ""
+
+#: src/message.h:87
+#, c-format
+msgid "Failed to open a socket, cause: %s"
+msgstr ""
+
+#: src/message.h:88
+#, c-format
+msgid "Failed to set a socket option, cause: %s"
+msgstr ""
+
+#: src/message.h:89
+#, c-format
+msgid "Failed to bind a socket, cause: %s"
+msgstr ""
+
+#: src/message.h:90
+#, c-format
+msgid "Failed to listen to a socket, cause: %s"
+msgstr ""
+
+#: src/message.h:91
+#, c-format
+msgid "Failed to accept a peer connection, cause: %s"
+msgstr ""
+
+#: src/message.h:92
+#, c-format
+msgid "Failed to get the name of socket, cause: %s"
+msgstr ""
+
+#: src/message.h:93
+#, c-format
+msgid "Failed to get the name of connected peer, cause: %s"
+msgstr ""
+
+#: src/message.h:94
+#, c-format
+msgid "Failed to resolve the hostname %s, cause: %s"
+msgstr ""
+
+#: src/message.h:95
+#, c-format
+msgid "Failed to connect to the host %s, cause: %s"
+msgstr ""
+
+#: src/message.h:96
+#, c-format
+msgid "Failed to check whether the socket is writable, cause: %s"
+msgstr ""
+
+#: src/message.h:97
+#, c-format
+msgid "Failed to check whether the socket is readable, cause: %s"
+msgstr ""
+
+#: src/message.h:98
+#, c-format
+msgid "Failed to send data, cause: %s"
+msgstr ""
+
+#: src/message.h:99
+#, c-format
+msgid "Failed to receive data, cause: %s"
+msgstr ""
+
+#: src/message.h:100
+#, c-format
+msgid "Failed to peek data, cause: %s"
 msgstr ""
 
 #: src/main.cc:64
@@ -336,30 +488,27 @@ msgstr ""
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
-"                              is the only supported scheme. You MUST "
-"specify\n"
-"                              this option in order to use HTTP "
-"authentication\n"
-"                              as well as --http-user and --http-passwd."
+"                              is the only supported scheme.\n"
+"                              Default: basic"
 msgstr ""
 
-#: src/main.cc:188
+#: src/main.cc:187
 msgid " --referer=REFERER            Set Referer. This affects to all URLs."
 msgstr ""
 
-#: src/main.cc:189
+#: src/main.cc:188
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
 
-#: src/main.cc:191
+#: src/main.cc:190
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
 
-#: src/main.cc:193
+#: src/main.cc:192
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
@@ -367,11 +516,11 @@ msgid ""
 "                              Default: binary"
 msgstr ""
 
-#: src/main.cc:196
+#: src/main.cc:195
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
 msgstr ""
 
-#: src/main.cc:197
+#: src/main.cc:196
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
@@ -379,11 +528,11 @@ msgid ""
 "                              Default: tunnel"
 msgstr ""
 
-#: src/main.cc:201
+#: src/main.cc:200
 msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
 msgstr ""
 
-#: src/main.cc:202
+#: src/main.cc:201
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -392,142 +541,142 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:206
+#: src/main.cc:205
 msgid ""
 " -S, --show-files             Print the file listing in .torrent file and "
 "exit."
 msgstr ""
 
-#: src/main.cc:207
+#: src/main.cc:206
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:210
+#: src/main.cc:209
 msgid ""
 " --listen-port                Set port number to listen to for peer "
 "connection."
 msgstr ""
 
-#: src/main.cc:212
+#: src/main.cc:211
 msgid " -v, --version                Print the version number and exit."
 msgstr ""
 
-#: src/main.cc:213
+#: src/main.cc:212
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 
-#: src/main.cc:216
+#: src/main.cc:215
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
 msgstr ""
 
-#: src/main.cc:220
+#: src/main.cc:219
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option."
 msgstr ""
 
-#: src/main.cc:223
+#: src/main.cc:222
 msgid "Examples:"
 msgstr ""
 
-#: src/main.cc:224
+#: src/main.cc:223
 msgid " Download a file by 1 connection:"
 msgstr ""
 
-#: src/main.cc:226
+#: src/main.cc:225
 msgid " Download a file by 2 connections:"
 msgstr ""
 
-#: src/main.cc:228
+#: src/main.cc:227
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr ""
 
-#: src/main.cc:230
+#: src/main.cc:229
 msgid " You can mix up different protocols:"
 msgstr ""
 
-#: src/main.cc:233
+#: src/main.cc:232
 msgid " Download a torrent:"
 msgstr ""
 
-#: src/main.cc:235
+#: src/main.cc:234
 msgid " Download a torrent using local .torrent file:"
 msgstr ""
 
-#: src/main.cc:237
+#: src/main.cc:236
 msgid " Download only selected files:"
 msgstr ""
 
-#: src/main.cc:241
+#: src/main.cc:240
 #, c-format
 msgid "Report bugs to %s"
 msgstr ""
 
-#: src/main.cc:335
+#: src/main.cc:334
 msgid "unrecognized proxy format"
 msgstr ""
 
-#: src/main.cc:362
+#: src/main.cc:361
 msgid "Currently, supported authentication scheme is basic."
 msgstr ""
 
-#: src/main.cc:371
+#: src/main.cc:370
 msgid "retry-wait must be between 0 and 60."
 msgstr ""
 
-#: src/main.cc:388
+#: src/main.cc:387
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr ""
 
-#: src/main.cc:397
+#: src/main.cc:396
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:415
+#: src/main.cc:414
 msgid "min-segment-size invalid"
 msgstr ""
 
-#: src/main.cc:426
+#: src/main.cc:425
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:434
+#: src/main.cc:433
 msgid "listen-port must be between 1024 and 65535."
 msgstr ""
 
-#: src/main.cc:445
+#: src/main.cc:444
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:485
+#: src/main.cc:484
 msgid "split must be between 1 and 5."
 msgstr ""
 
-#: src/main.cc:495
+#: src/main.cc:494
 msgid "timeout must be between 1 and 600"
 msgstr ""
 
-#: src/main.cc:504
+#: src/main.cc:503
 msgid "max-tries invalid"
 msgstr ""
 
-#: src/main.cc:533
+#: src/main.cc:532
 msgid "specify at least one URL"
 msgstr ""
 
-#: src/main.cc:540
+#: src/main.cc:539
 msgid "daemon failed"
 msgstr ""
 
-#: src/main.cc:644
+#: src/main.cc:643
 msgid "Files:"
 msgstr ""
 
-#: src/main.cc:667
+#: src/main.cc:666
 msgid "Errors occurred while binding port.\n"
 msgstr ""

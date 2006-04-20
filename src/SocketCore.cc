@@ -20,6 +20,9 @@
  */
 /* copyright --> */
 #include "SocketCore.h"
+#include "DlRetryEx.h"
+#include "DlAbortEx.h"
+#include "message.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -29,10 +32,7 @@
 #include <arpa/inet.h>
 #include <sys/time.h>
 #include <netdb.h>
-#include "DlRetryEx.h"
-#include "DlAbortEx.h"
 #include <errno.h>
-#include "message.h"
 
 SocketCore::SocketCore():sockfd(-1) {
   init();
@@ -71,13 +71,13 @@ void SocketCore::beginListen(int port) {
   //sockfd = socket(AF_UNSPEC, SOCK_STREAM, PF_UNSPEC);
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if(sockfd == -1) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_OPEN, strerror(errno));
   }
   socklen_t sockopt = 1;
   if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
     close(sockfd);
     sockfd = -1;
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_SET_OPT, strerror(errno));
   }
 
   struct sockaddr_in sockaddr;
@@ -87,11 +87,11 @@ void SocketCore::beginListen(int port) {
   sockaddr.sin_port = htons(port);
   
   if(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_BIND, strerror(errno));
   }
 
   if(listen(sockfd, 1) == -1) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_LISTEN, strerror(errno));
   }
 }
 
@@ -101,7 +101,7 @@ SocketCore* SocketCore::acceptConnection() const {
   memset((char*)&sockaddr, 0, sizeof(sockaddr));
   int fd;
   if((fd = accept(sockfd, (struct sockaddr*)&sockaddr, &len)) == -1) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_ACCEPT, strerror(errno));
   }
 
   SocketCore* s = new SocketCore(fd);
@@ -113,7 +113,7 @@ void SocketCore::getAddrInfo(pair<string, int>& addrinfo) const {
   memset((char*)&listenaddr, 0, sizeof(listenaddr));
   socklen_t len = sizeof(listenaddr);
   if(getsockname(sockfd, (struct sockaddr*)&listenaddr, &len) == -1) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_GET_NAME, strerror(errno));
   }
   addrinfo.first = inet_ntoa(listenaddr.sin_addr);
   addrinfo.second = ntohs(listenaddr.sin_port);
@@ -124,7 +124,7 @@ void SocketCore::getPeerInfo(pair<string, int>& peerinfo) const {
   memset(&peerin, 0, sizeof(peerin));
   int len = sizeof(peerin);
   if(getpeername(sockfd, (struct sockaddr*)&peerin, (socklen_t*)&len) < 0) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_GET_PEER, strerror(errno));
   }
   peerinfo.first = inet_ntoa(peerin.sin_addr);
   peerinfo.second = ntohs(peerin.sin_port);
@@ -134,13 +134,13 @@ void SocketCore::establishConnection(const string& host, int port) {
   closeConnection();
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if(sockfd == -1) {
-      throw new DlAbortEx(strerror(errno));
+      throw new DlAbortEx(EX_SOCKET_OPEN, strerror(errno));
   }
   socklen_t sockopt = 1;
   if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
     close(sockfd);
     sockfd = -1;
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_SET_OPT, strerror(errno));
   }
 
   struct sockaddr_in sockaddr;
@@ -159,7 +159,8 @@ void SocketCore::establishConnection(const string& host, int port) {
     struct addrinfo* res;
     int ec;
     if((ec = getaddrinfo(host.c_str(), NULL, &ai, &res)) != 0) {
-      throw new DlAbortEx(gai_strerror(ec));
+      throw new DlAbortEx(EX_RESOLVE_HOSTNAME,
+			  host.c_str(), gai_strerror(ec));
     }
     sockaddr.sin_addr = ((struct sockaddr_in*)res->ai_addr)->sin_addr;
     freeaddrinfo(res);
@@ -168,7 +169,7 @@ void SocketCore::establishConnection(const string& host, int port) {
   int flags = fcntl(sockfd, F_GETFL, 0);
   fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);
   if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && errno != EINPROGRESS) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_CONNECT, host.c_str(), strerror(errno));
   }
 }
 
@@ -227,7 +228,7 @@ bool SocketCore::isWritable(int timeout) const {
     if(errno == EINPROGRESS) {
       return false;
     } else {
-      throw new DlRetryEx(strerror(errno));
+      throw new DlRetryEx(EX_SOCKET_CHECK_WRITABLE, strerror(errno));
     }
   }
 }
@@ -256,7 +257,7 @@ bool SocketCore::isReadable(int timeout) const {
     if(errno == EINPROGRESS) {
       return false;
     } else {
-      throw new DlRetryEx(strerror(errno));
+      throw new DlRetryEx(EX_SOCKET_CHECK_READABLE, strerror(errno));
     }
   }
 }
@@ -283,7 +284,7 @@ void SocketCore::writeData(const char* data, int len, int timeout) {
 #else // HAVE_LIBGNUTLS
     errorMsg = strerror(errno);
 #endif
-    throw new DlRetryEx(errorMsg);
+    throw new DlRetryEx(EX_SOCKET_SEND, errorMsg);
   }
 }
 
@@ -309,7 +310,7 @@ void SocketCore::readData(char* data, int& len, int timeout) {
 #else // HAVE_LIBGNUTLS
     errorMsg = strerror(errno);
 #endif
-    throw new DlRetryEx(errorMsg);
+    throw new DlRetryEx(EX_SOCKET_RECV, errorMsg);
   }
   len = ret;
 }
@@ -336,7 +337,7 @@ void SocketCore::peekData(char* data, int& len, int timeout) {
 #else // HAVE_LIBGNUTLS
     errorMsg = strerror(errno);
 #endif
-    throw new DlRetryEx(errorMsg);
+    throw new DlRetryEx(EX_SOCKET_PEEK, errorMsg);
   }
   len = ret;
 }
@@ -377,7 +378,7 @@ int SocketCore::gnutlsRecv(char* data, int len) {
   if(plen < len) {
     int ret = gnutls_record_recv(sslSession, data+plen, len-plen);
     if(ret < 0) {
-      throw new DlRetryEx(gnutls_strerror(ret));
+      throw new DlRetryEx(EX_SOCKET_RECV, gnutls_strerror(ret));
     }
     return plen+ret;
   } else {
@@ -393,7 +394,7 @@ int SocketCore::gnutlsPeek(char* data, int len) {
     memcpy(data, peekBuf, peekBufLength);
     int ret = gnutls_record_recv(sslSession, data+peekBufLength, len-peekBufLength);
     if(ret < 0) {
-      throw new DlRetryEx(gnutls_strerror(ret));
+      throw new DlRetryEx(EX_SOCKET_PEEK, gnutls_strerror(ret));
     }
     addPeekData(data+peekBufLength, ret);
     return peekBufLength;

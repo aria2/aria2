@@ -22,6 +22,7 @@
 #include "Directory.h"
 #include "File.h"
 #include "DlAbortEx.h"
+#include "message.h"
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -39,12 +40,11 @@ void Directory::createDir(const string& parentDir, bool recursive) const {
   File f(path);
   if(f.exists()) {
     if(!f.isDir()) {
-      throw new DlAbortEx("%s is already exists and it is not a directory.",
-			  path.c_str());
+      throw new DlAbortEx(EX_NOT_DIRECTORY, path.c_str());
     }
   } else {
     if(mkdir(path.c_str(), S_IRUSR|S_IWUSR|S_IXUSR) == -1) {
-      throw new DlAbortEx(strerror(errno));
+      throw new DlAbortEx(EX_MAKE_DIR, path.c_str(), strerror(errno));
     }
   }
   if(recursive) {

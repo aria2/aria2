@@ -1,3 +1,26 @@
+2006-04-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add some useful information to the exception message:
+
+	* src/SocketCore.cc : Updated messages.
+	* src/SegmentMan.cc : 
+	* src/TorrentMan.cc : Updated messages.
+	* src/MultiDiskWriter.cc : Updated messages.
+	* src/Util.cc : Updated messages.
+	* src/AbstractDiskWriter.cc : Updated messages.
+	* src/PreAllocationDiskWriter.cc : Updated messages.
+	* src/message.cc : Added new messages. Updated some messages.
+
+	* src/TrackerWatcherCommand.h (MIN_PEERS): New definition.
+	* src/TrackerWatcherCommand.cc (execute): Use MIN_PEERS.
+	Updated threshold from 30 to 15.
+
+	* src/AbstractDiskWriter.h (filename): New variable.
+	* src/AbstractDiskWriter.cc (openExistingFile): Assigned filename.
+	(createFile): Assigned filename.
+	
+	* src/main.cc: Updated the help message for http-auth-scheme.
+
 2006-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add TrackerUpdateCommand with which replaces

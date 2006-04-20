@@ -29,8 +29,8 @@
 
 class AbstractDiskWriter:public DiskWriter {
 protected:
+  string filename;
   int fd;
-
 #ifdef ENABLE_SHA1DIGEST
   MessageDigestContext ctx;
 #endif // ENABLE_SHA1DIGEST

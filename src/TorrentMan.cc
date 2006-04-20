@@ -376,7 +376,7 @@ void TorrentMan::setup(const string& metaInfoFile, const Strings& targetFilePath
   pieces = totalLength/pieceLength+(totalLength%pieceLength ? 1 : 0);
   Data* piecesHashData = (Data*)infoDic->get("pieces");
   if(piecesHashData->getLen() != pieces*20) {
-    throw new DlAbortEx("the number of pieces is wrong.");
+    throw new DlAbortEx("The number of pieces is wrong.");
   }
   for(int index = 0; index < pieces; index++) {
     string hex = Util::toHex((unsigned char*)&piecesHashData->getData()[index*20], 20);
@@ -418,7 +418,7 @@ void TorrentMan::setFileFilter(const Strings& filePaths) {
   for(Strings::const_iterator pitr = filePaths.begin();
       pitr != filePaths.end(); pitr++) {
     if(!diskAdaptor->addDownloadEntry(*pitr)) {
-      throw new DlAbortEx("no such file entry <%s>", (*pitr).c_str());
+      throw new DlAbortEx("No such file entry %s", (*pitr).c_str());
     }
     FileEntry fileEntry = diskAdaptor->getFileEntryFromPath(*pitr);
     bitfield->addFilter(fileEntry.offset, fileEntry.length);
@@ -469,7 +469,8 @@ bool TorrentMan::segmentFileExists() const {
 FILE* TorrentMan::openSegFile(const string& segFilename, const string& mode) const {
   FILE* segFile = fopen(segFilename.c_str(), mode.c_str());
   if(segFile == NULL) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_SEGMENT_FILE_OPEN,
+			segFilename.c_str(), strerror(errno));
   }
   return segFile;
 }
@@ -478,8 +479,14 @@ void TorrentMan::load() {
   string segFilename = getSegmentFilePath();
   logger->info(MSG_LOADING_SEGMENT_FILE, segFilename.c_str());
   FILE* segFile = openSegFile(segFilename, "r+");
-  read(segFile);
-  fclose(segFile);
+  try {
+    read(segFile);
+    fclose(segFile);
+  } catch(string ex) {
+    fclose(segFile);
+    throw new DlAbortEx(EX_SEGMENT_FILE_READ,
+			segFilename.c_str(), strerror(errno));
+  }
   logger->info(MSG_LOADED_SEGMENT_FILE);
 }
 
@@ -487,27 +494,27 @@ void TorrentMan::read(FILE* file) {
   assert(file != NULL);
   unsigned char savedInfoHash[INFO_HASH_LENGTH];
   if(fread(savedInfoHash, INFO_HASH_LENGTH, 1, file) < 1) {
-    throw new DlAbortEx(strerror(errno));
+    throw string("readError");
   }
   if(Util::toHex(savedInfoHash, INFO_HASH_LENGTH) != Util::toHex(infoHash, INFO_HASH_LENGTH)) {
-    throw new DlAbortEx("info hash mismatch");
+    throw new DlAbortEx("Incorrect infoHash.");
   }
   unsigned char* savedBitfield = new unsigned char[bitfield->getBitfieldLength()];
   try {
     if(fread(savedBitfield, bitfield->getBitfieldLength(), 1, file) < 1) {
-      throw new DlAbortEx(strerror(errno));
+      throw string("readError");
     }
     setBitfield(savedBitfield, bitfield->getBitfieldLength());
     if(fread(&downloadLength, sizeof(downloadLength), 1, file) < 1) {
-      throw new DlAbortEx(strerror(errno));
+      throw string("readError");
     }
     if(fread(&uploadLength, sizeof(uploadLength), 1, file) < 1) {
-      throw new DlAbortEx(strerror(errno));
+      throw string("readError");
     }
     preDownloadLength = downloadLength;
     preUploadLength = uploadLength;
     delete [] savedBitfield;
-  } catch(Exception* ex) {
+  } catch(...) {
     delete [] savedBitfield;
     throw;
   }
@@ -520,20 +527,26 @@ void TorrentMan::save() const {
   string segFilename = getSegmentFilePath();
   logger->info(MSG_SAVING_SEGMENT_FILE, segFilename.c_str());
   FILE* file = openSegFile(segFilename, "w");
-  if(fwrite(infoHash, INFO_HASH_LENGTH, 1, file) < 1) {
-    throw new DlAbortEx(strerror(errno));
+  try {
+    if(fwrite(infoHash, INFO_HASH_LENGTH, 1, file) < 1) {
+      throw string("writeError");
+    }
+    if(fwrite(bitfield->getBitfield(), bitfield->getBitfieldLength(), 1, file) < 1) {
+      throw string("writeError");
+    }
+    if(fwrite(&downloadLength, sizeof(downloadLength), 1, file) < 1) {
+      throw string("writeError");
+    }
+    if(fwrite(&uploadLength, sizeof(uploadLength), 1, file) < 1) {
+      throw string("writeError");
+    }
+    fclose(file);
+    logger->info(MSG_SAVED_SEGMENT_FILE);
+  } catch(string ex) {
+    fclose(file);
+    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
+			segFilename.c_str(), strerror(errno));
   }
-  if(fwrite(bitfield->getBitfield(), bitfield->getBitfieldLength(), 1, file) < 1) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  if(fwrite(&downloadLength, sizeof(downloadLength), 1, file) < 1) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  if(fwrite(&uploadLength, sizeof(uploadLength), 1, file) < 1) {
-    throw new DlAbortEx(strerror(errno));
-  }
-  fclose(file);
-  logger->info(MSG_SAVED_SEGMENT_FILE);
 }
 
 void TorrentMan::remove() const {

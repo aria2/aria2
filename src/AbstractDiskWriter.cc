@@ -60,6 +60,7 @@ void AbstractDiskWriter::closeFile() {
 }
 
 void AbstractDiskWriter::openExistingFile(const string& filename) {
+  this->filename = filename;
   File f(filename);
   if(!f.isFile()) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), "file not found");
@@ -71,6 +72,7 @@ void AbstractDiskWriter::openExistingFile(const string& filename) {
 }
 
 void AbstractDiskWriter::createFile(const string& filename, int addFlags) {
+  this->filename = filename;
   // TODO proper filename handling needed
   assert(filename.size());
 //   if(filename.empty()) {
@@ -83,14 +85,14 @@ void AbstractDiskWriter::createFile(const string& filename, int addFlags) {
 
 void AbstractDiskWriter::writeDataInternal(const char* data, int len) {
   if(write(fd, data, len) < 0) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
   }
 }
 
 int AbstractDiskWriter::readDataInternal(char* data, int len) {
   int ret;
   if((ret = read(fd, data, len)) < 0) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
   }
   return ret;
 }
@@ -103,7 +105,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
     char buf[BUFSIZE];
     for(int i = 0; i < length/BUFSIZE; i++) {
       if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
-	throw "error";
+	throw string("error");
       }
       sha1DigestUpdate(ctx, buf, BUFSIZE);
       offset += BUFSIZE;
@@ -111,7 +113,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
     int r = length%BUFSIZE;
     if(r > 0) {
       if(r != readData(buf, r, offset)) {
-	throw "error";
+	throw string("error");
       }
       sha1DigestUpdate(ctx, buf, r);
     }
@@ -119,7 +121,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
     sha1DigestFinal(ctx, hashValue);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
   }
 #else
   return "";
@@ -128,7 +130,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
 
 void AbstractDiskWriter::seek(long long int offset) {
   if(offset != lseek(fd, offset, SEEK_SET)) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_SEEK, filename.c_str(), strerror(errno));
   }
 }
 

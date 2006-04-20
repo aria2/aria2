@@ -182,9 +182,8 @@ void showUsage() {
 	    "                              METHOD is either 'get' or 'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
   cout << _(" --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, basic\n"
-	    "                              is the only supported scheme. You MUST specify\n"
-	    "                              this option in order to use HTTP authentication\n"
-	    "                              as well as --http-user and --http-passwd.") << endl;
+	    "                              is the only supported scheme.\n"
+	    "                              Default: basic") << endl;
   cout << _(" --referer=REFERER            Set Referer. This affects to all URLs.") << endl;
   cout << _(" --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
 	    "                              Default: anonymous") << endl;

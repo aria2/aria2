@@ -21,6 +21,7 @@
 /* copyright --> */
 #include "PreAllocationDiskWriter.h"
 #include "DlAbortEx.h"
+#include "message.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -43,13 +44,13 @@ void PreAllocationDiskWriter::initAndOpenFile(const string& filename) {
   int r = totalLength%bufSize;
   for(long long int i = 0; i < x; i++) {
     if(write(fd, buf, bufSize) < 0) {
-      throw new DlAbortEx(strerror(errno));
+      throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
     }
   }
   if(r > 0) {
     seek(totalLength-r);
     if(write(fd, buf, r) < 0) {
-	throw new DlAbortEx(strerror(errno));
+	throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
     }
   }
 }

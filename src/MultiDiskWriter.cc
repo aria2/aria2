@@ -22,6 +22,7 @@
 #include "MultiDiskWriter.h"
 #include "DlAbortEx.h"
 #include "Util.h"
+#include "message.h"
 #include <errno.h>
 
 MultiDiskWriter::MultiDiskWriter(int pieceLength):pieceLength(pieceLength) {
@@ -82,8 +83,7 @@ void MultiDiskWriter::openExistingFile(const string& filename) {
   }
 }
 
-void MultiDiskWriter::writeData(const char* data, int len, long long int position) {
-  long long int offset = position;
+void MultiDiskWriter::writeData(const char* data, int len, long long int offset) {
   long long int fileOffset = offset;
   bool writing = false;
   int rem = len;
@@ -100,7 +100,7 @@ void MultiDiskWriter::writeData(const char* data, int len, long long int positio
     }
   }
   if(!writing) {
-    throw new DlAbortEx("offset out of range");
+    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
   }
 }
 
@@ -119,8 +119,7 @@ int MultiDiskWriter::calculateLength(const DiskWriterEntry* entry, long long int
   return length;
 }
 
-int MultiDiskWriter::readData(char* data, int len, long long int position) {
-  long long int offset = position;
+int MultiDiskWriter::readData(char* data, int len, long long int offset) {
   long long int fileOffset = offset;
   bool reading = false;
   int rem = len;
@@ -138,7 +137,7 @@ int MultiDiskWriter::readData(char* data, int len, long long int position) {
     }
   }
   if(!reading) {
-    throw new DlAbortEx("offset out of range");
+    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
   }
   return totalReadLength;
 }
@@ -149,7 +148,7 @@ void MultiDiskWriter::hashUpdate(const DiskWriterEntry* entry, long long int off
   char buf[BUFSIZE];
   for(int i = 0; i < length/BUFSIZE; i++) {
     if(BUFSIZE != entry->diskWriter->readData(buf, BUFSIZE, offset)) {
-      throw "error";
+      throw string("error");
     }
     sha1DigestUpdate(ctx, buf, BUFSIZE);
     offset += BUFSIZE;
@@ -157,7 +156,7 @@ void MultiDiskWriter::hashUpdate(const DiskWriterEntry* entry, long long int off
   int r = length%BUFSIZE;
   if(r > 0) {
     if(r != entry->diskWriter->readData(buf, r, offset)) {
-      throw "error";
+      throw string("error");
     }
     sha1DigestUpdate(ctx, buf, r);
   }
@@ -184,13 +183,13 @@ string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
       }
     }
     if(!reading) {
-      throw new DlAbortEx("offset out of range");
+      throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
     }
     unsigned char hashValue[20];
     sha1DigestFinal(ctx, hashValue);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
-    throw new DlAbortEx(strerror(errno));
+    throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
   }
 #else
   return "";

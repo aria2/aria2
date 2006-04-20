@@ -32,7 +32,7 @@ TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
-  if(e->torrentMan->trackers == 0 && e->torrentMan->connections < 30) {
+  if(e->torrentMan->trackers == 0 && e->torrentMan->connections < MIN_PEERS) {
     e->torrentMan->req->resetTryCount();
     
     if(e->torrentMan->downloadComplete()) {

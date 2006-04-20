@@ -22,6 +22,7 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "File.h"
+#include "message.h"
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -210,32 +211,32 @@ void Util::rangedFileCopy(const string& dest, const string& src, long long int s
   int srcFd = -1;
   try {
     if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR)) == -1) {
-      throw new DlAbortEx(strerror(errno));
+      throw new DlAbortEx(EX_FILE_OPEN, dest.c_str(), strerror(errno));
     }
     if((srcFd = open(src.c_str(), O_RDONLY, S_IRUSR|S_IWUSR)) == -1) {
-      throw new DlAbortEx(strerror(errno));
+      throw new DlAbortEx(EX_FILE_OPEN, src.c_str(), strerror(errno));
     }
     if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
-      throw new DlAbortEx(strerror(errno));
+      throw new DlAbortEx(EX_FILE_SEEK, src.c_str(), strerror(errno));
     }
     int x = length/bufSize;
     int r = length%bufSize;
     for(int i = 0; i < x; i++) {
       int readLength;
       if((readLength = read(srcFd, buf, bufSize)) == -1 || readLength != bufSize) {
-	throw new DlAbortEx(strerror(errno));
+	throw new DlAbortEx(EX_FILE_READ, src.c_str(), strerror(errno));
       }
       if(write(destFd, buf, readLength) == -1) {
-	throw new DlAbortEx(strerror(errno));
+	throw new DlAbortEx(EX_FILE_WRITE, dest.c_str(), strerror(errno));
       }
     }
     if(r > 0) {
       int readLength;
       if((readLength = read(srcFd, buf, r)) == -1 || readLength != r) {
-	throw new DlAbortEx(strerror(errno));
+	throw new DlAbortEx(EX_FILE_READ, src.c_str(), strerror(errno));
       }
       if(write(destFd, buf, r) == -1) {
-	throw new DlAbortEx(strerror(errno));
+	throw new DlAbortEx(EX_FILE_WRITE, dest.c_str(), strerror(errno));
       }
     }
     close(srcFd);
