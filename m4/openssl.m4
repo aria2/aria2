@@ -6,7 +6,7 @@ AC_ARG_WITH([openssl-prefix],
             [openssl_prefix=""])
 
 if test "x$openssl_prefix" = "x"; then
-  openssl_prefix=$prefix
+  openssl_prefix="/usr/local"
 fi
 
 openssl_prefix_lib=$openssl_prefix/lib
