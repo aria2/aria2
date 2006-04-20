@@ -50,7 +50,7 @@ private:
   void clearEntries();
 #ifdef ENABLE_SHA1DIGEST
   MessageDigestContext ctx;
-  void hashUpdate(const DiskWriterEntry* entry, long long int offset, long long int length) const;
+  void hashUpdate(DiskWriterEntry* entry, long long int offset, long long int length);
 #endif // ENABLE_SHA1DIGEST
 
 public:

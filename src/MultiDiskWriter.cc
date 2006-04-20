@@ -143,7 +143,7 @@ int MultiDiskWriter::readData(char* data, int len, long long int offset) {
 }
 
 #ifdef ENABLE_SHA1DIGEST
-void MultiDiskWriter::hashUpdate(const DiskWriterEntry* entry, long long int offset, long long int length) const {
+void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, long long int length) {
   int BUFSIZE = 16*1024;
   char buf[BUFSIZE];
   for(int i = 0; i < length/BUFSIZE; i++) {
