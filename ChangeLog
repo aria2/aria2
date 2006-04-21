@@ -21,6 +21,8 @@
 	
 	* src/main.cc: Updated the help message for http-auth-scheme.
 
+	* Release 0.4.0
+	
 2006-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add TrackerUpdateCommand with which replaces
