@@ -149,8 +149,9 @@ void showVersion() {
 
 void showUsage() {
   printf(_("Usage: %s [options] URL ...\n"), PACKAGE_NAME);
+#ifdef ENABLE_BITTORRENT
   printf(_("       %s [options] -T TORRENT_FILE FILE ...\n"), PACKAGE_NAME);
-
+#endif // ENABLE_BITTORRENT
   cout << endl;
   cout << _("Options:") << endl;
   cout << _(" -d, --dir=DIR                The directory to store downloaded file.") << endl;
@@ -215,10 +216,12 @@ void showUsage() {
   cout << _(" You can specify multiple URLs. All URLs must point to the same file\n"
 	    " or downloading fails.") << endl;
   cout << endl;
+#ifdef ENABLE_BITTORRENT
   cout << "FILE:" << endl;
   cout << _(" Specify files in multi-file torrent to download. Use conjunction with\n"
 	    " -T option.") << endl;
   cout << endl;
+#endif // ENABLE_BITTORRENT
   cout << _("Examples:") << endl;
   cout << _(" Download a file by 1 connection:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip" << endl;
@@ -230,13 +233,13 @@ void showUsage() {
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" Download a torrent:") << endl;
-  cout << "  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
+  cout << "  aria2c -t 180 -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
   cout << _(" Download a torrent using local .torrent file:") << endl;
-  cout << "  aria2c -T test.torrent" << endl;
+  cout << "  aria2c -t 180 -T test.torrent" << endl;
   cout << _(" Download only selected files:") << endl;
-  cout << "  aria2c -T test.torrent dir/file1.zip dir/file2.zip" << endl;
+  cout << "  aria2c -t 180 -T test.torrent dir/file1.zip dir/file2.zip" << endl;
   cout << _(" Print file listing of .torrent file:") << endl;
-  cout << "  aria2c -T test.torrent -S" << endl;  
+  cout << "  aria2c -t 180 -T test.torrent -S" << endl;  
   cout << endl;
 #endif // ENABLE_BITTORRENT
   printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
