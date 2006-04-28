@@ -28,10 +28,36 @@
 class TorrentDownloadEngine : public DownloadEngine {
 private:
   bool filenameFixed;
+
+  void initStatistics();
+  void calculateStatistics();
 protected:
+  struct timeval cp[2];
+  long long int sessionDownloadLengthArray[2];
+  long long int sessionUploadLengthArray[2];
+  int currentCp;
+
+  int downloadSpeed;
+  int uploadSpeed;
+  int lastElapsed;
+  long long int selectedDownloadLengthDiff;
+  long long int selectedTotalLength;
+  // The time when startup
+  struct timeval startup;
+  // The number of bytes downloaded since startup
+  long long int sessionDownloadLength;
+  // The average speed(bytes per second) since startup
+  int avgSpeed;
+  // The estimated remaining time to complete the download.
+  int eta;
+  long long int downloadLength;
+  long long int totalLength;
+
+  int calculateSpeed(long long int sessionLength, int elapsed);
   void onEndOfRun();
   void afterEachIteration();
   virtual void onSelectiveDownloadingCompletes() = 0;
+  virtual void sendStatistics() = 0;
 public:
   TorrentDownloadEngine():filenameFixed(false) {}
   virtual ~TorrentDownloadEngine() {}
@@ -39,6 +65,9 @@ public:
   TorrentMan* torrentMan;
 
   bool isFilenameFixed() const { return filenameFixed; }
+
+  // returns uploading speed in byte/sec.
+  int getUploadSpeed() const { return uploadSpeed; }
 };
 
 #endif // _D_TORRENT_DOWNLOAD_ENGINE_H_

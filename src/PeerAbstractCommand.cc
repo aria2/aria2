@@ -130,12 +130,7 @@ void PeerAbstractCommand::onAbort(Exception* ex) {
   } else {
     peer->error += MAX_PEER_ERROR;
   }
-  peer->tryCount = 0;
-  peer->cuid = 0;
-  peer->amChocking = true;
-  peer->amInterested = false;
-  peer->peerChoking = true;
-  peer->peerInterested = false;
+  peer->resetStatus();
   logger->debug("CUID#%d - peer %s:%d banned.", cuid, peer->ipaddr.c_str(), peer->port);
 }
 

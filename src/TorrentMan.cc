@@ -72,6 +72,7 @@ void TorrentMan::updatePeers(const Peers& peers) {
 }
 
 bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
+  deleteOldErrorPeers(MAX_PEER_LIST_SIZE);
   if(duplicate) {
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
@@ -80,7 +81,6 @@ bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
       }
     }
   } else {
-    deleteOldErrorPeers(MAX_PEER_LIST_SIZE);
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
       if(p->ipaddr == peer->ipaddr && p->port == peer->port) {
@@ -129,6 +129,9 @@ int TorrentMan::deleteOldErrorPeers(int maxNum) {
 }
 
 Peer* TorrentMan::getPeer() const {
+  if(connections > MAX_PEER_UPDATE) {
+    return Peer::nullPeer;
+  }
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peer* p = *itr;
     if(p->cuid == 0 && p->error < MAX_PEER_ERROR) {
@@ -350,7 +353,7 @@ void TorrentMan::readFileEntry(FileEntries& fileEntries, Directory** pTopDir, co
   }
 }
 
-void TorrentMan::setup(const string& metaInfoFile, const Strings& targetFilePaths) {
+void TorrentMan::setupInternal1(const string& metaInfoFile) {
   peerId = "-A2****-";
   for(int i = 0; i < 12; i++) {
     peerId += Util::itos((int)(((double)10)*random()/(RAND_MAX+1.0)));
@@ -400,7 +403,9 @@ void TorrentMan::setup(const string& metaInfoFile, const Strings& targetFilePath
   diskAdaptor->setStoreDir(storeDir);
   diskAdaptor->setTopDir(topDir);
   diskAdaptor->setFileEntries(fileEntries);
-  setFileFilter(targetFilePaths);
+}
+
+void TorrentMan::setupInternal2() {
   if(segmentFileExists()) {
     load();
     diskAdaptor->openExistingFile();
@@ -408,6 +413,26 @@ void TorrentMan::setup(const string& metaInfoFile, const Strings& targetFilePath
     diskAdaptor->initAndOpenFile();
   }
   setupComplete = true;
+}
+
+void TorrentMan::setup(const string& metaInfoFile, const Integers& targetFileIndexes) {
+  setupInternal1(metaInfoFile);
+  Strings targetFilePaths;
+  const FileEntries& entries = diskAdaptor->getFileEntries();
+  for(int i = 0; i < (int)entries.size(); i++) {
+    if(find(targetFileIndexes.begin(), targetFileIndexes.end(), i+1) != targetFileIndexes.end()) {
+      logger->debug("index=%d is %s", i+1, entries.at(i).path.c_str());
+      targetFilePaths.push_back(entries.at(i).path);
+    }
+  }
+  setFileFilter(targetFilePaths);
+  setupInternal2();
+}
+
+void TorrentMan::setup(const string& metaInfoFile, const Strings& targetFilePaths) {
+  setupInternal1(metaInfoFile);
+  setFileFilter(targetFilePaths);
+  setupInternal2();
 }
 
 void TorrentMan::setFileFilter(const Strings& filePaths) {

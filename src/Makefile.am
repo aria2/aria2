@@ -84,7 +84,8 @@ SRCS =  Socket.cc Socket.h\
 	FileEntry.h\
 	LogFactory.cc LogFactory.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
+	PeerChokeCommand.cc PeerChokeCommand.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

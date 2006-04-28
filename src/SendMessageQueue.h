@@ -31,12 +31,14 @@ private:
   RequestSlotMan* requestSlotMan;
   PendingMessages pendingMessages;
   const Logger* logger;
+  // upload speed limit(byte/sec)
+  int uploadLimit;
 public:
   SendMessageQueue(int cuid, PeerConnection* peerConnection,
 		   TorrentMan* torrentMan);
   ~SendMessageQueue();
 
-  void send();
+  void send(int uploadSpeed);
 
   void addPendingMessage(const PendingMessage& pendingMessage);
   void deletePendingPieceMessage(const PeerMessage* cancelMessage);
@@ -52,6 +54,9 @@ public:
 
   int countPendingMessage() const;
   int countRequestSlot() const;
+
+  void setUploadLimit(int uploadLimit) { this->uploadLimit = uploadLimit; }
+  int getUploadLimit() const { return this->uploadLimit; }
 };
 
 #endif // _D_SEND_MESSAGE_QUEUE_H_

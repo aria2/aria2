@@ -19,44 +19,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "Peer.h"
+#ifndef _D_PEER_CHOKE_COMMAND_H_
+#define _D_PEER_CHOKE_COMMAND_H_
 
-Peer* Peer::nullPeer = new Peer("", 0, 0, 0);
+#include "Command.h"
+#include "TorrentDownloadEngine.h"
 
-void Peer::updateBitfield(int index, int operation) {
-  if(operation == 1) {
-    bitfield->setBit(index);
-  } else if(operation == 0) {
-    bitfield->unsetBit(index);
-  }
-}
+class PeerChokeCommand : public Command {
+private:
+  int interval;
+  TorrentDownloadEngine* e;
+  int rotate;
 
-#define THRESHOLD 1024*1024*2
+  void orderByUploadRate(Peers& peers) const;
+  void orderByDownloadRate(Peers& peers) const;
+  void setAllPeerChoked(Peers& peers) const;
+  void setAllPeerResetDeltaUpload(Peers& peers) const;
+  void setAllPeerResetDeltaDownload(Peers& peers) const;
+  void optUnchokingPeer(Peers& peers) const;
 
-bool Peer::shouldBeChoking() const {
-  if(optUnchoking) {
-    return false;
-  }
-  return chokingRequired;
-}
+public:
+  PeerChokeCommand(int cuid, int interval, TorrentDownloadEngine* e);
+  virtual ~PeerChokeCommand();
 
-bool Peer::hasPiece(int index) const {
-  return bitfield->isBitSet(index);
-}
+  bool execute();
+};
 
-bool Peer::isSeeder() const {
-  return bitfield->isAllBitSet();
-}
-
-void Peer::resetStatus() {
-  tryCount = 0;
-  cuid = 0;
-  amChoking = true;
-  amInterested = false;
-  peerChoking = true;
-  peerInterested = false;
-  resetDeltaUpload();
-  resetDeltaDownload();
-  chokingRequired = true;
-  optUnchoking = false;
-}
+#endif // _D_PEER_CHOKE_COMMAND_H_

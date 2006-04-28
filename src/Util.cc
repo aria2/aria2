@@ -295,3 +295,50 @@ int Util::expandBuffer(char** pbuf, int curLength, int newLength) {
   *pbuf = newbuf;
   return newLength;
 }
+
+int getNum(const char* buf, int offset, int length) {
+  char* temp = new char[length+1];
+  memcpy(temp, buf+offset, length);
+  temp[length] = '\0';
+  int x = strtol(temp, NULL, 10);
+  delete [] temp;
+  return x;
+}
+
+void unfoldSubRange(const string& src, Integers& range) {
+  if(src.empty()) {
+    return;
+  }
+  string::size_type p = src.find_first_of(",-");
+  if(p == 0) {
+    return;
+  } else if(p == string::npos) {
+    range.push_back(atoi(src.c_str()));
+  } else {
+    if(src.at(p) == ',') {
+      int num = getNum(src.c_str(), 0, p);
+      range.push_back(num);
+      unfoldSubRange(src.substr(p+1), range);
+    } else if(src.at(p) == '-') {
+      int rightNumBegin = p+1;
+      string::size_type nextDelim = src.find_first_of(",", rightNumBegin);
+      if(nextDelim == string::npos) {
+	nextDelim = src.size();
+      }
+      int left = getNum(src.c_str(), 0, p);
+      int right = getNum(src.c_str(), rightNumBegin, nextDelim-rightNumBegin);
+      for(int i = left; i <= right; i++) {
+	range.push_back(i);
+      }
+      if(src.size() > nextDelim) {
+	unfoldSubRange(src.substr(nextDelim+1), range);
+      }
+    }
+  }
+}
+
+void Util::unfoldRange(const string& src, Integers& range) {
+  unfoldSubRange(src, range);
+  sort(range.begin(), range.end());
+  range.erase(unique(range.begin(), range.end()), range.end());
+}

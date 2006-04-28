@@ -20,6 +20,7 @@
  */
 /* copyright --> */
 #include "TorrentDownloadEngine.h"
+#include "Util.h"
 
 void TorrentDownloadEngine::onEndOfRun() {
   torrentMan->diskAdaptor->closeFile();
@@ -40,5 +41,82 @@ void TorrentDownloadEngine::afterEachIteration() {
     if(torrentMan->downloadComplete()) {
       filenameFixed = true;
     }
+  }
+}
+
+void TorrentDownloadEngine::initStatistics() {
+  downloadSpeed = 0;
+  uploadSpeed = 0;
+  lastElapsed = 0;
+  gettimeofday(&cp[0], NULL);
+  gettimeofday(&cp[1], NULL);
+  gettimeofday(&startup, NULL);
+  sessionDownloadLengthArray[0] = 0;
+  sessionDownloadLengthArray[1] = 0;
+  sessionUploadLengthArray[0] = 0;
+  sessionUploadLengthArray[1] = 0;
+  currentCp = 0;
+  eta = 0;
+  avgSpeed = 0;
+  sessionDownloadLength = 0;
+  downloadLength = 0;
+  totalLength = 0;
+  if(torrentMan->isSelectiveDownloadingMode()) {
+    selectedDownloadLengthDiff = torrentMan->getDownloadLength()-torrentMan->getCompletedLength();
+    selectedTotalLength = torrentMan->getSelectedTotalLength();
+  }
+}
+
+int TorrentDownloadEngine::calculateSpeed(long long int sessionLength, int elapsed) {
+  int nowSpeed = (int)(sessionLength/elapsed);
+  return nowSpeed;
+}
+
+void TorrentDownloadEngine::calculateStatistics() {
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  int elapsed = Util::difftvsec(now, cp[currentCp]);
+
+  sessionDownloadLengthArray[0] += torrentMan->getDeltaDownloadLength();
+  sessionUploadLengthArray[0] += torrentMan->getDeltaUploadLength();
+  sessionDownloadLengthArray[1] += torrentMan->getDeltaDownloadLength();
+  sessionUploadLengthArray[1] += torrentMan->getDeltaUploadLength();
+
+  sessionDownloadLength += torrentMan->getDeltaDownloadLength();
+
+
+  torrentMan->resetDeltaDownloadLength();
+  torrentMan->resetDeltaUploadLength();
+
+  if(torrentMan->isSelectiveDownloadingMode()) {
+    downloadLength = torrentMan->getDownloadLength()-selectedDownloadLengthDiff;
+    totalLength = selectedTotalLength;
+  } else {
+    downloadLength = torrentMan->getDownloadLength();
+    totalLength = torrentMan->getTotalLength();
+  }
+  
+
+  if(elapsed-lastElapsed >= 1) {
+    downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
+    uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
+    avgSpeed = calculateSpeed(sessionDownloadLength,
+			      Util::difftvsec(now, startup));
+    if(avgSpeed < 0) {
+      avgSpeed = 0;
+    } else if(avgSpeed != 0) {
+      eta = (totalLength-downloadLength)/avgSpeed;
+    }
+
+    sendStatistics();
+    lastElapsed = elapsed;
+  }
+
+  if(elapsed > 15) {
+    sessionDownloadLengthArray[currentCp] = 0;
+    sessionUploadLengthArray[currentCp] = 0;
+    cp[currentCp] = now;
+    lastElapsed = 0;
+    currentCp = currentCp ? 0 : 1;
   }
 }

@@ -36,13 +36,15 @@ public:
   int entryId;
   string ipaddr;
   int port;
-  bool amChocking;
+  bool amChoking;
   bool amInterested;
   bool peerChoking;
   bool peerInterested;
   int tryCount;
   int error;
   int cuid;
+  bool chokingRequired;
+  bool optUnchoking;
 private:
   char peerId[PEER_ID_LENGTH];
   BitfieldMan* bitfield;
@@ -50,15 +52,19 @@ private:
   long long int peerDownload;
   int pieceLength;
   long long int totalLength;
+  int deltaUpload;
+  int deltaDownload;
 public:
   Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
     entryId(0), ipaddr(ipaddr), port(port),
-    amChocking(true), amInterested(false),
+    amChoking(true), amInterested(false),
     peerChoking(true), peerInterested(false),
     tryCount(0), error(0), cuid(0),
+    chokingRequired(true), optUnchoking(false),
     bitfield(NULL),
     peerUpload(0), peerDownload(0),
-    pieceLength(pieceLength), totalLength(totalLength) {
+    pieceLength(pieceLength), totalLength(totalLength),
+    deltaUpload(0), deltaDownload(0) {
     this->bitfield = new BitfieldMan(pieceLength, totalLength);
   }
 
@@ -67,6 +73,20 @@ public:
       delete bitfield;
     }
   }
+
+  void resetStatus();
+
+  void addDeltaUpload(int length) {
+    this->deltaUpload += length;
+  }
+  void resetDeltaUpload() { this->deltaUpload = 0; }
+  int getDeltaUpload() const { return this->deltaUpload; }
+
+  void addDeltaDownload(int length) {
+    this->deltaDownload += length;
+  }
+  void resetDeltaDownload() { this->deltaDownload = 0; }
+  int getDeltaDownload() const { return this->deltaDownload; }
 
   void setPeerId(const char* peerId) {
     memcpy(this->peerId, peerId, PEER_ID_LENGTH);
@@ -85,15 +105,21 @@ public:
    */
   void updateBitfield(int index, int operation);
 
-  void addPeerUpload(int size) { peerUpload += size; }
+  void addPeerUpload(int size) {
+    peerUpload += size;
+    addDeltaUpload(size);
+  }
   void setPeerUpload(long long int size) { peerUpload = size; }
   long long int getPeerUpload() const { return peerUpload; }
 
-  void addPeerDownload(int size) { peerDownload += size; }
+  void addPeerDownload(int size) {
+    peerDownload += size;
+    addDeltaDownload(size);
+  }
   void setPeerDownload(long long int size) { peerDownload = size; }
   long long int getPeerDownload() const { return peerDownload; }
 
-  bool shouldChoke() const;
+  bool shouldBeChoking() const;
 
   bool hasPiece(int index) const;
 

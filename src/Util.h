@@ -73,6 +73,8 @@ public:
   static string secfmt(int sec);
 
   static int expandBuffer(char** pbuf, int curLength, int newLength);
+
+  static void unfoldRange(const string& src, Integers& range);
 };
 
 #endif // _D_UTIL_H_

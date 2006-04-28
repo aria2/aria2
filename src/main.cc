@@ -36,6 +36,7 @@
 #include "TrackerWatcherCommand.h"
 #include "TrackerUpdateCommand.h"
 #include "ByteArrayDiskWriter.h"
+#include "PeerChokeCommand.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -207,7 +208,15 @@ void showUsage() {
   cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
-  cout << _(" --listen-port                Set port number to listen to for peer connection.") << endl;
+  cout << _(" --listen-port=PORT           Set port number to listen to for peer connection.") << endl;
+  cout << _(" --upload-limit=SPEED         Set upload speed limit in KB/sec. aria2 tries to\n"
+	    "                              keep upload speed under SPEED. 0 means unlimited.") << endl;
+  cout << _(" --select-file=INDEX...       Set file to download by specifing its index.\n"
+	    "                              You can know file index through --show-files\n"
+	    "                              option. Multiple indexes can be specified by using\n"
+	    "                              ',' like \"3,6\".\n"
+	    "                              You can also use '-' to specify rangelike \"1-5\".\n"
+	    "                              ',' and '-' can be used together.\n") << endl;
 #endif // ENABLE_BITTORRENT
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
@@ -219,7 +228,7 @@ void showUsage() {
 #ifdef ENABLE_BITTORRENT
   cout << "FILE:" << endl;
   cout << _(" Specify files in multi-file torrent to download. Use conjunction with\n"
-	    " -T option.") << endl;
+	    " -T option. This arguments are ignored if you specify --select-file option.") << endl;
   cout << endl;
 #endif // ENABLE_BITTORRENT
   cout << _("Examples:") << endl;
@@ -262,7 +271,7 @@ int main(int argc, char* argv[]) {
   string referer;
   string torrentFile;
   int listenPort = -1;
-  Strings args;
+  Integers selectFileIndexes;
 #ifdef ENABLE_BITTORRENT
   bool followTorrent = true;
 #else
@@ -284,7 +293,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
   op->put(PREF_AUTO_SAVE_INTERVAL, "60");
   op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
-
+  op->put(PREF_UPLOAD_LIMIT, "0");
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -318,6 +327,8 @@ int main(int argc, char* argv[]) {
       { "show-files", no_argument, NULL, 'S' },
       { "no-preallocation", no_argument, &lopt, 18 },
       { "direct-file-mapping", required_argument, &lopt, 19 },
+      { "upload-limit", required_argument, &lopt, 20 },
+      { "select-file", required_argument, &lopt, 21 },
 #endif // ENABLE_BITTORRENT
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
@@ -460,10 +471,24 @@ int main(int argc, char* argv[]) {
 	} else if(string(optarg) == "false") {
 	  op->put(PREF_DIRECT_FILE_MAPPING, V_FALSE);
 	} else {
-	  cerr << "direct-file-mapping must be either 'true' or 'false'." << endl;
+	  cerr << _("direct-file-mapping must be either 'true' or 'false'.") << endl;
 	  showUsage();
 	  exit(1);
 	}
+	break;
+      case 20: {
+	int uploadSpeed = (int)strtol(optarg, NULL, 10);
+	if(0 > uploadSpeed) {
+	  cerr << _("upload-limit must be grater than or equal to 0.") << endl;
+	  showUsage();
+	  exit(1);
+	}
+	op->put(PREF_UPLOAD_LIMIT, Util::itos(uploadSpeed));
+	break;
+      }
+      case 21:
+	Util::unfoldRange(optarg, selectFileIndexes);
+	break;
       }
       break;
     }
@@ -546,9 +571,7 @@ int main(int argc, char* argv[]) {
     }
   }
   
-  for(int i = 1; optind+i-1 < argc; i++) {
-    args.push_back(argv[optind+i-1]);
-  }
+  Strings args(argv+optind, argv+argc);
 
 #ifdef HAVE_LIBSSL
   // for SSL initialization
@@ -646,18 +669,26 @@ int main(int argc, char* argv[]) {
 	FileEntries fileEntries =
 	  te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
 	cout << _("Files:") << endl;
+	cout << "idx|path/length" << endl;
+	cout << "===============================================================================" << endl;
+	int count = 1;
 	for(FileEntries::const_iterator itr = fileEntries.begin();
-	    itr != fileEntries.end(); itr++) {
-	  printf("%s %s Bytes\n", itr->path.c_str(),
+	    itr != fileEntries.end(); count++, itr++) {
+	  printf("%3d %s\n    %s Bytes\n", count, itr->path.c_str(),
 		 Util::llitos(itr->length, true).c_str());
+	  cout << "-------------------------------------------------------------------------------" << endl;
 	}
 	exit(0);
       } else {
-	Strings targetFiles;
-	if(!torrentFile.empty() && !args.empty()) {
-	  targetFiles = args;
+	if(selectFileIndexes.empty()) {
+	  Strings targetFiles;
+	  if(!torrentFile.empty() && !args.empty()) {
+	    targetFiles = args;
+	  }
+	  te->torrentMan->setup(targetTorrentFile, targetFiles);
+	} else {
+	  te->torrentMan->setup(targetTorrentFile, selectFileIndexes);
 	}
-	te->torrentMan->setup(targetTorrentFile, targetFiles);
       }
       PeerListenCommand* listenCommand =
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
@@ -680,6 +711,8 @@ int main(int argc, char* argv[]) {
       te->commands.push(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
 						   te,
 						   op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+      te->commands.push(new PeerChokeCommand(te->torrentMan->getNewCuid(),
+					     10, te));
       te->run();
       
       if(te->torrentMan->downloadComplete()) {

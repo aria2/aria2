@@ -1,3 +1,97 @@
+2006-04-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add --select-file command-line option:
+	
+	* src/Util.cc
+	(unfoldRange): New function.
+	(getNum): New function.
+	(unfoldSubRange): New function
+	* src/main.cc
+	(showUsage): Added help message.
+	(main): Added --select-file command-line option.
+	
+2006-04-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To deploy upload rate based choking algorithm:
+	
+	* src/PeerInteractionCommand.cc
+	(PeerInteractionCommand): Add peer to TorrentMan::activePeers to track
+	peer currently used.
+	(decideChoking): Deleted the choke/unchoke decision algorithm when
+	download completes. Simplified.
+	(receiveMessage): Updated.
+	* src/TorrentMan.h
+	(activePeers): New variable.
+	(addActivePeer): New function.
+	(getActivePeers): New function.
+	(deleteActivePeer): New function.
+	* src/TorrentMan.cc
+	(addPeer): deleteOldErrorPeers is moved to the begining of the function
+	* src/PeerAbstractCommand.cc
+	(onAbort): Use peer->resetStatus().
+	* src/main.cc
+	(PeerChokeCommand.h): Included.
+	(main): Added the instance of ChokingCommand to the command queue.
+	* src/Peer.h
+	(amChoking): Renamed from amChocking
+	(chokingRequired): New variable.
+	(optUnchoking): New variable.
+	(deltaUpload): New variable.
+	(deltaDownload): New variable.
+	(addDeltaUpload): New function.
+	(resetDeltaUpload): New function.
+	(addDeltaDownload): New function.
+	(resetDeltaDownload): New function.
+	(addPeerUpload): Added a call to addDeltaUpload.
+	(addPeerDownload): Added a call to addDeltaDownload.
+	* src/Peer.cc
+	(shouldBeChoking): Renamed from shouldChoke.
+	(resetStatus): New function.
+	* src/PeerChokeCommand.h: New class.
+	* src/PeerChokeCommand.cc: New class.
+	
+	To add lazy upload speed limiter:
+
+	* src/TorrentConsoleDownloadEngine.h: Moved the variables for
+	statistics calculation to TorrentDownloadEngine.
+	* src/TorrentConsoleDownloadEngine.cc
+	(sendStatistics): Renamed from printStatistics.
+	(initStatistics): Removed. Moved to TorrentDownloadEngine.
+	(calculateSpeed): Removed. Moved to TorrentDownloadEngine.
+	(calculateStatistics): Removed. Moved to TorrentDownloadEngine.
+	* src/TorrentDownloadEngine.h: Added the variables for statistics
+	calculation.
+	(sendStatistics): New function as pure virtual function.
+	(getUploadSpeed): New function.
+	* src/TorrentDownloadEngine.cc
+	(initStatistics): New function.
+	(calculateSpeed): New function.
+	(calculateStatistics): New function.
+	* src/SendMessageQueue.h
+	(uploadLength): New variable.
+	(send): Added an argument.
+	(setUploadLimit): New function.
+	(getUploadLimit): New function.
+	* src/SendMessageQueue.cc
+	(send): Added upload speed limiter.
+	* src/prefs.h
+	(PREF_UPLOAD_LIMIT): New definition.
+	* src/PeerInteractionCommand.cc
+	(PeerInteractionCommand): Set upload speed limit to sendMessageQueue.
+	* src/main.cc
+	(main): Added --upload-limit option
+
+	For bug fixes:
+	
+	* src/main.cc
+	(showUsage): Corrected --listen-port help
+
+	Other changes:
+	
+	* src/TorrentMan.cc
+	(getPeer): Return nullPeer if connection is grather than
+	MAX_PEER_UPDATE(15) in order to leave space for incoming peers.
+
 2006-04-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add some useful information to the exception message:

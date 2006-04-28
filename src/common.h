@@ -48,5 +48,6 @@
 using namespace std;
 
 typedef deque<string> Strings;
+typedef deque<int> Integers;
 
 #endif // _D_COMMON_H_

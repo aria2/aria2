@@ -36,6 +36,7 @@
 #include <deque>
 #include <map>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -75,6 +76,7 @@ private:
   UsedPieces usedPieces;
   bool setupComplete;
   const Logger* logger;
+  Peers activePeers;
 
   FILE* openSegFile(const string& segFilename, const string& mode) const;
   void read(FILE* file);
@@ -86,6 +88,8 @@ private:
   void reduceUsedPieces(int max);
   void readFileEntry(FileEntries& fileEntries, Directory** pTopDir, const Dictionary* infoDic, const string& defaultName);
   void setFileFilter(const Strings& filePaths);
+  void setupInternal1(const string& metaInfoFile);
+  void setupInternal2();
 public:
   int pieceLength;
   int pieces;
@@ -142,6 +146,7 @@ public:
   }
 
   void setup(const string& metaInfoFile, const Strings& targetFilePaths);
+  void setup(const string& metaInfoFile, const Integers& targetFileIndexes);
 
   string getPieceHash(int index) const;
 
@@ -231,6 +236,17 @@ public:
   long long int getSelectedTotalLength() const;
 
   void onDownloadComplete();
+
+  void addActivePeer(Peer* peer) {
+    activePeers.push_back(peer);
+  }
+
+  Peers& getActivePeers() { return this->activePeers; }
+
+  void deleteActivePeer(Peer* peer) {
+    Peers::iterator itr = find(activePeers.begin(), activePeers.end(), peer);
+    activePeers.erase(itr);
+  }
 
   enum FILE_MODE {
     SINGLE,

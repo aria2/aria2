@@ -96,5 +96,7 @@
 #define PREF_NO_PREALLOCATION "no_preallocation"
 // values: true | false
 #define PREF_DIRECT_FILE_MAPPING "direct_file_mapping"
+// values: 1*digit
+#define PREF_UPLOAD_LIMIT "upload_limit"
 
 #endif // _D_PREFS_H_

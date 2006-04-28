@@ -100,7 +100,7 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	DiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
 	LogFactory.$(OBJEXT) TrackerUpdateCommand.$(OBJEXT) \
-	ByteArrayDiskWriter.$(OBJEXT)
+	ByteArrayDiskWriter.$(OBJEXT) PeerChokeCommand.$(OBJEXT)
 am_libaria2c_a_OBJECTS = $(am__objects_1)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -334,7 +334,8 @@ SRCS = Socket.cc Socket.h\
 	FileEntry.h\
 	LogFactory.cc LogFactory.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
+	PeerChokeCommand.cc PeerChokeCommand.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -461,6 +462,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerChokeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInitiateConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInteractionCommand.Po@am__quote@

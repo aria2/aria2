@@ -39,6 +39,7 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
   }
   peerConnection = new PeerConnection(cuid, socket, e->option, peer, e->torrentMan);
   sendMessageQueue = new SendMessageQueue(cuid, peerConnection, e->torrentMan);
+  sendMessageQueue->setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   piece = Piece::nullPiece;
   keepAliveCheckPoint.tv_sec = 0;
   keepAliveCheckPoint.tv_usec = 0;
@@ -49,12 +50,14 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
   chokeUnchokeCount = 0;
   haveCount = 0;
   keepAliveCount = 0;
+  e->torrentMan->addActivePeer(this->peer);
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
   delete peerConnection;
   delete sendMessageQueue;
   e->torrentMan->unadvertisePiece(cuid);
+  e->torrentMan->deleteActivePeer(this->peer);
 }
 
 bool PeerInteractionCommand::executeInternal() {
@@ -189,24 +192,16 @@ void PeerInteractionCommand::syncPiece() {
 }
 
 void PeerInteractionCommand::decideChoking() {
-  if(e->torrentMan->downloadComplete()) {
-    if(peer->amChocking && peer->peerInterested) {
-      PendingMessage pendingMessage(PeerMessage::UNCHOKE, peerConnection);
-      sendMessageQueue->addPendingMessage(pendingMessage);
-    }
-    return;
-  }
-  if(peer->shouldChoke()) {
-    if(!peer->amChocking) {
+  if(peer->shouldBeChoking()) {
+    if(!peer->amChoking) {
       PendingMessage pendingMessage(PeerMessage::CHOKE, peerConnection);
       sendMessageQueue->addPendingMessage(pendingMessage);
     }
-  } else if(peer->amChocking && peer->peerInterested) {
-    PendingMessage pendingMessage(PeerMessage::UNCHOKE, peerConnection);
-    sendMessageQueue->addPendingMessage(pendingMessage);
-  } else if(!peer->peerInterested) {
-    PendingMessage pendingMessage(PeerMessage::CHOKE, peerConnection);
-    sendMessageQueue->addPendingMessage(pendingMessage);
+  } else {
+    if(peer->amChoking) {
+      PendingMessage pendingMessage(PeerMessage::UNCHOKE, peerConnection);
+      sendMessageQueue->addPendingMessage(pendingMessage);
+    }
   }
 }
 
@@ -389,7 +384,7 @@ void PeerInteractionCommand::sendMessages() {
     }
   }
 
-  sendMessageQueue->send();
+  sendMessageQueue->send(e->getUploadSpeed());
 }
 
 void PeerInteractionCommand::onAbort(Exception* ex) {

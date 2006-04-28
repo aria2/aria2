@@ -54,6 +54,8 @@ public:
     this->fileEntries = fileEntries;
   }
   FileEntry getFileEntryFromPath(const string& fileEntryPath) const;
+  const FileEntries& getFileEntries() const { return fileEntries; }
+
   bool addDownloadEntry(const string& fileEntryPath);
   bool addDownloadEntry(int index);
   void addAllDownloadEntry();

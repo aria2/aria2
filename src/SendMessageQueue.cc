@@ -24,7 +24,7 @@
 
 SendMessageQueue::SendMessageQueue(int cuid, PeerConnection* peerConnection,
 				   TorrentMan* torrentMan)
-  :cuid(cuid) {
+  :cuid(cuid), uploadLimit(0) {
   requestSlotMan = new RequestSlotMan(cuid, &pendingMessages, peerConnection,
 				      torrentMan);
   logger = LogFactory::getInstance();
@@ -34,15 +34,24 @@ SendMessageQueue::~SendMessageQueue() {
   delete requestSlotMan;
 }
 
-void SendMessageQueue::send() {
-  for(PendingMessages::iterator itr = pendingMessages.begin();
-      itr != pendingMessages.end();) {
-    if(itr->processMessage()) {
-      itr = pendingMessages.erase(itr);
+void SendMessageQueue::send(int uploadSpeed) {
+  //logger->debug("SendMessageQueue:send start");
+  int size = pendingMessages.size();
+  for(int i = 0; i < size; i++) {
+    PendingMessage msg = pendingMessages.front();
+    pendingMessages.pop_front();
+    if(uploadLimit != 0 && uploadSpeed >= uploadLimit*1024 &&
+       msg.getPeerMessageId() == PeerMessage::PIECE && !msg.isInProgress()) {
+      //logger->debug("upload speed limiter enabled, uploadSpeed=%d", uploadSpeed);
+      pendingMessages.push_back(msg);
     } else {
-      break;
+      if(!msg.processMessage()) {
+	pendingMessages.push_front(msg);
+	break;
+      }
     }
   }
+  //logger->debug("SendMessageQueue:send end");
 }
 
 void SendMessageQueue::addPendingMessage(const PendingMessage& pendingMessage) {

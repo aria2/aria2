@@ -33,15 +33,15 @@ bool PendingMessage::processMessage() {
     peerConnection->sendBitfield();
     break;
   case PeerMessage::UNCHOKE:
-    if(peerConnection->getPeer()->amChocking) {
+    if(peerConnection->getPeer()->amChoking) {
       peerConnection->sendUnchoke();
-      peerConnection->getPeer()->amChocking = false;
+      peerConnection->getPeer()->amChoking = false;
     }
     break;
   case PeerMessage::CHOKE:
-    if(!peerConnection->getPeer()->amChocking) {
+    if(!peerConnection->getPeer()->amChoking) {
       peerConnection->sendChoke();
-      peerConnection->getPeer()->amChocking = true;
+      peerConnection->getPeer()->amChoking = true;
     }
     break;
   case PeerMessage::NOT_INTERESTED:
@@ -57,7 +57,7 @@ bool PendingMessage::processMessage() {
     }
     break;
   case PeerMessage::PIECE:
-    if((!peerConnection->getPeer()->amChocking &&
+    if((!peerConnection->getPeer()->amChoking &&
 	peerConnection->getPeer()->peerInterested) || inProgress) {
       if(!inProgress) {
 	peerConnection->sendPieceHeader(index, begin, length);
