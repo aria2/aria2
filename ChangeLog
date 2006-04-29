@@ -22,6 +22,7 @@
 	(readData): Removed timeout argument.
 	(peekData): Removed timeout argument.
 	
+	* Release 0.4.1
 	
 2006-04-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
