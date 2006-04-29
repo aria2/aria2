@@ -89,20 +89,20 @@ bool Socket::isReadable(int timeout) const {
   return core->isReadable(timeout);
 }
 
-void Socket::writeData(const char* data, int len, int timeout) const {
-  core->writeData(data, len, timeout);
+void Socket::writeData(const char* data, int len) const {
+  core->writeData(data, len);
 }
 
-void Socket::writeData(const string& str, int timeout) const {
-  core->writeData(str.c_str(), str.size(), timeout);
+void Socket::writeData(const string& str) const {
+  core->writeData(str.c_str(), str.size());
 }
 
-void Socket::readData(char* data, int& len, int timeout) const {
-  core->readData(data, len, timeout);
+void Socket::readData(char* data, int& len) const {
+  core->readData(data, len);
 }
 
-void Socket::peekData(char* data, int& len, int timeout) const {
-  core->peekData(data, len, timeout);
+void Socket::peekData(char* data, int& len) const {
+  core->peekData(data, len);
 }
 
 void Socket::initiateSecureConnection() const {

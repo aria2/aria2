@@ -96,22 +96,22 @@ public:
   /**
    * @see SocketCore::writeData()
    */
-  void writeData(const char* data, int len, int timeout = 5) const;
+  void writeData(const char* data, int len) const;
   /**
    * A covenient function that can take string class parameter and
    * internally calls SocketCore::writeData().
    */
-  void writeData(const string& str, int timeout = 5) const;
+  void writeData(const string& str) const;
 
   /**
    * @see SocketCore::readData()
    */
-  void readData(char* data, int& len, int timeout = 5) const;
+  void readData(char* data, int& len) const;
 
   /**
    * @see SocketCore::peekData()
    */
-  void peekData(char* data, int& len, int timeout = 5) const;
+  void peekData(char* data, int& len) const;
 
   /**
    * @see SocketCore::initiateSecureConnection()

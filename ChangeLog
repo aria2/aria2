@@ -8,7 +8,20 @@
 	(unfoldSubRange): New function
 	* src/main.cc
 	(showUsage): Added help message.
-	(main): Added --select-file command-line option.
+	(main): Added --select-file command-line option. Updated the layout of
+	file listing.
+	* src/common.h
+	(Integers): New definition.
+
+	* src/SocketCore.cc
+	(writeData): Removed timeout argument.
+	(readData): Removed timeout argument.
+	(peekData): Removed timeout argument.
+	* src/Socket.cc
+	(writeData): Removed timeout argument.
+	(readData): Removed timeout argument.
+	(peekData): Removed timeout argument.
+	
 	
 2006-04-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

@@ -35,14 +35,12 @@ SendMessageQueue::~SendMessageQueue() {
 }
 
 void SendMessageQueue::send(int uploadSpeed) {
-  //logger->debug("SendMessageQueue:send start");
   int size = pendingMessages.size();
   for(int i = 0; i < size; i++) {
     PendingMessage msg = pendingMessages.front();
     pendingMessages.pop_front();
     if(uploadLimit != 0 && uploadSpeed >= uploadLimit*1024 &&
        msg.getPeerMessageId() == PeerMessage::PIECE && !msg.isInProgress()) {
-      //logger->debug("upload speed limiter enabled, uploadSpeed=%d", uploadSpeed);
       pendingMessages.push_back(msg);
     } else {
       if(!msg.processMessage()) {
@@ -51,7 +49,6 @@ void SendMessageQueue::send(int uploadSpeed) {
       }
     }
   }
-  //logger->debug("SendMessageQueue:send end");
 }
 
 void SendMessageQueue::addPendingMessage(const PendingMessage& pendingMessage) {

@@ -670,13 +670,13 @@ int main(int argc, char* argv[]) {
 	  te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
 	cout << _("Files:") << endl;
 	cout << "idx|path/length" << endl;
-	cout << "===============================================================================" << endl;
+	cout << "===+===========================================================================" << endl;
 	int count = 1;
 	for(FileEntries::const_iterator itr = fileEntries.begin();
 	    itr != fileEntries.end(); count++, itr++) {
-	  printf("%3d %s\n    %s Bytes\n", count, itr->path.c_str(),
+	  printf("%3d|%s\n   |%s Bytes\n", count, itr->path.c_str(),
 		 Util::llitos(itr->length, true).c_str());
-	  cout << "-------------------------------------------------------------------------------" << endl;
+	  cout << "---+---------------------------------------------------------------------------" << endl;
 	}
 	exit(0);
       } else {

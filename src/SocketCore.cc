@@ -262,7 +262,7 @@ bool SocketCore::isReadable(int timeout) const {
   }
 }
 
-void SocketCore::writeData(const char* data, int len, int timeout) {
+void SocketCore::writeData(const char* data, int len) {
   int ret = 0;
   if(!secure && (ret = send(sockfd, data, (size_t)len, 0)) != len
 #ifdef HAVE_LIBSSL
@@ -288,7 +288,7 @@ void SocketCore::writeData(const char* data, int len, int timeout) {
   }
 }
 
-void SocketCore::readData(char* data, int& len, int timeout) {
+void SocketCore::readData(char* data, int& len) {
   int ret = 0;
   if(!secure && (ret = recv(sockfd, data, (size_t)len, 0)) < 0
 #ifdef HAVE_LIBSSL
@@ -315,7 +315,7 @@ void SocketCore::readData(char* data, int& len, int timeout) {
   len = ret;
 }
 
-void SocketCore::peekData(char* data, int& len, int timeout) {
+void SocketCore::peekData(char* data, int& len) {
   int ret = 0;
   if(!secure && (ret = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
 #ifdef HAVE_LIBSSL

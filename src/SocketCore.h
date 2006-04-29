@@ -139,10 +139,8 @@ public:
    * for this method call.
    * @param data data to write
    * @param len length of data
-   * @param timeout the amount of time elapsed before isWritable()
-   * are timed out.
    */
-  void writeData(const char* data, int len, int timeout = 0);
+  void writeData(const char* data, int len);
 
   /**
    * Reads up to len bytes from this socket.
@@ -155,10 +153,8 @@ public:
    * @param data holder to store data.
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
-   * @param timeout the amount of time elapsed before isReadable() are timed
-   * out.
    */
-  void readData(char* data, int& len, int timeout = 0);
+  void readData(char* data, int& len);
 
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from
@@ -168,10 +164,8 @@ public:
    * @param data holder to store data.
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
-   * @param timeout the amount of time elapsed before isReadable() are timed
-   * out.
    */
-  void peekData(char* data, int& len, int timeout = 0);
+  void peekData(char* data, int& len);
   
   /**
    * Makes this socket secure.
