@@ -216,7 +216,7 @@ void showUsage() {
 	    "                              option. Multiple indexes can be specified by using\n"
 	    "                              ',' like \"3,6\".\n"
 	    "                              You can also use '-' to specify rangelike \"1-5\".\n"
-	    "                              ',' and '-' can be used together.\n") << endl;
+	    "                              ',' and '-' can be used together.") << endl;
 #endif // ENABLE_BITTORRENT
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
