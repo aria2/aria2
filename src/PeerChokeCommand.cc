@@ -44,36 +44,26 @@ void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
   }
   Peer* peer = peers.front();
   peer->optUnchoking = true;
-  /*
-  Peers::iterator itr = peers.begin();
-  for(;itr != peers.end(); itr++) {
-    if((*itr)->optUnchoking) {
-      break;
-    }
-  }
-  if(itr != peers.end()) {
-    (*itr)->optUnchoking = false;
-    itr++;
-  }
-  if(itr == peers.end()) {
-    itr = peers.begin();
-  }
-  (*itr)->optUnchoking = true;
-  */
   logger->debug("opt, unchoking %s, delta=%d",
 		peer->ipaddr.c_str(), peer->getDeltaUpload());
+  if(e->torrentMan->isEndGame()) {
+    Peers::iterator itr = peers.begin()+1;
+    for(; itr != peers.end(); itr++) {
+      Peer* peer = *itr;
+      if(peer->amInterested && peer->peerInterested) {
+	peer->optUnchoking = true;
+	logger->debug("opt, unchoking %s, delta=%d",
+		      peer->ipaddr.c_str(), peer->getDeltaUpload());
+	break;
+      }
+    }
+  }
 }
 
-void PeerChokeCommand::setAllPeerResetDeltaUpload(Peers& peers) const {
+void PeerChokeCommand::setAllPeerResetDelta(Peers& peers) const {
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peer* peer = *itr;
     peer->resetDeltaUpload();
-  }
-}
-
-void PeerChokeCommand::setAllPeerResetDeltaDownload(Peers& peers) const {
-  for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-    Peer* peer = *itr;
     peer->resetDeltaDownload();
   }
 }
@@ -113,6 +103,7 @@ bool PeerChokeCommand::execute() {
     Peer* peer = *itr;
     if(peer->peerInterested) {
       peer->chokingRequired = false;
+      peer->optUnchoking = false;
       itr = peers.erase(itr);
       unchokingCount--;
       logger->debug("cat01, unchoking %s, delta=%d", peer->ipaddr.c_str(), peer->getDeltaUpload());
@@ -124,6 +115,7 @@ bool PeerChokeCommand::execute() {
     Peer* peer = *itr;
     if(!peer->peerInterested) {
       peer->chokingRequired = false;
+      peer->optUnchoking = false;
       itr = peers.erase(itr);
       logger->debug("cat02, unchoking %s, delta=%d", peer->ipaddr.c_str(), peer->getDeltaUpload());
       break;
@@ -136,11 +128,7 @@ bool PeerChokeCommand::execute() {
     rotate = 0;
   }
   rotate++;
-  if(e->torrentMan->downloadComplete()) {
-    setAllPeerResetDeltaDownload(e->torrentMan->getActivePeers());
-  } else {
-    setAllPeerResetDeltaUpload(e->torrentMan->getActivePeers());
-  }
+  setAllPeerResetDelta(e->torrentMan->getActivePeers());
 
   SleepCommand* command = new SleepCommand(cuid, e, this, interval);
   e->commands.push(command);

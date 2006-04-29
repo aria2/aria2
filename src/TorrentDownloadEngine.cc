@@ -96,8 +96,10 @@ void TorrentDownloadEngine::calculateStatistics() {
     totalLength = torrentMan->getTotalLength();
   }
   
-  downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
-  uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
+  if(elapsed > 0) {
+    downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
+    uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
+  }
 
   if(elapsed-lastElapsed >= 1) {
     avgSpeed = calculateSpeed(sessionDownloadLength,

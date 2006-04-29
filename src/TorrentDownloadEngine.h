@@ -68,6 +68,7 @@ public:
 
   // returns uploading speed in byte/sec.
   int getUploadSpeed() const { return uploadSpeed; }
+  int getDownloadSpeed() const { return downloadSpeed; }
 };
 
 #endif // _D_TORRENT_DOWNLOAD_ENGINE_H_
