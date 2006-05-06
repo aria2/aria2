@@ -479,7 +479,7 @@ int main(int argc, char* argv[]) {
       case 20: {
 	int uploadSpeed = (int)strtol(optarg, NULL, 10);
 	if(0 > uploadSpeed) {
-	  cerr << _("upload-limit must be grater than or equal to 0.") << endl;
+	  cerr << _("upload-limit must be greater than or equal to 0.") << endl;
 	  showUsage();
 	  exit(1);
 	}

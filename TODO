@@ -14,3 +14,4 @@
 * Add Mainline-compatible DHT support
 * Add Message stream encryption support
 * Add announce-list support
+* Add content-disposition support(NO MIME Encoding)

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-04-30 02:39+0900\n"
-"PO-Revision-Date: 2006-04-30 02:40+0900\n"
+"POT-Creation-Date: 2006-05-05 19:42+0900\n"
+"PO-Revision-Date: 2006-05-05 19:45+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -209,7 +209,7 @@ msgid "Got EOF from peer."
 msgstr "ピアから EOF を受け取りました."
 
 #: src/message.h:73
-msgid "Mulformed meta info."
+msgid "Malformed meta info."
 msgstr "メタ情報ファイルの記述が不正です."
 
 #: src/message.h:75
@@ -824,7 +824,7 @@ msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr "direct-file-mapping は 'true' または 'false を指定してください."
 
 #: src/main.cc:482
-msgid "upload-limit must be grater than or equal to 0."
+msgid "upload-limit must be greater than or equal to 0."
 msgstr "upload-limit は 0 以上の数を指定してください."
 
 #: src/main.cc:514
