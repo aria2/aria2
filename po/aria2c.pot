@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-05-05 19:42+0900\n"
+"POT-Creation-Date: 2006-05-10 00:53+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -342,13 +342,13 @@ msgid ""
 "The download was not complete because of errors. Check the log.\n"
 msgstr ""
 
-#: src/main.cc:92 src/main.cc:101
+#: src/main.cc:88 src/main.cc:99
 msgid ""
 "\n"
 "stopping application...\n"
 msgstr ""
 
-#: src/main.cc:96 src/main.cc:111
+#: src/main.cc:94 src/main.cc:111
 msgid "done\n"
 msgstr ""
 
@@ -704,10 +704,10 @@ msgstr ""
 msgid "daemon failed"
 msgstr ""
 
-#: src/main.cc:671
+#: src/main.cc:670
 msgid "Files:"
 msgstr ""
 
-#: src/main.cc:702
+#: src/main.cc:701
 msgid "Errors occurred while binding port.\n"
 msgstr ""

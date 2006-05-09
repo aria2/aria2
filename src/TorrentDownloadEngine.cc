@@ -22,6 +22,15 @@
 #include "TorrentDownloadEngine.h"
 #include "Util.h"
 
+TorrentDownloadEngine::TorrentDownloadEngine():filenameFixed(false),
+					       torrentMan(NULL) {}
+
+TorrentDownloadEngine::~TorrentDownloadEngine() {
+  if(torrentMan != NULL) {
+    delete torrentMan;
+  }
+}
+
 void TorrentDownloadEngine::onEndOfRun() {
   torrentMan->diskAdaptor->closeFile();
   if(filenameFixed && torrentMan->downloadComplete()) {

@@ -342,3 +342,16 @@ void Util::unfoldRange(const string& src, Integers& range) {
   sort(range.begin(), range.end());
   range.erase(unique(range.begin(), range.end()), range.end());
 }
+
+string Util::getContentDispositionFilename(const string& header) {
+  string::size_type attributesp = header.find("filename=\"");
+  if(attributesp == string::npos) {
+    return "";
+  }
+  string::size_type filenamesp = attributesp+strlen("filename=\"");
+  string::size_type filenameep = header.find("\"", filenamesp);
+  if(filenameep == string::npos) {
+    return "";
+  }
+  return trim(header.substr(filenamesp, filenameep-filenamesp));
+}

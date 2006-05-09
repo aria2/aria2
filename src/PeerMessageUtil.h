@@ -22,6 +22,18 @@
 #ifndef _D_PEER_MESSAGE_UTIL_H_
 #define _D_PEER_MESSAGE_UTIL_H_
 
+#include "ChokeMessage.h"
+#include "UnchokeMessage.h"
+#include "InterestedMessage.h"
+#include "NotInterestedMessage.h"
+#include "HaveMessage.h"
+#include "BitfieldMessage.h"
+#include "RequestMessage.h"
+#include "CancelMessage.h"
+#include "PieceMessage.h"
+#include "HandshakeMessage.h"
+#include "KeepAliveMessage.h"
+#include "PortMessage.h"
 #include "PeerConnection.h"
 
 #define MAX_BLOCK_LENGTH (128*1024)
@@ -30,23 +42,29 @@ class PeerMessageUtil {
 private:
   PeerMessageUtil() {}
 
-  static PeerMessage* createBasicMessage(int id, const char* msg, int len);
-  static PeerMessage* createHaveMessage(int id, const char* msg, int len);
-  static PeerMessage* createBitfieldMessage(int id, const char* msg, int len);
-  static PeerMessage* createRequestCancelMessage(int id, const char* msg, int len);
-  static PeerMessage* createPieceMessage(int id, const char* msg, int len);
-  static int getId(const char* msg);
   static int getIntParam(const char* msg, int offset);
-
-  static void checkIndex(const PeerMessage* message, int pieces);
-  static void checkBegin(const PeerMessage* message, int pieceLength);
-  static void checkLength(const PeerMessage* message);
-  static void checkPieceOffset(const PeerMessage* message, int pieceLength, int pieces, long long int totalLength);
-  static void checkBitfield(const PeerMessage* message, int pieces);
+  static int getShortIntParam(const char* msg, int offset);
 public:
-  static PeerMessage* createPeerMessage(const char* msg, int len);
-  static void checkIntegrity(const PeerMessage* message, int pieceLength, int pieces, long long int totalLength);
-  static HandshakeMessage* createHandshakeMessage(const char* msg);
+  static int getId(const char* msg);
+
+  static ChokeMessage* createChokeMessage(const char* msg, int len);
+  static UnchokeMessage* createUnchokeMessage(const char* msg, int len);
+  static InterestedMessage* createInterestedMessage(const char* msg, int len);
+  static NotInterestedMessage* createNotInterestedMessage(const char* msg, int len);
+  static HaveMessage* createHaveMessage(const char* msg, int len);
+  static BitfieldMessage* createBitfieldMessage(const char* msg, int len);
+  static RequestMessage* createRequestMessage(const char* msg, int len);
+  static CancelMessage* createCancelMessage(const char* msg, int len);
+  static PieceMessage* createPieceMessage(const char* msg, int len);
+  static PortMessage* createPortMessage(const char* msg, int len);
+
+  static void checkIndex(int index, int pieces);
+  static void checkBegin(int begin, int pieceLength);
+  static void checkLength(int length);
+  static void checkRange(int begin, int length, int pieceLength);
+  static void checkBitfield(const unsigned char* bitfield, int bitfieldLength, int pieces);
+
+  static HandshakeMessage* createHandshakeMessage(const char* msg, int length);
   static void checkHandshake(const HandshakeMessage* message, const unsigned char* infoHash);
 };
 

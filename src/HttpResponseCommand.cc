@@ -45,7 +45,7 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
   int status = http->receiveResponse(headers);
   if(status == 0) {
     // didn't receive header fully
-    e->commands.push(this);
+    e->commands.push_back(this);
     return false;
   }
   // check HTTP status number
@@ -65,7 +65,7 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
       return handleDefaultEncoding(headers);
     }
   } else {
-    if(req->getFile() != e->segmentMan->filename) {
+    if(determinFilename(headers) != e->segmentMan->filename) {
       throw new DlAbortEx(EX_FILENAME_MISMATCH, req->getFile().c_str(), e->segmentMan->filename.c_str());
     }
     createHttpDownloadCommand();
@@ -91,6 +91,18 @@ bool HttpResponseCommand::handleRedirect(const string& url, const HttpHeader& he
   return prepareForRetry(0);
 }
 
+string HttpResponseCommand::determinFilename(const HttpHeader& headers) {
+  string contentDisposition =
+    Util::getContentDispositionFilename(headers.getFirst("Content-Disposition"));
+  if(contentDisposition.empty()) {
+    return req->getFile();
+  } else {
+    logger->info("CUID#%d - Content-Disposition Detected. Use %s as filename",
+		 cuid, contentDisposition.c_str());
+    return contentDisposition;
+  }
+}
+
 bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   // TODO quick and dirty way 
   if(req->isTorrent) {
@@ -108,7 +120,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
   e->segmentMan->isSplittable = !(size == 0);
-  e->segmentMan->filename = req->getFile();
+  e->segmentMan->filename = determinFilename(headers);
   bool segFileExists = e->segmentMan->segmentFileExists();
   e->segmentMan->downloadStarted = true;
   if(segFileExists) {
@@ -130,7 +142,7 @@ bool HttpResponseCommand::handleOtherEncoding(const string& transferEncoding, co
   // we ignore content-length when transfer-encoding is set
   e->segmentMan->downloadStarted = true;
   e->segmentMan->isSplittable = false;
-  e->segmentMan->filename = req->getFile();
+  e->segmentMan->filename = determinFilename(headers);
   e->segmentMan->totalSize = 0;
   Segment seg;
   e->segmentMan->getSegment(seg, cuid);	
@@ -151,7 +163,7 @@ void HttpResponseCommand::createHttpDownloadCommand(const string& transferEncodi
       command->transferEncoding = transferEncoding;
       enc->init();
     }
-    e->commands.push(command);
+    e->commands.push_back(command);
   }
 }
 

@@ -37,6 +37,14 @@ DownloadEngine::DownloadEngine():noWait(false), segmentMan(NULL) {
 DownloadEngine::~DownloadEngine() {
   assert(rsockets.empty());
   assert(wsockets.empty());
+  if(segmentMan != NULL) {
+    delete segmentMan;
+  }
+}
+
+void DownloadEngine::cleanQueue() {
+  for_each(commands.begin(), commands.end(), Deleter());
+  commands.clear();
 }
 
 void DownloadEngine::run() {
@@ -45,7 +53,7 @@ void DownloadEngine::run() {
     int max = commands.size();
     for(int i = 0; i < max; i++) {
       Command* com = commands.front();
-      commands.pop();
+      commands.pop_front();
       if(com->execute()) {
 	delete(com);
       }

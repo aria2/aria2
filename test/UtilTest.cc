@@ -13,6 +13,8 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testEndsWith);
   CPPUNIT_TEST(testReplace);
   CPPUNIT_TEST(testStartsWith);
+  // may be moved to other helper class in the future.
+  CPPUNIT_TEST(testGetContentDispositionFilename);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -26,6 +28,8 @@ public:
   void testEndsWith();
   void testReplace();
   void testStartsWith();
+  // may be moved to other helper class in the future.
+  void testGetContentDispositionFilename();
 };
 
 
@@ -156,4 +160,18 @@ void UtilTest::testStartsWith() {
   part = "a";
   CPPUNIT_ASSERT(Util::startsWith(target, part));
 
+}
+
+void UtilTest::testGetContentDispositionFilename() {
+  string h1 = "attachment; filename=\"aria2.tar.bz2\"";
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h1));
+
+  string h2 = "attachment; filename=\"\"";
+  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h2));
+
+  string h3 = "attachment; filename=\"";
+  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h3));
+
+  string h4 = "attachment;";
+  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h4));
 }

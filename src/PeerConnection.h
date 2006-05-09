@@ -73,8 +73,8 @@ public:
   void sendPieceHeader(int index, int begin, int length) const;
   int sendPieceData(long long int offset, int length) const;
   void sendCancel(int index, int begin, int length) const;
-  PeerMessage* receiveMessage();
-  HandshakeMessage* receiveHandshake();
+  bool receiveMessage(char* msg, int& length);
+  bool receiveHandshake(char* msg, int& length);
 
   Peer* getPeer() const { return peer; }
 };

@@ -75,6 +75,9 @@ public:
   static int expandBuffer(char** pbuf, int curLength, int newLength);
 
   static void unfoldRange(const string& src, Integers& range);
+
+  // this function temporarily put here
+  static string getContentDispositionFilename(const string& header);
 };
 
 #endif // _D_UTIL_H_

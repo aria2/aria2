@@ -22,8 +22,6 @@
 #ifndef _D_DOWNLOAD_ENGINE_H_
 #define _D_DOWNLOAD_ENGINE_H_
 
-#include <queue>
-#include <deque>
 #include "Command.h"
 #include "Socket.h"
 #include "SegmentMan.h"
@@ -31,11 +29,10 @@
 #include "Logger.h"
 #include "Option.h"
 #include <sys/time.h>
-
-using namespace std;
+#include <deque>
 
 typedef deque<Socket*> Sockets;
-typedef queue<Command*> Commands;
+typedef deque<Command*> Commands;
 
 class DownloadEngine {
 private:
@@ -62,6 +59,8 @@ public:
   virtual ~DownloadEngine();
 
   void run();
+
+  void cleanQueue();
 
   bool addSocketForReadCheck(Socket* socket);
   bool deleteSocketForReadCheck(Socket* socket);

@@ -42,6 +42,11 @@ public:
   static void setLogFile(const string& name) {
     filename = name;
   }
+
+  /**
+   * Releases used resources
+   */
+  static void release();
 };
 
 #endif // _D_LOG_FACTORY_H_

@@ -32,6 +32,6 @@ bool TorrentAutoSaveCommand::execute() {
   }
   e->torrentMan->save();
   SleepCommand* sleepCommand = new SleepCommand(cuid, e, this, interval);
-  e->commands.push(sleepCommand);
+  e->commands.push_back(sleepCommand);
   return false;
 }

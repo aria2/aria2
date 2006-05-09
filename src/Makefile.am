@@ -65,12 +65,10 @@ SRCS =  Socket.cc Socket.h\
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
 	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
 	PeerListenCommand.cc PeerListenCommand.h\
-	PendingMessage.cc PendingMessage.h\
 	PeerMessage.cc PeerMessage.h\
-	HandshakeMessage.h\
+	HandshakeMessage.cc HandshakeMessage.h\
 	Piece.cc Piece.h\
 	RequestSlot.cc RequestSlot.h\
-	RequestSlotMan.cc RequestSlotMan.h\
 	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
@@ -85,7 +83,18 @@ SRCS =  Socket.cc Socket.h\
 	LogFactory.cc LogFactory.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
-	PeerChokeCommand.cc PeerChokeCommand.h
+	PeerChokeCommand.cc PeerChokeCommand.h\
+	ChokeMessage.cc ChokeMessage.h\
+	UnchokeMessage.cc UnchokeMessage.h\
+	InterestedMessage.cc InterestedMessage.h\
+	NotInterestedMessage.cc NotInterestedMessage.h\
+	HaveMessage.cc HaveMessage.h\
+	BitfieldMessage.cc BitfieldMessage.h\
+	RequestMessage.cc RequestMessage.h\
+	PieceMessage.cc PieceMessage.h\
+	CancelMessage.cc CancelMessage.h\
+	KeepAliveMessage.cc KeepAliveMessage.h\
+	PortMessage.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

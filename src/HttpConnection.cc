@@ -120,7 +120,7 @@ int HttpConnection::findEndOfHeader(const char* buf, const char* substr, int buf
 int HttpConnection::receiveResponse(HttpHeader& headers) {
   //char buf[512];
   string header;
-  int delimiterSwith = 0;
+  int delimiterSwitch = 0;
   char* delimiters[] = { "\r\n", "\n" };
 
   int size = HEADERBUF_SIZE-headerBufLength;
@@ -137,19 +137,20 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
   //header += buf;
   //string::size_type p;
   int eohIndex;
+
   if((eohIndex = findEndOfHeader(headerBuf, "\r\n\r\n", hlenTemp)) == -1 &&
      (eohIndex = findEndOfHeader(headerBuf, "\n\n", hlenTemp)) == -1) {
     socket->readData(headerBuf+headerBufLength, size);
   } else {
     if(eohIndex[headerBuf] == '\n') {
       // for crapping non-standard HTTP server
-      delimiterSwith = 1;
+      delimiterSwitch = 1;
     } else {
-      delimiterSwith = 0;
+      delimiterSwitch = 0;
     }
-    headerBuf[eohIndex+strlen(delimiters[delimiterSwith])*2] = '\0';
+    headerBuf[eohIndex+strlen(delimiters[delimiterSwitch])*2] = '\0';
     header = headerBuf;
-    size = eohIndex+strlen(delimiters[delimiterSwith])*2-headerBufLength;
+    size = eohIndex+strlen(delimiters[delimiterSwitch])*2-headerBufLength;
     socket->readData(headerBuf+headerBufLength, size);
   }
   if(!Util::endsWith(header, "\r\n\r\n") && !Util::endsWith(header, "\n\n")) {
@@ -159,15 +160,18 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
   logger->info(MSG_RECEIVE_RESPONSE, cuid, header.c_str());
   string::size_type p, np;
   p = np = 0;
-  np = header.find(delimiters[delimiterSwith], p);
+  np = header.find(delimiters[delimiterSwitch], p);
   if(np == string::npos) {
     throw new DlRetryEx(EX_NO_STATUS_HEADER);
   }
   // check HTTP status value
+  if(header.size() <= 12) {
+    throw new DlRetryEx(EX_NO_STATUS_HEADER);
+  }
   string status = header.substr(9, 3);
   p = np+2;
   // retreive status name-value pairs, then push these into map
-  while((np = header.find(delimiters[delimiterSwith], p)) != string::npos && np != p) {
+  while((np = header.find(delimiters[delimiterSwitch], p)) != string::npos && np != p) {
     string line = header.substr(p, np-p);
     p = np+2;
     pair<string, string> hp;

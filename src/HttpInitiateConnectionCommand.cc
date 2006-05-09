@@ -55,7 +55,7 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
     socket->establishConnection(req->getHost(), req->getPort());
     command = new HttpRequestCommand(cuid, req, e, socket);
   }
-  e->commands.push(command);
+  e->commands.push_back(command);
   return true;
 }
 

@@ -43,7 +43,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   socket->establishConnection(peer->ipaddr, peer->port);
   command = new PeerInteractionCommand(cuid, peer, e, socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
 
-  e->commands.push(command);
+  e->commands.push_back(command);
   return true;
 }
 
@@ -54,13 +54,13 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
     int newCuid = e->torrentMan->getNewCuid();
     peer->cuid = newCuid;
     PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(newCuid, peer, e);
-    e->commands.push(command);
+    e->commands.push_back(command);
   }
   return true;
 }
 
 bool PeerInitiateConnectionCommand::prepareForRetry(int wait) {
   PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(cuid, peer, e);
-  e->commands.push(command);
+  e->commands.push_back(command);
   return true;
 }

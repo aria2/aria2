@@ -138,6 +138,11 @@ public:
     return bitfield->getBitfield();
   }
   int getBitfieldLength() const { return bitfield->getBitfieldLength(); }
+  int getPieceLength(int index) const {
+    return bitfield->getBlockLength(index);
+  }
+  int getPieceLength() const { return bitfield->getBlockLength(); }
+
   void setInfoHash(const unsigned char* infoHash) {
     memcpy(this->infoHash, infoHash, INFO_HASH_LENGTH);
   }

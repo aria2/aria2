@@ -81,10 +81,6 @@ void setSignalHander(int signal, void (*handler)(int)) {
   sigaction(signal, &sigact, NULL);
 }
 
-void clearRequest(Request* req) {
-  delete(req);
-}
-
 DownloadEngine* e;
 TorrentDownloadEngine* te;
 
@@ -93,6 +89,8 @@ void handler(int signal) {
   fflush(stdout);
   e->segmentMan->save();
   e->segmentMan->diskWriter->closeFile();
+  e->cleanQueue();
+  delete e;
   printf(_("done\n"));
   exit(0);
 }
@@ -108,6 +106,8 @@ void torrentHandler(int signal) {
   } else {
     te->torrentMan->save();
   }
+  te->cleanQueue();
+  delete te;
   printf(_("done\n"));
   exit(0);
 }
@@ -116,7 +116,7 @@ void addCommand(int cuid, const string& url, string referer, Requests& requests)
   Request* req = new Request();
   req->setReferer(referer);
   if(req->setUrl(url)) {
-    e->commands.push(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e));
+    e->commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e));
     requests.push_back(req);
   } else {
     fprintf(stderr, _("Unrecognized URL or unsupported protocol: %s\n"), req->getUrl().c_str());
@@ -596,9 +596,6 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-  SegmentSplitter* splitter = new SplitSlowestSegmentSplitter();
-  splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
-
   setSignalHander(SIGPIPE, SIG_IGN);
 
   bool readyToTorrentMode = false;
@@ -614,7 +611,9 @@ int main(int argc, char* argv[]) {
     e->segmentMan->dir = dir;
     e->segmentMan->ufilename = ufilename;
     e->segmentMan->option = op;
-    e->segmentMan->splitter = splitter;
+    e->segmentMan->splitter = new SplitSlowestSegmentSplitter();
+    e->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
+
     
     Requests requests;
     int cuidCounter = 1;
@@ -636,12 +635,11 @@ int main(int argc, char* argv[]) {
     } else {
       printDownloadAbortMessage();
     }
-    for_each(requests.begin(), requests.end(), clearRequest);
+    for_each(requests.begin(), requests.end(), Deleter());
     requests.clear();
 
-    delete(e->segmentMan);
-    delete(e->segmentMan->diskWriter);
-    delete(e);
+    e->cleanQueue();
+    delete e;
   }
   if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
     try {
@@ -658,7 +656,8 @@ int main(int argc, char* argv[]) {
       te->segmentMan = new SegmentMan();
       te->segmentMan->diskWriter = byteArrayDiskWriter;
       te->segmentMan->option = op;
-      te->segmentMan->splitter = splitter;
+      te->segmentMan->splitter = new SplitSlowestSegmentSplitter();
+      te->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
       te->torrentMan = new TorrentMan();
       te->torrentMan->setStoreDir(dir);
       te->torrentMan->option = op;
@@ -703,15 +702,15 @@ int main(int argc, char* argv[]) {
 	exit(1);
       }
       te->torrentMan->setPort(port);
-      te->commands.push(listenCommand);
-      te->commands.push(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
+      te->commands.push_back(listenCommand);
+      te->commands.push_back(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
 						  te));
-      te->commands.push(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
+      te->commands.push_back(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
 						 te));
-      te->commands.push(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
+      te->commands.push_back(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
 						   te,
 						   op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
-      te->commands.push(new PeerChokeCommand(te->torrentMan->getNewCuid(),
+      te->commands.push_back(new PeerChokeCommand(te->torrentMan->getNewCuid(),
 					     10, te));
       te->run();
       
@@ -720,20 +719,17 @@ int main(int argc, char* argv[]) {
       } else {
 	printDownloadAbortMessage();
       }
-      delete(req);
-      delete(te->segmentMan);
-      delete(te->segmentMan->diskWriter);
-      delete(te->torrentMan);
-      delete(te);
+      delete req;
+      te->cleanQueue();
+      delete te;
     } catch(Exception* ex) {
       cerr << ex->getMsg() << endl;
       delete ex;
       exit(1);
     }
   }
-  delete(op);
-  delete(splitter);
-  delete(LogFactory::getInstance());
+  delete op;
+  LogFactory::release();
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
 #endif // HAVE_LIBGNUTLS

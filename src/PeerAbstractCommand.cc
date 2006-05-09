@@ -82,7 +82,7 @@ bool PeerAbstractCommand::execute() {
 	checkPoint.tv_usec = 0;
 	throw new DlRetryEx(EX_TIME_OUT);
       }
-      e->commands.push(this);
+      e->commands.push_back(this);
       return false;
     }
     updateCheckPoint();
@@ -95,24 +95,6 @@ bool PeerAbstractCommand::execute() {
     delete(err);
     return prepareForNextPeer(0);
   }
-  /*catch(DlRetryEx* err) {
-    logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
-    peer->tryCount++;
-    bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
-      peer->tryCount >= e->option->getAsInt(PREF_MAX_TRIES);
-    int tryCount = peer->tryCount;
-    if(isAbort) {
-      onAbort(err);
-    }
-    delete(err);
-    if(isAbort) {
-      logger->error(MSG_MAX_TRY, cuid, tryCount);
-      return true;
-    } else {
-      return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
-    }
-  }
-  */
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented

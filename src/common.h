@@ -29,6 +29,7 @@
 #include <limits.h>
 #include <string>
 #include <deque>
+#include <algorithm>
 #if ENABLE_NLS
 #  include <gettext.h>
 #  define _(String) gettext (String)
@@ -46,6 +47,14 @@
 #define BITFIELD_LEN_FROM_PIECES(X) (X/8+(X%8? 1 : 0))
 
 using namespace std;
+
+class Deleter {
+public:
+  template<class T>
+  void operator()(T* ptr) {
+    delete ptr;
+  }
+};
 
 typedef deque<string> Strings;
 typedef deque<int> Integers;

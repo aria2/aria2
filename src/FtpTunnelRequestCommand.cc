@@ -36,6 +36,6 @@ bool FtpTunnelRequestCommand::executeInternal(Segment segment) {
   httpConnection.sendProxyRequest();
 
   FtpTunnelResponseCommand* command = new FtpTunnelResponseCommand(cuid, req, e, socket);
-  e->commands.push(command);
+  e->commands.push_back(command);
   return true;
 }

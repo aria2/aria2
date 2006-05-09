@@ -92,15 +92,20 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	PeerInteractionCommand.$(OBJEXT) Peer.$(OBJEXT) \
 	BitfieldMan.$(OBJEXT) TorrentDownloadEngine.$(OBJEXT) \
 	TorrentConsoleDownloadEngine.$(OBJEXT) \
-	PeerListenCommand.$(OBJEXT) PendingMessage.$(OBJEXT) \
-	PeerMessage.$(OBJEXT) Piece.$(OBJEXT) RequestSlot.$(OBJEXT) \
-	RequestSlotMan.$(OBJEXT) TorrentAutoSaveCommand.$(OBJEXT) \
+	PeerListenCommand.$(OBJEXT) PeerMessage.$(OBJEXT) \
+	HandshakeMessage.$(OBJEXT) Piece.$(OBJEXT) \
+	RequestSlot.$(OBJEXT) TorrentAutoSaveCommand.$(OBJEXT) \
 	Directory.$(OBJEXT) TrackerWatcherCommand.$(OBJEXT) \
 	SendMessageQueue.$(OBJEXT) MultiDiskWriter.$(OBJEXT) \
 	DiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
 	LogFactory.$(OBJEXT) TrackerUpdateCommand.$(OBJEXT) \
-	ByteArrayDiskWriter.$(OBJEXT) PeerChokeCommand.$(OBJEXT)
+	ByteArrayDiskWriter.$(OBJEXT) PeerChokeCommand.$(OBJEXT) \
+	ChokeMessage.$(OBJEXT) UnchokeMessage.$(OBJEXT) \
+	InterestedMessage.$(OBJEXT) NotInterestedMessage.$(OBJEXT) \
+	HaveMessage.$(OBJEXT) BitfieldMessage.$(OBJEXT) \
+	RequestMessage.$(OBJEXT) PieceMessage.$(OBJEXT) \
+	CancelMessage.$(OBJEXT) KeepAliveMessage.$(OBJEXT)
 am_libaria2c_a_OBJECTS = $(am__objects_1)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -315,12 +320,10 @@ SRCS = Socket.cc Socket.h\
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
 	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
 	PeerListenCommand.cc PeerListenCommand.h\
-	PendingMessage.cc PendingMessage.h\
 	PeerMessage.cc PeerMessage.h\
-	HandshakeMessage.h\
+	HandshakeMessage.cc HandshakeMessage.h\
 	Piece.cc Piece.h\
 	RequestSlot.cc RequestSlot.h\
-	RequestSlotMan.cc RequestSlotMan.h\
 	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
@@ -335,7 +338,18 @@ SRCS = Socket.cc Socket.h\
 	LogFactory.cc LogFactory.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
-	PeerChokeCommand.cc PeerChokeCommand.h
+	PeerChokeCommand.cc PeerChokeCommand.h\
+	ChokeMessage.cc ChokeMessage.h\
+	UnchokeMessage.cc UnchokeMessage.h\
+	InterestedMessage.cc InterestedMessage.h\
+	NotInterestedMessage.cc NotInterestedMessage.h\
+	HaveMessage.cc HaveMessage.h\
+	BitfieldMessage.cc BitfieldMessage.h\
+	RequestMessage.cc RequestMessage.h\
+	PieceMessage.cc PieceMessage.h\
+	CancelMessage.cc CancelMessage.h\
+	KeepAliveMessage.cc KeepAliveMessage.h\
+	PortMessage.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -425,7 +439,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CancelMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
@@ -445,6 +462,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpNegotiationCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeader.Po@am__quote@
@@ -454,11 +473,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InterestedMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/KeepAliveMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NotInterestedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@
@@ -469,12 +491,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PendingMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreAllocationDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlotMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SendMessageQueue.Po@am__quote@
@@ -491,6 +513,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 

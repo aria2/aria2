@@ -77,7 +77,7 @@ bool AbstractCommand::execute() {
       if(isTimeoutDetected()) {
 	throw new DlRetryEx(EX_TIME_OUT);
       }
-      e->commands.push(this);
+      e->commands.push_back(this);
       return false;
     }
     updateCheckPoint();
@@ -118,10 +118,10 @@ bool AbstractCommand::execute() {
 bool AbstractCommand::prepareForRetry(int wait) {
   Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
   if(wait == 0) {
-    e->commands.push(command);
+    e->commands.push_back(command);
   } else {
     SleepCommand* scom = new SleepCommand(cuid, e, command, wait);
-    e->commands.push(scom);
+    e->commands.push_back(scom);
   }
   return true;
 }

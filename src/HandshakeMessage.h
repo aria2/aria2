@@ -23,7 +23,8 @@
 #define _D_HANDSHAKE_MESSAGE_H_
 
 #include "common.h"
-#include "Util.h"
+
+class SendMessageQueue;
 
 #define PSTR "BitTorrent protocol"
 #define HANDSHAKE_MESSAGE_LENGTH 68
@@ -34,14 +35,16 @@ public:
   string pstr;
   unsigned char infoHash[20];
   char peerId[20];
+  SendMessageQueue* sendMessageQueue;
 public:
   HandshakeMessage() {}
   ~HandshakeMessage() {}
 
-  string toString() const {
-    return "handshake peerId="+
-      Util::urlencode((unsigned char*)peerId, sizeof(peerId));
-  }
+  SendMessageQueue* getSendMessageQueue() const { return sendMessageQueue; }
+  void setSendMessageQueue(SendMessageQueue* sendMessageQueue);
+
+  string toString() const;
+  void check();
 };
 
 #endif // _D_HANDSHAKE_MESSAGE_H_

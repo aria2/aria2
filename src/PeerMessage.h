@@ -23,61 +23,44 @@
 #define _D_PEER_MESSAGE_H_
 
 #include "common.h"
+#include "Logger.h"
+#include "Peer.h"
 #include <string>
 
+class SendMessageQueue;
+
 class PeerMessage {
-private:
-  int id;
-  int index;
-  int begin;
-  int length;
-  unsigned char* bitfield;
-  int bitfieldLength;
-  char* block;
-  int blockLength;
+protected:
+  bool inProgress;
+  int cuid;
+  Peer* peer;
+  SendMessageQueue* sendMessageQueue;
+  const Logger* logger;
 public:
-  PeerMessage():bitfield(NULL), bitfieldLength(0),
-		block(NULL), blockLength(0) {}
-  ~PeerMessage() {
-    if(bitfield != NULL) {
-      delete [] bitfield;
-    }
-    if(block != NULL) {
-      delete [] block;
-    }
+  PeerMessage();
+
+  virtual ~PeerMessage() {}
+
+  bool isInProgress() const { return inProgress; }
+
+  int getCuid() const { return cuid; }
+  void setCuid(int cuid) {
+    this->cuid = cuid;
+  }
+  Peer* getPeer() const { return this->peer; }
+  void setPeer(Peer* peer) {
+    this->peer = peer;
+  }
+  SendMessageQueue* getSendMessageQueue() const { return sendMessageQueue; }
+  void setSendMessageQueue(SendMessageQueue* sendMessageQueue) {
+    this->sendMessageQueue = sendMessageQueue;
   }
 
-  void setBitfield(const unsigned char* bitfield, int bitfieldLength);
-  const unsigned char* getBitfield() const { return bitfield; }
-  
-  void setBlock(const char* block, int blockLength);
-  const char* getBlock() const { return block; }
-  
-  int getBitfieldLength() const { return bitfieldLength; }
-  int getBlockLength() const { return blockLength; }
-
-  string toString() const;
-
-  int getId() const { return id; }
-  void setId(int id) { this->id = id; }
-  int getIndex() const { return index; }
-  void setIndex(int index) { this->index = index; }
-  int getBegin() const { return begin; }
-  void setBegin(int begin) { this->begin = begin; }
-  int getLength() const { return length; }
-  void setLength(int length) { this->length = length; }
-
-  enum ID {
-    CHOKE = 0,
-    UNCHOKE = 1,
-    INTERESTED = 2,
-    NOT_INTERESTED = 3,
-    HAVE = 4,
-    BITFIELD = 5,
-    REQUEST = 6,
-    PIECE = 7,
-    CANCEL = 8,
-    KEEP_ALIVE = 99};
+  virtual int getId() const = 0;
+  virtual void receivedAction() = 0;
+  virtual void send() = 0;
+  virtual void check() const {}
+  virtual string toString() const = 0;
 };
 
 #endif // _D_PEER_MESSAGE_H_

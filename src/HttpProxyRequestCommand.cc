@@ -36,6 +36,6 @@ bool HttpProxyRequestCommand::executeInternal(Segment segment) {
   httpConnection.sendProxyRequest();
 
   HttpProxyResponseCommand* command = new HttpProxyResponseCommand(cuid, req, e, socket);
-  e->commands.push(command);
+  e->commands.push_back(command);
   return true;
 }

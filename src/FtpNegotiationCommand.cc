@@ -51,10 +51,10 @@ bool FtpNegotiationCommand::executeInternal(Segment segment) {
     return prepareForRetry(0);
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
     FtpDownloadCommand* command = new FtpDownloadCommand(cuid, req, e, dataSocket, socket);
-    e->commands.push(command);
+    e->commands.push_back(command);
     return true;
   } else {
-    e->commands.push(this);
+    e->commands.push_back(this);
     return false;
   }
 }

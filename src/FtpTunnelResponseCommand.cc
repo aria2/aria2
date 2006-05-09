@@ -37,13 +37,13 @@ bool FtpTunnelResponseCommand::executeInternal(Segment segment) {
   int status = http->receiveResponse(headers);
   if(status == 0) {
     // we didn't receive all of headers yet.
-    e->commands.push(this);
+    e->commands.push_back(this);
     return false;
   }
   if(status != 200) {
     throw new DlRetryEx(EX_PROXY_CONNECTION_FAILED);
   }
   FtpNegotiationCommand* command = new FtpNegotiationCommand(cuid, req, e, socket);
-  e->commands.push(command);
+  e->commands.push_back(command);
   return true;
 }

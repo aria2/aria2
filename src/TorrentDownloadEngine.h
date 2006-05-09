@@ -59,8 +59,8 @@ protected:
   virtual void onSelectiveDownloadingCompletes() = 0;
   virtual void sendStatistics() = 0;
 public:
-  TorrentDownloadEngine():filenameFixed(false) {}
-  virtual ~TorrentDownloadEngine() {}
+  TorrentDownloadEngine();
+  virtual ~TorrentDownloadEngine();
 
   TorrentMan* torrentMan;
 

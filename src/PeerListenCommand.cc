@@ -73,7 +73,7 @@ bool PeerListenCommand::execute() {
 	  PeerInteractionCommand* command =
 	    new PeerInteractionCommand(newCuid, peer, e, peerSocket,
 				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
-	  e->commands.push(command);
+	  e->commands.push_back(command);
 	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
 	} else {
 	  delete peer;
@@ -88,6 +88,6 @@ bool PeerListenCommand::execute() {
       }
     }		    
   }
-  e->commands.push(this);
+  e->commands.push_back(this);
   return false;
 }

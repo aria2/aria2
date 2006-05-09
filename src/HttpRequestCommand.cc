@@ -41,7 +41,7 @@ bool HttpRequestCommand::executeInternal(Segment seg) {
   http.sendRequest(seg);
 
   Command* command = getNextCommand();
-  e->commands.push(command);
+  e->commands.push_back(command);
   return true;
 }
 

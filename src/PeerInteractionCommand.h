@@ -33,9 +33,8 @@ using namespace std;
 class PeerInteractionCommand : public PeerAbstractCommand {
 private:
   int sequence;
-  PeerConnection* peerConnection;
   SendMessageQueue* sendMessageQueue;
-  Piece piece;
+ 
   struct timeval keepAliveCheckPoint;
   struct timeval chokeCheckPoint;
   struct timeval freqCheckPoint;
@@ -46,18 +45,9 @@ private:
   void detectMessageFlooding();
   void checkLongTimePeerChoking();
   void checkInactiveConnection();
-  void syncPiece();
   void detectTimeoutAndDuplicateBlock();
   void decideChoking();
-  void sendInterest();
-  void sendMessages();
-  void createRequestPendingMessage(int blockIndex);
-  bool checkPieceHash(const Piece& piece);
-  void erasePieceOnDisk(const Piece& piece);
   void keepAlive();
-  Piece getNewPieceAndSendInterest();
-  void onGotNewPiece();
-  void onGotWrongPiece();
 protected:
   bool executeInternal();
   bool prepareForRetry(int wait);

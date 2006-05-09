@@ -1,3 +1,325 @@
+2006-05-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Each peer message has its own class.
+	
+	* src/PendingMessages.h: Removed.
+	* src/PendingMessages.cc: Removed. The sending process was moved to
+	each message class.
+	* src/RequestSlotMan.h: Removed.
+	* src/RequestSlotMan.cc: Removed. All functionarities were moved to
+	SendMessageQueue.
+	* src/RequestMessage.h: New class.
+	* src/RequestMessage.cc: New class.
+	* src/CancelMessage.h: New class.
+	* src/CancelMessage.cc: New class.
+	* src/BitfieldMessage.h: New class.
+	* src/BitfieldMessage.cc: New class.
+	* src/ChokeMessage.h: New class.
+	* src/ChokeMessage.cc: New class.
+	* src/KeepAliveMessage.h: New class.
+	* src/KeepAliveMessage.cc: New class.
+	* src/PortMessage.h: New class.
+	* src/UnchokeMessage.h: New class.
+	* src/UnchokeMessage.cc: New class.
+	* src/PieceMessage.h: New class.
+	* src/PieceMessage.cc: New class.
+	* src/HaveMessage.h: New class.
+	* src/HaveMessage.cc: New class.
+	* src/BitfieldMessage.h: New class.
+	* src/BitfieldMessage.cc: New class.
+	* src/NotInterestedMessage.h: New class.
+	* src/NotInterestedMessage.cc: New class.
+	* src/InterestedMessage.h: New class.
+	* src/InterestedMessage.cc: New class.
+	* src/HandshakeMessage.h (sendMessageQueue): New variable.
+	(getSendMessageQueue): New function.
+	(setSendMessageQueue): New function.
+	* src/HandshakeMessage.cc: New class.
+	* src/PeerConnection.h (receiveMessage): Changed return value and
+	arguments.
+	(receiveHandshake): Changed return value and arguments.
+	* src/PeerConnection.cc (receiveMessage): Do not create message class
+	here.
+	(receiveHandshake): Do not create handshake class here.
+	* src/PeerInteractionCommand.h (peerConnection): Removed.
+	(piece): Removed.
+	(syncPiece): Removed.
+	(sendInterest): Removed.
+	(sendMessages): Removed.
+	(createRequestPendingMessage): Removed.
+	(checkPieceHash): Removed.
+	(erasePieceOnDisk): Removed.
+	(getNewPieceAndSendInterest): Removed.
+	(onGotNewPice): Removed.
+	(onGotWrongPiece): Removed.
+	* src/PeerInteractionCommand.cc (PeerInteractionCommand):
+	Removed peerConnection, piece.
+	(~PeerInteractionCommand): Removed peerConnection.
+	(executeInternal): Use sendMessageQueue instead of peerConnection.
+	(syncPiece): Moved to SendMessageQueue.
+	(decideChoking): Removed PendingMessage.
+	(receiveMessage): Use sendMessageQueue instead of peerConnection.
+	The action after receiving peer message was moved to each message
+	class.
+	(onGotNewPice): Moved to SendMessageQueue.
+	(onGotWrongPiece): Moved to SendMessageQueue.
+	(getNewPieceAndSendInterest): Moved to SendMessageQueue.
+	(sendInterest): Moved to SendMessageQueue.
+	(createRequestPendingMessage): Removed.
+	(sendMessages): Moved to SendMessageQueue.
+	(onAbort): Use SendMessageQueue::abortPiece()
+	(keepAlive): Use sendMessageQueue instead of peerConnection.
+	(beforeSocketCheck): Use sendMessageQueue instead of peerConnection.
+	(checkPieceHash): Moved to SendMessageQueue.
+	(erasePieceOnDisk): Moved to SendMessageQueue.
+	* src/PeerMessageUtil.h
+	(createBitfieldMessage): Removed.
+	(createHaveMessage): Changed return value and arguments.
+	(createBitfieldMessage): Changed return value and arguments.
+	(createRequestCancelMessage): Removed.
+	(createPieceMessage): Changed return value and arguments.
+	(getShortIntParam): New function.
+	(checkIndex): Changed arguments.
+	(checkBegin): Changed arguments.
+	(checkLength): Changed arguments.
+	(checkPieceOffset): Removed.
+	(checkRange): New function.
+	(checkBitfield): Changed arguments.
+	(createPeerMessage): Removed.
+	(checkIntegrity): Removed.
+	(createHandshakeMessage): Changed arguments.
+	(createChokeMessage): New function.
+	(createUnchokeMessage): New function.
+	(createInterestedMessage): New function.
+	(createNotInterestedMessage): New function.
+	(createRequestMessage): New function.
+	(createCancelMessage): New function.
+	(createPortMessage): New function.
+	* src/PeerMessageUtil.cc
+	(createBitfieldMessage): Removed.
+	(createHaveMessage): Changed return value and arguments.
+	(createBitfieldMessage): Changed return value and arguments.
+	(createRequestCancelMessage): Removed.
+	(createPieceMessage): Changed return value and arguments.
+	(getShortIntParam): New function.
+	(checkIndex): Changed arguments.
+	(checkBegin): Changed arguments.
+	(checkLength): Changed arguments.
+	(checkPieceOffset): Removed.
+	(checkRange): New function.
+	(checkBitfield): Changed arguments.
+	(createPeerMessage): Removed.
+	(checkIntegrity): Removed.
+	(createHandshakeMessage): Changed arguments.
+	(createChokeMessage): New function.
+	(createUnchokeMessage): New function.
+	(createInterestedMessage): New function.
+	(createNotInterestedMessage): New function.
+	(createRequestMessage): New function.
+	(createCancelMessage): New function.
+	(createPortMessage): New function.
+	* src/PeerMessage.h
+	(id): Removed.
+	(index): Removed.
+	(begin): Removed.
+	(length): Removed.
+	(bitfield): Removed.
+	(bitfieldLength): Removed.
+	(block): Removed.
+	(blockLength): Removed.
+	(inProgress): New variable.
+	(cuid): New variable.
+	(peer): New variable.
+	(sendMessageQueue): New variable.
+	(logger): New variable.
+	(setBitfield): Removed.
+	(getBitfield): Removed.
+	(setBlock): Removed.
+	(getBlock): Removed.
+	(getBitfieldLength): Removed.
+	(getBlockLength): Removed.
+	(isInProgress): New function.
+	(toString): Made pure virtual.
+	(check): New function.
+	(send): New function.
+	(receivedAction): New function.
+	(getId): Made pure virtual.
+	(setId): Removed.
+	(getIndex): Removed.
+	(setIndex): Removed.
+	(getBegin): Removed.
+	(setBegin): Removed.
+	(getLength): Removed.
+	(setLength): Removed.
+	(getCuid): New function.
+	(setCuid): New function.
+	(getPeer): New function.
+	(setPeer): New function.
+	(getSendMessageQueue): New function.
+	(setSendMessageQueue): New function.
+	(ID): Removed.
+	* src/PeerMessage.cc
+	(setBitfield): Removed.
+	(setBlock): Removed.
+	(toString): Removed.
+	* src/TorrentMan.h
+	(getPieceLength): New function.
+	(getPieceLength): New function.
+	* src/SendMessageQueue.h
+	(REQUEST_TIME_OUT): New definition.
+	(RequestSlots): New definition.
+	(MessageQueue): New definition.
+	(requestSlotMan): Removed.
+	(pendingMessages): Removed.
+	(requestSlots): New variable.
+	(messageQueue): New variable.
+	(torrentMan): New variable.
+	(peerConnection): New variable.
+	(peer): New variable.
+	(piece): New variable.
+	(getNewPieceAndSendInterest): New function.
+	(createPeerMessage): New function.
+	(createHandshakeMessage): New function.
+	(send): Made private.
+	(setPeerMessageCommonProperty): New function.
+	(deleteAllRequestSlot): New function.
+	(deleteRequestMessageInQueue): New function.
+	(cancelAllRequest): Made private.
+	(cancelAllRequest): Made private.
+	(countRequestSlot): Made private.
+	(addPendingMessage): Removed.
+	(deletePendingPieceMessage): Removed.
+	(deletePendingRequestMessage): Removed.
+	(addMessage): New function.
+	(deletePieceMessageInQueue): New function.
+	(deleteTimeoutRequestSlot): Changed argument.
+	(deleteCompletedRequestSlot): Changed argument.
+	(getCorrespoindingRequestSlot): Renamed to getCorrespondingRequestSlot.
+	(getCorrespondingRequestSlot): New function.
+	(countPendingMessage): Removed.
+	(countMessageInQueue): New function.
+	(getTorrentMan): New function.
+	(getPeerConnection): New function.
+	(hasDownloadPiece): New function.
+	(getDownloadPiece): New function.
+	(setDownloadPiece): New function.
+	(syncPiece): New function.
+	(sendMessages): New function.
+	(sendNow): New function.
+	(trySendNow): New function.
+	(abortPiece): New function.
+	(sendHandshake): New function.
+	(receiveMessage): New function.
+	(receiveHandshake): New function.
+	(createRequestMessage): New function.
+	(createCancelMessage): New function.
+	(createPieceMessage): New function.
+	(createHaveMessage): New function.
+	(createChokeMessage): New function.
+	(createUnchokeMessage): New function.
+	(createInterestedMessage): New function.
+	(createNotInterestedMessage): New function.
+	(createBitfieldMessage): New function.
+	(createKeepAliveMessage): New function.
+	* src/SendMessageQueue.cc
+	(SendMessageQueue): Removed requestSlotMan.
+	Instantiated peerConnection here.
+	(~SendMessageQueue): Removed requestSlotMan.
+	Added deletion of peerConnection and the contents of messageQueue.
+	(send): Updated according to the change of messageQueue.
+	(addPendingMessage): Renamed to addMessage.
+	(addMessage): New function.
+	(deletePendingPieceMessage): Renamed to deletePieceMessageInQueue.
+	(deletePieceMessageInQueue): New function.
+	(deletePendingRequestMessage): Renamed to deleteRequestMessageInQueue.
+	(deleteRequestMessageInQueue): New function.
+	(deleteRequestSlot): RequestSlotMan::deleteRequestSlot(...) was moved
+	here.
+	(deleteTimeoutRequestSlot): RequestSlotMan::deleteTimeoutRequestSlot
+	(...) was moved here.
+	(deleteAllRequestSlot): RequestSlotMan::deleteAllRequestSlot(...) was
+	moved here.
+	(deleteCompletedRequestSlot):
+	RequestSlotMan::deleteCompletedRequestSlot(...) was moved here.
+	(getCorrespondingRequestSlot):
+	RequestSlotMan::getCorrespoindingRequestSlot(...) was moved here.
+	And renamed to getCorrespondingRequestSlot, correcting a typo.
+	(countPendingMessage): Renamed to countMessageInQueue.
+	(countMessageInQueue): New function.
+	(countRequestSlot): RequestSlotMan::countRequestSlot() was moved here.
+	(receiveHandshake): New function.
+	(createHandshakeMessage): New function.
+	(receiveMessage): New function.
+	(createPeerMessage): New function.
+	(syncPiece): New function.
+	(getNewPieceAndSendInterest): New function.
+	(sendMessages): New function.
+	(sendNow): New function.
+	(trySendNow): New function.
+	(sendHandshake): New function.
+	(abortPiece): New function.
+	(getDownloadPiece): New function.
+	(getPeerMessageCommonProperty): New function.
+	(createRequestMessage): New function.
+	(createCancelMessage): New function.
+	(createPieceMessage): New function.
+	(createHaveMessage): New function.
+	(createChokeMessage): New function.
+	(createUnchokeMessage): New function.
+	(createInterestedMessage): New function.
+	(createNotInterestedMessage): New function.
+	(createBitfieldMessage): New function.
+	(createKeepAliveMessage): New function.
+	
+	
+	To add simple Content-Disposition support:
+
+	* src/HttpResponseCommand.h (determinFilename): New function.
+	* src/HttpResponseCommand.cc (executeInternal):
+	Use determinFilename(headers) instead of req->getFile() when comparing
+	filename.
+	(determinFilename): New function.
+	(handleDefaultEncoding): Use determinFilename(headers) instead of
+	req->getFile().
+	(handleOtherEncoding): Use determinFilename(headers) instead of
+	req->getFile().
+	* src/Util.h (getContentDispositionFilename): New function.
+	* src/Util.cc (getContentDispositionFilename): New function.
+	
+	* src/LogFactory.h (release): New function.
+	* src/LogFactory.cc (release): New function.
+
+	To fix a bug that causes out-of-bound exception when HTTP status
+	line is wrong:
+	
+	* src/HttpConnection.cc (receiveResponse): Added a check for header
+	size.
+
+	* src/common.h (Deleter): New class.
+
+	* src/SegmentMan.cc
+	(~SegmentMan): Added deletion of splitter and diskWriter.
+	* src/DownloadEngine.h
+	(Commands): Use deque.
+	(clearQueue): New function.
+	* src/DownloadEngine.cc
+	(~DownloadEngine): Added deletion of segmentMan.
+	(cleanQueue): New function.
+	* src/TorrentDownloadEngine.h
+	(TorrentDownloadEngine): The implementation was moved to
+	TorrentDownloadEngine.cc.
+	(~TorrentDownloadEngine): The implementation was moved to
+	TorrentDownloadEngine.cc.
+	* src/TorrentDownloadEngine.cc
+	(~TorrentDownloadEngine): Added deletion of torrentMan.
+	* src/main.cc
+	(clearRequest): Removed.
+	(handler): Added deletion of e.
+	(torrentHandler): Added deletion of te.
+	(main): Do not share splitter.
+	Use Deleter instead of clearRequest.
+	Deletion of classes were updated.
+	
 2006-05-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/main.cc (main): Fixed typo.

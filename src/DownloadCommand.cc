@@ -82,7 +82,7 @@ bool DownloadCommand::executeInternal(Segment seg) {
     return prepareForNextSegment();
   } else {
     e->segmentMan->updateSegment(seg);
-    e->commands.push(this);
+    e->commands.push_back(this);
     return false;
   }
   

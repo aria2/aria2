@@ -131,7 +131,7 @@ bool PeerChokeCommand::execute() {
   setAllPeerResetDelta(e->torrentMan->getActivePeers());
 
   SleepCommand* command = new SleepCommand(cuid, e, this, interval);
-  e->commands.push(command);
+  e->commands.push_back(command);
 
   return false;
 }

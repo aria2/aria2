@@ -31,11 +31,23 @@
 #include <unistd.h>
 #include <errno.h>
 
-SegmentMan::SegmentMan():totalSize(0),isSplittable(true),downloadStarted(false),dir(".") {
+SegmentMan::SegmentMan():totalSize(0),
+			 isSplittable(true), 
+			 downloadStarted(false),
+			 dir("."),
+			 splitter(NULL),
+			 diskWriter(NULL) {
   logger = LogFactory::getInstance();
 }
 
-SegmentMan::~SegmentMan() {}
+SegmentMan::~SegmentMan() {
+  if(splitter != NULL) {
+    delete splitter;
+  }
+  if(diskWriter != NULL) {
+    delete diskWriter;
+  }
+}
 
 void SegmentMan::unregisterId(int cuid) {
   for(Segments::iterator itr = segments.begin(); itr != segments.end(); itr++) {

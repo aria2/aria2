@@ -300,9 +300,9 @@ void PeerConnection::sendCancel(int index, int begin, int length) const {
   socket->writeData(msg, sizeof(msg));
 }
 
-PeerMessage* PeerConnection::receiveMessage() {
+bool PeerConnection::receiveMessage(char* msg, int& length) {
   if(!socket->isReadable(0)) {
-    return NULL;
+    return false;
   }
   if(resbufLength == 0 && lenbufLength != 4) {
     // read payload size, 4-byte integer
@@ -316,7 +316,7 @@ PeerMessage* PeerConnection::receiveMessage() {
     if(remain != temp) {
       // still 4-temp bytes to go
       lenbufLength += temp;
-      return NULL;
+      return false;
     }
     //payloadLen = ntohl(nPayloadLen);
     int payloadLength = ntohl(*((int*)lenbuf));
@@ -336,26 +336,21 @@ PeerMessage* PeerConnection::receiveMessage() {
     }
     resbufLength += remaining;
     if(currentPayloadLength != resbufLength) {
-      return NULL;
+      return false;
     }
   }
   // we got whole payload.
   resbufLength = 0;
   lenbufLength = 0;
-  PeerMessage* peerMessage = PeerMessageUtil::createPeerMessage(resbuf,	currentPayloadLength);
-  try {
-    PeerMessageUtil::checkIntegrity(peerMessage, torrentMan->pieceLength,
-				    torrentMan->pieces, torrentMan->getTotalLength());
-  } catch(Exception* e) {
-    delete peerMessage;
-    throw;
-  }
-  return peerMessage;
+
+  memcpy(msg, resbuf, currentPayloadLength);
+  length = currentPayloadLength;
+  return true;
 }
 
-HandshakeMessage* PeerConnection::receiveHandshake() {
+bool PeerConnection::receiveHandshake(char* msg, int& length) {
   if(!socket->isReadable(0)) {
-    return NULL;
+    return false;
   }
   int remain = HANDSHAKE_MESSAGE_LENGTH-resbufLength;
   int temp = remain;
@@ -366,16 +361,12 @@ HandshakeMessage* PeerConnection::receiveHandshake() {
   }
   if(remain != temp) {
     resbufLength += temp;
-    return NULL;
+    return false;
   }
   // we got whole handshake payload
   resbufLength = 0;
-  HandshakeMessage* handshakeMessage = PeerMessageUtil::createHandshakeMessage(resbuf);
-  try {
-    PeerMessageUtil::checkHandshake(handshakeMessage, torrentMan->getInfoHash());
-  } catch(Exception* e) {
-    delete handshakeMessage;
-    throw;
-  }
-  return handshakeMessage;
+
+  memcpy(msg, resbuf, HANDSHAKE_MESSAGE_LENGTH);
+  length = HANDSHAKE_MESSAGE_LENGTH;
+  return true;
 }

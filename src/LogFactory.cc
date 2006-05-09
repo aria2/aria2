@@ -37,3 +37,8 @@ Logger* LogFactory::getInstance() {
   }
   return logger;
 }
+
+void LogFactory::release() {
+  delete logger;
+  logger = NULL;
+}

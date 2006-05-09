@@ -20,53 +20,8 @@
  */
 /* copyright --> */
 #include "PeerMessage.h"
-#include "Util.h"
+#include "LogFactory.h"
 
-void PeerMessage::setBitfield(const unsigned char* bitfield, int bitfieldLength) {
-  if(this->bitfield != NULL) {
-    delete [] this->bitfield;
-  }
-  this->bitfieldLength = bitfieldLength;
-  this->bitfield = new unsigned char[this->bitfieldLength];
-  memcpy(this->bitfield, bitfield, this->bitfieldLength);
+PeerMessage::PeerMessage():inProgress(false) {
+  logger = LogFactory::getInstance();
 }
-
-void PeerMessage::setBlock(const char* block, int blockLength) {
-  if(this->block != NULL) {
-    delete [] this->block;
-  }
-  this->blockLength = blockLength;
-  this->block = new char[this->blockLength];
-  memcpy(this->block, block, this->blockLength);
-}
-
-string PeerMessage::toString() const {
-  switch(id) {
-  case CHOKE:
-    return "choke";
-  case UNCHOKE:
-    return "unchoke";
-  case INTERESTED:
-    return "interested";
-  case NOT_INTERESTED:
-    return "not interested";
-  case HAVE:
-    return "have index="+Util::itos(index);
-  case BITFIELD:
-    return "bitfield "+Util::toHex(bitfield, bitfieldLength);
-  case REQUEST:
-    return "request index="+Util::itos(index)+", begin="+Util::itos(begin)+
-      ", length="+Util::itos(length);
-  case PIECE:
-    return "piece index="+Util::itos(index)+", begin="+Util::itos(begin)+
-      ", length="+Util::itos(blockLength);
-  case CANCEL:
-    return "cancel index="+Util::itos(index)+", begin="+Util::itos(begin)+
-      ", length="+Util::itos(length);
-  case KEEP_ALIVE:
-    return "keep alive";
-  default:
-    return "unknown";
-  }
-}
-

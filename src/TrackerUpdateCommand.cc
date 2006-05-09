@@ -37,7 +37,7 @@ TrackerUpdateCommand::~TrackerUpdateCommand() {}
 
 bool TrackerUpdateCommand::prepareForRetry() {
   Command* sleepCommand = new SleepCommand(cuid, e, this, 5);
-  e->commands.push(sleepCommand);
+  e->commands.push_back(sleepCommand);
   return false;
 }
 
@@ -153,7 +153,7 @@ bool TrackerUpdateCommand::execute() {
       int newCuid =  e->torrentMan->getNewCuid();
       peer->cuid = newCuid;
       PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(newCuid, peer, e);
-      e->commands.push(command);
+      e->commands.push_back(command);
       logger->debug("adding new command CUID#%d", newCuid);
     }
     if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {

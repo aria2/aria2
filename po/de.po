@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-05-05 19:42+0900\n"
+"POT-Creation-Date: 2006-05-10 00:53+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -355,7 +355,7 @@ msgstr ""
 "\n"
 "Abruf wegen Fehlern nicht vollständig. Überprüfen Sie die Log-Datei.\n"
 
-#: src/main.cc:92 src/main.cc:101
+#: src/main.cc:88 src/main.cc:99
 msgid ""
 "\n"
 "stopping application...\n"
@@ -363,7 +363,7 @@ msgstr ""
 "\n"
 "Anwendung wird gestoppt ...\n"
 
-#: src/main.cc:96 src/main.cc:111
+#: src/main.cc:94 src/main.cc:111
 msgid "done\n"
 msgstr "erledigt\n"
 
@@ -820,10 +820,10 @@ msgstr "Geben Sie zumindest eine URL an"
 msgid "daemon failed"
 msgstr "Daemon-Start nicht erfolgreich"
 
-#: src/main.cc:671
+#: src/main.cc:670
 msgid "Files:"
 msgstr "Dateien:"
 
-#: src/main.cc:702
+#: src/main.cc:701
 msgid "Errors occurred while binding port.\n"
 msgstr "Fehler beim Binden an Port aufgetreten.\n"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-05-05 19:42+0900\n"
+"POT-Creation-Date: 2006-05-10 00:53+0900\n"
 "PO-Revision-Date: 2006-05-05 19:45+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -358,7 +358,7 @@ msgstr ""
 "\n"
 "ダウンロードはエラーのため完了していません. ログを確認してください.\n"
 
-#: src/main.cc:92 src/main.cc:101
+#: src/main.cc:88 src/main.cc:99
 msgid ""
 "\n"
 "stopping application...\n"
@@ -366,7 +366,7 @@ msgstr ""
 "\n"
 "アプリケーションを終了しています...\n"
 
-#: src/main.cc:96 src/main.cc:111
+#: src/main.cc:94 src/main.cc:111
 msgid "done\n"
 msgstr "完了\n"
 
@@ -847,10 +847,10 @@ msgstr "一個以上の URL を指定してください."
 msgid "daemon failed"
 msgstr "デーモン起動に失敗"
 
-#: src/main.cc:671
+#: src/main.cc:670
 msgid "Files:"
 msgstr "ファイル:"
 
-#: src/main.cc:702
+#: src/main.cc:701
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"

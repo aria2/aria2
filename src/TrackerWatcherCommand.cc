@@ -76,13 +76,13 @@ bool TrackerWatcherCommand::execute() {
     }
     e->torrentMan->req->setUrl(url);
     Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), e->torrentMan->req, e);
-    e->commands.push(command);
+    e->commands.push_back(command);
     e->torrentMan->trackers++;
     logger->info("CUID#%d - creating new tracker request command #%d", cuid,
 		 command->getCuid());
   }
   SleepCommand* slpCommand = new SleepCommand(cuid, e, this,
 					      e->torrentMan->minInterval);
-  e->commands.push(slpCommand);
+  e->commands.push_back(slpCommand);
   return false;
 }
