@@ -73,7 +73,7 @@ SRCS =  Socket.cc Socket.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	messageDigest.h\
-	SendMessageQueue.cc SendMessageQueue.h\
+	PeerInteraction.cc PeerInteraction.h\
 	MultiDiskWriter.cc MultiDiskWriter.h\
 	DiskAdaptor.cc DiskAdaptor.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\

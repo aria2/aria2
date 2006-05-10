@@ -37,9 +37,9 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
-  sendMessageQueue = new SendMessageQueue(cuid, socket, e->option,
-					  e->torrentMan, this->peer);
-  sendMessageQueue->setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
+  peerInteraction = new PeerInteraction(cuid, socket, e->option,
+					e->torrentMan, this->peer);
+  peerInteraction->setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   keepAliveCheckPoint.tv_sec = 0;
   keepAliveCheckPoint.tv_usec = 0;
   chokeCheckPoint.tv_sec = 0;
@@ -53,7 +53,7 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
-  delete sendMessageQueue;
+  delete peerInteraction;
   e->torrentMan->unadvertisePiece(cuid);
   e->torrentMan->deleteActivePeer(this->peer);
 }
@@ -68,11 +68,11 @@ bool PeerInteractionCommand::executeInternal() {
 
   switch(sequence) {
   case INITIATOR_SEND_HANDSHAKE:
-    sendMessageQueue->sendHandshake();
+    peerInteraction->sendHandshake();
     sequence = INITIATOR_WAIT_HANDSHAKE;
     break;
   case INITIATOR_WAIT_HANDSHAKE: {
-    HandshakeMessage* handshakeMessage = sendMessageQueue->receiveHandshake();
+    HandshakeMessage* handshakeMessage = peerInteraction->receiveHandshake();
     if(handshakeMessage == NULL) {
       break;
     }
@@ -82,13 +82,13 @@ bool PeerInteractionCommand::executeInternal() {
 		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
     if(e->torrentMan->getDownloadLength() > 0) {
-      sendMessageQueue->sendNow(sendMessageQueue->createBitfieldMessage());
+      peerInteraction->sendNow(peerInteraction->createBitfieldMessage());
     }
     sequence = WIRED;
     break;
   }
   case RECEIVER_WAIT_HANDSHAKE: {
-    HandshakeMessage* handshakeMessage = sendMessageQueue->receiveHandshake();
+    HandshakeMessage* handshakeMessage = peerInteraction->receiveHandshake();
     if(handshakeMessage == NULL) {
       break;
     }
@@ -97,15 +97,15 @@ bool PeerInteractionCommand::executeInternal() {
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
-    sendMessageQueue->sendHandshake();
+    peerInteraction->sendHandshake();
     if(e->torrentMan->getDownloadLength() > 0) {
-      sendMessageQueue->sendNow(sendMessageQueue->createBitfieldMessage());
+      peerInteraction->sendNow(peerInteraction->createBitfieldMessage());
     }
     sequence = WIRED;    
     break;
   }
   case WIRED:
-    sendMessageQueue->syncPiece();
+    peerInteraction->syncPiece();
     decideChoking();
     for(int i = 0; i < 10; i++) {
       if(!socket->isReadable(0)) {
@@ -113,12 +113,12 @@ bool PeerInteractionCommand::executeInternal() {
       }
       receiveMessage();
     }
-    sendMessageQueue->deleteTimeoutRequestSlot();
-    sendMessageQueue->deleteCompletedRequestSlot();
-    sendMessageQueue->sendMessages(e->getUploadSpeed());
+    peerInteraction->deleteTimeoutRequestSlot();
+    peerInteraction->deleteCompletedRequestSlot();
+    peerInteraction->sendMessages(e->getUploadSpeed());
     break;
   }
-  if(sendMessageQueue->countMessageInQueue() > 0) {
+  if(peerInteraction->countMessageInQueue() > 0) {
     setWriteCheckSocket(socket);
   }
   e->commands.push_back(this);
@@ -171,17 +171,17 @@ void PeerInteractionCommand::checkLongTimePeerChoking() {
 void PeerInteractionCommand::decideChoking() {
   if(peer->shouldBeChoking()) {
     if(!peer->amChoking) {
-      sendMessageQueue->addMessage(sendMessageQueue->createChokeMessage());
+      peerInteraction->addMessage(peerInteraction->createChokeMessage());
     }
   } else {
     if(peer->amChoking) {
-      sendMessageQueue->addMessage(sendMessageQueue->createUnchokeMessage());
+      peerInteraction->addMessage(peerInteraction->createUnchokeMessage());
     }
   }
 }
 
 void PeerInteractionCommand::receiveMessage() {
-  PeerMessage* message = sendMessageQueue->receiveMessage();
+  PeerMessage* message = peerInteraction->receiveMessage();
   if(message == NULL) {
     return;
   }
@@ -234,7 +234,7 @@ bool PeerInteractionCommand::prepareForRetry(int wait) {
 }
 
 void PeerInteractionCommand::onAbort(Exception* ex) {
-  sendMessageQueue->abortPiece();
+  peerInteraction->abortPiece();
   PeerAbstractCommand::onAbort(ex);
 }
 
@@ -245,8 +245,8 @@ void PeerInteractionCommand::keepAlive() {
     struct timeval now;
     gettimeofday(&now, NULL);
     if(Util::difftv(now, keepAliveCheckPoint) >= (long long int)120*1000000) {
-      if(sendMessageQueue->countMessageInQueue() == 0) {
-	sendMessageQueue->sendNow(sendMessageQueue->createKeepAliveMessage());
+      if(peerInteraction->countMessageInQueue() == 0) {
+	peerInteraction->sendNow(peerInteraction->createKeepAliveMessage());
       }
       keepAliveCheckPoint = now;
     }
@@ -261,10 +261,10 @@ void PeerInteractionCommand::beforeSocketCheck() {
 
     PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
     if(indexes.size() >= 20) {
-      sendMessageQueue->trySendNow(sendMessageQueue->createBitfieldMessage());
+      peerInteraction->trySendNow(peerInteraction->createBitfieldMessage());
     } else {
       for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
-	sendMessageQueue->trySendNow(sendMessageQueue->createHaveMessage(*itr));
+	peerInteraction->trySendNow(peerInteraction->createHaveMessage(*itr));
       }
     }
     keepAlive();

@@ -20,7 +20,7 @@
  */
 /* copyright --> */
 #include "NotInterestedMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 
 void NotInterestedMessage::receivedAction() {
   peer->peerInterested = false;
@@ -28,7 +28,7 @@ void NotInterestedMessage::receivedAction() {
 
 void NotInterestedMessage::send() {
   if(peer->amInterested) {
-    sendMessageQueue->getPeerConnection()->sendNotInterested();
+    peerInteraction->getPeerConnection()->sendNotInterested();
     peer->amInterested = false;
   }
 }

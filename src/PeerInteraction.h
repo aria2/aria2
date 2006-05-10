@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_SEND_MESSAGE_QUEUE_H_
-#define _D_SEND_MESSAGE_QUEUE_H_
+#ifndef _D_PEER_INTERACTION_H_
+#define _D_PEER_INTERACTION_H_
 
 #include "common.h"
 #include "PeerConnection.h"
@@ -43,7 +43,7 @@
 typedef deque<RequestSlot> RequestSlots;
 typedef deque<PeerMessage*> MessageQueue;
 
-class SendMessageQueue {
+class PeerInteraction {
 private:
   int cuid;
   RequestSlots requestSlots;
@@ -67,12 +67,12 @@ private:
   void cancelAllRequest(Piece& piece);
   int countRequestSlot() const;
 public:
-  SendMessageQueue(int cuid,
-		   const Socket* socket,
-		   const Option* op,
-		   TorrentMan* torrentMan,
-		   Peer* peer);
-  ~SendMessageQueue();
+  PeerInteraction(int cuid,
+		  const Socket* socket,
+		  const Option* op,
+		  TorrentMan* torrentMan,
+		  Peer* peer);
+  ~PeerInteraction();
 
   void addMessage(PeerMessage* peerMessage);
   void deletePieceMessageInQueue(const CancelMessage* cancelMessage);
@@ -125,4 +125,4 @@ public:
   KeepAliveMessage* createKeepAliveMessage();
 };
 
-#endif // _D_SEND_MESSAGE_QUEUE_H_
+#endif // _D_PEER_INTERACTION_H_

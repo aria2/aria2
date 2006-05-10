@@ -20,7 +20,7 @@
  */
 /* copyright --> */
 #include "BitfieldMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
 
@@ -38,7 +38,7 @@ void BitfieldMessage::receivedAction() {
 }
 
 void BitfieldMessage::send() {
-  sendMessageQueue->getPeerConnection()->sendBitfield();
+  peerInteraction->getPeerConnection()->sendBitfield();
 }
 
 void BitfieldMessage::check() const {

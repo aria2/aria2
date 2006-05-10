@@ -21,7 +21,7 @@
 /* copyright --> */
 #include "PieceMessage.h"
 #include "PeerMessageUtil.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 #include "Util.h"
 #include "message.h"
 
@@ -35,12 +35,12 @@ void PieceMessage::setBlock(const char* block, int blockLength) {
 }
 
 void PieceMessage::receivedAction() {
-  TorrentMan* torrentMan = sendMessageQueue->getTorrentMan();
-  RequestSlot slot = sendMessageQueue->getCorrespondingRequestSlot(this);
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
+  RequestSlot slot = peerInteraction->getCorrespondingRequestSlot(this);
   peer->addPeerUpload(blockLength);
-  if(sendMessageQueue->hasDownloadPiece() &&
+  if(peerInteraction->hasDownloadPiece() &&
      !RequestSlot::isNull(slot)) {
-    Piece& piece = sendMessageQueue->getDownloadPiece();
+    Piece& piece = peerInteraction->getDownloadPiece();
     long long int offset =
       ((long long int)index)*torrentMan->pieceLength+begin;
     logger->debug("CUID#%d - write block length = %d, offset=%lld",
@@ -49,7 +49,7 @@ void PieceMessage::receivedAction() {
 				       blockLength,
 				       offset);
     piece.completeBlock(slot.getBlockIndex());
-    sendMessageQueue->deleteRequestSlot(slot);
+    peerInteraction->deleteRequestSlot(slot);
     torrentMan->updatePiece(piece);
     logger->debug("CUID#%d - setting piece bit index=%d",
 		  cuid, slot.getBlockIndex());
@@ -66,14 +66,14 @@ void PieceMessage::receivedAction() {
 
 void PieceMessage::send() {
   if((!peer->amChoking && peer->peerInterested) || inProgress) {
-    PeerConnection* peerConnection = sendMessageQueue->getPeerConnection();
+    PeerConnection* peerConnection = peerInteraction->getPeerConnection();
     if(!inProgress) {
       peerConnection->sendPieceHeader(index, begin, blockLength);
       peer->addPeerDownload(blockLength);
       leftPieceDataLength = blockLength;
     }
     inProgress = false;
-    int pieceLength = sendMessageQueue->getTorrentMan()->pieceLength;
+    int pieceLength = peerInteraction->getTorrentMan()->pieceLength;
     long long int pieceDataOffset =
       ((long long int)index)*pieceLength+begin+blockLength-leftPieceDataLength;
     int writtenLength =
@@ -96,7 +96,7 @@ string PieceMessage::toString() const {
 }
 
 bool PieceMessage::checkPieceHash(const Piece& piece) {
-  TorrentMan* torrentMan = sendMessageQueue->getTorrentMan();
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
   long long int offset =
     ((long long int)piece.getIndex())*torrentMan->pieceLength;
   return torrentMan->diskAdaptor->sha1Sum(offset, piece.getLength()) ==
@@ -104,7 +104,7 @@ bool PieceMessage::checkPieceHash(const Piece& piece) {
 }
 
 void PieceMessage::onGotNewPiece(Piece& piece) {
-  TorrentMan* torrentMan = sendMessageQueue->getTorrentMan();
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
   logger->info(MSG_GOT_NEW_PIECE, cuid, piece.getIndex());
   torrentMan->completePiece(piece);
   torrentMan->advertisePiece(cuid, piece.getIndex());
@@ -112,7 +112,7 @@ void PieceMessage::onGotNewPiece(Piece& piece) {
 }
 
 void PieceMessage::onGotWrongPiece(Piece& piece) {
-  TorrentMan* torrentMan = sendMessageQueue->getTorrentMan();
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
   logger->error(MSG_GOT_WRONG_PIECE, cuid, piece.getIndex());
   erasePieceOnDisk(piece);
   piece.clearAllBlock();
@@ -120,7 +120,7 @@ void PieceMessage::onGotWrongPiece(Piece& piece) {
 }
 
 void PieceMessage::erasePieceOnDisk(const Piece& piece) {
-  TorrentMan* torrentMan = sendMessageQueue->getTorrentMan();
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
   int BUFSIZE = 4096;
   char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);

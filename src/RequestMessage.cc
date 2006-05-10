@@ -20,14 +20,14 @@
  */
 /* copyright --> */
 #include "RequestMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
 
 void RequestMessage::receivedAction() {
-  TorrentMan* torrentMan = sendMessageQueue->getTorrentMan();
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
   if(torrentMan->hasPiece(index)) {
-    sendMessageQueue->addMessage(sendMessageQueue->createPieceMessage(index, begin, length));
+    peerInteraction->addMessage(peerInteraction->createPieceMessage(index, begin, length));
     torrentMan->addUploadLength(length);
     torrentMan->addDeltaUploadLength(length);
   }
@@ -35,7 +35,7 @@ void RequestMessage::receivedAction() {
 
 void RequestMessage::send() {
   if(!peer->peerChoking) {
-    sendMessageQueue->getPeerConnection()->sendRequest(index, begin, length);
+    peerInteraction->getPeerConnection()->sendRequest(index, begin, length);
   }
 }
 

@@ -24,7 +24,7 @@
 
 #include "PeerAbstractCommand.h"
 #include "PeerConnection.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 
 using namespace std;
 
@@ -33,7 +33,7 @@ using namespace std;
 class PeerInteractionCommand : public PeerAbstractCommand {
 private:
   int sequence;
-  SendMessageQueue* sendMessageQueue;
+  PeerInteraction* peerInteraction;
  
   struct timeval keepAliveCheckPoint;
   struct timeval chokeCheckPoint;

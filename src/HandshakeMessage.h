@@ -24,7 +24,7 @@
 
 #include "common.h"
 
-class SendMessageQueue;
+class PeerInteraction;
 
 #define PSTR "BitTorrent protocol"
 #define HANDSHAKE_MESSAGE_LENGTH 68
@@ -35,13 +35,13 @@ public:
   string pstr;
   unsigned char infoHash[20];
   char peerId[20];
-  SendMessageQueue* sendMessageQueue;
+  PeerInteraction* peerInteraction;
 public:
   HandshakeMessage() {}
   ~HandshakeMessage() {}
 
-  SendMessageQueue* getSendMessageQueue() const { return sendMessageQueue; }
-  void setSendMessageQueue(SendMessageQueue* sendMessageQueue);
+  PeerInteraction* getPeerInteraction() const { return peerInteraction; }
+  void setPeerInteraction(PeerInteraction* peerInteraction);
 
   string toString() const;
   void check();

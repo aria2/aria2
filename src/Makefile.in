@@ -96,7 +96,7 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	HandshakeMessage.$(OBJEXT) Piece.$(OBJEXT) \
 	RequestSlot.$(OBJEXT) TorrentAutoSaveCommand.$(OBJEXT) \
 	Directory.$(OBJEXT) TrackerWatcherCommand.$(OBJEXT) \
-	SendMessageQueue.$(OBJEXT) MultiDiskWriter.$(OBJEXT) \
+	PeerInteraction.$(OBJEXT) MultiDiskWriter.$(OBJEXT) \
 	DiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
 	LogFactory.$(OBJEXT) TrackerUpdateCommand.$(OBJEXT) \
@@ -328,7 +328,7 @@ SRCS = Socket.cc Socket.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	messageDigest.h\
-	SendMessageQueue.cc SendMessageQueue.h\
+	PeerInteraction.cc PeerInteraction.h\
 	MultiDiskWriter.cc MultiDiskWriter.h\
 	DiskAdaptor.cc DiskAdaptor.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
@@ -487,6 +487,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerChokeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInitiateConnectionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInteraction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInteractionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessage.Po@am__quote@
@@ -499,7 +500,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentSplitter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SendMessageQueue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@

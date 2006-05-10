@@ -25,8 +25,6 @@
 #include "PeerMessage.h"
 #include "TorrentMan.h"
 
-class SendMessageQueue;
-
 class PieceMessage : public PeerMessage {
 private:
   int index;

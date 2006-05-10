@@ -20,7 +20,7 @@
  */
 /* copyright --> */
 #include "ChokeMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 
 void ChokeMessage::receivedAction() {
   peer->peerChoking = true;
@@ -28,7 +28,7 @@ void ChokeMessage::receivedAction() {
 
 void ChokeMessage::send() {
   if(!peer->amChoking) {
-    sendMessageQueue->getPeerConnection()->sendChoke();
+    peerInteraction->getPeerConnection()->sendChoke();
     peer->amChoking = true;
   }
 }

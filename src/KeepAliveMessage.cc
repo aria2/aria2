@@ -20,8 +20,8 @@
  */
 /* copyright --> */
 #include "KeepAliveMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 
 void KeepAliveMessage::send() {
-  sendMessageQueue->getPeerConnection()->sendKeepAlive();
+  peerInteraction->getPeerConnection()->sendKeepAlive();
 }

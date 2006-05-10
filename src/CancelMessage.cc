@@ -20,16 +20,16 @@
  */
 /* copyright --> */
 #include "CancelMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
 
 void CancelMessage::receivedAction() {
-  sendMessageQueue->deletePieceMessageInQueue(this);
+  peerInteraction->deletePieceMessageInQueue(this);
 }
 
 void CancelMessage::send() {
-  sendMessageQueue->getPeerConnection()->sendCancel(index, begin, length);
+  peerInteraction->getPeerConnection()->sendCancel(index, begin, length);
 }
 
 void CancelMessage::check() const {

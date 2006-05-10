@@ -20,7 +20,7 @@
  */
 /* copyright --> */
 #include "HaveMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
 
@@ -30,7 +30,7 @@ void HaveMessage::receivedAction() {
 
 void HaveMessage::send() {
   if(!peer->hasPiece(index)) {
-    sendMessageQueue->getPeerConnection()->sendHave(index);
+    peerInteraction->getPeerConnection()->sendHave(index);
   }
 }
 

@@ -20,12 +20,12 @@
  */
 /* copyright --> */
 #include "HandshakeMessage.h"
-#include "SendMessageQueue.h"
+#include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
 
-void HandshakeMessage::setSendMessageQueue(SendMessageQueue* sendMessageQueue) {
-  this->sendMessageQueue = sendMessageQueue;
+void HandshakeMessage::setPeerInteraction(PeerInteraction* peerInteraction) {
+  this->peerInteraction = peerInteraction;
 }
 
 string HandshakeMessage::toString() const {
@@ -35,5 +35,5 @@ string HandshakeMessage::toString() const {
 
 void HandshakeMessage::check() {
   PeerMessageUtil::checkHandshake(this,
-				  sendMessageQueue->getTorrentMan()->getInfoHash());
+				  peerInteraction->getTorrentMan()->getInfoHash());
 }

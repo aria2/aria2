@@ -27,14 +27,14 @@
 #include "Peer.h"
 #include <string>
 
-class SendMessageQueue;
+class PeerInteraction;
 
 class PeerMessage {
 protected:
   bool inProgress;
   int cuid;
   Peer* peer;
-  SendMessageQueue* sendMessageQueue;
+  PeerInteraction* peerInteraction;
   const Logger* logger;
 public:
   PeerMessage();
@@ -51,9 +51,9 @@ public:
   void setPeer(Peer* peer) {
     this->peer = peer;
   }
-  SendMessageQueue* getSendMessageQueue() const { return sendMessageQueue; }
-  void setSendMessageQueue(SendMessageQueue* sendMessageQueue) {
-    this->sendMessageQueue = sendMessageQueue;
+  PeerInteraction* getPeerInteraction() const { return peerInteraction; }
+  void setPeerInteraction(PeerInteraction* peerInteraction) {
+    this->peerInteraction = peerInteraction;
   }
 
   virtual int getId() const = 0;
