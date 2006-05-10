@@ -105,9 +105,6 @@ bool PeerInteractionCommand::executeInternal() {
     break;
   }
   case WIRED:
-    detectMessageFlooding();
-    checkLongTimePeerChoking();
-    checkInactiveConnection();
     sendMessageQueue->syncPiece();
     decideChoking();
     for(int i = 0; i < 10; i++) {
@@ -126,16 +123,6 @@ bool PeerInteractionCommand::executeInternal() {
   }
   e->commands.push_back(this);
   return false;
-}
-
-void PeerInteractionCommand::checkInactiveConnection() {
-  if((!peer->amInterested && !peer->peerInterested &&
-     e->torrentMan->connections >= MAX_PEER_LIST_SIZE) ||
-     (!peer->amInterested && e->torrentMan->connections >= MAX_PEER_LIST_SIZE &&
-      e->torrentMan->isEndGame())) {
-    throw new DlAbortEx("marked as inactive connection.");
-  }
-  
 }
 
 void PeerInteractionCommand::detectMessageFlooding() {
@@ -271,7 +258,6 @@ void PeerInteractionCommand::beforeSocketCheck() {
     e->torrentMan->unadvertisePiece(cuid);
     detectMessageFlooding();
     checkLongTimePeerChoking();
-    checkInactiveConnection();
 
     PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
     if(indexes.size() >= 20) {

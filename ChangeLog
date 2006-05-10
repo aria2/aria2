@@ -1,3 +1,50 @@
+2006-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/PeerInteractionCommand.h
+	(checkInactiveConnection): Removed.
+	* src/PeerInteractionCommand.cc
+	(executeInternal): Removed following function calls:
+	detectMessageFlooding(), checkLongTimePeerChoking and
+	checkInactiveConnection().
+	(checkInactiveConnection): Removed.
+	(detectMessageFlooding): Removed function call to
+	checkInactiveConnection().
+
+	* src/PeerMessageUtil.h
+	(createChokeMessage): New function. Overload.
+	(createUnchokeMessage): New function. Overload.
+	(createInterestedMessage): New function. Overload.
+	(createNotInterestedMessage): New function. Overload.
+	(createHaveMessage): New function. Overload.
+	(createBitfieldMessage): New function. Overload.
+	(createRequestMessage): New function. Overload.
+	(createCancelMessage): New function. Overload.
+	(createPieceMessage): New function. Overload.
+	(createKeepAliveMessage): New function. Overload.
+	* src/PeerMessageUtil.cc
+	(createChokeMessage): New function. Overload.
+	(createUnchokeMessage): New function. Overload.
+	(createInterestedMessage): New function. Overload.
+	(createNotInterestedMessage): New function. Overload.
+	(createHaveMessage): New function. Overload.
+	(createBitfieldMessage): New function. Overload.
+	(createRequestMessage): New function. Overload.
+	(createCancelMessage): New function. Overload.
+	(createPieceMessage): New function. Overload.
+	(createKeepAliveMessage): New function. Overload.
+
+	* src/SendMessageQueue.cc
+	(createRequestMessage): Use PeerMessageUtil.
+	(createCancelMessage): Use PeerMessageUtil.
+	(createPieceMessage): Use PeerMessageUtil.
+	(createHaveMessage): Use PeerMessageUtil.
+	(createChokeMessage): Use PeerMessageUtil.
+	(createUnchokeMessage): Use PeerMessageUtil.
+	(createInterestedMessage): Use PeerMessageUtil.
+	(createNotInterestedMessage): Use PeerMessageUtil.
+	(createBitfieldMessage): Use PeerMessageUtil.
+	(createKeepAliveMessage): Use PeerMessageUtil.
+	
 2006-05-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Each peer message has its own class.

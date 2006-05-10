@@ -44,7 +44,6 @@ private:
   void receiveMessage();
   void detectMessageFlooding();
   void checkLongTimePeerChoking();
-  void checkInactiveConnection();
   void detectTimeoutAndDuplicateBlock();
   void decideChoking();
   void keepAlive();

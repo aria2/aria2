@@ -395,72 +395,67 @@ void SendMessageQueue::setPeerMessageCommonProperty(PeerMessage* peerMessage) {
 }
 
 RequestMessage* SendMessageQueue::createRequestMessage(int blockIndex) {
-  RequestMessage* msg = new RequestMessage();
+  RequestMessage* msg =
+    PeerMessageUtil::createRequestMessage(piece.getIndex(),
+					  blockIndex*piece.getBlockLength(),
+					  piece.getBlockLength(blockIndex),
+					  blockIndex);
   setPeerMessageCommonProperty(msg);
-  msg->setIndex(piece.getIndex());
-  msg->setBegin(blockIndex*piece.getBlockLength());
-  msg->setLength(piece.getBlockLength(blockIndex));
-  msg->setBlockIndex(blockIndex);
   return msg;
 }
 
 CancelMessage* SendMessageQueue::createCancelMessage(int index, int begin, int length) {
-  CancelMessage* msg = new CancelMessage();
+  CancelMessage* msg =
+    PeerMessageUtil::createCancelMessage(index, begin, length);
   setPeerMessageCommonProperty(msg);
-  msg->setIndex(index);
-  msg->setBegin(begin);
-  msg->setLength(length);
   return msg;
 }
 
 PieceMessage* SendMessageQueue::createPieceMessage(int index, int begin, int length) {
-  PieceMessage* msg = new PieceMessage();
+  PieceMessage* msg =
+    PeerMessageUtil::createPieceMessage(index, begin, length);
   setPeerMessageCommonProperty(msg);
-  msg->setIndex(index);
-  msg->setBegin(begin);
-  msg->setBlockLength(length);
   return msg;  
 }
 
 HaveMessage* SendMessageQueue::createHaveMessage(int index) {
-  HaveMessage* msg = new HaveMessage();
+  HaveMessage* msg = PeerMessageUtil::createHaveMessage(index);
   setPeerMessageCommonProperty(msg);
-  msg->setIndex(index);
   return msg;
 }
 
 ChokeMessage* SendMessageQueue::createChokeMessage() {
-  ChokeMessage* msg = new ChokeMessage();
+  ChokeMessage* msg = PeerMessageUtil::createChokeMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 UnchokeMessage* SendMessageQueue::createUnchokeMessage() {
-  UnchokeMessage* msg = new UnchokeMessage();
+  UnchokeMessage* msg = PeerMessageUtil::createUnchokeMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 InterestedMessage* SendMessageQueue::createInterestedMessage() {
-  InterestedMessage* msg = new InterestedMessage();
+  InterestedMessage* msg = PeerMessageUtil::createInterestedMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 NotInterestedMessage* SendMessageQueue::createNotInterestedMessage() {
-  NotInterestedMessage* msg = new NotInterestedMessage();
+  NotInterestedMessage* msg = PeerMessageUtil::createNotInterestedMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 BitfieldMessage* SendMessageQueue::createBitfieldMessage() {
-  BitfieldMessage* msg = new BitfieldMessage();
+  BitfieldMessage* msg = PeerMessageUtil::createBitfieldMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 KeepAliveMessage* SendMessageQueue::createKeepAliveMessage() {
-  KeepAliveMessage* msg = new KeepAliveMessage();
+  KeepAliveMessage* msg = PeerMessageUtil::createKeepAliveMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
