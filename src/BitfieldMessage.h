@@ -22,22 +22,28 @@
 #ifndef _D_BITFIELD_MESSAGE_H_
 #define _D_BITFIELD_MESSAGE_H_
 
-#include "PeerMessage.h"
+#include "SimplePeerMessage.h"
 
-class BitfieldMessage : public PeerMessage {
+class BitfieldMessage : public SimplePeerMessage {
 private:
   unsigned char* bitfield;
   int bitfieldLength;
   // for check
   int pieces;
+
+  char* msg;
+  int msgLength;
 public:
-  BitfieldMessage():PeerMessage(),
+  BitfieldMessage():SimplePeerMessage(),
 		    bitfield(NULL), bitfieldLength(0),
-		    pieces(0) {}
+		    pieces(0), msg(NULL), msgLength(0) {}
 
   virtual ~BitfieldMessage() {
     if(bitfield != NULL) {
       delete [] bitfield;
+    }
+    if(msg != NULL) {
+      delete [] msg;
     }
   }
 
@@ -55,9 +61,12 @@ public:
   }
   int getPieces() const { return pieces;}
 
+  static BitfieldMessage* create(const char* data, int dataLength);
+
   virtual int getId() const { return ID; }
   virtual void receivedAction();
-  virtual void send();
+  virtual const char* getMessage();
+  virtual int getMessageLength();
   virtual void check() const;
   virtual string toString() const;
 };

@@ -22,21 +22,28 @@
 #ifndef _D_UNCHOKE_MESSAGE_H_
 #define _D_UNCHOKE_MESSAGE_H_
 
-#include "PeerMessage.h"
+#include "SimplePeerMessage.h"
 
-class UnchokeMessage : public PeerMessage {
+class UnchokeMessage : public SimplePeerMessage {
+private:
+  char msg[5];
+protected:
+  virtual bool sendPredicate() const;
+  virtual void onSendComplete();
 public:
-  UnchokeMessage():PeerMessage() {}
+  UnchokeMessage():SimplePeerMessage() {}
   virtual ~UnchokeMessage() {}
 
   enum ID {
     ID = 1
   };
 
+  static UnchokeMessage* create(const char* data, int dataLength);
+
   virtual int getId() const { return ID; }
   virtual void receivedAction();
-  virtual void send();
-
+  virtual const char* getMessage();
+  virtual int getMessageLength();
   virtual string toString() const;
 };
 

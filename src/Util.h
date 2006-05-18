@@ -78,6 +78,12 @@ public:
 
   // this function temporarily put here
   static string getContentDispositionFilename(const string& header);
+
+  // digest must be at least 20 bytes long.
+  static void sha1Sum(unsigned char* digest, const void* data, int dataLength);
+
+  static Integers computeFastSet(string ipaddr, const unsigned char* infoHash,
+				int pieces, int fastSetSize);
 };
 
 #endif // _D_UTIL_H_

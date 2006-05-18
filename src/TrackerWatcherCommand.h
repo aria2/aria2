@@ -24,14 +24,17 @@
 
 #include "Command.h"
 #include "TorrentDownloadEngine.h"
+#include <sys/time.h>
 
 #define MIN_PEERS 15
 
 class TrackerWatcherCommand : public Command {
 private:
   TorrentDownloadEngine* e;
+  int interval;
+  struct timeval checkPoint;
 public:
-  TrackerWatcherCommand(int cuid, TorrentDownloadEngine* e);
+  TrackerWatcherCommand(int cuid, TorrentDownloadEngine* e, int interval);
   ~TrackerWatcherCommand();
 
   bool execute();

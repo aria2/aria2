@@ -48,6 +48,9 @@ public:
 private:
   char peerId[PEER_ID_LENGTH];
   BitfieldMan* bitfield;
+  bool fastExtensionEnabled;
+  // allowed fast indexes that peer has sent by Allowed Fast message
+  Integers fastSet;
   long long int peerUpload;
   long long int peerDownload;
   int pieceLength;
@@ -62,6 +65,7 @@ public:
     tryCount(0), error(0), cuid(0),
     chokingRequired(true), optUnchoking(false),
     bitfield(NULL),
+    fastExtensionEnabled(false),
     peerUpload(0), peerDownload(0),
     pieceLength(pieceLength), totalLength(totalLength),
     deltaUpload(0), deltaDownload(0) {
@@ -98,13 +102,14 @@ public:
   }
   const unsigned char* getBitfield() const { return bitfield->getBitfield(); }
   int getBitfieldLength() const { return bitfield->getBitfieldLength(); }
+  void setAllBitfield();
 
   /**
    * operation = 1: set index-th bit 1
    * operation = 0: set index-th bit 0
    */
   void updateBitfield(int index, int operation);
-
+  
   void addPeerUpload(int size) {
     peerUpload += size;
     addDeltaUpload(size);
@@ -118,6 +123,16 @@ public:
   }
   void setPeerDownload(long long int size) { peerDownload = size; }
   long long int getPeerDownload() const { return peerDownload; }
+
+  void setFastExtensionEnabled(bool enabled) {
+    fastExtensionEnabled = enabled;
+  }
+  bool isFastExtensionEnabled() const { return fastExtensionEnabled; }
+
+  void addFastSetIndex(int index);
+  const Integers getFastSet() const { return fastSet; }
+  bool isInFastSet(int index) const;
+  int countFastSet() const { return fastSet.size(); }
 
   bool shouldBeChoking() const;
 

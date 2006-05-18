@@ -147,10 +147,30 @@ bool TorrentMan::isEndGame() const {
 
 Piece TorrentMan::getMissingPiece(const Peer* peer) {
   int index = -1;
-  if(isEndGame()) {
-    index = bitfield->getMissingIndex(peer->getBitfield(), peer->getBitfieldLength());
-  } else {
-    index = bitfield->getMissingUnusedIndex(peer->getBitfield(), peer->getBitfieldLength());
+  if(peer->isFastExtensionEnabled() && peer->countFastSet() > 0) {
+    BitfieldMan tempBitfield(pieceLength, totalLength);
+    for(Integers::const_iterator itr = peer->getFastSet().begin();
+	itr != peer->getFastSet().end(); itr++) {
+      if(!hasPiece(*itr) && peer->hasPiece(*itr)) {
+	tempBitfield.setBit(*itr);
+      }
+    }
+    if(isEndGame()) {
+      index = bitfield->getMissingIndex(tempBitfield.getBitfield(),
+					tempBitfield.getBitfieldLength());
+    } else {
+      index = bitfield->getMissingUnusedIndex(tempBitfield.getBitfield(),
+					      tempBitfield.getBitfieldLength());
+    }
+  }
+  if(index == -1) {
+    if(isEndGame()) {
+      index = bitfield->getMissingIndex(peer->getBitfield(),
+					peer->getBitfieldLength());
+    } else {
+      index = bitfield->getMissingUnusedIndex(peer->getBitfield(),
+					      peer->getBitfieldLength());
+    }
   }
   if(index == -1) {
     return Piece::nullPiece;
@@ -248,6 +268,7 @@ void TorrentMan::cancelPiece(const Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
+  updatePiece(piece);
   bitfield->unsetUseBit(piece.getIndex());
   if(!isEndGame()) {
     if(piece.countCompleteBlock() == 0) {
@@ -301,6 +322,10 @@ void TorrentMan::setBitfield(unsigned char* bitfield, int bitfieldLength) {
 
 bool TorrentMan::downloadComplete() const {
   return bitfield->isAllBitSet();
+}
+
+bool TorrentMan::hasAllPieces() const {
+  return bitfield->getTotalLength() == downloadLength;
 }
 
 void TorrentMan::readFileEntry(FileEntries& fileEntries, Directory** pTopDir, const Dictionary* infoDic, const string& defaultName) {

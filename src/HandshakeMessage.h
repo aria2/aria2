@@ -22,29 +22,36 @@
 #ifndef _D_HANDSHAKE_MESSAGE_H_
 #define _D_HANDSHAKE_MESSAGE_H_
 
-#include "common.h"
-
-class PeerInteraction;
+#include "SimplePeerMessage.h"
+#include "TorrentMan.h"
 
 #define PSTR "BitTorrent protocol"
 #define HANDSHAKE_MESSAGE_LENGTH 68
 
-class HandshakeMessage {
+class HandshakeMessage : public SimplePeerMessage {
+private:
+  char msg[HANDSHAKE_MESSAGE_LENGTH];
 public:
   char pstrlen;
   string pstr;
-  unsigned char infoHash[20];
-  char peerId[20];
-  PeerInteraction* peerInteraction;
+  unsigned char reserved[8];
+  unsigned char infoHash[INFO_HASH_LENGTH];
+  char peerId[PEER_ID_LENGTH];
 public:
-  HandshakeMessage() {}
-  ~HandshakeMessage() {}
+  HandshakeMessage();
 
-  PeerInteraction* getPeerInteraction() const { return peerInteraction; }
-  void setPeerInteraction(PeerInteraction* peerInteraction);
+  static HandshakeMessage* create(const char* data, int dataLength);
 
-  string toString() const;
-  void check();
+  virtual ~HandshakeMessage() {}
+
+  virtual int getId() const { return 999; }
+  virtual void receivedAction() {};
+  virtual const char* getMessage();
+  virtual int getMessageLength();
+  virtual void check() const;
+  virtual string toString() const;
+
+  bool isFastExtensionSupported() const;
 };
 
 #endif // _D_HANDSHAKE_MESSAGE_H_

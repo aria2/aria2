@@ -22,20 +22,28 @@
 #ifndef _D_INTERESTED_MESSAGE_H_
 #define _D_INTERESTED_MESSAGE_H_
 
-#include "PeerMessage.h"
+#include "SimplePeerMessage.h"
 
-class InterestedMessage : public PeerMessage {
+class InterestedMessage : public SimplePeerMessage {
+private:
+  char msg[5];
+protected:
+  virtual bool sendPredicate() const;
+  virtual void onSendComplete();
 public:
-  InterestedMessage():PeerMessage() {}
+  InterestedMessage():SimplePeerMessage() {}
   virtual ~InterestedMessage() {}
 
   enum ID {
     ID = 2
   };
 
+  static InterestedMessage* create(const char* data, int dataLength);
+
   virtual int getId() const { return ID; }
   virtual void receivedAction();
-  virtual void send();
+  virtual const char* getMessage();
+  virtual int getMessageLength();
   virtual string toString() const;
 };
 

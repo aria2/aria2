@@ -21,16 +21,48 @@
 /* copyright --> */
 #include "InterestedMessage.h"
 #include "PeerInteraction.h"
+#include "PeerMessageUtil.h"
+#include "DlAbortEx.h"
+
+InterestedMessage* InterestedMessage::create(const char* data, int dataLength) {
+  if(dataLength != 1) {
+    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "interested", dataLength, 1);
+  }
+  int id = PeerMessageUtil::getId(data);
+  if(id != ID) {
+    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
+			id, "interested", ID);
+  }
+  InterestedMessage* interestedMessage = new InterestedMessage();
+  return interestedMessage;
+}
 
 void InterestedMessage::receivedAction() {
   peer->peerInterested = true;
 }
 
-void InterestedMessage::send() {
-  if(!peer->amInterested) {
-    peerInteraction->getPeerConnection()->sendInterested();
-    peer->amInterested = true;
+bool InterestedMessage::sendPredicate() const {
+  return !peer->amInterested;
+}
+
+const char* InterestedMessage::getMessage() {
+  if(!inProgress) {
+    /**
+     * len --- 1, 4bytes
+     * id --- 2, 1byte
+     * total: 5bytes
+     */
+    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, ID);
   }
+  return msg;
+}
+
+int InterestedMessage::getMessageLength() {
+  return sizeof(msg);
+}
+
+void InterestedMessage::onSendComplete() {
+  peer->amInterested = true;
 }
 
 string InterestedMessage::toString() const {

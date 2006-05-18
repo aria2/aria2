@@ -24,6 +24,7 @@
 #include "PeerInteraction.h"
 #include "Util.h"
 #include "message.h"
+#include "DlAbortEx.h"
 
 void PieceMessage::setBlock(const char* block, int blockLength) {
   if(this->block != NULL) {
@@ -34,16 +35,34 @@ void PieceMessage::setBlock(const char* block, int blockLength) {
   memcpy(this->block, block, this->blockLength);
 }
 
+PieceMessage* PieceMessage::create(const char* data, int dataLength) {
+  if(dataLength <= 9) {
+    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be greater than %d", "piece", dataLength, 9);
+  }
+  int id = PeerMessageUtil::getId(data);
+  if(id != ID) {
+    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
+			id, "piece", ID);
+  }
+  PieceMessage* pieceMessage = new PieceMessage();
+  pieceMessage->setIndex(PeerMessageUtil::getIntParam(data, 1));
+  pieceMessage->setBegin(PeerMessageUtil::getIntParam(data, 5));
+  pieceMessage->setBlock(data+9, dataLength-9);
+  return pieceMessage;
+}
+
 void PieceMessage::receivedAction() {
   TorrentMan* torrentMan = peerInteraction->getTorrentMan();
-  RequestSlot slot = peerInteraction->getCorrespondingRequestSlot(this);
+  RequestSlot slot = peerInteraction->getCorrespondingRequestSlot(index,
+								  begin,
+								  blockLength);
   peer->addPeerUpload(blockLength);
   if(peerInteraction->hasDownloadPiece() &&
      !RequestSlot::isNull(slot)) {
     Piece& piece = peerInteraction->getDownloadPiece();
     long long int offset =
       ((long long int)index)*torrentMan->pieceLength+begin;
-    logger->debug("CUID#%d - write block length = %d, offset=%lld",
+    logger->debug("CUID#%d - Writing the block length=%d, offset=%lld",
 		  cuid, blockLength, offset);      
     torrentMan->diskAdaptor->writeData(block,
 				       blockLength,
@@ -51,7 +70,7 @@ void PieceMessage::receivedAction() {
     piece.completeBlock(slot.getBlockIndex());
     peerInteraction->deleteRequestSlot(slot);
     torrentMan->updatePiece(piece);
-    logger->debug("CUID#%d - setting piece bit index=%d",
+    logger->debug("CUID#%d - Setting piece block index=%d",
 		  cuid, slot.getBlockIndex());
     torrentMan->addDeltaDownloadLength(blockLength);
     if(piece.pieceComplete()) {
@@ -64,25 +83,95 @@ void PieceMessage::receivedAction() {
   }
 }
 
+const char* PieceMessage::getMessageHeader() {
+  if(!inProgress) {
+    /**
+     * len --- 9+blockLength, 4bytes
+     * id --- 7, 1byte
+     * index --- index, 4bytes
+     * begin --- begin, 4bytes
+     * total: 13bytes
+     */
+    PeerMessageUtil::createPeerMessageString(msgHeader, sizeof(msgHeader),
+					     9+blockLength, ID);
+    PeerMessageUtil::setIntParam(&msgHeader[5], index);
+    PeerMessageUtil::setIntParam(&msgHeader[9], begin);
+  }
+  return msgHeader;
+}
+
+int PieceMessage::getMessageHeaderLength() {
+  return sizeof(msgHeader);
+}
+
 void PieceMessage::send() {
-  if((!peer->amChoking && peer->peerInterested) || inProgress) {
-    PeerConnection* peerConnection = peerInteraction->getPeerConnection();
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
+  PeerConnection* peerConnection = peerInteraction->getPeerConnection();
+  if(!headerSent) {
     if(!inProgress) {
-      peerConnection->sendPieceHeader(index, begin, blockLength);
-      peer->addPeerDownload(blockLength);
-      leftPieceDataLength = blockLength;
-    }
-    inProgress = false;
-    int pieceLength = peerInteraction->getTorrentMan()->pieceLength;
-    long long int pieceDataOffset =
-      ((long long int)index)*pieceLength+begin+blockLength-leftPieceDataLength;
-    int writtenLength =
-      peerConnection->sendPieceData(pieceDataOffset, leftPieceDataLength);
-    if(writtenLength != leftPieceDataLength) {
+      logger->info(MSG_SEND_PEER_MESSAGE,
+		   cuid, peer->ipaddr.c_str(), peer->port,
+		   toString().c_str());
+      getMessageHeader();
+      leftDataLength = getMessageHeaderLength();
       inProgress = true;
-      leftPieceDataLength -= writtenLength;
+    }
+    int writtenLength
+      = peerConnection->sendMessage(msgHeader+getMessageHeaderLength()-leftDataLength,
+				    leftDataLength);
+    if(writtenLength == leftDataLength) {
+      headerSent = true;
+      leftDataLength = blockLength;
+    } else {
+      leftDataLength -= writtenLength;
     }
   }
+  if(headerSent) {
+    inProgress = false;
+    int pieceLength = torrentMan->pieceLength;
+    long long int pieceDataOffset =
+      ((long long int)index)*pieceLength+begin+blockLength-leftDataLength;
+    int writtenLength =
+      sendPieceData(pieceDataOffset, leftDataLength);
+    peer->addPeerDownload(writtenLength);
+    torrentMan->addUploadLength(writtenLength);
+    torrentMan->addDeltaUploadLength(writtenLength);
+    if(writtenLength != leftDataLength) {
+      inProgress = true;
+    }
+    leftDataLength -= writtenLength;
+  }
+}
+
+int PieceMessage::sendPieceData(long long int offset, int length) const {
+  int BUF_SIZE = 256;
+  char buf[BUF_SIZE];
+  int iteration = length/BUF_SIZE;
+  int writtenLength = 0;
+  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
+  PeerConnection* peerConnection = peerInteraction->getPeerConnection();
+  for(int i = 0; i < iteration; i++) {
+    if(torrentMan->diskAdaptor->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
+      throw new DlAbortEx("Failed to read data from disk.");
+    }
+    int ws = peerConnection->sendMessage(buf, BUF_SIZE);
+    writtenLength += ws;
+    if(ws != BUF_SIZE) {
+      //logger->debug("CUID#%d - %d bytes written", cuid, writtenLength);
+      return writtenLength;
+    }
+  }
+
+  int rem = length%BUF_SIZE;
+  if(rem > 0) {
+    if(torrentMan->diskAdaptor->readData(buf, rem, offset+iteration*BUF_SIZE) < rem) {
+      throw new DlAbortEx("Failed to read data from disk.");
+    }
+    int ws = peerConnection->sendMessage(buf, rem);
+    writtenLength += ws;
+  }
+  //logger->debug("CUID#%d - %d bytes written", cuid, writtenLength);
+  return writtenLength;
 }
 
 void PieceMessage::check() const {

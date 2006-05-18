@@ -40,6 +40,7 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
   peerInteraction = new PeerInteraction(cuid, socket, e->option,
 					e->torrentMan, this->peer);
   peerInteraction->setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
+  setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   keepAliveCheckPoint.tv_sec = 0;
   keepAliveCheckPoint.tv_usec = 0;
   chokeCheckPoint.tv_sec = 0;
@@ -65,6 +66,7 @@ bool PeerInteractionCommand::executeInternal() {
     setTimeout(e->option->getAsInt(PREF_TIMEOUT));
   }
   setWriteCheckSocket(NULL);
+  setUploadLimitCheck(false);
 
   switch(sequence) {
   case INITIATOR_SEND_HANDSHAKE:
@@ -72,6 +74,12 @@ bool PeerInteractionCommand::executeInternal() {
     sequence = INITIATOR_WAIT_HANDSHAKE;
     break;
   case INITIATOR_WAIT_HANDSHAKE: {
+    if(peerInteraction->countMessageInQueue() > 0) {
+      peerInteraction->sendMessages(e->getUploadSpeed());
+      if(peerInteraction->countMessageInQueue() > 0) {
+	break;
+      }
+    }
     HandshakeMessage* handshakeMessage = peerInteraction->receiveHandshake();
     if(handshakeMessage == NULL) {
       break;
@@ -81,9 +89,8 @@ bool PeerInteractionCommand::executeInternal() {
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
-    if(e->torrentMan->getDownloadLength() > 0) {
-      peerInteraction->sendNow(peerInteraction->createBitfieldMessage());
-    }
+    peerInteraction->sendBitfield();
+    peerInteraction->sendAllowedFast();
     sequence = WIRED;
     break;
   }
@@ -98,9 +105,8 @@ bool PeerInteractionCommand::executeInternal() {
 		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
     peerInteraction->sendHandshake();
-    if(e->torrentMan->getDownloadLength() > 0) {
-      peerInteraction->sendNow(peerInteraction->createBitfieldMessage());
-    }
+    peerInteraction->sendBitfield();
+    peerInteraction->sendAllowedFast();
     sequence = WIRED;    
     break;
   }
@@ -115,11 +121,16 @@ bool PeerInteractionCommand::executeInternal() {
     }
     peerInteraction->deleteTimeoutRequestSlot();
     peerInteraction->deleteCompletedRequestSlot();
+    peerInteraction->addRequests();
     peerInteraction->sendMessages(e->getUploadSpeed());
     break;
   }
   if(peerInteraction->countMessageInQueue() > 0) {
-    setWriteCheckSocket(socket);
+    if(peerInteraction->isSendingMessageInProgress()) {
+      setWriteCheckSocket(socket);
+    } else {
+      setUploadLimitCheck(true);
+    }
   }
   e->commands.push_back(this);
   return false;
@@ -246,7 +257,8 @@ void PeerInteractionCommand::keepAlive() {
     gettimeofday(&now, NULL);
     if(Util::difftv(now, keepAliveCheckPoint) >= (long long int)120*1000000) {
       if(peerInteraction->countMessageInQueue() == 0) {
-	peerInteraction->sendNow(peerInteraction->createKeepAliveMessage());
+	peerInteraction->addMessage(peerInteraction->createKeepAliveMessage());
+	peerInteraction->sendMessages(e->getUploadSpeed());
       }
       keepAliveCheckPoint = now;
     }
@@ -261,10 +273,18 @@ void PeerInteractionCommand::beforeSocketCheck() {
 
     PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
     if(indexes.size() >= 20) {
-      peerInteraction->trySendNow(peerInteraction->createBitfieldMessage());
+      if(peer->isFastExtensionEnabled()) {
+	if(e->torrentMan->hasAllPieces()) {
+	  peerInteraction->addMessage(peerInteraction->createHaveAllMessage());
+	} else {
+	  peerInteraction->addMessage(peerInteraction->createBitfieldMessage());
+	}
+      } else {
+	peerInteraction->addMessage(peerInteraction->createBitfieldMessage());
+      }
     } else {
       for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
-	peerInteraction->trySendNow(peerInteraction->createHaveMessage(*itr));
+	peerInteraction->addMessage(peerInteraction->createHaveMessage(*itr));
       }
     }
     keepAlive();

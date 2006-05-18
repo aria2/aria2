@@ -36,9 +36,15 @@
 #include "HandshakeMessage.h"
 #include "KeepAliveMessage.h"
 #include "PortMessage.h"
+#include "HaveAllMessage.h"
+#include "HaveNoneMessage.h"
+#include "RejectMessage.h"
+#include "AllowedFastMessage.h"
+#include "SuggestPieceMessage.h"
 #include "RequestSlot.h"
 
 #define REQUEST_TIME_OUT 120
+#define ALLOWED_FAST_SET_SIZE 10
 
 typedef deque<RequestSlot> RequestSlots;
 typedef deque<PeerMessage*> MessageQueue;
@@ -54,17 +60,14 @@ private:
   PeerConnection* peerConnection;
   Peer* peer;
   Piece piece;
+  // allowed fast piece indexes that local client has sent
+  Integers fastSet;
   const Logger* logger;
-
-  Piece getNewPieceAndSendInterest();
+  
+  void getNewPieceAndSendInterest();
   PeerMessage* createPeerMessage(const char* msg, int msgLength);
   HandshakeMessage* createHandshakeMessage(const char* msg, int msgLength);
-  void send(int uploadSpeed);
   void setPeerMessageCommonProperty(PeerMessage* peerMessage);
-  void deleteAllRequestSlot(Piece& piece);
-  void deleteRequestMessageInQueue();
-  void cancelAllRequest();
-  void cancelAllRequest(Piece& piece);
   int countRequestSlot() const;
 public:
   PeerInteraction(int cuid,
@@ -75,12 +78,16 @@ public:
   ~PeerInteraction();
 
   void addMessage(PeerMessage* peerMessage);
-  void deletePieceMessageInQueue(const CancelMessage* cancelMessage);
-  
+  void rejectPieceMessageInQueue(int index, int begin, int length);
+  void rejectAllPieceMessageInQueue();
+  void onChoked();
+  void abortPiece();
+
+  bool isSendingMessageInProgress() const;
   void deleteRequestSlot(const RequestSlot& requestSlot);
   void deleteTimeoutRequestSlot();
   void deleteCompletedRequestSlot();
-  RequestSlot getCorrespondingRequestSlot(const PieceMessage* pieceMessage) const;
+  RequestSlot getCorrespondingRequestSlot(int index, int begin, int length) const;
 
   int countMessageInQueue() const;
 
@@ -100,15 +107,16 @@ public:
   void setDownloadPiece(const Piece& piece) {
     this->piece = piece;
   }
+  
+  bool isInFastSet(int index) const;
+  void addFastSetIndex(int index);
 
   void syncPiece();
+  void addRequests();
   void sendMessages(int currentUploadSpeed);
-  // after sending message, deletes peerMessage.
-  // So don't use peerMessage after this function call.
-  void sendNow(PeerMessage* peerMessage);
-  void trySendNow(PeerMessage* peerMessage);
-  void abortPiece();
   void sendHandshake();
+  void sendBitfield();
+  void sendAllowedFast();
 
   PeerMessage* receiveMessage();
   HandshakeMessage* receiveHandshake();
@@ -123,6 +131,10 @@ public:
   NotInterestedMessage* createNotInterestedMessage();
   BitfieldMessage* createBitfieldMessage();
   KeepAliveMessage* createKeepAliveMessage();
+  HaveAllMessage* createHaveAllMessage();
+  HaveNoneMessage* createHaveNoneMessage();
+  RejectMessage* createRejectMessage(int index, int begin, int length);
+  AllowedFastMessage* createAllowedFastMessage(int index);
 };
 
 #endif // _D_PEER_INTERACTION_H_

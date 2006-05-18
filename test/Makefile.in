@@ -64,7 +64,14 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
 	TorrentManTest.$(OBJEXT) PeerMessageUtilTest.$(OBJEXT) \
 	BitfieldManTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
-	MultiDiskWriterTest.$(OBJEXT)
+	MultiDiskWriterTest.$(OBJEXT) ChokeMessageTest.$(OBJEXT) \
+	UnchokeMessageTest.$(OBJEXT) HaveAllMessageTest.$(OBJEXT) \
+	HaveNoneMessageTest.$(OBJEXT) InterestedMessageTest.$(OBJEXT) \
+	NotInterestedMessageTest.$(OBJEXT) HaveMessageTest.$(OBJEXT) \
+	BitfieldMessageTest.$(OBJEXT) RequestMessageTest.$(OBJEXT) \
+	CancelMessageTest.$(OBJEXT) PieceMessageTest.$(OBJEXT) \
+	RejectMessageTest.$(OBJEXT) AllowedFastMessageTest.$(OBJEXT) \
+	SuggestPieceMessageTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -222,7 +229,21 @@ aria2c_SOURCES = AllTest.cc\
 	PeerMessageUtilTest.cc\
 	BitfieldManTest.cc\
 	DefaultDiskWriterTest.cc\
-	MultiDiskWriterTest.cc
+	MultiDiskWriterTest.cc\
+	ChokeMessageTest.cc\
+	UnchokeMessageTest.cc\
+	HaveAllMessageTest.cc\
+	HaveNoneMessageTest.cc\
+	InterestedMessageTest.cc\
+	NotInterestedMessageTest.cc\
+	HaveMessageTest.cc\
+	BitfieldMessageTest.cc\
+	RequestMessageTest.cc\
+	CancelMessageTest.cc\
+	PieceMessageTest.cc\
+	RejectMessageTest.cc\
+	AllowedFastMessageTest.cc\
+	SuggestPieceMessageTest.cc
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -284,22 +305,36 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllowedFastMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CancelMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncodingTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveAllMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveNoneMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InterestedMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriterTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NotInterestedMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RejectMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SuggestPieceMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
 
 .cc.o:

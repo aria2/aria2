@@ -704,7 +704,8 @@ int main(int argc, char* argv[]) {
       te->torrentMan->setPort(port);
       te->commands.push_back(listenCommand);
       te->commands.push_back(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
-						  te));
+						       te,
+						       te->torrentMan->minInterval));
       te->commands.push_back(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
 						 te));
       te->commands.push_back(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),

@@ -31,19 +31,25 @@ private:
   int begin;
   char* block;
   int blockLength;
-  int leftPieceDataLength;
+  int leftDataLength;
+  bool headerSent;
+  int pendingCount;
   // for check
   int pieces;
   int pieceLength;
+  
+  char msgHeader[13];
 
   bool checkPieceHash(const Piece& piece);
   void onGotNewPiece(Piece& piece);
   void onGotWrongPiece(Piece& piece);
   void erasePieceOnDisk(const Piece& piece);
+  int sendPieceData(long long int offset, int length) const;
 public:
   PieceMessage():PeerMessage(),
 		 index(0), begin(0), block(NULL), blockLength(0),
-		 leftPieceDataLength(0),
+		 leftDataLength(0), headerSent(false),
+		 pendingCount(0),
 		 pieces(0), pieceLength(0) {}
 
   virtual ~PieceMessage() {
@@ -75,8 +81,15 @@ public:
   }
   int getPieceLength() const { return pieceLength;}
 
+  void incrementPendingCount() { pendingCount++; }
+  bool isPendingCountMax() const { return pendingCount > 2; }
+
+  static PieceMessage* create(const char* data, int dataLength);
+
   virtual int getId() const { return ID; }
   virtual void receivedAction();
+  virtual const char* getMessageHeader();
+  virtual int getMessageHeaderLength();
   virtual void send();
   virtual void check() const;
   virtual string toString() const;

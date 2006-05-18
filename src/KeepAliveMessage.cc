@@ -22,6 +22,17 @@
 #include "KeepAliveMessage.h"
 #include "PeerInteraction.h"
 
-void KeepAliveMessage::send() {
-  peerInteraction->getPeerConnection()->sendKeepAlive();
+const char* KeepAliveMessage::getMessage() {
+  if(!inProgress) {
+    /**
+     * len --- 0, 4bytes
+     * total: 4bytes
+     */
+    memset(msg, 0, sizeof(msg));
+  }
+  return msg;
+}
+
+int KeepAliveMessage::getMessageLength() {
+  return sizeof(msg);
 }

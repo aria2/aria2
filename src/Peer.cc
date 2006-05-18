@@ -59,4 +59,20 @@ void Peer::resetStatus() {
   resetDeltaDownload();
   chokingRequired = true;
   optUnchoking = false;
+  fastExtensionEnabled = false;
+  fastSet.clear();
+}
+
+bool Peer::isInFastSet(int index) const {
+  return find(fastSet.begin(), fastSet.end(), index) != fastSet.end();
+}
+
+void Peer::addFastSetIndex(int index) {
+  if(!isInFastSet(index)) {
+    fastSet.push_back(index);
+  }
+}
+
+void Peer::setAllBitfield() {
+  bitfield->setAllBit();
 }

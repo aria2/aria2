@@ -23,20 +23,57 @@
 #include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "DlAbortEx.h"
+
+RequestMessage* RequestMessage::create(const char* data, int dataLength) {
+  if(dataLength != 13) {
+    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "request", dataLength, 13);
+  }
+  int id = PeerMessageUtil::getId(data);
+  if(id != ID) {
+    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
+			id, "request", ID);
+  }
+  RequestMessage* requestMessage = new RequestMessage();
+  requestMessage->setIndex(PeerMessageUtil::getIntParam(data, 1));
+  requestMessage->setBegin(PeerMessageUtil::getIntParam(data, 5));
+  requestMessage->setLength(PeerMessageUtil::getIntParam(data, 9));
+  return requestMessage;
+}
 
 void RequestMessage::receivedAction() {
   TorrentMan* torrentMan = peerInteraction->getTorrentMan();
-  if(torrentMan->hasPiece(index)) {
+  if(torrentMan->hasPiece(index) &&
+     (!peer->amChoking ||
+      peer->amChoking && peerInteraction->isInFastSet(index))) {
     peerInteraction->addMessage(peerInteraction->createPieceMessage(index, begin, length));
-    torrentMan->addUploadLength(length);
-    torrentMan->addDeltaUploadLength(length);
+  } else {
+    if(peer->isFastExtensionEnabled()) {
+      peerInteraction->addMessage(peerInteraction->createRejectMessage(index, begin, length));
+    }
   }
 }
 
-void RequestMessage::send() {
-  if(!peer->peerChoking) {
-    peerInteraction->getPeerConnection()->sendRequest(index, begin, length);
+const char* RequestMessage::getMessage() {
+  if(!inProgress) {
+    /**
+     * len --- 13, 4bytes
+     * id --- 6, 1byte
+     * index --- index, 4bytes
+     * begin --- begin, 4bytes
+     * length --- length, 4bytes
+     * total: 17bytes
+     */
+    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 13, ID);
+    PeerMessageUtil::setIntParam(&msg[5], index);
+    PeerMessageUtil::setIntParam(&msg[9], begin);
+    PeerMessageUtil::setIntParam(&msg[13], length);
   }
+  return msg;
+}
+
+int RequestMessage::getMessageLength() {
+  return sizeof(msg);
 }
 
 void RequestMessage::check() const {

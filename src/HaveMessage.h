@@ -22,15 +22,18 @@
 #ifndef _D_HAVE_MESSAGE_H_
 #define _D_HAVE_MESSAGE_H_
 
-#include "PeerMessage.h"
+#include "SimplePeerMessage.h"
 
-class HaveMessage : public PeerMessage {
+class HaveMessage : public SimplePeerMessage {
 private:
   int index;
   // for check
   int pieces;
+  char msg[9];
+protected:
+  virtual bool sendPredicate() const;
 public:
-  HaveMessage():PeerMessage(), index(0), pieces(0) {}
+  HaveMessage():SimplePeerMessage(), index(0), pieces(0) {}
 
   virtual ~HaveMessage() {}
 
@@ -48,9 +51,12 @@ public:
   }
   int getPieces() const { return pieces;}
 
+  static HaveMessage* create(const char* data, int dataLength);
+
   virtual int getId() const { return ID; }
   virtual void receivedAction();
-  virtual void send();
+  virtual const char* getMessage();
+  virtual int getMessageLength();
   virtual void check() const;
   virtual string toString() const;
 };

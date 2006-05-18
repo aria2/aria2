@@ -25,16 +25,27 @@
 #include "Util.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
-					     TorrentDownloadEngine* e):
-  Command(cuid), e(e) {
+					     TorrentDownloadEngine* e,
+					     int interval):
+  Command(cuid), e(e), interval(interval) {
+  checkPoint.tv_sec = 0;
+  checkPoint.tv_usec = 0;
 }
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
-  if(e->torrentMan->trackers == 0 && e->torrentMan->connections < MIN_PEERS) {
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  
+  if(e->torrentMan->trackers == 0 &&
+     Util::difftvsec(now, checkPoint) >= interval) {
+    checkPoint = now;
     e->torrentMan->req->resetTryCount();
-    
+    int numWant = 50;
+    if(e->torrentMan->connections >= MIN_PEERS) {
+      numWant = 0;
+    }    
     if(e->torrentMan->downloadComplete()) {
       if(e->torrentMan->req->getTrackerEvent() == Request::COMPLETED) {
 	e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
@@ -67,7 +78,8 @@ bool TrackerWatcherCommand::execute() {
       "left="+(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength() <= 0
 	       ? "0" : Util::llitos(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength()))+"&"+
       "compact=1"+"&"+
-      "key="+e->torrentMan->peerId;
+      "key="+e->torrentMan->peerId+"&"+
+      "numwant="+Util::itos(numWant);
     if(!event.empty()) {
       url += string("&")+"event="+event;
     }
@@ -81,8 +93,7 @@ bool TrackerWatcherCommand::execute() {
     logger->info("CUID#%d - creating new tracker request command #%d", cuid,
 		 command->getCuid());
   }
-  SleepCommand* slpCommand = new SleepCommand(cuid, e, this,
-					      e->torrentMan->minInterval);
-  e->commands.push_back(slpCommand);
+  interval = e->torrentMan->minInterval;
+  e->commands.push_back(this);
   return false;
 }

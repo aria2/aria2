@@ -39,14 +39,16 @@ public:
   void setPort(int port) { this->port = port; }
 
   virtual int getId() const { return ID; }
+
+  static PortMessage* create(const char* data, int dataLength);
+
   virtual void receivedAction() {
-    logger->info("no DHT support right now.");
+    logger->info("DHT is not supported yet.");
   }
   virtual void send() {}
   virtual string toString() const {
     return "port";
   }
-
 };
 
 #endif // _D_PORT_MESSAGE_H_

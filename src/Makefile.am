@@ -94,7 +94,13 @@ SRCS =  Socket.cc Socket.h\
 	PieceMessage.cc PieceMessage.h\
 	CancelMessage.cc CancelMessage.h\
 	KeepAliveMessage.cc KeepAliveMessage.h\
-	PortMessage.h
+	PortMessage.cc PortMessage.h\
+	HaveAllMessage.cc HaveAllMessage.h\
+	HaveNoneMessage.cc HaveNoneMessage.h\
+	RejectMessage.cc RejectMessage.h\
+	AllowedFastMessage.cc AllowedFastMessage.h\
+	SuggestPieceMessage.cc SuggestPieceMessage.h\
+	SimplePeerMessage.cc SimplePeerMessage.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

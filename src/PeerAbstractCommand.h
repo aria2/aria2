@@ -45,11 +45,15 @@ protected:
   virtual void beforeSocketCheck() {}
   void setReadCheckSocket(Socket* socket);
   void setWriteCheckSocket(Socket* socket);
+  void setUploadLimit(int uploadLimit);
+  void setUploadLimitCheck(bool check);
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
   Socket* readCheckTarget;
   Socket* writeCheckTarget;
+  bool uploadLimitCheck;
+  int uploadLimit;
 public:
   PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s = NULL);
   virtual ~PeerAbstractCommand();

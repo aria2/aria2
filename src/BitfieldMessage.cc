@@ -23,6 +23,7 @@
 #include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "DlAbortEx.h"
 
 void BitfieldMessage::setBitfield(const unsigned char* bitfield, int bitfieldLength) {
   if(this->bitfield != NULL) {
@@ -33,12 +34,44 @@ void BitfieldMessage::setBitfield(const unsigned char* bitfield, int bitfieldLen
   memcpy(this->bitfield, bitfield, this->bitfieldLength);
 }
 
+BitfieldMessage* BitfieldMessage::create(const char* data, int dataLength) {
+  if(dataLength <= 1) {
+    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be greater than %d", "bitfield", dataLength, 1);
+  }
+  int id = PeerMessageUtil::getId(data);
+  if(id != ID) {
+    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
+			id, "bitfield", ID);
+  }
+  BitfieldMessage* bitfieldMessage = new BitfieldMessage();
+  bitfieldMessage->setBitfield((unsigned char*)data+1, dataLength-1);
+  return bitfieldMessage;
+}
+
 void BitfieldMessage::receivedAction() {
   peer->setBitfield(bitfield, bitfieldLength);
 }
 
-void BitfieldMessage::send() {
-  peerInteraction->getPeerConnection()->sendBitfield();
+const char* BitfieldMessage::getMessage() {
+  if(!inProgress && msg == NULL) {
+    /**
+     * len --- 1+bitfieldLength, 4bytes
+     * id --- 5, 1byte
+     * bitfield --- bitfield, len bytes
+     * total: 5+len bytes
+     */
+    msgLength = 5+bitfieldLength;
+    msg = new char[msgLength];
+    PeerMessageUtil::createPeerMessageString(msg, msgLength,
+					     1+bitfieldLength, ID);
+    memcpy(msg+5, bitfield, bitfieldLength);
+  }
+  return msg;
+}
+
+int BitfieldMessage::getMessageLength() {
+  getMessage();
+  return msgLength;
 }
 
 void BitfieldMessage::check() const {

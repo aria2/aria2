@@ -28,7 +28,9 @@
 #include <sys/time.h>
 
 PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s):
-  Command(cuid), e(e), peer(peer), checkSocketIsReadable(false), checkSocketIsWritable(false) {
+  Command(cuid), e(e), peer(peer),
+  checkSocketIsReadable(false), checkSocketIsWritable(false),
+  uploadLimitCheck(false), uploadLimit(0) {
 
   if(s != NULL) {
     socket = new Socket(*s);
@@ -74,8 +76,13 @@ bool PeerAbstractCommand::isTimeoutDetected() {
 bool PeerAbstractCommand::execute() {
   try {
     beforeSocketCheck();
-    if(checkSocketIsReadable && !readCheckTarget->isReadable(0)
-       || checkSocketIsWritable && !writeCheckTarget->isWritable(0)) {
+    if(uploadLimitCheck && e->getUploadSpeed() <= uploadLimit*1024 ||
+       checkSocketIsReadable && readCheckTarget->isReadable(0) ||
+       checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
+       !checkSocketIsReadable && !checkSocketIsWritable) {
+      updateCheckPoint();
+      return executeInternal();
+    } else {
       if(isTimeoutDetected()) {
 	// TODO
 	checkPoint.tv_sec = 0;
@@ -85,10 +92,6 @@ bool PeerAbstractCommand::execute() {
       e->commands.push_back(this);
       return false;
     }
-    updateCheckPoint();
-    bool returnValue =  executeInternal();
-    //e->torrentMan->updatePeer(peer);
-    return returnValue;
   } catch(Exception* err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     onAbort(err);
@@ -113,7 +116,7 @@ void PeerAbstractCommand::onAbort(Exception* ex) {
     peer->error += MAX_PEER_ERROR;
   }
   peer->resetStatus();
-  logger->debug("CUID#%d - peer %s:%d banned.", cuid, peer->ipaddr.c_str(), peer->port);
+  logger->debug("CUID#%d - Peer %s:%d banned.", cuid, peer->ipaddr.c_str(), peer->port);
 }
 
 void PeerAbstractCommand::setReadCheckSocket(Socket* socket) {
@@ -158,4 +161,12 @@ void PeerAbstractCommand::setWriteCheckSocket(Socket* socket) {
       writeCheckTarget = socket;
     }
   }
+}
+
+void PeerAbstractCommand::setUploadLimit(int uploadLimit) {
+  this->uploadLimit = uploadLimit;
+}
+
+void PeerAbstractCommand::setUploadLimitCheck(bool check) {
+  this->uploadLimitCheck = check;
 }

@@ -24,6 +24,7 @@
 #include "DlAbortEx.h"
 #include "KeepAliveMessage.h"
 #include "PeerMessageUtil.h"
+#include "Util.h"
 #include <netinet/in.h>
 
 PeerInteraction::PeerInteraction(int cuid,
@@ -36,7 +37,7 @@ PeerInteraction::PeerInteraction(int cuid,
    torrentMan(torrentMan),
    peer(peer),
    piece(Piece::nullPiece) {
-  peerConnection = new PeerConnection(cuid, socket, op, peer, this->torrentMan);
+  peerConnection = new PeerConnection(cuid, socket, op);
   logger = LogFactory::getInstance();
 }
 
@@ -45,14 +46,37 @@ PeerInteraction::~PeerInteraction() {
   for_each(messageQueue.begin(), messageQueue.end(), Deleter());
 }
 
-void PeerInteraction::send(int uploadSpeed) {
-  int size = messageQueue.size();
-  for(int i = 0; i < size; i++) {
+class MsgPushBack {
+private:
+  MessageQueue* messageQueue;
+public:
+  MsgPushBack(MessageQueue* messageQueue):messageQueue(messageQueue) {}
+
+  void operator()(PeerMessage* msg) {
+    messageQueue->push_back(msg);
+  }
+};
+
+bool PeerInteraction::isSendingMessageInProgress() const {
+  if(messageQueue.size() > 0) {
+    PeerMessage* peerMessage = messageQueue.front();
+    if(peerMessage->isInProgress()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void PeerInteraction::sendMessages(int uploadSpeed) {
+  MessageQueue tempQueue;
+  while(messageQueue.size() > 0) {
     PeerMessage* msg = messageQueue.front();
     messageQueue.pop_front();
     if(uploadLimit != 0 && uploadLimit*1024 <= uploadSpeed &&
        msg->getId() == PieceMessage::ID && !msg->isInProgress()) {
-      messageQueue.push_back(msg);
+      //!((PieceMessage*)msg)->isPendingCountMax()) {
+      //((PieceMessage*)msg)->incrementPendingCount();
+      tempQueue.push_back(msg);
     } else {
       try {
 	msg->send();
@@ -68,6 +92,7 @@ void PeerInteraction::send(int uploadSpeed) {
       }
     }
   }
+  for_each(tempQueue.begin(), tempQueue.end(), MsgPushBack(&messageQueue));
 }
 
 void PeerInteraction::addMessage(PeerMessage* peerMessage) {
@@ -82,22 +107,51 @@ void PeerInteraction::addMessage(PeerMessage* peerMessage) {
   }
 }
 
-void PeerInteraction::deletePieceMessageInQueue(const CancelMessage* cancelMessage) {
+void PeerInteraction::rejectAllPieceMessageInQueue() {
+  MessageQueue tempQueue;
   for(MessageQueue::iterator itr = messageQueue.begin();
       itr != messageQueue.end();) {
-    if((*itr)->getId() == PieceMessage::ID) {
+    // Don't delete piece message which is in the allowed fast set.
+    if((*itr)->getId() == PieceMessage::ID && !(*itr)->isInProgress()
+       && !isInFastSet(((PieceMessage*)*itr)->getIndex())) {
       PieceMessage* pieceMessage = (PieceMessage*)*itr;
-      if(pieceMessage->getIndex() == cancelMessage->getIndex() &&
-	 pieceMessage->getBegin() == cancelMessage->getBegin() &&
-	 pieceMessage->getBlockLength() == cancelMessage->getLength() &&
-	 !pieceMessage->isInProgress()) {
-	logger->debug("CUID#%d - deleting piece message in queue because cancel message received. index=%d, begin=%d, length=%d",
-		      cuid,
-		      cancelMessage->getIndex(),
-		      cancelMessage->getBegin(),
-		      cancelMessage->getLength());
+      logger->debug("CUID#%d - Reject piece message in queue because"
+		    " peer has been choked. index=%d, begin=%d, length=%d",
+		    cuid,
+		    pieceMessage->getIndex(),
+		    pieceMessage->getBegin(),
+		    pieceMessage->getBlockLength());
+      if(peer->isFastExtensionEnabled()) {
+	tempQueue.push_back(createRejectMessage(pieceMessage->getIndex(),
+						pieceMessage->getBegin(),
+						pieceMessage->getBlockLength()));
+      }
+      delete pieceMessage;
+      itr = messageQueue.erase(itr);
+    } else {
+      itr++;
+    }
+  }
+  for_each(tempQueue.begin(), tempQueue.end(), MsgPushBack(&messageQueue));
+}
+
+void PeerInteraction::rejectPieceMessageInQueue(int index, int begin, int length) {
+  MessageQueue tempQueue;
+  for(MessageQueue::iterator itr = messageQueue.begin();
+      itr != messageQueue.end();) {
+    if((*itr)->getId() == PieceMessage::ID && !(*itr)->isInProgress()) {
+      PieceMessage* pieceMessage = (PieceMessage*)*itr;
+      if(pieceMessage->getIndex() == index &&
+	 pieceMessage->getBegin() == begin &&
+	 pieceMessage->getBlockLength() == length) {
+	logger->debug("CUID#%d - Reject piece message in queue because cancel"
+		      " message received. index=%d, begin=%d, length=%d",
+		      cuid, index, begin, length);
 	delete pieceMessage;
 	itr = messageQueue.erase(itr);
+	if(peer->isFastExtensionEnabled()) {
+	  tempQueue.push_back(createRejectMessage(index, begin, length));
+	}
       } else {
 	itr++;
       }
@@ -105,52 +159,59 @@ void PeerInteraction::deletePieceMessageInQueue(const CancelMessage* cancelMessa
       itr++;
     }
   }
+  for_each(tempQueue.begin(), tempQueue.end(), MsgPushBack(&messageQueue));
 }
 
-void PeerInteraction::deleteRequestMessageInQueue() {
-  for(MessageQueue::iterator itr = messageQueue.begin();
-      itr != messageQueue.end();) {
-    if((*itr)->getId() == RequestMessage::ID) {
-      delete *itr;
-      itr = messageQueue.erase(itr);
-    } else {
-      itr++;
-    }
-  }      
-}
-
-void PeerInteraction::deleteRequestSlot(const RequestSlot& requestSlot) {
-  // TODO use STL algorithm
-  for(RequestSlots::iterator itr = requestSlots.begin();
-      itr != requestSlots.end(); itr++) {
-    if(*itr == requestSlot) {
-      requestSlots.erase(itr);
-      break;
-    }
+void PeerInteraction::onChoked() {
+  if(!Piece::isNull(piece) && !peer->isInFastSet(piece.getIndex())) {
+    abortPiece();
   }
 }
 
-void PeerInteraction::deleteAllRequestSlot(Piece& piece) {
+void PeerInteraction::abortPiece() {
   if(!Piece::isNull(piece)) {
+    for(MessageQueue::iterator itr = messageQueue.begin();
+	itr != messageQueue.end();) {
+      if((*itr)->getId() == RequestMessage::ID
+	 && !(*itr)->isInProgress()) {
+	delete *itr;
+	itr = messageQueue.erase(itr);
+      } else {
+	itr++;
+      }
+    }  
     for(RequestSlots::const_iterator itr = requestSlots.begin();
 	itr != requestSlots.end(); itr++) {
-      if(itr->getIndex() == piece.getIndex()) {
-	piece.cancelBlock(itr->getBlockIndex());
-      }
+      logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
+		    " because piece was canceled",
+		    cuid,
+		    itr->getBlockIndex());
+      piece.cancelBlock(itr->getBlockIndex());
     }
-    torrentMan->updatePiece(piece);
+    requestSlots.clear();
+    torrentMan->cancelPiece(piece);
+    piece = Piece::nullPiece;
   }
-  requestSlots.clear();
+}
+
+
+void PeerInteraction::deleteRequestSlot(const RequestSlot& requestSlot) {
+  RequestSlots::iterator itr = find(requestSlots.begin(), requestSlots.end(),
+				    requestSlot);
+  if(itr != requestSlots.end()) {
+    requestSlots.erase(itr);
+  }
 }
 
 void PeerInteraction::deleteTimeoutRequestSlot() {
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end();) {
     if(itr->isTimeout(REQUEST_TIME_OUT)) {
-      logger->debug("CUID#%d - deleting requestslot blockIndex=%d because of time out", cuid,
+      logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
+		    " because of time out",
+		    cuid,
 		    itr->getBlockIndex());
       if(!Piece::isNull(piece)) {
-	//addMessage(createCancelMessage(itr->getIndex(), itr->getBegin(), itr->getLength()));
 	piece.cancelBlock(itr->getBlockIndex());
       }
       itr = requestSlots.erase(itr);
@@ -166,7 +227,8 @@ void PeerInteraction::deleteCompletedRequestSlot() {
       itr != requestSlots.end();) {
     if(Piece::isNull(piece) || piece.hasBlock(itr->getBlockIndex()) ||
        torrentMan->hasPiece(piece.getIndex())) {
-      logger->debug("CUID#%d - deleting requestslot blockIndex=%d because the block is already acquired.", cuid,
+      logger->debug("CUID#%d - Deleting request slot blockIndex=%d because"
+		    " the block has been acquired.", cuid,
 		    itr->getBlockIndex());
       addMessage(createCancelMessage(itr->getIndex(), itr->getBegin(), itr->getLength()));
       itr = requestSlots.erase(itr);
@@ -176,26 +238,19 @@ void PeerInteraction::deleteCompletedRequestSlot() {
   }
 }
 
-RequestSlot PeerInteraction::getCorrespondingRequestSlot(const PieceMessage* pieceMessage) const {
+RequestSlot PeerInteraction::getCorrespondingRequestSlot(int index,
+							 int begin,
+							 int length) const {
   for(RequestSlots::const_iterator itr = requestSlots.begin();
       itr != requestSlots.end(); itr++) {
     const RequestSlot& slot = *itr;
-    if(slot.getIndex() == pieceMessage->getIndex() &&
-       slot.getBegin() == pieceMessage->getBegin() &&
-       slot.getLength() == pieceMessage->getBlockLength()) {
+    if(slot.getIndex() == index &&
+       slot.getBegin() == begin &&
+       slot.getLength() == length) {
       return slot;
     }
   }
   return RequestSlot::nullSlot;
-}
-
-void PeerInteraction::cancelAllRequest() {
-  cancelAllRequest(Piece::nullPiece);
-}
-
-void PeerInteraction::cancelAllRequest(Piece& piece) {
-  deleteRequestMessageInQueue();
-  deleteAllRequestSlot(piece);
 }
 
 int PeerInteraction::countMessageInQueue() const {
@@ -219,12 +274,17 @@ HandshakeMessage* PeerInteraction::receiveHandshake() {
     delete handshakeMessage;
     throw;
   }
+  if(handshakeMessage->isFastExtensionSupported()) {
+    peer->setFastExtensionEnabled(true);
+    logger->info("CUID#%d - Fast extension enabled.");
+  }
   return handshakeMessage;
 }
 
 HandshakeMessage* PeerInteraction::createHandshakeMessage(const char* msg, int msgLength) {
-  HandshakeMessage* message = PeerMessageUtil::createHandshakeMessage(msg, msgLength);
-  message->setPeerInteraction(this);
+  HandshakeMessage* message = HandshakeMessage::create(msg, msgLength);
+
+  setPeerMessageCommonProperty(message);
   return message;
 }
 
@@ -253,42 +313,61 @@ PeerMessage* PeerInteraction::createPeerMessage(const char* msg, int msgLength) 
     int id = PeerMessageUtil::getId(msg);
     switch(id) {
     case ChokeMessage::ID:
-      peerMessage = PeerMessageUtil::createChokeMessage(msg, msgLength);
+      peerMessage = ChokeMessage::create(msg, msgLength);
       break;
     case UnchokeMessage::ID:
-      peerMessage = PeerMessageUtil::createUnchokeMessage(msg, msgLength);
+      peerMessage = UnchokeMessage::create(msg, msgLength);
       break;
     case InterestedMessage::ID:
-      peerMessage = PeerMessageUtil::createInterestedMessage(msg, msgLength);
+      peerMessage = InterestedMessage::create(msg, msgLength);
       break;
     case NotInterestedMessage::ID:
-      peerMessage = PeerMessageUtil::createNotInterestedMessage(msg, msgLength);
+      peerMessage = NotInterestedMessage::create(msg, msgLength);
       break;
     case HaveMessage::ID:
-      peerMessage = PeerMessageUtil::createHaveMessage(msg, msgLength);
+      peerMessage = HaveMessage::create(msg, msgLength);
       ((HaveMessage*)peerMessage)->setPieces(torrentMan->pieces);
       break;
     case BitfieldMessage::ID:
-      peerMessage = PeerMessageUtil::createBitfieldMessage(msg, msgLength);
+      peerMessage = BitfieldMessage::create(msg, msgLength);
       ((BitfieldMessage*)peerMessage)->setPieces(torrentMan->pieces);
       break;
     case RequestMessage::ID:
-      peerMessage = PeerMessageUtil::createRequestMessage(msg, msgLength);
+      peerMessage = RequestMessage::create(msg, msgLength);
       ((RequestMessage*)peerMessage)->setPieces(torrentMan->pieces);
       ((RequestMessage*)peerMessage)->setPieceLength(torrentMan->getPieceLength(((RequestMessage*)peerMessage)->getIndex()));
       break;
     case CancelMessage::ID:
-      peerMessage = PeerMessageUtil::createCancelMessage(msg, msgLength);
+      peerMessage = CancelMessage::create(msg, msgLength);
       ((CancelMessage*)peerMessage)->setPieces(torrentMan->pieces);
       ((CancelMessage*)peerMessage)->setPieceLength(torrentMan->getPieceLength(((CancelMessage*)peerMessage)->getIndex()));
       break;
     case PieceMessage::ID:
-      peerMessage = PeerMessageUtil::createPieceMessage(msg, msgLength);
+      peerMessage = PieceMessage::create(msg, msgLength);
       ((PieceMessage*)peerMessage)->setPieces(torrentMan->pieces);
       ((PieceMessage*)peerMessage)->setPieceLength(torrentMan->getPieceLength(((PieceMessage*)peerMessage)->getIndex()));
       break;
     case PortMessage::ID:
-      peerMessage = PeerMessageUtil::createPortMessage(msg, msgLength);
+      peerMessage = PortMessage::create(msg, msgLength);
+      break;
+    case HaveAllMessage::ID:
+      peerMessage = HaveAllMessage::create(msg, msgLength);
+      break;
+    case HaveNoneMessage::ID:
+      peerMessage = HaveNoneMessage::create(msg, msgLength);
+      break;
+    case RejectMessage::ID:
+      peerMessage = RejectMessage::create(msg, msgLength);
+      ((RejectMessage*)peerMessage)->setPieces(torrentMan->pieces);
+      ((RejectMessage*)peerMessage)->setPieceLength(torrentMan->getPieceLength(((RejectMessage*)peerMessage)->getIndex()));
+      break;
+    case SuggestPieceMessage::ID:
+      peerMessage = SuggestPieceMessage::create(msg, msgLength);
+      ((SuggestPieceMessage*)peerMessage)->setPieces(torrentMan->pieces);
+      break;
+    case AllowedFastMessage::ID:
+      peerMessage = AllowedFastMessage::create(msg, msgLength);
+      ((AllowedFastMessage*)peerMessage)->setPieces(torrentMan->pieces);
       break;
     default:
       throw new DlAbortEx("invalid message id. id = %d", id);
@@ -306,34 +385,35 @@ void PeerInteraction::syncPiece() {
   torrentMan->syncPiece(piece);
 }
 
-Piece PeerInteraction::getNewPieceAndSendInterest() {
-  cancelAllRequest();
-  Piece piece = torrentMan->getMissingPiece(peer);
+void PeerInteraction::getNewPieceAndSendInterest() {
+  piece = torrentMan->getMissingPiece(peer);
   if(Piece::isNull(piece)) {
-    logger->debug("CUID#%d - not interested in the peer", cuid);
+    logger->debug("CUID#%d - Not interested in the peer", cuid);
     addMessage(createNotInterestedMessage());
   } else {
-    logger->debug("CUID#%d - starting download for piece index=%d (%d/%d completed)",
-		  cuid, piece.getIndex(), piece.countCompleteBlock(),
-		  piece.countBlock());
-    logger->debug("CUID#%d - interested in the peer", cuid);
+    if(peer->peerChoking && !peer->isInFastSet(piece.getIndex())) {
+      abortPiece();
+    } else {
+      logger->info("CUID#%d - Starting download for piece index=%d (%d/%d completed)",
+		    cuid, piece.getIndex(), piece.countCompleteBlock(),
+		    piece.countBlock());
+    }
+    logger->debug("CUID#%d - Interested in the peer", cuid);
     addMessage(createInterestedMessage());
   }
-  return piece;
 }
 
-void PeerInteraction::sendMessages(int currentUploadSpeed) {
+void PeerInteraction::addRequests() {
   if(Piece::isNull(piece)) {
     // retrive new piece from TorrentMan
-    piece = getNewPieceAndSendInterest();
-  } else if(peer->peerChoking) {
-    cancelAllRequest(piece);
-    torrentMan->cancelPiece(piece);
-    piece = Piece::nullPiece;
+    getNewPieceAndSendInterest();
+  } else if(peer->peerChoking && !peer->isInFastSet(piece.getIndex())) {
+    onChoked();
   } else if(piece.pieceComplete()) {
-    piece = getNewPieceAndSendInterest();
+    abortPiece();
+    getNewPieceAndSendInterest();
   }
-  if(!Piece::isNull(piece) && !peer->peerChoking) {
+  if(!Piece::isNull(piece)) {
     if(torrentMan->isEndGame()) {
       BlockIndexes missingBlockIndexes = piece.getAllMissingBlockIndexes();
       if(countRequestSlot() == 0) {
@@ -355,30 +435,43 @@ void PeerInteraction::sendMessages(int currentUploadSpeed) {
       }
     }
   }
-  send(currentUploadSpeed);
-}
-
-void PeerInteraction::sendNow(PeerMessage* peerMessage) {
-  // ignore inProgress state
-  peerMessage->send();
-  delete peerMessage;
-}
-
-void PeerInteraction::trySendNow(PeerMessage* peerMessage) {
-  if(countMessageInQueue() == 0) {
-    sendNow(peerMessage);
-  } else {
-    addMessage(peerMessage);
-  }
 }
 
 void PeerInteraction::sendHandshake() {
-  peerConnection->sendHandshake();
+  HandshakeMessage* handshake = new HandshakeMessage();
+  memcpy(handshake->infoHash, torrentMan->getInfoHash(), INFO_HASH_LENGTH);
+  memcpy(handshake->peerId, torrentMan->peerId.c_str(), PEER_ID_LENGTH);
+  setPeerMessageCommonProperty(handshake);
+  addMessage(handshake);
+  sendMessages(0);
 }
 
-void PeerInteraction::abortPiece() {
-  cancelAllRequest(piece);
-  torrentMan->cancelPiece(piece);
+void PeerInteraction::sendBitfield() {
+  if(peer->isFastExtensionEnabled()) {
+    if(torrentMan->hasAllPieces()) {
+      addMessage(createHaveAllMessage());
+    } else if(torrentMan->getDownloadLength() > 0) {
+      addMessage(createBitfieldMessage());
+    } else {
+      addMessage(createHaveNoneMessage());
+    }
+  } else {
+    if(torrentMan->getDownloadLength() > 0) {
+      addMessage(createBitfieldMessage());
+    }
+  }
+  sendMessages(0);
+}
+
+void PeerInteraction::sendAllowedFast() {
+  if(peer->isFastExtensionEnabled()) {
+    Integers fastSet = Util::computeFastSet(peer->ipaddr, torrentMan->getInfoHash(),
+				   torrentMan->pieces, ALLOWED_FAST_SET_SIZE);
+    for(Integers::const_iterator itr = fastSet.begin();
+	itr != fastSet.end(); itr++) {
+      addMessage(createAllowedFastMessage(*itr));
+    }
+  }
 }
 
 Piece& PeerInteraction::getDownloadPiece() {
@@ -388,6 +481,16 @@ Piece& PeerInteraction::getDownloadPiece() {
   return piece;
 }
 
+bool PeerInteraction::isInFastSet(int index) const {
+  return find(fastSet.begin(), fastSet.end(), index) != fastSet.end();
+}
+
+void PeerInteraction::addFastSetIndex(int index) {
+  if(!isInFastSet(index)) {
+    fastSet.push_back(index);
+  }
+}
+
 void PeerInteraction::setPeerMessageCommonProperty(PeerMessage* peerMessage) {
   peerMessage->setPeer(peer);
   peerMessage->setCuid(cuid);
@@ -395,68 +498,102 @@ void PeerInteraction::setPeerMessageCommonProperty(PeerMessage* peerMessage) {
 }
 
 RequestMessage* PeerInteraction::createRequestMessage(int blockIndex) {
-  RequestMessage* msg =
-    PeerMessageUtil::createRequestMessage(piece.getIndex(),
-					  blockIndex*piece.getBlockLength(),
-					  piece.getBlockLength(blockIndex),
-					  blockIndex);
+  RequestMessage* msg = new RequestMessage();
+  msg->setIndex(piece.getIndex());
+  msg->setBegin(blockIndex*piece.getBlockLength());
+  msg->setLength(piece.getBlockLength(blockIndex));
+  msg->setBlockIndex(blockIndex);
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 CancelMessage* PeerInteraction::createCancelMessage(int index, int begin, int length) {
-  CancelMessage* msg =
-    PeerMessageUtil::createCancelMessage(index, begin, length);
+  CancelMessage* msg = new CancelMessage();
+  msg->setIndex(index);
+  msg->setBegin(begin);
+  msg->setLength(length);
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 PieceMessage* PeerInteraction::createPieceMessage(int index, int begin, int length) {
-  PieceMessage* msg =
-    PeerMessageUtil::createPieceMessage(index, begin, length);
+  PieceMessage* msg = new PieceMessage();
+  msg->setIndex(index);
+  msg->setBegin(begin);
+  msg->setBlockLength(length);
   setPeerMessageCommonProperty(msg);
   return msg;  
 }
 
 HaveMessage* PeerInteraction::createHaveMessage(int index) {
-  HaveMessage* msg = PeerMessageUtil::createHaveMessage(index);
+  HaveMessage* msg = new HaveMessage();
+  msg->setIndex(index);
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 ChokeMessage* PeerInteraction::createChokeMessage() {
-  ChokeMessage* msg = PeerMessageUtil::createChokeMessage();
+  ChokeMessage* msg = new ChokeMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 UnchokeMessage* PeerInteraction::createUnchokeMessage() {
-  UnchokeMessage* msg = PeerMessageUtil::createUnchokeMessage();
+  UnchokeMessage* msg = new UnchokeMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 InterestedMessage* PeerInteraction::createInterestedMessage() {
-  InterestedMessage* msg = PeerMessageUtil::createInterestedMessage();
+  InterestedMessage* msg = new InterestedMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 NotInterestedMessage* PeerInteraction::createNotInterestedMessage() {
-  NotInterestedMessage* msg = PeerMessageUtil::createNotInterestedMessage();
+  NotInterestedMessage* msg = new NotInterestedMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 BitfieldMessage* PeerInteraction::createBitfieldMessage() {
-  BitfieldMessage* msg = PeerMessageUtil::createBitfieldMessage();
+  BitfieldMessage* msg = new BitfieldMessage();
+  msg->setBitfield(getTorrentMan()->getBitfield(),
+		   getTorrentMan()->getBitfieldLength());
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
 KeepAliveMessage* PeerInteraction::createKeepAliveMessage() {
-  KeepAliveMessage* msg = PeerMessageUtil::createKeepAliveMessage();
+  KeepAliveMessage* msg = new KeepAliveMessage();
   setPeerMessageCommonProperty(msg);
   return msg;
 }
 
+HaveAllMessage* PeerInteraction::createHaveAllMessage() {
+  HaveAllMessage* msg = new HaveAllMessage();
+  setPeerMessageCommonProperty(msg);
+  return msg;
+}
+
+HaveNoneMessage* PeerInteraction::createHaveNoneMessage() {
+  HaveNoneMessage* msg = new HaveNoneMessage();
+  setPeerMessageCommonProperty(msg);
+  return msg;
+}
+
+RejectMessage* PeerInteraction::createRejectMessage(int index, int begin, int length) {
+  RejectMessage* msg = new RejectMessage();
+  msg->setIndex(index);
+  msg->setBegin(begin);
+  msg->setLength(length);
+  setPeerMessageCommonProperty(msg);
+  return msg;
+}
+
+AllowedFastMessage* PeerInteraction::createAllowedFastMessage(int index) {
+  AllowedFastMessage* msg = new AllowedFastMessage();
+  msg->setIndex(index);
+  setPeerMessageCommonProperty(msg);
+  return msg;
+}

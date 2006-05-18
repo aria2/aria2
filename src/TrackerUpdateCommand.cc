@@ -99,17 +99,19 @@ bool TrackerUpdateCommand::execute() {
     Data* trackerId = (Data*)response->get("tracker id");
     if(trackerId != NULL) {
       e->torrentMan->trackerId = trackerId->toString();
-      logger->debug("Tracker ID:%s", e->torrentMan->trackerId.c_str());
+      logger->debug("CUID#%d - Tracker ID:%s",
+		    cuid, e->torrentMan->trackerId.c_str());
     }
     Data* interval = (Data*)response->get("interval");
     if(interval != NULL) {
       e->torrentMan->interval = interval->toInt();
-      logger->debug("interval:%d", e->torrentMan->interval);
+      logger->debug("CUID#%d - Interval:%d", cuid, e->torrentMan->interval);
     }
     Data* minInterval = (Data*)response->get("min interval");
     if(minInterval != NULL) {
       e->torrentMan->minInterval = minInterval->toInt();
-      logger->debug("min interval:%d", e->torrentMan->minInterval);
+      logger->debug("CUID#%d - Min interval:%d",
+		    cuid, e->torrentMan->minInterval);
     }
     if(e->torrentMan->minInterval > e->torrentMan->interval) {
       e->torrentMan->minInterval = e->torrentMan->interval;
@@ -117,12 +119,13 @@ bool TrackerUpdateCommand::execute() {
     Data* complete = (Data*)response->get("complete");
     if(complete != NULL) {
       e->torrentMan->complete = complete->toInt();
-      logger->debug("complete:%d", e->torrentMan->complete);
+      logger->debug("CUID#%d - Complete:%d", cuid, e->torrentMan->complete);
     }
     Data* incomplete = (Data*)response->get("incomplete");
     if(incomplete != NULL) {
       e->torrentMan->incomplete = incomplete->toInt();
-      logger->debug("incomplete:%d", e->torrentMan->incomplete);
+      logger->debug("CUID#%d - Incomplete:%d",
+		    cuid, e->torrentMan->incomplete);
     } 
     Data* peers = (Data*)response->get("peers");
     if(peers != NULL) {
@@ -139,13 +142,14 @@ bool TrackerUpdateCommand::execute() {
 	Peer* peer = new Peer(ipaddr, port, e->torrentMan->pieceLength,
 			      e->torrentMan->getTotalLength());
 	if(e->torrentMan->addPeer(peer)) {
-	  logger->debug("adding peer %s:%d", peer->ipaddr.c_str(), peer->port);
+	  logger->debug("CUID#%d - Adding peer %s:%d",
+			cuid, peer->ipaddr.c_str(), peer->port);
 	} else {
 	  delete peer;
 	}
     }
     } else {
-      logger->info("no peer list received.");
+      logger->info("CUID#%d - No peer list received.", cuid);
     }
     while(e->torrentMan->isPeerAvailable() &&
 	  e->torrentMan->connections < MAX_PEER_UPDATE) {
@@ -154,7 +158,7 @@ bool TrackerUpdateCommand::execute() {
       peer->cuid = newCuid;
       PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(newCuid, peer, e);
       e->commands.push_back(command);
-      logger->debug("adding new command CUID#%d", newCuid);
+      logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
     }
     if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {
       e->torrentMan->req->setTrackerEvent(Request::AUTO);

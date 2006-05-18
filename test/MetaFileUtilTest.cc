@@ -37,41 +37,41 @@ void MetaFileUtilTest::testBdecoding() {
   try {
     char* str = "5:abcd";
     MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   } catch(DlAbortEx* ex) {
     delete ex;
   } catch(...) {
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   }
 
   try {
     char* str = "i1234";
     MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   } catch(DlAbortEx* ex) {
     delete ex;
   } catch(...) {
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   }
 
   try {
     char* str = "5abcd";
     MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   } catch(DlAbortEx* ex) {
     delete ex;
   } catch(...) {
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   }
 
   try {
     char* str = "d";
     MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   } catch(DlAbortEx* ex) {
     delete ex;
   } catch(...) {
-    CPPUNIT_FAIL("DlAbortEx exception must be throwed.");
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
   }
 }
     

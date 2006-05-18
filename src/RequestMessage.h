@@ -22,10 +22,10 @@
 #ifndef _D_REQUEST_MESSAGE_H_
 #define _D_REQUEST_MESSAGE_H_
 
-#include "PeerMessage.h"
+#include "SimplePeerMessage.h"
 #include "TorrentMan.h"
 
-class RequestMessage : public PeerMessage {
+class RequestMessage : public SimplePeerMessage {
 private:
   int index;
   int begin;
@@ -34,8 +34,10 @@ private:
   // for check
   int pieces;
   int pieceLength;
+  
+  char msg[17];
 public:
-  RequestMessage():PeerMessage(),
+  RequestMessage():SimplePeerMessage(),
 		   index(0), begin(0), length(0), blockIndex(0),
 		   pieces(0), pieceLength(0) {}
   virtual ~RequestMessage() {}
@@ -63,9 +65,12 @@ public:
   }
   int getPieceLength() const { return pieceLength;}
 
+  static RequestMessage* create(const char* data, int dataLength);
+
   virtual int getId() const { return ID; }
   virtual void receivedAction();
-  virtual void send();
+  virtual const char* getMessage();
+  virtual int getMessageLength();
   virtual void check() const;
   virtual string toString() const;
 };

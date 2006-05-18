@@ -24,16 +24,53 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 
-void HandshakeMessage::setPeerInteraction(PeerInteraction* peerInteraction) {
-  this->peerInteraction = peerInteraction;
+HandshakeMessage::HandshakeMessage() {
+  this->pstrlen = 19;
+  this->pstr = PSTR;
+  memset(this->reserved, 0, sizeof(this->reserved));
+  // fast extension
+  this->reserved[7] |= 0x04;
+}
+
+HandshakeMessage* HandshakeMessage::create(const char* data, int dataLength) {
+  HandshakeMessage* message = new HandshakeMessage();
+  message->pstrlen = data[0];
+  char pstrTemp[20];
+  memcpy(pstrTemp, &data[1], sizeof(pstrTemp)-1);
+  pstrTemp[sizeof(pstrTemp)-1] = '\0';
+  message->pstr = pstrTemp;
+  memcpy(message->reserved, &data[20], 8);
+  memcpy(message->infoHash, &data[28], 20);
+  memcpy(message->peerId, &data[48], 20);
+  return message;
+}
+
+const char* HandshakeMessage::getMessage() {
+  if(!inProgress) {
+    msg[0] = pstrlen;
+    memcpy(msg+1, pstr.c_str(), pstr.size());
+    memcpy(msg+20, reserved, 8);
+    memcpy(msg+28, infoHash, 20);
+    memcpy(msg+48, peerId, 20);
+  }
+  return msg;
+}
+
+int HandshakeMessage::getMessageLength() {
+  return sizeof(msg);
 }
 
 string HandshakeMessage::toString() const {
   return "handshake peerId="+
-    Util::urlencode((unsigned char*)peerId, sizeof(peerId));
+    Util::urlencode((unsigned char*)peerId, sizeof(peerId))+
+    " reserved="+Util::toHex(reserved, sizeof(reserved));
 }
 
-void HandshakeMessage::check() {
+void HandshakeMessage::check() const {
   PeerMessageUtil::checkHandshake(this,
 				  peerInteraction->getTorrentMan()->getInfoHash());
+}
+
+bool HandshakeMessage::isFastExtensionSupported() const {
+  return reserved[7]&0x04;
 }

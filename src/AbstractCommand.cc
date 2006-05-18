@@ -72,25 +72,28 @@ bool AbstractCommand::isTimeoutDetected() {
 
 bool AbstractCommand::execute() {
   try {
-    if(checkSocketIsReadable && !readCheckTarget->isReadable(0)
-       || checkSocketIsWritable && !writeCheckTarget->isWritable(0)) {
+    if(checkSocketIsReadable && readCheckTarget->isReadable(0) ||
+       checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
+       !checkSocketIsReadable && !checkSocketIsWritable) {
+
+      updateCheckPoint();
+      Segment seg = { 0, 0, 0, false };
+      if(e->segmentMan->downloadStarted) {
+	// get segment information in order to set Range header.
+	if(!e->segmentMan->getSegment(seg, cuid)) {
+	  // no segment available
+	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
+	  return true;
+	}
+      }
+      return executeInternal(seg);
+    } else {
       if(isTimeoutDetected()) {
 	throw new DlRetryEx(EX_TIME_OUT);
       }
       e->commands.push_back(this);
       return false;
     }
-    updateCheckPoint();
-    Segment seg = { 0, 0, 0, false };
-    if(e->segmentMan->downloadStarted) {
-      // get segment information in order to set Range header.
-      if(!e->segmentMan->getSegment(seg, cuid)) {
-	// no segment available
-	logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
-	return true;
-      }
-    }
-    return executeInternal(seg);
   } catch(DlAbortEx* err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     onAbort(err);

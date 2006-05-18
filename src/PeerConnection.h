@@ -39,8 +39,6 @@ private:
   const Socket* socket;
   const Option* option;
   const Logger* logger;
-  Peer* peer;
-  TorrentMan* torrentMan;
 
   char resbuf[MAX_PAYLOAD_LEN];
   int resbufLength;
@@ -48,35 +46,15 @@ private:
   char lenbuf[4];
   int lenbufLength;
 
-  void createNLengthMessage(char* msg, int msgLen, int payloadLen, int id) const;
-  void setIntParam(char* dest, int param) const;
-
-  void writeOutgoingMessageLog(const char* msg) const;
-  void writeOutgoingMessageLog(const char* msg, int index) const;
-  void writeOutgoingMessageLog(const char* msg, const unsigned char* bitfield, int bitfieldLength) const;
-  void writeOutgoingMessageLog(const char* msg, int index, int begin, int length) const;
 public:
-  PeerConnection(int cuid, const Socket* socket, const Option* op,
-		 Peer* peer, TorrentMan* torrenMan);
+  PeerConnection(int cuid, const Socket* socket, const Option* op);
   ~PeerConnection();
+  
+  // Returns the number of bytes written
+  int sendMessage(const char* msg, int length);
 
-  void sendHandshake() const;
-  void sendKeepAlive() const;
-  void sendChoke() const;
-  void sendUnchoke() const;
-  void sendInterested() const;
-  void sendNotInterested() const;
-  void sendHave(int index) const;
-  void sendBitfield() const;
-  void sendRequest(int index, int begin, int length) const;
-  void sendPiece(int index, int begin, int length) const;
-  void sendPieceHeader(int index, int begin, int length) const;
-  int sendPieceData(long long int offset, int length) const;
-  void sendCancel(int index, int begin, int length) const;
   bool receiveMessage(char* msg, int& length);
   bool receiveHandshake(char* msg, int& length);
-
-  Peer* getPeer() const { return peer; }
 };
 
 #endif // _D_PEER_CONNECTION_H_

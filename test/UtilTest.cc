@@ -15,6 +15,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testStartsWith);
   // may be moved to other helper class in the future.
   CPPUNIT_TEST(testGetContentDispositionFilename);
+  CPPUNIT_TEST(testComputeFastSet);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -28,6 +29,7 @@ public:
   void testEndsWith();
   void testReplace();
   void testStartsWith();
+  void testComputeFastSet();
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
 };
@@ -174,4 +176,35 @@ void UtilTest::testGetContentDispositionFilename() {
 
   string h4 = "attachment;";
   CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h4));
+}
+
+class Printer {
+public:
+  template<class T>
+  void operator()(T t) {
+    cerr << t << ", ";
+  }
+};
+
+void UtilTest::testComputeFastSet() {
+  string ipaddr = "192.168.0.1";
+  unsigned char infoHash[20];
+  memset(infoHash, 0, sizeof(infoHash));
+  infoHash[0] = 0xff;
+  
+  int pieces = 1000;
+  int fastSetSize = 10;
+
+  Integers fastSet = Util::computeFastSet(ipaddr, infoHash, pieces, fastSetSize);
+  //for_each(fastSet.begin(), fastSet.end(), Printer());
+  //cerr << endl;
+  int ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
+  Integers ansSet1(&ans1[0], &ans1[10]);
+  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
+
+  ipaddr = "10.0.0.1";
+  fastSet = Util::computeFastSet(ipaddr, infoHash, pieces, fastSetSize);
+  int ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
+  Integers ansSet2(&ans2[0], &ans2[10]);
+  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
 }

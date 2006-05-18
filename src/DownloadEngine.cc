@@ -35,8 +35,6 @@ DownloadEngine::DownloadEngine():noWait(false), segmentMan(NULL) {
 }
 
 DownloadEngine::~DownloadEngine() {
-  assert(rsockets.empty());
-  assert(wsockets.empty());
   if(segmentMan != NULL) {
     delete segmentMan;
   }
@@ -59,7 +57,7 @@ void DownloadEngine::run() {
       }
     }
     afterEachIteration();
-    shortSleep();
+    //shortSleep();
     if(!noWait && !commands.empty()) {
       waitData();
     }
@@ -102,7 +100,7 @@ void DownloadEngine::waitData() {
   tv.tv_sec = 1;
   tv.tv_usec = 0;
 
-  retval = select(max+1, &rfds, /*&wfds*/NULL, NULL, &tv);
+  retval = select(max+1, &rfds, &wfds, NULL, &tv);
 }
 
 bool DownloadEngine::addSocket(Sockets& sockets, Socket* socket) {

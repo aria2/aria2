@@ -14,5 +14,6 @@
 * Add Mainline-compatible DHT support
 * Add Message stream encryption support
 * Add announce-list support
-* Add fast extension
 * Refacturing HttpConnection and FtpConnection
+* HTTP/FTP downloading regression test
+* Fast extension test

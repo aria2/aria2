@@ -40,162 +40,6 @@ int PeerMessageUtil::getShortIntParam(const char* msg, int offset) {
   return ntohs(nParam);
 }
 
-ChokeMessage* PeerMessageUtil::createChokeMessage(const char* msg, int len) {
-  if(len != 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "choke", len, 1);
-  }
-  ChokeMessage* chokeMessage = new ChokeMessage();
-  return chokeMessage;
-}
-
-UnchokeMessage* PeerMessageUtil::createUnchokeMessage(const char* msg, int len) {
-  if(len != 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "unchoke", len, 1);
-  }
-  UnchokeMessage* unchokeMessage = new UnchokeMessage();
-  return unchokeMessage;
-}
-
-InterestedMessage* PeerMessageUtil::createInterestedMessage(const char* msg, int len) {
-  if(len != 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "interested", len, 1);
-  }
-  InterestedMessage* interestedMessage = new InterestedMessage();
-  return interestedMessage;
-}
-
-NotInterestedMessage* PeerMessageUtil::createNotInterestedMessage(const char* msg, int len) {
-  if(len != 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "not interested", len, 1);
-  }
-  NotInterestedMessage* notInterestedMessage = new NotInterestedMessage();
-  return notInterestedMessage;
-}
-
-HaveMessage* PeerMessageUtil::createHaveMessage(const char* msg, int len) {
-  if(len != 5) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "have", len, 5);
-  }
-  HaveMessage* haveMessage = new HaveMessage();
-  haveMessage->setIndex(getIntParam(msg, 1));
-  return haveMessage;
-}
-
-BitfieldMessage* PeerMessageUtil::createBitfieldMessage(const char* msg, int len) {
-  if(len <= 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be greater than %d", "bitfield", len, 1);
-  }
-  BitfieldMessage* bitfieldMessage = new BitfieldMessage();
-  bitfieldMessage->setBitfield((unsigned char*)msg+1, len-1);
-  return bitfieldMessage;
-}
-
-RequestMessage* PeerMessageUtil::createRequestMessage(const char* msg, int len) {
-  if(len != 13) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "request", len, 13);
-  }
-  RequestMessage* requestMessage = new RequestMessage();
-  requestMessage->setIndex(getIntParam(msg, 1));
-  requestMessage->setBegin(getIntParam(msg, 5));
-  requestMessage->setLength(getIntParam(msg, 9));
-  return requestMessage;
-}
-
-CancelMessage* PeerMessageUtil::createCancelMessage(const char* msg, int len) {
-  if(len != 13) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "cancel", len, 13);
-  }
-  CancelMessage* cancelMessage = new CancelMessage();
-  cancelMessage->setIndex(getIntParam(msg, 1));
-  cancelMessage->setBegin(getIntParam(msg, 5));
-  cancelMessage->setLength(getIntParam(msg, 9));
-  return cancelMessage;
-}
-
-PieceMessage* PeerMessageUtil::createPieceMessage(const char* msg, int len) {
-  if(len <= 9) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be greater than %d", "piece", len, 9);
-  }
-  PieceMessage* pieceMessage = new PieceMessage();
-  pieceMessage->setIndex(getIntParam(msg, 1));
-  pieceMessage->setBegin(getIntParam(msg, 5));
-  pieceMessage->setBlock(msg+9, len-9);
-  return pieceMessage;
-}
-
-PortMessage* PeerMessageUtil::createPortMessage(const char* msg, int len) {
-  if(len != 3) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "port", len, 3);
-  }
-  PortMessage* portMessage = new PortMessage();
-  portMessage->setPort(getShortIntParam(msg, 1));
-  return portMessage;
-}
-
-RequestMessage* PeerMessageUtil::createRequestMessage(int index,
-						       int begin,
-						       int length,
-						       int blockIndex) {
-  RequestMessage* msg = new RequestMessage();
-  msg->setIndex(index);
-  msg->setBegin(begin);
-  msg->setLength(length);
-  msg->setBlockIndex(blockIndex);
-  return msg;
-}
-
-CancelMessage* PeerMessageUtil::createCancelMessage(int index, int begin, int length) {
-  CancelMessage* msg = new CancelMessage();
-  msg->setIndex(index);
-  msg->setBegin(begin);
-  msg->setLength(length);
-  return msg;
-}
-
-PieceMessage* PeerMessageUtil::createPieceMessage(int index, int begin, int length) {
-  PieceMessage* msg = new PieceMessage();
-  msg->setIndex(index);
-  msg->setBegin(begin);
-  msg->setBlockLength(length);
-  return msg;  
-}
-
-HaveMessage* PeerMessageUtil::createHaveMessage(int index) {
-  HaveMessage* msg = new HaveMessage();
-  msg->setIndex(index);
-  return msg;
-}
-
-ChokeMessage* PeerMessageUtil::createChokeMessage() {
-  ChokeMessage* msg = new ChokeMessage();
-  return msg;
-}
-
-UnchokeMessage* PeerMessageUtil::createUnchokeMessage() {
-  UnchokeMessage* msg = new UnchokeMessage();
-  return msg;
-}
-
-InterestedMessage* PeerMessageUtil::createInterestedMessage() {
-  InterestedMessage* msg = new InterestedMessage();
-  return msg;
-}
-
-NotInterestedMessage* PeerMessageUtil::createNotInterestedMessage() {
-  NotInterestedMessage* msg = new NotInterestedMessage();
-  return msg;
-}
-
-BitfieldMessage* PeerMessageUtil::createBitfieldMessage() {
-  BitfieldMessage* msg = new BitfieldMessage();
-  return msg;
-}
-
-KeepAliveMessage* PeerMessageUtil::createKeepAliveMessage() {
-  KeepAliveMessage* msg = new KeepAliveMessage();
-  return msg;
-}
-
 void PeerMessageUtil::checkIndex(int index, int pieces) {
   if(!(0 <= index && index < pieces)) {
     throw new DlAbortEx("invalid index = %d", index);
@@ -244,19 +88,6 @@ void PeerMessageUtil::checkBitfield(const unsigned char* bitfield, int bitfieldL
   }
 }
 
-HandshakeMessage* PeerMessageUtil::createHandshakeMessage(const char* msg, int length) {
-  HandshakeMessage* message = new HandshakeMessage();
-  message->pstrlen = msg[0];
-  char pstr[20];
-  memcpy(pstr, &msg[1], sizeof(pstr)-1);
-  pstr[sizeof(pstr)-1] = '\0';
-  message->pstr = pstr;
-  memcpy(message->infoHash, &msg[28], 20);
-  memcpy(message->peerId, &msg[48], 20);
-  return message;
-}
-
-
 void PeerMessageUtil::checkHandshake(const HandshakeMessage* message, const unsigned char* infoHash) {
   if(message->pstrlen != 19) {
     throw new DlAbortEx("invalid handshake pstrlen = %d", (int)message->pstrlen);
@@ -272,3 +103,16 @@ void PeerMessageUtil::checkHandshake(const HandshakeMessage* message, const unsi
   }
 }
 
+void PeerMessageUtil::setIntParam(char* dest, int param) {
+  int nParam = htonl(param);
+  memcpy(dest, &nParam, 4);
+}
+
+void PeerMessageUtil::createPeerMessageString(char* msg, int msgLength,
+					      int payloadLength,
+					      int messageId) {
+  assert(msgLength >= 5);
+  memset(msg, 0, msgLength);
+  setIntParam(msg, payloadLength);
+  msg[4] = (char)messageId;
+}

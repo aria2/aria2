@@ -23,13 +23,48 @@
 #include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "DlAbortEx.h"
 
-void CancelMessage::receivedAction() {
-  peerInteraction->deletePieceMessageInQueue(this);
+CancelMessage* CancelMessage::create(const char* data, int dataLength) {
+  if(dataLength != 13) {
+    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "cancel", dataLength, 13);
+  }
+  int id = PeerMessageUtil::getId(data);
+  if(id != ID) {
+    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
+			id, "cancel", ID);
+  }
+  CancelMessage* cancelMessage = new CancelMessage();
+  cancelMessage->setIndex(PeerMessageUtil::getIntParam(data, 1));
+  cancelMessage->setBegin(PeerMessageUtil::getIntParam(data, 5));
+  cancelMessage->setLength(PeerMessageUtil::getIntParam(data, 9));
+  return cancelMessage;
 }
 
-void CancelMessage::send() {
-  peerInteraction->getPeerConnection()->sendCancel(index, begin, length);
+void CancelMessage::receivedAction() {
+  peerInteraction->rejectPieceMessageInQueue(index, begin, length);
+}
+
+const char* CancelMessage::getMessage() {
+  if(!inProgress) {
+    /**
+     * len --- 13, 4bytes
+     * id --- 8, 1byte
+     * index --- index, 4bytes
+     * begin --- begin, 4bytes
+     * length -- length, 4bytes
+     * total: 17bytes
+     */
+    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 13, ID);
+    PeerMessageUtil::setIntParam(&msg[5], index);
+    PeerMessageUtil::setIntParam(&msg[9], begin);
+    PeerMessageUtil::setIntParam(&msg[13], length);
+  }
+  return msg;
+}
+
+int CancelMessage::getMessageLength() {
+  return sizeof(msg);
 }
 
 void CancelMessage::check() const {

@@ -22,11 +22,16 @@
 #ifndef _D_CHOKE_MESSAGE_H_
 #define _D_CHOKE_MESSAGE_H_
 
-#include "PeerMessage.h"
+#include "SimplePeerMessage.h"
 
-class ChokeMessage : public PeerMessage {
+class ChokeMessage : public SimplePeerMessage {
+private:
+  char msg[5];
+protected:
+  virtual bool sendPredicate() const;
+  virtual void onSendComplete();
 public:
-  ChokeMessage():PeerMessage() {}
+  ChokeMessage():SimplePeerMessage() {}
   virtual ~ChokeMessage() {}
 
   enum ID {
@@ -35,9 +40,11 @@ public:
 
   virtual int getId() const { return ID; }
   virtual void receivedAction();
-  virtual void send();
+  virtual const char* getMessage();
+  virtual int getMessageLength();
   virtual string toString() const;
 
+  static ChokeMessage* create(const char* data, int dataLength);
 };
 
 #endif // _D_CHOKE_MESSAGE_H_

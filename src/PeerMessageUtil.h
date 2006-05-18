@@ -34,6 +34,8 @@
 #include "HandshakeMessage.h"
 #include "KeepAliveMessage.h"
 #include "PortMessage.h"
+#include "HaveAllMessage.h"
+#include "HaveNoneMessage.h"
 #include "PeerConnection.h"
 
 #define MAX_BLOCK_LENGTH (128*1024)
@@ -41,36 +43,13 @@
 class PeerMessageUtil {
 private:
   PeerMessageUtil() {}
-
+public:
   static int getIntParam(const char* msg, int offset);
   static int getShortIntParam(const char* msg, int offset);
-public:
+  static void setIntParam(char* dest, int param);
+
   static int getId(const char* msg);
-
-  static ChokeMessage* createChokeMessage(const char* msg, int len);
-  static UnchokeMessage* createUnchokeMessage(const char* msg, int len);
-  static InterestedMessage* createInterestedMessage(const char* msg, int len);
-  static NotInterestedMessage* createNotInterestedMessage(const char* msg,
-							  int len);
-  static HaveMessage* createHaveMessage(const char* msg, int len);
-  static BitfieldMessage* createBitfieldMessage(const char* msg, int len);
-  static RequestMessage* createRequestMessage(const char* msg, int len);
-  static CancelMessage* createCancelMessage(const char* msg, int len);
-  static PieceMessage* createPieceMessage(const char* msg, int len);
-  static PortMessage* createPortMessage(const char* msg, int len);
-
-  static ChokeMessage* createChokeMessage();
-  static UnchokeMessage* createUnchokeMessage();
-  static InterestedMessage* createInterestedMessage();
-  static NotInterestedMessage* createNotInterestedMessage();
-  static HaveMessage* createHaveMessage(int index);
-  static BitfieldMessage* createBitfieldMessage();
-  static RequestMessage* createRequestMessage(int index, int begin,
-					      int length, int blockIndex);
-  static CancelMessage* createCancelMessage(int index, int begin, int length);
-  static PieceMessage* createPieceMessage(int index, int begin, int length);
-  static KeepAliveMessage* createKeepAliveMessage();
-
+  
   static void checkIndex(int index, int pieces);
   static void checkBegin(int begin, int pieceLength);
   static void checkLength(int length);
@@ -79,9 +58,11 @@ public:
 			    int bitfieldLength,
 			    int pieces);
 
-  static HandshakeMessage* createHandshakeMessage(const char* msg, int length);
   static void checkHandshake(const HandshakeMessage* message,
 			     const unsigned char* infoHash);
+
+  static void createPeerMessageString(char* msg, int msgLength,
+				      int payloadLength, int messageId);
 };
 
 #endif // _D_PEER_MESSAGE_UTIL_H_

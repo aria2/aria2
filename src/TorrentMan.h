@@ -41,6 +41,7 @@
 using namespace std;
 
 #define INFO_HASH_LENGTH 20
+#define PEER_ID_LENGTH 20
 #define DEFAULT_ANNOUNCE_INTERVAL 300
 #define DEFAULT_ANNOUNCE_MIN_INTERVAL 300
 #define MAX_PEERS 55
@@ -93,6 +94,7 @@ private:
 public:
   int pieceLength;
   int pieces;
+  // TODO type char* would be better
   string peerId;
   string announce;
   string trackerId;
@@ -133,6 +135,7 @@ public:
   void initBitfield();
   bool isEndGame() const;
   bool downloadComplete() const;
+  bool hasAllPieces() const;
   void setBitfield(unsigned char* bitfield, int len);
   const unsigned char* getBitfield() const {
     return bitfield->getBitfield();

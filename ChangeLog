@@ -1,3 +1,421 @@
+2006-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To remove a wait from download loop:
+
+	* src/DownloadEngine.cc
+	(run): Comment out shortSleep.
+	
+        To rewrite the message handling:
+	
+	* src/CancelMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(create): New function.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/CancelMessage.cc
+	(create): New function.
+	(receivedAction): Replaced deleteRequestMessageInQueue with
+	rejectPieceMessageInQueue.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/BitfieldMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(msgLength): New variable.
+	(~BitfieldMessage): Deleted msg.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/BitfieldMessage.cc
+	(create): New function.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/ChokeMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(sendPredicate): New function.
+	(onSendComplete): New function.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	(create): New function.
+	* src/ChokeMessage.cc
+	(create): New function.
+	(send): Removed.
+	(sendPredicate): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	(onSendComplete): New function.
+	* src/KeepAliveMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.	
+	* src/KeepAliveMessage.cc
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/PortMessage.h
+	(create): New function.
+	(receivedAction): Updated log message.
+	* src/PortMessage.cc: New file.
+	* src/UnchokeMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(sendPredicate): New function.
+	(onSendComplete): New function.
+	(create): New function.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/UnchokeMessage.cc
+	(create): New function.
+	(send): Removed.
+	(sendPredicate): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	(onSendComplete): New function.
+	* src/PieceMessage.h
+	(leftPieceDataLength): Removed.
+	(leftDataLength): New variable.
+	(headerSend): New variable.
+	(pendingCount): New variable.
+	(msgHeader): New variable.
+	(sendPieceData): New function.
+	(incrementPendingCount): New function.
+	(isPendingCountMax): New function.
+	(create): New function.
+	(getMessageHeader): New function.
+	(getMessageHeaderLength): New function.
+	* src/PieceMessage.cc
+	(create): New function.
+	(getMessageHeader): New function.
+	(getMessageHeaderLength): New function.
+	(send): Rewritten.
+	(sendPieceData): New function.
+	* src/HaveMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(create): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/HaveMessage.cc
+	(create): New function.
+	(send): Removed.
+	(sendPieceData): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/RequestMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(create): New function.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/RequestMessage.cc
+	(create): New function.
+	(receivedAction): Added the handling of fast extension.
+	Deleted torrentMan->addUploadLength, torrentMan->addDeltaUploadLength.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/InterestedMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(sendPredicate): New function.
+	(onSendComplete): New function.
+	(create): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/InterestedMessage.cc
+	(create): New function.
+	(send): Removed.
+	(sendPieceData): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	(onSendComplete): New function.
+	* src/NotInterestedMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(sendPieceData): New function.
+	(onSendComplete): New function.
+	(create): New function.
+	(send): Removed.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	* src/NotInterestedMessage.cc
+	(create): New function.
+	(send): Removed.
+	(sendPredicate): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	(onSendComplete): New function.
+	* src/AllowedFastMessage.h: New class.
+	* src/AllowedFastMessage.cc: New class.
+	* src/RejectMessage.h: New class.
+	* src/RejectMessage.cc: New class.
+	* src/SuggestPieceMessage.h: New class.
+	* src/SuggestPieceMessage.cc: New class.
+	* src/HaveAllMessage.h: New class.
+	* src/HaveAllMessage.cc: New class.
+	* src/HaveNoneMessage.h: New class.
+	* src/HaveNoneMessage.cc: New class.
+	* src/HandshakeMessage.h: Derived from SimplePeerMessage.
+	(msg): New variable.
+	(reserved): New variable.
+	(create): New function.
+	(getId): New function.
+	(receivedAction): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	(isFastExtensionSupported): New function.
+	* src/HandshakeMessage.cc
+	(HandshakeMessage): Moved here from HandshakeMessage.h.
+	(create): New function.
+	(getMessage): New function.
+	(getMessageLength): New function.
+	(toString): Added the output of reserved field.
+	(check): Added const qualifier.
+	(isFastExtensionSupported): New function.
+	* src/PeerMessageUtil.h
+	(createChokeMessage): Removed.
+	(createUnchokeMessage): Removed.
+	(createInterestedMessage): Removed.
+	(createNotInterestedMessage): Removed.
+	(createHaveMessage): Removed.
+	(createBitfieldMessage): Removed.
+	(createRequestMessage): Removed.
+	(createCancelMessage): Removed.
+	(createPieceMessage): Removed.
+	(createPortMessage): Removed.
+	(createChokeMessage): Removed.
+	(createUnchokeMessage): Removed.
+	(createInterestedMessage): Removed.
+	(createNotInterestedMessage): Removed.
+	(createHaveMessage): Removed.
+	(createBitfieldMessage): Removed.
+	(createRequestMessage): Removed.
+	(createCancelMessage): Removed.
+	(createPieceMessage): Removed.
+	(createKeepAliveMessage): Removed.
+	(createHandshakeMessage): Removed.
+	(setIntParam): New function.
+	(createPeerMessageString): New function.
+	* src/PeerMessageUtil.cc
+	(createChokeMessage): Removed.
+	(createUnchokeMessage): Removed.
+	(createInterestedMessage): Removed.
+	(createNotInterestedMessage): Removed.
+	(createHaveMessage): Removed.
+	(createBitfieldMessage): Removed.
+	(createRequestMessage): Removed.
+	(createCancelMessage): Removed.
+	(createPieceMessage): Removed.
+	(createPortMessage): Removed.
+	(createRequestMessage): Removed.
+	(createCancelMessage): Removed.
+	(createPieceMessage): Removed.
+	(createHaveMessage): Removed.
+	(createChokeMessage): Removed.
+	(createUnchokeMessage): Removed.
+	(createInterestedMessage): Removed.
+	(createNotInterestedMessage): Removed.
+	(createBitfieldMessage): Removed.
+	(createKeepAliveMessage): Removed.
+	(createHandshakeMessage): Removed.
+	(setIntParam): New function.
+	(createPeerMessageString): New function.
+	* src/PeerConnection.h
+	(peer): Removed.
+	(torrentMan): Removed.
+	(createNLengthMessage): Removed.
+	(setIntParam): Removed.
+	(writeOutgoingMessageLog): Removed all overloaded functions.
+	(PeerConnection): Deleted peer and torrentMan from its arguments.
+	(sendMessage): New function.
+	(sendHandshake): Removed.
+	(sendKeepAlive): Removed.
+	(sendChoke): Removed.
+	(sendUnchoke): Removed.
+	(sendInterested): Removed.
+	(sendNotInterested): Removed.
+	(sendHave): Removed.
+	(sendBitfield): Removed.
+	(sendRequest): Removed.
+	(sendPiece): Removed.
+	(sendPieceHeader): Removed.
+	(sendPieceData): Removed.
+	(sendCancel): Removed.
+	(getPeer): Removed.
+	* src/PeerConnection.cc
+	(PeerConnection): Deleted peer and torrentMan from its arguments.
+	(sendHandshake): Removed.
+	(sendKeepAlive): Removed.
+	(createNLengthMessage): Removed.
+	(setIntParam): Removed.
+	(writeOutgoingMessageLog): Removed all overloaded functions.
+	(sendChoke): Removed.
+	(sendUnchoke): Removed.
+	(sendInterested): Removed.
+	(sendNotInterested): Removed.
+	(sendHave): Removed.
+	(sendBitfield): Removed.
+	(sendRequest): Removed.
+	(sendPiece): Removed.
+	(sendPieceHeader): Removed.
+	(sendPieceData): Removed.
+	(sendMessage): New function.
+	(sendCancel): Removed.
+	* src/PeerInteractionCommand.cc
+	(PeerInteractionCommand): Call setUploadLimit.
+	(executeInternal): Call setUploadLimit.
+	Added the handling of "inProgress" state of handshake message.
+	Call sendBitfield() or sendAllowdFast() instead of deprecated
+	sendNow().
+	(keepAlive): Call addMessage and sendMessage instead of deprecated
+	sendNow().
+	(beforeSocketCheck): Call addMessage instead of deprecated trySendNow()
+	* src/TorrentMan.h
+	(PEER_ID_LENGTH): New definition.
+	(hasAllPieces): New function.
+	* src/TorrentMan.cc
+	(getMissingPiece): Added the handling of fast extension.
+	(cancelPiece): Call updatePiece().
+	(hasAllPieces): New function.
+	* src/PeerInteraction.h
+	(fastSet): New variable.
+	(getNewPieceAndSendInterest): Changed the return type to void.
+	(send): Renamed as sendMessages.
+	(deleteAllRequestSlot): Removed.
+	(deleteRequestMessageInQueue): Renamed as rejectPieceMessageInQueue.
+	(cancelAllRequest): Removed all overloaded functions.
+	(deleteAllRequestSlot): Removed.
+	(deletePieceMessageInQueue): Renamed as rejectAllPieceMessageInQueue.
+	(rejectPieceMessageInQueue): New function.
+	(rejectAllPieceMessageInQueue): New function.
+	(onChoked): New function.
+	(isSendingMessageInProgress): New function.
+	(getCorrespondingRequestSlot): Changed its arguments.
+	(isInFastSet): New function.
+	(addFastSetIndex): New function.
+	(addRequests): New function.
+	(sendNow): Removed.
+	(trySendNow): Removed.
+	(sendBitfield): New function.
+	(sendAllowdFast): New function.
+	(createHaveAllMessage): New function.
+	(createHaveNoneMessage): New function.
+	(createRejectMessage): New function.
+	(createAllowedFastMessage): New function.
+	* src/PeerInteraction.cc
+	(send): Renamed as sendMessages.
+	(sendMessages): New function.
+	(MsgPushBack): New class.
+	(isSendingMessageInProgress): New function.
+	(deletePieceMessageInQueue): Renamed as rejectAllPieceMessageInQueue.
+	(rejectAllPieceMessageInQueue): New function.
+	Added the handling of fast extension.
+	(deleteRequestMessageInQueue): Renamed as rejectPieceMessageInQueue.
+	(rejectPieceMessageInQueue): New function.
+	Added the handling of fast extension.
+	(deleteRequestSlot): Replaced for loop with  std::find.
+	(onChoked): New function.
+	(deleteAllRequestSlot): Removed.
+	(abortPiece): Rewirtten.
+	(deleteTimeoutRequestSlot): Updated log messages.
+	(getCorrespondingRequestSlot): Changed its arguments.
+	(cancelAllRequest): Removed all overloaded functions.
+	(receiveHandshake): Added the check to see whether an incoming peer
+	supports fast extension.
+	(createHandshakeMessage): Use HandshakeMessage::create instead of
+	PeerMessageUtil.
+	(createPeerMessage): Use create() of each message class instead of
+	PeerMessageUtil.
+	HaveAllMessage, HaveNoneMessage, RejectMessage, SuggestPieceMessage,
+	AllowedFastMessage were added.
+	(getNewPieceAndSendInterest): Changed its return value type to void.
+	Added the handling of fast extension.
+	(addRequests): New function.
+	(sendNow): Removed.
+	(sendHandshake): Rewritten.
+	(trySendNow): Removed.
+	(sendBitfield): New function.
+	(sendAllowdFast): New function.
+	(isInFastSet): New function.
+	(addFastSetIndex): New function.
+	(createRequestMessage): Use RequestMessage::create instead of
+	PeerMessageUtil.
+	(createCancelMessage): Use CancelMessage::create instead of
+	PeerMessageUtil.
+	(createPieceMessage): Use PieceMessage::create instead of
+	PeerMessageUtil.
+	(createHaveMessage): Use HaveMessage::create instead of
+	PeerMessageUtil.
+	(createChokeMessage): Use ChokeMessage::create instead of
+	PeerMessageUtil.
+	(createUnchokeMessage): Use UnchokeMessage::create instead of
+	PeerMessageUtil.
+	(createInterestedMessage): Use InterestedMessage::create instead of
+	PeerMessageUtil.
+	(createNotInterestedMessage): Use NotInterestedMessage::create instead
+	of PeerMessageUtil.
+	(createBitfieldMessage): Use BitfieldMessage::create instead of
+	PeerMessageUtil.
+	(createKeepAliveMessage): Use KeepAliveMessage::create instead of
+	PeerMessageUtil.
+	(createHaveAllMessage): New function.
+	(createHaveNoneMessage): New function.
+	(createRejectMessage): New function.
+	(createAllowedFastMessage: New function.
+	* src/Util.h
+	(sha1Sum): New function.
+	(computeFastSet): New function.
+	* src/Util.cc
+	(sha1Sum): New function.
+	(computeFastSet): New function.
+	* src/Peer.h
+	(fastExtensionEnabled): New variable.
+	(fastSet): New variable.
+	(setAllBitfield): New function.
+	(setFastExtensionEnabled): New function.
+	(isFastExtensionEnabled): New function.
+	(addFastSetIndex): New function.
+	(getFastSet): New function.
+	(isInFastSet): New function.
+	(countFastSet): New function.
+	* src/Peer.cc
+	(isInFastSet): New function.
+	(addFastSetIndex): New function.
+	(setAllBitfield): New function.
+	
+	* src/AbstractCommand.cc (execute): Changed the procedure of checking
+	sockets.
+	* src/PeerAbstractCommand.cc
+	(PeerAbstractCommand): Added the initialization for uploadLimitCheck
+	and uploadLimit.
+	(execute): Changed the procedure of checking sockets. The upload speed
+	checking were added.
+	(setUploadLimit): New function.
+	(setUploadLimitCheck): New function.
+	* src/PeerAbstractCommand.h
+	(setUploadLimit): New function.
+	(setUploadLimitCheck): New function.
+	(uploadLimit): New variable.
+	(uploadLimitCheck): New variable.
+
+	To contact a tracker regularly:
+	
+	* src/TrackerWatcherCommand.h (interval): New variable.
+	(checkPoint): New variable.
+	(TrackerWatcherCommand): Added interval argument.
+	* src/TrackerWatcherCommand.cc
+	(TrackerWatcherCommand): Initialized checkPoint.
+	(execute): Now a tracker is contacted in every specified period.
+	If peer list is not needed, send request with numwant=0.
+
+	* src/TrackerUpdateCommand.cc
+	(execute): Updated log messages.
+
+	* src/DownloadEngine.cc
+	(~DownloadEngine): Removed two asserts.
+	(waitData): Uncommented wfds. May be a bug fix.
+	
 2006-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/PeerInteractionCommand.h

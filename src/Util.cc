@@ -23,10 +23,17 @@
 #include "DlAbortEx.h"
 #include "File.h"
 #include "message.h"
+#ifdef ENABLE_SHA1DIGEST
+#include "messageDigest.h"
+#endif // ENABLE_SHA1DIGEST
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 string Util::itos(int value, bool comma) {
   string str = llitos(value, comma);
@@ -355,3 +362,51 @@ string Util::getContentDispositionFilename(const string& header) {
   }
   return trim(header.substr(filenamesp, filenameep-filenamesp));
 }
+
+void Util::sha1Sum(unsigned char* digest, const void* data, int dataLength) {
+#ifdef ENABLE_SHA1DIGEST
+  MessageDigestContext ctx;
+  sha1DigestInit(ctx);
+  sha1DigestReset(ctx);
+  sha1DigestUpdate(ctx, data, dataLength);
+  sha1DigestFinal(ctx, digest);
+  sha1DigestFree(ctx);
+#endif // ENABLE_SHA1DIGEST
+}
+
+Integers Util::computeFastSet(string ipaddr, const unsigned char* infoHash,
+			     int pieces, int fastSetSize) {
+  Integers fastSet;
+  struct in_addr saddr;
+  if(inet_aton(ipaddr.c_str(), &saddr) == 0) {
+    abort();
+  }
+  unsigned char tx[24];
+  memcpy(tx, (void*)&saddr.s_addr, 4);
+  if((tx[0] & 0x80) == 0 || (tx[0] & 0x40) == 0) {
+    tx[2] = 0x00;
+    tx[3] = 0x00;
+  } else {
+    tx[3] = 0x00;
+  }
+  memcpy(tx+4, infoHash, 20);
+  unsigned char x[20];
+  sha1Sum(x, tx, 24);
+  while((int)fastSet.size() < fastSetSize) {
+    for(int i = 0; i < 5 && (int)fastSet.size() < fastSetSize; i++) {
+      int j = i*4;
+      unsigned int ny;
+      memcpy(&ny, x+j, 4);
+      unsigned int y = ntohl(ny);
+      int index = y%pieces;
+      if(find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
+	fastSet.push_back(index);
+      }
+    }
+    unsigned char temp[20];
+    sha1Sum(temp, x, 20);
+    memcpy(x, temp, sizeof(x));
+  }
+  return fastSet;
+}
+

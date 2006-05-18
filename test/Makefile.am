@@ -17,7 +17,21 @@ aria2c_SOURCES = AllTest.cc\
 	PeerMessageUtilTest.cc\
 	BitfieldManTest.cc\
 	DefaultDiskWriterTest.cc\
-	MultiDiskWriterTest.cc
+	MultiDiskWriterTest.cc\
+	ChokeMessageTest.cc\
+	UnchokeMessageTest.cc\
+	HaveAllMessageTest.cc\
+	HaveNoneMessageTest.cc\
+	InterestedMessageTest.cc\
+	NotInterestedMessageTest.cc\
+	HaveMessageTest.cc\
+	BitfieldMessageTest.cc\
+	RequestMessageTest.cc\
+	CancelMessageTest.cc\
+	PieceMessageTest.cc\
+	RejectMessageTest.cc\
+	AllowedFastMessageTest.cc\
+	SuggestPieceMessageTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 

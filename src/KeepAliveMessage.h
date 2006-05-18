@@ -22,11 +22,13 @@
 #ifndef _D_KEEP_ALIVE_MESSAGE_H_
 #define _D_KEEP_ALIVE_MESSAGE_H_
 
-#include "PeerMessage.h"
+#include "SimplePeerMessage.h"
 
-class KeepAliveMessage : public PeerMessage {
+class KeepAliveMessage : public SimplePeerMessage {
+private:
+  char msg[4];
 public:
-  KeepAliveMessage():PeerMessage() {}
+  KeepAliveMessage():SimplePeerMessage() {}
   virtual ~KeepAliveMessage() {}
 
   enum ID {
@@ -35,7 +37,8 @@ public:
 
   virtual int getId() const { return ID; }
   virtual void receivedAction() {}
-  virtual void send();
+  virtual const char* getMessage();
+  virtual int getMessageLength();
   virtual string toString() const {
     return "keep alive";
   }
