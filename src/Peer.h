@@ -130,7 +130,7 @@ public:
   bool isFastExtensionEnabled() const { return fastExtensionEnabled; }
 
   void addFastSetIndex(int index);
-  const Integers getFastSet() const { return fastSet; }
+  const Integers& getFastSet() const { return fastSet; }
   bool isInFastSet(int index) const;
   int countFastSet() const { return fastSet.size(); }
 

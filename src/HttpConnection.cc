@@ -141,6 +141,7 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
   if((eohIndex = findEndOfHeader(headerBuf, "\r\n\r\n", hlenTemp)) == -1 &&
      (eohIndex = findEndOfHeader(headerBuf, "\n\n", hlenTemp)) == -1) {
     socket->readData(headerBuf+headerBufLength, size);
+    headerBufLength += size;
   } else {
     if(eohIndex[headerBuf] == '\n') {
       // for crapping non-standard HTTP server

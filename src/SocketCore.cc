@@ -235,7 +235,7 @@ bool SocketCore::isWritable(int timeout) const {
 
 bool SocketCore::isReadable(int timeout) const {
 #ifdef HAVE_LIBGNUTLS
-  if(peekBufLength > 0) {
+  if(secure && peekBufLength > 0) {
     return true;
   }
 #endif // HAVE_LIBGNUTLS
