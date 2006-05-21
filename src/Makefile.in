@@ -359,7 +359,8 @@ SRCS = Socket.cc Socket.h\
 	RejectMessage.cc RejectMessage.h\
 	AllowedFastMessage.cc AllowedFastMessage.h\
 	SuggestPieceMessage.cc SuggestPieceMessage.h\
-	SimplePeerMessage.cc SimplePeerMessage.h
+	SimplePeerMessage.cc SimplePeerMessage.h\
+	NullLogger.h
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)

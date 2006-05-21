@@ -192,6 +192,20 @@ int BitfieldMan::getFirstMissingUnusedIndex() const {
   return -1;
 }
 
+int BitfieldMan::getMissingIndex() const {
+  unsigned char* tempBitfield = new unsigned char[bitfieldLength];
+  for(int i = 0; i < bitfieldLength; i++) {
+    tempBitfield[i] = ~bitfield[i];
+    if(filterEnabled) {
+      tempBitfield[i] &= filterBitfield[i];
+    }
+  }
+  int max = countSetBit(tempBitfield, bitfieldLength);
+  int index = getMissingIndexRandomly(tempBitfield, bitfieldLength, max);
+  delete [] tempBitfield;
+  return index;
+}
+
 BlockIndexes BitfieldMan::getAllMissingIndexes() const {
   BlockIndexes missingIndexes;
   for(int i = 0; i < bitfieldLength; i++) {

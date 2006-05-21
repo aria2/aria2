@@ -71,6 +71,10 @@ public:
   /**
    * affected by filter
    */
+  int getMissingIndex() const;
+  /**
+   * affected by filter
+   */
   int getFirstMissingUnusedIndex(const unsigned char* bitfield, int len) const;
   /**
    * affected by filter

@@ -145,7 +145,19 @@ bool TorrentMan::isEndGame() const {
   return bitfield->countMissingBlock() <= END_GAME_PIECE_NUM;
 }
 
-Piece TorrentMan::getMissingPiece(const Peer* peer) {
+int TorrentMan::getMissingPieceIndex(const Peer* peer) const {
+  int index = -1;
+  if(isEndGame()) {
+    index = bitfield->getMissingIndex(peer->getBitfield(),
+				      peer->getBitfieldLength());
+  } else {
+    index = bitfield->getMissingUnusedIndex(peer->getBitfield(),
+					    peer->getBitfieldLength());
+  }
+  return index;
+}
+
+int TorrentMan::getMissingFastPieceIndex(const Peer* peer) const {
   int index = -1;
   if(peer->isFastExtensionEnabled() && peer->countFastSet() > 0) {
     BitfieldMan tempBitfield(pieceLength, totalLength);
@@ -163,15 +175,20 @@ Piece TorrentMan::getMissingPiece(const Peer* peer) {
 					      tempBitfield.getBitfieldLength());
     }
   }
-  if(index == -1) {
-    if(isEndGame()) {
-      index = bitfield->getMissingIndex(peer->getBitfield(),
-					peer->getBitfieldLength());
-    } else {
-      index = bitfield->getMissingUnusedIndex(peer->getBitfield(),
-					      peer->getBitfieldLength());
-    }
-  }
+  return index;
+}
+
+Piece TorrentMan::getMissingFastPiece(const Peer* peer) {
+  int index = getMissingFastPieceIndex(peer);
+  return checkOutPiece(index);
+}
+
+Piece TorrentMan::getMissingPiece(const Peer* peer) {
+  int index = getMissingPieceIndex(peer);
+  return checkOutPiece(index);
+}
+
+Piece TorrentMan::checkOutPiece(int index) {
   if(index == -1) {
     return Piece::nullPiece;
   }
@@ -281,11 +298,10 @@ void TorrentMan::updatePiece(const Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
-  for(UsedPieces::iterator itr = usedPieces.begin(); itr != usedPieces.end(); itr++) {
-    if(itr->getIndex() == piece.getIndex()) {
-      *itr = piece;
-      break;
-    }
+  UsedPieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
+				  piece);
+  if(itr != usedPieces.end()) {
+    *itr = piece;
   }
 }
 
@@ -293,16 +309,17 @@ void TorrentMan::syncPiece(Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
-  for(UsedPieces::iterator itr = usedPieces.begin(); itr != usedPieces.end(); itr++) {
-    if(itr->getIndex() == piece.getIndex()) {
-      piece = *itr;
-      return;
+  UsedPieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
+				  piece);
+  if(itr != usedPieces.end()) {
+    piece = *itr;
+    return;
+  } else {
+    // hasPiece(piece.getIndex()) is true, then set all bit of
+    // piece.bitfield to 1
+    if(hasPiece(piece.getIndex())) {
+      piece.setAllBlock();
     }
-  }
-  // hasPiece(piece.getIndex()) is true, then set all bit of
-  // piece.bitfield to 1
-  if(hasPiece(piece.getIndex())) {
-    piece.setAllBlock();
   }
 }
 

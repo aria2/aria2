@@ -30,6 +30,7 @@
 using namespace std;
 
 #define PEER_ID_LENGTH 20
+#define DEFAULT_LATENCY 1000
 
 class Peer {
 public:
@@ -57,6 +58,7 @@ private:
   long long int totalLength;
   int deltaUpload;
   int deltaDownload;
+  int latency;
 public:
   Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
     entryId(0), ipaddr(ipaddr), port(port),
@@ -68,7 +70,8 @@ public:
     fastExtensionEnabled(false),
     peerUpload(0), peerDownload(0),
     pieceLength(pieceLength), totalLength(totalLength),
-    deltaUpload(0), deltaDownload(0) {
+    deltaUpload(0), deltaDownload(0),
+    latency(DEFAULT_LATENCY) {
     this->bitfield = new BitfieldMan(pieceLength, totalLength);
   }
 
@@ -139,6 +142,9 @@ public:
   bool hasPiece(int index) const;
 
   bool isSeeder() const;
+
+  void updateLatency(int latency);
+  int getLatency() const { return latency; }
 
   static Peer* nullPeer;
 };

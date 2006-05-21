@@ -19,46 +19,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_COMMON_H_
-#define _D_COMMON_H_
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-#include <iostream>
-#include <assert.h>
-#include <limits.h>
-#include <string>
-#include <deque>
-#include <algorithm>
-#if ENABLE_NLS
-#  include <gettext.h>
-#  define _(String) gettext (String)
-#else
-#  define _(String) (String)
-#endif
+#ifndef _D_NULL_LOGGER_H_
+#define _D_NULL_LOGGER_H_
 
-#ifndef LONG_LONG_MAX
-# define LONG_LONG_MAX      9223372036854775807LL
-# define LONG_LONG_MIN      (-LONG_LONG_MAX - 1LL)
-#endif // LONG_LONG_MAX
-
-#define USER_AGENT "aria2"
-
-#define BITFIELD_LEN_FROM_PIECES(X) ((X)/8+((X)%8? 1 : 0))
-
-#define DIV_FLOOR(X,Y) ((X)/(Y)+((X)%(Y)? 1:0))
+#include "Logger.h"
 
 using namespace std;
 
-class Deleter {
+class NullLogger : public Logger {
 public:
-  template<class T>
-  void operator()(T* ptr) {
-    delete ptr;
-  }
+  NullLogger() {}
+  virtual ~NullLogger() {}
+  virtual void debug(const char* msg, ...) const {}
+  virtual void debug(const char* msg, Exception* ex, ...) const {}
+  virtual void info(const char* msg, ...) const {}
+  virtual void info(const char* msg, Exception* ex, ...) const {}
+  virtual void warn(const char* msg, ...) const {}
+  virtual void warn(const char* msg, Exception* ex, ...) const {}
+  virtual void error(const char*  msg, ...) const {}
+  virtual void error(const char* msg, Exception* ex, ...) const {}
 };
 
-typedef deque<string> Strings;
-typedef deque<int> Integers;
-
-#endif // _D_COMMON_H_
+#endif // _D_NULL_LOGGER_H_

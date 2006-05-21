@@ -57,9 +57,11 @@ void PieceMessage::receivedAction() {
 								  begin,
 								  blockLength);
   peer->addPeerUpload(blockLength);
-  if(peerInteraction->hasDownloadPiece() &&
-     !RequestSlot::isNull(slot)) {
-    Piece& piece = peerInteraction->getDownloadPiece();
+  if(!RequestSlot::isNull(slot) &&
+     peerInteraction->hasDownloadPiece(slot.getIndex())) {
+    //logger->debug("CUID#%d - Latency=%d", cuid, slot.getLatencyInMillis());
+    peer->updateLatency(slot.getLatencyInMillis());
+    Piece& piece = peerInteraction->getDownloadPiece(slot.getIndex());
     long long int offset =
       ((long long int)index)*torrentMan->pieceLength+begin;
     logger->debug("CUID#%d - Writing the block length=%d, offset=%lld",
@@ -197,7 +199,6 @@ void PieceMessage::onGotNewPiece(Piece& piece) {
   logger->info(MSG_GOT_NEW_PIECE, cuid, piece.getIndex());
   torrentMan->completePiece(piece);
   torrentMan->advertisePiece(cuid, piece.getIndex());
-  piece = Piece::nullPiece;
 }
 
 void PieceMessage::onGotWrongPiece(Piece& piece) {

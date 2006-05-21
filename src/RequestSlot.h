@@ -43,6 +43,7 @@ public:
   void setDispatchedTime();
 
   bool isTimeout(int timeoutSec) const;
+  int getLatencyInMillis() const;
 
   bool operator==(const RequestSlot& requestSlot) const;
 

@@ -43,8 +43,10 @@ public:
   }
 
   Piece& operator=(const Piece& piece);
+  bool operator==(const Piece& piece) const;
 
   int getMissingUnusedBlockIndex() const;
+  int getMissingBlockIndex() const;
   BlockIndexes getAllMissingBlockIndexes() const;
   void completeBlock(int blockIndex);
   void cancelBlock(int blockIndex);

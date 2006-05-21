@@ -60,6 +60,7 @@ void Peer::resetStatus() {
   chokingRequired = true;
   optUnchoking = false;
   fastExtensionEnabled = false;
+  latency = DEFAULT_LATENCY;
   fastSet.clear();
 }
 
@@ -75,4 +76,8 @@ void Peer::addFastSetIndex(int index) {
 
 void Peer::setAllBitfield() {
   bitfield->setAllBit();
+}
+
+void Peer::updateLatency(int latency) {
+  this->latency = (this->latency*80+latency*20)/200;
 }

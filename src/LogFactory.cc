@@ -21,19 +21,20 @@
 /* copyright --> */
 #include "LogFactory.h"
 #include "SimpleLogger.h"
+#include "NullLogger.h"
 
 string LogFactory::filename;
 Logger* LogFactory::logger = NULL;
 
 Logger* LogFactory::getInstance() {
   if(logger == NULL) {
-    SimpleLogger* slogger = new SimpleLogger();
     if(filename.empty()) {
-      slogger->openFile("/dev/null");
+      logger = new NullLogger();
     } else {
+      SimpleLogger* slogger = new SimpleLogger();
       slogger->openFile(filename);
+      logger = slogger;
     }
-    logger = slogger;
   }
   return logger;
 }

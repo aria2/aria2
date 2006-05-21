@@ -91,6 +91,7 @@ private:
   void setFileFilter(const Strings& filePaths);
   void setupInternal1(const string& metaInfoFile);
   void setupInternal2();
+  Piece checkOutPiece(int index);
 public:
   int pieceLength;
   int pieces;
@@ -126,7 +127,10 @@ public:
   bool isPeerAvailable() const;
   int deleteOldErrorPeers(int maxNum);
 
+  int getMissingPieceIndex(const Peer* peer) const;
+  int getMissingFastPieceIndex(const Peer* peer) const;
   Piece getMissingPiece(const Peer* peer);
+  Piece getMissingFastPiece(const Peer* peer);
   void completePiece(const Piece& piece);
   void cancelPiece(const Piece& piece);
   void updatePiece(const Piece& piece);

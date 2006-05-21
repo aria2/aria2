@@ -1,5 +1,88 @@
 2006-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	To add the ability to download several pieces in mix in a command and
+	increase the number of request slots according to request-cancel
+	latency:
+	
+	* src/PeerInteractionCommand.cc
+	(executeInternal): The number of messages to be received at a time
+	is increased from 10 to 50.
+	* src/LogFactory
+	(getInstance): Added NullLogger.
+	* src/NullLogger.h: New class.
+	* src/BitfieldMan.h
+	(getMissingIndex): New function.
+	* src/BitfieldMan.cc
+	(getMissingIndex): New function.
+	* src/TorrentMan.h
+	(checkOutPiece): New function.
+	(getMissingPieceIndex): New function.
+	(getMissingFastPieceIndex): New function.
+	(getMissingFastPiece): New function.
+	* src/TorrentMan.cc
+	(updatePiece): Rewritten using STL.
+	(syncPiece): Rewritten using STL.
+	(getMissingPiece): Rewritten using getMissingPieceIndex() and
+	checkOutPiece().
+	(getMissingPieceIndex): New function.
+	(getMissingFastPieceIndex): New function.
+	(getMissingFastPiece): New function.
+	(checkOutPiece): New function.
+	* src/PeerInteraction.h
+	(Pieces): New type definition.
+	(piece): Removed.
+	(pieces): New variable.
+	(getNewPieceAndSendInterest): Added the "piece" argument.
+	(abortPiece): Added the "piece" argument.
+	(abortAllPieces): New function.
+	(isInRequestSlot): New function.
+	(hasDownloadPiece): Added the "index" argument.
+	(setDownloadPiece): Removed.
+	(getDownloadPiece): Added the "index" argument.
+	(updatePiece): New function.
+	(createRequestMessage): Added the "index" argument.
+	* src/PeerInteraction.cc
+	(onChoked): Rewritten.
+	(abortPiece): Rewirtten.
+	(abortAllPieces): New function.
+	(deleteTimeoutRequestSlot): Rewritten.
+	Clarified code a little bit.
+	(deleteCompletedRequestSlot): Rewritten.
+	(isInRequestSlot): New function.
+	(syncPiece): Rewritten.
+	(updatePiece): New function.
+	(getNewPieceAndSendInterest): Rewritten.
+	(addRequests):  Rewritten.
+	(getDownloadPiece): Rewritten.
+	(hasDownloadPiece): Rewritten.
+	(createRequestMessage): Added the "index" argument.
+	* src/common.h
+	(BITFIELD_LEN_FROM_PIECES): Enclosed the variable in parentheses.
+	(DIV_FLOOR): New definition.
+	* src/PieceMessage.cc
+	(receivedAction): Update request-piece latency here.
+	* src/RequestSlot.h
+	(getLatencyInMillis): New function.
+	* src/RequestSlot.cc
+	(isTimeout): Rewritten using getLatencyInMillis.
+	(getLatencyInMillis): New function.
+	* src/Piece.h
+	(operator==): New function.
+	(getMissingBlockIndex): New function.
+	* src/Piece.cc
+	(operator==): New function.
+	(getMissingBlockIndex): New function.
+	* src/Peer.h
+	(DEFAULT_LATENCY): New definition.
+	(latency): New variable.
+	(updateLatency): New function.
+	(getLatency): New function.
+	* src/Peer.cc
+	(resetStatus): Reset latecy.
+	(updateLatency): New function.
+	
+2006-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/SocketCore.cc
 	(isReadable): Added secure to the condition.
 	* src/HttpConnection.cc

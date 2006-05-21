@@ -48,6 +48,7 @@
 
 typedef deque<RequestSlot> RequestSlots;
 typedef deque<PeerMessage*> MessageQueue;
+typedef deque<Piece> Pieces;
 
 class PeerInteraction {
 private:
@@ -59,12 +60,12 @@ private:
   TorrentMan* torrentMan;
   PeerConnection* peerConnection;
   Peer* peer;
-  Piece piece;
+  Pieces pieces;
   // allowed fast piece indexes that local client has sent
   Integers fastSet;
   const Logger* logger;
   
-  void getNewPieceAndSendInterest();
+  void getNewPieceAndSendInterest(int pieceNum);
   PeerMessage* createPeerMessage(const char* msg, int msgLength);
   HandshakeMessage* createHandshakeMessage(const char* msg, int msgLength);
   void setPeerMessageCommonProperty(PeerMessage* peerMessage);
@@ -81,13 +82,15 @@ public:
   void rejectPieceMessageInQueue(int index, int begin, int length);
   void rejectAllPieceMessageInQueue();
   void onChoked();
-  void abortPiece();
+  void abortPiece(Piece& piece);
+  void abortAllPieces();
 
   bool isSendingMessageInProgress() const;
   void deleteRequestSlot(const RequestSlot& requestSlot);
   void deleteTimeoutRequestSlot();
   void deleteCompletedRequestSlot();
   RequestSlot getCorrespondingRequestSlot(int index, int begin, int length) const;
+  bool isInRequestSlot(int index, int blockIndex) const;
 
   int countMessageInQueue() const;
 
@@ -97,21 +100,17 @@ public:
   TorrentMan* getTorrentMan() const { return torrentMan; }
   PeerConnection* getPeerConnection() const { return peerConnection; }
   // If this object has nullPiece, then return false, otherwise true
-  bool hasDownloadPiece() const {
-    return !Piece::isNull(piece);
-  }
+  bool hasDownloadPiece(int index) const;
   // If the piece which this object has is nullPiece, then throws an exception.
   // So before calling this function, call hasDownloadPiece and make sure
   // this has valid piece, not nullPiece.
-  Piece& getDownloadPiece();
-  void setDownloadPiece(const Piece& piece) {
-    this->piece = piece;
-  }
+  Piece& getDownloadPiece(int index);
   
   bool isInFastSet(int index) const;
   void addFastSetIndex(int index);
 
   void syncPiece();
+  void updatePiece();
   void addRequests();
   void sendMessages(int currentUploadSpeed);
   void sendHandshake();
@@ -121,7 +120,7 @@ public:
   PeerMessage* receiveMessage();
   HandshakeMessage* receiveHandshake();
 
-  RequestMessage* createRequestMessage(int blockIndex);
+  RequestMessage* createRequestMessage(int index, int blockIndex);
   CancelMessage* createCancelMessage(int index, int begin, int length);
   PieceMessage* createPieceMessage(int index, int begin, int length);
   HaveMessage* createHaveMessage(int index);

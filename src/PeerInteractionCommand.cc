@@ -113,7 +113,7 @@ bool PeerInteractionCommand::executeInternal() {
   case WIRED:
     peerInteraction->syncPiece();
     decideChoking();
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 50; i++) {
       if(!socket->isReadable(0)) {
 	break;
       }
@@ -245,7 +245,7 @@ bool PeerInteractionCommand::prepareForRetry(int wait) {
 }
 
 void PeerInteractionCommand::onAbort(Exception* ex) {
-  peerInteraction->abortPiece();
+  peerInteraction->abortAllPieces();
   PeerAbstractCommand::onAbort(ex);
 }
 

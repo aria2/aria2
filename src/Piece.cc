@@ -49,6 +49,10 @@ Piece& Piece::operator=(const Piece& piece) {
   return *this;
 }
 
+bool Piece::operator==(const Piece& piece) const {
+  return index == piece.index;
+}
+
 void Piece::completeBlock(int blockIndex) {
   bitfield->setBit(blockIndex);
   bitfield->unsetUseBit(blockIndex);
@@ -72,6 +76,15 @@ void Piece::cancelBlock(int blockIndex) {
 
 int Piece::getMissingUnusedBlockIndex() const {
   int blockIndex = bitfield->getFirstMissingUnusedIndex();
+  if(blockIndex == -1) {
+    return blockIndex;
+  }
+  bitfield->setUseBit(blockIndex);
+  return blockIndex;
+}
+
+int Piece::getMissingBlockIndex() const {
+  int blockIndex = bitfield->getMissingIndex();
   if(blockIndex == -1) {
     return blockIndex;
   }

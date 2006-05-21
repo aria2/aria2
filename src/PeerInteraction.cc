@@ -35,8 +35,7 @@ PeerInteraction::PeerInteraction(int cuid,
   :cuid(cuid),
    uploadLimit(0),
    torrentMan(torrentMan),
-   peer(peer),
-   piece(Piece::nullPiece) {
+   peer(peer) {
   peerConnection = new PeerConnection(cuid, socket, op);
   logger = LogFactory::getInstance();
 }
@@ -163,34 +162,51 @@ void PeerInteraction::rejectPieceMessageInQueue(int index, int begin, int length
 }
 
 void PeerInteraction::onChoked() {
-  if(!Piece::isNull(piece) && !peer->isInFastSet(piece.getIndex())) {
-    abortPiece();
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end();) {
+    Piece& piece = *itr;
+    if(!peer->isInFastSet(piece.getIndex())) {
+      abortPiece(piece);
+      itr = pieces.erase(itr);
+    } else {
+      itr++;
+    }
   }
 }
 
-void PeerInteraction::abortPiece() {
+void PeerInteraction::abortAllPieces() {
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end();) {
+    abortPiece(*itr);
+    itr = pieces.erase(itr);
+  }
+}
+
+void PeerInteraction::abortPiece(Piece& piece) {
   if(!Piece::isNull(piece)) {
     for(MessageQueue::iterator itr = messageQueue.begin();
 	itr != messageQueue.end();) {
-      if((*itr)->getId() == RequestMessage::ID
-	 && !(*itr)->isInProgress()) {
+      if((*itr)->getId() == RequestMessage::ID &&
+	!(*itr)->isInProgress() &&
+	 ((RequestMessage*)*itr)->getIndex() == piece.getIndex()) {
 	delete *itr;
 	itr = messageQueue.erase(itr);
       } else {
 	itr++;
       }
     }  
-    for(RequestSlots::const_iterator itr = requestSlots.begin();
-	itr != requestSlots.end(); itr++) {
-      logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
-		    " because piece was canceled",
-		    cuid,
-		    itr->getBlockIndex());
-      piece.cancelBlock(itr->getBlockIndex());
+    for(RequestSlots::iterator itr = requestSlots.begin();
+	itr != requestSlots.end();) {
+      if(itr->getIndex() == piece.getIndex()) {
+	logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
+		      " because piece was canceled",
+		      cuid,
+		      itr->getBlockIndex());
+	piece.cancelBlock(itr->getBlockIndex());
+	itr = requestSlots.erase(itr);
+      } else {
+	itr++;
+      }
     }
-    requestSlots.clear();
     torrentMan->cancelPiece(piece);
-    piece = Piece::nullPiece;
   }
 }
 
@@ -206,36 +222,51 @@ void PeerInteraction::deleteRequestSlot(const RequestSlot& requestSlot) {
 void PeerInteraction::deleteTimeoutRequestSlot() {
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end();) {
-    if(itr->isTimeout(REQUEST_TIME_OUT)) {
+    RequestSlot& slot = *itr;
+    if(slot.isTimeout(REQUEST_TIME_OUT)) {
       logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
 		    " because of time out",
 		    cuid,
-		    itr->getBlockIndex());
-      if(!Piece::isNull(piece)) {
-	piece.cancelBlock(itr->getBlockIndex());
-      }
+		    slot.getBlockIndex());
+      Piece& piece = getDownloadPiece(slot.getIndex());
+      piece.cancelBlock(slot.getBlockIndex());
       itr = requestSlots.erase(itr);
     } else {
       itr++;
     }
   }
-  torrentMan->updatePiece(piece);
+  updatePiece();
 }
 
 void PeerInteraction::deleteCompletedRequestSlot() {
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end();) {
-    if(Piece::isNull(piece) || piece.hasBlock(itr->getBlockIndex()) ||
+    RequestSlot& slot = *itr;
+    Piece piece = getDownloadPiece(slot.getIndex());
+    if(piece.hasBlock(slot.getBlockIndex()) ||
        torrentMan->hasPiece(piece.getIndex())) {
       logger->debug("CUID#%d - Deleting request slot blockIndex=%d because"
 		    " the block has been acquired.", cuid,
-		    itr->getBlockIndex());
-      addMessage(createCancelMessage(itr->getIndex(), itr->getBegin(), itr->getLength()));
+		    slot.getBlockIndex());
+      addMessage(createCancelMessage(slot.getIndex(),
+				     slot.getBegin(),
+				     slot.getLength()));
       itr = requestSlots.erase(itr);
     } else {
       itr++;
     }
   }
+}
+
+bool PeerInteraction::isInRequestSlot(int index, int blockIndex) const {
+  for(RequestSlots::const_iterator itr = requestSlots.begin();
+      itr != requestSlots.end(); itr++) {
+    const RequestSlot& slot = *itr;
+    if(slot.getIndex() == index && slot.getBlockIndex() == blockIndex) {
+      return true;
+    }
+  }
+  return false;
 }
 
 RequestSlot PeerInteraction::getCorrespondingRequestSlot(int index,
@@ -379,62 +410,112 @@ PeerMessage* PeerInteraction::createPeerMessage(const char* msg, int msgLength) 
 
 
 void PeerInteraction::syncPiece() {
-  if(Piece::isNull(piece)) {
-    return;
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
+    torrentMan->syncPiece(*itr);
   }
-  torrentMan->syncPiece(piece);
 }
 
-void PeerInteraction::getNewPieceAndSendInterest() {
-  piece = torrentMan->getMissingPiece(peer);
-  if(Piece::isNull(piece)) {
-    logger->debug("CUID#%d - Not interested in the peer", cuid);
-    addMessage(createNotInterestedMessage());
-  } else {
-    if(peer->peerChoking && !peer->isInFastSet(piece.getIndex())) {
-      abortPiece();
-    } else {
-      logger->info("CUID#%d - Starting download for piece index=%d (%d/%d completed)",
-		    cuid, piece.getIndex(), piece.countCompleteBlock(),
-		    piece.countBlock());
+void PeerInteraction::updatePiece() {
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
+    torrentMan->updatePiece(*itr);
+  }
+}
+
+void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
+  int index = torrentMan->getMissingPieceIndex(peer);
+  if(pieces.empty() && index == -1) {
+    if(peer->amInterested) {
+      logger->debug("CUID#%d - Not interested in the peer", cuid);
+      addMessage(createNotInterestedMessage());
     }
-    logger->debug("CUID#%d - Interested in the peer", cuid);
-    addMessage(createInterestedMessage());
+  } else {
+    if(peer->peerChoking) {
+      onChoked();
+      if(peer->isFastExtensionEnabled()) {
+	while((int)pieces.size() < pieceNum) {
+	  Piece piece = torrentMan->getMissingFastPiece(peer);
+	  if(Piece::isNull(piece)) {
+	    break;
+	  } else {
+	    pieces.push_back(piece);
+	  }
+	}
+      }
+    } else {
+      while((int)pieces.size() < pieceNum) {
+	Piece piece = torrentMan->getMissingPiece(peer);
+	if(Piece::isNull(piece)) {
+	  break;
+	} else {
+	  pieces.push_back(piece);
+	}
+      }
+    }
+    if(!peer->amInterested) {
+      logger->debug("CUID#%d - Interested in the peer", cuid);
+      addMessage(createInterestedMessage());
+    }
   }
 }
 
 void PeerInteraction::addRequests() {
-  if(Piece::isNull(piece)) {
-    // retrive new piece from TorrentMan
-    getNewPieceAndSendInterest();
-  } else if(peer->peerChoking && !peer->isInFastSet(piece.getIndex())) {
-    onChoked();
-  } else if(piece.pieceComplete()) {
-    abortPiece();
-    getNewPieceAndSendInterest();
+  // Abort downloading of completed piece.
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end();) {
+    Piece& piece = *itr;
+    if(piece.pieceComplete()) {
+      abortPiece(piece);
+      itr = pieces.erase(itr);
+    } else {
+      itr++;
+    }
   }
-  if(!Piece::isNull(piece)) {
+  int MAX_PENDING_REQUEST;
+  if(peer->getLatency() < 300) {
+    MAX_PENDING_REQUEST = 24;
+  } else if(peer->getLatency() < 600) {
+    MAX_PENDING_REQUEST = 18;
+  } else if(peer->getLatency() < 1000) {
+    MAX_PENDING_REQUEST = 12;
+  } else {
+    MAX_PENDING_REQUEST = 6;
+  }
+  int pieceNum;
+  if(torrentMan->isEndGame()) {
+    pieceNum = 1;
+  } else {
+    int blocks = DIV_FLOOR(torrentMan->pieceLength, BLOCK_LENGTH);
+    pieceNum = DIV_FLOOR(MAX_PENDING_REQUEST, blocks);
+  }
+  getNewPieceAndSendInterest(pieceNum);
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
+    Piece& piece = *itr;
     if(torrentMan->isEndGame()) {
       BlockIndexes missingBlockIndexes = piece.getAllMissingBlockIndexes();
-      if(countRequestSlot() == 0) {
-	random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
-	int count = 0;
-	for(BlockIndexes::const_iterator itr = missingBlockIndexes.begin();
-	    itr != missingBlockIndexes.end() && count < 6; itr++, count++) {
-	  addMessage(createRequestMessage(*itr));
+      random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
+      int count = countRequestSlot();
+      for(BlockIndexes::const_iterator bitr = missingBlockIndexes.begin();
+	  bitr != missingBlockIndexes.end() && count < MAX_PENDING_REQUEST;
+	  bitr++) {
+	int blockIndex = *bitr;
+	if(!isInRequestSlot(piece.getIndex(), blockIndex)) {
+	  addMessage(createRequestMessage(piece.getIndex(), blockIndex));
+	  count++;
 	}
       }
     } else {
-      for(int i = countRequestSlot(); i < 6; i++) {
+      while(countRequestSlot() < MAX_PENDING_REQUEST) {
 	int blockIndex = piece.getMissingUnusedBlockIndex();
 	if(blockIndex == -1) {
 	  break;
 	}
-	torrentMan->updatePiece(piece);
-	addMessage(createRequestMessage(blockIndex));
+	addMessage(createRequestMessage(piece.getIndex(), blockIndex));
       }
     }
+    if(countRequestSlot() >= MAX_PENDING_REQUEST) {
+      break;
+    }
   }
+  updatePiece();
 }
 
 void PeerInteraction::sendHandshake() {
@@ -474,11 +555,22 @@ void PeerInteraction::sendAllowedFast() {
   }
 }
 
-Piece& PeerInteraction::getDownloadPiece() {
-  if(Piece::isNull(piece)) {
-    throw new DlAbortEx("current piece is null");
+Piece& PeerInteraction::getDownloadPiece(int index) {
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
+    if(itr->getIndex() == index) {
+      return *itr;
+    }
   }
-  return piece;
+  throw new DlAbortEx("No such piece index=%d", index);
+}
+
+bool PeerInteraction::hasDownloadPiece(int index) const {
+  for(Pieces::const_iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
+    if(itr->getIndex() == index) {
+      return true;
+    }
+  }
+  return false;
 }
 
 bool PeerInteraction::isInFastSet(int index) const {
@@ -497,8 +589,9 @@ void PeerInteraction::setPeerMessageCommonProperty(PeerMessage* peerMessage) {
   peerMessage->setPeerInteraction(this);  
 }
 
-RequestMessage* PeerInteraction::createRequestMessage(int blockIndex) {
+RequestMessage* PeerInteraction::createRequestMessage(int index, int blockIndex) {
   RequestMessage* msg = new RequestMessage();
+  Piece piece = getDownloadPiece(index);
   msg->setIndex(piece.getIndex());
   msg->setBegin(blockIndex*piece.getBlockLength());
   msg->setLength(piece.getBlockLength(blockIndex));
