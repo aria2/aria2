@@ -38,6 +38,7 @@ private:
   int blocks;
   bool filterEnabled;
   int countSetBit(const unsigned char* bitfield, int len) const;
+  int getNthBitIndex(const unsigned char* bitfield, int len, int nth) const;
   int getMissingIndexRandomly(const unsigned char* bitfield, int len, int randMax) const;
   bool isBitSetInternal(const unsigned char* bitfield, int index) const;
   bool setBitInternal(unsigned char* bitfield, int index, bool on);
@@ -67,6 +68,10 @@ public:
   /**
    * affected by filter
    */
+  bool hasMissingPiece(const unsigned char* bitfield, int len) const;
+  /**
+   * affected by filter
+   */
   int getMissingIndex(const unsigned char* bitfield, int len) const;
   /**
    * affected by filter
@@ -88,6 +93,10 @@ public:
    * affected by filter
    */
   BlockIndexes getAllMissingIndexes() const;
+  /**
+   * affected by filter
+   */
+  BlockIndexes getAllMissingIndexes(const unsigned char* bitfield, int len) const;
   /**
    * affected by filter
    */

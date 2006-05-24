@@ -113,12 +113,10 @@ bool PeerInteractionCommand::executeInternal() {
   case WIRED:
     peerInteraction->syncPiece();
     decideChoking();
-    for(int i = 0; i < 50; i++) {
-      if(!socket->isReadable(0)) {
-	break;
-      }
-      receiveMessage();
-    }
+    receiveMessages();
+    detectMessageFlooding();
+    //checkLongTimePeerChoking();
+
     peerInteraction->deleteTimeoutRequestSlot();
     peerInteraction->deleteCompletedRequestSlot();
     peerInteraction->addRequests();
@@ -142,11 +140,12 @@ void PeerInteractionCommand::detectMessageFlooding() {
   if(freqCheckPoint.tv_sec == 0 && freqCheckPoint.tv_usec == 0) {
     freqCheckPoint = now;
   } else {
-    if(Util::difftv(now, freqCheckPoint) >= 5*1000000) {
-      if(chokeUnchokeCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 0.4
-	 || haveCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 20.0
-	 || keepAliveCount*1.0/(Util::difftv(now, freqCheckPoint)/1000000) >= 1.0) {
-	throw new DlAbortEx("flooding detected.");
+    int elapsed = Util::difftvsec(now, freqCheckPoint);
+    if(elapsed >= 5) {
+      if(chokeUnchokeCount*1.0/elapsed >= 0.4
+	 //|| haveCount*1.0/elapsed >= 20.0
+	 || keepAliveCount*1.0/elapsed >= 1.0) {
+	throw new DlAbortEx("Flooding detected.");
       } else {
 	chokeUnchokeCount = 0;
 	haveCount = 0;
@@ -169,8 +168,8 @@ void PeerInteractionCommand::checkLongTimePeerChoking() {
     }
   } else {
     if(peer->amInterested && peer->peerChoking) {
-      if(Util::difftv(now, chokeCheckPoint) >= MAX_PEER_CHOKING_INTERVAL*1000000) {
-	throw new DlAbortEx("too long choking");
+      if(Util::difftvsec(now, chokeCheckPoint) >= MAX_PEER_CHOKING_INTERVAL) {
+	throw new DlAbortEx("Too long choking.");
       }
     } else {
       chokeCheckPoint.tv_sec = 0;
@@ -191,39 +190,41 @@ void PeerInteractionCommand::decideChoking() {
   }
 }
 
-void PeerInteractionCommand::receiveMessage() {
-  PeerMessage* message = peerInteraction->receiveMessage();
-  if(message == NULL) {
-    return;
-  }
-  logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-	       peer->ipaddr.c_str(), peer->port,
-	       message->toString().c_str());
-  // to detect flooding
-  switch(message->getId()) {
-  case KeepAliveMessage::ID:
-    keepAliveCount++;
-    break;
-  case ChokeMessage::ID:
-    if(!peer->peerChoking) {
-      chokeUnchokeCount++;
+void PeerInteractionCommand::receiveMessages() {
+  for(int i = 0; i < 50; i++) {
+    PeerMessage* message = peerInteraction->receiveMessage();
+    if(message == NULL) {
+      return;
     }
-    break;
-  case UnchokeMessage::ID:
-    if(peer->peerChoking) {
-      chokeUnchokeCount++;
+    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
+		 peer->ipaddr.c_str(), peer->port,
+		 message->toString().c_str());
+    // to detect flooding
+    switch(message->getId()) {
+    case KeepAliveMessage::ID:
+      keepAliveCount++;
+      break;
+    case ChokeMessage::ID:
+      if(!peer->peerChoking) {
+	chokeUnchokeCount++;
+      }
+      break;
+    case UnchokeMessage::ID:
+      if(peer->peerChoking) {
+	chokeUnchokeCount++;
+      }
+      break;
+    case HaveMessage::ID:
+      haveCount++;
+      break;
     }
-    break;
-  case HaveMessage::ID:
-    haveCount++;
-    break;
-  }
-  try {
-    message->receivedAction();
-    delete message;
-  } catch(Exception* ex) {
-    delete message;
-    throw;
+    try {
+      message->receivedAction();
+      delete message;
+    } catch(Exception* ex) {
+      delete message;
+      throw;
+    }
   }
 }
 
@@ -255,7 +256,7 @@ void PeerInteractionCommand::keepAlive() {
   } else {
     struct timeval now;
     gettimeofday(&now, NULL);
-    if(Util::difftv(now, keepAliveCheckPoint) >= (long long int)120*1000000) {
+    if(Util::difftvsec(now, keepAliveCheckPoint) >= 120) {
       if(peerInteraction->countMessageInQueue() == 0) {
 	peerInteraction->addMessage(peerInteraction->createKeepAliveMessage());
 	peerInteraction->sendMessages(e->getUploadSpeed());
@@ -269,8 +270,7 @@ void PeerInteractionCommand::beforeSocketCheck() {
   if(sequence == WIRED) {
     e->torrentMan->unadvertisePiece(cuid);
     detectMessageFlooding();
-    checkLongTimePeerChoking();
-
+    //checkLongTimePeerChoking();
     PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
     if(indexes.size() >= 20) {
       if(peer->isFastExtensionEnabled()) {

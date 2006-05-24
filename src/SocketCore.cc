@@ -225,7 +225,7 @@ bool SocketCore::isWritable(int timeout) const {
     // time out
     return false;
   } else {
-    if(errno == EINPROGRESS) {
+    if(errno == EINPROGRESS || errno == EINTR) {
       return false;
     } else {
       throw new DlRetryEx(EX_SOCKET_CHECK_WRITABLE, strerror(errno));
@@ -254,7 +254,7 @@ bool SocketCore::isReadable(int timeout) const {
     // time out
     return false;
   } else {
-    if(errno == EINPROGRESS) {
+    if(errno == EINPROGRESS || errno == EINTR) {
       return false;
     } else {
       throw new DlRetryEx(EX_SOCKET_CHECK_READABLE, strerror(errno));

@@ -20,10 +20,12 @@
  */
 /* copyright --> */
 #include "PeerChokeCommand.h"
-#include "SleepCommand.h"
 #include "Util.h"
 
-PeerChokeCommand::PeerChokeCommand(int cuid, int interval, TorrentDownloadEngine* e):Command(cuid), interval(interval), e(e), rotate(0) {}
+PeerChokeCommand::PeerChokeCommand(int cuid, int interval, TorrentDownloadEngine* e):Command(cuid), interval(interval), e(e), rotate(0) {
+  checkPoint.tv_sec = 0;
+  checkPoint.tv_usec = 0;
+}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 
@@ -91,47 +93,52 @@ void PeerChokeCommand::orderByDownloadRate(Peers& peers) const {
 }
 
 bool PeerChokeCommand::execute() {
-  Peers peers = e->torrentMan->getActivePeers();
-  setAllPeerChoked(peers);
-  if(e->torrentMan->downloadComplete()) {
-    orderByDownloadRate(peers);
-  } else {
-    orderByUploadRate(peers);
+  if(e->torrentMan->isHalt()) {
+    return true;
   }
-  int unchokingCount = peers.size() >= 4 ? 4 : peers.size();
-  for(Peers::iterator itr = peers.begin(); unchokingCount > 0 && itr != peers.end(); ) {
-    Peer* peer = *itr;
-    if(peer->peerInterested) {
-      peer->chokingRequired = false;
-      peer->optUnchoking = false;
-      itr = peers.erase(itr);
-      unchokingCount--;
-      logger->debug("cat01, unchoking %s, delta=%d", peer->ipaddr.c_str(), peer->getDeltaUpload());
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  if(Util::difftvsec(now, checkPoint) >= interval) {
+    checkPoint = now;
+    Peers peers = e->torrentMan->getActivePeers();
+    setAllPeerChoked(peers);
+    if(e->torrentMan->downloadComplete()) {
+      orderByDownloadRate(peers);
     } else {
-      itr++;
+      orderByUploadRate(peers);
     }
-  }
-  for(Peers::iterator itr = peers.begin(); itr != peers.end(); ) {
-    Peer* peer = *itr;
-    if(!peer->peerInterested) {
-      peer->chokingRequired = false;
-      peer->optUnchoking = false;
-      itr = peers.erase(itr);
-      logger->debug("cat02, unchoking %s, delta=%d", peer->ipaddr.c_str(), peer->getDeltaUpload());
-      break;
-    } else {
-      itr++;
+    int unchokingCount = peers.size() >= 4 ? 4 : peers.size();
+    for(Peers::iterator itr = peers.begin(); unchokingCount > 0 && itr != peers.end(); ) {
+      Peer* peer = *itr;
+      if(peer->peerInterested) {
+	peer->chokingRequired = false;
+	peer->optUnchoking = false;
+	itr = peers.erase(itr);
+	unchokingCount--;
+	logger->debug("cat01, unchoking %s, delta=%d", peer->ipaddr.c_str(), peer->getDeltaUpload());
+      } else {
+	itr++;
+      }
     }
+    for(Peers::iterator itr = peers.begin(); itr != peers.end(); ) {
+      Peer* peer = *itr;
+      if(!peer->peerInterested) {
+	peer->chokingRequired = false;
+	peer->optUnchoking = false;
+	itr = peers.erase(itr);
+	logger->debug("cat02, unchoking %s, delta=%d", peer->ipaddr.c_str(), peer->getDeltaUpload());
+	break;
+      } else {
+	itr++;
+      }
+    }
+    if(rotate%3 == 0) {
+      optUnchokingPeer(peers);
+      rotate = 0;
+    }
+    rotate++;
+    setAllPeerResetDelta(e->torrentMan->getActivePeers());
   }
-  if(rotate%3 == 0) {
-    optUnchokingPeer(peers);
-    rotate = 0;
-  }
-  rotate++;
-  setAllPeerResetDelta(e->torrentMan->getActivePeers());
-
-  SleepCommand* command = new SleepCommand(cuid, e, this, interval);
-  e->commands.push_back(command);
-
+  e->commands.push_back(this);
   return false;
 }

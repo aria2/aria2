@@ -60,9 +60,9 @@ bool DownloadCommand::executeInternal(Segment seg) {
     sw = now;
     lastSize = seg.ds;
   } else {
-    long long int diff = Util::difftv(now, sw);
-    if(diff >= 1000000) {
-      seg.speed = (int)((seg.ds-lastSize)/(diff/1000000.0));
+    int diff = Util::difftvsec(now, sw);
+    if(diff >= 1) {
+      seg.speed = (int)((seg.ds-lastSize)/(diff*1.0));
       sw = now;
       lastSize = seg.ds;
     }

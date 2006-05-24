@@ -64,8 +64,8 @@ bool PeerAbstractCommand::isTimeoutDetected() {
     checkPoint = now;
     return false;
   } else {
-    long long int elapsed = Util::difftv(now, checkPoint);
-    if(elapsed >= ((long long int)timeout)*1000000) {
+    int elapsed = Util::difftvsec(now, checkPoint);
+    if(elapsed >= timeout) {
       return true;
     } else {
       return false;
@@ -74,9 +74,13 @@ bool PeerAbstractCommand::isTimeoutDetected() {
 }
 
 bool PeerAbstractCommand::execute() {
+  if(e->torrentMan->isHalt()) {
+    return true;
+  }
   try {
     beforeSocketCheck();
-    if(uploadLimitCheck && e->getUploadSpeed() <= uploadLimit*1024 ||
+    if(uploadLimitCheck && (uploadLimit == 0 ||
+			    e->getUploadSpeed() <= uploadLimit*1024) ||
        checkSocketIsReadable && readCheckTarget->isReadable(0) ||
        checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
        !checkSocketIsReadable && !checkSocketIsWritable) {
@@ -130,11 +134,11 @@ void PeerAbstractCommand::setReadCheckSocket(Socket* socket) {
     if(checkSocketIsReadable) {
       if(readCheckTarget != socket) {
 	e->deleteSocketForReadCheck(readCheckTarget);
-	e->addSocketForReadCheck(socket);
+	e->addSocketForReadCheck(socket, this);
 	readCheckTarget = socket;
       }
     } else {
-      e->addSocketForReadCheck(socket);
+      e->addSocketForReadCheck(socket, this);
       checkSocketIsReadable = true;
       readCheckTarget = socket;
     }
@@ -152,11 +156,11 @@ void PeerAbstractCommand::setWriteCheckSocket(Socket* socket) {
     if(checkSocketIsWritable) {
       if(writeCheckTarget != socket) {
 	e->deleteSocketForWriteCheck(writeCheckTarget);
-	e->addSocketForWriteCheck(socket);
+	e->addSocketForWriteCheck(socket, this);
 	writeCheckTarget = socket;
       }
     } else {
-      e->addSocketForWriteCheck(socket);
+      e->addSocketForWriteCheck(socket, this);
       checkSocketIsWritable = true;
       writeCheckTarget = socket;
     }

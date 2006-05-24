@@ -401,7 +401,7 @@ PeerMessage* PeerInteraction::createPeerMessage(const char* msg, int msgLength) 
       ((AllowedFastMessage*)peerMessage)->setPieces(torrentMan->pieces);
       break;
     default:
-      throw new DlAbortEx("invalid message id. id = %d", id);
+      throw new DlAbortEx("Invalid message id. id = %d", id);
     }
   }
   setPeerMessageCommonProperty(peerMessage);
@@ -422,8 +422,7 @@ void PeerInteraction::updatePiece() {
 }
 
 void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
-  int index = torrentMan->getMissingPieceIndex(peer);
-  if(pieces.empty() && index == -1) {
+  if(pieces.empty() && !torrentMan->hasMissingPiece(peer)) {
     if(peer->amInterested) {
       logger->debug("CUID#%d - Not interested in the peer", cuid);
       addMessage(createNotInterestedMessage());
@@ -470,11 +469,9 @@ void PeerInteraction::addRequests() {
     }
   }
   int MAX_PENDING_REQUEST;
-  if(peer->getLatency() < 300) {
+  if(peer->getLatency() < 900) {
     MAX_PENDING_REQUEST = 24;
-  } else if(peer->getLatency() < 600) {
-    MAX_PENDING_REQUEST = 18;
-  } else if(peer->getLatency() < 1000) {
+  } else if(peer->getLatency() < 1500) {
     MAX_PENDING_REQUEST = 12;
   } else {
     MAX_PENDING_REQUEST = 6;

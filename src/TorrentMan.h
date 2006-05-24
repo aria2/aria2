@@ -78,6 +78,7 @@ private:
   bool setupComplete;
   const Logger* logger;
   Peers activePeers;
+  bool halt;
 
   FILE* openSegFile(const string& segFilename, const string& mode) const;
   void read(FILE* file);
@@ -127,6 +128,7 @@ public:
   bool isPeerAvailable() const;
   int deleteOldErrorPeers(int maxNum);
 
+  bool hasMissingPiece(const Peer* peer) const;
   int getMissingPieceIndex(const Peer* peer) const;
   int getMissingFastPieceIndex(const Peer* peer) const;
   Piece getMissingPiece(const Peer* peer);
@@ -258,6 +260,11 @@ public:
   void deleteActivePeer(Peer* peer) {
     Peers::iterator itr = find(activePeers.begin(), activePeers.end(), peer);
     activePeers.erase(itr);
+  }
+
+  bool isHalt() const { return halt; }
+  void setHalt(bool halt) {
+    this->halt = halt;
   }
 
   enum FILE_MODE {

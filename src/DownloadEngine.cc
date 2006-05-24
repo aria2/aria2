@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <algorithm>
 
 using namespace std;
@@ -47,19 +48,41 @@ void DownloadEngine::cleanQueue() {
 
 void DownloadEngine::run() {
   initStatistics();
+  struct timeval cp;
+  cp.tv_sec = 0;
+  cp.tv_usec = 0;
+  Sockets activeSockets;
   while(!commands.empty()) {
-    int max = commands.size();
-    for(int i = 0; i < max; i++) {
-      Command* com = commands.front();
-      commands.pop_front();
-      if(com->execute()) {
-	delete(com);
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    if(Util::difftvsec(now, cp) >= 1) {
+      cp = now;
+      int max = commands.size();
+      for(int i = 0; i < max; i++) {
+	Command* com = commands.front();
+	commands.pop_front();
+	if(com->execute()) {
+	  delete(com);
+	}
+      }
+    } else {
+      for(Sockets::iterator itr = activeSockets.begin();
+	  itr != activeSockets.end(); itr++) {
+	Socket* socket = *itr;
+	SockCmdMap::iterator mapItr = sockCmdMap.find(socket);
+	if(mapItr != sockCmdMap.end()) {
+	  Command* com = (*mapItr).second;
+	  commands.erase(remove(commands.begin(), commands.end(), com));
+	  if(com->execute()) {
+	    delete(com);
+	  }
+	}
       }
     }
     afterEachIteration();
     //shortSleep();
     if(!noWait && !commands.empty()) {
-      waitData();
+      waitData(activeSockets);
     }
     noWait = false;
     calculateStatistics();
@@ -76,39 +99,60 @@ void DownloadEngine::shortSleep() const {
   select(0, &rfds, NULL, NULL, &tv);
 }
 
-void DownloadEngine::waitData() {
+void DownloadEngine::waitData(Sockets& activeSockets) {
+  activeSockets.clear();
   fd_set rfds;
   fd_set wfds;
-  struct timeval tv;
-  int retval;
-
-  FD_ZERO(&rfds);
-  FD_ZERO(&wfds);
-  int max = 0;
-  for(Sockets::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
-    FD_SET((*itr)->getSockfd(), &rfds);
-    if(max < (*itr)->getSockfd()) {
-      max = (*itr)->getSockfd();
+  int retval = 0;
+  while(1) {
+    struct timeval tv;
+    
+    FD_ZERO(&rfds);
+    FD_ZERO(&wfds);
+    int max = 0;
+    for(Sockets::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
+      FD_SET((*itr)->getSockfd(), &rfds);
+      if(max < (*itr)->getSockfd()) {
+	max = (*itr)->getSockfd();
+      }
+    }
+    for(Sockets::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
+      FD_SET((*itr)->getSockfd(), &wfds);
+      if(max < (*itr)->getSockfd()) {
+	max = (*itr)->getSockfd();
+      }
+    }
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+    retval = select(max+1, &rfds, &wfds, NULL, &tv);
+    if(retval != -1 || errno != EINTR) {
+      break;
     }
   }
-  for(Sockets::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
-    FD_SET((*itr)->getSockfd(), &wfds);
-    if(max < (*itr)->getSockfd()) {
-      max = (*itr)->getSockfd();
+  if(retval > 0) {
+    for(Sockets::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
+      if(FD_ISSET((*itr)->getSockfd(), &rfds)) {
+	activeSockets.push_back(*itr);
+      }
     }
+    for(Sockets::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
+      if(FD_ISSET((*itr)->getSockfd(), &wfds)) {
+	activeSockets.push_back(*itr);
+      }
+    }
+    sort(activeSockets.begin(), activeSockets.end());
+    activeSockets.erase(unique(activeSockets.begin(), activeSockets.end()), activeSockets.end());
   }
-  tv.tv_sec = 1;
-  tv.tv_usec = 0;
-
-  retval = select(max+1, &rfds, &wfds, NULL, &tv);
 }
 
-bool DownloadEngine::addSocket(Sockets& sockets, Socket* socket) {
+bool DownloadEngine::addSocket(Sockets& sockets, Socket* socket, Command* command) {
   Sockets::iterator itr = find(sockets.begin(),
 			       sockets.end(),
 			       socket);
   if(itr == sockets.end()) {
     sockets.push_back(socket);
+    SockCmdMap::value_type vt(socket, command);
+    sockCmdMap.insert(vt);
     return true;
   } else {
     return false;
@@ -121,22 +165,26 @@ bool DownloadEngine::deleteSocket(Sockets& sockets, Socket* socket) {
 			       socket);
   if(itr != sockets.end()) {
     sockets.erase(itr);
+    SockCmdMap::iterator mapItr = sockCmdMap.find(socket);
+    if(mapItr != sockCmdMap.end()) {
+      sockCmdMap.erase(mapItr);
+    }
     return true;
   } else {
     return false;
   }
 }
 
-bool DownloadEngine::addSocketForReadCheck(Socket* socket) {
-  return addSocket(rsockets, socket);
+bool DownloadEngine::addSocketForReadCheck(Socket* socket, Command* command) {
+  return addSocket(rsockets, socket, command);
 }
 
 bool DownloadEngine::deleteSocketForReadCheck(Socket* socket) {
   return deleteSocket(rsockets , socket);
 }
 
-bool DownloadEngine::addSocketForWriteCheck(Socket* socket) {
-  return addSocket(wsockets, socket);
+bool DownloadEngine::addSocketForWriteCheck(Socket* socket, Command* command) {
+  return addSocket(wsockets, socket, command);
 }
 
 bool DownloadEngine::deleteSocketForWriteCheck(Socket* socket) {

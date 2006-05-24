@@ -39,6 +39,7 @@
 #include <errno.h>
 #include <libgen.h>
 #include <string.h>
+#include <algorithm>
 
 TorrentMan::TorrentMan():bitfield(NULL),
 			 peerEntryIdCounter(0), cuidCounter(0),
@@ -47,6 +48,7 @@ TorrentMan::TorrentMan():bitfield(NULL),
 			 deltaDownloadLength(0), deltaUploadLength(0),
 			 storeDir("."),
 			 setupComplete(false),
+			 halt(false),
 			 interval(DEFAULT_ANNOUNCE_INTERVAL),
 			 minInterval(DEFAULT_ANNOUNCE_MIN_INTERVAL),
 			 complete(0), incomplete(0),
@@ -145,6 +147,11 @@ bool TorrentMan::isEndGame() const {
   return bitfield->countMissingBlock() <= END_GAME_PIECE_NUM;
 }
 
+bool TorrentMan::hasMissingPiece(const Peer* peer) const {
+  return bitfield->hasMissingPiece(peer->getBitfield(),
+				   peer->getBitfieldLength());
+}
+
 int TorrentMan::getMissingPieceIndex(const Peer* peer) const {
   int index = -1;
   if(isEndGame()) {
@@ -211,7 +218,7 @@ int TorrentMan::deleteUsedPiecesByFillRate(int fillRate, int toDelete) {
     Piece& piece = *itr;
     if(!bitfield->isUseBitSet(piece.getIndex()) &&
        piece.countCompleteBlock() <= piece.countBlock()*(fillRate/100.0)) {
-      logger->debug("deleting used piece index=%d, fillRate(%%)=%d<=%d",
+      logger->debug("Deleting used piece index=%d, fillRate(%%)=%d<=%d",
 		    piece.getIndex(),
 		    (piece.countCompleteBlock()*100)/piece.countBlock(),
 		    fillRate);
@@ -258,12 +265,7 @@ void TorrentMan::deleteUsedPiece(const Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
-  for(UsedPieces::iterator itr = usedPieces.begin(); itr != usedPieces.end(); itr++) {
-    if(itr->getIndex() == piece.getIndex()) {
-      usedPieces.erase(itr);
-      break;
-    }
-  }  
+  usedPieces.erase(std::remove(usedPieces.begin(), usedPieces.end(), piece));
 }
 
 void TorrentMan::completePiece(const Piece& piece) {

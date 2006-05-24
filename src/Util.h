@@ -84,6 +84,8 @@ public:
 
   static Integers computeFastSet(string ipaddr, const unsigned char* infoHash,
 				int pieces, int fastSetSize);
+
+  static int countBit(unsigned int);
 };
 
 #endif // _D_UTIL_H_

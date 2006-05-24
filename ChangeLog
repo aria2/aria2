@@ -1,3 +1,117 @@
+2006-05-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To attempt to handle EINTR:
+	
+	* src/SocketCore.cc
+	(isReadable): Added EINTR handling.
+	(isWritable): Added EINTR handling.
+
+	To improve the performance:
+	
+	* src/AbstractCommand.cc
+	(isTimeoutDetected): Use Util::difftvsec() instead of Util::difftv().
+	* src/PeerInteractionCommand.h
+	(receiveMessage): Renamed as receiveMessages().
+	(receiveMessages): New function.
+	* src/PeerInteractionCommand.cc
+	(executeInternal): receiveMessage loop is moved to new receiveMessages
+	() function. detectMessageFlooding() is moved here.
+	(detectMessageFlooding): Use Util::difftvsec() instead of Util::difftv
+	(). The flooding detection for have message is comment out.
+	(checkLongTimePeerChoking): Use Util::difftvsec() instead of
+	Util::difftv().
+	(receiveMessage): Renamed as receiveMessages().
+	(receiveMessages): New function.
+	(keepAlive): Use Util::difftvsec() instead of Util::difftv().
+	(beforeSocketCheck): Commented out checkLongTimePeerChoking().
+	* src/SleepCommand.cc
+	(execute): Use Util::difftvsec() instead of Util::difftv().
+	* src/BitfieldMan.h
+	(getNthBitIndex): New function.
+	(hasMissingPiece): New function.
+	(getAllMissingIndexes): New function.
+	* src/BitfieldMan.cc
+	(countSetBit): Rewritten.
+	(getNthBitIndex): New function.
+	(getMissingIndexRandomly): Rewritten.
+	(hasMissingPiece): New function.
+	(getAllMissingIndexes): New function.
+	* src/TorrentMan.cc
+	(hasMissingPiece): New function.
+	(deleteUsedPiece): Rewritten using STL.
+	* src/PeerInteraction.cc
+	(getNewPieceAndSendInterest): Use TorrentMan::hasMissingPiece(), which
+	is a little bit faster then TorrentMan::getMissingPieceIndex().
+	(addRequests): Updated the number of pending requests.
+	* src/PeerAbstractCommand.cc
+	(isTimeoutDetected): Use Util::difftvsec() instead of Util::difftv().
+	(execute): Returns true if TorrentMan::isHalt() is true.
+	Corrected the condition of upload limit checking.
+	* src/Util.h
+	(countBit): New function.
+	* src/Util.cc
+	(nbits): New variable.
+	(countBit): New function.
+	* src/DownloadEngine.h
+	(SockCmdMap): New type definition.
+	(waitData): Added an argument.
+	(addSocket): Added an argument.
+	(addSocketForReadCheck): Added an argument.
+	(addSocketForWriteCheck): Added an argument.
+	* src/DownloadEngine.cc
+	(run): Executes only commands whose sockets are ready to read or write.
+	All commands are executed in every 1 second.
+	(waitData): Calls select() again if it returned
+	EINTR.
+	(addSocket): Saves socket and command object pair to the map.
+	(deleteSocket): Deletes socket and command object pair from the map.
+	(addSocketForReadCheck): Added an argument.
+	(addSocketForWriteCheck): Added an argument.
+	* src/DownloadCommand.cc
+	(executeInternal): Use Util::difftvsec() instead of Util::difftv().
+	
+	To send "event=stopped" to the tracker when the application finishes:
+	
+	* src/PeerChokeCommand.h
+	(checkPoint): New variable.
+	* src/PeerChokeCommand.cc
+	(PeerChokeCommand): Added the initialization of checkPoint.
+	(execute): The interval check is now done by checkPoint, not
+	SleepCommand. Return true if TorrentMan::isHalt() is true.
+	* src/TorrentMan.h
+	(halt): New function.
+	(hasMissingPiece): New function.
+	(isHalt): New function.
+	(setHalt): New function.
+	* src/TorrentMan.cc
+	(TorrentMan): Added the initialization of halt.
+	* src/TorrentAutoSaveCommand.h
+	(checkPoint): New variable.
+	* src/PeerListenCommand.cc
+	(execute): Returns true if TorrentMan::isHalt() is true.
+	* src/main.cc
+	(setSignalHander): Added flags argument.
+	(torrentHandler): Just calls TorrentMan::setHalt(true) and returns.
+	(main): Set SA_ONESHOT flag of the signal hander of SIGINT and SIGTERM.
+	Removed printDownloadAbortMessage() after torrent downloading loop.
+	* src/TorrentAutoSaveCommand.cc
+	(TorrentAutoSaveCommand): Added the initialization of checkPoint.
+	(execute): Returns true if TorrentMan::isHalt() is true.
+	The interval check is now done by checkPoint, not SleepCommand.
+	* src/TrackerWatcherCommand.cc
+	(execute): If TorrentMan::isHalt(), then create a tracker request with
+	event=stopped.
+	* src/TrackerUpdateCommand.cc
+	(prepareForRetry): Do not use SleepCommand here.
+	(execute): Returns true if TorrentMan::isHalt() is true.
+	
+	Others:
+	
+	* src/TorrentMan.cc
+	(getMissingPieceIndex): Updated log message.
+	* src/PeerInteraction.cc
+	(createPeerMessag): Updated log message.
+	
 2006-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add the ability to download several pieces in mix in a command and
@@ -1112,7 +1226,7 @@
 	* src/TrackerUpdateCommand.cc: Removed.
 	* src/TrackerWatcherCommand.cc (execute): The construction of request
 	url written in TrackerInitCommand was moved here. Do not create
-	tracker request command if torretnMan->trackers != 0.
+	tracker request command if torrentMan->trackers != 0.
 	* src/CompactTrackerResponseProcessor.h: New class.
 	* src/CompactTrackerResponseProcessor.cc: New class.
 	* src/message.h (MSG_TRACKER_WARNING_MESSAGE): Updated.
@@ -1312,7 +1426,7 @@
 	(finishPartialDownloadingMode): Reset requested flags.
 	(onDownloadComplete): New function.
 	* src/main.cc: Added --direct-file-mapping option.
-	Use TorretMan::setupDiskWriter().
+	Use TorrentMan::setupDiskWriter().
 	* src/TorrentDownloadEngine.cc (afterEachIteration): Use TorrentMan::
 	onDownloadComplete().
 	

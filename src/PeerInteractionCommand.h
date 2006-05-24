@@ -41,7 +41,7 @@ private:
   int chokeUnchokeCount;
   int haveCount;
   int keepAliveCount;
-  void receiveMessage();
+  void receiveMessages();
   void detectMessageFlooding();
   void checkLongTimePeerChoking();
   void detectTimeoutAndDuplicateBlock();

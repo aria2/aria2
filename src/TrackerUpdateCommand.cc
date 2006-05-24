@@ -36,8 +36,7 @@ TrackerUpdateCommand::TrackerUpdateCommand(int cuid, TorrentDownloadEngine*e):Co
 TrackerUpdateCommand::~TrackerUpdateCommand() {}
 
 bool TrackerUpdateCommand::prepareForRetry() {
-  Command* sleepCommand = new SleepCommand(cuid, e, this, 5);
-  e->commands.push_back(sleepCommand);
+  e->commands.push_back(this);
   return false;
 }
 
@@ -174,6 +173,10 @@ bool TrackerUpdateCommand::execute() {
 
   e->segmentMan->init();
 
-  return prepareForRetry();
+  if(e->torrentMan->isHalt()) {
+    return true;
+  } else {
+    return prepareForRetry();
+  }
 }
 

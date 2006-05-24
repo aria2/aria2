@@ -33,15 +33,17 @@
 
 typedef deque<Socket*> Sockets;
 typedef deque<Command*> Commands;
+typedef multimap<Socket*, Command*> SockCmdMap;
 
 class DownloadEngine {
 private:
-  void waitData();
+  void waitData(Sockets& activeSockets);
   Sockets rsockets;
   Sockets wsockets;
+  SockCmdMap sockCmdMap;
 
   void shortSleep() const;
-  bool addSocket(Sockets& sockets, Socket* socket);
+  bool addSocket(Sockets& sockets, Socket* socket, Command* command);
   bool deleteSocket(Sockets& sockets, Socket* socket);
 protected:
   const Logger* logger;
@@ -62,9 +64,9 @@ public:
 
   void cleanQueue();
 
-  bool addSocketForReadCheck(Socket* socket);
+  bool addSocketForReadCheck(Socket* socket, Command* command);
   bool deleteSocketForReadCheck(Socket* socket);
-  bool addSocketForWriteCheck(Socket* socket);
+  bool addSocketForWriteCheck(Socket* socket, Command* command);
   bool deleteSocketForWriteCheck(Socket* socket);
   
 };

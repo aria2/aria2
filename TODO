@@ -17,5 +17,4 @@
 * Refacturing HttpConnection and FtpConnection
 * HTTP/FTP downloading regression test
 * Fast extension test
-* send stop to the tracker when download finishes or ctrl-c enters.
-* fix flooding detection
+* compile test(OpenSSL, non-ssl, non-torrent)

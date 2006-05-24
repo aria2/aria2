@@ -73,10 +73,10 @@ void printDownloadAbortMessage() {
   printf(_("\nThe download was not complete because of errors. Check the log.\n"));
 }
 
-void setSignalHander(int signal, void (*handler)(int)) {
+void setSignalHander(int signal, void (*handler)(int), int flags) {
   struct sigaction sigact;
   sigact.sa_handler = handler;
-  sigact.sa_flags = 0;
+  sigact.sa_flags = flags;
   sigemptyset(&sigact.sa_mask);
   sigaction(signal, &sigact, NULL);
 }
@@ -96,6 +96,7 @@ void handler(int signal) {
 }
 
 void torrentHandler(int signal) {
+  /*
   printf(_("\nstopping application...\n"));
   fflush(stdout);
   te->torrentMan->diskAdaptor->closeFile();
@@ -110,6 +111,8 @@ void torrentHandler(int signal) {
   delete te;
   printf(_("done\n"));
   exit(0);
+  */
+  te->torrentMan->setHalt(true);
 }
 
 void addCommand(int cuid, const string& url, string referer, Requests& requests) {
@@ -596,13 +599,13 @@ int main(int argc, char* argv[]) {
     exit(1);
   }
 
-  setSignalHander(SIGPIPE, SIG_IGN);
+  setSignalHander(SIGPIPE, SIG_IGN, 0);
 
   bool readyToTorrentMode = false;
   string downloadedTorrentFile;
   if(torrentFile.empty()) {
-    setSignalHander(SIGINT, handler);
-    setSignalHander(SIGTERM, handler);
+    setSignalHander(SIGINT, handler, 0);
+    setSignalHander(SIGTERM, handler, 0);
 
     e = new ConsoleDownloadEngine();
     e->option = op;
@@ -644,8 +647,8 @@ int main(int argc, char* argv[]) {
   if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
     try {
       //op->put(PREF_MAX_TRIES, "0");
-      setSignalHander(SIGINT, torrentHandler);
-      setSignalHander(SIGTERM, torrentHandler);
+      setSignalHander(SIGINT, torrentHandler, SA_ONESHOT);
+      setSignalHander(SIGTERM, torrentHandler, SA_ONESHOT);
 
       Request* req = new Request();
       req->isTorrent = true;
@@ -717,8 +720,6 @@ int main(int argc, char* argv[]) {
       
       if(te->torrentMan->downloadComplete()) {
 	printDownloadCompeleteMessage();
-      } else {
-	printDownloadAbortMessage();
       }
       delete req;
       te->cleanQueue();

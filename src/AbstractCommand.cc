@@ -61,8 +61,8 @@ bool AbstractCommand::isTimeoutDetected() {
     checkPoint = now;
     return false;
   } else {
-    long long int elapsed = Util::difftv(now, checkPoint);
-    if(elapsed >= e->option->getAsLLInt(PREF_TIMEOUT)*1000000) {
+    int elapsed = Util::difftvsec(now, checkPoint);
+    if(elapsed >= e->option->getAsInt(PREF_TIMEOUT)) {
       return true;
     } else {
       return false;
@@ -145,11 +145,11 @@ void AbstractCommand::setReadCheckSocket(Socket* socket) {
     if(checkSocketIsReadable) {
       if(readCheckTarget != socket) {
 	e->deleteSocketForReadCheck(readCheckTarget);
-	e->addSocketForReadCheck(socket);
+	e->addSocketForReadCheck(socket, this);
 	readCheckTarget = socket;
       }
     } else {
-      e->addSocketForReadCheck(socket);
+      e->addSocketForReadCheck(socket, this);
       checkSocketIsReadable = true;
       readCheckTarget = socket;
     }
@@ -167,11 +167,11 @@ void AbstractCommand::setWriteCheckSocket(Socket* socket) {
     if(checkSocketIsWritable) {
       if(writeCheckTarget != socket) {
 	e->deleteSocketForWriteCheck(writeCheckTarget);
-	e->addSocketForWriteCheck(socket);
+	e->addSocketForWriteCheck(socket, this);
 	writeCheckTarget = socket;
       }
     } else {
-      e->addSocketForWriteCheck(socket);
+      e->addSocketForWriteCheck(socket, this);
       checkSocketIsWritable = true;
       writeCheckTarget = socket;
     }

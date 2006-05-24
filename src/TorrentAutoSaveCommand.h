@@ -29,6 +29,7 @@ class TorrentAutoSaveCommand : public Command {
 private:
   TorrentDownloadEngine* e;
   int interval;
+  struct timeval checkPoint;
 public:
   TorrentAutoSaveCommand(int cuid, TorrentDownloadEngine* e, int interval);
   ~TorrentAutoSaveCommand();

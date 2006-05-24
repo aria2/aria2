@@ -20,7 +20,6 @@
  */
 /* copyright --> */
 #include "TrackerWatcherCommand.h"
-#include "SleepCommand.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "Util.h"
 
@@ -37,16 +36,17 @@ TrackerWatcherCommand::~TrackerWatcherCommand() {}
 bool TrackerWatcherCommand::execute() {
   struct timeval now;
   gettimeofday(&now, NULL);
-  
   if(e->torrentMan->trackers == 0 &&
-     Util::difftvsec(now, checkPoint) >= interval) {
+     (Util::difftvsec(now, checkPoint) >= interval || e->torrentMan->isHalt())) {
     checkPoint = now;
     e->torrentMan->req->resetTryCount();
     int numWant = 50;
-    if(e->torrentMan->connections >= MIN_PEERS) {
+    if(e->torrentMan->connections >= MIN_PEERS || e->torrentMan->isHalt()) {
       numWant = 0;
-    }    
-    if(e->torrentMan->downloadComplete()) {
+    }
+    if(e->torrentMan->isHalt()) {
+      e->torrentMan->req->setTrackerEvent(Request::STOPPED);
+    } else if(e->torrentMan->downloadComplete()) {
       if(e->torrentMan->req->getTrackerEvent() == Request::COMPLETED) {
 	e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
       } else {
@@ -92,6 +92,9 @@ bool TrackerWatcherCommand::execute() {
     e->torrentMan->trackers++;
     logger->info("CUID#%d - creating new tracker request command #%d", cuid,
 		 command->getCuid());
+    if(e->torrentMan->isHalt()) {
+      return true;
+    }
   }
   interval = e->torrentMan->minInterval;
   e->commands.push_back(this);

@@ -20,6 +20,7 @@
  */
 /* copyright --> */
 #include "BitfieldMan.h"
+#include "Util.h"
 #include <string.h>
 
 BitfieldMan::BitfieldMan(int blockLength, long long int totalLength)
@@ -92,24 +93,21 @@ BitfieldMan& BitfieldMan::operator=(const BitfieldMan& bitfieldMan) {
 
 int BitfieldMan::countSetBit(const unsigned char* bitfield, int len) const {
   int count = 0;
-  for(int i = 0; i < len; i++) {
-    unsigned char bit = bitfield[i];
-    for(int bs = 7; bs >= 0 && i*8+7-bs < blocks; bs--) {
-      unsigned char mask = 1 << bs;
-      if(bit & mask) {
-	count++;
-      }
-    }
+  int size = sizeof(unsigned int);
+  for(int i = 0; i < len/size; i++) {
+    count += Util::countBit(*(unsigned int*)&bitfield[i*size]);
+  }
+  for(int i = len-len%size; i < len; i++) {
+    count += Util::countBit((unsigned int)bitfield[i]);
   }
   return count;
 }
 
-int BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield, int len, int randMax) const {
+int BitfieldMan::getNthBitIndex(const unsigned char* bitfield, int len, int nth) const {
   int index = -1;
-  int nth = 1+(int)(((double)randMax)*random()/(RAND_MAX+1.0));
   for(int i = 0; i < len && index == -1; i++) {
     unsigned char bit = bitfield[i];
-    for(int bs = 7; bs >= 0 && i*8+7-bs < blocks; bs--) {
+    for(int bs = 7; bs >= 0; bs--) {
       unsigned char mask = 1 << bs;
       if(bit & mask) {
 	nth--;
@@ -121,6 +119,61 @@ int BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield, int len,
     }
   }
   return index;
+}
+
+int BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield, int len, int randMax) const {
+  int nth = 1+(int)(((double)randMax)*random()/(RAND_MAX+1.0));
+
+  int count = 0;
+  int size = sizeof(unsigned int);
+  for(int i = 0; i < len/size; i++) {
+    int temp = Util::countBit(*(unsigned int*)&bitfield[i*size]);
+    if(nth <= count+temp) {
+      int t = i*size*8+getNthBitIndex(&bitfield[i*size], size, nth-count);
+      return t;
+    } else {
+      count += temp;
+    }
+  }
+  for(int i = len-len%size; i < len; i++) {
+    int temp = Util::countBit((unsigned int)bitfield[i]);
+    if(nth <= count+temp) {
+      int t = i*8+getNthBitIndex(&bitfield[i], 1, nth-count);
+      return t;      
+    } else {
+      count += temp;
+    }
+  }
+  return -1;
+}
+
+bool BitfieldMan::hasMissingPiece(const unsigned char* peerBitfield, int length) const {
+  if(bitfieldLength != length) {
+    return false;
+  }
+  unsigned char* tempBitfield = new unsigned char[bitfieldLength];
+  for(int i = 0; i < bitfieldLength; i++) {
+    tempBitfield[i] = peerBitfield[i] & ~bitfield[i];
+    if(filterEnabled) {
+      tempBitfield[i] &= filterBitfield[i];
+    }
+  }
+  bool retval = false;
+  int size = sizeof(unsigned int);
+  for(int i = 0; i < length/size; i++) {
+    if(Util::countBit(*(unsigned int*)&tempBitfield[i*size]) > 0) {
+      retval = true;
+      break;
+    }
+  }
+  for(int i = length-length%size; i < length && retval == false; i++) {
+    if(Util::countBit((unsigned int)tempBitfield[i]) > 0) {
+      retval = true;
+      break;
+    }
+  }
+  delete [] tempBitfield;
+  return retval;
 }
 
 int BitfieldMan::getMissingIndex(const unsigned char* peerBitfield, int length) const {
@@ -210,6 +263,26 @@ BlockIndexes BitfieldMan::getAllMissingIndexes() const {
   BlockIndexes missingIndexes;
   for(int i = 0; i < bitfieldLength; i++) {
     unsigned char bit = ~bitfield[i];
+    if(filterEnabled) {
+      bit &= filterBitfield[i];
+    }
+    for(int bs = 7; bs >= 0 && i*8+7-bs < blocks; bs--) {
+      unsigned char mask = 1 << bs;
+      if(bit & mask) {
+	missingIndexes.push_back(i*8+7-bs);
+      }
+    }
+  }
+  return missingIndexes;
+}
+
+BlockIndexes BitfieldMan::getAllMissingIndexes(const unsigned char* peerBitfield, int peerBitfieldLength) const {
+  BlockIndexes missingIndexes;
+  if(bitfieldLength != peerBitfieldLength) {
+    return missingIndexes;
+  }
+  for(int i = 0; i < bitfieldLength; i++) {
+    unsigned char bit = peerBitfield[i] & ~bitfield[i];
     if(filterEnabled) {
       bit &= filterBitfield[i];
     }

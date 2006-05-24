@@ -30,6 +30,7 @@ private:
   int interval;
   TorrentDownloadEngine* e;
   int rotate;
+  struct timeval checkPoint;
 
   void orderByUploadRate(Peers& peers) const;
   void orderByDownloadRate(Peers& peers) const;

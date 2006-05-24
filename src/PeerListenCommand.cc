@@ -54,39 +54,47 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
 }
 
 bool PeerListenCommand::execute() {
-  for(int i = 0; i < 3 && socket->isReadable(0); i++) {
-    Socket* peerSocket = NULL;
-    try {
-      peerSocket = socket->acceptConnection();
-      pair<string, int> peerInfo;
-      peerSocket->getPeerInfo(peerInfo);
-      pair<string, int> localInfo;
-      peerSocket->getAddrInfo(localInfo);
-      if(peerInfo.first != localInfo.first &&
-	 e->torrentMan->connections < MAX_PEERS) {
-	Peer* peer = new Peer(peerInfo.first, peerInfo.second,
-			      e->torrentMan->pieceLength,
-			      e->torrentMan->getTotalLength());
-	if(e->torrentMan->addPeer(peer, true)) {
-	  int newCuid =  e->torrentMan->getNewCuid();
-	  peer->cuid = newCuid;
-	  PeerInteractionCommand* command =
-	    new PeerInteractionCommand(newCuid, peer, e, peerSocket,
-				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
-	  e->commands.push_back(command);
-	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
-	} else {
-	  delete peer;
+  if(e->torrentMan->isHalt()) {
+    return true;
+  }
+  try {
+    for(int i = 0; i < 3 && socket->isReadable(0); i++) {
+      Socket* peerSocket = NULL;
+      try {
+	peerSocket = socket->acceptConnection();
+	pair<string, int> peerInfo;
+	peerSocket->getPeerInfo(peerInfo);
+	pair<string, int> localInfo;
+	peerSocket->getAddrInfo(localInfo);
+	if(peerInfo.first != localInfo.first &&
+	   e->torrentMan->connections < MAX_PEERS) {
+	  Peer* peer = new Peer(peerInfo.first, peerInfo.second,
+				e->torrentMan->pieceLength,
+				e->torrentMan->getTotalLength());
+	  if(e->torrentMan->addPeer(peer, true)) {
+	    int newCuid =  e->torrentMan->getNewCuid();
+	    peer->cuid = newCuid;
+	    PeerInteractionCommand* command =
+	      new PeerInteractionCommand(newCuid, peer, e, peerSocket,
+					 PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
+	    e->commands.push_back(command);
+	    logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
+	  } else {
+	    delete peer;
+	  }
 	}
-      }
-      delete peerSocket;
-    } catch(Exception* ex) {
-      logger->error("CUID#%d - error in accepting connection", ex, cuid);
-      delete ex;
-      if(peerSocket != NULL) {
 	delete peerSocket;
-      }
-    }		    
+      } catch(Exception* ex) {
+	logger->error("CUID#%d - error in accepting connection", ex, cuid);
+	delete ex;
+	if(peerSocket != NULL) {
+	  delete peerSocket;
+	}
+      }		    
+    }
+  } catch(Exception* e) {
+    logger->error("CUID#%d - Exception occurred.", e, cuid);
+    delete e;
   }
   e->commands.push_back(this);
   return false;
