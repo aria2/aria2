@@ -30,7 +30,7 @@
 using namespace std;
 
 #define PEER_ID_LENGTH 20
-#define DEFAULT_LATENCY 1000
+#define DEFAULT_LATENCY 1500
 
 class Peer {
 public:

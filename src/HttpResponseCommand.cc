@@ -26,6 +26,8 @@
 #include "HttpInitiateConnectionCommand.h"
 #include "message.h"
 #include "Util.h"
+#include <sys/types.h>
+#include <unistd.h>
 
 HttpResponseCommand::HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
   AbstractCommand(cuid, req, e, s) {
