@@ -1,3 +1,7 @@
+2006-05-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* Release 0.5.0
+
 2006-05-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/PeerAbstractCommand.h
