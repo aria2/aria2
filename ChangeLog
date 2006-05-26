@@ -269,7 +269,9 @@
 	(run): Comment out shortSleep.
 	
         To rewrite the message handling:
-	
+
+	* src/SimplePeerMessage.h: New class.
+	* src/SimplePeerMessage.cc: New class.
 	* src/CancelMessage.h: Derived from SimplePeerMessage.
 	(msg): New variable.
 	(create): New function.
