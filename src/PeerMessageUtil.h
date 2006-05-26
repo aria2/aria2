@@ -37,6 +37,7 @@
 #include "HaveAllMessage.h"
 #include "HaveNoneMessage.h"
 #include "PeerConnection.h"
+#include "common.h"
 
 #define MAX_BLOCK_LENGTH (128*1024)
 

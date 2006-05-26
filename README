@@ -20,7 +20,7 @@ aria2 is in very early development stage. Currently it has following features:
 * Segmented download
 * Cookie support(currently aria2 ignores "expires")
 * It can run as a daemon process.
-* BitTorrent protocol support
+* BitTorrent protocol support with fast extension.
 * Selective download in multi-file torrent
 
 3. How to build

@@ -15,6 +15,3 @@
 * Add Message stream encryption support
 * Add announce-list support
 * Refacturing HttpConnection and FtpConnection
-* HTTP/FTP downloading regression test
-* Fast extension test
-* compile test(OpenSSL, non-ssl, non-torrent)

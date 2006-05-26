@@ -28,6 +28,7 @@
 #include "TorrentMan.h"
 #include "PeerMessage.h"
 #include "HandshakeMessage.h"
+#include "common.h"
 
 // we assume maximum length of incoming message is "piece" message with 16KB
 // data. Messages beyond that size are dropped.

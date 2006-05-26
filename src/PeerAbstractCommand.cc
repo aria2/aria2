@@ -78,24 +78,19 @@ bool PeerAbstractCommand::execute() {
     return true;
   }
   try {
-    beforeSocketCheck();
     if(uploadLimitCheck && (uploadLimit == 0 ||
 			    e->getUploadSpeed() <= uploadLimit*1024) ||
        checkSocketIsReadable && readCheckTarget->isReadable(0) ||
-       checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
-       !checkSocketIsReadable && !checkSocketIsWritable) {
+       checkSocketIsWritable && writeCheckTarget->isWritable(0)) {
       updateCheckPoint();
-      return executeInternal();
-    } else {
-      if(isTimeoutDetected()) {
-	// TODO
-	checkPoint.tv_sec = 0;
-	checkPoint.tv_usec = 0;
-	throw new DlRetryEx(EX_TIME_OUT);
-      }
-      e->commands.push_back(this);
-      return false;
     }
+    if(isTimeoutDetected()) {
+      // TODO following 2 lines will be deleted.
+      checkPoint.tv_sec = 0;
+      checkPoint.tv_usec = 0;
+      throw new DlRetryEx(EX_TIME_OUT);
+    }
+    return executeInternal();
   } catch(Exception* err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     onAbort(err);

@@ -42,7 +42,6 @@ protected:
   virtual bool prepareForRetry(int wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal() = 0;
-  virtual void beforeSocketCheck() {}
   void setReadCheckSocket(Socket* socket);
   void setWriteCheckSocket(Socket* socket);
   void setUploadLimit(int uploadLimit);

@@ -219,7 +219,7 @@ void PeerInteraction::deleteRequestSlot(const RequestSlot& requestSlot) {
   }
 }
 
-void PeerInteraction::deleteTimeoutRequestSlot() {
+void PeerInteraction::checkRequestSlot() {
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end();) {
     RequestSlot& slot = *itr;
@@ -232,30 +232,22 @@ void PeerInteraction::deleteTimeoutRequestSlot() {
       piece.cancelBlock(slot.getBlockIndex());
       itr = requestSlots.erase(itr);
     } else {
-      itr++;
+      Piece piece = getDownloadPiece(slot.getIndex());
+      if(piece.hasBlock(slot.getBlockIndex()) ||
+	 torrentMan->hasPiece(piece.getIndex())) {
+	logger->debug("CUID#%d - Deleting request slot blockIndex=%d because"
+		      " the block has been acquired.", cuid,
+		      slot.getBlockIndex());
+	addMessage(createCancelMessage(slot.getIndex(),
+				       slot.getBegin(),
+				       slot.getLength()));
+	itr = requestSlots.erase(itr); 
+      } else {
+	itr++;
+      }
     }
   }
   updatePiece();
-}
-
-void PeerInteraction::deleteCompletedRequestSlot() {
-  for(RequestSlots::iterator itr = requestSlots.begin();
-      itr != requestSlots.end();) {
-    RequestSlot& slot = *itr;
-    Piece piece = getDownloadPiece(slot.getIndex());
-    if(piece.hasBlock(slot.getBlockIndex()) ||
-       torrentMan->hasPiece(piece.getIndex())) {
-      logger->debug("CUID#%d - Deleting request slot blockIndex=%d because"
-		    " the block has been acquired.", cuid,
-		    slot.getBlockIndex());
-      addMessage(createCancelMessage(slot.getIndex(),
-				     slot.getBegin(),
-				     slot.getLength()));
-      itr = requestSlots.erase(itr);
-    } else {
-      itr++;
-    }
-  }
 }
 
 bool PeerInteraction::isInRequestSlot(int index, int blockIndex) const {
@@ -469,7 +461,7 @@ void PeerInteraction::addRequests() {
     }
   }
   int MAX_PENDING_REQUEST;
-  if(peer->getLatency() < 900) {
+  if(peer->getLatency() < 500) {
     MAX_PENDING_REQUEST = 24;
   } else if(peer->getLatency() < 1500) {
     MAX_PENDING_REQUEST = 12;

@@ -46,13 +46,13 @@ private:
   void checkLongTimePeerChoking();
   void detectTimeoutAndDuplicateBlock();
   void decideChoking();
-  void keepAlive();
+  void sendKeepAlive();
+  void checkHave();
 protected:
   bool executeInternal();
   bool prepareForRetry(int wait);
   bool prepareForNextPeer(int wait);
   void onAbort(Exception* ex);
-  void beforeSocketCheck();
 public:
   PeerInteractionCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s, int sequence);
   ~PeerInteractionCommand();

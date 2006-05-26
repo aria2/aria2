@@ -52,8 +52,8 @@ using namespace std;
 
 typedef deque<Peer*> Peers;
 typedef multimap<int, int> Haves;
-typedef deque<Piece> UsedPieces;
 typedef deque<int> PieceIndexes;
+typedef deque<Piece> Pieces;
 
 class TorrentMan {
 private:
@@ -74,7 +74,7 @@ private:
   string storeDir;
   int port;
   Haves haves;
-  UsedPieces usedPieces;
+  Pieces usedPieces;
   bool setupComplete;
   const Logger* logger;
   Peers activePeers;
@@ -126,7 +126,7 @@ public:
   const Peers& getPeers() const { return peers; }
   Peer* getPeer() const;
   bool isPeerAvailable() const;
-  int deleteOldErrorPeers(int maxNum);
+  void deleteOldErrorPeers();
 
   bool hasMissingPiece(const Peer* peer) const;
   int getMissingPieceIndex(const Peer* peer) const;

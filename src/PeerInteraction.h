@@ -48,7 +48,6 @@
 
 typedef deque<RequestSlot> RequestSlots;
 typedef deque<PeerMessage*> MessageQueue;
-typedef deque<Piece> Pieces;
 
 class PeerInteraction {
 private:
@@ -87,8 +86,7 @@ public:
 
   bool isSendingMessageInProgress() const;
   void deleteRequestSlot(const RequestSlot& requestSlot);
-  void deleteTimeoutRequestSlot();
-  void deleteCompletedRequestSlot();
+  void checkRequestSlot();
   RequestSlot getCorrespondingRequestSlot(int index, int begin, int length) const;
   bool isInRequestSlot(int index, int blockIndex) const;
 

@@ -56,7 +56,10 @@ public:
   bool hasBlock(int blockIndex) const {
     return bitfield->isBitSet(blockIndex);
   }
-
+  /**
+   * Returns true if all blocks of this piece have been downloaded, otherwise
+   * returns false.
+   */
   bool pieceComplete() const;
   int countBlock() const { return bitfield->countBlock(); }
   int getBlockLength(int index) const {

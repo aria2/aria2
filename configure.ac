@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(aria2c, 0.4.2, tujikawa@rednoah.com)
+AC_INIT(aria2c, 0.5.0, tujikawa@rednoah.com)
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
@@ -13,7 +13,6 @@ localedir=${datadir}/locale
 AC_SUBST(localedir)
 
 # Checks for arguments.
-#AC_ARG_ENABLE([ssl], [  --enable-ssl            enalbe SSL support if libssl is installed. Default: yes], [enable_ssl=$enableval], [enable_ssl=yes])
 AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$enableval], [with_gnutls=yes])
 AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$enableval], [with_openssl=yes])
 

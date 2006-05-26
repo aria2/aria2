@@ -115,12 +115,12 @@ bool PeerInteractionCommand::executeInternal() {
     decideChoking();
     receiveMessages();
     detectMessageFlooding();
-    //checkLongTimePeerChoking();
 
-    peerInteraction->deleteTimeoutRequestSlot();
-    peerInteraction->deleteCompletedRequestSlot();
+    peerInteraction->checkRequestSlot();
     peerInteraction->addRequests();
+    checkHave();
     peerInteraction->sendMessages(e->getUploadSpeed());
+    sendKeepAlive();
     break;
   }
   if(peerInteraction->countMessageInQueue() > 0) {
@@ -250,7 +250,7 @@ void PeerInteractionCommand::onAbort(Exception* ex) {
   PeerAbstractCommand::onAbort(ex);
 }
 
-void PeerInteractionCommand::keepAlive() {
+void PeerInteractionCommand::sendKeepAlive() {
   if(keepAliveCheckPoint.tv_sec == 0 && keepAliveCheckPoint.tv_usec == 0) {
     gettimeofday(&keepAliveCheckPoint, NULL);
   } else {
@@ -266,27 +266,22 @@ void PeerInteractionCommand::keepAlive() {
   }
 }
 
-void PeerInteractionCommand::beforeSocketCheck() {
-  if(sequence == WIRED) {
-    e->torrentMan->unadvertisePiece(cuid);
-    detectMessageFlooding();
-    //checkLongTimePeerChoking();
-    PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
-    if(indexes.size() >= 20) {
-      if(peer->isFastExtensionEnabled()) {
-	if(e->torrentMan->hasAllPieces()) {
-	  peerInteraction->addMessage(peerInteraction->createHaveAllMessage());
-	} else {
-	  peerInteraction->addMessage(peerInteraction->createBitfieldMessage());
-	}
+void PeerInteractionCommand::checkHave() {
+  e->torrentMan->unadvertisePiece(cuid);
+  PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
+  if(indexes.size() >= 20) {
+    if(peer->isFastExtensionEnabled()) {
+      if(e->torrentMan->hasAllPieces()) {
+	peerInteraction->addMessage(peerInteraction->createHaveAllMessage());
       } else {
 	peerInteraction->addMessage(peerInteraction->createBitfieldMessage());
       }
     } else {
-      for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
-	peerInteraction->addMessage(peerInteraction->createHaveMessage(*itr));
-      }
+      peerInteraction->addMessage(peerInteraction->createBitfieldMessage());
     }
-    keepAlive();
+  } else {
+    for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+      peerInteraction->addMessage(peerInteraction->createHaveMessage(*itr));
+    }
   }
 }

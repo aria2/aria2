@@ -55,7 +55,6 @@ private:
   long long int peerUpload;
   long long int peerDownload;
   int pieceLength;
-  long long int totalLength;
   int deltaUpload;
   int deltaDownload;
   int latency;
@@ -69,7 +68,7 @@ public:
     bitfield(NULL),
     fastExtensionEnabled(false),
     peerUpload(0), peerDownload(0),
-    pieceLength(pieceLength), totalLength(totalLength),
+    pieceLength(pieceLength),
     deltaUpload(0), deltaDownload(0),
     latency(DEFAULT_LATENCY) {
     this->bitfield = new BitfieldMan(pieceLength, totalLength);

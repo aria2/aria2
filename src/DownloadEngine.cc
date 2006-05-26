@@ -80,7 +80,7 @@ void DownloadEngine::run() {
       }
     }
     afterEachIteration();
-    //shortSleep();
+    activeSockets.clear();
     if(!noWait && !commands.empty()) {
       waitData(activeSockets);
     }
@@ -100,7 +100,6 @@ void DownloadEngine::shortSleep() const {
 }
 
 void DownloadEngine::waitData(Sockets& activeSockets) {
-  activeSockets.clear();
   fd_set rfds;
   fd_set wfds;
   int retval = 0;

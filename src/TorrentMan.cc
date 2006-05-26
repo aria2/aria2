@@ -74,7 +74,9 @@ void TorrentMan::updatePeers(const Peers& peers) {
 }
 
 bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
-  deleteOldErrorPeers(MAX_PEER_LIST_SIZE);
+  if(peers.size() >= MAX_PEER_LIST_SIZE) {
+    deleteOldErrorPeers();
+  }
   if(duplicate) {
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
@@ -83,6 +85,9 @@ bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
       }
     }
   } else {
+    if(peers.size() >= MAX_PEER_LIST_SIZE) {
+      return false;
+    }
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
       Peer* p = *itr;
       if(p->ipaddr == peer->ipaddr && p->port == peer->port) {
@@ -112,22 +117,16 @@ bool TorrentMan::isPeerAvailable() const {
   return getPeer() != Peer::nullPeer;
 }
 
-int TorrentMan::deleteOldErrorPeers(int maxNum) {
-  int counter = 0;
+void TorrentMan::deleteOldErrorPeers() {
   for(Peers::iterator itr = peers.begin(); itr != peers.end();) {
     Peer* p = *itr;
     if(p->error >= MAX_PEER_ERROR && p->cuid == 0) {
       delete p;
       itr = peers.erase(itr);
-      counter++;
-      if(maxNum <= counter) {
-	break;
-      }
     } else {
       itr++;
     }
   }
-  return counter;
 }
 
 Peer* TorrentMan::getPeer() const {
@@ -213,7 +212,7 @@ Piece TorrentMan::checkOutPiece(int index) {
 
 int TorrentMan::deleteUsedPiecesByFillRate(int fillRate, int toDelete) {
   int deleted = 0;
-  for(UsedPieces::iterator itr = usedPieces.begin();
+  for(Pieces::iterator itr = usedPieces.begin();
       itr != usedPieces.end() && deleted < toDelete;) {
     Piece& piece = *itr;
     if(!bitfield->isUseBitSet(piece.getIndex()) &&
@@ -248,11 +247,12 @@ void TorrentMan::reduceUsedPieces(int max) {
 }
 
 void TorrentMan::addUsedPiece(const Piece& piece) {
+  // TODO ? if nullPiece
   usedPieces.push_back(piece);
 }
 
 Piece TorrentMan::findUsedPiece(int index) const {
-  for(UsedPieces::const_iterator itr = usedPieces.begin(); itr != usedPieces.end(); itr++) {
+  for(Pieces::const_iterator itr = usedPieces.begin(); itr != usedPieces.end(); itr++) {
     const Piece& piece = *itr;
     if(piece.getIndex() == index) {
       return piece;
@@ -265,7 +265,10 @@ void TorrentMan::deleteUsedPiece(const Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
-  usedPieces.erase(std::remove(usedPieces.begin(), usedPieces.end(), piece));
+  Pieces::iterator itr = find(usedPieces.begin(), usedPieces.end(), piece);
+  if(itr != usedPieces.end()) {
+    usedPieces.erase(itr);
+  }
 }
 
 void TorrentMan::completePiece(const Piece& piece) {
@@ -300,8 +303,8 @@ void TorrentMan::updatePiece(const Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
-  UsedPieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
-				  piece);
+  Pieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
+			      piece);
   if(itr != usedPieces.end()) {
     *itr = piece;
   }
@@ -311,8 +314,8 @@ void TorrentMan::syncPiece(Piece& piece) {
   if(Piece::isNull(piece)) {
     return;
   }
-  UsedPieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
-				  piece);
+  Pieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
+			      piece);
   if(itr != usedPieces.end()) {
     piece = *itr;
     return;

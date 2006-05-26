@@ -79,5 +79,5 @@ void Peer::setAllBitfield() {
 }
 
 void Peer::updateLatency(int latency) {
-  this->latency = (this->latency*80+latency*20)/200;
+  this->latency = (this->latency*20+latency*80)/200;
 }

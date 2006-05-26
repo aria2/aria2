@@ -1,3 +1,55 @@
+2006-05-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/PeerAbstractCommand.h
+	(beforeSocketCheck): Removed.
+	* src/PeerAbstractCommand.cc
+	Modified in order to call executeInternal() even if socket check
+	and upload limit check fail.
+	* src/PeerInteractionCommand.h
+	(keepAlive): Removed.
+	(sendKeepAlive): New function.
+	(checkHave): New function.
+	(beforeSocketCheck): Removed.
+	* src/PeerInteractionCommand.cc
+	(executeInternal): Use peerInteraction->checkRequestSlot(). Added
+	calls to checkHave() and sendKeepAlive().
+	(keepAlive): Renamed to sendKeepAlive().
+	(sendKeepAlive): New function.
+	(beforeSocketCheck): Removed.
+	(checkHave): New function.
+	* src/BitfieldMan.cc
+	(getMissingIndex): Don't call getMissingIndexRandomly() if max is 0.
+	(getMissingUnusedIndex): Don't call getMissingIndexRandomly() if max is
+	0.
+	(getMissingIndex): Dont't call getMissingIndexRandomly() if max is 0.
+	* src/TorrentMan.h
+	(UsedPieces): Removed.
+	(Pieces): New type definition.
+	* src/Piece.h: Updated doc.
+	* src/Peer.h
+	(totalLength): Removed.
+	* src/Peer.cc
+	(updateLatency): Fixed the latency calculation.
+	* src/TorrentMan.cc
+	(addPeer): Call deleteOldErrorPeers() only if peers.size() is higher
+	than or equal to MAX_PEER_LIST_SIZE.
+	If duplicate is false and peer.size() >= MAX_PEER_LIST_SIZE,
+	then return false.
+	(deleteOldErrorPeers): Rewritten.
+	(deleteUsedPiece): Fixed the miss use of STL remove.
+	* src/PeerInteraction.h
+	(Pieces): Removed.
+	(deleteTimeoutRequestSlot): Removed.
+	(deleteCompletedRequestSlot): Removed.
+	(checkRequestSlot): New function.
+	* src/PeerInteraction.cc
+	(deleteTimeoutRequestSlot): Merged to checkRequestSlot().
+	(deleteCompletedRequestSlot): Merged to checkRequestSlot().
+	(checkRequestSlot): New function.
+	* src/DownloadEngine.cc
+	(run): Clear activeSockets before calling waitData().
+	(waitData): Removed a call to activeSockets.clear().
+	
 2006-05-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To attempt to handle EINTR:
