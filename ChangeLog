@@ -2,7 +2,7 @@
 
 	* Release 0.5.0
 
-	To fix GCC3 compilation issue:
+	To fix compile issue with gcc3:
 
 	* src/CancelMessage.h
 	(ID): Renamed as ID_t
