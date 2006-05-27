@@ -2,6 +2,57 @@
 
 	* Release 0.5.0
 
+	To fix GCC3 compilation issue:
+
+	* src/CancelMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/RejectMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/SuggestPieceMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/AllowedFastMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/PortMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/HaveNoneMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/KeepAliveMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/HaveAllMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/UnchokeMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/BitfieldMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/PieceMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/RequestMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/NotInterestedMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/ChokeMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/InterestedMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	* src/HaveMessage.h
+	(ID): Renamed as ID_t
+	(ID_t): New enum.
+	
 2006-05-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/PeerAbstractCommand.h

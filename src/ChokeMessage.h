@@ -34,7 +34,7 @@ public:
   ChokeMessage():SimplePeerMessage() {}
   virtual ~ChokeMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 0
   };
 

@@ -31,7 +31,7 @@ public:
   PortMessage():PeerMessage() {}
   virtual ~PortMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 9
   };
 

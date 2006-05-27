@@ -58,7 +58,7 @@ public:
     }
   }
 
-  enum ID {
+  enum ID_t {
     ID = 7
   };
 

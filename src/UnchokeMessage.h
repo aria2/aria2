@@ -34,7 +34,7 @@ public:
   UnchokeMessage():SimplePeerMessage() {}
   virtual ~UnchokeMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 1
   };
 

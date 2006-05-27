@@ -31,7 +31,7 @@ public:
   HaveNoneMessage();
   virtual ~HaveNoneMessage();
   
-  enum ID {
+  enum ID_t {
     ID = 15
   };
   

@@ -31,7 +31,7 @@ public:
   KeepAliveMessage():SimplePeerMessage() {}
   virtual ~KeepAliveMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 99
   };
 
