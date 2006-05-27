@@ -37,7 +37,7 @@ public:
 
   virtual ~HaveMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 4
   };
 

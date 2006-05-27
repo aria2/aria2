@@ -42,7 +42,7 @@ public:
 		   pieces(0), pieceLength(0) {}
   virtual ~RequestMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 6
   };
 

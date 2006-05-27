@@ -37,7 +37,7 @@ public:
 
   virtual ~AllowedFastMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 17
   };
 

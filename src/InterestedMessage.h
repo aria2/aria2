@@ -34,7 +34,7 @@ public:
   InterestedMessage():SimplePeerMessage() {}
   virtual ~InterestedMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 2
   };
 

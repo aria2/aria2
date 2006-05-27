@@ -42,7 +42,7 @@ public:
 
   virtual ~RejectMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 16
   };
 

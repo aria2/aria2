@@ -42,7 +42,7 @@ public:
 
   virtual ~CancelMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 8
   };
 

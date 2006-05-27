@@ -31,7 +31,7 @@ public:
   HaveAllMessage();
   virtual ~HaveAllMessage();
 
-  enum ID {
+  enum ID_t {
     ID = 14
   };
 

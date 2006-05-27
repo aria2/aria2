@@ -34,7 +34,7 @@ public:
   NotInterestedMessage():SimplePeerMessage() {}
   virtual ~NotInterestedMessage() {}
 
-  enum ID {
+  enum ID_t {
     ID = 3
   };
 
