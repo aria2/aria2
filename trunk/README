@@ -1,0 +1,75 @@
+aria2 - a simple utility for downloading files.
+
+1. Disclaimer
+-------------
+This program comes with no warranty.
+You must use this program at your own risk.
+
+2. About aria2
+--------------
+aria2 has segmented downloading engine in its core. By segmented downloading,
+it can download files very much faster than ordinary browsers.
+
+aria2 is in very early development stage. Currently it has following features:
+* HTTP/HTTPS GET support
+* HTTP Proxy support
+* HTTP BASIC authentication support
+* HTTP Proxy authentication support
+* FTP support(active, passive mode)
+* FTP through HTTP proxy(GET command or tunneling)
+* Segmented download
+* Cookie support(currently aria2 ignores "expires")
+* It can run as a daemon process.
+* BitTorrent protocol support with fast extension.
+* Selective download in multi-file torrent
+
+3. How to build
+---------------
+$ ./configure
+$ make
+
+The executable is aria2c in src directory.
+
+4. Dependency
+-------------
+In order to enable HTTPS support, you need GNU TLS or OpenSSL.
+In order to enable BitTorrent support, you need GNU TLS+libgcrypt or OpenSSL.
+
+GNU TLS has precedence over OpenSSL if both libraries are installed.
+If you prefer OpenSSL, run configure with "--without-gnutls".
+
+5. BitTorrrent
+--------------
+The filename of the downloaded file is determined as follows:
+
+single-file mode:
+    If "name" key is present in .torrent file, filename is the value of "name"
+    key. Otherwise, filename is the basename of .torrent file appended by
+    ".file". For example, .torrent file is "test.torrrent", then filename is
+    "test.torrent.file".
+    The directory to store the downloaded file can be specified by -d option.
+multi-file mode:
+    The complete directory/file structure mentioned in .torrent file is
+    created.
+    The directory to store the top directory of downloaded files can be
+    specified by -d option.
+
+In the default behavior, before download starts, complete directory structure
+is created if needed. Then aria2 opens all files mentioned in .torrent file,
+directly writes to and reads from these files.
+NOTE: Even in selective download, all files are opened.
+
+If "--direct-file-mapping" option set to be false, aria2 creates temporary
+file in the store directory. The length of this file is the sum of length of
+the files in .torrent file, so at least 2 times more disk space than the file
+size itself is required. Writing and reading is done against this file.
+After download completes, aria2 creates complete directory structure if needed,
+and copies whole file or a part of it to the destination.
+
+Note:
+*  -o option is used to change the filename of downloaded .torrent file.
+* This version only supports compact peers list format.
+* The ports aria2c uses are 6881-6999.
+* The maximum number of peers is 55.
+* After selective download completes, aria2 is going to download rest of the
+files.

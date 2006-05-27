@@ -1,0 +1,467 @@
+#! /bin/sh
+# Output a system dependent table of character encoding aliases.
+#
+#   Copyright (C) 2000-2003 Free Software Foundation, Inc.
+#
+#   This program is free software; you can redistribute it and/or modify it
+#   under the terms of the GNU Library General Public License as published
+#   by the Free Software Foundation; either version 2, or (at your option)
+#   any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#   Library General Public License for more details.
+#
+#   You should have received a copy of the GNU Library General Public
+#   License along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#   USA.
+#
+# The table consists of lines of the form
+#    ALIAS  CANONICAL
+#
+# ALIAS is the (system dependent) result of "nl_langinfo (CODESET)".
+# ALIAS is compared in a case sensitive way.
+#
+# CANONICAL is the GNU canonical name for this character encoding.
+# It must be an encoding supported by libiconv. Support by GNU libc is
+# also desirable. CANONICAL is case insensitive. Usually an upper case
+# MIME charset name is preferred.
+# The current list of GNU canonical charset names is as follows.
+#
+#       name                         used by which systems         a MIME name?
+#   ASCII, ANSI_X3.4-1968     glibc solaris freebsd
+#   ISO-8859-1                glibc aix hpux irix osf solaris freebsd   yes
+#   ISO-8859-2                glibc aix hpux irix osf solaris freebsd   yes
+#   ISO-8859-3                glibc solaris                             yes
+#   ISO-8859-4                osf solaris freebsd                       yes
+#   ISO-8859-5                glibc aix hpux irix osf solaris freebsd   yes
+#   ISO-8859-6                glibc aix hpux solaris                    yes
+#   ISO-8859-7                glibc aix hpux irix osf solaris           yes
+#   ISO-8859-8                glibc aix hpux osf solaris                yes
+#   ISO-8859-9                glibc aix hpux irix osf solaris           yes
+#   ISO-8859-13               glibc
+#   ISO-8859-14               glibc
+#   ISO-8859-15               glibc aix osf solaris freebsd
+#   KOI8-R                    glibc solaris freebsd                     yes
+#   KOI8-U                    glibc freebsd                             yes
+#   KOI8-T                    glibc
+#   CP437                     dos
+#   CP775                     dos
+#   CP850                     aix osf dos
+#   CP852                     dos
+#   CP855                     dos
+#   CP856                     aix
+#   CP857                     dos
+#   CP861                     dos
+#   CP862                     dos
+#   CP864                     dos
+#   CP865                     dos
+#   CP866                     freebsd dos
+#   CP869                     dos
+#   CP874                     woe32 dos
+#   CP922                     aix
+#   CP932                     aix woe32 dos
+#   CP943                     aix
+#   CP949                     osf woe32 dos
+#   CP950                     woe32 dos
+#   CP1046                    aix
+#   CP1124                    aix
+#   CP1125                    dos
+#   CP1129                    aix
+#   CP1250                    woe32
+#   CP1251                    glibc solaris woe32
+#   CP1252                    aix woe32
+#   CP1253                    woe32
+#   CP1254                    woe32
+#   CP1255                    glibc woe32
+#   CP1256                    woe32
+#   CP1257                    woe32
+#   GB2312                    glibc aix hpux irix solaris freebsd       yes
+#   EUC-JP                    glibc aix hpux irix osf solaris freebsd   yes
+#   EUC-KR                    glibc aix hpux irix osf solaris freebsd   yes
+#   EUC-TW                    glibc aix hpux irix osf solaris
+#   BIG5                      glibc aix hpux osf solaris freebsd        yes
+#   BIG5-HKSCS                glibc solaris
+#   GBK                       glibc aix osf solaris woe32 dos
+#   GB18030                   glibc solaris
+#   SHIFT_JIS                 hpux osf solaris freebsd                  yes
+#   JOHAB                     glibc solaris woe32
+#   TIS-620                   glibc aix hpux osf solaris
+#   VISCII                    glibc                                     yes
+#   TCVN5712-1                glibc
+#   GEORGIAN-PS               glibc
+#   HP-ROMAN8                 hpux
+#   HP-ARABIC8                hpux
+#   HP-GREEK8                 hpux
+#   HP-HEBREW8                hpux
+#   HP-TURKISH8               hpux
+#   HP-KANA8                  hpux
+#   DEC-KANJI                 osf
+#   DEC-HANYU                 osf
+#   UTF-8                     glibc aix hpux osf solaris                yes
+#
+# Note: Names which are not marked as being a MIME name should not be used in
+# Internet protocols for information interchange (mail, news, etc.).
+#
+# Note: ASCII and ANSI_X3.4-1968 are synonymous canonical names. Applications
+# must understand both names and treat them as equivalent.
+#
+# The first argument passed to this file is the canonical host specification,
+#    CPU_TYPE-MANUFACTURER-OPERATING_SYSTEM
+# or
+#    CPU_TYPE-MANUFACTURER-KERNEL-OPERATING_SYSTEM
+
+host="$1"
+os=`echo "$host" | sed -e 's/^[^-]*-[^-]*-\(.*\)$/\1/'`
+echo "# This file contains a table of character encoding aliases,"
+echo "# suitable for operating system '${os}'."
+echo "# It was automatically generated from config.charset."
+# List of references, updated during installation:
+echo "# Packages using this file: "
+case "$os" in
+    linux* | *-gnu*)
+	# With glibc-2.1 or newer, we don't need any canonicalization,
+	# because glibc has iconv and both glibc and libiconv support all
+	# GNU canonical names directly. Therefore, the Makefile does not
+	# need to install the alias file at all.
+	# The following applies only to glibc-2.0.x and older libcs.
+	echo "ISO_646.IRV:1983 ASCII"
+	;;
+    aix*)
+	echo "ISO8859-1 ISO-8859-1"
+	echo "ISO8859-2 ISO-8859-2"
+	echo "ISO8859-5 ISO-8859-5"
+	echo "ISO8859-6 ISO-8859-6"
+	echo "ISO8859-7 ISO-8859-7"
+	echo "ISO8859-8 ISO-8859-8"
+	echo "ISO8859-9 ISO-8859-9"
+	echo "ISO8859-15 ISO-8859-15"
+	echo "IBM-850 CP850"
+	echo "IBM-856 CP856"
+	echo "IBM-921 ISO-8859-13"
+	echo "IBM-922 CP922"
+	echo "IBM-932 CP932"
+	echo "IBM-943 CP943"
+	echo "IBM-1046 CP1046"
+	echo "IBM-1124 CP1124"
+	echo "IBM-1129 CP1129"
+	echo "IBM-1252 CP1252"
+	echo "IBM-eucCN GB2312"
+	echo "IBM-eucJP EUC-JP"
+	echo "IBM-eucKR EUC-KR"
+	echo "IBM-eucTW EUC-TW"
+	echo "big5 BIG5"
+	echo "GBK GBK"
+	echo "TIS-620 TIS-620"
+	echo "UTF-8 UTF-8"
+	;;
+    hpux*)
+	echo "iso88591 ISO-8859-1"
+	echo "iso88592 ISO-8859-2"
+	echo "iso88595 ISO-8859-5"
+	echo "iso88596 ISO-8859-6"
+	echo "iso88597 ISO-8859-7"
+	echo "iso88598 ISO-8859-8"
+	echo "iso88599 ISO-8859-9"
+	echo "iso885915 ISO-8859-15"
+	echo "roman8 HP-ROMAN8"
+	echo "arabic8 HP-ARABIC8"
+	echo "greek8 HP-GREEK8"
+	echo "hebrew8 HP-HEBREW8"
+	echo "turkish8 HP-TURKISH8"
+	echo "kana8 HP-KANA8"
+	echo "tis620 TIS-620"
+	echo "big5 BIG5"
+	echo "eucJP EUC-JP"
+	echo "eucKR EUC-KR"
+	echo "eucTW EUC-TW"
+	echo "hp15CN GB2312"
+	#echo "ccdc ?" # what is this?
+	echo "SJIS SHIFT_JIS"
+	echo "utf8 UTF-8"
+	;;
+    irix*)
+	echo "ISO8859-1 ISO-8859-1"
+	echo "ISO8859-2 ISO-8859-2"
+	echo "ISO8859-5 ISO-8859-5"
+	echo "ISO8859-7 ISO-8859-7"
+	echo "ISO8859-9 ISO-8859-9"
+	echo "eucCN GB2312"
+	echo "eucJP EUC-JP"
+	echo "eucKR EUC-KR"
+	echo "eucTW EUC-TW"
+	;;
+    osf*)
+	echo "ISO8859-1 ISO-8859-1"
+	echo "ISO8859-2 ISO-8859-2"
+	echo "ISO8859-4 ISO-8859-4"
+	echo "ISO8859-5 ISO-8859-5"
+	echo "ISO8859-7 ISO-8859-7"
+	echo "ISO8859-8 ISO-8859-8"
+	echo "ISO8859-9 ISO-8859-9"
+	echo "ISO8859-15 ISO-8859-15"
+	echo "cp850 CP850"
+	echo "big5 BIG5"
+	echo "dechanyu DEC-HANYU"
+	echo "dechanzi GB2312"
+	echo "deckanji DEC-KANJI"
+	echo "deckorean EUC-KR"
+	echo "eucJP EUC-JP"
+	echo "eucKR EUC-KR"
+	echo "eucTW EUC-TW"
+	echo "GBK GBK"
+	echo "KSC5601 CP949"
+	echo "sdeckanji EUC-JP"
+	echo "SJIS SHIFT_JIS"
+	echo "TACTIS TIS-620"
+	echo "UTF-8 UTF-8"
+	;;
+    solaris*)
+	echo "646 ASCII"
+	echo "ISO8859-1 ISO-8859-1"
+	echo "ISO8859-2 ISO-8859-2"
+	echo "ISO8859-3 ISO-8859-3"
+	echo "ISO8859-4 ISO-8859-4"
+	echo "ISO8859-5 ISO-8859-5"
+	echo "ISO8859-6 ISO-8859-6"
+	echo "ISO8859-7 ISO-8859-7"
+	echo "ISO8859-8 ISO-8859-8"
+	echo "ISO8859-9 ISO-8859-9"
+	echo "ISO8859-15 ISO-8859-15"
+	echo "koi8-r KOI8-R"
+	echo "ansi-1251 CP1251"
+	echo "BIG5 BIG5"
+	echo "Big5-HKSCS BIG5-HKSCS"
+	echo "gb2312 GB2312"
+	echo "GBK GBK"
+	echo "GB18030 GB18030"
+	echo "cns11643 EUC-TW"
+	echo "5601 EUC-KR"
+	echo "ko_KR.johap92 JOHAB"
+	echo "eucJP EUC-JP"
+	echo "PCK SHIFT_JIS"
+	echo "TIS620.2533 TIS-620"
+	#echo "sun_eu_greek ?" # what is this?
+	echo "UTF-8 UTF-8"
+	;;
+    freebsd* | os2*)
+	# FreeBSD 4.2 doesn't have nl_langinfo(CODESET); therefore
+	# localcharset.c falls back to using the full locale name
+	# from the environment variables.
+	# Likewise for OS/2. OS/2 has XFree86 just like FreeBSD. Just
+	# reuse FreeBSD's locale data for OS/2.
+	echo "C ASCII"
+	echo "US-ASCII ASCII"
+	for l in la_LN lt_LN; do
+	  echo "$l.ASCII ASCII"
+	done
+	for l in da_DK de_AT de_CH de_DE en_AU en_CA en_GB en_US es_ES \
+	         fi_FI fr_BE fr_CA fr_CH fr_FR is_IS it_CH it_IT la_LN \
+	         lt_LN nl_BE nl_NL no_NO pt_PT sv_SE; do
+	  echo "$l.ISO_8859-1 ISO-8859-1"
+	  echo "$l.DIS_8859-15 ISO-8859-15"
+	done
+	for l in cs_CZ hr_HR hu_HU la_LN lt_LN pl_PL sl_SI; do
+	  echo "$l.ISO_8859-2 ISO-8859-2"
+	done
+	for l in la_LN lt_LT; do
+	  echo "$l.ISO_8859-4 ISO-8859-4"
+	done
+	for l in ru_RU ru_SU; do
+	  echo "$l.KOI8-R KOI8-R"
+	  echo "$l.ISO_8859-5 ISO-8859-5"
+	  echo "$l.CP866 CP866"
+	done
+	echo "uk_UA.KOI8-U KOI8-U"
+	echo "zh_TW.BIG5 BIG5"
+	echo "zh_TW.Big5 BIG5"
+	echo "zh_CN.EUC GB2312"
+	echo "ja_JP.EUC EUC-JP"
+	echo "ja_JP.SJIS SHIFT_JIS"
+	echo "ja_JP.Shift_JIS SHIFT_JIS"
+	echo "ko_KR.EUC EUC-KR"
+	;;
+    netbsd*)
+	echo "646 ASCII"
+	echo "ISO8859-1 ISO-8859-1"
+	echo "ISO8859-2 ISO-8859-2"
+	echo "ISO8859-4 ISO-8859-4"
+	echo "ISO8859-5 ISO-8859-5"
+	echo "ISO8859-15 ISO-8859-15"
+	echo "eucCN GB2312"
+	echo "eucJP EUC-JP"
+	echo "eucKR EUC-KR"
+	echo "eucTW EUC-TW"
+	echo "BIG5 BIG5"
+	echo "SJIS SHIFT_JIS"
+	;;
+    beos*)
+	# BeOS has a single locale, and it has UTF-8 encoding.
+	echo "* UTF-8"
+	;;
+    msdosdjgpp*)
+	# DJGPP 2.03 doesn't have nl_langinfo(CODESET); therefore
+	# localcharset.c falls back to using the full locale name
+	# from the environment variables.
+	echo "#"
+	echo "# The encodings given here may not all be correct."
+	echo "# If you find that the encoding given for your language and"
+	echo "# country is not the one your DOS machine actually uses, just"
+	echo "# correct it in this file, and send a mail to"
+	echo "# Juan Manuel Guerrero <st001906@hrz1.hrz.tu-darmstadt.de>"
+	echo "# and Bruno Haible <bruno@clisp.org>."
+	echo "#"
+	echo "C ASCII"
+	# ISO-8859-1 languages
+	echo "ca CP850"
+	echo "ca_ES CP850"
+	echo "da CP865"    # not CP850 ??
+	echo "da_DK CP865" # not CP850 ??
+	echo "de CP850"
+	echo "de_AT CP850"
+	echo "de_CH CP850"
+	echo "de_DE CP850"
+	echo "en CP850"
+	echo "en_AU CP850" # not CP437 ??
+	echo "en_CA CP850"
+	echo "en_GB CP850"
+	echo "en_NZ CP437"
+	echo "en_US CP437"
+	echo "en_ZA CP850" # not CP437 ??
+	echo "es CP850"
+	echo "es_AR CP850"
+	echo "es_BO CP850"
+	echo "es_CL CP850"
+	echo "es_CO CP850"
+	echo "es_CR CP850"
+	echo "es_CU CP850"
+	echo "es_DO CP850"
+	echo "es_EC CP850"
+	echo "es_ES CP850"
+	echo "es_GT CP850"
+	echo "es_HN CP850"
+	echo "es_MX CP850"
+	echo "es_NI CP850"
+	echo "es_PA CP850"
+	echo "es_PY CP850"
+	echo "es_PE CP850"
+	echo "es_SV CP850"
+	echo "es_UY CP850"
+	echo "es_VE CP850"
+	echo "et CP850"
+	echo "et_EE CP850"
+	echo "eu CP850"
+	echo "eu_ES CP850"
+	echo "fi CP850"
+	echo "fi_FI CP850"
+	echo "fr CP850"
+	echo "fr_BE CP850"
+	echo "fr_CA CP850"
+	echo "fr_CH CP850"
+	echo "fr_FR CP850"
+	echo "ga CP850"
+	echo "ga_IE CP850"
+	echo "gd CP850"
+	echo "gd_GB CP850"
+	echo "gl CP850"
+	echo "gl_ES CP850"
+	echo "id CP850"    # not CP437 ??
+	echo "id_ID CP850" # not CP437 ??
+	echo "is CP861"    # not CP850 ??
+	echo "is_IS CP861" # not CP850 ??
+	echo "it CP850"
+	echo "it_CH CP850"
+	echo "it_IT CP850"
+	echo "lt CP775"
+	echo "lt_LT CP775"
+	echo "lv CP775"
+	echo "lv_LV CP775"
+	echo "nb CP865"    # not CP850 ??
+	echo "nb_NO CP865" # not CP850 ??
+	echo "nl CP850"
+	echo "nl_BE CP850"
+	echo "nl_NL CP850"
+	echo "nn CP865"    # not CP850 ??
+	echo "nn_NO CP865" # not CP850 ??
+	echo "no CP865"    # not CP850 ??
+	echo "no_NO CP865" # not CP850 ??
+	echo "pt CP850"
+	echo "pt_BR CP850"
+	echo "pt_PT CP850"
+	echo "sv CP850"
+	echo "sv_SE CP850"
+	# ISO-8859-2 languages
+	echo "cs CP852"
+	echo "cs_CZ CP852"
+	echo "hr CP852"
+	echo "hr_HR CP852"
+	echo "hu CP852"
+	echo "hu_HU CP852"
+	echo "pl CP852"
+	echo "pl_PL CP852"
+	echo "ro CP852"
+	echo "ro_RO CP852"
+	echo "sk CP852"
+	echo "sk_SK CP852"
+	echo "sl CP852"
+	echo "sl_SI CP852"
+	echo "sq CP852"
+	echo "sq_AL CP852"
+	echo "sr CP852"    # CP852 or CP866 or CP855 ??
+	echo "sr_YU CP852" # CP852 or CP866 or CP855 ??
+	# ISO-8859-3 languages
+	echo "mt CP850"
+	echo "mt_MT CP850"
+	# ISO-8859-5 languages
+	echo "be CP866"
+	echo "be_BE CP866"
+	echo "bg CP866"    # not CP855 ??
+	echo "bg_BG CP866" # not CP855 ??
+	echo "mk CP866"    # not CP855 ??
+	echo "mk_MK CP866" # not CP855 ??
+	echo "ru CP866"
+	echo "ru_RU CP866"
+	echo "uk CP1125"
+	echo "uk_UA CP1125"
+	# ISO-8859-6 languages
+	echo "ar CP864"
+	echo "ar_AE CP864"
+	echo "ar_DZ CP864"
+	echo "ar_EG CP864"
+	echo "ar_IQ CP864"
+	echo "ar_IR CP864"
+	echo "ar_JO CP864"
+	echo "ar_KW CP864"
+	echo "ar_MA CP864"
+	echo "ar_OM CP864"
+	echo "ar_QA CP864"
+	echo "ar_SA CP864"
+	echo "ar_SY CP864"
+	# ISO-8859-7 languages
+	echo "el CP869"
+	echo "el_GR CP869"
+	# ISO-8859-8 languages
+	echo "he CP862"
+	echo "he_IL CP862"
+	# ISO-8859-9 languages
+	echo "tr CP857"
+	echo "tr_TR CP857"
+	# Japanese
+	echo "ja CP932"
+	echo "ja_JP CP932"
+	# Chinese
+	echo "zh_CN GBK"
+	echo "zh_TW CP950" # not CP938 ??
+	# Korean
+	echo "kr CP949"    # not CP934 ??
+	echo "kr_KR CP949" # not CP934 ??
+	# Thai
+	echo "th CP874"
+	echo "th_TH CP874"
+	# Other
+	echo "eo CP850"
+	echo "eo_EO CP850"
+	;;
+esac

@@ -1,0 +1,77 @@
+#include "MetaFileUtil.h"
+#include "Data.h"
+#include "Dictionary.h"
+#include "List.h"
+#include "DlAbortEx.h"
+#include <string>
+#include <cppunit/extensions/HelperMacros.h>
+
+using namespace std;
+
+class MetaFileUtilTest:public CppUnit::TestFixture {
+
+  CPPUNIT_TEST_SUITE(MetaFileUtilTest);
+  CPPUNIT_TEST(testParseMetaFile);
+  CPPUNIT_TEST(testBdecoding);
+  CPPUNIT_TEST_SUITE_END();
+private:
+
+public:
+  void setUp() {
+  }
+
+  void testParseMetaFile();
+  void testBdecoding();
+};
+
+
+CPPUNIT_TEST_SUITE_REGISTRATION( MetaFileUtilTest );
+
+void MetaFileUtilTest::testParseMetaFile() {
+  MetaEntry* entry = MetaFileUtil::parseMetaFile("test.torrent");
+  Dictionary* d = dynamic_cast<Dictionary*>(entry);
+  CPPUNIT_ASSERT(d != NULL);
+}
+
+void MetaFileUtilTest::testBdecoding() {
+  try {
+    char* str = "5:abcd";
+    MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  } catch(DlAbortEx* ex) {
+    delete ex;
+  } catch(...) {
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  }
+
+  try {
+    char* str = "i1234";
+    MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  } catch(DlAbortEx* ex) {
+    delete ex;
+  } catch(...) {
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  }
+
+  try {
+    char* str = "5abcd";
+    MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  } catch(DlAbortEx* ex) {
+    delete ex;
+  } catch(...) {
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  }
+
+  try {
+    char* str = "d";
+    MetaEntry* entry = MetaFileUtil::bdecoding(str, strlen(str));
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  } catch(DlAbortEx* ex) {
+    delete ex;
+  } catch(...) {
+    CPPUNIT_FAIL("DlAbortEx exception must be threw.");
+  }
+}
+    
