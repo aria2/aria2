@@ -125,39 +125,41 @@ bool TrackerUpdateCommand::execute() {
       e->torrentMan->incomplete = incomplete->toInt();
       logger->debug("CUID#%d - Incomplete:%d",
 		    cuid, e->torrentMan->incomplete);
-    } 
-    Data* peers = (Data*)response->get("peers");
-    if(peers != NULL) {
-      for(int i = 0; i < peers->getLen(); i += 6) {
-	unsigned int ipaddr1 = (unsigned char)*(peers->getData()+i);
-	unsigned int ipaddr2 = (unsigned char)*(peers->getData()+i+1);
-	unsigned int ipaddr3 = (unsigned char)*(peers->getData()+i+2);
-	unsigned int ipaddr4 = (unsigned char)*(peers->getData()+i+3);
-	unsigned int port = ntohs(*(unsigned short int*)(peers->getData()+i+4));
-	char ipaddr[16];
-	
-	snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
-		 ipaddr1, ipaddr2, ipaddr3, ipaddr4);
-	Peer* peer = new Peer(ipaddr, port, e->torrentMan->pieceLength,
-			      e->torrentMan->getTotalLength());
-	if(e->torrentMan->addPeer(peer)) {
-	  logger->debug("CUID#%d - Adding peer %s:%d",
-			cuid, peer->ipaddr.c_str(), peer->port);
-	} else {
-	  delete peer;
+    }
+    if(dynamic_cast<const Data*>(response->get("peers"))) {
+      Data* peers = (Data*)response->get("peers");
+      if(peers != NULL && peers->getLen() > 0) {
+	for(int i = 0; i < peers->getLen(); i += 6) {
+	  unsigned int ipaddr1 = (unsigned char)*(peers->getData()+i);
+	  unsigned int ipaddr2 = (unsigned char)*(peers->getData()+i+1);
+	  unsigned int ipaddr3 = (unsigned char)*(peers->getData()+i+2);
+	  unsigned int ipaddr4 = (unsigned char)*(peers->getData()+i+3);
+	  unsigned int port = ntohs(*(unsigned short int*)(peers->getData()+i+4));
+	  char ipaddr[16];
+	  
+	  snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
+		   ipaddr1, ipaddr2, ipaddr3, ipaddr4);
+	  Peer* peer = new Peer(ipaddr, port, e->torrentMan->pieceLength,
+				e->torrentMan->getTotalLength());
+	  if(e->torrentMan->addPeer(peer)) {
+	    logger->debug("CUID#%d - Adding peer %s:%d",
+			  cuid, peer->ipaddr.c_str(), peer->port);
+	  } else {
+	    delete peer;
+	  }
 	}
-    }
-    } else {
-      logger->info("CUID#%d - No peer list received.", cuid);
-    }
-    while(e->torrentMan->isPeerAvailable() &&
-	  e->torrentMan->connections < MAX_PEER_UPDATE) {
-      Peer* peer = e->torrentMan->getPeer();
-      int newCuid =  e->torrentMan->getNewCuid();
-      peer->cuid = newCuid;
-      PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(newCuid, peer, e);
-      e->commands.push_back(command);
-      logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
+      } else {
+	logger->info("CUID#%d - No peer list received.", cuid);
+      }
+      while(e->torrentMan->isPeerAvailable() &&
+	    e->torrentMan->connections < MAX_PEER_UPDATE) {
+	Peer* peer = e->torrentMan->getPeer();
+	int newCuid =  e->torrentMan->getNewCuid();
+	peer->cuid = newCuid;
+	PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(newCuid, peer, e);
+	e->commands.push_back(command);
+	logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
+      }
     }
     if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {
       e->torrentMan->req->setTrackerEvent(Request::AUTO);
