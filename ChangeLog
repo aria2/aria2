@@ -1,7 +1,7 @@
 2006-05-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	To fix the bug that cause segfaults if a zero-length peer list is
-	a zero-length list:
+	To fix the bug that causes segfaults if a tracker returns a zero-length
+	list as "peers":
 	
 	* src/TrackerUpdateCommand.cc
 	(execute): Added a check to see wether the type of peers is Data*.
