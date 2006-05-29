@@ -1,3 +1,11 @@
+2006-05-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To fix the bug that cause segfaults if a zero-length peer list is
+	a zero-length list:
+	
+	* src/TrackerUpdateCommand.cc
+	(execute): Added a check to see wether the type of peers is Data*.
+
 2006-05-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Release 0.5.0
