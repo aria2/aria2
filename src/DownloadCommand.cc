@@ -27,10 +27,7 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 
-DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s), lastSize(0) {
-  sw.tv_sec = 0;
-  sw.tv_usec = 0;
-}
+DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s), lastSize(0) {}
 
 DownloadCommand::~DownloadCommand() {}
 
@@ -54,18 +51,11 @@ bool DownloadCommand::executeInternal(Segment seg) {
     seg.ds += bufSize;
   }
   // calculate downloading speed
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(sw.tv_sec == 0 && sw.tv_usec == 0) {
-    sw = now;
+  int diff = sw.difference();
+  if(diff >= 1) {
+    seg.speed = (int)((seg.ds-lastSize)/(diff*1.0));
+    sw.reset();
     lastSize = seg.ds;
-  } else {
-    int diff = Util::difftvsec(now, sw);
-    if(diff >= 1) {
-      seg.speed = (int)((seg.ds-lastSize)/(diff*1.0));
-      sw = now;
-      lastSize = seg.ds;
-    }
   }
   if(e->segmentMan->totalSize != 0 && bufSize == 0) {
     throw new DlRetryEx(EX_GOT_EOF);

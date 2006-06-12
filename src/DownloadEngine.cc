@@ -22,6 +22,7 @@
 #include "DownloadEngine.h"
 #include "Util.h"
 #include "LogFactory.h"
+#include "Time.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -48,15 +49,11 @@ void DownloadEngine::cleanQueue() {
 
 void DownloadEngine::run() {
   initStatistics();
-  struct timeval cp;
-  cp.tv_sec = 0;
-  cp.tv_usec = 0;
+  Time cp;
   Sockets activeSockets;
   while(!commands.empty()) {
-    struct timeval now;
-    gettimeofday(&now, NULL);
-    if(Util::difftvsec(now, cp) >= 1) {
-      cp = now;
+    if(cp.elapsed(1)) {
+      cp.reset();
       int max = commands.size();
       for(int i = 0; i < max; i++) {
 	Command* com = commands.front();

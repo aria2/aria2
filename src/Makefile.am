@@ -101,7 +101,8 @@ SRCS =  Socket.cc Socket.h\
 	AllowedFastMessage.cc AllowedFastMessage.h\
 	SuggestPieceMessage.cc SuggestPieceMessage.h\
 	SimplePeerMessage.cc SimplePeerMessage.h\
-	NullLogger.h
+	NullLogger.h\
+	Time.cc Time.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

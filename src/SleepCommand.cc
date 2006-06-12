@@ -23,9 +23,7 @@
 #include "Util.h"
 
 SleepCommand::SleepCommand(int cuid, DownloadEngine* e, Command* nextCommand, int wait):
-  Command(cuid), engine(e), nextCommand(nextCommand), wait(wait) {
-  gettimeofday(&checkPoint, NULL);  
-}
+  Command(cuid), engine(e), nextCommand(nextCommand), wait(wait) {}
 
 SleepCommand::~SleepCommand() {
   if(nextCommand != NULL) {
@@ -34,9 +32,7 @@ SleepCommand::~SleepCommand() {
 }
 
 bool SleepCommand::execute() {
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(Util::difftvsec(now, checkPoint) >= wait) {
+  if(checkPoint.elapsed(wait)) {
     engine->commands.push_back(nextCommand);
     nextCommand = NULL;
     return true;

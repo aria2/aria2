@@ -26,13 +26,12 @@
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "SegmentMan.h"
-#include <sys/time.h>
+#include "Time.h"
 
 class AbstractCommand : public Command {
 private:
-  void updateCheckPoint();
-  bool isTimeoutDetected();
-  struct timeval checkPoint;
+  Time checkPoint;
+  int timeout;
 protected:
   Request* req;
   DownloadEngine* e;
@@ -44,6 +43,7 @@ protected:
 
   void setReadCheckSocket(Socket* socket);
   void setWriteCheckSocket(Socket* socket);
+  void setTimeout(int timeout) { this->timeout = timeout; }
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;

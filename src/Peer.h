@@ -46,6 +46,7 @@ public:
   int cuid;
   bool chokingRequired;
   bool optUnchoking;
+  bool snubbing;
 private:
   char peerId[PEER_ID_LENGTH];
   BitfieldMan* bitfield;
@@ -65,6 +66,7 @@ public:
     peerChoking(true), peerInterested(false),
     tryCount(0), error(0), cuid(0),
     chokingRequired(true), optUnchoking(false),
+    snubbing(false),
     bitfield(NULL),
     fastExtensionEnabled(false),
     peerUpload(0), peerDownload(0),
@@ -107,8 +109,8 @@ public:
   void setAllBitfield();
 
   /**
-   * operation = 1: set index-th bit 1
-   * operation = 0: set index-th bit 0
+   * operation = 1: set index-th bit to 1
+   * operation = 0: set index-th bit to 0
    */
   void updateBitfield(int index, int operation);
   

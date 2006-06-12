@@ -43,7 +43,7 @@
 #include "SuggestPieceMessage.h"
 #include "RequestSlot.h"
 
-#define REQUEST_TIME_OUT 120
+#define REQUEST_TIME_OUT 60
 #define ALLOWED_FAST_SET_SIZE 10
 
 typedef deque<RequestSlot> RequestSlots;

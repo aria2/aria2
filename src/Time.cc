@@ -19,23 +19,52 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_SLEEP_COMMAND_H_
-#define _D_SLEEP_COMMAND_H_
-
-#include "DownloadEngine.h"
-#include "Command.h"
 #include "Time.h"
+#include "Util.h"
 
-class SleepCommand:public Command {
-private:
-  DownloadEngine* engine;
-  Command* nextCommand;
-  int wait;
-  Time checkPoint;
-public:
-  SleepCommand(int cuid, DownloadEngine* e, Command* nextCommand, int wait);
-  ~SleepCommand();
-  bool execute();
-};
+Time::Time() {
+  reset();
+}
 
-#endif // _D_SLEEP_COMMAND_H_
+Time::Time(const Time& time) {
+  tv = time.tv;
+}
+
+Time::~Time() {}
+
+Time& Time::operator=(const Time& time) {
+  if(this != &time) {
+    tv = time.tv;
+  }
+  return *this;
+}
+
+void Time::reset() {
+  gettimeofday(&tv, 0);
+}
+
+struct timeval Time::getCurrentTime() const {
+  struct timeval now;
+  gettimeofday(&now, 0);
+  return now;
+}
+
+bool Time::elapsed(int sec) const {
+  return Util::difftvsec(getCurrentTime(), tv) >= sec;
+}
+
+bool Time::elapsedInMillis(int millis) const {
+  return Util::difftv(getCurrentTime(), tv)/1000 >= millis;
+}
+
+bool Time::isNewer(const Time& time) const {
+  return Util::difftvsec(this->tv, time.tv) > 0;
+}
+
+int Time::difference() const {
+  return Util::difftvsec(getCurrentTime(), tv);
+}
+
+long long int Time::differenceInMillis() const {
+  return Util::difftv(getCurrentTime(), tv)/1000;
+}

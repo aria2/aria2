@@ -33,6 +33,7 @@
 #include "FileEntry.h"
 #include "DiskAdaptor.h"
 #include "Request.h"
+#include "Time.h"
 #include <deque>
 #include <map>
 #include <string>
@@ -42,16 +43,26 @@ using namespace std;
 
 #define INFO_HASH_LENGTH 20
 #define PEER_ID_LENGTH 20
-#define DEFAULT_ANNOUNCE_INTERVAL 300
-#define DEFAULT_ANNOUNCE_MIN_INTERVAL 300
+#define DEFAULT_ANNOUNCE_INTERVAL 1800
+#define DEFAULT_ANNOUNCE_MIN_INTERVAL 1800
 #define MAX_PEERS 55
 #define MAX_PEER_UPDATE 15
 #define MAX_PEER_LIST_SIZE 250
 #define END_GAME_PIECE_NUM 20
 #define MAX_PEER_ERROR 5
 
+class HaveEntry {
+public:
+  int cuid;
+  int index;
+  Time registeredTime;
+  HaveEntry(int cuid, int index):
+    cuid(cuid),
+    index(index) {}
+};
+
 typedef deque<Peer*> Peers;
-typedef multimap<int, int> Haves;
+typedef deque<HaveEntry> Haves;
 typedef deque<int> PieceIndexes;
 typedef deque<Piece> Pieces;
 
@@ -164,26 +175,9 @@ public:
 
   string getPieceHash(int index) const;
 
-  void advertisePiece(int cuid, int index) {
-    Haves::value_type vt(cuid, index);
-    haves.insert(vt);
-  }
+  void advertisePiece(int cuid, int index);
 
-  PieceIndexes getAdvertisedPieceIndexes(int myCuid) const {
-    PieceIndexes indexes;
-    for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
-      const Haves::value_type& have = *itr;
-      if(have.first == myCuid) {
-	continue;
-      }
-      indexes.push_back(have.second);
-    }
-    return indexes;
-  }
-
-  void unadvertisePiece(int cuid) {
-    haves.erase(cuid);
-  }
+  PieceIndexes getAdvertisedPieceIndexes(int myCuid, Time lastCheckTime) const;
 
   long long int getTotalLength() const { return totalLength; }
   void setTotalLength(long long int length) { totalLength = length; }

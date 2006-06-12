@@ -647,8 +647,8 @@ int main(int argc, char* argv[]) {
   if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
     try {
       //op->put(PREF_MAX_TRIES, "0");
-      setSignalHander(SIGINT, torrentHandler, SA_ONESHOT);
-      setSignalHander(SIGTERM, torrentHandler, SA_ONESHOT);
+      setSignalHander(SIGINT, torrentHandler, SA_RESETHAND);
+      setSignalHander(SIGTERM, torrentHandler, SA_RESETHAND);
 
       Request* req = new Request();
       req->isTorrent = true;

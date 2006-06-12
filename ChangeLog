@@ -1,3 +1,155 @@
+2006-06-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
+	To add Time class which represents a specific instant in time and
+	its precision is microseconds. Time checking procedures were rewritten
+	using this object.
+
+	* src/Time.h: New class.
+	* src/Time.cc: New class.
+	* src/AbstractCommand.h
+	(updateCheckPoint): Removed.
+	(isTimeoutDetected): Removed.
+	(checkPoint): Changed the type to Time.
+	(timeout): New variable.
+	(setTimeout): New function.
+	* src/AbstractCommand.cc
+	(AbstractCommand): Removed the initialization of checkPoint.
+	Added the initialization of timeout.
+	(updateCheckPoint): Removed.
+	(isTimeoutDetected): Removed.
+	(execute): Use checkPoint.reset() and checkPoint.elapsed().
+	* src/PeerChokeCommand.h
+	(checkPoint): Changed the type to Time.
+	* src/PeerChokeCommand.cc
+	(PeerChokeCommand): Removed the initialization of checkPoint.
+	(execute): Rewritten using Time object.
+	* src/TrackerWatcherCommand.h
+	(checkPoint): Changed the type to Time.
+	* src/TrackerWatcherCommand.cc
+	(TrackerWatcherCommand): Removed the initialization of checkPoint.
+	(execute): Rewritten.
+	* src/ConsoleDownloadEngine.h
+	(cp): Changed the type to Time.
+	(startup): Changed the type to Time.
+	* src/ConsoleDownloadEngine.cc
+	(initStatistics): Use cp.reset(), startup.reset().
+	(calculateStatistics): Rewritten using Time object.
+	* src/PeerAbstractCommand.h
+	(updateCheckPoint): Removed.
+	(isTimeoutDetected): Removed.
+	(checkPoint): Changed the type to Time.
+	* src/PeerAbstractCommand.cc
+	(PeerAbstractCommand): Removed the initialization of checkPoint.
+	(updateCheckPoint): Removed.
+	(isTimeoutDetected): Removed.
+	(execute): Use checkPoint.reset() and checkPoint.elapsed().
+	* src/PeerInteractionCommand.cc
+	(PeerInteractionCommand): Removed the initializations of struct
+	timeval variables.
+	* src/PeerInteractionCommand.h
+	(keepAliveCheckPoint): Changed the type to Time.
+	(chokeCheckPoint): Changed the type to Time.
+	(freqCheckPoint): Changed the type to Time.
+	(haveCheckTime): Changed the type to Time.
+	* src/PeerInteractionCommand.cc
+	(executeInternal): Rewritten using Time object.
+	(detectMessageFlooding): Rewritten using Time object.
+	(checkLongTimePeerChoking): Rewritten using Time object.
+	(sendKeepAlive): Rewritten using Time object.
+	(checkHave): Rewritten using Time object.
+	* src/SleepCommand.h
+	(checkPoint): Changed the type to Time.
+	* src/SleepCommand.cc
+	(SleepCommand): Removed the initialization of checkPoint.
+	(execute): Rewritten using Time object.
+	* src/TorrentAutoSaveCommand.h
+	(checkPoint): Changed the type to Time.
+	* src/TorrentAutoSaveCommand.cc
+	(TorrentAutoSaveCommand): Removed the initialization of checkPoint.
+	(execute): Rewritten.
+	* src/DownloadCommand.h
+	(sw): Changed the type to Time.
+	* src/DownloadCommand.cc
+	(DownloadCommand): Removed the initialization of sw.
+	(executeInternal): Rewritten.
+	* src/RequestSlot.h
+	(dispatchedTime): Changed the type to Time.
+	* src/RequestSlot.cc
+	(RequestSlot): Removed the call to setDispatchedTime().
+	(setDispatchedTime): Rewirtten.
+	(isTimeout): Rewritten.
+	(getLatencyInMillis): Rewritten.
+	* src/TorrentDownloadEngine.h
+	(cp): Changed the type to Time[2].
+	(startup): Changed the type to Time.
+	* src/TorrentDownloadEngine.cc
+	(initStatistics): Rewritten.
+	(calculateStatistics): Rewritten.
+	* src/DownloadEngine.cc
+	(run): Rewritten.
+	
+	To detect all attempts to connect to the tracker are failed:
+
+	* src/AbstractCommand.cc
+	(execute): Increment e->segmentMan->errors if a command aborted.
+	* src/SegmentMan.h
+	(errors): New variable.
+	* src/SegmentMan.cc
+	(SegmentMan): Added the initialization of errors.
+	(init): Added the initialization of errors.
+	* src/TrackerWatcherCommand.cc
+	(execute): If e->segmentMan->errors > 0 then assume that the tracker
+	request was failed.
+	
+	To handle snubbed peers:
+	
+	* src/PeerChokeCommand.cc
+	(optUnchokingPeer): Snubbed peers don't get unchoked.
+	(execute): Snubbed peers don't get unchoked.
+	* src/PeerInteraction.h
+	(REQUEST_TIME_OUT): Changed the value from 120 to 60.
+	* src/PeerInteraction.cc
+	(checkRequestSlot): A peer get marked as "snubbed" if it doesn't send
+	back the requested 16k block in 60 seconds.
+	* src/PieceMessage.cc
+	(receivedAction): A peer's snubbed state is cleard if it sends
+	the requested 16k block in 60 seconds.
+	* src/Peer.h
+	(snubbing): New variable.
+	* src/Peer.cc
+	(resetStatus): Added snubbed = false.
+	
+	To fix the bug that causes have message is not sent:
+
+	* src/PeerInteractionCommand.cc
+	(~PeerInteractionCommand): Removed e->torrentMan->unadvertisePiece().
+	(FLOODING_CHECK_INTERVAL): New definition(temporal).
+	(detectMessageFlooding): Use FLOODING_CHECK_INTERVAL.
+	* src/TorrentMan.h
+	(HaveEntry): New class.
+	(advertisePiece): Rewritten.
+	(getAdvertisedPieceIndexes): Rewritten.
+	(Haves): Changed the type.
+	(getAdvertisedPieceIndexes): Added an argument.
+	
+	Others:
+	
+	* src/TorrentMan.h
+	(DEFAULT_ANNOUNCE_INTERVAL): Changed the value to 1800.
+	(DEFAULT_ANNOUNCE_MIN_INTERVAL): Changed the value to 1800.
+	* src/TorrentMan.cc
+	(getPeer): Don't check the number of connections here.
+	(setupInternal1): Changed peerId.
+
+	* src/PeerInteractionCommand.h
+	(KEEP_ALIVE_INTERVAL): New definition.
+	(sendKeepAlive): Use KEEP_ALIVE_INTERVAL.
+
+	* src/main.cc
+	(main): SA_ONESHOT was replaced with SA_RESETHAND.
+
+	* src/DownloadEngine.h: Removed unnecessary header includes.
+	
 2006-05-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To fix the bug that causes segfaults if a tracker returns a zero-length

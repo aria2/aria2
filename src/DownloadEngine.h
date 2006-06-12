@@ -28,8 +28,6 @@
 #include "common.h"
 #include "Logger.h"
 #include "Option.h"
-#include <sys/time.h>
-#include <deque>
 
 typedef deque<Socket*> Sockets;
 typedef deque<Command*> Commands;

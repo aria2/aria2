@@ -23,9 +23,7 @@
 #include "Util.h"
 
 RequestSlot::RequestSlot(int index, int begin, int length, int blockIndex)
-  :index(index), begin(begin), length(length), blockIndex(blockIndex) {
-  setDispatchedTime();
-}
+  :index(index), begin(begin), length(length), blockIndex(blockIndex) {}
 
 RequestSlot::RequestSlot(const RequestSlot& requestSlot) {
   copy(requestSlot);
@@ -49,17 +47,15 @@ void RequestSlot::copy(const RequestSlot& requestSlot) {
 RequestSlot RequestSlot::nullSlot(0, 0, 0, 0);
 
 void RequestSlot::setDispatchedTime() {
-  gettimeofday(&dispatchedTime, NULL);
+  dispatchedTime.reset();
 }
 
 bool RequestSlot::isTimeout(int timeoutSec) const {
-  return getLatencyInMillis() > timeoutSec*1000;
+  return dispatchedTime.differenceInMillis() > timeoutSec*1000;
 }
 
 int RequestSlot::getLatencyInMillis() const {
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  return Util::difftv(now, dispatchedTime)/1000;
+  return dispatchedTime.differenceInMillis();
 }
 
 bool RequestSlot::isNull(const RequestSlot& requestSlot) {

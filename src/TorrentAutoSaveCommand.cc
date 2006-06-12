@@ -22,21 +22,13 @@
 #include "TorrentAutoSaveCommand.h"
 #include "Util.h"
 
-TorrentAutoSaveCommand::TorrentAutoSaveCommand(int cuid, TorrentDownloadEngine* e, int interval):Command(cuid), e(e), interval(interval) {
-  checkPoint.tv_sec = 0;
-  checkPoint.tv_usec = 0;
-}
+TorrentAutoSaveCommand::TorrentAutoSaveCommand(int cuid, TorrentDownloadEngine* e, int interval):Command(cuid), e(e), interval(interval) {}
 
 TorrentAutoSaveCommand::~TorrentAutoSaveCommand() {}
 
 bool TorrentAutoSaveCommand::execute() {
-  if(e->torrentMan->downloadComplete() || e->torrentMan->isHalt()) {
-    return true;
-  }
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(Util::difftvsec(now, checkPoint) >= interval) {
-    checkPoint = now;
+  if(checkPoint.elapsed(interval) || e->torrentMan->isHalt()) {
+    checkPoint.reset();
     e->torrentMan->save();
     if(e->torrentMan->isHalt()) {
       return true;

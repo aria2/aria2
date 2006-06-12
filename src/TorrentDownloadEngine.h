@@ -24,6 +24,7 @@
 
 #include "DownloadEngine.h"
 #include "TorrentMan.h"
+#include "Time.h"
 
 class TorrentDownloadEngine : public DownloadEngine {
 private:
@@ -32,7 +33,7 @@ private:
   void initStatistics();
   void calculateStatistics();
 protected:
-  struct timeval cp[2];
+  Time cp[2];
   long long int sessionDownloadLengthArray[2];
   long long int sessionUploadLengthArray[2];
   int currentCp;
@@ -43,7 +44,7 @@ protected:
   long long int selectedDownloadLengthDiff;
   long long int selectedTotalLength;
   // The time when startup
-  struct timeval startup;
+  Time startup;
   // The number of bytes downloaded since startup
   long long int sessionDownloadLength;
   // The average speed(bytes per second) since startup

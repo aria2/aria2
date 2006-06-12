@@ -40,14 +40,14 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
 }
 
 void ConsoleDownloadEngine::initStatistics() {
-  cp.tv_sec = cp.tv_usec = 0;
+  cp.reset();
+  startup.reset();
   speed = 0;
   psize = 0;
   avgSpeed = 0;
   eta = 0;
   startupLength = 0;
   isStartupLengthSet = false;
-  gettimeofday(&startup, NULL);
 }
 
 void ConsoleDownloadEngine::calculateStatistics() {
@@ -56,28 +56,24 @@ void ConsoleDownloadEngine::calculateStatistics() {
     startupLength = dlSize;
     isStartupLengthSet = true;
   }
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(cp.tv_sec == 0 && cp.tv_usec == 0) {
-    cp = now;
+  int elapsed = cp.difference();
+  if(elapsed >= 1) {
+    int nspeed = (int)((dlSize-psize)/elapsed);
+    speed = (nspeed+speed)/2;
+    cp.reset();
     psize = dlSize;
-  } else {
-    int elapsed = Util::difftvsec(now, cp);
-    if(elapsed >= 1) {
-      int nspeed = (int)((dlSize-psize)/elapsed);
-      speed = (nspeed+speed)/2;
-      cp = now;
-      psize = dlSize;
 
-      avgSpeed = (int)((dlSize-startupLength)/Util::difftvsec(now, startup));
-      if(avgSpeed < 0) {
-	avgSpeed = 0;
-      } else if(avgSpeed != 0 && segmentMan->totalSize > 0) {
-	eta = (segmentMan->totalSize-dlSize)/avgSpeed;
-      }
-
-      sendStatistics(dlSize, segmentMan->totalSize);
+    int elapsedFromStartup = startup.difference();
+    if(elapsedFromStartup > 0) {
+      avgSpeed = (int)((dlSize-startupLength)/elapsedFromStartup);
     }
+    if(avgSpeed < 0) {
+      avgSpeed = 0;
+    } else if(avgSpeed != 0 && segmentMan->totalSize > 0) {
+      eta = (segmentMan->totalSize-dlSize)/avgSpeed;
+    }
+    
+    sendStatistics(dlSize, segmentMan->totalSize);
   }
 }
 

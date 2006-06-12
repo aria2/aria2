@@ -57,9 +57,9 @@ void TorrentDownloadEngine::initStatistics() {
   downloadSpeed = 0;
   uploadSpeed = 0;
   lastElapsed = 0;
-  gettimeofday(&cp[0], NULL);
-  gettimeofday(&cp[1], NULL);
-  gettimeofday(&startup, NULL);
+  cp[0].reset();
+  cp[1].reset();
+  startup.reset();
   sessionDownloadLengthArray[0] = 0;
   sessionDownloadLengthArray[1] = 0;
   sessionUploadLengthArray[0] = 0;
@@ -82,9 +82,7 @@ int TorrentDownloadEngine::calculateSpeed(long long int sessionLength, int elaps
 }
 
 void TorrentDownloadEngine::calculateStatistics() {
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  int elapsed = Util::difftvsec(now, cp[currentCp]);
+  int elapsed = cp[currentCp].difference();
 
   sessionDownloadLengthArray[0] += torrentMan->getDeltaDownloadLength();
   sessionUploadLengthArray[0] += torrentMan->getDeltaUploadLength();
@@ -111,8 +109,11 @@ void TorrentDownloadEngine::calculateStatistics() {
   }
 
   if(elapsed-lastElapsed >= 1) {
-    avgSpeed = calculateSpeed(sessionDownloadLength,
-			      Util::difftvsec(now, startup));
+    int elapsedFromStartup = startup.difference();
+    if(elapsedFromStartup > 0) {
+      avgSpeed = calculateSpeed(sessionDownloadLength,
+				elapsedFromStartup);
+    }
     if(avgSpeed < 0) {
       avgSpeed = 0;
     } else if(avgSpeed != 0) {
@@ -126,7 +127,7 @@ void TorrentDownloadEngine::calculateStatistics() {
   if(elapsed > 15) {
     sessionDownloadLengthArray[currentCp] = 0;
     sessionUploadLengthArray[currentCp] = 0;
-    cp[currentCp] = now;
+    cp[currentCp].reset();
     lastElapsed = 0;
     currentCp = currentCp ? 0 : 1;
   }

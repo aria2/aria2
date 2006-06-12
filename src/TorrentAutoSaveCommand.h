@@ -24,12 +24,13 @@
 
 #include "Command.h"
 #include "TorrentDownloadEngine.h"
+#include "Time.h"
 
 class TorrentAutoSaveCommand : public Command {
 private:
   TorrentDownloadEngine* e;
   int interval;
-  struct timeval checkPoint;
+  Time checkPoint;
 public:
   TorrentAutoSaveCommand(int cuid, TorrentDownloadEngine* e, int interval);
   ~TorrentAutoSaveCommand();

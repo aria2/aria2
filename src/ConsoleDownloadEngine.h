@@ -23,14 +23,15 @@
 #define _D_CONSOLE_DOWNLOAD_ENGINE_H_
 
 #include "DownloadEngine.h"
+#include "Time.h"
 
 class ConsoleDownloadEngine : public DownloadEngine {
 private:
-  struct timeval cp;
+  Time cp;
   long long int psize;
   int speed;
   // The time when startup
-  struct timeval startup;
+  Time startup;
   // The number of bytes downloaded at startup
   long long int startupLength;
   bool isStartupLengthSet;

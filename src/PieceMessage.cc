@@ -59,6 +59,7 @@ void PieceMessage::receivedAction() {
   peer->addPeerUpload(blockLength);
   if(!RequestSlot::isNull(slot) &&
      peerInteraction->hasDownloadPiece(slot.getIndex())) {
+    peer->snubbing = false;
     //logger->debug("CUID#%d - Latency=%d", cuid, slot.getLatencyInMillis());
     peer->updateLatency(slot.getLatencyInMillis());
     Piece& piece = peerInteraction->getDownloadPiece(slot.getIndex());

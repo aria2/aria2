@@ -41,12 +41,6 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
 					e->torrentMan, this->peer);
   peerInteraction->setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
-  keepAliveCheckPoint.tv_sec = 0;
-  keepAliveCheckPoint.tv_usec = 0;
-  chokeCheckPoint.tv_sec = 0;
-  chokeCheckPoint.tv_usec = 0;
-  freqCheckPoint.tv_sec = 0;
-  freqCheckPoint.tv_usec = 0;
   chokeUnchokeCount = 0;
   haveCount = 0;
   keepAliveCount = 0;
@@ -55,7 +49,6 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
 
 PeerInteractionCommand::~PeerInteractionCommand() {
   delete peerInteraction;
-  e->torrentMan->unadvertisePiece(cuid);
   e->torrentMan->deleteActivePeer(this->peer);
 }
 
@@ -89,6 +82,7 @@ bool PeerInteractionCommand::executeInternal() {
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
+    haveCheckTime.reset();
     peerInteraction->sendBitfield();
     peerInteraction->sendAllowedFast();
     sequence = WIRED;
@@ -105,6 +99,7 @@ bool PeerInteractionCommand::executeInternal() {
 		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
     peerInteraction->sendHandshake();
+    haveCheckTime.reset();
     peerInteraction->sendBitfield();
     peerInteraction->sendAllowedFast();
     sequence = WIRED;    
@@ -134,24 +129,19 @@ bool PeerInteractionCommand::executeInternal() {
   return false;
 }
 
+#define FLOODING_CHECK_INTERVAL 5
+
 void PeerInteractionCommand::detectMessageFlooding() {
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(freqCheckPoint.tv_sec == 0 && freqCheckPoint.tv_usec == 0) {
-    freqCheckPoint = now;
-  } else {
-    int elapsed = Util::difftvsec(now, freqCheckPoint);
-    if(elapsed >= 5) {
-      if(chokeUnchokeCount*1.0/elapsed >= 0.4
-	 //|| haveCount*1.0/elapsed >= 20.0
-	 || keepAliveCount*1.0/elapsed >= 1.0) {
-	throw new DlAbortEx("Flooding detected.");
-      } else {
-	chokeUnchokeCount = 0;
-	haveCount = 0;
-	keepAliveCount = 0;
-	freqCheckPoint = now;
-      }
+  if(freqCheckPoint.elapsed(FLOODING_CHECK_INTERVAL)) {
+    if(chokeUnchokeCount*1.0/FLOODING_CHECK_INTERVAL >= 0.4
+       //|| haveCount*1.0/elapsed >= 20.0
+       || keepAliveCount*1.0/FLOODING_CHECK_INTERVAL >= 1.0) {
+      throw new DlAbortEx("Flooding detected.");
+    } else {
+      chokeUnchokeCount = 0;
+      haveCount = 0;
+      keepAliveCount = 0;
+      freqCheckPoint.reset();
     }
   }
 }
@@ -160,21 +150,13 @@ void PeerInteractionCommand::checkLongTimePeerChoking() {
   if(e->torrentMan->downloadComplete()) {
     return;
   }    
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(chokeCheckPoint.tv_sec == 0 && chokeCheckPoint.tv_usec == 0) {
-    if(peer->amInterested && peer->peerChoking) {
-      chokeCheckPoint = now;
+  if(peer->amInterested && peer->peerChoking) {
+    if(chokeCheckPoint.elapsed(MAX_PEER_CHOKING_INTERVAL)) {
+      logger->info("CUID#%d - The peer is choking too long.", cuid);
+      peer->snubbing = true;
     }
   } else {
-    if(peer->amInterested && peer->peerChoking) {
-      if(Util::difftvsec(now, chokeCheckPoint) >= MAX_PEER_CHOKING_INTERVAL) {
-	throw new DlAbortEx("Too long choking.");
-      }
-    } else {
-      chokeCheckPoint.tv_sec = 0;
-      chokeCheckPoint.tv_usec = 0;
-    }
+    chokeCheckPoint.reset();
   }
 }
 
@@ -251,24 +233,19 @@ void PeerInteractionCommand::onAbort(Exception* ex) {
 }
 
 void PeerInteractionCommand::sendKeepAlive() {
-  if(keepAliveCheckPoint.tv_sec == 0 && keepAliveCheckPoint.tv_usec == 0) {
-    gettimeofday(&keepAliveCheckPoint, NULL);
-  } else {
-    struct timeval now;
-    gettimeofday(&now, NULL);
-    if(Util::difftvsec(now, keepAliveCheckPoint) >= 120) {
-      if(peerInteraction->countMessageInQueue() == 0) {
-	peerInteraction->addMessage(peerInteraction->createKeepAliveMessage());
-	peerInteraction->sendMessages(e->getUploadSpeed());
-      }
-      keepAliveCheckPoint = now;
+  if(keepAliveCheckPoint.elapsed(KEEP_ALIVE_INTERVAL)) {
+    if(peerInteraction->countMessageInQueue() == 0) {
+      peerInteraction->addMessage(peerInteraction->createKeepAliveMessage());
+      peerInteraction->sendMessages(e->getUploadSpeed());
     }
+    keepAliveCheckPoint.reset();
   }
 }
 
 void PeerInteractionCommand::checkHave() {
-  e->torrentMan->unadvertisePiece(cuid);
-  PieceIndexes indexes = e->torrentMan->getAdvertisedPieceIndexes(cuid);
+  PieceIndexes indexes =
+    e->torrentMan->getAdvertisedPieceIndexes(cuid, haveCheckTime);
+  haveCheckTime.reset();
   if(indexes.size() >= 20) {
     if(peer->isFastExtensionEnabled()) {
       if(e->torrentMan->hasAllPieces()) {

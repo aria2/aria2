@@ -27,7 +27,6 @@
 #include "message.h"
 #include "SleepCommand.h"
 #include "prefs.h"
-#include <sys/time.h>
 
 AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
   Command(cuid), req(req), e(e), checkSocketIsReadable(false), checkSocketIsWritable(false) {
@@ -38,8 +37,7 @@ AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, cons
   } else {
     socket = NULL;
   }
-  this->checkPoint.tv_sec = 0;
-  this->checkPoint.tv_usec = 0;
+  timeout = this->e->option->getAsInt(PREF_TIMEOUT);
 }
 
 AbstractCommand::~AbstractCommand() {
@@ -50,33 +48,12 @@ AbstractCommand::~AbstractCommand() {
   }
 }
 
-void AbstractCommand::updateCheckPoint() {
-  gettimeofday(&checkPoint, NULL);
-}
-
-bool AbstractCommand::isTimeoutDetected() {
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(checkPoint.tv_sec == 0 && checkPoint.tv_usec == 0) {
-    checkPoint = now;
-    return false;
-  } else {
-    int elapsed = Util::difftvsec(now, checkPoint);
-    if(elapsed >= e->option->getAsInt(PREF_TIMEOUT)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-
 bool AbstractCommand::execute() {
   try {
     if(checkSocketIsReadable && readCheckTarget->isReadable(0) ||
        checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
        !checkSocketIsReadable && !checkSocketIsWritable) {
-
-      updateCheckPoint();
+      checkPoint.reset();
       Segment seg = { 0, 0, 0, false };
       if(e->segmentMan->downloadStarted) {
 	// get segment information in order to set Range header.
@@ -88,7 +65,7 @@ bool AbstractCommand::execute() {
       }
       return executeInternal(seg);
     } else {
-      if(isTimeoutDetected()) {
+      if(checkPoint.elapsed(timeout)) {
 	throw new DlRetryEx(EX_TIME_OUT);
       }
       e->commands.push_back(this);
@@ -99,6 +76,7 @@ bool AbstractCommand::execute() {
     onAbort(err);
     delete(err);
     req->resetUrl();
+    e->segmentMan->errors++;
     return true;
   } catch(DlRetryEx* err) {
     logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
@@ -111,6 +89,7 @@ bool AbstractCommand::execute() {
     delete(err);
     if(isAbort) {
       logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
+      e->segmentMan->errors++;
       return true;
     } else {
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));

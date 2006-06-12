@@ -34,6 +34,7 @@
 SegmentMan::SegmentMan():totalSize(0),
 			 isSplittable(true), 
 			 downloadStarted(false),
+			 errors(0),
 			 dir("."),
 			 splitter(NULL),
 			 diskWriter(NULL) {
@@ -241,6 +242,7 @@ void SegmentMan::init() {
   totalSize = 0;
   isSplittable = false;
   downloadStarted = false;
+  errors = 0;
   segments.clear();
   diskWriter->closeFile();
 }

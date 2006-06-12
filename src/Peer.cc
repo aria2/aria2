@@ -59,6 +59,7 @@ void Peer::resetStatus() {
   resetDeltaDownload();
   chokingRequired = true;
   optUnchoking = false;
+  snubbing = false;
   fastExtensionEnabled = false;
   latency = DEFAULT_LATENCY;
   fastSet.clear();

@@ -25,19 +25,22 @@
 #include "PeerAbstractCommand.h"
 #include "PeerConnection.h"
 #include "PeerInteraction.h"
+#include "Time.h"
 
 using namespace std;
 
-#define MAX_PEER_CHOKING_INTERVAL (3*60)
+#define MAX_PEER_CHOKING_INTERVAL (1*60)
+#define KEEP_ALIVE_INTERVAL 120
 
 class PeerInteractionCommand : public PeerAbstractCommand {
 private:
   int sequence;
   PeerInteraction* peerInteraction;
  
-  struct timeval keepAliveCheckPoint;
-  struct timeval chokeCheckPoint;
-  struct timeval freqCheckPoint;
+  Time keepAliveCheckPoint;
+  Time chokeCheckPoint;
+  Time freqCheckPoint;
+  Time haveCheckTime;
   int chokeUnchokeCount;
   int haveCount;
   int keepAliveCount;

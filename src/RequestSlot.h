@@ -23,11 +23,11 @@
 #define _D_REQUEST_SLOT_H_
 
 #include "common.h"
-#include <sys/time.h>
+#include "Time.h"
 
 class RequestSlot {
 private:
-  struct timeval dispatchedTime;
+  Time dispatchedTime;
   int index;
   int begin;
   int length;

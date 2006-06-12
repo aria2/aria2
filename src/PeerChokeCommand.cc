@@ -22,10 +22,7 @@
 #include "PeerChokeCommand.h"
 #include "Util.h"
 
-PeerChokeCommand::PeerChokeCommand(int cuid, int interval, TorrentDownloadEngine* e):Command(cuid), interval(interval), e(e), rotate(0) {
-  checkPoint.tv_sec = 0;
-  checkPoint.tv_usec = 0;
-}
+PeerChokeCommand::PeerChokeCommand(int cuid, int interval, TorrentDownloadEngine* e):Command(cuid), interval(interval), e(e), rotate(0) {}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 
@@ -41,23 +38,16 @@ void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
     return;
   }
   random_shuffle(peers.begin(), peers.end());
+  int optUnchokCount = 1;
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-    (*itr)->optUnchoking = false;
-  }
-  Peer* peer = peers.front();
-  peer->optUnchoking = true;
-  logger->debug("opt, unchoking %s, delta=%d",
-		peer->ipaddr.c_str(), peer->getDeltaUpload());
-  if(e->torrentMan->isEndGame()) {
-    Peers::iterator itr = peers.begin()+1;
-    for(; itr != peers.end(); itr++) {
-      Peer* peer = *itr;
-      if(peer->amInterested && peer->peerInterested) {
-	peer->optUnchoking = true;
-	logger->debug("opt, unchoking %s, delta=%d",
-		      peer->ipaddr.c_str(), peer->getDeltaUpload());
-	break;
-      }
+    Peers::value_type peer = *itr;
+    if(optUnchokCount > 0 && !peer->snubbing) {
+      optUnchokCount--;
+      peer->optUnchoking = true;
+      logger->debug("opt, unchoking %s, delta=%d",
+		    peer->ipaddr.c_str(), peer->getDeltaUpload());
+    } else {
+      peer->optUnchoking = false;
     }
   }
 }
@@ -96,10 +86,8 @@ bool PeerChokeCommand::execute() {
   if(e->torrentMan->isHalt()) {
     return true;
   }
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(Util::difftvsec(now, checkPoint) >= interval) {
-    checkPoint = now;
+  if(checkPoint.elapsed(interval)) {
+    checkPoint.reset();
     Peers peers = e->torrentMan->getActivePeers();
     setAllPeerChoked(peers);
     if(e->torrentMan->downloadComplete()) {
@@ -107,14 +95,14 @@ bool PeerChokeCommand::execute() {
     } else {
       orderByUploadRate(peers);
     }
-    int unchokingCount = peers.size() >= 4 ? 4 : peers.size();
-    for(Peers::iterator itr = peers.begin(); unchokingCount > 0 && itr != peers.end(); ) {
+    int unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
+    for(Peers::iterator itr = peers.begin(); itr != peers.end() && unchokingCount > 0; ) {
       Peer* peer = *itr;
-      if(peer->peerInterested) {
+      if(peer->peerInterested && !peer->snubbing) {
+	unchokingCount--;
 	peer->chokingRequired = false;
 	peer->optUnchoking = false;
 	itr = peers.erase(itr);
-	unchokingCount--;
 	logger->debug("cat01, unchoking %s, delta=%d", peer->ipaddr.c_str(), peer->getDeltaUpload());
       } else {
 	itr++;
@@ -122,7 +110,7 @@ bool PeerChokeCommand::execute() {
     }
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); ) {
       Peer* peer = *itr;
-      if(!peer->peerInterested) {
+      if(!peer->peerInterested && !peer->snubbing) {
 	peer->chokingRequired = false;
 	peer->optUnchoking = false;
 	itr = peers.erase(itr);

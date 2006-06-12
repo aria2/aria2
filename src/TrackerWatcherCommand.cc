@@ -26,19 +26,21 @@
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 					     TorrentDownloadEngine* e,
 					     int interval):
-  Command(cuid), e(e), interval(interval) {
-  checkPoint.tv_sec = 0;
-  checkPoint.tv_usec = 0;
-}
+  Command(cuid), e(e), interval(interval) {}
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
-  struct timeval now;
-  gettimeofday(&now, NULL);
+  if(e->segmentMan->errors > 0) {
+    // we assume the tracker request has failed.
+    e->torrentMan->trackers = 0;
+    e->segmentMan->init();
+  }
   if(e->torrentMan->trackers == 0 &&
-     (Util::difftvsec(now, checkPoint) >= interval || e->torrentMan->isHalt())) {
-    checkPoint = now;
+     (e->torrentMan->connections < MAX_PEER_UPDATE ||
+      e->torrentMan->isHalt() ||
+      checkPoint.elapsed(interval))) {
+    checkPoint.reset();
     e->torrentMan->req->resetTryCount();
     int numWant = 50;
     if(e->torrentMan->connections >= MIN_PEERS || e->torrentMan->isHalt()) {
@@ -90,7 +92,7 @@ bool TrackerWatcherCommand::execute() {
     Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), e->torrentMan->req, e);
     e->commands.push_back(command);
     e->torrentMan->trackers++;
-    logger->info("CUID#%d - creating new tracker request command #%d", cuid,
+    logger->info("CUID#%d - Creating new tracker request command #%d", cuid,
 		 command->getCuid());
     if(e->torrentMan->isHalt()) {
       return true;

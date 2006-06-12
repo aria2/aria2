@@ -25,13 +25,11 @@
 #include "Command.h"
 #include "Request.h"
 #include "TorrentDownloadEngine.h"
-#include <sys/time.h>
+#include "Time.h"
 
 class PeerAbstractCommand : public Command {
 private:
-  void updateCheckPoint();
-  bool isTimeoutDetected();
-  struct timeval checkPoint;
+  Time checkPoint;
   int timeout;
 protected:
   TorrentDownloadEngine* e;

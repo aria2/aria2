@@ -24,13 +24,14 @@
 
 #include "Command.h"
 #include "TorrentDownloadEngine.h"
+#include "Time.h"
 
 class PeerChokeCommand : public Command {
 private:
   int interval;
   TorrentDownloadEngine* e;
   int rotate;
-  struct timeval checkPoint;
+  Time checkPoint;
 
   void orderByUploadRate(Peers& peers) const;
   void orderByDownloadRate(Peers& peers) const;

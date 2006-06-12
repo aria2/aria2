@@ -24,14 +24,13 @@
 
 #include "AbstractCommand.h"
 #include "TransferEncoding.h"
-#include <sys/time.h>
-#include <string>
+#include "Time.h"
 
 using namespace std;
 
 class DownloadCommand : public AbstractCommand {
 private:
-  struct timeval sw;
+  Time sw;
   long long int lastSize;
 protected:
   bool executeInternal(Segment segment);

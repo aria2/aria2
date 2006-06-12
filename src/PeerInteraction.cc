@@ -231,6 +231,7 @@ void PeerInteraction::checkRequestSlot() {
       Piece& piece = getDownloadPiece(slot.getIndex());
       piece.cancelBlock(slot.getBlockIndex());
       itr = requestSlots.erase(itr);
+      peer->snubbing = true;
     } else {
       Piece piece = getDownloadPiece(slot.getIndex());
       if(piece.hasBlock(slot.getBlockIndex()) ||

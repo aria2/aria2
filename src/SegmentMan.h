@@ -84,6 +84,11 @@ public:
    */
   string ufilename;
 
+  /**
+   * Represents the number of failures(usually, DlAbortEx) in downloads.
+   */
+  int errors;
+
   const Option* option;
   SegmentSplitter* splitter;
   DiskWriter* diskWriter;
@@ -91,7 +96,7 @@ public:
   SegmentMan();
   ~SegmentMan();
   
-  // Initializes totalSize, isSplittable, downloadStarted.
+  // Initializes totalSize, isSplittable, downloadStarted, errors.
   // Clears command queue. Also, closes diskWriter.
   void init();
 

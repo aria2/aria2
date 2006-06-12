@@ -25,7 +25,6 @@
 #include "Util.h"
 #include "message.h"
 #include "prefs.h"
-#include <sys/time.h>
 
 PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s):
   Command(cuid), e(e), peer(peer),
@@ -38,8 +37,6 @@ PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEn
   } else {
     socket = NULL;
   }
-  this->checkPoint.tv_sec = 0;
-  this->checkPoint.tv_usec = 0;
   timeout = e->option->getAsInt(PREF_TIMEOUT);
   e->torrentMan->connections++;
 }
@@ -53,26 +50,6 @@ PeerAbstractCommand::~PeerAbstractCommand() {
   e->torrentMan->connections--;
 }
 
-void PeerAbstractCommand::updateCheckPoint() {
-  gettimeofday(&checkPoint, NULL);
-}
-
-bool PeerAbstractCommand::isTimeoutDetected() {
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  if(checkPoint.tv_sec == 0 && checkPoint.tv_usec == 0) {
-    checkPoint = now;
-    return false;
-  } else {
-    int elapsed = Util::difftvsec(now, checkPoint);
-    if(elapsed >= timeout) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-
 bool PeerAbstractCommand::execute() {
   if(e->torrentMan->isHalt()) {
     return true;
@@ -82,12 +59,9 @@ bool PeerAbstractCommand::execute() {
 			    e->getUploadSpeed() <= uploadLimit*1024) ||
        checkSocketIsReadable && readCheckTarget->isReadable(0) ||
        checkSocketIsWritable && writeCheckTarget->isWritable(0)) {
-      updateCheckPoint();
+      checkPoint.reset();
     }
-    if(isTimeoutDetected()) {
-      // TODO following 2 lines will be deleted.
-      checkPoint.tv_sec = 0;
-      checkPoint.tv_usec = 0;
+    if(checkPoint.elapsed(timeout)) {
       throw new DlRetryEx(EX_TIME_OUT);
     }
     return executeInternal();

@@ -130,9 +130,6 @@ void TorrentMan::deleteOldErrorPeers() {
 }
 
 Peer* TorrentMan::getPeer() const {
-  if(connections > MAX_PEER_UPDATE) {
-    return Peer::nullPeer;
-  }
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peer* p = *itr;
     if(p->cuid == 0 && p->error < MAX_PEER_ERROR) {
@@ -401,8 +398,8 @@ void TorrentMan::readFileEntry(FileEntries& fileEntries, Directory** pTopDir, co
 }
 
 void TorrentMan::setupInternal1(const string& metaInfoFile) {
-  peerId = "-A2****-";
-  for(int i = 0; i < 12; i++) {
+  peerId = "-aria2-";
+  for(int i = 0; i < 20-(int)peerId.size(); i++) {
     peerId += Util::itos((int)(((double)10)*random()/(RAND_MAX+1.0)));
   }
 
@@ -652,3 +649,21 @@ void TorrentMan::onDownloadComplete() {
     finishSelectiveDownloadingMode();
   }
 }
+
+void TorrentMan::advertisePiece(int cuid, int index) {
+  HaveEntry entry(cuid, index);
+  haves.push_back(entry);
+};
+
+PieceIndexes TorrentMan::getAdvertisedPieceIndexes(int myCuid,
+						   Time lastCheckTime) const {
+    PieceIndexes indexes;
+    for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
+      const Haves::value_type& have = *itr;
+      if(have.cuid == myCuid || lastCheckTime.isNewer(have.registeredTime)) {
+	continue;
+      }
+      indexes.push_back(have.index);
+    }
+    return indexes;
+  }
