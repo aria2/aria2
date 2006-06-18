@@ -15,6 +15,10 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl8);
   CPPUNIT_TEST(testSetUrl9);
   CPPUNIT_TEST(testSetUrl10);
+  CPPUNIT_TEST(testSetUrl11);
+  CPPUNIT_TEST(testSetUrl12);
+  CPPUNIT_TEST(testSetUrl13);
+  CPPUNIT_TEST(testSetUrl14);
   CPPUNIT_TEST(testRedirectUrl);
   CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testResetUrl);
@@ -32,6 +36,10 @@ public:
   void testSetUrl8();
   void testSetUrl9();
   void testSetUrl10();
+  void testSetUrl11();
+  void testSetUrl12();
+  void testSetUrl13();
+  void testSetUrl14();
   void testRedirectUrl();
   void testRedirectUrl2();
   void testResetUrl();
@@ -148,6 +156,51 @@ void RequestTest::testSetUrl10() {
   bool v = req.setUrl("");
 
   CPPUNIT_ASSERT(!v);
+}
+
+void RequestTest::testSetUrl11() {
+  Request req;
+  bool v = req.setUrl("http://host?query/");
+  
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("?query/"), req.getFile());
+}
+
+void RequestTest::testSetUrl12() {
+  Request req;
+  bool v = req.setUrl("http://host?query");
+  
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("?query"), req.getFile());
+}
+
+void RequestTest::testSetUrl13() {
+  Request req;
+  bool v = req.setUrl("http://host/?query");
+  
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("?query"), req.getFile());
+}
+
+void RequestTest::testSetUrl14() {
+  Request req;
+  bool v = req.setUrl("http://host:8080/abc?query");
+  
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(8080, req.getPort());
+  CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("abc?query"), req.getFile());
 }
 
 void RequestTest::testRedirectUrl() {

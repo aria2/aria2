@@ -62,7 +62,11 @@ void SimpleLogger::closeFile() {
     fclose(file);
   }
 }
-  
+
+void SimpleLogger::writeHeader(string date, string level) const {
+  fprintf(file, "%s - %s - ", date.c_str(), level.c_str());
+}
+
 void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e) const
 {
   string levelStr;
@@ -84,9 +88,11 @@ void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e
   char datestr[26];
   ctime_r(&now, datestr);
   datestr[strlen(datestr)-1] = '\0';
-  vfprintf(file, string(string(datestr)+" - "+levelStr+" - "+Util::replace(msg, "\r", "")+"\n").c_str(), ap);
+  writeHeader(datestr, levelStr);
+  vfprintf(file, string(Util::replace(msg, "\r", "")+"\n").c_str(), ap);
   if(e != NULL) {
-    fprintf(file, string(string(datestr)+" - "+levelStr+" - exception: "+Util::replace(e->getMsg(), "\r", "")+"\n").c_str());
+    writeHeader(datestr, levelStr);
+    fprintf(file, "exception: %s\n", Util::replace(e->getMsg(), "\r", "").c_str());
   }
   fflush(file);
 }

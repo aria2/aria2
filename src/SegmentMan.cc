@@ -34,8 +34,8 @@
 SegmentMan::SegmentMan():totalSize(0),
 			 isSplittable(true), 
 			 downloadStarted(false),
-			 errors(0),
 			 dir("."),
+			 errors(0),
 			 splitter(NULL),
 			 diskWriter(NULL) {
   logger = LogFactory::getInstance();

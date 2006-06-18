@@ -13,5 +13,4 @@
 * Distinguish seeder from leecher
 * Add Mainline-compatible DHT support
 * Add Message stream encryption support
-* Add announce-list support
 * Refacturing HttpConnection and FtpConnection

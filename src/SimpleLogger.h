@@ -26,6 +26,7 @@
 
 class SimpleLogger:public Logger {
 private:
+  void writeHeader(string date, string level) const;
   void writeLog(int level, const char* msg, va_list ap, Exception* e = NULL) const;
   FILE* file;
 public:

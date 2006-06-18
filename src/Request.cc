@@ -57,6 +57,8 @@ bool Request::redirectUrl(const string& url) {
 
 bool Request::parseUrl(const string& url) {
   currentUrl = url;
+  string tempUrl = url;
+  string query;
   host = "";
   port = 0;
   dir = "";
@@ -64,21 +66,26 @@ bool Request::parseUrl(const string& url) {
   if(url.find_first_not_of(SAFE_CHARS) != string::npos) {
     return false;
   }
-  string::size_type hp = url.find("://");
+  string::size_type startQueryIndex = tempUrl.find("?");
+  if(startQueryIndex != string::npos) {
+    query = tempUrl.substr(startQueryIndex);
+    tempUrl.erase(startQueryIndex);
+  }
+  string::size_type hp = tempUrl.find("://");
   if(hp == string::npos) return false;
-  protocol = url.substr(0, hp);
+  protocol = tempUrl.substr(0, hp);
   int defPort;
   if((defPort = defaultPorts[protocol]) == 0) {
     return false;
   }
   hp += 3;
-  if(url.size() <= hp) return false;
-  string::size_type hep = url.find("/", hp);
+  if(tempUrl.size() <= hp) return false;
+  string::size_type hep = tempUrl.find("/", hp);
   if(hep == string::npos) {
-    hep = url.size();
+    hep = tempUrl.size();
   }
   pair<string, string> hostAndPort;
-  Util::split(hostAndPort, url.substr(hp, hep-hp), ':');
+  Util::split(hostAndPort, tempUrl.substr(hp, hep-hp), ':');
   host = hostAndPort.first;
   if(hostAndPort.second != "") {
     port = (int)strtol(hostAndPort.second.c_str(), NULL, 10);
@@ -89,15 +96,16 @@ bool Request::parseUrl(const string& url) {
     // If port is not specified, then we set it to default port of its protocol..
     port = defPort;
   }
-  string::size_type direp = url.find_last_of("/");
+  string::size_type direp = tempUrl.find_last_of("/");
   if(direp == string::npos || direp <= hep) {
     dir = "/";
     direp = hep;
   } else {
-    dir = url.substr(hep, direp-hep);
+    dir = tempUrl.substr(hep, direp-hep);
   }
-  if(url.size() > direp+1) {
-    file = url.substr(direp+1);
+  if(tempUrl.size() > direp+1) {
+    file = tempUrl.substr(direp+1);
   }
+  file += query;
   return true;
 }

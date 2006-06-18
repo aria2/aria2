@@ -22,6 +22,8 @@
 #include "TrackerWatcherCommand.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "Util.h"
+#include "SleepCommand.h"
+#include "prefs.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 					     TorrentDownloadEngine* e,
@@ -35,6 +37,11 @@ bool TrackerWatcherCommand::execute() {
     // we assume the tracker request has failed.
     e->torrentMan->trackers = 0;
     e->segmentMan->init();
+    // sleep a few seconds.
+    SleepCommand* sleepCommand =
+      new SleepCommand(cuid, e, this, e->option->getAsInt(PREF_RETRY_WAIT));
+    e->commands.push_back(sleepCommand);
+    return false;
   }
   if(e->torrentMan->trackers == 0 &&
      (e->torrentMan->connections < MAX_PEER_UPDATE ||
