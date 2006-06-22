@@ -89,7 +89,8 @@ bool PeerInteractionCommand::executeInternal() {
     break;
   }
   case RECEIVER_WAIT_HANDSHAKE: {
-    HandshakeMessage* handshakeMessage = peerInteraction->receiveHandshake();
+    HandshakeMessage* handshakeMessage =
+      peerInteraction->receiveHandshake(true);
     if(handshakeMessage == NULL) {
       break;
     }
@@ -98,7 +99,6 @@ bool PeerInteractionCommand::executeInternal() {
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
     delete handshakeMessage;
-    peerInteraction->sendHandshake();
     haveCheckTime.reset();
     peerInteraction->sendBitfield();
     peerInteraction->sendAllowedFast();

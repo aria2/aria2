@@ -101,6 +101,7 @@ bool PeerConnection::receiveMessage(char* msg, int& length) {
 
 bool PeerConnection::receiveHandshake(char* msg, int& length) {
   if(!socket->isReadable(0)) {
+    length = 0;
     return false;
   }
   int remain = HANDSHAKE_MESSAGE_LENGTH-resbufLength;
@@ -110,14 +111,19 @@ bool PeerConnection::receiveHandshake(char* msg, int& length) {
     // we got EOF
     throw new DlAbortEx(EX_EOF_FROM_PEER);
   }
+  bool retval;
   if(remain != temp) {
-    resbufLength += temp;
-    return false;
+    retval = false;
+  } else {
+    retval = true;
   }
+  resbufLength += temp;
   // we got whole handshake payload
-  resbufLength = 0;
-
-  memcpy(msg, resbuf, HANDSHAKE_MESSAGE_LENGTH);
-  length = HANDSHAKE_MESSAGE_LENGTH;
-  return true;
+  int writeLength = resbufLength > length ? length : resbufLength;
+  memcpy(msg, resbuf, writeLength);
+  length = writeLength;
+  if(retval) {
+    resbufLength = 0;
+  }
+  return retval;
 }

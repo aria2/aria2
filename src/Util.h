@@ -86,6 +86,8 @@ public:
 				int pieces, int fastSetSize);
 
   static int countBit(unsigned int);
+
+  static string randomAlpha(int length);
 };
 
 #endif // _D_UTIL_H_

@@ -104,6 +104,8 @@ public:
    */
   void establishConnection(const string& host, int port);
 
+  void setNonBlockingMode() const;
+
   /**
    * Makes this socket blocking mode.
    */

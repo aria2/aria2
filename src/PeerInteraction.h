@@ -62,8 +62,9 @@ private:
   Pieces pieces;
   // allowed fast piece indexes that local client has sent
   Integers fastSet;
+  bool quickReplied;
   const Logger* logger;
-  
+
   void getNewPieceAndSendInterest(int pieceNum);
   PeerMessage* createPeerMessage(const char* msg, int msgLength);
   HandshakeMessage* createHandshakeMessage(const char* msg, int msgLength);
@@ -116,7 +117,7 @@ public:
   void sendAllowedFast();
 
   PeerMessage* receiveMessage();
-  HandshakeMessage* receiveHandshake();
+  HandshakeMessage* receiveHandshake(bool quickReply = false);
 
   RequestMessage* createRequestMessage(int index, int blockIndex);
   CancelMessage* createCancelMessage(int index, int begin, int length);

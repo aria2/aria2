@@ -399,10 +399,8 @@ void TorrentMan::readFileEntry(FileEntries& fileEntries, Directory** pTopDir, co
 
 void TorrentMan::setupInternal1(const string& metaInfoFile) {
   peerId = "-aria2-";
-  int randomSize = 20-peerId.size();
-  for(int i = 0; i < randomSize; i++) {
-    peerId += Util::itos((int)(((double)10)*random()/(RAND_MAX+1.0)));
-  }
+  peerId += Util::randomAlpha(20-peerId.size());
+  key = Util::randomAlpha(8);
 
   uploadLength = 0;
   downloadLength = 0;

@@ -456,3 +456,18 @@ int Util::countBit(unsigned int n) {
 
   return count;
 }
+
+string Util::randomAlpha(int length) {
+  string str;
+  for(int i = 0; i < length; i++) {
+    int index = (int)(((double)52)*random()/(RAND_MAX+1.0));
+    char ch;
+    if(index < 26) {
+      ch = (char)('A'+index);
+    } else {
+      ch = (char)('a'+index-26);
+    }
+    str += ch;
+  }
+  return str;
+}

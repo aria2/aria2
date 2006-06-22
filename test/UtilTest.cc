@@ -16,6 +16,7 @@ class UtilTest:public CppUnit::TestFixture {
   // may be moved to other helper class in the future.
   CPPUNIT_TEST(testGetContentDispositionFilename);
   CPPUNIT_TEST(testComputeFastSet);
+  CPPUNIT_TEST(testRandomAlpha);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -32,6 +33,7 @@ public:
   void testComputeFastSet();
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
+  void testRandomAlpha();
 };
 
 
@@ -207,4 +209,8 @@ void UtilTest::testComputeFastSet() {
   int ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
   Integers ansSet2(&ans2[0], &ans2[10]);
   CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
+}
+
+void UtilTest::testRandomAlpha() {
+  CPPUNIT_ASSERT_EQUAL(string("rUopvKRn"), Util::randomAlpha(8));
 }

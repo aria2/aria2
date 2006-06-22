@@ -109,6 +109,7 @@ public:
   int pieces;
   // TODO type char* would be better
   string peerId;
+  string key;
   string announce;
   string trackerId;
   string name;

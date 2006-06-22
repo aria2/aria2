@@ -87,8 +87,9 @@ bool TrackerWatcherCommand::execute() {
       "left="+(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength() <= 0
 	       ? "0" : Util::llitos(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength()))+"&"+
       "compact=1"+"&"+
-      "key="+e->torrentMan->peerId+"&"+
-      "numwant="+Util::itos(numWant);
+      "key="+e->torrentMan->key+"&"+
+      "numwant="+Util::itos(numWant)+"&"+
+      "no_peer_id=1";
     if(!event.empty()) {
       url += string("&")+"event="+event;
     }

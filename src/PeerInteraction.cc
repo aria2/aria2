@@ -35,7 +35,8 @@ PeerInteraction::PeerInteraction(int cuid,
   :cuid(cuid),
    uploadLimit(0),
    torrentMan(torrentMan),
-   peer(peer) {
+   peer(peer),
+   quickReplied(false) {
   peerConnection = new PeerConnection(cuid, socket, op);
   logger = LogFactory::getInstance();
 }
@@ -285,10 +286,19 @@ int PeerInteraction::countRequestSlot() const {
   return requestSlots.size();
 }
 
-HandshakeMessage* PeerInteraction::receiveHandshake() {
+HandshakeMessage* PeerInteraction::receiveHandshake(bool quickReply) {
   char msg[HANDSHAKE_MESSAGE_LENGTH];
-  int msgLength = 0;
-  if(!peerConnection->receiveHandshake(msg, msgLength)) {
+  int msgLength = HANDSHAKE_MESSAGE_LENGTH;
+  bool retval = peerConnection->receiveHandshake(msg, msgLength);
+  // To handle tracker's NAT-checking feature
+  if(!quickReplied && quickReply && msgLength >= 48) {
+    quickReplied = true;
+    // check info_hash
+    if(memcmp(torrentMan->getInfoHash(), &msg[28], INFO_HASH_LENGTH) == 0) {
+      sendHandshake();
+    }
+  }
+  if(!retval) {
     return NULL;
   }
   HandshakeMessage* handshakeMessage = createHandshakeMessage(msg, msgLength);

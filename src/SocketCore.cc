@@ -93,6 +93,8 @@ void SocketCore::beginListen(int port) {
   if(listen(sockfd, 1) == -1) {
     throw new DlAbortEx(EX_SOCKET_LISTEN, strerror(errno));
   }
+
+  setNonBlockingMode();
 }
 
 SocketCore* SocketCore::acceptConnection() const {
@@ -166,16 +168,22 @@ void SocketCore::establishConnection(const string& host, int port) {
     freeaddrinfo(res);
   }
   // make socket non-blocking mode
-  int flags = fcntl(sockfd, F_GETFL, 0);
-  fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);
+  setNonBlockingMode();
   if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && errno != EINPROGRESS) {
     throw new DlAbortEx(EX_SOCKET_CONNECT, host.c_str(), strerror(errno));
   }
 }
 
+void SocketCore::setNonBlockingMode() const {
+  int flags = fcntl(sockfd, F_GETFL, 0);
+  // TODO add error handling
+  fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);
+}
+
 void SocketCore::setBlockingMode() const {
   int flags = fcntl(sockfd, F_GETFL, 0);
-  fcntl(sockfd, F_SETFL, flags&~O_NONBLOCK);
+  // TODO add error handling
+  fcntl(sockfd, F_SETFL, flags&(~O_NONBLOCK));
 }
 
 void SocketCore::closeConnection() {
