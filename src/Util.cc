@@ -94,7 +94,7 @@ long long int Util::difftv(struct timeval tv1, struct timeval tv2) {
   if(tv1.tv_sec < tv2.tv_sec || tv1.tv_sec == tv2.tv_sec && tv1.tv_usec < tv2.tv_usec) {
     return 0;
   }
-  return ((tv1.tv_sec-tv2.tv_sec)*1000000+
+  return ((long long int)(tv1.tv_sec-tv2.tv_sec)*1000000+
 	  tv1.tv_usec-tv2.tv_usec);
 }
 
