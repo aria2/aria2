@@ -1,3 +1,37 @@
+2006-06-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+        To fix the bug that causes same have message is sent many times to
+	a single peer.
+
+	* src/Time.cc
+	(isNewer): Use Util::difftv().
+
+	To fix the bug that sends tracker requests without a sleep interval
+	when the number of connections is less than 15.
+
+	* src/TrackerWatcherCommand.cc
+	(execute): Now the number of connections is not a factor to decide
+	whether or not a tracker request should be sent or not.
+	* src/Time.h
+	(setTimeInSec): New function.
+	* src/Time.cc
+	(setTimeInSec): New function.
+
+	etc.
+	
+	* src/ChokeMessage.cc
+	(receivedAction): Removed peer->snubbing = false
+
+	* src/PeerConnection.h
+	(receiveHandshake): Updated doc.
+
+	* src/TorrentMan.h
+	(getAdvertisedPieceIndexes): Updated the method signature.
+	* src/TorrentMan.cc
+	(getAdvertisedPieceIndexes): Updated the method signature.
+
+	* Release 0.5.2
+	
 2006-06-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To make a listening socket non-block:

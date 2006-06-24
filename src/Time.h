@@ -65,6 +65,8 @@ public:
     return tv.tv_sec;
   }
 
+  void setTimeInSec(int sec);
+
   bool isNewer(const Time& time) const;
 };
 

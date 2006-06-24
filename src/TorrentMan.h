@@ -178,7 +178,7 @@ public:
 
   void advertisePiece(int cuid, int index);
 
-  PieceIndexes getAdvertisedPieceIndexes(int myCuid, Time lastCheckTime) const;
+  PieceIndexes getAdvertisedPieceIndexes(int myCuid, const Time& lastCheckTime) const;
 
   long long int getTotalLength() const { return totalLength; }
   void setTotalLength(long long int length) { totalLength = length; }

@@ -655,7 +655,7 @@ void TorrentMan::advertisePiece(int cuid, int index) {
 };
 
 PieceIndexes TorrentMan::getAdvertisedPieceIndexes(int myCuid,
-						   Time lastCheckTime) const {
+						   const Time& lastCheckTime) const {
     PieceIndexes indexes;
     for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
       const Haves::value_type& have = *itr;

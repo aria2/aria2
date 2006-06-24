@@ -55,6 +55,12 @@ public:
   int sendMessage(const char* msg, int length);
 
   bool receiveMessage(char* msg, int& length);
+  /**
+   * Returns true if a handshake message is fully received, otherwise returns
+   * false.
+   * In both cases, 'msg' is filled with received bytes and the filled length
+   * is assigned to 'length'.
+   */
   bool receiveHandshake(char* msg, int& length);
 };
 

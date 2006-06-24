@@ -28,7 +28,10 @@
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 					     TorrentDownloadEngine* e,
 					     int interval):
-  Command(cuid), e(e), interval(interval) {}
+  Command(cuid), e(e), interval(interval) {
+  // to force requesting to a tracker first time.
+  checkPoint.setTimeInSec(0);
+}
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
@@ -44,8 +47,7 @@ bool TrackerWatcherCommand::execute() {
     return false;
   }
   if(e->torrentMan->trackers == 0 &&
-     (e->torrentMan->connections < MAX_PEER_UPDATE ||
-      e->torrentMan->isHalt() ||
+     (e->torrentMan->isHalt() ||
       checkPoint.elapsed(interval))) {
     checkPoint.reset();
     e->torrentMan->req->resetTryCount();

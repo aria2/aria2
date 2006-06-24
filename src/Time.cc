@@ -58,7 +58,7 @@ bool Time::elapsedInMillis(int millis) const {
 }
 
 bool Time::isNewer(const Time& time) const {
-  return Util::difftvsec(this->tv, time.tv) > 0;
+  return Util::difftv(this->tv, time.tv) > 0;
 }
 
 int Time::difference() const {
@@ -67,4 +67,9 @@ int Time::difference() const {
 
 long long int Time::differenceInMillis() const {
   return Util::difftv(getCurrentTime(), tv)/1000;
+}
+
+void Time::setTimeInSec(int sec) {
+  tv.tv_sec = sec;
+  tv.tv_usec = 0;
 }

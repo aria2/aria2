@@ -40,7 +40,6 @@ ChokeMessage* ChokeMessage::create(const char* data, int dataLength) {
 
 void ChokeMessage::receivedAction() {
   peer->peerChoking = true;
-  peer->snubbing = false;
   peerInteraction->onChoked();
 }
 
