@@ -53,11 +53,11 @@ public:
   bool isZero() const { return tv.tv_sec == 0 && tv.tv_usec == 0; }
 
   long long int getTimeInMicros() const {
-    return tv.tv_sec*1000*1000+tv.tv_usec;
+    return (long long int)tv.tv_sec*1000*1000+tv.tv_usec;
   }
 
   long long int getTimeInMillis() const {
-    return tv.tv_sec*1000+tv.tv_usec/1000;
+    return (long long int)tv.tv_sec*1000+tv.tv_usec/1000;
   }
 
   // Returns this object's time value in seconds.

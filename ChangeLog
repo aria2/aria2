@@ -5,7 +5,12 @@
 
 	* src/Time.cc
 	(isNewer): Use Util::difftv().
-
+	* src/Util.cc
+	(difftv): Added a cast to (long long int).
+	* src/TorrentMan.cc
+	(advertisePiece): Use push_front.
+	(getAdvertisedPieceIndexes): A performance improvement was made.
+	
 	To fix the bug that sends tracker requests without a sleep interval
 	when the number of connections is less than 15.
 
@@ -30,6 +35,10 @@
 	* src/TorrentMan.cc
 	(getAdvertisedPieceIndexes): Updated the method signature.
 
+	* src/Time.h
+	(getTimeInMicros): Added a cast to (long long int).
+	(getTimeInMillis): Added a cast to (long long int).
+	
 	* Release 0.5.2
 	
 2006-06-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>

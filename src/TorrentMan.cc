@@ -651,7 +651,7 @@ void TorrentMan::onDownloadComplete() {
 
 void TorrentMan::advertisePiece(int cuid, int index) {
   HaveEntry entry(cuid, index);
-  haves.push_back(entry);
+  haves.push_front(entry);
 };
 
 PieceIndexes TorrentMan::getAdvertisedPieceIndexes(int myCuid,
@@ -659,8 +659,11 @@ PieceIndexes TorrentMan::getAdvertisedPieceIndexes(int myCuid,
     PieceIndexes indexes;
     for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
       const Haves::value_type& have = *itr;
-      if(have.cuid == myCuid || lastCheckTime.isNewer(have.registeredTime)) {
+      if(have.cuid == myCuid) {
 	continue;
+      }
+      if(lastCheckTime.isNewer(have.registeredTime)) {
+	break;
       }
       indexes.push_back(have.index);
     }
