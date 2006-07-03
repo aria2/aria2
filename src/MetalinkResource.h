@@ -19,30 +19,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _BASE64_H_
-#define _BASE64_H_
-#include <string>
+#ifndef _D_METALINK_RESOURCE_H_
+#define _D_METALINK_RESOURCE_H_
+
 #include "common.h"
-using namespace std;
 
-class Base64
-{
-private:
-  static void part_encode(const unsigned char* sub, int subLength,
-			  unsigned char* buf);
-
-  static string part_encode(const string& subplain);
-  static string part_decode(const string& subCrypted);
-  static char getValue(char ch);
+class MetalinkResource {
 public:
-  static string encode(const string& plain);
-  // caller must deallocate the memory used by result.
-  static void encode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
-  static string decode(const string& crypted);
-  // caller must deallocate the memory used by result.
-  static void decode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
+  enum TYPE {
+    TYPE_FTP,
+    TYPE_HTTP,
+    TYPE_BITTORRENT,
+    TYPE_NOT_SUPPORTED
+  };
+public:
+  string url;
+  int type;
+  string location;
+  int preference;
+public:
+  MetalinkResource();
+  ~MetalinkResource();
+
+  MetalinkResource& operator=(const MetalinkResource& metalinkResource);
 };
 
-#endif // _BASE64_H_
+#endif // _D_METALINK_RESOURCE_H_

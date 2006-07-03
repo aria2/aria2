@@ -11,6 +11,9 @@
 /* Define to 1 if BitTorrent support is enabled. */
 #undef ENABLE_BITTORRENT
 
+/* Define to 1 if Metalink support is enabled. */
+#undef ENABLE_METALINK
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -113,6 +116,9 @@
 
 /* Define to 1 if you have openssl. */
 #undef HAVE_LIBSSL
+
+/* Define to 1 if you have libxml2. */
+#undef HAVE_LIBXML2
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H

@@ -19,30 +19,37 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _BASE64_H_
-#define _BASE64_H_
-#include <string>
+#ifndef _D_METALINK_ENTRY_H_
+#define _D_METALINK_ENTRY_H_
+
 #include "common.h"
-using namespace std;
+#include "MetalinkResource.h"
+#include <deque>
 
-class Base64
-{
-private:
-  static void part_encode(const unsigned char* sub, int subLength,
-			  unsigned char* buf);
+typedef deque<MetalinkResource*> MetalinkResources;
 
-  static string part_encode(const string& subplain);
-  static string part_decode(const string& subCrypted);
-  static char getValue(char ch);
+class MetalinkEntry {
 public:
-  static string encode(const string& plain);
-  // caller must deallocate the memory used by result.
-  static void encode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
-  static string decode(const string& crypted);
-  // caller must deallocate the memory used by result.
-  static void decode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
+  string filename;
+  string version;
+  string language;
+  string os;
+  long long int size;
+  string  md5;
+  string  sha1;
+public:
+  MetalinkResources resources;
+public:
+  MetalinkEntry();
+  ~MetalinkEntry();
+
+  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry);
+
+  bool check(const string& filename) const;
+
+  void dropUnsupportedResource();
+
+  void reorderResourcesByPreference();
 };
 
-#endif // _BASE64_H_
+#endif // _D_METALINK_ENTRY_H_

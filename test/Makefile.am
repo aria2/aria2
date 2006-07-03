@@ -31,16 +31,19 @@ aria2c_SOURCES = AllTest.cc\
 	PieceMessageTest.cc\
 	RejectMessageTest.cc\
 	AllowedFastMessageTest.cc\
-	SuggestPieceMessageTest.cc
+	SuggestPieceMessageTest.cc\
+	Xml2MetalinkProcessorTest.cc\
+	MetalinkerTest.cc\
+	MetalinkEntryTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 
 aria2c_LDADD = ../src/libaria2c.a\
 	 ${CPPUNIT_LIBS} @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
 AM_CPPFLAGS =  -Wall\
 	${CPPUNIT_CFLAGS}\
 	-I ../src\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
-	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@\
+	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@

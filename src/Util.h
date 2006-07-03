@@ -23,6 +23,9 @@
 #define _D_UTIL_H_
 
 #include "common.h"
+#ifdef ENABLE_SHA1DIGEST
+#include "messageDigest.h"
+#endif // ENABLE_SHA1DIGEST
 #include <string>
 #include <utility>
 #include <deque>
@@ -82,12 +85,21 @@ public:
   // digest must be at least 20 bytes long.
   static void sha1Sum(unsigned char* digest, const void* data, int dataLength);
 
+  // Before call this method, allocate enough memory to the parameter "digest".
+  // For sha1, you need 20 bytes. For md5, 16 bytes.
+  static void fileChecksum(const string& filename, unsigned char* digest,
+			   MessageDigestContext::HashAlgo algo);
+
   static Integers computeFastSet(string ipaddr, const unsigned char* infoHash,
 				int pieces, int fastSetSize);
 
   static int countBit(unsigned int);
 
   static string randomAlpha(int length);
+
+  static string toUpper(const string& src);
+
+  static string toLower(const string& src);
 };
 
 #endif // _D_UTIL_H_

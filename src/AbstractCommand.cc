@@ -77,6 +77,7 @@ bool AbstractCommand::execute() {
     delete(err);
     req->resetUrl();
     e->segmentMan->errors++;
+    tryReserved();
     return true;
   } catch(DlRetryEx* err) {
     logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
@@ -90,10 +91,20 @@ bool AbstractCommand::execute() {
     if(isAbort) {
       logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
       e->segmentMan->errors++;
+      tryReserved();
       return true;
     } else {
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
     }
+  }
+}
+
+void AbstractCommand::tryReserved() {
+  if(!e->segmentMan->reserved.empty()) {
+    Request* req = e->segmentMan->reserved.front();
+    e->segmentMan->reserved.pop_front();
+    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
+    e->commands.push_back(command);
   }
 }
 

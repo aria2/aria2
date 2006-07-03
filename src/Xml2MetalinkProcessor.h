@@ -19,30 +19,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _BASE64_H_
-#define _BASE64_H_
-#include <string>
-#include "common.h"
-using namespace std;
+#ifndef _D_XML2_METALINK_PROCESSOR_H_
+#define _D_XML2_METALINK_PROCESSOR_H_
 
-class Base64
-{
+#include "MetalinkProcessor.h"
+#include <libxml/parser.h>
+#include <libxml/xpath.h>
+
+class Xml2MetalinkProcessor : public MetalinkProcessor {
 private:
-  static void part_encode(const unsigned char* sub, int subLength,
-			  unsigned char* buf);
+  xmlDocPtr doc;
+  xmlXPathContextPtr context;
 
-  static string part_encode(const string& subplain);
-  static string part_decode(const string& subCrypted);
-  static char getValue(char ch);
+  MetalinkEntry* getEntry(const string& xpath);
+  MetalinkResource* getResource(const string& xpath);
+
+  xmlXPathObjectPtr xpathEvaluation(const string& xpath);
+  string xpathContent(const string& xpath);
+  string xmlAttribute(xmlNodePtr node, const string& attrName);
+  string xmlContent(xmlNodePtr node);
+
+  void release();
 public:
-  static string encode(const string& plain);
-  // caller must deallocate the memory used by result.
-  static void encode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
-  static string decode(const string& crypted);
-  // caller must deallocate the memory used by result.
-  static void decode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
+  Xml2MetalinkProcessor();
+  virtual ~Xml2MetalinkProcessor();
+
+  virtual Metalinker* parseFile(const string& filename);
+  
 };
 
-#endif // _BASE64_H_
+#endif // _D_XML2_METALINK_PROCESSOR_H_

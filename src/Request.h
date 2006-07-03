@@ -103,4 +103,6 @@ public:
 
 };
 
+typedef deque<Request*> Requests;
+
 #endif // _D_REQUEST_H_

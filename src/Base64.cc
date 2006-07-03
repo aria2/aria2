@@ -21,61 +21,68 @@
 /* copyright --> */
 #include "Base64.h"
 
-string Base64::part_encode(const string& subplain)
+static char base64_table[64] = {
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+  'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+  'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+  'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+  'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+  'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+  'w', 'x', 'y', 'z', '0', '1', '2', '3',
+  '4', '5', '6', '7', '8', '9', '+', '/',
+};
+
+void Base64::part_encode(const unsigned char* sub, int subLength,
+			 unsigned char* buf)
 {
-  static char base64_table[64] = {
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-    'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-    'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-    'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-    'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-    'w', 'x', 'y', 'z', '0', '1', '2', '3',
-    '4', '5', '6', '7', '8', '9', '+', '/',
-  };
-
   int shift = 2;
-  char carry = 0;
-  bool ignore_flag = false;
-  string crypted;
-
-  for(unsigned int index = 0; index < subplain.size(); ++index) {
-    if(ignore_flag) {
-      crypted += '=';
-    } else {
-      char cur = subplain.at(index) >> shift | carry;
-      if(subplain.at(index) == 0) ignore_flag = true;
-      carry = (subplain.at(index) << (6-shift)) & 0x3F;
-      shift += 2;
-      crypted += base64_table[(unsigned int)cur];
-    }
+  unsigned char carry = 0;
+  int index;
+  for(index = 0; index < subLength; index++) {
+    unsigned char cur = sub[index] >> shift | carry;
+    carry = (sub[index] << (6-shift)) & 0x3f;
+    shift += 2;
+    buf[index] = base64_table[(unsigned int)cur];
   }
-  if(subplain.at(subplain.size()-1) == 0) {
-    crypted += '=';
+  if(subLength == 1) {
+    buf[index] = base64_table[(unsigned int)carry];
+    buf[index+1] = buf[index+2] = '=';
+  } else if(subLength == 2) {
+    buf[index] = base64_table[(unsigned int)carry];
+    buf[index+1] = '=';
   } else {
-    char cur = subplain.at(subplain.size()-1) & 0x3F;
-    crypted += base64_table[(unsigned int)cur];
+    unsigned char cur = sub[subLength-1] & 0x3f;
+    buf[index] = base64_table[(unsigned int)cur];
   }
-
-  return crypted;
 }
 
 string Base64::encode(const string& plainSrc)
 {
-  string plain = plainSrc;
-  int remainder = plain.size() % 3;
-  if( remainder ) remainder = 3-remainder;
-  for(int i = 0; i < remainder; ++i) plain += (char)0;
-  string crypted;
-  int start_pos = 0;
-  for(unsigned int index = 0; plain.size() > index; index += 3) {
-    string subplain = plain.substr(start_pos, 3);
-    string subcrypted = part_encode(subplain);
-    start_pos += 3;
-    crypted += subcrypted;
-  }
-  return crypted;
+  unsigned char* result = 0;
+  int resultLength = 0;
+
+  encode((const unsigned char*)plainSrc.c_str(), plainSrc.size(),
+	 result, resultLength);
+  string encoded(&result[0], &result[resultLength]);
+  delete [] result;
+  return encoded;
 }
+
+void Base64::encode(const unsigned char* src, int srcLength,
+		    unsigned char*& result, int& resultLength) {
+  resultLength = (srcLength+(srcLength%3 == 0 ? 0 : 3-srcLength%3))/3*4;
+  result = new unsigned char[resultLength];
+  unsigned char* tail = result;
+  for(int index = 0; srcLength > index; index += 3) {
+    unsigned char temp[4];
+    part_encode(&src[index],
+		srcLength >= index+3 ? 3 : srcLength-index,
+		temp);
+    memcpy(tail, temp, sizeof(temp)); 
+    tail += sizeof(temp);
+  }
+}
+
 
 char Base64::getValue(char ch)
 {

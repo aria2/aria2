@@ -23,9 +23,6 @@
 #include "DlAbortEx.h"
 #include "File.h"
 #include "message.h"
-#ifdef ENABLE_SHA1DIGEST
-#include "messageDigest.h"
-#endif // ENABLE_SHA1DIGEST
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -68,8 +65,8 @@ string Util::llitos(long long int value, bool comma)
 }
 
 string Util::trim(const string& src) {
-  string::size_type sp = src.find_first_not_of(" ");
-  string::size_type ep = src.find_last_not_of(" ");
+  string::size_type sp = src.find_first_not_of("\r\n\t ");
+  string::size_type ep = src.find_last_not_of("\r\n\t ");
   if(sp == string::npos || ep == string::npos) {
     return "";
   } else {
@@ -365,12 +362,47 @@ string Util::getContentDispositionFilename(const string& header) {
 
 void Util::sha1Sum(unsigned char* digest, const void* data, int dataLength) {
 #ifdef ENABLE_SHA1DIGEST
-  MessageDigestContext ctx;
-  sha1DigestInit(ctx);
-  sha1DigestReset(ctx);
-  sha1DigestUpdate(ctx, data, dataLength);
-  sha1DigestFinal(ctx, digest);
-  sha1DigestFree(ctx);
+  MessageDigestContext ctx(MessageDigestContext::ALGO_SHA1);
+  digestInit(ctx);
+  digestReset(ctx);
+  digestUpdate(ctx, data, dataLength);
+  digestFinal(ctx, digest);
+  digestFree(ctx);
+#endif // ENABLE_SHA1DIGEST
+}
+
+void Util::fileChecksum(const string& filename, unsigned char* digest,
+			MessageDigestContext::HashAlgo algo) {
+#ifdef ENABLE_SHA1DIGEST
+  MessageDigestContext ctx(algo);
+  digestInit(ctx);
+  digestReset(ctx);
+
+  int BUFLEN = 4096;
+  char buf[BUFLEN];
+
+  int fd;
+  if((fd = open(filename.c_str(), O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
+    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
+  }
+  while(1) {
+    int size = read(fd, buf, BUFLEN);
+    if(size == -1) {
+      if(errno == EINTR) {
+	continue;
+      } else {
+	close(fd);
+	throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
+      }
+    } else if(size > 0) {
+      digestUpdate(ctx, buf, size);
+    }
+    if(size < BUFLEN) {
+      break;
+    }
+  }
+  digestFinal(ctx, digest);
+  digestFree(ctx);
 #endif // ENABLE_SHA1DIGEST
 }
 
@@ -470,4 +502,30 @@ string Util::randomAlpha(int length) {
     str += ch;
   }
   return str;
+}
+
+class UpperCase {
+public:
+  void operator()(char& ch) {
+    ch = toupper(ch);
+  }
+};
+
+string Util::toUpper(const string& src) {
+  string temp = src;
+  for_each(temp.begin(), temp.end(), UpperCase());
+  return temp;
+}
+
+class LowerCase {
+public:
+  void operator()(char& ch) {
+    ch = tolower(ch);
+  }
+};
+
+string Util::toLower(const string& src) {
+  string temp = src;
+  for_each(temp.begin(), temp.end(), LowerCase());
+  return temp;
 }

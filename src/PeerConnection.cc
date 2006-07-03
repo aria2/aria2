@@ -71,8 +71,8 @@ bool PeerConnection::receiveMessage(char* msg, int& length) {
     }
     //payloadLen = ntohl(nPayloadLen);
     int payloadLength = ntohl(*((int*)lenbuf));
-    if(payloadLength > MAX_PAYLOAD_LEN) {
-      throw new DlAbortEx("max payload length exceeded. length = %d",
+    if(payloadLength > MAX_PAYLOAD_LEN || payloadLength < 0) {
+      throw new DlAbortEx("max payload length exceeded or invalid. length = %d",
 			  payloadLength);
     }
     currentPayloadLength = payloadLength;

@@ -37,6 +37,7 @@
 #include "TrackerUpdateCommand.h"
 #include "ByteArrayDiskWriter.h"
 #include "PeerChokeCommand.h"
+#include "Xml2MetalinkProcessor.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -59,7 +60,10 @@ extern int optind, opterr, optopt;
 
 using namespace std;
 
-typedef deque<Request*> Requests;
+bool readyToTorrentMode = false;
+string downloadedTorrentFile;
+bool readyToMetalinkMode = false;
+string downloadedMetalinkFile;
 
 void printDownloadCompeleteMessage(string filename) {
   printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
@@ -115,11 +119,10 @@ void torrentHandler(int signal) {
   te->torrentMan->setHalt(true);
 }
 
-void addCommand(int cuid, const string& url, string referer, Requests& requests) {
+void createRequest(int cuid, const string& url, string referer, Requests& requests) {
   Request* req = new Request();
   req->setReferer(referer);
   if(req->setUrl(url)) {
-    e->commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e));
     requests.push_back(req);
   } else {
     fprintf(stderr, _("Unrecognized URL or unsupported protocol: %s\n"), req->getUrl().c_str());
@@ -258,6 +261,54 @@ void showUsage() {
   cout << endl;
 }
 
+bool normalDownload(const Requests& requests,
+		    const Requests& reserved,
+		    Option* op,
+		    const string& dir,
+		    const string& ufilename,
+		    string& downloadedFilename) {
+  setSignalHander(SIGINT, handler, 0);
+  setSignalHander(SIGTERM, handler, 0);
+  
+  e = new ConsoleDownloadEngine();
+  e->option = op;
+  e->segmentMan = new SegmentMan();
+  e->segmentMan->diskWriter = new DefaultDiskWriter();
+  e->segmentMan->dir = dir;
+  e->segmentMan->ufilename = ufilename;
+  e->segmentMan->option = op;
+  e->segmentMan->splitter = new SplitSlowestSegmentSplitter();
+  e->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
+  e->segmentMan->reserved = reserved;
+  
+  int cuidCounter = 1;
+  for(Requests::const_iterator itr = requests.begin();
+      itr != requests.end();
+      itr++, cuidCounter++) {
+    e->commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuidCounter, *itr, e));
+  }
+  e->run();
+  bool success = false;
+  if(e->segmentMan->finished()) {
+    printDownloadCompeleteMessage(e->segmentMan->getFilePath());
+    if(Util::endsWith(e->segmentMan->getFilePath(), ".torrent")) {
+      downloadedTorrentFile = e->segmentMan->getFilePath();
+      readyToTorrentMode = true;
+    } else if(Util::endsWith(e->segmentMan->getFilePath(), ".metalink")) {
+      downloadedMetalinkFile = e->segmentMan->getFilePath();
+      readyToMetalinkMode = true;
+    }
+    downloadedFilename = e->segmentMan->getFilePath();
+    success = true;
+  } else {
+    printDownloadAbortMessage();
+  }
+  e->cleanQueue();
+  delete e;
+
+  return success;
+}
+
 int main(int argc, char* argv[]) {
 #ifdef ENABLE_NLS
   setlocale (LC_CTYPE, "");
@@ -273,13 +324,23 @@ int main(int argc, char* argv[]) {
   bool daemonMode = false;
   string referer;
   string torrentFile;
+  string metalinkFile;
   int listenPort = -1;
+  string metalinkVersion;
+  string metalinkLanguage;
+  string metalinkOs;
+  int metalinkConnection = 15;
   Integers selectFileIndexes;
 #ifdef ENABLE_BITTORRENT
   bool followTorrent = true;
 #else
   bool followTorrent = false;
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+  bool followMetalink = true;
+#else
+  bool followMetalink = false;
+#endif // ENABLE_METALINK
 
   int c;
   Option* op = new Option();
@@ -333,11 +394,15 @@ int main(int argc, char* argv[]) {
       { "upload-limit", required_argument, &lopt, 20 },
       { "select-file", required_argument, &lopt, 21 },
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+      { "metalink-file", required_argument, NULL, 'M' },
+      { "metalink-connection", required_argument, NULL, 'C' },
+#endif // ENABLE_METALINK
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -549,6 +614,17 @@ int main(int argc, char* argv[]) {
     case 'T':
       torrentFile = string(optarg);
       break;
+    case 'M':
+      metalinkFile = string(optarg);
+      break;
+    case 'C':
+      metalinkConnection = (int)strtol(optarg, NULL, 10);
+      if(metalinkConnection <= 0) {
+	cerr << _("metalink-connection must be greater than 0.") << endl;
+	showUsage();
+	exit(1);
+      }
+      break;      
     case 'v':
       showVersion();
       exit(0);
@@ -560,7 +636,7 @@ int main(int argc, char* argv[]) {
       exit(1);
     }
   }
-  if(torrentFile.empty()) {
+  if(torrentFile.empty() && metalinkFile.empty()) {
     if(optind == argc) {
       cerr << _("specify at least one URL") << endl;
       showUsage();
@@ -584,6 +660,9 @@ int main(int argc, char* argv[]) {
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_init();
 #endif // HAVE_LIBGNUTLS
+#ifdef HAVE_LIBXML2
+  xmlInitParser();
+#endif // HAVE_LIBXML2
   srandom(time(NULL));
   if(stdoutLog) {
     LogFactory::setLogFile("/dev/stdout");
@@ -601,50 +680,76 @@ int main(int argc, char* argv[]) {
 
   setSignalHander(SIGPIPE, SIG_IGN, 0);
 
-  bool readyToTorrentMode = false;
-  string downloadedTorrentFile;
-  if(torrentFile.empty()) {
-    setSignalHander(SIGINT, handler, 0);
-    setSignalHander(SIGTERM, handler, 0);
-
-    e = new ConsoleDownloadEngine();
-    e->option = op;
-    e->segmentMan = new SegmentMan();
-    e->segmentMan->diskWriter = new DefaultDiskWriter();
-    e->segmentMan->dir = dir;
-    e->segmentMan->ufilename = ufilename;
-    e->segmentMan->option = op;
-    e->segmentMan->splitter = new SplitSlowestSegmentSplitter();
-    e->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
-
-    
+  if(torrentFile.empty() && metalinkFile.empty()) {
     Requests requests;
     int cuidCounter = 1;
     for(Strings::const_iterator itr = args.begin(); itr != args.end(); itr++) {
       for(int s = 1; s <= split; s++) {
-	addCommand(cuidCounter, *itr, referer, requests); 
+	createRequest(cuidCounter, *itr, referer, requests); 
 	cuidCounter++;
       }
     }
+    setSignalHander(SIGINT, handler, 0);
+    setSignalHander(SIGTERM, handler, 0);
 
-    e->run();
+    Requests reserved;
+    string downloadedFilename;
+    normalDownload(requests, reserved, op, dir, ufilename, downloadedFilename);
+
+    for_each(requests.begin(), requests.end(), Deleter());
+    requests.clear();
+  }
+  if(!metalinkFile.empty() || followMetalink && readyToMetalinkMode) {
+    string targetMetalinkFile = metalinkFile.empty() ?
+      downloadedMetalinkFile : metalinkFile;
+    Xml2MetalinkProcessor proc;
+    Metalinker* metalinker = proc.parseFile(targetMetalinkFile);
     
-    if(e->segmentMan->finished()) {
-      printDownloadCompeleteMessage(e->segmentMan->getFilePath());
-      if(Util::endsWith(e->segmentMan->getFilePath(), ".torrent")) {
-	downloadedTorrentFile = e->segmentMan->getFilePath();
-	readyToTorrentMode = true;
-      }
-    } else {
-      printDownloadAbortMessage();
+    MetalinkEntry* entry = metalinker->queryEntry(metalinkVersion,
+						  metalinkLanguage,
+						  metalinkOs);
+    if(entry == NULL) {
+      printf("No file matched with your preference");
+      exit(1);
     }
+    entry->dropUnsupportedResource();
+    entry->reorderResourcesByPreference();
+    Requests requests;
+    int cuidCounter = 1;
+    for(MetalinkResources::const_iterator itr = entry->resources.begin();
+	itr != entry->resources.end(); itr++) {
+      MetalinkResource* resource = *itr;
+      createRequest(cuidCounter, resource->url, referer, requests); 
+      cuidCounter++;
+    }
+    Requests reserved;
+    if((int)requests.size() > metalinkConnection) {
+      copy(requests.begin()+metalinkConnection, requests.end(),
+	   insert_iterator<Requests>(reserved, reserved.end()));
+      requests.erase(requests.begin()+metalinkConnection, requests.end());
+    }
+
+    setSignalHander(SIGINT, handler, 0);
+    setSignalHander(SIGTERM, handler, 0);
+
+    string downloadedFilename;
+    bool success = normalDownload(requests, reserved, op, dir, ufilename,
+				  downloadedFilename);
+
     for_each(requests.begin(), requests.end(), Deleter());
     requests.clear();
 
-    e->cleanQueue();
-    delete e;
-  }
-  if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
+    if(success) {
+      if(entry->check(downloadedFilename)) {
+	printf("checksum OK.\n");
+      } else {
+	printf("checksum ERROR.\n");
+	exit(EXIT_FAILURE);
+      }
+    }
+
+    delete metalinker;
+  } else if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
     try {
       //op->put(PREF_MAX_TRIES, "0");
       setSignalHander(SIGINT, torrentHandler, SA_RESETHAND);
@@ -735,5 +840,8 @@ int main(int argc, char* argv[]) {
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
 #endif // HAVE_LIBGNUTLS
+#ifdef HAVE_LIBXML2
+  xmlCleanupParser();
+#endif // HAVE_LIBXML2
   return 0;
 }

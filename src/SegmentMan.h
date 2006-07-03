@@ -28,6 +28,7 @@
 #include "Option.h"
 #include "SegmentSplitter.h"
 #include "DiskWriter.h"
+#include "Request.h"
 
 using namespace std;
 
@@ -92,6 +93,7 @@ public:
   const Option* option;
   SegmentSplitter* splitter;
   DiskWriter* diskWriter;
+  Requests reserved;
 
   SegmentMan();
   ~SegmentMan();

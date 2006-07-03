@@ -27,14 +27,15 @@
 
 MultiDiskWriter::MultiDiskWriter(int pieceLength):pieceLength(pieceLength) {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestInit(ctx);
+  ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
+  digestInit(ctx);
 #endif // ENABLE_SHA1DIGEST
 }
 
 MultiDiskWriter::~MultiDiskWriter() {
   clearEntries();
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestFree(ctx);
+  digestFree(ctx);
 #endif // ENABLE_SHA1DIGEST
 }
 
@@ -150,7 +151,7 @@ void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, l
     if(BUFSIZE != entry->diskWriter->readData(buf, BUFSIZE, offset)) {
       throw string("error");
     }
-    sha1DigestUpdate(ctx, buf, BUFSIZE);
+    digestUpdate(ctx, buf, BUFSIZE);
     offset += BUFSIZE;
   }
   int r = length%BUFSIZE;
@@ -158,7 +159,7 @@ void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, l
     if(r != entry->diskWriter->readData(buf, r, offset)) {
       throw string("error");
     }
-    sha1DigestUpdate(ctx, buf, r);
+    digestUpdate(ctx, buf, r);
   }
 }
 #endif // ENABLE_SHA1DIGEST
@@ -168,7 +169,7 @@ string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
   long long int fileOffset = offset;
   bool reading = false;
   int rem = length;
-  sha1DigestReset(ctx);
+  digestReset(ctx);
   try {
     for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
 	itr != diskWriterEntries.end() && rem != 0; itr++) {
@@ -186,7 +187,7 @@ string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
       throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
     }
     unsigned char hashValue[20];
-    sha1DigestFinal(ctx, hashValue);
+    digestFinal(ctx, hashValue);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
     throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));

@@ -14,3 +14,6 @@
 * Add Mainline-compatible DHT support
 * Add Message stream encryption support
 * Refacturing HttpConnection and FtpConnection
+* Use EXIT_SUCCESS and EXIT_FAILURE
+* Query resource by location
+* Conditional compilation based on ENABLE_LIBXML2

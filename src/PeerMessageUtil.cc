@@ -57,6 +57,9 @@ void PeerMessageUtil::checkLength(int length) {
     throw new DlAbortEx("too large length %d > %dKB", length,
 			MAX_BLOCK_LENGTH/1024);
   }
+  if(length <= 0) {
+    throw new DlAbortEx("invalid length %d", length);
+  }
   if(!Util::isPowerOf(length, 2)) {
     throw new DlAbortEx("invalid length %d, which is not power of 2",
 			length);

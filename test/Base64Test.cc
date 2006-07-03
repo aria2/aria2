@@ -26,6 +26,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Base64Test );
 void Base64Test::testEncode() {
   CPPUNIT_ASSERT_EQUAL(string("SGVsbG8gV29ybGQh"),
 		       Base64::encode("Hello World!"));
+  CPPUNIT_ASSERT_EQUAL(string("SGVsbG8gV29ybGQ="),
+		       Base64::encode("Hello World"));
+  CPPUNIT_ASSERT_EQUAL(string("SGVsbG8gV29ybA=="),
+		       Base64::encode("Hello Worl"));
+  CPPUNIT_ASSERT_EQUAL(string("YQ=="),
+		       Base64::encode("a"));
+  CPPUNIT_ASSERT_EQUAL(string(""),
+		       Base64::encode(""));
 }
 
 void Base64Test::testDecode() {

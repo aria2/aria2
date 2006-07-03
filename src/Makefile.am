@@ -102,12 +102,17 @@ SRCS =  Socket.cc Socket.h\
 	SuggestPieceMessage.cc SuggestPieceMessage.h\
 	SimplePeerMessage.cc SimplePeerMessage.h\
 	NullLogger.h\
-	Time.cc Time.h
+	Time.cc Time.h\
+	Metalinker.cc Metalinker.h\
+	MetalinkEntry.cc MetalinkEntry.h\
+	MetalinkResource.cc MetalinkResource.h\
+	MetalinkProcessor.h\
+	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
-	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@\
+	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@

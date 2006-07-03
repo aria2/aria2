@@ -32,14 +32,15 @@
 
 AbstractDiskWriter::AbstractDiskWriter():fd(0) {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestInit(ctx);
+  ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
+  digestInit(ctx);
 #endif // ENABLE_SHA1DIGEST
 }
 
 AbstractDiskWriter::~AbstractDiskWriter() {
   closeFile();
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestFree(ctx);
+  digestFree(ctx);
 #endif // ENABLE_SHA1DIGEST
 }
 
@@ -99,7 +100,7 @@ int AbstractDiskWriter::readDataInternal(char* data, int len) {
 
 string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestReset(ctx);
+  digestReset(ctx);
   try {
     int BUFSIZE = 16*1024;
     char buf[BUFSIZE];
@@ -107,7 +108,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
       if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
 	throw string("error");
       }
-      sha1DigestUpdate(ctx, buf, BUFSIZE);
+      digestUpdate(ctx, buf, BUFSIZE);
       offset += BUFSIZE;
     }
     int r = length%BUFSIZE;
@@ -115,10 +116,10 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
       if(r != readData(buf, r, offset)) {
 	throw string("error");
       }
-      sha1DigestUpdate(ctx, buf, r);
+      digestUpdate(ctx, buf, r);
     }
     unsigned char hashValue[20];
-    sha1DigestFinal(ctx, hashValue);
+    digestFinal(ctx, hashValue);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
     throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));

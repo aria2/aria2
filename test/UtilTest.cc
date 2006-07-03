@@ -17,6 +17,9 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetContentDispositionFilename);
   CPPUNIT_TEST(testComputeFastSet);
   CPPUNIT_TEST(testRandomAlpha);
+  CPPUNIT_TEST(testFileChecksum);
+  CPPUNIT_TEST(testToUpper);
+  CPPUNIT_TEST(testToLower);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -34,6 +37,9 @@ public:
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
   void testRandomAlpha();
+  void testFileChecksum();
+  void testToUpper();
+  void testToLower();
 };
 
 
@@ -213,4 +219,32 @@ void UtilTest::testComputeFastSet() {
 
 void UtilTest::testRandomAlpha() {
   CPPUNIT_ASSERT_EQUAL(string("rUopvKRn"), Util::randomAlpha(8));
+}
+
+void UtilTest::testFileChecksum() {
+  unsigned char buf[20];
+  string filename = "4096chunk.txt";
+  Util::fileChecksum(filename, buf, MessageDigestContext::ALGO_SHA1);
+  string sha1 = Util::toHex(buf, 20);
+  CPPUNIT_ASSERT_EQUAL(string("608cabc0f2fa18c260cafd974516865c772363d5"),
+		       sha1);
+
+  Util::fileChecksum(filename, buf, MessageDigestContext::ALGO_MD5);
+  string md5 = Util::toHex(buf, 16);
+  CPPUNIT_ASSERT_EQUAL(string("82a7348c2e03731109d0cf45a7325b88"),
+		       md5);
+}
+
+void UtilTest::testToUpper() {
+  string src = "608cabc0f2fa18c260cafd974516865c772363d5";
+  string upp = "608CABC0F2FA18C260CAFD974516865C772363D5";
+
+  CPPUNIT_ASSERT_EQUAL(upp, Util::toUpper(src));
+}
+
+void UtilTest::testToLower() {
+  string src = "608CABC0F2FA18C260CAFD974516865C772363D5";
+  string upp = "608cabc0f2fa18c260cafd974516865c772363d5";
+
+  CPPUNIT_ASSERT_EQUAL(upp, Util::toLower(src));
 }

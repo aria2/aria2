@@ -15,6 +15,7 @@ AC_SUBST(localedir)
 # Checks for arguments.
 AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$enableval], [with_gnutls=yes])
 AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$enableval], [with_openssl=yes])
+AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$enableval], [with_libxml2=yes])
 
 
 # Checks for programs.
@@ -25,6 +26,13 @@ AC_PROG_RANLIB
 AC_PROG_YACC
 
 # Checks for libraries.
+if test "x$with_libxml2" = "xyes"; then
+   AM_PATH_XML2([2.6.26], [have_libxml2=yes])
+   if test "x$have_libxml2" = "xyes"; then
+      AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
+   fi
+fi
+
 if test "x$with_gnutls" = "xyes"; then
   AM_PATH_LIBGNUTLS([1.2.9], [have_libgnutls=yes])
   if test "x$have_libgnutls" = "xyes"; then
@@ -49,6 +57,10 @@ if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
 #    AC_SUBST(OPENSSL_CFLAGS)
 #  fi
   AM_PATH_OPENSSL
+fi
+
+if test "x$have_libxml2" = "xyes"; then
+  AC_DEFINE([ENABLE_METALINK], [1], [Define to 1 if Metalink support is enabled.])
 fi
 
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then

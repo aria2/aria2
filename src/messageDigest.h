@@ -28,30 +28,79 @@
 
 #ifdef HAVE_LIBSSL
 #include <openssl/evp.h>
-#define MessageDigestContext EVP_MD_CTX
-#define sha1DigestInit(CTX) EVP_MD_CTX_init(&CTX)
-#define sha1DigestReset(CTX) EVP_DigestInit_ex(&CTX, EVP_sha1(), NULL)
-#define sha1DigestUpdate(CTX, DATA, LENGTH) EVP_DigestUpdate(&CTX, DATA, LENGTH)
-#define sha1DigestFinal(CTX, HASH) \
-{\
-int len;\
-EVP_DigestFinal_ex(&CTX, HASH, (unsigned int*)&len);\
-}
-#define sha1DigestFree(CTX) EVP_MD_CTX_cleanup(&CTX)
 #endif // HAVE_LIBSSL
 
 #ifdef HAVE_LIBGCRYPT
 #include <gcrypt.h>
-#define MessageDigestContext gcry_md_hd_t
-#define sha1DigestInit(CTX) gcry_md_open(&CTX, GCRY_MD_SHA1, 0)
-#define sha1DigestReset(CTX) gcry_md_reset(CTX)
-#define sha1DigestUpdate(CTX, DATA, LENGTH) gcry_md_write(CTX, DATA, LENGTH)
-#define sha1DigestFinal(CTX, HASH) \
+#endif // HAVE_LIBGCRYPT
+
+class MessageDigestContext {
+public:
+  enum HashAlgo {
+    ALGO_MD5,
+    ALGO_SHA1
+  };
+#ifdef HAVE_LIBSSL
+  EVP_MD_CTX ctx;
+  const EVP_MD* algo;
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGCRYPT
+  gcry_md_hd_t ctx;
+  int algo;
+#endif // HAVE_LIBGCRYPT
+
+  MessageDigestContext() {}
+  MessageDigestContext(HashAlgo algo) {
+    setAlgo(algo);
+  }
+
+  void setAlgo(HashAlgo algo) {
+    switch(algo) {
+    case ALGO_MD5:
+#ifdef HAVE_LIBSSL
+      this->algo = EVP_md5();
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGCRYPT
+      this->algo = GCRY_MD_MD5;
+#endif // HAVE_LIBGCRYPT
+      break;
+    case ALGO_SHA1:
+#ifdef HAVE_LIBSSL
+      this->algo = EVP_sha1();
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGCRYPT
+      this->algo = GCRY_MD_SHA1;
+#endif // HAVE_LIBGCRYPT
+      break;
+    default:
+      break;
+    }
+  }
+};
+
+#ifdef HAVE_LIBSSL
+#define digestInit(CTX) EVP_MD_CTX_init(&CTX.ctx)
+#define digestReset(CTX) EVP_DigestInit_ex(&CTX.ctx, CTX.algo, NULL)
+#define digestUpdate(CTX, DATA, LENGTH) EVP_DigestUpdate(&CTX.ctx, DATA, LENGTH)
+#define digestFinal(CTX, HASH) \
 {\
-gcry_md_final(CTX);\
-memcpy(HASH, gcry_md_read(CTX, 0), 20);\
+int len;\
+EVP_DigestFinal_ex(&CTX.ctx, HASH, (unsigned int*)&len);\
 }
-#define sha1DigestFree(CTX) gcry_md_close(CTX)
+#define digestFree(CTX) EVP_MD_CTX_cleanup(&CTX.ctx)
+
+#endif // HAVE_LIBSSL
+
+#ifdef HAVE_LIBGCRYPT
+#define digestInit(CTX) gcry_md_open(&CTX.ctx, CTX.algo, 0)
+#define digestReset(CTX) gcry_md_reset(CTX.ctx)
+#define digestUpdate(CTX, DATA, LENGTH) gcry_md_write(CTX.ctx, DATA, LENGTH)
+#define digestFinal(CTX, HASH) \
+{\
+gcry_md_final(CTX.ctx);\
+memcpy(HASH, gcry_md_read(CTX.ctx, 0), gcry_md_get_algo_dlen(CTX.algo));\
+}
+#define digestFree(CTX) gcry_md_close(CTX.ctx)
 #endif // HAVE_LIBGCRYPT
 
 #endif // ENABLE_BITTORRENT

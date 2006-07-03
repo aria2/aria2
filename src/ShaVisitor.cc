@@ -24,56 +24,57 @@
 
 ShaVisitor::ShaVisitor() {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestInit(ctx);
-  sha1DigestReset(ctx);
+  ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
+  digestInit(ctx);
+  digestReset(ctx);
 #endif // ENABLE_SHA1DIGEST
 }
 
 ShaVisitor::~ShaVisitor() {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestFree(ctx);
+  digestFree(ctx);
 #endif // ENABLE_SHA1DIGEST
 }
 
 void ShaVisitor::visit(const Data* d) {
 #ifdef ENABLE_SHA1DIGEST
   if(d->isNumber()) {
-    sha1DigestUpdate(ctx, "i", 1);
+    digestUpdate(ctx, "i", 1);
   } else {
     string lenStr = Util::llitos(d->getLen());
-    sha1DigestUpdate(ctx, lenStr.c_str(), lenStr.size());
-    sha1DigestUpdate(ctx, ":", 1);
+    digestUpdate(ctx, lenStr.c_str(), lenStr.size());
+    digestUpdate(ctx, ":", 1);
   }
-  sha1DigestUpdate(ctx, d->getData(), d->getLen());
+  digestUpdate(ctx, d->getData(), d->getLen());
   if(d->isNumber()) {
-    sha1DigestUpdate(ctx, "e", 1);
+    digestUpdate(ctx, "e", 1);
   }
 #endif // ENABLE_SHA1DIGEST
 }
 
 void ShaVisitor::visit(const Dictionary* d) {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestUpdate(ctx, "d", 1);
+  digestUpdate(ctx, "d", 1);
   const Order& v = d->getOrder();
   for(Order::const_iterator itr = v.begin(); itr != v.end(); itr++) {
     string lenStr = Util::llitos(itr->size());
-    sha1DigestUpdate(ctx, lenStr.c_str(), lenStr.size());
-    sha1DigestUpdate(ctx, ":", 1);
-    sha1DigestUpdate(ctx, itr->c_str(), itr->size());
+    digestUpdate(ctx, lenStr.c_str(), lenStr.size());
+    digestUpdate(ctx, ":", 1);
+    digestUpdate(ctx, itr->c_str(), itr->size());
     const MetaEntry* e = d->get(*itr);
     this->visit(e);
   }
-  sha1DigestUpdate(ctx, "e", 1);
+  digestUpdate(ctx, "e", 1);
 #endif // ENABLE_SHA1DIGEST
 }
 
 void ShaVisitor::visit(const List* l) {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestUpdate(ctx, "l", 1);
+  digestUpdate(ctx, "l", 1);
   for(MetaList::const_iterator itr = l->getList().begin(); itr != l->getList().end(); itr++) {
     this->visit(*itr);
   }
-  sha1DigestUpdate(ctx, "e", 1);
+  digestUpdate(ctx, "e", 1);
 #endif // ENABLE_SHA1DIGEST
 }
 
@@ -89,7 +90,7 @@ void ShaVisitor::visit(const MetaEntry* e) {
 
 void ShaVisitor::getHash(unsigned char* hashValue, int& len) {
 #ifdef ENABLE_SHA1DIGEST
-  sha1DigestFinal(ctx, hashValue);
+  digestFinal(ctx, hashValue);
   len = 20;
 #endif // ENABLE_SHA1DIGEST
 }

@@ -1,3 +1,75 @@
+2006-07-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add Metalink support(http/ftp only):
+
+	* src/AbstractCommand.h
+	(tryReserved): New function.
+	* src/AbstractCommand.cc
+	(execute): Call tryReserved().
+	(tryReserved): New function.
+	* src/Request.h
+	(Requests): New type definition.
+	* src/SegmentMan.h
+	(reserved): New variable.
+	* src/Util.h
+	(fileChecksum): New function.
+	(toUpper): New function.
+	(toLower): New function.
+	* src/Util.cc
+	(messageDigest.h): Included.
+	(trim): Trim \r\n\t.
+	(fileChecksum): New function.
+	(toUpper): New function.
+	(toLower): New function.
+	* src/main.cc
+	(normalDownload): New function.
+	(main): Added 2 command-line options: metalink-file,
+	metalink-connection. Their usage has not been written yet.
+	* src/MetalinkProcessor.h: New class.
+	* src/Xml2MetalinkProcessor.h: New class.
+	* src/Xml2MetalinkProcessor.cc: New class.
+	* src/MetalinkEntry.h: New class.
+	* src/MetalinkEntry.cc: New class.
+	* src/MetalinkResource.h: New class.
+	* src/MetalinkResource.cc: New class.
+	
+	To add md5 message digest checking:
+
+	* src/messageDigest.h: Rewritten.
+	* src/MultiDiskWriter.cc: Updated according to the changes in
+	messageDigest.h.
+	* src/ShaVisitor.cc: Updated according to the changes in
+	messageDigest.h.
+	* src/Util.cc: Updated according to the changes in messageDigest.h.
+	* src/AbstractDiskWriter.cc: Updated according to the changes in
+	messageDigest.h.
+	
+	To fix a bug that causes segfault when the payload length in peer
+	message is less than 0:
+
+	* src/PeerConnection.cc:
+	(receiveMessage): Fixed the bug.
+	* src/PeerMessageUtil.cc
+	(checkLength): Throw an exception if length is less than or equals to
+	0.
+	
+	To add new interfaces to Base64 encoding/decoding:
+
+	* src/Base64.h
+	(part_encode): Changed the method signature.
+	(encode): New function(overload).
+	(decode): New function(overload).
+	* src/Base64.cc
+	(part_encode): Rewritten.
+	(encode): Rewritten.
+	(encode): New function(overload).
+
+	To prevent a peer to download same piece if there is an error in
+	checksum:
+
+	* src/PieceMessage.cc
+	(receivedAction): Call peerInteraction->abortPiece().
+	
 2006-06-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
         To fix the bug that causes same have message is sent many times to

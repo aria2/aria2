@@ -81,6 +81,7 @@ void PieceMessage::receivedAction() {
 	onGotNewPiece(piece);
       } else {
 	onGotWrongPiece(piece);
+	peerInteraction->abortPiece(piece);
       }
     }
   }

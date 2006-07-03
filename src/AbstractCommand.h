@@ -37,6 +37,7 @@ protected:
   DownloadEngine* e;
   Socket* socket;
 
+  void tryReserved();
   virtual bool prepareForRetry(int wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal(Segment segment) = 0;
