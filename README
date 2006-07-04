@@ -22,7 +22,7 @@ aria2 is in very early development stage. Currently it has following features:
 * It can run as a daemon process.
 * BitTorrent protocol support with fast extension.
 * Selective download in multi-file torrent
-* Metalink version 3.0 support(http/ftp only).
+* Metalink version 3.0 support(HTTP/FTP only).
 
 3. How to build
 ---------------
@@ -82,8 +82,8 @@ files.
 
 6. Metalink
 -----------
-The current implementation only supports http/ftp downloading in Metalink.
-BitTorrent and other p2p protocols are ignored.
+The current implementation only supports HTTP/FTP downloading in Metalink.
+BitTorrent and other P2P protocols are ignored.
 
 For checksum checking, both MD5 and SHA1 are supported. If both values are
 provided, then aria2 uses SHA1. If checksum checking is failed, aria2 doesn't
