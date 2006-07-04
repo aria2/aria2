@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-07-04 01:30+0900\n"
+"POT-Creation-Date: 2006-07-04 20:44+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -764,10 +764,10 @@ msgstr ""
 msgid "daemon failed"
 msgstr ""
 
-#: src/main.cc:831
+#: src/main.cc:833
 msgid "Files:"
 msgstr ""
 
-#: src/main.cc:862
+#: src/main.cc:864
 msgid "Errors occurred while binding port.\n"
 msgstr ""

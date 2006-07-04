@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-07-04 01:30+0900\n"
+"POT-Creation-Date: 2006-07-04 20:44+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -898,10 +898,10 @@ msgstr "Geben Sie zumindest eine URL an"
 msgid "daemon failed"
 msgstr "Daemon-Start nicht erfolgreich"
 
-#: src/main.cc:831
+#: src/main.cc:833
 msgid "Files:"
 msgstr "Dateien:"
 
-#: src/main.cc:862
+#: src/main.cc:864
 msgid "Errors occurred while binding port.\n"
 msgstr "Fehler beim Binden an Port aufgetreten.\n"
