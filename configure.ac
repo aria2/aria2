@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(aria2c, 0.5.2, tujikawa@rednoah.com)
+AC_INIT(aria2c, 0.6.0, tujikawa@rednoah.com)
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
@@ -17,6 +17,8 @@ AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if insta
 AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$enableval], [with_openssl=yes])
 AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$enableval], [with_libxml2=yes])
 
+AC_ARG_ENABLE([bittorrent], [ --enable-bittorrent        enable BitTorrent support. Default: yes], [enable_bittorrent=$enableval], [enable_bittorrent=yes])
+AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. Default: yes], [enable_metalink=$enableval], [enable_metalink=yes])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -48,30 +50,33 @@ if test "x$have_libgnutls" = "xyes"; then
 fi
 
 if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
-#  AC_CHECK_LIB([ssl], [SSL_library_init], [have_openssl=yes])
-#  if test "x$have_openssl" = "xyes"; then
-#    AC_DEFINE([HAVE_LIBSSL], [1], [Define to 1 if you have openssl.])
-#    OPENSSL_LIBS="-lssl"
-#    OPENSSL_CFLAGS=""
-#    AC_SUBST(OPENSSL_LIBS)
-#    AC_SUBST(OPENSSL_CFLAGS)
-#  fi
   AM_PATH_OPENSSL
 fi
 
-if test "x$have_libxml2" = "xyes"; then
-  AC_DEFINE([ENABLE_METALINK], [1], [Define to 1 if Metalink support is enabled.])
-fi
-
+# Define variables based on the result of the checks for libraries.
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
 fi
 
 if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
-  AC_DEFINE([ENABLE_SHA1DIGEST], [1], [Define to 1 if SHA1 Digest support is enabled.])
-  AC_DEFINE([ENABLE_BITTORRENT], [1], [Define to 1 if BitTorrent support is enabled.])
+  AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1], [Define to 1 if message digest support is enabled.])
+  enable_message_digest=yes
 fi
 
+if test "x$enable_bittorrent" = "xyes" && test "x$enable_message_digest" = "xyes"; then
+    AC_DEFINE([ENABLE_BITTORRENT], [1], [Define to 1 if BitTorrent support is enabled.])
+    AM_CONDITIONAL([ENABLE_BITTORRENT], true)
+else
+    AM_CONDITIONAL([ENABLE_BITTORRENT], false)
+fi
+
+if test "x$have_libxml2" = "xyes" && test "x$enable_metalink" = "xyes" && \
+   test "x$enable_message_digest" = "xyes"; then
+    AC_DEFINE([ENABLE_METALINK], [1], [Define to 1 if Metalink support is enabled.])
+    AM_CONDITIONAL([ENABLE_METALINK], true)
+else
+    AM_CONDITIONAL([ENABLE_METALINK], false)
+fi
 
 # Checks for header files.
 AC_FUNC_ALLOCA

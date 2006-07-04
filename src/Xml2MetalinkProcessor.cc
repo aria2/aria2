@@ -88,8 +88,8 @@ MetalinkEntry* Xml2MetalinkProcessor::getEntry(const string& xpath) {
     entry->version = Util::trim(xpathContent(xpath+"/m:version"));
     entry->language = Util::trim(xpathContent(xpath+"/m:language"));
     entry->os = Util::trim(xpathContent(xpath+"/m:os"));
-    entry->md5 = Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]"));
-    entry->sha1 = Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]"));
+    entry->md5 = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]")));
+    entry->sha1 = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]")));
     for(int index = 1; 1; index++) {
       MetalinkResource* resource =
 	getResource(xpath+"/m:resources/m:url["+Util::itos(index)+"]");

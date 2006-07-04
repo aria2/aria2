@@ -23,21 +23,21 @@
 #include "Util.h"
 
 ShaVisitor::ShaVisitor() {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
   digestInit(ctx);
   digestReset(ctx);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 ShaVisitor::~ShaVisitor() {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   digestFree(ctx);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void ShaVisitor::visit(const Data* d) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   if(d->isNumber()) {
     digestUpdate(ctx, "i", 1);
   } else {
@@ -49,11 +49,11 @@ void ShaVisitor::visit(const Data* d) {
   if(d->isNumber()) {
     digestUpdate(ctx, "e", 1);
   }
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void ShaVisitor::visit(const Dictionary* d) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   digestUpdate(ctx, "d", 1);
   const Order& v = d->getOrder();
   for(Order::const_iterator itr = v.begin(); itr != v.end(); itr++) {
@@ -65,17 +65,17 @@ void ShaVisitor::visit(const Dictionary* d) {
     this->visit(e);
   }
   digestUpdate(ctx, "e", 1);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void ShaVisitor::visit(const List* l) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   digestUpdate(ctx, "l", 1);
   for(MetaList::const_iterator itr = l->getList().begin(); itr != l->getList().end(); itr++) {
     this->visit(*itr);
   }
   digestUpdate(ctx, "e", 1);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void ShaVisitor::visit(const MetaEntry* e) {
@@ -89,8 +89,8 @@ void ShaVisitor::visit(const MetaEntry* e) {
 }
 
 void ShaVisitor::getHash(unsigned char* hashValue, int& len) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   digestFinal(ctx, hashValue);
   len = 20;
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }

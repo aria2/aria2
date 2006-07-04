@@ -21,9 +21,7 @@
 /* copyright --> */
 #include "HttpInitiateConnectionCommand.h"
 #include "ConsoleDownloadEngine.h"
-#include "TorrentConsoleDownloadEngine.h"
 #include "SegmentMan.h"
-#include "TorrentMan.h"
 #include "SplitSlowestSegmentSplitter.h"
 #include "LogFactory.h"
 #include "common.h"
@@ -31,13 +29,22 @@
 #include "Util.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "prefs.h"
-#include "PeerListenCommand.h"
-#include "TorrentAutoSaveCommand.h"
-#include "TrackerWatcherCommand.h"
-#include "TrackerUpdateCommand.h"
-#include "ByteArrayDiskWriter.h"
-#include "PeerChokeCommand.h"
-#include "Xml2MetalinkProcessor.h"
+
+#ifdef ENABLE_BITTORRENT
+# include "TorrentConsoleDownloadEngine.h"
+# include "TorrentMan.h"
+# include "PeerListenCommand.h"
+# include "TorrentAutoSaveCommand.h"
+# include "TrackerWatcherCommand.h"
+# include "TrackerUpdateCommand.h"
+# include "ByteArrayDiskWriter.h"
+# include "PeerChokeCommand.h"
+#endif // ENABLE_BITTORRENT
+
+#ifdef ENABLE_METALINK
+# include "Xml2MetalinkProcessor.h"
+#endif // ENABLE_METALINK
+
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -86,7 +93,9 @@ void setSignalHander(int signal, void (*handler)(int), int flags) {
 }
 
 DownloadEngine* e;
+#ifdef ENABLE_BITTORRENT
 TorrentDownloadEngine* te;
+#endif // ENABLE_BITTORRENT
 
 void handler(int signal) {
   printf(_("\nstopping application...\n"));
@@ -96,28 +105,14 @@ void handler(int signal) {
   e->cleanQueue();
   delete e;
   printf(_("done\n"));
-  exit(0);
+  exit(EXIT_SUCCESS);
 }
 
+#ifdef ENABLE_BITTORRENT
 void torrentHandler(int signal) {
-  /*
-  printf(_("\nstopping application...\n"));
-  fflush(stdout);
-  te->torrentMan->diskAdaptor->closeFile();
-  if(te->torrentMan->downloadComplete() && te->isFilenameFixed()) {
-    te->torrentMan->remove();
-    //te->torrentMan->deleteTempFile();
-    printDownloadCompeleteMessage();
-  } else {
-    te->torrentMan->save();
-  }
-  te->cleanQueue();
-  delete te;
-  printf(_("done\n"));
-  exit(0);
-  */
   te->torrentMan->setHalt(true);
 }
+#endif // ENABLE_BITTORRENT
 
 void createRequest(int cuid, const string& url, string referer, Requests& requests) {
   Request* req = new Request();
@@ -159,6 +154,9 @@ void showUsage() {
 #ifdef ENABLE_BITTORRENT
   printf(_("       %s [options] -T TORRENT_FILE FILE ...\n"), PACKAGE_NAME);
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+  printf(_("       %s [options] -M METALINK_FILE\n"), PACKAGE_NAME);
+#endif // ENABLE_METALINK
   cout << endl;
   cout << _("Options:") << endl;
   cout << _(" -d, --dir=DIR                The directory to store downloaded file.") << endl;
@@ -224,6 +222,20 @@ void showUsage() {
 	    "                              You can also use '-' to specify rangelike \"1-5\".\n"
 	    "                              ',' and '-' can be used together.") << endl;
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+  cout << _(" -M, --metalink-file=METALINK_FILE The file path to .metalink file.") << endl;
+  cout << _(" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
+	    "                              simultaneously. If more than one connection per\n"
+	    "                              server is required, use -s option.\n"
+	    "                              Default: 15") << endl;
+  cout << _(" --metalink-version=VERSION   The version of file to download.") << endl;
+  cout << _(" --metalink-language=LANGUAGE The language of file to download.") << endl;
+  cout << _(" --metalink-os=OS             The operating system the file is targeted.") << endl;
+  cout << _(" --follow-metalink=true|false  Setting this option to false prevents aria2 to\n"
+	    "                              enter Metalink mode even if the filename of\n"
+	    "                              downloaded file ends with .metalink.\n"
+	    "                              Default: true") << endl;
+#endif // ENABLE_METALINK
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
   cout << endl;
@@ -247,6 +259,7 @@ void showUsage() {
   cout << _(" You can mix up different protocols:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
 #ifdef ENABLE_BITTORRENT
+  cout << endl;
   cout << _(" Download a torrent:") << endl;
   cout << "  aria2c -t 180 -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
   cout << _(" Download a torrent using local .torrent file:") << endl;
@@ -255,8 +268,17 @@ void showUsage() {
   cout << "  aria2c -t 180 -T test.torrent dir/file1.zip dir/file2.zip" << endl;
   cout << _(" Print file listing of .torrent file:") << endl;
   cout << "  aria2c -t 180 -T test.torrent -S" << endl;  
-  cout << endl;
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+  cout << endl;
+  cout << _(" Metalink downloading:") << endl;
+  cout << "  aria2c http://AAA.BBB.CCC/file.metalink" << endl;
+  cout << _(" Download a file using local .metalink file:") << endl;
+  cout << "  aria2c -M test.metalink" << endl;
+  cout << _(" Metalink downloading with preferences:") << endl;
+  cout << "  aria2c -M test.metalink --metalink-version=1.1.1 --metalink-language=en-US" << endl;
+#endif // ENABLE_METALINK
+  cout << endl;
   printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
 }
@@ -329,7 +351,7 @@ int main(int argc, char* argv[]) {
   string metalinkVersion;
   string metalinkLanguage;
   string metalinkOs;
-  int metalinkConnection = 15;
+  int metalinkServers = 15;
   Integers selectFileIndexes;
 #ifdef ENABLE_BITTORRENT
   bool followTorrent = true;
@@ -396,7 +418,11 @@ int main(int argc, char* argv[]) {
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { "metalink-file", required_argument, NULL, 'M' },
-      { "metalink-connection", required_argument, NULL, 'C' },
+      { "metalink-servers", required_argument, NULL, 'C' },
+      { "metalink-version", required_argument, &lopt, 100 },
+      { "metalink-language", required_argument, &lopt, 101 },
+      { "metalink-os", required_argument, &lopt, 102 },
+      { "follow-metalink", required_argument, &lopt, 103 },
 #endif // ENABLE_METALINK
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
@@ -417,7 +443,7 @@ int main(int argc, char* argv[]) {
 	   !(0 < port && port <= 65535)) {
 	  cerr << _("unrecognized proxy format") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_HTTP_PROXY_HOST, proxy.first);
 	op->put(PREF_HTTP_PROXY_PORT, Util::itos(port));
@@ -453,7 +479,7 @@ int main(int argc, char* argv[]) {
 	if(!(0 <= wait && wait <= 60)) {
 	  cerr << _("retry-wait must be between 0 and 60.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_RETRY_WAIT, Util::itos(wait));
 	break;
@@ -470,7 +496,7 @@ int main(int argc, char* argv[]) {
 	} else {
 	  cerr << _("ftp-type must be either 'binary' or 'ascii'.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	break;
       case 12:
@@ -479,7 +505,7 @@ int main(int argc, char* argv[]) {
 	} else {
 	  cerr << _("ftp-via-http-proxy must be either 'get' or 'tunnel'.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	break;
       case 13: {
@@ -497,7 +523,7 @@ int main(int argc, char* argv[]) {
 	if(size < 1024) {
 	  cerr << _("min-segment-size invalid") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_MIN_SEGMENT_SIZE, Util::llitos(size));
 	break;
@@ -508,7 +534,7 @@ int main(int argc, char* argv[]) {
 	} else {
 	  cerr << _("http-proxy-method must be either 'get' or 'tunnel'.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	break;
       case 15:
@@ -516,7 +542,7 @@ int main(int argc, char* argv[]) {
 	if(!(1024 <= listenPort && listenPort <= 65535)) {
 	  cerr << _("listen-port must be between 1024 and 65535.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	break;
       case 16:
@@ -527,7 +553,7 @@ int main(int argc, char* argv[]) {
 	} else {
 	  cerr << _("follow-torrent must be either 'true' or 'false'.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	break;
       case 18:
@@ -541,7 +567,7 @@ int main(int argc, char* argv[]) {
 	} else {
 	  cerr << _("direct-file-mapping must be either 'true' or 'false'.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	break;
       case 20: {
@@ -549,13 +575,33 @@ int main(int argc, char* argv[]) {
 	if(0 > uploadSpeed) {
 	  cerr << _("upload-limit must be greater than or equal to 0.") << endl;
 	  showUsage();
-	  exit(1);
+	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_UPLOAD_LIMIT, Util::itos(uploadSpeed));
 	break;
       }
       case 21:
 	Util::unfoldRange(optarg, selectFileIndexes);
+	break;
+      case 100:
+	metalinkVersion = string(optarg);
+	break;
+      case 101:
+	metalinkLanguage = string(optarg);
+	break;
+      case 102:
+	metalinkOs = string(optarg);
+	break;
+      case 103:
+	if(string(optarg) == "true") {
+	  followMetalink = true;
+	} else if(string(optarg) == "false") {
+	  followMetalink = false;
+	} else {
+	  cerr << _("follow-metalink must be either 'true' or 'false'.") << endl;
+	  showUsage();
+	  exit(EXIT_FAILURE);
+	}
 	break;
       }
       break;
@@ -581,7 +627,7 @@ int main(int argc, char* argv[]) {
       if(!(1 <= split && split <= 5)) {
 	cerr << _("split must be between 1 and 5.") << endl;
 	showUsage();
-	exit(1);
+	exit(EXIT_FAILURE);
       }
       break;
     case 't': {
@@ -591,7 +637,7 @@ int main(int argc, char* argv[]) {
       } else {
 	cerr << _("timeout must be between 1 and 600") << endl;
 	showUsage();
-	exit(1);
+	exit(EXIT_FAILURE);
       }
       break;
     }
@@ -600,7 +646,7 @@ int main(int argc, char* argv[]) {
       if(retries < 0) {
 	cerr << _("max-tries invalid") << endl;
 	showUsage();
-	exit(1);
+	exit(EXIT_FAILURE);
       }
       op->put(PREF_MAX_TRIES, Util::itos(retries));
       break;
@@ -618,35 +664,35 @@ int main(int argc, char* argv[]) {
       metalinkFile = string(optarg);
       break;
     case 'C':
-      metalinkConnection = (int)strtol(optarg, NULL, 10);
-      if(metalinkConnection <= 0) {
-	cerr << _("metalink-connection must be greater than 0.") << endl;
+      metalinkServers = (int)strtol(optarg, NULL, 10);
+      if(metalinkServers <= 0) {
+	cerr << _("metalink-servers must be greater than 0.") << endl;
 	showUsage();
-	exit(1);
+	exit(EXIT_FAILURE);
       }
       break;      
     case 'v':
       showVersion();
-      exit(0);
+      exit(EXIT_SUCCESS);
     case 'h':
       showUsage();
-      exit(0);
+      exit(EXIT_SUCCESS);
     default:
       showUsage();
-      exit(1);
+      exit(EXIT_FAILURE);
     }
   }
   if(torrentFile.empty() && metalinkFile.empty()) {
     if(optind == argc) {
       cerr << _("specify at least one URL") << endl;
       showUsage();
-      exit(1);
+      exit(EXIT_FAILURE);
     }
   }
   if(daemonMode) {
     if(daemon(1, 1) < 0) {
       perror(_("daemon failed"));
-      exit(1);
+      exit(EXIT_FAILURE);
     }
   }
   
@@ -660,9 +706,9 @@ int main(int argc, char* argv[]) {
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_init();
 #endif // HAVE_LIBGNUTLS
-#ifdef HAVE_LIBXML2
+#ifdef ENABLE_METALINK
   xmlInitParser();
-#endif // HAVE_LIBXML2
+#endif // ENABLE_METALINK
   srandom(time(NULL));
   if(stdoutLog) {
     LogFactory::setLogFile("/dev/stdout");
@@ -675,7 +721,7 @@ int main(int argc, char* argv[]) {
   } catch(Exception* ex) {
     cerr << ex->getMsg() << endl;
     delete ex;
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   setSignalHander(SIGPIPE, SIG_IGN, 0);
@@ -699,6 +745,7 @@ int main(int argc, char* argv[]) {
     for_each(requests.begin(), requests.end(), Deleter());
     requests.clear();
   }
+#ifdef ENABLE_METALINK
   if(!metalinkFile.empty() || followMetalink && readyToMetalinkMode) {
     string targetMetalinkFile = metalinkFile.empty() ?
       downloadedMetalinkFile : metalinkFile;
@@ -709,8 +756,8 @@ int main(int argc, char* argv[]) {
 						  metalinkLanguage,
 						  metalinkOs);
     if(entry == NULL) {
-      printf("No file matched with your preference");
-      exit(1);
+      printf("No file matched with your preference.\n");
+      exit(EXIT_FAILURE);
     }
     entry->dropUnsupportedResource();
     entry->reorderResourcesByPreference();
@@ -719,14 +766,17 @@ int main(int argc, char* argv[]) {
     for(MetalinkResources::const_iterator itr = entry->resources.begin();
 	itr != entry->resources.end(); itr++) {
       MetalinkResource* resource = *itr;
-      createRequest(cuidCounter, resource->url, referer, requests); 
-      cuidCounter++;
+      for(int s = 1; s <= split; s++) {
+	createRequest(cuidCounter, resource->url, referer, requests); 
+	cuidCounter++;
+      }
     }
     Requests reserved;
-    if((int)requests.size() > metalinkConnection) {
-      copy(requests.begin()+metalinkConnection, requests.end(),
+    int maxConnection = metalinkServers*split;
+    if((int)requests.size() > maxConnection) {
+      copy(requests.begin()+maxConnection, requests.end(),
 	   insert_iterator<Requests>(reserved, reserved.end()));
-      requests.erase(requests.begin()+metalinkConnection, requests.end());
+      requests.erase(requests.begin()+maxConnection, requests.end());
     }
 
     setSignalHander(SIGINT, handler, 0);
@@ -749,7 +799,10 @@ int main(int argc, char* argv[]) {
     }
 
     delete metalinker;
-  } else if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
+  }
+#endif // ENABLE_METALINK
+#ifdef ENABLE_BITTORRENT
+  if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
     try {
       //op->put(PREF_MAX_TRIES, "0");
       setSignalHander(SIGINT, torrentHandler, SA_RESETHAND);
@@ -785,7 +838,7 @@ int main(int argc, char* argv[]) {
 		 Util::llitos(itr->length, true).c_str());
 	  cout << "---+---------------------------------------------------------------------------" << endl;
 	}
-	exit(0);
+	exit(EXIT_SUCCESS);
       } else {
 	if(selectFileIndexes.empty()) {
 	  Strings targetFiles;
@@ -807,7 +860,7 @@ int main(int argc, char* argv[]) {
       }
       if(port == -1) {
 	printf(_("Errors occurred while binding port.\n"));
-	exit(1);
+	exit(EXIT_FAILURE);
       }
       te->torrentMan->setPort(port);
       te->commands.push_back(listenCommand);
@@ -832,16 +885,17 @@ int main(int argc, char* argv[]) {
     } catch(Exception* ex) {
       cerr << ex->getMsg() << endl;
       delete ex;
-      exit(1);
+      exit(EXIT_FAILURE);
     }
   }
+#endif // ENABLE_BITTORRENT
   delete op;
   LogFactory::release();
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
 #endif // HAVE_LIBGNUTLS
-#ifdef HAVE_LIBXML2
+#ifdef ENABLE_METALINK
   xmlCleanupParser();
-#endif // HAVE_LIBXML2
+#endif // ENABLE_METALINK
   return 0;
 }

@@ -1,3 +1,41 @@
+2006-07-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+        To improve the conditional compilation:
+
+	* src/MultiDiskWriter.h:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.	
+	* src/MultiDiskWriter.cc:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	* src/Util.h:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	Added ENABLE_BITTORRENT around computeFastSet().
+	* src/Util.cc:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	Added ENABLE_BITTORRENT around computeFastSet().	
+	* src/messageDigest.h:
+	Replaced ENABLE_BITTORRENT with ENABLE_SSL.
+	* src/ShaVisitor.h:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	* src/ShaVisitor.cc:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	* src/main.cc:
+	Added ENABLE_BITTORRENT around includes and blocks related to
+	BitTorrent.
+	* src/AbstractDiskWriter.h:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	* src/AbstractDiskWriter.cc:
+	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	
+	To add command-line options for Metalink:
+
+	* src/main.cc:
+	Added metalink-version, metalink-language, metalink-os,
+	follow-metalink.
+
+	To use EXIT_SUCCESS and EXIT_FAILURE with exit():
+
+	* src/main.cc: Use these definition.
+
 2006-07-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add Metalink support(http/ftp only):

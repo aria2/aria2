@@ -360,20 +360,20 @@ string Util::getContentDispositionFilename(const string& header) {
   return trim(header.substr(filenamesp, filenameep-filenamesp));
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
 void Util::sha1Sum(unsigned char* digest, const void* data, int dataLength) {
-#ifdef ENABLE_SHA1DIGEST
   MessageDigestContext ctx(MessageDigestContext::ALGO_SHA1);
   digestInit(ctx);
   digestReset(ctx);
   digestUpdate(ctx, data, dataLength);
   digestFinal(ctx, digest);
   digestFree(ctx);
-#endif // ENABLE_SHA1DIGEST
 }
+#endif // ENABLE_MESSAGE_DIGEST
 
+#ifdef ENABLE_MESSAGE_DIGEST
 void Util::fileChecksum(const string& filename, unsigned char* digest,
 			MessageDigestContext::HashAlgo algo) {
-#ifdef ENABLE_SHA1DIGEST
   MessageDigestContext ctx(algo);
   digestInit(ctx);
   digestReset(ctx);
@@ -403,9 +403,10 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
   }
   digestFinal(ctx, digest);
   digestFree(ctx);
-#endif // ENABLE_SHA1DIGEST
 }
+#endif // ENABLE_MESSAGE_DIGEST
 
+#ifdef ENABLE_BITTORRENT
 Integers Util::computeFastSet(string ipaddr, const unsigned char* infoHash,
 			     int pieces, int fastSetSize) {
   Integers fastSet;
@@ -441,6 +442,7 @@ Integers Util::computeFastSet(string ipaddr, const unsigned char* infoHash,
   }
   return fastSet;
 }
+#endif // ENABLE_BITTORRENT
 
 /*
 int Util::countBit(unsigned int n) {

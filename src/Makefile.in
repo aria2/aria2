@@ -38,6 +38,65 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = aria2c$(EXEEXT)
+@ENABLE_BITTORRENT_TRUE@am__append_1 = MetaEntry.h\
+@ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
+@ENABLE_BITTORRENT_TRUE@	Dictionary.cc Dictionary.h\
+@ENABLE_BITTORRENT_TRUE@	List.cc List.h\
+@ENABLE_BITTORRENT_TRUE@	MetaFileUtil.cc MetaFileUtil.h\
+@ENABLE_BITTORRENT_TRUE@	MetaEntryVisitor.h\
+@ENABLE_BITTORRENT_TRUE@	ShaVisitor.cc ShaVisitor.h\
+@ENABLE_BITTORRENT_TRUE@	TorrentMan.cc TorrentMan.h\
+@ENABLE_BITTORRENT_TRUE@	PeerConnection.cc PeerConnection.h\
+@ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.cc PeerMessageUtil.h\
+@ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.cc PeerAbstractCommand.h\
+@ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
+@ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.cc PeerInteractionCommand.h\
+@ENABLE_BITTORRENT_TRUE@	Peer.cc Peer.h\
+@ENABLE_BITTORRENT_TRUE@	BitfieldMan.cc BitfieldMan.h\
+@ENABLE_BITTORRENT_TRUE@	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
+@ENABLE_BITTORRENT_TRUE@	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
+@ENABLE_BITTORRENT_TRUE@	PeerListenCommand.cc PeerListenCommand.h\
+@ENABLE_BITTORRENT_TRUE@	PeerMessage.cc PeerMessage.h\
+@ENABLE_BITTORRENT_TRUE@	HandshakeMessage.cc HandshakeMessage.h\
+@ENABLE_BITTORRENT_TRUE@	Piece.cc Piece.h\
+@ENABLE_BITTORRENT_TRUE@	RequestSlot.cc RequestSlot.h\
+@ENABLE_BITTORRENT_TRUE@	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
+@ENABLE_BITTORRENT_TRUE@	Directory.cc Directory.h\
+@ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
+@ENABLE_BITTORRENT_TRUE@	PeerInteraction.cc PeerInteraction.h\
+@ENABLE_BITTORRENT_TRUE@	MultiDiskWriter.cc MultiDiskWriter.h\
+@ENABLE_BITTORRENT_TRUE@	DiskAdaptor.cc DiskAdaptor.h\
+@ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
+@ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
+@ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
+@ENABLE_BITTORRENT_TRUE@	FileEntry.h\
+@ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
+@ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
+@ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.cc PeerChokeCommand.h\
+@ENABLE_BITTORRENT_TRUE@	ChokeMessage.cc ChokeMessage.h\
+@ENABLE_BITTORRENT_TRUE@	UnchokeMessage.cc UnchokeMessage.h\
+@ENABLE_BITTORRENT_TRUE@	InterestedMessage.cc InterestedMessage.h\
+@ENABLE_BITTORRENT_TRUE@	NotInterestedMessage.cc NotInterestedMessage.h\
+@ENABLE_BITTORRENT_TRUE@	HaveMessage.cc HaveMessage.h\
+@ENABLE_BITTORRENT_TRUE@	BitfieldMessage.cc BitfieldMessage.h\
+@ENABLE_BITTORRENT_TRUE@	RequestMessage.cc RequestMessage.h\
+@ENABLE_BITTORRENT_TRUE@	PieceMessage.cc PieceMessage.h\
+@ENABLE_BITTORRENT_TRUE@	CancelMessage.cc CancelMessage.h\
+@ENABLE_BITTORRENT_TRUE@	KeepAliveMessage.cc KeepAliveMessage.h\
+@ENABLE_BITTORRENT_TRUE@	PortMessage.cc PortMessage.h\
+@ENABLE_BITTORRENT_TRUE@	HaveAllMessage.cc HaveAllMessage.h\
+@ENABLE_BITTORRENT_TRUE@	HaveNoneMessage.cc HaveNoneMessage.h\
+@ENABLE_BITTORRENT_TRUE@	RejectMessage.cc RejectMessage.h\
+@ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.cc AllowedFastMessage.h\
+@ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.cc SuggestPieceMessage.h\
+@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.cc SimplePeerMessage.h
+
+@ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
+@ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
+@ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
+@ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
+@ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
+
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -62,7 +121,126 @@ AR = ar
 ARFLAGS = cru
 libaria2c_a_AR = $(AR) $(ARFLAGS)
 libaria2c_a_LIBADD =
-am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
+am__libaria2c_a_SOURCES_DIST = Socket.cc Socket.h SocketCore.cc \
+	SocketCore.h Command.h AbstractCommand.cc AbstractCommand.h \
+	InitiateConnectionCommandFactory.cc \
+	InitiateConnectionCommandFactory.h DownloadCommand.cc \
+	DownloadCommand.h HttpInitiateConnectionCommand.cc \
+	HttpInitiateConnectionCommand.h HttpRequestCommand.cc \
+	HttpRequestCommand.h HttpResponseCommand.cc \
+	HttpResponseCommand.h HttpProxyRequestCommand.cc \
+	HttpProxyRequestCommand.h HttpProxyResponseCommand.cc \
+	HttpProxyResponseCommand.h HttpDownloadCommand.cc \
+	HttpDownloadCommand.h HttpHeader.cc HttpHeader.h \
+	HttpConnection.cc HttpConnection.h FtpConnection.cc \
+	FtpConnection.h FtpInitiateConnectionCommand.cc \
+	FtpInitiateConnectionCommand.h FtpNegotiationCommand.cc \
+	FtpNegotiationCommand.h FtpDownloadCommand.cc \
+	FtpDownloadCommand.h FtpTunnelRequestCommand.cc \
+	FtpTunnelRequestCommand.h FtpTunnelResponseCommand.cc \
+	FtpTunnelResponseCommand.h SleepCommand.cc SleepCommand.h \
+	DownloadEngine.cc DownloadEngine.h ConsoleDownloadEngine.cc \
+	ConsoleDownloadEngine.h Segment.h SegmentMan.cc SegmentMan.h \
+	SegmentSplitter.cc SegmentSplitter.h \
+	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h \
+	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h \
+	Util.cc Util.h Request.cc Request.h common.h message.h \
+	Exception.h DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
+	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
+	ChunkedEncoding.h DiskWriter.h DefaultDiskWriter.cc \
+	DefaultDiskWriter.h PreAllocationDiskWriter.cc \
+	PreAllocationDiskWriter.h AbstractDiskWriter.cc \
+	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
+	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
+	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
+	MetaEntry.h Data.cc Data.h Dictionary.cc Dictionary.h List.cc \
+	List.h MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	ShaVisitor.cc ShaVisitor.h TorrentMan.cc TorrentMan.h \
+	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
+	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
+	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
+	PeerInteractionCommand.h Peer.cc Peer.h BitfieldMan.cc \
+	BitfieldMan.h TorrentDownloadEngine.cc TorrentDownloadEngine.h \
+	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h \
+	PeerListenCommand.cc PeerListenCommand.h PeerMessage.cc \
+	PeerMessage.h HandshakeMessage.cc HandshakeMessage.h Piece.cc \
+	Piece.h RequestSlot.cc RequestSlot.h TorrentAutoSaveCommand.cc \
+	TorrentAutoSaveCommand.h Directory.cc Directory.h \
+	TrackerWatcherCommand.cc TrackerWatcherCommand.h \
+	PeerInteraction.cc PeerInteraction.h MultiDiskWriter.cc \
+	MultiDiskWriter.h DiskAdaptor.cc DiskAdaptor.h \
+	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
+	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
+	FileEntry.h TrackerUpdateCommand.cc TrackerUpdateCommand.h \
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
+	PeerChokeCommand.cc PeerChokeCommand.h ChokeMessage.cc \
+	ChokeMessage.h UnchokeMessage.cc UnchokeMessage.h \
+	InterestedMessage.cc InterestedMessage.h \
+	NotInterestedMessage.cc NotInterestedMessage.h HaveMessage.cc \
+	HaveMessage.h BitfieldMessage.cc BitfieldMessage.h \
+	RequestMessage.cc RequestMessage.h PieceMessage.cc \
+	PieceMessage.h CancelMessage.cc CancelMessage.h \
+	KeepAliveMessage.cc KeepAliveMessage.h PortMessage.cc \
+	PortMessage.h HaveAllMessage.cc HaveAllMessage.h \
+	HaveNoneMessage.cc HaveNoneMessage.h RejectMessage.cc \
+	RejectMessage.h AllowedFastMessage.cc AllowedFastMessage.h \
+	SuggestPieceMessage.cc SuggestPieceMessage.h \
+	SimplePeerMessage.cc SimplePeerMessage.h Metalinker.cc \
+	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
+	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
+@ENABLE_BITTORRENT_TRUE@am__objects_1 = Data.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	ShaVisitor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	TorrentMan.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerConnection.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	Peer.$(OBJEXT) BitfieldMan.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	TorrentDownloadEngine.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	TorrentConsoleDownloadEngine.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerListenCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	HandshakeMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	Piece.$(OBJEXT) RequestSlot.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	TorrentAutoSaveCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	Directory.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerInteraction.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	MultiDiskWriter.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DiskAdaptor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	ChokeMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UnchokeMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	InterestedMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	NotInterestedMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	HaveMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BitfieldMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	RequestMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PieceMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	CancelMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	KeepAliveMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PortMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	HaveAllMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	HaveNoneMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	RejectMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.$(OBJEXT)
+@ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT)
+am__objects_3 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -84,35 +262,9 @@ am__objects_1 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
 	ChunkedEncoding.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
 	PreAllocationDiskWriter.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
-	CookieBox.$(OBJEXT) Data.$(OBJEXT) Dictionary.$(OBJEXT) \
-	List.$(OBJEXT) MetaFileUtil.$(OBJEXT) ShaVisitor.$(OBJEXT) \
-	TorrentMan.$(OBJEXT) PeerConnection.$(OBJEXT) \
-	PeerMessageUtil.$(OBJEXT) PeerAbstractCommand.$(OBJEXT) \
-	PeerInitiateConnectionCommand.$(OBJEXT) \
-	PeerInteractionCommand.$(OBJEXT) Peer.$(OBJEXT) \
-	BitfieldMan.$(OBJEXT) TorrentDownloadEngine.$(OBJEXT) \
-	TorrentConsoleDownloadEngine.$(OBJEXT) \
-	PeerListenCommand.$(OBJEXT) PeerMessage.$(OBJEXT) \
-	HandshakeMessage.$(OBJEXT) Piece.$(OBJEXT) \
-	RequestSlot.$(OBJEXT) TorrentAutoSaveCommand.$(OBJEXT) \
-	Directory.$(OBJEXT) TrackerWatcherCommand.$(OBJEXT) \
-	PeerInteraction.$(OBJEXT) MultiDiskWriter.$(OBJEXT) \
-	DiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
-	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
-	LogFactory.$(OBJEXT) TrackerUpdateCommand.$(OBJEXT) \
-	ByteArrayDiskWriter.$(OBJEXT) PeerChokeCommand.$(OBJEXT) \
-	ChokeMessage.$(OBJEXT) UnchokeMessage.$(OBJEXT) \
-	InterestedMessage.$(OBJEXT) NotInterestedMessage.$(OBJEXT) \
-	HaveMessage.$(OBJEXT) BitfieldMessage.$(OBJEXT) \
-	RequestMessage.$(OBJEXT) PieceMessage.$(OBJEXT) \
-	CancelMessage.$(OBJEXT) KeepAliveMessage.$(OBJEXT) \
-	PortMessage.$(OBJEXT) HaveAllMessage.$(OBJEXT) \
-	HaveNoneMessage.$(OBJEXT) RejectMessage.$(OBJEXT) \
-	AllowedFastMessage.$(OBJEXT) SuggestPieceMessage.$(OBJEXT) \
-	SimplePeerMessage.$(OBJEXT) Time.$(OBJEXT) \
-	Metalinker.$(OBJEXT) MetalinkEntry.$(OBJEXT) \
-	MetalinkResource.$(OBJEXT) Xml2MetalinkProcessor.$(OBJEXT)
-am_libaria2c_a_OBJECTS = $(am__objects_1)
+	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) Time.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2)
+am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -133,7 +285,7 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libaria2c_a_SOURCES) $(aria2c_SOURCES)
-DIST_SOURCES = $(libaria2c_a_SOURCES) $(aria2c_SOURCES)
+DIST_SOURCES = $(am__libaria2c_a_SOURCES_DIST) $(aria2c_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -167,6 +319,10 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+ENABLE_BITTORRENT_FALSE = @ENABLE_BITTORRENT_FALSE@
+ENABLE_BITTORRENT_TRUE = @ENABLE_BITTORRENT_TRUE@
+ENABLE_METALINK_FALSE = @ENABLE_METALINK_FALSE@
+ENABLE_METALINK_TRUE = @ENABLE_METALINK_TRUE@
 EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIBC21 = @GLIBC21@
@@ -264,115 +420,39 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 aria2c_SOURCES = main.cc
-SRCS = Socket.cc Socket.h\
-	SocketCore.cc SocketCore.h\
-	Command.h\
-	AbstractCommand.cc AbstractCommand.h\
-	InitiateConnectionCommandFactory.cc InitiateConnectionCommandFactory.h\
-	DownloadCommand.cc DownloadCommand.h\
-	HttpInitiateConnectionCommand.cc HttpInitiateConnectionCommand.h\
-	HttpRequestCommand.cc HttpRequestCommand.h\
-	HttpResponseCommand.cc HttpResponseCommand.h\
-	HttpProxyRequestCommand.cc HttpProxyRequestCommand.h\
-	HttpProxyResponseCommand.cc HttpProxyResponseCommand.h\
-	HttpDownloadCommand.cc HttpDownloadCommand.h\
-	HttpHeader.cc HttpHeader.h\
-	HttpConnection.cc HttpConnection.h\
-	FtpConnection.cc FtpConnection.h\
-	FtpInitiateConnectionCommand.cc FtpInitiateConnectionCommand.h\
-	FtpNegotiationCommand.cc FtpNegotiationCommand.h\
-	FtpDownloadCommand.cc FtpDownloadCommand.h\
-	FtpTunnelRequestCommand.cc FtpTunnelRequestCommand.h\
-	FtpTunnelResponseCommand.cc FtpTunnelResponseCommand.h\
-	SleepCommand.cc SleepCommand.h\
-	DownloadEngine.cc DownloadEngine.h\
-	ConsoleDownloadEngine.cc ConsoleDownloadEngine.h\
-	Segment.h\
-	SegmentMan.cc SegmentMan.h\
-	SegmentSplitter.cc SegmentSplitter.h\
-	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h\
-	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h\
-	Util.cc Util.h\
-	Request.cc Request.h\
-	common.h\
-	message.h\
-	Exception.h\
-	DlAbortEx.h\
-	DlRetryEx.h\
-	Logger.h\
-	SimpleLogger.cc SimpleLogger.h\
-	TransferEncoding.h\
-	ChunkedEncoding.cc ChunkedEncoding.h\
-	DiskWriter.h\
-	DefaultDiskWriter.cc DefaultDiskWriter.h\
-	PreAllocationDiskWriter.cc PreAllocationDiskWriter.h\
-	AbstractDiskWriter.cc AbstractDiskWriter.h\
-	File.cc File.h\
-	Option.cc Option.h\
-	Base64.cc Base64.h\
-	CookieBox.cc CookieBox.h\
-	MetaEntry.h\
-	Data.cc Data.h\
-	Dictionary.cc Dictionary.h\
-	List.cc List.h\
-	MetaFileUtil.cc MetaFileUtil.h\
-	MetaEntryVisitor.h\
-	ShaVisitor.cc ShaVisitor.h\
-	TorrentMan.cc TorrentMan.h\
-	PeerConnection.cc PeerConnection.h\
-	PeerMessageUtil.cc PeerMessageUtil.h\
-	PeerAbstractCommand.cc PeerAbstractCommand.h\
-	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
-	PeerInteractionCommand.cc PeerInteractionCommand.h\
-	Peer.cc Peer.h\
-	BitfieldMan.cc BitfieldMan.h\
-	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
-	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
-	PeerListenCommand.cc PeerListenCommand.h\
-	PeerMessage.cc PeerMessage.h\
-	HandshakeMessage.cc HandshakeMessage.h\
-	Piece.cc Piece.h\
-	RequestSlot.cc RequestSlot.h\
-	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
-	Directory.cc Directory.h\
-	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-	messageDigest.h\
-	PeerInteraction.cc PeerInteraction.h\
-	MultiDiskWriter.cc MultiDiskWriter.h\
-	DiskAdaptor.cc DiskAdaptor.h\
-	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
-	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	FileEntry.h\
-	LogFactory.cc LogFactory.h\
-	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
-	PeerChokeCommand.cc PeerChokeCommand.h\
-	ChokeMessage.cc ChokeMessage.h\
-	UnchokeMessage.cc UnchokeMessage.h\
-	InterestedMessage.cc InterestedMessage.h\
-	NotInterestedMessage.cc NotInterestedMessage.h\
-	HaveMessage.cc HaveMessage.h\
-	BitfieldMessage.cc BitfieldMessage.h\
-	RequestMessage.cc RequestMessage.h\
-	PieceMessage.cc PieceMessage.h\
-	CancelMessage.cc CancelMessage.h\
-	KeepAliveMessage.cc KeepAliveMessage.h\
-	PortMessage.cc PortMessage.h\
-	HaveAllMessage.cc HaveAllMessage.h\
-	HaveNoneMessage.cc HaveNoneMessage.h\
-	RejectMessage.cc RejectMessage.h\
-	AllowedFastMessage.cc AllowedFastMessage.h\
-	SuggestPieceMessage.cc SuggestPieceMessage.h\
-	SimplePeerMessage.cc SimplePeerMessage.h\
-	NullLogger.h\
-	Time.cc Time.h\
-	Metalinker.cc Metalinker.h\
-	MetalinkEntry.cc MetalinkEntry.h\
-	MetalinkResource.cc MetalinkResource.h\
-	MetalinkProcessor.h\
-	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
-
+SRCS = Socket.cc Socket.h SocketCore.cc SocketCore.h Command.h \
+	AbstractCommand.cc AbstractCommand.h \
+	InitiateConnectionCommandFactory.cc \
+	InitiateConnectionCommandFactory.h DownloadCommand.cc \
+	DownloadCommand.h HttpInitiateConnectionCommand.cc \
+	HttpInitiateConnectionCommand.h HttpRequestCommand.cc \
+	HttpRequestCommand.h HttpResponseCommand.cc \
+	HttpResponseCommand.h HttpProxyRequestCommand.cc \
+	HttpProxyRequestCommand.h HttpProxyResponseCommand.cc \
+	HttpProxyResponseCommand.h HttpDownloadCommand.cc \
+	HttpDownloadCommand.h HttpHeader.cc HttpHeader.h \
+	HttpConnection.cc HttpConnection.h FtpConnection.cc \
+	FtpConnection.h FtpInitiateConnectionCommand.cc \
+	FtpInitiateConnectionCommand.h FtpNegotiationCommand.cc \
+	FtpNegotiationCommand.h FtpDownloadCommand.cc \
+	FtpDownloadCommand.h FtpTunnelRequestCommand.cc \
+	FtpTunnelRequestCommand.h FtpTunnelResponseCommand.cc \
+	FtpTunnelResponseCommand.h SleepCommand.cc SleepCommand.h \
+	DownloadEngine.cc DownloadEngine.h ConsoleDownloadEngine.cc \
+	ConsoleDownloadEngine.h Segment.h SegmentMan.cc SegmentMan.h \
+	SegmentSplitter.cc SegmentSplitter.h \
+	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h \
+	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h \
+	Util.cc Util.h Request.cc Request.h common.h message.h \
+	Exception.h DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
+	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
+	ChunkedEncoding.h DiskWriter.h DefaultDiskWriter.cc \
+	DefaultDiskWriter.h PreAllocationDiskWriter.cc \
+	PreAllocationDiskWriter.h AbstractDiskWriter.cc \
+	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
+	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
+	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
+	$(am__append_1) $(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

@@ -26,17 +26,17 @@
 #include <errno.h>
 
 MultiDiskWriter::MultiDiskWriter(int pieceLength):pieceLength(pieceLength) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
   digestInit(ctx);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 MultiDiskWriter::~MultiDiskWriter() {
   clearEntries();
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   digestFree(ctx);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MultiDiskWriter::clearEntries() {
@@ -143,7 +143,7 @@ int MultiDiskWriter::readData(char* data, int len, long long int offset) {
   return totalReadLength;
 }
 
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
 void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, long long int length) {
   int BUFSIZE = 16*1024;
   char buf[BUFSIZE];
@@ -162,10 +162,10 @@ void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, l
     digestUpdate(ctx, buf, r);
   }
 }
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 
 string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   long long int fileOffset = offset;
   bool reading = false;
   int rem = length;
@@ -194,6 +194,6 @@ string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
   }
 #else
   return "";
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 

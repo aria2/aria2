@@ -47,7 +47,13 @@ SRCS =  Socket.cc Socket.h\
 	Option.cc Option.h\
 	Base64.cc Base64.h\
 	CookieBox.cc CookieBox.h\
-	MetaEntry.h\
+	messageDigest.h\
+	LogFactory.cc LogFactory.h\
+	NullLogger.h\
+	Time.cc Time.h
+
+if ENABLE_BITTORRENT
+SRCS += MetaEntry.h\
 	Data.cc Data.h\
 	Dictionary.cc Dictionary.h\
 	List.cc List.h\
@@ -72,7 +78,6 @@ SRCS =  Socket.cc Socket.h\
 	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-	messageDigest.h\
 	PeerInteraction.cc PeerInteraction.h\
 	MultiDiskWriter.cc MultiDiskWriter.h\
 	DiskAdaptor.cc DiskAdaptor.h\
@@ -80,7 +85,6 @@ SRCS =  Socket.cc Socket.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 	FileEntry.h\
-	LogFactory.cc LogFactory.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
@@ -100,14 +104,17 @@ SRCS =  Socket.cc Socket.h\
 	RejectMessage.cc RejectMessage.h\
 	AllowedFastMessage.cc AllowedFastMessage.h\
 	SuggestPieceMessage.cc SuggestPieceMessage.h\
-	SimplePeerMessage.cc SimplePeerMessage.h\
-	NullLogger.h\
-	Time.cc Time.h\
-	Metalinker.cc Metalinker.h\
+	SimplePeerMessage.cc SimplePeerMessage.h
+endif # ENABLE_BITTORRENT
+
+if ENABLE_METALINK
+SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
+endif # ENABLE_METALINK
+
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

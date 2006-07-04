@@ -24,7 +24,7 @@
 
 #include "common.h"
 
-#ifdef ENABLE_BITTORRENT
+#ifdef ENABLE_SSL
 
 #ifdef HAVE_LIBSSL
 #include <openssl/evp.h>
@@ -103,6 +103,6 @@ memcpy(HASH, gcry_md_read(CTX.ctx, 0), gcry_md_get_algo_dlen(CTX.algo));\
 #define digestFree(CTX) gcry_md_close(CTX.ctx)
 #endif // HAVE_LIBGCRYPT
 
-#endif // ENABLE_BITTORRENT
+#endif // ENABLE_SSL
 
 #endif // _D_MESSAGE_DIGEST_H_

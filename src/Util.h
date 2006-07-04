@@ -23,9 +23,9 @@
 #define _D_UTIL_H_
 
 #include "common.h"
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 #include <string>
 #include <utility>
 #include <deque>
@@ -83,15 +83,21 @@ public:
   static string getContentDispositionFilename(const string& header);
 
   // digest must be at least 20 bytes long.
+#ifdef ENABLE_MESSAGE_DIGEST
   static void sha1Sum(unsigned char* digest, const void* data, int dataLength);
+#endif // ENABLE_MESSAGE_DIGEST
 
   // Before call this method, allocate enough memory to the parameter "digest".
   // For sha1, you need 20 bytes. For md5, 16 bytes.
+#ifdef ENABLE_MESSAGE_DIGEST
   static void fileChecksum(const string& filename, unsigned char* digest,
 			   MessageDigestContext::HashAlgo algo);
+#endif // ENABLE_MESSAGE_DIGEST
 
+#ifdef ENABLE_BITTORRENT
   static Integers computeFastSet(string ipaddr, const unsigned char* infoHash,
 				int pieces, int fastSetSize);
+#endif // ENABLE_BITTORRENT
 
   static int countBit(unsigned int);
 

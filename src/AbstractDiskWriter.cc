@@ -31,17 +31,17 @@
 #include <fcntl.h>
 
 AbstractDiskWriter::AbstractDiskWriter():fd(0) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
   digestInit(ctx);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 AbstractDiskWriter::~AbstractDiskWriter() {
   closeFile();
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   digestFree(ctx);
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void AbstractDiskWriter::openFile(const string& filename) {
@@ -99,7 +99,7 @@ int AbstractDiskWriter::readDataInternal(char* data, int len) {
 }
 
 string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   digestReset(ctx);
   try {
     int BUFSIZE = 16*1024;
@@ -126,7 +126,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
   }
 #else
   return "";
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void AbstractDiskWriter::seek(long long int offset) {

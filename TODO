@@ -4,16 +4,10 @@
 * Add SSL client cert support
 * Better HTTP status handling
 * Download files listed in a specifed file.
-* check MD5 checksum
 * Add the feature which adds or removes URLs on-the-fly.
-* Tracker UDP protocol
 * no-compact peers format
 * Add port range command-line option
 * Add max peers command-line option
-* Distinguish seeder from leecher
-* Add Mainline-compatible DHT support
-* Add Message stream encryption support
 * Refacturing HttpConnection and FtpConnection
-* Use EXIT_SUCCESS and EXIT_FAILURE
 * Query resource by location
-* Conditional compilation based on ENABLE_LIBXML2
+* Log version

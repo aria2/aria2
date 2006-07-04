@@ -27,15 +27,15 @@
 #include "Dictionary.h"
 #include "List.h"
 #include "common.h"
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 
 class ShaVisitor : public MetaEntryVisitor {
 private:
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestContext ctx;
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 public:
   ShaVisitor();
   ~ShaVisitor();

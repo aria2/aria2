@@ -23,17 +23,17 @@
 #define _D_ABSTRACT_DISK_WRITER_H_
 
 #include "DiskWriter.h"
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 
 class AbstractDiskWriter:public DiskWriter {
 protected:
   string filename;
   int fd;
-#ifdef ENABLE_SHA1DIGEST
+#ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestContext ctx;
-#endif // ENABLE_SHA1DIGEST
+#endif // ENABLE_MESSAGE_DIGEST
 
   void createFile(const string& filename, int addFlags = 0);
 
