@@ -41,6 +41,8 @@
 
 	* src/main.cc: Use these definition.
 
+	* Release 0.6.0
+	
 2006-07-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add Metalink support(http/ftp only):
