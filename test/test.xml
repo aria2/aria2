@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metalink version="3.0" xmlns="http://www.metalinker.org/">
+  <publisher>
+    <name>aria2</name>
+    <url>http://aria2.sourceforge.net/</url>
+  </publisher>
+  <description>The high speed download utility</description>
+  <files>
+    <file name="aria2-0.5.2.tar.bz2">
+      <version>0.5.2</version>
+      <language>en-US</language>
+      <os>Linux-x86</os>
+      <verification>
+        <hash type="md5">fc4d834e89c18c99b2615d902750948c</hash>
+        <hash type="sha1">a96cf3f0266b91d87d5124cf94326422800b627d</hash>
+      </verification>
+      <resources>
+        <url type="ftp" preference="100">ftp://ftphost/aria2-0.5.2.tar.bz2</url>
+        <url type="http" preference="100">http://httphost/aria2-0.5.2.tar.bz2</url>
+      </resources>
+    </file>
+    <file name="aria2-0.5.1.tar.bz2">
+      <version>0.5.1</version>
+      <language>ja-JP</language>
+      <os>Linux-m68k</os>
+      <verification>
+        <hash type="md5">92296e19c406d77d21bda0bb944eac46</hash>
+        <hash type="sha1">4c255b0ed130f5ea880f0aa061c3da0487e251cc</hash>
+      </verification>
+      <resources>
+        <url type="ftp" preference="100">ftp://ftphost/aria2-0.5.1.tar.bz2</url>
+        <url type="http" preference="100">http://httphost/aria2-0.5.1.tar.bz2</url>
+      </resources>
+    </file>
+  </files>
+</metalink>
