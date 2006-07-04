@@ -21,10 +21,15 @@
 	* src/main.cc:
 	Added ENABLE_BITTORRENT around includes and blocks related to
 	BitTorrent.
+	Added ENABLE_MESSAGE_DIGEST to skip checksum checking when the message
+	digest support is not available.
 	* src/AbstractDiskWriter.h:
 	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
 	* src/AbstractDiskWriter.cc:
 	Replaced ENABLE_SHA1DIGEST with ENABLE_MESSAGE_DIGEST.
+	* src/MetalinkEntry.cc
+	(check): Added ENABLE_MESSAGE_DIGEST. Return true if the message digest
+	support is not available.
 	
 	To add command-line options for Metalink:
 

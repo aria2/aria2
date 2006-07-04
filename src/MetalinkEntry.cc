@@ -30,6 +30,7 @@ MetalinkEntry::~MetalinkEntry() {
 }
 
 bool MetalinkEntry::check(const string& filename) const {
+#ifdef ENABLE_MESSAGE_DIGEST
   unsigned char buf[20];
   int digestLength;
   const string* digestPtr;
@@ -47,6 +48,9 @@ bool MetalinkEntry::check(const string& filename) const {
   }
   Util::fileChecksum(filename, buf, algo);
   return *digestPtr == Util::toHex(buf, digestLength);
+#else
+  return true;
+#endif //ENABLE_MESSAGE_DIGEST
 }
 
 class PrefOrder {

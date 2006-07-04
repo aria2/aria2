@@ -70,8 +70,7 @@ else
     AM_CONDITIONAL([ENABLE_BITTORRENT], false)
 fi
 
-if test "x$have_libxml2" = "xyes" && test "x$enable_metalink" = "xyes" && \
-   test "x$enable_message_digest" = "xyes"; then
+if test "x$have_libxml2" = "xyes" && test "x$enable_metalink" = "xyes"; then
     AC_DEFINE([ENABLE_METALINK], [1], [Define to 1 if Metalink support is enabled.])
     AM_CONDITIONAL([ENABLE_METALINK], true)
 else

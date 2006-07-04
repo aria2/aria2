@@ -790,12 +790,14 @@ int main(int argc, char* argv[]) {
     requests.clear();
 
     if(success) {
+#ifdef ENABLE_MESSAGE_DIGEST
       if(entry->check(downloadedFilename)) {
 	printf("checksum OK.\n");
       } else {
 	printf("checksum ERROR.\n");
 	exit(EXIT_FAILURE);
       }
+#endif // ENABLE_MESSAGE_DIGEST
     }
 
     delete metalinker;
