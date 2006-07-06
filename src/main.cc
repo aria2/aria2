@@ -323,6 +323,8 @@ bool normalDownload(const Requests& requests,
     downloadedFilename = e->segmentMan->getFilePath();
     success = true;
   } else {
+    e->segmentMan->save();
+    e->segmentMan->diskWriter->closeFile();
     printDownloadAbortMessage();
   }
   e->cleanQueue();
@@ -743,6 +745,7 @@ int main(int argc, char* argv[]) {
     normalDownload(requests, reserved, op, dir, ufilename, downloadedFilename);
 
     for_each(requests.begin(), requests.end(), Deleter());
+    for_each(reserved.begin(), reserved.end(), Deleter());
     requests.clear();
   }
 #ifdef ENABLE_METALINK
@@ -787,6 +790,7 @@ int main(int argc, char* argv[]) {
 				  downloadedFilename);
 
     for_each(requests.begin(), requests.end(), Deleter());
+    for_each(reserved.begin(), reserved.end(), Deleter());
     requests.clear();
 
     if(success) {

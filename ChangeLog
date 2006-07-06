@@ -1,3 +1,32 @@
+2006-07-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To fix the bug that .aria2 file is not saved if downloading is stopped
+	by the errors:it results that aria2 can not resume downloading:
+	
+	* src/main.cc
+	(normalDownload): Added the call to save().
+	(main): Added the deletion of the elements in 'reserved'.
+
+	To fix log:
+
+	* src/PeerInteraction.cc
+	(receiveHandshake): Fixed log.
+
+	To improve the download performance just a little bit:
+
+	* src/TorrentMan.cc
+	(getPeer): Return nullPeer if connections is greater than
+	MAX_PEER_UPDATE.
+	
+2006-07-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To improve download performance in BitTorrent:
+	
+	* src/TorrentMan.cc
+	(getPeer): Check the number of connections. Return nullPeer if
+	it is greater than MAX_PEER_UPDATE.
+	This code was originally here, but was removed in 0.5.1.
+
 2006-07-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
         To improve the conditional compilation:

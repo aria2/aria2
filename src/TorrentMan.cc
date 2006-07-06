@@ -130,6 +130,9 @@ void TorrentMan::deleteOldErrorPeers() {
 }
 
 Peer* TorrentMan::getPeer() const {
+  if(connections > MAX_PEER_UPDATE) {
+    return Peer::nullPeer;
+  }
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peer* p = *itr;
     if(p->cuid == 0 && p->error < MAX_PEER_ERROR) {

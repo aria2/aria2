@@ -310,7 +310,7 @@ HandshakeMessage* PeerInteraction::receiveHandshake(bool quickReply) {
   }
   if(handshakeMessage->isFastExtensionSupported()) {
     peer->setFastExtensionEnabled(true);
-    logger->info("CUID#%d - Fast extension enabled.");
+    logger->info("CUID#%d - Fast extension enabled.", cuid);
   }
   return handshakeMessage;
 }
