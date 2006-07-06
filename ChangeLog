@@ -12,12 +12,6 @@
 	* src/PeerInteraction.cc
 	(receiveHandshake): Fixed log.
 
-	To improve the download performance just a little bit:
-
-	* src/TorrentMan.cc
-	(getPeer): Return nullPeer if connections is greater than
-	MAX_PEER_UPDATE.
-	
 2006-07-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To improve download performance in BitTorrent:
