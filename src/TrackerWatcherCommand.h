@@ -26,8 +26,6 @@
 #include "TorrentDownloadEngine.h"
 #include "Time.h"
 
-#define MIN_PEERS 15
-
 class TrackerWatcherCommand : public Command {
 private:
   TorrentDownloadEngine* e;

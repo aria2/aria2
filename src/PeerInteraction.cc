@@ -28,10 +28,10 @@
 #include <netinet/in.h>
 
 PeerInteraction::PeerInteraction(int cuid,
-				 const Socket* socket,
+				 const PeerHandle& peer,
+				 const SocketHandle& socket,
 				 const Option* op,
-				 TorrentMan* torrentMan,
-				 Peer* peer)
+				 TorrentMan* torrentMan)
   :cuid(cuid),
    uploadLimit(0),
    torrentMan(torrentMan),
@@ -43,7 +43,6 @@ PeerInteraction::PeerInteraction(int cuid,
 
 PeerInteraction::~PeerInteraction() {
   delete peerConnection;
-  for_each(messageQueue.begin(), messageQueue.end(), Deleter());
 }
 
 class MsgPushBack {
@@ -52,14 +51,14 @@ private:
 public:
   MsgPushBack(MessageQueue* messageQueue):messageQueue(messageQueue) {}
 
-  void operator()(PeerMessage* msg) {
+  void operator()(const PeerMessageHandle& msg) {
     messageQueue->push_back(msg);
   }
 };
 
 bool PeerInteraction::isSendingMessageInProgress() const {
   if(messageQueue.size() > 0) {
-    PeerMessage* peerMessage = messageQueue.front();
+    const PeerMessageHandle& peerMessage = messageQueue.front();
     if(peerMessage->isInProgress()) {
       return true;
     }
@@ -70,7 +69,7 @@ bool PeerInteraction::isSendingMessageInProgress() const {
 void PeerInteraction::sendMessages(int uploadSpeed) {
   MessageQueue tempQueue;
   while(messageQueue.size() > 0) {
-    PeerMessage* msg = messageQueue.front();
+    PeerMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
     if(uploadLimit != 0 && uploadLimit*1024 <= uploadSpeed &&
        msg->getId() == PieceMessage::ID && !msg->isInProgress()) {
@@ -78,27 +77,20 @@ void PeerInteraction::sendMessages(int uploadSpeed) {
       //((PieceMessage*)msg)->incrementPendingCount();
       tempQueue.push_back(msg);
     } else {
-      try {
-	msg->send();
-      } catch(Exception* ex) {
-	delete msg;
-	throw;
-      }
+      msg->send();
       if(msg->isInProgress()) {
 	messageQueue.push_front(msg);
 	break;
-      } else {
-	delete msg;
       }
     }
   }
   for_each(tempQueue.begin(), tempQueue.end(), MsgPushBack(&messageQueue));
 }
 
-void PeerInteraction::addMessage(PeerMessage* peerMessage) {
+void PeerInteraction::addMessage(const PeerMessageHandle& peerMessage) {
   messageQueue.push_back(peerMessage);
   if(peerMessage->getId() == RequestMessage::ID) {
-    RequestMessage* requestMessage = (RequestMessage*)peerMessage;
+    RequestMessage* requestMessage = (RequestMessage*)peerMessage.get();
     RequestSlot requestSlot(requestMessage->getIndex(),
 			    requestMessage->getBegin(),
 			    requestMessage->getLength(),
@@ -113,8 +105,8 @@ void PeerInteraction::rejectAllPieceMessageInQueue() {
       itr != messageQueue.end();) {
     // Don't delete piece message which is in the allowed fast set.
     if((*itr)->getId() == PieceMessage::ID && !(*itr)->isInProgress()
-       && !isInFastSet(((PieceMessage*)*itr)->getIndex())) {
-      PieceMessage* pieceMessage = (PieceMessage*)*itr;
+       && !isInFastSet(((PieceMessage*)(*itr).get())->getIndex())) {
+      PieceMessage* pieceMessage = (PieceMessage*)(*itr).get();
       logger->debug("CUID#%d - Reject piece message in queue because"
 		    " peer has been choked. index=%d, begin=%d, length=%d",
 		    cuid,
@@ -126,7 +118,6 @@ void PeerInteraction::rejectAllPieceMessageInQueue() {
 						pieceMessage->getBegin(),
 						pieceMessage->getBlockLength()));
       }
-      delete pieceMessage;
       itr = messageQueue.erase(itr);
     } else {
       itr++;
@@ -140,14 +131,13 @@ void PeerInteraction::rejectPieceMessageInQueue(int index, int begin, int length
   for(MessageQueue::iterator itr = messageQueue.begin();
       itr != messageQueue.end();) {
     if((*itr)->getId() == PieceMessage::ID && !(*itr)->isInProgress()) {
-      PieceMessage* pieceMessage = (PieceMessage*)*itr;
+      PieceMessage* pieceMessage = (PieceMessage*)(*itr).get();
       if(pieceMessage->getIndex() == index &&
 	 pieceMessage->getBegin() == begin &&
 	 pieceMessage->getBlockLength() == length) {
 	logger->debug("CUID#%d - Reject piece message in queue because cancel"
 		      " message received. index=%d, begin=%d, length=%d",
 		      cuid, index, begin, length);
-	delete pieceMessage;
 	itr = messageQueue.erase(itr);
 	if(peer->isFastExtensionEnabled()) {
 	  tempQueue.push_back(createRejectMessage(index, begin, length));
@@ -187,8 +177,7 @@ void PeerInteraction::abortPiece(Piece& piece) {
 	itr != messageQueue.end();) {
       if((*itr)->getId() == RequestMessage::ID &&
 	!(*itr)->isInProgress() &&
-	 ((RequestMessage*)*itr)->getIndex() == piece.getIndex()) {
-	delete *itr;
+	 ((RequestMessage*)(*itr).get())->getIndex() == piece.getIndex()) {
 	itr = messageQueue.erase(itr);
       } else {
 	itr++;
@@ -286,7 +275,7 @@ int PeerInteraction::countRequestSlot() const {
   return requestSlots.size();
 }
 
-HandshakeMessage* PeerInteraction::receiveHandshake(bool quickReply) {
+HandshakeMessageHandle PeerInteraction::receiveHandshake(bool quickReply) {
   char msg[HANDSHAKE_MESSAGE_LENGTH];
   int msgLength = HANDSHAKE_MESSAGE_LENGTH;
   bool retval = peerConnection->receiveHandshake(msg, msgLength);
@@ -301,13 +290,8 @@ HandshakeMessage* PeerInteraction::receiveHandshake(bool quickReply) {
   if(!retval) {
     return NULL;
   }
-  HandshakeMessage* handshakeMessage = createHandshakeMessage(msg, msgLength);
-  try {
-    handshakeMessage->check();
-  } catch(Exception* e) {
-    delete handshakeMessage;
-    throw;
-  }
+  HandshakeMessageHandle handshakeMessage(createHandshakeMessage(msg, msgLength));
+  handshakeMessage->check();
   if(handshakeMessage->isFastExtensionSupported()) {
     peer->setFastExtensionEnabled(true);
     logger->info("CUID#%d - Fast extension enabled.", cuid);
@@ -315,30 +299,25 @@ HandshakeMessage* PeerInteraction::receiveHandshake(bool quickReply) {
   return handshakeMessage;
 }
 
-HandshakeMessage* PeerInteraction::createHandshakeMessage(const char* msg, int msgLength) {
+HandshakeMessageHandle PeerInteraction::createHandshakeMessage(const char* msg, int msgLength) {
   HandshakeMessage* message = HandshakeMessage::create(msg, msgLength);
 
   setPeerMessageCommonProperty(message);
   return message;
 }
 
-PeerMessage* PeerInteraction::receiveMessage() {
+PeerMessageHandle PeerInteraction::receiveMessage() {
   char msg[MAX_PAYLOAD_LEN];
   int msgLength = 0;
   if(!peerConnection->receiveMessage(msg, msgLength)) {
     return NULL;
   }
-  PeerMessage* peerMessage = createPeerMessage(msg, msgLength);
-  try {
-    peerMessage->check();
-  } catch(Exception* e) {
-    delete peerMessage;
-    throw;
-  }
+  PeerMessageHandle peerMessage(createPeerMessage(msg, msgLength));
+  peerMessage->check();
   return peerMessage;
 }
 
-PeerMessage* PeerInteraction::createPeerMessage(const char* msg, int msgLength) {
+PeerMessageHandle PeerInteraction::createPeerMessage(const char* msg, int msgLength) {
   PeerMessage* peerMessage;
   if(msgLength == 0) {
     // keep-alive

@@ -38,7 +38,8 @@ protected:
   bool prepareForRetry(int wait);
   bool prepareForNextSegment();
 public:
-  DownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
+  DownloadCommand(int cuid, Request* req, DownloadEngine* e,
+		  const SocketHandle& s);
   virtual ~DownloadCommand();
 
   virtual TransferEncoding* getTransferEncoding(const string& transferEncoding) = 0;

@@ -26,9 +26,11 @@
 
 class FtpDownloadCommand : public DownloadCommand {
 private:
-  Socket* ctrlSocket;
+  SocketHandle ctrlSocket;
 public:
-  FtpDownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* dataSocket, const Socket* ctrlSocket);
+  FtpDownloadCommand(int cuid, Request* req, DownloadEngine* e,
+		     const SocketHandle& dataSocket,
+		     const SocketHandle& ctrlSocket);
   ~FtpDownloadCommand();
 
   TransferEncoding* getTransferEncoding(const string& name);

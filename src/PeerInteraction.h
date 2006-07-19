@@ -42,12 +42,15 @@
 #include "AllowedFastMessage.h"
 #include "SuggestPieceMessage.h"
 #include "RequestSlot.h"
+#include "SharedHandle.h"
 
 #define REQUEST_TIME_OUT 60
 #define ALLOWED_FAST_SET_SIZE 10
 
+typedef SharedHandle<PeerMessage> PeerMessageHandle;
+typedef SharedHandle<HandshakeMessage> HandshakeMessageHandle;
 typedef deque<RequestSlot> RequestSlots;
-typedef deque<PeerMessage*> MessageQueue;
+typedef deque<PeerMessageHandle> MessageQueue;
 
 class PeerInteraction {
 private:
@@ -58,7 +61,7 @@ private:
   int uploadLimit;
   TorrentMan* torrentMan;
   PeerConnection* peerConnection;
-  Peer* peer;
+  PeerHandle peer;
   Pieces pieces;
   // allowed fast piece indexes that local client has sent
   Integers fastSet;
@@ -66,19 +69,19 @@ private:
   const Logger* logger;
 
   void getNewPieceAndSendInterest(int pieceNum);
-  PeerMessage* createPeerMessage(const char* msg, int msgLength);
-  HandshakeMessage* createHandshakeMessage(const char* msg, int msgLength);
+  PeerMessageHandle createPeerMessage(const char* msg, int msgLength);
+  HandshakeMessageHandle createHandshakeMessage(const char* msg, int msgLength);
   void setPeerMessageCommonProperty(PeerMessage* peerMessage);
   int countRequestSlot() const;
 public:
   PeerInteraction(int cuid,
-		  const Socket* socket,
+		  const PeerHandle& peer,
+		  const SocketHandle& socket,
 		  const Option* op,
-		  TorrentMan* torrentMan,
-		  Peer* peer);
+		  TorrentMan* torrentMan);
   ~PeerInteraction();
 
-  void addMessage(PeerMessage* peerMessage);
+  void addMessage(const PeerMessageHandle& peerMessage);
   void rejectPieceMessageInQueue(int index, int begin, int length);
   void rejectAllPieceMessageInQueue();
   void onChoked();
@@ -116,8 +119,8 @@ public:
   void sendBitfield();
   void sendAllowedFast();
 
-  PeerMessage* receiveMessage();
-  HandshakeMessage* receiveHandshake(bool quickReply = false);
+  PeerMessageHandle receiveMessage();
+  HandshakeMessageHandle receiveHandshake(bool quickReply = false);
 
   RequestMessage* createRequestMessage(int index, int blockIndex);
   CancelMessage* createCancelMessage(int index, int begin, int length);

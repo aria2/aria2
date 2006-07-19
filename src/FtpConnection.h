@@ -35,7 +35,7 @@ using namespace std;
 class FtpConnection {
 private:
   int cuid;
-  const Socket* socket;
+  SocketHandle socket;
   const Request* req;
   const Option* option;
   const Logger* logger;
@@ -46,7 +46,8 @@ private:
   bool isEndOfResponse(int status, const string& response) const;
   bool bulkReceiveResponse(pair<int, string>& response);
 public:
-  FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op);
+  FtpConnection(int cuid, const SocketHandle& socket,
+		const Request* req, const Option* op);
   ~FtpConnection();
   void sendUser() const;
   void sendPass() const;
@@ -54,7 +55,7 @@ public:
   void sendCwd() const;
   void sendSize() const;
   void sendPasv() const;
-  Socket* sendPort() const;
+  SocketHandle sendPort() const;
   void sendRest(const Segment& segment) const;
   void sendRetr() const;
 

@@ -73,14 +73,15 @@ private:
   bool recvRetr();
   bool processSequence(const Segment& segment);
 
-  Socket* dataSocket;
-  Socket* serverSocket;
+  SocketHandle dataSocket;
+  SocketHandle serverSocket;
   int sequence;
   FtpConnection* ftp;
 protected:
   bool executeInternal(Segment segment);
 public:
-  FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
+  FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e,
+			const SocketHandle& s);
   ~FtpNegotiationCommand();
 };
 

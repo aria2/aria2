@@ -23,13 +23,9 @@
 #include "PeerInteractionCommand.h"
 
 PeerListenCommand::PeerListenCommand(int cuid, TorrentDownloadEngine* e)
-  :Command(cuid), e(e), socket(NULL) {}
+  :Command(cuid), e(e) {}
 
-PeerListenCommand::~PeerListenCommand() {
-  if(socket != NULL) {
-    delete socket;
-  }
-}
+PeerListenCommand::~PeerListenCommand() {}
 
 int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
   if(portRangeStart > portRangeEnd) {
@@ -37,7 +33,6 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
   }
   for(int port = portRangeStart; port <= portRangeEnd; port++) {
     try {
-      socket = new Socket();
       socket->beginListen(port);
       logger->info("CUID#%d - using port %d for accepting new connections",
 		   cuid, port);
@@ -45,9 +40,8 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
     } catch(Exception* ex) {
       logger->error("CUID#%d - an error occurred while binding port=%d",
 		    ex, cuid, port);
+      socket->closeConnection();
       delete ex;
-      delete socket;
-      socket = NULL;
     }
   }
   return -1;
@@ -57,44 +51,33 @@ bool PeerListenCommand::execute() {
   if(e->torrentMan->isHalt()) {
     return true;
   }
-  try {
-    for(int i = 0; i < 3 && socket->isReadable(0); i++) {
-      Socket* peerSocket = NULL;
-      try {
-	peerSocket = socket->acceptConnection();
-	pair<string, int> peerInfo;
-	peerSocket->getPeerInfo(peerInfo);
-	pair<string, int> localInfo;
-	peerSocket->getAddrInfo(localInfo);
-	if(peerInfo.first != localInfo.first &&
-	   e->torrentMan->connections < MAX_PEERS) {
-	  Peer* peer = new Peer(peerInfo.first, peerInfo.second,
-				e->torrentMan->pieceLength,
-				e->torrentMan->getTotalLength());
-	  if(e->torrentMan->addPeer(peer, true)) {
-	    int newCuid =  e->torrentMan->getNewCuid();
-	    peer->cuid = newCuid;
-	    PeerInteractionCommand* command =
-	      new PeerInteractionCommand(newCuid, peer, e, peerSocket,
-					 PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
-	    e->commands.push_back(command);
-	    logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
-	  } else {
-	    delete peer;
-	  }
+  for(int i = 0; i < 3 && socket->isReadable(0); i++) {
+    SocketHandle peerSocket;
+    try {
+      peerSocket = socket->acceptConnection();
+      pair<string, int> peerInfo;
+      peerSocket->getPeerInfo(peerInfo);
+      pair<string, int> localInfo;
+      peerSocket->getAddrInfo(localInfo);
+      if(peerInfo.first != localInfo.first &&
+	 e->torrentMan->connections < MAX_PEERS) {
+	PeerHandle peer = PeerHandle(new Peer(peerInfo.first, peerInfo.second,
+					      e->torrentMan->pieceLength,
+					      e->torrentMan->getTotalLength()));
+	if(e->torrentMan->addPeer(peer)) {
+	  int newCuid =  e->torrentMan->getNewCuid();
+	  peer->cuid = newCuid;
+	  PeerInteractionCommand* command =
+	    new PeerInteractionCommand(newCuid, peer, e, peerSocket,
+				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
+	  e->commands.push_back(command);
+	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
 	}
-	delete peerSocket;
-      } catch(Exception* ex) {
-	logger->error("CUID#%d - error in accepting connection", ex, cuid);
-	delete ex;
-	if(peerSocket != NULL) {
-	  delete peerSocket;
-	}
-      }		    
-    }
-  } catch(Exception* e) {
-    logger->error("CUID#%d - Exception occurred.", e, cuid);
-    delete e;
+      }
+    } catch(Exception* ex) {
+      logger->error("CUID#%d - error in accepting connection", ex, cuid);
+      delete ex;
+    }		    
   }
   e->commands.push_back(this);
   return false;

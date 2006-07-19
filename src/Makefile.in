@@ -89,7 +89,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	RejectMessage.cc RejectMessage.h\
 @ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.cc AllowedFastMessage.h\
 @ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.cc SuggestPieceMessage.h\
-@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.cc SimplePeerMessage.h
+@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.cc SimplePeerMessage.h\
+@ENABLE_BITTORRENT_TRUE@	SharedHandle.h
 
 @ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -121,8 +122,8 @@ AR = ar
 ARFLAGS = cru
 libaria2c_a_AR = $(AR) $(ARFLAGS)
 libaria2c_a_LIBADD =
-am__libaria2c_a_SOURCES_DIST = Socket.cc Socket.h SocketCore.cc \
-	SocketCore.h Command.h AbstractCommand.cc AbstractCommand.h \
+am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
+	Command.cc Command.h AbstractCommand.cc AbstractCommand.h \
 	InitiateConnectionCommandFactory.cc \
 	InitiateConnectionCommandFactory.h DownloadCommand.cc \
 	DownloadCommand.h HttpInitiateConnectionCommand.cc \
@@ -186,8 +187,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.cc Socket.h SocketCore.cc \
 	HaveNoneMessage.cc HaveNoneMessage.h RejectMessage.cc \
 	RejectMessage.h AllowedFastMessage.cc AllowedFastMessage.h \
 	SuggestPieceMessage.cc SuggestPieceMessage.h \
-	SimplePeerMessage.cc SimplePeerMessage.h Metalinker.cc \
-	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	SimplePeerMessage.cc SimplePeerMessage.h SharedHandle.h \
+	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
 @ENABLE_BITTORRENT_TRUE@am__objects_1 = Data.$(OBJEXT) \
@@ -240,7 +241,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.cc Socket.h SocketCore.cc \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT)
-am__objects_3 = Socket.$(OBJEXT) SocketCore.$(OBJEXT) \
+am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -420,7 +421,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 aria2c_SOURCES = main.cc
-SRCS = Socket.cc Socket.h SocketCore.cc SocketCore.h Command.h \
+SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	AbstractCommand.cc AbstractCommand.h \
 	InitiateConnectionCommandFactory.cc \
 	InitiateConnectionCommandFactory.h DownloadCommand.cc \
@@ -547,6 +548,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CancelMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
@@ -614,7 +616,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimplePeerMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Socket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitFirstSegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitSlowestSegmentSplitter.Po@am__quote@

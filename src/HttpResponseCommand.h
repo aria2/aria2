@@ -38,7 +38,8 @@ private:
 protected:
   bool executeInternal(Segment segment);
 public:
-  HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s);
+  HttpResponseCommand(int cuid, Request* req, DownloadEngine* e,
+		      const SocketHandle& s);
   ~HttpResponseCommand();
 };
 

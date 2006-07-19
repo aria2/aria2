@@ -1,3 +1,301 @@
+2006-07-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/SharedHandle.h: New class.
+
+	To wrap Socket, Command, PeerMessage and Peer with SharedHandle:
+
+	* src/HttpResponseCommand.h
+	(HttpResponseCommand): Wrapped Socket.
+	* src/SocketCore.h
+	(operator==): New function.
+	(operator!=): New function.
+	(operator<): New function.
+	(getSockfd): New function.
+	(isOpen): New function.
+	(writeData): New function.
+	* src/SocketCore.cc
+	(operator==): New function.
+	(operator!=): New function.
+	(operator<): New function.
+	* src/AbstractCommand.h
+	(socket): Changed its type to SocketHandle.
+	(setReadCheckSocket): Replaced Socket with SocketHandle.
+	(setWriteCheckSocket): Replaced Socket with SocketHandle.
+	(disableReadCheckSocket): New function.
+	(disableWriteCheckSocket): New function.
+	(readCheckTarget): Changed its type to SocketHandle.
+	(writeCheckTarget): Changed its type to SocketHandle.
+	(AbstractCommand): Replaced Socket with SocketHandle.
+	* src/AbstractCommand.cc
+	(AbstractCommand): Replaced Socket with SocketHandle.
+	(~AbstractCommand): Removed the deallocation for Socket object.
+	(disableReadCheckSocket): New function.
+	(setReadCheckSocket): Replaced Socket with SocketHandle.
+	(disableWriteCheckSocket): New function.
+	(setWriteCheckSocket): Replaced Socket with SocketHandle.
+	* src/HttpDownloadCommand.cc
+	(DownloadCommand): Replaced Socket with SocketHandle.
+	* src/PeerAbstractCommand.h
+	(socket): Changed its type to SocketHandle.
+	(peer): Changed its type to PeerHandle.
+	(setReadCheckSocket): Replaced Socket with SocketHandle.
+	(setWriteCheckSocket): Replaced Socket with SocketHandle.
+	(disableReadCheckSocket): New function.
+	(disableWriteCheckSocket): New function.
+	(readCheckTarget): Changed its type to SocketHandle.
+	(writeCheckTarget): Changed its type to SocketHandle.
+	(PeerAbstractCommand): Replaced Socket with SocketHandle.
+	Replaced Peer with PeerHandle.
+	* src/HttpRequestCommand.cc
+	(HttpRequestCommand): Replaced Socket with SocketHandle.
+	Use disableReadCheckSocket.
+	* src/PeerInitiateConnectionCommand.h
+	(PeerInitiateConnectionCommand): Replaced Peer with PeerHandle.
+	* src/PeerChokeCommand.cc
+	(UploadFaster::operator()): Replaced Peer with PeerHandle.
+	(DownloadFaster::operator()): Replaced Peer with PeerHandle.
+	(execute): Use PeerHandle.
+	* src/PeerConnection.h
+	(HandshakeMessage.h): Removed include of HandshakeMessage.h.
+	(socket): Changed its type to SocketHandle.
+	(PeerConnection): Replaced Socket with SocketHandle.	
+	* src/PeerConnection.cc
+	(PeerConnection): Replaced Socket with SocketHandle.
+	* src/PeerInteractionCommand.h
+	(PeerInteractionCommand): Replaced socket with SocketHandle.
+	Replaced Peer with PeerHandle.	
+	* src/PeerInteractionCommand.cc
+	(PeerInteractionCommand): Replaced Socket with SocketHandle.
+	Replaced Peer with PeerHandle.
+	(executeInternal): Use disableWriteCheckSocket.
+	Use HandshakeMessageHandle.
+	(receiveMessages): Use PeerMessageHandle.
+	(prepareForNextPeer): Use PeerHandle.
+	* src/HttpProxyRequestCommand.h
+	(HttpProxyRequestCommand): Replaced Socket with SocketHandle.
+	* src/HttpResponseCommand.cc
+	(HttpResponseCommand): Replaced Socket with SocketHandle.
+	* src/TorrentMan.cc
+	(nullPeer): Added external reference.
+	(~TorrentMan): Removed the deallocation of the elements of peers.
+	(addPeer): Rewritten.
+	(isPeerAvailable): Use nullPeer.
+	(deleteOldpeers): Replaced with deleteErrorPeer.
+	(deleteErrorPeer): New function.
+	(getPeer): Use PeerHandle and nullPeer.
+	(hasMissingPiece): Replaced Peer with PeerHandle.
+	(getMissingPieceIndex): Replaced Peer with PeerHandle.
+	(getMissingFastPieceIndex): Replaced Peer with PeerHandle.
+	(getMissingFastPiece): Replaced Peer with PeerHandle.
+	(getMissingPiece): Replaced Peer with PeerHandle.
+	* src/FtpNegotiateCommand.cc
+	(FtpNegotiationCommand): Replaced Peer with PeerHandle.
+	(~FtpNegotiationCommand): Removed the deallocation of Sockets.
+	(recvGreeting): Use disableWriteCheckSocket.
+	(recvPasv): Removed the allocation of Socket.
+	Use disableReadCheckSocket.
+	(sendRestPasv): Use disableWriteCheckSocket.
+	(recvRetr): Changed assertion.
+	* src/PeerInteraction.h
+	(SharedHandle.h): Included SharedHandle.h.
+	(PeerMessageHandle): New type definition.
+	(HandshakeMessageHandle): New type definition.
+	(MessageQueue): Changed. Now its element is of type PeerMessageHandle.
+	(peer): Changed its type to PeerHandle.
+	(createHandshakeMessage): Replaced HandshakeMessage with
+	HandshakeMessageHandle.
+	(createPeerMessage): Replaced PeerMessageHandle with PeerMessage.
+	(PeerInteraction): Replaced Peer with PeerHandle.
+	Replaced Socket with SocketHandle.
+	(addMessage): Replaced PeerMessage with PeerMessageHandle.
+	(receiveMessage): Replaced PeerMessage with PeerMessageHandle.
+	(receiveHandshake): Replaced HandshakeMessage with
+	HandshakeMessageHandle.
+	* src/PeerInteraction.cc
+	(PeerInteraction): Replaced Peer with PeerHandle.
+	Replaced Socket with SocketHandle.
+	(~PeerInteraction): Removed the deallocation of the elements of
+	messageQueue.
+	(MsgPushBack::operator()): Replaced PeerMessage with PeerMessageHandle.
+	(isSendingMessageInProgress): Replaced PeerMessage with
+	PeerMessageHandle.
+	(sendMessages): Use PeerMessageHandle. Removed try-catch block.
+	(addMessage): Replaced PeerMessage with PeerMessageHandle.
+	(rejectAllPieceMessageInQueue): Use PeerMessageHandle.
+	(rejectPieceMessageInQueue): Use PeerMessageHandle.
+	(abortPiece): Use PeerMessageHandle.
+	(receiveHandshake): Replaced HandshakeMessage with
+	HandshakeMessageHandle. Removed try-catch block.
+	(createHandshakeMessage): Replaced HandshakeMessage with
+	HandshakeMessageHandle.
+	(receiveMessage): Replaced PeerMessage with PeerMessageHandle.
+	Removed try-catch block.
+	(createPeerMessage): Replaced PeerMessage with PeerMessageHandle.
+	* src/HttpProxyResponseCommand.cc
+	(HttpProxyRequestCommand): Replaced Socket with SocketHandle.
+	* src/FtpTunnelResponseCommand.h
+	(FtpTunnelResponseCommand): Replaced Socket with SocketHandle.
+	* src/HttpConnection.cc
+	(HttpConnection): Replaced Socket with SocketHandle.
+	* src/PeerAbstractCommand.cc
+	(PeerAbstractCommand): Replaced Socket with SocketHandle.
+	(~PeerAbstractCommand): Removed the deallocation of socket.
+	Use disableReadCheckSocket, disableWriteCheckSocket.
+	(disableReadCheckSocket): New function.
+	(setReadCheckSocket): Replaced Socket with SocketHandle.
+	(disableWriteCheckSocket): New function.
+	(setWriteCheckSocket): Replaced Socket with SocketHandle.
+	* src/InitiateConnectionCommandFactory.h: Corrected indentation.
+	* src/FtpTunnelRequestCommand.cc
+	(FtpTunnelRequestCommand): Replaced Socket with SocketHandle.
+	(~FtpTunnelRequestCommand): Corrected indentation.
+	* src/DownloadCommand.h
+	(DownloadCommand): Replaced Socket with SocketHandle.
+	* src/PeerListenCommand.cc
+	(PeerListenCommand): Removed the initialization of socket.
+	(~PeerListenCommand): Removed the deallocation of socket.
+	(bindPort): Use SocketHandle.
+	(execute): Use SocketHandle and PeerHandle.
+	* src/FtpDowndloadCommand.cc
+	(FtpDownloadCommand): Replaced Socket with SocketHandle.
+	(~FtpDownloadCommand): Removed the deallocation of ctrlSocket.
+	* src/main.cc
+	(main): Corrected indentation.
+	* src/HttpInitiateConnectionCommand.cc
+	(HttpInitiateConnectionCommand): Replaced Socket with SocketHandle.
+	(executeInternal): Removed the allocation of socket.
+	* src/HttpRequestCommand.h
+	(HttpRequestCommand): Replaced Socket with SocketHandle.
+	* src/FtpNegotiationCommand.h
+	(dataSocket): Changed its type to SocketHandle.
+	(serverSocket): Changed its type to SocketHandle.
+	(FtpNegotiationCommand): Replaced Socket with SocketHandle.
+	* src/TorrentMan.h
+	(MAX_PEER_UPDATE): Removed.
+	(MAX_PEERS): New definition.
+	(Peers): The element is now of type PeerHandle.
+	(addPeer): Replaced Peer with PeerHandle. Removed 'duplicate' argument.
+	(getPeer): Replaced Peer with PeerHandle.
+	(deleteOldErrorPeers): Removed.
+	(deleteErrorPeer): New function.
+	(hasMissingPiece): Replaced Peer with PeerHandle.
+	(getMissingPieceIndex): Replaced Peer with PeerHandle.
+	(getMissingPiece): Replaced Peer with PeerHandle.
+	(getMissingFastPieceIndex): Replaced Peer with PeerHandle.
+	(getMissingFastPiece): Replaced Peer with PeerHandle.
+	(addActivePeer): Replaced Peer with PeerHandle.
+	(deleteActivePeer): Replaced Peer with PeerHandle.
+	Added a check for the return value of find.
+	* src/FtpTunnelResponseCommand.cc
+	(FtpTunnelResponseCommand): Replaced Socket with SocketHandle.
+	* src/FtpInitiateConnectionCommand.cc
+	(executeInternal): Removed the allocation of socket.
+	* src/DownloadEngine.h
+	(Sockets): An element is now of type SocketHandle.
+	(SockCmdMap): A key is of type SocketHandle, a value is of type int.
+	(CommandUuids): New type definition.
+	(rsockets): Changed its type to SockCmdMap.
+	(wsockets): Changed its type to SockCmdMap.
+	(addSocket): Rewritten.
+	(deleteSocket): Rewritten.
+	(addSocketForReadCheck): Rewritten.
+	(deleteSocketForReadCheck): Rewritten.
+	(addSocketForWriteCheck): Rewritten.
+	(deleteSocketForWriteCheck): Rewritten.
+	(PairFind): New template class.
+	* src/HttpDownloadCommand.h
+	(HttpDownloadCommand): Replaced Socket with SocketHandle.
+	* src/FtpConnection.cc
+	(FtpConnection): Replaced Socket with SocketHandle.
+	(sendPort): Removed the allocation of serverSocket. Removed try-catch
+	block.
+	* src/InitiateConnectionCommandFactory.cc
+	(DlAbortEx.h): Included DlAbortEx.h.
+	(createInitiateConnectionCommand): Throw exception if the protocol of
+	requested URI is not supported.
+	* src/Peer.cc
+	(nullPeer): Changed its type to PeerHandle.
+	(operator==): New function.
+	(operator!=): New function.
+	* src/Peer.h
+	(SharedHandle.h): Included SharedHandle.h.
+	(operator==): New function.
+	(operator!=): New function.
+	(Peer): Added the default constructor.
+	Use resetStatus() to initialize member variables.
+	(nullPeer): Removed.
+	* src/TrackerUpdateCommand.cc
+	(execute): Brushed up using SharedHandle. Replaced MAX_PEER_UPDATE
+	with MIN_PEERS.
+	* src/PeerListenCommand.h
+	(socket): Changed its type to SocketHandle.
+	* src/Command.h
+	(CommandUuid): New type definition.
+	(uuid): New variable.
+	(uuidGen): New variable.
+	(Command): Added the initialization of uuid.
+	(getUuid): New function.
+	* src/Socket.h
+	(Socket): Removed.
+	(SocketHandle): New type definition.
+	* src/DownloadEngine.h
+	(FindCommand): New function object.
+	(run): The portion of socket check was rewritten.
+	(SetDescriptor): New function object.
+	(AccumulateActiveCommandUuid): New function object.
+	(waitData): Rewritten.
+	(addSocket): Rewritten.
+	(deleteSocket): Rewritten.
+	(addSocketForReadCheck): Rewritten.
+	(addSocketForWriteCheck): Rewritten.
+	(deleteSocketForReadCheck): Rewritten.
+	(deleteSocketForWriteCheck): Rewritten.
+	* src/HttpProxyResponseCommand.h
+	(HttpProxyResponseCommand): Replaced Socket with SocketHandle.
+	* src/HttpConnection.h
+	(socket): Changed its type to SocketHandle.
+	(HttpConnection): Replaced Socket with SocketHandle.
+	* src/PeerInitiateConnectionCommand.cc
+	(PeerInitiateConnectionCommand): Replaced Peer with PeerHandle.
+	(executeInternal): Removed the allocation of socket.
+	(prepareForNextPeer): Use PeerHandle.
+	* src/PeerMessage.h
+	(peer): Changed its type to PeerHandle.
+	(getPeer): Replaced Peer with PeerHandle.
+	(setPeer): Replaced Peer with PeerHandle.
+	* src/DownloadCommand.cc
+	(DownloadCommand): Replaced Socket with SocketHandle.
+	* src/FtpConnection.h
+	(socket): Changed its type to SocketHandle.
+	(FtpConnection): Replaced Socket with SocketHandle.
+	(sendPort); Replaced Socket with SocketHandle.
+	* src/FtpDowndloadCommand.h
+	(ctrlSocket): Changed its type to SocketHandle.
+	(FtpDownloadCommand): Replaced Socket with SocketHandle.
+	* src/HttpProxyRequestCommand.cc
+	(HttpProxyRequestCommand): Replaced Socket with SocketHandle.
+	* src/FtpTunnelRequestCommand.h
+	(FtpTunnelRequestCommand): Replaced Socket with SocketHandle.
+	
+	etc
+	
+	* src/PeerChokeCommand.h
+	(setAllPeerChoked): Removed.
+	(setAllPeerResetDelta): Removed.
+	* src/PeerChokeCommand.cc
+	(setAllPeerChoked): Removed.
+	(ChokePeer): New function object.
+	(setAllPeerResetDelta): Removed.
+	(ResetDelta): New function object.
+	(orderByDownloadRate): Fixed a bug: use DowloadFaster, not UploadFaster
+	(execute): Show download speed when the local node is a seeder.
+	setAllPeerChoked and setAllPeerResetDelta were rewritten
+	using STL.
+	* src/TrackerWatcherCommand.h
+	(MIN_PEERS): Removed.
+	* src/TorrentMan.cc
+	(getPeer): Replaced MAX_PEER_UPDATE with MIN_PEERS.
+	
 2006-07-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To fix the bug that .aria2 file is not saved if downloading is stopped

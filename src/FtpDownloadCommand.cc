@@ -21,17 +21,13 @@
 /* copyright --> */
 #include "FtpDownloadCommand.h"
 
-FtpDownloadCommand::FtpDownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* dataSocket, const Socket* ctrlSocket):
-  DownloadCommand(cuid, req, e, dataSocket)
-{
-  this->ctrlSocket = new Socket(*ctrlSocket);
-}
+FtpDownloadCommand::FtpDownloadCommand(int cuid, Request* req,
+				       DownloadEngine* e,
+				       const SocketHandle& dataSocket,
+				       const SocketHandle& ctrlSocket)
+  :DownloadCommand(cuid, req, e, dataSocket), ctrlSocket(ctrlSocket) {}
 
-FtpDownloadCommand::~FtpDownloadCommand() {
-  if(ctrlSocket != NULL) {
-    delete ctrlSocket;
-  }
-}
+FtpDownloadCommand::~FtpDownloadCommand() {}
 
 TransferEncoding* FtpDownloadCommand::getTransferEncoding(const string& name) {
   return NULL;

@@ -35,8 +35,6 @@ private:
 
   void orderByUploadRate(Peers& peers) const;
   void orderByDownloadRate(Peers& peers) const;
-  void setAllPeerChoked(Peers& peers) const;
-  void setAllPeerResetDelta(Peers& peers) const;
   void optUnchokingPeer(Peers& peers) const;
 
 public:

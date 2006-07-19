@@ -26,27 +26,20 @@
 #include "message.h"
 #include "prefs.h"
 
-PeerAbstractCommand::PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s):
-  Command(cuid), e(e), peer(peer),
+PeerAbstractCommand::PeerAbstractCommand(int cuid, const PeerHandle& peer,
+					 TorrentDownloadEngine* e,
+					 const SocketHandle& s)
+  :Command(cuid), e(e), socket(s), peer(peer),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   uploadLimitCheck(false), uploadLimit(0) {
-
-  if(s != NULL) {
-    socket = new Socket(*s);
-    setReadCheckSocket(socket);
-  } else {
-    socket = NULL;
-  }
+  setReadCheckSocket(socket);
   timeout = e->option->getAsInt(PREF_TIMEOUT);
   e->torrentMan->connections++;
 }
 
 PeerAbstractCommand::~PeerAbstractCommand() {
-  setReadCheckSocket(NULL);
-  setWriteCheckSocket(NULL);
-  if(socket != NULL) {
-    delete(socket);
-  }
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
   e->torrentMan->connections--;
 }
 
@@ -92,44 +85,52 @@ void PeerAbstractCommand::onAbort(Exception* ex) {
   logger->debug("CUID#%d - Peer %s:%d banned.", cuid, peer->ipaddr.c_str(), peer->port);
 }
 
-void PeerAbstractCommand::setReadCheckSocket(Socket* socket) {
-  if(socket == NULL) {
-    if(checkSocketIsReadable) {
-      e->deleteSocketForReadCheck(readCheckTarget);
-      checkSocketIsReadable = false;
-      readCheckTarget = NULL;
-    }
+void PeerAbstractCommand::disableReadCheckSocket() {
+  if(checkSocketIsReadable) {
+    e->deleteSocketForReadCheck(readCheckTarget, getUuid());
+    checkSocketIsReadable = false;
+    readCheckTarget = SocketHandle();
+  }  
+}
+
+void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
+  if(!socket->isOpen()) {
+    disableReadCheckSocket();
   } else {
     if(checkSocketIsReadable) {
       if(readCheckTarget != socket) {
-	e->deleteSocketForReadCheck(readCheckTarget);
-	e->addSocketForReadCheck(socket, this);
+	e->deleteSocketForReadCheck(readCheckTarget, getUuid());
+	e->addSocketForReadCheck(socket, getUuid());
 	readCheckTarget = socket;
       }
     } else {
-      e->addSocketForReadCheck(socket, this);
+      e->addSocketForReadCheck(socket, getUuid());
       checkSocketIsReadable = true;
       readCheckTarget = socket;
     }
   }
 }
 
-void PeerAbstractCommand::setWriteCheckSocket(Socket* socket) {
-  if(socket == NULL) {
-    if(checkSocketIsWritable) {
-      e->deleteSocketForWriteCheck(writeCheckTarget);
-      checkSocketIsWritable = false;
-      writeCheckTarget = NULL;
-    }
+void PeerAbstractCommand::disableWriteCheckSocket() {
+  if(checkSocketIsWritable) {
+    e->deleteSocketForWriteCheck(writeCheckTarget, getUuid());
+    checkSocketIsWritable = false;
+    writeCheckTarget = SocketHandle();
+  }
+}
+
+void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
+  if(!socket->isOpen()) {
+    disableWriteCheckSocket();
   } else {
     if(checkSocketIsWritable) {
       if(writeCheckTarget != socket) {
-	e->deleteSocketForWriteCheck(writeCheckTarget);
-	e->addSocketForWriteCheck(socket, this);
+	e->deleteSocketForWriteCheck(writeCheckTarget, getUuid());
+	e->addSocketForWriteCheck(socket, getUuid());
 	writeCheckTarget = socket;
       }
     } else {
-      e->addSocketForWriteCheck(socket, this);
+      e->addSocketForWriteCheck(socket, getUuid());
       checkSocketIsWritable = true;
       writeCheckTarget = socket;
     }

@@ -27,7 +27,10 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 
-DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s), lastSize(0) {}
+DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e,
+				 const SocketHandle& s):
+  AbstractCommand(cuid, req, e, s), lastSize(0) {
+}
 
 DownloadCommand::~DownloadCommand() {}
 

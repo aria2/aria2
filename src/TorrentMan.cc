@@ -41,27 +41,34 @@
 #include <string.h>
 #include <algorithm>
 
+extern PeerHandle nullPeer;
+
 TorrentMan::TorrentMan():bitfield(NULL),
-			 peerEntryIdCounter(0), cuidCounter(0),
-			 downloadLength(0), uploadLength(0),
-			 preDownloadLength(0), preUploadLength(0),
-			 deltaDownloadLength(0), deltaUploadLength(0),
+			 peerEntryIdCounter(0),
+			 cuidCounter(0),
+			 downloadLength(0),
+			 uploadLength(0),
+			 preDownloadLength(0),
+			 preUploadLength(0),
+			 deltaDownloadLength(0),
+			 deltaUploadLength(0),
 			 storeDir("."),
 			 setupComplete(false),
 			 halt(false),
 			 interval(DEFAULT_ANNOUNCE_INTERVAL),
 			 minInterval(DEFAULT_ANNOUNCE_MIN_INTERVAL),
-			 complete(0), incomplete(0),
-			 connections(0), trackers(0), diskAdaptor(NULL) {
+			 complete(0),
+			 incomplete(0),
+			 connections(0),
+			 trackers(0),
+			 diskAdaptor(NULL)
+{
   logger = LogFactory::getInstance();
 }
 
 TorrentMan::~TorrentMan() {
   if(bitfield != NULL) {
     delete bitfield;
-  }
-  for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-    delete *itr;
   }
   if(diskAdaptor != NULL) {
     delete diskAdaptor;
@@ -73,32 +80,25 @@ void TorrentMan::updatePeers(const Peers& peers) {
   this->peers = peers;
 }
 
-bool TorrentMan::addPeer(Peer* peer, bool duplicate) {
+bool TorrentMan::addPeer(const PeerHandle& peer) {
   if(peers.size() >= MAX_PEER_LIST_SIZE) {
-    deleteOldErrorPeers();
+    deleteErrorPeer();
   }
-  if(duplicate) {
-    for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-      Peer* p = *itr;
-      if(p->ipaddr == peer->ipaddr && p->port == peer->port && p->error > 0) {
-	return false;
-      }
-    }
+  Peers::iterator itr = find(peers.begin(), peers.end(), peer);
+  if(itr == peers.end()) {
+    ++peerEntryIdCounter;
+    peer->entryId = peerEntryIdCounter;
+    peers.push_back(peer);
+    return true;
   } else {
-    if(peers.size() >= MAX_PEER_LIST_SIZE) {
+    const PeerHandle& peer = *itr;
+    if(peer->error >= MAX_PEER_ERROR || peer->cuid != 0) {
       return false;
-    }
-    for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-      Peer* p = *itr;
-      if(p->ipaddr == peer->ipaddr && p->port == peer->port) {
-	return false;
-      }
-    }
+    } else {
+      *itr = peer;
+      return true;
+    }      
   }
-  ++peerEntryIdCounter;
-  peer->entryId = peerEntryIdCounter;
-  peers.push_back(peer);
-  return true;
 }
 
 /*
@@ -114,14 +114,13 @@ void TorrentMan::updatePeer(const Peer& peer) {
 */
 
 bool TorrentMan::isPeerAvailable() const {
-  return getPeer() != Peer::nullPeer;
+  return getPeer() != nullPeer;
 }
 
-void TorrentMan::deleteOldErrorPeers() {
+void TorrentMan::deleteErrorPeer() {
   for(Peers::iterator itr = peers.begin(); itr != peers.end();) {
-    Peer* p = *itr;
-    if(p->error >= MAX_PEER_ERROR && p->cuid == 0) {
-      delete p;
+    const PeerHandle& p = *itr;
+    if(p->error > 0 && p->cuid == 0) {
       itr = peers.erase(itr);
     } else {
       itr++;
@@ -129,29 +128,29 @@ void TorrentMan::deleteOldErrorPeers() {
   }
 }
 
-Peer* TorrentMan::getPeer() const {
-  if(connections > MAX_PEER_UPDATE) {
-    return Peer::nullPeer;
+PeerHandle TorrentMan::getPeer() const {
+  if(connections > MIN_PEERS) {
+    return nullPeer;
   }
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); itr++) {
-    Peer* p = *itr;
+    const PeerHandle& p = *itr;
     if(p->cuid == 0 && p->error < MAX_PEER_ERROR) {
       return p;
     }
   }
-  return Peer::nullPeer;
+  return nullPeer;
 }
 
 bool TorrentMan::isEndGame() const {
   return bitfield->countMissingBlock() <= END_GAME_PIECE_NUM;
 }
 
-bool TorrentMan::hasMissingPiece(const Peer* peer) const {
+bool TorrentMan::hasMissingPiece(const PeerHandle& peer) const {
   return bitfield->hasMissingPiece(peer->getBitfield(),
 				   peer->getBitfieldLength());
 }
 
-int TorrentMan::getMissingPieceIndex(const Peer* peer) const {
+int TorrentMan::getMissingPieceIndex(const PeerHandle& peer) const {
   int index = -1;
   if(isEndGame()) {
     index = bitfield->getMissingIndex(peer->getBitfield(),
@@ -163,7 +162,7 @@ int TorrentMan::getMissingPieceIndex(const Peer* peer) const {
   return index;
 }
 
-int TorrentMan::getMissingFastPieceIndex(const Peer* peer) const {
+int TorrentMan::getMissingFastPieceIndex(const PeerHandle& peer) const {
   int index = -1;
   if(peer->isFastExtensionEnabled() && peer->countFastSet() > 0) {
     BitfieldMan tempBitfield(pieceLength, totalLength);
@@ -184,12 +183,12 @@ int TorrentMan::getMissingFastPieceIndex(const Peer* peer) const {
   return index;
 }
 
-Piece TorrentMan::getMissingFastPiece(const Peer* peer) {
+Piece TorrentMan::getMissingFastPiece(const PeerHandle& peer) {
   int index = getMissingFastPieceIndex(peer);
   return checkOutPiece(index);
 }
 
-Piece TorrentMan::getMissingPiece(const Peer* peer) {
+Piece TorrentMan::getMissingPiece(const PeerHandle& peer) {
   int index = getMissingPieceIndex(peer);
   return checkOutPiece(index);
 }

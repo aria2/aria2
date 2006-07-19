@@ -33,7 +33,7 @@ class PeerMessage {
 protected:
   bool inProgress;
   int cuid;
-  Peer* peer;
+  PeerHandle peer;
   PeerInteraction* peerInteraction;
   const Logger* logger;
 public:
@@ -47,8 +47,8 @@ public:
   void setCuid(int cuid) {
     this->cuid = cuid;
   }
-  Peer* getPeer() const { return this->peer; }
-  void setPeer(Peer* peer) {
+  PeerHandle getPeer() const { return this->peer; }
+  void setPeer(const PeerHandle& peer) {
     this->peer = peer;
   }
   PeerInteraction* getPeerInteraction() const { return peerInteraction; }

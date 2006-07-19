@@ -27,7 +27,6 @@
 #include "Logger.h"
 #include "TorrentMan.h"
 #include "PeerMessage.h"
-#include "HandshakeMessage.h"
 #include "common.h"
 
 // we assume maximum length of incoming message is "piece" message with 16KB
@@ -37,7 +36,7 @@
 class PeerConnection {
 private:
   int cuid;
-  const Socket* socket;
+  SocketHandle socket;
   const Option* option;
   const Logger* logger;
 
@@ -48,7 +47,7 @@ private:
   int lenbufLength;
 
 public:
-  PeerConnection(int cuid, const Socket* socket, const Option* op);
+  PeerConnection(int cuid, const SocketHandle& socket, const Option* op);
   ~PeerConnection();
   
   // Returns the number of bytes written

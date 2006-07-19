@@ -33,26 +33,30 @@ private:
   int timeout;
 protected:
   TorrentDownloadEngine* e;
-  Socket* socket;
-  Peer* peer;
+  SocketHandle socket;
+  PeerHandle peer;
   void setTimeout(int timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(int wait);
   virtual bool prepareForRetry(int wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal() = 0;
-  void setReadCheckSocket(Socket* socket);
-  void setWriteCheckSocket(Socket* socket);
+  void setReadCheckSocket(const SocketHandle& socket);
+  void setWriteCheckSocket(const SocketHandle& socket);
+  void disableReadCheckSocket();
+  void disableWriteCheckSocket();
   void setUploadLimit(int uploadLimit);
   void setUploadLimitCheck(bool check);
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
-  Socket* readCheckTarget;
-  Socket* writeCheckTarget;
+  SocketHandle readCheckTarget;
+  SocketHandle writeCheckTarget;
   bool uploadLimitCheck;
   int uploadLimit;
 public:
-  PeerAbstractCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s = NULL);
+  PeerAbstractCommand(int cuid, const PeerHandle& peer,
+		      TorrentDownloadEngine* e,
+		      const SocketHandle& s = SocketHandle());
   virtual ~PeerAbstractCommand();
   bool execute();
 };

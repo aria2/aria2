@@ -27,12 +27,13 @@
 #include "message.h"
 #include "prefs.h"
 
-HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e):AbstractCommand(cuid, req, e) {}
+HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
+							     Request* req,
+							     DownloadEngine* e):AbstractCommand(cuid, req, e) {}
 
 HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
 
 bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
-  socket = new Socket();
   // socket->establishConnection(...);
   Command* command;
   if(useProxy()) {

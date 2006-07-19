@@ -27,16 +27,13 @@
 #include "prefs.h"
 
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand(int cuid,
-							     Peer* peer,
+							     const PeerHandle& peer,
 							     TorrentDownloadEngine* e)
   :PeerAbstractCommand(cuid, peer, e) {}
 
 PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand() {}
 
 bool PeerInitiateConnectionCommand::executeInternal() {
-  socket = new Socket();
-  // socket->establishConnection(...);
-
   Command* command;
   logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
 	       peer->port);
@@ -50,10 +47,11 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
   if(e->torrentMan->isPeerAvailable()) {
-    Peer* peer = e->torrentMan->getPeer();
+    PeerHandle peer = e->torrentMan->getPeer();
     int newCuid = e->torrentMan->getNewCuid();
     peer->cuid = newCuid;
-    PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(newCuid, peer, e);
+    PeerInitiateConnectionCommand* command =
+      new PeerInitiateConnectionCommand(newCuid, peer, e);
     e->commands.push_back(command);
   }
   return true;

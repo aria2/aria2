@@ -28,7 +28,7 @@
 #include <netinet/in.h>
 
 PeerConnection::PeerConnection(int cuid,
-			       const Socket* socket,
+			       const SocketHandle& socket,
 			       const Option* op)
   :cuid(cuid),
    socket(socket),

@@ -29,20 +29,22 @@
 #include "Logger.h"
 #include "Option.h"
 
-typedef deque<Socket*> Sockets;
+typedef deque<SocketHandle> Sockets;
 typedef deque<Command*> Commands;
-typedef multimap<Socket*, Command*> SockCmdMap;
+typedef deque<CommandUuid> CommandUuids;
+typedef multimap<SocketHandle, int> SockCmdMap;
 
 class DownloadEngine {
 private:
-  void waitData(Sockets& activeSockets);
-  Sockets rsockets;
-  Sockets wsockets;
-  SockCmdMap sockCmdMap;
-
+  void waitData(CommandUuids& activeCommandUuids);
+  SockCmdMap rsockmap;
+  SockCmdMap wsockmap;
+  
   void shortSleep() const;
-  bool addSocket(Sockets& sockets, Socket* socket, Command* command);
-  bool deleteSocket(Sockets& sockets, Socket* socket);
+  bool addSocket(SockCmdMap& sockmap, const SocketHandle& socket,
+		 const CommandUuid& commandUuid);
+  bool deleteSocket(SockCmdMap& sockmap, const SocketHandle& socket,
+		    const CommandUuid& commandUuid);
 protected:
   const Logger* logger;
   virtual void initStatistics() = 0;
@@ -62,11 +64,32 @@ public:
 
   void cleanQueue();
 
-  bool addSocketForReadCheck(Socket* socket, Command* command);
-  bool deleteSocketForReadCheck(Socket* socket);
-  bool addSocketForWriteCheck(Socket* socket, Command* command);
-  bool deleteSocketForWriteCheck(Socket* socket);
+  bool addSocketForReadCheck(const SocketHandle& socket,
+			     const CommandUuid& commandUuid);
+  bool deleteSocketForReadCheck(const SocketHandle& socket,
+				const CommandUuid& commandUuid);
+  bool addSocketForWriteCheck(const SocketHandle& socket,
+			      const CommandUuid& commandUuid);
+  bool deleteSocketForWriteCheck(const SocketHandle& socket,
+				 const CommandUuid& command);
   
+};
+
+template<class T1, class T2>
+class PairFind {
+private:
+  T1 first;
+  T2 second;
+public:
+  PairFind(T1 t1, T2 t2):first(t1), second(t2) {}
+
+  bool operator()(const pair<T1, T2>& pa) {
+    if(pa.first == first && pa.second == second) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 };
 
 #endif // _D_DOWNLOAD_ENGINE_H_

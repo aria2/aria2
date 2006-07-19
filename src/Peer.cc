@@ -21,7 +21,7 @@
 /* copyright --> */
 #include "Peer.h"
 
-Peer* Peer::nullPeer = new Peer("", 0, 0, 0);
+PeerHandle nullPeer = PeerHandle(new Peer("", 0, 0, 0));
 
 void Peer::updateBitfield(int index, int operation) {
   if(operation == 1) {
@@ -81,4 +81,12 @@ void Peer::setAllBitfield() {
 
 void Peer::updateLatency(int latency) {
   this->latency = (this->latency*20+latency*80)/200;
+}
+
+bool operator==(const Peer& p1, const Peer& p2) {
+  return p1.ipaddr == p2.ipaddr && p1.port == p2.port;
+}
+
+bool operator!=(const Peer& p1, const Peer& p2) {
+  return !(p1 == p2);
 }

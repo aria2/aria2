@@ -11,3 +11,4 @@
 * Refacturing HttpConnection and FtpConnection
 * Query resource by location
 * Log version
+* List available os, version, etc for metalink

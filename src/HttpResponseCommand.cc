@@ -29,8 +29,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-HttpResponseCommand::HttpResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
-  AbstractCommand(cuid, req, e, s) {
+HttpResponseCommand::HttpResponseCommand(int cuid, Request* req,
+					 DownloadEngine* e,
+					 const SocketHandle& s)
+  :AbstractCommand(cuid, req, e, s) {
   http = new HttpConnection(cuid, socket, req, e->option);
 }
 
@@ -154,7 +156,6 @@ bool HttpResponseCommand::handleOtherEncoding(const string& transferEncoding, co
 }
 
 void HttpResponseCommand::createHttpDownloadCommand(const string& transferEncoding) {
-  
   HttpDownloadCommand* command = new HttpDownloadCommand(cuid, req, e, socket);
   TransferEncoding* enc = NULL;
   if(transferEncoding.size() && (enc = command->getTransferEncoding(transferEncoding)) == NULL) {

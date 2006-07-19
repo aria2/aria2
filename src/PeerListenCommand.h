@@ -28,7 +28,7 @@
 class PeerListenCommand : public Command {
 private:
   TorrentDownloadEngine* e;
-  Socket* socket;
+  SocketHandle socket;
 public:
   PeerListenCommand(int cuid, TorrentDownloadEngine* e);
   ~PeerListenCommand();

@@ -57,7 +57,9 @@ protected:
   bool prepareForNextPeer(int wait);
   void onAbort(Exception* ex);
 public:
-  PeerInteractionCommand(int cuid, Peer* peer, TorrentDownloadEngine* e, const Socket* s, int sequence);
+  PeerInteractionCommand(int cuid, const PeerHandle& peer,
+			 TorrentDownloadEngine* e,
+			 const SocketHandle& s, int sequence);
   ~PeerInteractionCommand();
 
   enum Seq {

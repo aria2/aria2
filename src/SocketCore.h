@@ -22,9 +22,9 @@
 #ifndef _D_SOCKET_CORE_H_
 #define _D_SOCKET_CORE_H_
 
+#include "common.h"
 #include <string>
 #include <utility>
-#include "common.h"
 
 #ifdef HAVE_LIBSSL
 // for SSL
@@ -37,7 +37,9 @@
 using namespace std;
 
 class SocketCore {
-  friend class Socket;
+  friend bool operator==(const SocketCore& s1, const SocketCore& s2);
+  friend bool operator!=(const SocketCore& s1, const SocketCore& s2);
+  friend bool operator<(const SocketCore& s1, const SocketCore& s2);
 private:
   // socket endpoint descriptor
   int sockfd;
@@ -67,6 +69,10 @@ private:
 public:
   SocketCore();
   ~SocketCore();
+
+  int getSockfd() const { return sockfd; }
+
+  bool isOpen() const { return sockfd != -1; }
 
   /**
    * Creates a socket and listens form connection on it.
@@ -143,6 +149,7 @@ public:
    * @param len length of data
    */
   void writeData(const char* data, int len);
+  void writeData(const string& msg) { writeData(msg.c_str(), msg.size()); }
 
   /**
    * Reads up to len bytes from this socket.
@@ -176,5 +183,4 @@ public:
    */
   void initiateSecureConnection() ;
 };
-
 #endif // _D_SOCKET_CORE_H_

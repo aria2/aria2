@@ -24,6 +24,7 @@
 
 #include "common.h"
 #include "BitfieldMan.h"
+#include "SharedHandle.h"
 #include <string.h>
 #include <string>
 
@@ -33,6 +34,8 @@ using namespace std;
 #define DEFAULT_LATENCY 1500
 
 class Peer {
+  friend bool operator==(const Peer& p1, const Peer& p2);
+  friend bool operator!=(const Peer& p1, const Peer& p2);
 public:
   int entryId;
   string ipaddr;
@@ -60,20 +63,18 @@ private:
   int deltaDownload;
   int latency;
 public:
-  Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
-    entryId(0), ipaddr(ipaddr), port(port),
-    amChoking(true), amInterested(false),
-    peerChoking(true), peerInterested(false),
-    tryCount(0), error(0), cuid(0),
-    chokingRequired(true), optUnchoking(false),
-    snubbing(false),
-    bitfield(NULL),
-    fastExtensionEnabled(false),
-    peerUpload(0), peerDownload(0),
-    pieceLength(pieceLength),
-    deltaUpload(0), deltaDownload(0),
-    latency(DEFAULT_LATENCY) {
+  Peer(string ipaddr, int port, int pieceLength, long long int totalLength)
+    :entryId(0), ipaddr(ipaddr), port(port), error(0),
+     peerUpload(0), peerDownload(0), pieceLength(pieceLength)
+  {
+    resetStatus();
     this->bitfield = new BitfieldMan(pieceLength, totalLength);
+  }
+
+  Peer():entryId(0), ipaddr(""), port(0), bitfield(0),
+	 peerUpload(0), peerDownload(0), pieceLength(0)
+  {
+    resetStatus();
   }
 
   ~Peer() {
@@ -146,8 +147,11 @@ public:
 
   void updateLatency(int latency);
   int getLatency() const { return latency; }
-
-  static Peer* nullPeer;
 };
+
+bool operator==(const Peer& p1, const Peer& p2);
+bool operator!=(const Peer& p1, const Peer& p2);
+
+typedef SharedHandle<Peer> PeerHandle;
 
 #endif // _D_PEER_H_

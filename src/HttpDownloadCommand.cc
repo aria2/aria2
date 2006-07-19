@@ -33,8 +33,8 @@ using namespace std;
 
 HttpDownloadCommand::HttpDownloadCommand(int cuid, Request* req,
 					 DownloadEngine* e,
-					 const Socket* socket):
-  DownloadCommand(cuid, req, e, socket)
+					 const SocketHandle& socket)
+  :DownloadCommand(cuid, req, e, socket)
 {
   ChunkedEncoding* ce = new ChunkedEncoding();
   transferEncodings["chunked"] = ce;

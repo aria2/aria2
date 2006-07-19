@@ -44,7 +44,6 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
     }
   }
 
-  socket = new Socket();
   Command* command;
   if(useHttpProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,

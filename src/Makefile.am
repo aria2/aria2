@@ -1,8 +1,8 @@
 bin_PROGRAMS = aria2c
 aria2c_SOURCES = main.cc
-SRCS =  Socket.cc Socket.h\
+SRCS =  Socket.h\
 	SocketCore.cc SocketCore.h\
-	Command.h\
+	Command.cc Command.h\
 	AbstractCommand.cc AbstractCommand.h\
 	InitiateConnectionCommandFactory.cc InitiateConnectionCommandFactory.h\
 	DownloadCommand.cc DownloadCommand.h\
@@ -104,7 +104,8 @@ SRCS += MetaEntry.h\
 	RejectMessage.cc RejectMessage.h\
 	AllowedFastMessage.cc AllowedFastMessage.h\
 	SuggestPieceMessage.cc SuggestPieceMessage.h\
-	SimplePeerMessage.cc SimplePeerMessage.h
+	SimplePeerMessage.cc SimplePeerMessage.h\
+	SharedHandle.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

@@ -456,3 +456,14 @@ void SocketCore::initiateSecureConnection() {
 #endif // HAVE_LIBGNUTLS
 }
 
+bool operator==(const SocketCore& s1, const SocketCore& s2) {
+  return s1.sockfd == s2.sockfd;
+}
+
+bool operator!=(const SocketCore& s1, const SocketCore& s2) {
+  return s1.sockfd != s2.sockfd;
+}
+
+bool operator<(const SocketCore& s1, const SocketCore& s2) {
+  return s1.sockfd < s2.sockfd;
+}

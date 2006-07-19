@@ -23,8 +23,11 @@
 #include "HttpResponseCommand.h"
 #include "HttpConnection.h"
 
-HttpRequestCommand::HttpRequestCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s) {
-  setReadCheckSocket(NULL);
+HttpRequestCommand::HttpRequestCommand(int cuid, Request* req,
+				       DownloadEngine* e,
+				       const SocketHandle& s)
+  :AbstractCommand(cuid, req, e, s) {
+  disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
 

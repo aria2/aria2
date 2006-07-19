@@ -22,6 +22,7 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "HttpInitiateConnectionCommand.h"
 #include "FtpInitiateConnectionCommand.h"
+#include "DlAbortEx.h"
 
 Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e) {
   if(req->getProtocol() == "http"
@@ -35,6 +36,6 @@ Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int c
     return new FtpInitiateConnectionCommand(cuid, req, e);
   } else {
     // these protocols are not supported yet
-    return NULL;
+    throw new DlAbortEx("%s is not supported yet.", req->getProtocol().c_str());
   }
 }

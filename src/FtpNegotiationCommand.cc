@@ -26,22 +26,17 @@
 #include "message.h"
 #include "prefs.h"
 
-FtpNegotiationCommand::FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
-  AbstractCommand(cuid, req, e, s),
-  dataSocket(NULL), serverSocket(NULL), sequence(SEQ_RECV_GREETING)
+FtpNegotiationCommand::FtpNegotiationCommand(int cuid, Request* req,
+					     DownloadEngine* e,
+					     const SocketHandle& s):
+  AbstractCommand(cuid, req, e, s), sequence(SEQ_RECV_GREETING)
 {
   ftp = new FtpConnection(cuid, socket, req, e->option);
-  setReadCheckSocket(NULL);
+  disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
 
 FtpNegotiationCommand::~FtpNegotiationCommand() {
-  if(dataSocket != NULL) {
-    delete dataSocket;
-  }
-  if(serverSocket != NULL) {
-    delete serverSocket;
-  }
   delete ftp;
 }
 
@@ -50,7 +45,8 @@ bool FtpNegotiationCommand::executeInternal(Segment segment) {
   if(sequence == SEQ_RETRY) {
     return prepareForRetry(0);
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
-    FtpDownloadCommand* command = new FtpDownloadCommand(cuid, req, e, dataSocket, socket);
+    FtpDownloadCommand* command =
+      new FtpDownloadCommand(cuid, req, e, dataSocket, socket);
     e->commands.push_back(command);
     return true;
   } else {
@@ -71,7 +67,7 @@ bool FtpNegotiationCommand::recvGreeting() {
   sequence = SEQ_SEND_USER;
 
   setReadCheckSocket(socket);
-  setWriteCheckSocket(NULL);
+  disableWriteCheckSocket();
 
   return true;
 }
@@ -219,14 +215,12 @@ bool FtpNegotiationCommand::recvPasv() {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
   // make a data connection to the server.
-  dataSocket = new Socket();
-
   logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 	       dest.first.c_str(),
 	       dest.second);
   dataSocket->establishConnection(dest.first, dest.second);
 
-  setReadCheckSocket(NULL);
+  disableReadCheckSocket();
   setWriteCheckSocket(dataSocket);
 
   sequence = SEQ_SEND_REST_PASV;
@@ -236,7 +230,7 @@ bool FtpNegotiationCommand::recvPasv() {
 bool FtpNegotiationCommand::sendRestPasv(const Segment& segment) {
   dataSocket->setBlockingMode();
   setReadCheckSocket(socket);
-  setWriteCheckSocket(NULL);
+  disableWriteCheckSocket();
   return sendRest(segment);
 }
 
@@ -274,7 +268,7 @@ bool FtpNegotiationCommand::recvRetr() {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
   if(e->option->get(PREF_FTP_PASV_ENABLED) != V_TRUE) {
-    assert(serverSocket);
+    assert(serverSocket->getSockfd() != -1);
     dataSocket = serverSocket->acceptConnection();
   }
   sequence = SEQ_NEGOTIATION_COMPLETED;

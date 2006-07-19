@@ -24,7 +24,10 @@
 #include "DlRetryEx.h"
 #include "message.h"
 
-FtpTunnelResponseCommand::FtpTunnelResponseCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s) {
+FtpTunnelResponseCommand::FtpTunnelResponseCommand(int cuid, Request* req,
+						   DownloadEngine* e,
+						   const SocketHandle& s)
+  :AbstractCommand(cuid, req, e, s) {
   http = new HttpConnection(cuid, socket, req, e->option);
 }
 
@@ -43,7 +46,8 @@ bool FtpTunnelResponseCommand::executeInternal(Segment segment) {
   if(status != 200) {
     throw new DlRetryEx(EX_PROXY_CONNECTION_FAILED);
   }
-  FtpNegotiationCommand* command = new FtpNegotiationCommand(cuid, req, e, socket);
+  FtpNegotiationCommand* command
+    = new FtpNegotiationCommand(cuid, req, e, socket);
   e->commands.push_back(command);
   return true;
 }

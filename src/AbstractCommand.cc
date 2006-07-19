@@ -28,24 +28,18 @@
 #include "SleepCommand.h"
 #include "prefs.h"
 
-AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):
-  Command(cuid), req(req), e(e), checkSocketIsReadable(false), checkSocketIsWritable(false) {
-
-  if(s != NULL) {
-    socket = new Socket(*s);
-    setReadCheckSocket(socket);
-  } else {
-    socket = NULL;
-  }
+AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e,
+				 const SocketHandle& s):
+  Command(cuid), req(req), e(e), socket(s),
+  checkSocketIsReadable(false), checkSocketIsWritable(false) {
+  
+  setReadCheckSocket(socket);
   timeout = this->e->option->getAsInt(PREF_TIMEOUT);
 }
 
 AbstractCommand::~AbstractCommand() {
-  setReadCheckSocket(NULL);
-  setWriteCheckSocket(NULL);
-  if(socket != NULL) {
-    delete(socket);
-  }
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
 }
 
 bool AbstractCommand::execute() {
@@ -124,44 +118,52 @@ void AbstractCommand::onAbort(Exception* ex) {
   e->segmentMan->unregisterId(cuid);
 }
 
-void AbstractCommand::setReadCheckSocket(Socket* socket) {
-  if(socket == NULL) {
-    if(checkSocketIsReadable) {
-      e->deleteSocketForReadCheck(readCheckTarget);
-      checkSocketIsReadable = false;
-      readCheckTarget = NULL;
-    }
+void AbstractCommand::disableReadCheckSocket() {
+  if(checkSocketIsReadable) {
+    e->deleteSocketForReadCheck(readCheckTarget, getUuid());
+    checkSocketIsReadable = false;
+    readCheckTarget = SocketHandle();
+  }  
+}
+
+void AbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
+  if(!socket->isOpen()) {
+    disableReadCheckSocket();
   } else {
     if(checkSocketIsReadable) {
       if(readCheckTarget != socket) {
-	e->deleteSocketForReadCheck(readCheckTarget);
-	e->addSocketForReadCheck(socket, this);
+	e->deleteSocketForReadCheck(readCheckTarget, getUuid());
+	e->addSocketForReadCheck(socket, getUuid());
 	readCheckTarget = socket;
       }
     } else {
-      e->addSocketForReadCheck(socket, this);
+      e->addSocketForReadCheck(socket, getUuid());
       checkSocketIsReadable = true;
       readCheckTarget = socket;
     }
   }
 }
 
-void AbstractCommand::setWriteCheckSocket(Socket* socket) {
-  if(socket == NULL) {
-    if(checkSocketIsWritable) {
-      e->deleteSocketForWriteCheck(writeCheckTarget);
-      checkSocketIsWritable = false;
-      writeCheckTarget = NULL;
-    }
+void AbstractCommand::disableWriteCheckSocket() {
+  if(checkSocketIsWritable) {
+    e->deleteSocketForWriteCheck(writeCheckTarget, getUuid());
+    checkSocketIsWritable = false;
+    writeCheckTarget = SocketHandle();
+  }
+}
+
+void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
+  if(!socket->isOpen()) {
+    disableWriteCheckSocket();
   } else {
     if(checkSocketIsWritable) {
       if(writeCheckTarget != socket) {
-	e->deleteSocketForWriteCheck(writeCheckTarget);
-	e->addSocketForWriteCheck(socket, this);
+	e->deleteSocketForWriteCheck(writeCheckTarget, getUuid());
+	e->addSocketForWriteCheck(socket, getUuid());
 	writeCheckTarget = socket;
       }
     } else {
-      e->addSocketForWriteCheck(socket, this);
+      e->addSocketForWriteCheck(socket, getUuid());
       checkSocketIsWritable = true;
       writeCheckTarget = socket;
     }

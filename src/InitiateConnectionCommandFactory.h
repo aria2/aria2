@@ -28,7 +28,8 @@
 
 class InitiateConnectionCommandFactory {
 public:
-  static Command* createInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
+  static Command* createInitiateConnectionCommand(int cuid, Request* req, 
+						  DownloadEngine* e);
 };
 
 #endif // _D_INITIATE_CONNECTION_COMMAND_FACTORY_H_

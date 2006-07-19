@@ -46,14 +46,15 @@ private:
   bool useProxyGet() const;
   string getProxyAuthString() const;
   int cuid;
-  const Socket* socket;
+  SocketHandle socket;
   const Request* req;
   const Option* option;
   const Logger* logger;
   char headerBuf[HEADERBUF_SIZE+1];
   int headerBufLength;
 public:
-  HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op);
+  HttpConnection(int cuid, const SocketHandle& socket, const Request* req,
+		 const Option* op);
 
   /**
    * Sends Http request.

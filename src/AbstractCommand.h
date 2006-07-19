@@ -35,23 +35,25 @@ private:
 protected:
   Request* req;
   DownloadEngine* e;
-  Socket* socket;
+  SocketHandle socket;
 
   void tryReserved();
   virtual bool prepareForRetry(int wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal(Segment segment) = 0;
 
-  void setReadCheckSocket(Socket* socket);
-  void setWriteCheckSocket(Socket* socket);
+  void setReadCheckSocket(const SocketHandle& socket);
+  void setWriteCheckSocket(const SocketHandle& socket);
+  void disableReadCheckSocket();
+  void disableWriteCheckSocket();
   void setTimeout(int timeout) { this->timeout = timeout; }
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
-  Socket* readCheckTarget;
-  Socket* writeCheckTarget;
+  SocketHandle readCheckTarget;
+  SocketHandle writeCheckTarget;
 public:
-  AbstractCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s= NULL);
+  AbstractCommand(int cuid, Request* req, DownloadEngine* e, const SocketHandle& s = SocketHandle());
   virtual ~AbstractCommand();
   bool execute();
 };

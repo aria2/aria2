@@ -870,16 +870,17 @@ int main(int argc, char* argv[]) {
       }
       te->torrentMan->setPort(port);
       te->commands.push_back(listenCommand);
+
       te->commands.push_back(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
 						       te,
 						       te->torrentMan->minInterval));
       te->commands.push_back(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
-						 te));
+						      te));
       te->commands.push_back(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
-						   te,
-						   op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+							te,
+							op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
       te->commands.push_back(new PeerChokeCommand(te->torrentMan->getNewCuid(),
-					     10, te));
+						  10, te));
       te->run();
       
       if(te->torrentMan->downloadComplete()) {

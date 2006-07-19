@@ -25,18 +25,24 @@
 #include "common.h"
 #include "LogFactory.h"
 
+typedef int CommandUuid;
+
 class Command {
+private:
+  CommandUuid uuid;
+  static int uuidGen;
 protected:
   int cuid;
   const Logger* logger;
 public:
-  Command(int cuid):cuid(cuid) {
+  Command(int cuid):uuid(uuidGen++), cuid(cuid) {
     logger = LogFactory::getInstance();
   }
   virtual ~Command() {}
   virtual bool execute() = 0;
 
   int getCuid() const { return cuid; }
+  const CommandUuid& getUuid() const { return uuid; }
 };
 
 #endif // _D_COMMAND_H_

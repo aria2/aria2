@@ -27,7 +27,9 @@
 #include "prefs.h"
 #include "LogFactory.h"
 
-FtpConnection::FtpConnection(int cuid, const Socket* socket, const Request* req, const Option* op):cuid(cuid), socket(socket), req(req), option(op) {
+FtpConnection::FtpConnection(int cuid, const SocketHandle& socket,
+			     const Request* req, const Option* op)
+  :cuid(cuid), socket(socket), req(req), option(op) {
   logger = LogFactory::getInstance();
 }
 
@@ -75,27 +77,22 @@ void FtpConnection::sendPasv() const {
   socket->writeData(request);
 }
 
-Socket* FtpConnection::sendPort() const {
-  Socket* serverSocket = new Socket();
-  try {
-    serverSocket->beginListen();
-
-    pair<string, int> addrinfo;
-    socket->getAddrInfo(addrinfo);
-    int ipaddr[4]; 
-    sscanf(addrinfo.first.c_str(), "%d.%d.%d.%d",
-	   &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
-    serverSocket->getAddrInfo(addrinfo);
-    string request = "PORT "+
-      Util::itos(ipaddr[0])+","+Util::itos(ipaddr[1])+","+
-      Util::itos(ipaddr[2])+","+Util::itos(ipaddr[3])+","+
-      Util::itos(addrinfo.second/256)+","+Util::itos(addrinfo.second%256)+"\r\n";
-    logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
-    socket->writeData(request);
-  } catch (Exception* ex) {
-    delete serverSocket;
-    throw;
-  }
+SocketHandle FtpConnection::sendPort() const {
+  SocketHandle serverSocket;
+  serverSocket->beginListen();
+  
+  pair<string, int> addrinfo;
+  socket->getAddrInfo(addrinfo);
+  int ipaddr[4]; 
+  sscanf(addrinfo.first.c_str(), "%d.%d.%d.%d",
+	 &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
+  serverSocket->getAddrInfo(addrinfo);
+  string request = "PORT "+
+    Util::itos(ipaddr[0])+","+Util::itos(ipaddr[1])+","+
+    Util::itos(ipaddr[2])+","+Util::itos(ipaddr[3])+","+
+    Util::itos(addrinfo.second/256)+","+Util::itos(addrinfo.second%256)+"\r\n";
+  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+  socket->writeData(request);
   return serverSocket;
 }
 

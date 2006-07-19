@@ -27,7 +27,8 @@
 #include "prefs.h"
 #include "LogFactory.h"
 
-HttpConnection::HttpConnection(int cuid, const Socket* socket, const Request* req, const Option* op):
+HttpConnection::HttpConnection(int cuid, const SocketHandle& socket,
+			       const Request* req, const Option* op):
   cuid(cuid), socket(socket), req(req), option(op), headerBufLength(0) {
   logger = LogFactory::getInstance();
 }

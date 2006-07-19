@@ -47,10 +47,26 @@ void DownloadEngine::cleanQueue() {
   commands.clear();
 }
 
+
+class FindCommand {
+private:
+  CommandUuid uuid;
+public:
+  FindCommand(const CommandUuid& uuid):uuid(uuid) {}
+
+  bool operator()(const Command* command) {
+    if(command->getUuid() == uuid) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+};
+
 void DownloadEngine::run() {
   initStatistics();
   Time cp;
-  Sockets activeSockets;
+  CommandUuids activeCommandUuids;
   while(!commands.empty()) {
     if(cp.elapsed(1)) {
       cp.reset();
@@ -59,27 +75,26 @@ void DownloadEngine::run() {
 	Command* com = commands.front();
 	commands.pop_front();
 	if(com->execute()) {
-	  delete(com);
+	  delete com;
 	}
       }
     } else {
-      for(Sockets::iterator itr = activeSockets.begin();
-	  itr != activeSockets.end(); itr++) {
-	Socket* socket = *itr;
-	SockCmdMap::iterator mapItr = sockCmdMap.find(socket);
-	if(mapItr != sockCmdMap.end()) {
-	  Command* com = (*mapItr).second;
-	  commands.erase(remove(commands.begin(), commands.end(), com));
-	  if(com->execute()) {
-	    delete(com);
-	  }
+      for(CommandUuids::iterator itr = activeCommandUuids.begin();
+	  itr != activeCommandUuids.end(); itr++) {
+	Commands::iterator comItr = find_if(commands.begin(), commands.end(),
+					    FindCommand(*itr));
+	assert(comItr != commands.end());
+	Command* com = *comItr;
+	commands.erase(comItr);
+	if(com->execute()) {
+	  delete com;
 	}
       }
     }
     afterEachIteration();
-    activeSockets.clear();
+    activeCommandUuids.clear();
     if(!noWait && !commands.empty()) {
-      waitData(activeSockets);
+      waitData(activeCommandUuids);
     }
     noWait = false;
     calculateStatistics();
@@ -96,7 +111,40 @@ void DownloadEngine::shortSleep() const {
   select(0, &rfds, NULL, NULL, &tv);
 }
 
-void DownloadEngine::waitData(Sockets& activeSockets) {
+class SetDescriptor {
+private:
+  fd_set* fds_ptr;
+  int* max_ptr;
+public:
+  SetDescriptor(int* max_ptr, fd_set* fds_ptr)
+    :fds_ptr(fds_ptr), max_ptr(max_ptr) {}
+
+  void operator()(const pair<SocketHandle, CommandUuid>& pa) {
+    int fd = pa.first->getSockfd();
+    FD_SET(fd, fds_ptr);
+    if(*max_ptr < fd) {
+      *max_ptr = fd;
+    }
+  }
+};
+
+class AccumulateActiveCommandUuid {
+private:
+  CommandUuids* activeCommandUuids_ptr;
+  fd_set* fds_ptr;
+public:
+  AccumulateActiveCommandUuid(CommandUuids* activeCommandUuids_ptr,
+			      fd_set* fds_ptr)
+    :activeCommandUuids_ptr(activeCommandUuids_ptr), fds_ptr(fds_ptr) {}
+
+  void operator()(const pair<SocketHandle, CommandUuid>& pa) {
+    if(FD_ISSET(pa.first->getSockfd(), fds_ptr)) {
+      activeCommandUuids_ptr->push_back(pa.second);
+    }
+  }
+};
+
+void DownloadEngine::waitData(CommandUuids& activeCommandUuids) {
   fd_set rfds;
   fd_set wfds;
   int retval = 0;
@@ -106,18 +154,9 @@ void DownloadEngine::waitData(Sockets& activeSockets) {
     FD_ZERO(&rfds);
     FD_ZERO(&wfds);
     int max = 0;
-    for(Sockets::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
-      FD_SET((*itr)->getSockfd(), &rfds);
-      if(max < (*itr)->getSockfd()) {
-	max = (*itr)->getSockfd();
-      }
-    }
-    for(Sockets::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
-      FD_SET((*itr)->getSockfd(), &wfds);
-      if(max < (*itr)->getSockfd()) {
-	max = (*itr)->getSockfd();
-      }
-    }
+    for_each(rsockmap.begin(), rsockmap.end(), SetDescriptor(&max, &rfds));
+    for_each(wsockmap.begin(), wsockmap.end(), SetDescriptor(&max, &wfds));
+
     tv.tv_sec = 1;
     tv.tv_usec = 0;
     retval = select(max+1, &rfds, &wfds, NULL, &tv);
@@ -126,64 +165,60 @@ void DownloadEngine::waitData(Sockets& activeSockets) {
     }
   }
   if(retval > 0) {
-    for(Sockets::iterator itr = rsockets.begin(); itr != rsockets.end(); itr++) {
-      if(FD_ISSET((*itr)->getSockfd(), &rfds)) {
-	activeSockets.push_back(*itr);
-      }
-    }
-    for(Sockets::iterator itr = wsockets.begin(); itr != wsockets.end(); itr++) {
-      if(FD_ISSET((*itr)->getSockfd(), &wfds)) {
-	activeSockets.push_back(*itr);
-      }
-    }
-    sort(activeSockets.begin(), activeSockets.end());
-    activeSockets.erase(unique(activeSockets.begin(), activeSockets.end()), activeSockets.end());
+    for_each(rsockmap.begin(), rsockmap.end(),
+	     AccumulateActiveCommandUuid(&activeCommandUuids, &rfds));
+    for_each(wsockmap.begin(), wsockmap.end(),
+	     AccumulateActiveCommandUuid(&activeCommandUuids, &wfds));
+    sort(activeCommandUuids.begin(), activeCommandUuids.end());
+    activeCommandUuids.erase(unique(activeCommandUuids.begin(),
+				activeCommandUuids.end()),
+			 activeCommandUuids.end());
   }
 }
 
-bool DownloadEngine::addSocket(Sockets& sockets, Socket* socket, Command* command) {
-  Sockets::iterator itr = find(sockets.begin(),
-			       sockets.end(),
-			       socket);
-  if(itr == sockets.end()) {
-    sockets.push_back(socket);
-    SockCmdMap::value_type vt(socket, command);
-    sockCmdMap.insert(vt);
+bool DownloadEngine::addSocket(SockCmdMap& sockmap,
+			       const SocketHandle& socket,
+			       const CommandUuid& commandUuid) {
+  SockCmdMap::iterator itr = find_if(sockmap.begin(), sockmap.end(),
+				     PairFind<SocketHandle, CommandUuid>(socket, commandUuid));
+  if(itr == sockmap.end()) {
+    SockCmdMap::value_type vt(socket, commandUuid);
+    sockmap.insert(vt);
     return true;
   } else {
     return false;
   }
 }
 
-bool DownloadEngine::deleteSocket(Sockets& sockets, Socket* socket) {
-  Sockets::iterator itr = find(sockets.begin(),
-			       sockets.end(),
-			       socket);
-  if(itr != sockets.end()) {
-    sockets.erase(itr);
-    SockCmdMap::iterator mapItr = sockCmdMap.find(socket);
-    if(mapItr != sockCmdMap.end()) {
-      sockCmdMap.erase(mapItr);
-    }
-    return true;
-  } else {
+bool DownloadEngine::deleteSocket(SockCmdMap& sockmap,
+				  const SocketHandle& socket,
+				  const CommandUuid& commandUuid) {
+  SockCmdMap::iterator itr = find_if(sockmap.begin(), sockmap.end(),
+				     PairFind<SocketHandle, CommandUuid>(socket, commandUuid));
+  if(itr == sockmap.end()) {
     return false;
+  } else {
+    sockmap.erase(itr);
+    return true;
   }
 }
 
-bool DownloadEngine::addSocketForReadCheck(Socket* socket, Command* command) {
-  return addSocket(rsockets, socket, command);
+bool DownloadEngine::addSocketForReadCheck(const SocketHandle& socket,
+					   const CommandUuid& commandUuid) {
+  return addSocket(rsockmap, socket, commandUuid);
 }
 
-bool DownloadEngine::deleteSocketForReadCheck(Socket* socket) {
-  return deleteSocket(rsockets , socket);
+bool DownloadEngine::deleteSocketForReadCheck(const SocketHandle& socket,
+					      const CommandUuid& commandUuid) {
+  return deleteSocket(rsockmap, socket, commandUuid);
 }
 
-bool DownloadEngine::addSocketForWriteCheck(Socket* socket, Command* command) {
-  return addSocket(wsockets, socket, command);
+bool DownloadEngine::addSocketForWriteCheck(const SocketHandle& socket,
+					    const CommandUuid& commandUuid) {
+  return addSocket(wsockmap, socket, commandUuid);
 }
 
-bool DownloadEngine::deleteSocketForWriteCheck(Socket* socket) {
-  return deleteSocket(wsockets, socket);
+bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
+					       const CommandUuid& commandUuid) {
+  return deleteSocket(wsockmap, socket, commandUuid);
 }
-

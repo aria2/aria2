@@ -46,7 +46,7 @@ using namespace std;
 #define DEFAULT_ANNOUNCE_INTERVAL 1800
 #define DEFAULT_ANNOUNCE_MIN_INTERVAL 1800
 #define MAX_PEERS 55
-#define MAX_PEER_UPDATE 15
+#define MIN_PEERS 15
 #define MAX_PEER_LIST_SIZE 250
 #define END_GAME_PIECE_NUM 20
 #define MAX_PEER_ERROR 5
@@ -61,7 +61,7 @@ public:
     index(index) {}
 };
 
-typedef deque<Peer*> Peers;
+typedef deque<PeerHandle> Peers;
 typedef deque<HaveEntry> Haves;
 typedef deque<int> PieceIndexes;
 typedef deque<Piece> Pieces;
@@ -133,18 +133,18 @@ public:
 
   // TODO do not use this method
   void updatePeers(const Peers& peers);
-  bool addPeer(Peer* peer, bool duplicate = false);
+  bool addPeer(const PeerHandle& peer);
   //void updatePeer(const Peer* peer);
   const Peers& getPeers() const { return peers; }
-  Peer* getPeer() const;
+  PeerHandle getPeer() const;
   bool isPeerAvailable() const;
-  void deleteOldErrorPeers();
+  void deleteErrorPeer();
 
-  bool hasMissingPiece(const Peer* peer) const;
-  int getMissingPieceIndex(const Peer* peer) const;
-  int getMissingFastPieceIndex(const Peer* peer) const;
-  Piece getMissingPiece(const Peer* peer);
-  Piece getMissingFastPiece(const Peer* peer);
+  bool hasMissingPiece(const PeerHandle& peer) const;
+  int getMissingPieceIndex(const PeerHandle& peer) const;
+  int getMissingFastPieceIndex(const PeerHandle& peer) const;
+  Piece getMissingPiece(const PeerHandle& peer);
+  Piece getMissingFastPiece(const PeerHandle& peer);
   void completePiece(const Piece& piece);
   void cancelPiece(const Piece& piece);
   void updatePiece(const Piece& piece);
@@ -246,15 +246,17 @@ public:
 
   void onDownloadComplete();
 
-  void addActivePeer(Peer* peer) {
+  void addActivePeer(const PeerHandle& peer) {
     activePeers.push_back(peer);
   }
 
   Peers& getActivePeers() { return this->activePeers; }
 
-  void deleteActivePeer(Peer* peer) {
+  void deleteActivePeer(const PeerHandle& peer) {
     Peers::iterator itr = find(activePeers.begin(), activePeers.end(), peer);
-    activePeers.erase(itr);
+    if(itr != activePeers.end()) {
+      activePeers.erase(itr);
+    }
   }
 
   bool isHalt() const { return halt; }

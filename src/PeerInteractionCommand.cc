@@ -28,28 +28,30 @@
 #include "prefs.h"
 #include <algorithm>
 
-PeerInteractionCommand::PeerInteractionCommand(int cuid, Peer* peer,
+PeerInteractionCommand::PeerInteractionCommand(int cuid,
+					       const PeerHandle& p,
 					       TorrentDownloadEngine* e,
-					       const Socket* s, int sequence)
-  :PeerAbstractCommand(cuid, peer, e, s), sequence(sequence) {
+					       const SocketHandle& s,
+					       int sequence)
+  :PeerAbstractCommand(cuid, p, e, s), sequence(sequence) {
   if(sequence == INITIATOR_SEND_HANDSHAKE) {
-    setReadCheckSocket(NULL);
+    disableReadCheckSocket();
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
-  peerInteraction = new PeerInteraction(cuid, socket, e->option,
-					e->torrentMan, this->peer);
+  peerInteraction = new PeerInteraction(cuid, peer, socket, e->option,
+					e->torrentMan);
   peerInteraction->setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   chokeUnchokeCount = 0;
   haveCount = 0;
   keepAliveCount = 0;
-  e->torrentMan->addActivePeer(this->peer);
+  e->torrentMan->addActivePeer(peer);
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
   delete peerInteraction;
-  e->torrentMan->deleteActivePeer(this->peer);
+  e->torrentMan->deleteActivePeer(peer);
 }
 
 bool PeerInteractionCommand::executeInternal() {
@@ -58,7 +60,7 @@ bool PeerInteractionCommand::executeInternal() {
     setReadCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_TIMEOUT));
   }
-  setWriteCheckSocket(NULL);
+  disableWriteCheckSocket();
   setUploadLimitCheck(false);
 
   switch(sequence) {
@@ -73,15 +75,15 @@ bool PeerInteractionCommand::executeInternal() {
 	break;
       }
     }
-    HandshakeMessage* handshakeMessage = peerInteraction->receiveHandshake();
-    if(handshakeMessage == NULL) {
+    HandshakeMessageHandle handshakeMessage =
+      peerInteraction->receiveHandshake();
+    if(handshakeMessage.get() == NULL) {
       break;
     }
     peer->setPeerId(handshakeMessage->peerId);
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
-    delete handshakeMessage;
     haveCheckTime.reset();
     peerInteraction->sendBitfield();
     peerInteraction->sendAllowedFast();
@@ -89,16 +91,15 @@ bool PeerInteractionCommand::executeInternal() {
     break;
   }
   case RECEIVER_WAIT_HANDSHAKE: {
-    HandshakeMessage* handshakeMessage =
+    HandshakeMessageHandle handshakeMessage =
       peerInteraction->receiveHandshake(true);
-    if(handshakeMessage == NULL) {
+    if(handshakeMessage.get() == NULL) {
       break;
     }
     peer->setPeerId(handshakeMessage->peerId);
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
-    delete handshakeMessage;
     haveCheckTime.reset();
     peerInteraction->sendBitfield();
     peerInteraction->sendAllowedFast();
@@ -174,8 +175,8 @@ void PeerInteractionCommand::decideChoking() {
 
 void PeerInteractionCommand::receiveMessages() {
   for(int i = 0; i < 50; i++) {
-    PeerMessage* message = peerInteraction->receiveMessage();
-    if(message == NULL) {
+    PeerMessageHandle message = peerInteraction->receiveMessage();
+    if(message.get() == NULL) {
       return;
     }
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
@@ -200,23 +201,18 @@ void PeerInteractionCommand::receiveMessages() {
       haveCount++;
       break;
     }
-    try {
-      message->receivedAction();
-      delete message;
-    } catch(Exception* ex) {
-      delete message;
-      throw;
-    }
+    message->receivedAction();
   }
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInteractionCommand::prepareForNextPeer(int wait) {
   if(e->torrentMan->isPeerAvailable()) {
-    Peer* peer = e->torrentMan->getPeer();
+    PeerHandle peer = e->torrentMan->getPeer();
     int newCuid = e->torrentMan->getNewCuid();
     peer->cuid = newCuid;
-    PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(newCuid, peer, e);
+    PeerInitiateConnectionCommand* command =
+      new PeerInitiateConnectionCommand(newCuid, peer, e);
     e->commands.push_back(command);
   }
   return true;

@@ -23,9 +23,12 @@
 #include "FtpTunnelResponseCommand.h"
 #include "HttpConnection.h"
 
-FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid, Request* req, DownloadEngine* e, const Socket* s):AbstractCommand(cuid, req, e, s) {
-  setReadCheckSocket(NULL);
-  setWriteCheckSocket(NULL);
+FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid, Request* req,
+						 DownloadEngine* e,
+						 const SocketHandle& s)
+  :AbstractCommand(cuid, req, e, s) {
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
 }
 
 FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
@@ -35,7 +38,8 @@ bool FtpTunnelRequestCommand::executeInternal(Segment segment) {
   HttpConnection httpConnection(cuid, socket, req, e->option);
   httpConnection.sendProxyRequest();
 
-  FtpTunnelResponseCommand* command = new FtpTunnelResponseCommand(cuid, req, e, socket);
+  FtpTunnelResponseCommand* command
+    = new FtpTunnelResponseCommand(cuid, req, e, socket);
   e->commands.push_back(command);
   return true;
 }
