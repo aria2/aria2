@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-07-04 20:44+0900\n"
+"POT-Creation-Date: 2006-07-21 00:57+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -692,82 +692,82 @@ msgstr ""
 msgid "Report bugs to %s"
 msgstr ""
 
-#: src/main.cc:444
+#: src/main.cc:446
 msgid "unrecognized proxy format"
 msgstr ""
 
-#: src/main.cc:471
+#: src/main.cc:473
 msgid "Currently, supported authentication scheme is basic."
 msgstr ""
 
-#: src/main.cc:480
+#: src/main.cc:482
 msgid "retry-wait must be between 0 and 60."
 msgstr ""
 
-#: src/main.cc:497
+#: src/main.cc:499
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr ""
 
-#: src/main.cc:506
+#: src/main.cc:508
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:524
+#: src/main.cc:526
 msgid "min-segment-size invalid"
 msgstr ""
 
-#: src/main.cc:535
+#: src/main.cc:537
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:543
+#: src/main.cc:545
 msgid "listen-port must be between 1024 and 65535."
 msgstr ""
 
-#: src/main.cc:554
+#: src/main.cc:556
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:568
+#: src/main.cc:570
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:576
+#: src/main.cc:578
 msgid "upload-limit must be greater than or equal to 0."
 msgstr ""
 
-#: src/main.cc:601
+#: src/main.cc:603
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:628
+#: src/main.cc:630
 msgid "split must be between 1 and 5."
 msgstr ""
 
-#: src/main.cc:638
+#: src/main.cc:640
 msgid "timeout must be between 1 and 600"
 msgstr ""
 
-#: src/main.cc:647
+#: src/main.cc:649
 msgid "max-tries invalid"
 msgstr ""
 
-#: src/main.cc:669
+#: src/main.cc:671
 msgid "metalink-servers must be greater than 0."
 msgstr ""
 
-#: src/main.cc:687
+#: src/main.cc:689
 msgid "specify at least one URL"
 msgstr ""
 
-#: src/main.cc:694
+#: src/main.cc:696
 msgid "daemon failed"
 msgstr ""
 
-#: src/main.cc:833
+#: src/main.cc:837
 msgid "Files:"
 msgstr ""
 
-#: src/main.cc:864
+#: src/main.cc:868
 msgid "Errors occurred while binding port.\n"
 msgstr ""

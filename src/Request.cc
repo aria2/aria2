@@ -56,10 +56,16 @@ bool Request::redirectUrl(const string& url) {
 }
 
 bool Request::parseUrl(const string& url) {
+#ifdef ENABLE_METALINK
+  bool metalinkEnabled = true;
+#else
+  bool metalinkEnabled = false;
+#endif
+
   string tempUrl;
   string::size_type sharpIndex = url.find("#");
   if(sharpIndex != string::npos) {
-    if(url.find(METALINK_MARK) == sharpIndex) {
+    if(metalinkEnabled && url.find(METALINK_MARK) == sharpIndex) {
       tempUrl = url.substr(sharpIndex+strlen(METALINK_MARK));
     } else {
       tempUrl = url.substr(0, sharpIndex);

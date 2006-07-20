@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-07-04 20:44+0900\n"
+"POT-Creation-Date: 2006-07-21 00:57+0900\n"
 "PO-Revision-Date: 2006-07-04 01:41+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -848,82 +848,82 @@ msgstr " ユーザ設定による Metalink ダウンロード:"
 msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
-#: src/main.cc:444
+#: src/main.cc:446
 msgid "unrecognized proxy format"
 msgstr "理解できないProxyフォーマットです."
 
-#: src/main.cc:471
+#: src/main.cc:473
 msgid "Currently, supported authentication scheme is basic."
 msgstr "現在サポートされている認証方法は basic です."
 
-#: src/main.cc:480
+#: src/main.cc:482
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait は 0 から 60 の間で指定してください."
 
-#: src/main.cc:497
+#: src/main.cc:499
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type は 'binary' または 'ascii' を指定してください."
 
-#: src/main.cc:506
+#: src/main.cc:508
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:524
+#: src/main.cc:526
 msgid "min-segment-size invalid"
 msgstr "min-segment-size が不正です."
 
-#: src/main.cc:535
+#: src/main.cc:537
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:543
+#: src/main.cc:545
 msgid "listen-port must be between 1024 and 65535."
 msgstr "listen-port は 1024 - 65535 の値を指定してください."
 
-#: src/main.cc:554
+#: src/main.cc:556
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent は 'true' または 'false を指定してください."
 
-#: src/main.cc:568
+#: src/main.cc:570
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr "direct-file-mapping は 'true' または 'false を指定してください."
 
-#: src/main.cc:576
+#: src/main.cc:578
 msgid "upload-limit must be greater than or equal to 0."
 msgstr "upload-limit は 0 以上の数を指定してください."
 
-#: src/main.cc:601
+#: src/main.cc:603
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr "follow-metalink は 'true' または 'false を指定してください."
 
-#: src/main.cc:628
+#: src/main.cc:630
 msgid "split must be between 1 and 5."
 msgstr "split は 1 - 5 の値を指定してください."
 
-#: src/main.cc:638
+#: src/main.cc:640
 msgid "timeout must be between 1 and 600"
 msgstr "timeout は 1 - 600 の値を指定してください."
 
-#: src/main.cc:647
+#: src/main.cc:649
 msgid "max-tries invalid"
 msgstr "max-tries が不正です."
 
-#: src/main.cc:669
+#: src/main.cc:671
 msgid "metalink-servers must be greater than 0."
 msgstr "metalink-servers は 0 以上の数を指定してください."
 
-#: src/main.cc:687
+#: src/main.cc:689
 msgid "specify at least one URL"
 msgstr "一個以上の URL を指定してください."
 
-#: src/main.cc:694
+#: src/main.cc:696
 msgid "daemon failed"
 msgstr "デーモン起動に失敗"
 
-#: src/main.cc:833
+#: src/main.cc:837
 msgid "Files:"
 msgstr "ファイル:"
 
-#: src/main.cc:864
+#: src/main.cc:868
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
