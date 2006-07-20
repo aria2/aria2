@@ -47,7 +47,7 @@ using namespace std;
 #define DEFAULT_ANNOUNCE_MIN_INTERVAL 1800
 #define MAX_PEERS 55
 #define MIN_PEERS 15
-#define MAX_PEER_LIST_SIZE 250
+#define MAX_PEER_LIST_SIZE 100
 #define END_GAME_PIECE_NUM 20
 #define MAX_PEER_ERROR 5
 

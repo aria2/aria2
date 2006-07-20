@@ -45,17 +45,6 @@ PeerInteraction::~PeerInteraction() {
   delete peerConnection;
 }
 
-class MsgPushBack {
-private:
-  MessageQueue* messageQueue;
-public:
-  MsgPushBack(MessageQueue* messageQueue):messageQueue(messageQueue) {}
-
-  void operator()(const PeerMessageHandle& msg) {
-    messageQueue->push_back(msg);
-  }
-};
-
 bool PeerInteraction::isSendingMessageInProgress() const {
   if(messageQueue.size() > 0) {
     const PeerMessageHandle& peerMessage = messageQueue.front();
@@ -84,7 +73,7 @@ void PeerInteraction::sendMessages(int uploadSpeed) {
       }
     }
   }
-  for_each(tempQueue.begin(), tempQueue.end(), MsgPushBack(&messageQueue));
+  copy(tempQueue.begin(), tempQueue.end(), back_inserter(messageQueue));
 }
 
 void PeerInteraction::addMessage(const PeerMessageHandle& peerMessage) {
@@ -123,7 +112,7 @@ void PeerInteraction::rejectAllPieceMessageInQueue() {
       itr++;
     }
   }
-  for_each(tempQueue.begin(), tempQueue.end(), MsgPushBack(&messageQueue));
+  copy(tempQueue.begin(), tempQueue.end(), back_inserter(messageQueue));
 }
 
 void PeerInteraction::rejectPieceMessageInQueue(int index, int begin, int length) {
@@ -149,7 +138,7 @@ void PeerInteraction::rejectPieceMessageInQueue(int index, int begin, int length
       itr++;
     }
   }
-  for_each(tempQueue.begin(), tempQueue.end(), MsgPushBack(&messageQueue));
+  copy(tempQueue.begin(), tempQueue.end(), back_inserter(messageQueue));
 }
 
 void PeerInteraction::onChoked() {

@@ -23,6 +23,8 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testResetUrl);
   CPPUNIT_TEST(testSafeChar);
+  CPPUNIT_TEST(testInnerLink);
+  CPPUNIT_TEST(testMetalink);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -44,6 +46,8 @@ public:
   void testRedirectUrl2();
   void testResetUrl();
   void testSafeChar();
+  void testInnerLink();
+  void testMetalink();
 };
 
 
@@ -269,4 +273,23 @@ void RequestTest::testSafeChar() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com/|<>");
   CPPUNIT_ASSERT(!v);
+}
+
+void RequestTest::testInnerLink() {
+  Request req;
+  bool v = req.setUrl("http://aria.rednoah.com/index.html#download");
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("index.html"), req.getFile());
+}
+
+void RequestTest::testMetalink() {
+  Request req;
+  bool v = req.setUrl("http://aria.rednoah.com/download/aria.tar.bz2#!metalink3!http://aria2.sourceforge.net/download/aria.metalink");
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("aria2.sourceforge.net"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("aria.metalink"), req.getFile());
+
+  bool v2 = req.setUrl("http://aria.rednoah.com/download/aria.tar.bz2#!metalink3!");
+  CPPUNIT_ASSERT(!v2);
 }

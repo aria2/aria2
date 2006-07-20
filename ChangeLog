@@ -1,3 +1,24 @@
+2006-07-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+        To add the support for Metalink3.0 backward compatible links:
+	
+	* src/Request.h
+	(SAFE_CHARS): Added '#'.
+	(METALINK_MARK): New definition.
+	* src/Request.cc
+	(parseUrl): Added the support for Metalink3.0 backward compatible
+	links.
+
+	etc
+
+	* src/PeerInteraction.cc
+	(MsgPushBack): Removed.
+	(sendMessages): Use STL copy and back_inserter.
+	(rejectAllPieceMessageInQueue): Use STL copy and back_inserter.
+	(rejectPieceMessageInQueue): Use STL copy and back_inserter.
+	* src/TorrentMan.h
+	(MAX_PEER_LIST_SIZE): Changed to 100 from 250.
+	
 2006-07-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/SharedHandle.h: New class.

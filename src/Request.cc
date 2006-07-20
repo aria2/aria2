@@ -56,14 +56,25 @@ bool Request::redirectUrl(const string& url) {
 }
 
 bool Request::parseUrl(const string& url) {
-  currentUrl = url;
-  string tempUrl = url;
+  string tempUrl;
+  string::size_type sharpIndex = url.find("#");
+  if(sharpIndex != string::npos) {
+    if(url.find(METALINK_MARK) == sharpIndex) {
+      tempUrl = url.substr(sharpIndex+strlen(METALINK_MARK));
+    } else {
+      tempUrl = url.substr(0, sharpIndex);
+    }
+  } else {
+    tempUrl = url;
+  }
+
+  currentUrl = tempUrl;
   string query;
   host = "";
   port = 0;
   dir = "";
   file = "";
-  if(url.find_first_not_of(SAFE_CHARS) != string::npos) {
+  if(tempUrl.find_first_not_of(SAFE_CHARS) != string::npos) {
     return false;
   }
   string::size_type startQueryIndex = tempUrl.find("?");

@@ -35,7 +35,10 @@ using namespace std;
 ":/?[]@"\
 "!$&'()*+,;="\
 "-._~"\
-"%"
+"%"\
+"#"
+
+#define METALINK_MARK "#!metalink3!"
 
 class Request {
 private:
