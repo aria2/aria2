@@ -43,7 +43,18 @@ public:
   MetalinkEntry();
   ~MetalinkEntry();
 
-  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry);
+  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry) {
+    if(this != &metalinkEntry) {
+      this->filename = metalinkEntry.filename;
+      this->version = metalinkEntry.version;
+      this->language = metalinkEntry.language;
+      this->os = metalinkEntry.os;
+      this->size = metalinkEntry.size;
+      this->md5 = metalinkEntry.md5;
+      this->sha1 = metalinkEntry.sha1;
+    }
+    return *this;
+  }
 
   bool check(const string& filename) const;
 

@@ -37,9 +37,16 @@ private:
   
   char msg[17];
 public:
-  RequestMessage():SimplePeerMessage(),
-		   index(0), begin(0), length(0), blockIndex(0),
-		   pieces(0), pieceLength(0) {}
+  RequestMessage(int index = 0, int begin = 0, int length = 0,
+		 int blockIndex = 0)
+    :SimplePeerMessage(),
+     index(index),
+     begin(begin),
+     length(length),
+     blockIndex(blockIndex),
+     pieces(0),
+     pieceLength(0) {}
+
   virtual ~RequestMessage() {}
 
   enum ID_t {
@@ -73,6 +80,8 @@ public:
   virtual int getMessageLength();
   virtual void check() const;
   virtual string toString() const;
+  virtual void onPush();
+  virtual void onAbortPiece(const Piece& piece);
 };
 
 #endif // _D_REQUEST_MESSAGE_H_

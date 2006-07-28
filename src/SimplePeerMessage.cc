@@ -28,6 +28,9 @@ SimplePeerMessage::SimplePeerMessage():leftDataLength(0) {}
 SimplePeerMessage::~SimplePeerMessage() {}
 
 void SimplePeerMessage::send() {
+  if(invalidate) {
+    return;
+  }
   if(sendPredicate() || inProgress) {
     const char* msg = getMessage();
     int msgLength = getMessageLength();

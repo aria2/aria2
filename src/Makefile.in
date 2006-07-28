@@ -90,7 +90,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.cc AllowedFastMessage.h\
 @ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.cc SuggestPieceMessage.h\
 @ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.cc SimplePeerMessage.h\
-@ENABLE_BITTORRENT_TRUE@	SharedHandle.h
+@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.cc PeerMessageFactory.h
 
 @ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -154,12 +154,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
 	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
 	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
-	MetaEntry.h Data.cc Data.h Dictionary.cc Dictionary.h List.cc \
-	List.h MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
-	ShaVisitor.cc ShaVisitor.h TorrentMan.cc TorrentMan.h \
-	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
-	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
-	PeerInitiateConnectionCommand.cc \
+	SharedHandle.h MetaEntry.h Data.cc Data.h Dictionary.cc \
+	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
+	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h TorrentMan.cc \
+	TorrentMan.h PeerConnection.cc PeerConnection.h \
+	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
+	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h BitfieldMan.cc \
 	BitfieldMan.h TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -187,9 +187,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	HaveNoneMessage.cc HaveNoneMessage.h RejectMessage.cc \
 	RejectMessage.h AllowedFastMessage.cc AllowedFastMessage.h \
 	SuggestPieceMessage.cc SuggestPieceMessage.h \
-	SimplePeerMessage.cc SimplePeerMessage.h SharedHandle.h \
-	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
-	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
+	SimplePeerMessage.cc SimplePeerMessage.h PeerMessageFactory.cc \
+	PeerMessageFactory.h Metalinker.cc Metalinker.h \
+	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
+	MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
 @ENABLE_BITTORRENT_TRUE@am__objects_1 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
@@ -236,7 +237,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	RejectMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -453,16 +455,17 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
 	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
 	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
-	$(am__append_1) $(am__append_2)
+	SharedHandle.h $(am__append_1) $(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
 
+#aria2c_LDFLAGS = -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@# -pg
 
 all: all-am
 
@@ -601,6 +604,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInteractionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceMessage.Po@am__quote@

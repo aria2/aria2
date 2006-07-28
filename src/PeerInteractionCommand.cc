@@ -22,6 +22,11 @@
 #include "PeerInteractionCommand.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "PeerMessageUtil.h"
+#include "HandshakeMessage.h"
+#include "KeepAliveMessage.h"
+#include "ChokeMessage.h"
+#include "UnchokeMessage.h"
+#include "HaveMessage.h"
 #include "DlAbortEx.h"
 #include "Util.h"
 #include "message.h"
@@ -62,6 +67,7 @@ bool PeerInteractionCommand::executeInternal() {
   }
   disableWriteCheckSocket();
   setUploadLimitCheck(false);
+  setNoCheck(false);
 
   switch(sequence) {
   case INITIATOR_SEND_HANDSHAKE:
@@ -75,12 +81,12 @@ bool PeerInteractionCommand::executeInternal() {
 	break;
       }
     }
-    HandshakeMessageHandle handshakeMessage =
+    PeerMessageHandle handshakeMessage =
       peerInteraction->receiveHandshake();
-    if(handshakeMessage.get() == NULL) {
+    if(handshakeMessage.get() == 0) {
       break;
     }
-    peer->setPeerId(handshakeMessage->peerId);
+    peer->setPeerId(((HandshakeMessage*)handshakeMessage.get())->peerId);
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
@@ -91,12 +97,12 @@ bool PeerInteractionCommand::executeInternal() {
     break;
   }
   case RECEIVER_WAIT_HANDSHAKE: {
-    HandshakeMessageHandle handshakeMessage =
+    PeerMessageHandle handshakeMessage =
       peerInteraction->receiveHandshake(true);
-    if(handshakeMessage.get() == NULL) {
+    if(handshakeMessage.get() == 0) {
       break;
     }
-    peer->setPeerId(handshakeMessage->peerId);
+    peer->setPeerId(((HandshakeMessage*)handshakeMessage.get())->peerId);
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
 		 peer->ipaddr.c_str(), peer->port,
 		 handshakeMessage->toString().c_str());
@@ -121,10 +127,9 @@ bool PeerInteractionCommand::executeInternal() {
   }
   if(peerInteraction->countMessageInQueue() > 0) {
     if(peerInteraction->isSendingMessageInProgress()) {
-      setWriteCheckSocket(socket);
-    } else {
       setUploadLimitCheck(true);
     }
+    setNoCheck(true);
   }
   e->commands.push_back(this);
   return false;
@@ -164,11 +169,13 @@ void PeerInteractionCommand::checkLongTimePeerChoking() {
 void PeerInteractionCommand::decideChoking() {
   if(peer->shouldBeChoking()) {
     if(!peer->amChoking) {
-      peerInteraction->addMessage(peerInteraction->createChokeMessage());
+      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				  createChokeMessage());
     }
   } else {
     if(peer->amChoking) {
-      peerInteraction->addMessage(peerInteraction->createUnchokeMessage());
+      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				  createUnchokeMessage());
     }
   }
 }
@@ -231,7 +238,8 @@ void PeerInteractionCommand::onAbort(Exception* ex) {
 void PeerInteractionCommand::sendKeepAlive() {
   if(keepAliveCheckPoint.elapsed(KEEP_ALIVE_INTERVAL)) {
     if(peerInteraction->countMessageInQueue() == 0) {
-      peerInteraction->addMessage(peerInteraction->createKeepAliveMessage());
+      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				  createKeepAliveMessage());
       peerInteraction->sendMessages(e->getUploadSpeed());
     }
     keepAliveCheckPoint.reset();
@@ -245,16 +253,20 @@ void PeerInteractionCommand::checkHave() {
   if(indexes.size() >= 20) {
     if(peer->isFastExtensionEnabled()) {
       if(e->torrentMan->hasAllPieces()) {
-	peerInteraction->addMessage(peerInteraction->createHaveAllMessage());
+	peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				    createHaveAllMessage());
       } else {
-	peerInteraction->addMessage(peerInteraction->createBitfieldMessage());
+	peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				    createBitfieldMessage());
       }
     } else {
-      peerInteraction->addMessage(peerInteraction->createBitfieldMessage());
+      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				  createBitfieldMessage());
     }
   } else {
     for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
-      peerInteraction->addMessage(peerInteraction->createHaveMessage(*itr));
+      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				  createHaveMessage(*itr));
     }
   }
 }

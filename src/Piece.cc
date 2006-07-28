@@ -23,36 +23,6 @@
 
 Piece Piece::nullPiece;
 
-Piece::Piece(const Piece& piece) {
-  index = piece.index;
-  length = piece.length;
-  if(piece.bitfield == NULL) {
-    bitfield = NULL;
-  } else {
-    bitfield = new BitfieldMan(*piece.bitfield);
-  }
-}
-
-Piece& Piece::operator=(const Piece& piece) {
-  if(this != &piece) {
-    index = piece.index;
-    length = piece.length;
-    if(bitfield != NULL) {
-      delete bitfield;
-    }
-    if(piece.bitfield == NULL) {
-      bitfield = NULL;
-    } else {
-      bitfield = new BitfieldMan(*piece.bitfield);
-    }
-  }
-  return *this;
-}
-
-bool Piece::operator==(const Piece& piece) const {
-  return index == piece.index;
-}
-
 void Piece::completeBlock(int blockIndex) {
   bitfield->setBit(blockIndex);
   bitfield->unsetUseBit(blockIndex);

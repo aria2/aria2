@@ -41,7 +41,15 @@ public:
   MetalinkResource();
   ~MetalinkResource();
 
-  MetalinkResource& operator=(const MetalinkResource& metalinkResource);
+  MetalinkResource& operator=(const MetalinkResource& metalinkResource) {
+    if(this != &metalinkResource) {
+      this->url = metalinkResource.url;
+      this->type = metalinkResource.type;
+      this->location = metalinkResource.location;
+      this->preference = metalinkResource.preference;
+    }
+    return *this;
+  }
 };
 
 #endif // _D_METALINK_RESOURCE_H_

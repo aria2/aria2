@@ -37,7 +37,12 @@ public:
   Metalinker();
   ~Metalinker();
 
-  Metalinker& operator=(const Metalinker& metalinker);
+  Metalinker& operator=(const Metalinker& metalinker) {
+    if(this != &metalinker) {
+      this->entries = metalinker.entries;
+    }
+    return *this;
+  }
 
   MetalinkEntry* queryEntry(const string& version, const string& language,
 			    const string& os) const;

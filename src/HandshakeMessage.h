@@ -31,6 +31,7 @@
 class HandshakeMessage : public SimplePeerMessage {
 private:
   char msg[HANDSHAKE_MESSAGE_LENGTH];
+  void init();
 public:
   char pstrlen;
   string pstr;
@@ -39,6 +40,7 @@ public:
   char peerId[PEER_ID_LENGTH];
 public:
   HandshakeMessage();
+  HandshakeMessage(const unsigned char* infoHash, const char* peerId);
 
   static HandshakeMessage* create(const char* data, int dataLength);
 

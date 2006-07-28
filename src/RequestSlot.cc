@@ -29,13 +29,6 @@ RequestSlot::RequestSlot(const RequestSlot& requestSlot) {
   copy(requestSlot);
 }
 
-RequestSlot& RequestSlot::operator=(const RequestSlot& requestSlot) {
-  if(this != &requestSlot) {
-    copy(requestSlot);
-  }
-  return *this;
-}
-
 void RequestSlot::copy(const RequestSlot& requestSlot) {
   index = requestSlot.index;
   begin = requestSlot.begin;
@@ -61,10 +54,4 @@ int RequestSlot::getLatencyInMillis() const {
 bool RequestSlot::isNull(const RequestSlot& requestSlot) {
   return requestSlot.index == 0 && requestSlot.begin == 0&&
     requestSlot.length == 0;
-}
-
-bool RequestSlot::operator==(const RequestSlot& requestSlot) const {
-  return index == requestSlot.index &&
-    begin == requestSlot.begin &&
-    length == requestSlot.length;
 }

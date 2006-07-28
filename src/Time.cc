@@ -32,13 +32,6 @@ Time::Time(const Time& time) {
 
 Time::~Time() {}
 
-Time& Time::operator=(const Time& time) {
-  if(this != &time) {
-    tv = time.tv;
-  }
-  return *this;
-}
-
 void Time::reset() {
   gettimeofday(&tv, 0);
 }

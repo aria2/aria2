@@ -36,9 +36,13 @@ private:
 
   char msg[17];
 public:
-  RejectMessage():SimplePeerMessage(),
-		  index(0), begin(0), length(0),
-		  pieces(0), pieceLength(0) {}
+  RejectMessage(int index = 0, int begin = 0, int length = 0)
+    :SimplePeerMessage(),
+     index(index),
+     begin(begin),
+     length(length),
+     pieces(0),
+     pieceLength(0) {}
 
   virtual ~RejectMessage() {}
 

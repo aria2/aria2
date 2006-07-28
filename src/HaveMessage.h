@@ -33,7 +33,10 @@ private:
 protected:
   virtual bool sendPredicate() const;
 public:
-  HaveMessage():SimplePeerMessage(), index(0), pieces(0) {}
+  HaveMessage(int index = 0)
+    :SimplePeerMessage(),
+     index(index),
+     pieces(0) {}
 
   virtual ~HaveMessage() {}
 

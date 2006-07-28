@@ -83,6 +83,14 @@ public:
     }
   }
 
+  bool operator==(const Peer& p) {
+    return ipaddr == p.ipaddr && port == p.port;
+  }
+  
+  bool operator!=(const Peer& p) {
+    return !(*this == p);
+  }
+
   void resetStatus();
 
   void addDeltaUpload(int length) {
@@ -148,9 +156,6 @@ public:
   void updateLatency(int latency);
   int getLatency() const { return latency; }
 };
-
-bool operator==(const Peer& p1, const Peer& p2);
-bool operator!=(const Peer& p1, const Peer& p2);
 
 typedef SharedHandle<Peer> PeerHandle;
 

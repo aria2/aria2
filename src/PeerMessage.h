@@ -25,6 +25,8 @@
 #include "common.h"
 #include "Logger.h"
 #include "Peer.h"
+#include "Piece.h"
+#include "SharedHandle.h"
 #include <string>
 
 class PeerInteraction;
@@ -32,6 +34,8 @@ class PeerInteraction;
 class PeerMessage {
 protected:
   bool inProgress;
+  bool invalidate;
+  bool uploading;
   int cuid;
   PeerHandle peer;
   PeerInteraction* peerInteraction;
@@ -42,6 +46,8 @@ public:
   virtual ~PeerMessage() {}
 
   bool isInProgress() const { return inProgress; }
+  bool isInvalidate() const { return invalidate; }
+  bool isUploading() const { return uploading; }
 
   int getCuid() const { return cuid; }
   void setCuid(int cuid) {
@@ -61,6 +67,12 @@ public:
   virtual void send() = 0;
   virtual void check() const {}
   virtual string toString() const = 0;
+  virtual void onPush() {}
+  virtual void onChoked() {}
+  virtual void onCanceled(int index, int begin, int blockLength) {}
+  virtual void onAbortPiece(const Piece& piece) {}
 };
+
+typedef SharedHandle<PeerMessage> PeerMessageHandle;
 
 #endif // _D_PEER_MESSAGE_H_

@@ -46,10 +46,12 @@ void RequestMessage::receivedAction() {
   if(torrentMan->hasPiece(index) &&
      (!peer->amChoking ||
       peer->amChoking && peerInteraction->isInFastSet(index))) {
-    peerInteraction->addMessage(peerInteraction->createPieceMessage(index, begin, length));
+    peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				createPieceMessage(index, begin, length));
   } else {
     if(peer->isFastExtensionEnabled()) {
-      peerInteraction->addMessage(peerInteraction->createRejectMessage(index, begin, length));
+      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
+				  createRejectMessage(index, begin, length));
     }
   }
 }
@@ -86,4 +88,17 @@ void RequestMessage::check() const {
 string RequestMessage::toString() const {
   return "request index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::itos(length);
+}
+
+void RequestMessage::onPush() {
+  RequestSlot requestSlot(index, begin, length, blockIndex);
+  peerInteraction->addRequestSlot(requestSlot);
+}
+
+void RequestMessage::onAbortPiece(const Piece& piece) {
+  if(!invalidate &&
+     !inProgress &&
+     this->index == piece.getIndex()) {
+    invalidate = true;
+  }
 }

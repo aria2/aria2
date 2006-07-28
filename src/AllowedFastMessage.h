@@ -33,7 +33,10 @@ private:
 protected:
   virtual void onSendComplete();
 public:
-  AllowedFastMessage():SimplePeerMessage(), index(0), pieces(0) {}
+  AllowedFastMessage(int index = 0)
+    :SimplePeerMessage(),
+     index(index),
+     pieces(0) {}
 
   virtual ~AllowedFastMessage() {}
 

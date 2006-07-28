@@ -46,6 +46,7 @@ protected:
   void disableWriteCheckSocket();
   void setUploadLimit(int uploadLimit);
   void setUploadLimitCheck(bool check);
+  void setNoCheck(bool check);
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
@@ -53,6 +54,7 @@ private:
   SocketHandle writeCheckTarget;
   bool uploadLimitCheck;
   int uploadLimit;
+  bool noCheck;
 public:
   PeerAbstractCommand(int cuid, const PeerHandle& peer,
 		      TorrentDownloadEngine* e,

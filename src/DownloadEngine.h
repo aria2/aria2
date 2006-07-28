@@ -39,7 +39,10 @@ private:
   void waitData(CommandUuids& activeCommandUuids);
   SockCmdMap rsockmap;
   SockCmdMap wsockmap;
-  
+  fd_set rfdset;
+  fd_set wfdset;
+  int fdmax;
+
   void shortSleep() const;
   bool addSocket(SockCmdMap& sockmap, const SocketHandle& socket,
 		 const CommandUuid& commandUuid);
@@ -63,6 +66,8 @@ public:
   void run();
 
   void cleanQueue();
+
+  void updateFdSet();
 
   bool addSocketForReadCheck(const SocketHandle& socket,
 			     const CommandUuid& commandUuid);

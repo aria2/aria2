@@ -45,12 +45,22 @@ private:
   void onGotWrongPiece(Piece& piece);
   void erasePieceOnDisk(const Piece& piece);
   int sendPieceData(long long int offset, int length) const;
+  PeerMessageHandle createRejectMessage(int index, int begin, int blockLength) const;
 public:
-  PieceMessage():PeerMessage(),
-		 index(0), begin(0), block(NULL), blockLength(0),
-		 leftDataLength(0), headerSent(false),
-		 pendingCount(0),
-		 pieces(0), pieceLength(0) {}
+  PieceMessage(int index = 0, int begin = 0, int blockLength = 0)
+    :PeerMessage(),
+     index(index),
+     begin(begin),
+     block(0),
+     blockLength(blockLength),
+     leftDataLength(0),
+     headerSent(false),
+     pendingCount(0),
+     pieces(0),
+     pieceLength(0)
+  {
+    uploading = true;
+  }
 
   virtual ~PieceMessage() {
     if(block != NULL) {
@@ -93,6 +103,8 @@ public:
   virtual void send();
   virtual void check() const;
   virtual string toString() const;
+  virtual void onChoked();
+  virtual void onCanceled(int index, int begin, int blockLength);
 };
 
 #endif // _D_PIECE_MESSAGE_H_

@@ -50,7 +50,8 @@ SRCS =  Socket.h\
 	messageDigest.h\
 	LogFactory.cc LogFactory.h\
 	NullLogger.h\
-	Time.cc Time.h
+	Time.cc Time.h\
+	SharedHandle.h
 
 if ENABLE_BITTORRENT
 SRCS += MetaEntry.h\
@@ -105,7 +106,7 @@ SRCS += MetaEntry.h\
 	AllowedFastMessage.cc AllowedFastMessage.h\
 	SuggestPieceMessage.cc SuggestPieceMessage.h\
 	SimplePeerMessage.cc SimplePeerMessage.h\
-	SharedHandle.h
+	PeerMessageFactory.cc PeerMessageFactory.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
@@ -120,7 +121,8 @@ noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
+#aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@# -pg

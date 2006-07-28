@@ -22,6 +22,7 @@
 #include "DefaultDiskWriter.h"
 #include "DlAbortEx.h"
 #include <errno.h>
+#include <unistd.h>
 
 DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter(), totalLength(0) {}
 

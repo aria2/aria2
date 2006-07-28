@@ -119,7 +119,7 @@ public:
   SetDescriptor(int* max_ptr, fd_set* fds_ptr)
     :fds_ptr(fds_ptr), max_ptr(max_ptr) {}
 
-  void operator()(const pair<SocketHandle, CommandUuid>& pa) {
+  void operator()(const SockCmdMap::value_type& pa) {
     int fd = pa.first->getSockfd();
     FD_SET(fd, fds_ptr);
     if(*max_ptr < fd) {
@@ -137,7 +137,7 @@ public:
 			      fd_set* fds_ptr)
     :activeCommandUuids_ptr(activeCommandUuids_ptr), fds_ptr(fds_ptr) {}
 
-  void operator()(const pair<SocketHandle, CommandUuid>& pa) {
+  void operator()(const SockCmdMap::value_type& pa) {
     if(FD_ISSET(pa.first->getSockfd(), fds_ptr)) {
       activeCommandUuids_ptr->push_back(pa.second);
     }
@@ -151,15 +151,12 @@ void DownloadEngine::waitData(CommandUuids& activeCommandUuids) {
   while(1) {
     struct timeval tv;
     
-    FD_ZERO(&rfds);
-    FD_ZERO(&wfds);
-    int max = 0;
-    for_each(rsockmap.begin(), rsockmap.end(), SetDescriptor(&max, &rfds));
-    for_each(wsockmap.begin(), wsockmap.end(), SetDescriptor(&max, &wfds));
+    memcpy(&rfds, &rfdset, sizeof(fd_set));
+    memcpy(&wfds, &wfdset, sizeof(fd_set));
 
     tv.tv_sec = 1;
     tv.tv_usec = 0;
-    retval = select(max+1, &rfds, &wfds, NULL, &tv);
+    retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
     if(retval != -1 || errno != EINTR) {
       break;
     }
@@ -176,6 +173,14 @@ void DownloadEngine::waitData(CommandUuids& activeCommandUuids) {
   }
 }
 
+void DownloadEngine::updateFdSet() {
+  fdmax = 0;
+  FD_ZERO(&rfdset);
+  FD_ZERO(&wfdset);
+  for_each(rsockmap.begin(), rsockmap.end(), SetDescriptor(&fdmax, &rfdset));
+  for_each(wsockmap.begin(), wsockmap.end(), SetDescriptor(&fdmax, &wfdset));
+}
+
 bool DownloadEngine::addSocket(SockCmdMap& sockmap,
 			       const SocketHandle& socket,
 			       const CommandUuid& commandUuid) {
@@ -184,6 +189,7 @@ bool DownloadEngine::addSocket(SockCmdMap& sockmap,
   if(itr == sockmap.end()) {
     SockCmdMap::value_type vt(socket, commandUuid);
     sockmap.insert(vt);
+    updateFdSet();
     return true;
   } else {
     return false;
@@ -199,6 +205,7 @@ bool DownloadEngine::deleteSocket(SockCmdMap& sockmap,
     return false;
   } else {
     sockmap.erase(itr);
+    updateFdSet();
     return true;
   }
 }

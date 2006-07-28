@@ -25,6 +25,18 @@
 #include "Util.h"
 
 HandshakeMessage::HandshakeMessage() {
+  init();
+}
+
+HandshakeMessage::HandshakeMessage(const unsigned char* infoHash,
+				   const char* peerId)
+{
+  init();
+  memcpy(this->infoHash, infoHash, INFO_HASH_LENGTH);
+  memcpy(this->peerId, peerId, PEER_ID_LENGTH);
+}
+
+void HandshakeMessage::init() {
   this->pstrlen = 19;
   this->pstr = PSTR;
   memset(this->reserved, 0, sizeof(this->reserved));

@@ -182,5 +182,18 @@ public:
    * connection must be established  before calling this method.
    */
   void initiateSecureConnection() ;
+
+  bool operator==(const SocketCore& s) {
+    return sockfd == s.sockfd;
+  }
+  
+  bool operator!=(const SocketCore& s) {
+    return !(*this == s);
+  }
+  
+  bool operator<(const SocketCore& s) {
+    return sockfd < s.sockfd;
+  }
+
 };
 #endif // _D_SOCKET_CORE_H_

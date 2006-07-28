@@ -22,6 +22,9 @@
 #include "PeerMessage.h"
 #include "LogFactory.h"
 
-PeerMessage::PeerMessage():inProgress(false) {
+PeerMessage::PeerMessage()
+  :inProgress(false),
+   invalidate(false),
+   uploading(false) {
   logger = LogFactory::getInstance();
 }

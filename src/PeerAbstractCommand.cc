@@ -31,7 +31,7 @@ PeerAbstractCommand::PeerAbstractCommand(int cuid, const PeerHandle& peer,
 					 const SocketHandle& s)
   :Command(cuid), e(e), socket(s), peer(peer),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
-  uploadLimitCheck(false), uploadLimit(0) {
+  uploadLimitCheck(false), uploadLimit(0), noCheck(false) {
   setReadCheckSocket(socket);
   timeout = e->option->getAsInt(PREF_TIMEOUT);
   e->torrentMan->connections++;
@@ -48,7 +48,8 @@ bool PeerAbstractCommand::execute() {
     return true;
   }
   try {
-    if(uploadLimitCheck && (uploadLimit == 0 ||
+    if(noCheck ||
+       uploadLimitCheck && (uploadLimit == 0 ||
 			    e->getUploadSpeed() <= uploadLimit*1024) ||
        checkSocketIsReadable && readCheckTarget->isReadable(0) ||
        checkSocketIsWritable && writeCheckTarget->isWritable(0)) {
@@ -143,4 +144,8 @@ void PeerAbstractCommand::setUploadLimit(int uploadLimit) {
 
 void PeerAbstractCommand::setUploadLimitCheck(bool check) {
   this->uploadLimitCheck = check;
+}
+
+void PeerAbstractCommand::setNoCheck(bool check) {
+  this->noCheck = check;
 }

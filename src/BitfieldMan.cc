@@ -62,35 +62,6 @@ BitfieldMan::~BitfieldMan() {
   }
 }
 
-BitfieldMan& BitfieldMan::operator=(const BitfieldMan& bitfieldMan) {
-  if(this != &bitfieldMan) {
-    blockLength = bitfieldMan.blockLength;
-    totalLength = bitfieldMan.totalLength;
-    if(bitfieldLength != bitfieldMan.bitfieldLength) {
-      delete [] bitfield;
-      delete [] useBitfield;
-      bitfield = new unsigned char[bitfieldMan.bitfieldLength];
-      useBitfield = new unsigned char[bitfieldMan.bitfieldLength];
-    }
-    blocks = bitfieldMan.blocks;
-    bitfieldLength = bitfieldMan.bitfieldLength;
-    memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
-    memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
-    filterEnabled = bitfieldMan.filterEnabled;
-    if(bitfieldLength != bitfieldMan.bitfieldLength) {
-      delete [] filterBitfield;
-      filterBitfield = 0;
-    }
-    if(bitfieldMan.filterBitfield) {
-      if(!filterBitfield) {
-	filterBitfield = new unsigned char[bitfieldLength];
-      }
-      memcpy(filterBitfield, bitfieldMan.filterBitfield, bitfieldLength);
-    }
-  }
-  return *this;
-}
-
 int BitfieldMan::countSetBit(const unsigned char* bitfield, int len) const {
   int count = 0;
   int size = sizeof(unsigned int);

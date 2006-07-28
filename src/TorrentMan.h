@@ -138,7 +138,7 @@ public:
   const Peers& getPeers() const { return peers; }
   PeerHandle getPeer() const;
   bool isPeerAvailable() const;
-  void deleteErrorPeer();
+  void deleteUnusedPeer(int delSize);
 
   bool hasMissingPiece(const PeerHandle& peer) const;
   int getMissingPieceIndex(const PeerHandle& peer) const;

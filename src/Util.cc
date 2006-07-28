@@ -31,6 +31,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 string Util::itos(int value, bool comma) {
   string str = llitos(value, comma);

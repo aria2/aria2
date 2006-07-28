@@ -1,3 +1,258 @@
+2006-07-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/PeerMessage.h
+	(Piece.h): Included.
+	(SharedHandle.h): Included.
+	(invalidate): New variable.
+	(uploading): New variable.
+	(isInvalidate): New function.
+	(isUploading): New function.
+	(onPush): New function.
+	(onChoked): New function.
+	(onCanceled): New function.
+	(onAbortPiece): New function.
+	(PeerMessageHandle): New type definition.
+	
+	* src/PeerMessage.cc
+	(PeerMessage): Added the initialization for invalidate and uploading.
+	
+	* src/CancelMessage.h
+	(CancelMessage): Rewritten.
+
+	* src/RejectMessage.h
+	(RejectMessage): Rewritten.
+
+	* src/Metalinker.h
+	(operator=): Defined.
+	
+	* src/MetaEntry.h
+	(operator=): Defined.
+
+	* src/MetalinkResource.h
+	(operator=): Defined.
+	
+	* src/AllowedFastMessage.h
+	(AllowedFastMessage): Rewritten.
+
+	* src/HandshakeMessage.h
+	(HandshakeMessage): New function(overload).
+	
+	* src/HandshakeMessage.cc
+	(HandshakeMessage): Rewritten.
+	(init): New function.
+
+	* src/HaveMessage.h
+	(HaveMessage): Rewritten.
+	
+	* src/Time.h
+	(operator=): Defined the function body here.
+	* src/Time.cc
+	(operator=): Removed.
+	
+	* src/SocketCore.h
+	(operator==): Defined here.
+	(operator!=): Defined here.
+	(operator<): Defined here.
+	* src/SocketCore.cc
+	(operator==): Removed.
+	(operator<): Removed.
+
+	* src/BitfieldMan.h
+	(operator=): Defined the function body here.
+	* src/BitfieldMan.cc
+	(operator=): Removed.
+
+	* src/TorrentMan.h
+	(deleteErrorPeer): Removed.
+	(deleteUnusedPeer); New function.
+	* src/TorrentMan.cc
+	(addPeer): Call deleteUnusedPeer.
+	(deleteErrorPeer): Removed.
+	(deleteUnusedPeer): New function.
+
+	* src/PeerAbstractCommand.h
+	(setNoCheck): New function.
+	(noCheck): New variable.
+	* src/PeerAbstractCommand.cc
+	(PeerAbstractCommand): Added the initialization of noCheck.
+	(execute): Added a check for noCheck.
+	(setNoCheck): New function.
+
+	* src/Util.h
+	(stdio.h): Included.
+	* src/Util.cc
+	(unistd.h): Included.
+
+	* src/DefaultDiskWriter.cc
+	(unistd.h): Included.
+
+	* src/Peer.h
+	(operator==): Defined the function body here.
+	(operator!=): Defined the function body here.
+	* src/Peer.cc
+	(operator==): Removed.
+	(operator!=): Removed.
+
+	* src/Piece.h
+	(Piece): Defined the function body here(copy constructor).
+	(operator=): Defined the function body here.
+	(operator==): Defined the function body here.
+	* src/Piece.cc
+	(Piece): Removed(copy constructor).
+	(operator=): Removed.
+	(operator==): Removed.
+	
+	* src/PeerMessageUtil.h
+	(ChokeMessage.h): Removed.
+	(UnchokeMessage.h): Removed.
+	(InterestedMessage.h): Removed.
+	(NotInterestedMessage.h): Removed.
+	(HaveMessage.h): Removed.
+	(BitfieldMessage.h): Removed.
+	(RequestMessage.h): Removed.
+	(CancelMessage.h): Removed.
+	(PieceMessage.h): Removed.
+	(HandshakeMessage.h): Removed.
+	(KeepAliveMessage.h): Removed.
+	(PortMessage.h): Removed.
+	(HaveAllMessage.h): Removed.
+	(HaveNoneMessage.h): Removed.
+	(PeerConnection.h): Removed.
+	(HandshakeMessage.h): Included.
+
+	* src/BitfieldMessage.h
+	(init): New function.
+	(BitfieldMessage): Rewritten.
+	(BitfieldMessage): New function(overload).
+
+	* src/RequestSlot.h
+	(operator=): Defined the function body here.
+	(operator==): Defined the function body here.
+	* src/RequestSlot.cc
+	(operator=): Removed.
+	(operator==): Removed.
+	
+	To remove the dependency on the PeerMessage subclass from
+	PeerInteraction:
+
+	* src/PeerMessageFactory.h: New class.
+	* src/PeerMessageFactory.cc: New class.
+	* src/SimplePeerMessage.cc
+	(send): If invalidate is true then do nothing.
+	* src/PeerInteractionCommand.cc
+	(HandshakeMessage.h): Included.
+	(KeepAliveMessage.h): Included.
+	(ChokeMessage.h): Included.
+	(UnchokeMessage.h): Included.
+	(HaveMessage.h): Included.
+	(executeInternal): Call setNoCheck().
+	Removed setWriteCheckSocket(socket).
+	* src/PeerInteraction.h
+	(ChokeMessage.h): Removed.
+	(UnchokeMessage.h): Removed.
+	(InterestedMessage.h): Removed.
+	(NotInterestedMessage.h): Removed.
+	(HaveMessage.h): Removed.
+	(BitfieldMessage.h): Removed.
+	(RequestMessage.h): Removed.
+	(CancelMessage.h): Removed.
+	(PieceMessage.h): Removed.
+	(HandshakeMessage.h): Removed.
+	(KeepAliveMessage.h): Removed.
+	(PortMessage.h): Removed.
+	(HaveAllMessage.h): Removed.
+	(HaveNoneMessage.h): Removed.
+	(RejectMessage.h): Removed.
+	(AllowedFastMessage.h): Removed.
+	(SuggestPieceMessage.h): Removed.
+	(PeerMessageFactory.h): Included.
+	(PeerMessageHandle): Removed typedef of PeerMessageHandle.
+	(HandshakeMessageHandle): Removed typedef of HandshakeMessageHandle.
+	(PeerMessageFactory): New variable.
+	(createPeerMessage): Removed.
+	(createHandshakeMessage): Removed.
+	(setPeerMessageCommonProperty): Removed.
+	(addRequestSlot): New function.
+	(receiveHandshake): Changed the return value type to PeerMessageHandle.
+	(getPeerMessageFactory): New function.
+	(createRequestMessage): Removed.
+	(createCancelMessage): Removed.
+	(createPieceMessage): Removed.
+	(createHaveMessage): Removed.
+	(createChokeMessage): Removed.
+	(createUnchokeMessage): Removed.
+	(createInterestedMessage): Removed.
+	(createNotInterestedMessage): Removed.
+	(createBitfieldMessage): Removed.
+	(createKeepAliveMessage): Removed.
+	(createHaveAllMessage): Removed.
+	(createHaveNoneMessage): Removed.
+	(createRejectMessage): Removed.
+	(createAllowedFastMessage): Removed.	
+	* src/PeerInteraction.cc
+	(PeerInteraction): Allocate PeerMessageFactory here.
+	(~PeerInteraction): Deallocate PeerMessageFactory here.
+	(sendMessages): Use msg->isUploading() instead of msg->getId() ==
+	PieceMessage::ID.
+	(addMessage): Simplified by using PeerMessage::onPush().
+	(addRequestSlot): New function.
+	(rejectAllPieceMessageInQueue): Simplified by using
+	PeerMessage::onChoked().
+	(rejectPieceMessageInQueue): Simplified by using
+	PeerMessage::onCanceled().
+	(abortPiece): Simplified by using PeerMessage::abortPiece().
+	(receiveHandshake): Changed the return value type to PeerMessageHandle.
+	(createHandshakeMessage): Removed.
+	(createPeerMessage): Removed.
+	(sendHandshake): Call PeerMessageFactory::createHandshakeMessage().
+	(setPeerMessageCommonProperty): Removed.
+	(createRequestMessage): Removed.
+	(createCancelMessage): Removed.
+	(createPieceMessage): Removed.
+	(createHaveMessage): Removed.
+	(createChokeMessage): Removed.
+	(createUnchokeMessage): Removed.
+	(createInterestedMessage): Removed.
+	(createNotInterestedMessage): Removed.
+	(createBitfieldMessage): Removed.
+	(createKeepAliveMessage): Removed.
+	(createHaveAllMessage): Removed.
+	(createHaveNoneMessage): Removed.
+	(createRejectMessage): Removed.
+	(createAllowedFastMessage): Removed.
+	* src/PieceMessage.h
+	(createRejectMessage): New function.
+	(PieceMessage): Rewritten.
+	(onChoked): New function.
+	(onCanceled): New function.
+	* src/PieceMessage.cc
+	(send): If invalidate is true then do nothing, just return.
+	(createRejectMessage): New function.
+	(onChoked): New function.
+	(onCanceled): New function.
+	* src/RequestMessage.h
+	(RequestMessage): Rewritten.
+	(onPush): New function.
+	(onAbortPiece): New function.
+	* src/RequestMessage.cc
+	(onPush): New function.
+	(onAbortPiece): New function.
+	
+	Update fd_set when a socket is added or deleted in order to improve
+	performance:
+
+	* src/DownloadEngine.h
+	(rfdset): New variable.
+	(wfdset): New variable.
+	(updateFdSet): New function.
+	* src/DownloadEngine.cc
+	(SetDescriptor::operator()): Use SockCmdMap::value_type.
+	(AccumulateActiveCommandUuid::operator()): Use SockCmdMap::value_type.
+	(waitData): Copy rfdset and wfdset.
+	(updateFdSet): New function.
+	(addSocket): Call updateFdSet.
+	(deleteSocket): Call updateFdSet.
+	
 2006-07-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
         To add the support for Metalink3.0 backward compatible links:

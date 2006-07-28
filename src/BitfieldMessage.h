@@ -33,10 +33,28 @@ private:
 
   char* msg;
   int msgLength;
+
+  void init() {
+    bitfield = 0;
+    bitfieldLength = 0;
+    pieces = 0;
+    msg = 0;
+    msgLength = 0;
+  }
 public:
-  BitfieldMessage():SimplePeerMessage(),
-		    bitfield(NULL), bitfieldLength(0),
-		    pieces(0), msg(NULL), msgLength(0) {}
+  BitfieldMessage()
+    :SimplePeerMessage()
+  {
+    init();
+  }
+
+  BitfieldMessage(const unsigned char* bitfield,
+		  int bitfieldLength)
+    :SimplePeerMessage()
+  {
+    init();
+    setBitfield(bitfield, bitfieldLength);
+  }
 
   virtual ~BitfieldMessage() {
     if(bitfield != NULL) {

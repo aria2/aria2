@@ -37,13 +37,40 @@ public:
   Piece(int index, int length):index(index), length(length) {
     bitfield = new BitfieldMan(BLOCK_LENGTH, length);
   }
-  Piece(const Piece& piece);
+
+  Piece(const Piece& piece) {
+    index = piece.index;
+    length = piece.length;
+    if(piece.bitfield == NULL) {
+      bitfield = NULL;
+    } else {
+      bitfield = new BitfieldMan(*piece.bitfield);
+    }
+  }
+
   ~Piece() {
     delete bitfield;
   }
 
-  Piece& operator=(const Piece& piece);
-  bool operator==(const Piece& piece) const;
+  Piece& operator=(const Piece& piece) {
+    if(this != &piece) {
+      index = piece.index;
+      length = piece.length;
+      if(bitfield != NULL) {
+	delete bitfield;
+      }
+      if(piece.bitfield == NULL) {
+	bitfield = NULL;
+      } else {
+	bitfield = new BitfieldMan(*piece.bitfield);
+      }
+    }
+    return *this;
+  }
+  
+  bool operator==(const Piece& piece) const {
+    return index == piece.index;
+  }
 
   int getMissingUnusedBlockIndex() const;
   int getMissingBlockIndex() const;

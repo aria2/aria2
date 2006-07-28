@@ -24,31 +24,13 @@
 
 #include "common.h"
 #include "PeerConnection.h"
-#include "ChokeMessage.h"
-#include "UnchokeMessage.h"
-#include "InterestedMessage.h"
-#include "NotInterestedMessage.h"
-#include "HaveMessage.h"
-#include "BitfieldMessage.h"
-#include "RequestMessage.h"
-#include "CancelMessage.h"
-#include "PieceMessage.h"
-#include "HandshakeMessage.h"
-#include "KeepAliveMessage.h"
-#include "PortMessage.h"
-#include "HaveAllMessage.h"
-#include "HaveNoneMessage.h"
-#include "RejectMessage.h"
-#include "AllowedFastMessage.h"
-#include "SuggestPieceMessage.h"
 #include "RequestSlot.h"
 #include "SharedHandle.h"
+#include "PeerMessageFactory.h"
 
 #define REQUEST_TIME_OUT 60
 #define ALLOWED_FAST_SET_SIZE 10
 
-typedef SharedHandle<PeerMessage> PeerMessageHandle;
-typedef SharedHandle<HandshakeMessage> HandshakeMessageHandle;
 typedef deque<RequestSlot> RequestSlots;
 typedef deque<PeerMessageHandle> MessageQueue;
 
@@ -63,15 +45,13 @@ private:
   PeerConnection* peerConnection;
   PeerHandle peer;
   Pieces pieces;
+  PeerMessageFactory* peerMessageFactory;
   // allowed fast piece indexes that local client has sent
   Integers fastSet;
   bool quickReplied;
   const Logger* logger;
 
   void getNewPieceAndSendInterest(int pieceNum);
-  PeerMessageHandle createPeerMessage(const char* msg, int msgLength);
-  HandshakeMessageHandle createHandshakeMessage(const char* msg, int msgLength);
-  void setPeerMessageCommonProperty(PeerMessage* peerMessage);
   int countRequestSlot() const;
 public:
   PeerInteraction(int cuid,
@@ -82,6 +62,7 @@ public:
   ~PeerInteraction();
 
   void addMessage(const PeerMessageHandle& peerMessage);
+  void addRequestSlot(const RequestSlot& requestSlot);
   void rejectPieceMessageInQueue(int index, int begin, int length);
   void rejectAllPieceMessageInQueue();
   void onChoked();
@@ -120,22 +101,11 @@ public:
   void sendAllowedFast();
 
   PeerMessageHandle receiveMessage();
-  HandshakeMessageHandle receiveHandshake(bool quickReply = false);
+  PeerMessageHandle receiveHandshake(bool quickReply = false);
 
-  RequestMessage* createRequestMessage(int index, int blockIndex);
-  CancelMessage* createCancelMessage(int index, int begin, int length);
-  PieceMessage* createPieceMessage(int index, int begin, int length);
-  HaveMessage* createHaveMessage(int index);
-  ChokeMessage* createChokeMessage();
-  UnchokeMessage* createUnchokeMessage();
-  InterestedMessage* createInterestedMessage();
-  NotInterestedMessage* createNotInterestedMessage();
-  BitfieldMessage* createBitfieldMessage();
-  KeepAliveMessage* createKeepAliveMessage();
-  HaveAllMessage* createHaveAllMessage();
-  HaveNoneMessage* createHaveNoneMessage();
-  RejectMessage* createRejectMessage(int index, int begin, int length);
-  AllowedFastMessage* createAllowedFastMessage(int index);
+  const PeerMessageFactory* getPeerMessageFactory() const {
+    return peerMessageFactory;
+  }
 };
 
 #endif // _D_PEER_INTERACTION_H_

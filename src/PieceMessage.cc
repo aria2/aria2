@@ -109,6 +109,9 @@ int PieceMessage::getMessageHeaderLength() {
 }
 
 void PieceMessage::send() {
+  if(invalidate) {
+    return;
+  }
   TorrentMan* torrentMan = peerInteraction->getTorrentMan();
   PeerConnection* peerConnection = peerInteraction->getPeerConnection();
   if(!headerSent) {
@@ -227,3 +230,49 @@ void PieceMessage::erasePieceOnDisk(const Piece& piece) {
   }
 }
 
+PeerMessageHandle PieceMessage::createRejectMessage(int index,
+						    int begin,
+						    int blockLength) const {
+  return peerInteraction->getPeerMessageFactory()->
+    createRejectMessage(index,
+			begin,
+			blockLength);
+}
+
+void PieceMessage::onChoked() {
+  if(!invalidate &&
+     !inProgress &&
+     !peerInteraction->isInFastSet(index)) {
+    logger->debug("CUID#%d - Reject piece message in queue because"
+		  " the peer has been choked. index=%d, begin=%d, length=%d",
+		  cuid,
+		  index,
+		  begin,
+		  blockLength);
+
+    if(peer->isFastExtensionEnabled()) {
+      peerInteraction->addMessage(createRejectMessage(index,
+						      begin,
+						      blockLength));
+    }
+    invalidate = true;
+  }
+}
+
+void PieceMessage::onCanceled(int index, int begin, int blockLength) {
+  if(!invalidate &&
+     !inProgress &&
+     this->index == index &&
+     this->begin == begin &&
+     this->blockLength == blockLength) {
+    logger->debug("CUID#%d - Reject piece message in queue because cancel"
+		  " message received. index=%d, begin=%d, length=%d",
+		  cuid, index, begin, blockLength);
+    if(peer->isFastExtensionEnabled()) {
+      peerInteraction->addMessage(createRejectMessage(index,
+						      begin,
+						      blockLength));
+    }
+    invalidate = true;
+  }
+}

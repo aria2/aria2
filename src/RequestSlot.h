@@ -38,14 +38,23 @@ public:
   RequestSlot(const RequestSlot& requestSlot);
   ~RequestSlot() {}
 
-  RequestSlot& operator=(const RequestSlot& requestSlot);
+  RequestSlot& operator=(const RequestSlot& requestSlot) {
+    if(this != &requestSlot) {
+      copy(requestSlot);
+    }
+    return *this;
+  }
+
+  bool operator==(const RequestSlot& requestSlot) const {
+    return index == requestSlot.index &&
+      begin == requestSlot.begin &&
+      length == requestSlot.length;
+  }
 
   void setDispatchedTime();
 
   bool isTimeout(int timeoutSec) const;
   int getLatencyInMillis() const;
-
-  bool operator==(const RequestSlot& requestSlot) const;
 
   int getIndex() const { return index; }
   void setIndex(int index) { this->index = index; }

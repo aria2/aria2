@@ -22,22 +22,8 @@
 #ifndef _D_PEER_MESSAGE_UTIL_H_
 #define _D_PEER_MESSAGE_UTIL_H_
 
-#include "ChokeMessage.h"
-#include "UnchokeMessage.h"
-#include "InterestedMessage.h"
-#include "NotInterestedMessage.h"
-#include "HaveMessage.h"
-#include "BitfieldMessage.h"
-#include "RequestMessage.h"
-#include "CancelMessage.h"
-#include "PieceMessage.h"
-#include "HandshakeMessage.h"
-#include "KeepAliveMessage.h"
-#include "PortMessage.h"
-#include "HaveAllMessage.h"
-#include "HaveNoneMessage.h"
-#include "PeerConnection.h"
 #include "common.h"
+#include "HandshakeMessage.h"
 
 #define MAX_BLOCK_LENGTH (128*1024)
 

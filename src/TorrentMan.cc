@@ -82,7 +82,7 @@ void TorrentMan::updatePeers(const Peers& peers) {
 
 bool TorrentMan::addPeer(const PeerHandle& peer) {
   if(peers.size() >= MAX_PEER_LIST_SIZE) {
-    deleteErrorPeer();
+    deleteUnusedPeer(peers.size()-MAX_PEER_LIST_SIZE+15);
   }
   Peers::iterator itr = find(peers.begin(), peers.end(), peer);
   if(itr == peers.end()) {
@@ -117,11 +117,13 @@ bool TorrentMan::isPeerAvailable() const {
   return getPeer() != nullPeer;
 }
 
-void TorrentMan::deleteErrorPeer() {
-  for(Peers::iterator itr = peers.begin(); itr != peers.end();) {
+void TorrentMan::deleteUnusedPeer(int delSize) {
+  for(Peers::iterator itr = peers.begin();
+      itr != peers.end() && delSize > 0;) {
     const PeerHandle& p = *itr;
-    if(p->error > 0 && p->cuid == 0) {
+    if(p->cuid == 0) {
       itr = peers.erase(itr);
+      delSize--;
     } else {
       itr++;
     }
@@ -656,18 +658,19 @@ void TorrentMan::advertisePiece(int cuid, int index) {
   haves.push_front(entry);
 };
 
-PieceIndexes TorrentMan::getAdvertisedPieceIndexes(int myCuid,
-						   const Time& lastCheckTime) const {
-    PieceIndexes indexes;
-    for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
-      const Haves::value_type& have = *itr;
-      if(have.cuid == myCuid) {
-	continue;
-      }
-      if(lastCheckTime.isNewer(have.registeredTime)) {
-	break;
-      }
-      indexes.push_back(have.index);
+PieceIndexes
+TorrentMan::getAdvertisedPieceIndexes(int myCuid,
+				      const Time& lastCheckTime) const {
+  PieceIndexes indexes;
+  for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
+    const Haves::value_type& have = *itr;
+    if(have.cuid == myCuid) {
+      continue;
     }
-    return indexes;
+    if(lastCheckTime.isNewer(have.registeredTime)) {
+      break;
+    }
+    indexes.push_back(have.index);
   }
+  return indexes;
+}
