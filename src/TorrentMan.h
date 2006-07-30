@@ -176,9 +176,15 @@ public:
 
   string getPieceHash(int index) const;
 
+  // Addes piece index to advertise to other commands. They send have message
+  // based on this information.
   void advertisePiece(int cuid, int index);
 
+  // Returns piece index which is not advertised by the caller command and
+  // newer than lastCheckTime.
   PieceIndexes getAdvertisedPieceIndexes(int myCuid, const Time& lastCheckTime) const;
+  // Removes have entry if specified seconds have elapsed since its registration.
+  void removeAdvertisedPiece(int elapsed);
 
   long long int getTotalLength() const { return totalLength; }
   void setTotalLength(long long int length) { totalLength = length; }

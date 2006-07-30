@@ -660,7 +660,9 @@ void TorrentMan::advertisePiece(int cuid, int index) {
 
 PieceIndexes
 TorrentMan::getAdvertisedPieceIndexes(int myCuid,
-				      const Time& lastCheckTime) const {
+				      const Time& lastCheckTime
+				      ) const
+{
   PieceIndexes indexes;
   for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
     const Haves::value_type& have = *itr;
@@ -674,3 +676,30 @@ TorrentMan::getAdvertisedPieceIndexes(int myCuid,
   }
   return indexes;
 }
+
+class FindElapsedHave
+{
+private:
+  int elapsed;
+public:
+  FindElapsedHave(int elapsed):elapsed(elapsed) {}
+
+  bool operator()(const HaveEntry& have) {
+    if(have.registeredTime.elapsed(elapsed)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+};
+  
+void
+TorrentMan::removeAdvertisedPiece(int elapsed)
+{
+  Haves::iterator itr = find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
+  if(itr != haves.end()) {
+    logger->debug("Removed %d have entries.", haves.end()-itr);
+    haves.erase(itr, haves.end());
+  }
+}
+

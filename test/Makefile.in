@@ -73,7 +73,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	RejectMessageTest.$(OBJEXT) AllowedFastMessageTest.$(OBJEXT) \
 	SuggestPieceMessageTest.$(OBJEXT) \
 	Xml2MetalinkProcessorTest.$(OBJEXT) MetalinkerTest.$(OBJEXT) \
-	MetalinkEntryTest.$(OBJEXT)
+	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -255,7 +255,8 @@ aria2c_SOURCES = AllTest.cc\
 	SuggestPieceMessageTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	MetalinkerTest.cc\
-	MetalinkEntryTest.cc
+	MetalinkEntryTest.cc\
+	FeatureConfigTest.cc
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -328,6 +329,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriterTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveAllMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveMessageTest.Po@am__quote@

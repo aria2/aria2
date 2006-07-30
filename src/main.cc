@@ -29,6 +29,7 @@
 #include "Util.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "prefs.h"
+#include "FeatureConfig.h"
 
 #ifdef ENABLE_BITTORRENT
 # include "TorrentConsoleDownloadEngine.h"
@@ -37,6 +38,7 @@
 # include "TorrentAutoSaveCommand.h"
 # include "TrackerWatcherCommand.h"
 # include "TrackerUpdateCommand.h"
+# include "HaveEraseCommand.h"
 # include "ByteArrayDiskWriter.h"
 # include "PeerChokeCommand.h"
 #endif // ENABLE_BITTORRENT
@@ -128,6 +130,9 @@ void createRequest(int cuid, const string& url, string referer, Requests& reques
 void showVersion() {
   cout << PACKAGE << _(" version ") << PACKAGE_VERSION << endl;
   cout << "Copyright (C) 2006 Tatsuhiro Tsujikawa" << endl;
+  cout << endl;
+  cout << "**Configuration**" << endl;
+  cout << FeatureConfig::getConfigurationSummary();
   cout << endl;
   cout <<
     _("This program is free software; you can redistribute it and/or modify\n"
@@ -881,6 +886,8 @@ int main(int argc, char* argv[]) {
 							op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
       te->commands.push_back(new PeerChokeCommand(te->torrentMan->getNewCuid(),
 						  10, te));
+      te->commands.push_back(new HaveEraseCommand(te->torrentMan->getNewCuid(),
+						  te, 10));
       te->run();
       
       if(te->torrentMan->downloadComplete()) {

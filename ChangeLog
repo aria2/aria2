@@ -1,3 +1,55 @@
+2006-07-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/TorrentMan.h:
+	(advertisePiece): Updated doc.
+	(getAdvertisedPieceIndexes): Updated doc.
+	(removeAdvertisedPiece); New function.
+	
+	* src/TorrentMan.cc
+	(FindElapsedHave): New function object.
+	(removeAdvertisedPiece): New function.
+
+	* src/HaveEraseCommand.h: New class.
+	* src/HaveEraseCommand.cc: New class.
+
+	* src/FeatureConfig.h: New class.
+	* src/FeatureConfig.cc: New class.
+	
+	* src/Request.h
+	(defaultPorts): Removed.
+	* src/Request.cc
+	(FeatureConfig.h): Included.
+	(Request): Removed the statements related to defaultPorts.
+	(parseUrl): Removed metalinkEnabled. Use FeatureConfig instead.
+	A default port number is now retrieved from FeatureConfig.
+	
+	* src/main.cc
+	(HaveEraseCommand.h): Included.
+	(showVersion): Added the output of feature list.
+	(main): Added HaveEraseCommand to command queue in BitTorrent
+	downloading.
+	
+	* src/PeerInteractionCommand.h
+	(chokeCheckPoint): Commented out.
+	(periodicExecPoint): New variable.
+	* src/PeerInteractionCommand.cc
+	(executeInternal): Following methods are now called in at least every
+	0.5 seconds to reduce CPU usage:
+	detectMessageFlooding(), peerInteraction->checkRequestSlot(),
+	checkHave(), sendKeepAlive().
+	(checkLongTimePeerChoking): Commented out.
+
+	* src/BitfieldMan.h
+	(getNthBitIndex): Changed the method signature.
+	(getMissingIndexRandomly): Changed the method signature.
+	* src/BitfieldMan.cc
+	(getNthBitIndex): Rewritten
+	(getMissingIndexRandomly): Rewritten.
+	(hasMissingPiece): Rewritten.
+	(getMissingIndex): Refactored.
+	(getMissingUnusedIndex); Refactored.
+	(getMissingIndex): Refactored.
+	
 2006-07-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/PeerMessage.h

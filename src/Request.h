@@ -57,7 +57,6 @@ private:
   int port;
   string dir;
   string file;
-  map<string, int> defaultPorts;
   int tryCount;
   int trackerEvent;
   bool parseUrl(const string& url);

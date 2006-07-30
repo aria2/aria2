@@ -74,45 +74,36 @@ int BitfieldMan::countSetBit(const unsigned char* bitfield, int len) const {
   return count;
 }
 
-int BitfieldMan::getNthBitIndex(const unsigned char* bitfield, int len, int nth) const {
+int BitfieldMan::getNthBitIndex(const unsigned char bitfield, int nth) const {
   int index = -1;
-  for(int i = 0; i < len && index == -1; i++) {
-    unsigned char bit = bitfield[i];
-    for(int bs = 7; bs >= 0; bs--) {
-      unsigned char mask = 1 << bs;
-      if(bit & mask) {
-	nth--;
-	if(nth == 0) {
-	  index = i*8+7-bs;
-	  break;
-	}
+  for(int bs = 7; bs >= 0; bs--) {
+    unsigned char mask = 1 << bs;
+    if(bitfield & mask) {
+      nth--;
+      if(nth == 0) {
+	index = 7-bs;
+	break;
       }
     }
   }
   return index;
 }
 
-int BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield, int len, int randMax) const {
-  int nth = 1+(int)(((double)randMax)*random()/(RAND_MAX+1.0));
+int
+BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield,
+				     int bitfieldLength) const
+{
+  int byte = (int)(((double)bitfieldLength)*random()/(RAND_MAX+1.0));
 
-  int count = 0;
-  int size = sizeof(unsigned int);
-  for(int i = 0; i < len/size; i++) {
-    int temp = Util::countBit(*(unsigned int*)&bitfield[i*size]);
-    if(nth <= count+temp) {
-      int t = i*size*8+getNthBitIndex(&bitfield[i*size], size, nth-count);
-      return t;
-    } else {
-      count += temp;
+  for(int i = 0; i < bitfieldLength; i++) {
+    unsigned char mask = 0xff;
+    if(bitfield[byte]&mask) {
+      int index = byte*8+getNthBitIndex(bitfield[byte], 1);
+      return index;
     }
-  }
-  for(int i = len-len%size; i < len; i++) {
-    int temp = Util::countBit((unsigned int)bitfield[i]);
-    if(nth <= count+temp) {
-      int t = i*8+getNthBitIndex(&bitfield[i], 1, nth-count);
-      return t;      
-    } else {
-      count += temp;
+    byte++;
+    if(byte == bitfieldLength) {
+      byte = 0;
     }
   }
   return -1;
@@ -122,28 +113,17 @@ bool BitfieldMan::hasMissingPiece(const unsigned char* peerBitfield, int length)
   if(bitfieldLength != length) {
     return false;
   }
-  unsigned char* tempBitfield = new unsigned char[bitfieldLength];
-  for(int i = 0; i < bitfieldLength; i++) {
-    tempBitfield[i] = peerBitfield[i] & ~bitfield[i];
-    if(filterEnabled) {
-      tempBitfield[i] &= filterBitfield[i];
-    }
-  }
   bool retval = false;
-  int size = sizeof(unsigned int);
-  for(int i = 0; i < length/size; i++) {
-    if(Util::countBit(*(unsigned int*)&tempBitfield[i*size]) > 0) {
+  for(int i = 0; i < bitfieldLength; i++) {
+    unsigned char temp = peerBitfield[i] & ~bitfield[i];
+    if(filterEnabled) {
+      temp &= filterBitfield[i];
+    }
+    if(temp&0xff) {
       retval = true;
       break;
     }
   }
-  for(int i = length-length%size; i < length && retval == false; i++) {
-    if(Util::countBit((unsigned int)tempBitfield[i]) > 0) {
-      retval = true;
-      break;
-    }
-  }
-  delete [] tempBitfield;
   return retval;
 }
 
@@ -158,11 +138,7 @@ int BitfieldMan::getMissingIndex(const unsigned char* peerBitfield, int length) 
       tempBitfield[i] &= filterBitfield[i];
     }
   }
-  int max = countSetBit(tempBitfield, bitfieldLength);
-  int index = -1;
-  if(max > 0) {
-    index = getMissingIndexRandomly(tempBitfield, bitfieldLength, max);
-  }
+  int index = getMissingIndexRandomly(tempBitfield, bitfieldLength);
   delete [] tempBitfield;
   return index;
 }
@@ -178,11 +154,7 @@ int BitfieldMan::getMissingUnusedIndex(const unsigned char* peerBitfield, int le
       tempBitfield[i] &= filterBitfield[i];
     }
   }
-  int max = countSetBit(tempBitfield, bitfieldLength);
-  int index = -1;
-  if(max > 0) {
-    index = getMissingIndexRandomly(tempBitfield, bitfieldLength, max);
-  }
+  int index = getMissingIndexRandomly(tempBitfield, bitfieldLength);
   delete [] tempBitfield;
   return index;
 }
@@ -230,11 +202,7 @@ int BitfieldMan::getMissingIndex() const {
       tempBitfield[i] &= filterBitfield[i];
     }
   }
-  int max = countSetBit(tempBitfield, bitfieldLength);
-  int index = -1;
-  if(max > 0) {
-    index = getMissingIndexRandomly(tempBitfield, bitfieldLength, max);
-  }
+  int index = getMissingIndexRandomly(tempBitfield, bitfieldLength);
   delete [] tempBitfield;
   return index;
 }

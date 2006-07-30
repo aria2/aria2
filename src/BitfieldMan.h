@@ -38,8 +38,8 @@ private:
   int blocks;
   bool filterEnabled;
   int countSetBit(const unsigned char* bitfield, int len) const;
-  int getNthBitIndex(const unsigned char* bitfield, int len, int nth) const;
-  int getMissingIndexRandomly(const unsigned char* bitfield, int len, int randMax) const;
+  int getNthBitIndex(const unsigned char bit, int nth) const;
+  int getMissingIndexRandomly(const unsigned char* bitfield, int len) const;
   bool isBitSetInternal(const unsigned char* bitfield, int index) const;
   bool setBitInternal(unsigned char* bitfield, int index, bool on);
   bool setFilterBit(int index);

@@ -21,14 +21,9 @@
 /* copyright --> */
 #include "Request.h"
 #include "Util.h"
+#include "FeatureConfig.h"
 
 Request::Request():port(0), tryCount(0), isTorrent(false) {
-  defaultPorts["http"] = 80;
-#ifdef ENABLE_SSL
-  // for SSL
-  defaultPorts["https"] = 443;
-#endif // ENABLE_SSL
-  defaultPorts["ftp"] = 21;
   seg.sp = 0;
   seg.ep = 0;
   seg.ds = 0;
@@ -56,16 +51,11 @@ bool Request::redirectUrl(const string& url) {
 }
 
 bool Request::parseUrl(const string& url) {
-#ifdef ENABLE_METALINK
-  bool metalinkEnabled = true;
-#else
-  bool metalinkEnabled = false;
-#endif
-
   string tempUrl;
   string::size_type sharpIndex = url.find("#");
   if(sharpIndex != string::npos) {
-    if(metalinkEnabled && url.find(METALINK_MARK) == sharpIndex) {
+    if(FeatureConfig::isSupported(FeatureConfig::FEATURE_METALINK) &&
+       url.find(METALINK_MARK) == sharpIndex) {
       tempUrl = url.substr(sharpIndex+strlen(METALINK_MARK));
     } else {
       tempUrl = url.substr(0, sharpIndex);
@@ -92,7 +82,7 @@ bool Request::parseUrl(const string& url) {
   if(hp == string::npos) return false;
   protocol = tempUrl.substr(0, hp);
   int defPort;
-  if((defPort = defaultPorts[protocol]) == 0) {
+  if((defPort = FeatureConfig::getDefaultPort(protocol)) == 0) {
     return false;
   }
   hp += 3;

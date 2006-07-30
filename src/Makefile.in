@@ -90,7 +90,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.cc AllowedFastMessage.h\
 @ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.cc SuggestPieceMessage.h\
 @ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.cc SimplePeerMessage.h\
-@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.cc PeerMessageFactory.h
+@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.cc PeerMessageFactory.h\
+@ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.cc HaveEraseCommand.h
 
 @ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -154,12 +155,13 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
 	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
 	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
-	SharedHandle.h MetaEntry.h Data.cc Data.h Dictionary.cc \
-	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
-	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h TorrentMan.cc \
-	TorrentMan.h PeerConnection.cc PeerConnection.h \
-	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
-	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
+	SharedHandle.h FeatureConfig.cc FeatureConfig.h MetaEntry.h \
+	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
+	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	ShaVisitor.cc ShaVisitor.h TorrentMan.cc TorrentMan.h \
+	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
+	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h BitfieldMan.cc \
 	BitfieldMan.h TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -188,9 +190,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	RejectMessage.h AllowedFastMessage.cc AllowedFastMessage.h \
 	SuggestPieceMessage.cc SuggestPieceMessage.h \
 	SimplePeerMessage.cc SimplePeerMessage.h PeerMessageFactory.cc \
-	PeerMessageFactory.h Metalinker.cc Metalinker.h \
-	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
-	MetalinkResource.h MetalinkProcessor.h \
+	PeerMessageFactory.h HaveEraseCommand.cc HaveEraseCommand.h \
+	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
 @ENABLE_BITTORRENT_TRUE@am__objects_1 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
@@ -238,7 +240,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -266,7 +269,7 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	PreAllocationDiskWriter.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
 	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) Time.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2)
+	FeatureConfig.$(OBJEXT) $(am__objects_1) $(am__objects_2)
 am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -455,17 +458,18 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
 	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
 	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
-	SharedHandle.h $(am__append_1) $(am__append_2)
+	SharedHandle.h FeatureConfig.cc FeatureConfig.h \
+	$(am__append_1) $(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
 
-#aria2c_LDFLAGS = -pg
+aria2c_LDFLAGS = -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@# -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ -pg
 
 all: all-am
 
@@ -563,6 +567,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
@@ -572,6 +577,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveAllMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveEraseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveNoneMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@

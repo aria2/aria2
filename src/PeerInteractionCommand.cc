@@ -115,14 +115,18 @@ bool PeerInteractionCommand::executeInternal() {
   case WIRED:
     peerInteraction->syncPiece();
     decideChoking();
-    receiveMessages();
-    detectMessageFlooding();
 
-    peerInteraction->checkRequestSlot();
+    if(periodicExecPoint.elapsedInMillis(500)) {
+      periodicExecPoint.reset();
+      detectMessageFlooding();
+      peerInteraction->checkRequestSlot();
+      checkHave();
+      sendKeepAlive();
+    }
+    receiveMessages();
+
     peerInteraction->addRequests();
-    checkHave();
     peerInteraction->sendMessages(e->getUploadSpeed());
-    sendKeepAlive();
     break;
   }
   if(peerInteraction->countMessageInQueue() > 0) {
@@ -152,6 +156,7 @@ void PeerInteractionCommand::detectMessageFlooding() {
   }
 }
 
+/*
 void PeerInteractionCommand::checkLongTimePeerChoking() {
   if(e->torrentMan->downloadComplete()) {
     return;
@@ -165,6 +170,7 @@ void PeerInteractionCommand::checkLongTimePeerChoking() {
     chokeCheckPoint.reset();
   }
 }
+*/
 
 void PeerInteractionCommand::decideChoking() {
   if(peer->shouldBeChoking()) {

@@ -38,9 +38,10 @@ private:
   PeerInteraction* peerInteraction;
  
   Time keepAliveCheckPoint;
-  Time chokeCheckPoint;
+  //Time chokeCheckPoint;
   Time freqCheckPoint;
   Time haveCheckTime;
+  Time periodicExecPoint;
   int chokeUnchokeCount;
   int haveCount;
   int keepAliveCount;

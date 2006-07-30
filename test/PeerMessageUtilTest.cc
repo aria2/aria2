@@ -1,4 +1,12 @@
 #include "PeerMessageUtil.h"
+#include "UnchokeMessage.h"
+#include "InterestedMessage.h"
+#include "NotInterestedMessage.h"
+#include "HaveMessage.h"
+#include "BitfieldMessage.h"
+#include "RequestMessage.h"
+#include "PieceMessage.h"
+#include "CancelMessage.h"
 #include <netinet/in.h>
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
