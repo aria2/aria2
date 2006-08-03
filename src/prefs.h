@@ -43,6 +43,20 @@
 #define PREF_MIN_SEGMENT_SIZE "min_segment_size"
 // values: 1*digit
 #define PREF_AUTO_SAVE_INTERVAL "auto_save_interval"
+// values: true | false
+#define PREF_STDOUT_LOG "stdout_log"
+// values: a string that your file system recognizes as a file name.
+#define PREF_LOG "log"
+// values: a string that your file system recognizes as a directory.
+#define PREF_DIR "dir"
+// values: a string that your file system recognizes as a file name.
+#define PREF_OUT "out"
+// values: 1*digit
+#define PREF_SPLIT "split"
+// value: true | false
+#define PREF_DAEMON "daemon"
+// value: a string
+#define PREF_REFERER "referer"
 
 /**
  * FTP related preferences
@@ -98,5 +112,23 @@
 #define PREF_DIRECT_FILE_MAPPING "direct_file_mapping"
 // values: 1*digit
 #define PREF_UPLOAD_LIMIT "upload_limit"
+// values: a string that your file system recognizes as a file name.
+#define PREF_TORRENT_FILE "torrent_file"
+// values: 1*digit
+#define PREF_LISTEN_PORT "listen_port"
+
+/**
+ * Metalink related preferences
+ */
+// values: a string that your file system recognizes as a file name.
+#define PREF_METALINK_FILE "metalink_file"
+// values: a string
+#define PREF_METALINK_VERSION "metalink_version"
+// values: a string
+#define PREF_METALINK_LANGUAGE "metalink_language"
+// values: a string
+#define PREF_METALINK_OS "metalink_os"
+// values: 1*digit
+#define PREF_METALINK_SERVERS "metalink_servers"
 
 #endif // _D_PREFS_H_

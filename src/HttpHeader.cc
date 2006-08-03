@@ -20,18 +20,19 @@
  */
 /* copyright --> */
 #include "HttpHeader.h"
+#include "Util.h"
 
 void HttpHeader::put(const string& name, const string& value) {
-  multimap<string, string>::value_type vt(name, value);
+  multimap<string, string>::value_type vt(Util::toLower(name), value);
   table.insert(vt);
 }
 
 bool HttpHeader::defined(const string& name) const {
-  return table.count(name) == 1;
+  return table.count(Util::toLower(name)) >= 1;
 }
 
 string HttpHeader::getFirst(const string& name) const {
-  multimap<string, string>::const_iterator itr = table.find(name);
+  multimap<string, string>::const_iterator itr = table.find(Util::toLower(name));
   if(itr == table.end()) {
     return "";
   } else {
@@ -41,26 +42,21 @@ string HttpHeader::getFirst(const string& name) const {
 
 Strings HttpHeader::get(const string& name) const {
   Strings v;
-  for(multimap<string, string>::const_iterator itr = table.find(name); itr != table.end(); itr++) {
+  for(multimap<string, string>::const_iterator itr = table.find(Util::toLower(name)); itr != table.end(); itr++) {
     v.push_back((*itr).second);
   }
   return v;
 }
 
 int HttpHeader::getFirstAsInt(const string& name) const {
-  multimap<string, string>::const_iterator itr = table.find(name);
-  if(itr == table.end()) {
-    return 0;
-  } else {
-    return (int)strtol((*itr).second.c_str(), NULL, 10);
-  }
+  return (int)getFirstAsLLInt(name);
 }
 
 long long int HttpHeader::getFirstAsLLInt(const string& name) const {
-  multimap<string, string>::const_iterator itr = table.find(name);
-  if(itr == table.end()) {
+  string value = getFirst(name);
+  if(value == "") {
     return 0;
   } else {
-    return strtoll((*itr).second.c_str(), NULL, 10);
+    return strtoll(value.c_str(), NULL, 10);
   }
 }

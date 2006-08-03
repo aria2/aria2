@@ -20,16 +20,23 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(FeatureConfigTest);
 
 void FeatureConfigTest::testGetDefaultPort() {
-  CPPUNIT_ASSERT_EQUAL(80, FeatureConfig::getDefaultPort("http"));
-  CPPUNIT_ASSERT_EQUAL(443, FeatureConfig::getDefaultPort("https"));
-  CPPUNIT_ASSERT_EQUAL(21, FeatureConfig::getDefaultPort("ftp"));
+  CPPUNIT_ASSERT_EQUAL(80,
+		       FeatureConfig::getInstance()->getDefaultPort("http"));
+  CPPUNIT_ASSERT_EQUAL(443,
+		       FeatureConfig::getInstance()->getDefaultPort("https"));
+  CPPUNIT_ASSERT_EQUAL(21,
+		       FeatureConfig::getInstance()->getDefaultPort("ftp"));
 }
 
 void FeatureConfigTest::testIsSupported() {
-  CPPUNIT_ASSERT_EQUAL(true, FeatureConfig::isSupported("http"));
-  CPPUNIT_ASSERT_EQUAL(true, FeatureConfig::isSupported("https"));
-  CPPUNIT_ASSERT_EQUAL(true, FeatureConfig::isSupported("ftp"));
-  CPPUNIT_ASSERT_EQUAL(false, FeatureConfig::isSupported("ftps"));
+  CPPUNIT_ASSERT_EQUAL(true,
+		       FeatureConfig::getInstance()->isSupported("http"));
+  CPPUNIT_ASSERT_EQUAL(true,
+		       FeatureConfig::getInstance()->isSupported("https"));
+  CPPUNIT_ASSERT_EQUAL(true,
+		       FeatureConfig::getInstance()->isSupported("ftp"));
+  CPPUNIT_ASSERT_EQUAL(false,
+		       FeatureConfig::getInstance()->isSupported("ftps"));
 }
 
 void FeatureConfigTest::testGetConfigurationSummary() {
@@ -37,6 +44,7 @@ void FeatureConfigTest::testGetConfigurationSummary() {
 		       +"https: yes\n"
 		       +"ftp: yes\n"
 		       +"bittorrent: yes\n"
-		       +"metalink: yes\n",
-		       FeatureConfig::getConfigurationSummary());
+		       +"metalink: yes\n"
+		       +"message digest: yes\n",
+		       FeatureConfig::getInstance()->getConfigurationSummary());
 }

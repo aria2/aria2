@@ -1,3 +1,48 @@
+2006-08-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/Option.h
+	(getAsBool): New function.
+	* src/Option.cc
+	(prefs.h): Included.
+	(defined): 0-length value is now recognized as undefined.
+	(getAsInt): Rewritten.
+	(getAsLLInt): Rewritten.
+	(getAsBool): New function.
+	
+	* src/FeatureConfig.h: Rewritten.
+	* src/FeatureConfig.cc: Rewritten.
+
+	* src/prefs.h
+	(PREF_STDOUT_LOG): New definition.
+	(PREF_LOG): New definition.
+	(PREF_DIR): New definition.
+	(PREF_OUT): New definition.
+	(PREF_SPLIT): New definition.
+	(PREF_DAEMON): New definition.
+	(PREF_REFERER): New definition.
+	(PREF_TORRENT_FILE): New definition.
+	(PREF_LISTEN_PORT): New definition.
+	(PREF_METALINK_FILE): New definition.
+	(PREF_METALINK_VERSION): New definition.
+	(PREF_METALINK_LANGUAGE): New definition.
+	(PREF_METALINK_OS): New definition.
+	(PREF_METALINK_SERVERS): New definition.
+
+	* src/main.cc
+	(main): Following command-line parameters are now put into Option
+	class: stdoutLog, logfile, dir, ufilename, split, daemonMode,
+	referer, torrentFile, metalinkFile, listenPort, metalinkVersion,
+	metalinkLanguage, metalinkOs, metalinkServers
+	To fix the bug that aria2 can not handle http response header properly.
+	
+	* src/HttpHeader.cc
+	(put): Made name lowercased.
+	(defined): Made name lowercased.
+	(getFirst): Made name lowercased.
+	(get): Made name lowercased.
+	(getFirstAsInt): Rewritten.
+	(getFirstAsLLInt): Rewritten.
+
 2006-07-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/TorrentMan.h:

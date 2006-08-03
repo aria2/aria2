@@ -54,7 +54,7 @@ bool Request::parseUrl(const string& url) {
   string tempUrl;
   string::size_type sharpIndex = url.find("#");
   if(sharpIndex != string::npos) {
-    if(FeatureConfig::isSupported(FeatureConfig::FEATURE_METALINK) &&
+    if(FeatureConfig::getInstance()->isSupported("metalink") &&
        url.find(METALINK_MARK) == sharpIndex) {
       tempUrl = url.substr(sharpIndex+strlen(METALINK_MARK));
     } else {
@@ -82,7 +82,7 @@ bool Request::parseUrl(const string& url) {
   if(hp == string::npos) return false;
   protocol = tempUrl.substr(0, hp);
   int defPort;
-  if((defPort = FeatureConfig::getDefaultPort(protocol)) == 0) {
+  if((defPort = FeatureConfig::getInstance()->getDefaultPort(protocol)) == 0) {
     return false;
   }
   hp += 3;

@@ -12,4 +12,6 @@
 * Query resource by location
 * Log version
 * List available os, version, etc for metalink
-* Performance Profiling
+* bittorrent in metalink
+* rename Time to something appropriate
+* ipv6(RFC2428 for ftp)

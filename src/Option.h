@@ -40,6 +40,7 @@ public:
   string get(const string& name) const;
   int getAsInt(const string& name) const;
   long long int getAsLLInt(const string& name) const;
+  bool getAsBool(const string& name) const;
 };
 
 #endif // _D_OPTION_H_

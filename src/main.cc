@@ -132,7 +132,7 @@ void showVersion() {
   cout << "Copyright (C) 2006 Tatsuhiro Tsujikawa" << endl;
   cout << endl;
   cout << "**Configuration**" << endl;
-  cout << FeatureConfig::getConfigurationSummary();
+  cout << FeatureConfig::getInstance()->getConfigurationSummary();
   cout << endl;
   cout <<
     _("This program is free software; you can redistribute it and/or modify\n"
@@ -291,8 +291,6 @@ void showUsage() {
 bool normalDownload(const Requests& requests,
 		    const Requests& reserved,
 		    Option* op,
-		    const string& dir,
-		    const string& ufilename,
 		    string& downloadedFilename) {
   setSignalHander(SIGINT, handler, 0);
   setSignalHander(SIGTERM, handler, 0);
@@ -301,8 +299,8 @@ bool normalDownload(const Requests& requests,
   e->option = op;
   e->segmentMan = new SegmentMan();
   e->segmentMan->diskWriter = new DefaultDiskWriter();
-  e->segmentMan->dir = dir;
-  e->segmentMan->ufilename = ufilename;
+  e->segmentMan->dir = op->get(PREF_DIR);
+  e->segmentMan->ufilename = op->get(PREF_OUT);
   e->segmentMan->option = op;
   e->segmentMan->splitter = new SplitSlowestSegmentSplitter();
   e->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
@@ -345,20 +343,6 @@ int main(int argc, char* argv[]) {
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 #endif // ENABLE_NLS
-  bool stdoutLog = false;
-  string logfile;
-  string dir = ".";
-  string ufilename;
-  int split = 1;
-  bool daemonMode = false;
-  string referer;
-  string torrentFile;
-  string metalinkFile;
-  int listenPort = -1;
-  string metalinkVersion;
-  string metalinkLanguage;
-  string metalinkOs;
-  int metalinkServers = 15;
   Integers selectFileIndexes;
 #ifdef ENABLE_BITTORRENT
   bool followTorrent = true;
@@ -373,6 +357,12 @@ int main(int argc, char* argv[]) {
 
   int c;
   Option* op = new Option();
+  op->put(PREF_STDOUT_LOG, V_FALSE);
+  op->put(PREF_DIR, ".");
+  op->put(PREF_SPLIT, "1");
+  op->put(PREF_DAEMON, V_FALSE);
+  op->put(PREF_LISTEN_PORT, "-1");
+  op->put(PREF_METALINK_SERVERS, "15");
   op->put(PREF_RETRY_WAIT, "5");
   op->put(PREF_TIMEOUT, "60");
   op->put(PREF_PEER_CONNECTION_TIMEOUT, "60");
@@ -479,7 +469,7 @@ int main(int argc, char* argv[]) {
 	}
 	break;
       case 7:
-	referer = optarg;
+	op->put(PREF_REFERER, optarg);
 	break;
       case 8: {
 	int wait = (int)strtol(optarg, NULL, 10);
@@ -544,14 +534,16 @@ int main(int argc, char* argv[]) {
 	  exit(EXIT_FAILURE);
 	}
 	break;
-      case 15:
-	listenPort = (int)strtol(optarg, NULL, 10);
+      case 15: {
+	int listenPort = (int)strtol(optarg, NULL, 10);
 	if(!(1024 <= listenPort && listenPort <= 65535)) {
 	  cerr << _("listen-port must be between 1024 and 65535.") << endl;
 	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
+	op->put(PREF_LISTEN_PORT, Util::itos(listenPort));
 	break;
+      }
       case 16:
 	if(string(optarg) == "true") {
 	  followTorrent = true;
@@ -591,13 +583,13 @@ int main(int argc, char* argv[]) {
 	Util::unfoldRange(optarg, selectFileIndexes);
 	break;
       case 100:
-	metalinkVersion = string(optarg);
+	op->put(PREF_METALINK_VERSION, optarg);
 	break;
       case 101:
-	metalinkLanguage = string(optarg);
+	op->put(PREF_METALINK_LANGUAGE, optarg);
 	break;
       case 102:
-	metalinkOs = string(optarg);
+	op->put(PREF_METALINK_OS, optarg);
 	break;
       case 103:
 	if(string(optarg) == "true") {
@@ -614,29 +606,31 @@ int main(int argc, char* argv[]) {
       break;
     }
     case 'D':
-      daemonMode = true;
+      op->put(PREF_DAEMON, V_TRUE);
       break;
     case 'd':
-      dir = optarg;
+      op->put(PREF_DIR, optarg);
       break;
     case 'o':
-      ufilename = optarg;
+      op->put(PREF_OUT, optarg);
       break;
     case 'l':
       if(strcmp("-", optarg) == 0) {
-	stdoutLog = true;
+	op->put(PREF_STDOUT_LOG, V_TRUE);
       } else {
-	logfile = optarg;
+	op->put(PREF_LOG, optarg);
       }
       break;
-    case 's':
-      split = (int)strtol(optarg, NULL, 10);
+    case 's': {
+      int split = (int)strtol(optarg, NULL, 10);
       if(!(1 <= split && split <= 5)) {
 	cerr << _("split must be between 1 and 5.") << endl;
 	showUsage();
 	exit(EXIT_FAILURE);
       }
+      op->put(PREF_SPLIT, Util::itos(split));
       break;
+    }
     case 't': {
       int timeout = (int)strtol(optarg, NULL, 10);
       if(1 <= timeout && timeout <= 600) {
@@ -665,19 +659,21 @@ int main(int argc, char* argv[]) {
       op->put(PREF_SHOW_FILES, V_TRUE);
       break;
     case 'T':
-      torrentFile = string(optarg);
+      op->put(PREF_TORRENT_FILE, optarg);
       break;
     case 'M':
-      metalinkFile = string(optarg);
+      op->put(PREF_METALINK_FILE, optarg);
       break;
-    case 'C':
-      metalinkServers = (int)strtol(optarg, NULL, 10);
+    case 'C': {
+      int metalinkServers = (int)strtol(optarg, NULL, 10);
       if(metalinkServers <= 0) {
 	cerr << _("metalink-servers must be greater than 0.") << endl;
 	showUsage();
 	exit(EXIT_FAILURE);
       }
-      break;      
+      op->put(PREF_METALINK_SERVERS, Util::itos(metalinkServers));
+      break;
+    }
     case 'v':
       showVersion();
       exit(EXIT_SUCCESS);
@@ -689,14 +685,14 @@ int main(int argc, char* argv[]) {
       exit(EXIT_FAILURE);
     }
   }
-  if(torrentFile.empty() && metalinkFile.empty()) {
+  if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE)) {
     if(optind == argc) {
       cerr << _("specify at least one URL") << endl;
       showUsage();
       exit(EXIT_FAILURE);
     }
   }
-  if(daemonMode) {
+  if(op->getAsBool(PREF_DAEMON)) {
     if(daemon(1, 1) < 0) {
       perror(_("daemon failed"));
       exit(EXIT_FAILURE);
@@ -704,7 +700,7 @@ int main(int argc, char* argv[]) {
   }
   
   Strings args(argv+optind, argv+argc);
-
+  
 #ifdef HAVE_LIBSSL
   // for SSL initialization
   SSL_load_error_strings();
@@ -717,10 +713,10 @@ int main(int argc, char* argv[]) {
   xmlInitParser();
 #endif // ENABLE_METALINK
   srandom(time(NULL));
-  if(stdoutLog) {
+  if(op->getAsBool(PREF_STDOUT_LOG)) {
     LogFactory::setLogFile("/dev/stdout");
-  } else if(logfile.size()) {
-    LogFactory::setLogFile(logfile);
+  } else if(op->get(PREF_LOG).size()) {
+    LogFactory::setLogFile(op->get(PREF_LOG));
   }
   // make sure logger is configured properly.
   try {
@@ -733,12 +729,12 @@ int main(int argc, char* argv[]) {
 
   setSignalHander(SIGPIPE, SIG_IGN, 0);
 
-  if(torrentFile.empty() && metalinkFile.empty()) {
+  if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE)) {
     Requests requests;
     int cuidCounter = 1;
     for(Strings::const_iterator itr = args.begin(); itr != args.end(); itr++) {
-      for(int s = 1; s <= split; s++) {
-	createRequest(cuidCounter, *itr, referer, requests); 
+      for(int s = 1; s <= op->getAsInt(PREF_SPLIT); s++) {
+	createRequest(cuidCounter, *itr, op->get(PREF_REFERER), requests); 
 	cuidCounter++;
       }
     }
@@ -747,22 +743,24 @@ int main(int argc, char* argv[]) {
 
     Requests reserved;
     string downloadedFilename;
-    normalDownload(requests, reserved, op, dir, ufilename, downloadedFilename);
+    normalDownload(requests, reserved, op, downloadedFilename);
 
     for_each(requests.begin(), requests.end(), Deleter());
     for_each(reserved.begin(), reserved.end(), Deleter());
     requests.clear();
   }
 #ifdef ENABLE_METALINK
-  if(!metalinkFile.empty() || followMetalink && readyToMetalinkMode) {
-    string targetMetalinkFile = metalinkFile.empty() ?
-      downloadedMetalinkFile : metalinkFile;
+  if(op->defined(PREF_METALINK_FILE) ||
+     followMetalink && readyToMetalinkMode) {
+    string targetMetalinkFile = op->defined(PREF_METALINK_FILE) ?
+      op->get(PREF_METALINK_FILE) : downloadedMetalinkFile;
     Xml2MetalinkProcessor proc;
     Metalinker* metalinker = proc.parseFile(targetMetalinkFile);
     
-    MetalinkEntry* entry = metalinker->queryEntry(metalinkVersion,
-						  metalinkLanguage,
-						  metalinkOs);
+    MetalinkEntry* entry =
+      metalinker->queryEntry(op->get(PREF_METALINK_VERSION),
+			     op->get(PREF_METALINK_LANGUAGE),
+			     op->get(PREF_METALINK_OS));
     if(entry == NULL) {
       printf("No file matched with your preference.\n");
       exit(EXIT_FAILURE);
@@ -774,13 +772,15 @@ int main(int argc, char* argv[]) {
     for(MetalinkResources::const_iterator itr = entry->resources.begin();
 	itr != entry->resources.end(); itr++) {
       MetalinkResource* resource = *itr;
-      for(int s = 1; s <= split; s++) {
-	createRequest(cuidCounter, resource->url, referer, requests); 
+      for(int s = 1; s <= op->getAsInt(PREF_SPLIT); s++) {
+	createRequest(cuidCounter, resource->url,
+		      op->get(PREF_REFERER), requests); 
 	cuidCounter++;
       }
     }
     Requests reserved;
-    int maxConnection = metalinkServers*split;
+    int maxConnection =
+      op->getAsInt(PREF_METALINK_SERVERS)*op->getAsInt(PREF_SPLIT);
     if((int)requests.size() > maxConnection) {
       copy(requests.begin()+maxConnection, requests.end(),
 	   insert_iterator<Requests>(reserved, reserved.end()));
@@ -791,8 +791,7 @@ int main(int argc, char* argv[]) {
     setSignalHander(SIGTERM, handler, 0);
 
     string downloadedFilename;
-    bool success = normalDownload(requests, reserved, op, dir, ufilename,
-				  downloadedFilename);
+    bool success = normalDownload(requests, reserved, op, downloadedFilename);
 
     for_each(requests.begin(), requests.end(), Deleter());
     for_each(reserved.begin(), reserved.end(), Deleter());
@@ -813,7 +812,8 @@ int main(int argc, char* argv[]) {
   }
 #endif // ENABLE_METALINK
 #ifdef ENABLE_BITTORRENT
-  if(!torrentFile.empty() || followTorrent && readyToTorrentMode) {
+  if(op->defined(PREF_TORRENT_FILE) ||
+     followTorrent && readyToTorrentMode) {
     try {
       //op->put(PREF_MAX_TRIES, "0");
       setSignalHander(SIGINT, torrentHandler, SA_RESETHAND);
@@ -831,11 +831,11 @@ int main(int argc, char* argv[]) {
       te->segmentMan->splitter = new SplitSlowestSegmentSplitter();
       te->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
       te->torrentMan = new TorrentMan();
-      te->torrentMan->setStoreDir(dir);
+      te->torrentMan->setStoreDir(op->get(PREF_DIR));
       te->torrentMan->option = op;
       te->torrentMan->req = req;
-      string targetTorrentFile = torrentFile.empty() ?
-	downloadedTorrentFile : torrentFile;
+      string targetTorrentFile = op->defined(PREF_TORRENT_FILE) ?
+	op->get(PREF_TORRENT_FILE) : downloadedTorrentFile;
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	FileEntries fileEntries =
 	  te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
@@ -853,7 +853,7 @@ int main(int argc, char* argv[]) {
       } else {
 	if(selectFileIndexes.empty()) {
 	  Strings targetFiles;
-	  if(!torrentFile.empty() && !args.empty()) {
+	  if(op->defined(PREF_TORRENT_FILE) && !args.empty()) {
 	    targetFiles = args;
 	  }
 	  te->torrentMan->setup(targetTorrentFile, targetFiles);
@@ -864,6 +864,7 @@ int main(int argc, char* argv[]) {
       PeerListenCommand* listenCommand =
 	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
       int port;
+      int listenPort = op->getAsInt(PREF_LISTEN_PORT);
       if(listenPort == -1) {
 	port = listenCommand->bindPort(6881, 6999);
       } else {
@@ -911,5 +912,6 @@ int main(int argc, char* argv[]) {
 #ifdef ENABLE_METALINK
   xmlCleanupParser();
 #endif // ENABLE_METALINK
+  FeatureConfig::release();
   return 0;
 }

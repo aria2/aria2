@@ -21,36 +21,63 @@
 /* copyright --> */
 #include "FeatureConfig.h"
 
-string FeatureConfig::FEATURE_HTTP = "http";
-string FeatureConfig::FEATURE_HTTPS = "https";
-string FeatureConfig::FEATURE_FTP = "ftp";
-string FeatureConfig::FEATURE_BITTORRENT = "bittorrent";
-string FeatureConfig::FEATURE_METALINK = "metalink";
+FeatureConfig* FeatureConfig::featureConfig = 0;
 
-static ProtocolPortMap::value_type defaultPortsArray[] = {
-  ProtocolPortMap::value_type(FeatureConfig::FEATURE_HTTP, 80),
-  ProtocolPortMap::value_type(FeatureConfig::FEATURE_HTTPS, 443),
-  ProtocolPortMap::value_type(FeatureConfig::FEATURE_FTP, 21),
-};
+#define FEATURE_HTTP "http"
+#define FEATURE_HTTPS "https"
+#define FEATURE_FTP "ftp"
+#define FEATURE_BITTORRENT "bittorrent"
+#define FEATURE_METALINK "metalink"
+#define FEATURE_MESSAGE_DIGEST "message digest"
 
-ProtocolPortMap FeatureConfig::defaultPorts(&defaultPortsArray[0],
-					     &defaultPortsArray[3]);
+FeatureConfig::FeatureConfig() {
+  static PortMap::value_type portArray[] = {
+    PortMap::value_type("http", 80),
+    PortMap::value_type("https", 443),
+    PortMap::value_type("ftp", 21),
+  };
+  int portArraySize = sizeof(portArray)/sizeof(PortMap::value_type);
+  defaultPorts.insert(&portArray[0],
+		      &portArray[portArraySize]);
 
-static SupportedFeatureMap::value_type supportedFeaturesArray[] = {
-  SupportedFeatureMap::value_type(FeatureConfig::FEATURE_HTTP, true),
+  static FeatureMap::value_type featureArray[] = {
+    FeatureMap::value_type(FEATURE_HTTP, true),
+    FeatureMap::value_type(FEATURE_HTTPS,
 #ifdef ENABLE_SSL
-  SupportedFeatureMap::value_type(FeatureConfig::FEATURE_HTTPS, true),
+			   true
+#else
+			   false
 #endif // ENABLE_SSL
-  SupportedFeatureMap::value_type(FeatureConfig::FEATURE_FTP, true),
+			   ),
+    FeatureMap::value_type(FEATURE_FTP, true),
+    FeatureMap::value_type(FEATURE_BITTORRENT,
 #ifdef ENABLE_BITTORRENT
-  SupportedFeatureMap::value_type(FeatureConfig::FEATURE_BITTORRENT, true),
+			   true
+#else
+			   false
 #endif // ENABLE_BITTORRENT
+			   ),
+    FeatureMap::value_type(FEATURE_METALINK,
 #ifdef ENABLE_METALINK
-  SupportedFeatureMap::value_type(FeatureConfig::FEATURE_METALINK, true),
+			   true
+#else
+			   false
 #endif // ENABLE_METALINK
-};
+			   ),
+    FeatureMap::value_type(FEATURE_MESSAGE_DIGEST,
+#ifdef ENABLE_MESSAGE_DIGEST
+			   true
+#else
+			   false
+#endif // ENABLE_MESSAGE_DIGEST
+			   ),
+  };
 
-SupportedFeatureMap
-FeatureConfig::supportedFeatures(&supportedFeaturesArray[0],
-				 &supportedFeaturesArray[sizeof(supportedFeaturesArray)/sizeof(SupportedFeatureMap::value_type)]);
+  int featureArraySize = sizeof(featureArray)/sizeof(FeatureMap::value_type);
+  supportedFeatures.insert(&featureArray[0],
+			   &featureArray[featureArraySize]);
 
+  for(int i = 0; i < featureArraySize; i++) {
+    features.push_back(featureArray[i].first);
+  }
+}

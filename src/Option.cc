@@ -20,6 +20,7 @@
  */
 /* copyright --> */
 #include "Option.h"
+#include "prefs.h"
 
 Option::Option() {}
 
@@ -43,19 +44,28 @@ string Option::get(const string& name) const {
 }
 
 int Option::getAsInt(const string& name) const {
-  map<string, string>::const_iterator itr = table.find(name);
-  if(itr == table.end()) {
+  string value = get(name);
+  if(value == "") {
     return 0;
   } else {
-    return (int)strtol((*itr).second.c_str(), NULL, 10);
+    return (int)strtol(value.c_str(), NULL, 10);
   }
 }
 
 long long int Option::getAsLLInt(const string& name) const {
-  map<string, string>::const_iterator itr = table.find(name);
-  if(itr == table.end()) {
+  string value = get(name);
+  if(value == "") {
     return 0;
   } else {
-    return (int)strtoll((*itr).second.c_str(), NULL, 10);
+    return strtoll(value.c_str(), NULL, 10);
+  }
+}
+
+bool Option::getAsBool(const string& name) const {
+  string value = get(name);
+  if(value == V_TRUE) {
+    return true;
+  } else {
+    return false;
   }
 }

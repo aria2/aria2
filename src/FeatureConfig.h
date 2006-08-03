@@ -25,48 +25,60 @@
 #include "common.h"
 #include <map>
 
-typedef map<string, int> ProtocolPortMap;
-typedef map<string, bool> SupportedFeatureMap;
+typedef map<string, int> PortMap;
+typedef map<string, bool> FeatureMap;
 
 class FeatureConfig {
 private:
-  static ProtocolPortMap defaultPorts;
-  static SupportedFeatureMap supportedFeatures;
+  static FeatureConfig* featureConfig;
+
+  PortMap defaultPorts;
+  FeatureMap supportedFeatures;
+  Strings features;
+
+  FeatureConfig();
+  ~FeatureConfig() {}
 public:
-  static string FEATURE_HTTP;
-  static string FEATURE_HTTPS;
-  static string FEATURE_FTP;
-  static string FEATURE_BITTORRENT;
-  static string FEATURE_METALINK;
+  static FeatureConfig* getInstance() {
+    if(!featureConfig) {
+      featureConfig = new FeatureConfig();
+    }
+    return featureConfig;
+  }
 
-  static int getDefaultPort(const string& protocol) {
-    if(defaultPorts.count(protocol)) {
-      return defaultPorts[protocol];
-    } else {
+  static void release() {
+    delete featureConfig;
+    featureConfig = 0;
+  }
+
+  int getDefaultPort(const string& protocol) const {
+    PortMap::const_iterator itr = defaultPorts.find(protocol);
+    if(itr == defaultPorts.end()) {
       return 0;
+    } else {
+      return itr->second;
     }
   }
 
-  static bool isSupported(const string& protocol) {
-    if(supportedFeatures.count(protocol)) {
-      return supportedFeatures[protocol];
-    } else {
+  bool isSupported(const string& feature) const {
+    FeatureMap::const_iterator itr = supportedFeatures.find(feature);
+    if(itr == supportedFeatures.end()) {
       return false;
+    } else {
+      return itr->second;
     }
   }
-  
-  static string getConfigurationSummary() {
-    string protos[] = {
-      FEATURE_HTTP,
-      FEATURE_HTTPS,
-      FEATURE_FTP,
-      FEATURE_BITTORRENT,
-      FEATURE_METALINK
-    };
+
+  const Strings& getFeatures() const {
+    return features;
+  }
+
+  string getConfigurationSummary() const {
     string summary;
-    for(int i = 0; i < (int)(sizeof(protos)/sizeof(string)); i++) {
-      summary += protos[i];
-      if(isSupported(protos[i])) {
+    for(Strings::const_iterator itr = features.begin();
+	itr != features.end(); itr++) {
+      summary += *itr;
+      if(isSupported(*itr)) {
 	summary += ": yes";
       } else {
 	summary += ": no";
