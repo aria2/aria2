@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "Time.h"
+#include "TimeA2.h"
 #include "Util.h"
 
 Time::Time() {
