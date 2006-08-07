@@ -30,23 +30,11 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "prefs.h"
 #include "FeatureConfig.h"
-
-#ifdef ENABLE_BITTORRENT
-# include "TorrentConsoleDownloadEngine.h"
-# include "TorrentMan.h"
-# include "PeerListenCommand.h"
-# include "TorrentAutoSaveCommand.h"
-# include "TrackerWatcherCommand.h"
-# include "TrackerUpdateCommand.h"
-# include "HaveEraseCommand.h"
-# include "ByteArrayDiskWriter.h"
-# include "PeerChokeCommand.h"
-#endif // ENABLE_BITTORRENT
-
-#ifdef ENABLE_METALINK
-# include "Xml2MetalinkProcessor.h"
-#endif // ENABLE_METALINK
-
+#include "DownloadEngineFactory.h"
+#include "UrlRequestInfo.h"
+#include "TorrentRequestInfo.h"
+#include "MetalinkRequestInfo.h"
+#include "Xml2MetalinkProcessor.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -69,22 +57,7 @@ extern int optind, opterr, optopt;
 
 using namespace std;
 
-bool readyToTorrentMode = false;
-string downloadedTorrentFile;
-bool readyToMetalinkMode = false;
-string downloadedMetalinkFile;
-
-void printDownloadCompeleteMessage(string filename) {
-  printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
-}
-
-void printDownloadCompeleteMessage() {
-  printf("\nThe download was complete.\n");
-}
-
-void printDownloadAbortMessage() {
-  printf(_("\nThe download was not complete because of errors. Check the log.\n"));
-}
+RequestInfo* requestInfo;
 
 void setSignalHander(int signal, void (*handler)(int), int flags) {
   struct sigaction sigact;
@@ -92,39 +65,6 @@ void setSignalHander(int signal, void (*handler)(int), int flags) {
   sigact.sa_flags = flags;
   sigemptyset(&sigact.sa_mask);
   sigaction(signal, &sigact, NULL);
-}
-
-DownloadEngine* e;
-#ifdef ENABLE_BITTORRENT
-TorrentDownloadEngine* te;
-#endif // ENABLE_BITTORRENT
-
-void handler(int signal) {
-  printf(_("\nstopping application...\n"));
-  fflush(stdout);
-  e->segmentMan->save();
-  e->segmentMan->diskWriter->closeFile();
-  e->cleanQueue();
-  delete e;
-  printf(_("done\n"));
-  exit(EXIT_SUCCESS);
-}
-
-#ifdef ENABLE_BITTORRENT
-void torrentHandler(int signal) {
-  te->torrentMan->setHalt(true);
-}
-#endif // ENABLE_BITTORRENT
-
-void createRequest(int cuid, const string& url, string referer, Requests& requests) {
-  Request* req = new Request();
-  req->setReferer(referer);
-  if(req->setUrl(url)) {
-    requests.push_back(req);
-  } else {
-    fprintf(stderr, _("Unrecognized URL or unsupported protocol: %s\n"), req->getUrl().c_str());
-    delete(req);
-  }
 }
 
 void showVersion() {
@@ -182,7 +122,7 @@ void showUsage() {
   cout << _(" --min-segment-size=SIZE[K|M] Set minimum segment size. You can append\n"
 	    "                              K or M(1K = 1024, 1M = 1024K). This\n"
 	    "                              value must be greater than or equal to\n"
-	    "                              1024.") << endl;
+	    "                              1024. Default: 1M") << endl;
   cout << _(" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
 	    "                              URLs.") << endl;
   cout << _(" --http-user=USER             Set HTTP user. This affects to all URLs.") << endl;
@@ -207,6 +147,12 @@ void showUsage() {
   cout << _(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or\n"
 	    "                              'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
+  cout << _(" --lowest-speed-limit         Close connection if download speed is lower than\n"
+	    "                              or equal to this value. 0 means aria2 does not\n"
+	    "                              care lowest speed limit. You can use K or M in\n"
+	    "                              the same manner as in --min-segment-size option.\n"
+	    "                              This option does not affect BitTorrent download.\n"
+	    "                              Default: 0") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -288,52 +234,19 @@ void showUsage() {
   cout << endl;
 }
 
-bool normalDownload(const Requests& requests,
-		    const Requests& reserved,
-		    Option* op,
-		    string& downloadedFilename) {
-  setSignalHander(SIGINT, handler, 0);
-  setSignalHander(SIGTERM, handler, 0);
-  
-  e = new ConsoleDownloadEngine();
-  e->option = op;
-  e->segmentMan = new SegmentMan();
-  e->segmentMan->diskWriter = new DefaultDiskWriter();
-  e->segmentMan->dir = op->get(PREF_DIR);
-  e->segmentMan->ufilename = op->get(PREF_OUT);
-  e->segmentMan->option = op;
-  e->segmentMan->splitter = new SplitSlowestSegmentSplitter();
-  e->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
-  e->segmentMan->reserved = reserved;
-  
-  int cuidCounter = 1;
-  for(Requests::const_iterator itr = requests.begin();
-      itr != requests.end();
-      itr++, cuidCounter++) {
-    e->commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuidCounter, *itr, e));
-  }
-  e->run();
-  bool success = false;
-  if(e->segmentMan->finished()) {
-    printDownloadCompeleteMessage(e->segmentMan->getFilePath());
-    if(Util::endsWith(e->segmentMan->getFilePath(), ".torrent")) {
-      downloadedTorrentFile = e->segmentMan->getFilePath();
-      readyToTorrentMode = true;
-    } else if(Util::endsWith(e->segmentMan->getFilePath(), ".metalink")) {
-      downloadedMetalinkFile = e->segmentMan->getFilePath();
-      readyToMetalinkMode = true;
+long long int getRealSize(char* optarg) {
+  string::size_type p = string(optarg).find_first_of("KM");
+  int mult = 1;
+  if(p != string::npos) {
+    if(optarg[p] == 'K') {
+      mult = 1024;
+    } else if(optarg[p] == 'M') {
+      mult = 1024*1024;
     }
-    downloadedFilename = e->segmentMan->getFilePath();
-    success = true;
-  } else {
-    e->segmentMan->save();
-    e->segmentMan->diskWriter->closeFile();
-    printDownloadAbortMessage();
+    optarg[p] = '\0';
   }
-  e->cleanQueue();
-  delete e;
-
-  return success;
+  long long int size = strtoll(optarg, NULL, 10)*mult;
+  return size;
 }
 
 int main(int argc, char* argv[]) {
@@ -343,18 +256,6 @@ int main(int argc, char* argv[]) {
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 #endif // ENABLE_NLS
-  Integers selectFileIndexes;
-#ifdef ENABLE_BITTORRENT
-  bool followTorrent = true;
-#else
-  bool followTorrent = false;
-#endif // ENABLE_BITTORRENT
-#ifdef ENABLE_METALINK
-  bool followMetalink = true;
-#else
-  bool followMetalink = false;
-#endif // ENABLE_METALINK
-
   int c;
   Option* op = new Option();
   op->put(PREF_STDOUT_LOG, V_FALSE);
@@ -363,6 +264,20 @@ int main(int argc, char* argv[]) {
   op->put(PREF_DAEMON, V_FALSE);
   op->put(PREF_LISTEN_PORT, "-1");
   op->put(PREF_METALINK_SERVERS, "15");
+  op->put(PREF_FOLLOW_TORRENT,
+#ifdef ENABLE_BITTORRENT
+	  V_TRUE
+#else
+	  V_FALSE
+#endif // ENABLE_BITTORRENT
+	  );
+  op->put(PREF_FOLLOW_METALINK,
+#ifdef ENABLE_METALINK
+	  V_TRUE
+#else
+	  V_FALSE
+#endif // ENABLE_METALINK
+	  );
   op->put(PREF_RETRY_WAIT, "5");
   op->put(PREF_TIMEOUT, "60");
   op->put(PREF_PEER_CONNECTION_TIMEOUT, "60");
@@ -377,6 +292,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_AUTO_SAVE_INTERVAL, "60");
   op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
   op->put(PREF_UPLOAD_LIMIT, "0");
+  op->put(PREF_LOWEST_SPEED_LIMIT, "4000");
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -403,6 +319,7 @@ int main(int argc, char* argv[]) {
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
       { "min-segment-size", required_argument, &lopt, 13 },
       { "http-proxy-method", required_argument, &lopt, 14 },
+      { "lowest-speed-limit", required_argument, &lopt, 200 },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -506,17 +423,7 @@ int main(int argc, char* argv[]) {
 	}
 	break;
       case 13: {
-	string::size_type p = string(optarg).find_first_of("KM");
-	int mult = 1;
-	if(p != string::npos) {
-	  if(optarg[p] == 'K') {
-	    mult = 1024;
-	  } else if(optarg[p] == 'M') {
-	    mult = 1024*1024;
-	  }
-	  optarg[p] = '\0';
-	}
-	long long int size = strtoll(optarg, NULL, 10)*mult;
+	long long int size = getRealSize(optarg);
 	if(size < 1024) {
 	  cerr << _("min-segment-size invalid") << endl;
 	  showUsage();
@@ -546,9 +453,9 @@ int main(int argc, char* argv[]) {
       }
       case 16:
 	if(string(optarg) == "true") {
-	  followTorrent = true;
+	  op->put(PREF_FOLLOW_TORRENT, V_TRUE);
 	} else if(string(optarg) == "false") {
-	  followTorrent = false;
+	  op->put(PREF_FOLLOW_TORRENT, V_FALSE);
 	} else {
 	  cerr << _("follow-torrent must be either 'true' or 'false'.") << endl;
 	  showUsage();
@@ -580,7 +487,7 @@ int main(int argc, char* argv[]) {
 	break;
       }
       case 21:
-	Util::unfoldRange(optarg, selectFileIndexes);
+	op->put(PREF_SELECT_FILE, optarg);
 	break;
       case 100:
 	op->put(PREF_METALINK_VERSION, optarg);
@@ -593,15 +500,25 @@ int main(int argc, char* argv[]) {
 	break;
       case 103:
 	if(string(optarg) == "true") {
-	  followMetalink = true;
+	  op->put(PREF_FOLLOW_METALINK, V_TRUE);
 	} else if(string(optarg) == "false") {
-	  followMetalink = false;
+	  op->put(PREF_FOLLOW_METALINK, V_FALSE);
 	} else {
 	  cerr << _("follow-metalink must be either 'true' or 'false'.") << endl;
 	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	break;
+      case 200: {
+	int limit = getRealSize(optarg);
+	if(limit < 0) {
+	  cerr << _("lowest-speed-limit must be greater than or equal to 0") << endl;
+	  showUsage();
+	  exit(EXIT_FAILURE);
+	}
+	op->put(PREF_LOWEST_SPEED_LIMIT, Util::itos(limit));
+	break;
+      }
       }
       break;
     }
@@ -720,190 +637,58 @@ int main(int argc, char* argv[]) {
   }
   // make sure logger is configured properly.
   try {
-    LogFactory::getInstance();
+    Logger* logger = LogFactory::getInstance();
+    logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
+    logger->info("Logging started.");
+
+    setSignalHander(SIGPIPE, SIG_IGN, 0);
+
+    requestInfo = 0;
+#ifdef ENABLE_BITTORRENT
+    if(op->defined(PREF_TORRENT_FILE)) {
+      requestInfo = new TorrentRequestInfo(op->get(PREF_TORRENT_FILE),
+					   op);
+      Strings targetFiles;
+      if(op->defined(PREF_TORRENT_FILE) && !args.empty()) {
+	targetFiles = args;
+      }
+      ((TorrentRequestInfo*)requestInfo)->setTargetFiles(targetFiles);
+    }
+    else
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+      if(op->defined(PREF_METALINK_FILE)) {
+      requestInfo = new MetalinkRequestInfo(op->get(PREF_METALINK_FILE),
+					    op);
+      } else
+#endif // ENABLE_METALINK
+	{
+	  requestInfo = new UrlRequestInfo(args, 0, op);
+	}
+
+    while(requestInfo) {
+      RequestInfo* next = requestInfo->execute();
+      if(requestInfo->isFail()) {
+	delete requestInfo;
+	exit(EXIT_FAILURE);
+      }
+      if(requestInfo->getFileInfo().checkReady()) {
+	if(requestInfo->getFileInfo().check()) {
+	  printf("checksum OK.\n");
+	} else {
+	  // TODO
+	  printf("checksum ERROR.\n");
+	  exit(EXIT_FAILURE);
+	}
+      }
+      delete requestInfo;
+      requestInfo = next;
+    }
   } catch(Exception* ex) {
     cerr << ex->getMsg() << endl;
     delete ex;
     exit(EXIT_FAILURE);
   }
-
-  setSignalHander(SIGPIPE, SIG_IGN, 0);
-
-  if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE)) {
-    Requests requests;
-    int cuidCounter = 1;
-    for(Strings::const_iterator itr = args.begin(); itr != args.end(); itr++) {
-      for(int s = 1; s <= op->getAsInt(PREF_SPLIT); s++) {
-	createRequest(cuidCounter, *itr, op->get(PREF_REFERER), requests); 
-	cuidCounter++;
-      }
-    }
-    setSignalHander(SIGINT, handler, 0);
-    setSignalHander(SIGTERM, handler, 0);
-
-    Requests reserved;
-    string downloadedFilename;
-    normalDownload(requests, reserved, op, downloadedFilename);
-
-    for_each(requests.begin(), requests.end(), Deleter());
-    for_each(reserved.begin(), reserved.end(), Deleter());
-    requests.clear();
-  }
-#ifdef ENABLE_METALINK
-  if(op->defined(PREF_METALINK_FILE) ||
-     followMetalink && readyToMetalinkMode) {
-    string targetMetalinkFile = op->defined(PREF_METALINK_FILE) ?
-      op->get(PREF_METALINK_FILE) : downloadedMetalinkFile;
-    Xml2MetalinkProcessor proc;
-    Metalinker* metalinker = proc.parseFile(targetMetalinkFile);
-    
-    MetalinkEntry* entry =
-      metalinker->queryEntry(op->get(PREF_METALINK_VERSION),
-			     op->get(PREF_METALINK_LANGUAGE),
-			     op->get(PREF_METALINK_OS));
-    if(entry == NULL) {
-      printf("No file matched with your preference.\n");
-      exit(EXIT_FAILURE);
-    }
-    entry->dropUnsupportedResource();
-    entry->reorderResourcesByPreference();
-    Requests requests;
-    int cuidCounter = 1;
-    for(MetalinkResources::const_iterator itr = entry->resources.begin();
-	itr != entry->resources.end(); itr++) {
-      MetalinkResource* resource = *itr;
-      for(int s = 1; s <= op->getAsInt(PREF_SPLIT); s++) {
-	createRequest(cuidCounter, resource->url,
-		      op->get(PREF_REFERER), requests); 
-	cuidCounter++;
-      }
-    }
-    Requests reserved;
-    int maxConnection =
-      op->getAsInt(PREF_METALINK_SERVERS)*op->getAsInt(PREF_SPLIT);
-    if((int)requests.size() > maxConnection) {
-      copy(requests.begin()+maxConnection, requests.end(),
-	   insert_iterator<Requests>(reserved, reserved.end()));
-      requests.erase(requests.begin()+maxConnection, requests.end());
-    }
-
-    setSignalHander(SIGINT, handler, 0);
-    setSignalHander(SIGTERM, handler, 0);
-
-    string downloadedFilename;
-    bool success = normalDownload(requests, reserved, op, downloadedFilename);
-
-    for_each(requests.begin(), requests.end(), Deleter());
-    for_each(reserved.begin(), reserved.end(), Deleter());
-    requests.clear();
-
-    if(success) {
-#ifdef ENABLE_MESSAGE_DIGEST
-      if(entry->check(downloadedFilename)) {
-	printf("checksum OK.\n");
-      } else {
-	printf("checksum ERROR.\n");
-	exit(EXIT_FAILURE);
-      }
-#endif // ENABLE_MESSAGE_DIGEST
-    }
-
-    delete metalinker;
-  }
-#endif // ENABLE_METALINK
-#ifdef ENABLE_BITTORRENT
-  if(op->defined(PREF_TORRENT_FILE) ||
-     followTorrent && readyToTorrentMode) {
-    try {
-      //op->put(PREF_MAX_TRIES, "0");
-      setSignalHander(SIGINT, torrentHandler, SA_RESETHAND);
-      setSignalHander(SIGTERM, torrentHandler, SA_RESETHAND);
-
-      Request* req = new Request();
-      req->isTorrent = true;
-      req->setTrackerEvent(Request::STARTED);
-      te = new TorrentConsoleDownloadEngine();
-      te->option = op;
-      ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
-      te->segmentMan = new SegmentMan();
-      te->segmentMan->diskWriter = byteArrayDiskWriter;
-      te->segmentMan->option = op;
-      te->segmentMan->splitter = new SplitSlowestSegmentSplitter();
-      te->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
-      te->torrentMan = new TorrentMan();
-      te->torrentMan->setStoreDir(op->get(PREF_DIR));
-      te->torrentMan->option = op;
-      te->torrentMan->req = req;
-      string targetTorrentFile = op->defined(PREF_TORRENT_FILE) ?
-	op->get(PREF_TORRENT_FILE) : downloadedTorrentFile;
-      if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	FileEntries fileEntries =
-	  te->torrentMan->readFileEntryFromMetaInfoFile(targetTorrentFile);
-	cout << _("Files:") << endl;
-	cout << "idx|path/length" << endl;
-	cout << "===+===========================================================================" << endl;
-	int count = 1;
-	for(FileEntries::const_iterator itr = fileEntries.begin();
-	    itr != fileEntries.end(); count++, itr++) {
-	  printf("%3d|%s\n   |%s Bytes\n", count, itr->path.c_str(),
-		 Util::llitos(itr->length, true).c_str());
-	  cout << "---+---------------------------------------------------------------------------" << endl;
-	}
-	exit(EXIT_SUCCESS);
-      } else {
-	if(selectFileIndexes.empty()) {
-	  Strings targetFiles;
-	  if(op->defined(PREF_TORRENT_FILE) && !args.empty()) {
-	    targetFiles = args;
-	  }
-	  te->torrentMan->setup(targetTorrentFile, targetFiles);
-	} else {
-	  te->torrentMan->setup(targetTorrentFile, selectFileIndexes);
-	}
-      }
-      PeerListenCommand* listenCommand =
-	new PeerListenCommand(te->torrentMan->getNewCuid(), te);
-      int port;
-      int listenPort = op->getAsInt(PREF_LISTEN_PORT);
-      if(listenPort == -1) {
-	port = listenCommand->bindPort(6881, 6999);
-      } else {
-	port = listenCommand->bindPort(listenPort, listenPort);
-      }
-      if(port == -1) {
-	printf(_("Errors occurred while binding port.\n"));
-	exit(EXIT_FAILURE);
-      }
-      te->torrentMan->setPort(port);
-      te->commands.push_back(listenCommand);
-
-      te->commands.push_back(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
-						       te,
-						       te->torrentMan->minInterval));
-      te->commands.push_back(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
-						      te));
-      te->commands.push_back(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
-							te,
-							op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
-      te->commands.push_back(new PeerChokeCommand(te->torrentMan->getNewCuid(),
-						  10, te));
-      te->commands.push_back(new HaveEraseCommand(te->torrentMan->getNewCuid(),
-						  te, 10));
-      te->run();
-      
-      if(te->torrentMan->downloadComplete()) {
-	printDownloadCompeleteMessage();
-      }
-      delete req;
-      te->cleanQueue();
-      delete te;
-    } catch(Exception* ex) {
-      cerr << ex->getMsg() << endl;
-      delete ex;
-      exit(EXIT_FAILURE);
-    }
-  }
-#endif // ENABLE_BITTORRENT
   delete op;
   LogFactory::release();
 #ifdef HAVE_LIBGNUTLS

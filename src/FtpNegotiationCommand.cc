@@ -57,6 +57,9 @@ bool FtpNegotiationCommand::executeInternal(Segment segment) {
 
 bool FtpNegotiationCommand::recvGreeting() {
   socket->setBlockingMode();
+  disableWriteCheckSocket();
+  setReadCheckSocket(socket);
+
   int status = ftp->receiveResponse();
   if(status == 0) {
     return false;
@@ -65,9 +68,6 @@ bool FtpNegotiationCommand::recvGreeting() {
     throw new DlRetryEx(EX_CONNECTION_FAILED);
   }
   sequence = SEQ_SEND_USER;
-
-  setReadCheckSocket(socket);
-  disableWriteCheckSocket();
 
   return true;
 }

@@ -19,38 +19,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_METALINK_RESOURCE_H_
-#define _D_METALINK_RESOURCE_H_
+#ifndef _D_METALINK_REQUEST_INFO_H_
+#define _D_METALINK_REQUEST_INFO_H_
 
-#include "common.h"
+#include "RequestInfo.h"
 
-class MetalinkResource {
+class MetalinkRequestInfo : public RequestInfo {
+private:
+  string metalinkFile;
 public:
-  enum TYPE {
-    TYPE_FTP,
-    TYPE_HTTP,
-    TYPE_HTTPS,
-    TYPE_BITTORRENT,
-    TYPE_NOT_SUPPORTED
-  };
-public:
-  string url;
-  int type;
-  string location;
-  int preference;
-public:
-  MetalinkResource();
-  ~MetalinkResource();
+  MetalinkRequestInfo(const string& metalinkFile, const Option* op):
+    RequestInfo(op),
+    metalinkFile(metalinkFile) {}
+  virtual ~MetalinkRequestInfo() {}
 
-  MetalinkResource& operator=(const MetalinkResource& metalinkResource) {
-    if(this != &metalinkResource) {
-      this->url = metalinkResource.url;
-      this->type = metalinkResource.type;
-      this->location = metalinkResource.location;
-      this->preference = metalinkResource.preference;
-    }
-    return *this;
-  }
+  virtual RequestInfo* execute();
+
+  virtual DownloadEngine* getDownloadEngine() { return 0; }
 };
 
-#endif // _D_METALINK_RESOURCE_H_
+#endif // _D_METALINK_REQUEST_INFO_H_

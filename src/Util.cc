@@ -363,21 +363,20 @@ string Util::getContentDispositionFilename(const string& header) {
 
 #ifdef ENABLE_MESSAGE_DIGEST
 void Util::sha1Sum(unsigned char* digest, const void* data, int dataLength) {
-  MessageDigestContext ctx(MessageDigestContext::ALGO_SHA1);
-  digestInit(ctx);
-  digestReset(ctx);
-  digestUpdate(ctx, data, dataLength);
-  digestFinal(ctx, digest);
-  digestFree(ctx);
+  MessageDigestContext ctx(DIGEST_ALGO_SHA1);
+  ctx.digestInit();
+  ctx.digestUpdate(data, dataLength);
+  ctx.digestFinal(digest);
+  ctx.digestFree();
 }
 #endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_MESSAGE_DIGEST
 void Util::fileChecksum(const string& filename, unsigned char* digest,
-			MessageDigestContext::HashAlgo algo) {
+			MessageDigestContext::DigestAlgo algo) {
   MessageDigestContext ctx(algo);
-  digestInit(ctx);
-  digestReset(ctx);
+  ctx.digestInit();
+  ctx.digestReset();
 
   int BUFLEN = 4096;
   char buf[BUFLEN];
@@ -396,14 +395,14 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
 	throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
       }
     } else if(size > 0) {
-      digestUpdate(ctx, buf, size);
+      ctx.digestUpdate(buf, size);
     }
     if(size < BUFLEN) {
       break;
     }
   }
-  digestFinal(ctx, digest);
-  digestFree(ctx);
+  ctx.digestFinal(digest);
+  ctx.digestFree();
 }
 #endif // ENABLE_MESSAGE_DIGEST
 

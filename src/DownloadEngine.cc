@@ -32,14 +32,13 @@
 
 using namespace std;
 
-DownloadEngine::DownloadEngine():noWait(false), segmentMan(NULL) {
+DownloadEngine::DownloadEngine():noWait(false), segmentMan(0) {
   logger = LogFactory::getInstance();
 }
 
 DownloadEngine::~DownloadEngine() {
-  if(segmentMan != NULL) {
-    delete segmentMan;
-  }
+  delete segmentMan;
+  cleanQueue();
 }
 
 void DownloadEngine::cleanQueue() {
@@ -66,7 +65,7 @@ public:
 void DownloadEngine::run() {
   initStatistics();
   Time cp;
-  CommandUuids activeCommandUuids;
+  CommandUuids activeUuids;
   while(!commands.empty()) {
     if(cp.elapsed(1)) {
       cp.reset();
@@ -79,8 +78,8 @@ void DownloadEngine::run() {
 	}
       }
     } else {
-      for(CommandUuids::iterator itr = activeCommandUuids.begin();
-	  itr != activeCommandUuids.end(); itr++) {
+      for(CommandUuids::iterator itr = activeUuids.begin();
+	  itr != activeUuids.end(); itr++) {
 	Commands::iterator comItr = find_if(commands.begin(), commands.end(),
 					    FindCommand(*itr));
 	assert(comItr != commands.end());
@@ -92,9 +91,9 @@ void DownloadEngine::run() {
       }
     }
     afterEachIteration();
-    activeCommandUuids.clear();
+    activeUuids.clear();
     if(!noWait && !commands.empty()) {
-      waitData(activeCommandUuids);
+      waitData(activeUuids);
     }
     noWait = false;
     calculateStatistics();
@@ -113,63 +112,86 @@ void DownloadEngine::shortSleep() const {
 
 class SetDescriptor {
 private:
-  fd_set* fds_ptr;
   int* max_ptr;
+  fd_set* rfds_ptr;
+  fd_set* wfds_ptr;
 public:
-  SetDescriptor(int* max_ptr, fd_set* fds_ptr)
-    :fds_ptr(fds_ptr), max_ptr(max_ptr) {}
+  SetDescriptor(int* max_ptr, fd_set* rfds_ptr, fd_set* wfds_ptr):
+    max_ptr(max_ptr),
+    rfds_ptr(rfds_ptr),
+    wfds_ptr(wfds_ptr) {}
 
-  void operator()(const SockCmdMap::value_type& pa) {
-    int fd = pa.first->getSockfd();
-    FD_SET(fd, fds_ptr);
+  void operator()(const SocketEntry& entry) {
+    int fd = entry.socket->getSockfd();
+    switch(entry.type) {
+    case SocketEntry::TYPE_RD:
+      FD_SET(fd, rfds_ptr);
+      break;
+    case SocketEntry::TYPE_WR:
+      FD_SET(fd, wfds_ptr);
+      break;
+    }
     if(*max_ptr < fd) {
       *max_ptr = fd;
     }
   }
 };
 
-class AccumulateActiveCommandUuid {
+class AccumulateActiveUuid {
 private:
-  CommandUuids* activeCommandUuids_ptr;
-  fd_set* fds_ptr;
+  CommandUuids* activeUuids_ptr;
+  fd_set* rfds_ptr;
+  fd_set* wfds_ptr;
 public:
-  AccumulateActiveCommandUuid(CommandUuids* activeCommandUuids_ptr,
-			      fd_set* fds_ptr)
-    :activeCommandUuids_ptr(activeCommandUuids_ptr), fds_ptr(fds_ptr) {}
+  AccumulateActiveUuid(CommandUuids* activeUuids_ptr,
+		       fd_set* rfds_ptr,
+		       fd_set* wfds_ptr):
+    activeUuids_ptr(activeUuids_ptr),
+    rfds_ptr(rfds_ptr),
+    wfds_ptr(wfds_ptr) {}
 
-  void operator()(const SockCmdMap::value_type& pa) {
-    if(FD_ISSET(pa.first->getSockfd(), fds_ptr)) {
-      activeCommandUuids_ptr->push_back(pa.second);
+  void operator()(const SocketEntry& entry) {
+    if(FD_ISSET(entry.socket->getSockfd(), rfds_ptr) ||
+       FD_ISSET(entry.socket->getSockfd(), wfds_ptr)) {
+      activeUuids_ptr->push_back(entry.commandUuid);
     }
+    /*
+    switch(entry.type) {
+    case SocketEntry::TYPE_RD:
+      if(FD_ISSET(entry.socket->getSockfd(), rfds_ptr)) {
+	activeUuids_ptr->push_back(entry.commandUuid);
+      }
+      break;
+    case SocketEntry::TYPE_WR:
+      if(FD_ISSET(entry.socket->getSockfd(), wfds_ptr)) {
+	activeUuids_ptr->push_back(entry.commandUuid);
+      }
+      break;
+    }
+    */
   }
 };
 
-void DownloadEngine::waitData(CommandUuids& activeCommandUuids) {
+void DownloadEngine::waitData(CommandUuids& activeUuids) {
   fd_set rfds;
   fd_set wfds;
   int retval = 0;
-  while(1) {
-    struct timeval tv;
-    
-    memcpy(&rfds, &rfdset, sizeof(fd_set));
-    memcpy(&wfds, &wfdset, sizeof(fd_set));
-
-    tv.tv_sec = 1;
-    tv.tv_usec = 0;
-    retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
-    if(retval != -1 || errno != EINTR) {
-      break;
-    }
-  }
+  struct timeval tv;
+  
+  memcpy(&rfds, &rfdset, sizeof(fd_set));
+  memcpy(&wfds, &wfdset, sizeof(fd_set));
+  
+  tv.tv_sec = 1;
+  tv.tv_usec = 0;
+  retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
   if(retval > 0) {
-    for_each(rsockmap.begin(), rsockmap.end(),
-	     AccumulateActiveCommandUuid(&activeCommandUuids, &rfds));
-    for_each(wsockmap.begin(), wsockmap.end(),
-	     AccumulateActiveCommandUuid(&activeCommandUuids, &wfds));
-    sort(activeCommandUuids.begin(), activeCommandUuids.end());
-    activeCommandUuids.erase(unique(activeCommandUuids.begin(),
-				activeCommandUuids.end()),
-			 activeCommandUuids.end());
+    for_each(socketEntries.begin(), socketEntries.end(),
+	     AccumulateActiveUuid(&activeUuids, &rfds, &wfds));
+	  
+    sort(activeUuids.begin(), activeUuids.end());
+    activeUuids.erase(unique(activeUuids.begin(),
+			     activeUuids.end()),
+		      activeUuids.end());
   }
 }
 
@@ -177,18 +199,15 @@ void DownloadEngine::updateFdSet() {
   fdmax = 0;
   FD_ZERO(&rfdset);
   FD_ZERO(&wfdset);
-  for_each(rsockmap.begin(), rsockmap.end(), SetDescriptor(&fdmax, &rfdset));
-  for_each(wsockmap.begin(), wsockmap.end(), SetDescriptor(&fdmax, &wfdset));
+  for_each(socketEntries.begin(), socketEntries.end(),
+	   SetDescriptor(&fdmax, &rfdset, &wfdset));
 }
 
-bool DownloadEngine::addSocket(SockCmdMap& sockmap,
-			       const SocketHandle& socket,
-			       const CommandUuid& commandUuid) {
-  SockCmdMap::iterator itr = find_if(sockmap.begin(), sockmap.end(),
-				     PairFind<SocketHandle, CommandUuid>(socket, commandUuid));
-  if(itr == sockmap.end()) {
-    SockCmdMap::value_type vt(socket, commandUuid);
-    sockmap.insert(vt);
+bool DownloadEngine::addSocket(const SocketEntry& entry) {
+  SocketEntries::iterator itr =
+    find(socketEntries.begin(), socketEntries.end(), entry);
+  if(itr == socketEntries.end()) {
+    socketEntries.push_back(entry);
     updateFdSet();
     return true;
   } else {
@@ -196,15 +215,13 @@ bool DownloadEngine::addSocket(SockCmdMap& sockmap,
   }
 }
 
-bool DownloadEngine::deleteSocket(SockCmdMap& sockmap,
-				  const SocketHandle& socket,
-				  const CommandUuid& commandUuid) {
-  SockCmdMap::iterator itr = find_if(sockmap.begin(), sockmap.end(),
-				     PairFind<SocketHandle, CommandUuid>(socket, commandUuid));
-  if(itr == sockmap.end()) {
+bool DownloadEngine::deleteSocket(const SocketEntry& entry) {
+  SocketEntries::iterator itr =
+    find(socketEntries.begin(), socketEntries.end(), entry);
+  if(itr == socketEntries.end()) {
     return false;
   } else {
-    sockmap.erase(itr);
+    socketEntries.erase(itr);
     updateFdSet();
     return true;
   }
@@ -212,20 +229,24 @@ bool DownloadEngine::deleteSocket(SockCmdMap& sockmap,
 
 bool DownloadEngine::addSocketForReadCheck(const SocketHandle& socket,
 					   const CommandUuid& commandUuid) {
-  return addSocket(rsockmap, socket, commandUuid);
+  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_RD);
+  return addSocket(entry);
 }
 
 bool DownloadEngine::deleteSocketForReadCheck(const SocketHandle& socket,
 					      const CommandUuid& commandUuid) {
-  return deleteSocket(rsockmap, socket, commandUuid);
+  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_RD);
+  return deleteSocket(entry);
 }
 
 bool DownloadEngine::addSocketForWriteCheck(const SocketHandle& socket,
 					    const CommandUuid& commandUuid) {
-  return addSocket(wsockmap, socket, commandUuid);
+  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_WR);
+  return addSocket(entry);
 }
 
 bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
 					       const CommandUuid& commandUuid) {
-  return deleteSocket(wsockmap, socket, commandUuid);
+  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_WR);
+  return deleteSocket(entry);
 }

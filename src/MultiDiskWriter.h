@@ -48,10 +48,8 @@ private:
   bool isInRange(const DiskWriterEntry* entry, long long int offset) const;
   int calculateLength(const DiskWriterEntry* entry, long long int fileOffset, int rem) const;
   void clearEntries();
-#ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestContext ctx;
   void hashUpdate(DiskWriterEntry* entry, long long int offset, long long int length);
-#endif // ENABLE_MESSAGE_DIGEST
 
 public:
   MultiDiskWriter(int pieceLength);

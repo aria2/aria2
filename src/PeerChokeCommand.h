@@ -38,7 +38,7 @@ private:
   void optUnchokingPeer(Peers& peers) const;
 
 public:
-  PeerChokeCommand(int cuid, int interval, TorrentDownloadEngine* e);
+  PeerChokeCommand(int cuid, TorrentDownloadEngine* e, int interval);
   virtual ~PeerChokeCommand();
 
   bool execute();

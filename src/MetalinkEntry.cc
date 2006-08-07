@@ -29,30 +29,6 @@ MetalinkEntry::~MetalinkEntry() {
   for_each(resources.begin(), resources.end(), Deleter());
 }
 
-bool MetalinkEntry::check(const string& filename) const {
-#ifdef ENABLE_MESSAGE_DIGEST
-  unsigned char buf[20];
-  int digestLength;
-  const string* digestPtr;
-  MessageDigestContext::HashAlgo algo;
-  if(!sha1.empty()) {
-    digestLength = 20;
-    algo = MessageDigestContext::ALGO_SHA1;
-    digestPtr = &sha1;
-  } else if(!md5.empty()) {
-    digestLength = 16;
-    algo = MessageDigestContext::ALGO_MD5;
-    digestPtr = &md5;
-  } else {
-    return true;
-  }
-  Util::fileChecksum(filename, buf, algo);
-  return *digestPtr == Util::toHex(buf, digestLength);
-#else
-  return true;
-#endif //ENABLE_MESSAGE_DIGEST
-}
-
 class PrefOrder {
 public:
   bool operator()(const MetalinkResource* res1, const MetalinkResource* res2) {
@@ -71,6 +47,10 @@ public:
     switch(res->type) {
     case MetalinkResource::TYPE_FTP:
     case MetalinkResource::TYPE_HTTP:
+    case MetalinkResource::TYPE_HTTPS:
+#ifdef ENABLE_BITTORRENT
+    case MetalinkResource::TYPE_BITTORRENT:
+#endif // ENABLE_BITTORRENT
       return true;
     default:
       return false;
@@ -81,5 +61,6 @@ public:
 void MetalinkEntry::dropUnsupportedResource() {
   MetalinkResources::iterator split =
     partition(resources.begin(), resources.end(), Supported());
+  for_each(split, resources.end(), Deleter());
   resources.erase(split, resources.end());
 }

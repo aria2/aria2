@@ -57,6 +57,8 @@
 #define PREF_DAEMON "daemon"
 // value: a string
 #define PREF_REFERER "referer"
+// value' 1*digit
+#define PREF_LOWEST_SPEED_LIMIT "lowest_speed_limit"
 
 /**
  * FTP related preferences
@@ -116,6 +118,10 @@
 #define PREF_TORRENT_FILE "torrent_file"
 // values: 1*digit
 #define PREF_LISTEN_PORT "listen_port"
+// values: true | false
+#define PREF_FOLLOW_TORRENT "follow_torrent"
+// values: 1*digit *( (,|-) 1*digit)
+#define PREF_SELECT_FILE "select_file"
 
 /**
  * Metalink related preferences
@@ -130,5 +136,7 @@
 #define PREF_METALINK_OS "metalink_os"
 // values: 1*digit
 #define PREF_METALINK_SERVERS "metalink_servers"
+// values: true | false
+#define PREF_FOLLOW_METALINK "follow_metalink"
 
 #endif // _D_PREFS_H_

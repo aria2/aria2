@@ -88,8 +88,20 @@ MetalinkEntry* Xml2MetalinkProcessor::getEntry(const string& xpath) {
     entry->version = Util::trim(xpathContent(xpath+"/m:version"));
     entry->language = Util::trim(xpathContent(xpath+"/m:language"));
     entry->os = Util::trim(xpathContent(xpath+"/m:os"));
-    entry->md5 = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]")));
-    entry->sha1 = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]")));
+#ifdef ENABLE_MESSAGE_DIGEST
+    string md;
+    md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]")));
+    if(md.size() > 0) {
+      entry->checksum.setMessageDigest(md);
+      entry->checksum.setDigestAlgo(DIGEST_ALGO_SHA1);
+    } else {
+      md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]")));
+      if(md.size() > 0) {
+	entry->checksum.setMessageDigest(md);
+	entry->checksum.setDigestAlgo(DIGEST_ALGO_MD5);
+      }
+    }
+#endif // ENABLE_MESSAGE_DIGEST
     for(int index = 1; 1; index++) {
       MetalinkResource* resource =
 	getResource(xpath+"/m:resources/m:url["+Util::itos(index)+"]");
@@ -121,6 +133,8 @@ MetalinkResource* Xml2MetalinkProcessor::getResource(const string& xpath) {
       resource->type = MetalinkResource::TYPE_FTP;
     } else if(type == "http") {
       resource->type = MetalinkResource::TYPE_HTTP;
+    } else if(type == "https") {
+      resource->type = MetalinkResource::TYPE_HTTPS;
     } else if(type == "bittorrent") {
       resource->type = MetalinkResource::TYPE_BITTORRENT;
     } else {

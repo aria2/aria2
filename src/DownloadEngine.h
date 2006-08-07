@@ -32,22 +32,44 @@
 typedef deque<SocketHandle> Sockets;
 typedef deque<Command*> Commands;
 typedef deque<CommandUuid> CommandUuids;
-typedef multimap<SocketHandle, int> SockCmdMap;
+
+class SocketEntry {
+public:
+  enum TYPE {
+    TYPE_RD,
+    TYPE_WR,
+  };
+
+  SocketHandle socket;
+  CommandUuid commandUuid;
+  TYPE type;
+public:
+  SocketEntry(const SocketHandle& socket,
+	      const CommandUuid& commandUuid,
+	      TYPE type):
+    socket(socket), commandUuid(commandUuid), type(type) {}
+  ~SocketEntry() {}
+
+  bool operator==(const SocketEntry& entry) {
+    return socket == entry.socket &&
+      commandUuid == entry.commandUuid &&
+      type == entry.type;
+  }
+};
+
+typedef deque<SocketEntry> SocketEntries;
 
 class DownloadEngine {
 private:
-  void waitData(CommandUuids& activeCommandUuids);
-  SockCmdMap rsockmap;
-  SockCmdMap wsockmap;
+  void waitData(CommandUuids& activeUuids);
+  SocketEntries socketEntries;
   fd_set rfdset;
   fd_set wfdset;
   int fdmax;
 
   void shortSleep() const;
-  bool addSocket(SockCmdMap& sockmap, const SocketHandle& socket,
-		 const CommandUuid& commandUuid);
-  bool deleteSocket(SockCmdMap& sockmap, const SocketHandle& socket,
-		    const CommandUuid& commandUuid);
+  bool addSocket(const SocketEntry& socketEntry);
+  bool deleteSocket(const SocketEntry& socketEntry);
 protected:
   const Logger* logger;
   virtual void initStatistics() = 0;
@@ -78,23 +100,6 @@ public:
   bool deleteSocketForWriteCheck(const SocketHandle& socket,
 				 const CommandUuid& command);
   
-};
-
-template<class T1, class T2>
-class PairFind {
-private:
-  T1 first;
-  T2 second;
-public:
-  PairFind(T1 t1, T2 t2):first(t1), second(t2) {}
-
-  bool operator()(const pair<T1, T2>& pa) {
-    if(pa.first == first && pa.second == second) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 };
 
 #endif // _D_DOWNLOAD_ENGINE_H_

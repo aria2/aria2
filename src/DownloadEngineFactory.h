@@ -19,45 +19,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_METALINK_ENTRY_H_
-#define _D_METALINK_ENTRY_H_
+#ifndef _D_DOWNLOAD_ENGINE_FACTORY_H_
+#define _D_DOWNLOAD_ENGINE_FACTORY_H_
 
 #include "common.h"
-#include "MetalinkResource.h"
-#include "Checksum.h"
-#include <deque>
+#include "ConsoleDownloadEngine.h"
+#ifdef ENABLE_BITTORRENT
+# include "TorrentConsoleDownloadEngine.h"
+#endif // ENABLE_BITTORRENT
 
-typedef deque<MetalinkResource*> MetalinkResources;
-
-class MetalinkEntry {
+class DownloadEngineFactory {
 public:
-  string filename;
-  string version;
-  string language;
-  string os;
-  long long int size;
-  Checksum checksum;
-public:
-  MetalinkResources resources;
-public:
-  MetalinkEntry();
-  ~MetalinkEntry();
+  static ConsoleDownloadEngine*
+  newConsoleEngine(const Option* option,
+		   const Requests& requests,
+		   const Requests& reserved);
 
-  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry) {
-    if(this != &metalinkEntry) {
-      this->filename = metalinkEntry.filename;
-      this->version = metalinkEntry.version;
-      this->language = metalinkEntry.language;
-      this->os = metalinkEntry.os;
-      this->size = metalinkEntry.size;
-      this->checksum = metalinkEntry.checksum;
-    }
-    return *this;
-  }
-
-  void dropUnsupportedResource();
-
-  void reorderResourcesByPreference();
+#ifdef ENABLE_BITTORRENT
+  static TorrentConsoleDownloadEngine*
+  newTorrentConsoleEngine(const Option* option,
+			  const string& torrentFile,
+			  const Strings& targetFiles);
+#endif // ENABLE_BITTORRENT
 };
 
-#endif // _D_METALINK_ENTRY_H_
+#endif // _D_DOWNLOAD_ENGINE_FACTORY_H_

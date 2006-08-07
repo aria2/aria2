@@ -25,18 +25,15 @@
 #include "message.h"
 #include <errno.h>
 
-MultiDiskWriter::MultiDiskWriter(int pieceLength):pieceLength(pieceLength) {
-#ifdef ENABLE_MESSAGE_DIGEST
-  ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
-  digestInit(ctx);
-#endif // ENABLE_MESSAGE_DIGEST
+MultiDiskWriter::MultiDiskWriter(int pieceLength):
+  pieceLength(pieceLength),
+  ctx(DIGEST_ALGO_SHA1) {
+  ctx.digestInit();
 }
 
 MultiDiskWriter::~MultiDiskWriter() {
   clearEntries();
-#ifdef ENABLE_MESSAGE_DIGEST
-  digestFree(ctx);
-#endif // ENABLE_MESSAGE_DIGEST
+  ctx.digestFree();
 }
 
 void MultiDiskWriter::clearEntries() {
@@ -143,7 +140,6 @@ int MultiDiskWriter::readData(char* data, int len, long long int offset) {
   return totalReadLength;
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
 void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, long long int length) {
   int BUFSIZE = 16*1024;
   char buf[BUFSIZE];
@@ -151,7 +147,7 @@ void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, l
     if(BUFSIZE != entry->diskWriter->readData(buf, BUFSIZE, offset)) {
       throw string("error");
     }
-    digestUpdate(ctx, buf, BUFSIZE);
+    ctx.digestUpdate(buf, BUFSIZE);
     offset += BUFSIZE;
   }
   int r = length%BUFSIZE;
@@ -159,17 +155,15 @@ void MultiDiskWriter::hashUpdate(DiskWriterEntry* entry, long long int offset, l
     if(r != entry->diskWriter->readData(buf, r, offset)) {
       throw string("error");
     }
-    digestUpdate(ctx, buf, r);
+    ctx.digestUpdate(buf, r);
   }
 }
-#endif // ENABLE_MESSAGE_DIGEST
 
 string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
-#ifdef ENABLE_MESSAGE_DIGEST
   long long int fileOffset = offset;
   bool reading = false;
   int rem = length;
-  digestReset(ctx);
+  ctx.digestReset();
   try {
     for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
 	itr != diskWriterEntries.end() && rem != 0; itr++) {
@@ -187,13 +181,10 @@ string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
       throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
     }
     unsigned char hashValue[20];
-    digestFinal(ctx, hashValue);
+    ctx.digestFinal(hashValue);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
     throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
   }
-#else
-  return "";
-#endif // ENABLE_MESSAGE_DIGEST
 }
 

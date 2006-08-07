@@ -48,11 +48,17 @@ MetalinkEntry* createTestEntry() {
   res4->type = MetalinkResource::TYPE_NOT_SUPPORTED;
   res4->location = "ad";
   res4->preference = 10;
+  MetalinkResource* res5 = new MetalinkResource();
+  res5->url = "https://myhost/aria2.tar.bz2";
+  res5->type = MetalinkResource::TYPE_HTTPS;
+  res5->location = "jp";
+  res5->preference = 90;
 
   entry->resources.push_back(res1);
   entry->resources.push_back(res2);
   entry->resources.push_back(res3);
   entry->resources.push_back(res4);
+  entry->resources.push_back(res5);
   return entry;
 }
 
@@ -61,12 +67,16 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 
   entry->dropUnsupportedResource();
 
-  CPPUNIT_ASSERT_EQUAL(2, (int)entry->resources.size());
+  CPPUNIT_ASSERT_EQUAL(4, (int)entry->resources.size());
   
   CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_FTP,
 		       entry->resources.at(0)->type);
   CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_HTTP,
 		       entry->resources.at(1)->type);
+  CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_BITTORRENT,
+		       entry->resources.at(2)->type);
+  CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_HTTPS,
+		       entry->resources.at(3)->type);
 }
 
 void MetalinkEntryTest::testReorderResourcesByPreference() {
@@ -75,9 +85,10 @@ void MetalinkEntryTest::testReorderResourcesByPreference() {
   entry->reorderResourcesByPreference();
 
   CPPUNIT_ASSERT_EQUAL(100, entry->resources.at(0)->preference);
-  CPPUNIT_ASSERT_EQUAL(60, entry->resources.at(1)->preference);
-  CPPUNIT_ASSERT_EQUAL(50, entry->resources.at(2)->preference);
-  CPPUNIT_ASSERT_EQUAL(10, entry->resources.at(3)->preference);
+  CPPUNIT_ASSERT_EQUAL(90, entry->resources.at(1)->preference);
+  CPPUNIT_ASSERT_EQUAL(60, entry->resources.at(2)->preference);
+  CPPUNIT_ASSERT_EQUAL(50, entry->resources.at(3)->preference);
+  CPPUNIT_ASSERT_EQUAL(10, entry->resources.at(4)->preference);
 }
 
 void MetalinkEntryTest::testCheck() {

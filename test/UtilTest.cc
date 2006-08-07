@@ -224,12 +224,12 @@ void UtilTest::testRandomAlpha() {
 void UtilTest::testFileChecksum() {
   unsigned char buf[20];
   string filename = "4096chunk.txt";
-  Util::fileChecksum(filename, buf, MessageDigestContext::ALGO_SHA1);
+  Util::fileChecksum(filename, buf, DIGEST_ALGO_SHA1);
   string sha1 = Util::toHex(buf, 20);
   CPPUNIT_ASSERT_EQUAL(string("608cabc0f2fa18c260cafd974516865c772363d5"),
 		       sha1);
 
-  Util::fileChecksum(filename, buf, MessageDigestContext::ALGO_MD5);
+  Util::fileChecksum(filename, buf, DIGEST_ALGO_MD5);
   string md5 = Util::toHex(buf, 16);
   CPPUNIT_ASSERT_EQUAL(string("82a7348c2e03731109d0cf45a7325b88"),
 		       md5);
