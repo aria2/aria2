@@ -264,7 +264,7 @@ bool FtpNegotiationCommand::recvRetr() {
   if(status == 0) {
     return false;
   }
-  if(status != 150) {
+  if(status != 150 && status != 125) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
   if(e->option->get(PREF_FTP_PASV_ENABLED) != V_TRUE) {

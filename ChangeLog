@@ -5,7 +5,8 @@
 	* src/FtpNegotiateCommand.cc
 	(recvGreeting): Call disableWriteCheckSocket just after
 	socket->setBlockingMode(). This avoids unnecessary CPU-hog loop.
-
+	(recvRetr): Recognized status code 125 as a acceptable response code.
+	
 	Rename Time.h to TimeA2.h to avoid compilation ploblem on
 	case-insesitive filesystem(BUG#1531057).
 
