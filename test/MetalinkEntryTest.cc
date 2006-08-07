@@ -8,7 +8,6 @@ class MetalinkEntryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MetalinkEntryTest);
   CPPUNIT_TEST(testDropUnsupportedResource);
   CPPUNIT_TEST(testReorderResourcesByPreference);
-  CPPUNIT_TEST(testCheck);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -20,7 +19,6 @@ public:
 
   void testDropUnsupportedResource();
   void testReorderResourcesByPreference();
-  void testCheck();
 };
 
 
@@ -89,16 +87,4 @@ void MetalinkEntryTest::testReorderResourcesByPreference() {
   CPPUNIT_ASSERT_EQUAL(60, entry->resources.at(2)->preference);
   CPPUNIT_ASSERT_EQUAL(50, entry->resources.at(3)->preference);
   CPPUNIT_ASSERT_EQUAL(10, entry->resources.at(4)->preference);
-}
-
-void MetalinkEntryTest::testCheck() {
-  MetalinkEntry entry;
-  string filename = "4096chunk.txt";
-  CPPUNIT_ASSERT(entry.check(filename));
-  entry.md5 = "82a7348c2e03731109d0cf45a7325b88";
-  CPPUNIT_ASSERT(entry.check(filename));
-  entry.md5 = "00000000000000000000000000000000";
-  CPPUNIT_ASSERT(!entry.check(filename));
-  entry.sha1 = "608cabc0f2fa18c260cafd974516865c772363d5";
-  CPPUNIT_ASSERT(entry.check(filename));
 }
