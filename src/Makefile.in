@@ -156,7 +156,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PreAllocationDiskWriter.h AbstractDiskWriter.cc \
 	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
 	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
-	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
+	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
 	SharedHandle.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
 	UrlRequestInfo.cc UrlRequestInfo.h MetaEntry.h Data.cc Data.h \
@@ -275,7 +275,7 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	ChunkedEncoding.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
 	PreAllocationDiskWriter.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
-	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) Time.$(OBJEXT) \
+	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
 	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
 	UrlRequestInfo.$(OBJEXT) $(am__objects_1) $(am__objects_2)
 am_libaria2c_a_OBJECTS = $(am__objects_3)
@@ -465,7 +465,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	PreAllocationDiskWriter.h AbstractDiskWriter.cc \
 	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
 	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
-	LogFactory.cc LogFactory.h NullLogger.h Time.cc Time.h \
+	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
 	SharedHandle.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
 	UrlRequestInfo.cc UrlRequestInfo.h $(am__append_1) \
@@ -642,7 +642,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitFirstSegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitSlowestSegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SuggestPieceMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Time.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentAutoSaveCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentDownloadEngine.Po@am__quote@

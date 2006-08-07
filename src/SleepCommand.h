@@ -24,7 +24,7 @@
 
 #include "DownloadEngine.h"
 #include "Command.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 class SleepCommand:public Command {
 private:

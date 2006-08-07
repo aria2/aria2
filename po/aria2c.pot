@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-08-07 22:15+0900\n"
+"POT-Creation-Date: 2006-08-08 01:22+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,14 +16,14 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/RequestInfo.h:76
+#: src/RequestInfo.h:84
 #, c-format
 msgid ""
 "\n"
 "The download was complete. <%s>\n"
 msgstr ""
 
-#: src/RequestInfo.h:84
+#: src/RequestInfo.h:92
 msgid ""
 "\n"
 "The download was not complete because of errors. Check the log.\n"
@@ -350,17 +350,17 @@ msgstr ""
 msgid "Files:"
 msgstr ""
 
-#: src/UrlRequestInfo.cc:57
+#: src/UrlRequestInfo.cc:63
 msgid ""
 "\n"
 "stopping application...\n"
 msgstr ""
 
-#: src/UrlRequestInfo.cc:62
+#: src/UrlRequestInfo.cc:68
 msgid "done\n"
 msgstr ""
 
-#: src/UrlRequestInfo.cc:86
+#: src/UrlRequestInfo.cc:92
 #, c-format
 msgid "Unrecognized URL or unsupported protocol: %s\n"
 msgstr ""

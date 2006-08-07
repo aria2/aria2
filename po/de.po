@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-08-07 22:15+0900\n"
+"POT-Creation-Date: 2006-08-08 01:22+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 
-#: src/RequestInfo.h:76
+#: src/RequestInfo.h:84
 #, c-format
 msgid ""
 "\n"
@@ -25,7 +25,7 @@ msgstr ""
 "\n"
 "Abruf ist vollständig. <%s>\n"
 
-#: src/RequestInfo.h:84
+#: src/RequestInfo.h:92
 msgid ""
 "\n"
 "The download was not complete because of errors. Check the log.\n"
@@ -363,7 +363,7 @@ msgstr "Fehler beim Binden an Port aufgetreten.\n"
 msgid "Files:"
 msgstr "Dateien:"
 
-#: src/UrlRequestInfo.cc:57
+#: src/UrlRequestInfo.cc:63
 msgid ""
 "\n"
 "stopping application...\n"
@@ -371,11 +371,11 @@ msgstr ""
 "\n"
 "Anwendung wird gestoppt ...\n"
 
-#: src/UrlRequestInfo.cc:62
+#: src/UrlRequestInfo.cc:68
 msgid "done\n"
 msgstr "erledigt\n"
 
-#: src/UrlRequestInfo.cc:86
+#: src/UrlRequestInfo.cc:92
 #, c-format
 msgid "Unrecognized URL or unsupported protocol: %s\n"
 msgstr "URL nicht erkannt oder nicht unterstütztes Protokoll: %s\n"

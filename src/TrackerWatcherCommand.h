@@ -24,7 +24,7 @@
 
 #include "Command.h"
 #include "TorrentDownloadEngine.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 class TrackerWatcherCommand : public Command {
 private:

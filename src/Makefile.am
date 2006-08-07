@@ -50,7 +50,7 @@ SRCS =  Socket.h\
 	messageDigest.h\
 	LogFactory.cc LogFactory.h\
 	NullLogger.h\
-	Time.cc Time.h\
+	TimeA2.cc TimeA2.h\
 	SharedHandle.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\

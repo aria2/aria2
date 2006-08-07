@@ -25,7 +25,7 @@
 #include "Command.h"
 #include "Request.h"
 #include "TorrentDownloadEngine.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 class PeerAbstractCommand : public Command {
 private:

@@ -22,7 +22,7 @@
 #include "DownloadEngine.h"
 #include "Util.h"
 #include "LogFactory.h"
-#include "Time.h"
+#include "TimeA2.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>

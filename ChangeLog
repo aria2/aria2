@@ -1,9 +1,32 @@
-2006-08-08  Tatsuhiro Tsujikawa  <tujikawa@rednoah.com>
+2006-08-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* po/ru.po: Azamat sent me Russian translation.
+	
 	* src/FtpNegotiateCommand.cc
 	(recvGreeting): Call disableWriteCheckSocket just after
 	socket->setBlockingMode(). This avoids unnecessary CPU-hog loop.
 
+	Rename Time.h to TimeA2.h to avoid compilation ploblem on
+	case-insesitive filesystem(BUG#1531057).
+
+	* src/Time.h: Renamed as TimeA2.h.
+	* src/Time.cc: Renamed as TimeA2.cc.
+	* src/TimeA2.h: New class.
+	* src/TimeA2.cc: New class.
+	* src/PeerChokeCommand.h: Replaced Time.h with TimeA2.h.
+	* src/TrackerWatcherCommand.h: Replaced Time.h with TimeA2.h.
+	* src/PeerAbstractCommand.h: Replaced Time.h with TimeA2.h.
+	* src/AbstractCommand.h: Replaced Time.h with TimeA2.h.
+	* src/PeerInteractionCommand.h: Replaced Time.h with TimeA2.h.
+	* src/ConsoleDownloadEngine.h: Replaced Time.h with TimeA2.h.
+	* src/TorrentAutoSaveCommand.h: Replaced Time.h with TimeA2.h.
+	* src/DownloadCommand.h: Replaced Time.h with TimeA2.h.
+	* src/TorrentMan.h: Replaced Time.h with TimeA2.h.
+	* src/TorrentDownloadEngine.h: Replaced Time.h with TimeA2.h.
+	* src/RequestSlot.h: Replaced Time.h with TimeA2.h.
+	* src/SleepCommand.h: Replaced Time.h with TimeA2.h.
+	* src/DownloadEngine.cc: Replaced Time.h with TimeA2.h.
+	
 2006-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/PeerChokeCommand.h

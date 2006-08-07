@@ -11,6 +11,5 @@
 * Refacturing HttpConnection and FtpConnection
 * Query resource by location
 * List available os, version, etc for metalink
-* rename Time to something appropriate
 * ipv6(RFC2428 for ftp)
 * add ru.po
