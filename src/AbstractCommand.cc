@@ -169,3 +169,34 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
     }
   }
 }
+
+#ifdef HAVE_LIBARES
+void AbstractCommand::setNameResolverCheck(const NameResolverHandle& resolver) {
+  e->addNameResolverCheck(resolver, getUuid());
+}
+
+void AbstractCommand::disableNameResolverCheck(const NameResolverHandle& resolver) {
+  e->deleteNameResolverCheck(resolver, getUuid());
+}
+
+bool AbstractCommand::resolveHostname(const string& hostname,
+				      const NameResolverHandle& resolver) {
+  switch(resolver->getStatus()) {
+  case NameResolver::STATUS_READY:
+    logger->info("CUID#%d - Resolving hostname %s", cuid, hostname.c_str());
+    resolver->resolve(hostname);
+    setNameResolverCheck(resolver);
+    return false;
+  case NameResolver::STATUS_SUCCESS:
+    logger->info("CUID#%d - Name resolution complete: %s -> %s", cuid,
+		 hostname.c_str(), resolver->getAddrString().c_str());
+    return true;
+    break;
+  case NameResolver::STATUS_ERROR:
+    throw new DlRetryEx("CUID#%d - Name resolution failed:%s", cuid,
+			resolver->getError().c_str());
+  default:
+    return false;
+  }
+}
+#endif // HAVE_LIBARES

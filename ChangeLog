@@ -1,3 +1,62 @@
+2006-08-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add asynchronous DNS support(libares):
+
+	* src/AbstractCommand.h
+	(setNameResolverCheck): New function.
+	(disableNameResolverCheck): New function
+	(resolveHostname): New function.
+	* src/AbstractCommand.cc
+	(setNameResolverCheck): New function.
+	(disableNameResolverCheck): New function
+	(resolveHostname): New function.
+	* src/FtpInitiateConnectionCommand.h
+	(nameResolver): New function.
+	* src/FtpInitiateConnectionCommand.cc
+	(Util.h): Included.
+	(FtpInitiateConnectionCommand): Call disableReadCheckSocket,
+	disableWriteCheckSocket.
+	(~FtpInitiateConnectionCommand): Call disableNameResolverCheck.
+	(executeInternal): Added async DNS support.
+	* src/HttpInitiateConnectionCommand.h
+	(nameResolver): New function.
+	* src/HttpInitiateConnectionCommand.cc
+	(DlRetryEx.h): Included.
+	(HttpInitiateConnectionCommand): Call disableReadCheckSocket,
+	disableWriteCheckSocket.
+	(~HttpInitiateConnectionCommand): Call disableNameResolverCheck.
+	(executeInternal): Added async DNS support.
+	* src/NameResolver.h: New class. Note: #include <ares.h> is surrounded
+	by extern "C" declaration.
+	* src/NameResolver.cc: New class.
+	* src/Util.h:
+	(isNumberAndDotsNotation): New function
+	* src/Util.cc
+	(isNumberAndDotsNotation): New function.
+	* src/DownloadEngine.h
+	(NameResolver.h): Included.
+	(NameResolverEntry): New class.
+	(NameResolverEntries): New type definition.
+	(addNameResolverCheck): New function.
+	(deleteNameResolverCheck): New function.
+	* src/DownloadEngine.cc
+	(run): Initialize cp with 0.
+	(SetDescriptor::operator()): Added for NameResolverEntry.
+	(AccumulateActiveUuid::operator()): Added for NameResolverEntry.
+	(waitData): Check nameResolver entries.
+	(updateFdSet): Update fds in nameResolver entries.
+	(addNameResolverCheck): New function.
+	(deleteNameResolverCheck): new function.
+	
+	* src/PeerInteractionCommand.cc
+	(executeInternal): Fixed wrong socket handling.
+
+	* src/main.cc
+	(main): Fixed the initial value of PREF_LOWEST_SPEED_LIMIT option to 0.
+
+	* src/Util.cc
+	(fileChecksum): Removed the call to ctx.digestReset().
+	
 2006-08-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* po/ru.po: Azamat sent me Russian translation.
@@ -173,6 +232,7 @@
 	class: stdoutLog, logfile, dir, ufilename, split, daemonMode,
 	referer, torrentFile, metalinkFile, listenPort, metalinkVersion,
 	metalinkLanguage, metalinkOs, metalinkServers
+	
 	To fix the bug that aria2 can not handle http response header properly.
 	
 	* src/HttpHeader.cc

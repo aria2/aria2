@@ -65,6 +65,7 @@ public:
 void DownloadEngine::run() {
   initStatistics();
   Time cp;
+  cp.setTimeInSec(0);
   CommandUuids activeUuids;
   while(!commands.empty()) {
     if(cp.elapsed(1)) {
@@ -135,6 +136,14 @@ public:
       *max_ptr = fd;
     }
   }
+#ifdef HAVE_LIBARES
+  void operator()(const NameResolverEntry& entry) {
+    int tempFd = entry.nameResolver->getFds(rfds_ptr, wfds_ptr);
+    if(*max_ptr < tempFd) {
+      *max_ptr = tempFd;
+    }
+  }
+#endif // HAVE_LIBARES
 };
 
 class AccumulateActiveUuid {
@@ -170,6 +179,19 @@ public:
     }
     */
   }
+#ifdef HAVE_LIBARES
+  void operator()(const NameResolverEntry& entry) {
+    entry.nameResolver->process(rfds_ptr, wfds_ptr);
+    switch(entry.nameResolver->getStatus()) {
+    case NameResolver::STATUS_SUCCESS:
+    case NameResolver::STATUS_ERROR:
+      activeUuids_ptr->push_back(entry.commandUuid);
+      break;
+    default:
+      break;
+    }
+  }
+#endif // HAVE_LIBARES
 };
 
 void DownloadEngine::waitData(CommandUuids& activeUuids) {
@@ -187,7 +209,10 @@ void DownloadEngine::waitData(CommandUuids& activeUuids) {
   if(retval > 0) {
     for_each(socketEntries.begin(), socketEntries.end(),
 	     AccumulateActiveUuid(&activeUuids, &rfds, &wfds));
-	  
+#ifdef HAVE_LIBARES
+    for_each(nameResolverEntries.begin(), nameResolverEntries.end(),
+	     AccumulateActiveUuid(&activeUuids, &rfds, &wfds));
+#endif // HAVE_LIBARES
     sort(activeUuids.begin(), activeUuids.end());
     activeUuids.erase(unique(activeUuids.begin(),
 			     activeUuids.end()),
@@ -199,6 +224,10 @@ void DownloadEngine::updateFdSet() {
   fdmax = 0;
   FD_ZERO(&rfdset);
   FD_ZERO(&wfdset);
+#ifdef HAVE_LIBARES
+  for_each(nameResolverEntries.begin(), nameResolverEntries.end(),
+	   SetDescriptor(&fdmax, &rfdset, &wfdset));
+#endif // HAVE_LIBARES
   for_each(socketEntries.begin(), socketEntries.end(),
 	   SetDescriptor(&fdmax, &rfdset, &wfdset));
 }
@@ -250,3 +279,35 @@ bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
   SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_WR);
   return deleteSocket(entry);
 }
+
+#ifdef HAVE_LIBARES
+bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
+					  const CommandUuid& uuid) {
+  NameResolverEntry entry(resolver, uuid);
+  NameResolverEntries::iterator itr = find(nameResolverEntries.begin(),
+					   nameResolverEntries.end(),
+					   entry);
+  if(itr == nameResolverEntries.end()) {
+    nameResolverEntries.push_back(entry);
+    updateFdSet();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
+					     const CommandUuid& uuid) {
+  NameResolverEntry entry(resolver, uuid);
+  NameResolverEntries::iterator itr = find(nameResolverEntries.begin(),
+					   nameResolverEntries.end(),
+					   entry);
+  if(itr == nameResolverEntries.end()) {
+    return false;
+  } else {
+    nameResolverEntries.erase(itr);
+    updateFdSet();
+    return true;
+  }
+}
+#endif // HAVE_LIBARES

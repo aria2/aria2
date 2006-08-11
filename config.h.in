@@ -105,6 +105,9 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
+/* Define to 1 if you have libares. */
+#undef HAVE_LIBARES
+
 /* Define to 1 if you have libgcrypt. */
 #undef HAVE_LIBGCRYPT
 

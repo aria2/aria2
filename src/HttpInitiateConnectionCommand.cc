@@ -24,23 +24,48 @@
 #include "HttpProxyRequestCommand.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "DlRetryEx.h"
 #include "message.h"
 #include "prefs.h"
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
 							     Request* req,
-							     DownloadEngine* e):AbstractCommand(cuid, req, e) {}
+							     DownloadEngine* e):
+  AbstractCommand(cuid, req, e)
+{
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
+}
 
-HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
+HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {
+#ifdef HAVE_LIBARES
+  disableNameResolverCheck(nameResolver);
+#endif // HAVE_LIBARES
+}
 
 bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
-  // socket->establishConnection(...);
+  string hostname;
+  if(useProxy()) {
+    hostname = e->option->get(PREF_HTTP_PROXY_HOST);
+  } else {
+    hostname = req->getHost();
+  }
+#ifdef HAVE_LIBARES
+  if(!Util::isNumbersAndDotsNotation(hostname)) {
+    if(resolveHostname(hostname, nameResolver)) {
+      hostname = nameResolver->getAddrString();
+    } else {
+      e->commands.push_back(this);
+      return false;
+    }
+  }
+#endif // HAVE_LIBARES
   Command* command;
   if(useProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
 		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
-    socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
+    socket->establishConnection(hostname,
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     if(useProxyTunnel()) {
       command = new HttpProxyRequestCommand(cuid, req, e, socket);
@@ -53,7 +78,7 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
   } else {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		 req->getPort());
-    socket->establishConnection(req->getHost(), req->getPort());
+    socket->establishConnection(hostname, req->getPort());
     command = new HttpRequestCommand(cuid, req, e, socket);
   }
   e->commands.push_back(command);

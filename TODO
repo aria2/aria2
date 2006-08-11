@@ -12,4 +12,3 @@
 * Query resource by location
 * List available os, version, etc for metalink
 * ipv6(RFC2428 for ftp)
-* async DNS using ares or c-ares

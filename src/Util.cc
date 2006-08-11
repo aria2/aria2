@@ -376,7 +376,6 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
 			MessageDigestContext::DigestAlgo algo) {
   MessageDigestContext ctx(algo);
   ctx.digestInit();
-  ctx.digestReset();
 
   int BUFLEN = 4096;
   char buf[BUFLEN];
@@ -530,4 +529,13 @@ string Util::toLower(const string& src) {
   string temp = src;
   for_each(temp.begin(), temp.end(), LowerCase());
   return temp;
+}
+
+bool Util::isNumbersAndDotsNotation(const string& name) {
+  struct sockaddr_in sockaddr;
+  if(inet_aton(name.c_str(), &sockaddr.sin_addr)) {
+    return true;
+  } else {
+    return false;
+  }
 }

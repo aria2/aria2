@@ -107,6 +107,8 @@ public:
   static string toUpper(const string& src);
 
   static string toLower(const string& src);
+
+  static bool isNumbersAndDotsNotation(const string& name);
 };
 
 #endif // _D_UTIL_H_

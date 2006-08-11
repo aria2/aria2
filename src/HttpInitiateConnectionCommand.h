@@ -26,6 +26,9 @@
 
 class HttpInitiateConnectionCommand : public AbstractCommand {
 private:
+#ifdef HAVE_LIBARES
+  NameResolverHandle nameResolver;
+#endif // HAVE_LIBARES
   bool useProxy();
   bool useProxyGet();
   bool useProxyTunnel();

@@ -16,6 +16,7 @@ AC_SUBST(localedir)
 AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$withval], [with_gnutls=yes])
 AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$withval], [with_openssl=yes])
 AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$withval], [with_libxml2=yes])
+AC_ARG_WITH([ares],    [  --with-ares                use ares library if installed. Default: yes], [with_libares=$withval], [with_libares=yes])
 
 AC_ARG_ENABLE([bittorrent], [ --enable-bittorrent        enable BitTorrent support. Default: yes], [enable_bittorrent=$enableval], [enable_bittorrent=yes])
 AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. Default: yes], [enable_metalink=$enableval], [enable_metalink=yes])
@@ -53,6 +54,10 @@ if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
   AM_PATH_OPENSSL
 fi
 
+if test "x$with_libares" = "xyes"; then
+  AM_PATH_LIBARES
+fi
+
 # Define variables based on the result of the checks for libraries.
 if test "x$have_libgnutls" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_SSL], [1], [Define to 1 if ssl support is enabled.])
@@ -77,9 +82,15 @@ else
     AM_CONDITIONAL([ENABLE_METALINK], false)
 fi
 
+if test "x$have_libares" = "xyes"; then
+    AM_CONDITIONAL([HAVE_LIBARES], true)
+else
+    AM_CONDITIONAL([HAVE_LIBARES], false)
+fi
+
 # Checks for header files.
 AC_FUNC_ALLOCA
-AC_HEADER_STDC
+#AC_HEADER_STDC
 AC_CHECK_HEADERS([argz.h arpa/inet.h fcntl.h inttypes.h langinfo.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/param.h sys/socket.h sys/time.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.

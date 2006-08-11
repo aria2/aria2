@@ -38,7 +38,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = aria2c$(EXEEXT)
-@ENABLE_BITTORRENT_TRUE@am__append_1 = MetaEntry.h\
+@HAVE_LIBARES_TRUE@am__append_1 = NameResolver.cc NameResolver.h
+@ENABLE_BITTORRENT_TRUE@am__append_2 = MetaEntry.h\
 @ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
 @ENABLE_BITTORRENT_TRUE@	Dictionary.cc Dictionary.h\
 @ENABLE_BITTORRENT_TRUE@	List.cc List.h\
@@ -94,7 +95,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.cc HaveEraseCommand.h\
 @ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.cc TorrentRequestInfo.h
 
-@ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
+@ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
@@ -110,11 +111,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/codeset.m4 \
 	$(top_srcdir)/m4/inttypes-pri.m4 $(top_srcdir)/m4/inttypes.m4 \
 	$(top_srcdir)/m4/inttypes_h.m4 $(top_srcdir)/m4/lcmessage.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/stdint_h.m4 \
-	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/ulonglong.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libares.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/openssl.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
+	$(top_srcdir)/m4/ulonglong.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -159,10 +160,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
 	SharedHandle.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	UrlRequestInfo.cc UrlRequestInfo.h MetaEntry.h Data.cc Data.h \
-	Dictionary.cc Dictionary.h List.cc List.h MetaFileUtil.cc \
-	MetaFileUtil.h MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
-	TorrentMan.cc TorrentMan.h PeerConnection.cc PeerConnection.h \
+	UrlRequestInfo.cc UrlRequestInfo.h NameResolver.cc \
+	NameResolver.h MetaEntry.h Data.cc Data.h Dictionary.cc \
+	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
+	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h TorrentMan.cc \
+	TorrentMan.h PeerConnection.cc PeerConnection.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
 	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
@@ -199,7 +201,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h
-@ENABLE_BITTORRENT_TRUE@am__objects_1 = Data.$(OBJEXT) \
+@HAVE_LIBARES_TRUE@am__objects_1 = NameResolver.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@am__objects_2 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.$(OBJEXT) \
@@ -248,12 +251,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkRequestInfo.$(OBJEXT)
-am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -277,8 +280,9 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
 	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
 	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
-	UrlRequestInfo.$(OBJEXT) $(am__objects_1) $(am__objects_2)
-am_libaria2c_a_OBJECTS = $(am__objects_3)
+	UrlRequestInfo.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
+am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -341,6 +345,8 @@ EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIBC21 = @GLIBC21@
 GMSGFMT = @GMSGFMT@
+HAVE_LIBARES_FALSE = @HAVE_LIBARES_FALSE@
+HAVE_LIBARES_TRUE = @HAVE_LIBARES_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -351,6 +357,8 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 LDFLAGS = @LDFLAGS@
+LIBARES_CPPFLAGS = @LIBARES_CPPFLAGS@
+LIBARES_LIBS = @LIBARES_LIBS@
 LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
 LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
 LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
@@ -469,17 +477,18 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	SharedHandle.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
 	UrlRequestInfo.cc UrlRequestInfo.h $(am__append_1) \
-	$(am__append_2)
+	$(am__append_2) $(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@
 
 #aria2c_LDFLAGS = -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@# -pg
+	@LIBARES_CPPFLAGS@\
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ # -pg
 
 all: all-am
 
@@ -611,6 +620,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NameResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NotInterestedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@

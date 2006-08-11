@@ -57,6 +57,10 @@ SRCS =  Socket.h\
 	RequestInfo.h\
 	UrlRequestInfo.cc UrlRequestInfo.h
 
+if HAVE_LIBARES
+SRCS += NameResolver.cc NameResolver.h
+endif # HAVE_LIBARES
+
 if ENABLE_BITTORRENT
 SRCS += MetaEntry.h\
 	Data.cc Data.h\
@@ -127,9 +131,10 @@ endif # ENABLE_METALINK
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@
 #aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@# -pg
+	@LIBARES_CPPFLAGS@\
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ # -pg

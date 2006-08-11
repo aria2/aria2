@@ -19,24 +19,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
-#define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#include "NameResolver.h"
 
-#include "AbstractCommand.h"
-
-class FtpInitiateConnectionCommand : public AbstractCommand {
-private:
-#ifdef HAVE_LIBARES
-  NameResolverHandle nameResolver;
-#endif // HAVE_LIBARES
-  bool useHttpProxy() const;
-  bool useHttpProxyGet() const;
-  bool useHttpProxyConnect() const;
-protected:
-  bool executeInternal(Segment segment);
-public:
-  FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
-  ~FtpInitiateConnectionCommand();
-};
-
-#endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+void callback(void* arg, int status, struct hostent* host) {
+  NameResolver* resolverPtr = (NameResolver*)arg;
+  if(status != ARES_SUCCESS) {
+    resolverPtr->error = ares_strerror(status, 0);
+    resolverPtr->status = NameResolver::STATUS_ERROR;
+    return;
+  }
+  memcpy(&resolverPtr->addr, *host->h_addr_list, sizeof(struct in_addr));
+  resolverPtr->status = NameResolver::STATUS_SUCCESS;
+}

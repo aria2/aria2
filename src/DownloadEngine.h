@@ -28,6 +28,9 @@
 #include "common.h"
 #include "Logger.h"
 #include "Option.h"
+#ifdef HAVE_LIBARES
+# include "NameResolver.h"
+#endif // HAVE_LIBARES
 
 typedef deque<SocketHandle> Sockets;
 typedef deque<Command*> Commands;
@@ -59,10 +62,34 @@ public:
 
 typedef deque<SocketEntry> SocketEntries;
 
+#ifdef HAVE_LIBARES
+class NameResolverEntry {
+public:
+  NameResolverHandle nameResolver;
+  CommandUuid commandUuid;
+public:
+  NameResolverEntry(const NameResolverHandle& nameResolver,
+		    const CommandUuid& commandUuid):
+    nameResolver(nameResolver), commandUuid(commandUuid) {}
+  ~NameResolverEntry() {}
+
+  bool operator==(const NameResolverEntry& entry) {
+    return nameResolver == entry.nameResolver &&
+      commandUuid == entry.commandUuid;
+  }
+};
+
+typedef deque<NameResolverEntry> NameResolverEntries;
+#endif // HAVE_LIBARES
+
+
 class DownloadEngine {
 private:
   void waitData(CommandUuids& activeUuids);
   SocketEntries socketEntries;
+#ifdef HAVE_LIBARES
+  NameResolverEntries nameResolverEntries;
+#endif // HAVE_LIBARES
   fd_set rfdset;
   fd_set wfdset;
   int fdmax;
@@ -81,7 +108,7 @@ public:
   Commands commands;
   SegmentMan* segmentMan;
   const Option* option;
-
+  
   DownloadEngine();
   virtual ~DownloadEngine();
 
@@ -99,7 +126,12 @@ public:
 			      const CommandUuid& commandUuid);
   bool deleteSocketForWriteCheck(const SocketHandle& socket,
 				 const CommandUuid& command);
-  
+#ifdef HAVE_LIBARES
+  bool addNameResolverCheck(const NameResolverHandle& resolver,
+			    const CommandUuid& uuid);
+  bool deleteNameResolverCheck(const NameResolverHandle& resolver,
+			       const CommandUuid& uuid);
+#endif // HAVE_LIBARES
 };
 
 #endif // _D_DOWNLOAD_ENGINE_H_

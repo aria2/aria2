@@ -26,10 +26,22 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
+#include "Util.h"
 
-FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e):AbstractCommand(cuid, req, e) {}
+FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
+							   Request* req,
+							   DownloadEngine* e)
+  :AbstractCommand(cuid, req, e)
+{
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
+}
 
-FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
+FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {
+#ifdef HAVE_LIBARES
+  disableNameResolverCheck(nameResolver);
+#endif // HAVE_LIBARES
+}
 
 bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
   if(!e->segmentMan->downloadStarted) {
@@ -43,13 +55,28 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
       e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
     }
   }
-
+  string hostname;
+  if(useHttpProxy()) {
+    hostname = e->option->get(PREF_HTTP_PROXY_HOST);
+  } else {
+    hostname = req->getHost();
+  }
+#ifdef HAVE_LIBARES
+  if(!Util::isNumbersAndDotsNotation(hostname)) {
+    if(resolveHostname(hostname, nameResolver)) {
+      hostname = nameResolver->getAddrString();
+    } else {
+      e->commands.push_back(this);
+      return false;
+    }
+  }
+#endif // HAVE_LIBARES
   Command* command;
   if(useHttpProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
 		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
-    socket->establishConnection(e->option->get(PREF_HTTP_PROXY_HOST),
+    socket->establishConnection(hostname,
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     
     if(useHttpProxyGet()) {
@@ -63,7 +90,7 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
   } else {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		 req->getPort());
-    socket->establishConnection(req->getHost(), req->getPort());
+    socket->establishConnection(hostname, req->getPort());
     command = new FtpNegotiationCommand(cuid, req, e, socket);
   }
   e->commands.push_back(command);

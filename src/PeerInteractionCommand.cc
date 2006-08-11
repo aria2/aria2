@@ -60,17 +60,19 @@ PeerInteractionCommand::~PeerInteractionCommand() {
 }
 
 bool PeerInteractionCommand::executeInternal() {
-  if(sequence == INITIATOR_SEND_HANDSHAKE) {
-    socket->setBlockingMode();
-    setReadCheckSocket(socket);
-    setTimeout(e->option->getAsInt(PREF_TIMEOUT));
-  }
   disableWriteCheckSocket();
   setUploadLimitCheck(false);
   setNoCheck(false);
 
   switch(sequence) {
   case INITIATOR_SEND_HANDSHAKE:
+    if(!socket->isWritable(0)) {
+      setWriteCheckSocket(socket);
+      break;
+    }
+    socket->setBlockingMode();
+    setReadCheckSocket(socket);
+    setTimeout(e->option->getAsInt(PREF_TIMEOUT));
     peerInteraction->sendHandshake();
     sequence = INITIATOR_WAIT_HANDSHAKE;
     break;
