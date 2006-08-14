@@ -64,6 +64,8 @@ public:
 
   static string urlencode(const unsigned char* target, int len);
 
+  static string torrentUrlencode(const unsigned char* target, int len);
+
   static string toHex(const unsigned char* src, int len);
 
   static FILE* openFile(const string& filename, const string& mode);

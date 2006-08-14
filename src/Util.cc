@@ -23,6 +23,7 @@
 #include "DlAbortEx.h"
 #include "File.h"
 #include "message.h"
+#include <ctype.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -183,6 +184,21 @@ string Util::urlencode(const unsigned char* target, int len) {
       dest.append(temp);
     } else {
       dest += target[i];
+    }
+  }
+  return dest;
+}
+
+string Util::torrentUrlencode(const unsigned char* target, int len) {
+  string dest;
+  for(int i = 0; i < len; i++) {
+    if(isalpha(target[i]) || isdigit(target[i])) {
+      dest += target[i];
+    } else {
+      char temp[4];
+      sprintf(temp, "%%%02x", target[i]);
+      temp[sizeof(temp)-1] = '\0';
+      dest.append(temp);
     }
   }
   return dest;

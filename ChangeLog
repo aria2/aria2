@@ -1,3 +1,25 @@
+2006-08-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/main.cc
+	(main): Added a message to inform users that aria2 is starting to
+	verify checksum.
+	* src/RequestInfo.cc
+	(printDownloadAbortMessage): Added a message to inform users that
+	transfer can be resumed.
+
+2006-08-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To handle the case where some BitTorrent tracker requires all letters
+	except for [A-Za-z0-9] is URL encoded.
+	
+	* src/Util.h
+	(torrentUrlencode): New function.
+	* src/Util.cc
+	(ctype.h): Included.
+	(torrentUrlencode): New function.
+	* src/TrackerWatcherCommand.cc
+	(execute): Use Util::torrentUrlencode() instead of Util::urlencode().
+	
 2006-08-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add asynchronous DNS support(libares):

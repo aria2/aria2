@@ -673,11 +673,14 @@ int main(int argc, char* argv[]) {
 	exit(EXIT_FAILURE);
       }
       if(requestInfo->getFileInfo().checkReady()) {
+	cout << _("Now verifying checksum.\n"
+		  "This may take some time depending on your PC environment"
+		  " and the size of file.") << endl;
 	if(requestInfo->getFileInfo().check()) {
-	  printf("checksum OK.\n");
+	  cout << _("checksum OK.") << endl;
 	} else {
 	  // TODO
-	  printf("checksum ERROR.\n");
+	  cout << _("checksum ERROR.") << endl;
 	  exit(EXIT_FAILURE);
 	}
       }
