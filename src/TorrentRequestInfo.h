@@ -19,38 +19,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_METALINK_RESOURCE_H_
-#define _D_METALINK_RESOURCE_H_
+#ifndef _D_TORRENT_REQUEST_INFO_H_
+#define _D_TORRENT_REQUEST_INFO_H_
 
-#include "common.h"
+#include "RequestInfo.h"
+#include "TorrentDownloadEngine.h"
 
-class MetalinkResource {
-public:
-  enum TYPE {
-    TYPE_FTP,
-    TYPE_HTTP,
-    TYPE_HTTPS,
-    TYPE_BITTORRENT,
-    TYPE_NOT_SUPPORTED
-  };
-public:
-  string url;
-  int type;
-  string location;
-  int preference;
-public:
-  MetalinkResource();
-  ~MetalinkResource();
+class TorrentRequestInfo : public RequestInfo {
+private:
+  string torrentFile;
+  TorrentDownloadEngine* e;
+  Strings targetFiles;
 
-  MetalinkResource& operator=(const MetalinkResource& metalinkResource) {
-    if(this != &metalinkResource) {
-      this->url = metalinkResource.url;
-      this->type = metalinkResource.type;
-      this->location = metalinkResource.location;
-      this->preference = metalinkResource.preference;
-    }
-    return *this;
+  void showFileEntry();
+public:
+  TorrentRequestInfo(const string& torrentFile, const Option* op):
+    RequestInfo(op),
+    torrentFile(torrentFile),
+    e(0) {}
+  virtual ~TorrentRequestInfo() {}
+
+  virtual RequestInfo* execute();
+
+  void setTargetFiles(const Strings& targetFiles) {
+    this->targetFiles = targetFiles;
   }
+  virtual DownloadEngine* getDownloadEngine() { return e; }
+
 };
 
-#endif // _D_METALINK_RESOURCE_H_
+#endif // _D_TORRENT_REQUEST_INFO_H_

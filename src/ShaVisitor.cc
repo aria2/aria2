@@ -22,60 +22,49 @@
 #include "ShaVisitor.h"
 #include "Util.h"
 
-ShaVisitor::ShaVisitor() {
-#ifdef ENABLE_MESSAGE_DIGEST
-  ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
-  digestInit(ctx);
-  digestReset(ctx);
-#endif // ENABLE_MESSAGE_DIGEST
+ShaVisitor::ShaVisitor():
+  ctx(DIGEST_ALGO_SHA1) {
+  ctx.digestInit();
 }
 
 ShaVisitor::~ShaVisitor() {
-#ifdef ENABLE_MESSAGE_DIGEST
-  digestFree(ctx);
-#endif // ENABLE_MESSAGE_DIGEST
+  ctx.digestFree();
 }
 
 void ShaVisitor::visit(const Data* d) {
-#ifdef ENABLE_MESSAGE_DIGEST
   if(d->isNumber()) {
-    digestUpdate(ctx, "i", 1);
+    ctx.digestUpdate("i", 1);
   } else {
     string lenStr = Util::llitos(d->getLen());
-    digestUpdate(ctx, lenStr.c_str(), lenStr.size());
-    digestUpdate(ctx, ":", 1);
+    ctx.digestUpdate(lenStr.c_str(), lenStr.size());
+    ctx.digestUpdate(":", 1);
   }
-  digestUpdate(ctx, d->getData(), d->getLen());
+  ctx.digestUpdate(d->getData(), d->getLen());
   if(d->isNumber()) {
-    digestUpdate(ctx, "e", 1);
+    ctx.digestUpdate("e", 1);
   }
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void ShaVisitor::visit(const Dictionary* d) {
-#ifdef ENABLE_MESSAGE_DIGEST
-  digestUpdate(ctx, "d", 1);
+  ctx.digestUpdate("d", 1);
   const Order& v = d->getOrder();
   for(Order::const_iterator itr = v.begin(); itr != v.end(); itr++) {
     string lenStr = Util::llitos(itr->size());
-    digestUpdate(ctx, lenStr.c_str(), lenStr.size());
-    digestUpdate(ctx, ":", 1);
-    digestUpdate(ctx, itr->c_str(), itr->size());
+    ctx.digestUpdate(lenStr.c_str(), lenStr.size());
+    ctx.digestUpdate(":", 1);
+    ctx.digestUpdate(itr->c_str(), itr->size());
     const MetaEntry* e = d->get(*itr);
     this->visit(e);
   }
-  digestUpdate(ctx, "e", 1);
-#endif // ENABLE_MESSAGE_DIGEST
+  ctx.digestUpdate("e", 1);
 }
 
 void ShaVisitor::visit(const List* l) {
-#ifdef ENABLE_MESSAGE_DIGEST
-  digestUpdate(ctx, "l", 1);
+  ctx.digestUpdate("l", 1);
   for(MetaList::const_iterator itr = l->getList().begin(); itr != l->getList().end(); itr++) {
     this->visit(*itr);
   }
-  digestUpdate(ctx, "e", 1);
-#endif // ENABLE_MESSAGE_DIGEST
+  ctx.digestUpdate("e", 1);
 }
 
 void ShaVisitor::visit(const MetaEntry* e) {
@@ -89,8 +78,6 @@ void ShaVisitor::visit(const MetaEntry* e) {
 }
 
 void ShaVisitor::getHash(unsigned char* hashValue, int& len) {
-#ifdef ENABLE_MESSAGE_DIGEST
-  digestFinal(ctx, hashValue);
-  len = 20;
-#endif // ENABLE_MESSAGE_DIGEST
+  len = ctx.digestLength();
+  ctx.digestFinal(hashValue);
 }

@@ -19,38 +19,50 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_METALINK_RESOURCE_H_
-#define _D_METALINK_RESOURCE_H_
+#include "TimeA2.h"
+#include "Util.h"
 
-#include "common.h"
+Time::Time() {
+  reset();
+}
 
-class MetalinkResource {
-public:
-  enum TYPE {
-    TYPE_FTP,
-    TYPE_HTTP,
-    TYPE_HTTPS,
-    TYPE_BITTORRENT,
-    TYPE_NOT_SUPPORTED
-  };
-public:
-  string url;
-  int type;
-  string location;
-  int preference;
-public:
-  MetalinkResource();
-  ~MetalinkResource();
+Time::Time(const Time& time) {
+  tv = time.tv;
+}
 
-  MetalinkResource& operator=(const MetalinkResource& metalinkResource) {
-    if(this != &metalinkResource) {
-      this->url = metalinkResource.url;
-      this->type = metalinkResource.type;
-      this->location = metalinkResource.location;
-      this->preference = metalinkResource.preference;
-    }
-    return *this;
-  }
-};
+Time::~Time() {}
 
-#endif // _D_METALINK_RESOURCE_H_
+void Time::reset() {
+  gettimeofday(&tv, 0);
+}
+
+struct timeval Time::getCurrentTime() const {
+  struct timeval now;
+  gettimeofday(&now, 0);
+  return now;
+}
+
+bool Time::elapsed(int sec) const {
+  return Util::difftvsec(getCurrentTime(), tv) >= sec;
+}
+
+bool Time::elapsedInMillis(int millis) const {
+  return Util::difftv(getCurrentTime(), tv)/1000 >= millis;
+}
+
+bool Time::isNewer(const Time& time) const {
+  return Util::difftv(this->tv, time.tv) > 0;
+}
+
+int Time::difference() const {
+  return Util::difftvsec(getCurrentTime(), tv);
+}
+
+long long int Time::differenceInMillis() const {
+  return Util::difftv(getCurrentTime(), tv)/1000;
+}
+
+void Time::setTimeInSec(int sec) {
+  tv.tv_sec = sec;
+  tv.tv_usec = 0;
+}

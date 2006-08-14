@@ -24,7 +24,7 @@
 
 #include "AbstractCommand.h"
 #include "TransferEncoding.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 using namespace std;
 

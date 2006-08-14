@@ -8,13 +8,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-07-21 00:57+0900\n"
+"POT-Creation-Date: 2006-08-08 01:22+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/RequestInfo.h:84
+#, c-format
+msgid ""
+"\n"
+"The download was complete. <%s>\n"
+msgstr ""
+
+#: src/RequestInfo.h:92
+msgid ""
+"\n"
+"The download was not complete because of errors. Check the log.\n"
+msgstr ""
 
 #: src/message.h:27
 #, c-format
@@ -329,39 +342,34 @@ msgstr ""
 msgid "Failed to peek data, cause: %s"
 msgstr ""
 
-#: src/main.cc:76
-#, c-format
-msgid ""
-"\n"
-"The download was complete. <%s>\n"
+#: src/DownloadEngineFactory.cc:102
+msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/main.cc:84
-msgid ""
-"\n"
-"The download was not complete because of errors. Check the log.\n"
+#: src/TorrentRequestInfo.cc:71
+msgid "Files:"
 msgstr ""
 
-#: src/main.cc:101
+#: src/UrlRequestInfo.cc:63
 msgid ""
 "\n"
 "stopping application...\n"
 msgstr ""
 
-#: src/main.cc:107
+#: src/UrlRequestInfo.cc:68
 msgid "done\n"
 msgstr ""
 
-#: src/main.cc:123
+#: src/UrlRequestInfo.cc:92
 #, c-format
 msgid "Unrecognized URL or unsupported protocol: %s\n"
 msgstr ""
 
-#: src/main.cc:129
+#: src/main.cc:71
 msgid " version "
 msgstr ""
 
-#: src/main.cc:133
+#: src/main.cc:78
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -378,50 +386,50 @@ msgid ""
 "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
 msgstr ""
 
-#: src/main.cc:147
+#: src/main.cc:92
 #, c-format
 msgid "Contact Info: %s\n"
 msgstr ""
 
-#: src/main.cc:153
+#: src/main.cc:98
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
 msgstr ""
 
-#: src/main.cc:155
+#: src/main.cc:100
 #, c-format
 msgid "       %s [options] -T TORRENT_FILE FILE ...\n"
 msgstr ""
 
-#: src/main.cc:158
+#: src/main.cc:103
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
 msgstr ""
 
-#: src/main.cc:161
+#: src/main.cc:106
 msgid "Options:"
 msgstr ""
 
-#: src/main.cc:162
+#: src/main.cc:107
 msgid " -d, --dir=DIR                The directory to store downloaded file."
 msgstr ""
 
-#: src/main.cc:163
+#: src/main.cc:108
 msgid " -o, --out=FILE               The file name for downloaded file."
 msgstr ""
 
-#: src/main.cc:164
+#: src/main.cc:109
 msgid ""
 " -l, --log=LOG                The file path to store log. If '-' is "
 "specified,\n"
 "                              log is written to stdout."
 msgstr ""
 
-#: src/main.cc:166
+#: src/main.cc:111
 msgid " -D, --daemon                 Run as daemon."
 msgstr ""
 
-#: src/main.cc:167
+#: src/main.cc:112
 msgid ""
 " -s, --split=N                Download a file using N connections. N must "
 "be\n"
@@ -431,65 +439,65 @@ msgid ""
 "                              N connections."
 msgstr ""
 
-#: src/main.cc:171
+#: src/main.cc:116
 msgid ""
 " --retry-wait=SEC             Set amount of time in second between requests\n"
 "                              for errors. Specify a value between 0 and 60.\n"
 "                              Default: 5"
 msgstr ""
 
-#: src/main.cc:174
+#: src/main.cc:119
 msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
 msgstr ""
 
-#: src/main.cc:175
+#: src/main.cc:120
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
 
-#: src/main.cc:177
+#: src/main.cc:122
 msgid ""
 " --min-segment-size=SIZE[K|M] Set minimum segment size. You can append\n"
 "                              K or M(1K = 1024, 1M = 1024K). This\n"
 "                              value must be greater than or equal to\n"
-"                              1024."
+"                              1024. Default: 1M"
 msgstr ""
 
-#: src/main.cc:181
+#: src/main.cc:126
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
 "                              URLs."
 msgstr ""
 
-#: src/main.cc:183
+#: src/main.cc:128
 msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
 msgstr ""
 
-#: src/main.cc:184
+#: src/main.cc:129
 msgid ""
 " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
 msgstr ""
 
-#: src/main.cc:185
+#: src/main.cc:130
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
 msgstr ""
 
-#: src/main.cc:186
+#: src/main.cc:131
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
 "URLs."
 msgstr ""
 
-#: src/main.cc:187
+#: src/main.cc:132
 msgid ""
 " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 "                              METHOD is either 'get' or 'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
 
-#: src/main.cc:190
+#: src/main.cc:135
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -497,23 +505,23 @@ msgid ""
 "                              Default: basic"
 msgstr ""
 
-#: src/main.cc:193
+#: src/main.cc:138
 msgid " --referer=REFERER            Set Referer. This affects to all URLs."
 msgstr ""
 
-#: src/main.cc:194
+#: src/main.cc:139
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
 
-#: src/main.cc:196
+#: src/main.cc:141
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
 
-#: src/main.cc:198
+#: src/main.cc:143
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
@@ -521,11 +529,11 @@ msgid ""
 "                              Default: binary"
 msgstr ""
 
-#: src/main.cc:201
+#: src/main.cc:146
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
 msgstr ""
 
-#: src/main.cc:202
+#: src/main.cc:147
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
@@ -533,11 +541,26 @@ msgid ""
 "                              Default: tunnel"
 msgstr ""
 
-#: src/main.cc:206
+#: src/main.cc:150
+msgid ""
+" --lowest-speed-limit         Close connection if download speed is lower "
+"than\n"
+"                              or equal to this value. 0 means aria2 does "
+"not\n"
+"                              care lowest speed limit. You can use K or M "
+"in\n"
+"                              the same manner as in --min-segment-size "
+"option.\n"
+"                              This option does not affect BitTorrent "
+"download.\n"
+"                              Default: 0"
+msgstr ""
+
+#: src/main.cc:157
 msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
 msgstr ""
 
-#: src/main.cc:207
+#: src/main.cc:158
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -546,25 +569,25 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:211
+#: src/main.cc:162
 msgid ""
 " -S, --show-files             Print file listing of .torrent file and exit."
 msgstr ""
 
-#: src/main.cc:212
+#: src/main.cc:163
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:215
+#: src/main.cc:166
 msgid ""
 " --listen-port=PORT           Set port number to listen to for peer "
 "connection."
 msgstr ""
 
-#: src/main.cc:216
+#: src/main.cc:167
 msgid ""
 " --upload-limit=SPEED         Set upload speed limit in KB/sec. aria2 tries "
 "to\n"
@@ -572,7 +595,7 @@ msgid ""
 "unlimited."
 msgstr ""
 
-#: src/main.cc:218
+#: src/main.cc:169
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can know file index through --show-files\n"
@@ -584,11 +607,11 @@ msgid ""
 "                              ',' and '-' can be used together."
 msgstr ""
 
-#: src/main.cc:226
+#: src/main.cc:177
 msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
 msgstr ""
 
-#: src/main.cc:227
+#: src/main.cc:178
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. If more than one connection "
@@ -597,20 +620,20 @@ msgid ""
 "                              Default: 15"
 msgstr ""
 
-#: src/main.cc:231
+#: src/main.cc:182
 msgid " --metalink-version=VERSION   The version of file to download."
 msgstr ""
 
-#: src/main.cc:232
+#: src/main.cc:183
 msgid " --metalink-language=LANGUAGE The language of file to download."
 msgstr ""
 
-#: src/main.cc:233
+#: src/main.cc:184
 msgid ""
 " --metalink-os=OS             The operating system the file is targeted."
 msgstr ""
 
-#: src/main.cc:234
+#: src/main.cc:185
 msgid ""
 " --follow-metalink=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -619,155 +642,151 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:239
+#: src/main.cc:190
 msgid " -v, --version                Print the version number and exit."
 msgstr ""
 
-#: src/main.cc:240
+#: src/main.cc:191
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 
-#: src/main.cc:243
+#: src/main.cc:194
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
 msgstr ""
 
-#: src/main.cc:248
+#: src/main.cc:199
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option. This arguments are ignored if you specify --select-file option."
 msgstr ""
 
-#: src/main.cc:252
+#: src/main.cc:203
 msgid "Examples:"
 msgstr ""
 
-#: src/main.cc:253
+#: src/main.cc:204
 msgid " Download a file by 1 connection:"
 msgstr ""
 
-#: src/main.cc:255
+#: src/main.cc:206
 msgid " Download a file by 2 connections:"
 msgstr ""
 
-#: src/main.cc:257
+#: src/main.cc:208
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr ""
 
-#: src/main.cc:259
+#: src/main.cc:210
 msgid " You can mix up different protocols:"
 msgstr ""
 
-#: src/main.cc:263
+#: src/main.cc:214
 msgid " Download a torrent:"
 msgstr ""
 
-#: src/main.cc:265
+#: src/main.cc:216
 msgid " Download a torrent using local .torrent file:"
 msgstr ""
 
-#: src/main.cc:267
+#: src/main.cc:218
 msgid " Download only selected files:"
 msgstr ""
 
-#: src/main.cc:269
+#: src/main.cc:220
 msgid " Print file listing of .torrent file:"
 msgstr ""
 
-#: src/main.cc:274
+#: src/main.cc:225
 msgid " Metalink downloading:"
 msgstr ""
 
-#: src/main.cc:276
+#: src/main.cc:227
 msgid " Download a file using local .metalink file:"
 msgstr ""
 
-#: src/main.cc:278
+#: src/main.cc:229
 msgid " Metalink downloading with preferences:"
 msgstr ""
 
-#: src/main.cc:282
+#: src/main.cc:233
 #, c-format
 msgid "Report bugs to %s"
 msgstr ""
 
-#: src/main.cc:446
+#: src/main.cc:358
 msgid "unrecognized proxy format"
 msgstr ""
 
-#: src/main.cc:473
+#: src/main.cc:385
 msgid "Currently, supported authentication scheme is basic."
 msgstr ""
 
-#: src/main.cc:482
+#: src/main.cc:394
 msgid "retry-wait must be between 0 and 60."
 msgstr ""
 
-#: src/main.cc:499
+#: src/main.cc:411
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr ""
 
-#: src/main.cc:508
+#: src/main.cc:420
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:526
+#: src/main.cc:428
 msgid "min-segment-size invalid"
 msgstr ""
 
-#: src/main.cc:537
+#: src/main.cc:439
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:545
+#: src/main.cc:447
 msgid "listen-port must be between 1024 and 65535."
 msgstr ""
 
-#: src/main.cc:556
+#: src/main.cc:460
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:570
+#: src/main.cc:474
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:578
+#: src/main.cc:482
 msgid "upload-limit must be greater than or equal to 0."
 msgstr ""
 
-#: src/main.cc:603
+#: src/main.cc:507
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:630
+#: src/main.cc:515
+msgid "lowest-speed-limit must be greater than or equal to 0"
+msgstr ""
+
+#: src/main.cc:544
 msgid "split must be between 1 and 5."
 msgstr ""
 
-#: src/main.cc:640
+#: src/main.cc:556
 msgid "timeout must be between 1 and 600"
 msgstr ""
 
-#: src/main.cc:649
+#: src/main.cc:565
 msgid "max-tries invalid"
 msgstr ""
 
-#: src/main.cc:671
+#: src/main.cc:587
 msgid "metalink-servers must be greater than 0."
 msgstr ""
 
-#: src/main.cc:689
+#: src/main.cc:607
 msgid "specify at least one URL"
 msgstr ""
 
-#: src/main.cc:696
+#: src/main.cc:614
 msgid "daemon failed"
-msgstr ""
-
-#: src/main.cc:837
-msgid "Files:"
-msgstr ""
-
-#: src/main.cc:868
-msgid "Errors occurred while binding port.\n"
 msgstr ""

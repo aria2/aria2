@@ -50,9 +50,12 @@ SRCS =  Socket.h\
 	messageDigest.h\
 	LogFactory.cc LogFactory.h\
 	NullLogger.h\
-	Time.cc Time.h\
+	TimeA2.cc TimeA2.h\
 	SharedHandle.h\
-	FeatureConfig.cc FeatureConfig.h
+	FeatureConfig.cc FeatureConfig.h\
+	DownloadEngineFactory.cc DownloadEngineFactory.h\
+	RequestInfo.h\
+	UrlRequestInfo.cc UrlRequestInfo.h
 
 if ENABLE_BITTORRENT
 SRCS += MetaEntry.h\
@@ -108,7 +111,8 @@ SRCS += MetaEntry.h\
 	SuggestPieceMessage.cc SuggestPieceMessage.h\
 	SimplePeerMessage.cc SimplePeerMessage.h\
 	PeerMessageFactory.cc PeerMessageFactory.h\
-	HaveEraseCommand.cc HaveEraseCommand.h
+	HaveEraseCommand.cc HaveEraseCommand.h\
+	TorrentRequestInfo.cc TorrentRequestInfo.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
@@ -116,15 +120,16 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
-	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h
+	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
+	MetalinkRequestInfo.cc MetalinkRequestInfo.h
 endif # ENABLE_METALINK
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
-aria2c_LDFLAGS = -pg
+#aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@# -pg

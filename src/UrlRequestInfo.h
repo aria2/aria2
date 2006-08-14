@@ -19,38 +19,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_METALINK_RESOURCE_H_
-#define _D_METALINK_RESOURCE_H_
+#ifndef _D_URL_REQUEST_INFO_H_
+#define _D_URL_REQUEST_INFO_H_
 
-#include "common.h"
+#include "RequestInfo.h"
 
-class MetalinkResource {
-public:
-  enum TYPE {
-    TYPE_FTP,
-    TYPE_HTTP,
-    TYPE_HTTPS,
-    TYPE_BITTORRENT,
-    TYPE_NOT_SUPPORTED
-  };
-public:
-  string url;
-  int type;
-  string location;
-  int preference;
-public:
-  MetalinkResource();
-  ~MetalinkResource();
+class UrlRequestInfo : public RequestInfo {
+private:
+  Strings urls;
+  int maxConnections;
+  DownloadEngine* e;
 
-  MetalinkResource& operator=(const MetalinkResource& metalinkResource) {
-    if(this != &metalinkResource) {
-      this->url = metalinkResource.url;
-      this->type = metalinkResource.type;
-      this->location = metalinkResource.location;
-      this->preference = metalinkResource.preference;
-    }
-    return *this;
+  RequestInfo* createNextRequestInfo() const;
+  void adjustRequestSize(Requests& requests,
+			 Requests& reserved,
+			 int maxConnections) const;
+public:
+  UrlRequestInfo(const Strings& urls, int maxConnections, const Option* op):
+    RequestInfo(op),
+    urls(urls),
+    maxConnections(maxConnections),
+    e(0) {}
+  virtual ~UrlRequestInfo() {}
+
+  virtual RequestInfo* execute();
+
+  virtual DownloadEngine* getDownloadEngine() {
+    return e;
   }
 };
 
-#endif // _D_METALINK_RESOURCE_H_
+#endif // _D_URL_REQUEST_INFO_H_

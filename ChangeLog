@@ -1,3 +1,143 @@
+2006-08-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* po/ru.po: Azamat sent me Russian translation.
+	
+	* src/FtpNegotiateCommand.cc
+	(recvGreeting): Call disableWriteCheckSocket just after
+	socket->setBlockingMode(). This avoids unnecessary CPU-hog loop.
+	(recvRetr): Recognized status code 125 as a acceptable response code.
+	
+	Rename Time.h to TimeA2.h to avoid compilation ploblem on
+	case-insesitive filesystem(BUG#1531057).
+
+	* src/Time.h: Renamed as TimeA2.h.
+	* src/Time.cc: Renamed as TimeA2.cc.
+	* src/TimeA2.h: New class.
+	* src/TimeA2.cc: New class.
+	* src/PeerChokeCommand.h: Replaced Time.h with TimeA2.h.
+	* src/TrackerWatcherCommand.h: Replaced Time.h with TimeA2.h.
+	* src/PeerAbstractCommand.h: Replaced Time.h with TimeA2.h.
+	* src/AbstractCommand.h: Replaced Time.h with TimeA2.h.
+	* src/PeerInteractionCommand.h: Replaced Time.h with TimeA2.h.
+	* src/ConsoleDownloadEngine.h: Replaced Time.h with TimeA2.h.
+	* src/TorrentAutoSaveCommand.h: Replaced Time.h with TimeA2.h.
+	* src/DownloadCommand.h: Replaced Time.h with TimeA2.h.
+	* src/TorrentMan.h: Replaced Time.h with TimeA2.h.
+	* src/TorrentDownloadEngine.h: Replaced Time.h with TimeA2.h.
+	* src/RequestSlot.h: Replaced Time.h with TimeA2.h.
+	* src/SleepCommand.h: Replaced Time.h with TimeA2.h.
+	* src/DownloadEngine.cc: Replaced Time.h with TimeA2.h.
+	
+2006-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/PeerChokeCommand.h
+	(PeerChokeCommand): Rearranged the arguments.
+	* src/PeerChokeCommand.cc
+	(PeerChokeCommand): Rearranged the arguments.
+
+	* src/MetalinkEntry.h
+	(Checksum.h): Included.
+	(md5): Removed.
+	(sha1): Removed.
+	(checksum): New variable.
+	(operator=): Updated.
+	(check): Removed.
+
+	* src/prefs.h
+	(PREF_LOWEST_SPEED_LIMIT): New definition.
+	(PREF_FOLLOW_TORRENT): New definition.
+	(PREF_SELECT_FILE): New definition.
+	(PREF_FOLLOW_METALINK): New definition.
+
+	* src/MetalinkResource.h
+	(TYPE_HTTPS): Added to enum TYPE.
+
+	* src/TorrentMan.cc
+	(~TorrentMan): Rewritten.
+
+	* src/MultiDiskWriter.cc
+	(MultiDiskAdaptor): Updated according to the changes in
+	MessageDigestContext.
+	(~MultiDiskAdaptor): Updated according to the changes in
+	MessageDigestContext.
+	(hashUpdate): Updated according to the changes in MessageDigestContext.
+	(sha1Sum): Updated according to the changes in MessageDigestContext.
+
+	* src/Util.h
+	(fileChecksum): Updated according to the changes in
+	MessageDigestContext.
+	* src/Util.cc
+	(sha1Sum): Updated according to the changes in MessageDigestContext.
+	(fileChecksum): Updated according to the changes in
+	MessageDigestContext.
+
+	* src/messageDigest.h: Rewritten.
+
+	* src/MetalinkEntry.cc
+	(check): Removed.
+	(Supported): Updated.
+	(dropUnsupportedResource): Fixed a memory leak.
+
+	* src/ShaVisitor.cc
+	(ShaVisitor): Updated according to the changes in MessageDigestContext.
+	(~ShaVisitor): Updated according to the changes in
+	MessageDigestContext.
+	(visit): Updated according to the changes in MessageDigestContext.
+
+	* src/main.cc
+	(main): Rewritten the portion of download loop. --lowest-speed-limit
+	command-line option added.
+
+	* src/DownloadEngine.h
+	(SocketEntry): New class.
+	(SocketEntries): New definition.
+	(PairFind): Removed.
+	(SockCmdMap): Removed.
+	* src/DownloadEngine.cc
+	(DownloadEngine): Rewritten.
+	(~DownloadEngine): Rewritten.
+	(run): Renamed activeCommandUuids as activeUuids.
+	(SetDescriptor): Rewritten.
+	(AccumulateActiveCommandUuid): Removed.
+	(AccumulateActiveUuid): New function object.
+	(waitData): Rewritten.
+	(updateFdSet): Rewritten.
+	(addSocket): Rewritten.
+	(deleteSocket): Rewritten.
+	(addSocketForReadCheck): Rewritten.
+	(deleteSocketForReadCheck): Rewritten.
+	(addSocketForWriteCheck): Rewritten.
+	(deleteSocketForWriteCheck): Rewritten.
+	
+	* src/Xml2MetalinkProcessor.cc
+	(getEntry): Rewritten the portion of MetalinkEntry creation.
+
+	* src/DownloadCommand.cc
+	(executeInternal): Added the check routine for lowest speed limit.
+
+	* src/AbstractDiskWriter.cc
+	(AbstractDiskWriter): Updated according to the changes in
+	MessageDigestContext.
+	(~AbstractDiskWriter): Updated according to the changes in
+	MessageDigestContext.
+	(sha1Sum): Updated according to the changes in MessageDigestContext.
+
+	* src/RequestInfo.h: New class.
+
+	* src/UrlRequestInfo.h: New class.
+	* src/UrlRequestInfo.cc: New class.
+
+	* src/TorrentRequestInfo.h: New class.
+	* src/TorrentRequestInfo.cc: New class.
+
+	* src/MetalinkRequestInfo.h: New class.
+	* src/MetalinkRequestInfo.cc: New class.
+
+	* src/Checksum.h: New class.
+
+	* src/DownloadEngineFactory.h: New class.
+	* src/DownloadEngineFactory.cc: New class.
+	
 2006-08-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/Option.h

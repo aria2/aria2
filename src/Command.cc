@@ -19,38 +19,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_METALINK_RESOURCE_H_
-#define _D_METALINK_RESOURCE_H_
+#include "Command.h"
 
-#include "common.h"
-
-class MetalinkResource {
-public:
-  enum TYPE {
-    TYPE_FTP,
-    TYPE_HTTP,
-    TYPE_HTTPS,
-    TYPE_BITTORRENT,
-    TYPE_NOT_SUPPORTED
-  };
-public:
-  string url;
-  int type;
-  string location;
-  int preference;
-public:
-  MetalinkResource();
-  ~MetalinkResource();
-
-  MetalinkResource& operator=(const MetalinkResource& metalinkResource) {
-    if(this != &metalinkResource) {
-      this->url = metalinkResource.url;
-      this->type = metalinkResource.type;
-      this->location = metalinkResource.location;
-      this->preference = metalinkResource.preference;
-    }
-    return *this;
-  }
-};
-
-#endif // _D_METALINK_RESOURCE_H_
+int Command::uuidGen = 0;

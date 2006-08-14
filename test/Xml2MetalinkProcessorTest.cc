@@ -33,11 +33,10 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   CPPUNIT_ASSERT_EQUAL(string("0.5.2"), entry1->version);
   CPPUNIT_ASSERT_EQUAL(string("en-US"), entry1->language);
   CPPUNIT_ASSERT_EQUAL(string("Linux-x86"), entry1->os);
-  CPPUNIT_ASSERT_EQUAL(string("fc4d834e89c18c99b2615d902750948c"),
-		       entry1->md5);
   CPPUNIT_ASSERT_EQUAL(string("a96cf3f0266b91d87d5124cf94326422800b627d"),
-		       entry1->sha1);
-  
+		       entry1->checksum.getMessageDigest());
+  CPPUNIT_ASSERT(DIGEST_ALGO_SHA1 == entry1->checksum.getDigestAlgo());
+
   MetalinkResources::iterator resourceItr1 = entry1->resources.begin();
   MetalinkResource* resource1 = *resourceItr1;
   CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_FTP, resource1->type);
@@ -57,10 +56,9 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   CPPUNIT_ASSERT_EQUAL(string("0.5.1"), entry2->version);
   CPPUNIT_ASSERT_EQUAL(string("ja-JP"), entry2->language);
   CPPUNIT_ASSERT_EQUAL(string("Linux-m68k"), entry2->os);
-  CPPUNIT_ASSERT_EQUAL(string("92296e19c406d77d21bda0bb944eac46"),
-		       entry2->md5);
   CPPUNIT_ASSERT_EQUAL(string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
-		       entry2->sha1);
+		       entry2->checksum.getMessageDigest());
+  CPPUNIT_ASSERT(DIGEST_ALGO_SHA1 == entry2->checksum.getDigestAlgo());
 
   delete metalinker;
 }

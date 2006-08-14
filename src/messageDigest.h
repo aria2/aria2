@@ -26,6 +26,8 @@
 
 #ifdef ENABLE_SSL
 
+#define MAX_MD_LENGTH (16+20)
+
 #ifdef HAVE_LIBSSL
 #include <openssl/evp.h>
 #endif // HAVE_LIBSSL
@@ -36,73 +38,80 @@
 
 class MessageDigestContext {
 public:
-  enum HashAlgo {
-    ALGO_MD5,
-    ALGO_SHA1
-  };
+#ifdef HAVE_LIBSSL
+  typedef const EVP_MD* DigestAlgo;
+# define DIGEST_ALGO_MD5 EVP_md5()
+# define DIGEST_ALGO_SHA1 EVP_sha1()
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGCRYPT
+  typedef int DigestAlgo;
+# define DIGEST_ALGO_MD5 GCRY_MD_MD5
+# define DIGEST_ALGO_SHA1 GCRY_MD_SHA1
+#endif // HAVE_LIBGCRYPT
+private:
 #ifdef HAVE_LIBSSL
   EVP_MD_CTX ctx;
-  const EVP_MD* algo;
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGCRYPT
   gcry_md_hd_t ctx;
-  int algo;
-#endif // HAVE_LIBGCRYPT
+#endif // HAVE_LIBGCRYPT  
+  DigestAlgo algo;
+public:
+  MessageDigestContext():
+    algo(DIGEST_ALGO_SHA1) {}
+  MessageDigestContext(DigestAlgo algo):
+    algo(algo) {}
 
-  MessageDigestContext() {}
-  MessageDigestContext(HashAlgo algo) {
-    setAlgo(algo);
+#ifdef HAVE_LIBSSL
+  void digestInit() {
+    EVP_MD_CTX_init(&ctx);
+    digestReset();
   }
+  void digestReset() {
+    EVP_DigestInit_ex(&ctx, algo, 0);
+  }
+  void digestUpdate(const void* data, int length) {
+    EVP_DigestUpdate(&ctx, data, length);
+  }
+  void digestFinal(unsigned char* md) {
+    int len;
+    EVP_DigestFinal_ex(&ctx, md, (unsigned int*)&len);
+  }
+  void digestFree() {
+    EVP_MD_CTX_cleanup(&ctx);
+  }
+  int digestLength() const {
+    return digestLength(algo);
+  }
+  static int digestLength(DigestAlgo algo) {
+    return EVP_MD_size(algo);
+  }
+#endif // HAVE_LIBSSL
 
-  void setAlgo(HashAlgo algo) {
-    switch(algo) {
-    case ALGO_MD5:
-#ifdef HAVE_LIBSSL
-      this->algo = EVP_md5();
-#endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGCRYPT
-      this->algo = GCRY_MD_MD5;
-#endif // HAVE_LIBGCRYPT
-      break;
-    case ALGO_SHA1:
-#ifdef HAVE_LIBSSL
-      this->algo = EVP_sha1();
-#endif // HAVE_LIBSSL
-#ifdef HAVE_LIBGCRYPT
-      this->algo = GCRY_MD_SHA1;
-#endif // HAVE_LIBGCRYPT
-      break;
-    default:
-      break;
-    }
+  void digestInit() {
+    gcry_md_open(&ctx, algo, 0);
   }
+  void digestReset() {
+    gcry_md_reset(ctx);
+  }
+  void digestUpdate(const void* data, int length) {
+    gcry_md_write(ctx, data, length);
+  }
+  void digestFinal(unsigned char* md) {
+    gcry_md_final(ctx);
+    memcpy(md, gcry_md_read(ctx, 0), gcry_md_get_algo_dlen(algo));
+  }
+  void digestFree() {
+    gcry_md_close(ctx);
+  }
+  int digestLength() const {
+    return digestLength(algo);
+  }
+  static int digestLength(DigestAlgo algo) {
+    return gcry_md_get_algo_dlen(algo);
+  }
+#endif // HAVE_LIBGCRYPT
 };
-
-#ifdef HAVE_LIBSSL
-#define digestInit(CTX) EVP_MD_CTX_init(&CTX.ctx)
-#define digestReset(CTX) EVP_DigestInit_ex(&CTX.ctx, CTX.algo, NULL)
-#define digestUpdate(CTX, DATA, LENGTH) EVP_DigestUpdate(&CTX.ctx, DATA, LENGTH)
-#define digestFinal(CTX, HASH) \
-{\
-int len;\
-EVP_DigestFinal_ex(&CTX.ctx, HASH, (unsigned int*)&len);\
-}
-#define digestFree(CTX) EVP_MD_CTX_cleanup(&CTX.ctx)
-
-#endif // HAVE_LIBSSL
-
-#ifdef HAVE_LIBGCRYPT
-#define digestInit(CTX) gcry_md_open(&CTX.ctx, CTX.algo, 0)
-#define digestReset(CTX) gcry_md_reset(CTX.ctx)
-#define digestUpdate(CTX, DATA, LENGTH) gcry_md_write(CTX.ctx, DATA, LENGTH)
-#define digestFinal(CTX, HASH) \
-{\
-gcry_md_final(CTX.ctx);\
-memcpy(HASH, gcry_md_read(CTX.ctx, 0), gcry_md_get_algo_dlen(CTX.algo));\
-}
-#define digestFree(CTX) gcry_md_close(CTX.ctx)
-#endif // HAVE_LIBGCRYPT
-
 #endif // ENABLE_SSL
-
 #endif // _D_MESSAGE_DIGEST_H_

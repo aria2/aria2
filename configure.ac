@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(aria2c, 0.6.1, tujikawa@rednoah.com)
+AC_INIT(aria2c, 0.7.0, tujikawa@rednoah.com)
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
@@ -13,9 +13,9 @@ localedir=${datadir}/locale
 AC_SUBST(localedir)
 
 # Checks for arguments.
-AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$enableval], [with_gnutls=yes])
-AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$enableval], [with_openssl=yes])
-AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$enableval], [with_libxml2=yes])
+AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$withval], [with_gnutls=yes])
+AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$withval], [with_openssl=yes])
+AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$withval], [with_libxml2=yes])
 
 AC_ARG_ENABLE([bittorrent], [ --enable-bittorrent        enable BitTorrent support. Default: yes], [enable_bittorrent=$enableval], [enable_bittorrent=yes])
 AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. Default: yes], [enable_metalink=$enableval], [enable_metalink=yes])

@@ -10,8 +10,6 @@
 * Add max peers command-line option
 * Refacturing HttpConnection and FtpConnection
 * Query resource by location
-* Log version
 * List available os, version, etc for metalink
-* bittorrent in metalink
-* rename Time to something appropriate
 * ipv6(RFC2428 for ftp)
+* async DNS using ares or c-ares

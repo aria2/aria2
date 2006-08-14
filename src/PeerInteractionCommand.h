@@ -25,7 +25,7 @@
 #include "PeerAbstractCommand.h"
 #include "PeerConnection.h"
 #include "PeerInteraction.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 using namespace std;
 

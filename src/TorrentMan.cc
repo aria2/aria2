@@ -43,7 +43,7 @@
 
 extern PeerHandle nullPeer;
 
-TorrentMan::TorrentMan():bitfield(NULL),
+TorrentMan::TorrentMan():bitfield(0),
 			 peerEntryIdCounter(0),
 			 cuidCounter(0),
 			 downloadLength(0),
@@ -61,18 +61,16 @@ TorrentMan::TorrentMan():bitfield(NULL),
 			 incomplete(0),
 			 connections(0),
 			 trackers(0),
-			 diskAdaptor(NULL)
+			 req(0),
+			 diskAdaptor(0)
 {
   logger = LogFactory::getInstance();
 }
 
 TorrentMan::~TorrentMan() {
-  if(bitfield != NULL) {
-    delete bitfield;
-  }
-  if(diskAdaptor != NULL) {
-    delete diskAdaptor;
-  }
+  delete bitfield;
+  delete diskAdaptor;
+  delete req;
 }
 
 // TODO do not use this method in application code

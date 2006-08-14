@@ -19,50 +19,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#include "Time.h"
-#include "Util.h"
+#ifndef _D_DOWNLOAD_ENGINE_FACTORY_H_
+#define _D_DOWNLOAD_ENGINE_FACTORY_H_
 
-Time::Time() {
-  reset();
-}
+#include "common.h"
+#include "ConsoleDownloadEngine.h"
+#ifdef ENABLE_BITTORRENT
+# include "TorrentConsoleDownloadEngine.h"
+#endif // ENABLE_BITTORRENT
 
-Time::Time(const Time& time) {
-  tv = time.tv;
-}
+class DownloadEngineFactory {
+public:
+  static ConsoleDownloadEngine*
+  newConsoleEngine(const Option* option,
+		   const Requests& requests,
+		   const Requests& reserved);
 
-Time::~Time() {}
+#ifdef ENABLE_BITTORRENT
+  static TorrentConsoleDownloadEngine*
+  newTorrentConsoleEngine(const Option* option,
+			  const string& torrentFile,
+			  const Strings& targetFiles);
+#endif // ENABLE_BITTORRENT
+};
 
-void Time::reset() {
-  gettimeofday(&tv, 0);
-}
-
-struct timeval Time::getCurrentTime() const {
-  struct timeval now;
-  gettimeofday(&now, 0);
-  return now;
-}
-
-bool Time::elapsed(int sec) const {
-  return Util::difftvsec(getCurrentTime(), tv) >= sec;
-}
-
-bool Time::elapsedInMillis(int millis) const {
-  return Util::difftv(getCurrentTime(), tv)/1000 >= millis;
-}
-
-bool Time::isNewer(const Time& time) const {
-  return Util::difftv(this->tv, time.tv) > 0;
-}
-
-int Time::difference() const {
-  return Util::difftvsec(getCurrentTime(), tv);
-}
-
-long long int Time::differenceInMillis() const {
-  return Util::difftv(getCurrentTime(), tv)/1000;
-}
-
-void Time::setTimeInSec(int sec) {
-  tv.tv_sec = sec;
-  tv.tv_usec = 0;
-}
+#endif // _D_DOWNLOAD_ENGINE_FACTORY_H_

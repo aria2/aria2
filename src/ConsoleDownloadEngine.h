@@ -23,7 +23,7 @@
 #define _D_CONSOLE_DOWNLOAD_ENGINE_H_
 
 #include "DownloadEngine.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 class ConsoleDownloadEngine : public DownloadEngine {
 private:

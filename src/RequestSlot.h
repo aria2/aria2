@@ -23,7 +23,7 @@
 #define _D_REQUEST_SLOT_H_
 
 #include "common.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 class RequestSlot {
 private:

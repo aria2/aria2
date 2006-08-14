@@ -22,7 +22,7 @@
 #include "PeerChokeCommand.h"
 #include "Util.h"
 
-PeerChokeCommand::PeerChokeCommand(int cuid, int interval, TorrentDownloadEngine* e):Command(cuid), interval(interval), e(e), rotate(0) {}
+PeerChokeCommand::PeerChokeCommand(int cuid, TorrentDownloadEngine* e, int interval):Command(cuid), interval(interval), e(e), rotate(0) {}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 

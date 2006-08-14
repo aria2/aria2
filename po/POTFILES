@@ -1,2 +1,6 @@
+     ../src/RequestInfo.h \
      ../src/message.h \
+     ../src/DownloadEngineFactory.cc \
+     ../src/TorrentRequestInfo.cc \
+     ../src/UrlRequestInfo.cc \
      ../src/main.cc

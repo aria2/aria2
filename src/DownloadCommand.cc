@@ -20,12 +20,14 @@
  */
 /* copyright --> */
 #include "DownloadCommand.h"
-#include <sys/time.h>
 #include "Util.h"
 #include "DlRetryEx.h"
+#include "DlAbortEx.h"
 #include "HttpInitiateConnectionCommand.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
+#include "prefs.h"
+#include <sys/time.h>
 
 DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e,
 				 const SocketHandle& s):
@@ -59,6 +61,13 @@ bool DownloadCommand::executeInternal(Segment seg) {
     seg.speed = (int)((seg.ds-lastSize)/(diff*1.0));
     sw.reset();
     lastSize = seg.ds;
+    int lowestLimit = e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT);
+    if(lowestLimit > 0 && seg.speed <= lowestLimit) {
+      throw new DlAbortEx("CUID#%d - Too slow Downloading speed: %d <= %d(B/s)",
+			  cuid,
+			  seg.speed,
+			  lowestLimit);
+    }
   }
   if(e->segmentMan->totalSize != 0 && bufSize == 0) {
     throw new DlRetryEx(EX_GOT_EOF);

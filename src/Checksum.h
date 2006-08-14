@@ -19,45 +19,46 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_METALINK_ENTRY_H_
-#define _D_METALINK_ENTRY_H_
+#ifndef _D_CHECKSUM_H_
+#define _D_CHECKSUM_H_
 
 #include "common.h"
-#include "MetalinkResource.h"
-#include "Checksum.h"
-#include <deque>
+#include "messageDigest.h"
 
-typedef deque<MetalinkResource*> MetalinkResources;
+#ifdef ENABLE_MESSAGE_DIGEST
+class Checksum {
+private:
+  string md;
+  MessageDigestContext::DigestAlgo algo;
+public:
+  Checksum(const string& md, MessageDigestContext::DigestAlgo algo):
+    md(md),
+    algo(algo) {}
+  Checksum():
+    algo(DIGEST_ALGO_SHA1) {}
+  ~Checksum() {}
 
-class MetalinkEntry {
-public:
-  string filename;
-  string version;
-  string language;
-  string os;
-  long long int size;
-  Checksum checksum;
-public:
-  MetalinkResources resources;
-public:
-  MetalinkEntry();
-  ~MetalinkEntry();
-
-  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry) {
-    if(this != &metalinkEntry) {
-      this->filename = metalinkEntry.filename;
-      this->version = metalinkEntry.version;
-      this->language = metalinkEntry.language;
-      this->os = metalinkEntry.os;
-      this->size = metalinkEntry.size;
-      this->checksum = metalinkEntry.checksum;
-    }
-    return *this;
+  bool isEmpty() const {
+    return md.size() == 0;
   }
 
-  void dropUnsupportedResource();
-
-  void reorderResourcesByPreference();
+  void setMessageDigest(const string& md) {
+    this->md = md;
+  }
+  const string& getMessageDigest() const {
+    return md;
+  }
+  
+  void setDigestAlgo(MessageDigestContext::DigestAlgo algo) {
+    this->algo = algo;
+  }
+  const MessageDigestContext::DigestAlgo& getDigestAlgo() const {
+    return algo;
+  }
 };
+#else
+class Checksum {
+};
+#endif // ENABLE_MESSAGE_DIGEST
 
-#endif // _D_METALINK_ENTRY_H_
+#endif // _D_CHECKSUM_H_

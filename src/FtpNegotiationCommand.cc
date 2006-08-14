@@ -57,6 +57,9 @@ bool FtpNegotiationCommand::executeInternal(Segment segment) {
 
 bool FtpNegotiationCommand::recvGreeting() {
   socket->setBlockingMode();
+  disableWriteCheckSocket();
+  setReadCheckSocket(socket);
+
   int status = ftp->receiveResponse();
   if(status == 0) {
     return false;
@@ -65,9 +68,6 @@ bool FtpNegotiationCommand::recvGreeting() {
     throw new DlRetryEx(EX_CONNECTION_FAILED);
   }
   sequence = SEQ_SEND_USER;
-
-  setReadCheckSocket(socket);
-  disableWriteCheckSocket();
 
   return true;
 }
@@ -264,7 +264,7 @@ bool FtpNegotiationCommand::recvRetr() {
   if(status == 0) {
     return false;
   }
-  if(status != 150) {
+  if(status != 150 && status != 125) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
   if(e->option->get(PREF_FTP_PASV_ENABLED) != V_TRUE) {

@@ -30,17 +30,21 @@
 #include <errno.h>
 #include <fcntl.h>
 
-AbstractDiskWriter::AbstractDiskWriter():fd(0) {
+AbstractDiskWriter::AbstractDiskWriter():
+  fd(0)
+#ifdef ENABLE_MESSAGE_DIGEST				       
+  ,ctx(DIGEST_ALGO_SHA1)
+#endif // ENABLE_MESSAGE_DIGEST
+{
 #ifdef ENABLE_MESSAGE_DIGEST
-  ctx.setAlgo(MessageDigestContext::ALGO_SHA1);
-  digestInit(ctx);
+  ctx.digestInit();
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
 AbstractDiskWriter::~AbstractDiskWriter() {
   closeFile();
 #ifdef ENABLE_MESSAGE_DIGEST
-  digestFree(ctx);
+  ctx.digestFree();
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
@@ -100,7 +104,7 @@ int AbstractDiskWriter::readDataInternal(char* data, int len) {
 
 string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
 #ifdef ENABLE_MESSAGE_DIGEST
-  digestReset(ctx);
+  ctx.digestReset();
   try {
     int BUFSIZE = 16*1024;
     char buf[BUFSIZE];
@@ -108,7 +112,7 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
       if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
 	throw string("error");
       }
-      digestUpdate(ctx, buf, BUFSIZE);
+      ctx.digestUpdate(buf, BUFSIZE);
       offset += BUFSIZE;
     }
     int r = length%BUFSIZE;
@@ -116,10 +120,10 @@ string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
       if(r != readData(buf, r, offset)) {
 	throw string("error");
       }
-      digestUpdate(ctx, buf, r);
+      ctx.digestUpdate(buf, r);
     }
     unsigned char hashValue[20];
-    digestFinal(ctx, hashValue);
+    ctx.digestFinal(hashValue);
     return Util::toHex(hashValue, 20);
   } catch(string ex) {
     throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));

@@ -92,7 +92,7 @@ public:
   // For sha1, you need 20 bytes. For md5, 16 bytes.
 #ifdef ENABLE_MESSAGE_DIGEST
   static void fileChecksum(const string& filename, unsigned char* digest,
-			   MessageDigestContext::HashAlgo algo);
+			   MessageDigestContext::DigestAlgo algo);
 #endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_BITTORRENT

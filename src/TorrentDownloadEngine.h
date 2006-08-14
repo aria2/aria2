@@ -24,7 +24,7 @@
 
 #include "DownloadEngine.h"
 #include "TorrentMan.h"
-#include "Time.h"
+#include "TimeA2.h"
 
 class TorrentDownloadEngine : public DownloadEngine {
 private:
