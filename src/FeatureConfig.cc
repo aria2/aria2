@@ -29,6 +29,7 @@ FeatureConfig* FeatureConfig::featureConfig = 0;
 #define FEATURE_BITTORRENT "bittorrent"
 #define FEATURE_METALINK "metalink"
 #define FEATURE_MESSAGE_DIGEST "message digest"
+#define FEATURE_ASYNC_DNS "async dns"
 
 FeatureConfig::FeatureConfig() {
   static PortMap::value_type portArray[] = {
@@ -70,6 +71,13 @@ FeatureConfig::FeatureConfig() {
 #else
 			   false
 #endif // ENABLE_MESSAGE_DIGEST
+			   ),
+    FeatureMap::value_type(FEATURE_ASYNC_DNS,
+#ifdef HAVE_LIBARES
+			   true
+#else
+			   false
+#endif // HAVE_LIBARES
 			   ),
   };
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-08-08 01:22+0900\n"
-"PO-Revision-Date: 2006-08-08 01:27+0900\n"
+"POT-Creation-Date: 2006-08-14 23:18+0900\n"
+"PO-Revision-Date: 2006-08-14 23:22+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -29,9 +29,11 @@ msgstr ""
 msgid ""
 "\n"
 "The download was not complete because of errors. Check the log.\n"
+"aria2 will resume download if the transfer is restarted."
 msgstr ""
 "\n"
 "ダウンロードはエラーのため完了していません. ログを確認してください.\n"
+"次回のダウンロードはエラーの時点から再開できます."
 
 #: src/message.h:27
 #, c-format
@@ -957,3 +959,20 @@ msgstr "一個以上の URL を指定してください."
 #: src/main.cc:614
 msgid "daemon failed"
 msgstr "デーモン起動に失敗"
+
+#: src/main.cc:676
+msgid ""
+"Now verifying checksum.\n"
+"This may take some time depending on your PC environment and the size of "
+"file."
+msgstr ""
+"チェックサムを検査しています.\n"
+"お使いの PC 環境とファイルサイズにより, ある程度の時間がかかります."
+
+#: src/main.cc:680
+msgid "checksum OK."
+msgstr "チェックサム OK."
+
+#: src/main.cc:683
+msgid "checksum ERROR."
+msgstr "チェックサム エラー."

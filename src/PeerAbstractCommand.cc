@@ -88,7 +88,7 @@ void PeerAbstractCommand::onAbort(Exception* ex) {
 
 void PeerAbstractCommand::disableReadCheckSocket() {
   if(checkSocketIsReadable) {
-    e->deleteSocketForReadCheck(readCheckTarget, getUuid());
+    e->deleteSocketForReadCheck(readCheckTarget, this);
     checkSocketIsReadable = false;
     readCheckTarget = SocketHandle();
   }  
@@ -100,12 +100,12 @@ void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
   } else {
     if(checkSocketIsReadable) {
       if(readCheckTarget != socket) {
-	e->deleteSocketForReadCheck(readCheckTarget, getUuid());
-	e->addSocketForReadCheck(socket, getUuid());
+	e->deleteSocketForReadCheck(readCheckTarget, this);
+	e->addSocketForReadCheck(socket, this);
 	readCheckTarget = socket;
       }
     } else {
-      e->addSocketForReadCheck(socket, getUuid());
+      e->addSocketForReadCheck(socket, this);
       checkSocketIsReadable = true;
       readCheckTarget = socket;
     }
@@ -114,7 +114,7 @@ void PeerAbstractCommand::setReadCheckSocket(const SocketHandle& socket) {
 
 void PeerAbstractCommand::disableWriteCheckSocket() {
   if(checkSocketIsWritable) {
-    e->deleteSocketForWriteCheck(writeCheckTarget, getUuid());
+    e->deleteSocketForWriteCheck(writeCheckTarget, this);
     checkSocketIsWritable = false;
     writeCheckTarget = SocketHandle();
   }
@@ -126,12 +126,12 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   } else {
     if(checkSocketIsWritable) {
       if(writeCheckTarget != socket) {
-	e->deleteSocketForWriteCheck(writeCheckTarget, getUuid());
-	e->addSocketForWriteCheck(socket, getUuid());
+	e->deleteSocketForWriteCheck(writeCheckTarget, this);
+	e->addSocketForWriteCheck(socket, this);
 	writeCheckTarget = socket;
       }
     } else {
-      e->addSocketForWriteCheck(socket, getUuid());
+      e->addSocketForWriteCheck(socket, this);
       checkSocketIsWritable = true;
       writeCheckTarget = socket;
     }

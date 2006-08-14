@@ -46,27 +46,11 @@ void DownloadEngine::cleanQueue() {
   commands.clear();
 }
 
-
-class FindCommand {
-private:
-  CommandUuid uuid;
-public:
-  FindCommand(const CommandUuid& uuid):uuid(uuid) {}
-
-  bool operator()(const Command* command) {
-    if(command->getUuid() == uuid) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-};
-
 void DownloadEngine::run() {
   initStatistics();
   Time cp;
   cp.setTimeInSec(0);
-  CommandUuids activeUuids;
+  Commands activeCommands;
   while(!commands.empty()) {
     if(cp.elapsed(1)) {
       cp.reset();
@@ -79,22 +63,22 @@ void DownloadEngine::run() {
 	}
       }
     } else {
-      for(CommandUuids::iterator itr = activeUuids.begin();
-	  itr != activeUuids.end(); itr++) {
-	Commands::iterator comItr = find_if(commands.begin(), commands.end(),
-					    FindCommand(*itr));
+      for(Commands::iterator itr = activeCommands.begin();
+	  itr != activeCommands.end(); itr++) {
+	Commands::iterator comItr = find(commands.begin(), commands.end(),
+					 *itr);
 	assert(comItr != commands.end());
-	Command* com = *comItr;
+	Command* command = *itr;
 	commands.erase(comItr);
-	if(com->execute()) {
-	  delete com;
+	if(command->execute()) {
+	  delete command;
 	}
       }
     }
     afterEachIteration();
-    activeUuids.clear();
+    activeCommands.clear();
     if(!noWait && !commands.empty()) {
-      waitData(activeUuids);
+      waitData(activeCommands);
     }
     noWait = false;
     calculateStatistics();
@@ -146,34 +130,34 @@ public:
 #endif // HAVE_LIBARES
 };
 
-class AccumulateActiveUuid {
+class AccumulateActiveCommand {
 private:
-  CommandUuids* activeUuids_ptr;
+  Commands* activeCommands_ptr;
   fd_set* rfds_ptr;
   fd_set* wfds_ptr;
 public:
-  AccumulateActiveUuid(CommandUuids* activeUuids_ptr,
+  AccumulateActiveCommand(Commands* activeCommands_ptr,
 		       fd_set* rfds_ptr,
 		       fd_set* wfds_ptr):
-    activeUuids_ptr(activeUuids_ptr),
+    activeCommands_ptr(activeCommands_ptr),
     rfds_ptr(rfds_ptr),
     wfds_ptr(wfds_ptr) {}
 
   void operator()(const SocketEntry& entry) {
     if(FD_ISSET(entry.socket->getSockfd(), rfds_ptr) ||
        FD_ISSET(entry.socket->getSockfd(), wfds_ptr)) {
-      activeUuids_ptr->push_back(entry.commandUuid);
+      activeCommands_ptr->push_back(entry.command);
     }
     /*
     switch(entry.type) {
     case SocketEntry::TYPE_RD:
       if(FD_ISSET(entry.socket->getSockfd(), rfds_ptr)) {
-	activeUuids_ptr->push_back(entry.commandUuid);
+      activeCommands_ptr->push_back(entry.command);
       }
       break;
     case SocketEntry::TYPE_WR:
       if(FD_ISSET(entry.socket->getSockfd(), wfds_ptr)) {
-	activeUuids_ptr->push_back(entry.commandUuid);
+	activeCommands_ptr->push_back(entry.command);
       }
       break;
     }
@@ -185,7 +169,7 @@ public:
     switch(entry.nameResolver->getStatus()) {
     case NameResolver::STATUS_SUCCESS:
     case NameResolver::STATUS_ERROR:
-      activeUuids_ptr->push_back(entry.commandUuid);
+      activeCommands_ptr->push_back(entry.command);
       break;
     default:
       break;
@@ -194,7 +178,7 @@ public:
 #endif // HAVE_LIBARES
 };
 
-void DownloadEngine::waitData(CommandUuids& activeUuids) {
+void DownloadEngine::waitData(Commands& activeCommands) {
   fd_set rfds;
   fd_set wfds;
   int retval = 0;
@@ -208,15 +192,15 @@ void DownloadEngine::waitData(CommandUuids& activeUuids) {
   retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
   if(retval > 0) {
     for_each(socketEntries.begin(), socketEntries.end(),
-	     AccumulateActiveUuid(&activeUuids, &rfds, &wfds));
+	     AccumulateActiveCommand(&activeCommands, &rfds, &wfds));
 #ifdef HAVE_LIBARES
     for_each(nameResolverEntries.begin(), nameResolverEntries.end(),
-	     AccumulateActiveUuid(&activeUuids, &rfds, &wfds));
+	     AccumulateActiveCommand(&activeCommands, &rfds, &wfds));
 #endif // HAVE_LIBARES
-    sort(activeUuids.begin(), activeUuids.end());
-    activeUuids.erase(unique(activeUuids.begin(),
-			     activeUuids.end()),
-		      activeUuids.end());
+    sort(activeCommands.begin(), activeCommands.end());
+    activeCommands.erase(unique(activeCommands.begin(),
+				activeCommands.end()),
+			 activeCommands.end());
   }
 }
 
@@ -257,33 +241,33 @@ bool DownloadEngine::deleteSocket(const SocketEntry& entry) {
 }
 
 bool DownloadEngine::addSocketForReadCheck(const SocketHandle& socket,
-					   const CommandUuid& commandUuid) {
-  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_RD);
+					   Command* command) {
+  SocketEntry entry(socket, command, SocketEntry::TYPE_RD);
   return addSocket(entry);
 }
 
 bool DownloadEngine::deleteSocketForReadCheck(const SocketHandle& socket,
-					      const CommandUuid& commandUuid) {
-  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_RD);
+					      Command* command) {
+  SocketEntry entry(socket, command, SocketEntry::TYPE_RD);
   return deleteSocket(entry);
 }
 
 bool DownloadEngine::addSocketForWriteCheck(const SocketHandle& socket,
-					    const CommandUuid& commandUuid) {
-  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_WR);
+					    Command* command) {
+  SocketEntry entry(socket, command, SocketEntry::TYPE_WR);
   return addSocket(entry);
 }
 
 bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
-					       const CommandUuid& commandUuid) {
-  SocketEntry entry(socket, commandUuid, SocketEntry::TYPE_WR);
+					       Command* command) {
+  SocketEntry entry(socket, command, SocketEntry::TYPE_WR);
   return deleteSocket(entry);
 }
 
 #ifdef HAVE_LIBARES
 bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
-					  const CommandUuid& uuid) {
-  NameResolverEntry entry(resolver, uuid);
+					  Command* command) {
+  NameResolverEntry entry(resolver, command);
   NameResolverEntries::iterator itr = find(nameResolverEntries.begin(),
 					   nameResolverEntries.end(),
 					   entry);
@@ -297,8 +281,8 @@ bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
 }
 
 bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
-					     const CommandUuid& uuid) {
-  NameResolverEntry entry(resolver, uuid);
+					     Command* command) {
+  NameResolverEntry entry(resolver, command);
   NameResolverEntries::iterator itr = find(nameResolverEntries.begin(),
 					   nameResolverEntries.end(),
 					   entry);

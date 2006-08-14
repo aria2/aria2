@@ -7,6 +7,67 @@
 	(printDownloadAbortMessage): Added a message to inform users that
 	transfer can be resumed.
 
+	* src/FeatureConfig.cc
+	(FEATURE_ASYNC_DNS): New definition.
+	(FeatureConfig): Added aysnc DNS entry.
+
+	To replace CommandUuid with Command* in SocketEntry and
+	NameResolverEntry:
+	
+	* src/DownloadEngine.h
+	(CommandUuids): Removed.
+	(SocketEntry::commandUuid): Removed.
+	(SocketEntry::command): New variable.
+	(SocketEntry::SocketEntry): Updated.
+	(SocketEntry::operator==): Updated.
+	(NameResolverEntry::commandUuid): Removed.
+	(NameResolverEntry::command): New variable.
+	(NameResolverEntry::NameResolverEntry): Updated.
+	(NameResolverEntry::operator==): Updated.
+	(waitData): Changed the argument type.
+	(addSocketForReadCheck): Changed the argument type.
+	(deleteSocketForReadCheck): Changed the argument type.
+	(addSocketForWriteCheck): Changed the argument type.
+	(deleteSocketForWriteCheck): Changed the argument type.
+	(addNameResolverCheck): Changed the argument type.
+	(deleteNameResolverCheck): Changed the argument type.
+	* src/DownloadEngine.cc
+	(FindCommand): Removed.
+	(run): Removed activeUuid. Added activeCommands instead.
+	(AccumulateActiveUuid): Renamed as AccumulateActiveCommand.
+	(AccumulateActiveCommand): New function object.
+	(waitData): Use AccumulateActiveCommand.
+	(addSocketForReadCheck): Use Command instead of CommandUuid.
+	(deleteSocketForReadCheck): Use Command instead of CommandUuid.
+	(addSocketForWriteCheck): Use Command instead of CommandUuid.
+	(deleteSocketForWriteCheck): Use Command instead of CommandUuid.
+	(addNameResolverCheck): Use Command instead of CommandUuid.
+	(deleteNameResolverCheck): Use Command instead of CommandUuid.	
+	* src/AbstractCommand.cc
+	(disableReadCheckSocket): Updated according to the changes in
+	DownloadEngine.
+	(setReadCheckSocket): Updated according to the changes in
+	DownloadEngine.
+	(disableWriteCheckSocket): Updated according to the changes in
+	DownloadEngine.
+	(setWriteCheckSocket): Updated according to the changes in
+	DownloadEngine.
+	(setNameResolverCheck): Updated according to the changes in
+	DownloadEngine.
+	(disableNameResolverCheck): Updated according to the changes in
+	DownloadEngine.
+	* src/AbstractCommand.cc
+	(disableReadCheckSocket): Updated according to the changes in
+	DownloadEngine.
+	(setReadCheckSocket): Updated according to the changes in
+	DownloadEngine.
+	(disableWriteCheckSocket): Updated according to the changes in
+	DownloadEngine.
+	(setWriteCheckSocket): Updated according to the changes in
+	DownloadEngine.
+
+	* release 0.7.1
+	
 2006-08-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To handle the case where some BitTorrent tracker requires all letters
@@ -108,6 +169,8 @@
 	* src/RequestSlot.h: Replaced Time.h with TimeA2.h.
 	* src/SleepCommand.h: Replaced Time.h with TimeA2.h.
 	* src/DownloadEngine.cc: Replaced Time.h with TimeA2.h.
+
+	* release 0.7.0
 	
 2006-08-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

@@ -45,6 +45,7 @@ void FeatureConfigTest::testGetConfigurationSummary() {
 		       +"ftp: yes\n"
 		       +"bittorrent: yes\n"
 		       +"metalink: yes\n"
-		       +"message digest: yes\n",
+		       +"message digest: yes\n"
+		       +"async dns: yes\n",
 		       FeatureConfig::getInstance()->getConfigurationSummary());
 }

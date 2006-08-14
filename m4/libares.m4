@@ -6,7 +6,7 @@ AC_ARG_WITH([libares-prefix],
             [libares_prefix=""])
 
 if test "x$libares_prefix" = "x"; then
-  libares_prefix="/usr/local"
+  libares_prefix="/usr"
 fi
 
 libares_prefix_lib=$libares_prefix/lib
@@ -27,7 +27,7 @@ if test "x$have_libares" = "xyes"; then
     AC_SUBST(LIBARES_CPPFLAGS)
 fi
 
-
 LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
+
 ])

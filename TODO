@@ -12,4 +12,5 @@
 * Query resource by location
 * List available os, version, etc for metalink
 * ipv6(RFC2428 for ftp)
-* default prefix in libares.m4 must be the value of --prefex, not /usr/local
+* Add some criteria to stop seeding.
+* Add silent mode.

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-08-08 01:22+0900\n"
+"POT-Creation-Date: 2006-08-14 23:18+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -26,9 +26,11 @@ msgstr ""
 "Abruf ist vollständig. <%s>\n"
 
 #: src/RequestInfo.h:92
+#, fuzzy
 msgid ""
 "\n"
 "The download was not complete because of errors. Check the log.\n"
+"aria2 will resume download if the transfer is restarted."
 msgstr ""
 "\n"
 "Abruf wegen Fehlern nicht vollständig. Überprüfen Sie die Log-Datei.\n"
@@ -926,3 +928,18 @@ msgstr "Geben Sie zumindest eine URL an"
 #: src/main.cc:614
 msgid "daemon failed"
 msgstr "Daemon-Start nicht erfolgreich"
+
+#: src/main.cc:676
+msgid ""
+"Now verifying checksum.\n"
+"This may take some time depending on your PC environment and the size of "
+"file."
+msgstr ""
+
+#: src/main.cc:680
+msgid "checksum OK."
+msgstr ""
+
+#: src/main.cc:683
+msgid "checksum ERROR."
+msgstr ""

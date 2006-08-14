@@ -34,7 +34,6 @@
 
 typedef deque<SocketHandle> Sockets;
 typedef deque<Command*> Commands;
-typedef deque<CommandUuid> CommandUuids;
 
 class SocketEntry {
 public:
@@ -44,18 +43,18 @@ public:
   };
 
   SocketHandle socket;
-  CommandUuid commandUuid;
+  Command* command;
   TYPE type;
 public:
   SocketEntry(const SocketHandle& socket,
-	      const CommandUuid& commandUuid,
+	      Command* command,
 	      TYPE type):
-    socket(socket), commandUuid(commandUuid), type(type) {}
+    socket(socket), command(command), type(type) {}
   ~SocketEntry() {}
 
   bool operator==(const SocketEntry& entry) {
     return socket == entry.socket &&
-      commandUuid == entry.commandUuid &&
+      command == entry.command &&
       type == entry.type;
   }
 };
@@ -66,16 +65,16 @@ typedef deque<SocketEntry> SocketEntries;
 class NameResolverEntry {
 public:
   NameResolverHandle nameResolver;
-  CommandUuid commandUuid;
+  Command* command;
 public:
   NameResolverEntry(const NameResolverHandle& nameResolver,
-		    const CommandUuid& commandUuid):
-    nameResolver(nameResolver), commandUuid(commandUuid) {}
+		    Command* command):
+    nameResolver(nameResolver), command(command) {}
   ~NameResolverEntry() {}
 
   bool operator==(const NameResolverEntry& entry) {
     return nameResolver == entry.nameResolver &&
-      commandUuid == entry.commandUuid;
+      command == entry.command;
   }
 };
 
@@ -85,7 +84,7 @@ typedef deque<NameResolverEntry> NameResolverEntries;
 
 class DownloadEngine {
 private:
-  void waitData(CommandUuids& activeUuids);
+  void waitData(Commands& activeCommands);
   SocketEntries socketEntries;
 #ifdef HAVE_LIBARES
   NameResolverEntries nameResolverEntries;
@@ -119,18 +118,18 @@ public:
   void updateFdSet();
 
   bool addSocketForReadCheck(const SocketHandle& socket,
-			     const CommandUuid& commandUuid);
+			     Command* command);
   bool deleteSocketForReadCheck(const SocketHandle& socket,
-				const CommandUuid& commandUuid);
+				Command* command);
   bool addSocketForWriteCheck(const SocketHandle& socket,
-			      const CommandUuid& commandUuid);
+			      Command* command);
   bool deleteSocketForWriteCheck(const SocketHandle& socket,
-				 const CommandUuid& command);
+				 Command* command);
 #ifdef HAVE_LIBARES
   bool addNameResolverCheck(const NameResolverHandle& resolver,
-			    const CommandUuid& uuid);
+			    Command* command);
   bool deleteNameResolverCheck(const NameResolverHandle& resolver,
-			       const CommandUuid& uuid);
+			       Command* command);
 #endif // HAVE_LIBARES
 };
 
