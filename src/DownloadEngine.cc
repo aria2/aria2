@@ -120,14 +120,14 @@ public:
       *max_ptr = fd;
     }
   }
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   void operator()(const NameResolverEntry& entry) {
     int tempFd = entry.nameResolver->getFds(rfds_ptr, wfds_ptr);
     if(*max_ptr < tempFd) {
       *max_ptr = tempFd;
     }
   }
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 };
 
 class AccumulateActiveCommand {
@@ -163,7 +163,7 @@ public:
     }
     */
   }
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   void operator()(const NameResolverEntry& entry) {
     entry.nameResolver->process(rfds_ptr, wfds_ptr);
     switch(entry.nameResolver->getStatus()) {
@@ -175,7 +175,7 @@ public:
       break;
     }
   }
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 };
 
 void DownloadEngine::waitData(Commands& activeCommands) {
@@ -193,10 +193,10 @@ void DownloadEngine::waitData(Commands& activeCommands) {
   if(retval > 0) {
     for_each(socketEntries.begin(), socketEntries.end(),
 	     AccumulateActiveCommand(&activeCommands, &rfds, &wfds));
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
     for_each(nameResolverEntries.begin(), nameResolverEntries.end(),
 	     AccumulateActiveCommand(&activeCommands, &rfds, &wfds));
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
     sort(activeCommands.begin(), activeCommands.end());
     activeCommands.erase(unique(activeCommands.begin(),
 				activeCommands.end()),
@@ -208,10 +208,10 @@ void DownloadEngine::updateFdSet() {
   fdmax = 0;
   FD_ZERO(&rfdset);
   FD_ZERO(&wfdset);
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   for_each(nameResolverEntries.begin(), nameResolverEntries.end(),
 	   SetDescriptor(&fdmax, &rfdset, &wfdset));
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
   for_each(socketEntries.begin(), socketEntries.end(),
 	   SetDescriptor(&fdmax, &rfdset, &wfdset));
 }
@@ -264,7 +264,7 @@ bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
   return deleteSocket(entry);
 }
 
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
 bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
 					  Command* command) {
   NameResolverEntry entry(resolver, command);
@@ -294,4 +294,4 @@ bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
     return true;
   }
 }
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS

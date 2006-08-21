@@ -170,7 +170,7 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
 void AbstractCommand::setNameResolverCheck(const NameResolverHandle& resolver) {
   e->addNameResolverCheck(resolver, this);
 }
@@ -199,4 +199,4 @@ bool AbstractCommand::resolveHostname(const string& hostname,
     return false;
   }
 }
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS

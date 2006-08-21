@@ -26,9 +26,9 @@
 
 class FtpInitiateConnectionCommand : public AbstractCommand {
 private:
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   NameResolverHandle nameResolver;
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
   bool useHttpProxy() const;
   bool useHttpProxyGet() const;
   bool useHttpProxyConnect() const;

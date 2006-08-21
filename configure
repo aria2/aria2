@@ -311,7 +311,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CPPUNIT_CONFIG CPPUNIT_CFLAGS CPPUNIT_LIBS localedir CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB YACC XML2_CONFIG XML_CPPFLAGS XML_LIBS LIBGNUTLS_CONFIG LIBGNUTLS_CFLAGS LIBGNUTLS_LIBS LIBGCRYPT_CONFIG LIBGCRYPT_CFLAGS LIBGCRYPT_LIBS OPENSSL_LIBS OPENSSL_CFLAGS LIBARES_LIBS LIBARES_CPPFLAGS ENABLE_BITTORRENT_TRUE ENABLE_BITTORRENT_FALSE ENABLE_METALINK_TRUE ENABLE_METALINK_FALSE HAVE_LIBARES_TRUE HAVE_LIBARES_FALSE ALLOCA CPP EGREP MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE build build_cpu build_vendor build_os host host_cpu host_vendor host_os GLIBC21 LIBICONV LTLIBICONV INTLBISON BUILD_INCLUDED_LIBINTL USE_INCLUDED_LIBINTL CATOBJEXT DATADIRNAME INSTOBJEXT GENCAT INTLOBJS INTL_LIBTOOL_SUFFIX_PREFIX INTLLIBS LIBINTL LTLIBINTL POSUB LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CPPUNIT_CONFIG CPPUNIT_CFLAGS CPPUNIT_LIBS localedir CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB YACC XML2_CONFIG XML_CPPFLAGS XML_LIBS LIBGNUTLS_CONFIG LIBGNUTLS_CFLAGS LIBGNUTLS_LIBS LIBGCRYPT_CONFIG LIBGCRYPT_CFLAGS LIBGCRYPT_LIBS OPENSSL_LIBS OPENSSL_CFLAGS LIBCARES_LIBS LIBCARES_CPPFLAGS LIBARES_LIBS LIBARES_CPPFLAGS ENABLE_BITTORRENT_TRUE ENABLE_BITTORRENT_FALSE ENABLE_METALINK_TRUE ENABLE_METALINK_FALSE ENABLE_ASYNC_DNS_TRUE ENABLE_ASYNC_DNS_FALSE ALLOCA CPP EGREP MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE build build_cpu build_vendor build_os host host_cpu host_vendor host_os GLIBC21 LIBICONV LTLIBICONV INTLBISON BUILD_INCLUDED_LIBINTL USE_INCLUDED_LIBINTL CATOBJEXT DATADIRNAME INSTOBJEXT GENCAT INTLOBJS INTL_LIBTOOL_SUFFIX_PREFIX INTLLIBS LIBINTL LTLIBINTL POSUB LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -884,6 +884,7 @@ Optional Packages:
   --with-libgcrypt-prefix=PFX
                           prefix where LIBGCRYPT is installed (optional)
   --with-openssl-prefix=PREFIX  Prefix where OpenSSL installed (optional)
+  --with-libcares-prefix=PREFIX  Prefix where libcares installed (optional)
   --with-libares-prefix=PREFIX  Prefix where libares installed (optional)
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-libiconv-prefix[=DIR]  search for libiconv in DIR/include and DIR/lib
@@ -4635,7 +4636,117 @@ CPPFLAGS=$CPPFLAGS_save
 
 fi
 
-if test "x$with_libares" = "xyes"; then
+if test "x$with_libcares" = "xyes"; then
+
+
+# Check whether --with-libcares-prefix or --without-libcares-prefix was given.
+if test "${with_libcares_prefix+set}" = set; then
+  withval="$with_libcares_prefix"
+  libcares_prefix=$withval
+else
+  libcares_prefix=""
+fi;
+
+if test "x$libcares_prefix" = "x"; then
+  libcares_prefix="/usr"
+fi
+
+libcares_prefix_lib=$libcares_prefix/lib
+libcares_prefix_include=$libcares_prefix/include
+
+LIBS_save=$LIBS
+CPPFLAGS_save=$CPPFLAGS
+
+LIBS="-L$libcares_prefix_lib $LIBS"
+CPPFLAGS="-I$libcares_prefix_include $CPPFLAGS"
+
+echo "$as_me:$LINENO: checking for ares_init in -lcares" >&5
+echo $ECHO_N "checking for ares_init in -lcares... $ECHO_C" >&6
+if test "${ac_cv_lib_cares_ares_init+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcares  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char ares_init ();
+int
+main ()
+{
+ares_init ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_cares_ares_init=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_cares_ares_init=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_cares_ares_init" >&5
+echo "${ECHO_T}$ac_cv_lib_cares_ares_init" >&6
+if test $ac_cv_lib_cares_ares_init = yes; then
+  have_libcares=yes
+fi
+
+if test "x$have_libcares" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBCARES 1
+_ACEOF
+
+    LIBCARES_LIBS="-L$libcares_prefix_lib -lcares"
+    LIBCARES_CPPFLAGS="-I$libcares_prefix_include"
+
+
+fi
+
+LIBS=$LIBS_save
+CPPFLAGS=$CPPFLAGS_save
+
+
+fi
+
+if test "x$have_libcares" = "x"; then
+  if test "x$with_libares" = "xyes"; then
 
 
 # Check whether --with-libares-prefix or --without-libares-prefix was given.
@@ -4742,6 +4853,7 @@ LIBS=$LIBS_save
 CPPFLAGS=$CPPFLAGS_save
 
 
+  fi
 fi
 
 # Define variables based on the result of the checks for libraries.
@@ -4820,26 +4932,31 @@ fi
 
 fi
 
-if test "x$have_libares" = "xyes"; then
+if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define ENABLE_ASYNC_DNS 1
+_ACEOF
+
 
 
 if true; then
-  HAVE_LIBARES_TRUE=
-  HAVE_LIBARES_FALSE='#'
+  ENABLE_ASYNC_DNS_TRUE=
+  ENABLE_ASYNC_DNS_FALSE='#'
 else
-  HAVE_LIBARES_TRUE='#'
-  HAVE_LIBARES_FALSE=
+  ENABLE_ASYNC_DNS_TRUE='#'
+  ENABLE_ASYNC_DNS_FALSE=
 fi
 
 else
 
 
 if false; then
-  HAVE_LIBARES_TRUE=
-  HAVE_LIBARES_FALSE='#'
+  ENABLE_ASYNC_DNS_TRUE=
+  ENABLE_ASYNC_DNS_FALSE='#'
 else
-  HAVE_LIBARES_TRUE='#'
-  HAVE_LIBARES_FALSE=
+  ENABLE_ASYNC_DNS_TRUE='#'
+  ENABLE_ASYNC_DNS_FALSE=
 fi
 
 fi
@@ -11816,17 +11933,17 @@ echo "$as_me: error: conditional \"ENABLE_METALINK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${HAVE_LIBARES_TRUE}" && test -z "${HAVE_LIBARES_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"HAVE_LIBARES\" was never defined.
+if test -z "${ENABLE_ASYNC_DNS_TRUE}" && test -z "${ENABLE_ASYNC_DNS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_ASYNC_DNS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"HAVE_LIBARES\" was never defined.
+echo "$as_me: error: conditional \"ENABLE_ASYNC_DNS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${HAVE_LIBARES_TRUE}" && test -z "${HAVE_LIBARES_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"HAVE_LIBARES\" was never defined.
+if test -z "${ENABLE_ASYNC_DNS_TRUE}" && test -z "${ENABLE_ASYNC_DNS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_ASYNC_DNS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"HAVE_LIBARES\" was never defined.
+echo "$as_me: error: conditional \"ENABLE_ASYNC_DNS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -12437,14 +12554,16 @@ s,@LIBGCRYPT_CFLAGS@,$LIBGCRYPT_CFLAGS,;t t
 s,@LIBGCRYPT_LIBS@,$LIBGCRYPT_LIBS,;t t
 s,@OPENSSL_LIBS@,$OPENSSL_LIBS,;t t
 s,@OPENSSL_CFLAGS@,$OPENSSL_CFLAGS,;t t
+s,@LIBCARES_LIBS@,$LIBCARES_LIBS,;t t
+s,@LIBCARES_CPPFLAGS@,$LIBCARES_CPPFLAGS,;t t
 s,@LIBARES_LIBS@,$LIBARES_LIBS,;t t
 s,@LIBARES_CPPFLAGS@,$LIBARES_CPPFLAGS,;t t
 s,@ENABLE_BITTORRENT_TRUE@,$ENABLE_BITTORRENT_TRUE,;t t
 s,@ENABLE_BITTORRENT_FALSE@,$ENABLE_BITTORRENT_FALSE,;t t
 s,@ENABLE_METALINK_TRUE@,$ENABLE_METALINK_TRUE,;t t
 s,@ENABLE_METALINK_FALSE@,$ENABLE_METALINK_FALSE,;t t
-s,@HAVE_LIBARES_TRUE@,$HAVE_LIBARES_TRUE,;t t
-s,@HAVE_LIBARES_FALSE@,$HAVE_LIBARES_FALSE,;t t
+s,@ENABLE_ASYNC_DNS_TRUE@,$ENABLE_ASYNC_DNS_TRUE,;t t
+s,@ENABLE_ASYNC_DNS_FALSE@,$ENABLE_ASYNC_DNS_FALSE,;t t
 s,@ALLOCA@,$ALLOCA,;t t
 s,@CPP@,$CPP,;t t
 s,@EGREP@,$EGREP,;t t

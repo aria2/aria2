@@ -54,8 +54,14 @@ if test "x$with_openssl" = "xyes" && test "x$have_libgnutls" != "xyes"; then
   AM_PATH_OPENSSL
 fi
 
-if test "x$with_libares" = "xyes"; then
-  AM_PATH_LIBARES
+if test "x$with_libcares" = "xyes"; then
+  AM_PATH_LIBCARES
+fi
+
+if test "x$have_libcares" = "x"; then
+  if test "x$with_libares" = "xyes"; then
+    AM_PATH_LIBARES
+  fi
 fi
 
 # Define variables based on the result of the checks for libraries.
@@ -82,10 +88,11 @@ else
     AM_CONDITIONAL([ENABLE_METALINK], false)
 fi
 
-if test "x$have_libares" = "xyes"; then
-    AM_CONDITIONAL([HAVE_LIBARES], true)
+if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
+    AC_DEFINE([ENABLE_ASYNC_DNS], [1], [Define to 1 if asynchronous DNS support is enabled.])
+    AM_CONDITIONAL([ENABLE_ASYNC_DNS], true)
 else
-    AM_CONDITIONAL([HAVE_LIBARES], false)
+    AM_CONDITIONAL([ENABLE_ASYNC_DNS], false)
 fi
 
 # Checks for header files.

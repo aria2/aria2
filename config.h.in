@@ -8,6 +8,9 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* Define to 1 if asynchronous DNS support is enabled. */
+#undef ENABLE_ASYNC_DNS
+
 /* Define to 1 if BitTorrent support is enabled. */
 #undef ENABLE_BITTORRENT
 
@@ -107,6 +110,9 @@
 
 /* Define to 1 if you have libares. */
 #undef HAVE_LIBARES
+
+/* Define to 1 if you have libcares. */
+#undef HAVE_LIBCARES
 
 /* Define to 1 if you have libgcrypt. */
 #undef HAVE_LIBGCRYPT

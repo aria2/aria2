@@ -57,9 +57,9 @@ SRCS =  Socket.h\
 	RequestInfo.h\
 	UrlRequestInfo.cc UrlRequestInfo.h
 
-if HAVE_LIBARES
+if ENABLE_ASYNC_DNS
 SRCS += NameResolver.cc NameResolver.h
-endif # HAVE_LIBARES
+endif # ENABLE_ASYNC_DNS
 
 if ENABLE_BITTORRENT
 SRCS += MetaEntry.h\

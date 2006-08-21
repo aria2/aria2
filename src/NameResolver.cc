@@ -24,7 +24,11 @@
 void callback(void* arg, int status, struct hostent* host) {
   NameResolver* resolverPtr = (NameResolver*)arg;
   if(status != ARES_SUCCESS) {
+#ifdef HAVE_LIBCARES
+    resolverPtr->error = ares_strerror(status);
+#else
     resolverPtr->error = ares_strerror(status, 0);
+#endif // HAVE_LIBCARES
     resolverPtr->status = NameResolver::STATUS_ERROR;
     return;
   }

@@ -38,9 +38,9 @@ HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
 }
 
 HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   disableNameResolverCheck(nameResolver);
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 }
 
 bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
@@ -50,7 +50,7 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
   } else {
     hostname = req->getHost();
   }
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   if(!Util::isNumbersAndDotsNotation(hostname)) {
     if(resolveHostname(hostname, nameResolver)) {
       hostname = nameResolver->getAddrString();
@@ -59,7 +59,7 @@ bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
       return false;
     }
   }
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
   Command* command;
   if(useProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,

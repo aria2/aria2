@@ -37,6 +37,8 @@ extern "C" {
 } /* end of extern "C" */
 #endif
 
+void callback(void* arg, int status, struct hostent* host);
+
 class NameResolver {
   friend void callback(void* arg, int status, struct hostent* host);
 

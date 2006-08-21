@@ -28,9 +28,9 @@
 #include "common.h"
 #include "Logger.h"
 #include "Option.h"
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
 # include "NameResolver.h"
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 
 typedef deque<SocketHandle> Sockets;
 typedef deque<Command*> Commands;
@@ -61,7 +61,7 @@ public:
 
 typedef deque<SocketEntry> SocketEntries;
 
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
 class NameResolverEntry {
 public:
   NameResolverHandle nameResolver;
@@ -79,16 +79,16 @@ public:
 };
 
 typedef deque<NameResolverEntry> NameResolverEntries;
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 
 
 class DownloadEngine {
 private:
   void waitData(Commands& activeCommands);
   SocketEntries socketEntries;
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   NameResolverEntries nameResolverEntries;
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
   fd_set rfdset;
   fd_set wfdset;
   int fdmax;
@@ -125,12 +125,12 @@ public:
 			      Command* command);
   bool deleteSocketForWriteCheck(const SocketHandle& socket,
 				 Command* command);
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   bool addNameResolverCheck(const NameResolverHandle& resolver,
 			    Command* command);
   bool deleteNameResolverCheck(const NameResolverHandle& resolver,
 			       Command* command);
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 };
 
 #endif // _D_DOWNLOAD_ENGINE_H_

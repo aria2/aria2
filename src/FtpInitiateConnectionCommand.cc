@@ -38,9 +38,9 @@ FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
 }
 
 FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   disableNameResolverCheck(nameResolver);
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 }
 
 bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
@@ -61,7 +61,7 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
   } else {
     hostname = req->getHost();
   }
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
   if(!Util::isNumbersAndDotsNotation(hostname)) {
     if(resolveHostname(hostname, nameResolver)) {
       hostname = nameResolver->getAddrString();
@@ -70,7 +70,7 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
       return false;
     }
   }
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
   Command* command;
   if(useHttpProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,

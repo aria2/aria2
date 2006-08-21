@@ -73,11 +73,11 @@ FeatureConfig::FeatureConfig() {
 #endif // ENABLE_MESSAGE_DIGEST
 			   ),
     FeatureMap::value_type(FEATURE_ASYNC_DNS,
-#ifdef HAVE_LIBARES
+#ifdef ENABLE_ASYNC_DNS
 			   true
 #else
 			   false
-#endif // HAVE_LIBARES
+#endif // ENABLE_ASYNC_DNS
 			   ),
   };
 

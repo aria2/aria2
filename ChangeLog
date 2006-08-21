@@ -1,3 +1,27 @@
+2006-08-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+        To fix compilation problem on gcc4.1.1(patch#1542283 by tizianomueller)
+	* src/NameResolver.h: Added the prototype declaration of callback().
+	
+	To support c-ares library:
+	
+	* src/AbstractCommand.cc: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/FeatureConfig.cc: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/FtpInitiateConnectionCommand.h:
+	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/AbstractCommand.h: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/HttpInitiateConnectionCommand.h:
+	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/NameResolver.cc: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/HttpInitiateConnectionCommand.cc:
+	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/FtpInitiateConnectionCommand.cc:
+	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/DownloadEngine.h:
+	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/DownloadEngine.cc:
+	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS	
+
 2006-08-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/main.cc
