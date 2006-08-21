@@ -28,6 +28,8 @@
 	disabled(bug#1543587):
 
 	* src/main.cc: Fixed with the patch by tizianomueller.
+
+	* Release 0.7.2
 	
 2006-08-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
