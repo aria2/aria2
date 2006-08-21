@@ -878,6 +878,7 @@ Optional Packages:
   --with-openssl             use openssl library if installed. Default: yes
   --with-libxml2             use libxml2 library if installed. Default: yes
   --with-libares             use ares library if installed. Default: yes
+  --with-libcares            use c-ares library if installed. Default: yes
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
   --with-xml-exec-prefix=PFX Exec prefix where libxml is installed (optional)
   --with-libgnutls-prefix=PFX   Prefix where libgnutls is installed (optional)
@@ -1957,6 +1958,14 @@ if test "${with_libares+set}" = set; then
   with_libares=$withval
 else
   with_libares=yes
+fi;
+
+# Check whether --with-libcares or --without-libcares was given.
+if test "${with_libcares+set}" = set; then
+  withval="$with_libcares"
+  with_libcares=$withval
+else
+  with_libcares=yes
 fi;
 
 # Check whether --enable-bittorrent or --disable-bittorrent was given.

@@ -17,6 +17,7 @@ AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if insta
 AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$withval], [with_openssl=yes])
 AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$withval], [with_libxml2=yes])
 AC_ARG_WITH([libares], [  --with-libares             use ares library if installed. Default: yes], [with_libares=$withval], [with_libares=yes])
+AC_ARG_WITH([libcares], [  --with-libcares            use c-ares library if installed. Default: yes], [with_libcares=$withval], [with_libcares=yes])
 
 AC_ARG_ENABLE([bittorrent], [ --enable-bittorrent        enable BitTorrent support. Default: yes], [enable_bittorrent=$enableval], [enable_bittorrent=yes])
 AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. Default: yes], [enable_metalink=$enableval], [enable_metalink=yes])
