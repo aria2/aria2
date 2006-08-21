@@ -33,8 +33,6 @@
 #include "DownloadEngineFactory.h"
 #include "UrlRequestInfo.h"
 #include "TorrentRequestInfo.h"
-#include "MetalinkRequestInfo.h"
-#include "Xml2MetalinkProcessor.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -45,6 +43,11 @@
 extern char* optarg;
 extern int optind, opterr, optopt;
 #include <getopt.h>
+
+#ifdef ENABLE_METALINK
+#include "MetalinkRequestInfo.h"
+#include "Xml2MetalinkProcessor.h"
+#endif
 
 #ifdef HAVE_LIBSSL
 // for SSL

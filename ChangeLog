@@ -12,7 +12,9 @@
 	* src/AbstractCommand.h: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
 	* src/HttpInitiateConnectionCommand.h:
 	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
-	* src/NameResolver.cc: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
+	* src/NameResolver.cc: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS.
+	Added thes upport of c-ares's ares_strerror(the idea came from patch
+	#1542285 by tizianomueller)
 	* src/HttpInitiateConnectionCommand.cc:
 	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
 	* src/FtpInitiateConnectionCommand.cc:
@@ -22,6 +24,11 @@
 	* src/DownloadEngine.cc:
 	Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS	
 
+	To fix the bug that causes compilation failure with metalink-support
+	disabled(bug#1543587):
+
+	* src/main.cc: Fixed with the patch by tizianomueller.
+	
 2006-08-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/main.cc
