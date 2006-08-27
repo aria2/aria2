@@ -74,6 +74,8 @@
 	(execute): Return true if error occurred in the request to the tracker
 	and halt is requested.
 
+	To call onDownloadComplete from TorrentMan::completePiece(), not from
+	DownloadEngine:
 	* src/TorrentConsoleDownloadEngine.h
 	(onSelectiveDownloadingCompletes): Removed.
 	* src/TorrentConsoleDownloadEngine.cc
