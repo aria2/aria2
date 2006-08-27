@@ -156,6 +156,9 @@ public:
   void setAllBit();
 
   void addFilter(long long int offset, long long int length);
+  /**
+   * Clears filter and disables filter
+   */
   void clearFilter();
   
   void enableFilter();

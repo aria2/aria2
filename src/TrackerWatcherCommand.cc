@@ -37,6 +37,9 @@ TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
   if(e->segmentMan->errors > 0) {
+    if(e->torrentMan->isHalt()) {
+      return true;
+    }
     // we assume the tracker request has failed.
     e->torrentMan->trackers = 0;
     e->segmentMan->init();
@@ -62,6 +65,7 @@ bool TrackerWatcherCommand::execute() {
 	e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
       } else {
 	if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {
+	  // in case where download had completed when aria2c started.
 	  e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
 	} else if(e->torrentMan->req->getTrackerEvent() != Request::AFTER_COMPLETED) {
 	  e->torrentMan->req->setTrackerEvent(Request::COMPLETED);

@@ -26,11 +26,6 @@ TorrentConsoleDownloadEngine::TorrentConsoleDownloadEngine() {}
 
 TorrentConsoleDownloadEngine::~TorrentConsoleDownloadEngine() {}
 
-void TorrentConsoleDownloadEngine::onSelectiveDownloadingCompletes() {
-  printf("\nDownload of selected files has completed.\n");
-  fflush(stdout);
-}
-
 void TorrentConsoleDownloadEngine::sendStatistics() {
   printf("\r                                                                             ");
   printf("\r");

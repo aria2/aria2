@@ -14,3 +14,6 @@
 * ipv6(RFC2428 for ftp)
 * Add some criteria to stop seeding.
 * Add silent mode.
+* Add NOTIFY log level. A message categorized in this level is printed in
+ a console along with a log file.
+* Do onDownloadComplete in TorrentMan::completePiece().

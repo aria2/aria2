@@ -19,29 +19,35 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_OPTION_H_
-#define _D_OPTION_H_
+#ifndef _D_SEED_CHECK_COMMAND_H_
+#define _D_SEED_CHECK_COMMAND_H_
 
-#include "common.h"
-#include <string>
-#include <map>
+#include "Command.h"
+#include "TorrentDownloadEngine.h"
+#include "TimeA2.h"
+#include "SeedCriteria.h"
 
-using namespace std;
-
-class Option {
+class SeedCheckCommand : public Command {
 private:
-  map<string, string> table;
+  TorrentDownloadEngine* e;
+  Time checkPoint;
+  SeedCriteriaHandle seedCriteria;
+  bool checkStarted;
 public:
-  Option();
-  ~Option();
+  SeedCheckCommand(int cuid, TorrentDownloadEngine* e,
+		   SeedCriteriaHandle seedCriteria)
+    :Command(cuid),
+     e(e),
+     seedCriteria(seedCriteria),
+     checkStarted(false) {}
 
-  void put(const string& name, const string& value);
-  bool defined(const string& name) const;
-  string get(const string& name) const;
-  int getAsInt(const string& name) const;
-  long long int getAsLLInt(const string& name) const;
-  bool getAsBool(const string& name) const;
-  double getAsDouble(const string& name) const;
+  virtual ~SeedCheckCommand() {}
+
+  virtual bool execute();
+
+  void setSeedCriteria(SeedCriteriaHandle seedCriteria) {
+    this->seedCriteria = seedCriteria;
+  }
 };
 
-#endif // _D_OPTION_H_
+#endif // _D_SEED_CHECK_COMMAND_H_

@@ -35,7 +35,9 @@ aria2c_SOURCES = AllTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	MetalinkerTest.cc\
 	MetalinkEntryTest.cc\
-	FeatureConfigTest.cc
+	FeatureConfigTest.cc\
+	ShareRatioSeedCriteriaTest.cc\
+	TimeSeedCriteriaTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 

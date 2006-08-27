@@ -175,6 +175,12 @@ void showUsage() {
 	    "                              ',' like \"3,6\".\n"
 	    "                              You can also use '-' to specify rangelike \"1-5\".\n"
 	    "                              ',' and '-' can be used together.") << endl;
+  cout << _(" --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
+	    "                              --seed-ratio option.") << endl;
+  cout << _(" --seed-ratio=RATIO           Specify seed share ratio. 1.0 is encouraged.\n"
+	    "                              If --seed-time option is specified along with\n"
+	    "                              this option, seeding ends when at least one of\n"
+	    "                              the condition is met.") << endl;
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   cout << _(" -M, --metalink-file=METALINK_FILE The file path to .metalink file.") << endl;
@@ -332,6 +338,8 @@ int main(int argc, char* argv[]) {
       { "direct-file-mapping", required_argument, &lopt, 19 },
       { "upload-limit", required_argument, &lopt, 20 },
       { "select-file", required_argument, &lopt, 21 },
+      { "seed-time", required_argument, &lopt, 22 },
+      { "seed-ratio", required_argument, &lopt, 23 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { "metalink-file", required_argument, NULL, 'M' },
@@ -492,6 +500,26 @@ int main(int argc, char* argv[]) {
       case 21:
 	op->put(PREF_SELECT_FILE, optarg);
 	break;
+      case 22: {
+	int seedTime = (int)strtol(optarg, NULL, 10);
+	if(seedTime < 0) {
+	  cerr << _("seed-time must be greater than or equal to 0.") << endl;
+	  showUsage();
+	  exit(EXIT_FAILURE);
+	}
+	op->put(PREF_SEED_TIME, Util::itos(seedTime));
+	break;
+      }
+      case 23: {
+	double ratio = (int)strtod(optarg, NULL);
+	if(ratio < 0.0) {
+	  cerr << _("seed-ratio must be greater than or equal to 0.0.") << endl;
+	  showUsage();
+	  exit(EXIT_FAILURE);
+	}
+	op->put(PREF_SEED_RATIO, optarg);
+	break;
+      }
       case 100:
 	op->put(PREF_METALINK_VERSION, optarg);
 	break;
@@ -637,6 +665,8 @@ int main(int argc, char* argv[]) {
     LogFactory::setLogFile("/dev/stdout");
   } else if(op->get(PREF_LOG).size()) {
     LogFactory::setLogFile(op->get(PREF_LOG));
+  } else {
+    LogFactory::setLogFile("/dev/null");
   }
   // make sure logger is configured properly.
   try {

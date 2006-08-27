@@ -277,11 +277,17 @@ void TorrentMan::completePiece(const Piece& piece) {
   if(!hasPiece(piece.getIndex())) {
     addDownloadLength(piece.getLength());
   }
-  bitfield->setBit(piece.getIndex());
-  bitfield->unsetUseBit(piece.getIndex());
   deleteUsedPiece(piece);
   if(!isEndGame()) {
     reduceUsedPieces(100);
+  }
+  if(downloadComplete()) {
+    return;
+  }
+  bitfield->setBit(piece.getIndex());
+  bitfield->unsetUseBit(piece.getIndex());
+  if(downloadComplete()) {
+    onDownloadComplete();
   }
 }
 
@@ -647,7 +653,10 @@ void TorrentMan::onDownloadComplete() {
   save();
   diskAdaptor->onDownloadComplete();
   if(isSelectiveDownloadingMode()) {
+    logger->notice("Download of selected files has completed.");
     finishSelectiveDownloadingMode();
+  } else {
+    logger->info("The download has completed.");
   }
 }
 

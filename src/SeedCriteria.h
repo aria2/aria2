@@ -19,29 +19,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_OPTION_H_
-#define _D_OPTION_H_
+#ifndef _D_SEED_CRITERIA_H_
+#define _D_SEED_CRITERIA_H_
 
 #include "common.h"
-#include <string>
-#include <map>
+#include "SharedHandle.h"
 
-using namespace std;
-
-class Option {
-private:
-  map<string, string> table;
+class SeedCriteria {
 public:
-  Option();
-  ~Option();
+  virtual ~SeedCriteria() {}
 
-  void put(const string& name, const string& value);
-  bool defined(const string& name) const;
-  string get(const string& name) const;
-  int getAsInt(const string& name) const;
-  long long int getAsLLInt(const string& name) const;
-  bool getAsBool(const string& name) const;
-  double getAsDouble(const string& name) const;
+  /**
+   * Returns true if criteria is met.
+   */
+  virtual bool evaluate() = 0;
+
+  /**
+   * Used for reseting status.
+   */
+  virtual void reset() = 0;
 };
 
-#endif // _D_OPTION_H_
+typedef SharedHandle<SeedCriteria> SeedCriteriaHandle;
+
+typedef deque<SeedCriteriaHandle> SeedCriterion;
+
+#endif // _D_SEED_CRITERIA_H_

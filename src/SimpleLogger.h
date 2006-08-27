@@ -26,24 +26,29 @@
 
 class SimpleLogger:public Logger {
 private:
-  void writeHeader(string date, string level) const;
-  void writeLog(int level, const char* msg, va_list ap, Exception* e = NULL) const;
+  void writeFile(int level, const char* msg, va_list ap, Exception* e = 0) const;
+  void writeHeader(FILE* file, string date, string level) const;
+  void writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e = 0) const;
   FILE* file;
+  int stdoutField;
 public:
-  SimpleLogger();
-  SimpleLogger(FILE* logfile);
+  SimpleLogger(FILE* logfile = 0);
   ~SimpleLogger();
 
   void openFile(const string& filename);
   void closeFile();
-  void debug(const char* msg, ...) const;
-  void debug(const char* msg, Exception* ex, ...) const;
-  void info(const char* msg, ...) const;
-  void info(const char* msg, Exception* ex, ...) const;
-  void warn(const char* msg, ...) const;
-  void warn(const char* msg, Exception* ex, ...) const;
-  void error(const char* msg, ...) const;
-  void error(const char* msg, Exception* ex, ...) const;
+  virtual void debug(const char* msg, ...) const;
+  virtual void debug(const char* msg, Exception* ex, ...) const;
+  virtual void info(const char* msg, ...) const;
+  virtual void info(const char* msg, Exception* ex, ...) const;
+  virtual void notice(const char* msg, ...) const;
+  virtual void notice(const char* msg, Exception* ex, ...) const;
+  virtual void warn(const char* msg, ...) const;
+  virtual void warn(const char* msg, Exception* ex, ...) const;
+  virtual void error(const char* msg, ...) const;
+  virtual void error(const char* msg, Exception* ex, ...) const;
+
+  void setStdout(int level, bool enabled);
 };
 
 #endif // _D_SIMPLE_LOGGER_H_

@@ -116,7 +116,12 @@ SRCS += MetaEntry.h\
 	SimplePeerMessage.cc SimplePeerMessage.h\
 	PeerMessageFactory.cc PeerMessageFactory.h\
 	HaveEraseCommand.cc HaveEraseCommand.h\
-	TorrentRequestInfo.cc TorrentRequestInfo.h
+	TorrentRequestInfo.cc TorrentRequestInfo.h\
+	SeedCriteria.h\
+	TimeSeedCriteria.h\
+	ShareRatioSeedCriteria.h\
+	UnionSeedCriteria.h\
+	SeedCheckCommand.cc SeedCheckCommand.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

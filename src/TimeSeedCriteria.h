@@ -19,29 +19,36 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_OPTION_H_
-#define _D_OPTION_H_
+#ifndef _D_TIME_SEED_CRITERIA_H_
+#define _D_TIME_SEED_CRITERIA_H_
 
-#include "common.h"
-#include <string>
-#include <map>
+#include "SeedCriteria.h"
+#include "TimeA2.h"
 
-using namespace std;
-
-class Option {
+class TimeSeedCriteria : public SeedCriteria {
 private:
-  map<string, string> table;
+  // How much time the client does seeding in seconds.
+  int duration;
+  Time watch;
 public:
-  Option();
-  ~Option();
+  TimeSeedCriteria(int duration):duration(duration) {}
+  virtual ~TimeSeedCriteria() {}
 
-  void put(const string& name, const string& value);
-  bool defined(const string& name) const;
-  string get(const string& name) const;
-  int getAsInt(const string& name) const;
-  long long int getAsLLInt(const string& name) const;
-  bool getAsBool(const string& name) const;
-  double getAsDouble(const string& name) const;
+  virtual void reset() {
+    watch.reset();
+  }
+
+  virtual bool evaluate() {
+    return watch.elapsed(duration);
+  }
+
+  void setDuration(int duration) {
+    this->duration = duration;
+  }
+
+  int getDuration() const {
+    return duration;
+  }
 };
 
-#endif // _D_OPTION_H_
+#endif // _D_TIME_SEED_CRITERIA_H_

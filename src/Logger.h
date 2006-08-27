@@ -35,16 +35,19 @@ public:
   virtual void debug(const char* msg, Exception* ex, ...) const = 0;
   virtual void info(const char* msg, ...) const = 0;
   virtual void info(const char* msg, Exception* ex, ...) const = 0;
+  virtual void notice(const char* msg, ...) const = 0;
+  virtual void notice(const char* msg, Exception* ex, ...) const = 0;
   virtual void warn(const char* msg, ...) const = 0;
   virtual void warn(const char* msg, Exception* ex, ...) const = 0;
   virtual void error(const char*  msg, ...) const = 0;
   virtual void error(const char* msg, Exception* ex, ...) const = 0;
 
   enum LEVEL {
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR
+    DEBUG  = 1 << 0,
+    INFO   = 1 << 1,
+    NOTICE = 1 << 2,
+    WARN   = 1 << 3,
+    ERROR  = 1 << 4,
   };
 };
 

@@ -31,20 +31,16 @@
 #define WRITE_LOG(LEVEL, MSG) \
 va_list ap;\
 va_start(ap, MSG);\
-writeLog(Logger::LEVEL, MSG, ap);\
+writeFile(Logger::LEVEL, MSG, ap);\
 va_end(ap);
 
 #define WRITE_LOG_EX(LEVEL, MSG, EX) \
 va_list ap;\
 va_start(ap, EX);\
-writeLog(Logger::LEVEL, MSG, ap, EX);\
+writeFile(Logger::LEVEL, MSG, ap, EX);\
 va_end(ap);
 
-SimpleLogger::SimpleLogger():file(NULL) {}
-
-SimpleLogger::SimpleLogger(FILE* logfile) {
-  file = logfile;
-}
+SimpleLogger::SimpleLogger(FILE* logfile):file(logfile), stdoutField(0) {}
 
 SimpleLogger::~SimpleLogger() {
   closeFile();
@@ -63,16 +59,27 @@ void SimpleLogger::closeFile() {
   }
 }
 
-void SimpleLogger::writeHeader(string date, string level) const {
+void SimpleLogger::setStdout(int level, bool enabled) {
+  if(enabled) {
+    stdoutField |= level;
+  } else {
+    stdoutField &= ~level;
+  }
+}
+
+void SimpleLogger::writeHeader(FILE* file, string date, string level) const {
   fprintf(file, "%s - %s - ", date.c_str(), level.c_str());
 }
 
-void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e) const
+void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e) const
 {
   string levelStr;
   switch(level) {
   case Logger::DEBUG:
     levelStr = "DEBUG";
+    break;
+  case Logger::NOTICE:
+    levelStr = "NOTICE";
     break;
   case Logger::WARN:
     levelStr = "WARN";
@@ -88,13 +95,21 @@ void SimpleLogger::writeLog(int level, const char* msg, va_list ap, Exception* e
   char datestr[26];
   ctime_r(&now, datestr);
   datestr[strlen(datestr)-1] = '\0';
-  writeHeader(datestr, levelStr);
+  writeHeader(file, datestr, levelStr);
   vfprintf(file, string(Util::replace(msg, "\r", "")+"\n").c_str(), ap);
   if(e != NULL) {
-    writeHeader(datestr, levelStr);
+    writeHeader(file, datestr, levelStr);
     fprintf(file, "exception: %s\n", Util::replace(e->getMsg(), "\r", "").c_str());
   }
   fflush(file);
+}
+
+void SimpleLogger::writeFile(int level, const char* msg, va_list ap, Exception* e) const {
+  writeLog(file, level, msg, ap, e);
+  if(stdoutField&level) {
+    fprintf(stdout, "\n");
+    writeLog(stdout, level, msg, ap, e);
+  }
 }
 
 void SimpleLogger::debug(const char* msg, ...) const {
@@ -110,6 +125,14 @@ void SimpleLogger::info(const char* msg, ...) const {
 }
 
 void SimpleLogger::info(const char* msg, Exception* e, ...) const {
+  WRITE_LOG_EX(INFO, msg, e);
+}
+
+void SimpleLogger::notice(const char* msg, ...) const {
+  WRITE_LOG(NOTICE, msg);
+}
+
+void SimpleLogger::notice(const char* msg, Exception* e, ...) const {
   WRITE_LOG_EX(INFO, msg, e);
 }
 

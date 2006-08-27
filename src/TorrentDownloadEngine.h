@@ -55,9 +55,7 @@ protected:
   long long int totalLength;
 
   int calculateSpeed(long long int sessionLength, int elapsed);
-  void onEndOfRun();
-  void afterEachIteration();
-  virtual void onSelectiveDownloadingCompletes() = 0;
+  virtual void onEndOfRun();
   virtual void sendStatistics() = 0;
 public:
   TorrentDownloadEngine();

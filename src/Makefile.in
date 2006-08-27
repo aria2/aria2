@@ -93,7 +93,12 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.cc SimplePeerMessage.h\
 @ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.cc PeerMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.cc HaveEraseCommand.h\
-@ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.cc TorrentRequestInfo.h
+@ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.cc TorrentRequestInfo.h\
+@ENABLE_BITTORRENT_TRUE@	SeedCriteria.h\
+@ENABLE_BITTORRENT_TRUE@	TimeSeedCriteria.h\
+@ENABLE_BITTORRENT_TRUE@	ShareRatioSeedCriteria.h\
+@ENABLE_BITTORRENT_TRUE@	UnionSeedCriteria.h\
+@ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.cc SeedCheckCommand.h
 
 @ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -197,8 +202,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	SuggestPieceMessage.cc SuggestPieceMessage.h \
 	SimplePeerMessage.cc SimplePeerMessage.h PeerMessageFactory.cc \
 	PeerMessageFactory.h HaveEraseCommand.cc HaveEraseCommand.h \
-	TorrentRequestInfo.cc TorrentRequestInfo.h Metalinker.cc \
-	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	TorrentRequestInfo.cc TorrentRequestInfo.h SeedCriteria.h \
+	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
+	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
+	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h
@@ -251,7 +258,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -646,6 +654,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitor.Po@am__quote@

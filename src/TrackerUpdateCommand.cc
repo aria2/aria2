@@ -66,6 +66,9 @@ char* TrackerUpdateCommand::getTrackerResponse(int& trackerResponseLength) {
 }
 
 bool TrackerUpdateCommand::execute() {
+  if(e->segmentMan->errors > 0 && e->torrentMan->isHalt()) {
+    return true;
+  }
   if(!e->segmentMan->finished()) {
     return prepareForRetry();
   }

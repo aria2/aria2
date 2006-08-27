@@ -33,23 +33,10 @@ TorrentDownloadEngine::~TorrentDownloadEngine() {
 
 void TorrentDownloadEngine::onEndOfRun() {
   torrentMan->diskAdaptor->closeFile();
-  if(filenameFixed && torrentMan->downloadComplete()) {
+  if(torrentMan->downloadComplete()) {
     torrentMan->remove();
   } else {
     torrentMan->save();
-  }
-}
-
-void TorrentDownloadEngine::afterEachIteration() {
-  if(!filenameFixed && torrentMan->downloadComplete()) {
-    if(torrentMan->isSelectiveDownloadingMode()) {
-      onSelectiveDownloadingCompletes();
-    }
-    logger->info("The download was complete.");
-    torrentMan->onDownloadComplete();
-    if(torrentMan->downloadComplete()) {
-      filenameFixed = true;
-    }
   }
 }
 

@@ -19,29 +19,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_OPTION_H_
-#define _D_OPTION_H_
+#ifndef _D_SHARE_RATIO_SEED_CRITERIA_H_
+#define _D_SHARE_RATIO_SEED_CRITERIA_H_
 
-#include "common.h"
-#include <string>
-#include <map>
+#include "SeedCriteria.h"
+#include "TorrentMan.h"
 
-using namespace std;
-
-class Option {
+class ShareRatioSeedCriteria : public SeedCriteria {
 private:
-  map<string, string> table;
+  double ratio;
+  TorrentMan* torrentMan;
 public:
-  Option();
-  ~Option();
+  ShareRatioSeedCriteria(double ratio, TorrentMan* torrentMan)
+    :ratio(ratio),
+     torrentMan(torrentMan) {}
+  virtual ~ShareRatioSeedCriteria() {}
 
-  void put(const string& name, const string& value);
-  bool defined(const string& name) const;
-  string get(const string& name) const;
-  int getAsInt(const string& name) const;
-  long long int getAsLLInt(const string& name) const;
-  bool getAsBool(const string& name) const;
-  double getAsDouble(const string& name) const;
+  virtual void reset() {}
+
+  virtual bool evaluate() {
+    if(torrentMan->getDownloadLength() == 0) {
+      return false;
+    }
+    return ratio <=
+      ((double)torrentMan->getUploadLength())/torrentMan->getDownloadLength();
+  }
+
+  void setRatio(double ratio) {
+    this->ratio = ratio;
+  }
+
+  double getRatio() const {
+    return ratio;
+  }
 };
 
-#endif // _D_OPTION_H_
+#endif // _D_SHARE_RATIO_SEED_CRITERIA_H_

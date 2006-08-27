@@ -31,8 +31,12 @@
 # include "TrackerWatcherCommand.h"
 # include "TrackerUpdateCommand.h"
 # include "TorrentAutoSaveCommand.h"
+# include "SeedCheckCommand.h"
 # include "PeerChokeCommand.h"
 # include "HaveEraseCommand.h"
+# include "UnionSeedCriteria.h"
+# include "TimeSeedCriteria.h"
+# include "ShareRatioSeedCriteria.h"
 #endif // ENABLE_BITTORRENT
 
 ConsoleDownloadEngine*
@@ -117,7 +121,19 @@ DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
 					      te, 10));
   te->commands.push_back(new HaveEraseCommand(te->torrentMan->getNewCuid(),
 					      te, 10));
-  
+
+  SharedHandle<UnionSeedCriteria> unionCri = new UnionSeedCriteria();
+  if(op->defined(PREF_SEED_TIME)) {
+    unionCri->addSeedCriteria(new TimeSeedCriteria(op->getAsInt(PREF_SEED_TIME)*60));
+  }
+  if(op->defined(PREF_SEED_RATIO)) {
+    unionCri->addSeedCriteria(new ShareRatioSeedCriteria(op->getAsDouble(PREF_SEED_RATIO), te->torrentMan));
+  }
+  if(unionCri->getSeedCriterion().size() > 0) {
+    te->commands.push_back(new SeedCheckCommand(te->torrentMan->getNewCuid(),
+						te,
+						unionCri));
+  }
   return te;
 }
 #endif // ENABLE_BITTORRENT

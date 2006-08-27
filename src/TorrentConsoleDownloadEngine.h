@@ -27,7 +27,6 @@
 class TorrentConsoleDownloadEngine : public TorrentDownloadEngine {
 protected:
   virtual void sendStatistics();
-  void onSelectiveDownloadingCompletes();
 public:
   TorrentConsoleDownloadEngine();
   ~TorrentConsoleDownloadEngine();

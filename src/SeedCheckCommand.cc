@@ -19,29 +19,29 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_OPTION_H_
-#define _D_OPTION_H_
+#include "SeedCheckCommand.h"
 
-#include "common.h"
-#include <string>
-#include <map>
-
-using namespace std;
-
-class Option {
-private:
-  map<string, string> table;
-public:
-  Option();
-  ~Option();
-
-  void put(const string& name, const string& value);
-  bool defined(const string& name) const;
-  string get(const string& name) const;
-  int getAsInt(const string& name) const;
-  long long int getAsLLInt(const string& name) const;
-  bool getAsBool(const string& name) const;
-  double getAsDouble(const string& name) const;
-};
-
-#endif // _D_OPTION_H_
+bool SeedCheckCommand::execute() {
+  if(e->torrentMan->isHalt()) {
+    return true;
+  }
+  if(!seedCriteria.get()) {
+    return false;
+  }
+  if(checkPoint.elapsed(1)) {
+    if(!checkStarted) {
+      if(e->torrentMan->downloadComplete()) {
+	checkStarted = true;
+	seedCriteria->reset();
+      }
+    }
+    if(checkStarted) {
+      if(seedCriteria->evaluate()) {
+	logger->notice("CUID#%d - Seeding is over.", cuid);
+	e->torrentMan->setHalt(true);
+      }
+    }
+  }
+  e->commands.push_back(this);
+  return false;
+}

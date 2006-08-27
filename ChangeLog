@@ -1,10 +1,100 @@
+2006-08-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add --seed-time and --seed-ratio command-line option:
+	* src/Option.h (getAsDouble): New function.
+	* src/Option.cc (getAsDouble): New function.
+	* src/SeedCheckCommand.h: New class.
+	* src/SeedCheckCommand.cc: New class.
+	* src/DownloadEngineFactory.cc
+	(SeedCheckCommand.h): Included.
+	(UnionSeedCriteria.h): Included.
+	(TimeSeedCriteria.h): Included.
+	(ShareRatioSeedCriteria.h): Included.
+	(newTorrentConsoleEngine): Added the processing of seed option.
+	* src/SeedCriteria.h: New class.
+	* src/ShareRatioSeedCriteria.h: New class.
+	* src/TimeSeedCriteria.h: New class.
+	* src/UnionSeedCriteria.h: New class.
+	* src/prefs.h
+	(PREF_SEED_TIME): New definition.
+	(PREF_SEED_RATIO): New definition.
+	* src/main.cc
+	(showUsage): Added --seed-time and --seed-ratio option.
+	(main): Added --seed-time and --seed-ratio option.
+	Made default log file name "/dev/null".
+	* src/SharedHandle.h
+	(SharedHandle): Copy constructor. Made it assignable from the
+	SharedHandle of the subclasses.
+	(operator=): Made it assignable from the SharedHandle of the
+	subclasses.
+	(getRefCount): New function.
+	
+	To add notice log level and the switch to write log to stdout. This
+	switch is configurable per log level.
+	* src/Logger.h
+	(notice): New function.
+	(LEVEL): Added NOTICE. Assigned an explicit value to each log level
+	constant.
+	* src/LogFactory.cc
+	(getInstance): The use of NullLogger was removed. A log message with
+	notice log level was made written to stdout along with log file.
+	* src/NullLogger.h
+	(notice): New function.
+	* src/SimpleLogger.h
+	(writeHeader): Added the 'file' argument.
+	(writeLog): Added the 'file' argument.
+	(writeFile): New function.
+	(stdoutField): New variable.
+	(SimpleLogger): Removed the default constructor.
+	(SimpleLogger): Made the default value of logfile 0.
+	(debug): Added 'virtual' keyword.
+	(info): Added 'virtual' keyword.
+	(warn): Added 'virtual' keyword.
+	(error): Added 'virtual' keyword.
+	(notice): New function.
+	(setStdout): New function.
+	* src/SimpleLogger.cc
+	(WRITE_LOG): Replaced writeLog with writeFile.
+	(WRITE_LOG_EX): Replaced writeLog with writeFile.
+	(SimpleLogger): Removed the default constructor.
+	(setStdout): New function.
+	(writeLog): Added the handling of NOTICE log level.
+	(writeFile): New function.
+	(notice): New function.
+
+	* src/TorrentMan.h: Updated doc.
+
+	* src/BitfieldMan.h: Updated doc.
+	
+	* src/TrackerWatcherCommand.cc
+	(execute): Return true if error occurred in the request to the tracker
+	and halt is requested.
+
+	* src/TrackerUpdateCommand.cc
+	(execute): Return true if error occurred in the request to the tracker
+	and halt is requested.
+
+	* src/TorrentConsoleDownloadEngine.h
+	(onSelectiveDownloadingCompletes): Removed.
+	* src/TorrentConsoleDownloadEngine.cc
+	(onSelectiveDownloadingCompletes): Removed.
+	* src/TorrentDownloadEngine.h
+	(onEndOfRun): Added 'virtual' keyword.
+	(afterEachIteration): Removed.
+	(onSelectiveDownloadingCompletes): Removed.
+	* src/TorrentDownloadEngine.cc
+	(onEndOfRun): Removed filenameFixed.
+	(afterEachIteration): Removed.	
+	* src/TorrentMan.cc
+	(completePiece): Call onDownloadComplete here.
+	(onDownloadComplete): Added 2 log messages.
+
 2006-08-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
         To fix compilation problem on gcc4.1.1(patch#1542283 by tizianomueller)
 	* src/NameResolver.h: Added the prototype declaration of callback().
 	
 	To support c-ares library:
-	
 	* src/AbstractCommand.cc: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
 	* src/FeatureConfig.cc: Replaced HAVE_LIBARES with ENABLE_ASYNC_DNS
 	* src/FtpInitiateConnectionCommand.h:
@@ -26,7 +116,6 @@
 
 	To fix the bug that causes compilation failure with metalink-support
 	disabled(bug#1543587):
-
 	* src/main.cc: Fixed with the patch by tizianomueller.
 
 	* Release 0.7.2

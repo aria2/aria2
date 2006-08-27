@@ -122,6 +122,10 @@
 #define PREF_FOLLOW_TORRENT "follow_torrent"
 // values: 1*digit *( (,|-) 1*digit)
 #define PREF_SELECT_FILE "select_file"
+// values: 1*digit
+#define PREF_SEED_TIME "seed_time"
+// values: 1*digit ['.' [ 1*digit ] ]
+#define PREF_SEED_RATIO "seed_ratio"
 
 /**
  * Metalink related preferences

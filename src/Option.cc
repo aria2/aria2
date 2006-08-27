@@ -69,3 +69,12 @@ bool Option::getAsBool(const string& name) const {
     return false;
   }
 }
+
+double Option::getAsDouble(const string& name) const {
+  string value = get(name);
+  if(value == "") {
+    return 0.0;
+  } else {
+    return strtod(value.c_str(), 0);
+  }
+}

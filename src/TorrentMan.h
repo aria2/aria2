@@ -151,7 +151,17 @@ public:
   void syncPiece(Piece& piece);
   bool hasPiece(int index) const;
   void initBitfield();
+  /**
+   * Returns true if the number of missing block is less than or equal to
+   * END_GAME_PIECE_NUM.
+   * If file filter is enabled, only a range specified by the filter is
+   * concerned.
+   */
   bool isEndGame() const;
+  /**
+   * Returns true if download has completed. If file filter is enabled,
+   * returns true if download of a range specified by the filter has completed.
+   */
   bool downloadComplete() const;
   bool hasAllPieces() const;
   void setBitfield(unsigned char* bitfield, int len);
@@ -176,7 +186,7 @@ public:
 
   string getPieceHash(int index) const;
 
-  // Addes piece index to advertise to other commands. They send have message
+  // Adds piece index to advertise to other commands. They send have message
   // based on this information.
   void advertisePiece(int cuid, int index);
 
