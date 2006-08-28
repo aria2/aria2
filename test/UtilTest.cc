@@ -20,6 +20,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFileChecksum);
   CPPUNIT_TEST(testToUpper);
   CPPUNIT_TEST(testToLower);
+  CPPUNIT_TEST(testUrldecode);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -40,6 +41,7 @@ public:
   void testFileChecksum();
   void testToUpper();
   void testToLower();
+  void testUrldecode();
 };
 
 
@@ -247,4 +249,27 @@ void UtilTest::testToLower() {
   string upp = "608cabc0f2fa18c260cafd974516865c772363d5";
 
   CPPUNIT_ASSERT_EQUAL(upp, Util::toLower(src));
+}
+
+#include "SharedHandle.h"
+
+void UtilTest::testUrldecode() {
+  string src = "http://aria2.sourceforge.net/aria2%200.7.0%20docs.html";
+  CPPUNIT_ASSERT_EQUAL(string("http://aria2.sourceforge.net/aria2 0.7.0 docs.html"),
+		       Util::urldecode(src));
+
+  string src2 = "aria2+aria2";
+  CPPUNIT_ASSERT_EQUAL(string("aria2 aria2"), Util::urldecode(src2));
+
+  string src3 = "%5t%20";
+  CPPUNIT_ASSERT_EQUAL(string("%5t "), Util::urldecode(src3));
+
+  string src4 = "%";
+  CPPUNIT_ASSERT_EQUAL(string("%"), Util::urldecode(src4));
+  
+  string src5 = "%3";
+  CPPUNIT_ASSERT_EQUAL(string("%3"), Util::urldecode(src5));
+
+  string src6 = "%2f";
+  CPPUNIT_ASSERT_EQUAL(string("/"), Util::urldecode(src6));
 }

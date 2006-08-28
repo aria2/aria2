@@ -33,6 +33,9 @@ private:
   bool handleOtherEncoding(const string& transferEncoding, const HttpHeader& headers);
   void createHttpDownloadCommand(const string& transferEncoding = "");
   void retrieveCookie(const HttpHeader& headers);
+  /**
+   * Returned filename is URL-decoded.
+   */
   string determinFilename(const HttpHeader& headers);
   HttpConnection* http;
 protected:

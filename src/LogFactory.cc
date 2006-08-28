@@ -22,7 +22,7 @@
 #include "LogFactory.h"
 #include "SimpleLogger.h"
 
-string LogFactory::filename;
+string LogFactory::filename = "/dev/null";
 Logger* LogFactory::logger = NULL;
 
 Logger* LogFactory::getInstance() {

@@ -13,5 +13,5 @@
 * List available os, version, etc for metalink
 * ipv6(RFC2428 for ftp)
 * Add silent mode.
-* Add NOTIFY log level. A message categorized in this level is printed in
- a console along with a log file.
+* Add upload speed limit command-line option.
+* Save URLs and command-line arguments to .aria2 file.

@@ -9,6 +9,7 @@ class OptionTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(OptionTest);
   CPPUNIT_TEST(testPutAndGet);
   CPPUNIT_TEST(testPutAndGetAsInt);
+  CPPUNIT_TEST(testPutAndGetAsDouble);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -18,6 +19,7 @@ public:
 
   void testPutAndGet();
   void testPutAndGetAsInt();
+  void testPutAndGetAsDouble();
 };
 
 
@@ -37,4 +39,11 @@ void OptionTest::testPutAndGetAsInt() {
 
   CPPUNIT_ASSERT(op.defined("key"));
   CPPUNIT_ASSERT_EQUAL(1000, op.getAsInt("key"));
+}
+
+void OptionTest::testPutAndGetAsDouble() {
+  Option op;
+  op.put("key", "10.0");
+  
+  CPPUNIT_ASSERT_EQUAL(10.0, op.getAsDouble("key"));
 }

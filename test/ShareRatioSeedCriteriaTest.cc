@@ -22,7 +22,7 @@ void ShareRatioSeedCriteriaTest::testEvaluate() {
 
   ShareRatioSeedCriteria cri(1.0, &torrentMan);
   CPPUNIT_ASSERT(cri.evaluate());
-
+  
   cri.setRatio(2.0);
   CPPUNIT_ASSERT(!cri.evaluate());
   // check div by zero

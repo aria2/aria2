@@ -99,11 +99,11 @@ string HttpResponseCommand::determinFilename(const HttpHeader& headers) {
   string contentDisposition =
     Util::getContentDispositionFilename(headers.getFirst("Content-Disposition"));
   if(contentDisposition.empty()) {
-    return req->getFile();
+    return Util::urldecode(req->getFile());
   } else {
     logger->info("CUID#%d - Content-Disposition Detected. Use %s as filename",
 		 cuid, contentDisposition.c_str());
-    return contentDisposition;
+    return Util::urldecode(contentDisposition);
   }
 }
 

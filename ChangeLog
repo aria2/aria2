@@ -1,3 +1,14 @@
+2006-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To make filename URL-decoded:
+	* src/HttpResponseCommand.h: Updated doc.
+	* src/HttpResponseCommand.cc
+	(determinFilename): Made filename URL-decoded.
+	* src/FtpInitiateConnectionCommand.cc
+	(executeInternal): Made filename URL-decoded.
+	* src/Util.h (urldecode): New function.
+	* src/Util.cc (urldecode): New function.
+	
 2006-08-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add --seed-time and --seed-ratio command-line option:

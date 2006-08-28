@@ -85,7 +85,7 @@ bool TrackerWatcherCommand::execute() {
       break;
     }
     string url = e->torrentMan->announce+"?"+
-      "info_hash="+Util::torrentUrlencode(e->torrentMan->getInfoHash(), 20)+"&"+
+      "info_hash="+Util::torrentUrlencode((const char*)e->torrentMan->getInfoHash(), 20)+"&"+
       "peer_id="+e->torrentMan->peerId+"&"+
       "port="+Util::itos(e->torrentMan->getPort())+"&"+
       "uploaded="+Util::llitos(e->torrentMan->getSessionUploadLength())+"&"+

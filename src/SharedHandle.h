@@ -47,7 +47,9 @@ private:
 public:
   SharedHandle():obj(new T()), ucount(new int(1)) {}
   SharedHandle(T* obj):obj(obj), ucount(new int(1)) {}
-
+  SharedHandle(const SharedHandle<T>& t):obj(t.get()), ucount(t.getRefCount()) {
+    ++*ucount;
+  }
   template<class S>
   SharedHandle(const SharedHandle<S>& t):obj(t.get()), ucount(t.getRefCount()) {
     ++*ucount;
@@ -60,8 +62,18 @@ public:
     }
   }
 
+  SharedHandle<T>& operator=(const SharedHandle<T>& t) { 
+    ++*t.getRefCount();
+    if(--*ucount == 0) {
+      delete obj;
+      delete ucount;
+    }
+    obj = t.get();
+    ucount = t.getRefCount();
+    return *this;
+  }
   template<class S>
-  SharedHandle<T>& operator=(const SharedHandle<S>& t) {
+  SharedHandle<T>& operator=(const SharedHandle<S>& t) { 
     ++*t.getRefCount();
     if(--*ucount == 0) {
       delete obj;

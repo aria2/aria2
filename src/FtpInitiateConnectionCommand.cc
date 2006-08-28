@@ -45,7 +45,7 @@ FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {
 
 bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
   if(!e->segmentMan->downloadStarted) {
-    e->segmentMan->filename = req->getFile();
+    e->segmentMan->filename = Util::urldecode(req->getFile());
     bool segFileExists = e->segmentMan->segmentFileExists();
     if(segFileExists) {
       e->segmentMan->load();

@@ -166,7 +166,7 @@ string Util::replace(const string& target, const string& oldstr, const string& n
   return result;
 }
 
-string Util::urlencode(const unsigned char* target, int len) {
+string Util::urlencode(const char* target, int len) {
   string dest;
   for(int i = 0; i < len; i++) {
     if(!('0' <= target[i] && target[i] <= '9' ||
@@ -189,7 +189,7 @@ string Util::urlencode(const unsigned char* target, int len) {
   return dest;
 }
 
-string Util::torrentUrlencode(const unsigned char* target, int len) {
+string Util::torrentUrlencode(const char* target, int len) {
   string dest;
   for(int i = 0; i < len; i++) {
     if(isalpha(target[i]) || isdigit(target[i])) {
@@ -202,6 +202,31 @@ string Util::torrentUrlencode(const unsigned char* target, int len) {
     }
   }
   return dest;
+}
+
+string Util::urldecode(const string& target) {
+  string result;
+  for(string::const_iterator itr = target.begin();
+      itr != target.end(); itr++) {
+    if(*itr == '+') {
+      result += ' ';
+    } else if(*itr == '%') {
+      if(itr+1 != target.end() && itr+2 != target.end() &&
+	 isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
+	char temp[3];
+	temp[0] = *(itr+1);
+	temp[1] = *(itr+2);
+	temp[2] = '\0';
+	result += strtol(temp, 0, 16);
+	itr += 2;
+      } else {
+	result += *itr;
+      }
+    } else {
+      result += *itr;
+    }
+  }
+  return result;
 }
 
 string Util::toHex(const unsigned char* src, int len) {

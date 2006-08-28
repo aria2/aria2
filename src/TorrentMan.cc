@@ -653,10 +653,10 @@ void TorrentMan::onDownloadComplete() {
   save();
   diskAdaptor->onDownloadComplete();
   if(isSelectiveDownloadingMode()) {
-    logger->notice("Download of selected files has completed.");
+    logger->notice("Download of selected files was complete.");
     finishSelectiveDownloadingMode();
   } else {
-    logger->info("The download has completed.");
+    logger->info("The download was complete.");
   }
 }
 
