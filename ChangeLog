@@ -8,6 +8,9 @@
 	(executeInternal): Made filename URL-decoded.
 	* src/Util.h (urldecode): New function.
 	* src/Util.cc (urldecode): New function.
+
+	To fix a bug that caused assertion failure in ares_strerror:
+	* src/NameResolver.cc (callback): Fixed the bug.
 	
 2006-08-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
