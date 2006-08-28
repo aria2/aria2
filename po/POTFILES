@@ -1,3 +1,4 @@
+     ../src/TorrentMan.cc \
      ../src/RequestInfo.h \
      ../src/message.h \
      ../src/DownloadEngineFactory.cc \

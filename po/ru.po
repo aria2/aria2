@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-08-22 00:04+0900\n"
+"POT-Creation-Date: 2006-08-28 22:50+0900\n"
 "PO-Revision-Date: 2006-07-28 18:04+0600\n"
 "Last-Translator: Azamat H. Hackimov <azamat.hackimov@gmail.com>\n"
 "Language-Team:  <ru@li.org>\n"
@@ -20,6 +20,18 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.2\n"
+
+#: src/TorrentMan.cc:656
+#, fuzzy
+msgid "Download of selected files was complete."
+msgstr " Скачать только выбранные файлы:"
+
+#: src/TorrentMan.cc:659
+#, fuzzy
+msgid "The download was complete."
+msgstr ""
+"\n"
+"Скачивание завершено. <%s>\n"
 
 #: src/RequestInfo.h:84
 #, c-format
@@ -359,7 +371,7 @@ msgstr "Ошибка получения данных: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "Ошибка запроса данных: %s"
 
-#: src/DownloadEngineFactory.cc:102
+#: src/DownloadEngineFactory.cc:106
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
@@ -711,11 +723,38 @@ msgstr ""
 "                              Также вы можете использовать тире (\"1-5\").\n"
 "                              \",\" и \"-\" могут быть использованы вместе."
 
+#: src/main.cc:178
+#, fuzzy
+msgid ""
+" --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
+"                              --seed-ratio option."
+msgstr ""
+" -m, --max-tries=N            Установить число попыток. 0 означает\n"
+"                              неограниченное число. По умолчанию: 5"
+
 #: src/main.cc:180
+#, fuzzy
+msgid ""
+" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents "
+"until\n"
+"                              share ratio reaches RATIO. 1.0 is encouraged.\n"
+"                              If --seed-time option is specified along with\n"
+"                              this option, seeding ends when at least one "
+"of\n"
+"                              the conditions is satisfied."
+msgstr ""
+" -s, --split=N                Скачать файл, используя N соединений. N\n"
+"                              должен быть в пределах от 1 до 5. Этот "
+"параметр\n"
+"                              влияет на все URL.\n"
+"                              Следуя этому, aria2 соединяется к каждому URL\n"
+"                              используя N соединений."
+
+#: src/main.cc:187
 msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Путь к .metalink-файлу."
 
-#: src/main.cc:181
+#: src/main.cc:188
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. If more than one connection "
@@ -729,20 +768,20 @@ msgstr ""
 "параметр -s.\n"
 "                              По умолчанию: 15"
 
-#: src/main.cc:185
+#: src/main.cc:192
 msgid " --metalink-version=VERSION   The version of file to download."
 msgstr " --metalink-version=VERSION   Версия файла для скачивания."
 
-#: src/main.cc:186
+#: src/main.cc:193
 msgid " --metalink-language=LANGUAGE The language of file to download."
 msgstr " --metalink-language=LANGUAGE Язык файла для скачивания."
 
-#: src/main.cc:187
+#: src/main.cc:194
 msgid ""
 " --metalink-os=OS             The operating system the file is targeted."
 msgstr " --metalink-os=OS             Целевая операционная система файла."
 
-#: src/main.cc:188
+#: src/main.cc:195
 msgid ""
 " --follow-metalink=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -756,15 +795,15 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:193
+#: src/main.cc:200
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Вывести номер версии и выйти."
 
-#: src/main.cc:194
+#: src/main.cc:201
 msgid " -h, --help                   Print this message and exit."
 msgstr " -h, --help                   Вывести это сообщение и выйти."
 
-#: src/main.cc:197
+#: src/main.cc:204
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
@@ -772,7 +811,7 @@ msgstr ""
 " Вы можете указать несколько URL. Все URL должны указывать на один и тот же\n"
 " файл, иначе скачивание завершится неудачей."
 
-#: src/main.cc:202
+#: src/main.cc:209
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option. This arguments are ignored if you specify --select-file option."
@@ -780,147 +819,157 @@ msgstr ""
 " Указать файлы для скачивания при многофайловом torent. Используйте вместе\n"
 " с параметром -T. Этот параметр игнорируется при указании --select-file."
 
-#: src/main.cc:206
+#: src/main.cc:213
 msgid "Examples:"
 msgstr "Примеры:"
 
-#: src/main.cc:207
+#: src/main.cc:214
 msgid " Download a file by 1 connection:"
 msgstr " Скачать файл с помощью 1 соединения:"
 
-#: src/main.cc:209
+#: src/main.cc:216
 msgid " Download a file by 2 connections:"
 msgstr " Скачать файл с помощью 2 соединений:"
 
-#: src/main.cc:211
+#: src/main.cc:218
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr " Скачать файл с помощью 2 соединений к различным серверам:"
 
-#: src/main.cc:213
+#: src/main.cc:220
 msgid " You can mix up different protocols:"
 msgstr " Вы можете смешивать различные протоколы:"
 
-#: src/main.cc:217
+#: src/main.cc:224
 msgid " Download a torrent:"
 msgstr " Скачать torrent:"
 
-#: src/main.cc:219
+#: src/main.cc:226
 msgid " Download a torrent using local .torrent file:"
 msgstr " Скачать torrent с помощью локального .torrent-файла:"
 
-#: src/main.cc:221
+#: src/main.cc:228
 msgid " Download only selected files:"
 msgstr " Скачать только выбранные файлы:"
 
-#: src/main.cc:223
+#: src/main.cc:230
 msgid " Print file listing of .torrent file:"
 msgstr " Вывести список фалов из .torrent"
 
-#: src/main.cc:228
+#: src/main.cc:235
 msgid " Metalink downloading:"
 msgstr " Скачать metalink:"
 
-#: src/main.cc:230
+#: src/main.cc:237
 msgid " Download a file using local .metalink file:"
 msgstr " Скачать файл с помощью локального .metalink-файла:"
 
-#: src/main.cc:232
+#: src/main.cc:239
 msgid " Metalink downloading with preferences:"
 msgstr " Скачивание metalink с настройками:"
 
-#: src/main.cc:236
+#: src/main.cc:243
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Сообщения об ошибках направляйте на адрес %s"
 
-#: src/main.cc:361
+#: src/main.cc:370
 msgid "unrecognized proxy format"
 msgstr "неизвестный формат прокси"
 
-#: src/main.cc:388
+#: src/main.cc:397
 msgid "Currently, supported authentication scheme is basic."
 msgstr "Поддерживаемая схема аутентификации - \"basic\"."
 
-#: src/main.cc:397
+#: src/main.cc:406
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait должен быть в пределах 0..60"
 
-#: src/main.cc:414
+#: src/main.cc:423
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type должен быть \"binary\" или \"ascii\"."
 
-#: src/main.cc:423
+#: src/main.cc:432
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy должен быть \"get\" или \"tunnel\"."
 
-#: src/main.cc:431
+#: src/main.cc:440
 msgid "min-segment-size invalid"
 msgstr "min-segment-size неверен"
 
-#: src/main.cc:442
+#: src/main.cc:451
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method должен быть \"get\" или \"tunnel\"."
 
-#: src/main.cc:450
+#: src/main.cc:459
 msgid "listen-port must be between 1024 and 65535."
 msgstr "listen-port должен быть в пределах 1024..65535."
 
-#: src/main.cc:463
+#: src/main.cc:472
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent должен быть 'true' или 'false'."
 
-#: src/main.cc:477
+#: src/main.cc:486
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr "direct-file-mapping должен быть 'true' или 'false'."
 
-#: src/main.cc:485
+#: src/main.cc:494
 msgid "upload-limit must be greater than or equal to 0."
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:510
+#: src/main.cc:507
+#, fuzzy
+msgid "seed-time must be greater than or equal to 0."
+msgstr "upload-limit должен быть не меньше 0."
+
+#: src/main.cc:517
+#, fuzzy
+msgid "seed-ratio must be greater than or equal to 0.0."
+msgstr "upload-limit должен быть не меньше 0."
+
+#: src/main.cc:539
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr "follow-metalink должен быть 'true' или 'false'."
 
-#: src/main.cc:518
+#: src/main.cc:547
 #, fuzzy
 msgid "lowest-speed-limit must be greater than or equal to 0"
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:547
+#: src/main.cc:576
 msgid "split must be between 1 and 5."
 msgstr "split должен быть находится в пределах 1..5."
 
-#: src/main.cc:559
+#: src/main.cc:588
 msgid "timeout must be between 1 and 600"
 msgstr "таймаут должен быть в пределах 1..600"
 
-#: src/main.cc:568
+#: src/main.cc:597
 msgid "max-tries invalid"
 msgstr "неверный max-tries"
 
-#: src/main.cc:590
+#: src/main.cc:619
 msgid "metalink-servers must be greater than 0."
 msgstr "metalink-servers должен быть больше 0"
 
-#: src/main.cc:610
+#: src/main.cc:639
 msgid "specify at least one URL"
 msgstr "укажите по крайней мере один URL"
 
-#: src/main.cc:617
+#: src/main.cc:646
 msgid "daemon failed"
 msgstr "ошибка демона"
 
-#: src/main.cc:679
+#: src/main.cc:710
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
 "file."
 msgstr ""
 
-#: src/main.cc:683
+#: src/main.cc:714
 msgid "checksum OK."
 msgstr ""
 
-#: src/main.cc:686
+#: src/main.cc:717
 msgid "checksum ERROR."
 msgstr ""

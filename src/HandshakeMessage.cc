@@ -74,7 +74,7 @@ int HandshakeMessage::getMessageLength() {
 
 string HandshakeMessage::toString() const {
   return "handshake peerId="+
-    Util::urlencode(peerId, sizeof(peerId))+
+    Util::urlencode((unsigned char*)peerId, sizeof(peerId))+
     " reserved="+Util::toHex(reserved, sizeof(reserved));
 }
 

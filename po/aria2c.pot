@@ -8,13 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-08-22 00:04+0900\n"
+"POT-Creation-Date: 2006-08-28 22:50+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/TorrentMan.cc:656
+msgid "Download of selected files was complete."
+msgstr ""
+
+#: src/TorrentMan.cc:659
+msgid "The download was complete."
+msgstr ""
 
 #: src/RequestInfo.h:84
 #, c-format
@@ -343,7 +351,7 @@ msgstr ""
 msgid "Failed to peek data, cause: %s"
 msgstr ""
 
-#: src/DownloadEngineFactory.cc:102
+#: src/DownloadEngineFactory.cc:106
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
@@ -608,11 +616,28 @@ msgid ""
 "                              ',' and '-' can be used together."
 msgstr ""
 
+#: src/main.cc:178
+msgid ""
+" --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
+"                              --seed-ratio option."
+msgstr ""
+
 #: src/main.cc:180
+msgid ""
+" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents "
+"until\n"
+"                              share ratio reaches RATIO. 1.0 is encouraged.\n"
+"                              If --seed-time option is specified along with\n"
+"                              this option, seeding ends when at least one "
+"of\n"
+"                              the conditions is satisfied."
+msgstr ""
+
+#: src/main.cc:187
 msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
 msgstr ""
 
-#: src/main.cc:181
+#: src/main.cc:188
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. If more than one connection "
@@ -621,20 +646,20 @@ msgid ""
 "                              Default: 15"
 msgstr ""
 
-#: src/main.cc:185
+#: src/main.cc:192
 msgid " --metalink-version=VERSION   The version of file to download."
 msgstr ""
 
-#: src/main.cc:186
+#: src/main.cc:193
 msgid " --metalink-language=LANGUAGE The language of file to download."
 msgstr ""
 
-#: src/main.cc:187
+#: src/main.cc:194
 msgid ""
 " --metalink-os=OS             The operating system the file is targeted."
 msgstr ""
 
-#: src/main.cc:188
+#: src/main.cc:195
 msgid ""
 " --follow-metalink=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -643,166 +668,174 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:193
+#: src/main.cc:200
 msgid " -v, --version                Print the version number and exit."
 msgstr ""
 
-#: src/main.cc:194
+#: src/main.cc:201
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 
-#: src/main.cc:197
+#: src/main.cc:204
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
 msgstr ""
 
-#: src/main.cc:202
+#: src/main.cc:209
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option. This arguments are ignored if you specify --select-file option."
 msgstr ""
 
-#: src/main.cc:206
+#: src/main.cc:213
 msgid "Examples:"
 msgstr ""
 
-#: src/main.cc:207
+#: src/main.cc:214
 msgid " Download a file by 1 connection:"
 msgstr ""
 
-#: src/main.cc:209
+#: src/main.cc:216
 msgid " Download a file by 2 connections:"
 msgstr ""
 
-#: src/main.cc:211
+#: src/main.cc:218
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr ""
 
-#: src/main.cc:213
+#: src/main.cc:220
 msgid " You can mix up different protocols:"
 msgstr ""
 
-#: src/main.cc:217
+#: src/main.cc:224
 msgid " Download a torrent:"
 msgstr ""
 
-#: src/main.cc:219
+#: src/main.cc:226
 msgid " Download a torrent using local .torrent file:"
 msgstr ""
 
-#: src/main.cc:221
+#: src/main.cc:228
 msgid " Download only selected files:"
 msgstr ""
 
-#: src/main.cc:223
+#: src/main.cc:230
 msgid " Print file listing of .torrent file:"
 msgstr ""
 
-#: src/main.cc:228
+#: src/main.cc:235
 msgid " Metalink downloading:"
 msgstr ""
 
-#: src/main.cc:230
+#: src/main.cc:237
 msgid " Download a file using local .metalink file:"
 msgstr ""
 
-#: src/main.cc:232
+#: src/main.cc:239
 msgid " Metalink downloading with preferences:"
 msgstr ""
 
-#: src/main.cc:236
+#: src/main.cc:243
 #, c-format
 msgid "Report bugs to %s"
 msgstr ""
 
-#: src/main.cc:361
+#: src/main.cc:370
 msgid "unrecognized proxy format"
 msgstr ""
 
-#: src/main.cc:388
+#: src/main.cc:397
 msgid "Currently, supported authentication scheme is basic."
 msgstr ""
 
-#: src/main.cc:397
+#: src/main.cc:406
 msgid "retry-wait must be between 0 and 60."
 msgstr ""
 
-#: src/main.cc:414
+#: src/main.cc:423
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr ""
 
-#: src/main.cc:423
+#: src/main.cc:432
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:431
+#: src/main.cc:440
 msgid "min-segment-size invalid"
 msgstr ""
 
-#: src/main.cc:442
+#: src/main.cc:451
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr ""
 
-#: src/main.cc:450
+#: src/main.cc:459
 msgid "listen-port must be between 1024 and 65535."
 msgstr ""
 
-#: src/main.cc:463
+#: src/main.cc:472
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:477
+#: src/main.cc:486
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:485
+#: src/main.cc:494
 msgid "upload-limit must be greater than or equal to 0."
 msgstr ""
 
-#: src/main.cc:510
+#: src/main.cc:507
+msgid "seed-time must be greater than or equal to 0."
+msgstr ""
+
+#: src/main.cc:517
+msgid "seed-ratio must be greater than or equal to 0.0."
+msgstr ""
+
+#: src/main.cc:539
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr ""
 
-#: src/main.cc:518
+#: src/main.cc:547
 msgid "lowest-speed-limit must be greater than or equal to 0"
 msgstr ""
 
-#: src/main.cc:547
+#: src/main.cc:576
 msgid "split must be between 1 and 5."
 msgstr ""
 
-#: src/main.cc:559
+#: src/main.cc:588
 msgid "timeout must be between 1 and 600"
 msgstr ""
 
-#: src/main.cc:568
+#: src/main.cc:597
 msgid "max-tries invalid"
 msgstr ""
 
-#: src/main.cc:590
+#: src/main.cc:619
 msgid "metalink-servers must be greater than 0."
 msgstr ""
 
-#: src/main.cc:610
+#: src/main.cc:639
 msgid "specify at least one URL"
 msgstr ""
 
-#: src/main.cc:617
+#: src/main.cc:646
 msgid "daemon failed"
 msgstr ""
 
-#: src/main.cc:679
+#: src/main.cc:710
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
 "file."
 msgstr ""
 
-#: src/main.cc:683
+#: src/main.cc:714
 msgid "checksum OK."
 msgstr ""
 
-#: src/main.cc:686
+#: src/main.cc:717
 msgid "checksum ERROR."
 msgstr ""

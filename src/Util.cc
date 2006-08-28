@@ -166,7 +166,7 @@ string Util::replace(const string& target, const string& oldstr, const string& n
   return result;
 }
 
-string Util::urlencode(const char* target, int len) {
+string Util::urlencode(const unsigned char* target, int len) {
   string dest;
   for(int i = 0; i < len; i++) {
     if(!('0' <= target[i] && target[i] <= '9' ||
@@ -189,7 +189,7 @@ string Util::urlencode(const char* target, int len) {
   return dest;
 }
 
-string Util::torrentUrlencode(const char* target, int len) {
+string Util::torrentUrlencode(const unsigned char* target, int len) {
   string dest;
   for(int i = 0; i < len; i++) {
     if(isalpha(target[i]) || isdigit(target[i])) {

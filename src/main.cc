@@ -177,10 +177,11 @@ void showUsage() {
 	    "                              ',' and '-' can be used together.") << endl;
   cout << _(" --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
 	    "                              --seed-ratio option.") << endl;
-  cout << _(" --seed-ratio=RATIO           Specify seed share ratio. 1.0 is encouraged.\n"
+  cout << _(" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents until\n"
+	    "                              share ratio reaches RATIO. 1.0 is encouraged.\n"
 	    "                              If --seed-time option is specified along with\n"
 	    "                              this option, seeding ends when at least one of\n"
-	    "                              the condition is met.") << endl;
+	    "                              the conditions is satisfied.") << endl;
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   cout << _(" -M, --metalink-file=METALINK_FILE The file path to .metalink file.") << endl;

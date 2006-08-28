@@ -62,11 +62,11 @@ public:
 
   static string replace(const string& target, const string& oldstr, const string& newstr);
 
-  static string urlencode(const char* target, int len);
+  static string urlencode(const unsigned char* target, int len);
 
   static string urldecode(const string& target);
 
-  static string torrentUrlencode(const char* target, int len);
+  static string torrentUrlencode(const unsigned char* target, int len);
 
   static string toHex(const unsigned char* src, int len);
 
