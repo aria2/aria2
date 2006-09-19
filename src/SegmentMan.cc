@@ -31,87 +31,20 @@
 #include <unistd.h>
 #include <errno.h>
 
-SegmentMan::SegmentMan():totalSize(0),
+SegmentMan::SegmentMan():bitfield(0),
+			 totalSize(0),
 			 isSplittable(true), 
 			 downloadStarted(false),
 			 dir("."),
 			 errors(0),
-			 splitter(NULL),
-			 diskWriter(NULL) {
+			 diskWriter(0) {
   logger = LogFactory::getInstance();
 }
 
 SegmentMan::~SegmentMan() {
-  if(splitter != NULL) {
-    delete splitter;
-  }
-  if(diskWriter != NULL) {
-    delete diskWriter;
-  }
+  delete bitfield;
+  delete diskWriter;
 }
-
-void SegmentMan::unregisterId(int cuid) {
-  for(Segments::iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    if((*itr).cuid == cuid) {
-      cuid = 0;
-    }
-  }
-}
-
-bool SegmentMan::getSegment(Segment& seg, int cuid) {
-  //Segment s = { 0, 0, 0, false };
-
-  if(segments.empty()) {
-    logger->debug(string("assign new segment { sp = 0, ep = "+(totalSize == 0 ? "0" : Util::llitos(totalSize-1))+" } to cuid "+Util::llitos(cuid)).c_str());
-    //seg = { cuid, 0, totalSize == 0 ? 0 : totalSize-1, 0, false };
-    seg.cuid = cuid;
-    seg.sp = 0;
-    seg.ep = totalSize == 0 ? 0 : totalSize-1;
-    seg.ds = 0;
-    seg.speed = 0;
-    seg.finish = false;
-    segments.push_back(seg);
-    return true;
-  }
-  for(Segments::iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    if((*itr).cuid == cuid && !(*itr).finish) {
-//       logger->debug("return an existing segment { "
-// 		    "sp = "+Util::ulitos((*itr).sp)+", "+
-// 		    "ep = "+Util::ulitos((*itr).ep)+", "
-// 		    "ds = "+Util::ulitos((*itr).ds)+" } to "+
-// 		    "cuid "+Util::ulitos((*itr).cuid));
-      seg = *itr;
-      return true;
-    }
-  }
-  if(!isSplittable) {
-    return false;
-  }
-  for(Segments::iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    Segment& s = *itr;
-    if(s.finish) {
-      continue;
-    }
-    if(s.cuid == 0) {
-      s.cuid = cuid;
-      seg = s;
-      return true;
-    }
-  }
-  return splitter->splitSegment(seg, cuid, segments);
-}
-
-void SegmentMan::updateSegment(const Segment& segment) {
-  for(Segments::iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    if((*itr).cuid == segment.cuid && 
-       (*itr).sp == segment.sp &&
-       (*itr).ep == segment.ep) {
-      *itr = segment;
-      break;
-    }
-  } 
-}
-
 
 bool SegmentMan::segmentFileExists() const {
   if(!isSplittable) {
@@ -144,10 +77,6 @@ void SegmentMan::load() {
 			segFilename.c_str(), strerror(errno));
   }
   logger->info(MSG_LOADED_SEGMENT_FILE);
-  for(Segments::iterator itr = segments.begin(); itr != segments.end();
-      itr++) {
-    (*itr).cuid = 0;
-  }
 }
 
 void SegmentMan::save() const {
@@ -161,8 +90,32 @@ void SegmentMan::save() const {
     if(fwrite(&totalSize, sizeof(totalSize), 1, segFile) < 1) {
       throw string("writeError");
     }
-    for(Segments::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
-      if(fwrite(&*itr, sizeof(Segment), 1, segFile) < 1) {
+    int segmentLength = bitfield->getBlockLength();
+    if(fwrite(&segmentLength, sizeof(segmentLength), 1, segFile) < 1) {
+      throw string("writeError");
+    }
+    if(bitfield) {
+      int bitfieldLength = bitfield->getBitfieldLength();
+      if(fwrite(&bitfieldLength, sizeof(bitfieldLength), 1, segFile) < 1) {
+	throw string("writeError");
+      }
+      if(fwrite(bitfield->getBitfield(), bitfield->getBitfieldLength(),
+		1, segFile) < 1) {
+	throw string("writeError");
+      }					 
+    } else {
+      int i = 0;
+      if(fwrite(&i, sizeof(i), 1, segFile) < 1) {
+	throw string("writeError");
+      }
+    }
+    int usedSegmentCount = usedSegmentEntries.size();
+    if(fwrite(&usedSegmentCount, sizeof(usedSegmentCount), 1, segFile) < 1) {
+      throw string("writeError");
+    }
+    for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
+	itr != usedSegmentEntries.end(); itr++) {
+      if(fwrite(&itr->segment, sizeof(Segment), 1, segFile) < 1) {
 	throw string("writeError");
       }
     }
@@ -189,16 +142,35 @@ void SegmentMan::read(FILE* file) {
   if(fread(&totalSize, sizeof(totalSize), 1, file) < 1) {
     throw string("readError");
   }
-  while(1) {
+  int segmentSize;
+  if(fread(&segmentSize, sizeof(segmentSize), 1, file) < 1) {
+    throw string("readError");
+  }
+  int bitfieldLength;
+  if(fread(&bitfieldLength, sizeof(bitfieldLength), 1, file) < 1) {
+    throw string("readError");
+  }
+  if(bitfieldLength > 0) {
+    initBitfield(segmentSize, totalSize);
+    unsigned char* savedBitfield = new unsigned char[bitfield->getBitfieldLength()];
+    if(fread(savedBitfield, bitfield->getBitfieldLength(), 1, file) < 1) {
+      delete [] savedBitfield;
+      throw string("readError");
+    } else {
+      bitfield->setBitfield(savedBitfield, bitfield->getBitfieldLength());
+      delete [] savedBitfield;
+    }
+  }
+  int segmentCount;
+  if(fread(&segmentCount, sizeof(segmentCount), 1, file) < 1) {
+    throw string("readError");
+  }
+  while(segmentCount--) {
     Segment seg;
     if(fread(&seg, sizeof(Segment), 1, file) < 1) {
-      if(ferror(file)) {
-	throw string("readError");
-      } else if(feof(file)) {
-	break;
-      }
+      throw string("readError");
     }
-    segments.push_back(seg);
+    usedSegmentEntries.push_back(SegmentEntry(0, seg));
   }
 }
 
@@ -213,15 +185,14 @@ void SegmentMan::remove() const {
 }
 
 bool SegmentMan::finished() const {
-  if(!downloadStarted || segments.size() == 0) {
+  if(!downloadStarted) {
     return false;
   }
-  for(Segments::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    if(!(*itr).finish) {
-      return false;
-    }
+  if(!bitfield) {
+    return false;
   }
-  return true;
+  assert(bitfield);
+  return bitfield->isAllBitSet();
 }
 
 void SegmentMan::removeIfFinished() const {
@@ -230,19 +201,219 @@ void SegmentMan::removeIfFinished() const {
   }
 }
 
-long long int SegmentMan::getDownloadedSize() const {
-  long long int size = 0;
-  for(Segments::const_iterator itr = segments.begin(); itr != segments.end(); itr++) {
-    size += (*itr).ds;
-  }
-  return size;
-}
-
 void SegmentMan::init() {
   totalSize = 0;
   isSplittable = false;
   downloadStarted = false;
   errors = 0;
-  segments.clear();
+  //segments.clear();
+  usedSegmentEntries.clear();
+  delete bitfield;
+  peerStats.clear();
   diskWriter->closeFile();
+  
+}
+
+void SegmentMan::initBitfield(int segmentLength, long long int totalLength) {
+  this->bitfield = new BitfieldMan(segmentLength, totalLength);
+}
+
+class FindSegmentEntryByIndex {
+private:
+  int index;
+public:
+  FindSegmentEntryByIndex(int index):index(index) {}
+  
+  bool operator()(const SegmentEntry& entry) {
+    return entry.segment.index == index;
+  }
+};
+
+class FindSegmentEntryByCuid {
+private:
+  int cuid;
+public:
+  FindSegmentEntryByCuid(int cuid):cuid(cuid) {}
+
+  bool operator()(const SegmentEntry& entry) {
+    return entry.cuid == cuid;
+  }
+};
+
+Segment SegmentMan::checkoutSegment(int cuid, int index) {
+  logger->debug("Attach segment#%d to CUID#%d.", index, cuid);
+  bitfield->setUseBit(index);
+
+  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
+					 usedSegmentEntries.end(),
+					 FindSegmentEntryByIndex(index));
+  Segment segment;
+  if(itr == usedSegmentEntries.end()) {
+    segment = Segment(index, bitfield->getBlockLength(index),
+		       bitfield->getBlockLength());
+    SegmentEntry entry(cuid, segment);
+    usedSegmentEntries.push_back(entry);
+  } else {
+    (*itr).cuid = cuid;
+    segment = (*itr).segment;
+  }
+
+  logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
+		segment.index, segment.length, segment.segmentLength,
+		segment.writtenLength);
+  return segment;
+}
+
+bool SegmentMan::onNullBitfield(Segment& segment, int cuid) {
+  if(usedSegmentEntries.size() == 0) {
+    segment = Segment(0, 0, 0);
+    usedSegmentEntries.push_back(SegmentEntry(cuid, segment));
+    return true;
+  } else {
+    SegmentEntries::iterator uitr = find_if(usedSegmentEntries.begin(),
+					    usedSegmentEntries.end(),
+					    FindSegmentEntryByCuid(cuid));
+    if(uitr == usedSegmentEntries.end()) {
+      return false;
+    } else {
+      segment = uitr->segment;
+      return true;
+    }
+  }
+}
+
+bool SegmentMan::getSegment(Segment& segment, int cuid) {
+  if(!bitfield) {
+    return onNullBitfield(segment, cuid);
+  }
+  SegmentEntries::iterator uitr = find_if(usedSegmentEntries.begin(),
+					  usedSegmentEntries.end(),
+					  FindSegmentEntryByCuid(cuid));
+  if(uitr != usedSegmentEntries.end()) {
+    segment = uitr->segment;
+    return true;
+  }
+  int index = bitfield->getSparseMissingUnusedIndex();
+  if(index == -1) {
+    return false;
+  } else {
+    segment = checkoutSegment(cuid, index);
+    return true;
+  }
+}
+
+bool SegmentMan::getSegment(Segment& segment, int cuid, int index) {
+  if(!bitfield) {
+    return onNullBitfield(segment, cuid);
+  }
+  if(index < 0 || bitfield->countBlock() <= index) {
+    return false;
+  }
+  if(bitfield->isBitSet(index) || bitfield->isUseBitSet(index)) {
+    return false;
+  } else {
+    segment = checkoutSegment(cuid, index);
+    return true;
+  }
+}
+
+bool SegmentMan::updateSegment(int cuid, const Segment& segment) {
+  if(segment.isNull()) {
+    return false;
+  }
+  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
+					 usedSegmentEntries.end(),
+					 FindSegmentEntryByCuid(cuid));
+  if(itr == usedSegmentEntries.end()) {
+    return false;
+  } else {
+    (*itr).segment = segment;
+    return true;
+  }
+}
+
+class CancelSegment {
+private:
+  int cuid;
+  BitfieldMan* bitfield;
+public:
+  CancelSegment(int cuid, BitfieldMan* bitfield):cuid(cuid),
+						 bitfield(bitfield) {}
+  
+  void operator()(SegmentEntry& entry) {
+    if(entry.cuid == cuid) {
+      bitfield->unsetUseBit(entry.segment.index);
+      entry.cuid = 0;
+    }
+  }
+};
+
+void SegmentMan::cancelSegment(int cuid) {
+  if(bitfield) {
+    for_each(usedSegmentEntries.begin(), usedSegmentEntries.end(),
+	     CancelSegment(cuid, bitfield));
+  } else {
+    usedSegmentEntries.clear();
+  }
+}
+
+bool SegmentMan::completeSegment(int cuid, const Segment& segment) {
+  if(segment.isNull()) {
+    return false;
+  }
+  if(bitfield) {
+    bitfield->unsetUseBit(segment.index);
+    bitfield->setBit(segment.index);
+  } else {
+    initBitfield(option->getAsInt(PREF_SEGMENT_SIZE), segment.writtenLength);
+    bitfield->setAllBit();
+  }
+  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
+					 usedSegmentEntries.end(),
+					 FindSegmentEntryByCuid(cuid));
+  if(itr == usedSegmentEntries.end()) {
+    return false;
+  } else {
+    usedSegmentEntries.erase(itr);
+    return true;
+  }
+}
+
+bool SegmentMan::hasSegment(int index) const {
+  if(bitfield) {
+    return bitfield->isBitSet(index);
+  } else {
+    return false;
+  }
+}
+
+long long int SegmentMan::getDownloadLength() const {
+  long long int dlLength = 0;
+  if(bitfield) {
+    dlLength += bitfield->getCompletedLength();
+  }
+  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
+      itr != usedSegmentEntries.end(); itr++) {
+    dlLength += itr->segment.writtenLength;
+  }
+  return dlLength;
+}
+
+void SegmentMan::registerPeerStat(const PeerStatHandle& peerStat) {
+  PeerStatHandle temp = getPeerStat(peerStat->getCuid());
+  if(!temp.get()) {
+    peerStats.push_back(peerStat);
+  }
+}
+
+int SegmentMan::calculateDownloadSpeed() const {
+  int speed = 0;
+  for(PeerStats::const_iterator itr = peerStats.begin();
+      itr != peerStats.end(); itr++) {
+    const PeerStatHandle& peerStat = *itr;
+    if(peerStat->getStatus() == PeerStat::ACTIVE) {
+      speed += peerStat->calculateDownloadSpeed();
+    }
+  }
+  return speed;
 }

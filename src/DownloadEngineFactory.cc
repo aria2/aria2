@@ -22,7 +22,6 @@
 #include "DownloadEngineFactory.h"
 #include "prefs.h"
 #include "DefaultDiskWriter.h"
-#include "SplitSlowestSegmentSplitter.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "ByteArrayDiskWriter.h"
 #include "Util.h"
@@ -51,8 +50,6 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
   e->segmentMan->dir = op->get(PREF_DIR);
   e->segmentMan->ufilename = op->get(PREF_OUT);
   e->segmentMan->option = op;
-  e->segmentMan->splitter = new SplitSlowestSegmentSplitter();
-  e->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
   e->segmentMan->reserved = reserved;
   
   int cuidCounter = 1;
@@ -79,8 +76,6 @@ DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
   te->segmentMan = new SegmentMan();
   te->segmentMan->diskWriter = byteArrayDiskWriter;
   te->segmentMan->option = op;
-  te->segmentMan->splitter = new SplitSlowestSegmentSplitter();
-  te->segmentMan->splitter->setMinSegmentSize(op->getAsLLInt(PREF_MIN_SEGMENT_SIZE));
   te->torrentMan = new TorrentMan();
   te->torrentMan->setStoreDir(op->get(PREF_DIR));
   te->torrentMan->option = op;

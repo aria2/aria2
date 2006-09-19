@@ -35,7 +35,7 @@ HttpProxyResponseCommand::~HttpProxyResponseCommand() {
   delete http;
 }
 
-bool HttpProxyResponseCommand::executeInternal(Segment segment) {
+bool HttpProxyResponseCommand::executeInternal(Segment& segment) {
   HttpHeader headers;
   int status = http->receiveResponse(headers);
   if(status == 0) {

@@ -151,26 +151,24 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FtpTunnelRequestCommand.h FtpTunnelResponseCommand.cc \
 	FtpTunnelResponseCommand.h SleepCommand.cc SleepCommand.h \
 	DownloadEngine.cc DownloadEngine.h ConsoleDownloadEngine.cc \
-	ConsoleDownloadEngine.h Segment.h SegmentMan.cc SegmentMan.h \
-	SegmentSplitter.cc SegmentSplitter.h \
-	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h \
-	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h \
-	Util.cc Util.h Request.cc Request.h common.h message.h \
-	Exception.h DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
-	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
-	ChunkedEncoding.h DiskWriter.h DefaultDiskWriter.cc \
-	DefaultDiskWriter.h PreAllocationDiskWriter.cc \
-	PreAllocationDiskWriter.h AbstractDiskWriter.cc \
-	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
-	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
-	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
-	SharedHandle.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	UrlRequestInfo.cc UrlRequestInfo.h NameResolver.cc \
-	NameResolver.h MetaEntry.h Data.cc Data.h Dictionary.cc \
-	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
-	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h TorrentMan.cc \
-	TorrentMan.h PeerConnection.cc PeerConnection.h \
+	ConsoleDownloadEngine.h Segment.cc Segment.h SegmentMan.cc \
+	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
+	message.h Exception.h DlAbortEx.h DlRetryEx.h Logger.h \
+	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
+	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
+	DefaultDiskWriter.cc DefaultDiskWriter.h \
+	PreAllocationDiskWriter.cc PreAllocationDiskWriter.h \
+	AbstractDiskWriter.cc AbstractDiskWriter.h File.cc File.h \
+	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
+	messageDigest.h LogFactory.cc LogFactory.h NullLogger.h \
+	TimeA2.cc TimeA2.h SharedHandle.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
+	DownloadEngineFactory.h RequestInfo.h UrlRequestInfo.cc \
+	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
+	NameResolver.cc NameResolver.h MetaEntry.h Data.cc Data.h \
+	Dictionary.cc Dictionary.h List.cc List.h MetaFileUtil.cc \
+	MetaFileUtil.h MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
+	TorrentMan.cc TorrentMan.h PeerConnection.cc PeerConnection.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
 	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
@@ -280,17 +278,15 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FtpTunnelRequestCommand.$(OBJEXT) \
 	FtpTunnelResponseCommand.$(OBJEXT) SleepCommand.$(OBJEXT) \
 	DownloadEngine.$(OBJEXT) ConsoleDownloadEngine.$(OBJEXT) \
-	SegmentMan.$(OBJEXT) SegmentSplitter.$(OBJEXT) \
-	SplitFirstSegmentSplitter.$(OBJEXT) \
-	SplitSlowestSegmentSplitter.$(OBJEXT) Util.$(OBJEXT) \
+	Segment.$(OBJEXT) SegmentMan.$(OBJEXT) Util.$(OBJEXT) \
 	Request.$(OBJEXT) SimpleLogger.$(OBJEXT) \
 	ChunkedEncoding.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
 	PreAllocationDiskWriter.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
 	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
 	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
-	UrlRequestInfo.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	UrlRequestInfo.$(OBJEXT) SpeedCalc.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -472,23 +468,21 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	FtpTunnelRequestCommand.h FtpTunnelResponseCommand.cc \
 	FtpTunnelResponseCommand.h SleepCommand.cc SleepCommand.h \
 	DownloadEngine.cc DownloadEngine.h ConsoleDownloadEngine.cc \
-	ConsoleDownloadEngine.h Segment.h SegmentMan.cc SegmentMan.h \
-	SegmentSplitter.cc SegmentSplitter.h \
-	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h \
-	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h \
-	Util.cc Util.h Request.cc Request.h common.h message.h \
-	Exception.h DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
-	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
-	ChunkedEncoding.h DiskWriter.h DefaultDiskWriter.cc \
-	DefaultDiskWriter.h PreAllocationDiskWriter.cc \
-	PreAllocationDiskWriter.h AbstractDiskWriter.cc \
-	AbstractDiskWriter.h File.cc File.h Option.cc Option.h \
-	Base64.cc Base64.h CookieBox.cc CookieBox.h messageDigest.h \
-	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
-	SharedHandle.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	UrlRequestInfo.cc UrlRequestInfo.h $(am__append_1) \
-	$(am__append_2) $(am__append_3)
+	ConsoleDownloadEngine.h Segment.cc Segment.h SegmentMan.cc \
+	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
+	message.h Exception.h DlAbortEx.h DlRetryEx.h Logger.h \
+	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
+	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
+	DefaultDiskWriter.cc DefaultDiskWriter.h \
+	PreAllocationDiskWriter.cc PreAllocationDiskWriter.h \
+	AbstractDiskWriter.cc AbstractDiskWriter.h File.cc File.h \
+	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
+	messageDigest.h LogFactory.cc LogFactory.h NullLogger.h \
+	TimeA2.cc TimeA2.h SharedHandle.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
+	DownloadEngineFactory.h RequestInfo.h UrlRequestInfo.cc \
+	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
+	$(am__append_1) $(am__append_2) $(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -655,15 +649,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Segment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentSplitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimplePeerMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitFirstSegmentSplitter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SplitSlowestSegmentSplitter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SuggestPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentAutoSaveCommand.Po@am__quote@

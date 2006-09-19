@@ -127,7 +127,11 @@ bool PeerInteractionCommand::executeInternal() {
     }
     receiveMessages();
 
-    peerInteraction->addRequests();
+    int maxSpeedLimit = e->option->getAsInt(PREF_MAX_SPEED_LIMIT);
+    if(maxSpeedLimit == 0 ||
+       maxSpeedLimit > 0 && maxSpeedLimit <= e->getDownloadSpeed()) {
+      peerInteraction->addRequests();
+    }
     peerInteraction->sendMessages(e->getUploadSpeed());
     break;
   }

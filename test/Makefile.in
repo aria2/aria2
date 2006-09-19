@@ -76,7 +76,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	Xml2MetalinkProcessorTest.$(OBJEXT) MetalinkerTest.$(OBJEXT) \
 	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
 	ShareRatioSeedCriteriaTest.$(OBJEXT) \
-	TimeSeedCriteriaTest.$(OBJEXT)
+	TimeSeedCriteriaTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
+	SpeedCalcTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -267,7 +268,9 @@ aria2c_SOURCES = AllTest.cc\
 	MetalinkEntryTest.cc\
 	FeatureConfigTest.cc\
 	ShareRatioSeedCriteriaTest.cc\
-	TimeSeedCriteriaTest.cc
+	TimeSeedCriteriaTest.cc\
+	SegmentManTest.cc\
+	SpeedCalcTest.cc
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -358,8 +361,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RejectMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SuggestPieceMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentManTest.Po@am__quote@

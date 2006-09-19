@@ -95,8 +95,20 @@ BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield,
 {
   int byte = (int)(((double)bitfieldLength)*random()/(RAND_MAX+1.0));
 
+  unsigned char lastMask = 0;
+  int lastByteLength = totalLength%(blockLength*8);
+  int lastBlockCount = DIV_FLOOR(lastByteLength, blockLength);
+  for(int i = 0; i < lastBlockCount; i++) {
+    lastMask >>= 1;
+    lastMask |= 0x80;
+  }
   for(int i = 0; i < bitfieldLength; i++) {
-    unsigned char mask = 0xff;
+    unsigned char mask;
+    if(byte == bitfieldLength-1) {
+      mask = lastMask;
+    } else {
+      mask = 0xff;
+    }
     if(bitfield[byte]&mask) {
       int index = byte*8+getNthBitIndex(bitfield[byte], 1);
       return index;
@@ -205,6 +217,82 @@ int BitfieldMan::getMissingIndex() const {
   int index = getMissingIndexRandomly(tempBitfield, bitfieldLength);
   delete [] tempBitfield;
   return index;
+}
+
+int BitfieldMan::getMissingUnusedIndex() const {
+  unsigned char* tempBitfield = new unsigned char[bitfieldLength];
+  memset(tempBitfield, 0xff, bitfieldLength);
+  int index = getMissingUnusedIndex(tempBitfield, bitfieldLength);
+  delete [] tempBitfield;
+  return index;
+}
+
+// [startIndex, endIndex)
+class Range {
+public:
+  int startIndex;
+  int endIndex;
+  Range(int startIndex = 0, int endIndex = 0):startIndex(startIndex),
+					      endIndex(endIndex) {}
+  
+  int getSize() const {
+    return endIndex-startIndex;
+  }
+
+  int getMidIndex() const {
+    return (endIndex-startIndex)/2+startIndex;
+  }
+
+  bool operator<(const Range& range) const {
+    return getSize() < range.getSize();
+  }
+};
+
+int BitfieldMan::getStartIndex(int index) const {
+  while(index < blocks &&
+	(isUseBitSet(index) || isBitSet(index))) {
+    index++;
+  }
+  if(blocks <= index) {
+    return -1;
+  } else {
+    return index;
+  }
+}
+
+int BitfieldMan::getEndIndex(int index) const {
+  while(index < blocks &&
+	(!isUseBitSet(index) && !isBitSet(index))) {
+    index++;
+  }
+  return index;
+}
+
+int BitfieldMan::getSparseMissingUnusedIndex() const {
+  Range maxRange;
+  int index = 0;
+  int blocks = countBlock();
+  Range currentRange;
+  while(index < blocks) {
+    currentRange.startIndex = getStartIndex(index);
+    if(currentRange.startIndex == -1) {
+      break;
+    }
+    currentRange.endIndex = getEndIndex(currentRange.startIndex);
+    if(maxRange < currentRange) {
+      maxRange = currentRange;
+    }
+    index = currentRange.endIndex;
+  }
+  if(maxRange.getSize()) {
+    if(maxRange.startIndex == 0) {
+      return 0;
+    } else {
+      return maxRange.getMidIndex();
+    }
+  } else {
+    return -1;
+  }
 }
 
 BlockIndexes BitfieldMan::getAllMissingIndexes() const {
@@ -317,7 +405,7 @@ bool BitfieldMan::isAllBitSet() const {
 }
 
 bool BitfieldMan::isBitSetInternal(const unsigned char* bitfield, int index) const {
-  if(blocks <= index) { return false; }
+  if(index < 0 || blocks <= index) { return false; }
   unsigned char mask = 128 >> index%8;
   return (bitfield[index/8] & mask) != 0;
 }
@@ -340,12 +428,21 @@ void BitfieldMan::setBitfield(const unsigned char* bitfield, int bitfieldLength)
 
 void BitfieldMan::clearAllBit() {
   memset(this->bitfield, 0, this->bitfieldLength);
-  memset(this->useBitfield, 0, this->bitfieldLength);
 }
 
 void BitfieldMan::setAllBit() {
   for(int i = 0; i < blocks; i++) {
     setBit(i);
+  }
+}
+
+void BitfieldMan::clearAllUseBit() {
+  memset(this->useBitfield, 0, this->bitfieldLength);
+}
+
+void BitfieldMan::setAllUseBit() {
+  for(int i = 0; i < blocks; i++) {
+    setUseBit(i);
   }
 }
 

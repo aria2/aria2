@@ -33,7 +33,7 @@ HttpProxyRequestCommand::HttpProxyRequestCommand(int cuid, Request* req,
 
 HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 
-bool HttpProxyRequestCommand::executeInternal(Segment segment) {
+bool HttpProxyRequestCommand::executeInternal(Segment& segment) {
   socket->setBlockingMode();
   HttpConnection httpConnection(cuid, socket, req, e->option);
   httpConnection.sendProxyRequest();

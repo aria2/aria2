@@ -22,7 +22,6 @@
 #include "HttpInitiateConnectionCommand.h"
 #include "ConsoleDownloadEngine.h"
 #include "SegmentMan.h"
-#include "SplitSlowestSegmentSplitter.h"
 #include "LogFactory.h"
 #include "common.h"
 #include "DefaultDiskWriter.h"
@@ -272,6 +271,8 @@ int main(int argc, char* argv[]) {
   op->put(PREF_DIR, ".");
   op->put(PREF_SPLIT, "1");
   op->put(PREF_DAEMON, V_FALSE);
+  op->put(PREF_SEGMENT_SIZE, Util::itos(1024*1024));
+  op->put(PREF_HTTP_KEEP_ALIVE, V_FALSE);
   op->put(PREF_LISTEN_PORT, "-1");
   op->put(PREF_METALINK_SERVERS, "15");
   op->put(PREF_FOLLOW_TORRENT,
@@ -303,6 +304,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
   op->put(PREF_UPLOAD_LIMIT, "0");
   op->put(PREF_LOWEST_SPEED_LIMIT, "0");
+  op->put(PREF_MAX_SPEED_LIMIT, "0");
   while(1) {
     int optIndex = 0;
     int lopt;

@@ -39,7 +39,7 @@ private:
   string determinFilename(const HttpHeader& headers);
   HttpConnection* http;
 protected:
-  bool executeInternal(Segment segment);
+  bool executeInternal(Segment& segment);
 public:
   HttpResponseCommand(int cuid, Request* req, DownloadEngine* e,
 		      const SocketHandle& s);

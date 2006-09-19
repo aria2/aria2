@@ -19,18 +19,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_HTTP_PROXY_REQUEST_COMMAND_H_
-#define _D_HTTP_PROXY_REQUEST_COMMAND_H_
 
-#include "AbstractCommand.h"
+#include "Segment.h"
 
-class HttpProxyRequestCommand : public AbstractCommand {
-protected:
-  bool executeInternal(Segment& segment);
-public:
-  HttpProxyRequestCommand(int cuid, Request* req, DownloadEngine* e,
-			  const SocketHandle& s);
-  ~HttpProxyRequestCommand();
-};
-
-#endif // _D_HTTP_PROXY_REQUEST_COMMAND_H_
+ostream& operator<<(ostream& o, const Segment& segment) {
+  o << "index = " << segment.index << ", ";
+  o << "length = " << segment.length << ", ";
+  o << "segmentLength = " << segment.segmentLength << ", ";
+  o << "writtenLength = " << segment.writtenLength;
+  return o;
+}

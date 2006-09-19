@@ -51,9 +51,10 @@ void ConsoleDownloadEngine::initStatistics() {
 }
 
 void ConsoleDownloadEngine::calculateStatistics() {
-  long long int dlSize = segmentMan->getDownloadedSize();
+  long long int dlSize = segmentMan->getDownloadLength();
   if(!isStartupLengthSet && dlSize > 0) {
     startupLength = dlSize;
+    psize = dlSize;
     isStartupLengthSet = true;
   }
   int elapsed = cp.difference();

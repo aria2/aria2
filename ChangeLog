@@ -1,3 +1,191 @@
+2006-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To rewrite segment download mechanism for HTTP/FTP download.
+	Use BitfieldMan to manage segment download.
+	* src/HttpResponseCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/AbstractCommand.cc
+	(prepareForRetry): Call segmentMan->cancelSegment here.
+	(onAbort): Call segmentMan->cancelSegment here.
+	* src/HttpDownloadCommand.cc
+	(prepareForNextSegment): New function.
+	* src/DownloadEngineFactory.cc
+	(newConsoleEngine): Removed splitter.
+	(newTorrentConsoleEngine): Removed splitter.
+	* src/Request.h
+	(segment): Renamed from seg.
+	* src/FtpInitiateConnectionCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/AbstractCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/pref.h
+	(PREF_SEGMENT_SIZE): New definition.
+	* src/HttpProxyRequestCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/HttpResponseCommand.cc
+	(checkResponse): Allowed status 206 when a request range starts 0.
+	(handleDefaultEncoding): Rewritten the code related to Segment.
+	(handleOtherEncoding): Rewritten the code related to Segment.
+	* src/SegmentMan.h
+	(SegmentEntry): New class.
+	(SegmentEntries): New type definition.
+	(bitfield): New variable.
+	(usedSegmentEntries): New variable.
+	(onNullBitfield): New function.
+	(checkoutSegment): New function.
+	(segments): Removed.
+	(splitter): Removed.
+	(unregisterId): Removed.
+	(getSegment): New function(overload)
+	(getDownloadedSize): Removed.
+	(cancelSegment): New function.
+	(completeSegment): New function.
+	(initBitfield): New function.
+	(hasSegment): New function.
+	(getDownloadLength): New function.
+	* src/BitfieldMan.h
+	(getStartIndex): New function.
+	(getEndIndex): New function.
+	(getMissingUnusedIndex): New function(overload).
+	(getSparseMissingUnusedIndex): New function.	
+	* src/BitfieldMan.cc
+	(getMissingIndexRandomly): Handle the last byte of bitfield properly.
+	(getMissingUnusedIndex): New function(overload).
+	(Range): New class.
+	(getStartIndex): New function.
+	(getEndIndex): New function.
+	(getSparseMissingUnusedIndex): New function.
+	(isBitSetInternal): Return false if the given index is less than 0.
+	* src/HttpInitiateConnectionCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/FtpNegotiateCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/FtpNegotiateCommand.cc
+	(recvSize): Initialize bitfield here.
+	* src/FtpTunnelResponseCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/HttpConnection.cc
+	(createRequest): Rewritten range header processing.
+	* src/DownloadCommand.h
+	(executeInternal): Pass the reference of segment.
+	(prepareForRetry): Removed.
+	(prepareForNextSegment): Added an argument segment. Made it a virtual
+	function.
+	* src/main.cc
+	(main): Set the initial value of PREF_SEGMENT_SIZE to 1MB.
+	* src/SegmentMan.cc
+	(SegmentMan): Added bitfield. Removed splitter.
+	(~SegmentMan): Added bitfield. Removed splitter.
+	(unregisterId): Removed.
+	(getSegment): Rewritten.
+	(updateSegment): Rewritten.
+	(save): Rewritten.
+	(read): Rewritten.
+	(finished): Rewritten.
+	(getDownloadedSize): Removed.
+	(initBitfield): New function.
+	(FindSegmentEntryByIndex): New function object.
+	(FindSegmentEntryByCuid): New function object.
+	(checkoutSegment): New function.
+	(onNullBitfield): New function.
+	(getSegment): New function(overload).
+	(CancelSegment): New function object.
+	(cancelSegment): New function.
+	(completeSegment): New function.
+	(hasSegment): New function.
+	(getDownloadLength): New function.
+	* src/FtpInitiateConnectionCommand.cc
+	(executeInternal): Load .aria2 file after hostname resolution finishes.
+	* src/Segment.h: Rewritten.
+	* src/Segment.cc (operator<<): New function.
+	* src/HttpDownloadCommand.h
+	(prepareForNextSegment): New function.
+	* src/Request.cc
+	(resetUrl): Made segment null.
+	* src/DownloadEngine.cc
+	(~DownloadEngine): Call cleanQueue before deleting segmentMan.
+	* src/HttpProxyRequestCommand.h
+	(executeInternal): Pass the reference of segment.
+	* src/DownloadCommand.cc
+	(executeInternal): Rewritten the code related to Segment.
+	(prepareForRetry): Removed.
+	(prepareForNextSegment): Rewritten.
+	* src/FtpTunnelResponseCommand.h
+	(executeInternal): Pass the reference of segment.
+	
+	To add HTTP 1.1 persistent connection support(experimental)
+	* src/HttpRequestCommand.cc
+	(executeInternal): Disable keep alive if it is disabled by
+	configuration.
+	* src/Request.h
+	(keepAlive): New variable.
+	(isKeepAlive): New function.
+	(setKeepAlive): New function.
+	* src/pref.h
+	(PREF_HTTP_KEEP_ALIVE): New definition.
+	* src/HttpResponseCommand.cc
+	(executeInternal): Check the remote server supports keep alive.
+	* src/HttpConnection.cc
+	(createRequest): Send "Connection: close" only if keep alive is
+	disabled.
+	* src/main.cc
+	(main):
+	Set the initial value(false) of PREF_KEEP_ALIVE to false.
+
+	To add max download speed limit:
+	* src/pref.h
+	(PREF_MAX_SPEED_LIMIT): New definition.
+	* src/PeerInteractionCommand.cc
+	(executeInternal): Added max download speed limit. Not tested yet.
+	* src/SegmentMan.h
+	(PeerStats): New type definition.
+	(peerStats): New variable.
+	(registerPeerStat): New function.
+	(FindPeerStat): New function object.
+	(getPeerStat): New function.
+	(calculateDownloadSpeed): New function.
+	* src/SpeedCalc.h: New class.
+	* src/SpeedCalc.cc: New class.
+	* src/main.cc
+	(main):
+	Set the initial value of PREF_MAX_SPEED_LIMIT to 0(which means the
+	download speed is not restricted).
+	* src/PeerStat.h: New class.
+	* src/SegmentMan.cc
+	(registerPeerStat): New function.
+	(calculateDownloadSpeed): New function.
+	* src/DownloadCommand.cc
+	(STARTUP_IDLE_TIME): New definition.
+	(DownloadCommand): Register peerStat to segmentMan. Call peerStat->
+	downloadStart.
+	(~DownloadCommand): Call peerStat->downloadStop.
+	(executeInternal): Added download speed limitter. Rewritten lowest
+	speed limitter.
+
+	* src/HttpConnection.cc
+	(receiveResponse): Fixed: eohIndex[headerBuf] -> headerBuf[eohIndex].
+	
+	* src/AbstractCommand.cc
+	(resolveHostname): Throw DlAbortEx if a name resolution failes.
+	Added hostname to the error message.
+	
+	* src/ConsoleDownloadEngine.cc
+	(calculateStatistics): Initialize psize with dlSize.
+
+	* src/PieceMessage.cc
+	(receivedAction): Do not call peerInteraction->abortPiece here.
+	(onGotWrongPiece): Call peerInteraction->abortPiece here.
+
+	* src/BitfieldMan.h
+	(clearAllUseBit): New function.
+	(setAllUseBit): New function.
+	* src/BitfieldMan.cc
+	(clearAllBit): Do not clear useBitfield here.
+	(clearAllUseBit): New function.
+	(setAllUseBit): New function.
+	* src/Piece.cc
+	(clearAllBlock): Call bitfield->clearAllUseBit().
+
 2006-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To make filename URL-decoded:

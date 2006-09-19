@@ -40,7 +40,7 @@ protected:
   void tryReserved();
   virtual bool prepareForRetry(int wait);
   virtual void onAbort(Exception* ex);
-  virtual bool executeInternal(Segment segment) = 0;
+  virtual bool executeInternal(Segment& segment) = 0;
 
   void setReadCheckSocket(const SocketHandle& socket);
   void setWriteCheckSocket(const SocketHandle& socket);

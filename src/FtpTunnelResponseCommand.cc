@@ -35,7 +35,7 @@ FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {
   delete http;
 }
 
-bool FtpTunnelResponseCommand::executeInternal(Segment segment) {
+bool FtpTunnelResponseCommand::executeInternal(Segment& segment) {
   HttpHeader headers;
   int status = http->receiveResponse(headers);
   if(status == 0) {

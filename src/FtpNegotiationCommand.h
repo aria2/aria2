@@ -78,7 +78,7 @@ private:
   int sequence;
   FtpConnection* ftp;
 protected:
-  bool executeInternal(Segment segment);
+  bool executeInternal(Segment& segment);
 public:
   FtpNegotiationCommand(int cuid, Request* req, DownloadEngine* e,
 			const SocketHandle& s);

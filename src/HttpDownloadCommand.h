@@ -36,6 +36,8 @@ using namespace std;
 class HttpDownloadCommand:public DownloadCommand {
 private:
   map<string, TransferEncoding*> transferEncodings;
+protected:
+  virtual bool prepareForNextSegment(const Segment& currentSegment);
 public:
   HttpDownloadCommand(int cuid, Request* req, DownloadEngine* e,
 		      const SocketHandle& s);

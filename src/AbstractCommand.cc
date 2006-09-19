@@ -48,16 +48,18 @@ bool AbstractCommand::execute() {
        checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
        !checkSocketIsReadable && !checkSocketIsWritable) {
       checkPoint.reset();
-      Segment seg = { 0, 0, 0, false };
+      if(e->segmentMan->finished()) {
+	logger->debug("CUID#%d - finished.", cuid);
+	return true;
+      }
+      Segment segment;
       if(e->segmentMan->downloadStarted) {
-	// get segment information in order to set Range header.
-	if(!e->segmentMan->getSegment(seg, cuid)) {
-	  // no segment available
+	if(!e->segmentMan->getSegment(segment, cuid)) {
 	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
 	  return true;
 	}
       }
-      return executeInternal(seg);
+      return executeInternal(segment);
     } else {
       if(checkPoint.elapsed(timeout)) {
 	throw new DlRetryEx(EX_TIME_OUT);
@@ -103,6 +105,7 @@ void AbstractCommand::tryReserved() {
 }
 
 bool AbstractCommand::prepareForRetry(int wait) {
+  e->segmentMan->cancelSegment(cuid);
   Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
   if(wait == 0) {
     e->commands.push_back(command);
@@ -115,7 +118,8 @@ bool AbstractCommand::prepareForRetry(int wait) {
 
 void AbstractCommand::onAbort(Exception* ex) {
   logger->debug(MSG_UNREGISTER_CUID, cuid);
-  e->segmentMan->unregisterId(cuid);
+  //e->segmentMan->unregisterId(cuid);
+  e->segmentMan->cancelSegment(cuid);
 }
 
 void AbstractCommand::disableReadCheckSocket() {
@@ -193,7 +197,8 @@ bool AbstractCommand::resolveHostname(const string& hostname,
     return true;
     break;
   case NameResolver::STATUS_ERROR:
-    throw new DlRetryEx("CUID#%d - Name resolution failed:%s", cuid,
+    throw new DlAbortEx("CUID#%d - Name resolution for %s failed:%s", cuid,
+			hostname.c_str(),
 			resolver->getError().c_str());
   default:
     return false;

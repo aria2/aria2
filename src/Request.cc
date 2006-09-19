@@ -23,11 +23,7 @@
 #include "Util.h"
 #include "FeatureConfig.h"
 
-Request::Request():port(0), tryCount(0), isTorrent(false) {
-  seg.sp = 0;
-  seg.ep = 0;
-  seg.ds = 0;
-  seg.finish = false;
+Request::Request():port(0), tryCount(0), keepAlive(true), isTorrent(false) {
   cookieBox = new CookieBox();
 }
 
@@ -42,6 +38,7 @@ bool Request::setUrl(const string& url) {
 
 bool Request::resetUrl() {
   previousUrl = referer;
+  segment = Segment();
   return setUrl(url);
 }
 

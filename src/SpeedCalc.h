@@ -19,18 +19,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 /* copyright --> */
-#ifndef _D_HTTP_PROXY_REQUEST_COMMAND_H_
-#define _D_HTTP_PROXY_REQUEST_COMMAND_H_
+#ifndef _D_SPEED_CALC_H_
+#define _D_SPEED_CALC_H_
 
-#include "AbstractCommand.h"
+#include "common.h"
+#include "TimeA2.h"
 
-class HttpProxyRequestCommand : public AbstractCommand {
-protected:
-  bool executeInternal(Segment& segment);
+class SpeedCalc {
+private:
+  long long int lengthArray[2];
+  int sw;
+  Time cpArray[2];
+  int maxSpeed;
+  int prevSpeed;
+
+  bool isIntervalOver() const;
+  void changeSw();
 public:
-  HttpProxyRequestCommand(int cuid, Request* req, DownloadEngine* e,
-			  const SocketHandle& s);
-  ~HttpProxyRequestCommand();
+  SpeedCalc() {
+    reset();
+  }
+
+  ~SpeedCalc() {}
+
+  /**
+   * Returns download/upload speed in byte per sec
+   */
+  int calculateSpeed();
+
+  int getMaxSpeed() const {
+    return maxSpeed;
+  }
+
+  void update(int bytes);
+
+  void reset();
 };
 
-#endif // _D_HTTP_PROXY_REQUEST_COMMAND_H_
+#endif // _D_SPEED_CALC_H_

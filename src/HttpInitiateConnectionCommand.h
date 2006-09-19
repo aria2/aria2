@@ -41,7 +41,7 @@ protected:
    * Whether or not the connection is established successfully is
    * evaluated by RequestCommand.
    */
-  bool executeInternal(Segment segment);
+  bool executeInternal(Segment& segment);
 public:
   HttpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
   ~HttpInitiateConnectionCommand();

@@ -43,7 +43,7 @@ HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {
 #endif // ENABLE_ASYNC_DNS
 }
 
-bool HttpInitiateConnectionCommand::executeInternal(Segment segment) {
+bool HttpInitiateConnectionCommand::executeInternal(Segment& segment) {
   string hostname;
   if(useProxy()) {
     hostname = e->option->get(PREF_HTTP_PROXY_HOST);

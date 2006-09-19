@@ -81,7 +81,6 @@ void PieceMessage::receivedAction() {
 	onGotNewPiece(piece);
       } else {
 	onGotWrongPiece(piece);
-	peerInteraction->abortPiece(piece);
       }
     }
   }
@@ -212,6 +211,7 @@ void PieceMessage::onGotWrongPiece(Piece& piece) {
   erasePieceOnDisk(piece);
   piece.clearAllBlock();
   torrentMan->updatePiece(piece);
+  peerInteraction->abortPiece(piece);
 }
 
 void PieceMessage::erasePieceOnDisk(const Piece& piece) {

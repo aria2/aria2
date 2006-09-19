@@ -33,7 +33,7 @@ private:
   bool useHttpProxyGet() const;
   bool useHttpProxyConnect() const;
 protected:
-  bool executeInternal(Segment segment);
+  bool executeInternal(Segment& segment);
 public:
   FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
   ~FtpInitiateConnectionCommand();

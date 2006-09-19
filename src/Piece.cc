@@ -30,6 +30,7 @@ void Piece::completeBlock(int blockIndex) {
 
 void Piece::clearAllBlock() {
   bitfield->clearAllBit();
+  bitfield->clearAllUseBit();
 }
 
 void Piece::setAllBlock() {

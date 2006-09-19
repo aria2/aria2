@@ -25,7 +25,8 @@ FtpDownloadCommand::FtpDownloadCommand(int cuid, Request* req,
 				       DownloadEngine* e,
 				       const SocketHandle& dataSocket,
 				       const SocketHandle& ctrlSocket)
-  :DownloadCommand(cuid, req, e, dataSocket), ctrlSocket(ctrlSocket) {}
+  :DownloadCommand(cuid, req, e, dataSocket),
+   ctrlSocket(ctrlSocket) {}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
 

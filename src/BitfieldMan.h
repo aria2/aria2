@@ -43,6 +43,9 @@ private:
   bool isBitSetInternal(const unsigned char* bitfield, int index) const;
   bool setBitInternal(unsigned char* bitfield, int index, bool on);
   bool setFilterBit(int index);
+
+  int getStartIndex(int index) const;
+  int getEndIndex(int index) const;
 public:
   BitfieldMan(int blockLength, long long int totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);
@@ -119,6 +122,14 @@ public:
   /**
    * affected by filter
    */
+  int getMissingUnusedIndex() const;
+  /**
+   * affected by filter
+   */
+  int getSparseMissingUnusedIndex() const;
+  /**
+   * affected by filter
+   */
   BlockIndexes getAllMissingIndexes() const;
   /**
    * affected by filter
@@ -154,6 +165,9 @@ public:
 
   void clearAllBit();
   void setAllBit();
+
+  void clearAllUseBit();
+  void setAllUseBit();
 
   void addFilter(long long int offset, long long int length);
   /**

@@ -71,14 +71,23 @@ string HttpConnection::createRequest(const Segment& segment) const {
      ((req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()))+
     string(" HTTP/1.1\r\n")+
     "User-Agent: "+USER_AGENT+"\r\n"+
-    "Connection: close\r\n"+
+    // use persistent connection
+    //"Connection: close\r\n"+
     "Accept: */*\r\n"+        /* */
     "Host: "+getHost(req->getHost(), req->getPort())+"\r\n"+
     "Pragma: no-cache\r\n"+
     "Cache-Control: no-cache\r\n";
-  if(segment.sp+segment.ds > 0) {
+  if(!req->isKeepAlive()) {
+    request += "Connection: close\r\n";
+  }
+  if(segment.length > 0) {
     request += "Range: bytes="+
-      Util::llitos(segment.sp+segment.ds)+"-"+Util::llitos(segment.ep)+"\r\n";
+      Util::llitos(segment.getPosition()+segment.writtenLength);
+    request += "-";
+    if(req->isKeepAlive()) {
+      request += Util::llitos(segment.getPosition()+segment.length-1);
+    }
+    request += "\r\n";
   }
   if(useProxy() && useProxyAuth() && useProxyGet()) {
     request += "Proxy-Connection: close\r\n";
@@ -144,7 +153,7 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
     socket->readData(headerBuf+headerBufLength, size);
     headerBufLength += size;
   } else {
-    if(eohIndex[headerBuf] == '\n') {
+    if(headerBuf[eohIndex] == '\n') {
       // for crapping non-standard HTTP server
       delimiterSwitch = 1;
     } else {

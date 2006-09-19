@@ -26,7 +26,7 @@
 
 class HttpRequestCommand:public AbstractCommand {
 protected:
-  bool executeInternal(Segment segment);
+  bool executeInternal(Segment& segment);
   Command* getNextCommand() const;
 public:
   HttpRequestCommand(int cuid, Request* req, DownloadEngine* e,

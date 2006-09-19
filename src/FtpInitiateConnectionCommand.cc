@@ -43,18 +43,7 @@ FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {
 #endif // ENABLE_ASYNC_DNS
 }
 
-bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
-  if(!e->segmentMan->downloadStarted) {
-    e->segmentMan->filename = Util::urldecode(req->getFile());
-    bool segFileExists = e->segmentMan->segmentFileExists();
-    if(segFileExists) {
-      e->segmentMan->load();
-      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
-      e->segmentMan->downloadStarted = true;
-    } else {
-      e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
-    }
-  }
+bool FtpInitiateConnectionCommand::executeInternal(Segment& segment) {
   string hostname;
   if(useHttpProxy()) {
     hostname = e->option->get(PREF_HTTP_PROXY_HOST);
@@ -71,6 +60,17 @@ bool FtpInitiateConnectionCommand::executeInternal(Segment segment) {
     }
   }
 #endif // ENABLE_ASYNC_DNS
+  if(!e->segmentMan->downloadStarted) {
+    e->segmentMan->filename = Util::urldecode(req->getFile());
+    bool segFileExists = e->segmentMan->segmentFileExists();
+    if(segFileExists) {
+      e->segmentMan->load();
+      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+      e->segmentMan->downloadStarted = true;
+    } else {
+      e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
+    }
+  }
   Command* command;
   if(useHttpProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,

@@ -29,7 +29,7 @@ class HttpProxyResponseCommand : public AbstractCommand {
 private:
   HttpConnection* http;
 protected:
-  bool executeInternal(Segment segment);
+  bool executeInternal(Segment& segment);
 public:
   HttpProxyResponseCommand(int cuid, Request* req, DownloadEngine* e,
 			   const SocketHandle& s);

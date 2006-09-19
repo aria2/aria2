@@ -12,6 +12,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsAllBitSet);
   CPPUNIT_TEST(testFilter);
   CPPUNIT_TEST(testGetMissingIndex);
+  CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -24,6 +25,7 @@ public:
   void testIsAllBitSet();
   void testFilter();
   void testGetMissingIndex();
+  void testGetSparceMissingUnusedIndex();
 };
 
 
@@ -208,4 +210,30 @@ void BitfieldManTest::testGetMissingIndex() {
 
   CPPUNIT_ASSERT_EQUAL(-1, bt1.getMissingIndex(bitArray5, 32));
 
+}
+
+void BitfieldManTest::testGetSparceMissingUnusedIndex() {
+  BitfieldMan bitfield(1024*1024, 10*1024*1024);
+
+  CPPUNIT_ASSERT_EQUAL(0, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(0);
+  CPPUNIT_ASSERT_EQUAL(5, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setUseBit(5);
+  CPPUNIT_ASSERT_EQUAL(3, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(3);
+  CPPUNIT_ASSERT_EQUAL(8, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(8);
+  CPPUNIT_ASSERT_EQUAL(2, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(2);
+  CPPUNIT_ASSERT_EQUAL(7, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(7);
+  CPPUNIT_ASSERT_EQUAL(1, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(1);
+  CPPUNIT_ASSERT_EQUAL(4, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(4);
+  CPPUNIT_ASSERT_EQUAL(6, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(6);
+  CPPUNIT_ASSERT_EQUAL(9, bitfield.getSparseMissingUnusedIndex());
+  bitfield.setBit(9);
+  CPPUNIT_ASSERT_EQUAL(-1, bitfield.getSparseMissingUnusedIndex());
 }

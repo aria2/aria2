@@ -97,7 +97,7 @@ SocketHandle FtpConnection::sendPort() const {
 }
 
 void FtpConnection::sendRest(const Segment& segment) const {
-  string request = "REST "+Util::llitos(segment.sp+segment.ds)+"\r\n";
+  string request = "REST "+Util::llitos(segment.getPosition()+segment.writtenLength)+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }

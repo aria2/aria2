@@ -40,7 +40,7 @@ FtpNegotiationCommand::~FtpNegotiationCommand() {
   delete ftp;
 }
 
-bool FtpNegotiationCommand::executeInternal(Segment segment) {
+bool FtpNegotiationCommand::executeInternal(Segment& segment) {
   while(processSequence(segment));
   if(sequence == SEQ_RETRY) {
     return prepareForRetry(0);
@@ -170,6 +170,8 @@ bool FtpNegotiationCommand::recvSize() {
   if(!e->segmentMan->downloadStarted) {
     e->segmentMan->downloadStarted = true;
     e->segmentMan->totalSize = size;
+    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				e->segmentMan->totalSize);
   } else if(e->segmentMan->totalSize != size) {
     throw new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
   }

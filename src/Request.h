@@ -23,8 +23,8 @@
 #define _D_REQUEST_H_
 #include <string>
 #include <map>
-#include <Segment.h>
 #include "CookieBox.h"
+#include "Segment.h"
 #include "common.h"
 
 using namespace std;
@@ -59,9 +59,10 @@ private:
   string file;
   int tryCount;
   int trackerEvent;
+  bool keepAlive;
   bool parseUrl(const string& url);
 public:
-  Segment seg;
+  Segment segment;
   CookieBox* cookieBox;
   bool isTorrent;
 public:
@@ -91,7 +92,8 @@ public:
   int getPort() const { return port; }
   string getDir() const { return dir; }
   string getFile() const { return file;}
-
+  bool isKeepAlive() const { return keepAlive; }
+  void setKeepAlive(bool keepAlive) { this->keepAlive = keepAlive; }
   void setTrackerEvent(int event) { trackerEvent = event; }
   int getTrackerEvent() const { return trackerEvent; }
 

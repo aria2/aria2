@@ -23,11 +23,8 @@ SRCS =  Socket.h\
 	SleepCommand.cc SleepCommand.h\
 	DownloadEngine.cc DownloadEngine.h\
 	ConsoleDownloadEngine.cc ConsoleDownloadEngine.h\
-	Segment.h\
+	Segment.cc Segment.h\
 	SegmentMan.cc SegmentMan.h\
-	SegmentSplitter.cc SegmentSplitter.h\
-	SplitFirstSegmentSplitter.cc SplitFirstSegmentSplitter.h\
-	SplitSlowestSegmentSplitter.cc SplitSlowestSegmentSplitter.h\
 	Util.cc Util.h\
 	Request.cc Request.h\
 	common.h\
@@ -55,7 +52,9 @@ SRCS =  Socket.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
 	RequestInfo.h\
-	UrlRequestInfo.cc UrlRequestInfo.h
+	UrlRequestInfo.cc UrlRequestInfo.h\
+	SpeedCalc.cc SpeedCalc.h\
+	PeerStat.h
 
 if ENABLE_ASYNC_DNS
 SRCS += NameResolver.cc NameResolver.h

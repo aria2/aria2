@@ -37,8 +37,8 @@ DownloadEngine::DownloadEngine():noWait(false), segmentMan(0) {
 }
 
 DownloadEngine::~DownloadEngine() {
-  delete segmentMan;
   cleanQueue();
+  delete segmentMan;
 }
 
 void DownloadEngine::cleanQueue() {

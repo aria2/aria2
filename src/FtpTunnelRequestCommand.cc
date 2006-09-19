@@ -33,7 +33,7 @@ FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid, Request* req,
 
 FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
 
-bool FtpTunnelRequestCommand::executeInternal(Segment segment) {
+bool FtpTunnelRequestCommand::executeInternal(Segment& segment) {
   socket->setBlockingMode();
   HttpConnection httpConnection(cuid, socket, req, e->option);
   httpConnection.sendProxyRequest();

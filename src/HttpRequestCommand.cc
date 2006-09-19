@@ -22,6 +22,7 @@
 #include "HttpRequestCommand.h"
 #include "HttpResponseCommand.h"
 #include "HttpConnection.h"
+#include "prefs.h"
 
 HttpRequestCommand::HttpRequestCommand(int cuid, Request* req,
 				       DownloadEngine* e,
@@ -33,15 +34,17 @@ HttpRequestCommand::HttpRequestCommand(int cuid, Request* req,
 
 HttpRequestCommand::~HttpRequestCommand() {}
 
-bool HttpRequestCommand::executeInternal(Segment seg) {
+bool HttpRequestCommand::executeInternal(Segment& segment) {
   socket->setBlockingMode();
   if(req->getProtocol() == "https") {
     socket->initiateSecureConnection();
   }
+  if(!e->option->getAsBool(PREF_HTTP_KEEP_ALIVE)) {
+    req->setKeepAlive(false);
+  }
   HttpConnection http(cuid, socket, req, e->option);
-  // set seg to request in order to remember the request range
-  req->seg = seg;
-  http.sendRequest(seg);
+  req->segment = segment;
+  http.sendRequest(segment);
 
   Command* command = getNextCommand();
   e->commands.push_back(command);

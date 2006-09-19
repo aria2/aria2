@@ -57,8 +57,12 @@
 #define PREF_DAEMON "daemon"
 // value: a string
 #define PREF_REFERER "referer"
-// value' 1*digit
+// value: 1*digit
 #define PREF_LOWEST_SPEED_LIMIT "lowest_speed_limit"
+// value: 1*digit
+#define PREF_SEGMENT_SIZE "segment_size"
+// value: 1*digit
+#define PREF_MAX_SPEED_LIMIT "max_speed_limit"
 
 /**
  * FTP related preferences
@@ -86,6 +90,8 @@
 #  define V_BASIC "basic"
 // values: true | false
 #define PREF_HTTP_AUTH_ENABLED "http_auth_enabled"
+// values: true | false
+#define PREF_HTTP_KEEP_ALIVE "http_keep_alive"
 
 /** 
  * HTTP proxy related preferences

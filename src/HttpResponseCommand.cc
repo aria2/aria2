@@ -26,6 +26,7 @@
 #include "HttpInitiateConnectionCommand.h"
 #include "message.h"
 #include "Util.h"
+#include "prefs.h"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -40,8 +41,8 @@ HttpResponseCommand::~HttpResponseCommand() {
   delete http;
 }
 
-bool HttpResponseCommand::executeInternal(Segment seg) {
-  if(req->seg.sp != seg.sp) {
+bool HttpResponseCommand::executeInternal(Segment& segment) {
+  if(req->segment != segment) {
     logger->info(MSG_SEGMENT_CHANGED, cuid);
     return prepareForRetry(0);
   }
@@ -53,8 +54,12 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
     return false;
   }
   // check HTTP status number
-  checkResponse(status, seg);
+  checkResponse(status, segment);
   retrieveCookie(headers);
+  // check whether the server supports persistent connections.
+  if(Util::toLower(headers.getFirst("Connection")).find("close") != string::npos) {
+    req->setKeepAlive(false);
+  }
   // check whether Location header exists. If it does, update request object
   // with redirected URL.
   // then establish a connection to the new host and port
@@ -64,7 +69,8 @@ bool HttpResponseCommand::executeInternal(Segment seg) {
   if(!e->segmentMan->downloadStarted) {
     string transferEncoding;
     if(headers.defined("Transfer-Encoding")) {
-      return handleOtherEncoding(headers.getFirst("Transfer-Encoding"), headers);
+      return handleOtherEncoding(headers.getFirst("Transfer-Encoding"),
+				 headers);
     } else {
       return handleDefaultEncoding(headers);
     }
@@ -82,8 +88,8 @@ void HttpResponseCommand::checkResponse(int status, const Segment& segment) {
     throw new DlAbortEx(EX_AUTH_FAILED);
   }
   if(!(300 <= status && status < 400 ||
-       (segment.sp+segment.ds == 0 && status == 200)
-       || (segment.sp+segment.ds > 0 &&  status == 206))) {
+       (segment.getPosition()+segment.writtenLength == 0 && (status == 200 || status == 206)) ||
+       (segment.getPosition()+segment.writtenLength > 0 &&  status == 206))) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
 }
@@ -112,6 +118,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   if(req->isTorrent) {
     long long int size = headers.getFirstAsLLInt("Content-Length");
     e->segmentMan->totalSize = size;
+    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				e->segmentMan->totalSize);
     e->segmentMan->isSplittable = false;
     e->segmentMan->downloadStarted = true;
     e->segmentMan->diskWriter->initAndOpenFile("/tmp/aria2"+Util::itos(getpid()));
@@ -134,11 +142,10 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     return prepareForRetry(0);
   } else {
     e->segmentMan->totalSize = size;
-    Segment seg;
-    e->segmentMan->getSegment(seg, cuid);	
+    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				e->segmentMan->totalSize);
     e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
-    createHttpDownloadCommand();
-    return true;
+    return prepareForRetry(0);
   }
 }
 
@@ -148,8 +155,10 @@ bool HttpResponseCommand::handleOtherEncoding(const string& transferEncoding, co
   e->segmentMan->isSplittable = false;
   e->segmentMan->filename = determinFilename(headers);
   e->segmentMan->totalSize = 0;
-  Segment seg;
-  e->segmentMan->getSegment(seg, cuid);	
+  // disable keep-alive
+  req->setKeepAlive(false);
+  Segment segment;
+  e->segmentMan->getSegment(segment, cuid);	
   e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
   createHttpDownloadCommand(transferEncoding);
   return true;
