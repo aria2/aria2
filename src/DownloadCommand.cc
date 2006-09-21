@@ -44,7 +44,7 @@ DownloadCommand::~DownloadCommand() {
 }
 
 bool DownloadCommand::executeInternal(Segment& segment) {
-  int maxSpeedLimit = e->option->getAsInt(PREF_MAX_SPEED_LIMIT);
+  int maxSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
   if(maxSpeedLimit > 0 &&
      maxSpeedLimit < e->segmentMan->calculateDownloadSpeed()) {
     usleep(1);

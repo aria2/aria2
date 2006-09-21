@@ -46,7 +46,7 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
   }
   peerInteraction = new PeerInteraction(cuid, peer, socket, e->option,
 					e->torrentMan);
-  setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
+  setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   chokeUnchokeCount = 0;
   haveCount = 0;
   keepAliveCount = 0;
@@ -190,7 +190,7 @@ void PeerInteractionCommand::decideChoking() {
 
 void PeerInteractionCommand::receiveMessages() {
   for(int i = 0; i < 50; i++) {
-    int maxSpeedLimit = e->option->getAsInt(PREF_MAX_SPEED_LIMIT);
+    int maxSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
     if(maxSpeedLimit > 0) {
       TransferStat stat = e->torrentMan->calculateStat();
       if(maxSpeedLimit < stat.downloadSpeed) {

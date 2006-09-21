@@ -21,4 +21,3 @@
 0.8.0
 
 * Add a statement for the permission to link with OpenSSL.
-* Add command-line options: max-speed-limit, max-upload-limit.

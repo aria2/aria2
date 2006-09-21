@@ -216,6 +216,29 @@
 	(op): Removed const qualifier.
 	(RequestInfo): Removed const qualifier from op.
 
+	* src/prefs.h
+	(PREF_MAX_SPEED_LIMIT): Renamed as PREF_MAX_DOWNLOAD_LIMIT.
+	(PREF_UPLOAD_LIMIT): Renamed as PREF_MAX_UPLOAD_LIMIT.
+
+	* src/PeerInteractionCommand.cc
+	(PeerInteractionCommand): Use PREF_MAX_UPLOAD_LIMIT.
+	(receiveMessages): Use PREF_MAX_DOWNLOAD_LIMIT.
+
+	* src/PeerInteraction.cc
+	(sendMessages): Use PREF_MAX_UPLOAD_LIMIT.
+
+	* src/main.cc
+	(showUsage): Updated the description of "--lowest-speed-limit" option.
+	Added the description of "--max-download-limit" option.
+	Removed the description of "--upload-limit" option.
+	Added the description of "--max-upload-limit" option.
+	(main): Use PREF_MAX_UPLOAD_LIMIT, PREF_MAX_DOWNLOAD_LIMIT.
+	Added "--max-download-limit" option and "--max-upload-limit" option.
+	Added the warning message if "--upload-limit" option is used.
+
+	* src/DownloadCommand.cc
+	(executeInternal): Use PREF_MAX_DOWNLOAD_LIMIT.
+	
 2006-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To rewrite segment download mechanism for HTTP/FTP download.

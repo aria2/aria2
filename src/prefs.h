@@ -62,7 +62,7 @@
 // value: 1*digit
 #define PREF_SEGMENT_SIZE "segment_size"
 // value: 1*digit
-#define PREF_MAX_SPEED_LIMIT "max_speed_limit"
+#define PREF_MAX_DOWNLOAD_LIMIT "max_download_limit"
 // value: 1*digit
 #define PREF_STARTUP_IDLE_TIME "startup_idle_time"
 
@@ -121,7 +121,7 @@
 // values: true | false
 #define PREF_DIRECT_FILE_MAPPING "direct_file_mapping"
 // values: 1*digit
-#define PREF_UPLOAD_LIMIT "upload_limit"
+#define PREF_MAX_UPLOAD_LIMIT "max_upload_limit"
 // values: a string that your file system recognizes as a file name.
 #define PREF_TORRENT_FILE "torrent_file"
 // values: 1*digit

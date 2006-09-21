@@ -152,9 +152,13 @@ void showUsage() {
 	    "                              Default: tunnel") << endl;
   cout << _(" --lowest-speed-limit         Close connection if download speed is lower than\n"
 	    "                              or equal to this value. 0 means aria2 does not\n"
-	    "                              care lowest speed limit. You can use K or M in\n"
-	    "                              the same manner as in --min-segment-size option.\n"
+	    "                              care lowest speed limit.\n"
+	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+
 	    "                              This option does not affect BitTorrent download.\n"
+	    "                              Default: 0") << endl;
+  cout << _(" --max-download-limit         Set max download speed. 0 means unrestricted.\n"
+	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 	    "                              Default: 0") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
@@ -167,8 +171,9 @@ void showUsage() {
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
   cout << _(" --listen-port=PORT           Set port number to listen to for peer connection.") << endl;
-  cout << _(" --upload-limit=SPEED         Set upload speed limit in KB/sec. aria2 tries to\n"
-	    "                              keep upload speed under SPEED. 0 means unlimited.") << endl;
+  cout << _(" --max-upload-limit           Set max upload speed. 0 means unrestricted.\n"
+	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+	    "                              Default: 0") << endl;
   cout << _(" --select-file=INDEX...       Set file to download by specifing its index.\n"
 	    "                              You can know file index through --show-files\n"
 	    "                              option. Multiple indexes can be specified by using\n"
@@ -305,9 +310,9 @@ int main(int argc, char* argv[]) {
   op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
   op->put(PREF_AUTO_SAVE_INTERVAL, "60");
   op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
-  op->put(PREF_UPLOAD_LIMIT, "0");
   op->put(PREF_LOWEST_SPEED_LIMIT, "0");
-  op->put(PREF_MAX_SPEED_LIMIT, "0");
+  op->put(PREF_MAX_DOWNLOAD_LIMIT, "0");
+  op->put(PREF_MAX_UPLOAD_LIMIT, "0");
   op->put(PREF_STARTUP_IDLE_TIME, "10");
   while(1) {
     int optIndex = 0;
@@ -336,6 +341,7 @@ int main(int argc, char* argv[]) {
       { "min-segment-size", required_argument, &lopt, 13 },
       { "http-proxy-method", required_argument, &lopt, 14 },
       { "lowest-speed-limit", required_argument, &lopt, 200 },
+      { "max-download-limit", required_argument, &lopt, 201 },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -343,10 +349,12 @@ int main(int argc, char* argv[]) {
       { "show-files", no_argument, NULL, 'S' },
       { "no-preallocation", no_argument, &lopt, 18 },
       { "direct-file-mapping", required_argument, &lopt, 19 },
+      // TODO remove upload-limit.
       { "upload-limit", required_argument, &lopt, 20 },
       { "select-file", required_argument, &lopt, 21 },
       { "seed-time", required_argument, &lopt, 22 },
       { "seed-ratio", required_argument, &lopt, 23 },
+      { "max-upload-limit", required_argument, &lopt, 24 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { "metalink-file", required_argument, NULL, 'M' },
@@ -495,13 +503,16 @@ int main(int argc, char* argv[]) {
 	}
 	break;
       case 20: {
+	cerr << "Warning: upload-limit will be deprecated in the future release.\n"
+	  "Use max-upload-limit instead. Because there is a difference between them,\n"
+	  "take a look at the description of max-upload-limit option." << endl;
 	int uploadSpeed = strtol(optarg, NULL, 10)*1024;
 	if(0 > uploadSpeed) {
 	  cerr << _("upload-limit must be greater than or equal to 0.") << endl;
 	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
-	op->put(PREF_UPLOAD_LIMIT, Util::itos(uploadSpeed));
+	op->put(PREF_MAX_UPLOAD_LIMIT, Util::itos(uploadSpeed));
 	break;
       }
       case 21:
@@ -525,6 +536,16 @@ int main(int argc, char* argv[]) {
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_SEED_RATIO, optarg);
+	break;
+      }
+      case 24: {
+	int limit = getRealSize(optarg);
+	if(limit < 0) {
+	  cerr << _("max-upload-limit must be greater than or equal to 0") << endl;
+	  showUsage();
+	  exit(EXIT_FAILURE);
+	}
+	op->put(PREF_MAX_UPLOAD_LIMIT, Util::itos(limit));
 	break;
       }
       case 100:
@@ -555,6 +576,16 @@ int main(int argc, char* argv[]) {
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_LOWEST_SPEED_LIMIT, Util::itos(limit));
+	break;
+      }
+      case 201: {
+	int limit = getRealSize(optarg);
+	if(limit < 0) {
+	  cerr << _("max-download-limit must be greater than or equal to 0") << endl;
+	  showUsage();
+	  exit(EXIT_FAILURE);
+	}
+	op->put(PREF_MAX_DOWNLOAD_LIMIT, Util::itos(limit));
 	break;
       }
       }
@@ -654,7 +685,6 @@ int main(int argc, char* argv[]) {
       exit(EXIT_FAILURE);
     }
   }
-  
   Strings args(argv+optind, argv+argc);
   
 #ifdef HAVE_LIBSSL

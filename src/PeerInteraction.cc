@@ -60,7 +60,7 @@ bool PeerInteraction::isSendingMessageInProgress() const {
 
 void PeerInteraction::sendMessages() {
   MessageQueue tempQueue;
-  int uploadLimit = option->getAsInt(PREF_UPLOAD_LIMIT);
+  int uploadLimit = option->getAsInt(PREF_MAX_UPLOAD_LIMIT);
   while(messageQueue.size() > 0) {
     PeerMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
