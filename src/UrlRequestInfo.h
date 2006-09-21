@@ -35,7 +35,7 @@ private:
 			 Requests& reserved,
 			 int maxConnections) const;
 public:
-  UrlRequestInfo(const Strings& urls, int maxConnections, const Option* op):
+  UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
     RequestInfo(op),
     urls(urls),
     maxConnections(maxConnections),

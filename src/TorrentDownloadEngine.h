@@ -33,20 +33,14 @@ private:
   void initStatistics();
   void calculateStatistics();
 protected:
-  Time cp[2];
-  long long int sessionDownloadLengthArray[2];
-  long long int sessionUploadLengthArray[2];
-  int currentCp;
-
+  Time cp;
+  Time lastCalcStat;
   int downloadSpeed;
   int uploadSpeed;
-  int lastElapsed;
   long long int selectedDownloadLengthDiff;
   long long int selectedTotalLength;
   // The time when startup
   Time startup;
-  // The number of bytes downloaded since startup
-  long long int sessionDownloadLength;
   // The average speed(bytes per second) since startup
   int avgSpeed;
   // The estimated remaining time to complete the download.
@@ -55,6 +49,8 @@ protected:
   long long int totalLength;
 
   int calculateSpeed(long long int sessionLength, int elapsed);
+  void calculateStat();
+
   virtual void onEndOfRun();
   virtual void sendStatistics() = 0;
 public:
@@ -64,10 +60,6 @@ public:
   TorrentMan* torrentMan;
 
   bool isFilenameFixed() const { return filenameFixed; }
-
-  // returns uploading speed in byte/sec.
-  int getUploadSpeed() const { return uploadSpeed; }
-  int getDownloadSpeed() const { return downloadSpeed; }
 };
 
 #endif // _D_TORRENT_DOWNLOAD_ENGINE_H_

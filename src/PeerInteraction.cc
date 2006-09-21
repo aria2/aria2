@@ -25,6 +25,7 @@
 #include "KeepAliveMessage.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "prefs.h"
 #include <netinet/in.h>
 
 PeerInteraction::PeerInteraction(int cuid,
@@ -33,7 +34,7 @@ PeerInteraction::PeerInteraction(int cuid,
 				 const Option* op,
 				 TorrentMan* torrentMan)
   :cuid(cuid),
-   uploadLimit(0),
+   option(op),
    torrentMan(torrentMan),
    peer(peer),
    quickReplied(false) {
@@ -57,20 +58,24 @@ bool PeerInteraction::isSendingMessageInProgress() const {
   return false;
 }
 
-void PeerInteraction::sendMessages(int uploadSpeed) {
+void PeerInteraction::sendMessages() {
   MessageQueue tempQueue;
+  int uploadLimit = option->getAsInt(PREF_UPLOAD_LIMIT);
   while(messageQueue.size() > 0) {
     PeerMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
-    if(uploadLimit != 0 && uploadLimit*1024 <= uploadSpeed &&
-       msg->isUploading() && !msg->isInProgress()) {
-      tempQueue.push_back(msg);
-    } else {
-      msg->send();
-      if(msg->isInProgress()) {
-	messageQueue.push_front(msg);
-	break;
+    if(uploadLimit > 0) {
+      TransferStat stat = torrentMan->calculateStat();
+      if(uploadLimit < stat.uploadSpeed &&
+	 msg->isUploading() && !msg->isInProgress()) {
+	tempQueue.push_back(msg);
+	continue;
       }
+    }
+    msg->send();
+    if(msg->isInProgress()) {
+      messageQueue.push_front(msg);
+      break;
     }
   }
   copy(tempQueue.begin(), tempQueue.end(), back_inserter(messageQueue));
@@ -365,7 +370,7 @@ void PeerInteraction::sendHandshake() {
     peerMessageFactory->createHandshakeMessage(torrentMan->getInfoHash(),
 					       torrentMan->peerId.c_str());
   addMessage(handle);
-  sendMessages(0);
+  sendMessages();
 }
 
 void PeerInteraction::sendBitfield() {
@@ -382,7 +387,7 @@ void PeerInteraction::sendBitfield() {
       addMessage(peerMessageFactory->createBitfieldMessage());
     }
   }
-  sendMessages(0);
+  sendMessages();
 }
 
 void PeerInteraction::sendAllowedFast() {

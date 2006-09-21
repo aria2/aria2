@@ -26,6 +26,7 @@
 
 extern RequestInfo* requestInfo;
 extern void setSignalHander(int signal, void (*handler)(int), int flags);
+extern bool timeoutSpecified;
 
 void torrentHandler(int signal) {
   ((TorrentDownloadEngine*)requestInfo->getDownloadEngine())->
@@ -36,6 +37,9 @@ RequestInfo* TorrentRequestInfo::execute() {
   if(op->get(PREF_SHOW_FILES) == V_TRUE) {
     showFileEntry();
     return 0;
+  }
+  if(!timeoutSpecified) {
+    op->put(PREF_TIMEOUT, "180");
   }
   e = DownloadEngineFactory::newTorrentConsoleEngine(op,
 						     torrentFile,

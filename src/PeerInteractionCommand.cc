@@ -46,7 +46,6 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
   }
   peerInteraction = new PeerInteraction(cuid, peer, socket, e->option,
 					e->torrentMan);
-  peerInteraction->setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   setUploadLimit(e->option->getAsInt(PREF_UPLOAD_LIMIT));
   chokeUnchokeCount = 0;
   haveCount = 0;
@@ -78,7 +77,7 @@ bool PeerInteractionCommand::executeInternal() {
     break;
   case INITIATOR_WAIT_HANDSHAKE: {
     if(peerInteraction->countMessageInQueue() > 0) {
-      peerInteraction->sendMessages(e->getUploadSpeed());
+      peerInteraction->sendMessages();
       if(peerInteraction->countMessageInQueue() > 0) {
 	break;
       }
@@ -129,7 +128,7 @@ bool PeerInteractionCommand::executeInternal() {
 
     peerInteraction->addRequests();
 
-    peerInteraction->sendMessages(e->getUploadSpeed());
+    peerInteraction->sendMessages();
     break;
   }
   if(peerInteraction->countMessageInQueue() > 0) {
@@ -192,10 +191,13 @@ void PeerInteractionCommand::decideChoking() {
 void PeerInteractionCommand::receiveMessages() {
   for(int i = 0; i < 50; i++) {
     int maxSpeedLimit = e->option->getAsInt(PREF_MAX_SPEED_LIMIT);
-    if(maxSpeedLimit > 0 && maxSpeedLimit < e->getDownloadSpeed()) {
-      disableReadCheckSocket();
-      setNoCheck(true);
-      break;
+    if(maxSpeedLimit > 0) {
+      TransferStat stat = e->torrentMan->calculateStat();
+      if(maxSpeedLimit < stat.downloadSpeed) {
+	disableReadCheckSocket();
+	setNoCheck(true);
+	break;
+      }
     }
 
     PeerMessageHandle message = peerInteraction->receiveMessage();
@@ -256,7 +258,7 @@ void PeerInteractionCommand::sendKeepAlive() {
     if(peerInteraction->countMessageInQueue() == 0) {
       peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
 				  createKeepAliveMessage());
-      peerInteraction->sendMessages(e->getUploadSpeed());
+      peerInteraction->sendMessages();
     }
     keepAliveCheckPoint.reset();
   }

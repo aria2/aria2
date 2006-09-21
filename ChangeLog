@@ -62,7 +62,160 @@
 	* src/DownloadCommand.cc
 	(STARTUP_IDLE_TIME): Removed.
 	(executeInternal): Use PREF_STARTUP_IDLE_TIME.
+
+	* src/PeerChokeCommand.cc
+	(optUnchokingPeer): Updated according to the changes in Peer.
+	(ResetDelta): Removed.
+	(UploadFaster): Updated according to the changes in Peer.
+	(DownloadFaster): Updated according to the changes in Peer.
+	(execute): I clarify the meaning of "upload" and "download" here.
+	"upload" means the transfer from localhost to remote host.
+	"download" means the transfer from remote host to localhost.
+	Based on this rule, I swapped orderByUploadRate and
+	orderByDownloadRate.
+
+	* src/PeerInteractionCommand.cc
+	(PeerInteraction): Removed peerInteraction->setUploadLImit().
+	(executeInternal): Removed the argument of
+	peerInteraction->sendMessages().
+	(receiveMessages): Rewritten download speed limit.
+	(sendKeepAlive): Removed peerInteraction->sendMessages().
+
+	* src/HttpResponseCommand.cc
+	(handleDefaultEncoding): If file size is unknown in torrent request,
+	do not call segmentMan->initBitfield() here.
+	Disabled persistent connection feature in torrent request.
+
+	* src/UrlRequestInfo.h
+	(UrlRequestInfo): Removed const qualifier from option.
+
+	* src/TorrentMan.h
+	(TransferStat): New class.
+	(deltaDownloadLength): Removed.
+	(deltaUploadLength): Removed.
+	(addDeltaDownloadLength): Removed.
+	(getDeltaDownloadLength): Removed.
+	(resetDeltaDownloadLength): Removed.
+	(addDeltaUploadLength): Removed.
+	(getDeltaUploadLength): Removed.
+	(resetDeltaUploadLength): Removed.
+	(addActivePeer): Added peer->activate().
+	(deleteActivePeer): Added peer->deactivate().
+	(calculateStat): New function.
+	* src/TorrentMan.cc
+	(TorrentMan): Removed deltaDownloadLength and deltaUploadLength.
+	(calculateStat): New function.
+
+	* src/PeerInteraction.h
+	(uploadLimit): Removed.
+	(option): New variable.
+	(setUploadLimit): Removed.
+	(getUploadSpeed): Removed.
+	(sendMessages): Removed the argument "currentUploadSpeed".
+	* src/PeerInteraction.cc
+	(prefs.h): Included.
+	(PeerInteraction): Removed uploadLimit. Added option.
+	(sendMessages): Rewritten upload speed limit.
+	(sendHandshake): Removed the argument from sendMessages().
+	(sendBitfield): Removed the argument from sendMessages().
+
+	* src/PeerAbstractCommand.cc
+	(execute): Commented out the portion of upload limit.
+	(onAbort): Removed peer->resetStatus().
+
+	* src/TorrentRequestInfo.cc
+	(timeoutSpecified): Declared extern.
+	(execute): Set timeout to 180 if timeout is not specified by.
+	command-line.
+
+	* src/PieceMessage.cc
+	(receivedAction): Added peer->updateDownloadLength().
+	Removed peer->addPeerUpload().
+	Removed torrentMan->addDeltaDownloadLength().
+	(send): Added peer->updateUploadLength().
+	Removed peer->addPeerDownload().
+	Removed torrentMan->addDeltaUploadLength().
+
+	* src/main.cc
+	(timeoutSpecified): New variable.
+	(main): Set timeoutSpecified to false.
+	If the command-line option "--upload-limit" is specified, then
+	timeoutSpecified is set to true. This option will remain in the next
+	release, but be deprecated in the future release.
+
+	* src/TorrentRequestInfo.h
+	(TorrentRequestInfo): Removed const qualifier from op.
+
+	* src/PeerStat.h
+	(uploadSpeed): New variable.
+	(PeerStat): Added default value to cuid.
+	(calculateUploadSpeed): New function.
+	(updateUploadLength): New function.
+	(getMaxUploadSpeed): New function.
+	(getAvgUploadSpeed): New function.
+	(reset): Added uploadSpeed. Set status to IDLE.
+
+	* src/TorrentDownloadEngine.h
+	(cp): Declared as Time.
+	(sessionDownloadLengthArray): Removed.
+	(sessionUploadLengthArray): Removed.
+	(currentCp): Removed.
+	(lastCalcStat): New variable
+	(lastElapsed): Removed.
+	(sessionDownloadLength): Removed.
+	(calculateStat): New function.
+	* src/TorrentDownloadEngine.cc
+	(initStatistics): Removed lastElapsed, cp[],
+	sessionDownloadLengthArray[], sessionUploadLengthArray[],
+	currentCp, sessionDownloadLength.
+	Added cp.reset() and lastCalcStat.reset().
+	(calculateSpeed): Changed the name of the argument.
+	(calculateStatistics): Rewritten.
+	(calculateStat): New function.
+
+	* src/Peer.h
+	(PeerStat.h): Included.
+	(peerUpload): Removed.
+	(peerDownload): Removed.
+	(peerStat): New variable.
+	(sessionUploadLength): New variable.
+	(sessionDownloadLength): New variable.
+	(deltaUpload): Removed.
+	(deltaDownload): Removed.
+	(resetStatus): Made private.
+	(Peer): Added sessionUploadLength, sessionDownloadLength.
+	Removed peerUpload, peerDownload.
+	(updateUploadLength): New function.
+	(addDeltaUpload): Removed.
+	(updateDownloadLength): New function.
+	(resetDeltaUpload): Removed.
+	(getDeltaUpload): Removed.
+	(addDeltaDownload): Removed.
+	(calculateUploadSpeed): New function.
+	(resetDeltaDownload): Removed.
+	(getDeltaDownload): Removed.
+	(calculateDownloadSpeed): New function.
+	(getSessionUploadLength): New function.
+	(getSessionDownloadLength): New function.
+	(activate): New function.
+	(deactivate): New function.
+	(addPeerUpload): Removed.
+	(setPeerUpload): Removed.
+	(getPeerUpload): Removed.
+	(addPeerDownload): Removed.
+	(setPeerDownload): Removed.
+	(getPeerDownload): Removed.
 	
+	* src/Peer.cc
+	(resetStatus): Removed resetDeltaUpload() and resetDeltaDownload().
+	
+	* src/MetalinkRequestInfo.h
+	(MetalinkRequestInfo): Removed const qualifier from op.
+
+	* src/RequestInfo.h
+	(op): Removed const qualifier.
+	(RequestInfo): Removed const qualifier from op.
+
 2006-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To rewrite segment download mechanism for HTTP/FTP download.

@@ -39,8 +39,7 @@ private:
   int cuid;
   RequestSlots requestSlots;
   MessageQueue messageQueue;
-  // upload speed limit(byte/sec)
-  int uploadLimit;
+  const Option* option;
   TorrentMan* torrentMan;
   PeerConnection* peerConnection;
   PeerHandle peer;
@@ -77,9 +76,6 @@ public:
 
   int countMessageInQueue() const;
 
-  void setUploadLimit(int uploadLimit) { this->uploadLimit = uploadLimit; }
-  int getUploadLimit() const { return this->uploadLimit; }
-
   TorrentMan* getTorrentMan() const { return torrentMan; }
   PeerConnection* getPeerConnection() const { return peerConnection; }
   // If this object has nullPiece, then return false, otherwise true
@@ -95,7 +91,7 @@ public:
   void syncPiece();
   void updatePiece();
   void addRequests();
-  void sendMessages(int currentUploadSpeed);
+  void sendMessages();
   void sendHandshake();
   void sendBitfield();
   void sendAllowedFast();

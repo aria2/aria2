@@ -28,7 +28,7 @@ class MetalinkRequestInfo : public RequestInfo {
 private:
   string metalinkFile;
 public:
-  MetalinkRequestInfo(const string& metalinkFile, const Option* op):
+  MetalinkRequestInfo(const string& metalinkFile, Option* op):
     RequestInfo(op),
     metalinkFile(metalinkFile) {}
   virtual ~MetalinkRequestInfo() {}

@@ -60,6 +60,7 @@ extern int optind, opterr, optopt;
 using namespace std;
 
 RequestInfo* requestInfo;
+bool timeoutSpecified;
 
 void setSignalHander(int signal, void (*handler)(int), int flags) {
   struct sigaction sigact;
@@ -265,6 +266,8 @@ int main(int argc, char* argv[]) {
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 #endif // ENABLE_NLS
+  timeoutSpecified = false;
+
   int c;
   Option* op = new Option();
   op->put(PREF_STDOUT_LOG, V_FALSE);
@@ -492,7 +495,7 @@ int main(int argc, char* argv[]) {
 	}
 	break;
       case 20: {
-	int uploadSpeed = (int)strtol(optarg, NULL, 10);
+	int uploadSpeed = strtol(optarg, NULL, 10)*1024;
 	if(0 > uploadSpeed) {
 	  cerr << _("upload-limit must be greater than or equal to 0.") << endl;
 	  showUsage();
@@ -587,6 +590,7 @@ int main(int argc, char* argv[]) {
       int timeout = (int)strtol(optarg, NULL, 10);
       if(1 <= timeout && timeout <= 600) {
 	op->put(PREF_TIMEOUT, Util::itos(timeout));
+	timeoutSpecified = true;
       } else {
 	cerr << _("timeout must be between 1 and 600") << endl;
 	showUsage();
@@ -695,8 +699,8 @@ int main(int argc, char* argv[]) {
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       if(op->defined(PREF_METALINK_FILE)) {
-      requestInfo = new MetalinkRequestInfo(op->get(PREF_METALINK_FILE),
-					    op);
+	requestInfo = new MetalinkRequestInfo(op->get(PREF_METALINK_FILE),
+					      op);
       } else
 #endif // ENABLE_METALINK
 	{

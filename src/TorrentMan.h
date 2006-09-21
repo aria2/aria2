@@ -51,6 +51,17 @@ using namespace std;
 #define END_GAME_PIECE_NUM 20
 #define MAX_PEER_ERROR 5
 
+class TransferStat {
+public:
+  int downloadSpeed;
+  int uploadSpeed;
+  long long int sessionDownloadLength;
+  long long int sessionUploadLength;
+public:
+  TransferStat():downloadSpeed(0), uploadSpeed(0),
+		 sessionDownloadLength(0), sessionUploadLength(0) {}
+};
+
 class HaveEntry {
 public:
   int cuid;
@@ -79,8 +90,6 @@ private:
   long long int uploadLength;
   long long int preDownloadLength;
   long long int preUploadLength;
-  int deltaDownloadLength;
-  int deltaUploadLength;
   int fileMode;
   string storeDir;
   int port;
@@ -199,14 +208,6 @@ public:
   long long int getTotalLength() const { return totalLength; }
   void setTotalLength(long long int length) { totalLength = length; }
 
-  void addDeltaDownloadLength(int length) { deltaDownloadLength += length; }
-  int getDeltaDownloadLength() const { return deltaDownloadLength; }
-  void resetDeltaDownloadLength() { deltaDownloadLength = 0; }
-
-  void addDeltaUploadLength(int length) { deltaUploadLength += length; }
-  int getDeltaUploadLength() const { return deltaUploadLength; }
-  void resetDeltaUploadLength() { deltaUploadLength = 0; }
-
   void addDownloadLength(int deltaLength) { downloadLength += deltaLength; }
   long long int getDownloadLength() const { return downloadLength; }
   void setDownloadLength(long long int length) { downloadLength = length; }
@@ -263,6 +264,7 @@ public:
   void onDownloadComplete();
 
   void addActivePeer(const PeerHandle& peer) {
+    peer->activate();
     activePeers.push_back(peer);
   }
 
@@ -271,6 +273,7 @@ public:
   void deleteActivePeer(const PeerHandle& peer) {
     Peers::iterator itr = find(activePeers.begin(), activePeers.end(), peer);
     if(itr != activePeers.end()) {
+      peer->deactivate();
       activePeers.erase(itr);
     }
   }
@@ -284,6 +287,8 @@ public:
     SINGLE,
     MULTI
   };
+
+  TransferStat calculateStat();
 };
 
 #endif // _D_TORRENT_MAN_H_

@@ -55,14 +55,13 @@ void Peer::resetStatus() {
   amInterested = false;
   peerChoking = true;
   peerInterested = false;
-  resetDeltaUpload();
-  resetDeltaDownload();
   chokingRequired = true;
   optUnchoking = false;
   snubbing = false;
   fastExtensionEnabled = false;
   latency = DEFAULT_LATENCY;
   fastSet.clear();
+  peerStat.reset();
 }
 
 bool Peer::isInFastSet(int index) const {

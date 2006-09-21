@@ -33,7 +33,7 @@ private:
 
   void showFileEntry();
 public:
-  TorrentRequestInfo(const string& torrentFile, const Option* op):
+  TorrentRequestInfo(const string& torrentFile, Option* op):
     RequestInfo(op),
     torrentFile(torrentFile),
     e(0) {}

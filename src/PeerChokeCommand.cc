@@ -45,27 +45,18 @@ void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
     if(optUnchokCount > 0 && !peer->snubbing) {
       optUnchokCount--;
       peer->optUnchoking = true;
-      logger->debug("opt, unchoking %s, delta=%d",
-		    peer->ipaddr.c_str(), peer->getDeltaUpload());
+      logger->debug("opt, unchoking %s, download speed=%d",
+		    peer->ipaddr.c_str(), peer->calculateDownloadSpeed());
     } else {
       peer->optUnchoking = false;
     }
   }
 }
 
-class ResetDelta {
-public:
-  ResetDelta() {}
-  void operator()(PeerHandle& peer) {
-    peer->resetDeltaUpload();
-    peer->resetDeltaDownload();
-  }
-};
-
 class UploadFaster {
 public:
   bool operator() (const PeerHandle& left, const PeerHandle& right) const {
-    return left->getDeltaUpload() > right->getDeltaUpload();
+    return left->calculateUploadSpeed() > right->calculateUploadSpeed();
   }
 };
 
@@ -76,7 +67,7 @@ void PeerChokeCommand::orderByUploadRate(Peers& peers) const {
 class DownloadFaster {
 public:
   bool operator() (const PeerHandle& left, const PeerHandle& right) const {
-    return left->getDeltaDownload() > right->getDeltaDownload();
+    return left->calculateDownloadSpeed() > right->calculateDownloadSpeed();
   }
 };
 
@@ -93,9 +84,9 @@ bool PeerChokeCommand::execute() {
     Peers peers = e->torrentMan->getActivePeers();
     for_each(peers.begin(), peers.end(), ChokePeer());
     if(e->torrentMan->downloadComplete()) {
-      orderByDownloadRate(peers);
-    } else {
       orderByUploadRate(peers);
+    } else {
+      orderByDownloadRate(peers);
     }
     int unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
     for(Peers::iterator itr = peers.begin(); itr != peers.end() && unchokingCount > 0; ) {
@@ -105,10 +96,15 @@ bool PeerChokeCommand::execute() {
 	peer->chokingRequired = false;
 	peer->optUnchoking = false;
 	itr = peers.erase(itr);
-	logger->debug("cat01, unchoking %s, delta=%d",
-		      peer->ipaddr.c_str(),
-		      e->torrentMan->downloadComplete() ?
-		      peer->getDeltaDownload() : peer->getDeltaUpload());
+	if(e->torrentMan->downloadComplete()) {
+	  logger->debug("cat01, unchoking %s, upload speed=%d",
+			peer->ipaddr.c_str(),
+			peer->calculateUploadSpeed());
+	} else {
+	  logger->debug("cat01, unchoking %s, download speed=%d",
+			peer->ipaddr.c_str(),
+			peer->calculateDownloadSpeed());
+	}
       } else {
 	itr++;
       }
@@ -119,10 +115,15 @@ bool PeerChokeCommand::execute() {
 	peer->chokingRequired = false;
 	peer->optUnchoking = false;
 	itr = peers.erase(itr);
-	logger->debug("cat02, unchoking %s, delta=%d",
-		      peer->ipaddr.c_str(),
-		      e->torrentMan->downloadComplete() ?
-		      peer->getDeltaDownload() : peer->getDeltaUpload());
+	if(e->torrentMan->downloadComplete()) {
+	  logger->debug("cat01, unchoking %s, upload speed=%d",
+			peer->ipaddr.c_str(),
+			peer->calculateUploadSpeed());
+	} else {
+	  logger->debug("cat01, unchoking %s, download speed=%d",
+			peer->ipaddr.c_str(),
+			peer->calculateDownloadSpeed());
+	}
 	break;
       } else {
 	itr++;
@@ -133,9 +134,6 @@ bool PeerChokeCommand::execute() {
       rotate = 0;
     }
     rotate++;
-    for_each(e->torrentMan->getActivePeers().begin(),
-	     e->torrentMan->getActivePeers().end(),
-	     ResetDelta());
   }
   e->commands.push_back(this);
   return false;

@@ -21,5 +21,4 @@
 0.8.0
 
 * Add a statement for the permission to link with OpenSSL.
-* Add upload speed limit command-line option(not tested for torrent yet).
-
+* Add command-line options: max-speed-limit, max-upload-limit.

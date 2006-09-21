@@ -118,8 +118,12 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   if(req->isTorrent) {
     long long int size = headers.getFirstAsLLInt("Content-Length");
     e->segmentMan->totalSize = size;
-    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				e->segmentMan->totalSize);
+    if(size > 0) {
+      e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				  e->segmentMan->totalSize);
+    }
+    // disable keep-alive
+    req->setKeepAlive(false);
     e->segmentMan->isSplittable = false;
     e->segmentMan->downloadStarted = true;
     e->segmentMan->diskWriter->initAndOpenFile("/tmp/aria2"+Util::itos(getpid()));

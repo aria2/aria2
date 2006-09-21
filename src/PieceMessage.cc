@@ -56,7 +56,7 @@ void PieceMessage::receivedAction() {
   RequestSlot slot = peerInteraction->getCorrespondingRequestSlot(index,
 								  begin,
 								  blockLength);
-  peer->addPeerUpload(blockLength);
+  peer->updateDownloadLength(blockLength);
   if(!RequestSlot::isNull(slot) &&
      peerInteraction->hasDownloadPiece(slot.getIndex())) {
     peer->snubbing = false;
@@ -75,7 +75,6 @@ void PieceMessage::receivedAction() {
     torrentMan->updatePiece(piece);
     logger->debug("CUID#%d - Setting piece block index=%d",
 		  cuid, slot.getBlockIndex());
-    torrentMan->addDeltaDownloadLength(blockLength);
     if(piece.pieceComplete()) {
       if(checkPieceHash(piece)) {
 	onGotNewPiece(piece);
@@ -139,9 +138,8 @@ void PieceMessage::send() {
       ((long long int)index)*pieceLength+begin+blockLength-leftDataLength;
     int writtenLength =
       sendPieceData(pieceDataOffset, leftDataLength);
-    peer->addPeerDownload(writtenLength);
+    peer->updateUploadLength(writtenLength);
     torrentMan->addUploadLength(writtenLength);
-    torrentMan->addDeltaUploadLength(writtenLength);
     if(writtenLength != leftDataLength) {
       inProgress = true;
     }

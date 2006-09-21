@@ -43,18 +43,11 @@ void TorrentDownloadEngine::onEndOfRun() {
 void TorrentDownloadEngine::initStatistics() {
   downloadSpeed = 0;
   uploadSpeed = 0;
-  lastElapsed = 0;
-  cp[0].reset();
-  cp[1].reset();
+  cp.reset();
+  lastCalcStat.reset();
   startup.reset();
-  sessionDownloadLengthArray[0] = 0;
-  sessionDownloadLengthArray[1] = 0;
-  sessionUploadLengthArray[0] = 0;
-  sessionUploadLengthArray[1] = 0;
-  currentCp = 0;
   eta = 0;
   avgSpeed = 0;
-  sessionDownloadLength = 0;
   downloadLength = 0;
   totalLength = 0;
   if(torrentMan->isSelectiveDownloadingMode()) {
@@ -63,25 +56,24 @@ void TorrentDownloadEngine::initStatistics() {
   }
 }
 
-int TorrentDownloadEngine::calculateSpeed(long long int sessionLength, int elapsed) {
-  int nowSpeed = (int)(sessionLength/elapsed);
+int TorrentDownloadEngine::calculateSpeed(long long int length, int elapsed) {
+  int nowSpeed = (int)(length/elapsed);
   return nowSpeed;
 }
 
+void TorrentDownloadEngine::calculateStat() {
+  TransferStat stat = torrentMan->calculateStat();
+  downloadSpeed = stat.downloadSpeed;
+  uploadSpeed = stat.uploadSpeed;
+  avgSpeed = calculateSpeed(stat.sessionDownloadLength, startup.difference());
+  if(avgSpeed < 0) {
+    avgSpeed = 0;
+  } else if(avgSpeed != 0) {
+    eta = (totalLength-downloadLength)/avgSpeed;
+  }
+}
+
 void TorrentDownloadEngine::calculateStatistics() {
-  int elapsed = cp[currentCp].difference();
-
-  sessionDownloadLengthArray[0] += torrentMan->getDeltaDownloadLength();
-  sessionUploadLengthArray[0] += torrentMan->getDeltaUploadLength();
-  sessionDownloadLengthArray[1] += torrentMan->getDeltaDownloadLength();
-  sessionUploadLengthArray[1] += torrentMan->getDeltaUploadLength();
-
-  sessionDownloadLength += torrentMan->getDeltaDownloadLength();
-
-
-  torrentMan->resetDeltaDownloadLength();
-  torrentMan->resetDeltaUploadLength();
-
   if(torrentMan->isSelectiveDownloadingMode()) {
     downloadLength = torrentMan->getDownloadLength()-selectedDownloadLengthDiff;
     totalLength = selectedTotalLength;
@@ -90,32 +82,13 @@ void TorrentDownloadEngine::calculateStatistics() {
     totalLength = torrentMan->getTotalLength();
   }
   
-  if(elapsed > 0) {
-    downloadSpeed = calculateSpeed(sessionDownloadLengthArray[currentCp], elapsed);
-    uploadSpeed = calculateSpeed(sessionUploadLengthArray[currentCp], elapsed);
+  Time now;
+  if(now.getTimeInMillis()-lastCalcStat.getTimeInMillis() >= 1000) {
+    calculateStat();
+    lastCalcStat = now;
   }
-
-  if(elapsed-lastElapsed >= 1) {
-    int elapsedFromStartup = startup.difference();
-    if(elapsedFromStartup > 0) {
-      avgSpeed = calculateSpeed(sessionDownloadLength,
-				elapsedFromStartup);
-    }
-    if(avgSpeed < 0) {
-      avgSpeed = 0;
-    } else if(avgSpeed != 0) {
-      eta = (totalLength-downloadLength)/avgSpeed;
-    }
-
+  if(cp.difference() >= 1) {
     sendStatistics();
-    lastElapsed = elapsed;
-  }
-
-  if(elapsed > 15) {
-    sessionDownloadLengthArray[currentCp] = 0;
-    sessionUploadLengthArray[currentCp] = 0;
-    cp[currentCp].reset();
-    lastElapsed = 0;
-    currentCp = currentCp ? 0 : 1;
+    cp.reset();
   }
 }

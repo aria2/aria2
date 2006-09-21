@@ -25,6 +25,7 @@
 #include "common.h"
 #include "BitfieldMan.h"
 #include "SharedHandle.h"
+#include "PeerStat.h"
 #include <string.h>
 #include <string>
 
@@ -56,23 +57,26 @@ private:
   bool fastExtensionEnabled;
   // allowed fast indexes that peer has sent by Allowed Fast message
   Integers fastSet;
-  long long int peerUpload;
-  long long int peerDownload;
+  PeerStat peerStat;
+  long long int sessionUploadLength;
+  long long int sessionDownloadLength;
   int pieceLength;
-  int deltaUpload;
-  int deltaDownload;
   int latency;
+
+  void resetStatus();
 public:
   Peer(string ipaddr, int port, int pieceLength, long long int totalLength)
     :entryId(0), ipaddr(ipaddr), port(port), error(0),
-     peerUpload(0), peerDownload(0), pieceLength(pieceLength)
+    sessionUploadLength(0), sessionDownloadLength(0),
+    pieceLength(pieceLength)
   {
     resetStatus();
     this->bitfield = new BitfieldMan(pieceLength, totalLength);
   }
 
   Peer():entryId(0), ipaddr(""), port(0), bitfield(0),
-	 peerUpload(0), peerDownload(0), pieceLength(0)
+	 sessionUploadLength(0), sessionDownloadLength(0),
+	 pieceLength(0)
   {
     resetStatus();
   }
@@ -91,19 +95,51 @@ public:
     return !(*this == p);
   }
 
-  void resetStatus();
-
-  void addDeltaUpload(int length) {
-    this->deltaUpload += length;
+  void updateUploadLength(int bytes) {
+    peerStat.updateUploadLength(bytes);
+    sessionUploadLength += bytes;
   }
-  void resetDeltaUpload() { this->deltaUpload = 0; }
-  int getDeltaUpload() const { return this->deltaUpload; }
 
-  void addDeltaDownload(int length) {
-    this->deltaDownload += length;
+  void updateDownloadLength(int bytes) {
+    peerStat.updateDownloadLength(bytes);
+    sessionDownloadLength += bytes;
   }
-  void resetDeltaDownload() { this->deltaDownload = 0; }
-  int getDeltaDownload() const { return this->deltaDownload; }
+
+  /**
+   * Returns the transfer rate from localhost to remote host.
+   */
+  int calculateUploadSpeed() {
+    return peerStat.calculateUploadSpeed();
+  }
+
+  /**
+   * Returns the transfer rate from remote host to localhost.
+   */
+  int calculateDownloadSpeed() {
+    return peerStat.calculateDownloadSpeed();
+  }
+
+  /**
+   * Returns the number of bytes uploaded to the remote host.
+   */
+  long long int getSessionUploadLength() const {
+    return sessionUploadLength;
+  }
+
+  /**
+   * Returns the number of bytes downloaded from the remote host.
+   */
+  long long int getSessionDownloadLength() const {
+    return sessionDownloadLength;
+  }
+
+  void activate() {
+    peerStat.downloadStart();
+  }
+
+  void deactivate() {
+    peerStat.downloadStop();
+  }
 
   void setPeerId(const char* peerId) {
     memcpy(this->peerId, peerId, PEER_ID_LENGTH);
@@ -123,20 +159,6 @@ public:
    */
   void updateBitfield(int index, int operation);
   
-  void addPeerUpload(int size) {
-    peerUpload += size;
-    addDeltaUpload(size);
-  }
-  void setPeerUpload(long long int size) { peerUpload = size; }
-  long long int getPeerUpload() const { return peerUpload; }
-
-  void addPeerDownload(int size) {
-    peerDownload += size;
-    addDeltaDownload(size);
-  }
-  void setPeerDownload(long long int size) { peerDownload = size; }
-  long long int getPeerDownload() const { return peerDownload; }
-
   void setFastExtensionEnabled(bool enabled) {
     fastExtensionEnabled = enabled;
   }

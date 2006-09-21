@@ -74,7 +74,7 @@ public:
 
 class RequestInfo {
 protected:
-  const Option* op;
+  Option* op;
   const Logger* logger;
   Checksum checksum;
   FileInfo fileInfo;
@@ -94,7 +94,7 @@ protected:
 	     "aria2 will resume download if the transfer is restarted."));
   }
 public:
-  RequestInfo(const Option* op):
+  RequestInfo(Option* op):
     op(op),
     fail(false)
   {

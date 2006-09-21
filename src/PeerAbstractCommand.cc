@@ -49,8 +49,10 @@ bool PeerAbstractCommand::execute() {
   }
   try {
     if(noCheck ||
+       /*
        uploadLimitCheck && (uploadLimit == 0 ||
 			    e->getUploadSpeed() <= uploadLimit*1024) ||
+       */
        checkSocketIsReadable && readCheckTarget->isReadable(0) ||
        checkSocketIsWritable && writeCheckTarget->isWritable(0)) {
       checkPoint.reset();
@@ -61,8 +63,10 @@ bool PeerAbstractCommand::execute() {
     return executeInternal();
   } catch(Exception* err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
+    logger->debug("CUID#%d - Peer %s:%d banned.",
+		  cuid, peer->ipaddr.c_str(), peer->port);
     onAbort(err);
-    delete(err);
+    delete err;
     return prepareForNextPeer(0);
   }
 }
@@ -82,8 +86,6 @@ void PeerAbstractCommand::onAbort(Exception* ex) {
   } else {
     peer->error += MAX_PEER_ERROR;
   }
-  peer->resetStatus();
-  logger->debug("CUID#%d - Peer %s:%d banned.", cuid, peer->ipaddr.c_str(), peer->port);
 }
 
 void PeerAbstractCommand::disableReadCheckSocket() {

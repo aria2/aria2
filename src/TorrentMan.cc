@@ -50,8 +50,6 @@ TorrentMan::TorrentMan():bitfield(0),
 			 uploadLength(0),
 			 preDownloadLength(0),
 			 preUploadLength(0),
-			 deltaDownloadLength(0),
-			 deltaUploadLength(0),
 			 storeDir("."),
 			 setupComplete(false),
 			 halt(false),
@@ -710,3 +708,15 @@ TorrentMan::removeAdvertisedPiece(int elapsed)
   }
 }
 
+TransferStat TorrentMan::calculateStat() {
+  TransferStat stat;
+  for(Peers::iterator itr = activePeers.begin();
+      itr != activePeers.end(); itr++) {
+    PeerHandle& peer = *itr;
+    stat.downloadSpeed += peer->calculateDownloadSpeed();
+    stat.uploadSpeed += peer->calculateUploadSpeed();
+    stat.sessionDownloadLength += peer->getSessionDownloadLength();
+    stat.sessionUploadLength += peer->getSessionUploadLength();
+  }
+  return stat;
+}
