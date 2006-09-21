@@ -16,8 +16,10 @@
 * Save URLs and command-line arguments to .aria2 file.
 * Add multi-file metalink support.
 * Add a control port for GUI frontend
+* Add a version header to .aria2 file to check the compatibiliy.
 
 0.8.0
 
 * Add a statement for the permission to link with OpenSSL.
 * Add upload speed limit command-line option(not tested for torrent yet).
+

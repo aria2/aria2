@@ -30,7 +30,8 @@ class PeerStat {
 public:
   enum STATUS {
     IDLE,
-    ACTIVE
+    ACTIVE,
+    REQUEST_IDLE,
   };
 private:
   int cuid;
@@ -54,8 +55,12 @@ public:
     downloadSpeed.update(bytes);
   }
 
-  int getMaxSpeed() const {
+  int getMaxDownloadSpeed() const {
     return downloadSpeed.getMaxSpeed();
+  }
+
+  int getAvgDownloadSpeed() const {
+    return downloadSpeed.getAvgSpeed();
   }
 
   void reset() {
@@ -70,6 +75,10 @@ public:
 
   void downloadStop() {
     status = IDLE;
+  }
+
+  void requestIdle() {
+    status = REQUEST_IDLE;
   }
 
   const Time& getDownloadStartTime() const {

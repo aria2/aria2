@@ -45,7 +45,8 @@ public:
   ~SegmentEntry() {}
 };
 
-typedef deque<SegmentEntry> SegmentEntries;
+typedef SharedHandle<SegmentEntry> SegmentEntryHandle;
+typedef deque<SegmentEntryHandle> SegmentEntries;
 typedef deque<PeerStatHandle> PeerStats;
 
 /**
@@ -62,6 +63,7 @@ private:
   FILE* openSegFile(const string& segFilename, const string& mode) const;
   bool onNullBitfield(Segment& segment, int cuid);
   Segment checkoutSegment(int cuid, int index);
+  SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
 public:
   /**
    * The total number of bytes to download.

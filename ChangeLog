@@ -1,3 +1,68 @@
+2006-09-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/AbstractCommand.cc
+	(execute): Check whether the download has finished before checking
+	socket status.
+	Return true if peerStat->getStatus() == REQUEST_IDLE.
+	Do not exit even if no segment is available.
+
+	* src/prefs.h
+	(PREF_STARTUP_IDLE_TIME): New definition.
+
+	* src/PeerInteractionCommand.cc
+	(executeInternal): Removed max speed limit. Because it performs bad.
+	(receiveMessages): Added max speed limit. This was better than above,
+	but still a little bit to be desired. Sometimes the download speed
+	became much faster than I specified.
+
+	* src/SpeedCalc.h
+	(start): New variable.
+	(accumulatedLength): New variable.
+	(getAvgSpeed): New function.
+	* src/SpeedCalc.cc
+	(reset): Added start, accumulatedLength.
+	(update): Added calculation of an average speed.
+	(getAvgSpeed): New function.
+
+	* src/DownloadCommand.h
+	(sw): Removed.
+
+	* src/main.cc
+	(main): Added PREF_STARTUP_IDLE_TIME.
+
+	* src/PeerStat.h
+	(STATUS): Added REQUEST_IDLE.
+	(getMaxSpeed): Renamed as getMaxDownloadSpeed().
+	(getAvgDownloadSpeed): New function
+	(requestIdle): New function.
+
+	* src/SegmentMan.h
+	(SegmentEntryHandle): New type definition.
+	(SegmentEntries): Now holds SegmentEntryHandle.
+	(findSlowerSegmentEntry): New funtion.
+	* src/SegmentMan.cc
+	(save): Updated according to the changes in SegmentEntries.
+	(read): Updated according to the changes in SegmentEntries.
+	(FindSegmentEntryByIndex): Updated according to the changes in
+	SegmentEntries.
+	(FindSegmentEntryByCuid): Updated according to the changes in
+	SegmentEntries.
+	(checkoutSegment): Updated according to the changes in SegmentEntries.
+	(onNullBitfield): Updated according to the changes in SegmentEntries.
+	Renamed uitr as itr.
+	(findSlowerSegmentEntry): New function.
+	(getSegment): Updated according to the changes in SegmentEntries.
+	Added the feature that cancels the segment with slow server and fast
+	one takes it over.
+	(cancelSegment): Updated according to the changes in SegmentEntries.
+	(getDownloadLength): Updated according to the changes in
+	SegmentEntries.
+	(init): Assigned 0 to bitfield after deleting it.
+	
+	* src/DownloadCommand.cc
+	(STARTUP_IDLE_TIME): Removed.
+	(executeInternal): Use PREF_STARTUP_IDLE_TIME.
+	
 2006-09-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To rewrite segment download mechanism for HTTP/FTP download.

@@ -127,11 +127,8 @@ bool PeerInteractionCommand::executeInternal() {
     }
     receiveMessages();
 
-    int maxSpeedLimit = e->option->getAsInt(PREF_MAX_SPEED_LIMIT);
-    if(maxSpeedLimit == 0 ||
-       maxSpeedLimit > 0 && maxSpeedLimit <= e->getDownloadSpeed()) {
-      peerInteraction->addRequests();
-    }
+    peerInteraction->addRequests();
+
     peerInteraction->sendMessages(e->getUploadSpeed());
     break;
   }
@@ -194,6 +191,13 @@ void PeerInteractionCommand::decideChoking() {
 
 void PeerInteractionCommand::receiveMessages() {
   for(int i = 0; i < 50; i++) {
+    int maxSpeedLimit = e->option->getAsInt(PREF_MAX_SPEED_LIMIT);
+    if(maxSpeedLimit > 0 && maxSpeedLimit < e->getDownloadSpeed()) {
+      disableReadCheckSocket();
+      setNoCheck(true);
+      break;
+    }
+
     PeerMessageHandle message = peerInteraction->receiveMessage();
     if(message.get() == NULL) {
       return;

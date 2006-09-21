@@ -29,8 +29,6 @@
 #include "prefs.h"
 #include <sys/time.h>
 
-#define STARTUP_IDLE_TIME 10
-
 DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e,
 				 const SocketHandle& s):
   AbstractCommand(cuid, req, e, s), lastSize(0) {
@@ -78,7 +76,7 @@ bool DownloadCommand::executeInternal(Segment& segment) {
     peerStat->updateDownloadLength(bufSize);
   }
   // calculate downloading speed
-  if(/*sw.elapsed(1) >= 1 && */peerStat->getDownloadStartTime().elapsed(STARTUP_IDLE_TIME)) {
+  if(peerStat->getDownloadStartTime().elapsed(e->option->getAsInt(PREF_STARTUP_IDLE_TIME))) {
     int lowestLimit = e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT);
     int nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestLimit > 0 &&  nowSpeed <= lowestLimit) {
@@ -87,7 +85,6 @@ bool DownloadCommand::executeInternal(Segment& segment) {
 			  nowSpeed,
 			  lowestLimit);
     }
-    //sw.reset();
   }
   if(e->segmentMan->totalSize != 0 && bufSize == 0) {
     throw new DlRetryEx(EX_GOT_EOF);

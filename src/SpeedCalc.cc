@@ -39,6 +39,8 @@ void SpeedCalc::reset() {
   sw = 0;
   maxSpeed = 0;
   prevSpeed = 0;
+  start.reset();
+  accumulatedLength = 0;
 }
 
 int SpeedCalc::calculateSpeed() {
@@ -65,6 +67,7 @@ public:
 };
 
 void SpeedCalc::update(int bytes) {
+  accumulatedLength += bytes;
   for_each(&lengthArray[0], &lengthArray[2], Plus(bytes));
   if(isIntervalOver()) {
     changeSw();
@@ -79,4 +82,14 @@ void SpeedCalc::changeSw() {
   lengthArray[sw] = 0;
   cpArray[sw].reset();
   sw ^= 0x01;
+}
+
+int SpeedCalc::getAvgSpeed() const {
+  int milliElapsed = start.differenceInMillis();
+  if(milliElapsed) {
+    int speed = accumulatedLength*1000/milliElapsed;
+    return speed;
+  } else {
+    return 0;
+  }
 }

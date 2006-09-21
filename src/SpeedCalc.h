@@ -32,6 +32,8 @@ private:
   Time cpArray[2];
   int maxSpeed;
   int prevSpeed;
+  Time start;
+  long long int accumulatedLength;
 
   bool isIntervalOver() const;
   void changeSw();
@@ -50,6 +52,8 @@ public:
   int getMaxSpeed() const {
     return maxSpeed;
   }
+
+  int getAvgSpeed() const;
 
   void update(int bytes);
 

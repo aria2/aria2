@@ -30,7 +30,6 @@ using namespace std;
 
 class DownloadCommand : public AbstractCommand {
 private:
-  Time sw;
   long long int lastSize;
 protected:
   bool executeInternal(Segment& segment);

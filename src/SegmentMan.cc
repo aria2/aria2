@@ -115,7 +115,7 @@ void SegmentMan::save() const {
     }
     for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
 	itr != usedSegmentEntries.end(); itr++) {
-      if(fwrite(&itr->segment, sizeof(Segment), 1, segFile) < 1) {
+      if(fwrite(&(*itr)->segment, sizeof(Segment), 1, segFile) < 1) {
 	throw string("writeError");
       }
     }
@@ -170,7 +170,7 @@ void SegmentMan::read(FILE* file) {
     if(fread(&seg, sizeof(Segment), 1, file) < 1) {
       throw string("readError");
     }
-    usedSegmentEntries.push_back(SegmentEntry(0, seg));
+    usedSegmentEntries.push_back(SegmentEntryHandle(new SegmentEntry(0, seg)));
   }
 }
 
@@ -209,6 +209,7 @@ void SegmentMan::init() {
   //segments.clear();
   usedSegmentEntries.clear();
   delete bitfield;
+  bitfield = 0;
   peerStats.clear();
   diskWriter->closeFile();
   
@@ -224,8 +225,8 @@ private:
 public:
   FindSegmentEntryByIndex(int index):index(index) {}
   
-  bool operator()(const SegmentEntry& entry) {
-    return entry.segment.index == index;
+  bool operator()(const SegmentEntryHandle& entry) {
+    return entry->segment.index == index;
   }
 };
 
@@ -235,8 +236,8 @@ private:
 public:
   FindSegmentEntryByCuid(int cuid):cuid(cuid) {}
 
-  bool operator()(const SegmentEntry& entry) {
-    return entry.cuid == cuid;
+  bool operator()(const SegmentEntryHandle& entry) {
+    return entry->cuid == cuid;
   }
 };
 
@@ -251,11 +252,12 @@ Segment SegmentMan::checkoutSegment(int cuid, int index) {
   if(itr == usedSegmentEntries.end()) {
     segment = Segment(index, bitfield->getBlockLength(index),
 		       bitfield->getBlockLength());
-    SegmentEntry entry(cuid, segment);
+    SegmentEntryHandle entry =
+      SegmentEntryHandle(new SegmentEntry(cuid, segment));
     usedSegmentEntries.push_back(entry);
   } else {
-    (*itr).cuid = cuid;
-    segment = (*itr).segment;
+    (*itr)->cuid = cuid;
+    segment = (*itr)->segment;
   }
 
   logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
@@ -267,35 +269,76 @@ Segment SegmentMan::checkoutSegment(int cuid, int index) {
 bool SegmentMan::onNullBitfield(Segment& segment, int cuid) {
   if(usedSegmentEntries.size() == 0) {
     segment = Segment(0, 0, 0);
-    usedSegmentEntries.push_back(SegmentEntry(cuid, segment));
+    usedSegmentEntries.push_back(SegmentEntryHandle(new SegmentEntry(cuid, segment)));
     return true;
   } else {
-    SegmentEntries::iterator uitr = find_if(usedSegmentEntries.begin(),
-					    usedSegmentEntries.end(),
-					    FindSegmentEntryByCuid(cuid));
-    if(uitr == usedSegmentEntries.end()) {
+    SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
+					   usedSegmentEntries.end(),
+					   FindSegmentEntryByCuid(cuid));
+    if(itr == usedSegmentEntries.end()) {
       return false;
     } else {
-      segment = uitr->segment;
+      segment = (*itr)->segment;
       return true;
     }
   }
+}
+
+SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peerStat) const {
+  int speed = (int)(peerStat->getAvgDownloadSpeed()*0.8);
+  SegmentEntryHandle slowSegmentEntry(0);
+  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
+      itr != usedSegmentEntries.end(); itr++) {
+    const SegmentEntryHandle& segmentEntry = *itr;
+    if(segmentEntry->cuid == 0) {
+      continue;
+    }
+    PeerStatHandle p = getPeerStat(segmentEntry->cuid);
+    if(!p.get() || p->getCuid() == peerStat->getCuid()) {
+      continue;
+    }
+    int pSpeed = p->calculateDownloadSpeed();
+    if(p->getStatus() == PeerStat::ACTIVE &&
+       p->getDownloadStartTime().elapsed(option->getAsInt(PREF_STARTUP_IDLE_TIME)) &&
+       pSpeed < speed) {
+      speed = pSpeed;
+      slowSegmentEntry = segmentEntry;
+    }
+  }
+  return slowSegmentEntry;
 }
 
 bool SegmentMan::getSegment(Segment& segment, int cuid) {
   if(!bitfield) {
     return onNullBitfield(segment, cuid);
   }
-  SegmentEntries::iterator uitr = find_if(usedSegmentEntries.begin(),
-					  usedSegmentEntries.end(),
-					  FindSegmentEntryByCuid(cuid));
-  if(uitr != usedSegmentEntries.end()) {
-    segment = uitr->segment;
+  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
+					 usedSegmentEntries.end(),
+					 FindSegmentEntryByCuid(cuid));
+  if(itr != usedSegmentEntries.end()) {
+    segment = (*itr)->segment;
     return true;
   }
   int index = bitfield->getSparseMissingUnusedIndex();
   if(index == -1) {
-    return false;
+    PeerStatHandle myPeerStat = getPeerStat(cuid);
+    if(!myPeerStat.get()) {
+      return false;
+    }
+    SegmentEntryHandle slowSegmentEntry = findSlowerSegmentEntry(myPeerStat);
+    if(slowSegmentEntry.get()) {
+      logger->info("CUID#%d cancels segment index=%d. CUID#%d handles it instead.",
+		   slowSegmentEntry->cuid,
+		   slowSegmentEntry->segment.index,
+		   cuid);
+      PeerStatHandle slowPeerStat = getPeerStat(slowSegmentEntry->cuid);
+      slowPeerStat->requestIdle();
+      cancelSegment(slowSegmentEntry->cuid);
+      segment = checkoutSegment(cuid, slowSegmentEntry->segment.index);
+      return true;
+    } else {
+      return false;
+    }
   } else {
     segment = checkoutSegment(cuid, index);
     return true;
@@ -327,7 +370,7 @@ bool SegmentMan::updateSegment(int cuid, const Segment& segment) {
   if(itr == usedSegmentEntries.end()) {
     return false;
   } else {
-    (*itr).segment = segment;
+    (*itr)->segment = segment;
     return true;
   }
 }
@@ -340,10 +383,10 @@ public:
   CancelSegment(int cuid, BitfieldMan* bitfield):cuid(cuid),
 						 bitfield(bitfield) {}
   
-  void operator()(SegmentEntry& entry) {
-    if(entry.cuid == cuid) {
-      bitfield->unsetUseBit(entry.segment.index);
-      entry.cuid = 0;
+  void operator()(SegmentEntryHandle& entry) {
+    if(entry->cuid == cuid) {
+      bitfield->unsetUseBit(entry->segment.index);
+      entry->cuid = 0;
     }
   }
 };
@@ -394,7 +437,7 @@ long long int SegmentMan::getDownloadLength() const {
   }
   for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end(); itr++) {
-    dlLength += itr->segment.writtenLength;
+    dlLength += (*itr)->segment.writtenLength;
   }
   return dlLength;
 }

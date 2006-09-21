@@ -44,23 +44,34 @@ AbstractCommand::~AbstractCommand() {
 
 bool AbstractCommand::execute() {
   try {
+    if(e->segmentMan->finished()) {
+      logger->debug("CUID#%d - finished.", cuid);
+      return true;
+    }
+    PeerStatHandle peerStat = e->segmentMan->getPeerStat(cuid);
+    if(peerStat.get()) {
+      if(peerStat->getStatus() == PeerStat::REQUEST_IDLE) {
+	logger->info("CUID#%d - Request idle.", cuid);
+	onAbort(0);
+	req->resetUrl();
+	tryReserved();
+	return true;
+      }
+    }
     if(checkSocketIsReadable && readCheckTarget->isReadable(0) ||
        checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
        !checkSocketIsReadable && !checkSocketIsWritable) {
       checkPoint.reset();
-      if(e->segmentMan->finished()) {
-	logger->debug("CUID#%d - finished.", cuid);
-	return true;
-      }
       Segment segment;
       if(e->segmentMan->downloadStarted) {
 	if(!e->segmentMan->getSegment(segment, cuid)) {
 	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
-	  return true;
+	  return prepareForRetry(1);
 	}
       }
       return executeInternal(segment);
     } else {
+
       if(checkPoint.elapsed(timeout)) {
 	throw new DlRetryEx(EX_TIME_OUT);
       }

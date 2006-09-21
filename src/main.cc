@@ -305,6 +305,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_UPLOAD_LIMIT, "0");
   op->put(PREF_LOWEST_SPEED_LIMIT, "0");
   op->put(PREF_MAX_SPEED_LIMIT, "0");
+  op->put(PREF_STARTUP_IDLE_TIME, "10");
   while(1) {
     int optIndex = 0;
     int lopt;

@@ -63,6 +63,8 @@
 #define PREF_SEGMENT_SIZE "segment_size"
 // value: 1*digit
 #define PREF_MAX_SPEED_LIMIT "max_speed_limit"
+// value: 1*digit
+#define PREF_STARTUP_IDLE_TIME "startup_idle_time"
 
 /**
  * FTP related preferences
