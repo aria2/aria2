@@ -1,3 +1,8 @@
+2006-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/*.{h,cc}:
+	Added an exception to the license which allows linking with OpenSSL.
+
 2006-09-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/AbstractCommand.cc
