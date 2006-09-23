@@ -135,10 +135,12 @@ void showUsage() {
   cout << _(" -t, --timeout=SEC            Set timeout in second. Default: 60") << endl;
   cout << _(" -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 	    "                              Default: 5") << endl;
+  /*
   cout << _(" --min-segment-size=SIZE[K|M] Set minimum segment size. You can append\n"
 	    "                              K or M(1K = 1024, 1M = 1024K). This\n"
 	    "                              value must be greater than or equal to\n"
 	    "                              1024. Default: 1M") << endl;
+  */
   cout << _(" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
 	    "                              URLs.") << endl;
   cout << _(" --http-user=USER             Set HTTP user. This affects to all URLs.") << endl;
@@ -164,13 +166,14 @@ void showUsage() {
 	    "                              'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
   cout << _(" --lowest-speed-limit         Close connection if download speed is lower than\n"
-	    "                              or equal to this value. 0 means aria2 does not\n"
-	    "                              care lowest speed limit.\n"
+	    "                              or equal to this value(bytes per sec).\n"
+	    "                              0 means aria2 does not care lowest speed limit.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 
 	    "                              This option does not affect BitTorrent download.\n"
 	    "                              Default: 0") << endl;
-  cout << _(" --max-download-limit         Set max download speed. 0 means unrestricted.\n"
+  cout << _(" --max-download-limit         Set max download speed in bytes per sec.\n"
+	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 	    "                              Default: 0") << endl;
 #ifdef ENABLE_BITTORRENT
@@ -184,7 +187,8 @@ void showUsage() {
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
   cout << _(" --listen-port=PORT           Set port number to listen to for peer connection.") << endl;
-  cout << _(" --max-upload-limit           Set max upload speed. 0 means unrestricted.\n"
+  cout << _(" --max-upload-limit           Set max upload speed in bytes per sec.\n"
+	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 	    "                              Default: 0") << endl;
   cout << _(" --select-file=INDEX...       Set file to download by specifing its index.\n"
@@ -240,13 +244,13 @@ void showUsage() {
 #ifdef ENABLE_BITTORRENT
   cout << endl;
   cout << _(" Download a torrent:") << endl;
-  cout << "  aria2c -t 180 -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
+  cout << "  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
   cout << _(" Download a torrent using local .torrent file:") << endl;
-  cout << "  aria2c -t 180 -T test.torrent" << endl;
+  cout << "  aria2c -T test.torrent" << endl;
   cout << _(" Download only selected files:") << endl;
-  cout << "  aria2c -t 180 -T test.torrent dir/file1.zip dir/file2.zip" << endl;
+  cout << "  aria2c -T test.torrent dir/file1.zip dir/file2.zip" << endl;
   cout << _(" Print file listing of .torrent file:") << endl;
-  cout << "  aria2c -t 180 -T test.torrent -S" << endl;  
+  cout << "  aria2c -T test.torrent -S" << endl;  
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   cout << endl;
@@ -351,7 +355,7 @@ int main(int argc, char* argv[]) {
       { "ftp-type", required_argument, &lopt, 11 },
       { "ftp-pasv", no_argument, NULL, 'p' },
       { "ftp-via-http-proxy", required_argument, &lopt, 12 },
-      { "min-segment-size", required_argument, &lopt, 13 },
+      //{ "min-segment-size", required_argument, &lopt, 13 },
       { "http-proxy-method", required_argument, &lopt, 14 },
       { "lowest-speed-limit", required_argument, &lopt, 200 },
       { "max-download-limit", required_argument, &lopt, 201 },

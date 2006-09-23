@@ -54,7 +54,8 @@ SRCS =  Socket.h\
 	RequestInfo.h\
 	UrlRequestInfo.cc UrlRequestInfo.h\
 	SpeedCalc.cc SpeedCalc.h\
-	PeerStat.h
+	PeerStat.h\
+	BitfieldMan.cc BitfieldMan.h
 
 if ENABLE_ASYNC_DNS
 SRCS += NameResolver.cc NameResolver.h
@@ -75,7 +76,6 @@ SRCS += MetaEntry.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 	PeerInteractionCommand.cc PeerInteractionCommand.h\
 	Peer.cc Peer.h\
-	BitfieldMan.cc BitfieldMan.h\
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
 	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
 	PeerListenCommand.cc PeerListenCommand.h\

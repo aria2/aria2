@@ -53,7 +53,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.cc PeerInteractionCommand.h\
 @ENABLE_BITTORRENT_TRUE@	Peer.cc Peer.h\
-@ENABLE_BITTORRENT_TRUE@	BitfieldMan.cc BitfieldMan.h\
 @ENABLE_BITTORRENT_TRUE@	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
 @ENABLE_BITTORRENT_TRUE@	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
 @ENABLE_BITTORRENT_TRUE@	PeerListenCommand.cc PeerListenCommand.h\
@@ -165,15 +164,16 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h RequestInfo.h UrlRequestInfo.cc \
 	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	NameResolver.cc NameResolver.h MetaEntry.h Data.cc Data.h \
-	Dictionary.cc Dictionary.h List.cc List.h MetaFileUtil.cc \
-	MetaFileUtil.h MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
-	TorrentMan.cc TorrentMan.h PeerConnection.cc PeerConnection.h \
-	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
-	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
+	BitfieldMan.cc BitfieldMan.h NameResolver.cc NameResolver.h \
+	MetaEntry.h Data.cc Data.h Dictionary.cc Dictionary.h List.cc \
+	List.h MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	ShaVisitor.cc ShaVisitor.h TorrentMan.cc TorrentMan.h \
+	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
+	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
-	PeerInteractionCommand.h Peer.cc Peer.h BitfieldMan.cc \
-	BitfieldMan.h TorrentDownloadEngine.cc TorrentDownloadEngine.h \
+	PeerInteractionCommand.h Peer.cc Peer.h \
+	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
 	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h \
 	PeerListenCommand.cc PeerListenCommand.h PeerMessage.cc \
 	PeerMessage.h HandshakeMessage.cc HandshakeMessage.h Piece.cc \
@@ -218,7 +218,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInteractionCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	Peer.$(OBJEXT) BitfieldMan.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	Peer.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TorrentDownloadEngine.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TorrentConsoleDownloadEngine.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerListenCommand.$(OBJEXT) \
@@ -285,8 +285,9 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
 	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
 	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
-	UrlRequestInfo.$(OBJEXT) SpeedCalc.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3)
+	UrlRequestInfo.$(OBJEXT) SpeedCalc.$(OBJEXT) \
+	BitfieldMan.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -482,7 +483,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	FeatureConfig.h DownloadEngineFactory.cc \
 	DownloadEngineFactory.h RequestInfo.h UrlRequestInfo.cc \
 	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	$(am__append_1) $(am__append_2) $(am__append_3)
+	BitfieldMan.cc BitfieldMan.h $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
