@@ -23,6 +23,7 @@ aria2 is in very early development stage. Currently it has following features:
 * BitTorrent protocol support with fast extension.
 * Selective download in multi-file torrent
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent).
+* Limiting download/upload speed.
 
 3. How to build
 ---------------

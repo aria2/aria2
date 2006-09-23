@@ -4,6 +4,8 @@
 	(showUsage): Commented out --min-segment-size option.
 	(main): Commented out --min-segment-size option.
 
+	* Release 0.8.0
+	
 2006-09-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/*.{h,cc}:
