@@ -46,6 +46,7 @@ FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
 							   DownloadEngine* e)
   :AbstractCommand(cuid, req, e)
 {
+  setTimeout(e->option->getAsInt(PREF_DNS_TIMEOUT));
   disableReadCheckSocket();
   disableWriteCheckSocket();
 }

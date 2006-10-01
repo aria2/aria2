@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(aria2c, 0.8.0, tujikawa@rednoah.com)
+AC_INIT(aria2c, 0.8.1, tujikawa@rednoah.com)
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
@@ -31,7 +31,7 @@ AC_PROG_YACC
 
 # Checks for libraries.
 if test "x$with_libxml2" = "xyes"; then
-   AM_PATH_XML2([2.6.26], [have_libxml2=yes])
+   AM_PATH_XML2([2.6.24], [have_libxml2=yes])
    if test "x$have_libxml2" = "xyes"; then
       AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
    fi
@@ -128,5 +128,6 @@ AC_CONFIG_FILES([Makefile
 		test/Makefile
 		po/Makefile.in
 		m4/Makefile
-		intl/Makefile])
+		intl/Makefile
+		doc/Makefile])
 AC_OUTPUT

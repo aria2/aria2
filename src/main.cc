@@ -103,7 +103,7 @@ void showVersion() {
       "\n"
       "You should have received a copy of the GNU General Public License\n"
       "along with this program; if not, write to the Free Software\n"
-      "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n");
+      "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n");
   cout << endl;
   printf(_("Contact Info: %s\n"), "Tasuhiro Tsujikawa <tujikawa at users dot sourceforge dot net>");
   cout << endl;
@@ -165,14 +165,14 @@ void showUsage() {
   cout << _(" --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' or\n"
 	    "                              'tunnel'.\n"
 	    "                              Default: tunnel") << endl;
-  cout << _(" --lowest-speed-limit         Close connection if download speed is lower than\n"
+  cout << _(" --lowest-speed-limit=SPEED   Close connection if download speed is lower than\n"
 	    "                              or equal to this value(bytes per sec).\n"
 	    "                              0 means aria2 does not care lowest speed limit.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 
 	    "                              This option does not affect BitTorrent download.\n"
 	    "                              Default: 0") << endl;
-  cout << _(" --max-download-limit         Set max download speed in bytes per sec.\n"
+  cout << _(" --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 	    "                              Default: 0") << endl;
@@ -187,7 +187,7 @@ void showUsage() {
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
   cout << _(" --listen-port=PORT           Set port number to listen to for peer connection.") << endl;
-  cout << _(" --max-upload-limit           Set max upload speed in bytes per sec.\n"
+  cout << _(" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 	    "                              Default: 0") << endl;
@@ -316,6 +316,7 @@ int main(int argc, char* argv[]) {
 	  );
   op->put(PREF_RETRY_WAIT, "5");
   op->put(PREF_TIMEOUT, "60");
+  op->put(PREF_DNS_TIMEOUT, "10");
   op->put(PREF_PEER_CONNECTION_TIMEOUT, "60");
   op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
   op->put(PREF_MAX_TRIES, "5");

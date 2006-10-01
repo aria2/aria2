@@ -14,8 +14,16 @@
 	(nameResolverFinished): New function.
 	* src/FtpInitiateConnectionCommand.h
 	(nameResolverFinished): New function.
+	* src/FtpInitiateConnectionCommand.cc
+	(FtpInitiateConnectionCommand): Set timeout to PREF_DNS_TIMEOUT.
 	* src/HttpInitiateConnectionCommand.h
 	(nameResolverFinished): New function.
+	* src/HttpInitiateConnectionCommand.cc
+	(HttpInitiateConnectionCommand): Set timeout to PREF_DNS_TIMEOUT.
+	* src/prefs.h
+	(PREF_DNS_TIMEOUT): New definition.
+	* src/main.cc
+	(main): Added PREF_DNS_TIMEOUT.
 
 	To add the support for a non-compact response from a tracker:
 
@@ -57,6 +65,7 @@
 
 	* src/main.cc
 	(showVersion): Updated.
+	(showUsage): Updated.
 	
 2006-09-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

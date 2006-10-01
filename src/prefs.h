@@ -51,6 +51,8 @@
 // values: 1*digit
 #define PREF_TIMEOUT "timeout"
 // values: 1*digit
+#define PREF_DNS_TIMEOUT "dns_timeout"
+// values: 1*digit
 #define PREF_MAX_TRIES "max_try"
 // values: 1*digit
 #define PREF_MIN_SEGMENT_SIZE "min_segment_size"

@@ -1,0 +1,277 @@
+.TH "ARIA2C" 1 "October 2006" "aria2 0.8.1"
+
+.SH NAME
+.P
+aria2c \- The high speed download utility
+
+.SH SYNOPSIS
+.TS
+tab(^); l.
+ aria2c [\fIoptions\fR] \fIURL\fR ...
+ aria2c [\fIoptions\fR] \fB\-T\fR \fITORRENT_FILE FILE\fR ...
+ aria2c [\fIoptions\fR] \fB\-M\fR \fIMETALINK_FILE\fR
+.TE
+
+.SH DESCRIPTION
+.P
+aria2 is a utility for downloading files. It has completely new design
+concept from its predecessor, Aria, and is written from scratch.
+aria2 has a segmented downloading engine in its core.
+It can download one file from multiple URLs or multiple connections from one
+URL. This results in very high speed downloading, much faster than ordinary
+browsers. This engine in was implemented in a single\-thread model.
+The architecture is clean and easy to extend. aria2 currently supports HTTP,
+FTP, and BitTorrent. It also supports Metalink version 3.0.
+
+.P
+Please visit the project web site at \fIhttp://aria2.sourceforge.net\fR.
+
+.SH OPTIONS
+.TP
+\fB\-d\fR, \fB\-\-dir\fR=\fIDIR\fR
+The directory to store downloaded file.
+
+.TP
+\fB\-o\fR, \fB\-\-out\fR=\fIFILE\fR
+The file name for downloaded file.
+
+.TP
+\fB\-l\fR, \fB\-\-log\fR=\fILOG\fR
+The file path to store log. If '\-' is specified,
+log is written to stdout.
+
+.TP
+\fB\-D\fR, \fB\-\-daemon\fR
+Run as daemon.
+
+.TP
+\fB\-s\fR, \fB\-\-split\fR=\fIN\fR
+Download a file using \fIN\fR connections. \fIN\fR must be
+between 1 and 5. This option affects all URLs.
+Thus, aria2 connects to each URL with
+\fIN\fR connections.
+
+.TP
+\fB\-\-retry\-wait\fR=\fISEC\fR
+Set amount of time in second between requests
+for errors. Specify a value between 0 and 60.
+Default: 5
+
+.TP
+\fB\-t\fR, \fB\-\-timeout\fR=\fISEC\fR
+Set timeout in second. Default: 60
+
+.TP
+\fB\-m\fR, \fB\-\-max\-tries\fR=\fIN\fR
+Set number of tries. 0 means unlimited.
+Default: 5
+
+.TP
+\fB\-\-http\-proxy\fR=\fIHOST\fR:\fIPORT\fR
+Use HTTP proxy server. This affects to all
+URLs.
+
+.TP
+\fB\-\-http\-user\fR=\fIUSER\fR
+Set HTTP user. This affects to all URLs.
+
+.TP
+\fB\-\-http\-passwd\fR=\fIPASSWD\fR
+Set HTTP password. This affects to all URLs.
+
+.TP
+\fB\-\-http\-proxy\-user\fR=\fIUSER\fR
+Set HTTP proxy user. This affects to all URLs
+
+.TP
+\fB\-\-http\-proxy\-passwd\fR=\fIPASSWD\fR
+Set HTTP proxy password. This affects to all URLs.
+
+.TP
+\fB\-\-http\-proxy\-method\fR=\fIMETHOD\fR
+Set the method to use in proxy request.
+\fIMETHOD\fR is either 'get' or 'tunnel'.
+Default: tunnel
+
+.TP
+\fB\-\-http\-auth\-scheme\fR=\fISCHEME\fR
+Set HTTP authentication scheme. Currently, basic
+is the only supported scheme.
+Default: basic
+
+.TP
+\fB\-\-referer\fR=\fIREFERER\fR
+Set Referer. This affects to all URLs.
+
+.TP
+\fB\-\-ftp\-user\fR=\fIUSER\fR
+Set FTP user. This affects to all URLs.
+Default: anonymous
+.TP
+\fB\-\-ftp\-passwd\fR=\fIPASSWD\fR
+Set FTP password. This affects to all URLs.
+Default: ARIA2USER@
+
+.TP
+\fB\-\-ftp\-type\fR=\fITYPE\fR
+Set FTP transfer type. TYPE is either 'binary'
+or 'ascii'.
+Default: binary
+
+.TP
+\fB\-p\fR, \fB\-\-ftp\-pasv\fR
+Use passive mode in FTP.
+
+.TP
+\fB\-\-ftp\-via\-http\-proxy\fR=\fIMETHOD\fR
+Use HTTP proxy in FTP. \fIMETHOD\fR is either 'get' or
+\&'tunnel'.
+Default: tunnel
+
+.TP
+\fB\-\-lowest\-speed\-limit\fR=\fISPEED\fR
+Close connection if download speed is lower than
+or equal to this value(bytes per sec).
+0 means aria2 does not care lowest speed limit.
+You can append K or M(1K = 1024, 1M = 1024K).
+This option does not affect BitTorrent download.
+Default: 0
+
+.TP
+\fB\-\-max\-download\-limit\fR=\fISPEED\fR
+Set max download speed in bytes per sec.
+0 means unrestricted.
+You can append K or M(1K = 1024, 1M = 1024K).
+Default: 0
+
+.TP
+\fB\-T\fR, \fB\-\-torrent\-file\fR=\fITORRENT_FILE\fR
+The file path to .torrent file.
+
+.TP
+\fB\-\-follow\-torrent\fR=true|false
+Setting this option to false prevents aria2 to
+enter BitTorrent mode even if the filename of
+downloaded file ends with .torrent.
+Default: true
+
+.TP
+\fB\-S\fR, \fB\-\-show\-files\fR
+Print file listing of .torrent file and exit.
+
+.TP
+\fB\-\-direct\-file\-mapping\fR=true|false
+Directly read from and write to each file
+mentioned in .torrent file.
+Default: true
+
+.TP
+\fB\-\-listen\-port\fR=\fIPORT\fR
+Set port number to listen to for peer connection.
+
+.TP
+\fB\-\-max\-upload\-limit\fR=\fISPEED\fR
+Set max upload speed in bytes per sec.
+0 means unrestricted.
+You can append K or M(1K = 1024, 1M = 1024K).
+Default: 0
+
+.TP
+\fB\-\-select\-file\fR=\fIINDEX\fR...
+Set file to download by specifing its index.
+You can know file index through \fB\-\-show\-files\fR
+option. Multiple indexes can be specified by using
+\&',' like "3,6".
+You can also use '\-' to specify rangelike "1\-5".
+\&',' and '\-' can be used together.
+
+.TP
+\fB\-\-seed\-time\fR=\fIMINUTES\fR
+Specify seeding time in minutes. See also
+\fB\-\-seed\-ratio\fR option.
+
+.TP
+\fB\-\-seed\-ratio\fR=\fIRATIO\fR
+Specify share ratio. Seed completed torrents until
+share ratio reaches RATIO. 1.0 is encouraged.
+If \fB\-\-seed\-time\fR option is specified along with
+this option, seeding ends when at least one of
+the conditions is satisfied.
+
+.TP
+\fB\-M\fR, \fB\-\-metalink\-file\fR=\fIMETALINK_FILE\fR
+The file path to .metalink file.
+
+.TP
+\fB\-C\fR, \fB\-\-metalink\-servers\fR=\fINUM_SERVERS\fR
+The number of servers to connect to
+simultaneously. If more than one connection per
+server is required, use \fB\-s\fR option.
+Default: 15
+
+.TP
+\fB\-\-metalink\-version\fR=\fIVERSION\fR
+The version of file to download.
+
+.TP
+\fB\-\-metalink\-language\fR=\fILANGUAGE\fR
+The language of file to download.
+
+.TP
+\fB\-\-metalink\-os\fR=\fIOS\fR
+The operating system the file is targeted.
+
+.TP
+\fB\-\-follow\-metalink\fR=true|false
+Setting this option to false prevents aria2 to
+enter Metalink mode even if the filename of
+downloaded file ends with .metalink.
+Default: true
+
+.TP
+\fB\-v\fR, \fB\-\-version\fR
+Print the version number and exit.
+
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print this message and exit.
+
+.TP
+\fIURL\fR
+You can specify multiple URLs. All URLs must point to the same file
+or downloading fails.
+
+.TP
+\fIFILE\fR
+Specify files in multi\-file torrent to download. Use conjunction with
+\fB\-T\fR option. This arguments are ignored if you specify \fB\-\-select\-file\fR option.
+
+.SH REPORTING BUGS
+.P
+Report bugs to <tujikawa at users dot sourceforge dot net>
+
+.SH COPYRIGHT
+.P
+Copyright (C) 2006 Tatsuhiro Tsujikawa
+
+.P
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+.P
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+.P
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110\-1301 USA
+
+
+.\" man code generated by txt2tags 2.3 (http://txt2tags.sf.net)
+.\" cmdline: txt2tags -t man aria2c.t2t
+
