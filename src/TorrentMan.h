@@ -47,6 +47,7 @@
 #include "DiskAdaptor.h"
 #include "Request.h"
 #include "TimeA2.h"
+#include "PeerListProcessor.h"
 #include <deque>
 #include <map>
 #include <string>
@@ -85,7 +86,6 @@ public:
     index(index) {}
 };
 
-typedef deque<PeerHandle> Peers;
 typedef deque<HaveEntry> Haves;
 typedef deque<int> PieceIndexes;
 typedef deque<Piece> Pieces;
@@ -156,6 +156,7 @@ public:
   // TODO do not use this method
   void updatePeers(const Peers& peers);
   bool addPeer(const PeerHandle& peer);
+  void addPeer(const Peers& peers);
   //void updatePeer(const Peer* peer);
   const Peers& getPeers() const { return peers; }
   PeerHandle getPeer() const;

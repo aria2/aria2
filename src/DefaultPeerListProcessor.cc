@@ -32,30 +32,39 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
-#define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#include "DefaultPeerListProcessor.h"
+#include "List.h"
+#include "Dictionary.h"
+#include "Data.h"
 
-#include "AbstractCommand.h"
+bool DefaultPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
+  const List* peersList = dynamic_cast<const List*>(peersEntry);
+  return peersList != 0;
+}
 
-class FtpInitiateConnectionCommand : public AbstractCommand {
-private:
-#ifdef ENABLE_ASYNC_DNS
-  NameResolverHandle nameResolver;
-#endif // ENABLE_ASYNC_DNS
-  bool useHttpProxy() const;
-  bool useHttpProxyGet() const;
-  bool useHttpProxyConnect() const;
-#ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const {
-    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
+Peers DefaultPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
+  Peers peers;
+  const List* peersList = dynamic_cast<const List*>(peersEntry);
+  if(!peersList) {
+    return peers;
   }
-#endif // ENABLE_ASYNC_DNS
-protected:
-  bool executeInternal(Segment& segment);
-public:
-  FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
-  ~FtpInitiateConnectionCommand();
-};
-
-#endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+  const MetaList& metaList = peersList->getList();
+  for(MetaList::const_iterator itr = metaList.begin();
+      itr != metaList.end(); itr++) {
+    const Dictionary* peerDic = dynamic_cast<const Dictionary*>(*itr);
+    if(!peerDic) {
+      break;
+    }
+    const Data* ip = dynamic_cast<const Data*>(peerDic->get("ip"));
+    const Data* port = dynamic_cast<const Data*>(peerDic->get("port"));
+    if(!ip || !port || !port->isNumber()) {
+      continue;
+    }
+    PeerHandle peer = PeerHandle(new Peer(ip->toString(),
+					  port->toInt(),
+					  pieceLength,
+					  totalLength));
+    peers.push_back(peer);
+  }
+  return peers;
+}

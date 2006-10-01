@@ -32,30 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
-#define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#ifndef _D_PEER_LIST_PROCESSOR_H_
+#define _D_PEER_LIST_PROCESSOR_H_
 
-#include "AbstractCommand.h"
+#include "common.h"
+#include "MetaEntry.h"
+#include "Peer.h"
+#include "SharedHandle.h"
 
-class FtpInitiateConnectionCommand : public AbstractCommand {
-private:
-#ifdef ENABLE_ASYNC_DNS
-  NameResolverHandle nameResolver;
-#endif // ENABLE_ASYNC_DNS
-  bool useHttpProxy() const;
-  bool useHttpProxyGet() const;
-  bool useHttpProxyConnect() const;
-#ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const {
-    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
-  }
-#endif // ENABLE_ASYNC_DNS
-protected:
-  bool executeInternal(Segment& segment);
+typedef deque<PeerHandle> Peers;
+
+class PeerListProcessor {
 public:
-  FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
-  ~FtpInitiateConnectionCommand();
+  virtual ~PeerListProcessor() {}
+
+  virtual Peers extractPeer(const MetaEntry* peersEntry) = 0;
+
+  virtual bool canHandle(const MetaEntry* peersEntry) const = 0;
 };
 
-#endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+typedef SharedHandle<PeerListProcessor> PeerListProcessorHandle;
+
+#endif // _D_PEER_LIST_PROCESSOR_H_

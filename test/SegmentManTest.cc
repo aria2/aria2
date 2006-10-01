@@ -12,6 +12,7 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSaveAndLoad);
   CPPUNIT_TEST(testNullBitfield);
   CPPUNIT_TEST(testCancelSegmentOnNullBitfield);
+  CPPUNIT_TEST(testBug);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -22,6 +23,7 @@ public:
   void testSaveAndLoad();
   void testNullBitfield();
   void testCancelSegmentOnNullBitfield();
+  void testBug();
 };
 
 
@@ -41,20 +43,20 @@ void SegmentManTest::testSaveAndLoad() {
     segmentMan.ufilename = filename;
     segmentMan.initBitfield(1024*1024, segmentMan.totalSize);
     
-    Segment2 seg1;
-    segmentMan.getSegment2(seg1, 1);
+    Segment seg1;
+    segmentMan.getSegment(seg1, 1);
     seg1.writtenLength = seg1.length;
-    segmentMan.completeSegment2(1, seg1);
+    segmentMan.completeSegment(1, seg1);
     
-    Segment2 seg2;
-    segmentMan.getSegment2(seg2, 2);
+    Segment seg2;
+    segmentMan.getSegment(seg2, 2);
     seg2.writtenLength = 512*1024;
-    segmentMan.updateSegment2(2, seg2);
+    segmentMan.updateSegment(2, seg2);
     
-    Segment2 seg3;
-    segmentMan.getSegment2(seg3, 3);
+    Segment seg3;
+    segmentMan.getSegment(seg3, 3);
     seg2.writtenLength = 512*1024;
-    segmentMan.updateSegment2(2, seg2);
+    segmentMan.updateSegment(2, seg2);
     
     segmentMan.save();
     
@@ -66,12 +68,12 @@ void SegmentManTest::testSaveAndLoad() {
 
     CPPUNIT_ASSERT_EQUAL(segmentMan.totalSize, segmentManLoad.totalSize);
   
-    Segment2 seg2Load;
-    segmentManLoad.getSegment2(seg2Load, 2, seg2.index);
+    Segment seg2Load;
+    segmentManLoad.getSegment(seg2Load, 2, seg2.index);
     CPPUNIT_ASSERT_EQUAL(seg2, seg2Load);
     
-    Segment2 seg3Load;
-    segmentManLoad.getSegment2(seg3Load, 3, seg3.index);
+    Segment seg3Load;
+    segmentManLoad.getSegment(seg3Load, 3, seg3.index);
     CPPUNIT_ASSERT_EQUAL(seg3, seg3Load);
 
     CPPUNIT_ASSERT_EQUAL(segmentMan.getDownloadLength(), segmentManLoad.getDownloadLength());
@@ -88,26 +90,36 @@ void SegmentManTest::testNullBitfield() {
   op.put(PREF_SEGMENT_SIZE, Util::itos(1024*1024));
   segmentMan.option = &op;
 
-  Segment2 segment;
-  CPPUNIT_ASSERT(segmentMan.getSegment2(segment, 1));
-  CPPUNIT_ASSERT_EQUAL(Segment2(0, 0, 0), segment);
+  Segment segment;
+  CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
+  CPPUNIT_ASSERT_EQUAL(Segment(0, 0, 0), segment);
 
-  Segment2 segment2;
-  CPPUNIT_ASSERT(!segmentMan.getSegment2(segment2, 2));
+  Segment segment2;
+  CPPUNIT_ASSERT(!segmentMan.getSegment(segment2, 2));
 
   long long int totalLength = 1024*1024;
   segment.writtenLength = totalLength;
-  CPPUNIT_ASSERT(segmentMan.updateSegment2(1, segment));
+  CPPUNIT_ASSERT(segmentMan.updateSegment(1, segment));
   CPPUNIT_ASSERT_EQUAL(totalLength, segmentMan.getDownloadLength());
-  CPPUNIT_ASSERT(segmentMan.completeSegment2(1, segment));
+  CPPUNIT_ASSERT(segmentMan.completeSegment(1, segment));
   CPPUNIT_ASSERT_EQUAL(totalLength, segmentMan.getDownloadLength());
 }
 
 void SegmentManTest::testCancelSegmentOnNullBitfield() {
   SegmentMan segmentMan;
   
-  Segment2 segment;
-  CPPUNIT_ASSERT(segmentMan.getSegment2(segment, 1));
-  CPPUNIT_ASSERT(segmentMan.cancelSegment2(1, segment));
-  CPPUNIT_ASSERT(segmentMan.getSegment2(segment, 1));
+  Segment segment;
+  CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
+  segmentMan.cancelSegment(1);
+  CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
+}
+
+void SegmentManTest::testBug() {
+  SegmentMan segmentMan;
+
+  segmentMan.ufilename = "bug";
+
+  cerr << "########################################" << endl;
+  segmentMan.load();
+
 }

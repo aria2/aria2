@@ -89,12 +89,23 @@ void TorrentMan::updatePeers(const Peers& peers) {
   this->peers = peers;
 }
 
-bool TorrentMan::addPeer(const PeerHandle& peer) {
-  if(peers.size() >= MAX_PEER_LIST_SIZE) {
-    deleteUnusedPeer(peers.size()-MAX_PEER_LIST_SIZE+15);
+void TorrentMan::addPeer(const Peers& peers) {
+  for(Peers::const_iterator itr = peers.begin();
+      itr != peers.end(); itr++) {
+    const PeerHandle& peer = *itr;
+    if(addPeer(peer)) {
+      logger->debug("Adding peer %s:%d",
+		    peer->ipaddr.c_str(), peer->port);
+    }
   }
+}
+
+bool TorrentMan::addPeer(const PeerHandle& peer) {
   Peers::iterator itr = find(peers.begin(), peers.end(), peer);
   if(itr == peers.end()) {
+    if(peers.size() > MAX_PEER_LIST_SIZE) {
+      deleteUnusedPeer(peers.size()-MAX_PEER_LIST_SIZE+1);
+    }
     ++peerEntryIdCounter;
     peer->entryId = peerEntryIdCounter;
     peers.push_back(peer);

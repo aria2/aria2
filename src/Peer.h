@@ -75,8 +75,6 @@ private:
   long long int sessionDownloadLength;
   int pieceLength;
   int latency;
-
-  void resetStatus();
 public:
   Peer(string ipaddr, int port, int pieceLength, long long int totalLength)
     :entryId(0), ipaddr(ipaddr), port(port), error(0),
@@ -107,6 +105,8 @@ public:
   bool operator!=(const Peer& p) {
     return !(*this == p);
   }
+
+  void resetStatus();
 
   void updateUploadLength(int bytes) {
     peerStat.updateUploadLength(bytes);

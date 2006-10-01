@@ -1,4 +1,3 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
@@ -32,30 +31,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
-#define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#include "CompactPeerListProcessor.h"
+#include "Data.h"
+#include <netinet/in.h>
 
-#include "AbstractCommand.h"
+bool CompactPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
+  return dynamic_cast<const Data*>(peersEntry) != 0;
+}
 
-class FtpInitiateConnectionCommand : public AbstractCommand {
-private:
-#ifdef ENABLE_ASYNC_DNS
-  NameResolverHandle nameResolver;
-#endif // ENABLE_ASYNC_DNS
-  bool useHttpProxy() const;
-  bool useHttpProxyGet() const;
-  bool useHttpProxyConnect() const;
-#ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const {
-    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
+Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
+  Peers peers;
+
+  const Data* peersData = (const Data*)peersEntry;
+  if(peersData->getLen() > 0) {
+    for(int i = 0; i < peersData->getLen(); i += 6) {
+      unsigned int ipaddr1 = (unsigned char)*(peersData->getData()+i);
+      unsigned int ipaddr2 = (unsigned char)*(peersData->getData()+i+1);
+      unsigned int ipaddr3 = (unsigned char)*(peersData->getData()+i+2);
+      unsigned int ipaddr4 = (unsigned char)*(peersData->getData()+i+3);
+      unsigned int port = ntohs(*(unsigned short int*)(peersData->getData()+i+4));
+      char ipaddr[16];
+      
+      snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
+	       ipaddr1, ipaddr2, ipaddr3, ipaddr4);
+      PeerHandle peer =
+	PeerHandle(new Peer(ipaddr, port, pieceLength, totalLength));
+      
+      peers.push_back(peer);
+    }
   }
-#endif // ENABLE_ASYNC_DNS
-protected:
-  bool executeInternal(Segment& segment);
-public:
-  FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
-  ~FtpInitiateConnectionCommand();
-};
-
-#endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+  return peers;
+}

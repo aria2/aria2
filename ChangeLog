@@ -1,3 +1,63 @@
+2006-10-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add timeout to async name resolution:
+
+	* src/AbstractCommand.h
+	(nameResolveFinished): New function. This is not elegant way. It needs
+	to be more refined.
+	(nameResolverCheck): New variable.
+	* src/AbstractCommand.cc
+	(AbstractCommand): Added nameResolverCheck.
+	(execute): Added the check whether the name resolution has finished.
+	(setNameResolverCheck): Set nameResolverCheck to true.
+	(disableNameResolverCheck): Set nameResolverCheck to false.
+	(nameResolverFinished): New function.
+	* src/FtpInitiateConnectionCommand.h
+	(nameResolverFinished): New function.
+	* src/HttpInitiateConnectionCommand.h
+	(nameResolverFinished): New function.
+
+	To add the support for a non-compact response from a tracker:
+
+	* src/PeerListProcessor.h: New class.
+	* src/DefaultPeerListProcessor.h: New class.
+	* src/DefaultPeerListProcessor.cc: New class.
+	* src/CompactPeerListProcessor.h: New class.
+	* src/CompactPeerListProcessor.cc: New class.
+	* src/DelegatingPeerListProcessor.h: New class.
+	* src/DelegatingPeerListProcessor.cc: New class.	
+	* src/TorrentMan.cc
+	(addPeer): New function(overload).
+	(addPeer): Delete unused peers only when new peer is added.
+	* src/TorrentMan.h
+	(PeerListProcessor.h): Included.
+	(Peers): Removed.
+	(addPeer): New function(overload).
+	* src/TrackerUpdateCommand.cc
+	(netinet/in.h): Removed.
+	(DelegatingPeerListProcessor.h): Included.
+	(execute): Updated to use DelegatingPeerListProcessor.
+	
+	To fix the memory leak in TorrentMan::peers:
+
+	* src/PeerAbstractCommand.cc
+	(onAbort): Added peer->resetStatus().
+	* src/Peer.h
+	(resetStatus): Made public.
+	
+	To improve the precision of the speed calculation:
+
+	* src/SpeedCalc.h
+	(nextInterval): New variable.
+	* src/SpeedCalc.cc
+	(reset): Added nextInterval.
+	(isIntervalOver): Use nextInterval instead of CHANGE_INTERVAL_SEC.
+	(changeSw): Set nextInterval to 15 seconds relative to the current
+	instant time.
+
+	* src/main.cc
+	(showVersion): Updated.
+	
 2006-09-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/main.cc

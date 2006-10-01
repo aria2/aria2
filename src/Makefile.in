@@ -97,7 +97,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteria.h\
 @ENABLE_BITTORRENT_TRUE@	ShareRatioSeedCriteria.h\
 @ENABLE_BITTORRENT_TRUE@	UnionSeedCriteria.h\
-@ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.cc SeedCheckCommand.h
+@ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.cc SeedCheckCommand.h\
+@ENABLE_BITTORRENT_TRUE@	PeerListProcessor.h\
+@ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h\
+@ENABLE_BITTORRENT_TRUE@	CompactPeerListProcessor.cc CompactPeerListProcessor.h\
+@ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h
 
 @ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -203,8 +207,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	TorrentRequestInfo.cc TorrentRequestInfo.h SeedCriteria.h \
 	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
-	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
-	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
+	PeerListProcessor.h DefaultPeerListProcessor.cc \
+	DefaultPeerListProcessor.h CompactPeerListProcessor.cc \
+	CompactPeerListProcessor.h DelegatingPeerListProcessor.cc \
+	DelegatingPeerListProcessor.h Metalinker.cc Metalinker.h \
+	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
+	MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h
 @ENABLE_ASYNC_DNS_TRUE@am__objects_1 = NameResolver.$(OBJEXT)
@@ -257,7 +265,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	CompactPeerListProcessor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -583,11 +594,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DelegatingPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dictionary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Directory.Po@am__quote@

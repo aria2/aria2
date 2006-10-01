@@ -1,4 +1,3 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
@@ -32,30 +31,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
-#define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#ifndef _D_COMPACT_PEER_LIST_PROCESSOR_H_
+#define _D_COMPACT_PEER_LIST_PROCESSOR_H_
 
-#include "AbstractCommand.h"
+#include "PeerListProcessor.h"
 
-class FtpInitiateConnectionCommand : public AbstractCommand {
+class CompactPeerListProcessor : public PeerListProcessor {
 private:
-#ifdef ENABLE_ASYNC_DNS
-  NameResolverHandle nameResolver;
-#endif // ENABLE_ASYNC_DNS
-  bool useHttpProxy() const;
-  bool useHttpProxyGet() const;
-  bool useHttpProxyConnect() const;
-#ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const {
-    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
-  }
-#endif // ENABLE_ASYNC_DNS
-protected:
-  bool executeInternal(Segment& segment);
+  int pieceLength;
+  long long int totalLength;
 public:
-  FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
-  ~FtpInitiateConnectionCommand();
+  CompactPeerListProcessor(int pieceLength, long long int totalLength)
+  :pieceLength(pieceLength),
+   totalLength(totalLength) {}
+
+  virtual ~CompactPeerListProcessor() {}
+
+  virtual Peers extractPeer(const MetaEntry* peersEntry);
+
+  virtual bool canHandle(const MetaEntry* peersEntry) const;
 };
 
-#endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#endif // _D_COMPACT_PEER_LIST_PROCESSOR_H_

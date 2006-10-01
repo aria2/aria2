@@ -40,7 +40,7 @@
 #include "PeerInitiateConnectionCommand.h"
 #include "SleepCommand.h"
 #include "Util.h"
-#include <netinet/in.h>
+#include "DelegatingPeerListProcessor.h"
 
 TrackerUpdateCommand::TrackerUpdateCommand(int cuid, TorrentDownloadEngine*e):Command(cuid), e(e) {
   logger = LogFactory::getInstance();
@@ -132,32 +132,15 @@ bool TrackerUpdateCommand::execute() {
       logger->debug("CUID#%d - Incomplete:%d",
 		    cuid, e->torrentMan->incomplete);
     }
+    const MetaEntry* peersEntry = response->get("peers");
     if(!e->torrentMan->isHalt() &&
        e->torrentMan->connections < MIN_PEERS &&
-       dynamic_cast<const Data*>(response->get("peers"))) {
-      Data* peers = (Data*)response->get("peers");
-      if(peers != NULL && peers->getLen() > 0) {
-	for(int i = 0; i < peers->getLen(); i += 6) {
-	  unsigned int ipaddr1 = (unsigned char)*(peers->getData()+i);
-	  unsigned int ipaddr2 = (unsigned char)*(peers->getData()+i+1);
-	  unsigned int ipaddr3 = (unsigned char)*(peers->getData()+i+2);
-	  unsigned int ipaddr4 = (unsigned char)*(peers->getData()+i+3);
-	  unsigned int port = ntohs(*(unsigned short int*)(peers->getData()+i+4));
-	  char ipaddr[16];
-	  
-	  snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
-		   ipaddr1, ipaddr2, ipaddr3, ipaddr4);
-	  PeerHandle peer =
-	    PeerHandle(new Peer(ipaddr, port, e->torrentMan->pieceLength,
-				e->torrentMan->getTotalLength()));
-	  if(e->torrentMan->addPeer(peer)) {
-	    logger->debug("CUID#%d - Adding peer %s:%d",
-			  cuid, peer->ipaddr.c_str(), peer->port);
-	  }
-	}
-      } else {
-	logger->info("CUID#%d - No peer list received.", cuid);
-      }
+       peersEntry) {
+      DelegatingPeerListProcessor proc(e->torrentMan->pieceLength,
+				       e->torrentMan->getTotalLength());
+      Peers peers = proc.extractPeer(peersEntry);
+      e->torrentMan->addPeer(peers);
+
       while(e->torrentMan->isPeerAvailable() &&
 	    e->torrentMan->connections < MIN_PEERS) {
 	PeerHandle peer = e->torrentMan->getPeer();
@@ -169,6 +152,10 @@ bool TrackerUpdateCommand::execute() {
 	logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
       }
     }
+    if(!peersEntry) {
+      logger->info("CUID#%d - No peer list received.", cuid);
+    }
+
     if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {
       e->torrentMan->req->setTrackerEvent(Request::AUTO);
     }

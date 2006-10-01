@@ -55,6 +55,12 @@ protected:
    * evaluated by RequestCommand.
    */
   bool executeInternal(Segment& segment);
+#ifdef ENABLE_ASYNC_DNS
+  virtual bool nameResolveFinished() const {
+    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
+      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
+  }
+#endif // ENABLE_ASYNC_DNS
 public:
   HttpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
   ~HttpInitiateConnectionCommand();

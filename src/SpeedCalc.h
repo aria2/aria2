@@ -47,6 +47,7 @@ private:
   int prevSpeed;
   Time start;
   long long int accumulatedLength;
+  int nextInterval;
 
   bool isIntervalOver() const;
   void changeSw();

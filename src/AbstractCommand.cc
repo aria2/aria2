@@ -44,7 +44,8 @@
 AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e,
 				 const SocketHandle& s):
   Command(cuid), req(req), e(e), socket(s),
-  checkSocketIsReadable(false), checkSocketIsWritable(false) {
+  checkSocketIsReadable(false), checkSocketIsWritable(false),
+  nameResolverCheck(false) {
   
   setReadCheckSocket(socket);
   timeout = this->e->option->getAsInt(PREF_TIMEOUT);
@@ -73,7 +74,10 @@ bool AbstractCommand::execute() {
     }
     if(checkSocketIsReadable && readCheckTarget->isReadable(0) ||
        checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
-       !checkSocketIsReadable && !checkSocketIsWritable) {
+#ifdef ENABLE_ASYNC_DNS
+       nameResolverCheck && nameResolveFinished() ||
+#endif // ENABLE_ASYNC_DNS
+       !checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck) {
       checkPoint.reset();
       Segment segment;
       if(e->segmentMan->downloadStarted) {
@@ -200,10 +204,12 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
 
 #ifdef ENABLE_ASYNC_DNS
 void AbstractCommand::setNameResolverCheck(const NameResolverHandle& resolver) {
+  nameResolverCheck = true;
   e->addNameResolverCheck(resolver, this);
 }
 
 void AbstractCommand::disableNameResolverCheck(const NameResolverHandle& resolver) {
+  nameResolverCheck = false;
   e->deleteNameResolverCheck(resolver, this);
 }
 
@@ -227,5 +233,9 @@ bool AbstractCommand::resolveHostname(const string& hostname,
   default:
     return false;
   }
+}
+
+bool AbstractCommand::nameResolveFinished() const {
+  return false;
 }
 #endif // ENABLE_ASYNC_DNS

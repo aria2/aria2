@@ -99,6 +99,7 @@ void PeerAbstractCommand::onAbort(Exception* ex) {
   } else {
     peer->error += MAX_PEER_ERROR;
   }
+  peer->resetStatus();
 }
 
 void PeerAbstractCommand::disableReadCheckSocket() {

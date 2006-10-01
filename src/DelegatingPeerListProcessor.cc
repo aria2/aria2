@@ -1,4 +1,3 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
@@ -32,30 +31,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
-#define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+#include "DelegatingPeerListProcessor.h"
 
-#include "AbstractCommand.h"
-
-class FtpInitiateConnectionCommand : public AbstractCommand {
-private:
-#ifdef ENABLE_ASYNC_DNS
-  NameResolverHandle nameResolver;
-#endif // ENABLE_ASYNC_DNS
-  bool useHttpProxy() const;
-  bool useHttpProxyGet() const;
-  bool useHttpProxyConnect() const;
-#ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const {
-    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
+Peers DelegatingPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
+  Peers peers;
+  for(PeerListProcessors::iterator itr = processors.begin();
+      itr != processors.end(); itr++) {
+    PeerListProcessorHandle processor = *itr;
+    if(processor->canHandle(peersEntry)) {
+      Peers tempPeers = processor->extractPeer(peersEntry);
+      copy(tempPeers.begin(), tempPeers.end(), back_inserter(peers));
+      break;
+    }
   }
-#endif // ENABLE_ASYNC_DNS
-protected:
-  bool executeInternal(Segment& segment);
-public:
-  FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
-  ~FtpInitiateConnectionCommand();
-};
+  return peers;
+}
 
-#endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_
+bool DelegatingPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
+  for(PeerListProcessors::const_iterator itr = processors.begin();
+      itr != processors.end(); itr++) {
+    if((*itr)->canHandle(peersEntry)) {
+      return true;
+    }
+  }
+}

@@ -120,7 +120,11 @@ SRCS += MetaEntry.h\
 	TimeSeedCriteria.h\
 	ShareRatioSeedCriteria.h\
 	UnionSeedCriteria.h\
-	SeedCheckCommand.cc SeedCheckCommand.h
+	SeedCheckCommand.cc SeedCheckCommand.h\
+	PeerListProcessor.h\
+	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h\
+	CompactPeerListProcessor.cc CompactPeerListProcessor.h\
+	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

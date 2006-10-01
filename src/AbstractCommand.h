@@ -63,6 +63,7 @@ protected:
   void setNameResolverCheck(const NameResolverHandle& resolver);
   void disableNameResolverCheck(const NameResolverHandle& resolver);
   bool resolveHostname(const string& hostname, const NameResolverHandle& nameResolver);
+  virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
   void setTimeout(int timeout) { this->timeout = timeout; }
 private:
@@ -70,6 +71,7 @@ private:
   bool checkSocketIsWritable;
   SocketHandle readCheckTarget;
   SocketHandle writeCheckTarget;
+  bool nameResolverCheck;
 public:
   AbstractCommand(int cuid, Request* req, DownloadEngine* e, const SocketHandle& s = SocketHandle());
   virtual ~AbstractCommand();
