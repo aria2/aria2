@@ -43,14 +43,14 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/codeset.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/glibc21.m4 \
 	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/intdiv0.m4 \
 	$(top_srcdir)/m4/inttypes-pri.m4 $(top_srcdir)/m4/inttypes.m4 \
-	$(top_srcdir)/m4/inttypes_h.m4 $(top_srcdir)/m4/lcmessage.m4 \
-	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
-	$(top_srcdir)/m4/lib-prefix.m4 $(top_srcdir)/m4/libares.m4 \
-	$(top_srcdir)/m4/libcares.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/stdint_h.m4 \
-	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/ulonglong.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/inttypes_h.m4 $(top_srcdir)/m4/isc-posix.m4 \
+	$(top_srcdir)/m4/lcmessage.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/libares.m4 $(top_srcdir)/m4/libcares.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/openssl.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
+	$(top_srcdir)/m4/ulonglong.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -77,7 +77,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
 	ShareRatioSeedCriteriaTest.$(OBJEXT) \
 	TimeSeedCriteriaTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
-	SpeedCalcTest.$(OBJEXT) DefaultPeerListProcessorTest.$(OBJEXT)
+	SpeedCalcTest.$(OBJEXT) DefaultPeerListProcessorTest.$(OBJEXT) \
+	AnnounceListTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -134,6 +135,7 @@ EXEEXT = @EXEEXT@
 GENCAT = @GENCAT@
 GLIBC21 = @GLIBC21@
 GMSGFMT = @GMSGFMT@
+GREP = @GREP@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -188,10 +190,9 @@ XML2_CONFIG = @XML2_CONFIG@
 XML_CPPFLAGS = @XML_CPPFLAGS@
 XML_LIBS = @XML_LIBS@
 YACC = @YACC@
+YFLAGS = @YFLAGS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -208,12 +209,16 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
@@ -224,8 +229,10 @@ localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -271,7 +278,8 @@ aria2c_SOURCES = AllTest.cc\
 	TimeSeedCriteriaTest.cc\
 	SegmentManTest.cc\
 	SpeedCalcTest.cc\
-	DefaultPeerListProcessorTest.cc
+	DefaultPeerListProcessorTest.cc\
+	AnnounceListTest.cc
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -334,6 +342,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllowedFastMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMessageTest.Po@am__quote@

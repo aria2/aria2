@@ -39,7 +39,7 @@
 #include "message.h"
 #include "prefs.h"
 
-FtpNegotiationCommand::FtpNegotiationCommand(int cuid, Request* req,
+FtpNegotiationCommand::FtpNegotiationCommand(int cuid, const RequestHandle req,
 					     DownloadEngine* e,
 					     const SocketHandle& s):
   AbstractCommand(cuid, req, e, s), sequence(SEQ_RECV_GREETING)

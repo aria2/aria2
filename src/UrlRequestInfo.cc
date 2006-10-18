@@ -97,14 +97,13 @@ public:
 
   void operator()(const string& url) {
     for(int s = 1; s <= split; s++) {
-      Request* req = new Request();
+      RequestHandle req;
       req->setReferer(referer);
       if(req->setUrl(url)) {
 	requestsPtr->push_back(req);
       } else {
 	fprintf(stderr, _("Unrecognized URL or unsupported protocol: %s\n"),
 		req->getUrl().c_str());
-	delete req;
       }
     }
   }
@@ -146,9 +145,6 @@ RequestInfo* UrlRequestInfo::execute() {
     delete e;
     fail = true;
   }
-  for_each(requests.begin(), requests.end(), Deleter());
-  for_each(reserved.begin(), reserved.end(), Deleter());
-  
   setSignalHander(SIGINT, SIG_DFL, 0);
   setSignalHander(SIGTERM, SIG_DFL, 0);
   

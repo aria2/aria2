@@ -332,6 +332,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_MAX_DOWNLOAD_LIMIT, "0");
   op->put(PREF_MAX_UPLOAD_LIMIT, "0");
   op->put(PREF_STARTUP_IDLE_TIME, "10");
+  op->put(PREF_TRACKER_MAX_TRIES, "10");
   while(1) {
     int optIndex = 0;
     int lopt;

@@ -72,7 +72,7 @@ TorrentMan::TorrentMan():bitfield(0),
 			 incomplete(0),
 			 connections(0),
 			 trackers(0),
-			 req(0),
+			 trackerNumTry(0),
 			 diskAdaptor(0)
 {
   logger = LogFactory::getInstance();
@@ -81,7 +81,6 @@ TorrentMan::TorrentMan():bitfield(0),
 TorrentMan::~TorrentMan() {
   delete bitfield;
   delete diskAdaptor;
-  delete req;
 }
 
 // TODO do not use this method in application code
@@ -447,7 +446,15 @@ void TorrentMan::setupInternal1(const string& metaInfoFile) {
   Directory* topDir = NULL;
   readFileEntry(fileEntries, &topDir, infoDic, metaInfoFile);
 
-  announce = ((Data*)topDic->get("announce"))->toString();
+  string announce = ((Data*)topDic->get("announce"))->toString();
+  const MetaEntry* announces = topDic->get("announce-list");
+  if(announces) {
+    announceList.reconfigure(announces);
+    announceList.shuffle();
+  }
+  if(!announceList.countTier()) {
+    announceList.reconfigure(announce);
+  }
   pieceLength = ((Data*)infoDic->get("piece length"))->toInt();
   pieces = totalLength/pieceLength+(totalLength%pieceLength ? 1 : 0);
   Data* piecesHashData = (Data*)infoDic->get("pieces");

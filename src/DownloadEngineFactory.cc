@@ -80,9 +80,6 @@ DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
 					       const string& torrentFile,
 					       const Strings& targetFiles)
 {
-  Request* req = new Request();
-  req->isTorrent = true;
-  req->setTrackerEvent(Request::STARTED);
   TorrentConsoleDownloadEngine* te = new TorrentConsoleDownloadEngine();
   te->option = op;
   ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
@@ -92,7 +89,6 @@ DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
   te->torrentMan = new TorrentMan();
   te->torrentMan->setStoreDir(op->get(PREF_DIR));
   te->torrentMan->option = op;
-  te->torrentMan->req = req;
   Integers selectIndexes;
   Util::unfoldRange(op->get(PREF_SELECT_FILE), selectIndexes);
   if(selectIndexes.size()) {

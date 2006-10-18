@@ -53,7 +53,7 @@
 // values: 1*digit
 #define PREF_DNS_TIMEOUT "dns_timeout"
 // values: 1*digit
-#define PREF_MAX_TRIES "max_try"
+#define PREF_MAX_TRIES "max_tries"
 // values: 1*digit
 #define PREF_MIN_SEGMENT_SIZE "min_segment_size"
 // values: 1*digit
@@ -149,6 +149,8 @@
 #define PREF_SEED_TIME "seed_time"
 // values: 1*digit ['.' [ 1*digit ] ]
 #define PREF_SEED_RATIO "seed_ratio"
+// values: 1*digit
+#define PREF_TRACKER_MAX_TRIES "tracker_max_tries"
 
 /**
  * Metalink related preferences

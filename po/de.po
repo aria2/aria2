@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-10-01 22:14+0900\n"
+"POT-Creation-Date: 2006-10-18 23:54+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 
-#: src/TorrentMan.cc:678
+#: src/TorrentMan.cc:685
 #, fuzzy
 msgid "Download of selected files was complete."
 msgstr " Nur ausgewählte Dateien abrufen:"
 
-#: src/TorrentMan.cc:681
+#: src/TorrentMan.cc:688
 #, fuzzy
 msgid "The download was complete."
 msgstr ""
@@ -38,7 +38,7 @@ msgstr ""
 "Abruf ist vollständig. <%s>\n"
 
 #: src/RequestInfo.h:105
-#, fuzzy
+#, fuzzy, c-format
 msgid ""
 "\n"
 "The download was not complete because of errors. Check the log.\n"
@@ -369,15 +369,17 @@ msgstr "Konnte Daten nicht erhalten, Ursache: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "Datenermittelung fehlgeschlagen, Ursache: %s"
 
-#: src/DownloadEngineFactory.cc:114
+#: src/DownloadEngineFactory.cc:110
+#, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "Fehler beim Binden an Port aufgetreten.\n"
 
-#: src/TorrentRequestInfo.cc:88
+#: src/TorrentRequestInfo.cc:90
 msgid "Files:"
 msgstr "Dateien:"
 
 #: src/UrlRequestInfo.cc:76
+#, c-format
 msgid ""
 "\n"
 "stopping application...\n"
@@ -386,6 +388,7 @@ msgstr ""
 "Anwendung wird gestoppt ...\n"
 
 #: src/UrlRequestInfo.cc:81
+#, c-format
 msgid "done\n"
 msgstr "erledigt\n"
 
@@ -897,117 +900,117 @@ msgstr ""
 msgid "Report bugs to %s"
 msgstr "Fehler an %s melden"
 
-#: src/main.cc:401
+#: src/main.cc:403
 msgid "unrecognized proxy format"
 msgstr "nicht erkanntes Proxy-Format"
 
-#: src/main.cc:428
+#: src/main.cc:430
 msgid "Currently, supported authentication scheme is basic."
 msgstr "Derzeit unterstütztes Authentifizierungsschema ist basic."
 
-#: src/main.cc:437
+#: src/main.cc:439
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait muss zwischen 0 und 60 liegen."
 
-#: src/main.cc:454
+#: src/main.cc:456
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type muss entweder 'binary' oder 'ascii' sein."
 
-#: src/main.cc:463
+#: src/main.cc:465
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy muss entweder 'get' oder 'tunnel' sein."
 
-#: src/main.cc:471
+#: src/main.cc:473
 msgid "min-segment-size invalid"
 msgstr "min-segment-size ungültig"
 
-#: src/main.cc:482
+#: src/main.cc:484
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method muss entweder 'get' oder 'tunnel' sein."
 
-#: src/main.cc:490
+#: src/main.cc:492
 msgid "listen-port must be between 1024 and 65535."
 msgstr "listen-port muss zwischen 1024 und 65535 liegen."
 
-#: src/main.cc:503
+#: src/main.cc:505
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
 
-#: src/main.cc:517
+#: src/main.cc:519
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr "direct-file-mapping muss entweder 'true' oder 'false' sein."
 
-#: src/main.cc:528
+#: src/main.cc:530
 msgid "upload-limit must be greater than or equal to 0."
 msgstr "upload-limit muss größer oder gleich 0 sein."
 
-#: src/main.cc:541
+#: src/main.cc:543
 #, fuzzy
 msgid "seed-time must be greater than or equal to 0."
 msgstr "upload-limit muss größer oder gleich 0 sein."
 
-#: src/main.cc:551
+#: src/main.cc:553
 #, fuzzy
 msgid "seed-ratio must be greater than or equal to 0.0."
 msgstr "upload-limit muss größer oder gleich 0 sein."
 
-#: src/main.cc:561
+#: src/main.cc:563
 #, fuzzy
 msgid "max-upload-limit must be greater than or equal to 0"
 msgstr "upload-limit muss größer oder gleich 0 sein."
 
-#: src/main.cc:583
+#: src/main.cc:585
 #, fuzzy
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
 
-#: src/main.cc:591
+#: src/main.cc:593
 #, fuzzy
 msgid "lowest-speed-limit must be greater than or equal to 0"
 msgstr "upload-limit muss größer oder gleich 0 sein."
 
-#: src/main.cc:601
+#: src/main.cc:603
 #, fuzzy
 msgid "max-download-limit must be greater than or equal to 0"
 msgstr "upload-limit muss größer oder gleich 0 sein."
 
-#: src/main.cc:630
+#: src/main.cc:632
 msgid "split must be between 1 and 5."
 msgstr "split muss zwischen 1 und 5 liegen."
 
-#: src/main.cc:643
+#: src/main.cc:645
 msgid "timeout must be between 1 and 600"
 msgstr "timeout muss zwischen 1 und 600 liegen."
 
-#: src/main.cc:652
+#: src/main.cc:654
 msgid "max-tries invalid"
 msgstr "max-tries ungültig"
 
-#: src/main.cc:674
+#: src/main.cc:676
 #, fuzzy
 msgid "metalink-servers must be greater than 0."
 msgstr "upload-limit muss größer oder gleich 0 sein."
 
-#: src/main.cc:694
+#: src/main.cc:696
 msgid "specify at least one URL"
 msgstr "Geben Sie zumindest eine URL an"
 
-#: src/main.cc:701
+#: src/main.cc:703
 msgid "daemon failed"
 msgstr "Daemon-Start nicht erfolgreich"
 
-#: src/main.cc:764
+#: src/main.cc:766
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
 "file."
 msgstr ""
 
-#: src/main.cc:768
+#: src/main.cc:770
 msgid "checksum OK."
 msgstr ""
 
-#: src/main.cc:771
+#: src/main.cc:773
 msgid "checksum ERROR."
 msgstr ""
 

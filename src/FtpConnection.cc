@@ -41,7 +41,7 @@
 #include "LogFactory.h"
 
 FtpConnection::FtpConnection(int cuid, const SocketHandle& socket,
-			     const Request* req, const Option* op)
+			     const RequestHandle req, const Option* op)
   :cuid(cuid), socket(socket), req(req), option(op) {
   logger = LogFactory::getInstance();
 }

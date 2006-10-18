@@ -155,21 +155,17 @@ bool TrackerUpdateCommand::execute() {
     if(!peersEntry) {
       logger->info("CUID#%d - No peer list received.", cuid);
     }
-
-    if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {
-      e->torrentMan->req->setTrackerEvent(Request::AUTO);
-    }
+    e->torrentMan->announceList.announceSuccess();
+    e->torrentMan->trackers = 0;
+    e->segmentMan->init();
   } catch(Exception* err) {
     logger->error("CUID#%d - Error occurred while processing tracker response.", cuid, err);
+    e->segmentMan->errors++;
     delete err;
   }
-  if(trackerResponse != NULL) {
+  if(trackerResponse) {
     delete [] trackerResponse;
   }
-  e->torrentMan->trackers = 0;
-
-  e->segmentMan->init();
-
   if(e->torrentMan->isHalt()) {
     return true;
   } else {

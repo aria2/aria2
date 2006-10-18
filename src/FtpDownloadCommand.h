@@ -41,7 +41,7 @@ class FtpDownloadCommand : public DownloadCommand {
 private:
   SocketHandle ctrlSocket;
 public:
-  FtpDownloadCommand(int cuid, Request* req, DownloadEngine* e,
+  FtpDownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		     const SocketHandle& dataSocket,
 		     const SocketHandle& ctrlSocket);
   ~FtpDownloadCommand();

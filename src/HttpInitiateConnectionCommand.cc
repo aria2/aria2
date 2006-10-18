@@ -42,7 +42,7 @@
 #include "prefs.h"
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
-							     Request* req,
+							     const RequestHandle req,
 							     DownloadEngine* e):
   AbstractCommand(cuid, req, e)
 {

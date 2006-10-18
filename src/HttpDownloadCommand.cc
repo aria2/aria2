@@ -45,7 +45,7 @@
 
 using namespace std;
 
-HttpDownloadCommand::HttpDownloadCommand(int cuid, Request* req,
+HttpDownloadCommand::HttpDownloadCommand(int cuid, const RequestHandle req,
 					 DownloadEngine* e,
 					 const SocketHandle& socket)
   :DownloadCommand(cuid, req, e, socket)

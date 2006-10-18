@@ -41,7 +41,7 @@ class FtpTunnelRequestCommand : public AbstractCommand {
 protected:
   bool executeInternal(Segment& segment);
 public:
-  FtpTunnelRequestCommand(int cuid, Request* req, DownloadEngine* e,
+  FtpTunnelRequestCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 			  const SocketHandle& s);
   ~FtpTunnelRequestCommand();
 };

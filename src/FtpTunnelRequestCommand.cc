@@ -36,7 +36,8 @@
 #include "FtpTunnelResponseCommand.h"
 #include "HttpConnection.h"
 
-FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid, Request* req,
+FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid,
+						 const RequestHandle req,
 						 DownloadEngine* e,
 						 const SocketHandle& s)
   :AbstractCommand(cuid, req, e, s) {

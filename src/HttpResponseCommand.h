@@ -54,7 +54,7 @@ private:
 protected:
   bool executeInternal(Segment& segment);
 public:
-  HttpResponseCommand(int cuid, Request* req, DownloadEngine* e,
+  HttpResponseCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		      const SocketHandle& s);
   ~HttpResponseCommand();
 };

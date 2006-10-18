@@ -60,13 +60,13 @@ private:
   string getProxyAuthString() const;
   int cuid;
   SocketHandle socket;
-  const Request* req;
+  RequestHandle req;
   const Option* option;
   const Logger* logger;
   char headerBuf[HEADERBUF_SIZE+1];
   int headerBufLength;
 public:
-  HttpConnection(int cuid, const SocketHandle& socket, const Request* req,
+  HttpConnection(int cuid, const SocketHandle& socket, const RequestHandle req,
 		 const Option* op);
 
   /**

@@ -49,7 +49,7 @@ class FtpConnection {
 private:
   int cuid;
   SocketHandle socket;
-  const Request* req;
+  RequestHandle req;
   const Option* option;
   const Logger* logger;
 
@@ -60,7 +60,7 @@ private:
   bool bulkReceiveResponse(pair<int, string>& response);
 public:
   FtpConnection(int cuid, const SocketHandle& socket,
-		const Request* req, const Option* op);
+		const RequestHandle req, const Option* op);
   ~FtpConnection();
   void sendUser() const;
   void sendPass() const;

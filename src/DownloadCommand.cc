@@ -42,7 +42,9 @@
 #include "prefs.h"
 #include <sys/time.h>
 
-DownloadCommand::DownloadCommand(int cuid, Request* req, DownloadEngine* e,
+DownloadCommand::DownloadCommand(int cuid,
+				 const RequestHandle req,
+				 DownloadEngine* e,
 				 const SocketHandle& s):
   AbstractCommand(cuid, req, e, s), lastSize(0) {
   PeerStatHandle peerStat = PeerStatHandle(new PeerStat(cuid));

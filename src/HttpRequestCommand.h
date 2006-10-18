@@ -42,7 +42,7 @@ protected:
   bool executeInternal(Segment& segment);
   Command* getNextCommand() const;
 public:
-  HttpRequestCommand(int cuid, Request* req, DownloadEngine* e,
+  HttpRequestCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		     const SocketHandle& s);
   ~HttpRequestCommand();
 };

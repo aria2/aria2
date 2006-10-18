@@ -39,6 +39,7 @@
 #include "CookieBox.h"
 #include "Segment.h"
 #include "common.h"
+#include "SharedHandle.h"
 
 using namespace std;
 
@@ -120,6 +121,7 @@ public:
 
 };
 
-typedef deque<Request*> Requests;
+typedef SharedHandle<Request> RequestHandle;
+typedef deque<RequestHandle> Requests;
 
 #endif // _D_REQUEST_H_

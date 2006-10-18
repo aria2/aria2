@@ -37,7 +37,8 @@
 #include "HttpConnection.h"
 #include "prefs.h"
 
-HttpRequestCommand::HttpRequestCommand(int cuid, Request* req,
+HttpRequestCommand::HttpRequestCommand(int cuid,
+				       const RequestHandle req,
 				       DownloadEngine* e,
 				       const SocketHandle& s)
   :AbstractCommand(cuid, req, e, s) {

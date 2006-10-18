@@ -44,7 +44,7 @@ private:
 protected:
   bool executeInternal(Segment& segment);
 public:
-  HttpProxyResponseCommand(int cuid, Request* req, DownloadEngine* e,
+  HttpProxyResponseCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 			   const SocketHandle& s);
   ~HttpProxyResponseCommand();
 };

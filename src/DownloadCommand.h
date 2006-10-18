@@ -49,7 +49,7 @@ protected:
 
   virtual bool prepareForNextSegment(const Segment& currentSegment);
 public:
-  DownloadCommand(int cuid, Request* req, DownloadEngine* e,
+  DownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		  const SocketHandle& s);
   virtual ~DownloadCommand();
 

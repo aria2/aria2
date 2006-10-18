@@ -44,6 +44,8 @@ private:
   TorrentDownloadEngine* e;
   int interval;
   Time checkPoint;
+
+  Command* createRequestCommand();
 public:
   TrackerWatcherCommand(int cuid, TorrentDownloadEngine* e, int interval);
   ~TrackerWatcherCommand();

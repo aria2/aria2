@@ -37,7 +37,8 @@
 #include "DlRetryEx.h"
 #include "message.h"
 
-FtpTunnelResponseCommand::FtpTunnelResponseCommand(int cuid, Request* req,
+FtpTunnelResponseCommand::FtpTunnelResponseCommand(int cuid,
+						   const RequestHandle req,
 						   DownloadEngine* e,
 						   const SocketHandle& s)
   :AbstractCommand(cuid, req, e, s) {

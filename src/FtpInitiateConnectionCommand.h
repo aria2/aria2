@@ -54,7 +54,7 @@ private:
 protected:
   bool executeInternal(Segment& segment);
 public:
-  FtpInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e);
+  FtpInitiateConnectionCommand(int cuid, const RequestHandle req, DownloadEngine* e);
   ~FtpInitiateConnectionCommand();
 };
 

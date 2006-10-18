@@ -5,7 +5,6 @@
 * Better HTTP status handling
 * Download files listed in a specifed file.
 * Add the feature which adds or removes URLs on-the-fly.
-* no-compact peers format
 * Add port range command-line option
 * Add max peers command-line option
 * Refacturing HttpConnection and FtpConnection
@@ -17,3 +16,7 @@
 * Add multi-file metalink support.
 * Add a control port for GUI frontend
 * Add a version header to .aria2 file to check the compatibiliy.
+* Use SharedHandle where it is useful.
+* Add support for "announce-list".
+* Rewrite Util::countBit
+* Add the ability to display filename or URL to be downloaded in metalink mode. 

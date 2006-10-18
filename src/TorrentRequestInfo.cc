@@ -54,6 +54,8 @@ RequestInfo* TorrentRequestInfo::execute() {
   if(!timeoutSpecified) {
     op->put(PREF_TIMEOUT, "180");
   }
+  // set max_tries to 1. AnnounceList handles retries.
+  op->put(PREF_MAX_TRIES, "1");
   e = DownloadEngineFactory::newTorrentConsoleEngine(op,
 						     torrentFile,
 						     targetFiles);

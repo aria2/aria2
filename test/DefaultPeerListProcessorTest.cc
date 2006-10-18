@@ -29,8 +29,8 @@ void DefaultPeerListProcessorTest::testExtractPeer() {
   string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
 
   Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
-
-  CPPUNIT_ASSERT(proc.canHandle(dic->get("peers"));
+  
+  CPPUNIT_ASSERT(proc.canHandle(dic->get("peers")));
 
   Peers peers = proc.extractPeer(dic->get("peers"));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());

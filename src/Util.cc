@@ -221,9 +221,7 @@ string Util::urldecode(const string& target) {
   string result;
   for(string::const_iterator itr = target.begin();
       itr != target.end(); itr++) {
-    if(*itr == '+') {
-      result += ' ';
-    } else if(*itr == '%') {
+    if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
 	 isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
 	char temp[3];

@@ -1,3 +1,86 @@
+2006-10-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Request -> RequestHandle:
+	
+	* src/HttpResponseCommand.h: Request->RequestHandle
+	* src/AbstractCommand.cc: Request->RequestHandle
+	* src/HttpDownloadCommand.cc: Request->RequestHandle
+	* src/HttpRequestCommand.cc: Request->RequestHandle
+	* src/FtpInitiateConnectionCommand.h: Request->RequestHandle
+	* src/AbstractCommand.h: Request->RequestHandle
+	* src/HttpProxyRequestCommand.h: Request->RequestHandle
+	* src/HttpResponseCommand.cc: Request->RequestHandle
+	* src/HttpInitiateConnectionCommand.h: Request->RequestHandle
+	* src/FtpNegotiateCommand.cc: Request->RequestHandle
+	* src/FtpTunnelResponseCommand.h: Request->RequestHandle
+	* src/HttpConnection.h: Request->RequestHandle
+	* src/HttpProxyResponseCommand.cc: Request->RequestHandle
+	* src/InitiateConnectionCommandFactory.h: Request->RequestHandle
+	* src/FtpTunnelResponseCommand.cc: Request->RequestHandle
+	* src/DownloadCommand.h: Request->RequestHandle
+	* src/FtpDowndloadCommand.cc: Request->RequestHandle
+	* src/HttpInitiateConnectionCommand.cc: Request->RequestHandle
+	* src/HttpRequestCommand.h: Request->RequestHandle
+	* src/FtpNegotiateCommand.h: Request->RequestHandle
+	* src/FtpTunnelResponseCommand.cc: Request->RequestHandle
+	* src/FtpInitiateConnectionCommand.cc: Request->RequestHandle
+	* src/HttpDownloadCommand.h: Request->RequestHandle
+	* src/FtpConnection.cc: Request->RequestHandle
+	* src/InitiateConnectionCommandFactory.cc: Request->RequestHandle
+	* src/UrlRequestInfo.cc: Request->RequestHandle
+	* src/HttpProxyResponseCommand.h: Request->RequestHandle
+	* src/HttpConnection.h: Request->RequestHandle
+	* src/DownloadCommand.cc: Request->RequestHandle
+	* src/FtpConnection.h: Request->RequestHandle
+	* src/FtpDowndloadCommand.h: Request->RequestHandle
+	* src/HttpProxyRequestCommand.cc: Request->RequestHandle
+	* src/FtpTunnelRequestCommand.h: Request->RequestHandle
+	* src/Request.h
+	(SharedHandle.h): New include.
+	(RequestHandle): New type definition.
+	(Requests): Redefined.
+	
+	To add MULTITRACKER support:
+
+	* src/TrackerWatcherCommand.h
+	(createRequestCommand): New function.
+	* src/DownloadEngineFactory.cc
+	(newTorrentConsoleEngine): Removed req.
+	* src/prefs.h
+	(PREF_TRACKER_MAX_TRIES): New definition.
+	* src/TorrentMan.cc
+	(TorrentMan): Removed req. Added trackerNumTry.
+	(~TorrentMan): Removed req.
+	(setupInternal1): Added announceList.
+	* src/TorrentRequestInfo.cc
+	(execute): Set PREF_MAX_TIRES to 1. The max number of tries for
+	announces is now specified by PREF_TRACKER_MAX_TRIES.
+	* src/main.cc
+	(main): Added PREF_TRACKER_MAX_TRIES.
+	* src/TorrentMan.h
+	(Request.h): Removed.
+	(AnnounceList.h): New include.
+	(trackerNumTry): New variable.
+	(req): Removed.
+	(announceList): New variable.
+	* src/TrackerWatcherCommand.cc
+	(execute): Rewritten.
+	(createRequestCommand): New function.
+	* src/TrackerUpdateCommand.cc
+	(execute): Updated with the use of AnnounceList.
+	* src/AnnounceList.cc: New class.
+	* src/AnnounceList.h: New class.
+	
+	To fix typo:
+
+	* src/prefs.h
+	(PREF_MAX_TRIES): max_try->max_tries
+
+	To not to decode "+" as space in URL decode:
+
+	* src/Util.cc
+	(urldecode): Removed "+"->space decoding rule. Test case was updated.
+	
 2006-10-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add timeout to async name resolution:

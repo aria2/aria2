@@ -37,7 +37,7 @@
 #include "FtpInitiateConnectionCommand.h"
 #include "DlAbortEx.h"
 
-Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, Request* req, DownloadEngine* e) {
+Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, const RequestHandle req, DownloadEngine* e) {
   if(req->getProtocol() == "http"
 #ifdef ENABLE_SSL
      // for SSL

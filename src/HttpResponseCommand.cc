@@ -43,7 +43,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-HttpResponseCommand::HttpResponseCommand(int cuid, Request* req,
+HttpResponseCommand::HttpResponseCommand(int cuid,
+					 const RequestHandle req,
 					 DownloadEngine* e,
 					 const SocketHandle& s)
   :AbstractCommand(cuid, req, e, s) {

@@ -124,7 +124,8 @@ SRCS += MetaEntry.h\
 	PeerListProcessor.h\
 	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h\
 	CompactPeerListProcessor.cc CompactPeerListProcessor.h\
-	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h
+	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h\
+	AnnounceList.h AnnounceList.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

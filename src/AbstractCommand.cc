@@ -41,7 +41,9 @@
 #include "SleepCommand.h"
 #include "prefs.h"
 
-AbstractCommand::AbstractCommand(int cuid, Request* req, DownloadEngine* e,
+AbstractCommand::AbstractCommand(int cuid,
+				 const RequestHandle req,
+				 DownloadEngine* e,
 				 const SocketHandle& s):
   Command(cuid), req(req), e(e), socket(s),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
@@ -125,7 +127,7 @@ bool AbstractCommand::execute() {
 
 void AbstractCommand::tryReserved() {
   if(!e->segmentMan->reserved.empty()) {
-    Request* req = e->segmentMan->reserved.front();
+    RequestHandle req = e->segmentMan->reserved.front();
     e->segmentMan->reserved.pop_front();
     Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
     e->commands.push_back(command);

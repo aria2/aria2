@@ -12,7 +12,6 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSaveAndLoad);
   CPPUNIT_TEST(testNullBitfield);
   CPPUNIT_TEST(testCancelSegmentOnNullBitfield);
-  CPPUNIT_TEST(testBug);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -23,7 +22,6 @@ public:
   void testSaveAndLoad();
   void testNullBitfield();
   void testCancelSegmentOnNullBitfield();
-  void testBug();
 };
 
 
@@ -112,14 +110,4 @@ void SegmentManTest::testCancelSegmentOnNullBitfield() {
   CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
   segmentMan.cancelSegment(1);
   CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
-}
-
-void SegmentManTest::testBug() {
-  SegmentMan segmentMan;
-
-  segmentMan.ufilename = "bug";
-
-  cerr << "########################################" << endl;
-  segmentMan.load();
-
 }

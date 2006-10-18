@@ -34,7 +34,8 @@
 /* copyright --> */
 #include "FtpDownloadCommand.h"
 
-FtpDownloadCommand::FtpDownloadCommand(int cuid, Request* req,
+FtpDownloadCommand::FtpDownloadCommand(int cuid,
+				       const RequestHandle req,
 				       DownloadEngine* e,
 				       const SocketHandle& dataSocket,
 				       const SocketHandle& ctrlSocket)

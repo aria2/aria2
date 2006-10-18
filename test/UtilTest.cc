@@ -259,7 +259,7 @@ void UtilTest::testUrldecode() {
 		       Util::urldecode(src));
 
   string src2 = "aria2+aria2";
-  CPPUNIT_ASSERT_EQUAL(string("aria2 aria2"), Util::urldecode(src2));
+  CPPUNIT_ASSERT_EQUAL(string("aria2+aria2"), Util::urldecode(src2));
 
   string src3 = "%5t%20";
   CPPUNIT_ASSERT_EQUAL(string("%5t "), Util::urldecode(src3));

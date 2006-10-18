@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-10-01 22:14+0900\n"
+"POT-Creation-Date: 2006-10-18 23:54+0900\n"
 "PO-Revision-Date: 2006-07-28 18:04+0600\n"
 "Last-Translator: Azamat H. Hackimov <azamat.hackimov@gmail.com>\n"
 "Language-Team:  <ru@li.org>\n"
@@ -21,12 +21,12 @@ msgstr ""
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: src/TorrentMan.cc:678
+#: src/TorrentMan.cc:685
 #, fuzzy
 msgid "Download of selected files was complete."
 msgstr " Скачать только выбранные файлы:"
 
-#: src/TorrentMan.cc:681
+#: src/TorrentMan.cc:688
 #, fuzzy
 msgid "The download was complete."
 msgstr ""
@@ -43,7 +43,7 @@ msgstr ""
 "Скачивание завершено. <%s>\n"
 
 #: src/RequestInfo.h:105
-#, fuzzy
+#, fuzzy, c-format
 msgid ""
 "\n"
 "The download was not complete because of errors. Check the log.\n"
@@ -371,15 +371,17 @@ msgstr "Ошибка получения данных: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "Ошибка запроса данных: %s"
 
-#: src/DownloadEngineFactory.cc:114
+#: src/DownloadEngineFactory.cc:110
+#, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
-#: src/TorrentRequestInfo.cc:88
+#: src/TorrentRequestInfo.cc:90
 msgid "Files:"
 msgstr "Файлы:"
 
 #: src/UrlRequestInfo.cc:76
+#, c-format
 msgid ""
 "\n"
 "stopping application...\n"
@@ -388,6 +390,7 @@ msgstr ""
 "остановка приложения...\n"
 
 #: src/UrlRequestInfo.cc:81
+#, c-format
 msgid "done\n"
 msgstr "завершено\n"
 
@@ -879,115 +882,115 @@ msgstr " Скачивание metalink с настройками:"
 msgid "Report bugs to %s"
 msgstr "Сообщения об ошибках направляйте на адрес %s"
 
-#: src/main.cc:401
+#: src/main.cc:403
 msgid "unrecognized proxy format"
 msgstr "неизвестный формат прокси"
 
-#: src/main.cc:428
+#: src/main.cc:430
 msgid "Currently, supported authentication scheme is basic."
 msgstr "Поддерживаемая схема аутентификации - \"basic\"."
 
-#: src/main.cc:437
+#: src/main.cc:439
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait должен быть в пределах 0..60"
 
-#: src/main.cc:454
+#: src/main.cc:456
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type должен быть \"binary\" или \"ascii\"."
 
-#: src/main.cc:463
+#: src/main.cc:465
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy должен быть \"get\" или \"tunnel\"."
 
-#: src/main.cc:471
+#: src/main.cc:473
 msgid "min-segment-size invalid"
 msgstr "min-segment-size неверен"
 
-#: src/main.cc:482
+#: src/main.cc:484
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method должен быть \"get\" или \"tunnel\"."
 
-#: src/main.cc:490
+#: src/main.cc:492
 msgid "listen-port must be between 1024 and 65535."
 msgstr "listen-port должен быть в пределах 1024..65535."
 
-#: src/main.cc:503
+#: src/main.cc:505
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent должен быть 'true' или 'false'."
 
-#: src/main.cc:517
+#: src/main.cc:519
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr "direct-file-mapping должен быть 'true' или 'false'."
 
-#: src/main.cc:528
+#: src/main.cc:530
 msgid "upload-limit must be greater than or equal to 0."
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:541
+#: src/main.cc:543
 #, fuzzy
 msgid "seed-time must be greater than or equal to 0."
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:551
+#: src/main.cc:553
 #, fuzzy
 msgid "seed-ratio must be greater than or equal to 0.0."
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:561
+#: src/main.cc:563
 #, fuzzy
 msgid "max-upload-limit must be greater than or equal to 0"
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:583
+#: src/main.cc:585
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr "follow-metalink должен быть 'true' или 'false'."
 
-#: src/main.cc:591
+#: src/main.cc:593
 #, fuzzy
 msgid "lowest-speed-limit must be greater than or equal to 0"
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:601
+#: src/main.cc:603
 #, fuzzy
 msgid "max-download-limit must be greater than or equal to 0"
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:630
+#: src/main.cc:632
 msgid "split must be between 1 and 5."
 msgstr "split должен быть находится в пределах 1..5."
 
-#: src/main.cc:643
+#: src/main.cc:645
 msgid "timeout must be between 1 and 600"
 msgstr "таймаут должен быть в пределах 1..600"
 
-#: src/main.cc:652
+#: src/main.cc:654
 msgid "max-tries invalid"
 msgstr "неверный max-tries"
 
-#: src/main.cc:674
+#: src/main.cc:676
 msgid "metalink-servers must be greater than 0."
 msgstr "metalink-servers должен быть больше 0"
 
-#: src/main.cc:694
+#: src/main.cc:696
 msgid "specify at least one URL"
 msgstr "укажите по крайней мере один URL"
 
-#: src/main.cc:701
+#: src/main.cc:703
 msgid "daemon failed"
 msgstr "ошибка демона"
 
-#: src/main.cc:764
+#: src/main.cc:766
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
 "file."
 msgstr ""
 
-#: src/main.cc:768
+#: src/main.cc:770
 msgid "checksum OK."
 msgstr ""
 
-#: src/main.cc:771
+#: src/main.cc:773
 msgid "checksum ERROR."
 msgstr ""
 

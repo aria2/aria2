@@ -46,7 +46,7 @@ private:
   Time checkPoint;
   int timeout;
 protected:
-  Request* req;
+  RequestHandle req;
   DownloadEngine* e;
   SocketHandle socket;
 
@@ -73,7 +73,7 @@ private:
   SocketHandle writeCheckTarget;
   bool nameResolverCheck;
 public:
-  AbstractCommand(int cuid, Request* req, DownloadEngine* e, const SocketHandle& s = SocketHandle());
+  AbstractCommand(int cuid, const RequestHandle req, DownloadEngine* e, const SocketHandle& s = SocketHandle());
   virtual ~AbstractCommand();
   bool execute();
 };

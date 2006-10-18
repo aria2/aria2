@@ -45,7 +45,7 @@
 #include "Option.h"
 #include "FileEntry.h"
 #include "DiskAdaptor.h"
-#include "Request.h"
+#include "AnnounceList.h"
 #include "TimeA2.h"
 #include "PeerListProcessor.h"
 #include <deque>
@@ -142,8 +142,9 @@ public:
   int connections;
   // The number of tracker request command currently in the command queue.
   int trackers;
+  int trackerNumTry;
   // tracker request
-  Request* req;
+  AnnounceList announceList;
 public:
   TorrentMan();
   ~TorrentMan();

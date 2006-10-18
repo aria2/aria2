@@ -42,7 +42,7 @@
 #include "Util.h"
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
-							   Request* req,
+							   const RequestHandle req,
 							   DownloadEngine* e)
   :AbstractCommand(cuid, req, e)
 {

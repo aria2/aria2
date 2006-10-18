@@ -52,7 +52,7 @@ private:
 protected:
   virtual bool prepareForNextSegment(const Segment& currentSegment);
 public:
-  HttpDownloadCommand(int cuid, Request* req, DownloadEngine* e,
+  HttpDownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		      const SocketHandle& s);
   ~HttpDownloadCommand();
 

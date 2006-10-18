@@ -49,83 +49,98 @@ TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
-  if(e->segmentMan->errors > 0) {
-    if(e->torrentMan->isHalt()) {
+  Command* command = 0;
+  if(e->torrentMan->trackers == 0 && e->torrentMan->isHalt()) {
+    // Download is going to halt.
+    // Check whether there are at least one tracker which can receive
+    // "stopped" event.
+    if(e->torrentMan->announceList.countStoppedAllowedTier()) {
+      e->torrentMan->announceList.moveToStoppedAllowedTier();
+      e->torrentMan->announceList.setEvent(AnnounceTier::STOPPED);
+      command = createRequestCommand();
+    } else {
+      // We don't send "stopped" event since no tracker cares about it.
       return true;
     }
+  } else if(e->torrentMan->trackers == 0 &&
+	    e->torrentMan->downloadComplete() &&
+	    e->torrentMan->announceList.countCompletedAllowedTier()) {
+    // Send "completed" event to all trackers which can accept it.
+    e->torrentMan->announceList.moveToCompletedAllowedTier();
+    e->torrentMan->announceList.setEvent(AnnounceTier::COMPLETED);
+    command = createRequestCommand();
+  } else if(e->torrentMan->trackers == 0 &&
+	    checkPoint.elapsed(interval)) {
+    checkPoint.reset();
+    // If download completed before "started" event is sent to a tracker,
+    // we change the event to something else to prevent us from
+    // sending "completed" event.
+    if(e->torrentMan->downloadComplete() &&
+       e->torrentMan->announceList.getEvent() == AnnounceTier::STARTED) {
+      e->torrentMan->announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
+    }
+    command = createRequestCommand();
+  } else if(e->segmentMan->errors > 0) {
+    e->torrentMan->trackerNumTry++;
+    checkPoint.reset();
     // we assume the tracker request has failed.
+    e->torrentMan->announceList.announceFailure();
     e->torrentMan->trackers = 0;
     e->segmentMan->init();
-    // sleep a few seconds.
-    SleepCommand* sleepCommand =
-      new SleepCommand(cuid, e, this, e->option->getAsInt(PREF_RETRY_WAIT));
-    e->commands.push_back(sleepCommand);
-    return false;
-  }
-  if(e->torrentMan->trackers == 0 &&
-     (e->torrentMan->isHalt() ||
-      checkPoint.elapsed(interval))) {
-    checkPoint.reset();
-    e->torrentMan->req->resetTryCount();
-    int numWant = 50;
-    if(e->torrentMan->connections >= MIN_PEERS || e->torrentMan->isHalt()) {
-      numWant = 0;
-    }
-    if(e->torrentMan->isHalt()) {
-      e->torrentMan->req->setTrackerEvent(Request::STOPPED);
-    } else if(e->torrentMan->downloadComplete()) {
-      if(e->torrentMan->req->getTrackerEvent() == Request::COMPLETED) {
-	e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
-      } else {
-	if(e->torrentMan->req->getTrackerEvent() == Request::STARTED) {
-	  // in case where download had completed when aria2c started.
-	  e->torrentMan->req->setTrackerEvent(Request::AFTER_COMPLETED);
-	} else if(e->torrentMan->req->getTrackerEvent() != Request::AFTER_COMPLETED) {
-	  e->torrentMan->req->setTrackerEvent(Request::COMPLETED);
-	}
+    if(e->torrentMan->trackerNumTry >= e->option->getAsInt(PREF_TRACKER_MAX_TRIES)) {
+      // abort tracker request
+      e->torrentMan->trackerNumTry = 0;
+      if(e->torrentMan->isHalt()) {
+	return true;
       }
+    } else {
+      // sleep a few seconds.
+      command =
+	new SleepCommand(cuid, e,
+			 createRequestCommand(),
+			 e->option->getAsInt(PREF_RETRY_WAIT));
     }
-    string event;
-    switch(e->torrentMan->req->getTrackerEvent()) {
-    case Request::STARTED:
-      event = "started";
-      break;
-    case Request::STOPPED:
-      event = "stopped";
-      break;
-    case Request::COMPLETED:
-      event = "completed";
-      break;
-    }
-    string url = e->torrentMan->announce+"?"+
-      "info_hash="+Util::torrentUrlencode(e->torrentMan->getInfoHash(), 20)+"&"+
-      "peer_id="+e->torrentMan->peerId+"&"+
-      "port="+Util::itos(e->torrentMan->getPort())+"&"+
-      "uploaded="+Util::llitos(e->torrentMan->getSessionUploadLength())+"&"+
-      "downloaded="+Util::llitos(e->torrentMan->getSessionDownloadLength())+"&"+
-      "left="+(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength() <= 0
-	       ? "0" : Util::llitos(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength()))+"&"+
-      "compact=1"+"&"+
-      "key="+e->torrentMan->key+"&"+
-      "numwant="+Util::itos(numWant)+"&"+
-      "no_peer_id=1";
-    if(!event.empty()) {
-      url += string("&")+"event="+event;
-    }
-    if(!e->torrentMan->trackerId.empty()) {
-      url += string("&")+"trackerid="+e->torrentMan->trackerId;
-    }
-    e->torrentMan->req->setUrl(url);
-    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), e->torrentMan->req, e);
+  }
+
+  if(command) {
     e->commands.push_back(command);
     e->torrentMan->trackers++;
-    logger->info("CUID#%d - Creating new tracker request command #%d", cuid,
-		 command->getCuid());
-    if(e->torrentMan->isHalt()) {
-      return true;
-    }
   }
+  // updates interval with newest minInterval
   interval = e->torrentMan->minInterval;
   e->commands.push_back(this);
   return false;
+}
+
+Command* TrackerWatcherCommand::createRequestCommand() {
+  int numWant = 50;
+  if(e->torrentMan->connections >= MIN_PEERS || e->torrentMan->isHalt()) {
+    numWant = 0;
+  }
+  string url = e->torrentMan->announceList.getAnnounce()+"?"+
+    "info_hash="+Util::torrentUrlencode(e->torrentMan->getInfoHash(), 20)+"&"+
+    "peer_id="+e->torrentMan->peerId+"&"+
+    "port="+Util::itos(e->torrentMan->getPort())+"&"+
+    "uploaded="+Util::llitos(e->torrentMan->getSessionUploadLength())+"&"+
+    "downloaded="+Util::llitos(e->torrentMan->getSessionDownloadLength())+"&"+
+    "left="+(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength() <= 0
+	     ? "0" : Util::llitos(e->torrentMan->getTotalLength()-e->torrentMan->getDownloadLength()))+"&"+
+    "compact=1"+"&"+
+    "key="+e->torrentMan->key+"&"+
+    "numwant="+Util::itos(numWant)+"&"+
+    "no_peer_id=1";
+  string event = e->torrentMan->announceList.getEventString();
+  if(!event.empty()) {
+    url += string("&")+"event="+event;
+  }
+  if(!e->torrentMan->trackerId.empty()) {
+    url += string("&")+"trackerid="+e->torrentMan->trackerId;
+  }
+  RequestHandle req;
+  req->setUrl(url);
+  req->isTorrent = true;
+  Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), req, e);
+  logger->info("CUID#%d - Creating new tracker request command #%d", cuid,
+	       command->getCuid());
+  return command;
 }
