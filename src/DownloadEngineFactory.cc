@@ -114,8 +114,7 @@ DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
   te->commands.push_back(listenCommand);
   
   te->commands.push_back(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
-						   te,
-						   te->torrentMan->minInterval));
+						   te));
   te->commands.push_back(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
 						  te));
   te->commands.push_back(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),

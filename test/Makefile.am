@@ -41,16 +41,19 @@ aria2c_SOURCES = AllTest.cc\
 	SegmentManTest.cc\
 	SpeedCalcTest.cc\
 	DefaultPeerListProcessorTest.cc\
-	AnnounceListTest.cc
+	AnnounceListTest.cc\
+	TrackerWatcherCommandTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 
 aria2c_LDADD = ../src/libaria2c.a\
 	 ${CPPUNIT_LIBS} @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
+	@LIBARES_LIBS@ @LIBCARES_LIBS@
 AM_CPPFLAGS =  -Wall\
 	${CPPUNIT_CFLAGS}\
 	-I ../src\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
+	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
 	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@

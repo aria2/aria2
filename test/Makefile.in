@@ -78,7 +78,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	ShareRatioSeedCriteriaTest.$(OBJEXT) \
 	TimeSeedCriteriaTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
 	SpeedCalcTest.$(OBJEXT) DefaultPeerListProcessorTest.$(OBJEXT) \
-	AnnounceListTest.$(OBJEXT)
+	AnnounceListTest.$(OBJEXT) TrackerWatcherCommandTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -279,19 +279,22 @@ aria2c_SOURCES = AllTest.cc\
 	SegmentManTest.cc\
 	SpeedCalcTest.cc\
 	DefaultPeerListProcessorTest.cc\
-	AnnounceListTest.cc
+	AnnounceListTest.cc\
+	TrackerWatcherCommandTest.cc
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 aria2c_LDADD = ../src/libaria2c.a\
 	 ${CPPUNIT_LIBS} @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
+	@LIBARES_LIBS@ @LIBCARES_LIBS@
 
 AM_CPPFLAGS = -Wall\
 	${CPPUNIT_CFLAGS}\
 	-I ../src\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
+	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
 	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 all: all-am
@@ -379,6 +382,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SuggestPieceMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommandTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessorTest.Po@am__quote@

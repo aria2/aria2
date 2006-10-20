@@ -37,18 +37,21 @@
 
 #include "Command.h"
 #include "TorrentDownloadEngine.h"
-#include "TimeA2.h"
 
 class TrackerWatcherCommand : public Command {
 private:
   TorrentDownloadEngine* e;
-  int interval;
-  Time checkPoint;
 
-  Command* createRequestCommand();
+  /**
+   * Returns a command for announce request. Returns 0 if no announce request
+   * is needed.
+   */
+  Command* createRequestCommand(const string& url);
 public:
-  TrackerWatcherCommand(int cuid, TorrentDownloadEngine* e, int interval);
+  TrackerWatcherCommand(int cuid, TorrentDownloadEngine* e);
   ~TrackerWatcherCommand();
+
+  Command* createCommand();
 
   bool execute();
 };

@@ -126,6 +126,10 @@ private:
   void setupInternal1(const string& metaInfoFile);
   void setupInternal2();
   Piece checkOutPiece(int index);
+  bool isStoppedAnnounceReady() const;
+  bool isCompletedAnnounceReady() const;
+  bool isDefaultAnnounceReady() const;
+
 public:
   int pieceLength;
   int pieces;
@@ -143,6 +147,7 @@ public:
   // The number of tracker request command currently in the command queue.
   int trackers;
   int trackerNumTry;
+  Time announceInterval;
   // tracker request
   AnnounceList announceList;
 public:
@@ -297,6 +302,18 @@ public:
   void setHalt(bool halt) {
     this->halt = halt;
   }
+  // announce related methods.
+  bool isAnnounceReady() const;
+  string getAnnounceUrl();
+  void announceStart();
+  void announceSuccess();
+  void announceFailure();
+  bool isAllAnnounceFailed() const;
+  void resetAnnounce();
+  void processAnnounceResponse(const char* trackerResponse,
+			       size_t trackerResponseLength);
+  bool needMorePeerConnection() const;
+  bool noMoreAnnounce() const;
 
   enum FILE_MODE {
     SINGLE,

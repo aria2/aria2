@@ -44,7 +44,7 @@ private:
   TorrentDownloadEngine* e;
   const Logger* logger;
   bool prepareForRetry();
-  char* getTrackerResponse(int& trackerResponseLength);
+  char* getTrackerResponse(size_t& trackerResponseLength);
 public:
   TrackerUpdateCommand(int cuid, TorrentDownloadEngine* e);
   virtual ~TrackerUpdateCommand();

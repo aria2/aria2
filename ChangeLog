@@ -1,3 +1,61 @@
+2006-10-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To simplify TrackerWatherCommand, TrackerUpdateCommand and
+	make the process of announce request testable.
+	
+	* src/TrackerWatcherCommand.h
+	(TimeA2.h): Removed.
+	(interval): Removed.
+	(checkPoint): Removed.
+	(createRequestCommand): Added an argument 'url'.
+	(TrackerWatherCommand): Removed interval.
+	(createCommand): New function.
+	* src/DownloadEngineFactory.cc
+	(newTorrentConsoleEngine): Updated according to the changes in
+	TrackerWatherCommand.
+	* src/TorrentMan.cc
+	(DelegatingPeerListProcessor.h): New includes.
+	(TorrentMan): Added the initialization of announceInterval.
+	(isStoppedAnnounceReady): New function.
+	(isCompletedAnnounceReady): New function.
+	(isDefaultAnnounceReady): New function.
+	(isAnnounceReady): New function.
+	(getAnnounceUrl): New function.
+	(announceStart): New function.
+	(announceFailure): New function.
+	(announceSuccess): New function.
+	(isAllAnnounceFailed): New function.
+	(resetAnnounce): New function.
+	(processAnnounceResponse): New function.
+	(needMorePeerConnection): New function.
+	(noMoreAnnounce): New function.
+	* src/TrackerUpdateCommand.h
+	(getTrackerResponse): int->size_t
+	* src/TorrentMan.h
+	(isStoppedAnnounceReady): New function.
+	(isCompletedAnnounceReady): New function.
+	(isDefaultAnnounceReady): New function.
+	(announceInterval): New variable.
+	(isAnnounceReady): New function.
+	(getAnnounceUrl): New function.
+	(announceStart): New function.
+	(announceFailure): New function.
+	(announceSuccess): New function.
+	(isAllAnnounceFailed): New function.
+	(resetAnnounce): New function.
+	(processAnnounceResponse): New function.
+	(needMorePeerConnection): New function.
+	(noMoreAnnounce): New function.
+	* src/TrackerWatcherCommand.cc
+	(TrackerWatherCommand): Removed interval and checkPoint.
+	(execute): Rewritten.
+	(createCommand): New function.
+	(createRequestCommand): Rewritten.
+	* src/TrackerUpdateCommand.cc
+	(MetaFileUtil.h): Removed.
+	(DelegatingPeerListProcessor.h): Removed.
+	(getTrackerResponse): int->size_t. Use torrentMan's new functions.
+	
 2006-10-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Request -> RequestHandle:

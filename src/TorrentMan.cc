@@ -49,6 +49,7 @@
 #include "DirectDiskAdaptor.h"
 #include "MultiDiskAdaptor.h"
 #include "LogFactory.h"
+#include "DelegatingPeerListProcessor.h"
 #include <errno.h>
 #include <libgen.h>
 #include <string.h>
@@ -76,6 +77,8 @@ TorrentMan::TorrentMan():bitfield(0),
 			 diskAdaptor(0)
 {
   logger = LogFactory::getInstance();
+  // to force requesting to a tracker first time.
+  announceInterval.setTimeInSec(0);
 }
 
 TorrentMan::~TorrentMan() {
@@ -750,4 +753,159 @@ TransferStat TorrentMan::calculateStat() {
     stat.sessionUploadLength += peer->getSessionUploadLength();
   }
   return stat;
+}
+
+bool TorrentMan::isStoppedAnnounceReady() const {
+  return (trackers == 0 &&
+	  isHalt() &&
+	  announceList.countStoppedAllowedTier());
+}
+
+bool TorrentMan::isCompletedAnnounceReady() const {
+  return (trackers == 0 &&
+	  downloadComplete() &&
+	  announceList.countCompletedAllowedTier());
+}
+
+bool TorrentMan::isDefaultAnnounceReady() const {
+  return (trackers == 0 &&
+	  announceInterval.elapsed(minInterval));
+}
+
+bool TorrentMan::isAnnounceReady() const {
+  return
+    isStoppedAnnounceReady() ||
+    isCompletedAnnounceReady() ||
+    isDefaultAnnounceReady();
+}
+
+string TorrentMan::getAnnounceUrl() {
+  if(isStoppedAnnounceReady()) {
+    announceList.moveToStoppedAllowedTier();
+    announceList.setEvent(AnnounceTier::STOPPED);
+  } else if(isCompletedAnnounceReady()) {
+    announceList.moveToCompletedAllowedTier();
+    announceList.setEvent(AnnounceTier::COMPLETED);
+  } else if(isDefaultAnnounceReady()) {
+    // If download completed before "started" event is sent to a tracker,
+    // we change the event to something else to prevent us from
+    // sending "completed" event.
+    if(downloadComplete() &&
+       announceList.getEvent() == AnnounceTier::STARTED) {
+      announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
+    }
+  }
+  int numWant = 50;
+  if(connections >= MIN_PEERS || isHalt()) {
+    numWant = 0;
+  }
+  string url = announceList.getAnnounce()+"?"+
+    "info_hash="+Util::torrentUrlencode(getInfoHash(), 20)+"&"+
+    "peer_id="+peerId+"&"+
+    "port="+Util::itos(getPort())+"&"+
+    "uploaded="+Util::llitos(getSessionUploadLength())+"&"+
+    "downloaded="+Util::llitos(getSessionDownloadLength())+"&"+
+    "left="+(getTotalLength()-getDownloadLength() <= 0
+	     ? "0" : Util::llitos(getTotalLength()-getDownloadLength()))+"&"+
+    "compact=1"+"&"+
+    "key="+key+"&"+
+    "numwant="+Util::itos(numWant)+"&"+
+    "no_peer_id=1";
+  string event = announceList.getEventString();
+  if(!event.empty()) {
+    url += string("&")+"event="+event;
+  }
+  if(!trackerId.empty()) {
+    url += string("&")+"trackerid="+trackerId;
+  }
+  return url;
+}
+
+void TorrentMan::announceStart() {
+  trackers++;
+}
+
+void TorrentMan::announceFailure() {
+  trackers = 0;
+  trackerNumTry++;
+  announceList.announceFailure();
+}
+
+void TorrentMan::announceSuccess() {
+  trackers = 0;
+  announceList.announceSuccess();
+}
+
+bool TorrentMan::isAllAnnounceFailed() const {
+  return 
+    trackerNumTry >= option->getAsInt(PREF_TRACKER_MAX_TRIES);
+}
+
+void TorrentMan::resetAnnounce() {
+  announceInterval.reset();
+  trackerNumTry = 0;
+}
+
+void TorrentMan::processAnnounceResponse(const char* trackerResponse,
+					 size_t trackerResponseLength) {
+  SharedHandle<MetaEntry> entry(MetaFileUtil::bdecoding(trackerResponse,
+							trackerResponseLength));
+  Dictionary* response = (Dictionary*)entry.get();
+  Data* failureReasonData = (Data*)response->get("failure reason");
+  if(failureReasonData) {
+    throw new DlAbortEx("Tracker returned failure reason: %s",
+			failureReasonData->toString().c_str());
+  }
+  Data* warningMessageData = (Data*)response->get("warning message");
+  if(warningMessageData) {
+    logger->warn(MSG_TRACKER_WARNING_MESSAGE,
+		 warningMessageData->toString().c_str());
+  }
+  Data* trackerIdData = (Data*)response->get("tracker id");
+  if(trackerIdData) {
+    trackerId = trackerIdData->toString();
+    logger->debug("Tracker ID:%s", trackerId.c_str());
+  }
+  Data* intervalData = (Data*)response->get("interval");
+  if(intervalData) {
+    interval = intervalData->toInt();
+    logger->debug("Interval:%d", interval);
+  }
+  Data* minIntervalData = (Data*)response->get("min interval");
+  if(minIntervalData) {
+    minInterval = minIntervalData->toInt();
+    logger->debug("Min interval:%d", minInterval);
+  }
+  if(minInterval > interval) {
+    minInterval = interval;
+  }
+  Data* completeData = (Data*)response->get("complete");
+  if(completeData) {
+    complete = completeData->toInt();
+    logger->debug("Complete:%d", complete);
+  }
+  Data* incompleteData = (Data*)response->get("incomplete");
+  if(incompleteData) {
+    incomplete = incompleteData->toInt();
+    logger->debug("Incomplete:%d", incomplete);
+  }
+  const MetaEntry* peersEntry = response->get("peers");
+  if(peersEntry && !isHalt() && connections < MIN_PEERS) {
+    DelegatingPeerListProcessor proc(pieceLength, getTotalLength());
+    Peers peers = proc.extractPeer(peersEntry);
+    addPeer(peers);
+  }
+  if(!peersEntry) {
+    logger->info("No peer list received.");
+  }
+}
+
+bool TorrentMan::needMorePeerConnection() const {
+  return isPeerAvailable() && connections < MIN_PEERS;
+}
+
+bool TorrentMan::noMoreAnnounce() const {
+  return (trackers == 0 &&
+	  isHalt() &&
+	  !announceList.countStoppedAllowedTier());
 }

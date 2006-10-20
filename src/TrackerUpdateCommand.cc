@@ -34,15 +34,13 @@
 /* copyright --> */
 #include "TrackerUpdateCommand.h"
 #include "LogFactory.h"
-#include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "SleepCommand.h"
 #include "Util.h"
-#include "DelegatingPeerListProcessor.h"
 
-TrackerUpdateCommand::TrackerUpdateCommand(int cuid, TorrentDownloadEngine*e):Command(cuid), e(e) {
+TrackerUpdateCommand::TrackerUpdateCommand(int cuid, TorrentDownloadEngine* e):Command(cuid), e(e) {
   logger = LogFactory::getInstance();
 }
 
@@ -53,7 +51,7 @@ bool TrackerUpdateCommand::prepareForRetry() {
   return false;
 }
 
-char* TrackerUpdateCommand::getTrackerResponse(int& trackerResponseLength) {
+char* TrackerUpdateCommand::getTrackerResponse(size_t& trackerResponseLength) {
   int maxBufLength = 2048;
   char* buf = new char[maxBufLength];
   int bufLength = 0;
@@ -86,77 +84,24 @@ bool TrackerUpdateCommand::execute() {
     return prepareForRetry();
   }
   char* trackerResponse = NULL;
-  int trackerResponseLength = 0;
+  size_t trackerResponseLength = 0;
 
   try {
     trackerResponse = getTrackerResponse(trackerResponseLength);
-    SharedHandle<MetaEntry> entry(MetaFileUtil::bdecoding(trackerResponse,
-							  trackerResponseLength));
-    Dictionary* response = (Dictionary*)entry.get();
-    Data* failureReason = (Data*)response->get("failure reason");
-    if(failureReason != NULL) {
-      throw new DlAbortEx("Tracker returned failure reason: %s", failureReason->toString().c_str());
-    }
-    Data* warningMessage = (Data*)response->get("warning message");
-    if(warningMessage != NULL) {
-      logger->warn(MSG_TRACKER_WARNING_MESSAGE, warningMessage->toString().c_str());
-    }
-    Data* trackerId = (Data*)response->get("tracker id");
-    if(trackerId != NULL) {
-      e->torrentMan->trackerId = trackerId->toString();
-      logger->debug("CUID#%d - Tracker ID:%s",
-		    cuid, e->torrentMan->trackerId.c_str());
-    }
-    Data* interval = (Data*)response->get("interval");
-    if(interval != NULL) {
-      e->torrentMan->interval = interval->toInt();
-      logger->debug("CUID#%d - Interval:%d", cuid, e->torrentMan->interval);
-    }
-    Data* minInterval = (Data*)response->get("min interval");
-    if(minInterval != NULL) {
-      e->torrentMan->minInterval = minInterval->toInt();
-      logger->debug("CUID#%d - Min interval:%d",
-		    cuid, e->torrentMan->minInterval);
-    }
-    if(e->torrentMan->minInterval > e->torrentMan->interval) {
-      e->torrentMan->minInterval = e->torrentMan->interval;
-    }
-    Data* complete = (Data*)response->get("complete");
-    if(complete != NULL) {
-      e->torrentMan->complete = complete->toInt();
-      logger->debug("CUID#%d - Complete:%d", cuid, e->torrentMan->complete);
-    }
-    Data* incomplete = (Data*)response->get("incomplete");
-    if(incomplete != NULL) {
-      e->torrentMan->incomplete = incomplete->toInt();
-      logger->debug("CUID#%d - Incomplete:%d",
-		    cuid, e->torrentMan->incomplete);
-    }
-    const MetaEntry* peersEntry = response->get("peers");
-    if(!e->torrentMan->isHalt() &&
-       e->torrentMan->connections < MIN_PEERS &&
-       peersEntry) {
-      DelegatingPeerListProcessor proc(e->torrentMan->pieceLength,
-				       e->torrentMan->getTotalLength());
-      Peers peers = proc.extractPeer(peersEntry);
-      e->torrentMan->addPeer(peers);
 
-      while(e->torrentMan->isPeerAvailable() &&
-	    e->torrentMan->connections < MIN_PEERS) {
-	PeerHandle peer = e->torrentMan->getPeer();
-	int newCuid =  e->torrentMan->getNewCuid();
-	peer->cuid = newCuid;
-	PeerInitiateConnectionCommand* command =
-	  new PeerInitiateConnectionCommand(newCuid, peer, e);
-	e->commands.push_back(command);
-	logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
-      }
+    e->torrentMan->processAnnounceResponse(trackerResponse,
+					   trackerResponseLength);
+    while(e->torrentMan->needMorePeerConnection()) {
+      PeerHandle peer = e->torrentMan->getPeer();
+      int newCuid =  e->torrentMan->getNewCuid();
+      peer->cuid = newCuid;
+      PeerInitiateConnectionCommand* command =
+	new PeerInitiateConnectionCommand(newCuid, peer, e);
+      e->commands.push_back(command);
+      logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
     }
-    if(!peersEntry) {
-      logger->info("CUID#%d - No peer list received.", cuid);
-    }
-    e->torrentMan->announceList.announceSuccess();
-    e->torrentMan->trackers = 0;
+    e->torrentMan->announceSuccess();
+    e->torrentMan->resetAnnounce();
     e->segmentMan->init();
   } catch(Exception* err) {
     logger->error("CUID#%d - Error occurred while processing tracker response.", cuid, err);
