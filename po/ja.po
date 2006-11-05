@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-10-18 23:54+0900\n"
+"POT-Creation-Date: 2006-11-06 00:12+0900\n"
 "PO-Revision-Date: 2006-10-01 22:31+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -15,14 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-
-#: src/TorrentMan.cc:685
-msgid "Download of selected files was complete."
-msgstr "ご指定のファイルのダウンロードが完了."
-
-#: src/TorrentMan.cc:688
-msgid "The download was complete."
-msgstr "ダウンロードが完了."
 
 #: src/RequestInfo.h:97
 #, c-format
@@ -369,12 +361,12 @@ msgstr "データの受信に失敗しました. 原因: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "データの peek に失敗しました. 原因: %s"
 
-#: src/DownloadEngineFactory.cc:110
+#: src/DownloadEngineFactory.cc:139
 #, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
-#: src/TorrentRequestInfo.cc:90
+#: src/TorrentRequestInfo.cc:91
 msgid "Files:"
 msgstr "ファイル:"
 
@@ -1034,6 +1026,14 @@ msgstr "チェックサム OK."
 #: src/main.cc:773
 msgid "checksum ERROR."
 msgstr "チェックサム エラー."
+
+#: src/DefaultPieceStorage.cc:219
+msgid "Download of selected files was complete."
+msgstr "ご指定のファイルのダウンロードが完了."
+
+#: src/DefaultPieceStorage.cc:222
+msgid "The download was complete."
+msgstr "ダウンロードが完了."
 
 #~ msgid ""
 #~ " --min-segment-size=SIZE[K|M] Set minimum segment size. You can append\n"

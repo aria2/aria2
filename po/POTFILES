@@ -1,7 +1,9 @@
-     ../src/TorrentMan.cc \
      ../src/RequestInfo.h \
      ../src/message.h \
      ../src/DownloadEngineFactory.cc \
      ../src/TorrentRequestInfo.cc \
      ../src/UrlRequestInfo.cc \
-     ../src/main.cc
+     ../src/main.cc \
+     ../src/DefaultPieceStorage.cc \
+     ../src/DefaultBtAnnounce.cc \
+     ../src/DefaultBtProgressInfoFile.cc

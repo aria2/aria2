@@ -3,6 +3,8 @@
 	To divide TorrentMan into 6 classes: BtContext, BtRuntime,
 	PeerStorage, PieceStorage, BtAnnounce and BtProgressInfoFile
 
+	* src/TorrentMan.h: Removed.
+	* src/TorrentMan.cc: Removed.
 	* src/TrackerWatcherComand.h: Made subclass of BtContextAwareCommand.
 	* src/SeedCheckCommand.cc: Use pieceStorage, btRuntime
 	* src/PeerAbstractCommand.h: Made subclass of BtContextAwareCommand.

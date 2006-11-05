@@ -8,21 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-10-18 23:54+0900\n"
+"POT-Creation-Date: 2006-11-06 00:12+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: src/TorrentMan.cc:685
-msgid "Download of selected files was complete."
-msgstr ""
-
-#: src/TorrentMan.cc:688
-msgid "The download was complete."
-msgstr ""
 
 #: src/RequestInfo.h:97
 #, c-format
@@ -352,12 +344,12 @@ msgstr ""
 msgid "Failed to peek data, cause: %s"
 msgstr ""
 
-#: src/DownloadEngineFactory.cc:110
+#: src/DownloadEngineFactory.cc:139
 #, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/TorrentRequestInfo.cc:90
+#: src/TorrentRequestInfo.cc:91
 msgid "Files:"
 msgstr ""
 
@@ -849,4 +841,12 @@ msgstr ""
 
 #: src/main.cc:773
 msgid "checksum ERROR."
+msgstr ""
+
+#: src/DefaultPieceStorage.cc:219
+msgid "Download of selected files was complete."
+msgstr ""
+
+#: src/DefaultPieceStorage.cc:222
+msgid "The download was complete."
 msgstr ""

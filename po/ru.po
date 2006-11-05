@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-10-18 23:54+0900\n"
+"POT-Creation-Date: 2006-11-06 00:12+0900\n"
 "PO-Revision-Date: 2006-07-28 18:04+0600\n"
 "Last-Translator: Azamat H. Hackimov <azamat.hackimov@gmail.com>\n"
 "Language-Team:  <ru@li.org>\n"
@@ -20,18 +20,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.2\n"
-
-#: src/TorrentMan.cc:685
-#, fuzzy
-msgid "Download of selected files was complete."
-msgstr " Скачать только выбранные файлы:"
-
-#: src/TorrentMan.cc:688
-#, fuzzy
-msgid "The download was complete."
-msgstr ""
-"\n"
-"Скачивание завершено. <%s>\n"
 
 #: src/RequestInfo.h:97
 #, c-format
@@ -371,12 +359,12 @@ msgstr "Ошибка получения данных: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "Ошибка запроса данных: %s"
 
-#: src/DownloadEngineFactory.cc:110
+#: src/DownloadEngineFactory.cc:139
 #, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
-#: src/TorrentRequestInfo.cc:90
+#: src/TorrentRequestInfo.cc:91
 msgid "Files:"
 msgstr "Файлы:"
 
@@ -993,6 +981,18 @@ msgstr ""
 #: src/main.cc:773
 msgid "checksum ERROR."
 msgstr ""
+
+#: src/DefaultPieceStorage.cc:219
+#, fuzzy
+msgid "Download of selected files was complete."
+msgstr " Скачать только выбранные файлы:"
+
+#: src/DefaultPieceStorage.cc:222
+#, fuzzy
+msgid "The download was complete."
+msgstr ""
+"\n"
+"Скачивание завершено. <%s>\n"
 
 #, fuzzy
 #~ msgid ""

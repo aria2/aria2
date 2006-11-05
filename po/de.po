@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-10-18 23:54+0900\n"
+"POT-Creation-Date: 2006-11-06 00:12+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -15,18 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
-
-#: src/TorrentMan.cc:685
-#, fuzzy
-msgid "Download of selected files was complete."
-msgstr " Nur ausgewählte Dateien abrufen:"
-
-#: src/TorrentMan.cc:688
-#, fuzzy
-msgid "The download was complete."
-msgstr ""
-"\n"
-"Abruf ist vollständig. <%s>\n"
 
 #: src/RequestInfo.h:97
 #, c-format
@@ -369,12 +357,12 @@ msgstr "Konnte Daten nicht erhalten, Ursache: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "Datenermittelung fehlgeschlagen, Ursache: %s"
 
-#: src/DownloadEngineFactory.cc:110
+#: src/DownloadEngineFactory.cc:139
 #, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "Fehler beim Binden an Port aufgetreten.\n"
 
-#: src/TorrentRequestInfo.cc:90
+#: src/TorrentRequestInfo.cc:91
 msgid "Files:"
 msgstr "Dateien:"
 
@@ -1013,6 +1001,18 @@ msgstr ""
 #: src/main.cc:773
 msgid "checksum ERROR."
 msgstr ""
+
+#: src/DefaultPieceStorage.cc:219
+#, fuzzy
+msgid "Download of selected files was complete."
+msgstr " Nur ausgewählte Dateien abrufen:"
+
+#: src/DefaultPieceStorage.cc:222
+#, fuzzy
+msgid "The download was complete."
+msgstr ""
+"\n"
+"Abruf ist vollständig. <%s>\n"
 
 #, fuzzy
 #~ msgid ""
