@@ -46,19 +46,17 @@ void CopyDiskAdaptor::onDownloadComplete() {
 }
 
 void CopyDiskAdaptor::fixFilename() {
-  if(topDir != NULL) {
-    topDir->createDir(storeDir, true);
-  }
   long long int offset = 0;
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    if(!itr->extracted && itr->requested) {
-      string dest = storeDir+"/"+itr->path;
+    if(!(*itr)->isExtracted() && (*itr)->isRequested()) {
+      (*itr)->setupDir(storeDir);
+      string dest = storeDir+"/"+(*itr)->getPath();
       logger->info("writing file %s", dest.c_str());
-      Util::rangedFileCopy(dest, getFilePath(), offset, itr->length);
-      itr->extracted = true;
+      Util::rangedFileCopy(dest, getFilePath(), offset, (*itr)->getLength());
+      (*itr)->setExtracted(true);
     }
-    offset += itr->length;
+    offset += (*itr)->getLength();
   }
 }
 

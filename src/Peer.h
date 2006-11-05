@@ -75,11 +75,12 @@ private:
   long long int sessionDownloadLength;
   int pieceLength;
   int latency;
+  bool active;
 public:
-  Peer(string ipaddr, int port, int pieceLength, long long int totalLength)
-    :entryId(0), ipaddr(ipaddr), port(port), error(0),
+  Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
+    entryId(0), ipaddr(ipaddr), port(port), error(0),
     sessionUploadLength(0), sessionDownloadLength(0),
-    pieceLength(pieceLength)
+    pieceLength(pieceLength), active(false)
   {
     resetStatus();
     this->bitfield = new BitfieldMan(pieceLength, totalLength);
@@ -148,10 +149,16 @@ public:
 
   void activate() {
     peerStat.downloadStart();
+    active = true;
   }
 
   void deactivate() {
     peerStat.downloadStop();
+    active = false;
+  }
+
+  bool isActive() const {
+    return active;
   }
 
   void setPeerId(const char* peerId) {
@@ -193,5 +200,6 @@ public:
 };
 
 typedef SharedHandle<Peer> PeerHandle;
+typedef deque<PeerHandle> Peers;
 
 #endif // _D_PEER_H_

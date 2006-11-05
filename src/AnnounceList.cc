@@ -59,7 +59,7 @@ void AnnounceList::reconfigure(const MetaEntry* announceListEntry) {
 	urls.push_back(data->toString());
       }
       if(urls.size()) {
-	AnnounceTier tier(urls);
+	AnnounceTierHandle tier(new AnnounceTier(urls));
 	tiers.push_back(tier);
       }
     }
@@ -70,14 +70,14 @@ void AnnounceList::reconfigure(const MetaEntry* announceListEntry) {
 void AnnounceList::reconfigure(const string& url) {
   Strings urls;
   urls.push_back(url);
-  tiers.push_back(AnnounceTier(urls));
+  tiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
   resetIterator();
 }
 
 void AnnounceList::resetIterator() {
   currentTier = tiers.begin();
-  if(currentTier != tiers.end() && currentTier->urls.size()) {
-    currentTracker = currentTier->urls.begin();
+  if(currentTier != tiers.end() && (*currentTier)->urls.size()) {
+    currentTracker = (*currentTier)->urls.begin();
     currentTrackerInitialized = true;
   } else {
     currentTrackerInitialized = false;
@@ -94,31 +94,31 @@ string AnnounceList::getAnnounce() const {
 
 void AnnounceList::announceSuccess() {
   if(currentTrackerInitialized) {
-    currentTier->nextEvent();
+    (*currentTier)->nextEvent();
     string url = *currentTracker;
-    currentTier->urls.erase(currentTracker);
-    currentTier->urls.push_front(url);
+    (*currentTier)->urls.erase(currentTracker);
+    (*currentTier)->urls.push_front(url);
     currentTier = tiers.begin();
-    currentTracker = currentTier->urls.begin();
+    currentTracker = (*currentTier)->urls.begin();
   }
 }
 
 void AnnounceList::announceFailure() {
   if(currentTrackerInitialized) {
     currentTracker++;
-    if(currentTracker == currentTier->urls.end()) {
+    if(currentTracker == (*currentTier)->urls.end()) {
       currentTier++;
       if(currentTier == tiers.end()) {
 	currentTier = tiers.begin();
       }
-      currentTracker = currentTier->urls.begin();
+      currentTracker = (*currentTier)->urls.begin();
     }
   }
 }
 
 AnnounceTier::AnnounceEvent AnnounceList::getEvent() const {
   if(currentTrackerInitialized) {
-    return currentTier->event;
+    return (*currentTier)->event;
   } else {
     return AnnounceTier::STARTED;
   }
@@ -126,13 +126,13 @@ AnnounceTier::AnnounceEvent AnnounceList::getEvent() const {
 
 void AnnounceList::setEvent(AnnounceTier::AnnounceEvent event) {
   if(currentTrackerInitialized) {
-    currentTier->event = event;
+    (*currentTier)->event = event;
   }
 }
 
 string AnnounceList::getEventString() const {
   if(currentTrackerInitialized) {
-    switch(currentTier->event) {
+    switch((*currentTier)->event) {
     case AnnounceTier::STARTED:
     case AnnounceTier::STARTED_AFTER_COMPLETION:
       return "started";
@@ -150,8 +150,8 @@ string AnnounceList::getEventString() const {
 
 class FindStoppedAllowedTier {
 public:
-  bool operator()(const AnnounceTier& tier) const {
-    switch(tier.event) {
+  bool operator()(const AnnounceTierHandle& tier) const {
+    switch(tier->event) {
     case AnnounceTier::DOWNLOADING:
     case AnnounceTier::STOPPED:
     case AnnounceTier::COMPLETED:
@@ -165,8 +165,8 @@ public:
 
 class FindCompletedAllowedTier {
 public:
-  bool operator()(const AnnounceTier& tier) const {
-    switch(tier.event) {
+  bool operator()(const AnnounceTierHandle& tier) const {
+    switch(tier->event) {
     case AnnounceTier::DOWNLOADING:
     case AnnounceTier::COMPLETED:
       return true;
@@ -187,7 +187,7 @@ int AnnounceList::countCompletedAllowedTier() const {
 void AnnounceList::setCurrentTier(const AnnounceTiers::iterator& itr) {
   if(itr != tiers.end()) {
     currentTier = itr;
-    currentTracker = currentTier->urls.begin();
+    currentTracker = (*currentTier)->urls.begin();
   }
 }
 
@@ -220,6 +220,7 @@ void AnnounceList::moveToCompletedAllowedTier() {
 void AnnounceList::shuffle() {
   for(AnnounceTiers::iterator itr = tiers.begin();
       itr != tiers.end(); itr++) {
-    random_shuffle(itr->urls.begin(), itr->urls.end());
+    Strings& urls = (*itr)->urls;
+    random_shuffle(urls.begin(), urls.end());
   }
 }

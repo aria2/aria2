@@ -34,13 +34,21 @@
 /* copyright --> */
 #include "HaveEraseCommand.h"
 
+HaveEraseCommand::HaveEraseCommand(int cuid,
+				   TorrentDownloadEngine* e,
+				   const BtContextHandle& btContext,
+				   int interval)
+  :BtContextAwareCommand(cuid, btContext),
+   e(e),
+   interval(interval) {}
+
 bool HaveEraseCommand::execute() {
-  if(e->torrentMan->isHalt()) {
+  if(btRuntime->isHalt()) {
     return true;
   }
   if(cp.elapsed(interval)) {
     cp.reset();
-    e->torrentMan->removeAdvertisedPiece(5);
+    pieceStorage->removeAdvertisedPiece(5);
   }
   e->commands.push_back(this);
   return false;

@@ -43,6 +43,8 @@ protected:
 public:
   TorrentConsoleDownloadEngine();
   ~TorrentConsoleDownloadEngine();
+
+  virtual void afterEachIteration();
 };
 
 #endif // _D_TORRENT_CONSOLE_DOWNLOAD_ENGINE_H_

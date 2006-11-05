@@ -38,7 +38,6 @@
 #include "Option.h"
 #include "Socket.h"
 #include "Logger.h"
-#include "TorrentMan.h"
 #include "PeerMessage.h"
 #include "common.h"
 

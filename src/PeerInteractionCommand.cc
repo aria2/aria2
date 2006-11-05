@@ -49,26 +49,27 @@
 PeerInteractionCommand::PeerInteractionCommand(int cuid,
 					       const PeerHandle& p,
 					       TorrentDownloadEngine* e,
+					       const BtContextHandle& btContext,
 					       const SocketHandle& s,
 					       int sequence)
-  :PeerAbstractCommand(cuid, p, e, s), sequence(sequence) {
+  :PeerAbstractCommand(cuid, p, e, btContext, s), sequence(sequence) {
   if(sequence == INITIATOR_SEND_HANDSHAKE) {
     disableReadCheckSocket();
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
   peerInteraction = new PeerInteraction(cuid, peer, socket, e->option,
-					e->torrentMan);
+					btContext);
   setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   chokeUnchokeCount = 0;
   haveCount = 0;
   keepAliveCount = 0;
-  e->torrentMan->addActivePeer(peer);
+  peer->activate();
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
   delete peerInteraction;
-  e->torrentMan->deleteActivePeer(peer);
+  peer->deactivate();
 }
 
 bool PeerInteractionCommand::executeInternal() {
@@ -173,7 +174,7 @@ void PeerInteractionCommand::detectMessageFlooding() {
 
 /*
 void PeerInteractionCommand::checkLongTimePeerChoking() {
-  if(e->torrentMan->downloadComplete()) {
+  if(pieceStorage->downloadFinished()) {
     return;
   }    
   if(peer->amInterested && peer->peerChoking) {
@@ -205,7 +206,7 @@ void PeerInteractionCommand::receiveMessages() {
   for(int i = 0; i < 50; i++) {
     int maxSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
     if(maxSpeedLimit > 0) {
-      TransferStat stat = e->torrentMan->calculateStat();
+      TransferStat stat = peerStorage->calculateStat();
       if(maxSpeedLimit < stat.downloadSpeed) {
 	disableReadCheckSocket();
 	setNoCheck(true);
@@ -245,12 +246,15 @@ void PeerInteractionCommand::receiveMessages() {
 
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInteractionCommand::prepareForNextPeer(int wait) {
-  if(e->torrentMan->isPeerAvailable()) {
-    PeerHandle peer = e->torrentMan->getPeer();
-    int newCuid = e->torrentMan->getNewCuid();
+  if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
+    PeerHandle peer = peerStorage->getUnusedPeer();
+    int newCuid = btRuntime->getNewCuid();
     peer->cuid = newCuid;
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(newCuid, peer, e);
+      new PeerInitiateConnectionCommand(newCuid,
+					peer,
+					e,
+					btContext);
     e->commands.push_back(command);
   }
   return true;
@@ -278,12 +282,12 @@ void PeerInteractionCommand::sendKeepAlive() {
 }
 
 void PeerInteractionCommand::checkHave() {
-  PieceIndexes indexes =
-    e->torrentMan->getAdvertisedPieceIndexes(cuid, haveCheckTime);
+  Integers indexes =
+    pieceStorage->getAdvertisedPieceIndexes(cuid, haveCheckTime);
   haveCheckTime.reset();
   if(indexes.size() >= 20) {
     if(peer->isFastExtensionEnabled()) {
-      if(e->torrentMan->hasAllPieces()) {
+      if(pieceStorage->downloadFinished()) {
 	peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
 				    createHaveAllMessage());
       } else {
@@ -295,7 +299,7 @@ void PeerInteractionCommand::checkHave() {
 				  createBitfieldMessage());
     }
   } else {
-    for(PieceIndexes::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+    for(Integers::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
       peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
 				  createHaveMessage(*itr));
     }

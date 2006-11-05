@@ -36,16 +36,16 @@
 #define _D_MULTI_DISK_WRITER_H_
 
 #include "DefaultDiskWriter.h"
-#include "TorrentMan.h"
 #include "messageDigest.h"
+#include "FileEntry.h"
 
 class DiskWriterEntry {
 public:
-  FileEntry fileEntry;
+  FileEntryHandle fileEntry;
   DiskWriter* diskWriter;
 public:
-  DiskWriterEntry(const FileEntry& fileEntry):fileEntry(fileEntry) {
-    diskWriter = new DefaultDiskWriter(this->fileEntry.length);
+  DiskWriterEntry(const FileEntryHandle& fileEntry):fileEntry(fileEntry) {
+    diskWriter = new DefaultDiskWriter(this->fileEntry->getLength());
   }
   ~DiskWriterEntry() {
     delete diskWriter;

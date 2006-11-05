@@ -34,22 +34,35 @@
 /* copyright --> */
 #include "TorrentDownloadEngine.h"
 #include "Util.h"
+#include "BtRegistry.h"
 
-TorrentDownloadEngine::TorrentDownloadEngine():filenameFixed(false),
-					       torrentMan(NULL) {}
+TorrentDownloadEngine::TorrentDownloadEngine():
+  filenameFixed(false),
+  btContext(0),
+  btRuntime(0),
+  pieceStorage(0),
+  peerStorage(0),
+  btAnnounce(0),
+  btProgressInfoFile(0) {}
 
 TorrentDownloadEngine::~TorrentDownloadEngine() {
-  if(torrentMan != NULL) {
-    delete torrentMan;
-  }
+}
+
+void TorrentDownloadEngine::setBtContext(const BtContextHandle& btContext) {
+  this->btContext = btContext;
+  btRuntime = BT_RUNTIME(btContext);
+  pieceStorage = PIECE_STORAGE(btContext);
+  peerStorage = PEER_STORAGE(btContext);
+  btAnnounce = BT_ANNOUNCE(btContext);
+  btProgressInfoFile = BT_PROGRESS_INFO_FILE(btContext);
 }
 
 void TorrentDownloadEngine::onEndOfRun() {
-  torrentMan->diskAdaptor->closeFile();
-  if(torrentMan->downloadComplete()) {
-    torrentMan->remove();
+  pieceStorage->getDiskAdaptor()->closeFile();
+  if(pieceStorage->downloadFinished()) {
+    btProgressInfoFile->removeFile();
   } else {
-    torrentMan->save();
+    btProgressInfoFile->save();
   }
 }
 
@@ -57,16 +70,12 @@ void TorrentDownloadEngine::initStatistics() {
   downloadSpeed = 0;
   uploadSpeed = 0;
   cp.reset();
-  lastCalcStat.reset();
   startup.reset();
   eta = 0;
   avgSpeed = 0;
   downloadLength = 0;
+  uploadLength = 0;
   totalLength = 0;
-  if(torrentMan->isSelectiveDownloadingMode()) {
-    selectedDownloadLengthDiff = torrentMan->getDownloadLength()-torrentMan->getCompletedLength();
-    selectedTotalLength = torrentMan->getSelectedTotalLength();
-  }
 }
 
 int TorrentDownloadEngine::calculateSpeed(long long int length, int elapsed) {
@@ -75,10 +84,22 @@ int TorrentDownloadEngine::calculateSpeed(long long int length, int elapsed) {
 }
 
 void TorrentDownloadEngine::calculateStat() {
-  TransferStat stat = torrentMan->calculateStat();
-  downloadSpeed = stat.downloadSpeed;
-  uploadSpeed = stat.uploadSpeed;
-  avgSpeed = calculateSpeed(stat.sessionDownloadLength, startup.difference());
+  TransferStat stat = peerStorage->calculateStat();
+
+  if(pieceStorage->isSelectiveDownloadingMode()) {
+    downloadLength = pieceStorage->getFilteredCompletedLength();
+    totalLength = pieceStorage->getFilteredTotalLength();
+  } else {
+    downloadLength = pieceStorage->getCompletedLength();
+    totalLength = pieceStorage->getTotalLength();
+  }
+  uploadLength = stat.getSessionUploadLength()+
+    btRuntime->getUploadLengthAtStartup();
+
+  downloadSpeed = stat.getDownloadSpeed();
+  uploadSpeed = stat.getUploadSpeed();
+  avgSpeed = calculateSpeed(stat.getSessionDownloadLength(),
+			    startup.difference());
   if(avgSpeed < 0) {
     avgSpeed = 0;
   } else if(avgSpeed != 0) {
@@ -87,20 +108,8 @@ void TorrentDownloadEngine::calculateStat() {
 }
 
 void TorrentDownloadEngine::calculateStatistics() {
-  if(torrentMan->isSelectiveDownloadingMode()) {
-    downloadLength = torrentMan->getDownloadLength()-selectedDownloadLengthDiff;
-    totalLength = selectedTotalLength;
-  } else {
-    downloadLength = torrentMan->getDownloadLength();
-    totalLength = torrentMan->getTotalLength();
-  }
-  
-  Time now;
-  if(now.getTimeInMillis()-lastCalcStat.getTimeInMillis() >= 1000) {
-    calculateStat();
-    lastCalcStat = now;
-  }
   if(cp.difference() >= 1) {
+    calculateStat();
     sendStatistics();
     cp.reset();
   }

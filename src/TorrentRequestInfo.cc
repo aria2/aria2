@@ -36,19 +36,24 @@
 #include "DownloadEngineFactory.h"
 #include "prefs.h"
 #include "Util.h"
+#include "BtRegistry.h"
+#include "DefaultBtContext.h"
 
 extern RequestInfo* requestInfo;
 extern void setSignalHander(int signal, void (*handler)(int), int flags);
 extern bool timeoutSpecified;
+extern volatile sig_atomic_t haltRequested;
 
 void torrentHandler(int signal) {
-  ((TorrentDownloadEngine*)requestInfo->getDownloadEngine())->
-    torrentMan->setHalt(true);
+  haltRequested = 1;
 }
 
 RequestInfo* TorrentRequestInfo::execute() {
+  BtContextHandle btContext(new DefaultBtContext());
+  btContext->load(torrentFile);
+  
   if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-    showFileEntry();
+    showFileEntry(btContext);
     return 0;
   }
   if(!timeoutSpecified) {
@@ -56,45 +61,42 @@ RequestInfo* TorrentRequestInfo::execute() {
   }
   // set max_tries to 1. AnnounceList handles retries.
   op->put(PREF_MAX_TRIES, "1");
-  e = DownloadEngineFactory::newTorrentConsoleEngine(op,
-						     torrentFile,
-						     targetFiles);
+  SharedHandle<TorrentDownloadEngine>
+    e(DownloadEngineFactory::newTorrentConsoleEngine(btContext,
+						     op,
+						     targetFiles));
+
   setSignalHander(SIGINT, torrentHandler, SA_RESETHAND);
   setSignalHander(SIGTERM, torrentHandler, SA_RESETHAND);
     
   try {
     e->run();
-    if(e->torrentMan->downloadComplete()) {
+    if(PIECE_STORAGE(btContext)->downloadFinished()) {
       printDownloadCompeleteMessage();
     }
-  } catch(Exception* e) {
-    logger->error("Exception caught", e);
-    delete e;
+  } catch(Exception* ex) {
+    logger->error("Exception caught", ex);
     fail = true;
+    delete ex;
   }
   setSignalHander(SIGINT, SIG_DFL, 0);
   setSignalHander(SIGTERM, SIG_DFL, 0);
-  delete e;
   
   return 0;
 }
 
-// TODO should be const TorrentMan* torrentMan
-void TorrentRequestInfo::showFileEntry()
+void TorrentRequestInfo::showFileEntry(const BtContextHandle& btContext)
 {
-  TorrentMan torrentMan;
-  torrentMan.option = op;
-
-  FileEntries fileEntries =
-    torrentMan.readFileEntryFromMetaInfoFile(torrentFile);
+  FileEntries fileEntries = btContext->getFileEntries();
   cout << _("Files:") << endl;
   cout << "idx|path/length" << endl;
   cout << "===+===========================================================================" << endl;
   int count = 1;
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); count++, itr++) {
-    printf("%3d|%s\n   |%s Bytes\n", count, itr->path.c_str(),
-	   Util::llitos(itr->length, true).c_str());
+    printf("%3d|%s\n   |%s Bytes\n", count,
+	   (*itr)->getPath().c_str(),
+	   Util::llitos((*itr)->getLength(), true).c_str());
     cout << "---+---------------------------------------------------------------------------" << endl;
   }
 }

@@ -50,8 +50,8 @@ public:
 
 #ifdef ENABLE_BITTORRENT
   static TorrentConsoleDownloadEngine*
-  newTorrentConsoleEngine(const Option* option,
-			  const string& torrentFile,
+  newTorrentConsoleEngine(const BtContextHandle& btContext,
+			  const Option* option, 
 			  const Strings& targetFiles);
 #endif // ENABLE_BITTORRENT
 };

@@ -55,8 +55,7 @@ RequestMessage* RequestMessage::create(const char* data, int dataLength) {
 }
 
 void RequestMessage::receivedAction() {
-  TorrentMan* torrentMan = peerInteraction->getTorrentMan();
-  if(torrentMan->hasPiece(index) &&
+  if(pieceStorage->hasPiece(index) &&
      (!peer->amChoking ||
       peer->amChoking && peerInteraction->isInFastSet(index))) {
     peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->

@@ -35,10 +35,10 @@
 #ifndef _D_TRACKER_WATCHER_COMMAND_H_
 #define _D_TRACKER_WATCHER_COMMAND_H_
 
-#include "Command.h"
+#include "BtContextAwareCommand.h"
 #include "TorrentDownloadEngine.h"
 
-class TrackerWatcherCommand : public Command {
+class TrackerWatcherCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
 
@@ -48,7 +48,10 @@ private:
    */
   Command* createRequestCommand(const string& url);
 public:
-  TrackerWatcherCommand(int cuid, TorrentDownloadEngine* e);
+  TrackerWatcherCommand(int cuid,
+			TorrentDownloadEngine* e,
+			const BtContextHandle& btContext);
+
   ~TrackerWatcherCommand();
 
   Command* createCommand();

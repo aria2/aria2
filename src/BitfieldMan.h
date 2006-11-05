@@ -59,6 +59,8 @@ private:
 
   int getStartIndex(int index) const;
   int getEndIndex(int index) const;
+
+  long long int getCompletedLength(bool useFilter) const;
 public:
   BitfieldMan(int blockLength, long long int totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);
@@ -191,11 +193,15 @@ public:
   void enableFilter();
   void disableFilter();
   bool isFilterEnabled() const;
-  long long int getFilteredTotalLength() const;
   /**
    * affected by filter
    */
+  long long int getFilteredTotalLength() const;
   long long int getCompletedLength() const;
+  /**
+   * affected by filter
+   */
+  long long int getFilteredCompletedLength() const;
 };
 
 #endif // _D_BITFIELD_MAN_H_

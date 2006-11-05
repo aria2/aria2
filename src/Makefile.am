@@ -69,7 +69,6 @@ SRCS += MetaEntry.h\
 	MetaFileUtil.cc MetaFileUtil.h\
 	MetaEntryVisitor.h\
 	ShaVisitor.cc ShaVisitor.h\
-	TorrentMan.cc TorrentMan.h\
 	PeerConnection.cc PeerConnection.h\
 	PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerAbstractCommand.cc PeerAbstractCommand.h\
@@ -92,7 +91,7 @@ SRCS += MetaEntry.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	FileEntry.h\
+	FileEntry.cc FileEntry.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
@@ -125,7 +124,21 @@ SRCS += MetaEntry.h\
 	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h\
 	CompactPeerListProcessor.cc CompactPeerListProcessor.h\
 	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h\
-	AnnounceList.h AnnounceList.cc
+	AnnounceTier.h\
+	AnnounceList.h AnnounceList.cc\
+	BtContext.h\
+	DefaultBtContext.cc DefaultBtContext.h\
+	PieceStorage.h\
+	DefaultPieceStorage.cc DefaultPieceStorage.h\
+	PeerService.h\
+	DefaultPeerStorage.cc DefaultPeerStorage.h\
+	BtAnnounce.h\
+	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
+	BtRegistry.cc BtRegistry.h\
+	BtRuntime.h\
+	BtProgressInfoFile.h\
+	DefaultBtProgressInfoFile.cc DefaultBtProgressInfoFile.h\
+	BtContextAwareCommand.cc BtContextAwareCommand.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

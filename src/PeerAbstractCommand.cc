@@ -41,23 +41,25 @@
 
 PeerAbstractCommand::PeerAbstractCommand(int cuid, const PeerHandle& peer,
 					 TorrentDownloadEngine* e,
+					 const BtContextHandle& btContext,
 					 const SocketHandle& s)
-  :Command(cuid), e(e), socket(s), peer(peer),
-  checkSocketIsReadable(false), checkSocketIsWritable(false),
-  uploadLimitCheck(false), uploadLimit(0), noCheck(false) {
+  :BtContextAwareCommand(cuid, btContext), e(e), socket(s), peer(peer),
+   checkSocketIsReadable(false), checkSocketIsWritable(false),
+   uploadLimitCheck(false), uploadLimit(0), noCheck(false)
+{
   setReadCheckSocket(socket);
   timeout = e->option->getAsInt(PREF_TIMEOUT);
-  e->torrentMan->connections++;
+  btRuntime->increaseConnections();
 }
 
 PeerAbstractCommand::~PeerAbstractCommand() {
   disableReadCheckSocket();
   disableWriteCheckSocket();
-  e->torrentMan->connections--;
+  btRuntime->decreaseConnections();
 }
 
 bool PeerAbstractCommand::execute() {
-  if(e->torrentMan->isHalt()) {
+  if(btRuntime->isHalt()) {
     return true;
   }
   try {

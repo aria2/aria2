@@ -40,7 +40,13 @@
 #include "SleepCommand.h"
 #include "Util.h"
 
-TrackerUpdateCommand::TrackerUpdateCommand(int cuid, TorrentDownloadEngine* e):Command(cuid), e(e) {
+extern PeerHandle nullPeer;
+
+TrackerUpdateCommand::TrackerUpdateCommand(int cuid,
+					   TorrentDownloadEngine* e,
+					   const BtContextHandle& btContext):
+  BtContextAwareCommand(cuid, btContext), e(e)
+{
   logger = LogFactory::getInstance();
 }
 
@@ -77,7 +83,7 @@ char* TrackerUpdateCommand::getTrackerResponse(size_t& trackerResponseLength) {
 }
 
 bool TrackerUpdateCommand::execute() {
-  if(e->segmentMan->errors > 0 && e->torrentMan->isHalt()) {
+  if(e->segmentMan->errors > 0 && btRuntime->isHalt()) {
     return true;
   }
   if(!e->segmentMan->finished()) {
@@ -89,19 +95,25 @@ bool TrackerUpdateCommand::execute() {
   try {
     trackerResponse = getTrackerResponse(trackerResponseLength);
 
-    e->torrentMan->processAnnounceResponse(trackerResponse,
-					   trackerResponseLength);
-    while(e->torrentMan->needMorePeerConnection()) {
-      PeerHandle peer = e->torrentMan->getPeer();
-      int newCuid =  e->torrentMan->getNewCuid();
+    btAnnounce->processAnnounceResponse(trackerResponse,
+					trackerResponseLength);
+    while(!btRuntime->isHalt() && btRuntime->lessThanMinPeer()) {
+      PeerHandle peer = peerStorage->getUnusedPeer();
+      if(peer == nullPeer) {
+	break;
+      }
+      int newCuid =  btRuntime->getNewCuid();
       peer->cuid = newCuid;
       PeerInitiateConnectionCommand* command =
-	new PeerInitiateConnectionCommand(newCuid, peer, e);
+	new PeerInitiateConnectionCommand(newCuid,
+					  peer,
+					  e,
+					  btContext);
       e->commands.push_back(command);
       logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
     }
-    e->torrentMan->announceSuccess();
-    e->torrentMan->resetAnnounce();
+    btAnnounce->announceSuccess();
+    btAnnounce->resetAnnounce();
     e->segmentMan->init();
   } catch(Exception* err) {
     logger->error("CUID#%d - Error occurred while processing tracker response.", cuid, err);
@@ -111,7 +123,7 @@ bool TrackerUpdateCommand::execute() {
   if(trackerResponse) {
     delete [] trackerResponse;
   }
-  if(e->torrentMan->isHalt()) {
+  if(btRuntime->isHalt()) {
     return true;
   } else {
     return prepareForRetry();

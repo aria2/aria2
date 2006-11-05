@@ -46,7 +46,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.cc MetaFileUtil.h\
 @ENABLE_BITTORRENT_TRUE@	MetaEntryVisitor.h\
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.cc ShaVisitor.h\
-@ENABLE_BITTORRENT_TRUE@	TorrentMan.cc TorrentMan.h\
 @ENABLE_BITTORRENT_TRUE@	PeerConnection.cc PeerConnection.h\
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.cc PeerMessageUtil.h\
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.cc PeerAbstractCommand.h\
@@ -69,7 +68,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-@ENABLE_BITTORRENT_TRUE@	FileEntry.h\
+@ENABLE_BITTORRENT_TRUE@	FileEntry.cc FileEntry.h\
 @ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.cc PeerChokeCommand.h\
@@ -102,7 +101,21 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h\
 @ENABLE_BITTORRENT_TRUE@	CompactPeerListProcessor.cc CompactPeerListProcessor.h\
 @ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h\
-@ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc
+@ENABLE_BITTORRENT_TRUE@	AnnounceTier.h\
+@ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc\
+@ENABLE_BITTORRENT_TRUE@	BtContext.h\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtContext.cc DefaultBtContext.h\
+@ENABLE_BITTORRENT_TRUE@	PieceStorage.h\
+@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorage.cc DefaultPieceStorage.h\
+@ENABLE_BITTORRENT_TRUE@	PeerService.h\
+@ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.cc DefaultPeerStorage.h\
+@ENABLE_BITTORRENT_TRUE@	BtAnnounce.h\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
+@ENABLE_BITTORRENT_TRUE@	BtRegistry.cc BtRegistry.h\
+@ENABLE_BITTORRENT_TRUE@	BtRuntime.h\
+@ENABLE_BITTORRENT_TRUE@	BtProgressInfoFile.h\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtProgressInfoFile.cc DefaultBtProgressInfoFile.h\
+@ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.cc BtContextAwareCommand.h
 
 @ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -172,10 +185,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BitfieldMan.cc BitfieldMan.h NameResolver.cc NameResolver.h \
 	MetaEntry.h Data.cc Data.h Dictionary.cc Dictionary.h List.cc \
 	List.h MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
-	ShaVisitor.cc ShaVisitor.h TorrentMan.cc TorrentMan.h \
-	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
-	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
-	PeerInitiateConnectionCommand.cc \
+	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
+	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
+	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -189,11 +201,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MultiDiskWriter.h DiskAdaptor.cc DiskAdaptor.h \
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
 	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
-	FileEntry.h TrackerUpdateCommand.cc TrackerUpdateCommand.h \
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	PeerChokeCommand.cc PeerChokeCommand.h ChokeMessage.cc \
-	ChokeMessage.h UnchokeMessage.cc UnchokeMessage.h \
-	InterestedMessage.cc InterestedMessage.h \
+	FileEntry.cc FileEntry.h TrackerUpdateCommand.cc \
+	TrackerUpdateCommand.h ByteArrayDiskWriter.cc \
+	ByteArrayDiskWriter.h PeerChokeCommand.cc PeerChokeCommand.h \
+	ChokeMessage.cc ChokeMessage.h UnchokeMessage.cc \
+	UnchokeMessage.h InterestedMessage.cc InterestedMessage.h \
 	NotInterestedMessage.cc NotInterestedMessage.h HaveMessage.cc \
 	HaveMessage.h BitfieldMessage.cc BitfieldMessage.h \
 	RequestMessage.cc RequestMessage.h PieceMessage.cc \
@@ -211,9 +223,17 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerListProcessor.h DefaultPeerListProcessor.cc \
 	DefaultPeerListProcessor.h CompactPeerListProcessor.cc \
 	CompactPeerListProcessor.h DelegatingPeerListProcessor.cc \
-	DelegatingPeerListProcessor.h AnnounceList.h AnnounceList.cc \
-	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
-	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
+	DelegatingPeerListProcessor.h AnnounceTier.h AnnounceList.h \
+	AnnounceList.cc BtContext.h DefaultBtContext.cc \
+	DefaultBtContext.h PieceStorage.h DefaultPieceStorage.cc \
+	DefaultPieceStorage.h PeerService.h DefaultPeerStorage.cc \
+	DefaultPeerStorage.h BtAnnounce.h DefaultBtAnnounce.cc \
+	DefaultBtAnnounce.h BtRegistry.cc BtRegistry.h BtRuntime.h \
+	BtProgressInfoFile.h DefaultBtProgressInfoFile.cc \
+	DefaultBtProgressInfoFile.h BtContextAwareCommand.cc \
+	BtContextAwareCommand.h Metalinker.cc Metalinker.h \
+	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
+	MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h
 @ENABLE_ASYNC_DNS_TRUE@am__objects_1 = NameResolver.$(OBJEXT)
@@ -221,7 +241,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	TorrentMan.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerConnection.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
@@ -243,6 +262,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	FileEntry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
@@ -270,7 +290,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	CompactPeerListProcessor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtContext.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtRegistry.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtProgressInfoFile.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -598,6 +625,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtContextAwareCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRegistry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CancelMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChokeMessage.Po@am__quote@
@@ -608,8 +637,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounce.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtContext.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtProgressInfoFile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DelegatingPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dictionary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
@@ -620,6 +654,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngineFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpInitiateConnectionCommand.Po@am__quote@
@@ -687,7 +722,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentAutoSaveCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentDownloadEngine.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@

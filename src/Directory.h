@@ -48,10 +48,13 @@ private:
   Files files;
 public:
   Directory(const string& name);
+  Directory();
   ~Directory();
 
   void createDir(const string& parentDir, bool recursive) const;
   void addFile(Directory* directory);
 };
+
+typedef SharedHandle<Directory> DirectoryHandle;
 
 #endif // _D_DIRECTORY_H_

@@ -39,20 +39,24 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "prefs.h"
+#include "BtRegistry.h"
 #include <netinet/in.h>
 
 PeerInteraction::PeerInteraction(int cuid,
 				 const PeerHandle& peer,
 				 const SocketHandle& socket,
 				 const Option* op,
-				 TorrentMan* torrentMan)
+				 const BtContextHandle& btContext)
   :cuid(cuid),
    option(op),
-   torrentMan(torrentMan),
+   btContext(btContext),
+   peerStorage(PEER_STORAGE(btContext)),
+   pieceStorage(PIECE_STORAGE(btContext)),
+   btAnnounce(BT_ANNOUNCE(btContext)),
    peer(peer),
    quickReplied(false) {
   peerConnection = new PeerConnection(cuid, socket, op);
-  peerMessageFactory = new PeerMessageFactory(cuid, this, peer);
+  peerMessageFactory = new PeerMessageFactory(cuid, btContext, this, peer);
   logger = LogFactory::getInstance();
 }
 
@@ -78,7 +82,7 @@ void PeerInteraction::sendMessages() {
     PeerMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
     if(uploadLimit > 0) {
-      TransferStat stat = torrentMan->calculateStat();
+      TransferStat stat = peerStorage->calculateStat();
       if(uploadLimit < stat.uploadSpeed &&
 	 msg->isUploading() && !msg->isInProgress()) {
 	tempQueue.push_back(msg);
@@ -155,7 +159,7 @@ void PeerInteraction::abortPiece(Piece& piece) {
 	itr++;
       }
     }
-    torrentMan->cancelPiece(piece);
+    pieceStorage->cancelPiece(piece);
   }
 }
 
@@ -184,7 +188,7 @@ void PeerInteraction::checkRequestSlot() {
     } else {
       Piece piece = getDownloadPiece(slot.getIndex());
       if(piece.hasBlock(slot.getBlockIndex()) ||
-	 torrentMan->hasPiece(piece.getIndex())) {
+	 pieceStorage->hasPiece(piece.getIndex())) {
 	logger->debug("CUID#%d - Deleting request slot blockIndex=%d because"
 		      " the block has been acquired.", cuid,
 		      slot.getBlockIndex());
@@ -242,7 +246,7 @@ PeerMessageHandle PeerInteraction::receiveHandshake(bool quickReply) {
   if(!quickReplied && quickReply && msgLength >= 48) {
     quickReplied = true;
     // check info_hash
-    if(memcmp(torrentMan->getInfoHash(), &msg[28], INFO_HASH_LENGTH) == 0) {
+    if(memcmp(btContext->getInfoHash(), &msg[28], INFO_HASH_LENGTH) == 0) {
       sendHandshake();
     }
   }
@@ -272,18 +276,18 @@ PeerMessageHandle PeerInteraction::receiveMessage() {
 
 void PeerInteraction::syncPiece() {
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
-    torrentMan->syncPiece(*itr);
+    pieceStorage->syncPiece(*itr);
   }
 }
 
 void PeerInteraction::updatePiece() {
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
-    torrentMan->updatePiece(*itr);
+    pieceStorage->updatePiece(*itr);
   }
 }
 
 void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
-  if(pieces.empty() && !torrentMan->hasMissingPiece(peer)) {
+  if(pieces.empty() && !pieceStorage->hasMissingPiece(peer)) {
     if(peer->amInterested) {
       logger->debug("CUID#%d - Not interested in the peer", cuid);
       addMessage(peerMessageFactory->createNotInterestedMessage());
@@ -293,7 +297,7 @@ void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
       onChoked();
       if(peer->isFastExtensionEnabled()) {
 	while((int)pieces.size() < pieceNum) {
-	  Piece piece = torrentMan->getMissingFastPiece(peer);
+	  Piece piece = pieceStorage->getMissingFastPiece(peer);
 	  if(Piece::isNull(piece)) {
 	    break;
 	  } else {
@@ -303,7 +307,7 @@ void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
       }
     } else {
       while((int)pieces.size() < pieceNum) {
-	Piece piece = torrentMan->getMissingPiece(peer);
+	Piece piece = pieceStorage->getMissingPiece(peer);
 	if(Piece::isNull(piece)) {
 	  break;
 	} else {
@@ -338,16 +342,16 @@ void PeerInteraction::addRequests() {
     MAX_PENDING_REQUEST = 6;
   }
   int pieceNum;
-  if(torrentMan->isEndGame()) {
+  if(pieceStorage->isEndGame()) {
     pieceNum = 1;
   } else {
-    int blocks = DIV_FLOOR(torrentMan->pieceLength, BLOCK_LENGTH);
+    int blocks = DIV_FLOOR(btContext->getPieceLength(), BLOCK_LENGTH);
     pieceNum = DIV_FLOOR(MAX_PENDING_REQUEST, blocks);
   }
   getNewPieceAndSendInterest(pieceNum);
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
     Piece& piece = *itr;
-    if(torrentMan->isEndGame()) {
+    if(pieceStorage->isEndGame()) {
       BlockIndexes missingBlockIndexes = piece.getAllMissingBlockIndexes();
       random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
       int count = countRequestSlot();
@@ -380,23 +384,23 @@ void PeerInteraction::addRequests() {
 
 void PeerInteraction::sendHandshake() {
   PeerMessageHandle handle =
-    peerMessageFactory->createHandshakeMessage(torrentMan->getInfoHash(),
-					       torrentMan->peerId.c_str());
+    peerMessageFactory->createHandshakeMessage(btContext->getInfoHash(),
+					       btAnnounce->getPeerId().c_str());
   addMessage(handle);
   sendMessages();
 }
 
 void PeerInteraction::sendBitfield() {
   if(peer->isFastExtensionEnabled()) {
-    if(torrentMan->hasAllPieces()) {
+    if(pieceStorage->downloadFinished()) {
       addMessage(peerMessageFactory->createHaveAllMessage());
-    } else if(torrentMan->getDownloadLength() > 0) {
+    } else if(pieceStorage->getCompletedLength() > 0) {
       addMessage(peerMessageFactory->createBitfieldMessage());
     } else {
       addMessage(peerMessageFactory->createHaveNoneMessage());
     }
   } else {
-    if(torrentMan->getDownloadLength() > 0) {
+    if(pieceStorage->getCompletedLength() > 0) {
       addMessage(peerMessageFactory->createBitfieldMessage());
     }
   }
@@ -405,8 +409,10 @@ void PeerInteraction::sendBitfield() {
 
 void PeerInteraction::sendAllowedFast() {
   if(peer->isFastExtensionEnabled()) {
-    Integers fastSet = Util::computeFastSet(peer->ipaddr, torrentMan->getInfoHash(),
-				   torrentMan->pieces, ALLOWED_FAST_SET_SIZE);
+    Integers fastSet = Util::computeFastSet(peer->ipaddr,
+					    btContext->getInfoHash(),
+					    btContext->getNumPieces(),
+					    ALLOWED_FAST_SET_SIZE);
     for(Integers::const_iterator itr = fastSet.begin();
 	itr != fastSet.end(); itr++) {
       addMessage(peerMessageFactory->createAllowedFastMessage(*itr));

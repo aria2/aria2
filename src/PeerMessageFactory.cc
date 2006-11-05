@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "PeerMessageFactory.h"
-#include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "ChokeMessage.h"
 #include "UnchokeMessage.h"
@@ -54,11 +53,16 @@
 #include "SuggestPieceMessage.h"
 #include "RequestSlot.h"
 #include "DlAbortEx.h"
+#include "BtRegistry.h"
+#include "PeerInteraction.h"
 
 PeerMessageFactory::PeerMessageFactory(int cuid,
+				       const BtContextHandle& btContext,
 				       PeerInteraction* peerInteraction,
 				       const PeerHandle& peer)
   :cuid(cuid),
+   btContext(btContext),
+   pieceStorage(PIECE_STORAGE(btContext)),
    peerInteraction(peerInteraction),
    peer(peer) {}
 
@@ -86,29 +90,26 @@ PeerMessageHandle PeerMessageFactory::createPeerMessage(const char* msg, int msg
       break;
     case HaveMessage::ID:
       peerMessage = HaveMessage::create(msg, msgLength);
-      ((HaveMessage*)peerMessage)->setPieces(peerInteraction->getTorrentMan()->
-					     pieces);
+      ((HaveMessage*)peerMessage)->setPieces(btContext->getNumPieces());
       break;
     case BitfieldMessage::ID:
       peerMessage = BitfieldMessage::create(msg, msgLength);
-      ((BitfieldMessage*)peerMessage)->setPieces(peerInteraction->
-						 getTorrentMan()->pieces);
+      ((BitfieldMessage*)peerMessage)->setPieces(btContext->getNumPieces());
       break;
     case RequestMessage::ID:
       peerMessage = RequestMessage::create(msg, msgLength);
-      ((RequestMessage*)peerMessage)->setPieces(peerInteraction->
-						getTorrentMan()->pieces);
-      ((RequestMessage*)peerMessage)->setPieceLength(peerInteraction->getTorrentMan()->getPieceLength(((RequestMessage*)peerMessage)->getIndex()));
+      ((RequestMessage*)peerMessage)->setPieces(btContext->getNumPieces());
+      ((RequestMessage*)peerMessage)->setPieceLength(pieceStorage->getPieceLength(((RequestMessage*)peerMessage)->getIndex()));
       break;
     case CancelMessage::ID:
       peerMessage = CancelMessage::create(msg, msgLength);
-      ((CancelMessage*)peerMessage)->setPieces(peerInteraction->getTorrentMan()->pieces);
-      ((CancelMessage*)peerMessage)->setPieceLength(peerInteraction->getTorrentMan()->getPieceLength(((CancelMessage*)peerMessage)->getIndex()));
+      ((CancelMessage*)peerMessage)->setPieces(btContext->getNumPieces());
+      ((CancelMessage*)peerMessage)->setPieceLength(pieceStorage->getPieceLength(((CancelMessage*)peerMessage)->getIndex()));
       break;
     case PieceMessage::ID:
       peerMessage = PieceMessage::create(msg, msgLength);
-      ((PieceMessage*)peerMessage)->setPieces(peerInteraction->getTorrentMan()->pieces);
-      ((PieceMessage*)peerMessage)->setPieceLength(peerInteraction->getTorrentMan()->getPieceLength(((PieceMessage*)peerMessage)->getIndex()));
+      ((PieceMessage*)peerMessage)->setPieces(btContext->getNumPieces());
+      ((PieceMessage*)peerMessage)->setPieceLength(pieceStorage->getPieceLength(((PieceMessage*)peerMessage)->getIndex()));
       break;
     case PortMessage::ID:
       peerMessage = PortMessage::create(msg, msgLength);
@@ -121,16 +122,16 @@ PeerMessageHandle PeerMessageFactory::createPeerMessage(const char* msg, int msg
       break;
     case RejectMessage::ID:
       peerMessage = RejectMessage::create(msg, msgLength);
-      ((RejectMessage*)peerMessage)->setPieces(peerInteraction->getTorrentMan()->pieces);
-      ((RejectMessage*)peerMessage)->setPieceLength(peerInteraction->getTorrentMan()->getPieceLength(((RejectMessage*)peerMessage)->getIndex()));
+      ((RejectMessage*)peerMessage)->setPieces(btContext->getNumPieces());
+      ((RejectMessage*)peerMessage)->setPieceLength(pieceStorage->getPieceLength(((RejectMessage*)peerMessage)->getIndex()));
       break;
     case SuggestPieceMessage::ID:
       peerMessage = SuggestPieceMessage::create(msg, msgLength);
-      ((SuggestPieceMessage*)peerMessage)->setPieces(peerInteraction->getTorrentMan()->pieces);
+      ((SuggestPieceMessage*)peerMessage)->setPieces(btContext->getNumPieces());
       break;
     case AllowedFastMessage::ID:
       peerMessage = AllowedFastMessage::create(msg, msgLength);
-      ((AllowedFastMessage*)peerMessage)->setPieces(peerInteraction->getTorrentMan()->pieces);
+      ((AllowedFastMessage*)peerMessage)->setPieces(btContext->getNumPieces());
       break;
     default:
       throw new DlAbortEx("Invalid message id. id = %d", id);
@@ -167,6 +168,7 @@ PeerMessageFactory::setPeerMessageCommonProperty(PeerMessageHandle& peerMessage)
   peerMessage->setPeer(peer);
   peerMessage->setCuid(cuid);
   peerMessage->setPeerInteraction(peerInteraction);
+  peerMessage->setBtContext(btContext);
 }
 
 PeerMessageHandle PeerMessageFactory::createRequestMessage(const Piece& piece,
@@ -235,10 +237,8 @@ PeerMessageHandle PeerMessageFactory::createNotInterestedMessage() const {
 
 PeerMessageHandle PeerMessageFactory::createBitfieldMessage() const {
   PeerMessageHandle handle =
-    PeerMessageHandle(new BitfieldMessage(peerInteraction->getTorrentMan()->
-					  getBitfield(),
-					  peerInteraction->getTorrentMan()->
-					  getBitfieldLength()));
+    PeerMessageHandle(new BitfieldMessage(pieceStorage->getBitfield(),
+					  pieceStorage->getBitfieldLength()));
   setPeerMessageCommonProperty(handle);
   return handle;
 }

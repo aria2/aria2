@@ -37,45 +37,7 @@
 
 #include "common.h"
 #include "MetaEntry.h"
-
-class AnnounceTier {
-public:
-  enum AnnounceEvent {
-    STARTED,
-    STARTED_AFTER_COMPLETION,
-    DOWNLOADING,
-    STOPPED,
-    COMPLETED,
-    SEEDING,
-    HALTED
-  };
-
-  AnnounceEvent event;
-  Strings urls;
-
-  AnnounceTier(const Strings& urls):event(STARTED), urls(urls) {}
-
-  void nextEvent() {
-    switch(event) {
-    case STARTED:
-      event = DOWNLOADING;
-      break;
-    case STARTED_AFTER_COMPLETION:
-      event = SEEDING;
-      break;
-    case STOPPED:
-      event = HALTED;
-      break;
-    case COMPLETED:
-      event = SEEDING;
-      break;
-    default:
-      break;
-    }
-  }
-};
-
-typedef deque<AnnounceTier> AnnounceTiers;
+#include "AnnounceTier.h"
 
 class AnnounceList {
 public:

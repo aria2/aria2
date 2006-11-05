@@ -117,20 +117,28 @@ int Util::difftvsec(struct timeval tv1, struct timeval tv2) {
   return tv1.tv_sec-tv2.tv_sec;
 }
 
-void Util::slice(Strings& result, const string& src, char delim) {
+void Util::slice(Strings& result, const string& src, char delim, bool doTrim) {
   string::size_type p = 0;
   while(1) {
     string::size_type np = src.find(delim, p);
     if(np == string::npos) {
-      string term = trim(src.substr(p));
-      if(term.size() > 0) {
+      string term = src.substr(p);
+      if(doTrim) {
+	term = trim(term);
+      }
+      if(term.size()) {
 	result.push_back(term);
       }
       break;
     }
     string term = src.substr(p, np-p);
+    if(doTrim) {
+      term = trim(term);
+    }
     p = np+1;
-    result.push_back(trim(term));
+    if(term.size()) {
+      result.push_back(term);
+    }
   } 
 }
 

@@ -36,7 +36,6 @@
 #define _D_REJECT_MESSAGE_H_
 
 #include "SimplePeerMessage.h"
-#include "TorrentMan.h"
 
 class RejectMessage : public SimplePeerMessage {
 private:

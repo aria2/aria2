@@ -37,19 +37,19 @@
 
 #include "RequestInfo.h"
 #include "TorrentDownloadEngine.h"
+#include "BtContext.h"
 
 class TorrentRequestInfo : public RequestInfo {
 private:
   string torrentFile;
-  TorrentDownloadEngine* e;
   Strings targetFiles;
 
-  void showFileEntry();
+  void showFileEntry(const BtContextHandle& btContext);
 public:
   TorrentRequestInfo(const string& torrentFile, Option* op):
     RequestInfo(op),
-    torrentFile(torrentFile),
-    e(0) {}
+    torrentFile(torrentFile) {}
+
   virtual ~TorrentRequestInfo() {}
 
   virtual RequestInfo* execute();
@@ -57,8 +57,10 @@ public:
   void setTargetFiles(const Strings& targetFiles) {
     this->targetFiles = targetFiles;
   }
-  virtual DownloadEngine* getDownloadEngine() { return e; }
 
+  virtual DownloadEngine* getDownloadEngine() {
+    return 0;
+  }
 };
 
 #endif // _D_TORRENT_REQUEST_INFO_H_

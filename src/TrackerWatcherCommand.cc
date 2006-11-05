@@ -39,17 +39,19 @@
 #include "prefs.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
-					     TorrentDownloadEngine* e):
-  Command(cuid), e(e) {
+					     TorrentDownloadEngine* e,
+					     const BtContextHandle& btContext):
+  BtContextAwareCommand(cuid, btContext), e(e)
+{
 }
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 
 bool TrackerWatcherCommand::execute() {
-  if(e->torrentMan->isHalt() &&
-     e->segmentMan->errors > 0 && e->torrentMan->isAllAnnounceFailed() ||
-     e->torrentMan->noMoreAnnounce()) {
+  if(btRuntime->isHalt() &&
+     e->segmentMan->errors > 0 && btAnnounce->isAllAnnounceFailed() ||
+     btAnnounce->noMoreAnnounce()) {
     return true;
   }
   Command* command = createCommand();
@@ -62,18 +64,18 @@ bool TrackerWatcherCommand::execute() {
 
 Command* TrackerWatcherCommand::createCommand() {
   Command* command = 0;
-  if(e->torrentMan->isAnnounceReady()) {
-    command = createRequestCommand(e->torrentMan->getAnnounceUrl());
-    e->torrentMan->announceStart(); // inside it, trackers++.
+  if(btAnnounce->isAnnounceReady()) {
+    command = createRequestCommand(btAnnounce->getAnnounceUrl());
+    btAnnounce->announceStart(); // inside it, trackers++.
   } else if(e->segmentMan->errors > 0) {
-    e->torrentMan->announceFailure(); // inside it, trackers = 0.
+    btAnnounce->announceFailure(); // inside it, trackers = 0.
     e->segmentMan->init();
-    if(e->torrentMan->isAllAnnounceFailed()) {
-      e->torrentMan->resetAnnounce();
+    if(btAnnounce->isAllAnnounceFailed()) {
+      btAnnounce->resetAnnounce();
       // sleep a few seconds.
       command =
 	new SleepCommand(cuid, e,
-			 createRequestCommand(e->torrentMan->getAnnounceUrl()),
+			 createRequestCommand(btAnnounce->getAnnounceUrl()),
 			 e->option->getAsInt(PREF_RETRY_WAIT));
     }
   }
@@ -84,7 +86,8 @@ Command* TrackerWatcherCommand::createRequestCommand(const string& url) {
   RequestHandle req;
   req->setUrl(url);
   req->isTorrent = true;
-  Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(e->torrentMan->getNewCuid(), req, e);
+  Command* command =
+    InitiateConnectionCommandFactory::createInitiateConnectionCommand(btRuntime->getNewCuid(), req, e);
   logger->info("CUID#%d - Creating new tracker request command #%d", cuid,
 	       command->getCuid());
   return command;

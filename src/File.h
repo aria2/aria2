@@ -72,6 +72,15 @@ public:
    */
   bool remove();
 
+  /**
+   * Creates the directory denoted by name.
+   * This method creates complete directory structure.
+   * Returns true if the directory is created successfully, otherwise returns
+   * false.
+   * If the directory already exists, then returns false.
+   */
+  bool mkdirs();
+
   long long int size();
 };
 

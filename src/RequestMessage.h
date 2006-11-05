@@ -36,7 +36,6 @@
 #define _D_REQUEST_MESSAGE_H_
 
 #include "SimplePeerMessage.h"
-#include "TorrentMan.h"
 
 class RequestMessage : public SimplePeerMessage {
 private:

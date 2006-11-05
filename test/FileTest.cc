@@ -15,6 +15,7 @@ class FileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsDir);
   CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST(testSize);
+  CPPUNIT_TEST(testMkdir);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -27,6 +28,7 @@ public:
   void testIsDir();
   void testRemove();
   void testSize();
+  void testMkdir();
 };
 
 
@@ -68,6 +70,7 @@ void FileTest::testIsDir() {
 void FileTest::testRemove() {
   int fd;
   string name = "/tmp/aria2test";
+  unlink(name.c_str());
   if((fd = creat(name.c_str(), S_IRUSR|S_IWUSR)) < 0) {
     CPPUNIT_FAIL("cannot create test file");
   }
@@ -92,4 +95,20 @@ void FileTest::testRemove() {
 void FileTest::testSize() {
   File f("4096chunk.txt");
   CPPUNIT_ASSERT_EQUAL(4096, (int)f.size());
+}
+
+void FileTest::testMkdir() {
+  string dir = "/tmp/aria2test2/test";
+  File d(dir);
+  if(d.exists()) {
+    CPPUNIT_ASSERT(d.remove());
+  }
+  CPPUNIT_ASSERT(!d.exists());
+
+  CPPUNIT_ASSERT(d.mkdirs());
+
+  CPPUNIT_ASSERT(d.exists());
+  // this test failes because d.mkdir returns false when the directory is
+  // already exists.
+  CPPUNIT_ASSERT(!d.mkdirs());
 }

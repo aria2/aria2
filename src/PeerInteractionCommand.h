@@ -73,7 +73,9 @@ protected:
 public:
   PeerInteractionCommand(int cuid, const PeerHandle& peer,
 			 TorrentDownloadEngine* e,
+			 const BtContextHandle& btContext,
 			 const SocketHandle& s, int sequence);
+
   ~PeerInteractionCommand();
 
   enum Seq {

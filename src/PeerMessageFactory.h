@@ -38,18 +38,23 @@
 #include "common.h"
 #include "PeerMessage.h"
 #include "HandshakeMessage.h"
+#include "BtContext.h"
+#include "PieceStorage.h"
 
 class PeerInteraction;
 
 class PeerMessageFactory {
 private:
   int cuid;
+  BtContextHandle btContext;
+  PieceStorageHandle pieceStorage;
   PeerInteraction* peerInteraction;
   PeerHandle peer;
 
   void setPeerMessageCommonProperty(PeerMessageHandle& peerMessage) const;
 public:
   PeerMessageFactory(int cuid,
+		     const BtContextHandle& btContext,
 		     PeerInteraction* peerInteraction,
 		     const PeerHandle& peer);
 

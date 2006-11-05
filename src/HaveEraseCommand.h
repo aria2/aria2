@@ -35,19 +35,19 @@
 #ifndef _D_HAVE_ERASE_COMMAND_H_
 #define _D_HAVE_ERASE_COMMAND_H_
 
-#include "Command.h"
+#include "BtContextAwareCommand.h"
 #include "TorrentDownloadEngine.h"
 
-class HaveEraseCommand : public Command {
+class HaveEraseCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
   Time cp;
   int interval;
 public:
-  HaveEraseCommand(int cuid, TorrentDownloadEngine* e, int interval)
-    :Command(cuid),
-     e(e),
-     interval(interval) {}
+  HaveEraseCommand(int cuid,
+		   TorrentDownloadEngine* e,
+		   const BtContextHandle& btContext,
+		   int interval);
 
   virtual ~HaveEraseCommand() {}
 

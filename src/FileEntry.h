@@ -38,18 +38,41 @@
 #include "common.h"
 
 class FileEntry {
-public:
+private:
   string path;
   long long int length;
   long long int offset;
   bool extracted;
   bool requested;
-  FileEntry(const string& path, long long int length, long long int offset):
-    path(path), length(length), offset(offset),
-    extracted(false), requested(true) {}
-  ~FileEntry() {}
+public:
+  FileEntry(const string& path, long long int length, long long int offset);
+
+  ~FileEntry();
+
+  const string& getPath() const { return path; }
+
+  void setPath(const string& path) { this->path = path; }
+
+  long long int getLength() const { return length; }
+
+  void setLength(long long int length) { this->length = length; }
+
+  long long int getOffset() const { return offset; }
+
+  void setOffset(long long int offset) { this->offset = offset; }
+
+  bool isExtracted() const { return extracted; }
+
+  void setExtracted(bool flag) { this->extracted = flag; }
+
+  bool isRequested() const { return requested; }
+
+  void setRequested(bool flag) { this->requested = flag; }
+
+  void setupDir(const string& parentDir);
 };
 
-typedef deque<FileEntry> FileEntries;
+typedef SharedHandle<FileEntry> FileEntryHandle;
+typedef deque<FileEntryHandle> FileEntries;
 
 #endif // _D_FILE_ENTRY_H_

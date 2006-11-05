@@ -41,8 +41,9 @@
 
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand(int cuid,
 							     const PeerHandle& peer,
-							     TorrentDownloadEngine* e)
-  :PeerAbstractCommand(cuid, peer, e) {}
+							     TorrentDownloadEngine* e,
+							     const BtContextHandle& btContext)
+  :PeerAbstractCommand(cuid, peer, e, btContext) {}
 
 PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand() {}
 
@@ -51,7 +52,13 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
 	       peer->port);
   socket->establishConnection(peer->ipaddr, peer->port);
-  command = new PeerInteractionCommand(cuid, peer, e, socket, PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
+  command =
+    new PeerInteractionCommand(cuid,
+			       peer,
+			       e,
+			       btContext,
+			       socket,
+			       PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
 
   e->commands.push_back(command);
   return true;
@@ -59,19 +66,26 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 
 // TODO this method removed when PeerBalancerCommand is implemented
 bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
-  if(e->torrentMan->isPeerAvailable()) {
-    PeerHandle peer = e->torrentMan->getPeer();
-    int newCuid = e->torrentMan->getNewCuid();
+  if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
+    PeerHandle peer = peerStorage->getUnusedPeer();
+    int newCuid = btRuntime->getNewCuid();
     peer->cuid = newCuid;
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(newCuid, peer, e);
+      new PeerInitiateConnectionCommand(newCuid,
+					peer,
+					e,
+					btContext);
     e->commands.push_back(command);
   }
   return true;
 }
 
 bool PeerInitiateConnectionCommand::prepareForRetry(int wait) {
-  PeerInitiateConnectionCommand* command = new PeerInitiateConnectionCommand(cuid, peer, e);
+  PeerInitiateConnectionCommand* command =
+    new PeerInitiateConnectionCommand(cuid,
+				      peer,
+				      e,
+				      btContext);
   e->commands.push_back(command);
   return true;
 }

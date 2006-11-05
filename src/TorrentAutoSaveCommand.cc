@@ -35,15 +35,21 @@
 #include "TorrentAutoSaveCommand.h"
 #include "Util.h"
 
-TorrentAutoSaveCommand::TorrentAutoSaveCommand(int cuid, TorrentDownloadEngine* e, int interval):Command(cuid), e(e), interval(interval) {}
+TorrentAutoSaveCommand::TorrentAutoSaveCommand(int cuid,
+					       TorrentDownloadEngine* e,
+					       const BtContextHandle& btContext,
+					       int interval):
+  BtContextAwareCommand(cuid, btContext),
+  e(e),
+  interval(interval) {}
 
 TorrentAutoSaveCommand::~TorrentAutoSaveCommand() {}
 
 bool TorrentAutoSaveCommand::execute() {
-  if(checkPoint.elapsed(interval) || e->torrentMan->isHalt()) {
+  if(checkPoint.elapsed(interval) || btRuntime->isHalt()) {
     checkPoint.reset();
-    e->torrentMan->save();
-    if(e->torrentMan->isHalt()) {
+    btProgressInfoFile->save();
+    if(btRuntime->isHalt()) {
       return true;
     }
   }

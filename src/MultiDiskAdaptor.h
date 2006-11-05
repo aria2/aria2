@@ -41,6 +41,7 @@
 class MultiDiskAdaptor : public DiskAdaptor {
 private:
   void setDiskWriterFileEntries();
+  void mkdir() const;
 protected:
   virtual string getFilePath() const;
 public:

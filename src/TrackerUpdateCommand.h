@@ -35,18 +35,21 @@
 #ifndef _D_TRACKER_UPDATE_COMMAND_H_
 #define _D_TRACKER_UPDATE_COMMAND_H_
 
-#include "Command.h"
+#include "BtContextAwareCommand.h"
 #include "TorrentDownloadEngine.h"
 #include "Logger.h"
 
-class TrackerUpdateCommand : public Command {
+class TrackerUpdateCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
   const Logger* logger;
   bool prepareForRetry();
   char* getTrackerResponse(size_t& trackerResponseLength);
 public:
-  TrackerUpdateCommand(int cuid, TorrentDownloadEngine* e);
+  TrackerUpdateCommand(int cuid,
+		       TorrentDownloadEngine* e,
+		       const BtContextHandle& btContext);
+
   virtual ~TrackerUpdateCommand();
 
   bool execute();

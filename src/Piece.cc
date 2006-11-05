@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "Piece.h"
+#include "Util.h"
 
 Piece Piece::nullPiece;
 
@@ -78,4 +79,8 @@ int Piece::getMissingBlockIndex() const {
 
 BlockIndexes Piece::getAllMissingBlockIndexes() const {
   return bitfield->getAllMissingIndexes();
+}
+
+string Piece::toString() const {
+  return "piece: index="+Util::itos(index)+", length="+Util::itos(length);
 }

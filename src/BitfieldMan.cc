@@ -510,13 +510,17 @@ long long int BitfieldMan::getFilteredTotalLength() const {
   }
 }
 
-long long int BitfieldMan::getCompletedLength() const {
+long long int BitfieldMan::getCompletedLength(bool useFilter) const {
   unsigned char* temp = new unsigned char[bitfieldLength];
-  for(int i = 0; i < bitfieldLength; i++) {
-    temp[i] = bitfield[i];
-    if(filterEnabled) {
-      temp[i] &= filterBitfield[i];
+  if(useFilter) {
+    for(int i = 0; i < bitfieldLength; i++) {
+      temp[i] = bitfield[i];
+      if(filterEnabled) {
+	temp[i] &= filterBitfield[i];
+      }
     }
+  } else {
+    memcpy(temp, bitfield, bitfieldLength);
   }
   int completedBlocks = countSetBit(temp, bitfieldLength);
   long long int completedLength = 0;
@@ -531,4 +535,12 @@ long long int BitfieldMan::getCompletedLength() const {
   }
   delete [] temp;
   return completedLength;
+}
+
+long long int BitfieldMan::getCompletedLength() const {
+  return getCompletedLength(false);
+}
+
+long long int BitfieldMan::getFilteredCompletedLength() const {
+  return getCompletedLength(true);
 }

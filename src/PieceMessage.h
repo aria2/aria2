@@ -36,7 +36,6 @@
 #define _D_PIECE_MESSAGE_H_
 
 #include "PeerMessage.h"
-#include "TorrentMan.h"
 
 class PieceMessage : public PeerMessage {
 private:

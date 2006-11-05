@@ -34,8 +34,17 @@
 /* copyright --> */
 #include "SeedCheckCommand.h"
 
+SeedCheckCommand::SeedCheckCommand(int cuid,
+				   TorrentDownloadEngine* e,
+				   const BtContextHandle& btContext,
+				   SeedCriteriaHandle seedCriteria)
+  :BtContextAwareCommand(cuid, btContext),
+   e(e),
+   seedCriteria(seedCriteria),
+   checkStarted(false) {}
+
 bool SeedCheckCommand::execute() {
-  if(e->torrentMan->isHalt()) {
+  if(btRuntime->isHalt()) {
     return true;
   }
   if(!seedCriteria.get()) {
@@ -43,7 +52,7 @@ bool SeedCheckCommand::execute() {
   }
   if(checkPoint.elapsed(1)) {
     if(!checkStarted) {
-      if(e->torrentMan->downloadComplete()) {
+      if(pieceStorage->downloadFinished()) {
 	checkStarted = true;
 	seedCriteria->reset();
       }
@@ -51,7 +60,7 @@ bool SeedCheckCommand::execute() {
     if(checkStarted) {
       if(seedCriteria->evaluate()) {
 	logger->notice("CUID#%d - Seeding is over.", cuid);
-	e->torrentMan->setHalt(true);
+	btRuntime->setHalt(true);
       }
     }
   }

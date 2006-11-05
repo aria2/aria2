@@ -38,6 +38,10 @@
 PeerMessage::PeerMessage()
   :inProgress(false),
    invalidate(false),
-   uploading(false) {
+   uploading(false),
+   btContext(0),
+   peerStorage(0),
+   pieceStorage(0)
+ {
   logger = LogFactory::getInstance();
 }

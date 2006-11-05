@@ -5,6 +5,11 @@
 #include "prefs.h"
 #include "HttpInitiateConnectionCommand.h"
 #include "ByteArrayDiskWriter.h"
+#include "DefaultBtContext.h"
+#include "DefaultBtAnnounce.h"
+#include "DefaultPieceStorage.h"
+#include "DefaultPeerStorage.h"
+#include "BtRegistry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -28,39 +33,52 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TrackerWatcherCommandTest );
 
 void TrackerWatcherCommandTest::testCreateCommand() {
   try {
-  Option* op = new Option();
-  op->put(PREF_TRACKER_MAX_TRIES, "10");
+    Option* op = new Option();
+    op->put(PREF_TRACKER_MAX_TRIES, "10");
+    
+    BtContextHandle btContext(new DefaultBtContext());
+    btContext->load("test.torrent");
+    
+    BtRuntimeHandle btRuntime;
+    BtRegistry::registerBtRuntime(btContext->getInfoHashAsString(), btRuntime);
+    
+    PieceStorageHandle pieceStorage(new DefaultPieceStorage(btContext, op));
+    BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
+				     pieceStorage);
 
-  TorrentConsoleDownloadEngine* te = new TorrentConsoleDownloadEngine();
-  te->option = op;
-  te->segmentMan = new SegmentMan();
-  te->segmentMan->option = op;
-  ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
-  te->segmentMan->diskWriter = byteArrayDiskWriter;
-  te->torrentMan = new TorrentMan();
-  te->torrentMan->option = op;
-  te->torrentMan->setup("test.torrent", Strings());
+    PeerStorageHandle peerStorage(new DefaultPeerStorage(btContext, op));
+    BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(),
+				    peerStorage);
 
-  TrackerWatcherCommand command(1, te);
+    BtAnnounceHandle btAnnounce(new DefaultBtAnnounce(btContext, op));
+    BtRegistry::registerBtAnnounce(btContext->getInfoHashAsString(), btAnnounce);
+    TorrentConsoleDownloadEngine* te = new TorrentConsoleDownloadEngine();
+    te->option = op;
+    te->segmentMan = new SegmentMan();
+    te->segmentMan->option = op;
+    ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
+    te->segmentMan->diskWriter = byteArrayDiskWriter;
 
-  CPPUNIT_ASSERT(dynamic_cast<HttpInitiateConnectionCommand*>(command.createCommand()));
-  cerr << te->torrentMan->getAnnounceUrl() << endl;
+    TrackerWatcherCommand command(1, te, btContext);
 
-  te->torrentMan->announceSuccess();
-  te->torrentMan->resetAnnounce();
-  te->segmentMan->init();
-
-  te->torrentMan->setHalt(true);
-
-  CPPUNIT_ASSERT(dynamic_cast<HttpInitiateConnectionCommand*>(command.createCommand()));
-  cerr << te->torrentMan->getAnnounceUrl() << endl;
-
-  te->torrentMan->announceSuccess();
-  te->torrentMan->resetAnnounce();
-  te->segmentMan->init();
-
-  CPPUNIT_ASSERT(te->torrentMan->noMoreAnnounce());
-
+    CPPUNIT_ASSERT(dynamic_cast<HttpInitiateConnectionCommand*>(command.createCommand()));
+    //cerr << btAnnounce->getAnnounceUrl() << endl;
+    
+    btAnnounce->announceSuccess();
+    btAnnounce->resetAnnounce();
+    te->segmentMan->init();
+    
+    btRuntime->setHalt(true);
+    
+    CPPUNIT_ASSERT(dynamic_cast<HttpInitiateConnectionCommand*>(command.createCommand()));
+    //cerr << btAnnounce->getAnnounceUrl() << endl;
+    
+    btAnnounce->announceSuccess();
+    btAnnounce->resetAnnounce();
+    te->segmentMan->init();
+    
+    CPPUNIT_ASSERT(btAnnounce->noMoreAnnounce());
+    
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;

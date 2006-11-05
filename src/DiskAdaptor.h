@@ -40,13 +40,13 @@
 #include "Directory.h"
 #include "DiskWriter.h"
 #include "Logger.h"
+#include "FileEntry.h"
 
 class DiskAdaptor {
 protected:
   DiskWriter* diskWriter;
   string storeDir;
   FileEntries fileEntries;
-  const Directory* topDir;
   const Logger* logger;
   virtual string getFilePath() const = 0;
 public:
@@ -66,7 +66,9 @@ public:
   void setFileEntries(const FileEntries& fileEntries) {
     this->fileEntries = fileEntries;
   }
-  FileEntry getFileEntryFromPath(const string& fileEntryPath) const;
+
+  FileEntryHandle getFileEntryFromPath(const string& fileEntryPath) const;
+
   const FileEntries& getFileEntries() const { return fileEntries; }
 
   bool addDownloadEntry(const string& fileEntryPath);
@@ -75,15 +77,8 @@ public:
   void removeAllDownloadEntry();
 
   void setStoreDir(const string& storeDir) { this->storeDir = storeDir; }
-  string getStoreDir() const { return this->storeDir; }
 
-  void setTopDir(const Directory* dirctory) {
-    if(this->topDir != NULL) {
-      delete topDir;
-    }
-    this->topDir = dirctory;
-  }
-  const Directory* getTopDir() const { return this->topDir; }
+  string getStoreDir() const { return this->storeDir; }
 };
 
 #endif // _D_DISK_ADAPTOR_H_

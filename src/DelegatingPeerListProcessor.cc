@@ -54,4 +54,5 @@ bool DelegatingPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
       return true;
     }
   }
+  return false;
 }

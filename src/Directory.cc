@@ -42,6 +42,8 @@
 
 Directory::Directory(const string& name):name(name) {}
 
+Directory::Directory() {}
+
 Directory::~Directory() {
   for(Files::iterator itr = files.begin(); itr != files.end(); itr++) {
     delete *itr;
@@ -49,6 +51,9 @@ Directory::~Directory() {
 }
 
 void Directory::createDir(const string& parentDir, bool recursive) const {
+  if(name.size() == 0) {
+    return;
+  }
   string path = parentDir+"/"+name;
   File f(path);
   if(f.exists()) {

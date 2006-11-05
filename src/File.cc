@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "File.h"
+#include "Util.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -82,4 +83,31 @@ long long int File::size() {
     return 0;
   }
   return fstat.st_size;
+}
+
+bool File::mkdirs() {
+  if(isDir()) {
+    return false;
+  }
+  Strings dirs;
+  Util::slice(dirs, name, '/');
+  if(!dirs.size()) {
+    return true;
+  }
+  string accDir;
+  if(Util::startsWith(name, "/")) {
+    accDir = "/";
+  }
+  mode_t mode = S_IRUSR|S_IWUSR|S_IXUSR;
+  for(Strings::const_iterator itr = dirs.begin(); itr != dirs.end();
+      itr++, accDir += "/") {
+    accDir += *itr;
+    if(File(accDir).isDir()) {
+      continue;
+    }
+    if(mkdir(accDir.c_str(), mode) == -1) {
+      return false;
+    }
+  }
+  return true;
 }

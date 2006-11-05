@@ -36,7 +36,6 @@
 #define _D_HANDSHAKE_MESSAGE_H_
 
 #include "SimplePeerMessage.h"
-#include "TorrentMan.h"
 
 #define PSTR "BitTorrent protocol"
 #define HANDSHAKE_MESSAGE_LENGTH 68

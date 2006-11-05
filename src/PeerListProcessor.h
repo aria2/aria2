@@ -40,8 +40,6 @@
 #include "Peer.h"
 #include "SharedHandle.h"
 
-typedef deque<PeerHandle> Peers;
-
 class PeerListProcessor {
 public:
   virtual ~PeerListProcessor() {}

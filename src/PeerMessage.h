@@ -39,7 +39,10 @@
 #include "Logger.h"
 #include "Peer.h"
 #include "Piece.h"
-#include "SharedHandle.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtRegistry.h"
 #include <string>
 
 class PeerInteraction;
@@ -53,6 +56,9 @@ protected:
   PeerHandle peer;
   PeerInteraction* peerInteraction;
   const Logger* logger;
+  BtContextHandle btContext;
+  PeerStorageHandle peerStorage;
+  PieceStorageHandle pieceStorage;
 public:
   PeerMessage();
 
@@ -63,16 +69,27 @@ public:
   bool isUploading() const { return uploading; }
 
   int getCuid() const { return cuid; }
+
   void setCuid(int cuid) {
     this->cuid = cuid;
   }
+
   PeerHandle getPeer() const { return this->peer; }
+
   void setPeer(const PeerHandle& peer) {
     this->peer = peer;
   }
+
   PeerInteraction* getPeerInteraction() const { return peerInteraction; }
+
   void setPeerInteraction(PeerInteraction* peerInteraction) {
     this->peerInteraction = peerInteraction;
+  }
+
+  void setBtContext(const BtContextHandle& btContext) {
+    this->btContext = btContext;
+    pieceStorage = PIECE_STORAGE(btContext);
+    peerStorage = PEER_STORAGE(btContext);
   }
 
   virtual int getId() const = 0;

@@ -68,7 +68,7 @@ void MultiDiskWriter::setFileEntries(const FileEntries& fileEntries) {
 void MultiDiskWriter::openFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    (*itr)->diskWriter->openFile(filename+"/"+(*itr)->fileEntry.path);
+    (*itr)->diskWriter->openFile(filename+"/"+(*itr)->fileEntry->getPath());
   }
 }
 
@@ -76,7 +76,7 @@ void MultiDiskWriter::openFile(const string& filename) {
 void MultiDiskWriter::initAndOpenFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    (*itr)->diskWriter->initAndOpenFile(filename+"/"+(*itr)->fileEntry.path);
+    (*itr)->diskWriter->initAndOpenFile(filename+"/"+(*itr)->fileEntry->getPath());
   }
 }
 
@@ -90,7 +90,7 @@ void MultiDiskWriter::closeFile() {
 void MultiDiskWriter::openExistingFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
-    (*itr)->diskWriter->openExistingFile(filename+"/"+(*itr)->fileEntry.path);
+    (*itr)->diskWriter->openExistingFile(filename+"/"+(*itr)->fileEntry->getPath());
   }
 }
 
@@ -107,7 +107,7 @@ void MultiDiskWriter::writeData(const char* data, int len, long long int offset)
       writing = true;
       fileOffset = 0;
     } else {
-      fileOffset -= (*itr)->fileEntry.length;
+      fileOffset -= (*itr)->fileEntry->getLength();
     }
   }
   if(!writing) {
@@ -116,14 +116,14 @@ void MultiDiskWriter::writeData(const char* data, int len, long long int offset)
 }
 
 bool MultiDiskWriter::isInRange(const DiskWriterEntry* entry, long long int offset) const {
-  return entry->fileEntry.offset <= offset &&
-    offset < entry->fileEntry.offset+entry->fileEntry.length;
+  return entry->fileEntry->getOffset() <= offset &&
+    offset < entry->fileEntry->getOffset()+entry->fileEntry->getLength();
 }
 
 int MultiDiskWriter::calculateLength(const DiskWriterEntry* entry, long long int fileOffset, int rem) const {
   int length;
-  if(entry->fileEntry.length < fileOffset+rem) {
-    length = entry->fileEntry.length-fileOffset;
+  if(entry->fileEntry->getLength() < fileOffset+rem) {
+    length = entry->fileEntry->getLength()-fileOffset;
   } else {
     length = rem;
   }
@@ -144,7 +144,7 @@ int MultiDiskWriter::readData(char* data, int len, long long int offset) {
       reading = true;
       fileOffset = 0;
     } else {
-      fileOffset -= (*itr)->fileEntry.length;
+      fileOffset -= (*itr)->fileEntry->getLength();
     }
   }
   if(!reading) {
@@ -187,7 +187,7 @@ string MultiDiskWriter::sha1Sum(long long int offset, long long int length) {
 	reading = true;
 	fileOffset = 0;
       } else {
-	fileOffset -= (*itr)->fileEntry.length;
+	fileOffset -= (*itr)->fileEntry->getLength();
       }
     }
     if(!reading) {

@@ -93,7 +93,7 @@ string HandshakeMessage::toString() const {
 
 void HandshakeMessage::check() const {
   PeerMessageUtil::checkHandshake(this,
-				  peerInteraction->getTorrentMan()->getInfoHash());
+				  peerInteraction->getBtContext()->getInfoHash());
 }
 
 bool HandshakeMessage::isFastExtensionSupported() const {

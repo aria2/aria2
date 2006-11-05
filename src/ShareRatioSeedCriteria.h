@@ -36,26 +36,37 @@
 #define _D_SHARE_RATIO_SEED_CRITERIA_H_
 
 #include "SeedCriteria.h"
-#include "TorrentMan.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "BtRuntime.h"
+#include "BtRegistry.h"
 
 class ShareRatioSeedCriteria : public SeedCriteria {
 private:
   double ratio;
-  TorrentMan* torrentMan;
+  BtContextHandle btContext;
+  PeerStorageHandle peerStorage;
+  BtRuntimeHandle btRuntime;
 public:
-  ShareRatioSeedCriteria(double ratio, TorrentMan* torrentMan)
+  ShareRatioSeedCriteria(double ratio, const BtContextHandle& btContext)
     :ratio(ratio),
-     torrentMan(torrentMan) {}
+     btContext(btContext),
+     peerStorage(PEER_STORAGE(btContext)),
+     btRuntime(BT_RUNTIME(btContext)) {}
+
   virtual ~ShareRatioSeedCriteria() {}
 
   virtual void reset() {}
 
   virtual bool evaluate() {
-    if(torrentMan->getDownloadLength() == 0) {
+    if(btContext->getTotalLength() == 0) {
       return false;
     }
+    TransferStat stat = peerStorage->calculateStat();
+    long long int allTimeUploadLength =
+      btRuntime->getUploadLengthAtStartup()+stat.getSessionUploadLength();
     return ratio <=
-      ((double)torrentMan->getUploadLength())/torrentMan->getDownloadLength();
+      ((double)allTimeUploadLength)/btContext->getTotalLength();
   }
 
   void setRatio(double ratio) {

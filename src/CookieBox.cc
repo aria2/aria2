@@ -68,7 +68,7 @@ void CookieBox::setField(Cookie& cookie, const string& name, const string& value
 void CookieBox::parse(Cookie& cookie, const string& cookieStr) const {
   cookie.clear();
   Strings terms;
-  Util::slice(terms, cookieStr, ';');
+  Util::slice(terms, cookieStr, ';', true);
   for(Strings::iterator itr = terms.begin(); itr != terms.end(); itr++) {
     pair<string, string> nv;
     Util::split(nv, *itr, '=');

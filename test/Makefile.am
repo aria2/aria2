@@ -13,7 +13,6 @@ aria2c_SOURCES = AllTest.cc\
 	ListTest.cc\
 	MetaFileUtilTest.cc\
 	ShaVisitorTest.cc\
-	TorrentManTest.cc\
 	PeerMessageUtilTest.cc\
 	BitfieldManTest.cc\
 	DefaultDiskWriterTest.cc\
@@ -42,7 +41,12 @@ aria2c_SOURCES = AllTest.cc\
 	SpeedCalcTest.cc\
 	DefaultPeerListProcessorTest.cc\
 	AnnounceListTest.cc\
-	TrackerWatcherCommandTest.cc
+	TrackerWatcherCommandTest.cc\
+	DefaultBtContextTest.cc\
+	DefaultPieceStorageTest.cc\
+	DefaultPeerStorageTest.cc\
+	DefaultBtAnnounceTest.cc\
+	BtRegistryTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 

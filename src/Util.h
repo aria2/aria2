@@ -65,7 +65,7 @@ public:
    * Take a string src which is a deliminated list and add its elements
    * into result. result is not cleared before conversion begins.
    */
-  static void slice(Strings& result, const string& src, char delim);
+  static void slice(Strings& result, const string& src, char delim, bool trim = false);
   
   static string trim(const string& src);
 

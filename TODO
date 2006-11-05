@@ -20,3 +20,4 @@
 * Add support for "announce-list".
 * Rewrite Util::countBit
 * Add the ability to display filename or URL to be downloaded in metalink mode. 
+* Add Turkish translation.

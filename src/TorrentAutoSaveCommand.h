@@ -35,17 +35,22 @@
 #ifndef _D_TORRENT_AUTO_SAVE_COMMAND_H_
 #define _D_TORRENT_AUTO_SAVE_COMMAND_H_
 
-#include "Command.h"
+#include "BtContextAwareCommand.h"
 #include "TorrentDownloadEngine.h"
 #include "TimeA2.h"
+#include "BtContext.h"
 
-class TorrentAutoSaveCommand : public Command {
+class TorrentAutoSaveCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
   int interval;
   Time checkPoint;
 public:
-  TorrentAutoSaveCommand(int cuid, TorrentDownloadEngine* e, int interval);
+  TorrentAutoSaveCommand(int cuid,
+			 TorrentDownloadEngine* e,
+			 const BtContextHandle& btContext,
+			 int interval);
+
   ~TorrentAutoSaveCommand();
 
   bool execute();

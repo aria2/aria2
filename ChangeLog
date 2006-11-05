@@ -1,3 +1,201 @@
+2006-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To divide TorrentMan into 6 classes: BtContext, BtRuntime,
+	PeerStorage, PieceStorage, BtAnnounce and BtProgressInfoFile
+
+	* src/TrackerWatcherComand.h: Made subclass of BtContextAwareCommand.
+	* src/SeedCheckCommand.cc: Use pieceStorage, btRuntime
+	* src/PeerAbstractCommand.h: Made subclass of BtContextAwareCommand.
+	* src/PeerAbstractCommand.cc: Use btRuntime.
+	* src/BtContextAwareCommand.h: New class.
+	* src/FileEntry.h: Added accessor methods for following variables.
+	(path): Made private.
+	(length): Made private.
+	(offset): Made private.
+	(extracted): Made private.
+	(requested): Made private.
+	(FileEntries): New definition.
+	(FileEntryHandle): New definition.
+	* src/FileEntry.cc: New file.
+	* src/HaveEraseCommand.h: Made subclass of BtContextAwareCommand.
+	* src/HaveEraseCommand.cc: Use btRuntime, pieceStorage.
+	* src/PeerChokeCommand.h: Made subclass of BtContextAwareCommand.
+	* src/PeerChokeCommand.cc: Use btRuntime, peerStorage, pieceStorage.
+	* src/PieceStorage.h: New file.
+	* src/PeerInteractionCommand.h: Use btContext.
+	* src/PeerInteractionCommand.cc: Use pieceStorage, peerStorage,
+	btRuntime.
+	* src/DefaultBtProgressInfoFile.h: New file.
+	* src/DefaultBtProgressInfoFile.cc: New file.
+	* src/File.cc
+	(Util.h): New include.
+	(mkdirs): New function.
+	* src/MultiDiskAdaptor.h
+	(mkdir): New function.
+	* src/PeerListProcessor.h
+	(Peers): Removed.
+	* src/PeerInteraction.h
+	(torrentMan): Removed.
+	(btContext): New variable.
+	(peerStorage): New variable.
+	(pieceStorage): New variable.
+	(btAnnounce): New variable.
+	(getTorrentMan): Removed.
+	(getBtContext): New function.
+	* src/PeerInteraction.cc: Use btContext, peerStorage, pieceStorage,
+	btAnnounce.
+	* src/HandshakeMessage.h
+	(TorrentMan.h): Removed.
+	* src/HandshakeMessage.cc: Use btContext.
+	* src/DefaultBtAnnounce.cc: New file.
+	* src/MultiDiskWriter.cc: Use the accessor methods of FileEntry.
+	* src/DefaultPieceStorage.cc: New file.
+	* src/DefaultBtContext.h: New file.
+	* src/TorrentRequestInfo.cc: Use btContext, pieceStorage.
+	Use the accessor methods of FileEntry.
+	* src/CookieBox.cc: Updated to use Util::slice().
+	* src/PieceMessage.cc: Use btContext, pieceStorage.
+	* src/common.h (SharedHandle.h): New include.
+	* src/PeerMessage.cc (PeerMessage): Added btContext, peerStorage,
+	pieceStorage.
+	* src/TorrentAutoSaveCommand.h: Made subclass of BtContextAwareCommand.
+	* src/DiskAdaptor.h
+	(topDir): Removed.
+	(getFileEntryFromPath): Changed the return type to FileEntryHandle.
+	(setTopDir): Removed.
+	(getTopDir): Removed.
+	* src/BtContext.h: New file.
+	* src/DefaultPeerStorage.h: New file.
+	* src/PieceMessage.h (TorrentMan.h): Removed.
+	* src/RequestMessage.h (TorrentMan.h): Removed.
+	* src/TorrentDownloadEngine.h
+	(uploadLength): New variable.
+	(btContext): New variable.
+	(btRuntime): New variable.
+	(pieceStorage): New variable.
+	(peerStorage): New variable.
+	(btAnnounce): New variable.
+	(btProgressInfoFile): New variable.
+	(torrentMan): Removed.
+	(setBtContext): New function.
+	* src/TorrentDownloadEngine.cc: Use BtContext, BtRuntime, pieceStorage,
+	peerStorage, btAnnounce, btProgressInfoFile.
+	* src/Piece.h
+	(toString): New function.
+	(Pieces): New type definition.
+	* src/Peer.h
+	(active): New variable.
+	(Peer): Added active.
+	(activate): Set active to true.
+	(deactivate): Set active to false.
+	(isActive): New function.
+	(Peers): New type definition.
+	* src/DirectDiskAdaptor.cc
+	(getFilePath): Use the accessor methods of FileEntry.
+	* src/TorrentConsoleDownloadEngine.h
+	(afterEachIteration): New function.
+	* src/TorrentConsoleDownloadEngine.cc
+	(haltRequested): New variable.
+	(sendStatistics): Use pieceStorage, btRuntime.
+	(afterEachIteration): New function.
+	* src/AnnounceList: AnnounceTier->AnnounceTierHandle.
+	* src/Directry.h
+	(Directory): New function.
+	(DirectoryHandle): New type definition.
+	* src/BtProgressInfoFile.h: New file.
+	* src/RequestMessage.cc: Use pieceStorage.
+	* src/BtRuntime.h: New file.
+	* src/DefaultBtContext.cc: New file.
+	* src/BitfieldMan.h
+	(getCompletedLength): New function(private).
+	(getCompletedLength): New function.
+	(getFilteredCompletedLength): New function.
+	* src/BitfieldMan.h
+	(getCompletedLength): New function(private).
+	(getCompletedLength): New function.
+	(getFilteredCompletedLength): New function.
+	* src/MultiDiskAdaptor.cc
+	(mkdir): New function.
+	(openFile): Call mkdir().
+	(initAndOpenFile): Call mkdir().
+	* src/CancelMessage.h
+	(TorrentMan.h): Removed.
+	* src/RejectMessage.h
+	(TorrentMan.h): Removed.
+	* src/DownloadEngineFactory.cc
+	(DefaultPieceStorage.h): New include.
+	(DefaultPeerStorage.h): New include.
+	(DefaultBtAnnounce.h): New include.
+	(DefaultBtProgressInfoFile.h): New include.
+	(newTorrentConsoleEngine): Rewritten.
+	* src/ShareRatioSeedCriteria.h
+	(torrentMan): Removed.
+	(btContext): New variable.
+	(peerStorage): New variable.
+	(btRuntime): New variable.
+	(evaluate): Use btContext, btRuntime, peerStorage.
+	* src/AnnounceTier.h: New file.
+	* src/BtAnnounce.h: New file.
+	* src/BtRegistry.h: New file.
+	* src/PeerInitiateConnectionCommand.h: Added btContext.
+	* src/PeerConnection.h (TorrentMan.h): Removed.
+	* src/PeerMessageFactory.cc: Use btContext, pieceStorage.
+	* src/Util.h
+	(slice): Added an argument.
+	* src/Util.cc
+	(slice): Added an argument to control whether trim is made or not.
+	* src/PeerStorage.h: New file.
+	* src/BtRegistry.cc: New file.
+	* src/TrackerUpdateCommand.h: Made subclass of BtContextAwareCommand.
+	* src/CopyDiskAdaptor.cc: Use the accessor methods of FileEntry.
+	* src/MultiDiskWriter.h: FileEntry -> FileEntryHandle
+	* src/PeerListenCommand.cc: Use btRuntime, peerStorage, btContext.
+	* src/TorrentRequestInfo.h
+	(e): Removed.
+	(showFileEntry): Added an argument.
+	(getDownloadEngine): Return 0.
+	* src/DefaultBtAnnounce.h: New file.
+	* src/TorrentAutoSaveCommand.cc: Use btRuntime, btProgressInfoFile.
+	* src/TrackerWatcherComand.cc: Use btRuntime, btAnnounce,
+	* src/PeerMessageFactory.h
+	(btContext): New variable.
+	(pieceStorage): New variable.
+	* src/TrackerUpdateCommand.cc: Use btRuntime, peerStorage, btContext,
+	btAnnounce.
+	* src/DiskAdaptor.cc
+	(DiskAdaptor): Removed topDir.
+	(~DiskAdaptor): Removed topDir.
+	* src/PeerListenCommand.h: Made subclass of BtContextAwareCommand.
+	* src/SeedCheckCommand.h: Made subclass of BtContextAwareCommand.
+	* src/File.h (mkdirs): New function.
+	* src/DefaultPeerStorage): New file.
+	* src/DownloadEngineFactory.h
+	(newTorrentConsoleEngine): Use btContext.
+	* src/BtContextAwareCommand.cc: New file.
+	* src/PeerInitiateConnectionCommand.cc: Use btRuntime, peerStorage.
+	* src/PeerMessage.h
+	(btContext): New variable.
+	(peerStorage): New variable.
+	(pieceStorage): New variable.
+	(setBtContext): New function.
+	* src/Directry.cc
+	(Directory): New function.
+	(createDir): Do nothing if name.size() == 0.
+	* src/AnnounceList.h
+	(AnnounceTier): Removed. 
+	(AnnounceTiers): Removed.
+	* src/DefaultPieceStorage.h: New file.
+	* src/Piece.cc (toString): New function.
+	
+	To fix typo:
+	
+	* src/main.cc (showVersion): Fixed typo.
+
+	To fix compile warning:
+	
+	* src/DelegatingPeerListProcessor.cc
+	(canHandle): Added "return false".
+	
 2006-10-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To simplify TrackerWatherCommand, TrackerUpdateCommand and

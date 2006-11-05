@@ -36,15 +36,12 @@
 #include "DlAbortEx.h"
 #include "LogFactory.h"
 
-DiskAdaptor::DiskAdaptor(DiskWriter* diskWriter):diskWriter(diskWriter), topDir(NULL) {
+DiskAdaptor::DiskAdaptor(DiskWriter* diskWriter):diskWriter(diskWriter) {
   logger = LogFactory::getInstance();
 }
 
 DiskAdaptor::~DiskAdaptor() {
   delete diskWriter;
-  if(topDir != NULL) {
-    delete topDir;
-  }
 }
 
 void DiskAdaptor::openFile() {
@@ -75,10 +72,10 @@ string DiskAdaptor::sha1Sum(long long int offset, long long int length) {
   return diskWriter->sha1Sum(offset, length);
 }
 
-FileEntry DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
+FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    if(itr->path == fileEntryPath) {
+    if((*itr)->getPath() == fileEntryPath) {
       return *itr;
     }
   }
@@ -88,8 +85,8 @@ FileEntry DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
 bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    if(itr->path == fileEntryPath) {
-      itr->requested = true;
+    if((*itr)->getPath() == fileEntryPath) {
+      (*itr)->setRequested(true);
       return true;
     }
   }
@@ -100,20 +97,20 @@ bool DiskAdaptor::addDownloadEntry(int index) {
   if(fileEntries.size() <= (unsigned int)index) {
     return false;
   }
-  fileEntries.at(index).requested = true;
+  fileEntries.at(index)->setRequested(true);
   return true;
 }
 
 void DiskAdaptor::addAllDownloadEntry() {
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    itr->requested = true;
+    (*itr)->setRequested(true);
   }
 }
 
 void DiskAdaptor::removeAllDownloadEntry() {
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    itr->requested = false;
+    (*itr)->setRequested(false);
   }
 }

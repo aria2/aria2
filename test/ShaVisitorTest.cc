@@ -55,6 +55,6 @@ void ShaVisitorTest::testVisitCompound() {
   int len = 0;
   v.getHash(md, len);
   string hashHex = hexHash(md, len);
-  CPPUNIT_ASSERT_EQUAL(string("0815f9b8137fbca179c8f560e20849174e9ede8b"),
+  CPPUNIT_ASSERT_EQUAL(string("36a58c6ab3eb02caa952f4345f57fabb06a39511"),
 		       hashHex);
 }

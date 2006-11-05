@@ -36,8 +36,13 @@
 #define _D_TORRENT_DOWNLOAD_ENGINE_H_
 
 #include "DownloadEngine.h"
-#include "TorrentMan.h"
 #include "TimeA2.h"
+#include "BtContext.h"
+#include "BtRuntime.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
+#include "BtAnnounce.h"
+#include "BtProgressInfoFile.h"
 
 class TorrentDownloadEngine : public DownloadEngine {
 private:
@@ -59,7 +64,15 @@ protected:
   // The estimated remaining time to complete the download.
   int eta;
   long long int downloadLength;
+  long long int uploadLength;
   long long int totalLength;
+
+  BtContextHandle btContext;
+  BtRuntimeHandle btRuntime;
+  PieceStorageHandle pieceStorage;
+  PeerStorageHandle peerStorage;
+  BtAnnounceHandle btAnnounce;
+  BtProgressInfoFileHandle btProgressInfoFile;
 
   int calculateSpeed(long long int sessionLength, int elapsed);
   void calculateStat();
@@ -70,9 +83,9 @@ public:
   TorrentDownloadEngine();
   virtual ~TorrentDownloadEngine();
 
-  TorrentMan* torrentMan;
-
   bool isFilenameFixed() const { return filenameFixed; }
+
+  void setBtContext(const BtContextHandle& btContext);
 };
 
 #endif // _D_TORRENT_DOWNLOAD_ENGINE_H_

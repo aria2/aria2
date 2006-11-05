@@ -36,7 +36,6 @@
 #define _D_CANCEL_MESSAGE_H_
 
 #include "SimplePeerMessage.h"
-#include "TorrentMan.h"
 
 class CancelMessage : public SimplePeerMessage {
 private:

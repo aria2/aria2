@@ -71,6 +71,8 @@ public:
   }
 };
 
+#include "SharedHandle.h"
+
 typedef deque<string> Strings;
 typedef deque<int> Integers;
 

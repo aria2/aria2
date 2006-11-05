@@ -35,24 +35,22 @@
 #ifndef _D_SEED_CHECK_COMMAND_H_
 #define _D_SEED_CHECK_COMMAND_H_
 
-#include "Command.h"
+#include "BtContextAwareCommand.h"
 #include "TorrentDownloadEngine.h"
 #include "TimeA2.h"
 #include "SeedCriteria.h"
 
-class SeedCheckCommand : public Command {
+class SeedCheckCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
   Time checkPoint;
   SeedCriteriaHandle seedCriteria;
   bool checkStarted;
 public:
-  SeedCheckCommand(int cuid, TorrentDownloadEngine* e,
-		   SeedCriteriaHandle seedCriteria)
-    :Command(cuid),
-     e(e),
-     seedCriteria(seedCriteria),
-     checkStarted(false) {}
+  SeedCheckCommand(int cuid,
+		   TorrentDownloadEngine* e,
+		   const BtContextHandle& btContext,
+		   SeedCriteriaHandle seedCriteria);
 
   virtual ~SeedCheckCommand() {}
 

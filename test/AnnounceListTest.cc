@@ -227,10 +227,10 @@ Strings createUrls(const string& url) {
 }
 
 void AnnounceListTest::testMoveToStoppedAllowedTier() {
-  AnnounceTier t1(createUrls("tracker1"));
-  AnnounceTier t2(createUrls("tracker2"));
-  t2.event = AnnounceTier::COMPLETED;
-  AnnounceTier t3(createUrls("tracker3"));
+  AnnounceTierHandle t1(new AnnounceTier(createUrls("tracker1")));
+  AnnounceTierHandle t2(new AnnounceTier(createUrls("tracker2")));
+  t2->event = AnnounceTier::COMPLETED;
+  AnnounceTierHandle t3(new AnnounceTier(createUrls("tracker3")));
 
   AnnounceTiers tiers;
   tiers.push_back(t1);
@@ -250,10 +250,10 @@ void AnnounceListTest::testMoveToStoppedAllowedTier() {
 }
 
 void AnnounceListTest::testMoveToCompletedAllowedTier() {
-  AnnounceTier t1(createUrls("tracker1"));
-  AnnounceTier t2(createUrls("tracker2"));
-  t2.event = AnnounceTier::COMPLETED;
-  AnnounceTier t3(createUrls("tracker3"));
+  AnnounceTierHandle t1(new AnnounceTier(createUrls("tracker1")));
+  AnnounceTierHandle t2(new AnnounceTier(createUrls("tracker2")));
+  t2->event = AnnounceTier::COMPLETED;
+  AnnounceTierHandle t3(new AnnounceTier(createUrls("tracker3")));
 
   AnnounceTiers tiers;
   tiers.push_back(t1);

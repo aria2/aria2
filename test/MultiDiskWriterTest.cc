@@ -26,9 +26,9 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( MultiDiskWriterTest );
 
 FileEntries createEntries() {
-  FileEntry entry1("file1.txt", 15, 0);
-  FileEntry entry2("file2.txt", 7, 15);
-  FileEntry entry3("file3.txt", 3, 22);
+  FileEntryHandle entry1(new FileEntry("file1.txt", 15, 0));
+  FileEntryHandle entry2(new FileEntry("file2.txt", 7, 15));
+  FileEntryHandle entry3(new FileEntry("file3.txt", 3, 22));
   unlink("file1.txt");
   unlink("file2.txt");
   unlink("file3.txt");
@@ -94,9 +94,9 @@ void MultiDiskWriterTest::testWriteData() {
 }
 
 void MultiDiskWriterTest::testReadData() {
-  FileEntry entry1("file1r.txt", 15, 0);
-  FileEntry entry2("file2r.txt", 7, 15);
-  FileEntry entry3("file3r.txt", 3, 22);
+  FileEntryHandle entry1(new FileEntry("file1r.txt", 15, 0));
+  FileEntryHandle entry2(new FileEntry("file2r.txt", 7, 15));
+  FileEntryHandle entry3(new FileEntry("file3r.txt", 3, 22));
   FileEntries entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
@@ -121,9 +121,9 @@ void MultiDiskWriterTest::testReadData() {
 }
 
 void MultiDiskWriterTest::testSha1Sum() {
-  FileEntry entry1("file1r.txt", 15, 0);
-  FileEntry entry2("file2r.txt", 7, 15);
-  FileEntry entry3("file3r.txt", 3, 22);
+  FileEntryHandle entry1(new FileEntry("file1r.txt", 15, 0));
+  FileEntryHandle entry2(new FileEntry("file2r.txt", 7, 15));
+  FileEntryHandle entry3(new FileEntry("file3r.txt", 3, 22));
   FileEntries entries;
   entries.push_back(entry1);
   entries.push_back(entry2);

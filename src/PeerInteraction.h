@@ -37,9 +37,13 @@
 
 #include "common.h"
 #include "PeerConnection.h"
+#include "PeerMessageFactory.h"
 #include "RequestSlot.h"
 #include "SharedHandle.h"
-#include "PeerMessageFactory.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtAnnounce.h"
 
 #define REQUEST_TIME_OUT 60
 #define ALLOWED_FAST_SET_SIZE 10
@@ -53,7 +57,10 @@ private:
   RequestSlots requestSlots;
   MessageQueue messageQueue;
   const Option* option;
-  TorrentMan* torrentMan;
+  BtContextHandle btContext;
+  PeerStorageHandle peerStorage;
+  PieceStorageHandle pieceStorage;
+  BtAnnounceHandle btAnnounce;
   PeerConnection* peerConnection;
   PeerHandle peer;
   Pieces pieces;
@@ -70,7 +77,7 @@ public:
 		  const PeerHandle& peer,
 		  const SocketHandle& socket,
 		  const Option* op,
-		  TorrentMan* torrentMan);
+		  const BtContextHandle& btContext);
   ~PeerInteraction();
 
   void addMessage(const PeerMessageHandle& peerMessage);
@@ -89,16 +96,20 @@ public:
 
   int countMessageInQueue() const;
 
-  TorrentMan* getTorrentMan() const { return torrentMan; }
+  BtContextHandle getBtContext() const { return btContext; }
+
   PeerConnection* getPeerConnection() const { return peerConnection; }
+
   // If this object has nullPiece, then return false, otherwise true
   bool hasDownloadPiece(int index) const;
+
   // If the piece which this object has is nullPiece, then throws an exception.
   // So before calling this function, call hasDownloadPiece and make sure
   // this has valid piece, not nullPiece.
   Piece& getDownloadPiece(int index);
   
   bool isInFastSet(int index) const;
+
   void addFastSetIndex(int index);
 
   void syncPiece();

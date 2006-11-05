@@ -49,6 +49,10 @@
 # include "UnionSeedCriteria.h"
 # include "TimeSeedCriteria.h"
 # include "ShareRatioSeedCriteria.h"
+# include "DefaultPieceStorage.h"
+# include "DefaultPeerStorage.h"
+# include "DefaultBtAnnounce.h"
+# include "DefaultBtProgressInfoFile.h"
 #endif // ENABLE_BITTORRENT
 
 ConsoleDownloadEngine*
@@ -76,8 +80,8 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
 
 #ifdef ENABLE_BITTORRENT
 TorrentConsoleDownloadEngine*
-DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
-					       const string& torrentFile,
+DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
+					       const Option* op,
 					       const Strings& targetFiles)
 {
   TorrentConsoleDownloadEngine* te = new TorrentConsoleDownloadEngine();
@@ -86,19 +90,44 @@ DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
   te->segmentMan = new SegmentMan();
   te->segmentMan->diskWriter = byteArrayDiskWriter;
   te->segmentMan->option = op;
-  te->torrentMan = new TorrentMan();
-  te->torrentMan->setStoreDir(op->get(PREF_DIR));
-  te->torrentMan->option = op;
+  BtRuntimeHandle btRuntime(new BtRuntime());
+  BtRegistry::registerBtRuntime(btContext->getInfoHashAsString(), btRuntime);
+
+  PieceStorageHandle pieceStorage(new DefaultPieceStorage(btContext, op));
+  BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(), pieceStorage);
+
+  PeerStorageHandle peerStorage(new DefaultPeerStorage(btContext, op));
+  BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(), peerStorage);
+
+  BtAnnounceHandle btAnnounce(new DefaultBtAnnounce(btContext, op));
+  BtRegistry::registerBtAnnounce(btContext->getInfoHashAsString(), btAnnounce);
+  btAnnounce->shuffleAnnounce();
+
+  BtProgressInfoFileHandle btProgressInfoFile(new DefaultBtProgressInfoFile(btContext, op));
+  BtRegistry::registerBtProgressInfoFile(btContext->getInfoHashAsString(),
+					 btProgressInfoFile);
+
+  te->setBtContext(btContext);
+  // initialize file storage
+  pieceStorage->initStorage();
+  if(btProgressInfoFile->exists()) {
+    // load .aria2 file if it exists.
+    btProgressInfoFile->load();
+    pieceStorage->getDiskAdaptor()->openExistingFile();
+  } else {
+    pieceStorage->getDiskAdaptor()->initAndOpenFile();
+  }
+
   Integers selectIndexes;
   Util::unfoldRange(op->get(PREF_SELECT_FILE), selectIndexes);
   if(selectIndexes.size()) {
-    te->torrentMan->setup(torrentFile, selectIndexes);
+    pieceStorage->setFileFilter(selectIndexes);
   } else {
-    te->torrentMan->setup(torrentFile, targetFiles);
+    pieceStorage->setFileFilter(targetFiles);
   }
 
   PeerListenCommand* listenCommand =
-    new PeerListenCommand(te->torrentMan->getNewCuid(), te);
+    new PeerListenCommand(btRuntime->getNewCuid(), te, btContext);
   int port;
   int listenPort = op->getAsInt(PREF_LISTEN_PORT);
   if(listenPort == -1) {
@@ -110,31 +139,39 @@ DownloadEngineFactory::newTorrentConsoleEngine(const Option* op,
     printf(_("Errors occurred while binding port.\n"));
     exit(EXIT_FAILURE);
   }
-  te->torrentMan->setPort(port);
+  btRuntime->setListenPort(port);
   te->commands.push_back(listenCommand);
   
-  te->commands.push_back(new TrackerWatcherCommand(te->torrentMan->getNewCuid(),
-						   te));
-  te->commands.push_back(new TrackerUpdateCommand(te->torrentMan->getNewCuid(),
-						  te));
-  te->commands.push_back(new TorrentAutoSaveCommand(te->torrentMan->getNewCuid(),
+  te->commands.push_back(new TrackerWatcherCommand(btRuntime->getNewCuid(),
+						   te,
+						   btContext));
+  te->commands.push_back(new TrackerUpdateCommand(btRuntime->getNewCuid(),
+						  te,
+						  btContext));
+  te->commands.push_back(new TorrentAutoSaveCommand(btRuntime->getNewCuid(),
 						    te,
+						    btContext,
 						    op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
-  te->commands.push_back(new PeerChokeCommand(te->torrentMan->getNewCuid(),
-					      te, 10));
-  te->commands.push_back(new HaveEraseCommand(te->torrentMan->getNewCuid(),
-					      te, 10));
+  te->commands.push_back(new PeerChokeCommand(btRuntime->getNewCuid(),
+					      te,
+					      btContext,
+					      10));
+  te->commands.push_back(new HaveEraseCommand(btRuntime->getNewCuid(),
+					      te,
+					      btContext,
+					      10));
 
   SharedHandle<UnionSeedCriteria> unionCri = new UnionSeedCriteria();
   if(op->defined(PREF_SEED_TIME)) {
     unionCri->addSeedCriteria(new TimeSeedCriteria(op->getAsInt(PREF_SEED_TIME)*60));
   }
   if(op->defined(PREF_SEED_RATIO)) {
-    unionCri->addSeedCriteria(new ShareRatioSeedCriteria(op->getAsDouble(PREF_SEED_RATIO), te->torrentMan));
+    unionCri->addSeedCriteria(new ShareRatioSeedCriteria(op->getAsDouble(PREF_SEED_RATIO), btContext));
   }
   if(unionCri->getSeedCriterion().size() > 0) {
-    te->commands.push_back(new SeedCheckCommand(te->torrentMan->getNewCuid(),
+    te->commands.push_back(new SeedCheckCommand(btRuntime->getNewCuid(),
 						te,
+						btContext,
 						unionCri));
   }
   return te;

@@ -87,15 +87,24 @@ void UtilTest::testSplit() {
 
 void UtilTest::testSlice() {
   Strings v1;
-  Util::slice(v1, "name1=value1; name2=value2; name3=value3;", ';');
+  Util::slice(v1, "name1=value1; name2=value2; name3=value3;", ';', true);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   v1.clear();
-  Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';');
+  Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';', true);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   Strings::iterator itr = v1.begin();
   CPPUNIT_ASSERT_EQUAL(string("name1=value1"), *itr++);
   CPPUNIT_ASSERT_EQUAL(string("name2=value2"), *itr++);
   CPPUNIT_ASSERT_EQUAL(string("name3=value3"), *itr++);
+
+  v1.clear();
+
+  Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';', false);
+  CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
+  itr = v1.begin();
+  CPPUNIT_ASSERT_EQUAL(string("name1=value1"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(string(" name2=value2"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(string(" name3=value3"), *itr++);
 }
 
 void UtilTest::testEndsWith() {

@@ -46,14 +46,21 @@ string MultiDiskAdaptor::getFilePath() const {
   return storeDir;
 }
 
+void MultiDiskAdaptor::mkdir() const {
+  for(FileEntries::const_iterator itr = fileEntries.begin();
+      itr != fileEntries.end(); itr++) {
+    (*itr)->setupDir(storeDir);
+  }
+}
+
 void MultiDiskAdaptor::openFile() {
-  topDir->createDir(storeDir, true);
+  mkdir();
   setDiskWriterFileEntries();
   DiskAdaptor::openFile();
 }
 
 void MultiDiskAdaptor::initAndOpenFile() {
-  topDir->createDir(storeDir, true);
+  mkdir();
   setDiskWriterFileEntries();
   DiskAdaptor::initAndOpenFile();
 }

@@ -35,8 +35,11 @@
 #include "PeerListenCommand.h"
 #include "PeerInteractionCommand.h"
 
-PeerListenCommand::PeerListenCommand(int cuid, TorrentDownloadEngine* e)
-  :Command(cuid), e(e) {}
+PeerListenCommand::PeerListenCommand(int cuid,
+				     TorrentDownloadEngine* e,
+				     const BtContextHandle& btContext)
+  :BtContextAwareCommand(cuid, btContext),
+   e(e) {}
 
 PeerListenCommand::~PeerListenCommand() {}
 
@@ -61,7 +64,7 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
 }
 
 bool PeerListenCommand::execute() {
-  if(e->torrentMan->isHalt()) {
+  if(btRuntime->isHalt()) {
     return true;
   }
   for(int i = 0; i < 3 && socket->isReadable(0); i++) {
@@ -73,15 +76,17 @@ bool PeerListenCommand::execute() {
       pair<string, int> localInfo;
       peerSocket->getAddrInfo(localInfo);
       if(peerInfo.first != localInfo.first &&
-	 e->torrentMan->connections < MAX_PEERS) {
+	 btRuntime->getConnections() < MAX_PEERS) {
 	PeerHandle peer = PeerHandle(new Peer(peerInfo.first, peerInfo.second,
-					      e->torrentMan->pieceLength,
-					      e->torrentMan->getTotalLength()));
-	if(e->torrentMan->addPeer(peer)) {
-	  int newCuid =  e->torrentMan->getNewCuid();
+					      btContext->getPieceLength(),
+					      btContext->getTotalLength()));
+	if(peerStorage->addPeer(peer)) {
+	  int newCuid =  btRuntime->getNewCuid();
 	  peer->cuid = newCuid;
 	  PeerInteractionCommand* command =
-	    new PeerInteractionCommand(newCuid, peer, e, peerSocket,
+	    new PeerInteractionCommand(newCuid, peer, e,
+				       btContext,
+				       peerSocket,
 				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
 	  e->commands.push_back(command);
 	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);

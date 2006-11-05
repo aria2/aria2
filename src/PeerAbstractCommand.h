@@ -35,12 +35,12 @@
 #ifndef _D_PEER_ABSTRACT_COMMAND_H_
 #define _D_PEER_ABSTRACT_COMMAND_H_
 
-#include "Command.h"
+#include "BtContextAwareCommand.h"
 #include "Request.h"
 #include "TorrentDownloadEngine.h"
 #include "TimeA2.h"
 
-class PeerAbstractCommand : public Command {
+class PeerAbstractCommand : public BtContextAwareCommand {
 private:
   Time checkPoint;
   int timeout;
@@ -48,6 +48,7 @@ protected:
   TorrentDownloadEngine* e;
   SocketHandle socket;
   PeerHandle peer;
+
   void setTimeout(int timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(int wait);
   virtual bool prepareForRetry(int wait);
@@ -71,6 +72,7 @@ private:
 public:
   PeerAbstractCommand(int cuid, const PeerHandle& peer,
 		      TorrentDownloadEngine* e,
+		      const BtContextHandle& btContext,
 		      const SocketHandle& s = SocketHandle());
   virtual ~PeerAbstractCommand();
   bool execute();

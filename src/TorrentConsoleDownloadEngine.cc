@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "TorrentConsoleDownloadEngine.h"
 #include "Util.h"
+#include <signal.h>
+
+volatile sig_atomic_t haltRequested = 0;
 
 TorrentConsoleDownloadEngine::TorrentConsoleDownloadEngine() {}
 
@@ -42,8 +45,8 @@ TorrentConsoleDownloadEngine::~TorrentConsoleDownloadEngine() {}
 void TorrentConsoleDownloadEngine::sendStatistics() {
   printf("\r                                                                             ");
   printf("\r");
-  if(torrentMan->downloadComplete()) {
-    printf("Download Completed ");
+  if(pieceStorage->downloadFinished()) {
+    printf("Download Completed.");
   } else {
     printf("%s/%sB %d%% %s D:%.2f",
 	   Util::llitos(downloadLength, true).c_str(),
@@ -55,7 +58,14 @@ void TorrentConsoleDownloadEngine::sendStatistics() {
   }
   printf(" U:%.2f(%s) %d peers",
 	 uploadSpeed/1024.0,
-	 Util::llitos(torrentMan->getUploadLength(), true).c_str(),
-	 torrentMan->connections);
+	 Util::llitos(uploadLength, true).c_str(),
+	 btRuntime->getConnections());
   fflush(stdout);	 
+}
+
+void TorrentConsoleDownloadEngine::afterEachIteration() {
+  if(haltRequested) {
+    btRuntime->setHalt(true);
+  }
+  TorrentDownloadEngine::afterEachIteration();
 }

@@ -1,0 +1,157 @@
+/* <!-- copyright */
+/*
+ * aria2 - The high speed download utility
+ *
+ * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * In addition, as a special exception, the copyright holders give
+ * permission to link the code of portions of this program with the
+ * OpenSSL library under certain conditions as described in each
+ * individual source file, and distribute linked combinations
+ * including the two.
+ * You must obey the GNU General Public License in all respects
+ * for all of the code used other than OpenSSL.  If you modify
+ * file(s) with this exception, you may extend this exception to your
+ * version of the file(s), but you are not obligated to do so.  If you
+ * do not wish to do so, delete this exception statement from your
+ * version.  If you delete this exception statement from all source
+ * files in the program, then also delete it here.
+ */
+/* copyright --> */
+#ifndef _D_PIECE_STORAGE_H_
+#define _D_PIECE_STORAGE_H_
+
+#include "common.h"
+#include "Peer.h"
+#include "Piece.h"
+#include "DiskAdaptor.h"
+
+class PieceStorage {
+public:
+  virtual ~PieceStorage() {}
+
+  /**
+   * Returns true if the peer has a piece that localhost doesn't have.
+   * Otherwise returns false.
+   */
+  virtual bool hasMissingPiece(const PeerHandle& peer) = 0;
+
+  /**
+   * Returns a piece that the peer has but localhost doesn't.
+   * The piece will be marked "used" status in order to prevent other command
+   * from get the same piece. But in end game mode, same piece may be returned
+   * to several commands.
+   */
+  virtual Piece getMissingPiece(const PeerHandle& peer) = 0;
+  /**
+   * Returns a piece that the peer has but localhost doesn't.
+   * Only pieces that declared as "fast" are returned.
+   * The piece will be marked "used" status in order to prevent other command
+   * from get the same piece. But in end game mode, same piece may be returned
+   * to several commands.
+   */
+  virtual Piece getMissingFastPiece(const PeerHandle& peer) = 0;
+
+  /**
+   * Tells that the download of the specfied piece completes.
+   */
+  virtual void completePiece(const Piece& piece) = 0;
+
+  /**
+   * Tells that the download of the specified piece is canceled.
+   */
+  virtual void cancelPiece(const Piece& piece) = 0;
+
+  /**
+   * Updates the internal piece data with the specified piece data.
+   */
+  virtual void updatePiece(const Piece& piece) = 0;
+
+  /**
+   * Updates the spcefied piece data with the internal piece data.
+   */
+  virtual void syncPiece(Piece& piece) = 0;
+
+  /**
+   * Returns true if the specified piece is already downloaded.
+   * Otherwise returns false.
+   */
+  virtual bool hasPiece(int index) = 0;
+
+  virtual long long int getTotalLength() = 0;
+
+  virtual long long int getFilteredTotalLength() = 0;
+
+  virtual long long int getCompletedLength() = 0;
+
+  virtual long long int getFilteredCompletedLength() = 0;
+  
+  virtual void setFileFilter(const Strings& filePaths) = 0;
+
+  virtual void setFileFilter(const Integers& fileIndexes) = 0;
+
+  virtual void clearFileFilter() = 0;
+
+  virtual bool downloadFinished() = 0;
+
+  /**
+   * Initializes DiskAdaptor.
+   * TODO add better documentation here.
+   */
+  virtual void initStorage() = 0;
+
+  virtual const unsigned char* getBitfield() = 0;
+
+  virtual void setBitfield(const unsigned char* bitfield,
+			   int bitfieldLength) = 0;
+  
+  virtual int getBitfieldLength() = 0;
+
+  virtual bool isSelectiveDownloadingMode() = 0;
+
+  virtual void finishSelectiveDownloadingMode() = 0;
+
+  virtual bool isEndGame() = 0;
+
+  virtual DiskAdaptor* getDiskAdaptor() = 0;
+  
+  virtual int getPieceLength(int index) = 0;
+
+  /**
+   * Adds piece index to advertise to other commands. They send have message
+   * based on this information.
+   */
+  virtual void advertisePiece(int cuid, int index) = 0;
+
+  /**
+   * Returns piece index which is not advertised by the caller command and
+   * newer than lastCheckTime.
+   */
+  virtual Integers getAdvertisedPieceIndexes(int myCuid,
+					     const Time& lastCheckTime) = 0;
+
+  /**
+   * Removes have entry if specified seconds have elapsed since its
+   * registration.
+   */
+  virtual void removeAdvertisedPiece(int elapsed) = 0;
+
+};
+
+typedef SharedHandle<PieceStorage> PieceStorageHandle;
+
+#endif // _D_PIECE_STORAGE_H_

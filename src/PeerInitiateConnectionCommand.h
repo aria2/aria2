@@ -43,8 +43,11 @@ protected:
   bool prepareForRetry(int wait);
   bool prepareForNextPeer(int wait);
 public:
-  PeerInitiateConnectionCommand(int cuid,  const PeerHandle& peer,
-				TorrentDownloadEngine* e);
+  PeerInitiateConnectionCommand(int cuid,
+				const PeerHandle& peer,
+				TorrentDownloadEngine* e,
+				const BtContextHandle& btContext);
+
   ~PeerInitiateConnectionCommand();
 };
 

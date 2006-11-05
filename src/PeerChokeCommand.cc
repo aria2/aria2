@@ -35,7 +35,14 @@
 #include "PeerChokeCommand.h"
 #include "Util.h"
 
-PeerChokeCommand::PeerChokeCommand(int cuid, TorrentDownloadEngine* e, int interval):Command(cuid), interval(interval), e(e), rotate(0) {}
+PeerChokeCommand::PeerChokeCommand(int cuid,
+				   TorrentDownloadEngine* e,
+				   const BtContextHandle& btContext,
+				   int interval):
+  BtContextAwareCommand(cuid, btContext),
+  interval(interval),
+  e(e),
+  rotate(0) {}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 
@@ -89,14 +96,14 @@ void PeerChokeCommand::orderByDownloadRate(Peers& peers) const {
 }
 
 bool PeerChokeCommand::execute() {
-  if(e->torrentMan->isHalt()) {
+  if(btRuntime->isHalt()) {
     return true;
   }
   if(checkPoint.elapsed(interval)) {
     checkPoint.reset();
-    Peers peers = e->torrentMan->getActivePeers();
+    Peers peers = peerStorage->getActivePeers();
     for_each(peers.begin(), peers.end(), ChokePeer());
-    if(e->torrentMan->downloadComplete()) {
+    if(pieceStorage->downloadFinished()) {
       orderByUploadRate(peers);
     } else {
       orderByDownloadRate(peers);
@@ -109,7 +116,7 @@ bool PeerChokeCommand::execute() {
 	peer->chokingRequired = false;
 	peer->optUnchoking = false;
 	itr = peers.erase(itr);
-	if(e->torrentMan->downloadComplete()) {
+	if(pieceStorage->downloadFinished()) {
 	  logger->debug("cat01, unchoking %s, upload speed=%d",
 			peer->ipaddr.c_str(),
 			peer->calculateUploadSpeed());
@@ -128,7 +135,7 @@ bool PeerChokeCommand::execute() {
 	peer->chokingRequired = false;
 	peer->optUnchoking = false;
 	itr = peers.erase(itr);
-	if(e->torrentMan->downloadComplete()) {
+	if(pieceStorage->downloadFinished()) {
 	  logger->debug("cat01, unchoking %s, upload speed=%d",
 			peer->ipaddr.c_str(),
 			peer->calculateUploadSpeed());

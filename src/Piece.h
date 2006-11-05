@@ -117,10 +117,14 @@ public:
   void clearAllBlock();
   void setAllBlock();
 
+  string toString() const;
+
   static Piece nullPiece;
   static bool isNull(const Piece& piece) {
     return piece.index == 0 && piece.length == 0;
   }
 };
+
+typedef deque<Piece> Pieces;
 
 #endif // _D_PIECE_H_

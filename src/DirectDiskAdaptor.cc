@@ -39,7 +39,7 @@ DirectDiskAdaptor::DirectDiskAdaptor(DiskWriter* diskWriter):DiskAdaptor(diskWri
 DirectDiskAdaptor::~DirectDiskAdaptor() {}
 
 string DirectDiskAdaptor::getFilePath() const {
-  return storeDir+"/"+fileEntries.front().path;
+  return storeDir+"/"+fileEntries.front()->getPath();
 }
 
 void DirectDiskAdaptor::onDownloadComplete() {
