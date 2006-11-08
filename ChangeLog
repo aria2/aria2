@@ -156,6 +156,8 @@
 
 	* src/SegmentMan.cc
 	(findSlowerSegmentEntry): Refactored.
+
+	* Release 0.9.0
 	
 2006-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
