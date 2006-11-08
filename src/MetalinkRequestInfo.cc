@@ -48,7 +48,7 @@ public:
     :urlsPtr(urlsPtr),
      split(split) {}
 
-  void operator()(const MetalinkResource* resource) {
+  void operator()(const MetalinkResourceHandle& resource) {
     switch(resource->type) {
     case MetalinkResource::TYPE_HTTP:
     case MetalinkResource::TYPE_HTTPS:
@@ -65,7 +65,7 @@ class FindBitTorrentUrl {
 public:
   FindBitTorrentUrl() {}
 
-  bool operator()(const MetalinkResource* resource) {
+  bool operator()(const MetalinkResourceHandle& resource) {
     if(resource->type == MetalinkResource::TYPE_BITTORRENT) {
       return true;
     } else {
@@ -74,51 +74,61 @@ public:
   }
 };
 
-RequestInfo* MetalinkRequestInfo::execute() {
-  RequestInfo* next = 0;
+RequestInfos MetalinkRequestInfo::execute() {
   Xml2MetalinkProcessor proc;
-  Metalinker* metalinker = 0;
+  RequestInfos nextReqInfos;
   try {
-    metalinker = proc.parseFile(metalinkFile);
-    
-    MetalinkEntry* entry =
+    MetalinkerHandle metalinker = proc.parseFile(metalinkFile);
+    MetalinkEntries entries =
       metalinker->queryEntry(op->get(PREF_METALINK_VERSION),
 			     op->get(PREF_METALINK_LANGUAGE),
 			     op->get(PREF_METALINK_OS));
-    if(entry == 0) {
+    if(entries.size() == 0) {
       printf("No file matched with your preference.\n");
       throw new DlAbortEx("No file matched with your preference.");
     }
-    entry->dropUnsupportedResource();
-    MetalinkResources::iterator itr =
-      find_if(entry->resources.begin(),
-	      entry->resources.end(),
-	      FindBitTorrentUrl());
-    Strings urls;
-    int maxConnection = 0;
-    Checksum checksum;
-    if(itr == entry->resources.end()) {
-      entry->reorderResourcesByPreference();
+    for(MetalinkEntries::iterator itr = entries.begin(); itr != entries.end();
+	itr++) {
+      MetalinkEntryHandle& entry = *itr;
+      if(op->defined(PREF_METALINK_LOCATION)) {
+	entry->setLocationPreference(op->get(PREF_METALINK_LOCATION), 100);
+      }
+      entry->dropUnsupportedResource();
+      if(entry->resources.size() == 0) {
+	continue;
+      }
+      logger->notice("Metalink: Queueing %s for download.",
+		     entry->filename.c_str());
+      MetalinkResources::iterator itr =
+	find_if(entry->resources.begin(),
+		entry->resources.end(),
+		FindBitTorrentUrl());
+      Strings urls;
+      int maxConnection = 0;
+      Checksum checksum;
+      if(itr == entry->resources.end()) {
+	entry->reorderResourcesByPreference();
 	
-      for_each(entry->resources.begin(), entry->resources.end(),
-	       AccumulateNonP2PUrl(&urls, op->getAsInt(PREF_SPLIT)));
-      maxConnection =
-	op->getAsInt(PREF_METALINK_SERVERS)*op->getAsInt(PREF_SPLIT);
+	for_each(entry->resources.begin(), entry->resources.end(),
+		 AccumulateNonP2PUrl(&urls, op->getAsInt(PREF_SPLIT)));
+	maxConnection =
+	  op->getAsInt(PREF_METALINK_SERVERS)*op->getAsInt(PREF_SPLIT);
 	
-      // TODO
-      // set checksum
-      checksum = entry->checksum;
-    } else {
-      // BitTorrent downloading
-      urls.push_back((*itr)->url);
+	// TODO
+	// set checksum
+	checksum = entry->checksum;
+      } else {
+	// BitTorrent downloading
+	urls.push_back((*itr)->url);
+      }
+      RequestInfoHandle reqInfo(new UrlRequestInfo(urls, maxConnection, op));
+      reqInfo->setChecksum(checksum);
+      nextReqInfos.push_front(reqInfo);
     }
-    next = new UrlRequestInfo(urls, maxConnection, op);
-    next->setChecksum(checksum);
-  } catch(Exception* e) {
-    logger->error("Exception caught", e);
-    delete e;
+  } catch(Exception* ex) {
+    logger->error("Exception caught", ex);
+    delete ex;
     fail = true;
   }
-  delete metalinker;
-  return next;
+  return nextReqInfos;
 }

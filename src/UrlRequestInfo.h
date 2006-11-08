@@ -41,25 +41,20 @@ class UrlRequestInfo : public RequestInfo {
 private:
   Strings urls;
   int maxConnections;
-  DownloadEngine* e;
-
   RequestInfo* createNextRequestInfo() const;
   void adjustRequestSize(Requests& requests,
 			 Requests& reserved,
 			 int maxConnections) const;
+  void printUrls(const Strings& urls) const;
 public:
   UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
     RequestInfo(op),
     urls(urls),
-    maxConnections(maxConnections),
-    e(0) {}
+    maxConnections(maxConnections) {}
+
   virtual ~UrlRequestInfo() {}
 
-  virtual RequestInfo* execute();
-
-  virtual DownloadEngine* getDownloadEngine() {
-    return e;
-  }
+  virtual RequestInfos execute();
 };
 
 #endif // _D_URL_REQUEST_INFO_H_

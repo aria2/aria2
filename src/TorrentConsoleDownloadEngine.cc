@@ -36,7 +36,7 @@
 #include "Util.h"
 #include <signal.h>
 
-volatile sig_atomic_t haltRequested = 0;
+volatile sig_atomic_t btHaltRequested = 0;
 
 TorrentConsoleDownloadEngine::TorrentConsoleDownloadEngine() {}
 
@@ -64,7 +64,7 @@ void TorrentConsoleDownloadEngine::sendStatistics() {
 }
 
 void TorrentConsoleDownloadEngine::afterEachIteration() {
-  if(haltRequested) {
+  if(btHaltRequested) {
     btRuntime->setHalt(true);
   }
   TorrentDownloadEngine::afterEachIteration();

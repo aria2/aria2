@@ -66,4 +66,7 @@ public:
   }
 };
 
+typedef SharedHandle<MetalinkResource> MetalinkResourceHandle;
+typedef deque<MetalinkResourceHandle> MetalinkResources;
+
 #endif // _D_METALINK_RESOURCE_H_

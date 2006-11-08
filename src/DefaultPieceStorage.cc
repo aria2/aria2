@@ -45,6 +45,7 @@
 
 DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option* option):
   btContext(btContext),
+  diskAdaptor(0),
   endGamePieceNum(END_GAME_PIECE_NUM),
   option(option)
 {
@@ -349,17 +350,18 @@ void DefaultPieceStorage::initStorage() {
       diskAdaptor = new DirectDiskAdaptor(new DefaultDiskWriter(btContext->getTotalLength()));
     } else {
       diskAdaptor = new MultiDiskAdaptor(new MultiDiskWriter(btContext->getPieceLength()));
+      ((MultiDiskAdaptor*)diskAdaptor)->setTopDir(btContext->getName());
     }
   } else {
     diskAdaptor = new CopyDiskAdaptor(new PreAllocationDiskWriter(btContext->getTotalLength()));
     ((CopyDiskAdaptor*)diskAdaptor)->setTempFilename(btContext->getName()+".a2tmp");
+    if(btContext->getFileMode() == BtContext::MULTI) {
+      ((CopyDiskAdaptor*)diskAdaptor)->setTopDir(btContext->getName());
+    }
   }
   string storeDir = option->get(PREF_DIR);
   if(storeDir == "") {
     storeDir = ".";
-  }
-  if(btContext->getFileMode() == BtContext::MULTI) {
-    storeDir += "/"+btContext->getName();
   }
   diskAdaptor->setStoreDir(storeDir);
   diskAdaptor->setFileEntries(btContext->getFileEntries());

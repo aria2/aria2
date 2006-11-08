@@ -49,9 +49,7 @@ TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 
 bool TrackerWatcherCommand::execute() {
-  if(btRuntime->isHalt() &&
-     e->segmentMan->errors > 0 && btAnnounce->isAllAnnounceFailed() ||
-     btAnnounce->noMoreAnnounce()) {
+  if(btAnnounce->noMoreAnnounce()) {
     return true;
   }
   Command* command = createCommand();

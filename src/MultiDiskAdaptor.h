@@ -40,6 +40,8 @@
 
 class MultiDiskAdaptor : public DiskAdaptor {
 private:
+  string topDir;
+
   void setDiskWriterFileEntries();
   void mkdir() const;
 protected:
@@ -47,6 +49,14 @@ protected:
 public:
   MultiDiskAdaptor(MultiDiskWriter* diskWriter);
   virtual ~MultiDiskAdaptor();
+
+  void setTopDir(const string& topDir) {
+    this->topDir = topDir;
+  }
+
+  const string& getTopDir() const {
+    return topDir;
+  }
 
   virtual void openFile();
   virtual void initAndOpenFile();

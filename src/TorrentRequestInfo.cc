@@ -42,19 +42,19 @@
 extern RequestInfo* requestInfo;
 extern void setSignalHander(int signal, void (*handler)(int), int flags);
 extern bool timeoutSpecified;
-extern volatile sig_atomic_t haltRequested;
+extern volatile sig_atomic_t btHaltRequested;
 
 void torrentHandler(int signal) {
-  haltRequested = 1;
+  btHaltRequested = 1;
 }
 
-RequestInfo* TorrentRequestInfo::execute() {
+RequestInfos TorrentRequestInfo::execute() {
   BtContextHandle btContext(new DefaultBtContext());
   btContext->load(torrentFile);
   
   if(op->get(PREF_SHOW_FILES) == V_TRUE) {
     showFileEntry(btContext);
-    return 0;
+    return RequestInfos();
   }
   if(!timeoutSpecified) {
     op->put(PREF_TIMEOUT, "180");
@@ -82,7 +82,7 @@ RequestInfo* TorrentRequestInfo::execute() {
   setSignalHander(SIGINT, SIG_DFL, 0);
   setSignalHander(SIGTERM, SIG_DFL, 0);
   
-  return 0;
+  return RequestInfos();
 }
 
 void TorrentRequestInfo::showFileEntry(const BtContextHandle& btContext)

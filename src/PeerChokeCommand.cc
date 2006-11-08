@@ -136,11 +136,11 @@ bool PeerChokeCommand::execute() {
 	peer->optUnchoking = false;
 	itr = peers.erase(itr);
 	if(pieceStorage->downloadFinished()) {
-	  logger->debug("cat01, unchoking %s, upload speed=%d",
+	  logger->debug("cat02, unchoking %s, upload speed=%d",
 			peer->ipaddr.c_str(),
 			peer->calculateUploadSpeed());
 	} else {
-	  logger->debug("cat01, unchoking %s, download speed=%d",
+	  logger->debug("cat02, unchoking %s, download speed=%d",
 			peer->ipaddr.c_str(),
 			peer->calculateDownloadSpeed());
 	}

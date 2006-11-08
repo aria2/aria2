@@ -83,7 +83,7 @@ char* TrackerUpdateCommand::getTrackerResponse(size_t& trackerResponseLength) {
 }
 
 bool TrackerUpdateCommand::execute() {
-  if(e->segmentMan->errors > 0 && btRuntime->isHalt()) {
+  if(btAnnounce->noMoreAnnounce()) {
     return true;
   }
   if(!e->segmentMan->finished()) {
@@ -123,10 +123,6 @@ bool TrackerUpdateCommand::execute() {
   if(trackerResponse) {
     delete [] trackerResponse;
   }
-  if(btRuntime->isHalt()) {
-    return true;
-  } else {
-    return prepareForRetry();
-  }
+  return prepareForRetry();
 }
 

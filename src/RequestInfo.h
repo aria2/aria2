@@ -85,6 +85,11 @@ public:
   }
 };
 
+class RequestInfo;
+
+typedef SharedHandle<RequestInfo> RequestInfoHandle;
+typedef deque<RequestInfoHandle> RequestInfos;
+
 class RequestInfo {
 protected:
   Option* op;
@@ -115,9 +120,7 @@ public:
   }
   virtual ~RequestInfo() {}
 
-  virtual RequestInfo* execute() = 0;
-
-  virtual DownloadEngine* getDownloadEngine() = 0;
+  virtual RequestInfos execute() = 0;
 
   bool isFail() const { return fail; }
 

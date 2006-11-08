@@ -13,11 +13,8 @@
 * ipv6(RFC2428 for ftp)
 * Add silent mode.
 * Save URLs and command-line arguments to .aria2 file.
-* Add multi-file metalink support.
 * Add a control port for GUI frontend
 * Add a version header to .aria2 file to check the compatibiliy.
 * Use SharedHandle where it is useful.
-* Add support for "announce-list".
 * Rewrite Util::countBit
-* Add the ability to display filename or URL to be downloaded in metalink mode. 
 * Add Turkish translation.

@@ -163,6 +163,8 @@
 #define PREF_METALINK_LANGUAGE "metalink_language"
 // values: a string
 #define PREF_METALINK_OS "metalink_os"
+// values: a string
+#define PREF_METALINK_LOCATION "metalink_location"
 // values: 1*digit
 #define PREF_METALINK_SERVERS "metalink_servers"
 // values: true | false

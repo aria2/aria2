@@ -52,14 +52,10 @@ public:
 
   virtual ~TorrentRequestInfo() {}
 
-  virtual RequestInfo* execute();
+  virtual RequestInfos execute();
 
   void setTargetFiles(const Strings& targetFiles) {
     this->targetFiles = targetFiles;
-  }
-
-  virtual DownloadEngine* getDownloadEngine() {
-    return 0;
   }
 };
 

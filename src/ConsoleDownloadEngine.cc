@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "ConsoleDownloadEngine.h"
 #include "Util.h"
+#include <signal.h>
+
+volatile sig_atomic_t haltRequested = 0;
 
 ConsoleDownloadEngine::ConsoleDownloadEngine() {}
 
@@ -97,5 +100,16 @@ void ConsoleDownloadEngine::onEndOfRun() {
     segmentMan->remove();
   } else {
     segmentMan->save();
+  }
+}
+
+void ConsoleDownloadEngine::afterEachIteration() {
+  if(haltRequested) {
+    printf(_("\nstopping application...\n"));
+    fflush(stdout);
+    segmentMan->save();
+    segmentMan->diskWriter->closeFile();
+    printf(_("done\n"));
+    exit(EXIT_SUCCESS);
   }
 }

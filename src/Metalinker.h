@@ -40,12 +40,9 @@
 #include <deque>
 #include <libxml/xpath.h>
 
-typedef deque<MetalinkEntry*> MetalinkEntries;
-
 class Metalinker {
 public:
   MetalinkEntries entries;
-
 public:
   Metalinker();
   ~Metalinker();
@@ -57,8 +54,11 @@ public:
     return *this;
   }
 
-  MetalinkEntry* queryEntry(const string& version, const string& language,
-			    const string& os) const;
+  MetalinkEntries queryEntry(const string& version,
+			     const string& language,
+			     const string& os) const;
 };
+
+typedef SharedHandle<Metalinker> MetalinkerHandle;
 
 #endif // _D_METALINKER_H_

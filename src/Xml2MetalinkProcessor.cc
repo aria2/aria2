@@ -39,7 +39,7 @@
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
-Xml2MetalinkProcessor::Xml2MetalinkProcessor():doc(NULL), context(NULL) {}
+Xml2MetalinkProcessor::Xml2MetalinkProcessor():doc(0), context(0) {}
 
 Xml2MetalinkProcessor::~Xml2MetalinkProcessor() {
   release();
@@ -48,141 +48,139 @@ Xml2MetalinkProcessor::~Xml2MetalinkProcessor() {
 void Xml2MetalinkProcessor::release() {
   if(context) {
     xmlXPathFreeContext(context);
-    context = NULL;
+    context = 0;
   }
   if(doc) {
     xmlFreeDoc(doc);
-    doc = NULL;
+    doc = 0;
   }
 }
 
-Metalinker* Xml2MetalinkProcessor::parseFile(const string& filename) {
+MetalinkerHandle Xml2MetalinkProcessor::parseFile(const string& filename) {
   release();
   doc = xmlParseFile(filename.c_str());
-  if(doc == NULL) {
+  if(!doc) {
     throw new DlAbortEx("Cannot parse metalink file %s", filename.c_str());
   }
   context = xmlXPathNewContext(doc);
-  if(context == NULL) {
+  if(!context) {
     throw new DlAbortEx("Cannot create new xpath context");
   }
   string defaultNamespace = "http://www.metalinker.org/";
   if(xmlXPathRegisterNs(context, (xmlChar*)"m",
 			(xmlChar*)defaultNamespace.c_str()) != 0) {
-    throw new DlAbortEx("Cannot register namespace %s", defaultNamespace.c_str());
+    throw new DlAbortEx("Cannot register namespace %s",
+			defaultNamespace.c_str());
   }
   
   string xpath = "/m:metalink/m:files/m:file";
-  Metalinker* metalinker = new Metalinker();
-  try {
-    for(int index = 1; 1; index++) {
-      MetalinkEntry* entry = getEntry(xpath+"["+Util::itos(index)+"]");
-      if(entry == NULL) {
-	break;
-      } else {
-	metalinker->entries.push_back(entry);
-      }
+  MetalinkerHandle metalinker(new Metalinker());
+  for(int index = 1; 1; index++) {
+    MetalinkEntryHandle entry = getEntry(xpath+"["+Util::itos(index)+"]");
+    if(!entry.get()) {
+      break;
+    } else {
+      metalinker->entries.push_back(entry);
     }
-  } catch(Exception* e) {
-    delete metalinker;
-    throw;
   }
   return metalinker;
 }
 
-MetalinkEntry* Xml2MetalinkProcessor::getEntry(const string& xpath) {
+MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
   xmlXPathObjectPtr result = xpathEvaluation(xpath);
-  if(result == NULL) {
-    return NULL;
+  if(!result) {
+    return 0;
   }
+  xmlNodeSetPtr nodeSet = result->nodesetval;
+  xmlNodePtr node = nodeSet->nodeTab[0];
+  string filename = Util::trim(xmlAttribute(node, "name"));
   xmlXPathFreeObject(result);
-  MetalinkEntry* entry = new MetalinkEntry();
-  try {
-    entry->version = Util::trim(xpathContent(xpath+"/m:version"));
-    entry->language = Util::trim(xpathContent(xpath+"/m:language"));
-    entry->os = Util::trim(xpathContent(xpath+"/m:os"));
+
+  MetalinkEntryHandle entry(new MetalinkEntry());
+
+  entry->filename = filename;
+
+  entry->version = Util::trim(xpathContent(xpath+"/m:version"));
+  entry->language = Util::trim(xpathContent(xpath+"/m:language"));
+  entry->os = Util::trim(xpathContent(xpath+"/m:os"));
 #ifdef ENABLE_MESSAGE_DIGEST
-    string md;
-    md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]")));
+  string md;
+  md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]")));
+  if(md.size() > 0) {
+    entry->checksum.setMessageDigest(md);
+    entry->checksum.setDigestAlgo(DIGEST_ALGO_SHA1);
+  } else {
+    md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]")));
     if(md.size() > 0) {
       entry->checksum.setMessageDigest(md);
-      entry->checksum.setDigestAlgo(DIGEST_ALGO_SHA1);
-    } else {
-      md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]")));
-      if(md.size() > 0) {
-	entry->checksum.setMessageDigest(md);
-	entry->checksum.setDigestAlgo(DIGEST_ALGO_MD5);
-      }
+      entry->checksum.setDigestAlgo(DIGEST_ALGO_MD5);
     }
-#endif // ENABLE_MESSAGE_DIGEST
-    for(int index = 1; 1; index++) {
-      MetalinkResource* resource =
-	getResource(xpath+"/m:resources/m:url["+Util::itos(index)+"]");
-      if(resource == NULL) {
-	break;
-      } else {
-	entry->resources.push_back(resource);
-      }
-    }
-  } catch(Exception* e) {
-    delete entry;
-    throw;
   }
-
+#endif // ENABLE_MESSAGE_DIGEST
+  for(int index = 1; 1; index++) {
+    MetalinkResourceHandle resource(getResource(xpath+"/m:resources/m:url["+Util::itos(index)+"]"));
+    if(!resource.get()) {
+      break;
+    } else {
+      entry->resources.push_back(resource);
+    }
+  }
   return entry;
 }
 
-MetalinkResource* Xml2MetalinkProcessor::getResource(const string& xpath) {
+MetalinkResourceHandle Xml2MetalinkProcessor::getResource(const string& xpath) {
   xmlXPathObjectPtr result = xpathEvaluation(xpath);
-  if(result == NULL) {
-    return NULL;
+  if(!result) {
+    return 0;
   }
-  MetalinkResource* resource = new MetalinkResource();
-  try {
-    xmlNodeSetPtr nodeSet = result->nodesetval;
-    xmlNodePtr node = nodeSet->nodeTab[0];
-    string type = Util::trim(xmlAttribute(node, "type"));
-    if(type == "ftp") {
-      resource->type = MetalinkResource::TYPE_FTP;
-    } else if(type == "http") {
-      resource->type = MetalinkResource::TYPE_HTTP;
-    } else if(type == "https") {
-      resource->type = MetalinkResource::TYPE_HTTPS;
-    } else if(type == "bittorrent") {
-      resource->type = MetalinkResource::TYPE_BITTORRENT;
-    } else {
-      resource->type = MetalinkResource::TYPE_NOT_SUPPORTED;
-    }
-    string pref = Util::trim(xmlAttribute(node, "preference"));
-    if(pref.empty()) {
-      resource->preference = 100;
-    } else {
-      resource->preference = STRTOLL(pref.c_str());
-    }
-    resource->url = Util::trim(xmlContent(node));
-  } catch(Exception* e) {
-    delete resource;
-    throw e;
+  MetalinkResourceHandle resource(new MetalinkResource());
+
+  xmlNodeSetPtr nodeSet = result->nodesetval;
+  xmlNodePtr node = nodeSet->nodeTab[0];
+  string type = Util::trim(xmlAttribute(node, "type"));
+
+  if(type == "ftp") {
+    resource->type = MetalinkResource::TYPE_FTP;
+  } else if(type == "http") {
+    resource->type = MetalinkResource::TYPE_HTTP;
+  } else if(type == "https") {
+    resource->type = MetalinkResource::TYPE_HTTPS;
+  } else if(type == "bittorrent") {
+    resource->type = MetalinkResource::TYPE_BITTORRENT;
+  } else {
+    resource->type = MetalinkResource::TYPE_NOT_SUPPORTED;
   }
+  string pref = Util::trim(xmlAttribute(node, "preference"));
+  if(pref.empty()) {
+    resource->preference = 100;
+  } else {
+    resource->preference = STRTOLL(pref.c_str());
+  }
+  resource->location = Util::trim(xmlAttribute(node, "location"));
+
+  resource->url = Util::trim(xmlContent(node));
+
+  xmlXPathFreeObject(result);
+
   return resource;
 }
 
 xmlXPathObjectPtr Xml2MetalinkProcessor::xpathEvaluation(const string& xpath) {
   xmlXPathObjectPtr result = xmlXPathEvalExpression((xmlChar*)xpath.c_str(),
 						    context);
-  if(result == NULL) {
+  if(!result) {
     throw new DlAbortEx("Cannot evaluate xpath %s", xpath.c_str());
   }
   if(xmlXPathNodeSetIsEmpty(result->nodesetval)) {
     xmlXPathFreeObject(result);
-    return NULL;
+    return 0;
   }
   return result;
 }
 
 string Xml2MetalinkProcessor::xmlAttribute(xmlNodePtr node, const string& attrName) {
   xmlChar* temp = xmlGetNoNsProp(node, (xmlChar*)attrName.c_str());
-  if(temp == NULL) {
+  if(!temp) {
     return "";
   } else {
     string attr = (char*)temp;
@@ -193,7 +191,7 @@ string Xml2MetalinkProcessor::xmlAttribute(xmlNodePtr node, const string& attrNa
 
 string Xml2MetalinkProcessor::xmlContent(xmlNodePtr node) {
   xmlChar* temp = xmlNodeGetContent(node);
-  if(temp == NULL) {
+  if(!temp) {
     return "";
   } else {
     string content = (char*)temp;
@@ -204,7 +202,7 @@ string Xml2MetalinkProcessor::xmlContent(xmlNodePtr node) {
 
 string Xml2MetalinkProcessor::xpathContent(const string& xpath) {
   xmlXPathObjectPtr result = xpathEvaluation(xpath);
-  if(result == NULL) {
+  if(!result) {
     return "";
   }
   xmlNodeSetPtr nodeSet = result->nodesetval;

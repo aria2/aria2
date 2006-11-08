@@ -161,6 +161,9 @@ bool FtpConnection::bulkReceiveResponse(pair<int, string>& response) {
   while(socket->isReadable(0)) {
     int size = sizeof(buf)-1;
     socket->readData(buf, size);
+    if(size == 0) {
+      throw new DlRetryEx(EX_GOT_EOF);
+    }
     buf[size] = '\0';
     strbuf += buf;
   }

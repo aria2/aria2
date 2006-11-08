@@ -38,9 +38,7 @@
 Metalinker::Metalinker() {
 }
 
-Metalinker::~Metalinker() {
-  for_each(entries.begin(), entries.end(), Deleter());
-}
+Metalinker::~Metalinker() {}
 
 class EntryQuery {
 private:
@@ -50,10 +48,12 @@ private:
 public:
   EntryQuery(const string& version,
 	     const string& language,
-	     const string& os):version(version),
-			       language(language),
-			       os(os) {}
-  bool operator()(const MetalinkEntry* entry) {
+	     const string& os):
+    version(version),
+    language(language),
+    os(os) {}
+
+  bool operator()(const MetalinkEntryHandle& entry) {
     if(!version.empty()) {
       if(version != entry->version) {
 	return false;
@@ -73,15 +73,13 @@ public:
   }
 };
 
-MetalinkEntry* Metalinker::queryEntry(const string& version,
-				      const string& language,
-				      const string& os) const {
-  MetalinkEntries::const_iterator itr =
-    find_if(entries.begin(), entries.end(),
-	    EntryQuery(version, language, os));
-  if(itr == entries.end()) {
-    return NULL;
-  } else {
-    return *itr;
-  }
+MetalinkEntries Metalinker::queryEntry(const string& version,
+				       const string& language,
+				       const string& os) const {
+  MetalinkEntries resultEntries(entries.begin(), entries.end());
+  MetalinkEntries::iterator split =
+    partition(resultEntries.begin(), resultEntries.end(),
+	      EntryQuery(version, language, os));
+  resultEntries.erase(split, resultEntries.end());
+  return resultEntries;
 }

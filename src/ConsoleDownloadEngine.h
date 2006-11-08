@@ -54,9 +54,10 @@ private:
   int eta;
 protected:
   void sendStatistics(long long int currentSize, long long int totalSize);
-  void initStatistics();
-  void calculateStatistics();
-  void onEndOfRun();
+  virtual void initStatistics();
+  virtual void calculateStatistics();
+  virtual void onEndOfRun();
+  virtual void afterEachIteration();
 public:
   ConsoleDownloadEngine();
   ~ConsoleDownloadEngine();

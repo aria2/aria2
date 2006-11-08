@@ -42,7 +42,7 @@ class MetalinkProcessor {
 public:
   virtual ~MetalinkProcessor() {}
 
-  virtual Metalinker* parseFile(const string& filename) = 0;
+  virtual MetalinkerHandle parseFile(const string& filename) = 0;
 };
 
 #endif // _D_METALINK_PROCESSOR_H_

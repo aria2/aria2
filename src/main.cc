@@ -72,7 +72,6 @@ extern int optind, opterr, optopt;
 
 using namespace std;
 
-RequestInfo* requestInfo;
 bool timeoutSpecified;
 
 void setSignalHander(int signal, void (*handler)(int), int flags) {
@@ -214,6 +213,7 @@ void showUsage() {
   cout << _(" --metalink-version=VERSION   The version of file to download.") << endl;
   cout << _(" --metalink-language=LANGUAGE The language of file to download.") << endl;
   cout << _(" --metalink-os=OS             The operating system the file is targeted.") << endl;
+  cout << _(" --metalink-location=LOCATION The location of the prefered server.") << endl;
   cout << _(" --follow-metalink=true|false  Setting this option to false prevents aria2 to\n"
 	    "                              enter Metalink mode even if the filename of\n"
 	    "                              downloaded file ends with .metalink.\n"
@@ -382,6 +382,7 @@ int main(int argc, char* argv[]) {
       { "metalink-language", required_argument, &lopt, 101 },
       { "metalink-os", required_argument, &lopt, 102 },
       { "follow-metalink", required_argument, &lopt, 103 },
+      { "metalink-location", required_argument, &lopt, 104 },
 #endif // ENABLE_METALINK
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
@@ -587,6 +588,9 @@ int main(int argc, char* argv[]) {
 	  exit(EXIT_FAILURE);
 	}
 	break;
+      case 104:
+	op->put(PREF_METALINK_LOCATION, optarg);
+	break;
       case 200: {
 	int limit = getRealSize(optarg);
 	if(limit < 0) {
@@ -725,7 +729,7 @@ int main(int argc, char* argv[]) {
   } else {
     LogFactory::setLogFile("/dev/null");
   }
-  // make sure logger is configured properly.
+  int exitStatus = EXIT_SUCCESS;
   try {
     Logger* logger = LogFactory::getInstance();
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
@@ -733,49 +737,52 @@ int main(int argc, char* argv[]) {
 
     setSignalHander(SIGPIPE, SIG_IGN, 0);
 
-    requestInfo = 0;
+    RequestInfo* firstReqInfo = 0;
 #ifdef ENABLE_BITTORRENT
     if(op->defined(PREF_TORRENT_FILE)) {
-      requestInfo = new TorrentRequestInfo(op->get(PREF_TORRENT_FILE),
+      firstReqInfo = new TorrentRequestInfo(op->get(PREF_TORRENT_FILE),
 					   op);
       Strings targetFiles;
       if(op->defined(PREF_TORRENT_FILE) && !args.empty()) {
 	targetFiles = args;
       }
-      ((TorrentRequestInfo*)requestInfo)->setTargetFiles(targetFiles);
+      ((TorrentRequestInfo*)firstReqInfo)->setTargetFiles(targetFiles);
     }
     else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       if(op->defined(PREF_METALINK_FILE)) {
-	requestInfo = new MetalinkRequestInfo(op->get(PREF_METALINK_FILE),
+	firstReqInfo = new MetalinkRequestInfo(op->get(PREF_METALINK_FILE),
 					      op);
       } else
 #endif // ENABLE_METALINK
 	{
-	  requestInfo = new UrlRequestInfo(args, 0, op);
+	  firstReqInfo = new UrlRequestInfo(args, 0, op);
 	}
 
-    while(requestInfo) {
-      RequestInfo* next = requestInfo->execute();
-      if(requestInfo->isFail()) {
-	delete requestInfo;
-	exit(EXIT_FAILURE);
-      }
-      if(requestInfo->getFileInfo().checkReady()) {
+    RequestInfos reqInfos;
+    if(firstReqInfo) {
+      reqInfos.push_front(firstReqInfo);
+    }
+    while(reqInfos.size()) {
+      RequestInfoHandle reqInfo = reqInfos.front();
+      reqInfos.pop_front();
+      RequestInfos nextReqInfos = reqInfo->execute();
+      copy(nextReqInfos.begin(), nextReqInfos.end(), front_inserter(reqInfos));
+      if(reqInfo->isFail()) {
+	exitStatus = EXIT_FAILURE;
+      } else if(reqInfo->getFileInfo().checkReady()) {
 	cout << _("Now verifying checksum.\n"
 		  "This may take some time depending on your PC environment"
 		  " and the size of file.") << endl;
-	if(requestInfo->getFileInfo().check()) {
+	if(reqInfo->getFileInfo().check()) {
 	  cout << _("checksum OK.") << endl;
 	} else {
 	  // TODO
 	  cout << _("checksum ERROR.") << endl;
-	  exit(EXIT_FAILURE);
+	  exitStatus = EXIT_FAILURE;
 	}
       }
-      delete requestInfo;
-      requestInfo = next;
     }
   } catch(Exception* ex) {
     cerr << ex->getMsg() << endl;
@@ -791,5 +798,5 @@ int main(int argc, char* argv[]) {
   xmlCleanupParser();
 #endif // ENABLE_METALINK
   FeatureConfig::release();
-  return 0;
+  return exitStatus;
 }

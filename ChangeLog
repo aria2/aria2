@@ -1,3 +1,162 @@
+2006-11-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add Metalink location option:
+	
+	* src/MetalinkRequestInfo.cc
+	(execute): Call MetalinkEntry::setLocationPreference()
+	* src/main.cc
+	(showUsage): Added the help message for --metalink-location option.
+	(main): Added --metalink-location option.
+	* src/prefs.h
+	(PREF_METALINK_LOCATION): New definition.
+	* src/MetalinkEntry.cc
+	(AddLocationPreference): New function object.
+	(setLocationPreference): New function.
+	* src/Xml2MetalinkProcessor.cc
+	(getResource): Set location attribute to MetalinkResource
+
+	To show URLs to download
+
+	* src/UrlRequestInfo.h
+	(printUrls): New function.
+
+	To add multiple <file> Metalink support:
+
+	* src/MetalinkEntry.h
+	(MetalinkResources): Removed.
+	(setLocationPreference): New function.
+	(MetalinkEntryHandle): New type definition.
+	(MetalinkEntries): New type definition.
+	* src/Xml2MetalinkProcessor.h
+	(getEntry): MetalinkEntry* -> MetalinkEntryHandle
+	(getResource): MetalinkResource* -> MetalinkResourceHandle
+	(parseFile): Metalinker* -> MetalinkerHandle
+	* src/UrlRequestInfo.h
+	(execute): RequestInfo* -> RequestInfos
+	* src/MetalinkRequestInfo.cc
+	(AccumulateNonP2PUrl): MetalinkResource* -> MetalinkResourceHandle
+	(FindBitTorrentUrl): MetalinkResource* -> MetalinkResourceHandle
+	(execute): RequestInfo* -> RequestInfos
+	Added multiple <file> support. Print filename when it is queued.
+	* src/MetalinkRequestInfo.h
+	(execute): RequestInfo* -> RequestInfos
+	(getDownloadEngine): Removed.
+	* src/RequestInfo.h
+	(RequestInfoHandle): New type definition.
+	(RequestInfos): New type definition.
+	(execute): RequestInfo* -> RequestInfos
+	(getDownloadEngine): Removed.
+	* src/MetalinkResource.h
+	(MetalinkResourceHandle): New type definition.
+	(MetalinkResources): New type definition.
+	* src/MetalinkEntry.cc
+	(~MetalinkEntry): Removed the deletion of the elements of resources,
+	because the element is now of type MetalinkResourceHandle.
+	(PrefOrder): MetalinkResource* -> MetalinkResourceHandle
+	(Supported): MetalinkResource* -> MetalinkResourceHandle
+	(dropUnsupportedResource): Removed the deletion of the elements of
+	resources because the element is now of type MetalinkResourceHandle.
+	* src/Xml2MetalinkProcessor.cc
+	(parseFile): Metalinker* -> MetalinkerHandle
+	MetalinkEntry* -> MetalinkEntryHandle
+	Removed try-catch block.
+	(getEntry): MetalinkEntry* -> MetalinkEntryHandle
+	MetalinkResource* -> MetalinkResourceHandle
+	Removed try-catch block.
+	(getResource): MetalinkResource* -> MetalinkResourceHandle
+	Free result by using xmlXPathFreeObject()
+	* src/Metalinker.cc
+	(~Metalinker): Removed the deletion of entries.
+	MetalinkEntry* -> MetalinkEntryHandle
+	(queryEntry): Add multiple <file> Metalink support.
+	* src/Metalinker.h
+	(MetalinkEntries): Removed.
+	(queryEntry): MetalinkEntry* -> MetalinkEntries
+	* src/MetalinkProcessor.h
+	(parseFile): Metalinker* -> MetalinkerHandle
+	
+	Bug fixes:
+
+	* src/PeerChokeCommand.cc
+	(execute): cat01->cat02
+	* src/DefaultPieceStorage.cc
+	(DefaultPieceStorage): Added diskAdaptor(0)
+	* src/TrackerWatcherComand.cc:
+	(execute): Use btAnnounce->noMoreAnnounce()
+	to determin whether the function returns true or not.
+	* src/TrackerUpdateCommand.cc:
+	(execute): Use btAnnounce->noMoreAnnounce()
+	to determin whether the function returns true or not.
+	* src/FtpConnection.cc
+	(bulkReceiveResponse): Throw DlRetryEx if EOF got.
+	This is the fix of the busy loop bug.
+	* src/DownloadCommand.cc
+	(DownloadCommand): Reuse PeerStat. segmentMan->getPeerStat() returns
+	cached PeerStat.
+	
+	The value of "name" entry in torrent file is now set by
+	*DiskAdaptor::setTopDir(...) methods.
+	
+	* src/MultiDiskAdaptor.h
+	(topDir): New variable.
+	(setTopDir): New function.
+	(getTopDir): New function.
+	* src/MultiDiskAdaptor.cc
+	(getFilePath): Concat storDir, "/" and topDir.
+	(mkdir): Use getFilePath() to get the directory path for output.
+	* src/DefaultPieceStorage.cc
+	(initStorage): Set the value of "name" entry to MultiDiskAdaptor,
+	CopyDiskAdaptor.
+	* src/CopyDiskAdaptor.h
+	(topDir): New variable.
+	(setTopDir): New function.
+	(getTopDir): New function.
+	* src/CopyDiskAdaptor.cc
+	(fixFilename): Updated.
+	
+	Misc
+
+	* src/UrlRequestInfo.h
+	(e): Removed.
+	(UrlRequestInfo): Removed e.
+	(getDownloadEngine): Removed.
+	* src/UrlRequestInfo.cc
+	(handler): Rewritten.
+	(printUrls): New function.
+	(execute): Call printUrls().
+	
+	* src/HandshakeMessage.cc
+	(check): peerinteraction->getBtContext() -> btContext
+
+	* src/PeerInteraction.h
+	(getBtContext): Removed.
+
+	* src/TorrentRequestInfo.h
+	(execute): RequestInfo* -> RequestInfos
+	(getDownloadEngine): Removed.
+	* src/TorrentRequestInfo.cc
+	(haltRequested): Removed.
+	(btHaltRequested): New variable.
+	(torrentHandler): haltRequested -> btHaltRequested
+	(execute): RequestInfo* -> RequestInfos
+	* src/TorrentConsoleDownloadEngine.cc
+	(afterEachIteration): haltRequested -> btHaltRequested.
+	
+	* src/ConsoleDownloadEngine.h
+	(initStatistics): Added virtual.
+	(calculateStatistics): Added virtual.
+	(onEndOfRun): Added virtual.
+	(afterEachIteration): Added virtual.
+	* src/ConsoleDownloadEngine.cc
+	(haltRequested): New variable.
+	(afterEachIteration): New function.
+
+	* src/main.cc
+	(requestInfo): Removed.
+
+	* src/SegmentMan.cc
+	(findSlowerSegmentEntry): Refactored.
+	
 2006-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To divide TorrentMan into 6 classes: BtContext, BtRuntime,

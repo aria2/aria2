@@ -47,9 +47,12 @@ DownloadCommand::DownloadCommand(int cuid,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
   AbstractCommand(cuid, req, e, s), lastSize(0) {
-  PeerStatHandle peerStat = PeerStatHandle(new PeerStat(cuid));
+  PeerStatHandle peerStat = this->e->segmentMan->getPeerStat(cuid);
+  if(!peerStat.get()) {
+    peerStat = PeerStatHandle(new PeerStat(cuid));
+    this->e->segmentMan->registerPeerStat(peerStat);
+  }
   peerStat->downloadStart();
-  this->e->segmentMan->registerPeerStat(peerStat);
 }
 
 DownloadCommand::~DownloadCommand() {

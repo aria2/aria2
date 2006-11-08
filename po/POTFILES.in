@@ -7,4 +7,4 @@ src/main.cc
 src/DefaultPieceStorage.cc
 src/DefaultBtAnnounce.cc
 src/DefaultBtProgressInfoFile.cc
-
+src/ConsoleDownloadEngine.cc

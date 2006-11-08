@@ -51,10 +51,10 @@ private:
   SpeedCalc downloadSpeed;
   SpeedCalc uploadSpeed;
   Time downloadStartTime;
-  STATUS status;
+  PeerStat::STATUS status;
 public:
 
-  PeerStat(int cuid = 0):cuid(cuid), status(IDLE) {}
+  PeerStat(int cuid = 0):cuid(cuid), status(PeerStat::IDLE) {}
 
   ~PeerStat() {}
 
@@ -97,27 +97,27 @@ public:
     downloadSpeed.reset();
     uploadSpeed.reset();
     downloadStartTime.reset();
-    status = IDLE;
+    status = PeerStat::IDLE;
   }
 
   void downloadStart() {
     reset();
-    status = ACTIVE;
+    status = PeerStat::ACTIVE;
   }
 
   void downloadStop() {
-    status = IDLE;
+    status = PeerStat::IDLE;
   }
 
   void requestIdle() {
-    status = REQUEST_IDLE;
+    status = PeerStat::REQUEST_IDLE;
   }
 
   const Time& getDownloadStartTime() const {
     return downloadStartTime;
   }
 
-  STATUS getStatus() const {
+  PeerStat::STATUS getStatus() const {
     return status;
   }
 

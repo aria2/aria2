@@ -41,6 +41,8 @@
 class CopyDiskAdaptor : public DiskAdaptor {
 private:
   string tempFilename;
+  string topDir;
+
   void fixFilename();
 protected:
   string getFilePath() const;
@@ -55,6 +57,14 @@ public:
     this->tempFilename = tempFilename;
   }
   string getTempFile() const { return this->tempFilename; }
+
+  void setTopDir(const string& topDir) {
+    this->topDir = topDir;
+  }
+
+  const string& getTopDir() const {
+    return topDir;
+  }
 };
 
 #endif // _D_COPY_DISK_ADAPTOR_H_

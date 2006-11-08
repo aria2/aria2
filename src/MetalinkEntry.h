@@ -40,8 +40,6 @@
 #include "Checksum.h"
 #include <deque>
 
-typedef deque<MetalinkResource*> MetalinkResources;
-
 class MetalinkEntry {
 public:
   string filename;
@@ -71,6 +69,11 @@ public:
   void dropUnsupportedResource();
 
   void reorderResourcesByPreference();
+  
+  void setLocationPreference(const string& location, int preferenceToAdd);
 };
+
+typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
+typedef deque<MetalinkEntryHandle> MetalinkEntries;
 
 #endif // _D_METALINK_ENTRY_H_

@@ -38,13 +38,32 @@
 
 MetalinkEntry::MetalinkEntry() {}
 
-MetalinkEntry::~MetalinkEntry() {
-  for_each(resources.begin(), resources.end(), Deleter());
+MetalinkEntry::~MetalinkEntry() {}
+
+class AddLocationPreference {
+private:
+  string location;
+  int preferenceToAdd;
+public:
+  AddLocationPreference(const string& location, int preferenceToAdd):
+    location(location), preferenceToAdd(preferenceToAdd) {}
+
+  void operator()(MetalinkResourceHandle& res) {
+    if(res->location == location) {
+      res->preference += preferenceToAdd;
+    }
+  }
+};
+
+void MetalinkEntry::setLocationPreference(const string& location, int preferenceToAdd) {
+  for_each(resources.begin(), resources.end(),
+	   AddLocationPreference(location, preferenceToAdd));
 }
 
 class PrefOrder {
 public:
-  bool operator()(const MetalinkResource* res1, const MetalinkResource* res2) {
+  bool operator()(const MetalinkResourceHandle& res1,
+		  const MetalinkResourceHandle& res2) {
     return res1->preference > res2->preference;
   }
 };
@@ -56,7 +75,7 @@ void MetalinkEntry::reorderResourcesByPreference() {
 
 class Supported {
 public:
-  bool operator()(const MetalinkResource* res) {
+  bool operator()(const MetalinkResourceHandle& res) {
     switch(res->type) {
     case MetalinkResource::TYPE_FTP:
     case MetalinkResource::TYPE_HTTP:
@@ -74,6 +93,5 @@ public:
 void MetalinkEntry::dropUnsupportedResource() {
   MetalinkResources::iterator split =
     partition(resources.begin(), resources.end(), Supported());
-  for_each(split, resources.end(), Deleter());
   resources.erase(split, resources.end());
 }

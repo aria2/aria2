@@ -44,8 +44,8 @@ private:
   xmlDocPtr doc;
   xmlXPathContextPtr context;
 
-  MetalinkEntry* getEntry(const string& xpath);
-  MetalinkResource* getResource(const string& xpath);
+  MetalinkEntryHandle getEntry(const string& xpath);
+  MetalinkResourceHandle getResource(const string& xpath);
 
   xmlXPathObjectPtr xpathEvaluation(const string& xpath);
   string xpathContent(const string& xpath);
@@ -57,7 +57,7 @@ public:
   Xml2MetalinkProcessor();
   virtual ~Xml2MetalinkProcessor();
 
-  virtual Metalinker* parseFile(const string& filename);
+  virtual MetalinkerHandle parseFile(const string& filename);
   
 };
 

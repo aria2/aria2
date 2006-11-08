@@ -307,13 +307,13 @@ SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peer
       continue;
     }
     PeerStatHandle p = getPeerStat(segmentEntry->cuid);
-    if(!p.get() || p->getCuid() == peerStat->getCuid()) {
+    if(!p.get() || p->getCuid() == peerStat->getCuid() ||
+       p->getStatus() != PeerStat::ACTIVE ||
+       !p->getDownloadStartTime().elapsed(option->getAsInt(PREF_STARTUP_IDLE_TIME))) {
       continue;
     }
-    int pSpeed = p->calculateDownloadSpeed();
-    if(p->getStatus() == PeerStat::ACTIVE &&
-       p->getDownloadStartTime().elapsed(option->getAsInt(PREF_STARTUP_IDLE_TIME)) &&
-       pSpeed < speed) {
+    int pSpeed = p->calculateDownloadSpeed(); 
+    if(pSpeed < speed) {
       speed = pSpeed;
       slowSegmentEntry = segmentEntry;
     }

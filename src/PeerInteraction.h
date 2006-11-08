@@ -96,8 +96,6 @@ public:
 
   int countMessageInQueue() const;
 
-  BtContextHandle getBtContext() const { return btContext; }
-
   PeerConnection* getPeerConnection() const { return peerConnection; }
 
   // If this object has nullPiece, then return false, otherwise true

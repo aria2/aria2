@@ -38,8 +38,8 @@
 #include "prefs.h"
 #include "DownloadEngineFactory.h"
 
-extern RequestInfo* requestInfo;
 extern void setSignalHander(int signal, void (*handler)(int), int flags);
+extern volatile sig_atomic_t haltRequested;
 
 void UrlRequestInfo::adjustRequestSize(Requests& requests,
 				       Requests& reserved,
@@ -73,13 +73,7 @@ RequestInfo* UrlRequestInfo::createNextRequestInfo() const
 }
 
 void handler(int signal) {
-  printf(_("\nstopping application...\n"));
-  fflush(stdout);
-  requestInfo->getDownloadEngine()->segmentMan->save();
-  requestInfo->getDownloadEngine()->segmentMan->diskWriter->closeFile();
-  delete requestInfo->getDownloadEngine();
-  printf(_("done\n"));
-  exit(EXIT_SUCCESS);
+  haltRequested = true;
 }
 
 class CreateRequest {
@@ -109,9 +103,16 @@ public:
   }
 };
 
-RequestInfo* UrlRequestInfo::execute() {
+void UrlRequestInfo::printUrls(const Strings& urls) const {
+  for(Strings::const_iterator itr = urls.begin(); itr != urls.end(); itr++) {
+    logger->notice("Adding URL: %s", itr->c_str());
+  }
+}
+
+RequestInfos UrlRequestInfo::execute() {
   Requests requests;
   Requests reserved;
+  printUrls(urls);
   for_each(urls.begin(), urls.end(),
 	   CreateRequest(&requests,
 			 op->get(PREF_REFERER),
@@ -119,7 +120,7 @@ RequestInfo* UrlRequestInfo::execute() {
   
   adjustRequestSize(requests, reserved, maxConnections);
   
-  e = DownloadEngineFactory::newConsoleEngine(op, requests, reserved);
+  SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
   
   setSignalHander(SIGINT, handler, 0);
   setSignalHander(SIGTERM, handler, 0);
@@ -140,16 +141,17 @@ RequestInfo* UrlRequestInfo::execute() {
       e->segmentMan->diskWriter->closeFile();
       printDownloadAbortMessage();
     }
-  } catch(Exception *e) {
-    logger->error("Exception caught", e);
-    delete e;
+  } catch(Exception *ex) {
+    logger->error("Exception caught", ex);
+    delete ex;
     fail = true;
+  }
+  RequestInfos nextReqInfos;
+  if(next) {
+    nextReqInfos.push_front(next);
   }
   setSignalHander(SIGINT, SIG_DFL, 0);
   setSignalHander(SIGTERM, SIG_DFL, 0);
   
-  delete e;
-  e = 0;
-  
-  return next;
+  return nextReqInfos;
 }

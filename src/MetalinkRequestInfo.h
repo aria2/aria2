@@ -46,9 +46,7 @@ public:
     metalinkFile(metalinkFile) {}
   virtual ~MetalinkRequestInfo() {}
 
-  virtual RequestInfo* execute();
-
-  virtual DownloadEngine* getDownloadEngine() { return 0; }
+  virtual RequestInfos execute();
 };
 
 #endif // _D_METALINK_REQUEST_INFO_H_
