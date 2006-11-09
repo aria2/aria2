@@ -72,14 +72,6 @@ extern int optind, opterr, optopt;
 
 using namespace std;
 
-void setSignalHander(int signal, void (*handler)(int), int flags) {
-  struct sigaction sigact;
-  sigact.sa_handler = handler;
-  sigact.sa_flags = flags;
-  sigemptyset(&sigact.sa_mask);
-  sigaction(signal, &sigact, NULL);
-}
-
 void showVersion() {
   cout << PACKAGE << _(" version ") << PACKAGE_VERSION << endl;
   cout << "**Configuration**" << endl;
@@ -732,7 +724,7 @@ int main(int argc, char* argv[]) {
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
     logger->info("Logging started.");
 
-    setSignalHander(SIGPIPE, SIG_IGN, 0);
+    Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 
     RequestInfo* firstReqInfo = 0;
 #ifdef ENABLE_BITTORRENT

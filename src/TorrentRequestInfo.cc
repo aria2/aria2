@@ -39,7 +39,6 @@
 #include "BtRegistry.h"
 #include "DefaultBtContext.h"
 
-extern void setSignalHander(int signal, void (*handler)(int), int flags);
 extern volatile sig_atomic_t btHaltRequested;
 
 void torrentHandler(int signal) {
@@ -61,8 +60,8 @@ RequestInfos TorrentRequestInfo::execute() {
 						     op,
 						     targetFiles));
 
-  setSignalHander(SIGINT, torrentHandler, SA_RESETHAND);
-  setSignalHander(SIGTERM, torrentHandler, SA_RESETHAND);
+  Util::setGlobalSignalHandler(SIGINT, torrentHandler, SA_RESETHAND);
+  Util::setGlobalSignalHandler(SIGTERM, torrentHandler, SA_RESETHAND);
     
   try {
     e->run();
@@ -74,8 +73,8 @@ RequestInfos TorrentRequestInfo::execute() {
     fail = true;
     delete ex;
   }
-  setSignalHander(SIGINT, SIG_DFL, 0);
-  setSignalHander(SIGTERM, SIG_DFL, 0);
+  Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
+  Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
   
   return RequestInfos();
 }

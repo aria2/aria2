@@ -126,6 +126,8 @@ public:
   static string toLower(const string& src);
 
   static bool isNumbersAndDotsNotation(const string& name);
+
+  static void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);
 };
 
 #endif // _D_UTIL_H_

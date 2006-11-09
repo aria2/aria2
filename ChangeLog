@@ -1,7 +1,7 @@
 2006-11-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Introduce new preference PREF_BT_TIMEOUT. This is the timeout value
-	for BitTorrent download.
+	for BitTorrent download:
 
 	* src/PeerAbstractCommand.cc
 	(PeerAbstractCommand): PREF_TIMEOUT -> PREF_BT_TIMEOUT
@@ -11,16 +11,29 @@
 	Removed timeoutSpecified. TODO: Add --bt-timeout command line option.
 	* src/TorrentRequestInfo.cc
 	(timeoutSpecified): Removed.
-	(torrentHandler): Removed timeoutSpecified and the change of timeout
-	value.
+	(torrentHandler): Removed timeoutSpecified and the adjustment of
+	timeout value.
 	* src/prefs.h
 	(PREF_BT_TIMEOUT): New definition.
 	
-	Delete unused variables.
+	Delete unused variables:
 	
 	* src/TorrentRequestInfo.cc
 	(requestInfo): Removed.
-	
+
+	Move setSignalHander to Util::setGlobalSignalHandler:
+
+	* src/TorrentRequestInfo.cc:
+	setSignalHander -> Util::setGlobalSignalHandler
+	* src/main.cc
+	(setSignalHander): Removed.
+	(main): setSignalHander -> Util::setGlobalSignalHandler
+	* src/Util.h
+	(setGlobalSignalHandler): New function.
+	* src/Util.cc
+	(setGlobalSignalHandler): New function.
+	* src/UrlRequestInfo.cc:
+	setSignalHander -> Util::setGlobalSignalHandler
 	
 2006-11-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

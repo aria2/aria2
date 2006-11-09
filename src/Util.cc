@@ -46,6 +46,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <signal.h>
 
 string Util::itos(int value, bool comma) {
   string str = llitos(value, comma);
@@ -598,4 +599,12 @@ bool Util::isNumbersAndDotsNotation(const string& name) {
   } else {
     return false;
   }
+}
+
+void Util::setGlobalSignalHandler(int signal, void (*handler)(int), int flags) {
+  struct sigaction sigact;
+  sigact.sa_handler = handler;
+  sigact.sa_flags = flags;
+  sigemptyset(&sigact.sa_mask);
+  sigaction(signal, &sigact, NULL);
 }

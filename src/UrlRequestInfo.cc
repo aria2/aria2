@@ -38,7 +38,6 @@
 #include "prefs.h"
 #include "DownloadEngineFactory.h"
 
-extern void setSignalHander(int signal, void (*handler)(int), int flags);
 extern volatile sig_atomic_t haltRequested;
 
 void UrlRequestInfo::adjustRequestSize(Requests& requests,
@@ -122,8 +121,8 @@ RequestInfos UrlRequestInfo::execute() {
   
   SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
   
-  setSignalHander(SIGINT, handler, 0);
-  setSignalHander(SIGTERM, handler, 0);
+  Util::setGlobalSignalHandler(SIGINT, handler, 0);
+  Util::setGlobalSignalHandler(SIGTERM, handler, 0);
   
   RequestInfo* next = 0;
   try {
@@ -150,8 +149,8 @@ RequestInfos UrlRequestInfo::execute() {
   if(next) {
     nextReqInfos.push_front(next);
   }
-  setSignalHander(SIGINT, SIG_DFL, 0);
-  setSignalHander(SIGTERM, SIG_DFL, 0);
+  Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
+  Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
   
   return nextReqInfos;
 }
