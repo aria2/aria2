@@ -60,6 +60,7 @@ PeerAbstractCommand::~PeerAbstractCommand() {
 
 bool PeerAbstractCommand::execute() {
   if(btRuntime->isHalt()) {
+    peer->resetStatus();
     return true;
   }
   try {

@@ -34,6 +34,27 @@
 	(setGlobalSignalHandler): New function.
 	* src/UrlRequestInfo.cc:
 	setSignalHander -> Util::setGlobalSignalHandler
+
+	Reset peer status in order to exit gracefully:
+
+	* src/PeerAbstractCommand.cc
+	(execute): Call peer->resetStatus() when btRuntime->isHalt() is true.
+
+	To fix the bug that causes the number of bytes uploaded is not saved
+	to .aria2 file:
+
+	* src/DefaultPeerStorage.h
+	(removedPeerSessionDownloadLength): New variable.
+	(removedPeerSessionUploadLength): New variable.
+	* src/DefaultPeerStorage.cc
+	(DefaultPieceStorage): Added removedPeerSessionDownloadLength(0),
+	removedPeerSessionUploadLength(0).
+	(calculateStat): Calculate the number of bytes downloaded(uploaded)
+	through all peers, and then add removedPeerSessionDownloadLength(
+	removedPeerSessionUploadLength) to it.
+	(deleteUnusedPeer): Add the number of bytes downloaded(uploaded) from
+	 (to) the peer to removedPeerSessionDownloadLength
+	 (removedPeerSessionUploadLength).
 	
 2006-11-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

@@ -53,6 +53,8 @@ private:
   int peerEntryIdCounter;
   Logger* logger;
   BtRuntimeHandle btRuntime;
+  long long int removedPeerSessionDownloadLength;
+  long long int removedPeerSessionUploadLength;
 public:
   DefaultPeerStorage(BtContextHandle btContext, const Option* option);
   virtual ~DefaultPeerStorage();

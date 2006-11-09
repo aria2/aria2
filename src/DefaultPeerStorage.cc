@@ -44,7 +44,9 @@ DefaultPeerStorage::DefaultPeerStorage(BtContextHandle btContext,
   option(option),
   maxPeerListSize(MAX_PEER_LIST_SIZE),
   peerEntryIdCounter(0),
-  btRuntime(BT_RUNTIME(btContext))
+  btRuntime(BT_RUNTIME(btContext)),
+  removedPeerSessionDownloadLength(0),
+  removedPeerSessionUploadLength(0)
 {
   logger = LogFactory::getInstance();
 }
@@ -154,9 +156,14 @@ TransferStat DefaultPeerStorage::calculateStat() {
     PeerHandle& peer = *itr;
     stat.downloadSpeed += peer->calculateDownloadSpeed();
     stat.uploadSpeed += peer->calculateUploadSpeed();
+  }
+  for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
+    PeerHandle& peer = *itr;
     stat.sessionDownloadLength += peer->getSessionDownloadLength();
     stat.sessionUploadLength += peer->getSessionUploadLength();
   }
+  stat.sessionDownloadLength += removedPeerSessionDownloadLength;
+  stat.sessionUploadLength += removedPeerSessionUploadLength;
   return stat;
 }
 
@@ -165,6 +172,9 @@ void DefaultPeerStorage::deleteUnusedPeer(int delSize) {
       itr != peers.end() && delSize > 0;) {
     const PeerHandle& p = *itr;
     if(p->cuid == 0) {
+      // Update removedPeerSession******Length
+      removedPeerSessionDownloadLength += p->getSessionDownloadLength();
+      removedPeerSessionUploadLength += p->getSessionUploadLength();
       itr = peers.erase(itr);
       delSize--;
     } else {
