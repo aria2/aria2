@@ -129,6 +129,8 @@
  */
 // values: 1*digit
 #define PREF_PEER_CONNECTION_TIMEOUT "peer_connection_timeout"
+// values: 1*digit
+#define PREF_BT_TIMEOUT "bt_timeout"
 // values: true | false
 #define PREF_SHOW_FILES "show_files"
 // values: true | false

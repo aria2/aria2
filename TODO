@@ -18,3 +18,4 @@
 * Use SharedHandle where it is useful.
 * Rewrite Util::countBit
 * Add Turkish translation.
+* Add the message like "you can resume the transfer by invoking aria2 again" when the download stops.

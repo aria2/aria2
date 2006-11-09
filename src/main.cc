@@ -72,8 +72,6 @@ extern int optind, opterr, optopt;
 
 using namespace std;
 
-bool timeoutSpecified;
-
 void setSignalHander(int signal, void (*handler)(int), int flags) {
   struct sigaction sigact;
   sigact.sa_handler = handler;
@@ -288,7 +286,6 @@ int main(int argc, char* argv[]) {
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 #endif // ENABLE_NLS
-  timeoutSpecified = false;
 
   int c;
   Option* op = new Option();
@@ -318,6 +315,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_TIMEOUT, "60");
   op->put(PREF_DNS_TIMEOUT, "10");
   op->put(PREF_PEER_CONNECTION_TIMEOUT, "60");
+  op->put(PREF_BT_TIMEOUT, "180");
   op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
   op->put(PREF_MAX_TRIES, "5");
   op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
@@ -644,7 +642,6 @@ int main(int argc, char* argv[]) {
       int timeout = (int)strtol(optarg, NULL, 10);
       if(1 <= timeout && timeout <= 600) {
 	op->put(PREF_TIMEOUT, Util::itos(timeout));
-	timeoutSpecified = true;
       } else {
 	cerr << _("timeout must be between 1 and 600") << endl;
 	showUsage();

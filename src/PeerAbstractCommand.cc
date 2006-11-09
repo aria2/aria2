@@ -48,7 +48,7 @@ PeerAbstractCommand::PeerAbstractCommand(int cuid, const PeerHandle& peer,
    uploadLimitCheck(false), uploadLimit(0), noCheck(false)
 {
   setReadCheckSocket(socket);
-  timeout = e->option->getAsInt(PREF_TIMEOUT);
+  timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
   btRuntime->increaseConnections();
 }
 

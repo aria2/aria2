@@ -1,5 +1,29 @@
 2006-11-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Introduce new preference PREF_BT_TIMEOUT. This is the timeout value
+	for BitTorrent download.
+
+	* src/PeerAbstractCommand.cc
+	(PeerAbstractCommand): PREF_TIMEOUT -> PREF_BT_TIMEOUT
+	* src/main.cc: 
+	(timeoutSpecified): Removed.
+	(main): Set the initial value of PREF_BT_TIMEOUT to 180.
+	Removed timeoutSpecified. TODO: Add --bt-timeout command line option.
+	* src/TorrentRequestInfo.cc
+	(timeoutSpecified): Removed.
+	(torrentHandler): Removed timeoutSpecified and the change of timeout
+	value.
+	* src/prefs.h
+	(PREF_BT_TIMEOUT): New definition.
+	
+	Delete unused variables.
+	
+	* src/TorrentRequestInfo.cc
+	(requestInfo): Removed.
+	
+	
+2006-11-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	To add Metalink location option:
 	
 	* src/MetalinkRequestInfo.cc

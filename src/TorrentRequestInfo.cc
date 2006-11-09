@@ -39,9 +39,7 @@
 #include "BtRegistry.h"
 #include "DefaultBtContext.h"
 
-extern RequestInfo* requestInfo;
 extern void setSignalHander(int signal, void (*handler)(int), int flags);
-extern bool timeoutSpecified;
 extern volatile sig_atomic_t btHaltRequested;
 
 void torrentHandler(int signal) {
@@ -55,9 +53,6 @@ RequestInfos TorrentRequestInfo::execute() {
   if(op->get(PREF_SHOW_FILES) == V_TRUE) {
     showFileEntry(btContext);
     return RequestInfos();
-  }
-  if(!timeoutSpecified) {
-    op->put(PREF_TIMEOUT, "180");
   }
   // set max_tries to 1. AnnounceList handles retries.
   op->put(PREF_MAX_TRIES, "1");
