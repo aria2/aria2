@@ -150,15 +150,12 @@ Peers DefaultPeerStorage::getActivePeers() {
 
 TransferStat DefaultPeerStorage::calculateStat() {
   TransferStat stat;
-  Peers activePeers = getActivePeers();
-  for(Peers::iterator itr = activePeers.begin();
-      itr != activePeers.end(); itr++) {
-    PeerHandle& peer = *itr;
-    stat.downloadSpeed += peer->calculateDownloadSpeed();
-    stat.uploadSpeed += peer->calculateUploadSpeed();
-  }
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     PeerHandle& peer = *itr;
+    if(peer->isActive()) {
+      stat.downloadSpeed += peer->calculateDownloadSpeed();
+      stat.uploadSpeed += peer->calculateUploadSpeed();
+    }
     stat.sessionDownloadLength += peer->getSessionDownloadLength();
     stat.sessionUploadLength += peer->getSessionUploadLength();
   }
