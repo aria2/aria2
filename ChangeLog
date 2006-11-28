@@ -1,3 +1,8 @@
+2006-11-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/DefaultBtProgressInfoFile.cc
+	(load): Fixed memory leak when the infohash doesn't match.
+
 2006-11-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/DefaultPeerStorage.cc

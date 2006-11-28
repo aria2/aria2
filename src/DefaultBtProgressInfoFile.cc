@@ -104,7 +104,7 @@ void DefaultBtProgressInfoFile::load() {
     }
     if(Util::toHex(savedInfoHash, btContext->getInfoHashLength()) != 
        btContext->getInfoHashAsString()) {
-      throw new DlAbortEx("Incorrect infoHash.");
+      throw string("infoHashMismatch");
     }
     if(fread(savedBitfield, pieceStorage->getBitfieldLength(), 1, file) < 1) {
       throw string("readError");
@@ -136,8 +136,12 @@ void DefaultBtProgressInfoFile::load() {
       delete [] savedInfoHash;
     }
     fclose(file);
-    throw new DlAbortEx(EX_SEGMENT_FILE_READ,
-			filename.c_str(), strerror(errno));
+    if(ex == "infoHashMismatch") {
+      throw new DlAbortEx("The infoHash in torrent file doesn't match to one in .aria2 file.");
+    } else {
+      throw new DlAbortEx(EX_SEGMENT_FILE_READ,
+			  filename.c_str(), strerror(errno));
+    }
   }
   logger->info(MSG_LOADED_SEGMENT_FILE);
 }
