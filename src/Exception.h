@@ -46,15 +46,21 @@ class Exception {
 private:
   string msg;
 protected:
+  Exception* cause;
+
   void setMsg(const string& msgsrc, va_list ap) {
     char buf[256];
     vsnprintf(buf, sizeof(buf), msgsrc.c_str(), ap);
     msg = buf;
   }
 public:
-  Exception() {}
+  Exception(Exception* cause = 0):cause(cause) {}
+
   virtual ~Exception() {}
-  string getMsg() { return msg; }
+
+  const string& getMsg() const { return msg; }
+
+  Exception* getCause() const { return cause; }
 };
 
 #endif // _D_EXCEPTION_H_

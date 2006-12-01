@@ -110,9 +110,9 @@ void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, 
   datestr[strlen(datestr)-1] = '\0';
   writeHeader(file, datestr, levelStr);
   vfprintf(file, string(Util::replace(msg, "\r", "")+"\n").c_str(), ap);
-  if(e != NULL) {
+  for(Exception* nestedEx = e; nestedEx; nestedEx = nestedEx->getCause()) {
     writeHeader(file, datestr, levelStr);
-    fprintf(file, "exception: %s\n", Util::replace(e->getMsg(), "\r", "").c_str());
+    fprintf(file, "exception: %s\n", Util::replace(nestedEx->getMsg(), "\r", "").c_str());
   }
   fflush(file);
 }

@@ -38,8 +38,16 @@
 
 class DlRetryEx:public Exception {
 public:
-  DlRetryEx():Exception() {}
+  DlRetryEx(Exception* cause = 0):Exception(cause) {}
+
   DlRetryEx(const char* msg, ...):Exception() {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(msg, ap);
+    va_end(ap);
+  }
+
+  DlRetryEx(Exception* cause, const char* msg, ...):Exception(cause) {
     va_list ap;
     va_start(ap, msg);
     setMsg(msg, ap);

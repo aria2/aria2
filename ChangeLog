@@ -1,3 +1,20 @@
+2006-12-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To know root cause of exception:
+	
+	* src/Exception.h
+	(cause): New variable.
+	(Exception): Added a parameter.
+	(getMsg): Return const reference to msg.
+	(getCause): New function.
+	* src/DlRetryEx.h
+	(DlRetryEx): Added a parameter 'cause'.
+	Added an overloaded constructor.
+	(DlAbortEx): Added a parameter 'cause'.
+	Added an overloaded constructor.
+	* src/SimpleLogger.cc
+	(writeLog): Log nested exception messages recursively.
+
 2006-11-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/DefaultBtProgressInfoFile.cc

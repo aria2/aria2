@@ -38,8 +38,16 @@
 
 class DlAbortEx:public Exception {
 public:
-  DlAbortEx():Exception() {}
+  DlAbortEx(Exception* cause = 0):Exception(cause) {}
+
   DlAbortEx(const char* msg, ...):Exception() {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(string(msg), ap);
+    va_end(ap);
+  }
+
+  DlAbortEx(Exception* cause, const char* msg, ...):Exception(cause) {
     va_list ap;
     va_start(ap, msg);
     setMsg(string(msg), ap);
