@@ -38,7 +38,7 @@
 
 BitfieldMan::BitfieldMan(int blockLength, long long int totalLength)
   :blockLength(blockLength), totalLength(totalLength), filterBitfield(0),
-   filterEnabled(false) {
+   filterEnabled(false), randomizer(0) {
   if(blockLength > 0 && totalLength > 0) {
     blocks = totalLength/blockLength+(totalLength%blockLength ? 1 : 0);
     bitfieldLength = blocks/8+(blocks%8 ? 1 : 0);
@@ -49,7 +49,7 @@ BitfieldMan::BitfieldMan(int blockLength, long long int totalLength)
   }
 }
 
-BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan) {
+BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan):randomizer(0) {
   blockLength = bitfieldMan.blockLength;
   totalLength = bitfieldMan.totalLength;
   blocks = bitfieldMan.blocks;
@@ -65,6 +65,7 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan) {
   } else {
     filterBitfield = 0;
   }
+  this->randomizer = bitfieldMan.randomizer;
 }
 
 BitfieldMan::~BitfieldMan() {
@@ -106,7 +107,9 @@ int
 BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield,
 				     int bitfieldLength) const
 {
-  int byte = (int)(((double)bitfieldLength)*random()/(RAND_MAX+1.0));
+  int byte = (int)(((double)bitfieldLength)*
+		   randomizer->getRandomNumber()/
+		   (randomizer->getMaxRandomNumber()+1.0));
 
   unsigned char lastMask = 0;
   int lastByteLength = totalLength%(blockLength*8);

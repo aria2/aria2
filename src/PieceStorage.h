@@ -56,7 +56,7 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual Piece getMissingPiece(const PeerHandle& peer) = 0;
+  virtual PieceHandle getMissingPiece(const PeerHandle& peer) = 0;
   /**
    * Returns a piece that the peer has but localhost doesn't.
    * Only pieces that declared as "fast" are returned.
@@ -64,27 +64,23 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual Piece getMissingFastPiece(const PeerHandle& peer) = 0;
+  virtual PieceHandle getMissingFastPiece(const PeerHandle& peer) = 0;
+
+  /**
+   * Returns the piece denoted by index.
+   * No status of the piece is changed in this method.
+   */
+  virtual PieceHandle getPiece(int index) = 0;
 
   /**
    * Tells that the download of the specfied piece completes.
    */
-  virtual void completePiece(const Piece& piece) = 0;
+  virtual void completePiece(const PieceHandle& piece) = 0;
 
   /**
    * Tells that the download of the specified piece is canceled.
    */
-  virtual void cancelPiece(const Piece& piece) = 0;
-
-  /**
-   * Updates the internal piece data with the specified piece data.
-   */
-  virtual void updatePiece(const Piece& piece) = 0;
-
-  /**
-   * Updates the spcefied piece data with the internal piece data.
-   */
-  virtual void syncPiece(Piece& piece) = 0;
+  virtual void cancelPiece(const PieceHandle& piece) = 0;
 
   /**
    * Returns true if the specified piece is already downloaded.

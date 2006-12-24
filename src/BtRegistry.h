@@ -41,6 +41,8 @@
 #include "BtAnnounce.h"
 #include "BtRuntime.h"
 #include "BtProgressInfoFile.h"
+#include "PeerObject.h"
+#include "HandleRegistry.h"
 #include <map>
 
 typedef map<string, PeerStorageHandle> PeerStorageMap;
@@ -48,6 +50,11 @@ typedef map<string, PieceStorageHandle> PieceStorageMap;
 typedef map<string, BtAnnounceHandle> BtAnnounceMap;
 typedef map<string, BtRuntimeHandle> BtRuntimeMap;
 typedef map<string, BtProgressInfoFileHandle> BtProgressInfoFileMap;
+
+// for BtMessageFactory
+typedef HandleRegistry<string, PeerObject> PeerObjectCluster;
+typedef SharedHandle<PeerObjectCluster> PeerObjectClusterHandle;
+typedef HandleRegistry<string, PeerObjectCluster> PeerObjectClusterRegistry;
 
 class BtRegistry {
 private:
@@ -58,6 +65,7 @@ private:
   static BtAnnounceMap btAnnounceMap;
   static BtRuntimeMap btRuntimeMap;
   static BtProgressInfoFileMap btProgressInfoFileMap;
+  static PeerObjectClusterRegistry peerObjectClusterRegistry;
 public:
   static PeerStorageHandle getPeerStorage(const string& key);
   static bool registerPeerStorage(const string& key,
@@ -78,6 +86,19 @@ public:
   static BtProgressInfoFileHandle getBtProgressInfoFile(const string& key);
   static bool registerBtProgressInfoFile(const string& key,
 					 const BtProgressInfoFileHandle& btProgressInfoFile);
+
+  // for PeerObject
+  static PeerObjectClusterHandle
+  getPeerObjectCluster(const string& key);
+
+  static void
+  registerPeerObjectCluster(const string& key,
+			    const PeerObjectClusterHandle& cluster);
+
+  static void
+  unregisterPeerObjectCluster(const string& key);
+
+  static void clear();
 };
 
 #define PEER_STORAGE(btContext) \
@@ -94,5 +115,23 @@ BtRegistry::getBtRuntime(btContext->getInfoHashAsString())
 
 #define BT_PROGRESS_INFO_FILE(btContext) \
 BtRegistry::getBtProgressInfoFile(btContext->getInfoHashAsString())
+
+#define PEER_OBJECT_CLUSTER(btContext) \
+BtRegistry::getPeerObjectCluster(btContext->getInfoHashAsString())
+
+#define PEER_OBJECT(btContext, peer) \
+PEER_OBJECT_CLUSTER(btContext)->getHandle(peer->getId())
+
+#define BT_MESSAGE_DISPATCHER(btContext, peer) \
+PEER_OBJECT(btContext, peer)->btMessageDispatcher
+
+#define BT_MESSAGE_FACTORY(btContext, peer) \
+PEER_OBJECT(btContext, peer)->btMessageFactory
+
+#define BT_REQUEST_FACTORY(btContext, peer) \
+PEER_OBJECT(btContext, peer)->btRequestFactory
+
+#define PEER_CONNECTION(btContext, peer) \
+PEER_OBJECT(btContext, peer)->peerConnection
 
 #endif // _D_BT_REGISTRY_H_

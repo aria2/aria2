@@ -45,6 +45,12 @@ DefaultBtContext::DefaultBtContext() {}
 
 DefaultBtContext::~DefaultBtContext() {}
 
+string DefaultBtContext::generatePeerId() const {
+  string peerId = "-aria2-";
+  peerId += Util::randomAlpha(20-peerId.size());
+  return peerId;
+}
+
 const unsigned char* DefaultBtContext::getInfoHash() const {
   return infoHash;
 }

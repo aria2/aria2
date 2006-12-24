@@ -77,29 +77,26 @@ private:
 
   int getMissingPieceIndex(const PeerHandle& peer);
   int getMissingFastPieceIndex(const PeerHandle& peer);
-  Piece checkOutPiece(int index);
-  void addUsedPiece(const Piece& piece);
-  Piece findUsedPiece(int index) const;
+  PieceHandle checkOutPiece(int index);
   int deleteUsedPiecesByFillRate(int fillRate, int toDelete);
   void reduceUsedPieces(int delMax);
-  void deleteUsedPiece(const Piece& piece);
+  void deleteUsedPiece(const PieceHandle& piece);
+  PieceHandle findUsedPiece(int index) const;
 public:
   DefaultPieceStorage(BtContextHandle btContext, const Option* option);
   virtual ~DefaultPieceStorage();
 
   virtual bool hasMissingPiece(const PeerHandle& peer);
 
-  virtual Piece getMissingPiece(const PeerHandle& peer);
+  virtual PieceHandle getMissingPiece(const PeerHandle& peer);
 
-  virtual Piece getMissingFastPiece(const PeerHandle& peer);
+  virtual PieceHandle getMissingFastPiece(const PeerHandle& peer);
 
-  virtual void completePiece(const Piece& piece);
+  virtual PieceHandle getPiece(int index);
 
-  virtual void cancelPiece(const Piece& piece);
+  virtual void completePiece(const PieceHandle& piece);
 
-  virtual void updatePiece(const Piece& piece);
-
-  virtual void syncPiece(Piece& piece);
+  virtual void cancelPiece(const PieceHandle& piece);
 
   virtual bool hasPiece(int index);
 
@@ -153,6 +150,10 @@ public:
 
   virtual void removeAdvertisedPiece(int elapsed);
 
+  /**
+   * This method is made private for test purpose only.
+   */
+  void addUsedPiece(const PieceHandle& piece);
 };
 
 #endif // _D_DEFAULT_PIECE_STORAGE_H_

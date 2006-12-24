@@ -74,7 +74,7 @@ void PieceMessage::receivedAction() {
     peer->snubbing = false;
     //logger->debug("CUID#%d - Latency=%d", cuid, slot.getLatencyInMillis());
     peer->updateLatency(slot.getLatencyInMillis());
-    Piece& piece = peerInteraction->getDownloadPiece(slot.getIndex());
+    PieceHandle piece = peerInteraction->getDownloadPiece(slot.getIndex());
     long long int offset =
       ((long long int)index)*btContext->getPieceLength()+begin;
     logger->debug("CUID#%d - Writing the block length=%d, offset=%lld",
@@ -82,12 +82,12 @@ void PieceMessage::receivedAction() {
     pieceStorage->getDiskAdaptor()->writeData(block,
 					      blockLength,
 					      offset);
-    piece.completeBlock(slot.getBlockIndex());
+    piece->completeBlock(slot.getBlockIndex());
     peerInteraction->deleteRequestSlot(slot);
-    pieceStorage->updatePiece(piece);
+    //pieceStorage->updatePiece(piece);
     logger->debug("CUID#%d - Setting piece block index=%d",
 		  cuid, slot.getBlockIndex());
-    if(piece.pieceComplete()) {
+    if(piece->pieceComplete()) {
       if(checkPieceHash(piece)) {
 	onGotNewPiece(piece);
       } else {
@@ -196,38 +196,38 @@ string PieceMessage::toString() const {
     ", length="+Util::itos(blockLength);
 }
 
-bool PieceMessage::checkPieceHash(const Piece& piece) {
+bool PieceMessage::checkPieceHash(const PieceHandle& piece) {
   long long int offset =
-    ((long long int)piece.getIndex())*btContext->getPieceLength();
-  return pieceStorage->getDiskAdaptor()->sha1Sum(offset, piece.getLength()) ==
-    btContext->getPieceHash(piece.getIndex());
+    ((long long int)piece->getIndex())*btContext->getPieceLength();
+  return pieceStorage->getDiskAdaptor()->sha1Sum(offset, piece->getLength()) ==
+    btContext->getPieceHash(piece->getIndex());
 }
 
-void PieceMessage::onGotNewPiece(Piece& piece) {
-  logger->info(MSG_GOT_NEW_PIECE, cuid, piece.getIndex());
+void PieceMessage::onGotNewPiece(const PieceHandle& piece) {
+  logger->info(MSG_GOT_NEW_PIECE, cuid, piece->getIndex());
   pieceStorage->completePiece(piece);
-  pieceStorage->advertisePiece(cuid, piece.getIndex());
+  pieceStorage->advertisePiece(cuid, piece->getIndex());
 }
 
-void PieceMessage::onGotWrongPiece(Piece& piece) {
-  logger->error(MSG_GOT_WRONG_PIECE, cuid, piece.getIndex());
+void PieceMessage::onGotWrongPiece(const PieceHandle& piece) {
+  logger->error(MSG_GOT_WRONG_PIECE, cuid, piece->getIndex());
   erasePieceOnDisk(piece);
-  piece.clearAllBlock();
-  pieceStorage->updatePiece(piece);
+  piece->clearAllBlock();
+  //pieceStorage->updatePiece(piece);
   peerInteraction->abortPiece(piece);
 }
 
-void PieceMessage::erasePieceOnDisk(const Piece& piece) {
+void PieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
   int BUFSIZE = 4096;
   char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);
   long long int offset =
-    ((long long int)piece.getIndex())*btContext->getPieceLength();
-  for(int i = 0; i < piece.getLength()/BUFSIZE; i++) {
+    ((long long int)piece->getIndex())*btContext->getPieceLength();
+  for(int i = 0; i < piece->getLength()/BUFSIZE; i++) {
     pieceStorage->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
     offset += BUFSIZE;
   }
-  int r = piece.getLength()%BUFSIZE;
+  int r = piece->getLength()%BUFSIZE;
   if(r > 0) {
     pieceStorage->getDiskAdaptor()->writeData(buf, r, offset);
   }

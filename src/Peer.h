@@ -51,7 +51,6 @@ class Peer {
   friend bool operator==(const Peer& p1, const Peer& p2);
   friend bool operator!=(const Peer& p1, const Peer& p2);
 public:
-  int entryId;
   string ipaddr;
   int port;
   bool amChoking;
@@ -65,42 +64,32 @@ public:
   bool optUnchoking;
   bool snubbing;
 private:
-  char peerId[PEER_ID_LENGTH];
+  unsigned char peerId[PEER_ID_LENGTH];
   BitfieldMan* bitfield;
   bool fastExtensionEnabled;
   // allowed fast indexes that peer has sent by Allowed Fast message
   Integers fastSet;
+  // fast index set which a peer has sent to localhost.
+  Integers peerAllowedIndexSet;
+  // fast index set which localhost has sent to a peer.
+  Integers amAllowedIndexSet;
   PeerStat peerStat;
   long long int sessionUploadLength;
   long long int sessionDownloadLength;
   int pieceLength;
   int latency;
   bool active;
+  string id;
 public:
-  Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
-    entryId(0), ipaddr(ipaddr), port(port), error(0),
-    sessionUploadLength(0), sessionDownloadLength(0),
-    pieceLength(pieceLength), active(false)
-  {
-    resetStatus();
-    this->bitfield = new BitfieldMan(pieceLength, totalLength);
-  }
-
-  Peer():entryId(0), ipaddr(""), port(0), bitfield(0),
-	 sessionUploadLength(0), sessionDownloadLength(0),
-	 pieceLength(0)
-  {
-    resetStatus();
-  }
+  Peer(string ipaddr, int port, int pieceLength, long long int totalLength);
 
   ~Peer() {
-    if(bitfield != NULL) {
-      delete bitfield;
-    }
+    delete bitfield;
   }
 
   bool operator==(const Peer& p) {
-    return ipaddr == p.ipaddr && port == p.port;
+    //return ipaddr == p.ipaddr && port == p.port;
+    return id == p.id;
   }
   
   bool operator!=(const Peer& p) {
@@ -161,10 +150,10 @@ public:
     return active;
   }
 
-  void setPeerId(const char* peerId) {
+  void setPeerId(const unsigned char* peerId) {
     memcpy(this->peerId, peerId, PEER_ID_LENGTH);
   }
-  const char* getPeerId() const { return this->peerId; }
+  const unsigned char* getPeerId() const { return this->peerId; }
   
   void setBitfield(const unsigned char* bitfield, int bitfieldLength) {
     this->bitfield->setBitfield(bitfield, bitfieldLength);
@@ -189,6 +178,12 @@ public:
   bool isInFastSet(int index) const;
   int countFastSet() const { return fastSet.size(); }
 
+  void addPeerAllowedIndex(int index);
+  bool isInPeerAllowedIndexSet(int index) const;
+
+  void addAmAllowedIndex(int index);
+  bool isInAmAllowedIndexSet(int index) const;
+
   bool shouldBeChoking() const;
 
   bool hasPiece(int index) const;
@@ -197,6 +192,10 @@ public:
 
   void updateLatency(int latency);
   int getLatency() const { return latency; }
+
+  const string& getId() const {
+    return id;
+  }
 };
 
 typedef SharedHandle<Peer> PeerHandle;

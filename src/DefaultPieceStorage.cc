@@ -42,6 +42,7 @@
 #include "MultiDiskWriter.h"
 #include "PreAllocationDiskWriter.h"
 #include "DlAbortEx.h"
+#include "BitfieldManFactory.h"
 
 DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option* option):
   btContext(btContext),
@@ -49,13 +50,16 @@ DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option
   endGamePieceNum(END_GAME_PIECE_NUM),
   option(option)
 {
-  bitfieldMan = new BitfieldMan(btContext->getPieceLength(),
-				btContext->getTotalLength());
+  bitfieldMan =
+    BitfieldManFactory::getNewFactory()->
+    createBitfieldMan(btContext->getPieceLength(),
+		      btContext->getTotalLength());
   logger = LogFactory::getInstance();
 }
 
 DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan;
+  delete diskAdaptor;
 }
 
 bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer) {
@@ -79,15 +83,15 @@ int DefaultPieceStorage::getMissingPieceIndex(const PeerHandle& peer) {
   return index;
 }
 
-Piece DefaultPieceStorage::checkOutPiece(int index) {
+PieceHandle DefaultPieceStorage::checkOutPiece(int index) {
   if(index == -1) {
-    return Piece::nullPiece;
+    return 0;
   }
   bitfieldMan->setUseBit(index);
 
-  Piece piece = findUsedPiece(index);
-  if(Piece::isNull(piece)) {
-    Piece piece(index, bitfieldMan->getBlockLength(index));
+  PieceHandle piece = findUsedPiece(index);
+  if(piece.isNull()) {
+    piece = new Piece(index, bitfieldMan->getBlockLength(index));
     addUsedPiece(piece);
     return piece;
   } else {
@@ -95,8 +99,26 @@ Piece DefaultPieceStorage::checkOutPiece(int index) {
   }
 }
 
-void DefaultPieceStorage::addUsedPiece(const Piece& piece) {
-  // TODO ? if nullPiece
+/**
+ * Newly instantiated piece is not added to usedPieces.
+ * Because it is waste of memory and there is no chance to use them later.
+ */
+PieceHandle DefaultPieceStorage::getPiece(int index) {
+  if(0 <= index && index <= bitfieldMan->getMaxIndex()) {
+    PieceHandle piece = findUsedPiece(index);
+    if(piece.isNull()) {
+      piece = new Piece(index, bitfieldMan->getBlockLength(index));
+      if(hasPiece(index)) {
+	piece->setAllBlock();
+      }
+    }
+    return piece;
+  } else {
+    return 0;
+  }
+}
+
+void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece) {
   usedPieces.push_back(piece);
 }
 
@@ -106,23 +128,23 @@ private:
 public:
   FindPiece(int index):index(index) {}
 
-  bool operator()(const Piece& piece) {
-    return piece.getIndex() == index;
+  bool operator()(const PieceHandle& piece) {
+    return piece->getIndex() == index;
   }
 };
 
-Piece DefaultPieceStorage::findUsedPiece(int index) const {
+PieceHandle DefaultPieceStorage::findUsedPiece(int index) const {
   Pieces::const_iterator itr = find_if(usedPieces.begin(),
 				       usedPieces.end(),
 				       FindPiece(index));
   if(itr == usedPieces.end()) {
-    return Piece::nullPiece;
+    return 0;
   } else {
     return *itr;
   }
 }
 
-Piece DefaultPieceStorage::getMissingPiece(const PeerHandle& peer) {
+PieceHandle DefaultPieceStorage::getMissingPiece(const PeerHandle& peer) {
   int index = getMissingPieceIndex(peer);
   return checkOutPiece(index);
 }
@@ -149,13 +171,13 @@ int DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer) {
   return index;
 }
 
-Piece DefaultPieceStorage::getMissingFastPiece(const PeerHandle& peer) {
+PieceHandle DefaultPieceStorage::getMissingFastPiece(const PeerHandle& peer) {
   int index = getMissingFastPieceIndex(peer);
   return checkOutPiece(index);
 }
 
-void DefaultPieceStorage::deleteUsedPiece(const Piece& piece) {
-  if(Piece::isNull(piece)) {
+void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece) {
+  if(piece.isNull()) {
     return;
   }
   Pieces::iterator itr = find(usedPieces.begin(), usedPieces.end(), piece);
@@ -185,12 +207,12 @@ int DefaultPieceStorage::deleteUsedPiecesByFillRate(int fillRate,
   int deleted = 0;
   for(Pieces::iterator itr = usedPieces.begin();
       itr != usedPieces.end() && deleted < toDelete;) {
-    Piece& piece = *itr;
-    if(!bitfieldMan->isUseBitSet(piece.getIndex()) &&
-       piece.countCompleteBlock() <= piece.countBlock()*(fillRate/100.0)) {
+    PieceHandle& piece = *itr;
+    if(!bitfieldMan->isUseBitSet(piece->getIndex()) &&
+       piece->countCompleteBlock() <= piece->countBlock()*(fillRate/100.0)) {
       logger->debug("Deleting used piece index=%d, fillRate(%%)=%d<=%d",
-		    piece.getIndex(),
-		    (piece.countCompleteBlock()*100)/piece.countBlock(),
+		    piece->getIndex(),
+		    (piece->countCompleteBlock()*100)/piece->countBlock(),
 		    fillRate);
       itr = usedPieces.erase(itr);
       deleted++;
@@ -201,8 +223,8 @@ int DefaultPieceStorage::deleteUsedPiecesByFillRate(int fillRate,
   return deleted;
 }
 
-void DefaultPieceStorage::completePiece(const Piece& piece) {
-  if(Piece::isNull(piece)) {
+void DefaultPieceStorage::completePiece(const PieceHandle& piece) {
+  if(piece.isNull()) {
     return;
   }
   deleteUsedPiece(piece);
@@ -212,8 +234,8 @@ void DefaultPieceStorage::completePiece(const Piece& piece) {
   if(downloadFinished()) {
     return;
   }
-  bitfieldMan->setBit(piece.getIndex());
-  bitfieldMan->unsetUseBit(piece.getIndex());
+  bitfieldMan->setBit(piece->getIndex());
+  bitfieldMan->unsetUseBit(piece->getIndex());
   if(downloadFinished()) {
     diskAdaptor->onDownloadComplete();
     if(isSelectiveDownloadingMode()) {
@@ -235,46 +257,14 @@ void DefaultPieceStorage::finishSelectiveDownloadingMode() {
 }
 
 // not unittested
-void DefaultPieceStorage::cancelPiece(const Piece& piece) {
-  if(Piece::isNull(piece)) {
+void DefaultPieceStorage::cancelPiece(const PieceHandle& piece) {
+  if(piece.isNull()) {
     return;
   }
-  updatePiece(piece);
-  bitfieldMan->unsetUseBit(piece.getIndex());
+  bitfieldMan->unsetUseBit(piece->getIndex());
   if(!isEndGame()) {
-    if(piece.countCompleteBlock() == 0) {
+    if(piece->countCompleteBlock() == 0) {
       deleteUsedPiece(piece);
-    }
-  }
-}
-
-// not unittested
-void DefaultPieceStorage::updatePiece(const Piece& piece) {
-  if(Piece::isNull(piece)) {
-    return;
-  }
-  Pieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
-			      piece);
-  if(itr != usedPieces.end()) {
-    *itr = piece;
-  }
-}
-
-// not unittested
-void DefaultPieceStorage::syncPiece(Piece& piece) {
-  if(Piece::isNull(piece)) {
-    return;
-  }
-  Pieces::iterator itr = find(usedPieces.begin(), usedPieces.end(),
-			      piece);
-  if(itr != usedPieces.end()) {
-    piece = *itr;
-    return;
-  } else {
-    // hasPiece(piece.getIndex()) is true, then set all bit of
-    // piece.bitfield to 1
-    if(hasPiece(piece.getIndex())) {
-      piece.setAllBlock();
     }
   }
 }

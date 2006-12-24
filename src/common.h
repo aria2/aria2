@@ -34,6 +34,8 @@
 /* copyright --> */
 #ifndef _D_COMMON_H_
 #define _D_COMMON_H_
+// use C99 limit macros
+#define __STDC_LIMIT_MACROS
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -62,6 +64,7 @@
 #define DIV_FLOOR(X,Y) ((X)/(Y)+((X)%(Y)? 1:0))
 
 using namespace std;
+//#include "debug_new.h"
 
 class Deleter {
 public:
@@ -74,6 +77,6 @@ public:
 #include "SharedHandle.h"
 
 typedef deque<string> Strings;
-typedef deque<int> Integers;
+typedef deque<int32_t> Integers;
 
 #endif // _D_COMMON_H_

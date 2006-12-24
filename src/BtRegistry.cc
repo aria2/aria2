@@ -40,6 +40,7 @@ PieceStorageMap BtRegistry::pieceStorageMap;
 BtAnnounceMap BtRegistry::btAnnounceMap;
 BtRuntimeMap BtRegistry::btRuntimeMap;
 BtProgressInfoFileMap BtRegistry::btProgressInfoFileMap;
+PeerObjectClusterRegistry BtRegistry::peerObjectClusterRegistry;
 
 PeerStorageHandle BtRegistry::getPeerStorage(const string& key) {
   PeerStorageMap::iterator itr = peerStorageMap.find(key);
@@ -70,6 +71,7 @@ BtRegistry::getPieceStorage(const string& key) {
 bool
 BtRegistry::registerPieceStorage(const string& key,
 				 const PieceStorageHandle& pieceStorage) {
+  pieceStorageMap.erase(key);
   PieceStorageMap::value_type p(key, pieceStorage);
   pair<PieceStorageMap::iterator, bool> retval = pieceStorageMap.insert(p);
   return retval.second;
@@ -127,4 +129,32 @@ BtRegistry::registerBtProgressInfoFile(const string& key,
   pair<BtProgressInfoFileMap::iterator, bool> retval =
     btProgressInfoFileMap.insert(p);
   return retval.second;
+}
+
+PeerObjectClusterHandle
+BtRegistry::getPeerObjectCluster(const string& key)
+{
+  return peerObjectClusterRegistry.getHandle(key);
+}
+
+void
+BtRegistry::registerPeerObjectCluster(const string& key,
+				      const PeerObjectClusterHandle& cluster)
+{
+  peerObjectClusterRegistry.registerHandle(key, cluster);
+}
+
+void
+BtRegistry::unregisterPeerObjectCluster(const string& key)
+{
+  peerObjectClusterRegistry.unregisterHandle(key);
+}
+
+void BtRegistry::clear() {
+  peerStorageMap.clear();
+  pieceStorageMap.clear();
+  btAnnounceMap.clear();
+  btRuntimeMap.clear();
+  btProgressInfoFileMap.clear();
+  peerObjectClusterRegistry.clear();
 }

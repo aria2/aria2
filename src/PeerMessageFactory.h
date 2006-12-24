@@ -71,7 +71,7 @@ public:
   createHandshakeMessage(const unsigned char* infoHash,
 			 const char* peerId) const;
 
-  PeerMessageHandle createRequestMessage(const Piece& piece,
+  PeerMessageHandle createRequestMessage(const PieceHandle& piece,
 					 int blockIndex) const;
   PeerMessageHandle createCancelMessage(int index, int begin, int length) const;
   PeerMessageHandle createPieceMessage(int index, int begin, int length) const;

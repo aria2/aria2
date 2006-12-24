@@ -36,6 +36,7 @@
 #define _D_BITFIELD_MAN_H_
 
 #include "common.h"
+#include "Randomizer.h"
 #include <deque>
 
 typedef deque<int> BlockIndexes;
@@ -50,6 +51,8 @@ private:
   int bitfieldLength;
   int blocks;
   bool filterEnabled;
+  RandomizerHandle randomizer;
+
   int countSetBit(const unsigned char* bitfield, int len) const;
   int getNthBitIndex(const unsigned char bit, int nth) const;
   int getMissingIndexRandomly(const unsigned char* bitfield, int len) const;
@@ -176,6 +179,8 @@ public:
    */
   int countBlock() const;
 
+  int getMaxIndex() const { return blocks-1; }
+
   void setBitfield(const unsigned char* bitfield, int bitfieldLength);
 
   void clearAllBit();
@@ -202,6 +207,14 @@ public:
    * affected by filter
    */
   long long int getFilteredCompletedLength() const;
+
+  void setRandomizer(const RandomizerHandle& randomizer) {
+    this->randomizer = randomizer;
+  }
+
+  RandomizerHandle getRandomizer() const {
+    return randomizer;
+  }
 };
 
 #endif // _D_BITFIELD_MAN_H_

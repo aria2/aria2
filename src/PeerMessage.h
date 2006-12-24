@@ -100,7 +100,7 @@ public:
   virtual void onPush() {}
   virtual void onChoked() {}
   virtual void onCanceled(int index, int begin, int blockLength) {}
-  virtual void onAbortPiece(const Piece& piece) {}
+  virtual void onAbortPiece(const PieceHandle& piece) {}
 };
 
 typedef SharedHandle<PeerMessage> PeerMessageHandle;

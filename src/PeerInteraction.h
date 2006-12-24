@@ -48,7 +48,6 @@
 #define REQUEST_TIME_OUT 60
 #define ALLOWED_FAST_SET_SIZE 10
 
-typedef deque<RequestSlot> RequestSlots;
 typedef deque<PeerMessageHandle> MessageQueue;
 
 class PeerInteraction {
@@ -85,7 +84,7 @@ public:
   void rejectPieceMessageInQueue(int index, int begin, int length);
   void rejectAllPieceMessageInQueue();
   void onChoked();
-  void abortPiece(Piece& piece);
+  void abortPiece(const PieceHandle& piece);
   void abortAllPieces();
 
   bool isSendingMessageInProgress() const;
@@ -104,7 +103,7 @@ public:
   // If the piece which this object has is nullPiece, then throws an exception.
   // So before calling this function, call hasDownloadPiece and make sure
   // this has valid piece, not nullPiece.
-  Piece& getDownloadPiece(int index);
+  PieceHandle getDownloadPiece(int index);
   
   bool isInFastSet(int index) const;
 

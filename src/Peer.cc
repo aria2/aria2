@@ -33,8 +33,33 @@
  */
 /* copyright --> */
 #include "Peer.h"
+#include "BitfieldManFactory.h"
+#include "Util.h"
 
-PeerHandle nullPeer = PeerHandle(new Peer("", 0, 0, 0));
+Peer::Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
+  ipaddr(ipaddr),
+  port(port),
+  error(0),
+  sessionUploadLength(0),
+  sessionDownloadLength(0),
+  pieceLength(pieceLength),
+  active(false)
+{
+  resetStatus();
+  this->bitfield = BitfieldManFactory::getNewFactory()->
+    createBitfieldMan(pieceLength, totalLength);
+  string idSeed = ipaddr+":"+Util::itos(port);
+  id = Util::simpleMessageDigest(idSeed);
+}
+
+/*
+Peer::Peer():entryId(0), ipaddr(""), port(0), bitfield(0),
+       sessionUploadLength(0), sessionDownloadLength(0),
+       pieceLength(0)
+{
+  resetStatus();
+}
+*/
 
 void Peer::updateBitfield(int index, int operation) {
   if(operation == 1) {
@@ -74,6 +99,8 @@ void Peer::resetStatus() {
   fastExtensionEnabled = false;
   latency = DEFAULT_LATENCY;
   fastSet.clear();
+  peerAllowedIndexSet.clear();
+  amAllowedIndexSet.clear();
   peerStat.reset();
 }
 
@@ -84,6 +111,28 @@ bool Peer::isInFastSet(int index) const {
 void Peer::addFastSetIndex(int index) {
   if(!isInFastSet(index)) {
     fastSet.push_back(index);
+  }
+}
+
+bool Peer::isInPeerAllowedIndexSet(int index) const {
+  return find(peerAllowedIndexSet.begin(), peerAllowedIndexSet.end(),
+	      index) != peerAllowedIndexSet.end();
+}
+
+void Peer::addPeerAllowedIndex(int index) {
+  if(!isInPeerAllowedIndexSet(index)) {
+    peerAllowedIndexSet.push_back(index);
+  }
+}
+
+bool Peer::isInAmAllowedIndexSet(int index) const {
+  return find(amAllowedIndexSet.begin(), amAllowedIndexSet.end(),
+	      index) != amAllowedIndexSet.end();
+}
+
+void Peer::addAmAllowedIndex(int index) {
+  if(!isInAmAllowedIndexSet(index)) {
+    amAllowedIndexSet.push_back(index);
   }
 }
 

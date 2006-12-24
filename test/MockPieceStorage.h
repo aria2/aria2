@@ -23,21 +23,21 @@ public:
     return false;
   }
 
-  virtual Piece getMissingPiece(const PeerHandle& peer) {
-    return Piece();
+  virtual PieceHandle getMissingPiece(const PeerHandle& peer) {
+    return new Piece();
   }
 
-  virtual Piece getMissingFastPiece(const PeerHandle& peer) {
-    return Piece();
+  virtual PieceHandle getMissingFastPiece(const PeerHandle& peer) {
+    return new Piece();
   }
 
-  virtual void completePiece(const Piece& piece) {}
+  virtual PieceHandle getPiece(int index) {
+    return new Piece();
+  }
 
-  virtual void cancelPiece(const Piece& piece) {}
+  virtual void completePiece(const PieceHandle& piece) {}
 
-  virtual void updatePiece(const Piece& piece) {}
-
-  virtual void syncPiece(Piece& piece) {}
+  virtual void cancelPiece(const PieceHandle& piece) {}
 
   virtual bool hasPiece(int index) {
     return false;
@@ -147,5 +147,7 @@ public:
 
   virtual void removeAdvertisedPiece(int elapsed) {}
 };
+
+typedef SharedHandle<MockPieceStorage> MockPieceStorageHandle;
 
 #endif // _D_MOCK_PIECE_STORAGE_H_

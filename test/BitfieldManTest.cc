@@ -1,4 +1,6 @@
 #include "BitfieldMan.h"
+#include "FixedNumberRandomizer.h"
+#include "BitfieldManFactory.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -15,8 +17,15 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
   CPPUNIT_TEST_SUITE_END();
 private:
+  RandomizerHandle fixedNumberRandomizer;
 
 public:
+  BitfieldManTest():fixedNumberRandomizer(0) {
+    FixedNumberRandomizer* randomizer = new FixedNumberRandomizer();
+    randomizer->setFixedNumber(0);
+    this->fixedNumberRandomizer = randomizer;
+  }
+
   void setUp() {
   }
 
@@ -82,9 +91,8 @@ void BitfieldManTest::testIsAllBitSet() {
 }
 
 void BitfieldManTest::testFilter() {
-  // set random seed here in order to get same random numbers.
-  srandom(100);
   BitfieldMan btman(2, 32);
+  btman.setRandomizer(fixedNumberRandomizer);
 
   // test offset=4, length=12
   btman.addFilter(4, 12);
@@ -140,12 +148,12 @@ void BitfieldManTest::testFilter() {
   btman2.addFilter(0, 31);
   btman2.enableFilter();
   CPPUNIT_ASSERT_EQUAL((long long int)31, btman2.getFilteredTotalLength());
+
 }
 
 void BitfieldManTest::testGetMissingIndex() {
-  srandom(100);
-
   BitfieldMan bt1(1024, 1024*256);
+  bt1.setRandomizer(fixedNumberRandomizer);
 
   unsigned char bitArray[] = {
     0xff, 0xff, 0xff, 0xff,
@@ -157,12 +165,12 @@ void BitfieldManTest::testGetMissingIndex() {
     0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
   };
-  CPPUNIT_ASSERT_EQUAL(80, bt1.getMissingIndex(bitArray, 32));
+  CPPUNIT_ASSERT_EQUAL(0, bt1.getMissingIndex(bitArray, 32));
 
   unsigned char bitArray2[] = {
+    0x0f, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
-    0xff, 0x00, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
@@ -170,11 +178,11 @@ void BitfieldManTest::testGetMissingIndex() {
     0xff, 0xff, 0xff, 0xff,
   };
 
-  CPPUNIT_ASSERT_EQUAL(80, bt1.getMissingIndex(bitArray2, 32));
+  CPPUNIT_ASSERT_EQUAL(4, bt1.getMissingIndex(bitArray2, 32));
 
   unsigned char bitArray3[] = {
+    0x00, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0x0f,
     0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff,
@@ -183,22 +191,9 @@ void BitfieldManTest::testGetMissingIndex() {
     0xff, 0xff, 0xff, 0xff,
   };
 
-  CPPUNIT_ASSERT_EQUAL(60, bt1.getMissingIndex(bitArray3, 32));
+  CPPUNIT_ASSERT_EQUAL(8, bt1.getMissingIndex(bitArray3, 32));
 
   unsigned char bitArray4[] = {
-    0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00,
-  };
-
-  CPPUNIT_ASSERT_EQUAL(0, bt1.getMissingIndex(bitArray4, 32));
-
-  unsigned char bitArray5[] = {
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
@@ -209,7 +204,7 @@ void BitfieldManTest::testGetMissingIndex() {
     0x00, 0x00, 0x00, 0x00,
   };
 
-  CPPUNIT_ASSERT_EQUAL(-1, bt1.getMissingIndex(bitArray5, 32));
+  CPPUNIT_ASSERT_EQUAL(-1, bt1.getMissingIndex(bitArray4, 32));
 
 }
 

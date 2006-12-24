@@ -35,7 +35,7 @@
 #include "RequestSlot.h"
 #include "Util.h"
 
-RequestSlot::RequestSlot(int index, int begin, int length, int blockIndex)
+RequestSlot::RequestSlot(uint32_t index, uint32_t begin, uint32_t length, uint32_t blockIndex)
   :index(index), begin(begin), length(length), blockIndex(blockIndex) {}
 
 RequestSlot::RequestSlot(const RequestSlot& requestSlot) {
@@ -56,7 +56,11 @@ void RequestSlot::setDispatchedTime() {
   dispatchedTime.reset();
 }
 
-bool RequestSlot::isTimeout(int timeoutSec) const {
+void RequestSlot::setDispatchedTime(time_t secFromEpoch) {
+  dispatchedTime.setTimeInSec(secFromEpoch);
+}
+
+bool RequestSlot::isTimeout(time_t timeoutSec) const {
   return dispatchedTime.differenceInMillis() > timeoutSec*1000;
 }
 

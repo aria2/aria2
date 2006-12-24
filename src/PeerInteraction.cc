@@ -123,8 +123,8 @@ void PeerInteraction::rejectPieceMessageInQueue(int index, int begin, int length
 
 void PeerInteraction::onChoked() {
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end();) {
-    Piece& piece = *itr;
-    if(!peer->isInFastSet(piece.getIndex())) {
+    PieceHandle& piece = *itr;
+    if(!peer->isInFastSet(piece->getIndex())) {
       abortPiece(piece);
       itr = pieces.erase(itr);
     } else {
@@ -140,20 +140,20 @@ void PeerInteraction::abortAllPieces() {
   }
 }
 
-void PeerInteraction::abortPiece(Piece& piece) {
-  if(!Piece::isNull(piece)) {
+void PeerInteraction::abortPiece(const PieceHandle& piece) {
+  if(!piece.isNull()) {
     int size = messageQueue.size();
     for(int i = 0; i < size; i++) {
       messageQueue.at(i)->onAbortPiece(piece);
     }
     for(RequestSlots::iterator itr = requestSlots.begin();
 	itr != requestSlots.end();) {
-      if(itr->getIndex() == piece.getIndex()) {
+      if(itr->getIndex() == piece->getIndex()) {
 	logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
 		      " because piece was canceled",
 		      cuid,
 		      itr->getBlockIndex());
-	piece.cancelBlock(itr->getBlockIndex());
+	piece->cancelBlock(itr->getBlockIndex());
 	itr = requestSlots.erase(itr);
       } else {
 	itr++;
@@ -181,14 +181,14 @@ void PeerInteraction::checkRequestSlot() {
 		    " because of time out",
 		    cuid,
 		    slot.getBlockIndex());
-      Piece& piece = getDownloadPiece(slot.getIndex());
-      piece.cancelBlock(slot.getBlockIndex());
+      PieceHandle piece = getDownloadPiece(slot.getIndex());
+      piece->cancelBlock(slot.getBlockIndex());
       itr = requestSlots.erase(itr);
       peer->snubbing = true;
     } else {
-      Piece piece = getDownloadPiece(slot.getIndex());
-      if(piece.hasBlock(slot.getBlockIndex()) ||
-	 pieceStorage->hasPiece(piece.getIndex())) {
+      PieceHandle piece = getDownloadPiece(slot.getIndex());
+      if(piece->hasBlock(slot.getBlockIndex()) ||
+	 pieceStorage->hasPiece(piece->getIndex())) {
 	logger->debug("CUID#%d - Deleting request slot blockIndex=%d because"
 		      " the block has been acquired.", cuid,
 		      slot.getBlockIndex());
@@ -275,15 +275,19 @@ PeerMessageHandle PeerInteraction::receiveMessage() {
 }
 
 void PeerInteraction::syncPiece() {
+  /*
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
     pieceStorage->syncPiece(*itr);
   }
+  */
 }
 
 void PeerInteraction::updatePiece() {
+  /*
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
     pieceStorage->updatePiece(*itr);
   }
+  */
 }
 
 void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
@@ -297,8 +301,8 @@ void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
       onChoked();
       if(peer->isFastExtensionEnabled()) {
 	while((int)pieces.size() < pieceNum) {
-	  Piece piece = pieceStorage->getMissingFastPiece(peer);
-	  if(Piece::isNull(piece)) {
+	  PieceHandle piece = pieceStorage->getMissingFastPiece(peer);
+	  if(piece.isNull()) {
 	    break;
 	  } else {
 	    pieces.push_back(piece);
@@ -307,8 +311,8 @@ void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
       }
     } else {
       while((int)pieces.size() < pieceNum) {
-	Piece piece = pieceStorage->getMissingPiece(peer);
-	if(Piece::isNull(piece)) {
+	PieceHandle piece = pieceStorage->getMissingPiece(peer);
+	if(piece.isNull()) {
 	  break;
 	} else {
 	  pieces.push_back(piece);
@@ -325,8 +329,8 @@ void PeerInteraction::getNewPieceAndSendInterest(int pieceNum) {
 void PeerInteraction::addRequests() {
   // Abort downloading of completed piece.
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end();) {
-    Piece& piece = *itr;
-    if(piece.pieceComplete()) {
+    PieceHandle& piece = *itr;
+    if(piece->pieceComplete()) {
       abortPiece(piece);
       itr = pieces.erase(itr);
     } else {
@@ -350,16 +354,16 @@ void PeerInteraction::addRequests() {
   }
   getNewPieceAndSendInterest(pieceNum);
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
-    Piece& piece = *itr;
+    PieceHandle& piece = *itr;
     if(pieceStorage->isEndGame()) {
-      BlockIndexes missingBlockIndexes = piece.getAllMissingBlockIndexes();
+      BlockIndexes missingBlockIndexes = piece->getAllMissingBlockIndexes();
       random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
       int count = countRequestSlot();
       for(BlockIndexes::const_iterator bitr = missingBlockIndexes.begin();
 	  bitr != missingBlockIndexes.end() && count < MAX_PENDING_REQUEST;
 	  bitr++) {
 	int blockIndex = *bitr;
-	if(!isInRequestSlot(piece.getIndex(), blockIndex)) {
+	if(!isInRequestSlot(piece->getIndex(), blockIndex)) {
 	  addMessage(peerMessageFactory->createRequestMessage(piece,
 							      blockIndex));
 	  count++;
@@ -367,7 +371,7 @@ void PeerInteraction::addRequests() {
       }
     } else {
       while(countRequestSlot() < MAX_PENDING_REQUEST) {
-	int blockIndex = piece.getMissingUnusedBlockIndex();
+	int blockIndex = piece->getMissingUnusedBlockIndex();
 	if(blockIndex == -1) {
 	  break;
 	}
@@ -385,7 +389,7 @@ void PeerInteraction::addRequests() {
 void PeerInteraction::sendHandshake() {
   PeerMessageHandle handle =
     peerMessageFactory->createHandshakeMessage(btContext->getInfoHash(),
-					       btAnnounce->getPeerId().c_str());
+					       (const char*)btContext->getPeerId());
   addMessage(handle);
   sendMessages();
 }
@@ -420,9 +424,9 @@ void PeerInteraction::sendAllowedFast() {
   }
 }
 
-Piece& PeerInteraction::getDownloadPiece(int index) {
+PieceHandle PeerInteraction::getDownloadPiece(int index) {
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
-    if(itr->getIndex() == index) {
+    if((*itr)->getIndex() == index) {
       return *itr;
     }
   }
@@ -431,7 +435,7 @@ Piece& PeerInteraction::getDownloadPiece(int index) {
 
 bool PeerInteraction::hasDownloadPiece(int index) const {
   for(Pieces::const_iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
-    if(itr->getIndex() == index) {
+    if((*itr)->getIndex() == index) {
       return true;
     }
   }

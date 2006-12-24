@@ -46,20 +46,11 @@ private:
   int length;
   BitfieldMan* bitfield;
 public:
-  Piece():index(0), length(0), bitfield(NULL) {}
-  Piece(int index, int length):index(index), length(length) {
-    bitfield = new BitfieldMan(BLOCK_LENGTH, length);
-  }
+  Piece();
 
-  Piece(const Piece& piece) {
-    index = piece.index;
-    length = piece.length;
-    if(piece.bitfield == NULL) {
-      bitfield = NULL;
-    } else {
-      bitfield = new BitfieldMan(*piece.bitfield);
-    }
-  }
+  Piece(int index, int length);
+
+  Piece(const Piece& piece);
 
   ~Piece() {
     delete bitfield;
@@ -119,12 +110,12 @@ public:
 
   string toString() const;
 
-  static Piece nullPiece;
-  static bool isNull(const Piece& piece) {
-    return piece.index == 0 && piece.length == 0;
+  bool isBlockUsed(int index) const {
+    return bitfield->isUseBitSet(index);
   }
 };
 
-typedef deque<Piece> Pieces;
+typedef SharedHandle<Piece> PieceHandle;
+typedef deque<PieceHandle> Pieces;
 
 #endif // _D_PIECE_H_

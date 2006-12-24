@@ -45,6 +45,8 @@
 #include "DownloadEngineFactory.h"
 #include "UrlRequestInfo.h"
 #include "TorrentRequestInfo.h"
+#include "BitfieldManFactory.h"
+#include "SimpleRandomizer.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -308,6 +310,8 @@ int main(int argc, char* argv[]) {
   op->put(PREF_DNS_TIMEOUT, "10");
   op->put(PREF_PEER_CONNECTION_TIMEOUT, "60");
   op->put(PREF_BT_TIMEOUT, "180");
+  op->put(PREF_BT_REQUEST_TIMEOUT, "60");
+  op->put(PREF_BT_KEEP_ALIVE_INTERVAL, "120");
   op->put(PREF_MIN_SEGMENT_SIZE, "1048576");// 1M
   op->put(PREF_MAX_TRIES, "5");
   op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
@@ -710,7 +714,8 @@ int main(int argc, char* argv[]) {
 #ifdef ENABLE_METALINK
   xmlInitParser();
 #endif // ENABLE_METALINK
-  srandom(time(NULL));
+  SimpleRandomizer::init();
+  BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
   if(op->getAsBool(PREF_STDOUT_LOG)) {
     LogFactory::setLogFile("/dev/stdout");
   } else if(op->get(PREF_LOG).size()) {

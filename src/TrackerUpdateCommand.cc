@@ -40,8 +40,6 @@
 #include "SleepCommand.h"
 #include "Util.h"
 
-extern PeerHandle nullPeer;
-
 TrackerUpdateCommand::TrackerUpdateCommand(int cuid,
 					   TorrentDownloadEngine* e,
 					   const BtContextHandle& btContext):
@@ -89,7 +87,7 @@ bool TrackerUpdateCommand::execute() {
   if(!e->segmentMan->finished()) {
     return prepareForRetry();
   }
-  char* trackerResponse = NULL;
+  char* trackerResponse = 0;
   size_t trackerResponseLength = 0;
 
   try {
@@ -99,7 +97,7 @@ bool TrackerUpdateCommand::execute() {
 					trackerResponseLength);
     while(!btRuntime->isHalt() && btRuntime->lessThanMinPeer()) {
       PeerHandle peer = peerStorage->getUnusedPeer();
-      if(peer == nullPeer) {
+      if(peer.isNull()) {
 	break;
       }
       int newCuid =  btRuntime->getNewCuid();

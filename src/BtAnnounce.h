@@ -99,11 +99,6 @@ public:
    * Shuffles the URLs in each announce tier.
    */
   virtual void shuffleAnnounce() = 0;
-
-  /**
-   * Returns the peer id of the client.
-   */
-  virtual string getPeerId() = 0;
 };
 
 typedef SharedHandle<BtAnnounce> BtAnnounceHandle;

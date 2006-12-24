@@ -41,13 +41,13 @@
 class RequestSlot {
 private:
   Time dispatchedTime;
-  int index;
-  int begin;
-  int length;
-  int blockIndex;
+  uint32_t index;
+  uint32_t begin;
+  uint32_t length;
+  uint32_t blockIndex;
   void copy(const RequestSlot& requestSlot);
 public:
-  RequestSlot(int index, int begin, int legnth, int blockIndex);
+  RequestSlot(uint32_t index, uint32_t begin, uint32_t length, uint32_t blockIndex);
   RequestSlot(const RequestSlot& requestSlot);
   ~RequestSlot() {}
 
@@ -65,22 +65,25 @@ public:
   }
 
   void setDispatchedTime();
+  void setDispatchedTime(time_t secFromEpoch);
 
-  bool isTimeout(int timeoutSec) const;
+  bool isTimeout(time_t timeoutSec) const;
   int getLatencyInMillis() const;
 
-  int getIndex() const { return index; }
-  void setIndex(int index) { this->index = index; }
-  int getBegin() const { return begin; }
-  void setBegin(int begin) { this->begin = begin; }
-  int getLength() const { return length; }
-  void setLength(int length) { this->length = length; }
-  int getBlockIndex() const { return blockIndex; }
-  void setBlockIndex(int blockIndex) { this->blockIndex = blockIndex; }
+  uint32_t getIndex() const { return index; }
+  void setIndex(uint32_t index) { this->index = index; }
+  uint32_t getBegin() const { return begin; }
+  void setBegin(uint32_t begin) { this->begin = begin; }
+  uint32_t getLength() const { return length; }
+  void setLength(uint32_t length) { this->length = length; }
+  uint32_t getBlockIndex() const { return blockIndex; }
+  void setBlockIndex(uint32_t blockIndex) { this->blockIndex = blockIndex; }
 
   static RequestSlot nullSlot;
 
   static bool isNull(const RequestSlot& requestSlot);
 };
+
+typedef deque<RequestSlot> RequestSlots;
 
 #endif // _D_REQUEST_SLOT_H_

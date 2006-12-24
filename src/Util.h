@@ -52,8 +52,12 @@ using namespace std;
 class Util {
 public:
   static void split(pair<string, string>& hp, const string& src, char delim);
-  static string llitos(long long int value, bool comma = false);
-  static string itos(int value, bool comma = false);
+  static string llitos(int64_t value, bool comma = false);
+  static string itos(int32_t value, bool comma = false);
+  static string uitos(uint32_t value, bool comma = false);
+  static string itos(int16_t value, bool comma = false);
+  static string uitos(uint16_t value, bool comma = false);
+
   /**
    * Computes difference in micro-seconds between tv1 and tv2,
    * assuming tv1 is newer than tv2.
@@ -103,6 +107,7 @@ public:
   // digest must be at least 20 bytes long.
 #ifdef ENABLE_MESSAGE_DIGEST
   static void sha1Sum(unsigned char* digest, const void* data, int dataLength);
+  static string simpleMessageDigest(const string& data);
 #endif // ENABLE_MESSAGE_DIGEST
 
   // Before call this method, allocate enough memory to the parameter "digest".

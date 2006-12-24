@@ -13,10 +13,14 @@ private:
   string name;
   int pieceLength;
   int numPieces;
+  unsigned char peerId[20];
   FileEntries fileEntries;
   AnnounceTiers announceTiers;
 public:
-  MockBtContext() {}
+  MockBtContext():totalLength(0),
+		  pieceLength(0),
+		  numPieces(0) {}
+
   virtual ~MockBtContext() {}
 
   virtual const unsigned char* getInfoHash() const {
@@ -100,6 +104,17 @@ public:
   void setNumPieces(int numPieces) {
     this->numPieces = numPieces;
   }
+
+  virtual const unsigned char* getPeerId() {
+    return peerId;
+  }
+
+  void setPeerId(const unsigned char* peerId) {
+    memcpy(this->peerId, peerId, sizeof(this->peerId));
+  }
+
 };
+
+typedef SharedHandle<MockBtContext> MockBtContextHandle;
 
 #endif // _D_MOCK_BT_CONTEXT_H_

@@ -44,25 +44,57 @@ class PeerMessageUtil {
 private:
   PeerMessageUtil() {}
 public:
-  static int getIntParam(const char* msg, int offset);
-  static int getShortIntParam(const char* msg, int offset);
-  static void setIntParam(char* dest, int param);
+  static uint32_t getIntParam(const unsigned char* msg, int32_t offset);
+  static uint32_t getIntParam(const char* msg, int32_t offset) {
+    return getIntParam((const unsigned char*)msg, offset);
+  }
 
-  static int getId(const char* msg);
+  static uint16_t getShortIntParam(const unsigned char* msg, int32_t offset);
+  static uint16_t getShortIntParam(const char* msg, int32_t offset) {
+    return getShortIntParam((const unsigned char*)msg, offset);
+  }
+
+  static void setIntParam(unsigned char* dest, uint32_t param);
+  static void setIntParam(char* dest, uint32_t param) {
+    setIntParam((unsigned char*)dest, param);
+  }
+
+  static void setShortIntParam(unsigned char* dest, uint16_t param);
+  static void setShortIntParam(char* dest, uint16_t param) {
+    setShortIntParam((unsigned char*)dest, param);
+  }
+
+  static int32_t getId(const unsigned char* msg);
+  static int32_t getId(const char* msg) {
+    return getId((const unsigned char*)msg);
+  }
   
-  static void checkIndex(int index, int pieces);
-  static void checkBegin(int begin, int pieceLength);
-  static void checkLength(int length);
-  static void checkRange(int begin, int length, int pieceLength);
+  static void checkIndex(uint32_t index, uint32_t pieces);
+  static void checkBegin(uint32_t begin, uint32_t pieceLength);
+  static void checkLength(uint32_t length);
+  static void checkRange(uint32_t begin, uint32_t length, uint32_t pieceLength);
   static void checkBitfield(const unsigned char* bitfield,
-			    int bitfieldLength,
-			    int pieces);
+			    uint32_t bitfieldLength,
+			    uint32_t pieces);
+  static void checkBitfield(const char* bitfield,
+			    uint32_t bitfieldLength,
+			    uint32_t pieces) {
+    checkBitfield((unsigned char*)bitfield, bitfieldLength, pieces);
+  }
 
   static void checkHandshake(const HandshakeMessage* message,
 			     const unsigned char* infoHash);
 
-  static void createPeerMessageString(char* msg, int msgLength,
-				      int payloadLength, int messageId);
+  static void createPeerMessageString(unsigned char* msg,
+				      uint32_t msgLength,
+				      uint32_t payloadLength,
+				      int32_t messageId);
+  static void createPeerMessageString(char* msg,
+				      uint32_t msgLength,
+				      uint32_t payloadLength,
+				      int32_t messageId) {
+    createPeerMessageString((unsigned char*)msg, msgLength, payloadLength, messageId);
+  }
 };
 
 #endif // _D_PEER_MESSAGE_UTIL_H_

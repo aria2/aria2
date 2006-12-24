@@ -48,13 +48,9 @@
 #include <unistd.h>
 #include <signal.h>
 
-string Util::itos(int value, bool comma) {
-  string str = llitos(value, comma);
-  return str;
-}
 
-string Util::llitos(long long int value, bool comma)
-{
+template<typename T>
+string int2str(T value, bool comma) {
   string str;
   bool flag = false;
   if(value < 0) {
@@ -78,6 +74,27 @@ string Util::llitos(long long int value, bool comma)
     str.insert(str.begin(), '-');
   }
   return str;
+}
+
+string Util::uitos(uint16_t value, bool comma) {
+  return int2str<uint16_t>(value, comma);
+}
+
+string Util::itos(int16_t value, bool comma) {
+  return int2str<int16_t>(value, comma);
+}
+
+string Util::uitos(uint32_t value, bool comma) {
+  return int2str<uint32_t>(value, comma);
+}
+
+string Util::itos(int32_t value, bool comma) {
+  return int2str<int32_t>(value, comma);
+}
+
+string Util::llitos(int64_t value, bool comma)
+{
+  return int2str<int64_t>(value, comma);
 }
 
 string Util::trim(const string& src) {
@@ -430,6 +447,13 @@ void Util::sha1Sum(unsigned char* digest, const void* data, int dataLength) {
   ctx.digestFinal(digest);
   ctx.digestFree();
 }
+
+string Util::simpleMessageDigest(const string& data) {
+  unsigned char checksum[20];
+  sha1Sum(checksum, data.c_str(), data.size());
+  return Util::toHex(checksum, sizeof(checksum));
+}
+
 #endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_MESSAGE_DIGEST

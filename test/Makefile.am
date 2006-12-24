@@ -14,23 +14,9 @@ aria2c_SOURCES = AllTest.cc\
 	MetaFileUtilTest.cc\
 	ShaVisitorTest.cc\
 	PeerMessageUtilTest.cc\
-	BitfieldManTest.cc\
 	DefaultDiskWriterTest.cc\
 	MultiDiskWriterTest.cc\
-	ChokeMessageTest.cc\
-	UnchokeMessageTest.cc\
-	HaveAllMessageTest.cc\
-	HaveNoneMessageTest.cc\
-	InterestedMessageTest.cc\
-	NotInterestedMessageTest.cc\
-	HaveMessageTest.cc\
-	BitfieldMessageTest.cc\
-	RequestMessageTest.cc\
-	CancelMessageTest.cc\
-	PieceMessageTest.cc\
-	RejectMessageTest.cc\
-	AllowedFastMessageTest.cc\
-	SuggestPieceMessageTest.cc\
+	BitfieldManTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	MetalinkerTest.cc\
 	MetalinkEntryTest.cc\
@@ -46,7 +32,32 @@ aria2c_SOURCES = AllTest.cc\
 	DefaultPieceStorageTest.cc\
 	DefaultPeerStorageTest.cc\
 	DefaultBtAnnounceTest.cc\
-	BtRegistryTest.cc
+	BtRegistryTest.cc\
+	DefaultBtMessageDispatcherTest.cc\
+	MockPeerStorage.h\
+	DefaultBtRequestFactoryTest.cc\
+	PeerTest.cc\
+	BtAllowedFastMessageTest.cc\
+	BtBitfieldMessageTest.cc\
+	BtCancelMessageTest.cc\
+	BtChokeMessageTest.cc\
+	BtHaveAllMessageTest.cc\
+	BtHaveMessageTest.cc\
+	BtHaveNoneMessageTest.cc\
+	BtInterestedMessageTest.cc\
+	BtKeepAliveMessageTest.cc\
+	BtNotInterestedMessageTest.cc\
+	BtPieceMessageTest.cc\
+	BtPortMessageTest.cc\
+	BtRejectMessageTest.cc\
+	BtRequestMessageTest.cc\
+	BtSuggestPieceMessageTest.cc\
+	BtUnchokeMessageTest.cc\
+	BtHandshakeMessageTest.cc\
+	MockBtMessageDispatcher.h\
+	FixedNumberRandomizer.h\
+	MockBtMessageFactory.h\
+	MockBtMessage.h
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 

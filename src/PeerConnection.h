@@ -38,7 +38,6 @@
 #include "Option.h"
 #include "Socket.h"
 #include "Logger.h"
-#include "PeerMessage.h"
 #include "common.h"
 
 // we assume maximum length of incoming message is "piece" message with 16KB
@@ -47,32 +46,44 @@
 
 class PeerConnection {
 private:
-  int cuid;
+  int32_t cuid;
   SocketHandle socket;
   const Option* option;
   const Logger* logger;
 
   char resbuf[MAX_PAYLOAD_LEN];
-  int resbufLength;
-  int currentPayloadLength;
-  char lenbuf[4];
-  int lenbufLength;
+  uint32_t resbufLength;
+  uint32_t currentPayloadLength;
+  unsigned char lenbuf[4];
+  uint32_t lenbufLength;
 
 public:
-  PeerConnection(int cuid, const SocketHandle& socket, const Option* op);
+  PeerConnection(int32_t cuid, const SocketHandle& socket, const Option* op);
   ~PeerConnection();
   
   // Returns the number of bytes written
-  int sendMessage(const char* msg, int length);
+  uint32_t sendMessage(const unsigned char* data, uint32_t dataLength);
+  uint32_t sendMessage(const char* msg, int length) {
+    return sendMessage((const unsigned char*)msg, (uint32_t)length);
+  }
 
-  bool receiveMessage(char* msg, int& length);
+  bool receiveMessage(unsigned char* data, uint32_t& dataLength);
+  bool receiveMessage(char* msg, int& length) {
+    return receiveMessage((unsigned char*)msg, (uint32_t&)length);
+  }
+
   /**
    * Returns true if a handshake message is fully received, otherwise returns
    * false.
    * In both cases, 'msg' is filled with received bytes and the filled length
    * is assigned to 'length'.
    */
-  bool receiveHandshake(char* msg, int& length);
+  bool receiveHandshake(unsigned char* data, uint32_t& dataLength);
+  bool receiveHandshake(char* msg, int& length) {
+    return receiveHandshake((unsigned char*)msg, (uint32_t&)length);
+  }
 };
+
+typedef SharedHandle<PeerConnection> PeerConnectionHandle;
 
 #endif // _D_PEER_CONNECTION_H_

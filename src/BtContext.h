@@ -77,6 +77,11 @@ public:
   virtual int getPieceLength() const = 0;
 
   virtual int getNumPieces() const = 0;
+
+  /**
+   * Returns the peer id of localhost, 20 byte length
+   */
+  virtual const unsigned char* getPeerId() = 0;
 };
 
 typedef SharedHandle<BtContext> BtContextHandle;

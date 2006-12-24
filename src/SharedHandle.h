@@ -64,8 +64,14 @@ public:
     ++*ucount;
   }
   template<class S>
-  SharedHandle(const SharedHandle<S>& t):obj(t.get()), ucount(t.getRefCount()) {
-    ++*ucount;
+  SharedHandle(const SharedHandle<S>& t) {
+    obj = dynamic_cast<T*>(t.get());
+    if(obj) {
+      ucount = t.getRefCount();
+      ++*ucount;
+    } else {
+      ucount = new int(1);
+    }
   }
 
   ~SharedHandle() {
@@ -107,6 +113,10 @@ public:
 
   int* getRefCount() const {
     return ucount;
+  }
+
+  bool isNull() const {
+    return obj == 0;
   }
 };
 

@@ -50,7 +50,6 @@ private:
   const Option* option;
   Peers peers;
   int maxPeerListSize;
-  int peerEntryIdCounter;
   Logger* logger;
   BtRuntimeHandle btRuntime;
   long long int removedPeerSessionDownloadLength;

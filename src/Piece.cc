@@ -34,8 +34,25 @@
 /* copyright --> */
 #include "Piece.h"
 #include "Util.h"
+#include "BitfieldManFactory.h"
 
-Piece Piece::nullPiece;
+Piece::Piece():index(0), length(0), bitfield(0) {}
+
+Piece::Piece(int index, int length):index(index), length(length) {
+  bitfield =
+    BitfieldManFactory::getNewFactory()->createBitfieldMan(BLOCK_LENGTH, length);
+}
+
+Piece::Piece(const Piece& piece) {
+  index = piece.index;
+  length = piece.length;
+  if(piece.bitfield == 0) {
+    bitfield = 0;
+  } else {
+    bitfield = new BitfieldMan(*piece.bitfield);
+  }
+}
+
 
 void Piece::completeBlock(int blockIndex) {
   bitfield->setBit(blockIndex);

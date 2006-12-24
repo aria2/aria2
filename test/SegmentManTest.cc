@@ -22,6 +22,7 @@ public:
   void testSaveAndLoad();
   void testNullBitfield();
   void testCancelSegmentOnNullBitfield();
+
 };
 
 
@@ -75,7 +76,6 @@ void SegmentManTest::testSaveAndLoad() {
     CPPUNIT_ASSERT_EQUAL(seg3, seg3Load);
 
     CPPUNIT_ASSERT_EQUAL(segmentMan.getDownloadLength(), segmentManLoad.getDownloadLength());
-
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -111,3 +111,4 @@ void SegmentManTest::testCancelSegmentOnNullBitfield() {
   segmentMan.cancelSegment(1);
   CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
 }
+

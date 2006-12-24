@@ -22,6 +22,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetAnnounceTierAnnounceList);
   CPPUNIT_TEST(testGetPieceLength);
   CPPUNIT_TEST(testGetInfoHashAsString);
+  CPPUNIT_TEST(testGetPeerId);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -41,6 +42,7 @@ public:
   void testGetAnnounceTierAnnounceList();
   void testGetPieceLength();
   void testGetInfoHashAsString();
+  void testGetPeerId();
 };
 
 
@@ -216,4 +218,9 @@ void DefaultBtContextTest::testGetInfoHashAsString() {
 
   CPPUNIT_ASSERT_EQUAL(string("248d0a1cd08284299de78d5c1ed359bb46717d8c"),
 		       btContext.getInfoHashAsString());
+}
+
+void DefaultBtContextTest::testGetPeerId() {
+  DefaultBtContext btContext;
+  Util::torrentUrlencode(btContext.getPeerId(), 20);
 }

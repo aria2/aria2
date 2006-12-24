@@ -36,14 +36,11 @@
 #include "LogFactory.h"
 #include "BtRegistry.h"
 
-extern PeerHandle nullPeer;
-
 DefaultPeerStorage::DefaultPeerStorage(BtContextHandle btContext,
 				       const Option* option):
   btContext(btContext),
   option(option),
   maxPeerListSize(MAX_PEER_LIST_SIZE),
-  peerEntryIdCounter(0),
   btRuntime(BT_RUNTIME(btContext)),
   removedPeerSessionDownloadLength(0),
   removedPeerSessionUploadLength(0)
@@ -59,8 +56,6 @@ bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
     if(peers.size() >= (size_t)maxPeerListSize) {
       deleteUnusedPeer(peers.size()-maxPeerListSize+1);
     }
-    ++peerEntryIdCounter;
-    peer->entryId = peerEntryIdCounter;
     peers.push_back(peer);
     return true;
   } else {
@@ -100,7 +95,7 @@ PeerHandle DefaultPeerStorage::getUnusedPeer() {
   Peers::const_iterator itr = find_if(peers.begin(), peers.end(),
 				      FindFinePeer());
   if(itr == peers.end()) {
-    return nullPeer;
+    return 0;
   } else {
     return *itr;
   }
@@ -123,7 +118,7 @@ PeerHandle DefaultPeerStorage::getPeer(const string& ipaddr,
   Peers::const_iterator itr = find_if(peers.begin(), peers.end(),
 				      FindPeer(ipaddr, port));
   if(itr == peers.end()) {
-    return nullPeer;
+    return 0;
   } else {
     return *itr;
   }
@@ -134,7 +129,7 @@ int DefaultPeerStorage::countPeer() const {
 }
 
 bool DefaultPeerStorage::isPeerAvailable() {
-  return getUnusedPeer() != nullPeer;
+  return !getUnusedPeer().isNull();
 }
 
 Peers DefaultPeerStorage::getActivePeers() {

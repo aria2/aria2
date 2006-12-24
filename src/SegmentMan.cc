@@ -39,6 +39,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"
+#include "BitfieldManFactory.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -229,7 +230,7 @@ void SegmentMan::init() {
 }
 
 void SegmentMan::initBitfield(int segmentLength, long long int totalLength) {
-  this->bitfield = new BitfieldMan(segmentLength, totalLength);
+  this->bitfield = BitfieldManFactory::getNewFactory()->createBitfieldMan(segmentLength, totalLength);
 }
 
 class FindSegmentEntryByIndex {

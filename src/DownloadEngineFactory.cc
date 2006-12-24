@@ -107,6 +107,24 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
   BtRegistry::registerBtProgressInfoFile(btContext->getInfoHashAsString(),
 					 btProgressInfoFile);
 
+  BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
+					new PeerObjectCluster());
+
+  /*
+  DefaultBtMessageFactoryAdaptorHandle factoryAdaptor =
+    new DefaultBtMessageFactoryAdaptor();
+  BtRegistry::registerBtMessageFactoryAdaptor(btContext->getInfoHashAsString(),
+					      factoryAdaptor);
+
+  BtMessageFactoryClusterHandle factoryCluster = new BtMessageFactoryCluster();
+  BtRegistry::registerBtMessageFactoryCluster(btContext->getInfoHashAsString(),
+					      factoryCluster);
+
+  BtMessageDispatcherClusterHandle dispatcherCluster =
+    new BtMessageDispatcherCluster();
+  BtRegistry::registerBtMessageDispatcherCluster(btContext->getInfoHashAsString(),
+						 dispatcherCluster);
+  */
   te->setBtContext(btContext);
   // initialize file storage
   pieceStorage->initStorage();

@@ -171,12 +171,12 @@ PeerMessageFactory::setPeerMessageCommonProperty(PeerMessageHandle& peerMessage)
   peerMessage->setBtContext(btContext);
 }
 
-PeerMessageHandle PeerMessageFactory::createRequestMessage(const Piece& piece,
+PeerMessageHandle PeerMessageFactory::createRequestMessage(const PieceHandle& piece,
 							   int blockIndex) const {
   PeerMessageHandle handle =
-    PeerMessageHandle(new RequestMessage(piece.getIndex(),
-					 blockIndex*piece.getBlockLength(),
-					 piece.getBlockLength(blockIndex),
+    PeerMessageHandle(new RequestMessage(piece->getIndex(),
+					 blockIndex*piece->getBlockLength(),
+					 piece->getBlockLength(blockIndex),
 					 blockIndex));
   setPeerMessageCommonProperty(handle);
   return handle;

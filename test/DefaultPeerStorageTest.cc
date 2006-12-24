@@ -4,8 +4,6 @@
 #include "Exception.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-extern PeerHandle nullPeer;
-
 using namespace std;
 
 class DefaultPeerStorageTest:public CppUnit::TestFixture {
@@ -143,7 +141,7 @@ void DefaultPeerStorageTest::testGetPeer() {
 
   peer1->cuid = 1;
 
-  CPPUNIT_ASSERT(nullPeer == ps.getUnusedPeer());
+  CPPUNIT_ASSERT(ps.getUnusedPeer().isNull());
 
   peer1->resetStatus();
   peer1->error = 1;
@@ -154,7 +152,7 @@ void DefaultPeerStorageTest::testGetPeer() {
   peer1->resetStatus();
   peer1->error = MAX_PEER_ERROR;
 
-  CPPUNIT_ASSERT(nullPeer == ps.getUnusedPeer());
+  CPPUNIT_ASSERT(ps.getUnusedPeer().isNull());
 }
 
 void DefaultPeerStorageTest::testIsPeerAvailable() {

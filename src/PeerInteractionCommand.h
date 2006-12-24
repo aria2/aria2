@@ -36,45 +36,24 @@
 #define _D_PEER_INTERACTION_COMMAND_H_
 
 #include "PeerAbstractCommand.h"
-#include "PeerConnection.h"
-#include "PeerInteraction.h"
-#include "TimeA2.h"
-
-using namespace std;
-
-#define MAX_PEER_CHOKING_INTERVAL (1*60)
-#define KEEP_ALIVE_INTERVAL 120
+#include "BtInteractive.h"
 
 class PeerInteractionCommand : public PeerAbstractCommand {
 private:
   int sequence;
-  PeerInteraction* peerInteraction;
- 
-  Time keepAliveCheckPoint;
-  //Time chokeCheckPoint;
-  Time freqCheckPoint;
-  Time haveCheckTime;
-  Time periodicExecPoint;
-  int chokeUnchokeCount;
-  int haveCount;
-  int keepAliveCount;
-  void receiveMessages();
-  void detectMessageFlooding();
-  void checkLongTimePeerChoking();
-  void detectTimeoutAndDuplicateBlock();
-  void decideChoking();
-  void sendKeepAlive();
-  void checkHave();
+  BtInteractiveHandle btInteractive;
 protected:
   bool executeInternal();
   bool prepareForRetry(int wait);
   bool prepareForNextPeer(int wait);
   void onAbort(Exception* ex);
 public:
-  PeerInteractionCommand(int cuid, const PeerHandle& peer,
+  PeerInteractionCommand(int cuid,
+			 const PeerHandle& peer,
 			 TorrentDownloadEngine* e,
 			 const BtContextHandle& btContext,
-			 const SocketHandle& s, int sequence);
+			 const SocketHandle& s,
+			 int sequence);
 
   ~PeerInteractionCommand();
 

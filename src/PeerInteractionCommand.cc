@@ -35,15 +35,17 @@
 #include "PeerInteractionCommand.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "PeerMessageUtil.h"
-#include "HandshakeMessage.h"
-#include "KeepAliveMessage.h"
-#include "ChokeMessage.h"
-#include "UnchokeMessage.h"
-#include "HaveMessage.h"
+#include "DefaultBtInteractive.h"
 #include "DlAbortEx.h"
 #include "Util.h"
 #include "message.h"
 #include "prefs.h"
+#include "DefaultBtMessageDispatcher.h"
+#include "DefaultBtMessageReceiver.h"
+#include "DefaultBtRequestFactory.h"
+#include "DefaultBtMessageFactory.h"
+#include "DefaultBtInteractive.h"
+#include "PeerConnection.h"
 #include <algorithm>
 
 PeerInteractionCommand::PeerInteractionCommand(int cuid,
@@ -52,196 +54,133 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
 					       const BtContextHandle& btContext,
 					       const SocketHandle& s,
 					       int sequence)
-  :PeerAbstractCommand(cuid, p, e, btContext, s), sequence(sequence) {
+  :PeerAbstractCommand(cuid, p, e, btContext, s),
+   sequence(sequence),
+   btInteractive(0)
+{
+  // TODO move following bunch of processing to separate method, like init()
   if(sequence == INITIATOR_SEND_HANDSHAKE) {
     disableReadCheckSocket();
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
-  peerInteraction = new PeerInteraction(cuid, peer, socket, e->option,
-					btContext);
+  PeerConnectionHandle peerConnection =
+    new PeerConnection(cuid, socket, e->option);
+
+  DefaultBtMessageDispatcherHandle dispatcher = new DefaultBtMessageDispatcher();
+  dispatcher->setCuid(cuid);
+  dispatcher->setPeer(peer);
+  dispatcher->setBtContext(btContext);
+  dispatcher->setOption(e->option);
+
+  DefaultBtMessageReceiverHandle receiver = new DefaultBtMessageReceiver();
+  receiver->setCuid(cuid);
+  receiver->setPeer(peer);
+  receiver->setBtContext(btContext);
+  receiver->setPeerConnection(peerConnection);
+  receiver->setDispatcher(dispatcher);
+
+  DefaultBtRequestFactoryHandle reqFactory = new DefaultBtRequestFactory();
+  reqFactory->setCuid(cuid);
+  reqFactory->setPeer(peer);
+  reqFactory->setBtContext(btContext);
+  reqFactory->setBtMessageDispatcher(dispatcher);
+
+  DefaultBtInteractiveHandle btInteractive = new DefaultBtInteractive();
+  btInteractive->setCuid(cuid);
+  btInteractive->setPeer(peer);
+  btInteractive->setBtContext(btContext);
+  btInteractive->setBtMessageReceiver(receiver);
+  btInteractive->setDispatcher(dispatcher);
+  btInteractive->setBtRequestFactory(reqFactory);
+  btInteractive->setPeerConnection(peerConnection);
+  btInteractive->setOption(e->option);
+  this->btInteractive = btInteractive;
+
+  DefaultBtMessageFactoryHandle factory = new DefaultBtMessageFactory();
+  factory->setCuid(cuid);
+  factory->setBtContext(btContext);
+  factory->setPeer(peer);
+
+  PeerObjectHandle peerObject = new PeerObject();
+  peerObject->btMessageDispatcher = dispatcher;
+  peerObject->btMessageFactory = factory;
+  peerObject->btRequestFactory = reqFactory;
+  peerObject->peerConnection = peerConnection;
+
+  PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), peerObject);
+
   setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
-  chokeUnchokeCount = 0;
-  haveCount = 0;
-  keepAliveCount = 0;
   peer->activate();
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
-  delete peerInteraction;
   peer->deactivate();
+  PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getId());
+							  
+  logger->debug("CUID#%d - unregistered message factory using ID:%s",
+		cuid, peer->getId().c_str());
 }
 
 bool PeerInteractionCommand::executeInternal() {
+  setReadCheckSocket(socket);
   disableWriteCheckSocket();
   setUploadLimitCheck(false);
   setNoCheck(false);
-
   switch(sequence) {
   case INITIATOR_SEND_HANDSHAKE:
     if(!socket->isWritable(0)) {
+      disableReadCheckSocket();
       setWriteCheckSocket(socket);
       break;
     }
     socket->setBlockingMode();
-    setReadCheckSocket(socket);
-    setTimeout(e->option->getAsInt(PREF_TIMEOUT));
-    peerInteraction->sendHandshake();
+    setTimeout(e->option->getAsInt(PREF_BT_TIMEOUT));
+    btInteractive->initiateHandshake();
     sequence = INITIATOR_WAIT_HANDSHAKE;
     break;
   case INITIATOR_WAIT_HANDSHAKE: {
-    if(peerInteraction->countMessageInQueue() > 0) {
-      peerInteraction->sendMessages();
-      if(peerInteraction->countMessageInQueue() > 0) {
+    if(btInteractive->countPendingMessage() > 0) {
+      btInteractive->sendPendingMessage();
+      if(btInteractive->countPendingMessage() > 0) {
 	break;
       }
     }
-    PeerMessageHandle handshakeMessage =
-      peerInteraction->receiveHandshake();
-    if(handshakeMessage.get() == 0) {
+    BtMessageHandle handshakeMessage = btInteractive->receiveHandshake();
+    if(handshakeMessage.isNull()) {
       break;
     }
-    peer->setPeerId(((HandshakeMessage*)handshakeMessage.get())->peerId);
-    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		 peer->ipaddr.c_str(), peer->port,
-		 handshakeMessage->toString().c_str());
-    haveCheckTime.reset();
-    peerInteraction->sendBitfield();
-    peerInteraction->sendAllowedFast();
+    btInteractive->doPostHandshakeProcessing();
     sequence = WIRED;
     break;
   }
   case RECEIVER_WAIT_HANDSHAKE: {
-    PeerMessageHandle handshakeMessage =
-      peerInteraction->receiveHandshake(true);
-    if(handshakeMessage.get() == 0) {
+    BtMessageHandle handshakeMessage = btInteractive->receiveAndSendHandshake();
+    if(handshakeMessage.isNull()) {
       break;
     }
-    peer->setPeerId(((HandshakeMessage*)handshakeMessage.get())->peerId);
-    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		 peer->ipaddr.c_str(), peer->port,
-		 handshakeMessage->toString().c_str());
-    haveCheckTime.reset();
-    peerInteraction->sendBitfield();
-    peerInteraction->sendAllowedFast();
+    btInteractive->doPostHandshakeProcessing();
     sequence = WIRED;    
     break;
   }
   case WIRED:
-    peerInteraction->syncPiece();
-    decideChoking();
+    btInteractive->doInteractionProcessing();
 
-    if(periodicExecPoint.elapsedInMillis(500)) {
-      periodicExecPoint.reset();
-      detectMessageFlooding();
-      peerInteraction->checkRequestSlot();
-      checkHave();
-      sendKeepAlive();
-    }
-    receiveMessages();
-
-    peerInteraction->addRequests();
-
-    peerInteraction->sendMessages();
     break;
   }
-  if(peerInteraction->countMessageInQueue() > 0) {
-    if(peerInteraction->isSendingMessageInProgress()) {
-      setUploadLimitCheck(true);
-    }
+  if(btInteractive->countPendingMessage() > 0) {
     setNoCheck(true);
+  }
+  int maxSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
+  if(maxSpeedLimit > 0) {
+    TransferStat stat = peerStorage->calculateStat();
+    if(maxSpeedLimit < stat.downloadSpeed) {
+      disableReadCheckSocket();
+      setNoCheck(true);
+    }
   }
   e->commands.push_back(this);
   return false;
-}
-
-#define FLOODING_CHECK_INTERVAL 5
-
-void PeerInteractionCommand::detectMessageFlooding() {
-  if(freqCheckPoint.elapsed(FLOODING_CHECK_INTERVAL)) {
-    if(chokeUnchokeCount*1.0/FLOODING_CHECK_INTERVAL >= 0.4
-       //|| haveCount*1.0/elapsed >= 20.0
-       || keepAliveCount*1.0/FLOODING_CHECK_INTERVAL >= 1.0) {
-      throw new DlAbortEx("Flooding detected.");
-    } else {
-      chokeUnchokeCount = 0;
-      haveCount = 0;
-      keepAliveCount = 0;
-      freqCheckPoint.reset();
-    }
-  }
-}
-
-/*
-void PeerInteractionCommand::checkLongTimePeerChoking() {
-  if(pieceStorage->downloadFinished()) {
-    return;
-  }    
-  if(peer->amInterested && peer->peerChoking) {
-    if(chokeCheckPoint.elapsed(MAX_PEER_CHOKING_INTERVAL)) {
-      logger->info("CUID#%d - The peer is choking too long.", cuid);
-      peer->snubbing = true;
-    }
-  } else {
-    chokeCheckPoint.reset();
-  }
-}
-*/
-
-void PeerInteractionCommand::decideChoking() {
-  if(peer->shouldBeChoking()) {
-    if(!peer->amChoking) {
-      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
-				  createChokeMessage());
-    }
-  } else {
-    if(peer->amChoking) {
-      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
-				  createUnchokeMessage());
-    }
-  }
-}
-
-void PeerInteractionCommand::receiveMessages() {
-  for(int i = 0; i < 50; i++) {
-    int maxSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
-    if(maxSpeedLimit > 0) {
-      TransferStat stat = peerStorage->calculateStat();
-      if(maxSpeedLimit < stat.downloadSpeed) {
-	disableReadCheckSocket();
-	setNoCheck(true);
-	break;
-      }
-    }
-
-    PeerMessageHandle message = peerInteraction->receiveMessage();
-    if(message.get() == NULL) {
-      return;
-    }
-    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		 peer->ipaddr.c_str(), peer->port,
-		 message->toString().c_str());
-    // to detect flooding
-    switch(message->getId()) {
-    case KeepAliveMessage::ID:
-      keepAliveCount++;
-      break;
-    case ChokeMessage::ID:
-      if(!peer->peerChoking) {
-	chokeUnchokeCount++;
-      }
-      break;
-    case UnchokeMessage::ID:
-      if(peer->peerChoking) {
-	chokeUnchokeCount++;
-      }
-      break;
-    case HaveMessage::ID:
-      haveCount++;
-      break;
-    }
-    message->receivedAction();
-  }
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
@@ -266,42 +205,6 @@ bool PeerInteractionCommand::prepareForRetry(int wait) {
 }
 
 void PeerInteractionCommand::onAbort(Exception* ex) {
-  peerInteraction->abortAllPieces();
+  btInteractive->cancelAllPiece();
   PeerAbstractCommand::onAbort(ex);
-}
-
-void PeerInteractionCommand::sendKeepAlive() {
-  if(keepAliveCheckPoint.elapsed(KEEP_ALIVE_INTERVAL)) {
-    if(peerInteraction->countMessageInQueue() == 0) {
-      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
-				  createKeepAliveMessage());
-      peerInteraction->sendMessages();
-    }
-    keepAliveCheckPoint.reset();
-  }
-}
-
-void PeerInteractionCommand::checkHave() {
-  Integers indexes =
-    pieceStorage->getAdvertisedPieceIndexes(cuid, haveCheckTime);
-  haveCheckTime.reset();
-  if(indexes.size() >= 20) {
-    if(peer->isFastExtensionEnabled()) {
-      if(pieceStorage->downloadFinished()) {
-	peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
-				    createHaveAllMessage());
-      } else {
-	peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
-				    createBitfieldMessage());
-      }
-    } else {
-      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
-				  createBitfieldMessage());
-    }
-  } else {
-    for(Integers::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
-      peerInteraction->addMessage(peerInteraction->getPeerMessageFactory()->
-				  createHaveMessage(*itr));
-    }
-  }
 }

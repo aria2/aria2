@@ -49,13 +49,18 @@ SRCS =  Socket.h\
 	NullLogger.h\
 	TimeA2.cc TimeA2.h\
 	SharedHandle.h\
+	HandleRegistry.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
 	RequestInfo.h\
 	UrlRequestInfo.cc UrlRequestInfo.h\
 	SpeedCalc.cc SpeedCalc.h\
 	PeerStat.h\
-	BitfieldMan.cc BitfieldMan.h
+	BitfieldMan.cc BitfieldMan.h\
+	BitfieldManFactory.cc BitfieldManFactory.h\
+	Randomizer.h\
+	SimpleRandomizer.cc SimpleRandomizer.h
+#	debug_new.cpp
 
 if ENABLE_ASYNC_DNS
 SRCS += NameResolver.cc NameResolver.h
@@ -138,7 +143,54 @@ SRCS += MetaEntry.h\
 	BtRuntime.h\
 	BtProgressInfoFile.h\
 	DefaultBtProgressInfoFile.cc DefaultBtProgressInfoFile.h\
-	BtContextAwareCommand.cc BtContextAwareCommand.h
+	BtContextAwareCommand.cc BtContextAwareCommand.h\
+	BtMessage.h\
+	AbstractBtMessage.h\
+	SimpleBtMessage.cc SimpleBtMessage.h\
+	BtAllowedFastMessage.cc BtAllowedFastMessage.h\
+	BtBitfieldMessage.cc BtBitfieldMessage.h\
+	BtCancelMessage.cc BtCancelMessage.h\
+	BtChokeMessage.cc BtChokeMessage.h\
+	BtHaveAllMessage.cc BtHaveAllMessage.h\
+	BtHaveMessage.cc BtHaveMessage.h\
+	BtHaveNoneMessage.cc BtHaveNoneMessage.h\
+	BtInterestedMessage.cc BtInterestedMessage.h\
+	BtKeepAliveMessage.cc BtKeepAliveMessage.h\
+	BtNotInterestedMessage.cc BtNotInterestedMessage.h\
+	BtPieceMessage.cc BtPieceMessage.h\
+	BtPortMessage.cc BtPortMessage.h\
+	BtRejectMessage.cc BtRejectMessage.h\
+	BtRequestMessage.cc BtRequestMessage.h\
+	BtSuggestPieceMessage.cc BtSuggestPieceMessage.h\
+	BtUnchokeMessage.cc BtUnchokeMessage.h\
+	BtHandshakeMessage.cc BtHandshakeMessage.h\
+	BtMessageValidator.h\
+	BtAllowedFastMessageValidator.h\
+	BtBitfieldMessageValidator.h\
+	BtCancelMessageValidator.h\
+	BtHaveMessageValidator.h\
+	BtPieceMessageValidator.h\
+	BtRejectMessageValidator.h\
+	BtRequestMessageValidator.h\
+	BtSuggestPieceMessageValidator.h\
+	BtHandshakeMessageValidator.h\
+	BtMessageFactory.h\
+	DefaultBtMessageFactory.cc DefaultBtMessageFactory.h\
+	BtMessageDispatcher.h\
+	DefaultBtMessageDispatcher.cc DefaultBtMessageDispatcher.h\
+	BtMessageReceiver.h\
+	DefaultBtMessageReceiver.cc DefaultBtMessageReceiver.h\
+	BtRequestFactory.h\
+	DefaultBtRequestFactory.cc DefaultBtRequestFactory.h\
+	BtEvent.h\
+	BtEventListener.h\
+	BtCancelSendingPieceEvent.h\
+	BtAbortOutstandingRequestEvent.h\
+	BtChokedEvent.h\
+	BtChokingEvent.h\
+	BtInteractive.h\
+	DefaultBtInteractive.cc DefaultBtInteractive.h\
+	PeerObject.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

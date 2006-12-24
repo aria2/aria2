@@ -52,10 +52,10 @@ private:
   
   char msgHeader[13];
 
-  bool checkPieceHash(const Piece& piece);
-  void onGotNewPiece(Piece& piece);
-  void onGotWrongPiece(Piece& piece);
-  void erasePieceOnDisk(const Piece& piece);
+  bool checkPieceHash(const PieceHandle& piece);
+  void onGotNewPiece(const PieceHandle& piece);
+  void onGotWrongPiece(const PieceHandle& piece);
+  void erasePieceOnDisk(const PieceHandle& piece);
   int sendPieceData(long long int offset, int length) const;
   PeerMessageHandle createRejectMessage(int index, int begin, int blockLength) const;
 public:
@@ -75,9 +75,7 @@ public:
   }
 
   virtual ~PieceMessage() {
-    if(block != NULL) {
       delete []  block;
-    }
   }
 
   enum ID_t {

@@ -39,6 +39,7 @@ PeerMessage::PeerMessage()
   :inProgress(false),
    invalidate(false),
    uploading(false),
+   peer(0),
    btContext(0),
    peerStorage(0),
    pieceStorage(0)

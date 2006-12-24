@@ -55,6 +55,7 @@ private:
   int pieceLength;
   string name;
   int numPieces;
+  string peerId;
   AnnounceTiers announceTiers;
 
   void clear();
@@ -92,6 +93,15 @@ private:
   virtual int getPieceLength() const;
   
   virtual int getNumPieces() const;
+
+  virtual const unsigned char* getPeerId() {
+    if(peerId == "") {
+      peerId = generatePeerId();
+    }
+    return (const unsigned char*)peerId.c_str();
+  }
+
+  string generatePeerId() const;
 };
 
 #endif // _D_DEFAULT_BT_CONTEXT_H_

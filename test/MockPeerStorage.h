@@ -46,4 +46,6 @@ public:
   }
 };
 
+typedef SharedHandle<MockPeerStorage> MockPeerStorageHandle;
+
 #endif // _D_MOCK_PEER_STORAGE_H_

@@ -73,6 +73,9 @@ RequestInfos TorrentRequestInfo::execute() {
     fail = true;
     delete ex;
   }
+  // TODO we want just 1 torrent download to clear
+  BtRegistry::clear();
+
   Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
   Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
   

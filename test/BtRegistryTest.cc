@@ -4,7 +4,6 @@
 #include "MockPieceStorage.h"
 #include "MockBtAnnounce.h"
 #include "MockBtProgressInfoFile.h"
-#include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -17,6 +16,7 @@ class BtRegistryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetBtRuntime);
   CPPUNIT_TEST(testGetBtAnnounce);
   CPPUNIT_TEST(testGetBtProgressInfoFile);
+  CPPUNIT_TEST(testGetPeerObjectCluster);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -29,6 +29,7 @@ public:
   void testGetBtRuntime();
   void testGetBtAnnounce();
   void testGetBtProgressInfoFile();
+  void testGetPeerObjectCluster();
 };
 
 
@@ -85,4 +86,16 @@ void BtRegistryTest::testGetBtProgressInfoFile() {
   							btProgressInfoFile));
   CPPUNIT_ASSERT_EQUAL(btProgressInfoFile.get(),
   		       BtRegistry::getBtProgressInfoFile("test").get());
+}
+
+void BtRegistryTest::testGetPeerObjectCluster() {
+  CPPUNIT_ASSERT(!BtRegistry::getPeerObjectCluster("test").get());
+
+  BtRegistry::registerPeerObjectCluster("test", new PeerObjectCluster());
+
+  CPPUNIT_ASSERT(BtRegistry::getPeerObjectCluster("test").get());
+  
+  BtRegistry::unregisterPeerObjectCluster("test");
+
+  CPPUNIT_ASSERT(!BtRegistry::getPeerObjectCluster("test").get());
 }

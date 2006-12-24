@@ -62,7 +62,6 @@ DefaultBtAnnounce::DefaultBtAnnounce(BtContextHandle btContext,
 {
   prevAnnounceTime.setTimeInSec(0);
   key = generateKey();
-  peerId = generatePeerId();
   logger = LogFactory::getInstance();
 }
 
@@ -71,12 +70,6 @@ DefaultBtAnnounce::~DefaultBtAnnounce() {
 
 string DefaultBtAnnounce::generateKey() const {
   return Util::randomAlpha(8);
-}
-
-string DefaultBtAnnounce::generatePeerId() const {
-  string peerId = "-aria2-";
-  peerId += Util::randomAlpha(20-peerId.size());
-  return peerId;
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
@@ -131,7 +124,7 @@ string DefaultBtAnnounce::getAnnounceUrl() {
   string url = announceList.getAnnounce()+"?"+
     "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
 					btContext->getInfoHashLength())+"&"+
-    "peer_id="+peerId+"&"+
+    "peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+"&"+
     "port="+Util::itos(btRuntime->getListenPort())+"&"+
     "uploaded="+Util::llitos(stat.getSessionUploadLength())+"&"+
     "downloaded="+Util::llitos(stat.getSessionDownloadLength())+"&"+

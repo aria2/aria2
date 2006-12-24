@@ -60,7 +60,6 @@ private:
   string trackerId;
   string key;
   int trackerNumTry;
-  string peerId;
   const Option* option;
   Logger* logger;
   BtRuntimeHandle btRuntime;
@@ -112,11 +111,7 @@ public:
 
   virtual void shuffleAnnounce();
 
-  string generateKey() const;
-  
-  string generatePeerId() const;
-
-  virtual string getPeerId() { return peerId; }
+  string generateKey() const;  
 };
 
 #endif // _D_DEFAULT_BT_ANNOUNCE_H_
