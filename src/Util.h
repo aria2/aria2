@@ -122,7 +122,7 @@ public:
 				int pieces, int fastSetSize);
 #endif // ENABLE_BITTORRENT
 
-  static int countBit(unsigned int);
+  static uint32_t countBit(uint32_t n);
 
   static string randomAlpha(int length);
 

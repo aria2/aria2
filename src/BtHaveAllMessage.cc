@@ -40,7 +40,7 @@ BtHaveAllMessageHandle BtHaveAllMessage::create(const unsigned char* data, uint3
   if(dataLength != 1) {
     throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "have all", dataLength, 1);
   }
-  int32_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
 			id, "have all", ID);
@@ -59,14 +59,14 @@ void BtHaveAllMessage::doReceivedAction() {
 
 uint32_t BtHaveAllMessage::MESSAGE_LENGTH = 5;
 
-const char* BtHaveAllMessage::getMessage() {
+const unsigned char* BtHaveAllMessage::getMessage() {
   if(!msg) {
     /**
      * len --- 1, 4bytes
      * id --- 14, 1byte
      * total: 5bytes
      */
-    msg = new char[MESSAGE_LENGTH];
+    msg = new unsigned char[MESSAGE_LENGTH];
     PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
   }
   return msg;

@@ -35,7 +35,7 @@ void BtBitfieldMessageTest::testCreate() {
   memset(bitfield, 0xff, sizeof(bitfield));
   memcpy(&msg[5], bitfield, sizeof(bitfield));
   BtBitfieldMessageHandle pm = BtBitfieldMessage::create(&msg[4], 3);
-  CPPUNIT_ASSERT_EQUAL(5, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)5, pm->getId());
   CPPUNIT_ASSERT(memcmp(bitfield, pm->getBitfield(), sizeof(bitfield)) == 0);
   CPPUNIT_ASSERT_EQUAL((uint32_t)2, pm->getBitfieldLength());
   // case: payload size is wrong

@@ -35,7 +35,7 @@
 #include "RequestSlot.h"
 #include "Util.h"
 
-RequestSlot::RequestSlot(uint32_t index, uint32_t begin, uint32_t length, uint32_t blockIndex)
+RequestSlot::RequestSlot(int32_t index, int32_t begin, uint32_t length, int32_t blockIndex)
   :index(index), begin(begin), length(length), blockIndex(blockIndex) {}
 
 RequestSlot::RequestSlot(const RequestSlot& requestSlot) {

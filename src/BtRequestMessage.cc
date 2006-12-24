@@ -40,9 +40,9 @@
 
 BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, uint32_t dataLength) {
   if(dataLength != 13) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "request", dataLength, 13);
+    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "request", dataLength, 13);
   }
-  int32_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
 			id, "request", ID);
@@ -76,7 +76,7 @@ void BtRequestMessage::doReceivedAction() {
 
 uint32_t BtRequestMessage::MESSAGE_LENGTH = 17;
 
-const char* BtRequestMessage::getMessage() {
+const unsigned char* BtRequestMessage::getMessage() {
   if(!msg) {
     /**
      * len --- 13, 4bytes
@@ -86,7 +86,7 @@ const char* BtRequestMessage::getMessage() {
      * length --- length, 4bytes
      * total: 17bytes
      */
-    msg = new char[MESSAGE_LENGTH];
+    msg = new unsigned char[MESSAGE_LENGTH];
     PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 13, ID);
     PeerMessageUtil::setIntParam(&msg[5], index);
     PeerMessageUtil::setIntParam(&msg[9], begin);
@@ -100,7 +100,7 @@ uint32_t BtRequestMessage::getMessageLength() {
 }
 
 string BtRequestMessage::toString() const {
-  return "request index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
+  return "request index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::uitos(length);
 }
 

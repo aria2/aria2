@@ -73,15 +73,15 @@ public:
 			 const unsigned char* peerId);
 
   virtual BtMessageHandle
-  createRequestMessage(const PieceHandle& piece, uint32_t blockIndex);
+  createRequestMessage(const PieceHandle& piece, int32_t blockIndex);
 
   virtual BtMessageHandle
-  createCancelMessage(uint32_t index, uint32_t begin, uint32_t length);
+  createCancelMessage(int32_t index, int32_t begin, uint32_t length);
 
   virtual BtMessageHandle
-  createPieceMessage(uint32_t index, uint32_t begin, uint32_t length);
+  createPieceMessage(int32_t index, int32_t begin, uint32_t length);
 
-  virtual BtMessageHandle createHaveMessage(uint32_t index);
+  virtual BtMessageHandle createHaveMessage(int32_t index);
 
   virtual BtMessageHandle createChokeMessage();
 
@@ -100,9 +100,9 @@ public:
   virtual BtMessageHandle createHaveNoneMessage();
 
   virtual BtMessageHandle
-  createRejectMessage(uint32_t index, uint32_t begin, uint32_t length);
+  createRejectMessage(int32_t index, int32_t begin, uint32_t length);
 
-  virtual BtMessageHandle createAllowedFastMessage(uint32_t index);
+  virtual BtMessageHandle createAllowedFastMessage(int32_t index);
 
   void setPeer(const PeerHandle& peer) {
     this->peer = peer;

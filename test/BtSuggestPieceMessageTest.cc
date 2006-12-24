@@ -30,8 +30,8 @@ void BtSuggestPieceMessageTest::testCreate() {
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 13);
   PeerMessageUtil::setIntParam(&msg[5], 12345);
   BtSuggestPieceMessageHandle pm = BtSuggestPieceMessage::create(&msg[4], 5);
-  CPPUNIT_ASSERT_EQUAL(13, pm->getId());
-  CPPUNIT_ASSERT_EQUAL((uint32_t)12345, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)13, pm->getId());
+  CPPUNIT_ASSERT_EQUAL(12345, pm->getIndex());
 
   // case: payload size is wrong
   try {

@@ -60,15 +60,15 @@ void DiskAdaptor::initAndOpenFile() {
   diskWriter->initAndOpenFile(getFilePath());
 }
 
-void DiskAdaptor::writeData(const char* data, int len, long long int position) {
-  diskWriter->writeData(data, len, position);
+void DiskAdaptor::writeData(const unsigned char* data, uint32_t len, int64_t offset) {
+  diskWriter->writeData(data, len, offset);
 }
 
-int DiskAdaptor::readData(char* data, int len, long long int position) {
-  return diskWriter->readData(data, len, position);
+int DiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset) {
+  return diskWriter->readData(data, len, offset);
 }
 
-string DiskAdaptor::sha1Sum(long long int offset, long long int length) {
+string DiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
   return diskWriter->sha1Sum(offset, length);
 }
 
@@ -79,7 +79,7 @@ FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) c
       return *itr;
     }
   }
-  throw new DlAbortEx("no such file entry <%s>", fileEntryPath.c_str());
+  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
 }
 
 bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {

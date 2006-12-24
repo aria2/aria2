@@ -36,13 +36,13 @@
 
 uint32_t BtKeepAliveMessage::MESSAGE_LENGTH = 4;
 
-const char* BtKeepAliveMessage::getMessage() {
+const unsigned char* BtKeepAliveMessage::getMessage() {
   if(!msg) {
     /**
      * len --- 0, 4bytes
      * total: 4bytes
      */
-    msg = new char[MESSAGE_LENGTH];
+    msg = new unsigned char[MESSAGE_LENGTH];
     memset(msg, 0, MESSAGE_LENGTH);
   }
   return msg;

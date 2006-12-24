@@ -45,7 +45,7 @@ void SimpleBtMessage::send() {
     return;
   }
   if(sendPredicate() || sendingInProgress) {
-    const char* msg = getMessage();
+    const unsigned char* msg = getMessage();
     int msgLength = getMessageLength();
     if(!sendingInProgress) {
       logger->info(MSG_SEND_PEER_MESSAGE,

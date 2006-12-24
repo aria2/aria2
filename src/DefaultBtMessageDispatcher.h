@@ -82,7 +82,7 @@ public:
 
   virtual void sendMessages();
 
-  virtual void doCancelSendingPieceAction(uint32_t index, uint32_t begin, uint32_t blockLength);
+  virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, uint32_t length);
 
   virtual void doCancelSendingPieceAction(const PieceHandle& piece);
 
@@ -102,14 +102,14 @@ public:
 
   virtual uint32_t countOutstandingRequest();
 
-  virtual bool isOutstandingRequest(uint32_t index, uint32_t blockIndex);
+  virtual bool isOutstandingRequest(int32_t index, int32_t blockIndex);
 
-  virtual RequestSlot getOutstandingRequest(uint32_t index, uint32_t begin, uint32_t blockLength) {
+  virtual RequestSlot getOutstandingRequest(int32_t index, int32_t begin, uint32_t length) {
     for(RequestSlots::iterator itr = requestSlots.begin();
 	itr != requestSlots.end(); itr++) {
       if(itr->getIndex() == index &&
 	 itr->getBegin() == begin &&
-	 itr->getLength() == blockLength) {
+	 itr->getLength() == length) {
 	return *itr;
       }
     }

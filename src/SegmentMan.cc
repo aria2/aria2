@@ -363,7 +363,7 @@ bool SegmentMan::getSegment(Segment& segment, int cuid, int index) {
   if(!bitfield) {
     return onNullBitfield(segment, cuid);
   }
-  if(index < 0 || bitfield->countBlock() <= index) {
+  if(index < 0 || (int32_t)bitfield->countBlock() <= index) {
     return false;
   }
   if(bitfield->isBitSet(index) || bitfield->isUseBitSet(index)) {

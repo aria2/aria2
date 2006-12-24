@@ -43,14 +43,14 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual BtMessageHandle
-    createRequestMessage(const PieceHandle& piece, uint32_t blockIndex) {
+    createRequestMessage(const PieceHandle& piece, int32_t blockIndex) {
       return new MockBtRequestMessage(piece->getIndex(), blockIndex);
     }
   };
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
   public:
-    virtual bool isOutstandingRequest(uint32_t index, uint32_t blockIndex) {
+    virtual bool isOutstandingRequest(int32_t index, int32_t blockIndex) {
       return index == 0 && blockIndex == 0;
     }
   };

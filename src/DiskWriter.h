@@ -79,8 +79,15 @@ public:
    * @param position the offset of this binary stream
    */
   virtual void writeData(const char* data, int len, long long int position = 0) = 0;
+  virtual void writeData(const unsigned char* data, int len, long long int position = 0)
+  {
+    writeData((const char*)data, len, position);
+  }
 
   virtual int readData(char* data, int len, long long int position) = 0;
+  virtual int readData(unsigned char* data, int len, long long int position) {
+    return readData((char*)data, len, position);
+  }
 
   virtual string sha1Sum(long long int offset, long long int length) = 0;
 

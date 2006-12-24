@@ -100,7 +100,7 @@ public:
     this->uploading = uploading;
   }
 
-  virtual int32_t getId() {
+  virtual uint8_t getId() {
     return id;
   }
 

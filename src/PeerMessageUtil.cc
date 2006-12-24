@@ -37,8 +37,8 @@
 #include "Util.h"
 #include <netinet/in.h>
 
-int32_t PeerMessageUtil::getId(const unsigned char* msg) {
-  return (int32_t)msg[0];
+uint8_t PeerMessageUtil::getId(const unsigned char* msg) {
+  return msg[0];
 }
 
 uint32_t PeerMessageUtil::getIntParam(const unsigned char* msg, int32_t offset) {
@@ -53,14 +53,14 @@ uint16_t PeerMessageUtil::getShortIntParam(const unsigned char* msg, int32_t off
   return ntohs(nParam);
 }
 
-void PeerMessageUtil::checkIndex(uint32_t index, uint32_t pieces) {
-  if(!(0 <= index && index < pieces)) {
+void PeerMessageUtil::checkIndex(int32_t index, uint32_t pieces) {
+  if(!(0 <= index && index < (int32_t)pieces)) {
     throw new DlAbortEx("invalid index = %u", index);
   }
 }
 
-void PeerMessageUtil::checkBegin(uint32_t begin, uint32_t pieceLength) {
-  if(!(0 <= begin && begin < pieceLength)) {
+void PeerMessageUtil::checkBegin(int32_t begin, uint32_t pieceLength) {
+  if(!(0 <= begin && begin < (int32_t)pieceLength)) {
     throw new DlAbortEx("invalid begin = %u", begin);
   }  
 }
@@ -79,7 +79,7 @@ void PeerMessageUtil::checkLength(uint32_t length) {
   }
 }
 
-void PeerMessageUtil::checkRange(uint32_t begin, uint32_t length, uint32_t pieceLength) {
+void PeerMessageUtil::checkRange(int32_t begin, uint32_t length, uint32_t pieceLength) {
   if(!(0 <= begin && 0 < length)) {
     throw new DlAbortEx("invalid range, begin = %u, length = %u",
 			begin, length);
@@ -119,9 +119,9 @@ void PeerMessageUtil::setShortIntParam(unsigned char* dest, uint16_t param) {
 void PeerMessageUtil::createPeerMessageString(unsigned char* msg,
 					      uint32_t msgLength,
 					      uint32_t payloadLength,
-					      int32_t messageId) {
+					      uint8_t messageId) {
   assert(msgLength >= 5);
   memset(msg, 0, msgLength);
   setIntParam(msg, payloadLength);
-  msg[4] = (char)messageId;
+  msg[4] = messageId;
 }

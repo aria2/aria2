@@ -42,7 +42,7 @@ private:
   bool sendingInProgress;
   bool invalidate;
   bool uploading;
-  int32_t id;
+  uint8_t id;
 public:
   MockBtMessage() {}
 
@@ -71,12 +71,12 @@ public:
   void setUploading(bool flag) {
     this->uploading = flag;
   }
-
-  virtual int32_t getId() {
+  
+  virtual uint8_t getId() {
     return id;
   }
 
-  void setId(int32_t id) {
+  void setId(uint8_t id) {
     this->id = id;
   }
 

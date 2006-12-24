@@ -41,13 +41,13 @@
 class RequestSlot {
 private:
   Time dispatchedTime;
-  uint32_t index;
-  uint32_t begin;
+  int32_t index;
+  int32_t begin;
   uint32_t length;
-  uint32_t blockIndex;
+  int32_t blockIndex;
   void copy(const RequestSlot& requestSlot);
 public:
-  RequestSlot(uint32_t index, uint32_t begin, uint32_t length, uint32_t blockIndex);
+  RequestSlot(int32_t index, int32_t begin, uint32_t length, int32_t blockIndex);
   RequestSlot(const RequestSlot& requestSlot);
   ~RequestSlot() {}
 
@@ -70,14 +70,17 @@ public:
   bool isTimeout(time_t timeoutSec) const;
   int getLatencyInMillis() const;
 
-  uint32_t getIndex() const { return index; }
-  void setIndex(uint32_t index) { this->index = index; }
-  uint32_t getBegin() const { return begin; }
-  void setBegin(uint32_t begin) { this->begin = begin; }
+  int32_t getIndex() const { return index; }
+  void setIndex(int32_t index) { this->index = index; }
+
+  int32_t getBegin() const { return begin; }
+  void setBegin(int32_t begin) { this->begin = begin; }
+
   uint32_t getLength() const { return length; }
   void setLength(uint32_t length) { this->length = length; }
-  uint32_t getBlockIndex() const { return blockIndex; }
-  void setBlockIndex(uint32_t blockIndex) { this->blockIndex = blockIndex; }
+
+  int32_t getBlockIndex() const { return blockIndex; }
+  void setBlockIndex(int32_t blockIndex) { this->blockIndex = blockIndex; }
 
   static RequestSlot nullSlot;
 

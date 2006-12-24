@@ -54,7 +54,7 @@ BtBitfieldMessage::create(const unsigned char* data, uint32_t dataLength)
   if(dataLength <= 1) {
     throw new DlAbortEx("invalid payload size for %s, size = %d. It should be greater than %d", "bitfield", dataLength, 1);
   }
-  int32_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
 			id, "bitfield", ID);
@@ -68,7 +68,7 @@ void BtBitfieldMessage::doReceivedAction() {
   peer->setBitfield(bitfield, bitfieldLength);
 }
 
-const char* BtBitfieldMessage::getMessage() {
+const unsigned char* BtBitfieldMessage::getMessage() {
   if(!msg) {
     /**
      * len --- 1+bitfieldLength, 4bytes
@@ -77,7 +77,7 @@ const char* BtBitfieldMessage::getMessage() {
      * total: 5+len bytes
      */
     msgLength = 5+bitfieldLength;
-    msg = new char[msgLength];
+    msg = new unsigned char[msgLength];
     PeerMessageUtil::createPeerMessageString(msg, msgLength,
 					     1+bitfieldLength, ID);
     memcpy(msg+5, bitfield, bitfieldLength);

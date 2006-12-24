@@ -43,11 +43,11 @@ typedef SharedHandle<BtHaveMessage> BtHaveMessageHandle;
 
 class BtHaveMessage : public SimpleBtMessage {
 private:
-  uint32_t index;
-  char* msg;
+  int32_t index;
+  unsigned char* msg;
   static uint32_t MESSAGE_LENGTH;
 public:
-  BtHaveMessage(uint32_t index = 0):index(index), msg(0) {}
+  BtHaveMessage(int32_t index = 0):index(index), msg(0) {}
 
   virtual ~BtHaveMessage() {
     delete [] msg;
@@ -57,19 +57,19 @@ public:
     ID = 4
   };
 
-  void setIndex(uint32_t index) {
+  void setIndex(int32_t index) {
     this->index = index;
   }
 
-  uint32_t getIndex() const { return index; }
+  int32_t getIndex() const { return index; }
 
   static BtHaveMessageHandle create(const unsigned char* data, uint32_t dataLength);
 
-  virtual int32_t getId() const { return ID; }
+  virtual uint8_t getId() const { return ID; }
 
   virtual void doReceivedAction();
 
-  virtual const char* getMessage();
+  virtual const unsigned char* getMessage();
 
   virtual uint32_t getMessageLength();
 

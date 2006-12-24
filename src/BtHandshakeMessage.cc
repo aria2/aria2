@@ -73,9 +73,9 @@ BtHandshakeMessageHandle BtHandshakeMessage::create(const unsigned char* data, u
   return message;
 }
 
-const char* BtHandshakeMessage::getMessage() {
+const unsigned char* BtHandshakeMessage::getMessage() {
   if(!msg) {
-    msg = new char[MESSAGE_LENGTH];
+    msg = new unsigned char[MESSAGE_LENGTH];
     msg[0] = pstrlen;
     memcpy(msg+1, pstr, PSTR_LENGTH);
     memcpy(msg+20, reserved, RESERVED_LENGTH);

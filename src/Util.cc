@@ -50,13 +50,9 @@
 
 
 template<typename T>
-string int2str(T value, bool comma) {
+string uint2str(T value, bool comma) {
   string str;
-  bool flag = false;
-  if(value < 0) {
-    flag = true;
-    value = -value;
-  } else if(value == 0) {
+  if(value == 0) {
     str = "0";
     return str;
   }
@@ -70,14 +66,27 @@ string int2str(T value, bool comma) {
       str.insert(str.begin()+1, ',');
     }
   }
+  return str;
+}
+
+template<typename T>
+string int2str(T value, bool comma) {
+  bool flag = false;
+  if(value < 0) {
+    flag = true;
+    value = -value;
+  }
+  string str = uint2str<T>(value, comma);
   if(flag) {
     str.insert(str.begin(), '-');
   }
   return str;
 }
 
+
+
 string Util::uitos(uint16_t value, bool comma) {
-  return int2str<uint16_t>(value, comma);
+  return uint2str<uint16_t>(value, comma);
 }
 
 string Util::itos(int16_t value, bool comma) {
@@ -85,7 +94,7 @@ string Util::itos(int16_t value, bool comma) {
 }
 
 string Util::uitos(uint32_t value, bool comma) {
-  return int2str<uint32_t>(value, comma);
+  return uint2str<uint32_t>(value, comma);
 }
 
 string Util::itos(int32_t value, bool comma) {
@@ -558,7 +567,7 @@ static int nbits[] = {
   4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 
 };
 
-int Util::countBit(unsigned int n) {
+uint32_t Util::countBit(uint32_t n) {
   /*
   return
     nbits[n & 0xffu]+
@@ -566,8 +575,8 @@ int Util::countBit(unsigned int n) {
     nbits[(n >> 16) & 0xffu]+
     nbits[(n >> 24) & 0xffu];
   */
-  int count = 0;
-  int size = sizeof(unsigned int);
+  uint32_t count = 0;
+  int size = sizeof(uint32_t);
   for(int i = 0; i < size; i++) {
     count += nbits[(n >> i*8) & 0xffu];
   }

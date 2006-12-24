@@ -39,11 +39,11 @@
 
 BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, uint32_t dataLength) {
   if(dataLength != 5) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "have", dataLength, 5);
+    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "have", dataLength, 5);
   }
-  int32_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
+    throw new DlAbortEx("invalid ID=%u for %s. It should be %d.",
 			id, "have", ID);
   }
   BtHaveMessageHandle message = new BtHaveMessage();
@@ -61,7 +61,7 @@ bool BtHaveMessage::sendPredicate() const {
 
 uint32_t BtHaveMessage::MESSAGE_LENGTH = 9;
 
-const char* BtHaveMessage::getMessage() {
+const unsigned char* BtHaveMessage::getMessage() {
   if(!msg) {
     /**
      * len --- 5, 4bytes
@@ -69,7 +69,7 @@ const char* BtHaveMessage::getMessage() {
      * piece index --- index, 4bytes
      * total: 9bytes
      */
-    msg = new char[MESSAGE_LENGTH];
+    msg = new unsigned char[MESSAGE_LENGTH];
     PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 5, ID);
     PeerMessageUtil::setIntParam(&msg[5], index);
   }
@@ -81,5 +81,5 @@ uint32_t BtHaveMessage::getMessageLength() {
 }
 
 string BtHaveMessage::toString() const {
-  return "have index="+Util::uitos(index);
+  return "have index="+Util::itos(index);
 }

@@ -43,13 +43,13 @@ typedef SharedHandle<BtRejectMessage> BtRejectMessageHandle;
 
 class BtRejectMessage : public SimpleBtMessage {
 private:
-  uint32_t index;
-  uint32_t begin;
+  int32_t index;
+  int32_t begin;
   uint32_t length;
-  char* msg;
+  unsigned char* msg;
   static uint32_t MESSAGE_LENGTH;
 public:
-  BtRejectMessage(uint32_t index = 0, uint32_t begin = 0, uint32_t length = 0)
+  BtRejectMessage(int32_t index = 0, int32_t begin = 0, uint32_t length = 0)
     :index(index),
      begin(begin),
      length(length),
@@ -63,22 +63,22 @@ public:
     ID = 16
   };
 
-  uint32_t getIndex() const { return index; }
-  void setIndex(uint32_t index) { this->index = index; }
+  int32_t getIndex() const { return index; }
+  void setIndex(int32_t index) { this->index = index; }
 
-  uint32_t getBegin() const { return begin; }
-  void setBegin(uint32_t begin) { this->begin = begin; }
+  int32_t getBegin() const { return begin; }
+  void setBegin(int32_t begin) { this->begin = begin; }
 
   uint32_t getLength() const { return length; }
   void setLength(uint32_t length) { this->length = length; }
 
   static BtRejectMessageHandle create(const unsigned char* data, uint32_t dataLength);
 
-  virtual int32_t getId() const { return ID; }
+  virtual uint8_t getId() const { return ID; }
 
   virtual void doReceivedAction();
 
-  virtual const char* getMessage();
+  virtual const unsigned char* getMessage();
 
   virtual uint32_t getMessageLength();
 

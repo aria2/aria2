@@ -57,7 +57,7 @@ public:
 
   void setPort(uint16_t port) { this->port = port; }
 
-  virtual int32_t getId() const { return ID; }
+  virtual uint8_t getId() const { return ID; }
 
   static BtPortMessageHandle create(const unsigned char* data, uint32_t dataLength);
 

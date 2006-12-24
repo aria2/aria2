@@ -53,7 +53,7 @@ private:
   unsigned char* reserved;
   unsigned char* infoHash;
   unsigned char* peerId;
-  char* msg;
+  unsigned char* msg;
   void init();
 public:
   BtHandshakeMessage();
@@ -73,11 +73,11 @@ public:
     delete [] peerId;
   }
 
-  virtual int32_t getId() const { return INT32_MAX; }
+  virtual uint8_t getId() const { return UINT8_MAX; }
 
   virtual void doReceivedAction() {};
 
-  virtual const char* getMessage();
+  virtual const unsigned char* getMessage();
 
   virtual uint32_t getMessageLength();
 

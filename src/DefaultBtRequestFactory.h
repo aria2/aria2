@@ -46,7 +46,7 @@
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
-  int cuid;
+  int32_t cuid;
   BtContextHandle btContext;
   PieceStorageHandle pieceStorage;
   PeerHandle peer;
@@ -82,9 +82,9 @@ public:
 
   virtual void removeCompletedPiece();
 
-  virtual BtMessages createRequestMessages(int max);
+  virtual BtMessages createRequestMessages(uint32_t max);
 
-  virtual BtMessages createRequestMessagesOnEndGame(int max);
+  virtual BtMessages createRequestMessagesOnEndGame(uint32_t max);
 
   Pieces& getTargetPieces() {
     return pieces;

@@ -41,7 +41,7 @@ BtPortMessageHandle BtPortMessage::create(const unsigned char* data, uint32_t da
   if(dataLength != 3) {
     throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "port", dataLength, 3);
   }
-  int32_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
 			id, "piece", ID);

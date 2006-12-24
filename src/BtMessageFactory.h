@@ -54,15 +54,15 @@ public:
 			 const unsigned char* peerId) = 0;
 
   virtual BtMessageHandle
-  createRequestMessage(const PieceHandle& piece, uint32_t blockIndex) = 0;
+  createRequestMessage(const PieceHandle& piece, int32_t blockIndex) = 0;
 
   virtual BtMessageHandle
-  createCancelMessage(uint32_t index, uint32_t begin, uint32_t length) = 0;
+  createCancelMessage(int32_t index, int32_t begin, uint32_t length) = 0;
 
   virtual BtMessageHandle
-  createPieceMessage(uint32_t index, uint32_t begin, uint32_t length) = 0;
+  createPieceMessage(int32_t index, int32_t begin, uint32_t length) = 0;
 
-  virtual BtMessageHandle createHaveMessage(uint32_t index) = 0;
+  virtual BtMessageHandle createHaveMessage(int32_t index) = 0;
 
   virtual BtMessageHandle createChokeMessage() = 0;
 
@@ -81,9 +81,9 @@ public:
   virtual BtMessageHandle createHaveNoneMessage() = 0;
 
   virtual BtMessageHandle
-  createRejectMessage(uint32_t index, uint32_t begin, uint32_t length) = 0;
+  createRejectMessage(int32_t index, int32_t begin, uint32_t length) = 0;
 
-  virtual BtMessageHandle createAllowedFastMessage(uint32_t index) = 0;
+  virtual BtMessageHandle createAllowedFastMessage(int32_t index) = 0;
 };
 
 typedef SharedHandle<BtMessageFactory> BtMessageFactoryHandle;

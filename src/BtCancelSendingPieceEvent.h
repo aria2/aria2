@@ -39,28 +39,28 @@
 
 class BtCancelSendingPieceEvent : public BtEvent {
 private:
-  uint32_t index;
-  uint32_t begin;
+  int32_t index;
+  int32_t begin;
   uint32_t length;
 public:
-  BtCancelSendingPieceEvent(uint32_t index, uint32_t begin, uint32_t length):
+  BtCancelSendingPieceEvent(int32_t index, int32_t begin, uint32_t length):
     index(index), begin(begin), length(length) {}
 
   virtual ~BtCancelSendingPieceEvent() {}
 
-  void setIndex(uint32_t index) {
+  void setIndex(int32_t index) {
     this->index = index;
   }
 
-  uint32_t getIndex() const {
+  int32_t getIndex() const {
     return index;
   }
 
-  void setBegin(uint32_t begin) {
+  void setBegin(int32_t begin) {
     this->begin = begin;
   }
 
-  uint32_t getBegin() const {
+  int32_t getBegin() const {
     return begin;
   }
 

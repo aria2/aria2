@@ -43,17 +43,17 @@
 void BtPieceMessage::setBlock(const unsigned char* block, uint32_t blockLength) {
   delete [] this->block;
   this->blockLength = blockLength;
-  this->block = new char[this->blockLength];
+  this->block = new unsigned char[this->blockLength];
   memcpy(this->block, block, this->blockLength);
 }
 
 BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, uint32_t dataLength) {
   if(dataLength <= 9) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be greater than %d", "piece", dataLength, 9);
+    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be greater than %d", "piece", dataLength, 9);
   }
-  int32_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
+    throw new DlAbortEx("invalid ID=%u for %s. It should be %d.",
 			id, "piece", ID);
   }
   BtPieceMessageHandle message = new BtPieceMessage();
@@ -73,9 +73,9 @@ void BtPieceMessage::doReceivedAction() {
     peer->snubbing = false;
     peer->updateLatency(slot.getLatencyInMillis());
     PieceHandle piece = pieceStorage->getPiece(index);
-    uint64_t offset =
-      ((uint64_t)index)*btContext->getPieceLength()+begin;
-    logger->debug("CUID#%d - Piece received. index=%u, begin=%u, length=%u, offset=%llu, blockIndex=%u",
+    int64_t offset =
+      ((int64_t)index)*btContext->getPieceLength()+begin;
+    logger->debug("CUID#%d - Piece received. index=%d, begin=%d, length=%u, offset=%llu, blockIndex=%u",
 		  cuid, index, begin, blockLength, offset, slot.getBlockIndex());
     pieceStorage->getDiskAdaptor()->writeData(block,
 					      blockLength,
@@ -94,7 +94,7 @@ void BtPieceMessage::doReceivedAction() {
 
 uint32_t BtPieceMessage::MESSAGE_HEADER_LENGTH = 13;
 
-const char* BtPieceMessage::getMessageHeader() {
+const unsigned char* BtPieceMessage::getMessageHeader() {
   if(!msgHeader) {
     /**
      * len --- 9+blockLength, 4bytes
@@ -103,7 +103,7 @@ const char* BtPieceMessage::getMessageHeader() {
      * begin --- begin, 4bytes
      * total: 13bytes
      */
-    msgHeader = new char[MESSAGE_HEADER_LENGTH];
+    msgHeader = new unsigned char[MESSAGE_HEADER_LENGTH];
     PeerMessageUtil::createPeerMessageString(msgHeader, MESSAGE_HEADER_LENGTH,
 					     9+blockLength, ID);
     PeerMessageUtil::setIntParam(&msgHeader[5], index);
@@ -141,8 +141,8 @@ void BtPieceMessage::send() {
   }
   if(headerSent) {
     sendingInProgress = false;
-    uint64_t pieceDataOffset =
-      ((uint64_t)index)*btContext->getPieceLength()+begin+blockLength-leftDataLength;
+    int64_t pieceDataOffset =
+      ((int64_t)index)*btContext->getPieceLength()+begin+blockLength-leftDataLength;
     uint32_t writtenLength =
       sendPieceData(pieceDataOffset, leftDataLength);
     peer->updateUploadLength(writtenLength);
@@ -153,13 +153,13 @@ void BtPieceMessage::send() {
   }
 }
 
-uint32_t BtPieceMessage::sendPieceData(uint64_t offset, uint32_t length) const {
+uint32_t BtPieceMessage::sendPieceData(int64_t offset, uint32_t length) const {
   uint32_t BUF_SIZE = 256;
-  char buf[BUF_SIZE];
+  unsigned char buf[BUF_SIZE];
   int32_t iteration = length/BUF_SIZE;
   uint32_t writtenLength = 0;
   for(int32_t i = 0; i < iteration; i++) {
-    if(pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
+    if(pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < (int32_t)BUF_SIZE) {
       throw new DlAbortEx("Failed to read data from disk.");
     }
     uint32_t ws = PEER_CONNECTION(btContext, peer)->sendMessage(buf, BUF_SIZE);
@@ -181,13 +181,13 @@ uint32_t BtPieceMessage::sendPieceData(uint64_t offset, uint32_t length) const {
 }
 
 string BtPieceMessage::toString() const {
-  return "piece index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
+  return "piece index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::uitos(blockLength);
 }
 
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
-  uint64_t offset =
-    ((uint64_t)piece->getIndex())*btContext->getPieceLength();
+  int64_t offset =
+    ((int64_t)piece->getIndex())*btContext->getPieceLength();
   return pieceStorage->getDiskAdaptor()->sha1Sum(offset, piece->getLength()) ==
     btContext->getPieceHash(piece->getIndex());
 }
@@ -207,10 +207,10 @@ void BtPieceMessage::onWrongPiece(const PieceHandle& piece) {
 
 void BtPieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
   int32_t BUFSIZE = 4096;
-  char buf[BUFSIZE];
+  unsigned char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);
-  uint64_t offset =
-    ((uint64_t)piece->getIndex())*btContext->getPieceLength();
+  int64_t offset =
+    ((int64_t)piece->getIndex())*btContext->getPieceLength();
   for(int32_t i = 0; i < piece->getLength()/BUFSIZE; i++) {
     pieceStorage->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
     offset += BUFSIZE;
@@ -269,7 +269,7 @@ void BtPieceMessage::handleCancelSendingPieceEvent(const BtEventHandle& event) {
      begin == intEvent->getBegin() &&
      blockLength == intEvent->getLength()) {
     logger->debug("CUID#%d - Reject piece message in queue because cancel"
-		  " message received. index=%d, begin=%d, length=%d",
+		  " message received. index=%d, begin=%d, length=%u",
 		  cuid, index, begin, blockLength);
     if(peer->isFastExtensionEnabled()) {
       BtMessageHandle rej =

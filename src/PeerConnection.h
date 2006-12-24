@@ -63,14 +63,8 @@ public:
   
   // Returns the number of bytes written
   uint32_t sendMessage(const unsigned char* data, uint32_t dataLength);
-  uint32_t sendMessage(const char* msg, int length) {
-    return sendMessage((const unsigned char*)msg, (uint32_t)length);
-  }
 
   bool receiveMessage(unsigned char* data, uint32_t& dataLength);
-  bool receiveMessage(char* msg, int& length) {
-    return receiveMessage((unsigned char*)msg, (uint32_t&)length);
-  }
 
   /**
    * Returns true if a handshake message is fully received, otherwise returns
@@ -79,9 +73,6 @@ public:
    * is assigned to 'length'.
    */
   bool receiveHandshake(unsigned char* data, uint32_t& dataLength);
-  bool receiveHandshake(char* msg, int& length) {
-    return receiveHandshake((unsigned char*)msg, (uint32_t&)length);
-  }
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;

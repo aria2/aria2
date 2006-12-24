@@ -43,8 +43,8 @@ typedef SharedHandle<BtSuggestPieceMessage> BtSuggestPieceMessageHandle;
 
 class BtSuggestPieceMessage : public SimpleBtMessage {
 private:
-  uint32_t index;
-  char* msg;
+  int32_t index;
+  unsigned char* msg;
   static uint32_t MESSAGE_LENGTH;
 public:
   BtSuggestPieceMessage():index(0), msg(0) {}
@@ -57,21 +57,21 @@ public:
     ID = 13
   };
 
-  void setIndex(uint32_t index) {
+  void setIndex(int32_t index) {
     this->index = index;
   }
 
-  uint32_t getIndex() const { return index; }
+  int32_t getIndex() const { return index; }
 
   static BtSuggestPieceMessageHandle create(const unsigned char* data, uint32_t dataLength);
 
-  virtual int32_t getId() const { return ID; }
+  virtual uint8_t getId() const { return ID; }
 
   virtual void doReceivedAction() {
     // TODO Current implementation ignores this message.
   }
 
-  virtual const char* getMessage();
+  virtual const unsigned char* getMessage();
 
   virtual uint32_t getMessageLength();
 

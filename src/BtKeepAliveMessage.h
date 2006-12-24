@@ -43,7 +43,7 @@ typedef SharedHandle<BtKeepAliveMessage> BtKeepAliveMessageHandle;
 
 class BtKeepAliveMessage : public SimpleBtMessage {
 private:
-  char* msg;
+  unsigned char* msg;
 
   static uint32_t MESSAGE_LENGTH;
 public:
@@ -57,11 +57,11 @@ public:
     ID = 99
   };
 
-  virtual int32_t getId() const { return ID; }
+  virtual uint8_t getId() const { return ID; }
 
   virtual void doReceivedAction() {}
 
-  virtual const char* getMessage();
+  virtual const unsigned char* getMessage();
 
   virtual uint32_t getMessageLength();
 

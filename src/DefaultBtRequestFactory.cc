@@ -62,12 +62,12 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
   pieces.clear();
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessages(int max) {
+BtMessages DefaultBtRequestFactory::createRequestMessages(uint32_t max) {
   BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < (size_t)max; itr++) {
     PieceHandle& piece = *itr;
-    int blockIndex;
+    int32_t blockIndex;
     while(requests.size() < (size_t)max &&
 	  (blockIndex = piece->getMissingUnusedBlockIndex()) != -1) {
       requests.push_back(BT_MESSAGE_FACTORY(btContext, peer)->
@@ -77,7 +77,7 @@ BtMessages DefaultBtRequestFactory::createRequestMessages(int max) {
   return requests;
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(int max) {
+BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(uint32_t max) {
   BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < (size_t)max; itr++) {
@@ -87,7 +87,7 @@ BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(int max) {
     for(BlockIndexes::const_iterator bitr = missingBlockIndexes.begin();
 	bitr != missingBlockIndexes.end() && requests.size() < (size_t)max;
 	bitr++) {
-      int blockIndex = *bitr;
+      int32_t blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
 					   blockIndex)) {
 	requests.push_back(BT_MESSAGE_FACTORY(btContext, peer)->

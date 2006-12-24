@@ -37,15 +37,15 @@ public:
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
   public:
-    uint32_t index;
-    uint32_t begin;
+    int32_t index;
+    int32_t begin;
     uint32_t length;
   public:
     MockBtMessageDispatcher2():index(0),
 			       begin(0),
 			       length(0) {}
 
-    virtual void doCancelSendingPieceAction(uint32_t index, uint32_t begin, uint32_t length) {
+    virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, uint32_t length) {
       this->index = index;
       this->begin = begin;
       this->length = length;
@@ -65,9 +65,9 @@ void BtCancelMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[9], 256);
   PeerMessageUtil::setIntParam(&msg[13], 1024);
   BtCancelMessageHandle pm = BtCancelMessage::create(&msg[4], 13);
-  CPPUNIT_ASSERT_EQUAL(8, pm->getId());
-  CPPUNIT_ASSERT_EQUAL((uint32_t)12345, pm->getIndex());
-  CPPUNIT_ASSERT_EQUAL((uint32_t)256, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)8, pm->getId());
+  CPPUNIT_ASSERT_EQUAL(12345, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
   CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pm->getLength());
 
   // case: payload size is wrong

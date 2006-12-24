@@ -26,21 +26,21 @@ public:
   }
 
   virtual BtMessageHandle
-  createRequestMessage(const PieceHandle& piece, uint32_t blockIndex) {
+  createRequestMessage(const PieceHandle& piece, int32_t blockIndex) {
     return BtMessageHandle(0);
   }
 
   virtual BtMessageHandle
-  createCancelMessage(uint32_t index, uint32_t begin, uint32_t length) {
+  createCancelMessage(int32_t index, int32_t begin, uint32_t length) {
     return BtMessageHandle(0);
   }
 
   virtual BtMessageHandle
-  createPieceMessage(uint32_t index, uint32_t begin, uint32_t length) {
+  createPieceMessage(int32_t index, int32_t begin, uint32_t length) {
     return BtMessageHandle(0);
   }
 
-  virtual BtMessageHandle createHaveMessage(uint32_t index) {
+  virtual BtMessageHandle createHaveMessage(int32_t index) {
     return BtMessageHandle(0);
   }
 
@@ -77,11 +77,11 @@ public:
   }
 
   virtual BtMessageHandle
-  createRejectMessage(uint32_t index, uint32_t begin, uint32_t length) {
+  createRejectMessage(int32_t index, int32_t begin, uint32_t length) {
     return BtMessageHandle(0);
   }
 
-  virtual BtMessageHandle createAllowedFastMessage(uint32_t index) {
+  virtual BtMessageHandle createAllowedFastMessage(int32_t index) {
     return BtMessageHandle(0);
   }
 };

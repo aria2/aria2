@@ -57,9 +57,16 @@ public:
   virtual void closeFile();
   virtual void openExistingFile();
   virtual void initAndOpenFile();
-  void writeData(const char* data, int len, long long int position);
-  int readData(char* data, int len, long long int position);
-  string sha1Sum(long long int offset, long long int length);
+  void writeData(const unsigned char* data, uint32_t len, int64_t offset);
+  void writeData(const char* data, uint32_t len, int64_t offset) {
+    writeData((const unsigned char*)data, len, offset);
+  }
+  int readData(unsigned char* data, uint32_t len, int64_t offset);
+  int readData(char* data, uint32_t len, int64_t offset) {
+    return readData((unsigned char*)data, len, offset);
+  }
+
+  string sha1Sum(int64_t offset, uint64_t length);
 
   virtual void onDownloadComplete() = 0;  
 

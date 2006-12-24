@@ -47,13 +47,13 @@ typedef SharedHandle<BtPieceMessage> BtPieceMessageHandle;
 
 class BtPieceMessage : public AbstractBtMessage {
 private:
-  uint32_t index;
-  uint32_t begin;
+  int32_t index;
+  int32_t begin;
   uint32_t blockLength;
-  char* block;
+  unsigned char* block;
   uint32_t leftDataLength;
   bool headerSent;
-  char* msgHeader;
+  unsigned char* msgHeader;
 
   static uint32_t MESSAGE_HEADER_LENGTH;
 
@@ -65,7 +65,7 @@ private:
 
   void erasePieceOnDisk(const PieceHandle& piece);
 
-  uint32_t sendPieceData(uint64_t offset, uint32_t length) const;
+  uint32_t sendPieceData(int64_t offset, uint32_t length) const;
 
   class BtChokingEventListener : public AbstractBtEventListener {
   private:
@@ -93,7 +93,7 @@ private:
 
   typedef SharedHandle<BtCancelSendingPieceEventListener> BtCancelSendingPieceEventListenerHandle;
 public:
-  BtPieceMessage(uint32_t index = 0, uint32_t begin = 0, uint32_t blockLength = 0)
+  BtPieceMessage(int32_t index = 0, int32_t begin = 0, uint32_t blockLength = 0)
     :index(index),
      begin(begin),
      blockLength(blockLength),
@@ -116,15 +116,15 @@ public:
     ID = 7
   };
 
-  uint32_t getIndex() const { return index; }
+  int32_t getIndex() const { return index; }
 
-  void setIndex(uint32_t index) { this->index = index; }
+  void setIndex(int32_t index) { this->index = index; }
 
-  uint32_t getBegin() const { return begin; }
+  int32_t getBegin() const { return begin; }
 
-  void setBegin(uint32_t begin) { this->begin = begin; }
+  void setBegin(int32_t begin) { this->begin = begin; }
 
-  const char* getBlock() const { return block; }
+  const unsigned char* getBlock() const { return block; }
 
   void setBlock(const unsigned char* block, uint32_t blockLength);
 
@@ -134,11 +134,11 @@ public:
 
   static BtPieceMessageHandle create(const unsigned char* data, uint32_t dataLength);
 
-  virtual int32_t getId() const { return ID; }
+  virtual uint8_t getId() const { return ID; }
 
   virtual void doReceivedAction();
 
-  const char* getMessageHeader();
+  const unsigned char* getMessageHeader();
 
   uint32_t getMessageHeaderLength();
 

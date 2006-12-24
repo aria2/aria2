@@ -40,7 +40,7 @@ BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, uint32_t 
   if(dataLength != 1) {
     throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "choke", dataLength, 1);
   }
-  int32_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
 			id, "choke", ID);
@@ -60,14 +60,14 @@ bool BtChokeMessage::sendPredicate() const {
 
 uint32_t BtChokeMessage::MESSAGE_LENGTH = 5;
 
-const char* BtChokeMessage::getMessage() {
+const unsigned char* BtChokeMessage::getMessage() {
   if(!msg) {
     /**
      * len --- 1, 4bytes
      * id --- 0, 1byte
      * total: 5bytes
      */
-    msg = new char[MESSAGE_LENGTH];
+    msg = new unsigned char[MESSAGE_LENGTH];
     PeerMessageUtil::createPeerMessageString(msg, MESSAGE_LENGTH, 1, ID);
   }
   return msg;

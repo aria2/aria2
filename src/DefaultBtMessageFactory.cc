@@ -70,7 +70,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, uint32_t dat
     // keep-alive
     msg = new BtKeepAliveMessage();
   } else {
-    int32_t id = PeerMessageUtil::getId(data);
+    uint8_t id = PeerMessageUtil::getId(data);
     switch(id) {
     case BtChokeMessage::ID:
       msg = BtChokeMessage::create(data, dataLength);
@@ -162,7 +162,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, uint32_t dat
       break;
     }
     default:
-      throw new DlAbortEx("Invalid message id. id = %d", id);
+      throw new DlAbortEx("Invalid message id. id = %u", id);
     }
   }
   setCommonProperty(msg);
@@ -201,7 +201,7 @@ DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, uint32_t blockIndex)
+DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, int32_t blockIndex)
 {
   BtRequestMessageHandle msg =
     new BtRequestMessage(piece->getIndex(),
@@ -218,7 +218,7 @@ DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, uint32_t
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createCancelMessage(uint32_t index, uint32_t begin, uint32_t length)
+DefaultBtMessageFactory::createCancelMessage(int32_t index, int32_t begin, uint32_t length)
 {
   BtCancelMessageHandle msg = new BtCancelMessage(index, begin, length);
   BtMessageValidatorHandle validator =
@@ -231,7 +231,7 @@ DefaultBtMessageFactory::createCancelMessage(uint32_t index, uint32_t begin, uin
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createPieceMessage(uint32_t index, uint32_t begin, uint32_t length)
+DefaultBtMessageFactory::createPieceMessage(int32_t index, int32_t begin, uint32_t length)
 {
   BtPieceMessageHandle msg = new BtPieceMessage(index, begin, length);
   BtMessageValidatorHandle validator =
@@ -244,7 +244,7 @@ DefaultBtMessageFactory::createPieceMessage(uint32_t index, uint32_t begin, uint
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createHaveMessage(uint32_t index)
+DefaultBtMessageFactory::createHaveMessage(int32_t index)
 {
   BtHaveMessageHandle msg = new BtHaveMessage(index);
   msg->setBtMessageValidator(new BtHaveMessageValidator(msg.get(),
@@ -322,7 +322,7 @@ DefaultBtMessageFactory::createHaveNoneMessage()
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createRejectMessage(uint32_t index, uint32_t begin, uint32_t length)
+DefaultBtMessageFactory::createRejectMessage(int32_t index, int32_t begin, uint32_t length)
 {
   BtRejectMessageHandle msg = new BtRejectMessage(index, begin, length);
   BtMessageValidatorHandle validator =
@@ -335,7 +335,7 @@ DefaultBtMessageFactory::createRejectMessage(uint32_t index, uint32_t begin, uin
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createAllowedFastMessage(uint32_t index)
+DefaultBtMessageFactory::createAllowedFastMessage(int32_t index)
 {
   BtAllowedFastMessageHandle msg = new BtAllowedFastMessage(index);
   BtMessageValidatorHandle validator =

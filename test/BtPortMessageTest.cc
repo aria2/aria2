@@ -29,7 +29,7 @@ void BtPortMessageTest::testCreate() {
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 3, 9);
   PeerMessageUtil::setShortIntParam(&msg[5], 12345);
   BtPortMessageHandle pm = BtPortMessage::create(&msg[4], 3);
-  CPPUNIT_ASSERT_EQUAL(9, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)9, pm->getId());
   CPPUNIT_ASSERT_EQUAL((uint16_t)12345, pm->getPort());
 
   // case: payload size is wrong
