@@ -57,7 +57,7 @@ void BtHandshakeMessage::init() {
   reserved = new unsigned char[RESERVED_LENGTH];
   infoHash = new unsigned char[INFO_HASH_LENGTH];
   peerId = new unsigned char[PEER_ID_LENGTH];
-  memcpy(this->pstr, PSTR, PSTR_LENGTH);
+  memcpy(this->pstr, BT_PSTR, PSTR_LENGTH);
   memset(this->reserved, 0, RESERVED_LENGTH);
   // fast extension
   this->reserved[7] |= 0x04;

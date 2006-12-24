@@ -106,21 +106,6 @@ void PeerMessageUtil::checkBitfield(const unsigned char* bitfield,
   }
 }
 
-void PeerMessageUtil::checkHandshake(const HandshakeMessage* message, const unsigned char* infoHash) {
-  if(message->pstrlen != 19) {
-    throw new DlAbortEx("invalid handshake pstrlen = %d", (int)message->pstrlen);
-  }
-  if(message->pstr != PSTR) {
-    throw new DlAbortEx("invalid handshake pstr");
-  }
-  string myInfoHash = Util::toHex(infoHash, 20);
-  string peerInfoHash = Util::toHex(message->infoHash, 20);
-  if(myInfoHash != peerInfoHash) {
-    throw new DlAbortEx("invalid handshake info hash: expected:%s, actual:%s",
-			myInfoHash.c_str(), peerInfoHash.c_str());
-  }
-}
-
 void PeerMessageUtil::setIntParam(unsigned char* dest, uint32_t param) {
   uint32_t nParam = htonl(param);
   memcpy(dest, &nParam, sizeof(uint32_t));

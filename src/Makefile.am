@@ -83,14 +83,11 @@ SRCS += MetaEntry.h\
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
 	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
 	PeerListenCommand.cc PeerListenCommand.h\
-	PeerMessage.cc PeerMessage.h\
-	HandshakeMessage.cc HandshakeMessage.h\
 	Piece.cc Piece.h\
 	RequestSlot.cc RequestSlot.h\
 	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-	PeerInteraction.cc PeerInteraction.h\
 	MultiDiskWriter.cc MultiDiskWriter.h\
 	DiskAdaptor.cc DiskAdaptor.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
@@ -100,24 +97,6 @@ SRCS += MetaEntry.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
-	ChokeMessage.cc ChokeMessage.h\
-	UnchokeMessage.cc UnchokeMessage.h\
-	InterestedMessage.cc InterestedMessage.h\
-	NotInterestedMessage.cc NotInterestedMessage.h\
-	HaveMessage.cc HaveMessage.h\
-	BitfieldMessage.cc BitfieldMessage.h\
-	RequestMessage.cc RequestMessage.h\
-	PieceMessage.cc PieceMessage.h\
-	CancelMessage.cc CancelMessage.h\
-	KeepAliveMessage.cc KeepAliveMessage.h\
-	PortMessage.cc PortMessage.h\
-	HaveAllMessage.cc HaveAllMessage.h\
-	HaveNoneMessage.cc HaveNoneMessage.h\
-	RejectMessage.cc RejectMessage.h\
-	AllowedFastMessage.cc AllowedFastMessage.h\
-	SuggestPieceMessage.cc SuggestPieceMessage.h\
-	SimplePeerMessage.cc SimplePeerMessage.h\
-	PeerMessageFactory.cc PeerMessageFactory.h\
 	HaveEraseCommand.cc HaveEraseCommand.h\
 	TorrentRequestInfo.cc TorrentRequestInfo.h\
 	SeedCriteria.h\
@@ -135,7 +114,6 @@ SRCS += MetaEntry.h\
 	DefaultBtContext.cc DefaultBtContext.h\
 	PieceStorage.h\
 	DefaultPieceStorage.cc DefaultPieceStorage.h\
-	PeerService.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
 	BtAnnounce.h\
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h\

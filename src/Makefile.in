@@ -38,6 +38,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = aria2c$(EXEEXT)
+#	debug_new.cpp
 @ENABLE_ASYNC_DNS_TRUE@am__append_1 = NameResolver.cc NameResolver.h
 @ENABLE_BITTORRENT_TRUE@am__append_2 = MetaEntry.h\
 @ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
@@ -55,14 +56,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
 @ENABLE_BITTORRENT_TRUE@	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
 @ENABLE_BITTORRENT_TRUE@	PeerListenCommand.cc PeerListenCommand.h\
-@ENABLE_BITTORRENT_TRUE@	PeerMessage.cc PeerMessage.h\
-@ENABLE_BITTORRENT_TRUE@	HandshakeMessage.cc HandshakeMessage.h\
 @ENABLE_BITTORRENT_TRUE@	Piece.cc Piece.h\
 @ENABLE_BITTORRENT_TRUE@	RequestSlot.cc RequestSlot.h\
 @ENABLE_BITTORRENT_TRUE@	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 @ENABLE_BITTORRENT_TRUE@	Directory.cc Directory.h\
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-@ENABLE_BITTORRENT_TRUE@	PeerInteraction.cc PeerInteraction.h\
 @ENABLE_BITTORRENT_TRUE@	MultiDiskWriter.cc MultiDiskWriter.h\
 @ENABLE_BITTORRENT_TRUE@	DiskAdaptor.cc DiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
@@ -72,24 +70,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.cc PeerChokeCommand.h\
-@ENABLE_BITTORRENT_TRUE@	ChokeMessage.cc ChokeMessage.h\
-@ENABLE_BITTORRENT_TRUE@	UnchokeMessage.cc UnchokeMessage.h\
-@ENABLE_BITTORRENT_TRUE@	InterestedMessage.cc InterestedMessage.h\
-@ENABLE_BITTORRENT_TRUE@	NotInterestedMessage.cc NotInterestedMessage.h\
-@ENABLE_BITTORRENT_TRUE@	HaveMessage.cc HaveMessage.h\
-@ENABLE_BITTORRENT_TRUE@	BitfieldMessage.cc BitfieldMessage.h\
-@ENABLE_BITTORRENT_TRUE@	RequestMessage.cc RequestMessage.h\
-@ENABLE_BITTORRENT_TRUE@	PieceMessage.cc PieceMessage.h\
-@ENABLE_BITTORRENT_TRUE@	CancelMessage.cc CancelMessage.h\
-@ENABLE_BITTORRENT_TRUE@	KeepAliveMessage.cc KeepAliveMessage.h\
-@ENABLE_BITTORRENT_TRUE@	PortMessage.cc PortMessage.h\
-@ENABLE_BITTORRENT_TRUE@	HaveAllMessage.cc HaveAllMessage.h\
-@ENABLE_BITTORRENT_TRUE@	HaveNoneMessage.cc HaveNoneMessage.h\
-@ENABLE_BITTORRENT_TRUE@	RejectMessage.cc RejectMessage.h\
-@ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.cc AllowedFastMessage.h\
-@ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.cc SuggestPieceMessage.h\
-@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.cc SimplePeerMessage.h\
-@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.cc PeerMessageFactory.h\
 @ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.cc HaveEraseCommand.h\
 @ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.cc TorrentRequestInfo.h\
 @ENABLE_BITTORRENT_TRUE@	SeedCriteria.h\
@@ -107,7 +87,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.cc DefaultBtContext.h\
 @ENABLE_BITTORRENT_TRUE@	PieceStorage.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultPieceStorage.cc DefaultPieceStorage.h\
-@ENABLE_BITTORRENT_TRUE@	PeerService.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.cc DefaultPeerStorage.h\
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
@@ -231,44 +210,29 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h debug_new.cpp NameResolver.cc \
-	NameResolver.h MetaEntry.h Data.cc Data.h Dictionary.cc \
-	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
-	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
-	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
-	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
-	PeerInitiateConnectionCommand.cc \
+	SimpleRandomizer.h NameResolver.cc NameResolver.h MetaEntry.h \
+	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
+	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
+	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
+	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
 	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h \
-	PeerListenCommand.cc PeerListenCommand.h PeerMessage.cc \
-	PeerMessage.h HandshakeMessage.cc HandshakeMessage.h Piece.cc \
-	Piece.h RequestSlot.cc RequestSlot.h TorrentAutoSaveCommand.cc \
+	PeerListenCommand.cc PeerListenCommand.h Piece.cc Piece.h \
+	RequestSlot.cc RequestSlot.h TorrentAutoSaveCommand.cc \
 	TorrentAutoSaveCommand.h Directory.cc Directory.h \
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h \
-	PeerInteraction.cc PeerInteraction.h MultiDiskWriter.cc \
-	MultiDiskWriter.h DiskAdaptor.cc DiskAdaptor.h \
-	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
-	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
-	FileEntry.cc FileEntry.h TrackerUpdateCommand.cc \
-	TrackerUpdateCommand.h ByteArrayDiskWriter.cc \
-	ByteArrayDiskWriter.h PeerChokeCommand.cc PeerChokeCommand.h \
-	ChokeMessage.cc ChokeMessage.h UnchokeMessage.cc \
-	UnchokeMessage.h InterestedMessage.cc InterestedMessage.h \
-	NotInterestedMessage.cc NotInterestedMessage.h HaveMessage.cc \
-	HaveMessage.h BitfieldMessage.cc BitfieldMessage.h \
-	RequestMessage.cc RequestMessage.h PieceMessage.cc \
-	PieceMessage.h CancelMessage.cc CancelMessage.h \
-	KeepAliveMessage.cc KeepAliveMessage.h PortMessage.cc \
-	PortMessage.h HaveAllMessage.cc HaveAllMessage.h \
-	HaveNoneMessage.cc HaveNoneMessage.h RejectMessage.cc \
-	RejectMessage.h AllowedFastMessage.cc AllowedFastMessage.h \
-	SuggestPieceMessage.cc SuggestPieceMessage.h \
-	SimplePeerMessage.cc SimplePeerMessage.h PeerMessageFactory.cc \
-	PeerMessageFactory.h HaveEraseCommand.cc HaveEraseCommand.h \
-	TorrentRequestInfo.cc TorrentRequestInfo.h SeedCriteria.h \
-	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
+	MultiDiskWriter.cc MultiDiskWriter.h DiskAdaptor.cc \
+	DiskAdaptor.h CopyDiskAdaptor.cc CopyDiskAdaptor.h \
+	DirectDiskAdaptor.cc DirectDiskAdaptor.h MultiDiskAdaptor.cc \
+	MultiDiskAdaptor.h FileEntry.cc FileEntry.h \
+	TrackerUpdateCommand.cc TrackerUpdateCommand.h \
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
+	PeerChokeCommand.cc PeerChokeCommand.h HaveEraseCommand.cc \
+	HaveEraseCommand.h TorrentRequestInfo.cc TorrentRequestInfo.h \
+	SeedCriteria.h TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
 	PeerListProcessor.h DefaultPeerListProcessor.cc \
 	DefaultPeerListProcessor.h CompactPeerListProcessor.cc \
@@ -276,7 +240,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DelegatingPeerListProcessor.h AnnounceTier.h AnnounceList.h \
 	AnnounceList.cc BtContext.h DefaultBtContext.cc \
 	DefaultBtContext.h PieceStorage.h DefaultPieceStorage.cc \
-	DefaultPieceStorage.h PeerService.h DefaultPeerStorage.cc \
+	DefaultPieceStorage.h DefaultPeerStorage.cc \
 	DefaultPeerStorage.h BtAnnounce.h DefaultBtAnnounce.cc \
 	DefaultBtAnnounce.h BtRegistry.cc BtRegistry.h BtRuntime.h \
 	BtProgressInfoFile.h DefaultBtProgressInfoFile.cc \
@@ -329,13 +293,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	TorrentDownloadEngine.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TorrentConsoleDownloadEngine.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerListenCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PeerMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	HandshakeMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Piece.$(OBJEXT) RequestSlot.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TorrentAutoSaveCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Directory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PeerInteraction.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MultiDiskWriter.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.$(OBJEXT) \
@@ -345,24 +306,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	ChokeMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	UnchokeMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	InterestedMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	NotInterestedMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	HaveMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BitfieldMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	RequestMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PieceMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	CancelMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	KeepAliveMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PortMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	HaveAllMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	HaveNoneMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	RejectMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	AllowedFastMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	SuggestPieceMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	SimplePeerMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PeerMessageFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HaveEraseCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TorrentRequestInfo.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT) \
@@ -429,8 +372,8 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
 	UrlRequestInfo.$(OBJEXT) SpeedCalc.$(OBJEXT) \
 	BitfieldMan.$(OBJEXT) BitfieldManFactory.$(OBJEXT) \
-	SimpleRandomizer.$(OBJEXT) debug_new.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3)
+	SimpleRandomizer.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -634,8 +577,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h debug_new.cpp $(am__append_1) \
-	$(am__append_2) $(am__append_3)
+	SimpleRandomizer.h $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -652,7 +595,7 @@ AM_CPPFLAGS = -Wall\
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .cpp .o .obj
+.SUFFIXES: .cc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -725,12 +668,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/alloca.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractDiskWriter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllowedFastMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtBitfieldMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCancelMessage.Po@am__quote@
@@ -751,8 +692,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CancelMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactPeerListProcessor.Po@am__quote@
@@ -789,11 +728,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpNegotiationCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveAllMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveEraseCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveNoneMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeader.Po@am__quote@
@@ -803,8 +738,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InterestedMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/KeepAliveMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
@@ -815,26 +748,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NameResolver.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NotInterestedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerChokeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInitiateConnectionCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInteraction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerInteractionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceMessage.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PortMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreAllocationDiskWriter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RejectMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Segment.Po@am__quote@
@@ -842,12 +767,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimplePeerMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SuggestPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentAutoSaveCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentConsoleDownloadEngine.Po@am__quote@
@@ -855,11 +778,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UrlRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug_new.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .cc.o:
@@ -870,20 +791,6 @@ distclean-compile:
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
 
 .cc.obj:
-@am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-.cpp.o:
-@am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
-
-.cpp.obj:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@

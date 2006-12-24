@@ -36,7 +36,6 @@
 #define _D_PEER_MESSAGE_UTIL_H_
 
 #include "common.h"
-#include "HandshakeMessage.h"
 
 #define MAX_BLOCK_LENGTH (128*1024)
 
@@ -81,9 +80,6 @@ public:
 			    uint32_t pieces) {
     checkBitfield((unsigned char*)bitfield, bitfieldLength, pieces);
   }
-
-  static void checkHandshake(const HandshakeMessage* message,
-			     const unsigned char* infoHash);
 
   static void createPeerMessageString(unsigned char* msg,
 				      uint32_t msgLength,

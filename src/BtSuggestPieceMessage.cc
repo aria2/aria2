@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "BtSuggestPieceMessage.h"
-#include "PeerInteraction.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"

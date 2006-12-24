@@ -55,7 +55,29 @@
 	* src/DefaultBtMessageFactory.h: New class.
 	* src/PeerObject.h: New class.
 	* src/BtRequestFactory.h: New class.
-	
+	* src/SuggestPieceMessage.h: Removed.
+	* src/PortMessage.h: Removed.
+	* src/SuggestPieceMessage.h: Removed.
+	* src/KeepAliveMessage.h: Removed.
+	* src/HandshakeMessage.h: Removed.
+	* src/PeerInteraction.h: Removed.
+	* src/UnchokeMessage.h: Removed.
+	* src/PieceMessage.h: Removed.
+	* src/RequestMessage.h: Removed.
+	* src/InterestedMessage.h: Removed.
+	* src/HaveMessage.h: Removed.
+	* src/CancelMessage.h: Removed.
+	* src/RejectMessage.h: Removed.
+	* src/AllowedFastMessage.h: Removed.
+	* src/HaveNoneMessage.h: Removed.
+	* src/SimplePeerMessage.h: Removed.
+	* src/HaveAllMessage.h: Removed.
+	* src/BitfieldMessage.h: Removed.
+	* src/PeerMessageFactory.h: Removed.
+	* src/NotInterestedMessage.h: Removed.
+	* src/ChokeMessage.h: Removed.
+	* src/PeerMessage.h: Removed.
+
 2006-12-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To know root cause of exception:
