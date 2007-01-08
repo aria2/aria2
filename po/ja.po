@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2006-11-09 01:22+0900\n"
+"POT-Creation-Date: 2007-01-08 09:17+0900\n"
 "PO-Revision-Date: 2006-11-09 01:23+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -361,27 +361,27 @@ msgstr "データの受信に失敗しました. 原因: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "データの peek に失敗しました. 原因: %s"
 
-#: src/DownloadEngineFactory.cc:139
+#: src/DownloadEngineFactory.cc:159
 #, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
-#: src/TorrentRequestInfo.cc:91
+#: src/TorrentRequestInfo.cc:88
 msgid "Files:"
 msgstr "ファイル:"
 
-#: src/UrlRequestInfo.cc:99
+#: src/UrlRequestInfo.cc:98
 #, c-format
 msgid "Unrecognized URL or unsupported protocol: %s\n"
 msgstr ""
 "%s は, 理解できない URL フォーマット, または, サポートされないプロトコルで"
 "す.\n"
 
-#: src/main.cc:86
+#: src/main.cc:79
 msgid " version "
 msgstr " バージョン "
 
-#: src/main.cc:93
+#: src/main.cc:86
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -413,41 +413,41 @@ msgstr ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
 "USA\n"
 
-#: src/main.cc:107
+#: src/main.cc:100
 #, c-format
 msgid "Contact Info: %s\n"
 msgstr "連絡先: %s\n"
 
-#: src/main.cc:113
+#: src/main.cc:106
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
 msgstr "使い方: %s [オプション] URL ...\n"
 
-#: src/main.cc:115
+#: src/main.cc:108
 #, c-format
 msgid "       %s [options] -T TORRENT_FILE FILE ...\n"
 msgstr "        %s [オプション] -T TORRENT_FILE FILE ...\n"
 
-#: src/main.cc:118
+#: src/main.cc:111
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
 msgstr "        %s [オプション] -M METALINK_FILE\n"
 
-#: src/main.cc:121
+#: src/main.cc:114
 msgid "Options:"
 msgstr "オプション:"
 
-#: src/main.cc:122
+#: src/main.cc:115
 msgid " -d, --dir=DIR                The directory to store downloaded file."
 msgstr ""
 " -d, --dir=DIR                ダウンロードしたファイルを保存するディレクトリ."
 
-#: src/main.cc:123
+#: src/main.cc:116
 msgid " -o, --out=FILE               The file name for downloaded file."
 msgstr ""
 " -o, --out=FILE               ダウンロードしたファイルの保存先ファイル名."
 
-#: src/main.cc:124
+#: src/main.cc:117
 msgid ""
 " -l, --log=LOG                The file path to store log. If '-' is "
 "specified,\n"
@@ -457,18 +457,20 @@ msgstr ""
 "力\n"
 "                              に出力します."
 
-#: src/main.cc:126
+#: src/main.cc:119
 msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 デーモンとして起動します."
 
-#: src/main.cc:127
+#: src/main.cc:120
+#, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. N must "
 "be\n"
 "                              between 1 and 5. This option affects all "
 "URLs.\n"
 "                              Thus, aria2 connects to each URL with\n"
-"                              N connections."
+"                              N connections.\n"
+"                              Default: 1"
 msgstr ""
 " -s, --split=N                N 個のコネクションを使ってファイルをダウンロー"
 "ド\n"
@@ -480,7 +482,7 @@ msgstr ""
 "ショ\n"
 "                              ンを確立します."
 
-#: src/main.cc:131
+#: src/main.cc:125
 msgid ""
 " --retry-wait=SEC             Set amount of time in second between requests\n"
 "                              for errors. Specify a value between 0 and 60.\n"
@@ -491,13 +493,13 @@ msgstr ""
 "                              す. 0 - 60 の値を指定してください.\n"
 "                              デフォルト値: 5"
 
-#: src/main.cc:134
+#: src/main.cc:128
 msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
 msgstr ""
 " -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します.\n"
 "                              デフォルト値: 60"
 
-#: src/main.cc:135
+#: src/main.cc:129
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
@@ -506,7 +508,7 @@ msgstr ""
 "行\n"
 "                              します. デフォルト値: 5"
 
-#: src/main.cc:143
+#: src/main.cc:137
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
 "                              URLs."
@@ -515,14 +517,14 @@ msgstr ""
 "シ\n"
 "                              ョンはすべての URL に影響します."
 
-#: src/main.cc:145
+#: src/main.cc:139
 msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
 msgstr ""
 " --http-user=USER             HTTP での認証ユーザーを指定します. このオプショ"
 "ン\n"
 "                              はすべての URL に影響します."
 
-#: src/main.cc:146
+#: src/main.cc:140
 msgid ""
 " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
 msgstr ""
@@ -530,7 +532,7 @@ msgstr ""
 "ショ\n"
 "                              ンはすべての URL に影響します."
 
-#: src/main.cc:147
+#: src/main.cc:141
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
 msgstr ""
@@ -540,7 +542,7 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/main.cc:148
+#: src/main.cc:142
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
 "URLs."
@@ -551,7 +553,7 @@ msgstr ""
 "し\n"
 "                              ます."
 
-#: src/main.cc:149
+#: src/main.cc:143
 msgid ""
 " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 "                              METHOD is either 'get' or 'tunnel'.\n"
@@ -562,7 +564,7 @@ msgstr ""
 "                              す. 'get' または 'tunnel' を指定してください.\n"
 "                              デフォルト値: tunnel"
 
-#: src/main.cc:152
+#: src/main.cc:146
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -574,14 +576,14 @@ msgstr ""
 "                              いるのは basic です. \n"
 "                              デフォルト値: basic"
 
-#: src/main.cc:155
+#: src/main.cc:149
 msgid " --referer=REFERER            Set Referer. This affects to all URLs."
 msgstr ""
 " --referer=REFERER            リファラーを指定します. このオプションはすべて"
 "の\n"
 "                               URL に影響します."
 
-#: src/main.cc:156
+#: src/main.cc:150
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
 "                              Default: anonymous"
@@ -591,7 +593,7 @@ msgstr ""
 "                              はすべての URL に影響します.\n"
 "                              デフォルト値: anonymous"
 
-#: src/main.cc:158
+#: src/main.cc:152
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
 "                              Default: ARIA2USER@"
@@ -601,7 +603,7 @@ msgstr ""
 "                              ンはすべての URL に影響します.\n"
 "                              デフォルト値: ARIA2USER@"
 
-#: src/main.cc:160
+#: src/main.cc:154
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
@@ -612,11 +614,11 @@ msgstr ""
 "                              'ascii' を指定してください. デフォルト値: "
 "binary"
 
-#: src/main.cc:163
+#: src/main.cc:157
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
 msgstr " -p, --ftp-pasv               FTP で passive モードを使用します."
 
-#: src/main.cc:164
+#: src/main.cc:158
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
@@ -629,7 +631,7 @@ msgstr ""
 "く\n"
 "                              ださい. デフォルト値: tunnel"
 
-#: src/main.cc:167
+#: src/main.cc:161
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -652,7 +654,7 @@ msgstr ""
 "                              ードには影響しません.\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:174
+#: src/main.cc:168
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -667,11 +669,37 @@ msgstr ""
 "1024K).\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:179
+#: src/main.cc:172
+#, fuzzy
+msgid ""
+" --file-allocation=METHOD     Specify file allocation method. METHOD is "
+"either\n"
+"                              'none' or 'prealloc'.\n"
+"                              'none' doesn't pre-allocate file space. "
+"'prealloc'\n"
+"                              pre-allocates file space before download "
+"begins.\n"
+"                              This may take some time depending on the size "
+"of\n"
+"                              file.\n"
+"                              Default: 'none'"
+msgstr ""
+" --lowest-speed-limit=SPEED   ここで指定するダウンロード速度を下回った場合, "
+"ダ\n"
+"                              ウンロードを中止します. 速度はバイト/秒です.\n"
+"                              0 を指定すると, 速度の判定を行いません.\n"
+"                              K または M を付加することができます (1K = "
+"1024,\n"
+"                              1M = 1024K). このオプションは, BitTorrent ダウ"
+"ンロ\n"
+"                              ードには影響しません.\n"
+"                              デフォルト値: 0"
+
+#: src/main.cc:180
 msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  .torrent ファイルのパスを指定."
 
-#: src/main.cc:180
+#: src/main.cc:181
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -686,7 +714,7 @@ msgstr ""
 "                              は, BitTorrent モードに入りません.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:184
+#: src/main.cc:185
 msgid ""
 " -S, --show-files             Print file listing of .torrent file and exit."
 msgstr ""
@@ -694,7 +722,7 @@ msgstr ""
 "し\n"
 "                              終了します."
 
-#: src/main.cc:185
+#: src/main.cc:186
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -705,14 +733,14 @@ msgstr ""
 "                              します.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:188
+#: src/main.cc:189
 msgid ""
 " --listen-port=PORT           Set port number to listen to for peer "
 "connection."
 msgstr ""
 " --listen-port=PORT           ピアからの接続を受け付けるポート番号を指定."
 
-#: src/main.cc:189
+#: src/main.cc:190
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -727,7 +755,7 @@ msgstr ""
 "1024K).\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:193
+#: src/main.cc:194
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can know file index through --show-files\n"
@@ -748,7 +776,7 @@ msgstr ""
 "                              また, '-' を使って範囲指定もできます: \"1-5\"\n"
 "                              ',' と '-' は組み合わせて使うことができます."
 
-#: src/main.cc:199
+#: src/main.cc:200
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
 "                              --seed-ratio option."
@@ -756,7 +784,7 @@ msgstr ""
 " --seed-time=MINUTES          シードを行う時間を分単位で指定します. \n"
 "                              --seed-ratio オプションも参照してください."
 
-#: src/main.cc:201
+#: src/main.cc:202
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents "
 "until\n"
@@ -775,11 +803,11 @@ msgstr ""
 "く\n"
 "                              とも一方の条件が成立するとシードを終了します."
 
-#: src/main.cc:208
+#: src/main.cc:209
 msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE .metalink ファイルのパスを指定."
 
-#: src/main.cc:209
+#: src/main.cc:210
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. If more than one connection "
@@ -793,15 +821,15 @@ msgstr ""
 "                              使用してください.\n"
 "                              デフォルト値: 15"
 
-#: src/main.cc:213
+#: src/main.cc:214
 msgid " --metalink-version=VERSION   The version of file to download."
 msgstr " --metalink-version=VERSION   ダウンロードするファイルのバージョン."
 
-#: src/main.cc:214
+#: src/main.cc:215
 msgid " --metalink-language=LANGUAGE The language of file to download."
 msgstr " --metalink-language=LANGUAGE ダウンロードするファイルの言語."
 
-#: src/main.cc:215
+#: src/main.cc:216
 msgid ""
 " --metalink-os=OS             The operating system the file is targeted."
 msgstr ""
@@ -809,11 +837,11 @@ msgstr ""
 "レー\n"
 "                              ティング・システム."
 
-#: src/main.cc:216
+#: src/main.cc:217
 msgid " --metalink-location=LOCATION The location of the prefered server."
 msgstr " --metalink-location=LOCATION 優先的にダウンロードするサーバーの場所."
 
-#: src/main.cc:217
+#: src/main.cc:218
 msgid ""
 " --follow-metalink=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -828,16 +856,16 @@ msgstr ""
 "                              は, Metalink モードに入りません.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:222
+#: src/main.cc:223
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
-#: src/main.cc:223
+#: src/main.cc:224
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 " -h, --help                   このヘルプメッセージを表示し, 終了します."
 
-#: src/main.cc:226
+#: src/main.cc:227
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
@@ -846,7 +874,7 @@ msgstr ""
 "れ\n"
 " ばなりません. さもなくばダウンロードは失敗します."
 
-#: src/main.cc:231
+#: src/main.cc:232
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option. This arguments are ignored if you specify --select-file option."
@@ -855,152 +883,157 @@ msgstr ""
 "ン\n"
 " と共に使用します. --select-file オプションと併用はできません."
 
-#: src/main.cc:235
+#: src/main.cc:236
 msgid "Examples:"
 msgstr "例:"
 
-#: src/main.cc:236
+#: src/main.cc:237
 msgid " Download a file by 1 connection:"
 msgstr " 1 コネクションでのダウンロード:"
 
-#: src/main.cc:238
+#: src/main.cc:239
 msgid " Download a file by 2 connections:"
 msgstr " 2 コネクションでのダウンロード:"
 
-#: src/main.cc:240
+#: src/main.cc:241
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr " 二つの異なるサーバーに接続してダウンロード:"
 
-#: src/main.cc:242
+#: src/main.cc:243
 msgid " You can mix up different protocols:"
 msgstr " 異なるプロトコルを混合させてダウンロード:"
 
-#: src/main.cc:246
+#: src/main.cc:247
 msgid " Download a torrent:"
 msgstr " torrent をダウンロード:"
 
-#: src/main.cc:248
+#: src/main.cc:249
 msgid " Download a torrent using local .torrent file:"
 msgstr " ローカル .torrent ファイルを使ってダウンロード:"
 
-#: src/main.cc:250
+#: src/main.cc:251
 msgid " Download only selected files:"
 msgstr " ファイルを指定してダウンロード:"
 
-#: src/main.cc:252
+#: src/main.cc:253
 msgid " Print file listing of .torrent file:"
 msgstr " この .torrent ファイルに含まれるファイルリストを表示:"
 
-#: src/main.cc:257
+#: src/main.cc:258
 msgid " Metalink downloading:"
 msgstr " Metalink でダウンロード:"
 
-#: src/main.cc:259
+#: src/main.cc:260
 msgid " Download a file using local .metalink file:"
 msgstr " ローカル .metalink ファイルを使ってダウンロード:"
 
-#: src/main.cc:261
+#: src/main.cc:262
 msgid " Metalink downloading with preferences:"
 msgstr " ユーザ設定による Metalink ダウンロード:"
 
-#: src/main.cc:265
+#: src/main.cc:266
 #, c-format
 msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
-#: src/main.cc:404
+#: src/main.cc:409
 msgid "unrecognized proxy format"
 msgstr "理解できないProxyフォーマットです."
 
-#: src/main.cc:431
+#: src/main.cc:436
 msgid "Currently, supported authentication scheme is basic."
 msgstr "現在サポートされている認証方法は basic です."
 
-#: src/main.cc:440
+#: src/main.cc:445
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait は 0 から 60 の間で指定してください."
 
-#: src/main.cc:457
+#: src/main.cc:462
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type は 'binary' または 'ascii' を指定してください."
 
-#: src/main.cc:466
+#: src/main.cc:471
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:474
+#: src/main.cc:479
 msgid "min-segment-size invalid"
 msgstr "min-segment-size が不正です."
 
-#: src/main.cc:485
+#: src/main.cc:490
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method は 'get' または 'tunnel' を指定してください."
 
-#: src/main.cc:493
+#: src/main.cc:498
 msgid "listen-port must be between 1024 and 65535."
 msgstr "listen-port は 1024 - 65535 の値を指定してください."
 
-#: src/main.cc:506
+#: src/main.cc:511
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent は 'true' または 'false を指定してください."
 
-#: src/main.cc:520
+#: src/main.cc:525
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr "direct-file-mapping は 'true' または 'false を指定してください."
 
-#: src/main.cc:531
+#: src/main.cc:536
 msgid "upload-limit must be greater than or equal to 0."
 msgstr "upload-limit は 0 以上の数を指定してください."
 
-#: src/main.cc:544
+#: src/main.cc:549
 msgid "seed-time must be greater than or equal to 0."
 msgstr "seed-time は 0 以上の数を指定してください."
 
-#: src/main.cc:554
+#: src/main.cc:559
 msgid "seed-ratio must be greater than or equal to 0.0."
 msgstr "seed-ratio は 0.0 以上の数を指定してください."
 
-#: src/main.cc:564
+#: src/main.cc:569
 msgid "max-upload-limit must be greater than or equal to 0"
 msgstr "max-upload-limit は 0 以上の数を指定してください."
 
-#: src/main.cc:586
+#: src/main.cc:591
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr "follow-metalink は 'true' または 'false を指定してください."
 
-#: src/main.cc:597
+#: src/main.cc:602
 msgid "lowest-speed-limit must be greater than or equal to 0"
 msgstr "lowest-speed-limit は 0 以上の数を指定してください."
 
-#: src/main.cc:607
+#: src/main.cc:612
 msgid "max-download-limit must be greater than or equal to 0"
 msgstr "max-download-limit は 0 以上の数を指定してください."
 
-#: src/main.cc:636
+#: src/main.cc:641
 msgid "split must be between 1 and 5."
 msgstr "split は 1 - 5 の値を指定してください."
 
-#: src/main.cc:649
+#: src/main.cc:653
 msgid "timeout must be between 1 and 600"
 msgstr "timeout は 1 - 600 の値を指定してください."
 
-#: src/main.cc:658
+#: src/main.cc:662
 msgid "max-tries invalid"
 msgstr "max-tries が不正です."
 
-#: src/main.cc:680
+#: src/main.cc:684
 msgid "metalink-servers must be greater than 0."
 msgstr "metalink-servers は 0 以上の数を指定してください."
 
-#: src/main.cc:700
+#: src/main.cc:696
+#, fuzzy
+msgid "file-allocation must be either 'none' or 'prealloc'."
+msgstr "follow-torrent は 'true' または 'false を指定してください."
+
+#: src/main.cc:715
 msgid "specify at least one URL"
 msgstr "一個以上の URL を指定してください."
 
-#: src/main.cc:707
+#: src/main.cc:722
 msgid "daemon failed"
 msgstr "デーモン起動に失敗"
 
-#: src/main.cc:775
+#: src/main.cc:792
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
@@ -1009,19 +1042,19 @@ msgstr ""
 "チェックサムを検査しています.\n"
 "お使いの PC 環境とファイルサイズにより, ある程度の時間がかかります."
 
-#: src/main.cc:779
+#: src/main.cc:796
 msgid "checksum OK."
 msgstr "チェックサム OK."
 
-#: src/main.cc:782
+#: src/main.cc:799
 msgid "checksum ERROR."
 msgstr "チェックサム エラー."
 
-#: src/DefaultPieceStorage.cc:220
+#: src/DefaultPieceStorage.cc:240
 msgid "Download of selected files was complete."
 msgstr "ご指定のファイルのダウンロードが完了."
 
-#: src/DefaultPieceStorage.cc:223
+#: src/DefaultPieceStorage.cc:243
 msgid "The download was complete."
 msgstr "ダウンロードが完了."
 
