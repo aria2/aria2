@@ -32,53 +32,36 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "DlAbortEx.h"
-#include "LogFactory.h"
+#ifndef _D_FILE_ALLOCATION_MONITOR_H_
+#define _D_FILE_ALLOCATION_MONITOR_H_
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
+#include "FileProgressMonitor.h"
 
-DiskAdaptor::~DiskAdaptor() {}
+typedef FileProgressMonitor<uint64_t> FileAllocationMonitor;
+typedef SharedHandle<FileAllocationMonitor> FileAllocationMonitorHandle;
 
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
-    }
+class FileAllocationMonitorFactory;
+
+typedef SharedHandle<FileAllocationMonitorFactory> FileAllocationMonitorFactoryHandle;
+
+class FileAllocationMonitorFactory {
+private:
+  static FileAllocationMonitorFactoryHandle factory;
+
+protected:
+  FileAllocationMonitorFactory() {}
+public:
+  static FileAllocationMonitorFactoryHandle getFactory() {
+    return factory;
   }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
-}
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
-    }
-  }
-  return false;
-}
+  virtual ~FileAllocationMonitorFactory() {}
 
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
+  static void setFactory(const FileAllocationMonitorFactoryHandle& factory) {
+    FileAllocationMonitorFactory::factory = factory;
   }
-  fileEntries.at(index)->setRequested(true);
-  return true;
-}
 
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
-  }
-}
+  virtual FileAllocationMonitorHandle createNewMonitor() = 0;
+};
 
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
-  }
-}
+#endif // _D_FILE_ALLOCATION_MONITOR_H_

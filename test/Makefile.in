@@ -64,7 +64,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
 	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
 	PeerMessageUtilTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
-	MultiDiskWriterTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
+	MultiDiskAdaptorTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
 	Xml2MetalinkProcessorTest.$(OBJEXT) MetalinkerTest.$(OBJEXT) \
 	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
 	ShareRatioSeedCriteriaTest.$(OBJEXT) \
@@ -88,7 +88,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	BtRejectMessageTest.$(OBJEXT) BtRequestMessageTest.$(OBJEXT) \
 	BtSuggestPieceMessageTest.$(OBJEXT) \
 	BtUnchokeMessageTest.$(OBJEXT) \
-	BtHandshakeMessageTest.$(OBJEXT)
+	BtHandshakeMessageTest.$(OBJEXT) \
+	ConsoleFileAllocationMonitorTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -267,7 +268,7 @@ aria2c_SOURCES = AllTest.cc\
 	ShaVisitorTest.cc\
 	PeerMessageUtilTest.cc\
 	DefaultDiskWriterTest.cc\
-	MultiDiskWriterTest.cc\
+	MultiDiskAdaptorTest.cc\
 	BitfieldManTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	MetalinkerTest.cc\
@@ -309,7 +310,8 @@ aria2c_SOURCES = AllTest.cc\
 	MockBtMessageDispatcher.h\
 	FixedNumberRandomizer.h\
 	MockBtMessageFactory.h\
-	MockBtMessage.h
+	MockBtMessage.h\
+	ConsoleFileAllocationMonitorTest.cc
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -395,6 +397,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncodingTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleFileAllocationMonitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@
@@ -412,7 +415,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkerTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriterTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@

@@ -61,8 +61,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 @ENABLE_BITTORRENT_TRUE@	Directory.cc Directory.h\
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-@ENABLE_BITTORRENT_TRUE@	MultiDiskWriter.cc MultiDiskWriter.h\
 @ENABLE_BITTORRENT_TRUE@	DiskAdaptor.cc DiskAdaptor.h\
+@ENABLE_BITTORRENT_TRUE@	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
@@ -199,9 +199,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	message.h Exception.h DlAbortEx.h DlRetryEx.h Logger.h \
 	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
 	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
-	DefaultDiskWriter.cc DefaultDiskWriter.h \
-	PreAllocationDiskWriter.cc PreAllocationDiskWriter.h \
-	AbstractDiskWriter.cc AbstractDiskWriter.h File.cc File.h \
+	AbstractDiskWriter.cc AbstractDiskWriter.h \
+	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
 	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
 	messageDigest.h LogFactory.cc LogFactory.h NullLogger.h \
 	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
@@ -210,12 +209,15 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h NameResolver.cc NameResolver.h MetaEntry.h \
-	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
-	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
-	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
-	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
-	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
+	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
+	FileAllocationMonitor.cc FileAllocationMonitor.h \
+	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
+	NameResolver.cc NameResolver.h MetaEntry.h Data.cc Data.h \
+	Dictionary.cc Dictionary.h List.cc List.h MetaFileUtil.cc \
+	MetaFileUtil.h MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
+	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
+	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -224,11 +226,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	RequestSlot.cc RequestSlot.h TorrentAutoSaveCommand.cc \
 	TorrentAutoSaveCommand.h Directory.cc Directory.h \
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h \
-	MultiDiskWriter.cc MultiDiskWriter.h DiskAdaptor.cc \
-	DiskAdaptor.h CopyDiskAdaptor.cc CopyDiskAdaptor.h \
-	DirectDiskAdaptor.cc DirectDiskAdaptor.h MultiDiskAdaptor.cc \
-	MultiDiskAdaptor.h FileEntry.cc FileEntry.h \
-	TrackerUpdateCommand.cc TrackerUpdateCommand.h \
+	DiskAdaptor.cc DiskAdaptor.h AbstractSingleDiskAdaptor.cc \
+	AbstractSingleDiskAdaptor.h CopyDiskAdaptor.cc \
+	CopyDiskAdaptor.h DirectDiskAdaptor.cc DirectDiskAdaptor.h \
+	MultiDiskAdaptor.cc MultiDiskAdaptor.h FileEntry.cc \
+	FileEntry.h TrackerUpdateCommand.cc TrackerUpdateCommand.h \
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
 	PeerChokeCommand.cc PeerChokeCommand.h HaveEraseCommand.cc \
 	HaveEraseCommand.h TorrentRequestInfo.cc TorrentRequestInfo.h \
@@ -297,8 +299,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	TorrentAutoSaveCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Directory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MultiDiskWriter.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DiskAdaptor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	AbstractSingleDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.$(OBJEXT) \
@@ -365,15 +367,16 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	DownloadEngine.$(OBJEXT) ConsoleDownloadEngine.$(OBJEXT) \
 	Segment.$(OBJEXT) SegmentMan.$(OBJEXT) Util.$(OBJEXT) \
 	Request.$(OBJEXT) SimpleLogger.$(OBJEXT) \
-	ChunkedEncoding.$(OBJEXT) DefaultDiskWriter.$(OBJEXT) \
-	PreAllocationDiskWriter.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
-	File.$(OBJEXT) Option.$(OBJEXT) Base64.$(OBJEXT) \
-	CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) TimeA2.$(OBJEXT) \
-	FeatureConfig.$(OBJEXT) DownloadEngineFactory.$(OBJEXT) \
-	UrlRequestInfo.$(OBJEXT) SpeedCalc.$(OBJEXT) \
-	BitfieldMan.$(OBJEXT) BitfieldManFactory.$(OBJEXT) \
-	SimpleRandomizer.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	ChunkedEncoding.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
+	DefaultDiskWriter.$(OBJEXT) File.$(OBJEXT) Option.$(OBJEXT) \
+	Base64.$(OBJEXT) CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) \
+	TimeA2.$(OBJEXT) FeatureConfig.$(OBJEXT) \
+	DownloadEngineFactory.$(OBJEXT) UrlRequestInfo.$(OBJEXT) \
+	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
+	BitfieldManFactory.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
+	FileAllocator.$(OBJEXT) FileAllocationMonitor.$(OBJEXT) \
+	ConsoleFileAllocationMonitor.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -566,9 +569,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	message.h Exception.h DlAbortEx.h DlRetryEx.h Logger.h \
 	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
 	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
-	DefaultDiskWriter.cc DefaultDiskWriter.h \
-	PreAllocationDiskWriter.cc PreAllocationDiskWriter.h \
-	AbstractDiskWriter.cc AbstractDiskWriter.h File.cc File.h \
+	AbstractDiskWriter.cc AbstractDiskWriter.h \
+	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
 	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
 	messageDigest.h LogFactory.cc LogFactory.h NullLogger.h \
 	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
@@ -577,8 +579,10 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
 	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h $(am__append_1) $(am__append_2) \
-	$(am__append_3)
+	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
+	FileAllocationMonitor.cc FileAllocationMonitor.h \
+	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
+	$(am__append_1) $(am__append_2) $(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -668,6 +672,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/alloca.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractSingleDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
@@ -696,6 +701,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleFileAllocationMonitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
@@ -721,6 +727,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngineFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationMonitor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
@@ -746,7 +754,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NameResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
@@ -758,7 +765,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreAllocationDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@

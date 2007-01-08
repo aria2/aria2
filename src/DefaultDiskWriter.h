@@ -36,16 +36,20 @@
 #define _D_DEFAULT_DISK_WRITER_H_
 
 #include "AbstractDiskWriter.h"
+#include "Option.h"
 
 class DefaultDiskWriter:public AbstractDiskWriter {
-private:
-  long long int totalLength;
 public:
   DefaultDiskWriter();
-  DefaultDiskWriter(long long int totalLength);
-  ~DefaultDiskWriter();
 
-  void initAndOpenFile(const string& filename);
+  virtual ~DefaultDiskWriter();
+
+  virtual void initAndOpenFile(const string& filename,
+			       uint64_t totalLength = 0);
+
+  static DefaultDiskWriter* createNewDiskWriter(const Option* option);
 };
+
+typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;
 
 #endif // _D_DEFAULT_DISK_WRITER_H_

@@ -38,11 +38,12 @@
 #include "DefaultDiskWriter.h"
 #include "messageDigest.h"
 #include "FileEntry.h"
+#include "FileAllocator.h"
 
 class DiskWriterEntry {
 public:
   FileEntryHandle fileEntry;
-  DiskWriter* diskWriter;
+  DefaultDiskWriter* diskWriter;
 public:
   DiskWriterEntry(const FileEntryHandle& fileEntry):fileEntry(fileEntry) {
     diskWriter = new DefaultDiskWriter(this->fileEntry->getLength());
@@ -58,12 +59,14 @@ class MultiDiskWriter : public DiskWriter {
 private:
   DiskWriterEntries diskWriterEntries;
   int pieceLength;
+  MessageDigestContext ctx;
+  FileAllocatorHandle fileAllocator;
+
   bool isInRange(const DiskWriterEntry* entry, long long int offset) const;
   int calculateLength(const DiskWriterEntry* entry, long long int fileOffset, int rem) const;
   void clearEntries();
-  MessageDigestContext ctx;
   void hashUpdate(DiskWriterEntry* entry, long long int offset, long long int length);
-
+  void configureFileAllocator(DiskWriterEntry* entry);
 public:
   MultiDiskWriter(int pieceLength);
   virtual ~MultiDiskWriter();
@@ -77,6 +80,10 @@ public:
   virtual void writeData(const char* data, int len, long long int position = 0);
   virtual int readData(char* data, int len, long long int position);
   virtual string sha1Sum(long long int offset, long long int length);
+
+  void setFileAllocator(const FileAllocatorHandle& fileAllocator) {
+    this->fileAllocator = fileAllocator;
+  }
 };
 
 #endif // _D_MULTI_DISK_WRITER_H_

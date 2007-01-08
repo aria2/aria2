@@ -35,20 +35,20 @@
 #ifndef _D_COPY_DISK_ADAPTOR_H_
 #define _D_COPY_DISK_ADAPTOR_H_
 
-#include "DiskAdaptor.h"
-#include "DiskWriter.h"
+#include "AbstractSingleDiskAdaptor.h"
 
-class CopyDiskAdaptor : public DiskAdaptor {
+class CopyDiskAdaptor : public AbstractSingleDiskAdaptor {
 private:
   string tempFilename;
   string topDir;
 
   void fixFilename();
 protected:
-  string getFilePath() const;
+  virtual string getFilePath();
 public:
-  CopyDiskAdaptor(DiskWriter* diskWriter);
-  ~CopyDiskAdaptor();
+  CopyDiskAdaptor() {}
+
+  virtual ~CopyDiskAdaptor() {}
 
   virtual void onDownloadComplete();
 
@@ -56,7 +56,8 @@ public:
   void setTempFilename(const string& tempFilename) {
     this->tempFilename = tempFilename;
   }
-  string getTempFile() const { return this->tempFilename; }
+
+  const string& getTempFile() const { return this->tempFilename; }
 
   void setTopDir(const string& topDir) {
     this->topDir = topDir;
@@ -66,5 +67,7 @@ public:
     return topDir;
   }
 };
+
+typedef SharedHandle<CopyDiskAdaptor> CopyDiskAdaptorHandle;
 
 #endif // _D_COPY_DISK_ADAPTOR_H_

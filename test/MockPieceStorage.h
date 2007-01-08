@@ -13,10 +13,10 @@ private:
   BitfieldMan* bitfieldMan;
   bool selectiveDownloadingMode;
   bool endGame;
-  DiskAdaptor* diskAdaptor;
+  DiskAdaptorHandle diskAdaptor;
   Integers pieceLengthList;
 public:
-  MockPieceStorage() {}
+  MockPieceStorage():diskAdaptor(0) {}
   virtual ~MockPieceStorage() {}
 
   virtual bool hasMissingPiece(const PeerHandle& peer) {
@@ -122,11 +122,11 @@ public:
     this->endGame = flag;
   }
 
-  virtual DiskAdaptor* getDiskAdaptor() {
+  virtual DiskAdaptorHandle getDiskAdaptor() {
     return diskAdaptor;
   }
 
-  void setDiskAdaptor(DiskAdaptor* adaptor) {
+  void setDiskAdaptor(const DiskAdaptorHandle adaptor) {
     this->diskAdaptor = adaptor;
   }
   

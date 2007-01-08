@@ -32,53 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "DlAbortEx.h"
-#include "LogFactory.h"
+#include "AbstractSingleDiskAdaptor.h"
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
-
-DiskAdaptor::~DiskAdaptor() {}
-
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
-    }
-  }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
+void AbstractSingleDiskAdaptor::initAndOpenFile() {
+  diskWriter->initAndOpenFile(getFilePath(), totalLength);
 }
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
-    }
-  }
-  return false;
+void AbstractSingleDiskAdaptor::openFile() {
+  diskWriter->openFile(getFilePath(), totalLength);
 }
 
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
-  }
-  fileEntries.at(index)->setRequested(true);
-  return true;
+void AbstractSingleDiskAdaptor::closeFile() {
+  diskWriter->closeFile();
 }
 
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
-  }
+void AbstractSingleDiskAdaptor::openExistingFile() {
+  diskWriter->openExistingFile(getFilePath());
 }
 
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
-  }
+void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, uint32_t len, int64_t offset) {
+  diskWriter->writeData(data, len, offset);
+}
+
+int AbstractSingleDiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset) {
+  return diskWriter->readData(data, len, offset);
+}
+
+string AbstractSingleDiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
+  return diskWriter->sha1Sum(offset, length);
 }

@@ -32,53 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "DlAbortEx.h"
-#include "LogFactory.h"
+#include "ConsoleFileAllocationMonitor.h"
+#include "Util.h"
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
+void ConsoleFileAllocationMonitor::showProgress() {
+  uint32_t progressPercentage = (uint32_t)(((current-min)*1.0/(max-min))*100);
+  uint32_t numOfStar = progressPercentage/10*2;
 
-DiskAdaptor::~DiskAdaptor() {}
-
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
-    }
+  cout << "\r                                                                                ";
+  cout << "\r";
+  cout << "|";
+  for(uint32_t i = 0; i < numOfStar; i++) {
+    cout << "*";
   }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
-}
-
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
-    }
+  for(uint32_t i = 0; i < 20-numOfStar; i++) {
+    cout << " ";
   }
-  return false;
-}
-
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
-  }
-  fileEntries.at(index)->setRequested(true);
-  return true;
-}
-
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
-  }
-}
-
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
-  }
+  cout << "|";
+  cout << progressPercentage << "%";
+  cout << "(";
+  cout << Util::ullitos(current, true) << "/" << Util::ullitos(max, true);
+  cout << ") done";
+  cout << flush;
+  // |******************* | 95%(1,333,3256/1,553,3232 bytes) done
 }

@@ -34,11 +34,7 @@
 /* copyright --> */
 #include "DirectDiskAdaptor.h"
 
-DirectDiskAdaptor::DirectDiskAdaptor(DiskWriter* diskWriter):DiskAdaptor(diskWriter) {}
-
-DirectDiskAdaptor::~DirectDiskAdaptor() {}
-
-string DirectDiskAdaptor::getFilePath() const {
+string DirectDiskAdaptor::getFilePath() {
   return storeDir+"/"+fileEntries.front()->getPath();
 }
 

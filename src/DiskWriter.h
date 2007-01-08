@@ -52,9 +52,9 @@ public:
    * If the file exists, then it is truncated to 0 length.
    * @param filename the file name to be opened.
    */
-  virtual void initAndOpenFile(const string& filename) = 0;
-
-  virtual void openFile(const string& filename) = 0;
+  virtual void initAndOpenFile(const string& filename, uint64_t totalLength = 0) = 0;
+  
+  virtual void openFile(const string& filename, uint64_t totalLength = 0) = 0;
 
   /**
    * Closes this output stream.
@@ -78,19 +78,20 @@ public:
    * @param len the number of bytes to write
    * @param position the offset of this binary stream
    */
-  virtual void writeData(const char* data, int len, long long int position = 0) = 0;
-  virtual void writeData(const unsigned char* data, int len, long long int position = 0)
+  virtual void writeData(const char* data, uint32_t len, int64_t position = 0) = 0;
+  virtual void writeData(const unsigned char* data, uint32_t len, int64_t position = 0)
   {
     writeData((const char*)data, len, position);
   }
 
-  virtual int readData(char* data, int len, long long int position) = 0;
-  virtual int readData(unsigned char* data, int len, long long int position) {
+  virtual int readData(char* data, uint32_t len, int64_t position) = 0;
+  virtual int readData(unsigned char* data, uint32_t len, int64_t position) {
     return readData((char*)data, len, position);
   }
 
-  virtual string sha1Sum(long long int offset, long long int length) = 0;
-
+  virtual string sha1Sum(int64_t offset, uint64_t length) = 0;
 };
+
+typedef SharedHandle<DiskWriter> DiskWriterHandle;
 
 #endif // _D_DISK_WRITER_H_

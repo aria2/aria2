@@ -39,37 +39,45 @@
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include "FileAllocator.h"
+#include "Logger.h"
 
-class AbstractDiskWriter:public DiskWriter {
+class AbstractDiskWriter : public DiskWriter {
 protected:
   string filename;
-  int fd;
+  int32_t fd;
+  FileAllocatorHandle fileAllocator;
+  const Logger* logger;
 #ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestContext ctx;
 #endif // ENABLE_MESSAGE_DIGEST
 
-  void createFile(const string& filename, int addFlags = 0);
+  void createFile(const string& filename, int32_t addFlags = 0);
 
-  void writeDataInternal(const char* data, int len);
-  int readDataInternal(char* data, int len);
+  void writeDataInternal(const char* data, uint32_t len);
+  int readDataInternal(char* data, uint32_t len);
 
-  void seek(long long int offset);
+  void seek(int64_t offset);
 
 public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
 
-  void openFile(const string& filename);
+  virtual void openFile(const string& filename, uint64_t totalLength = 0);
 
-  void closeFile();
+  virtual void closeFile();
 
-  void openExistingFile(const string& filename);
+  virtual void openExistingFile(const string& filename);
 
-  string sha1Sum(long long int offset, long long int length);
+  virtual string sha1Sum(int64_t offset, uint64_t length);
 
-  void writeData(const char* data, int len, long long int offset);
+  virtual void writeData(const char* data, uint32_t len, int64_t offset);
 
-  int readData(char* data, int len, long long int offset);
+  virtual int readData(char* data, uint32_t len, int64_t offset);
+
+  void setFileAllocator(const FileAllocatorHandle& fileAllocator) {
+    this->fileAllocator = fileAllocator;
+  }
 };
 
 #endif // _D_ABSTRACT_DISK_WRITER_H_

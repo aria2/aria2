@@ -32,53 +32,74 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "DlAbortEx.h"
-#include "LogFactory.h"
+#ifndef _D_CONSOLE_FILE_ALLOCATION_MONITOR_H_
+#define _D_CONSOLE_FILE_ALLOCATION_MONITOR_H_
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
+#include "FileAllocationMonitor.h"
 
-DiskAdaptor::~DiskAdaptor() {}
+class ConsoleFileAllocationMonitor : public FileAllocationMonitor {
+private:
+  string filename;
+  uint64_t min;
+  uint64_t max;
+  uint64_t current;
+public:
+  ConsoleFileAllocationMonitor():min(0), max(0), current(0) {}
 
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
+  virtual ~ConsoleFileAllocationMonitor() {}
+
+  virtual void setFilename(const string& filename) {
+    this->filename = filename;
+  }
+
+  virtual void setMinValue(const uint64_t& min) {
+    if(max < min) {
+      this->min = max;
+    } else {
+      this->min = min;
     }
   }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
-}
+  
+  uint64_t getMinValue() const {
+    return min;
+  }
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
+  virtual void setMaxValue(const uint64_t& max) {
+    if(max < min) {
+      this->max = min;
+    } else {
+      this->max = max;
     }
   }
-  return false;
-}
 
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
+  uint64_t getMaxValue() const {
+    return max;
   }
-  fileEntries.at(index)->setRequested(true);
-  return true;
-}
 
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
+  virtual void setCurrentValue(const uint64_t& current) {
+    if(current > max) {
+      this->current = max;
+    } else {
+      this->current = current;
+    }
   }
-}
 
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
+  uint64_t getCurrentValue() const {
+    return current;
   }
-}
+
+  virtual void showProgress();
+};
+
+class ConsoleFileAllocationMonitorFactory : public FileAllocationMonitorFactory {
+public:
+  ConsoleFileAllocationMonitorFactory() {}
+
+  virtual FileAllocationMonitorHandle createNewMonitor() {
+    return new ConsoleFileAllocationMonitor();
+  }
+};
+
+typedef SharedHandle<ConsoleFileAllocationMonitorFactory> ConsoleFileAllocationMonitorFactoryHandle;
+
+#endif // _D_CONSOLE_FILE_ALLOCATION_MONITOR_H_

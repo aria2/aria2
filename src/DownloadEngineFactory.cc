@@ -38,6 +38,8 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "ByteArrayDiskWriter.h"
 #include "Util.h"
+#include "FileAllocator.h"
+#include "FileAllocationMonitor.h"
 #ifdef ENABLE_BITTORRENT
 # include "PeerListenCommand.h"
 # include "TrackerWatcherCommand.h"
@@ -63,7 +65,7 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
   ConsoleDownloadEngine* e = new ConsoleDownloadEngine();
   e->option = op;
   e->segmentMan = new SegmentMan();
-  e->segmentMan->diskWriter = new DefaultDiskWriter();
+  e->segmentMan->diskWriter = DefaultDiskWriter::createNewDiskWriter(op);
   e->segmentMan->dir = op->get(PREF_DIR);
   e->segmentMan->ufilename = op->get(PREF_OUT);
   e->segmentMan->option = op;

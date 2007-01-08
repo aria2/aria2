@@ -35,10 +35,6 @@
 #include "CopyDiskAdaptor.h"
 #include "Util.h"
 
-CopyDiskAdaptor::CopyDiskAdaptor(DiskWriter* diskWriter):DiskAdaptor(diskWriter) {}
-
-CopyDiskAdaptor::~CopyDiskAdaptor() {}
-
 void CopyDiskAdaptor::onDownloadComplete() {
   closeFile();
   fixFilename();
@@ -62,6 +58,6 @@ void CopyDiskAdaptor::fixFilename() {
   }
 }
 
-string CopyDiskAdaptor::getFilePath() const {
+string CopyDiskAdaptor::getFilePath() {
   return storeDir+"/"+tempFilename;
 }

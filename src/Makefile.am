@@ -37,9 +37,8 @@ SRCS =  Socket.h\
 	TransferEncoding.h\
 	ChunkedEncoding.cc ChunkedEncoding.h\
 	DiskWriter.h\
-	DefaultDiskWriter.cc DefaultDiskWriter.h\
-	PreAllocationDiskWriter.cc PreAllocationDiskWriter.h\
 	AbstractDiskWriter.cc AbstractDiskWriter.h\
+	DefaultDiskWriter.cc DefaultDiskWriter.h\
 	File.cc File.h\
 	Option.cc Option.h\
 	Base64.cc Base64.h\
@@ -59,7 +58,10 @@ SRCS =  Socket.h\
 	BitfieldMan.cc BitfieldMan.h\
 	BitfieldManFactory.cc BitfieldManFactory.h\
 	Randomizer.h\
-	SimpleRandomizer.cc SimpleRandomizer.h
+	SimpleRandomizer.cc SimpleRandomizer.h\
+	FileAllocator.cc FileAllocator.h\
+	FileAllocationMonitor.cc FileAllocationMonitor.h\
+	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h
 #	debug_new.cpp
 
 if ENABLE_ASYNC_DNS
@@ -88,8 +90,8 @@ SRCS += MetaEntry.h\
 	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-	MultiDiskWriter.cc MultiDiskWriter.h\
 	DiskAdaptor.cc DiskAdaptor.h\
+	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\

@@ -42,6 +42,7 @@
 #include "Logger.h"
 #include "Option.h"
 #include "Piece.h"
+#include "FileAllocator.h"
 
 #define END_GAME_PIECE_NUM 20
 
@@ -68,12 +69,13 @@ class DefaultPieceStorage : public PieceStorage {
 private:
   BtContextHandle btContext;
   BitfieldMan* bitfieldMan;
-  DiskAdaptor* diskAdaptor;
+  DiskAdaptorHandle diskAdaptor;
   Pieces usedPieces;
   uint32_t endGamePieceNum;
   Logger* logger;
   const Option* option;
   Haves haves;
+  FileAllocatorHandle createFileAllocator();
 
   int getMissingPieceIndex(const PeerHandle& peer);
   int getMissingFastPieceIndex(const PeerHandle& peer);
@@ -139,7 +141,7 @@ public:
 
   virtual bool isEndGame();
   
-  virtual DiskAdaptor* getDiskAdaptor();
+  virtual DiskAdaptorHandle getDiskAdaptor();
 
   virtual int getPieceLength(int index);
 

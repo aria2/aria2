@@ -25,8 +25,5 @@
 do not start downloading and print some useful message to the user.
 * Fix Segfaults in BitfieldMan.cc:71
 https://sourceforge.net/tracker/index.php?func=detail&aid=1606060&group_id=159897&atid=813673
-* Prevent the file to be fragmented. Use PreAllocationDiskWriter
-https://sourceforge.net/tracker/index.php?func=detail&aid=1611886&group_id=159897&atid=813673
-* Add #include <libgen.h> to DefaultBtContext.h
 * int32_t
 * remove blockIndex

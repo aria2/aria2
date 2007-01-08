@@ -42,6 +42,7 @@
  */
 #define V_TRUE "true"
 #define V_FALSE "false"
+#define V_NONE "none"
 
 /**
  * General preferences
@@ -80,6 +81,9 @@
 #define PREF_MAX_DOWNLOAD_LIMIT "max_download_limit"
 // value: 1*digit
 #define PREF_STARTUP_IDLE_TIME "startup_idle_time"
+// value: prealloc | none
+#define PREF_FILE_ALLOCATION "file_allocation"
+#  define V_PREALLOC "prealloc"
 
 /**
  * FTP related preferences

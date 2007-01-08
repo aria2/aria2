@@ -47,6 +47,7 @@
 #include "TorrentRequestInfo.h"
 #include "BitfieldManFactory.h"
 #include "SimpleRandomizer.h"
+#include "ConsoleFileAllocationMonitor.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -119,7 +120,8 @@ void showUsage() {
   cout << _(" -s, --split=N                Download a file using N connections. N must be\n"
 	    "                              between 1 and 5. This option affects all URLs.\n"
 	    "                              Thus, aria2 connects to each URL with\n"
-	    "                              N connections.") << endl;
+	    "                              N connections.\n"
+	    "                              Default: 1") << endl;
   cout << _(" --retry-wait=SEC             Set amount of time in second between requests\n"
 	    "                              for errors. Specify a value between 0 and 60.\n"
 	    "                              Default: 5") << endl;
@@ -167,6 +169,13 @@ void showUsage() {
 	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 	    "                              Default: 0") << endl;
+  cout << _(" --file-allocation=METHOD     Specify file allocation method. METHOD is either\n"
+	    "                              'none' or 'prealloc'.\n"
+	    "                              'none' doesn't pre-allocate file space. 'prealloc'\n"
+	    "                              pre-allocates file space before download begins.\n"
+	    "                              This may take some time depending on the size of\n"
+	    "                              file.\n"
+	    "                              Default: 'none'") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -327,6 +336,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_MAX_UPLOAD_LIMIT, "0");
   op->put(PREF_STARTUP_IDLE_TIME, "10");
   op->put(PREF_TRACKER_MAX_TRIES, "10");
+  op->put(PREF_FILE_ALLOCATION, V_NONE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -355,6 +365,7 @@ int main(int argc, char* argv[]) {
       { "http-proxy-method", required_argument, &lopt, 14 },
       { "lowest-speed-limit", required_argument, &lopt, 200 },
       { "max-download-limit", required_argument, &lopt, 201 },
+      { "file-allocation", required_argument, 0, 'a' },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -382,7 +393,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -677,6 +688,17 @@ int main(int argc, char* argv[]) {
       op->put(PREF_METALINK_SERVERS, Util::itos(metalinkServers));
       break;
     }
+    case 'a': {
+      string value = string(optarg);
+      if(value == V_NONE || value == V_PREALLOC) {
+	op->put(PREF_FILE_ALLOCATION, value);
+      } else {
+	cerr << _("file-allocation must be either 'none' or 'prealloc'.") << endl;
+	showUsage();
+	exit(EXIT_FAILURE);
+      }
+      break;
+    }
     case 'v':
       showVersion();
       exit(EXIT_SUCCESS);
@@ -716,6 +738,7 @@ int main(int argc, char* argv[]) {
 #endif // ENABLE_METALINK
   SimpleRandomizer::init();
   BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
+  FileAllocationMonitorFactory::setFactory(new ConsoleFileAllocationMonitorFactory());
   if(op->getAsBool(PREF_STDOUT_LOG)) {
     LogFactory::setLogFile("/dev/stdout");
   } else if(op->get(PREF_LOG).size()) {

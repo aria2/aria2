@@ -34,18 +34,46 @@
 /* copyright --> */
 #include "DefaultDiskWriter.h"
 #include "DlAbortEx.h"
+#include "message.h"
+#include "FileAllocator.h"
+#include "prefs.h"
+#include "Util.h"
 #include <errno.h>
 #include <unistd.h>
 
-DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter(), totalLength(0) {}
-
-DefaultDiskWriter::DefaultDiskWriter(long long int totalLength):AbstractDiskWriter(), totalLength(totalLength) {}
+DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter() {}
 
 DefaultDiskWriter::~DefaultDiskWriter() {}
 
-void DefaultDiskWriter::initAndOpenFile(const string& filename) {
+void DefaultDiskWriter::initAndOpenFile(const string& filename,
+					uint64_t totalLength)
+{
   createFile(filename);
-  if(totalLength > 0) {
-    ftruncate(fd, totalLength);
+  try {
+    if(totalLength > 0) {
+      if(fileAllocator.isNull()) {
+	ftruncate(fd, totalLength);
+      } else {
+	logger->notice("Allocating file %s, %s bytes",
+		       filename.c_str(),
+		       Util::ullitos(totalLength).c_str());
+	fileAllocator->allocate(fd, totalLength);
+      }
+    }
+  } catch(Exception *e) {
+    throw new DlAbortEx(e, EX_FILE_WRITE, filename.c_str(), strerror(errno));
   }
+}
+
+DefaultDiskWriter* DefaultDiskWriter::createNewDiskWriter(const Option* option)
+{
+  DefaultDiskWriter* diskWriter = new DefaultDiskWriter();
+  if(option->get(PREF_FILE_ALLOCATION) == V_PREALLOC) {
+    FileAllocatorHandle allocator = new FileAllocator();
+    allocator->setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
+    diskWriter->setFileAllocator(allocator);
+  } else {
+    diskWriter->setFileAllocator(0);
+  }
+  return diskWriter;
 }

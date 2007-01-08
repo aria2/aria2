@@ -15,7 +15,7 @@ aria2c_SOURCES = AllTest.cc\
 	ShaVisitorTest.cc\
 	PeerMessageUtilTest.cc\
 	DefaultDiskWriterTest.cc\
-	MultiDiskWriterTest.cc\
+	MultiDiskAdaptorTest.cc\
 	BitfieldManTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	MetalinkerTest.cc\
@@ -57,7 +57,8 @@ aria2c_SOURCES = AllTest.cc\
 	MockBtMessageDispatcher.h\
 	FixedNumberRandomizer.h\
 	MockBtMessageFactory.h\
-	MockBtMessage.h
+	MockBtMessage.h\
+	ConsoleFileAllocationMonitorTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 

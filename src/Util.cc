@@ -101,6 +101,10 @@ string Util::itos(int32_t value, bool comma) {
   return int2str<int32_t>(value, comma);
 }
 
+string Util::ullitos(uint64_t value, bool comma) {
+  return uint2str<uint64_t>(value, comma);
+}
+
 string Util::llitos(int64_t value, bool comma)
 {
   return int2str<int64_t>(value, comma);

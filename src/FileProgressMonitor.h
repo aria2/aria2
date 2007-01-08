@@ -32,53 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "DlAbortEx.h"
-#include "LogFactory.h"
+#ifndef _D_FILE_PROGRESS_MONITOR_H_
+#define _D_FILE_PROGRESS_MONITOR_H_
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
+#include "common.h"
 
-DiskAdaptor::~DiskAdaptor() {}
+template <typename T>
+class FileProgressMonitor {
+public:
+  virtual ~FileProgressMonitor() {}
 
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
-    }
-  }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
-}
+  virtual void setFilename(const string& filename) = 0;
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
-    }
-  }
-  return false;
-}
+  virtual void setMinValue(const T& min) = 0;
+  
+  virtual void setMaxValue(const T& max) = 0;
 
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
-  }
-  fileEntries.at(index)->setRequested(true);
-  return true;
-}
+  virtual void setCurrentValue(const T& current) = 0;
 
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
-  }
-}
+  virtual void showProgress() = 0;
+};
 
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
-  }
-}
+#endif // _D_FILE_PROGRESS_MONITOR_H_

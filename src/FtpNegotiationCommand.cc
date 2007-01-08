@@ -38,6 +38,7 @@
 #include "DlRetryEx.h"
 #include "message.h"
 #include "prefs.h"
+#include "Util.h"
 
 FtpNegotiationCommand::FtpNegotiationCommand(int cuid, const RequestHandle req,
 					     DownloadEngine* e,
@@ -185,6 +186,15 @@ bool FtpNegotiationCommand::recvSize() {
     e->segmentMan->totalSize = size;
     e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				e->segmentMan->totalSize);
+
+    e->segmentMan->filename = Util::urldecode(req->getFile());
+    bool segFileExists = e->segmentMan->segmentFileExists();
+    if(segFileExists) {
+      e->segmentMan->load();
+      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+    } else {
+      e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(), size);
+    }
   } else if(e->segmentMan->totalSize != size) {
     throw new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
   }

@@ -39,10 +39,9 @@
 #include "MultiDiskAdaptor.h"
 #include "CopyDiskAdaptor.h"
 #include "DefaultDiskWriter.h"
-#include "MultiDiskWriter.h"
-#include "PreAllocationDiskWriter.h"
 #include "DlAbortEx.h"
 #include "BitfieldManFactory.h"
+#include "FileAllocationMonitor.h"
 
 DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option* option):
   btContext(btContext),
@@ -59,7 +58,6 @@ DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option
 
 DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan;
-  delete diskAdaptor;
 }
 
 bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer) {
@@ -331,23 +329,30 @@ bool DefaultPieceStorage::downloadFinished() {
 
 // not unittested
 void DefaultPieceStorage::initStorage() {
-  if(diskAdaptor) {
-    delete diskAdaptor;
-    diskAdaptor = 0;
-  }
   if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
     if(btContext->getFileMode() == BtContext::SINGLE) {
-      diskAdaptor = new DirectDiskAdaptor(new DefaultDiskWriter(btContext->getTotalLength()));
+      DefaultDiskWriterHandle writer = DefaultDiskWriter::createNewDiskWriter(option);
+      DirectDiskAdaptorHandle directDiskAdaptor = new DirectDiskAdaptor();
+      directDiskAdaptor->setDiskWriter(writer);
+      directDiskAdaptor->setTotalLength(btContext->getTotalLength());
+      this->diskAdaptor = directDiskAdaptor;
     } else {
-      diskAdaptor = new MultiDiskAdaptor(new MultiDiskWriter(btContext->getPieceLength()));
-      ((MultiDiskAdaptor*)diskAdaptor)->setTopDir(btContext->getName());
+      MultiDiskAdaptorHandle multiDiskAdaptor = new MultiDiskAdaptor();
+      multiDiskAdaptor->setPieceLength(btContext->getPieceLength());
+      multiDiskAdaptor->setTopDir(btContext->getName());
+      multiDiskAdaptor->setOption(option);
+      this->diskAdaptor = multiDiskAdaptor;
     }
   } else {
-    diskAdaptor = new CopyDiskAdaptor(new PreAllocationDiskWriter(btContext->getTotalLength()));
-    ((CopyDiskAdaptor*)diskAdaptor)->setTempFilename(btContext->getName()+".a2tmp");
+    DefaultDiskWriterHandle writer = DefaultDiskWriter::createNewDiskWriter(option);
+    CopyDiskAdaptorHandle copyDiskAdaptor = new CopyDiskAdaptor();
+    copyDiskAdaptor->setDiskWriter(writer);
+    copyDiskAdaptor->setTempFilename(btContext->getName()+".a2tmp");
+    copyDiskAdaptor->setTotalLength(btContext->getTotalLength());
     if(btContext->getFileMode() == BtContext::MULTI) {
-      ((CopyDiskAdaptor*)diskAdaptor)->setTopDir(btContext->getName());
+      copyDiskAdaptor->setTopDir(btContext->getName());
     }
+    this->diskAdaptor = copyDiskAdaptor;
   }
   string storeDir = option->get(PREF_DIR);
   if(storeDir == "") {
@@ -370,7 +375,7 @@ const unsigned char* DefaultPieceStorage::getBitfield() {
   return bitfieldMan->getBitfield();
 }
 
-DiskAdaptor* DefaultPieceStorage::getDiskAdaptor() {
+DiskAdaptorHandle DefaultPieceStorage::getDiskAdaptor() {
   return diskAdaptor;
 }
 

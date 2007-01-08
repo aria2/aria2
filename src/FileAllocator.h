@@ -32,53 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
-#include "DlAbortEx.h"
-#include "LogFactory.h"
+#ifndef _D_FILE_ALLOCATOR_H_
+#define _D_FILE_ALLOCATOR_H_
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
+#include "common.h"
+#include "FileAllocationMonitor.h"
 
-DiskAdaptor::~DiskAdaptor() {}
+class FileAllocator {
+private:
+  FileAllocationMonitorHandle fileAllocationMonitor;
+public:
+  FileAllocator():fileAllocationMonitor(0) {}
 
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
-    }
+  ~FileAllocator() {}
+
+  void allocate(int fd, uint64_t totalLength);
+
+  void setFileAllocationMonitor(const FileAllocationMonitorHandle& monitor)
+  {
+    this->fileAllocationMonitor = monitor;
   }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
-}
+};
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
-    }
-  }
-  return false;
-}
+typedef SharedHandle<FileAllocator> FileAllocatorHandle;
 
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
-  }
-  fileEntries.at(index)->setRequested(true);
-  return true;
-}
-
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
-  }
-}
-
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
-  }
-}
+#endif // _D_FILE_ALLOCATOR_H_

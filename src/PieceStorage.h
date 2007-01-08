@@ -123,7 +123,7 @@ public:
 
   virtual bool isEndGame() = 0;
 
-  virtual DiskAdaptor* getDiskAdaptor() = 0;
+  virtual DiskAdaptorHandle getDiskAdaptor() = 0;
   
   virtual int getPieceLength(int index) = 0;
 

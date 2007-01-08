@@ -110,9 +110,10 @@ BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield,
 			   (randomizer->getMaxRandomNumber()+1.0));
 
   unsigned char lastMask = 0;
+  // the number of bytes in the last byte of bitfield
   uint32_t lastByteLength = totalLength%(blockLength*8);
+  // the number of block in the last byte of bitfield
   uint32_t lastBlockCount = DIV_FLOOR(lastByteLength, blockLength);
-  // TODO test this
   for(uint32_t i = 0; i < lastBlockCount; i++) {
     lastMask >>= 1;
     lastMask |= 0x80;

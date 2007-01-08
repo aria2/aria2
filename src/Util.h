@@ -53,6 +53,7 @@ class Util {
 public:
   static void split(pair<string, string>& hp, const string& src, char delim);
   static string llitos(int64_t value, bool comma = false);
+  static string ullitos(uint64_t value, bool comma = false);
   static string itos(int32_t value, bool comma = false);
   static string uitos(uint32_t value, bool comma = false);
   static string itos(int16_t value, bool comma = false);

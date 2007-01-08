@@ -33,44 +33,185 @@
  */
 /* copyright --> */
 #include "MultiDiskAdaptor.h"
+#include "DefaultDiskWriter.h"
+#include "DlAbortEx.h"
+#include "message.h"
+#include "Util.h"
+#include <errno.h>
 
-MultiDiskAdaptor::MultiDiskAdaptor(MultiDiskWriter* diskWriter):DiskAdaptor(diskWriter) {}
-
-MultiDiskAdaptor::~MultiDiskAdaptor() {}
-
-void MultiDiskAdaptor::setDiskWriterFileEntries() {
-  ((MultiDiskWriter*)diskWriter)->setFileEntries(fileEntries);
+void MultiDiskAdaptor::resetDiskWriterEntries() {
+  diskWriterEntries.clear();
+  for(FileEntries::const_iterator itr = fileEntries.begin();
+      itr != fileEntries.end(); itr++) {
+    DiskWriterEntryHandle entry = new DiskWriterEntry(*itr);
+    if((*itr)->isRequested()) {
+      entry->setDiskWriter(DefaultDiskWriter::createNewDiskWriter(option));
+    } else {
+      entry->setDiskWriter(new DefaultDiskWriter());
+    }
+    diskWriterEntries.push_back(entry);
+  }
 }
 
-string MultiDiskAdaptor::getFilePath() const {
+string MultiDiskAdaptor::getTopDirPath() const {
   return storeDir+"/"+topDir;
 }
 
 void MultiDiskAdaptor::mkdir() const {
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    (*itr)->setupDir(getFilePath());
+    (*itr)->setupDir(getTopDirPath());
   }
 }
 
 void MultiDiskAdaptor::openFile() {
   mkdir();
-  setDiskWriterFileEntries();
-  DiskAdaptor::openFile();
+  resetDiskWriterEntries();
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); itr++) {
+    (*itr)->openFile(getTopDirPath());
+  }
 }
 
 void MultiDiskAdaptor::initAndOpenFile() {
   mkdir();
-  setDiskWriterFileEntries();
-  DiskAdaptor::initAndOpenFile();
+  resetDiskWriterEntries();
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); itr++) {
+    (*itr)->initAndOpenFile(getTopDirPath());
+  }
 }
 
 void MultiDiskAdaptor::openExistingFile() {
-  setDiskWriterFileEntries();
-  DiskAdaptor::openExistingFile();
+  resetDiskWriterEntries();
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); itr++) {
+    (*itr)->openExistingFile(getTopDirPath());
+  }
+}
+
+void MultiDiskAdaptor::closeFile() {
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); itr++) {
+    (*itr)->closeFile();
+  }
 }
 
 void MultiDiskAdaptor::onDownloadComplete() {
   closeFile();
   openFile();
+}
+
+void MultiDiskAdaptor::writeData(const unsigned char* data, uint32_t len,
+				 int64_t offset)
+{
+  int64_t fileOffset = offset;
+  bool writing = false;
+  uint32_t rem = len;
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end() && rem != 0; itr++) {
+    if(isInRange(*itr, offset) || writing) {
+      uint32_t writeLength = calculateLength(*itr, fileOffset, rem);
+      (*itr)->getDiskWriter()->writeData(data+(len-rem), writeLength, fileOffset);
+      rem -= writeLength;
+      writing = true;
+      fileOffset = 0;
+    } else {
+      fileOffset -= (*itr)->fileEntry->getLength();
+    }
+  }
+  if(!writing) {
+    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
+  }
+}
+
+bool MultiDiskAdaptor::isInRange(const DiskWriterEntryHandle entry,
+				 int64_t offset) const
+{
+  return entry->fileEntry->getOffset() <= offset &&
+    offset < entry->fileEntry->getOffset()+entry->fileEntry->getLength();
+}
+
+uint32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
+					   int64_t fileOffset,
+					   uint32_t rem) const
+{
+  uint32_t length;
+  if(entry->fileEntry->getLength() < fileOffset+rem) {
+    length = entry->fileEntry->getLength()-fileOffset;
+  } else {
+    length = rem;
+  }
+  return length;
+}
+
+int MultiDiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset)
+{
+  int64_t fileOffset = offset;
+  bool reading = false;
+  uint32_t rem = len;
+  uint32_t totalReadLength = 0;
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end() && rem != 0; itr++) {
+    if(isInRange(*itr, offset) || reading) {
+      uint32_t readLength = calculateLength((*itr), fileOffset, rem);
+      totalReadLength += (*itr)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
+      rem -= readLength;
+      reading = true;
+      fileOffset = 0;
+    } else {
+      fileOffset -= (*itr)->fileEntry->getLength();
+    }
+  }
+  if(!reading) {
+    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
+  }
+  return totalReadLength;
+}
+
+void MultiDiskAdaptor::hashUpdate(const DiskWriterEntryHandle entry,
+				  int64_t offset, uint64_t length)
+{
+  uint32_t BUFSIZE = 16*1024;
+  unsigned char buf[BUFSIZE];
+  for(uint64_t i = 0; i < length/BUFSIZE; i++) {
+    if((int32_t)BUFSIZE != entry->getDiskWriter()->readData(buf, BUFSIZE, offset)) {
+      throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
+    }
+    ctx.digestUpdate(buf, BUFSIZE);
+    offset += BUFSIZE;
+  }
+  uint32_t r = length%BUFSIZE;
+  if(r > 0) {
+    if((int32_t)r != entry->getDiskWriter()->readData(buf, r, offset)) {
+      throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
+    }
+    ctx.digestUpdate(buf, r);
+  }
+}
+
+string MultiDiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
+  int64_t fileOffset = offset;
+  bool reading = false;
+  uint32_t rem = length;
+  ctx.digestReset();
+
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end() && rem != 0; itr++) {
+    if(isInRange(*itr, offset) || reading) {
+      uint32_t readLength = calculateLength((*itr), fileOffset, rem);
+      hashUpdate(*itr, fileOffset, readLength);
+      rem -= readLength;
+      reading = true;
+      fileOffset = 0;
+    } else {
+      fileOffset -= (*itr)->fileEntry->getLength();
+    }
+  }
+  if(!reading) {
+    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, offset);
+  }
+  unsigned char hashValue[20];
+  ctx.digestFinal(hashValue);
+  return Util::toHex(hashValue, 20);
 }

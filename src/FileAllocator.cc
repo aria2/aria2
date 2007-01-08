@@ -1,3 +1,4 @@
+
 /* <!-- copyright */
 /*
  * aria2 - The high speed download utility
@@ -32,53 +33,37 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DiskAdaptor.h"
+#include "FileAllocator.h"
 #include "DlAbortEx.h"
-#include "LogFactory.h"
+#include "TimeA2.h"
+#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
-
-DiskAdaptor::~DiskAdaptor() {}
-
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
+void FileAllocator::allocate(int fd, uint64_t totalLength)
+{
+  if(0 != lseek(fd, 0, SEEK_SET)) {
+    throw new DlAbortEx("Seek failed: %s", strerror(errno));
+  }
+  uint32_t bufSize = 4096;
+  char buf[4096];
+  memset(buf, 0, bufSize);
+  uint64_t x = (totalLength+bufSize-1)/bufSize;
+  fileAllocationMonitor->setMinValue(0);
+  fileAllocationMonitor->setMaxValue(totalLength);
+  fileAllocationMonitor->setCurrentValue(0);
+  fileAllocationMonitor->showProgress();
+  Time cp;
+  for(uint64_t i = 0; i < x; i++) {
+    if(write(fd, buf, bufSize) < 0) {
+      throw new DlAbortEx("Allocation failed: %s", strerror(errno));
+    }
+    if(cp.elapsedInMillis(500)) {
+      fileAllocationMonitor->setCurrentValue(x*bufSize);
+      fileAllocationMonitor->showProgress();
     }
   }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
-}
-
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
-    }
-  }
-  return false;
-}
-
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
-  }
-  fileEntries.at(index)->setRequested(true);
-  return true;
-}
-
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
-  }
-}
-
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
-  }
+  fileAllocationMonitor->setCurrentValue(totalLength);
+  fileAllocationMonitor->showProgress();
+  ftruncate(fd, totalLength);
 }

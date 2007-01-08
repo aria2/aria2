@@ -35,16 +35,18 @@
 #ifndef _D_DIRECT_DISK_ADAPTOR_H_
 #define _D_DIRECT_DISK_ADAPTOR_H_
 
-#include "DiskAdaptor.h"
+#include "AbstractSingleDiskAdaptor.h"
 
-class DirectDiskAdaptor : public DiskAdaptor {
+class DirectDiskAdaptor : public AbstractSingleDiskAdaptor {
 protected:
-  string getFilePath() const;
+  virtual string getFilePath();
 public:
-  DirectDiskAdaptor(DiskWriter* diskWriter);
-  virtual ~DirectDiskAdaptor();
+  DirectDiskAdaptor() {};
+  virtual ~DirectDiskAdaptor() {};
 
   virtual void onDownloadComplete();
 };
+
+typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;
 
 #endif // _D_DIRECT_DISK_ADAPTOR_H_

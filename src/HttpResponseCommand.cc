@@ -162,7 +162,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     e->segmentMan->totalSize = size;
     e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				e->segmentMan->totalSize);
-    e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath());
+    e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
+					       size);
     return prepareForRetry(0);
   }
 }

@@ -37,36 +37,30 @@
 
 #include "common.h"
 #include "FileEntry.h"
-#include "Directory.h"
-#include "DiskWriter.h"
 #include "Logger.h"
-#include "FileEntry.h"
 
 class DiskAdaptor {
 protected:
-  DiskWriter* diskWriter;
   string storeDir;
   FileEntries fileEntries;
   const Logger* logger;
-  virtual string getFilePath() const = 0;
 public:
-  DiskAdaptor(DiskWriter* diskWriter);
+  DiskAdaptor();
   virtual ~DiskAdaptor();
 
-  virtual void openFile();
-  virtual void closeFile();
-  virtual void openExistingFile();
-  virtual void initAndOpenFile();
-  void writeData(const unsigned char* data, uint32_t len, int64_t offset);
-  void writeData(const char* data, uint32_t len, int64_t offset) {
-    writeData((const unsigned char*)data, len, offset);
-  }
-  int readData(unsigned char* data, uint32_t len, int64_t offset);
-  int readData(char* data, uint32_t len, int64_t offset) {
-    return readData((unsigned char*)data, len, offset);
-  }
+  virtual void openFile() = 0;
 
-  string sha1Sum(int64_t offset, uint64_t length);
+  virtual void closeFile() = 0;
+
+  virtual void openExistingFile() = 0;
+
+  virtual void initAndOpenFile() = 0;
+
+  virtual void writeData(const unsigned char* data, uint32_t len, int64_t offset) = 0;
+
+  virtual int readData(unsigned char* data, uint32_t len, int64_t offset) = 0;
+
+  virtual string sha1Sum(int64_t offset, uint64_t length) = 0;
 
   virtual void onDownloadComplete() = 0;  
 
@@ -79,13 +73,18 @@ public:
   const FileEntries& getFileEntries() const { return fileEntries; }
 
   bool addDownloadEntry(const string& fileEntryPath);
+
   bool addDownloadEntry(int index);
+
   void addAllDownloadEntry();
+
   void removeAllDownloadEntry();
 
   void setStoreDir(const string& storeDir) { this->storeDir = storeDir; }
 
-  string getStoreDir() const { return this->storeDir; }
+  const string& getStoreDir() const { return this->storeDir; }
 };
+
+typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
 
 #endif // _D_DISK_ADAPTOR_H_

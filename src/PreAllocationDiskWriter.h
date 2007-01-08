@@ -38,13 +38,12 @@
 #include "AbstractDiskWriter.h"
 
 class PreAllocationDiskWriter:public AbstractDiskWriter {
-private:
-  long long int totalLength;
 public:
-  PreAllocationDiskWriter(long long int totalLength);
-  ~PreAllocationDiskWriter();
+  PreAllocationDiskWriter(uint64_t totalLength);
 
-  void initAndOpenFile(const string& filename);
+  virtual ~PreAllocationDiskWriter();
+
+  virtual void initAndOpenFile(const string& filename);
 };
 
 #endif // _D_PRE_ALLOCATION_DISK_WRITER_H_

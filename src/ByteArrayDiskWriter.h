@@ -40,8 +40,8 @@
 class ByteArrayDiskWriter : public DiskWriter {
 private:
   char* buf;
-  int maxBufLength;
-  int bufLength;
+  uint32_t maxBufLength;
+  uint32_t bufLength;
 
   void init();
   void clear();
@@ -49,19 +49,19 @@ public:
   ByteArrayDiskWriter();
   virtual ~ByteArrayDiskWriter();
 
-  virtual void initAndOpenFile(const string& filename);
+  virtual void initAndOpenFile(const string& filename, uint64_t totalLength = 0);
 
-  virtual void openFile(const string& filename);
+  virtual void openFile(const string& filename, uint64_t totalLength = 0);
 
   virtual void closeFile();
 
   virtual void openExistingFile(const string& filename);
 
   // position is ignored
-  virtual void writeData(const char* data, int len, long long int position = 0);
-  virtual int readData(char* data, int len, long long int position);
+  virtual void writeData(const char* data, uint32_t len, int64_t position = 0);
+  virtual int readData(char* data, uint32_t len, int64_t position);
   // not implemented yet
-  virtual string sha1Sum(long long int offset, long long int length) { return ""; }
+  virtual string sha1Sum(int64_t offset, uint64_t length) { return ""; }
 
   const char* getByteArray() const {
     return buf;

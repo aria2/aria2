@@ -32,53 +32,49 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+#ifndef _D_ABSTRACT_SINGLE_DISK_ADAPTOR_H_
+#define _D_ABSTRACT_SINGLE_DISK_ADAPTOR_H_
+
 #include "DiskAdaptor.h"
-#include "DlAbortEx.h"
-#include "LogFactory.h"
+#include "DiskWriter.h"
 
-DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
+class AbstractSingleDiskAdaptor : public DiskAdaptor {
+protected:
+  DiskWriterHandle diskWriter;
+  uint64_t totalLength;
 
-DiskAdaptor::~DiskAdaptor() {}
+  virtual string getFilePath() = 0;
+public:
+  AbstractSingleDiskAdaptor():diskWriter(0), totalLength(0) {}
 
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      return *itr;
-    }
+  virtual ~AbstractSingleDiskAdaptor() {}
+
+  virtual void initAndOpenFile();
+
+  virtual void openFile();
+
+  virtual void closeFile();
+
+  virtual void openExistingFile();
+
+  virtual void writeData(const unsigned char* data, uint32_t len,
+			 int64_t offset);
+
+  virtual int readData(unsigned char* data, uint32_t len, int64_t offset);
+
+  virtual string sha1Sum(int64_t offset, uint64_t length);
+ 
+  void setDiskWriter(const DiskWriterHandle diskWriter) {
+    this->diskWriter = diskWriter;
   }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
-}
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    if((*itr)->getPath() == fileEntryPath) {
-      (*itr)->setRequested(true);
-      return true;
-    }
-  }
-  return false;
-}
+  DiskWriterHandle getDiskWriter() const { return diskWriter; }
 
-bool DiskAdaptor::addDownloadEntry(int index) {
-  if(fileEntries.size() <= (unsigned int)index) {
-    return false;
+  void setTotalLength(const uint64_t& totalLength) {
+    this->totalLength = totalLength;
   }
-  fileEntries.at(index)->setRequested(true);
-  return true;
-}
 
-void DiskAdaptor::addAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(true);
-  }
-}
+  uint64_t getTotalLength() const { return totalLength; }
+};
 
-void DiskAdaptor::removeAllDownloadEntry() {
-  for(FileEntries::iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); itr++) {
-    (*itr)->setRequested(false);
-  }
-}
+#endif // _D_ABSTRACT_SINGLE_DISK_ADAPTOR_H_

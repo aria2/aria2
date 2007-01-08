@@ -56,7 +56,9 @@ protected:
 public:
   Exception(Exception* cause = 0):cause(cause) {}
 
-  virtual ~Exception() {}
+  virtual ~Exception() {
+    delete cause;
+  }
 
   const string& getMsg() const { return msg; }
 

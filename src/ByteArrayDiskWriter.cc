@@ -35,7 +35,7 @@
 #include "ByteArrayDiskWriter.h"
 #include "Util.h"
 
-ByteArrayDiskWriter::ByteArrayDiskWriter():buf(NULL) {
+ByteArrayDiskWriter::ByteArrayDiskWriter():buf(0) {
 }
 
 ByteArrayDiskWriter::~ByteArrayDiskWriter() {
@@ -43,10 +43,7 @@ ByteArrayDiskWriter::~ByteArrayDiskWriter() {
 }
 
 void ByteArrayDiskWriter::clear() {
-  if(buf != NULL) {
-    delete [] buf;
-    buf = NULL;
-  }
+  delete [] buf;
 }
 
 void ByteArrayDiskWriter::init() {
@@ -55,13 +52,15 @@ void ByteArrayDiskWriter::init() {
   bufLength = 0;
 }
 
-void ByteArrayDiskWriter::initAndOpenFile(const string& filename) {
-  openFile(filename);
-}
-
-void ByteArrayDiskWriter::openFile(const string& filename) {
+void ByteArrayDiskWriter::initAndOpenFile(const string& filename,
+					  uint64_t totalLength) {
   clear();
   init();
+}
+
+void ByteArrayDiskWriter::openFile(const string& filename,
+				   uint64_t totalLength) {
+  initAndOpenFile(filename);
 }
 
 void ByteArrayDiskWriter::closeFile() {
@@ -72,7 +71,7 @@ void ByteArrayDiskWriter::openExistingFile(const string& filename) {
   openFile(filename);
 }
 
-void ByteArrayDiskWriter::writeData(const char* data, int dataLength, long long int position) {
+void ByteArrayDiskWriter::writeData(const char* data, uint32_t dataLength, int64_t position) {
   if(bufLength+dataLength >= maxBufLength) {
     maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
   }
@@ -80,11 +79,11 @@ void ByteArrayDiskWriter::writeData(const char* data, int dataLength, long long 
   bufLength += dataLength;
 }
 
-int ByteArrayDiskWriter::readData(char* data, int len, long long int position) {
+int ByteArrayDiskWriter::readData(char* data, uint32_t len, int64_t position) {
   if(position >= bufLength) {
     return 0;
   }
-  int readLength;
+  uint32_t readLength;
   if(position+len <= bufLength) {
     readLength = len;
   } else {

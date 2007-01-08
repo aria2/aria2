@@ -40,7 +40,8 @@
 
 MultiDiskWriter::MultiDiskWriter(int pieceLength):
   pieceLength(pieceLength),
-  ctx(DIGEST_ALGO_SHA1) {
+  ctx(DIGEST_ALGO_SHA1),
+  fileAllocator(0) {
   ctx.digestInit();
 }
 
@@ -65,9 +66,18 @@ void MultiDiskWriter::setFileEntries(const FileEntries& fileEntries) {
   }
 }
 
+void MultiDiskWriter::configureFileAllocator(DiskWriterEntry* entry) {
+  if(entry->fileEntry->isRequested()) {
+    entry->diskWriter->setFileAllocator(fileAllocator);
+  } else {
+    entry->diskWriter->setFileAllocator(0);
+  }
+}
+
 void MultiDiskWriter::openFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
+    configureFileAllocator(*itr);
     (*itr)->diskWriter->openFile(filename+"/"+(*itr)->fileEntry->getPath());
   }
 }
@@ -76,6 +86,7 @@ void MultiDiskWriter::openFile(const string& filename) {
 void MultiDiskWriter::initAndOpenFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
+    configureFileAllocator(*itr);
     (*itr)->diskWriter->initAndOpenFile(filename+"/"+(*itr)->fileEntry->getPath());
   }
 }
@@ -90,6 +101,7 @@ void MultiDiskWriter::closeFile() {
 void MultiDiskWriter::openExistingFile(const string& filename) {
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
+    (*itr)->diskWriter->setFileAllocator(0);
     (*itr)->diskWriter->openExistingFile(filename+"/"+(*itr)->fileEntry->getPath());
   }
 }

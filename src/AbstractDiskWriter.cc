@@ -37,6 +37,7 @@
 #include "File.h"
 #include "Util.h"
 #include "message.h"
+#include "LogFactory.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -44,7 +45,9 @@
 #include <fcntl.h>
 
 AbstractDiskWriter::AbstractDiskWriter():
-  fd(0)
+  fd(0),
+  fileAllocator(0),
+  logger(LogFactory::getInstance())
 #ifdef ENABLE_MESSAGE_DIGEST				       
   ,ctx(DIGEST_ALGO_SHA1)
 #endif // ENABLE_MESSAGE_DIGEST
@@ -61,12 +64,12 @@ AbstractDiskWriter::~AbstractDiskWriter() {
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void AbstractDiskWriter::openFile(const string& filename) {
+void AbstractDiskWriter::openFile(const string& filename, uint64_t totalLength) {
   File f(filename);
   if(f.exists()) {
     openExistingFile(filename);
   } else {
-    initAndOpenFile(filename);
+    initAndOpenFile(filename, totalLength);
   }
 }
 
@@ -89,7 +92,7 @@ void AbstractDiskWriter::openExistingFile(const string& filename) {
   }
 }
 
-void AbstractDiskWriter::createFile(const string& filename, int addFlags) {
+void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags) {
   this->filename = filename;
   // TODO proper filename handling needed
   assert(filename.size());
@@ -101,63 +104,61 @@ void AbstractDiskWriter::createFile(const string& filename, int addFlags) {
   }  
 }
 
-void AbstractDiskWriter::writeDataInternal(const char* data, int len) {
+void AbstractDiskWriter::writeDataInternal(const char* data, uint32_t len) {
   if(write(fd, data, len) < 0) {
     throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
   }
 }
 
-int AbstractDiskWriter::readDataInternal(char* data, int len) {
-  int ret;
+int AbstractDiskWriter::readDataInternal(char* data, uint32_t len) {
+  int32_t ret;
   if((ret = read(fd, data, len)) < 0) {
     throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
   }
   return ret;
 }
 
-string AbstractDiskWriter::sha1Sum(long long int offset, long long int length) {
+string AbstractDiskWriter::sha1Sum(int64_t offset, uint64_t length) {
 #ifdef ENABLE_MESSAGE_DIGEST
   ctx.digestReset();
-  try {
-    int BUFSIZE = 16*1024;
-    char buf[BUFSIZE];
-    for(int i = 0; i < length/BUFSIZE; i++) {
-      if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
-	throw string("error");
-      }
-      ctx.digestUpdate(buf, BUFSIZE);
-      offset += BUFSIZE;
+
+  uint32_t BUFSIZE = 16*1024;
+  char buf[BUFSIZE];
+  for(uint64_t i = 0; i < length/BUFSIZE; i++) {
+    if((int32_t)BUFSIZE != readData(buf, BUFSIZE, offset)) {
+      throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
     }
-    int r = length%BUFSIZE;
-    if(r > 0) {
-      if(r != readData(buf, r, offset)) {
-	throw string("error");
-      }
-      ctx.digestUpdate(buf, r);
-    }
-    unsigned char hashValue[20];
-    ctx.digestFinal(hashValue);
-    return Util::toHex(hashValue, 20);
-  } catch(string ex) {
-    throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
+    ctx.digestUpdate(buf, BUFSIZE);
+    offset += BUFSIZE;
   }
+  uint32_t r = length%BUFSIZE;
+  if(r > 0) {
+    if((int32_t)r != readData(buf, r, offset)) {
+      throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
+    }
+    ctx.digestUpdate(buf, r);
+  }
+  unsigned char hashValue[20];
+  ctx.digestFinal(hashValue);
+  return Util::toHex(hashValue, 20);
 #else
   return "";
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void AbstractDiskWriter::seek(long long int offset) {
+void AbstractDiskWriter::seek(int64_t offset) {
   if(offset != lseek(fd, offset, SEEK_SET)) {
     throw new DlAbortEx(EX_FILE_SEEK, filename.c_str(), strerror(errno));
   }
 }
 
-void AbstractDiskWriter::writeData(const char* data, int len, long long int offset) {
+void AbstractDiskWriter::writeData(const char* data, uint32_t len, int64_t offset) {
   seek(offset);
   writeDataInternal(data, len);
 }
 
-int AbstractDiskWriter::readData(char* data, int len, long long int offset) {
+int AbstractDiskWriter::readData(char* data, uint32_t len, int64_t offset) {
   seek(offset);
   return readDataInternal(data, len);
 }
+

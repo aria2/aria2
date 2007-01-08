@@ -40,6 +40,7 @@
 #include "DlAbortEx.h"
 #include "ShaVisitor.h"
 #include "Util.h"
+#include <libgen.h>
 
 DefaultBtContext::DefaultBtContext() {}
 

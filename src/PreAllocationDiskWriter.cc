@@ -42,12 +42,13 @@
 #include <errno.h>
 #include <string.h>
 
-PreAllocationDiskWriter::PreAllocationDiskWriter(long long int totalLength)
-  :AbstractDiskWriter(),totalLength(totalLength) {}
+PreAllocationDiskWriter::PreAllocationDiskWriter(uint64_t totalLength)
+  :AbstractDiskWriter(totalLength) {}
 
 PreAllocationDiskWriter::~PreAllocationDiskWriter() {}
 
-void PreAllocationDiskWriter::initAndOpenFile(const string& filename) {
+void PreAllocationDiskWriter::initAndOpenFile(const string& filename)
+{
   createFile(filename);
   int bufSize = 4096;
   char buf[4096];
