@@ -61,7 +61,7 @@ void RequestSlot::setDispatchedTime(time_t secFromEpoch) {
 }
 
 bool RequestSlot::isTimeout(time_t timeoutSec) const {
-  return dispatchedTime.differenceInMillis() > timeoutSec*1000;
+  return dispatchedTime.elapsed(timeoutSec);
 }
 
 int RequestSlot::getLatencyInMillis() const {

@@ -39,6 +39,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "Util.h"
+#include "FatalException.h"
 
 FtpNegotiationCommand::FtpNegotiationCommand(int cuid, const RequestHandle req,
 					     DownloadEngine* e,
@@ -188,6 +189,11 @@ bool FtpNegotiationCommand::recvSize() {
 				e->segmentMan->totalSize);
 
     e->segmentMan->filename = Util::urldecode(req->getFile());
+    if(e->segmentMan->shouldCancelDownloadForSafety()) {
+      throw new FatalException(EX_FILE_ALREADY_EXISTS,
+			       e->segmentMan->getFilePath().c_str(),
+			       e->segmentMan->getSegmentFilePath().c_str());
+    }
     bool segFileExists = e->segmentMan->segmentFileExists();
     if(segFileExists) {
       e->segmentMan->load();

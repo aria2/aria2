@@ -112,9 +112,7 @@ public:
     delete []  block;
   }
 
-  enum ID_t {
-    ID = 7
-  };
+  static const uint8_t ID = 7;
 
   int32_t getIndex() const { return index; }
 
@@ -134,7 +132,7 @@ public:
 
   static BtPieceMessageHandle create(const unsigned char* data, uint32_t dataLength);
 
-  virtual uint8_t getId() const { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

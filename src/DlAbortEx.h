@@ -34,20 +34,20 @@
 /* copyright --> */
 #ifndef _D_DL_ABORT_EX_H_
 #define _D_DL_ABORT_EX_H_
-#include "Exception.h"
+#include "RecoverableException.h"
 
-class DlAbortEx:public Exception {
+class DlAbortEx : public RecoverableException {
 public:
-  DlAbortEx(Exception* cause = 0):Exception(cause) {}
+  DlAbortEx(Exception* cause = 0):RecoverableException(cause) {}
 
-  DlAbortEx(const char* msg, ...):Exception() {
+  DlAbortEx(const char* msg, ...) {
     va_list ap;
     va_start(ap, msg);
     setMsg(string(msg), ap);
     va_end(ap);
   }
 
-  DlAbortEx(Exception* cause, const char* msg, ...):Exception(cause) {
+  DlAbortEx(Exception* cause, const char* msg, ...):RecoverableException(cause) {
     va_list ap;
     va_start(ap, msg);
     setMsg(string(msg), ap);

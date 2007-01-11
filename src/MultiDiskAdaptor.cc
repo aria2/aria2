@@ -117,7 +117,7 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, uint32_t len,
       writing = true;
       fileOffset = 0;
     } else {
-      fileOffset -= (*itr)->fileEntry->getLength();
+      fileOffset -= (*itr)->getFileEntry()->getLength();
     }
   }
   if(!writing) {
@@ -128,8 +128,8 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, uint32_t len,
 bool MultiDiskAdaptor::isInRange(const DiskWriterEntryHandle entry,
 				 int64_t offset) const
 {
-  return entry->fileEntry->getOffset() <= offset &&
-    offset < entry->fileEntry->getOffset()+entry->fileEntry->getLength();
+  return entry->getFileEntry()->getOffset() <= offset &&
+    offset < entry->getFileEntry()->getOffset()+entry->getFileEntry()->getLength();
 }
 
 uint32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
@@ -137,8 +137,8 @@ uint32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
 					   uint32_t rem) const
 {
   uint32_t length;
-  if(entry->fileEntry->getLength() < fileOffset+rem) {
-    length = entry->fileEntry->getLength()-fileOffset;
+  if(entry->getFileEntry()->getLength() < fileOffset+rem) {
+    length = entry->getFileEntry()->getLength()-fileOffset;
   } else {
     length = rem;
   }
@@ -160,7 +160,7 @@ int MultiDiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset
       reading = true;
       fileOffset = 0;
     } else {
-      fileOffset -= (*itr)->fileEntry->getLength();
+      fileOffset -= (*itr)->getFileEntry()->getLength();
     }
   }
   if(!reading) {
@@ -205,7 +205,7 @@ string MultiDiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
       reading = true;
       fileOffset = 0;
     } else {
-      fileOffset -= (*itr)->fileEntry->getLength();
+      fileOffset -= (*itr)->getFileEntry()->getLength();
     }
   }
   if(!reading) {
@@ -214,4 +214,15 @@ string MultiDiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
   unsigned char hashValue[20];
   ctx.digestFinal(hashValue);
   return Util::toHex(hashValue, 20);
+}
+
+bool MultiDiskAdaptor::fileExists()
+{
+  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); itr++) {
+    if((*itr)->fileExists(getTopDirPath())) {
+      return true;
+    }				   
+  }
+  return false;
 }

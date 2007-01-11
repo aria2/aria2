@@ -146,7 +146,7 @@ bool AbstractCommand::prepareForRetry(int wait) {
   return true;
 }
 
-void AbstractCommand::onAbort(Exception* ex) {
+void AbstractCommand::onAbort(RecoverableException* ex) {
   logger->debug(MSG_UNREGISTER_CUID, cuid);
   //e->segmentMan->unregisterId(cuid);
   e->segmentMan->cancelSegment(cuid);

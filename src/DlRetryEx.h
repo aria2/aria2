@@ -34,20 +34,20 @@
 /* copyright --> */
 #ifndef _D_DL_RETRY_EX_H_
 #define _D_DL_RETRY_EX_H_
-#include "Exception.h"
+#include "RecoverableException.h"
 
-class DlRetryEx:public Exception {
+class DlRetryEx : public RecoverableException {
 public:
-  DlRetryEx(Exception* cause = 0):Exception(cause) {}
+  DlRetryEx(Exception* cause = 0):RecoverableException(cause) {}
 
-  DlRetryEx(const char* msg, ...):Exception() {
+  DlRetryEx(const char* msg, ...) {
     va_list ap;
     va_start(ap, msg);
     setMsg(msg, ap);
     va_end(ap);
   }
 
-  DlRetryEx(Exception* cause, const char* msg, ...):Exception(cause) {
+  DlRetryEx(Exception* cause, const char* msg, ...):RecoverableException(cause) {
     va_list ap;
     va_start(ap, msg);
     setMsg(msg, ap);

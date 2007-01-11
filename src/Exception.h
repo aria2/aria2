@@ -49,7 +49,7 @@ protected:
   Exception* cause;
 
   void setMsg(const string& msgsrc, va_list ap) {
-    char buf[256];
+    char buf[1024];
     vsnprintf(buf, sizeof(buf), msgsrc.c_str(), ap);
     msg = buf;
   }

@@ -53,11 +53,9 @@ public:
     delete [] msg;
   }
 
-  enum ID_t {
-    ID = 99
-  };
+  static const uint8_t ID = 99;
 
-  virtual uint8_t getId() const { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction() {}
 

@@ -176,6 +176,12 @@ void showUsage() {
 	    "                              This may take some time depending on the size of\n"
 	    "                              file.\n"
 	    "                              Default: 'none'") << endl;
+  cout << _(" --force-truncate=true|false  If this option set to false, aria2 doesn't download\n"
+	    "                              file which already exists in file system but\n"
+	    "                              its corresponding .aria2 file doesn't exist.\n"
+	    "                              Set this option to true if you want to download\n"
+	    "                              file all over again.\n"
+            "                              Default: false") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -337,6 +343,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_STARTUP_IDLE_TIME, "10");
   op->put(PREF_TRACKER_MAX_TRIES, "10");
   op->put(PREF_FILE_ALLOCATION, V_NONE);
+  op->put(PREF_FORCE_TRUNCATE, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -366,6 +373,7 @@ int main(int argc, char* argv[]) {
       { "lowest-speed-limit", required_argument, &lopt, 200 },
       { "max-download-limit", required_argument, &lopt, 201 },
       { "file-allocation", required_argument, 0, 'a' },
+      { "force-truncate", required_argument, &lopt, 202 },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -615,6 +623,17 @@ int main(int argc, char* argv[]) {
 	}
 	op->put(PREF_MAX_DOWNLOAD_LIMIT, Util::itos(limit));
 	break;
+      }
+      case 202: {
+	if(string(optarg) == "true") {
+	  op->put(PREF_FORCE_TRUNCATE, V_TRUE);
+	} else if(string(optarg) == "false") {
+	  op->put(PREF_FORCE_TRUNCATE, V_FALSE);
+	} else {
+	  cerr << _("force-true must be either 'true' or 'false'.") << endl;
+	  showUsage();
+	  exit(EXIT_FAILURE);
+	}
       }
       }
       break;

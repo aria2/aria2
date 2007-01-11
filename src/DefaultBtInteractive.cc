@@ -75,6 +75,7 @@ void DefaultBtInteractive::doPostHandshakeProcessing() {
   floodingCheckPoint.reset();
   addBitfieldMessageToQueue();
   addAllowedFastMessageToQueue();  
+  sendPendingMessage();
 }
 
 void DefaultBtInteractive::addBitfieldMessageToQueue() {
@@ -142,10 +143,8 @@ void DefaultBtInteractive::checkHave() {
 
 void DefaultBtInteractive::sendKeepAlive() {
   if(keepAliveCheckPoint.elapsed(option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL))) {
-    if(dispatcher->countMessageInQueue() == 0) {
-      dispatcher->addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->createKeepAliveMessage());
-      dispatcher->sendMessages();
-    }
+    dispatcher->addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->createKeepAliveMessage());
+    dispatcher->sendMessages();
     keepAliveCheckPoint.reset();
   }
 }
@@ -187,19 +186,19 @@ void DefaultBtInteractive::receiveMessages() {
 }
 
 void DefaultBtInteractive::decideInterest() {
-  if(!pieceStorage->hasMissingPiece(peer)) {
-    if(peer->amInterested) {
-      logger->debug("CUID#%d - Not interested in the peer", cuid);
-      dispatcher->
-	addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
-			  createNotInterestedMessage());
-    }
-  } else {
+  if(pieceStorage->hasMissingPiece(peer)) {
     if(!peer->amInterested) {
       logger->debug("CUID#%d - Interested in the peer", cuid);
       dispatcher->
 	addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
 			  createInterestedMessage());
+    }
+  } else {
+    if(peer->amInterested) {
+      logger->debug("CUID#%d - Not interested in the peer", cuid);
+      dispatcher->
+	addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
+			  createNotInterestedMessage());
     }
   }
 }
@@ -207,7 +206,6 @@ void DefaultBtInteractive::decideInterest() {
 void DefaultBtInteractive::fillPiece(int maxPieceNum) {
   if(pieceStorage->hasMissingPiece(peer)) {
     if(peer->peerChoking) {
-      dispatcher->doChokedAction();
       if(peer->isFastExtensionEnabled()) {
 	while(btRequestFactory->countTargetPiece() < maxPieceNum) {
 	  PieceHandle piece = pieceStorage->getMissingFastPiece(peer);

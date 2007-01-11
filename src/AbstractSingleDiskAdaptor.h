@@ -42,8 +42,6 @@ class AbstractSingleDiskAdaptor : public DiskAdaptor {
 protected:
   DiskWriterHandle diskWriter;
   uint64_t totalLength;
-
-  virtual string getFilePath() = 0;
 public:
   AbstractSingleDiskAdaptor():diskWriter(0), totalLength(0) {}
 
@@ -63,7 +61,9 @@ public:
   virtual int readData(unsigned char* data, uint32_t len, int64_t offset);
 
   virtual string sha1Sum(int64_t offset, uint64_t length);
- 
+
+  virtual bool fileExists();
+
   void setDiskWriter(const DiskWriterHandle diskWriter) {
     this->diskWriter = diskWriter;
   }

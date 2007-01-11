@@ -59,8 +59,9 @@ void FileAllocator::allocate(int fd, uint64_t totalLength)
       throw new DlAbortEx("Allocation failed: %s", strerror(errno));
     }
     if(cp.elapsedInMillis(500)) {
-      fileAllocationMonitor->setCurrentValue(x*bufSize);
+      fileAllocationMonitor->setCurrentValue(i*bufSize);
       fileAllocationMonitor->showProgress();
+      cp.reset();
     }
   }
   fileAllocationMonitor->setCurrentValue(totalLength);

@@ -81,6 +81,10 @@ void BtPieceMessage::doReceivedAction() {
 					      blockLength,
 					      offset);
     piece->completeBlock(slot.getBlockIndex());
+    logger->debug("CUID#%d - Piece bitfield %s",
+		  cuid,
+		  Util::toHex(piece->getBitfield(),
+			      piece->getBitfieldLength()).c_str());
     BT_MESSAGE_DISPATCHER(btContext, peer)->removeOutstandingRequest(slot);
     if(piece->pieceComplete()) {
       if(checkPieceHash(piece)) {

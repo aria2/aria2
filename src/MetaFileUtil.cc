@@ -57,7 +57,7 @@ MetaEntry* MetaFileUtil::parseMetaFile(const string& file) {
     MetaEntry* entry = bdecoding(buf, len);
     delete [] buf;
     return entry;
-  } catch(Exception* ex) {
+  } catch(RecoverableException* ex) {
     delete [] buf;
     if(fp != NULL) {
       fclose(fp);
@@ -121,7 +121,7 @@ Dictionary* MetaFileUtil::parseDictionaryTree(const char** pp, const char* end) 
       dic->put(name, e);
     }
     return dic;
-  } catch(Exception* ex) {
+  } catch(RecoverableException* ex) {
     delete dic;
     throw;
   }
@@ -142,7 +142,7 @@ List* MetaFileUtil::parseListTree(const char** pp, const char* end) {
       lis->add(e);
     }
     return lis;
-  } catch(Exception* ex) {
+  } catch(RecoverableException* ex) {
     delete lis;
     throw;
   }

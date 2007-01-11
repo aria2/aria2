@@ -125,7 +125,7 @@ RequestInfos MetalinkRequestInfo::execute() {
       reqInfo->setChecksum(checksum);
       nextReqInfos.push_front(reqInfo);
     }
-  } catch(Exception* ex) {
+  } catch(RecoverableException* ex) {
     logger->error("Exception caught", ex);
     delete ex;
     fail = true;

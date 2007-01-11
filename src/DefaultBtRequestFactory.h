@@ -82,6 +82,8 @@ public:
 
   virtual void removeCompletedPiece();
 
+  virtual void doChokedAction();
+
   virtual BtMessages createRequestMessages(uint32_t max);
 
   virtual BtMessages createRequestMessagesOnEndGame(uint32_t max);

@@ -21,9 +21,7 @@
 * Add the message like "you can resume the transfer by invoking aria2 again" when the download stops.
 * Add --bt-timeout command line option.
 * Fix DefaultBtProgressInfoFile.cc: save(), load()
-* Add a feature that if any existing file is detected, then
-do not start downloading and print some useful message to the user.
-* Fix Segfaults in BitfieldMan.cc:71
-https://sourceforge.net/tracker/index.php?func=detail&aid=1606060&group_id=159897&atid=813673
-* int32_t
 * remove blockIndex
+* Add piece hash checking
+* Stop download after selective download completes
+* Add an ability of seeding

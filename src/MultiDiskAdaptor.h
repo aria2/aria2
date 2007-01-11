@@ -39,11 +39,11 @@
 #include "Option.h"
 #include "DiskWriter.h"
 #include "messageDigest.h"
+#include "File.h"
 
 class DiskWriterEntry {
-public:
-  FileEntryHandle fileEntry;
 private:
+  FileEntryHandle fileEntry;
   DiskWriterHandle diskWriter;
 public:
   DiskWriterEntry(const FileEntryHandle& fileEntry):
@@ -75,6 +75,15 @@ public:
   void closeFile()
   {
     diskWriter->closeFile();
+  }
+
+  bool fileExists(const string& topDir)
+  {
+    return File(getFilePath(topDir)).exists();
+  }
+
+  FileEntryHandle getFileEntry() const {
+    return fileEntry;
   }
 
   void setDiskWriter(const DiskWriterHandle& diskWriter) {
@@ -138,6 +147,12 @@ public:
   virtual int readData(unsigned char* data, uint32_t len, int64_t offset);
 
   virtual string sha1Sum(int64_t offset, uint64_t length);
+
+  virtual bool fileExists();
+
+  virtual string getFilePath() {
+    return getTopDirPath();
+  }
 
   void setTopDir(const string& topDir) {
     this->topDir = topDir;

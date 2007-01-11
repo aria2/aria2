@@ -32,48 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_SUGGEST_PIECE_MESSAGE_H_
-#define _D_BT_SUGGEST_PIECE_MESSAGE_H_
+#ifndef _D_RECOVERABLE_EXCEPTION_H_
+#define _D_RECOVERABLE_EXCEPTION_H_
+#include "Exception.h"
 
-#include "SimpleBtMessage.h"
-
-class BtSuggestPieceMessage;
-
-typedef SharedHandle<BtSuggestPieceMessage> BtSuggestPieceMessageHandle;
-
-class BtSuggestPieceMessage : public SimpleBtMessage {
-private:
-  int32_t index;
-  unsigned char* msg;
-  static uint32_t MESSAGE_LENGTH;
+class RecoverableException : public Exception {
 public:
-  BtSuggestPieceMessage():index(0), msg(0) {}
+  RecoverableException(Exception* cause = 0):Exception(cause) {}
 
-  virtual ~BtSuggestPieceMessage() {
-    delete [] msg;
+  RecoverableException(const char* msg, ...):Exception() {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(string(msg), ap);
+    va_end(ap);
   }
 
-  static const uint8_t ID = 13;
-
-  void setIndex(int32_t index) {
-    this->index = index;
+  RecoverableException(Exception* cause, const char* msg, ...):Exception(cause) {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(string(msg), ap);
+    va_end(ap);
   }
-
-  int32_t getIndex() const { return index; }
-
-  static BtSuggestPieceMessageHandle create(const unsigned char* data, uint32_t dataLength);
-
-  virtual uint8_t getId() { return ID; }
-
-  virtual void doReceivedAction() {
-    // TODO Current implementation ignores this message.
-  }
-
-  virtual const unsigned char* getMessage();
-
-  virtual uint32_t getMessageLength();
-
-  virtual string toString() const;
 };
 
-#endif // _D_BT_SUGGEST_PIECE_MESSAGE_H_
+#endif // _D_RECOVERABLE_EXCEPTION_EX_H_

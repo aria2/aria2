@@ -40,6 +40,8 @@
 #include "message.h"
 #include "Util.h"
 #include "prefs.h"
+#include "File.h"
+#include "FatalException.h"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -159,6 +161,11 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     // send request again to the server with Range header
     return prepareForRetry(0);
   } else {
+    if(e->segmentMan->shouldCancelDownloadForSafety()) {
+      throw new FatalException(EX_FILE_ALREADY_EXISTS,
+			       e->segmentMan->getFilePath().c_str(),
+			       e->segmentMan->getSegmentFilePath().c_str());
+    }
     e->segmentMan->totalSize = size;
     e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				e->segmentMan->totalSize);

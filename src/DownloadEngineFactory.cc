@@ -130,13 +130,6 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
   te->setBtContext(btContext);
   // initialize file storage
   pieceStorage->initStorage();
-  if(btProgressInfoFile->exists()) {
-    // load .aria2 file if it exists.
-    btProgressInfoFile->load();
-    pieceStorage->getDiskAdaptor()->openExistingFile();
-  } else {
-    pieceStorage->getDiskAdaptor()->initAndOpenFile();
-  }
 
   Integers selectIndexes;
   Util::unfoldRange(op->get(PREF_SELECT_FILE), selectIndexes);

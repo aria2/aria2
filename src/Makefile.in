@@ -196,18 +196,18 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DownloadEngine.cc DownloadEngine.h ConsoleDownloadEngine.cc \
 	ConsoleDownloadEngine.h Segment.cc Segment.h SegmentMan.cc \
 	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
-	message.h Exception.h DlAbortEx.h DlRetryEx.h Logger.h \
-	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
-	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
-	AbstractDiskWriter.cc AbstractDiskWriter.h \
-	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
-	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
-	messageDigest.h LogFactory.cc LogFactory.h NullLogger.h \
-	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
-	FeatureConfig.cc FeatureConfig.h DownloadEngineFactory.cc \
-	DownloadEngineFactory.h RequestInfo.h UrlRequestInfo.cc \
-	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
+	message.h Exception.h FatalException.h RecoverableException.h \
+	DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
+	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
+	ChunkedEncoding.h DiskWriter.h AbstractDiskWriter.cc \
+	AbstractDiskWriter.h DefaultDiskWriter.cc DefaultDiskWriter.h \
+	File.cc File.h Option.cc Option.h Base64.cc Base64.h \
+	CookieBox.cc CookieBox.h messageDigest.h LogFactory.cc \
+	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
+	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
+	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
+	UrlRequestInfo.cc UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h \
+	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
 	FileAllocationMonitor.cc FileAllocationMonitor.h \
@@ -566,18 +566,18 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	DownloadEngine.cc DownloadEngine.h ConsoleDownloadEngine.cc \
 	ConsoleDownloadEngine.h Segment.cc Segment.h SegmentMan.cc \
 	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
-	message.h Exception.h DlAbortEx.h DlRetryEx.h Logger.h \
-	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
-	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
-	AbstractDiskWriter.cc AbstractDiskWriter.h \
-	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
-	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
-	messageDigest.h LogFactory.cc LogFactory.h NullLogger.h \
-	TimeA2.cc TimeA2.h SharedHandle.h HandleRegistry.h \
-	FeatureConfig.cc FeatureConfig.h DownloadEngineFactory.cc \
-	DownloadEngineFactory.h RequestInfo.h UrlRequestInfo.cc \
-	UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h PeerStat.h \
-	BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
+	message.h Exception.h FatalException.h RecoverableException.h \
+	DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
+	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
+	ChunkedEncoding.h DiskWriter.h AbstractDiskWriter.cc \
+	AbstractDiskWriter.h DefaultDiskWriter.cc DefaultDiskWriter.h \
+	File.cc File.h Option.cc Option.h Base64.cc Base64.h \
+	CookieBox.cc CookieBox.h messageDigest.h LogFactory.cc \
+	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
+	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
+	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
+	UrlRequestInfo.cc UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h \
+	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
 	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
 	FileAllocationMonitor.cc FileAllocationMonitor.h \
@@ -589,12 +589,12 @@ aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@
 
-#aria2c_LDFLAGS = -pg
+aria2c_LDFLAGS = -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ # -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@  -pg
 
 all: all-am
 

@@ -54,6 +54,20 @@ void DefaultBtRequestFactory::removeTargetPiece(const PieceHandle& piece) {
   pieceStorage->cancelPiece(piece);
 }
 
+void DefaultBtRequestFactory::doChokedAction()
+{
+  Pieces temp;
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
+    PieceHandle& piece = *itr;
+    if(peer->isInPeerAllowedIndexSet(piece->getIndex())) {
+      temp.push_back(piece);
+    } else {
+      pieceStorage->cancelPiece(*itr);
+    }
+  }
+  pieces = temp;
+}
+
 void DefaultBtRequestFactory::removeAllTargetPiece() {
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
     dispatcher->doAbortOutstandingRequestAction(*itr);

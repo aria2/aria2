@@ -129,14 +129,18 @@ void DefaultBtMessageDispatcher::doChokedAction()
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end();) {
     RequestSlot& slot = *itr;
-    logger->debug("CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-		  " because localhost got choked.",
-		  cuid,
-		  slot.getIndex(),
-		  slot.getBlockIndex());
-    PieceHandle piece = pieceStorage->getPiece(slot.getIndex());
-    piece->cancelBlock(slot.getBlockIndex());
-    itr = requestSlots.erase(itr);
+    if(peer->isInPeerAllowedIndexSet(slot.getIndex())) {
+      itr++;
+    } else {
+      logger->debug("CUID#%d - Deleting request slot index=%d, blockIndex=%d"
+		    " because localhost got choked.",
+		    cuid,
+		    slot.getIndex(),
+		    slot.getBlockIndex());
+      PieceHandle piece = pieceStorage->getPiece(slot.getIndex());
+      piece->cancelBlock(slot.getBlockIndex());
+      itr = requestSlots.erase(itr);
+    }
   }
 
   BtChokedEventHandle event = new BtChokedEvent();

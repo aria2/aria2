@@ -44,6 +44,7 @@ ByteArrayDiskWriter::~ByteArrayDiskWriter() {
 
 void ByteArrayDiskWriter::clear() {
   delete [] buf;
+  buf = 0;
 }
 
 void ByteArrayDiskWriter::init() {

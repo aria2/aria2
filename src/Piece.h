@@ -105,6 +105,10 @@ public:
   const unsigned char* getBitfield() const { return bitfield->getBitfield(); }
   void setBitfield(const unsigned char* bitfield, int len);
 
+  int getBitfieldLength() const {
+    return bitfield->getBitfieldLength();
+  }
+
   void clearAllBlock();
   void setAllBlock();
 

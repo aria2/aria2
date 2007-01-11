@@ -38,6 +38,9 @@
 #include "Util.h"
 #include "BtRegistry.h"
 #include "DefaultBtContext.h"
+#include "FatalException.h"
+#include "message.h"
+#include "RecoverableException.h"
 
 extern volatile sig_atomic_t btHaltRequested;
 
@@ -60,6 +63,21 @@ RequestInfos TorrentRequestInfo::execute() {
 						     op,
 						     targetFiles));
 
+  if(BT_PROGRESS_INFO_FILE(btContext)->exists()) {
+    // load .aria2 file if it exists.
+    BT_PROGRESS_INFO_FILE(btContext)->load();
+    PIECE_STORAGE(btContext)->getDiskAdaptor()->openExistingFile();
+  } else {
+    if(PIECE_STORAGE(btContext)->getDiskAdaptor()->fileExists() &&
+       op->get(PREF_FORCE_TRUNCATE) != V_TRUE) {
+      throw new FatalException(EX_FILE_ALREADY_EXISTS,
+			       PIECE_STORAGE(btContext)->getDiskAdaptor()->getFilePath().c_str(),
+			       BT_PROGRESS_INFO_FILE(btContext)->getFilename().c_str());
+    } else {
+      PIECE_STORAGE(btContext)->getDiskAdaptor()->initAndOpenFile();
+    }
+  }
+
   Util::setGlobalSignalHandler(SIGINT, torrentHandler, SA_RESETHAND);
   Util::setGlobalSignalHandler(SIGTERM, torrentHandler, SA_RESETHAND);
     
@@ -68,7 +86,7 @@ RequestInfos TorrentRequestInfo::execute() {
     if(PIECE_STORAGE(btContext)->downloadFinished()) {
       printDownloadCompeleteMessage();
     }
-  } catch(Exception* ex) {
+  } catch(RecoverableException* ex) {
     logger->error("Exception caught", ex);
     fail = true;
     delete ex;

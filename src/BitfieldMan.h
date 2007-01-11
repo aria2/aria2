@@ -73,26 +73,24 @@ public:
     if(this != &bitfieldMan) {
       blockLength = bitfieldMan.blockLength;
       totalLength = bitfieldMan.totalLength;
-      if(bitfieldLength != bitfieldMan.bitfieldLength) {
-	delete [] bitfield;
-	delete [] useBitfield;
-	bitfield = new unsigned char[bitfieldMan.bitfieldLength];
-	useBitfield = new unsigned char[bitfieldMan.bitfieldLength];
-      }
       blocks = bitfieldMan.blocks;
       bitfieldLength = bitfieldMan.bitfieldLength;
-      memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
-      memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
       filterEnabled = bitfieldMan.filterEnabled;
-      if(bitfieldLength != bitfieldMan.bitfieldLength) {
-	delete [] filterBitfield;
-	filterBitfield = 0;
-      }
-      if(bitfieldMan.filterBitfield) {
-	if(!filterBitfield) {
-	  filterBitfield = new unsigned char[bitfieldLength];
-	}
+
+      delete [] bitfield;
+      bitfield = new unsigned char[bitfieldLength];
+      memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
+
+      delete [] useBitfield;
+      useBitfield = new unsigned char[bitfieldLength];
+      memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
+
+      delete [] filterBitfield;
+      if(filterEnabled) {
+	filterBitfield = new unsigned char[bitfieldLength];
 	memcpy(filterBitfield, bitfieldMan.filterBitfield, bitfieldLength);
+      } else {
+	filterBitfield = 0;
       }
     }
     return *this;

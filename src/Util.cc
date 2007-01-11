@@ -244,7 +244,9 @@ string Util::urlencode(const unsigned char* target, int len) {
 string Util::torrentUrlencode(const unsigned char* target, int len) {
   string dest;
   for(int i = 0; i < len; i++) {
-    if(isalpha(target[i]) || isdigit(target[i])) {
+    if('0' <= target[i] && target[i] <= '9' ||
+       'A' <= target[i] && target[i] <= 'Z' ||
+       'a' <= target[i] && target[i] <= 'z') {
       dest += target[i];
     } else {
       char temp[4];
@@ -339,7 +341,7 @@ void Util::rangedFileCopy(const string& dest, const string& src, long long int s
     close(destFd);
     srcFd = -1;
     destFd = -1;
-  } catch(Exception* e) {
+  } catch(RecoverableException* e) {
     if(srcFd != -1) {
       close(srcFd);
     }

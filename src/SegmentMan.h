@@ -255,6 +255,11 @@ public:
    * Returns current download speed in bytes per sec. 
    */
   int calculateDownloadSpeed() const;
+
+  bool fileExists();
+
+  bool shouldCancelDownloadForSafety();
+
 };
 
 #endif // _D_SEGMENT_MAN_H_

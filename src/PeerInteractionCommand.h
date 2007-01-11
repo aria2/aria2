@@ -43,10 +43,10 @@ private:
   int sequence;
   BtInteractiveHandle btInteractive;
 protected:
-  bool executeInternal();
-  bool prepareForRetry(int wait);
-  bool prepareForNextPeer(int wait);
-  void onAbort(Exception* ex);
+  virtual bool executeInternal();
+  virtual bool prepareForRetry(int wait);
+  virtual bool prepareForNextPeer(int wait);
+  virtual void onAbort(RecoverableException* ex);
 public:
   PeerInteractionCommand(int cuid,
 			 const PeerHandle& peer,

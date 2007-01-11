@@ -84,6 +84,8 @@
 // value: prealloc | none
 #define PREF_FILE_ALLOCATION "file_allocation"
 #  define V_PREALLOC "prealloc"
+// value: true | false
+#define PREF_FORCE_TRUNCATE "force_truncate"
 
 /**
  * FTP related preferences

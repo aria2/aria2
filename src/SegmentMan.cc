@@ -474,3 +474,12 @@ int SegmentMan::calculateDownloadSpeed() const {
   }
   return speed;
 }
+
+bool SegmentMan::fileExists() {
+  return File(getFilePath()).exists();
+}
+
+bool SegmentMan::shouldCancelDownloadForSafety() {
+  return fileExists() && !segmentFileExists() &&
+    option->get(PREF_FORCE_TRUNCATE) != V_TRUE;
+}

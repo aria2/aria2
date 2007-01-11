@@ -40,6 +40,7 @@
 #include "DownloadEngine.h"
 #include "SegmentMan.h"
 #include "TimeA2.h"
+#include "RecoverableException.h"
 
 class AbstractCommand : public Command {
 private:
@@ -52,7 +53,7 @@ protected:
 
   void tryReserved();
   virtual bool prepareForRetry(int wait);
-  virtual void onAbort(Exception* ex);
+  virtual void onAbort(RecoverableException* ex);
   virtual bool executeInternal(Segment& segment) = 0;
 
   void setReadCheckSocket(const SocketHandle& socket);

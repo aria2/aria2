@@ -43,12 +43,12 @@ private:
   string topDir;
 
   void fixFilename();
-protected:
-  virtual string getFilePath();
 public:
   CopyDiskAdaptor() {}
 
   virtual ~CopyDiskAdaptor() {}
+
+  virtual string getFilePath();
 
   virtual void onDownloadComplete();
 

@@ -74,7 +74,7 @@ char* TrackerUpdateCommand::getTrackerResponse(size_t& trackerResponseLength) {
     }
     trackerResponseLength = bufLength;
     return buf;
-  } catch(Exception* e) {
+  } catch(RecoverableException* e) {
     delete [] buf;
     throw;
   }
@@ -113,7 +113,7 @@ bool TrackerUpdateCommand::execute() {
     btAnnounce->announceSuccess();
     btAnnounce->resetAnnounce();
     e->segmentMan->init();
-  } catch(Exception* err) {
+  } catch(RecoverableException* err) {
     logger->error("CUID#%d - Error occurred while processing tracker response.", cuid, err);
     e->segmentMan->errors++;
     delete err;

@@ -64,6 +64,10 @@ public:
 
   virtual void onDownloadComplete() = 0;  
 
+  virtual bool fileExists() = 0;
+
+  virtual string getFilePath() = 0;
+
   void setFileEntries(const FileEntries& fileEntries) {
     this->fileEntries = fileEntries;
   }

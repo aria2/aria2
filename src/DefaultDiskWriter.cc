@@ -60,7 +60,7 @@ void DefaultDiskWriter::initAndOpenFile(const string& filename,
 	fileAllocator->allocate(fd, totalLength);
       }
     }
-  } catch(Exception *e) {
+  } catch(RecoverableException *e) {
     throw new DlAbortEx(e, EX_FILE_WRITE, filename.c_str(), strerror(errno));
   }
 }

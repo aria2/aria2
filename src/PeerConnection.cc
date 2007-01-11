@@ -93,6 +93,9 @@ bool PeerConnection::receiveMessage(unsigned char* data, uint32_t& dataLength) {
     }
     currentPayloadLength = payloadLength;
   }
+  if(!socket->isReadable(0)) {
+    return false;
+  }
   // we have currentPayloadLen-resbufLen bytes to read
   uint32_t remaining = currentPayloadLength-resbufLength;
   if(remaining > 0) {

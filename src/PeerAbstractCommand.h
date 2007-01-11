@@ -39,6 +39,7 @@
 #include "Request.h"
 #include "TorrentDownloadEngine.h"
 #include "TimeA2.h"
+#include "RecoverableException.h"
 
 class PeerAbstractCommand : public BtContextAwareCommand {
 private:
@@ -52,7 +53,7 @@ protected:
   void setTimeout(int timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(int wait);
   virtual bool prepareForRetry(int wait);
-  virtual void onAbort(Exception* ex);
+  virtual void onAbort(RecoverableException* ex);
   virtual bool executeInternal() = 0;
   void setReadCheckSocket(const SocketHandle& socket);
   void setWriteCheckSocket(const SocketHandle& socket);

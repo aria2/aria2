@@ -50,7 +50,6 @@ protected:
   bool sendingInProgress;
   bool invalidate;
   bool uploading;
-  int32_t id;
   int32_t cuid;
 
   BtContextHandle btContext;
@@ -66,7 +65,6 @@ public:
   AbstractBtMessage():sendingInProgress(false),
 		      invalidate(false),
 		      uploading(false),
-		      id(0),
 		      cuid(0),
 		      btContext(0),
 		      pieceStorage(0),
@@ -98,10 +96,6 @@ public:
 
   void setUploading(bool uploading) {
     this->uploading = uploading;
-  }
-
-  virtual uint8_t getId() {
-    return id;
   }
 
   int32_t getCuid() const {

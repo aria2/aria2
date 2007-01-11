@@ -77,7 +77,7 @@ bool PeerAbstractCommand::execute() {
       throw new DlRetryEx(EX_TIME_OUT);
     }
     return executeInternal();
-  } catch(Exception* err) {
+  } catch(RecoverableException* err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     logger->debug("CUID#%d - Peer %s:%d banned.",
 		  cuid, peer->ipaddr.c_str(), peer->port);
@@ -96,7 +96,7 @@ bool PeerAbstractCommand::prepareForRetry(int wait) {
   return true;
 }
 
-void PeerAbstractCommand::onAbort(Exception* ex) {
+void PeerAbstractCommand::onAbort(RecoverableException* ex) {
   if(peer->isSeeder()) {
     peer->error++;
   } else {

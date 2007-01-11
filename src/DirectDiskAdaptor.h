@@ -38,11 +38,11 @@
 #include "AbstractSingleDiskAdaptor.h"
 
 class DirectDiskAdaptor : public AbstractSingleDiskAdaptor {
-protected:
-  virtual string getFilePath();
 public:
   DirectDiskAdaptor() {};
   virtual ~DirectDiskAdaptor() {};
+
+  virtual string getFilePath();
 
   virtual void onDownloadComplete();
 };

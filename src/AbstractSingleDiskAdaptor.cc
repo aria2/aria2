@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "AbstractSingleDiskAdaptor.h"
+#include "File.h"
 
 void AbstractSingleDiskAdaptor::initAndOpenFile() {
   diskWriter->initAndOpenFile(getFilePath(), totalLength);
@@ -60,4 +61,9 @@ int AbstractSingleDiskAdaptor::readData(unsigned char* data, uint32_t len, int64
 
 string AbstractSingleDiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
   return diskWriter->sha1Sum(offset, length);
+}
+
+bool AbstractSingleDiskAdaptor::fileExists()
+{
+  return File(getFilePath()).exists();
 }

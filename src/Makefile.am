@@ -30,6 +30,8 @@ SRCS =  Socket.h\
 	common.h\
 	message.h\
 	Exception.h\
+	FatalException.h\
+	RecoverableException.h\
 	DlAbortEx.h\
 	DlRetryEx.h\
 	Logger.h\
@@ -187,9 +189,9 @@ libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@
-#aria2c_LDFLAGS = -pg
+aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ # -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@  -pg

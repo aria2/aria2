@@ -73,7 +73,9 @@ public:
     delete [] peerId;
   }
 
-  virtual uint8_t getId() const { return UINT8_MAX; }
+  static const uint8_t ID = UINT8_MAX;
+
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction() {};
 

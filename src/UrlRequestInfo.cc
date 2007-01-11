@@ -37,6 +37,7 @@
 #include "MetalinkRequestInfo.h"
 #include "prefs.h"
 #include "DownloadEngineFactory.h"
+#include "RecoverableException.h"
 
 extern volatile sig_atomic_t haltRequested;
 
@@ -140,7 +141,7 @@ RequestInfos UrlRequestInfo::execute() {
       e->segmentMan->diskWriter->closeFile();
       printDownloadAbortMessage();
     }
-  } catch(Exception *ex) {
+  } catch(RecoverableException *ex) {
     logger->error("Exception caught", ex);
     delete ex;
     fail = true;

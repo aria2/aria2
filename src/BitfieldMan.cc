@@ -37,8 +37,14 @@
 #include <string.h>
 
 BitfieldMan::BitfieldMan(uint32_t blockLength, uint64_t totalLength)
-  :blockLength(blockLength), totalLength(totalLength), filterBitfield(0),
-   filterEnabled(false), randomizer(0) {
+  :blockLength(blockLength),
+   totalLength(totalLength),
+   bitfield(0),
+   useBitfield(0),
+   filterBitfield(0),
+   filterEnabled(false),
+   randomizer(0)
+{
   if(blockLength > 0 && totalLength > 0) {
     blocks = totalLength/blockLength+(totalLength%blockLength ? 1 : 0);
     bitfieldLength = blocks/8+(blocks%8 ? 1 : 0);
@@ -49,7 +55,13 @@ BitfieldMan::BitfieldMan(uint32_t blockLength, uint64_t totalLength)
   }
 }
 
-BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan):randomizer(0) {
+BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
+  :bitfield(0),
+   useBitfield(0),
+   filterBitfield(0),
+   filterEnabled(false),
+   randomizer(0)
+{
   blockLength = bitfieldMan.blockLength;
   totalLength = bitfieldMan.totalLength;
   blocks = bitfieldMan.blocks;
@@ -59,7 +71,7 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan):randomizer(0) {
   memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
   memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
   filterEnabled = bitfieldMan.filterEnabled;
-  if(bitfieldMan.filterBitfield) {
+  if(filterBitfield) {
     filterBitfield = new unsigned char[bitfieldLength];
     memcpy(filterBitfield, bitfieldMan.filterBitfield, bitfieldLength);
   } else {

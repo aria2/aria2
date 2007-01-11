@@ -49,15 +49,13 @@ public:
 
   virtual ~BtPortMessage() {}
 
-  enum ID_t {
-    ID = 9
-  };
+  static const uint8_t ID = 9;
 
   uint16_t getPort() const { return port; }
 
   void setPort(uint16_t port) { this->port = port; }
 
-  virtual uint8_t getId() const { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   static BtPortMessageHandle create(const unsigned char* data, uint32_t dataLength);
 

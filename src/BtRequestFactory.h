@@ -53,6 +53,8 @@ public:
 
   virtual void removeCompletedPiece() = 0;
 
+  virtual void doChokedAction() = 0;
+
   /**
    * Creates RequestMessage objects associated to the pieces added by
    * addTargetPiece() and returns them.

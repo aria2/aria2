@@ -1,3 +1,217 @@
+2007-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add RecoverableException, FatalException:
+	
+	* src/AbstractCommand.cc
+	(onAbort): Exception -> RecoverableException
+	* src/PeerAbstractCommand.h
+	(RecoverableException.h): New include.
+	(onAbort): Exception -> RecoverableException.
+	* src/PeerInteractionCommand.cc
+	(onAbort): Exception -> RecoverableException.
+	* src/PeerAbstractCommand.cc
+	(execute): Exception -> RecoverableException.
+	(onAbort): Exception -> RecoverableException.
+	* src/TorrentRequestInfo.cc
+	(execute): Exception -> RecoverableException.
+	* src/MetalinkRequestInfo.cc
+	(execute): Exception -> RecoverableException.
+	* src/MetaFileUtil.cc: RecoverableException.
+	* src/AbstractCommand.h
+	(onAbort): Exception -> RecoverableException.
+	* src/DlRetryEx.h: Exception -> RecoverableException.
+	* src/DlAbortEx.h: Exception -> RecoverableException.
+	* src/PeerListenCommand.cc: Exception -> RecoverableException.
+	* src/Util.cc: Exception -> RecoverableException.
+	* src/DefauldDiskWriter.cc: Exception -> RecoverableException.
+	* src/TrackerUpdateCommand.cc: Exception -> RecoverableException.
+	* src/UrlRequestInfo.cc: Exception -> RecoverableException.
+	
+	To make ID static const int
+
+	* src/BtInterestedMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtPieceMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtChokeMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtHaveAllMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtKeepAliveMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtHandshakeMessage.h
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtSuggestPieceMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtPortMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/AbstractBtMessage.h
+	(id): Removed.
+	(AbstractBtMessage): Removed id.
+	(getId): Removed.
+	* src/BtHaveMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtAllowedFastMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtCancelMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtNotInterestedMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtChokeMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtRejectMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtBitfieldMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtUnchokeMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtRequestMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+	* src/BtHaveMessage.h
+	(ID_t): Removed.
+	(ID): New variable.
+	(getId): Made non-const.
+
+	To add --force-truncate command-line option and a check whether
+	the file already exists:
+	
+	* src/DirectDiskAdaptor.h
+	(getFilePath): Made virtual public.
+	* src/MultiDiskAdaptor.h
+	(File.h): New include.
+	(DiskWriterEntry::fileEntry): Made private.
+	(DiskWriterEntry::fileExists): New function.
+	(DiskWriterEntry::getFileEntry): New function.
+	(fileExists): New function.
+	(getFilePath): New function.
+	* src/TorrentRequestInfo.cc
+	(FatalException.h): New include.
+	(message.h): New include.
+	(RecoverableException.h): New include.
+	(execute): Added a check whether file is already exists or not.
+	* src/DiskAdaptor.h
+	(fileExists): New function.
+	(getFilePath): New function.
+	* src/main.cc
+	(showUsage): Added an explanation of --force-truncate command-line
+	option.
+	(main): Added --force-truncate command-line option.
+	* src/Exception.h
+	(setMsg): buf[256] -> buf[1024]
+	* src/CopyDiskWriter.h
+	(getFilePath): Made public virtual.
+	* src/MultiDiskAdaptor.cc: fileEntry -> getFileEntry()
+	(fileExists): New function.
+	* src/DownloadEngineFactory.cc
+	(newTorrentConsoleEngine): Don't open file here.
+	* src/message.h
+	(EX_FILE_ALREADY_EXISTS): New definition.
+	* src/prefs.h
+	(PREF_FOECE_TRUNCATE): New definition.
+	* src/HttpResponseCommand.cc
+	(handleDefaultEncoding): Added a check whether the file already exists.
+	* src/SegmentMan.h
+	(fileExists): New function.
+	(shouldCancelDownloadForSafety): New function.
+	* src/FtpNegotiateCommand.cc
+	(recvSize): Added a check whether the file already exists.
+	* src/AbstractSingleDiskAdaptor.cc
+	(File.h): New include.
+	(fileExists): New function.
+	* src/AbstractSingleDiskAdaptor.h
+	(getFilePath): Removed.
+	(fileExists): New function.
+	* src/SegmentMan.cc
+	(fileExists): New function.
+	(shouldCancelDownloadForSafety): New function.
+
+	To fix regression bug in torrent downloading:
+	
+	* src/DefaultBtRequestFactory.cc
+	(doChokedAction): New function.
+	* src/DefaultBtRequestFactory.h
+	(doChokedAction): New function.
+	* src/DefaultBtMessageDispatcher.cc
+	(doChokedAction): Do not delete request if its target is in allowed
+	fast set.
+	* src/DefaultBtInteractive.cc
+	(doPostHandshakeProcessing): Added a call to sendPendingMessage().
+	(sendKeepAlive): Send keep alive message even if the outgoing message
+	queue is not empty.
+	(decideInterest): Simplified the code.
+	(fillPiece): Remove a call to dispatcher->doChokedAction() because
+	it is already called when BtChokeMessage is received from a peer.
+	* src/BtRequestFactory.h
+	(doChokedAction): New function.
+
+	To clean up code:
+	
+	* src/PeerInteractionCommand.h
+	(executeInternal): Added virtual keyword explicitly.
+	(prepareForRetry): Added virtual keyword explicitly.
+	(prepareForNextPeer): Added virtual keyword explicitly.
+	(onAbort): Added virtual keyword explicitly.
+
+	* src/RequestSlot.cc
+	(isTimeout): Use Time::elapsed() instead of differenceInMillis().
+
+	* src/BtPieceMessage.cc
+	(doReceivedAction): Added a debug log of piece's bitfield.
+	* src/Piece.h
+	(getBitfieldLength): New function.
+
+	* src/ByteArrayDiskWriter.cc
+	(clear): Added buf = 0 to avoid double free corruption.
+
+	* src/FileAllocator.cc
+	(allocate): Fixed an assignment of fileAllocationMonitor->currentValue.
+	Added cp.reset().
+
+	* src/BitfieldMan.h
+	(operator=): Rewritten.
+	* src/BitfieldMan.cc
+	(BitfieldMan): Initialized bitfield, useBitfield.
+	
+	* src/PeerConnection.cc
+	(receiveMessage): Added a call to socket->readable() after getting
+	message length to avoid possible EOF.
+
+	* src/Util.cc
+	(torrentUrlencode): Fixed an encodeing bug. BUG#1629912
+	
 2007-01-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add an ability to pre-allocate file space:

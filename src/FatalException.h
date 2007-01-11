@@ -32,31 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COMPACT_TRACKER_RESPONSE_PROCESSOR_H_
-#define _D_COMPACT_TRACKER_RESPONSE_PROCESSOR_H_
+#ifndef _D_FATAL_EXCEPTION_H_
+#define _D_FATAL_EXCEPTION_H_
+#include "Exception.h"
 
-#include "common.h"
-#include "ByteArrayDiskWriter.h"
-#include "Request.h"
-
-class TorrentDownloadEngine;
-class Logger;
-
-class CompactTrackerResponseProcessor {
-private:
-  ByteArrayDiskWriter* diskWriter;
-  TorrentDownloadEngine* e;
-  Request* req;
-  const Logger* logger;
+class FatalException : public Exception {
 public:
-  CompactTrackerResponseProcessor(ByteArrayDiskWriter* diskWriter,
-				  TorrentDownloadEngine* e,
-				  Request* req);
-  ~CompactTrackerResponseProcessor();
+  FatalException(Exception* cause = 0):Exception(cause) {}
 
-  bool isFeeded() const;
-  void execute();
-  void resetTrackerResponse();
+  FatalException(const char* msg, ...):Exception() {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(string(msg), ap);
+    va_end(ap);
+  }
+
+  FatalException(Exception* cause, const char* msg, ...):Exception(cause) {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(string(msg), ap);
+    va_end(ap);
+  }
 };
 
-#endif // _D_COMPACT_TRACKER_RESPONSE_PROCESSOR_H_
+#endif // _D_FATAL_EXCEPTION_EX_H_

@@ -53,7 +53,7 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
       logger->info("CUID#%d - using port %d for accepting new connections",
 		   cuid, port);
       return port;
-    } catch(Exception* ex) {
+    } catch(RecoverableException* ex) {
       logger->error("CUID#%d - an error occurred while binding port=%d",
 		    ex, cuid, port);
       socket->closeConnection();
@@ -92,7 +92,7 @@ bool PeerListenCommand::execute() {
 	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
 	}
       }
-    } catch(Exception* ex) {
+    } catch(RecoverableException* ex) {
       logger->error("CUID#%d - error in accepting connection", ex, cuid);
       delete ex;
     }		    

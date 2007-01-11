@@ -53,13 +53,11 @@ public:
     delete [] msg;
   }
 
-  enum ID_t {
-    ID = 14
-  };
+  static const uint8_t ID = 14;
 
   static BtHaveAllMessageHandle create(const unsigned char* data, uint32_t dataLength);
 
-  virtual uint8_t getId() const { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 

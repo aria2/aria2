@@ -111,5 +111,6 @@
 #define EX_SOCKET_SEND _("Failed to send data, cause: %s")
 #define EX_SOCKET_RECV _("Failed to receive data, cause: %s")
 #define EX_SOCKET_PEEK _("Failed to peek data, cause: %s")
+#define EX_FILE_ALREADY_EXISTS _("File %s exists, but %s does not exist. The download was canceled in order to prevent your file from being truncated to 0. If you are sure to download file all over again, then delete it or add --force-truncate=true option and restart aria2.")
 
 #endif // _D_MESSAGE_H_
