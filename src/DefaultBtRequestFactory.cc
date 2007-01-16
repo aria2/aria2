@@ -84,8 +84,7 @@ BtMessages DefaultBtRequestFactory::createRequestMessages(uint32_t max) {
     int32_t blockIndex;
     while(requests.size() < (size_t)max &&
 	  (blockIndex = piece->getMissingUnusedBlockIndex()) != -1) {
-      requests.push_back(BT_MESSAGE_FACTORY(btContext, peer)->
-			 createRequestMessage(piece, blockIndex));
+      requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
     }
   }
   return requests;
@@ -104,8 +103,7 @@ BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(uint32_t max)
       int32_t blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
 					   blockIndex)) {
-	requests.push_back(BT_MESSAGE_FACTORY(btContext, peer)->
-			   createRequestMessage(piece, blockIndex));
+	requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
       }
     }
   }

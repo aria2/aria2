@@ -58,18 +58,16 @@ void BtRequestMessage::doReceivedAction() {
   if(pieceStorage->hasPiece(index) &&
      (!peer->amChoking ||
       peer->amChoking && peer->isInAmAllowedIndexSet(index))) {
-    BtMessageHandle msg =
-      BT_MESSAGE_FACTORY(btContext, peer)->createPieceMessage(index,
-							       begin,
-							       length);
-    BT_MESSAGE_DISPATCHER(btContext, peer)->addMessageToQueue(msg);
+    BtMessageHandle msg = messageFactory->createPieceMessage(index,
+							     begin,
+							     length);
+    dispatcher->addMessageToQueue(msg);
   } else {
     if(peer->isFastExtensionEnabled()) {
-      BtMessageHandle msg =
-	BT_MESSAGE_FACTORY(btContext, peer)->createRejectMessage(index,
-								  begin,
-								  length);
-      BT_MESSAGE_DISPATCHER(btContext, peer)->addMessageToQueue(msg);
+      BtMessageHandle msg = messageFactory->createRejectMessage(index,
+								begin,
+								length);
+      dispatcher->addMessageToQueue(msg);
     }
   }
 }
@@ -106,7 +104,7 @@ string BtRequestMessage::toString() const {
 
 void BtRequestMessage::onQueued() {
   RequestSlot requestSlot(index, begin, length, blockIndex);
-  BT_MESSAGE_DISPATCHER(btContext, peer)->addOutstandingRequest(requestSlot);
+  dispatcher->addOutstandingRequest(requestSlot);
 }
 
 bool BtRequestMessage::BtAbortOutstandingRequestEventListener::canHandle(const BtEventHandle& event) {

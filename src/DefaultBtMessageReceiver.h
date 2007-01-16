@@ -50,8 +50,9 @@ private:
   bool handshakeSent;
   BtContextHandle btContext;
   PeerHandle peer;
-  PeerConnectionHandle peerConnection;
-  BtMessageDispatcherHandle dispatcher;
+  PeerConnectionWeakHandle peerConnection;
+  BtMessageDispatcherWeakHandle dispatcher;
+  BtMessageFactoryWeakHandle messageFactory;
   const Logger* logger;
 
   void sendHandshake();
@@ -86,11 +87,11 @@ public:
     return cuid;
   }
 
-  void setPeerConnection(const PeerConnectionHandle& peerConnection) {
+  void setPeerConnection(const PeerConnectionWeakHandle& peerConnection) {
     this->peerConnection = peerConnection;
   }
 
-  PeerConnectionHandle getPeerConnection() const {
+  PeerConnectionWeakHandle getPeerConnection() const {
     return peerConnection;
   }
 
@@ -110,8 +111,12 @@ public:
     return peer;
   }
 
-  void setDispatcher(const BtMessageDispatcherHandle& dispatcher) {
+  void setDispatcher(const BtMessageDispatcherWeakHandle& dispatcher) {
     this->dispatcher = dispatcher;
+  }
+
+  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
+    this->messageFactory = factory;
   }
 };
 

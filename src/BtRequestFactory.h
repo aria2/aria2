@@ -70,5 +70,6 @@ public:
 };
 
 typedef SharedHandle<BtRequestFactory> BtRequestFactoryHandle;
+typedef WeakHandle<BtRequestFactory> BtRequestFactoryWeakHandle;
 
 #endif // _D_BT_REQUEST_FACTORY_H_

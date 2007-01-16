@@ -94,6 +94,8 @@ public:
     msg->setBlockLength(16*1024);
     msg->setBtContext(btContext);
     msg->setPeer(peer);
+    msg->setBtMessageDispatcher(btMessageDispatcher);
+    msg->setBtMessageFactory(BT_MESSAGE_FACTORY(btContext, peer));
   }
 };
 

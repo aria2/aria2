@@ -125,6 +125,9 @@ PEER_OBJECT_CLUSTER(btContext)->getHandle(peer->getId())
 #define BT_MESSAGE_DISPATCHER(btContext, peer) \
 PEER_OBJECT(btContext, peer)->btMessageDispatcher
 
+#define BT_MESSAGE_RECEIVER(btContext, peer) \
+PEER_OBJECT(btContext, peer)->btMessageReceiver
+
 #define BT_MESSAGE_FACTORY(btContext, peer) \
 PEER_OBJECT(btContext, peer)->btMessageFactory
 

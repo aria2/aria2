@@ -172,7 +172,11 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, uint32_t dat
 void DefaultBtMessageFactory::setCommonProperty(const AbstractBtMessageHandle& msg) {
   msg->setCuid(cuid);
   msg->setPeer(peer);
-  msg->setBtContext(btContext);  
+  msg->setBtContext(btContext);
+  msg->setBtMessageDispatcher(dispatcher);
+  msg->setBtRequestFactory(requestFactory);
+  msg->setBtMessageFactory(this);
+  msg->setPeerConnection(peerConnection);
 }
 
 BtMessageHandle

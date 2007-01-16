@@ -87,5 +87,5 @@ public:
 };
 
 typedef SharedHandle<BtMessageFactory> BtMessageFactoryHandle;
-
+typedef WeakHandle<BtMessageFactory> BtMessageFactoryWeakHandle;
 #endif // _D_BT_MESSAGE_FACTORY_H_

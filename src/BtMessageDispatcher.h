@@ -78,5 +78,5 @@ public:
 };
 
 typedef SharedHandle<BtMessageDispatcher> BtMessageDispatcherHandle;
-
+typedef WeakHandle<BtMessageDispatcher> BtMessageDispatcherWeakHandle;
 #endif // _D_BT_MESSAGE_DISPATCHER_H_

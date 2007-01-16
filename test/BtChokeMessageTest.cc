@@ -1,6 +1,7 @@
 #include "BtChokeMessage.h"
 #include "PeerMessageUtil.h"
 #include "MockBtMessageDispatcher.h"
+#include "MockBtRequestFactory.h"
 #include "MockBtContext.h"
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -56,6 +57,19 @@ public:
   };
 
   typedef SharedHandle<MockBtMessageDispatcher2> MockBtMessageDispatcher2Handle;
+
+  class MockBtRequestFactory2 : public MockBtRequestFactory {
+  public:
+    bool doChokedActionCalled;
+  public:
+    MockBtRequestFactory2():doChokedActionCalled(false) {}
+
+    virtual void doChokedAction() {
+      doChokedActionCalled = true;
+    }
+  };
+
+  typedef SharedHandle<MockBtRequestFactory2> MockBtRequestFactory2Handle;
 };
 
 
@@ -99,8 +113,9 @@ void BtChokeMessageTest::testDoReceivedAction() {
   msg.setBtContext(btContext);
 
   MockBtMessageDispatcher2Handle dispatcher = new MockBtMessageDispatcher2();
-
-  PEER_OBJECT(btContext, peer)->btMessageDispatcher = dispatcher;
+  msg.setBtMessageDispatcher(dispatcher);
+  MockBtRequestFactory2Handle requestFactory = new MockBtRequestFactory2();
+  msg.setBtRequestFactory(requestFactory);
 
   msg.doReceivedAction();
 
@@ -115,8 +130,7 @@ void BtChokeMessageTest::testOnSendComplete() {
   msg.setBtContext(btContext);
 
   MockBtMessageDispatcher2Handle dispatcher = new MockBtMessageDispatcher2();
-
-  PEER_OBJECT(btContext, peer)->btMessageDispatcher = dispatcher;
+  msg.setBtMessageDispatcher(dispatcher);
 
   msg.onSendComplete();
 

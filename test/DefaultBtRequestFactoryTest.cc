@@ -77,6 +77,7 @@ public:
     btRequestFactory->setBtContext(btContext);
     btRequestFactory->setPeer(peer);
     btRequestFactory->setBtMessageDispatcher(new MockBtMessageDispatcher());
+    btRequestFactory->setBtMessageFactory(peerObject->btMessageFactory);
   }
   
 };

@@ -58,13 +58,12 @@ void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessages& btMessages)
 
 void DefaultBtMessageDispatcher::sendMessages() {
   BtMessages tempQueue;
-  int32_t uploadLimit = option->getAsInt(PREF_MAX_UPLOAD_LIMIT);
   while(messageQueue.size() > 0) {
     BtMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
-    if(uploadLimit > 0) {
+    if(maxUploadSpeedLimit > 0) {
       TransferStat stat = peerStorage->calculateStat();
-      if(uploadLimit < stat.getUploadSpeed() &&
+      if(maxUploadSpeedLimit < stat.getUploadSpeed() &&
 	 msg->isUploading() && !msg->isSendingInProgress()) {
 	tempQueue.push_back(msg);
 	continue;
@@ -168,7 +167,7 @@ void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
       itr != requestSlots.end();) {
     RequestSlot& slot = *itr;
     PieceHandle piece = pieceStorage->getPiece(slot.getIndex());
-    if(slot.isTimeout(option->getAsInt(PREF_BT_REQUEST_TIMEOUT))) {
+    if(slot.isTimeout(requestTimeout)) {
       logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
 		    " because of time out",
 		    cuid,
@@ -181,10 +180,9 @@ void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 		    " the block has been acquired.",
 		    cuid,
 		    slot.getBlockIndex());
-      addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
-			createCancelMessage(slot.getIndex(),
-					    slot.getBegin(),
-					    slot.getLength()));
+      addMessageToQueue(messageFactory->createCancelMessage(slot.getIndex(),
+							    slot.getBegin(),
+							    slot.getLength()));
       itr = requestSlots.erase(itr);
     } else {
       itr++;

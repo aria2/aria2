@@ -43,10 +43,8 @@
 #include "DlAbortEx.h"
 
 void DefaultBtInteractive::initiateHandshake() {
-  BtMessageHandle message =
-    BT_MESSAGE_FACTORY(btContext, peer)->
-    createHandshakeMessage(btContext->getInfoHash(),
-			   btContext->getPeerId());
+  BtMessageHandle message = messageFactory->createHandshakeMessage(btContext->getInfoHash(),
+								   btContext->getPeerId());
   dispatcher->addMessageToQueue(message);
   dispatcher->sendMessages();
 }
@@ -79,18 +77,17 @@ void DefaultBtInteractive::doPostHandshakeProcessing() {
 }
 
 void DefaultBtInteractive::addBitfieldMessageToQueue() {
-  BtMessageFactoryHandle factory = BT_MESSAGE_FACTORY(btContext, peer);
   if(peer->isFastExtensionEnabled()) {
     if(pieceStorage->downloadFinished()) {
-      dispatcher->addMessageToQueue(factory->createHaveAllMessage());
+      dispatcher->addMessageToQueue(messageFactory->createHaveAllMessage());
     } else if(pieceStorage->getCompletedLength() > 0) {
-      dispatcher->addMessageToQueue(factory->createBitfieldMessage());
+      dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
     } else {
-      dispatcher->addMessageToQueue(factory->createHaveNoneMessage());
+      dispatcher->addMessageToQueue(messageFactory->createHaveNoneMessage());
     }
   } else {
     if(pieceStorage->getCompletedLength() > 0) {
-      dispatcher->addMessageToQueue(factory->createBitfieldMessage());
+      dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
     }
   }
 }
@@ -103,8 +100,7 @@ void DefaultBtInteractive::addAllowedFastMessageToQueue() {
 					    allowedFastSetSize);
     for(Integers::const_iterator itr = fastSet.begin();
 	itr != fastSet.end(); itr++) {
-      dispatcher->addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
-				    createAllowedFastMessage(*itr));
+      dispatcher->addMessageToQueue(messageFactory->createAllowedFastMessage(*itr));
     }
   }
 }
@@ -112,38 +108,35 @@ void DefaultBtInteractive::addAllowedFastMessageToQueue() {
 void DefaultBtInteractive::decideChoking() {
   if(peer->shouldBeChoking()) {
     if(!peer->amChoking) {
-      dispatcher->addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
-				    createChokeMessage());
+      dispatcher->addMessageToQueue(messageFactory->createChokeMessage());
     }
   } else {
     if(peer->amChoking) {
-      dispatcher->addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
-				    createUnchokeMessage());
+      dispatcher->addMessageToQueue(messageFactory->createUnchokeMessage());
     }
   }
 }
 
 void DefaultBtInteractive::checkHave() {
-  BtMessageFactoryHandle factory = BT_MESSAGE_FACTORY(btContext, peer);
   Integers indexes =
     pieceStorage->getAdvertisedPieceIndexes(cuid, haveCheckPoint);
   haveCheckPoint.reset();
   if(indexes.size() >= 20) {
     if(peer->isFastExtensionEnabled() && pieceStorage->downloadFinished()) {
-      dispatcher->addMessageToQueue(factory->createHaveAllMessage());
+      dispatcher->addMessageToQueue(messageFactory->createHaveAllMessage());
     } else {
-      dispatcher->addMessageToQueue(factory->createBitfieldMessage());
+      dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
     }
   } else {
     for(Integers::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
-      dispatcher->addMessageToQueue(factory->createHaveMessage(*itr));
+      dispatcher->addMessageToQueue(messageFactory->createHaveMessage(*itr));
     }
   }
 }
 
 void DefaultBtInteractive::sendKeepAlive() {
-  if(keepAliveCheckPoint.elapsed(option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL))) {
-    dispatcher->addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->createKeepAliveMessage());
+  if(keepAliveCheckPoint.elapsed(keepAliveInterval)) {
+    dispatcher->addMessageToQueue(messageFactory->createKeepAliveMessage());
     dispatcher->sendMessages();
     keepAliveCheckPoint.reset();
   }
@@ -151,10 +144,9 @@ void DefaultBtInteractive::sendKeepAlive() {
 
 void DefaultBtInteractive::receiveMessages() {
   for(int i = 0; i < 50; i++) {
-    int maxSpeedLimit = option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
-    if(maxSpeedLimit > 0) {
+    if(maxDownloadSpeedLimit > 0) {
       TransferStat stat = peerStorage->calculateStat();
-      if(maxSpeedLimit < stat.downloadSpeed) {
+      if(maxDownloadSpeedLimit < stat.downloadSpeed) {
 	break;
       }
     }
@@ -190,15 +182,13 @@ void DefaultBtInteractive::decideInterest() {
     if(!peer->amInterested) {
       logger->debug("CUID#%d - Interested in the peer", cuid);
       dispatcher->
-	addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
-			  createInterestedMessage());
+	addMessageToQueue(messageFactory->createInterestedMessage());
     }
   } else {
     if(peer->amInterested) {
       logger->debug("CUID#%d - Not interested in the peer", cuid);
       dispatcher->
-	addMessageToQueue(BT_MESSAGE_FACTORY(btContext, peer)->
-			  createNotInterestedMessage());
+	addMessageToQueue(messageFactory->createNotInterestedMessage());
     }
   }
 }

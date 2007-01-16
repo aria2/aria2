@@ -42,7 +42,6 @@
 #include "RequestSlot.h"
 #include "BtMessage.h"
 #include "Peer.h"
-#include "Option.h"
 #include "LogFactory.h"
 #include "Logger.h"
 #include "BtRegistry.h"
@@ -55,8 +54,10 @@ private:
   BtContextHandle btContext;
   PeerStorageHandle peerStorage;
   PieceStorageHandle pieceStorage;
+  BtMessageFactoryWeakHandle messageFactory;
   PeerHandle peer;
-  const Option* option;
+  uint32_t maxUploadSpeedLimit;
+  uint32_t requestTimeout;
   const Logger* logger;
 public:
   DefaultBtMessageDispatcher():
@@ -65,17 +66,12 @@ public:
     peerStorage(0),
     pieceStorage(0),
     peer(0),
-    option(0),
-    logger(LogFactory::getInstance())
-  {
-    logger->debug("DefaultBtMessageDispatcher::instantiated");
-  }
+    maxUploadSpeedLimit(0),
+    requestTimeout(0),
+    logger(LogFactory::getInstance()) {}
 
-  virtual ~DefaultBtMessageDispatcher()
-  {
-    logger->debug("DefaultBtMessageDispatcher::deleted");
-  }
-
+  virtual ~DefaultBtMessageDispatcher() {}
+  
   virtual void addMessageToQueue(const BtMessageHandle& btMessage);
 
   virtual void addMessageToQueue(const BtMessages& btMessages);
@@ -132,14 +128,6 @@ public:
     return messageQueue;
   }
 
-  void setOption(const Option* option) {
-    this->option = option;
-  }
-
-  const Option* getOption() const {
-    return option;
-  }
-
   RequestSlots& getRequestSlots() {
     return requestSlots;
   }
@@ -156,6 +144,18 @@ public:
 
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
+  }
+
+  void setMaxUploadSpeedLimit(uint32_t maxUploadSpeedLimit) {
+    this->maxUploadSpeedLimit = maxUploadSpeedLimit;
+  }
+
+  void setRequestTimeout(uint32_t requestTimeout) {
+    this->requestTimeout = requestTimeout;
+  }
+
+  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
+    this->messageFactory = factory;
   }
 };
 

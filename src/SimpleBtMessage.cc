@@ -53,7 +53,7 @@ void SimpleBtMessage::send() {
       leftDataLength = getMessageLength();
     }
     sendingInProgress = false;
-    int writtenLength = PEER_CONNECTION(btContext, peer)->sendMessage(msg+msgLength-leftDataLength, leftDataLength);
+    int writtenLength = peerConnection->sendMessage(msg+msgLength-leftDataLength, leftDataLength);
     if(writtenLength == leftDataLength) {
       onSendComplete();
     } else {

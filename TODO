@@ -22,6 +22,7 @@
 * Add --bt-timeout command line option.
 * Fix DefaultBtProgressInfoFile.cc: save(), load()
 * remove blockIndex
+* Add an ability of seeding
+
 * Add piece hash checking
 * Stop download after selective download completes
-* Add an ability of seeding

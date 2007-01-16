@@ -50,7 +50,8 @@ private:
   BtContextHandle btContext;
   PieceStorageHandle pieceStorage;
   PeerHandle peer;
-  BtMessageDispatcherHandle dispatcher;
+  BtMessageDispatcherWeakHandle dispatcher;
+  BtMessageFactoryWeakHandle messageFactory;
   Pieces pieces;
 public:
   DefaultBtRequestFactory():
@@ -117,8 +118,13 @@ public:
     this->peer = peer;
   }
 
-  void setBtMessageDispatcher(const BtMessageDispatcherHandle& dispatcher) {
+  void setBtMessageDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
+  {
     this->dispatcher = dispatcher;
+  }
+
+  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
+    this->messageFactory = factory;
   }
 };
 

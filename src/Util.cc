@@ -574,20 +574,11 @@ static int nbits[] = {
 };
 
 uint32_t Util::countBit(uint32_t n) {
-  /*
   return
-    nbits[n & 0xffu]+
-    nbits[(n >> 8) & 0xffu]+
-    nbits[(n >> 16) & 0xffu]+
-    nbits[(n >> 24) & 0xffu];
-  */
-  uint32_t count = 0;
-  int size = sizeof(uint32_t);
-  for(int i = 0; i < size; i++) {
-    count += nbits[(n >> i*8) & 0xffu];
-  }
-
-  return count;
+    nbits[n&0xffu]+
+    nbits[(n >> 8)&0xffu]+
+    nbits[(n >> 16)&0xffu]+
+    nbits[(n >> 24)&0xffu];
 }
 
 string Util::randomAlpha(int length) {

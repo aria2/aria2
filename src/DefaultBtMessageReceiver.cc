@@ -50,8 +50,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   if(!retval) {
     return 0;
   }
-  BtHandshakeMessageHandle msg =
-    BT_MESSAGE_FACTORY(btContext, peer)->createHandshakeMessage(data, dataLength);
+  BtHandshakeMessageHandle msg = messageFactory->createHandshakeMessage(data, dataLength);
   Errors errors;
   if(msg->validate(errors)) {
     if(msg->isFastExtensionSupported()) {
@@ -70,8 +69,8 @@ BtMessageHandle DefaultBtMessageReceiver::receiveAndSendHandshake() {
 
 void DefaultBtMessageReceiver::sendHandshake() {
   BtHandshakeMessageHandle msg =
-    BT_MESSAGE_FACTORY(btContext, peer)->createHandshakeMessage(btContext->getInfoHash(),
-								 btContext->getPeerId());
+    messageFactory->createHandshakeMessage(btContext->getInfoHash(),
+					   btContext->getPeerId());
   dispatcher->addMessageToQueue(msg);
   dispatcher->sendMessages();
 }
@@ -82,8 +81,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
   if(!peerConnection->receiveMessage(data, dataLength)) {
     return 0;
   }
-  BtMessageHandle msg =
-    BT_MESSAGE_FACTORY(btContext, peer)->createBtMessage(data, dataLength);
+  BtMessageHandle msg = messageFactory->createBtMessage(data, dataLength);
   Errors errors;
   if(msg->validate(errors)) {
     return msg;

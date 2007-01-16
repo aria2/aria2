@@ -76,5 +76,5 @@ public:
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;
-
+typedef WeakHandle<PeerConnection> PeerConnectionWeakHandle;
 #endif // _D_PEER_CONNECTION_H_

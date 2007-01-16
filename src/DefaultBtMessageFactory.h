@@ -47,6 +47,12 @@ private:
   PieceStorageHandle pieceStorage;
   PeerHandle peer;
 
+  BtMessageDispatcherWeakHandle dispatcher;
+
+  BtRequestFactoryWeakHandle requestFactory;
+
+  PeerConnectionWeakHandle peerConnection;
+
   void setCommonProperty(const AbstractBtMessageHandle& msg);
 public:
   DefaultBtMessageFactory():cuid(0),
@@ -124,6 +130,20 @@ public:
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
   }
+
+  void setBtMessageDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
+  {
+    this->dispatcher = dispatcher;
+  }
+  
+  void setBtRequestFactory(const BtRequestFactoryWeakHandle& factory) {
+    this->requestFactory = factory;
+  }
+
+  void setPeerConnection(const PeerConnectionWeakHandle& connection) {
+    this->peerConnection = connection;
+  }
+  
 };
 
 typedef SharedHandle<DefaultBtMessageFactory> DefaultBtMessageFactoryHandle;

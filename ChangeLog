@@ -1,3 +1,205 @@
+2007-01-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To decrease CPU usage in bittorrent download, calculation results in
+	BitfieldMan were cached and realtime fetching PeerObject was removed
+	with WeakHandle introduced. Option values are set to the objects
+	by setter before download begins.
+
+	* src/DefaultBtRequestFactory.cc: Use messageFactory member.
+	* src/DefaultBtRequestFactory.h
+	(dispatcher): BtMessageDispatcherHandle ->
+	BtMessageDispatcherWeakHandle.
+	(messageFactory): New variable.
+	(setBtMessageDispatcher): BtMessageDispatcherHandle ->
+	BtMessageDispatcherWeakHandle.
+	(setBtMessageFactory): New function.
+	* src/DefaultBtMessageDispatcher.cc:
+	(sendMessages): Use maxUploadSpeedLimit instead of fetching the value
+	from Option.
+	(checkRequestSlotAndDoNecessaryThing): Use requestTimeout instead of
+	feating the value from Option.
+	Use messageFactory member.
+	* src/PeerInteractionCommand.cc
+	(PeerInteractionCommand): Added maxDownloadSpeedLimit.
+	Add reverse dependencies to factory object.
+	Set maxUploadSpeedLimit and requestTimeout and messageFactory to
+	dispatcher.
+	Set messageFactory to receiver.
+	Set keepAliveInterval and maxDownloadSpeedLimit and messageFactory to
+	btInteractive.
+	Set receiver to peerObject.
+	Set maxDownloadSpeedLimit to this.
+	(executeInternal): Use maxDownloadSpeedLimit member.
+	* src/BtChokeMessage.cc
+	(doReceivedAction): Use dispatcher, requestFactory member.
+	(onSendComplete): Use dispatcher member.
+	* src/PeerInteractionCommand.h
+	(maxDownloadSpeedLimit): New variable.
+	* src/DefaultBtMessageReceiver.h
+	(peerConnection): PeerConnectionHandle -> PeerConnectionWeakHandle
+	(dispatcher):
+	BtMessageDispatcherHandle -> BtMessageDispatcherWeakHandle
+	(messageFactory): New variable.
+	(setPeerConnection): PeerConnectionHandle -> PeerConnectionWeakHandle
+	(getPeerConnection): PeerConnectionHandle -> PeerConnectionWeakHandle
+	(setDispatcher):
+	BtMessageDispatcherHandle -> BtMessageDispatcherWeakHandle
+	(setBtMessageFactory): New function.
+	* src/DefaultBtInteractive.cc
+	(initiateHandshake): Use messageFactory member.
+	(addBitfieldMessageToQueue): Use messageFactory member.
+	(addAllowedFastMessageToQueue): Use messageFactory member.
+	(decideChoking): Use messageFactory member.
+	(checkHave): Use messageFactory member.
+	(sendKeepAlive): Use keepAliveInterval, messageFactory member.
+	(receiveMessages): Use maxDownloadSpeedLimit member.
+	(decideInterest): Use messageFactory member.
+	* src/BtRequestMessage.cc
+	(doReceivedAction): Use messageFactory, dispatcher member.
+	(onQueued): Use dispatcher member.
+	* src/BtPieceMessage.cc
+	(doReceivedAction): Use dispatcher member.
+	(send): Use peerConnection member.
+	(onWrongPiece): Use requestFactory member.
+	(handleChokingEvent): Use messageFactory, dispatcher member.
+	(handleCancelSendingPieceEvent): Use messageFactory, dispatcher member.
+	* src/BtMessageDispatcher.h
+	(BtMessageDispatcherWeakHandle): New type definition.
+	* src/SimpleBtMessage.cc
+	(send): Use peerConnection member.
+	* src/BtRejectMessage.cc
+	(doReceivedAction): Use dispatcher member.
+	* src/DefaultBtMessageDispatcher.h
+	(Option.h): Removed include.
+	(messageFactory): New variable.
+	(option): Removed.
+	(maxUploadSpeedLimit): New variable.
+	(requestTimeout): New variable.
+	(DefaultBtMessageDispatcher): Removed option.
+	Added maxUploadSpeedLimit, requestTimeout.
+	(setOption): Removed.
+	(getOption): Removed.
+	(setMaxUploadSpeedLimit): New function.
+	(setRequestTimeout): New function.
+	(setBtMessageFactory): New function.
+	* src/DefaultBtInteractive.h
+	(btMessageReceiver):
+	BtMessageReceiverHandle -> BtMessageReceiverWeakHandle
+	(dispatcher):
+	BtMessageDispatcherHandle -> BtMessageReceiverWeakHandle
+	(btRequestFactory):
+	BtRequestFactoryHandle -> BtRequestFactoryWeakHandle
+	(peerConnection):
+	PeerConnectionHandle -> PeerConnectionWeakHandle
+	(messageFactory): New variable.
+	(option): Removed.
+	(keepAliveInterval): New variable.
+	(maxDownloadSpeedLimit): New variable.
+	(DefaultBtInteractive): Added keepAliveInterval, maxDownloadSpeedLimit.
+	(setBtMessageReceiver):
+	BtMessageReceiverHandle -> BtMessageReceiverWeakHandle
+	(setDispatcher):
+	BtMessageDispatcherHandle -> BtMessageReceiverWeakHandle
+	(setBtRequestFactory):
+	BtRequestFactoryHandle -> BtRequestFactoryWeakHandle
+	(setPeerConnection):
+	PeerConnectionHandle -> PeerConnectionWeakHandle
+	(setOption): Removed.
+	(setKeepAliveInterval): New function.
+	(setMaxDownloadSpeedLimit): New function.
+	(setBtMessageFactory): New function.
+	* src/BitfieldMan.h
+	(cachedNumMissingBlock): New variable.
+	(cachedNumFilteredBlock): New variable.
+	(cachedCompletedLength): New variable.
+	(cachedFilteredComletedLength): New variable.
+	(cachedFilteredTotalLength): New variable.
+	(countMissingBlockNow): New function.
+	(countFilteredBlockNow): New function.
+	(getFilteredTotalLengthNow): New function.
+	(getCompletedLengthNow): New function.
+	(getFilteredCompletedLengthNow): New function.
+	(updateCache): New function.
+	* src/AbstractBtMessage.h
+	(BtMessageDispatcher.h): New include.
+	(PeerConnection.h): New include.
+	(BtRequestFactory.h): New include
+	(BtMessageFactory.h): New include.
+	(dispatcher): New variable.
+	(messageFactory): New variable.
+	(peerConnection: New variable.
+	(setBtMessageDispatcher): New function.
+	(setPeerConnection): New function.
+	(setBtMessageFactory): New function.
+	(setBtRequestFactory): New function.
+	* src/DefaultBtMessageFactory.cc
+	(setCommonProperty): Set dispatcher, requestFactory, this,
+	peerConnection to msg.
+	* src/BtRegistry.h
+	(BT_MESSAGE_RECEIVER): New macro.
+	* src/PeerConnection.h
+	(PeerConnectionWeakHandle): New type definition.
+	* src/BtMessageFactory.h
+	(BtMessageFactoryWeakHandle): New type definition.
+	* src/BitfieldMan.cc
+	(BitfieldMan): Added cachedNumMissingBlock, cachedNumFilteredBlock,
+	cachedCompletedLength, cachedFilteredComletedLength,
+	cachedFilteredTotalLength.
+	Call updateCache().
+	(countMissingBlock): Return cachedNumMissingBlock.
+	(countMissingBlockNow): New function.
+	(countBlock): Return cachedNumFilteredBlock if filterEnabled is true.
+	(countFilteredBlockNow): New function.
+	(setBit): Call updateCache().
+	(unsetBit): Call updateCache().
+	(setBitfield): Call updateCache().
+	(clearAllBit): Call updateCache().
+	(setAllBit): Use setBitInternal instead of setBit.
+	Call updateCache().
+	(addFilter): Call updateCache().
+	(enableFilter): Call updateCache().
+	(disableFilter): Call updateCache().
+	(clearFilter): Call updateCache().
+	(getFilteredTotalLength): Return cachedFilteredTotalLength.
+	(getFilteredTotalLengthNow): New function.
+	(getCompletedLength): Return cachedCompletedLength.
+	(getCompletedLengthNow): New function.
+	(getFilteredCompletedLength): Return cachedFilteredComletedLength.
+	(getFilteredCompletedLengthNow): New function.
+	(updateCache): New function.
+	* src/BtMessageReceiver.h
+	(BtMessageReceiverWeakHandle): New type definition.
+	* src/DefaultBtMessageReceiver.cc
+	(receiveHandshake): Use messageFactory member.
+	(sendHandshake): Use messageFactory member.
+	(receiveMessage): Use messageFactory member.
+	* src/DefaultBtMessageFactory.h
+	(dispatcher): New variable.
+	(requestFactory): New variable.
+	(peerConnection): New variablle.
+	(setBtMessageDispatcher): New function.
+	(setBtRequestFactory): New function.
+	(setPeerConnection): New function.
+	* src/SharedHandle.h
+	(RefCount): New class.
+	(WeakHandle): New class.
+	* src/PeerObject.h
+	(BtMessageReceiver.h): New include.
+	(PeerObject): Added btMessageReceiver.
+	(btMessageReceiver): New variable.
+	* src/Util.cc
+	(countBit): Simplified.
+	* src/BtCancelMessage.cc
+	(doReceivedAction): Use dispatcher member.
+	* src/BtRequestFactory.h
+	(BtRequestFactoryWeakHandle): New type definition.
+	
+	* src/PeerStorage.h
+	(downloadSpeed): int -> uint32_t
+	(uploadSpeed): int -> uint32_t
+	(sessionDownloadLength): long long int -> uint64_t
+	(sessionUploadLength): long long int -> uint64_t
+	
 2007-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add RecoverableException, FatalException:

@@ -64,10 +64,9 @@ BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, uint32_t 
 }
 
 void BtPieceMessage::doReceivedAction() {
-  RequestSlot slot =
-    BT_MESSAGE_DISPATCHER(btContext, peer)->getOutstandingRequest(index,
-								  begin,
-								  blockLength);
+  RequestSlot slot = dispatcher->getOutstandingRequest(index,
+						       begin,
+						       blockLength);
   peer->updateDownloadLength(blockLength);
   if(!RequestSlot::isNull(slot)) {
     peer->snubbing = false;
@@ -85,7 +84,7 @@ void BtPieceMessage::doReceivedAction() {
 		  cuid,
 		  Util::toHex(piece->getBitfield(),
 			      piece->getBitfieldLength()).c_str());
-    BT_MESSAGE_DISPATCHER(btContext, peer)->removeOutstandingRequest(slot);
+    dispatcher->removeOutstandingRequest(slot);
     if(piece->pieceComplete()) {
       if(checkPieceHash(piece)) {
 	onNewPiece(piece);
@@ -134,7 +133,7 @@ void BtPieceMessage::send() {
       sendingInProgress = true;
     }
     uint32_t writtenLength
-      = PEER_CONNECTION(btContext, peer)->sendMessage(msgHeader+getMessageHeaderLength()-leftDataLength,
+      = peerConnection->sendMessage(msgHeader+getMessageHeaderLength()-leftDataLength,
 				    leftDataLength);
     if(writtenLength == leftDataLength) {
       headerSent = true;
@@ -166,7 +165,7 @@ uint32_t BtPieceMessage::sendPieceData(int64_t offset, uint32_t length) const {
     if(pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < (int32_t)BUF_SIZE) {
       throw new DlAbortEx("Failed to read data from disk.");
     }
-    uint32_t ws = PEER_CONNECTION(btContext, peer)->sendMessage(buf, BUF_SIZE);
+    uint32_t ws = peerConnection->sendMessage(buf, BUF_SIZE);
     writtenLength += ws;
     if(ws != BUF_SIZE) {
       return writtenLength;
@@ -178,7 +177,7 @@ uint32_t BtPieceMessage::sendPieceData(int64_t offset, uint32_t length) const {
     if(pieceStorage->getDiskAdaptor()->readData(buf, rem, offset+iteration*BUF_SIZE) < rem) {
       throw new DlAbortEx("Failed to read data from disk.");
     }
-    uint32_t ws = PEER_CONNECTION(btContext, peer)->sendMessage(buf, rem);
+    uint32_t ws = peerConnection->sendMessage(buf, rem);
     writtenLength += ws;
   }
   return writtenLength;
@@ -206,7 +205,7 @@ void BtPieceMessage::onWrongPiece(const PieceHandle& piece) {
   logger->error(MSG_GOT_WRONG_PIECE, cuid, piece->getIndex());
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
-  BT_REQUEST_FACTORY(btContext, peer)->removeTargetPiece(piece);
+  requestFactory->removeTargetPiece(piece);
 }
 
 void BtPieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
@@ -246,11 +245,10 @@ void BtPieceMessage::handleChokingEvent(const BtEventHandle& event) {
 		  blockLength);
 
     if(peer->isFastExtensionEnabled()) {
-      BtMessageHandle rej =
-	BT_MESSAGE_FACTORY(btContext, peer)->createRejectMessage(index,
-								  begin,
-								  blockLength);
-      BT_MESSAGE_DISPATCHER(btContext, peer)->addMessageToQueue(rej);
+      BtMessageHandle rej = messageFactory->createRejectMessage(index,
+								begin,
+								blockLength);
+      dispatcher->addMessageToQueue(rej);
     }
     invalidate = true;
   }
@@ -276,11 +274,10 @@ void BtPieceMessage::handleCancelSendingPieceEvent(const BtEventHandle& event) {
 		  " message received. index=%d, begin=%d, length=%u",
 		  cuid, index, begin, blockLength);
     if(peer->isFastExtensionEnabled()) {
-      BtMessageHandle rej =
-	BT_MESSAGE_FACTORY(btContext, peer)->createRejectMessage(index,
-								  begin,
-								  blockLength);
-      BT_MESSAGE_DISPATCHER(btContext, peer)->addMessageToQueue(rej);
+      BtMessageHandle rej = messageFactory->createRejectMessage(index,
+								begin,
+								blockLength);
+      dispatcher->addMessageToQueue(rej);
     }
     invalidate = true;
   } 

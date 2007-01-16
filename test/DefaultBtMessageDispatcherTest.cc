@@ -33,7 +33,6 @@ class DefaultBtMessageDispatcherTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE_END();
 private:
   BtContextHandle btContext;
-  Option* option;
   PeerHandle peer;
   DefaultBtMessageDispatcherHandle btMessageDispatcher;
   MockPeerStorageHandle peerStorage;
@@ -41,9 +40,7 @@ private:
 public:
   DefaultBtMessageDispatcherTest():btContext(0), peer(0), btMessageDispatcher(0) {}
 
-  void tearDown() {
-    delete option;
-  }
+  void tearDown() {}
 
   void testAddMessage();
   void testSendMessages();
@@ -132,7 +129,6 @@ public:
   void setUp() {
     btContext = new DefaultBtContext();
     btContext->load("test.torrent");
-    option = new Option();
     peer = new Peer("192.168.0.1", 6969,
 		    btContext->getPieceLength(),
 		    btContext->getTotalLength());    
@@ -155,7 +151,8 @@ public:
     btMessageDispatcher->setCuid(1);
     btMessageDispatcher->setBtContext(btContext);
     btMessageDispatcher->setPeer(peer);
-    btMessageDispatcher->setOption(option);
+    btMessageDispatcher->setMaxUploadSpeedLimit(0);
+    btMessageDispatcher->setBtMessageFactory(peerObject->btMessageFactory);
   }
 };
 
@@ -172,7 +169,6 @@ void DefaultBtMessageDispatcherTest::testAddMessage() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages() {
-  option->put(PREF_MAX_UPLOAD_LIMIT, "0");
   TransferStat stat;
   stat.setUploadSpeed(0);
   peerStorage->setStat(stat);
@@ -192,7 +188,6 @@ void DefaultBtMessageDispatcherTest::testSendMessages() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
-  option->put(PREF_MAX_UPLOAD_LIMIT, "0");
   TransferStat stat;
   stat.setUploadSpeed(0);
   peerStorage->setStat(stat);
@@ -212,7 +207,7 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages_overUploadLimit() {
-  option->put(PREF_MAX_UPLOAD_LIMIT, "100");
+  btMessageDispatcher->setMaxUploadSpeedLimit(100);
   TransferStat stat;
   stat.setUploadSpeed(150);
   peerStorage->setStat(stat);
@@ -289,13 +284,11 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
   CPPUNIT_ASSERT(BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 						  pieceStorage));
 
-  option->put(PREF_BT_REQUEST_TIMEOUT, "60");
-
   btMessageDispatcher = new DefaultBtMessageDispatcher();
   btMessageDispatcher->setCuid(1);
   btMessageDispatcher->setBtContext(btContext);
   btMessageDispatcher->setPeer(peer);
-  btMessageDispatcher->setOption(option);
+  btMessageDispatcher->setRequestTimeout(60);
   
   btMessageDispatcher->addOutstandingRequest(slot);
 
@@ -317,14 +310,15 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   pieceStorage->setPiece(piece);
   CPPUNIT_ASSERT(BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 						  pieceStorage));
-  option->put(PREF_BT_REQUEST_TIMEOUT, "60");
 
   btMessageDispatcher = new DefaultBtMessageDispatcher();
   btMessageDispatcher->setCuid(1);
   btMessageDispatcher->setBtContext(btContext);
   btMessageDispatcher->setPeer(peer);
-  btMessageDispatcher->setOption(option);
-  
+  btMessageDispatcher->setRequestTimeout(60);
+  btMessageDispatcher->setBtMessageFactory(BT_MESSAGE_FACTORY(btContext,
+							      peer));
+
   btMessageDispatcher->addOutstandingRequest(slot);
 
   btMessageDispatcher->checkRequestSlotAndDoNecessaryThing();
@@ -346,13 +340,14 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
   CPPUNIT_ASSERT(BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 						  pieceStorage));
 
-  option->put(PREF_BT_REQUEST_TIMEOUT, "60");
 
   btMessageDispatcher = new DefaultBtMessageDispatcher();
   btMessageDispatcher->setCuid(1);
   btMessageDispatcher->setBtContext(btContext);
   btMessageDispatcher->setPeer(peer);
-  btMessageDispatcher->setOption(option);
+  btMessageDispatcher->setRequestTimeout(60);
+  btMessageDispatcher->setBtMessageFactory(BT_MESSAGE_FACTORY(btContext,
+							      peer));
 
   btMessageDispatcher->addOutstandingRequest(slot);
 

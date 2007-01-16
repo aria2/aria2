@@ -56,7 +56,8 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
 					       int sequence)
   :PeerAbstractCommand(cuid, p, e, btContext, s),
    sequence(sequence),
-   btInteractive(0)
+   btInteractive(0),
+   maxDownloadSpeedLimit(0)
 {
   // TODO move following bunch of processing to separate method, like init()
   if(sequence == INITIATOR_SEND_HANDSHAKE) {
@@ -64,6 +65,11 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
+  DefaultBtMessageFactoryHandle factory = new DefaultBtMessageFactory();
+  factory->setCuid(cuid);
+  factory->setBtContext(btContext);
+  factory->setPeer(peer);
+
   PeerConnectionHandle peerConnection =
     new PeerConnection(cuid, socket, e->option);
 
@@ -71,7 +77,9 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
   dispatcher->setCuid(cuid);
   dispatcher->setPeer(peer);
   dispatcher->setBtContext(btContext);
-  dispatcher->setOption(e->option);
+  dispatcher->setMaxUploadSpeedLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
+  dispatcher->setRequestTimeout(e->option->getAsInt(PREF_BT_REQUEST_TIMEOUT));
+  dispatcher->setBtMessageFactory(factory);
 
   DefaultBtMessageReceiverHandle receiver = new DefaultBtMessageReceiver();
   receiver->setCuid(cuid);
@@ -79,12 +87,14 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
   receiver->setBtContext(btContext);
   receiver->setPeerConnection(peerConnection);
   receiver->setDispatcher(dispatcher);
+  receiver->setBtMessageFactory(factory);
 
   DefaultBtRequestFactoryHandle reqFactory = new DefaultBtRequestFactory();
   reqFactory->setCuid(cuid);
   reqFactory->setPeer(peer);
   reqFactory->setBtContext(btContext);
   reqFactory->setBtMessageDispatcher(dispatcher);
+  reqFactory->setBtMessageFactory(factory);
 
   DefaultBtInteractiveHandle btInteractive = new DefaultBtInteractive();
   btInteractive->setCuid(cuid);
@@ -94,24 +104,29 @@ PeerInteractionCommand::PeerInteractionCommand(int cuid,
   btInteractive->setDispatcher(dispatcher);
   btInteractive->setBtRequestFactory(reqFactory);
   btInteractive->setPeerConnection(peerConnection);
-  btInteractive->setOption(e->option);
+  btInteractive->setKeepAliveInterval(e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
+  btInteractive->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+  btInteractive->setBtMessageFactory(factory);
   this->btInteractive = btInteractive;
 
-  DefaultBtMessageFactoryHandle factory = new DefaultBtMessageFactory();
-  factory->setCuid(cuid);
-  factory->setBtContext(btContext);
-  factory->setPeer(peer);
+  // reverse depends
+  factory->setBtMessageDispatcher(dispatcher);
+  factory->setBtRequestFactory(reqFactory);
+  factory->setPeerConnection(peerConnection);
 
   PeerObjectHandle peerObject = new PeerObject();
   peerObject->btMessageDispatcher = dispatcher;
+  peerObject->btMessageReceiver = receiver;
   peerObject->btMessageFactory = factory;
   peerObject->btRequestFactory = reqFactory;
   peerObject->peerConnection = peerConnection;
-
+  
   PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), peerObject);
 
   setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   peer->activate();
+
+  maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
@@ -171,10 +186,9 @@ bool PeerInteractionCommand::executeInternal() {
   if(btInteractive->countPendingMessage() > 0) {
     setNoCheck(true);
   }
-  int maxSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
-  if(maxSpeedLimit > 0) {
+  if(maxDownloadSpeedLimit > 0) {
     TransferStat stat = peerStorage->calculateStat();
-    if(maxSpeedLimit < stat.downloadSpeed) {
+    if(maxDownloadSpeedLimit < stat.downloadSpeed) {
       disableReadCheckSocket();
       setNoCheck(true);
     }

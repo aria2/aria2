@@ -42,6 +42,7 @@ class PeerInteractionCommand : public PeerAbstractCommand {
 private:
   int sequence;
   BtInteractiveHandle btInteractive;
+  uint32_t maxDownloadSpeedLimit;
 protected:
   virtual bool executeInternal();
   virtual bool prepareForRetry(int wait);

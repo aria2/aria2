@@ -89,17 +89,19 @@ private:
   BtContextHandle btContext;
   PeerStorageHandle peerStorage;
   PieceStorageHandle pieceStorage;
-  BtMessageReceiverHandle btMessageReceiver;
-  BtMessageDispatcherHandle dispatcher;
-  BtRequestFactoryHandle btRequestFactory;
-  PeerConnectionHandle peerConnection;
+  BtMessageReceiverWeakHandle btMessageReceiver;
+  BtMessageDispatcherWeakHandle dispatcher;
+  BtRequestFactoryWeakHandle btRequestFactory;
+  PeerConnectionWeakHandle peerConnection;
+  BtMessageFactoryWeakHandle messageFactory;
   const Logger* logger;
   uint32_t allowedFastSetSize;
   Time haveCheckPoint;
   Time keepAliveCheckPoint;
   Time floodingCheckPoint;
   FloodingStat floodingStat;
-  const Option* option;
+  uint32_t keepAliveInterval;
+  uint32_t maxDownloadSpeedLimit;
 
   static const uint32_t FLOODING_CHECK_INTERVAL = 5;
 
@@ -122,14 +124,12 @@ public:
 			 btRequestFactory(0),
 			 peerConnection(0),
 			 logger(LogFactory::getInstance()),
-			 allowedFastSetSize(10)
-  {
-    logger->debug("DefaultBtInteractive instantiated.");
-  }
+			 allowedFastSetSize(10),
+			 keepAliveInterval(120),
+			 maxDownloadSpeedLimit(0)
+  {}
 
-  virtual ~DefaultBtInteractive() {
-    logger->debug("DefaultBtInteractive deleted.");
-  }
+  virtual ~DefaultBtInteractive() {}
 
   virtual void initiateHandshake();
 
@@ -169,24 +169,32 @@ public:
     this->pieceStorage = PIECE_STORAGE(btContext);
   }
 
-  void setBtMessageReceiver(const BtMessageReceiverHandle& receiver) {
+  void setBtMessageReceiver(const BtMessageReceiverWeakHandle& receiver) {
     this->btMessageReceiver = receiver;
   }
 
-  void setDispatcher(const BtMessageDispatcherHandle& dispatcher) {
+  void setDispatcher(const BtMessageDispatcherWeakHandle& dispatcher) {
     this->dispatcher = dispatcher;
   }
 
-  void setBtRequestFactory(const BtRequestFactoryHandle& factory) {
+  void setBtRequestFactory(const BtRequestFactoryWeakHandle& factory) {
     this->btRequestFactory = factory;
   }
 
-  void setPeerConnection(const PeerConnectionHandle& peerConnection) {
+  void setPeerConnection(const PeerConnectionWeakHandle& peerConnection) {
     this->peerConnection  = peerConnection;
   }
 
-  void setOption(const Option* option) {
-    this->option = option;
+  void setKeepAliveInterval(uint32_t keepAliveInterval) {
+    this->keepAliveInterval = keepAliveInterval;
+  }
+
+  void setMaxDownloadSpeedLimit(uint32_t maxDownloadSpeedLimit) {
+    this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
+  }
+
+  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
+    this->messageFactory = factory;
   }
 };
 

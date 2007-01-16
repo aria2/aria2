@@ -51,8 +51,8 @@ BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, uint32_t 
 
 void BtChokeMessage::doReceivedAction() {
   peer->peerChoking = true;
-  BT_MESSAGE_DISPATCHER(btContext, peer)->doChokedAction();
-  BT_REQUEST_FACTORY(btContext, peer)->doChokedAction();
+  dispatcher->doChokedAction();
+  requestFactory->doChokedAction();
 }
 
 bool BtChokeMessage::sendPredicate() const {
@@ -80,7 +80,7 @@ uint32_t BtChokeMessage::getMessageLength() {
 
 void BtChokeMessage::onSendComplete() {
   peer->amChoking = true;
-  BT_MESSAGE_DISPATCHER(btContext, peer)->doChokingAction();
+  dispatcher->doChokingAction();
 }
 
 string BtChokeMessage::toString() const {

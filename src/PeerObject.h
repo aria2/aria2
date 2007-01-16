@@ -40,17 +40,20 @@
 #include "BtRequestFactory.h"
 #include "BtMessageDispatcher.h"
 #include "PeerConnection.h"
+#include "BtMessageReceiver.h"
 
 class PeerObject {
 public:
   PeerObject():btMessageFactory(0),
 	       btRequestFactory(0),
 	       btMessageDispatcher(0),
+	       btMessageReceiver(0),
 	       peerConnection(0) {}
 
   BtMessageFactoryHandle btMessageFactory;
   BtRequestFactoryHandle btRequestFactory;
   BtMessageDispatcherHandle btMessageDispatcher;
+  BtMessageReceiverHandle btMessageReceiver;
   PeerConnectionHandle peerConnection;
 };
 

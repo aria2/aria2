@@ -44,6 +44,10 @@
 #include "BtEventListener.h"
 #include "BtContext.h"
 #include "BtRegistry.h"
+#include "BtMessageDispatcher.h"
+#include "PeerConnection.h"
+#include "BtRequestFactory.h"
+#include "BtMessageFactory.h"
 
 class AbstractBtMessage : public BtMessage {
 protected:
@@ -57,6 +61,14 @@ protected:
   PieceStorageHandle pieceStorage;
 
   PeerHandle peer;
+
+  BtMessageDispatcherWeakHandle dispatcher;
+
+  BtMessageFactoryWeakHandle messageFactory;
+
+  BtRequestFactoryWeakHandle requestFactory;
+
+  PeerConnectionWeakHandle peerConnection;
 
   BtMessageValidatorHandle validator;
   BtEventListeners listeners;
@@ -154,6 +166,22 @@ public:
     return btContext;
   }
 
+  void setBtMessageDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
+  {
+    this->dispatcher = dispatcher;
+  }
+
+  void setPeerConnection(const PeerConnectionWeakHandle& peerConnection) {
+    this->peerConnection = peerConnection;
+  }
+
+  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
+    this->messageFactory = factory;
+  }
+
+  void setBtRequestFactory(const BtRequestFactoryWeakHandle& factory) {
+    this->requestFactory = factory;
+  }
 };
 
 typedef SharedHandle<AbstractBtMessage> AbstractBtMessageHandle;

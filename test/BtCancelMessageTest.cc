@@ -109,7 +109,7 @@ void BtCancelMessageTest::testDoReceivedAction() {
   msg.setBtContext(btContext);
   msg.setPeer(peer);
   MockBtMessageDispatcher2Handle dispatcher = new MockBtMessageDispatcher2();
-  PEER_OBJECT(btContext, peer)->btMessageDispatcher = dispatcher;
+  msg.setBtMessageDispatcher(dispatcher);
 
   msg.doReceivedAction();
   CPPUNIT_ASSERT_EQUAL(msg.getIndex(), dispatcher->index);

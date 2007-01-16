@@ -53,6 +53,13 @@ private:
   bool filterEnabled;
   RandomizerHandle randomizer;
 
+  // for caching
+  uint32_t cachedNumMissingBlock;
+  uint32_t cachedNumFilteredBlock;
+  uint64_t cachedCompletedLength;
+  uint64_t cachedFilteredComletedLength;
+  uint64_t cachedFilteredTotalLength;
+
   uint32_t countSetBit(const unsigned char* bitfield, uint32_t len) const;
   int32_t getNthBitIndex(const unsigned char bit, uint32_t nth) const;
   int32_t getMissingIndexRandomly(const unsigned char* bitfield, uint32_t len) const;
@@ -92,6 +99,8 @@ public:
       } else {
 	filterBitfield = 0;
       }
+
+      updateCache();
     }
     return *this;
   }
@@ -158,6 +167,10 @@ public:
    * affected by filter
    */
   uint32_t countMissingBlock() const;
+  /**
+   * affected by filter
+   */
+  uint32_t countMissingBlockNow() const;
 
   bool setUseBit(int32_t index);
   bool unsetUseBit(int32_t index);
@@ -180,6 +193,10 @@ public:
    * affected by filter
    */
   uint32_t countBlock() const;
+  /**
+   * affected by filter
+   */
+  uint32_t countFilteredBlockNow() const;
 
   int32_t getMaxIndex() const { return blocks-1; }
 
@@ -204,13 +221,23 @@ public:
    * affected by filter
    */
   uint64_t getFilteredTotalLength() const;
+  /**
+   * affected by filter
+   */
+  uint64_t getFilteredTotalLengthNow() const;
 
   uint64_t getCompletedLength() const;
+
+  uint64_t getCompletedLengthNow() const;
 
   /**
    * affected by filter
    */
   uint64_t getFilteredCompletedLength() const;
+  /**
+   * affected by filter
+   */
+  uint64_t getFilteredCompletedLengthNow() const;
 
   void setRandomizer(const RandomizerHandle& randomizer) {
     this->randomizer = randomizer;
@@ -219,6 +246,8 @@ public:
   RandomizerHandle getRandomizer() const {
     return randomizer;
   }
+
+  void updateCache();
 };
 
 #endif // _D_BITFIELD_MAN_H_

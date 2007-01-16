@@ -37,69 +37,104 @@
 
 #include <ostream>
 
-template<class T>
-class SharedHandle {
+class RefCount {
+public:
+  RefCount():totalRefCount(0), strongRefCount(0) {}
 
-  template<class T1>
+  RefCount(uint32_t totalRefCount, uint32_t strongRefCount)
+    :totalRefCount(totalRefCount), strongRefCount(strongRefCount) {}
+
+  uint32_t totalRefCount;
+  uint32_t strongRefCount;
+};
+
+template<typename T>
+class SharedHandle;
+
+template<typename T>
+class WeakHandle;
+
+template<typename T>
+class SharedHandle {
+private:
+  template<typename T1>
   friend std::ostream& operator<<(std::ostream& o, const SharedHandle<T1>& sp);
 
-  template<class T1, class T2>
+  template<typename T1, typename T2>
   friend bool operator==(const SharedHandle<T1>& t1,
 			 const SharedHandle<T2>& t2);
 
-  template<class T1, class T2>
+  template<typename T1, typename T2>
   friend bool operator!=(const SharedHandle<T1>& t1,
 			 const SharedHandle<T2>& t2);
 
-  template<class T1, class T2>
+  template<typename T1, typename T2>
   friend bool operator<(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2);
 
-private:
   T* obj;
-  int* ucount;
-public:
-  SharedHandle():obj(new T()), ucount(new int(1)) {}
-  SharedHandle(T* obj):obj(obj), ucount(new int(1)) {}
-  SharedHandle(const SharedHandle& t):obj(t.get()), ucount(t.getRefCount()) {
-    ++*ucount;
+
+  RefCount* ucount;
+
+  void releaseReference() {
+    if(--ucount->strongRefCount == 0) {
+      delete obj;
+      obj = 0;
+    }
+    if(--ucount->totalRefCount == 0) {
+      delete ucount;
+      ucount = 0;
+    }
   }
-  template<class S>
+
+public:
+  SharedHandle():obj(new T()), ucount(new RefCount(1, 1)) {}
+
+  SharedHandle(T* obj):obj(obj), ucount(new RefCount(1, 1)) {}
+
+  SharedHandle(const SharedHandle& t):obj(t.get()), ucount(t.getRefCount()) {
+    ++ucount->totalRefCount;
+    ++ucount->strongRefCount;
+  }
+
+  template<typename S>
   SharedHandle(const SharedHandle<S>& t) {
     obj = dynamic_cast<T*>(t.get());
     if(obj) {
       ucount = t.getRefCount();
-      ++*ucount;
+      ++ucount->totalRefCount;
+      ++ucount->strongRefCount;
     } else {
-      ucount = new int(1);
+      ucount = new RefCount(1, 1);
     }
   }
 
   ~SharedHandle() {
-    if(--*ucount == 0) {
-      delete obj;
-      delete ucount;
-    }
+    releaseReference();
   }
 
   SharedHandle& operator=(const SharedHandle& t) { 
-    ++*t.getRefCount();
-    if(--*ucount == 0) {
-      delete obj;
-      delete ucount;
-    }
+    ++t.getRefCount()->totalRefCount;
+    ++t.getRefCount()->strongRefCount;
+    releaseReference();
     obj = t.get();
     ucount = t.getRefCount();
     return *this;
   }
-  template<class S>
-  SharedHandle& operator=(const SharedHandle<S>& t) { 
-    ++*t.getRefCount();
-    if(--*ucount == 0) {
-      delete obj;
-      delete ucount;
+
+  template<typename S>
+  SharedHandle& operator=(const SharedHandle<S>& t) {
+    T* to = dynamic_cast<T*>(t.get());
+    if(to) {
+      ++t.getRefCount()->totalRefCount;
+      ++t.getRefCount()->strongRefCount;
+      releaseReference();
+      obj = to;
+      ucount = t.getRefCount();
+    } else {
+      releaseReference();
+      obj = 0;
+      ucount = new RefCount(1, 1);
     }
-    obj = t.get();
-    ucount = t.getRefCount();
     return *this;
   }
 
@@ -111,7 +146,7 @@ public:
     return obj;
   }
 
-  int* getRefCount() const {
+  RefCount* getRefCount() const {
     return ucount;
   }
 
@@ -120,24 +155,168 @@ public:
   }
 };
 
-template<class T>
+template<typename T>
 std::ostream& operator<<(std::ostream& o, const SharedHandle<T>& sp) {
   o << *sp.obj;
   return o;
 }
 
-template<class T1, class T2>
+template<typename T1, typename T2>
 bool operator==(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
   return *t1.obj == *t2.obj;
 }
 
-template<class T1, class T2>
+template<typename T1, typename T2>
 bool operator!=(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
   return *t1.obj != *t2.obj;
 }
 
-template<class T1, class T2>
+template<typename T1, typename T2>
 bool operator<(const SharedHandle<T1>& t1, const SharedHandle<T2>& t2) {
+  return *t1.obj < *t2.obj;
+}
+
+template<typename T>
+class WeakHandle {
+private:
+  template<typename T1>
+  friend std::ostream& operator<<(std::ostream& o, const WeakHandle<T1>& sp);
+
+  template<typename T1, typename T2>
+  friend bool operator==(const WeakHandle<T1>& t1,
+			 const WeakHandle<T2>& t2);
+
+  template<typename T1, typename T2>
+  friend bool operator!=(const WeakHandle<T1>& t1,
+			 const WeakHandle<T2>& t2);
+
+  template<typename T1, typename T2>
+  friend bool operator<(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2);
+
+  T* obj;
+
+  RefCount* ucount;
+
+  void releaseReference() {
+    if(--ucount->totalRefCount == 0) {
+      delete ucount;
+      ucount = 0;
+    }
+  }
+public:
+  WeakHandle():obj(0), ucount(new RefCount(1, 0)) {}
+
+  WeakHandle(T* obj):obj(obj), ucount(new RefCount(1, 1)) {}
+
+  WeakHandle(const WeakHandle& t):obj(t.get()), ucount(t.getRefCount()) {
+    ++ucount->totalRefCount;
+  }
+
+  template<typename S>
+  WeakHandle(const SharedHandle<S>& t):obj(t.get()), ucount(t.getRefCount()) {
+    obj = dynamic_cast<T*>(t.get());
+    if(obj) {
+      ucount = t.getRefCount();
+      ++ucount->totalRefCount;
+    } else {
+      ucount = new RefCount(1, 0);
+    }
+  }
+
+  template<typename S>
+  WeakHandle(const WeakHandle<S>& t) {
+    obj = dynamic_cast<T*>(t.get());
+    if(obj) {
+      ucount = t.getRefCount();
+      ++ucount->totalRefCount;
+    } else {
+      ucount = new RefCount(1, 0);
+    }
+  }
+
+  ~WeakHandle() {
+    releaseReference();
+  }
+
+  WeakHandle& operator=(const WeakHandle& t) { 
+    ++t.getRefCount()->totalRefCount;
+    releaseReference();
+    obj = t.get();
+    ucount = t.getRefCount();
+    return *this;
+  }
+
+  template<typename S>
+  WeakHandle& operator=(const SharedHandle<S>& t) {
+    T* to = dynamic_cast<T*>(t.get());
+    if(to) {
+      ++t.getRefCount()->totalRefCount;
+      releaseReference();
+      obj = to;
+      ucount = t.getRefCount();
+    } else {
+      releaseReference();
+      obj = 0;
+      ucount = new RefCount(1, 0);
+    }
+    return *this;
+  }
+
+  template<typename S>
+  WeakHandle& operator=(const WeakHandle<S>& t) { 
+    T* to = dynamic_cast<T*>(t.get());
+    if(to) {
+      ++t.getRefCount()->totalRefCount;
+      releaseReference();
+      obj = to;
+      ucount = t.getRefCount();
+    } else {
+      releaseReference();
+      obj = 0;
+      ucount = new RefCount(1, 0);
+    }
+    return *this;
+  }
+
+  T* operator->() { return obj; }
+
+  T* operator->() const { return obj; }
+
+  T* get() const {
+    if(isNull()) {
+      return 0;
+    } else {
+      return obj;
+    }
+  }
+
+  RefCount* getRefCount() const {
+    return ucount;
+  }
+
+  bool isNull() const {
+    return ucount->strongRefCount == 0 || obj == 0;
+  }
+};
+
+template<typename T>
+std::ostream& operator<<(std::ostream& o, const WeakHandle<T>& sp) {
+  o << *sp.obj;
+  return o;
+}
+
+template<typename T1, typename T2>
+bool operator==(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
+  return *t1.obj == *t2.obj;
+}
+
+template<typename T1, typename T2>
+bool operator!=(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
+  return *t1.obj != *t2.obj;
+}
+
+template<typename T1, typename T2>
+bool operator<(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
   return *t1.obj < *t2.obj;
 }
 

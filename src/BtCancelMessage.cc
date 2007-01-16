@@ -54,7 +54,7 @@ BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, uint32_
 }
 
 void BtCancelMessage::doReceivedAction() {
-  BT_MESSAGE_DISPATCHER(btContext, peer)->doCancelSendingPieceAction(index, begin, length);
+  dispatcher->doCancelSendingPieceAction(index, begin, length);
 }
 
 uint32_t BtCancelMessage::MESSAGE_LENGTH = 17;

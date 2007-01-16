@@ -50,5 +50,6 @@ public:
 };
 
 typedef SharedHandle<BtMessageReceiver> BtMessageReceiverHandle;
+typedef WeakHandle<BtMessageReceiver> BtMessageReceiverWeakHandle;
 
 #endif // _D_BT_MESSAGE_RECEIVER_H_
