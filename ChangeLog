@@ -199,6 +199,7 @@
 	(markAllPiecesDone): New function.
 	(checkIntegrity): New function.
 	* src/NullFileAllocationMonitor.h: New class.
+	* src/MetalinkChunkChecksum.h: New class.
 	
 2007-01-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
