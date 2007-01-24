@@ -248,6 +248,10 @@ public:
   }
 
   void updateCache();
+
+  bool isBitRangeSet(int32_t startIndex, int32_t endIndex) const;
+
+  void unsetBitRange(int32_t startIndex, int32_t endIndex);
 };
 
 #endif // _D_BITFIELD_MAN_H_

@@ -40,6 +40,7 @@
 #include "prefs.h"
 #include "LogFactory.h"
 #include "BitfieldManFactory.h"
+#include "ChunkChecksumValidator.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -51,13 +52,15 @@ SegmentMan::SegmentMan():bitfield(0),
 			 downloadStarted(false),
 			 dir("."),
 			 errors(0),
-			 diskWriter(0) {
+			 diskWriter(0),
+			 chunkHashLength(0),
+			 digestAlgo(DIGEST_ALGO_SHA1)
+{
   logger = LogFactory::getInstance();
 }
 
 SegmentMan::~SegmentMan() {
   delete bitfield;
-  delete diskWriter;
 }
 
 bool SegmentMan::segmentFileExists() const {
@@ -233,47 +236,20 @@ void SegmentMan::initBitfield(int segmentLength, long long int totalLength) {
   this->bitfield = BitfieldManFactory::getNewFactory()->createBitfieldMan(segmentLength, totalLength);
 }
 
-class FindSegmentEntryByIndex {
-private:
-  int index;
-public:
-  FindSegmentEntryByIndex(int index):index(index) {}
-  
-  bool operator()(const SegmentEntryHandle& entry) {
-    return entry->segment.index == index;
-  }
-};
-
-class FindSegmentEntryByCuid {
-private:
-  int cuid;
-public:
-  FindSegmentEntryByCuid(int cuid):cuid(cuid) {}
-
-  bool operator()(const SegmentEntryHandle& entry) {
-    return entry->cuid == cuid;
-  }
-};
-
 Segment SegmentMan::checkoutSegment(int cuid, int index) {
   logger->debug("Attach segment#%d to CUID#%d.", index, cuid);
   bitfield->setUseBit(index);
-
-  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
-					 usedSegmentEntries.end(),
-					 FindSegmentEntryByIndex(index));
+  SegmentEntryHandle segmentEntry = getSegmentEntryByIndex(index);
   Segment segment;
-  if(itr == usedSegmentEntries.end()) {
+  if(segmentEntry.isNull()) {
     segment = Segment(index, bitfield->getBlockLength(index),
 		       bitfield->getBlockLength());
-    SegmentEntryHandle entry =
-      SegmentEntryHandle(new SegmentEntry(cuid, segment));
+    SegmentEntryHandle entry = new SegmentEntry(cuid, segment);
     usedSegmentEntries.push_back(entry);
   } else {
-    (*itr)->cuid = cuid;
-    segment = (*itr)->segment;
+    segmentEntry->cuid = cuid;
+    segment = segmentEntry->segment;
   }
-
   logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
 		segment.index, segment.length, segment.segmentLength,
 		segment.writtenLength);
@@ -286,13 +262,11 @@ bool SegmentMan::onNullBitfield(Segment& segment, int cuid) {
     usedSegmentEntries.push_back(SegmentEntryHandle(new SegmentEntry(cuid, segment)));
     return true;
   } else {
-    SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
-					   usedSegmentEntries.end(),
-					   FindSegmentEntryByCuid(cuid));
-    if(itr == usedSegmentEntries.end()) {
+    SegmentEntryHandle segmentEntry = getSegmentEntryByCuid(cuid);
+    if(segmentEntry.isNull()) {
       return false;
     } else {
-      segment = (*itr)->segment;
+      segment = segmentEntry->segment;
       return true;
     }
   }
@@ -302,7 +276,7 @@ SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peer
   int speed = (int)(peerStat->getAvgDownloadSpeed()*0.8);
   SegmentEntryHandle slowSegmentEntry(0);
   for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end(); itr++) {
+      itr != usedSegmentEntries.end(); ++itr) {
     const SegmentEntryHandle& segmentEntry = *itr;
     if(segmentEntry->cuid == 0) {
       continue;
@@ -326,11 +300,10 @@ bool SegmentMan::getSegment(Segment& segment, int cuid) {
   if(!bitfield) {
     return onNullBitfield(segment, cuid);
   }
-  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
-					 usedSegmentEntries.end(),
-					 FindSegmentEntryByCuid(cuid));
-  if(itr != usedSegmentEntries.end()) {
-    segment = (*itr)->segment;
+
+  SegmentEntryHandle segmentEntry = getSegmentEntryByCuid(cuid);
+  if(!segmentEntry.isNull()) {
+    segment = segmentEntry->segment;
     return true;
   }
   int index = bitfield->getSparseMissingUnusedIndex();
@@ -378,13 +351,11 @@ bool SegmentMan::updateSegment(int cuid, const Segment& segment) {
   if(segment.isNull()) {
     return false;
   }
-  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
-					 usedSegmentEntries.end(),
-					 FindSegmentEntryByCuid(cuid));
-  if(itr == usedSegmentEntries.end()) {
+  SegmentEntryHandle segmentEntry = getSegmentEntryByCuid(cuid);
+  if(segmentEntry.isNull()) {
     return false;
   } else {
-    (*itr)->segment = segment;
+    segmentEntry->segment = segment;
     return true;
   }
 }
@@ -425,9 +396,7 @@ bool SegmentMan::completeSegment(int cuid, const Segment& segment) {
     initBitfield(option->getAsInt(PREF_SEGMENT_SIZE), segment.writtenLength);
     bitfield->setAllBit();
   }
-  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
-					 usedSegmentEntries.end(),
-					 FindSegmentEntryByCuid(cuid));
+  SegmentEntries::iterator itr = getSegmentEntryIteratorByCuid(cuid);
   if(itr == usedSegmentEntries.end()) {
     return false;
   } else {
@@ -463,7 +432,7 @@ void SegmentMan::registerPeerStat(const PeerStatHandle& peerStat) {
   }
 }
 
-int SegmentMan::calculateDownloadSpeed() const {
+uint32_t SegmentMan::calculateDownloadSpeed() const {
   int speed = 0;
   for(PeerStats::const_iterator itr = peerStats.begin();
       itr != peerStats.end(); itr++) {
@@ -482,4 +451,79 @@ bool SegmentMan::fileExists() {
 bool SegmentMan::shouldCancelDownloadForSafety() {
   return fileExists() && !segmentFileExists() &&
     option->get(PREF_FORCE_TRUNCATE) != V_TRUE;
+}
+
+void SegmentMan::markAllPiecesDone()
+{
+  if(bitfield) {
+    bitfield->setAllBit();
+  }
+}
+
+void SegmentMan::checkIntegrity()
+{
+  logger->notice("Validating file %s",
+		 getFilePath().c_str());
+  ChunkChecksumValidator v;
+  v.setDigestAlgo(digestAlgo);
+  v.setDiskWriter(diskWriter);
+  v.setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
+  v.validate(bitfield, pieceHashes, chunkHashLength);
+}
+
+bool SegmentMan::isChunkChecksumValidationReady() const {
+  return bitfield &&
+    pieceHashes.size()*chunkHashLength == bitfield->getBlockLength()*(bitfield->getMaxIndex()+1);
+}
+
+void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
+{
+  if(!isChunkChecksumValidationReady()) {
+    return;
+  }
+  int32_t hashStartIndex;
+  int32_t hashEndIndex;
+  Util::indexRange(hashStartIndex, hashEndIndex,
+		   segment.getPosition(),
+		   segment.writtenLength,
+		   chunkHashLength);
+  if(hashStartIndex*chunkHashLength < segment.getPosition() && !bitfield->isBitSet(segment.index-1)) {
+    ++hashStartIndex;
+  }
+  if(hashEndIndex*(chunkHashLength+1) > segment.getPosition()+segment.segmentLength && !bitfield->isBitSet(segment.index+1)) {
+    --hashEndIndex;
+  }
+  logger->debug("hashStartIndex=%d, hashEndIndex=%d",
+		hashStartIndex, hashEndIndex);
+  if(hashStartIndex > hashEndIndex) {
+    logger->debug("No chunk to verify.");
+    return;
+  }
+  int64_t hashOffset = hashStartIndex*chunkHashLength;
+  int32_t startIndex;
+  int32_t endIndex;
+  Util::indexRange(startIndex, endIndex,
+		   hashOffset,
+		   (hashEndIndex-hashStartIndex+1)*chunkHashLength,
+		   segment.segmentLength);
+  logger->debug("startIndex=%d, endIndex=%d", startIndex, endIndex);
+  if(bitfield->isBitRangeSet(startIndex, endIndex)) {
+    for(int32_t index = hashStartIndex; index <= hashEndIndex; ++index) {
+      int64_t offset = index*chunkHashLength;
+      uint32_t dataLength =
+	offset+chunkHashLength <= totalSize ? chunkHashLength : totalSize-offset;
+      string actualChecksum = diskWriter->messageDigest(offset, dataLength, digestAlgo);
+      string expectedChecksum = pieceHashes.at(index);
+      if(expectedChecksum == actualChecksum) {
+	logger->info("Chunk checksum validation succeeded.");
+      } else {
+	logger->error("Chunk checksum validation failed. checksumIndex=%d, offset=%lld, length=%u, expected=%s, actual=%s",
+		      index, offset, dataLength,
+		      expectedChecksum.c_str(), actualChecksum.c_str());
+	logger->info("Unset bit from %d to %d(inclusive)", startIndex, endIndex);
+	bitfield->unsetBitRange(startIndex, endIndex);
+	break;
+      }
+    }
+  }
 }

@@ -58,7 +58,8 @@ aria2c_SOURCES = AllTest.cc\
 	FixedNumberRandomizer.h\
 	MockBtMessageFactory.h\
 	MockBtMessage.h\
-	ConsoleFileAllocationMonitorTest.cc
+	ConsoleFileAllocationMonitorTest.cc\
+	ChunkChecksumValidatorTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 

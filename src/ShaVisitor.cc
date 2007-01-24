@@ -40,9 +40,8 @@ ShaVisitor::ShaVisitor():
   ctx.digestInit();
 }
 
-ShaVisitor::~ShaVisitor() {
-  ctx.digestFree();
-}
+ShaVisitor::~ShaVisitor() {}
+
 
 void ShaVisitor::visit(const Data* d) {
   if(d->isNumber()) {

@@ -37,6 +37,9 @@
 
 #include <string>
 #include "common.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#include "messageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 using namespace std;
 
@@ -89,7 +92,8 @@ public:
     return readData((char*)data, len, position);
   }
 
-  virtual string sha1Sum(int64_t offset, uint64_t length) = 0;
+  virtual string messageDigest(int64_t offset, uint64_t length,
+			       const MessageDigestContext::DigestAlgo& algo) = 0;
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;

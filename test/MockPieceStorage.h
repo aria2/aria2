@@ -146,6 +146,10 @@ public:
   }
 
   virtual void removeAdvertisedPiece(int elapsed) {}
+
+  virtual void markAllPiecesDone() {}
+
+  virtual void checkIntegrity() {}
 };
 
 typedef SharedHandle<MockPieceStorage> MockPieceStorageHandle;

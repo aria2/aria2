@@ -74,6 +74,7 @@ private:
   int tryCount;
   int trackerEvent;
   bool keepAlive;
+  string method;
   bool parseUrl(const string& url);
 public:
   Segment segment;
@@ -110,6 +111,17 @@ public:
   void setKeepAlive(bool keepAlive) { this->keepAlive = keepAlive; }
   void setTrackerEvent(int event) { trackerEvent = event; }
   int getTrackerEvent() const { return trackerEvent; }
+
+  void setMethod(const string& method) {
+    this->method = method;
+  }
+
+  const string& getMethod() const {
+    return method;
+  }
+
+  static const string METHOD_GET;
+  static const string METHOD_HEAD;
 
   enum TRACKER_EVENT {
     AUTO,

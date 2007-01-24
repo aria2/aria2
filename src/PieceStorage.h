@@ -146,6 +146,15 @@ public:
    */
   virtual void removeAdvertisedPiece(int elapsed) = 0;
 
+  /**
+   * Sets all bits in bitfield to 1.
+   */
+  virtual void markAllPiecesDone() = 0;
+
+  /**
+   * Validates file integrity by comparing checksums.
+   */
+  virtual void checkIntegrity() = 0;
 };
 
 typedef SharedHandle<PieceStorage> PieceStorageHandle;

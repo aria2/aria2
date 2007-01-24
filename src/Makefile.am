@@ -63,7 +63,8 @@ SRCS =  Socket.h\
 	SimpleRandomizer.cc SimpleRandomizer.h\
 	FileAllocator.cc FileAllocator.h\
 	FileAllocationMonitor.cc FileAllocationMonitor.h\
-	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h
+	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h\
+	ChunkChecksumValidator.cc ChunkChecksumValidator.h
 #	debug_new.cpp
 
 if ENABLE_ASYNC_DNS

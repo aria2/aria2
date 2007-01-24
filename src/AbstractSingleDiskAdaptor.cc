@@ -59,8 +59,8 @@ int AbstractSingleDiskAdaptor::readData(unsigned char* data, uint32_t len, int64
   return diskWriter->readData(data, len, offset);
 }
 
-string AbstractSingleDiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
-  return diskWriter->sha1Sum(offset, length);
+string AbstractSingleDiskAdaptor::messageDigest(int64_t offset, uint64_t length, const MessageDigestContext::DigestAlgo& algo) {
+  return diskWriter->messageDigest(offset, length, algo);
 }
 
 bool AbstractSingleDiskAdaptor::fileExists()

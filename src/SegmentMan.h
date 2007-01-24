@@ -77,6 +77,39 @@ private:
   bool onNullBitfield(Segment& segment, int cuid);
   Segment checkoutSegment(int cuid, int index);
   SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
+  SegmentEntryHandle getSegmentEntryByIndex(int index) {
+    for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
+	itr != usedSegmentEntries.end(); ++itr) {
+      const SegmentEntryHandle& segmentEntry = *itr;
+      if(segmentEntry->segment.index == index) {
+	return segmentEntry;
+      }
+    }
+    return 0;
+  }
+  
+  SegmentEntryHandle getSegmentEntryByCuid(int cuid) {
+    for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
+	itr != usedSegmentEntries.end(); ++itr) {
+      const SegmentEntryHandle& segmentEntry = *itr;
+      if(segmentEntry->cuid == cuid) {
+	return segmentEntry;
+      }
+    }
+    return 0;    
+  }
+
+  SegmentEntries::iterator getSegmentEntryIteratorByCuid(int cuid) {
+    for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
+	itr != usedSegmentEntries.end(); ++itr) {
+      const SegmentEntryHandle& segmentEntry = *itr;
+      if(segmentEntry->cuid == cuid) {
+	return itr;
+      }
+    }
+    return usedSegmentEntries.end();    
+  }
+
 public:
   /**
    * The total number of bytes to download.
@@ -121,8 +154,12 @@ public:
   int errors;
 
   const Option* option;
-  DiskWriter* diskWriter;
+  DiskWriterHandle diskWriter;
   Requests reserved;
+
+  Strings pieceHashes;
+  uint32_t chunkHashLength;
+  MessageDigestContext::DigestAlgo digestAlgo;
 
   SegmentMan();
   ~SegmentMan();
@@ -221,44 +258,36 @@ public:
    */
   void registerPeerStat(const PeerStatHandle& peerStat);
 
-  class FindPeerStat {
-  private:
-    int cuid;
-  public:
-    FindPeerStat(int cuid):cuid(cuid) {}
-
-    bool operator()(const PeerStatHandle& peerStat) {
-      if(peerStat->getCuid() == cuid) {
-	return true;
-      } else {
-	return false;
-      }
-    }
-  };
-
   /**
    * Returns peerStat whose cuid is given cuid. If it is not found, returns
-   * PeerStatHandle(0).
+   * 0.
    */
   PeerStatHandle getPeerStat(int cuid) const {
-    PeerStats::const_iterator itr = find_if(peerStats.begin(), peerStats.end(),
-					    FindPeerStat(cuid));
-    if(itr == peerStats.end()) {
-      // TODO
-      return PeerStatHandle(0);
-    } else {
-      return *itr;
+    for(PeerStats::const_iterator itr = peerStats.begin(); itr != peerStats.end(); ++itr) {
+      const PeerStatHandle& peerStat = *itr;
+      if(peerStat->getCuid() == cuid) {
+	return peerStat;
+      }
     }
+    return 0;
   }
 
   /**
    * Returns current download speed in bytes per sec. 
    */
-  int calculateDownloadSpeed() const;
+  uint32_t calculateDownloadSpeed() const;
 
   bool fileExists();
 
   bool shouldCancelDownloadForSafety();
+
+  void markAllPiecesDone();
+
+  void checkIntegrity();
+
+  void tryChunkChecksumValidation(const Segment& segment);
+
+  bool isChunkChecksumValidationReady() const;
 
 };
 

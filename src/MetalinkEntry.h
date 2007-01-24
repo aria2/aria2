@@ -38,6 +38,7 @@
 #include "common.h"
 #include "MetalinkResource.h"
 #include "Checksum.h"
+#include "MetalinkChunkChecksum.h"
 #include <deque>
 
 class MetalinkEntry {
@@ -46,10 +47,11 @@ public:
   string version;
   string language;
   string os;
-  long long int size;
+  uint64_t size;
   Checksum checksum;
 public:
   MetalinkResources resources;
+  MetalinkChunkChecksumHandle chunkChecksum;
 public:
   MetalinkEntry();
   ~MetalinkEntry();

@@ -153,6 +153,17 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   }
   e->segmentMan->isSplittable = !(size == 0);
   e->segmentMan->filename = determinFilename(headers);
+  
+  // quick hack for method 'head'
+  if(req->getMethod() == Request::METHOD_HEAD) {
+    e->segmentMan->downloadStarted = true;
+    e->segmentMan->totalSize = size;
+    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				e->segmentMan->totalSize);
+    e->segmentMan->markAllPiecesDone();
+    e->segmentMan->isSplittable = false; // TODO because we don't want segment file to be saved.
+    return true;
+  }
   bool segFileExists = e->segmentMan->segmentFileExists();
   e->segmentMan->downloadStarted = true;
   if(segFileExists) {
@@ -161,11 +172,6 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     // send request again to the server with Range header
     return prepareForRetry(0);
   } else {
-    if(e->segmentMan->shouldCancelDownloadForSafety()) {
-      throw new FatalException(EX_FILE_ALREADY_EXISTS,
-			       e->segmentMan->getFilePath().c_str(),
-			       e->segmentMan->getSegmentFilePath().c_str());
-    }
     e->segmentMan->totalSize = size;
     e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				e->segmentMan->totalSize);
@@ -176,6 +182,11 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
 }
 
 bool HttpResponseCommand::handleOtherEncoding(const string& transferEncoding, const HttpHeader& headers) {
+  if(e->segmentMan->shouldCancelDownloadForSafety()) {
+    throw new FatalException(EX_FILE_ALREADY_EXISTS,
+			     e->segmentMan->getFilePath().c_str(),
+			     e->segmentMan->getSegmentFilePath().c_str());
+  }
   // we ignore content-length when transfer-encoding is set
   e->segmentMan->downloadStarted = true;
   e->segmentMan->isSplittable = false;
@@ -192,6 +203,9 @@ bool HttpResponseCommand::handleOtherEncoding(const string& transferEncoding, co
 
 void HttpResponseCommand::createHttpDownloadCommand(const string& transferEncoding) {
   HttpDownloadCommand* command = new HttpDownloadCommand(cuid, req, e, socket);
+  command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
+  command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
+  command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   TransferEncoding* enc = NULL;
   if(transferEncoding.size() && (enc = command->getTransferEncoding(transferEncoding)) == NULL) {
     delete(command);

@@ -60,7 +60,8 @@ public:
 
   virtual int readData(unsigned char* data, uint32_t len, int64_t offset);
 
-  virtual string sha1Sum(int64_t offset, uint64_t length);
+  virtual string messageDigest(int64_t offset, uint64_t length,
+			       const MessageDigestContext::DigestAlgo& algo);
 
   virtual bool fileExists();
 

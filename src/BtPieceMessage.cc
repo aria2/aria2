@@ -191,7 +191,7 @@ string BtPieceMessage::toString() const {
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
   int64_t offset =
     ((int64_t)piece->getIndex())*btContext->getPieceLength();
-  return pieceStorage->getDiskAdaptor()->sha1Sum(offset, piece->getLength()) ==
+  return pieceStorage->getDiskAdaptor()->messageDigest(offset, piece->getLength(), DIGEST_ALGO_SHA1) ==
     btContext->getPieceHash(piece->getIndex());
 }
 

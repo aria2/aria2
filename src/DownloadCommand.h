@@ -38,12 +38,17 @@
 #include "AbstractCommand.h"
 #include "TransferEncoding.h"
 #include "TimeA2.h"
+#include "PeerStat.h"
 
 using namespace std;
 
 class DownloadCommand : public AbstractCommand {
 private:
   long long int lastSize;
+  uint32_t maxDownloadSpeedLimit;
+  uint32_t startupIdleTime;
+  uint32_t lowestDownloadSpeedLimit;
+  PeerStatHandle peerStat;
 protected:
   bool executeInternal(Segment& segment);
 
@@ -57,6 +62,17 @@ public:
 
   string transferEncoding;
 
+  void setMaxDownloadSpeedLimit(uint32_t maxDownloadSpeedLimit) {
+    this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
+  }
+
+  void setStartupIdleTime(uint32_t startupIdleTime) {
+    this->startupIdleTime = startupIdleTime;
+  }
+
+  void setLowestDownloadSpeedLimit(uint32_t lowestDownloadSpeedLimit) {
+    this->lowestDownloadSpeedLimit = lowestDownloadSpeedLimit;
+  }
 };
 
 #endif // _D_DOWNLOAD_COMMAND_H_

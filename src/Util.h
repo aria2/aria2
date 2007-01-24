@@ -134,6 +134,10 @@ public:
   static bool isNumbersAndDotsNotation(const string& name);
 
   static void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);
+
+  static void indexRange(int32_t& startIndex, int32_t& endIndex,
+			 int64_t offset,
+			 uint32_t srcLength, uint32_t destLength);
 };
 
 #endif // _D_UTIL_H_

@@ -460,7 +460,6 @@ void Util::sha1Sum(unsigned char* digest, const void* data, int dataLength) {
   ctx.digestInit();
   ctx.digestUpdate(data, dataLength);
   ctx.digestFinal(digest);
-  ctx.digestFree();
 }
 
 string Util::simpleMessageDigest(const string& data) {
@@ -501,7 +500,6 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
     }
   }
   ctx.digestFinal(digest);
-  ctx.digestFree();
 }
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -638,3 +636,11 @@ void Util::setGlobalSignalHandler(int signal, void (*handler)(int), int flags) {
   sigemptyset(&sigact.sa_mask);
   sigaction(signal, &sigact, NULL);
 }
+
+void Util::indexRange(int32_t& startIndex, int32_t& endIndex,
+		      int64_t offset, uint32_t srcLength, uint32_t destLength)
+{
+  startIndex = offset/destLength;
+  endIndex = (offset+srcLength-1)/destLength;
+}
+

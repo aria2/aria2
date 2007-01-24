@@ -36,9 +36,6 @@
 #define _D_ABSTRACT_DISK_WRITER_H_
 
 #include "DiskWriter.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-#include "messageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
 #include "FileAllocator.h"
 #include "Logger.h"
 
@@ -48,13 +45,11 @@ protected:
   int32_t fd;
   FileAllocatorHandle fileAllocator;
   const Logger* logger;
-#ifdef ENABLE_MESSAGE_DIGEST
-  MessageDigestContext ctx;
-#endif // ENABLE_MESSAGE_DIGEST
 
   void createFile(const string& filename, int32_t addFlags = 0);
 
-  void writeDataInternal(const char* data, uint32_t len);
+private:
+  int writeDataInternal(const char* data, uint32_t len);
   int readDataInternal(char* data, uint32_t len);
 
   void seek(int64_t offset);
@@ -69,7 +64,8 @@ public:
 
   virtual void openExistingFile(const string& filename);
 
-  virtual string sha1Sum(int64_t offset, uint64_t length);
+  virtual string messageDigest(int64_t offset, uint64_t length,
+			       const MessageDigestContext::DigestAlgo& algo);
 
   virtual void writeData(const char* data, uint32_t len, int64_t offset);
 

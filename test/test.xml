@@ -20,12 +20,17 @@
       </resources>
     </file>
     <file name="aria2-0.5.1.tar.bz2">
+      <size>345689</size>
       <version>0.5.1</version>
       <language>ja-JP</language>
       <os>Linux-m68k</os>
       <verification>
         <hash type="md5">92296e19c406d77d21bda0bb944eac46</hash>
         <hash type="sha1">4c255b0ed130f5ea880f0aa061c3da0487e251cc</hash>
+	<pieces length="262144" type="sha1">
+	  <hash pieces="0">179463a88d79cbf0b1923991708aead914f26142</hash>
+	  <hash pieces="1">fecf8bc9a1647505fe16746f94e97a477597dbf3</hash>
+	</pieces>
       </verification>
       <resources>
         <url type="ftp" preference="100">ftp://ftphost/aria2-0.5.1.tar.bz2</url>

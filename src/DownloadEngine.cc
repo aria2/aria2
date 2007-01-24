@@ -108,89 +108,6 @@ void DownloadEngine::shortSleep() const {
   select(0, &rfds, NULL, NULL, &tv);
 }
 
-class SetDescriptor {
-private:
-  int* max_ptr;
-  fd_set* rfds_ptr;
-  fd_set* wfds_ptr;
-public:
-  SetDescriptor(int* max_ptr, fd_set* rfds_ptr, fd_set* wfds_ptr):
-    max_ptr(max_ptr),
-    rfds_ptr(rfds_ptr),
-    wfds_ptr(wfds_ptr) {}
-
-  void operator()(const SocketEntry& entry) {
-    int fd = entry.socket->getSockfd();
-    switch(entry.type) {
-    case SocketEntry::TYPE_RD:
-      FD_SET(fd, rfds_ptr);
-      break;
-    case SocketEntry::TYPE_WR:
-      FD_SET(fd, wfds_ptr);
-      break;
-    }
-    if(*max_ptr < fd) {
-      *max_ptr = fd;
-    }
-  }
-#ifdef ENABLE_ASYNC_DNS
-  void operator()(const NameResolverEntry& entry) {
-    int tempFd = entry.nameResolver->getFds(rfds_ptr, wfds_ptr);
-    if(*max_ptr < tempFd) {
-      *max_ptr = tempFd;
-    }
-  }
-#endif // ENABLE_ASYNC_DNS
-};
-
-class AccumulateActiveCommand {
-private:
-  Commands* activeCommands_ptr;
-  fd_set* rfds_ptr;
-  fd_set* wfds_ptr;
-public:
-  AccumulateActiveCommand(Commands* activeCommands_ptr,
-		       fd_set* rfds_ptr,
-		       fd_set* wfds_ptr):
-    activeCommands_ptr(activeCommands_ptr),
-    rfds_ptr(rfds_ptr),
-    wfds_ptr(wfds_ptr) {}
-
-  void operator()(const SocketEntry& entry) {
-    if(FD_ISSET(entry.socket->getSockfd(), rfds_ptr) ||
-       FD_ISSET(entry.socket->getSockfd(), wfds_ptr)) {
-      activeCommands_ptr->push_back(entry.command);
-    }
-    /*
-    switch(entry.type) {
-    case SocketEntry::TYPE_RD:
-      if(FD_ISSET(entry.socket->getSockfd(), rfds_ptr)) {
-      activeCommands_ptr->push_back(entry.command);
-      }
-      break;
-    case SocketEntry::TYPE_WR:
-      if(FD_ISSET(entry.socket->getSockfd(), wfds_ptr)) {
-	activeCommands_ptr->push_back(entry.command);
-      }
-      break;
-    }
-    */
-  }
-#ifdef ENABLE_ASYNC_DNS
-  void operator()(const NameResolverEntry& entry) {
-    entry.nameResolver->process(rfds_ptr, wfds_ptr);
-    switch(entry.nameResolver->getStatus()) {
-    case NameResolver::STATUS_SUCCESS:
-    case NameResolver::STATUS_ERROR:
-      activeCommands_ptr->push_back(entry.command);
-      break;
-    default:
-      break;
-    }
-  }
-#endif // ENABLE_ASYNC_DNS
-};
-
 void DownloadEngine::waitData(Commands& activeCommands) {
   fd_set rfds;
   fd_set wfds;
@@ -204,16 +121,33 @@ void DownloadEngine::waitData(Commands& activeCommands) {
   tv.tv_usec = 0;
   retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
   if(retval > 0) {
-    for_each(socketEntries.begin(), socketEntries.end(),
-	     AccumulateActiveCommand(&activeCommands, &rfds, &wfds));
+    for(SocketEntries::iterator itr = socketEntries.begin();
+	itr != socketEntries.end(); ++itr) {
+      SocketEntry& entry = *itr;
+      if(FD_ISSET(entry.socket->getSockfd(), &rfds) ||
+	 FD_ISSET(entry.socket->getSockfd(), &wfds)) {
+	if(find(activeCommands.begin(), activeCommands.end(), entry.command) == activeCommands.end()) {
+	  activeCommands.push_back(entry.command);
+	}
+      }
+    }
 #ifdef ENABLE_ASYNC_DNS
-    for_each(nameResolverEntries.begin(), nameResolverEntries.end(),
-	     AccumulateActiveCommand(&activeCommands, &rfds, &wfds));
+    for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
+	itr != nameResolverEntries.end(); ++itr) {
+      NameResolverEntry& entry = *itr;
+      entry.nameResolver->process(&rfds, &wfds);
+      switch(entry.nameResolver->getStatus()) {
+      case NameResolver::STATUS_SUCCESS:
+      case NameResolver::STATUS_ERROR:
+	if(find(activeCommands.begin(), activeCommands.end(), entry.command) == activeCommands.end()) {
+	  activeCommands.push_back(entry.command);
+	}
+	break;
+      default:
+	break;
+      }
+    }
 #endif // ENABLE_ASYNC_DNS
-    sort(activeCommands.begin(), activeCommands.end());
-    activeCommands.erase(unique(activeCommands.begin(),
-				activeCommands.end()),
-			 activeCommands.end());
   }
 }
 
@@ -222,11 +156,31 @@ void DownloadEngine::updateFdSet() {
   FD_ZERO(&rfdset);
   FD_ZERO(&wfdset);
 #ifdef ENABLE_ASYNC_DNS
-  for_each(nameResolverEntries.begin(), nameResolverEntries.end(),
-	   SetDescriptor(&fdmax, &rfdset, &wfdset));
+  for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
+      itr != nameResolverEntries.end(); ++itr) {
+    NameResolverEntry& entry = *itr;
+    int fd = entry.nameResolver->getFds(&rfdset, &wfdset);
+    if(fdmax < fd) {
+      fdmax = fd;
+    }
+  }
 #endif // ENABLE_ASYNC_DNS
-  for_each(socketEntries.begin(), socketEntries.end(),
-	   SetDescriptor(&fdmax, &rfdset, &wfdset));
+  for(SocketEntries::iterator itr = socketEntries.begin();
+      itr != socketEntries.end(); ++itr) {
+    SocketEntry& entry = *itr;
+    int fd = entry.socket->getSockfd();
+    switch(entry.type) {
+    case SocketEntry::TYPE_RD:
+      FD_SET(fd, &rfdset);
+      break;
+    case SocketEntry::TYPE_WR:
+      FD_SET(fd, &wfdset);
+      break;
+    }
+    if(fdmax < fd) {
+      fdmax = fd;
+    }
+  }
 }
 
 bool DownloadEngine::addSocket(const SocketEntry& entry) {

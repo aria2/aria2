@@ -32,35 +32,63 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML2_METALINK_PROCESSOR_H_
-#define _D_XML2_METALINK_PROCESSOR_H_
+#ifndef _D_CHUNK_CHECKSUM_VALIDATOR_H_
+#define _D_CHUNK_CHECKSUM_VALIDATOR_H_
 
-#include "MetalinkProcessor.h"
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
+#include "common.h"
+#include "DiskWriter.h"
+#include "BitfieldMan.h"
+#include "messageDigest.h"
+#include "LogFactory.h"
+#include "FileAllocationMonitor.h"
+#include "NullFileAllocationMonitor.h"
 
-class Xml2MetalinkProcessor : public MetalinkProcessor {
+class ChunkChecksumValidator {
 private:
-  xmlDocPtr doc;
-  xmlXPathContextPtr context;
+  DiskWriterHandle diskWriter;
 
-  MetalinkEntryHandle getEntry(const string& xpath);
-  MetalinkResourceHandle getResource(const string& xpath);
-  MetalinkChunkChecksumHandle getPieceHash(const string& xpath,
-					   uint64_t totalSize);
+  MessageDigestContext::DigestAlgo algo;
 
-  xmlXPathObjectPtr xpathEvaluation(const string& xpath);
-  string xpathContent(const string& xpath);
-  string xmlAttribute(xmlNodePtr node, const string& attrName);
-  string xmlContent(xmlNodePtr node);
+  FileAllocationMonitorHandle fileAllocationMonitor;
 
-  void release();
+  const Logger* logger;
+
+  void validateSameLengthChecksum(BitfieldMan* bitfieldMan,
+				  int32_t index,
+				  const string& expectedChecksum,
+				  uint32_t thisLength,
+				  uint32_t checksumLength);
+
+  void validateDifferentLengthChecksum(BitfieldMan* bitfieldMan,
+				       int32_t index,
+				       const string& expectedChecksum,
+				       uint32_t thisLength,
+				       uint32_t checksumLength);
 public:
-  Xml2MetalinkProcessor();
-  virtual ~Xml2MetalinkProcessor();
+  ChunkChecksumValidator():
+    diskWriter(0),
+    algo(DIGEST_ALGO_SHA1),
+    fileAllocationMonitor(new NullFileAllocationMonitor()),
+    logger(LogFactory::getInstance())
+  {}
 
-  virtual MetalinkerHandle parseFile(const string& filename);
-  
+  ~ChunkChecksumValidator() {}
+
+  void validate(BitfieldMan* bitfieldMan, 
+		const Strings& checksums,
+		uint32_t checksumLength);
+
+  void setDiskWriter(const DiskWriterHandle& diskWriter) {
+    this->diskWriter = diskWriter;
+  }
+
+  void setDigestAlgo(const MessageDigestContext::DigestAlgo& algo) {
+    this->algo = algo;
+  }
+
+  void setFileAllocationMonitor(const FileAllocationMonitorHandle& monitor) {
+    this->fileAllocationMonitor = monitor;
+  }
 };
 
-#endif // _D_XML2_METALINK_PROCESSOR_H_
+#endif // _D_CHUNK_CHECKSUM_VALIDATOR_H_

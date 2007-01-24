@@ -76,6 +76,9 @@ void ConsoleDownloadEngine::calculateStatistics() {
   int elapsed = cp.difference();
   if(elapsed >= 1) {
     int nspeed = (int)((dlSize-psize)/elapsed);
+    if(nspeed < 0) {
+      nspeed = 0;
+    }
     speed = (nspeed+speed)/2;
     cp.reset();
     psize = dlSize;

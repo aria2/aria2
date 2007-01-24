@@ -62,6 +62,8 @@ public:
 
   virtual string getPieceHash(int index) const = 0;
   
+  virtual const Strings& getPieceHashes() const = 0;
+
   virtual long long int getTotalLength() const = 0;
 
   virtual FILE_MODE getFileMode() const = 0;

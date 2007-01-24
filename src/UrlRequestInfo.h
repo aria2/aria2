@@ -37,24 +37,53 @@
 
 #include "RequestInfo.h"
 
+class HeadResult {
+public:
+  HeadResult():totalLength(0) {}
+  string filename;
+  uint64_t totalLength;
+};
+
+std::ostream& operator<<(std::ostream& o, const HeadResult& hr);
+
 class UrlRequestInfo : public RequestInfo {
 private:
   Strings urls;
   int maxConnections;
+  MessageDigestContext::DigestAlgo digestAlgo;
+  uint32_t chunkChecksumLength;
+  Strings chunkChecksums;
+
   RequestInfo* createNextRequestInfo() const;
   void adjustRequestSize(Requests& requests,
 			 Requests& reserved,
 			 int maxConnections) const;
   void printUrls(const Strings& urls) const;
+  HeadResult getHeadResult();
 public:
   UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
     RequestInfo(op),
     urls(urls),
-    maxConnections(maxConnections) {}
+    maxConnections(maxConnections),
+    digestAlgo(DIGEST_ALGO_SHA1),
+    chunkChecksumLength(0) {}
 
   virtual ~UrlRequestInfo() {}
 
   virtual RequestInfos execute();
+
+  void setDigestAlgo(const MessageDigestContext::DigestAlgo& algo) {
+    this->digestAlgo = algo;
+  }
+
+  void setChunkChecksumLength(uint32_t chunkChecksumLength) {
+    this->chunkChecksumLength = chunkChecksumLength;
+  }
+
+  void setChunkChecksums(const Strings& chunkChecksums) {
+    this->chunkChecksums = chunkChecksums;
+  }
 };
 
+typedef SharedHandle<UrlRequestInfo> UrlRequestInfoHandle;
 #endif // _D_URL_REQUEST_INFO_H_

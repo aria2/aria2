@@ -1,3 +1,205 @@
+2007-01-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add chunk checksum validation:
+	* src/MetalinkEntry.h
+	(MetalinkChunkChecksum.h): New include.
+	(chunkChecksum): New variable.
+	* src/Request.h
+	(method): New variable.
+	(setMethod): New function.
+	(getMethod): New function.
+	(METHOD_GET): New static constant.
+	(METHOD_HEAD): New static constant.
+	* src/Xml2MetalinkProcessor.h
+	(getPieceHash): New function.
+	* src/PieceStorage.h
+	(markAllPiecesDone): New function.
+	(checkIntegrity): New function.
+	* src/FileAllocator.h
+	(NullFileAllocationMonitor.h): New include.
+	(FileAllocator): Initialize fileAllocationMonitor with new
+	NullFileAllocationMonitor().
+	* src/MultiDiskAdaptor.h
+	(messageDigest.h): Remove include.
+	(ctx): Removed.
+	(hashUpdate): Added ctx.
+	(MultiDiskAdaptor): Removed ctx.
+	(sha1Sum): Renamed as messageDigest.
+	(messageDigest): New function.
+	* src/UrlRequestInfo.h
+	(HeadResult): New class.
+	(digestAlgo): New variable.
+	(chunkChecksumLength): New variable.
+	(chunkChecksums): New variable.
+	(getHeadResult): New function.
+	(UrlRequestInfo): Added digestAlgo, chunkChecksumLength.
+	(setDigestAlgo): New function.
+	(setChunkChecksumLength): New function.
+	(setChunkChecksums): New function.
+	* src/DefaultPieceStorage.cc
+	(DiskAdaptorWriter.h): New include.
+	(ChunkChecksumValidator.h): New include.
+	(markAllPiecesDone): New function.
+	(checkIntegrity): New function.
+	* src/DefaultBtContext.h
+	(getPieceHashes): New function.
+	* src/TorrentRequestInfo.cc
+	(execute): Try to validate chunk checksum if file already exists and
+	.aria2 file doesn't there and user allows aria2 to overwrite it.
+	* src/messageDigest.h
+	(~MessageDigestContext): Added digestFree().
+	* src/MetalinkRequestInfo.cc
+	(execute): Set digestAlgo, chunkChecksum, chunkChecksums to reqInfo.
+	* src/DiskAdaptor.h
+	(messageDigest.h): New include.
+	(sha1Sum): Renamed as messageDigest.
+	(messageDigest): New function.
+	* src/DownloadCommand.h
+	(PeerStat.h): New include.
+	(maxDownloadSpeedLimit): New variable.
+	(startupIdleTime): New variable.
+	(lowestDownloadSpeedLimit): New variable.
+	(peerStat): New variable.
+	(setMaxDownloadSpeedLimit): New function.
+	(setStartupIdleTime): New function.
+	(setLowestDownloadSPeedLimit): New function.
+	* src/BtContext.h
+	(getPieceHashes): New function.
+	* src/main.cc
+	(main): Set PREF_REALTIME_CHUNK_CHECKSUM and PREF_CHECK_INTEGRITY
+	option to true for testing purpose.
+	* src/BtPieceMessage.cc
+	(checkPieceHash): Use messageDigest
+	* src/DownloadEngine.cc
+	(SetDescriptor): Removed.
+	(AccumulateActiveCommand): Removed.
+	(waitData): Rewritten.
+	(updateFdSet): Rewritten.
+	* src/MultiDiskAdaptor.cc
+	(hashUpdate): Added ctx.
+	(sha1Sum): Renamed as messageDigest.
+	(messageDigest): New function.
+	* src/BitfieldMan.h
+	(isBitRangeSet): New function.
+	(unsetBitRange): New function.
+	* src/ByteArrayDiskWriter.h
+	(sha1Sum): Renamed as messageDigest.
+	(messageDigest): New function.
+	* src/ConsoleDownloadEngine.cc
+	(calculateStatistics): If nspeed < 0 then set nspeed to 0.
+	* src/DiskWriter.h
+	(messageDigest.h): New include.
+	(sha1Sum): Renamed as messageDigest.
+	(messageDigest): New function.
+	* src/ChunkChecksumValidator.h: New class.
+	* src/DiskAdaptorWriter.h: New class.
+	* src/prefs.h
+	(PREF_REALTIME_CHUNK_CHECKSUM): New definition.
+	(PREF_CHECK_INTEGRITY): New definition.
+	* src/HttpResponseCommand.cc
+	(handleDefaultEncoding): Added method "HEAD" handling.
+	Removed the call to e->segmentMan->shouldCancelDownloadForSafety().
+	(handleOtherEncoding):
+	Added the call to e->segmentMan->shouldCancelDownloadForSafety().
+	(createHttpDownloadCommand): Set maxDownloadSpeedLimit,
+	startupIdleTime, lowestDownloadSpeedLimit to command.
+	* src/SegmentMan.h
+	(getSegmentEntryByIndex): New function.
+	(getSegmentEntryByCuid): New function.
+	(getSegmentEntryIteratorByCuid): New function.
+	(diskWriter): DiskWriter -> DiskWriterHandle
+	(pieceHashes): New variable.
+	(chunkHashLength): New variable.
+	(digestAlgo): New variable.
+	(FindPeerStat): Removed.
+	(getPeerStat): Rewritten.
+	(markAllPiecesDone): New function.
+	(checkIntegrity): New function.
+	(tryChunkChecksumValidation): New function.
+	(isChunkChecksumValidationReady): New function.
+	* src/BitfieldMan.cc
+	(BitfieldMan): Initialized bitfieldLength, blocks to 0.
+	(BitfieldMan): Initialized blockLength, totalLength, bitfieldLength,
+	blocks to 0.
+	(isBitRangeSet): New function.
+	(unsetBitRange): New function.
+	* src/FtpNegotiateCommand.cc
+	(executeInternal): Set maxDownloadSpeedLimit,
+	startupIdleTime, lowestDownloadSpeedLimit to command.
+	(recvSize): Added method "HEAD" handling.
+	Removed the call to e->segmentMan->shouldCancelDownloadForSafety().
+	* src/AbstractSingleDiskAdaptor.cc
+	(sha1Sum): Renamed as messageDigest.
+	(messageDigest): New function.
+	* src/AbstractSingleDiskAdaptor.h
+	(sha1Sum): Renamed as messageDigest.
+	(messageDigest): New function.
+	* src/Util.h
+	(indexRange): New function.
+	* src/MetalinkEntry.cc
+	(MetalinkEntry): Initialized chunkChecksum to 0.
+	* src/ShaVisitor.cc
+	(~ShaVisitor): Removed the call to ctx.digestFree().
+	* src/SegmentMan.cc
+	(ChunkChecksumValidator.h): New include.
+	(SegmentMan): Initialized chunkHashLength to 0. Initialized digestAlgo
+	to DIGEST_ALGO_SHA1.
+	(~SegmentMan): Removed diskWriter.
+	(FindSegmentEntryByIndex): Removed.
+	(FindSegmentEntryByCuid): Removed.
+	(checkoutSegment): Rewritten.
+	(findSlowerSegmentEntry): Rewritten.
+	(getSegment): Rewritten.
+	(updateSegment): Rewritten.
+	(completeSegment): Rewritten.
+	(markAllPiecesDone): New function.
+	(checkIntegrity): New function.
+	(isChunkChecksumValidationReady): New function.
+	(tryChunkChecksumValidation): New function.
+	* src/Xml2MetalinkProcessor.cc
+	(getEntry): Get size and set it to entry.
+	Get chunk checksum and set it to entry.
+	(getPieceHash): New function.
+	* src/Util.cc
+	(sha1Sum): Removed ctx.digestFree()
+	(fileChecksum): Removed ctx.digestFree()
+	(indexRange): New function.
+	* src/Request.cc
+	(METHOD_GET): New variable.
+	(METHOD_HEAD): New variable.
+	(Request): Added method.
+	* src/UrlRequestInfo.cc
+	(FatalException.h): New include.
+	(message.h): New include.
+	(operator<<): Added operator<< for class HeadResult.
+	(getHeadResult): New function.
+	(execute): Get filename and size in separate download engine.
+	* src/ChunkChecksumValidator.cc: New class.
+	* src/DownloadCommand.cc:
+	(DownloadCommand): Added peerStat.
+	(executeInternal): Use maxDownloadSpeedLimit member instead of getting
+	the value from Option.
+	The buffer size is now 16KB.
+	Use peerStat member instead of getting it from SegmentMan.
+	Use startupIdleTime member instead of gettingit from Option.
+	Added chunk checksum validation.
+	* src/AbstractDiskWriter.cc
+	(AbstractDiskWriter): Removed ctx.
+	(~AbstractDiskWriter): Removed ctx.digestFree()
+	(writeDataInternal): Returns the return value of write.
+	(readDataInternal): Returns the return value of read.
+	(sha1Sum): Renamed as messageDigest
+	(messageDigest): New function.
+	* src/AbstractDiwkWriter.h
+	(messageDigest.h): Removed include.
+	(ctx): Removed.
+	(sha1Sum): Renamed as messageDigest
+	(messageDigest): New function.
+	* src/DefaultPieceStorage.h
+	(markAllPiecesDone): New function.
+	(checkIntegrity): New function.
+	* src/NullFileAllocationMonitor.h: New class.
+	
 2007-01-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To decrease CPU usage in bittorrent download, calculation results in

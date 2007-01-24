@@ -42,6 +42,8 @@
 #include "DlAbortEx.h"
 #include "BitfieldManFactory.h"
 #include "FileAllocationMonitor.h"
+#include "DiskAdaptorWriter.h"
+#include "ChunkChecksumValidator.h"
 
 DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option* option):
   btContext(btContext),
@@ -427,4 +429,21 @@ void DefaultPieceStorage::removeAdvertisedPiece(int elapsed) {
     logger->debug("Removed %d have entries.", haves.end()-itr);
     haves.erase(itr, haves.end());
   }
+}
+
+void DefaultPieceStorage::markAllPiecesDone()
+{
+  bitfieldMan->setAllBit();
+}
+
+void DefaultPieceStorage::checkIntegrity()
+{
+  logger->notice("Validating file %s",
+		 diskAdaptor->getFilePath().c_str());
+  ChunkChecksumValidator v;
+  v.setDigestAlgo(DIGEST_ALGO_SHA1);
+  v.setDiskWriter(new DiskAdaptorWriter(diskAdaptor));
+  v.setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
+  v.validate(bitfieldMan, btContext->getPieceHashes(),
+	     btContext->getPieceLength());
 }

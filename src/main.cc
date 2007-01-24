@@ -344,6 +344,8 @@ int main(int argc, char* argv[]) {
   op->put(PREF_TRACKER_MAX_TRIES, "10");
   op->put(PREF_FILE_ALLOCATION, V_NONE);
   op->put(PREF_FORCE_TRUNCATE, V_FALSE);
+  op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
+  op->put(PREF_CHECK_INTEGRITY, V_TRUE);
   while(1) {
     int optIndex = 0;
     int lopt;

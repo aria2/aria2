@@ -61,7 +61,8 @@ public:
   virtual void writeData(const char* data, uint32_t len, int64_t position = 0);
   virtual int readData(char* data, uint32_t len, int64_t position);
   // not implemented yet
-  virtual string sha1Sum(int64_t offset, uint64_t length) { return ""; }
+  virtual string messageDigest(int64_t offset, uint64_t length,
+			       const MessageDigestContext::DigestAlgo& algo) { return ""; }
 
   const char* getByteArray() const {
     return buf;

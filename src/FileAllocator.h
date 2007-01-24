@@ -37,12 +37,13 @@
 
 #include "common.h"
 #include "FileAllocationMonitor.h"
+#include "NullFileAllocationMonitor.h"
 
 class FileAllocator {
 private:
   FileAllocationMonitorHandle fileAllocationMonitor;
 public:
-  FileAllocator():fileAllocationMonitor(0) {}
+  FileAllocator():fileAllocationMonitor(new NullFileAllocationMonitor()) {}
 
   ~FileAllocator() {}
 

@@ -38,6 +38,7 @@
 #include "common.h"
 #include "FileEntry.h"
 #include "Logger.h"
+#include "messageDigest.h"
 
 class DiskAdaptor {
 protected:
@@ -60,7 +61,8 @@ public:
 
   virtual int readData(unsigned char* data, uint32_t len, int64_t offset) = 0;
 
-  virtual string sha1Sum(int64_t offset, uint64_t length) = 0;
+  virtual string messageDigest(int64_t offset, uint64_t length,
+			       const MessageDigestContext::DigestAlgo& algo) = 0;
 
   virtual void onDownloadComplete() = 0;  
 

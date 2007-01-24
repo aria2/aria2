@@ -31,7 +31,6 @@ void ConsoleFileAllocationMonitorTest::testShowProgress() {
   for(uint64_t i = monitor.getMinValue(); i <= monitor.getMaxValue(); i += 1234343) {
     monitor.setCurrentValue(i);
     monitor.showProgress();
-    usleep(5);
   }
   monitor.setCurrentValue(monitor.getMaxValue());
   monitor.showProgress();

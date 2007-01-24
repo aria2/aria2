@@ -42,6 +42,8 @@ BitfieldMan::BitfieldMan(uint32_t blockLength, uint64_t totalLength)
    bitfield(0),
    useBitfield(0),
    filterBitfield(0),
+   bitfieldLength(0),
+   blocks(0),
    filterEnabled(false),
    randomizer(0),
    cachedNumMissingBlock(0),
@@ -62,9 +64,13 @@ BitfieldMan::BitfieldMan(uint32_t blockLength, uint64_t totalLength)
 }
 
 BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
-  :bitfield(0),
+  :blockLength(0),
+   totalLength(0),
+   bitfield(0),
    useBitfield(0),
    filterBitfield(0),
+   bitfieldLength(0),
+   blocks(0),
    filterEnabled(false),
    randomizer(0),
    cachedNumMissingBlock(0),
@@ -615,4 +621,22 @@ void BitfieldMan::updateCache()
   cachedFilteredTotalLength = getFilteredTotalLengthNow();
   cachedCompletedLength = getCompletedLengthNow();
   cachedFilteredComletedLength = getFilteredCompletedLengthNow();
+}
+
+bool BitfieldMan::isBitRangeSet(int32_t startIndex, int32_t endIndex) const
+{
+  for(int32_t i =  startIndex; i <= endIndex; ++i) {
+    if(!isBitSet(i)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void BitfieldMan::unsetBitRange(int32_t startIndex, int32_t endIndex)
+{
+  for(int32_t i = startIndex; i <= endIndex; ++i) {
+    unsetBit(i);
+  }
+  updateCache();
 }

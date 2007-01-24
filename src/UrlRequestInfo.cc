@@ -38,6 +38,13 @@
 #include "prefs.h"
 #include "DownloadEngineFactory.h"
 #include "RecoverableException.h"
+#include "FatalException.h"
+#include "message.h"
+
+std::ostream& operator<<(std::ostream& o, const HeadResult& hr) {
+  o << "filename = " << hr.filename << ", " << "totalLength = " << hr.totalLength;
+  return o;
+}
 
 extern volatile sig_atomic_t haltRequested;
 
@@ -81,18 +88,22 @@ private:
   Requests* requestsPtr;
   string referer;
   int split;
+  string method;
 public:
   CreateRequest(Requests* requestsPtr,
 		const string& referer,
-		int split)
+		int split,
+		const string& method = Request::METHOD_GET)
     :requestsPtr(requestsPtr),
      referer(referer),
-     split(split) {}
+     split(split),
+     method(method) {}
 
   void operator()(const string& url) {
     for(int s = 1; s <= split; s++) {
       RequestHandle req;
       req->setReferer(referer);
+      req->setMethod(method);
       if(req->setUrl(url)) {
 	requestsPtr->push_back(req);
       } else {
@@ -109,6 +120,32 @@ void UrlRequestInfo::printUrls(const Strings& urls) const {
   }
 }
 
+HeadResult UrlRequestInfo::getHeadResult() {
+  Requests requests;
+  for_each(urls.begin(), urls.end(),
+	   CreateRequest(&requests,
+			 op->get(PREF_REFERER),
+			 1,
+			 Request::METHOD_HEAD));
+  Requests reserved(requests.begin()+1, requests.end());
+  requests.erase(requests.begin()+1, requests.end());
+
+  SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
+
+  HeadResult hr;
+  try {
+    e->run();
+    hr.filename = e->segmentMan->filename;
+    hr.totalLength = e->segmentMan->totalSize;
+  } catch(RecoverableException *ex) {
+    logger->error("Exception caught", ex);
+    delete ex;
+    fail = true;
+  }
+  return hr;
+}
+
+
 RequestInfos UrlRequestInfo::execute() {
   Requests requests;
   Requests reserved;
@@ -117,11 +154,49 @@ RequestInfos UrlRequestInfo::execute() {
 	   CreateRequest(&requests,
 			 op->get(PREF_REFERER),
 			 op->getAsInt(PREF_SPLIT)));
+
+  HeadResult hr = getHeadResult();
+
+  if(fail) {
+    return RequestInfos();
+  }
+
+  logger->info("Head result: filename=%s, total length=%s",
+	       hr.filename.c_str(), Util::ullitos(hr.totalLength, true).c_str());
   
   adjustRequestSize(requests, reserved, maxConnections);
   
   SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
-  
+  e->segmentMan->filename = hr.filename;
+  e->segmentMan->totalSize = hr.totalLength;
+  e->segmentMan->downloadStarted = true;
+  e->segmentMan->digestAlgo = digestAlgo;
+  e->segmentMan->chunkHashLength = chunkChecksumLength;
+  e->segmentMan->pieceHashes = chunkChecksums;
+
+  if(e->segmentMan->segmentFileExists()) {
+    e->segmentMan->load();
+    e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+    if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+      e->segmentMan->checkIntegrity();
+    }
+  } else {
+    if(e->segmentMan->shouldCancelDownloadForSafety()) {
+      throw new FatalException(EX_FILE_ALREADY_EXISTS,
+			       e->segmentMan->getFilePath().c_str(),
+			       e->segmentMan->getSegmentFilePath().c_str());
+    }
+    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				e->segmentMan->totalSize);
+    if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+      e->segmentMan->markAllPiecesDone();
+      e->segmentMan->checkIntegrity();
+    } else {
+      e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
+						 e->segmentMan->totalSize);
+    }
+  }
   Util::setGlobalSignalHandler(SIGINT, handler, 0);
   Util::setGlobalSignalHandler(SIGTERM, handler, 0);
   

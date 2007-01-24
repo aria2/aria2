@@ -99,7 +99,7 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
   MetalinkEntryHandle entry(new MetalinkEntry());
 
   entry->filename = filename;
-
+  entry->size = STRTOLL(xpathContent(xpath+"/m:size").c_str());
   entry->version = Util::trim(xpathContent(xpath+"/m:version"));
   entry->language = Util::trim(xpathContent(xpath+"/m:language"));
   entry->os = Util::trim(xpathContent(xpath+"/m:os"));
@@ -116,6 +116,8 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
       entry->checksum.setDigestAlgo(DIGEST_ALGO_MD5);
     }
   }
+  entry->chunkChecksum = getPieceHash(xpath+"/m:verification/m:pieces[@type=\"sha1\"]", entry->size);
+
 #endif // ENABLE_MESSAGE_DIGEST
   for(int index = 1; 1; index++) {
     MetalinkResourceHandle resource(getResource(xpath+"/m:resources/m:url["+Util::itos(index)+"]"));
@@ -126,6 +128,33 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
     }
   }
   return entry;
+}
+
+MetalinkChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
+								uint64_t totalSize)
+{
+  MetalinkChunkChecksumHandle chunkChecksum = new MetalinkChunkChecksum();
+  chunkChecksum->digestAlgo = DIGEST_ALGO_SHA1;
+
+  xmlXPathObjectPtr result = xpathEvaluation(xpath);
+  if(!result) {
+    return 0;
+  }
+  xmlNodeSetPtr nodeSet = result->nodesetval;
+  xmlNodePtr node = nodeSet->nodeTab[0];
+  chunkChecksum->pieceLength = STRTOLL(Util::trim(xmlAttribute(node, "length")).c_str());
+  xmlXPathFreeObject(result);
+
+  uint64_t numPiece =
+    (totalSize+chunkChecksum->pieceLength-1)/chunkChecksum->pieceLength;
+  for(uint64_t i = 0; i < numPiece; i++) {
+    string pieceHash = Util::trim(xpathContent(xpath+"/m:hash[@piece=\""+Util::ullitos(i)+"\"]"));
+    if(pieceHash == "") {
+      throw new DlAbortEx("Piece hash missing. index=%u", i);
+    }
+    chunkChecksum->pieceHashes.push_back(pieceHash);
+  }
+  return chunkChecksum;
 }
 
 MetalinkResourceHandle Xml2MetalinkProcessor::getResource(const string& xpath) {

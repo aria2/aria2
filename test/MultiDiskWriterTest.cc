@@ -9,7 +9,7 @@ class MultiDiskWriterTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MultiDiskWriterTest);
   CPPUNIT_TEST(testWriteData);
   CPPUNIT_TEST(testReadData);
-  CPPUNIT_TEST(testSha1Sum);
+  CPPUNIT_TEST(testMessageDigest);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -19,7 +19,7 @@ public:
 
   void testWriteData();
   void testReadData();
-  void testSha1Sum();
+  void testMessageDigest();
 };
 
 
@@ -120,7 +120,7 @@ void MultiDiskWriterTest::testReadData() {
   CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDEFGHIJKLMNO"), string(buf));
 }
 
-void MultiDiskWriterTest::testSha1Sum() {
+void MultiDiskWriterTest::testMessageDigest() {
   FileEntryHandle entry1(new FileEntry("file1r.txt", 15, 0));
   FileEntryHandle entry2(new FileEntry("file2r.txt", 7, 15));
   FileEntryHandle entry3(new FileEntry("file3r.txt", 3, 22));
@@ -132,11 +132,11 @@ void MultiDiskWriterTest::testSha1Sum() {
   dw.setFileEntries(entries);
 
   dw.openFile(".");
-  string sha1sum = dw.sha1Sum(0, 25);
+  string sha1sum = dw.messageDigest(0, 25, DIGEST_ALGO_SHA1);
   CPPUNIT_ASSERT_EQUAL(string("76495faf71ca63df66dce99547d2c58da7266d9e"), sha1sum);
-  sha1sum = dw.sha1Sum(15, 7);
+  sha1sum = dw.messageDigest(15, 7, DIGEST_ALGO_SHA1);
   CPPUNIT_ASSERT_EQUAL(string("737660d816fb23c2d5bc74f62d9b01b852b2aaca"), sha1sum);
-  sha1sum = dw.sha1Sum(10, 14);
+  sha1sum = dw.messageDigest(10, 14, DIGEST_ALGO_SHA1);
   CPPUNIT_ASSERT_EQUAL(string("6238bf61dd8df8f77156b2378e9e39cd3939680c"), sha1sum);
   dw.closeFile();
 }

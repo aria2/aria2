@@ -36,7 +36,11 @@
 #include "Util.h"
 #include "FeatureConfig.h"
 
-Request::Request():port(0), tryCount(0), keepAlive(true), isTorrent(false) {
+const string Request::METHOD_GET = "get";
+
+const string Request::METHOD_HEAD = "head";
+
+Request::Request():port(0), tryCount(0), keepAlive(true), method(METHOD_GET), isTorrent(false) {
   cookieBox = new CookieBox();
 }
 

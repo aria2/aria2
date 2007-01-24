@@ -152,10 +152,15 @@ public:
 
   virtual void removeAdvertisedPiece(int elapsed);
 
+  virtual void markAllPiecesDone();
+
+  virtual void checkIntegrity();
+
   /**
    * This method is made private for test purpose only.
    */
   void addUsedPiece(const PieceHandle& piece);
+
 };
 
 #endif // _D_DEFAULT_PIECE_STORAGE_H_

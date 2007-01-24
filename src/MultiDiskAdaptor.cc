@@ -169,7 +169,8 @@ int MultiDiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset
   return totalReadLength;
 }
 
-void MultiDiskAdaptor::hashUpdate(const DiskWriterEntryHandle entry,
+void MultiDiskAdaptor::hashUpdate(MessageDigestContext& ctx,
+				  const DiskWriterEntryHandle& entry,
 				  int64_t offset, uint64_t length)
 {
   uint32_t BUFSIZE = 16*1024;
@@ -190,17 +191,19 @@ void MultiDiskAdaptor::hashUpdate(const DiskWriterEntryHandle entry,
   }
 }
 
-string MultiDiskAdaptor::sha1Sum(int64_t offset, uint64_t length) {
+string MultiDiskAdaptor::messageDigest(int64_t offset, uint64_t length,
+				       const MessageDigestContext::DigestAlgo& algo) {
   int64_t fileOffset = offset;
   bool reading = false;
   uint32_t rem = length;
-  ctx.digestReset();
+  MessageDigestContext ctx(algo);
+  ctx.digestInit();
 
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || reading) {
       uint32_t readLength = calculateLength((*itr), fileOffset, rem);
-      hashUpdate(*itr, fileOffset, readLength);
+      hashUpdate(ctx, *itr, fileOffset, readLength);
       rem -= readLength;
       reading = true;
       fileOffset = 0;

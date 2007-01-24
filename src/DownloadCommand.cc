@@ -46,25 +46,23 @@ DownloadCommand::DownloadCommand(int cuid,
 				 const RequestHandle req,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  AbstractCommand(cuid, req, e, s), lastSize(0) {
-  PeerStatHandle peerStat = this->e->segmentMan->getPeerStat(cuid);
+  AbstractCommand(cuid, req, e, s), lastSize(0), peerStat(0) {
+  peerStat = this->e->segmentMan->getPeerStat(cuid);
   if(!peerStat.get()) {
-    peerStat = PeerStatHandle(new PeerStat(cuid));
+    peerStat = new PeerStat(cuid);
     this->e->segmentMan->registerPeerStat(peerStat);
   }
   peerStat->downloadStart();
 }
 
 DownloadCommand::~DownloadCommand() {
-  PeerStatHandle peerStat = e->segmentMan->getPeerStat(cuid);
   assert(peerStat.get());
   peerStat->downloadStop();
 }
 
 bool DownloadCommand::executeInternal(Segment& segment) {
-  int maxSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
-  if(maxSpeedLimit > 0 &&
-     maxSpeedLimit < e->segmentMan->calculateDownloadSpeed()) {
+  if(maxDownloadSpeedLimit > 0 &&
+     maxDownloadSpeedLimit < e->segmentMan->calculateDownloadSpeed()) {
     usleep(1);
     e->commands.push_back(this);
     return false;
@@ -74,13 +72,11 @@ bool DownloadCommand::executeInternal(Segment& segment) {
     te = getTransferEncoding(transferEncoding);
     assert(te != NULL);
   }
-  int bufSize = 4096;
+  int bufSize = 16*1024;//4096;
   char buf[bufSize];
   socket->readData(buf, bufSize);
-  PeerStatHandle peerStat = e->segmentMan->getPeerStat(cuid);
-  assert(peerStat.get());
   if(te != NULL) {
-    int infbufSize = 4096;
+    int infbufSize = 16*1024;//4096;
     char infbuf[infbufSize];
     te->inflate(infbuf, infbufSize, buf, bufSize);
     e->segmentMan->diskWriter->writeData(infbuf, infbufSize,
@@ -94,14 +90,13 @@ bool DownloadCommand::executeInternal(Segment& segment) {
     peerStat->updateDownloadLength(bufSize);
   }
   // calculate downloading speed
-  if(peerStat->getDownloadStartTime().elapsed(e->option->getAsInt(PREF_STARTUP_IDLE_TIME))) {
-    int lowestLimit = e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT);
-    int nowSpeed = peerStat->calculateDownloadSpeed();
-    if(lowestLimit > 0 &&  nowSpeed <= lowestLimit) {
+  if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
+    uint32_t nowSpeed = peerStat->calculateDownloadSpeed();
+    if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
       throw new DlAbortEx("CUID#%d - Too slow Downloading speed: %d <= %d(B/s)",
 			  cuid,
 			  nowSpeed,
-			  lowestLimit);
+			  lowestDownloadSpeedLimit);
     }
   }
   if(e->segmentMan->totalSize != 0 && bufSize == 0) {
@@ -113,6 +108,9 @@ bool DownloadCommand::executeInternal(Segment& segment) {
     if(te != NULL) te->end();
     logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
     e->segmentMan->completeSegment(cuid, segment);
+    if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE) {
+      e->segmentMan->tryChunkChecksumValidation(segment);
+    }
     // this unit is going to download another segment.
     return prepareForNextSegment(segment);
   } else {

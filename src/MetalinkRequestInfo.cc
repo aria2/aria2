@@ -121,8 +121,11 @@ RequestInfos MetalinkRequestInfo::execute() {
 	// BitTorrent downloading
 	urls.push_back((*itr)->url);
       }
-      RequestInfoHandle reqInfo(new UrlRequestInfo(urls, maxConnection, op));
+      UrlRequestInfoHandle reqInfo = new UrlRequestInfo(urls, maxConnection, op);
       reqInfo->setChecksum(checksum);
+      reqInfo->setDigestAlgo(entry->chunkChecksum->digestAlgo);
+      reqInfo->setChunkChecksumLength(entry->chunkChecksum->pieceLength);
+      reqInfo->setChunkChecksums(entry->chunkChecksum->pieceHashes);
       nextReqInfos.push_front(reqInfo);
     }
   } catch(RecoverableException* ex) {

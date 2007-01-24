@@ -75,6 +75,10 @@ public:
   MessageDigestContext(DigestAlgo algo):
     algo(algo) {}
 
+  ~MessageDigestContext()
+  {
+    digestFree();
+  }
 #ifdef HAVE_LIBSSL
   void digestInit() {
     EVP_MD_CTX_init(&ctx);

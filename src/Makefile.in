@@ -212,6 +212,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
 	FileAllocationMonitor.cc FileAllocationMonitor.h \
 	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
+	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
 	NameResolver.cc NameResolver.h MetaEntry.h Data.cc Data.h \
 	Dictionary.cc Dictionary.h List.cc List.h MetaFileUtil.cc \
 	MetaFileUtil.h MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
@@ -375,7 +376,8 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
 	BitfieldManFactory.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
 	FileAllocator.$(OBJEXT) FileAllocationMonitor.$(OBJEXT) \
-	ConsoleFileAllocationMonitor.$(OBJEXT) $(am__objects_1) \
+	ConsoleFileAllocationMonitor.$(OBJEXT) \
+	ChunkChecksumValidator.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
@@ -582,6 +584,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
 	FileAllocationMonitor.cc FileAllocationMonitor.h \
 	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
+	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
 	$(am__append_1) $(am__append_2) $(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -697,6 +700,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactPeerListProcessor.Po@am__quote@

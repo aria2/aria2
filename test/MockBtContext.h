@@ -43,6 +43,10 @@ public:
     return pieceHashes.at(index);
   }
   
+  virtual const Strings& getPieceHashes() const {
+    return pieceHashes;
+  }
+
   void addPieceHash(const string pieceHash) {
     pieceHashes.push_back(pieceHash);
   }

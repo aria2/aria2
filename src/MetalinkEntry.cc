@@ -36,7 +36,7 @@
 #include "Util.h"
 #include <algorithm>
 
-MetalinkEntry::MetalinkEntry() {}
+MetalinkEntry::MetalinkEntry():chunkChecksum(0) {}
 
 MetalinkEntry::~MetalinkEntry() {}
 

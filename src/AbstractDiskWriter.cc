@@ -48,20 +48,11 @@ AbstractDiskWriter::AbstractDiskWriter():
   fd(0),
   fileAllocator(0),
   logger(LogFactory::getInstance())
-#ifdef ENABLE_MESSAGE_DIGEST				       
-  ,ctx(DIGEST_ALGO_SHA1)
-#endif // ENABLE_MESSAGE_DIGEST
-{
-#ifdef ENABLE_MESSAGE_DIGEST
-  ctx.digestInit();
-#endif // ENABLE_MESSAGE_DIGEST
-}
+{}
 
-AbstractDiskWriter::~AbstractDiskWriter() {
+AbstractDiskWriter::~AbstractDiskWriter()
+{
   closeFile();
-#ifdef ENABLE_MESSAGE_DIGEST
-  ctx.digestFree();
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void AbstractDiskWriter::openFile(const string& filename, uint64_t totalLength) {
@@ -104,42 +95,42 @@ void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags) {
   }  
 }
 
-void AbstractDiskWriter::writeDataInternal(const char* data, uint32_t len) {
-  if(write(fd, data, len) < 0) {
-    throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
-  }
+int32_t AbstractDiskWriter::writeDataInternal(const char* data, uint32_t len) {
+  return write(fd, data, len);
 }
 
 int AbstractDiskWriter::readDataInternal(char* data, uint32_t len) {
-  int32_t ret;
-  if((ret = read(fd, data, len)) < 0) {
-    throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
-  }
-  return ret;
+  return read(fd, data, len);
 }
 
-string AbstractDiskWriter::sha1Sum(int64_t offset, uint64_t length) {
+string AbstractDiskWriter::messageDigest(int64_t offset, uint64_t length,
+					 const MessageDigestContext::DigestAlgo& algo)
+{
 #ifdef ENABLE_MESSAGE_DIGEST
-  ctx.digestReset();
+  MessageDigestContext ctx(algo);
+  ctx.digestInit();
 
-  uint32_t BUFSIZE = 16*1024;
+  int32_t BUFSIZE = 16*1024;
   char buf[BUFSIZE];
   for(uint64_t i = 0; i < length/BUFSIZE; i++) {
-    if((int32_t)BUFSIZE != readData(buf, BUFSIZE, offset)) {
+    int32_t rs = readData(buf, BUFSIZE, offset);
+    if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
       throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
     }
     ctx.digestUpdate(buf, BUFSIZE);
     offset += BUFSIZE;
   }
-  uint32_t r = length%BUFSIZE;
+  int32_t r = length%BUFSIZE;
   if(r > 0) {
-    if((int32_t)r != readData(buf, r, offset)) {
+    int32_t rs = readData(buf, r, offset);
+    if(r != readData(buf, r, offset)) {
       throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
     }
     ctx.digestUpdate(buf, r);
   }
   unsigned char hashValue[20];
   ctx.digestFinal(hashValue);
+
   return Util::toHex(hashValue, 20);
 #else
   return "";
@@ -154,11 +145,17 @@ void AbstractDiskWriter::seek(int64_t offset) {
 
 void AbstractDiskWriter::writeData(const char* data, uint32_t len, int64_t offset) {
   seek(offset);
-  writeDataInternal(data, len);
+  if(writeDataInternal(data, len) < 0) {
+    throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
+  }
 }
 
 int AbstractDiskWriter::readData(char* data, uint32_t len, int64_t offset) {
+  int32_t ret;
   seek(offset);
-  return readDataInternal(data, len);
+  if((ret = readDataInternal(data, len)) < 0) {
+    throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
+  }
+  return ret;
 }
 

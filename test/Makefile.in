@@ -89,7 +89,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	BtSuggestPieceMessageTest.$(OBJEXT) \
 	BtUnchokeMessageTest.$(OBJEXT) \
 	BtHandshakeMessageTest.$(OBJEXT) \
-	ConsoleFileAllocationMonitorTest.$(OBJEXT)
+	ConsoleFileAllocationMonitorTest.$(OBJEXT) \
+	ChunkChecksumValidatorTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -311,7 +312,8 @@ aria2c_SOURCES = AllTest.cc\
 	FixedNumberRandomizer.h\
 	MockBtMessageFactory.h\
 	MockBtMessage.h\
-	ConsoleFileAllocationMonitorTest.cc
+	ConsoleFileAllocationMonitorTest.cc\
+	ChunkChecksumValidatorTest.cc
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -396,6 +398,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRequestMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkChecksumValidatorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncodingTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleFileAllocationMonitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@

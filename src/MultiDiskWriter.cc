@@ -47,7 +47,6 @@ MultiDiskWriter::MultiDiskWriter(int pieceLength):
 
 MultiDiskWriter::~MultiDiskWriter() {
   clearEntries();
-  ctx.digestFree();
 }
 
 void MultiDiskWriter::clearEntries() {

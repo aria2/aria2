@@ -32,35 +32,56 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML2_METALINK_PROCESSOR_H_
-#define _D_XML2_METALINK_PROCESSOR_H_
+#ifndef _D_DISK_ADAPTOR_WRITER_H_
+#define _D_DISK_ADAPTOR_WRITER_H_
 
-#include "MetalinkProcessor.h"
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
+#include "DiskWriter.h"
+#include "DiskAdaptor.h"
 
-class Xml2MetalinkProcessor : public MetalinkProcessor {
+class DiskAdaptorWriter : public DiskWriter {
 private:
-  xmlDocPtr doc;
-  xmlXPathContextPtr context;
-
-  MetalinkEntryHandle getEntry(const string& xpath);
-  MetalinkResourceHandle getResource(const string& xpath);
-  MetalinkChunkChecksumHandle getPieceHash(const string& xpath,
-					   uint64_t totalSize);
-
-  xmlXPathObjectPtr xpathEvaluation(const string& xpath);
-  string xpathContent(const string& xpath);
-  string xmlAttribute(xmlNodePtr node, const string& attrName);
-  string xmlContent(xmlNodePtr node);
-
-  void release();
+  DiskAdaptorHandle diskAdaptor;
 public:
-  Xml2MetalinkProcessor();
-  virtual ~Xml2MetalinkProcessor();
+  DiskAdaptorWriter(const DiskAdaptorHandle& diskAdaptor):
+    diskAdaptor(diskAdaptor) {}
 
-  virtual MetalinkerHandle parseFile(const string& filename);
+  virtual ~DiskAdaptorWriter() {}
+
+  virtual void initAndOpenFile(const string& filename, uint64_t totalLength = 0)
+  {
+    diskAdaptor->initAndOpenFile();
+  }
   
+  virtual void openFile(const string& filename, uint64_t totalLength = 0)
+  {
+    diskAdaptor->openFile();
+  }
+
+  virtual void closeFile()
+  {
+    diskAdaptor->closeFile();
+  }
+
+  virtual void openExistingFile(const string& filename)
+  {
+    diskAdaptor->openExistingFile();
+  }
+
+  virtual void writeData(const char* data, uint32_t len, int64_t position = 0)
+  {
+    diskAdaptor->writeData((const unsigned char*)data, len, position);
+  }
+
+  virtual int readData(char* data, uint32_t len, int64_t position)
+  {
+    return diskAdaptor->readData((unsigned char*)data, len, position);
+  }
+
+  virtual string messageDigest(int64_t offset, uint64_t length,
+			       const MessageDigestContext::DigestAlgo& algo)
+  {
+    return diskAdaptor->messageDigest(offset, length, algo);
+  }
 };
 
-#endif // _D_XML2_METALINK_PROCESSOR_H_
+#endif // _D_DISK_ADAPTOR_WRITER_H_

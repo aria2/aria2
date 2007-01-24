@@ -38,7 +38,6 @@
 #include "DiskAdaptor.h"
 #include "Option.h"
 #include "DiskWriter.h"
-#include "messageDigest.h"
 #include "File.h"
 
 class DiskWriterEntry {
@@ -103,7 +102,6 @@ class MultiDiskAdaptor : public DiskAdaptor {
 private:
   string topDir;
   uint32_t pieceLength;
-  MessageDigestContext ctx;
   DiskWriterEntries diskWriterEntries;
   const Option* option;
 
@@ -117,17 +115,15 @@ private:
 			   int64_t fileOffset,
 			   uint32_t rem) const;
 
-  void hashUpdate(const DiskWriterEntryHandle entry,
+  void hashUpdate(MessageDigestContext& ctx,
+		  const DiskWriterEntryHandle& entry,
 		  int64_t offset, uint64_t length);
 
   string getTopDirPath() const;
 public:
   MultiDiskAdaptor():pieceLength(0),
-		     ctx(DIGEST_ALGO_SHA1),
 		     option(0)
-  {
-    ctx.digestInit();
-  }
+  {}
 
   virtual ~MultiDiskAdaptor() {}
 
@@ -146,7 +142,8 @@ public:
 
   virtual int readData(unsigned char* data, uint32_t len, int64_t offset);
 
-  virtual string sha1Sum(int64_t offset, uint64_t length);
+  virtual string messageDigest(int64_t offset, uint64_t length,
+			       const MessageDigestContext::DigestAlgo& algo);
 
   virtual bool fileExists();
 

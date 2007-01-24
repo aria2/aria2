@@ -32,35 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_XML2_METALINK_PROCESSOR_H_
-#define _D_XML2_METALINK_PROCESSOR_H_
+#ifndef _D_NULL_FILE_ALLOCATION_MONITOR_H_
+#define _D_NULL_FILE_ALLOCATION_MONITOR_H_
 
-#include "MetalinkProcessor.h"
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
+#include "FileAllocationMonitor.h"
 
-class Xml2MetalinkProcessor : public MetalinkProcessor {
-private:
-  xmlDocPtr doc;
-  xmlXPathContextPtr context;
-
-  MetalinkEntryHandle getEntry(const string& xpath);
-  MetalinkResourceHandle getResource(const string& xpath);
-  MetalinkChunkChecksumHandle getPieceHash(const string& xpath,
-					   uint64_t totalSize);
-
-  xmlXPathObjectPtr xpathEvaluation(const string& xpath);
-  string xpathContent(const string& xpath);
-  string xmlAttribute(xmlNodePtr node, const string& attrName);
-  string xmlContent(xmlNodePtr node);
-
-  void release();
+class NullFileAllocationMonitor : public FileAllocationMonitor {
 public:
-  Xml2MetalinkProcessor();
-  virtual ~Xml2MetalinkProcessor();
-
-  virtual MetalinkerHandle parseFile(const string& filename);
+  NullFileAllocationMonitor() {}
   
+  virtual ~NullFileAllocationMonitor() {}
+
+  virtual void setFilename(const string& filename) {}
+
+  virtual void setMinValue(const uint64_t& min) {}
+  
+  virtual void setMaxValue(const uint64_t& max) {}
+
+  virtual void setCurrentValue(const uint64_t& current) {}
+
+  virtual void showProgress() {}
+
 };
 
-#endif // _D_XML2_METALINK_PROCESSOR_H_
+#endif // _D_NULL_FILE_ALLOCATION_MONITOR_H_

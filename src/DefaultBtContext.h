@@ -78,6 +78,11 @@ private:
 
   virtual string getPieceHash(int index) const;
 
+  virtual const Strings& getPieceHashes() const
+  {
+    return pieceHashes;
+  }
+
   virtual long long int getTotalLength() const;
 
   virtual FILE_MODE getFileMode() const;
