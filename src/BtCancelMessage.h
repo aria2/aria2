@@ -36,6 +36,7 @@
 #define _D_BT_CANCEL_MESSAGE_H_
 
 #include "SimpleBtMessage.h"
+#include "message.h"
 
 class BtCancelMessage;
 
@@ -45,12 +46,12 @@ class BtCancelMessage : public SimpleBtMessage {
 private:
   int32_t index;
   int32_t begin;
-  uint32_t length;
+  int32_t length;
   unsigned char* msg;
 
-  static uint32_t MESSAGE_LENGTH;
+  static int32_t MESSAGE_LENGTH;
 public:
-  BtCancelMessage(int32_t index = 0, int32_t begin = 0, uint32_t length = 0)
+  BtCancelMessage(int32_t index = 0, int32_t begin = 0, int32_t length = 0)
     :SimpleBtMessage(),
      index(index),
      begin(begin),
@@ -61,7 +62,7 @@ public:
     delete [] msg;
   }
 
-  static const uint8_t ID = 8;
+  static const int8_t ID = 8;
 
   int32_t getIndex() const { return index; }
 
@@ -71,19 +72,19 @@ public:
 
   void setBegin(int32_t begin) { this->begin = begin; }
 
-  uint32_t getLength() const { return length; }
+  int32_t getLength() const { return length; }
 
-  void setLength(uint32_t length) { this->length = length; }
+  void setLength(int32_t length) { this->length = length; }
 
-  static BtCancelMessageHandle create(const unsigned char* data, uint32_t dataLength);
+  static BtCancelMessageHandle create(const unsigned char* data, int32_t dataLength);
 
-  virtual uint8_t getId() { return ID; }
+  virtual int8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual uint32_t getMessageLength();
+  virtual int32_t getMessageLength();
 
   virtual string toString() const;
 };

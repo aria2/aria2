@@ -131,7 +131,7 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
 }
 
 MetalinkChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
-								uint64_t totalSize)
+								int64_t totalSize)
 {
   MetalinkChunkChecksumHandle chunkChecksum = new MetalinkChunkChecksum();
   chunkChecksum->digestAlgo = DIGEST_ALGO_SHA1;
@@ -145,12 +145,12 @@ MetalinkChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xp
   chunkChecksum->pieceLength = STRTOLL(Util::trim(xmlAttribute(node, "length")).c_str());
   xmlXPathFreeObject(result);
 
-  uint64_t numPiece =
+  int64_t numPiece =
     (totalSize+chunkChecksum->pieceLength-1)/chunkChecksum->pieceLength;
-  for(uint64_t i = 0; i < numPiece; i++) {
+  for(int64_t i = 0; i < numPiece; ++i) {
     string pieceHash = Util::trim(xpathContent(xpath+"/m:hash[@piece=\""+Util::ullitos(i)+"\"]"));
     if(pieceHash == "") {
-      throw new DlAbortEx("Piece hash missing. index=%u", i);
+      throw new DlAbortEx("Piece hash missing. index=%d", i);
     }
     chunkChecksum->pieceHashes.push_back(pieceHash);
   }

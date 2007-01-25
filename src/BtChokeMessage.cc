@@ -35,15 +35,15 @@
 #include "BtChokeMessage.h"
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "choke", dataLength, 1);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "choke", dataLength, 1);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
-			id, "choke", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "choke", ID);
   }
   BtChokeMessageHandle chokeMessage = new BtChokeMessage();
   return chokeMessage;
@@ -59,7 +59,7 @@ bool BtChokeMessage::sendPredicate() const {
   return !peer->amChoking;
 }
 
-uint32_t BtChokeMessage::MESSAGE_LENGTH = 5;
+int32_t BtChokeMessage::MESSAGE_LENGTH = 5;
 
 const unsigned char* BtChokeMessage::getMessage() {
   if(!msg) {
@@ -74,7 +74,7 @@ const unsigned char* BtChokeMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtChokeMessage::getMessageLength() {
+int32_t BtChokeMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

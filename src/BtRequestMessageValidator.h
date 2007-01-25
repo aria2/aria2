@@ -41,12 +41,12 @@
 class BtRequestMessageValidator : public BtMessageValidator {
 private:
   const BtRequestMessage* message;
-  uint32_t numPiece;
-  uint32_t pieceLength;
+  int32_t numPiece;
+  int32_t pieceLength;
 public:
   BtRequestMessageValidator(const BtRequestMessage* message,
-			   uint32_t numPiece,
-			   uint32_t pieceLength):
+			   int32_t numPiece,
+			   int32_t pieceLength):
     message(message),
     numPiece(numPiece),
     pieceLength(pieceLength) {}

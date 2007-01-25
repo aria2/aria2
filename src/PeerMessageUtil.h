@@ -43,28 +43,28 @@ class PeerMessageUtil {
 private:
   PeerMessageUtil() {}
 public:
-  static uint32_t getIntParam(const unsigned char* msg, int32_t offset);
+  static int32_t getIntParam(const unsigned char* msg, int32_t offset);
 
-  static uint16_t getShortIntParam(const unsigned char* msg, int32_t offset);
+  static int16_t getShortIntParam(const unsigned char* msg, int32_t offset);
 
-  static void setIntParam(unsigned char* dest, uint32_t param);
+  static void setIntParam(unsigned char* dest, int32_t param);
 
-  static void setShortIntParam(unsigned char* dest, uint16_t param);
+  static void setShortIntParam(unsigned char* dest, int16_t param);
 
-  static uint8_t getId(const unsigned char* msg);
+  static int8_t getId(const unsigned char* msg);
   
-  static void checkIndex(int32_t index, uint32_t pieces);
-  static void checkBegin(int32_t begin, uint32_t pieceLength);
-  static void checkLength(uint32_t length);
-  static void checkRange(int32_t begin, uint32_t length, uint32_t pieceLength);
+  static void checkIndex(int32_t index, int32_t pieces);
+  static void checkBegin(int32_t begin, int32_t pieceLength);
+  static void checkLength(int32_t length);
+  static void checkRange(int32_t begin, int32_t length, int32_t pieceLength);
   static void checkBitfield(const unsigned char* bitfield,
-			    uint32_t bitfieldLength,
-			    uint32_t pieces);
+			    int32_t bitfieldLength,
+			    int32_t pieces);
 
   static void createPeerMessageString(unsigned char* msg,
-				      uint32_t msgLength,
-				      uint32_t payloadLength,
-				      uint8_t messageId);
+				      int32_t msgLength,
+				      int32_t payloadLength,
+				      int8_t messageId);
 };
 
 #endif // _D_PEER_MESSAGE_UTIL_H_

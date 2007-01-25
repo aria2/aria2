@@ -56,8 +56,8 @@ private:
   PieceStorageHandle pieceStorage;
   BtMessageFactoryWeakHandle messageFactory;
   PeerHandle peer;
-  uint32_t maxUploadSpeedLimit;
-  uint32_t requestTimeout;
+  int32_t maxUploadSpeedLimit;
+  int32_t requestTimeout;
   const Logger* logger;
 public:
   DefaultBtMessageDispatcher():
@@ -78,7 +78,7 @@ public:
 
   virtual void sendMessages();
 
-  virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, uint32_t length);
+  virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, int32_t length);
 
   virtual void doCancelSendingPieceAction(const PieceHandle& piece);
 
@@ -92,15 +92,15 @@ public:
 
   virtual bool isSendingInProgress();
 
-  virtual uint32_t countMessageInQueue() {
+  virtual int32_t countMessageInQueue() {
     return messageQueue.size();
   }
 
-  virtual uint32_t countOutstandingRequest();
+  virtual int32_t countOutstandingRequest();
 
   virtual bool isOutstandingRequest(int32_t index, int32_t blockIndex);
 
-  virtual RequestSlot getOutstandingRequest(int32_t index, int32_t begin, uint32_t length) {
+  virtual RequestSlot getOutstandingRequest(int32_t index, int32_t begin, int32_t length) {
     for(RequestSlots::iterator itr = requestSlots.begin();
 	itr != requestSlots.end(); itr++) {
       if(itr->getIndex() == index &&
@@ -146,11 +146,11 @@ public:
     this->cuid = cuid;
   }
 
-  void setMaxUploadSpeedLimit(uint32_t maxUploadSpeedLimit) {
+  void setMaxUploadSpeedLimit(int32_t maxUploadSpeedLimit) {
     this->maxUploadSpeedLimit = maxUploadSpeedLimit;
   }
 
-  void setRequestTimeout(uint32_t requestTimeout) {
+  void setRequestTimeout(int32_t requestTimeout) {
     this->requestTimeout = requestTimeout;
   }
 

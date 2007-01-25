@@ -47,7 +47,7 @@ public:
   string version;
   string language;
   string os;
-  uint64_t size;
+  int64_t size;
   Checksum checksum;
 public:
   MetalinkResources resources;

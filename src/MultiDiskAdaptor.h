@@ -101,7 +101,7 @@ typedef deque<DiskWriterEntryHandle> DiskWriterEntries;
 class MultiDiskAdaptor : public DiskAdaptor {
 private:
   string topDir;
-  uint32_t pieceLength;
+  int32_t pieceLength;
   DiskWriterEntries diskWriterEntries;
   const Option* option;
 
@@ -111,13 +111,13 @@ private:
 
   bool isInRange(const DiskWriterEntryHandle entry, int64_t offset) const;
 
-  uint32_t calculateLength(const DiskWriterEntryHandle entry,
-			   int64_t fileOffset,
-			   uint32_t rem) const;
+  int32_t calculateLength(const DiskWriterEntryHandle entry,
+			  int64_t fileOffset,
+			  int32_t rem) const;
 
   void hashUpdate(MessageDigestContext& ctx,
 		  const DiskWriterEntryHandle& entry,
-		  int64_t offset, uint64_t length);
+		  int64_t offset, int64_t length);
 
   string getTopDirPath() const;
 public:
@@ -137,12 +137,12 @@ public:
 
   virtual void onDownloadComplete();
 
-  virtual void writeData(const unsigned char* data, uint32_t len,
+  virtual void writeData(const unsigned char* data, int32_t len,
 			 int64_t offset);
 
-  virtual int readData(unsigned char* data, uint32_t len, int64_t offset);
+  virtual int readData(unsigned char* data, int32_t len, int64_t offset);
 
-  virtual string messageDigest(int64_t offset, uint64_t length,
+  virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo);
 
   virtual bool fileExists();
@@ -159,11 +159,11 @@ public:
     return topDir;
   }
 
-  void setPieceLength(uint32_t pieceLength) {
+  void setPieceLength(int32_t pieceLength) {
     this->pieceLength = pieceLength;
   }
 
-  uint32_t getPieceLength() const {
+  int32_t getPieceLength() const {
     return pieceLength;
   }
 

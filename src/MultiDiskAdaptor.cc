@@ -102,16 +102,16 @@ void MultiDiskAdaptor::onDownloadComplete() {
   openFile();
 }
 
-void MultiDiskAdaptor::writeData(const unsigned char* data, uint32_t len,
+void MultiDiskAdaptor::writeData(const unsigned char* data, int32_t len,
 				 int64_t offset)
 {
   int64_t fileOffset = offset;
   bool writing = false;
-  uint32_t rem = len;
+  int32_t rem = len;
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || writing) {
-      uint32_t writeLength = calculateLength(*itr, fileOffset, rem);
+      int32_t writeLength = calculateLength(*itr, fileOffset, rem);
       (*itr)->getDiskWriter()->writeData(data+(len-rem), writeLength, fileOffset);
       rem -= writeLength;
       writing = true;
@@ -132,11 +132,11 @@ bool MultiDiskAdaptor::isInRange(const DiskWriterEntryHandle entry,
     offset < entry->getFileEntry()->getOffset()+entry->getFileEntry()->getLength();
 }
 
-uint32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
-					   int64_t fileOffset,
-					   uint32_t rem) const
+int32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
+					  int64_t fileOffset,
+					  int32_t rem) const
 {
-  uint32_t length;
+  int32_t length;
   if(entry->getFileEntry()->getLength() < fileOffset+rem) {
     length = entry->getFileEntry()->getLength()-fileOffset;
   } else {
@@ -145,16 +145,16 @@ uint32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
   return length;
 }
 
-int MultiDiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset)
+int MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
 {
   int64_t fileOffset = offset;
   bool reading = false;
-  uint32_t rem = len;
-  uint32_t totalReadLength = 0;
+  int32_t rem = len;
+  int32_t totalReadLength = 0;
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || reading) {
-      uint32_t readLength = calculateLength((*itr), fileOffset, rem);
+      int32_t readLength = calculateLength((*itr), fileOffset, rem);
       totalReadLength += (*itr)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
       rem -= readLength;
       reading = true;
@@ -171,18 +171,18 @@ int MultiDiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset
 
 void MultiDiskAdaptor::hashUpdate(MessageDigestContext& ctx,
 				  const DiskWriterEntryHandle& entry,
-				  int64_t offset, uint64_t length)
+				  int64_t offset, int64_t length)
 {
-  uint32_t BUFSIZE = 16*1024;
+  int32_t BUFSIZE = 16*1024;
   unsigned char buf[BUFSIZE];
-  for(uint64_t i = 0; i < length/BUFSIZE; i++) {
-    if((int32_t)BUFSIZE != entry->getDiskWriter()->readData(buf, BUFSIZE, offset)) {
+  for(int64_t i = 0; i < length/BUFSIZE; i++) {
+    if(BUFSIZE != entry->getDiskWriter()->readData(buf, BUFSIZE, offset)) {
       throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
     }
     ctx.digestUpdate(buf, BUFSIZE);
     offset += BUFSIZE;
   }
-  uint32_t r = length%BUFSIZE;
+  int32_t r = length%BUFSIZE;
   if(r > 0) {
     if((int32_t)r != entry->getDiskWriter()->readData(buf, r, offset)) {
       throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
@@ -191,18 +191,18 @@ void MultiDiskAdaptor::hashUpdate(MessageDigestContext& ctx,
   }
 }
 
-string MultiDiskAdaptor::messageDigest(int64_t offset, uint64_t length,
+string MultiDiskAdaptor::messageDigest(int64_t offset, int64_t length,
 				       const MessageDigestContext::DigestAlgo& algo) {
   int64_t fileOffset = offset;
   bool reading = false;
-  uint32_t rem = length;
+  int32_t rem = length;
   MessageDigestContext ctx(algo);
   ctx.digestInit();
 
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || reading) {
-      uint32_t readLength = calculateLength((*itr), fileOffset, rem);
+      int32_t readLength = calculateLength((*itr), fileOffset, rem);
       hashUpdate(ctx, *itr, fileOffset, readLength);
       rem -= readLength;
       reading = true;

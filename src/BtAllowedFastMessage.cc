@@ -36,15 +36,15 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-BtAllowedFastMessageHandle BtAllowedFastMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtAllowedFastMessageHandle BtAllowedFastMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 5) {
-    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "allowed fast", dataLength, 5);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "allowed fast", dataLength, 5);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%u for %s. It should be %d.",
-			id, "allowed fast", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "allowed fast", ID);
   }
   BtAllowedFastMessageHandle message = new BtAllowedFastMessage();
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
@@ -59,7 +59,7 @@ void BtAllowedFastMessage::doReceivedAction() {
   peer->addPeerAllowedIndex(index);
 }
 
-uint32_t BtAllowedFastMessage::MESSAGE_LENGTH = 9;
+int32_t BtAllowedFastMessage::MESSAGE_LENGTH = 9;
 
 const unsigned char* BtAllowedFastMessage::getMessage() {
   if(!msg) {
@@ -76,7 +76,7 @@ const unsigned char* BtAllowedFastMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtAllowedFastMessage::getMessageLength() {
+int32_t BtAllowedFastMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

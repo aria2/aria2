@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "BtKeepAliveMessage.h"
 
-uint32_t BtKeepAliveMessage::MESSAGE_LENGTH = 4;
+int32_t BtKeepAliveMessage::MESSAGE_LENGTH = 4;
 
 const unsigned char* BtKeepAliveMessage::getMessage() {
   if(!msg) {
@@ -48,6 +48,6 @@ const unsigned char* BtKeepAliveMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtKeepAliveMessage::getMessageLength() {
+int32_t BtKeepAliveMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }

@@ -45,7 +45,7 @@ public:
   virtual ~DefaultDiskWriter();
 
   virtual void initAndOpenFile(const string& filename,
-			       uint64_t totalLength = 0);
+			       int64_t totalLength = 0);
 
   static DefaultDiskWriter* createNewDiskWriter(const Option* option);
 };

@@ -45,11 +45,11 @@ public:
 
   virtual void setFilename(const string& filename) {}
 
-  virtual void setMinValue(const uint64_t& min) {}
+  virtual void setMinValue(const int64_t& min) {}
   
-  virtual void setMaxValue(const uint64_t& max) {}
+  virtual void setMaxValue(const int64_t& max) {}
 
-  virtual void setCurrentValue(const uint64_t& current) {}
+  virtual void setCurrentValue(const int64_t& current) {}
 
   virtual void showProgress() {}
 

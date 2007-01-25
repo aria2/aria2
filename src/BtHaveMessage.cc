@@ -36,15 +36,15 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 5) {
-    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "have", dataLength, 5);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "have", dataLength, 5);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%u for %s. It should be %d.",
-			id, "have", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have", ID);
   }
   BtHaveMessageHandle message = new BtHaveMessage();
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
@@ -59,7 +59,7 @@ bool BtHaveMessage::sendPredicate() const {
   return !peer->hasPiece(index);
 }
 
-uint32_t BtHaveMessage::MESSAGE_LENGTH = 9;
+int32_t BtHaveMessage::MESSAGE_LENGTH = 9;
 
 const unsigned char* BtHaveMessage::getMessage() {
   if(!msg) {
@@ -76,7 +76,7 @@ const unsigned char* BtHaveMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtHaveMessage::getMessageLength() {
+int32_t BtHaveMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

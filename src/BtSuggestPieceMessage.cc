@@ -36,22 +36,22 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 5) {
-    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "suggest piece", dataLength, 5);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "suggest piece", dataLength, 5);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%u for %s. It should be %d.",
-			id, "suggest piece", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "suggest piece", ID);
   }
   BtSuggestPieceMessageHandle message = new BtSuggestPieceMessage();
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   return message;
 }
 
-uint32_t BtSuggestPieceMessage::MESSAGE_LENGTH = 9;
+int32_t BtSuggestPieceMessage::MESSAGE_LENGTH = 9;
 
 const unsigned char* BtSuggestPieceMessage::getMessage() {
   if(!msg) {
@@ -68,7 +68,7 @@ const unsigned char* BtSuggestPieceMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtSuggestPieceMessage::getMessageLength() {
+int32_t BtSuggestPieceMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

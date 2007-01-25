@@ -40,45 +40,45 @@
 
 class TransferStat {
 public:
-  uint32_t downloadSpeed;
-  uint32_t uploadSpeed;
-  uint64_t sessionDownloadLength;
-  uint64_t sessionUploadLength;
+  int32_t downloadSpeed;
+  int32_t uploadSpeed;
+  int64_t sessionDownloadLength;
+  int64_t sessionUploadLength;
 public:
   TransferStat():downloadSpeed(0), uploadSpeed(0),
 		 sessionDownloadLength(0), sessionUploadLength(0) {}
 
-  uint32_t getDownloadSpeed() const {
+  int32_t getDownloadSpeed() const {
     return downloadSpeed;
   }
 
-  void setDownloadSpeed(uint32_t s) { downloadSpeed = s; }
+  void setDownloadSpeed(int32_t s) { downloadSpeed = s; }
 
-  uint32_t getUploadSpeed() const {
+  int32_t getUploadSpeed() const {
     return uploadSpeed;
   }
 
-  void setUploadSpeed(uint32_t s) { uploadSpeed = s; }
+  void setUploadSpeed(int32_t s) { uploadSpeed = s; }
 
   /**
    * Returns the number of bytes downloaded since the program started.
    * This is not the total number of bytes downloaded.
    */
-  uint64_t getSessionDownloadLength() const {
+  int64_t getSessionDownloadLength() const {
     return sessionDownloadLength;
   }
 
-  void setSessionDownloadLength(uint64_t s) { sessionDownloadLength = s; }
+  void setSessionDownloadLength(int64_t s) { sessionDownloadLength = s; }
 
   /**
    * Returns the number of bytes uploaded since the program started.
    * This is not the total number of bytes uploaded.
    */
-  uint64_t getSessionUploadLength() const {
+  int64_t getSessionUploadLength() const {
     return sessionUploadLength;
   }
 
-  void setSessionUploadLength(uint64_t s) { sessionUploadLength = s; }
+  void setSessionUploadLength(int64_t s) { sessionUploadLength = s; }
 };
 
 class PeerStorage {

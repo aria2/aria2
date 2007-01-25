@@ -47,7 +47,7 @@ public:
 
   ~FileAllocator() {}
 
-  void allocate(int fd, uint64_t totalLength);
+  void allocate(int fd, int64_t totalLength);
 
   void setFileAllocationMonitor(const FileAllocationMonitorHandle& monitor)
   {

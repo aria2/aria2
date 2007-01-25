@@ -23,8 +23,8 @@
 * Fix DefaultBtProgressInfoFile.cc: save(), load()
 * remove blockIndex
 * Add an ability of seeding
+* Continue file allocation with existing file
 
 * Stopping while piece hash checking and file allocation
 * Stop download after selective download completes
 * Remove -pg option in Makefile.am
-* Continue file allocation with existing file

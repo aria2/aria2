@@ -45,7 +45,7 @@ class BtKeepAliveMessage : public SimpleBtMessage {
 private:
   unsigned char* msg;
 
-  static uint32_t MESSAGE_LENGTH;
+  static int32_t MESSAGE_LENGTH;
 public:
   BtKeepAliveMessage():msg(0) {}
 
@@ -53,15 +53,15 @@ public:
     delete [] msg;
   }
 
-  static const uint8_t ID = 99;
+  static const int8_t ID = 99;
 
-  virtual uint8_t getId() { return ID; }
+  virtual int8_t getId() { return ID; }
 
   virtual void doReceivedAction() {}
 
   virtual const unsigned char* getMessage();
 
-  virtual uint32_t getMessageLength();
+  virtual int32_t getMessageLength();
 
   virtual string toString() const {
     return "keep alive";

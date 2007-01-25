@@ -85,9 +85,9 @@ public:
 
   virtual void doChokedAction();
 
-  virtual BtMessages createRequestMessages(uint32_t max);
+  virtual BtMessages createRequestMessages(int32_t max);
 
-  virtual BtMessages createRequestMessagesOnEndGame(uint32_t max);
+  virtual BtMessages createRequestMessagesOnEndGame(int32_t max);
 
   Pieces& getTargetPieces() {
     return pieces;

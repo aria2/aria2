@@ -60,13 +60,13 @@ public:
    * addTargetPiece() and returns them.
    * The number of objects returned is capped by max.
    */
-  virtual BtMessages createRequestMessages(uint32_t max) = 0;
+  virtual BtMessages createRequestMessages(int32_t max) = 0;
 
   /**
    * Use this method in end game mode.
    *
    */
-  virtual BtMessages createRequestMessagesOnEndGame(uint32_t max) = 0;
+  virtual BtMessages createRequestMessagesOnEndGame(int32_t max) = 0;
 };
 
 typedef SharedHandle<BtRequestFactory> BtRequestFactoryHandle;

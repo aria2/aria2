@@ -220,7 +220,7 @@ void DefaultBtInteractive::fillPiece(int maxPieceNum) {
 }
 
 void DefaultBtInteractive::addRequests() {
-  uint32_t MAX_PENDING_REQUEST;
+  int32_t MAX_PENDING_REQUEST;
   if(peer->getLatency() < 500) {
     MAX_PENDING_REQUEST = 24;
   } else if(peer->getLatency() < 1500) {
@@ -228,20 +228,19 @@ void DefaultBtInteractive::addRequests() {
   } else {
     MAX_PENDING_REQUEST = 6;
   }
-  uint32_t pieceNum;
+  int32_t pieceNum;
   if(pieceStorage->isEndGame()) {
     pieceNum = 1;
   } else {
-    uint32_t blocks = DIV_FLOOR(btContext->getPieceLength(), BLOCK_LENGTH);
+    int32_t blocks = DIV_FLOOR(btContext->getPieceLength(), BLOCK_LENGTH);
     pieceNum = DIV_FLOOR(MAX_PENDING_REQUEST, blocks);
   }
   fillPiece(pieceNum);
 
-  uint32_t reqNumToCreate =
+  int32_t reqNumToCreate =
     MAX_PENDING_REQUEST <= dispatcher->countOutstandingRequest() ?
     0 : MAX_PENDING_REQUEST-dispatcher->countOutstandingRequest();
   if(reqNumToCreate > 0) {
-    //logger->debug("CUID#%d - %u requets to go.", cuid, reqNumToCreate);
     BtMessages requests;
     if(pieceStorage->isEndGame()) {
       requests = btRequestFactory->createRequestMessagesOnEndGame(reqNumToCreate);

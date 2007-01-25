@@ -48,11 +48,11 @@ class BtRequestMessage : public SimpleBtMessage {
 private:
   int32_t index;
   int32_t begin;
-  uint32_t length;
+  int32_t length;
   int32_t blockIndex;
   unsigned char* msg;
 
-  static uint32_t MESSAGE_LENGTH;
+  static int32_t MESSAGE_LENGTH;
 
   class BtAbortOutstandingRequestEventListener : public AbstractBtEventListener {
   private:
@@ -69,7 +69,7 @@ private:
 public:
   BtRequestMessage(int32_t index = 0,
 		   int32_t begin = 0,
-		   uint32_t length = 0,
+		   int32_t length = 0,
 		   int32_t blockIndex = 0)
     :index(index),
      begin(begin),
@@ -84,7 +84,7 @@ public:
     delete [] msg;
   }
 
-  static const uint8_t ID = 6;
+  static const int8_t ID = 6;
 
   int32_t getIndex() const { return index; }
   void setIndex(int32_t index) { this->index = index; }
@@ -92,21 +92,21 @@ public:
   int32_t getBegin() const { return begin; }
   void setBegin(int32_t begin) { this->begin = begin; }
 
-  uint32_t getLength() const { return length; }
-  void setLength(uint32_t length) { this->length = length; }
+  int32_t getLength() const { return length; }
+  void setLength(int32_t length) { this->length = length; }
 
   int32_t getBlockIndex() const { return blockIndex; }
   void setBlockIndex(int32_t blockIndex) { this->blockIndex = blockIndex; }
 
-  static BtRequestMessageHandle create(const unsigned char* data, uint32_t dataLength);
+  static BtRequestMessageHandle create(const unsigned char* data, int32_t dataLength);
 
-  virtual uint8_t getId() { return ID; }
+  virtual int8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual uint32_t getMessageLength();
+  virtual int32_t getMessageLength();
 
   virtual string toString() const;
 

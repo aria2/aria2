@@ -56,14 +56,14 @@ private:
   void validateSameLengthChecksum(BitfieldMan* bitfieldMan,
 				  int32_t index,
 				  const string& expectedChecksum,
-				  uint32_t thisLength,
-				  uint32_t checksumLength);
+				  int32_t thisLength,
+				  int32_t checksumLength);
 
   void validateDifferentLengthChecksum(BitfieldMan* bitfieldMan,
 				       int32_t index,
 				       const string& expectedChecksum,
-				       uint32_t thisLength,
-				       uint32_t checksumLength);
+				       int32_t thisLength,
+				       int32_t checksumLength);
 public:
   ChunkChecksumValidator():
     diskWriter(0),
@@ -76,7 +76,7 @@ public:
 
   void validate(BitfieldMan* bitfieldMan, 
 		const Strings& checksums,
-		uint32_t checksumLength);
+		int32_t checksumLength);
 
   void setDiskWriter(const DiskWriterHandle& diskWriter) {
     this->diskWriter = diskWriter;

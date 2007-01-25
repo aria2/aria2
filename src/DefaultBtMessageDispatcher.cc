@@ -79,7 +79,7 @@ void DefaultBtMessageDispatcher::sendMessages() {
 }
 
 // Cancel sending piece message to peer.
-void DefaultBtMessageDispatcher::doCancelSendingPieceAction(int32_t index, int32_t begin, uint32_t length)
+void DefaultBtMessageDispatcher::doCancelSendingPieceAction(int32_t index, int32_t begin, int32_t length)
 {
   BtCancelSendingPieceEventHandle event =
     new BtCancelSendingPieceEvent(index, begin, length);
@@ -199,7 +199,7 @@ bool DefaultBtMessageDispatcher::isSendingInProgress()
   }
 }
 
-uint32_t DefaultBtMessageDispatcher::countOutstandingRequest()
+int32_t DefaultBtMessageDispatcher::countOutstandingRequest()
 {
   return requestSlots.size();
 }

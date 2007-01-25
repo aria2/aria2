@@ -43,21 +43,21 @@ typedef SharedHandle<BtPortMessage> BtPortMessageHandle;
 
 class BtPortMessage : public AbstractBtMessage {
 private:
-  uint16_t port;
+  int16_t port;
 public:
-  BtPortMessage(uint16_t port = 0):port(port) {}
+  BtPortMessage(int16_t port = 0):port(port) {}
 
   virtual ~BtPortMessage() {}
 
-  static const uint8_t ID = 9;
+  static const int8_t ID = 9;
 
-  uint16_t getPort() const { return port; }
+  int16_t getPort() const { return port; }
 
-  void setPort(uint16_t port) { this->port = port; }
+  void setPort(int16_t port) { this->port = port; }
 
-  virtual uint8_t getId() { return ID; }
+  virtual int8_t getId() { return ID; }
 
-  static BtPortMessageHandle create(const unsigned char* data, uint32_t dataLength);
+  static BtPortMessageHandle create(const unsigned char* data, int32_t dataLength);
 
   virtual void doReceivedAction() {
     logger->info("DHT is not supported yet.");

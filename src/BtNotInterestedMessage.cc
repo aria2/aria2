@@ -35,15 +35,15 @@
 #include "BtNotInterestedMessage.h"
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "not interested", dataLength, 1);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "not interested", dataLength, 1);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
-			id, "not interested", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "not interested", ID);
   }
   BtNotInterestedMessageHandle message = new BtNotInterestedMessage();
   return message;
@@ -57,7 +57,7 @@ bool BtNotInterestedMessage::sendPredicate() const {
   return peer->amInterested;
 }
 
-uint32_t BtNotInterestedMessage::MESSAGE_LENGTH = 5;
+int32_t BtNotInterestedMessage::MESSAGE_LENGTH = 5;
 
 const unsigned char* BtNotInterestedMessage::getMessage() {
   if(!msg) {
@@ -72,7 +72,7 @@ const unsigned char* BtNotInterestedMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtNotInterestedMessage::getMessageLength() {
+int32_t BtNotInterestedMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

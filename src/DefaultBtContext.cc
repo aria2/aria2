@@ -105,8 +105,8 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
   // TODO use dynamic_cast
   List* files = (List*)infoDic->get("files");
   if(files) {
-    long long int length = 0;
-    long long int offset = 0;
+    int64_t length = 0;
+    int64_t offset = 0;
     // multi-file mode
     fileMode = BtContext::MULTI;
     const MetaList& metaList = files->getList();
@@ -120,7 +120,7 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
       List* pathList = (List*)fileDic->get("path");
       const MetaList& paths = pathList->getList();
       string path;
-      for(int i = 0; i < (int)paths.size()-1; i++) {
+      for(int32_t i = 0; i < (int32_t)paths.size()-1; i++) {
 	Data* subpath = (Data*)paths.at(i);
 	path += subpath->toString()+"/";
       }

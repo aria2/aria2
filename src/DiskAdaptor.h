@@ -57,11 +57,11 @@ public:
 
   virtual void initAndOpenFile() = 0;
 
-  virtual void writeData(const unsigned char* data, uint32_t len, int64_t offset) = 0;
+  virtual void writeData(const unsigned char* data, int32_t len, int64_t offset) = 0;
 
-  virtual int readData(unsigned char* data, uint32_t len, int64_t offset) = 0;
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) = 0;
 
-  virtual string messageDigest(int64_t offset, uint64_t length,
+  virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo) = 0;
 
   virtual void onDownloadComplete() = 0;  

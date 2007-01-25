@@ -36,15 +36,15 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 13) {
-    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "reject", dataLength, 13);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "reject", dataLength, 13);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%u for %s. It should be %d.",
-			id, "reject", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "reject", ID);
   }
   BtRejectMessageHandle message = new BtRejectMessage();
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
@@ -69,7 +69,7 @@ void BtRejectMessage::doReceivedAction() {
 
 }
 
-uint32_t BtRejectMessage::MESSAGE_LENGTH = 17;
+int32_t BtRejectMessage::MESSAGE_LENGTH = 17;
 
 const unsigned char* BtRejectMessage::getMessage() {
   if(!msg) {
@@ -90,11 +90,11 @@ const unsigned char* BtRejectMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtRejectMessage::getMessageLength() {
+int32_t BtRejectMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
 string BtRejectMessage::toString() const {
   return "reject index="+Util::itos(index)+", begin="+Util::itos(begin)+
-    ", length="+Util::uitos(length);
+    ", length="+Util::itos(length);
 }

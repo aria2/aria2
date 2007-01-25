@@ -41,7 +41,7 @@
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
 protected:
   DiskWriterHandle diskWriter;
-  uint64_t totalLength;
+  int64_t totalLength;
 public:
   AbstractSingleDiskAdaptor():diskWriter(0), totalLength(0) {}
 
@@ -55,12 +55,12 @@ public:
 
   virtual void openExistingFile();
 
-  virtual void writeData(const unsigned char* data, uint32_t len,
+  virtual void writeData(const unsigned char* data, int32_t len,
 			 int64_t offset);
 
-  virtual int readData(unsigned char* data, uint32_t len, int64_t offset);
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
 
-  virtual string messageDigest(int64_t offset, uint64_t length,
+  virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo);
 
   virtual bool fileExists();
@@ -71,11 +71,11 @@ public:
 
   DiskWriterHandle getDiskWriter() const { return diskWriter; }
 
-  void setTotalLength(const uint64_t& totalLength) {
+  void setTotalLength(const int64_t& totalLength) {
     this->totalLength = totalLength;
   }
 
-  uint64_t getTotalLength() const { return totalLength; }
+  int64_t getTotalLength() const { return totalLength; }
 };
 
 #endif // _D_ABSTRACT_SINGLE_DISK_ADAPTOR_H_

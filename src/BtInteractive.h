@@ -56,7 +56,7 @@ public:
 
   virtual void sendPendingMessage() = 0;
 
-  virtual uint32_t countPendingMessage() = 0;
+  virtual int32_t countPendingMessage() = 0;
 
   virtual bool isSendingMessageInProgress() = 0;
 };

@@ -35,15 +35,15 @@
 #include "BtHaveNoneMessage.h"
 #include "DlAbortEx.h"
 #include "PeerMessageUtil.h"
+#include "message.h"
 
-BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "have none", dataLength, 1);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "have none", dataLength, 1);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
-			id, "have none", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have none", ID);
   }
   BtHaveNoneMessageHandle message = new BtHaveNoneMessage();
   return message;
@@ -56,7 +56,7 @@ void BtHaveNoneMessage::doReceivedAction() {
   }
 }
 
-uint32_t BtHaveNoneMessage::MESSAGE_LENGTH = 5;
+int32_t BtHaveNoneMessage::MESSAGE_LENGTH = 5;
 
 const unsigned char* BtHaveNoneMessage::getMessage() {
   if(!msg) {
@@ -71,7 +71,7 @@ const unsigned char* BtHaveNoneMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtHaveNoneMessage::getMessageLength() {
+int32_t BtHaveNoneMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

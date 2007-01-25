@@ -571,7 +571,7 @@ static int nbits[] = {
   4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 
 };
 
-uint32_t Util::countBit(uint32_t n) {
+int32_t Util::countBit(uint32_t n) {
   return
     nbits[n&0xffu]+
     nbits[(n >> 8)&0xffu]+
@@ -638,9 +638,13 @@ void Util::setGlobalSignalHandler(int signal, void (*handler)(int), int flags) {
 }
 
 void Util::indexRange(int32_t& startIndex, int32_t& endIndex,
-		      int64_t offset, uint32_t srcLength, uint32_t destLength)
+		      int64_t offset, int32_t srcLength, int32_t destLength)
 {
-  startIndex = offset/destLength;
-  endIndex = (offset+srcLength-1)/destLength;
+  int64_t _startIndex = offset/destLength;
+  int64_t _endIndex = (offset+srcLength-1)/destLength;
+  assert(_startIndex <= INT32_MAX);
+  assert(_endIndex <= INT32_MAX);
+  startIndex = _startIndex;
+  endIndex = _endIndex;
 }
 

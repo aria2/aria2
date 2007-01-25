@@ -45,7 +45,7 @@ class BtHaveNoneMessage : public SimpleBtMessage {
 private:
   unsigned char* msg;
 
-  static uint32_t MESSAGE_LENGTH;
+  static int32_t MESSAGE_LENGTH;
 public:
   BtHaveNoneMessage():msg(0) {}
 
@@ -53,17 +53,17 @@ public:
     delete []  msg;
   }
   
-  static const uint8_t ID = 15;
+  static const int8_t ID = 15;
 
-  static BtHaveNoneMessageHandle create(const unsigned char* data, uint32_t dataLength);
+  static BtHaveNoneMessageHandle create(const unsigned char* data, int32_t dataLength);
 
-  virtual uint8_t getId() { return ID; }
+  virtual int8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual uint32_t getMessageLength();
+  virtual int32_t getMessageLength();
 
   virtual string toString() const;
 };

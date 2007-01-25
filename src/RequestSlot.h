@@ -43,11 +43,11 @@ private:
   Time dispatchedTime;
   int32_t index;
   int32_t begin;
-  uint32_t length;
+  int32_t length;
   int32_t blockIndex;
   void copy(const RequestSlot& requestSlot);
 public:
-  RequestSlot(int32_t index, int32_t begin, uint32_t length, int32_t blockIndex);
+  RequestSlot(int32_t index, int32_t begin, int32_t length, int32_t blockIndex);
   RequestSlot(const RequestSlot& requestSlot);
   ~RequestSlot() {}
 
@@ -76,8 +76,8 @@ public:
   int32_t getBegin() const { return begin; }
   void setBegin(int32_t begin) { this->begin = begin; }
 
-  uint32_t getLength() const { return length; }
-  void setLength(uint32_t length) { this->length = length; }
+  int32_t getLength() const { return length; }
+  void setLength(int32_t length) { this->length = length; }
 
   int32_t getBlockIndex() const { return blockIndex; }
   void setBlockIndex(int32_t blockIndex) { this->blockIndex = blockIndex; }

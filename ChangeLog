@@ -1,3 +1,28 @@
+2007-01-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/message.h: Added EX_INVALID_PAYLOAD_SIZE and
+	EX_INVALID_BT_MESSAGE_ID. Following source files affected.
+	* src/BtAllowedFastMessage.cc:
+	* src/BtBitfieldMessage.cc
+	* src/BtCancelMessage.cc
+	* src/BtChokeMessage.cc
+	* src/BtHaveAllMessage.cc
+	* src/BtHaveMessage.cc
+	* src/BtHaveNoneMessage.cc
+	* src/BtInterestedMessage.cc
+	* src/BtNotInterestedMessage.cc
+	* src/BtPieceMessage.cc
+	* src/BtPortMessage.cc
+	* src/BtRejectMessage.cc
+	* src/BtRequestMessage.cc
+	* src/BtSuggestPieceMessage.cc
+	* src/BtUnchokeMessage.cc
+
+	* src/message.h: Added EX_INVALID_CHUNK_CHECKSUM. Following source
+	files are affected.
+	* src/ChunkChecksumValidator.cc
+	* src/SegmentMan.cc
+
 2007-01-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add chunk checksum validation:

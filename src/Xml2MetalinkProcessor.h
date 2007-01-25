@@ -47,7 +47,7 @@ private:
   MetalinkEntryHandle getEntry(const string& xpath);
   MetalinkResourceHandle getResource(const string& xpath);
   MetalinkChunkChecksumHandle getPieceHash(const string& xpath,
-					   uint64_t totalSize);
+					   int64_t totalSize);
 
   xmlXPathObjectPtr xpathEvaluation(const string& xpath);
   string xpathContent(const string& xpath);

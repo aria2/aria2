@@ -91,7 +91,7 @@ bool DownloadCommand::executeInternal(Segment& segment) {
   }
   // calculate downloading speed
   if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
-    uint32_t nowSpeed = peerStat->calculateDownloadSpeed();
+    int32_t nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
       throw new DlAbortEx("CUID#%d - Too slow Downloading speed: %d <= %d(B/s)",
 			  cuid,

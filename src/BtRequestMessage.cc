@@ -37,15 +37,15 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "BtAbortOutstandingRequestEvent.h"
+#include "message.h"
 
-BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 13) {
-    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "request", dataLength, 13);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "request", dataLength, 13);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
-			id, "request", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "request", ID);
   }
   BtRequestMessageHandle message = new BtRequestMessage();
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
@@ -72,7 +72,7 @@ void BtRequestMessage::doReceivedAction() {
   }
 }
 
-uint32_t BtRequestMessage::MESSAGE_LENGTH = 17;
+int32_t BtRequestMessage::MESSAGE_LENGTH = 17;
 
 const unsigned char* BtRequestMessage::getMessage() {
   if(!msg) {
@@ -93,13 +93,13 @@ const unsigned char* BtRequestMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtRequestMessage::getMessageLength() {
+int32_t BtRequestMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
 string BtRequestMessage::toString() const {
   return "request index="+Util::itos(index)+", begin="+Util::itos(begin)+
-    ", length="+Util::uitos(length);
+    ", length="+Util::itos(length);
 }
 
 void BtRequestMessage::onQueued() {

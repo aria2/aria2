@@ -40,21 +40,21 @@
 #include <unistd.h>
 #include <errno.h>
 
-void FileAllocator::allocate(int fd, uint64_t totalLength)
+void FileAllocator::allocate(int fd, int64_t totalLength)
 {
   if(0 != lseek(fd, 0, SEEK_SET)) {
     throw new DlAbortEx("Seek failed: %s", strerror(errno));
   }
-  uint32_t bufSize = 4096;
+  int32_t bufSize = 4096;
   char buf[4096];
   memset(buf, 0, bufSize);
-  uint64_t x = (totalLength+bufSize-1)/bufSize;
+  int64_t x = (totalLength+bufSize-1)/bufSize;
   fileAllocationMonitor->setMinValue(0);
   fileAllocationMonitor->setMaxValue(totalLength);
   fileAllocationMonitor->setCurrentValue(0);
   fileAllocationMonitor->showProgress();
   Time cp;
-  for(uint64_t i = 0; i < x; i++) {
+  for(int64_t i = 0; i < x; ++i) {
     if(write(fd, buf, bufSize) < 0) {
       throw new DlAbortEx("Allocation failed: %s", strerror(errno));
     }

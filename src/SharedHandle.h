@@ -41,11 +41,11 @@ class RefCount {
 public:
   RefCount():totalRefCount(0), strongRefCount(0) {}
 
-  RefCount(uint32_t totalRefCount, uint32_t strongRefCount)
+  RefCount(int32_t totalRefCount, int32_t strongRefCount)
     :totalRefCount(totalRefCount), strongRefCount(strongRefCount) {}
 
-  uint32_t totalRefCount;
-  uint32_t strongRefCount;
+  int32_t totalRefCount;
+  int32_t strongRefCount;
 };
 
 template<typename T>

@@ -41,7 +41,7 @@
 class MetalinkChunkChecksum {
 public:
   MessageDigestContext::DigestAlgo digestAlgo;
-  uint32_t pieceLength;
+  int32_t pieceLength;
   Strings pieceHashes;
 public:
   MetalinkChunkChecksum():pieceLength(0) {}

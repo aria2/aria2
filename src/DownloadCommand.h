@@ -45,9 +45,9 @@ using namespace std;
 class DownloadCommand : public AbstractCommand {
 private:
   long long int lastSize;
-  uint32_t maxDownloadSpeedLimit;
-  uint32_t startupIdleTime;
-  uint32_t lowestDownloadSpeedLimit;
+  int32_t maxDownloadSpeedLimit;
+  int32_t startupIdleTime;
+  int32_t lowestDownloadSpeedLimit;
   PeerStatHandle peerStat;
 protected:
   bool executeInternal(Segment& segment);
@@ -62,15 +62,15 @@ public:
 
   string transferEncoding;
 
-  void setMaxDownloadSpeedLimit(uint32_t maxDownloadSpeedLimit) {
+  void setMaxDownloadSpeedLimit(int32_t maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
   }
 
-  void setStartupIdleTime(uint32_t startupIdleTime) {
+  void setStartupIdleTime(int32_t startupIdleTime) {
     this->startupIdleTime = startupIdleTime;
   }
 
-  void setLowestDownloadSpeedLimit(uint32_t lowestDownloadSpeedLimit) {
+  void setLowestDownloadSpeedLimit(int32_t lowestDownloadSpeedLimit) {
     this->lowestDownloadSpeedLimit = lowestDownloadSpeedLimit;
   }
 };

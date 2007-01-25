@@ -50,7 +50,7 @@ public:
 
   virtual bool isUploading() = 0;
 
-  virtual uint8_t getId() = 0;
+  virtual int8_t getId() = 0;
 
   virtual void doReceivedAction() = 0;
 

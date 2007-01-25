@@ -52,19 +52,19 @@ private:
   const Logger* logger;
 
   char resbuf[MAX_PAYLOAD_LEN];
-  uint32_t resbufLength;
-  uint32_t currentPayloadLength;
+  int32_t resbufLength;
+  int32_t currentPayloadLength;
   unsigned char lenbuf[4];
-  uint32_t lenbufLength;
+  int32_t lenbufLength;
 
 public:
   PeerConnection(int32_t cuid, const SocketHandle& socket, const Option* op);
   ~PeerConnection();
   
   // Returns the number of bytes written
-  uint32_t sendMessage(const unsigned char* data, uint32_t dataLength);
+  int32_t sendMessage(const unsigned char* data, int32_t dataLength);
 
-  bool receiveMessage(unsigned char* data, uint32_t& dataLength);
+  bool receiveMessage(unsigned char* data, int32_t& dataLength);
 
   /**
    * Returns true if a handshake message is fully received, otherwise returns
@@ -72,7 +72,7 @@ public:
    * In both cases, 'msg' is filled with received bytes and the filled length
    * is assigned to 'length'.
    */
-  bool receiveHandshake(unsigned char* data, uint32_t& dataLength);
+  bool receiveHandshake(unsigned char* data, int32_t& dataLength);
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;

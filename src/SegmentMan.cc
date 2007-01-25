@@ -432,7 +432,7 @@ void SegmentMan::registerPeerStat(const PeerStatHandle& peerStat) {
   }
 }
 
-uint32_t SegmentMan::calculateDownloadSpeed() const {
+int32_t SegmentMan::calculateDownloadSpeed() const {
   int speed = 0;
   for(PeerStats::const_iterator itr = peerStats.begin();
       itr != peerStats.end(); itr++) {
@@ -473,7 +473,7 @@ void SegmentMan::checkIntegrity()
 
 bool SegmentMan::isChunkChecksumValidationReady() const {
   return bitfield &&
-    pieceHashes.size()*chunkHashLength == bitfield->getBlockLength()*(bitfield->getMaxIndex()+1);
+    ((int64_t)pieceHashes.size())*chunkHashLength == ((int64_t)bitfield->getBlockLength())*(bitfield->getMaxIndex()+1);
 }
 
 void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
@@ -499,7 +499,7 @@ void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
     logger->debug("No chunk to verify.");
     return;
   }
-  int64_t hashOffset = hashStartIndex*chunkHashLength;
+  int64_t hashOffset = ((int64_t)hashStartIndex)*chunkHashLength;
   int32_t startIndex;
   int32_t endIndex;
   Util::indexRange(startIndex, endIndex,
@@ -509,15 +509,15 @@ void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
   logger->debug("startIndex=%d, endIndex=%d", startIndex, endIndex);
   if(bitfield->isBitRangeSet(startIndex, endIndex)) {
     for(int32_t index = hashStartIndex; index <= hashEndIndex; ++index) {
-      int64_t offset = index*chunkHashLength;
-      uint32_t dataLength =
+      int64_t offset = ((int64_t)index)*chunkHashLength;
+      int32_t dataLength =
 	offset+chunkHashLength <= totalSize ? chunkHashLength : totalSize-offset;
       string actualChecksum = diskWriter->messageDigest(offset, dataLength, digestAlgo);
       string expectedChecksum = pieceHashes.at(index);
       if(expectedChecksum == actualChecksum) {
-	logger->info("Chunk checksum validation succeeded.");
+	logger->info("Good chunk checksum.");
       } else {
-	logger->error("Chunk checksum validation failed. checksumIndex=%d, offset=%lld, length=%u, expected=%s, actual=%s",
+	logger->error(EX_INVALID_CHUNK_CHECKSUM,
 		      index, offset, dataLength,
 		      expectedChecksum.c_str(), actualChecksum.c_str());
 	logger->info("Unset bit from %d to %d(inclusive)", startIndex, endIndex);

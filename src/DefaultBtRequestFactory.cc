@@ -76,7 +76,7 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
   pieces.clear();
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessages(uint32_t max) {
+BtMessages DefaultBtRequestFactory::createRequestMessages(int32_t max) {
   BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < (size_t)max; itr++) {
@@ -90,7 +90,7 @@ BtMessages DefaultBtRequestFactory::createRequestMessages(uint32_t max) {
   return requests;
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(uint32_t max) {
+BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(int32_t max) {
   BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < (size_t)max; itr++) {

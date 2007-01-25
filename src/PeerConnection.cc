@@ -56,8 +56,8 @@ PeerConnection::PeerConnection(int32_t cuid,
 
 PeerConnection::~PeerConnection() {}
 
-uint32_t PeerConnection::sendMessage(const unsigned char* data, uint32_t dataLength) {
-  uint32_t writtenLength = 0;
+int32_t PeerConnection::sendMessage(const unsigned char* data, int32_t dataLength) {
+  int32_t writtenLength = 0;
   if(socket->isWritable(0)) {
     // TODO fix this
     socket->writeData((const char*)data, dataLength);
@@ -66,14 +66,14 @@ uint32_t PeerConnection::sendMessage(const unsigned char* data, uint32_t dataLen
   return writtenLength;
 }
 
-bool PeerConnection::receiveMessage(unsigned char* data, uint32_t& dataLength) {
+bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
   if(!socket->isReadable(0)) {
     return false;
   }
   if(resbufLength == 0 && lenbufLength != 4) {
     // read payload size, 4-byte integer
-    uint32_t remain = 4-lenbufLength;
-    uint32_t temp = remain;
+    int32_t remain = 4-lenbufLength;
+    int32_t temp = remain;
     // TODO fix this
     socket->readData((char*)lenbuf+lenbufLength, (int&)temp);
     if(temp == 0) {
@@ -86,7 +86,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, uint32_t& dataLength) {
       return false;
     }
     //payloadLen = ntohl(nPayloadLen);
-    uint32_t payloadLength = ntohl(*((uint32_t*)lenbuf));
+    int32_t payloadLength = ntohl(*((int32_t*)lenbuf));
     if(payloadLength > MAX_PAYLOAD_LEN || payloadLength < 0) {
       throw new DlAbortEx("max payload length exceeded or invalid. length = %d",
 			  payloadLength);
@@ -97,7 +97,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, uint32_t& dataLength) {
     return false;
   }
   // we have currentPayloadLen-resbufLen bytes to read
-  uint32_t remaining = currentPayloadLength-resbufLength;
+  int32_t remaining = currentPayloadLength-resbufLength;
   if(remaining > 0) {
     socket->readData((char*)resbuf+resbufLength, (int&)remaining);
     if(remaining == 0) {
@@ -118,13 +118,13 @@ bool PeerConnection::receiveMessage(unsigned char* data, uint32_t& dataLength) {
   return true;
 }
 
-bool PeerConnection::receiveHandshake(unsigned char* data, uint32_t& dataLength) {
+bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength) {
   if(!socket->isReadable(0)) {
     dataLength = 0;
     return false;
   }
-  uint32_t remain = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
-  uint32_t temp = remain;
+  int32_t remain = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
+  int32_t temp = remain;
   socket->readData((char*)resbuf+resbufLength, (int&)temp);
   if(temp == 0) {
     // we got EOF
@@ -138,7 +138,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, uint32_t& dataLength)
   }
   resbufLength += temp;
   // we got whole handshake payload
-  uint32_t writeLength = resbufLength > dataLength ? dataLength : resbufLength;
+  int32_t writeLength = resbufLength > dataLength ? dataLength : resbufLength;
   memcpy(data, resbuf, writeLength);
   dataLength = writeLength;
   if(retval) {

@@ -49,13 +49,13 @@ class BtPieceMessage : public AbstractBtMessage {
 private:
   int32_t index;
   int32_t begin;
-  uint32_t blockLength;
+  int32_t blockLength;
   unsigned char* block;
-  uint32_t leftDataLength;
+  int32_t leftDataLength;
   bool headerSent;
   unsigned char* msgHeader;
 
-  static uint32_t MESSAGE_HEADER_LENGTH;
+  static int32_t MESSAGE_HEADER_LENGTH;
 
   bool checkPieceHash(const PieceHandle& piece);
 
@@ -65,7 +65,7 @@ private:
 
   void erasePieceOnDisk(const PieceHandle& piece);
 
-  uint32_t sendPieceData(int64_t offset, uint32_t length) const;
+  int32_t sendPieceData(int64_t offset, int32_t length) const;
 
   class BtChokingEventListener : public AbstractBtEventListener {
   private:
@@ -93,7 +93,7 @@ private:
 
   typedef SharedHandle<BtCancelSendingPieceEventListener> BtCancelSendingPieceEventListenerHandle;
 public:
-  BtPieceMessage(int32_t index = 0, int32_t begin = 0, uint32_t blockLength = 0)
+  BtPieceMessage(int32_t index = 0, int32_t begin = 0, int32_t blockLength = 0)
     :index(index),
      begin(begin),
      blockLength(blockLength),
@@ -112,7 +112,7 @@ public:
     delete []  block;
   }
 
-  static const uint8_t ID = 7;
+  static const int8_t ID = 7;
 
   int32_t getIndex() const { return index; }
 
@@ -124,21 +124,21 @@ public:
 
   const unsigned char* getBlock() const { return block; }
 
-  void setBlock(const unsigned char* block, uint32_t blockLength);
+  void setBlock(const unsigned char* block, int32_t blockLength);
 
-  uint32_t getBlockLength() const { return blockLength; }
+  int32_t getBlockLength() const { return blockLength; }
 
-  void setBlockLength(uint32_t blockLength) { this->blockLength = blockLength; }
+  void setBlockLength(int32_t blockLength) { this->blockLength = blockLength; }
 
-  static BtPieceMessageHandle create(const unsigned char* data, uint32_t dataLength);
+  static BtPieceMessageHandle create(const unsigned char* data, int32_t dataLength);
 
-  virtual uint8_t getId() { return ID; }
+  virtual int8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   const unsigned char* getMessageHeader();
 
-  uint32_t getMessageHeaderLength();
+  int32_t getMessageHeaderLength();
 
   virtual void send();
 

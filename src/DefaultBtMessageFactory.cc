@@ -63,14 +63,14 @@
 #include "BtHandshakeMessageValidator.h"
 
 BtMessageHandle
-DefaultBtMessageFactory::createBtMessage(const unsigned char* data, uint32_t dataLength)
+DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t dataLength)
 {
   AbstractBtMessageHandle msg(0);
   if(dataLength == 0) {
     // keep-alive
     msg = new BtKeepAliveMessage();
   } else {
-    uint8_t id = PeerMessageUtil::getId(data);
+    int8_t id = PeerMessageUtil::getId(data);
     switch(id) {
     case BtChokeMessage::ID:
       msg = BtChokeMessage::create(data, dataLength);
@@ -162,7 +162,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, uint32_t dat
       break;
     }
     default:
-      throw new DlAbortEx("Invalid message id. id = %u", id);
+      throw new DlAbortEx("Invalid message ID. id=%d", id);
     }
   }
   setCommonProperty(msg);
@@ -180,7 +180,7 @@ void DefaultBtMessageFactory::setCommonProperty(const AbstractBtMessageHandle& m
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* data, uint32_t dataLength)
+DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* data, int32_t dataLength)
 {
   BtHandshakeMessageHandle msg = BtHandshakeMessage::create(data, dataLength);
   BtMessageValidatorHandle validator =
@@ -222,7 +222,7 @@ DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, int32_t 
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createCancelMessage(int32_t index, int32_t begin, uint32_t length)
+DefaultBtMessageFactory::createCancelMessage(int32_t index, int32_t begin, int32_t length)
 {
   BtCancelMessageHandle msg = new BtCancelMessage(index, begin, length);
   BtMessageValidatorHandle validator =
@@ -235,7 +235,7 @@ DefaultBtMessageFactory::createCancelMessage(int32_t index, int32_t begin, uint3
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createPieceMessage(int32_t index, int32_t begin, uint32_t length)
+DefaultBtMessageFactory::createPieceMessage(int32_t index, int32_t begin, int32_t length)
 {
   BtPieceMessageHandle msg = new BtPieceMessage(index, begin, length);
   BtMessageValidatorHandle validator =
@@ -326,7 +326,7 @@ DefaultBtMessageFactory::createHaveNoneMessage()
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createRejectMessage(int32_t index, int32_t begin, uint32_t length)
+DefaultBtMessageFactory::createRejectMessage(int32_t index, int32_t begin, int32_t length)
 {
   BtRejectMessageHandle msg = new BtRejectMessage(index, begin, length);
   BtMessageValidatorHandle validator =

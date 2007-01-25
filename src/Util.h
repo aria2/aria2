@@ -123,7 +123,7 @@ public:
 				int pieces, int fastSetSize);
 #endif // ENABLE_BITTORRENT
 
-  static uint32_t countBit(uint32_t n);
+  static int32_t countBit(uint32_t n);
 
   static string randomAlpha(int length);
 
@@ -137,7 +137,7 @@ public:
 
   static void indexRange(int32_t& startIndex, int32_t& endIndex,
 			 int64_t offset,
-			 uint32_t srcLength, uint32_t destLength);
+			 int32_t srcLength, int32_t destLength);
 };
 
 #endif // _D_UTIL_H_

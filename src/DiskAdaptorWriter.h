@@ -47,12 +47,12 @@ public:
 
   virtual ~DiskAdaptorWriter() {}
 
-  virtual void initAndOpenFile(const string& filename, uint64_t totalLength = 0)
+  virtual void initAndOpenFile(const string& filename, int64_t totalLength = 0)
   {
     diskAdaptor->initAndOpenFile();
   }
   
-  virtual void openFile(const string& filename, uint64_t totalLength = 0)
+  virtual void openFile(const string& filename, int64_t totalLength = 0)
   {
     diskAdaptor->openFile();
   }
@@ -67,17 +67,17 @@ public:
     diskAdaptor->openExistingFile();
   }
 
-  virtual void writeData(const char* data, uint32_t len, int64_t position = 0)
+  virtual void writeData(const char* data, int32_t len, int64_t position = 0)
   {
     diskAdaptor->writeData((const unsigned char*)data, len, position);
   }
 
-  virtual int readData(char* data, uint32_t len, int64_t position)
+  virtual int32_t readData(char* data, int32_t len, int64_t position)
   {
     return diskAdaptor->readData((unsigned char*)data, len, position);
   }
 
-  virtual string messageDigest(int64_t offset, uint64_t length,
+  virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo)
   {
     return diskAdaptor->messageDigest(offset, length, algo);

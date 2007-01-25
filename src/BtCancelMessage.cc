@@ -36,15 +36,15 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 13) {
-    throw new DlAbortEx("invalid payload size for %s, size = %u. It should be %d", "cancel", dataLength, 13);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "cancel", dataLength, 13);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%u for %s. It should be %d.",
-			id, "cancel", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "cancel", ID);
   }
   BtCancelMessageHandle message = new BtCancelMessage();
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
@@ -57,7 +57,7 @@ void BtCancelMessage::doReceivedAction() {
   dispatcher->doCancelSendingPieceAction(index, begin, length);
 }
 
-uint32_t BtCancelMessage::MESSAGE_LENGTH = 17;
+int32_t BtCancelMessage::MESSAGE_LENGTH = 17;
 
 const unsigned char* BtCancelMessage::getMessage() {
   if(!msg) {
@@ -78,11 +78,11 @@ const unsigned char* BtCancelMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtCancelMessage::getMessageLength() {
+int32_t BtCancelMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
 string BtCancelMessage::toString() const {
   return "cancel index="+Util::itos(index)+", begin="+Util::itos(begin)+
-    ", length="+Util::uitos(length);
+    ", length="+Util::itos(length);
 }

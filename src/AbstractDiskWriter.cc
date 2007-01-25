@@ -55,7 +55,7 @@ AbstractDiskWriter::~AbstractDiskWriter()
   closeFile();
 }
 
-void AbstractDiskWriter::openFile(const string& filename, uint64_t totalLength) {
+void AbstractDiskWriter::openFile(const string& filename, int64_t totalLength) {
   File f(filename);
   if(f.exists()) {
     openExistingFile(filename);
@@ -95,15 +95,15 @@ void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags) {
   }  
 }
 
-int32_t AbstractDiskWriter::writeDataInternal(const char* data, uint32_t len) {
+int32_t AbstractDiskWriter::writeDataInternal(const char* data, int32_t len) {
   return write(fd, data, len);
 }
 
-int AbstractDiskWriter::readDataInternal(char* data, uint32_t len) {
+int32_t AbstractDiskWriter::readDataInternal(char* data, int32_t len) {
   return read(fd, data, len);
 }
 
-string AbstractDiskWriter::messageDigest(int64_t offset, uint64_t length,
+string AbstractDiskWriter::messageDigest(int64_t offset, int64_t length,
 					 const MessageDigestContext::DigestAlgo& algo)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -112,7 +112,7 @@ string AbstractDiskWriter::messageDigest(int64_t offset, uint64_t length,
 
   int32_t BUFSIZE = 16*1024;
   char buf[BUFSIZE];
-  for(uint64_t i = 0; i < length/BUFSIZE; i++) {
+  for(int64_t i = 0; i < length/BUFSIZE; i++) {
     int32_t rs = readData(buf, BUFSIZE, offset);
     if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
       throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
@@ -143,14 +143,14 @@ void AbstractDiskWriter::seek(int64_t offset) {
   }
 }
 
-void AbstractDiskWriter::writeData(const char* data, uint32_t len, int64_t offset) {
+void AbstractDiskWriter::writeData(const char* data, int32_t len, int64_t offset) {
   seek(offset);
   if(writeDataInternal(data, len) < 0) {
     throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
   }
 }
 
-int AbstractDiskWriter::readData(char* data, uint32_t len, int64_t offset) {
+int32_t AbstractDiskWriter::readData(char* data, int32_t len, int64_t offset) {
   int32_t ret;
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {

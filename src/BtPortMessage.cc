@@ -36,15 +36,15 @@
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
 #include "Util.h"
+#include "message.h"
 
-BtPortMessageHandle BtPortMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtPortMessageHandle BtPortMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 3) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be %d", "port", dataLength, 3);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "port", dataLength, 3);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
-			id, "piece", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
   }
   BtPortMessageHandle message = new BtPortMessage();
   message->setPort(PeerMessageUtil::getShortIntParam(data, 1));
@@ -52,5 +52,5 @@ BtPortMessageHandle BtPortMessage::create(const unsigned char* data, uint32_t da
 }
 
 string BtPortMessage::toString() const {
-  return "port port="+Util::uitos(port);
+  return "port port="+Util::itos(port);
 }

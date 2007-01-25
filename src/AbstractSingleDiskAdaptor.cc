@@ -51,15 +51,15 @@ void AbstractSingleDiskAdaptor::openExistingFile() {
   diskWriter->openExistingFile(getFilePath());
 }
 
-void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, uint32_t len, int64_t offset) {
+void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, int32_t len, int64_t offset) {
   diskWriter->writeData(data, len, offset);
 }
 
-int AbstractSingleDiskAdaptor::readData(unsigned char* data, uint32_t len, int64_t offset) {
+int32_t AbstractSingleDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset) {
   return diskWriter->readData(data, len, offset);
 }
 
-string AbstractSingleDiskAdaptor::messageDigest(int64_t offset, uint64_t length, const MessageDigestContext::DigestAlgo& algo) {
+string AbstractSingleDiskAdaptor::messageDigest(int64_t offset, int64_t length, const MessageDigestContext::DigestAlgo& algo) {
   return diskWriter->messageDigest(offset, length, algo);
 }
 

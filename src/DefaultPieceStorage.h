@@ -71,7 +71,7 @@ private:
   BitfieldMan* bitfieldMan;
   DiskAdaptorHandle diskAdaptor;
   Pieces usedPieces;
-  uint32_t endGamePieceNum;
+  int32_t endGamePieceNum;
   Logger* logger;
   const Option* option;
   Haves haves;
@@ -127,11 +127,11 @@ public:
 
   virtual const unsigned char* getBitfield();
 
-  void setEndGamePieceNum(uint32_t num) {
+  void setEndGamePieceNum(int32_t num) {
     endGamePieceNum = num;
   }
 
-  uint32_t getEndGamePieceNum() const {
+  int32_t getEndGamePieceNum() const {
     return endGamePieceNum;
   }
 

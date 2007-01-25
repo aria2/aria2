@@ -37,7 +37,7 @@
 
 #include "FileProgressMonitor.h"
 
-typedef FileProgressMonitor<uint64_t> FileAllocationMonitor;
+typedef FileProgressMonitor<int64_t> FileAllocationMonitor;
 typedef SharedHandle<FileAllocationMonitor> FileAllocationMonitorHandle;
 
 class FileAllocationMonitorFactory;

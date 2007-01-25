@@ -41,7 +41,7 @@ class HeadResult {
 public:
   HeadResult():totalLength(0) {}
   string filename;
-  uint64_t totalLength;
+  int64_t totalLength;
 };
 
 std::ostream& operator<<(std::ostream& o, const HeadResult& hr);
@@ -51,7 +51,7 @@ private:
   Strings urls;
   int maxConnections;
   MessageDigestContext::DigestAlgo digestAlgo;
-  uint32_t chunkChecksumLength;
+  int32_t chunkChecksumLength;
   Strings chunkChecksums;
 
   RequestInfo* createNextRequestInfo() const;
@@ -76,7 +76,7 @@ public:
     this->digestAlgo = algo;
   }
 
-  void setChunkChecksumLength(uint32_t chunkChecksumLength) {
+  void setChunkChecksumLength(int32_t chunkChecksumLength) {
     this->chunkChecksumLength = chunkChecksumLength;
   }
 

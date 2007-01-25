@@ -41,10 +41,10 @@
 class BtAllowedFastMessageValidator : public BtMessageValidator {
 private:
   const BtAllowedFastMessage* message;
-  uint32_t numPiece;
+  int32_t numPiece;
 public:
   BtAllowedFastMessageValidator(const BtAllowedFastMessage* message,
-				uint32_t numPiece):
+				int32_t numPiece):
     message(message),
     numPiece(numPiece) {}
 

@@ -158,7 +158,7 @@ public:
   Requests reserved;
 
   Strings pieceHashes;
-  uint32_t chunkHashLength;
+  int32_t chunkHashLength;
   MessageDigestContext::DigestAlgo digestAlgo;
 
   SegmentMan();
@@ -275,7 +275,7 @@ public:
   /**
    * Returns current download speed in bytes per sec. 
    */
-  uint32_t calculateDownloadSpeed() const;
+  int32_t calculateDownloadSpeed() const;
 
   bool fileExists();
 

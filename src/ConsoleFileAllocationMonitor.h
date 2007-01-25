@@ -40,9 +40,9 @@
 class ConsoleFileAllocationMonitor : public FileAllocationMonitor {
 private:
   string filename;
-  uint64_t min;
-  uint64_t max;
-  uint64_t current;
+  int64_t min;
+  int64_t max;
+  int64_t current;
 public:
   ConsoleFileAllocationMonitor():min(0), max(0), current(0) {}
 
@@ -52,7 +52,7 @@ public:
     this->filename = filename;
   }
 
-  virtual void setMinValue(const uint64_t& min) {
+  virtual void setMinValue(const int64_t& min) {
     if(max < min) {
       this->min = max;
     } else {
@@ -60,11 +60,11 @@ public:
     }
   }
   
-  uint64_t getMinValue() const {
+  int64_t getMinValue() const {
     return min;
   }
 
-  virtual void setMaxValue(const uint64_t& max) {
+  virtual void setMaxValue(const int64_t& max) {
     if(max < min) {
       this->max = min;
     } else {
@@ -72,11 +72,11 @@ public:
     }
   }
 
-  uint64_t getMaxValue() const {
+  int64_t getMaxValue() const {
     return max;
   }
 
-  virtual void setCurrentValue(const uint64_t& current) {
+  virtual void setCurrentValue(const int64_t& current) {
     if(current > max) {
       this->current = max;
     } else {
@@ -84,7 +84,7 @@ public:
     }
   }
 
-  uint64_t getCurrentValue() const {
+  int64_t getCurrentValue() const {
     return current;
   }
 

@@ -36,8 +36,9 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "DlAbortEx.h"
+#include "message.h"
 
-void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, uint32_t bitfieldLength) {
+void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, int32_t bitfieldLength) {
   if(this->bitfield == bitfield) {
     return;
   }
@@ -49,15 +50,14 @@ void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, uint32_t bitf
 }
 
 BtBitfieldMessageHandle
-BtBitfieldMessage::create(const unsigned char* data, uint32_t dataLength)
+BtBitfieldMessage::create(const unsigned char* data, int32_t dataLength)
 {
   if(dataLength <= 1) {
-    throw new DlAbortEx("invalid payload size for %s, size = %d. It should be greater than %d", "bitfield", dataLength, 1);
+    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "bitfield", dataLength, 1);
   }
-  uint8_t id = PeerMessageUtil::getId(data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx("invalid ID=%d for %s. It should be %d.",
-			id, "bitfield", ID);
+    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "bitfield", ID);
   }
   BtBitfieldMessageHandle message = new BtBitfieldMessage();
   message->setBitfield((unsigned char*)data+1, dataLength-1);
@@ -85,7 +85,7 @@ const unsigned char* BtBitfieldMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtBitfieldMessage::getMessageLength() {
+int32_t BtBitfieldMessage::getMessageLength() {
   getMessage();
   return msgLength;
 }

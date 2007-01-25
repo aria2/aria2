@@ -43,12 +43,12 @@ typedef SharedHandle<BtHandshakeMessage> BtHandshakeMessageHandle;
 
 class BtHandshakeMessage : public SimpleBtMessage {
 public:
-  static const uint32_t PSTR_LENGTH = 19;
+  static const int32_t PSTR_LENGTH = 19;
   static const unsigned char* BT_PSTR;
-  static const uint32_t RESERVED_LENGTH = 8;
-  static const uint32_t MESSAGE_LENGTH = 68;
+  static const int32_t RESERVED_LENGTH = 8;
+  static const int32_t MESSAGE_LENGTH = 68;
 private:
-  uint8_t pstrlen;
+  int8_t pstrlen;
   unsigned char* pstr;
   unsigned char* reserved;
   unsigned char* infoHash;
@@ -63,7 +63,7 @@ public:
    */
   BtHandshakeMessage(const unsigned char* infoHash, const unsigned char* peerId);
 
-  static BtHandshakeMessageHandle create(const unsigned char* data, uint32_t dataLength);
+  static BtHandshakeMessageHandle create(const unsigned char* data, int32_t dataLength);
 
   virtual ~BtHandshakeMessage() {
     delete [] msg;
@@ -73,21 +73,21 @@ public:
     delete [] peerId;
   }
 
-  static const uint8_t ID = UINT8_MAX;
+  static const int8_t ID = INT8_MAX;
 
-  virtual uint8_t getId() { return ID; }
+  virtual int8_t getId() { return ID; }
 
   virtual void doReceivedAction() {};
 
   virtual const unsigned char* getMessage();
 
-  virtual uint32_t getMessageLength();
+  virtual int32_t getMessageLength();
 
   virtual string toString() const;
 
   bool isFastExtensionSupported() const;
 
-  uint8_t getPstrlen() const {
+  int8_t getPstrlen() const {
     return pstrlen;
   }
 

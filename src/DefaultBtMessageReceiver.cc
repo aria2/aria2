@@ -37,7 +37,7 @@
 
 BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
-  uint32_t dataLength = sizeof(data);
+  int32_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
   bool retval = peerConnection->receiveHandshake(data, dataLength);
   // To handle tracker's NAT-checking feature
   if(!handshakeSent && quickReply && dataLength >= 48) {
@@ -77,7 +77,7 @@ void DefaultBtMessageReceiver::sendHandshake() {
 
 BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
   unsigned char data[MAX_PAYLOAD_LEN];
-  uint32_t dataLength = 0;
+  int32_t dataLength = 0;
   if(!peerConnection->receiveMessage(data, dataLength)) {
     return 0;
   }

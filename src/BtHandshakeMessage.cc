@@ -63,7 +63,7 @@ void BtHandshakeMessage::init() {
   this->reserved[7] |= 0x04;
 }
 
-BtHandshakeMessageHandle BtHandshakeMessage::create(const unsigned char* data, uint32_t dataLength) {
+BtHandshakeMessageHandle BtHandshakeMessage::create(const unsigned char* data, int32_t dataLength) {
   BtHandshakeMessageHandle message = new BtHandshakeMessage();
   message->pstrlen = data[0];
   memcpy(message->pstr, &data[1], PSTR_LENGTH);
@@ -85,7 +85,7 @@ const unsigned char* BtHandshakeMessage::getMessage() {
   return msg;
 }
 
-uint32_t BtHandshakeMessage::getMessageLength() {
+int32_t BtHandshakeMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

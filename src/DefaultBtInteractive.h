@@ -51,28 +51,28 @@
 
 class FloodingStat {
 private:
-  uint32_t chokeUnchokeCount;
-  uint32_t keepAliveCount;
+  int32_t chokeUnchokeCount;
+  int32_t keepAliveCount;
 public:
   FloodingStat():chokeUnchokeCount(0), keepAliveCount(0) {}
   
   void incChokeUnchokeCount() {
-    if(chokeUnchokeCount < UINT32_MAX) {
+    if(chokeUnchokeCount < INT32_MAX) {
       chokeUnchokeCount++;
     }
   }
 
   void incKeepAliveCount() {
-    if(keepAliveCount < UINT32_MAX) {
+    if(keepAliveCount < INT32_MAX) {
       keepAliveCount++;
     }
   }
 
-  uint32_t getChokeUnchokeCount() const {
+  int32_t getChokeUnchokeCount() const {
     return chokeUnchokeCount;
   }
 
-  uint32_t getKeepAliveCount() const {
+  int32_t getKeepAliveCount() const {
     return keepAliveCount;
   }
 
@@ -95,15 +95,15 @@ private:
   PeerConnectionWeakHandle peerConnection;
   BtMessageFactoryWeakHandle messageFactory;
   const Logger* logger;
-  uint32_t allowedFastSetSize;
+  int32_t allowedFastSetSize;
   Time haveCheckPoint;
   Time keepAliveCheckPoint;
   Time floodingCheckPoint;
   FloodingStat floodingStat;
-  uint32_t keepAliveInterval;
-  uint32_t maxDownloadSpeedLimit;
+  int32_t keepAliveInterval;
+  int32_t maxDownloadSpeedLimit;
 
-  static const uint32_t FLOODING_CHECK_INTERVAL = 5;
+  static const int32_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
   void addAllowedFastMessageToQueue();
@@ -147,7 +147,7 @@ public:
 
   void receiveMessages();
 
-  virtual uint32_t countPendingMessage() {
+  virtual int32_t countPendingMessage() {
     return dispatcher->countMessageInQueue();
   }
   
@@ -185,11 +185,11 @@ public:
     this->peerConnection  = peerConnection;
   }
 
-  void setKeepAliveInterval(uint32_t keepAliveInterval) {
+  void setKeepAliveInterval(int32_t keepAliveInterval) {
     this->keepAliveInterval = keepAliveInterval;
   }
 
-  void setMaxDownloadSpeedLimit(uint32_t maxDownloadSpeedLimit) {
+  void setMaxDownloadSpeedLimit(int32_t maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
   }
 

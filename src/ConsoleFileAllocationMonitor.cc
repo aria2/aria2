@@ -36,23 +36,24 @@
 #include "Util.h"
 
 void ConsoleFileAllocationMonitor::showProgress() {
-  uint32_t progressPercentage = (uint32_t)(((current-min)*1.0/(max-min))*100);
-  uint32_t numOfStar = progressPercentage/10*2;
+  int32_t progressPercentage = (int32_t)(((current-min)*1.0/(max-min))*100);
+  int32_t numOfStar = progressPercentage/10*2;
 
   cout << "\r                                                                                ";
   cout << "\r";
   cout << "|";
-  for(uint32_t i = 0; i < numOfStar; i++) {
+  for(int32_t i = 0; i < numOfStar; ++i) {
     cout << "*";
   }
-  for(uint32_t i = 0; i < 20-numOfStar; i++) {
+  for(int32_t i = 0; i < 20-numOfStar; ++i) {
     cout << " ";
   }
   cout << "|";
   cout << progressPercentage << "%";
   cout << "(";
   cout << Util::ullitos(current, true) << "/" << Util::ullitos(max, true);
-  cout << ") done";
+  cout << ")";
   cout << flush;
-  // |******************* | 95%(1,333,3256/1,553,3232 bytes) done
+  // Example,
+  // |******************* | 95%(1,333,3256/1,553,3232 bytes)
 }

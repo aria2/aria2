@@ -49,8 +49,8 @@ protected:
   void createFile(const string& filename, int32_t addFlags = 0);
 
 private:
-  int writeDataInternal(const char* data, uint32_t len);
-  int readDataInternal(char* data, uint32_t len);
+  int32_t writeDataInternal(const char* data, int32_t len);
+  int32_t readDataInternal(char* data, int32_t len);
 
   void seek(int64_t offset);
 
@@ -58,18 +58,18 @@ public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(const string& filename, uint64_t totalLength = 0);
+  virtual void openFile(const string& filename, int64_t totalLength = 0);
 
   virtual void closeFile();
 
   virtual void openExistingFile(const string& filename);
 
-  virtual string messageDigest(int64_t offset, uint64_t length,
+  virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo);
 
-  virtual void writeData(const char* data, uint32_t len, int64_t offset);
+  virtual void writeData(const char* data, int32_t len, int64_t offset);
 
-  virtual int readData(char* data, uint32_t len, int64_t offset);
+  virtual int32_t readData(char* data, int32_t len, int64_t offset);
 
   void setFileAllocator(const FileAllocatorHandle& fileAllocator) {
     this->fileAllocator = fileAllocator;

@@ -54,13 +54,13 @@ void ByteArrayDiskWriter::init() {
 }
 
 void ByteArrayDiskWriter::initAndOpenFile(const string& filename,
-					  uint64_t totalLength) {
+					  int64_t totalLength) {
   clear();
   init();
 }
 
 void ByteArrayDiskWriter::openFile(const string& filename,
-				   uint64_t totalLength) {
+				   int64_t totalLength) {
   initAndOpenFile(filename);
 }
 
@@ -72,7 +72,7 @@ void ByteArrayDiskWriter::openExistingFile(const string& filename) {
   openFile(filename);
 }
 
-void ByteArrayDiskWriter::writeData(const char* data, uint32_t dataLength, int64_t position) {
+void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_t position) {
   if(bufLength+dataLength >= maxBufLength) {
     maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
   }
@@ -80,11 +80,11 @@ void ByteArrayDiskWriter::writeData(const char* data, uint32_t dataLength, int64
   bufLength += dataLength;
 }
 
-int ByteArrayDiskWriter::readData(char* data, uint32_t len, int64_t position) {
+int ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
   if(position >= bufLength) {
     return 0;
   }
-  uint32_t readLength;
+  int32_t readLength;
   if(position+len <= bufLength) {
     readLength = len;
   } else {

@@ -69,10 +69,10 @@ public:
   }
 
   virtual BtMessageHandle
-  createBtMessage(const unsigned char* msg, uint32_t msgLength);
+  createBtMessage(const unsigned char* msg, int32_t msgLength);
 
   virtual BtMessageHandle
-  createHandshakeMessage(const unsigned char* msg, uint32_t msgLength);
+  createHandshakeMessage(const unsigned char* msg, int32_t msgLength);
 
   virtual BtMessageHandle
   createHandshakeMessage(const unsigned char* infoHash,
@@ -82,10 +82,10 @@ public:
   createRequestMessage(const PieceHandle& piece, int32_t blockIndex);
 
   virtual BtMessageHandle
-  createCancelMessage(int32_t index, int32_t begin, uint32_t length);
+  createCancelMessage(int32_t index, int32_t begin, int32_t length);
 
   virtual BtMessageHandle
-  createPieceMessage(int32_t index, int32_t begin, uint32_t length);
+  createPieceMessage(int32_t index, int32_t begin, int32_t length);
 
   virtual BtMessageHandle createHaveMessage(int32_t index);
 
@@ -106,7 +106,7 @@ public:
   virtual BtMessageHandle createHaveNoneMessage();
 
   virtual BtMessageHandle
-  createRejectMessage(int32_t index, int32_t begin, uint32_t length);
+  createRejectMessage(int32_t index, int32_t begin, int32_t length);
 
   virtual BtMessageHandle createAllowedFastMessage(int32_t index);
 
