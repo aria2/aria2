@@ -80,7 +80,7 @@ void showVersion() {
   cout << "**Configuration**" << endl;
   cout << FeatureConfig::getInstance()->getConfigurationSummary();
   cout << endl;
-  cout << "Copyright (C) 2006 Tatsuhiro Tsujikawa" << endl;
+  cout << "Copyright (C) 2006, 2007 Tatsuhiro Tsujikawa" << endl;
   cout << endl;
   cout <<
     _("This program is free software; you can redistribute it and/or modify\n"
