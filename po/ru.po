@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-01-08 09:17+0900\n"
+"POT-Creation-Date: 2007-01-29 00:10+0900\n"
 "PO-Revision-Date: 2006-07-28 18:04+0600\n"
 "Last-Translator: Azamat H. Hackimov <azamat.hackimov@gmail.com>\n"
 "Language-Team:  <ru@li.org>\n"
@@ -359,16 +359,42 @@ msgstr "Ошибка получения данных: %s"
 msgid "Failed to peek data, cause: %s"
 msgstr "Ошибка запроса данных: %s"
 
-#: src/DownloadEngineFactory.cc:159
+#: src/message.h:114
+#, c-format
+msgid ""
+"File %s exists, but %s does not exist. The download was canceled in order to "
+"prevent your file from being truncated to 0. If you are sure to download "
+"file all over again, then delete it or add --allow-overwrite=true option and "
+"restart aria2."
+msgstr ""
+
+#: src/message.h:115
+#, c-format
+msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgstr ""
+
+#: src/message.h:116
+#, c-format
+msgid "Invalid ID=%d for %s. It should be %d."
+msgstr ""
+
+#: src/message.h:117
+#, c-format
+msgid ""
+"Chunk checksum validation failed. checksumIndex=%d, offset=%lld, length=%d, "
+"expectedHash=%s, actualHash=%s"
+msgstr ""
+
+#: src/DownloadEngineFactory.cc:152
 #, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
-#: src/TorrentRequestInfo.cc:88
+#: src/TorrentRequestInfo.cc:120
 msgid "Files:"
 msgstr "Файлы:"
 
-#: src/UrlRequestInfo.cc:98
+#: src/UrlRequestInfo.cc:110
 #, c-format
 msgid "Unrecognized URL or unsupported protocol: %s\n"
 msgstr "Неправильный URL или неподдерживаемый протокол: %s\n"
@@ -649,18 +675,71 @@ msgid ""
 "                              This may take some time depending on the size "
 "of\n"
 "                              file.\n"
-"                              Default: 'none'"
+"                              Default: none"
 msgstr ""
 " --retry-wait=SEC             Установить промежуток времени между запросами\n"
 "                              при ошибках. Значение должно быть между 0 и "
 "60.\n"
 "                              По умолчанию: 5"
 
-#: src/main.cc:180
+#: src/main.cc:179
+#, fuzzy
+msgid ""
+" --allow-overwrite=true|false  If this option set to false, aria2 doesn't\n"
+"                              download a file which already exists in the "
+"file\n"
+"                              system but its corresponding .aria2 file "
+"doesn't\n"
+"                              exist.\n"
+"                              Default: false"
+msgstr ""
+" --follow-torrent=true|false  При установке в \"false\" aria2 не переходит "
+"в\n"
+"                              режим BitTorrent и может скачивать .torrent-\n"
+"                              файлы.\n"
+"                              По умолчанию: true"
+
+#: src/main.cc:184
+#, fuzzy
+msgid ""
+" --check-integiry=true|false  Check file integiry by validating piece hash.\n"
+"                              This option makes effect in BitTorrent "
+"download\n"
+"                              and Metalink with chunk checksums.\n"
+"                              Use this option to redownload a damaged "
+"portion of\n"
+"                              file.\n"
+"                              You may need to specify --allow-"
+"overwrite=true\n"
+"                              option if .aria2 file doesn't exist.\n"
+"                              Default: false"
+msgstr ""
+" --retry-wait=SEC             Установить промежуток времени между запросами\n"
+"                              при ошибках. Значение должно быть между 0 и "
+"60.\n"
+"                              По умолчанию: 5"
+
+#: src/main.cc:192
+#, fuzzy
+msgid ""
+" --realtime-chunk-checksum=true|false  Validate chunk checksum while "
+"downloading\n"
+"                              a file in Metalink mode. This option makes "
+"effect\n"
+"                              in Metalink with chunk checksums.\n"
+"                              Default: true"
+msgstr ""
+" --follow-metalink=true|false При установке в \"false\" aria2 не переходит "
+"в\n"
+"                              режим Metalink и может скачивать .metalink-\n"
+"                              файлы.\n"
+"                              По умолчанию: true"
+
+#: src/main.cc:197
 msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  Путь до .torrent-файла."
 
-#: src/main.cc:181
+#: src/main.cc:198
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -674,13 +753,13 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:185
+#: src/main.cc:202
 msgid ""
 " -S, --show-files             Print file listing of .torrent file and exit."
 msgstr ""
 " -S, --show-files             Вывести перечисленные .torrent файлы и выйти."
 
-#: src/main.cc:186
+#: src/main.cc:203
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -690,14 +769,14 @@ msgstr ""
 "                              описанный в .torrent-файл.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:189
+#: src/main.cc:206
 msgid ""
 " --listen-port=PORT           Set port number to listen to for peer "
 "connection."
 msgstr ""
 " --listen-port=PORT           Установить порт для прослушивания соединения."
 
-#: src/main.cc:190
+#: src/main.cc:207
 #, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
@@ -710,7 +789,7 @@ msgstr ""
 "60.\n"
 "                              По умолчанию: 5"
 
-#: src/main.cc:194
+#: src/main.cc:211
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can know file index through --show-files\n"
@@ -729,7 +808,7 @@ msgstr ""
 "                              Также вы можете использовать тире (\"1-5\").\n"
 "                              \",\" и \"-\" могут быть использованы вместе."
 
-#: src/main.cc:200
+#: src/main.cc:217
 #, fuzzy
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
@@ -738,7 +817,7 @@ msgstr ""
 " -m, --max-tries=N            Установить число попыток. 0 означает\n"
 "                              неограниченное число. По умолчанию: 5"
 
-#: src/main.cc:202
+#: src/main.cc:219
 #, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents "
@@ -756,11 +835,11 @@ msgstr ""
 "                              Следуя этому, aria2 соединяется к каждому URL\n"
 "                              используя N соединений."
 
-#: src/main.cc:209
+#: src/main.cc:226
 msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Путь к .metalink-файлу."
 
-#: src/main.cc:210
+#: src/main.cc:227
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously. If more than one connection "
@@ -774,24 +853,24 @@ msgstr ""
 "параметр -s.\n"
 "                              По умолчанию: 15"
 
-#: src/main.cc:214
+#: src/main.cc:231
 msgid " --metalink-version=VERSION   The version of file to download."
 msgstr " --metalink-version=VERSION   Версия файла для скачивания."
 
-#: src/main.cc:215
+#: src/main.cc:232
 msgid " --metalink-language=LANGUAGE The language of file to download."
 msgstr " --metalink-language=LANGUAGE Язык файла для скачивания."
 
-#: src/main.cc:216
+#: src/main.cc:233
 msgid ""
 " --metalink-os=OS             The operating system the file is targeted."
 msgstr " --metalink-os=OS             Целевая операционная система файла."
 
-#: src/main.cc:217
+#: src/main.cc:234
 msgid " --metalink-location=LOCATION The location of the prefered server."
 msgstr ""
 
-#: src/main.cc:218
+#: src/main.cc:235
 msgid ""
 " --follow-metalink=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -805,15 +884,15 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:223
+#: src/main.cc:240
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Вывести номер версии и выйти."
 
-#: src/main.cc:224
+#: src/main.cc:241
 msgid " -h, --help                   Print this message and exit."
 msgstr " -h, --help                   Вывести это сообщение и выйти."
 
-#: src/main.cc:227
+#: src/main.cc:244
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
@@ -821,7 +900,7 @@ msgstr ""
 " Вы можете указать несколько URL. Все URL должны указывать на один и тот же\n"
 " файл, иначе скачивание завершится неудачей."
 
-#: src/main.cc:232
+#: src/main.cc:249
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option. This arguments are ignored if you specify --select-file option."
@@ -829,104 +908,100 @@ msgstr ""
 " Указать файлы для скачивания при многофайловом torent. Используйте вместе\n"
 " с параметром -T. Этот параметр игнорируется при указании --select-file."
 
-#: src/main.cc:236
+#: src/main.cc:253
 msgid "Examples:"
 msgstr "Примеры:"
 
-#: src/main.cc:237
+#: src/main.cc:254
 msgid " Download a file by 1 connection:"
 msgstr " Скачать файл с помощью 1 соединения:"
 
-#: src/main.cc:239
+#: src/main.cc:256
 msgid " Download a file by 2 connections:"
 msgstr " Скачать файл с помощью 2 соединений:"
 
-#: src/main.cc:241
+#: src/main.cc:258
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr " Скачать файл с помощью 2 соединений к различным серверам:"
 
-#: src/main.cc:243
+#: src/main.cc:260
 msgid " You can mix up different protocols:"
 msgstr " Вы можете смешивать различные протоколы:"
 
-#: src/main.cc:247
+#: src/main.cc:264
 msgid " Download a torrent:"
 msgstr " Скачать torrent:"
 
-#: src/main.cc:249
+#: src/main.cc:266
 msgid " Download a torrent using local .torrent file:"
 msgstr " Скачать torrent с помощью локального .torrent-файла:"
 
-#: src/main.cc:251
+#: src/main.cc:268
 msgid " Download only selected files:"
 msgstr " Скачать только выбранные файлы:"
 
-#: src/main.cc:253
+#: src/main.cc:270
 msgid " Print file listing of .torrent file:"
 msgstr " Вывести список фалов из .torrent"
 
-#: src/main.cc:258
+#: src/main.cc:275
 msgid " Metalink downloading:"
 msgstr " Скачать metalink:"
 
-#: src/main.cc:260
+#: src/main.cc:277
 msgid " Download a file using local .metalink file:"
 msgstr " Скачать файл с помощью локального .metalink-файла:"
 
-#: src/main.cc:262
+#: src/main.cc:279
 msgid " Metalink downloading with preferences:"
 msgstr " Скачивание metalink с настройками:"
 
-#: src/main.cc:266
+#: src/main.cc:283
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Сообщения об ошибках направляйте на адрес %s"
 
-#: src/main.cc:409
+#: src/main.cc:432
 msgid "unrecognized proxy format"
 msgstr "неизвестный формат прокси"
 
-#: src/main.cc:436
+#: src/main.cc:458
 msgid "Currently, supported authentication scheme is basic."
 msgstr "Поддерживаемая схема аутентификации - \"basic\"."
 
-#: src/main.cc:445
+#: src/main.cc:467
 msgid "retry-wait must be between 0 and 60."
 msgstr "retry-wait должен быть в пределах 0..60"
 
-#: src/main.cc:462
+#: src/main.cc:483
 msgid "ftp-type must be either 'binary' or 'ascii'."
 msgstr "ftp-type должен быть \"binary\" или \"ascii\"."
 
-#: src/main.cc:471
+#: src/main.cc:491
 msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
 msgstr "ftp-via-http-proxy должен быть \"get\" или \"tunnel\"."
 
-#: src/main.cc:479
+#: src/main.cc:498
 msgid "min-segment-size invalid"
 msgstr "min-segment-size неверен"
 
-#: src/main.cc:490
+#: src/main.cc:508
 msgid "http-proxy-method must be either 'get' or 'tunnel'."
 msgstr "http-proxy-method должен быть \"get\" или \"tunnel\"."
 
-#: src/main.cc:498
+#: src/main.cc:515
 msgid "listen-port must be between 1024 and 65535."
 msgstr "listen-port должен быть в пределах 1024..65535."
 
-#: src/main.cc:511
+#: src/main.cc:527
 msgid "follow-torrent must be either 'true' or 'false'."
 msgstr "follow-torrent должен быть 'true' или 'false'."
 
-#: src/main.cc:525
+#: src/main.cc:540
 msgid "direct-file-mapping must be either 'true' or 'false'."
 msgstr "direct-file-mapping должен быть 'true' или 'false'."
 
-#: src/main.cc:536
-msgid "upload-limit must be greater than or equal to 0."
-msgstr "upload-limit должен быть не меньше 0."
-
-#: src/main.cc:549
+#: src/main.cc:550
 #, fuzzy
 msgid "seed-time must be greater than or equal to 0."
 msgstr "upload-limit должен быть не меньше 0."
@@ -936,82 +1011,97 @@ msgstr "upload-limit должен быть не меньше 0."
 msgid "seed-ratio must be greater than or equal to 0.0."
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:569
+#: src/main.cc:568
 #, fuzzy
 msgid "max-upload-limit must be greater than or equal to 0"
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:591
+#: src/main.cc:589
 msgid "follow-metalink must be either 'true' or 'false'."
 msgstr "follow-metalink должен быть 'true' или 'false'."
 
-#: src/main.cc:602
+#: src/main.cc:599
 #, fuzzy
 msgid "lowest-speed-limit must be greater than or equal to 0"
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:612
+#: src/main.cc:608
 #, fuzzy
 msgid "max-download-limit must be greater than or equal to 0"
 msgstr "upload-limit должен быть не меньше 0."
 
-#: src/main.cc:641
+#: src/main.cc:620
+#, fuzzy
+msgid "allow-overwrite must be either 'true' or 'false'."
+msgstr "follow-torrent должен быть 'true' или 'false'."
+
+#: src/main.cc:631
+#, fuzzy
+msgid "check-integrity must be be either 'true' or 'false'."
+msgstr "direct-file-mapping должен быть 'true' или 'false'."
+
+#: src/main.cc:642
+#, fuzzy
+msgid "realtime-chunk-checksum must be either 'true' or 'false'."
+msgstr "follow-metalink должен быть 'true' или 'false'."
+
+#: src/main.cc:669
 msgid "split must be between 1 and 5."
 msgstr "split должен быть находится в пределах 1..5."
 
-#: src/main.cc:653
+#: src/main.cc:680
 msgid "timeout must be between 1 and 600"
 msgstr "таймаут должен быть в пределах 1..600"
 
-#: src/main.cc:662
+#: src/main.cc:688
 msgid "max-tries invalid"
 msgstr "неверный max-tries"
 
-#: src/main.cc:684
+#: src/main.cc:709
 msgid "metalink-servers must be greater than 0."
 msgstr "metalink-servers должен быть больше 0"
 
-#: src/main.cc:696
+#: src/main.cc:720
 #, fuzzy
 msgid "file-allocation must be either 'none' or 'prealloc'."
 msgstr "follow-torrent должен быть 'true' или 'false'."
 
-#: src/main.cc:715
+#: src/main.cc:737
 msgid "specify at least one URL"
 msgstr "укажите по крайней мере один URL"
 
-#: src/main.cc:722
+#: src/main.cc:743
 msgid "daemon failed"
 msgstr "ошибка демона"
 
-#: src/main.cc:792
+#: src/main.cc:813
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
 "file."
 msgstr ""
 
-#: src/main.cc:796
+#: src/main.cc:817
 msgid "checksum OK."
 msgstr ""
 
-#: src/main.cc:799
+#: src/main.cc:820
 msgid "checksum ERROR."
 msgstr ""
 
-#: src/DefaultPieceStorage.cc:240
+#: src/DefaultPieceStorage.cc:242
 #, fuzzy
 msgid "Download of selected files was complete."
 msgstr " Скачать только выбранные файлы:"
 
-#: src/DefaultPieceStorage.cc:243
+#: src/DefaultPieceStorage.cc:247
 #, fuzzy
 msgid "The download was complete."
 msgstr ""
 "\n"
 "Скачивание завершено. <%s>\n"
 
-#: src/ConsoleDownloadEngine.cc:108
+#: src/ConsoleDownloadEngine.cc:111
 #, c-format
 msgid ""
 "\n"
@@ -1020,10 +1110,13 @@ msgstr ""
 "\n"
 "остановка приложения...\n"
 
-#: src/ConsoleDownloadEngine.cc:112
+#: src/ConsoleDownloadEngine.cc:115
 #, c-format
 msgid "done\n"
 msgstr "завершено\n"
+
+#~ msgid "upload-limit must be greater than or equal to 0."
+#~ msgstr "upload-limit должен быть не меньше 0."
 
 #, fuzzy
 #~ msgid ""
