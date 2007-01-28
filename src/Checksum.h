@@ -36,9 +36,9 @@
 #define _D_CHECKSUM_H_
 
 #include "common.h"
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
 
-#ifdef ENABLE_MESSAGE_DIGEST
 class Checksum {
 private:
   string md;

@@ -82,8 +82,8 @@ Note:
 * This version only supports compact peers list format.
 * The ports aria2c uses are 6881-6999.
 * The maximum number of peers is 55.
-* After selective download completes, aria2 is going to download rest of the
-files.
+* As of release 0.10.0, aria2 stops sending request message after selective
+  download completes,
 
 6. Metalink
 -----------
@@ -96,3 +96,7 @@ provided, then aria2 uses SHA1. If checksum checking is failed, aria2 doesn't
 retry the download and just exits with non-zero return code.
 
 The supported user preferences are version, language and os.
+
+If chunk checksums are provided in Metalink file, aria2 automatically validate
+a chunk of file while downloading it. This behavior can be turned off by
+a command-line option.

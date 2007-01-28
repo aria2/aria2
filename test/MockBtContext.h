@@ -8,11 +8,11 @@ class MockBtContext : public BtContext  {
 private:
   unsigned char infoHash[20];
   Strings pieceHashes;
-  long long int totalLength;
+  int64_t totalLength;
   FILE_MODE fileMode;
   string name;
-  int pieceLength;
-  int numPieces;
+  int32_t pieceLength;
+  int32_t numPieces;
   unsigned char peerId[20];
   FileEntries fileEntries;
   AnnounceTiers announceTiers;
@@ -31,7 +31,7 @@ public:
     memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
   }
 
-  virtual int getInfoHashLength() const {
+  virtual int32_t getInfoHashLength() const {
     return sizeof(infoHash);
   }
 
@@ -39,7 +39,7 @@ public:
     return Util::toHex(infoHash, sizeof(infoHash));
   }
 
-  virtual string getPieceHash(int index) const {
+  virtual string getPieceHash(int32_t index) const {
     return pieceHashes.at(index);
   }
   
@@ -51,11 +51,11 @@ public:
     pieceHashes.push_back(pieceHash);
   }
 
-  virtual long long int getTotalLength() const {
+  virtual int64_t getTotalLength() const {
     return totalLength;
   }
 
-  void setTotalLength(long long int length) {
+  void setTotalLength(int64_t length) {
     this->totalLength = length;
   }
 
@@ -93,19 +93,19 @@ public:
     this->name = name;
   }
   
-  virtual int getPieceLength() const {
+  virtual int32_t getPieceLength() const {
     return pieceLength;
   }
 
-  void setPieceLength(int pieceLength) {
+  void setPieceLength(int32_t pieceLength) {
     this->pieceLength = pieceLength;
   }
 
-  virtual int getNumPieces() const {
+  virtual int32_t getNumPieces() const {
     return numPieces;
   }
 
-  void setNumPieces(int numPieces) {
+  void setNumPieces(int32_t numPieces) {
     this->numPieces = numPieces;
   }
 

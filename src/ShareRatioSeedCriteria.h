@@ -38,6 +38,7 @@
 #include "SeedCriteria.h"
 #include "BtContext.h"
 #include "PeerStorage.h"
+#include "PieceStorage.h"
 #include "BtRuntime.h"
 #include "BtRegistry.h"
 
@@ -46,12 +47,14 @@ private:
   double ratio;
   BtContextHandle btContext;
   PeerStorageHandle peerStorage;
+  PieceStorageHandle pieceStorage;
   BtRuntimeHandle btRuntime;
 public:
   ShareRatioSeedCriteria(double ratio, const BtContextHandle& btContext)
     :ratio(ratio),
      btContext(btContext),
      peerStorage(PEER_STORAGE(btContext)),
+     pieceStorage(PIECE_STORAGE(btContext)),
      btRuntime(BT_RUNTIME(btContext)) {}
 
   virtual ~ShareRatioSeedCriteria() {}
@@ -66,7 +69,7 @@ public:
     long long int allTimeUploadLength =
       btRuntime->getUploadLengthAtStartup()+stat.getSessionUploadLength();
     return ratio <=
-      ((double)allTimeUploadLength)/btContext->getTotalLength();
+      ((double)allTimeUploadLength)/pieceStorage->getCompletedLength();
   }
 
   void setRatio(double ratio) {

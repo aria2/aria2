@@ -56,7 +56,7 @@ const unsigned char* DefaultBtContext::getInfoHash() const {
   return infoHash;
 }
 
-int DefaultBtContext::getInfoHashLength() const {
+int32_t DefaultBtContext::getInfoHashLength() const {
   return INFO_HASH_LENGTH;
 }
 
@@ -78,14 +78,14 @@ void DefaultBtContext::clear() {
 }
 
 void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
-					int hashDataLength,
-					int hashLength) {
+					int32_t hashDataLength,
+					int32_t hashLength) {
   assert(hashDataLength > 0);
   assert(hashLength > 0);
-  int numPieces = hashDataLength/hashLength;
+  int32_t numPieces = hashDataLength/hashLength;
   assert(numPieces > 0);
 
-  for(int i = 0; i < numPieces; i++) {
+  for(int32_t i = 0; i < numPieces; i++) {
     pieceHashes.push_back(Util::toHex(&hashData[i*hashLength],
 				      hashLength));
   }
@@ -180,7 +180,7 @@ void DefaultBtContext::load(const string& torrentFile) {
   // retrieve infoHash
   ShaVisitor v;
   infoDic->accept(&v);
-  int len;
+  int32_t len;
   v.getHash(infoHash, len);
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces
@@ -208,14 +208,14 @@ void DefaultBtContext::load(const string& torrentFile) {
   }
 }
 
-string DefaultBtContext::getPieceHash(int index) const {
+string DefaultBtContext::getPieceHash(int32_t index) const {
   if(index < 0 || numPieces <= index) {
     return "";
   }
   return pieceHashes.at(index);
 }
 
-long long int DefaultBtContext::getTotalLength() const {
+int64_t DefaultBtContext::getTotalLength() const {
   return totalLength;
 }
 
@@ -235,10 +235,10 @@ string DefaultBtContext::getName() const {
   return name;
 }
 
-int DefaultBtContext::getPieceLength() const {
+int32_t DefaultBtContext::getPieceLength() const {
   return pieceLength;
 }
 
-int DefaultBtContext::getNumPieces() const {
+int32_t DefaultBtContext::getNumPieces() const {
   return numPieces;
 }

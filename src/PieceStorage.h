@@ -101,8 +101,19 @@ public:
   virtual void setFileFilter(const Integers& fileIndexes) = 0;
 
   virtual void clearFileFilter() = 0;
-
+  
+  /**
+   * Returns true if download has completed.
+   * If file filter is enabled, then returns true if those files have
+   * downloaded.
+   */
   virtual bool downloadFinished() = 0;
+
+  /**
+   * Returns true if all files have downloaded.
+   * The file filter is ignored.
+   */
+  virtual bool allDownloadFinished() = 0;
 
   /**
    * Initializes DiskAdaptor.

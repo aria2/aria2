@@ -155,31 +155,39 @@ RequestInfos UrlRequestInfo::execute() {
 			 op->get(PREF_REFERER),
 			 op->getAsInt(PREF_SPLIT)));
 
-  HeadResult hr = getHeadResult();
-
-  if(fail) {
-    return RequestInfos();
+  HeadResult hr;
+  if(filename.size() && totalLength > 0) {
+    hr.filename = filename;
+    hr.totalLength = totalLength;
+  } else {
+    hr = getHeadResult();
+    if(fail) {
+      return RequestInfos();
+    }
+    
+    logger->info("Head result: filename=%s, total length=%s",
+		 hr.filename.c_str(), Util::ullitos(hr.totalLength, true).c_str());
   }
-
-  logger->info("Head result: filename=%s, total length=%s",
-	       hr.filename.c_str(), Util::ullitos(hr.totalLength, true).c_str());
-  
   adjustRequestSize(requests, reserved, maxConnections);
   
   SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
   e->segmentMan->filename = hr.filename;
   e->segmentMan->totalSize = hr.totalLength;
   e->segmentMan->downloadStarted = true;
+#ifdef ENABLE_MESSAGE_DIGEST
   e->segmentMan->digestAlgo = digestAlgo;
   e->segmentMan->chunkHashLength = chunkChecksumLength;
   e->segmentMan->pieceHashes = chunkChecksums;
+#endif // ENABLE_MESSAGE_DIGEST
 
   if(e->segmentMan->segmentFileExists()) {
     e->segmentMan->load();
     e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+#ifdef ENABLE_MESSAGE_DIGEST
     if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
       e->segmentMan->checkIntegrity();
     }
+#endif // ENABLE_MESSAGE_DIGEST
   } else {
     if(e->segmentMan->shouldCancelDownloadForSafety()) {
       throw new FatalException(EX_FILE_ALREADY_EXISTS,
@@ -190,8 +198,10 @@ RequestInfos UrlRequestInfo::execute() {
 				e->segmentMan->totalSize);
     if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
       e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+#ifdef ENABLE_MESSAGE_DIGEST
       e->segmentMan->markAllPiecesDone();
       e->segmentMan->checkIntegrity();
+#endif // ENABLE_MESSAGE_DIGEST
     } else {
       e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
 						 e->segmentMan->totalSize);

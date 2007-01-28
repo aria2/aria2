@@ -56,15 +56,15 @@ public:
 
   virtual const unsigned char* getInfoHash() const = 0;
 
-  virtual int getInfoHashLength() const = 0;
+  virtual int32_t getInfoHashLength() const = 0;
 
   virtual string getInfoHashAsString() const = 0;
 
-  virtual string getPieceHash(int index) const = 0;
+  virtual string getPieceHash(int32_t index) const = 0;
   
   virtual const Strings& getPieceHashes() const = 0;
 
-  virtual long long int getTotalLength() const = 0;
+  virtual int64_t getTotalLength() const = 0;
 
   virtual FILE_MODE getFileMode() const = 0;
 
@@ -76,9 +76,9 @@ public:
 
   virtual string getName() const = 0;
   
-  virtual int getPieceLength() const = 0;
+  virtual int32_t getPieceLength() const = 0;
 
-  virtual int getNumPieces() const = 0;
+  virtual int32_t getNumPieces() const = 0;
 
   /**
    * Returns the peer id of localhost, 20 byte length

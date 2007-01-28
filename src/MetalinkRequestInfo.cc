@@ -97,8 +97,8 @@ RequestInfos MetalinkRequestInfo::execute() {
       if(entry->resources.size() == 0) {
 	continue;
       }
-      logger->notice("Metalink: Queueing %s for download.",
-		     entry->filename.c_str());
+      logger->info("Metalink: Queueing %s for download.",
+		   entry->filename.c_str());
       MetalinkResources::iterator itr =
 	find_if(entry->resources.begin(),
 		entry->resources.end(),
@@ -122,10 +122,14 @@ RequestInfos MetalinkRequestInfo::execute() {
 	urls.push_back((*itr)->url);
       }
       UrlRequestInfoHandle reqInfo = new UrlRequestInfo(urls, maxConnection, op);
+      reqInfo->setFilename(entry->filename);
+      reqInfo->setTotalLength(entry->size);
+#ifdef ENABLE_MESSAGE_DIGEST
       reqInfo->setChecksum(checksum);
       reqInfo->setDigestAlgo(entry->chunkChecksum->digestAlgo);
       reqInfo->setChunkChecksumLength(entry->chunkChecksum->pieceLength);
       reqInfo->setChunkChecksums(entry->chunkChecksum->pieceHashes);
+#endif // ENABLE_MESSAGE_DIGEST
       nextReqInfos.push_front(reqInfo);
     }
   } catch(RecoverableException* ex) {

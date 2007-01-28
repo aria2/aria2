@@ -40,24 +40,28 @@
 #include "prefs.h"
 #include "LogFactory.h"
 #include "BitfieldManFactory.h"
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "ChunkChecksumValidator.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
 
-SegmentMan::SegmentMan():bitfield(0),
+SegmentMan::SegmentMan():logger(LogFactory::getInstance()),
+			 bitfield(0),
 			 totalSize(0),
 			 isSplittable(true), 
 			 downloadStarted(false),
 			 dir("."),
 			 errors(0),
-			 diskWriter(0),
+			 diskWriter(0)
+#ifdef ENABLE_MESSAGE_DIGEST
+			,
 			 chunkHashLength(0),
 			 digestAlgo(DIGEST_ALGO_SHA1)
-{
-  logger = LogFactory::getInstance();
-}
+#endif // ENABLE_MESSAGE_DIGEST
+{}
 
 SegmentMan::~SegmentMan() {
   delete bitfield;
@@ -450,7 +454,7 @@ bool SegmentMan::fileExists() {
 
 bool SegmentMan::shouldCancelDownloadForSafety() {
   return fileExists() && !segmentFileExists() &&
-    option->get(PREF_FORCE_TRUNCATE) != V_TRUE;
+    option->get(PREF_ALLOW_OVERWRITE) != V_TRUE;
 }
 
 void SegmentMan::markAllPiecesDone()
@@ -460,6 +464,7 @@ void SegmentMan::markAllPiecesDone()
   }
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
 void SegmentMan::checkIntegrity()
 {
   logger->notice("Validating file %s",
@@ -470,12 +475,16 @@ void SegmentMan::checkIntegrity()
   v.setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
   v.validate(bitfield, pieceHashes, chunkHashLength);
 }
+#endif // ENABLE_MESSAGE_DIGEST
 
+#ifdef ENABLE_MESSAGE_DIGEST
 bool SegmentMan::isChunkChecksumValidationReady() const {
   return bitfield &&
     ((int64_t)pieceHashes.size())*chunkHashLength == ((int64_t)bitfield->getBlockLength())*(bitfield->getMaxIndex()+1);
 }
+#endif // ENABLE_MESSAGE_DIGEST
 
+#ifdef ENABLE_MESSAGE_DIGEST
 void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
 {
   if(!isChunkChecksumValidationReady()) {
@@ -527,3 +536,4 @@ void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
     }
   }
 }
+#endif // ENABLE_MESSAGE_DIGEST

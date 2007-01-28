@@ -119,7 +119,7 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual BtMessageHandle
-    createCancelMessage(int32_t index, int32_t begin, uint32_t length) {
+    createCancelMessage(int32_t index, int32_t begin, int32_t length) {
       MockBtMessage2Handle btMsg = new MockBtMessage2();
       btMsg->type = "cancel";
       return btMsg;
@@ -370,7 +370,7 @@ void DefaultBtMessageDispatcherTest::testIsSendingInProgress() {
 void DefaultBtMessageDispatcherTest::testCountOutstandingRequest() {
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
   btMessageDispatcher->addOutstandingRequest(slot);
-  CPPUNIT_ASSERT_EQUAL((uint32_t)1, btMessageDispatcher->countOutstandingRequest());
+  CPPUNIT_ASSERT_EQUAL(1, btMessageDispatcher->countOutstandingRequest());
 }
 
 void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {

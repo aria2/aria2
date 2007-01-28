@@ -33,7 +33,7 @@ void BtInterestedMessageTest::testCreate() {
   unsigned char msg[5];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 2);
   BtInterestedMessageHandle pm = BtInterestedMessage::create(&msg[4], 1);
-  CPPUNIT_ASSERT_EQUAL((uint8_t)2, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((int8_t)2, pm->getId());
 
   // case: payload size is wrong
   try {

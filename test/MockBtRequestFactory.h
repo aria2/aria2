@@ -19,9 +19,9 @@ public:
 
   virtual void doChokedAction() {}
 
-  virtual BtMessages createRequestMessages(uint32_t max) { return BtMessages(); }
+  virtual BtMessages createRequestMessages(int32_t max) { return BtMessages(); }
 
-  virtual BtMessages createRequestMessagesOnEndGame(uint32_t max) { return BtMessages(); }
+  virtual BtMessages createRequestMessagesOnEndGame(int32_t max) { return BtMessages(); }
 };
 
 typedef SharedHandle<MockBtRequestFactory> MockBtRequestFactoryHandle;

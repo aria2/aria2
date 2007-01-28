@@ -157,9 +157,11 @@ public:
   DiskWriterHandle diskWriter;
   Requests reserved;
 
+#ifdef ENABLE_MESSAGE_DIGEST
   Strings pieceHashes;
   int32_t chunkHashLength;
   MessageDigestContext::DigestAlgo digestAlgo;
+#endif // ENABLE_MESSAGE_DIGEST
 
   SegmentMan();
   ~SegmentMan();
@@ -283,12 +285,13 @@ public:
 
   void markAllPiecesDone();
 
+#ifdef ENABLE_MESSAGE_DIGEST
   void checkIntegrity();
 
   void tryChunkChecksumValidation(const Segment& segment);
 
   bool isChunkChecksumValidationReady() const;
-
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 #endif // _D_SEGMENT_MAN_H_

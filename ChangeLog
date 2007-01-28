@@ -1,3 +1,89 @@
+2007-01-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/Xml2MetalinkProcessor.h
+	(xpathExists): New function.
+	* src/Xml2MetalinkProcessor.cc
+	(xpathExists): New function.
+
+	Not to send HEAD request if filename and size are available in Metalink
+	file:
+	* src/UrlRequestInfo.h
+	(filename): New variable.
+	(totalLength): New variable.
+	(setTotalLength): New function.
+	(setFilename): New function.
+	* src/MetalinkRequestInfo.cc
+	(execute): Set filename and size to UrlRequestInfo.
+	* src/MetalinkEntry.cc
+	(MetalinkEntry): Initialize size with 0.
+	* src/UrlRequestInfo.cc
+	(execute): Set filename and size to SegmentMan.
+	
+	Not to download rest of the files after selected files are downloaded
+	in BitTorrent:
+	* src/PieceStorage.h
+	(allDownloadFinished): New function.
+	* src/DefaultBtAnnounce.cc
+	(isCompleteAnnounceReady): Use allDownloadFinished instead of
+	downloadFinished.
+	(getAnnounceUrl): Use allDownloadFinished instead of downloadFinished.
+	* src/DefaultPieceStorage.cc
+	(completePiece): Use allDownloadFinished instead of downloadFinished.
+	Commented out the call to finishSelectiveDownloadingMode().
+	(downloadFinished): Call isFilteredAllBitSet() instead of
+	isAllBitSet().
+	(allDownloadFinished): New function.
+	* src/DefaultBtInteractive.cc
+	(addBitfieldMessageToQueue): Call allDownloadFinished() instead of
+	downloadFinished().
+	(checkHave): Call allDownloadFinished() instead of downloadFinished().
+	* src/TorrentDownloadEngine.cc
+	(onEndOfRun): Call allDownloadFinished() instead of downloadFinished().
+	* src/BitfieldMan.h
+	(isFilteredAllBitSet): New function.
+	* src/ShareRatioSeedCriteria.h
+	(PieceStorage.h): New include.
+	(pieceStorage): New variable.
+	(evaluate):
+	btContext->getTotalLength() -> pieceStorage->getCompletedLength()
+	* src/BitfieldMan.cc
+	(isFilteredAllBitSet): New function.
+	(isAllBitSet): Filter is not took into account.
+	
+	Rename --force-truncate as --allow-overwrite:
+	* src/TorrentRequestInfo.cc
+	(execute): PREF_FORCE_TRUNCATE -> PREF_ALLOW_OVERWRITE
+	* src/main.cc
+	(showUsage): --force-truncate -> --allow-overwrite
+	* src/message.h
+	(EX_FILE_ALREADY_EXISTS): --force-truncate -> --allow-overwrite
+	* src/prefs.h
+	(PREF_FORCE_TRUNCATE): Removed.
+	(PREF_ALLOW_OVERWRITE): New definition.
+	* src/SegmentMan.cc
+	(shouldCancelDownloadForSafety): --force-truncate -> --allow-overwrite
+	
+	* src/MetalinkRequestInfo.cc
+	(execute): Queueing message are now logged in info level.
+
+	* src/common.h
+	(LONG_LONG_MAX): Removed.
+	(LONG_LONG_MIN): Removed.
+	* src/HttpResponseCommand.cc
+	(handleDefaultEncoding): LONG_LONG_MAX -> INT64_MAX
+	* src/FtpNegotiateCommand.cc
+	(recvSize): LONG_LONG_MAX -> INT64_MAX
+	
+	* src/main.cc
+	(showUsage): Added --check-integiry and --realtime-chunk-checksum
+	command-line option.
+	(main): Added --check-integiry and --realtime-chunk-checksum
+	command-line option.
+	--force-truncate -> --allow-overwrite
+	Set initial value of --check-integrity option to false.
+	Don't show usage when error occurs while persing command-line options.
+	Removed deprecated --upload-limit option.
+
 2007-01-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/message.h: Added EX_INVALID_PAYLOAD_SIZE and

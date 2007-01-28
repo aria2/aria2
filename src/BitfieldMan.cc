@@ -444,7 +444,7 @@ bool BitfieldMan::unsetBit(int32_t index) {
   return b;
 }
 
-bool BitfieldMan::isAllBitSet() const {
+bool BitfieldMan::isFilteredAllBitSet() const {
   if(filterEnabled) {
     for(int32_t i = 0; i < bitfieldLength; ++i) {
       if((bitfield[i]&filterBitfield[i]) != filterBitfield[i]) {
@@ -453,17 +453,21 @@ bool BitfieldMan::isAllBitSet() const {
     }
     return true;
   } else {
-    for(int32_t i = 0; i < bitfieldLength-1; ++i) {
-      if(bitfield[i] != 0xff) {
-	return false;
-      }
-    }
-    unsigned char b = ~((128 >> (blocks-1)%8)-1);
-    if(bitfield[bitfieldLength-1] != b) {
+    return isAllBitSet();
+  }
+}
+
+bool BitfieldMan::isAllBitSet() const {
+  for(int32_t i = 0; i < bitfieldLength-1; ++i) {
+    if(bitfield[i] != 0xff) {
       return false;
     }
-    return true;
   }
+  unsigned char b = ~((128 >> (blocks-1)%8)-1);
+  if(bitfield[bitfieldLength-1] != b) {
+    return false;
+  }
+  return true;
 }
 
 bool BitfieldMan::isBitSetInternal(const unsigned char* bitfield, int32_t index) const {

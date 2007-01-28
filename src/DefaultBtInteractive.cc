@@ -78,7 +78,7 @@ void DefaultBtInteractive::doPostHandshakeProcessing() {
 
 void DefaultBtInteractive::addBitfieldMessageToQueue() {
   if(peer->isFastExtensionEnabled()) {
-    if(pieceStorage->downloadFinished()) {
+    if(pieceStorage->allDownloadFinished()) {
       dispatcher->addMessageToQueue(messageFactory->createHaveAllMessage());
     } else if(pieceStorage->getCompletedLength() > 0) {
       dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
@@ -122,7 +122,7 @@ void DefaultBtInteractive::checkHave() {
     pieceStorage->getAdvertisedPieceIndexes(cuid, haveCheckPoint);
   haveCheckPoint.reset();
   if(indexes.size() >= 20) {
-    if(peer->isFastExtensionEnabled() && pieceStorage->downloadFinished()) {
+    if(peer->isFastExtensionEnabled() && pieceStorage->allDownloadFinished()) {
       dispatcher->addMessageToQueue(messageFactory->createHaveAllMessage());
     } else {
       dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());

@@ -38,6 +38,7 @@
 #include "TimeA2.h"
 #include "message.h"
 
+#ifdef ENABLE_MESSAGE_DIGEST
 void ChunkChecksumValidator::validateSameLengthChecksum(BitfieldMan* bitfieldMan,
 							int32_t index,
 							const string& expectedChecksum,
@@ -118,3 +119,4 @@ void ChunkChecksumValidator::validate(BitfieldMan* bitfieldMan,
   fileAllocationMonitor->setCurrentValue(bitfieldMan->getTotalLength());
   fileAllocationMonitor->showProgress();
 }
+#endif // ENABLE_MESSAGE_DIGEST

@@ -28,7 +28,7 @@ void ConsoleFileAllocationMonitorTest::testShowProgress() {
   monitor.setCurrentValue(0);
 
   cout << endl;
-  for(uint64_t i = monitor.getMinValue(); i <= monitor.getMaxValue(); i += 1234343) {
+  for(int64_t i = monitor.getMinValue(); i <= monitor.getMaxValue(); i += 1234343) {
     monitor.setCurrentValue(i);
     monitor.showProgress();
   }

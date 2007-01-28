@@ -1,0 +1,283 @@
+ARIA2C(1)
+=========
+Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
+
+NAME
+----
+aria2c - The high speed download utility
+
+SYNOPSIS
+--------
+-----------------------------------------
+aria2c [OPTIONS] URL ...
+aria2c [OPTIONS] -T TORRENT_FILE FILE ...
+aria2c [OPTIONS] -M METALINK_FILE
+-----------------------------------------
+
+DESCRIPTION
+-----------
+aria2 is a utility for downloading files. It has completely new design
+concept from its predecessor, Aria, and is written from scratch.
+aria2 has a segmented downloading engine in its core.
+It can download one file from multiple URLs or multiple connections from one
+URL. This results in very high speed downloading, much faster than ordinary
+browsers. This engine in was implemented in a single-thread model.
+The architecture is clean and easy to extend. aria2 currently supports HTTP,
+FTP, and BitTorrent. It also supports Metalink version 3.0.
+
+Please visit the project web site at http://aria2.sourceforge.net
+
+OPTIONS
+-------
+-d, --dir=DIR::
+	The directory to store downloaded file.
+
+-o, --out=FILE::
+	The file name for downloaded file.
+
+-l, --log=LOG::
+	The file path to store log. If '-' is specified, log is written to
+	stdout.
+
+-D, --daemon::
+	Run as daemon.
+
+-s, --split=N::
+	Download a file using 'N' connections. 'N' must be between '1' and '5'.
+	This option affects all URLs. Thus, aria2 connects to each URL with 'N'
+	connections.
+        Default: '1'
+
+--retry-wait=SEC::
+	Set amount of time in second between requests for errors. Specify a
+	value between '0' and '60'.
+	Default: '5'
+
+-t, --timeout=SEC::
+        Set timeout in second.
+	Default: '60'
+
+ -m, --max-tries=N::
+            Set number of tries. '0' means unlimited.
+            Default: '5'
+
+ --http-proxy=HOST:PORT::
+       Use HTTP proxy server. This affects to all URLs.
+
+ --http-user=USER::
+             Set HTTP user. This affects to all URLs.
+
+ --http-passwd=PASSWD::
+         Set HTTP password. This affects to all URLs.
+
+ --http-proxy-user=USER::
+       Set HTTP proxy user. This affects to all URLs
+
+ --http-proxy-passwd=PASSWD::
+   Set HTTP proxy password. This affects to all URLs.
+
+ --http-proxy-method=METHOD::
+    Set the method to use in proxy request.
+    'METHOD' is either 'get' or 'tunnel'.
+    Default: 'tunnel'
+
+ --http-auth-scheme=SCHEME::
+    Set HTTP authentication scheme. Currently, 'basic'
+                              is the only supported scheme.
+                              Default: 'basic'
+
+ --referer=REFERER::
+            Set Referer. This affects to all URLs.
+
+ --ftp-user=USER::
+              Set FTP user. This affects to all URLs.
+              Default: 'anonymous'
+
+ --ftp-passwd=PASSWD::
+          Set FTP password. This affects to all URLs.
+          Default: 'ARIA2USER@'
+
+ --ftp-type=TYPE::
+              Set FTP transfer type. TYPE is either 'binary'
+                              or 'ascii'.
+                              Default: 'binary'
+
+ -p, --ftp-pasv::
+               Use passive mode in FTP.
+
+ --ftp-via-http-proxy=METHOD::
+  Use HTTP proxy in 'FTP'. 'METHOD' is either 'get' or
+                              'tunnel'.
+                              Default: 'tunnel'
+
+ --lowest-speed-limit=SPEED::
+   Close connection if download speed is lower than
+                              or equal to this value(bytes per sec).
+                              0 means aria2 does not care lowest speed limit.
+                              You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
+                              This option does not affect BitTorrent download.
+                              Default: '0'
+
+ --max-download-limit=SPEED::
+   Set max download speed in bytes per sec.
+                              '0' means unrestricted.
+                              You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
+                              Default: '0'
+
+ --file-allocation=METHOD::
+     Specify file allocation method. 'METHOD' is either
+                              'none' or 'prealloc'.
+                              'none' doesn't pre-allocate file space. 'prealloc'
+                              pre-allocates file space before download begins.
+                              This may take some time depending on the size of
+                              file.
+                              Default: 'none'
+
+ --allow-overwrite=true|false::
+  If this option set to 'false', aria2 doesn't
+                              download a file which already exists in the file
+                              system but its corresponding .aria2 file doesn't
+                              exist.
+                              Default: 'false'
+
+ --check-integiry=true|false::
+  Check file integiry by validating piece hash.
+                              This option makes effect in BitTorrent download
+                              and Metalink with chunk checksums.
+                              Use this option to redownload a damaged portion of
+                              file.
+                              You may need to specify '--allow-overwrite=true'
+                              option if .aria2 file doesn't exist.
+                              Default: 'false'
+
+ --realtime-chunk-checksum=true|false::
+  Validate chunk checksum while downloading
+                              a file in Metalink mode. This option makes effect
+                              in Metalink with chunk checksums.
+                              Default: 'true'
+
+ -T, --torrent-file=TORRENT_FILE::
+  The file path to .torrent file.
+
+ --follow-torrent=true|false::
+  Setting this option to 'false' prevents aria2 to
+                              enter BitTorrent mode even if the filename of
+                              downloaded file ends with .torrent.
+                              Default: 'true'
+
+ -S, --show-files::
+             Print file listing of .torrent file and exit.
+
+ --direct-file-mapping=true|false::
+ Directly read from and write to each file
+                              mentioned in .torrent file.
+                              Default: 'true'
+
+ --listen-port=PORT::
+           Set port number to listen to for peer connection.
+
+ --max-upload-limit=SPEED::
+     Set max upload speed in bytes per sec.
+                              '0' means unrestricted.
+                              You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
+                              Default: '0'
+
+ --select-file=INDEX...::
+       Set file to download by specifing its index.
+                              You can know file index through '--show-files'
+                              option. Multiple indexes can be specified by using
+                              ',' like "3,6".
+                              You can also use '-' to specify rangelike "1-5".
+                              ',' and '-' can be used together.
+
+ --seed-time=MINUTES::
+          Specify seeding time in minutes. See also
+                              '--seed-ratio' option.
+
+ --seed-ratio=RATIO::
+           Specify share ratio. Seed completed torrents until
+                              share ratio reaches 'RATIO'. '1.0' is encouraged.
+                              If '--seed-time' option is specified along with
+                              this option, seeding ends when at least one of
+                              the conditions is satisfied.
+
+ -M, --metalink-file=METALINK_FILE::
+ The file path to .metalink file.
+
+ -C, --metalink-servers=NUM_SERVERS::
+ The number of servers to connect to
+                              simultaneously. If more than one connection per
+                              server is required, use '-s' option.
+                              Default: '15'
+
+ --metalink-version=VERSION::
+   The version of file to download.
+
+ --metalink-language=LANGUAGE::
+ The language of file to download.
+
+ --metalink-os=OS::
+             The operating system the file is targeted.
+
+ --metalink-location=LOCATION::
+ The location of the prefered server.
+
+ --follow-metalink=true|false::
+  Setting this option to 'false' prevents aria2 to
+                              enter Metalink mode even if the filename of
+                              downloaded file ends with .metalink.
+                              Default: 'true'
+
+ -v, --version::
+                Print the version number and exit.
+
+ -h, --help::
+                   Print this message and exit.
+
+URL::
+ You can specify multiple URLs. All URLs must point to the same file
+ or downloading fails.
+
+FILE::
+ Specify files in multi-file torrent to download. Use conjunction with
+ '-T' option. This arguments are ignored if you specify '--select-file' option.
+
+EXAMPLES
+--------
+
+ Download a file by 1 connection::
+  aria2c http://AAA.BBB.CCC/file.zip
+ Download a file by 2 connections::
+  aria2c -s 2 http://AAA.BBB.CCC/file.zip
+ Download a file by 2 connections, each connects to a different server::
+  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip
+ You can mix up different protocols::
+  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip
+
+ Download a torrent::
+  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent
+ Download a torrent using local .torrent file::
+  aria2c -T test.torrent
+ Download only selected files::
+  aria2c -T test.torrent dir/file1.zip dir/file2.zip
+ Print file listing of .torrent file::
+  aria2c -T test.torrent -S
+
+ Metalink downloading::
+  aria2c --lowest-speed-limit 10K http://AAA.BBB.CCC/file.metalink
+ Download a file using local .metalink file::
+  aria2c -M test.metalink
+ Metalink downloading with preferences::
+  aria2c -M test.metalink --metalink-version=1.1.1 --metalink-language=en-US
+
+REPORTING BUGS
+--------------
+Report bugs to Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
+
+AUTHOR
+------
+Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
+
+COPYRIGHT
+---------
+Copyright (C) 2006, 2007 Tatsuhiro Tsujikawa

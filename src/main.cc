@@ -175,13 +175,24 @@ void showUsage() {
 	    "                              pre-allocates file space before download begins.\n"
 	    "                              This may take some time depending on the size of\n"
 	    "                              file.\n"
-	    "                              Default: 'none'") << endl;
-  cout << _(" --force-truncate=true|false  If this option set to false, aria2 doesn't download\n"
-	    "                              file which already exists in file system but\n"
-	    "                              its corresponding .aria2 file doesn't exist.\n"
-	    "                              Set this option to true if you want to download\n"
-	    "                              file all over again.\n"
+	    "                              Default: none") << endl;
+  cout << _(" --allow-overwrite=true|false  If this option set to false, aria2 doesn't\n"
+	    "                              download a file which already exists in the file\n"
+	    "                              system but its corresponding .aria2 file doesn't\n"
+	    "                              exist.\n"
             "                              Default: false") << endl;
+  cout << _(" --check-integiry=true|false  Check file integiry by validating piece hash.\n"
+	    "                              This option makes effect in BitTorrent download\n"
+	    "                              and Metalink with chunk checksums.\n"
+	    "                              Use this option to redownload a damaged portion of\n"
+	    "                              file.\n"
+	    "                              You may need to specify --allow-overwrite=true\n"
+	    "                              option if .aria2 file doesn't exist.\n"
+	    "                              Default: false") << endl;
+  cout << _(" --realtime-chunk-checksum=true|false  Validate chunk checksum while downloading\n"
+	    "                              a file in Metalink mode. This option makes effect\n"
+	    "                              in Metalink with chunk checksums.\n"
+	    "                              Default: true") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -343,9 +354,9 @@ int main(int argc, char* argv[]) {
   op->put(PREF_STARTUP_IDLE_TIME, "10");
   op->put(PREF_TRACKER_MAX_TRIES, "10");
   op->put(PREF_FILE_ALLOCATION, V_NONE);
-  op->put(PREF_FORCE_TRUNCATE, V_FALSE);
+  op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
   op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
-  op->put(PREF_CHECK_INTEGRITY, V_TRUE);
+  op->put(PREF_CHECK_INTEGRITY, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -375,7 +386,9 @@ int main(int argc, char* argv[]) {
       { "lowest-speed-limit", required_argument, &lopt, 200 },
       { "max-download-limit", required_argument, &lopt, 201 },
       { "file-allocation", required_argument, 0, 'a' },
-      { "force-truncate", required_argument, &lopt, 202 },
+      { "allow-overwrite", required_argument, &lopt, 202 },
+      { "check-integrity", required_argument, &lopt, 203 },
+      {" realtime-chunk-checksum", required_argument, &lopt, 204 },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -384,7 +397,7 @@ int main(int argc, char* argv[]) {
       { "no-preallocation", no_argument, &lopt, 18 },
       { "direct-file-mapping", required_argument, &lopt, 19 },
       // TODO remove upload-limit.
-      { "upload-limit", required_argument, &lopt, 20 },
+      //{ "upload-limit", required_argument, &lopt, 20 },
       { "select-file", required_argument, &lopt, 21 },
       { "seed-time", required_argument, &lopt, 22 },
       { "seed-ratio", required_argument, &lopt, 23 },
@@ -417,7 +430,6 @@ int main(int argc, char* argv[]) {
 	if(proxy.first.empty() || proxy.second.empty() ||
 	   !(0 < port && port <= 65535)) {
 	  cerr << _("unrecognized proxy format") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_HTTP_PROXY_HOST, proxy.first);
@@ -453,7 +465,6 @@ int main(int argc, char* argv[]) {
 	int wait = (int)strtol(optarg, NULL, 10);
 	if(!(0 <= wait && wait <= 60)) {
 	  cerr << _("retry-wait must be between 0 and 60.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_RETRY_WAIT, Util::itos(wait));
@@ -470,7 +481,6 @@ int main(int argc, char* argv[]) {
 	  op->put(PREF_FTP_TYPE, optarg);
 	} else {
 	  cerr << _("ftp-type must be either 'binary' or 'ascii'.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	break;
@@ -479,7 +489,6 @@ int main(int argc, char* argv[]) {
 	  op->put(PREF_FTP_VIA_HTTP_PROXY, optarg);
 	} else {
 	  cerr << _("ftp-via-http-proxy must be either 'get' or 'tunnel'.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	break;
@@ -487,7 +496,6 @@ int main(int argc, char* argv[]) {
 	long long int size = getRealSize(optarg);
 	if(size < 1024) {
 	  cerr << _("min-segment-size invalid") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_MIN_SEGMENT_SIZE, Util::llitos(size));
@@ -498,7 +506,6 @@ int main(int argc, char* argv[]) {
 	  op->put(PREF_HTTP_PROXY_METHOD, optarg);
 	} else {
 	  cerr << _("http-proxy-method must be either 'get' or 'tunnel'.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	break;
@@ -506,7 +513,6 @@ int main(int argc, char* argv[]) {
 	int listenPort = (int)strtol(optarg, NULL, 10);
 	if(!(1024 <= listenPort && listenPort <= 65535)) {
 	  cerr << _("listen-port must be between 1024 and 65535.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_LISTEN_PORT, Util::itos(listenPort));
@@ -519,7 +525,6 @@ int main(int argc, char* argv[]) {
 	  op->put(PREF_FOLLOW_TORRENT, V_FALSE);
 	} else {
 	  cerr << _("follow-torrent must be either 'true' or 'false'.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	break;
@@ -533,23 +538,9 @@ int main(int argc, char* argv[]) {
 	  op->put(PREF_DIRECT_FILE_MAPPING, V_FALSE);
 	} else {
 	  cerr << _("direct-file-mapping must be either 'true' or 'false'.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	break;
-      case 20: {
-	cerr << "Warning: upload-limit will be deprecated in the future release.\n"
-	  "Use max-upload-limit instead. Because there is a difference between them,\n"
-	  "take a look at the description of max-upload-limit option." << endl;
-	int uploadSpeed = strtol(optarg, NULL, 10)*1024;
-	if(0 > uploadSpeed) {
-	  cerr << _("upload-limit must be greater than or equal to 0.") << endl;
-	  showUsage();
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_MAX_UPLOAD_LIMIT, Util::itos(uploadSpeed));
-	break;
-      }
       case 21:
 	op->put(PREF_SELECT_FILE, optarg);
 	break;
@@ -557,7 +548,6 @@ int main(int argc, char* argv[]) {
 	int seedTime = (int)strtol(optarg, NULL, 10);
 	if(seedTime < 0) {
 	  cerr << _("seed-time must be greater than or equal to 0.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_SEED_TIME, Util::itos(seedTime));
@@ -567,7 +557,6 @@ int main(int argc, char* argv[]) {
 	double ratio = (int)strtod(optarg, NULL);
 	if(ratio < 0.0) {
 	  cerr << _("seed-ratio must be greater than or equal to 0.0.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_SEED_RATIO, optarg);
@@ -577,7 +566,6 @@ int main(int argc, char* argv[]) {
 	int limit = getRealSize(optarg);
 	if(limit < 0) {
 	  cerr << _("max-upload-limit must be greater than or equal to 0") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_MAX_UPLOAD_LIMIT, Util::itos(limit));
@@ -599,7 +587,6 @@ int main(int argc, char* argv[]) {
 	  op->put(PREF_FOLLOW_METALINK, V_FALSE);
 	} else {
 	  cerr << _("follow-metalink must be either 'true' or 'false'.") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	break;
@@ -610,7 +597,6 @@ int main(int argc, char* argv[]) {
 	int limit = getRealSize(optarg);
 	if(limit < 0) {
 	  cerr << _("lowest-speed-limit must be greater than or equal to 0") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_LOWEST_SPEED_LIMIT, Util::itos(limit));
@@ -620,7 +606,6 @@ int main(int argc, char* argv[]) {
 	int limit = getRealSize(optarg);
 	if(limit < 0) {
 	  cerr << _("max-download-limit must be greater than or equal to 0") << endl;
-	  showUsage();
 	  exit(EXIT_FAILURE);
 	}
 	op->put(PREF_MAX_DOWNLOAD_LIMIT, Util::itos(limit));
@@ -628,14 +613,36 @@ int main(int argc, char* argv[]) {
       }
       case 202: {
 	if(string(optarg) == "true") {
-	  op->put(PREF_FORCE_TRUNCATE, V_TRUE);
+	  op->put(PREF_ALLOW_OVERWRITE, V_TRUE);
 	} else if(string(optarg) == "false") {
-	  op->put(PREF_FORCE_TRUNCATE, V_FALSE);
+	  op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
 	} else {
-	  cerr << _("force-true must be either 'true' or 'false'.") << endl;
-	  showUsage();
+	  cerr << _("allow-overwrite must be either 'true' or 'false'.") << endl;
 	  exit(EXIT_FAILURE);
 	}
+	break;
+      }
+      case 203: {
+	if(string(optarg) == "true") {
+	  op->put(PREF_CHECK_INTEGRITY, V_TRUE);
+	} else if(string(optarg) == "false") {
+	  op->put(PREF_CHECK_INTEGRITY, V_FALSE);
+	} else {
+	  cerr << _("check-integrity must be be either 'true' or 'false'.") << endl;
+	  exit(EXIT_FAILURE);
+	}
+	break;
+      }
+      case 204: {
+	if(string(optarg) == "true") {
+	  op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
+	} else if(string(optarg) == "false") {
+	  op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_FALSE);
+	} else {
+	  cerr << _("realtime-chunk-checksum must be either 'true' or 'false'.") << endl;
+	  exit(EXIT_FAILURE);
+	}
+	break;
       }
       }
       break;
@@ -660,7 +667,6 @@ int main(int argc, char* argv[]) {
       int split = (int)strtol(optarg, NULL, 10);
       if(!(1 <= split && split <= 5)) {
 	cerr << _("split must be between 1 and 5.") << endl;
-	showUsage();
 	exit(EXIT_FAILURE);
       }
       op->put(PREF_SPLIT, Util::itos(split));
@@ -672,7 +678,6 @@ int main(int argc, char* argv[]) {
 	op->put(PREF_TIMEOUT, Util::itos(timeout));
       } else {
 	cerr << _("timeout must be between 1 and 600") << endl;
-	showUsage();
 	exit(EXIT_FAILURE);
       }
       break;
@@ -681,7 +686,6 @@ int main(int argc, char* argv[]) {
       int retries = (int)strtol(optarg, NULL, 10);
       if(retries < 0) {
 	cerr << _("max-tries invalid") << endl;
-	showUsage();
 	exit(EXIT_FAILURE);
       }
       op->put(PREF_MAX_TRIES, Util::itos(retries));
@@ -703,7 +707,6 @@ int main(int argc, char* argv[]) {
       int metalinkServers = (int)strtol(optarg, NULL, 10);
       if(metalinkServers <= 0) {
 	cerr << _("metalink-servers must be greater than 0.") << endl;
-	showUsage();
 	exit(EXIT_FAILURE);
       }
       op->put(PREF_METALINK_SERVERS, Util::itos(metalinkServers));
@@ -715,7 +718,6 @@ int main(int argc, char* argv[]) {
 	op->put(PREF_FILE_ALLOCATION, value);
       } else {
 	cerr << _("file-allocation must be either 'none' or 'prealloc'.") << endl;
-	showUsage();
 	exit(EXIT_FAILURE);
       }
       break;
@@ -727,14 +729,12 @@ int main(int argc, char* argv[]) {
       showUsage();
       exit(EXIT_SUCCESS);
     default:
-      showUsage();
       exit(EXIT_FAILURE);
     }
   }
   if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE)) {
     if(optind == argc) {
       cerr << _("specify at least one URL") << endl;
-      showUsage();
       exit(EXIT_FAILURE);
     }
   }

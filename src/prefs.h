@@ -85,7 +85,7 @@
 #define PREF_FILE_ALLOCATION "file_allocation"
 #  define V_PREALLOC "prealloc"
 // value: true | false
-#define PREF_FORCE_TRUNCATE "force_truncate"
+#define PREF_ALLOW_OVERWRITE "allow_overwrite"
 // value: true | false
 #define PREF_REALTIME_CHUNK_CHECKSUM "realtime_chunk_checksum"
 // value: true | false

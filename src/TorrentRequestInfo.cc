@@ -67,21 +67,25 @@ RequestInfos TorrentRequestInfo::execute() {
     // load .aria2 file if it exists.
     BT_PROGRESS_INFO_FILE(btContext)->load();
     PIECE_STORAGE(btContext)->getDiskAdaptor()->openExistingFile();
+#ifdef ENABLE_MESSAGE_DIGEST
     if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
       PIECE_STORAGE(btContext)->checkIntegrity();
     }
+#endif // ENABLE_MESSAGE_DIGEST
   } else {
     if(PIECE_STORAGE(btContext)->getDiskAdaptor()->fileExists()) {
-      if(op->get(PREF_FORCE_TRUNCATE) != V_TRUE) {
+      if(op->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
 	throw new FatalException(EX_FILE_ALREADY_EXISTS,
 				 PIECE_STORAGE(btContext)->getDiskAdaptor()->getFilePath().c_str(),
 				 BT_PROGRESS_INFO_FILE(btContext)->getFilename().c_str());
       } else {
 	PIECE_STORAGE(btContext)->getDiskAdaptor()->openExistingFile();
+#ifdef ENABLE_MESSAGE_DIGEST
 	if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
 	  PIECE_STORAGE(btContext)->markAllPiecesDone();
 	  PIECE_STORAGE(btContext)->checkIntegrity();
 	}
+#endif // ENABLE_MESSAGE_DIGEST
       }
     } else {
       PIECE_STORAGE(btContext)->getDiskAdaptor()->initAndOpenFile();

@@ -51,7 +51,9 @@ public:
   Checksum checksum;
 public:
   MetalinkResources resources;
+#ifdef ENABLE_MESSAGE_DIGEST
   MetalinkChunkChecksumHandle chunkChecksum;
+#endif // ENABLE_MESSAGE_DIGEST
 public:
   MetalinkEntry();
   ~MetalinkEntry();
@@ -64,6 +66,9 @@ public:
       this->os = metalinkEntry.os;
       this->size = metalinkEntry.size;
       this->checksum = metalinkEntry.checksum;
+#ifdef ENABLE_MESSAGE_DIGEST
+      this->chunkChecksum = metalinkEntry.chunkChecksum;
+#endif // ENABLE_MESSAGE_DIGEST
     }
     return *this;
   }

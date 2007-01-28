@@ -38,12 +38,15 @@
 #include "common.h"
 #include "DiskWriter.h"
 #include "BitfieldMan.h"
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include "LogFactory.h"
 #include "FileAllocationMonitor.h"
 #include "NullFileAllocationMonitor.h"
 
 class ChunkChecksumValidator {
+#ifdef ENABLE_MESSAGE_DIGEST
 private:
   DiskWriterHandle diskWriter;
 
@@ -89,6 +92,7 @@ public:
   void setFileAllocationMonitor(const FileAllocationMonitorHandle& monitor) {
     this->fileAllocationMonitor = monitor;
   }
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 #endif // _D_CHUNK_CHECKSUM_VALIDATOR_H_

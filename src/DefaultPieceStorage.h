@@ -120,6 +120,8 @@ public:
 
   virtual bool downloadFinished();
 
+  virtual bool allDownloadFinished();
+
   virtual void setBitfield(const unsigned char* bitfield,
 			   int bitfieldLength);
   

@@ -184,6 +184,8 @@ public:
   /**
    * affected by filter
    */
+  bool isFilteredAllBitSet() const;
+
   bool isAllBitSet() const;
 
   const unsigned char* getBitfield() const { return bitfield; }

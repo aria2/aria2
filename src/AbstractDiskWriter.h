@@ -64,8 +64,10 @@ public:
 
   virtual void openExistingFile(const string& filename);
 
+#ifdef ENABLE_MESSAGE_DIGEST
   virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo);
+#endif // ENABLE_MESSAGE_DIGEST
 
   virtual void writeData(const char* data, int32_t len, int64_t offset);
 

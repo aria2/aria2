@@ -182,7 +182,8 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
-	MetalinkRequestInfo.cc MetalinkRequestInfo.h
+	MetalinkRequestInfo.cc MetalinkRequestInfo.h\
+	MetalinkChunkChecksum.h
 endif # ENABLE_METALINK
 
 noinst_LIBRARIES = libaria2c.a
@@ -190,9 +191,9 @@ libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@
-aria2c_LDFLAGS = -pg
+#aria2c_LDFLAGS = -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@  -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@#  -pg

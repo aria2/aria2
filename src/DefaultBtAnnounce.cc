@@ -84,7 +84,7 @@ bool DefaultBtAnnounce::isStoppedAnnounceReady() {
 
 bool DefaultBtAnnounce::isCompletedAnnounceReady() {
   return (trackers == 0 &&
-	  pieceStorage->downloadFinished() &&
+	  pieceStorage->allDownloadFinished() &&
 	  announceList.countCompletedAllowedTier());
 }
 
@@ -106,7 +106,7 @@ string DefaultBtAnnounce::getAnnounceUrl() {
     // If download completed before "started" event is sent to a tracker,
     // we change the event to something else to prevent us from
     // sending "completed" event.
-    if(pieceStorage->downloadFinished() &&
+    if(pieceStorage->allDownloadFinished() &&
        announceList.getEvent() == AnnounceTier::STARTED) {
       announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
     }

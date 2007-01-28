@@ -60,9 +60,14 @@ public:
   // position is ignored
   virtual void writeData(const char* data, int32_t len, int64_t position = 0);
   virtual int readData(char* data, int32_t len, int64_t position);
+
   // not implemented yet
+#ifdef ENABLE_MESSAGE_DIGEST
   virtual string messageDigest(int64_t offset, int64_t length,
-			       const MessageDigestContext::DigestAlgo& algo) { return ""; }
+			       const MessageDigestContext::DigestAlgo& algo) {
+    return "";
+  }
+#endif // ENABLE_MESSAGE_DIGEST
 
   const char* getByteArray() const {
     return buf;

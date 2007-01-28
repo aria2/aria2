@@ -46,13 +46,17 @@ private:
 
   MetalinkEntryHandle getEntry(const string& xpath);
   MetalinkResourceHandle getResource(const string& xpath);
+
+#ifdef ENABLE_MESSAGE_DIGEST
   MetalinkChunkChecksumHandle getPieceHash(const string& xpath,
 					   int64_t totalSize);
+#endif // ENABLE_MESSAGE_DIGEST
 
   xmlXPathObjectPtr xpathEvaluation(const string& xpath);
   string xpathContent(const string& xpath);
   string xmlAttribute(xmlNodePtr node, const string& attrName);
   string xmlContent(xmlNodePtr node);
+  bool xpathExists(const string& xpath);
 
   void release();
 public:

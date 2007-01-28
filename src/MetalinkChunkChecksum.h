@@ -36,15 +36,19 @@
 #define _D_METALINK_CHUNK_CHECKSUM_H_
 
 #include "common.h"
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 class MetalinkChunkChecksum {
+#ifdef ENABLE_MESSAGE_DIGEST
 public:
   MessageDigestContext::DigestAlgo digestAlgo;
   int32_t pieceLength;
   Strings pieceHashes;
 public:
   MetalinkChunkChecksum():pieceLength(0) {}
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 typedef SharedHandle<MetalinkChunkChecksum> MetalinkChunkChecksumHandle;

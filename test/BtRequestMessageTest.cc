@@ -55,9 +55,9 @@ public:
     string type;
     int32_t index;
     int32_t begin;
-    uint32_t length;
+    int32_t length;
   public:
-    MockBtMessage2(string type, int32_t index, int32_t begin, uint32_t length):type(type), index(index), begin(begin), length(length) {}
+    MockBtMessage2(string type, int32_t index, int32_t begin, int32_t length):type(type), index(index), begin(begin), length(length) {}
   };
 
   typedef SharedHandle<MockBtMessage2> MockBtMessage2Handle;
@@ -65,13 +65,13 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual BtMessageHandle
-    createPieceMessage(int32_t index, int32_t begin, uint32_t length) {
+    createPieceMessage(int32_t index, int32_t begin, int32_t length) {
       MockBtMessage2Handle btMsg = new MockBtMessage2("piece", index, begin, length);
       return btMsg;
     }
 
     virtual BtMessageHandle
-    createRejectMessage(int32_t index, int32_t begin, uint32_t length) {
+    createRejectMessage(int32_t index, int32_t begin, int32_t length) {
       MockBtMessage2Handle btMsg = new MockBtMessage2("reject", index, begin, length);
       return btMsg;
     }
@@ -131,10 +131,10 @@ void BtRequestMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[9], 256);
   PeerMessageUtil::setIntParam(&msg[13], 1024);
   BtRequestMessageHandle pm = BtRequestMessage::create(&msg[4], 13);
-  CPPUNIT_ASSERT_EQUAL((uint8_t)6, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((int8_t)6, pm->getId());
   CPPUNIT_ASSERT_EQUAL(12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pm->getLength());
+  CPPUNIT_ASSERT_EQUAL(1024, pm->getLength());
 
   // case: payload size is wrong
   try {
@@ -176,7 +176,7 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
   CPPUNIT_ASSERT_EQUAL(string("piece"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL(1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL(16, pieceMsg->begin);
-  CPPUNIT_ASSERT_EQUAL((uint32_t)32, pieceMsg->length);
+  CPPUNIT_ASSERT_EQUAL(32, pieceMsg->length);
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionEnabled() {
@@ -189,7 +189,7 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExten
   CPPUNIT_ASSERT_EQUAL(string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL(1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL(16, pieceMsg->begin);
-  CPPUNIT_ASSERT_EQUAL((uint32_t)32, pieceMsg->length);
+  CPPUNIT_ASSERT_EQUAL(32, pieceMsg->length);
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionDisabled() {
@@ -210,7 +210,7 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionE
   CPPUNIT_ASSERT_EQUAL(string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL(2, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL(16, pieceMsg->begin);
-  CPPUNIT_ASSERT_EQUAL((uint32_t)32, pieceMsg->length);
+  CPPUNIT_ASSERT_EQUAL(32, pieceMsg->length);
 }
 
 void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionDisabled() {

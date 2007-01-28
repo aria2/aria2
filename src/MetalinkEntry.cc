@@ -36,7 +36,13 @@
 #include "Util.h"
 #include <algorithm>
 
-MetalinkEntry::MetalinkEntry():chunkChecksum(0) {}
+MetalinkEntry::MetalinkEntry():
+  size(0)
+#ifdef ENABLE_MESSAGE_DIGEST
+  ,
+  chunkChecksum(0)
+#endif // ENABLE_MESSAGE_DIGEST
+{}
 
 MetalinkEntry::~MetalinkEntry() {}
 

@@ -1,6 +1,7 @@
 #include "ShareRatioSeedCriteria.h"
 #include "MockBtContext.h"
 #include "MockPeerStorage.h"
+#include "MockPieceStorage.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 class ShareRatioSeedCriteriaTest:public CppUnit::TestFixture {
@@ -35,6 +36,10 @@ void ShareRatioSeedCriteriaTest::testEvaluate() {
   mockPeerStorage->setStat(stat);
   PeerStorageHandle peerStorage(mockPeerStorage);
   BtRegistry::registerPeerStorage(infoHashString, peerStorage);
+
+  MockPieceStorage* mockPieceStorage = new MockPieceStorage();
+  mockPieceStorage->setCompletedLength(1000000);
+  BtRegistry::registerPieceStorage(infoHashString, PieceStorageHandle(mockPieceStorage));
 
   ShareRatioSeedCriteria cri(1.0, btContext);
   CPPUNIT_ASSERT(cri.evaluate());

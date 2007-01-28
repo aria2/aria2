@@ -35,7 +35,7 @@ void BtAllowedFastMessageTest::testCreate() {
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 17);
   PeerMessageUtil::setIntParam(&msg[5], 12345);
   BtAllowedFastMessageHandle pm = BtAllowedFastMessage::create(&msg[4], 5);
-  CPPUNIT_ASSERT_EQUAL((uint8_t)17, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((int8_t)17, pm->getId());
   CPPUNIT_ASSERT_EQUAL(12345, pm->getIndex());
 
   // case: payload size is wrong

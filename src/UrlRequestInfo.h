@@ -50,9 +50,13 @@ class UrlRequestInfo : public RequestInfo {
 private:
   Strings urls;
   int maxConnections;
+#ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestContext::DigestAlgo digestAlgo;
   int32_t chunkChecksumLength;
   Strings chunkChecksums;
+#endif // ENABLE_MESSAGE_DIGEST
+  string filename;
+  int64_t totalLength;
 
   RequestInfo* createNextRequestInfo() const;
   void adjustRequestSize(Requests& requests,
@@ -65,23 +69,40 @@ public:
     RequestInfo(op),
     urls(urls),
     maxConnections(maxConnections),
+#ifdef ENABLE_MESSAGE_DIGEST
     digestAlgo(DIGEST_ALGO_SHA1),
-    chunkChecksumLength(0) {}
+    chunkChecksumLength(0),
+#endif // ENABLE_MESSAGE_DIGEST
+    totalLength(0) {}
 
   virtual ~UrlRequestInfo() {}
 
   virtual RequestInfos execute();
 
+#ifdef ENABLE_MESSAGE_DIGEST
   void setDigestAlgo(const MessageDigestContext::DigestAlgo& algo) {
     this->digestAlgo = algo;
   }
+#endif // ENABLE_MESSAGE_DIGEST
 
+#ifdef ENABLE_MESSAGE_DIGEST
   void setChunkChecksumLength(int32_t chunkChecksumLength) {
     this->chunkChecksumLength = chunkChecksumLength;
   }
+#endif // ENABLE_MESSAGE_DIGEST
 
+#ifdef ENABLE_MESSAGE_DIGEST
   void setChunkChecksums(const Strings& chunkChecksums) {
     this->chunkChecksums = chunkChecksums;
+  }
+#endif // ENABLE_MESSAGE_DIGEST
+
+  void setTotalLength(int64_t totalLength) {
+    this->totalLength = totalLength;
+  }
+
+  void setFilename(const string& filename) {
+    this->filename = filename;
   }
 };
 

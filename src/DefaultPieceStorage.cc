@@ -231,7 +231,7 @@ void DefaultPieceStorage::completePiece(const PieceHandle& piece) {
   if(!isEndGame()) {
     reduceUsedPieces(100);
   }
-  if(downloadFinished()) {
+  if(allDownloadFinished()) {
     return;
   }
   bitfieldMan->setBit(piece->getIndex());
@@ -240,7 +240,9 @@ void DefaultPieceStorage::completePiece(const PieceHandle& piece) {
     diskAdaptor->onDownloadComplete();
     if(isSelectiveDownloadingMode()) {
       logger->notice(_("Download of selected files was complete."));
-      finishSelectiveDownloadingMode();
+      // following line was commented out in order to stop sending request
+      // message after user-specified files were downloaded.
+      //finishSelectiveDownloadingMode();
     } else {
       logger->info(_("The download was complete."));
     }
@@ -326,6 +328,11 @@ void DefaultPieceStorage::clearFileFilter() {
 
 // not unittested
 bool DefaultPieceStorage::downloadFinished() {
+  return bitfieldMan->isFilteredAllBitSet();
+}
+
+// not unittested
+bool DefaultPieceStorage::allDownloadFinished() {
   return bitfieldMan->isAllBitSet();
 }
 

@@ -6,10 +6,10 @@
 
 class MockPieceStorage : public PieceStorage {
 private:
-  long long int totalLength;
-  long long int filteredTotalLength;
-  long long int completedLength;
-  long long int filteredCompletedLength;
+  int64_t totalLength;
+  int64_t filteredTotalLength;
+  int64_t completedLength;
+  int64_t filteredCompletedLength;
   BitfieldMan* bitfieldMan;
   bool selectiveDownloadingMode;
   bool endGame;
@@ -43,35 +43,35 @@ public:
     return false;
   }
 
-  virtual long long int getTotalLength() {
+  virtual int64_t getTotalLength() {
     return totalLength;
   }
 
-  void setTotalLength(long long int totalLength) {
+  void setTotalLength(int64_t totalLength) {
     this->totalLength = totalLength;
   }
 
-  virtual long long int getFilteredTotalLength() {
+  virtual int64_t getFilteredTotalLength() {
     return filteredTotalLength;
   }
 
-  void setFilteredTotalLength(long long int totalLength) {
+  void setFilteredTotalLength(int64_t totalLength) {
     this->filteredTotalLength = totalLength;
   }
 
-  virtual long long int getCompletedLength() {
+  virtual int64_t getCompletedLength() {
     return completedLength;
   }
 
-  void setCompletedLength(long long int completedLength) {
+  void setCompletedLength(int64_t completedLength) {
     this->completedLength = completedLength;
   }
 
-  virtual long long int getFilteredCompletedLength() {
+  virtual int64_t getFilteredCompletedLength() {
     return filteredCompletedLength;
   }
 
-  void setFilteredCompletedLength(long long int completedLength) {
+  void setFilteredCompletedLength(int64_t completedLength) {
     this->filteredCompletedLength = completedLength;
   }
   
@@ -85,6 +85,10 @@ public:
     return false;
   }
 
+  virtual bool allDownloadFinished() {
+    return false;
+  }
+
   virtual void initStorage() {}
 
   virtual const unsigned char* getBitfield() {
@@ -92,11 +96,11 @@ public:
   }
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   int bitfieldLength) {
+			   int32_t bitfieldLength) {
     bitfieldMan->setBitfield(bitfield, bitfieldLength);
   }
   
-  virtual int getBitfieldLength() {
+  virtual int32_t getBitfieldLength() {
     return bitfieldMan->getBitfieldLength();
   }
 
@@ -130,22 +134,22 @@ public:
     this->diskAdaptor = adaptor;
   }
   
-  virtual int getPieceLength(int index) {
+  virtual int32_t getPieceLength(int32_t index) {
     return pieceLengthList.at(index);
   }
 
-  void addPieceLengthList(int length) {
+  void addPieceLengthList(int32_t length) {
     pieceLengthList.push_back(length);
   }
 
-  virtual void advertisePiece(int cuid, int index) {}
+  virtual void advertisePiece(int32_t cuid, int32_t index) {}
 
-  virtual Integers getAdvertisedPieceIndexes(int myCuid,
+  virtual Integers getAdvertisedPieceIndexes(int32_t myCuid,
 					     const Time& lastCheckTime) {
     return Integers();
   }
 
-  virtual void removeAdvertisedPiece(int elapsed) {}
+  virtual void removeAdvertisedPiece(int32_t elapsed) {}
 
   virtual void markAllPiecesDone() {}
 

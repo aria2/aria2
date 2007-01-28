@@ -51,17 +51,17 @@ private:
   PieceHashes pieceHashes;
   FileEntries fileEntries;
   FILE_MODE fileMode;
-  long long int totalLength;
-  int pieceLength;
+  int64_t totalLength;
+  int32_t pieceLength;
   string name;
-  int numPieces;
+  int32_t numPieces;
   string peerId;
   AnnounceTiers announceTiers;
 
   void clear();
   void extractPieceHash(const unsigned char* hashData,
-			int hashDataLength,
-			int hashLength);
+			int32_t hashDataLength,
+			int32_t hashLength);
   void extractFileEntries(Dictionary* infoDic,
 			  const string& defaultName);
   void extractAnnounce(Data* announceData);
@@ -72,18 +72,18 @@ private:
 
   virtual const unsigned char* getInfoHash() const;
 
-  virtual int getInfoHashLength() const;
+  virtual int32_t getInfoHashLength() const;
 
   virtual string getInfoHashAsString() const;
 
-  virtual string getPieceHash(int index) const;
+  virtual string getPieceHash(int32_t index) const;
 
   virtual const Strings& getPieceHashes() const
   {
     return pieceHashes;
   }
 
-  virtual long long int getTotalLength() const;
+  virtual int64_t getTotalLength() const;
 
   virtual FILE_MODE getFileMode() const;
 
@@ -95,9 +95,9 @@ private:
 
   virtual string getName() const;
 
-  virtual int getPieceLength() const;
+  virtual int32_t getPieceLength() const;
   
-  virtual int getNumPieces() const;
+  virtual int32_t getNumPieces() const;
 
   virtual const unsigned char* getPeerId() {
     if(peerId == "") {

@@ -148,7 +148,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
-@ENABLE_METALINK_TRUE@	MetalinkRequestInfo.cc MetalinkRequestInfo.h
+@ENABLE_METALINK_TRUE@	MetalinkRequestInfo.cc MetalinkRequestInfo.h\
+@ENABLE_METALINK_TRUE@	MetalinkChunkChecksum.h
 
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
@@ -281,7 +282,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
-	MetalinkRequestInfo.cc MetalinkRequestInfo.h
+	MetalinkRequestInfo.cc MetalinkRequestInfo.h \
+	MetalinkChunkChecksum.h
 @ENABLE_ASYNC_DNS_TRUE@am__objects_1 = NameResolver.$(OBJEXT)
 @ENABLE_BITTORRENT_TRUE@am__objects_2 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
@@ -592,12 +594,12 @@ aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@
 
-aria2c_LDFLAGS = -pg
+#aria2c_LDFLAGS = -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@  -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@#  -pg
 
 all: all-am
 

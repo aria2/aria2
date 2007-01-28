@@ -32,7 +32,7 @@ void BtUnchokeMessageTest::testCreate() {
   unsigned char msg[5];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 1);
   BtUnchokeMessageHandle pm = BtUnchokeMessage::create(&msg[4], 1);
-  CPPUNIT_ASSERT_EQUAL((uint8_t)1, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((int8_t)1, pm->getId());
 
   // case: payload size is wrong
   try {

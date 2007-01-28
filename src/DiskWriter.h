@@ -91,9 +91,10 @@ public:
   virtual int readData(unsigned char* data, int32_t len, int64_t position) {
     return readData((char*)data, len, position);
   }
-
+#ifdef ENABLE_MESSAGE_DIGEST
   virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo) = 0;
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;

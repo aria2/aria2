@@ -52,11 +52,6 @@
 #  define _(String) (String)
 #endif
 
-#ifndef LONG_LONG_MAX
-# define LONG_LONG_MAX      9223372036854775807LL
-# define LONG_LONG_MIN      (-LONG_LONG_MAX - 1LL)
-#endif // LONG_LONG_MAX
-
 #define USER_AGENT "aria2"
 
 #define BITFIELD_LEN_FROM_PIECES(X) ((X)/8+((X)%8? 1 : 0))

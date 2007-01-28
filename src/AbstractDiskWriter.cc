@@ -103,17 +103,16 @@ int32_t AbstractDiskWriter::readDataInternal(char* data, int32_t len) {
   return read(fd, data, len);
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
 string AbstractDiskWriter::messageDigest(int64_t offset, int64_t length,
 					 const MessageDigestContext::DigestAlgo& algo)
 {
-#ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestContext ctx(algo);
   ctx.digestInit();
 
   int32_t BUFSIZE = 16*1024;
   char buf[BUFSIZE];
   for(int64_t i = 0; i < length/BUFSIZE; i++) {
-    int32_t rs = readData(buf, BUFSIZE, offset);
     if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
       throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
     }
@@ -122,7 +121,6 @@ string AbstractDiskWriter::messageDigest(int64_t offset, int64_t length,
   }
   int32_t r = length%BUFSIZE;
   if(r > 0) {
-    int32_t rs = readData(buf, r, offset);
     if(r != readData(buf, r, offset)) {
       throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
     }
@@ -132,10 +130,8 @@ string AbstractDiskWriter::messageDigest(int64_t offset, int64_t length,
   ctx.digestFinal(hashValue);
 
   return Util::toHex(hashValue, 20);
-#else
-  return "";
-#endif // ENABLE_MESSAGE_DIGEST
 }
+#endif // ENABLE_MESSAGE_DIGEST
 
 void AbstractDiskWriter::seek(int64_t offset) {
   if(offset != lseek(fd, offset, SEEK_SET)) {

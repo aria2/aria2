@@ -148,7 +148,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   }
 
   long long int size = headers.getFirstAsLLInt("Content-Length");
-  if(size == LONG_LONG_MAX || size < 0) {
+  if(size == INT64_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
   e->segmentMan->isSplittable = !(size == 0);

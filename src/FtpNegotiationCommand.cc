@@ -182,7 +182,7 @@ bool FtpNegotiationCommand::recvSize() {
   if(status != 213) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
-  if(size == LONG_LONG_MAX || size < 0) {
+  if(size == INT64_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
   if(!e->segmentMan->downloadStarted) {

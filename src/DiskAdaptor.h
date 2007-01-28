@@ -38,7 +38,9 @@
 #include "common.h"
 #include "FileEntry.h"
 #include "Logger.h"
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 class DiskAdaptor {
 protected:
@@ -61,8 +63,10 @@ public:
 
   virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) = 0;
 
+#ifdef ENABLE_MESSAGE_DIGEST
   virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo) = 0;
+#endif // ENABLE_MESSAGE_DIGEST
 
   virtual void onDownloadComplete() = 0;  
 

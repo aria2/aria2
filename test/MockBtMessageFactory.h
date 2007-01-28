@@ -10,12 +10,12 @@ public:
   virtual ~MockBtMessageFactory() {}
 
   virtual BtMessageHandle
-  createBtMessage(const unsigned char* msg, uint32_t msgLength) {
+  createBtMessage(const unsigned char* msg, int32_t msgLength) {
     return BtMessageHandle(0);
   };
 
   virtual BtMessageHandle
-  createHandshakeMessage(const unsigned char* msg, uint32_t msgLength) {
+  createHandshakeMessage(const unsigned char* msg, int32_t msgLength) {
     return BtMessageHandle(0);
   }
 
@@ -31,12 +31,12 @@ public:
   }
 
   virtual BtMessageHandle
-  createCancelMessage(int32_t index, int32_t begin, uint32_t length) {
+  createCancelMessage(int32_t index, int32_t begin, int32_t length) {
     return BtMessageHandle(0);
   }
 
   virtual BtMessageHandle
-  createPieceMessage(int32_t index, int32_t begin, uint32_t length) {
+  createPieceMessage(int32_t index, int32_t begin, int32_t length) {
     return BtMessageHandle(0);
   }
 
@@ -77,7 +77,7 @@ public:
   }
 
   virtual BtMessageHandle
-  createRejectMessage(int32_t index, int32_t begin, uint32_t length) {
+  createRejectMessage(int32_t index, int32_t begin, int32_t length) {
     return BtMessageHandle(0);
   }
 

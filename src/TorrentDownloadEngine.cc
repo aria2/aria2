@@ -59,7 +59,7 @@ void TorrentDownloadEngine::setBtContext(const BtContextHandle& btContext) {
 
 void TorrentDownloadEngine::onEndOfRun() {
   pieceStorage->getDiskAdaptor()->closeFile();
-  if(pieceStorage->downloadFinished()) {
+  if(pieceStorage->allDownloadFinished()) {
     btProgressInfoFile->removeFile();
   } else {
     btProgressInfoFile->save();

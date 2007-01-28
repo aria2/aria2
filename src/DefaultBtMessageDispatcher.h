@@ -68,9 +68,14 @@ public:
     peer(0),
     maxUploadSpeedLimit(0),
     requestTimeout(0),
-    logger(LogFactory::getInstance()) {}
+    logger(LogFactory::getInstance())
+  {
+    logger->debug("DefaultBtMessageDispatcher::instantiated");
+  }
 
-  virtual ~DefaultBtMessageDispatcher() {}
+  virtual ~DefaultBtMessageDispatcher() {
+    logger->debug("DefaultBtMessageDispatcher::deleted");
+  }
   
   virtual void addMessageToQueue(const BtMessageHandle& btMessage);
 

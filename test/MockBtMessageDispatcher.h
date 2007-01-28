@@ -19,7 +19,7 @@ public:
 
   virtual void sendMessages() {}
 
-  virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, uint32_t length) {}
+  virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, int32_t length) {}
 
   virtual void doCancelSendingPieceAction(const PieceHandle& piece) {}
 
@@ -35,11 +35,11 @@ public:
     return false;
   }
 
-  virtual uint32_t countMessageInQueue() {
+  virtual int32_t countMessageInQueue() {
     return messageQueue.size();
   }
 
-  virtual uint32_t countOutstandingRequest() {
+  virtual int32_t countOutstandingRequest() {
     return 0;
   }
 
@@ -47,7 +47,7 @@ public:
     return false;
   }
 
-  virtual RequestSlot getOutstandingRequest(int32_t index, int32_t begin, uint32_t length) {
+  virtual RequestSlot getOutstandingRequest(int32_t index, int32_t begin, int32_t length) {
     return RequestSlot::nullSlot;
   }
 
