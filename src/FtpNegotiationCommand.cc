@@ -67,6 +67,8 @@ bool FtpNegotiationCommand::executeInternal(Segment& segment) {
     command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     e->commands.push_back(command);
     return true;
+  } else if(sequence == SEQ_HEAD_OK) {
+    return true;
   } else {
     e->commands.push_back(this);
     return false;
@@ -186,21 +188,16 @@ bool FtpNegotiationCommand::recvSize() {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
   if(!e->segmentMan->downloadStarted) {
-    if(req->getMethod() == Request::METHOD_HEAD) {
-      e->segmentMan->downloadStarted = true;
-      e->segmentMan->totalSize = size;
-      e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				  e->segmentMan->totalSize);
-      e->segmentMan->markAllPiecesDone();
-      e->segmentMan->isSplittable = false; // TODO because we don't want segment file to be saved.
-      return true;
-    }
     e->segmentMan->downloadStarted = true;
     e->segmentMan->totalSize = size;
     e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				e->segmentMan->totalSize);
-
     e->segmentMan->filename = Util::urldecode(req->getFile());
+    if(req->getMethod() == Request::METHOD_HEAD) {
+      e->segmentMan->isSplittable = false; // TODO because we don't want segment file to be saved.
+      sequence = SEQ_HEAD_OK;
+      return false;
+    }
     bool segFileExists = e->segmentMan->segmentFileExists();
     if(segFileExists) {
       e->segmentMan->load();

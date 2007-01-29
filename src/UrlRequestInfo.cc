@@ -127,6 +127,10 @@ HeadResult UrlRequestInfo::getHeadResult() {
 			 op->get(PREF_REFERER),
 			 1,
 			 Request::METHOD_HEAD));
+  if(requests.size() == 0) {
+    fail = true;
+    return HeadResult();
+  }
   Requests reserved(requests.begin()+1, requests.end());
   requests.erase(requests.begin()+1, requests.end());
 
@@ -135,8 +139,12 @@ HeadResult UrlRequestInfo::getHeadResult() {
   HeadResult hr;
   try {
     e->run();
-    hr.filename = e->segmentMan->filename;
-    hr.totalLength = e->segmentMan->totalSize;
+    if(e->segmentMan->errors > 0) {
+      fail = true;
+    } else {
+      hr.filename = e->segmentMan->filename;
+      hr.totalLength = e->segmentMan->totalSize;
+    }
   } catch(RecoverableException *ex) {
     logger->error("Exception caught", ex);
     delete ex;
@@ -150,34 +158,33 @@ RequestInfos UrlRequestInfo::execute() {
   Requests requests;
   Requests reserved;
   printUrls(urls);
+  HeadResult hr = getHeadResult();
+  if(fail) {
+    return RequestInfos();
+  }
+
   for_each(urls.begin(), urls.end(),
 	   CreateRequest(&requests,
 			 op->get(PREF_REFERER),
 			 op->getAsInt(PREF_SPLIT)));
+  
+  logger->info("Head result: filename=%s, total length=%s",
+	       hr.filename.c_str(), Util::ullitos(hr.totalLength, true).c_str());
 
-  HeadResult hr;
-  if(filename.size() && totalLength > 0) {
-    hr.filename = filename;
-    hr.totalLength = totalLength;
-  } else {
-    hr = getHeadResult();
-    if(fail) {
-      return RequestInfos();
-    }
-    
-    logger->info("Head result: filename=%s, total length=%s",
-		 hr.filename.c_str(), Util::ullitos(hr.totalLength, true).c_str());
-  }
   adjustRequestSize(requests, reserved, maxConnections);
   
   SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
-  e->segmentMan->filename = hr.filename;
-  e->segmentMan->totalSize = hr.totalLength;
-  e->segmentMan->downloadStarted = true;
+  if(hr.totalLength > 0) {
+    e->segmentMan->filename = hr.filename;
+    e->segmentMan->totalSize = hr.totalLength;
+    e->segmentMan->downloadStarted = true;
+  }
 #ifdef ENABLE_MESSAGE_DIGEST
-  e->segmentMan->digestAlgo = digestAlgo;
-  e->segmentMan->chunkHashLength = chunkChecksumLength;
-  e->segmentMan->pieceHashes = chunkChecksums;
+  if(chunkChecksumLength > 0) {
+    e->segmentMan->digestAlgo = digestAlgo;
+    e->segmentMan->chunkHashLength = chunkChecksumLength;
+    e->segmentMan->pieceHashes = chunkChecksums;
+  }
 #endif // ENABLE_MESSAGE_DIGEST
 
   if(e->segmentMan->segmentFileExists()) {
@@ -194,17 +201,19 @@ RequestInfos UrlRequestInfo::execute() {
 			       e->segmentMan->getFilePath().c_str(),
 			       e->segmentMan->getSegmentFilePath().c_str());
     }
-    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				e->segmentMan->totalSize);
-    if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+    if(e->segmentMan->totalSize > 0) {
+      e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				  e->segmentMan->totalSize);
+      if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+	e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
 #ifdef ENABLE_MESSAGE_DIGEST
-      e->segmentMan->markAllPiecesDone();
-      e->segmentMan->checkIntegrity();
+	e->segmentMan->markAllPiecesDone();
+	e->segmentMan->checkIntegrity();
 #endif // ENABLE_MESSAGE_DIGEST
-    } else {
-      e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
-						 e->segmentMan->totalSize);
+      } else {
+	e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
+						   e->segmentMan->totalSize);
+      }
     }
   }
   Util::setGlobalSignalHandler(SIGINT, handler, 0);

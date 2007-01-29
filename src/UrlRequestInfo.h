@@ -39,9 +39,10 @@
 
 class HeadResult {
 public:
-  HeadResult():totalLength(0) {}
   string filename;
   int64_t totalLength;
+public:
+  HeadResult():totalLength(0) {}
 };
 
 std::ostream& operator<<(std::ostream& o, const HeadResult& hr);
@@ -55,8 +56,6 @@ private:
   int32_t chunkChecksumLength;
   Strings chunkChecksums;
 #endif // ENABLE_MESSAGE_DIGEST
-  string filename;
-  int64_t totalLength;
 
   RequestInfo* createNextRequestInfo() const;
   void adjustRequestSize(Requests& requests,
@@ -68,12 +67,13 @@ public:
   UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
     RequestInfo(op),
     urls(urls),
-    maxConnections(maxConnections),
+    maxConnections(maxConnections)
 #ifdef ENABLE_MESSAGE_DIGEST
+    ,
     digestAlgo(DIGEST_ALGO_SHA1),
-    chunkChecksumLength(0),
+    chunkChecksumLength(0)
 #endif // ENABLE_MESSAGE_DIGEST
-    totalLength(0) {}
+    {}
 
   virtual ~UrlRequestInfo() {}
 
@@ -96,14 +96,6 @@ public:
     this->chunkChecksums = chunkChecksums;
   }
 #endif // ENABLE_MESSAGE_DIGEST
-
-  void setTotalLength(int64_t totalLength) {
-    this->totalLength = totalLength;
-  }
-
-  void setFilename(const string& filename) {
-    this->filename = filename;
-  }
 };
 
 typedef SharedHandle<UrlRequestInfo> UrlRequestInfoHandle;

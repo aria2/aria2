@@ -122,13 +122,13 @@ RequestInfos MetalinkRequestInfo::execute() {
 	urls.push_back((*itr)->url);
       }
       UrlRequestInfoHandle reqInfo = new UrlRequestInfo(urls, maxConnection, op);
-      reqInfo->setFilename(entry->filename);
-      reqInfo->setTotalLength(entry->size);
 #ifdef ENABLE_MESSAGE_DIGEST
       reqInfo->setChecksum(checksum);
-      reqInfo->setDigestAlgo(entry->chunkChecksum->digestAlgo);
-      reqInfo->setChunkChecksumLength(entry->chunkChecksum->pieceLength);
-      reqInfo->setChunkChecksums(entry->chunkChecksum->pieceHashes);
+      if(!entry->chunkChecksum.isNull()) {
+	reqInfo->setDigestAlgo(entry->chunkChecksum->digestAlgo);
+	reqInfo->setChunkChecksumLength(entry->chunkChecksum->pieceLength);
+	reqInfo->setChunkChecksums(entry->chunkChecksum->pieceHashes);
+      }
 #endif // ENABLE_MESSAGE_DIGEST
       nextReqInfos.push_front(reqInfo);
     }

@@ -1,3 +1,37 @@
+2007-01-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To fix segfault in Metalink download:
+	
+	* src/UrlRequestInfo.h
+	(filename): Removed.
+	(totalLength): Removed.
+	(setTotalLength): Removed.
+	(setFilename): Removed.
+	* src/MetalinkRequestInfo.cc
+	(execute): Do not set filename and totalLength to reqInfo.
+	Set chunk checksum to reqInfo if it is not null.
+	
+	* src/HttpResponseCommand.cc
+	(executeInternal): Fixed filename in log.
+	(handleDefaultEncoding): Removed the call to initBitfield() and
+	markAllPiecesDone().
+	(handleOtherEncoding): Added HEAD method handling.
+	
+	* src/FtpNegotiateCommand.cc
+	(executeInternal): Added SEQ_HEAD_OK handling.
+	(recvSize): In HEAD handling, set sequence to SEQ_HEAD_OK and
+	return false.
+	
+	* src/FtpNegotiateCommand.h
+	(SEQ_HEAD_OK): New definition.
+	
+	* src/SegmentMan.cc
+	(initBitfield): Delete bitfield.
+	(isChunkChecksumValidationReady): Fixed the condition.
+
+	* src/UrlRequestInfo.cc: Fixed so that Metalink and Torrent download
+	works fine.
+	
 2007-01-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/Xml2MetalinkProcessor.h

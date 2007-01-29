@@ -62,7 +62,8 @@ private:
     SEQ_SEND_RETR,
     SEQ_RECV_RETR,
     SEQ_NEGOTIATION_COMPLETED,
-    SEQ_RETRY
+    SEQ_RETRY,
+    SEQ_HEAD_OK
   };
   bool recvGreeting();
   bool sendUser();

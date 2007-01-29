@@ -91,8 +91,11 @@ bool HttpResponseCommand::executeInternal(Segment& segment) {
       return handleDefaultEncoding(headers);
     }
   } else {
-    if(determinFilename(headers) != e->segmentMan->filename) {
-      throw new DlAbortEx(EX_FILENAME_MISMATCH, req->getFile().c_str(), e->segmentMan->filename.c_str());
+    string filenameInHeader = determinFilename(headers);
+    if(filenameInHeader != e->segmentMan->filename) {
+      throw new DlAbortEx(EX_FILENAME_MISMATCH,
+			  filenameInHeader.c_str(),
+			  e->segmentMan->filename.c_str());
     }
     createHttpDownloadCommand();
     return true;
@@ -158,9 +161,6 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
   if(req->getMethod() == Request::METHOD_HEAD) {
     e->segmentMan->downloadStarted = true;
     e->segmentMan->totalSize = size;
-    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				e->segmentMan->totalSize);
-    e->segmentMan->markAllPiecesDone();
     e->segmentMan->isSplittable = false; // TODO because we don't want segment file to be saved.
     return true;
   }
@@ -182,6 +182,14 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
 }
 
 bool HttpResponseCommand::handleOtherEncoding(const string& transferEncoding, const HttpHeader& headers) {
+  // quick hack for method 'head'
+  if(req->getMethod() == Request::METHOD_HEAD) {
+    e->segmentMan->downloadStarted = true;
+    e->segmentMan->isSplittable = false;
+    e->segmentMan->filename = determinFilename(headers);
+    e->segmentMan->totalSize = 0;
+    return true;
+  }
   if(e->segmentMan->shouldCancelDownloadForSafety()) {
     throw new FatalException(EX_FILE_ALREADY_EXISTS,
 			     e->segmentMan->getFilePath().c_str(),

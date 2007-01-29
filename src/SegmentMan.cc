@@ -237,6 +237,7 @@ void SegmentMan::init() {
 }
 
 void SegmentMan::initBitfield(int segmentLength, long long int totalLength) {
+  delete bitfield;
   this->bitfield = BitfieldManFactory::getNewFactory()->createBitfieldMan(segmentLength, totalLength);
 }
 
@@ -479,8 +480,8 @@ void SegmentMan::checkIntegrity()
 
 #ifdef ENABLE_MESSAGE_DIGEST
 bool SegmentMan::isChunkChecksumValidationReady() const {
-  return bitfield &&
-    ((int64_t)pieceHashes.size())*chunkHashLength == ((int64_t)bitfield->getBlockLength())*(bitfield->getMaxIndex()+1);
+  return bitfield && totalSize > 0 &&
+    ((int64_t)pieceHashes.size())*chunkHashLength >= totalSize;
 }
 #endif // ENABLE_MESSAGE_DIGEST
 
