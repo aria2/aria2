@@ -145,7 +145,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpHeader& headers) {
     req->setKeepAlive(false);
     e->segmentMan->isSplittable = false;
     e->segmentMan->downloadStarted = true;
-    e->segmentMan->diskWriter->initAndOpenFile("/tmp/aria2"+Util::itos(getpid()));
+    e->segmentMan->diskWriter->initAndOpenFile("/tmp/aria2"+Util::itos((int32_t)getpid()));
     createHttpDownloadCommand();
     return true;
   }

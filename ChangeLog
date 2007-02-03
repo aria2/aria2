@@ -1,3 +1,19 @@
+2007-02-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To lower CPU usage in BitTorrent download when --max-upload-limit
+	command-line option specified:
+	
+	* src/DefaultBtMessageDispatcher.cc
+	(sendMessages): Calculate uploading speed only when current message
+	is uploading data and is not sent yet.
+	
+	* src/DefaultPeerStorage.h
+	(MAX_PEER_LIST_SIZE): 100 -> 60, because 60 is well enough.
+
+	* src/HttpResponseCommand.cc
+	(handleDefaultEncoding): Added the cast to int32_t to itos.
+	This fixes compile error in Soralis 10.
+
 2007-01-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To fix segfault in Metalink download:

@@ -61,10 +61,10 @@ void DefaultBtMessageDispatcher::sendMessages() {
   while(messageQueue.size() > 0) {
     BtMessageHandle msg = messageQueue.front();
     messageQueue.pop_front();
-    if(maxUploadSpeedLimit > 0) {
+    if(maxUploadSpeedLimit > 0 &&
+       msg->isUploading() && !msg->isSendingInProgress()) {
       TransferStat stat = peerStorage->calculateStat();
-      if(maxUploadSpeedLimit < stat.getUploadSpeed() &&
-	 msg->isUploading() && !msg->isSendingInProgress()) {
+      if(maxUploadSpeedLimit < stat.getUploadSpeed()) {
 	tempQueue.push_back(msg);
 	continue;
       }

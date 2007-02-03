@@ -41,7 +41,7 @@
 #include "Logger.h"
 #include "BtRuntime.h"
 
-#define MAX_PEER_LIST_SIZE 100
+#define MAX_PEER_LIST_SIZE 60
 #define MAX_PEER_ERROR 5
 
 class DefaultPeerStorage : public PeerStorage {
