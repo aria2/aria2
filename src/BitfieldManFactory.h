@@ -53,9 +53,7 @@ public:
   ~BitfieldManFactory() {}
 
   static BitfieldManFactoryHandle getNewFactory() {
-    BitfieldManFactoryHandle factory =
-      BitfieldManFactoryHandle(new BitfieldManFactory());
-    factory->setRandomizer(defaultRandomizer);
+    BitfieldManFactoryHandle factory = new BitfieldManFactory();
     return factory;
   }
 

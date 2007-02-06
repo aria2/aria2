@@ -497,10 +497,12 @@ void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
 		   segment.getPosition(),
 		   segment.writtenLength,
 		   chunkHashLength);
-  if(hashStartIndex*chunkHashLength < segment.getPosition() && !bitfield->isBitSet(segment.index-1)) {
+  if(!bitfield->isBitSetOffsetRange((int64_t)hashStartIndex*chunkHashLength,
+				    chunkHashLength)) {
     ++hashStartIndex;
   }
-  if(hashEndIndex*(chunkHashLength+1) > segment.getPosition()+segment.segmentLength && !bitfield->isBitSet(segment.index+1)) {
+  if(!bitfield->isBitSetOffsetRange((int64_t)hashEndIndex*chunkHashLength,
+				    chunkHashLength)) {
     --hashEndIndex;
   }
   logger->debug("hashStartIndex=%d, hashEndIndex=%d",
@@ -515,7 +517,7 @@ void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
   Util::indexRange(startIndex, endIndex,
 		   hashOffset,
 		   (hashEndIndex-hashStartIndex+1)*chunkHashLength,
-		   segment.segmentLength);
+		   bitfield->getBlockLength());
   logger->debug("startIndex=%d, endIndex=%d", startIndex, endIndex);
   if(bitfield->isBitRangeSet(startIndex, endIndex)) {
     for(int32_t index = hashStartIndex; index <= hashEndIndex; ++index) {

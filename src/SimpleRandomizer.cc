@@ -34,4 +34,4 @@
 /* copyright --> */
 #include "SimpleRandomizer.h"
 
-RandomizerHandle SimpleRandomizer::randomizer = RandomizerHandle(new SimpleRandomizer());
+RandomizerHandle SimpleRandomizer::randomizer = 0;

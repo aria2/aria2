@@ -254,6 +254,9 @@ public:
   bool isBitRangeSet(int32_t startIndex, int32_t endIndex) const;
 
   void unsetBitRange(int32_t startIndex, int32_t endIndex);
+
+  bool isBitSetOffsetRange(int64_t offset, int64_t length) const;
+
 };
 
 #endif // _D_BITFIELD_MAN_H_

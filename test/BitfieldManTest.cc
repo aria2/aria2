@@ -15,6 +15,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testFilter);
   CPPUNIT_TEST(testGetMissingIndex);
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
+  CPPUNIT_TEST(testIsBitSetOffsetRange);
   CPPUNIT_TEST_SUITE_END();
 private:
   RandomizerHandle fixedNumberRandomizer;
@@ -35,6 +36,7 @@ public:
   void testFilter();
   void testGetMissingIndex();
   void testGetSparceMissingUnusedIndex();
+  void testIsBitSetOffsetRange();
 };
 
 
@@ -232,4 +234,36 @@ void BitfieldManTest::testGetSparceMissingUnusedIndex() {
   CPPUNIT_ASSERT_EQUAL(9, bitfield.getSparseMissingUnusedIndex());
   bitfield.setBit(9);
   CPPUNIT_ASSERT_EQUAL(-1, bitfield.getSparseMissingUnusedIndex());
+}
+
+void BitfieldManTest::testIsBitSetOffsetRange()
+{
+  int64_t totalLength = (int64_t)4*1024*1024*1024;
+  int32_t pieceLength = 4*1024*1024;
+  BitfieldMan bitfield(pieceLength, totalLength);
+  bitfield.setAllBit();
+
+  CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(0, 0));
+  CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(0, -1));
+  CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(totalLength, 100));
+  CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(totalLength+1, 100));
+
+  CPPUNIT_ASSERT(bitfield.isBitSetOffsetRange(0, totalLength));
+  CPPUNIT_ASSERT(bitfield.isBitSetOffsetRange(0, totalLength+1));
+
+  bitfield.clearAllBit();
+
+  bitfield.setBit(100);
+  bitfield.setBit(101);
+  
+  CPPUNIT_ASSERT(bitfield.isBitSetOffsetRange(pieceLength*100, pieceLength*2));
+  CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(pieceLength*100-10, pieceLength*2));
+  CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(pieceLength*100, pieceLength*2+1));
+    
+  bitfield.clearAllBit();
+
+  bitfield.setBit(100);
+  bitfield.setBit(102);
+
+  CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(pieceLength*100, pieceLength*3));
 }

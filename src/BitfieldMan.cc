@@ -644,3 +644,24 @@ void BitfieldMan::unsetBitRange(int32_t startIndex, int32_t endIndex)
   }
   updateCache();
 }
+
+bool BitfieldMan::isBitSetOffsetRange(int64_t offset, int64_t length) const
+{
+  if(length <= 0) {
+    return false;
+  }
+  if(totalLength <= offset) {
+    return false;
+  }
+  if(totalLength < offset+length) {
+    length = totalLength-offset;
+  }
+  int32_t startBlock = offset/blockLength;
+  int32_t endBlock = (offset+length-1)/blockLength;
+  for(int32_t i = startBlock; i <= endBlock; i++) {
+    if(!isBitSet(i)) {
+      return false;
+    }
+  }
+  return true;
+}

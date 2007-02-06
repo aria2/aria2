@@ -1,3 +1,24 @@
+2007-02-06  Tatsuhiro Tsujikawa  <tujikawa dot rednoah dot com>
+
+	To fix the bug that causes crash on Max OS X:
+	
+	* src/SimpleRandomizer.h
+	(getInstance): Create new instance if the static variable is null.
+	* src/SimpleRandomizer.cc
+	(randomizer): Initialized to 0.
+	* src/BitfieldManFactory.h
+	(getNewFactory): Removed the call to setRandomizer().
+	
+	To fix the miscalculation of the range of checksum:
+	
+	* src/BitfieldMan.h
+	(isBitSetOffsetRange): New function.
+	* src/BitfieldMan.cc
+	(isBitSetOffsetRange): New function.
+	* src/SegmentMan.cc
+	(tryChunkChecksumValidation): Use BitfieldMan::isBitSetOffsetRange().
+	Use bitfield->getBlockLength() instead of segment.segmentLength.
+	
 2007-02-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To lower CPU usage in BitTorrent download when --max-upload-limit

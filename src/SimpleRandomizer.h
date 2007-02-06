@@ -47,11 +47,14 @@ private:
 public:
 
   static RandomizerHandle getInstance() {
+    if(randomizer.isNull()) {
+      randomizer = new SimpleRandomizer();
+    }
     return randomizer;
   }
   
   static void init() {
-    srandom(time(NULL));
+    srandom(time(0));
   }
 
   virtual ~SimpleRandomizer() {}
