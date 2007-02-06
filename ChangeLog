@@ -18,6 +18,8 @@
 	* src/SegmentMan.cc
 	(tryChunkChecksumValidation): Use BitfieldMan::isBitSetOffsetRange().
 	Use bitfield->getBlockLength() instead of segment.segmentLength.
+
+	* Release 0.10.1
 	
 2007-02-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
