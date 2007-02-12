@@ -238,7 +238,7 @@ void SegmentMan::init() {
 
 void SegmentMan::initBitfield(int segmentLength, long long int totalLength) {
   delete bitfield;
-  this->bitfield = BitfieldManFactory::getNewFactory()->createBitfieldMan(segmentLength, totalLength);
+  this->bitfield = BitfieldManFactory::getFactoryInstance()->createBitfieldMan(segmentLength, totalLength);
 }
 
 Segment SegmentMan::checkoutSegment(int cuid, int index) {

@@ -46,7 +46,7 @@ Peer::Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
   active(false)
 {
   resetStatus();
-  this->bitfield = BitfieldManFactory::getNewFactory()->
+  this->bitfield = BitfieldManFactory::getFactoryInstance()->
     createBitfieldMan(pieceLength, totalLength);
   string idSeed = ipaddr+":"+Util::itos(port);
   id = Util::simpleMessageDigest(idSeed);

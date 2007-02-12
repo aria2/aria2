@@ -45,15 +45,18 @@ typedef SharedHandle<BitfieldManFactory> BitfieldManFactoryHandle;
 
 class BitfieldManFactory {
 private:
-  static RandomizerHandle defaultRandomizer;
+  static BitfieldManFactoryHandle factory;
+
   RandomizerHandle randomizer;
 
   BitfieldManFactory();
 public:
   ~BitfieldManFactory() {}
 
-  static BitfieldManFactoryHandle getNewFactory() {
-    BitfieldManFactoryHandle factory = new BitfieldManFactory();
+  static BitfieldManFactoryHandle getFactoryInstance() {
+    if(factory.isNull()) {
+      factory = new BitfieldManFactory();
+    }
     return factory;
   }
 
@@ -64,11 +67,12 @@ public:
   }
 
   static void setDefaultRandomizer(const RandomizerHandle& randomizer) {
-    defaultRandomizer = randomizer;
+    BitfieldManFactoryHandle factory = getFactoryInstance();
+    factory->setRandomizer(randomizer);
   }
 
   static RandomizerHandle getDefaultRandomizer() {
-    return defaultRandomizer;
+    return getFactoryInstance()->getRandomizer();
   }
 
   void setRandomizer(const RandomizerHandle& randomizer) {

@@ -35,6 +35,6 @@
 #include "BitfieldManFactory.h"
 #include "SimpleRandomizer.h"
 
-RandomizerHandle BitfieldManFactory::defaultRandomizer = SimpleRandomizer::getInstance();
+BitfieldManFactoryHandle BitfieldManFactory::factory = 0;
 
-BitfieldManFactory::BitfieldManFactory():randomizer(defaultRandomizer) {}
+BitfieldManFactory::BitfieldManFactory():randomizer(0) {}

@@ -52,7 +52,7 @@ DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option
   option(option)
 {
   bitfieldMan =
-    BitfieldManFactory::getNewFactory()->
+    BitfieldManFactory::getFactoryInstance()->
     createBitfieldMan(btContext->getPieceLength(),
 		      btContext->getTotalLength());
   logger = LogFactory::getInstance();

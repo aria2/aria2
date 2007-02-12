@@ -40,7 +40,7 @@ Piece::Piece():index(0), length(0), bitfield(0) {}
 
 Piece::Piece(int index, int length):index(index), length(length) {
   bitfield =
-    BitfieldManFactory::getNewFactory()->createBitfieldMan(BLOCK_LENGTH, length);
+    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(BLOCK_LENGTH, length);
 }
 
 Piece::Piece(const Piece& piece) {
