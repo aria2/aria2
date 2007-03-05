@@ -665,3 +665,18 @@ bool BitfieldMan::isBitSetOffsetRange(int64_t offset, int64_t length) const
   }
   return true;
 }
+
+int64_t BitfieldMan::getMissingUnusedLength(int32_t startingIndex) const
+{
+  if(startingIndex < 0 || blocks <= startingIndex) {
+    return 0;
+  }
+  int64_t length = 0;
+  for(int32_t i = startingIndex; i < blocks; ++i) {
+    if(isBitSet(i) || isUseBitSet(i)) {
+      break;
+    }
+    length += getBlockLength(i);
+  }
+  return length;
+}

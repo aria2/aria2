@@ -73,3 +73,23 @@ long long int HttpHeader::getFirstAsLLInt(const string& name) const {
     return strtoll(value.c_str(), NULL, 10);
   }
 }
+
+RangeHandle HttpHeader::getRange() const
+{
+  string rangeStr = getFirst("Range");
+  if(rangeStr == "") {
+    return 0;
+  }
+  pair<string, string> rangePair;
+  Util::split(rangePair, rangeStr, '/');
+  pair<string, string> startEndBytePair;
+  Util::split(startEndBytePair, rangePair.first, '-');
+
+  int64_t startByte = STRTOLL(startEndBytePair.first.c_str());
+  int64_t endByte = STRTOLL(startEndBytePair.second.c_str());
+  int64_t contentLength = STRTOLL(rangePair.second.c_str());
+
+  RangeHandle range = new Range(startByte, endByte, contentLength);
+
+  return range;
+}

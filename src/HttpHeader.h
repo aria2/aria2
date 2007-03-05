@@ -36,17 +36,17 @@
 #define _D_HTTP_HEADER_H_
 
 #include "common.h"
+#include "Range.h"
 #include <map>
 #include <deque>
 #include <string>
 
-using namespace std;
-
 class HttpHeader {
 private:
+  int32_t status;
   multimap<string, string> table;
 public:
-  HttpHeader() {}
+  HttpHeader():status(0) {}
   ~HttpHeader() {}
 
   void put(const string& name, const string& value);
@@ -55,6 +55,20 @@ public:
   Strings get(const string& name) const;
   int getFirstAsInt(const string& name) const;
   long long int getFirstAsLLInt(const string& name) const;
+
+  RangeHandle getRange() const;
+
+  int32_t getStatus() const
+  {
+    return status;
+  }
+
+  void setStatus(int32_t status)
+  {
+    this->status = status;
+  }
 };
+
+typedef SharedHandle<HttpHeader> HttpHeaderHandle;
 
 #endif // _D_HTTP_HEADER_H_

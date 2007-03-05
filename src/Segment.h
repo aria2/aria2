@@ -81,5 +81,7 @@ public:
 
 ostream& operator<<(ostream& o, const Segment& segment);
 
+typedef SharedHandle<Segment> SegmentHandle;
+
 #endif // _D_SEGMENT_H_
 

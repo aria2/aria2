@@ -257,6 +257,8 @@ public:
 
   bool isBitSetOffsetRange(int64_t offset, int64_t length) const;
 
+  int64_t getMissingUnusedLength(int32_t startingIndex) const;
+
 };
 
 #endif // _D_BITFIELD_MAN_H_

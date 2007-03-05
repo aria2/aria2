@@ -181,7 +181,7 @@ void showUsage() {
 	    "                              system but its corresponding .aria2 file doesn't\n"
 	    "                              exist.\n"
             "                              Default: false") << endl;
-  cout << _(" --check-integiry=true|false  Check file integiry by validating piece hash.\n"
+  cout << _(" --check-integriy=true|false  Check file integriy by validating piece hash.\n"
 	    "                              This option makes effect in BitTorrent download\n"
 	    "                              and Metalink with chunk checksums.\n"
 	    "                              Use this option to redownload a damaged portion of\n"

@@ -135,5 +135,6 @@ public:
 
 typedef SharedHandle<Request> RequestHandle;
 typedef deque<RequestHandle> Requests;
+typedef WeakHandle<Request> RequestWeakHandle;
 
 #endif // _D_REQUEST_H_

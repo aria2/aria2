@@ -202,7 +202,8 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
     Util::split(hp, line, ':');
     headers.put(hp.first, hp.second);
   }
-  return (int)strtol(status.c_str(), NULL, 10);
+  headers.setStatus(strtol(status.c_str(), 0, 10));
+  return headers.getStatus();
 }
 
 bool HttpConnection::useProxy() const {

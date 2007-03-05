@@ -97,4 +97,6 @@ public:
   int receiveResponse(HttpHeader& headers);
 };
 
+typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+
 #endif // _D_HTTP_CONNECTION_H_
