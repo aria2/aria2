@@ -51,9 +51,9 @@ using namespace std;
 class SegmentEntry {
 public:
   int cuid;
-  Segment segment;
+  SegmentHandle segment;
 public:
-  SegmentEntry(int cuid, const Segment& segment)
+  SegmentEntry(int cuid, const SegmentHandle& segment)
     :cuid(cuid), segment(segment) {}
   ~SegmentEntry() {}
 };
@@ -74,14 +74,14 @@ private:
 
   void read(FILE* file);
   FILE* openSegFile(const string& segFilename, const string& mode) const;
-  bool onNullBitfield(Segment& segment, int cuid);
-  Segment checkoutSegment(int cuid, int index);
+  SegmentHandle onNullBitfield(int32_t cuid);
+  SegmentHandle checkoutSegment(int32_t cuid, int32_t index);
   SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
   SegmentEntryHandle getSegmentEntryByIndex(int index) {
     for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
 	itr != usedSegmentEntries.end(); ++itr) {
       const SegmentEntryHandle& segmentEntry = *itr;
-      if(segmentEntry->segment.index == index) {
+      if(segmentEntry->segment->index == index) {
 	return segmentEntry;
       }
     }
@@ -116,7 +116,7 @@ public:
    * If Transfer-Encoding is Chunked or Content-Length header is not provided,
    * then this value is set to be 0.
    */
-  long long int totalSize;
+  int64_t totalSize;
   /**
    * Represents whether this download is splittable.
    * In Split download(or segmented download), http client establishes
@@ -220,39 +220,39 @@ public:
    * If there is no vacant segment, then returns a segment instance whose
    * isNull call is true.
    */
-  bool getSegment(Segment& segment, int cuid);
+  SegmentHandle getSegment(int32_t cuid);
   /**
    * Returns a segment whose index is index. 
    * If it has already assigned
    * to another cuid or has been downloaded, then returns a segment instance
    * whose isNull call is true.
    */
-  bool getSegment(Segment& segment, int cuid, int index);
+  SegmentHandle getSegment(int32_t cuid, int32_t index);
   /**
    * Updates download status.
    */
-  bool updateSegment(int cuid, const Segment& segment);
+  //bool updateSegment(int cuid, const Segment& segment);
   /**
    * Cancels all the segment which the command having given cuid
    * uses.
    */
-  void cancelSegment(int cuid);
+  void cancelSegment(int32_t cuid);
   /**
    * Tells SegmentMan that the segment has been downloaded successfully.
    */
-  bool completeSegment(int cuid, const Segment& segment);
+  bool completeSegment(int32_t cuid, const SegmentHandle& segment);
   /**
    * Initializes bitfield with the provided length parameters.
    */
-  void initBitfield(int segmentLength, long long int totalLength);
+  void initBitfield(int32_t segmentLength, int64_t totalLength);
   /**
    * Returns true if the segment whose index is index has been downloaded.
    */
-  bool hasSegment(int index) const;
+  bool hasSegment(int32_t index) const;
   /**
    * Returns the length of bytes downloaded.
    */
-  long long int getDownloadLength() const;
+  int64_t getDownloadLength() const;
 
   /**
    * Registers given peerStat if it has not been registerd.
@@ -288,7 +288,7 @@ public:
 #ifdef ENABLE_MESSAGE_DIGEST
   void checkIntegrity();
 
-  void tryChunkChecksumValidation(const Segment& segment);
+  void tryChunkChecksumValidation(const SegmentHandle& segment);
 
   bool isChunkChecksumValidationReady() const;
 #endif // ENABLE_MESSAGE_DIGEST

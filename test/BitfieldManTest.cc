@@ -16,6 +16,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetMissingIndex);
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
   CPPUNIT_TEST(testIsBitSetOffsetRange);
+  CPPUNIT_TEST(testGetMissingUnusedLength);
   CPPUNIT_TEST_SUITE_END();
 private:
   RandomizerHandle fixedNumberRandomizer;
@@ -37,6 +38,7 @@ public:
   void testGetMissingIndex();
   void testGetSparceMissingUnusedIndex();
   void testIsBitSetOffsetRange();
+  void testGetMissingUnusedLength();
 };
 
 
@@ -266,4 +268,38 @@ void BitfieldManTest::testIsBitSetOffsetRange()
   bitfield.setBit(102);
 
   CPPUNIT_ASSERT(!bitfield.isBitSetOffsetRange(pieceLength*100, pieceLength*3));
+}
+
+void BitfieldManTest::testGetMissingUnusedLength()
+{
+  int64_t totalLength = 1024*10+10;
+  int32_t blockLength = 1024;
+
+  BitfieldMan bf(blockLength, totalLength);
+
+  // from index 0 and all blocks are unused and not acquired.
+  CPPUNIT_ASSERT_EQUAL((int64_t)totalLength, bf.getMissingUnusedLength(0));
+
+  // from index 10 and all blocks are unused and not acquired.
+  CPPUNIT_ASSERT_EQUAL((int64_t)10, bf.getMissingUnusedLength(10));
+
+  // from index -1
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bf.getMissingUnusedLength(-1));
+
+  // from index 11
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bf.getMissingUnusedLength(11));
+
+  // from index 12
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, bf.getMissingUnusedLength(12));
+
+  // from index 0 and 5th block is used.
+  bf.setUseBit(5);
+  CPPUNIT_ASSERT_EQUAL((int64_t)5*blockLength, bf.getMissingUnusedLength(0));
+
+  // from index 0 and 4th block is acquired.
+  bf.setBit(4);
+  CPPUNIT_ASSERT_EQUAL((int64_t)4*blockLength, bf.getMissingUnusedLength(0));
+
+  // from index 1
+  CPPUNIT_ASSERT_EQUAL((int64_t)3*blockLength, bf.getMissingUnusedLength(1));
 }

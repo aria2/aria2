@@ -33,38 +33,19 @@
  */
 /* copyright --> */
 #include "HttpDownloadCommand.h"
-#include "DlRetryEx.h"
 #include "HttpRequestCommand.h"
 #include "Util.h"
-#include "ChunkedEncoding.h"
 #include "message.h"
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <algorithm>
 
-using namespace std;
-
-HttpDownloadCommand::HttpDownloadCommand(int cuid, const RequestHandle req,
+HttpDownloadCommand::HttpDownloadCommand(int cuid,
+					 const RequestHandle req,
 					 DownloadEngine* e,
 					 const SocketHandle& socket)
-  :DownloadCommand(cuid, req, e, socket)
-{
-  ChunkedEncoding* ce = new ChunkedEncoding();
-  transferEncodings["chunked"] = ce;
-}
+  :DownloadCommand(cuid, req, e, socket) {}
 
-HttpDownloadCommand::~HttpDownloadCommand() {
-  for(map<string, TransferEncoding*>::iterator itr = transferEncodings.begin(); itr != transferEncodings.end(); itr++) {
-    delete((*itr).second);
-  }
-}
+HttpDownloadCommand::~HttpDownloadCommand() {}
 
-TransferEncoding* HttpDownloadCommand::getTransferEncoding(const string& name) {
-  return transferEncodings[name];
-}
-
-bool HttpDownloadCommand::prepareForNextSegment(const Segment& currentSegment) {
+bool HttpDownloadCommand::prepareForNextSegment() {
   if(e->segmentMan->finished()) {
     return true;
   } else {
@@ -73,7 +54,7 @@ bool HttpDownloadCommand::prepareForNextSegment(const Segment& currentSegment) {
       e->commands.push_back(command);
       return true;
     } else {
-      return DownloadCommand::prepareForNextSegment(currentSegment);
+      return DownloadCommand::prepareForNextSegment();
     }
   }
 }

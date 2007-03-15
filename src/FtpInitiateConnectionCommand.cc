@@ -42,7 +42,7 @@
 #include "Util.h"
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
-							   const RequestHandle req,
+							   const RequestHandle& req,
 							   DownloadEngine* e)
   :AbstractCommand(cuid, req, e)
 {
@@ -57,7 +57,7 @@ FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {
 #endif // ENABLE_ASYNC_DNS
 }
 
-bool FtpInitiateConnectionCommand::executeInternal(Segment& segment) {
+bool FtpInitiateConnectionCommand::executeInternal() {
   string hostname;
   if(useHttpProxy()) {
     hostname = e->option->get(PREF_HTTP_PROXY_HOST);

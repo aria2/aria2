@@ -136,7 +136,7 @@ void SegmentMan::save() const {
     }
     for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
 	itr != usedSegmentEntries.end(); itr++) {
-      if(fwrite(&(*itr)->segment, sizeof(Segment), 1, segFile) < 1) {
+      if(fwrite((*itr)->segment.get(), sizeof(Segment), 1, segFile) < 1) {
 	throw string("writeError");
       }
     }
@@ -187,8 +187,8 @@ void SegmentMan::read(FILE* file) {
     throw string("readError");
   }
   while(segmentCount--) {
-    Segment seg;
-    if(fread(&seg, sizeof(Segment), 1, file) < 1) {
+    SegmentHandle seg;
+    if(fread(seg.get(), sizeof(Segment), 1, file) < 1) {
       throw string("readError");
     }
     usedSegmentEntries.push_back(SegmentEntryHandle(new SegmentEntry(0, seg)));
@@ -236,19 +236,19 @@ void SegmentMan::init() {
   
 }
 
-void SegmentMan::initBitfield(int segmentLength, long long int totalLength) {
+void SegmentMan::initBitfield(int32_t segmentLength, int64_t totalLength) {
   delete bitfield;
   this->bitfield = BitfieldManFactory::getFactoryInstance()->createBitfieldMan(segmentLength, totalLength);
 }
 
-Segment SegmentMan::checkoutSegment(int cuid, int index) {
+SegmentHandle SegmentMan::checkoutSegment(int32_t cuid, int32_t index) {
   logger->debug("Attach segment#%d to CUID#%d.", index, cuid);
   bitfield->setUseBit(index);
   SegmentEntryHandle segmentEntry = getSegmentEntryByIndex(index);
-  Segment segment;
+  SegmentHandle segment(0);
   if(segmentEntry.isNull()) {
-    segment = Segment(index, bitfield->getBlockLength(index),
-		       bitfield->getBlockLength());
+    segment = new Segment(index, bitfield->getBlockLength(index),
+			  bitfield->getBlockLength());
     SegmentEntryHandle entry = new SegmentEntry(cuid, segment);
     usedSegmentEntries.push_back(entry);
   } else {
@@ -256,23 +256,22 @@ Segment SegmentMan::checkoutSegment(int cuid, int index) {
     segment = segmentEntry->segment;
   }
   logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
-		segment.index, segment.length, segment.segmentLength,
-		segment.writtenLength);
+		segment->index, segment->length, segment->segmentLength,
+		segment->writtenLength);
   return segment;
 }
 
-bool SegmentMan::onNullBitfield(Segment& segment, int cuid) {
+SegmentHandle SegmentMan::onNullBitfield(int32_t cuid) {
   if(usedSegmentEntries.size() == 0) {
-    segment = Segment(0, 0, 0);
+    SegmentHandle segment = new Segment(0, 0, 0);
     usedSegmentEntries.push_back(SegmentEntryHandle(new SegmentEntry(cuid, segment)));
-    return true;
+    return segment;
   } else {
     SegmentEntryHandle segmentEntry = getSegmentEntryByCuid(cuid);
     if(segmentEntry.isNull()) {
-      return false;
+      return 0;
     } else {
-      segment = segmentEntry->segment;
-      return true;
+      return segmentEntry->segment;
     }
   }
 }
@@ -301,57 +300,52 @@ SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peer
   return slowSegmentEntry;
 }
 
-bool SegmentMan::getSegment(Segment& segment, int cuid) {
+SegmentHandle SegmentMan::getSegment(int32_t cuid) {
   if(!bitfield) {
-    return onNullBitfield(segment, cuid);
+    return onNullBitfield(cuid);
   }
-
   SegmentEntryHandle segmentEntry = getSegmentEntryByCuid(cuid);
   if(!segmentEntry.isNull()) {
-    segment = segmentEntry->segment;
-    return true;
+    return segmentEntry->segment;
   }
   int index = bitfield->getSparseMissingUnusedIndex();
   if(index == -1) {
     PeerStatHandle myPeerStat = getPeerStat(cuid);
     if(!myPeerStat.get()) {
-      return false;
+      return 0;
     }
     SegmentEntryHandle slowSegmentEntry = findSlowerSegmentEntry(myPeerStat);
     if(slowSegmentEntry.get()) {
       logger->info("CUID#%d cancels segment index=%d. CUID#%d handles it instead.",
 		   slowSegmentEntry->cuid,
-		   slowSegmentEntry->segment.index,
+		   slowSegmentEntry->segment->index,
 		   cuid);
       PeerStatHandle slowPeerStat = getPeerStat(slowSegmentEntry->cuid);
       slowPeerStat->requestIdle();
       cancelSegment(slowSegmentEntry->cuid);
-      segment = checkoutSegment(cuid, slowSegmentEntry->segment.index);
-      return true;
+      return checkoutSegment(cuid, slowSegmentEntry->segment->index);
     } else {
-      return false;
+      return 0;
     }
   } else {
-    segment = checkoutSegment(cuid, index);
-    return true;
+    return checkoutSegment(cuid, index);
   }
 }
 
-bool SegmentMan::getSegment(Segment& segment, int cuid, int index) {
+SegmentHandle SegmentMan::getSegment(int32_t cuid, int32_t index) {
   if(!bitfield) {
-    return onNullBitfield(segment, cuid);
+    return onNullBitfield(cuid);
   }
   if(index < 0 || (int32_t)bitfield->countBlock() <= index) {
-    return false;
+    return 0;
   }
   if(bitfield->isBitSet(index) || bitfield->isUseBitSet(index)) {
-    return false;
+    return 0;
   } else {
-    segment = checkoutSegment(cuid, index);
-    return true;
+    return checkoutSegment(cuid, index);
   }
 }
-
+/*
 bool SegmentMan::updateSegment(int cuid, const Segment& segment) {
   if(segment.isNull()) {
     return false;
@@ -364,41 +358,32 @@ bool SegmentMan::updateSegment(int cuid, const Segment& segment) {
     return true;
   }
 }
+*/
 
-class CancelSegment {
-private:
-  int cuid;
-  BitfieldMan* bitfield;
-public:
-  CancelSegment(int cuid, BitfieldMan* bitfield):cuid(cuid),
-						 bitfield(bitfield) {}
-  
-  void operator()(SegmentEntryHandle& entry) {
-    if(entry->cuid == cuid) {
-      bitfield->unsetUseBit(entry->segment.index);
-      entry->cuid = 0;
-    }
-  }
-};
-
-void SegmentMan::cancelSegment(int cuid) {
+void SegmentMan::cancelSegment(int32_t cuid) {
   if(bitfield) {
-    for_each(usedSegmentEntries.begin(), usedSegmentEntries.end(),
-	     CancelSegment(cuid, bitfield));
+    for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
+	itr != usedSegmentEntries.end(); ++itr) {
+      if((*itr)->cuid == cuid) {
+	bitfield->unsetUseBit((*itr)->segment->index);
+	(*itr)->cuid = 0;
+	break;
+      }
+    }
   } else {
     usedSegmentEntries.clear();
   }
 }
 
-bool SegmentMan::completeSegment(int cuid, const Segment& segment) {
-  if(segment.isNull()) {
+bool SegmentMan::completeSegment(int32_t cuid, const SegmentHandle& segment) {
+  if(segment->isNull()) {
     return false;
   }
   if(bitfield) {
-    bitfield->unsetUseBit(segment.index);
-    bitfield->setBit(segment.index);
+    bitfield->unsetUseBit(segment->index);
+    bitfield->setBit(segment->index);
   } else {
-    initBitfield(option->getAsInt(PREF_SEGMENT_SIZE), segment.writtenLength);
+    initBitfield(option->getAsInt(PREF_SEGMENT_SIZE), segment->writtenLength);
     bitfield->setAllBit();
   }
   SegmentEntries::iterator itr = getSegmentEntryIteratorByCuid(cuid);
@@ -410,7 +395,7 @@ bool SegmentMan::completeSegment(int cuid, const Segment& segment) {
   }
 }
 
-bool SegmentMan::hasSegment(int index) const {
+bool SegmentMan::hasSegment(int32_t index) const {
   if(bitfield) {
     return bitfield->isBitSet(index);
   } else {
@@ -418,14 +403,14 @@ bool SegmentMan::hasSegment(int index) const {
   }
 }
 
-long long int SegmentMan::getDownloadLength() const {
-  long long int dlLength = 0;
+int64_t SegmentMan::getDownloadLength() const {
+  int64_t dlLength = 0;
   if(bitfield) {
     dlLength += bitfield->getCompletedLength();
   }
   for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end(); itr++) {
-    dlLength += (*itr)->segment.writtenLength;
+    dlLength += (*itr)->segment->writtenLength;
   }
   return dlLength;
 }
@@ -486,7 +471,7 @@ bool SegmentMan::isChunkChecksumValidationReady() const {
 #endif // ENABLE_MESSAGE_DIGEST
 
 #ifdef ENABLE_MESSAGE_DIGEST
-void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
+void SegmentMan::tryChunkChecksumValidation(const SegmentHandle& segment)
 {
   if(!isChunkChecksumValidationReady()) {
     return;
@@ -494,8 +479,8 @@ void SegmentMan::tryChunkChecksumValidation(const Segment& segment)
   int32_t hashStartIndex;
   int32_t hashEndIndex;
   Util::indexRange(hashStartIndex, hashEndIndex,
-		   segment.getPosition(),
-		   segment.writtenLength,
+		   segment->getPosition(),
+		   segment->writtenLength,
 		   chunkHashLength);
   if(!bitfield->isBitSetOffsetRange((int64_t)hashStartIndex*chunkHashLength,
 				    chunkHashLength)) {

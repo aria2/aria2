@@ -120,7 +120,7 @@ void UrlRequestInfo::printUrls(const Strings& urls) const {
   }
 }
 
-HeadResult UrlRequestInfo::getHeadResult() {
+HeadResultHandle UrlRequestInfo::getHeadResult() {
   Requests requests;
   for_each(urls.begin(), urls.end(),
 	   CreateRequest(&requests,
@@ -128,27 +128,22 @@ HeadResult UrlRequestInfo::getHeadResult() {
 			 1,
 			 Request::METHOD_HEAD));
   if(requests.size() == 0) {
-    fail = true;
-    return HeadResult();
+    return 0;
   }
   Requests reserved(requests.begin()+1, requests.end());
   requests.erase(requests.begin()+1, requests.end());
 
   SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
 
-  HeadResult hr;
+  HeadResultHandle hr = 0;
   try {
     e->run();
-    if(e->segmentMan->errors > 0) {
-      fail = true;
-    } else {
-      hr.filename = e->segmentMan->filename;
-      hr.totalLength = e->segmentMan->totalSize;
-    }
+    hr = new HeadResult();
+    hr->filename = e->segmentMan->filename;
+    hr->totalLength = e->segmentMan->totalSize;
   } catch(RecoverableException *ex) {
     logger->error("Exception caught", ex);
     delete ex;
-    fail = true;
   }
   return hr;
 }
@@ -158,10 +153,7 @@ RequestInfos UrlRequestInfo::execute() {
   Requests requests;
   Requests reserved;
   printUrls(urls);
-  HeadResult hr = getHeadResult();
-  if(fail) {
-    return RequestInfos();
-  }
+  HeadResultHandle hr = getHeadResult();
 
   for_each(urls.begin(), urls.end(),
 	   CreateRequest(&requests,
@@ -169,16 +161,18 @@ RequestInfos UrlRequestInfo::execute() {
 			 op->getAsInt(PREF_SPLIT)));
   
   logger->info("Head result: filename=%s, total length=%s",
-	       hr.filename.c_str(), Util::ullitos(hr.totalLength, true).c_str());
+	       hr->filename.c_str(), Util::ullitos(hr->totalLength, true).c_str());
 
   adjustRequestSize(requests, reserved, maxConnections);
   
   SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
-  if(hr.totalLength > 0) {
-    e->segmentMan->filename = hr.filename;
-    e->segmentMan->totalSize = hr.totalLength;
+
+  e->segmentMan->filename = hr->filename;
+  e->segmentMan->totalSize = hr->totalLength;
+  if(hr->totalLength > 0) {
     e->segmentMan->downloadStarted = true;
   }
+
 #ifdef ENABLE_MESSAGE_DIGEST
   if(chunkChecksumLength > 0) {
     e->segmentMan->digestAlgo = digestAlgo;

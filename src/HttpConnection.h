@@ -40,33 +40,29 @@
 #include "Request.h"
 #include "Option.h"
 #include "Logger.h"
-#include "HttpHeader.h"
 #include "common.h"
 #include "Logger.h"
+#include "HttpResponse.h"
+#include <netinet/in.h>
 #include <string>
-
-using namespace std;
 
 #define HEADERBUF_SIZE 4096
 
 class HttpConnection {
 private:
-  string getHost(const string& host, int port) const;
-  string createRequest(const Segment& segment) const;
-  int findEndOfHeader(const char* buf, const char* substr, int bufLength) const;
-  bool useProxy() const;
-  bool useProxyAuth() const;
-  bool useProxyGet() const;
-  string getProxyAuthString() const;
   int cuid;
   SocketHandle socket;
-  RequestHandle req;
   const Option* option;
   const Logger* logger;
   char headerBuf[HEADERBUF_SIZE+1];
   int headerBufLength;
+
+  HttpRequests outstandingHttpRequests;
+
+  int findEndOfHeader(const char* buf, const char* substr, int bufLength) const;
 public:
-  HttpConnection(int cuid, const SocketHandle& socket, const RequestHandle req,
+  HttpConnection(int cuid,
+		 const SocketHandle& socket,
 		 const Option* op);
 
   /**
@@ -76,25 +72,34 @@ public:
    * HTTP proxy(GET method).
    * @param segment indicates starting postion of the file for downloading
    */
-  void sendRequest(const Segment& segment) const;
+  void sendRequest(const HttpRequestHandle& httpRequest);
 
   /**
    * Sends Http proxy request using CONNECT method.
    */
-  void sendProxyRequest() const;
+  void sendProxyRequest(const HttpRequestHandle& httpRequest);
 
   /**
-   * Receives HTTP response from the server and store the response header
-   * into the variable headers.
-   * If response header is not fully received, received header is buffured
-   * in this object and headers is undefined and this method returns 0. 
+   * Receives HTTP response from the server and returns HttpResponseHandle
+   * object which contains response header and HttpRequestHandle object
+   * for this response.
+   * If a response is not fully received, received header is buffured
+   * in this object and returns 0. 
    * You should continue to call this method until whole response header is
-   * received and this method returns non-zero value.
+   * received and this method returns non-null HttpResponseHandle object.
    * 
-   * @param headers holder to store HTTP response header
-   * @return HTTP status or 0 if whole response header is not received
+   * @return HttpResponse or 0 if whole response header is not received
    */
-  int receiveResponse(HttpHeader& headers);
+  HttpResponseHandle receiveResponse();
+
+  HttpRequestHandle getFirstHttpRequest() const
+  {
+    if(outstandingHttpRequests.size() > 0) {
+      return outstandingHttpRequests.front();
+    } else {
+      return 0;
+    }
+  }
 };
 
 typedef SharedHandle<HttpConnection> HttpConnectionHandle;

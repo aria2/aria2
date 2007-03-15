@@ -42,7 +42,7 @@
 #include "prefs.h"
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
-							     const RequestHandle req,
+							     const RequestHandle& req,
 							     DownloadEngine* e):
   AbstractCommand(cuid, req, e)
 {
@@ -57,7 +57,7 @@ HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {
 #endif // ENABLE_ASYNC_DNS
 }
 
-bool HttpInitiateConnectionCommand::executeInternal(Segment& segment) {
+bool HttpInitiateConnectionCommand::executeInternal() {
   string hostname;
   if(useProxy()) {
     hostname = e->option->get(PREF_HTTP_PROXY_HOST);

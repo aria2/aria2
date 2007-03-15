@@ -34,34 +34,17 @@
 /* copyright --> */
 #include "HttpProxyResponseCommand.h"
 #include "HttpRequestCommand.h"
-#include "DlRetryEx.h"
-#include "message.h"
 
 HttpProxyResponseCommand::HttpProxyResponseCommand(int cuid,
-						   const RequestHandle req,
+						   const RequestHandle& req,
+						   const HttpConnectionHandle& httpConnection,
 						   DownloadEngine* e,
 						   const SocketHandle& s)
-  :AbstractCommand(cuid, req, e, s) {
-  http = new HttpConnection(cuid, socket, req, e->option);
-}
+  :AbstractProxyResponseCommand(cuid, req, httpConnection, e, s) {}
 
-HttpProxyResponseCommand::~HttpProxyResponseCommand() {
-  delete http;
-}
+HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
 
-bool HttpProxyResponseCommand::executeInternal(Segment& segment) {
-  HttpHeader headers;
-  int status = http->receiveResponse(headers);
-  if(status == 0) {
-    // we didn't receive all of headers yet.
-    e->commands.push_back(this);
-    return false;
-  }
-  if(status != 200) {
-    throw new DlRetryEx(EX_PROXY_CONNECTION_FAILED);
-  }
-  HttpRequestCommand* command = new HttpRequestCommand(cuid, req, e, socket);
-  e->commands.push_back(command);
-  return true;
+Command* HttpProxyResponseCommand::getNextCommand()
+{
+  return new HttpRequestCommand(cuid, req, e, socket);
 }
-

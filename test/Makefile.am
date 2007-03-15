@@ -1,6 +1,12 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	HttpHeaderTest.cc\
+	HttpRequestTest.cc\
+	HttpResponseTest.cc\
+	NetrcTest.cc\
+	BitfieldManTest.cc\
+	SharedHandleTest.cc\
 	RequestTest.cc\
 	ChunkedEncodingTest.cc\
 	FileTest.cc\
@@ -16,7 +22,6 @@ aria2c_SOURCES = AllTest.cc\
 	PeerMessageUtilTest.cc\
 	DefaultDiskWriterTest.cc\
 	MultiDiskAdaptorTest.cc\
-	BitfieldManTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	MetalinkerTest.cc\
 	MetalinkEntryTest.cc\

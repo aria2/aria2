@@ -35,18 +35,18 @@
 #ifndef _D_FTP_TUNNEL_RESPONSE_COMMAND_H_
 #define _D_FTP_TUNNEL_RESPONSE_COMMAND_H_
 
-#include "AbstractCommand.h"
-#include "HttpConnection.h"
+#include "AbstractProxyResponseCommand.h"
 
-class FtpTunnelResponseCommand : public AbstractCommand {
-private:
-  HttpConnection* http;
-protected:
-    bool executeInternal(Segment& segment);
+class FtpTunnelResponseCommand : public AbstractProxyResponseCommand {
 public:
-  FtpTunnelResponseCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  FtpTunnelResponseCommand(int cuid,
+			   const RequestHandle& req,
+			   const HttpConnectionHandle& httpConnection,
+			   DownloadEngine* e,
 			   const SocketHandle& s);
-  ~FtpTunnelResponseCommand();
+  virtual ~FtpTunnelResponseCommand();
+
+  virtual Command* getNextCommand();
 };
 
 #endif // _D_FTP_TUNNEL_RESPONSE_COMMAND_H_

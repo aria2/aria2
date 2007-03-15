@@ -35,18 +35,18 @@
 #ifndef _D_HTTP_PROXY_RESPONSE_COMMAND_H_
 #define _D_HTTP_PROXY_RESPONSE_COMMAND_H_
 
-#include "AbstractCommand.h"
-#include "HttpConnection.h"
+#include "AbstractProxyResponseCommand.h"
 
-class HttpProxyResponseCommand : public AbstractCommand {
-private:
-  HttpConnection* http;
-protected:
-  bool executeInternal(Segment& segment);
+class HttpProxyResponseCommand : public AbstractProxyResponseCommand {
 public:
-  HttpProxyResponseCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  HttpProxyResponseCommand(int cuid,
+			   const RequestHandle& req,
+			   const HttpConnectionHandle& httpConnection,
+			   DownloadEngine* e,
 			   const SocketHandle& s);
-  ~HttpProxyResponseCommand();
+  virtual ~HttpProxyResponseCommand();
+
+  virtual Command* getNextCommand();
 };
 
 #endif // _D_HTTP_PROXY_RESPONSE_COMMAND_H_

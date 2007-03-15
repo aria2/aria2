@@ -69,7 +69,7 @@ public:
   void sendSize() const;
   void sendPasv() const;
   SocketHandle sendPort() const;
-  void sendRest(const Segment& segment) const;
+  void sendRest(const SegmentHandle& segment) const;
   void sendRetr() const;
 
   int receiveResponse();

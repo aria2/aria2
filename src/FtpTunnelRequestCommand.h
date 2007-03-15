@@ -35,15 +35,17 @@
 #ifndef _D_FTP_TUNNEL_REQUEST_COMMAND_H_
 #define _D_FTP_TUNNEL_REQUEST_COMMAND_H_
 
-#include "AbstractCommand.h"
+#include "AbstractProxyRequestCommand.h"
 
-class FtpTunnelRequestCommand : public AbstractCommand {
-protected:
-  bool executeInternal(Segment& segment);
+class FtpTunnelRequestCommand : public AbstractProxyRequestCommand {
 public:
-  FtpTunnelRequestCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  FtpTunnelRequestCommand(int cuid,
+			  const RequestHandle& req,
+			  DownloadEngine* e,
 			  const SocketHandle& s);
-  ~FtpTunnelRequestCommand();
+  virtual ~FtpTunnelRequestCommand();
+
+  virtual Command* getNextCommand();
 };
 
 #endif // _D_FTP_TUNNEL_REQUEST_COMMAND_H_

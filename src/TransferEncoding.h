@@ -46,5 +46,7 @@ public:
   virtual void end() = 0;
 };
 
+typedef SharedHandle<TransferEncoding> TransferEncodingHandle;
+
 #endif // _D_TRANSFER_ENCODING_H_
 

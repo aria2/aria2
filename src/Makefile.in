@@ -214,12 +214,16 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FileAllocationMonitor.cc FileAllocationMonitor.h \
 	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
 	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
-	NameResolver.cc NameResolver.h MetaEntry.h Data.cc Data.h \
-	Dictionary.cc Dictionary.h List.cc List.h MetaFileUtil.cc \
-	MetaFileUtil.h MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
-	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
-	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
-	PeerInitiateConnectionCommand.cc \
+	HttpResponse.cc HttpResponse.h HttpRequest.cc HttpRequest.h \
+	Range.h AbstractProxyRequestCommand.cc \
+	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
+	AbstractProxyResponseCommand.h HttpAuthConfig.h Netrc.cc \
+	Netrc.h NameResolver.cc NameResolver.h MetaEntry.h Data.cc \
+	Data.h Dictionary.cc Dictionary.h List.cc List.h \
+	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
+	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
+	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -379,8 +383,10 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	BitfieldManFactory.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
 	FileAllocator.$(OBJEXT) FileAllocationMonitor.$(OBJEXT) \
 	ConsoleFileAllocationMonitor.$(OBJEXT) \
-	ChunkChecksumValidator.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3)
+	ChunkChecksumValidator.$(OBJEXT) HttpResponse.$(OBJEXT) \
+	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
+	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -587,7 +593,11 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	FileAllocationMonitor.cc FileAllocationMonitor.h \
 	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
 	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
-	$(am__append_1) $(am__append_2) $(am__append_3)
+	HttpResponse.cc HttpResponse.h HttpRequest.cc HttpRequest.h \
+	Range.h AbstractProxyRequestCommand.cc \
+	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
+	AbstractProxyResponseCommand.h HttpAuthConfig.h Netrc.cc \
+	Netrc.h $(am__append_1) $(am__append_2) $(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -677,6 +687,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/alloca.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractProxyRequestCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractProxyResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractSingleDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
@@ -749,7 +761,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpInitiateConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
@@ -761,6 +775,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NameResolver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Netrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@

@@ -39,12 +39,11 @@
 
 class HttpRequestCommand:public AbstractCommand {
 protected:
-  bool executeInternal(Segment& segment);
-  Command* getNextCommand() const;
+  virtual bool executeInternal();
 public:
-  HttpRequestCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  HttpRequestCommand(int cuid, const RequestHandle& req, DownloadEngine* e,
 		     const SocketHandle& s);
-  ~HttpRequestCommand();
+  virtual ~HttpRequestCommand();
 };
 
 #endif // _D_HTTP_REQUEST_COMMAND_H_

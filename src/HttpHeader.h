@@ -43,10 +43,9 @@
 
 class HttpHeader {
 private:
-  int32_t status;
   multimap<string, string> table;
 public:
-  HttpHeader():status(0) {}
+  HttpHeader() {}
   ~HttpHeader() {}
 
   void put(const string& name, const string& value);
@@ -57,16 +56,6 @@ public:
   long long int getFirstAsLLInt(const string& name) const;
 
   RangeHandle getRange() const;
-
-  int32_t getStatus() const
-  {
-    return status;
-  }
-
-  void setStatus(int32_t status)
-  {
-    this->status = status;
-  }
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;

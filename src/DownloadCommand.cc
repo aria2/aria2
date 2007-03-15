@@ -46,7 +46,10 @@ DownloadCommand::DownloadCommand(int cuid,
 				 const RequestHandle req,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  AbstractCommand(cuid, req, e, s), lastSize(0), peerStat(0) {
+  AbstractCommand(cuid, req, e, s),
+  peerStat(0),
+  transferDecoder(0)
+{
   peerStat = this->e->segmentMan->getPeerStat(cuid);
   if(!peerStat.get()) {
     peerStat = new PeerStat(cuid);
@@ -60,34 +63,30 @@ DownloadCommand::~DownloadCommand() {
   peerStat->downloadStop();
 }
 
-bool DownloadCommand::executeInternal(Segment& segment) {
+bool DownloadCommand::executeInternal() {
   if(maxDownloadSpeedLimit > 0 &&
      maxDownloadSpeedLimit < e->segmentMan->calculateDownloadSpeed()) {
     usleep(1);
     e->commands.push_back(this);
     return false;
   }
-  TransferEncoding* te = NULL;
-  if(transferEncoding.size()) {
-    te = getTransferEncoding(transferEncoding);
-    assert(te != NULL);
-  }
-  int bufSize = 16*1024;//4096;
+  int32_t bufSize = 16*1024;
   char buf[bufSize];
   socket->readData(buf, bufSize);
-  if(te != NULL) {
-    int infbufSize = 16*1024;//4096;
-    char infbuf[infbufSize];
-    te->inflate(infbuf, infbufSize, buf, bufSize);
-    e->segmentMan->diskWriter->writeData(infbuf, infbufSize,
-					 segment.getPosition()+segment.writtenLength);
-    segment.writtenLength += infbufSize;
-    peerStat->updateDownloadLength(infbufSize);
-  } else {
+
+  if(transferDecoder.isNull()) {
     e->segmentMan->diskWriter->writeData(buf, bufSize,
-					 segment.getPosition()+segment.writtenLength);
-    segment.writtenLength += bufSize;
+					 segment->getPositionToWrite());
+    segment->writtenLength += bufSize;
     peerStat->updateDownloadLength(bufSize);
+  } else {
+    int32_t infbufSize = 16*1024;
+    char infbuf[infbufSize];
+    transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
+    e->segmentMan->diskWriter->writeData(infbuf, infbufSize,
+					 segment->getPositionToWrite());
+    segment->writtenLength += infbufSize;
+    peerStat->updateDownloadLength(infbufSize);
   }
   // calculate downloading speed
   if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
@@ -102,10 +101,10 @@ bool DownloadCommand::executeInternal(Segment& segment) {
   if(e->segmentMan->totalSize != 0 && bufSize == 0) {
     throw new DlRetryEx(EX_GOT_EOF);
   }
-  if(te != NULL && te->finished()
-     || te == NULL && segment.complete()
+  if(!transferDecoder.isNull() && transferDecoder->finished()
+     || transferDecoder.isNull() && segment->complete()
      || bufSize == 0) {
-    if(te != NULL) te->end();
+    if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
     e->segmentMan->completeSegment(cuid, segment);
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -114,38 +113,39 @@ bool DownloadCommand::executeInternal(Segment& segment) {
     }
 #endif // ENABLE_MESSAGE_DIGEST
     // this unit is going to download another segment.
-    return prepareForNextSegment(segment);
+    return prepareForNextSegment();
   } else {
-    e->segmentMan->updateSegment(cuid, segment);
     e->commands.push_back(this);
     return false;
   }
   
 }
 
-bool DownloadCommand::prepareForNextSegment(const Segment& currentSegment) {
+bool DownloadCommand::prepareForNextSegment() {
   if(e->segmentMan->finished()) {
     return true;
   } else {
     // Merge segment with next segment, if segment.index+1 == nextSegment.index
-    Segment tempSegment = currentSegment;
+    SegmentHandle tempSegment = segment;
     while(1) {
-      Segment nextSegment;
-      if(e->segmentMan->getSegment(nextSegment, cuid, tempSegment.index+1)) {
-	if(nextSegment.writtenLength > 0) {
+      SegmentHandle nextSegment = e->segmentMan->getSegment(cuid,
+							    tempSegment->index+1);
+      cerr << nextSegment.isNull() << endl;
+      if(nextSegment.isNull()) {
+	break;
+      } else {
+	if(nextSegment->writtenLength > 0) {
 	  return prepareForRetry(0);
 	}
-	nextSegment.writtenLength = tempSegment.writtenLength-tempSegment.length;
-	if(nextSegment.complete()) {
+	nextSegment->writtenLength = tempSegment->writtenLength-tempSegment->length;
+	if(nextSegment->complete()) {
 	  e->segmentMan->completeSegment(cuid, nextSegment);
 	  tempSegment = nextSegment;
 	} else {
-	  e->segmentMan->updateSegment(cuid, nextSegment);
+	  segment = nextSegment;
 	  e->commands.push_back(this);
 	  return false;
 	}
-      } else {
-	break;
       }
     }
     return prepareForRetry(0);

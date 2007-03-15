@@ -32,29 +32,31 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_RESPONSE_COMMAND_H_
-#define _D_HTTP_RESPONSE_COMMAND_H_
+#include "AbstractProxyResponseCommand.h"
+#include "HttpRequestCommand.h"
+#include "DlRetryEx.h"
+#include "message.h"
 
-#include "AbstractCommand.h"
-#include "HttpConnection.h"
+AbstractProxyResponseCommand::AbstractProxyResponseCommand(int cuid,
+							   const RequestHandle& req,
+							   const HttpConnectionHandle& httpConnection,
+							   DownloadEngine* e,
+							   const SocketHandle& s)
+  :AbstractCommand(cuid, req, e, s),
+   httpConnection(httpConnection) {}
 
-class HttpResponseCommand : public AbstractCommand {
-private:
-  HttpConnectionHandle httpConnection;
+AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}
 
-  bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
-  bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
-  void createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
-  bool doTorrentStuff(const HttpResponseHandle& httpResponse);
-protected:
-  bool executeInternal();
-public:
-  HttpResponseCommand(int32_t cuid,
-		      const RequestHandle& req,
-		      const HttpConnectionHandle& httpConnection,
-		      DownloadEngine* e,
-		      const SocketHandle& s);
-  ~HttpResponseCommand();
-};
-
-#endif // _D_HTTP_RESPONSE_COMMAND_H_
+bool AbstractProxyResponseCommand::executeInternal() {
+  HttpResponseHandle httpResponse = httpConnection->receiveResponse();
+  if(httpResponse.isNull()) {
+    // the server has not responded our request yet.
+    e->commands.push_back(this);
+    return false;
+  }
+  if(httpResponse->getStatus() != 200) {
+    throw new DlRetryEx(EX_PROXY_CONNECTION_FAILED);
+  }
+  e->commands.push_back(getNextCommand());
+  return true;
+}

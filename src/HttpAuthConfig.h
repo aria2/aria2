@@ -32,29 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_RESPONSE_COMMAND_H_
-#define _D_HTTP_RESPONSE_COMMAND_H_
+#ifndef _D_HTTP_AUTH_CONFIG_H_
+#define _D_HTTP_AUTH_CONFIG_H_
 
-#include "AbstractCommand.h"
-#include "HttpConnection.h"
+#include "common.h"
 
-class HttpResponseCommand : public AbstractCommand {
+class HttpAuthConfig {
 private:
-  HttpConnectionHandle httpConnection;
-
-  bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
-  bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
-  void createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
-  bool doTorrentStuff(const HttpResponseHandle& httpResponse);
-protected:
-  bool executeInternal();
+  string authScheme;
+  string authUser;
+  string authPassword;
 public:
-  HttpResponseCommand(int32_t cuid,
-		      const RequestHandle& req,
-		      const HttpConnectionHandle& httpConnection,
-		      DownloadEngine* e,
-		      const SocketHandle& s);
-  ~HttpResponseCommand();
+
+  HttpAuthConfig(const string& authUser, const string& authPassword):
+    authUser(authUser), authPassword(authPassword) {}
+
+  string getAuthText() const
+  {
+    return authUser+":"+authPassword;
+  }
 };
 
-#endif // _D_HTTP_RESPONSE_COMMAND_H_
+typedef SharedHandle<HttpAuthConfig> HttpAuthConfigHandle;
+
+#endif // _D_HTTP_AUTH_CONFIG_H_

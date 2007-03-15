@@ -52,6 +52,7 @@ using namespace std;
 class Util {
 public:
   static void split(pair<string, string>& hp, const string& src, char delim);
+  static pair<string, string> split(const string& src, const string& delims);
   static string llitos(int64_t value, bool comma = false);
   static string ullitos(uint64_t value, bool comma = false);
   static string itos(int32_t value, bool comma = false);
@@ -81,6 +82,11 @@ public:
   static string replace(const string& target, const string& oldstr, const string& newstr);
 
   static string urlencode(const unsigned char* target, int len);
+
+  static string urlencode(const string& target)
+  {
+    return urlencode((const unsigned char*)target.c_str(), target.size());
+  }
 
   static string urldecode(const string& target);
 

@@ -50,11 +50,12 @@ protected:
   RequestHandle req;
   DownloadEngine* e;
   SocketHandle socket;
+  SegmentHandle segment;
 
   void tryReserved();
   virtual bool prepareForRetry(int wait);
   virtual void onAbort(RecoverableException* ex);
-  virtual bool executeInternal(Segment& segment) = 0;
+  virtual bool executeInternal() = 0;
 
   void setReadCheckSocket(const SocketHandle& socket);
   void setWriteCheckSocket(const SocketHandle& socket);
@@ -74,7 +75,7 @@ private:
   SocketHandle writeCheckTarget;
   bool nameResolverCheck;
 public:
-  AbstractCommand(int cuid, const RequestHandle req, DownloadEngine* e, const SocketHandle& s = SocketHandle());
+  AbstractCommand(int cuid, const RequestHandle& req, DownloadEngine* e, const SocketHandle& s = SocketHandle());
   virtual ~AbstractCommand();
   bool execute();
 };

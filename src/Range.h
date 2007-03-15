@@ -32,29 +32,59 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_RESPONSE_COMMAND_H_
-#define _D_HTTP_RESPONSE_COMMAND_H_
+#ifndef _D_RANGE_H_
+#define _D_RANGE_H_
 
-#include "AbstractCommand.h"
-#include "HttpConnection.h"
+#include "common.h"
 
-class HttpResponseCommand : public AbstractCommand {
+class Range {
 private:
-  HttpConnectionHandle httpConnection;
-
-  bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
-  bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
-  void createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
-  bool doTorrentStuff(const HttpResponseHandle& httpResponse);
-protected:
-  bool executeInternal();
+  int64_t startByte;
+  int64_t endByte;
+  int64_t entityLength;
 public:
-  HttpResponseCommand(int32_t cuid,
-		      const RequestHandle& req,
-		      const HttpConnectionHandle& httpConnection,
-		      DownloadEngine* e,
-		      const SocketHandle& s);
-  ~HttpResponseCommand();
+  Range():startByte(0), endByte(0), entityLength(0) {}
+
+  Range(int64_t startByte, int64_t endByte, int64_t entityLength):
+    startByte(startByte), endByte(endByte), entityLength(entityLength) {}
+
+  bool operator==(const Range& range) const
+  {
+    return startByte == range.startByte &&
+      endByte == range.endByte &&
+      entityLength == range.entityLength;
+  }
+
+  bool operator!=(const Range& range) const
+  {
+    return !(*this == range);
+  }
+
+  int64_t getStartByte() const
+  {
+    return startByte;
+  }
+
+  int64_t getEndByte() const
+  {
+    return endByte;
+  }
+
+  int64_t getEntityLength() const
+  {
+    return entityLength;
+  }
+
+  int64_t getContentLength() const
+  {
+    if(endByte >= startByte) {
+      return endByte-startByte+1;
+    } else {
+      return 0;
+    }
+  }
 };
 
-#endif // _D_HTTP_RESPONSE_COMMAND_H_
+typedef SharedHandle<Range> RangeHandle;
+
+#endif // _D_RANGE_H_

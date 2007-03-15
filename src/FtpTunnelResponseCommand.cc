@@ -34,34 +34,17 @@
 /* copyright --> */
 #include "FtpTunnelResponseCommand.h"
 #include "FtpNegotiationCommand.h"
-#include "DlRetryEx.h"
-#include "message.h"
 
 FtpTunnelResponseCommand::FtpTunnelResponseCommand(int cuid,
-						   const RequestHandle req,
+						   const RequestHandle& req,
+						   const HttpConnectionHandle& httpConnection,
 						   DownloadEngine* e,
 						   const SocketHandle& s)
-  :AbstractCommand(cuid, req, e, s) {
-  http = new HttpConnection(cuid, socket, req, e->option);
-}
+  :AbstractProxyResponseCommand(cuid, req, httpConnection,e, s) {}
 
-FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {
-  delete http;
-}
+FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
 
-bool FtpTunnelResponseCommand::executeInternal(Segment& segment) {
-  HttpHeader headers;
-  int status = http->receiveResponse(headers);
-  if(status == 0) {
-    // we didn't receive all of headers yet.
-    e->commands.push_back(this);
-    return false;
-  }
-  if(status != 200) {
-    throw new DlRetryEx(EX_PROXY_CONNECTION_FAILED);
-  }
-  FtpNegotiationCommand* command
-    = new FtpNegotiationCommand(cuid, req, e, socket);
-  e->commands.push_back(command);
-  return true;
+Command* FtpTunnelResponseCommand::getNextCommand()
+{
+  return new FtpNegotiationCommand(cuid, req, e, socket);
 }

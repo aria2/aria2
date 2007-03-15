@@ -52,10 +52,10 @@ private:
   }
 #endif // ENABLE_ASYNC_DNS
 protected:
-  bool executeInternal(Segment& segment);
+  virtual bool executeInternal();
 public:
-  FtpInitiateConnectionCommand(int cuid, const RequestHandle req, DownloadEngine* e);
-  ~FtpInitiateConnectionCommand();
+  FtpInitiateConnectionCommand(int cuid, const RequestHandle& req, DownloadEngine* e);
+  virtual ~FtpInitiateConnectionCommand();
 };
 
 #endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_

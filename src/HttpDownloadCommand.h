@@ -36,27 +36,14 @@
 #define _D_HTTP_DOWNLOAD_COMMAND_H_
 
 #include "DownloadCommand.h"
-#include "DownloadEngine.h"
-#include "Socket.h"
-#include "Request.h"
-#include "common.h"
-#include "TransferEncoding.h"
-#include <string>
-#include <map>
 
-using namespace std;
-
-class HttpDownloadCommand:public DownloadCommand {
-private:
-  map<string, TransferEncoding*> transferEncodings;
+class HttpDownloadCommand : public DownloadCommand {
 protected:
-  virtual bool prepareForNextSegment(const Segment& currentSegment);
+  virtual bool prepareForNextSegment();
 public:
   HttpDownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		      const SocketHandle& s);
-  ~HttpDownloadCommand();
-
-  TransferEncoding* getTransferEncoding(const string& transferEncoding);
+  virtual ~HttpDownloadCommand();
 };
 
 #endif // _D_HTTP_DOWNLOAD_COMMAND_H_

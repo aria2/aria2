@@ -64,7 +64,14 @@ SRCS =  Socket.h\
 	FileAllocator.cc FileAllocator.h\
 	FileAllocationMonitor.cc FileAllocationMonitor.h\
 	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h\
-	ChunkChecksumValidator.cc ChunkChecksumValidator.h
+	ChunkChecksumValidator.cc ChunkChecksumValidator.h\
+	HttpResponse.cc HttpResponse.h\
+	HttpRequest.cc HttpRequest.h\
+	Range.h\
+	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h\
+	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h\
+	HttpAuthConfig.h\
+	Netrc.cc Netrc.h
 #	debug_new.cpp
 
 if ENABLE_ASYNC_DNS

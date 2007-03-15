@@ -47,6 +47,8 @@ public:
 
 std::ostream& operator<<(std::ostream& o, const HeadResult& hr);
 
+typedef SharedHandle<HeadResult> HeadResultHandle;
+
 class UrlRequestInfo : public RequestInfo {
 private:
   Strings urls;
@@ -62,7 +64,7 @@ private:
 			 Requests& reserved,
 			 int maxConnections) const;
   void printUrls(const Strings& urls) const;
-  HeadResult getHeadResult();
+  HeadResultHandle getHeadResult();
 public:
   UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
     RequestInfo(op),

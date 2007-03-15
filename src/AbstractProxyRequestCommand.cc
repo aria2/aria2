@@ -32,29 +32,31 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_RESPONSE_COMMAND_H_
-#define _D_HTTP_RESPONSE_COMMAND_H_
-
-#include "AbstractCommand.h"
+#include "AbstractProxyRequestCommand.h"
 #include "HttpConnection.h"
 
-class HttpResponseCommand : public AbstractCommand {
-private:
-  HttpConnectionHandle httpConnection;
+AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
+							 const RequestHandle& req,
+							 DownloadEngine* e,
+							 const SocketHandle& s)
+  :AbstractCommand(cuid, req, e, s), httpConnection(0) {
+  disableReadCheckSocket();
+  setWriteCheckSocket(socket);
+}
 
-  bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
-  bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
-  void createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
-  bool doTorrentStuff(const HttpResponseHandle& httpResponse);
-protected:
-  bool executeInternal();
-public:
-  HttpResponseCommand(int32_t cuid,
-		      const RequestHandle& req,
-		      const HttpConnectionHandle& httpConnection,
-		      DownloadEngine* e,
-		      const SocketHandle& s);
-  ~HttpResponseCommand();
-};
+AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 
-#endif // _D_HTTP_RESPONSE_COMMAND_H_
+bool AbstractProxyRequestCommand::executeInternal() {
+  socket->setBlockingMode();
+
+  HttpRequestHandle httpRequest = new HttpRequest();
+  httpRequest->setRequest(req);
+  httpRequest->configure(e->option);
+
+  httpConnection= new HttpConnection(cuid, socket, e->option);
+
+  httpConnection->sendProxyRequest(httpRequest);
+
+  e->commands.push_back(getNextCommand());
+  return true;
+}

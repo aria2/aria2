@@ -61,8 +61,13 @@ public:
     return index == -1;
   }
 
-  long long int getPosition() const {
-    return ((long long int)index)*segmentLength;
+  int64_t getPosition() const {
+    return ((int64_t)index)*segmentLength;
+  }
+
+  int64_t getPositionToWrite() const
+  {
+    return getPosition()+writtenLength;
   }
 
   bool operator==(const Segment& segment) const {

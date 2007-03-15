@@ -44,9 +44,7 @@ public:
   FtpDownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		     const SocketHandle& dataSocket,
 		     const SocketHandle& ctrlSocket);
-  ~FtpDownloadCommand();
-
-  TransferEncoding* getTransferEncoding(const string& name);
+  virtual ~FtpDownloadCommand();
 };
 
 #endif // _D_FTP_DOWNLOAD_COMMAND_H_

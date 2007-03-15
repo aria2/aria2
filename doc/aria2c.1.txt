@@ -140,8 +140,8 @@ OPTIONS
                               exist.
                               Default: 'false'
 
- --check-integiry=true|false::
-  Check file integiry by validating piece hash.
+ --check-integriy=true|false::
+  Check file integriy by validating piece hash.
                               This option makes effect in BitTorrent download
                               and Metalink with chunk checksums.
                               Use this option to redownload a damaged portion of

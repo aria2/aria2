@@ -33,26 +33,17 @@
  */
 /* copyright --> */
 #include "HttpProxyRequestCommand.h"
-#include "HttpConnection.h"
 #include "HttpProxyResponseCommand.h"
 
 HttpProxyRequestCommand::HttpProxyRequestCommand(int cuid,
-						 const RequestHandle req,
+						 const RequestHandle& req,
 						 DownloadEngine* e,
 						 const SocketHandle& s)
-  :AbstractCommand(cuid, req, e, s) {
-  disableReadCheckSocket();
-  setWriteCheckSocket(socket);
-}
+  :AbstractProxyRequestCommand(cuid, req, e, s) {}
 
 HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 
-bool HttpProxyRequestCommand::executeInternal(Segment& segment) {
-  socket->setBlockingMode();
-  HttpConnection httpConnection(cuid, socket, req, e->option);
-  httpConnection.sendProxyRequest();
-
-  HttpProxyResponseCommand* command = new HttpProxyResponseCommand(cuid, req, e, socket);
-  e->commands.push_back(command);
-  return true;
+Command* HttpProxyRequestCommand::getNextCommand()
+{
+  return new HttpProxyResponseCommand(cuid, req, httpConnection, e, socket);
 }

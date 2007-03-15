@@ -42,7 +42,7 @@
 #include "prefs.h"
 
 AbstractCommand::AbstractCommand(int cuid,
-				 const RequestHandle req,
+				 const RequestHandle& req,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
   Command(cuid), req(req), e(e), socket(s),
@@ -81,14 +81,17 @@ bool AbstractCommand::execute() {
 #endif // ENABLE_ASYNC_DNS
        !checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck) {
       checkPoint.reset();
-      Segment segment;
       if(e->segmentMan->downloadStarted) {
-	if(!e->segmentMan->getSegment(segment, cuid)) {
-	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
-	  return prepareForRetry(1);
+	// TODO Segment::isNull(), Change method name, it is very confusing.
+	if(segment->isNull()) {
+	  segment = e->segmentMan->getSegment(cuid);
+	  if(segment.isNull()) {
+	    logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
+	    return prepareForRetry(1);
+	  }
 	}
       }
-      return executeInternal(segment);
+      return executeInternal();
     } else {
 
       if(checkPoint.elapsed(timeout)) {

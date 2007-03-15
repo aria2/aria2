@@ -80,23 +80,25 @@ private:
   bool recvPort();
   bool sendPasv();
   bool recvPasv();
-  bool sendRest(const Segment& segment);
-  bool sendRestPasv(const Segment& segment);
+  bool sendRest(const SegmentHandle& segment);
+  bool sendRestPasv(const SegmentHandle& segment);
   bool recvRest();
   bool sendRetr();
   bool recvRetr();
-  bool processSequence(const Segment& segment);
+  bool processSequence(const SegmentHandle& segment);
 
   SocketHandle dataSocket;
   SocketHandle serverSocket;
   int sequence;
   FtpConnection* ftp;
 protected:
-  bool executeInternal(Segment& segment);
+  virtual bool executeInternal();
 public:
-  FtpNegotiationCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  FtpNegotiationCommand(int cuid,
+			const RequestHandle& req,
+			DownloadEngine* e,
 			const SocketHandle& s);
-  ~FtpNegotiationCommand();
+  virtual ~FtpNegotiationCommand();
 };
 
 #endif // _D_FTP_NEGOTIATION_COMMAND_H_

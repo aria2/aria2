@@ -41,7 +41,8 @@
 #include "Util.h"
 #include "FatalException.h"
 
-FtpNegotiationCommand::FtpNegotiationCommand(int cuid, const RequestHandle req,
+FtpNegotiationCommand::FtpNegotiationCommand(int cuid,
+					     const RequestHandle& req,
 					     DownloadEngine* e,
 					     const SocketHandle& s):
   AbstractCommand(cuid, req, e, s), sequence(SEQ_RECV_GREETING)
@@ -55,7 +56,7 @@ FtpNegotiationCommand::~FtpNegotiationCommand() {
   delete ftp;
 }
 
-bool FtpNegotiationCommand::executeInternal(Segment& segment) {
+bool FtpNegotiationCommand::executeInternal() {
   while(processSequence(segment));
   if(sequence == SEQ_RETRY) {
     return prepareForRetry(0);
@@ -262,14 +263,14 @@ bool FtpNegotiationCommand::recvPasv() {
   return false;
 }
 
-bool FtpNegotiationCommand::sendRestPasv(const Segment& segment) {
+bool FtpNegotiationCommand::sendRestPasv(const SegmentHandle& segment) {
   dataSocket->setBlockingMode();
   setReadCheckSocket(socket);
   disableWriteCheckSocket();
   return sendRest(segment);
 }
 
-bool FtpNegotiationCommand::sendRest(const Segment& segment) {
+bool FtpNegotiationCommand::sendRest(const SegmentHandle& segment) {
   ftp->sendRest(segment);
   sequence = SEQ_RECV_REST;
   return false;
@@ -311,7 +312,7 @@ bool FtpNegotiationCommand::recvRetr() {
   return false;
 }
 
-bool FtpNegotiationCommand::processSequence(const Segment& segment) {
+bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
   bool doNextSequence = true;
   switch(sequence) {
   case SEQ_RECV_GREETING:

@@ -57,14 +57,17 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) HttpHeaderTest.$(OBJEXT) \
+	HttpRequestTest.$(OBJEXT) HttpResponseTest.$(OBJEXT) \
+	NetrcTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
+	SharedHandleTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	ChunkedEncodingTest.$(OBJEXT) FileTest.$(OBJEXT) \
 	OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) UtilTest.$(OBJEXT) \
 	CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
 	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
 	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
 	PeerMessageUtilTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
-	MultiDiskAdaptorTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
+	MultiDiskAdaptorTest.$(OBJEXT) \
 	Xml2MetalinkProcessorTest.$(OBJEXT) MetalinkerTest.$(OBJEXT) \
 	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
 	ShareRatioSeedCriteriaTest.$(OBJEXT) \
@@ -255,6 +258,12 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
+	HttpHeaderTest.cc\
+	HttpRequestTest.cc\
+	HttpResponseTest.cc\
+	NetrcTest.cc\
+	BitfieldManTest.cc\
+	SharedHandleTest.cc\
 	RequestTest.cc\
 	ChunkedEncodingTest.cc\
 	FileTest.cc\
@@ -270,7 +279,6 @@ aria2c_SOURCES = AllTest.cc\
 	PeerMessageUtilTest.cc\
 	DefaultDiskWriterTest.cc\
 	MultiDiskAdaptorTest.cc\
-	BitfieldManTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	MetalinkerTest.cc\
 	MetalinkEntryTest.cc\
@@ -414,11 +422,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
@@ -426,6 +438,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommandTest.Po@am__quote@

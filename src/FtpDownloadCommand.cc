@@ -43,7 +43,3 @@ FtpDownloadCommand::FtpDownloadCommand(int cuid,
    ctrlSocket(ctrlSocket) {}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
-
-TransferEncoding* FtpDownloadCommand::getTransferEncoding(const string& name) {
-  return NULL;
-}

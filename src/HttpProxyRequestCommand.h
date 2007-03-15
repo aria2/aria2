@@ -35,15 +35,17 @@
 #ifndef _D_HTTP_PROXY_REQUEST_COMMAND_H_
 #define _D_HTTP_PROXY_REQUEST_COMMAND_H_
 
-#include "AbstractCommand.h"
+#include "AbstractProxyRequestCommand.h"
 
-class HttpProxyRequestCommand : public AbstractCommand {
-protected:
-  bool executeInternal(Segment& segment);
+class HttpProxyRequestCommand : public AbstractProxyRequestCommand {
 public:
-  HttpProxyRequestCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  HttpProxyRequestCommand(int cuid,
+			  const RequestHandle& req,
+			  DownloadEngine* e,
 			  const SocketHandle& s);
-  ~HttpProxyRequestCommand();
+  virtual ~HttpProxyRequestCommand();
+
+  virtual Command* getNextCommand();
 };
 
 #endif // _D_HTTP_PROXY_REQUEST_COMMAND_H_

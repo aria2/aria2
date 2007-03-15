@@ -24,3 +24,4 @@
 * remove blockIndex
 * Add an ability of seeding
 * Continue file allocation with existing file
+* Rewrite HttpConnection::receiveResponse() using {i,o}stringstream

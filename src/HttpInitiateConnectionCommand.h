@@ -54,7 +54,7 @@ protected:
    * Whether or not the connection is established successfully is
    * evaluated by RequestCommand.
    */
-  bool executeInternal(Segment& segment);
+  virtual bool executeInternal();
 #ifdef ENABLE_ASYNC_DNS
   virtual bool nameResolveFinished() const {
     return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
@@ -62,8 +62,8 @@ protected:
   }
 #endif // ENABLE_ASYNC_DNS
 public:
-  HttpInitiateConnectionCommand(int cuid, const RequestHandle req, DownloadEngine* e);
-  ~HttpInitiateConnectionCommand();
+  HttpInitiateConnectionCommand(int cuid, const RequestHandle& req, DownloadEngine* e);
+  virtual ~HttpInitiateConnectionCommand();
 };
 
 #endif // _D_HTTP_INITIATE_CONNECTION_COMMAND_H_

@@ -42,20 +42,17 @@ void SegmentManTest::testSaveAndLoad() {
     segmentMan.ufilename = filename;
     segmentMan.initBitfield(1024*1024, segmentMan.totalSize);
     
-    Segment seg1;
-    segmentMan.getSegment(seg1, 1);
-    seg1.writtenLength = seg1.length;
+    SegmentHandle seg1 = segmentMan.getSegment(1);
+    seg1->writtenLength = seg1->length;
     segmentMan.completeSegment(1, seg1);
     
-    Segment seg2;
-    segmentMan.getSegment(seg2, 2);
-    seg2.writtenLength = 512*1024;
-    segmentMan.updateSegment(2, seg2);
+    SegmentHandle seg2 = segmentMan.getSegment(2);
+    seg2->writtenLength = 512*1024;
+    //segmentMan.updateSegment(2, seg2);
     
-    Segment seg3;
-    segmentMan.getSegment(seg3, 3);
-    seg2.writtenLength = 512*1024;
-    segmentMan.updateSegment(2, seg2);
+    SegmentHandle seg3 = segmentMan.getSegment(3);
+    seg3->writtenLength = 512*1024;
+    //segmentMan.updateSegment(2, seg2);
     
     segmentMan.save();
     
@@ -67,12 +64,10 @@ void SegmentManTest::testSaveAndLoad() {
 
     CPPUNIT_ASSERT_EQUAL(segmentMan.totalSize, segmentManLoad.totalSize);
   
-    Segment seg2Load;
-    segmentManLoad.getSegment(seg2Load, 2, seg2.index);
+    SegmentHandle seg2Load = segmentManLoad.getSegment(2, seg2->index);
     CPPUNIT_ASSERT_EQUAL(seg2, seg2Load);
     
-    Segment seg3Load;
-    segmentManLoad.getSegment(seg3Load, 3, seg3.index);
+    SegmentHandle seg3Load = segmentManLoad.getSegment(3, seg3->index);
     CPPUNIT_ASSERT_EQUAL(seg3, seg3Load);
 
     CPPUNIT_ASSERT_EQUAL(segmentMan.getDownloadLength(), segmentManLoad.getDownloadLength());
@@ -88,16 +83,18 @@ void SegmentManTest::testNullBitfield() {
   op.put(PREF_SEGMENT_SIZE, Util::itos(1024*1024));
   segmentMan.option = &op;
 
-  Segment segment;
-  CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
-  CPPUNIT_ASSERT_EQUAL(Segment(0, 0, 0), segment);
+  SegmentHandle segment = segmentMan.getSegment(1);
+  CPPUNIT_ASSERT(!segment.isNull());
+  CPPUNIT_ASSERT_EQUAL(0, segment->index);
+  CPPUNIT_ASSERT_EQUAL(0, segment->length);
+  CPPUNIT_ASSERT_EQUAL(0, segment->segmentLength);
+  CPPUNIT_ASSERT_EQUAL(0, segment->writtenLength);
 
-  Segment segment2;
-  CPPUNIT_ASSERT(!segmentMan.getSegment(segment2, 2));
+  SegmentHandle segment2 = segmentMan.getSegment(2);
+  CPPUNIT_ASSERT(segment2.isNull());
 
-  long long int totalLength = 1024*1024;
-  segment.writtenLength = totalLength;
-  CPPUNIT_ASSERT(segmentMan.updateSegment(1, segment));
+  int64_t totalLength = 1024*1024;
+  segment->writtenLength = totalLength;
   CPPUNIT_ASSERT_EQUAL(totalLength, segmentMan.getDownloadLength());
   CPPUNIT_ASSERT(segmentMan.completeSegment(1, segment));
   CPPUNIT_ASSERT_EQUAL(totalLength, segmentMan.getDownloadLength());
@@ -106,9 +103,9 @@ void SegmentManTest::testNullBitfield() {
 void SegmentManTest::testCancelSegmentOnNullBitfield() {
   SegmentMan segmentMan;
   
-  Segment segment;
-  CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
+  SegmentHandle segment = segmentMan.getSegment(1);
+  CPPUNIT_ASSERT(!segment.isNull());
   segmentMan.cancelSegment(1);
-  CPPUNIT_ASSERT(segmentMan.getSegment(segment, 1));
+  CPPUNIT_ASSERT(!segmentMan.getSegment(1).isNull());
 }
 

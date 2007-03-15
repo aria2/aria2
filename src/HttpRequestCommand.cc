@@ -38,7 +38,7 @@
 #include "prefs.h"
 
 HttpRequestCommand::HttpRequestCommand(int cuid,
-				       const RequestHandle req,
+				       const RequestHandle& req,
 				       DownloadEngine* e,
 				       const SocketHandle& s)
   :AbstractCommand(cuid, req, e, s) {
@@ -48,7 +48,7 @@ HttpRequestCommand::HttpRequestCommand(int cuid,
 
 HttpRequestCommand::~HttpRequestCommand() {}
 
-bool HttpRequestCommand::executeInternal(Segment& segment) {
+bool HttpRequestCommand::executeInternal() {
   socket->setBlockingMode();
   if(req->getProtocol() == "https") {
     socket->initiateSecureConnection();
@@ -56,15 +56,17 @@ bool HttpRequestCommand::executeInternal(Segment& segment) {
   if(!e->option->getAsBool(PREF_HTTP_KEEP_ALIVE)) {
     req->setKeepAlive(false);
   }
-  HttpConnection http(cuid, socket, req, e->option);
-  req->segment = segment;
-  http.sendRequest(segment);
+  HttpRequestHandle httpRequest = new HttpRequest();
+  httpRequest->setRequest(req);
+  httpRequest->setSegment(segment);
+  httpRequest->setEntityLength(e->segmentMan->totalSize);
+  httpRequest->configure(e->option);
 
-  Command* command = getNextCommand();
+  HttpConnectionHandle httpConnection = new HttpConnection(cuid, socket, e->option);
+
+  httpConnection->sendRequest(httpRequest);
+
+  Command* command = new HttpResponseCommand(cuid, req, httpConnection, e, socket);
   e->commands.push_back(command);
   return true;
-}
-
-Command* HttpRequestCommand::getNextCommand() const {
-  return new HttpResponseCommand(cuid, req, e, socket);
 }

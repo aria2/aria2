@@ -40,93 +40,27 @@
 #include "prefs.h"
 #include "LogFactory.h"
 
-HttpConnection::HttpConnection(int cuid, const SocketHandle& socket,
-			       const RequestHandle req, const Option* op):
-  cuid(cuid), socket(socket), req(req), option(op), headerBufLength(0) {
+HttpConnection::HttpConnection(int cuid,
+			       const SocketHandle& socket,
+			       const Option* op):
+  cuid(cuid), socket(socket), option(op), headerBufLength(0) {
   logger = LogFactory::getInstance();
 }
 
-void HttpConnection::sendRequest(const Segment& segment) const {
-  string request = createRequest(segment);
+void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
+{
+  string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request.c_str(), request.size());
+  outstandingHttpRequests.push_back(httpRequest);
 }
 
-void HttpConnection::sendProxyRequest() const {
-  string request =
-    string("CONNECT ")+req->getHost()+":"+Util::llitos(req->getPort())+
-    string(" HTTP/1.1\r\n")+
-    "User-Agent: "+USER_AGENT+"\r\n"+
-    "Proxy-Connection: close\r\n"+
-    "Host: "+getHost(req->getHost(), req->getPort())+"\r\n";
-  if(useProxyAuth()) {
-    request += getProxyAuthString();
-  }
-  request += "\r\n";
+void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
+{
+  string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request.c_str(), request.size());
-}
-
-string HttpConnection::getProxyAuthString() const {
-  return "Proxy-Authorization: Basic "+
-    Base64::encode(option->get(PREF_HTTP_PROXY_USER)+":"+
-		   option->get(PREF_HTTP_PROXY_PASSWD))+"\r\n";
-}
-
-string HttpConnection::getHost(const string& host, int port) const {
-  return host+(port == 80 || port == 443 ? "" : ":"+Util::llitos(port));
-}
-
-string HttpConnection::createRequest(const Segment& segment) const {
-  string request = string("GET ")+
-    (req->getProtocol() == "ftp" || useProxy() && useProxyGet() ?
-     req->getCurrentUrl() :
-     ((req->getDir() == "/" ? "/" : req->getDir()+"/")+req->getFile()))+
-    string(" HTTP/1.1\r\n")+
-    "User-Agent: "+USER_AGENT+"\r\n"+
-    // use persistent connection
-    //"Connection: close\r\n"+
-    "Accept: */*\r\n"+        /* */
-    "Host: "+getHost(req->getHost(), req->getPort())+"\r\n"+
-    "Pragma: no-cache\r\n"+
-    "Cache-Control: no-cache\r\n";
-  if(!req->isKeepAlive()) {
-    request += "Connection: close\r\n";
-  }
-  if(segment.length > 0) {
-    request += "Range: bytes="+
-      Util::llitos(segment.getPosition()+segment.writtenLength);
-    request += "-";
-    if(req->isKeepAlive()) {
-      request += Util::llitos(segment.getPosition()+segment.length-1);
-    }
-    request += "\r\n";
-  }
-  if(useProxy() && useProxyAuth() && useProxyGet()) {
-    request += "Proxy-Connection: close\r\n";
-    request += getProxyAuthString();
-  }
-  if(option->get(PREF_HTTP_AUTH_ENABLED) == V_TRUE) {
-    if(option->get(PREF_HTTP_AUTH_SCHEME) == V_BASIC) {
-      request += "Authorization: Basic "+
-	Base64::encode(option->get(PREF_HTTP_USER)+":"+
-		       option->get(PREF_HTTP_PASSWD))+"\r\n";
-    }
-  }
-  if(req->getPreviousUrl().size()) {
-    request += "Referer: "+req->getPreviousUrl()+"\r\n";
-  }
-
-  string cookiesValue;
-  Cookies cookies = req->cookieBox->criteriaFind(req->getHost(), req->getDir(), req->getProtocol() == "https" ? true : false);
-  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
-    cookiesValue += (*itr).toString()+";";
-  }
-  if(cookiesValue.size()) {
-    request += string("Cookie: ")+cookiesValue+"\r\n";
-  }
-  request += "\r\n";
-  return request;
+  outstandingHttpRequests.push_back(httpRequest);
 }
 
 int HttpConnection::findEndOfHeader(const char* buf, const char* substr, int bufLength) const {
@@ -140,7 +74,7 @@ int HttpConnection::findEndOfHeader(const char* buf, const char* substr, int buf
   return -1;
 }
 
-int HttpConnection::receiveResponse(HttpHeader& headers) {
+HttpResponseHandle HttpConnection::receiveResponse() {
   //char buf[512];
   string header;
   int delimiterSwitch = 0;
@@ -194,26 +128,22 @@ int HttpConnection::receiveResponse(HttpHeader& headers) {
   }
   string status = header.substr(9, 3);
   p = np+2;
+  HttpHeaderHandle httpHeader = new HttpHeader();
   // retreive status name-value pairs, then push these into map
   while((np = header.find(delimiters[delimiterSwitch], p)) != string::npos && np != p) {
     string line = header.substr(p, np-p);
     p = np+2;
     pair<string, string> hp;
     Util::split(hp, line, ':');
-    headers.put(hp.first, hp.second);
+    httpHeader->put(hp.first, hp.second);
   }
-  headers.setStatus(strtol(status.c_str(), 0, 10));
-  return headers.getStatus();
-}
+  HttpResponseHandle httpResponse = new HttpResponse();
+  httpResponse->setCuid(cuid);
+  httpResponse->setStatus(strtol(status.c_str(), 0, 10));
+  httpResponse->setHttpHeader(httpHeader);
+  httpResponse->setHttpRequest(outstandingHttpRequests.front());
 
-bool HttpConnection::useProxy() const {
-  return option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
-}
+  outstandingHttpRequests.pop_front();
 
-bool HttpConnection::useProxyAuth() const {
-  return option->get(PREF_HTTP_PROXY_AUTH_ENABLED) == V_TRUE;
-}
-
-bool HttpConnection::useProxyGet() const {
-  return option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
+  return httpResponse;
 }

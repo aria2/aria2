@@ -44,23 +44,25 @@ using namespace std;
 
 class DownloadCommand : public AbstractCommand {
 private:
-  long long int lastSize;
   int32_t maxDownloadSpeedLimit;
   int32_t startupIdleTime;
   int32_t lowestDownloadSpeedLimit;
   PeerStatHandle peerStat;
 protected:
-  bool executeInternal(Segment& segment);
+  TransferEncodingHandle transferDecoder;
 
-  virtual bool prepareForNextSegment(const Segment& currentSegment);
+  virtual bool executeInternal();
+
+  virtual bool prepareForNextSegment();
 public:
   DownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
 		  const SocketHandle& s);
   virtual ~DownloadCommand();
 
-  virtual TransferEncoding* getTransferEncoding(const string& transferEncoding) = 0;
-
-  string transferEncoding;
+  void setTransferDecoder(const TransferEncodingHandle& transferDecoder)
+  {
+    this->transferDecoder = transferDecoder;
+  }
 
   void setMaxDownloadSpeedLimit(int32_t maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;

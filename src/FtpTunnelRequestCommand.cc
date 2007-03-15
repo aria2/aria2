@@ -34,26 +34,16 @@
 /* copyright --> */
 #include "FtpTunnelRequestCommand.h"
 #include "FtpTunnelResponseCommand.h"
-#include "HttpConnection.h"
 
 FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid,
-						 const RequestHandle req,
+						 const RequestHandle& req,
 						 DownloadEngine* e,
 						 const SocketHandle& s)
-  :AbstractCommand(cuid, req, e, s) {
-  disableReadCheckSocket();
-  disableWriteCheckSocket();
-}
+  :AbstractProxyRequestCommand(cuid, req, e, s) {}
 
 FtpTunnelRequestCommand::~FtpTunnelRequestCommand() {}
 
-bool FtpTunnelRequestCommand::executeInternal(Segment& segment) {
-  socket->setBlockingMode();
-  HttpConnection httpConnection(cuid, socket, req, e->option);
-  httpConnection.sendProxyRequest();
-
-  FtpTunnelResponseCommand* command
-    = new FtpTunnelResponseCommand(cuid, req, e, socket);
-  e->commands.push_back(command);
-  return true;
+Command* FtpTunnelRequestCommand::getNextCommand()
+{
+  return new FtpTunnelResponseCommand(cuid, req, httpConnection, e, socket);
 }

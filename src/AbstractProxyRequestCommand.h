@@ -32,29 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_RESPONSE_COMMAND_H_
-#define _D_HTTP_RESPONSE_COMMAND_H_
+#ifndef _D_ABSTRACT_PROXY_REQUEST_COMMAND_H_
+#define _D_ABSTRACT_PROXY_REQUEST_COMMAND_H_
 
 #include "AbstractCommand.h"
 #include "HttpConnection.h"
 
-class HttpResponseCommand : public AbstractCommand {
-private:
+class AbstractProxyRequestCommand : public AbstractCommand {
+protected:
   HttpConnectionHandle httpConnection;
 
-  bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
-  bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
-  void createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
-  bool doTorrentStuff(const HttpResponseHandle& httpResponse);
-protected:
-  bool executeInternal();
+  virtual bool executeInternal();
 public:
-  HttpResponseCommand(int32_t cuid,
-		      const RequestHandle& req,
-		      const HttpConnectionHandle& httpConnection,
-		      DownloadEngine* e,
-		      const SocketHandle& s);
-  ~HttpResponseCommand();
+  AbstractProxyRequestCommand(int cuid,
+			      const RequestHandle& req,
+			      DownloadEngine* e,
+			      const SocketHandle& s);
+  virtual ~AbstractProxyRequestCommand();
+
+  virtual Command* getNextCommand() = 0;
 };
 
-#endif // _D_HTTP_RESPONSE_COMMAND_H_
+#endif // _D_ABSTRACT_PROXY_REQUEST_COMMAND_H_

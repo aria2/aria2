@@ -133,6 +133,22 @@ void Util::split(pair<string, string>& hp, const string& src, char delim) {
   }
 }
 
+pair<string, string> Util::split(const string& src, const string& delims)
+{
+  pair<string, string> hp;
+  hp.first = "";
+  hp.second = "";
+  string::size_type p = src.find_first_of(delims);
+  if(p == string::npos) {
+    hp.first = src;
+    hp.second = "";
+  } else {
+    hp.first = trim(src.substr(0, p));
+    hp.second = trim(src.substr(p+1));
+  }
+  return hp;
+}
+
 long long int Util::difftv(struct timeval tv1, struct timeval tv2) {
   if(tv1.tv_sec < tv2.tv_sec || tv1.tv_sec == tv2.tv_sec && tv1.tv_usec < tv2.tv_usec) {
     return 0;
