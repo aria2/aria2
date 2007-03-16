@@ -59,6 +59,24 @@ void DownloadEngine::cleanQueue() {
   commands.clear();
 }
 
+void DownloadEngine::executeCommand(Command::STATUS statusFilter)
+{
+  int max = commands.size();
+  for(int i = 0; i < max; i++) {
+    Command* com = commands.front();
+    commands.pop_front();
+    if(com->statusMatch(statusFilter)) {
+      if(com->execute()) {
+	delete com;
+      } else {
+	com->setStatusInactive();
+      }
+    } else {
+      commands.push_back(com);
+    }
+  }
+}
+
 void DownloadEngine::run() {
   initStatistics();
   Time cp;
@@ -67,31 +85,13 @@ void DownloadEngine::run() {
   while(!commands.empty()) {
     if(cp.elapsed(1)) {
       cp.reset();
-      int max = commands.size();
-      for(int i = 0; i < max; i++) {
-	Command* com = commands.front();
-	commands.pop_front();
-	if(com->execute()) {
-	  delete com;
-	}
-      }
+      executeCommand(Command::STATUS_ALL);
     } else {
-      for(Commands::iterator itr = activeCommands.begin();
-	  itr != activeCommands.end(); itr++) {
-	Commands::iterator comItr = find(commands.begin(), commands.end(),
-					 *itr);
-	assert(comItr != commands.end());
-	Command* command = *itr;
-	commands.erase(comItr);
-	if(command->execute()) {
-	  delete command;
-	}
-      }
+      executeCommand(Command::STATUS_ACTIVE);
     }
     afterEachIteration();
-    activeCommands.clear();
     if(!noWait && !commands.empty()) {
-      waitData(activeCommands);
+      waitData();
     }
     noWait = false;
     calculateStatistics();
@@ -108,7 +108,7 @@ void DownloadEngine::shortSleep() const {
   select(0, &rfds, NULL, NULL, &tv);
 }
 
-void DownloadEngine::waitData(Commands& activeCommands) {
+void DownloadEngine::waitData() {
   fd_set rfds;
   fd_set wfds;
   int retval = 0;
@@ -126,9 +126,7 @@ void DownloadEngine::waitData(Commands& activeCommands) {
       SocketEntry& entry = *itr;
       if(FD_ISSET(entry.socket->getSockfd(), &rfds) ||
 	 FD_ISSET(entry.socket->getSockfd(), &wfds)) {
-	if(find(activeCommands.begin(), activeCommands.end(), entry.command) == activeCommands.end()) {
-	  activeCommands.push_back(entry.command);
-	}
+	entry.command->setStatusActive();
       }
     }
 #ifdef ENABLE_ASYNC_DNS
@@ -139,9 +137,7 @@ void DownloadEngine::waitData(Commands& activeCommands) {
       switch(entry.nameResolver->getStatus()) {
       case NameResolver::STATUS_SUCCESS:
       case NameResolver::STATUS_ERROR:
-	if(find(activeCommands.begin(), activeCommands.end(), entry.command) == activeCommands.end()) {
-	  activeCommands.push_back(entry.command);
-	}
+	entry.command->setStatusActive();
 	break;
       default:
 	break;

@@ -1,3 +1,21 @@
+2007-03-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To reduce overhead to find commands whose socket is either
+	readable or writable in the download engine loop:
+	* src/Command.h, src/Command.cc
+	(STATUS): New enum.
+	(status): New variable.
+	(statusMatch): New function.
+	(setStatusActive): New function.
+	(setStatusInactive): New function.
+	* src/DownloadEngine.h, src/DownloadEngine.cc
+	(executeCommand): New function.
+	(run): Simplified.
+	(waitData): Call Command::setStatusActive() when command's socket is
+	readable or writable.
+
+	
+
 2007-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To handle Segment as SegmentHandle:

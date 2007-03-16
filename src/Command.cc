@@ -35,3 +35,14 @@
 #include "Command.h"
 
 int Command::uuidGen = 0;
+
+bool Command::statusMatch(Command::STATUS statusFilter) const
+{
+  if(statusFilter == STATUS_ALL) {
+    return true;
+  } else if(statusFilter == status) {
+    return true;
+  } else {
+    return false;
+  }
+}

@@ -130,7 +130,6 @@ bool DownloadCommand::prepareForNextSegment() {
     while(1) {
       SegmentHandle nextSegment = e->segmentMan->getSegment(cuid,
 							    tempSegment->index+1);
-      cerr << nextSegment.isNull() << endl;
       if(nextSegment.isNull()) {
 	break;
       } else {

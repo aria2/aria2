@@ -97,7 +97,7 @@ typedef deque<NameResolverEntry> NameResolverEntries;
 
 class DownloadEngine {
 private:
-  void waitData(Commands& activeCommands);
+  void waitData();
   SocketEntries socketEntries;
 #ifdef ENABLE_ASYNC_DNS
   NameResolverEntries nameResolverEntries;
@@ -109,6 +109,7 @@ private:
   void shortSleep() const;
   bool addSocket(const SocketEntry& socketEntry);
   bool deleteSocket(const SocketEntry& socketEntry);
+  void executeCommand(Command::STATUS statusFilter);
 protected:
   const Logger* logger;
   virtual void initStatistics() = 0;

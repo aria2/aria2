@@ -41,14 +41,21 @@
 typedef int CommandUuid;
 
 class Command {
+public:
+  enum STATUS {
+    STATUS_ALL,
+    STATUS_ACTIVE,
+    STATUS_INACTIVE
+  };
 private:
   CommandUuid uuid;
   static int uuidGen;
+  STATUS status;
 protected:
   int cuid;
   const Logger* logger;
 public:
-  Command(int cuid):uuid(uuidGen++), cuid(cuid) {
+  Command(int cuid):uuid(uuidGen++), status(STATUS_INACTIVE), cuid(cuid) {
     logger = LogFactory::getInstance();
   }
   virtual ~Command() {}
@@ -56,6 +63,12 @@ public:
 
   int getCuid() const { return cuid; }
   const CommandUuid& getUuid() const { return uuid; }
+
+  void setStatusActive() { this->status = STATUS_ACTIVE; }
+
+  void setStatusInactive() { this->status = STATUS_INACTIVE; }
+
+  bool statusMatch(Command::STATUS statusFilter) const;
 };
 
 #endif // _D_COMMAND_H_
