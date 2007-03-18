@@ -664,3 +664,12 @@ void Util::indexRange(int32_t& startIndex, int32_t& endIndex,
   endIndex = _endIndex;
 }
 
+string Util::getHomeDir()
+{
+  const char* p = getenv("HOME");
+  if(p) {
+    return p;
+  } else {
+    return "";
+  }
+}

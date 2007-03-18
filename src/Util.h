@@ -144,6 +144,8 @@ public:
   static void indexRange(int32_t& startIndex, int32_t& endIndex,
 			 int64_t offset,
 			 int32_t srcLength, int32_t destLength);
+
+  static string getHomeDir();
 };
 
 #endif // _D_UTIL_H_

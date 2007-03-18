@@ -32,47 +32,30 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_COMMON_H_
-#define _D_COMMON_H_
-// use C99 limit macros
-#define __STDC_LIMIT_MACROS
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-#include <iostream>
-#include <assert.h>
-#include <limits.h>
-#include <string>
-#include <deque>
-#include <algorithm>
-#if ENABLE_NLS
-#  include <gettext.h>
-#  define _(String) gettext (String)
-#else
-#  define _(String) (String)
-#endif
+#ifndef _D_SINGLETON_HOLDER_H_
+#define _D_SINGLETON_HOLDER_H_
 
-#define USER_AGENT "aria2"
+template<typename T>
+class SingletonHolder {
+private:
+  static T _instance;
 
-#define BITFIELD_LEN_FROM_PIECES(X) ((X)/8+((X)%8? 1 : 0))
-
-#define DIV_FLOOR(X,Y) ((X)/(Y)+((X)%(Y)? 1:0))
-
-using namespace std;
-//#include "debug_new.h"
-
-class Deleter {
+  SingletonHolder() {}
 public:
-  template<class T>
-  void operator()(T* ptr) {
-    delete ptr;
+  ~SingletonHolder() {}
+
+  static T& instance()
+  {
+    return _instance;
+  }
+
+  static void instance(T& instance)
+  {
+    _instance = instance;
   }
 };
 
-#include "SharedHandle.h"
-#include "SingletonHolder.h"
+template<typename T>
+T SingletonHolder<T>::_instance = 0;
 
-typedef deque<string> Strings;
-typedef deque<int32_t> Integers;
-
-#endif // _D_COMMON_H_
+#endif // _D_SINGLETON_HOLDER_H_

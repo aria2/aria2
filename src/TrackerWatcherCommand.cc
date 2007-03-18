@@ -81,8 +81,11 @@ Command* TrackerWatcherCommand::createCommand() {
 }
 
 Command* TrackerWatcherCommand::createRequestCommand(const string& url) {
+  AuthConfigHandle authConfig = new AuthConfig();
+  authConfig->configure(e->option);
   RequestHandle req;
   req->setUrl(url);
+  req->setUserDefinedAuthConfig(authConfig);
   req->isTorrent = true;
   Command* command =
     InitiateConnectionCommandFactory::createInitiateConnectionCommand(btRuntime->getNewCuid(), req, e);

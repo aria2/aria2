@@ -1,3 +1,58 @@
+2007-03-19  Tatsuhiro Tsujikawa  <tujikawa at valkyrie dot rednoah com>
+
+	To integrate Netrc into exsiting classes:
+	* src/Request.h
+	(_userDefinedAuthConfig): New variable.
+	(findNetrcAuthenticator): New function.
+	(segment): Removed.
+	(setUserDefinedAuthConfig): New function.
+	(resolveHttpAuthConfigItem): New function.
+	(resolveFtpAuthConfigItem): New function.
+	(resolveHttpProxyAuthConfigItem): New function.
+	* src/HttpRequest.h
+	(authConfig): Removed.
+	(proxyAuthConfig): Removed.
+	(setAuthConfig): Removed.
+	(setProxyAuthConfig): Removed.
+	* src/UrlRequest.h
+	(getHeadResult): Added a parameter: authConfigHandle
+	* src/common.h
+	(SingletonHolder.h): New include.
+	* src/main.cc
+	(Netrc.h): New include.
+	(main): Removed initial values of PREF_FTP_USER, PREF_FTP_PASSWD.
+	Added initial value of PREF_NETRC_PATH.
+	Added the initialization of netrc.
+	* src/AuthConfig.h: New class.
+	* src/prefs.h
+	(PREF_NETRC_PATH): New definition.
+	* src/HttpAuthConfig.h: Removed.
+	* src/Netrc.cc
+	(getRequiredNextToken): New function.
+	(skipMacdef): New function.
+	(parse): Rewritten.
+	* src/Netrc.h
+	(getRequiredNextToken): New function.
+	(skipMacdef): New function.
+	* src/Util.h, src/Util.cc
+	(getHomeDir): New function.
+	* src/TrackerWatcherComand.cc
+	(createRequestCommand): Use AuthConfig.
+	* src/FtpConnection.cc
+	(sendUser): Use Request::resolveFtpAuthConfigItem().
+	(sendPass): Use Request::resolveFtpAuthConfigItem().
+	* src/Request.cc
+	(findNetrcAuthenticator): New function.
+	(resolveHttpAuthConfigItem): New function.
+	(resolveFtpAuthConfigItem): New function.
+	(resolveHttpProxyAuthConfigItem): New function.
+	* src/UrlRequestInfo.cc: Use AuthConfig.
+	* src/HttpRequest.cc
+	(createRequest): Use authConfig.
+	(getProxyAuthString): Use authConfig.
+	(configure): Removed PREF_HTTP_USER, PREF_HTTP_PASSWD,
+	PREF_HTTP_PROXY_USER, PREF_HTTP_PROXY_PASSWD.
+	
 2007-03-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To reduce overhead to find commands whose socket is either
@@ -13,8 +68,6 @@
 	(run): Simplified.
 	(waitData): Call Command::setStatusActive() when command's socket is
 	readable or writable.
-
-	
 
 2007-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

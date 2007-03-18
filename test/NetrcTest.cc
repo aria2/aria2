@@ -7,10 +7,11 @@ using namespace std;
 class NetrcTest : public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(NetrcTest);
-  CPPUNIT_TEST(testFindAuthenticatable);
+  CPPUNIT_TEST(testFindAuthenticator);
   CPPUNIT_TEST(testParse);
   CPPUNIT_TEST(testParse_fileNotFound);
   CPPUNIT_TEST(testParse_emptyfile);
+  CPPUNIT_TEST(testParse_malformedNetrc);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -18,29 +19,30 @@ public:
   void setUp() {
   }
 
-  void testFindAuthenticatable();
+  void testFindAuthenticator();
   void testParse();
   void testParse_fileNotFound();
   void testParse_emptyfile();
+  void testParse_malformedNetrc();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( NetrcTest );
 
-void NetrcTest::testFindAuthenticatable()
+void NetrcTest::testFindAuthenticator()
 {
   Netrc netrc;
-  netrc.addAuthenticatable(new Authenticator("host1", "tujikawa", "tujikawapasswd", "tujikawaaccount"));
-  netrc.addAuthenticatable(new Authenticator("host2", "aria2", "aria2password", "aria2account"));
-  netrc.addAuthenticatable(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
+  netrc.addAuthenticator(new Authenticator("host1", "tujikawa", "tujikawapasswd", "tujikawaaccount"));
+  netrc.addAuthenticator(new Authenticator("host2", "aria2", "aria2password", "aria2account"));
+  netrc.addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
 
-  AuthenticatorHandle aria2auth = netrc.findAuthenticatable("host2");
+  AuthenticatorHandle aria2auth = netrc.findAuthenticator("host2");
   CPPUNIT_ASSERT(!aria2auth.isNull());
   CPPUNIT_ASSERT_EQUAL(string("aria2"), aria2auth->getLogin());
   CPPUNIT_ASSERT_EQUAL(string("aria2password"), aria2auth->getPassword());
   CPPUNIT_ASSERT_EQUAL(string("aria2account"), aria2auth->getAccount());
 
-  AuthenticatorHandle defaultauth = netrc.findAuthenticatable("host3");
+  AuthenticatorHandle defaultauth = netrc.findAuthenticator("host3");
   CPPUNIT_ASSERT(!defaultauth.isNull());
   CPPUNIT_ASSERT_EQUAL(string("default"), defaultauth->getLogin());
   CPPUNIT_ASSERT_EQUAL(string("defaultpassword"), defaultauth->getPassword());
@@ -51,7 +53,7 @@ void NetrcTest::testParse()
 {
   Netrc netrc;
   netrc.parse("sample.netrc");
-  Authenticatables::const_iterator itr = netrc.getAuthenticatables().begin();
+  Authenticators::const_iterator itr = netrc.getAuthenticators().begin();
 
   AuthenticatorHandle tujikawaauth = *itr;
   CPPUNIT_ASSERT(!tujikawaauth.isNull());
@@ -91,5 +93,17 @@ void NetrcTest::testParse_emptyfile()
   Netrc netrc;
   netrc.parse("emptyfile");
 
-  CPPUNIT_ASSERT_EQUAL((size_t)0, netrc.getAuthenticatables().size());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, netrc.getAuthenticators().size());
+}
+
+void NetrcTest::testParse_malformedNetrc()
+{
+  Netrc netrc;
+  try {
+    netrc.parse("malformed.netrc");
+    CPPUNIT_FAIL("exception must be threw.");
+  } catch(Exception* e) {
+    cerr << e->getMsg() << endl;
+    delete e;
+  }
 }

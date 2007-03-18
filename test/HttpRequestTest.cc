@@ -81,6 +81,9 @@ void HttpRequestTest::testCreateRequest()
 {
   RequestHandle request = new Request();
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  AuthConfigHandle authConfig = new AuthConfig();
+  request->setUserDefinedAuthConfig(authConfig);
+
   SegmentHandle segment = new Segment();
 
   HttpRequest httpRequest;
@@ -168,6 +171,7 @@ void HttpRequestTest::testCreateRequest()
   option->put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
   option->put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
+  authConfig->configure(option.get());
   httpRequest.configure(option.get());
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -278,6 +282,8 @@ void HttpRequestTest::testCreateRequest_ftp()
 {
   RequestHandle request = new Request();
   request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  AuthConfigHandle authConfig = new AuthConfig();
+  request->setUserDefinedAuthConfig(authConfig);
   SegmentHandle segment = new Segment();
 
   HttpRequest httpRequest;
@@ -296,6 +302,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   option->put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
   httpRequest.configure(option.get());
+  authConfig->configure(option.get());
 
   string expectedText = "GET ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"

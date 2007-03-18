@@ -127,6 +127,10 @@ private:
   Authenticators authenticators;
 
   void storeAuthenticator(const AuthenticatorHandle& authenticator);
+
+  string getRequiredNextToken(ifstream& f) const;
+  
+  void skipMacdef(ifstream& f) const;
 public:
   Netrc() {}
 

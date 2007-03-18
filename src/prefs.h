@@ -90,6 +90,8 @@
 #define PREF_REALTIME_CHUNK_CHECKSUM "realtime_chunk_checksum"
 // value: true | false
 #define PREF_CHECK_INTEGRITY "check_integrity"
+// value: string that your file system recognizes as a file name.
+#define PREF_NETRC_PATH "netrc_path"
 
 /**
  * FTP related preferences

@@ -39,7 +39,6 @@
 #include "Segment.h"
 #include "Range.h"
 #include "Request.h"
-#include "HttpAuthConfig.h"
 #include "Option.h"
 #include <netinet/in.h>
 
@@ -54,13 +53,9 @@ private:
 
   bool authEnabled;
 
-  HttpAuthConfigHandle authConfig;
-
   bool proxyEnabled;
 
   bool proxyAuthEnabled;
-
-  HttpAuthConfigHandle proxyAuthConfig;
 
   string userAgent;
 
@@ -73,10 +68,8 @@ public:
 		segment(0),
 		entityLength(0),
 		authEnabled(false),
-		authConfig(0),
 		proxyEnabled(false),
 		proxyAuthEnabled(false),
-		proxyAuthConfig(0),
 		userAgent(USER_AGENT)
   {}
 
@@ -219,16 +212,6 @@ public:
   void setAuthEnabled(bool authEnabled)
   {
     this->authEnabled = authEnabled;
-  }
-
-  void setAuthConfig(const HttpAuthConfigHandle& authConfig)
-  {
-    this->authConfig = authConfig;
-  }
-
-  void setProxyAuthConfig(const HttpAuthConfigHandle& proxyAuthConfig)
-  {
-    this->proxyAuthConfig = proxyAuthConfig;
   }
 
   void setUserAgent(const string& userAgent)

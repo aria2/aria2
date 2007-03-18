@@ -32,27 +32,37 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_AUTH_CONFIG_H_
-#define _D_HTTP_AUTH_CONFIG_H_
+#ifndef _D_AUTH_CONFIG_ITEM_H_
+#define _D_AUTH_CONFIG_ITEM_H_
 
 #include "common.h"
 
-class HttpAuthConfig {
+class AuthConfigItem {
 private:
-  string authScheme;
-  string authUser;
-  string authPassword;
+  string _authScheme;
+  string _user;
+  string _password;
 public:
 
-  HttpAuthConfig(const string& authUser, const string& authPassword):
-    authUser(authUser), authPassword(authPassword) {}
+  AuthConfigItem(const string& user, const string& password):
+    _user(user), _password(password) {}
 
   string getAuthText() const
   {
-    return authUser+":"+authPassword;
+    return _user+":"+_password;
+  }
+
+  const string& getUser() const
+  {
+    return _user;
+  }
+
+  const string& getPassword() const
+  {
+    return _password;
   }
 };
 
-typedef SharedHandle<HttpAuthConfig> HttpAuthConfigHandle;
+typedef SharedHandle<AuthConfigItem> AuthConfigItemHandle;
 
-#endif // _D_HTTP_AUTH_CONFIG_H_
+#endif // _D_AUTH_CONFIG_ITEM_H_

@@ -57,9 +57,10 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) HttpHeaderTest.$(OBJEXT) \
-	HttpRequestTest.$(OBJEXT) HttpResponseTest.$(OBJEXT) \
-	NetrcTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) NetrcTest.$(OBJEXT) \
+	HttpRequestTest.$(OBJEXT) AuthConfigTest.$(OBJEXT) \
+	SingletonHolderTest.$(OBJEXT) HttpHeaderTest.$(OBJEXT) \
+	HttpResponseTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
 	SharedHandleTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	ChunkedEncodingTest.$(OBJEXT) FileTest.$(OBJEXT) \
 	OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) UtilTest.$(OBJEXT) \
@@ -258,10 +259,12 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
-	HttpHeaderTest.cc\
-	HttpRequestTest.cc\
-	HttpResponseTest.cc\
 	NetrcTest.cc\
+	HttpRequestTest.cc\
+	AuthConfigTest.cc\
+	SingletonHolderTest.cc\
+	HttpHeaderTest.cc\
+	HttpResponseTest.cc\
 	BitfieldManTest.cc\
 	SharedHandleTest.cc\
 	RequestTest.cc\
@@ -386,6 +389,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessageTest.Po@am__quote@
@@ -439,6 +443,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommandTest.Po@am__quote@

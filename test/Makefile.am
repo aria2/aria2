@@ -1,10 +1,12 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
-	HttpHeaderTest.cc\
-	HttpRequestTest.cc\
-	HttpResponseTest.cc\
 	NetrcTest.cc\
+	HttpRequestTest.cc\
+	AuthConfigTest.cc\
+	SingletonHolderTest.cc\
+	HttpHeaderTest.cc\
+	HttpResponseTest.cc\
 	BitfieldManTest.cc\
 	SharedHandleTest.cc\
 	RequestTest.cc\

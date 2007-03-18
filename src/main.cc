@@ -48,6 +48,7 @@
 #include "BitfieldManFactory.h"
 #include "SimpleRandomizer.h"
 #include "ConsoleFileAllocationMonitor.h"
+#include "Netrc.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -342,8 +343,6 @@ int main(int argc, char* argv[]) {
   op->put(PREF_MAX_TRIES, "5");
   op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
   op->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
-  op->put(PREF_FTP_USER, "anonymous");
-  op->put(PREF_FTP_PASSWD, "ARIA2USER@");
   op->put(PREF_FTP_TYPE, V_BINARY);
   op->put(PREF_FTP_VIA_HTTP_PROXY, V_TUNNEL);
   op->put(PREF_AUTO_SAVE_INTERVAL, "60");
@@ -357,6 +356,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
   op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
   op->put(PREF_CHECK_INTEGRITY, V_FALSE);
+  op->put(PREF_NETRC_PATH, Util::getHomeDir()+"/.netrc");
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -772,6 +772,10 @@ int main(int argc, char* argv[]) {
     Logger* logger = LogFactory::getInstance();
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
     logger->info("Logging started.");
+
+    NetrcHandle netrc = new Netrc();
+    netrc->parse(op->get(PREF_NETRC_PATH));
+    NetrcSingletonHolder::instance(netrc);
 
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 

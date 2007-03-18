@@ -49,13 +49,13 @@ FtpConnection::FtpConnection(int cuid, const SocketHandle& socket,
 FtpConnection::~FtpConnection() {}
 
 void FtpConnection::sendUser() const {
-  string request = "USER "+option->get(PREF_FTP_USER)+"\r\n";
+  string request = "USER "+req->resolveFtpAuthConfigItem()->getUser()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendPass() const {
-  string request = "PASS "+option->get(PREF_FTP_PASSWD)+"\r\n";
+  string request = "PASS "+req->resolveFtpAuthConfigItem()->getPassword()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
   socket->writeData(request);
 }

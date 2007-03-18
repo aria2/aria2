@@ -34,14 +34,9 @@
 /* copyright --> */
 #ifndef _D_REQUEST_H_
 #define _D_REQUEST_H_
-#include <string>
-#include <map>
-#include "CookieBox.h"
-#include "Segment.h"
 #include "common.h"
-#include "SharedHandle.h"
-
-using namespace std;
+#include "CookieBox.h"
+#include "AuthConfig.h"
 
 #define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
@@ -75,9 +70,14 @@ private:
   int trackerEvent;
   bool keepAlive;
   string method;
+
+  AuthConfigHandle _userDefinedAuthConfig;
+  
   bool parseUrl(const string& url);
+
+  AuthConfigItemHandle findNetrcAuthenticator() const;
+
 public:
-  Segment segment;
   CookieBox* cookieBox;
   bool isTorrent;
 public:
@@ -115,6 +115,17 @@ public:
   void setMethod(const string& method) {
     this->method = method;
   }
+
+  void setUserDefinedAuthConfig(const AuthConfigHandle& authConfig)
+  {
+    _userDefinedAuthConfig = authConfig;
+  }
+
+  AuthConfigItemHandle resolveHttpAuthConfigItem() const;
+
+  AuthConfigItemHandle resolveFtpAuthConfigItem() const;
+
+  AuthConfigItemHandle resolveHttpProxyAuthConfigItem() const;
 
   const string& getMethod() const {
     return method;

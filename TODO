@@ -25,3 +25,5 @@
 * Add an ability of seeding
 * Continue file allocation with existing file
 * Rewrite HttpConnection::receiveResponse() using {i,o}stringstream
+* -c command line option to continue the download of existing file assuming
+that it was downloaded from the beginning.

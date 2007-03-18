@@ -37,6 +37,27 @@
 #include "RecoverableException.h"
 #include <fstream>
 
+string Netrc::getRequiredNextToken(ifstream& f) const
+{
+  string token;
+  if(f >> token) {
+    return token;
+  } else {
+    throw new RecoverableException("Netrc:parse error. EOF reached where a token expected.");
+  }
+}
+
+void Netrc::skipMacdef(ifstream& f) const
+{
+  string line;
+  getline(f, line);
+  while(getline(f, line)) {
+    if(line == "\r" || line == "") {
+      break;
+    }
+  }
+}
+
 void Netrc::parse(const string& path)
 {
   authenticators.clear();
@@ -46,32 +67,29 @@ void Netrc::parse(const string& path)
     throw new RecoverableException("File not found: %s", path.c_str());
   }
 
-  int32_t lineNum = 0;
-  string line;
   AuthenticatorHandle authenticator = 0;
-  while(getline(f, line)) {
-    ++lineNum;
-    if(Util::trim(line).empty()) {
-      continue;
-    }
-    pair<string, string> nameValuePair = Util::split(line, "\r\n\t ");
-    if(nameValuePair.first == "machine") {
+  string token;
+  while(f >> token) {
+    if(token == "machine") {
       storeAuthenticator(authenticator);
       authenticator = new Authenticator();
-      authenticator->setMachine(nameValuePair.second);
-    } else if(nameValuePair.first == "default") {
+      authenticator->setMachine(getRequiredNextToken(f));
+    } else if(token == "default") {
       storeAuthenticator(authenticator);
       authenticator = new DefaultAuthenticator();
     } else {
       if(authenticator.isNull()) {
-	throw new RecoverableException("Malformed netrc file: line %d", lineNum);
+	throw new RecoverableException("Netrc:parse error. %s encounterd where 'machine' or 'default' expected.");
       }
-      if(nameValuePair.first == "login") {
-	authenticator->setLogin(nameValuePair.second);
-      } else if(nameValuePair.first == "password") {
-	authenticator->setPassword(nameValuePair.second);
-      } else if(nameValuePair.first == "account") {
-	authenticator->setAccount(nameValuePair.second);
+      if(token == "login") {
+	authenticator->setLogin(getRequiredNextToken(f));
+      } else if(token == "password") {
+	authenticator->setPassword(getRequiredNextToken(f));
+      } else if(token == "account") {
+	authenticator->setAccount(getRequiredNextToken(f));
+      } else if(token == "macdef") {
+	getRequiredNextToken(f);
+	skipMacdef(f);
       }
     }
   }

@@ -107,7 +107,7 @@ string HttpRequest::createRequest() const
   }
   if(authEnabled) {
     requestLine += "Authorization: Basic "+
-	Base64::encode(authConfig->getAuthText())+"\r\n";
+	Base64::encode(request->resolveHttpAuthConfigItem()->getAuthText())+"\r\n";
   }
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";
@@ -145,7 +145,7 @@ string HttpRequest::createProxyRequest() const
 
 string HttpRequest::getProxyAuthString() const {
   return "Proxy-Authorization: Basic "+
-    Base64::encode(proxyAuthConfig->getAuthText())+"\r\n";
+    Base64::encode(request->resolveHttpProxyAuthConfigItem()->getAuthText())+"\r\n";
 }
 
 void HttpRequest::configure(const Option* option)
@@ -155,8 +155,4 @@ void HttpRequest::configure(const Option* option)
     option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE &&
     option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
   proxyAuthEnabled = option->get(PREF_HTTP_PROXY_AUTH_ENABLED) == V_TRUE;
-  authConfig = new HttpAuthConfig(option->get(PREF_HTTP_USER),
-				  option->get(PREF_HTTP_PASSWD));
-  proxyAuthConfig = new HttpAuthConfig(option->get(PREF_HTTP_PROXY_USER),
-				       option->get(PREF_HTTP_PROXY_PASSWD));
 }
