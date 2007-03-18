@@ -39,7 +39,7 @@
 
 void Netrc::parse(const string& path)
 {
-  authenticatables.clear();
+  authenticators.clear();
   ifstream f(path.c_str());
   
   if(!f) {
@@ -56,11 +56,11 @@ void Netrc::parse(const string& path)
     }
     pair<string, string> nameValuePair = Util::split(line, "\r\n\t ");
     if(nameValuePair.first == "machine") {
-      storeAuthenticatable(authenticator);
+      storeAuthenticator(authenticator);
       authenticator = new Authenticator();
       authenticator->setMachine(nameValuePair.second);
     } else if(nameValuePair.first == "default") {
-      storeAuthenticatable(authenticator);
+      storeAuthenticator(authenticator);
       authenticator = new DefaultAuthenticator();
     } else {
       if(authenticator.isNull()) {
@@ -75,13 +75,13 @@ void Netrc::parse(const string& path)
       }
     }
   }
-  storeAuthenticatable(authenticator);
+  storeAuthenticator(authenticator);
 }
 
-void Netrc::storeAuthenticatable(const AuthenticatableHandle& authenticatable)
+void Netrc::storeAuthenticator(const AuthenticatorHandle& authenticator)
 {
-  if(!authenticatable.isNull()) {
-    authenticatables.push_back(authenticatable);
+  if(!authenticator.isNull()) {
+    authenticators.push_back(authenticator);
   }
 }
 
@@ -91,18 +91,18 @@ private:
 public:
   AuthHostMatch(const string& hostname):hostname(hostname) {}
 
-  bool operator()(const AuthenticatableHandle& authenticatable)
+  bool operator()(const AuthenticatorHandle& authenticator)
   {
-    return authenticatable->match(hostname);
+    return authenticator->match(hostname);
   }
 };
 
-AuthenticatableHandle Netrc::findAuthenticatable(const string& hostname) const
+AuthenticatorHandle Netrc::findAuthenticator(const string& hostname) const
 {
-  Authenticatables::const_iterator itr =
-    find_if(authenticatables.begin(), authenticatables.end(),
+  Authenticators::const_iterator itr =
+    find_if(authenticators.begin(), authenticators.end(),
 	    AuthHostMatch(hostname));
-  if(itr == authenticatables.end()) {
+  if(itr == authenticators.end()) {
     return 0;
   } else {
     return *itr;

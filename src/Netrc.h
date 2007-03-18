@@ -45,7 +45,6 @@ public:
 };
 
 typedef SharedHandle<Authenticatable> AuthenticatableHandle;
-typedef deque<AuthenticatableHandle> Authenticatables;
 
 class Authenticator : public Authenticatable {
 private:
@@ -102,6 +101,7 @@ public:
 };
 
 typedef SharedHandle<Authenticator> AuthenticatorHandle;
+typedef deque<AuthenticatorHandle> Authenticators;
 
 class DefaultAuthenticator : public Authenticator {
 public:
@@ -124,27 +124,28 @@ typedef SharedHandle<DefaultAuthenticator> DefaultAuthenticatorHandle;
 
 class Netrc {
 private:
-  Authenticatables authenticatables;
+  Authenticators authenticators;
 
-  void storeAuthenticatable(const AuthenticatableHandle& authenticatable);
+  void storeAuthenticator(const AuthenticatorHandle& authenticator);
 public:
   Netrc() {}
 
   void parse(const string& path);
 
-  AuthenticatableHandle findAuthenticatable(const string& hostname) const;
+  AuthenticatorHandle findAuthenticator(const string& hostname) const;
 
-  const Authenticatables& getAuthenticatables() const
+  const Authenticators& getAuthenticators() const
   {
-    return authenticatables;
+    return authenticators;
   }
 
-  void addAuthenticatable(const AuthenticatableHandle& authenticatable)
+  void addAuthenticator(const AuthenticatorHandle& authenticator)
   {
-    authenticatables.push_back(authenticatable);
+    authenticators.push_back(authenticator);
   }
 };
 
 typedef SharedHandle<Netrc> NetrcHandle;
+typedef SingletonHolder<NetrcHandle> NetrcSingletonHolder;
 
 #endif // _D_NETRC_H_
