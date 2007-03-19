@@ -44,6 +44,7 @@ private:
   string _password;
 public:
 
+  AuthConfigItem() {}
   AuthConfigItem(const string& user, const string& password):
     _user(user), _password(password) {}
 
@@ -64,5 +65,7 @@ public:
 };
 
 typedef SharedHandle<AuthConfigItem> AuthConfigItemHandle;
+
+ostream& operator<<(ostream& o, const AuthConfigItemHandle& authConfigItem);
 
 #endif // _D_AUTH_CONFIG_ITEM_H_
