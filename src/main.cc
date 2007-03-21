@@ -32,23 +32,18 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpInitiateConnectionCommand.h"
-#include "ConsoleDownloadEngine.h"
-#include "SegmentMan.h"
-#include "LogFactory.h"
 #include "common.h"
-#include "DefaultDiskWriter.h"
+#include "LogFactory.h"
 #include "Util.h"
-#include "InitiateConnectionCommandFactory.h"
 #include "prefs.h"
 #include "FeatureConfig.h"
-#include "DownloadEngineFactory.h"
 #include "UrlRequestInfo.h"
 #include "TorrentRequestInfo.h"
 #include "BitfieldManFactory.h"
 #include "SimpleRandomizer.h"
 #include "ConsoleFileAllocationMonitor.h"
 #include "Netrc.h"
+#include "RequestFactory.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -775,7 +770,11 @@ int main(int argc, char* argv[]) {
 
     NetrcHandle netrc = new Netrc();
     netrc->parse(op->get(PREF_NETRC_PATH));
-    NetrcSingletonHolder::instance(netrc);
+
+    RequestFactoryHandle requestFactory = new RequestFactory();
+    requestFactory->setOption(op);
+    requestFactory->setNetrc(netrc);
+    RequestFactorySingletonHolder::instance(requestFactory);
 
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 

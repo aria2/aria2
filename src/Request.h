@@ -37,6 +37,7 @@
 #include "common.h"
 #include "CookieBox.h"
 #include "AuthConfig.h"
+#include "AuthResolver.h"
 
 #define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
@@ -71,12 +72,13 @@ private:
   bool keepAlive;
   string method;
 
-  AuthConfigHandle _userDefinedAuthConfig;
-  
+  AuthResolverHandle _httpAuthResolver;
+
+  AuthResolverHandle _httpProxyAuthResolver;
+
+  AuthResolverHandle _ftpAuthResolver;
+
   bool parseUrl(const string& url);
-
-  AuthConfigItemHandle findNetrcAuthenticator() const;
-
 public:
   CookieBox* cookieBox;
   bool isTorrent;
@@ -116,16 +118,26 @@ public:
     this->method = method;
   }
 
-  void setUserDefinedAuthConfig(const AuthConfigHandle& authConfig)
+  void setHttpAuthResolver(const AuthResolverHandle& authResolver)
   {
-    _userDefinedAuthConfig = authConfig;
+    _httpAuthResolver = authResolver;
   }
 
-  AuthConfigItemHandle resolveHttpAuthConfigItem() const;
+  void setHttpProxyAuthResolver(const AuthResolverHandle& authResolver)
+  {
+    _httpProxyAuthResolver = authResolver;
+  }
 
-  AuthConfigItemHandle resolveFtpAuthConfigItem() const;
+  void setFtpAuthResolver(const AuthResolverHandle& authResolver)
+  {
+    _ftpAuthResolver = authResolver;
+  }
 
-  AuthConfigItemHandle resolveHttpProxyAuthConfigItem() const;
+  AuthConfigHandle resolveHttpAuthConfig();
+
+  AuthConfigHandle resolveFtpAuthConfig();
+
+  AuthConfigHandle resolveHttpProxyAuthConfig();
 
   const string& getMethod() const {
     return method;

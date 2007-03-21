@@ -35,14 +35,15 @@
 #include "Request.h"
 #include "Util.h"
 #include "FeatureConfig.h"
-#include "Netrc.h"
 
 const string Request::METHOD_GET = "get";
 
 const string Request::METHOD_HEAD = "head";
 
 Request::Request():port(0), tryCount(0), keepAlive(true), method(METHOD_GET),
-		   _userDefinedAuthConfig(0),
+		   _httpAuthResolver(0),
+		   _httpProxyAuthResolver(0),
+		   _ftpAuthResolver(0),
 		   isTorrent(false)
 {
   cookieBox = new CookieBox();
@@ -134,51 +135,17 @@ bool Request::parseUrl(const string& url) {
   return true;
 }
 
-AuthConfigItemHandle Request::findNetrcAuthenticator() const
+AuthConfigHandle Request::resolveHttpAuthConfig()
 {
-  if(!NetrcSingletonHolder::instance().isNull()) {
-    AuthenticatorHandle auth = NetrcSingletonHolder::instance()->findAuthenticator(getHost());
-    if(auth.isNull()) {
-      return 0;
-    } else {
-      return new AuthConfigItem(auth->getLogin(), auth->getPassword());
-    }
-  } else {
-    return 0;
-  }
+  return _httpAuthResolver->resolveAuthConfig(getHost());
 }
 
-AuthConfigItemHandle Request::resolveHttpAuthConfigItem() const
+AuthConfigHandle Request::resolveFtpAuthConfig()
 {
-  if(!_userDefinedAuthConfig.isNull() &&
-     !_userDefinedAuthConfig->getHttpAuthConfigItem().isNull()) {
-    return _userDefinedAuthConfig->getHttpAuthConfigItem();
-  } else {
-    return findNetrcAuthenticator();
-  }
+  return _ftpAuthResolver->resolveAuthConfig(getHost());
 }
 
-AuthConfigItemHandle Request::resolveFtpAuthConfigItem() const
+AuthConfigHandle Request::resolveHttpProxyAuthConfig()
 {
-  if(!_userDefinedAuthConfig.isNull() &&
-     !_userDefinedAuthConfig->getFtpAuthConfigItem().isNull()) {
-    return _userDefinedAuthConfig->getFtpAuthConfigItem();
-  } else {
-    AuthConfigItemHandle authConfig = findNetrcAuthenticator();
-    if(authConfig.isNull()) {
-      return new AuthConfigItem("anonymous", "ARIA2USER@");
-    } else {
-      return authConfig;
-    }
-  }
-}
-
-AuthConfigItemHandle Request::resolveHttpProxyAuthConfigItem() const
-{
-  if(!_userDefinedAuthConfig.isNull() &&
-     !_userDefinedAuthConfig->getHttpProxyAuthConfigItem().isNull()) {
-    return _userDefinedAuthConfig->getHttpProxyAuthConfigItem();
-  } else {
-    return findNetrcAuthenticator();
-  }
+  return _httpProxyAuthResolver->resolveAuthConfig(getHost());
 }

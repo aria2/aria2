@@ -217,9 +217,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	HttpResponse.cc HttpResponse.h HttpRequest.cc HttpRequest.h \
 	Range.h AbstractProxyRequestCommand.cc \
 	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h HttpAuthConfig.h Netrc.cc \
-	Netrc.h NameResolver.cc NameResolver.h MetaEntry.h Data.cc \
-	Data.h Dictionary.cc Dictionary.h List.cc List.h \
+	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
+	AuthConfig.h AuthResolver.h AbstractAuthResolver.h \
+	DefaultAuthResolver.cc DefaultAuthResolver.h \
+	NetrcAuthResolver.cc NetrcAuthResolver.h RequestFactory.cc \
+	RequestFactory.h NameResolver.cc NameResolver.h MetaEntry.h \
+	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
 	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
 	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
@@ -386,6 +389,8 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	ChunkChecksumValidator.$(OBJEXT) HttpResponse.$(OBJEXT) \
 	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
 	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
+	AuthConfig.$(OBJEXT) DefaultAuthResolver.$(OBJEXT) \
+	NetrcAuthResolver.$(OBJEXT) RequestFactory.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
@@ -596,8 +601,12 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	HttpResponse.cc HttpResponse.h HttpRequest.cc HttpRequest.h \
 	Range.h AbstractProxyRequestCommand.cc \
 	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h HttpAuthConfig.h Netrc.cc \
-	Netrc.h $(am__append_1) $(am__append_2) $(am__append_3)
+	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
+	AuthConfig.h AuthResolver.h AbstractAuthResolver.h \
+	DefaultAuthResolver.cc DefaultAuthResolver.h \
+	NetrcAuthResolver.cc NetrcAuthResolver.h RequestFactory.cc \
+	RequestFactory.h $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -691,6 +700,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractProxyResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractSingleDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManFactory.Po@am__quote@
@@ -723,6 +733,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounce.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtInteractive.Po@am__quote@
@@ -776,6 +787,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NameResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Netrc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@
@@ -787,6 +799,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Segment.Po@am__quote@

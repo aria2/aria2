@@ -70,8 +70,13 @@ SRCS =  Socket.h\
 	Range.h\
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h\
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h\
-	HttpAuthConfig.h\
-	Netrc.cc Netrc.h
+	Netrc.cc Netrc.h\
+	AuthConfig.cc AuthConfig.h\
+	AuthResolver.h\
+	AbstractAuthResolver.h\
+	DefaultAuthResolver.cc DefaultAuthResolver.h\
+	NetrcAuthResolver.cc NetrcAuthResolver.h\
+	RequestFactory.cc RequestFactory.h
 #	debug_new.cpp
 
 if ENABLE_ASYNC_DNS

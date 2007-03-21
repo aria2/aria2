@@ -1,5 +1,7 @@
 #include "Request.h"
 #include "Netrc.h"
+#include "DefaultAuthResolver.h"
+#include "NetrcAuthResolver.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 class RequestTest:public CppUnit::TestFixture {
@@ -25,12 +27,10 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSafeChar);
   CPPUNIT_TEST(testInnerLink);
   CPPUNIT_TEST(testMetalink);
-  CPPUNIT_TEST(testResolveHttpAuthConfigItem);
-  CPPUNIT_TEST(testResolveHttpAuthConfigItem_noCandidate);
-  CPPUNIT_TEST(testResolveHttpProxyAuthConfigItem);
-  CPPUNIT_TEST(testResolveHttpProxyAuthConfigItem_noCandidate);
-  CPPUNIT_TEST(testResolveFtpAuthConfigItem);
-  CPPUNIT_TEST(testResolveFtpAuthConfigItem_noCandidate);
+  CPPUNIT_TEST(testResolveHttpAuthConfig);
+  CPPUNIT_TEST(testResolveHttpAuthConfig_noCandidate);
+  CPPUNIT_TEST(testResolveHttpProxyAuthConfig);
+  CPPUNIT_TEST(testResolveFtpAuthConfig);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -54,12 +54,10 @@ public:
   void testSafeChar();
   void testInnerLink();
   void testMetalink();
-  void testResolveHttpAuthConfigItem();
-  void testResolveHttpAuthConfigItem_noCandidate();
-  void testResolveHttpProxyAuthConfigItem();
-  void testResolveHttpProxyAuthConfigItem_noCandidate();
-  void testResolveFtpAuthConfigItem();
-  void testResolveFtpAuthConfigItem_noCandidate();
+  void testResolveHttpAuthConfig();
+  void testResolveHttpAuthConfig_noCandidate();
+  void testResolveHttpProxyAuthConfig();
+  void testResolveFtpAuthConfig();
 };
 
 
@@ -306,117 +304,77 @@ void RequestTest::testMetalink() {
   CPPUNIT_ASSERT(!v2);
 }
 
-void RequestTest::testResolveHttpAuthConfigItem()
+void RequestTest::testResolveHttpAuthConfig()
 {
   Request req;
   req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-  // with no authConfig
-  CPPUNIT_ASSERT(req.resolveHttpAuthConfigItem().isNull());
+  // with DefaultAuthResolver
+  DefaultAuthResolverHandle defaultAuthResolver = new DefaultAuthResolver();
+  req.setHttpAuthResolver(defaultAuthResolver);
+  CPPUNIT_ASSERT(!req.resolveHttpAuthConfig().isNull());
+  CPPUNIT_ASSERT_EQUAL(string(":"),
+		       req.resolveHttpAuthConfig()->getAuthText());
 
   // with Netrc
   NetrcHandle netrc = new Netrc();
   netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
-  NetrcSingletonHolder::instance(netrc);
-  CPPUNIT_ASSERT(!req.resolveHttpAuthConfigItem().isNull());
-  AuthConfigItemHandle authConfig1 = req.resolveHttpAuthConfigItem();
-  CPPUNIT_ASSERT_EQUAL(string("default"), authConfig1->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("defaultpassword"), authConfig1->getPassword());
+  NetrcAuthResolverHandle netrcAuthResolver = new NetrcAuthResolver();
+  netrcAuthResolver->setNetrc(netrc);
+  req.setHttpAuthResolver(netrcAuthResolver);
+  AuthConfigHandle authConfig1 = req.resolveHttpAuthConfig();
+  CPPUNIT_ASSERT(!authConfig1.isNull());
+  CPPUNIT_ASSERT_EQUAL(string("default:defaultpassword"),
+		       authConfig1->getAuthText());
 
   // with Netrc + user defined
-  AuthConfigHandle authConfig = new AuthConfig();
-  authConfig->setHttpAuthConfigItem("userDefinedUser", "userDefinedPassword");
-  req.setUserDefinedAuthConfig(authConfig);
-  CPPUNIT_ASSERT(!req.resolveHttpAuthConfigItem().isNull());
-  AuthConfigItemHandle authConfig2 = req.resolveHttpAuthConfigItem();
-  CPPUNIT_ASSERT_EQUAL(string("userDefinedUser"), authConfig2->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("userDefinedPassword"), authConfig2->getPassword());
+  AuthConfigHandle authConfig =
+    new AuthConfig("userDefinedUser", "userDefinedPassword");
+  netrcAuthResolver->setUserDefinedAuthConfig(authConfig);
+  AuthConfigHandle authConfig2 = req.resolveHttpAuthConfig();
+  CPPUNIT_ASSERT(!authConfig2.isNull());
+  CPPUNIT_ASSERT_EQUAL(string("userDefinedUser:userDefinedPassword"),
+		       authConfig2->getAuthText());
 }
 
-void RequestTest::testResolveHttpAuthConfigItem_noCandidate()
+void RequestTest::testResolveHttpAuthConfig_noCandidate()
 {
   Request req;
   req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
 
-  NetrcHandle netrc = new Netrc();
-  netrc->addAuthenticator(new Authenticator("localhost2", "default", "defaultpassword", "defaultaccount"));
-  NetrcSingletonHolder::instance(netrc);
-  CPPUNIT_ASSERT(req.resolveHttpAuthConfigItem().isNull());
+  DefaultAuthResolverHandle defaultAuthResolver = new DefaultAuthResolver();
+  req.setHttpAuthResolver(defaultAuthResolver);
+  CPPUNIT_ASSERT_EQUAL(string(":"),
+		       req.resolveHttpAuthConfig()->getAuthText());
 }
 
-void RequestTest::testResolveHttpProxyAuthConfigItem()
+void RequestTest::testResolveHttpProxyAuthConfig()
 {
   Request req;
   req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-  // with no authConfig
-  CPPUNIT_ASSERT(req.resolveHttpProxyAuthConfigItem().isNull());
-
   // with Netrc
   NetrcHandle netrc = new Netrc();
   netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
-  NetrcSingletonHolder::instance(netrc);
-  CPPUNIT_ASSERT(!req.resolveHttpProxyAuthConfigItem().isNull());
-  AuthConfigItemHandle authConfig1 = req.resolveHttpProxyAuthConfigItem();
-  CPPUNIT_ASSERT_EQUAL(string("default"), authConfig1->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("defaultpassword"), authConfig1->getPassword());
-
-  // with Netrc + user defined
-  AuthConfigHandle authConfig = new AuthConfig();
-  authConfig->setHttpProxyAuthConfigItem("userDefinedUser", "userDefinedPassword");
-  req.setUserDefinedAuthConfig(authConfig);
-  CPPUNIT_ASSERT(!req.resolveHttpProxyAuthConfigItem().isNull());
-  AuthConfigItemHandle authConfig2 = req.resolveHttpProxyAuthConfigItem();
-  CPPUNIT_ASSERT_EQUAL(string("userDefinedUser"), authConfig2->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("userDefinedPassword"), authConfig2->getPassword());
+  NetrcAuthResolverHandle netrcAuthResolver = new NetrcAuthResolver();
+  netrcAuthResolver->setNetrc(netrc);
+  req.setHttpProxyAuthResolver(netrcAuthResolver);
+  AuthConfigHandle authConfig1 = req.resolveHttpProxyAuthConfig();
+  CPPUNIT_ASSERT(!authConfig1.isNull());
+  CPPUNIT_ASSERT_EQUAL(string("default:defaultpassword"),
+		       authConfig1->getAuthText());
 }
 
-void RequestTest::testResolveHttpProxyAuthConfigItem_noCandidate()
+void RequestTest::testResolveFtpAuthConfig()
 {
   Request req;
   req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-
-  NetrcHandle netrc = new Netrc();
-  netrc->addAuthenticator(new Authenticator("localhost2", "default", "defaultpassword", "defaultaccount"));
-  NetrcSingletonHolder::instance(netrc);
-  CPPUNIT_ASSERT(req.resolveHttpProxyAuthConfigItem().isNull());
-}
-
-void RequestTest::testResolveFtpAuthConfigItem()
-{
-  Request req;
-  req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-  // with no authConfig
-  CPPUNIT_ASSERT(!req.resolveFtpAuthConfigItem().isNull());
-  CPPUNIT_ASSERT_EQUAL(string("anonymous"), req.resolveFtpAuthConfigItem()->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("ARIA2USER@"), req.resolveFtpAuthConfigItem()->getPassword());
-
   // with Netrc
   NetrcHandle netrc = new Netrc();
   netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
-  NetrcSingletonHolder::instance(netrc);
-  CPPUNIT_ASSERT(!req.resolveFtpAuthConfigItem().isNull());
-  AuthConfigItemHandle authConfig1 = req.resolveFtpAuthConfigItem();
-  CPPUNIT_ASSERT_EQUAL(string("default"), authConfig1->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("defaultpassword"), authConfig1->getPassword());
-
-  // with Netrc + user defined
-  AuthConfigHandle authConfig = new AuthConfig();
-  authConfig->setFtpAuthConfigItem("userDefinedUser", "userDefinedPassword");
-  req.setUserDefinedAuthConfig(authConfig);
-  CPPUNIT_ASSERT(!req.resolveFtpAuthConfigItem().isNull());
-  AuthConfigItemHandle authConfig2 = req.resolveFtpAuthConfigItem();
-  CPPUNIT_ASSERT_EQUAL(string("userDefinedUser"), authConfig2->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("userDefinedPassword"), authConfig2->getPassword());
-}
-
-void RequestTest::testResolveFtpAuthConfigItem_noCandidate()
-{
-  Request req;
-  req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-
-  NetrcHandle netrc = new Netrc();
-  netrc->addAuthenticator(new Authenticator("localhost2", "default", "defaultpassword", "defaultaccount"));
-  NetrcSingletonHolder::instance(netrc);
-  CPPUNIT_ASSERT(!req.resolveFtpAuthConfigItem().isNull());
-  CPPUNIT_ASSERT_EQUAL(string("anonymous"), req.resolveFtpAuthConfigItem()->getUser());
-  CPPUNIT_ASSERT_EQUAL(string("ARIA2USER@"), req.resolveFtpAuthConfigItem()->getPassword());
+  NetrcAuthResolverHandle netrcAuthResolver = new NetrcAuthResolver();
+  netrcAuthResolver->setNetrc(netrc);
+  req.setFtpAuthResolver(netrcAuthResolver);
+  AuthConfigHandle authConfig1 = req.resolveFtpAuthConfig();
+  CPPUNIT_ASSERT(!authConfig1.isNull());
+  CPPUNIT_ASSERT_EQUAL(string("default:defaultpassword"),
+		       authConfig1->getAuthText());
 }

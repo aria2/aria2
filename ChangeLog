@@ -1,3 +1,13 @@
+2007-03-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/Request.h: Use AuthResolver to get authentication information.
+	* src/main.cc: Made RequestFactory a singleton object. Netrc is now
+	set to RequestFactory object.
+	* src/AuthConfigItem.h, src/AuthConfigItem.cc: Removed.
+	* src/AuthConfig.h, src/AuthConfig.cc: Rewritten.
+	* src/TrackerWatcherComand.cc: Use RequestFactorySingletonHolder to
+	create Request object.
+	
 2007-03-19  Tatsuhiro Tsujikawa  <tujikawa at valkyrie dot rednoah com>
 
 	To integrate Netrc into exsiting classes:

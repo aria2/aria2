@@ -57,14 +57,13 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) NetrcTest.$(OBJEXT) \
-	HttpRequestTest.$(OBJEXT) AuthConfigTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
+	HttpRequestTest.$(OBJEXT) NetrcTest.$(OBJEXT) \
 	SingletonHolderTest.$(OBJEXT) HttpHeaderTest.$(OBJEXT) \
 	HttpResponseTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
-	SharedHandleTest.$(OBJEXT) RequestTest.$(OBJEXT) \
-	ChunkedEncodingTest.$(OBJEXT) FileTest.$(OBJEXT) \
-	OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) UtilTest.$(OBJEXT) \
-	CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
+	SharedHandleTest.$(OBJEXT) ChunkedEncodingTest.$(OBJEXT) \
+	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) \
+	UtilTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
 	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
 	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
 	PeerMessageUtilTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
@@ -259,15 +258,14 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
-	NetrcTest.cc\
+	RequestTest.cc\
 	HttpRequestTest.cc\
-	AuthConfigTest.cc\
+	NetrcTest.cc\
 	SingletonHolderTest.cc\
 	HttpHeaderTest.cc\
 	HttpResponseTest.cc\
 	BitfieldManTest.cc\
 	SharedHandleTest.cc\
-	RequestTest.cc\
 	ChunkedEncodingTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
@@ -389,7 +387,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessageTest.Po@am__quote@

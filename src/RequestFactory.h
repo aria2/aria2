@@ -32,40 +32,59 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_AUTH_CONFIG_ITEM_H_
-#define _D_AUTH_CONFIG_ITEM_H_
+#ifndef _D_REQUEST_FACTORY_H_
+#define _D_REQUEST_FACTORY_H_
 
 #include "common.h"
+#include "Request.h"
+#include "Option.h"
+#include "Netrc.h"
 
-class AuthConfigItem {
+class RequestFactory {
 private:
-  string _authScheme;
-  string _user;
-  string _password;
+  const Option* _option;
+  NetrcHandle _netrc;
+  string _method;
+  string _referer;
+
+  AuthConfigHandle createAuthConfig(const string& user, const string& password) const;
+
 public:
+  RequestFactory():_option(0),
+		   _netrc(0),
+		   _method(Request::METHOD_GET)
+  {}
 
-  AuthConfigItem() {}
-  AuthConfigItem(const string& user, const string& password):
-    _user(user), _password(password) {}
+  RequestHandle createRequest();
 
-  string getAuthText() const
+  AuthResolverHandle createHttpAuthResolver();
+
+  AuthResolverHandle createHttpProxyAuthResolver();
+
+  AuthResolverHandle createFtpAuthResolver();
+
+  void setOption(const Option* option)
   {
-    return _user+":"+_password;
+    _option = option;
   }
 
-  const string& getUser() const
+  void setNetrc(const NetrcHandle& netrc)
   {
-    return _user;
+    _netrc = netrc;
   }
 
-  const string& getPassword() const
+  void setMethod(const string& method)
   {
-    return _password;
+    _method = method;
+  }
+
+  void setReferer(const string& referer)
+  {
+    _referer = referer;
   }
 };
 
-typedef SharedHandle<AuthConfigItem> AuthConfigItemHandle;
+typedef SharedHandle<RequestFactory> RequestFactoryHandle;
+typedef SingletonHolder<RequestFactoryHandle> RequestFactorySingletonHolder;
 
-ostream& operator<<(ostream& o, const AuthConfigItemHandle& authConfigItem);
-
-#endif // _D_AUTH_CONFIG_ITEM_H_
+#endif // _D_REQUEST_FACTORY_H_

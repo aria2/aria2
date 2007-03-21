@@ -40,6 +40,7 @@
 #include "RecoverableException.h"
 #include "FatalException.h"
 #include "message.h"
+#include "RequestFactory.h"
 
 std::ostream& operator<<(std::ostream& o, const HeadResult& hr) {
   o << "filename = " << hr.filename << ", " << "totalLength = " << hr.totalLength;
@@ -88,26 +89,23 @@ private:
   Requests* requestsPtr;
   string referer;
   int split;
-  AuthConfigHandle _userDefinedAuthConfig;
   string method;
 public:
   CreateRequest(Requests* requestsPtr,
 		const string& referer,
 		int split,
-		const AuthConfigHandle& userDefinedAuthConfig,
 		const string& method = Request::METHOD_GET)
     :requestsPtr(requestsPtr),
      referer(referer),
      split(split),
-     _userDefinedAuthConfig(userDefinedAuthConfig),
-     method(method) {}
+     method(method)
+  {}
 
   void operator()(const string& url) {
     for(int s = 1; s <= split; s++) {
-      RequestHandle req;
+      RequestHandle req = RequestFactorySingletonHolder::instance()->createRequest();
       req->setReferer(referer);
       req->setMethod(method);
-      req->setUserDefinedAuthConfig(_userDefinedAuthConfig);
       if(req->setUrl(url)) {
 	requestsPtr->push_back(req);
       } else {
@@ -124,13 +122,12 @@ void UrlRequestInfo::printUrls(const Strings& urls) const {
   }
 }
 
-HeadResultHandle UrlRequestInfo::getHeadResult(const AuthConfigHandle& authConfig) {
+HeadResultHandle UrlRequestInfo::getHeadResult() {
   Requests requests;
   for_each(urls.begin(), urls.end(),
 	   CreateRequest(&requests,
 			 op->get(PREF_REFERER),
 			 1,
-			 authConfig,
 			 Request::METHOD_HEAD));
   if(requests.size() == 0) {
     return 0;
@@ -159,16 +156,12 @@ RequestInfos UrlRequestInfo::execute() {
   Requests reserved;
   printUrls(urls);
 
-  AuthConfigHandle authConfig = new AuthConfig();
-  authConfig->configure(op);
-
-  HeadResultHandle hr = getHeadResult(authConfig);
+  HeadResultHandle hr = getHeadResult();
   
   for_each(urls.begin(), urls.end(),
 	   CreateRequest(&requests,
 			 op->get(PREF_REFERER),
-			 op->getAsInt(PREF_SPLIT),
-			 authConfig));
+			 op->getAsInt(PREF_SPLIT)));
   
   logger->info("Head result: filename=%s, total length=%s",
 	       hr->filename.c_str(), Util::ullitos(hr->totalLength, true).c_str());

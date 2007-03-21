@@ -37,6 +37,7 @@
 #include "Util.h"
 #include "SleepCommand.h"
 #include "prefs.h"
+#include "RequestFactory.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 					     TorrentDownloadEngine* e,
@@ -80,12 +81,10 @@ Command* TrackerWatcherCommand::createCommand() {
   return command;
 }
 
-Command* TrackerWatcherCommand::createRequestCommand(const string& url) {
-  AuthConfigHandle authConfig = new AuthConfig();
-  authConfig->configure(e->option);
-  RequestHandle req;
+Command* TrackerWatcherCommand::createRequestCommand(const string& url)
+{
+  RequestHandle req = RequestFactorySingletonHolder::instance()->createRequest();
   req->setUrl(url);
-  req->setUserDefinedAuthConfig(authConfig);
   req->isTorrent = true;
   Command* command =
     InitiateConnectionCommandFactory::createInitiateConnectionCommand(btRuntime->getNewCuid(), req, e);

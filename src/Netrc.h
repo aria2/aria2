@@ -150,6 +150,6 @@ public:
 };
 
 typedef SharedHandle<Netrc> NetrcHandle;
-typedef SingletonHolder<NetrcHandle> NetrcSingletonHolder;
+//typedef SingletonHolder<NetrcHandle> NetrcSingletonHolder;
 
 #endif // _D_NETRC_H_

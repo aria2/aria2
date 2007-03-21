@@ -64,7 +64,7 @@ private:
 			 Requests& reserved,
 			 int maxConnections) const;
   void printUrls(const Strings& urls) const;
-  HeadResultHandle getHeadResult(const AuthConfigHandle& authConfig);
+  HeadResultHandle getHeadResult();
 public:
   UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
     RequestInfo(op),

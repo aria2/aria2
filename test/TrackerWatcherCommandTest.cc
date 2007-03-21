@@ -10,6 +10,7 @@
 #include "DefaultPieceStorage.h"
 #include "DefaultPeerStorage.h"
 #include "BtRegistry.h"
+#include "RequestFactory.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -20,10 +21,17 @@ class TrackerWatcherCommandTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateCommand);
   CPPUNIT_TEST_SUITE_END();
 private:
-
+  Option* op;
 public:
-  void setUp() {
+  TrackerWatcherCommandTest():op(new Option())
+  {
+    op->put(PREF_TRACKER_MAX_TRIES, "10");
+    RequestFactoryHandle requestFactory = new RequestFactory();
+    requestFactory->setOption(op);
+    RequestFactorySingletonHolder::instance(requestFactory);
   }
+
+  void setUp() {}
 
   void testCreateCommand();
 };
@@ -33,8 +41,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION( TrackerWatcherCommandTest );
 
 void TrackerWatcherCommandTest::testCreateCommand() {
   try {
-    Option* op = new Option();
-    op->put(PREF_TRACKER_MAX_TRIES, "10");
     
     BtContextHandle btContext(new DefaultBtContext());
     btContext->load("test.torrent");
