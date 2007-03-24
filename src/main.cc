@@ -189,6 +189,12 @@ void showUsage() {
 	    "                              a file in Metalink mode. This option makes effect\n"
 	    "                              in Metalink with chunk checksums.\n"
 	    "                              Default: true") << endl;
+  cout << _(" -c, --continue               Continue downloading a partially downloaded\n"
+	    "                              file. Use this option to resume a download started\n"
+	    "                              by web browsers or another programs\n"
+	    "                              which download files from the beginning.\n"
+	    "                              Currently this option is applicable to http(s)/\n"
+	    "                              ftp downloads.") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
