@@ -48,7 +48,7 @@ void AbstractSingleDiskAdaptor::closeFile() {
 }
 
 void AbstractSingleDiskAdaptor::openExistingFile() {
-  diskWriter->openExistingFile(getFilePath());
+  diskWriter->openExistingFile(getFilePath(), totalLength);
 }
 
 void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, int32_t len, int64_t offset) {

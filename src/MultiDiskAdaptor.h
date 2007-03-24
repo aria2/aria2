@@ -68,7 +68,7 @@ public:
 
   void openExistingFile(const string& topDir)
   {
-    diskWriter->openExistingFile(getFilePath(topDir));
+    diskWriter->openExistingFile(getFilePath(topDir), fileEntry->getLength());
   }
 
   void closeFile()
