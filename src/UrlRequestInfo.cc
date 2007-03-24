@@ -122,7 +122,7 @@ public:
 
 void UrlRequestInfo::printUrls(const Strings& urls) const {
   for(Strings::const_iterator itr = urls.begin(); itr != urls.end(); itr++) {
-    logger->notice("Adding URL: %s", itr->c_str());
+    logger->info("Adding URL: %s", itr->c_str());
   }
 }
 
@@ -142,15 +142,12 @@ HeadResultHandle UrlRequestInfo::getHeadResult() {
   SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
 
   HeadResultHandle hr = 0;
-  try {
-    e->run();
-    hr = new HeadResult();
-    hr->filename = e->segmentMan->filename;
-    hr->totalLength = e->segmentMan->totalSize;
-  } catch(RecoverableException *ex) {
-    logger->error("Exception caught", ex);
-    delete ex;
-  }
+  
+  e->run();
+  hr = new HeadResult();
+  hr->filename = e->segmentMan->filename;
+  hr->totalLength = e->segmentMan->totalSize;
+
   return hr;
 }
 
@@ -160,104 +157,109 @@ RequestInfos UrlRequestInfo::execute() {
   Requests reserved;
   printUrls(urls);
 
-  HeadResultHandle hr = getHeadResult();
-  
-  for_each(urls.begin(), urls.end(),
-	   CreateRequest(&requests,
-			 op->get(PREF_REFERER),
-			 op->getAsInt(PREF_SPLIT)));
-  
-  logger->info("Head result: filename=%s, total length=%s",
-	       hr->filename.c_str(), Util::ullitos(hr->totalLength, true).c_str());
-
-  adjustRequestSize(requests, reserved, maxConnections);
-  
-  SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
-
-  e->segmentMan->filename = hr->filename;
-  e->segmentMan->totalSize = hr->totalLength;
-  if(hr->totalLength > 0) {
-    e->segmentMan->downloadStarted = true;
-  }
-
-#ifdef ENABLE_MESSAGE_DIGEST
-  if(chunkChecksumLength > 0) {
-    e->segmentMan->digestAlgo = digestAlgo;
-    e->segmentMan->chunkHashLength = chunkChecksumLength;
-    e->segmentMan->pieceHashes = chunkChecksums;
-  }
-#endif // ENABLE_MESSAGE_DIGEST
-
-  if(op->get(PREF_CONTINUE) == V_TRUE && e->segmentMan->fileExists()) {
-    if(e->segmentMan->totalSize == 0) {
-      logger->notice("Cannot get file length. Download aborted.");
+  RequestInfo* next = 0;
+  try {
+    HeadResultHandle hr = getHeadResult();
+    
+    if(hr.isNull()) {
+      logger->notice("No URI to download. Download aborted.");
       return RequestInfos();
     }
-    File existingFile(e->segmentMan->getFilePath());
-    if(e->segmentMan->totalSize < existingFile.size()) {
-      logger->notice("The local file length is larger than the remote file size. Download aborted.");
-      return RequestInfos();
+    
+    logger->info("Head result: filename=%s, total length=%s",
+		 hr->filename.c_str(), Util::ullitos(hr->totalLength, true).c_str());
+    
+    for_each(urls.begin(), urls.end(),
+	     CreateRequest(&requests,
+			   op->get(PREF_REFERER),
+			   op->getAsInt(PREF_SPLIT)));
+    
+    adjustRequestSize(requests, reserved, maxConnections);
+    
+    SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
+    
+    e->segmentMan->filename = hr->filename;
+    e->segmentMan->totalSize = hr->totalLength;
+    if(hr->totalLength > 0) {
+      e->segmentMan->downloadStarted = true;
     }
-    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				e->segmentMan->totalSize);
-
-    e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
-						e->segmentMan->totalSize);
-    if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+    
 #ifdef ENABLE_MESSAGE_DIGEST
-      if(!e->segmentMan->isChunkChecksumValidationReady()) {
-	throw new DlAbortEx("Chunk checksums are not provided.");
-      }
-      e->segmentMan->markAllPiecesDone();
-      e->segmentMan->checkIntegrity();
-#endif // ENABLE_MESSAGE_DIGEST
-    } else {
-      e->segmentMan->markPieceDone(existingFile.size());
-    }
-  } else if(e->segmentMan->segmentFileExists()) {
-    e->segmentMan->load();
-    e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
-						e->segmentMan->totalSize);
-#ifdef ENABLE_MESSAGE_DIGEST
-    if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-      if(!e->segmentMan->isChunkChecksumValidationReady()) {
-	throw new DlAbortEx("Chunk checksums are not provided.");
-      }
-      e->segmentMan->checkIntegrity();
+    if(chunkChecksumLength > 0) {
+      e->segmentMan->digestAlgo = digestAlgo;
+      e->segmentMan->chunkHashLength = chunkChecksumLength;
+      e->segmentMan->pieceHashes = chunkChecksums;
     }
 #endif // ENABLE_MESSAGE_DIGEST
-  } else {
-    if(e->segmentMan->shouldCancelDownloadForSafety()) {
-      throw new FatalException(EX_FILE_ALREADY_EXISTS,
-			       e->segmentMan->getFilePath().c_str(),
-			       e->segmentMan->getSegmentFilePath().c_str());
-    }
-    if(e->segmentMan->totalSize > 0) {
+    
+    if(op->get(PREF_CONTINUE) == V_TRUE && e->segmentMan->fileExists()) {
+      if(e->segmentMan->totalSize == 0) {
+	logger->notice("Cannot get file length. Download aborted.");
+	return RequestInfos();
+      }
+      File existingFile(e->segmentMan->getFilePath());
+      if(e->segmentMan->totalSize < existingFile.size()) {
+	logger->notice("The local file length is larger than the remote file size. Download aborted.");
+	return RequestInfos();
+      }
       e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				  e->segmentMan->totalSize);
-      if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+      
+      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
+						  e->segmentMan->totalSize);
+      if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
 #ifdef ENABLE_MESSAGE_DIGEST
 	if(!e->segmentMan->isChunkChecksumValidationReady()) {
 	  throw new DlAbortEx("Chunk checksums are not provided.");
 	}
-#endif // ENABLE_MESSAGE_DIGEST
-	e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
-						    e->segmentMan->totalSize);
-#ifdef ENABLE_MESSAGE_DIGEST
 	e->segmentMan->markAllPiecesDone();
 	e->segmentMan->checkIntegrity();
 #endif // ENABLE_MESSAGE_DIGEST
       } else {
-	e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
-						   e->segmentMan->totalSize);
+	e->segmentMan->markPieceDone(existingFile.size());
+      }
+    } else if(e->segmentMan->segmentFileExists()) {
+      e->segmentMan->load();
+      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
+						  e->segmentMan->totalSize);
+#ifdef ENABLE_MESSAGE_DIGEST
+      if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+	if(!e->segmentMan->isChunkChecksumValidationReady()) {
+	  throw new DlAbortEx("Chunk checksums are not provided.");
+	}
+	e->segmentMan->checkIntegrity();
+      }
+#endif // ENABLE_MESSAGE_DIGEST
+    } else {
+      if(e->segmentMan->shouldCancelDownloadForSafety()) {
+	throw new FatalException(EX_FILE_ALREADY_EXISTS,
+				 e->segmentMan->getFilePath().c_str(),
+				 e->segmentMan->getSegmentFilePath().c_str());
+      }
+      if(e->segmentMan->totalSize > 0) {
+	e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				    e->segmentMan->totalSize);
+	if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+#ifdef ENABLE_MESSAGE_DIGEST
+	  if(!e->segmentMan->isChunkChecksumValidationReady()) {
+	    throw new DlAbortEx("Chunk checksums are not provided.");
+	  }
+#endif // ENABLE_MESSAGE_DIGEST
+	  e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
+						      e->segmentMan->totalSize);
+#ifdef ENABLE_MESSAGE_DIGEST
+	  e->segmentMan->markAllPiecesDone();
+	  e->segmentMan->checkIntegrity();
+#endif // ENABLE_MESSAGE_DIGEST
+	} else {
+	  e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
+						     e->segmentMan->totalSize);
+	}
       }
     }
-  }
-  Util::setGlobalSignalHandler(SIGINT, handler, 0);
-  Util::setGlobalSignalHandler(SIGTERM, handler, 0);
-  
-  RequestInfo* next = 0;
-  try {
+    Util::setGlobalSignalHandler(SIGINT, handler, 0);
+    Util::setGlobalSignalHandler(SIGTERM, handler, 0);
+    
     e->run();
     
     if(e->segmentMan->finished()) {
