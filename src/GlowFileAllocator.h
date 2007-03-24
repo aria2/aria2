@@ -32,66 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ByteArrayDiskWriter.h"
-#include "Util.h"
+#ifndef _D_GLOW_FILE_ALLOCATOR_H_
+#define _D_GLOW_FILE_ALLOCATOR_H_
 
-ByteArrayDiskWriter::ByteArrayDiskWriter():buf(0) {
-}
+#include "FileAllocator.h"
 
-ByteArrayDiskWriter::~ByteArrayDiskWriter() {
-  closeFile();
-}
+class GlowFileAllocator : public FileAllocator {
+public:
+  GlowFileAllocator() {}
 
-void ByteArrayDiskWriter::clear() {
-  delete [] buf;
-  buf = 0;
-}
+  virtual ~GlowFileAllocator() {}
 
-void ByteArrayDiskWriter::init() {
-  maxBufLength = 256;
-  buf = new char[maxBufLength];
-  bufLength = 0;
-}
+  virtual void allocate(int fd, int64_t totalLength);
+};
 
-void ByteArrayDiskWriter::initAndOpenFile(const string& filename,
-					  int64_t totalLength) {
-  clear();
-  init();
-}
+typedef SharedHandle<GlowFileAllocator> GlowFileAllocatorHandle;
 
-void ByteArrayDiskWriter::openFile(const string& filename,
-				   int64_t totalLength) {
-  initAndOpenFile(filename);
-}
-
-void ByteArrayDiskWriter::closeFile() {
-  clear();
-}
-
-void ByteArrayDiskWriter::openExistingFile(const string& filename,
-					   int64_t totalLength) {
-  openFile(filename);
-}
-
-void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_t position) {
-  if(bufLength+dataLength >= maxBufLength) {
-    maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
-  }
-  memcpy(buf+bufLength, data, dataLength);
-  bufLength += dataLength;
-}
-
-int ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
-  if(position >= bufLength) {
-    return 0;
-  }
-  int32_t readLength;
-  if(position+len <= bufLength) {
-    readLength = len;
-  } else {
-    readLength = bufLength-position;
-  }
-  memcpy(data, buf+position, readLength);
-  return readLength;
-}
-
+#endif // _D_GLOW_FILE_ALLOCATOR_H_

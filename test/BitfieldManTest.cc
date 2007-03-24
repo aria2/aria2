@@ -17,6 +17,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetSparceMissingUnusedIndex);
   CPPUNIT_TEST(testIsBitSetOffsetRange);
   CPPUNIT_TEST(testGetMissingUnusedLength);
+  CPPUNIT_TEST(testSetBitRange);
   CPPUNIT_TEST_SUITE_END();
 private:
   RandomizerHandle fixedNumberRandomizer;
@@ -39,6 +40,7 @@ public:
   void testGetSparceMissingUnusedIndex();
   void testIsBitSetOffsetRange();
   void testGetMissingUnusedLength();
+  void testSetBitRange();
 };
 
 
@@ -302,4 +304,22 @@ void BitfieldManTest::testGetMissingUnusedLength()
 
   // from index 1
   CPPUNIT_ASSERT_EQUAL((int64_t)3*blockLength, bf.getMissingUnusedLength(1));
+}
+
+void BitfieldManTest::testSetBitRange()
+{
+  int32_t blockLength = 1024*1024;
+  int64_t totalLength = 10*blockLength;
+
+  BitfieldMan bf(blockLength, totalLength);
+
+  bf.setBitRange(0, 4);
+
+  for(int32_t i = 0; i < 5; ++i) {
+    CPPUNIT_ASSERT(bf.isBitSet(i));
+  }
+  for(int32_t i = 5; i < 10; ++i) {
+    CPPUNIT_ASSERT(!bf.isBitSet(i));
+  }
+  CPPUNIT_ASSERT_EQUAL(int64_t(5*blockLength), bf.getCompletedLength());
 }

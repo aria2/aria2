@@ -41,6 +41,10 @@
 #include "FatalException.h"
 #include "message.h"
 #include "RequestFactory.h"
+#include "GlowFileAllocator.h"
+#include "File.h"
+#include "DefaultDiskWriter.h"
+#include "DlAbortEx.h"
 
 std::ostream& operator<<(std::ostream& o, const HeadResult& hr) {
   o << "filename = " << hr.filename << ", " << "totalLength = " << hr.totalLength;
@@ -184,11 +188,41 @@ RequestInfos UrlRequestInfo::execute() {
   }
 #endif // ENABLE_MESSAGE_DIGEST
 
-  if(e->segmentMan->segmentFileExists()) {
-    e->segmentMan->load();
-    e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
-#ifdef ENABLE_MESSAGE_DIGEST
+  if(op->get(PREF_CONTINUE) == V_TRUE && e->segmentMan->fileExists()) {
+    if(e->segmentMan->totalSize == 0) {
+      logger->notice("Cannot get file length. Download aborted.");
+      return RequestInfos();
+    }
+    File existingFile(e->segmentMan->getFilePath());
+    if(e->segmentMan->totalSize < existingFile.size()) {
+      logger->notice("The local file length is larger than the remote file size. Download aborted.");
+      return RequestInfos();
+    }
+    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				e->segmentMan->totalSize);
+
+    e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
+						e->segmentMan->totalSize);
     if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+#ifdef ENABLE_MESSAGE_DIGEST
+      if(!e->segmentMan->isChunkChecksumValidationReady()) {
+	throw new DlAbortEx("Chunk checksums are not provided.");
+      }
+      e->segmentMan->markAllPiecesDone();
+      e->segmentMan->checkIntegrity();
+#endif // ENABLE_MESSAGE_DIGEST
+    } else {
+      e->segmentMan->markPieceDone(existingFile.size());
+    }
+  } else if(e->segmentMan->segmentFileExists()) {
+    e->segmentMan->load();
+    e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
+						e->segmentMan->totalSize);
+#ifdef ENABLE_MESSAGE_DIGEST
+    if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+      if(!e->segmentMan->isChunkChecksumValidationReady()) {
+	throw new DlAbortEx("Chunk checksums are not provided.");
+      }
       e->segmentMan->checkIntegrity();
     }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -202,7 +236,13 @@ RequestInfos UrlRequestInfo::execute() {
       e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				  e->segmentMan->totalSize);
       if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-	e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
+#ifdef ENABLE_MESSAGE_DIGEST
+	if(!e->segmentMan->isChunkChecksumValidationReady()) {
+	  throw new DlAbortEx("Chunk checksums are not provided.");
+	}
+#endif // ENABLE_MESSAGE_DIGEST
+	e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
+						    e->segmentMan->totalSize);
 #ifdef ENABLE_MESSAGE_DIGEST
 	e->segmentMan->markAllPiecesDone();
 	e->segmentMan->checkIntegrity();

@@ -285,6 +285,8 @@ public:
 
   void markAllPiecesDone();
 
+  void markPieceDone(int64_t length);
+
 #ifdef ENABLE_MESSAGE_DIGEST
   void checkIntegrity();
 

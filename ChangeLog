@@ -1,3 +1,31 @@
+2007-03-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add the ability to resume downloading a partially downloaded file
+	which is downloaded from the beginning:
+	* src/FileAllocator.h: Made abstract class. New DefaultFileAllocator
+	takes this role.
+	* src/main.cc: Added -c option.
+	* src/BitfieldMan.h, src/BitfieldMan.cc (setBitRange): New function.
+	* src/DiskWriter.h (openExistingFile): Added totalLength argument.
+	* src/prefs.h (PREF_CONTINUE): New definition.
+	* src/SegmentMan.h, src/SegmentMan.cc (markPieceDone): New function.
+	* src/DefaultDiskWriter.cc
+	(createNewDiskWriter): Add GlowFileAllocator to the new object.
+	* src/AbstractDiskWriter.h
+	(glowFileAllocator): New variable.
+	* src/AbstractDiskWriter.cc
+	(openExistingFile): Now preallocate file space from the end of the
+	existing file if totalLength argument is specified and grater than 0.
+	* src/UrlRequestInfo.cc: If -c option is specified and the file
+	to download exists in local, continue the download of the file.
+	--allow-overwrite=true is assumed in this context.
+	* src/DefaultFileAllocator.h, src/DefaultFileAllocator.cc: New class.
+	* src/GlowFileAllocator.h, src/GlowFileAllocator.cc: New class.
+
+	Throw exception if --check-integrity=true is specified but chunk
+	checksums are not provided:
+	* src/UrlRequestInfo.cc
+	
 2007-03-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/Request.h: Use AuthResolver to get authentication information.

@@ -92,6 +92,8 @@
 #define PREF_CHECK_INTEGRITY "check_integrity"
 // value: string that your file system recognizes as a file name.
 #define PREF_NETRC_PATH "netrc_path"
+// value:
+#define PREF_CONTINUE "continue"
 
 /**
  * FTP related preferences

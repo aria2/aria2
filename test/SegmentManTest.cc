@@ -12,6 +12,8 @@ class SegmentManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSaveAndLoad);
   CPPUNIT_TEST(testNullBitfield);
   CPPUNIT_TEST(testCancelSegmentOnNullBitfield);
+  CPPUNIT_TEST(testMarkPieceDone);
+  CPPUNIT_TEST(testMarkPieceDone_usedSegment);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -22,7 +24,8 @@ public:
   void testSaveAndLoad();
   void testNullBitfield();
   void testCancelSegmentOnNullBitfield();
-
+  void testMarkPieceDone();
+  void testMarkPieceDone_usedSegment();
 };
 
 
@@ -109,3 +112,41 @@ void SegmentManTest::testCancelSegmentOnNullBitfield() {
   CPPUNIT_ASSERT(!segmentMan.getSegment(1).isNull());
 }
 
+void SegmentManTest::testMarkPieceDone()
+{
+  SegmentMan segmentMan;
+  int32_t pieceLength = 1024*1024;
+  int64_t totalLength = 10*pieceLength;
+  segmentMan.initBitfield(pieceLength, totalLength);
+  segmentMan.markPieceDone(5*pieceLength);
+
+  for(int32_t i = 0; i < 5; ++i) {
+    CPPUNIT_ASSERT(segmentMan.hasSegment(i));
+  }
+  for(int32_t i = 5; i < 10; ++i) {
+    CPPUNIT_ASSERT(!segmentMan.hasSegment(i));
+  }
+}
+
+void SegmentManTest::testMarkPieceDone_usedSegment()
+{
+  SegmentMan segmentMan;
+  int32_t pieceLength = 1024*1024;
+  int64_t totalLength = 10*pieceLength;
+  segmentMan.initBitfield(pieceLength, totalLength);
+  segmentMan.markPieceDone(5*pieceLength+100);
+
+  for(int32_t i = 0; i < 5; ++i) {
+    CPPUNIT_ASSERT(segmentMan.hasSegment(i));
+  }
+  for(int32_t i = 5; i < 10; ++i) {
+    CPPUNIT_ASSERT(!segmentMan.hasSegment(i));
+  }
+
+  SegmentHandle segment = segmentMan.getSegment(0, 5);
+  CPPUNIT_ASSERT(!segment.isNull());
+  CPPUNIT_ASSERT_EQUAL(5, segment->index);
+  CPPUNIT_ASSERT_EQUAL(pieceLength, segment->length);
+  CPPUNIT_ASSERT_EQUAL(pieceLength, segment->segmentLength);
+  CPPUNIT_ASSERT_EQUAL(100, segment->writtenLength);
+}

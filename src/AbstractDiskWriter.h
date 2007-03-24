@@ -44,6 +44,7 @@ protected:
   string filename;
   int32_t fd;
   FileAllocatorHandle fileAllocator;
+  FileAllocatorHandle glowFileAllocator;
   const Logger* logger;
 
   void createFile(const string& filename, int32_t addFlags = 0);
@@ -62,7 +63,7 @@ public:
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const string& filename);
+  virtual void openExistingFile(const string& filename, int64_t totalLength = 0);
 
 #ifdef ENABLE_MESSAGE_DIGEST
   virtual string messageDigest(int64_t offset, int64_t length,
@@ -73,8 +74,14 @@ public:
 
   virtual int32_t readData(char* data, int32_t len, int64_t offset);
 
-  void setFileAllocator(const FileAllocatorHandle& fileAllocator) {
+  void setFileAllocator(const FileAllocatorHandle& fileAllocator)
+  {
     this->fileAllocator = fileAllocator;
+  }
+
+  void setGlowFileAllocator(const FileAllocatorHandle& fileAllocator)
+  {
+    this->glowFileAllocator = fileAllocator;
   }
 };
 

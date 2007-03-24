@@ -57,10 +57,11 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
-	HttpRequestTest.$(OBJEXT) NetrcTest.$(OBJEXT) \
-	SingletonHolderTest.$(OBJEXT) HttpHeaderTest.$(OBJEXT) \
-	HttpResponseTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
+	BitfieldManTest.$(OBJEXT) GlowFileAllocatorTest.$(OBJEXT) \
+	RequestTest.$(OBJEXT) HttpRequestTest.$(OBJEXT) \
+	NetrcTest.$(OBJEXT) SingletonHolderTest.$(OBJEXT) \
+	HttpHeaderTest.$(OBJEXT) HttpResponseTest.$(OBJEXT) \
 	SharedHandleTest.$(OBJEXT) ChunkedEncodingTest.$(OBJEXT) \
 	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) \
 	UtilTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
@@ -71,8 +72,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	Xml2MetalinkProcessorTest.$(OBJEXT) MetalinkerTest.$(OBJEXT) \
 	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
 	ShareRatioSeedCriteriaTest.$(OBJEXT) \
-	TimeSeedCriteriaTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
-	SpeedCalcTest.$(OBJEXT) DefaultPeerListProcessorTest.$(OBJEXT) \
+	TimeSeedCriteriaTest.$(OBJEXT) SpeedCalcTest.$(OBJEXT) \
+	DefaultPeerListProcessorTest.$(OBJEXT) \
 	AnnounceListTest.$(OBJEXT) TrackerWatcherCommandTest.$(OBJEXT) \
 	DefaultBtContextTest.$(OBJEXT) \
 	DefaultPieceStorageTest.$(OBJEXT) \
@@ -258,13 +259,15 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
+	SegmentManTest.cc\
+	BitfieldManTest.cc\
+	GlowFileAllocatorTest.cc\
 	RequestTest.cc\
 	HttpRequestTest.cc\
 	NetrcTest.cc\
 	SingletonHolderTest.cc\
 	HttpHeaderTest.cc\
 	HttpResponseTest.cc\
-	BitfieldManTest.cc\
 	SharedHandleTest.cc\
 	ChunkedEncodingTest.cc\
 	FileTest.cc\
@@ -286,7 +289,6 @@ aria2c_SOURCES = AllTest.cc\
 	FeatureConfigTest.cc\
 	ShareRatioSeedCriteriaTest.cc\
 	TimeSeedCriteriaTest.cc\
-	SegmentManTest.cc\
 	SpeedCalcTest.cc\
 	DefaultPeerListProcessorTest.cc\
 	AnnounceListTest.cc\
@@ -423,6 +425,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GlowFileAllocatorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseTest.Po@am__quote@

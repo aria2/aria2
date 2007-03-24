@@ -450,6 +450,27 @@ void SegmentMan::markAllPiecesDone()
   }
 }
 
+void SegmentMan::markPieceDone(int64_t length)
+{
+  if(bitfield) {
+    if(length == bitfield->getTotalLength()) {
+      bitfield->setAllBit();
+    } else {
+      int32_t numSegment = length/bitfield->getBlockLength();
+      int32_t remainingLength = length%bitfield->getBlockLength();
+      bitfield->setBitRange(0, numSegment-1);
+      if(remainingLength > 0) {
+	SegmentHandle segment = new Segment();
+	segment->index = numSegment;
+	segment->length = bitfield->getBlockLength(numSegment);
+	segment->segmentLength = bitfield->getBlockLength();
+	segment->writtenLength = remainingLength;
+	usedSegmentEntries.push_back(new SegmentEntry(0, segment));
+      }
+    }
+  }
+}
+
 #ifdef ENABLE_MESSAGE_DIGEST
 void SegmentMan::checkIntegrity()
 {

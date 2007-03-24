@@ -352,6 +352,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
   op->put(PREF_CHECK_INTEGRITY, V_FALSE);
   op->put(PREF_NETRC_PATH, Util::getHomeDir()+"/.netrc");
+  op->put(PREF_CONTINUE, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -383,7 +384,8 @@ int main(int argc, char* argv[]) {
       { "file-allocation", required_argument, 0, 'a' },
       { "allow-overwrite", required_argument, &lopt, 202 },
       { "check-integrity", required_argument, &lopt, 203 },
-      {" realtime-chunk-checksum", required_argument, &lopt, 204 },
+      { "realtime-chunk-checksum", required_argument, &lopt, 204 },
+      { "continue", no_argument, NULL, 'c' },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -411,7 +413,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:c", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -717,6 +719,9 @@ int main(int argc, char* argv[]) {
       }
       break;
     }
+    case 'c':
+      op->put(PREF_CONTINUE, V_TRUE);
+      break;
     case 'v':
       showVersion();
       exit(EXIT_SUCCESS);

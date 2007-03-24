@@ -61,7 +61,7 @@ SRCS =  Socket.h\
 	BitfieldManFactory.cc BitfieldManFactory.h\
 	Randomizer.h\
 	SimpleRandomizer.cc SimpleRandomizer.h\
-	FileAllocator.cc FileAllocator.h\
+	FileAllocator.h\
 	FileAllocationMonitor.cc FileAllocationMonitor.h\
 	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h\
 	ChunkChecksumValidator.cc ChunkChecksumValidator.h\
@@ -76,7 +76,9 @@ SRCS =  Socket.h\
 	AbstractAuthResolver.h\
 	DefaultAuthResolver.cc DefaultAuthResolver.h\
 	NetrcAuthResolver.cc NetrcAuthResolver.h\
-	RequestFactory.cc RequestFactory.h
+	RequestFactory.cc RequestFactory.h\
+	DefaultFileAllocator.cc DefaultFileAllocator.h\
+	GlowFileAllocator.cc GlowFileAllocator.h
 #	debug_new.cpp
 
 if ENABLE_ASYNC_DNS

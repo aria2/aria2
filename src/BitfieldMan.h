@@ -255,6 +255,8 @@ public:
 
   void unsetBitRange(int32_t startIndex, int32_t endIndex);
 
+  void setBitRange(int32_t startIndex, int32_t endIndex);
+
   bool isBitSetOffsetRange(int64_t offset, int64_t length) const;
 
   int64_t getMissingUnusedLength(int32_t startingIndex) const;

@@ -32,66 +32,43 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ByteArrayDiskWriter.h"
-#include "Util.h"
+#include "GlowFileAllocator.h"
+#include "DlAbortEx.h"
+#include "TimeA2.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
 
-ByteArrayDiskWriter::ByteArrayDiskWriter():buf(0) {
-}
-
-ByteArrayDiskWriter::~ByteArrayDiskWriter() {
-  closeFile();
-}
-
-void ByteArrayDiskWriter::clear() {
-  delete [] buf;
-  buf = 0;
-}
-
-void ByteArrayDiskWriter::init() {
-  maxBufLength = 256;
-  buf = new char[maxBufLength];
-  bufLength = 0;
-}
-
-void ByteArrayDiskWriter::initAndOpenFile(const string& filename,
-					  int64_t totalLength) {
-  clear();
-  init();
-}
-
-void ByteArrayDiskWriter::openFile(const string& filename,
-				   int64_t totalLength) {
-  initAndOpenFile(filename);
-}
-
-void ByteArrayDiskWriter::closeFile() {
-  clear();
-}
-
-void ByteArrayDiskWriter::openExistingFile(const string& filename,
-					   int64_t totalLength) {
-  openFile(filename);
-}
-
-void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_t position) {
-  if(bufLength+dataLength >= maxBufLength) {
-    maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
+void GlowFileAllocator::allocate(int fd, int64_t totalLength)
+{
+  struct stat fs;
+  if(fstat(fd, &fs) < 0) {
+    throw new DlAbortEx("fstat filed: %s", strerror(errno));
   }
-  memcpy(buf+bufLength, data, dataLength);
-  bufLength += dataLength;
-}
-
-int ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
-  if(position >= bufLength) {
-    return 0;
+  if(fs.st_size != lseek(fd, 0, SEEK_END)) {
+    throw new DlAbortEx("Seek failed: %s", strerror(errno));
   }
-  int32_t readLength;
-  if(position+len <= bufLength) {
-    readLength = len;
-  } else {
-    readLength = bufLength-position;
+  int32_t bufSize = 4096;
+  char buf[4096];
+  memset(buf, 0, bufSize);
+  int64_t x = (totalLength-fs.st_size+bufSize-1)/bufSize;
+  fileAllocationMonitor->setMinValue(0);
+  fileAllocationMonitor->setMaxValue(totalLength);
+  fileAllocationMonitor->setCurrentValue(fs.st_size);
+  fileAllocationMonitor->showProgress();
+  Time cp;
+  for(int64_t i = 0; i < x; ++i) {
+    if(write(fd, buf, bufSize) < 0) {
+      throw new DlAbortEx("Allocation failed: %s", strerror(errno));
+    }
+    if(cp.elapsedInMillis(500)) {
+      fileAllocationMonitor->setCurrentValue(i*bufSize);
+      fileAllocationMonitor->showProgress();
+      cp.reset();
+    }
   }
-  memcpy(data, buf+position, readLength);
-  return readLength;
+  fileAllocationMonitor->setCurrentValue(totalLength);
+  fileAllocationMonitor->showProgress();
+  ftruncate(fd, totalLength);
 }
-

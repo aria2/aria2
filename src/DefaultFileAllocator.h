@@ -1,4 +1,3 @@
-
 /* <!-- copyright */
 /*
  * aria2 - The high speed download utility
@@ -33,38 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FileAllocator.h"
-#include "DlAbortEx.h"
-#include "TimeA2.h"
-#include <sys/types.h>
-#include <unistd.h>
-#include <errno.h>
+#ifndef _D_DEFAULT_FILE_ALLOCATOR_H_
+#define _D_DEFAULT_FILE_ALLOCATOR_H_
 
-void FileAllocator::allocate(int fd, int64_t totalLength)
-{
-  if(0 != lseek(fd, 0, SEEK_SET)) {
-    throw new DlAbortEx("Seek failed: %s", strerror(errno));
-  }
-  int32_t bufSize = 4096;
-  char buf[4096];
-  memset(buf, 0, bufSize);
-  int64_t x = (totalLength+bufSize-1)/bufSize;
-  fileAllocationMonitor->setMinValue(0);
-  fileAllocationMonitor->setMaxValue(totalLength);
-  fileAllocationMonitor->setCurrentValue(0);
-  fileAllocationMonitor->showProgress();
-  Time cp;
-  for(int64_t i = 0; i < x; ++i) {
-    if(write(fd, buf, bufSize) < 0) {
-      throw new DlAbortEx("Allocation failed: %s", strerror(errno));
-    }
-    if(cp.elapsedInMillis(500)) {
-      fileAllocationMonitor->setCurrentValue(i*bufSize);
-      fileAllocationMonitor->showProgress();
-      cp.reset();
-    }
-  }
-  fileAllocationMonitor->setCurrentValue(totalLength);
-  fileAllocationMonitor->showProgress();
-  ftruncate(fd, totalLength);
-}
+#include "FileAllocator.h"
+
+class DefaultFileAllocator : public FileAllocator {
+public:
+  DefaultFileAllocator() {}
+
+  virtual ~DefaultFileAllocator() {}
+
+  virtual void allocate(int fd, int64_t totalLength);
+};
+
+typedef SharedHandle<DefaultFileAllocator> DefaultFileAllocatorHandle;
+
+#endif // _D_DEFAULT_FILE_ALLOCATOR_H_

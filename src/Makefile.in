@@ -210,18 +210,19 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	UrlRequestInfo.cc UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h \
 	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
-	FileAllocationMonitor.cc FileAllocationMonitor.h \
-	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
-	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
-	HttpResponse.cc HttpResponse.h HttpRequest.cc HttpRequest.h \
-	Range.h AbstractProxyRequestCommand.cc \
-	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
-	AuthConfig.h AuthResolver.h AbstractAuthResolver.h \
-	DefaultAuthResolver.cc DefaultAuthResolver.h \
-	NetrcAuthResolver.cc NetrcAuthResolver.h RequestFactory.cc \
-	RequestFactory.h NameResolver.cc NameResolver.h MetaEntry.h \
+	SimpleRandomizer.h FileAllocator.h FileAllocationMonitor.cc \
+	FileAllocationMonitor.h ConsoleFileAllocationMonitor.cc \
+	ConsoleFileAllocationMonitor.h ChunkChecksumValidator.cc \
+	ChunkChecksumValidator.h HttpResponse.cc HttpResponse.h \
+	HttpRequest.cc HttpRequest.h Range.h \
+	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
+	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
+	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
+	AbstractAuthResolver.h DefaultAuthResolver.cc \
+	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
+	RequestFactory.cc RequestFactory.h DefaultFileAllocator.cc \
+	DefaultFileAllocator.h GlowFileAllocator.cc \
+	GlowFileAllocator.h NameResolver.cc NameResolver.h MetaEntry.h \
 	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
 	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
 	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
@@ -384,13 +385,14 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	DownloadEngineFactory.$(OBJEXT) UrlRequestInfo.$(OBJEXT) \
 	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
 	BitfieldManFactory.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
-	FileAllocator.$(OBJEXT) FileAllocationMonitor.$(OBJEXT) \
+	FileAllocationMonitor.$(OBJEXT) \
 	ConsoleFileAllocationMonitor.$(OBJEXT) \
 	ChunkChecksumValidator.$(OBJEXT) HttpResponse.$(OBJEXT) \
 	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
 	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) DefaultAuthResolver.$(OBJEXT) \
 	NetrcAuthResolver.$(OBJEXT) RequestFactory.$(OBJEXT) \
+	DefaultFileAllocator.$(OBJEXT) GlowFileAllocator.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
@@ -594,18 +596,19 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	UrlRequestInfo.cc UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h \
 	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
 	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h FileAllocator.cc FileAllocator.h \
-	FileAllocationMonitor.cc FileAllocationMonitor.h \
-	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h \
-	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
-	HttpResponse.cc HttpResponse.h HttpRequest.cc HttpRequest.h \
-	Range.h AbstractProxyRequestCommand.cc \
-	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
-	AuthConfig.h AuthResolver.h AbstractAuthResolver.h \
-	DefaultAuthResolver.cc DefaultAuthResolver.h \
-	NetrcAuthResolver.cc NetrcAuthResolver.h RequestFactory.cc \
-	RequestFactory.h $(am__append_1) $(am__append_2) \
+	SimpleRandomizer.h FileAllocator.h FileAllocationMonitor.cc \
+	FileAllocationMonitor.h ConsoleFileAllocationMonitor.cc \
+	ConsoleFileAllocationMonitor.h ChunkChecksumValidator.cc \
+	ChunkChecksumValidator.h HttpResponse.cc HttpResponse.h \
+	HttpRequest.cc HttpRequest.h Range.h \
+	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
+	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
+	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
+	AbstractAuthResolver.h DefaultAuthResolver.cc \
+	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
+	RequestFactory.cc RequestFactory.h DefaultFileAllocator.cc \
+	DefaultFileAllocator.h GlowFileAllocator.cc \
+	GlowFileAllocator.h $(am__append_1) $(am__append_2) \
 	$(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -743,6 +746,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtProgressInfoFile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtRequestFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultFileAllocator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
@@ -757,7 +761,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationMonitor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
@@ -765,6 +768,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpNegotiationCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GlowFileAllocator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveEraseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpDownloadCommand.Po@am__quote@

@@ -55,7 +55,7 @@ public:
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const string& filename);
+  virtual void openExistingFile(const string& filename, int64_t totalLength = 0);
 
   // position is ignored
   virtual void writeData(const char* data, int32_t len, int64_t position = 0);

@@ -40,14 +40,14 @@
 #include "NullFileAllocationMonitor.h"
 
 class FileAllocator {
-private:
+protected:
   FileAllocationMonitorHandle fileAllocationMonitor;
 public:
   FileAllocator():fileAllocationMonitor(new NullFileAllocationMonitor()) {}
 
-  ~FileAllocator() {}
+  virtual ~FileAllocator() {}
 
-  void allocate(int fd, int64_t totalLength);
+  virtual void allocate(int fd, int64_t totalLength) = 0;
 
   void setFileAllocationMonitor(const FileAllocationMonitorHandle& monitor)
   {

@@ -47,6 +47,7 @@
 AbstractDiskWriter::AbstractDiskWriter():
   fd(0),
   fileAllocator(0),
+  glowFileAllocator(0),
   logger(LogFactory::getInstance())
 {}
 
@@ -71,7 +72,7 @@ void AbstractDiskWriter::closeFile() {
   }
 }
 
-void AbstractDiskWriter::openExistingFile(const string& filename) {
+void AbstractDiskWriter::openExistingFile(const string& filename, int64_t totalLength) {
   this->filename = filename;
   File f(filename);
   if(!f.isFile()) {
@@ -80,6 +81,14 @@ void AbstractDiskWriter::openExistingFile(const string& filename) {
 
   if((fd = open(filename.c_str(), O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
+  }
+  if(f.size() < totalLength) {
+    if(!fileAllocator.isNull()) {
+      logger->notice("Allocating file %s, %s bytes",
+		     filename.c_str(),
+		     Util::ullitos(totalLength).c_str());
+      glowFileAllocator->allocate(fd, totalLength);
+    }
   }
 }
 

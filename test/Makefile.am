@@ -1,13 +1,15 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	SegmentManTest.cc\
+	BitfieldManTest.cc\
+	GlowFileAllocatorTest.cc\
 	RequestTest.cc\
 	HttpRequestTest.cc\
 	NetrcTest.cc\
 	SingletonHolderTest.cc\
 	HttpHeaderTest.cc\
 	HttpResponseTest.cc\
-	BitfieldManTest.cc\
 	SharedHandleTest.cc\
 	ChunkedEncodingTest.cc\
 	FileTest.cc\
@@ -29,7 +31,6 @@ aria2c_SOURCES = AllTest.cc\
 	FeatureConfigTest.cc\
 	ShareRatioSeedCriteriaTest.cc\
 	TimeSeedCriteriaTest.cc\
-	SegmentManTest.cc\
 	SpeedCalcTest.cc\
 	DefaultPeerListProcessorTest.cc\
 	AnnounceListTest.cc\

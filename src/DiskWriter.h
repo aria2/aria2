@@ -70,7 +70,7 @@ public:
    *
    * @param filename the file name to be opened.
    */
-  virtual void openExistingFile(const string& filename) = 0;
+  virtual void openExistingFile(const string& filename, int64_t totalLength = 0) = 0;
 
   /*
    * Writes len bytes from data to this binary stream at offset position.

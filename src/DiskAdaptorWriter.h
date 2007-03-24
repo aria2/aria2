@@ -62,7 +62,7 @@ public:
     diskAdaptor->closeFile();
   }
 
-  virtual void openExistingFile(const string& filename)
+  virtual void openExistingFile(const string& filename, int64_t totalLength = 0)
   {
     diskAdaptor->openExistingFile();
   }

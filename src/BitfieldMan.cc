@@ -645,6 +645,14 @@ void BitfieldMan::unsetBitRange(int32_t startIndex, int32_t endIndex)
   updateCache();
 }
 
+void BitfieldMan::setBitRange(int32_t startIndex, int32_t endIndex)
+{
+  for(int32_t i = startIndex; i <= endIndex; ++i) {
+    setBit(i);
+  }
+  updateCache();
+}
+
 bool BitfieldMan::isBitSetOffsetRange(int64_t offset, int64_t length) const
 {
   if(length <= 0) {

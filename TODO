@@ -28,4 +28,5 @@
 * -c command line option to continue the download of existing file assuming
 that it was downloaded from the beginning.
 * Continue file allocation with existing file
-* keep-alive
+* Netrc, mode 600, enabled in ftp, http, all
+* preallocate file in MultiDiskAdaptor

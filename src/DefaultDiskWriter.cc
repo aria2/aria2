@@ -35,7 +35,8 @@
 #include "DefaultDiskWriter.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "FileAllocator.h"
+#include "DefaultFileAllocator.h"
+#include "GlowFileAllocator.h"
 #include "prefs.h"
 #include "Util.h"
 #include <errno.h>
@@ -69,11 +70,16 @@ DefaultDiskWriter* DefaultDiskWriter::createNewDiskWriter(const Option* option)
 {
   DefaultDiskWriter* diskWriter = new DefaultDiskWriter();
   if(option->get(PREF_FILE_ALLOCATION) == V_PREALLOC) {
-    FileAllocatorHandle allocator = new FileAllocator();
+    DefaultFileAllocatorHandle allocator = new DefaultFileAllocator();
     allocator->setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
     diskWriter->setFileAllocator(allocator);
+
+    GlowFileAllocatorHandle glowAllocator = new GlowFileAllocator();
+    glowAllocator->setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
+    diskWriter->setGlowFileAllocator(glowAllocator);
   } else {
     diskWriter->setFileAllocator(0);
+    diskWriter->setGlowFileAllocator(0);
   }
   return diskWriter;
 }
