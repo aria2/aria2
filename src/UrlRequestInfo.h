@@ -53,6 +53,8 @@ class UrlRequestInfo : public RequestInfo {
 private:
   Strings urls;
   int maxConnections;
+  string _filename;
+  int64_t _totalLength;
 #ifdef ENABLE_MESSAGE_DIGEST
   MessageDigestContext::DigestAlgo digestAlgo;
   int32_t chunkChecksumLength;
@@ -69,7 +71,8 @@ public:
   UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
     RequestInfo(op),
     urls(urls),
-    maxConnections(maxConnections)
+    maxConnections(maxConnections),
+    _totalLength(0)
 #ifdef ENABLE_MESSAGE_DIGEST
     ,
     digestAlgo(DIGEST_ALGO_SHA1),
@@ -98,6 +101,16 @@ public:
     this->chunkChecksums = chunkChecksums;
   }
 #endif // ENABLE_MESSAGE_DIGEST
+
+  void setTotalLength(int64_t totalLength)
+  {
+    _totalLength = totalLength;
+  }
+
+  void setFilename(const string& filename)
+  {
+    _filename = filename;
+  }
 };
 
 typedef SharedHandle<UrlRequestInfo> UrlRequestInfoHandle;

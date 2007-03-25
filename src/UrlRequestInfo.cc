@@ -159,13 +159,19 @@ RequestInfos UrlRequestInfo::execute() {
 
   RequestInfo* next = 0;
   try {
-    HeadResultHandle hr = getHeadResult();
-    
-    if(hr.isNull()) {
-      logger->notice("No URI to download. Download aborted.");
-      return RequestInfos();
+    HeadResultHandle hr(0);
+    if(_totalLength == 0 || _filename.length() == 0) {
+      hr = getHeadResult();
+      
+      if(hr.isNull()) {
+	logger->notice(MSG_NO_URL_TO_DOWNLOAD);
+	return RequestInfos();
+      }
+    } else {
+      hr = new HeadResult();
+      hr->filename = _filename;
+      hr->totalLength = _totalLength;
     }
-    
     logger->info("Head result: filename=%s, total length=%s",
 		 hr->filename.c_str(), Util::ullitos(hr->totalLength, true).c_str());
     
@@ -174,6 +180,11 @@ RequestInfos UrlRequestInfo::execute() {
 			   op->get(PREF_REFERER),
 			   op->getAsInt(PREF_SPLIT)));
     
+    if(requests.size() == 0) {
+      logger->notice(MSG_NO_URL_TO_DOWNLOAD);
+      return RequestInfos();
+    }
+
     adjustRequestSize(requests, reserved, maxConnections);
     
     SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));

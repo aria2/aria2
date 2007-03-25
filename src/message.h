@@ -64,6 +64,7 @@
 #define MSG_SAVED_SEGMENT_FILE _("The segment file was saved successfully.")
 #define MSG_LOADING_SEGMENT_FILE _("Loading the segment file %s.")
 #define MSG_LOADED_SEGMENT_FILE _("The segment file was loaded successfully.")
+#define MSG_NO_URL_TO_DOWNLOAD _("No URI to download. Download aborted.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

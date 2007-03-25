@@ -122,6 +122,8 @@ RequestInfos MetalinkRequestInfo::execute() {
 	urls.push_back((*itr)->url);
       }
       UrlRequestInfoHandle reqInfo = new UrlRequestInfo(urls, maxConnection, op);
+      reqInfo->setFilename(entry->filename);
+      reqInfo->setTotalLength(entry->size);
 #ifdef ENABLE_MESSAGE_DIGEST
       reqInfo->setChecksum(checksum);
       if(!entry->chunkChecksum.isNull()) {
