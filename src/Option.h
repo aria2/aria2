@@ -55,6 +55,8 @@ public:
   long long int getAsLLInt(const string& name) const;
   bool getAsBool(const string& name) const;
   double getAsDouble(const string& name) const;
+  
+  void clear();
 };
 
 #endif // _D_OPTION_H_

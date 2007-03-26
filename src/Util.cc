@@ -673,3 +673,21 @@ string Util::getHomeDir()
     return "";
   }
 }
+
+int64_t Util::getRealSize(const string& sizeWithUnit)
+{
+  string::size_type p = sizeWithUnit.find_first_of("KM");
+  string size;
+  int mult = 1;
+  if(p == string::npos) {
+    size = sizeWithUnit;
+  } else {
+    if(sizeWithUnit[p] == 'K') {
+      mult = 1024;
+    } else if(sizeWithUnit[p] == 'M') {
+      mult = 1024*1024;
+    }
+    size = sizeWithUnit.substr(0, p);
+  }
+  return strtoll(size.c_str(), 0, 10)*mult;
+}

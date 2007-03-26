@@ -313,8 +313,8 @@ void DefaultPieceStorage::setFileFilter(const Integers& fileIndexes) {
   const FileEntries& entries = diskAdaptor->getFileEntries();
   for(int i = 0; i < (int)entries.size(); i++) {
     if(find(fileIndexes.begin(), fileIndexes.end(), i+1) != fileIndexes.end()) {
-      logger->debug("index=%d is %s", i+1, entries.at(i)->getPath().c_str());
-      filePaths.push_back(entries.at(i)->getPath());
+      logger->debug("index=%d is %s", i+1, entries[i]->getPath().c_str());
+      filePaths.push_back(entries[i]->getPath());
     }
   }
   setFileFilter(filePaths);

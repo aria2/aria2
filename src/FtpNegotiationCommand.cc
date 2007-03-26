@@ -209,7 +209,7 @@ bool FtpNegotiationCommand::recvSize() {
   } else if(e->segmentMan->totalSize != size) {
     throw new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
   }
-  if(e->option->get(PREF_FTP_PASV_ENABLED) == V_TRUE) {
+  if(e->option->get(PREF_FTP_PASV) == V_TRUE) {
     sequence = SEQ_SEND_PASV;
   } else {
     sequence = SEQ_SEND_PORT;
@@ -303,7 +303,7 @@ bool FtpNegotiationCommand::recvRetr() {
   if(status != 150 && status != 125) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
-  if(e->option->get(PREF_FTP_PASV_ENABLED) != V_TRUE) {
+  if(e->option->get(PREF_FTP_PASV) != V_TRUE) {
     assert(serverSocket->getSockfd() != -1);
     dataSocket = serverSocket->acceptConnection();
   }

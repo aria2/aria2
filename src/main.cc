@@ -44,6 +44,10 @@
 #include "ConsoleFileAllocationMonitor.h"
 #include "Netrc.h"
 #include "RequestFactory.h"
+#include "OptionParser.h"
+#include "OptionHandlerFactory.h"
+#include "FatalException.h"
+#include "File.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -51,6 +55,8 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <utility>
+#include <fstream>
+#include <sstream>
 extern char* optarg;
 extern int optind, opterr, optopt;
 #include <getopt.h>
@@ -195,6 +201,7 @@ void showUsage() {
 	    "                              which download files from the beginning.\n"
 	    "                              Currently this option is applicable to http(s)/\n"
 	    "                              ftp downloads.") << endl;
+  cout << _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -286,21 +293,6 @@ void showUsage() {
   cout << endl;
 }
 
-long long int getRealSize(char* optarg) {
-  string::size_type p = string(optarg).find_first_of("KM");
-  int mult = 1;
-  if(p != string::npos) {
-    if(optarg[p] == 'K') {
-      mult = 1024;
-    } else if(optarg[p] == 'M') {
-      mult = 1024*1024;
-    }
-    optarg[p] = '\0';
-  }
-  long long int size = strtoll(optarg, NULL, 10)*mult;
-  return size;
-}
-
 int main(int argc, char* argv[]) {
 #ifdef ENABLE_NLS
   setlocale (LC_CTYPE, "");
@@ -308,7 +300,7 @@ int main(int argc, char* argv[]) {
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 #endif // ENABLE_NLS
-
+  stringstream cmdstream;
   int c;
   Option* op = new Option();
   op->put(PREF_STDOUT_LOG, V_FALSE);
@@ -359,6 +351,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_CHECK_INTEGRITY, V_FALSE);
   op->put(PREF_NETRC_PATH, Util::getHomeDir()+"/.netrc");
   op->put(PREF_CONTINUE, V_FALSE);
+  op->put(PREF_USER_AGENT, "aria2");
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -391,7 +384,8 @@ int main(int argc, char* argv[]) {
       { "allow-overwrite", required_argument, &lopt, 202 },
       { "check-integrity", required_argument, &lopt, 203 },
       { "realtime-chunk-checksum", required_argument, &lopt, 204 },
-      { "continue", no_argument, NULL, 'c' },
+      { "continue", no_argument, 0, 'c' },
+      { "user-agent", required_argument, 0, 'U' },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -426,307 +420,149 @@ int main(int argc, char* argv[]) {
     switch(c) {
     case 0:{
       switch(lopt) {
-      case 1: {
-	pair<string, string> proxy;
-	Util::split(proxy, optarg, ':');
-	int port = (int)strtol(proxy.second.c_str(), NULL, 10);
-	if(proxy.first.empty() || proxy.second.empty() ||
-	   !(0 < port && port <= 65535)) {
-	  cerr << _("unrecognized proxy format") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_HTTP_PROXY_HOST, proxy.first);
-	op->put(PREF_HTTP_PROXY_PORT, Util::itos(port));
-	op->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
+      case 1:
+	cmdstream << PREF_HTTP_PROXY << "=" << optarg << "\n";
 	break;
-      }
       case 2:
-	op->put(PREF_HTTP_USER, optarg);
-	op->put(PREF_HTTP_AUTH_ENABLED, V_TRUE);
+	cmdstream << PREF_HTTP_USER << "=" << optarg << "\n";
 	break;
       case 3:
-	op->put(PREF_HTTP_PASSWD, optarg);
+	cmdstream << PREF_HTTP_PASSWD << "=" << optarg << "\n";
 	break;
       case 4:
-	op->put(PREF_HTTP_PROXY_USER, optarg);
-	op->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
+	cmdstream << PREF_HTTP_PROXY_USER << "=" << optarg << "\n";
 	break;
       case 5: 
-	op->put(PREF_HTTP_PROXY_PASSWD, optarg);
+	cmdstream << PREF_HTTP_PROXY_PASSWD << "=" << optarg << "\n";
 	break;
       case 6:
-	if(string(V_BASIC) == optarg) {
-	  op->put(PREF_HTTP_AUTH_SCHEME, V_BASIC);
-	} else {
-	  cerr << _("Currently, supported authentication scheme is basic.") << endl;
-	}
+	cmdstream << PREF_HTTP_AUTH_SCHEME << "=" << optarg << "\n";
 	break;
       case 7:
-	op->put(PREF_REFERER, optarg);
+	cmdstream << PREF_REFERER << "=" << optarg << "\n";
 	break;
-      case 8: {
-	int wait = (int)strtol(optarg, NULL, 10);
-	if(!(0 <= wait && wait <= 60)) {
-	  cerr << _("retry-wait must be between 0 and 60.") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_RETRY_WAIT, Util::itos(wait));
+      case 8:
+	cmdstream << PREF_RETRY_WAIT << "=" << optarg << "\n";
 	break;
-      }
       case 9:
-	op->put(PREF_FTP_USER, optarg);
+	cmdstream << PREF_FTP_USER << "=" << optarg << "\n";
 	break;
       case 10:
-	op->put(PREF_FTP_PASSWD, optarg);
+	cmdstream << PREF_FTP_PASSWD << "=" << optarg << "\n";
 	break;
       case 11:
-	if(string(optarg) == V_BINARY || string(optarg) == V_ASCII) {
-	  op->put(PREF_FTP_TYPE, optarg);
-	} else {
-	  cerr << _("ftp-type must be either 'binary' or 'ascii'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+	cmdstream << PREF_FTP_TYPE << "=" << optarg << "\n";
 	break;
       case 12:
-	if(string(optarg) == V_GET || string(optarg) == V_TUNNEL) {
-	  op->put(PREF_FTP_VIA_HTTP_PROXY, optarg);
-	} else {
-	  cerr << _("ftp-via-http-proxy must be either 'get' or 'tunnel'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+	cmdstream << PREF_FTP_VIA_HTTP_PROXY << "=" << optarg << "\n";
 	break;
-      case 13: {
-	long long int size = getRealSize(optarg);
-	if(size < 1024) {
-	  cerr << _("min-segment-size invalid") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_MIN_SEGMENT_SIZE, Util::llitos(size));
+      case 13:
+	cmdstream << PREF_MIN_SEGMENT_SIZE << "=" << optarg << "\n";
 	break;
-      }
       case 14:
-	if(string(optarg) == V_GET || string(optarg) == V_TUNNEL) {
-	  op->put(PREF_HTTP_PROXY_METHOD, optarg);
-	} else {
-	  cerr << _("http-proxy-method must be either 'get' or 'tunnel'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+	cmdstream << PREF_HTTP_PROXY_METHOD << "=" << optarg << "\n";
 	break;
-      case 15: {
-	int listenPort = (int)strtol(optarg, NULL, 10);
-	if(!(1024 <= listenPort && listenPort <= 65535)) {
-	  cerr << _("listen-port must be between 1024 and 65535.") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_LISTEN_PORT, Util::itos(listenPort));
+      case 15:
+	cmdstream << PREF_LISTEN_PORT << "=" << optarg << "\n";
 	break;
-      }
       case 16:
-	if(string(optarg) == "true") {
-	  op->put(PREF_FOLLOW_TORRENT, V_TRUE);
-	} else if(string(optarg) == "false") {
-	  op->put(PREF_FOLLOW_TORRENT, V_FALSE);
-	} else {
-	  cerr << _("follow-torrent must be either 'true' or 'false'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+	cmdstream << PREF_FOLLOW_TORRENT << "=" << optarg << "\n";
 	break;
       case 18:
-	op->put(PREF_NO_PREALLOCATION, V_TRUE);
+	cmdstream << PREF_NO_PREALLOCATION << "=" << V_TRUE << "\n";
 	break;
       case 19:
-	if(string(optarg) == "true") {
-	  op->put(PREF_DIRECT_FILE_MAPPING, V_TRUE);
-	} else if(string(optarg) == "false") {
-	  op->put(PREF_DIRECT_FILE_MAPPING, V_FALSE);
-	} else {
-	  cerr << _("direct-file-mapping must be either 'true' or 'false'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+	cmdstream << PREF_DIRECT_FILE_MAPPING << "=" << optarg << "\n";
 	break;
       case 21:
-	op->put(PREF_SELECT_FILE, optarg);
+	cmdstream << PREF_SELECT_FILE << "=" << optarg << "\n";
 	break;
-      case 22: {
-	int seedTime = (int)strtol(optarg, NULL, 10);
-	if(seedTime < 0) {
-	  cerr << _("seed-time must be greater than or equal to 0.") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_SEED_TIME, Util::itos(seedTime));
+      case 22:
+	cmdstream << PREF_SEED_TIME << "=" << optarg << "\n";
 	break;
-      }
-      case 23: {
-	double ratio = (int)strtod(optarg, NULL);
-	if(ratio < 0.0) {
-	  cerr << _("seed-ratio must be greater than or equal to 0.0.") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_SEED_RATIO, optarg);
+      case 23:
+	cmdstream << PREF_SEED_RATIO << "=" << optarg << "\n";
 	break;
-      }
-      case 24: {
-	int limit = getRealSize(optarg);
-	if(limit < 0) {
-	  cerr << _("max-upload-limit must be greater than or equal to 0") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_MAX_UPLOAD_LIMIT, Util::itos(limit));
+      case 24:
+	cmdstream << PREF_MAX_UPLOAD_LIMIT << "=" << optarg << "\n";
 	break;
-      }
       case 100:
-	op->put(PREF_METALINK_VERSION, optarg);
+	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";
 	break;
       case 101:
-	op->put(PREF_METALINK_LANGUAGE, optarg);
+	cmdstream << PREF_METALINK_LANGUAGE << "=" << optarg << "\n";
 	break;
       case 102:
-	op->put(PREF_METALINK_OS, optarg);
+	cmdstream << PREF_METALINK_OS << "=" << optarg << "\n";
 	break;
       case 103:
-	if(string(optarg) == "true") {
-	  op->put(PREF_FOLLOW_METALINK, V_TRUE);
-	} else if(string(optarg) == "false") {
-	  op->put(PREF_FOLLOW_METALINK, V_FALSE);
-	} else {
-	  cerr << _("follow-metalink must be either 'true' or 'false'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+	cmdstream << PREF_FOLLOW_METALINK << "=" << optarg << "\n";
 	break;
       case 104:
-	op->put(PREF_METALINK_LOCATION, optarg);
+	cmdstream << PREF_METALINK_LOCATION << "=" << optarg << "\n";
 	break;
-      case 200: {
-	int limit = getRealSize(optarg);
-	if(limit < 0) {
-	  cerr << _("lowest-speed-limit must be greater than or equal to 0") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_LOWEST_SPEED_LIMIT, Util::itos(limit));
+      case 200:
+	cmdstream << PREF_LOWEST_SPEED_LIMIT << "=" << optarg << "\n";
 	break;
-      }
-      case 201: {
-	int limit = getRealSize(optarg);
-	if(limit < 0) {
-	  cerr << _("max-download-limit must be greater than or equal to 0") << endl;
-	  exit(EXIT_FAILURE);
-	}
-	op->put(PREF_MAX_DOWNLOAD_LIMIT, Util::itos(limit));
+      case 201:
+	cmdstream << PREF_MAX_DOWNLOAD_LIMIT << "=" << optarg << "\n";
 	break;
-      }
-      case 202: {
-	if(string(optarg) == "true") {
-	  op->put(PREF_ALLOW_OVERWRITE, V_TRUE);
-	} else if(string(optarg) == "false") {
-	  op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
-	} else {
-	  cerr << _("allow-overwrite must be either 'true' or 'false'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+      case 202:
+	cmdstream << PREF_ALLOW_OVERWRITE << "=" << optarg << "\n";
 	break;
-      }
-      case 203: {
-	if(string(optarg) == "true") {
-	  op->put(PREF_CHECK_INTEGRITY, V_TRUE);
-	} else if(string(optarg) == "false") {
-	  op->put(PREF_CHECK_INTEGRITY, V_FALSE);
-	} else {
-	  cerr << _("check-integrity must be be either 'true' or 'false'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+      case 203:
+	cmdstream << PREF_CHECK_INTEGRITY << "=" << optarg << "\n";
 	break;
-      }
-      case 204: {
-	if(string(optarg) == "true") {
-	  op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
-	} else if(string(optarg) == "false") {
-	  op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_FALSE);
-	} else {
-	  cerr << _("realtime-chunk-checksum must be either 'true' or 'false'.") << endl;
-	  exit(EXIT_FAILURE);
-	}
+      case 204:
+	cmdstream << PREF_REALTIME_CHUNK_CHECKSUM << "=" << optarg << "\n";
 	break;
-      }
       }
       break;
     }
     case 'D':
-      op->put(PREF_DAEMON, V_TRUE);
+      cmdstream << PREF_DAEMON << "=" << V_TRUE << "\n";
       break;
     case 'd':
-      op->put(PREF_DIR, optarg);
+      cmdstream << PREF_DIR << "=" << optarg << "\n";
       break;
     case 'o':
-      op->put(PREF_OUT, optarg);
+      cmdstream << PREF_OUT << "=" << optarg << "\n";
       break;
     case 'l':
-      if(strcmp("-", optarg) == 0) {
-	op->put(PREF_STDOUT_LOG, V_TRUE);
-      } else {
-	op->put(PREF_LOG, optarg);
-      }
+      cmdstream << PREF_LOG << "=" << optarg << "\n";
       break;
-    case 's': {
-      int split = (int)strtol(optarg, NULL, 10);
-      if(!(1 <= split && split <= 5)) {
-	cerr << _("split must be between 1 and 5.") << endl;
-	exit(EXIT_FAILURE);
-      }
-      op->put(PREF_SPLIT, Util::itos(split));
+    case 's':
+      cmdstream << PREF_SPLIT << "=" << optarg << "\n";
       break;
-    }
-    case 't': {
-      int timeout = (int)strtol(optarg, NULL, 10);
-      if(1 <= timeout && timeout <= 600) {
-	op->put(PREF_TIMEOUT, Util::itos(timeout));
-      } else {
-	cerr << _("timeout must be between 1 and 600") << endl;
-	exit(EXIT_FAILURE);
-      }
+    case 't':
+      cmdstream << PREF_TIMEOUT << "=" << optarg << "\n";
       break;
-    }
-    case 'm': {
-      int retries = (int)strtol(optarg, NULL, 10);
-      if(retries < 0) {
-	cerr << _("max-tries invalid") << endl;
-	exit(EXIT_FAILURE);
-      }
-      op->put(PREF_MAX_TRIES, Util::itos(retries));
+    case 'm':
+      cmdstream << PREF_MAX_TRIES << "=" << optarg << "\n";
       break;
-    }
     case 'p':
-      op->put(PREF_FTP_PASV_ENABLED, V_TRUE);
+      cmdstream << PREF_FTP_PASV << "=" << V_TRUE << "\n";
       break;
     case 'S':
-      op->put(PREF_SHOW_FILES, V_TRUE);
+      cmdstream << PREF_SHOW_FILES << "=" << V_TRUE << "\n";
       break;
     case 'T':
-      op->put(PREF_TORRENT_FILE, optarg);
+      cmdstream << PREF_TORRENT_FILE << "=" << optarg << "\n";
       break;
     case 'M':
-      op->put(PREF_METALINK_FILE, optarg);
+      cmdstream << PREF_METALINK_FILE << "=" << optarg << "\n";
       break;
-    case 'C': {
-      int metalinkServers = (int)strtol(optarg, NULL, 10);
-      if(metalinkServers <= 0) {
-	cerr << _("metalink-servers must be greater than 0.") << endl;
-	exit(EXIT_FAILURE);
-      }
-      op->put(PREF_METALINK_SERVERS, Util::itos(metalinkServers));
+    case 'C':
+      cmdstream << PREF_METALINK_SERVERS << "=" << optarg << "\n";
       break;
-    }
-    case 'a': {
-      string value = string(optarg);
-      if(value == V_NONE || value == V_PREALLOC) {
-	op->put(PREF_FILE_ALLOCATION, value);
-      } else {
-	cerr << _("file-allocation must be either 'none' or 'prealloc'.") << endl;
-	exit(EXIT_FAILURE);
-      }
+    case 'a':
+      cmdstream << PREF_FILE_ALLOCATION << "=" << optarg << "\n";
       break;
-    }
     case 'c':
-      op->put(PREF_CONTINUE, V_TRUE);
+      cmdstream << PREF_CONTINUE << "=" << V_TRUE << "\n";
+      break;
+    case 'U':
+      cmdstream << PREF_USER_AGENT << "=" << optarg << "\n";
       break;
     case 'v':
       showVersion();
@@ -737,6 +573,34 @@ int main(int argc, char* argv[]) {
     default:
       exit(EXIT_FAILURE);
     }
+  }
+
+  {
+    OptionParser oparser;
+    oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
+    string cfname = Util::getHomeDir()+"/.aria2/aria2.conf";
+    ifstream cfstream(cfname.c_str());
+    try {
+      oparser.parse(op, cfstream);
+    } catch(Exception* e) {
+      cerr << "Parse error in " << cfname << endl;
+      cerr << e->getMsg() << endl;
+      delete e;
+      exit(EXIT_FAILURE);
+    }
+    try {
+      oparser.parse(op, cmdstream);
+    } catch(Exception* e) {
+      cerr << e->getMsg() << endl;
+      delete e;
+      exit(EXIT_FAILURE);
+    }
+  }
+  if(op->defined(PREF_HTTP_USER)) {
+    op->put(PREF_HTTP_AUTH_ENABLED, V_TRUE);
+  }
+  if(op->defined(PREF_HTTP_PROXY_USER)) {
+    op->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
   }
   if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE)) {
     if(optind == argc) {
@@ -779,9 +643,16 @@ int main(int argc, char* argv[]) {
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
     logger->info("Logging started.");
 
-    NetrcHandle netrc = new Netrc();
-    netrc->parse(op->get(PREF_NETRC_PATH));
-
+    NetrcHandle netrc = 0;
+    File netrccf(op->get(PREF_NETRC_PATH));
+    mode_t mode = netrccf.mode();
+    if(mode&(S_IRWXG|S_IRWXO)) {
+      logger->notice(".netrc file %s does not have correct permissions. It should be 600. netrc support disabled.",
+		     op->get(PREF_NETRC_PATH).c_str());
+    } else {
+      netrc = new Netrc();
+      netrc->parse(op->get(PREF_NETRC_PATH));
+    }
     RequestFactoryHandle requestFactory = new RequestFactory();
     requestFactory->setOption(op);
     requestFactory->setNetrc(netrc);

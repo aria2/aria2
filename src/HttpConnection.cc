@@ -39,6 +39,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"
+#include <sstream>
 
 HttpConnection::HttpConnection(int cuid,
 			       const SocketHandle& socket,
@@ -47,10 +48,27 @@ HttpConnection::HttpConnection(int cuid,
   logger = LogFactory::getInstance();
 }
 
+string HttpConnection::eraseConfidentialInfo(const string& request)
+{
+  istringstream istr(request);
+  ostringstream ostr;
+  string line;
+  while(getline(istr, line)) {
+    if(Util::startsWith(line, "Authorization: Basic")) {
+      ostr << "Authorization: Basic ********\n";
+    } else if(Util::startsWith(line, "Proxy-Authorization: Basic")) {
+      ostr << "Proxy-Authorization: Basic ********\n";
+    } else {
+      ostr << line << "\n";
+    }
+  }
+  return ostr.str();
+}
+
 void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
 {
   string request = httpRequest->createRequest();
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
   outstandingHttpRequests.push_back(httpRequest);
 }
@@ -58,7 +76,7 @@ void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
 void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 {
   string request = httpRequest->createProxyRequest();
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
   outstandingHttpRequests.push_back(httpRequest);
 }

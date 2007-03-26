@@ -1,3 +1,38 @@
+2007-03-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To the ability to read options from a config file:
+	* src/main.cc: Command-line parameter validation is delegated to
+	OptionHandler class.
+	* src/OptionHandlerFactory.h, src/OptionHandlerFactory.cc: New class.
+	* src/Option.h, src/Option.cc (clear): New function.
+	* src/OptionParser.h, src/OptionParser.cc: New class.
+	* src/OptionHandler.h: New class.
+	* src/NameMatchOptionHandler.h: New class.
+	* src/OptionHandlerImpl.h: New classes.
+	* src/prefs.h: '_' -> '-'
+	(FTP_PASV_ENABLED): Renamed to FTP_PASV.
+	(FTP_PASV): New definition.
+	* src/Util.h, src/Util.cc (getRealSize): New function.
+	
+	To disable netrc support if .netrc file does not have correct
+	permissions:
+	* src/File.h, src/File.cc (mode): New function.
+
+	To prevent confidential information to be logged:
+	* src/HttpConnection.h, src/HttpConnection.cc
+	(eraseConfidentialInfo): New function.
+	(sendRequest): Call eraseConfidentialInfo().
+	(sendProxyRequest): Call eraseConfidentialInfo().
+	* src/main.cc: Validate permissions of .netrc file.
+	
+	To add --user-agent command-line option:
+	* src/main.cc: Added new command line option: --user-agent
+	* src/prefs.h (PREF_USER_AGENT): New definition.
+	* src/HttpRequestCommand.cc (executeInternal): Set user-agent option
+	parameter to HttpRequest object.
+	
+	Marged the patches from Dan Fandrich.
+	
 2007-03-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use filename and size from Metalink file instead of sending HEAD

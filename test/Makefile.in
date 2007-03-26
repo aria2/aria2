@@ -57,14 +57,15 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) UtilTest.$(OBJEXT) \
+	OptionHandlerTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
 	BitfieldManTest.$(OBJEXT) GlowFileAllocatorTest.$(OBJEXT) \
 	RequestTest.$(OBJEXT) HttpRequestTest.$(OBJEXT) \
 	NetrcTest.$(OBJEXT) SingletonHolderTest.$(OBJEXT) \
 	HttpHeaderTest.$(OBJEXT) HttpResponseTest.$(OBJEXT) \
 	SharedHandleTest.$(OBJEXT) ChunkedEncodingTest.$(OBJEXT) \
 	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) \
-	UtilTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
+	CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
 	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
 	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
 	PeerMessageUtilTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
@@ -259,6 +260,8 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
+	UtilTest.cc\
+	OptionHandlerTest.cc\
 	SegmentManTest.cc\
 	BitfieldManTest.cc\
 	GlowFileAllocatorTest.cc\
@@ -273,7 +276,6 @@ aria2c_SOURCES = AllTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
 	Base64Test.cc\
-	UtilTest.cc\
 	CookieBoxTest.cc\
 	DataTest.cc\
 	DictionaryTest.cc\
@@ -435,6 +437,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@

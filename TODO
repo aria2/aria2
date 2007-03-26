@@ -22,9 +22,4 @@
 * Add --bt-timeout command line option.
 * Fix DefaultBtProgressInfoFile.cc: save(), load()
 * remove blockIndex
-* Add an ability of seeding
-* Rewrite HttpConnection::receiveResponse() using {i,o}stringstream
-
-* Add usage message for -c command line option
-* Netrc, mode 600, enabled in ftp, http, all
-* preallocate file in MultiDiskAdaptor
+* Add seed mode.

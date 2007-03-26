@@ -531,7 +531,7 @@ void SegmentMan::tryChunkChecksumValidation(const SegmentHandle& segment)
       int32_t dataLength =
 	offset+chunkHashLength <= totalSize ? chunkHashLength : totalSize-offset;
       string actualChecksum = diskWriter->messageDigest(offset, dataLength, digestAlgo);
-      string expectedChecksum = pieceHashes.at(index);
+      string expectedChecksum = pieceHashes[index];
       if(expectedChecksum == actualChecksum) {
 	logger->info("Good chunk checksum.");
       } else {

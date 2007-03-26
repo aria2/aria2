@@ -32,91 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "File.h"
-#include "Util.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#ifndef _D_OPTION_HANDLER_H_
+#define _D_OPTION_HANDLER_H_
 
-File::File(const string& name):name(name) {}
+#include "common.h"
+#include "Option.h"
 
-File::~File() {}
+class OptionHandler {
+public:
+  virtual ~OptionHandler() {}
+  
+  virtual bool canHandle(const string& optName) = 0;
+  virtual void parseArg(Option* option, const string& arg) = 0;
+};
 
-int File::fillStat(struct stat& fstat) {
-  return stat(name.c_str(), &fstat);
-}
-
-bool File::exists() {
-  struct stat fstat;
-  return fillStat(fstat) == 0;
-}
-
-bool File::isFile() {
-  struct stat fstat;
-  if(fillStat(fstat) < 0) {
-    return false;
-  }
-  return S_ISREG(fstat.st_mode) == 1;
-}
-
-bool File::isDir() {
-  struct stat fstat;
-  if(fillStat(fstat) < 0) {
-    return false;
-  }
-  return S_ISDIR(fstat.st_mode) == 1;
-}
-
-bool File::remove() {
-  if(isFile()) {
-    return unlink(name.c_str()) == 0;
-  } else if(isDir()) {
-    return rmdir(name.c_str()) == 0;
-  } else {
-    return false;
-  }
-}
-
-int64_t File::size() {
-  struct stat fstat;
-  if(fillStat(fstat) < 0) {
-    return 0;
-  }
-  return fstat.st_size;
-}
-
-bool File::mkdirs() {
-  if(isDir()) {
-    return false;
-  }
-  Strings dirs;
-  Util::slice(dirs, name, '/');
-  if(!dirs.size()) {
-    return true;
-  }
-  string accDir;
-  if(Util::startsWith(name, "/")) {
-    accDir = "/";
-  }
-  mode_t mode = S_IRUSR|S_IWUSR|S_IXUSR;
-  for(Strings::const_iterator itr = dirs.begin(); itr != dirs.end();
-      itr++, accDir += "/") {
-    accDir += *itr;
-    if(File(accDir).isDir()) {
-      continue;
-    }
-    if(mkdir(accDir.c_str(), mode) == -1) {
-      return false;
-    }
-  }
-  return true;
-}
-
-mode_t File::mode()
-{
-  struct stat fstat;
-  if(fillStat(fstat) < 0) {
-    return 0;
-  }
-  return fstat.st_mode;
-}
+typedef SharedHandle<OptionHandler> OptionHandlerHandle;
+typedef deque<OptionHandlerHandle> OptionHandlers;
+#endif // _D_OPTION_HANDLER_H_

@@ -78,7 +78,9 @@ SRCS =  Socket.h\
 	NetrcAuthResolver.cc NetrcAuthResolver.h\
 	RequestFactory.cc RequestFactory.h\
 	DefaultFileAllocator.cc DefaultFileAllocator.h\
-	GlowFileAllocator.cc GlowFileAllocator.h
+	GlowFileAllocator.cc GlowFileAllocator.h\
+	OptionParser.cc OptionParser.h\
+	OptionHandlerFactory.cc OptionHandlerFactory.h
 #	debug_new.cpp
 
 if ENABLE_ASYNC_DNS

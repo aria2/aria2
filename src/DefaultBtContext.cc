@@ -121,7 +121,7 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
       const MetaList& paths = pathList->getList();
       string path;
       for(int32_t i = 0; i < (int32_t)paths.size()-1; i++) {
-	Data* subpath = (Data*)paths.at(i);
+	Data* subpath = (Data*)paths[i];
 	path += subpath->toString()+"/";
       }
       // TODO use dynamic_cast
@@ -212,7 +212,7 @@ string DefaultBtContext::getPieceHash(int32_t index) const {
   if(index < 0 || numPieces <= index) {
     return "";
   }
-  return pieceHashes.at(index);
+  return pieceHashes[index];
 }
 
 int64_t DefaultBtContext::getTotalLength() const {

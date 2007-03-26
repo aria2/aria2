@@ -36,7 +36,9 @@
 #define _D_FILE_H_
 
 #include "common.h"
-#include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -81,7 +83,9 @@ public:
    */
   bool mkdirs();
 
-  long long int size();
+  int64_t size();
+
+  mode_t mode();
 };
 
 #endif // _D_FILE_H_

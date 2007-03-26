@@ -146,6 +146,8 @@ public:
 			 int32_t srcLength, int32_t destLength);
 
   static string getHomeDir();
+
+  static int64_t getRealSize(const string& sizeWithUnit);
 };
 
 #endif // _D_UTIL_H_

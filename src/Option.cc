@@ -91,3 +91,8 @@ double Option::getAsDouble(const string& name) const {
     return strtod(value.c_str(), 0);
   }
 }
+
+void Option::clear()
+{
+  table.clear();
+}

@@ -57,6 +57,7 @@ bool HttpRequestCommand::executeInternal() {
     req->setKeepAlive(false);
   }
   HttpRequestHandle httpRequest = new HttpRequest();
+  httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setSegment(segment);
   httpRequest->setEntityLength(e->segmentMan->totalSize);

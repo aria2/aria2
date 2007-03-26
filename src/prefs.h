@@ -48,19 +48,19 @@
  * General preferences
  */
 // values: 1*digit
-#define PREF_RETRY_WAIT "retry_wait"
+#define PREF_RETRY_WAIT "retry-wait"
 // values: 1*digit
 #define PREF_TIMEOUT "timeout"
 // values: 1*digit
-#define PREF_DNS_TIMEOUT "dns_timeout"
+#define PREF_DNS_TIMEOUT "dns-timeout"
 // values: 1*digit
-#define PREF_MAX_TRIES "max_tries"
+#define PREF_MAX_TRIES "max-tries"
 // values: 1*digit
-#define PREF_MIN_SEGMENT_SIZE "min_segment_size"
+#define PREF_MIN_SEGMENT_SIZE "min-segment-size"
 // values: 1*digit
-#define PREF_AUTO_SAVE_INTERVAL "auto_save_interval"
+#define PREF_AUTO_SAVE_INTERVAL "auto-save-interval"
 // values: true | false
-#define PREF_STDOUT_LOG "stdout_log"
+#define PREF_STDOUT_LOG "stdout-log"
 // values: a string that your file system recognizes as a file name.
 #define PREF_LOG "log"
 // values: a string that your file system recognizes as a directory.
@@ -74,120 +74,123 @@
 // value: a string
 #define PREF_REFERER "referer"
 // value: 1*digit
-#define PREF_LOWEST_SPEED_LIMIT "lowest_speed_limit"
+#define PREF_LOWEST_SPEED_LIMIT "lowest-speed-limit"
 // value: 1*digit
-#define PREF_SEGMENT_SIZE "segment_size"
+#define PREF_SEGMENT_SIZE "segment-size"
 // value: 1*digit
-#define PREF_MAX_DOWNLOAD_LIMIT "max_download_limit"
+#define PREF_MAX_DOWNLOAD_LIMIT "max-download-limit"
 // value: 1*digit
-#define PREF_STARTUP_IDLE_TIME "startup_idle_time"
+#define PREF_STARTUP_IDLE_TIME "startup-idle-time"
 // value: prealloc | none
-#define PREF_FILE_ALLOCATION "file_allocation"
+#define PREF_FILE_ALLOCATION "file-allocation"
 #  define V_PREALLOC "prealloc"
 // value: true | false
-#define PREF_ALLOW_OVERWRITE "allow_overwrite"
+#define PREF_ALLOW_OVERWRITE "allow-overwrite"
 // value: true | false
-#define PREF_REALTIME_CHUNK_CHECKSUM "realtime_chunk_checksum"
+#define PREF_REALTIME_CHUNK_CHECKSUM "realtime-chunk-checksum"
 // value: true | false
-#define PREF_CHECK_INTEGRITY "check_integrity"
+#define PREF_CHECK_INTEGRITY "check-integrity"
 // value: string that your file system recognizes as a file name.
-#define PREF_NETRC_PATH "netrc_path"
+#define PREF_NETRC_PATH "netrc-path"
 // value:
 #define PREF_CONTINUE "continue"
 
 /**
  * FTP related preferences
  */
-#define PREF_FTP_USER "ftp_user"
-#define PREF_FTP_PASSWD "ftp_passwd"
+#define PREF_FTP_USER "ftp-user"
+#define PREF_FTP_PASSWD "ftp-passwd"
 // values: binary | ascii
-#define PREF_FTP_TYPE "ftp_type"
+#define PREF_FTP_TYPE "ftp-type"
 #  define V_BINARY "binary"
 #  define V_ASCII "ascii"
 // values: get | tunnel
-#define PREF_FTP_VIA_HTTP_PROXY "ftp_via_http_proxy"
+#define PREF_FTP_VIA_HTTP_PROXY "ftp-via-http-proxy"
 #  define V_GET "get"
 #  define V_TUNNEL "tunnel"
 // values: true | false
-#define PREF_FTP_PASV_ENABLED "ftp_pasv_enabled"
+#define PREF_FTP_PASV "ftp-pasv"
 
 /**
  * HTTP related preferences
  */
-#define PREF_HTTP_USER "http_user"
-#define PREF_HTTP_PASSWD "http_passwd"
+#define PREF_HTTP_USER "http-user"
+#define PREF_HTTP_PASSWD "http-passwd"
 // values: basic
-#define PREF_HTTP_AUTH_SCHEME "http_auth_scheme"
+#define PREF_HTTP_AUTH_SCHEME "http-auth-scheme"
 #  define V_BASIC "basic"
 // values: true | false
-#define PREF_HTTP_AUTH_ENABLED "http_auth_enabled"
+#define PREF_HTTP_AUTH_ENABLED "http-auth-enabled"
 // values: true | false
-#define PREF_HTTP_KEEP_ALIVE "http_keep_alive"
+#define PREF_HTTP_KEEP_ALIVE "http-keep-alive"
+// values: string
+#define PREF_USER_AGENT "user-agent"
 
 /** 
  * HTTP proxy related preferences
  */
-#define PREF_HTTP_PROXY_USER "http_proxy_user"
-#define PREF_HTTP_PROXY_PASSWD "http_proxy_passwd"
-#define PREF_HTTP_PROXY_HOST "http_proxy_host"
-#define PREF_HTTP_PROXY_PORT "http_proxy_port"
+#define PREF_HTTP_PROXY "http-proxy"
+#define PREF_HTTP_PROXY_USER "http-proxy-user"
+#define PREF_HTTP_PROXY_PASSWD "http-proxy-passwd"
+#define PREF_HTTP_PROXY_HOST "http-proxy-host"
+#define PREF_HTTP_PROXY_PORT "http-proxy-port"
 // values: get | tunnel
-#define PREF_HTTP_PROXY_METHOD "http_proxy_method"
+#define PREF_HTTP_PROXY_METHOD "http-proxy-method"
 // values: true | false
-#define PREF_HTTP_PROXY_ENABLED "http_proxy_enabled"
+#define PREF_HTTP_PROXY_ENABLED "http-proxy-enabled"
 // values: true | false
-#define PREF_HTTP_PROXY_AUTH_ENABLED "http_proxy_auth_enabled"
+#define PREF_HTTP_PROXY_AUTH_ENABLED "http-proxy-auth-enabled"
 
 /**
  * BitTorrent related preferences
  */
 // values: 1*digit
-#define PREF_PEER_CONNECTION_TIMEOUT "peer_connection_timeout"
+#define PREF_PEER_CONNECTION_TIMEOUT "peer-connection-timeout"
 // values: 1*digit
-#define PREF_BT_TIMEOUT "bt_timeout"
+#define PREF_BT_TIMEOUT "bt-timeout"
 // values: 1*digit
-#define PREF_BT_REQUEST_TIMEOUT "bt_request_timeout"
+#define PREF_BT_REQUEST_TIMEOUT "bt-request-timeout"
 // values: true | false
-#define PREF_SHOW_FILES "show_files"
+#define PREF_SHOW_FILES "show-files"
 // values: true | false
-#define PREF_NO_PREALLOCATION "no_preallocation"
+#define PREF_NO_PREALLOCATION "no-preallocation"
 // values: true | false
-#define PREF_DIRECT_FILE_MAPPING "direct_file_mapping"
+#define PREF_DIRECT_FILE_MAPPING "direct-file-mapping"
 // values: 1*digit
-#define PREF_MAX_UPLOAD_LIMIT "max_upload_limit"
+#define PREF_MAX_UPLOAD_LIMIT "max-upload-limit"
 // values: a string that your file system recognizes as a file name.
-#define PREF_TORRENT_FILE "torrent_file"
+#define PREF_TORRENT_FILE "torrent-file"
 // values: 1*digit
-#define PREF_LISTEN_PORT "listen_port"
+#define PREF_LISTEN_PORT "listen-port"
 // values: true | false
-#define PREF_FOLLOW_TORRENT "follow_torrent"
+#define PREF_FOLLOW_TORRENT "follow-torrent"
 // values: 1*digit *( (,|-) 1*digit)
-#define PREF_SELECT_FILE "select_file"
+#define PREF_SELECT_FILE "select-file"
 // values: 1*digit
-#define PREF_SEED_TIME "seed_time"
+#define PREF_SEED_TIME "seed-time"
 // values: 1*digit ['.' [ 1*digit ] ]
-#define PREF_SEED_RATIO "seed_ratio"
+#define PREF_SEED_RATIO "seed-ratio"
 // values: 1*digit
-#define PREF_TRACKER_MAX_TRIES "tracker_max_tries"
+#define PREF_TRACKER_MAX_TRIES "tracker-max-tries"
 // values: 1*digit
-#define PREF_BT_KEEP_ALIVE_INTERVAL "bt_keep_alive_interval"
+#define PREF_BT_KEEP_ALIVE_INTERVAL "bt-keep-alive-interval"
 
 /**
  * Metalink related preferences
  */
 // values: a string that your file system recognizes as a file name.
-#define PREF_METALINK_FILE "metalink_file"
+#define PREF_METALINK_FILE "metalink-file"
 // values: a string
-#define PREF_METALINK_VERSION "metalink_version"
+#define PREF_METALINK_VERSION "metalink-version"
 // values: a string
-#define PREF_METALINK_LANGUAGE "metalink_language"
+#define PREF_METALINK_LANGUAGE "metalink-language"
 // values: a string
-#define PREF_METALINK_OS "metalink_os"
+#define PREF_METALINK_OS "metalink-os"
 // values: a string
-#define PREF_METALINK_LOCATION "metalink_location"
+#define PREF_METALINK_LOCATION "metalink-location"
 // values: 1*digit
-#define PREF_METALINK_SERVERS "metalink_servers"
+#define PREF_METALINK_SERVERS "metalink-servers"
 // values: true | false
-#define PREF_FOLLOW_METALINK "follow_metalink"
+#define PREF_FOLLOW_METALINK "follow-metalink"
 
 #endif // _D_PREFS_H_

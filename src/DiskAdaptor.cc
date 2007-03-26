@@ -65,7 +65,7 @@ bool DiskAdaptor::addDownloadEntry(int index) {
   if(fileEntries.size() <= (unsigned int)index) {
     return false;
   }
-  fileEntries.at(index)->setRequested(true);
+  fileEntries[index]->setRequested(true);
   return true;
 }
 

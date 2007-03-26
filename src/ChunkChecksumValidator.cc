@@ -106,7 +106,7 @@ void ChunkChecksumValidator::validate(BitfieldMan* bitfieldMan,
   fileAllocationMonitor->showProgress();
   Time cp;
   for(int32_t i = 0; i < x; ++i) {
-    (this->*f)(bitfieldMan, i, checksums.at(i), checksumLength, checksumLength);
+    (this->*f)(bitfieldMan, i, checksums[i], checksumLength, checksumLength);
     if(cp.elapsedInMillis(500)) {
       fileAllocationMonitor->setCurrentValue(i*checksumLength);
       fileAllocationMonitor->showProgress();
@@ -114,7 +114,7 @@ void ChunkChecksumValidator::validate(BitfieldMan* bitfieldMan,
     }
   }
   if(r) {
-    (this->*f)(bitfieldMan, x, checksums.at(x), r, checksumLength);
+    (this->*f)(bitfieldMan, x, checksums[x], r, checksumLength);
   }
   fileAllocationMonitor->setCurrentValue(bitfieldMan->getTotalLength());
   fileAllocationMonitor->showProgress();

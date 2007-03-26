@@ -222,12 +222,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
 	RequestFactory.cc RequestFactory.h DefaultFileAllocator.cc \
 	DefaultFileAllocator.h GlowFileAllocator.cc \
-	GlowFileAllocator.h NameResolver.cc NameResolver.h MetaEntry.h \
-	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
-	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
-	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
-	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
-	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
+	GlowFileAllocator.h OptionParser.cc OptionParser.h \
+	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
+	NameResolver.h MetaEntry.h Data.cc Data.h Dictionary.cc \
+	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
+	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
+	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
+	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -393,6 +395,7 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) DefaultAuthResolver.$(OBJEXT) \
 	NetrcAuthResolver.$(OBJEXT) RequestFactory.$(OBJEXT) \
 	DefaultFileAllocator.$(OBJEXT) GlowFileAllocator.$(OBJEXT) \
+	OptionParser.$(OBJEXT) OptionHandlerFactory.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
@@ -608,8 +611,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
 	RequestFactory.cc RequestFactory.h DefaultFileAllocator.cc \
 	DefaultFileAllocator.h GlowFileAllocator.cc \
-	GlowFileAllocator.h $(am__append_1) $(am__append_2) \
-	$(am__append_3)
+	GlowFileAllocator.h OptionParser.cc OptionParser.h \
+	OptionHandlerFactory.cc OptionHandlerFactory.h $(am__append_1) \
+	$(am__append_2) $(am__append_3)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -793,6 +797,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Netrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Peer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerAbstractCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerChokeCommand.Po@am__quote@

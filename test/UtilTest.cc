@@ -22,6 +22,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testToLower);
   CPPUNIT_TEST(testUrldecode);
   CPPUNIT_TEST(testCountBit);
+  CPPUNIT_TEST(testGetRealSize);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -44,6 +45,7 @@ public:
   void testToLower();
   void testUrldecode();
   void testCountBit();
+  void testGetRealSize();
 };
 
 
@@ -288,4 +290,12 @@ void UtilTest::testUrldecode() {
 void UtilTest::testCountBit() {
   CPPUNIT_ASSERT_EQUAL(32, Util::countBit(UINT32_MAX));
   CPPUNIT_ASSERT_EQUAL(8, Util::countBit(255));
+}
+
+void UtilTest::testGetRealSize()
+{
+  CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, Util::getRealSize("4096M"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024, Util::getRealSize("1K"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, Util::getRealSize(""));
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, Util::getRealSize("foo"));
 }

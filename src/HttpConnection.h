@@ -60,6 +60,7 @@ private:
   HttpRequests outstandingHttpRequests;
 
   int findEndOfHeader(const char* buf, const char* substr, int bufLength) const;
+  string eraseConfidentialInfo(const string& request);
 public:
   HttpConnection(int cuid,
 		 const SocketHandle& socket,

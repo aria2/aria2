@@ -39,9 +39,12 @@
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
+#include <stdio.h>
+#include <stdint.h>
 #include <iostream>
 #include <assert.h>
 #include <limits.h>
+#include <unistd.h>
 #include <string>
 #include <deque>
 #include <algorithm>

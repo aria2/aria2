@@ -79,7 +79,24 @@ public:
   {
     digestFree();
   }
-#ifdef HAVE_LIBSSL
+
+#if defined(HAVE_OLD_LIBSSL)
+  void digestInit() {EVP_DigestInit(&ctx, algo);}
+  void digestReset() {EVP_DigestInit(&ctx, algo);}
+  void digestUpdate(const void* data, int length) {EVP_DigestUpdate(&ctx, data, length);}
+  void digestFinal(unsigned char* md) {
+    int len;
+    EVP_DigestFinal(&ctx, md, (unsigned int*)&len);
+  }
+  void digestFree() {/*empty*/}
+  int digestLength() const {
+    return digestLength(algo);
+  }
+  static int digestLength(DigestAlgo algo) {
+    return EVP_MD_size(algo);
+  }
+
+#elif defined(HAVE_LIBSSL)
   void digestInit() {
     EVP_MD_CTX_init(&ctx);
     digestReset();
@@ -103,9 +120,8 @@ public:
   static int digestLength(DigestAlgo algo) {
     return EVP_MD_size(algo);
   }
-#endif // HAVE_LIBSSL
 
-#ifdef HAVE_LIBGCRYPT
+#elif defined(HAVE_LIBGCRYPT)
   void digestInit() {
     gcry_md_open(&ctx, algo, 0);
   }
