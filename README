@@ -24,6 +24,9 @@ aria2 is in very early development stage. Currently it has following features:
 * Selective download in multi-file torrent
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent).
 * Limiting download/upload speed.
+* Chunk checksum validation in Metalink.
+* netrc support.
+* Configuration file support.
 
 3. How to build
 ---------------
@@ -100,3 +103,26 @@ The supported user preferences are version, language and os.
 If chunk checksums are provided in Metalink file, aria2 automatically validate
 a chunk of file while downloading it. This behavior can be turned off by
 a command-line option.
+
+7. netrc
+--------
+netrc support is enabled by default in ftp.
+To disable netrc support, specify -n command-line option.
+Your .netrc file should have correct permissions(600).
+
+8. Configuration file
+---------------------
+Configuration file must be placed under ~/.aria2 and must be named as
+aria2.conf. Options in a file are one option per line.
+The syntax is name=value, where name is the long option name without '--'
+prefix.
+The line beginning '#' are treated as comments.
+
+Examples:
+
+# sample configuration file for aria2c
+file-allocation=prealloc
+listen-port=60000
+seed-ratio=1.0
+max-upload-limit=40K
+ftp-pasv=true
