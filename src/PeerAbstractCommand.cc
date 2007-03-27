@@ -97,11 +97,7 @@ bool PeerAbstractCommand::prepareForRetry(int wait) {
 }
 
 void PeerAbstractCommand::onAbort(RecoverableException* ex) {
-  if(peer->isSeeder()) {
-    peer->error++;
-  } else {
-    peer->error += MAX_PEER_ERROR;
-  }
+  peer->startBadCondition();
   peer->resetStatus();
 }
 

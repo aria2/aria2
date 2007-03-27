@@ -335,7 +335,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
-    "Host: localhost\r\n"
+    "Host: localhost:80\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Cookie: name1=value1;\r\n"
@@ -348,7 +348,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
-    "Host: localhost\r\n"
+    "Host: localhost:80\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Cookie: name1=value1;name2=value2;\r\n"
@@ -361,7 +361,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
-    "Host: tt.localhost\r\n"
+    "Host: tt.localhost:80\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Cookie: name1=value1;name2=value2;name3=value3;\r\n"
@@ -374,7 +374,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
-    "Host: tt.localhost\r\n"
+    "Host: tt.localhost:443\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
     "Cookie: name1=value1;name2=value2;name3=value3;name4=value4;\r\n"
@@ -387,7 +387,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 void HttpRequestTest::testCreateProxyRequest()
 {
   RequestHandle request = new Request();
-  request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   SegmentHandle segment = new Segment();
 
   HttpRequest httpRequest;
@@ -395,10 +395,10 @@ void HttpRequestTest::testCreateProxyRequest()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
-  string expectedText = "CONNECT localhost:8080 HTTP/1.1\r\n"
+  string expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Proxy-Connection: close\r\n"
-    "Host: localhost:8080\r\n"
+    "Host: localhost:80\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());

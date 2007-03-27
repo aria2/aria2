@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "AbstractProxyRequestCommand.h"
 #include "HttpConnection.h"
+#include "prefs.h"
 
 AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
 							 const RequestHandle& req,
@@ -50,6 +51,7 @@ bool AbstractProxyRequestCommand::executeInternal() {
   socket->setBlockingMode();
 
   HttpRequestHandle httpRequest = new HttpRequest();
+  httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->configure(e->option);
 

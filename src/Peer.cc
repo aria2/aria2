@@ -39,11 +39,12 @@
 Peer::Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
   ipaddr(ipaddr),
   port(port),
-  error(0),
   sessionUploadLength(0),
   sessionDownloadLength(0),
   pieceLength(pieceLength),
-  active(false)
+  active(false),
+  _badConditionStartTime(0),
+  _badConditionInterval(10)
 {
   resetStatus();
   this->bitfield = BitfieldManFactory::getFactoryInstance()->
@@ -142,4 +143,14 @@ void Peer::setAllBitfield() {
 
 void Peer::updateLatency(int latency) {
   this->latency = (this->latency*20+latency*80)/200;
+}
+
+void Peer::startBadCondition()
+{
+  _badConditionStartTime.reset();
+}
+
+bool Peer::isGood() const
+{
+  return _badConditionStartTime.elapsed(_badConditionInterval);
 }

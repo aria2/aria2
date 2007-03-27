@@ -60,7 +60,7 @@ bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
     return true;
   } else {
     const PeerHandle& peer = *itr;
-    if(peer->error >= MAX_PEER_ERROR || peer->cuid != 0) {
+    if(!peer->isGood() || peer->cuid != 0) {
       return false;
     } else {
       *itr = peer;
@@ -87,7 +87,7 @@ const Peers& DefaultPeerStorage::getPeers() {
 class FindFinePeer {
 public:
   bool operator()(const PeerHandle& peer) const {
-    return peer->cuid == 0 && peer->error < MAX_PEER_ERROR;
+    return peer->cuid == 0 && peer->isGood();
   }
 };
 

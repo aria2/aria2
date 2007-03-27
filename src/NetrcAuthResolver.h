@@ -52,6 +52,12 @@ public:
   {
     _netrc = netrc;
   }
+
+  NetrcHandle getNetrc() const
+  {
+    return _netrc;
+  }
+      
 };
 
 typedef SharedHandle<NetrcAuthResolver> NetrcAuthResolverHandle;

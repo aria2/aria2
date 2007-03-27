@@ -89,6 +89,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 						V_NONE, V_PREALLOC));
   handlers.push_back(new BooleanOptionHandler(PREF_CONTINUE));
   handlers.push_back(new DefaultOptionHandler(PREF_USER_AGENT));
+  handlers.push_back(new BooleanOptionHandler(PREF_NO_NETRC));
 
   return handlers;
 }

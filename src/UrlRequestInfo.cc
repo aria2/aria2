@@ -189,9 +189,9 @@ RequestInfos UrlRequestInfo::execute() {
     
     SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
     
-    e->segmentMan->filename = hr->filename;
-    e->segmentMan->totalSize = hr->totalLength;
     if(hr->totalLength > 0) {
+      e->segmentMan->filename = hr->filename;
+      e->segmentMan->totalSize = hr->totalLength;
       e->segmentMan->downloadStarted = true;
     }
     

@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "RequestFactory.h"
 #include "prefs.h"
+#include "AbstractAuthResolver.h"
 #include "NetrcAuthResolver.h"
+#include "DefaultAuthResolver.h"
 
 RequestHandle RequestFactory::createRequest()
 {
@@ -58,29 +60,43 @@ AuthConfigHandle RequestFactory::createAuthConfig(const string& user, const stri
 
 AuthResolverHandle RequestFactory::createHttpAuthResolver()
 {
-  NetrcAuthResolverHandle authResolver = 0;
-  authResolver = new NetrcAuthResolver();
-  authResolver->setNetrc(_netrc);
-  authResolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_USER), _option->get(PREF_HTTP_PASSWD)));
-  return authResolver;		     
+  AbstractAuthResolverHandle resolver = 0;
+  if(true || _option->getAsBool(PREF_NO_NETRC)) {
+    resolver = new DefaultAuthResolver();
+  } else {
+    NetrcAuthResolverHandle authResolver = new NetrcAuthResolver();
+    authResolver->setNetrc(_netrc);
+    resolver = authResolver;
+  }
+  resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_USER), _option->get(PREF_HTTP_PASSWD)));
+  return resolver;
 }
 
 AuthResolverHandle RequestFactory::createFtpAuthResolver()
 {
-  NetrcAuthResolverHandle authResolver = 0;
-  authResolver = new NetrcAuthResolver();
-  authResolver->setNetrc(_netrc);
-  authResolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_FTP_USER), _option->get(PREF_FTP_PASSWD)));
-  authResolver->setDefaultAuthConfig(new AuthConfig("anonymous",
-							    "ARIA2USER@"));
-  return authResolver;
+  AbstractAuthResolverHandle resolver = 0;
+  if(_option->getAsBool(PREF_NO_NETRC)) {
+    resolver = new DefaultAuthResolver();
+  } else {
+    NetrcAuthResolverHandle authResolver = new NetrcAuthResolver();
+    authResolver->setNetrc(_netrc);
+    resolver = authResolver;
+  }
+  resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_FTP_USER), _option->get(PREF_FTP_PASSWD)));
+  resolver->setDefaultAuthConfig(new AuthConfig("anonymous", "ARIA2USER@"));
+  return resolver;
 }
 
 AuthResolverHandle RequestFactory::createHttpProxyAuthResolver()
 {
-  NetrcAuthResolverHandle authResolver = 0;
-  authResolver = new NetrcAuthResolver();
-  authResolver->setNetrc(_netrc);
-  authResolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_PROXY_USER), _option->get(PREF_HTTP_PROXY_PASSWD)));
-  return authResolver;
+  AbstractAuthResolverHandle resolver = 0;
+  if(true || _option->getAsBool(PREF_NO_NETRC)) {
+    resolver = new DefaultAuthResolver();
+  } else {
+    NetrcAuthResolverHandle authResolver = new NetrcAuthResolver();
+    authResolver->setNetrc(_netrc);
+    resolver = authResolver;
+  }
+  resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_PROXY_USER), _option->get(PREF_HTTP_PROXY_PASSWD)));
+  return resolver;
 }

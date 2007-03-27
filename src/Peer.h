@@ -39,6 +39,7 @@
 #include "BitfieldMan.h"
 #include "SharedHandle.h"
 #include "PeerStat.h"
+#include "TimeA2.h"
 #include <string.h>
 #include <string>
 
@@ -58,7 +59,6 @@ public:
   bool peerChoking;
   bool peerInterested;
   int tryCount;
-  int error;
   int cuid;
   bool chokingRequired;
   bool optUnchoking;
@@ -80,6 +80,8 @@ private:
   int latency;
   bool active;
   string id;
+  Time _badConditionStartTime;
+  int _badConditionInterval;
 public:
   Peer(string ipaddr, int port, int pieceLength, long long int totalLength);
 
@@ -196,6 +198,10 @@ public:
   const string& getId() const {
     return id;
   }
+
+  void startBadCondition();
+
+  bool isGood() const;
 };
 
 typedef SharedHandle<Peer> PeerHandle;

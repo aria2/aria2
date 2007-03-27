@@ -94,6 +94,8 @@
 #define PREF_NETRC_PATH "netrc-path"
 // value:
 #define PREF_CONTINUE "continue"
+// value:
+#define PREF_NO_NETRC "no-netrc"
 
 /**
  * FTP related preferences

@@ -65,7 +65,7 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
 
 string HttpRequest::getHostText(const string& host, in_port_t port) const
 {
-  return host+(port == 80 || port == 443 ? "" : ":"+Util::itos(port));
+  return host+":"+Util::itos(port);
 }
 
 string HttpRequest::createRequest() const

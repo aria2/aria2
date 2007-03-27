@@ -48,6 +48,7 @@ public:
   // this object was created.
   Time();
   Time(const Time& time);
+  Time(int sec);
 
   Time& operator=(const Time& time) {
     if(this != &time) {

@@ -1,3 +1,32 @@
+2007-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	To add the command-line option which disables netrc support:
+	* src/OptionHandlerFactory.cc
+	(createOptionHandlers): Added PREF_NO_NETRC.
+	* src/main.cc: Added -n option.
+	* src/prefs.h (PREF_NO_NETRC): New definition.
+	* src/RequestFactory.cc: Do not use netrc in ftp if PREF_NO_NETRC is
+	V_TRUE.
+	Note that netrc is not used in http, http proxy even if PREF_NO_NETRC
+	is V_FALSE. This may get configurable in the future release.
+	
+	To clear peer's error status by time basis:
+	* src/PeerAbstractCommand.cc
+	(onAbort): Call Peer::startBadCondition().
+	* src/Peer.h, src/Peer.cc
+	(error): Removed.
+	(_badConditionStartTime): New variable.
+	(_badConditionInterval): New variable. Initialized to 10 seconds.
+	(startBadCondition): New function.
+	(isGood): New function.
+	* src/DefaultPeerStorage.cc
+	(addPeer): Use Peer::isGood().
+	(FindFinePeer): Use Peer::isGood().
+
+	Always include port number in http request header:
+	* src/HttpRequest.cc (getHostText): Always include port number in
+	http request header.
+	
 2007-03-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To the ability to read options from a config file:
@@ -30,6 +59,9 @@
 	* src/prefs.h (PREF_USER_AGENT): New definition.
 	* src/HttpRequestCommand.cc (executeInternal): Set user-agent option
 	parameter to HttpRequest object.
+	* src/AbstractProxyRequestCommand.cc
+	(executeInternal): Set user-agent option parameter to HttpRequest
+	object.
 	
 	Marged the patches from Dan Fandrich.
 	

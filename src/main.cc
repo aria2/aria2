@@ -202,6 +202,7 @@ void showUsage() {
 	    "                              Currently this option is applicable to http(s)/\n"
 	    "                              ftp downloads.") << endl;
   cout << _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.") << endl;
+  cout << _(" -n, --no-netrc               Disables netrc support.") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -352,6 +353,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_NETRC_PATH, Util::getHomeDir()+"/.netrc");
   op->put(PREF_CONTINUE, V_FALSE);
   op->put(PREF_USER_AGENT, "aria2");
+  op->put(PREF_NO_NETRC, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -386,6 +388,7 @@ int main(int argc, char* argv[]) {
       { "realtime-chunk-checksum", required_argument, &lopt, 204 },
       { "continue", no_argument, 0, 'c' },
       { "user-agent", required_argument, 0, 'U' },
+      { "no-netrc", no_argument, 0, 'n' },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -413,7 +416,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:c", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:n", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -563,6 +566,9 @@ int main(int argc, char* argv[]) {
       break;
     case 'U':
       cmdstream << PREF_USER_AGENT << "=" << optarg << "\n";
+      break;
+    case 'n':
+      cmdstream << PREF_NO_NETRC << "=" << V_TRUE << "\n";
       break;
     case 'v':
       showVersion();

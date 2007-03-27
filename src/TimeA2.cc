@@ -43,6 +43,10 @@ Time::Time(const Time& time) {
   tv = time.tv;
 }
 
+Time::Time(int sec) {
+  setTimeInSec(sec);
+}
+
 Time::~Time() {}
 
 void Time::reset() {
