@@ -65,7 +65,7 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
 
 string HttpRequest::getHostText(const string& host, in_port_t port) const
 {
-  return host+":"+Util::itos(port);
+  return  host+(port == 80 || port == 443 ? "" : ":"+Util::llitos(port));
 }
 
 string HttpRequest::createRequest() const
@@ -131,11 +131,11 @@ string HttpRequest::createRequest() const
 string HttpRequest::createProxyRequest() const
 {
   string requestLine =
-    string("CONNECT ")+getHost()+":"+Util::llitos(getPort())+
+    string("CONNECT ")+getHost()+":"+Util::itos(getPort())+
     string(" HTTP/1.1\r\n")+
     "User-Agent: "+Util::urlencode(userAgent)+"\r\n"+
     "Proxy-Connection: close\r\n"+
-    "Host: "+getHostText(getHost(), getPort())+"\r\n";
+    "Host: "+getHost()+":"+Util::itos(getPort())+"\r\n";
   if(proxyAuthEnabled) {
     requestLine += getProxyAuthString();
   }

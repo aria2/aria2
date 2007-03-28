@@ -15,7 +15,13 @@
 	* src/DNSCache.h: New class.
 	* src/UrlRequestInfo.cc
 	(execute): Use dns cache.
-	
+
+	In http request, suppress port number in http request header if port
+	is 80 or 443:
+	* src/HttpRequest.cc (getHostText): Suppress port number in http
+	request header if port is 80 or 443.
+	(createProxyRequest): Allways send port number.
+
 2007-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To add the command-line option which disables netrc support:
