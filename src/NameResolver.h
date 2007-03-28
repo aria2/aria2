@@ -36,11 +36,12 @@
 #define _D_NAME_RESOLVER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+#ifdef ENABLE_ASYNC_DNS
 
 #ifdef __cplusplus
 extern "C" {
@@ -110,7 +111,32 @@ public:
   bool operator==(const NameResolver& resolver) {
     return this == &resolver;
   }
+
+  void setAddr(const string& addrString)
+  {
+    inet_aton(addrString.c_str(), &addr);
+  }
 };
+
+#else // ENABLE_ASYNC_DNS
+
+class NameResolver {
+private:
+  struct in_addr _addr;
+public:
+  void resolve(const string& hostname);
+
+  string getAddrString() const {
+    return inet_ntoa(_addr);
+  }
+  
+  void setAddr(const string& addrString)
+  {
+    inet_aton(addrString.c_str(), &_addr);
+  }
+};
+
+#endif // ENABLE_ASYNC_DNS
 
 typedef SharedHandle<NameResolver> NameResolverHandle;
 

@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
-.\" Generator: DocBook XSL Stylesheets v1.70.1 <http://docbook.sf.net/>
-.\"      Date: 01/28/2007
+.\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
+.\"      Date: 03/28/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "01/28/2007" "" ""
+.TH "ARIA2C" "1" "03/28/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -27,22 +27,31 @@ aria2 is a utility for downloading files. It has completely new design concept f
 Please visit the project web site at http://aria2.sourceforge.net
 .sp
 .SH "OPTIONS"
-.TP 3n
+.PP
 \-d, \-\-dir=DIR
+.RS 3n
 The directory to store downloaded file.
-.TP 3n
+.RE
+.PP
 \-o, \-\-out=FILE
+.RS 3n
 The file name for downloaded file.
-.TP 3n
+.RE
+.PP
 \-l, \-\-log=LOG
+.RS 3n
 The file path to store log. If
 \fI\-\fR
 is specified, log is written to stdout.
-.TP 3n
+.RE
+.PP
 \-D, \-\-daemon
+.RS 3n
 Run as daemon.
-.TP 3n
+.RE
+.PP
 \-s, \-\-split=N
+.RS 3n
 Download a file using
 \fIN\fR
 connections.
@@ -54,40 +63,58 @@ and
 \fIN\fR
 connections. Default:
 \fI1\fR
-.TP 3n
+.RE
+.PP
 \-\-retry\-wait=SEC
+.RS 3n
 Set amount of time in second between requests for errors. Specify a value between
 \fI0\fR
 and
 \fI60\fR. Default:
 \fI5\fR
-.TP 3n
+.RE
+.PP
 \-t, \-\-timeout=SEC
+.RS 3n
 Set timeout in second. Default:
 \fI60\fR
-.TP 3n
+.RE
+.PP
 \-m, \-\-max\-tries=N
+.RS 3n
 Set number of tries.
 \fI0\fR
 means unlimited. Default:
 \fI5\fR
-.TP 3n
+.RE
+.PP
 \-\-http\-proxy=HOST:PORT
+.RS 3n
 Use HTTP proxy server. This affects to all URLs.
-.TP 3n
+.RE
+.PP
 \-\-http\-user=USER
+.RS 3n
 Set HTTP user. This affects to all URLs.
-.TP 3n
+.RE
+.PP
 \-\-http\-passwd=PASSWD
+.RS 3n
 Set HTTP password. This affects to all URLs.
-.TP 3n
+.RE
+.PP
 \-\-http\-proxy\-user=USER
+.RS 3n
 Set HTTP proxy user. This affects to all URLs
-.TP 3n
+.RE
+.PP
 \-\-http\-proxy\-passwd=PASSWD
+.RS 3n
 Set HTTP proxy password. This affects to all URLs.
-.TP 3n
+.RE
+.PP
 \-\-http\-proxy\-method=METHOD
+.RS 3n
 Set the method to use in proxy request.
 \fIMETHOD\fR
 is either
@@ -95,35 +122,49 @@ is either
 or
 \fItunnel\fR. Default:
 \fItunnel\fR
-.TP 3n
+.RE
+.PP
 \-\-http\-auth\-scheme=SCHEME
+.RS 3n
 Set HTTP authentication scheme. Currently,
 \fIbasic\fR
 is the only supported scheme. Default:
 \fIbasic\fR
-.TP 3n
+.RE
+.PP
 \-\-referer=REFERER
+.RS 3n
 Set Referer. This affects to all URLs.
-.TP 3n
+.RE
+.PP
 \-\-ftp\-user=USER
+.RS 3n
 Set FTP user. This affects to all URLs. Default:
 \fIanonymous\fR
-.TP 3n
+.RE
+.PP
 \-\-ftp\-passwd=PASSWD
+.RS 3n
 Set FTP password. This affects to all URLs. Default:
 \fIARIA2USER@\fR
-.TP 3n
+.RE
+.PP
 \-\-ftp\-type=TYPE
+.RS 3n
 Set FTP transfer type. TYPE is either
 \fIbinary\fR
 or
 \fIascii\fR. Default:
 \fIbinary\fR
-.TP 3n
+.RE
+.PP
 \-p, \-\-ftp\-pasv
+.RS 3n
 Use passive mode in FTP.
-.TP 3n
+.RE
+.PP
 \-\-ftp\-via\-http\-proxy=METHOD
+.RS 3n
 Use HTTP proxy in
 \fIFTP\fR.
 \fIMETHOD\fR
@@ -132,15 +173,19 @@ is either
 or
 \fItunnel\fR. Default:
 \fItunnel\fR
-.TP 3n
+.RE
+.PP
 \-\-lowest\-speed\-limit=SPEED
+.RS 3n
 Close connection if download speed is lower than or equal to this value(bytes per sec). 0 means aria2 does not care lowest speed limit. You can append
 \fIK\fR
 or
 \fIM\fR(1K = 1024, 1M = 1024K). This option does not affect BitTorrent download. Default:
 \fI0\fR
-.TP 3n
+.RE
+.PP
 \-\-max\-download\-limit=SPEED
+.RS 3n
 Set max download speed in bytes per sec.
 \fI0\fR
 means unrestricted. You can append
@@ -148,8 +193,10 @@ means unrestricted. You can append
 or
 \fIM\fR(1K = 1024, 1M = 1024K). Default:
 \fI0\fR
-.TP 3n
+.RE
+.PP
 \-\-file\-allocation=METHOD
+.RS 3n
 Specify file allocation method.
 \fIMETHOD\fR
 is either
@@ -161,42 +208,75 @@ doesn't pre\-allocate file space.
 \fIprealloc\fR
 pre\-allocates file space before download begins. This may take some time depending on the size of file. Default:
 \fInone\fR
-.TP 3n
+.RE
+.PP
 \-\-allow\-overwrite=true|false
+.RS 3n
 If this option set to
 \fIfalse\fR, aria2 doesn't download a file which already exists in the file system but its corresponding .aria2 file doesn't exist. Default:
 \fIfalse\fR
-.TP 3n
-\-\-check\-integiry=true|false
-Check file integiry by validating piece hash. This option makes effect in BitTorrent download and Metalink with chunk checksums. Use this option to redownload a damaged portion of file. You may need to specify
+.RE
+.PP
+\-\-check\-integrity=true|false
+.RS 3n
+Check file integrity by validating piece hash. This option makes effect in BitTorrent download and Metalink with chunk checksums. Use this option to redownload a damaged portion of file. You may need to specify
 \fI\-\-allow\-overwrite=true\fR
 option if .aria2 file doesn't exist. Default:
 \fIfalse\fR
-.TP 3n
+.RE
+.PP
 \-\-realtime\-chunk\-checksum=true|false
+.RS 3n
 Validate chunk checksum while downloading a file in Metalink mode. This option makes effect in Metalink with chunk checksums. Default:
 \fItrue\fR
-.TP 3n
+.RE
+.PP
+\-c, \-\-continue
+.RS 3n
+Continue downloading a partially downloaded file. Use this option to resume a download started by web browsers or another programs which download files sequentially from the beginning. Currently this option is applicable to http(s)/ ftp downloads.
+.RE
+.PP
+\-U, \-\-user\-agent=USER_AGENT
+.RS 3n
+Set user agent for http(s) downloads.
+.RE
+.PP
+\-n, \-\-no\-netrc
+.RS 3n
+Disables netrc support.
+.RE
+.PP
 \-T, \-\-torrent\-file=TORRENT_FILE
+.RS 3n
 The file path to .torrent file.
-.TP 3n
+.RE
+.PP
 \-\-follow\-torrent=true|false
+.RS 3n
 Setting this option to
 \fIfalse\fR
 prevents aria2 to enter BitTorrent mode even if the filename of downloaded file ends with .torrent. Default:
 \fItrue\fR
-.TP 3n
+.RE
+.PP
 \-S, \-\-show\-files
+.RS 3n
 Print file listing of .torrent file and exit.
-.TP 3n
+.RE
+.PP
 \-\-direct\-file\-mapping=true|false
+.RS 3n
 Directly read from and write to each file mentioned in .torrent file. Default:
 \fItrue\fR
-.TP 3n
+.RE
+.PP
 \-\-listen\-port=PORT
+.RS 3n
 Set port number to listen to for peer connection.
-.TP 3n
+.RE
+.PP
 \-\-max\-upload\-limit=SPEED
+.RS 3n
 Set max upload speed in bytes per sec.
 \fI0\fR
 means unrestricted. You can append
@@ -204,8 +284,10 @@ means unrestricted. You can append
 or
 \fIM\fR(1K = 1024, 1M = 1024K). Default:
 \fI0\fR
-.TP 3n
+.RE
+.PP
 \-\-select\-file=INDEX\&...
+.RS 3n
 Set file to download by specifing its index. You can know file index through
 \fI\-\-show\-files\fR
 option. Multiple indexes can be specified by using
@@ -217,96 +299,151 @@ to specify rangelike "1\-5".
 and
 \fI\-\fR
 can be used together.
-.TP 3n
+.RE
+.PP
 \-\-seed\-time=MINUTES
+.RS 3n
 Specify seeding time in minutes. See also
 \fI\-\-seed\-ratio\fR
 option.
-.TP 3n
+.RE
+.PP
 \-\-seed\-ratio=RATIO
+.RS 3n
 Specify share ratio. Seed completed torrents until share ratio reaches
 \fIRATIO\fR.
 \fI1.0\fR
 is encouraged. If
 \fI\-\-seed\-time\fR
 option is specified along with this option, seeding ends when at least one of the conditions is satisfied.
-.TP 3n
+.RE
+.PP
 \-M, \-\-metalink\-file=METALINK_FILE
+.RS 3n
 The file path to .metalink file.
-.TP 3n
+.RE
+.PP
 \-C, \-\-metalink\-servers=NUM_SERVERS
+.RS 3n
 The number of servers to connect to simultaneously. If more than one connection per server is required, use
 \fI\-s\fR
 option. Default:
 \fI15\fR
-.TP 3n
+.RE
+.PP
 \-\-metalink\-version=VERSION
+.RS 3n
 The version of file to download.
-.TP 3n
+.RE
+.PP
 \-\-metalink\-language=LANGUAGE
+.RS 3n
 The language of file to download.
-.TP 3n
+.RE
+.PP
 \-\-metalink\-os=OS
+.RS 3n
 The operating system the file is targeted.
-.TP 3n
+.RE
+.PP
 \-\-metalink\-location=LOCATION
+.RS 3n
 The location of the prefered server.
-.TP 3n
+.RE
+.PP
 \-\-follow\-metalink=true|false
+.RS 3n
 Setting this option to
 \fIfalse\fR
 prevents aria2 to enter Metalink mode even if the filename of downloaded file ends with .metalink. Default:
 \fItrue\fR
-.TP 3n
+.RE
+.PP
 \-v, \-\-version
+.RS 3n
 Print the version number and exit.
-.TP 3n
+.RE
+.PP
 \-h, \-\-help
+.RS 3n
 Print this message and exit.
-.TP 3n
+.RE
+.PP
 URL
+.RS 3n
 You can specify multiple URLs. All URLs must point to the same file or downloading fails.
-.TP 3n
+.RE
+.PP
 FILE
+.RS 3n
 Specify files in multi\-file torrent to download. Use conjunction with
 \fI\-T\fR
 option. This arguments are ignored if you specify
 \fI\-\-select\-file\fR
 option.
+.RE
 .SH "EXAMPLES"
-.TP 3n
+.PP
 Download a file by 1 connection
+.RS 3n
 aria2c http://AAA.BBB.CCC/file.zip
-.TP 3n
+.RE
+.PP
 Download a file by 2 connections
+.RS 3n
 aria2c \-s 2 http://AAA.BBB.CCC/file.zip
-.TP 3n
+.RE
+.PP
 Download a file by 2 connections, each connects to a different server
+.RS 3n
 aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip
-.TP 3n
+.RE
+.PP
 You can mix up different protocols
+.RS 3n
 aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip
-.TP 3n
+.RE
+.PP
 Download a torrent
+.RS 3n
 aria2c \-o test.torrent http://AAA.BBB.CCC/file.torrent
-.TP 3n
+.RE
+.PP
 Download a torrent using local .torrent file
+.RS 3n
 aria2c \-T test.torrent
-.TP 3n
+.RE
+.PP
 Download only selected files
+.RS 3n
 aria2c \-T test.torrent dir/file1.zip dir/file2.zip
-.TP 3n
+.RE
+.PP
 Print file listing of .torrent file
+.RS 3n
 aria2c \-T test.torrent \-S
-.TP 3n
+.RE
+.PP
 Metalink downloading
+.RS 3n
 aria2c \-\-lowest\-speed\-limit 10K http://AAA.BBB.CCC/file.metalink
-.TP 3n
+.RE
+.PP
 Download a file using local .metalink file
+.RS 3n
 aria2c \-M test.metalink
-.TP 3n
+.RE
+.PP
 Metalink downloading with preferences
+.RS 3n
 aria2c \-M test.metalink \-\-metalink\-version=1.1.1 \-\-metalink\-language=en\-US
+.RE
+.SH "FILES"
+.PP
+aria2.conf
+.RS 3n
+User configuration file. Must be placed under ~/.aria2 directory.
+.RE
 .SH "REPORTING BUGS"
 Report bugs to Tatsuhiro Tsujikawa <t\-tujikawa@users.sourceforge.net>
 .sp

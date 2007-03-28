@@ -39,8 +39,7 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = aria2c$(EXEEXT)
 #	debug_new.cpp
-@ENABLE_ASYNC_DNS_TRUE@am__append_1 = NameResolver.cc NameResolver.h
-@ENABLE_BITTORRENT_TRUE@am__append_2 = MetaEntry.h\
+@ENABLE_BITTORRENT_TRUE@am__append_1 = MetaEntry.h\
 @ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
 @ENABLE_BITTORRENT_TRUE@	Dictionary.cc Dictionary.h\
 @ENABLE_BITTORRENT_TRUE@	List.cc List.h\
@@ -143,7 +142,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.cc DefaultBtInteractive.h\
 @ENABLE_BITTORRENT_TRUE@	PeerObject.h
 
-@ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
+@ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
@@ -294,8 +293,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h \
 	MetalinkChunkChecksum.h
-@ENABLE_ASYNC_DNS_TRUE@am__objects_1 = NameResolver.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_2 = Data.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@am__objects_1 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.$(OBJEXT) \
@@ -358,12 +356,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageReceiver.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkRequestInfo.$(OBJEXT)
-am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -396,8 +394,8 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	NetrcAuthResolver.$(OBJEXT) RequestFactory.$(OBJEXT) \
 	DefaultFileAllocator.$(OBJEXT) GlowFileAllocator.$(OBJEXT) \
 	OptionParser.$(OBJEXT) OptionHandlerFactory.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3)
-am_libaria2c_a_OBJECTS = $(am__objects_4)
+	NameResolver.$(OBJEXT) $(am__objects_1) $(am__objects_2)
+am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -612,8 +610,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	RequestFactory.cc RequestFactory.h DefaultFileAllocator.cc \
 	DefaultFileAllocator.h GlowFileAllocator.cc \
 	GlowFileAllocator.h OptionParser.cc OptionParser.h \
-	OptionHandlerFactory.cc OptionHandlerFactory.h $(am__append_1) \
-	$(am__append_2) $(am__append_3)
+	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
+	NameResolver.h $(am__append_1) $(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

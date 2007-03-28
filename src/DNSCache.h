@@ -32,56 +32,51 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "NameResolver.h"
+#ifndef _D_DNS_CACHE_H_
+#define _D_DNS_CACHE_H_
 
-#ifdef ENABLE_ASYNC_DNS
+#include "common.h"
+#include <map>
 
-void callback(void* arg, int status, struct hostent* host) {
-  NameResolver* resolverPtr = (NameResolver*)arg;
-#ifdef HAVE_LIBARES
-  // This block is required since the assertion in ares_strerror fails
-  // if status = ARES_EDESTRUCTION is passed to ares_strerror as 1st argument.
-  // This does not happen in c-ares.
-  if(status == ARES_EDESTRUCTION) {
-    // we simply return in this case.
-    return;
+class DNSCache {
+public:
+  virtual ~DNSCache() {}
+
+  virtual string find(const string& hostname) = 0;
+
+  virtual void put(const string& hostname, const string& ipaddr) = 0;
+};
+
+typedef SharedHandle<DNSCache> DNSCacheHandle;
+typedef SingletonHolder<DNSCacheHandle> DNSCacheSingletonHolder;
+
+class SimpleDNSCache : public DNSCache {
+private:
+  map<string, string> _table;
+public:
+  SimpleDNSCache() {}
+
+  virtual ~SimpleDNSCache() {}
+
+  virtual string find(const string& hostname)
+  {
+    return _table[hostname];
   }
-#endif
-  if(status != ARES_SUCCESS) {
-#ifdef HAVE_LIBCARES
-    resolverPtr->error = ares_strerror(status);
-#else
-    resolverPtr->error = ares_strerror(status, 0);
-#endif // HAVE_LIBCARES
-    resolverPtr->status = NameResolver::STATUS_ERROR;
-    return;
+
+  virtual void put(const string& hostname, const string& ipaddr)
+  {
+    _table[hostname] = ipaddr;
   }
-  memcpy(&resolverPtr->addr, *host->h_addr_list, sizeof(struct in_addr));
-  resolverPtr->status = NameResolver::STATUS_SUCCESS;
-}
+  
+};
 
-#else // ENABLE_ASYNC_DNS
+class NullDNSCache : public DNSCache {
+public:
+  virtual ~NullDNSCache() {}
 
-#include "DlAbortEx.h"
-#include "message.h"
+  virtual string find(const string& hostname) { return ""; }
 
-void NameResolver::resolve(const string& hostname)
-{
-  memset(&_addr, 0, sizeof(in_addr));
-  struct addrinfo ai;
-  memset((char*)&ai, 0, sizeof(ai));
-  ai.ai_flags = 0;
-  ai.ai_family = PF_INET;
-  ai.ai_socktype = SOCK_STREAM;
-  ai.ai_protocol = 0; 
-  struct addrinfo* res;
-  int ec;
-  if((ec = getaddrinfo(hostname.c_str(), 0, &ai, &res)) != 0) {
-    throw new DlAbortEx(EX_RESOLVE_HOSTNAME,
-			hostname.c_str(), gai_strerror(ec));
-  }
-  _addr = ((struct sockaddr_in*)res->ai_addr)->sin_addr;
-  freeaddrinfo(res);
-}
+  virtual void put(const string& hostname, const string& ipaddr) {}
+};
 
-#endif // ENABLE_ASYNC_DNS
+#endif // _D_DNS_CACHE_H_

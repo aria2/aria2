@@ -45,6 +45,7 @@
 #include "File.h"
 #include "DefaultDiskWriter.h"
 #include "DlAbortEx.h"
+#include "DNSCache.h"
 
 std::ostream& operator<<(std::ostream& o, const HeadResult& hr) {
   o << "filename = " << hr.filename << ", " << "totalLength = " << hr.totalLength;
@@ -153,6 +154,11 @@ HeadResultHandle UrlRequestInfo::getHeadResult() {
 
 
 RequestInfos UrlRequestInfo::execute() {
+  {
+    DNSCacheHandle dnsCache = new SimpleDNSCache();
+    DNSCacheSingletonHolder::instance(dnsCache);
+  }
+
   Requests requests;
   Requests reserved;
   printUrls(urls);

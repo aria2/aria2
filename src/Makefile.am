@@ -80,12 +80,9 @@ SRCS =  Socket.h\
 	DefaultFileAllocator.cc DefaultFileAllocator.h\
 	GlowFileAllocator.cc GlowFileAllocator.h\
 	OptionParser.cc OptionParser.h\
-	OptionHandlerFactory.cc OptionHandlerFactory.h
+	OptionHandlerFactory.cc OptionHandlerFactory.h\
+	NameResolver.cc NameResolver.h
 #	debug_new.cpp
-
-if ENABLE_ASYNC_DNS
-SRCS += NameResolver.cc NameResolver.h
-endif # ENABLE_ASYNC_DNS
 
 if ENABLE_BITTORRENT
 SRCS += MetaEntry.h\

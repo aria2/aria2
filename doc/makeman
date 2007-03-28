@@ -1,0 +1,7 @@
+#!/bin/sh
+
+a2x -f manpage aria2c.1.txt
+
+sed 's/\(.\)\.sp/\1\n\.sp/g' aria2c.1 > aria2c.1.tmp
+
+mv aria2c.1.tmp aria2c.1

@@ -61,10 +61,10 @@ protected:
   void setWriteCheckSocket(const SocketHandle& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
+  bool resolveHostname(const string& hostname, const NameResolverHandle& nameResolver);
 #ifdef ENABLE_ASYNC_DNS
   void setNameResolverCheck(const NameResolverHandle& resolver);
   void disableNameResolverCheck(const NameResolverHandle& resolver);
-  bool resolveHostname(const string& hostname, const NameResolverHandle& nameResolver);
   virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
   void setTimeout(int timeout) { this->timeout = timeout; }

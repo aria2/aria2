@@ -5,7 +5,7 @@ aria2c_SOURCES = AllTest.cc\
 	NetrcAuthResolverTest.cc\
 	DefaultAuthResolverTest.cc\
 	RequestTest.cc\
-	HttpRequestTest.cc
+	HttpRequestTest.cc\
 	UtilTest.cc\
 	OptionHandlerTest.cc\
 	SegmentManTest.cc\

@@ -40,6 +40,7 @@
 #include "message.h"
 #include "SleepCommand.h"
 #include "prefs.h"
+#include "DNSCache.h"
 
 AbstractCommand::AbstractCommand(int cuid,
 				 const RequestHandle& req,
@@ -207,6 +208,46 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
+bool AbstractCommand::resolveHostname(const string& hostname,
+				      const NameResolverHandle& resolver) {
+  string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
+  if(ipaddr.empty()) {
+#ifdef ENABLE_ASYNC_DNS
+    switch(resolver->getStatus()) {
+    case NameResolver::STATUS_READY:
+      logger->info("CUID#%d - Resolving hostname %s", cuid, hostname.c_str());
+      resolver->resolve(hostname);
+      setNameResolverCheck(resolver);
+      return false;
+    case NameResolver::STATUS_SUCCESS:
+      logger->info("CUID#%d - Name resolution complete: %s -> %s", cuid,
+		   hostname.c_str(), resolver->getAddrString().c_str());
+      DNSCacheSingletonHolder::instance()->put(hostname, resolver->getAddrString());
+      return true;
+      break;
+    case NameResolver::STATUS_ERROR:
+      throw new DlAbortEx("CUID#%d - Name resolution for %s failed:%s", cuid,
+			  hostname.c_str(),
+			  resolver->getError().c_str());
+    default:
+      return false;
+    }
+#else
+    logger->info("CUID#%d - Resolving hostname %s", cuid, hostname.c_str());
+    resolver->resolve(hostname);
+    logger->info("CUID#%d - Name resolution complete: %s -> %s", cuid,
+		 hostname.c_str(), resolver->getAddrString().c_str());
+    DNSCacheSingletonHolder::instance()->put(hostname, resolver->getAddrString());
+    return true;
+#endif // ENABLE_ASYNC_DNS
+  } else {
+    logger->info("CUID#%d - DNS cache hit: %s -> %s", cuid,
+		 hostname.c_str(), ipaddr.c_str());
+    resolver->setAddr(ipaddr);
+    return true;
+  }
+}
+
 #ifdef ENABLE_ASYNC_DNS
 void AbstractCommand::setNameResolverCheck(const NameResolverHandle& resolver) {
   nameResolverCheck = true;
@@ -216,28 +257,6 @@ void AbstractCommand::setNameResolverCheck(const NameResolverHandle& resolver) {
 void AbstractCommand::disableNameResolverCheck(const NameResolverHandle& resolver) {
   nameResolverCheck = false;
   e->deleteNameResolverCheck(resolver, this);
-}
-
-bool AbstractCommand::resolveHostname(const string& hostname,
-				      const NameResolverHandle& resolver) {
-  switch(resolver->getStatus()) {
-  case NameResolver::STATUS_READY:
-    logger->info("CUID#%d - Resolving hostname %s", cuid, hostname.c_str());
-    resolver->resolve(hostname);
-    setNameResolverCheck(resolver);
-    return false;
-  case NameResolver::STATUS_SUCCESS:
-    logger->info("CUID#%d - Name resolution complete: %s -> %s", cuid,
-		 hostname.c_str(), resolver->getAddrString().c_str());
-    return true;
-    break;
-  case NameResolver::STATUS_ERROR:
-    throw new DlAbortEx("CUID#%d - Name resolution for %s failed:%s", cuid,
-			hostname.c_str(),
-			resolver->getError().c_str());
-  default:
-    return false;
-  }
 }
 
 bool AbstractCommand::nameResolveFinished() const {

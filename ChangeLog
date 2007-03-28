@@ -1,5 +1,23 @@
 2007-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	To cache resolved hostname:
+	* src/AbstractCommand.h, src/AbstractCommand.cc
+	(resolveHostname): Put outside #ifdef ENABLE_ASYNC_DNS clause.
+	Added dns cache.
+	* src/FtpInitiateConnectionCommand.cc
+	(executeInternal): Removed #ifdef ENABLE_ASYNC_DNS.
+	* src/NameResolver.h, src/NameResolver.cc: Added synchronized
+	NameResolver working without ares.
+	* src/TorrentRequestInfo.cc
+	(execute): Don't cache dns in torrent download.
+	* src/HttpInitiateConnectionCommand.cc
+	(executeInternal): Removed #ifdef ENABLE_ASYNC_DNS
+	* src/DNSCache.h: New class.
+	* src/UrlRequestInfo.cc
+	(execute): Use dns cache.
+	
+2007-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	To add the command-line option which disables netrc support:
 	* src/OptionHandlerFactory.cc
 	(createOptionHandlers): Added PREF_NO_NETRC.

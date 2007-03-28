@@ -41,6 +41,7 @@
 #include "FatalException.h"
 #include "message.h"
 #include "RecoverableException.h"
+#include "DNSCache.h"
 
 extern volatile sig_atomic_t btHaltRequested;
 
@@ -49,6 +50,11 @@ void torrentHandler(int signal) {
 }
 
 RequestInfos TorrentRequestInfo::execute() {
+  {
+    DNSCacheHandle dnsCache = new NullDNSCache();
+    DNSCacheSingletonHolder::instance(dnsCache);
+  }
+
   BtContextHandle btContext(new DefaultBtContext());
   btContext->load(torrentFile);
   

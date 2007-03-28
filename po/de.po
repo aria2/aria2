@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-01-29 00:10+0900\n"
+"POT-Creation-Date: 2007-03-29 00:07+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -145,44 +145,49 @@ msgstr "Laden der Segmentdatei %s."
 msgid "The segment file was loaded successfully."
 msgstr "Die Segmentdatei wurde fehlerfrei geladen."
 
-#: src/message.h:68
+#: src/message.h:67
+#, fuzzy
+msgid "No URI to download. Download aborted."
+msgstr "CUID#%d - Abruf abgebrochen."
+
+#: src/message.h:69
 msgid "Timeout."
 msgstr "Zeitablauf."
 
-#: src/message.h:69
+#: src/message.h:70
 msgid "Invalid chunk size."
 msgstr "Ungültige Teilgröße."
 
-#: src/message.h:70
+#: src/message.h:71
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Teilstück zu groß. Größe=%d"
 
-#: src/message.h:71
+#: src/message.h:72
 msgid "Invalid header."
 msgstr "Ungültige Header-Information."
 
-#: src/message.h:72
+#: src/message.h:73
 msgid "Invalid response."
 msgstr "Ungültige Antwort."
 
-#: src/message.h:73
+#: src/message.h:74
 msgid "No header found."
 msgstr "Keine Header-Information gefunden."
 
-#: src/message.h:74
+#: src/message.h:75
 msgid "No status header."
 msgstr "Keine Status-Information."
 
-#: src/message.h:75
+#: src/message.h:76
 msgid "Proxy connection failed."
 msgstr "Proxy-Verbindung fehlgeschlagen."
 
-#: src/message.h:76
+#: src/message.h:77
 msgid "Connection failed."
 msgstr "Verbindung fehlgeschlagen."
 
-#: src/message.h:77
+#: src/message.h:78
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. %s != "
@@ -191,173 +196,173 @@ msgstr ""
 "Der angeforderte Dateiname und der vorher registrierte sind nicht gleich. %"
 "s != %s"
 
-#: src/message.h:78
+#: src/message.h:79
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Antwortstatus ist nicht in Ordnung. Status=%d"
 
-#: src/message.h:79
+#: src/message.h:80
 #, c-format
 msgid "Too large file size. size=%lld"
 msgstr "Dateigröße zu groß. Größe=%lld"
 
-#: src/message.h:80
+#: src/message.h:81
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Übertragungskodierung %s wird nicht unterstützt."
 
-#: src/message.h:81
+#: src/message.h:82
 msgid "SSL initialization failed."
 msgstr "SSL-Initialisierung fehlgeschlagen."
 
-#: src/message.h:82
+#: src/message.h:83
 #, c-format
 msgid "Size mismatch %lld != %lld"
 msgstr "Größendifferenz %lld != %lld"
 
-#: src/message.h:83
+#: src/message.h:84
 msgid "Authorization failed."
 msgstr "Autorisierung fehlgeschlagen."
 
-#: src/message.h:84
+#: src/message.h:85
 msgid "Got EOF from the server."
 msgstr "Erhielt EOF vom Server."
 
-#: src/message.h:85
+#: src/message.h:86
 msgid "Got EOF from peer."
 msgstr "Erhielt EOF von Gegenstelle."
 
-#: src/message.h:86
+#: src/message.h:87
 msgid "Malformed meta info."
 msgstr "Fehlerhafte Meta-Information."
 
-#: src/message.h:88
+#: src/message.h:89
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Konnte Datei %s nicht öffnen, Ursache: %s"
 
-#: src/message.h:89
+#: src/message.h:90
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Konnte nicht in Datei %s schreiben, Ursache: %s"
 
-#: src/message.h:90
+#: src/message.h:91
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Konnte nicht von Datei %s lesen, Ursache: %s"
 
-#: src/message.h:91
+#: src/message.h:92
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Konnte SHA1-Digest (eines Teils) der Datei %s nicht berechnen, Ursache: %s"
 
-#: src/message.h:92
+#: src/message.h:93
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Konnte nicht in Datei %s positionieren, Ursache: %s"
 
-#: src/message.h:93
+#: src/message.h:94
 #, c-format
 msgid "The offset is out of range, offset=%lld"
 msgstr "Offset außerhalb des Bereichs, Offset=%lld"
 
-#: src/message.h:94
+#: src/message.h:95
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s ist kein Verzeichnis."
 
-#: src/message.h:95
+#: src/message.h:96
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Konnte Verzeichnis %s nicht erstellen, Ursache: %s"
 
-#: src/message.h:96
+#: src/message.h:97
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Konnte Segmentdatei %s nicht öffnen, Ursache %s"
 
-#: src/message.h:97
+#: src/message.h:98
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Konnte nicht in Segmentdatei %s schreiben, Ursache: %s"
 
-#: src/message.h:98
+#: src/message.h:99
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Konnte nicht aus Segmentdatei %s lesen, Ursache: %s"
 
-#: src/message.h:100
+#: src/message.h:101
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Konnte Socket nicht öffnen, Ursache: %s"
 
-#: src/message.h:101
+#: src/message.h:102
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Konnte eine Socket-Option nicht setzen, Ursache: %s"
 
-#: src/message.h:102
+#: src/message.h:103
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Konnte Socket nicht binden, Ursache: %s"
 
-#: src/message.h:103
+#: src/message.h:104
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Konnte nicht auf Socket lauschen, Ursache: %s"
 
-#: src/message.h:104
+#: src/message.h:105
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Konnte Peer-Verbindung nicht akzeptieren, Ursache: %s"
 
-#: src/message.h:105
+#: src/message.h:106
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Konnte Socketnamen nicht ermitteln, Ursache: %s"
 
-#: src/message.h:106
+#: src/message.h:107
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Konnte Namen der verbundenen Gegenstelle nicht ermitteln, Ursache: %s"
 
-#: src/message.h:107
+#: src/message.h:108
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Konnte Rechnername %s nicht auflösen, Ursache: %s"
 
-#: src/message.h:108
+#: src/message.h:109
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Konnte nicht zum Rechner %s verbinden, Ursache: %s"
 
-#: src/message.h:109
+#: src/message.h:110
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr "Konnte nicht testen, ob der Socket beschreibbar ist, Ursache: %s"
 
-#: src/message.h:110
+#: src/message.h:111
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Konnte nicht testen, ob der Socket lesbar ist, Ursache: %s"
 
-#: src/message.h:111
+#: src/message.h:112
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Konnte Daten nicht senden, Ursache: %s"
 
-#: src/message.h:112
+#: src/message.h:113
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Konnte Daten nicht erhalten, Ursache: %s"
 
-#: src/message.h:113
+#: src/message.h:114
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Datenermittelung fehlgeschlagen, Ursache: %s"
 
-#: src/message.h:114
+#: src/message.h:115
 #, c-format
 msgid ""
 "File %s exists, but %s does not exist. The download was canceled in order to "
@@ -366,17 +371,17 @@ msgid ""
 "restart aria2."
 msgstr ""
 
-#: src/message.h:115
+#: src/message.h:116
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 
-#: src/message.h:116
+#: src/message.h:117
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr ""
 
-#: src/message.h:117
+#: src/message.h:118
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%lld, length=%d, "
@@ -388,20 +393,20 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr "Fehler beim Binden an Port aufgetreten.\n"
 
-#: src/TorrentRequestInfo.cc:120
+#: src/TorrentRequestInfo.cc:126
 msgid "Files:"
 msgstr "Dateien:"
 
-#: src/UrlRequestInfo.cc:110
+#: src/UrlRequestInfo.cc:117
 #, c-format
 msgid "Unrecognized URL or unsupported protocol: %s\n"
 msgstr "URL nicht erkannt oder nicht unterstütztes Protokoll: %s\n"
 
-#: src/main.cc:79
+#: src/main.cc:81
 msgid " version "
 msgstr " Version "
 
-#: src/main.cc:86
+#: src/main.cc:88
 #, fuzzy
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
@@ -433,41 +438,41 @@ msgstr ""
 "along with this program; if not, write to the Free Software\n"
 "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
 
-#: src/main.cc:100
+#: src/main.cc:102
 #, c-format
 msgid "Contact Info: %s\n"
 msgstr "Kontakt-Info: %s\n"
 
-#: src/main.cc:106
+#: src/main.cc:108
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
 msgstr "Aufruf: %s [Optionen] URL ...\n"
 
-#: src/main.cc:108
+#: src/main.cc:110
 #, c-format
 msgid "       %s [options] -T TORRENT_FILE FILE ...\n"
 msgstr "       %s [Optionen] -T TORRENT_FILE FILE ...\n"
 
-#: src/main.cc:111
+#: src/main.cc:113
 #, fuzzy, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
 msgstr "       %s [Optionen] -T TORRENT_FILE FILE ...\n"
 
-#: src/main.cc:114
+#: src/main.cc:116
 msgid "Options:"
 msgstr "Optionen:"
 
-#: src/main.cc:115
+#: src/main.cc:117
 msgid " -d, --dir=DIR                The directory to store downloaded file."
 msgstr ""
 " -d, --dir=DIR                Verzeichnis zum Speichern der abgerufenen "
 "Datei."
 
-#: src/main.cc:116
+#: src/main.cc:118
 msgid " -o, --out=FILE               The file name for downloaded file."
 msgstr " -o, --out=FILE               Dateiname für die abgerufene Datei."
 
-#: src/main.cc:117
+#: src/main.cc:119
 msgid ""
 " -l, --log=LOG                The file path to store log. If '-' is "
 "specified,\n"
@@ -478,11 +483,11 @@ msgstr ""
 "                              wird das Log auf die Standardausgabe "
 "geschrieben."
 
-#: src/main.cc:119
+#: src/main.cc:121
 msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 Start als Daemon-Prozeß."
 
-#: src/main.cc:120
+#: src/main.cc:122
 #, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. N must "
@@ -500,7 +505,7 @@ msgstr ""
 "                              Daher verbindet sich aria2 zu jeder URL mit\n"
 "                              N Verbindungen."
 
-#: src/main.cc:125
+#: src/main.cc:127
 msgid ""
 " --retry-wait=SEC             Set amount of time in second between requests\n"
 "                              for errors. Specify a value between 0 and 60.\n"
@@ -512,12 +517,12 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:128
+#: src/main.cc:130
 msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
 msgstr ""
 " -t, --timeout=SEC            Setzt Wartezeit in Sekunden. Fehlwert: 60"
 
-#: src/main.cc:129
+#: src/main.cc:131
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
@@ -525,7 +530,7 @@ msgstr ""
 " -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:137
+#: src/main.cc:139
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
 "                              URLs."
@@ -533,26 +538,26 @@ msgstr ""
 " --http-proxy=HOST:PORT       HTTP-Proxyserver benutzen. Dies betrifft alle\n"
 "                              URLs."
 
-#: src/main.cc:139
+#: src/main.cc:141
 msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
 msgstr ""
 " --http-user=USER             HTTP-Anwendername angeben. Dies betrifft alle "
 "URLs."
 
-#: src/main.cc:140
+#: src/main.cc:142
 msgid ""
 " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
 msgstr ""
 " --http-passwd=PASSWD         HTTP-Passwort setzen. Dies betrifft alle URLs."
 
-#: src/main.cc:141
+#: src/main.cc:143
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
 msgstr ""
 " --http-proxy-user=USER       HTTP-Proxy-Anwender setzen. Dies betrifft alle "
 "URLs."
 
-#: src/main.cc:142
+#: src/main.cc:144
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
 "URLs."
@@ -560,7 +565,7 @@ msgstr ""
 " --http-proxy-passwd=PASSWD   HTTP-Proxy-Passwort setzen. Dies betrifft alle "
 "URLs."
 
-#: src/main.cc:143
+#: src/main.cc:145
 msgid ""
 " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 "                              METHOD is either 'get' or 'tunnel'.\n"
@@ -571,7 +576,7 @@ msgstr ""
 "                              METHOD ist entweder 'get' oder 'tunnel'.\n"
 "                              Fehlwert: tunnel"
 
-#: src/main.cc:146
+#: src/main.cc:148
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -583,11 +588,11 @@ msgstr ""
 "                              das einzig zulässige Schema.\n"
 "                              Fehlwert: basic"
 
-#: src/main.cc:149
+#: src/main.cc:151
 msgid " --referer=REFERER            Set Referer. This affects to all URLs."
 msgstr " --referer=REFERER            Referer setzen. Dies betrifft alle URLs."
 
-#: src/main.cc:150
+#: src/main.cc:152
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
 "                              Default: anonymous"
@@ -595,7 +600,7 @@ msgstr ""
 " --ftp-user=USER              FTP-Anwender setzen. Dies betrifft alle URLs.\n"
 "                              Fehlwert: anonymous"
 
-#: src/main.cc:152
+#: src/main.cc:154
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
 "                              Default: ARIA2USER@"
@@ -603,7 +608,7 @@ msgstr ""
 " --ftp-passwd=PASSWD          FTP-Passwort setzen. Dies betrifft alle URLs.\n"
 "                              Fehlwert: ARIA2USER@"
 
-#: src/main.cc:154
+#: src/main.cc:156
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
@@ -615,11 +620,11 @@ msgstr ""
 "                              oder 'ascii'.\n"
 "                              Fehlwert: binary"
 
-#: src/main.cc:157
+#: src/main.cc:159
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
 msgstr " -p, --ftp-pasv               Passiv-Modus für FTP benutzen."
 
-#: src/main.cc:158
+#: src/main.cc:160
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
@@ -631,7 +636,7 @@ msgstr ""
 "                              'tunnel'.\n"
 "                              Fehlwert: tunnel"
 
-#: src/main.cc:161
+#: src/main.cc:163
 #, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
@@ -650,7 +655,7 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:168
+#: src/main.cc:170
 #, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
@@ -664,7 +669,7 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:172
+#: src/main.cc:174
 #, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method. METHOD is "
@@ -685,7 +690,7 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:179
+#: src/main.cc:181
 #, fuzzy
 msgid ""
 " --allow-overwrite=true|false  If this option set to false, aria2 doesn't\n"
@@ -703,10 +708,11 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:184
+#: src/main.cc:186
 #, fuzzy
 msgid ""
-" --check-integiry=true|false  Check file integiry by validating piece hash.\n"
+" --check-integrity=true|false  Check file integrity by validating piece "
+"hash.\n"
 "                              This option makes effect in BitTorrent "
 "download\n"
 "                              and Metalink with chunk checksums.\n"
@@ -724,7 +730,7 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:192
+#: src/main.cc:194
 #, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while "
@@ -741,11 +747,31 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:197
+#: src/main.cc:198
+msgid ""
+" -c, --continue               Continue downloading a partially downloaded\n"
+"                              file. Use this option to resume a download "
+"started\n"
+"                              by web browsers or another programs\n"
+"                              which download files sequentially from the\n"
+"                              beginning. Currently this option is applicable "
+"to\n"
+"                              http(s)/ftp downloads."
+msgstr ""
+
+#: src/main.cc:204
+msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
+msgstr ""
+
+#: src/main.cc:205
+msgid " -n, --no-netrc               Disables netrc support."
+msgstr ""
+
+#: src/main.cc:207
 msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  Datenpfad zur torrent-Datei."
 
-#: src/main.cc:198
+#: src/main.cc:208
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -760,14 +786,14 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:202
+#: src/main.cc:212
 msgid ""
 " -S, --show-files             Print file listing of .torrent file and exit."
 msgstr ""
 " -S, --show-files             Dateiliste der .torrent-Datei ausgeben und "
 "beenden."
 
-#: src/main.cc:203
+#: src/main.cc:213
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -777,7 +803,7 @@ msgstr ""
 "                              .torrent-Datei erwähnten Datei.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:206
+#: src/main.cc:216
 msgid ""
 " --listen-port=PORT           Set port number to listen to for peer "
 "connection."
@@ -785,7 +811,7 @@ msgstr ""
 " --listen-port=PORT           Port-Nummer zum Lauschen auf Peer-Verbindungen "
 "setzen."
 
-#: src/main.cc:207
+#: src/main.cc:217
 #, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
@@ -799,7 +825,7 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:211
+#: src/main.cc:221
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can know file index through --show-files\n"
@@ -819,7 +845,7 @@ msgstr ""
 "                              Sie können auch '-' verwenden wie in \"1-5\".\n"
 "                              ',' und '-' können zusammen benutzt werden."
 
-#: src/main.cc:217
+#: src/main.cc:227
 #, fuzzy
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
@@ -828,7 +854,7 @@ msgstr ""
 " -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:219
+#: src/main.cc:229
 #, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents "
@@ -846,12 +872,12 @@ msgstr ""
 "                              Daher verbindet sich aria2 zu jeder URL mit\n"
 "                              N Verbindungen."
 
-#: src/main.cc:226
+#: src/main.cc:236
 #, fuzzy
 msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
 msgstr " -T, --torrent-file=TORRENT_FILE  Datenpfad zur torrent-Datei."
 
-#: src/main.cc:227
+#: src/main.cc:237
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
@@ -867,24 +893,24 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:231
+#: src/main.cc:241
 msgid " --metalink-version=VERSION   The version of file to download."
 msgstr ""
 
-#: src/main.cc:232
+#: src/main.cc:242
 msgid " --metalink-language=LANGUAGE The language of file to download."
 msgstr ""
 
-#: src/main.cc:233
+#: src/main.cc:243
 msgid ""
 " --metalink-os=OS             The operating system the file is targeted."
 msgstr ""
 
-#: src/main.cc:234
+#: src/main.cc:244
 msgid " --metalink-location=LOCATION The location of the prefered server."
 msgstr ""
 
-#: src/main.cc:235
+#: src/main.cc:245
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false  Setting this option to false prevents aria2 "
@@ -900,15 +926,15 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:240
+#: src/main.cc:250
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Versionsnummer ausgeben und beenden."
 
-#: src/main.cc:241
+#: src/main.cc:251
 msgid " -h, --help                   Print this message and exit."
 msgstr " -h, --help                   Diese Anzeige ausgeben und beenden."
 
-#: src/main.cc:244
+#: src/main.cc:254
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
@@ -917,7 +943,7 @@ msgstr ""
 "verweisen\n"
 "oder der Abruf schlägt fehl."
 
-#: src/main.cc:249
+#: src/main.cc:259
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option. This arguments are ignored if you specify --select-file option."
@@ -927,189 +953,82 @@ msgstr ""
 " -T-Option. Diese Argumente werden ignoriert, wenn sie die Option --select-"
 "file angeben."
 
-#: src/main.cc:253
+#: src/main.cc:263
 msgid "Examples:"
 msgstr "Beispiele:"
 
-#: src/main.cc:254
+#: src/main.cc:264
 msgid " Download a file by 1 connection:"
 msgstr " Abruf einer Datei über 1 Verbindung:"
 
-#: src/main.cc:256
+#: src/main.cc:266
 msgid " Download a file by 2 connections:"
 msgstr " Abruf einer Datei mit 2 Verbindungen:"
 
-#: src/main.cc:258
+#: src/main.cc:268
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr ""
 " Abruf einer Datei über 2 Verbindungen, jede verbindet zu einem anderen "
 "Server:"
 
-#: src/main.cc:260
+#: src/main.cc:270
 msgid " You can mix up different protocols:"
 msgstr " Sie können verschiedene Protokolle mischen:"
 
-#: src/main.cc:264
+#: src/main.cc:274
 msgid " Download a torrent:"
 msgstr " Einen torrent abrufen:"
 
-#: src/main.cc:266
+#: src/main.cc:276
 msgid " Download a torrent using local .torrent file:"
 msgstr " Einen torrent mit einer lokalen .torrent-Datei abrufen:"
 
-#: src/main.cc:268
+#: src/main.cc:278
 msgid " Download only selected files:"
 msgstr " Nur ausgewählte Dateien abrufen:"
 
-#: src/main.cc:270
+#: src/main.cc:280
 msgid " Print file listing of .torrent file:"
 msgstr " Dateiliste einer .torrent-Datei ausgeben:"
 
-#: src/main.cc:275
+#: src/main.cc:285
 msgid " Metalink downloading:"
 msgstr ""
 
-#: src/main.cc:277
+#: src/main.cc:287
 #, fuzzy
 msgid " Download a file using local .metalink file:"
 msgstr " Einen torrent mit einer lokalen .torrent-Datei abrufen:"
 
-#: src/main.cc:279
+#: src/main.cc:289
 msgid " Metalink downloading with preferences:"
 msgstr ""
 
-#: src/main.cc:283
+#: src/main.cc:293
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Fehler an %s melden"
 
-#: src/main.cc:432
-msgid "unrecognized proxy format"
-msgstr "nicht erkanntes Proxy-Format"
-
-#: src/main.cc:458
-msgid "Currently, supported authentication scheme is basic."
-msgstr "Derzeit unterstütztes Authentifizierungsschema ist basic."
-
-#: src/main.cc:467
-msgid "retry-wait must be between 0 and 60."
-msgstr "retry-wait muss zwischen 0 und 60 liegen."
-
-#: src/main.cc:483
-msgid "ftp-type must be either 'binary' or 'ascii'."
-msgstr "ftp-type muss entweder 'binary' oder 'ascii' sein."
-
-#: src/main.cc:491
-msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
-msgstr "ftp-via-http-proxy muss entweder 'get' oder 'tunnel' sein."
-
-#: src/main.cc:498
-msgid "min-segment-size invalid"
-msgstr "min-segment-size ungültig"
-
-#: src/main.cc:508
-msgid "http-proxy-method must be either 'get' or 'tunnel'."
-msgstr "http-proxy-method muss entweder 'get' oder 'tunnel' sein."
-
-#: src/main.cc:515
-msgid "listen-port must be between 1024 and 65535."
-msgstr "listen-port muss zwischen 1024 und 65535 liegen."
-
-#: src/main.cc:527
-msgid "follow-torrent must be either 'true' or 'false'."
-msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
-
-#: src/main.cc:540
-msgid "direct-file-mapping must be either 'true' or 'false'."
-msgstr "direct-file-mapping muss entweder 'true' oder 'false' sein."
-
-#: src/main.cc:550
-#, fuzzy
-msgid "seed-time must be greater than or equal to 0."
-msgstr "upload-limit muss größer oder gleich 0 sein."
-
-#: src/main.cc:559
-#, fuzzy
-msgid "seed-ratio must be greater than or equal to 0.0."
-msgstr "upload-limit muss größer oder gleich 0 sein."
-
-#: src/main.cc:568
-#, fuzzy
-msgid "max-upload-limit must be greater than or equal to 0"
-msgstr "upload-limit muss größer oder gleich 0 sein."
-
-#: src/main.cc:589
-#, fuzzy
-msgid "follow-metalink must be either 'true' or 'false'."
-msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
-
-#: src/main.cc:599
-#, fuzzy
-msgid "lowest-speed-limit must be greater than or equal to 0"
-msgstr "upload-limit muss größer oder gleich 0 sein."
-
-#: src/main.cc:608
-#, fuzzy
-msgid "max-download-limit must be greater than or equal to 0"
-msgstr "upload-limit muss größer oder gleich 0 sein."
-
-#: src/main.cc:620
-#, fuzzy
-msgid "allow-overwrite must be either 'true' or 'false'."
-msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
-
-#: src/main.cc:631
-#, fuzzy
-msgid "check-integrity must be be either 'true' or 'false'."
-msgstr "direct-file-mapping muss entweder 'true' oder 'false' sein."
-
-#: src/main.cc:642
-#, fuzzy
-msgid "realtime-chunk-checksum must be either 'true' or 'false'."
-msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
-
-#: src/main.cc:669
-msgid "split must be between 1 and 5."
-msgstr "split muss zwischen 1 und 5 liegen."
-
-#: src/main.cc:680
-msgid "timeout must be between 1 and 600"
-msgstr "timeout muss zwischen 1 und 600 liegen."
-
-#: src/main.cc:688
-msgid "max-tries invalid"
-msgstr "max-tries ungültig"
-
-#: src/main.cc:709
-#, fuzzy
-msgid "metalink-servers must be greater than 0."
-msgstr "upload-limit muss größer oder gleich 0 sein."
-
-#: src/main.cc:720
-#, fuzzy
-msgid "file-allocation must be either 'none' or 'prealloc'."
-msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
-
-#: src/main.cc:737
+#: src/main.cc:613
 msgid "specify at least one URL"
 msgstr "Geben Sie zumindest eine URL an"
 
-#: src/main.cc:743
+#: src/main.cc:619
 msgid "daemon failed"
 msgstr "Daemon-Start nicht erfolgreich"
 
-#: src/main.cc:813
+#: src/main.cc:704
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
 "file."
 msgstr ""
 
-#: src/main.cc:817
+#: src/main.cc:708
 msgid "checksum OK."
 msgstr ""
 
-#: src/main.cc:820
+#: src/main.cc:711
 msgid "checksum ERROR."
 msgstr ""
 
@@ -1138,6 +1057,89 @@ msgstr ""
 #, c-format
 msgid "done\n"
 msgstr "erledigt\n"
+
+#~ msgid "unrecognized proxy format"
+#~ msgstr "nicht erkanntes Proxy-Format"
+
+#~ msgid "Currently, supported authentication scheme is basic."
+#~ msgstr "Derzeit unterstütztes Authentifizierungsschema ist basic."
+
+#~ msgid "retry-wait must be between 0 and 60."
+#~ msgstr "retry-wait muss zwischen 0 und 60 liegen."
+
+#~ msgid "ftp-type must be either 'binary' or 'ascii'."
+#~ msgstr "ftp-type muss entweder 'binary' oder 'ascii' sein."
+
+#~ msgid "ftp-via-http-proxy must be either 'get' or 'tunnel'."
+#~ msgstr "ftp-via-http-proxy muss entweder 'get' oder 'tunnel' sein."
+
+#~ msgid "min-segment-size invalid"
+#~ msgstr "min-segment-size ungültig"
+
+#~ msgid "http-proxy-method must be either 'get' or 'tunnel'."
+#~ msgstr "http-proxy-method muss entweder 'get' oder 'tunnel' sein."
+
+#~ msgid "listen-port must be between 1024 and 65535."
+#~ msgstr "listen-port muss zwischen 1024 und 65535 liegen."
+
+#~ msgid "follow-torrent must be either 'true' or 'false'."
+#~ msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
+
+#~ msgid "direct-file-mapping must be either 'true' or 'false'."
+#~ msgstr "direct-file-mapping muss entweder 'true' oder 'false' sein."
+
+#, fuzzy
+#~ msgid "seed-time must be greater than or equal to 0."
+#~ msgstr "upload-limit muss größer oder gleich 0 sein."
+
+#, fuzzy
+#~ msgid "seed-ratio must be greater than or equal to 0.0."
+#~ msgstr "upload-limit muss größer oder gleich 0 sein."
+
+#, fuzzy
+#~ msgid "max-upload-limit must be greater than or equal to 0"
+#~ msgstr "upload-limit muss größer oder gleich 0 sein."
+
+#, fuzzy
+#~ msgid "follow-metalink must be either 'true' or 'false'."
+#~ msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
+
+#, fuzzy
+#~ msgid "lowest-speed-limit must be greater than or equal to 0"
+#~ msgstr "upload-limit muss größer oder gleich 0 sein."
+
+#, fuzzy
+#~ msgid "max-download-limit must be greater than or equal to 0"
+#~ msgstr "upload-limit muss größer oder gleich 0 sein."
+
+#, fuzzy
+#~ msgid "allow-overwrite must be either 'true' or 'false'."
+#~ msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
+
+#, fuzzy
+#~ msgid "check-integrity must be be either 'true' or 'false'."
+#~ msgstr "direct-file-mapping muss entweder 'true' oder 'false' sein."
+
+#, fuzzy
+#~ msgid "realtime-chunk-checksum must be either 'true' or 'false'."
+#~ msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
+
+#~ msgid "split must be between 1 and 5."
+#~ msgstr "split muss zwischen 1 und 5 liegen."
+
+#~ msgid "timeout must be between 1 and 600"
+#~ msgstr "timeout muss zwischen 1 und 600 liegen."
+
+#~ msgid "max-tries invalid"
+#~ msgstr "max-tries ungültig"
+
+#, fuzzy
+#~ msgid "metalink-servers must be greater than 0."
+#~ msgstr "upload-limit muss größer oder gleich 0 sein."
+
+#, fuzzy
+#~ msgid "file-allocation must be either 'none' or 'prealloc'."
+#~ msgstr "follow-torrent muss entweder 'true' oder 'false' sein."
 
 #~ msgid "upload-limit must be greater than or equal to 0."
 #~ msgstr "upload-limit muss größer oder gleich 0 sein."

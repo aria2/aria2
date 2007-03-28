@@ -39,9 +39,7 @@
 
 class HttpInitiateConnectionCommand : public AbstractCommand {
 private:
-#ifdef ENABLE_ASYNC_DNS
   NameResolverHandle nameResolver;
-#endif // ENABLE_ASYNC_DNS
   bool useProxy();
   bool useProxyGet();
   bool useProxyTunnel();

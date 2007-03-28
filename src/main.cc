@@ -198,9 +198,9 @@ void showUsage() {
   cout << _(" -c, --continue               Continue downloading a partially downloaded\n"
 	    "                              file. Use this option to resume a download started\n"
 	    "                              by web browsers or another programs\n"
-	    "                              which download files from the beginning.\n"
-	    "                              Currently this option is applicable to http(s)/\n"
-	    "                              ftp downloads.") << endl;
+	    "                              which download files sequentially from the\n"
+	    "                              beginning. Currently this option is applicable to\n"
+	    "                              http(s)/ftp downloads.") << endl;
   cout << _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.") << endl;
   cout << _(" -n, --no-netrc               Disables netrc support.") << endl;
 #ifdef ENABLE_BITTORRENT

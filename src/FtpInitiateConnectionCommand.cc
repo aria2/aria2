@@ -64,7 +64,6 @@ bool FtpInitiateConnectionCommand::executeInternal() {
   } else {
     hostname = req->getHost();
   }
-#ifdef ENABLE_ASYNC_DNS
   if(!Util::isNumbersAndDotsNotation(hostname)) {
     if(resolveHostname(hostname, nameResolver)) {
       hostname = nameResolver->getAddrString();
@@ -73,7 +72,6 @@ bool FtpInitiateConnectionCommand::executeInternal() {
       return false;
     }
   }
-#endif // ENABLE_ASYNC_DNS
   Command* command;
   if(useHttpProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,

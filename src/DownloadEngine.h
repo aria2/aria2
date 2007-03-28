@@ -41,9 +41,7 @@
 #include "common.h"
 #include "Logger.h"
 #include "Option.h"
-#ifdef ENABLE_ASYNC_DNS
-# include "NameResolver.h"
-#endif // ENABLE_ASYNC_DNS
+#include "NameResolver.h"
 
 typedef deque<SocketHandle> Sockets;
 typedef deque<Command*> Commands;
