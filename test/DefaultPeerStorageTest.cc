@@ -121,7 +121,7 @@ void DefaultPeerStorageTest::testAddPeer() {
   // peer3 was deleted.
   CPPUNIT_ASSERT_EQUAL(3, ps.countPeer());
   
-  peer4->error = MAX_PEER_ERROR;
+  peer4->startBadCondition();
 
   // this returns false, because peer4 in the container has error.
   CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer4));
@@ -144,13 +144,7 @@ void DefaultPeerStorageTest::testGetPeer() {
   CPPUNIT_ASSERT(ps.getUnusedPeer().isNull());
 
   peer1->resetStatus();
-  peer1->error = 1;
-
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"),
-		       ps.getUnusedPeer()->ipaddr);
-
-  peer1->resetStatus();
-  peer1->error = MAX_PEER_ERROR;
+  peer1->startBadCondition();
 
   CPPUNIT_ASSERT(ps.getUnusedPeer().isNull());
 }
@@ -174,7 +168,7 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
 
   peer1->resetStatus();
 
-  peer1->error = MAX_PEER_ERROR;
+  peer1->startBadCondition();
 
   CPPUNIT_ASSERT_EQUAL(false, ps.isPeerAvailable());
 }
