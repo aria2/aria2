@@ -287,7 +287,20 @@ EXAMPLES
 FILES
 -----
 aria2.conf::
-	User configuration file. Must be placed under ~/.aria2 directory.
+	User configuration file.
+	It must be placed under ~/.aria2 and must be named as aria2.conf.
+	In each line, there is 1 parameter whose syntax is name=value pair,
+	where name is the long command-line option name without '--' prefix.
+	The lines beginning '#' are treated as comments.
+
+	Example:
+
+	# sample configuration file for aria2c
+	file-allocation=prealloc
+	listen-port=60000
+	seed-ratio=1.0
+	max-upload-limit=40K
+	ftp-pasv=true
 
 REPORTING BUGS
 --------------

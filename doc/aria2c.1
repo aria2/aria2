@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
-.\"      Date: 03/28/2007
+.\"      Date: 03/29/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "03/28/2007" "" ""
+.TH "ARIA2C" "1" "03/29/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -442,7 +442,28 @@ aria2c \-M test.metalink \-\-metalink\-version=1.1.1 \-\-metalink\-language=en\-
 .PP
 aria2.conf
 .RS 3n
-User configuration file. Must be placed under ~/.aria2 directory.
+User configuration file. It must be placed under ~/.aria2 and must be named as aria2.conf. In each line, there is 1 parameter whose syntax is name=value pair, where name is the long command\-line option name without
+\fI\-\-\fR
+prefix. The lines beginning
+\fI#\fR
+are treated as comments.
+.sp
+.RS 3n
+.nf
+Examples:
+.fi
+.RE
+.sp
+.RS 3n
+.nf
+# sample configuration file for aria2c
+file\-allocation=prealloc
+listen\-port=60000
+seed\-ratio=1.0
+max\-upload\-limit=40K
+ftp\-pasv=true
+.fi
+.RE
 .RE
 .SH "REPORTING BUGS"
 Report bugs to Tatsuhiro Tsujikawa <t\-tujikawa@users.sourceforge.net>

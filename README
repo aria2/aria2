@@ -112,13 +112,12 @@ Your .netrc file should have correct permissions(600).
 
 8. Configuration file
 ---------------------
-Configuration file must be placed under ~/.aria2 and must be named as
-aria2.conf. Options in a file are one option per line.
-The syntax is name=value, where name is the long option name without '--'
-prefix.
-The line beginning '#' are treated as comments.
+Configuration file must be placed under ~/.aria2 and must be named as aria2.conf.
+In each line, there is 1 parameter whose syntax is name=value pair,
+where name is the long command-line option name without '--' prefix.
+The lines beginning '#' are treated as comments.
 
-Examples:
+Example:
 
 # sample configuration file for aria2c
 file-allocation=prealloc
