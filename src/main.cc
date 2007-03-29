@@ -649,19 +649,20 @@ int main(int argc, char* argv[]) {
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
     logger->info("Logging started.");
 
-    NetrcHandle netrc = 0;
-    File netrccf(op->get(PREF_NETRC_PATH));
-    mode_t mode = netrccf.mode();
-    if(mode&(S_IRWXG|S_IRWXO)) {
-      logger->notice(".netrc file %s does not have correct permissions. It should be 600. netrc support disabled.",
-		     op->get(PREF_NETRC_PATH).c_str());
-    } else {
-      netrc = new Netrc();
-      netrc->parse(op->get(PREF_NETRC_PATH));
-    }
     RequestFactoryHandle requestFactory = new RequestFactory();
     requestFactory->setOption(op);
-    requestFactory->setNetrc(netrc);
+    File netrccf(op->get(PREF_NETRC_PATH));
+    if(!op->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
+      mode_t mode = netrccf.mode();
+      if(mode&(S_IRWXG|S_IRWXO)) {
+	logger->notice(".netrc file %s does not have correct permissions. It should be 600. netrc support disabled.",
+		       op->get(PREF_NETRC_PATH).c_str());
+      } else {
+	NetrcHandle netrc = new Netrc();
+	netrc->parse(op->get(PREF_NETRC_PATH));
+	requestFactory->setNetrc(netrc);
+      }
+    }
     RequestFactorySingletonHolder::instance(requestFactory);
 
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);

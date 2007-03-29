@@ -1,3 +1,10 @@
+2007-03-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
+	* src/HttpRequest.cc (createRequest): url-encode user-agent
+
+	* src/main.cc: Fixed the bug that prevents download if .netrc
+	doesn't exist.
+
 2007-03-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	To cache resolved hostname:
