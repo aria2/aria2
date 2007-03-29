@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.59)
-AC_INIT(aria2c, 0.10.2, t-tujikawa@users.sourceforge.net)
+AC_INIT(aria2c, 0.10.2+1, t-tujikawa@users.sourceforge.net)
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])

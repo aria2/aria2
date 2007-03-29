@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-03-29 00:07+0900\n"
+"POT-Creation-Date: 2007-03-29 20:30+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -1017,18 +1017,18 @@ msgstr "Geben Sie zumindest eine URL an"
 msgid "daemon failed"
 msgstr "Daemon-Start nicht erfolgreich"
 
-#: src/main.cc:704
+#: src/main.cc:705
 msgid ""
 "Now verifying checksum.\n"
 "This may take some time depending on your PC environment and the size of "
 "file."
 msgstr ""
 
-#: src/main.cc:708
+#: src/main.cc:709
 msgid "checksum OK."
 msgstr ""
 
-#: src/main.cc:711
+#: src/main.cc:712
 msgid "checksum ERROR."
 msgstr ""
 
