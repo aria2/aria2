@@ -140,7 +140,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtChokingEvent.h\
 @ENABLE_BITTORRENT_TRUE@	BtInteractive.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.cc DefaultBtInteractive.h\
-@ENABLE_BITTORRENT_TRUE@	PeerObject.h
+@ENABLE_BITTORRENT_TRUE@	PeerObject.h\
+@ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h
 
 @ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -288,6 +289,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtCancelSendingPieceEvent.h BtAbortOutstandingRequestEvent.h \
 	BtChokedEvent.h BtChokingEvent.h BtInteractive.h \
 	DefaultBtInteractive.cc DefaultBtInteractive.h PeerObject.h \
+	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h \
 	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
@@ -355,7 +357,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcher.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageReceiver.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactory.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -704,6 +707,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractProxyRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractProxyResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractSingleDiskAdaptor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActivePeerConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@

@@ -48,6 +48,7 @@
 # include "SeedCheckCommand.h"
 # include "PeerChokeCommand.h"
 # include "HaveEraseCommand.h"
+# include "ActivePeerConnectionCommand.h"
 # include "UnionSeedCriteria.h"
 # include "TimeSeedCriteria.h"
 # include "ShareRatioSeedCriteria.h"
@@ -173,6 +174,10 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
 					      te,
 					      btContext,
 					      10));
+  te->commands.push_back(new ActivePeerConnectionCommand(btRuntime->getNewCuid(),
+							 te,
+							 btContext,
+							 30));
 
   SharedHandle<UnionSeedCriteria> unionCri = new UnionSeedCriteria();
   if(op->defined(PREF_SEED_TIME)) {

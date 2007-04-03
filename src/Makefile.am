@@ -186,7 +186,8 @@ SRCS += MetaEntry.h\
 	BtChokingEvent.h\
 	BtInteractive.h\
 	DefaultBtInteractive.cc DefaultBtInteractive.h\
-	PeerObject.h
+	PeerObject.h\
+	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

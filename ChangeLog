@@ -1,3 +1,9 @@
+2007-04-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Connect to a peer actively when download speed is lower than specified
+	speed in torrent download:
+	* src/ActivePeerConnectionCommand.h: New class.
+
 2007-03-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 	
 	* src/HttpRequest.cc (createRequest): url-encode user-agent
