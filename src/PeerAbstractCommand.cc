@@ -97,8 +97,7 @@ bool PeerAbstractCommand::prepareForRetry(int wait) {
 }
 
 void PeerAbstractCommand::onAbort(RecoverableException* ex) {
-  peer->startBadCondition();
-  peer->resetStatus();
+  peerStorage->returnPeer(peer);
 }
 
 void PeerAbstractCommand::disableReadCheckSocket() {

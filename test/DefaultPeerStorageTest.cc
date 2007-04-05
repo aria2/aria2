@@ -16,6 +16,9 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsPeerAvailable);
   CPPUNIT_TEST(testActivatePeer);
   CPPUNIT_TEST(testCalculateStat);
+  CPPUNIT_TEST(testAddIncomingPeer);
+  CPPUNIT_TEST(testReturnPeer);
+  CPPUNIT_TEST(testOnErasingPeer);
   CPPUNIT_TEST_SUITE_END();
 private:
   BtContextHandle btContext;
@@ -38,6 +41,9 @@ public:
   void testIsPeerAvailable();
   void testActivatePeer();
   void testCalculateStat();
+  void testAddIncomingPeer();
+  void testReturnPeer();
+  void testOnErasingPeer();
 };
 
 
@@ -118,13 +124,25 @@ void DefaultPeerStorageTest::testAddPeer() {
 			    btContext->getTotalLength()));
 
   CPPUNIT_ASSERT(ps.addPeer(peer4));
-  // peer3 was deleted.
+  // peer1 was deleted.
   CPPUNIT_ASSERT_EQUAL(3, ps.countPeer());
   
   peer4->startBadCondition();
 
+  PeerHandle peer5(new Peer("192.168.0.4", 6889, btContext->getPieceLength(),
+			    btContext->getTotalLength()));
+
   // this returns false, because peer4 in the container has error.
-  CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer4));
+  CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer5));
+
+  peer3->cuid = 1;
+
+  PeerHandle peer6(new Peer("192.168.0.3", 6889, btContext->getPieceLength(),
+			    btContext->getTotalLength()));
+
+  // this is false, because peer3's cuid is not zero
+  CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer6));
+  
 }
 
 void DefaultPeerStorageTest::testGetPeer() {
@@ -193,4 +211,48 @@ void DefaultPeerStorageTest::testActivatePeer() {
 }
 
 void DefaultPeerStorageTest::testCalculateStat() {
+}
+
+
+void DefaultPeerStorageTest::testAddIncomingPeer()
+{
+  DefaultPeerStorage ps(btContext, option);
+ 
+  CPPUNIT_ASSERT(ps.addIncomingPeer(new Peer("192.168.0.1", 6889,
+					     btContext->getPieceLength(),
+					     btContext->getTotalLength())));
+
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getIncomingPeers().size());
+}
+
+void DefaultPeerStorageTest::testReturnPeer()
+{
+  DefaultPeerStorage ps(btContext, option);
+
+  PeerHandle peer1(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
+			   btContext->getTotalLength()));
+  PeerHandle peer2(new Peer("192.168.0.2", 6889, btContext->getPieceLength(),
+			   btContext->getTotalLength()));
+  ps.addPeer(peer1);
+  ps.addPeer(peer2);
+
+  PeerHandle peer3(new Peer("192.168.0.3", 6889, btContext->getPieceLength(),
+			   btContext->getTotalLength()));
+  
+  ps.addIncomingPeer(peer3);
+
+  CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"),
+		       ps.getPeers().front()->ipaddr);
+  ps.returnPeer(peer2);
+  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"),
+		       ps.getPeers().front()->ipaddr);
+
+  ps.returnPeer(peer3);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getIncomingPeers().size());
+
+}
+
+void DefaultPeerStorageTest::testOnErasingPeer()
+{
+  // test this
 }

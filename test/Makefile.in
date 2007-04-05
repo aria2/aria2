@@ -57,7 +57,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestFactoryTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) PeerTest.$(OBJEXT) \
+	DefaultPeerStorageTest.$(OBJEXT) RequestFactoryTest.$(OBJEXT) \
 	NetrcAuthResolverTest.$(OBJEXT) \
 	DefaultAuthResolverTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	HttpRequestTest.$(OBJEXT) UtilTest.$(OBJEXT) \
@@ -80,10 +81,9 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestFactoryTest.$(OBJEXT) \
 	AnnounceListTest.$(OBJEXT) TrackerWatcherCommandTest.$(OBJEXT) \
 	DefaultBtContextTest.$(OBJEXT) \
 	DefaultPieceStorageTest.$(OBJEXT) \
-	DefaultPeerStorageTest.$(OBJEXT) \
 	DefaultBtAnnounceTest.$(OBJEXT) BtRegistryTest.$(OBJEXT) \
 	DefaultBtMessageDispatcherTest.$(OBJEXT) \
-	DefaultBtRequestFactoryTest.$(OBJEXT) PeerTest.$(OBJEXT) \
+	DefaultBtRequestFactoryTest.$(OBJEXT) \
 	BtAllowedFastMessageTest.$(OBJEXT) \
 	BtBitfieldMessageTest.$(OBJEXT) BtCancelMessageTest.$(OBJEXT) \
 	BtChokeMessageTest.$(OBJEXT) BtHaveAllMessageTest.$(OBJEXT) \
@@ -262,6 +262,8 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
+	PeerTest.cc\
+	DefaultPeerStorageTest.cc\
 	RequestFactoryTest.cc\
 	NetrcAuthResolverTest.cc\
 	DefaultAuthResolverTest.cc\
@@ -302,13 +304,11 @@ aria2c_SOURCES = AllTest.cc\
 	TrackerWatcherCommandTest.cc\
 	DefaultBtContextTest.cc\
 	DefaultPieceStorageTest.cc\
-	DefaultPeerStorageTest.cc\
 	DefaultBtAnnounceTest.cc\
 	BtRegistryTest.cc\
 	DefaultBtMessageDispatcherTest.cc\
 	MockPeerStorage.h\
 	DefaultBtRequestFactoryTest.cc\
-	PeerTest.cc\
 	BtAllowedFastMessageTest.cc\
 	BtBitfieldMessageTest.cc\
 	BtCancelMessageTest.cc\

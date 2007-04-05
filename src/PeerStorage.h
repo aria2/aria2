@@ -44,9 +44,30 @@ public:
   int32_t uploadSpeed;
   int64_t sessionDownloadLength;
   int64_t sessionUploadLength;
+
+  void copy(const TransferStat& stat)
+  {
+    downloadSpeed = stat.downloadSpeed;
+    uploadSpeed = stat.uploadSpeed;
+    sessionDownloadLength = stat.sessionDownloadLength;
+    sessionUploadLength = stat.sessionUploadLength;
+  }
 public:
   TransferStat():downloadSpeed(0), uploadSpeed(0),
 		 sessionDownloadLength(0), sessionUploadLength(0) {}
+
+  TransferStat(const TransferStat& stat)
+  {
+    copy(stat);
+  }
+
+  TransferStat& operator=(const TransferStat& stat)
+  {
+    if(this != &stat) {
+      copy(stat);
+    }
+    return *this;
+  }
 
   int32_t getDownloadSpeed() const {
     return downloadSpeed;
@@ -86,10 +107,16 @@ public:
   virtual ~PeerStorage() {}
 
   /**
-   * Adds new peer to internal peer list.
+   * Adds new peer to the internal peer list.
    * If the peer is added successfully, returns true. Otherwise returns false.
    */
   virtual bool addPeer(const PeerHandle& peer) = 0;
+
+  /**
+   * Adds new incoming peer to the internal peer list.
+   * If the peer is added successfully, returns true. Otherwise returns false.
+   */
+  virtual bool addIncomingPeer(const PeerHandle& peer) = 0;
 
   /**
    * Adds all peers in peers to internal peer list.
@@ -121,6 +148,11 @@ public:
    * Calculates current download/upload statistics.
    */
   virtual TransferStat calculateStat() = 0;
+
+  /**
+   * Tells PeerStorage object that peer is no longer used in the session.
+   */
+  virtual void returnPeer(const PeerHandle& peer) = 0;
 };
 
 typedef SharedHandle<PeerStorage> PeerStorageHandle;

@@ -1,6 +1,8 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	PeerTest.cc\
+	DefaultPeerStorageTest.cc\
 	RequestFactoryTest.cc\
 	NetrcAuthResolverTest.cc\
 	DefaultAuthResolverTest.cc\
@@ -41,13 +43,11 @@ aria2c_SOURCES = AllTest.cc\
 	TrackerWatcherCommandTest.cc\
 	DefaultBtContextTest.cc\
 	DefaultPieceStorageTest.cc\
-	DefaultPeerStorageTest.cc\
 	DefaultBtAnnounceTest.cc\
 	BtRegistryTest.cc\
 	DefaultBtMessageDispatcherTest.cc\
 	MockPeerStorage.h\
 	DefaultBtRequestFactoryTest.cc\
-	PeerTest.cc\
 	BtAllowedFastMessageTest.cc\
 	BtBitfieldMessageTest.cc\
 	BtCancelMessageTest.cc\

@@ -56,7 +56,7 @@ bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
     if(peers.size() >= (size_t)maxPeerListSize) {
       deleteUnusedPeer(peers.size()-maxPeerListSize+1);
     }
-    peers.push_back(peer);
+    peers.push_front(peer);
     return true;
   } else {
     const PeerHandle& peer = *itr;
@@ -67,6 +67,12 @@ bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
       return true;
     }      
   }
+}
+
+bool DefaultPeerStorage::addIncomingPeer(const PeerHandle& peer)
+{
+  incomingPeers.push_back(peer);
+  return true;
 }
 
 void DefaultPeerStorage::addPeer(const Peers& peers) {
@@ -124,7 +130,7 @@ PeerHandle DefaultPeerStorage::getPeer(const string& ipaddr,
   }
 }
 
-int DefaultPeerStorage::countPeer() const {
+int32_t DefaultPeerStorage::countPeer() const {
   return peers.size();
 }
 
@@ -132,45 +138,94 @@ bool DefaultPeerStorage::isPeerAvailable() {
   return !getUnusedPeer().isNull();
 }
 
-Peers DefaultPeerStorage::getActivePeers() {
-  Peers activePeers;
-  for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-    PeerHandle& peer = *itr;
+class CollectActivePeer {
+private:
+  Peers _activePeers;
+public:
+  void operator()(const PeerHandle& peer)
+  {
     if(peer->isActive()) {
-      activePeers.push_back(peer);
+      _activePeers.push_back(peer);
     }
   }
-  return activePeers;
+
+  const Peers& getActivePeers() { return _activePeers; }
+};
+
+Peers DefaultPeerStorage::getActivePeers() {
+  CollectActivePeer funcObj;
+  funcObj = for_each(peers.begin(), peers.end(), funcObj);
+  funcObj = for_each(incomingPeers.begin(), incomingPeers.end(), funcObj);
+  return funcObj.getActivePeers();
 }
 
-TransferStat DefaultPeerStorage::calculateStat() {
-  TransferStat stat;
-  for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-    PeerHandle& peer = *itr;
+class CalculateStat {
+private:
+  TransferStat _stat;
+public:
+  void operator()(const PeerHandle& peer)
+  {
     if(peer->isActive()) {
-      stat.downloadSpeed += peer->calculateDownloadSpeed();
-      stat.uploadSpeed += peer->calculateUploadSpeed();
+      _stat.downloadSpeed += peer->calculateDownloadSpeed();
+      _stat.uploadSpeed += peer->calculateUploadSpeed();
     }
-    stat.sessionDownloadLength += peer->getSessionDownloadLength();
-    stat.sessionUploadLength += peer->getSessionUploadLength();
+    _stat.sessionDownloadLength += peer->getSessionDownloadLength();
+    _stat.sessionUploadLength += peer->getSessionUploadLength();    
   }
+
+  const TransferStat& getTransferStat() { return _stat; }
+};
+
+TransferStat DefaultPeerStorage::calculateStat() {
+  CalculateStat calStat;
+  calStat = for_each(peers.begin(), peers.end(), calStat);
+  calStat = for_each(incomingPeers.begin(), incomingPeers.end(), calStat);
+
+  TransferStat stat = calStat.getTransferStat();
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
   return stat;
 }
 
 void DefaultPeerStorage::deleteUnusedPeer(int delSize) {
-  for(Peers::iterator itr = peers.begin();
-      itr != peers.end() && delSize > 0;) {
+  Peers temp;
+  for(Peers::reverse_iterator itr = peers.rbegin();
+      itr != peers.rend(); ++itr) {
     const PeerHandle& p = *itr;
-    if(p->cuid == 0) {
+    if(p->cuid == 0 && delSize > 0) {
       // Update removedPeerSession******Length
-      removedPeerSessionDownloadLength += p->getSessionDownloadLength();
-      removedPeerSessionUploadLength += p->getSessionUploadLength();
-      itr = peers.erase(itr);
+      onErasingPeer(p);
       delSize--;
     } else {
-      itr++;
+      temp.push_front(p);
     }
+  }
+  peers = temp;
+}
+
+void DefaultPeerStorage::onErasingPeer(const PeerHandle& peer)
+{
+  removedPeerSessionDownloadLength += peer->getSessionDownloadLength();
+  removedPeerSessionUploadLength += peer->getSessionUploadLength();
+}
+
+void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
+{
+  Peers::iterator itr = find(peers.begin(), peers.end(), peer);
+  if(itr == peers.end()) {
+    itr = find(incomingPeers.begin(), incomingPeers.end(), peer);
+    if(itr == peers.end()) {
+      // do nothing
+    } else {
+      // erase incoming peer because we cannot connect to it with port number
+      // (*itr)->port. It is not the listening port.
+      onErasingPeer(*itr);
+      incomingPeers.erase(itr);
+    }
+  } else {
+    peer->startBadCondition();
+    peer->resetStatus();
+    peers.erase(itr);
+    peers.push_back(peer);
   }
 }

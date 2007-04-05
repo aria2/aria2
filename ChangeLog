@@ -1,3 +1,25 @@
+2007-04-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/PeerAbstractCommand.cc
+	(onAbort): Call PeerStorage::returnPeer()
+	* src/DefaultPeerStorage.h, src/DefaultPeerStorage.cc
+	(incomingPeers): New variable.
+	(addIncomingPeer): New function.
+	(returnPeer): New function.
+	(onErasingPeer): New function.
+	(addPeer): push_back -> push_front
+	(getActivePeers): Rewritten.
+	(calculateStat): Rewritten.
+	* src/PeerStorage.h
+	(TransferStat::copy): New function.
+	(TransferStat::TransferStat): New function.
+	(TransferStat::operator=): New function.
+	(addIncomingPeer): New function.
+	(returnPeer): New function.
+	* src/PeerListenCommand.cc
+	(execute): Use PeerStorage::addIncomingPeer() instead of
+	Peer::addPeer().
+
 2007-04-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Connect to a peer actively when download speed is lower than specified

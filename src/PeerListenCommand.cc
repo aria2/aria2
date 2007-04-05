@@ -80,7 +80,7 @@ bool PeerListenCommand::execute() {
 	PeerHandle peer = PeerHandle(new Peer(peerInfo.first, peerInfo.second,
 					      btContext->getPieceLength(),
 					      btContext->getTotalLength()));
-	if(peerStorage->addPeer(peer)) {
+	if(peerStorage->addIncomingPeer(peer)) {
 	  int newCuid =  btRuntime->getNewCuid();
 	  peer->cuid = newCuid;
 	  PeerInteractionCommand* command =

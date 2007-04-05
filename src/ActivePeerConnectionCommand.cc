@@ -39,7 +39,7 @@ bool ActivePeerConnectionCommand::execute() {
   if(btRuntime->isHalt()) {
     return true;
   }
-  if(checkPoint.elapsed(interval)) {
+  if(!pieceStorage->downloadFinished() && checkPoint.elapsed(interval)) {
     checkPoint.reset();
 
     TransferStat tstat = peerStorage->calculateStat();
