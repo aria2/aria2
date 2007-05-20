@@ -81,7 +81,6 @@ private:
   bool parseUrl(const string& url);
 public:
   CookieBox* cookieBox;
-  bool isTorrent;
 public:
   Request();
   virtual ~Request();

@@ -41,6 +41,7 @@ class HttpProxyRequestCommand : public AbstractProxyRequestCommand {
 public:
   HttpProxyRequestCommand(int cuid,
 			  const RequestHandle& req,
+			  RequestGroup* requestGroup,
 			  DownloadEngine* e,
 			  const SocketHandle& s);
   virtual ~HttpProxyRequestCommand();

@@ -89,12 +89,6 @@ public:
 
   int64_t getEntityLength() const;
 
-  /**
-   * Compares actual filename with specified expectedFilename.
-   * The actual filename is the string returned from determinFilename().
-   */
-  void validateFilename(const string& expectedFilename) const;
-
   void setHttpHeader(const HttpHeaderHandle& httpHeader)
   {
     this->httpHeader = httpHeader;

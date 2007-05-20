@@ -36,10 +36,13 @@
 #include "prefs.h"
 #include "DefaultDiskWriter.h"
 #include "InitiateConnectionCommandFactory.h"
-#include "ByteArrayDiskWriter.h"
 #include "Util.h"
 #include "FileAllocator.h"
 #include "FileAllocationMonitor.h"
+#include "FillRequestGroupCommand.h"
+#include "CUIDCounter.h"
+#include "FileAllocationDispatcherCommand.h"
+#include "FileAllocationMan.h"
 #ifdef ENABLE_BITTORRENT
 # include "PeerListenCommand.h"
 # include "TrackerWatcherCommand.h"
@@ -60,24 +63,51 @@
 
 ConsoleDownloadEngine*
 DownloadEngineFactory::newConsoleEngine(const Option* op,
+					const RequestGroups& requestGroups)
+{
+  RequestGroups workingSet;
+  RequestGroups reservedSet;
+  if(op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS) < (int32_t)requestGroups.size()) {
+    copy(requestGroups.begin(), requestGroups.begin()+op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS), back_inserter(workingSet));
+    copy(requestGroups.begin()+op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS),
+	 requestGroups.end(), back_inserter(reservedSet));
+  } else {
+    workingSet = requestGroups;
+  }
+
+  ConsoleDownloadEngine* e = new ConsoleDownloadEngine();
+  e->option = op;
+  RequestGroupManHandle requestGroupMan = new RequestGroupMan(workingSet,
+							      op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS));
+  requestGroupMan->addReservedGroup(reservedSet);
+  e->_requestGroupMan = requestGroupMan;
+  e->_fileAllocationMan = new FileAllocationMan();
+
+  e->commands.push_back(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e, 1));
+  e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e));
+  return e;
+}
+
+ConsoleDownloadEngine*
+DownloadEngineFactory::newConsoleEngine(const Option* op,
 					const Requests& requests,
 					const Requests& reserved)
 {
   ConsoleDownloadEngine* e = new ConsoleDownloadEngine();
   e->option = op;
-  e->segmentMan = new SegmentMan();
-  e->segmentMan->diskWriter = DefaultDiskWriter::createNewDiskWriter(op);
-  e->segmentMan->dir = op->get(PREF_DIR);
-  e->segmentMan->ufilename = op->get(PREF_OUT);
-  e->segmentMan->option = op;
-  e->segmentMan->reserved = reserved;
+//   e->segmentMan = new SegmentMan();
+//   e->segmentMan->diskWriter = DefaultDiskWriter::createNewDiskWriter(op);
+//   e->segmentMan->dir = op->get(PREF_DIR);
+//   e->segmentMan->ufilename = op->get(PREF_OUT);
+//   e->segmentMan->option = op;
+//   e->segmentMan->reserved = reserved;
   
-  int cuidCounter = 1;
-  for(Requests::const_iterator itr = requests.begin();
-      itr != requests.end();
-      itr++, cuidCounter++) {
-    e->commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuidCounter, *itr, e));
-  }
+//   int cuidCounter = 1;
+//   for(Requests::const_iterator itr = requests.begin();
+//       itr != requests.end();
+//       itr++, cuidCounter++) {
+//     e->commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuidCounter, *itr, e));
+//   }
   return e;
 }
 
@@ -89,10 +119,12 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
 {
   TorrentConsoleDownloadEngine* te = new TorrentConsoleDownloadEngine();
   te->option = op;
-  ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
-  te->segmentMan = new SegmentMan();
-  te->segmentMan->diskWriter = byteArrayDiskWriter;
-  te->segmentMan->option = op;
+  RequestGroupManHandle requestGroupMan = new RequestGroupMan();
+  te->_requestGroupMan = requestGroupMan;
+  //  ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
+//   te->segmentMan = new SegmentMan();
+//   te->segmentMan->diskWriter = byteArrayDiskWriter;
+//   te->segmentMan->option = op;
   BtRuntimeHandle btRuntime(new BtRuntime());
   BtRegistry::registerBtRuntime(btContext->getInfoHashAsString(), btRuntime);
 

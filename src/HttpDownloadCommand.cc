@@ -39,18 +39,19 @@
 
 HttpDownloadCommand::HttpDownloadCommand(int cuid,
 					 const RequestHandle req,
+					 RequestGroup* requestGroup,
 					 DownloadEngine* e,
 					 const SocketHandle& socket)
-  :DownloadCommand(cuid, req, e, socket) {}
+  :DownloadCommand(cuid, req, requestGroup, e, socket) {}
 
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
 bool HttpDownloadCommand::prepareForNextSegment() {
-  if(e->segmentMan->finished()) {
+  if(_requestGroup->getSegmentMan()->finished()) {
     return true;
   } else {
     if(req->isKeepAlive()) {
-      Command* command = new HttpRequestCommand(cuid, req, e, socket);
+      Command* command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
       e->commands.push_back(command);
       return true;
     } else {

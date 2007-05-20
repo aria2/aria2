@@ -37,6 +37,7 @@
 
 #include "DiskWriter.h"
 #include "DiskAdaptor.h"
+#include "FatalException.h"
 
 class DiskAdaptorWriter : public DiskWriter {
 private:
@@ -81,6 +82,16 @@ public:
 			       const MessageDigestContext::DigestAlgo& algo)
   {
     return diskAdaptor->messageDigest(offset, length, algo);
+  }
+
+  virtual void truncate(int64_t length)
+  {
+    throw new FatalException("DiskAdaptorWriter::truncate() is not implemented yet.");
+  }
+
+  virtual int64_t size() const
+  {
+    throw new FatalException("DiskAdaptorWriter::size() is not implemented yet.");
   }
 };
 

@@ -38,6 +38,7 @@
 #include "SleepCommand.h"
 #include "prefs.h"
 #include "RequestFactory.h"
+#include "TrackerSegmentManFactory.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 					     TorrentDownloadEngine* e,
@@ -66,9 +67,9 @@ Command* TrackerWatcherCommand::createCommand() {
   if(btAnnounce->isAnnounceReady()) {
     command = createRequestCommand(btAnnounce->getAnnounceUrl());
     btAnnounce->announceStart(); // inside it, trackers++.
-  } else if(e->segmentMan->errors > 0) {
+  } else if(e->_requestGroupMan->getErrors() > 0) {
     btAnnounce->announceFailure(); // inside it, trackers = 0.
-    e->segmentMan->init();
+    e->_requestGroupMan->removeStoppedGroup();
     if(btAnnounce->isAllAnnounceFailed()) {
       btAnnounce->resetAnnounce();
       // sleep a few seconds.
@@ -83,12 +84,18 @@ Command* TrackerWatcherCommand::createCommand() {
 
 Command* TrackerWatcherCommand::createRequestCommand(const string& url)
 {
-  RequestHandle req = RequestFactorySingletonHolder::instance()->createRequest();
-  req->setUrl(url);
-  req->isTorrent = true;
-  Command* command =
-    InitiateConnectionCommandFactory::createInitiateConnectionCommand(btRuntime->getNewCuid(), req, e);
+  RequestGroupHandle rg = new RequestGroup(url, e->option);
+  rg->isTorrent = true;
+  rg->setSegmentManFactory(new TrackerSegmentManFactory(e->option));
+  e->_requestGroupMan->addRequestGroup(rg);
+  Commands commands = e->_requestGroupMan->getInitialCommands(e);
+
+  if(commands.empty()) {
+    logger->error("CUID#%d - Cannot create tracker request.");
+    return 0;
+  }
+
   logger->info("CUID#%d - Creating new tracker request command #%d", cuid,
-	       command->getCuid());
-  return command;
+	       commands.front()->getCuid());
+  return commands.front();
 }

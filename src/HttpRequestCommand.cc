@@ -39,9 +39,10 @@
 
 HttpRequestCommand::HttpRequestCommand(int cuid,
 				       const RequestHandle& req,
+				       RequestGroup* requestGroup,
 				       DownloadEngine* e,
 				       const SocketHandle& s)
-  :AbstractCommand(cuid, req, e, s) {
+  :AbstractCommand(cuid, req, requestGroup, e, s) {
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
@@ -60,14 +61,14 @@ bool HttpRequestCommand::executeInternal() {
   httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setSegment(segment);
-  httpRequest->setEntityLength(e->segmentMan->totalSize);
+  httpRequest->setEntityLength(_requestGroup->getSegmentMan()->totalSize);
   httpRequest->configure(e->option);
 
   HttpConnectionHandle httpConnection = new HttpConnection(cuid, socket, e->option);
 
   httpConnection->sendRequest(httpRequest);
 
-  Command* command = new HttpResponseCommand(cuid, req, httpConnection, e, socket);
+  Command* command = new HttpResponseCommand(cuid, req, _requestGroup, httpConnection, e, socket);
   e->commands.push_back(command);
   return true;
 }

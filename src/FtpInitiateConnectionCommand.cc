@@ -43,10 +43,12 @@
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
 							   const RequestHandle& req,
+							   RequestGroup* requestGroup,
 							   DownloadEngine* e)
-  :AbstractCommand(cuid, req, e)
+  :AbstractCommand(cuid, req, requestGroup, e)
 {
   setTimeout(e->option->getAsInt(PREF_DNS_TIMEOUT));
+  setStatusActive();
   disableReadCheckSocket();
   disableWriteCheckSocket();
 }
@@ -81,9 +83,9 @@ bool FtpInitiateConnectionCommand::executeInternal() {
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     
     if(useHttpProxyGet()) {
-      command = new HttpRequestCommand(cuid, req, e, socket);
+      command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
     } else if(useHttpProxyConnect()) {
-      command = new FtpTunnelRequestCommand(cuid, req, e, socket);
+      command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e, socket);
     } else {
       // TODO
       throw new DlAbortEx("ERROR");
@@ -92,7 +94,7 @@ bool FtpInitiateConnectionCommand::executeInternal() {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		 req->getPort());
     socket->establishConnection(hostname, req->getPort());
-    command = new FtpNegotiationCommand(cuid, req, e, socket);
+    command = new FtpNegotiationCommand(cuid, req, _requestGroup, e, socket);
   }
   e->commands.push_back(command);
   return true;

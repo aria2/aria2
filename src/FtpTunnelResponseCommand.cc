@@ -37,14 +37,15 @@
 
 FtpTunnelResponseCommand::FtpTunnelResponseCommand(int cuid,
 						   const RequestHandle& req,
+						   RequestGroup* requestGroup,
 						   const HttpConnectionHandle& httpConnection,
 						   DownloadEngine* e,
 						   const SocketHandle& s)
-  :AbstractProxyResponseCommand(cuid, req, httpConnection,e, s) {}
+  :AbstractProxyResponseCommand(cuid, req, requestGroup, httpConnection,e, s) {}
 
 FtpTunnelResponseCommand::~FtpTunnelResponseCommand() {}
 
 Command* FtpTunnelResponseCommand::getNextCommand()
 {
-  return new FtpNegotiationCommand(cuid, req, e, socket);
+  return new FtpNegotiationCommand(cuid, req, _requestGroup, e, socket);
 }

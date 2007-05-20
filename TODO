@@ -21,3 +21,19 @@
 * Fix DefaultBtProgressInfoFile.cc: save(), load()
 * remove blockIndex
 * Add seed mode.
+
+* Add ChecksumCommand
+* Add fancy console read out. like this:
+100K/300M(10%)(3cn)(3more) 100KB/s [FileAlloc:35MB/40MB(90%)][Checksum:10MB/20MB(50%)]
+* exit status: all downloads have been successful-> EXIT_SUCCESS,
+		some of downloads have been failed -> EXIT_FAILURE
+* consider life cycle of requestGroup and segmentMan
+* use hintFilename and hintTotalLength if these are provided.
+	-> test against ftp downloads
+* make sure that the same file name is not used at the same time.
+* Add a option like "line-feed-readout" which causes readout to be printed with proper line feed.
+* Rewrite ByteArrayDiskWriter, TrackerUpdateCommand with stringstream
+* Make trakcerwatchercommand and trackerUploadCommand poses requestGroup 
+* Do not use ufilename in multi-simultaneous download mode.
+* Merge umask patch.
+https://sourceforge.net/tracker/index.php?func=detail&aid=1718641&group_id=159897&atid=813673

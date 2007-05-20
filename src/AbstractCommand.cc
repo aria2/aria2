@@ -41,31 +41,35 @@
 #include "SleepCommand.h"
 #include "prefs.h"
 #include "DNSCache.h"
+#include "FatalException.h"
 
 AbstractCommand::AbstractCommand(int cuid,
 				 const RequestHandle& req,
+				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  Command(cuid), req(req), e(e), socket(s),
+  Command(cuid), req(req), _requestGroup(requestGroup), e(e), socket(s),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   nameResolverCheck(false) {
   
   setReadCheckSocket(socket);
   timeout = this->e->option->getAsInt(PREF_TIMEOUT);
+  ++_requestGroup->numConnection;
 }
 
 AbstractCommand::~AbstractCommand() {
   disableReadCheckSocket();
   disableWriteCheckSocket();
+  --_requestGroup->numConnection;
 }
 
 bool AbstractCommand::execute() {
   try {
-    if(e->segmentMan->finished()) {
+    if(_requestGroup->getSegmentMan()->finished()) {
       logger->debug("CUID#%d - finished.", cuid);
       return true;
     }
-    PeerStatHandle peerStat = e->segmentMan->getPeerStat(cuid);
+    PeerStatHandle peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
     if(peerStat.get()) {
       if(peerStat->getStatus() == PeerStat::REQUEST_IDLE) {
 	logger->info("CUID#%d - Request idle.", cuid);
@@ -82,10 +86,10 @@ bool AbstractCommand::execute() {
 #endif // ENABLE_ASYNC_DNS
        !checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck) {
       checkPoint.reset();
-      if(e->segmentMan->downloadStarted) {
+      if(_requestGroup->getSegmentMan()->downloadStarted) {
 	// TODO Segment::isNull(), Change method name, it is very confusing.
 	if(segment->isNull()) {
-	  segment = e->segmentMan->getSegment(cuid);
+	  segment = _requestGroup->getSegmentMan()->getSegment(cuid);
 	  if(segment.isNull()) {
 	    logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
 	    return prepareForRetry(1);
@@ -101,12 +105,19 @@ bool AbstractCommand::execute() {
       e->commands.push_back(this);
       return false;
     }
+  } catch(FatalException* err) {
+    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
+    onAbort(err);
+    delete(err);
+    req->resetUrl();
+    _requestGroup->getSegmentMan()->errors++;
+    return true;    
   } catch(DlAbortEx* err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
     onAbort(err);
     delete(err);
     req->resetUrl();
-    e->segmentMan->errors++;
+    _requestGroup->getSegmentMan()->errors++;
     tryReserved();
     return true;
   } catch(DlRetryEx* err) {
@@ -120,7 +131,7 @@ bool AbstractCommand::execute() {
     delete(err);
     if(isAbort) {
       logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
-      e->segmentMan->errors++;
+      _requestGroup->getSegmentMan()->errors++;
       tryReserved();
       return true;
     } else {
@@ -130,17 +141,13 @@ bool AbstractCommand::execute() {
 }
 
 void AbstractCommand::tryReserved() {
-  if(!e->segmentMan->reserved.empty()) {
-    RequestHandle req = e->segmentMan->reserved.front();
-    e->segmentMan->reserved.pop_front();
-    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
-    e->commands.push_back(command);
-  }
+  Commands commands = _requestGroup->getNextCommand(e, 1);
+  e->addCommand(commands);
 }
 
 bool AbstractCommand::prepareForRetry(int wait) {
-  e->segmentMan->cancelSegment(cuid);
-  Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, e);
+  _requestGroup->getSegmentMan()->cancelSegment(cuid);
+  Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, _requestGroup, e);
   if(wait == 0) {
     e->commands.push_back(command);
   } else {
@@ -150,10 +157,10 @@ bool AbstractCommand::prepareForRetry(int wait) {
   return true;
 }
 
-void AbstractCommand::onAbort(RecoverableException* ex) {
+void AbstractCommand::onAbort(Exception* ex) {
   logger->debug(MSG_UNREGISTER_CUID, cuid);
-  //e->segmentMan->unregisterId(cuid);
-  e->segmentMan->cancelSegment(cuid);
+  //_segmentMan->unregisterId(cuid);
+  _requestGroup->getSegmentMan()->cancelSegment(cuid);
 }
 
 void AbstractCommand::disableReadCheckSocket() {

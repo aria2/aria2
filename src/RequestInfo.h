@@ -107,7 +107,7 @@ protected:
   }
   
   void printDownloadAbortMessage() {
-    printf(_("\nThe download was not complete because of errors."
+    printf(_("\nSome downloads were not complete because of errors."
 	     " Check the log.\n"
 	     "aria2 will resume download if the transfer is restarted."));
   }

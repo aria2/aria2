@@ -90,6 +90,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new BooleanOptionHandler(PREF_CONTINUE));
   handlers.push_back(new DefaultOptionHandler(PREF_USER_AGENT));
   handlers.push_back(new BooleanOptionHandler(PREF_NO_NETRC));
+  handlers.push_back(new DefaultOptionHandler(PREF_INPUT_FILE));
 
   return handlers;
 }

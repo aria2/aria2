@@ -55,9 +55,10 @@
 #define MSG_RECEIVE_PEER_MESSAGE "CUID#%d - From: %s:%d %s"
 #define MSG_GOT_NEW_PIECE _("CUID#%d - we got new piece. index=%d")
 #define MSG_GOT_WRONG_PIECE _("CUID#%d - we got wrong piece. index=%d")
+#define MSG_DOWNLOAD_NOT_COMPLETE _("CUID#%d - Download not complete: %s")
+#define MSG_DOWNLOAD_ALREADY_COMPLETED _("CUID#%d - Download already completed: %s")
 
 #define MSG_TRACKER_WARNING_MESSAGE _("Tracker returned warning message: %s")
-
 #define MSG_SEGMENT_FILE_EXISTS _("The segment file %s exists.")
 #define MSG_SEGMENT_FILE_DOES_NOT_EXIST _("The segment file %s does not exist.")
 #define MSG_SAVING_SEGMENT_FILE _("Saving the segment file %s")
@@ -65,6 +66,7 @@
 #define MSG_LOADING_SEGMENT_FILE _("Loading the segment file %s.")
 #define MSG_LOADED_SEGMENT_FILE _("The segment file was loaded successfully.")
 #define MSG_NO_URL_TO_DOWNLOAD _("No URI to download. Download aborted.")
+#define MSG_FILE_ALREADY_EXISTS _("File %s exists, but %s does not exist. The download was canceled in order to prevent your file from being truncated to 0. If you are sure to download file all over again, then delete it or add --allow-overwrite=true option and restart aria2.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
@@ -75,12 +77,12 @@
 #define EX_NO_STATUS_HEADER _("No status header.")
 #define EX_PROXY_CONNECTION_FAILED _("Proxy connection failed.")
 #define EX_CONNECTION_FAILED _("Connection failed.")
-#define EX_FILENAME_MISMATCH _("The requested filename and the previously registered one are not same. %s != %s")
+#define EX_FILENAME_MISMATCH _("The requested filename and the previously registered one are not same. Expected:%s Actual:%s")
 #define EX_BAD_STATUS _("The response status is not successful. status=%d")
 #define EX_TOO_LARGE_FILE _("Too large file size. size=%lld")
 #define EX_TRANSFER_ENCODING_NOT_SUPPORTED _("Transfer encoding %s is not supported.")
 #define EX_SSL_INIT_FAILURE _("SSL initialization failed.")
-#define EX_SIZE_MISMATCH _("Size mismatch %lld != %lld")
+#define EX_SIZE_MISMATCH _("Size mismatch Expected:%lld Actual:%lld")
 #define EX_AUTH_FAILED _("Authorization failed.")
 #define EX_GOT_EOF _("Got EOF from the server.")
 #define EX_EOF_FROM_PEER _("Got EOF from peer.")
@@ -112,8 +114,8 @@
 #define EX_SOCKET_SEND _("Failed to send data, cause: %s")
 #define EX_SOCKET_RECV _("Failed to receive data, cause: %s")
 #define EX_SOCKET_PEEK _("Failed to peek data, cause: %s")
-#define EX_FILE_ALREADY_EXISTS _("File %s exists, but %s does not exist. The download was canceled in order to prevent your file from being truncated to 0. If you are sure to download file all over again, then delete it or add --allow-overwrite=true option and restart aria2.")
+#define EX_FILE_ALREADY_EXISTS _("File %s exists, but %s does not exist.")
 #define EX_INVALID_PAYLOAD_SIZE _("Invalid payload size for %s, size=%d. It should be %d.")
 #define EX_INVALID_BT_MESSAGE_ID _("Invalid ID=%d for %s. It should be %d.")
-#define EX_INVALID_CHUNK_CHECKSUM _("Chunk checksum validation failed. checksumIndex=%d, offset=%lld, length=%d, expectedHash=%s, actualHash=%s")
+#define EX_INVALID_CHUNK_CHECKSUM _("Chunk checksum validation failed. checksumIndex=%d, offset=%lld, expectedHash=%s, actualHash=%s")
 #endif // _D_MESSAGE_H_

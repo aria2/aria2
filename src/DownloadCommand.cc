@@ -44,16 +44,17 @@
 
 DownloadCommand::DownloadCommand(int cuid,
 				 const RequestHandle req,
+				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  AbstractCommand(cuid, req, e, s),
+  AbstractCommand(cuid, req, requestGroup, e, s),
   peerStat(0),
   transferDecoder(0)
 {
-  peerStat = this->e->segmentMan->getPeerStat(cuid);
+  peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
   if(!peerStat.get()) {
     peerStat = new PeerStat(cuid);
-    this->e->segmentMan->registerPeerStat(peerStat);
+    _requestGroup->getSegmentMan()->registerPeerStat(peerStat);
   }
   peerStat->downloadStart();
 }
@@ -64,8 +65,9 @@ DownloadCommand::~DownloadCommand() {
 }
 
 bool DownloadCommand::executeInternal() {
+  // TODO we need to specify the sum of all segmentMan's download speed here.
   if(maxDownloadSpeedLimit > 0 &&
-     maxDownloadSpeedLimit < e->segmentMan->calculateDownloadSpeed()) {
+     maxDownloadSpeedLimit < _requestGroup->getSegmentMan()->calculateDownloadSpeed()) {
     usleep(1);
     e->commands.push_back(this);
     return false;
@@ -75,16 +77,16 @@ bool DownloadCommand::executeInternal() {
   socket->readData(buf, bufSize);
 
   if(transferDecoder.isNull()) {
-    e->segmentMan->diskWriter->writeData(buf, bufSize,
-					 segment->getPositionToWrite());
+    _requestGroup->getSegmentMan()->diskWriter->writeData(buf, bufSize,
+							  segment->getPositionToWrite());
     segment->writtenLength += bufSize;
     peerStat->updateDownloadLength(bufSize);
   } else {
     int32_t infbufSize = 16*1024;
     char infbuf[infbufSize];
     transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
-    e->segmentMan->diskWriter->writeData(infbuf, infbufSize,
-					 segment->getPositionToWrite());
+    _requestGroup->getSegmentMan()->diskWriter->writeData(infbuf, infbufSize,
+							  segment->getPositionToWrite());
     segment->writtenLength += infbufSize;
     peerStat->updateDownloadLength(infbufSize);
   }
@@ -98,7 +100,7 @@ bool DownloadCommand::executeInternal() {
 			  lowestDownloadSpeedLimit);
     }
   }
-  if(e->segmentMan->totalSize != 0 && bufSize == 0) {
+  if(_requestGroup->getSegmentMan()->totalSize != 0 && bufSize == 0) {
     throw new DlRetryEx(EX_GOT_EOF);
   }
   if(!transferDecoder.isNull() && transferDecoder->finished()
@@ -106,10 +108,10 @@ bool DownloadCommand::executeInternal() {
      || bufSize == 0) {
     if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
-    e->segmentMan->completeSegment(cuid, segment);
+    _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
 #ifdef ENABLE_MESSAGE_DIGEST
     if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE) {
-      e->segmentMan->tryChunkChecksumValidation(segment);
+      _requestGroup->getSegmentMan()->tryChunkChecksumValidation(segment);
     }
 #endif // ENABLE_MESSAGE_DIGEST
     // this unit is going to download another segment.
@@ -122,23 +124,25 @@ bool DownloadCommand::executeInternal() {
 }
 
 bool DownloadCommand::prepareForNextSegment() {
-  if(e->segmentMan->finished()) {
+  if(_requestGroup->getSegmentMan()->finished()) {
     return true;
   } else {
     // Merge segment with next segment, if segment.index+1 == nextSegment.index
     SegmentHandle tempSegment = segment;
     while(1) {
-      SegmentHandle nextSegment = e->segmentMan->getSegment(cuid,
-							    tempSegment->index+1);
+      SegmentHandle nextSegment =
+	_requestGroup->getSegmentMan()->getSegment(cuid,
+						   tempSegment->index+1);
       if(nextSegment.isNull()) {
 	break;
       } else {
 	if(nextSegment->writtenLength > 0) {
 	  return prepareForRetry(0);
 	}
-	nextSegment->writtenLength = tempSegment->writtenLength-tempSegment->length;
+	nextSegment->writtenLength =
+	  tempSegment->writtenLength-tempSegment->length;
 	if(nextSegment->complete()) {
-	  e->segmentMan->completeSegment(cuid, nextSegment);
+	  _requestGroup->getSegmentMan()->completeSegment(cuid, nextSegment);
 	  tempSegment = nextSegment;
 	} else {
 	  segment = nextSegment;

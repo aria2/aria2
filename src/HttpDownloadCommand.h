@@ -41,7 +41,10 @@ class HttpDownloadCommand : public DownloadCommand {
 protected:
   virtual bool prepareForNextSegment();
 public:
-  HttpDownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  HttpDownloadCommand(int cuid,
+		      const RequestHandle req,
+		      RequestGroup* requestGroup,
+		      DownloadEngine* e,
 		      const SocketHandle& s);
   virtual ~HttpDownloadCommand();
 };

@@ -63,7 +63,9 @@ private:
     SEQ_RECV_RETR,
     SEQ_NEGOTIATION_COMPLETED,
     SEQ_RETRY,
-    SEQ_HEAD_OK
+    SEQ_HEAD_OK,
+    SEQ_DOWNLOAD_ALREADY_COMPLETED,
+    SEQ_FILE_PREPARATION
   };
   bool recvGreeting();
   bool sendUser();
@@ -96,6 +98,7 @@ protected:
 public:
   FtpNegotiationCommand(int cuid,
 			const RequestHandle& req,
+			RequestGroup* requestGroup,
 			DownloadEngine* e,
 			const SocketHandle& s);
   virtual ~FtpNegotiationCommand();

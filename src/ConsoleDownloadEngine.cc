@@ -43,6 +43,7 @@ ConsoleDownloadEngine::ConsoleDownloadEngine() {}
 ConsoleDownloadEngine::~ConsoleDownloadEngine() {}
 
 void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long int totalSize) {
+  /*
   printf("\r                                                                             ");
   printf("\r");
   printf("%s/%s Bytes %d%% %s %.2f KB/s %d connections",
@@ -53,6 +54,45 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
 	 speed/1024.0,
 	 commands.size());
   fflush(stdout);
+  */
+
+  cout << "\r                                                                             ";
+  cout << "\r";
+  if(_requestGroupMan->countRequestGroup() > 0) {
+    RequestGroupHandle firstRequestGroup = _requestGroupMan->getRequestGroup(0);
+    cout << "[";
+    cout << Util::llitos(firstRequestGroup->getDownloadLength(), true)
+	 << "/"
+	 << Util::llitos(firstRequestGroup->getTotalLength(), true);
+    if(firstRequestGroup->getTotalLength() > 0) {
+      cout << "("
+	   << 100*firstRequestGroup->getDownloadLength()/firstRequestGroup->getTotalLength()
+	   << "%)";
+    }
+    cout << "("
+	 << firstRequestGroup->numConnection
+	 << "cn)";
+    if(_requestGroupMan->countRequestGroup() > 1) {
+      cout << "("
+	   << _requestGroupMan->countRequestGroup()-1
+	   << "more...)";
+    }
+    cout << "]";
+  }
+  cout << "[" << speed/1024.0 << "KB/s" << "]";
+
+  FileAllocationEntryHandle entry = _fileAllocationMan->getCurrentFileAllocationEntry();
+  if(!entry.isNull()) {
+    cout << "[FileAlloc:"
+	 << entry->getOffset()
+	 << "/"
+	 << entry->getRequestGroup()->getTotalLength()
+	 << "("
+	 << entry->getOffset()/(entry->getRequestGroup()->getTotalLength()/100)
+	 << "%)"
+	 << "]";
+  }
+  cout << flush;
 }
 
 void ConsoleDownloadEngine::initStatistics() {
@@ -67,7 +107,7 @@ void ConsoleDownloadEngine::initStatistics() {
 }
 
 void ConsoleDownloadEngine::calculateStatistics() {
-  long long int dlSize = segmentMan->getDownloadLength();
+  long long int dlSize = _requestGroupMan->getDownloadLength();
   if(!isStartupLengthSet && dlSize > 0) {
     startupLength = dlSize;
     psize = dlSize;
@@ -87,32 +127,38 @@ void ConsoleDownloadEngine::calculateStatistics() {
     if(elapsedFromStartup > 0) {
       avgSpeed = (int)((dlSize-startupLength)/elapsedFromStartup);
     }
+    int64_t totalLength = _requestGroupMan->getTotalLength();
     if(avgSpeed < 0) {
       avgSpeed = 0;
-    } else if(avgSpeed != 0 && segmentMan->totalSize > 0) {
-      eta = (segmentMan->totalSize-dlSize)/avgSpeed;
+    } else if(avgSpeed != 0 && totalLength > 0) {
+      eta = (totalLength-dlSize)/avgSpeed;
     }
     
-    sendStatistics(dlSize, segmentMan->totalSize);
+    sendStatistics(dlSize, totalLength);
   }
 }
 
 void ConsoleDownloadEngine::onEndOfRun() {
-  segmentMan->diskWriter->closeFile();
-  if(segmentMan->finished()) {
-    segmentMan->remove();
-  } else {
-    segmentMan->save();
-  }
+  _requestGroupMan->closeFile();
+//   if(segmentMan->finished()) {
+//     segmentMan->remove();
+//   } else {
+//     segmentMan->save();
+//   }
 }
 
 void ConsoleDownloadEngine::afterEachIteration() {
   if(haltRequested) {
     printf(_("\nstopping application...\n"));
     fflush(stdout);
-    segmentMan->save();
-    segmentMan->diskWriter->closeFile();
+    _requestGroupMan->save();
+    _requestGroupMan->closeFile();
     printf(_("done\n"));
     exit(EXIT_SUCCESS);
   }
+}
+
+void ConsoleDownloadEngine::fillCommand()
+{
+  addCommand(_requestGroupMan->getInitialCommands(this));
 }

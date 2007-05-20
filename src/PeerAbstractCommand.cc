@@ -96,7 +96,7 @@ bool PeerAbstractCommand::prepareForRetry(int wait) {
   return true;
 }
 
-void PeerAbstractCommand::onAbort(RecoverableException* ex) {
+void PeerAbstractCommand::onAbort(Exception* ex) {
   peerStorage->returnPeer(peer);
 }
 

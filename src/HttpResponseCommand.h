@@ -51,6 +51,7 @@ protected:
 public:
   HttpResponseCommand(int32_t cuid,
 		      const RequestHandle& req,
+		      RequestGroup* requestGroup,
 		      const HttpConnectionHandle& httpConnection,
 		      DownloadEngine* e,
 		      const SocketHandle& s);

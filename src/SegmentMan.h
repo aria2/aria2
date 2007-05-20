@@ -245,6 +245,10 @@ public:
    * Initializes bitfield with the provided length parameters.
    */
   void initBitfield(int32_t segmentLength, int64_t totalLength);
+  BitfieldMan* getBitfield() const
+  {
+    return bitfield;
+  }
   /**
    * Returns true if the segment whose index is index has been downloaded.
    */
@@ -279,9 +283,9 @@ public:
    */
   int32_t calculateDownloadSpeed() const;
 
-  bool fileExists();
+  bool fileExists() const;
 
-  bool shouldCancelDownloadForSafety();
+  bool shouldCancelDownloadForSafety() const;
 
   void markAllPiecesDone();
 
@@ -296,4 +300,5 @@ public:
 #endif // ENABLE_MESSAGE_DIGEST
 };
 
+typedef SharedHandle<SegmentMan> SegmentManHandle;
 #endif // _D_SEGMENT_MAN_H_

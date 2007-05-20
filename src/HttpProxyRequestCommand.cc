@@ -37,13 +37,14 @@
 
 HttpProxyRequestCommand::HttpProxyRequestCommand(int cuid,
 						 const RequestHandle& req,
+						 RequestGroup* requestGroup,
 						 DownloadEngine* e,
 						 const SocketHandle& s)
-  :AbstractProxyRequestCommand(cuid, req, e, s) {}
+  :AbstractProxyRequestCommand(cuid, req, requestGroup, e, s) {}
 
 HttpProxyRequestCommand::~HttpProxyRequestCommand() {}
 
 Command* HttpProxyRequestCommand::getNextCommand()
 {
-  return new HttpProxyResponseCommand(cuid, req, httpConnection, e, socket);
+  return new HttpProxyResponseCommand(cuid, req, _requestGroup, httpConnection, e, socket);
 }

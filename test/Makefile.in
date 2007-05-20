@@ -57,47 +57,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) PeerTest.$(OBJEXT) \
-	DefaultPeerStorageTest.$(OBJEXT) RequestFactoryTest.$(OBJEXT) \
-	NetrcAuthResolverTest.$(OBJEXT) \
-	DefaultAuthResolverTest.$(OBJEXT) RequestTest.$(OBJEXT) \
-	HttpRequestTest.$(OBJEXT) UtilTest.$(OBJEXT) \
-	OptionHandlerTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
-	BitfieldManTest.$(OBJEXT) GlowFileAllocatorTest.$(OBJEXT) \
-	NetrcTest.$(OBJEXT) SingletonHolderTest.$(OBJEXT) \
-	HttpHeaderTest.$(OBJEXT) HttpResponseTest.$(OBJEXT) \
-	SharedHandleTest.$(OBJEXT) ChunkedEncodingTest.$(OBJEXT) \
-	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) \
-	CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
-	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
-	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
-	PeerMessageUtilTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
-	MultiDiskAdaptorTest.$(OBJEXT) \
-	Xml2MetalinkProcessorTest.$(OBJEXT) MetalinkerTest.$(OBJEXT) \
-	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
-	ShareRatioSeedCriteriaTest.$(OBJEXT) \
-	TimeSeedCriteriaTest.$(OBJEXT) SpeedCalcTest.$(OBJEXT) \
-	DefaultPeerListProcessorTest.$(OBJEXT) \
-	AnnounceListTest.$(OBJEXT) TrackerWatcherCommandTest.$(OBJEXT) \
-	DefaultBtContextTest.$(OBJEXT) \
-	DefaultPieceStorageTest.$(OBJEXT) \
-	DefaultBtAnnounceTest.$(OBJEXT) BtRegistryTest.$(OBJEXT) \
-	DefaultBtMessageDispatcherTest.$(OBJEXT) \
-	DefaultBtRequestFactoryTest.$(OBJEXT) \
-	BtAllowedFastMessageTest.$(OBJEXT) \
-	BtBitfieldMessageTest.$(OBJEXT) BtCancelMessageTest.$(OBJEXT) \
-	BtChokeMessageTest.$(OBJEXT) BtHaveAllMessageTest.$(OBJEXT) \
-	BtHaveMessageTest.$(OBJEXT) BtHaveNoneMessageTest.$(OBJEXT) \
-	BtInterestedMessageTest.$(OBJEXT) \
-	BtKeepAliveMessageTest.$(OBJEXT) \
-	BtNotInterestedMessageTest.$(OBJEXT) \
-	BtPieceMessageTest.$(OBJEXT) BtPortMessageTest.$(OBJEXT) \
-	BtRejectMessageTest.$(OBJEXT) BtRequestMessageTest.$(OBJEXT) \
-	BtSuggestPieceMessageTest.$(OBJEXT) \
-	BtUnchokeMessageTest.$(OBJEXT) \
-	BtHandshakeMessageTest.$(OBJEXT) \
-	ConsoleFileAllocationMonitorTest.$(OBJEXT) \
-	ChunkChecksumValidatorTest.$(OBJEXT)
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) \
+	IteratableChunkChecksumValidatorTest.$(OBJEXT)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -109,10 +70,6 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(aria2c_SOURCES)
 DIST_SOURCES = $(aria2c_SOURCES)
 ETAGS = etags
@@ -262,77 +219,79 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
-	PeerTest.cc\
-	DefaultPeerStorageTest.cc\
-	RequestFactoryTest.cc\
-	NetrcAuthResolverTest.cc\
-	DefaultAuthResolverTest.cc\
-	RequestTest.cc\
-	HttpRequestTest.cc\
-	UtilTest.cc\
-	OptionHandlerTest.cc\
-	SegmentManTest.cc\
-	BitfieldManTest.cc\
-	GlowFileAllocatorTest.cc\
-	NetrcTest.cc\
-	SingletonHolderTest.cc\
-	HttpHeaderTest.cc\
-	HttpResponseTest.cc\
-	SharedHandleTest.cc\
-	ChunkedEncodingTest.cc\
-	FileTest.cc\
-	OptionTest.cc\
-	Base64Test.cc\
-	CookieBoxTest.cc\
-	DataTest.cc\
-	DictionaryTest.cc\
-	ListTest.cc\
-	MetaFileUtilTest.cc\
-	ShaVisitorTest.cc\
-	PeerMessageUtilTest.cc\
-	DefaultDiskWriterTest.cc\
-	MultiDiskAdaptorTest.cc\
-	Xml2MetalinkProcessorTest.cc\
-	MetalinkerTest.cc\
-	MetalinkEntryTest.cc\
-	FeatureConfigTest.cc\
-	ShareRatioSeedCriteriaTest.cc\
-	TimeSeedCriteriaTest.cc\
-	SpeedCalcTest.cc\
-	DefaultPeerListProcessorTest.cc\
-	AnnounceListTest.cc\
-	TrackerWatcherCommandTest.cc\
-	DefaultBtContextTest.cc\
-	DefaultPieceStorageTest.cc\
-	DefaultBtAnnounceTest.cc\
-	BtRegistryTest.cc\
-	DefaultBtMessageDispatcherTest.cc\
-	MockPeerStorage.h\
-	DefaultBtRequestFactoryTest.cc\
-	BtAllowedFastMessageTest.cc\
-	BtBitfieldMessageTest.cc\
-	BtCancelMessageTest.cc\
-	BtChokeMessageTest.cc\
-	BtHaveAllMessageTest.cc\
-	BtHaveMessageTest.cc\
-	BtHaveNoneMessageTest.cc\
-	BtInterestedMessageTest.cc\
-	BtKeepAliveMessageTest.cc\
-	BtNotInterestedMessageTest.cc\
-	BtPieceMessageTest.cc\
-	BtPortMessageTest.cc\
-	BtRejectMessageTest.cc\
-	BtRequestMessageTest.cc\
-	BtSuggestPieceMessageTest.cc\
-	BtUnchokeMessageTest.cc\
-	BtHandshakeMessageTest.cc\
-	MockBtMessageDispatcher.h\
-	FixedNumberRandomizer.h\
-	MockBtMessageFactory.h\
-	MockBtMessage.h\
-	ConsoleFileAllocationMonitorTest.cc\
-	ChunkChecksumValidatorTest.cc
+	IteratableChunkChecksumValidatorTest.cc
 
+#	UriFileListParserTest.cc
+# 	PeerTest.cc\
+# 	DefaultPeerStorageTest.cc\
+# 	RequestFactoryTest.cc\
+# 	NetrcAuthResolverTest.cc\
+# 	DefaultAuthResolverTest.cc\
+# 	RequestTest.cc\
+# 	HttpRequestTest.cc\
+# 	UtilTest.cc\
+# 	OptionHandlerTest.cc\
+# 	SegmentManTest.cc\
+# 	BitfieldManTest.cc\
+# 	GlowFileAllocatorTest.cc\
+# 	NetrcTest.cc\
+# 	SingletonHolderTest.cc\
+# 	HttpHeaderTest.cc\
+# 	HttpResponseTest.cc\
+# 	SharedHandleTest.cc\
+# 	ChunkedEncodingTest.cc\
+# 	FileTest.cc\
+# 	OptionTest.cc\
+# 	Base64Test.cc\
+# 	CookieBoxTest.cc\
+# 	DataTest.cc\
+# 	DictionaryTest.cc\
+# 	ListTest.cc\
+# 	MetaFileUtilTest.cc\
+# 	ShaVisitorTest.cc\
+# 	PeerMessageUtilTest.cc\
+# 	DefaultDiskWriterTest.cc\
+# 	MultiDiskAdaptorTest.cc\
+# 	Xml2MetalinkProcessorTest.cc\
+# 	MetalinkerTest.cc\
+# 	MetalinkEntryTest.cc\
+# 	FeatureConfigTest.cc\
+# 	ShareRatioSeedCriteriaTest.cc\
+# 	TimeSeedCriteriaTest.cc\
+# 	SpeedCalcTest.cc\
+# 	DefaultPeerListProcessorTest.cc\
+# 	AnnounceListTest.cc\
+# 	TrackerWatcherCommandTest.cc\
+# 	DefaultBtContextTest.cc\
+# 	DefaultPieceStorageTest.cc\
+# 	DefaultBtAnnounceTest.cc\
+# 	BtRegistryTest.cc\
+# 	DefaultBtMessageDispatcherTest.cc\
+# 	MockPeerStorage.h\
+# 	DefaultBtRequestFactoryTest.cc\
+# 	BtAllowedFastMessageTest.cc\
+# 	BtBitfieldMessageTest.cc\
+# 	BtCancelMessageTest.cc\
+# 	BtChokeMessageTest.cc\
+# 	BtHaveAllMessageTest.cc\
+# 	BtHaveMessageTest.cc\
+# 	BtHaveNoneMessageTest.cc\
+# 	BtInterestedMessageTest.cc\
+# 	BtKeepAliveMessageTest.cc\
+# 	BtNotInterestedMessageTest.cc\
+# 	BtPieceMessageTest.cc\
+# 	BtPortMessageTest.cc\
+# 	BtRejectMessageTest.cc\
+# 	BtRequestMessageTest.cc\
+# 	BtSuggestPieceMessageTest.cc\
+# 	BtUnchokeMessageTest.cc\
+# 	BtHandshakeMessageTest.cc\
+# 	MockBtMessageDispatcher.h\
+# 	FixedNumberRandomizer.h\
+# 	MockBtMessageFactory.h\
+# 	MockBtMessage.h\
+# 	ConsoleFileAllocationMonitorTest.cc\
+# 	ChunkChecksumValidatorTest.cc
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 aria2c_LDADD = ../src/libaria2c.a\
@@ -395,71 +354,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtBitfieldMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCancelMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtChokeMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHandshakeMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHaveAllMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHaveMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHaveNoneMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtInterestedMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtKeepAliveMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtNotInterestedMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtPieceMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtPortMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRegistryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRejectMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRequestMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkChecksumValidatorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncodingTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleFileAllocationMonitorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolverTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtContextTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtMessageDispatcherTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtRequestFactoryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriterTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorageTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GlowFileAllocatorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ListTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtilTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkerTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcAuthResolverTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactoryTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentManTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommandTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidatorTest.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

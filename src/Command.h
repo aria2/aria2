@@ -44,8 +44,9 @@ class Command {
 public:
   enum STATUS {
     STATUS_ALL,
+    STATUS_INACTIVE,
     STATUS_ACTIVE,
-    STATUS_INACTIVE
+    STATUS_REALTIME
   };
 private:
   CommandUuid uuid;
@@ -68,7 +69,13 @@ public:
 
   void setStatusInactive() { this->status = STATUS_INACTIVE; }
 
+  void setStatusRealtime() { this->status = STATUS_REALTIME; }
+
+  void transitStatus();
+
   bool statusMatch(Command::STATUS statusFilter) const;
 };
+
+typedef deque<Command*> Commands;
 
 #endif // _D_COMMAND_H_

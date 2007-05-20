@@ -145,16 +145,3 @@ int64_t HttpResponse::getEntityLength() const
     return httpHeader->getRange()->getEntityLength();
   }
 }
-
-void HttpResponse::validateFilename(const string& expectedFilename) const
-{
-  if(expectedFilename.size() == 0) {
-    return;
-  }
-  string actualFilename = determinFilename();
-  if(expectedFilename != actualFilename) {
-    throw new DlAbortEx(EX_FILENAME_MISMATCH,
-			actualFilename.c_str(),
-			expectedFilename.c_str());
-  }
-}

@@ -47,7 +47,7 @@ protected:
   virtual bool executeInternal();
   virtual bool prepareForRetry(int wait);
   virtual bool prepareForNextPeer(int wait);
-  virtual void onAbort(RecoverableException* ex);
+  virtual void onAbort(Exception* ex);
 public:
   PeerInteractionCommand(int cuid,
 			 const PeerHandle& peer,

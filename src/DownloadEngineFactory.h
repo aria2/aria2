@@ -44,6 +44,10 @@
 class DownloadEngineFactory {
 public:
   static ConsoleDownloadEngine*
+  newConsoleEngine(const Option* op,
+		   const RequestGroups& requestGroups);
+
+  static ConsoleDownloadEngine*
   newConsoleEngine(const Option* option,
 		   const Requests& requests,
 		   const Requests& reserved);

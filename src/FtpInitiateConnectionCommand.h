@@ -52,7 +52,7 @@ private:
 protected:
   virtual bool executeInternal();
 public:
-  FtpInitiateConnectionCommand(int cuid, const RequestHandle& req, DownloadEngine* e);
+  FtpInitiateConnectionCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e);
   virtual ~FtpInitiateConnectionCommand();
 };
 

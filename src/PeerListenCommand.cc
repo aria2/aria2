@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "PeerListenCommand.h"
 #include "PeerInteractionCommand.h"
+#include "RecoverableException.h"
 
 PeerListenCommand::PeerListenCommand(int cuid,
 				     TorrentDownloadEngine* e,

@@ -41,6 +41,7 @@ class HttpProxyResponseCommand : public AbstractProxyResponseCommand {
 public:
   HttpProxyResponseCommand(int cuid,
 			   const RequestHandle& req,
+			   RequestGroup* requestGroup,
 			   const HttpConnectionHandle& httpConnection,
 			   DownloadEngine* e,
 			   const SocketHandle& s);

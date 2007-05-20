@@ -61,6 +61,8 @@ protected:
 public:
   ConsoleDownloadEngine();
   ~ConsoleDownloadEngine();
+
+  void fillCommand();
 };
 
 #endif // _D_CONSOLE_DOWNLOAD_ENGINE_H_

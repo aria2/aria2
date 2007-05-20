@@ -81,7 +81,21 @@ SRCS =  Socket.h\
 	GlowFileAllocator.cc GlowFileAllocator.h\
 	OptionParser.cc OptionParser.h\
 	OptionHandlerFactory.cc OptionHandlerFactory.h\
-	NameResolver.cc NameResolver.h
+	NameResolver.cc NameResolver.h\
+	RequestGroup.cc RequestGroup.h\
+	RequestGroupMan.cc RequestGroupMan.h\
+	FileAllocationCommand.cc FileAllocationCommand.h\
+	FillRequestGroupCommand.cc FillRequestGroupCommand.h\
+	FileAllocationDispatcherCommand.cc FileAllocationDispatcherCommand.h\
+	FileAllocationEntry.cc FileAllocationEntry.h\
+	IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
+	SingleUrlRequestInfo.cc SingleUrlRequestInfo.h\
+	MultiUrlRequestInfo.cc MultiUrlRequestInfo.h\
+	UriFileListParser.cc UriFileListParser.h\
+	SegmentManFactory.h\
+	AbstractSegmentManFactory.h\
+	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h
 #	debug_new.cpp
 
 if ENABLE_BITTORRENT
@@ -187,7 +201,8 @@ SRCS += MetaEntry.h\
 	BtInteractive.h\
 	DefaultBtInteractive.cc DefaultBtInteractive.h\
 	PeerObject.h\
-	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h
+	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h\
+	TrackerSegmentManFactory.cc TrackerSegmentManFactory.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

@@ -101,7 +101,7 @@ void SegmentMan::load() {
 }
 
 void SegmentMan::save() const {
-  if(!isSplittable || totalSize == 0) {
+  if(!isSplittable || totalSize == 0 || !bitfield) {
     return;
   }
   string segFilename = getSegmentFilePath();
@@ -434,11 +434,11 @@ int32_t SegmentMan::calculateDownloadSpeed() const {
   return speed;
 }
 
-bool SegmentMan::fileExists() {
+bool SegmentMan::fileExists() const {
   return File(getFilePath()).exists();
 }
 
-bool SegmentMan::shouldCancelDownloadForSafety() {
+bool SegmentMan::shouldCancelDownloadForSafety() const {
   return fileExists() && !segmentFileExists() &&
     option->get(PREF_ALLOW_OVERWRITE) != V_TRUE;
 }
@@ -456,6 +456,7 @@ void SegmentMan::markPieceDone(int64_t length)
     if(length == bitfield->getTotalLength()) {
       bitfield->setAllBit();
     } else {
+      bitfield->clearAllBit();
       int32_t numSegment = length/bitfield->getBlockLength();
       int32_t remainingLength = length%bitfield->getBlockLength();
       bitfield->setBitRange(0, numSegment-1);
@@ -535,10 +536,10 @@ void SegmentMan::tryChunkChecksumValidation(const SegmentHandle& segment)
       if(expectedChecksum == actualChecksum) {
 	logger->info("Good chunk checksum.");
       } else {
-	logger->error(EX_INVALID_CHUNK_CHECKSUM,
-		      index, offset, dataLength,
-		      expectedChecksum.c_str(), actualChecksum.c_str());
-	logger->info("Unset bit from %d to %d(inclusive)", startIndex, endIndex);
+	logger->info(EX_INVALID_CHUNK_CHECKSUM,
+		     index, offset,
+		     expectedChecksum.c_str(), actualChecksum.c_str());
+	logger->debug("Unset bit from %d to %d(inclusive)", startIndex, endIndex);
 	bitfield->unsetBitRange(startIndex, endIndex);
 	break;
       }

@@ -62,7 +62,7 @@ char* TrackerUpdateCommand::getTrackerResponse(size_t& trackerResponseLength) {
   char data[2048];
   try {
     while(1) {
-      int dataLength = e->segmentMan->diskWriter->readData(data, sizeof(data), bufLength);
+      int dataLength = e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->diskWriter->readData(data, sizeof(data), bufLength);
       if(bufLength+dataLength >= maxBufLength) {
 	maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
       }
@@ -84,7 +84,8 @@ bool TrackerUpdateCommand::execute() {
   if(btAnnounce->noMoreAnnounce()) {
     return true;
   }
-  if(!e->segmentMan->finished()) {
+  if(e->_requestGroupMan->countRequestGroup() == 0 ||
+     !e->_requestGroupMan->downloadFinished()) {
     return prepareForRetry();
   }
   char* trackerResponse = 0;
@@ -112,10 +113,10 @@ bool TrackerUpdateCommand::execute() {
     }
     btAnnounce->announceSuccess();
     btAnnounce->resetAnnounce();
-    e->segmentMan->init();
+    e->_requestGroupMan->removeStoppedGroup();
   } catch(RecoverableException* err) {
     logger->error("CUID#%d - Error occurred while processing tracker response.", cuid, err);
-    e->segmentMan->errors++;
+    e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->errors++;
     delete err;
   }
   if(trackerResponse) {

@@ -38,6 +38,7 @@
 #include "prefs.h"
 #include "FeatureConfig.h"
 #include "UrlRequestInfo.h"
+#include "MultiUrlRequestInfo.h"
 #include "TorrentRequestInfo.h"
 #include "BitfieldManFactory.h"
 #include "SimpleRandomizer.h"
@@ -48,6 +49,8 @@
 #include "OptionHandlerFactory.h"
 #include "FatalException.h"
 #include "File.h"
+#include "CUIDCounter.h"
+#include "UriFileListParser.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -354,6 +357,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_CONTINUE, V_FALSE);
   op->put(PREF_USER_AGENT, "aria2");
   op->put(PREF_NO_NETRC, V_FALSE);
+  op->put(PREF_MAX_SIMULTANEOUS_DOWNLOADS, "5");
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -389,6 +393,7 @@ int main(int argc, char* argv[]) {
       { "continue", no_argument, 0, 'c' },
       { "user-agent", required_argument, 0, 'U' },
       { "no-netrc", no_argument, 0, 'n' },
+      { "input-file", required_argument, 0, 'i' },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -416,7 +421,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:n", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -570,6 +575,9 @@ int main(int argc, char* argv[]) {
     case 'n':
       cmdstream << PREF_NO_NETRC << "=" << V_TRUE << "\n";
       break;
+    case 'i':
+      cmdstream << PREF_INPUT_FILE << "=" << optarg << "\n";
+      break;
     case 'v':
       showVersion();
       exit(EXIT_SUCCESS);
@@ -664,6 +672,8 @@ int main(int argc, char* argv[]) {
       }
     }
     RequestFactorySingletonHolder::instance(requestFactory);
+    CUIDCounterHandle cuidCounter = new CUIDCounter();
+    CUIDCounterSingletonHolder::instance(cuidCounter);
 
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 
@@ -683,12 +693,26 @@ int main(int argc, char* argv[]) {
 #ifdef ENABLE_METALINK
       if(op->defined(PREF_METALINK_FILE)) {
 	firstReqInfo = new MetalinkRequestInfo(op->get(PREF_METALINK_FILE),
-					      op);
-      } else
+					       op);
+      }
+      else
 #endif // ENABLE_METALINK
-	{
-	  firstReqInfo = new UrlRequestInfo(args, 0, op);
+	if(op->defined(PREF_INPUT_FILE)) {
+	  UriFileListParser flparser(op->get(PREF_INPUT_FILE));
+	  RequestGroups groups;
+	  while(flparser.hasNext()) {
+	    Strings uris = flparser.next();
+	    if(!uris.empty()) {
+	      RequestGroupHandle rg = new RequestGroup(uris, op);
+	      groups.push_back(rg);
+	    }
+	  }
+	  firstReqInfo = new MultiUrlRequestInfo(groups, op);
 	}
+	else
+	  {
+	    firstReqInfo = new MultiUrlRequestInfo(args, op);
+	  }
 
     RequestInfos reqInfos;
     if(firstReqInfo) {
@@ -699,6 +723,7 @@ int main(int argc, char* argv[]) {
       reqInfos.pop_front();
       RequestInfos nextReqInfos = reqInfo->execute();
       copy(nextReqInfos.begin(), nextReqInfos.end(), front_inserter(reqInfos));
+      /*
       if(reqInfo->isFail()) {
 	exitStatus = EXIT_FAILURE;
       } else if(reqInfo->getFileInfo().checkReady()) {
@@ -713,6 +738,7 @@ int main(int argc, char* argv[]) {
 	  exitStatus = EXIT_FAILURE;
 	}
       }
+      */
     }
   } catch(Exception* ex) {
     cerr << ex->getMsg() << endl;

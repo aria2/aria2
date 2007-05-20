@@ -37,16 +37,16 @@
 #include "FtpInitiateConnectionCommand.h"
 #include "DlAbortEx.h"
 
-Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, const RequestHandle req, DownloadEngine* e) {
+Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, const RequestHandle req, RequestGroup* requestGroup, DownloadEngine* e) {
   if(req->getProtocol() == "http"
 #ifdef ENABLE_SSL
      // for SSL
      || req->getProtocol() == "https"
 #endif // ENABLE_SSL
      ) {
-    return new HttpInitiateConnectionCommand(cuid, req, e);
+    return new HttpInitiateConnectionCommand(cuid, req, requestGroup, e);
   } else if(req->getProtocol() == "ftp") {
-    return new FtpInitiateConnectionCommand(cuid, req, e);
+    return new FtpInitiateConnectionCommand(cuid, req, requestGroup, e);
   } else {
     // these protocols are not supported yet
     throw new DlAbortEx("%s is not supported yet.", req->getProtocol().c_str());

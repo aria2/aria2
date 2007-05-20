@@ -38,9 +38,10 @@
 
 AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
 							 const RequestHandle& req,
+							 RequestGroup* requestGroup,
 							 DownloadEngine* e,
 							 const SocketHandle& s)
-  :AbstractCommand(cuid, req, e, s), httpConnection(0) {
+  :AbstractCommand(cuid, req, requestGroup, e, s), httpConnection(0) {
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }

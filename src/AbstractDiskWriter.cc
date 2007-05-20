@@ -45,7 +45,7 @@
 #include <fcntl.h>
 
 AbstractDiskWriter::AbstractDiskWriter():
-  fd(0),
+  fd(-1),
   fileAllocator(0),
   glowFileAllocator(0),
   logger(LogFactory::getInstance())
@@ -164,3 +164,16 @@ int32_t AbstractDiskWriter::readData(char* data, int32_t len, int64_t offset) {
   return ret;
 }
 
+void AbstractDiskWriter::truncate(int64_t length)
+{
+  ftruncate(fd, length);
+}
+
+int64_t AbstractDiskWriter::size() const
+{
+  struct stat fileStat;
+  if(fstat(fd, &fileStat) < 0) {
+    return 0;
+  }
+  return fileStat.st_size;
+}

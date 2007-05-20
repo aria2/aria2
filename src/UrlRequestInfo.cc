@@ -88,7 +88,7 @@ RequestInfo* UrlRequestInfo::createNextRequestInfo() const
 void handler(int signal) {
   haltRequested = true;
 }
-
+/*
 class CreateRequest {
 private:
   Requests* requestsPtr;
@@ -120,13 +120,13 @@ public:
     }
   }
 };
-
+*/
 void UrlRequestInfo::printUrls(const Strings& urls) const {
   for(Strings::const_iterator itr = urls.begin(); itr != urls.end(); itr++) {
     logger->info("Adding URL: %s", itr->c_str());
   }
 }
-
+/*
 HeadResultHandle UrlRequestInfo::getHeadResult() {
   Requests requests;
   for_each(urls.begin(), urls.end(),
@@ -151,7 +151,7 @@ HeadResultHandle UrlRequestInfo::getHeadResult() {
 
   return hr;
 }
-
+*/
 
 RequestInfos UrlRequestInfo::execute() {
   {
@@ -159,136 +159,54 @@ RequestInfos UrlRequestInfo::execute() {
     DNSCacheSingletonHolder::instance(dnsCache);
   }
 
-  Requests requests;
-  Requests reserved;
-  printUrls(urls);
-
   RequestInfo* next = 0;
-  try {
-    HeadResultHandle hr(0);
-    if(_totalLength == 0 || _filename.length() == 0) {
-      hr = getHeadResult();
-      
-      if(hr.isNull()) {
-	logger->notice(MSG_NO_URL_TO_DOWNLOAD);
-	return RequestInfos();
-      }
-    } else {
-      hr = new HeadResult();
-      hr->filename = _filename;
-      hr->totalLength = _totalLength;
-    }
-    logger->info("Head result: filename=%s, total length=%s",
-		 hr->filename.c_str(), Util::ullitos(hr->totalLength, true).c_str());
-    
-    for_each(urls.begin(), urls.end(),
-	     CreateRequest(&requests,
-			   op->get(PREF_REFERER),
-			   op->getAsInt(PREF_SPLIT)));
-    
-    if(requests.size() == 0) {
-      logger->notice(MSG_NO_URL_TO_DOWNLOAD);
-      return RequestInfos();
-    }
 
-    adjustRequestSize(requests, reserved, maxConnections);
+  try {
+    RequestGroups requestGroups;
+
+    Strings urls;
+    urls.push_back("http://localhost/~tujikawa/linux-2.6.6.tar.bz2");    
+    RequestGroupHandle rg1 = new RequestGroup(urls, op);
+
+    Strings urls2;
+    urls2.push_back("http://localhost/~tujikawa/linux-2.6.19.1.tar.bz2");
+    RequestGroupHandle rg2 = new RequestGroup(urls2, op);
+
+    requestGroups.push_back(rg1);
+    requestGroups.push_back(rg2);
     
-    SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requests, reserved));
+    SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, requestGroups));
+
+
+    Strings reservedUrls1;
+    reservedUrls1.push_back("http://localhost/~tujikawa/linux-2.6.1.tar.bz2");
+
+    RequestGroupHandle rrg1 = new RequestGroup(reservedUrls1, op);
+
+    e->_requestGroupMan->addReservedGroup(rrg1);
     
-    if(hr->totalLength > 0) {
-      e->segmentMan->filename = hr->filename;
-      e->segmentMan->totalSize = hr->totalLength;
-      e->segmentMan->downloadStarted = true;
-    }
-    
-#ifdef ENABLE_MESSAGE_DIGEST
-    if(chunkChecksumLength > 0) {
-      e->segmentMan->digestAlgo = digestAlgo;
-      e->segmentMan->chunkHashLength = chunkChecksumLength;
-      e->segmentMan->pieceHashes = chunkChecksums;
-    }
-#endif // ENABLE_MESSAGE_DIGEST
-    
-    if(op->get(PREF_CONTINUE) == V_TRUE && e->segmentMan->fileExists()) {
-      if(e->segmentMan->totalSize == 0) {
-	logger->notice("Cannot get file length. Download aborted.");
-	return RequestInfos();
-      }
-      File existingFile(e->segmentMan->getFilePath());
-      if(e->segmentMan->totalSize < existingFile.size()) {
-	logger->notice("The local file length is larger than the remote file size. Download aborted.");
-	return RequestInfos();
-      }
-      e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				  e->segmentMan->totalSize);
-      
-      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
-						  e->segmentMan->totalSize);
-      if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-#ifdef ENABLE_MESSAGE_DIGEST
-	if(!e->segmentMan->isChunkChecksumValidationReady()) {
-	  throw new DlAbortEx("Chunk checksums are not provided.");
-	}
-	e->segmentMan->markAllPiecesDone();
-	e->segmentMan->checkIntegrity();
-#endif // ENABLE_MESSAGE_DIGEST
-      } else {
-	e->segmentMan->markPieceDone(existingFile.size());
-      }
-    } else if(e->segmentMan->segmentFileExists()) {
-      e->segmentMan->load();
-      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
-						  e->segmentMan->totalSize);
-#ifdef ENABLE_MESSAGE_DIGEST
-      if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-	if(!e->segmentMan->isChunkChecksumValidationReady()) {
-	  throw new DlAbortEx("Chunk checksums are not provided.");
-	}
-	e->segmentMan->checkIntegrity();
-      }
-#endif // ENABLE_MESSAGE_DIGEST
-    } else {
-      if(e->segmentMan->shouldCancelDownloadForSafety()) {
-	throw new FatalException(EX_FILE_ALREADY_EXISTS,
-				 e->segmentMan->getFilePath().c_str(),
-				 e->segmentMan->getSegmentFilePath().c_str());
-      }
-      if(e->segmentMan->totalSize > 0) {
-	e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				    e->segmentMan->totalSize);
-	if(e->segmentMan->fileExists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-#ifdef ENABLE_MESSAGE_DIGEST
-	  if(!e->segmentMan->isChunkChecksumValidationReady()) {
-	    throw new DlAbortEx("Chunk checksums are not provided.");
-	  }
-#endif // ENABLE_MESSAGE_DIGEST
-	  e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath(),
-						      e->segmentMan->totalSize);
-#ifdef ENABLE_MESSAGE_DIGEST
-	  e->segmentMan->markAllPiecesDone();
-	  e->segmentMan->checkIntegrity();
-#endif // ENABLE_MESSAGE_DIGEST
-	} else {
-	  e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(),
-						     e->segmentMan->totalSize);
-	}
-      }
-    }
+    e->fillCommand();
+
+
+
+
+    // The number of simultaneous download is specified by PREF_MAX_SIMULTANEOUS_DOWNLOADS.
+    // The remaining urls are queued into FillRequestGroupCommand.
+    // It observes the number of simultaneous downloads and if it is under
+    // the limit, it adds RequestGroup object from its queue to DownloadEngine.
+    // This is done every 1 second. At the same time, it removes finished/error
+    // RequestGroup from DownloadEngine.
+
     Util::setGlobalSignalHandler(SIGINT, handler, 0);
     Util::setGlobalSignalHandler(SIGTERM, handler, 0);
     
     e->run();
     
-    if(e->segmentMan->finished()) {
-      printDownloadCompeleteMessage(e->segmentMan->getFilePath());
-      fileInfo.filename = e->segmentMan->getFilePath();
-      fileInfo.length = e->segmentMan->totalSize;
-      fileInfo.checksum = checksum;
-      
+    if(e->_requestGroupMan->downloadFinished()) {
       next = createNextRequestInfo();
     } else {
-      e->segmentMan->save();
-      e->segmentMan->diskWriter->closeFile();
+      e->_requestGroupMan->save();
+      e->_requestGroupMan->closeFile();
       printDownloadAbortMessage();
     }
   } catch(RecoverableException *ex) {

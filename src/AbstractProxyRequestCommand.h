@@ -46,6 +46,7 @@ protected:
 public:
   AbstractProxyRequestCommand(int cuid,
 			      const RequestHandle& req,
+			      RequestGroup* requestGroup,
 			      DownloadEngine* e,
 			      const SocketHandle& s);
   virtual ~AbstractProxyRequestCommand();

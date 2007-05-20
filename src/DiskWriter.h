@@ -95,6 +95,11 @@ public:
   virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo) = 0;
 #endif // ENABLE_MESSAGE_DIGEST
+
+  virtual void truncate(int64_t length) = 0;
+
+  // Returns file length
+  virtual int64_t size() const = 0;
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;

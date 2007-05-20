@@ -36,7 +36,7 @@
 #include "Xml2MetalinkProcessor.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
-#include "UrlRequestInfo.h"
+#include "MultiUrlRequestInfo.h"
 
 class AccumulateNonP2PUrl {
 private:
@@ -87,6 +87,7 @@ RequestInfos MetalinkRequestInfo::execute() {
       printf("No file matched with your preference.\n");
       throw new DlAbortEx("No file matched with your preference.");
     }
+    RequestGroups groups;
     for(MetalinkEntries::iterator itr = entries.begin(); itr != entries.end();
 	itr++) {
       MetalinkEntryHandle& entry = *itr;
@@ -121,19 +122,25 @@ RequestInfos MetalinkRequestInfo::execute() {
 	// BitTorrent downloading
 	urls.push_back((*itr)->url);
       }
-      UrlRequestInfoHandle reqInfo = new UrlRequestInfo(urls, maxConnection, op);
-      reqInfo->setFilename(entry->filename);
-      reqInfo->setTotalLength(entry->size);
+      RequestGroupHandle rg = new RequestGroup(urls, op);
+      rg->setHintFilename(entry->filename);
+      rg->setHintTotalLength(entry->size);
+
 #ifdef ENABLE_MESSAGE_DIGEST
-      reqInfo->setChecksum(checksum);
-      if(!entry->chunkChecksum.isNull()) {
-	reqInfo->setDigestAlgo(entry->chunkChecksum->digestAlgo);
-	reqInfo->setChunkChecksumLength(entry->chunkChecksum->pieceLength);
-	reqInfo->setChunkChecksums(entry->chunkChecksum->pieceHashes);
+      if(entry->chunkChecksum.isNull()) {
+	rg->setChecksum(checksum);
+      } else {
+	ChunkChecksumHandle cc =
+	  new ChunkChecksum(entry->chunkChecksum->digestAlgo,
+			    entry->chunkChecksum->pieceHashes,
+			    entry->chunkChecksum->pieceLength);
+	rg->setChunkChecksum(cc);
       }
 #endif // ENABLE_MESSAGE_DIGEST
-      nextReqInfos.push_front(reqInfo);
+      groups.push_front(rg);
     }
+    MultiUrlRequestInfoHandle reqInfo = new MultiUrlRequestInfo(groups, op);
+    nextReqInfos.push_back(reqInfo);
   } catch(RecoverableException* ex) {
     logger->error("Exception caught", ex);
     delete ex;

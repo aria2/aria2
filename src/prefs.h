@@ -96,6 +96,12 @@
 #define PREF_CONTINUE "continue"
 // value:
 #define PREF_NO_NETRC "no-netrc"
+// value: 1*digit
+#define PREF_MAX_DOWNLOADS "max-downloads"
+// value: string that your file system recognizes as a file name.
+#define PREF_INPUT_FILE "input-file"
+// value: 1*digit
+#define PREF_MAX_SIMULTANEOUS_DOWNLOADS "max-simultaneous-downloads"
 
 /**
  * FTP related preferences

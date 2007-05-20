@@ -47,7 +47,7 @@
 
 class ChunkChecksumValidator {
 #ifdef ENABLE_MESSAGE_DIGEST
-private:
+protected:
   DiskWriterHandle diskWriter;
 
   MessageDigestContext::DigestAlgo algo;

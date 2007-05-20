@@ -141,7 +141,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtInteractive.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.cc DefaultBtInteractive.h\
 @ENABLE_BITTORRENT_TRUE@	PeerObject.h\
-@ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h
+@ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h\
+@ENABLE_BITTORRENT_TRUE@	TrackerSegmentManFactory.cc TrackerSegmentManFactory.h
 
 @ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -224,12 +225,23 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultFileAllocator.h GlowFileAllocator.cc \
 	GlowFileAllocator.h OptionParser.cc OptionParser.h \
 	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
-	NameResolver.h MetaEntry.h Data.cc Data.h Dictionary.cc \
-	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
-	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
-	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
-	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
-	PeerInitiateConnectionCommand.cc \
+	NameResolver.h RequestGroup.cc RequestGroup.h \
+	RequestGroupMan.cc RequestGroupMan.h FileAllocationCommand.cc \
+	FileAllocationCommand.h FillRequestGroupCommand.cc \
+	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
+	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
+	FileAllocationEntry.h IteratableChunkChecksumValidator.cc \
+	IteratableChunkChecksumValidator.h CheckIntegrityCommand.cc \
+	CheckIntegrityCommand.h SingleUrlRequestInfo.cc \
+	SingleUrlRequestInfo.h MultiUrlRequestInfo.cc \
+	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
+	SegmentManFactory.h AbstractSegmentManFactory.h \
+	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
+	MetaEntry.h Data.cc Data.h Dictionary.cc Dictionary.h List.cc \
+	List.h MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
+	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
+	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -290,6 +302,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtChokedEvent.h BtChokingEvent.h BtInteractive.h \
 	DefaultBtInteractive.cc DefaultBtInteractive.h PeerObject.h \
 	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h \
+	TrackerSegmentManFactory.cc TrackerSegmentManFactory.h \
 	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
@@ -358,7 +371,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageReceiver.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	TrackerSegmentManFactory.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -397,7 +411,16 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	NetrcAuthResolver.$(OBJEXT) RequestFactory.$(OBJEXT) \
 	DefaultFileAllocator.$(OBJEXT) GlowFileAllocator.$(OBJEXT) \
 	OptionParser.$(OBJEXT) OptionHandlerFactory.$(OBJEXT) \
-	NameResolver.$(OBJEXT) $(am__objects_1) $(am__objects_2)
+	NameResolver.$(OBJEXT) RequestGroup.$(OBJEXT) \
+	RequestGroupMan.$(OBJEXT) FileAllocationCommand.$(OBJEXT) \
+	FillRequestGroupCommand.$(OBJEXT) \
+	FileAllocationDispatcherCommand.$(OBJEXT) \
+	FileAllocationEntry.$(OBJEXT) \
+	IteratableChunkChecksumValidator.$(OBJEXT) \
+	CheckIntegrityCommand.$(OBJEXT) SingleUrlRequestInfo.$(OBJEXT) \
+	MultiUrlRequestInfo.$(OBJEXT) UriFileListParser.$(OBJEXT) \
+	DefaultSegmentManFactory.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2)
 am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -614,7 +637,19 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	DefaultFileAllocator.h GlowFileAllocator.cc \
 	GlowFileAllocator.h OptionParser.cc OptionParser.h \
 	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
-	NameResolver.h $(am__append_1) $(am__append_2)
+	NameResolver.h RequestGroup.cc RequestGroup.h \
+	RequestGroupMan.cc RequestGroupMan.h FileAllocationCommand.cc \
+	FileAllocationCommand.h FillRequestGroupCommand.cc \
+	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
+	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
+	FileAllocationEntry.h IteratableChunkChecksumValidator.cc \
+	IteratableChunkChecksumValidator.h CheckIntegrityCommand.cc \
+	CheckIntegrityCommand.h SingleUrlRequestInfo.cc \
+	SingleUrlRequestInfo.h MultiUrlRequestInfo.cc \
+	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
+	SegmentManFactory.h AbstractSegmentManFactory.h \
+	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
+	$(am__append_1) $(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -733,6 +768,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
@@ -756,6 +792,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultSegmentManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DelegatingPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Dictionary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DirectDiskAdaptor.Po@am__quote@
@@ -766,8 +803,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngineFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationDispatcherCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationMonitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FillRequestGroupCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpInitiateConnectionCommand.Po@am__quote@
@@ -787,6 +828,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
@@ -795,6 +837,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiUrlRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NameResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Netrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcAuthResolver.Po@am__quote@
@@ -812,6 +855,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Segment.Po@am__quote@
@@ -820,6 +865,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleUrlRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
@@ -828,8 +874,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentRequestInfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerSegmentManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriFileListParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UrlRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessor.Po@am__quote@

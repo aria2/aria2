@@ -39,10 +39,11 @@
 
 AbstractProxyResponseCommand::AbstractProxyResponseCommand(int cuid,
 							   const RequestHandle& req,
+							   RequestGroup* requestGroup,
 							   const HttpConnectionHandle& httpConnection,
 							   DownloadEngine* e,
 							   const SocketHandle& s)
-  :AbstractCommand(cuid, req, e, s),
+  :AbstractCommand(cuid, req, requestGroup, e, s),
    httpConnection(httpConnection) {}
 
 AbstractProxyResponseCommand::~AbstractProxyResponseCommand() {}

@@ -41,6 +41,7 @@
 #include "SegmentMan.h"
 #include "TimeA2.h"
 #include "RecoverableException.h"
+#include "RequestGroup.h"
 
 class AbstractCommand : public Command {
 private:
@@ -48,13 +49,14 @@ private:
   int timeout;
 protected:
   RequestHandle req;
+  RequestGroup* _requestGroup;
   DownloadEngine* e;
   SocketHandle socket;
   SegmentHandle segment;
 
   void tryReserved();
   virtual bool prepareForRetry(int wait);
-  virtual void onAbort(RecoverableException* ex);
+  virtual void onAbort(Exception* ex);
   virtual bool executeInternal() = 0;
 
   void setReadCheckSocket(const SocketHandle& socket);
@@ -75,7 +77,7 @@ private:
   SocketHandle writeCheckTarget;
   bool nameResolverCheck;
 public:
-  AbstractCommand(int cuid, const RequestHandle& req, DownloadEngine* e, const SocketHandle& s = SocketHandle());
+  AbstractCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const SocketHandle& s = SocketHandle());
   virtual ~AbstractCommand();
   bool execute();
 };

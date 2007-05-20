@@ -61,6 +61,14 @@ public:
   virtual void writeData(const char* data, int32_t len, int64_t position = 0);
   virtual int readData(char* data, int32_t len, int64_t position);
 
+  // Not implemented yet
+  virtual void truncate(int64_t length) {}
+
+  virtual int64_t size() const
+  {
+    return bufLength;
+  }
+
   // not implemented yet
 #ifdef ENABLE_MESSAGE_DIGEST
   virtual string messageDigest(int64_t offset, int64_t length,
@@ -72,6 +80,8 @@ public:
   const char* getByteArray() const {
     return buf;
   }
+
+  // can be deleted. Use size() instead.
   int getByteArrayLength() const {
     return bufLength;
   }

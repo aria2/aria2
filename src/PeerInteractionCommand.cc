@@ -218,7 +218,7 @@ bool PeerInteractionCommand::prepareForRetry(int wait) {
   return false;
 }
 
-void PeerInteractionCommand::onAbort(RecoverableException* ex) {
+void PeerInteractionCommand::onAbort(Exception* ex) {
   btInteractive->cancelAllPiece();
   PeerAbstractCommand::onAbort(ex);
 }

@@ -60,7 +60,7 @@ protected:
   }
 #endif // ENABLE_ASYNC_DNS
 public:
-  HttpInitiateConnectionCommand(int cuid, const RequestHandle& req, DownloadEngine* e);
+  HttpInitiateConnectionCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e);
   virtual ~HttpInitiateConnectionCommand();
 };
 

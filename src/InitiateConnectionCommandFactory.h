@@ -35,14 +35,16 @@
 #ifndef _D_INITIATE_CONNECTION_COMMAND_FACTORY_H_
 #define _D_INITIATE_CONNECTION_COMMAND_FACTORY_H_
 
-#include "Request.h"
-#include "DownloadEngine.h"
 #include "common.h"
+#include "Request.h"
+#include "RequestGroup.h"
+#include "DownloadEngine.h"
 
 class InitiateConnectionCommandFactory {
 public:
   static Command* createInitiateConnectionCommand(int cuid,
-						  const RequestHandle req, 
+						  const RequestHandle req,
+						  RequestGroup* requestGroup,
 						  DownloadEngine* e);
 };
 

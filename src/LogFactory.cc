@@ -43,6 +43,8 @@ Logger* LogFactory::getInstance() {
     SimpleLogger* slogger = new SimpleLogger();
     slogger->openFile(filename);
     slogger->setStdout(Logger::NOTICE, true);
+    slogger->setStdout(Logger::WARN, true);
+    slogger->setStdout(Logger::ERROR, true);
     logger = slogger;
   }
   return logger;

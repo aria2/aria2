@@ -55,7 +55,10 @@ protected:
 
   virtual bool prepareForNextSegment();
 public:
-  DownloadCommand(int cuid, const RequestHandle req, DownloadEngine* e,
+  DownloadCommand(int cuid,
+		  const RequestHandle req,
+		  RequestGroup* requestGroup,
+		  DownloadEngine* e,
 		  const SocketHandle& s);
   virtual ~DownloadCommand();
 

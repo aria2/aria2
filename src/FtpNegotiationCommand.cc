@@ -43,9 +43,10 @@
 
 FtpNegotiationCommand::FtpNegotiationCommand(int cuid,
 					     const RequestHandle& req,
+					     RequestGroup* requestGroup,
 					     DownloadEngine* e,
 					     const SocketHandle& s):
-  AbstractCommand(cuid, req, e, s), sequence(SEQ_RECV_GREETING)
+  AbstractCommand(cuid, req, requestGroup, e, s), sequence(SEQ_RECV_GREETING)
 {
   ftp = new FtpConnection(cuid, socket, req, e->option);
   disableReadCheckSocket();
@@ -62,13 +63,13 @@ bool FtpNegotiationCommand::executeInternal() {
     return prepareForRetry(0);
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
     FtpDownloadCommand* command =
-      new FtpDownloadCommand(cuid, req, e, dataSocket, socket);
+      new FtpDownloadCommand(cuid, req, _requestGroup, e, dataSocket, socket);
     command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
     command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     e->commands.push_back(command);
     return true;
-  } else if(sequence == SEQ_HEAD_OK) {
+  } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED || sequence == SEQ_FILE_PREPARATION) {
     return true;
   } else {
     e->commands.push_back(this);
@@ -188,26 +189,50 @@ bool FtpNegotiationCommand::recvSize() {
   if(size == INT64_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
-  if(!e->segmentMan->downloadStarted) {
-    e->segmentMan->downloadStarted = true;
-    e->segmentMan->totalSize = size;
-    e->segmentMan->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				e->segmentMan->totalSize);
-    e->segmentMan->filename = Util::urldecode(req->getFile());
+  if(!_requestGroup->getSegmentMan()->downloadStarted) {
+    _requestGroup->getSegmentMan()->downloadStarted = true;
+    _requestGroup->getSegmentMan()->totalSize = size;
+    _requestGroup->getSegmentMan()->filename = Util::urldecode(req->getFile());
+
+    // TODO validate filename and totalsize against hintFilename and hintTotalSize if these are provided.
+    _requestGroup->validateTotalLengthByHint(size);
+
     if(req->getMethod() == Request::METHOD_HEAD) {
-      e->segmentMan->isSplittable = false; // TODO because we don't want segment file to be saved.
+      _requestGroup->getSegmentMan()->isSplittable = false; // TODO because we don't want segment file to be saved.
       sequence = SEQ_HEAD_OK;
       return false;
     }
-    bool segFileExists = e->segmentMan->segmentFileExists();
-    if(segFileExists) {
-      e->segmentMan->load();
-      e->segmentMan->diskWriter->openExistingFile(e->segmentMan->getFilePath());
-    } else {
-      e->segmentMan->diskWriter->initAndOpenFile(e->segmentMan->getFilePath(), size);
+
+    if(e->option->get(PREF_CHECK_INTEGRITY) != V_TRUE) {
+      if(_requestGroup->downloadFinishedByFileLength()) {
+	logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
+	sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+	return false;
+      }
     }
-  } else if(e->segmentMan->totalSize != size) {
-    throw new DlAbortEx(EX_SIZE_MISMATCH, e->segmentMan->totalSize, size);
+    _requestGroup->loadAndOpenFile();
+    _requestGroup->prepareForNextAction(cuid, req, e);
+    
+    sequence = SEQ_FILE_PREPARATION;
+    e->noWait = true;
+    return false;
+
+    /*
+    _requestGroup->getSegmentMan()->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
+						 _requestGroup->getSegmentMan()->totalSize);
+    bool segFileExists = _requestGroup->getSegmentMan()->segmentFileExists();
+    if(segFileExists) {
+      _requestGroup->getSegmentMan()->load();
+      _requestGroup->getSegmentMan()->diskWriter->openExistingFile(_requestGroup->getSegmentMan()->getFilePath());
+    } else {
+      _requestGroup->getSegmentMan()->diskWriter->initAndOpenFile(_requestGroup->getSegmentMan()->getFilePath(), size);
+    }
+    */
+
+  } else {
+    _requestGroup->validateTotalLength(size);
+    //if(_requestGroup->getSegmentMan()->totalSize != size) {
+    //throw new DlAbortEx(EX_SIZE_MISMATCH, _requestGroup->getSegmentMan()->totalSize, size);
   }
   if(e->option->get(PREF_FTP_PASV) == V_TRUE) {
     sequence = SEQ_SEND_PASV;
@@ -281,7 +306,7 @@ bool FtpNegotiationCommand::recvRest() {
   if(status == 0) {
     return false;
   }
-  // TODO if we recieve negative response, then we set e->segmentMan->splittable = false, and continue.
+  // TODO if we recieve negative response, then we set _requestGroup->getSegmentMan()->splittable = false, and continue.
   if(status != 350) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }

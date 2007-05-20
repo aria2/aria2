@@ -45,13 +45,13 @@
 
 using namespace std;
 
-DownloadEngine::DownloadEngine():noWait(false), segmentMan(0) {
-  logger = LogFactory::getInstance();
-}
+DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
+				 noWait(false),
+				 _requestGroupMan(0),
+				 _fileAllocationMan(0) {}
 
 DownloadEngine::~DownloadEngine() {
   cleanQueue();
-  delete segmentMan;
 }
 
 void DownloadEngine::cleanQueue() {
@@ -69,7 +69,7 @@ void DownloadEngine::executeCommand(Command::STATUS statusFilter)
       if(com->execute()) {
 	delete com;
       } else {
-	com->setStatusInactive();
+	com->transitStatus();
       }
     } else {
       commands.push_back(com);
@@ -90,7 +90,7 @@ void DownloadEngine::run() {
       executeCommand(Command::STATUS_ACTIVE);
     }
     afterEachIteration();
-    if(!noWait && !commands.empty()) {
+    if(!commands.empty()) {
       waitData();
     }
     noWait = false;
@@ -117,7 +117,7 @@ void DownloadEngine::waitData() {
   memcpy(&rfds, &rfdset, sizeof(fd_set));
   memcpy(&wfds, &wfdset, sizeof(fd_set));
   
-  tv.tv_sec = 1;
+  tv.tv_sec = noWait ? 0 : 1;
   tv.tv_usec = 0;
   retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
   if(retval > 0) {

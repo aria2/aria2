@@ -42,9 +42,10 @@
 #include "Logger.h"
 #include "Option.h"
 #include "NameResolver.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationMan.h"
 
 typedef deque<SocketHandle> Sockets;
-typedef deque<Command*> Commands;
 
 class SocketEntry {
 public:
@@ -117,7 +118,8 @@ protected:
 public:
   bool noWait;
   Commands commands;
-  SegmentMan* segmentMan;
+  RequestGroupManHandle _requestGroupMan;
+  FileAllocationManHandle _fileAllocationMan;
   const Option* option;
   
   DownloadEngine();
@@ -143,6 +145,11 @@ public:
   bool deleteNameResolverCheck(const NameResolverHandle& resolver,
 			       Command* command);
 #endif // ENABLE_ASYNC_DNS
+
+  void addCommand(const Commands& commands)
+  {
+    this->commands.insert(this->commands.end(), commands.begin(), commands.end());
+  }
 };
 
 #endif // _D_DOWNLOAD_ENGINE_H_
