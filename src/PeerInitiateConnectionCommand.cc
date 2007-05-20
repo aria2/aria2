@@ -38,6 +38,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
+#include "CUIDCounter.h"
 
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand(int cuid,
 							     const PeerHandle& peer,
@@ -68,10 +69,9 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
   if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
-    int newCuid = btRuntime->getNewCuid();
-    peer->cuid = newCuid;
+    peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(newCuid,
+      new PeerInitiateConnectionCommand(peer->cuid,
 					peer,
 					e,
 					btContext);

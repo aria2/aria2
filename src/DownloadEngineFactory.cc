@@ -173,7 +173,8 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
   }
 
   PeerListenCommand* listenCommand =
-    new PeerListenCommand(btRuntime->getNewCuid(), te, btContext);
+    new PeerListenCommand(CUIDCounterSingletonHolder::instance()->newID(),
+			  te, btContext);
   int port;
   int listenPort = op->getAsInt(PREF_LISTEN_PORT);
   if(listenPort == -1) {
@@ -188,25 +189,25 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
   btRuntime->setListenPort(port);
   te->commands.push_back(listenCommand);
   
-  te->commands.push_back(new TrackerWatcherCommand(btRuntime->getNewCuid(),
+  te->commands.push_back(new TrackerWatcherCommand(CUIDCounterSingletonHolder::instance()->newID(),
 						   te,
 						   btContext));
-  te->commands.push_back(new TrackerUpdateCommand(btRuntime->getNewCuid(),
+  te->commands.push_back(new TrackerUpdateCommand(CUIDCounterSingletonHolder::instance()->newID(),
 						  te,
 						  btContext));
-  te->commands.push_back(new TorrentAutoSaveCommand(btRuntime->getNewCuid(),
+  te->commands.push_back(new TorrentAutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(),
 						    te,
 						    btContext,
 						    op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
-  te->commands.push_back(new PeerChokeCommand(btRuntime->getNewCuid(),
+  te->commands.push_back(new PeerChokeCommand(CUIDCounterSingletonHolder::instance()->newID(),
 					      te,
 					      btContext,
 					      10));
-  te->commands.push_back(new HaveEraseCommand(btRuntime->getNewCuid(),
+  te->commands.push_back(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(),
 					      te,
 					      btContext,
 					      10));
-  te->commands.push_back(new ActivePeerConnectionCommand(btRuntime->getNewCuid(),
+  te->commands.push_back(new ActivePeerConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
 							 te,
 							 btContext,
 							 30));
@@ -219,7 +220,7 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
     unionCri->addSeedCriteria(new ShareRatioSeedCriteria(op->getAsDouble(PREF_SEED_RATIO), btContext));
   }
   if(unionCri->getSeedCriterion().size() > 0) {
-    te->commands.push_back(new SeedCheckCommand(btRuntime->getNewCuid(),
+    te->commands.push_back(new SeedCheckCommand(CUIDCounterSingletonHolder::instance()->newID(),
 						te,
 						btContext,
 						unionCri));

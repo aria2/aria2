@@ -2,6 +2,17 @@
 
 	* Added the simultaneous download feature.
 	* src/main.cc: Print "Exception caught: " when exception is caught.
+
+	Use CUIDCounter instead of BtRuntime::getNewCuid():
+	* src/ActivePeerConnectionCommand.cc
+	* src/PeerInteractionCommand.cc
+	* src/BtRuntime.h
+	(cuidCounter): Removed.
+	(getNewCuid): Removed.
+	* src/DownloadEngineFactory.cc
+	* src/PeerListenCommand.cc
+	* src/TrackerUpdateCommand.cc
+	* src/PeerInitiateConnectionCommand.cc
 	
 2007-04-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

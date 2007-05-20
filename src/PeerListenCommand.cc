@@ -35,6 +35,7 @@
 #include "PeerListenCommand.h"
 #include "PeerInteractionCommand.h"
 #include "RecoverableException.h"
+#include "CUIDCounter.h"
 
 PeerListenCommand::PeerListenCommand(int cuid,
 				     TorrentDownloadEngine* e,
@@ -82,15 +83,14 @@ bool PeerListenCommand::execute() {
 					      btContext->getPieceLength(),
 					      btContext->getTotalLength()));
 	if(peerStorage->addIncomingPeer(peer)) {
-	  int newCuid =  btRuntime->getNewCuid();
-	  peer->cuid = newCuid;
+	  peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
 	  PeerInteractionCommand* command =
-	    new PeerInteractionCommand(newCuid, peer, e,
+	    new PeerInteractionCommand(peer->cuid, peer, e,
 				       btContext,
 				       peerSocket,
 				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
 	  e->commands.push_back(command);
-	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, newCuid);
+	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, peer->cuid);
 	}
       }
     } catch(RecoverableException* ex) {

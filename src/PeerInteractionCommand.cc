@@ -46,6 +46,7 @@
 #include "DefaultBtMessageFactory.h"
 #include "DefaultBtInteractive.h"
 #include "PeerConnection.h"
+#include "CUIDCounter.h"
 #include <algorithm>
 
 PeerInteractionCommand::PeerInteractionCommand(int cuid,
@@ -201,10 +202,9 @@ bool PeerInteractionCommand::executeInternal() {
 bool PeerInteractionCommand::prepareForNextPeer(int wait) {
   if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
-    int newCuid = btRuntime->getNewCuid();
-    peer->cuid = newCuid;
+    peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(newCuid,
+      new PeerInitiateConnectionCommand(peer->cuid,
 					peer,
 					e,
 					btContext);

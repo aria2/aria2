@@ -39,6 +39,7 @@
 #include "PeerInitiateConnectionCommand.h"
 #include "SleepCommand.h"
 #include "Util.h"
+#include "CUIDCounter.h"
 
 TrackerUpdateCommand::TrackerUpdateCommand(int cuid,
 					   TorrentDownloadEngine* e,
@@ -101,15 +102,14 @@ bool TrackerUpdateCommand::execute() {
       if(peer.isNull()) {
 	break;
       }
-      int newCuid =  btRuntime->getNewCuid();
-      peer->cuid = newCuid;
+      peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
       PeerInitiateConnectionCommand* command =
-	new PeerInitiateConnectionCommand(newCuid,
+	new PeerInitiateConnectionCommand(peer->cuid,
 					  peer,
 					  e,
 					  btContext);
       e->commands.push_back(command);
-      logger->debug("CUID#%d - Adding new command CUID#%d", cuid, newCuid);
+      logger->debug("CUID#%d - Adding new command CUID#%d", cuid, peer->cuid);
     }
     btAnnounce->announceSuccess();
     btAnnounce->resetAnnounce();

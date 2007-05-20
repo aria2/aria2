@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "ActivePeerConnectionCommand.h"
 #include "PeerInitiateConnectionCommand.h"
+#include "CUIDCounter.h"
 
 bool ActivePeerConnectionCommand::execute() {
   if(btRuntime->isHalt()) {
@@ -59,7 +60,7 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   if(peer.isNull()) {
     return;
   }
-  peer->cuid = btRuntime->getNewCuid();
+  peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
   PeerInitiateConnectionCommand* command =
     new PeerInitiateConnectionCommand(peer->cuid, peer, e, btContext);
   e->commands.push_back(command);

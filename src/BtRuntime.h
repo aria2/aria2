@@ -46,14 +46,13 @@ private:
   int port;
   bool halt;
   int connections;
-  int cuidCounter;
 public:
   BtRuntime():
     uploadLengthAtStartup(0),
     port(0),
     halt(false),
-    connections(0),
-    cuidCounter(0) {}
+    connections(0)
+    {}
   ~BtRuntime() {}
 
   long long int getUploadLengthAtStartup() const {
@@ -84,9 +83,7 @@ public:
 
   bool lessThanMinPeer() const { return connections < MIN_PEERS; }
 
-  bool lessThanEqMinPeer() const { return connections <= MIN_PEERS; }
-  
-  int getNewCuid() { return ++cuidCounter; }
+  bool lessThanEqMinPeer() const { return connections <= MIN_PEERS; }  
 };
 
 typedef SharedHandle<BtRuntime> BtRuntimeHandle;
