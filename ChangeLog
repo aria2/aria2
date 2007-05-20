@@ -1,7 +1,8 @@
 2007-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Added the simultaneous download feature.
-
+	* src/main.cc: Print "Exception caught: " when exception is caught.
+	
 2007-04-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/PeerAbstractCommand.cc

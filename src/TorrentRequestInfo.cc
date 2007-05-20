@@ -81,9 +81,10 @@ RequestInfos TorrentRequestInfo::execute() {
   } else {
     if(PIECE_STORAGE(btContext)->getDiskAdaptor()->fileExists()) {
       if(op->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
-	throw new FatalException(EX_FILE_ALREADY_EXISTS,
-				 PIECE_STORAGE(btContext)->getDiskAdaptor()->getFilePath().c_str(),
-				 BT_PROGRESS_INFO_FILE(btContext)->getFilename().c_str());
+	logger->notice(MSG_FILE_ALREADY_EXISTS,
+		       PIECE_STORAGE(btContext)->getDiskAdaptor()->getFilePath().c_str(),
+		       BT_PROGRESS_INFO_FILE(btContext)->getFilename().c_str());
+	throw new FatalException(EX_DOWNLOAD_ABORTED);
       } else {
 	PIECE_STORAGE(btContext)->getDiskAdaptor()->openExistingFile();
 #ifdef ENABLE_MESSAGE_DIGEST

@@ -741,7 +741,7 @@ int main(int argc, char* argv[]) {
       */
     }
   } catch(Exception* ex) {
-    cerr << ex->getMsg() << endl;
+    cerr << "Exception caught:\n" << ex->getMsg() << endl;
     delete ex;
     exit(EXIT_FAILURE);
   }

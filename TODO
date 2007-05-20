@@ -37,3 +37,4 @@
 * Do not use ufilename in multi-simultaneous download mode.
 * Merge umask patch.
 https://sourceforge.net/tracker/index.php?func=detail&aid=1718641&group_id=159897&atid=813673
+* Use CUIDCounter to generate CUID.

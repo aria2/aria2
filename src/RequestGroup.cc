@@ -113,9 +113,7 @@ void RequestGroup::shouldCancelDownloadForSafety()
 		   _segmentMan->getFilePath().c_str(),
 		   _segmentMan->getSegmentFilePath().c_str());
     
-    throw new FatalException(EX_FILE_ALREADY_EXISTS,
-			     _segmentMan->getFilePath().c_str(),
-			     _segmentMan->getSegmentFilePath().c_str());
+    throw new FatalException(EX_DOWNLOAD_ABORTED);
   }
 }
 

@@ -118,4 +118,5 @@
 #define EX_INVALID_PAYLOAD_SIZE _("Invalid payload size for %s, size=%d. It should be %d.")
 #define EX_INVALID_BT_MESSAGE_ID _("Invalid ID=%d for %s. It should be %d.")
 #define EX_INVALID_CHUNK_CHECKSUM _("Chunk checksum validation failed. checksumIndex=%d, offset=%lld, expectedHash=%s, actualHash=%s")
+#define EX_DOWNLOAD_ABORTED _("Download aborted.")
 #endif // _D_MESSAGE_H_
