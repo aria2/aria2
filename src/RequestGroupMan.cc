@@ -83,6 +83,17 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
 }
 
+Commands RequestGroupMan::getInitialCommands(DownloadEngine* e) const
+{
+  Commands commands;
+  for(RequestGroups::const_iterator itr = _requestGroups.begin();
+	itr != _requestGroups.end(); ++itr) {
+    (*itr)->initSegmentMan();
+    commands.push_back((*itr)->getNextCommand(e, 1).front());
+  }
+  return commands;
+}
+
 void RequestGroupMan::showDownloadResults(ostream& o) const
 {
   // Download Results:

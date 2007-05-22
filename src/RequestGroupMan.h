@@ -102,16 +102,7 @@ public:
     return totalLength;
   }
 
-  Commands getInitialCommands(DownloadEngine* e) const
-  {
-    Commands commands;
-    for(RequestGroups::const_iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      (*itr)->initSegmentMan();
-      commands.push_back((*itr)->getNextCommand(e, 1).front());
-    }
-    return commands;
-  }
+  Commands getInitialCommands(DownloadEngine* e) const;
 
   void removeStoppedGroup();
 

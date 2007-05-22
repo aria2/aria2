@@ -98,14 +98,13 @@ bool File::mkdirs() {
   if(Util::startsWith(name, "/")) {
     accDir = "/";
   }
-  mode_t mode = S_IRUSR|S_IWUSR|S_IXUSR;
   for(Strings::const_iterator itr = dirs.begin(); itr != dirs.end();
       itr++, accDir += "/") {
     accDir += *itr;
     if(File(accDir).isDir()) {
       continue;
     }
-    if(mkdir(accDir.c_str(), mode) == -1) {
+    if(mkdir(accDir.c_str(), OPEN_MODE) == -1) {
       return false;
     }
   }

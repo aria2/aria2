@@ -64,6 +64,7 @@ bool TrackerWatcherCommand::execute() {
 
 Command* TrackerWatcherCommand::createCommand() {
   Command* command = 0;
+
   if(btAnnounce->isAnnounceReady()) {
     command = createRequestCommand(btAnnounce->getAnnounceUrl());
     btAnnounce->announceStart(); // inside it, trackers++.
@@ -72,11 +73,13 @@ Command* TrackerWatcherCommand::createCommand() {
     e->_requestGroupMan->removeStoppedGroup();
     if(btAnnounce->isAllAnnounceFailed()) {
       btAnnounce->resetAnnounce();
-      // sleep a few seconds.
+      return 0;
+    } else if(btAnnounce->isAnnounceReady()) {
       command =
 	new SleepCommand(cuid, e,
 			 createRequestCommand(btAnnounce->getAnnounceUrl()),
 			 e->option->getAsInt(PREF_RETRY_WAIT));
+      btAnnounce->announceStart(); // inside it, tracker++.
     }
   }
   return command;
@@ -94,7 +97,6 @@ Command* TrackerWatcherCommand::createRequestCommand(const string& url)
     logger->error("CUID#%d - Cannot create tracker request.");
     return 0;
   }
-
   logger->info("CUID#%d - Creating new tracker request command #%d", cuid,
 	       commands.front()->getCuid());
   return commands.front();

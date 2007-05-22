@@ -324,10 +324,10 @@ void Util::rangedFileCopy(const string& dest, const string& src, long long int s
   int destFd = -1;
   int srcFd = -1;
   try {
-    if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, S_IRUSR|S_IWUSR)) == -1) {
+    if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, OPEN_MODE)) == -1) {
       throw new DlAbortEx(EX_FILE_OPEN, dest.c_str(), strerror(errno));
     }
-    if((srcFd = open(src.c_str(), O_RDONLY, S_IRUSR|S_IWUSR)) == -1) {
+    if((srcFd = open(src.c_str(), O_RDONLY, OPEN_MODE)) == -1) {
       throw new DlAbortEx(EX_FILE_OPEN, src.c_str(), strerror(errno));
     }
     if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
@@ -496,7 +496,7 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
   char buf[BUFLEN];
 
   int fd;
-  if((fd = open(filename.c_str(), O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
+  if((fd = open(filename.c_str(), O_RDWR, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
   while(1) {

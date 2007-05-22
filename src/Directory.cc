@@ -61,7 +61,7 @@ void Directory::createDir(const string& parentDir, bool recursive) const {
       throw new DlAbortEx(EX_NOT_DIRECTORY, path.c_str());
     }
   } else {
-    if(mkdir(path.c_str(), S_IRUSR|S_IWUSR|S_IXUSR) == -1) {
+    if(mkdir(path.c_str(), OPEN_MODE) == -1) {
       throw new DlAbortEx(EX_MAKE_DIR, path.c_str(), strerror(errno));
     }
   }

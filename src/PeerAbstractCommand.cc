@@ -78,7 +78,7 @@ bool PeerAbstractCommand::execute() {
     }
     return executeInternal();
   } catch(RecoverableException* err) {
-    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
+    logger->debug(MSG_DOWNLOAD_ABORTED, err, cuid);
     logger->debug("CUID#%d - Peer %s:%d banned.",
 		  cuid, peer->ipaddr.c_str(), peer->port);
     onAbort(err);

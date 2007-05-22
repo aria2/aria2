@@ -72,10 +72,25 @@ public:
   bool isTorrent;
 
   RequestGroup(const Strings& uris, const Option* option):
-    _uris(uris), _segmentMan(0), _segmentManFactory(new DefaultSegmentManFactory(option)), _option(option), logger(LogFactory::getInstance()), _chunkChecksum(0), numConnection(0), isTorrent(false) {}
+    _hintTotalLength(0),
+    _uris(uris),
+    _segmentMan(0),
+    _segmentManFactory(new DefaultSegmentManFactory(option)),
+    _option(option),
+    logger(LogFactory::getInstance()),
+    _chunkChecksum(0),
+    numConnection(0),
+    isTorrent(false) {}
 
   RequestGroup(const string& uri, const Option* option):
-    _segmentMan(0), _segmentManFactory(new DefaultSegmentManFactory(option)), _option(option), logger(LogFactory::getInstance()), _chunkChecksum(0), numConnection(0), isTorrent(false)
+    _hintTotalLength(0),
+    _segmentMan(0),
+    _segmentManFactory(new DefaultSegmentManFactory(option)),
+    _option(option),
+    logger(LogFactory::getInstance()),
+    _chunkChecksum(0),
+    numConnection(0),
+    isTorrent(false)
   {
     _uris.push_back(uri);
   }

@@ -79,7 +79,7 @@ void AbstractDiskWriter::openExistingFile(const string& filename, int64_t totalL
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), "file not found");
   }
 
-  if((fd = open(filename.c_str(), O_RDWR, S_IRUSR|S_IWUSR)) < 0) {
+  if((fd = open(filename.c_str(), O_RDWR, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
   if(f.size() < totalLength) {
@@ -99,7 +99,7 @@ void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags) {
 //   if(filename.empty()) {
 //     filename = "index.html";
 //   }
-  if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|addFlags, S_IRUSR|S_IWUSR)) < 0) {
+  if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|addFlags, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }  
 }
