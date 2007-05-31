@@ -49,7 +49,7 @@ void ChunkChecksumValidator::validateSameLengthChecksum(BitfieldMan* bitfieldMan
   string actualChecksum = diskWriter->messageDigest(offset, dataLength, algo);
   if(actualChecksum != expectedChecksum) {
     logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		 index, offset, dataLength,
+		 index, offset,
 		 expectedChecksum.c_str(), actualChecksum.c_str());
     bitfieldMan->unsetBit(index);
   }
@@ -71,7 +71,7 @@ void ChunkChecksumValidator::validateDifferentLengthChecksum(BitfieldMan* bitfie
     if(expectedChecksum != actualChecksum) {
       // wrong checksum
       logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		   index, offset, dataLength,
+		   index, offset,
 		   expectedChecksum.c_str(), actualChecksum.c_str());
       bitfieldMan->unsetBitRange(startIndex, endIndex);
     }

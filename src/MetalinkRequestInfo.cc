@@ -106,7 +106,7 @@ RequestInfos MetalinkRequestInfo::execute() {
 		FindBitTorrentUrl());
       Strings urls;
       int maxConnection = 0;
-      Checksum checksum;
+      ChecksumHandle checksum = 0;
       if(itr == entry->resources.end()) {
 	entry->reorderResourcesByPreference();
 	

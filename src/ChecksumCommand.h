@@ -32,28 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_COMMAND_H_
-#define _D_FILE_ALLOCATION_COMMAND_H_
+#ifndef _D_CHECKSUM_COMMAND_H_
+#define _D_CHECKSUM_COMMAND_H_
 
 #include "RealtimeCommand.h"
-#include "Request.h"
-#include "TimeA2.h"
-#include "FileAllocationEntry.h"
+#include "IteratableChecksumValidator.h"
 
-class FileAllocationCommand : public RealtimeCommand {
+class ChecksumCommand : public RealtimeCommand
+{
 private:
-  RequestHandle _req;
-  FileAllocationEntryHandle _fileAllocationEntry;
-  Time _timer;
+  IteratableChecksumValidatorHandle _validator;
 public:
-  FileAllocationCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
+  ChecksumCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e):
     RealtimeCommand(cuid, requestGroup, e),
-    _req(req),
-    _fileAllocationEntry(fileAllocationEntry) {}
+    _validator(0)
+  {
+    ++_requestGroup->numConnection;
+  }
+
+  virtual ~ChecksumCommand()
+  {
+    --_requestGroup->numConnection;
+  }
+
+  void initValidator();
 
   virtual bool executeInternal();
 
   virtual bool handleException(Exception* e);
 };
 
-#endif // _D_FILE_ALLOCATION_COMMAND_H_
+
+#endif // _D_CHECKSUM_COMMAND_H_

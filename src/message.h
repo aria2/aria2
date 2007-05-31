@@ -57,6 +57,8 @@
 #define MSG_GOT_WRONG_PIECE _("CUID#%d - we got wrong piece. index=%d")
 #define MSG_DOWNLOAD_NOT_COMPLETE _("CUID#%d - Download not complete: %s")
 #define MSG_DOWNLOAD_ALREADY_COMPLETED _("CUID#%d - Download already completed: %s")
+#define MSG_GOOD_CHECKSUM _("CUID#%d - Good checksum: %s")
+#define MSG_BAD_CHECKSUM _("CUID#%d - Bad checksum: %s")
 
 #define MSG_TRACKER_WARNING_MESSAGE _("Tracker returned warning message: %s")
 #define MSG_SEGMENT_FILE_EXISTS _("The segment file %s exists.")

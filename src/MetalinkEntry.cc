@@ -40,6 +40,7 @@ MetalinkEntry::MetalinkEntry():
   size(0)
 #ifdef ENABLE_MESSAGE_DIGEST
   ,
+  checksum(0),
   chunkChecksum(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}

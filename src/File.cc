@@ -94,6 +94,7 @@ bool File::mkdirs() {
   if(!dirs.size()) {
     return true;
   }
+
   string accDir;
   if(Util::startsWith(name, "/")) {
     accDir = "/";
@@ -104,7 +105,7 @@ bool File::mkdirs() {
     if(File(accDir).isDir()) {
       continue;
     }
-    if(mkdir(accDir.c_str(), OPEN_MODE) == -1) {
+    if(mkdir(accDir.c_str(), DIR_OPEN_MODE) == -1) {
       return false;
     }
   }

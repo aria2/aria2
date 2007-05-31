@@ -32,28 +32,50 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_COMMAND_H_
-#define _D_FILE_ALLOCATION_COMMAND_H_
+#include "IteratableChecksumValidator.h"
+#include "Util.h"
+#include "message.h"
 
-#include "RealtimeCommand.h"
-#include "Request.h"
-#include "TimeA2.h"
-#include "FileAllocationEntry.h"
+#define BUFSIZE 16*1024
 
-class FileAllocationCommand : public RealtimeCommand {
-private:
-  RequestHandle _req;
-  FileAllocationEntryHandle _fileAllocationEntry;
-  Time _timer;
-public:
-  FileAllocationCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
-    RealtimeCommand(cuid, requestGroup, e),
-    _req(req),
-    _fileAllocationEntry(fileAllocationEntry) {}
+void IteratableChecksumValidator::validateChunk()
+{
+  if(!finished()) {
+    
+    char data[BUFSIZE];
 
-  virtual bool executeInternal();
+    int32_t size = _diskWriter->readData(data, sizeof(data), _currentOffset);
 
-  virtual bool handleException(Exception* e);
-};
+    _ctx->digestUpdate(data, size);
+    _currentOffset += sizeof(data);    
 
-#endif // _D_FILE_ALLOCATION_COMMAND_H_
+    if(finished()) {
+      unsigned char* digest = new unsigned char[_ctx->digestLength()];
+      try {
+	_ctx->digestFinal(digest);
+	if(_checksum->getMessageDigest() != Util::toHex(digest, _ctx->digestLength())) {
+	  _bitfield->clearAllBit();
+	}
+	delete [] digest;
+      } catch(...) {
+	delete [] digest;
+	throw;
+      }
+    }
+  }
+}
+
+bool IteratableChecksumValidator::canValidate() const
+{
+  // We assume file is already opened using DiskWriter::open or openExistingFile.
+  return !_checksum.isNull() && !_checksum->isEmpty();
+}
+
+void IteratableChecksumValidator::init()
+{
+  _bitfield->setAllBit();
+  _currentOffset = 0;
+
+  _ctx = new MessageDigestContext(_checksum->getDigestAlgo());
+  _ctx->digestInit();
+}

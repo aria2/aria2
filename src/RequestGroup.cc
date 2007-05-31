@@ -191,21 +191,28 @@ bool RequestGroup::downloadFinishedByFileLength()
   }
 }
 
-void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, DownloadEngine* e)
+void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, DownloadEngine* e, DownloadCommand* downloadCommand)
 {
   File existingFile(getFilePath());
   if(existingFile.size() > 0 && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
     CheckIntegrityCommand* command = new CheckIntegrityCommand(cuid, req, this, e);
+    command->setNextDownloadCommand(downloadCommand);
     command->initValidator();
     e->commands.push_back(command);
   } else if(needsFileAllocation()) {
-    e->_fileAllocationMan->pushFileAllocationEntry(new FileAllocationEntry(cuid, req, this));
+    FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this);
+    entry->setNextDownloadCommand(downloadCommand);
+    e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {
-    int32_t numCommandsToGenerate = 15;
-    Commands commands = getNextCommand(e, numCommandsToGenerate);
-    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, this, e);
-    commands.push_front(command);
-    e->addCommand(commands);
+    if(downloadCommand) {
+      e->commands.push_back(downloadCommand);
+    } else {
+      int32_t numCommandsToGenerate = 15;
+      Commands commands = getNextCommand(e, numCommandsToGenerate);
+      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, this, e);
+      commands.push_front(command);
+      e->addCommand(commands);
+    }
   }
 }
 

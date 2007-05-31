@@ -79,5 +79,6 @@ typedef deque<string> Strings;
 typedef deque<int32_t> Integers;
 
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
+#define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
 
 #endif // _D_COMMON_H_

@@ -51,20 +51,23 @@ void CheckIntegrityCommand::initValidator()
   _validator->init();
 }
 
-bool CheckIntegrityCommand::execute()
+bool CheckIntegrityCommand::executeInternal()
 {
-  setStatusRealtime();
-  _e->noWait = true;
-
-  try {
-    _validator->validateChunk();
-    if(_validator->finished()) {
-      if(_requestGroup->downloadFinished()) {
-	logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
-	return true;
-      }
-      if(_requestGroup->needsFileAllocation()) {
-	_e->_fileAllocationMan->pushFileAllocationEntry(new FileAllocationEntry(cuid, _req, _requestGroup)); 
+  _validator->validateChunk();
+  if(_validator->finished()) {
+    if(_requestGroup->downloadFinished()) {
+      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
+      return true;
+    }
+    if(_requestGroup->needsFileAllocation()) {
+      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, _req, _requestGroup);
+      entry->setNextDownloadCommand(_nextDownloadCommand);
+      _nextDownloadCommand = 0;
+      _e->_fileAllocationMan->pushFileAllocationEntry(entry); 
+    } else {
+      if(_nextDownloadCommand) {
+	_e->commands.push_back(_nextDownloadCommand);
+	_nextDownloadCommand = 0;
       } else {
 	int32_t numCommandsToGenerate = 15;
 	Commands commands = _requestGroup->getNextCommand(_e, numCommandsToGenerate);
@@ -72,19 +75,23 @@ bool CheckIntegrityCommand::execute()
 	commands.push_front(command);
 	_e->addCommand(commands);
       }
-      return true;
-    } else {
-      _e->commands.push_back(this);
-      return false;
     }
-  } catch(Exception* e) {
-    _requestGroup->getSegmentMan()->errors++;
-    logger->error("CUID#%d - Exception caught while validating file integrity.", e, cuid);
-    delete e;
-    logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
-    // TODO this is wrong. There may exist invalid chunk data before catching
-    // exception. Fix this.
-    _requestGroup->markPieceDone(_validator->getCurrentOffset());
     return true;
+  } else {
+    _e->commands.push_back(this);
+    return false;
   }
+}
+
+bool CheckIntegrityCommand::handleException(Exception* e)
+{
+  logger->error("CUID#%d - Exception caught while validating file integrity.", e, cuid);
+  delete e;
+  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
+  // TODO this is wrong. There may exist invalid chunk data before catching
+  // exception. Fix this.
+  // The one of the solution is having a copy of bitfield before settting its
+  // all bit to 1. If exception is thrown, then assign the copy to the bitfield.
+  _requestGroup->markPieceDone(_validator->getCurrentOffset());
+  return true;
 }

@@ -74,4 +74,6 @@ class Checksum {
 };
 #endif // ENABLE_MESSAGE_DIGEST
 
+typedef SharedHandle<Checksum> ChecksumHandle;
+
 #endif // _D_CHECKSUM_H_

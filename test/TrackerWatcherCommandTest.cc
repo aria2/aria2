@@ -11,6 +11,7 @@
 #include "DefaultPeerStorage.h"
 #include "BtRegistry.h"
 #include "RequestFactory.h"
+#include "CUIDCounter.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -31,7 +32,11 @@ public:
     RequestFactorySingletonHolder::instance(requestFactory);
   }
 
-  void setUp() {}
+  void setUp() 
+  {
+    CUIDCounterHandle counter = new CUIDCounter();
+    CUIDCounterSingletonHolder::instance(counter);
+  }
 
   void testCreateCommand();
 };
@@ -60,10 +65,7 @@ void TrackerWatcherCommandTest::testCreateCommand() {
     BtRegistry::registerBtAnnounce(btContext->getInfoHashAsString(), btAnnounce);
     TorrentConsoleDownloadEngine* te = new TorrentConsoleDownloadEngine();
     te->option = op;
-    te->segmentMan = new SegmentMan();
-    te->segmentMan->option = op;
-    ByteArrayDiskWriter* byteArrayDiskWriter = new ByteArrayDiskWriter();
-    te->segmentMan->diskWriter = byteArrayDiskWriter;
+    te->_requestGroupMan = new RequestGroupMan();
 
     TrackerWatcherCommand command(1, te, btContext);
 
@@ -72,7 +74,7 @@ void TrackerWatcherCommandTest::testCreateCommand() {
     
     btAnnounce->announceSuccess();
     btAnnounce->resetAnnounce();
-    te->segmentMan->init();
+    te->_requestGroupMan = new RequestGroupMan();
     
     btRuntime->setHalt(true);
     
@@ -81,7 +83,7 @@ void TrackerWatcherCommandTest::testCreateCommand() {
     
     btAnnounce->announceSuccess();
     btAnnounce->resetAnnounce();
-    te->segmentMan->init();
+    te->_requestGroupMan = new RequestGroupMan();
     
     CPPUNIT_ASSERT(btAnnounce->noMoreAnnounce());
     

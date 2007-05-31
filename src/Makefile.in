@@ -237,8 +237,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
-	MetaEntry.h Data.cc Data.h Dictionary.cc Dictionary.h List.cc \
-	List.h MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	RealtimeCommand.cc RealtimeCommand.h \
+	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
+	ChecksumCommand.cc ChecksumCommand.h MetaEntry.h Data.cc \
+	Data.h Dictionary.cc Dictionary.h List.cc List.h \
+	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
 	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
 	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
@@ -419,8 +422,9 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	IteratableChunkChecksumValidator.$(OBJEXT) \
 	CheckIntegrityCommand.$(OBJEXT) SingleUrlRequestInfo.$(OBJEXT) \
 	MultiUrlRequestInfo.$(OBJEXT) UriFileListParser.$(OBJEXT) \
-	DefaultSegmentManFactory.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2)
+	DefaultSegmentManFactory.$(OBJEXT) RealtimeCommand.$(OBJEXT) \
+	IteratableChecksumValidator.$(OBJEXT) \
+	ChecksumCommand.$(OBJEXT) $(am__objects_1) $(am__objects_2)
 am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -649,19 +653,22 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
-	$(am__append_1) $(am__append_2)
+	RealtimeCommand.cc RealtimeCommand.h \
+	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
+	ChecksumCommand.cc ChecksumCommand.h $(am__append_1) \
+	$(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@
 
-#aria2c_LDFLAGS = -pg
+aria2c_LDFLAGS = -pg
 AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@#  -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@  -pg
 
 all: all-am
 
@@ -769,6 +776,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
@@ -828,6 +836,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
@@ -853,6 +862,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealtimeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroup.Po@am__quote@

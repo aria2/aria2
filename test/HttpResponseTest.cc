@@ -20,7 +20,6 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsTransferEncodingSpecified);
   CPPUNIT_TEST(testGetTransferEncoding);
   CPPUNIT_TEST(testGetTransferDecoder);
-  CPPUNIT_TEST(testValidateFilename);
   CPPUNIT_TEST(testValidateResponse);
   CPPUNIT_TEST(testValidateResponse_good_range);
   CPPUNIT_TEST(testValidateResponse_bad_range);
@@ -44,7 +43,6 @@ public:
   void testIsTransferEncodingSpecified();
   void testGetTransferEncoding();
   void testGetTransferDecoder();
-  void testValidateFilename();
   void testValidateResponse();
   void testValidateResponse_good_range();
   void testValidateResponse_bad_range();
@@ -218,38 +216,6 @@ void HttpResponseTest::testGetTransferDecoder()
   httpHeader->put("Transfer-Encoding", "chunked");
 
   CPPUNIT_ASSERT(!httpResponse.getTransferDecoder().isNull());
-}
-
-void HttpResponseTest::testValidateFilename()
-{
-  HttpResponse httpResponse;
-
-  try {
-    httpResponse.validateFilename("");
-  } catch(...) {
-    CPPUNIT_FAIL("");
-  }
-  
-  HttpHeaderHandle httpHeader = new HttpHeader();
-  HttpRequestHandle httpRequest = new HttpRequest();
-  RequestHandle request = new Request();
-  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  httpRequest->setRequest(request);
-
-  httpResponse.setHttpHeader(httpHeader);
-  httpResponse.setHttpRequest(httpRequest);
-
-  try {
-    httpResponse.validateFilename("aria2-1.0.0.tar.bz2");
-  } catch(...) {
-    CPPUNIT_FAIL("");
-  }
-
-  try {
-    httpResponse.validateFilename("aria2-current.tar.bz2");
-    CPPUNIT_FAIL("exception must be threw.");
-  } catch(...) {
-  }
 }
 
 void HttpResponseTest::testValidateResponse()

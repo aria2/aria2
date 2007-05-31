@@ -48,7 +48,7 @@ public:
   string language;
   string os;
   int64_t size;
-  Checksum checksum;
+  ChecksumHandle checksum;
 public:
   MetalinkResources resources;
 #ifdef ENABLE_MESSAGE_DIGEST

@@ -44,6 +44,8 @@
 #include "SegmentManFactory.h"
 #include "DefaultSegmentManFactory.h"
 
+class DownloadCommand;
+
 class DownloadEngine;
 
 class RequestGroup {
@@ -57,7 +59,7 @@ private:
   const Option* _option;
   const Logger* logger;
   ChunkChecksumHandle _chunkChecksum;
-  Checksum _checksum;
+  ChecksumHandle _checksum;
 
   void validateFilename(const string& expectedFilename,
 			const string& actualFilename) const;
@@ -79,6 +81,7 @@ public:
     _option(option),
     logger(LogFactory::getInstance()),
     _chunkChecksum(0),
+    _checksum(0),
     numConnection(0),
     isTorrent(false) {}
 
@@ -186,13 +189,18 @@ public:
 
   void loadAndOpenFile();
 
-  void prepareForNextAction(int cuid, const RequestHandle& req, DownloadEngine* e);
+  void prepareForNextAction(int cuid, const RequestHandle& req, DownloadEngine* e, DownloadCommand* downloadCommand = 0);
 
   bool downloadFinishedByFileLength();
 
-  void setChecksum(const Checksum& checksum)
+  void setChecksum(const ChecksumHandle& checksum)
   {
     _checksum = checksum;
+  }
+
+  ChecksumHandle getChecksum() const
+  {
+    return _checksum;
   }
 
   const string& getHintFilename() const

@@ -38,8 +38,8 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   CPPUNIT_ASSERT_EQUAL(string("en-US"), entry1->language);
   CPPUNIT_ASSERT_EQUAL(string("Linux-x86"), entry1->os);
   CPPUNIT_ASSERT_EQUAL(string("a96cf3f0266b91d87d5124cf94326422800b627d"),
-		       entry1->checksum.getMessageDigest());
-  CPPUNIT_ASSERT(DIGEST_ALGO_SHA1 == entry1->checksum.getDigestAlgo());
+		       entry1->checksum->getMessageDigest());
+  CPPUNIT_ASSERT(DIGEST_ALGO_SHA1 == entry1->checksum->getDigestAlgo());
 
   MetalinkResources::iterator resourceItr1 = entry1->resources.begin();
   MetalinkResourceHandle resource1 = *resourceItr1;
@@ -65,7 +65,7 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   CPPUNIT_ASSERT_EQUAL(string("ja-JP"), entry2->language);
   CPPUNIT_ASSERT_EQUAL(string("Linux-m68k"), entry2->os);
   CPPUNIT_ASSERT_EQUAL(string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
-		       entry2->checksum.getMessageDigest());
+		       entry2->checksum->getMessageDigest());
   CPPUNIT_ASSERT_EQUAL((size_t)2, entry2->chunkChecksum->pieceHashes.size());
   CPPUNIT_ASSERT_EQUAL(262144, entry2->chunkChecksum->pieceLength);
   CPPUNIT_ASSERT_EQUAL(string("179463a88d79cbf0b1923991708aead914f26142"),
@@ -73,7 +73,7 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   CPPUNIT_ASSERT_EQUAL(string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),
 		       entry2->chunkChecksum->pieceHashes.at(1));
 
-  CPPUNIT_ASSERT(DIGEST_ALGO_SHA1 == entry2->checksum.getDigestAlgo());
+  CPPUNIT_ASSERT(DIGEST_ALGO_SHA1 == entry2->checksum->getDigestAlgo());
   } catch(Exception* e) {
     CPPUNIT_FAIL(e->getMsg());
     delete e;

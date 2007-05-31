@@ -39,12 +39,15 @@
 #include "Request.h"
 #include "RequestGroup.h"
 
+class DownloadCommand;
+
 class FileAllocationEntry {
 private:
   int _cuid;
   RequestHandle _currentRequest;
   RequestGroup* _requestGroup;
   int64_t _offset;
+  DownloadCommand* _nextDownloadCommand;
 public:
   FileAllocationEntry(int cuid,
 		      const RequestHandle& currentRequest,
@@ -53,15 +56,13 @@ public:
     _cuid(cuid),
     _currentRequest(currentRequest),
     _requestGroup(requestGroup),
-    _offset(offset)
+    _offset(offset),
+    _nextDownloadCommand(0)
   {
     ++_requestGroup->numConnection;
   }
 
-  ~FileAllocationEntry()
-  {
-    --_requestGroup->numConnection;
-  }
+  ~FileAllocationEntry();
 
   int getCUID() const
   {
@@ -93,6 +94,16 @@ public:
   bool allocationFinished() const
   {
     return _requestGroup->getSegmentMan()->totalSize <= _offset;
+  }
+
+  void setNextDownloadCommand(DownloadCommand* command)
+  {
+    _nextDownloadCommand = command;
+  }
+
+  DownloadCommand* getNextDownloadCommand() const
+  {
+    return _nextDownloadCommand;
   }
 };
 

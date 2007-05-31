@@ -146,5 +146,6 @@ public:
   }
 #endif // HAVE_LIBGCRYPT
 };
+typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
 #endif // ENABLE_SSL
 #endif // _D_MESSAGE_DIGEST_H_

@@ -32,28 +32,31 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_COMMAND_H_
-#define _D_FILE_ALLOCATION_COMMAND_H_
+#ifndef _D_REALTIME_COMMAND_H_
+#define _D_REALTIME_COMMAND_H_
 
-#include "RealtimeCommand.h"
-#include "Request.h"
-#include "TimeA2.h"
-#include "FileAllocationEntry.h"
+#include "common.h"
+#include "RequestGroup.h"
+#include "DownloadEngine.h"
+#include "Exception.h"
 
-class FileAllocationCommand : public RealtimeCommand {
-private:
-  RequestHandle _req;
-  FileAllocationEntryHandle _fileAllocationEntry;
-  Time _timer;
+class RealtimeCommand : public Command {
+protected:
+  RequestGroup* _requestGroup;
+  DownloadEngine* _e;
 public:
-  FileAllocationCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
-    RealtimeCommand(cuid, requestGroup, e),
-    _req(req),
-    _fileAllocationEntry(fileAllocationEntry) {}
+  RealtimeCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e):
+    Command(cuid),
+    _requestGroup(requestGroup),
+    _e(e) {}
 
-  virtual bool executeInternal();
+  virtual ~RealtimeCommand() {}
 
-  virtual bool handleException(Exception* e);
+  virtual bool execute();
+
+  virtual bool executeInternal() = 0;
+
+  virtual bool handleException(Exception* e) = 0;
 };
 
-#endif // _D_FILE_ALLOCATION_COMMAND_H_
+#endif // _D_REALTIME_COMMAND_H_

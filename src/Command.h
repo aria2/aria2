@@ -71,9 +71,20 @@ public:
 
   void setStatusRealtime() { this->status = STATUS_REALTIME; }
 
-  void transitStatus();
+  bool statusMatch(Command::STATUS statusFilter) const
+  {
+    return statusFilter <= status;
+  }
 
-  bool statusMatch(Command::STATUS statusFilter) const;
+  void transitStatus()
+  {
+    switch(status) {
+    case STATUS_REALTIME:
+      break;
+    default:
+      status = STATUS_INACTIVE;
+    }
+  }
 };
 
 typedef deque<Command*> Commands;

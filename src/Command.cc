@@ -35,18 +35,3 @@
 #include "Command.h"
 
 int Command::uuidGen = 0;
-
-bool Command::statusMatch(Command::STATUS statusFilter) const
-{
-  return statusFilter <= status;
-}
-
-void Command::transitStatus()
-{
-  switch(status) {
-  case STATUS_REALTIME:
-    break;
-  default:
-    status = STATUS_INACTIVE;
-  }
-}

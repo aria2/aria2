@@ -1,3 +1,62 @@
+2007-06-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/FileAllocationCommand.cc: Derived from RealtimeCommand.
+	* src/CheckIntegrityCommand.cc: Derived from RealtimeCommand.
+	
+	* src/MetalinkEntry.h
+	(checksum): Changed to ChecksumHandle
+	* src/MetalinkRequestInfo.cc
+	(checksum): Changed to ChecksumHandle
+
+	* src/File.cc
+	(mkdirs): OPEN_MODE -> DIR_OPEN_MODE
+	* src/common.h
+	(DIR_OPEN_MODE): New definition
+
+	* src/RequestGroup.cc
+	(prepareForNextAction): Added an argument.
+
+	* src/message.h
+	(MSG_GOOD_CHECKSUM): New definition
+	(MSG_BAD_CHECKSUM): New definition
+
+	* src/HttpResponseCommand.cc
+	(handleDefaultEncoding): Continue download sequence in new
+	non-segmented download.
+
+	* src/FileAllocationEntry.h
+	(_nextDownloadCommand): New variable.
+
+	* src/DownloadCommand.cc
+	(prepareForNextSegment): Create ChecksumCommand if checksum is
+	available.	
+
+	* src/RealtimeCommand.h, src/RealtimeCommand.cc: New class.
+
+	* src/IteratableChecksumValidator.h,
+	src/IteratableChecksumValidator.cc: New class.
+
+	* src/ChecksumCommand.h, src/ChecksumCommand.cc: New class.
+	
+2007-05-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Change file mode to 666:
+	* src/common.h (OPEN_MODE): New definition.
+	* src/File.cc
+	* src/Util.cc
+	* src/Directry.cc
+	* src/AbstractDiskWriter.cc
+
+	Change the level of log message "download aborted" to debug:
+	* src/PeerAbstractCommand.cc (execute)
+	
+	* src/RequestGroup.h (RequestGroup): Initialized _hintTotalLength to 0.
+
+	* src/TrackerWatcherCommand.cc
+	(createCommand): Sleep some seconds after request failed.
+	If tracker request fails more than value of PREF_TRACKER_MAX_TRIES,
+	then abort tracker request.
+	
 2007-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* Added the simultaneous download feature.

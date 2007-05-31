@@ -112,13 +112,15 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
   string md;
   md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]")));
   if(md.size() > 0) {
-    entry->checksum.setMessageDigest(md);
-    entry->checksum.setDigestAlgo(DIGEST_ALGO_SHA1);
+    entry->checksum = new Checksum();
+    entry->checksum->setMessageDigest(md);
+    entry->checksum->setDigestAlgo(DIGEST_ALGO_SHA1);
   } else {
     md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]")));
     if(md.size() > 0) {
-      entry->checksum.setMessageDigest(md);
-      entry->checksum.setDigestAlgo(DIGEST_ALGO_MD5);
+      entry->checksum = new Checksum();
+      entry->checksum->setMessageDigest(md);
+      entry->checksum->setDigestAlgo(DIGEST_ALGO_MD5);
     }
   }
   string piecesPath = xpath+"/m:verification/m:pieces";

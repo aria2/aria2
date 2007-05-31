@@ -40,6 +40,7 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 #include "prefs.h"
+#include "ChecksumCommand.h"
 #include <sys/time.h>
 
 DownloadCommand::DownloadCommand(int cuid,
@@ -125,6 +126,11 @@ bool DownloadCommand::executeInternal() {
 
 bool DownloadCommand::prepareForNextSegment() {
   if(_requestGroup->getSegmentMan()->finished()) {
+    if(!_requestGroup->getChecksum().isNull() &&
+       !_requestGroup->getChecksum()->isEmpty()) {
+      ChecksumCommand* command = new ChecksumCommand(cuid, _requestGroup, e);
+      e->commands.push_back(command);
+    }
     return true;
   } else {
     // Merge segment with next segment, if segment.index+1 == nextSegment.index

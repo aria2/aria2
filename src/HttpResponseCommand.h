@@ -37,6 +37,7 @@
 
 #include "AbstractCommand.h"
 #include "HttpConnection.h"
+#include "HttpDownloadCommand.h"
 
 class HttpResponseCommand : public AbstractCommand {
 private:
@@ -44,7 +45,7 @@ private:
 
   bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
   bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
-  void createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
+  HttpDownloadCommand* createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
   bool doTorrentStuff(const HttpResponseHandle& httpResponse);
 protected:
   bool executeInternal();

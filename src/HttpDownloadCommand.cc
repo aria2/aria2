@@ -47,9 +47,7 @@ HttpDownloadCommand::HttpDownloadCommand(int cuid,
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
 bool HttpDownloadCommand::prepareForNextSegment() {
-  if(_requestGroup->getSegmentMan()->finished()) {
-    return true;
-  } else {
+  if(!_requestGroup->getSegmentMan()->finished()) {
     if(req->isKeepAlive()) {
       Command* command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
       e->commands.push_back(command);
@@ -57,5 +55,7 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     } else {
       return DownloadCommand::prepareForNextSegment();
     }
+  } else {
+    return DownloadCommand::prepareForNextSegment();
   }
 }

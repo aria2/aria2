@@ -21,6 +21,11 @@ public:
     copy(peers.begin(), peers.end(), back_inserter(this->peers));
   }
 
+  virtual bool addIncomingPeer(const PeerHandle& peer)
+  {
+    return true;
+  }
+
   virtual const Peers& getPeers() {
     return peers;
   }
@@ -43,6 +48,10 @@ public:
 
   void setStat(const TransferStat& stat) {
     this->stat = stat;
+  }
+
+  virtual void returnPeer(const PeerHandle& peer)
+  {
   }
 };
 

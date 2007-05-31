@@ -91,7 +91,7 @@ bool HttpResponseCommand::executeInternal()
     _requestGroup->validateFilename(httpResponse->determinFilename());
     _requestGroup->validateTotalLength(httpResponse->getEntityLength());
 
-    createHttpDownloadCommand(httpResponse);
+    e->commands.push_back(createHttpDownloadCommand(httpResponse));
     return true;
   } else {
     // TODO validate totalsize against hintTotalSize if it is provided.
@@ -136,8 +136,13 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     }
   }
 
+  DownloadCommand* command = 0;
+  File file(_requestGroup->getFilePath());
+  if(_requestGroup->getRemainingUris().empty() && !file.exists()) {
+    command = createHttpDownloadCommand(httpResponse);
+  }
   _requestGroup->loadAndOpenFile();
-  _requestGroup->prepareForNextAction(cuid, req, e);
+  _requestGroup->prepareForNextAction(cuid, req, e, command);
   e->noWait = true;
   return true;
 }
@@ -157,11 +162,11 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   req->setKeepAlive(false);
   segment = _requestGroup->getSegmentMan()->getSegment(cuid);	
   _requestGroup->getSegmentMan()->diskWriter->initAndOpenFile(_requestGroup->getSegmentMan()->getFilePath());
-  createHttpDownloadCommand(httpResponse);
+  e->commands.push_back(createHttpDownloadCommand(httpResponse));
   return true;
 }
 
-void HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& httpResponse)
+HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& httpResponse)
 {
   TransferEncodingHandle enc = 0;
   if(httpResponse->isTransferEncodingSpecified()) {
@@ -179,7 +184,7 @@ void HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& ht
   command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
   command->setTransferDecoder(enc);
 
-  e->commands.push_back(command);
+  return command;
 }
 
 bool HttpResponseCommand::doTorrentStuff(const HttpResponseHandle& httpResponse)
@@ -195,6 +200,6 @@ bool HttpResponseCommand::doTorrentStuff(const HttpResponseHandle& httpResponse)
   _requestGroup->getSegmentMan()->isSplittable = false;
   _requestGroup->getSegmentMan()->downloadStarted = true;
   _requestGroup->getSegmentMan()->diskWriter->initAndOpenFile("/tmp/aria2"+Util::itos((int32_t)getpid()));
-  createHttpDownloadCommand(httpResponse);
+  e->commands.push_back(createHttpDownloadCommand(httpResponse));
   return true;
 }

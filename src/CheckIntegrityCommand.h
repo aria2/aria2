@@ -35,25 +35,22 @@
 #ifndef _D_CHECK_INTEGRITY_COMMAND_H_
 #define _D_CHECK_INTEGRITY_COMMAND_H_
 
-#include "Command.h"
+#include "RealtimeCommand.h"
 #include "Request.h"
-#include "RequestGroup.h"
-#include "DownloadEngine.h"
 #include "IteratableChunkChecksumValidator.h"
+#include "DownloadCommand.h"
 
-class CheckIntegrityCommand : public Command {
+class CheckIntegrityCommand : public RealtimeCommand {
 private:
   RequestHandle _req;
-  RequestGroup* _requestGroup;
-  DownloadEngine* _e;
   IteratableChunkChecksumValidatorHandle _validator;
+  DownloadCommand* _nextDownloadCommand;
 public:
   CheckIntegrityCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e):
-    Command(cuid),
+    RealtimeCommand(cuid, requestGroup, e),
     _req(req),
-    _requestGroup(requestGroup),
-    _e(e),
-    _validator(0)
+    _validator(0),
+    _nextDownloadCommand(0)
   {
     ++_requestGroup->numConnection;
   }
@@ -61,11 +58,19 @@ public:
   virtual ~CheckIntegrityCommand()
   {
     --_requestGroup->numConnection;
+    delete _nextDownloadCommand;
   }
 
   void initValidator();
 
-  virtual bool execute();
+  virtual bool executeInternal();
+
+  virtual bool handleException(Exception* e);
+
+  void setNextDownloadCommand(DownloadCommand* command)
+  {
+    _nextDownloadCommand = command;
+  }
 };
 
 #endif // _D_CHECK_INTEGRITY_COMMAND_H_

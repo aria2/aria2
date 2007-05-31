@@ -32,28 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_COMMAND_H_
-#define _D_FILE_ALLOCATION_COMMAND_H_
+#include "ChecksumCommand.h"
+#include "DlAbortEx.h"
+#include "message.h"
 
-#include "RealtimeCommand.h"
-#include "Request.h"
-#include "TimeA2.h"
-#include "FileAllocationEntry.h"
+void ChecksumCommand::initValidator()
+{
+  _validator = new IteratableChecksumValidator();
+  _validator->setChecksum(_requestGroup->getChecksum());
+  _validator->setDiskWriter(_requestGroup->getSegmentMan()->diskWriter);
+  _validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
+  if(!_validator->canValidate()) {
+    // insufficient checksums.
+    throw new DlAbortEx("Insufficient checksums.");
+  }
+  _validator->init();
+}
 
-class FileAllocationCommand : public RealtimeCommand {
-private:
-  RequestHandle _req;
-  FileAllocationEntryHandle _fileAllocationEntry;
-  Time _timer;
-public:
-  FileAllocationCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
-    RealtimeCommand(cuid, requestGroup, e),
-    _req(req),
-    _fileAllocationEntry(fileAllocationEntry) {}
+bool ChecksumCommand::executeInternal()
+{
+  _validator->validateChunk();
+  if(_validator->finished()) {
+    if(_requestGroup->downloadFinished()) {
+      logger->notice(MSG_GOOD_CHECKSUM, cuid, _requestGroup->getFilePath().c_str());
+      return true;
+    } else {
+      logger->error(MSG_BAD_CHECKSUM, cuid, _requestGroup->getFilePath().c_str());
+      return true;
+    }
+  } else {
+    _e->commands.push_back(this);
+    return false;
+  }
 
-  virtual bool executeInternal();
+}
 
-  virtual bool handleException(Exception* e);
-};
-
-#endif // _D_FILE_ALLOCATION_COMMAND_H_
+bool ChecksumCommand::handleException(Exception* e)
+{
+  logger->error("CUID#%d - Exception caught while validating file integrity.", e, cuid);
+  delete e;
+  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
+  // TODO We need to set bitfield back to the state when validation begun.
+  // The one of the solution is having a copy of bitfield before settting its
+  // all bit to 1. If exception is thrown, then assign the copy to the bitfield.
+  return true;
+}

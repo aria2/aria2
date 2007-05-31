@@ -35,39 +35,43 @@
 #include "FileAllocationCommand.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
+#include "DownloadCommand.h"
 
-bool FileAllocationCommand::execute()
+bool FileAllocationCommand::executeInternal()
 {
-  setStatusRealtime();
-  _e->noWait = true;
-  try {
-    _fileAllocationEntry->allocateChunk();
-
-    if(_fileAllocationEntry->allocationFinished()) {
-      int64_t totalLength = _requestGroup->getSegmentMan()->totalSize;
-      logger->debug("%d seconds to allocate %lld byte(s)",
-		    _timer.difference(), totalLength);
+  _fileAllocationEntry->allocateChunk();
+  
+  if(_fileAllocationEntry->allocationFinished()) {
+    int64_t totalLength = _requestGroup->getSegmentMan()->totalSize;
+    logger->debug("%d seconds to allocate %lld byte(s)",
+		  _timer.difference(), totalLength);
     
-      _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
-
+    _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
+    
+    if(_fileAllocationEntry->getNextDownloadCommand()) {
+      _e->commands.push_back(_fileAllocationEntry->getNextDownloadCommand());
+      _fileAllocationEntry->setNextDownloadCommand(0);
+    } else {
       int32_t numCommandsToGenerate = 15;
       Commands commands = _requestGroup->getNextCommand(_e, numCommandsToGenerate);
-
+      
       Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _req, _requestGroup, _e);
-
+      
       commands.push_front(command);
-
+    
       _e->addCommand(commands);
-      return true;
-    } else {
-      _e->commands.push_back(this);
-      return false;
     }
-  } catch(Exception* e) {
-    _requestGroup->getSegmentMan()->errors++;
-    logger->error("CUID#%d - Exception caught while allocating file space.", e, cuid);
-    delete e;
-    logger->notice(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
     return true;
+  } else {
+    _e->commands.push_back(this);
+    return false;
   }
+}
+
+bool FileAllocationCommand::handleException(Exception* e)
+{
+  logger->error("CUID#%d - Exception caught while allocating file space.", e, cuid);
+  delete e;
+  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
+  return true;
 }

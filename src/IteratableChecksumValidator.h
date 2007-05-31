@@ -32,28 +32,62 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_COMMAND_H_
-#define _D_FILE_ALLOCATION_COMMAND_H_
+#ifndef _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
+#define _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
 
-#include "RealtimeCommand.h"
-#include "Request.h"
-#include "TimeA2.h"
-#include "FileAllocationEntry.h"
+#include "common.h"
+#include "BitfieldMan.h"
+#include "Checksum.h"
+#include "DiskWriter.h"
+#include "LogFactory.h"
+#include "messageDigest.h"
 
-class FileAllocationCommand : public RealtimeCommand {
+class IteratableChecksumValidator
+{
 private:
-  RequestHandle _req;
-  FileAllocationEntryHandle _fileAllocationEntry;
-  Time _timer;
+  DiskWriterHandle _diskWriter;
+  BitfieldMan* _bitfield;
+  int64_t _currentOffset;
+  ChecksumHandle _checksum;
+  const Logger* logger;
+  MessageDigestContextHandle _ctx;
+
+  string calculateActualChecksum();
 public:
-  FileAllocationCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
-    RealtimeCommand(cuid, requestGroup, e),
-    _req(req),
-    _fileAllocationEntry(fileAllocationEntry) {}
+  IteratableChecksumValidator():_diskWriter(0), _bitfield(0), _currentOffset(0), _checksum(0), logger(LogFactory::getInstance()), _ctx(0) {}
 
-  virtual bool executeInternal();
+  bool canValidate() const;
 
-  virtual bool handleException(Exception* e);
+  void init();
+
+  void validateChunk();
+
+  bool finished() const
+  {
+    return _currentOffset >= _bitfield->getTotalLength();
+  }
+
+  void setDiskWriter(const DiskWriterHandle& diskWriter)
+  {
+    _diskWriter = diskWriter;
+  }
+
+  void setBitfield(BitfieldMan* bitfield)
+  {
+    _bitfield = bitfield;
+  }
+
+  void setChecksum(const ChecksumHandle& checksum)
+  {
+    _checksum = checksum;
+  }
+
+  int64_t getCurrentOffset() const
+  {
+    return _currentOffset;
+  }
 };
 
-#endif // _D_FILE_ALLOCATION_COMMAND_H_
+typedef SharedHandle<IteratableChecksumValidator> IteratableChecksumValidatorHandle;
+
+#endif // _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
