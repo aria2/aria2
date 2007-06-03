@@ -197,6 +197,10 @@ bool FtpNegotiationCommand::recvSize() {
     // TODO validate filename and totalsize against hintFilename and hintTotalSize if these are provided.
     _requestGroup->validateTotalLengthByHint(size);
 
+    if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
+      throw new FatalException(EX_DUPLICATE_FILE_DOWNLOAD, _requestGroup->getFilePath().c_str());
+    }
+
     if(req->getMethod() == Request::METHOD_HEAD) {
       _requestGroup->getSegmentMan()->isSplittable = false; // TODO because we don't want segment file to be saved.
       sequence = SEQ_HEAD_OK;

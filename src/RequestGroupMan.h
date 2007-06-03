@@ -148,6 +148,8 @@ public:
     }
     return errors;
   }
+
+  bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

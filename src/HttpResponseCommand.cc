@@ -41,6 +41,7 @@
 #include "prefs.h"
 #include "File.h"
 #include "InitiateConnectionCommandFactory.h"
+#include "FatalException.h"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -97,6 +98,10 @@ bool HttpResponseCommand::executeInternal()
     // TODO validate totalsize against hintTotalSize if it is provided.
     _requestGroup->validateFilenameByHint(httpResponse->determinFilename());
     _requestGroup->validateTotalLengthByHint(httpResponse->getEntityLength());
+
+    if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
+      throw new FatalException(EX_DUPLICATE_FILE_DOWNLOAD, _requestGroup->getFilePath().c_str());
+    }
 
     if(httpResponse->isTransferEncodingSpecified()) {
       return handleOtherEncoding(httpResponse);

@@ -141,7 +141,7 @@ bool AbstractCommand::execute() {
 }
 
 void AbstractCommand::tryReserved() {
-  Commands commands = _requestGroup->getNextCommand(e, 1);
+  Commands commands = _requestGroup->createNextCommand(e, 1);
   e->addCommand(commands);
 }
 

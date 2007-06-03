@@ -19,6 +19,7 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAddIncomingPeer);
   CPPUNIT_TEST(testReturnPeer);
   CPPUNIT_TEST(testOnErasingPeer);
+  CPPUNIT_TEST(testReturnPeer);
   CPPUNIT_TEST_SUITE_END();
 private:
   BtContextHandle btContext;

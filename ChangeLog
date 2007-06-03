@@ -1,3 +1,21 @@
+2007-06-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	RequestGroup::getNextCommand() was renamed to createNextCommand().
+	Added its overloaded method.
+	* src/RequestGroup.h 
+	(_numConcurrentCommand): New variable.
+	(setNumConcurrentCommand): New function.
+	* src/RequestGroup.cc
+	
+	Abort download if same file is being downloaded concurrently.
+	* src/RequestGroup.h, src/RequestGroupMan.cc
+	(isSameFileBeingDownloaded): New function.
+	* src/HttpResponseCommand.cc (executeInternal)
+	* src/FtpNegotiateCommand.cc (recvSize)
+	* src/message.h (EX_DUPLICATE_FILE_DOWNLOAD): New definition.
+	
+	* main.cc: Added help message for -i option.
+	
 2007-06-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/FileAllocationCommand.cc: Derived from RealtimeCommand.

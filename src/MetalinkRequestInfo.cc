@@ -105,16 +105,12 @@ RequestInfos MetalinkRequestInfo::execute() {
 		entry->resources.end(),
 		FindBitTorrentUrl());
       Strings urls;
-      int maxConnection = 0;
       ChecksumHandle checksum = 0;
       if(itr == entry->resources.end()) {
 	entry->reorderResourcesByPreference();
 	
 	for_each(entry->resources.begin(), entry->resources.end(),
 		 AccumulateNonP2PUrl(&urls, op->getAsInt(PREF_SPLIT)));
-	maxConnection =
-	  op->getAsInt(PREF_METALINK_SERVERS)*op->getAsInt(PREF_SPLIT);
-	
 	// TODO
 	// set checksum
 	checksum = entry->checksum;
@@ -125,6 +121,7 @@ RequestInfos MetalinkRequestInfo::execute() {
       RequestGroupHandle rg = new RequestGroup(urls, op);
       rg->setHintFilename(entry->filename);
       rg->setHintTotalLength(entry->size);
+      rg->setNumConcurrentCommand(op->getAsInt(PREF_METALINK_SERVERS));
 
 #ifdef ENABLE_MESSAGE_DIGEST
       if(entry->chunkChecksum.isNull()) {

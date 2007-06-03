@@ -61,10 +61,16 @@ SegmentManHandle RequestGroup::initSegmentMan()
   return _segmentMan;
 }
 
-Commands RequestGroup::getNextCommand(DownloadEngine* e, int32_t maxNum, const string& method)
+Commands RequestGroup::createNextCommand(DownloadEngine* e, const string& method)
+{
+  int32_t numCommand = _numConcurrentCommand == 0 ? _uris.size() : _numConcurrentCommand;
+  return createNextCommand(e, numCommand, method);
+}
+
+Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, const string& method)
 {
   Commands commands;
-  for(;!_uris.empty() && commands.size() < (size_t)maxNum; _uris.pop_front()) {
+  for(;!_uris.empty() && commands.size() < (size_t)numCommand; _uris.pop_front()) {
     string uri = _uris.front();
     _spentUris.push_back(uri);
     RequestHandle req = RequestFactorySingletonHolder::instance()->createRequest();
@@ -207,8 +213,7 @@ void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, Down
     if(downloadCommand) {
       e->commands.push_back(downloadCommand);
     } else {
-      int32_t numCommandsToGenerate = 15;
-      Commands commands = getNextCommand(e, numCommandsToGenerate);
+      Commands commands = createNextCommand(e);
       Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, this, e);
       commands.push_front(command);
       e->addCommand(commands);

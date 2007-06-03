@@ -206,6 +206,9 @@ void showUsage() {
 	    "                              http(s)/ftp downloads.") << endl;
   cout << _(" -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads.") << endl;
   cout << _(" -n, --no-netrc               Disables netrc support.") << endl;
+  cout << _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
+	    "                              multiple URIs for a single entity: deliminate\n"
+	    "                              URIs by Tab in a single line.") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -616,7 +619,8 @@ int main(int argc, char* argv[]) {
   if(op->defined(PREF_HTTP_PROXY_USER)) {
     op->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
   }
-  if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE)) {
+  if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE) &&
+     !op->defined(PREF_INPUT_FILE)) {
     if(optind == argc) {
       cerr << _("specify at least one URL") << endl;
       exit(EXIT_FAILURE);

@@ -60,6 +60,7 @@ private:
   const Logger* logger;
   ChunkChecksumHandle _chunkChecksum;
   ChecksumHandle _checksum;
+  int32_t _numConcurrentCommand;
 
   void validateFilename(const string& expectedFilename,
 			const string& actualFilename) const;
@@ -82,6 +83,7 @@ public:
     logger(LogFactory::getInstance()),
     _chunkChecksum(0),
     _checksum(0),
+    _numConcurrentCommand(0),
     numConnection(0),
     isTorrent(false) {}
 
@@ -92,6 +94,7 @@ public:
     _option(option),
     logger(LogFactory::getInstance()),
     _chunkChecksum(0),
+    _numConcurrentCommand(0),
     numConnection(0),
     isTorrent(false)
   {
@@ -109,7 +112,9 @@ public:
     return _segmentMan;
   }
 
-  Commands getNextCommand(DownloadEngine* e, int32_t maxNum, const string& method = "GET");
+  Commands createNextCommand(DownloadEngine* e, const string& method = "GET");
+
+  Commands createNextCommand(DownloadEngine* e, int32_t numCommand, const string& method = "GET");
   
   void addURI(const string& uri)
   {
@@ -259,6 +264,11 @@ public:
   void setSegmentManFactory(const SegmentManFactoryHandle& segmentManFactory)
   {
     _segmentManFactory = segmentManFactory;
+  }
+
+  void setNumConcurrentCommand(int32_t num)
+  {
+    _numConcurrentCommand = num;
   }
 };
 

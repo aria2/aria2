@@ -31,13 +31,6 @@
 100K/300M(10%)(3cn)(3more) 100KB/s [FileAlloc:35MB/40MB(90%)][Checksum:10MB/20MB(50%)]
 * exit status: all downloads have been successful-> EXIT_SUCCESS,
 		some of downloads have been failed -> EXIT_FAILURE
-* use hintFilename and hintTotalLength if these are provided.
-	-> test against ftp downloads
-* make sure that the same file name is not used at the same time.
 * Do not use ufilename in multi-simultaneous download mode.
-* Replace numCommandToGenerate to the value of PREF_METALINK_SERVERS
-* Do not send range header if the position of starting byte is 0 and
-the position of ending byte is not specified.
 * Create download command directly when 1connection download.
 Consider timeout when file allocation/check integrity is enabled.
-* Test DefaultPeerStorage

@@ -74,7 +74,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     
     _requestGroups.push_back(groupToAdd);
     groupToAdd->initSegmentMan();
-    Commands commands = groupToAdd->getNextCommand(e, 1);
+    Commands commands = groupToAdd->createNextCommand(e, 1);
     count += commands.size();
     e->addCommand(commands);
   }
@@ -89,7 +89,7 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e) const
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
 	itr != _requestGroups.end(); ++itr) {
     (*itr)->initSegmentMan();
-    commands.push_back((*itr)->getNextCommand(e, 1).front());
+    commands.push_back((*itr)->createNextCommand(e, 1).front());
   }
   return commands;
 }
@@ -128,4 +128,16 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
     }
     o << "\n";
   }
+}
+
+bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) const
+{
+  for(RequestGroups::const_iterator itr = _requestGroups.begin();
+      itr != _requestGroups.end(); ++itr) {
+    if((*itr).get() != requestGroup &&
+       (*itr)->getFilePath() == requestGroup->getFilePath()) {
+      return true;
+    }
+  }
+  return false;
 }
