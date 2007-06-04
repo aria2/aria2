@@ -42,6 +42,7 @@ class PeerListenCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
   SocketHandle socket;
+  int32_t _lowestSpeedLimit;
 public:
   PeerListenCommand(int cuid,
 		    TorrentDownloadEngine* e,
@@ -52,6 +53,11 @@ public:
   bool execute();
 
   int bindPort(int portRangeStart, int portRangeEnd);
+
+  void setLowestSpeedLimit(int32_t speed)
+  {
+    _lowestSpeedLimit = speed;
+  }
 };
 
 #endif // _D_PEER_LISTEN_COMMAND_H_

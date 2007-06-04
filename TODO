@@ -34,3 +34,4 @@
 * Do not use ufilename in multi-simultaneous download mode.
 * Create download command directly when 1connection download.
 Consider timeout when file allocation/check integrity is enabled.
+* Accept incoming connections if download rate is low.

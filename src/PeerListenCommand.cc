@@ -41,7 +41,8 @@ PeerListenCommand::PeerListenCommand(int cuid,
 				     TorrentDownloadEngine* e,
 				     const BtContextHandle& btContext)
   :BtContextAwareCommand(cuid, btContext),
-   e(e) {}
+   e(e),
+   _lowestSpeedLimit(20*1024) {}
 
 PeerListenCommand::~PeerListenCommand() {}
 
@@ -77,8 +78,11 @@ bool PeerListenCommand::execute() {
       peerSocket->getPeerInfo(peerInfo);
       pair<string, int> localInfo;
       peerSocket->getAddrInfo(localInfo);
+
+      TransferStat tstat = peerStorage->calculateStat();
       if(peerInfo.first != localInfo.first &&
-	 btRuntime->getConnections() < MAX_PEERS) {
+	 (!pieceStorage->downloadFinished() && tstat.getDownloadSpeed() < _lowestSpeedLimit ||
+	  btRuntime->getConnections() < MAX_PEERS)) {
 	PeerHandle peer = PeerHandle(new Peer(peerInfo.first, peerInfo.second,
 					      btContext->getPieceLength(),
 					      btContext->getTotalLength()));
