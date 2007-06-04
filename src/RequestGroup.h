@@ -270,6 +270,8 @@ public:
   {
     _numConcurrentCommand = num;
   }
+
+  void setUserDefinedFilename(const string& filename);
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

@@ -1,5 +1,5 @@
 2007-06-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
-
+	
 	Accept incoming connections if download rate is low.
 	* src/PeerListenCommand.h, src/PeerListenCommand.cc:
 	(_lowestSpeedLimit): New variable.
@@ -7,6 +7,15 @@
 	(execute): Accept incoming connections if download rate is low.
 	MAX_PEERS is ignored in this case.
 
+	Disable PREF_OUT in multiple concurrent download:
+	* src/RequestGroup.h, src/RequestGroup.cc
+	(setUserDefinedFilename): New function.
+	* src/DownloadEngineFactory.cc
+	(newConsoleEngine): Do not set PREF_OUT to requestGroup in multiple
+	concurrent download.
+	* src/DefaultSegmentManFactory.cc
+	(createNewInstance): Comment out the line: segmentMan->ufilename = ...
+	
 2007-06-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	RequestGroup::getNextCommand() was renamed to createNextCommand().

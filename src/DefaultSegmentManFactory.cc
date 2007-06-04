@@ -42,7 +42,7 @@ SegmentManHandle DefaultSegmentManFactory::createNewInstance()
   segmentMan->diskWriter = new DefaultDiskWriter();
   segmentMan->dir = _option->get(PREF_DIR);
   // TODO disable this in multi-simultaneous download mode.
-  segmentMan->ufilename = _option->get(PREF_OUT);
+  //segmentMan->ufilename = _option->get(PREF_OUT);
   segmentMan->option = _option;
   return segmentMan;
 }

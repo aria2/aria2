@@ -50,14 +50,6 @@
 SegmentManHandle RequestGroup::initSegmentMan()
 {
   _segmentMan = _segmentManFactory->createNewInstance();
-  /*
-  _segmentMan = new SegmentMan();
-  _segmentMan->diskWriter = new DefaultDiskWriter();// DefaultDiskWriter::createNewDiskWriter(_option);
-  _segmentMan->dir = _option->get(PREF_DIR);
-  // TODO disable this in multi-simultaneous download mode.
-  _segmentMan->ufilename = _option->get(PREF_OUT);
-  _segmentMan->option = _option;
-  */
   return _segmentMan;
 }
 
@@ -265,4 +257,12 @@ void RequestGroup::validateFilenameByHint(const string& actualFilename) const
 void RequestGroup::validateTotalLengthByHint(int64_t actualTotalLength) const
 {
   validateTotalLength(_hintTotalLength, actualTotalLength);
+}
+
+void RequestGroup::setUserDefinedFilename(const string& filename)
+{
+  if(_segmentMan.isNull()) {
+    throw new FatalException("SegmentMan is not initialized yet. Call initSegmentMan() before calling this function.");
+  }
+  _segmentMan->ufilename = filename;
 }

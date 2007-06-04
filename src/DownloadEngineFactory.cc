@@ -65,6 +65,10 @@ ConsoleDownloadEngine*
 DownloadEngineFactory::newConsoleEngine(const Option* op,
 					const RequestGroups& requestGroups)
 {
+  // set PREF_OUT parameter to requestGroup in non-multi download mode.
+  if(requestGroups.size() == 1) {
+    requestGroups.front()->setUserDefinedFilename(op->get(PREF_OUT));
+  }
   RequestGroups workingSet;
   RequestGroups reservedSet;
   if(op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS) < (int32_t)requestGroups.size()) {
