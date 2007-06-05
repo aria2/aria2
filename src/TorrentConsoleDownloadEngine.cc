@@ -50,7 +50,7 @@ void TorrentConsoleDownloadEngine::sendStatistics() {
   } else {
     printf("%s/%sB %d%% %s D:%.2f",
 	   Util::abbrevSize(downloadLength).c_str(),
-	   Util::abbrevSizellitos(totalLength).c_str(),
+	   Util::abbrevSize(totalLength).c_str(),
 	   (totalLength == 0 ?
 	    0 : (int)((downloadLength*100)/totalLength)),
 	   avgSpeed == 0 ? "-" : Util::secfmt(eta).c_str(),
