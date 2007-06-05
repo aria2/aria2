@@ -48,10 +48,9 @@ bool FileAllocationDispatcherCommand::execute()
 		 entry->getCUID());
     FileAllocationCommand* command =
       new FileAllocationCommand(entry->getCUID(),
-				entry->getCurrentRequest(),
 				entry->getRequestGroup(),
 				_e,
-				_e->_fileAllocationMan->getCurrentFileAllocationEntry());
+				entry);
     _e->commands.push_back(command);
     _e->noWait = true;
   }

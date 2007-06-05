@@ -33,15 +33,8 @@
  */
 /* copyright --> */
 #include "FileAllocationEntry.h"
-#include "DownloadCommand.h"
 
 #define BUFSIZE 16*1024
-
-FileAllocationEntry::~FileAllocationEntry()
-{
-  --_requestGroup->numConnection;
-  delete _nextDownloadCommand;
-}
 
 void FileAllocationEntry::allocateChunk()
 {

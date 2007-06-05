@@ -46,10 +46,13 @@
 #include "Util.h"
 #include "CheckIntegrityCommand.h"
 #include "FatalException.h"
+#include "CheckIntegrityEntry.h"
+#include "DownloadCommand.h"
 
 SegmentManHandle RequestGroup::initSegmentMan()
 {
   _segmentMan = _segmentManFactory->createNewInstance();
+  _segmentMan->ufilename = _ufilename;
   return _segmentMan;
 }
 
@@ -193,9 +196,13 @@ void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, Down
 {
   File existingFile(getFilePath());
   if(existingFile.size() > 0 && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-    CheckIntegrityCommand* command = new CheckIntegrityCommand(cuid, req, this, e);
-    command->setNextDownloadCommand(downloadCommand);
-    command->initValidator();
+    // purge SegmentEntries
+    _segmentMan->purgeSegmentEntry();
+
+    CheckIntegrityEntryHandle entry = new CheckIntegrityEntry(cuid, req, this);
+    entry->setNextDownloadCommand(downloadCommand);
+    entry->initValidator();
+    CheckIntegrityCommand* command = new CheckIntegrityCommand(cuid, this, e, entry);
     e->commands.push_back(command);
   } else if(needsFileAllocation()) {
     FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this);
@@ -261,8 +268,10 @@ void RequestGroup::validateTotalLengthByHint(int64_t actualTotalLength) const
 
 void RequestGroup::setUserDefinedFilename(const string& filename)
 {
-  if(_segmentMan.isNull()) {
-    throw new FatalException("SegmentMan is not initialized yet. Call initSegmentMan() before calling this function.");
-  }
-  _segmentMan->ufilename = filename;
+  _ufilename = filename;
+}
+
+int64_t RequestGroup::getExistingFileLength() const
+{
+  return File(getFilePath()).size();
 }

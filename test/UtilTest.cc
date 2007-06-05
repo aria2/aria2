@@ -23,6 +23,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testUrldecode);
   CPPUNIT_TEST(testCountBit);
   CPPUNIT_TEST(testGetRealSize);
+  CPPUNIT_TEST(testAbbrevSize);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -46,6 +47,7 @@ public:
   void testUrldecode();
   void testCountBit();
   void testGetRealSize();
+  void testAbbrevSize();
 };
 
 
@@ -298,4 +300,12 @@ void UtilTest::testGetRealSize()
   CPPUNIT_ASSERT_EQUAL((int64_t)1024, Util::getRealSize("1K"));
   CPPUNIT_ASSERT_EQUAL((int64_t)0, Util::getRealSize(""));
   CPPUNIT_ASSERT_EQUAL((int64_t)0, Util::getRealSize("foo"));
+}
+
+void UtilTest::testAbbrevSize()
+{
+  CPPUNIT_ASSERT_EQUAL(string("4,096M"), Util::abbrevSize(4294967296LL));
+  CPPUNIT_ASSERT_EQUAL(string("1K"), Util::abbrevSize(1024));
+  CPPUNIT_ASSERT_EQUAL(string("1,023"), Util::abbrevSize(1023));
+  CPPUNIT_ASSERT_EQUAL(string("0"), Util::abbrevSize(0));
 }

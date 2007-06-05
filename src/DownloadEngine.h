@@ -44,6 +44,7 @@
 #include "NameResolver.h"
 #include "RequestGroupMan.h"
 #include "FileAllocationMan.h"
+#include "CheckIntegrityMan.h"
 
 typedef deque<SocketHandle> Sockets;
 
@@ -120,6 +121,7 @@ public:
   Commands commands;
   RequestGroupManHandle _requestGroupMan;
   FileAllocationManHandle _fileAllocationMan;
+  CheckIntegrityManHandle _checkIntegrityMan;
   const Option* option;
   
   DownloadEngine();

@@ -32,39 +32,11 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_ENTRY_H_
-#define _D_FILE_ALLOCATION_ENTRY_H_
-
 #include "RequestGroupEntry.h"
+#include "DownloadCommand.h"
 
-class FileAllocationEntry : public RequestGroupEntry {
-private:
-  int64_t _offset;
-public:
-  FileAllocationEntry(int cuid,
-		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      int64_t offset = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup),
-    _offset(offset)
-  {}
-
-  virtual ~FileAllocationEntry() {}
-
-  virtual int64_t getCurrentLength() const
-  {
-    return _offset;
-  }
-
-  virtual bool finished() const
-  {
-    return _requestGroup->getTotalLength() <= _offset;
-  }
-
-  void allocateChunk();
-};
-
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
-
-#endif // _D_FILE_ALLOCATION_ENTRY_H_
+RequestGroupEntry::~RequestGroupEntry()
+{
+  --_requestGroup->numConnection;
+  delete _nextDownloadCommand;
+}

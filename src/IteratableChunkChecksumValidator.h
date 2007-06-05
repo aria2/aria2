@@ -84,6 +84,11 @@ public:
   {
     return ((int64_t)_currentIndex)*_chunkChecksum->getChecksumLength();
   }
+
+  int64_t getTotalLength() const
+  {
+    return _bitfield->getTotalLength();
+  }
 };
 
 typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;

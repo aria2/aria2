@@ -32,39 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_ENTRY_H_
-#define _D_FILE_ALLOCATION_ENTRY_H_
+#ifndef _D_CHECK_INTEGRITY_ENTRY_H_
+#define _D_CHECK_INTEGRITY_ENTRY_H_
 
 #include "RequestGroupEntry.h"
+#include "IteratableChunkChecksumValidator.h"
 
-class FileAllocationEntry : public RequestGroupEntry {
+class CheckIntegrityEntry : public RequestGroupEntry {
 private:
-  int64_t _offset;
+  IteratableChunkChecksumValidatorHandle _validator;
 public:
-  FileAllocationEntry(int cuid,
+  CheckIntegrityEntry(int cuid,
 		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      int64_t offset = 0):
+		      RequestGroup* requestGroup):
     RequestGroupEntry(cuid, currentRequest, requestGroup),
-    _offset(offset)
+    _validator(0)
   {}
 
-  virtual ~FileAllocationEntry() {}
+  virtual ~CheckIntegrityEntry() {}
 
-  virtual int64_t getCurrentLength() const
-  {
-    return _offset;
-  }
+  virtual int64_t getCurrentLength() const;
 
-  virtual bool finished() const
-  {
-    return _requestGroup->getTotalLength() <= _offset;
-  }
+  virtual bool finished() const;
 
-  void allocateChunk();
+  void initValidator();
+
+  void validateChunk();
 };
 
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
-
-#endif // _D_FILE_ALLOCATION_ENTRY_H_
+typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
+typedef deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
+#endif // _D_CHECK_INTEGRITY_ENTRY_H_

@@ -148,6 +148,8 @@ public:
   static string getHomeDir();
 
   static int64_t getRealSize(const string& sizeWithUnit);
+
+  static string abbrevSize(int64_t size);
 };
 
 #endif // _D_UTIL_H_

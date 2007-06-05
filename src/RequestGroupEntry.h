@@ -32,39 +32,77 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_ENTRY_H_
-#define _D_FILE_ALLOCATION_ENTRY_H_
+#ifndef _D_REQUEST_GROUP_ENTRY_H_
+#define _D_REQUEST_GROUP_ENTRY_H_
 
-#include "RequestGroupEntry.h"
+#include "ProgressAwareEntry.h"
+#include "Request.h"
+#include "RequestGroup.h"
 
-class FileAllocationEntry : public RequestGroupEntry {
-private:
-  int64_t _offset;
+class DownloadCommand;
+
+class RequestGroupEntry : public ProgressAwareEntry {
+protected:
+  int _cuid;
+  RequestHandle _currentRequest;
+  RequestGroup* _requestGroup;
+  DownloadCommand* _nextDownloadCommand;
 public:
-  FileAllocationEntry(int cuid,
-		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      int64_t offset = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup),
-    _offset(offset)
-  {}
-
-  virtual ~FileAllocationEntry() {}
-
-  virtual int64_t getCurrentLength() const
+  RequestGroupEntry(int cuid,
+		    const RequestHandle& currentRequest,
+		    RequestGroup* requestGroup):
+    _cuid(cuid),
+    _currentRequest(currentRequest),
+    _requestGroup(requestGroup),
+    _nextDownloadCommand(0)
   {
-    return _offset;
+    ++_requestGroup->numConnection;
   }
 
-  virtual bool finished() const
+  virtual ~RequestGroupEntry();
+
+  virtual int64_t getTotalLength() const
   {
-    return _requestGroup->getTotalLength() <= _offset;
+    return _requestGroup->getTotalLength();
   }
 
-  void allocateChunk();
+  int getCUID() const
+  {
+    return _cuid;
+  }
+
+  RequestHandle getCurrentRequest() const
+  {
+    return _currentRequest;
+  }
+
+  RequestGroup* getRequestGroup() const
+  {
+    return _requestGroup;
+  }
+
+  void setNextDownloadCommand(DownloadCommand* command)
+  {
+    _nextDownloadCommand = command;
+  }
+
+  DownloadCommand* getNextDownloadCommand() const
+  {
+    return _nextDownloadCommand;
+  }
+
+  DownloadCommand* popNextDownloadCommand()
+  {
+    DownloadCommand* temp = _nextDownloadCommand;
+    _nextDownloadCommand = 0;
+    return temp;
+  }
+  
+  bool operator==(const RequestGroupEntry& entry) const
+  {
+    return this == &entry;
+  }
 };
 
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
-
-#endif // _D_FILE_ALLOCATION_ENTRY_H_
+typedef SharedHandle<RequestGroupEntry> RequestGroupEntryHandle;
+#endif // _D_REQUEST_GROUP_ENTRY_H_

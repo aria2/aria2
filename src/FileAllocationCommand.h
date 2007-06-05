@@ -36,19 +36,16 @@
 #define _D_FILE_ALLOCATION_COMMAND_H_
 
 #include "RealtimeCommand.h"
-#include "Request.h"
 #include "TimeA2.h"
 #include "FileAllocationEntry.h"
 
 class FileAllocationCommand : public RealtimeCommand {
 private:
-  RequestHandle _req;
   FileAllocationEntryHandle _fileAllocationEntry;
   Time _timer;
 public:
-  FileAllocationCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
+  FileAllocationCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
     RealtimeCommand(cuid, requestGroup, e),
-    _req(req),
     _fileAllocationEntry(fileAllocationEntry) {}
 
   virtual bool executeInternal();

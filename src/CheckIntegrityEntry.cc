@@ -32,39 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_ENTRY_H_
-#define _D_FILE_ALLOCATION_ENTRY_H_
+#include "CheckIntegrityEntry.h"
+#include "DlAbortEx.h"
 
-#include "RequestGroupEntry.h"
+void CheckIntegrityEntry::validateChunk()
+{
+  _validator->validateChunk();
+}
 
-class FileAllocationEntry : public RequestGroupEntry {
-private:
-  int64_t _offset;
-public:
-  FileAllocationEntry(int cuid,
-		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      int64_t offset = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup),
-    _offset(offset)
-  {}
+bool CheckIntegrityEntry::finished() const
+{
+  return _validator->finished();
+}
 
-  virtual ~FileAllocationEntry() {}
+int64_t CheckIntegrityEntry::getCurrentLength() const
+{
+  return _validator->getCurrentOffset();
+}
 
-  virtual int64_t getCurrentLength() const
-  {
-    return _offset;
+void CheckIntegrityEntry::initValidator()
+{
+  IteratableChunkChecksumValidatorHandle validator =
+    new IteratableChunkChecksumValidator();
+  validator->setChunkChecksum(_requestGroup->getChunkChecksum());
+  validator->setDiskWriter(_requestGroup->getSegmentMan()->diskWriter);
+  validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
+  if(!validator->canValidate()) {
+    // insufficient checksums.
+    throw new DlAbortEx("Insufficient checksums.");
   }
-
-  virtual bool finished() const
-  {
-    return _requestGroup->getTotalLength() <= _offset;
-  }
-
-  void allocateChunk();
-};
-
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
-
-#endif // _D_FILE_ALLOCATION_ENTRY_H_
+  validator->init();
+  _validator = validator;
+}

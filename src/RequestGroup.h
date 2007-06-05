@@ -52,6 +52,7 @@ class RequestGroup {
 private:
   int64_t _hintTotalLength;
   string _hintFilename;
+  string _ufilename;
   Strings _uris;
   Strings _spentUris;
   SegmentManHandle _segmentMan;
@@ -181,6 +182,8 @@ public:
   bool segmentFileExists() const;
 
   string getFilePath() const;
+
+  int64_t getExistingFileLength() const;
 
   int64_t getTotalLength() const
   {

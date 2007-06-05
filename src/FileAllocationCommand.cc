@@ -36,24 +36,24 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 #include "DownloadCommand.h"
+#include "prefs.h"
 
 bool FileAllocationCommand::executeInternal()
 {
   _fileAllocationEntry->allocateChunk();
   
-  if(_fileAllocationEntry->allocationFinished()) {
-    int64_t totalLength = _requestGroup->getSegmentMan()->totalSize;
+  if(_fileAllocationEntry->finished()) {
     logger->debug("%d seconds to allocate %lld byte(s)",
-		  _timer.difference(), totalLength);
+		  _timer.difference(), _requestGroup->getTotalLength());
     
     _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
     
-    if(_fileAllocationEntry->getNextDownloadCommand()) {
-      _e->commands.push_back(_fileAllocationEntry->getNextDownloadCommand());
-      _fileAllocationEntry->setNextDownloadCommand(0);
+    if(_timer.difference() <= _e->option->getAsInt(PREF_DIRECT_DOWNLOAD_TIMEOUT) &&
+       _fileAllocationEntry->getNextDownloadCommand()) {
+      _e->commands.push_back(_fileAllocationEntry->popNextDownloadCommand());
     } else {
       Commands commands = _requestGroup->createNextCommand(_e);
-      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _req, _requestGroup, _e);
+      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _fileAllocationEntry->getCurrentRequest(), _requestGroup, _e);
       
       commands.push_front(command);
     

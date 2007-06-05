@@ -361,6 +361,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_USER_AGENT, "aria2");
   op->put(PREF_NO_NETRC, V_FALSE);
   op->put(PREF_MAX_SIMULTANEOUS_DOWNLOADS, "5");
+  op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "15");
   while(1) {
     int optIndex = 0;
     int lopt;

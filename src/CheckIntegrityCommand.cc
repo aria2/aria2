@@ -37,40 +37,40 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "DownloadCommand.h"
+#include "prefs.h"
 
-void CheckIntegrityCommand::initValidator()
+CheckIntegrityCommand::CheckIntegrityCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const CheckIntegrityEntryHandle& entry):
+  RealtimeCommand(cuid, requestGroup, e),
+  _entry(entry)
 {
-  _validator = new IteratableChunkChecksumValidator();
-  _validator->setChunkChecksum(_requestGroup->getChunkChecksum());
-  _validator->setDiskWriter(_requestGroup->getSegmentMan()->diskWriter);
-  _validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
-  if(!_validator->canValidate()) {
-    // insufficient checksums.
-    throw new DlAbortEx("Insufficient checksums.");
-  }
-  _validator->init();
+  _e->_checkIntegrityMan->addCheckIntegrityEntry(_entry);
+}
+
+CheckIntegrityCommand::~CheckIntegrityCommand()
+{
+  _e->_checkIntegrityMan->removeCheckIntegrityEntry(_entry);
 }
 
 bool CheckIntegrityCommand::executeInternal()
 {
-  _validator->validateChunk();
-  if(_validator->finished()) {
+  _entry->validateChunk();
+  if(_entry->finished()) {
     if(_requestGroup->downloadFinished()) {
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
       return true;
     }
     if(_requestGroup->needsFileAllocation()) {
-      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, _req, _requestGroup);
-      entry->setNextDownloadCommand(_nextDownloadCommand);
-      _nextDownloadCommand = 0;
+      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, _entry->getCurrentRequest(), _requestGroup, _requestGroup->getExistingFileLength());
+      entry->setNextDownloadCommand(_entry->popNextDownloadCommand());
       _e->_fileAllocationMan->pushFileAllocationEntry(entry); 
     } else {
-      if(_nextDownloadCommand) {
-	_e->commands.push_back(_nextDownloadCommand);
-	_nextDownloadCommand = 0;
+      if(_timer.difference() <= _e->option->getAsInt(PREF_DIRECT_DOWNLOAD_TIMEOUT) &&
+	 _entry->getNextDownloadCommand()) {
+	_e->commands.push_back(_entry->popNextDownloadCommand());
       } else {
 	Commands commands = _requestGroup->createNextCommand(_e);
-	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _req, _requestGroup, _e);
+	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _entry->getCurrentRequest(), _requestGroup, _e);
 	commands.push_front(command);
 	_e->addCommand(commands);
       }
@@ -91,6 +91,6 @@ bool CheckIntegrityCommand::handleException(Exception* e)
   // exception. Fix this.
   // The one of the solution is having a copy of bitfield before settting its
   // all bit to 1. If exception is thrown, then assign the copy to the bitfield.
-  _requestGroup->markPieceDone(_validator->getCurrentOffset());
+  _requestGroup->markPieceDone(_entry->getCurrentLength());
   return true;
 }

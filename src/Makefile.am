@@ -98,7 +98,11 @@ SRCS =  Socket.h\
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h\
 	RealtimeCommand.cc RealtimeCommand.h\
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
-	ChecksumCommand.cc ChecksumCommand.h
+	ChecksumCommand.cc ChecksumCommand.h\
+	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
+	CheckIntegrityMan.h\
+	ProgressAwareEntry.h\
+	RequestGroupEntry.cc RequestGroupEntry.h
 #	debug_new.cpp
 
 if ENABLE_BITTORRENT

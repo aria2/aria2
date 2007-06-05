@@ -32,39 +32,49 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_ENTRY_H_
-#define _D_FILE_ALLOCATION_ENTRY_H_
+#ifndef _D_CHECK_INTEGRITY_MAN_H_
+#define _D_CHECK_INTEGRITY_MAN_H_
 
-#include "RequestGroupEntry.h"
+#include "common.h"
+#include "CheckIntegrityEntry.h"
 
-class FileAllocationEntry : public RequestGroupEntry {
+class CheckIntegrityMan {
 private:
-  int64_t _offset;
+  CheckIntegrityEntries _checkIntegrityEntries;
 public:
-  FileAllocationEntry(int cuid,
-		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      int64_t offset = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup),
-    _offset(offset)
-  {}
-
-  virtual ~FileAllocationEntry() {}
-
-  virtual int64_t getCurrentLength() const
+  void addCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry)
   {
-    return _offset;
+    _checkIntegrityEntries.push_back(entry);
   }
 
-  virtual bool finished() const
+  bool removeCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry)
   {
-    return _requestGroup->getTotalLength() <= _offset;
+    CheckIntegrityEntries::iterator itr = find(_checkIntegrityEntries.begin(),
+					       _checkIntegrityEntries.end(),
+					       entry);
+    if(itr == _checkIntegrityEntries.end()) {
+      return false;
+    } else {
+      _checkIntegrityEntries.erase(itr);
+      return true;
+    }
   }
 
-  void allocateChunk();
+  CheckIntegrityEntryHandle getFirstCheckIntegrityEntry() const
+  {
+    if(_checkIntegrityEntries.empty()) {
+      return 0;
+    } else {
+      return _checkIntegrityEntries.front();
+    }
+  }
+
+  int32_t countCheckIntegrityEntry() const
+  {
+    return _checkIntegrityEntries.size();
+  }
 };
 
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
+typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
 
-#endif // _D_FILE_ALLOCATION_ENTRY_H_
+#endif // _D_CHECK_INTEGRITY_MAN_H_

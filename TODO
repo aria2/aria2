@@ -23,13 +23,10 @@
 * Add seed mode.
 
 * Rewrite ByteArrayDiskWriter, TrackerUpdateCommand with stringstream
-* Make trakcerwatchercommand and trackerUploadCommand poses requestGroup 
+* Make trakcerwatchercommand and trackerUploadCommand posses requestGroup 
 * consider life cycle of requestGroup and segmentMan
 
 
-* Add fancy console read out. like this:
-100K/300M(10%)(3cn)(3more) 100KB/s [FileAlloc:35MB/40MB(90%)][Checksum:10MB/20MB(50%)]
 * exit status: all downloads have been successful-> EXIT_SUCCESS,
 		some of downloads have been failed -> EXIT_FAILURE
-* Create download command directly when 1connection download.
-Consider timeout when file allocation/check integrity is enabled.
+

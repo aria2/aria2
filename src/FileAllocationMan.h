@@ -82,6 +82,11 @@ public:
   {
     _fileAllocationEntries.push_back(entry);
   }
+
+  int32_t countFileAllocationEntryInQueue() const
+  {
+    return _fileAllocationEntries.size();
+  }
 };
 
 typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;

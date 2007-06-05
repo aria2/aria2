@@ -239,7 +239,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
-	ChecksumCommand.cc ChecksumCommand.h MetaEntry.h Data.cc \
+	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityEntry.cc \
+	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
+	RequestGroupEntry.cc RequestGroupEntry.h MetaEntry.h Data.cc \
 	Data.h Dictionary.cc Dictionary.h List.cc List.h \
 	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
 	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
@@ -424,7 +426,8 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	MultiUrlRequestInfo.$(OBJEXT) UriFileListParser.$(OBJEXT) \
 	DefaultSegmentManFactory.$(OBJEXT) RealtimeCommand.$(OBJEXT) \
 	IteratableChecksumValidator.$(OBJEXT) \
-	ChecksumCommand.$(OBJEXT) $(am__objects_1) $(am__objects_2)
+	ChecksumCommand.$(OBJEXT) CheckIntegrityEntry.$(OBJEXT) \
+	RequestGroupEntry.$(OBJEXT) $(am__objects_1) $(am__objects_2)
 am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -655,7 +658,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
-	ChecksumCommand.cc ChecksumCommand.h $(am__append_1) \
+	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityEntry.cc \
+	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
+	RequestGroupEntry.cc RequestGroupEntry.h $(am__append_1) \
 	$(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
@@ -776,6 +781,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ByteArrayDiskWriter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
@@ -866,6 +872,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@

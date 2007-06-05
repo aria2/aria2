@@ -43,6 +43,7 @@
 #include "CUIDCounter.h"
 #include "FileAllocationDispatcherCommand.h"
 #include "FileAllocationMan.h"
+#include "CheckIntegrityMan.h"
 #ifdef ENABLE_BITTORRENT
 # include "PeerListenCommand.h"
 # include "TrackerWatcherCommand.h"
@@ -86,6 +87,7 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
   requestGroupMan->addReservedGroup(reservedSet);
   e->_requestGroupMan = requestGroupMan;
   e->_fileAllocationMan = new FileAllocationMan();
+  e->_checkIntegrityMan = new CheckIntegrityMan();
 
   e->commands.push_back(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e, 1));
   e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e));

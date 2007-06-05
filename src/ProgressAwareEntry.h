@@ -32,39 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_FILE_ALLOCATION_ENTRY_H_
-#define _D_FILE_ALLOCATION_ENTRY_H_
+#ifndef _D_PROGRESS_AWARE_ENTRY_H_
+#define _D_PROGRESS_AWARE_ENTRY_H_
 
-#include "RequestGroupEntry.h"
+#include "common.h"
 
-class FileAllocationEntry : public RequestGroupEntry {
-private:
-  int64_t _offset;
+class ProgressAwareEntry {
 public:
-  FileAllocationEntry(int cuid,
-		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      int64_t offset = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup),
-    _offset(offset)
-  {}
+  virtual ~ProgressAwareEntry() {}
 
-  virtual ~FileAllocationEntry() {}
+  virtual int64_t getCurrentLength() const = 0;
 
-  virtual int64_t getCurrentLength() const
-  {
-    return _offset;
-  }
+  virtual int64_t getTotalLength() const = 0;
 
-  virtual bool finished() const
-  {
-    return _requestGroup->getTotalLength() <= _offset;
-  }
-
-  void allocateChunk();
+  virtual bool finished() const = 0;
 };
 
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
+typedef SharedHandle<ProgressAwareEntry> ProgressAwareEntryHandle;
 
-#endif // _D_FILE_ALLOCATION_ENTRY_H_
+#endif // _D_PROGRESS_AWARE_ENTRY_H_

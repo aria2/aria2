@@ -48,7 +48,8 @@ using namespace std;
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 noWait(false),
 				 _requestGroupMan(0),
-				 _fileAllocationMan(0) {}
+				 _fileAllocationMan(0),
+				 _checkIntegrityMan(0) {}
 
 DownloadEngine::~DownloadEngine() {
   cleanQueue();

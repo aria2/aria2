@@ -36,41 +36,22 @@
 #define _D_CHECK_INTEGRITY_COMMAND_H_
 
 #include "RealtimeCommand.h"
-#include "Request.h"
 #include "IteratableChunkChecksumValidator.h"
-#include "DownloadCommand.h"
+#include "CheckIntegrityEntry.h"
+#include "TimeA2.h"
 
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
-  RequestHandle _req;
-  IteratableChunkChecksumValidatorHandle _validator;
-  DownloadCommand* _nextDownloadCommand;
+  CheckIntegrityEntryHandle _entry;
+  Time _timer;
 public:
-  CheckIntegrityCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e):
-    RealtimeCommand(cuid, requestGroup, e),
-    _req(req),
-    _validator(0),
-    _nextDownloadCommand(0)
-  {
-    ++_requestGroup->numConnection;
-  }
+  CheckIntegrityCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const CheckIntegrityEntryHandle& entry);
 
-  virtual ~CheckIntegrityCommand()
-  {
-    --_requestGroup->numConnection;
-    delete _nextDownloadCommand;
-  }
-
-  void initValidator();
+  virtual ~CheckIntegrityCommand();
 
   virtual bool executeInternal();
 
   virtual bool handleException(Exception* e);
-
-  void setNextDownloadCommand(DownloadCommand* command)
-  {
-    _nextDownloadCommand = command;
-  }
 };
 
 #endif // _D_CHECK_INTEGRITY_COMMAND_H_

@@ -61,9 +61,9 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
   if(_requestGroupMan->countRequestGroup() > 0) {
     RequestGroupHandle firstRequestGroup = _requestGroupMan->getRequestGroup(0);
     cout << "[";
-    cout << Util::llitos(firstRequestGroup->getDownloadLength(), true)
+    cout << Util::abbrevSize(firstRequestGroup->getDownloadLength())
 	 << "/"
-	 << Util::llitos(firstRequestGroup->getTotalLength(), true);
+	 << Util::abbrevSize(firstRequestGroup->getTotalLength());
     if(firstRequestGroup->getTotalLength() > 0) {
       cout << "("
 	   << 100*firstRequestGroup->getDownloadLength()/firstRequestGroup->getTotalLength()
@@ -81,16 +81,41 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
   }
   cout << "[" << speed/1024.0 << "KB/s" << "]";
 
-  FileAllocationEntryHandle entry = _fileAllocationMan->getCurrentFileAllocationEntry();
-  if(!entry.isNull()) {
-    cout << "[FileAlloc:"
-	 << entry->getOffset()
-	 << "/"
-	 << entry->getRequestGroup()->getTotalLength()
-	 << "("
-	 << entry->getOffset()/(entry->getRequestGroup()->getTotalLength()/100)
-	 << "%)"
-	 << "]";
+  {
+    FileAllocationEntryHandle entry = _fileAllocationMan->getCurrentFileAllocationEntry();
+    if(!entry.isNull()) {
+      cout << "[FileAlloc:"
+	   << Util::abbrevSize(entry->getCurrentLength())
+	   << "/"
+	   << Util::abbrevSize(entry->getTotalLength())
+	   << "("
+	   << 100*entry->getCurrentLength()/entry->getTotalLength()
+	   << "%)";
+      if(_fileAllocationMan->countFileAllocationEntryInQueue() > 0) {
+	cout << "("
+	     << _fileAllocationMan->countFileAllocationEntryInQueue()
+	     << "waiting...)";
+      }
+      cout << "]";
+    }
+  }
+  {
+    CheckIntegrityEntryHandle entry = _checkIntegrityMan->getFirstCheckIntegrityEntry();
+    if(!entry.isNull()) {
+      cout << "[Checksum:"
+	   << Util::abbrevSize(entry->getCurrentLength())
+	   << "/"
+	   << Util::abbrevSize(entry->getTotalLength())
+	   << "("
+	   << 100*entry->getCurrentLength()/entry->getTotalLength()
+	   << "%)";
+      if(_checkIntegrityMan->countCheckIntegrityEntry() > 1) {
+	cout << "("
+	     << _checkIntegrityMan->countCheckIntegrityEntry()-1
+	     << "more...)";
+      }
+      cout << "]";
+    }
   }
   cout << flush;
 }

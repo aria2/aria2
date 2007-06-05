@@ -102,6 +102,8 @@
 #define PREF_INPUT_FILE "input-file"
 // value: 1*digit
 #define PREF_MAX_SIMULTANEOUS_DOWNLOADS "max-simultaneous-downloads"
+// value: 1*digit
+#define PREF_DIRECT_DOWNLOAD_TIMEOUT "direct-download-timeout"
 
 /**
  * FTP related preferences

@@ -691,3 +691,18 @@ int64_t Util::getRealSize(const string& sizeWithUnit)
   }
   return strtoll(size.c_str(), 0, 10)*mult;
 }
+
+string Util::abbrevSize(int64_t size)
+{
+  if(size < 1024) {
+    return Util::llitos(size, true);
+  }
+  size >>= 10;
+  char units[] = { 'K', 'M' };
+  int32_t numUnit = sizeof(units)/sizeof(char);
+  int32_t i = 0;
+  for(; i < numUnit-1 && size >= 1024; ++i) {
+    size >>= 10;
+  } 
+  return Util::llitos(size, true)+units[i];
+}

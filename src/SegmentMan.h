@@ -291,6 +291,14 @@ public:
 
   void markPieceDone(int64_t length);
 
+  /**
+   * This function must be called when none of segment entries is used.
+   */
+  void purgeSegmentEntry()
+  {
+    usedSegmentEntries.clear();
+  }
+
 #ifdef ENABLE_MESSAGE_DIGEST
   void checkIntegrity();
 
