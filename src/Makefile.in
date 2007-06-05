@@ -232,8 +232,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
 	FileAllocationEntry.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h CheckIntegrityCommand.cc \
-	CheckIntegrityCommand.h SingleUrlRequestInfo.cc \
-	SingleUrlRequestInfo.h MultiUrlRequestInfo.cc \
+	CheckIntegrityCommand.h MultiUrlRequestInfo.cc \
 	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
@@ -422,9 +421,9 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FileAllocationDispatcherCommand.$(OBJEXT) \
 	FileAllocationEntry.$(OBJEXT) \
 	IteratableChunkChecksumValidator.$(OBJEXT) \
-	CheckIntegrityCommand.$(OBJEXT) SingleUrlRequestInfo.$(OBJEXT) \
-	MultiUrlRequestInfo.$(OBJEXT) UriFileListParser.$(OBJEXT) \
-	DefaultSegmentManFactory.$(OBJEXT) RealtimeCommand.$(OBJEXT) \
+	CheckIntegrityCommand.$(OBJEXT) MultiUrlRequestInfo.$(OBJEXT) \
+	UriFileListParser.$(OBJEXT) DefaultSegmentManFactory.$(OBJEXT) \
+	RealtimeCommand.$(OBJEXT) \
 	IteratableChecksumValidator.$(OBJEXT) \
 	ChecksumCommand.$(OBJEXT) CheckIntegrityEntry.$(OBJEXT) \
 	RequestGroupEntry.$(OBJEXT) $(am__objects_1) $(am__objects_2)
@@ -651,8 +650,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
 	FileAllocationEntry.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h CheckIntegrityCommand.cc \
-	CheckIntegrityCommand.h SingleUrlRequestInfo.cc \
-	SingleUrlRequestInfo.h MultiUrlRequestInfo.cc \
+	CheckIntegrityCommand.h MultiUrlRequestInfo.cc \
 	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
@@ -882,7 +880,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleUrlRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@

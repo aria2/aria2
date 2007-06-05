@@ -90,7 +90,6 @@ SRCS =  Socket.h\
 	FileAllocationEntry.cc FileAllocationEntry.h\
 	IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
-	SingleUrlRequestInfo.cc SingleUrlRequestInfo.h\
 	MultiUrlRequestInfo.cc MultiUrlRequestInfo.h\
 	UriFileListParser.cc UriFileListParser.h\
 	SegmentManFactory.h\
