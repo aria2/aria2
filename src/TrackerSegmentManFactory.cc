@@ -40,6 +40,5 @@ SegmentManHandle TrackerSegmentManFactory::createNewInstance()
   SegmentManHandle segmentMan = new SegmentMan();
   segmentMan->diskWriter = new ByteArrayDiskWriter();
   segmentMan->option = _option;
-  segmentMan->ufilename = "[tracker.announce]";
   return segmentMan;
 }

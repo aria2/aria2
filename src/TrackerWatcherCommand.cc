@@ -88,6 +88,7 @@ Command* TrackerWatcherCommand::createCommand() {
 Command* TrackerWatcherCommand::createRequestCommand(const string& url)
 {
   RequestGroupHandle rg = new RequestGroup(url, e->option);
+  rg->setUserDefinedFilename("[tracker.announce]");
   rg->isTorrent = true;
   rg->setSegmentManFactory(new TrackerSegmentManFactory(e->option));
   e->_requestGroupMan->addRequestGroup(rg);

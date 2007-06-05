@@ -98,7 +98,7 @@ bool PeerListenCommand::execute() {
 	}
       }
     } catch(RecoverableException* ex) {
-      logger->error("CUID#%d - error in accepting connection", ex, cuid);
+      logger->debug("CUID#%d - error in accepting connection", ex, cuid);
       delete ex;
     }		    
   }

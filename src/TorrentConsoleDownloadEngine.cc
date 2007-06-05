@@ -49,8 +49,8 @@ void TorrentConsoleDownloadEngine::sendStatistics() {
     printf("Download Completed.");
   } else {
     printf("%s/%sB %d%% %s D:%.2f",
-	   Util::llitos(downloadLength, true).c_str(),
-	   Util::llitos(totalLength, true).c_str(),
+	   Util::abbrevSize(downloadLength).c_str(),
+	   Util::abbrevSizellitos(totalLength).c_str(),
 	   (totalLength == 0 ?
 	    0 : (int)((downloadLength*100)/totalLength)),
 	   avgSpeed == 0 ? "-" : Util::secfmt(eta).c_str(),
