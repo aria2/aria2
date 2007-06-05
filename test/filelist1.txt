@@ -1,0 +1,3 @@
+http://localhost/index.html	http://localhost2/index.html
+
+ftp://localhost/aria2.tar.bz2
