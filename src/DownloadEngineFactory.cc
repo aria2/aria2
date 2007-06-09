@@ -72,9 +72,9 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
   }
   RequestGroups workingSet;
   RequestGroups reservedSet;
-  if(op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS) < (int32_t)requestGroups.size()) {
-    copy(requestGroups.begin(), requestGroups.begin()+op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS), back_inserter(workingSet));
-    copy(requestGroups.begin()+op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS),
+  if(op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS) < (int32_t)requestGroups.size()) {
+    copy(requestGroups.begin(), requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS), back_inserter(workingSet));
+    copy(requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS),
 	 requestGroups.end(), back_inserter(reservedSet));
   } else {
     workingSet = requestGroups;
@@ -83,7 +83,7 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
   ConsoleDownloadEngine* e = new ConsoleDownloadEngine();
   e->option = op;
   RequestGroupManHandle requestGroupMan = new RequestGroupMan(workingSet,
-							      op->getAsInt(PREF_MAX_SIMULTANEOUS_DOWNLOADS));
+							      op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
   requestGroupMan->addReservedGroup(reservedSet);
   e->_requestGroupMan = requestGroupMan;
   e->_fileAllocationMan = new FileAllocationMan();

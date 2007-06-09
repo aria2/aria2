@@ -40,6 +40,7 @@
 #include "SleepCommand.h"
 #include "Util.h"
 #include "CUIDCounter.h"
+#include <sstream>
 
 TrackerUpdateCommand::TrackerUpdateCommand(int cuid,
 					   TorrentDownloadEngine* e,
@@ -56,27 +57,19 @@ bool TrackerUpdateCommand::prepareForRetry() {
   return false;
 }
 
-char* TrackerUpdateCommand::getTrackerResponse(size_t& trackerResponseLength) {
-  int maxBufLength = 2048;
-  char* buf = new char[maxBufLength];
-  int bufLength = 0;
+string TrackerUpdateCommand::getTrackerResponse() {
+  stringstream strm;
   char data[2048];
   try {
     while(1) {
-      int dataLength = e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->diskWriter->readData(data, sizeof(data), bufLength);
-      if(bufLength+dataLength >= maxBufLength) {
-	maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
-      }
-      memcpy(buf+bufLength, data, dataLength);
-      bufLength += dataLength;
+      int dataLength = e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->diskWriter->readData(data, sizeof(data), strm.tellp());
+      strm.write(data, dataLength);
       if(dataLength != sizeof(data)) {
 	break;
       }
     }
-    trackerResponseLength = bufLength;
-    return buf;
+    return strm.str();
   } catch(RecoverableException* e) {
-    delete [] buf;
     throw;
   }
 }
@@ -89,14 +82,12 @@ bool TrackerUpdateCommand::execute() {
      !e->_requestGroupMan->downloadFinished()) {
     return prepareForRetry();
   }
-  char* trackerResponse = 0;
-  size_t trackerResponseLength = 0;
 
   try {
-    trackerResponse = getTrackerResponse(trackerResponseLength);
+    string trackerResponse = getTrackerResponse();
 
-    btAnnounce->processAnnounceResponse(trackerResponse,
-					trackerResponseLength);
+    btAnnounce->processAnnounceResponse(trackerResponse.c_str(),
+					trackerResponse.size());
     while(!btRuntime->isHalt() && btRuntime->lessThanMinPeer()) {
       PeerHandle peer = peerStorage->getUnusedPeer();
       if(peer.isNull()) {
@@ -118,9 +109,6 @@ bool TrackerUpdateCommand::execute() {
     logger->error("CUID#%d - Error occurred while processing tracker response.", cuid, err);
     e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->errors++;
     delete err;
-  }
-  if(trackerResponse) {
-    delete [] trackerResponse;
   }
   return prepareForRetry();
 }

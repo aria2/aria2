@@ -21,12 +21,8 @@
 * Fix DefaultBtProgressInfoFile.cc: save(), load()
 * remove blockIndex
 * Add seed mode.
-
-* Rewrite ByteArrayDiskWriter, TrackerUpdateCommand with stringstream
 * Make trakcerwatchercommand and trackerUploadCommand posses requestGroup 
 * consider life cycle of requestGroup and segmentMan
-
-
 * exit status: all downloads have been successful-> EXIT_SUCCESS,
 		some of downloads have been failed -> EXIT_FAILURE
 

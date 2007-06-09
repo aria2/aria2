@@ -209,6 +209,8 @@ void showUsage() {
   cout << _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 	    "                              multiple URIs for a single entity: deliminate\n"
 	    "                              URIs by Tab in a single line.") << endl;
+  cout << _(" -j, --max-concurrent-downloads=N Set maximum number of concurrent downloads.\n"
+	    "                              Default: 5") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -360,7 +362,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_CONTINUE, V_FALSE);
   op->put(PREF_USER_AGENT, "aria2");
   op->put(PREF_NO_NETRC, V_FALSE);
-  op->put(PREF_MAX_SIMULTANEOUS_DOWNLOADS, "5");
+  op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "5");
   op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "15");
   while(1) {
     int optIndex = 0;
@@ -398,6 +400,7 @@ int main(int argc, char* argv[]) {
       { "user-agent", required_argument, 0, 'U' },
       { "no-netrc", no_argument, 0, 'n' },
       { "input-file", required_argument, 0, 'i' },
+      { "max-concurrent-downloads", required_argument, 0, 'j' },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -425,7 +428,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:j:", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -581,6 +584,9 @@ int main(int argc, char* argv[]) {
       break;
     case 'i':
       cmdstream << PREF_INPUT_FILE << "=" << optarg << "\n";
+      break;
+    case 'j':
+      cmdstream << PREF_MAX_CONCURRENT_DOWNLOADS << "=" << optarg << "\n";
       break;
     case 'v':
       showVersion();

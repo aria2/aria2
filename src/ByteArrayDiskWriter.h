@@ -36,14 +36,12 @@
 #define _D_BYTE_ARRAY_DISK_WRITER_H_
 
 #include "DiskWriter.h"
+#include <sstream>
 
 class ByteArrayDiskWriter : public DiskWriter {
 private:
-  char* buf;
-  int32_t maxBufLength;
-  int32_t bufLength;
+  stringstream buf;
 
-  void init();
   void clear();
 public:
   ByteArrayDiskWriter();
@@ -66,7 +64,7 @@ public:
 
   virtual int64_t size() const
   {
-    return bufLength;
+    return buf.str().size();
   }
 
   // not implemented yet
@@ -76,15 +74,6 @@ public:
     return "";
   }
 #endif // ENABLE_MESSAGE_DIGEST
-
-  const char* getByteArray() const {
-    return buf;
-  }
-
-  // can be deleted. Use size() instead.
-  int getByteArrayLength() const {
-    return bufLength;
-  }
 };
 
 #endif // _D_BYTE_ARRAY_DISK_WRITER_H_

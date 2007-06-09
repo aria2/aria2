@@ -54,7 +54,6 @@ SRCS =  Socket.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
 	RequestInfo.h\
-	UrlRequestInfo.cc UrlRequestInfo.h\
 	SpeedCalc.cc SpeedCalc.h\
 	PeerStat.h\
 	BitfieldMan.cc BitfieldMan.h\

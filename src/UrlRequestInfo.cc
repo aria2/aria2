@@ -190,7 +190,7 @@ RequestInfos UrlRequestInfo::execute() {
 
 
 
-    // The number of simultaneous download is specified by PREF_MAX_SIMULTANEOUS_DOWNLOADS.
+    // The number of simultaneous download is specified by PREF_MAX_CONCURRENT_DOWNLOADS.
     // The remaining urls are queued into FillRequestGroupCommand.
     // It observes the number of simultaneous downloads and if it is under
     // the limit, it adds RequestGroup object from its queue to DownloadEngine.

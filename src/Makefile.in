@@ -208,10 +208,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
 	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	UrlRequestInfo.cc UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h \
-	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
-	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h FileAllocator.h FileAllocationMonitor.cc \
+	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
+	BitfieldMan.h BitfieldManFactory.cc BitfieldManFactory.h \
+	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
+	FileAllocator.h FileAllocationMonitor.cc \
 	FileAllocationMonitor.h ConsoleFileAllocationMonitor.cc \
 	ConsoleFileAllocationMonitor.h ChunkChecksumValidator.cc \
 	ChunkChecksumValidator.h HttpResponse.cc HttpResponse.h \
@@ -403,10 +403,9 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	DefaultDiskWriter.$(OBJEXT) File.$(OBJEXT) Option.$(OBJEXT) \
 	Base64.$(OBJEXT) CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) \
 	TimeA2.$(OBJEXT) FeatureConfig.$(OBJEXT) \
-	DownloadEngineFactory.$(OBJEXT) UrlRequestInfo.$(OBJEXT) \
-	SpeedCalc.$(OBJEXT) BitfieldMan.$(OBJEXT) \
-	BitfieldManFactory.$(OBJEXT) SimpleRandomizer.$(OBJEXT) \
-	FileAllocationMonitor.$(OBJEXT) \
+	DownloadEngineFactory.$(OBJEXT) SpeedCalc.$(OBJEXT) \
+	BitfieldMan.$(OBJEXT) BitfieldManFactory.$(OBJEXT) \
+	SimpleRandomizer.$(OBJEXT) FileAllocationMonitor.$(OBJEXT) \
 	ConsoleFileAllocationMonitor.$(OBJEXT) \
 	ChunkChecksumValidator.$(OBJEXT) HttpResponse.$(OBJEXT) \
 	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
@@ -626,10 +625,10 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
 	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	UrlRequestInfo.cc UrlRequestInfo.h SpeedCalc.cc SpeedCalc.h \
-	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
-	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
-	SimpleRandomizer.h FileAllocator.h FileAllocationMonitor.cc \
+	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
+	BitfieldMan.h BitfieldManFactory.cc BitfieldManFactory.h \
+	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
+	FileAllocator.h FileAllocationMonitor.cc \
 	FileAllocationMonitor.h ConsoleFileAllocationMonitor.cc \
 	ConsoleFileAllocationMonitor.h ChunkChecksumValidator.cc \
 	ChunkChecksumValidator.h HttpResponse.cc HttpResponse.h \
@@ -892,7 +891,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriFileListParser.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UrlRequestInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@

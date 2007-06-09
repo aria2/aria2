@@ -35,7 +35,7 @@
 #include "ByteArrayDiskWriter.h"
 #include "Util.h"
 
-ByteArrayDiskWriter::ByteArrayDiskWriter():buf(0) {
+ByteArrayDiskWriter::ByteArrayDiskWriter() {
 }
 
 ByteArrayDiskWriter::~ByteArrayDiskWriter() {
@@ -43,20 +43,12 @@ ByteArrayDiskWriter::~ByteArrayDiskWriter() {
 }
 
 void ByteArrayDiskWriter::clear() {
-  delete [] buf;
-  buf = 0;
-}
-
-void ByteArrayDiskWriter::init() {
-  maxBufLength = 256;
-  buf = new char[maxBufLength];
-  bufLength = 0;
+  buf.str("");
 }
 
 void ByteArrayDiskWriter::initAndOpenFile(const string& filename,
 					  int64_t totalLength) {
   clear();
-  init();
 }
 
 void ByteArrayDiskWriter::openFile(const string& filename,
@@ -74,24 +66,21 @@ void ByteArrayDiskWriter::openExistingFile(const string& filename,
 }
 
 void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_t position) {
-  if(bufLength+dataLength >= maxBufLength) {
-    maxBufLength = Util::expandBuffer(&buf, bufLength, bufLength+dataLength);
+  if(size() < position) {
+    buf.seekg(0, ios_base::end);
+    for(int32_t i = size(); i < position; ++i) {
+      buf.put('\0');
+    }
+  } else {
+    buf.seekg(position, ios_base::beg);
   }
-  memcpy(buf+bufLength, data, dataLength);
-  bufLength += dataLength;
+  buf.write(data, dataLength);
 }
 
 int ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
-  if(position >= bufLength) {
-    return 0;
-  }
-  int32_t readLength;
-  if(position+len <= bufLength) {
-    readLength = len;
-  } else {
-    readLength = bufLength-position;
-  }
-  memcpy(data, buf+position, readLength);
-  return readLength;
+  buf.seekg(position, ios_base::beg);
+  buf.read(data, len);
+  // TODO we have to call buf.clear() here? YES
+  buf.clear();
+  return buf.gcount();
 }
-

@@ -101,7 +101,7 @@
 // value: string that your file system recognizes as a file name.
 #define PREF_INPUT_FILE "input-file"
 // value: 1*digit
-#define PREF_MAX_SIMULTANEOUS_DOWNLOADS "max-simultaneous-downloads"
+#define PREF_MAX_CONCURRENT_DOWNLOADS "max-concurrent-downloads"
 // value: 1*digit
 #define PREF_DIRECT_DOWNLOAD_TIMEOUT "direct-download-timeout"
 
