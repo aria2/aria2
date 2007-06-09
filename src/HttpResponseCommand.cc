@@ -99,6 +99,7 @@ bool HttpResponseCommand::executeInternal()
     _requestGroup->validateFilenameByHint(httpResponse->determinFilename());
     _requestGroup->validateTotalLengthByHint(httpResponse->getEntityLength());
 
+    _requestGroup->getSegmentMan()->filename = httpResponse->determinFilename();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
       throw new FatalException(EX_DUPLICATE_FILE_DOWNLOAD, _requestGroup->getFilePath().c_str());
     }
@@ -123,7 +124,6 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
   }
   _requestGroup->getSegmentMan()->isSplittable = !(size == 0);
-  _requestGroup->getSegmentMan()->filename = httpResponse->determinFilename();
   _requestGroup->getSegmentMan()->downloadStarted = true;
   _requestGroup->getSegmentMan()->totalSize = size;
   
@@ -157,7 +157,6 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   // we ignore content-length when transfer-encoding is set
   _requestGroup->getSegmentMan()->downloadStarted = true;
   _requestGroup->getSegmentMan()->isSplittable = false;
-  _requestGroup->getSegmentMan()->filename = httpResponse->determinFilename();
   _requestGroup->getSegmentMan()->totalSize = 0;
   // quick hack for method 'head'
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {

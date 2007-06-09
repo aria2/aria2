@@ -129,6 +129,7 @@ bool DownloadCommand::prepareForNextSegment() {
     if(!_requestGroup->getChecksum().isNull() &&
        !_requestGroup->getChecksum()->isEmpty()) {
       ChecksumCommand* command = new ChecksumCommand(cuid, _requestGroup, e);
+      command->initValidator();
       e->commands.push_back(command);
     }
     return true;
