@@ -35,6 +35,7 @@
 #include "ConsoleDownloadEngine.h"
 #include "Util.h"
 #include <signal.h>
+#include <iomanip>
 
 volatile sig_atomic_t haltRequested = 0;
 
@@ -79,7 +80,7 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     }
     cout << "]";
   }
-  cout << "[" << speed/1024.0 << "KB/s" << "]";
+  cout << "[" << fixed << setprecision(2) << speed/1024.0 << "KB/s" << "]";
 
   {
     FileAllocationEntryHandle entry = _fileAllocationMan->getCurrentFileAllocationEntry();
