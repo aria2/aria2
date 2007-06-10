@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-03-29 20:30+0900\n"
+"POT-Creation-Date: 2007-06-10 17:41+0900\n"
 "PO-Revision-Date: 2006-11-09 01:23+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -26,10 +26,10 @@ msgstr ""
 "<%s> のダウンロードが完了しました.\n"
 
 #: src/RequestInfo.h:110
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "\n"
-"The download was not complete because of errors. Check the log.\n"
+"Some downloads were not complete because of errors. Check the log.\n"
 "aria2 will resume download if the transfer is restarted."
 msgstr ""
 "\n"
@@ -84,289 +84,101 @@ msgstr ""
 "%s"
 
 #: src/message.h:47
+#, fuzzy, c-format
+msgid "CUID#%d - Download aborted. URI=%s"
+msgstr "CUID#%d - ダウンロードを中止します."
+
+#: src/message.h:48
+#, fuzzy, c-format
+msgid "CUID#%d - Restarting the download. URI=%s"
+msgstr "CUID#%d - ダウンロードシーケンスを再開します."
+
+#: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
 msgstr "CUID#%d - ダウンロードを中止します."
 
-#: src/message.h:48
-#, c-format
-msgid "CUID#%d - Restarting the download."
-msgstr "CUID#%d - ダウンロードシーケンスを再開します."
-
-#: src/message.h:49
+#: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 msgstr ""
 "CUID#%d - %d 回ダウンロードを行いましたがすべて失敗しました. ダウンロードを中"
 "止します."
 
-#: src/message.h:50
+#: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
 msgstr "CUID#%d - cuid をセグメントマネジャーから削除します."
 
-#: src/message.h:56
+#: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
 msgstr "CUID#%d - 新しいピースを入手しました. index=%d"
 
-#: src/message.h:57
+#: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
 msgstr "CUID#%d - ピースを入手しましたが, データに誤りがあります. index=%d"
 
 #: src/message.h:59
+#, fuzzy, c-format
+msgid "CUID#%d - Download not complete: %s"
+msgstr "CUID#%d - ダウンロードを中止します."
+
+#: src/message.h:60
+#, fuzzy, c-format
+msgid "CUID#%d - Download has already completed: %s"
+msgstr "CUID#%d - ダウンロードを中止します."
+
+#: src/message.h:61
+#, c-format
+msgid "CUID#%d - Good checksum: %s"
+msgstr ""
+
+#: src/message.h:62
+#, fuzzy, c-format
+msgid "CUID#%d - Bad checksum: %s"
+msgstr "CUID#%d - %s にリダイレクトします."
+
+#: src/message.h:64
 #, c-format
 msgid "Tracker returned warning message: %s"
 msgstr "トラッカーが警告メッセージを返しました: %s"
 
-#: src/message.h:61
+#: src/message.h:65
 #, c-format
 msgid "The segment file %s exists."
 msgstr "セグメントファイル %s が存在します."
 
-#: src/message.h:62
+#: src/message.h:66
 #, c-format
 msgid "The segment file %s does not exist."
 msgstr "セグメントファイル %s が存在しません."
 
-#: src/message.h:63
+#: src/message.h:67
 #, c-format
 msgid "Saving the segment file %s"
 msgstr "セグメントファイル %s を保存しています."
 
-#: src/message.h:64
+#: src/message.h:68
 msgid "The segment file was saved successfully."
 msgstr "セグメントファイルの保存が完了しました."
 
-#: src/message.h:65
+#: src/message.h:69
 #, c-format
 msgid "Loading the segment file %s."
 msgstr "セグメントファイル %s をロードしています."
 
-#: src/message.h:66
+#: src/message.h:70
 msgid "The segment file was loaded successfully."
 msgstr "セグメントファイルのロードが完了しました."
 
-#: src/message.h:67
+#: src/message.h:71
 #, fuzzy
 msgid "No URI to download. Download aborted."
 msgstr "CUID#%d - ダウンロードを中止します."
 
-#: src/message.h:69
-msgid "Timeout."
-msgstr "タイムアウトしました."
-
-#: src/message.h:70
-msgid "Invalid chunk size."
-msgstr "chunk サイズが不正です."
-
-#: src/message.h:71
-#, c-format
-msgid "Too large chunk. size=%d"
-msgstr "chunk サイズ (%d) が大きすぎます."
-
 #: src/message.h:72
-msgid "Invalid header."
-msgstr "ヘッダーが不正です."
-
-#: src/message.h:73
-msgid "Invalid response."
-msgstr "サーバーから不正なレスポンスを受け取りました."
-
-#: src/message.h:74
-msgid "No header found."
-msgstr "ヘッダーが見つかりません."
-
-#: src/message.h:75
-msgid "No status header."
-msgstr "status ヘッダーが見つかりません."
-
-#: src/message.h:76
-msgid "Proxy connection failed."
-msgstr "Proxy 接続に失敗しました."
-
-#: src/message.h:77
-msgid "Connection failed."
-msgstr "接続に失敗しました."
-
-#: src/message.h:78
-#, c-format
-msgid ""
-"The requested filename and the previously registered one are not same. %s != "
-"%s"
-msgstr "リクエストしたファイル名 (%s) と登録済みファイル名 (%s) が異なります."
-
-#: src/message.h:79
-#, c-format
-msgid "The response status is not successful. status=%d"
-msgstr "レスポンスのステータス (%d) が異常です."
-
-#: src/message.h:80
-#, c-format
-msgid "Too large file size. size=%lld"
-msgstr "ファイルサイズ (%lld) が大きすぎます."
-
-#: src/message.h:81
-#, c-format
-msgid "Transfer encoding %s is not supported."
-msgstr "トランスファー・エンコーディング %s はサポートされていません."
-
-#: src/message.h:82
-msgid "SSL initialization failed."
-msgstr "SSL 初期化に失敗しました."
-
-#: src/message.h:83
-#, c-format
-msgid "Size mismatch %lld != %lld"
-msgstr "サイズが合いません (%lld != %lld)"
-
-#: src/message.h:84
-msgid "Authorization failed."
-msgstr "認証に失敗しました."
-
-#: src/message.h:85
-msgid "Got EOF from the server."
-msgstr "サーバーから EOF を受けとりました."
-
-#: src/message.h:86
-msgid "Got EOF from peer."
-msgstr "ピアから EOF を受け取りました."
-
-#: src/message.h:87
-msgid "Malformed meta info."
-msgstr "メタ情報ファイルの記述が不正です."
-
-#: src/message.h:89
-#, c-format
-msgid "Failed to open the file %s, cause: %s"
-msgstr "ファイル %s をオープンできませんでした. 原因: %s"
-
-#: src/message.h:90
-#, c-format
-msgid "Failed to write into the file %s, cause: %s"
-msgstr "ファイル %s への書き込みに失敗しました. 原因: %s"
-
-#: src/message.h:91
-#, c-format
-msgid "Failed to read from the file %s, cause: %s"
-msgstr "ファイル %s からの読みとりに失敗しました. 原因: %s"
-
-#: src/message.h:92
-#, c-format
-msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr ""
-"ファイル %s の (またはその一部の) SHA1 ダイジェストの計算に失敗しました. 原"
-"因: %s"
-
-#: src/message.h:93
-#, c-format
-msgid "Failed to seek the file %s, cause: %s"
-msgstr "ファイル %s のシークに失敗しました. 原因: %s"
-
-#: src/message.h:94
-#, c-format
-msgid "The offset is out of range, offset=%lld"
-msgstr "オフセット (%lld) が範囲外です."
-
-#: src/message.h:95
-#, c-format
-msgid "%s is not a directory."
-msgstr "%s はディレクトリではありません."
-
-#: src/message.h:96
-#, c-format
-msgid "Failed to make the directory %s, cause: %s"
-msgstr "ディレクトリ %s を作成できませんでした. 原因: %s"
-
-#: src/message.h:97
-#, c-format
-msgid "Failed to open the segment file %s, cause: %s"
-msgstr "セグメントファイル %s をオープンできませんでした. 原因: %s"
-
-#: src/message.h:98
-#, c-format
-msgid "Failed to write into the segment file %s, cause: %s"
-msgstr "セグメントファイル %s への書き込みに失敗しました. 原因: %s"
-
-#: src/message.h:99
-#, c-format
-msgid "Failed to read from the segment file %s, cause: %s"
-msgstr "セグメントファイル %s からの読み込みに失敗しました. 原因: %s"
-
-#: src/message.h:101
-#, c-format
-msgid "Failed to open a socket, cause: %s"
-msgstr "ソケットをオープンできませんでした. 原因: %s"
-
-#: src/message.h:102
-#, c-format
-msgid "Failed to set a socket option, cause: %s"
-msgstr "ソケットのオプションの設定に失敗しました. 原因: %s"
-
-#: src/message.h:103
-#, c-format
-msgid "Failed to bind a socket, cause: %s"
-msgstr "ソケットの bind に失敗しました. 原因: %s"
-
-#: src/message.h:104
-#, c-format
-msgid "Failed to listen to a socket, cause: %s"
-msgstr "ソケットの listen に失敗しました. 原因: %s"
-
-#: src/message.h:105
-#, c-format
-msgid "Failed to accept a peer connection, cause: %s"
-msgstr "ピアからの接続の受付に失敗しました. 原因: %s"
-
-#: src/message.h:106
-#, c-format
-msgid "Failed to get the name of socket, cause: %s"
-msgstr "ソケットの名前の取得に失敗しました. 原因: %s"
-
-#: src/message.h:107
-#, c-format
-msgid "Failed to get the name of connected peer, cause: %s"
-msgstr "接続ピアの名前の取得に失敗しました. 原因: %s"
-
-#: src/message.h:108
-#, c-format
-msgid "Failed to resolve the hostname %s, cause: %s"
-msgstr "ホスト名 %s のアドレス解決に失敗しました. 原因: %s"
-
-#: src/message.h:109
-#, c-format
-msgid "Failed to connect to the host %s, cause: %s"
-msgstr "ホスト %s への接続に失敗しました. 原因: %s"
-
-#: src/message.h:110
-#, c-format
-msgid "Failed to check whether the socket is writable, cause: %s"
-msgstr ""
-"ソケットへデータを書き込み可能かどうかのチェックに失敗しました. 原因: %s"
-
-#: src/message.h:111
-#, c-format
-msgid "Failed to check whether the socket is readable, cause: %s"
-msgstr ""
-"ソケットからデータを読みとり可能かどうかのチェックに失敗しました. 原因: %s"
-
-#: src/message.h:112
-#, c-format
-msgid "Failed to send data, cause: %s"
-msgstr "データの送信に失敗しました. 原因: %s"
-
-#: src/message.h:113
-#, c-format
-msgid "Failed to receive data, cause: %s"
-msgstr "データの受信に失敗しました. 原因: %s"
-
-#: src/message.h:114
-#, c-format
-msgid "Failed to peek data, cause: %s"
-msgstr "データの peek に失敗しました. 原因: %s"
-
-#: src/message.h:115
 #, c-format
 msgid ""
 "File %s exists, but %s does not exist. The download was canceled in order to "
@@ -375,44 +187,265 @@ msgid ""
 "restart aria2."
 msgstr ""
 
+#: src/message.h:74
+msgid "Timeout."
+msgstr "タイムアウトしました."
+
+#: src/message.h:75
+msgid "Invalid chunk size."
+msgstr "chunk サイズが不正です."
+
+#: src/message.h:76
+#, c-format
+msgid "Too large chunk. size=%d"
+msgstr "chunk サイズ (%d) が大きすぎます."
+
+#: src/message.h:77
+msgid "Invalid header."
+msgstr "ヘッダーが不正です."
+
+#: src/message.h:78
+msgid "Invalid response."
+msgstr "サーバーから不正なレスポンスを受け取りました."
+
+#: src/message.h:79
+msgid "No header found."
+msgstr "ヘッダーが見つかりません."
+
+#: src/message.h:80
+msgid "No status header."
+msgstr "status ヘッダーが見つかりません."
+
+#: src/message.h:81
+msgid "Proxy connection failed."
+msgstr "Proxy 接続に失敗しました."
+
+#: src/message.h:82
+msgid "Connection failed."
+msgstr "接続に失敗しました."
+
+#: src/message.h:83
+#, fuzzy, c-format
+msgid ""
+"The requested filename and the previously registered one are not same. "
+"Expected:%s Actual:%s"
+msgstr "リクエストしたファイル名 (%s) と登録済みファイル名 (%s) が異なります."
+
+#: src/message.h:84
+#, c-format
+msgid "The response status is not successful. status=%d"
+msgstr "レスポンスのステータス (%d) が異常です."
+
+#: src/message.h:85
+#, c-format
+msgid "Too large file size. size=%lld"
+msgstr "ファイルサイズ (%lld) が大きすぎます."
+
+#: src/message.h:86
+#, c-format
+msgid "Transfer encoding %s is not supported."
+msgstr "トランスファー・エンコーディング %s はサポートされていません."
+
+#: src/message.h:87
+msgid "SSL initialization failed."
+msgstr "SSL 初期化に失敗しました."
+
+#: src/message.h:88
+#, fuzzy, c-format
+msgid "Size mismatch Expected:%lld Actual:%lld"
+msgstr "サイズが合いません (%lld != %lld)"
+
+#: src/message.h:89
+msgid "Authorization failed."
+msgstr "認証に失敗しました."
+
+#: src/message.h:90
+msgid "Got EOF from the server."
+msgstr "サーバーから EOF を受けとりました."
+
+#: src/message.h:91
+msgid "Got EOF from peer."
+msgstr "ピアから EOF を受け取りました."
+
+#: src/message.h:92
+msgid "Malformed meta info."
+msgstr "メタ情報ファイルの記述が不正です."
+
+#: src/message.h:94
+#, c-format
+msgid "Failed to open the file %s, cause: %s"
+msgstr "ファイル %s をオープンできませんでした. 原因: %s"
+
+#: src/message.h:95
+#, c-format
+msgid "Failed to write into the file %s, cause: %s"
+msgstr "ファイル %s への書き込みに失敗しました. 原因: %s"
+
+#: src/message.h:96
+#, c-format
+msgid "Failed to read from the file %s, cause: %s"
+msgstr "ファイル %s からの読みとりに失敗しました. 原因: %s"
+
+#: src/message.h:97
+#, c-format
+msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
+msgstr ""
+"ファイル %s の (またはその一部の) SHA1 ダイジェストの計算に失敗しました. 原"
+"因: %s"
+
+#: src/message.h:98
+#, c-format
+msgid "Failed to seek the file %s, cause: %s"
+msgstr "ファイル %s のシークに失敗しました. 原因: %s"
+
+#: src/message.h:99
+#, c-format
+msgid "The offset is out of range, offset=%lld"
+msgstr "オフセット (%lld) が範囲外です."
+
+#: src/message.h:100
+#, c-format
+msgid "%s is not a directory."
+msgstr "%s はディレクトリではありません."
+
+#: src/message.h:101
+#, c-format
+msgid "Failed to make the directory %s, cause: %s"
+msgstr "ディレクトリ %s を作成できませんでした. 原因: %s"
+
+#: src/message.h:102
+#, c-format
+msgid "Failed to open the segment file %s, cause: %s"
+msgstr "セグメントファイル %s をオープンできませんでした. 原因: %s"
+
+#: src/message.h:103
+#, c-format
+msgid "Failed to write into the segment file %s, cause: %s"
+msgstr "セグメントファイル %s への書き込みに失敗しました. 原因: %s"
+
+#: src/message.h:104
+#, c-format
+msgid "Failed to read from the segment file %s, cause: %s"
+msgstr "セグメントファイル %s からの読み込みに失敗しました. 原因: %s"
+
+#: src/message.h:106
+#, c-format
+msgid "Failed to open a socket, cause: %s"
+msgstr "ソケットをオープンできませんでした. 原因: %s"
+
+#: src/message.h:107
+#, c-format
+msgid "Failed to set a socket option, cause: %s"
+msgstr "ソケットのオプションの設定に失敗しました. 原因: %s"
+
+#: src/message.h:108
+#, c-format
+msgid "Failed to bind a socket, cause: %s"
+msgstr "ソケットの bind に失敗しました. 原因: %s"
+
+#: src/message.h:109
+#, c-format
+msgid "Failed to listen to a socket, cause: %s"
+msgstr "ソケットの listen に失敗しました. 原因: %s"
+
+#: src/message.h:110
+#, c-format
+msgid "Failed to accept a peer connection, cause: %s"
+msgstr "ピアからの接続の受付に失敗しました. 原因: %s"
+
+#: src/message.h:111
+#, c-format
+msgid "Failed to get the name of socket, cause: %s"
+msgstr "ソケットの名前の取得に失敗しました. 原因: %s"
+
+#: src/message.h:112
+#, c-format
+msgid "Failed to get the name of connected peer, cause: %s"
+msgstr "接続ピアの名前の取得に失敗しました. 原因: %s"
+
+#: src/message.h:113
+#, c-format
+msgid "Failed to resolve the hostname %s, cause: %s"
+msgstr "ホスト名 %s のアドレス解決に失敗しました. 原因: %s"
+
+#: src/message.h:114
+#, c-format
+msgid "Failed to connect to the host %s, cause: %s"
+msgstr "ホスト %s への接続に失敗しました. 原因: %s"
+
+#: src/message.h:115
+#, c-format
+msgid "Failed to check whether the socket is writable, cause: %s"
+msgstr ""
+"ソケットへデータを書き込み可能かどうかのチェックに失敗しました. 原因: %s"
+
 #: src/message.h:116
+#, c-format
+msgid "Failed to check whether the socket is readable, cause: %s"
+msgstr ""
+"ソケットからデータを読みとり可能かどうかのチェックに失敗しました. 原因: %s"
+
+#: src/message.h:117
+#, c-format
+msgid "Failed to send data, cause: %s"
+msgstr "データの送信に失敗しました. 原因: %s"
+
+#: src/message.h:118
+#, c-format
+msgid "Failed to receive data, cause: %s"
+msgstr "データの受信に失敗しました. 原因: %s"
+
+#: src/message.h:119
+#, c-format
+msgid "Failed to peek data, cause: %s"
+msgstr "データの peek に失敗しました. 原因: %s"
+
+#: src/message.h:120
+#, fuzzy, c-format
+msgid "File %s exists, but %s does not exist."
+msgstr "セグメントファイル %s が存在しません."
+
+#: src/message.h:121
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
 
-#: src/message.h:117
+#: src/message.h:122
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr ""
 
-#: src/message.h:118
+#: src/message.h:123
 #, c-format
 msgid ""
-"Chunk checksum validation failed. checksumIndex=%d, offset=%lld, length=%d, "
+"Chunk checksum validation failed. checksumIndex=%d, offset=%lld, "
 "expectedHash=%s, actualHash=%s"
 msgstr ""
 
-#: src/DownloadEngineFactory.cc:152
+#: src/message.h:124
+#, fuzzy
+msgid "Download aborted."
+msgstr "CUID#%d - ダウンロードを中止します."
+
+#: src/message.h:125
+#, c-format
+msgid "File %s is being downloaded by other command."
+msgstr ""
+
+#: src/DownloadEngineFactory.cc:192
 #, c-format
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
-#: src/TorrentRequestInfo.cc:126
+#: src/TorrentRequestInfo.cc:127
 msgid "Files:"
 msgstr "ファイル:"
 
-#: src/UrlRequestInfo.cc:117
-#, c-format
-msgid "Unrecognized URL or unsupported protocol: %s\n"
-msgstr ""
-"%s は, 理解できない URL フォーマット, または, サポートされないプロトコルで"
-"す.\n"
-
-#: src/main.cc:81
+#: src/main.cc:85
 msgid " version "
 msgstr " バージョン "
 
-#: src/main.cc:88
+#: src/main.cc:92
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -444,41 +477,41 @@ msgstr ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
 "USA\n"
 
-#: src/main.cc:102
+#: src/main.cc:106
 #, c-format
 msgid "Contact Info: %s\n"
 msgstr "連絡先: %s\n"
 
-#: src/main.cc:108
+#: src/main.cc:112
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
 msgstr "使い方: %s [オプション] URL ...\n"
 
-#: src/main.cc:110
+#: src/main.cc:114
 #, c-format
 msgid "       %s [options] -T TORRENT_FILE FILE ...\n"
 msgstr "        %s [オプション] -T TORRENT_FILE FILE ...\n"
 
-#: src/main.cc:113
+#: src/main.cc:117
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
 msgstr "        %s [オプション] -M METALINK_FILE\n"
 
-#: src/main.cc:116
+#: src/main.cc:120
 msgid "Options:"
 msgstr "オプション:"
 
-#: src/main.cc:117
+#: src/main.cc:121
 msgid " -d, --dir=DIR                The directory to store downloaded file."
 msgstr ""
 " -d, --dir=DIR                ダウンロードしたファイルを保存するディレクトリ."
 
-#: src/main.cc:118
+#: src/main.cc:122
 msgid " -o, --out=FILE               The file name for downloaded file."
 msgstr ""
 " -o, --out=FILE               ダウンロードしたファイルの保存先ファイル名."
 
-#: src/main.cc:119
+#: src/main.cc:123
 msgid ""
 " -l, --log=LOG                The file path to store log. If '-' is "
 "specified,\n"
@@ -488,11 +521,11 @@ msgstr ""
 "力\n"
 "                              に出力します."
 
-#: src/main.cc:121
+#: src/main.cc:125
 msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 デーモンとして起動します."
 
-#: src/main.cc:122
+#: src/main.cc:126
 #, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. N must "
@@ -513,7 +546,7 @@ msgstr ""
 "ショ\n"
 "                              ンを確立します."
 
-#: src/main.cc:127
+#: src/main.cc:131
 msgid ""
 " --retry-wait=SEC             Set amount of time in second between requests\n"
 "                              for errors. Specify a value between 0 and 60.\n"
@@ -524,13 +557,13 @@ msgstr ""
 "                              す. 0 - 60 の値を指定してください.\n"
 "                              デフォルト値: 5"
 
-#: src/main.cc:130
+#: src/main.cc:134
 msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
 msgstr ""
 " -t, --timeout=SEC            タイムアウトとなる時間を秒で指定します.\n"
 "                              デフォルト値: 60"
 
-#: src/main.cc:131
+#: src/main.cc:135
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
@@ -539,7 +572,7 @@ msgstr ""
 "行\n"
 "                              します. デフォルト値: 5"
 
-#: src/main.cc:139
+#: src/main.cc:143
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
 "                              URLs."
@@ -548,14 +581,14 @@ msgstr ""
 "シ\n"
 "                              ョンはすべての URL に影響します."
 
-#: src/main.cc:141
+#: src/main.cc:145
 msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
 msgstr ""
 " --http-user=USER             HTTP での認証ユーザーを指定します. このオプショ"
 "ン\n"
 "                              はすべての URL に影響します."
 
-#: src/main.cc:142
+#: src/main.cc:146
 msgid ""
 " --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
 msgstr ""
@@ -563,7 +596,7 @@ msgstr ""
 "ショ\n"
 "                              ンはすべての URL に影響します."
 
-#: src/main.cc:143
+#: src/main.cc:147
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
 msgstr ""
@@ -573,7 +606,7 @@ msgstr ""
 "ま\n"
 "                              す."
 
-#: src/main.cc:144
+#: src/main.cc:148
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
 "URLs."
@@ -584,7 +617,7 @@ msgstr ""
 "し\n"
 "                              ます."
 
-#: src/main.cc:145
+#: src/main.cc:149
 msgid ""
 " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 "                              METHOD is either 'get' or 'tunnel'.\n"
@@ -595,7 +628,7 @@ msgstr ""
 "                              す. 'get' または 'tunnel' を指定してください.\n"
 "                              デフォルト値: tunnel"
 
-#: src/main.cc:148
+#: src/main.cc:152
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -607,14 +640,14 @@ msgstr ""
 "                              いるのは basic です. \n"
 "                              デフォルト値: basic"
 
-#: src/main.cc:151
+#: src/main.cc:155
 msgid " --referer=REFERER            Set Referer. This affects to all URLs."
 msgstr ""
 " --referer=REFERER            リファラーを指定します. このオプションはすべて"
 "の\n"
 "                               URL に影響します."
 
-#: src/main.cc:152
+#: src/main.cc:156
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
 "                              Default: anonymous"
@@ -624,7 +657,7 @@ msgstr ""
 "                              はすべての URL に影響します.\n"
 "                              デフォルト値: anonymous"
 
-#: src/main.cc:154
+#: src/main.cc:158
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
 "                              Default: ARIA2USER@"
@@ -634,7 +667,7 @@ msgstr ""
 "                              ンはすべての URL に影響します.\n"
 "                              デフォルト値: ARIA2USER@"
 
-#: src/main.cc:156
+#: src/main.cc:160
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
@@ -645,11 +678,11 @@ msgstr ""
 "                              'ascii' を指定してください. デフォルト値: "
 "binary"
 
-#: src/main.cc:159
+#: src/main.cc:163
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
 msgstr " -p, --ftp-pasv               FTP で passive モードを使用します."
 
-#: src/main.cc:160
+#: src/main.cc:164
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
@@ -662,7 +695,7 @@ msgstr ""
 "く\n"
 "                              ださい. デフォルト値: tunnel"
 
-#: src/main.cc:163
+#: src/main.cc:167
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -685,7 +718,7 @@ msgstr ""
 "                              ードには影響しません.\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:170
+#: src/main.cc:174
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -700,7 +733,7 @@ msgstr ""
 "1024K).\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:174
+#: src/main.cc:178
 #, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method. METHOD is "
@@ -726,7 +759,7 @@ msgstr ""
 "                              ードには影響しません.\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:181
+#: src/main.cc:185
 #, fuzzy
 msgid ""
 " --allow-overwrite=true|false  If this option set to false, aria2 doesn't\n"
@@ -744,7 +777,7 @@ msgstr ""
 "                              は, BitTorrent モードに入りません.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:186
+#: src/main.cc:190
 #, fuzzy
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
@@ -771,7 +804,7 @@ msgstr ""
 "                              ードには影響しません.\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:194
+#: src/main.cc:198
 #, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while "
@@ -788,7 +821,7 @@ msgstr ""
 "                              は, Metalink モードに入りません.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:198
+#: src/main.cc:202
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download "
@@ -800,19 +833,43 @@ msgid ""
 "                              http(s)/ftp downloads."
 msgstr ""
 
-#: src/main.cc:204
+#: src/main.cc:208
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 
-#: src/main.cc:205
+#: src/main.cc:209
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr ""
 
-#: src/main.cc:207
+#: src/main.cc:210
+msgid ""
+" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
+"                              multiple URIs for a single entity: deliminate\n"
+"                              URIs by Tab in a single line."
+msgstr ""
+
+#: src/main.cc:213
+#, fuzzy
+msgid ""
+" -j, --max-concurrent-downloads=N Set maximum number of concurrent "
+"downloads.\n"
+"                              Default: 5"
+msgstr ""
+" -m, --max-tries=N            試行回数を指定します. 0 を指定すると何度でも試"
+"行\n"
+"                              します. デフォルト値: 5"
+
+#: src/main.cc:215
+msgid ""
+" --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
+"                              one used by Netscape and Mozilla."
+msgstr ""
+
+#: src/main.cc:218
 msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  .torrent ファイルのパスを指定."
 
-#: src/main.cc:208
+#: src/main.cc:219
 msgid ""
 " --follow-torrent=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -827,7 +884,7 @@ msgstr ""
 "                              は, BitTorrent モードに入りません.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:212
+#: src/main.cc:223
 msgid ""
 " -S, --show-files             Print file listing of .torrent file and exit."
 msgstr ""
@@ -835,7 +892,7 @@ msgstr ""
 "し\n"
 "                              終了します."
 
-#: src/main.cc:213
+#: src/main.cc:224
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -846,14 +903,14 @@ msgstr ""
 "                              します.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:216
+#: src/main.cc:227
 msgid ""
 " --listen-port=PORT           Set port number to listen to for peer "
 "connection."
 msgstr ""
 " --listen-port=PORT           ピアからの接続を受け付けるポート番号を指定."
 
-#: src/main.cc:217
+#: src/main.cc:228
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -868,7 +925,7 @@ msgstr ""
 "1024K).\n"
 "                              デフォルト値: 0"
 
-#: src/main.cc:221
+#: src/main.cc:232
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can know file index through --show-files\n"
@@ -889,7 +946,7 @@ msgstr ""
 "                              また, '-' を使って範囲指定もできます: \"1-5\"\n"
 "                              ',' と '-' は組み合わせて使うことができます."
 
-#: src/main.cc:227
+#: src/main.cc:238
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
 "                              --seed-ratio option."
@@ -897,7 +954,7 @@ msgstr ""
 " --seed-time=MINUTES          シードを行う時間を分単位で指定します. \n"
 "                              --seed-ratio オプションも参照してください."
 
-#: src/main.cc:229
+#: src/main.cc:240
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents "
 "until\n"
@@ -916,17 +973,16 @@ msgstr ""
 "く\n"
 "                              とも一方の条件が成立するとシードを終了します."
 
-#: src/main.cc:236
+#: src/main.cc:247
 msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE .metalink ファイルのパスを指定."
 
-#: src/main.cc:237
+#: src/main.cc:248
+#, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-"                              simultaneously. If more than one connection "
-"per\n"
-"                              server is required, use -s option.\n"
-"                              Default: 15"
+"                              simultaneously.\n"
+"                              Default: 5"
 msgstr ""
 " -C, --metalink-servers=NUM_SERVERS 同時に接続するサーバの数を指定します.\n"
 "                              1 サーバに複数の接続が必要ならば, -s オプション"
@@ -934,15 +990,15 @@ msgstr ""
 "                              使用してください.\n"
 "                              デフォルト値: 15"
 
-#: src/main.cc:241
+#: src/main.cc:251
 msgid " --metalink-version=VERSION   The version of file to download."
 msgstr " --metalink-version=VERSION   ダウンロードするファイルのバージョン."
 
-#: src/main.cc:242
+#: src/main.cc:252
 msgid " --metalink-language=LANGUAGE The language of file to download."
 msgstr " --metalink-language=LANGUAGE ダウンロードするファイルの言語."
 
-#: src/main.cc:243
+#: src/main.cc:253
 msgid ""
 " --metalink-os=OS             The operating system the file is targeted."
 msgstr ""
@@ -950,11 +1006,11 @@ msgstr ""
 "レー\n"
 "                              ティング・システム."
 
-#: src/main.cc:244
+#: src/main.cc:254
 msgid " --metalink-location=LOCATION The location of the prefered server."
 msgstr " --metalink-location=LOCATION 優先的にダウンロードするサーバーの場所."
 
-#: src/main.cc:245
+#: src/main.cc:255
 msgid ""
 " --follow-metalink=true|false  Setting this option to false prevents aria2 "
 "to\n"
@@ -969,16 +1025,16 @@ msgstr ""
 "                              は, Metalink モードに入りません.\n"
 "                              デフォルト値: true"
 
-#: src/main.cc:250
+#: src/main.cc:260
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
-#: src/main.cc:251
+#: src/main.cc:261
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 " -h, --help                   このヘルプメッセージを表示し, 終了します."
 
-#: src/main.cc:254
+#: src/main.cc:264
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading fails."
@@ -987,7 +1043,7 @@ msgstr ""
 "れ\n"
 " ばなりません. さもなくばダウンロードは失敗します."
 
-#: src/main.cc:259
+#: src/main.cc:269
 msgid ""
 " Specify files in multi-file torrent to download. Use conjunction with\n"
 " -T option. This arguments are ignored if you specify --select-file option."
@@ -996,83 +1052,66 @@ msgstr ""
 "ン\n"
 " と共に使用します. --select-file オプションと併用はできません."
 
-#: src/main.cc:263
+#: src/main.cc:273
 msgid "Examples:"
 msgstr "例:"
 
-#: src/main.cc:264
+#: src/main.cc:274
 msgid " Download a file by 1 connection:"
 msgstr " 1 コネクションでのダウンロード:"
 
-#: src/main.cc:266
+#: src/main.cc:276
 msgid " Download a file by 2 connections:"
 msgstr " 2 コネクションでのダウンロード:"
 
-#: src/main.cc:268
+#: src/main.cc:278
 msgid " Download a file by 2 connections, each connects to a different server:"
 msgstr " 二つの異なるサーバーに接続してダウンロード:"
 
-#: src/main.cc:270
+#: src/main.cc:280
 msgid " You can mix up different protocols:"
 msgstr " 異なるプロトコルを混合させてダウンロード:"
 
-#: src/main.cc:274
+#: src/main.cc:284
 msgid " Download a torrent:"
 msgstr " torrent をダウンロード:"
 
-#: src/main.cc:276
+#: src/main.cc:286
 msgid " Download a torrent using local .torrent file:"
 msgstr " ローカル .torrent ファイルを使ってダウンロード:"
 
-#: src/main.cc:278
+#: src/main.cc:288
 msgid " Download only selected files:"
 msgstr " ファイルを指定してダウンロード:"
 
-#: src/main.cc:280
+#: src/main.cc:290
 msgid " Print file listing of .torrent file:"
 msgstr " この .torrent ファイルに含まれるファイルリストを表示:"
 
-#: src/main.cc:285
+#: src/main.cc:295
 msgid " Metalink downloading:"
 msgstr " Metalink でダウンロード:"
 
-#: src/main.cc:287
+#: src/main.cc:297
 msgid " Download a file using local .metalink file:"
 msgstr " ローカル .metalink ファイルを使ってダウンロード:"
 
-#: src/main.cc:289
+#: src/main.cc:299
 msgid " Metalink downloading with preferences:"
 msgstr " ユーザ設定による Metalink ダウンロード:"
 
-#: src/main.cc:293
+#: src/main.cc:303
 #, c-format
 msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
-#: src/main.cc:613
+#: src/main.cc:638
 msgid "specify at least one URL"
 msgstr "一個以上の URL を指定してください."
 
-#: src/main.cc:619
+#: src/main.cc:644
 msgid "daemon failed"
 msgstr "デーモン起動に失敗"
-
-#: src/main.cc:705
-msgid ""
-"Now verifying checksum.\n"
-"This may take some time depending on your PC environment and the size of "
-"file."
-msgstr ""
-"チェックサムを検査しています.\n"
-"お使いの PC 環境とファイルサイズにより, ある程度の時間がかかります."
-
-#: src/main.cc:709
-msgid "checksum OK."
-msgstr "チェックサム OK."
-
-#: src/main.cc:712
-msgid "checksum ERROR."
-msgstr "チェックサム エラー."
 
 #: src/DefaultPieceStorage.cc:242
 msgid "Download of selected files was complete."
@@ -1082,7 +1121,7 @@ msgstr "ご指定のファイルのダウンロードが完了."
 msgid "The download was complete."
 msgstr "ダウンロードが完了."
 
-#: src/ConsoleDownloadEngine.cc:111
+#: src/ConsoleDownloadEngine.cc:178
 #, c-format
 msgid ""
 "\n"
@@ -1091,10 +1130,29 @@ msgstr ""
 "\n"
 "アプリケーションを終了しています...\n"
 
-#: src/ConsoleDownloadEngine.cc:115
+#: src/ConsoleDownloadEngine.cc:182
 #, c-format
 msgid "done\n"
 msgstr "完了\n"
+
+#~ msgid "Unrecognized URL or unsupported protocol: %s\n"
+#~ msgstr ""
+#~ "%s は, 理解できない URL フォーマット, または, サポートされないプロトコルで"
+#~ "す.\n"
+
+#~ msgid ""
+#~ "Now verifying checksum.\n"
+#~ "This may take some time depending on your PC environment and the size of "
+#~ "file."
+#~ msgstr ""
+#~ "チェックサムを検査しています.\n"
+#~ "お使いの PC 環境とファイルサイズにより, ある程度の時間がかかります."
+
+#~ msgid "checksum OK."
+#~ msgstr "チェックサム OK."
+
+#~ msgid "checksum ERROR."
+#~ msgstr "チェックサム エラー."
 
 #~ msgid "unrecognized proxy format"
 #~ msgstr "理解できないProxyフォーマットです."
