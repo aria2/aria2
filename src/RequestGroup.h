@@ -50,6 +50,7 @@ class DownloadEngine;
 
 class RequestGroup {
 private:
+  int32_t _gid;
   int64_t _hintTotalLength;
   string _hintFilename;
   string _ufilename;
@@ -76,6 +77,7 @@ public:
   bool isTorrent;
 
   RequestGroup(const Strings& uris, const Option* option):
+    _gid(0),
     _hintTotalLength(0),
     _uris(uris),
     _segmentMan(0),
@@ -89,6 +91,7 @@ public:
     isTorrent(false) {}
 
   RequestGroup(const string& uri, const Option* option):
+    _gid(0),
     _hintTotalLength(0),
     _segmentMan(0),
     _segmentManFactory(new DefaultSegmentManFactory(option)),
@@ -275,6 +278,16 @@ public:
   }
 
   void setUserDefinedFilename(const string& filename);
+
+  void setGID(int32_t gid)
+  {
+    _gid = gid;
+  }
+
+  int32_t getGID() const
+  {
+    return _gid;
+  }
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

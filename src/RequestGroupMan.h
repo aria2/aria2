@@ -47,11 +47,13 @@ private:
   RequestGroups _reservedGroups;
   const Logger* _logger;
   int32_t _maxSimultaneousDownloads;
+  int32_t _gidCounter;
 public:
   RequestGroupMan(const RequestGroups& requestGroups = RequestGroups(), int32_t maxSimultaneousDownloads = 1):
     _requestGroups(requestGroups),
     _logger(LogFactory::getInstance()),
-    _maxSimultaneousDownloads(maxSimultaneousDownloads) {}
+    _maxSimultaneousDownloads(maxSimultaneousDownloads),
+    _gidCounter(0) {}
 
   bool downloadFinished()
   {
@@ -102,7 +104,7 @@ public:
     return totalLength;
   }
 
-  Commands getInitialCommands(DownloadEngine* e) const;
+  Commands getInitialCommands(DownloadEngine* e);
 
   void removeStoppedGroup();
 

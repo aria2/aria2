@@ -84,7 +84,7 @@ void SimpleLogger::writeHeader(FILE* file, string date, string level) const {
   fprintf(file, "%s - %s - ", date.c_str(), level.c_str());
 }
 
-void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e) const
+void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e, bool printHeader) const
 {
   string levelStr;
   switch(level) {
@@ -108,10 +108,16 @@ void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, 
   char datestr[26];
   ctime_r(&now, datestr);
   datestr[strlen(datestr)-1] = '\0';
-  writeHeader(file, datestr, levelStr);
+  // TODO a quick hack not to print header in console
+  if(printHeader) {
+    writeHeader(file, datestr, levelStr);
+  }
   vfprintf(file, string(Util::replace(msg, "\r", "")+"\n").c_str(), ap);
   for(Exception* nestedEx = e; nestedEx; nestedEx = nestedEx->getCause()) {
-    writeHeader(file, datestr, levelStr);
+    // TODO a quick hack not to print header in console
+    if(printHeader) {
+      writeHeader(file, datestr, levelStr);
+    }
     fprintf(file, "exception: %s\n", Util::replace(nestedEx->getMsg(), "\r", "").c_str());
   }
   fflush(file);
@@ -121,7 +127,7 @@ void SimpleLogger::writeFile(int level, const char* msg, va_list ap, Exception* 
   writeLog(file, level, msg, ap, e);
   if(stdoutField&level) {
     fprintf(stdout, "\n");
-    writeLog(stdout, level, msg, ap, e);
+    writeLog(stdout, level, msg, ap, e, false);
   }
 }
 

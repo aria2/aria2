@@ -74,6 +74,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     
     _requestGroups.push_back(groupToAdd);
     groupToAdd->initSegmentMan();
+    groupToAdd->setGID(++_gidCounter);
     Commands commands = groupToAdd->createNextCommand(e, 1);
     count += commands.size();
     e->addCommand(commands);
@@ -83,12 +84,13 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
 }
 
-Commands RequestGroupMan::getInitialCommands(DownloadEngine* e) const
+Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
 {
   Commands commands;
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
 	itr != _requestGroups.end(); ++itr) {
     (*itr)->initSegmentMan();
+    (*itr)->setGID(++_gidCounter);
     commands.push_back((*itr)->createNextCommand(e, 1).front());
   }
   return commands;

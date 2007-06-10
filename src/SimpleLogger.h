@@ -41,7 +41,7 @@ class SimpleLogger:public Logger {
 private:
   void writeFile(int level, const char* msg, va_list ap, Exception* e = 0) const;
   void writeHeader(FILE* file, string date, string level) const;
-  void writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e = 0) const;
+  void writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e = 0, bool printHeader = false) const;
   FILE* file;
   int stdoutField;
 public:

@@ -61,8 +61,9 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
   cout << "\r";
   if(_requestGroupMan->countRequestGroup() > 0) {
     RequestGroupHandle firstRequestGroup = _requestGroupMan->getRequestGroup(0);
-    cout << "[";
-    cout << Util::abbrevSize(firstRequestGroup->getDownloadLength())
+    cout << "["
+	 << "#" << firstRequestGroup->getGID() << " "
+	 << Util::abbrevSize(firstRequestGroup->getDownloadLength())
 	 << "/"
 	 << Util::abbrevSize(firstRequestGroup->getTotalLength());
     if(firstRequestGroup->getTotalLength() > 0) {
@@ -86,6 +87,7 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     FileAllocationEntryHandle entry = _fileAllocationMan->getCurrentFileAllocationEntry();
     if(!entry.isNull()) {
       cout << "[FileAlloc:"
+	   << "#" << entry->getRequestGroup()->getGID() << " "
 	   << Util::abbrevSize(entry->getCurrentLength())
 	   << "/"
 	   << Util::abbrevSize(entry->getTotalLength())
@@ -104,6 +106,7 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     CheckIntegrityEntryHandle entry = _checkIntegrityMan->getFirstCheckIntegrityEntry();
     if(!entry.isNull()) {
       cout << "[Checksum:"
+	   << "#" << entry->getRequestGroup()->getGID() << " "
 	   << Util::abbrevSize(entry->getCurrentLength())
 	   << "/"
 	   << Util::abbrevSize(entry->getTotalLength())
