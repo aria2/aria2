@@ -58,7 +58,7 @@ void TorrentConsoleDownloadEngine::sendStatistics() {
   }
   printf(" U:%.2f(%s) %d peers",
 	 uploadSpeed/1024.0,
-	 Util::llitos(uploadLength, true).c_str(),
+	 Util::abbrevSize(uploadLength).c_str(),
 	 btRuntime->getConnections());
   fflush(stdout);	 
 }

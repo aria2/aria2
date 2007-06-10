@@ -697,14 +697,16 @@ string Util::abbrevSize(int64_t size)
   if(size < 1024) {
     return Util::llitos(size, true);
   }
-  size >>= 10;
   char units[] = { 'K', 'M' };
   int32_t numUnit = sizeof(units)/sizeof(char);
   int32_t i = 0;
+  int32_t r = size%1024;
+  size >>= 10;
   for(; i < numUnit-1 && size >= 1024; ++i) {
+    r = size%1024;
     size >>= 10;
   } 
-  return Util::llitos(size, true)+units[i];
+  return Util::llitos(size, true)+"."+Util::itos(r*10/1024)+units[i];
 }
 
 time_t Util::httpGMT(const string& httpStdTime)

@@ -304,8 +304,11 @@ void UtilTest::testGetRealSize()
 
 void UtilTest::testAbbrevSize()
 {
-  CPPUNIT_ASSERT_EQUAL(string("4,096M"), Util::abbrevSize(4294967296LL));
-  CPPUNIT_ASSERT_EQUAL(string("1K"), Util::abbrevSize(1024));
+  CPPUNIT_ASSERT_EQUAL(string("4,096.0M"), Util::abbrevSize(4294967296LL));
+  CPPUNIT_ASSERT_EQUAL(string("1.0K"), Util::abbrevSize(1024));
   CPPUNIT_ASSERT_EQUAL(string("1,023"), Util::abbrevSize(1023));
   CPPUNIT_ASSERT_EQUAL(string("0"), Util::abbrevSize(0));
+  CPPUNIT_ASSERT_EQUAL(string("1.1K"), Util::abbrevSize(1127));
+  CPPUNIT_ASSERT_EQUAL(string("1.5M"), Util::abbrevSize(1572864));
+
 }
