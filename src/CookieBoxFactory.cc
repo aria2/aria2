@@ -32,38 +32,46 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "CookieBox.h"
-#include "Util.h"
+#include "CookieBoxFactory.h"
 #include "CookieParser.h"
+#include "Util.h"
 
-CookieBox::CookieBox() {}
-
-CookieBox::~CookieBox() {}
-
-void CookieBox::add(const Cookie& cookie) {
-  cookies.push_back(cookie);
-}
-
-void CookieBox::add(const string& cookieStr) {
-  Cookie c = CookieParser().parse(cookieStr);
-  if(c.good()) {
-    cookies.push_back(c);
-  }
-}
-
-void CookieBox::add(const Cookies& cookies)
+CookieBoxHandle CookieBoxFactory::createNewInstance()
 {
-  this->cookies.insert(this->cookies.end(), cookies.begin(), cookies.end());
+  CookieBoxHandle box = new CookieBox();
+  box->add(defaultCookies);
+  return box;
 }
 
-Cookies CookieBox::criteriaFind(const string& host, const string& dir, time_t date,  bool secure) const {
-  Cookies result;
-  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
-    const Cookie& c = *itr;
-    if(c.match(host, dir, date, secure)) {
-      result.push_back(c);
+void CookieBoxFactory::loadDefaultCookie(istream& s)
+{
+  string line;
+  while(getline(s, line)) {
+    if(Util::startsWith(line, "#")) {
+      continue;
+    }
+    Cookie c = parseNsCookie(line);
+    if(c.good()) {
+      defaultCookies.push_back(c);
     }
   }
-  return result;
 }
 
+Cookie CookieBoxFactory::parseNsCookie(const string& nsCookieStr) const
+{
+  Strings vs;
+  Util::slice(vs, nsCookieStr, '\t', true);
+  Cookie c;
+  if(vs.size() < 6 ) {
+    return c;
+  }
+  c.domain = vs[0];
+  c.path = vs[2];
+  c.secure = vs[3] == "TRUE" ? true : false;
+  c.expires = strtol(vs[4].c_str(), NULL, 10);
+  c.name = vs[5];
+  if(vs.size() >= 7) {
+    c.value = vs[6];
+  }
+  return c;
+}

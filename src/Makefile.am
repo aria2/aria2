@@ -100,7 +100,10 @@ SRCS =  Socket.h\
 	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
 	CheckIntegrityMan.h\
 	ProgressAwareEntry.h\
-	RequestGroupEntry.cc RequestGroupEntry.h
+	RequestGroupEntry.cc RequestGroupEntry.h\
+	Cookie.cc Cookie.h\
+	CookieParser.cc CookieParser.h\
+	CookieBoxFactory.cc CookieBoxFactory.h
 #	debug_new.cpp
 
 if ENABLE_BITTORRENT

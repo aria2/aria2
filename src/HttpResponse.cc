@@ -86,9 +86,7 @@ void HttpResponse::retrieveCookie()
 {
   Strings v = httpHeader->get("Set-Cookie");
   for(Strings::const_iterator itr = v.begin(); itr != v.end(); itr++) {
-    Cookie c;
-    httpRequest->getRequest()->cookieBox->parse(c, *itr);
-    httpRequest->getRequest()->cookieBox->add(c);
+    httpRequest->getRequest()->cookieBox->add(*itr);
   }
 }
 

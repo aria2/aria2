@@ -113,7 +113,7 @@ public:
     return _segmentMan;
   }
 
-  Commands createNextCommand(DownloadEngine* e, const string& method = "GET");
+  Commands createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj);
 
   Commands createNextCommand(DownloadEngine* e, int32_t numCommand, const string& method = "GET");
   

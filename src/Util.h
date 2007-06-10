@@ -150,6 +150,8 @@ public:
   static int64_t getRealSize(const string& sizeWithUnit);
 
   static string abbrevSize(int64_t size);
+
+  static time_t httpGMT(const string& httpTimeFormat);
 };
 
 #endif // _D_UTIL_H_

@@ -56,10 +56,10 @@ SegmentManHandle RequestGroup::initSegmentMan()
   return _segmentMan;
 }
 
-Commands RequestGroup::createNextCommand(DownloadEngine* e, const string& method)
+Commands RequestGroup::createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj)
 {
-  int32_t numCommand = _numConcurrentCommand == 0 ? _uris.size() : _numConcurrentCommand;
-  return createNextCommand(e, numCommand, method);
+  int32_t numCommand = _numConcurrentCommand == 0 ? _uris.size() : _numConcurrentCommand+numAdj;
+  return createNextCommand(e, numCommand, "GET");
 }
 
 Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, const string& method)
@@ -212,7 +212,7 @@ void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, Down
     if(downloadCommand) {
       e->commands.push_back(downloadCommand);
     } else {
-      Commands commands = createNextCommand(e);
+      Commands commands = createNextCommandWithAdj(e, -1);
       Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, this, e);
       commands.push_front(command);
       e->addCommand(commands);

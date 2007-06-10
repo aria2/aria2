@@ -88,14 +88,14 @@ bool HttpResponseCommand::executeInternal()
     return prepareForRetry(0);
   }
   if(_requestGroup->getSegmentMan()->downloadStarted) {
-    // TODO validate totalsize
+    // validate totalsize
     _requestGroup->validateFilename(httpResponse->determinFilename());
     _requestGroup->validateTotalLength(httpResponse->getEntityLength());
 
     e->commands.push_back(createHttpDownloadCommand(httpResponse));
     return true;
   } else {
-    // TODO validate totalsize against hintTotalSize if it is provided.
+    // validate totalsize against hintTotalSize if it is provided.
     _requestGroup->validateFilenameByHint(httpResponse->determinFilename());
     _requestGroup->validateTotalLengthByHint(httpResponse->getEntityLength());
 
@@ -165,6 +165,7 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   // disable keep-alive
   req->setKeepAlive(false);
   segment = _requestGroup->getSegmentMan()->getSegment(cuid);	
+  _requestGroup->shouldCancelDownloadForSafety();
   _requestGroup->getSegmentMan()->diskWriter->initAndOpenFile(_requestGroup->getSegmentMan()->getFilePath());
   e->commands.push_back(createHttpDownloadCommand(httpResponse));
   return true;

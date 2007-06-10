@@ -706,3 +706,12 @@ string Util::abbrevSize(int64_t size)
   } 
   return Util::llitos(size, true)+units[i];
 }
+
+time_t Util::httpGMT(const string& httpStdTime)
+{
+  struct tm tm;
+  memset(&tm, 0, sizeof(tm));
+  strptime(httpStdTime.c_str(), "%a, %Y-%m-%d %H:%M:%S GMT", &tm);
+  time_t thetime = timegm(&tm);
+  return thetime;
+}

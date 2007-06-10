@@ -135,6 +135,8 @@
 #define PREF_HTTP_KEEP_ALIVE "http-keep-alive"
 // values: string
 #define PREF_USER_AGENT "user-agent"
+// value: string that your file system recognizes as a file name.
+#define PREF_LOAD_COOKIES "load-cookies"
 
 /** 
  * HTTP proxy related preferences

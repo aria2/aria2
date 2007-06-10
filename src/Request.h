@@ -80,7 +80,7 @@ private:
 
   bool parseUrl(const string& url);
 public:
-  CookieBox* cookieBox;
+  CookieBoxHandle cookieBox;
 public:
   Request();
   virtual ~Request();

@@ -35,6 +35,7 @@
 #include "Request.h"
 #include "Util.h"
 #include "FeatureConfig.h"
+#include "CookieBoxFactory.h"
 
 const string Request::METHOD_GET = "get";
 
@@ -43,14 +44,10 @@ const string Request::METHOD_HEAD = "head";
 Request::Request():port(0), tryCount(0), keepAlive(true), method(METHOD_GET),
 		   _httpAuthResolver(0),
 		   _httpProxyAuthResolver(0),
-		   _ftpAuthResolver(0)
-{
-  cookieBox = new CookieBox();
-}
+		   _ftpAuthResolver(0),
+		   cookieBox(CookieBoxFactorySingletonHolder::instance()->createNewInstance()) {}
 
-Request::~Request() {
-  delete cookieBox;
-}
+Request::~Request() {}
 
 bool Request::setUrl(const string& url) {
   this->url = url;

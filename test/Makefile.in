@@ -57,7 +57,9 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) \
+	RequestTest.$(OBJEXT) CookieParserTest.$(OBJEXT) \
+	HttpRequestTest.$(OBJEXT) CookieBoxFactoryTest.$(OBJEXT) \
 	ByteArrayDiskWriterTest.$(OBJEXT) \
 	RequestGroupManTest.$(OBJEXT) \
 	IteratableChecksumValidatorTest.$(OBJEXT) \
@@ -65,16 +67,14 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) \
 	UriFileListParserTest.$(OBJEXT) PeerTest.$(OBJEXT) \
 	DefaultPeerStorageTest.$(OBJEXT) RequestFactoryTest.$(OBJEXT) \
 	NetrcAuthResolverTest.$(OBJEXT) \
-	DefaultAuthResolverTest.$(OBJEXT) RequestTest.$(OBJEXT) \
-	HttpRequestTest.$(OBJEXT) UtilTest.$(OBJEXT) \
+	DefaultAuthResolverTest.$(OBJEXT) UtilTest.$(OBJEXT) \
 	OptionHandlerTest.$(OBJEXT) SegmentManTest.$(OBJEXT) \
 	BitfieldManTest.$(OBJEXT) GlowFileAllocatorTest.$(OBJEXT) \
 	NetrcTest.$(OBJEXT) SingletonHolderTest.$(OBJEXT) \
 	HttpHeaderTest.$(OBJEXT) HttpResponseTest.$(OBJEXT) \
 	SharedHandleTest.$(OBJEXT) ChunkedEncodingTest.$(OBJEXT) \
 	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) \
-	CookieBoxTest.$(OBJEXT) DataTest.$(OBJEXT) \
-	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
+	DataTest.$(OBJEXT) DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
 	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
 	PeerMessageUtilTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
 	MultiDiskAdaptorTest.$(OBJEXT) \
@@ -267,6 +267,11 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
+	CookieBoxTest.cc\
+	RequestTest.cc\
+	CookieParserTest.cc\
+	HttpRequestTest.cc\
+	CookieBoxFactoryTest.cc\
 	ByteArrayDiskWriterTest.cc\
 	RequestGroupManTest.cc\
 	IteratableChecksumValidatorTest.cc\
@@ -277,8 +282,6 @@ aria2c_SOURCES = AllTest.cc\
 	RequestFactoryTest.cc\
 	NetrcAuthResolverTest.cc\
 	DefaultAuthResolverTest.cc\
-	RequestTest.cc\
-	HttpRequestTest.cc\
 	UtilTest.cc\
 	OptionHandlerTest.cc\
 	SegmentManTest.cc\
@@ -293,7 +296,6 @@ aria2c_SOURCES = AllTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
 	Base64Test.cc\
-	CookieBoxTest.cc\
 	DataTest.cc\
 	DictionaryTest.cc\
 	ListTest.cc\
@@ -430,7 +432,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkChecksumValidatorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncodingTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleFileAllocationMonitorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolverTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@

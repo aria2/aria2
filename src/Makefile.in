@@ -240,12 +240,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityEntry.cc \
 	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
-	RequestGroupEntry.cc RequestGroupEntry.h MetaEntry.h Data.cc \
-	Data.h Dictionary.cc Dictionary.h List.cc List.h \
-	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
-	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
-	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
-	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
+	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
+	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
+	CookieBoxFactory.h MetaEntry.h Data.cc Data.h Dictionary.cc \
+	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
+	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
+	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
+	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -425,7 +427,9 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	RealtimeCommand.$(OBJEXT) \
 	IteratableChecksumValidator.$(OBJEXT) \
 	ChecksumCommand.$(OBJEXT) CheckIntegrityEntry.$(OBJEXT) \
-	RequestGroupEntry.$(OBJEXT) $(am__objects_1) $(am__objects_2)
+	RequestGroupEntry.$(OBJEXT) Cookie.$(OBJEXT) \
+	CookieParser.$(OBJEXT) CookieBoxFactory.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2)
 am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -657,8 +661,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityEntry.cc \
 	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
-	RequestGroupEntry.cc RequestGroupEntry.h $(am__append_1) \
-	$(am__append_2)
+	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
+	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
+	CookieBoxFactory.h $(am__append_1) $(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -786,7 +791,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ConsoleFileAllocationMonitor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Cookie.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBox.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolver.Po@am__quote@

@@ -51,6 +51,7 @@
 #include "File.h"
 #include "CUIDCounter.h"
 #include "UriFileListParser.h"
+#include "CookieBoxFactory.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -211,6 +212,8 @@ void showUsage() {
 	    "                              URIs by Tab in a single line.") << endl;
   cout << _(" -j, --max-concurrent-downloads=N Set maximum number of concurrent downloads.\n"
 	    "                              Default: 5") << endl;
+  cout << _(" --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
+	    "                              one used by Netscape and Mozilla.") << endl;
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
@@ -243,9 +246,8 @@ void showUsage() {
 #ifdef ENABLE_METALINK
   cout << _(" -M, --metalink-file=METALINK_FILE The file path to .metalink file.") << endl;
   cout << _(" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-	    "                              simultaneously. If more than one connection per\n"
-	    "                              server is required, use -s option.\n"
-	    "                              Default: 15") << endl;
+	    "                              simultaneously.\n"
+	    "                              Default: 5") << endl;
   cout << _(" --metalink-version=VERSION   The version of file to download.") << endl;
   cout << _(" --metalink-language=LANGUAGE The language of file to download.") << endl;
   cout << _(" --metalink-os=OS             The operating system the file is targeted.") << endl;
@@ -319,7 +321,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_SEGMENT_SIZE, Util::itos(1024*1024));
   op->put(PREF_HTTP_KEEP_ALIVE, V_FALSE);
   op->put(PREF_LISTEN_PORT, "-1");
-  op->put(PREF_METALINK_SERVERS, "15");
+  op->put(PREF_METALINK_SERVERS, "5");
   op->put(PREF_FOLLOW_TORRENT,
 #ifdef ENABLE_BITTORRENT
 	  V_TRUE
@@ -401,6 +403,7 @@ int main(int argc, char* argv[]) {
       { "no-netrc", no_argument, 0, 'n' },
       { "input-file", required_argument, 0, 'i' },
       { "max-concurrent-downloads", required_argument, 0, 'j' },
+      { "load-cookies", required_argument, &lopt, 205 },
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
@@ -530,6 +533,9 @@ int main(int argc, char* argv[]) {
 	break;
       case 204:
 	cmdstream << PREF_REALTIME_CHUNK_CHECKSUM << "=" << optarg << "\n";
+	break;
+      case 205:
+	cmdstream << PREF_LOAD_COOKIES << "=" << optarg << "\n";
 	break;
       }
       break;
@@ -682,6 +688,20 @@ int main(int argc, char* argv[]) {
 	requestFactory->setNetrc(netrc);
       }
     }
+
+    CookieBoxFactoryHandle cookieBoxFactory = new CookieBoxFactory();
+    CookieBoxFactorySingletonHolder::instance(cookieBoxFactory);
+    if(op->defined(PREF_LOAD_COOKIES)) {
+      File cookieFile(op->get(PREF_LOAD_COOKIES));
+      if(cookieFile.isFile()) {
+	ifstream in(op->get(PREF_LOAD_COOKIES).c_str());
+	CookieBoxFactorySingletonHolder::instance()->loadDefaultCookie(in);
+      } else {
+	logger->error("Failed to load cookies from %s", op->get(PREF_LOAD_COOKIES).c_str());
+	exit(EXIT_FAILURE);
+      }
+    }
+
     RequestFactorySingletonHolder::instance(requestFactory);
     CUIDCounterHandle cuidCounter = new CUIDCounter();
     CUIDCounterSingletonHolder::instance(cuidCounter);

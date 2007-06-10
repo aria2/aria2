@@ -1,0 +1,7 @@
+# name=this is a omment line;
+localhost	FALSE	/	TRUE	1181473200	JSESSIONID	123456789
+
+localhost	FALSE	/	FALSE	1181473200	user	me
+
+localhost	FALSE	/	FALSE	1181473200	passwd	secret
+localhost	FALSE	/	FALSE	1181473200	novalue	

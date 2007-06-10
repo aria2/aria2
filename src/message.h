@@ -44,8 +44,9 @@
 #define MSG_REDIRECT _("CUID#%d - Redirecting to %s")
 #define MSG_SENDING_REQUEST _("CUID#%d - Requesting:\n%s")
 #define MSG_RECEIVE_RESPONSE _("CUID#%d - Response received:\n%s")
-#define MSG_DOWNLOAD_ABORTED _("CUID#%d - Download aborted.")
-#define MSG_RESTARTING_DOWNLOAD _("CUID#%d - Restarting the download.")
+#define MSG_DOWNLOAD_ABORTED _("CUID#%d - Download aborted. URI=%s")
+#define MSG_RESTARTING_DOWNLOAD _("CUID#%d - Restarting the download. URI=%s")
+#define MSG_TORRENT_DOWNLOAD_ABORTED _("CUID#%d - Download aborted.")
 #define MSG_MAX_TRY _("CUID#%d - %d times attempted, but no success. Download aborted.")
 #define MSG_UNREGISTER_CUID _("CUID#%d - Unregistering cuid from segmentManager.")
 #define MSG_SEND_PEER_MESSAGE "CUID#%d - To: %s:%d %s"
@@ -56,7 +57,7 @@
 #define MSG_GOT_NEW_PIECE _("CUID#%d - we got new piece. index=%d")
 #define MSG_GOT_WRONG_PIECE _("CUID#%d - we got wrong piece. index=%d")
 #define MSG_DOWNLOAD_NOT_COMPLETE _("CUID#%d - Download not complete: %s")
-#define MSG_DOWNLOAD_ALREADY_COMPLETED _("CUID#%d - Download already completed: %s")
+#define MSG_DOWNLOAD_ALREADY_COMPLETED _("CUID#%d - Download has already completed: %s")
 #define MSG_GOOD_CHECKSUM _("CUID#%d - Good checksum: %s")
 #define MSG_BAD_CHECKSUM _("CUID#%d - Bad checksum: %s")
 

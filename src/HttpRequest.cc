@@ -116,6 +116,7 @@ string HttpRequest::createRequest() const
   string cookiesValue;
   Cookies cookies = request->cookieBox->criteriaFind(getHost(),
 						     getDir(),
+						     time(0),
 						     getProtocol() == "https" ?
 						     true : false);
   for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {

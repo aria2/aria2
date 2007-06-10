@@ -32,38 +32,17 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "CookieBox.h"
+#include "Cookie.h"
 #include "Util.h"
-#include "CookieParser.h"
 
-CookieBox::CookieBox() {}
-
-CookieBox::~CookieBox() {}
-
-void CookieBox::add(const Cookie& cookie) {
-  cookies.push_back(cookie);
-}
-
-void CookieBox::add(const string& cookieStr) {
-  Cookie c = CookieParser().parse(cookieStr);
-  if(c.good()) {
-    cookies.push_back(c);
-  }
-}
-
-void CookieBox::add(const Cookies& cookies)
+bool Cookie::match(const string& host, const string& dir, time_t date, bool secure) const
 {
-  this->cookies.insert(this->cookies.end(), cookies.begin(), cookies.end());
-}
-
-Cookies CookieBox::criteriaFind(const string& host, const string& dir, time_t date,  bool secure) const {
-  Cookies result;
-  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
-    const Cookie& c = *itr;
-    if(c.match(host, dir, date, secure)) {
-      result.push_back(c);
-    }
+  if((secure || !this->secure && !secure) &&
+     Util::endsWith(host, this->domain) &&
+     Util::startsWith(dir, this->path) &&
+     (this->onetime || date < this->expires)) {
+    return true;
+  } else {
+    return false;
   }
-  return result;
 }
-

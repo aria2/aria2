@@ -1,3 +1,48 @@
+2007-06-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/AbstractCommand.cc
+	(execute): Changed log level of MSG_RESTARTING_DOWNLOAD and
+	MSG_MAX_TRY from error to info.
+	Added MSG_DOWNLOAD_ABORTED after MSG_MAX_TRY.
+
+	* src/message.h
+	(MSG_TORRENT_DOWNLOAD_ABORTED): New definition.
+	(MSG_DOWNLOAD_ABORTED): Added %s.
+	(MSG_RESTARTING_DOWNLOAD): Added %s.
+	(MSG_DOWNLOAD_ALREADY_COMPLETED): Updated.
+	
+	* src/PeerAbstractCommand.cc
+	(execute): MSG_DOWNLOAD_ABORTED -> MSG_TORRENT_DOWNLOAD_ABORTED
+	
+	* src/Request.h
+	(cookieBox): Made ShardHandle.
+	
+	* src/RequestGroup.h, src/RequestGroup.cc
+	(createNextCommandWithAdj): New function.
+	* src/FileAllocationCommand.cc
+	(executeInternal): Use createNextCommandWithAdj().
+	* src/CheckIntegrityCommand.cc
+	(executeInternal): Use createNextCommandWithAdj().
+
+	Added --load-cookies command-option.
+	* src/OptionHandlerFactory.cc
+	(createOptionHandlers): Added PREF_LOAD_COOKIES.
+	* src/CookieBox.h, src/CookieBox.cc: Rwritten using CookieParser.
+	Now aria2 can handle cookie's expiration date.
+	* src/Cookie.h (expires): Changed its type to time_t.
+	* src/main.cc: Added --load-cookies command-line option.
+	* src/prefs.h (PREF_LOAD_COOKIES): New definition.
+	* src/Util.h, src/Util.cc (httpGMT): New function.
+	* src/Request.cc (Request): Initialize cookieBox using
+	CookieBoxFactory.
+	* src/CookieBoxFactory.h, src/CookieBoxFactory.cc: New class.
+	* src/CookieParser.h, src/CookieParser.cc: New class.
+	
+	* src/main.cc: Chagned the default value of --metalink-servers to 5.
+
+	* src/HttpResponseCommand.cc
+	(handleOtherEncoding): Call RequestGroup::shouldCancelDownloadForSafety
+
 2007-06-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added -j command-line option.

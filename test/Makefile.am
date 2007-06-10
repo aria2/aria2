@@ -1,6 +1,11 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	CookieBoxTest.cc\
+	RequestTest.cc\
+	CookieParserTest.cc\
+	HttpRequestTest.cc\
+	CookieBoxFactoryTest.cc\
 	ByteArrayDiskWriterTest.cc\
 	RequestGroupManTest.cc\
 	IteratableChecksumValidatorTest.cc\
@@ -11,8 +16,6 @@ aria2c_SOURCES = AllTest.cc\
 	RequestFactoryTest.cc\
 	NetrcAuthResolverTest.cc\
 	DefaultAuthResolverTest.cc\
-	RequestTest.cc\
-	HttpRequestTest.cc\
 	UtilTest.cc\
 	OptionHandlerTest.cc\
 	SegmentManTest.cc\
@@ -27,7 +30,6 @@ aria2c_SOURCES = AllTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
 	Base64Test.cc\
-	CookieBoxTest.cc\
 	DataTest.cc\
 	DictionaryTest.cc\
 	ListTest.cc\

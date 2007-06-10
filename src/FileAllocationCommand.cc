@@ -52,7 +52,7 @@ bool FileAllocationCommand::executeInternal()
        _fileAllocationEntry->getNextDownloadCommand()) {
       _e->commands.push_back(_fileAllocationEntry->popNextDownloadCommand());
     } else {
-      Commands commands = _requestGroup->createNextCommand(_e);
+      Commands commands = _requestGroup->createNextCommandWithAdj(_e, -1);
       Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _fileAllocationEntry->getCurrentRequest(), _requestGroup, _e);
       
       commands.push_front(command);

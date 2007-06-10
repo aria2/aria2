@@ -32,38 +32,54 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "CookieBox.h"
-#include "Util.h"
 #include "CookieParser.h"
+#include "Util.h"
 
-CookieBox::CookieBox() {}
-
-CookieBox::~CookieBox() {}
-
-void CookieBox::add(const Cookie& cookie) {
-  cookies.push_back(cookie);
-}
-
-void CookieBox::add(const string& cookieStr) {
-  Cookie c = CookieParser().parse(cookieStr);
-  if(c.good()) {
-    cookies.push_back(c);
+void CookieParser::setField(Cookie& cookie, const string& name, const string& value) const
+{
+  if(name.size() == string("secure").size() &&
+     strcasecmp(name.c_str(), "secure") == 0) {
+    cookie.secure = true;
+  } else if(name.size() == string("domain").size() && strcasecmp(name.c_str(), "domain") == 0) {
+    cookie.domain = value;
+  } else if(name.size() == string("path").size() && strcasecmp(name.c_str(), "path") == 0) {
+    cookie.path = value;
+  } else if(name.size() == string("expires").size() && strcasecmp(name.c_str(), "expires") == 0) {
+    cookie.expires = Util::httpGMT(value);
+    cookie.onetime = false;
+  } else {
+    cookie.name = name;
+    cookie.value = value;
   }
 }
 
-void CookieBox::add(const Cookies& cookies)
+Cookie CookieParser::parse(const string& cookieStr) const
 {
-  this->cookies.insert(this->cookies.end(), cookies.begin(), cookies.end());
+  Cookie cookie;
+  Strings terms;
+  Util::slice(terms, Util::trim(cookieStr), ';', true);
+  for(Strings::iterator itr = terms.begin(); itr != terms.end(); itr++) {
+    pair<string, string> nv;
+    Util::split(nv, *itr, '=');
+    setField(cookie, nv.first, nv.second);
+  }
+  return cookie;
 }
 
-Cookies CookieBox::criteriaFind(const string& host, const string& dir, time_t date,  bool secure) const {
-  Cookies result;
-  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
-    const Cookie& c = *itr;
-    if(c.match(host, dir, date, secure)) {
-      result.push_back(c);
+
+Cookies CookieParser::parse(istream& s) const
+{
+  Cookies cookies;
+  string line;
+  while(getline(s, line)) {
+    if(Util::trim(line) == "" || Util::startsWith(line, "#")) {
+      continue;
+    }
+    Cookie cookie = parse(line);
+    if(cookie.good()) {
+      cookies.push_back(cookie);
     }
   }
-  return result;
+  return cookies;
 }
 

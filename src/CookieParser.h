@@ -32,38 +32,26 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "CookieBox.h"
-#include "Util.h"
-#include "CookieParser.h"
+#ifndef _D_COOKIE_PARSER_H_
+#define _D_COOKIE_PARSER_H_
 
-CookieBox::CookieBox() {}
+#include "common.h"
+#include "Cookie.h"
+#include <istream>
 
-CookieBox::~CookieBox() {}
+class CookieParser {
+private:
+  void setField(Cookie& cookie, const string& name, const string& value) const;
+public:
+  CookieParser() {}
 
-void CookieBox::add(const Cookie& cookie) {
-  cookies.push_back(cookie);
-}
+  ~CookieParser() {}
 
-void CookieBox::add(const string& cookieStr) {
-  Cookie c = CookieParser().parse(cookieStr);
-  if(c.good()) {
-    cookies.push_back(c);
-  }
-}
+  Cookie parse(const string& cookieStr) const;
 
-void CookieBox::add(const Cookies& cookies)
-{
-  this->cookies.insert(this->cookies.end(), cookies.begin(), cookies.end());
-}
+  Cookies parse(istream& s) const;
+};
 
-Cookies CookieBox::criteriaFind(const string& host, const string& dir, time_t date,  bool secure) const {
-  Cookies result;
-  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
-    const Cookie& c = *itr;
-    if(c.match(host, dir, date, secure)) {
-      result.push_back(c);
-    }
-  }
-  return result;
-}
+typedef SharedHandle<CookieParser> CookieParserHandle;
 
+#endif // _D_COOKIE_PARSER_H_

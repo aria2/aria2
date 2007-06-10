@@ -317,10 +317,10 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   SegmentHandle segment = new Segment();
 
-  Cookie cookie1("name1", "value1", "2007/1/1", "/archives", "localhost", false);
-  Cookie cookie2("name2", "value2", "2007/1/1", "/archives/download", "localhost", false);
-  Cookie cookie3("name3", "value3", "2007/1/1", "/archives/download", "tt.localhost", false);
-  Cookie cookie4("name4", "value4", "2007/1/1", "/archives/download", "tt.localhost", true);
+  Cookie cookie1("name1", "value1", 1181473200, "/archives", "localhost", false);
+  Cookie cookie2("name2", "value2", 1181473200, "/archives/download", "localhost", false);
+  Cookie cookie3("name3", "value3", 1181473200, "/archives/download", "tt.localhost", false);
+  Cookie cookie4("name4", "value4", 1181473200, "/archives/download", "tt.localhost", true);
 
   request->cookieBox->add(cookie1);
   request->cookieBox->add(cookie2);

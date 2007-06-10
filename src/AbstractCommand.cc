@@ -106,14 +106,14 @@ bool AbstractCommand::execute() {
       return false;
     }
   } catch(FatalException* err) {
-    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
+    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
     onAbort(err);
     delete(err);
     req->resetUrl();
     _requestGroup->getSegmentMan()->errors++;
     return true;    
   } catch(DlAbortEx* err) {
-    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid);
+    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
     onAbort(err);
     delete(err);
     req->resetUrl();
@@ -121,20 +121,22 @@ bool AbstractCommand::execute() {
     tryReserved();
     return true;
   } catch(DlRetryEx* err) {
-    logger->error(MSG_RESTARTING_DOWNLOAD, err, cuid);
+    logger->info(MSG_RESTARTING_DOWNLOAD, err, cuid, req->getUrl().c_str());
     req->addTryCount();
     bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
       req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRIES);
     if(isAbort) {
       onAbort(err);
     }
-    delete(err);
     if(isAbort) {
-      logger->error(MSG_MAX_TRY, cuid, req->getTryCount());
+      logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
+      logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
+      delete(err);
       _requestGroup->getSegmentMan()->errors++;
       tryReserved();
       return true;
     } else {
+      delete(err);
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
     }
   }

@@ -32,38 +32,67 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "CookieBox.h"
-#include "Util.h"
-#include "CookieParser.h"
+#ifndef _D_COOKIE_H_
+#define _D_COOKIE_H_
 
-CookieBox::CookieBox() {}
+#include "common.h"
 
-CookieBox::~CookieBox() {}
+class Cookie {
+public:
+  string name;
+  string value;
+  time_t expires;
+  string path;
+  string domain;
+  bool secure;
+  bool onetime; // if true, this cookie will expire when the user's session ends.
+public:
+  Cookie(const string& name,
+	 const string& value,
+	 time_t  expires,
+	 const string& path,
+	 const string& domain,
+	 bool secure):
+    name(name),
+    value(value),
+    expires(expires),
+    path(path),
+    domain(domain),
+    secure(secure),
+    onetime(false) {}
 
-void CookieBox::add(const Cookie& cookie) {
-  cookies.push_back(cookie);
-}
+  Cookie(const string& name,
+	 const string& value,
+	 const string& path,
+	 const string& domain,
+	 bool secure):
+    name(name),
+    value(value),
+    path(path),
+    domain(domain),
+    secure(secure),
+    onetime(true) {}
 
-void CookieBox::add(const string& cookieStr) {
-  Cookie c = CookieParser().parse(cookieStr);
-  if(c.good()) {
-    cookies.push_back(c);
+  Cookie():expires(0), secure(false), onetime(true) {}
+
+  ~Cookie() {}
+  string toString() const {
+    return name+"="+value;
   }
-}
-
-void CookieBox::add(const Cookies& cookies)
-{
-  this->cookies.insert(this->cookies.end(), cookies.begin(), cookies.end());
-}
-
-Cookies CookieBox::criteriaFind(const string& host, const string& dir, time_t date,  bool secure) const {
-  Cookies result;
-  for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
-    const Cookie& c = *itr;
-    if(c.match(host, dir, date, secure)) {
-      result.push_back(c);
-    }
+  void clear() {
+    name = value = path = domain = "";
+    expires = 0;
+    secure = false;
   }
-  return result;
-}
 
+  bool good() const
+  {
+    return !name.empty();
+  }
+
+  bool match(const string& host, const string& dir, time_t date, bool secure) const;
+};
+
+typedef deque<Cookie> Cookies;
+
+#endif // _D_COOKIE_H_
