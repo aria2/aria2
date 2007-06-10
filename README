@@ -18,7 +18,8 @@ aria2 is in very early development stage. Currently it has following features:
 * FTP support(active, passive mode)
 * FTP through HTTP proxy(GET command or tunneling)
 * Segmented download
-* Cookie support(currently aria2 ignores "expires")
+* Cookie support
+* It can load cookies from file whose format is used by Netscape and Mozilla.
 * It can run as a daemon process.
 * BitTorrent protocol support with fast extension.
 * Selective download in multi-file torrent
@@ -84,7 +85,8 @@ Note:
 *  -o option is used to change the filename of downloaded .torrent file.
 * This version only supports compact peers list format.
 * The ports aria2c uses are 6881-6999.
-* The maximum number of peers is 55.
+* The maximum number of peers is 55. This limit may be exceeded when download
+rate is low.
 * As of release 0.10.0, aria2 stops sending request message after selective
   download completes,
 

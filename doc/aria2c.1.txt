@@ -169,6 +169,18 @@ OPTIONS
  -n, --no-netrc::
                Disables netrc support.
 
+ -i, --input-file=FILE::
+        Downloads URIs found in 'FILE'. You can specify
+                              multiple URIs for a single entity: deliminate
+                              URIs by Tab in a single line.
+
+ -j, --max-concurrent-downloads=N::
+         Set maximum number of concurrent downloads.
+         Default: '5'
+
+ --load-cookies=FILE::
+          Load cookies from 'FILE'. The format of 'FILE' is
+                              one used by Netscape and Mozilla.
 
  -T, --torrent-file=TORRENT_FILE::
   The file path to .torrent file.
@@ -219,10 +231,9 @@ OPTIONS
  The file path to .metalink file.
 
  -C, --metalink-servers=NUM_SERVERS::
- The number of servers to connect to
-                              simultaneously. If more than one connection per
-                              server is required, use '-s' option.
-                              Default: '15'
+   The number of servers to connect to
+                              simultaneously.
+                              Default: '5'
 
  --metalink-version=VERSION::
    The version of file to download.

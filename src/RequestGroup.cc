@@ -164,6 +164,7 @@ void RequestGroup::loadAndOpenFile()
     }
     initBitfield();
     openExistingFile();
+    _segmentMan->markPieceDone(existingFile.size());
   } else {
     shouldCancelDownloadForSafety();
     initBitfield();
@@ -205,7 +206,7 @@ void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, Down
     CheckIntegrityCommand* command = new CheckIntegrityCommand(cuid, this, e, entry);
     e->commands.push_back(command);
   } else if(needsFileAllocation()) {
-    FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this);
+    FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this, existingFile.size());
     entry->setNextDownloadCommand(downloadCommand);
     e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {
