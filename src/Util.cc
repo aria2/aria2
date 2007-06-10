@@ -700,10 +700,10 @@ string Util::abbrevSize(int64_t size)
   char units[] = { 'K', 'M' };
   int32_t numUnit = sizeof(units)/sizeof(char);
   int32_t i = 0;
-  int32_t r = size%1024;
+  int32_t r = size&0x3ff;
   size >>= 10;
   for(; i < numUnit-1 && size >= 1024; ++i) {
-    r = size%1024;
+    r = size&0x3ff;
     size >>= 10;
   } 
   return Util::llitos(size, true)+"."+Util::itos(r*10/1024)+units[i];
