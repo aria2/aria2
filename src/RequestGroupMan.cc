@@ -105,10 +105,9 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
     <<_("Download Results:") << "\n"
     << "idx|stat|path/URI" << "\n"
     << "===+====+======================================================================" << "\n";
-  int32_t count = 0;
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
-    o << setw(3) << ++count << "|";
+    o << setw(3) << (*itr)->getGID() << "|";
     if((*itr)->downloadFinished()) {
       o << "OK  ";
     } else {

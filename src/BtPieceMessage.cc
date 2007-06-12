@@ -201,7 +201,7 @@ void BtPieceMessage::onNewPiece(const PieceHandle& piece) {
 }
 
 void BtPieceMessage::onWrongPiece(const PieceHandle& piece) {
-  logger->error(MSG_GOT_WRONG_PIECE, cuid, piece->getIndex());
+  logger->info(MSG_GOT_WRONG_PIECE, cuid, piece->getIndex());
   erasePieceOnDisk(piece);
   piece->clearAllBlock();
   requestFactory->removeTargetPiece(piece);

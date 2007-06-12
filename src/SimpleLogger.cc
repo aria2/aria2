@@ -81,7 +81,7 @@ void SimpleLogger::setStdout(int level, bool enabled) {
 }
 
 void SimpleLogger::writeHeader(FILE* file, string date, string level) const {
-  fprintf(file, "%s - %s - ", date.c_str(), level.c_str());
+  fprintf(file, "%s %s - ", date.c_str(), level.c_str());
 }
 
 void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e, bool printHeader) const
@@ -105,9 +105,11 @@ void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, 
     levelStr = "INFO";
   }
   time_t now = time(NULL);
-  char datestr[26];
-  ctime_r(&now, datestr);
-  datestr[strlen(datestr)-1] = '\0';
+  char datestr[20];
+  struct tm tm;
+  localtime_r(&now, &tm);
+  strftime(datestr, sizeof(datestr), "%Y-%m-%d %H:%M:%S", &tm);
+
   // TODO a quick hack not to print header in console
   if(printHeader) {
     writeHeader(file, datestr, levelStr);
@@ -127,7 +129,7 @@ void SimpleLogger::writeFile(int level, const char* msg, va_list ap, Exception* 
   writeLog(file, level, msg, ap, e);
   if(stdoutField&level) {
     fprintf(stdout, "\n");
-    writeLog(stdout, level, msg, ap, e, false);
+    writeLog(stdout, level, msg, ap, e);
   }
 }
 
