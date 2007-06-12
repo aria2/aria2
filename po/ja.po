@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-06-10 17:41+0900\n"
+"POT-Creation-Date: 2007-06-12 19:53+0900\n"
 "PO-Revision-Date: 2006-11-09 01:23+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1121,7 +1121,7 @@ msgstr "ご指定のファイルのダウンロードが完了."
 msgid "The download was complete."
 msgstr "ダウンロードが完了."
 
-#: src/ConsoleDownloadEngine.cc:178
+#: src/ConsoleDownloadEngine.cc:181
 #, c-format
 msgid ""
 "\n"
@@ -1130,7 +1130,7 @@ msgstr ""
 "\n"
 "アプリケーションを終了しています...\n"
 
-#: src/ConsoleDownloadEngine.cc:182
+#: src/ConsoleDownloadEngine.cc:185
 #, c-format
 msgid "done\n"
 msgstr "完了\n"

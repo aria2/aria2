@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-06-10 17:41+0900\n"
+"POT-Creation-Date: 2007-06-12 19:53+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -1085,7 +1085,7 @@ msgstr ""
 "\n"
 "Abruf ist vollständig. <%s>\n"
 
-#: src/ConsoleDownloadEngine.cc:178
+#: src/ConsoleDownloadEngine.cc:181
 #, c-format
 msgid ""
 "\n"
@@ -1094,7 +1094,7 @@ msgstr ""
 "\n"
 "Anwendung wird gestoppt ...\n"
 
-#: src/ConsoleDownloadEngine.cc:182
+#: src/ConsoleDownloadEngine.cc:185
 #, c-format
 msgid "done\n"
 msgstr "erledigt\n"

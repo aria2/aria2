@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-06-10 17:41+0900\n"
+"POT-Creation-Date: 2007-06-12 19:53+0900\n"
 "PO-Revision-Date: 2006-07-28 18:04+0600\n"
 "Last-Translator: Azamat H. Hackimov <azamat.hackimov@gmail.com>\n"
 "Language-Team:  <ru@li.org>\n"
@@ -1064,7 +1064,7 @@ msgstr ""
 "\n"
 "Скачивание завершено. <%s>\n"
 
-#: src/ConsoleDownloadEngine.cc:178
+#: src/ConsoleDownloadEngine.cc:181
 #, c-format
 msgid ""
 "\n"
@@ -1073,7 +1073,7 @@ msgstr ""
 "\n"
 "остановка приложения...\n"
 
-#: src/ConsoleDownloadEngine.cc:182
+#: src/ConsoleDownloadEngine.cc:185
 #, c-format
 msgid "done\n"
 msgstr "завершено\n"
