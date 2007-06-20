@@ -47,13 +47,13 @@ RequestInfoHandle MultiUrlRequestInfo::createNextRequestInfo(const string& filen
 {
 #ifdef ENABLE_BITTORRENT
   if(op->getAsBool(PREF_FOLLOW_TORRENT) &&
-     Util::endsWith(fileInfo.filename, ".torrent")) {
+     Util::endsWith(filename, ".torrent")) {
     return new TorrentRequestInfo(filename, op);
   } else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
     if(op->getAsBool(PREF_FOLLOW_METALINK) &&
-       Util::endsWith(fileInfo.filename, ".metalink")) {
+       Util::endsWith(filename, ".metalink")) {
       return new MetalinkRequestInfo(filename, op);
     } else
 #endif // ENABLE_METALINK

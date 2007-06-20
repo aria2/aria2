@@ -89,6 +89,7 @@ private:
   BtContextHandle btContext;
   PeerStorageHandle peerStorage;
   PieceStorageHandle pieceStorage;
+  BtRuntimeHandle btRuntime;
   BtMessageReceiverWeakHandle btMessageReceiver;
   BtMessageDispatcherWeakHandle dispatcher;
   BtRequestFactoryWeakHandle btRequestFactory;
@@ -100,6 +101,7 @@ private:
   Time keepAliveCheckPoint;
   Time floodingCheckPoint;
   FloodingStat floodingStat;
+  Time inactiveCheckPoint;
   int32_t keepAliveInterval;
   int32_t maxDownloadSpeedLimit;
 
@@ -114,11 +116,14 @@ private:
   void fillPiece(int maxPieceNum);
   void addRequests();
   void detectMessageFlooding();
+  void checkActiveInteraction();
+
 public:
   DefaultBtInteractive():peer(0),
 			 btContext(0),
 			 peerStorage(0),
 			 pieceStorage(0),
+			 btRuntime(0),
 			 btMessageReceiver(0),
 			 dispatcher(0),
 			 btRequestFactory(0),
@@ -167,6 +172,7 @@ public:
     this->btContext = btContext;
     this->peerStorage = PEER_STORAGE(btContext);
     this->pieceStorage = PIECE_STORAGE(btContext);
+    this->btRuntime = BT_RUNTIME(btContext);
   }
 
   void setBtMessageReceiver(const BtMessageReceiverWeakHandle& receiver) {

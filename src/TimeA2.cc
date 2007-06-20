@@ -79,6 +79,11 @@ long long int Time::differenceInMillis() const {
   return Util::difftv(getCurrentTime(), tv)/1000;
 }
 
+int64_t Time::differenceInMillis(const struct timeval& now) const
+{
+  return Util::difftv(now, tv)/1000;
+}
+
 void Time::setTimeInSec(int sec) {
   tv.tv_sec = sec;
   tv.tv_usec = 0;

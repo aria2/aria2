@@ -162,12 +162,18 @@ Peers DefaultPeerStorage::getActivePeers() {
 class CalculateStat {
 private:
   TransferStat _stat;
+  struct timeval _now;
 public:
+  CalculateStat()
+  {
+    gettimeofday(&_now, 0);
+  }
+
   void operator()(const PeerHandle& peer)
   {
     if(peer->isActive()) {
-      _stat.downloadSpeed += peer->calculateDownloadSpeed();
-      _stat.uploadSpeed += peer->calculateUploadSpeed();
+      _stat.downloadSpeed += peer->calculateDownloadSpeed(_now);
+      _stat.uploadSpeed += peer->calculateUploadSpeed(_now);
     }
     _stat.sessionDownloadLength += peer->getSessionDownloadLength();
     _stat.sessionUploadLength += peer->getSessionUploadLength();    

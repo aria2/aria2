@@ -69,6 +69,8 @@ public:
   int difference() const;
   long long int differenceInMillis() const;
 
+  int64_t differenceInMillis(const struct timeval& now) const;
+
   // Returns true if this object's time value is zero.
   bool isZero() const { return tv.tv_sec == 0 && tv.tv_usec == 0; }
 

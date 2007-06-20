@@ -40,6 +40,8 @@
 #include "BtKeepAliveMessage.h"
 #include "BtChokeMessage.h"
 #include "BtUnchokeMessage.h"
+#include "BtRequestMessage.h"
+#include "BtPieceMessage.h"
 #include "DlAbortEx.h"
 
 void DefaultBtInteractive::initiateHandshake() {
@@ -173,6 +175,10 @@ void DefaultBtInteractive::receiveMessages() {
 	floodingStat.incChokeUnchokeCount();
       }
       break;
+    case BtRequestMessage::ID:
+    case BtPieceMessage::ID:
+      inactiveCheckPoint.reset();
+      break;
     }
   }
 }
@@ -271,7 +277,16 @@ void DefaultBtInteractive::detectMessageFlooding() {
   }
 }
 
+void DefaultBtInteractive::checkActiveInteraction()
+{
+  if(inactiveCheckPoint.elapsed(10*60) && btRuntime->getConnections() >= MAX_PEERS) {
+    throw new DlAbortEx("Drop connection because of an inactive interaction.");
+  }
+}
+
 void DefaultBtInteractive::doInteractionProcessing() {
+  checkActiveInteraction();
+
   decideChoking();
 
   detectMessageFlooding();

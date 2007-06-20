@@ -40,14 +40,14 @@
 
 class SpeedCalc {
 private:
-  long long int lengthArray[2];
-  int sw;
+  int64_t lengthArray[2];
+  int32_t sw;
   Time cpArray[2];
-  int maxSpeed;
-  int prevSpeed;
+  int32_t maxSpeed;
+  int32_t prevSpeed;
   Time start;
-  long long int accumulatedLength;
-  int nextInterval;
+  int64_t accumulatedLength;
+  int32_t nextInterval;
 
   bool isIntervalOver() const;
   void changeSw();
@@ -61,13 +61,15 @@ public:
   /**
    * Returns download/upload speed in byte per sec
    */
-  int calculateSpeed();
+  int32_t calculateSpeed();
 
-  int getMaxSpeed() const {
+  int32_t calculateSpeed(const struct timeval& now);
+
+  int32_t getMaxSpeed() const {
     return maxSpeed;
   }
 
-  int getAvgSpeed() const;
+  int32_t getAvgSpeed() const;
 
   void update(int bytes);
 

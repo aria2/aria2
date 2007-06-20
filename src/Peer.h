@@ -113,15 +113,23 @@ public:
   /**
    * Returns the transfer rate from localhost to remote host.
    */
-  int calculateUploadSpeed() {
+  int32_t calculateUploadSpeed() {
     return peerStat.calculateUploadSpeed();
+  }
+
+  int32_t calculateUploadSpeed(const struct timeval& now) {
+    return peerStat.calculateUploadSpeed(now);
   }
 
   /**
    * Returns the transfer rate from remote host to localhost.
    */
-  int calculateDownloadSpeed() {
+  int32_t calculateDownloadSpeed() {
     return peerStat.calculateDownloadSpeed();
+  }
+
+  int32_t calculateDownloadSpeed(const struct timeval& now) {
+    return peerStat.calculateDownloadSpeed(now);
   }
 
   /**

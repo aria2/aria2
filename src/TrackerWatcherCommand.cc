@@ -95,7 +95,7 @@ Command* TrackerWatcherCommand::createRequestCommand(const string& url)
   Commands commands = e->_requestGroupMan->getInitialCommands(e);
 
   if(commands.empty()) {
-    logger->error("CUID#%d - Cannot create tracker request.");
+    logger->error("CUID#%d - Cannot create tracker request.", cuid);
     return 0;
   }
   logger->info("CUID#%d - Creating new tracker request command #%d", cuid,

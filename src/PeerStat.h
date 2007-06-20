@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SpeedCalc.h"
 #include "SharedHandle.h"
+#include <sys/time.h>
 
 class PeerStat {
 public:
@@ -61,12 +62,20 @@ public:
   /**
    * Returns current download speed in byte per sec.
    */
-  int calculateDownloadSpeed() {
+  int32_t calculateDownloadSpeed() {
     return downloadSpeed.calculateSpeed();
   }
 
-  int calculateUploadSpeed() {
+  int32_t calculateDownloadSpeed(const struct timeval& now) {
+    return downloadSpeed.calculateSpeed(now);
+  }
+
+  int32_t calculateUploadSpeed() {
     return uploadSpeed.calculateSpeed();
+  }
+
+  int32_t calculateUploadSpeed(const struct timeval& now) {
+    return uploadSpeed.calculateSpeed(now);
   }
 
   void updateDownloadLength(int bytes) {

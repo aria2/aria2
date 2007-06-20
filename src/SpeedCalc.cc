@@ -57,12 +57,24 @@ void SpeedCalc::reset() {
   nextInterval = CHANGE_INTERVAL_SEC;
 }
 
-int SpeedCalc::calculateSpeed() {
-  int milliElapsed = cpArray[sw].differenceInMillis();
+int32_t SpeedCalc::calculateSpeed() {
+  int32_t milliElapsed = cpArray[sw].differenceInMillis();
   if(milliElapsed) {
-    int speed = lengthArray[sw]*1000/milliElapsed;
+    int32_t speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
-    maxSpeed = max<int>(speed, maxSpeed);
+    maxSpeed = max<int32_t>(speed, maxSpeed);
+    return speed;
+  } else {
+    return prevSpeed;
+  }
+}
+
+int32_t SpeedCalc::calculateSpeed(const struct timeval& now) {
+  int64_t milliElapsed = cpArray[sw].differenceInMillis(now);
+  if(milliElapsed) {
+    int32_t speed = lengthArray[sw]*1000/milliElapsed;
+    prevSpeed = speed;
+    maxSpeed = max<int32_t>(speed, maxSpeed);
     return speed;
   } else {
     return prevSpeed;
@@ -71,16 +83,16 @@ int SpeedCalc::calculateSpeed() {
 
 class Plus {
 private:
-  int d;
+  int32_t d;
 public:
-  Plus(int d):d(d) {}
+  Plus(int32_t d):d(d) {}
 
-  void operator()(long long int& length) {
+  void operator()(int64_t& length) {
     length += d;
   }
 };
 
-void SpeedCalc::update(int bytes) {
+void SpeedCalc::update(int32_t bytes) {
   accumulatedLength += bytes;
   for_each(&lengthArray[0], &lengthArray[2], Plus(bytes));
   if(isIntervalOver()) {
@@ -99,10 +111,10 @@ void SpeedCalc::changeSw() {
   nextInterval = cpArray[sw].difference()+CHANGE_INTERVAL_SEC;
 }
 
-int SpeedCalc::getAvgSpeed() const {
-  int milliElapsed = start.differenceInMillis();
+int32_t SpeedCalc::getAvgSpeed() const {
+  int32_t milliElapsed = start.differenceInMillis();
   if(milliElapsed) {
-    int speed = accumulatedLength*1000/milliElapsed;
+    int32_t speed = accumulatedLength*1000/milliElapsed;
     return speed;
   } else {
     return 0;

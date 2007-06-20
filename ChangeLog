@@ -1,8 +1,37 @@
+2007-06-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Reduce the number of calls to gettimeofday to lower CPU load.
+	* src/TimeA2.h, src/TimeA2.cc (differenceInMillis): New function.
+	* src/SpeedCalc.h, src/SpeedCalc.cc (calculateSpeed): New function.
+	* src/Peer.h (calculateUploadSpeed): New function.
+	(calculateDownloadSpeed): New function.
+	* src/DefaultPeerStorage.cc
+	(CalculateStat): Added _now variable.
+	In operator(), call Peer::calculateDownloadSpeed(const struct timeval&)
+	and Peer::calculateUploadSpeed(const struct timeval&)
+	
+	Drop connection if no request or piece message is exchanged in
+	a certain interval.
+	* src/DefaultBtInteractive.h
+	(btRuntime): New variable.
+	(inactiveCheckPoint): New variable.
+	(checkActiveInteraction): New function.
+	* src/DefaultBtInteractive.cc (receiveMessages): Reset timer when
+	request or piece message is received.
+	(checkActiveInteraction): New function.
+	(doInteractionProcessing): Call checkActiveInteraction.
+
+	Fixed the bug that causes remote Metalink and Torrent files are not
+	processed.
+	* src/MultiUrlRequestInfo.cc (createNextRequestInfo): Fixed the bug.
+
 2007-06-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed format of log file.
 	* src/SimpleLogger.cc
 
+	* Release 0.11.0
+	
 2007-06-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/AbstractCommand.cc
