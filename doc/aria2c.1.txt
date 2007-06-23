@@ -201,6 +201,7 @@ OPTIONS
 
  --listen-port=PORT::
            Set port number to listen to for peer connection.
+           Default: 6881-6999
 
  --max-upload-limit=SPEED::
      Set max upload speed in bytes per sec.

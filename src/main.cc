@@ -224,7 +224,8 @@ void showUsage() {
   cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
-  cout << _(" --listen-port=PORT           Set port number to listen to for peer connection.") << endl;
+  cout << _(" --listen-port=PORT           Set port number to listen to for peer connection.\n"
+	    "                              Default: 6881-6999") << endl;
   cout << _(" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"

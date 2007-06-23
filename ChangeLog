@@ -1,3 +1,8 @@
+2007-06-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added the default listening ports to the help message.
+	* src/main.cc (showUsage)
+
 2007-06-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Reduce the number of calls to gettimeofday to lower CPU load.
