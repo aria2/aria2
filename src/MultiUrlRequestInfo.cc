@@ -40,6 +40,8 @@
 #include "DNSCache.h"
 #include "TorrentRequestInfo.h"
 #include "MetalinkRequestInfo.h"
+#include "Util.h"
+#include <signal.h>
 
 extern volatile sig_atomic_t haltRequested;
 

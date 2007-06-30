@@ -98,13 +98,15 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
 
   MetalinkEntryHandle entry(new MetalinkEntry());
 
-  entry->filename = filename;
+  FileEntryHandle fileEntry = new FileEntry(filename, 0, 0);
+  
   string sizeStr = Util::trim(xpathContent(xpath+"/m:size"));
   if(sizeStr == "") {
-    entry->size = 0;
+    fileEntry->setLength(0);
   } else {
-    entry->size = STRTOLL(sizeStr.c_str());
+    fileEntry->setLength(strtoll(sizeStr.c_str(), 0, 10));
   }
+  entry->file = fileEntry;
   entry->version = Util::trim(xpathContent(xpath+"/m:version"));
   entry->language = Util::trim(xpathContent(xpath+"/m:language"));
   entry->os = Util::trim(xpathContent(xpath+"/m:os"));
@@ -127,9 +129,9 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
   string sha1PiecesPath = piecesPath+"[@type=\"sha1\"]";
   string md5PiecesPath = piecesPath+"[@type=\"md5\"]";
   if(xpathExists(sha1PiecesPath)) {
-    entry->chunkChecksum = getPieceHash(sha1PiecesPath, entry->size);
+    entry->chunkChecksum = getPieceHash(sha1PiecesPath, entry->getLength());
   } else if(xpathExists(md5PiecesPath)) {
-    entry->chunkChecksum = getPieceHash(md5PiecesPath, entry->size);
+    entry->chunkChecksum = getPieceHash(md5PiecesPath, entry->getLength());
   }
 #endif // ENABLE_MESSAGE_DIGEST
   for(int index = 1; 1; index++) {

@@ -47,6 +47,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <signal.h>
+#include <iomanip>
 
 
 template<typename T>
@@ -705,8 +706,8 @@ string Util::abbrevSize(int64_t size)
   for(; i < numUnit-1 && size >= 1024; ++i) {
     r = size&0x3ff;
     size >>= 10;
-  } 
-  return Util::llitos(size, true)+"."+Util::itos(r*10/1024)+units[i];
+  }
+  return Util::llitos(size, true)+"."+Util::itos(r*10/1024)+units[i]+"i";
 }
 
 time_t Util::httpGMT(const string& httpStdTime)
@@ -716,4 +717,18 @@ time_t Util::httpGMT(const string& httpStdTime)
   strptime(httpStdTime.c_str(), "%a, %Y-%m-%d %H:%M:%S GMT", &tm);
   time_t thetime = timegm(&tm);
   return thetime;
+}
+
+void Util::toStream(ostream& os, const FileEntries& fileEntries)
+{
+  os << _("Files:") << "\n";
+  os << "idx|path/length" << "\n";
+  os << "===+===========================================================================" << "\n";
+  int count = 1;
+  for(FileEntries::const_iterator itr = fileEntries.begin();
+      itr != fileEntries.end(); count++, itr++) {
+    os << setw(3) << count << "|" << (*itr)->getPath() << "\n";
+    os << "   |" << Util::llitos((*itr)->getLength(), true) << " bytes" << "\n";
+    os << "---+---------------------------------------------------------------------------" << "\n";
+  }
 }

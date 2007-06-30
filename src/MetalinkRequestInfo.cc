@@ -37,6 +37,7 @@
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "MultiUrlRequestInfo.h"
+#include "Util.h"
 
 class AccumulateNonP2PUrl {
 private:
@@ -87,19 +88,42 @@ RequestInfos MetalinkRequestInfo::execute() {
       printf("No file matched with your preference.\n");
       throw new DlAbortEx("No file matched with your preference.");
     }
+    if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+      Util::toStream(cout, MetalinkEntry::toFileEntry(entries));
+      return RequestInfos();
+    }
+    bool useIndex;
+    Integers selectIndexes;
+    Util::unfoldRange(op->get(PREF_SELECT_FILE), selectIndexes);
+    if(selectIndexes.size()) {
+      useIndex = true;
+    } else {
+      useIndex = false;
+    }
     RequestGroups groups;
+    int32_t count = 0;
     for(MetalinkEntries::iterator itr = entries.begin(); itr != entries.end();
-	itr++) {
+	itr++, ++count) {
       MetalinkEntryHandle& entry = *itr;
       if(op->defined(PREF_METALINK_LOCATION)) {
 	entry->setLocationPreference(op->get(PREF_METALINK_LOCATION), 100);
       }
+      if(useIndex) {
+	if(find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {
+	  continue;
+	}
+      } else if(!targetFiles.empty()) {
+	if(find(targetFiles.begin(), targetFiles.end(), entry->getPath()) == targetFiles.end()) {
+	  continue;
+	}
+      }
+
       entry->dropUnsupportedResource();
       if(entry->resources.size() == 0) {
 	continue;
       }
       logger->info("Metalink: Queueing %s for download.",
-		   entry->filename.c_str());
+		   entry->getPath().c_str());
       MetalinkResources::iterator itr =
 	find_if(entry->resources.begin(),
 		entry->resources.end(),
@@ -119,8 +143,9 @@ RequestInfos MetalinkRequestInfo::execute() {
 	urls.push_back((*itr)->url);
       }
       RequestGroupHandle rg = new RequestGroup(urls, op);
-      rg->setHintFilename(entry->filename);
-      rg->setHintTotalLength(entry->size);
+      rg->setHintFilename(entry->file->getBasename());
+      rg->setTopDir(entry->file->getDirname());
+      rg->setHintTotalLength(entry->getLength());
       rg->setNumConcurrentCommand(op->getAsInt(PREF_METALINK_SERVERS));
 
 #ifdef ENABLE_MESSAGE_DIGEST

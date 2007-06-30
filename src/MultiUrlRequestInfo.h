@@ -36,6 +36,7 @@
 #define _D_MULTI_URL_REQUEST_INFO_H_
 
 #include "RequestInfo.h"
+#include "RequestGroup.h"
 
 class MultiUrlRequestInfo : public RequestInfo {
 private:

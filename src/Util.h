@@ -36,6 +36,7 @@
 #define _D_UTIL_H_
 
 #include "common.h"
+#include "FileEntry.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -44,8 +45,7 @@
 #include <deque>
 #include <sys/time.h>
 #include <stdio.h>
-
-using namespace std;
+#include <ostream>
 
 #define STRTOLL(X) strtoll(X, (char**)NULL, 10);
 
@@ -152,6 +152,8 @@ public:
   static string abbrevSize(int64_t size);
 
   static time_t httpGMT(const string& httpTimeFormat);
+
+  static void toStream(ostream& os, const FileEntries& entries);
 };
 
 #endif // _D_UTIL_H_

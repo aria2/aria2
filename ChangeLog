@@ -1,3 +1,73 @@
+2007-06-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Made -S option work with metalink file and provided selective download
+	to metalink.
+	* src/MetalinkEntry.h, src/MetalinkEntry.cc
+	(filename): Removed.
+	(file): New variable.
+	(size): Removed.
+	(operator=): Updated.
+	(getPath): New function.
+	(getLength): New function.
+	(toFileEntry): New function.
+	* src/TorrentRequestInfo.h, src/TorrentRequestInfo.cc
+	(execute): Use toStream.
+	(showFileEntry): Removed.
+	* src/MetalinkRequestInfo.h
+	(targetFiles): New variable.
+	(setTargetFiles): New variable.
+	* src/MetalinkRequestInfo.cc
+	(execute): Added the ability to print file information included in
+	a metalink file.
+	Added selective download mode to metalink.
+	* src/main.cc
+	(showUsage): Updated to denote that -S and --select-file options are
+	applicable to metalink.
+	* src/FileEntry.h
+	(operator=): New function.
+	(getBasename): New function.
+	(getDirname): New function.
+	* src/Util.h, src/Util.cc
+	(toStream): New function.
+	* src/Xml2MetalinkProcessor.cc: Updated.
+	
+	Made aria2 work with metalink with directory structure.
+	* src/File.h, src/File.cc
+	(getBasename): New function.
+	(getDirname): New function.
+	* src/RequestGroup.h, src/RequestGroup.cc
+	(_topDir): New variable.
+	(setTopDir): New function.
+	(initSegmentMan): A directory structure is added to _segmentMan->dir.
+	
+	Rewrote HTTP header parsing with stringstream.
+	* src/HttpConnection.h, src/HttpConnection.cc
+	(HttpRequestEntry): New class.
+	(headerBuf): Removed.
+	(headerBufLength): Removed.
+	(outstandingHttpRequests): Now its element type is
+	HttpRequestEntryHandle.
+	(findEndOfHeader): Removed.
+	(receiveResponse): Rewritten.
+	
+	Updated doc for -j option to notice that it should be used with -i
+	option.
+	* src/main.cc (showUsage)
+
+	Removed unused classes.
+	* src/RequestInfo.h
+	(FileInfo): Removed.
+	(checksum): Removed.
+	(fileInfo): Removed.
+	(setChecksum): Removed.
+	(getChecksum): Removed.
+	(getFileInfo): Removed.
+
+	Use ISO units.
+	* src/ConsoleDownloadEngine.cc
+	* src/TorrentConsoleDownloadEngine.cc
+	* src/Util.cc (abbrevSize)
+	
 2007-06-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added the default listening ports to the help message.

@@ -37,6 +37,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <libgen.h>
 
 File::File(const string& name):name(name) {}
 
@@ -119,4 +120,20 @@ mode_t File::mode()
     return 0;
   }
   return fstat.st_mode;
+}
+
+string File::getBasename() const
+{
+  char* s = strdup(name.c_str());
+  string bname = basename(s);
+  free(s);
+  return bname;
+}
+
+string File::getDirname() const
+{
+  char* s = strdup(name.c_str());
+  string dname = dirname(s);
+  free(s);
+  return dname;
 }

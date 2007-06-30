@@ -48,7 +48,7 @@ void TorrentConsoleDownloadEngine::sendStatistics() {
   if(pieceStorage->downloadFinished()) {
     printf("Download Completed.");
   } else {
-    printf("%s/%sB %d%% %s D:%.2f",
+    printf("%sB/%sB %d%% %s D:%.2f",
 	   Util::abbrevSize(downloadLength).c_str(),
 	   Util::abbrevSize(totalLength).c_str(),
 	   (totalLength == 0 ?
@@ -56,7 +56,7 @@ void TorrentConsoleDownloadEngine::sendStatistics() {
 	   avgSpeed == 0 ? "-" : Util::secfmt(eta).c_str(),
 	   downloadSpeed/1024.0);
   }
-  printf(" U:%.2f(%s) %d peers",
+  printf(" U:%.2f(%sB) %d peers",
 	 uploadSpeed/1024.0,
 	 Util::abbrevSize(uploadLength).c_str(),
 	 btRuntime->getConnections());

@@ -43,10 +43,35 @@
 #include "common.h"
 #include "Logger.h"
 #include "HttpResponse.h"
+#include "HttpHeaderProcessor.h"
 #include <netinet/in.h>
 #include <string>
 
-#define HEADERBUF_SIZE 4096
+class HttpRequestEntry {
+private:
+  HttpRequestHandle _httpRequest;
+  HttpHeaderProcessorHandle _proc;
+public:
+  HttpRequestEntry(const HttpRequestHandle& httpRequest,
+		   const HttpHeaderProcessorHandle& proc):
+    _httpRequest(httpRequest),
+    _proc(proc) {}
+
+  ~HttpRequestEntry() {}
+
+  HttpRequestHandle getHttpRequest() const
+  {
+    return _httpRequest;
+  }
+
+  HttpHeaderProcessorHandle getHttpHeaderProcessor() const
+  {
+    return _proc;
+  }
+};
+
+typedef SharedHandle<HttpRequestEntry> HttpRequestEntryHandle;
+typedef deque<HttpRequestEntryHandle> HttpRequestEntries;
 
 class HttpConnection {
 private:
@@ -54,12 +79,9 @@ private:
   SocketHandle socket;
   const Option* option;
   const Logger* logger;
-  char headerBuf[HEADERBUF_SIZE+1];
-  int headerBufLength;
 
-  HttpRequests outstandingHttpRequests;
+  HttpRequestEntries outstandingHttpRequests;
 
-  int findEndOfHeader(const char* buf, const char* substr, int bufLength) const;
   string eraseConfidentialInfo(const string& request);
 public:
   HttpConnection(int cuid,
@@ -96,7 +118,7 @@ public:
   HttpRequestHandle getFirstHttpRequest() const
   {
     if(outstandingHttpRequests.size() > 0) {
-      return outstandingHttpRequests.front();
+      return outstandingHttpRequests.front()->getHttpRequest();
     } else {
       return 0;
     }

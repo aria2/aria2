@@ -44,7 +44,6 @@ private:
   string torrentFile;
   Strings targetFiles;
 
-  void showFileEntry(const BtContextHandle& btContext);
 public:
   TorrentRequestInfo(const string& torrentFile, Option* op):
     RequestInfo(op),

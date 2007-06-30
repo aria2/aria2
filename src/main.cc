@@ -37,7 +37,6 @@
 #include "Util.h"
 #include "prefs.h"
 #include "FeatureConfig.h"
-#include "UrlRequestInfo.h"
 #include "MultiUrlRequestInfo.h"
 #include "TorrentRequestInfo.h"
 #include "BitfieldManFactory.h"
@@ -211,16 +210,28 @@ void showUsage() {
 	    "                              multiple URIs for a single entity: deliminate\n"
 	    "                              URIs by Tab in a single line.") << endl;
   cout << _(" -j, --max-concurrent-downloads=N Set maximum number of concurrent downloads.\n"
+	    "                              It should be used with -i option.\n"
 	    "                              Default: 5") << endl;
   cout << _(" --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 	    "                              one used by Netscape and Mozilla.") << endl;
+#if defined ENABLE_BITTORRENT || ENABLE_METALINK
+  cout << _(" -S, --show-files             Print file listing of .torrent or .metalink file\n"
+	    "                              and exit.") << endl;
+  cout << _(" --select-file=INDEX...       Set file to download by specifing its index.\n"
+	    "                              You can know file index through --show-files\n"
+	    "                              option. Multiple indexes can be specified by using\n"
+	    "                              ',' like \"3,6\".\n"
+	    "                              You can also use '-' to specify rangelike \"1-5\".\n"
+	    "                              ',' and '-' can be used together.\n"
+	    "                              When used with -M option, index may vary depending\n"
+	    "                              on the query(see --metalink-* options).") << endl;
+#endif // ENABLE_BITTORRENT || ENABLE_METALINK
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The file path to .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false  Setting this option to false prevents aria2 to\n"
 	    "                              enter BitTorrent mode even if the filename of\n"
 	    "                              downloaded file ends with .torrent.\n"
 	    "                              Default: true") << endl;
-  cout << _(" -S, --show-files             Print file listing of .torrent file and exit.") << endl;
   cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
@@ -230,12 +241,6 @@ void showUsage() {
 	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 	    "                              Default: 0") << endl;
-  cout << _(" --select-file=INDEX...       Set file to download by specifing its index.\n"
-	    "                              You can know file index through --show-files\n"
-	    "                              option. Multiple indexes can be specified by using\n"
-	    "                              ',' like \"3,6\".\n"
-	    "                              You can also use '-' to specify rangelike \"1-5\".\n"
-	    "                              ',' and '-' can be used together.") << endl;
   cout << _(" --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
 	    "                              --seed-ratio option.") << endl;
   cout << _(" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents until\n"
@@ -405,16 +410,18 @@ int main(int argc, char* argv[]) {
       { "input-file", required_argument, 0, 'i' },
       { "max-concurrent-downloads", required_argument, 0, 'j' },
       { "load-cookies", required_argument, &lopt, 205 },
+#if defined ENABLE_BITTORRENT || ENABLE_METALINK
+      { "show-files", no_argument, NULL, 'S' },
+      { "select-file", required_argument, &lopt, 21 },
+#endif // ENABLE_BITTORRENT || ENABLE_METALINK
 #ifdef ENABLE_BITTORRENT
       { "torrent-file", required_argument, NULL, 'T' },
       { "listen-port", required_argument, &lopt, 15 },
       { "follow-torrent", required_argument, &lopt, 16 },
-      { "show-files", no_argument, NULL, 'S' },
       { "no-preallocation", no_argument, &lopt, 18 },
       { "direct-file-mapping", required_argument, &lopt, 19 },
       // TODO remove upload-limit.
       //{ "upload-limit", required_argument, &lopt, 20 },
-      { "select-file", required_argument, &lopt, 21 },
       { "seed-time", required_argument, &lopt, 22 },
       { "seed-ratio", required_argument, &lopt, 23 },
       { "max-upload-limit", required_argument, &lopt, 24 },
@@ -709,7 +716,7 @@ int main(int argc, char* argv[]) {
 
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 
-    RequestInfo* firstReqInfo = 0;
+    RequestInfo* firstReqInfo;
 #ifdef ENABLE_BITTORRENT
     if(op->defined(PREF_TORRENT_FILE)) {
       firstReqInfo = new TorrentRequestInfo(op->get(PREF_TORRENT_FILE),
@@ -726,6 +733,11 @@ int main(int argc, char* argv[]) {
       if(op->defined(PREF_METALINK_FILE)) {
 	firstReqInfo = new MetalinkRequestInfo(op->get(PREF_METALINK_FILE),
 					       op);
+	Strings targetFiles;
+	if(op->defined(PREF_METALINK_FILE) && !args.empty()) {
+	  targetFiles = args;
+	}
+	((MetalinkRequestInfo*)firstReqInfo)->setTargetFiles(targetFiles);
       }
       else
 #endif // ENABLE_METALINK

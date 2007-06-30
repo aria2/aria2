@@ -42,6 +42,7 @@
 #include "message.h"
 #include "RecoverableException.h"
 #include "DNSCache.h"
+#include <signal.h>
 
 extern volatile sig_atomic_t btHaltRequested;
 
@@ -59,7 +60,7 @@ RequestInfos TorrentRequestInfo::execute() {
   btContext->load(torrentFile);
   
   if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-    showFileEntry(btContext);
+    Util::toStream(cout, btContext->getFileEntries());
     return RequestInfos();
   }
   // set max_tries to 1. AnnounceList handles retries.
@@ -119,20 +120,4 @@ RequestInfos TorrentRequestInfo::execute() {
   Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
   
   return RequestInfos();
-}
-
-void TorrentRequestInfo::showFileEntry(const BtContextHandle& btContext)
-{
-  FileEntries fileEntries = btContext->getFileEntries();
-  cout << _("Files:") << endl;
-  cout << "idx|path/length" << endl;
-  cout << "===+===========================================================================" << endl;
-  int count = 1;
-  for(FileEntries::const_iterator itr = fileEntries.begin();
-      itr != fileEntries.end(); count++, itr++) {
-    printf("%3d|%s\n   |%s Bytes\n", count,
-	   (*itr)->getPath().c_str(),
-	   Util::llitos((*itr)->getLength(), true).c_str());
-    cout << "---+---------------------------------------------------------------------------" << endl;
-  }
 }

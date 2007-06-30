@@ -54,6 +54,7 @@ private:
   int64_t _hintTotalLength;
   string _hintFilename;
   string _ufilename;
+  string _topDir;
   Strings _uris;
   Strings _spentUris;
   SegmentManHandle _segmentMan;
@@ -287,6 +288,11 @@ public:
   int32_t getGID() const
   {
     return _gid;
+  }
+
+  void setTopDir(const string& topDir)
+  {
+    _topDir = topDir;
   }
 };
 

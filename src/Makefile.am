@@ -103,7 +103,9 @@ SRCS =  Socket.h\
 	RequestGroupEntry.cc RequestGroupEntry.h\
 	Cookie.cc Cookie.h\
 	CookieParser.cc CookieParser.h\
-	CookieBoxFactory.cc CookieBoxFactory.h
+	CookieBoxFactory.cc CookieBoxFactory.h\
+	HttpHeaderProcessor.cc HttpHeaderProcessor.h\
+	FileEntry.cc FileEntry.h
 #	debug_new.cpp
 
 if ENABLE_BITTORRENT
@@ -133,7 +135,6 @@ SRCS += MetaEntry.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	FileEntry.cc FileEntry.h\
 	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\

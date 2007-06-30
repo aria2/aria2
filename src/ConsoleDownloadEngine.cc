@@ -64,8 +64,10 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     cout << "["
 	 << "#" << firstRequestGroup->getGID() << " "
 	 << Util::abbrevSize(firstRequestGroup->getDownloadLength())
+	 << "B"
 	 << "/"
-	 << Util::abbrevSize(firstRequestGroup->getTotalLength());
+	 << Util::abbrevSize(firstRequestGroup->getTotalLength())
+	 << "B";
     if(firstRequestGroup->getTotalLength() > 0) {
       cout << "("
 	   << 100*firstRequestGroup->getDownloadLength()/firstRequestGroup->getTotalLength()
@@ -81,7 +83,7 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     }
     cout << "]";
   }
-  cout << "[" << fixed << setprecision(2) << speed/1024.0 << "KB/s" << "]";
+  cout << "[" << fixed << setprecision(2) << speed/1024.0 << "KiB/s" << "]";
 
   {
     FileAllocationEntryHandle entry = _fileAllocationMan->getCurrentFileAllocationEntry();
@@ -89,8 +91,10 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
       cout << "[FileAlloc:"
 	   << "#" << entry->getRequestGroup()->getGID() << " "
 	   << Util::abbrevSize(entry->getCurrentLength())
+	   << "B"
 	   << "/"
 	   << Util::abbrevSize(entry->getTotalLength())
+	   << "B"
 	   << "("
 	   << 100*entry->getCurrentLength()/entry->getTotalLength()
 	   << "%)";
@@ -108,8 +112,10 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
       cout << "[Checksum:"
 	   << "#" << entry->getRequestGroup()->getGID() << " "
 	   << Util::abbrevSize(entry->getCurrentLength())
+	   << "B"
 	   << "/"
 	   << Util::abbrevSize(entry->getTotalLength())
+	   << "B"
 	   << "("
 	   << 100*entry->getCurrentLength()/entry->getTotalLength()
 	   << "%)";

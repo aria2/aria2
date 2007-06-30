@@ -86,6 +86,10 @@ public:
   int64_t size();
 
   mode_t mode();
+
+  string getBasename() const;
+
+  string getDirname() const;
 };
 
 #endif // _D_FILE_H_

@@ -65,7 +65,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-@ENABLE_BITTORRENT_TRUE@	FileEntry.cc FileEntry.h\
 @ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.cc PeerChokeCommand.h\
@@ -242,12 +241,13 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
-	CookieBoxFactory.h MetaEntry.h Data.cc Data.h Dictionary.cc \
-	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
-	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
-	PeerConnection.cc PeerConnection.h PeerMessageUtil.cc \
-	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
-	PeerInitiateConnectionCommand.cc \
+	CookieBoxFactory.h HttpHeaderProcessor.cc \
+	HttpHeaderProcessor.h FileEntry.cc FileEntry.h MetaEntry.h \
+	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
+	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
+	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
+	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h Peer.cc Peer.h \
 	TorrentDownloadEngine.cc TorrentDownloadEngine.h \
@@ -259,31 +259,30 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DiskAdaptor.cc DiskAdaptor.h AbstractSingleDiskAdaptor.cc \
 	AbstractSingleDiskAdaptor.h CopyDiskAdaptor.cc \
 	CopyDiskAdaptor.h DirectDiskAdaptor.cc DirectDiskAdaptor.h \
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h FileEntry.cc \
-	FileEntry.h TrackerUpdateCommand.cc TrackerUpdateCommand.h \
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	PeerChokeCommand.cc PeerChokeCommand.h HaveEraseCommand.cc \
-	HaveEraseCommand.h TorrentRequestInfo.cc TorrentRequestInfo.h \
-	SeedCriteria.h TimeSeedCriteria.h ShareRatioSeedCriteria.h \
-	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
-	PeerListProcessor.h DefaultPeerListProcessor.cc \
-	DefaultPeerListProcessor.h CompactPeerListProcessor.cc \
-	CompactPeerListProcessor.h DelegatingPeerListProcessor.cc \
-	DelegatingPeerListProcessor.h AnnounceTier.h AnnounceList.h \
-	AnnounceList.cc BtContext.h DefaultBtContext.cc \
-	DefaultBtContext.h PieceStorage.h DefaultPieceStorage.cc \
-	DefaultPieceStorage.h DefaultPeerStorage.cc \
-	DefaultPeerStorage.h BtAnnounce.h DefaultBtAnnounce.cc \
-	DefaultBtAnnounce.h BtRegistry.cc BtRegistry.h BtRuntime.h \
-	BtProgressInfoFile.h DefaultBtProgressInfoFile.cc \
-	DefaultBtProgressInfoFile.h BtContextAwareCommand.cc \
-	BtContextAwareCommand.h BtMessage.h AbstractBtMessage.h \
-	SimpleBtMessage.cc SimpleBtMessage.h BtAllowedFastMessage.cc \
-	BtAllowedFastMessage.h BtBitfieldMessage.cc \
-	BtBitfieldMessage.h BtCancelMessage.cc BtCancelMessage.h \
-	BtChokeMessage.cc BtChokeMessage.h BtHaveAllMessage.cc \
-	BtHaveAllMessage.h BtHaveMessage.cc BtHaveMessage.h \
-	BtHaveNoneMessage.cc BtHaveNoneMessage.h \
+	MultiDiskAdaptor.cc MultiDiskAdaptor.h TrackerUpdateCommand.cc \
+	TrackerUpdateCommand.h ByteArrayDiskWriter.cc \
+	ByteArrayDiskWriter.h PeerChokeCommand.cc PeerChokeCommand.h \
+	HaveEraseCommand.cc HaveEraseCommand.h TorrentRequestInfo.cc \
+	TorrentRequestInfo.h SeedCriteria.h TimeSeedCriteria.h \
+	ShareRatioSeedCriteria.h UnionSeedCriteria.h \
+	SeedCheckCommand.cc SeedCheckCommand.h PeerListProcessor.h \
+	DefaultPeerListProcessor.cc DefaultPeerListProcessor.h \
+	CompactPeerListProcessor.cc CompactPeerListProcessor.h \
+	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h \
+	AnnounceTier.h AnnounceList.h AnnounceList.cc BtContext.h \
+	DefaultBtContext.cc DefaultBtContext.h PieceStorage.h \
+	DefaultPieceStorage.cc DefaultPieceStorage.h \
+	DefaultPeerStorage.cc DefaultPeerStorage.h BtAnnounce.h \
+	DefaultBtAnnounce.cc DefaultBtAnnounce.h BtRegistry.cc \
+	BtRegistry.h BtRuntime.h BtProgressInfoFile.h \
+	DefaultBtProgressInfoFile.cc DefaultBtProgressInfoFile.h \
+	BtContextAwareCommand.cc BtContextAwareCommand.h BtMessage.h \
+	AbstractBtMessage.h SimpleBtMessage.cc SimpleBtMessage.h \
+	BtAllowedFastMessage.cc BtAllowedFastMessage.h \
+	BtBitfieldMessage.cc BtBitfieldMessage.h BtCancelMessage.cc \
+	BtCancelMessage.h BtChokeMessage.cc BtChokeMessage.h \
+	BtHaveAllMessage.cc BtHaveAllMessage.h BtHaveMessage.cc \
+	BtHaveMessage.h BtHaveNoneMessage.cc BtHaveNoneMessage.h \
 	BtInterestedMessage.cc BtInterestedMessage.h \
 	BtKeepAliveMessage.cc BtKeepAliveMessage.h \
 	BtNotInterestedMessage.cc BtNotInterestedMessage.h \
@@ -336,7 +335,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	FileEntry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TrackerUpdateCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
@@ -429,6 +427,7 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	ChecksumCommand.$(OBJEXT) CheckIntegrityEntry.$(OBJEXT) \
 	RequestGroupEntry.$(OBJEXT) Cookie.$(OBJEXT) \
 	CookieParser.$(OBJEXT) CookieBoxFactory.$(OBJEXT) \
+	HttpHeaderProcessor.$(OBJEXT) FileEntry.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2)
 am_libaria2c_a_OBJECTS = $(am__objects_3)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
@@ -663,7 +662,9 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
-	CookieBoxFactory.h $(am__append_1) $(am__append_2)
+	CookieBoxFactory.h HttpHeaderProcessor.cc \
+	HttpHeaderProcessor.h FileEntry.cc FileEntry.h $(am__append_1) \
+	$(am__append_2)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -839,6 +840,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpInitiateConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyResponseCommand.Po@am__quote@

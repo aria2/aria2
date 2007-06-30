@@ -36,24 +36,49 @@
 #define _D_FILE_ENTRY_H_
 
 #include "common.h"
+#include "File.h"
 
 class FileEntry {
 private:
   string path;
-  long long int length;
-  long long int offset;
+  int64_t length;
+  int64_t offset;
   bool extracted;
   bool requested;
 public:
+  FileEntry():length(0), offset(0), extracted(false), requested(false) {}
+
   FileEntry(const string& path, long long int length, long long int offset);
 
+  FileEntry& operator=(const FileEntry& entry)
+  {
+    if(this != &entry) {
+      path = entry.path;
+      length = entry.length;
+      offset = entry.offset;
+      extracted = entry.extracted;
+      requested = entry.requested;
+    }
+    return *this;
+  }
+
   ~FileEntry();
+
+  string getBasename() const
+  {
+    return File(path).getBasename();
+  }
+
+  string getDirname() const
+  {
+    return File(path).getDirname();
+  }
 
   const string& getPath() const { return path; }
 
   void setPath(const string& path) { this->path = path; }
 
-  long long int getLength() const { return length; }
+  int64_t getLength() const { return length; }
 
   void setLength(long long int length) { this->length = length; }
 

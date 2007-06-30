@@ -36,11 +36,9 @@
 #include "Util.h"
 #include <algorithm>
 
-MetalinkEntry::MetalinkEntry():
-  size(0)
+MetalinkEntry::MetalinkEntry()
 #ifdef ENABLE_MESSAGE_DIGEST
-  ,
-  checksum(0),
+  :checksum(0),
   chunkChecksum(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
@@ -102,3 +100,14 @@ void MetalinkEntry::dropUnsupportedResource() {
     partition(resources.begin(), resources.end(), Supported());
   resources.erase(split, resources.end());
 }
+
+FileEntries MetalinkEntry::toFileEntry(const MetalinkEntries& metalinkEntries)
+{
+  FileEntries entries;
+  for(MetalinkEntries::const_iterator itr = metalinkEntries.begin();
+      itr != metalinkEntries.end(); ++itr) {
+    entries.push_back((*itr)->file);
+  }
+  return entries;
+}
+

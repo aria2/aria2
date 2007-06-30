@@ -53,6 +53,9 @@ SegmentManHandle RequestGroup::initSegmentMan()
 {
   _segmentMan = _segmentManFactory->createNewInstance();
   _segmentMan->ufilename = _ufilename;
+  if(!_topDir.empty() && _topDir != ".") {
+    _segmentMan->dir += "/"+_topDir;
+  }
   return _segmentMan;
 }
 

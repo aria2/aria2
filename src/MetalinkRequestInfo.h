@@ -40,6 +40,7 @@
 class MetalinkRequestInfo : public RequestInfo {
 private:
   string metalinkFile;
+  Strings targetFiles;
 public:
   MetalinkRequestInfo(const string& metalinkFile, Option* op):
     RequestInfo(op),
@@ -47,6 +48,10 @@ public:
   virtual ~MetalinkRequestInfo() {}
 
   virtual RequestInfos execute();
+
+  void setTargetFiles(const Strings& targetFiles) {
+    this->targetFiles = targetFiles;
+  }
 };
 
 #endif // _D_METALINK_REQUEST_INFO_H_

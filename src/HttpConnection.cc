@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "HttpConnection.h"
 #include "DlRetryEx.h"
+#include "DlAbortEx.h"
 #include "Util.h"
 #include "Base64.h"
 #include "message.h"
@@ -44,9 +45,8 @@
 HttpConnection::HttpConnection(int cuid,
 			       const SocketHandle& socket,
 			       const Option* op):
-  cuid(cuid), socket(socket), option(op), headerBufLength(0) {
-  logger = LogFactory::getInstance();
-}
+  cuid(cuid), socket(socket), option(op), logger(LogFactory::getInstance())
+{}
 
 string HttpConnection::eraseConfidentialInfo(const string& request)
 {
@@ -70,7 +70,8 @@ void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
   string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
-  outstandingHttpRequests.push_back(httpRequest);
+  outstandingHttpRequests.push_back(new HttpRequestEntry(httpRequest,
+							 new HttpHeaderProcessor()));
 }
 
 void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
@@ -78,88 +79,41 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
   string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
-  outstandingHttpRequests.push_back(httpRequest);
-}
-
-int HttpConnection::findEndOfHeader(const char* buf, const char* substr, int bufLength) const {
-  const char* p = buf;
-  while(bufLength > p-buf && bufLength-(p-buf) >= (int)strlen(substr)) {
-    if(memcmp(p, substr, strlen(substr)) == 0) {
-      return p-buf;
-    }
-    p++;
-  }
-  return -1;
+  outstandingHttpRequests.push_back(new HttpRequestEntry(httpRequest,
+							 new HttpHeaderProcessor()));
 }
 
 HttpResponseHandle HttpConnection::receiveResponse() {
-  //char buf[512];
-  string header;
-  int delimiterSwitch = 0;
-  char* delimiters[] = { "\r\n", "\n" };
-
-  int size = HEADERBUF_SIZE-headerBufLength;
-  if(size < 0) {
-    // TODO too large header
-    throw new DlRetryEx("too large header > 4096");
+  if(outstandingHttpRequests.size() == 0) {
+    throw new DlAbortEx("No HttpRequestEntry found.");
   }
-  socket->peekData(headerBuf+headerBufLength, size);
+  HttpRequestEntryHandle entry = outstandingHttpRequests.front();
+  HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
+
+  char buf[512];
+  int32_t size = sizeof(buf);
+  socket->peekData(buf, size);
   if(size == 0) {
     throw new DlRetryEx(EX_INVALID_RESPONSE);
   }
-  //buf[size] = '\0';
-  int hlenTemp = headerBufLength+size;
-  //header += buf;
-  //string::size_type p;
-  int eohIndex;
-
-  if((eohIndex = findEndOfHeader(headerBuf, "\r\n\r\n", hlenTemp)) == -1 &&
-     (eohIndex = findEndOfHeader(headerBuf, "\n\n", hlenTemp)) == -1) {
-    socket->readData(headerBuf+headerBufLength, size);
-    headerBufLength += size;
-  } else {
-    if(headerBuf[eohIndex] == '\n') {
-      // for crapping non-standard HTTP server
-      delimiterSwitch = 1;
-    } else {
-      delimiterSwitch = 0;
-    }
-    headerBuf[eohIndex+strlen(delimiters[delimiterSwitch])*2] = '\0';
-    header = headerBuf;
-    size = eohIndex+strlen(delimiters[delimiterSwitch])*2-headerBufLength;
-    socket->readData(headerBuf+headerBufLength, size);
-  }
-  if(!Util::endsWith(header, "\r\n\r\n") && !Util::endsWith(header, "\n\n")) {
+  proc->update(buf, size);
+  if(!proc->eoh()) {
+    socket->readData(buf, size);
     return 0;
   }
+  int32_t putbackDataLength = proc->getPutBackDataLength();
+  size -= putbackDataLength;
+  socket->readData(buf, size);
+
   // OK, we got all headers.
-  logger->info(MSG_RECEIVE_RESPONSE, cuid, header.c_str());
-  string::size_type p, np;
-  p = np = 0;
-  np = header.find(delimiters[delimiterSwitch], p);
-  if(np == string::npos) {
-    throw new DlRetryEx(EX_NO_STATUS_HEADER);
-  }
-  // check HTTP status value
-  if(header.size() <= 12) {
-    throw new DlRetryEx(EX_NO_STATUS_HEADER);
-  }
-  string status = header.substr(9, 3);
-  p = np+2;
-  HttpHeaderHandle httpHeader = new HttpHeader();
-  // retreive status name-value pairs, then push these into map
-  while((np = header.find(delimiters[delimiterSwitch], p)) != string::npos && np != p) {
-    string line = header.substr(p, np-p);
-    p = np+2;
-    pair<string, string> hp;
-    Util::split(hp, line, ':');
-    httpHeader->put(hp.first, hp.second);
-  }
+  logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
+
+  pair<string, HttpHeaderHandle> httpStatusHeader = proc->getHttpStatusHeader();
   HttpResponseHandle httpResponse = new HttpResponse();
   httpResponse->setCuid(cuid);
-  httpResponse->setStatus(strtol(status.c_str(), 0, 10));
-  httpResponse->setHttpHeader(httpHeader);
-  httpResponse->setHttpRequest(outstandingHttpRequests.front());
+  httpResponse->setStatus(strtol(httpStatusHeader.first.c_str(), 0, 10));
+  httpResponse->setHttpHeader(httpStatusHeader.second);
+  httpResponse->setHttpRequest(entry->getHttpRequest());
 
   outstandingHttpRequests.pop_front();
 

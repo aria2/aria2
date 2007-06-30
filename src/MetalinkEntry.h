@@ -39,15 +39,20 @@
 #include "MetalinkResource.h"
 #include "Checksum.h"
 #include "MetalinkChunkChecksum.h"
+#include "FileEntry.h"
 #include <deque>
+
+class MetalinkEntry;
+
+typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
+typedef deque<MetalinkEntryHandle> MetalinkEntries;
 
 class MetalinkEntry {
 public:
-  string filename;
+  FileEntryHandle file;
   string version;
   string language;
   string os;
-  int64_t size;
   ChecksumHandle checksum;
 public:
   MetalinkResources resources;
@@ -56,15 +61,15 @@ public:
 #endif // ENABLE_MESSAGE_DIGEST
 public:
   MetalinkEntry();
+
   ~MetalinkEntry();
 
   MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry) {
     if(this != &metalinkEntry) {
-      this->filename = metalinkEntry.filename;
+      this->file = metalinkEntry.file;
       this->version = metalinkEntry.version;
       this->language = metalinkEntry.language;
       this->os = metalinkEntry.os;
-      this->size = metalinkEntry.size;
       this->checksum = metalinkEntry.checksum;
 #ifdef ENABLE_MESSAGE_DIGEST
       this->chunkChecksum = metalinkEntry.chunkChecksum;
@@ -73,14 +78,23 @@ public:
     return *this;
   }
 
+  string getPath() const
+  {
+    return file->getPath();
+  }
+
+  int64_t getLength() const
+  {
+    return file->getLength();
+  }
+
   void dropUnsupportedResource();
 
   void reorderResourcesByPreference();
   
   void setLocationPreference(const string& location, int preferenceToAdd);
-};
 
-typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
-typedef deque<MetalinkEntryHandle> MetalinkEntries;
+  static FileEntries toFileEntry(const MetalinkEntries& metalinkEntries);
+};
 
 #endif // _D_METALINK_ENTRY_H_
