@@ -24,6 +24,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountBit);
   CPPUNIT_TEST(testGetRealSize);
   CPPUNIT_TEST(testAbbrevSize);
+  CPPUNIT_TEST(testToStream);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -48,6 +49,7 @@ public:
   void testCountBit();
   void testGetRealSize();
   void testAbbrevSize();
+  void testToStream();
 };
 
 
@@ -304,11 +306,33 @@ void UtilTest::testGetRealSize()
 
 void UtilTest::testAbbrevSize()
 {
-  CPPUNIT_ASSERT_EQUAL(string("4,096.0M"), Util::abbrevSize(4294967296LL));
-  CPPUNIT_ASSERT_EQUAL(string("1.0K"), Util::abbrevSize(1024));
+  CPPUNIT_ASSERT_EQUAL(string("4,096.0Mi"), Util::abbrevSize(4294967296LL));
+  CPPUNIT_ASSERT_EQUAL(string("1.0Ki"), Util::abbrevSize(1024));
   CPPUNIT_ASSERT_EQUAL(string("1,023"), Util::abbrevSize(1023));
   CPPUNIT_ASSERT_EQUAL(string("0"), Util::abbrevSize(0));
-  CPPUNIT_ASSERT_EQUAL(string("1.1K"), Util::abbrevSize(1127));
-  CPPUNIT_ASSERT_EQUAL(string("1.5M"), Util::abbrevSize(1572864));
+  CPPUNIT_ASSERT_EQUAL(string("1.1Ki"), Util::abbrevSize(1127));
+  CPPUNIT_ASSERT_EQUAL(string("1.5Mi"), Util::abbrevSize(1572864));
 
+}
+
+void UtilTest::testToStream()
+{
+  ostringstream os;
+  FileEntryHandle f1 = new FileEntry("aria2.tar.bz2", 12300, 0);
+  FileEntryHandle f2 = new FileEntry("aria2.txt", 556, 0);
+  FileEntries entries;
+  entries.push_back(f1);
+  entries.push_back(f2);
+  Util::toStream(os, entries);
+  CPPUNIT_ASSERT_EQUAL(
+		       string("Files:\n"
+			      "idx|path/length\n"
+			      "===+===========================================================================\n"
+			      "  1|aria2.tar.bz2\n"
+			      "   |12,300 bytes\n"
+			      "---+---------------------------------------------------------------------------\n"
+			      "  2|aria2.txt\n"
+			      "   |556 bytes\n"
+			      "---+---------------------------------------------------------------------------\n"),
+		       os.str());
 }

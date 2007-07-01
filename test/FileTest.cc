@@ -16,6 +16,8 @@ class FileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemove);
   CPPUNIT_TEST(testSize);
   CPPUNIT_TEST(testMkdir);
+  CPPUNIT_TEST(testGetDirname);
+  CPPUNIT_TEST(testGetBasename);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -29,6 +31,8 @@ public:
   void testRemove();
   void testSize();
   void testMkdir();
+  void testGetDirname();
+  void testGetBasename();
 };
 
 
@@ -111,4 +115,16 @@ void FileTest::testMkdir() {
   // this test failes because d.mkdir returns false when the directory is
   // already exists.
   CPPUNIT_ASSERT(!d.mkdirs());
+}
+
+void FileTest::testGetDirname()
+{
+  File f("/tmp/dist/aria2.tar.bz2");
+  CPPUNIT_ASSERT_EQUAL(string("/tmp/dist"), f.getDirname());
+}
+
+void FileTest::testGetBasename()
+{
+  File f("/tmp/dist/aria2.tar.bz2");
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), f.getBasename());
 }

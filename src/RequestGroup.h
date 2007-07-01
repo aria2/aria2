@@ -187,6 +187,8 @@ public:
 
   string getFilePath() const;
 
+  string getDir() const;
+
   int64_t getExistingFileLength() const;
 
   int64_t getTotalLength() const

@@ -1,3 +1,11 @@
+2007-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Create directory structure specified in metalink file.
+	* src/RequestGroup.h, src/RequestGroup.cc
+	(initAndOpenFile): Create a directory to store files if it does not
+	exist.
+	(getDir): New function.
+
 2007-06-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Made -S option work with metalink file and provided selective download
@@ -49,6 +57,7 @@
 	HttpRequestEntryHandle.
 	(findEndOfHeader): Removed.
 	(receiveResponse): Rewritten.
+	* src/HttpHeaderProcessor.h, src/HttpHeaderProcessor.cc: New class.
 	
 	Updated doc for -j option to notice that it should be used with -i
 	option.

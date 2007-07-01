@@ -57,7 +57,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) UtilTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) \
+	HttpHeaderProcessorTest.$(OBJEXT) UtilTest.$(OBJEXT) \
 	CookieBoxTest.$(OBJEXT) RequestTest.$(OBJEXT) \
 	CookieParserTest.$(OBJEXT) HttpRequestTest.$(OBJEXT) \
 	CookieBoxFactoryTest.$(OBJEXT) \
@@ -268,6 +269,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc\
+	HttpHeaderProcessorTest.cc\
 	UtilTest.cc\
 	CookieBoxTest.cc\
 	RequestTest.cc\
@@ -450,6 +452,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GlowFileAllocatorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseTest.Po@am__quote@

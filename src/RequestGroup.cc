@@ -48,6 +48,7 @@
 #include "FatalException.h"
 #include "CheckIntegrityEntry.h"
 #include "DownloadCommand.h"
+#include <cerrno>
 
 SegmentManHandle RequestGroup::initSegmentMan()
 {
@@ -123,6 +124,13 @@ void RequestGroup::shouldCancelDownloadForSafety()
 
 void RequestGroup::initAndOpenFile()
 {
+  File d(getDir());
+  if(d.isDir()) {
+  } else if(d.exists()) {
+    throw new FatalException(EX_MAKE_DIR, getDir().c_str(), "not a directory");
+  } else if(!d.mkdirs()) {
+    throw new FatalException(EX_MAKE_DIR, getDir().c_str(), strerror(errno));
+  }
   _segmentMan->diskWriter->initAndOpenFile(_segmentMan->getFilePath());
 }
   
@@ -148,6 +156,15 @@ string RequestGroup::getFilePath() const
     return "";
   } else {
     return _segmentMan->getFilePath();
+  }
+}
+
+string RequestGroup::getDir() const
+{
+  if(_segmentMan.isNull()) {
+    return "";
+  } else {
+    return _segmentMan->dir;
   }
 }
 

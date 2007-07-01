@@ -26,3 +26,9 @@
 * exit status: all downloads have been successful-> EXIT_SUCCESS,
 		some of downloads have been failed -> EXIT_FAILURE
 
+
+* Create directory structure before initAndOpen:
+	HttpResponseCommand.cc
+	RequestGroup.cc
+	TorrentRequestInfo.cc: <- not the case
+* Add ETA like:    ETA:01.23'45"

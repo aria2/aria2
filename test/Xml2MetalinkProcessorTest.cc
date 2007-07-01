@@ -32,8 +32,8 @@ void Xml2MetalinkProcessorTest::testParseFile() {
 
   MetalinkEntries::iterator entryItr = metalinker->entries.begin();
   MetalinkEntryHandle entry1 = *entryItr;
-  CPPUNIT_ASSERT_EQUAL(string("aria2-0.5.2.tar.bz2"), entry1->filename);
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, entry1->size);
+  CPPUNIT_ASSERT_EQUAL(string("aria2-0.5.2.tar.bz2"), entry1->getPath());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, entry1->getLength());
   CPPUNIT_ASSERT_EQUAL(string("0.5.2"), entry1->version);
   CPPUNIT_ASSERT_EQUAL(string("en-US"), entry1->language);
   CPPUNIT_ASSERT_EQUAL(string("Linux-x86"), entry1->os);
@@ -59,8 +59,8 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   entryItr++;
 
   MetalinkEntryHandle entry2 = *entryItr;
-  CPPUNIT_ASSERT_EQUAL(string("aria2-0.5.1.tar.bz2"), entry2->filename);
-  CPPUNIT_ASSERT_EQUAL((int64_t)345689, entry2->size);
+  CPPUNIT_ASSERT_EQUAL(string("aria2-0.5.1.tar.bz2"), entry2->getPath());
+  CPPUNIT_ASSERT_EQUAL((int64_t)345689, entry2->getLength());
   CPPUNIT_ASSERT_EQUAL(string("0.5.1"), entry2->version);
   CPPUNIT_ASSERT_EQUAL(string("ja-JP"), entry2->language);
   CPPUNIT_ASSERT_EQUAL(string("Linux-m68k"), entry2->os);
