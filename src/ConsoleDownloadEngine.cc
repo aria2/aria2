@@ -61,6 +61,12 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
   cout << "\r";
   if(_requestGroupMan->countRequestGroup() > 0) {
     RequestGroupHandle firstRequestGroup = _requestGroupMan->getRequestGroup(0);
+    int32_t dlSpeed = firstRequestGroup->calculateDownloadSpeed();
+    int32_t eta = 0;
+    if(firstRequestGroup->getTotalLength() > 0 && dlSpeed > 0) {
+      eta = (firstRequestGroup->getTotalLength()-firstRequestGroup->getDownloadLength())/dlSpeed;
+    }
+
     cout << "["
 	 << "#" << firstRequestGroup->getGID() << " "
 	 << Util::abbrevSize(firstRequestGroup->getDownloadLength())
@@ -76,6 +82,15 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     cout << "("
 	 << firstRequestGroup->numConnection
 	 << "cn)";
+    cout << "("
+	 << fixed << setprecision(2)
+	 << dlSpeed/1024.0 << "KiB/s"
+	 << ")";
+    if(eta > 0) {
+      cout << " "
+	   << "ETA:"
+	   << Util::secfmt(eta);
+    }
     if(_requestGroupMan->countRequestGroup() > 1) {
       cout << "("
 	   << _requestGroupMan->countRequestGroup()-1
@@ -83,12 +98,17 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
     }
     cout << "]";
   }
-  cout << "[" << fixed << setprecision(2) << speed/1024.0 << "KiB/s" << "]";
+
+  if(_requestGroupMan->countRequestGroup() > 1) {
+    cout << " "
+	 << "[" << fixed << setprecision(2) << speed/1024.0 << "KiB/s" << "]";
+  }
 
   {
     FileAllocationEntryHandle entry = _fileAllocationMan->getCurrentFileAllocationEntry();
     if(!entry.isNull()) {
-      cout << "[FileAlloc:"
+      cout << " "
+	   << "[FileAlloc:"
 	   << "#" << entry->getRequestGroup()->getGID() << " "
 	   << Util::abbrevSize(entry->getCurrentLength())
 	   << "B"
@@ -109,7 +129,8 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
   {
     CheckIntegrityEntryHandle entry = _checkIntegrityMan->getFirstCheckIntegrityEntry();
     if(!entry.isNull()) {
-      cout << "[Checksum:"
+      cout << " "
+	   << "[Checksum:"
 	   << "#" << entry->getRequestGroup()->getGID() << " "
 	   << Util::abbrevSize(entry->getCurrentLength())
 	   << "B"

@@ -53,7 +53,7 @@ DownloadCommand::DownloadCommand(int cuid,
   transferDecoder(0)
 {
   peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
-  if(!peerStat.get()) {
+  if(peerStat.isNull()) {
     peerStat = new PeerStat(cuid);
     _requestGroup->getSegmentMan()->registerPeerStat(peerStat);
   }

@@ -6,6 +6,11 @@
 	exist.
 	(getDir): New function.
 
+	Added ETA and download speed for an individual file to readout.
+	* src/ConsoleDownloadEngine.cc (sendStatistics)
+	* src/RequestGroup.h
+	(calculateDownloadSpeed): New function.
+	
 2007-06-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Made -S option work with metalink file and provided selective download

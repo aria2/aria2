@@ -296,6 +296,11 @@ public:
   {
     _topDir = topDir;
   }
+
+  int32_t calculateDownloadSpeed() const
+  {
+    return _segmentMan->calculateDownloadSpeed();
+  }
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
