@@ -1,3 +1,9 @@
+2007-07-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fix the bug that causes -s option not to work.
+	* src/main.cc (main)
+	* src/a2algo.h: New file.
+
 2007-07-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Create directory structure specified in metalink file.

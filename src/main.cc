@@ -51,6 +51,7 @@
 #include "CUIDCounter.h"
 #include "UriFileListParser.h"
 #include "CookieBoxFactory.h"
+#include "a2algo.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -747,7 +748,10 @@ int main(int argc, char* argv[]) {
 	  while(flparser.hasNext()) {
 	    Strings uris = flparser.next();
 	    if(!uris.empty()) {
-	      RequestGroupHandle rg = new RequestGroup(uris, op);
+	      Strings xuris;
+	      ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
+		    back_inserter(xuris));
+	      RequestGroupHandle rg = new RequestGroup(xuris, op);
 	      groups.push_back(rg);
 	    }
 	  }
@@ -755,7 +759,10 @@ int main(int argc, char* argv[]) {
 	}
 	else
 	  {
-	    firstReqInfo = new MultiUrlRequestInfo(args, op);
+	    Strings xargs;
+	    ncopy(args.begin(), args.end(), op->getAsInt(PREF_SPLIT),
+		  back_inserter(xargs));
+	    firstReqInfo = new MultiUrlRequestInfo(xargs, op);
 	  }
 
     RequestInfos reqInfos;
