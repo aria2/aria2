@@ -1,3 +1,8 @@
+2007-07-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Made console readout more readable.
+	* src/ConsoleDownloadEngine.cc (sendStatistics)
+
 2007-07-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fix the bug that causes -s option not to work.

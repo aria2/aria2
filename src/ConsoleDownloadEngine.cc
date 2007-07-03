@@ -69,6 +69,7 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
 
     cout << "["
 	 << "#" << firstRequestGroup->getGID() << " "
+	 << "SIZE:"
 	 << Util::abbrevSize(firstRequestGroup->getDownloadLength())
 	 << "B"
 	 << "/"
@@ -79,29 +80,29 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
 	   << 100*firstRequestGroup->getDownloadLength()/firstRequestGroup->getTotalLength()
 	   << "%)";
     }
-    cout << "("
-	 << firstRequestGroup->numConnection
-	 << "cn)";
-    cout << "("
-	 << fixed << setprecision(2)
-	 << dlSpeed/1024.0 << "KiB/s"
-	 << ")";
+    cout << " "
+	 << "CN:"
+	 << firstRequestGroup->numConnection;
+    cout << " "
+	 << "SPD:"
+	 << fixed << setprecision(2) << dlSpeed/1024.0 << "KiB/s";
     if(eta > 0) {
       cout << " "
 	   << "ETA:"
 	   << Util::secfmt(eta);
     }
+    cout << "]";
     if(_requestGroupMan->countRequestGroup() > 1) {
       cout << "("
 	   << _requestGroupMan->countRequestGroup()-1
 	   << "more...)";
     }
-    cout << "]";
   }
 
   if(_requestGroupMan->countRequestGroup() > 1) {
     cout << " "
-	 << "[" << fixed << setprecision(2) << speed/1024.0 << "KiB/s" << "]";
+	 << "[TOTAL SPD:"
+	 << fixed << setprecision(2) << speed/1024.0 << "KiB/s" << "]";
   }
 
   {
@@ -118,12 +119,12 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
 	   << "("
 	   << 100*entry->getCurrentLength()/entry->getTotalLength()
 	   << "%)";
+      cout << "]";
       if(_fileAllocationMan->countFileAllocationEntryInQueue() > 0) {
 	cout << "("
 	     << _fileAllocationMan->countFileAllocationEntryInQueue()
 	     << "waiting...)";
       }
-      cout << "]";
     }
   }
   {
@@ -140,12 +141,12 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
 	   << "("
 	   << 100*entry->getCurrentLength()/entry->getTotalLength()
 	   << "%)";
+      cout << "]";
       if(_checkIntegrityMan->countCheckIntegrityEntry() > 1) {
 	cout << "("
 	     << _checkIntegrityMan->countCheckIntegrityEntry()-1
 	     << "more...)";
       }
-      cout << "]";
     }
   }
   cout << flush;
