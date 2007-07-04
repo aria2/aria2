@@ -716,6 +716,8 @@ LIBCARES_LIBS
 LIBCARES_CPPFLAGS
 LIBARES_LIBS
 LIBARES_CPPFLAGS
+ENABLE_MESSAGE_DIGEST_TRUE
+ENABLE_MESSAGE_DIGEST_FALSE
 ENABLE_BITTORRENT_TRUE
 ENABLE_BITTORRENT_FALSE
 ENABLE_METALINK_TRUE
@@ -5439,7 +5441,28 @@ cat >>confdefs.h <<\_ACEOF
 #define ENABLE_MESSAGE_DIGEST 1
 _ACEOF
 
+
+
+if true; then
+  ENABLE_MESSAGE_DIGEST_TRUE=
+  ENABLE_MESSAGE_DIGEST_FALSE='#'
+else
+  ENABLE_MESSAGE_DIGEST_TRUE='#'
+  ENABLE_MESSAGE_DIGEST_FALSE=
+fi
+
   enable_message_digest=yes
+else
+
+
+if false; then
+  ENABLE_MESSAGE_DIGEST_TRUE=
+  ENABLE_MESSAGE_DIGEST_FALSE='#'
+else
+  ENABLE_MESSAGE_DIGEST_TRUE='#'
+  ENABLE_MESSAGE_DIGEST_FALSE=
+fi
+
 fi
 
 if test "x$enable_bittorrent" = "xyes" && test "x$enable_message_digest" = "xyes"; then
@@ -12599,6 +12622,20 @@ echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${ENABLE_MESSAGE_DIGEST_TRUE}" && test -z "${ENABLE_MESSAGE_DIGEST_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_MESSAGE_DIGEST\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLE_MESSAGE_DIGEST\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${ENABLE_MESSAGE_DIGEST_TRUE}" && test -z "${ENABLE_MESSAGE_DIGEST_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_MESSAGE_DIGEST\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLE_MESSAGE_DIGEST\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${ENABLE_BITTORRENT_TRUE}" && test -z "${ENABLE_BITTORRENT_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"ENABLE_BITTORRENT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -13328,6 +13365,8 @@ LIBCARES_LIBS!$LIBCARES_LIBS$ac_delim
 LIBCARES_CPPFLAGS!$LIBCARES_CPPFLAGS$ac_delim
 LIBARES_LIBS!$LIBARES_LIBS$ac_delim
 LIBARES_CPPFLAGS!$LIBARES_CPPFLAGS$ac_delim
+ENABLE_MESSAGE_DIGEST_TRUE!$ENABLE_MESSAGE_DIGEST_TRUE$ac_delim
+ENABLE_MESSAGE_DIGEST_FALSE!$ENABLE_MESSAGE_DIGEST_FALSE$ac_delim
 ENABLE_BITTORRENT_TRUE!$ENABLE_BITTORRENT_TRUE$ac_delim
 ENABLE_BITTORRENT_FALSE!$ENABLE_BITTORRENT_FALSE$ac_delim
 ENABLE_METALINK_TRUE!$ENABLE_METALINK_TRUE$ac_delim
@@ -13372,7 +13411,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 46; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 48; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

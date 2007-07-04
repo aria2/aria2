@@ -127,6 +127,7 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
       }
     }
   }
+#ifdef ENABLE_MESSAGE_DIGEST
   {
     CheckIntegrityEntryHandle entry = _checkIntegrityMan->getFirstCheckIntegrityEntry();
     if(!entry.isNull()) {
@@ -149,6 +150,7 @@ void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long 
       }
     }
   }
+#endif // ENABLE_MESSAGE_DIGEST
   cout << flush;
 }
 

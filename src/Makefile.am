@@ -63,7 +63,6 @@ SRCS =  Socket.h\
 	FileAllocator.h\
 	FileAllocationMonitor.cc FileAllocationMonitor.h\
 	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h\
-	ChunkChecksumValidator.cc ChunkChecksumValidator.h\
 	HttpResponse.cc HttpResponse.h\
 	HttpRequest.cc HttpRequest.h\
 	Range.h\
@@ -87,18 +86,12 @@ SRCS =  Socket.h\
 	FillRequestGroupCommand.cc FillRequestGroupCommand.h\
 	FileAllocationDispatcherCommand.cc FileAllocationDispatcherCommand.h\
 	FileAllocationEntry.cc FileAllocationEntry.h\
-	IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
-	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	MultiUrlRequestInfo.cc MultiUrlRequestInfo.h\
 	UriFileListParser.cc UriFileListParser.h\
 	SegmentManFactory.h\
 	AbstractSegmentManFactory.h\
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h\
 	RealtimeCommand.cc RealtimeCommand.h\
-	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
-	ChecksumCommand.cc ChecksumCommand.h\
-	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
-	CheckIntegrityMan.h\
 	ProgressAwareEntry.h\
 	RequestGroupEntry.cc RequestGroupEntry.h\
 	Cookie.cc Cookie.h\
@@ -107,6 +100,16 @@ SRCS =  Socket.h\
 	HttpHeaderProcessor.cc HttpHeaderProcessor.h\
 	FileEntry.cc FileEntry.h
 #	debug_new.cpp
+
+if ENABLE_MESSAGE_DIGEST
+SRCS += ChunkChecksumValidator.cc ChunkChecksumValidator.h\
+	IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
+	ChecksumCommand.cc ChecksumCommand.h\
+	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
+	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
+	CheckIntegrityMan.h
+endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT
 SRCS += MetaEntry.h\
@@ -220,15 +223,15 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
-	MetalinkRequestInfo.cc MetalinkRequestInfo.h\
-	MetalinkChunkChecksum.h
+	MetalinkRequestInfo.cc MetalinkRequestInfo.h
+#	MetalinkChunkChecksum.h
 endif # ENABLE_METALINK
 
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ -lprofiler
+	@LIBCARES_LIBS@ # -lprofiler
 #aria2c_LDFLAGS =  #-pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\

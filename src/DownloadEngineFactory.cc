@@ -43,7 +43,9 @@
 #include "CUIDCounter.h"
 #include "FileAllocationDispatcherCommand.h"
 #include "FileAllocationMan.h"
-#include "CheckIntegrityMan.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "CheckIntegrityMan.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #ifdef ENABLE_BITTORRENT
 # include "PeerListenCommand.h"
 # include "TrackerWatcherCommand.h"
@@ -87,8 +89,9 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
   requestGroupMan->addReservedGroup(reservedSet);
   e->_requestGroupMan = requestGroupMan;
   e->_fileAllocationMan = new FileAllocationMan();
+#ifdef ENABLE_MESSAGE_DIGEST
   e->_checkIntegrityMan = new CheckIntegrityMan();
-
+#endif // ENABLE_MESSAGE_DIGEST
   e->commands.push_back(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e, 1));
   e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e));
   return e;

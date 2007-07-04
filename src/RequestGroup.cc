@@ -44,10 +44,12 @@
 #include "message.h"
 #include "DlAbortEx.h"
 #include "Util.h"
-#include "CheckIntegrityCommand.h"
 #include "FatalException.h"
-#include "CheckIntegrityEntry.h"
 #include "DownloadCommand.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#include "CheckIntegrityCommand.h"
+#include "CheckIntegrityEntry.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <cerrno>
 
 SegmentManHandle RequestGroup::initSegmentMan()
@@ -188,11 +190,15 @@ void RequestGroup::loadAndOpenFile()
   } else {
     shouldCancelDownloadForSafety();
     initBitfield();
+#ifdef ENABLE_MESSAGE_DIGEST
     if(fileExists() && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
       openExistingFile();
     } else {
       initAndOpenFile();
     }
+#else // ENABLE_MESSAGE_DIGEST
+    initAndOpenFile();
+#endif // ENABLE_MESSAGE_DIGEST
   }
 }
 
@@ -216,6 +222,7 @@ bool RequestGroup::downloadFinishedByFileLength()
 void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, DownloadEngine* e, DownloadCommand* downloadCommand)
 {
   File existingFile(getFilePath());
+#ifdef ENABLE_MESSAGE_DIGEST
   if(existingFile.size() > 0 && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
     // purge SegmentEntries
     _segmentMan->purgeSegmentEntry();
@@ -225,20 +232,22 @@ void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, Down
     entry->initValidator();
     CheckIntegrityCommand* command = new CheckIntegrityCommand(cuid, this, e, entry);
     e->commands.push_back(command);
-  } else if(needsFileAllocation()) {
-    FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this, existingFile.size());
-    entry->setNextDownloadCommand(downloadCommand);
-    e->_fileAllocationMan->pushFileAllocationEntry(entry);
-  } else {
-    if(downloadCommand) {
-      e->commands.push_back(downloadCommand);
+  } else
+#endif // ENABLE_MESSAGE_DIGEST
+    if(needsFileAllocation()) {
+      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this, existingFile.size());
+      entry->setNextDownloadCommand(downloadCommand);
+      e->_fileAllocationMan->pushFileAllocationEntry(entry);
     } else {
-      Commands commands = createNextCommandWithAdj(e, -1);
-      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, this, e);
-      commands.push_front(command);
-      e->addCommand(commands);
+      if(downloadCommand) {
+	e->commands.push_back(downloadCommand);
+      } else {
+	Commands commands = createNextCommandWithAdj(e, -1);
+	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, this, e);
+	commands.push_front(command);
+	e->addCommand(commands);
+      }
     }
-  }
 }
 
 void RequestGroup::validateFilename(const string& expectedFilename,

@@ -39,7 +39,15 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = aria2c$(EXEEXT)
 #	debug_new.cpp
-@ENABLE_BITTORRENT_TRUE@am__append_1 = MetaEntry.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_1 = ChunkChecksumValidator.cc ChunkChecksumValidator.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCommand.cc ChecksumCommand.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityMan.h
+
+@ENABLE_BITTORRENT_TRUE@am__append_2 = MetaEntry.h\
 @ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
 @ENABLE_BITTORRENT_TRUE@	Dictionary.cc Dictionary.h\
 @ENABLE_BITTORRENT_TRUE@	List.cc List.h\
@@ -143,13 +151,12 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h\
 @ENABLE_BITTORRENT_TRUE@	TrackerSegmentManFactory.cc TrackerSegmentManFactory.h
 
-@ENABLE_METALINK_TRUE@am__append_2 = Metalinker.cc Metalinker.h\
+@ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
-@ENABLE_METALINK_TRUE@	MetalinkRequestInfo.cc MetalinkRequestInfo.h\
-@ENABLE_METALINK_TRUE@	MetalinkChunkChecksum.h
+@ENABLE_METALINK_TRUE@	MetalinkRequestInfo.cc MetalinkRequestInfo.h
 
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
@@ -212,8 +219,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
 	FileAllocator.h FileAllocationMonitor.cc \
 	FileAllocationMonitor.h ConsoleFileAllocationMonitor.cc \
-	ConsoleFileAllocationMonitor.h ChunkChecksumValidator.cc \
-	ChunkChecksumValidator.h HttpResponse.cc HttpResponse.h \
+	ConsoleFileAllocationMonitor.h HttpResponse.cc HttpResponse.h \
 	HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
@@ -229,21 +235,23 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FileAllocationCommand.h FillRequestGroupCommand.cc \
 	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
-	FileAllocationEntry.h IteratableChunkChecksumValidator.cc \
-	IteratableChunkChecksumValidator.h CheckIntegrityCommand.cc \
-	CheckIntegrityCommand.h MultiUrlRequestInfo.cc \
+	FileAllocationEntry.h MultiUrlRequestInfo.cc \
 	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
-	RealtimeCommand.cc RealtimeCommand.h \
-	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
-	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityEntry.cc \
-	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
+	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
 	CookieBoxFactory.h HttpHeaderProcessor.cc \
-	HttpHeaderProcessor.h FileEntry.cc FileEntry.h MetaEntry.h \
-	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
+	HttpHeaderProcessor.h FileEntry.cc FileEntry.h \
+	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
+	IteratableChunkChecksumValidator.cc \
+	IteratableChunkChecksumValidator.h \
+	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
+	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityCommand.cc \
+	CheckIntegrityCommand.h CheckIntegrityEntry.cc \
+	CheckIntegrityEntry.h CheckIntegrityMan.h MetaEntry.h Data.cc \
+	Data.h Dictionary.cc Dictionary.h List.cc List.h \
 	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
 	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
@@ -311,9 +319,15 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
-	MetalinkRequestInfo.cc MetalinkRequestInfo.h \
-	MetalinkChunkChecksum.h
-@ENABLE_BITTORRENT_TRUE@am__objects_1 = Data.$(OBJEXT) \
+	MetalinkRequestInfo.cc MetalinkRequestInfo.h
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
+@ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksumValidator.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidator.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCommand.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@am__objects_2 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.$(OBJEXT) \
@@ -377,12 +391,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtInteractive.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ActivePeerConnectionCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TrackerSegmentManFactory.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_2 = Metalinker.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkRequestInfo.$(OBJEXT)
-am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -406,8 +420,7 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	DownloadEngineFactory.$(OBJEXT) SpeedCalc.$(OBJEXT) \
 	BitfieldMan.$(OBJEXT) BitfieldManFactory.$(OBJEXT) \
 	SimpleRandomizer.$(OBJEXT) FileAllocationMonitor.$(OBJEXT) \
-	ConsoleFileAllocationMonitor.$(OBJEXT) \
-	ChunkChecksumValidator.$(OBJEXT) HttpResponse.$(OBJEXT) \
+	ConsoleFileAllocationMonitor.$(OBJEXT) HttpResponse.$(OBJEXT) \
 	HttpRequest.$(OBJEXT) AbstractProxyRequestCommand.$(OBJEXT) \
 	AbstractProxyResponseCommand.$(OBJEXT) Netrc.$(OBJEXT) \
 	AuthConfig.$(OBJEXT) DefaultAuthResolver.$(OBJEXT) \
@@ -418,18 +431,14 @@ am__objects_3 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	RequestGroupMan.$(OBJEXT) FileAllocationCommand.$(OBJEXT) \
 	FillRequestGroupCommand.$(OBJEXT) \
 	FileAllocationDispatcherCommand.$(OBJEXT) \
-	FileAllocationEntry.$(OBJEXT) \
-	IteratableChunkChecksumValidator.$(OBJEXT) \
-	CheckIntegrityCommand.$(OBJEXT) MultiUrlRequestInfo.$(OBJEXT) \
+	FileAllocationEntry.$(OBJEXT) MultiUrlRequestInfo.$(OBJEXT) \
 	UriFileListParser.$(OBJEXT) DefaultSegmentManFactory.$(OBJEXT) \
-	RealtimeCommand.$(OBJEXT) \
-	IteratableChecksumValidator.$(OBJEXT) \
-	ChecksumCommand.$(OBJEXT) CheckIntegrityEntry.$(OBJEXT) \
-	RequestGroupEntry.$(OBJEXT) Cookie.$(OBJEXT) \
-	CookieParser.$(OBJEXT) CookieBoxFactory.$(OBJEXT) \
-	HttpHeaderProcessor.$(OBJEXT) FileEntry.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2)
-am_libaria2c_a_OBJECTS = $(am__objects_3)
+	RealtimeCommand.$(OBJEXT) RequestGroupEntry.$(OBJEXT) \
+	Cookie.$(OBJEXT) CookieParser.$(OBJEXT) \
+	CookieBoxFactory.$(OBJEXT) HttpHeaderProcessor.$(OBJEXT) \
+	FileEntry.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
+am_libaria2c_a_OBJECTS = $(am__objects_4)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -488,6 +497,8 @@ ENABLE_ASYNC_DNS_FALSE = @ENABLE_ASYNC_DNS_FALSE@
 ENABLE_ASYNC_DNS_TRUE = @ENABLE_ASYNC_DNS_TRUE@
 ENABLE_BITTORRENT_FALSE = @ENABLE_BITTORRENT_FALSE@
 ENABLE_BITTORRENT_TRUE = @ENABLE_BITTORRENT_TRUE@
+ENABLE_MESSAGE_DIGEST_FALSE = @ENABLE_MESSAGE_DIGEST_FALSE@
+ENABLE_MESSAGE_DIGEST_TRUE = @ENABLE_MESSAGE_DIGEST_TRUE@
 ENABLE_METALINK_FALSE = @ENABLE_METALINK_FALSE@
 ENABLE_METALINK_TRUE = @ENABLE_METALINK_TRUE@
 EXEEXT = @EXEEXT@
@@ -633,8 +644,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
 	FileAllocator.h FileAllocationMonitor.cc \
 	FileAllocationMonitor.h ConsoleFileAllocationMonitor.cc \
-	ConsoleFileAllocationMonitor.h ChunkChecksumValidator.cc \
-	ChunkChecksumValidator.h HttpResponse.cc HttpResponse.h \
+	ConsoleFileAllocationMonitor.h HttpResponse.cc HttpResponse.h \
 	HttpRequest.cc HttpRequest.h Range.h \
 	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
 	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
@@ -650,26 +660,22 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	FileAllocationCommand.h FillRequestGroupCommand.cc \
 	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
-	FileAllocationEntry.h IteratableChunkChecksumValidator.cc \
-	IteratableChunkChecksumValidator.h CheckIntegrityCommand.cc \
-	CheckIntegrityCommand.h MultiUrlRequestInfo.cc \
+	FileAllocationEntry.h MultiUrlRequestInfo.cc \
 	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
-	RealtimeCommand.cc RealtimeCommand.h \
-	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
-	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityEntry.cc \
-	CheckIntegrityEntry.h CheckIntegrityMan.h ProgressAwareEntry.h \
+	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
 	CookieBoxFactory.h HttpHeaderProcessor.cc \
 	HttpHeaderProcessor.h FileEntry.cc FileEntry.h $(am__append_1) \
-	$(am__append_2)
+	$(am__append_2) $(am__append_3)
+#	MetalinkChunkChecksum.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ -lprofiler
+	@LIBCARES_LIBS@ # -lprofiler
 
 #aria2c_LDFLAGS =  #-pg
 AM_CPPFLAGS = -Wall\

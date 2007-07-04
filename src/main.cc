@@ -187,6 +187,7 @@ void showUsage() {
 	    "                              system but its corresponding .aria2 file doesn't\n"
 	    "                              exist.\n"
             "                              Default: false") << endl;
+#ifdef ENABLE_MESSAGE_DIGEST
   cout << _(" --check-integrity=true|false  Check file integrity by validating piece hash.\n"
 	    "                              This option makes effect in BitTorrent download\n"
 	    "                              and Metalink with chunk checksums.\n"
@@ -199,6 +200,7 @@ void showUsage() {
 	    "                              a file in Metalink mode. This option makes effect\n"
 	    "                              in Metalink with chunk checksums.\n"
 	    "                              Default: true") << endl;
+#endif // ENABLE_MESSAGE_DIGEST
   cout << _(" -c, --continue               Continue downloading a partially downloaded\n"
 	    "                              file. Use this option to resume a download started\n"
 	    "                              by web browsers or another programs\n"
@@ -403,8 +405,10 @@ int main(int argc, char* argv[]) {
       { "max-download-limit", required_argument, &lopt, 201 },
       { "file-allocation", required_argument, 0, 'a' },
       { "allow-overwrite", required_argument, &lopt, 202 },
+#ifdef ENABLE_MESSAGE_DIGEST
       { "check-integrity", required_argument, &lopt, 203 },
       { "realtime-chunk-checksum", required_argument, &lopt, 204 },
+#endif // ENABLE_MESSAGE_DIGEST
       { "continue", no_argument, 0, 'c' },
       { "user-agent", required_argument, 0, 'U' },
       { "no-netrc", no_argument, 0, 'n' },
@@ -641,7 +645,13 @@ int main(int argc, char* argv[]) {
   if(op->defined(PREF_HTTP_PROXY_USER)) {
     op->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
   }
-  if(!op->defined(PREF_TORRENT_FILE) && !op->defined(PREF_METALINK_FILE) &&
+  if(
+#ifdef ENABLE_BITTORRENT
+     !op->defined(PREF_TORRENT_FILE) &&
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+     !op->defined(PREF_METALINK_FILE) &&
+#endif // ENABLE_METALINK
      !op->defined(PREF_INPUT_FILE)) {
     if(optind == argc) {
       cerr << _("specify at least one URL") << endl;

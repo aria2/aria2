@@ -44,7 +44,9 @@
 #include "NameResolver.h"
 #include "RequestGroupMan.h"
 #include "FileAllocationMan.h"
-#include "CheckIntegrityMan.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "CheckIntegrityMan.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 typedef deque<SocketHandle> Sockets;
 
@@ -121,7 +123,9 @@ public:
   Commands commands;
   RequestGroupManHandle _requestGroupMan;
   FileAllocationManHandle _fileAllocationMan;
+#ifdef ENABLE_MESSAGE_DIGEST
   CheckIntegrityManHandle _checkIntegrityMan;
+#endif // ENABLE_MESSAGE_DIGEST
   const Option* option;
   
   DownloadEngine();

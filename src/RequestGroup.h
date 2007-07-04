@@ -39,10 +39,12 @@
 #include "SegmentMan.h"
 #include "LogFactory.h"
 #include "Command.h"
-#include "ChunkChecksum.h"
-#include "Checksum.h"
 #include "SegmentManFactory.h"
 #include "DefaultSegmentManFactory.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "ChunkChecksum.h"
+# include "Checksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 class DownloadCommand;
 
@@ -61,8 +63,10 @@ private:
   SegmentManFactoryHandle _segmentManFactory;
   const Option* _option;
   const Logger* logger;
+#ifdef ENABLE_MESSAGE_DIGEST
   ChunkChecksumHandle _chunkChecksum;
   ChecksumHandle _checksum;
+#endif // ENABLE_MESSAGE_DIGEST
   int32_t _numConcurrentCommand;
 
   void validateFilename(const string& expectedFilename,
@@ -85,8 +89,10 @@ public:
     _segmentManFactory(new DefaultSegmentManFactory(option)),
     _option(option),
     logger(LogFactory::getInstance()),
+#ifdef ENABLE_MESSAGE_DIGEST
     _chunkChecksum(0),
     _checksum(0),
+#endif // ENABLE_MESSAGE_DIGEST
     _numConcurrentCommand(0),
     numConnection(0),
     isTorrent(false) {}
@@ -98,7 +104,10 @@ public:
     _segmentManFactory(new DefaultSegmentManFactory(option)),
     _option(option),
     logger(LogFactory::getInstance()),
+#ifdef ENABLE_MESSAGE_DIGEST
     _chunkChecksum(0),
+    _checksum(0),
+#endif // ENABLE_MESSAGE_DIGEST
     _numConcurrentCommand(0),
     numConnection(0),
     isTorrent(false)
@@ -126,6 +135,7 @@ public:
     _uris.push_back(uri);
   }
 
+#ifdef ENABLE_MESSAGE_DIGEST
   void setChunkChecksum(const ChunkChecksumHandle& chunkChecksum)
   {
     _chunkChecksum = chunkChecksum;
@@ -135,6 +145,17 @@ public:
   {
     return _chunkChecksum;
   }
+
+  void setChecksum(const ChecksumHandle& checksum)
+  {
+    _checksum = checksum;
+  }
+
+  ChecksumHandle getChecksum() const
+  {
+    return _checksum;
+  }
+#endif // ENABLE_MESSAGE_DIGEST
 
   void initBitfield();
 
@@ -206,16 +227,6 @@ public:
   void prepareForNextAction(int cuid, const RequestHandle& req, DownloadEngine* e, DownloadCommand* downloadCommand = 0);
 
   bool downloadFinishedByFileLength();
-
-  void setChecksum(const ChecksumHandle& checksum)
-  {
-    _checksum = checksum;
-  }
-
-  ChecksumHandle getChecksum() const
-  {
-    return _checksum;
-  }
 
   const string& getHintFilename() const
   {

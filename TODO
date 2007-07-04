@@ -25,3 +25,6 @@
 * consider life cycle of requestGroup and segmentMan
 * exit status: all downloads have been successful-> EXIT_SUCCESS,
 		some of downloads have been failed -> EXIT_FAILURE
+
+
+* Replace MetalinkChunkChecksum with ChunkChecksum

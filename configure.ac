@@ -72,7 +72,10 @@ fi
 
 if test "x$have_libgcrypt" = "xyes" || test "x$have_openssl" = "xyes"; then
   AC_DEFINE([ENABLE_MESSAGE_DIGEST], [1], [Define to 1 if message digest support is enabled.])
+  AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], true)
   enable_message_digest=yes
+else
+  AM_CONDITIONAL([ENABLE_MESSAGE_DIGEST], false)
 fi
 
 if test "x$enable_bittorrent" = "xyes" && test "x$enable_message_digest" = "xyes"; then

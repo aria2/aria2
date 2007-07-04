@@ -40,7 +40,9 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "message.h"
 #include "prefs.h"
-#include "ChecksumCommand.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "ChecksumCommand.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <sys/time.h>
 
 DownloadCommand::DownloadCommand(int cuid,
@@ -126,12 +128,14 @@ bool DownloadCommand::executeInternal() {
 
 bool DownloadCommand::prepareForNextSegment() {
   if(_requestGroup->getSegmentMan()->finished()) {
+#ifdef ENABLE_MESSAGE_DIGEST
     if(!_requestGroup->getChecksum().isNull() &&
        !_requestGroup->getChecksum()->isEmpty()) {
       ChecksumCommand* command = new ChecksumCommand(cuid, _requestGroup, e);
       command->initValidator();
       e->commands.push_back(command);
     }
+#endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
     // Merge segment with next segment, if segment.index+1 == nextSegment.index
