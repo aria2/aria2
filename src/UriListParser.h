@@ -32,35 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_URI_FILE_LIST_PARSER_H_
-#define _D_URI_FILE_LIST_PARSER_H_
+#ifndef _D_URI_LIST_PARSER_H_
+#define _D_URI_LIST_PARSER_H_
 
 #include "common.h"
-#include <fstream>
+#include <istream>
 
-class UriFileListParser {
-private:
-  string _filename;
-  istream* _ifs;
-  bool _deleteOnExit;
+class UriListParser {
+protected:
+  virtual istream& getInputStream() = 0;
+  virtual const istream& getInputStream() const = 0;
+
 public:
-  UriFileListParser(const string& filename):_filename(filename), _ifs(new ifstream(filename.c_str())), _deleteOnExit(true) {}
+  UriListParser() {}
 
-  UriFileListParser():_ifs(0) {}
-
-  UriFileListParser(istream& ifs):_filename("-"), _ifs(&ifs), _deleteOnExit(false)
-  {}
-
-  ~UriFileListParser()
-  {
-    if(_deleteOnExit) {
-      delete _ifs;
-    }
-  }
+  virtual ~UriListParser() {}
 
   bool hasNext() const;
 
   Strings next();
 };
 
-#endif // _D_URI_FILE_LIST_PARSER_H_
+#endif // _D_URI_LIST_PARSER_H_

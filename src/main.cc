@@ -49,7 +49,8 @@
 #include "FatalException.h"
 #include "File.h"
 #include "CUIDCounter.h"
-#include "UriFileListParser.h"
+#include "FileUriListParser.h"
+#include "StreamUriListParser.h"
 #include "CookieBoxFactory.h"
 #include "a2algo.h"
 #include "message.h"
@@ -755,14 +756,14 @@ int main(int argc, char* argv[]) {
       else
 #endif // ENABLE_METALINK
 	if(op->defined(PREF_INPUT_FILE)) {
-	  SharedHandle<UriFileListParser> flparser(0);
+	  SharedHandle<UriListParser> flparser(0);
 	  if(op->get(PREF_INPUT_FILE) == "-") {
-	    flparser = new UriFileListParser(cin);
+	    flparser = new StreamUriListParser(cin);
 	  } else {
 	    if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
 	      throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
 	    }
-	    flparser = new UriFileListParser(op->get(PREF_INPUT_FILE));
+	    flparser = new FileUriListParser(op->get(PREF_INPUT_FILE));
 	  }
 	  RequestGroups groups;
 	  while(flparser->hasNext()) {

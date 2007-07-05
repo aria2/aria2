@@ -32,23 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "UriFileListParser.h"
-#include "Util.h"
+#ifndef _D_FILE_URI_LIST_PARSER_H_
+#define _D_FILE_URI_LIST_PARSER_H_
 
-bool UriFileListParser::hasNext() const
-{
-  return *_ifs;
-}
+#include "UriListParser.h"
+#include <fstream>
 
-Strings UriFileListParser::next()
-{
-  string line;
-  while(getline(*_ifs, line)) {
-    if(Util::trim(line) != "") {
-      Strings uris;
-      Util::slice(uris, line, '\t', true);
-      return uris;
-    }
+class FileUriListParser : public UriListParser {
+private:
+  string _filename;
+  ifstream _ifs;
+
+protected:
+  virtual istream& getInputStream()
+  {
+    return _ifs;
   }
-  return Strings();
-}
+
+  virtual const istream& getInputStream() const
+  {
+    return _ifs;
+  }
+
+public:
+  FileUriListParser(const string& filename):_filename(filename), _ifs(filename.c_str()) {}
+
+  virtual ~FileUriListParser() {}
+};
+
+#endif // _D_FILE_URI_LIST_PARSER_H_

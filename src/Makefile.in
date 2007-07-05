@@ -236,7 +236,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
 	FileAllocationEntry.h MultiUrlRequestInfo.cc \
-	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
+	MultiUrlRequestInfo.h UriListParser.cc UriListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
@@ -432,7 +432,7 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FillRequestGroupCommand.$(OBJEXT) \
 	FileAllocationDispatcherCommand.$(OBJEXT) \
 	FileAllocationEntry.$(OBJEXT) MultiUrlRequestInfo.$(OBJEXT) \
-	UriFileListParser.$(OBJEXT) DefaultSegmentManFactory.$(OBJEXT) \
+	UriListParser.$(OBJEXT) DefaultSegmentManFactory.$(OBJEXT) \
 	RealtimeCommand.$(OBJEXT) RequestGroupEntry.$(OBJEXT) \
 	Cookie.$(OBJEXT) CookieParser.$(OBJEXT) \
 	CookieBoxFactory.$(OBJEXT) HttpHeaderProcessor.$(OBJEXT) \
@@ -661,7 +661,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	FillRequestGroupCommand.h FileAllocationDispatcherCommand.cc \
 	FileAllocationDispatcherCommand.h FileAllocationEntry.cc \
 	FileAllocationEntry.h MultiUrlRequestInfo.cc \
-	MultiUrlRequestInfo.h UriFileListParser.cc UriFileListParser.h \
+	MultiUrlRequestInfo.h UriListParser.cc UriListParser.h \
 	SegmentManFactory.h AbstractSegmentManFactory.h \
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h \
 	RealtimeCommand.cc RealtimeCommand.h ProgressAwareEntry.h \
@@ -906,7 +906,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerSegmentManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerUpdateCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriFileListParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@

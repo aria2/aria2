@@ -1,6 +1,8 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	FileUriListParserTest.cc\
+	StreamUriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
 	UtilTest.cc\
 	CookieBoxTest.cc\
@@ -12,7 +14,6 @@ aria2c_SOURCES = AllTest.cc\
 	RequestGroupManTest.cc\
 	IteratableChecksumValidatorTest.cc\
 	IteratableChunkChecksumValidatorTest.cc\
-	UriFileListParserTest.cc\
 	PeerTest.cc\
 	DefaultPeerStorageTest.cc\
 	RequestFactoryTest.cc\

@@ -87,7 +87,7 @@ SRCS =  Socket.h\
 	FileAllocationDispatcherCommand.cc FileAllocationDispatcherCommand.h\
 	FileAllocationEntry.cc FileAllocationEntry.h\
 	MultiUrlRequestInfo.cc MultiUrlRequestInfo.h\
-	UriFileListParser.cc UriFileListParser.h\
+	UriListParser.cc UriListParser.h\
 	SegmentManFactory.h\
 	AbstractSegmentManFactory.h\
 	DefaultSegmentManFactory.cc DefaultSegmentManFactory.h\
