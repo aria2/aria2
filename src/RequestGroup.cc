@@ -227,16 +227,14 @@ void RequestGroup::prepareForNextAction(int cuid, const RequestHandle& req, Down
     // purge SegmentEntries
     _segmentMan->purgeSegmentEntry();
 
-    CheckIntegrityEntryHandle entry = new CheckIntegrityEntry(cuid, req, this);
-    entry->setNextDownloadCommand(downloadCommand);
+    CheckIntegrityEntryHandle entry = new CheckIntegrityEntry(cuid, req, this, downloadCommand);
     entry->initValidator();
     CheckIntegrityCommand* command = new CheckIntegrityCommand(cuid, this, e, entry);
     e->commands.push_back(command);
   } else
 #endif // ENABLE_MESSAGE_DIGEST
     if(needsFileAllocation()) {
-      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this, existingFile.size());
-      entry->setNextDownloadCommand(downloadCommand);
+      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, req, this, downloadCommand, existingFile.size());
       e->_fileAllocationMan->pushFileAllocationEntry(entry);
     } else {
       if(downloadCommand) {

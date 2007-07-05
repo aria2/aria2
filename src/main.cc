@@ -52,6 +52,7 @@
 #include "UriFileListParser.h"
 #include "CookieBoxFactory.h"
 #include "a2algo.h"
+#include "message.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -211,7 +212,8 @@ void showUsage() {
   cout << _(" -n, --no-netrc               Disables netrc support.") << endl;
   cout << _(" -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 	    "                              multiple URIs for a single entity: deliminate\n"
-	    "                              URIs by Tab in a single line.") << endl;
+	    "                              URIs by Tab in a single line.\n"
+	    "                              Reads input from stdin when '-' is specified.") << endl;
   cout << _(" -j, --max-concurrent-downloads=N Set maximum number of concurrent downloads.\n"
 	    "                              It should be used with -i option.\n"
 	    "                              Default: 5") << endl;
@@ -753,10 +755,18 @@ int main(int argc, char* argv[]) {
       else
 #endif // ENABLE_METALINK
 	if(op->defined(PREF_INPUT_FILE)) {
-	  UriFileListParser flparser(op->get(PREF_INPUT_FILE));
+	  SharedHandle<UriFileListParser> flparser(0);
+	  if(op->get(PREF_INPUT_FILE) == "-") {
+	    flparser = new UriFileListParser(cin);
+	  } else {
+	    if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
+	      throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
+	    }
+	    flparser = new UriFileListParser(op->get(PREF_INPUT_FILE));
+	  }
 	  RequestGroups groups;
-	  while(flparser.hasNext()) {
-	    Strings uris = flparser.next();
+	  while(flparser->hasNext()) {
+	    Strings uris = flparser->next();
 	    if(!uris.empty()) {
 	      Strings xuris;
 	      ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),

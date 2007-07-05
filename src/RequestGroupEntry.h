@@ -47,16 +47,23 @@ protected:
   RequestHandle _currentRequest;
   RequestGroup* _requestGroup;
   DownloadCommand* _nextDownloadCommand;
+  bool _shouldAddNumConnection;
 public:
   RequestGroupEntry(int cuid,
 		    const RequestHandle& currentRequest,
-		    RequestGroup* requestGroup):
+		    RequestGroup* requestGroup,
+		    DownloadCommand* nextDownloadCommand = 0):
     _cuid(cuid),
     _currentRequest(currentRequest),
     _requestGroup(requestGroup),
-    _nextDownloadCommand(0)
+    _nextDownloadCommand(nextDownloadCommand)
   {
-    ++_requestGroup->numConnection;
+    if(nextDownloadCommand) {
+      _shouldAddNumConnection = false;
+    } else {
+      _shouldAddNumConnection = true;
+      ++_requestGroup->numConnection;
+    }
   }
 
   virtual ~RequestGroupEntry();
@@ -80,12 +87,12 @@ public:
   {
     return _requestGroup;
   }
-
+  /*
   void setNextDownloadCommand(DownloadCommand* command)
   {
     _nextDownloadCommand = command;
   }
-
+  */
   DownloadCommand* getNextDownloadCommand() const
   {
     return _nextDownloadCommand;

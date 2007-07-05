@@ -44,8 +44,9 @@ private:
 public:
   CheckIntegrityEntry(int cuid,
 		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup):
-    RequestGroupEntry(cuid, currentRequest, requestGroup),
+		      RequestGroup* requestGroup,
+		      DownloadCommand* nextDownloadCommand = 0):
+    RequestGroupEntry(cuid, currentRequest, requestGroup, nextDownloadCommand),
     _validator(0)
   {}
 

@@ -41,9 +41,22 @@
 class UriFileListParser {
 private:
   string _filename;
-  ifstream _ifs;
+  istream* _ifs;
+  bool _deleteOnExit;
 public:
-  UriFileListParser(const string& filename):_filename(filename), _ifs(filename.c_str()) {}
+  UriFileListParser(const string& filename):_filename(filename), _ifs(new ifstream(filename.c_str())), _deleteOnExit(true) {}
+
+  UriFileListParser():_ifs(0) {}
+
+  UriFileListParser(istream& ifs):_filename("-"), _ifs(&ifs), _deleteOnExit(false)
+  {}
+
+  ~UriFileListParser()
+  {
+    if(_deleteOnExit) {
+      delete _ifs;
+    }
+  }
 
   bool hasNext() const;
 

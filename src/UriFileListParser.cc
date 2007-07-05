@@ -37,13 +37,13 @@
 
 bool UriFileListParser::hasNext() const
 {
-  return _ifs;
+  return *_ifs;
 }
 
 Strings UriFileListParser::next()
 {
   string line;
-  while(getline(_ifs, line)) {
+  while(getline(*_ifs, line)) {
     if(Util::trim(line) != "") {
       Strings uris;
       Util::slice(uris, line, '\t', true);

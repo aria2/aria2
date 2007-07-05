@@ -44,8 +44,9 @@ public:
   FileAllocationEntry(int cuid,
 		      const RequestHandle& currentRequest,
 		      RequestGroup* requestGroup,
+		      DownloadCommand* nextDownloadCommand = 0,
 		      int64_t offset = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup),
+    RequestGroupEntry(cuid, currentRequest, requestGroup, nextDownloadCommand),
     _offset(offset)
   {}
 

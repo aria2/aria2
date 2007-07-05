@@ -37,6 +37,8 @@
 
 RequestGroupEntry::~RequestGroupEntry()
 {
-  --_requestGroup->numConnection;
+  if(_shouldAddNumConnection) {
+    --_requestGroup->numConnection;
+  }
   delete _nextDownloadCommand;
 }

@@ -61,8 +61,7 @@ bool CheckIntegrityCommand::executeInternal()
       return true;
     }
     if(_requestGroup->needsFileAllocation()) {
-      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, _entry->getCurrentRequest(), _requestGroup, _requestGroup->getExistingFileLength());
-      entry->setNextDownloadCommand(_entry->popNextDownloadCommand());
+      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, _entry->getCurrentRequest(), _requestGroup, _entry->popNextDownloadCommand(), _requestGroup->getExistingFileLength());
       _e->_fileAllocationMan->pushFileAllocationEntry(entry); 
     } else {
       if(_timer.difference() <= _e->option->getAsInt(PREF_DIRECT_DOWNLOAD_TIMEOUT) &&
