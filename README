@@ -22,12 +22,13 @@ aria2 is in very early development stage. Currently it has following features:
 * It can load cookies from file whose format is used by Netscape and Mozilla.
 * It can run as a daemon process.
 * BitTorrent protocol support with fast extension.
-* Selective download in multi-file torrent
+* Selective download in multi-file torrent/metalink.
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent).
 * Limiting download/upload speed.
 * Chunk checksum validation in Metalink.
 * netrc support.
 * Configuration file support.
+* Download URIs found in a text file or stdin.
 
 3. How to build
 ---------------
