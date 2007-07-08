@@ -7,6 +7,7 @@
 	* src/FileUriListParser.h: New class.
 	* src/main.cc (main): Use StreamUriListParser and FileUriListParser
 	instead of UriFileListParser.
+	(showUsage): Added 3 usage examples for metalink download.
 
 2007-07-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

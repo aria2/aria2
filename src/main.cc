@@ -310,6 +310,12 @@ void showUsage() {
   cout << "  aria2c -M test.metalink" << endl;
   cout << _(" Metalink downloading with preferences:") << endl;
   cout << "  aria2c -M test.metalink --metalink-version=1.1.1 --metalink-language=en-US" << endl;
+  cout << _(" Download only selected files:") << endl;
+  cout << "  aria2c -T test.metalink --metalink-language=en-US dir/file1.zip dir/file2.zip" << endl;
+  cout << _(" Download only selected files using index:") << endl;
+  cout << "  aria2c -T test.metalink --metalink-language=en-US --select-file 1,3-5" << endl;
+  cout << _(" Print file listing of .metalink file:") << endl;
+  cout << "  aria2c -T test.torrent -S --metalink-language=en-US" << endl;
 #endif // ENABLE_METALINK
   cout << endl;
   printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
