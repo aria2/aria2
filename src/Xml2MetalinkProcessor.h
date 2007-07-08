@@ -48,8 +48,8 @@ private:
   MetalinkResourceHandle getResource(const string& xpath);
 
 #ifdef ENABLE_MESSAGE_DIGEST
-  MetalinkChunkChecksumHandle getPieceHash(const string& xpath,
-					   int64_t totalSize);
+  ChunkChecksumHandle getPieceHash(const string& xpath,
+				   int64_t totalSize);
 #endif // ENABLE_MESSAGE_DIGEST
 
   xmlXPathObjectPtr xpathEvaluation(const string& xpath);

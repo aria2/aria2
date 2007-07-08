@@ -670,7 +670,6 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	CookieBoxFactory.h HttpHeaderProcessor.cc \
 	HttpHeaderProcessor.h FileEntry.cc FileEntry.h $(am__append_1) \
 	$(am__append_2) $(am__append_3)
-#	MetalinkChunkChecksum.h
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

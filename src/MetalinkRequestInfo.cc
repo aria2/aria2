@@ -152,11 +152,7 @@ RequestInfos MetalinkRequestInfo::execute() {
       if(entry->chunkChecksum.isNull()) {
 	rg->setChecksum(checksum);
       } else {
-	ChunkChecksumHandle cc =
-	  new ChunkChecksum(entry->chunkChecksum->digestAlgo,
-			    entry->chunkChecksum->pieceHashes,
-			    entry->chunkChecksum->pieceLength);
-	rg->setChunkChecksum(cc);
+	rg->setChunkChecksum(entry->chunkChecksum);
       }
 #endif // ENABLE_MESSAGE_DIGEST
       groups.push_front(rg);

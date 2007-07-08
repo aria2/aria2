@@ -38,8 +38,10 @@
 #include "common.h"
 #include "MetalinkResource.h"
 #include "Checksum.h"
-#include "MetalinkChunkChecksum.h"
 #include "FileEntry.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#include "ChunkChecksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <deque>
 
 class MetalinkEntry;
@@ -57,7 +59,7 @@ public:
 public:
   MetalinkResources resources;
 #ifdef ENABLE_MESSAGE_DIGEST
-  MetalinkChunkChecksumHandle chunkChecksum;
+  ChunkChecksumHandle chunkChecksum;
 #endif // ENABLE_MESSAGE_DIGEST
 public:
   MetalinkEntry();

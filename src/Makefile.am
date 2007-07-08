@@ -224,7 +224,6 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkProcessor.h\
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h
-#	MetalinkChunkChecksum.h
 endif # ENABLE_METALINK
 
 noinst_LIBRARIES = libaria2c.a

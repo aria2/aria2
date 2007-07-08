@@ -146,40 +146,39 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST
-MetalinkChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
+ChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
 								int64_t totalSize)
 {
-  MetalinkChunkChecksumHandle chunkChecksum = new MetalinkChunkChecksum();
-
   xmlXPathObjectPtr result = xpathEvaluation(xpath);
   if(!result) {
     return 0;
   }
   xmlNodeSetPtr nodeSet = result->nodesetval;
   xmlNodePtr node = nodeSet->nodeTab[0];
-  chunkChecksum->pieceLength = STRTOLL(Util::trim(xmlAttribute(node, "length")).c_str());
-  string algo = Util::trim(xmlAttribute(node, "type"));
+
+  int64_t checksumLength = STRTOLL(Util::trim(xmlAttribute(node, "length")).c_str());
+  string algoString = Util::trim(xmlAttribute(node, "type"));
   xmlXPathFreeObject(result);
-  if(algo == "sha1") {
-    chunkChecksum->digestAlgo = DIGEST_ALGO_SHA1;
-  } else if(algo == "md5") {
-    chunkChecksum->digestAlgo = DIGEST_ALGO_MD5;
+  MessageDigestContext::DigestAlgo algo;
+  if(algoString == "sha1") {
+    algo = DIGEST_ALGO_SHA1;
+  } else if(algoString == "md5") {
+    algo = DIGEST_ALGO_MD5;
   } else {
     // unknown checksum type
-    chunkChecksum->pieceLength = 0;
-    return chunkChecksum;
+    return 0;
   }
 
-  int64_t numPiece =
-    (totalSize+chunkChecksum->pieceLength-1)/chunkChecksum->pieceLength;
+  Strings checksums;
+  int64_t numPiece = (totalSize+checksumLength-1)/checksumLength;
   for(int64_t i = 0; i < numPiece; ++i) {
     string pieceHash = Util::trim(xpathContent(xpath+"/m:hash[@piece=\""+Util::ullitos(i)+"\"]"));
     if(pieceHash == "") {
       throw new DlAbortEx("Piece hash missing. index=%d", i);
     }
-    chunkChecksum->pieceHashes.push_back(pieceHash);
+    checksums.push_back(pieceHash);
   }
-  return chunkChecksum;
+  return new ChunkChecksum(algo, checksums, checksumLength);
 }
 #endif // ENABLE_MESSAGE_DIGEST
 
