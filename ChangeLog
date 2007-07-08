@@ -11,6 +11,8 @@
 	(getPieceHash): Use ChunkChecksum instead of MetalinkChunkChecksum.
 	* src/MetalinkRequestInfo.cc (execute)
 
+	* Release 0.11.1
+	
 2007-07-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Reads URIs from stdin when "-i -" is specified.
