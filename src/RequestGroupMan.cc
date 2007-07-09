@@ -91,7 +91,10 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
 	itr != _requestGroups.end(); ++itr) {
     (*itr)->initSegmentMan();
     (*itr)->setGID(++_gidCounter);
-    commands.push_back((*itr)->createNextCommand(e, 1).front());
+    Commands nextCommands = (*itr)->createNextCommand(e, 1);
+    if(!nextCommands.empty()) {
+      commands.push_back(nextCommands.front());
+    }
   }
   return commands;
 }

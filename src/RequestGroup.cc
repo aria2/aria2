@@ -80,8 +80,8 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, 
     if(req->setUrl(uri)) {
       commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e));
     } else {
-      logger->info(_("Unrecognized URL or unsupported protocol: %s\n"),
-		   req->getUrl().c_str());
+      logger->error(_("Unrecognized URL or unsupported protocol: %s\n"),
+		    req->getUrl().c_str());
     }
   }
   return commands;

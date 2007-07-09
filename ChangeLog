@@ -1,3 +1,19 @@
+2007-07-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that causes segfault when all URIs specified are
+	unsupported.
+	* src/RequestGroupMan.cc (getInitialCommands)
+	Check if RequestGroup::createNextCommand() returns empty list of
+	commands.
+	* src/RequestGroup.cc (createNextCommand)
+	Change log level from info to error so that users can notice that
+	an error occurred.
+
+	Fixed the bug that causes segfault when a zero-sized file is
+	downloaded.
+	* src/BitfieldMan.cc (isAllBitSet)
+	Return true if bitfieldLength is 0.
+	
 2007-07-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/main.cc

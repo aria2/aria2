@@ -458,6 +458,9 @@ bool BitfieldMan::isFilteredAllBitSet() const {
 }
 
 bool BitfieldMan::isAllBitSet() const {
+  if(bitfieldLength == 0) {
+    return true;
+  }
   for(int32_t i = 0; i < bitfieldLength-1; ++i) {
     if(bitfield[i] != 0xff) {
       return false;
