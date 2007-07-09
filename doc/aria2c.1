@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.72.0 <http://docbook.sf.net/>
-.\"      Date: 07/06/2007
+.\"      Date: 07/09/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "07/06/2007" "" ""
+.TH "ARIA2C" "1" "07/09/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -486,17 +486,17 @@ aria2c \-M test.metalink \-\-metalink\-version=1.1.1 \-\-metalink\-language=en\-
 .PP
 Download only selected files
 .RS 4
-aria2c \-T test.metalink \-\-metalink\-language=en\-US dir/file1.zip dir/file2.zip
+aria2c \-M test.metalink \-\-metalink\-language=en\-US dir/file1.zip dir/file2.zip
 .RE
 .PP
 Download only selected files using index
 .RS 4
-aria2c \-T test.metalink \-\-metalink\-language=en\-US \-\-select\-file 1,3\-5
+aria2c \-M test.metalink \-\-metalink\-language=en\-US \-\-select\-file 1,3\-5
 .RE
 .PP
 Print file listing of .metalink file
 .RS 4
-aria2c \-T test.torrent \-S \-\-metalink\-language=en\-US
+aria2c \-M test.metalink \-S \-\-metalink\-language=en\-US
 .RE
 .SH "FILES"
 .PP

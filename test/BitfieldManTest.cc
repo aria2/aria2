@@ -94,6 +94,9 @@ void BitfieldManTest::testIsAllBitSet() {
     CPPUNIT_ASSERT(bt1.setBit(i));
   }
   CPPUNIT_ASSERT(bt1.isAllBitSet());
+
+  BitfieldMan btzero(1024, 0);
+  CPPUNIT_ASSERT(btzero.isAllBitSet());
 }
 
 void BitfieldManTest::testFilter() {
