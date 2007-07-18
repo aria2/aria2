@@ -142,13 +142,18 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   }
 
   DownloadCommand* command = 0;
-  File file(_requestGroup->getFilePath());
-  if(_requestGroup->getRemainingUris().empty() && !file.exists()) {
-    command = createHttpDownloadCommand(httpResponse);
+  try {
+    File file(_requestGroup->getFilePath());
+    if(_requestGroup->getRemainingUris().empty() && !file.exists()) {
+      command = createHttpDownloadCommand(httpResponse);
+    }
+    _requestGroup->loadAndOpenFile();
+    _requestGroup->prepareForNextAction(cuid, req, e, command);
+    e->noWait = true;
+  } catch(Exception* e) {
+    delete command;
+    throw;
   }
-  _requestGroup->loadAndOpenFile();
-  _requestGroup->prepareForNextAction(cuid, req, e, command);
-  e->noWait = true;
   return true;
 }
 

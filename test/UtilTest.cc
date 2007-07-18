@@ -203,6 +203,28 @@ void UtilTest::testGetContentDispositionFilename() {
 
   string h4 = "attachment;";
   CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h4));
+
+  string h5 = "attachment; filename=aria2.tar.bz2";
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h5));
+
+  string h6 = "attachment; filename='aria2.tar.bz2'";
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h6));
+
+  string h7 = "attachment; filename='aria2.tar.bz2";
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h7));
+
+  string h8 = "attachment; filename=aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT";
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h8));
+
+  string h9 = "attachment; filename=\"aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT\"";
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT"), Util::getContentDispositionFilename(h9));
+
+  string h10 = "attachment; filename=";
+  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h10));
+
+  string h11 = "attachment; filename=;";
+  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h11));
+
 }
 
 class Printer {

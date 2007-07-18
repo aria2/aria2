@@ -111,9 +111,9 @@ string Util::llitos(int64_t value, bool comma)
   return int2str<int64_t>(value, comma);
 }
 
-string Util::trim(const string& src) {
-  string::size_type sp = src.find_first_not_of("\r\n\t ");
-  string::size_type ep = src.find_last_not_of("\r\n\t ");
+string Util::trim(const string& src, const string& trimCharset) {
+  string::size_type sp = src.find_first_not_of(trimCharset);
+  string::size_type ep = src.find_last_not_of(trimCharset);
   if(sp == string::npos || ep == string::npos) {
     return "";
   } else {
@@ -459,16 +459,27 @@ void Util::unfoldRange(const string& src, Integers& range) {
 }
 
 string Util::getContentDispositionFilename(const string& header) {
-  string::size_type attributesp = header.find("filename=\"");
+  string keyName = "filename=";
+  string::size_type attributesp = header.find(keyName);
   if(attributesp == string::npos) {
     return "";
   }
-  string::size_type filenamesp = attributesp+strlen("filename=\"");
-  string::size_type filenameep = header.find("\"", filenamesp);
-  if(filenameep == string::npos) {
+  string::size_type filenamesp = attributesp+strlen(keyName.c_str());
+  string::size_type filenameep;
+  if(filenamesp == header.size()) {
     return "";
   }
-  return trim(header.substr(filenamesp, filenameep-filenamesp));
+  
+  if(header[filenamesp] == '\'' || header[filenamesp] == '"') {
+    char quoteChar = header[filenamesp];
+    filenameep = header.find(quoteChar, filenamesp+1);
+  } else {
+    filenameep = header.find(';', filenamesp);
+  }
+  if(filenameep == string::npos) {
+    filenameep = header.size();
+  }
+  return trim(header.substr(filenamesp, filenameep-filenamesp), "\r\n '\"");
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST

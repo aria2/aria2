@@ -1,3 +1,13 @@
+2007-07-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that prevents filename in content-disposition from
+	being retrieved when filename is not quoted.
+	* src/Util.cc (getContentDispositionFilename)
+
+	Fixed the bug that causes infinate loop and memory leak when file open
+	operation failed.
+	* src/HttpResponseCommand.cc (handleDefaultEncoding)
+
 2007-07-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that causes segfault when all URIs specified are

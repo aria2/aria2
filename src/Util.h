@@ -73,7 +73,7 @@ public:
    */
   static void slice(Strings& result, const string& src, char delim, bool trim = false);
   
-  static string trim(const string& src);
+  static string trim(const string& src, const string& trimCharset = "\r\n\t ");
 
   static bool startsWith(const string& target, const string& part);
 
