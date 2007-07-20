@@ -85,7 +85,7 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 
 HttpResponseHandle HttpConnection::receiveResponse() {
   if(outstandingHttpRequests.size() == 0) {
-    throw new DlAbortEx("No HttpRequestEntry found.");
+    throw new DlAbortEx(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
   HttpRequestEntryHandle entry = outstandingHttpRequests.front();
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();

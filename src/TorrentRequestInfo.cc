@@ -56,9 +56,12 @@ RequestInfos TorrentRequestInfo::execute() {
     DNSCacheSingletonHolder::instance(dnsCache);
   }
 
-  BtContextHandle btContext(new DefaultBtContext());
+  DefaultBtContextHandle btContext = new DefaultBtContext();
   btContext->load(torrentFile);
-  
+  if(op->defined(PREF_PEER_ID_PREFIX)) {
+    btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
+  }
+
   if(op->get(PREF_SHOW_FILES) == V_TRUE) {
     Util::toStream(cout, btContext->getFileEntries());
     return RequestInfos();
@@ -109,7 +112,7 @@ RequestInfos TorrentRequestInfo::execute() {
       printDownloadCompeleteMessage();
     }
   } catch(RecoverableException* ex) {
-    logger->error("Exception caught", ex);
+    logger->error(EX_EXCEPTION_CAUGHT, ex);
     fail = true;
     delete ex;
   }

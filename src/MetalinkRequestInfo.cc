@@ -38,6 +38,7 @@
 #include "DlAbortEx.h"
 #include "MultiUrlRequestInfo.h"
 #include "Util.h"
+#include "message.h"
 
 class AccumulateNonP2PUrl {
 private:
@@ -85,8 +86,8 @@ RequestInfos MetalinkRequestInfo::execute() {
 			     op->get(PREF_METALINK_LANGUAGE),
 			     op->get(PREF_METALINK_OS));
     if(entries.size() == 0) {
-      printf("No file matched with your preference.\n");
-      throw new DlAbortEx("No file matched with your preference.");
+      cout << EX_NO_RESULT_WITH_YOUR_PREFS << endl;
+      throw new DlAbortEx(EX_NO_RESULT_WITH_YOUR_PREFS);
     }
     if(op->get(PREF_SHOW_FILES) == V_TRUE) {
       Util::toStream(cout, MetalinkEntry::toFileEntry(entries));
@@ -122,7 +123,7 @@ RequestInfos MetalinkRequestInfo::execute() {
       if(entry->resources.size() == 0) {
 	continue;
       }
-      logger->info("Metalink: Queueing %s for download.",
+      logger->info(MSG_METALINK_QUEUEING,
 		   entry->getPath().c_str());
       MetalinkResources::iterator itr =
 	find_if(entry->resources.begin(),
@@ -160,7 +161,7 @@ RequestInfos MetalinkRequestInfo::execute() {
     MultiUrlRequestInfoHandle reqInfo = new MultiUrlRequestInfo(groups, op);
     nextReqInfos.push_back(reqInfo);
   } catch(RecoverableException* ex) {
-    logger->error("Exception caught", ex);
+    logger->error(EX_EXCEPTION_CAUGHT, ex);
     delete ex;
     fail = true;
   }

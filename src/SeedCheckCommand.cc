@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "SeedCheckCommand.h"
+#include "message.h"
 
 SeedCheckCommand::SeedCheckCommand(int cuid,
 				   TorrentDownloadEngine* e,
@@ -59,7 +60,7 @@ bool SeedCheckCommand::execute() {
     }
     if(checkStarted) {
       if(seedCriteria->evaluate()) {
-	logger->notice("CUID#%d - Seeding is over.", cuid);
+	logger->notice(MSG_SEEDING_END);
 	btRuntime->setHalt(true);
       }
     }

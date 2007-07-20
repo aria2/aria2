@@ -43,7 +43,7 @@ bool FileAllocationCommand::executeInternal()
   _fileAllocationEntry->allocateChunk();
   
   if(_fileAllocationEntry->finished()) {
-    logger->debug("%d seconds to allocate %lld byte(s)",
+    logger->debug(MSG_ALLOCATION_COMPLETED,
 		  _timer.difference(), _requestGroup->getTotalLength());
     
     _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
@@ -68,7 +68,7 @@ bool FileAllocationCommand::executeInternal()
 
 bool FileAllocationCommand::handleException(Exception* e)
 {
-  logger->error("CUID#%d - Exception caught while allocating file space.", e, cuid);
+  logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);
   delete e;
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   return true;

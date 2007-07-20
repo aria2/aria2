@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "DefaultBtMessageReceiver.h"
 #include "BtHandshakeMessage.h"
+#include "message.h"
 
 BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
@@ -55,7 +56,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   if(msg->validate(errors)) {
     if(msg->isFastExtensionSupported()) {
       peer->setFastExtensionEnabled(true);
-      logger->info("CUID#%d - Fast extension enabled.", cuid);
+      logger->info(MSG_FAST_EXTENSION_ENABLED, cuid);
     }
   } else {
     // TODO throw exception here based on errors

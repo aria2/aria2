@@ -39,6 +39,7 @@
 #include "prefs.h"
 #include "RequestFactory.h"
 #include "TrackerSegmentManFactory.h"
+#include "message.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
 					     TorrentDownloadEngine* e,
@@ -95,10 +96,10 @@ Command* TrackerWatcherCommand::createRequestCommand(const string& url)
   Commands commands = e->_requestGroupMan->getInitialCommands(e);
 
   if(commands.empty()) {
-    logger->error("CUID#%d - Cannot create tracker request.", cuid);
+    logger->error(MSG_TRACKER_REQUEST_CREATION_FAILED, cuid);
     return 0;
   }
-  logger->info("CUID#%d - Creating new tracker request command #%d", cuid,
+  logger->info(MSG_CREATING_TRACKER_REQUEST, cuid,
 	       commands.front()->getCuid());
   return commands.front();
 }

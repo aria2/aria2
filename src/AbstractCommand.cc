@@ -66,13 +66,13 @@ AbstractCommand::~AbstractCommand() {
 bool AbstractCommand::execute() {
   try {
     if(_requestGroup->getSegmentMan()->finished()) {
-      logger->debug("CUID#%d - finished.", cuid);
+      //logger->debug("CUID#%d - finished.", cuid);
       return true;
     }
     PeerStatHandle peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
     if(peerStat.get()) {
       if(peerStat->getStatus() == PeerStat::REQUEST_IDLE) {
-	logger->info("CUID#%d - Request idle.", cuid);
+	logger->info(MSG_ABORT_REQUESTED, cuid);
 	onAbort(0);
 	req->resetUrl();
 	tryReserved();
@@ -224,33 +224,33 @@ bool AbstractCommand::resolveHostname(const string& hostname,
 #ifdef ENABLE_ASYNC_DNS
     switch(resolver->getStatus()) {
     case NameResolver::STATUS_READY:
-      logger->info("CUID#%d - Resolving hostname %s", cuid, hostname.c_str());
+      logger->info(MSG_RESOLVING_HOSTNAME, cuid, hostname.c_str());
       resolver->resolve(hostname);
       setNameResolverCheck(resolver);
       return false;
     case NameResolver::STATUS_SUCCESS:
-      logger->info("CUID#%d - Name resolution complete: %s -> %s", cuid,
+      logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
 		   hostname.c_str(), resolver->getAddrString().c_str());
       DNSCacheSingletonHolder::instance()->put(hostname, resolver->getAddrString());
       return true;
       break;
     case NameResolver::STATUS_ERROR:
-      throw new DlAbortEx("CUID#%d - Name resolution for %s failed:%s", cuid,
+      throw new DlAbortEx(MSG_NAME_RESOLUTION_FAILED, cuid,
 			  hostname.c_str(),
 			  resolver->getError().c_str());
     default:
       return false;
     }
 #else
-    logger->info("CUID#%d - Resolving hostname %s", cuid, hostname.c_str());
+    logger->info(MSG_RESOLVING_HOSTNAME, cuid, hostname.c_str());
     resolver->resolve(hostname);
-    logger->info("CUID#%d - Name resolution complete: %s -> %s", cuid,
+    logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
 		 hostname.c_str(), resolver->getAddrString().c_str());
     DNSCacheSingletonHolder::instance()->put(hostname, resolver->getAddrString());
     return true;
 #endif // ENABLE_ASYNC_DNS
   } else {
-    logger->info("CUID#%d - DNS cache hit: %s -> %s", cuid,
+    logger->info(MSG_DNS_CACHE_HIT, cuid,
 		 hostname.c_str(), ipaddr.c_str());
     resolver->setAddr(ipaddr);
     return true;

@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "FileAllocationDispatcherCommand.h"
 #include "FileAllocationCommand.h"
+#include "message.h"
 
 bool FileAllocationDispatcherCommand::execute()
 {
@@ -44,7 +45,7 @@ bool FileAllocationDispatcherCommand::execute()
   if(!_e->_fileAllocationMan->isFileAllocationBeingExecuted() &&
      _e->_fileAllocationMan->nextFileAllocationEntryExists()) {
     FileAllocationEntryHandle entry = _e->_fileAllocationMan->popNextFileAllocationEntry();
-    logger->info("Dispatching FileAllocationCommand for CUID#%d.",
+    logger->info(MSG_FILE_ALLOCATION_DISPATCH,
 		 entry->getCUID());
     FileAllocationCommand* command =
       new FileAllocationCommand(entry->getCUID(),

@@ -35,6 +35,7 @@
 #include "DiskAdaptor.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
+#include "message.h"
 
 DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
 
@@ -47,7 +48,7 @@ FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) c
       return *itr;
     }
   }
-  throw new DlAbortEx("No such file entry <%s>", fileEntryPath.c_str());
+  throw new DlAbortEx(EX_NO_SUCH_FILE_ENTRY, fileEntryPath.c_str());
 }
 
 bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {

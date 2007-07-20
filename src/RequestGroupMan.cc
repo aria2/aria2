@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "RequestGroupMan.h"
 #include "DownloadEngine.h"
+#include "message.h"
 #include <iomanip>
 
 void RequestGroupMan::removeStoppedGroup()
@@ -47,7 +48,8 @@ void RequestGroupMan::removeStoppedGroup()
     } else {
       (*itr)->closeFile();
       if((*itr)->downloadFinished()) {
-	_logger->notice("Download complete: %s", (*itr)->getFilePath().c_str());
+	_logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
+			(*itr)->getFilePath().c_str());
 	(*itr)->remove();
       } else {
 	(*itr)->save();

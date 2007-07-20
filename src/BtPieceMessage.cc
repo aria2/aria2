@@ -73,13 +73,13 @@ void BtPieceMessage::doReceivedAction() {
     PieceHandle piece = pieceStorage->getPiece(index);
     int64_t offset =
       ((int64_t)index)*btContext->getPieceLength()+begin;
-    logger->debug("CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, blockIndex=%d",
+    logger->debug(MSG_PIECE_RECEIVED,
 		  cuid, index, begin, blockLength, offset, slot.getBlockIndex());
     pieceStorage->getDiskAdaptor()->writeData(block,
 					      blockLength,
 					      offset);
     piece->completeBlock(slot.getBlockIndex());
-    logger->debug("CUID#%d - Piece bitfield %s",
+    logger->debug(MSG_PIECE_BITFIELD,
 		  cuid,
 		  Util::toHex(piece->getBitfield(),
 			      piece->getBitfieldLength()).c_str());
@@ -162,7 +162,7 @@ int32_t BtPieceMessage::sendPieceData(int64_t offset, int32_t length) const {
   int32_t writtenLength = 0;
   for(int32_t i = 0; i < iteration; i++) {
     if(pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
-      throw new DlAbortEx("Failed to read data from disk.");
+      throw new DlAbortEx(EX_DATA_READ);
     }
     int32_t ws = peerConnection->sendMessage(buf, BUF_SIZE);
     writtenLength += ws;
@@ -174,7 +174,7 @@ int32_t BtPieceMessage::sendPieceData(int64_t offset, int32_t length) const {
   int32_t rem = length%BUF_SIZE;
   if(rem > 0) {
     if(pieceStorage->getDiskAdaptor()->readData(buf, rem, offset+iteration*BUF_SIZE) < rem) {
-      throw new DlAbortEx("Failed to read data from disk.");
+      throw new DlAbortEx(EX_DATA_READ);
     }
     int32_t ws = peerConnection->sendMessage(buf, rem);
     writtenLength += ws;
@@ -236,8 +236,7 @@ void BtPieceMessage::handleChokingEvent(const BtEventHandle& event) {
   if(!invalidate &&
      !sendingInProgress &&
      !peer->isInAmAllowedIndexSet(index)) {
-    logger->debug("CUID#%d - Reject piece message in queue because"
-		  " the peer has been choked. index=%d, begin=%d, length=%d",
+    logger->debug(MSG_REJECT_PIECE_CHOKED,
 		  cuid,
 		  index,
 		  begin,
@@ -269,8 +268,7 @@ void BtPieceMessage::handleCancelSendingPieceEvent(const BtEventHandle& event) {
      index == intEvent->getIndex() &&
      begin == intEvent->getBegin() &&
      blockLength == intEvent->getLength()) {
-    logger->debug("CUID#%d - Reject piece message in queue because cancel"
-		  " message received. index=%d, begin=%d, length=%d",
+    logger->debug(MSG_REJECT_PIECE_CANCEL,
 		  cuid, index, begin, blockLength);
     if(peer->isFastExtensionEnabled()) {
       BtMessageHandle rej = messageFactory->createRejectMessage(index,

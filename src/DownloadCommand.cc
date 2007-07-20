@@ -97,10 +97,10 @@ bool DownloadCommand::executeInternal() {
   if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
     int32_t nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
-      throw new DlAbortEx("CUID#%d - Too slow Downloading speed: %d <= %d(B/s)",
-			  cuid,
+      throw new DlAbortEx(EX_TOO_SLOW_DOWNLOAD_SPEED,
 			  nowSpeed,
-			  lowestDownloadSpeedLimit);
+			  lowestDownloadSpeedLimit,
+			  req->getHost().c_str());
     }
   }
   if(_requestGroup->getSegmentMan()->totalSize != 0 && bufSize == 0) {
@@ -110,7 +110,7 @@ bool DownloadCommand::executeInternal() {
      || transferDecoder.isNull() && segment->complete()
      || bufSize == 0) {
     if(!transferDecoder.isNull()) transferDecoder->end();
-    logger->info(MSG_DOWNLOAD_COMPLETED, cuid);
+    logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
     _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
 #ifdef ENABLE_MESSAGE_DIGEST
     if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE) {

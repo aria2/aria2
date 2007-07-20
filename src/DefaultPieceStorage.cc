@@ -44,6 +44,7 @@
 #include "FileAllocationMonitor.h"
 #include "DiskAdaptorWriter.h"
 #include "ChunkChecksumValidator.h"
+#include "message.h"
 
 DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option* option):
   btContext(btContext),
@@ -210,7 +211,7 @@ int DefaultPieceStorage::deleteUsedPiecesByFillRate(int fillRate,
     PieceHandle& piece = *itr;
     if(!bitfieldMan->isUseBitSet(piece->getIndex()) &&
        piece->countCompleteBlock() <= piece->countBlock()*(fillRate/100.0)) {
-      logger->debug("Deleting used piece index=%d, fillRate(%%)=%d<=%d",
+      logger->debug(MSG_DELETING_USED_PIECE,
 		    piece->getIndex(),
 		    (piece->countCompleteBlock()*100)/piece->countBlock(),
 		    fillRate);
@@ -239,12 +240,12 @@ void DefaultPieceStorage::completePiece(const PieceHandle& piece) {
   if(downloadFinished()) {
     diskAdaptor->onDownloadComplete();
     if(isSelectiveDownloadingMode()) {
-      logger->notice(_("Download of selected files was complete."));
+      logger->notice(MSG_SELECTIVE_DOWNLOAD_COMPLETED);
       // following line was commented out in order to stop sending request
       // message after user-specified files were downloaded.
       //finishSelectiveDownloadingMode();
     } else {
-      logger->info(_("The download was complete."));
+      logger->info(MSG_DOWNLOAD_COMPLETED);
     }
   }
 }
@@ -300,7 +301,7 @@ void DefaultPieceStorage::setFileFilter(const Strings& filePaths) {
   for(Strings::const_iterator pitr = filePaths.begin();
       pitr != filePaths.end(); pitr++) {
     if(!diskAdaptor->addDownloadEntry(*pitr)) {
-      throw new DlAbortEx("No such file entry %s", (*pitr).c_str());
+      throw new DlAbortEx(EX_NO_SUCH_FILE_ENTRY, (*pitr).c_str());
     }
     FileEntryHandle fileEntry = diskAdaptor->getFileEntryFromPath(*pitr);
     bitfieldMan->addFilter(fileEntry->getOffset(), fileEntry->getLength());
@@ -433,7 +434,7 @@ void DefaultPieceStorage::removeAdvertisedPiece(int elapsed) {
   Haves::iterator itr =
     find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
   if(itr != haves.end()) {
-    logger->debug("Removed %d have entries.", haves.end()-itr);
+    logger->debug(MSG_REMOVED_HAVE_ENTRY, haves.end()-itr);
     haves.erase(itr, haves.end());
   }
 }
@@ -445,7 +446,7 @@ void DefaultPieceStorage::markAllPiecesDone()
 
 void DefaultPieceStorage::checkIntegrity()
 {
-  logger->notice("Validating file %s",
+  logger->notice(MSG_VALIDATING_FILE,
 		 diskAdaptor->getFilePath().c_str());
   ChunkChecksumValidator v;
   v.setDigestAlgo(DIGEST_ALGO_SHA1);

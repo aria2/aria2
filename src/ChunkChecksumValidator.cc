@@ -85,8 +85,8 @@ void ChunkChecksumValidator::validate(BitfieldMan* bitfieldMan,
   // We assume file is already opened using DiskWriter::open or openExistingFile.
   if(((int64_t)checksumLength*checksums.size()) < bitfieldMan->getTotalLength()) {
     // insufficient checksums.
-    logger->error("Insufficient checksums. checksumLength=%d, numChecksum=%d",
-		    checksumLength, checksums.size());
+    logger->error(MSG_INSUFFICIENT_CHECKSUM,
+		  checksumLength, checksums.size());
     return;
   }
   assert(bitfieldMan->getTotalLength()/checksumLength <= INT32_MAX);

@@ -106,7 +106,7 @@ bool TrackerUpdateCommand::execute() {
     btAnnounce->resetAnnounce();
     e->_requestGroupMan->removeStoppedGroup();
   } catch(RecoverableException* err) {
-    logger->error("CUID#%d - Error occurred while processing tracker response.", cuid, err);
+    logger->error(MSG_TRACKER_RESPONSE_PROCESSING_FAILED, err, cuid);
     e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->errors++;
     delete err;
   }

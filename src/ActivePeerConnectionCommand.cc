@@ -35,6 +35,7 @@
 #include "ActivePeerConnectionCommand.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "CUIDCounter.h"
+#include "message.h"
 
 bool ActivePeerConnectionCommand::execute() {
   if(btRuntime->isHalt()) {
@@ -64,6 +65,6 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   PeerInitiateConnectionCommand* command =
     new PeerInitiateConnectionCommand(peer->cuid, peer, e, btContext);
   e->commands.push_back(command);
-  logger->info("CUID#%d - Active Connect to the peer %s",
+  logger->info(MSG_CONNECTING_TO_PEER,
 	       cuid, peer->ipaddr.c_str());
 }

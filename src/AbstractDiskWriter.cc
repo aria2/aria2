@@ -76,7 +76,7 @@ void AbstractDiskWriter::openExistingFile(const string& filename, int64_t totalL
   this->filename = filename;
   File f(filename);
   if(!f.isFile()) {
-    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), "file not found");
+    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), MSG_FILE_NOT_FOUND);
   }
 
   if((fd = open(filename.c_str(), O_RDWR, OPEN_MODE)) < 0) {
@@ -84,7 +84,7 @@ void AbstractDiskWriter::openExistingFile(const string& filename, int64_t totalL
   }
   if(f.size() < totalLength) {
     if(!fileAllocator.isNull()) {
-      logger->notice("Allocating file %s, %s bytes",
+      logger->notice(MSG_ALLOCATING_FILE,
 		     filename.c_str(),
 		     Util::ullitos(totalLength).c_str());
       glowFileAllocator->allocate(fd, totalLength);

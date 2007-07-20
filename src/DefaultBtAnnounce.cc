@@ -178,7 +178,7 @@ DefaultBtAnnounce::processAnnounceResponse(const char* trackerResponse,
   Dictionary* response = (Dictionary*)entry.get();
   Data* failureReasonData = (Data*)response->get("failure reason");
   if(failureReasonData) {
-    throw new DlAbortEx("Tracker returned failure reason: %s",
+    throw new DlAbortEx(EX_TRACKER_FAILURE,
 			failureReasonData->toString().c_str());
   }
   Data* warningMessageData = (Data*)response->get("warning message");
@@ -224,7 +224,7 @@ DefaultBtAnnounce::processAnnounceResponse(const char* trackerResponse,
     peerStorage->addPeer(peers);
   }
   if(!peersEntry) {
-    logger->info("No peer list received.");
+    logger->info(MSG_NO_PEER_LIST_RECEIVED);
   }
 }
 

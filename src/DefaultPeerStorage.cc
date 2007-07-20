@@ -35,6 +35,7 @@
 #include "DefaultPeerStorage.h"
 #include "LogFactory.h"
 #include "BtRegistry.h"
+#include "message.h"
 
 DefaultPeerStorage::DefaultPeerStorage(BtContextHandle btContext,
 				       const Option* option):
@@ -80,7 +81,7 @@ void DefaultPeerStorage::addPeer(const Peers& peers) {
       itr != peers.end(); itr++) {
     const PeerHandle& peer = *itr;
     if(addPeer(peer)) {
-      logger->debug("Adding peer %s:%d",
+      logger->debug(MSG_ADDING_PEER,
 		    peer->ipaddr.c_str(), peer->port);
     }
   }  

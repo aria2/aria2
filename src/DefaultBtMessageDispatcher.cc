@@ -41,6 +41,7 @@
 #include "BtChokingEvent.h"
 #include "BtRegistry.h"
 #include "BtMessageFactory.h"
+#include "message.h"
 
 void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessageHandle& btMessage)
 {
@@ -102,7 +103,7 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction(const PieceHand
       itr != requestSlots.end();) {
     RequestSlot& slot = *itr;
     if(slot.getIndex() == piece->getIndex()) {
-      logger->debug("CUID#%d - Deleting request slot index=%d, blockIndex=%d",
+      logger->debug(MSG_DELETING_REQUEST_SLOT,
 		    cuid,
 		    slot.getIndex(),
 		    slot.getBlockIndex());
@@ -131,8 +132,7 @@ void DefaultBtMessageDispatcher::doChokedAction()
     if(peer->isInPeerAllowedIndexSet(slot.getIndex())) {
       itr++;
     } else {
-      logger->debug("CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-		    " because localhost got choked.",
+      logger->debug(MSG_DELETING_REQUEST_SLOT_CHOKED,
 		    cuid,
 		    slot.getIndex(),
 		    slot.getBlockIndex());
@@ -168,16 +168,14 @@ void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
     RequestSlot& slot = *itr;
     PieceHandle piece = pieceStorage->getPiece(slot.getIndex());
     if(slot.isTimeout(requestTimeout)) {
-      logger->debug("CUID#%d - Deleting request slot blockIndex=%d"
-		    " because of time out",
+      logger->debug(MSG_DELETING_REQUEST_SLOT_TIMEOUT,
 		    cuid,
 		    slot.getBlockIndex());
       piece->cancelBlock(slot.getBlockIndex());
       peer->snubbing = true;
       itr = requestSlots.erase(itr);
     } else if(piece->hasBlock(slot.getBlockIndex())) {
-      logger->debug("CUID#%d - Deleting request slot blockIndex=%d because"
-		    " the block has been acquired.",
+      logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,
 		    cuid,
 		    slot.getBlockIndex());
       addMessageToQueue(messageFactory->createCancelMessage(slot.getIndex(),

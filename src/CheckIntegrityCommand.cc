@@ -83,7 +83,7 @@ bool CheckIntegrityCommand::executeInternal()
 
 bool CheckIntegrityCommand::handleException(Exception* e)
 {
-  logger->error("CUID#%d - Exception caught while validating file integrity.", e, cuid);
+  logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
   delete e;
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   // TODO this is wrong. There may exist invalid chunk data before catching

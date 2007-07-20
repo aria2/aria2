@@ -49,7 +49,7 @@ void HttpResponse::validateResponse() const
   }
   if(status >= 300) {
     if(!httpHeader->defined("Location")) {
-      throw new DlRetryEx("Got %d status, but no location header provided.",
+      throw new DlRetryEx(EX_LOCATION_HEADER_REQUIRED,
 			  status);
     }
   } else {
@@ -57,7 +57,7 @@ void HttpResponse::validateResponse() const
       // compare the received range against the requested range
       RangeHandle responseRange = httpHeader->getRange();
       if(!httpRequest->isRangeSatisfied(responseRange)) {
-	throw new DlRetryEx("Invalid range header. Request: %lld-%lld/%lld, Response: %lld-%lld/%lld",
+	throw new DlRetryEx(EX_INVALID_RANGE_HEADER,
 			    httpRequest->getStartByte(),
 			    httpRequest->getEndByte(),
 			    httpRequest->getEntityLength(),
@@ -76,7 +76,7 @@ string HttpResponse::determinFilename() const
   if(contentDisposition.empty()) {
     return Util::urldecode(httpRequest->getRequest()->getFile());
   } else {
-    logger->info("CUID#%d - Content-Disposition Detected. Use %s as filename",
+    logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
 		 cuid, contentDisposition.c_str());
     return Util::urldecode(contentDisposition);
   }

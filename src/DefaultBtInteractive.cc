@@ -186,13 +186,13 @@ void DefaultBtInteractive::receiveMessages() {
 void DefaultBtInteractive::decideInterest() {
   if(pieceStorage->hasMissingPiece(peer)) {
     if(!peer->amInterested) {
-      logger->debug("CUID#%d - Interested in the peer", cuid);
+      logger->debug(MSG_PEER_INTERESTED, cuid);
       dispatcher->
 	addMessageToQueue(messageFactory->createInterestedMessage());
     }
   } else {
     if(peer->amInterested) {
-      logger->debug("CUID#%d - Not interested in the peer", cuid);
+      logger->debug(MSG_PEER_NOT_INTERESTED, cuid);
       dispatcher->
 	addMessageToQueue(messageFactory->createNotInterestedMessage());
     }
@@ -269,7 +269,7 @@ void DefaultBtInteractive::detectMessageFlooding() {
   if(floodingCheckPoint.elapsed(FLOODING_CHECK_INTERVAL)) {
     if(floodingStat.getChokeUnchokeCount() >= 2 ||
        floodingStat.getKeepAliveCount() >= 2) {
-      throw new DlAbortEx("Flooding detected.");
+      throw new DlAbortEx(EX_FLOODING_DETECTED);
     } else {
       floodingStat.reset();
     }
@@ -279,8 +279,9 @@ void DefaultBtInteractive::detectMessageFlooding() {
 
 void DefaultBtInteractive::checkActiveInteraction()
 {
-  if(inactiveCheckPoint.elapsed(10*60) && btRuntime->getConnections() >= MAX_PEERS) {
-    throw new DlAbortEx("Drop connection because of an inactive interaction.");
+  int32_t interval = 5*60;
+  if(inactiveCheckPoint.elapsed(interval) && btRuntime->getConnections() >= MAX_PEERS) {
+    throw new DlAbortEx(EX_DROP_INACTIVE_CONNECTION, interval);
   }
 }
 

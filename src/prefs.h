@@ -186,6 +186,8 @@
 #define PREF_TRACKER_MAX_TRIES "tracker-max-tries"
 // values: 1*digit
 #define PREF_BT_KEEP_ALIVE_INTERVAL "bt-keep-alive-interval"
+// values: a string, less than or equals to 20 bytes length
+#define PREF_PEER_ID_PREFIX "peer-id-prefix"
 
 /**
  * Metalink related preferences

@@ -42,13 +42,16 @@
 #include "Util.h"
 #include <libgen.h>
 
-DefaultBtContext::DefaultBtContext() {}
+DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-") {}
 
 DefaultBtContext::~DefaultBtContext() {}
 
 string DefaultBtContext::generatePeerId() const {
-  string peerId = "-aria2-";
-  peerId += Util::randomAlpha(20-peerId.size());
+  string peerId = _peerIdPrefix;
+  peerId += Util::randomAlpha(20-_peerIdPrefix.size());
+  if(peerId.size() > 20) {
+    peerId.erase(20);
+  }
   return peerId;
 }
 

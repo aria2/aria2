@@ -52,12 +52,12 @@ PeerConnection::PeerConnection(int32_t cuid,
    currentPayloadLength(0),
    lenbufLength(0)
 {
-  logger->debug("PeerConnection::instantiated");
+  //logger->debug("PeerConnection::instantiated");
 }
 
 PeerConnection::~PeerConnection()
 {
-  logger->debug("PeerConnection::deleted");
+  //logger->debug("PeerConnection::deleted");
 }
 
 int32_t PeerConnection::sendMessage(const unsigned char* data, int32_t dataLength) {
@@ -92,7 +92,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
     //payloadLen = ntohl(nPayloadLen);
     int32_t payloadLength = ntohl(*((int32_t*)lenbuf));
     if(payloadLength > MAX_PAYLOAD_LEN || payloadLength < 0) {
-      throw new DlAbortEx("max payload length exceeded or invalid. length = %d",
+      throw new DlAbortEx(EX_TOO_LONG_PAYLOAD,
 			  payloadLength);
     }
     currentPayloadLength = payloadLength;

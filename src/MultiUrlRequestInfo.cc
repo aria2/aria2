@@ -110,7 +110,7 @@ RequestInfos MultiUrlRequestInfo::execute() {
       printDownloadAbortMessage();
     }
   } catch(RecoverableException *ex) {
-    logger->error("Exception caught", ex);
+    logger->error(EX_EXCEPTION_CAUGHT, ex);
     delete ex;
     fail = true;
   }

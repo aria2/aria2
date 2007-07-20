@@ -55,7 +55,7 @@ void DefaultDiskWriter::initAndOpenFile(const string& filename,
       if(fileAllocator.isNull()) {
 	ftruncate(fd, totalLength);
       } else {
-	logger->notice("Allocating file %s, %s bytes",
+	logger->notice(MSG_ALLOCATING_FILE,
 		       filename.c_str(),
 		       Util::ullitos(totalLength).c_str());
 	fileAllocator->allocate(fd, totalLength);

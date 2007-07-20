@@ -137,7 +137,7 @@ void DefaultBtProgressInfoFile::load() {
     }
     fclose(file);
     if(ex == "infoHashMismatch") {
-      throw new DlAbortEx("The infoHash in torrent file doesn't match to one in .aria2 file.");
+      throw new DlAbortEx(EX_INFOHASH_MISMATCH_IN_SEGFILE);
     } else {
       throw new DlAbortEx(EX_SEGMENT_FILE_READ,
 			  filename.c_str(), strerror(errno));

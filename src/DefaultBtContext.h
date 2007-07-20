@@ -56,6 +56,7 @@ private:
   string name;
   int32_t numPieces;
   string peerId;
+  string _peerIdPrefix;
   AnnounceTiers announceTiers;
 
   void clear();
@@ -107,6 +108,13 @@ private:
   }
 
   string generatePeerId() const;
+
+  void setPeerIdPrefix(const string& peerIdPrefix)
+  {
+    _peerIdPrefix = peerIdPrefix;
+  }
 };
+
+typedef SharedHandle<DefaultBtContext> DefaultBtContextHandle;
 
 #endif // _D_DEFAULT_BT_CONTEXT_H_

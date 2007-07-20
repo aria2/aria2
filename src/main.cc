@@ -439,6 +439,7 @@ int main(int argc, char* argv[]) {
       { "seed-time", required_argument, &lopt, 22 },
       { "seed-ratio", required_argument, &lopt, 23 },
       { "max-upload-limit", required_argument, &lopt, 24 },
+      { "peer-id-prefix", required_argument, &lopt, 25 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { "metalink-file", required_argument, NULL, 'M' },
@@ -526,6 +527,8 @@ int main(int argc, char* argv[]) {
       case 24:
 	cmdstream << PREF_MAX_UPLOAD_LIMIT << "=" << optarg << "\n";
 	break;
+      case 25:
+	cmdstream << PREF_PEER_ID_PREFIX << "=" << optarg << "\n";
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";
 	break;
@@ -663,13 +666,13 @@ int main(int argc, char* argv[]) {
 #endif // ENABLE_METALINK
      !op->defined(PREF_INPUT_FILE)) {
     if(optind == argc) {
-      cerr << _("specify at least one URL") << endl;
+      cerr << MSG_URI_REQUIRED << endl;
       exit(EXIT_FAILURE);
     }
   }
   if(op->getAsBool(PREF_DAEMON)) {
     if(daemon(1, 1) < 0) {
-      perror(_("daemon failed"));
+      perror(MSG_DAEMON_FAILED);
       exit(EXIT_FAILURE);
     }
   }
@@ -700,7 +703,7 @@ int main(int argc, char* argv[]) {
   try {
     Logger* logger = LogFactory::getInstance();
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
-    logger->info("Logging started.");
+    logger->info(MSG_LOGGING_STARTED);
 
     RequestFactoryHandle requestFactory = new RequestFactory();
     requestFactory->setOption(op);
@@ -708,7 +711,7 @@ int main(int argc, char* argv[]) {
     if(!op->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();
       if(mode&(S_IRWXG|S_IRWXO)) {
-	logger->notice(".netrc file %s does not have correct permissions. It should be 600. netrc support disabled.",
+	logger->notice(MSG_INCORRECT_NETRC_PERMISSION,
 		       op->get(PREF_NETRC_PATH).c_str());
       } else {
 	NetrcHandle netrc = new Netrc();
@@ -725,7 +728,7 @@ int main(int argc, char* argv[]) {
 	ifstream in(op->get(PREF_LOAD_COOKIES).c_str());
 	CookieBoxFactorySingletonHolder::instance()->loadDefaultCookie(in);
       } else {
-	logger->error("Failed to load cookies from %s", op->get(PREF_LOAD_COOKIES).c_str());
+	logger->error(MSG_LOADING_COOKIE_FAILED, op->get(PREF_LOAD_COOKIES).c_str());
 	exit(EXIT_FAILURE);
       }
     }
@@ -819,7 +822,7 @@ int main(int argc, char* argv[]) {
       */
     }
   } catch(Exception* ex) {
-    cerr << "Exception caught:\n" << ex->getMsg() << endl;
+    cerr << EX_EXCEPTION_CAUGHT << "\n" << ex->getMsg() << endl;
     delete ex;
     exit(EXIT_FAILURE);
   }

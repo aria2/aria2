@@ -134,8 +134,8 @@ PeerInteractionCommand::~PeerInteractionCommand() {
   peer->deactivate();
   PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getId());
 							  
-  logger->debug("CUID#%d - unregistered message factory using ID:%s",
-		cuid, peer->getId().c_str());
+  //logger->debug("CUID#%d - unregistered message factory using ID:%s",
+  //cuid, peer->getId().c_str());
 }
 
 bool PeerInteractionCommand::executeInternal() {

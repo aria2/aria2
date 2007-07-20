@@ -4,6 +4,19 @@
 	if the domain of cookie is FQDN and starts with ".".
 	* src/Cookie.cc (match)
 
+	To add the ability to change peer id.
+	* src/DefaultBtContext.h
+	(_peerIdPrefix): New variable
+	(setPeerIdPrefix): New function.
+	* src/torrentRequestInfo.cc
+	(execute): Set the option value of PREF_PEER_ID_PREFIX to
+	DefaultBtContext.
+	* src/main.cc (main): Added peer-id-prefix command-line option.
+	The usage message is not added yet.
+	* src/DefaultBtContext.cc
+	(generatePeerId): Use _peerIdPrefix.
+	* src/prefs.h (PREF_PEER_ID_PREFIX): New definition.
+	
 2007-07-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that prevents filename in content-disposition from

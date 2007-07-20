@@ -44,7 +44,7 @@ void ChecksumCommand::initValidator()
   _validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
   if(!_validator->canValidate()) {
     // insufficient checksums.
-    throw new DlAbortEx("Insufficient checksums.");
+    throw new DlAbortEx(EX_INSUFFICIENT_CHECKSUM);
   }
   _validator->init();
 }
@@ -69,7 +69,7 @@ bool ChecksumCommand::executeInternal()
 
 bool ChecksumCommand::handleException(Exception* e)
 {
-  logger->error("CUID#%d - Exception caught while validating file integrity.", e, cuid);
+  logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
   delete e;
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   // TODO We need to set bitfield back to the state when validation begun.

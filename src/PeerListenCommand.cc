@@ -36,6 +36,7 @@
 #include "PeerInteractionCommand.h"
 #include "RecoverableException.h"
 #include "CUIDCounter.h"
+#include "message.h"
 
 PeerListenCommand::PeerListenCommand(int cuid,
 				     TorrentDownloadEngine* e,
@@ -53,11 +54,11 @@ int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
   for(int port = portRangeStart; port <= portRangeEnd; port++) {
     try {
       socket->beginListen(port);
-      logger->info("CUID#%d - using port %d for accepting new connections",
+      logger->info(MSG_LISTENING_PORT,
 		   cuid, port);
       return port;
     } catch(RecoverableException* ex) {
-      logger->error("CUID#%d - an error occurred while binding port=%d",
+      logger->error(MSG_BIND_FAILURE,
 		    ex, cuid, port);
       socket->closeConnection();
       delete ex;
@@ -94,11 +95,11 @@ bool PeerListenCommand::execute() {
 				       peerSocket,
 				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
 	  e->commands.push_back(command);
-	  logger->debug("CUID#%d - incoming connection, adding new command CUID#%d", cuid, peer->cuid);
+	  logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->cuid);
 	}
       }
     } catch(RecoverableException* ex) {
-      logger->debug("CUID#%d - error in accepting connection", ex, cuid);
+      logger->debug(MSG_ACCEPT_FAILURE, ex, cuid);
       delete ex;
     }		    
   }

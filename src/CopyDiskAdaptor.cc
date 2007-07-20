@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "CopyDiskAdaptor.h"
 #include "Util.h"
+#include "message.h"
 
 void CopyDiskAdaptor::onDownloadComplete() {
   closeFile();
@@ -49,7 +50,7 @@ void CopyDiskAdaptor::fixFilename() {
       string topDirPath = storeDir+"/"+topDir;
       (*itr)->setupDir(topDirPath);
       string destFilePath = topDirPath+"/"+(*itr)->getPath();
-      logger->info("writing file %s", destFilePath.c_str());
+      logger->info(MSG_WRITING_FILE, destFilePath.c_str());
       Util::rangedFileCopy(destFilePath, getFilePath(),
 			   offset, (*itr)->getLength());
       (*itr)->setExtracted(true);

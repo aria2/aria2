@@ -316,7 +316,7 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid) {
     }
     SegmentEntryHandle slowSegmentEntry = findSlowerSegmentEntry(myPeerStat);
     if(slowSegmentEntry.get()) {
-      logger->info("CUID#%d cancels segment index=%d. CUID#%d handles it instead.",
+      logger->info(MSG_SEGMENT_FORWARDING,
 		   slowSegmentEntry->cuid,
 		   slowSegmentEntry->segment->index,
 		   cuid);
@@ -475,7 +475,7 @@ void SegmentMan::markPieceDone(int64_t length)
 #ifdef ENABLE_MESSAGE_DIGEST
 void SegmentMan::checkIntegrity()
 {
-  logger->notice("Validating file %s",
+  logger->notice(MSG_VALIDATING_FILE,
 		 getFilePath().c_str());
   ChunkChecksumValidator v;
   v.setDigestAlgo(digestAlgo);
@@ -515,7 +515,7 @@ void SegmentMan::tryChunkChecksumValidation(const SegmentHandle& segment)
   logger->debug("hashStartIndex=%d, hashEndIndex=%d",
 		hashStartIndex, hashEndIndex);
   if(hashStartIndex > hashEndIndex) {
-    logger->debug("No chunk to verify.");
+    logger->debug(MSG_NO_CHUNK_CHECKSUM);
     return;
   }
   int64_t hashOffset = ((int64_t)hashStartIndex)*chunkHashLength;
@@ -534,7 +534,7 @@ void SegmentMan::tryChunkChecksumValidation(const SegmentHandle& segment)
       string actualChecksum = diskWriter->messageDigest(offset, dataLength, digestAlgo);
       string expectedChecksum = pieceHashes[index];
       if(expectedChecksum == actualChecksum) {
-	logger->info("Good chunk checksum.");
+	logger->info(MSG_GOOD_CHUNK_CHECKSUM);
       } else {
 	logger->info(EX_INVALID_CHUNK_CHECKSUM,
 		     index, offset,

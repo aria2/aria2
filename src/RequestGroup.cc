@@ -80,7 +80,7 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, 
     if(req->setUrl(uri)) {
       commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e));
     } else {
-      logger->error(_("Unrecognized URL or unsupported protocol: %s\n"),
+      logger->error(MSG_UNRECOGNIZED_URI,
 		    req->getUrl().c_str());
     }
   }
@@ -129,7 +129,7 @@ void RequestGroup::initAndOpenFile()
   File d(getDir());
   if(d.isDir()) {
   } else if(d.exists()) {
-    throw new FatalException(EX_MAKE_DIR, getDir().c_str(), "not a directory");
+    throw new FatalException(EX_MAKE_DIR, getDir().c_str(), MSG_NOT_DIRECTORY);
   } else if(!d.mkdirs()) {
     throw new FatalException(EX_MAKE_DIR, getDir().c_str(), strerror(errno));
   }
@@ -179,7 +179,7 @@ void RequestGroup::loadAndOpenFile()
   } else if(fileExists() && _option->get(PREF_CONTINUE) == V_TRUE) {
     File existingFile(getFilePath());
     if(getTotalLength() < existingFile.size()) {
-      throw new DlAbortEx("Invalid file length. Cannot continue download %s: local %s, remote %s",
+      throw new DlAbortEx(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
 		    getFilePath().c_str(),
 		    Util::llitos(existingFile.size()).c_str(),
 		    Util::llitos(getTotalLength()).c_str());
