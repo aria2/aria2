@@ -1,3 +1,9 @@
+2007-07-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that prevents cookies from being sent to the server
+	if the domain of cookie is FQDN and starts with ".".
+	* src/Cookie.cc (match)
+
 2007-07-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that prevents filename in content-disposition from

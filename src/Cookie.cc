@@ -38,7 +38,7 @@
 bool Cookie::match(const string& host, const string& dir, time_t date, bool secure) const
 {
   if((secure || !this->secure && !secure) &&
-     Util::endsWith(host, this->domain) &&
+     Util::endsWith("."+host, this->domain) &&
      Util::startsWith(dir, this->path) &&
      (this->onetime || date < this->expires)) {
     return true;
