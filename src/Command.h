@@ -38,7 +38,7 @@
 #include "common.h"
 #include "LogFactory.h"
 
-typedef int CommandUuid;
+typedef int32_t CommandUuid;
 
 class Command {
 public:
@@ -50,19 +50,19 @@ public:
   };
 private:
   CommandUuid uuid;
-  static int uuidGen;
+  static int32_t uuidGen;
   STATUS status;
 protected:
-  int cuid;
+  int32_t cuid;
   const Logger* logger;
 public:
-  Command(int cuid):uuid(uuidGen++), status(STATUS_INACTIVE), cuid(cuid) {
+  Command(int32_t cuid):uuid(uuidGen++), status(STATUS_INACTIVE), cuid(cuid) {
     logger = LogFactory::getInstance();
   }
   virtual ~Command() {}
   virtual bool execute() = 0;
 
-  int getCuid() const { return cuid; }
+  int32_t getCuid() const { return cuid; }
   const CommandUuid& getUuid() const { return uuid; }
 
   void setStatusActive() { this->status = STATUS_ACTIVE; }

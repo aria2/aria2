@@ -42,7 +42,7 @@
 #include "LogFactory.h"
 #include <sstream>
 
-HttpConnection::HttpConnection(int cuid,
+HttpConnection::HttpConnection(int32_t cuid,
 			       const SocketHandle& socket,
 			       const Option* op):
   cuid(cuid), socket(socket), option(op), logger(LogFactory::getInstance())

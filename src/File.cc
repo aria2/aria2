@@ -43,7 +43,7 @@ File::File(const string& name):name(name) {}
 
 File::~File() {}
 
-int File::fillStat(struct stat& fstat) {
+int32_t File::fillStat(struct stat& fstat) {
   return stat(name.c_str(), &fstat);
 }
 

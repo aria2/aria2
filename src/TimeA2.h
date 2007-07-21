@@ -48,7 +48,7 @@ public:
   // this object was created.
   Time();
   Time(const Time& time);
-  Time(int sec);
+  Time(int32_t sec);
 
   Time& operator=(const Time& time) {
     if(this != &time) {
@@ -62,32 +62,32 @@ public:
   // Makes this object's time value up to date.
   void reset();
 
-  bool elapsed(int sec) const;
+  bool elapsed(int32_t sec) const;
 
-  bool elapsedInMillis(int millis) const;
+  bool elapsedInMillis(int32_t millis) const;
 
-  int difference() const;
-  long long int differenceInMillis() const;
+  int32_t difference() const;
+  int64_t differenceInMillis() const;
 
   int64_t differenceInMillis(const struct timeval& now) const;
 
   // Returns true if this object's time value is zero.
   bool isZero() const { return tv.tv_sec == 0 && tv.tv_usec == 0; }
 
-  long long int getTimeInMicros() const {
-    return (long long int)tv.tv_sec*1000*1000+tv.tv_usec;
+  int64_t getTimeInMicros() const {
+    return (int64_t)tv.tv_sec*1000*1000+tv.tv_usec;
   }
 
-  long long int getTimeInMillis() const {
-    return (long long int)tv.tv_sec*1000+tv.tv_usec/1000;
+  int64_t getTimeInMillis() const {
+    return (int64_t)tv.tv_sec*1000+tv.tv_usec/1000;
   }
 
   // Returns this object's time value in seconds.
-  int getTime() const {
+  int32_t getTime() const {
     return tv.tv_sec;
   }
 
-  void setTimeInSec(int sec);
+  void setTimeInSec(int32_t sec);
 
   bool isNewer(const Time& time) const;
 };

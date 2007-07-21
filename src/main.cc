@@ -330,7 +330,7 @@ int main(int argc, char* argv[]) {
   textdomain (PACKAGE);
 #endif // ENABLE_NLS
   stringstream cmdstream;
-  int c;
+  int32_t c;
   Option* op = new Option();
   op->put(PREF_STDOUT_LOG, V_FALSE);
   op->put(PREF_DIR, ".");
@@ -385,8 +385,8 @@ int main(int argc, char* argv[]) {
   op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "5");
   op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "15");
   while(1) {
-    int optIndex = 0;
-    int lopt;
+    int32_t optIndex = 0;
+    int32_t lopt;
     static struct option longOpts[] = {
       { "daemon", no_argument, NULL, 'D' },
       { "dir", required_argument, NULL, 'd' },
@@ -699,7 +699,7 @@ int main(int argc, char* argv[]) {
   } else {
     LogFactory::setLogFile("/dev/null");
   }
-  int exitStatus = EXIT_SUCCESS;
+  int32_t exitStatus = EXIT_SUCCESS;
   try {
     Logger* logger = LogFactory::getInstance();
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);

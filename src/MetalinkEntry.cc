@@ -48,9 +48,9 @@ MetalinkEntry::~MetalinkEntry() {}
 class AddLocationPreference {
 private:
   string location;
-  int preferenceToAdd;
+  int32_t preferenceToAdd;
 public:
-  AddLocationPreference(const string& location, int preferenceToAdd):
+  AddLocationPreference(const string& location, int32_t preferenceToAdd):
     location(location), preferenceToAdd(preferenceToAdd) {}
 
   void operator()(MetalinkResourceHandle& res) {
@@ -60,7 +60,7 @@ public:
   }
 };
 
-void MetalinkEntry::setLocationPreference(const string& location, int preferenceToAdd) {
+void MetalinkEntry::setLocationPreference(const string& location, int32_t preferenceToAdd) {
   for_each(resources.begin(), resources.end(),
 	   AddLocationPreference(location, preferenceToAdd));
 }

@@ -41,10 +41,10 @@
 class TimeSeedCriteria : public SeedCriteria {
 private:
   // How much time the client does seeding in seconds.
-  int duration;
+  int32_t duration;
   Time watch;
 public:
-  TimeSeedCriteria(int duration):duration(duration) {}
+  TimeSeedCriteria(int32_t duration):duration(duration) {}
   virtual ~TimeSeedCriteria() {}
 
   virtual void reset() {
@@ -55,11 +55,11 @@ public:
     return watch.elapsed(duration);
   }
 
-  void setDuration(int duration) {
+  void setDuration(int32_t duration) {
     this->duration = duration;
   }
 
-  int getDuration() const {
+  int32_t getDuration() const {
     return duration;
   }
 };

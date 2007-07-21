@@ -55,9 +55,9 @@ class SocketCore {
   friend bool operator<(const SocketCore& s1, const SocketCore& s2);
 private:
   // socket endpoint descriptor
-  int sockfd;
+  int32_t sockfd;
   // reference counter for this object.
-  int use;
+  int32_t use;
   bool secure;
 #ifdef HAVE_LIBSSL
   // for SSL
@@ -68,22 +68,22 @@ private:
   gnutls_session_t sslSession;
   gnutls_certificate_credentials_t sslXcred;
   char* peekBuf;
-  int peekBufLength;
-  int peekBufMax;
+  int32_t peekBufLength;
+  int32_t peekBufMax;
 
-  int shiftPeekData(char* data, int len);
-  void addPeekData(char* data, int len);
-  int gnutlsRecv(char* data, int len);
-  int gnutlsPeek(char* data, int len);
+  int32_t shiftPeekData(char* data, int32_t len);
+  void addPeekData(char* data, int32_t len);
+  int32_t gnutlsRecv(char* data, int32_t len);
+  int32_t gnutlsPeek(char* data, int32_t len);
 #endif // HAVE_LIBGNUTLS
 
   void init();
-  SocketCore(int sockfd);
+  SocketCore(int32_t sockfd);
 public:
   SocketCore();
   ~SocketCore();
 
-  int getSockfd() const { return sockfd; }
+  int32_t getSockfd() const { return sockfd; }
 
   bool isOpen() const { return sockfd != -1; }
 
@@ -92,19 +92,19 @@ public:
    * @param port port to listen. If 0 is specified, os automaticaly
    * choose avaiable port.
    */
-  void beginListen(int port = 0);
+  void beginListen(int32_t port = 0);
 
   /**
    * Stores host address and port of this socket to addrinfo.
    * @param addrinfo placeholder to store host address and port.
    */
-  void getAddrInfo(pair<string, int>& addrinfo) const;
+  void getAddrInfo(pair<string, int32_t>& addrinfo) const;
   
   /**
    * Stores peer's address and port to peerinfo.
    * @param peerinfo placeholder to store peer's address and port.
    */
-  void getPeerInfo(pair<string, int>& peerinfo) const;
+  void getPeerInfo(pair<string, int32_t>& peerinfo) const;
 
   /**
    * Accepts incoming connection on this socket.
@@ -121,7 +121,7 @@ public:
    * @param host hostname or ip address to connect to
    * @param port service port number to connect to
    */
-  void establishConnection(const string& host, int port);
+  void establishConnection(const string& host, int32_t port);
 
   void setNonBlockingMode() const;
 
@@ -142,7 +142,7 @@ public:
    * @return true if the socket is available for writing,
    * otherwise returns false.
    */
-  bool isWritable(int timeout) const;
+  bool isWritable(int32_t timeout) const;
 
   /**
    * Checks whether this socket is available for reading.
@@ -151,7 +151,7 @@ public:
    * @return true if the socket is available for reading,
    * otherwise returns false.
    */
-  bool isReadable(int timeout) const;
+  bool isReadable(int32_t timeout) const;
 
   /**
    * Writes characters into this socket. data is a pointer pointing the first
@@ -161,7 +161,7 @@ public:
    * @param data data to write
    * @param len length of data
    */
-  void writeData(const char* data, int len);
+  void writeData(const char* data, int32_t len);
   void writeData(const string& msg) { writeData(msg.c_str(), msg.size()); }
 
   /**
@@ -176,7 +176,7 @@ public:
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
    */
-  void readData(char* data, int& len);
+  void readData(char* data, int32_t& len);
 
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from
@@ -187,7 +187,7 @@ public:
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
    */
-  void peekData(char* data, int& len);
+  void peekData(char* data, int32_t& len);
   
   /**
    * Makes this socket secure.

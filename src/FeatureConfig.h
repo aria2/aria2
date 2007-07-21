@@ -38,7 +38,7 @@
 #include "common.h"
 #include <map>
 
-typedef map<string, int> PortMap;
+typedef map<string, int32_t> PortMap;
 typedef map<string, bool> FeatureMap;
 
 class FeatureConfig {
@@ -64,7 +64,7 @@ public:
     featureConfig = 0;
   }
 
-  int getDefaultPort(const string& protocol) const {
+  int32_t getDefaultPort(const string& protocol) const {
     PortMap::const_iterator itr = defaultPorts.find(protocol);
     if(itr == defaultPorts.end()) {
       return 0;

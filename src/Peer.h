@@ -53,13 +53,13 @@ class Peer {
   friend bool operator!=(const Peer& p1, const Peer& p2);
 public:
   string ipaddr;
-  int port;
+  int32_t port;
   bool amChoking;
   bool amInterested;
   bool peerChoking;
   bool peerInterested;
-  int tryCount;
-  int cuid;
+  int32_t tryCount;
+  int32_t cuid;
   bool chokingRequired;
   bool optUnchoking;
   bool snubbing;
@@ -74,16 +74,16 @@ private:
   // fast index set which localhost has sent to a peer.
   Integers amAllowedIndexSet;
   PeerStat peerStat;
-  long long int sessionUploadLength;
-  long long int sessionDownloadLength;
-  int pieceLength;
-  int latency;
+  int64_t sessionUploadLength;
+  int64_t sessionDownloadLength;
+  int32_t pieceLength;
+  int32_t latency;
   bool active;
   string id;
   Time _badConditionStartTime;
-  int _badConditionInterval;
+  int32_t _badConditionInterval;
 public:
-  Peer(string ipaddr, int port, int pieceLength, long long int totalLength);
+  Peer(string ipaddr, int32_t port, int32_t pieceLength, int64_t totalLength);
 
   ~Peer() {
     delete bitfield;
@@ -100,12 +100,12 @@ public:
 
   void resetStatus();
 
-  void updateUploadLength(int bytes) {
+  void updateUploadLength(int32_t bytes) {
     peerStat.updateUploadLength(bytes);
     sessionUploadLength += bytes;
   }
 
-  void updateDownloadLength(int bytes) {
+  void updateDownloadLength(int32_t bytes) {
     peerStat.updateDownloadLength(bytes);
     sessionDownloadLength += bytes;
   }
@@ -135,14 +135,14 @@ public:
   /**
    * Returns the number of bytes uploaded to the remote host.
    */
-  long long int getSessionUploadLength() const {
+  int64_t getSessionUploadLength() const {
     return sessionUploadLength;
   }
 
   /**
    * Returns the number of bytes downloaded from the remote host.
    */
-  long long int getSessionDownloadLength() const {
+  int64_t getSessionDownloadLength() const {
     return sessionDownloadLength;
   }
 
@@ -165,43 +165,43 @@ public:
   }
   const unsigned char* getPeerId() const { return this->peerId; }
   
-  void setBitfield(const unsigned char* bitfield, int bitfieldLength) {
+  void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength) {
     this->bitfield->setBitfield(bitfield, bitfieldLength);
   }
   const unsigned char* getBitfield() const { return bitfield->getBitfield(); }
-  int getBitfieldLength() const { return bitfield->getBitfieldLength(); }
+  int32_t getBitfieldLength() const { return bitfield->getBitfieldLength(); }
   void setAllBitfield();
 
   /**
    * operation = 1: set index-th bit to 1
    * operation = 0: set index-th bit to 0
    */
-  void updateBitfield(int index, int operation);
+  void updateBitfield(int32_t index, int32_t operation);
   
   void setFastExtensionEnabled(bool enabled) {
     fastExtensionEnabled = enabled;
   }
   bool isFastExtensionEnabled() const { return fastExtensionEnabled; }
 
-  void addFastSetIndex(int index);
+  void addFastSetIndex(int32_t index);
   const Integers& getFastSet() const { return fastSet; }
-  bool isInFastSet(int index) const;
-  int countFastSet() const { return fastSet.size(); }
+  bool isInFastSet(int32_t index) const;
+  int32_t countFastSet() const { return fastSet.size(); }
 
-  void addPeerAllowedIndex(int index);
-  bool isInPeerAllowedIndexSet(int index) const;
+  void addPeerAllowedIndex(int32_t index);
+  bool isInPeerAllowedIndexSet(int32_t index) const;
 
-  void addAmAllowedIndex(int index);
-  bool isInAmAllowedIndexSet(int index) const;
+  void addAmAllowedIndex(int32_t index);
+  bool isInAmAllowedIndexSet(int32_t index) const;
 
   bool shouldBeChoking() const;
 
-  bool hasPiece(int index) const;
+  bool hasPiece(int32_t index) const;
 
   bool isSeeder() const;
 
-  void updateLatency(int latency);
-  int getLatency() const { return latency; }
+  void updateLatency(int32_t latency);
+  int32_t getLatency() const { return latency; }
 
   const string& getId() const {
     return id;

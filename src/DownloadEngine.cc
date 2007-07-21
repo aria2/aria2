@@ -66,8 +66,8 @@ void DownloadEngine::cleanQueue() {
 
 void DownloadEngine::executeCommand(Command::STATUS statusFilter)
 {
-  int max = commands.size();
-  for(int i = 0; i < max; i++) {
+  int32_t max = commands.size();
+  for(int32_t i = 0; i < max; i++) {
     Command* com = commands.front();
     commands.pop_front();
     if(com->statusMatch(statusFilter)) {
@@ -116,7 +116,7 @@ void DownloadEngine::shortSleep() const {
 void DownloadEngine::waitData() {
   fd_set rfds;
   fd_set wfds;
-  int retval = 0;
+  int32_t retval = 0;
   struct timeval tv;
   
   memcpy(&rfds, &rfdset, sizeof(fd_set));
@@ -160,7 +160,7 @@ void DownloadEngine::updateFdSet() {
   for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
       itr != nameResolverEntries.end(); ++itr) {
     NameResolverEntry& entry = *itr;
-    int fd = entry.nameResolver->getFds(&rfdset, &wfdset);
+    int32_t fd = entry.nameResolver->getFds(&rfdset, &wfdset);
     if(fdmax < fd) {
       fdmax = fd;
     }
@@ -169,7 +169,7 @@ void DownloadEngine::updateFdSet() {
   for(SocketEntries::iterator itr = socketEntries.begin();
       itr != socketEntries.end(); ++itr) {
     SocketEntry& entry = *itr;
-    int fd = entry.socket->getSockfd();
+    int32_t fd = entry.socket->getSockfd();
     switch(entry.type) {
     case SocketEntry::TYPE_RD:
       FD_SET(fd, &rfdset);

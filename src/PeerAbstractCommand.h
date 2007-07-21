@@ -44,22 +44,22 @@
 class PeerAbstractCommand : public BtContextAwareCommand {
 private:
   Time checkPoint;
-  int timeout;
+  int32_t timeout;
 protected:
   TorrentDownloadEngine* e;
   SocketHandle socket;
   PeerHandle peer;
 
-  void setTimeout(int timeout) { this->timeout = timeout; }
-  virtual bool prepareForNextPeer(int wait);
-  virtual bool prepareForRetry(int wait);
+  void setTimeout(int32_t timeout) { this->timeout = timeout; }
+  virtual bool prepareForNextPeer(int32_t wait);
+  virtual bool prepareForRetry(int32_t wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal() = 0;
   void setReadCheckSocket(const SocketHandle& socket);
   void setWriteCheckSocket(const SocketHandle& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
-  void setUploadLimit(int uploadLimit);
+  void setUploadLimit(int32_t uploadLimit);
   void setUploadLimitCheck(bool check);
   void setNoCheck(bool check);
 private:
@@ -68,10 +68,10 @@ private:
   SocketHandle readCheckTarget;
   SocketHandle writeCheckTarget;
   bool uploadLimitCheck;
-  int uploadLimit;
+  int32_t uploadLimit;
   bool noCheck;
 public:
-  PeerAbstractCommand(int cuid, const PeerHandle& peer,
+  PeerAbstractCommand(int32_t cuid, const PeerHandle& peer,
 		      TorrentDownloadEngine* e,
 		      const BtContextHandle& btContext,
 		      const SocketHandle& s = SocketHandle());

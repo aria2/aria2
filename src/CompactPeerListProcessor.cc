@@ -44,18 +44,17 @@ Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
 
   const Data* peersData = (const Data*)peersEntry;
   if(peersData->getLen() > 0) {
-    for(int i = 0; i < peersData->getLen(); i += 6) {
-      unsigned int ipaddr1 = (unsigned char)*(peersData->getData()+i);
-      unsigned int ipaddr2 = (unsigned char)*(peersData->getData()+i+1);
-      unsigned int ipaddr3 = (unsigned char)*(peersData->getData()+i+2);
-      unsigned int ipaddr4 = (unsigned char)*(peersData->getData()+i+3);
-      unsigned int port = ntohs(*(unsigned short int*)(peersData->getData()+i+4));
+    for(int32_t i = 0; i < peersData->getLen(); i += 6) {
+      uint32_t ipaddr1 = (unsigned char)*(peersData->getData()+i);
+      uint32_t ipaddr2 = (unsigned char)*(peersData->getData()+i+1);
+      uint32_t ipaddr3 = (unsigned char)*(peersData->getData()+i+2);
+      uint32_t ipaddr4 = (unsigned char)*(peersData->getData()+i+3);
+      int32_t port = ntohs(*(uint16_t*)(peersData->getData()+i+4));
       char ipaddr[16];
       
       snprintf(ipaddr, sizeof(ipaddr), "%d.%d.%d.%d",
 	       ipaddr1, ipaddr2, ipaddr3, ipaddr4);
-      PeerHandle peer =
-	PeerHandle(new Peer(ipaddr, port, pieceLength, totalLength));
+      PeerHandle peer = new Peer(ipaddr, port, pieceLength, totalLength);
       
       peers.push_back(peer);
     }

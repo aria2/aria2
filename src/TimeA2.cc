@@ -43,7 +43,7 @@ Time::Time(const Time& time) {
   tv = time.tv;
 }
 
-Time::Time(int sec) {
+Time::Time(int32_t sec) {
   setTimeInSec(sec);
 }
 
@@ -59,11 +59,11 @@ struct timeval Time::getCurrentTime() const {
   return now;
 }
 
-bool Time::elapsed(int sec) const {
+bool Time::elapsed(int32_t sec) const {
   return Util::difftvsec(getCurrentTime(), tv) >= sec;
 }
 
-bool Time::elapsedInMillis(int millis) const {
+bool Time::elapsedInMillis(int32_t millis) const {
   return Util::difftv(getCurrentTime(), tv)/1000 >= millis;
 }
 
@@ -71,11 +71,11 @@ bool Time::isNewer(const Time& time) const {
   return Util::difftv(this->tv, time.tv) > 0;
 }
 
-int Time::difference() const {
+int32_t Time::difference() const {
   return Util::difftvsec(getCurrentTime(), tv);
 }
 
-long long int Time::differenceInMillis() const {
+int64_t Time::differenceInMillis() const {
   return Util::difftv(getCurrentTime(), tv)/1000;
 }
 
@@ -84,7 +84,7 @@ int64_t Time::differenceInMillis(const struct timeval& now) const
   return Util::difftv(now, tv)/1000;
 }
 
-void Time::setTimeInSec(int sec) {
+void Time::setTimeInSec(int32_t sec) {
   tv.tv_sec = sec;
   tv.tv_usec = 0;
 }

@@ -51,8 +51,8 @@ public:
   void put(const string& name, const string& value);
   bool defined(const string& name) const;
   string get(const string& name) const;
-  int getAsInt(const string& name) const;
-  long long int getAsLLInt(const string& name) const;
+  int32_t getAsInt(const string& name) const;
+  int64_t getAsLLInt(const string& name) const;
   bool getAsBool(const string& name) const;
   double getAsDouble(const string& name) const;
   

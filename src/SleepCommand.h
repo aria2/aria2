@@ -43,11 +43,11 @@ class SleepCommand:public Command {
 private:
   DownloadEngine* engine;
   Command* nextCommand;
-  int wait;
+  int32_t wait;
   Time checkPoint;
 public:
-  SleepCommand(int cuid, DownloadEngine* e, Command* nextCommand, int wait);
-  ~SleepCommand();
+  SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, int32_t wait);
+  virtual ~SleepCommand();
   bool execute();
 };
 

@@ -38,10 +38,10 @@
 
 class CompactPeerListProcessor : public PeerListProcessor {
 private:
-  int pieceLength;
-  long long int totalLength;
+  int32_t pieceLength;
+  int64_t totalLength;
 public:
-  CompactPeerListProcessor(int pieceLength, long long int totalLength)
+  CompactPeerListProcessor(int32_t pieceLength, int64_t totalLength)
   :pieceLength(pieceLength),
    totalLength(totalLength) {}
 

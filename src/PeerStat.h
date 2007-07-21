@@ -48,14 +48,14 @@ public:
     REQUEST_IDLE,
   };
 private:
-  int cuid;
+  int32_t cuid;
   SpeedCalc downloadSpeed;
   SpeedCalc uploadSpeed;
   Time downloadStartTime;
   PeerStat::STATUS status;
 public:
 
-  PeerStat(int cuid = 0):cuid(cuid), status(PeerStat::IDLE) {}
+  PeerStat(int32_t cuid = 0):cuid(cuid), status(PeerStat::IDLE) {}
 
   ~PeerStat() {}
 
@@ -78,27 +78,27 @@ public:
     return uploadSpeed.calculateSpeed(now);
   }
 
-  void updateDownloadLength(int bytes) {
+  void updateDownloadLength(int32_t bytes) {
     downloadSpeed.update(bytes);
   }
 
-  void updateUploadLength(int bytes) {
+  void updateUploadLength(int32_t bytes) {
     uploadSpeed.update(bytes);
   }
 
-  int getMaxDownloadSpeed() const {
+  int32_t getMaxDownloadSpeed() const {
     return downloadSpeed.getMaxSpeed();
   }
 
-  int getMaxUploadSpeed() const {
+  int32_t getMaxUploadSpeed() const {
     return uploadSpeed.getMaxSpeed();
   }
 
-  int getAvgDownloadSpeed() const {
+  int32_t getAvgDownloadSpeed() const {
     return downloadSpeed.getAvgSpeed();
   }
 
-  int getAvgUploadSpeed() const {
+  int32_t getAvgUploadSpeed() const {
     return uploadSpeed.getAvgSpeed();
   }
 
@@ -130,7 +130,7 @@ public:
     return status;
   }
 
-  int getCuid() const {
+  int32_t getCuid() const {
     return cuid;
   }
 };

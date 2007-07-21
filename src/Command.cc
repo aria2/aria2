@@ -34,4 +34,4 @@
 /* copyright --> */
 #include "Command.h"
 
-int Command::uuidGen = 0;
+int32_t Command::uuidGen = 0;

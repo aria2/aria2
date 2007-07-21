@@ -77,7 +77,7 @@ public:
 
   virtual void removeAllTargetPiece();
 
-  virtual int countTargetPiece() {
+  virtual int32_t countTargetPiece() {
     return pieces.size();
   }
 

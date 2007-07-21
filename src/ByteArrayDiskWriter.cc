@@ -77,7 +77,7 @@ void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_
   buf.write(data, dataLength);
 }
 
-int ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
+int32_t ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
   buf.seekg(position, ios_base::beg);
   buf.read(data, len);
   // TODO we have to call buf.clear() here? YES

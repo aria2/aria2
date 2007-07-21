@@ -39,10 +39,10 @@
 
 class DefaultPeerListProcessor : public PeerListProcessor {
 private:
-  int pieceLength;
-  long long int totalLength;
+  int32_t pieceLength;
+  int64_t totalLength;
 public:
-  DefaultPeerListProcessor(int pieceLength, long long int totalLength)
+  DefaultPeerListProcessor(int32_t pieceLength, int64_t totalLength)
   :pieceLength(pieceLength),
    totalLength(totalLength) {}
 

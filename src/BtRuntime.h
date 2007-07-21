@@ -42,10 +42,10 @@
 
 class BtRuntime {
 private:
-  long long int uploadLengthAtStartup;
-  int port;
+  int64_t uploadLengthAtStartup;
+  int32_t port;
   bool halt;
-  int connections;
+  int32_t connections;
 public:
   BtRuntime():
     uploadLengthAtStartup(0),
@@ -55,19 +55,19 @@ public:
     {}
   ~BtRuntime() {}
 
-  long long int getUploadLengthAtStartup() const {
+  int64_t getUploadLengthAtStartup() const {
     return uploadLengthAtStartup;
   }
 
-  void setUploadLengthAtStartup(long long int length) {
+  void setUploadLengthAtStartup(int64_t length) {
     this->uploadLengthAtStartup = length;
   }
 
-  void setListenPort(int port) {
+  void setListenPort(int32_t port) {
     this->port = port;
   }
 
-  int getListenPort() const { return port; }
+  int32_t getListenPort() const { return port; }
 
   bool isHalt() const { return halt; }
 
@@ -75,7 +75,7 @@ public:
     this->halt = halt;
   }
 
-  int getConnections() const { return connections; }
+  int32_t getConnections() const { return connections; }
 
   void increaseConnections() { connections++; }
 

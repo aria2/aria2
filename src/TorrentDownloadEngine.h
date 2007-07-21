@@ -53,19 +53,19 @@ private:
 protected:
   Time cp;
   Time lastCalcStat;
-  int downloadSpeed;
-  int uploadSpeed;
-  long long int selectedDownloadLengthDiff;
-  long long int selectedTotalLength;
+  int32_t downloadSpeed;
+  int32_t uploadSpeed;
+  int64_t selectedDownloadLengthDiff;
+  int64_t selectedTotalLength;
   // The time when startup
   Time startup;
   // The average speed(bytes per second) since startup
-  int avgSpeed;
+  int32_t avgSpeed;
   // The estimated remaining time to complete the download.
-  int eta;
-  long long int downloadLength;
-  long long int uploadLength;
-  long long int totalLength;
+  int32_t eta;
+  int64_t downloadLength;
+  int64_t uploadLength;
+  int64_t totalLength;
 
   BtContextHandle btContext;
   BtRuntimeHandle btRuntime;
@@ -74,7 +74,7 @@ protected:
   BtAnnounceHandle btAnnounce;
   BtProgressInfoFileHandle btProgressInfoFile;
 
-  int calculateSpeed(long long int sessionLength, int elapsed);
+  int32_t calculateSpeed(int64_t sessionLength, int32_t elapsed);
   void calculateStat();
 
   virtual void onEndOfRun();

@@ -51,6 +51,14 @@
 #define METALINK_MARK "#!metalink3!"
 
 class Request {
+public:
+  enum TRACKER_EVENT {
+    AUTO,
+    STARTED,
+    STOPPED,
+    COMPLETED,
+    AFTER_COMPLETED
+  };
 private:
   string url;
   string currentUrl;
@@ -64,11 +72,11 @@ private:
   string referer;
   string protocol;
   string host;
-  int port;
+  int32_t port;
   string dir;
   string file;
-  int tryCount;
-  int trackerEvent;
+  int32_t tryCount;
+  TRACKER_EVENT trackerEvent;
   bool keepAlive;
   string method;
 
@@ -95,7 +103,7 @@ public:
   bool resetUrl();
   void resetTryCount() { tryCount = 0; }
   void addTryCount() { tryCount++; }
-  int getTryCount() const { return tryCount; }
+  int32_t getTryCount() const { return tryCount; }
   //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
 
   string getUrl() const { return url; }
@@ -105,13 +113,13 @@ public:
   void setReferer(const string& url) { referer = previousUrl = url; }
   string getProtocol() const { return protocol; }
   string getHost() const { return host; }
-  int getPort() const { return port; }
+  int32_t getPort() const { return port; }
   string getDir() const { return dir; }
   string getFile() const { return file;}
   bool isKeepAlive() const { return keepAlive; }
   void setKeepAlive(bool keepAlive) { this->keepAlive = keepAlive; }
-  void setTrackerEvent(int event) { trackerEvent = event; }
-  int getTrackerEvent() const { return trackerEvent; }
+  void setTrackerEvent(TRACKER_EVENT event) { trackerEvent = event; }
+  TRACKER_EVENT getTrackerEvent() const { return trackerEvent; }
 
   void setMethod(const string& method) {
     this->method = method;
@@ -144,14 +152,6 @@ public:
 
   static const string METHOD_GET;
   static const string METHOD_HEAD;
-
-  enum TRACKER_EVENT {
-    AUTO,
-    STARTED,
-    STOPPED,
-    COMPLETED,
-    AFTER_COMPLETED
-  };
 
 };
 

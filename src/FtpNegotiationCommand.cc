@@ -41,7 +41,7 @@
 #include "Util.h"
 #include "FatalException.h"
 
-FtpNegotiationCommand::FtpNegotiationCommand(int cuid,
+FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     const RequestHandle& req,
 					     RequestGroup* requestGroup,
 					     DownloadEngine* e,
@@ -82,7 +82,7 @@ bool FtpNegotiationCommand::recvGreeting() {
   disableWriteCheckSocket();
   setReadCheckSocket(socket);
 
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -101,7 +101,7 @@ bool FtpNegotiationCommand::sendUser() {
 }
 
 bool FtpNegotiationCommand::recvUser() {
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   switch(status) {
   case 0:
     return false;
@@ -124,7 +124,7 @@ bool FtpNegotiationCommand::sendPass() {
 }
 
 bool FtpNegotiationCommand::recvPass() {
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -142,7 +142,7 @@ bool FtpNegotiationCommand::sendType() {
 }
 
 bool FtpNegotiationCommand::recvType() {
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -160,7 +160,7 @@ bool FtpNegotiationCommand::sendCwd() {
 }
 
 bool FtpNegotiationCommand::recvCwd() {
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -178,8 +178,8 @@ bool FtpNegotiationCommand::sendSize() {
 }
 
 bool FtpNegotiationCommand::recvSize() {
-  long long int size = 0;
-  int status = ftp->receiveSizeResponse(size);
+  int64_t size = 0;
+  int32_t status = ftp->receiveSizeResponse(size);
   if(status == 0) {
     return false;
   }
@@ -253,7 +253,7 @@ bool FtpNegotiationCommand::sendPort() {
 }
 
 bool FtpNegotiationCommand::recvPort() {
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -271,8 +271,8 @@ bool FtpNegotiationCommand::sendPasv() {
 }
 
 bool FtpNegotiationCommand::recvPasv() {
-  pair<string, int> dest;
-  int status = ftp->receivePasvResponse(dest);
+  pair<string, int32_t> dest;
+  int32_t status = ftp->receivePasvResponse(dest);
   if(status == 0) {
     return false;
   }
@@ -306,7 +306,7 @@ bool FtpNegotiationCommand::sendRest(const SegmentHandle& segment) {
 }
 
 bool FtpNegotiationCommand::recvRest() {
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }
@@ -325,7 +325,7 @@ bool FtpNegotiationCommand::sendRetr() {
 }
 
 bool FtpNegotiationCommand::recvRetr() {
-  int status = ftp->receiveResponse();
+  int32_t status = ftp->receiveResponse();
   if(status == 0) {
     return false;
   }

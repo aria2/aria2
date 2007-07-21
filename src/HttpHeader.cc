@@ -61,11 +61,11 @@ Strings HttpHeader::get(const string& name) const {
   return v;
 }
 
-int HttpHeader::getFirstAsInt(const string& name) const {
-  return (int)getFirstAsLLInt(name);
+int32_t HttpHeader::getFirstAsInt(const string& name) const {
+  return getFirstAsLLInt(name);
 }
 
-long long int HttpHeader::getFirstAsLLInt(const string& name) const {
+int64_t HttpHeader::getFirstAsLLInt(const string& name) const {
   string value = getFirst(name);
   if(value == "") {
     return 0;

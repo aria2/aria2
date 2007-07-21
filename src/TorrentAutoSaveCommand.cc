@@ -35,10 +35,10 @@
 #include "TorrentAutoSaveCommand.h"
 #include "Util.h"
 
-TorrentAutoSaveCommand::TorrentAutoSaveCommand(int cuid,
+TorrentAutoSaveCommand::TorrentAutoSaveCommand(int32_t cuid,
 					       TorrentDownloadEngine* e,
 					       const BtContextHandle& btContext,
-					       int interval):
+					       int32_t interval):
   BtContextAwareCommand(cuid, btContext),
   e(e),
   interval(interval) {}

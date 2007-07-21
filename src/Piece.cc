@@ -38,7 +38,7 @@
 
 Piece::Piece():index(0), length(0), bitfield(0) {}
 
-Piece::Piece(int index, int length):index(index), length(length) {
+Piece::Piece(int32_t index, int32_t length):index(index), length(length) {
   bitfield =
     BitfieldManFactory::getFactoryInstance()->createBitfieldMan(BLOCK_LENGTH, length);
 }
@@ -54,7 +54,7 @@ Piece::Piece(const Piece& piece) {
 }
 
 
-void Piece::completeBlock(int blockIndex) {
+void Piece::completeBlock(int32_t blockIndex) {
   bitfield->setBit(blockIndex);
   bitfield->unsetUseBit(blockIndex);
 }
@@ -72,12 +72,12 @@ bool Piece::pieceComplete() const {
   return bitfield->isAllBitSet();
 }
 
-void Piece::cancelBlock(int blockIndex) {
+void Piece::cancelBlock(int32_t blockIndex) {
   bitfield->unsetUseBit(blockIndex);
 }
 
-int Piece::getMissingUnusedBlockIndex() const {
-  int blockIndex = bitfield->getFirstMissingUnusedIndex();
+int32_t Piece::getMissingUnusedBlockIndex() const {
+  int32_t blockIndex = bitfield->getFirstMissingUnusedIndex();
   if(blockIndex == -1) {
     return blockIndex;
   }
@@ -85,8 +85,8 @@ int Piece::getMissingUnusedBlockIndex() const {
   return blockIndex;
 }
 
-int Piece::getMissingBlockIndex() const {
-  int blockIndex = bitfield->getMissingIndex();
+int32_t Piece::getMissingBlockIndex() const {
+  int32_t blockIndex = bitfield->getMissingIndex();
   if(blockIndex == -1) {
     return blockIndex;
   }

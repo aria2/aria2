@@ -70,12 +70,12 @@ void DefaultBtProgressInfoFile::save() {
       throw string("writeError:bitfield");
     }
     TransferStat stat = peerStorage->calculateStat();
-    long long int allTimeDownloadLength = pieceStorage->getCompletedLength();
+    int64_t allTimeDownloadLength = pieceStorage->getCompletedLength();
     if(fwrite(&allTimeDownloadLength,
 	      sizeof(allTimeDownloadLength), 1, file) < 1) {
       throw string("writeError:download length");
     }
-    long long int allTimeUploadLength =
+    int64_t allTimeUploadLength =
       btRuntime->getUploadLengthAtStartup()+
       stat.getSessionUploadLength();
     if(fwrite(&allTimeUploadLength,
@@ -112,12 +112,12 @@ void DefaultBtProgressInfoFile::load() {
     pieceStorage->setBitfield(savedBitfield,
 			      pieceStorage->getBitfieldLength());
     // allTimeDownloadLength exists for only a compatibility reason.
-    long long int allTimeDownloadLength;
+    int64_t allTimeDownloadLength;
     if(fread(&allTimeDownloadLength,
 	     sizeof(allTimeDownloadLength), 1, file) < 1) {
       throw string("readError");
     }
-    long long int allTimeUploadLength;
+    int64_t allTimeUploadLength;
     if(fread(&allTimeUploadLength,
 	     sizeof(allTimeUploadLength), 1, file) < 1) {
       throw string("readError");

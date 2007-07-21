@@ -42,7 +42,7 @@
 #include "CUIDCounter.h"
 #include <sstream>
 
-TrackerUpdateCommand::TrackerUpdateCommand(int cuid,
+TrackerUpdateCommand::TrackerUpdateCommand(int32_t cuid,
 					   TorrentDownloadEngine* e,
 					   const BtContextHandle& btContext):
   BtContextAwareCommand(cuid, btContext), e(e)
@@ -62,7 +62,7 @@ string TrackerUpdateCommand::getTrackerResponse() {
   char data[2048];
   try {
     while(1) {
-      int dataLength = e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->diskWriter->readData(data, sizeof(data), strm.tellp());
+      int32_t dataLength = e->_requestGroupMan->getRequestGroup(0)->getSegmentMan()->diskWriter->readData(data, sizeof(data), strm.tellp());
       strm.write(data, dataLength);
       if(dataLength != sizeof(data)) {
 	break;

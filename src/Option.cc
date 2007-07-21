@@ -56,16 +56,16 @@ string Option::get(const string& name) const {
   }
 }
 
-int Option::getAsInt(const string& name) const {
+int32_t Option::getAsInt(const string& name) const {
   string value = get(name);
   if(value == "") {
     return 0;
   } else {
-    return (int)strtol(value.c_str(), NULL, 10);
+    return strtol(value.c_str(), NULL, 10);
   }
 }
 
-long long int Option::getAsLLInt(const string& name) const {
+int64_t Option::getAsLLInt(const string& name) const {
   string value = get(name);
   if(value == "") {
     return 0;

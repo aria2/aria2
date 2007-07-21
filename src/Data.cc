@@ -35,7 +35,7 @@
 #include "Data.h"
 #include "MetaEntryVisitor.h"
 
-Data::Data(const char* data, int len, bool number):number(number) {
+Data::Data(const char* data, int32_t len, bool number):number(number) {
   if(data == NULL) {
     this->data = NULL;
     this->len = 0;
@@ -71,15 +71,15 @@ const char* Data::getData() const {
   }
 }
 
-int Data::getLen() const {
+int32_t Data::getLen() const {
   return len;
 }
 
-int Data::toInt() const {
-  return (int)toLLInt();
+int32_t Data::toInt() const {
+  return toLLInt();
 }
 
-long long int Data::toLLInt() const {
+int64_t Data::toLLInt() const {
   if(len == 0) {
     return 0;
   } else {

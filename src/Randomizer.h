@@ -41,9 +41,9 @@ class Randomizer {
 public:
   virtual ~Randomizer() {}
 
-  virtual int getRandomNumber() = 0;
+  virtual long int getRandomNumber() = 0;
 
-  virtual int getMaxRandomNumber() = 0;
+  virtual long int getMaxRandomNumber() = 0;
 };
 
 typedef SharedHandle<Randomizer> RandomizerHandle;

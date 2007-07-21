@@ -41,7 +41,7 @@
 
 MetaEntry* MetaFileUtil::parseMetaFile(const string& file) {
   File f(file);
-  int len = f.size();
+  int32_t len = f.size();
   char* buf = new char[len];
   FILE* fp = fopen(file.c_str(), "r+");
   try {
@@ -66,7 +66,7 @@ MetaEntry* MetaFileUtil::parseMetaFile(const string& file) {
   }
 }
 
-MetaEntry* MetaFileUtil::bdecoding(const char* buf, int len) {
+MetaEntry* MetaFileUtil::bdecoding(const char* buf, int32_t len) {
   MetaEntry* entry = NULL;
   try{
     const char* p = buf;
@@ -157,7 +157,7 @@ Data* MetaFileUtil::decodeInt(const char** pp, const char* end) {
   if(endTerm == NULL) {
     throw new DlAbortEx(EX_MULFORMED_META_INFO);
   }
-  int numSize = endTerm-*pp;
+  int32_t numSize = endTerm-*pp;
 
   Data* data = new Data(*pp, numSize, true);
   *pp += numSize+1;
@@ -173,12 +173,12 @@ Data* MetaFileUtil::decodeWord(const char** pp, const char* end) {
   if(delim == *pp || delim == NULL) {
     throw new DlAbortEx(EX_MULFORMED_META_INFO);
   }
-  int numSize = delim-*pp;
+  int32_t numSize = delim-*pp;
   char* temp = new char[numSize+1];
   memcpy(temp, *pp, numSize);
   temp[numSize] = '\0';
   char* endptr;
-  int size = strtol(temp, &endptr, 10);
+  int32_t size = strtol(temp, &endptr, 10);
   if(*endptr != '\0') {
     delete [] temp;
     throw new DlAbortEx(EX_MULFORMED_META_INFO);

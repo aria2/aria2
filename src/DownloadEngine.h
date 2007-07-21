@@ -106,7 +106,7 @@ private:
 #endif // ENABLE_ASYNC_DNS
   fd_set rfdset;
   fd_set wfdset;
-  int fdmax;
+  int32_t fdmax;
 
   void shortSleep() const;
   bool addSocket(const SocketEntry& socketEntry);

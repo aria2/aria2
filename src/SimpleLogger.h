@@ -39,11 +39,11 @@
 
 class SimpleLogger:public Logger {
 private:
-  void writeFile(int level, const char* msg, va_list ap, Exception* e = 0) const;
+  void writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e = 0) const;
   void writeHeader(FILE* file, string date, string level) const;
-  void writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e = 0, bool printHeader = true) const;
+  void writeLog(FILE* file, Logger::LEVEL level, const char* msg, va_list ap, Exception* e = 0, bool printHeader = true) const;
   FILE* file;
-  int stdoutField;
+  int32_t stdoutField;
 public:
   SimpleLogger(FILE* logfile = 0);
   ~SimpleLogger();
@@ -61,7 +61,7 @@ public:
   virtual void error(const char* msg, ...) const;
   virtual void error(const char* msg, Exception* ex, ...) const;
 
-  void setStdout(int level, bool enabled);
+  void setStdout(Logger::LEVEL level, bool enabled);
 };
 
 #endif // _D_SIMPLE_LOGGER_H_

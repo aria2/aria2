@@ -35,10 +35,10 @@
 #include "PeerChokeCommand.h"
 #include "Util.h"
 
-PeerChokeCommand::PeerChokeCommand(int cuid,
+PeerChokeCommand::PeerChokeCommand(int32_t cuid,
 				   TorrentDownloadEngine* e,
 				   const BtContextHandle& btContext,
-				   int interval):
+				   int32_t interval):
   BtContextAwareCommand(cuid, btContext),
   interval(interval),
   e(e),
@@ -59,7 +59,7 @@ void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
     return;
   }
   random_shuffle(peers.begin(), peers.end());
-  int optUnchokCount = 1;
+  int32_t optUnchokCount = 1;
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peers::value_type peer = *itr;
     if(optUnchokCount > 0 && !peer->snubbing) {
@@ -108,7 +108,7 @@ bool PeerChokeCommand::execute() {
     } else {
       orderByDownloadRate(peers);
     }
-    int unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
+    int32_t unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
     for(Peers::iterator itr = peers.begin(); itr != peers.end() && unchokingCount > 0; ) {
       PeerHandle peer = *itr;
       if(peer->peerInterested && !peer->snubbing) {

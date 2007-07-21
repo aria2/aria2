@@ -59,7 +59,7 @@ private:
 
   string userAgent;
 
-  string getHostText(const string& host, in_port_t port) const;
+  string getHostText(const string& host, int32_t port) const;
 
   string getProxyAuthString() const;
 
@@ -106,7 +106,7 @@ public:
     return request->getHost();
   }
 
-  in_port_t getPort() const
+  int32_t getPort() const
   {
     return request->getPort();
   }

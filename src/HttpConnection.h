@@ -75,7 +75,7 @@ typedef deque<HttpRequestEntryHandle> HttpRequestEntries;
 
 class HttpConnection {
 private:
-  int cuid;
+  int32_t cuid;
   SocketHandle socket;
   const Option* option;
   const Logger* logger;
@@ -84,7 +84,7 @@ private:
 
   string eraseConfidentialInfo(const string& request);
 public:
-  HttpConnection(int cuid,
+  HttpConnection(int32_t cuid,
 		 const SocketHandle& socket,
 		 const Option* op);
 

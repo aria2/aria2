@@ -34,10 +34,10 @@
 /* copyright --> */
 #include "HaveEraseCommand.h"
 
-HaveEraseCommand::HaveEraseCommand(int cuid,
+HaveEraseCommand::HaveEraseCommand(int32_t cuid,
 				   TorrentDownloadEngine* e,
 				   const BtContextHandle& btContext,
-				   int interval)
+				   int32_t interval)
   :BtContextAwareCommand(cuid, btContext),
    e(e),
    interval(interval) {}

@@ -52,7 +52,7 @@ typedef SharedHandle<HeadResult> HeadResultHandle;
 class UrlRequestInfo : public RequestInfo {
 private:
   Strings urls;
-  int maxConnections;
+  int32_t maxConnections;
   string _filename;
   int64_t _totalLength;
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -64,11 +64,11 @@ private:
   RequestInfo* createNextRequestInfo() const;
   void adjustRequestSize(Requests& requests,
 			 Requests& reserved,
-			 int maxConnections) const;
+			 int32_t maxConnections) const;
   void printUrls(const Strings& urls) const;
   HeadResultHandle getHeadResult();
 public:
-  UrlRequestInfo(const Strings& urls, int maxConnections, Option* op):
+  UrlRequestInfo(const Strings& urls, int32_t maxConnections, Option* op):
     RequestInfo(op),
     urls(urls),
     maxConnections(maxConnections),

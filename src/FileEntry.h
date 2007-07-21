@@ -48,7 +48,7 @@ private:
 public:
   FileEntry():length(0), offset(0), extracted(false), requested(false) {}
 
-  FileEntry(const string& path, long long int length, long long int offset);
+  FileEntry(const string& path, int64_t length, int64_t offset);
 
   FileEntry& operator=(const FileEntry& entry)
   {
@@ -80,11 +80,11 @@ public:
 
   int64_t getLength() const { return length; }
 
-  void setLength(long long int length) { this->length = length; }
+  void setLength(int64_t length) { this->length = length; }
 
-  long long int getOffset() const { return offset; }
+  int64_t getOffset() const { return offset; }
 
-  void setOffset(long long int offset) { this->offset = offset; }
+  void setOffset(int64_t offset) { this->offset = offset; }
 
   bool isExtracted() const { return extracted; }
 

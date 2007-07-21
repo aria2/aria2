@@ -42,13 +42,13 @@
 
 class Piece {
 private:
-  int index;
-  int length;
+  int32_t index;
+  int32_t length;
   BitfieldMan* bitfield;
 public:
   Piece();
 
-  Piece(int index, int length);
+  Piece(int32_t index, int32_t length);
 
   Piece(const Piece& piece);
 
@@ -76,15 +76,15 @@ public:
     return index == piece.index;
   }
 
-  int getMissingUnusedBlockIndex() const;
-  int getMissingBlockIndex() const;
+  int32_t getMissingUnusedBlockIndex() const;
+  int32_t getMissingBlockIndex() const;
   BlockIndexes getAllMissingBlockIndexes() const;
-  void completeBlock(int blockIndex);
-  void cancelBlock(int blockIndex);
-  int countCompleteBlock() const {
+  void completeBlock(int32_t blockIndex);
+  void cancelBlock(int32_t blockIndex);
+  int32_t countCompleteBlock() const {
     return bitfield->countBlock()-bitfield->countMissingBlock();
   }
-  bool hasBlock(int blockIndex) const {
+  bool hasBlock(int32_t blockIndex) const {
     return bitfield->isBitSet(blockIndex);
   }
   /**
@@ -92,20 +92,20 @@ public:
    * returns false.
    */
   bool pieceComplete() const;
-  int countBlock() const { return bitfield->countBlock(); }
-  int getBlockLength(int index) const {
+  int32_t countBlock() const { return bitfield->countBlock(); }
+  int32_t getBlockLength(int32_t index) const {
     return bitfield->getBlockLength(index);
   }
-  int getBlockLength() const { return bitfield->getBlockLength(); }
-  int getIndex() const { return index; }
-  void setIndex(int index) { this->index = index; }
-  int getLength() const { return length; }
-  void setLength(int index) { this->length = length; }
+  int32_t getBlockLength() const { return bitfield->getBlockLength(); }
+  int32_t getIndex() const { return index; }
+  void setIndex(int32_t index) { this->index = index; }
+  int32_t getLength() const { return length; }
+  void setLength(int32_t index) { this->length = length; }
 
   const unsigned char* getBitfield() const { return bitfield->getBitfield(); }
-  void setBitfield(const unsigned char* bitfield, int len);
+  void setBitfield(const unsigned char* bitfield, int32_t len);
 
-  int getBitfieldLength() const {
+  int32_t getBitfieldLength() const {
     return bitfield->getBitfieldLength();
   }
 
@@ -114,7 +114,7 @@ public:
 
   string toString() const;
 
-  bool isBlockUsed(int index) const {
+  bool isBlockUsed(int32_t index) const {
     return bitfield->isUseBitSet(index);
   }
 };

@@ -63,7 +63,7 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
   }  
 }
 
-string HttpRequest::getHostText(const string& host, in_port_t port) const
+string HttpRequest::getHostText(const string& host, int32_t port) const
 {
   return  host+(port == 80 || port == 443 ? "" : ":"+Util::llitos(port));
 }

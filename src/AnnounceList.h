@@ -57,7 +57,7 @@ public:
   void reconfigure(const MetaEntry* announceListEntry);
   void reconfigure(const string& url);
 
-  int countTier() const {
+  int32_t countTier() const {
     return tiers.size();
   }
 
@@ -98,12 +98,12 @@ public:
   /**
    * Counts the number of tiers to which the "stopped" event can be sent.
    */
-  int countStoppedAllowedTier() const;
+  int32_t countStoppedAllowedTier() const;
 
   /**
    * Counts the number of tiers to which the "completed" event can be sent.
    */
-  int countCompletedAllowedTier() const;
+  int32_t countCompletedAllowedTier() const;
 
   /**
    * Moves current tier pointer to the tier to which the "stopped" event can

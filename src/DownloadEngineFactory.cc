@@ -184,8 +184,8 @@ DownloadEngineFactory::newTorrentConsoleEngine(const BtContextHandle& btContext,
   PeerListenCommand* listenCommand =
     new PeerListenCommand(CUIDCounterSingletonHolder::instance()->newID(),
 			  te, btContext);
-  int port;
-  int listenPort = op->getAsInt(PREF_LISTEN_PORT);
+  int32_t port;
+  int32_t listenPort = op->getAsInt(PREF_LISTEN_PORT);
   if(listenPort == -1) {
     port = listenCommand->bindPort(6881, 6999);
   } else {

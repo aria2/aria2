@@ -72,7 +72,7 @@ void SimpleLogger::closeFile() {
   }
 }
 
-void SimpleLogger::setStdout(int level, bool enabled) {
+void SimpleLogger::setStdout(Logger::LEVEL level, bool enabled) {
   if(enabled) {
     stdoutField |= level;
   } else {
@@ -84,7 +84,7 @@ void SimpleLogger::writeHeader(FILE* file, string date, string level) const {
   fprintf(file, "%s %s - ", date.c_str(), level.c_str());
 }
 
-void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, Exception* e, bool printHeader) const
+void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va_list ap, Exception* e, bool printHeader) const
 {
   string levelStr;
   switch(level) {
@@ -125,7 +125,7 @@ void SimpleLogger::writeLog(FILE* file, int level, const char* msg, va_list ap, 
   fflush(file);
 }
 
-void SimpleLogger::writeFile(int level, const char* msg, va_list ap, Exception* e) const {
+void SimpleLogger::writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e) const {
   writeLog(file, level, msg, ap, e);
   if(stdoutField&level) {
     fprintf(stdout, "\n");

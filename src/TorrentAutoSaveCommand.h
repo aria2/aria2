@@ -43,13 +43,13 @@
 class TorrentAutoSaveCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
-  int interval;
+  int32_t interval;
   Time checkPoint;
 public:
-  TorrentAutoSaveCommand(int cuid,
+  TorrentAutoSaveCommand(int32_t cuid,
 			 TorrentDownloadEngine* e,
 			 const BtContextHandle& btContext,
-			 int interval);
+			 int32_t interval);
 
   ~TorrentAutoSaveCommand();
 

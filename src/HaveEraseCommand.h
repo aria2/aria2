@@ -42,12 +42,12 @@ class HaveEraseCommand : public BtContextAwareCommand {
 private:
   TorrentDownloadEngine* e;
   Time cp;
-  int interval;
+  int32_t interval;
 public:
-  HaveEraseCommand(int cuid,
+  HaveEraseCommand(int32_t cuid,
 		   TorrentDownloadEngine* e,
 		   const BtContextHandle& btContext,
-		   int interval);
+		   int32_t interval);
 
   virtual ~HaveEraseCommand() {}
 

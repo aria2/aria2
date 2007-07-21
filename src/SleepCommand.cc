@@ -35,7 +35,7 @@
 #include "SleepCommand.h"
 #include "Util.h"
 
-SleepCommand::SleepCommand(int cuid, DownloadEngine* e, Command* nextCommand, int wait):
+SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, int32_t wait):
   Command(cuid), engine(e), nextCommand(nextCommand), wait(wait) {}
 
 SleepCommand::~SleepCommand() {

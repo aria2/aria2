@@ -37,13 +37,13 @@
 
 class TimeoutException {
 public:
-  int err;
+  int32_t err;
   string msg;
 public:
   TimeoutException():err(0), msg("") {};
-  TimeoutException(int err):err(err), msg("") {};
+  TimeoutException(int32_t err):err(err), msg("") {};
   TimeoutException(string msg):err(0), msg(msg) {};
-  TimeoutException(int err, string msg):err(err), msg(msg) {}
+  TimeoutException(int32_t err, string msg):err(err), msg(msg) {}
 };
 
 #endif // _D_TIMEOUT_EXCEPTION_H_

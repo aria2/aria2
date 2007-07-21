@@ -50,11 +50,11 @@ private:
   const Option* option;
   Peers peers;
   Peers incomingPeers;
-  int maxPeerListSize;
+  int32_t maxPeerListSize;
   Logger* logger;
   BtRuntimeHandle btRuntime;
-  long long int removedPeerSessionDownloadLength;
-  long long int removedPeerSessionUploadLength;
+  int64_t removedPeerSessionDownloadLength;
+  int64_t removedPeerSessionUploadLength;
 public:
   DefaultPeerStorage(BtContextHandle btContext, const Option* option);
   virtual ~DefaultPeerStorage();
@@ -72,7 +72,7 @@ public:
 
   virtual PeerHandle getUnusedPeer();
 
-  PeerHandle getPeer(const string& ipaddr, int port) const;
+  PeerHandle getPeer(const string& ipaddr, int32_t port) const;
 
   virtual void addPeer(const Peers& peers);
 
@@ -86,11 +86,11 @@ public:
 
   virtual void returnPeer(const PeerHandle& peer);
 
-  void setMaxPeerListSize(int size) { this->maxPeerListSize = size; }
+  void setMaxPeerListSize(int32_t size) { this->maxPeerListSize = size; }
  
-  int getMaxPeerListSize() const { return maxPeerListSize; }
+  int32_t getMaxPeerListSize() const { return maxPeerListSize; }
 
-  void deleteUnusedPeer(int delSize);
+  void deleteUnusedPeer(int32_t delSize);
   
   void onErasingPeer(const PeerHandle& peer);
 

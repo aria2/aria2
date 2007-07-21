@@ -57,7 +57,7 @@ public:
 # define DIGEST_ALGO_SHA1 EVP_sha1()
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGCRYPT
-  typedef int DigestAlgo;
+  typedef int32_t DigestAlgo;
 # define DIGEST_ALGO_MD5 GCRY_MD_MD5
 # define DIGEST_ALGO_SHA1 GCRY_MD_SHA1
 #endif // HAVE_LIBGCRYPT
@@ -83,16 +83,16 @@ public:
 #if defined(HAVE_OLD_LIBSSL)
   void digestInit() {EVP_DigestInit(&ctx, algo);}
   void digestReset() {EVP_DigestInit(&ctx, algo);}
-  void digestUpdate(const void* data, int length) {EVP_DigestUpdate(&ctx, data, length);}
+  void digestUpdate(const void* data, int32_t length) {EVP_DigestUpdate(&ctx, data, length);}
   void digestFinal(unsigned char* md) {
-    int len;
-    EVP_DigestFinal(&ctx, md, (unsigned int*)&len);
+    int32_t len;
+    EVP_DigestFinal(&ctx, md, (uint32_t*)&len);
   }
   void digestFree() {/*empty*/}
-  int digestLength() const {
+  int32_t digestLength() const {
     return digestLength(algo);
   }
-  static int digestLength(DigestAlgo algo) {
+  static int32_t digestLength(DigestAlgo algo) {
     return EVP_MD_size(algo);
   }
 
@@ -104,20 +104,20 @@ public:
   void digestReset() {
     EVP_DigestInit_ex(&ctx, algo, 0);
   }
-  void digestUpdate(const void* data, int length) {
+  void digestUpdate(const void* data, int32_t length) {
     EVP_DigestUpdate(&ctx, data, length);
   }
   void digestFinal(unsigned char* md) {
-    int len;
-    EVP_DigestFinal_ex(&ctx, md, (unsigned int*)&len);
+    int32_t len;
+    EVP_DigestFinal_ex(&ctx, md, (uint32_t*)&len);
   }
   void digestFree() {
     EVP_MD_CTX_cleanup(&ctx);
   }
-  int digestLength() const {
+  int32_t digestLength() const {
     return digestLength(algo);
   }
-  static int digestLength(DigestAlgo algo) {
+  static int32_t digestLength(DigestAlgo algo) {
     return EVP_MD_size(algo);
   }
 
@@ -128,7 +128,7 @@ public:
   void digestReset() {
     gcry_md_reset(ctx);
   }
-  void digestUpdate(const void* data, int length) {
+  void digestUpdate(const void* data, int32_t length) {
     gcry_md_write(ctx, data, length);
   }
   void digestFinal(unsigned char* md) {
@@ -138,7 +138,7 @@ public:
   void digestFree() {
     gcry_md_close(ctx);
   }
-  int digestLength() const {
+  int32_t digestLength() const {
     return digestLength(algo);
   }
   static int digestLength(DigestAlgo algo) {

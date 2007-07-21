@@ -48,9 +48,9 @@ public:
   };
 public:
   string url;
-  int type;
+  TYPE type;
   string location;
-  int preference;
+  int32_t preference;
 public:
   MetalinkResource();
   ~MetalinkResource();

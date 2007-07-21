@@ -43,13 +43,13 @@ class DownloadCommand;
 
 class RequestGroupEntry : public ProgressAwareEntry {
 protected:
-  int _cuid;
+  int32_t _cuid;
   RequestHandle _currentRequest;
   RequestGroup* _requestGroup;
   DownloadCommand* _nextDownloadCommand;
   bool _shouldAddNumConnection;
 public:
-  RequestGroupEntry(int cuid,
+  RequestGroupEntry(int32_t cuid,
 		    const RequestHandle& currentRequest,
 		    RequestGroup* requestGroup,
 		    DownloadCommand* nextDownloadCommand = 0):
@@ -73,7 +73,7 @@ public:
     return _requestGroup->getTotalLength();
   }
 
-  int getCUID() const
+  int32_t getCUID() const
   {
     return _cuid;
   }

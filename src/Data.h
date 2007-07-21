@@ -42,7 +42,7 @@ using namespace std;
 
 class Data : public MetaEntry {
 private:
-  int len;
+  int32_t len;
   char* data;
   bool number;
 public:
@@ -50,15 +50,15 @@ public:
    * This class stores the copy of data. So caller must take care of freeing
    * memory of data.
    */
-  Data(const char* data, int len, bool number = false);
+  Data(const char* data, int32_t len, bool number = false);
   ~Data();
 
   string toString() const;
-  int toInt() const;
-  long long int toLLInt() const;
+  int32_t toInt() const;
+  int64_t toLLInt() const;
   
   const char* getData() const;
-  int getLen() const;
+  int32_t getLen() const;
   bool isNumber() const;
 
   void accept(MetaEntryVisitor* v) const;

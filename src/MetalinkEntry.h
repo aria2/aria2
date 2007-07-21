@@ -94,7 +94,7 @@ public:
 
   void reorderResourcesByPreference();
   
-  void setLocationPreference(const string& location, int preferenceToAdd);
+  void setLocationPreference(const string& location, int32_t preferenceToAdd);
 
   static FileEntries toFileEntry(const MetalinkEntries& metalinkEntries);
 };

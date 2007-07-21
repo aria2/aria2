@@ -43,7 +43,7 @@
 #include "DNSCache.h"
 #include "FatalException.h"
 
-AbstractCommand::AbstractCommand(int cuid,
+AbstractCommand::AbstractCommand(int32_t cuid,
 				 const RequestHandle& req,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
@@ -147,7 +147,7 @@ void AbstractCommand::tryReserved() {
   e->addCommand(commands);
 }
 
-bool AbstractCommand::prepareForRetry(int wait) {
+bool AbstractCommand::prepareForRetry(int32_t wait) {
   _requestGroup->getSegmentMan()->cancelSegment(cuid);
   Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, _requestGroup, e);
   if(wait == 0) {

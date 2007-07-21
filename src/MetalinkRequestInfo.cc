@@ -43,10 +43,9 @@
 class AccumulateNonP2PUrl {
 private:
   Strings* urlsPtr;
-  int split;
+  int32_t split;
 public:
-  AccumulateNonP2PUrl(Strings* urlsPtr,
-		int split)
+  AccumulateNonP2PUrl(Strings* urlsPtr, int32_t split)
     :urlsPtr(urlsPtr),
      split(split) {}
 
@@ -55,7 +54,7 @@ public:
     case MetalinkResource::TYPE_HTTP:
     case MetalinkResource::TYPE_HTTPS:
     case MetalinkResource::TYPE_FTP:
-      for(int s = 1; s <= split; s++) {
+      for(int32_t s = 1; s <= split; s++) {
 	urlsPtr->push_back(resource->url);
       }
       break;

@@ -66,15 +66,15 @@ Socket& Socket::operator=(const Socket& s) {
   return *this;
 }
 
-void Socket::beginListen(int port) const {
+void Socket::beginListen(int32_t port) const {
   core->beginListen(port);
 }
 
-void Socket::getAddrInfo(pair<string, int>& addrinfo) const {
+void Socket::getAddrInfo(pair<string, int32_t>& addrinfo) const {
   core->getAddrInfo(addrinfo);
 }
 
-void Socket::getPeerInfo(pair<string, int>& peerinfo) const {
+void Socket::getPeerInfo(pair<string, int32_t>& peerinfo) const {
   core->getPeerInfo(peerinfo);
 }
 
@@ -82,7 +82,7 @@ Socket* Socket::acceptConnection() const {
   return new Socket(core->acceptConnection());
 }
 
-void Socket::establishConnection(const string& host, int port) const {
+void Socket::establishConnection(const string& host, int32_t port) const {
   core->establishConnection(host, port);
 }
 
@@ -94,15 +94,15 @@ void Socket::closeConnection() const {
   core->closeConnection();
 }
 
-bool Socket::isWritable(int timeout) const {
+bool Socket::isWritable(int32_t timeout) const {
   return core->isWritable(timeout);
 }
 
-bool Socket::isReadable(int timeout) const {
+bool Socket::isReadable(int32_t timeout) const {
   return core->isReadable(timeout);
 }
 
-void Socket::writeData(const char* data, int len) const {
+void Socket::writeData(const char* data, int32_t len) const {
   core->writeData(data, len);
 }
 
@@ -110,11 +110,11 @@ void Socket::writeData(const string& str) const {
   core->writeData(str.c_str(), str.size());
 }
 
-void Socket::readData(char* data, int& len) const {
+void Socket::readData(char* data, int32_t& len) const {
   core->readData(data, len);
 }
 
-void Socket::peekData(char* data, int& len) const {
+void Socket::peekData(char* data, int32_t& len) const {
   core->peekData(data, len);
 }
 

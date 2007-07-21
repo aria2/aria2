@@ -57,7 +57,7 @@ string uint2str(T value, bool comma) {
     str = "0";
     return str;
   }
-  int count = 0;
+  int32_t count = 0;
   while(value) {
     ++count;
     char digit = value%10+'0';
@@ -150,15 +150,15 @@ pair<string, string> Util::split(const string& src, const string& delims)
   return hp;
 }
 
-long long int Util::difftv(struct timeval tv1, struct timeval tv2) {
+int64_t Util::difftv(struct timeval tv1, struct timeval tv2) {
   if(tv1.tv_sec < tv2.tv_sec || tv1.tv_sec == tv2.tv_sec && tv1.tv_usec < tv2.tv_usec) {
     return 0;
   }
-  return ((long long int)(tv1.tv_sec-tv2.tv_sec)*1000000+
+  return ((int64_t)(tv1.tv_sec-tv2.tv_sec)*1000000+
 	  tv1.tv_usec-tv2.tv_usec);
 }
 
-int Util::difftvsec(struct timeval tv1, struct timeval tv2) {
+int32_t Util::difftvsec(struct timeval tv1, struct timeval tv2) {
   if(tv1.tv_sec < tv2.tv_sec) {
     return 0;
   }
@@ -235,9 +235,9 @@ string Util::replace(const string& target, const string& oldstr, const string& n
   return result;
 }
 
-string Util::urlencode(const unsigned char* target, int len) {
+string Util::urlencode(const unsigned char* target, int32_t len) {
   string dest;
-  for(int i = 0; i < len; i++) {
+  for(int32_t i = 0; i < len; i++) {
     if(!('0' <= target[i] && target[i] <= '9' ||
 	 'A' <= target[i] && target[i] <= 'Z' ||
 	 'a' <= target[i] && target[i] <= 'z' ||
@@ -258,9 +258,9 @@ string Util::urlencode(const unsigned char* target, int len) {
   return dest;
 }
 
-string Util::torrentUrlencode(const unsigned char* target, int len) {
+string Util::torrentUrlencode(const unsigned char* target, int32_t len) {
   string dest;
-  for(int i = 0; i < len; i++) {
+  for(int32_t i = 0; i < len; i++) {
     if('0' <= target[i] && target[i] <= '9' ||
        'A' <= target[i] && target[i] <= 'Z' ||
        'a' <= target[i] && target[i] <= 'z') {
@@ -298,9 +298,9 @@ string Util::urldecode(const string& target) {
   return result;
 }
 
-string Util::toHex(const unsigned char* src, int len) {
+string Util::toHex(const unsigned char* src, int32_t len) {
   char* temp = new char[len*2+1];
-  for(int i = 0; i < len; i++) {
+  for(int32_t i = 0; i < len; i++) {
     sprintf(temp+i*2, "%02x", src[i]);
   }
   temp[len*2] = '\0';
@@ -319,11 +319,11 @@ void Util::fileCopy(const string& dest, const string& src) {
   rangedFileCopy(dest, src, 0, file.size());
 }
 
-void Util::rangedFileCopy(const string& dest, const string& src, long long int srcOffset, long long int length) {
-  int bufSize = 4096;
+void Util::rangedFileCopy(const string& dest, const string& src, int64_t srcOffset, int64_t length) {
+  int32_t bufSize = 4096;
   char buf[bufSize];
-  int destFd = -1;
-  int srcFd = -1;
+  int32_t destFd = -1;
+  int32_t srcFd = -1;
   try {
     if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, OPEN_MODE)) == -1) {
       throw new DlAbortEx(EX_FILE_OPEN, dest.c_str(), strerror(errno));
@@ -334,10 +334,10 @@ void Util::rangedFileCopy(const string& dest, const string& src, long long int s
     if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
       throw new DlAbortEx(EX_FILE_SEEK, src.c_str(), strerror(errno));
     }
-    int x = length/bufSize;
-    int r = length%bufSize;
-    for(int i = 0; i < x; i++) {
-      int readLength;
+    int32_t x = length/bufSize;
+    int32_t r = length%bufSize;
+    for(int32_t i = 0; i < x; i++) {
+      int32_t readLength;
       if((readLength = read(srcFd, buf, bufSize)) == -1 || readLength != bufSize) {
 	throw new DlAbortEx(EX_FILE_READ, src.c_str(), strerror(errno));
       }
@@ -346,7 +346,7 @@ void Util::rangedFileCopy(const string& dest, const string& src, long long int s
       }
     }
     if(r > 0) {
-      int readLength;
+      int32_t readLength;
       if((readLength = read(srcFd, buf, r)) == -1 || readLength != r) {
 	throw new DlAbortEx(EX_FILE_READ, src.c_str(), strerror(errno));
       }
@@ -369,7 +369,7 @@ void Util::rangedFileCopy(const string& dest, const string& src, long long int s
   }
 }
 
-bool Util::isPowerOf(int num, int base) {
+bool Util::isPowerOf(int32_t num, int32_t base) {
   if(base <= 0) { return false; }
   if(base == 1) { return true; }
 
@@ -382,14 +382,14 @@ bool Util::isPowerOf(int num, int base) {
   return false;
 }
 
-string Util::secfmt(int sec) {
+string Util::secfmt(int32_t sec) {
   string str;
   if(sec >= 3600) {
     str = itos(sec/3600)+"h";
     sec %= 3600;
   }
   if(sec >= 60) {
-    int min = sec/60;
+    int32_t min = sec/60;
     if(min < 10) {
       str += "0";
     }
@@ -403,7 +403,7 @@ string Util::secfmt(int sec) {
   return str;
 }
 
-int Util::expandBuffer(char** pbuf, int curLength, int newLength) {
+int32_t Util::expandBuffer(char** pbuf, int32_t curLength, int32_t newLength) {
   char* newbuf = new char[newLength];
   memcpy(newbuf, *pbuf, curLength);
   delete [] *pbuf;
@@ -411,11 +411,11 @@ int Util::expandBuffer(char** pbuf, int curLength, int newLength) {
   return newLength;
 }
 
-int getNum(const char* buf, int offset, int length) {
+int32_t getNum(const char* buf, int32_t offset, int32_t length) {
   char* temp = new char[length+1];
   memcpy(temp, buf+offset, length);
   temp[length] = '\0';
-  int x = strtol(temp, NULL, 10);
+  int32_t x = strtol(temp, NULL, 10);
   delete [] temp;
   return x;
 }
@@ -431,18 +431,18 @@ void unfoldSubRange(const string& src, Integers& range) {
     range.push_back(atoi(src.c_str()));
   } else {
     if(src.at(p) == ',') {
-      int num = getNum(src.c_str(), 0, p);
+      int32_t num = getNum(src.c_str(), 0, p);
       range.push_back(num);
       unfoldSubRange(src.substr(p+1), range);
     } else if(src.at(p) == '-') {
-      int rightNumBegin = p+1;
+      int32_t rightNumBegin = p+1;
       string::size_type nextDelim = src.find_first_of(",", rightNumBegin);
       if(nextDelim == string::npos) {
 	nextDelim = src.size();
       }
-      int left = getNum(src.c_str(), 0, p);
-      int right = getNum(src.c_str(), rightNumBegin, nextDelim-rightNumBegin);
-      for(int i = left; i <= right; i++) {
+      int32_t left = getNum(src.c_str(), 0, p);
+      int32_t right = getNum(src.c_str(), rightNumBegin, nextDelim-rightNumBegin);
+      for(int32_t i = left; i <= right; i++) {
 	range.push_back(i);
       }
       if(src.size() > nextDelim) {
@@ -483,7 +483,7 @@ string Util::getContentDispositionFilename(const string& header) {
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST
-void Util::sha1Sum(unsigned char* digest, const void* data, int dataLength) {
+void Util::sha1Sum(unsigned char* digest, const void* data, int32_t dataLength) {
   MessageDigestContext ctx(DIGEST_ALGO_SHA1);
   ctx.digestInit();
   ctx.digestUpdate(data, dataLength);
@@ -504,15 +504,15 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
   MessageDigestContext ctx(algo);
   ctx.digestInit();
 
-  int BUFLEN = 4096;
+  int32_t BUFLEN = 4096;
   char buf[BUFLEN];
 
-  int fd;
+  int32_t fd;
   if((fd = open(filename.c_str(), O_RDWR, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
   while(1) {
-    int size = read(fd, buf, BUFLEN);
+    int32_t size = read(fd, buf, BUFLEN);
     if(size == -1) {
       if(errno == EINTR) {
 	continue;
@@ -533,7 +533,7 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
 
 #ifdef ENABLE_BITTORRENT
 Integers Util::computeFastSet(string ipaddr, const unsigned char* infoHash,
-			     int pieces, int fastSetSize) {
+			     int32_t pieces, int32_t fastSetSize) {
   Integers fastSet;
   struct in_addr saddr;
   if(inet_aton(ipaddr.c_str(), &saddr) == 0) {
@@ -550,13 +550,13 @@ Integers Util::computeFastSet(string ipaddr, const unsigned char* infoHash,
   memcpy(tx+4, infoHash, 20);
   unsigned char x[20];
   sha1Sum(x, tx, 24);
-  while((int)fastSet.size() < fastSetSize) {
-    for(int i = 0; i < 5 && (int)fastSet.size() < fastSetSize; i++) {
-      int j = i*4;
-      unsigned int ny;
+  while((int32_t)fastSet.size() < fastSetSize) {
+    for(int32_t i = 0; i < 5 && (int32_t)fastSet.size() < fastSetSize; i++) {
+      int32_t j = i*4;
+      uint32_t ny;
       memcpy(&ny, x+j, 4);
-      unsigned int y = ntohl(ny);
-      int index = y%pieces;
+      uint32_t y = ntohl(ny);
+      int32_t index = y%pieces;
       if(find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
 	fastSet.push_back(index);
       }
@@ -569,18 +569,7 @@ Integers Util::computeFastSet(string ipaddr, const unsigned char* infoHash,
 }
 #endif // ENABLE_BITTORRENT
 
-/*
-int Util::countBit(unsigned int n) {
-  int count = 0;
-  while(n > 0) {
-    count++;
-    n &= (n-1);
-  }
-  return count;
-}
-*/
-
-static int nbits[] = {
+static int32_t nbits[] = {
   0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 
   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 
   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 
@@ -607,10 +596,10 @@ int32_t Util::countBit(uint32_t n) {
     nbits[(n >> 24)&0xffu];
 }
 
-string Util::randomAlpha(int length) {
+string Util::randomAlpha(int32_t length) {
   string str;
-  for(int i = 0; i < length; i++) {
-    int index = (int)(((double)52)*random()/(RAND_MAX+1.0));
+  for(int32_t i = 0; i < length; i++) {
+    int32_t index = (int32_t)(((double)52)*random()/(RAND_MAX+1.0));
     char ch;
     if(index < 26) {
       ch = (char)('A'+index);
@@ -657,7 +646,7 @@ bool Util::isNumbersAndDotsNotation(const string& name) {
   }
 }
 
-void Util::setGlobalSignalHandler(int signal, void (*handler)(int), int flags) {
+void Util::setGlobalSignalHandler(int32_t signal, void (*handler)(int32_t), int32_t flags) {
   struct sigaction sigact;
   sigact.sa_handler = handler;
   sigact.sa_flags = flags;
@@ -690,7 +679,7 @@ int64_t Util::getRealSize(const string& sizeWithUnit)
 {
   string::size_type p = sizeWithUnit.find_first_of("KM");
   string size;
-  int mult = 1;
+  int32_t mult = 1;
   if(p == string::npos) {
     size = sizeWithUnit;
   } else {
@@ -735,7 +724,7 @@ void Util::toStream(ostream& os, const FileEntries& fileEntries)
   os << _("Files:") << "\n";
   os << "idx|path/length" << "\n";
   os << "===+===========================================================================" << "\n";
-  int count = 1;
+  int32_t count = 1;
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); count++, itr++) {
     os << setw(3) << count << "|" << (*itr)->getPath() << "\n";

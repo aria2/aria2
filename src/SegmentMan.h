@@ -50,10 +50,10 @@ using namespace std;
 
 class SegmentEntry {
 public:
-  int cuid;
+  int32_t cuid;
   SegmentHandle segment;
 public:
-  SegmentEntry(int cuid, const SegmentHandle& segment)
+  SegmentEntry(int32_t cuid, const SegmentHandle& segment)
     :cuid(cuid), segment(segment) {}
   ~SegmentEntry() {}
 };
@@ -77,7 +77,7 @@ private:
   SegmentHandle onNullBitfield(int32_t cuid);
   SegmentHandle checkoutSegment(int32_t cuid, int32_t index);
   SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
-  SegmentEntryHandle getSegmentEntryByIndex(int index) {
+  SegmentEntryHandle getSegmentEntryByIndex(int32_t index) {
     for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
 	itr != usedSegmentEntries.end(); ++itr) {
       const SegmentEntryHandle& segmentEntry = *itr;
@@ -88,7 +88,7 @@ private:
     return 0;
   }
   
-  SegmentEntryHandle getSegmentEntryByCuid(int cuid) {
+  SegmentEntryHandle getSegmentEntryByCuid(int32_t cuid) {
     for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
 	itr != usedSegmentEntries.end(); ++itr) {
       const SegmentEntryHandle& segmentEntry = *itr;
@@ -99,7 +99,7 @@ private:
     return 0;    
   }
 
-  SegmentEntries::iterator getSegmentEntryIteratorByCuid(int cuid) {
+  SegmentEntries::iterator getSegmentEntryIteratorByCuid(int32_t cuid) {
     for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
 	itr != usedSegmentEntries.end(); ++itr) {
       const SegmentEntryHandle& segmentEntry = *itr;
@@ -151,7 +151,7 @@ public:
   /**
    * Represents the number of failures(usually, DlAbortEx) in downloads.
    */
-  int errors;
+  int32_t errors;
 
   const Option* option;
   DiskWriterHandle diskWriter;
@@ -268,7 +268,7 @@ public:
    * Returns peerStat whose cuid is given cuid. If it is not found, returns
    * 0.
    */
-  PeerStatHandle getPeerStat(int cuid) const {
+  PeerStatHandle getPeerStat(int32_t cuid) const {
     for(PeerStats::const_iterator itr = peerStats.begin(); itr != peerStats.end(); ++itr) {
       const PeerStatHandle& peerStat = *itr;
       if(peerStat->getCuid() == cuid) {

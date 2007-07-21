@@ -39,31 +39,32 @@
 #include "BtInteractive.h"
 
 class PeerInteractionCommand : public PeerAbstractCommand {
+public:
+  enum Seq {
+    INITIATOR_SEND_HANDSHAKE,
+    INITIATOR_WAIT_HANDSHAKE,
+    //RECEIVER_SEND_HANDSHAKE,
+    RECEIVER_WAIT_HANDSHAKE,
+    WIRED};
 private:
-  int sequence;
+  Seq sequence;
   BtInteractiveHandle btInteractive;
   int32_t maxDownloadSpeedLimit;
 protected:
   virtual bool executeInternal();
-  virtual bool prepareForRetry(int wait);
-  virtual bool prepareForNextPeer(int wait);
+  virtual bool prepareForRetry(int32_t wait);
+  virtual bool prepareForNextPeer(int32_t wait);
   virtual void onAbort(Exception* ex);
 public:
-  PeerInteractionCommand(int cuid,
+  PeerInteractionCommand(int32_t cuid,
 			 const PeerHandle& peer,
 			 TorrentDownloadEngine* e,
 			 const BtContextHandle& btContext,
 			 const SocketHandle& s,
-			 int sequence);
+			 Seq sequence);
 
-  ~PeerInteractionCommand();
+  virtual ~PeerInteractionCommand();
 
-  enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_SEND_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
 };
 
 #endif // _D_PEER_INTERACTION_COMMAND_H_

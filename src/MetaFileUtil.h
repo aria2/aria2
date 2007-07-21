@@ -57,7 +57,7 @@ private:
 
 public:
   static MetaEntry* parseMetaFile(const string& file);
-  static MetaEntry* bdecoding(const char* buf, int len);
+  static MetaEntry* bdecoding(const char* buf, int32_t len);
 };
 
 #endif // _D_META_FILE_UTIL_H_

@@ -111,9 +111,9 @@ PeerHandle DefaultPeerStorage::getUnusedPeer() {
 class FindPeer {
 private:
   string ipaddr;
-  int port;
+  int32_t port;
 public:
-  FindPeer(const string& ipaddr, int port):ipaddr(ipaddr), port(port) {}
+  FindPeer(const string& ipaddr, int32_t port):ipaddr(ipaddr), port(port) {}
 
   bool operator()(const PeerHandle& peer) const {
     return ipaddr == peer->ipaddr && port == peer->port;
@@ -121,7 +121,7 @@ public:
 };
 
 PeerHandle DefaultPeerStorage::getPeer(const string& ipaddr,
-				       int port) const {
+				       int32_t port) const {
   Peers::const_iterator itr = find_if(peers.begin(), peers.end(),
 				      FindPeer(ipaddr, port));
   if(itr == peers.end()) {
@@ -194,7 +194,7 @@ TransferStat DefaultPeerStorage::calculateStat() {
   return stat;
 }
 
-void DefaultPeerStorage::deleteUnusedPeer(int delSize) {
+void DefaultPeerStorage::deleteUnusedPeer(int32_t delSize) {
   Peers temp;
   for(Peers::reverse_iterator itr = peers.rbegin();
       itr != peers.rend(); ++itr) {

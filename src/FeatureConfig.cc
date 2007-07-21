@@ -50,7 +50,7 @@ FeatureConfig::FeatureConfig() {
     PortMap::value_type("https", 443),
     PortMap::value_type("ftp", 21),
   };
-  int portArraySize = sizeof(portArray)/sizeof(PortMap::value_type);
+  int32_t portArraySize = sizeof(portArray)/sizeof(PortMap::value_type);
   defaultPorts.insert(&portArray[0],
 		      &portArray[portArraySize]);
 
@@ -94,11 +94,11 @@ FeatureConfig::FeatureConfig() {
 			   ),
   };
 
-  int featureArraySize = sizeof(featureArray)/sizeof(FeatureMap::value_type);
+  int32_t featureArraySize = sizeof(featureArray)/sizeof(FeatureMap::value_type);
   supportedFeatures.insert(&featureArray[0],
 			   &featureArray[featureArraySize]);
 
-  for(int i = 0; i < featureArraySize; i++) {
+  for(int32_t i = 0; i < featureArraySize; i++) {
     features.push_back(featureArray[i].first);
   }
 }

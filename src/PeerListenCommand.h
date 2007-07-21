@@ -44,15 +44,15 @@ private:
   SocketHandle socket;
   int32_t _lowestSpeedLimit;
 public:
-  PeerListenCommand(int cuid,
+  PeerListenCommand(int32_t cuid,
 		    TorrentDownloadEngine* e,
 		    const BtContextHandle& btContext);
 
-  ~PeerListenCommand();
+  virtual ~PeerListenCommand();
   
   bool execute();
 
-  int bindPort(int portRangeStart, int portRangeEnd);
+  int32_t bindPort(int32_t portRangeStart, int32_t portRangeEnd);
 
   void setLowestSpeedLimit(int32_t speed)
   {

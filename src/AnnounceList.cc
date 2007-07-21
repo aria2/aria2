@@ -176,11 +176,11 @@ public:
   }
 };
 
-int AnnounceList::countStoppedAllowedTier() const {
+int32_t AnnounceList::countStoppedAllowedTier() const {
   return count_if(tiers.begin(), tiers.end(), FindStoppedAllowedTier());
 }
 
-int AnnounceList::countCompletedAllowedTier() const {
+int32_t AnnounceList::countCompletedAllowedTier() const {
   return count_if(tiers.begin(), tiers.end(), FindCompletedAllowedTier());
 }
 

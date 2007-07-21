@@ -111,12 +111,12 @@ void SegmentMan::save() const {
     if(fwrite(&totalSize, sizeof(totalSize), 1, segFile) < 1) {
       throw string("writeError");
     }
-    int segmentLength = bitfield->getBlockLength();
+    int32_t segmentLength = bitfield->getBlockLength();
     if(fwrite(&segmentLength, sizeof(segmentLength), 1, segFile) < 1) {
       throw string("writeError");
     }
     if(bitfield) {
-      int bitfieldLength = bitfield->getBitfieldLength();
+      int32_t bitfieldLength = bitfield->getBitfieldLength();
       if(fwrite(&bitfieldLength, sizeof(bitfieldLength), 1, segFile) < 1) {
 	throw string("writeError");
       }
@@ -125,12 +125,12 @@ void SegmentMan::save() const {
 	throw string("writeError");
       }					 
     } else {
-      int i = 0;
+      int32_t i = 0;
       if(fwrite(&i, sizeof(i), 1, segFile) < 1) {
 	throw string("writeError");
       }
     }
-    int usedSegmentCount = usedSegmentEntries.size();
+    int32_t usedSegmentCount = usedSegmentEntries.size();
     if(fwrite(&usedSegmentCount, sizeof(usedSegmentCount), 1, segFile) < 1) {
       throw string("writeError");
     }
@@ -163,11 +163,11 @@ void SegmentMan::read(FILE* file) {
   if(fread(&totalSize, sizeof(totalSize), 1, file) < 1) {
     throw string("readError");
   }
-  int segmentSize;
+  int32_t segmentSize;
   if(fread(&segmentSize, sizeof(segmentSize), 1, file) < 1) {
     throw string("readError");
   }
-  int bitfieldLength;
+  int32_t bitfieldLength;
   if(fread(&bitfieldLength, sizeof(bitfieldLength), 1, file) < 1) {
     throw string("readError");
   }
@@ -182,7 +182,7 @@ void SegmentMan::read(FILE* file) {
       delete [] savedBitfield;
     }
   }
-  int segmentCount;
+  int32_t segmentCount;
   if(fread(&segmentCount, sizeof(segmentCount), 1, file) < 1) {
     throw string("readError");
   }
@@ -277,7 +277,7 @@ SegmentHandle SegmentMan::onNullBitfield(int32_t cuid) {
 }
 
 SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peerStat) const {
-  int speed = (int)(peerStat->getAvgDownloadSpeed()*0.8);
+  int32_t speed = (int32_t)(peerStat->getAvgDownloadSpeed()*0.8);
   SegmentEntryHandle slowSegmentEntry(0);
   for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end(); ++itr) {
@@ -291,7 +291,7 @@ SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peer
        !p->getDownloadStartTime().elapsed(option->getAsInt(PREF_STARTUP_IDLE_TIME))) {
       continue;
     }
-    int pSpeed = p->calculateDownloadSpeed(); 
+    int32_t pSpeed = p->calculateDownloadSpeed(); 
     if(pSpeed < speed) {
       speed = pSpeed;
       slowSegmentEntry = segmentEntry;
@@ -308,7 +308,7 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid) {
   if(!segmentEntry.isNull()) {
     return segmentEntry->segment;
   }
-  int index = bitfield->getSparseMissingUnusedIndex();
+  int32_t index = bitfield->getSparseMissingUnusedIndex();
   if(index == -1) {
     PeerStatHandle myPeerStat = getPeerStat(cuid);
     if(!myPeerStat.get()) {
@@ -423,7 +423,7 @@ void SegmentMan::registerPeerStat(const PeerStatHandle& peerStat) {
 }
 
 int32_t SegmentMan::calculateDownloadSpeed() const {
-  int speed = 0;
+  int32_t speed = 0;
   for(PeerStats::const_iterator itr = peerStats.begin();
       itr != peerStats.end(); itr++) {
     const PeerStatHandle& peerStat = *itr;

@@ -41,19 +41,19 @@
 class ConsoleDownloadEngine : public DownloadEngine {
 private:
   Time cp;
-  long long int psize;
-  int speed;
+  int64_t psize;
+  int32_t speed;
   // The time when startup
   Time startup;
   // The number of bytes downloaded at startup
-  long long int startupLength;
+  int64_t startupLength;
   bool isStartupLengthSet;
   // The average speed(bytes per second) since startup
-  int avgSpeed;
+  int32_t avgSpeed;
   // The estimated remaining time to complete the download.
-  int eta;
+  int32_t eta;
 protected:
-  void sendStatistics(long long int currentSize, long long int totalSize);
+  void sendStatistics(int64_t currentSize, int64_t totalSize);
   virtual void initStatistics();
   virtual void calculateStatistics();
   virtual void onEndOfRun();

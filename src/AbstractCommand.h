@@ -46,7 +46,7 @@
 class AbstractCommand : public Command {
 private:
   Time checkPoint;
-  int timeout;
+  int32_t timeout;
 protected:
   RequestHandle req;
   RequestGroup* _requestGroup;
@@ -55,7 +55,7 @@ protected:
   SegmentHandle segment;
 
   void tryReserved();
-  virtual bool prepareForRetry(int wait);
+  virtual bool prepareForRetry(int32_t wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal() = 0;
 
@@ -69,7 +69,7 @@ protected:
   void disableNameResolverCheck(const NameResolverHandle& resolver);
   virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
-  void setTimeout(int timeout) { this->timeout = timeout; }
+  void setTimeout(int32_t timeout) { this->timeout = timeout; }
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
@@ -77,7 +77,7 @@ private:
   SocketHandle writeCheckTarget;
   bool nameResolverCheck;
 public:
-  AbstractCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const SocketHandle& s = SocketHandle());
+  AbstractCommand(int32_t cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const SocketHandle& s = SocketHandle());
   virtual ~AbstractCommand();
   bool execute();
 };

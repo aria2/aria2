@@ -70,7 +70,7 @@ public:
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
-  virtual PieceHandle getPiece(int index) = 0;
+  virtual PieceHandle getPiece(int32_t index) = 0;
 
   /**
    * Tells that the download of the specfied piece completes.
@@ -86,15 +86,15 @@ public:
    * Returns true if the specified piece is already downloaded.
    * Otherwise returns false.
    */
-  virtual bool hasPiece(int index) = 0;
+  virtual bool hasPiece(int32_t index) = 0;
 
-  virtual long long int getTotalLength() = 0;
+  virtual int64_t getTotalLength() = 0;
 
-  virtual long long int getFilteredTotalLength() = 0;
+  virtual int64_t getFilteredTotalLength() = 0;
 
-  virtual long long int getCompletedLength() = 0;
+  virtual int64_t getCompletedLength() = 0;
 
-  virtual long long int getFilteredCompletedLength() = 0;
+  virtual int64_t getFilteredCompletedLength() = 0;
   
   virtual void setFileFilter(const Strings& filePaths) = 0;
 
@@ -124,9 +124,9 @@ public:
   virtual const unsigned char* getBitfield() = 0;
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   int bitfieldLength) = 0;
+			   int32_t bitfieldLength) = 0;
   
-  virtual int getBitfieldLength() = 0;
+  virtual int32_t getBitfieldLength() = 0;
 
   virtual bool isSelectiveDownloadingMode() = 0;
 
@@ -136,26 +136,26 @@ public:
 
   virtual DiskAdaptorHandle getDiskAdaptor() = 0;
   
-  virtual int getPieceLength(int index) = 0;
+  virtual int32_t getPieceLength(int32_t index) = 0;
 
   /**
    * Adds piece index to advertise to other commands. They send have message
    * based on this information.
    */
-  virtual void advertisePiece(int cuid, int index) = 0;
+  virtual void advertisePiece(int32_t cuid, int32_t index) = 0;
 
   /**
    * Returns piece index which is not advertised by the caller command and
    * newer than lastCheckTime.
    */
-  virtual Integers getAdvertisedPieceIndexes(int myCuid,
+  virtual Integers getAdvertisedPieceIndexes(int32_t myCuid,
 					     const Time& lastCheckTime) = 0;
 
   /**
    * Removes have entry if specified seconds have elapsed since its
    * registration.
    */
-  virtual void removeAdvertisedPiece(int elapsed) = 0;
+  virtual void removeAdvertisedPiece(int32_t elapsed) = 0;
 
   /**
    * Sets all bits in bitfield to 1.

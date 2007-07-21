@@ -42,10 +42,10 @@
 class BtHaveMessageValidator : public BtMessageValidator {
 private:
   const BtHaveMessage* message;
-  int numPiece;
+  int32_t numPiece;
 public:
   BtHaveMessageValidator(const BtHaveMessage* message,
-			 int numPiece):
+			 int32_t numPiece):
     message(message),
     numPiece(numPiece) {}
 

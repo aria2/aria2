@@ -50,16 +50,16 @@
 class DefaultBtAnnounce : public BtAnnounce {
 private:
   BtContextHandle btContext;
-  int trackers;
+  int32_t trackers;
   Time prevAnnounceTime;
-  int interval;
-  int minInterval;
-  int complete;
-  int incomplete;
+  int32_t interval;
+  int32_t minInterval;
+  int32_t complete;
+  int32_t incomplete;
   AnnounceList announceList;
   string trackerId;
   string key;
-  int trackerNumTry;
+  int32_t trackerNumTry;
   const Option* option;
   Logger* logger;
   BtRuntimeHandle btRuntime;

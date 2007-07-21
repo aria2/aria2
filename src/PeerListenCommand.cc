@@ -38,7 +38,7 @@
 #include "CUIDCounter.h"
 #include "message.h"
 
-PeerListenCommand::PeerListenCommand(int cuid,
+PeerListenCommand::PeerListenCommand(int32_t cuid,
 				     TorrentDownloadEngine* e,
 				     const BtContextHandle& btContext)
   :BtContextAwareCommand(cuid, btContext),
@@ -47,11 +47,11 @@ PeerListenCommand::PeerListenCommand(int cuid,
 
 PeerListenCommand::~PeerListenCommand() {}
 
-int PeerListenCommand::bindPort(int portRangeStart, int portRangeEnd) {
+int32_t PeerListenCommand::bindPort(int32_t portRangeStart, int32_t portRangeEnd) {
   if(portRangeStart > portRangeEnd) {
     return -1;
   }
-  for(int port = portRangeStart; port <= portRangeEnd; port++) {
+  for(int32_t port = portRangeStart; port <= portRangeEnd; port++) {
     try {
       socket->beginListen(port);
       logger->info(MSG_LISTENING_PORT,
@@ -71,13 +71,13 @@ bool PeerListenCommand::execute() {
   if(btRuntime->isHalt()) {
     return true;
   }
-  for(int i = 0; i < 3 && socket->isReadable(0); i++) {
+  for(int32_t i = 0; i < 3 && socket->isReadable(0); i++) {
     SocketHandle peerSocket;
     try {
       peerSocket = socket->acceptConnection();
-      pair<string, int> peerInfo;
+      pair<string, int32_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
-      pair<string, int> localInfo;
+      pair<string, int32_t> localInfo;
       peerSocket->getAddrInfo(localInfo);
 
       TransferStat tstat = peerStorage->calculateStat();

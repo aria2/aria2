@@ -40,7 +40,7 @@
 #include "prefs.h"
 #include "LogFactory.h"
 
-FtpConnection::FtpConnection(int cuid, const SocketHandle& socket,
+FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
 			     const RequestHandle req, const Option* op)
   :cuid(cuid), socket(socket), req(req), option(op) {
   logger = LogFactory::getInstance();
@@ -94,9 +94,9 @@ SocketHandle FtpConnection::sendPort() const {
   SocketHandle serverSocket;
   serverSocket->beginListen();
   
-  pair<string, int> addrinfo;
+  pair<string, int32_t> addrinfo;
   socket->getAddrInfo(addrinfo);
-  int ipaddr[4]; 
+  int32_t ipaddr[4]; 
   sscanf(addrinfo.first.c_str(), "%d.%d.%d.%d",
 	 &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
   serverSocket->getAddrInfo(addrinfo);
@@ -121,8 +121,8 @@ void FtpConnection::sendRetr() const {
   socket->writeData(request);
 }
 
-int FtpConnection::getStatus(const string& response) const {
-  int status;
+int32_t FtpConnection::getStatus(const string& response) const {
+  int32_t status;
   // When the response is not like "%d %*s",
   // we return 0.
   if(response.find_first_not_of("0123456789") != 3
@@ -136,7 +136,7 @@ int FtpConnection::getStatus(const string& response) const {
   }
 }
 
-bool FtpConnection::isEndOfResponse(int status, const string& response) const {
+bool FtpConnection::isEndOfResponse(int32_t status, const string& response) const {
   if(response.size() <= 4) {
     return false;
   }
@@ -156,10 +156,10 @@ bool FtpConnection::isEndOfResponse(int status, const string& response) const {
   }
 }
 
-bool FtpConnection::bulkReceiveResponse(pair<int, string>& response) {
+bool FtpConnection::bulkReceiveResponse(pair<int32_t, string>& response) {
   char buf[1024];  
   while(socket->isReadable(0)) {
-    int size = sizeof(buf)-1;
+    int32_t size = sizeof(buf)-1;
     socket->readData(buf, size);
     if(size == 0) {
       throw new DlRetryEx(EX_GOT_EOF);
@@ -167,7 +167,7 @@ bool FtpConnection::bulkReceiveResponse(pair<int, string>& response) {
     buf[size] = '\0';
     strbuf += buf;
   }
-  int status;
+  int32_t status;
   if(strbuf.size() >= 4) {
     status = getStatus(strbuf);
     if(status == 0) {
@@ -188,8 +188,8 @@ bool FtpConnection::bulkReceiveResponse(pair<int, string>& response) {
   }
 }
 
-int FtpConnection::receiveResponse() {
-  pair<int, string> response;
+int32_t FtpConnection::receiveResponse() {
+  pair<int32_t, string> response;
   if(bulkReceiveResponse(response)) {
     return response.first;
   } else {
@@ -197,8 +197,8 @@ int FtpConnection::receiveResponse() {
   }
 }
 
-int FtpConnection::receiveSizeResponse(long long int& size) {
-  pair<int, string> response;
+int32_t FtpConnection::receiveSizeResponse(int64_t& size) {
+  pair<int32_t, string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
       sscanf(response.second.c_str(), "%*d %Ld", &size);
@@ -209,12 +209,12 @@ int FtpConnection::receiveSizeResponse(long long int& size) {
   }
 }
 
-int FtpConnection::receivePasvResponse(pair<string, int>& dest) {
-  pair<int, string> response;
+int32_t FtpConnection::receivePasvResponse(pair<string, int32_t>& dest) {
+  pair<int32_t, string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 227) {
       // we assume the format of response is "227 Entering Passive Mode (h1,h2,h3,h4,p1,p2)."
-      int h1, h2, h3, h4, p1, p2;
+      int32_t h1, h2, h3, h4, p1, p2;
       string::size_type p = response.second.find("(");
       if(p >= 4) {
 	sscanf(response.second.substr(response.second.find("(")).c_str(),

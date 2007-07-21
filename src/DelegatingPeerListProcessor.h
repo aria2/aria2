@@ -42,11 +42,11 @@ typedef deque<PeerListProcessorHandle> PeerListProcessors;
 
 class DelegatingPeerListProcessor : public PeerListProcessor {
 private:
-  int pieceLength;
-  long long int totalLength;
+  int32_t pieceLength;
+  int64_t totalLength;
   PeerListProcessors processors;
 public:
-  DelegatingPeerListProcessor(int pieceLength, long long int totalLength)
+  DelegatingPeerListProcessor(int32_t pieceLength, int64_t totalLength)
   :pieceLength(pieceLength),
    totalLength(totalLength) {
     processors.push_back(new DefaultPeerListProcessor(pieceLength, totalLength));

@@ -52,8 +52,8 @@ public:
   bool defined(const string& name) const;
   string getFirst(const string& name) const;
   Strings get(const string& name) const;
-  int getFirstAsInt(const string& name) const;
-  long long int getFirstAsLLInt(const string& name) const;
+  int32_t getFirstAsInt(const string& name) const;
+  int64_t getFirstAsLLInt(const string& name) const;
 
   RangeHandle getRange() const;
 };

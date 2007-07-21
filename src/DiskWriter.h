@@ -35,7 +35,6 @@
 #ifndef _D_DISK_WRITER_H_
 #define _D_DISK_WRITER_H_
 
-#include <string>
 #include "common.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
@@ -87,8 +86,8 @@ public:
     writeData((const char*)data, len, position);
   }
 
-  virtual int readData(char* data, int32_t len, int64_t position) = 0;
-  virtual int readData(unsigned char* data, int32_t len, int64_t position) {
+  virtual int32_t readData(char* data, int32_t len, int64_t position) = 0;
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t position) {
     return readData((char*)data, len, position);
   }
 #ifdef ENABLE_MESSAGE_DIGEST

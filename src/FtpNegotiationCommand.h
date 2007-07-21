@@ -91,12 +91,12 @@ private:
 
   SocketHandle dataSocket;
   SocketHandle serverSocket;
-  int sequence;
+  int32_t sequence;
   FtpConnection* ftp;
 protected:
   virtual bool executeInternal();
 public:
-  FtpNegotiationCommand(int cuid,
+  FtpNegotiationCommand(int32_t cuid,
 			const RequestHandle& req,
 			RequestGroup* requestGroup,
 			DownloadEngine* e,

@@ -95,7 +95,7 @@ bool Request::parseUrl(const string& url) {
   string::size_type hp = tempUrl.find("://");
   if(hp == string::npos) return false;
   protocol = tempUrl.substr(0, hp);
-  int defPort;
+  int32_t defPort;
   if((defPort = FeatureConfig::getInstance()->getDefaultPort(protocol)) == 0) {
     return false;
   }
@@ -109,7 +109,7 @@ bool Request::parseUrl(const string& url) {
   Util::split(hostAndPort, tempUrl.substr(hp, hep-hp), ':');
   host = hostAndPort.first;
   if(hostAndPort.second != "") {
-    port = (int)strtol(hostAndPort.second.c_str(), NULL, 10);
+    port = strtol(hostAndPort.second.c_str(), NULL, 10);
     if(!(0 < port && port <= 65535)) {
       return false;
     }

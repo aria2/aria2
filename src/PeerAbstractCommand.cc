@@ -39,7 +39,7 @@
 #include "message.h"
 #include "prefs.h"
 
-PeerAbstractCommand::PeerAbstractCommand(int cuid, const PeerHandle& peer,
+PeerAbstractCommand::PeerAbstractCommand(int32_t cuid, const PeerHandle& peer,
 					 TorrentDownloadEngine* e,
 					 const BtContextHandle& btContext,
 					 const SocketHandle& s)
@@ -88,11 +88,11 @@ bool PeerAbstractCommand::execute() {
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
-bool PeerAbstractCommand::prepareForNextPeer(int wait) {
+bool PeerAbstractCommand::prepareForNextPeer(int32_t wait) {
   return true;
 }
 
-bool PeerAbstractCommand::prepareForRetry(int wait) {
+bool PeerAbstractCommand::prepareForRetry(int32_t wait) {
   return true;
 }
 
@@ -152,7 +152,7 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
-void PeerAbstractCommand::setUploadLimit(int uploadLimit) {
+void PeerAbstractCommand::setUploadLimit(int32_t uploadLimit) {
   this->uploadLimit = uploadLimit;
 }
 

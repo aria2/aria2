@@ -48,17 +48,17 @@
 
 class HaveEntry {
 private:
-  int cuid;
-  int index;
+  int32_t cuid;
+  int32_t index;
   Time registeredTime;
 public:
-  HaveEntry(int cuid, int index):
+  HaveEntry(int32_t cuid, int32_t index):
     cuid(cuid),
     index(index) {}
 
-  int getCuid() const { return cuid; }
+  int32_t getCuid() const { return cuid; }
 
-  int getIndex() const { return index; }
+  int32_t getIndex() const { return index; }
 
   const Time& getRegisteredTime() const { return registeredTime; }
 };
@@ -77,13 +77,13 @@ private:
   Haves haves;
   FileAllocatorHandle createFileAllocator();
 
-  int getMissingPieceIndex(const PeerHandle& peer);
-  int getMissingFastPieceIndex(const PeerHandle& peer);
-  PieceHandle checkOutPiece(int index);
-  int deleteUsedPiecesByFillRate(int fillRate, int toDelete);
-  void reduceUsedPieces(int delMax);
+  int32_t getMissingPieceIndex(const PeerHandle& peer);
+  int32_t getMissingFastPieceIndex(const PeerHandle& peer);
+  PieceHandle checkOutPiece(int32_t index);
+  int32_t deleteUsedPiecesByFillRate(int32_t fillRate, int32_t toDelete);
+  void reduceUsedPieces(int32_t delMax);
   void deleteUsedPiece(const PieceHandle& piece);
-  PieceHandle findUsedPiece(int index) const;
+  PieceHandle findUsedPiece(int32_t index) const;
 public:
   DefaultPieceStorage(BtContextHandle btContext, const Option* option);
   virtual ~DefaultPieceStorage();
@@ -94,21 +94,21 @@ public:
 
   virtual PieceHandle getMissingFastPiece(const PeerHandle& peer);
 
-  virtual PieceHandle getPiece(int index);
+  virtual PieceHandle getPiece(int32_t index);
 
   virtual void completePiece(const PieceHandle& piece);
 
   virtual void cancelPiece(const PieceHandle& piece);
 
-  virtual bool hasPiece(int index);
+  virtual bool hasPiece(int32_t index);
 
-  virtual long long int getTotalLength();
+  virtual int64_t getTotalLength();
 
-  virtual long long int getFilteredTotalLength();
+  virtual int64_t getFilteredTotalLength();
 
-  virtual long long int getCompletedLength();
+  virtual int64_t getCompletedLength();
 
-  virtual long long int getFilteredCompletedLength();
+  virtual int64_t getFilteredCompletedLength();
 
   virtual void initStorage();
 
@@ -123,9 +123,9 @@ public:
   virtual bool allDownloadFinished();
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   int bitfieldLength);
+			   int32_t bitfieldLength);
   
-  virtual int getBitfieldLength();
+  virtual int32_t getBitfieldLength();
 
   virtual const unsigned char* getBitfield();
 
@@ -145,14 +145,14 @@ public:
   
   virtual DiskAdaptorHandle getDiskAdaptor();
 
-  virtual int getPieceLength(int index);
+  virtual int32_t getPieceLength(int32_t index);
 
-  virtual void advertisePiece(int cuid, int index);
+  virtual void advertisePiece(int32_t cuid, int32_t index);
 
-  virtual Integers getAdvertisedPieceIndexes(int myCuid,
+  virtual Integers getAdvertisedPieceIndexes(int32_t myCuid,
 					     const Time& lastCheckTime);
 
-  virtual void removeAdvertisedPiece(int elapsed);
+  virtual void removeAdvertisedPiece(int32_t elapsed);
 
   virtual void markAllPiecesDone();
 

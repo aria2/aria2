@@ -78,8 +78,8 @@ void TorrentDownloadEngine::initStatistics() {
   totalLength = 0;
 }
 
-int TorrentDownloadEngine::calculateSpeed(long long int length, int elapsed) {
-  int nowSpeed = (int)(length/elapsed);
+int32_t TorrentDownloadEngine::calculateSpeed(int64_t length, int32_t elapsed) {
+  int32_t nowSpeed = length/elapsed;
   return nowSpeed;
 }
 

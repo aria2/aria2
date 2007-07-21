@@ -39,7 +39,7 @@
 
 class SimpleBtMessage : public AbstractBtMessage {
 private:
-  int leftDataLength;
+  int32_t leftDataLength;
 public:
   SimpleBtMessage();
 

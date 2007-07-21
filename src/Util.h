@@ -65,8 +65,8 @@ public:
    * assuming tv1 is newer than tv2.
    * If tv1 is older than tv2, then this method returns 0.
    */
-  static long long int difftv(struct timeval tv1, struct timeval tv2);
-  static int difftvsec(struct timeval tv1, struct timeval tv2);
+  static int64_t difftv(struct timeval tv1, struct timeval tv2);
+  static int32_t difftvsec(struct timeval tv1, struct timeval tv2);
   /**
    * Take a string src which is a deliminated list and add its elements
    * into result. result is not cleared before conversion begins.
@@ -81,7 +81,7 @@ public:
 
   static string replace(const string& target, const string& oldstr, const string& newstr);
 
-  static string urlencode(const unsigned char* target, int len);
+  static string urlencode(const unsigned char* target, int32_t len);
 
   static string urlencode(const string& target)
   {
@@ -90,21 +90,21 @@ public:
 
   static string urldecode(const string& target);
 
-  static string torrentUrlencode(const unsigned char* target, int len);
+  static string torrentUrlencode(const unsigned char* target, int32_t len);
 
-  static string toHex(const unsigned char* src, int len);
+  static string toHex(const unsigned char* src, int32_t len);
 
   static FILE* openFile(const string& filename, const string& mode);
 
   static void fileCopy(const string& destFile, const string& src);
 
-  static void rangedFileCopy(const string& destFile, const string& src, long long int srcOffset, long long int length);
+  static void rangedFileCopy(const string& destFile, const string& src, int64_t srcOffset, int64_t length);
 
-  static bool isPowerOf(int num, int base);
+  static bool isPowerOf(int32_t num, int32_t base);
 
-  static string secfmt(int sec);
+  static string secfmt(int32_t sec);
 
-  static int expandBuffer(char** pbuf, int curLength, int newLength);
+  static int32_t expandBuffer(char** pbuf, int32_t curLength, int32_t newLength);
 
   static void unfoldRange(const string& src, Integers& range);
 
@@ -113,7 +113,7 @@ public:
 
   // digest must be at least 20 bytes long.
 #ifdef ENABLE_MESSAGE_DIGEST
-  static void sha1Sum(unsigned char* digest, const void* data, int dataLength);
+  static void sha1Sum(unsigned char* digest, const void* data, int32_t dataLength);
   static string simpleMessageDigest(const string& data);
 #endif // ENABLE_MESSAGE_DIGEST
 
@@ -126,12 +126,12 @@ public:
 
 #ifdef ENABLE_BITTORRENT
   static Integers computeFastSet(string ipaddr, const unsigned char* infoHash,
-				int pieces, int fastSetSize);
+				int32_t pieces, int32_t fastSetSize);
 #endif // ENABLE_BITTORRENT
 
   static int32_t countBit(uint32_t n);
 
-  static string randomAlpha(int length);
+  static string randomAlpha(int32_t length);
 
   static string toUpper(const string& src);
 
@@ -139,7 +139,7 @@ public:
 
   static bool isNumbersAndDotsNotation(const string& name);
 
-  static void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);
+  static void setGlobalSignalHandler(int32_t signal, void (*handler)(int32_t), int32_t flags);
 
   static void indexRange(int32_t& startIndex, int32_t& endIndex,
 			 int64_t offset,

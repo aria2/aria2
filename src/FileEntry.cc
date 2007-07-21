@@ -38,8 +38,8 @@
 #include <libgen.h>
 
 FileEntry::FileEntry(const string& path,
-		     long long int length,
-		     long long int offset):
+		     int64_t length,
+		     int64_t offset):
   path(path), length(length), offset(offset),
   extracted(false), requested(true) {}
 

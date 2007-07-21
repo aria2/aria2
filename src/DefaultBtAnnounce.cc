@@ -111,13 +111,13 @@ string DefaultBtAnnounce::getAnnounceUrl() {
       announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
     }
   }
-  int numWant = 50;
+  int32_t numWant = 50;
   if(!btRuntime->lessThanEqMinPeer() ||
      btRuntime->isHalt()) {
     numWant = 0;
   }
   TransferStat stat = peerStorage->calculateStat();
-  long long int left = pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
+  int64_t left = pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
   if(left < 0) {
     left = 0;
   }

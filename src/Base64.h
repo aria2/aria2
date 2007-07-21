@@ -41,7 +41,7 @@ using namespace std;
 class Base64
 {
 private:
-  static void part_encode(const unsigned char* sub, int subLength,
+  static void part_encode(const unsigned char* sub, int32_t subLength,
 			  unsigned char* buf);
 
   static string part_encode(const string& subplain);
@@ -50,12 +50,12 @@ private:
 public:
   static string encode(const string& plain);
   // caller must deallocate the memory used by result.
-  static void encode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
+  static void encode(const unsigned char* src, int32_t srcLength,
+		     unsigned char*& result, int32_t& resultLength);
   static string decode(const string& crypted);
   // caller must deallocate the memory used by result.
-  static void decode(const unsigned char* src, int srcLength,
-		     unsigned char*& result, int& resultLength);
+  static void decode(const unsigned char* src, int32_t srcLength,
+		     unsigned char*& result, int32_t& resultLength);
 };
 
 #endif // _BASE64_H_

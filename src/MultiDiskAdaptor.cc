@@ -145,7 +145,7 @@ int32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
   return length;
 }
 
-int MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
+int32_t MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
 {
   int64_t fileOffset = offset;
   bool reading = false;

@@ -140,7 +140,7 @@ public:
   virtual void writeData(const unsigned char* data, int32_t len,
 			 int64_t offset);
 
-  virtual int readData(unsigned char* data, int32_t len, int64_t offset);
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
 
   virtual string messageDigest(int64_t offset, int64_t length,
 			       const MessageDigestContext::DigestAlgo& algo);

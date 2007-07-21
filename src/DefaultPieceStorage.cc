@@ -72,8 +72,8 @@ bool DefaultPieceStorage::isEndGame() {
   return bitfieldMan->countMissingBlock() <= endGamePieceNum;
 }
 
-int DefaultPieceStorage::getMissingPieceIndex(const PeerHandle& peer) {
-  int index = -1;
+int32_t DefaultPieceStorage::getMissingPieceIndex(const PeerHandle& peer) {
+  int32_t index = -1;
   if(isEndGame()) {
     index = bitfieldMan->getMissingIndex(peer->getBitfield(),
 					 peer->getBitfieldLength());
@@ -84,7 +84,7 @@ int DefaultPieceStorage::getMissingPieceIndex(const PeerHandle& peer) {
   return index;
 }
 
-PieceHandle DefaultPieceStorage::checkOutPiece(int index) {
+PieceHandle DefaultPieceStorage::checkOutPiece(int32_t index) {
   if(index == -1) {
     return 0;
   }
@@ -104,7 +104,7 @@ PieceHandle DefaultPieceStorage::checkOutPiece(int index) {
  * Newly instantiated piece is not added to usedPieces.
  * Because it is waste of memory and there is no chance to use them later.
  */
-PieceHandle DefaultPieceStorage::getPiece(int index) {
+PieceHandle DefaultPieceStorage::getPiece(int32_t index) {
   if(0 <= index && index <= bitfieldMan->getMaxIndex()) {
     PieceHandle piece = findUsedPiece(index);
     if(piece.isNull()) {
@@ -125,16 +125,16 @@ void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece) {
 
 class FindPiece {
 private:
-  int index;
+  int32_t index;
 public:
-  FindPiece(int index):index(index) {}
+  FindPiece(int32_t index):index(index) {}
 
   bool operator()(const PieceHandle& piece) {
     return piece->getIndex() == index;
   }
 };
 
-PieceHandle DefaultPieceStorage::findUsedPiece(int index) const {
+PieceHandle DefaultPieceStorage::findUsedPiece(int32_t index) const {
   Pieces::const_iterator itr = find_if(usedPieces.begin(),
 				       usedPieces.end(),
 				       FindPiece(index));
@@ -146,12 +146,12 @@ PieceHandle DefaultPieceStorage::findUsedPiece(int index) const {
 }
 
 PieceHandle DefaultPieceStorage::getMissingPiece(const PeerHandle& peer) {
-  int index = getMissingPieceIndex(peer);
+  int32_t index = getMissingPieceIndex(peer);
   return checkOutPiece(index);
 }
 
-int DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer) {
-  int index = -1;
+int32_t DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer) {
+  int32_t index = -1;
   if(peer->isFastExtensionEnabled() && peer->countFastSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan->getBlockLength(),
 			     bitfieldMan->getTotalLength());
@@ -173,7 +173,7 @@ int DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer) {
 }
 
 PieceHandle DefaultPieceStorage::getMissingFastPiece(const PeerHandle& peer) {
-  int index = getMissingFastPieceIndex(peer);
+  int32_t index = getMissingFastPieceIndex(peer);
   return checkOutPiece(index);
 }
 
@@ -187,14 +187,14 @@ void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece) {
   }
 }
 
-void DefaultPieceStorage::reduceUsedPieces(int delMax) {
-  int toDelete = usedPieces.size()-delMax;
+void DefaultPieceStorage::reduceUsedPieces(int32_t delMax) {
+  int32_t toDelete = usedPieces.size()-delMax;
   if(toDelete <= 0) {
     return;
   }
-  int fillRate = 10;
+  int32_t fillRate = 10;
   while(fillRate < 50) {
-    int deleted = deleteUsedPiecesByFillRate(fillRate, toDelete);
+    int32_t deleted = deleteUsedPiecesByFillRate(fillRate, toDelete);
     if(deleted == 0) {
       break;
     }
@@ -203,9 +203,9 @@ void DefaultPieceStorage::reduceUsedPieces(int delMax) {
   }
 }
 
-int DefaultPieceStorage::deleteUsedPiecesByFillRate(int fillRate,
-							   int toDelete) {
-  int deleted = 0;
+int32_t DefaultPieceStorage::deleteUsedPiecesByFillRate(int32_t fillRate,
+							   int32_t toDelete) {
+  int32_t deleted = 0;
   for(Pieces::iterator itr = usedPieces.begin();
       itr != usedPieces.end() && deleted < toDelete;) {
     PieceHandle& piece = *itr;
@@ -272,23 +272,23 @@ void DefaultPieceStorage::cancelPiece(const PieceHandle& piece) {
   }
 }
 
-bool DefaultPieceStorage::hasPiece(int index) {
+bool DefaultPieceStorage::hasPiece(int32_t index) {
   return bitfieldMan->isBitSet(index);
 }
 
-long long int DefaultPieceStorage::getTotalLength() {
+int64_t DefaultPieceStorage::getTotalLength() {
   return bitfieldMan->getTotalLength();
 }
 
-long long int DefaultPieceStorage::getFilteredTotalLength() {
+int64_t DefaultPieceStorage::getFilteredTotalLength() {
   return bitfieldMan->getFilteredTotalLength();
 }
 
-long long int DefaultPieceStorage::getCompletedLength() {
+int64_t DefaultPieceStorage::getCompletedLength() {
   return bitfieldMan->getCompletedLength();
 }
 
-long long int DefaultPieceStorage::getFilteredCompletedLength() {
+int64_t DefaultPieceStorage::getFilteredCompletedLength() {
   return bitfieldMan->getFilteredCompletedLength();
 }
 
@@ -312,7 +312,7 @@ void DefaultPieceStorage::setFileFilter(const Strings& filePaths) {
 void DefaultPieceStorage::setFileFilter(const Integers& fileIndexes) {
   Strings filePaths;
   const FileEntries& entries = diskAdaptor->getFileEntries();
-  for(int i = 0; i < (int)entries.size(); i++) {
+  for(int32_t i = 0; i < (int32_t)entries.size(); i++) {
     if(find(fileIndexes.begin(), fileIndexes.end(), i+1) != fileIndexes.end()) {
       logger->debug("index=%d is %s", i+1, entries[i]->getPath().c_str());
       filePaths.push_back(entries[i]->getPath());
@@ -373,11 +373,11 @@ void DefaultPieceStorage::initStorage() {
 }
 
 void DefaultPieceStorage::setBitfield(const unsigned char* bitfield,
-				      int bitfieldLength) {
+				      int32_t bitfieldLength) {
   bitfieldMan->setBitfield(bitfield, bitfieldLength);
 }
   
-int DefaultPieceStorage::getBitfieldLength() {
+int32_t DefaultPieceStorage::getBitfieldLength() {
   return bitfieldMan->getBitfieldLength();
 }
 
@@ -389,16 +389,16 @@ DiskAdaptorHandle DefaultPieceStorage::getDiskAdaptor() {
   return diskAdaptor;
 }
 
-int DefaultPieceStorage::getPieceLength(int index) {
+int32_t DefaultPieceStorage::getPieceLength(int32_t index) {
   return bitfieldMan->getBlockLength(index);
 }
 
-void DefaultPieceStorage::advertisePiece(int cuid, int index) {
+void DefaultPieceStorage::advertisePiece(int32_t cuid, int32_t index) {
   HaveEntry entry(cuid, index);
   haves.push_front(entry);
 }
 
-Integers DefaultPieceStorage::getAdvertisedPieceIndexes(int myCuid,
+Integers DefaultPieceStorage::getAdvertisedPieceIndexes(int32_t myCuid,
 							const Time& lastCheckTime) {
   Integers indexes;
   for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
@@ -417,9 +417,9 @@ Integers DefaultPieceStorage::getAdvertisedPieceIndexes(int myCuid,
 class FindElapsedHave
 {
 private:
-  int elapsed;
+  int32_t elapsed;
 public:
-  FindElapsedHave(int elapsed):elapsed(elapsed) {}
+  FindElapsedHave(int32_t elapsed):elapsed(elapsed) {}
 
   bool operator()(const HaveEntry& have) {
     if(have.getRegisteredTime().elapsed(elapsed)) {
@@ -430,7 +430,7 @@ public:
   }
 };
   
-void DefaultPieceStorage::removeAdvertisedPiece(int elapsed) {
+void DefaultPieceStorage::removeAdvertisedPiece(int32_t elapsed) {
   Haves::iterator itr =
     find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
   if(itr != haves.end()) {

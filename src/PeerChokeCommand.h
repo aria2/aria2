@@ -41,9 +41,9 @@
 
 class PeerChokeCommand : public BtContextAwareCommand {
 private:
-  int interval;
+  int32_t interval;
   TorrentDownloadEngine* e;
-  int rotate;
+  int32_t rotate;
   Time checkPoint;
 
   void orderByUploadRate(Peers& peers) const;
@@ -51,10 +51,10 @@ private:
   void optUnchokingPeer(Peers& peers) const;
 
 public:
-  PeerChokeCommand(int cuid,
+  PeerChokeCommand(int32_t cuid,
 		   TorrentDownloadEngine* e,
 		   const BtContextHandle& btContext,
-		   int interval);
+		   int32_t interval);
 
   virtual ~PeerChokeCommand();
 

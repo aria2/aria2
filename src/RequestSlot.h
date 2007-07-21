@@ -68,7 +68,7 @@ public:
   void setDispatchedTime(time_t secFromEpoch);
 
   bool isTimeout(time_t timeoutSec) const;
-  int getLatencyInMillis() const;
+  int32_t getLatencyInMillis() const;
 
   int32_t getIndex() const { return index; }
   void setIndex(int32_t index) { this->index = index; }

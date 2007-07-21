@@ -48,7 +48,11 @@ using namespace std;
 class File {
 private:
   string name;
-  int fillStat(struct stat& fstat);
+  
+  /**
+   * Returns the return value of stat(...)
+   */
+  int32_t fillStat(struct stat& fstat);
 public:
   File(const string& name);
   ~File();

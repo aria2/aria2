@@ -67,13 +67,13 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 
   CPPUNIT_ASSERT_EQUAL(4, (int)entry->resources.size());
   
-  CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_FTP,
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
 		       entry->resources.at(0)->type);
-  CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_HTTP,
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP,
 		       entry->resources.at(1)->type);
-  CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_BITTORRENT,
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_BITTORRENT,
 		       entry->resources.at(2)->type);
-  CPPUNIT_ASSERT_EQUAL((int)MetalinkResource::TYPE_HTTPS,
+  CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTPS,
 		       entry->resources.at(3)->type);
 }
 

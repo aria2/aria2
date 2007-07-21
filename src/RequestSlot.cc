@@ -64,7 +64,7 @@ bool RequestSlot::isTimeout(time_t timeoutSec) const {
   return dispatchedTime.elapsed(timeoutSec);
 }
 
-int RequestSlot::getLatencyInMillis() const {
+int32_t RequestSlot::getLatencyInMillis() const {
   return dispatchedTime.differenceInMillis();
 }
 

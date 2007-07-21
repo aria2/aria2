@@ -41,10 +41,10 @@
 class BtBitfieldMessageValidator : public BtMessageValidator {
 private:
   const BtBitfieldMessage* message;
-  int numPiece;
+  int32_t numPiece;
 public:
   BtBitfieldMessageValidator(const BtBitfieldMessage* message,
-			     int numPiece):
+			     int32_t numPiece):
     message(message),
     numPiece(numPiece) {}
 

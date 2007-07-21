@@ -36,7 +36,7 @@
 #include "BitfieldManFactory.h"
 #include "Util.h"
 
-Peer::Peer(string ipaddr, int port, int pieceLength, long long int totalLength):
+Peer::Peer(string ipaddr, int32_t port, int32_t pieceLength, int64_t totalLength):
   ipaddr(ipaddr),
   port(port),
   sessionUploadLength(0),
@@ -62,7 +62,7 @@ Peer::Peer():entryId(0), ipaddr(""), port(0), bitfield(0),
 }
 */
 
-void Peer::updateBitfield(int index, int operation) {
+void Peer::updateBitfield(int32_t index, int32_t operation) {
   if(operation == 1) {
     bitfield->setBit(index);
   } else if(operation == 0) {
@@ -79,7 +79,7 @@ bool Peer::shouldBeChoking() const {
   return chokingRequired;
 }
 
-bool Peer::hasPiece(int index) const {
+bool Peer::hasPiece(int32_t index) const {
   return bitfield->isBitSet(index);
 }
 
@@ -105,33 +105,33 @@ void Peer::resetStatus() {
   peerStat.reset();
 }
 
-bool Peer::isInFastSet(int index) const {
+bool Peer::isInFastSet(int32_t index) const {
   return find(fastSet.begin(), fastSet.end(), index) != fastSet.end();
 }
 
-void Peer::addFastSetIndex(int index) {
+void Peer::addFastSetIndex(int32_t index) {
   if(!isInFastSet(index)) {
     fastSet.push_back(index);
   }
 }
 
-bool Peer::isInPeerAllowedIndexSet(int index) const {
+bool Peer::isInPeerAllowedIndexSet(int32_t index) const {
   return find(peerAllowedIndexSet.begin(), peerAllowedIndexSet.end(),
 	      index) != peerAllowedIndexSet.end();
 }
 
-void Peer::addPeerAllowedIndex(int index) {
+void Peer::addPeerAllowedIndex(int32_t index) {
   if(!isInPeerAllowedIndexSet(index)) {
     peerAllowedIndexSet.push_back(index);
   }
 }
 
-bool Peer::isInAmAllowedIndexSet(int index) const {
+bool Peer::isInAmAllowedIndexSet(int32_t index) const {
   return find(amAllowedIndexSet.begin(), amAllowedIndexSet.end(),
 	      index) != amAllowedIndexSet.end();
 }
 
-void Peer::addAmAllowedIndex(int index) {
+void Peer::addAmAllowedIndex(int32_t index) {
   if(!isInAmAllowedIndexSet(index)) {
     amAllowedIndexSet.push_back(index);
   }
@@ -141,7 +141,7 @@ void Peer::setAllBitfield() {
   bitfield->setAllBit();
 }
 
-void Peer::updateLatency(int latency) {
+void Peer::updateLatency(int32_t latency) {
   this->latency = (this->latency*20+latency*80)/200;
 }
 

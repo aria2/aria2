@@ -47,7 +47,7 @@ using namespace std;
 
 class FtpConnection {
 private:
-  int cuid;
+  int32_t cuid;
   SocketHandle socket;
   RequestHandle req;
   const Option* option;
@@ -55,11 +55,11 @@ private:
 
   string strbuf;
 
-  int getStatus(const string& response) const;
-  bool isEndOfResponse(int status, const string& response) const;
-  bool bulkReceiveResponse(pair<int, string>& response);
+  int32_t getStatus(const string& response) const;
+  bool isEndOfResponse(int32_t status, const string& response) const;
+  bool bulkReceiveResponse(pair<int32_t, string>& response);
 public:
-  FtpConnection(int cuid, const SocketHandle& socket,
+  FtpConnection(int32_t cuid, const SocketHandle& socket,
 		const RequestHandle req, const Option* op);
   ~FtpConnection();
   void sendUser() const;
@@ -72,9 +72,9 @@ public:
   void sendRest(const SegmentHandle& segment) const;
   void sendRetr() const;
 
-  int receiveResponse();
-  int receiveSizeResponse(long long int& size);
-  int receivePasvResponse(pair<string, int>& dest);
+  int32_t receiveResponse();
+  int32_t receiveSizeResponse(int64_t& size);
+  int32_t receivePasvResponse(pair<string, int32_t>& dest);
 };
 
 #endif // _D_FTP_CONNECTION_H_

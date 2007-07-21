@@ -45,34 +45,34 @@ static char base64_table[64] = {
   '4', '5', '6', '7', '8', '9', '+', '/',
 };
 
-void Base64::part_encode(const unsigned char* sub, int subLength,
+void Base64::part_encode(const unsigned char* sub, int32_t subLength,
 			 unsigned char* buf)
 {
-  int shift = 2;
+  int32_t shift = 2;
   unsigned char carry = 0;
-  int index;
+  int32_t index;
   for(index = 0; index < subLength; index++) {
     unsigned char cur = sub[index] >> shift | carry;
     carry = (sub[index] << (6-shift)) & 0x3f;
     shift += 2;
-    buf[index] = base64_table[(unsigned int)cur];
+    buf[index] = base64_table[(uint32_t)cur];
   }
   if(subLength == 1) {
-    buf[index] = base64_table[(unsigned int)carry];
+    buf[index] = base64_table[(uint32_t)carry];
     buf[index+1] = buf[index+2] = '=';
   } else if(subLength == 2) {
-    buf[index] = base64_table[(unsigned int)carry];
+    buf[index] = base64_table[(uint32_t)carry];
     buf[index+1] = '=';
   } else {
     unsigned char cur = sub[subLength-1] & 0x3f;
-    buf[index] = base64_table[(unsigned int)cur];
+    buf[index] = base64_table[(uint32_t)cur];
   }
 }
 
 string Base64::encode(const string& plainSrc)
 {
   unsigned char* result = 0;
-  int resultLength = 0;
+  int32_t resultLength = 0;
 
   encode((const unsigned char*)plainSrc.c_str(), plainSrc.size(),
 	 result, resultLength);
@@ -81,12 +81,12 @@ string Base64::encode(const string& plainSrc)
   return encoded;
 }
 
-void Base64::encode(const unsigned char* src, int srcLength,
-		    unsigned char*& result, int& resultLength) {
+void Base64::encode(const unsigned char* src, int32_t srcLength,
+		    unsigned char*& result, int32_t& resultLength) {
   resultLength = (srcLength+(srcLength%3 == 0 ? 0 : 3-srcLength%3))/3*4;
   result = new unsigned char[resultLength];
   unsigned char* tail = result;
-  for(int index = 0; srcLength > index; index += 3) {
+  for(int32_t index = 0; srcLength > index; index += 3) {
     unsigned char temp[4];
     part_encode(&src[index],
 		srcLength >= index+3 ? 3 : srcLength-index,
@@ -119,10 +119,10 @@ char Base64::getValue(char ch)
 
 string Base64::part_decode(const string& subCrypted)
 {
-  int shift = 2;
+  int32_t shift = 2;
   string plain;
 
-  for(unsigned int index = 0; index < subCrypted.size()-1; ++index) {
+  for(uint32_t index = 0; index < subCrypted.size()-1; ++index) {
     if(subCrypted.at(index) == '=') break;
     char cur = getValue(subCrypted.at(index)) << shift;
     char carry = getValue(subCrypted.at(index+1)) >> (6-shift);
@@ -136,8 +136,8 @@ string Base64::part_decode(const string& subCrypted)
 string Base64::decode(const string& crypted)
 {
   string plain;
-  int sIndex = 0;
-  for(int index = 0; crypted.size() > (unsigned int)index; index +=4) {
+  int32_t sIndex = 0;
+  for(int32_t index = 0; crypted.size() > (uint32_t)index; index +=4) {
     string subCrypted = crypted.substr(sIndex, 4);
     string subPlain = part_decode(subCrypted);
     sIndex += 4;

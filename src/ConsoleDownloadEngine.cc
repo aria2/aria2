@@ -43,20 +43,7 @@ ConsoleDownloadEngine::ConsoleDownloadEngine() {}
 
 ConsoleDownloadEngine::~ConsoleDownloadEngine() {}
 
-void ConsoleDownloadEngine::sendStatistics(long long int currentSize, long long int totalSize) {
-  /*
-  printf("\r                                                                             ");
-  printf("\r");
-  printf("%s/%s Bytes %d%% %s %.2f KB/s %d connections",
-	 Util::llitos(currentSize, true).c_str(),
-	 Util::llitos(totalSize, true).c_str(),
-	 (totalSize == 0 ? 0 : (int)((currentSize*100)/totalSize)),
-	 avgSpeed == 0 ? "-" : Util::secfmt(eta).c_str(),
-	 speed/1024.0,
-	 commands.size());
-  fflush(stdout);
-  */
-
+void ConsoleDownloadEngine::sendStatistics(int64_t currentSize, int64_t totalSize) {
   cout << "\r                                                                             ";
   cout << "\r";
   if(_requestGroupMan->countRequestGroup() > 0) {
@@ -166,15 +153,15 @@ void ConsoleDownloadEngine::initStatistics() {
 }
 
 void ConsoleDownloadEngine::calculateStatistics() {
-  long long int dlSize = _requestGroupMan->getDownloadLength();
+  int64_t dlSize = _requestGroupMan->getDownloadLength();
   if(!isStartupLengthSet && dlSize > 0) {
     startupLength = dlSize;
     psize = dlSize;
     isStartupLengthSet = true;
   }
-  int elapsed = cp.difference();
+  int32_t elapsed = cp.difference();
   if(elapsed >= 1) {
-    int nspeed = (int)((dlSize-psize)/elapsed);
+    int32_t nspeed = (dlSize-psize)/elapsed;
     if(nspeed < 0) {
       nspeed = 0;
     }
@@ -182,9 +169,9 @@ void ConsoleDownloadEngine::calculateStatistics() {
     cp.reset();
     psize = dlSize;
 
-    int elapsedFromStartup = startup.difference();
+    int32_t elapsedFromStartup = startup.difference();
     if(elapsedFromStartup > 0) {
-      avgSpeed = (int)((dlSize-startupLength)/elapsedFromStartup);
+      avgSpeed = (dlSize-startupLength)/elapsedFromStartup;
     }
     int64_t totalLength = _requestGroupMan->getTotalLength();
     if(avgSpeed < 0) {

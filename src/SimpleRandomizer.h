@@ -59,12 +59,12 @@ public:
 
   virtual ~SimpleRandomizer() {}
 
-  virtual int getRandomNumber() {
+  virtual long int getRandomNumber() {
     return random();
   }
 
-  virtual int getMaxRandomNumber() {
-    return RAND_MAX;
+  virtual long int getMaxRandomNumber() {
+      return RAND_MAX;
   }
 };
 

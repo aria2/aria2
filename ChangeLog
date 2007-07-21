@@ -1,3 +1,8 @@
+2007-07-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Converted int's to in32_t. long long int's are also converted to
+	int64_t
+
 2007-07-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that prevents cookies from being sent to the server

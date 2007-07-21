@@ -60,7 +60,7 @@ public:
     return factory;
   }
 
-  BitfieldMan* createBitfieldMan(int blockLength, long long int totalLength) {
+  BitfieldMan* createBitfieldMan(int32_t blockLength, int64_t totalLength) {
     BitfieldMan* bitfieldMan = new BitfieldMan(blockLength, totalLength);
     bitfieldMan->setRandomizer(randomizer);
     return bitfieldMan;

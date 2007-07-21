@@ -42,12 +42,12 @@ using namespace std;
 
 class Segment {
 public:
-  int index;
-  int length;
-  int segmentLength;
-  int writtenLength;
+  int32_t index;
+  int32_t length;
+  int32_t segmentLength;
+  int32_t writtenLength;
 
-  Segment(int index, int length, int segmentLength, int writtenLength = 0)
+  Segment(int32_t index, int32_t length, int32_t segmentLength, int32_t writtenLength = 0)
     :index(index), length(length), segmentLength(segmentLength),
      writtenLength(writtenLength) {}
 

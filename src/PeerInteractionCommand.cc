@@ -49,12 +49,12 @@
 #include "CUIDCounter.h"
 #include <algorithm>
 
-PeerInteractionCommand::PeerInteractionCommand(int cuid,
+PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
 					       const PeerHandle& p,
 					       TorrentDownloadEngine* e,
 					       const BtContextHandle& btContext,
 					       const SocketHandle& s,
-					       int sequence)
+					       Seq sequence)
   :PeerAbstractCommand(cuid, p, e, btContext, s),
    sequence(sequence),
    btInteractive(0),
@@ -199,7 +199,7 @@ bool PeerInteractionCommand::executeInternal() {
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
-bool PeerInteractionCommand::prepareForNextPeer(int wait) {
+bool PeerInteractionCommand::prepareForNextPeer(int32_t wait) {
   if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
     peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
@@ -213,7 +213,7 @@ bool PeerInteractionCommand::prepareForNextPeer(int wait) {
   return true;
 }
 
-bool PeerInteractionCommand::prepareForRetry(int wait) {
+bool PeerInteractionCommand::prepareForRetry(int32_t wait) {
   e->commands.push_back(this);
   return false;
 }

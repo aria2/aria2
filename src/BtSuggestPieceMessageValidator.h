@@ -41,10 +41,10 @@
 class BtSuggestPieceMessageValidator : public BtMessageValidator {
 private:
   const BtSuggestPieceMessage* message;
-  int numPiece;
+  int32_t numPiece;
 public:
   BtSuggestPieceMessageValidator(const BtSuggestPieceMessage* message,
-				 int numPiece):
+				 int32_t numPiece):
     message(message),
     numPiece(numPiece) {}
 

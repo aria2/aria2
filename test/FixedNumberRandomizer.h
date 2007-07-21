@@ -5,25 +5,25 @@
 
 class FixedNumberRandomizer : public Randomizer {
 private:
-  int fixedNumber;
+  int32_t fixedNumber;
 public:
   FixedNumberRandomizer():fixedNumber(0) {}
 
   virtual ~FixedNumberRandomizer() {}
 
-  virtual int getRandomNumber() {
+  virtual long int getRandomNumber() {
     return fixedNumber;
   }
 
-  virtual int getMaxRandomNumber() {
+  virtual long int getMaxRandomNumber() {
     return RAND_MAX;
   }
 
-  void setFixedNumber(int num) {
+  void setFixedNumber(int32_t num) {
     this->fixedNumber = num;
   }
 
-  int getFixedNumber() const {
+  int32_t getFixedNumber() const {
     return fixedNumber;
   }
 };

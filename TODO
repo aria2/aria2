@@ -25,3 +25,11 @@
 * consider life cycle of requestGroup and segmentMan
 * exit status: all downloads have been successful-> EXIT_SUCCESS,
 		some of downloads have been failed -> EXIT_FAILURE
+
+* Fix log and stdout message in Metalink related class.
+* Fix Cookie header's value. ';' is not necessary at the end of it.
+* It is possible to replace all %lld to %s, using Util::llitos(...) ?.
+* Time::getTimeInMillis() returns int64_t.
+* Util::secfmt, What happens if sec is less than 0?
+* Rewrite ChunkedEncoding
+* typedef int32_t CUID in common.h or a2types.h
