@@ -47,7 +47,7 @@ void IteratableChunkChecksumValidator::validateChunk()
       // wrong checksum
       logger->info(EX_INVALID_CHUNK_CHECKSUM,
 		   _currentIndex,
-		   offset,
+		   Util::llitos(offset, true).c_str(),
 		   _chunkChecksum->getChecksum(_currentIndex).c_str(),
 		   actualChecksum.c_str());
       int32_t startIndex;

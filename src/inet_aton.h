@@ -32,53 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
-#include <time.h>
+#ifndef _D_INET_ATON_H
+#define _D_INET_ATON_H
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
-  SimpleRandomizer() {}
-public:
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif // HAVE_CONFIG_H
 
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
-#else
-    srand(time(0));
-#endif
-  }
+#ifdef __MINGW32__
+# ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x501
+# endif // _WIN32_WINNT
+# include <winsock2.h>
+# undef ERROR
+# include <ws2tcpip.h>
+#endif // __MINGW32__
 
-  virtual ~SimpleRandomizer() {}
+#ifdef HAVE_NETDB_H
+# include <netdb.h>
+#endif // HAVE_NETDB_H
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif // HAVE_SYS_SOCKET_H
+#ifdef HAVE_NETINET_IN_H
+# include <netinet/in.h>
+#endif // HAVE_NETINET_IN_H
+#ifdef HAVE_ARPA_INET_H
+# include <arpa/inet.h>
+#endif // HAVE_ARPA_INET_H
 
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
+int inet_aton(const char *cp, struct in_addr *inp);
 
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
-};
-
-#endif // _D_SIMPLE_RANDOMIZER_H_
+#endif /* not _D_INET_ATON_H */

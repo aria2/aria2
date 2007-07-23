@@ -40,7 +40,6 @@
 #include "Range.h"
 #include "Request.h"
 #include "Option.h"
-#include <netinet/in.h>
 
 class HttpRequest {
 private:

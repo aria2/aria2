@@ -36,10 +36,14 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "a2io.h"
 #include <time.h>
 #include <stdarg.h>
-#include <stdio.h>
 #include <errno.h>
+
+#ifndef HAVE_LOCALTIME_R
+# include "localtime_r.h"
+#endif // HAVE_LOCALTIME_R
 
 #define WRITE_LOG(LEVEL, MSG) \
 va_list ap;\
@@ -60,10 +64,13 @@ SimpleLogger::~SimpleLogger() {
 }
 
 void SimpleLogger::openFile(const string& filename) {
-  file = fopen(filename.c_str(), "a");
+  file = fopen(filename.c_str(), "ab");
   if(file == NULL) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
+#ifdef HAVE_SETMODE
+  setmode(fileno(file), O_BINARY);
+#endif
 }
 
 void SimpleLogger::closeFile() {

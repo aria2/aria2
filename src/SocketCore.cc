@@ -36,16 +36,37 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "a2io.h"
+#include "a2netcompat.h"
 #include <unistd.h>
 #include <fcntl.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <sys/time.h>
-#include <netdb.h>
 #include <errno.h>
+
+#ifdef __MINGW32__
+
+static char *mingw_strerror(int err) {
+	err = WSAGetLastError();
+	static char buf[2048];
+	if (FormatMessage(
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		err,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+		(LPTSTR) &buf,
+		sizeof(buf),
+		NULL
+	) == 0) {
+		snprintf(buf, sizeof(buf), _("Unknown socket error %d"), err);
+	}
+	return buf;
+}
+
+#define strerror mingw_strerror
+#define gai_strerror mingw_strerror
+
+#endif // __MINGW32__
 
 SocketCore::SocketCore():sockfd(-1) {
   init();
@@ -86,7 +107,7 @@ void SocketCore::beginListen(int32_t port) {
   if(sockfd == -1) {
     throw new DlAbortEx(EX_SOCKET_OPEN, strerror(errno));
   }
-  socklen_t sockopt = 1;
+  SOCKOPT_T sockopt = 1;
   if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
     close(sockfd);
     sockfd = -1;
@@ -151,7 +172,7 @@ void SocketCore::establishConnection(const string& host, int32_t port) {
   if(sockfd == -1) {
       throw new DlAbortEx(EX_SOCKET_OPEN, strerror(errno));
   }
-  socklen_t sockopt = 1;
+  SOCKOPT_T sockopt = 1;
   if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
     close(sockfd);
     sockfd = -1;
@@ -188,15 +209,25 @@ void SocketCore::establishConnection(const string& host, int32_t port) {
 }
 
 void SocketCore::setNonBlockingMode() const {
+#ifdef __MINGW32__
+  u_long flag = 0;
+  ::ioctlsocket(sockfd, FIONBIO, &flag);
+#else
   int32_t flags = fcntl(sockfd, F_GETFL, 0);
   // TODO add error handling
   fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);
+#endif // __MINGW32__
 }
 
 void SocketCore::setBlockingMode() const {
+#ifdef __MINGW32__
+  u_long flag = 1;
+  ::ioctlsocket(sockfd, FIONBIO, &flag);
+#else
   int32_t flags = fcntl(sockfd, F_GETFL, 0);
   // TODO add error handling
   fcntl(sockfd, F_SETFL, flags&(~O_NONBLOCK));
+#endif // __MINGW32__
 }
 
 void SocketCore::closeConnection() {

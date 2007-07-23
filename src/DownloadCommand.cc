@@ -44,6 +44,7 @@
 # include "ChecksumCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include <sys/time.h>
+#include <stdlib.h>
 
 DownloadCommand::DownloadCommand(int cuid,
 				 const RequestHandle req,
@@ -71,7 +72,11 @@ bool DownloadCommand::executeInternal() {
   // TODO we need to specify the sum of all segmentMan's download speed here.
   if(maxDownloadSpeedLimit > 0 &&
      maxDownloadSpeedLimit < _requestGroup->getSegmentMan()->calculateDownloadSpeed()) {
+#ifdef HAVE_USLEEP
     usleep(1);
+#else
+    _sleep(1);
+#endif // HAVE_USLEEP
     e->commands.push_back(this);
     return false;
   }

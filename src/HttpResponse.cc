@@ -58,12 +58,12 @@ void HttpResponse::validateResponse() const
       RangeHandle responseRange = httpHeader->getRange();
       if(!httpRequest->isRangeSatisfied(responseRange)) {
 	throw new DlRetryEx(EX_INVALID_RANGE_HEADER,
-			    httpRequest->getStartByte(),
-			    httpRequest->getEndByte(),
-			    httpRequest->getEntityLength(),
-			    responseRange->getStartByte(),
-			    responseRange->getEndByte(),
-			    responseRange->getEntityLength());
+			    Util::llitos(httpRequest->getStartByte(), true).c_str(),
+			    Util::llitos(httpRequest->getEndByte(), true).c_str(),
+			    Util::llitos(httpRequest->getEntityLength(), true).c_str(),
+			    Util::llitos(responseRange->getStartByte(), true).c_str(),
+			    Util::llitos(responseRange->getEndByte(), true).c_str(),
+			    Util::llitos(responseRange->getEntityLength(), true).c_str());
       }
     }
   }

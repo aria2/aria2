@@ -37,6 +37,7 @@
 #include "message.h"
 #include "DownloadCommand.h"
 #include "prefs.h"
+#include "Util.h"
 
 bool FileAllocationCommand::executeInternal()
 {
@@ -44,7 +45,8 @@ bool FileAllocationCommand::executeInternal()
   
   if(_fileAllocationEntry->finished()) {
     logger->debug(MSG_ALLOCATION_COMPLETED,
-		  _timer.difference(), _requestGroup->getTotalLength());
+		  _timer.difference(),
+		  Util::llitos(_requestGroup->getTotalLength(), true).c_str());
     
     _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
     

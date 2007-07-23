@@ -32,53 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif // HAVE_CONFIG_H
 
-#include "Randomizer.h"
-#include <stdlib.h>
-#include <time.h>
+#ifdef HAVE_WINSOCK2_H
+# ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x501
+# endif // _WIN32_WINNT
+# include <winsock2.h>
+#endif // HAVE_WINSOCK2_H
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
+#include "Platform.h"
+#include "DlAbortEx.h"
 
-  SimpleRandomizer() {}
-public:
-
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
+Platform::Platform() {
+#ifdef HAVE_WINSOCK2_H
+  WSADATA wsaData;
+  memset((char*)&wsaData, 0, sizeof(wsaData));
+  if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {
+    throw new DlAbortEx(_("Windows socket library initialization failed"));
   }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
-#else
-    srand(time(0));
-#endif
-  }
+#endif // HAVE_WINSOCK2_H
+}
 
-  virtual ~SimpleRandomizer() {}
-
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
-
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
-
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
-};
-
-#endif // _D_SIMPLE_RANDOMIZER_H_
+Platform::~Platform() {
+#ifdef HAVE_WINSOCK2_H
+  WSACleanup();
+#endif // HAVE_WINSOCK2_H
+}

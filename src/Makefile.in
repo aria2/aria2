@@ -37,6 +37,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+target_triplet = @target@
 bin_PROGRAMS = aria2c$(EXEEXT)
 #	debug_new.cpp
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_1 = ChunkChecksumValidator.cc ChunkChecksumValidator.h\
@@ -158,6 +159,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
 @ENABLE_METALINK_TRUE@	MetalinkRequestInfo.cc MetalinkRequestInfo.h
 
+@HAVE_BASENAME_FALSE@am__append_4 = libgen.c libgen.h
+@HAVE_GETADDRINFO_FALSE@am__append_5 = getaddrinfo.c getaddrinfo.h
+@HAVE_INET_ATON_FALSE@am__append_6 = inet_aton.c inet_aton.h
+@HAVE_LOCALTIME_R_FALSE@am__append_7 = localtime_r.c localtime_r.h
+@HAVE_STRPTIME_FALSE@am__append_8 = strptime.c strptime.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -243,8 +249,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
 	CookieBoxFactory.h HttpHeaderProcessor.cc \
-	HttpHeaderProcessor.h FileEntry.cc FileEntry.h \
-	ChunkChecksumValidator.cc ChunkChecksumValidator.h \
+	HttpHeaderProcessor.h FileEntry.cc FileEntry.h Platform.cc \
+	Platform.h ChunkChecksumValidator.cc ChunkChecksumValidator.h \
 	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
@@ -319,7 +325,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
-	MetalinkRequestInfo.cc MetalinkRequestInfo.h
+	MetalinkRequestInfo.cc MetalinkRequestInfo.h libgen.c libgen.h \
+	getaddrinfo.c getaddrinfo.h inet_aton.c inet_aton.h \
+	localtime_r.c localtime_r.h strptime.c strptime.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidator.$(OBJEXT) \
@@ -396,7 +404,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkRequestInfo.$(OBJEXT)
-am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+@HAVE_BASENAME_FALSE@am__objects_4 = libgen.$(OBJEXT)
+@HAVE_GETADDRINFO_FALSE@am__objects_5 = getaddrinfo.$(OBJEXT)
+@HAVE_INET_ATON_FALSE@am__objects_6 = inet_aton.$(OBJEXT)
+@HAVE_LOCALTIME_R_FALSE@am__objects_7 = localtime_r.$(OBJEXT)
+@HAVE_STRPTIME_FALSE@am__objects_8 = strptime.$(OBJEXT)
+am__objects_9 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -436,9 +449,11 @@ am__objects_4 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	RealtimeCommand.$(OBJEXT) RequestGroupEntry.$(OBJEXT) \
 	Cookie.$(OBJEXT) CookieParser.$(OBJEXT) \
 	CookieBoxFactory.$(OBJEXT) HttpHeaderProcessor.$(OBJEXT) \
-	FileEntry.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
-am_libaria2c_a_OBJECTS = $(am__objects_4)
+	FileEntry.$(OBJEXT) Platform.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8)
+am_libaria2c_a_OBJECTS = $(am__objects_9)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -449,15 +464,15 @@ aria2c_DEPENDENCIES = libaria2c.a @ALLOCA@
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(libaria2c_a_SOURCES) $(aria2c_SOURCES)
 DIST_SOURCES = $(am__libaria2c_a_SOURCES_DIST) $(aria2c_SOURCES)
 ETAGS = etags
@@ -506,6 +521,16 @@ GENCAT = @GENCAT@
 GLIBC21 = @GLIBC21@
 GMSGFMT = @GMSGFMT@
 GREP = @GREP@
+HAVE_BASENAME_FALSE = @HAVE_BASENAME_FALSE@
+HAVE_BASENAME_TRUE = @HAVE_BASENAME_TRUE@
+HAVE_GETADDRINFO_FALSE = @HAVE_GETADDRINFO_FALSE@
+HAVE_GETADDRINFO_TRUE = @HAVE_GETADDRINFO_TRUE@
+HAVE_INET_ATON_FALSE = @HAVE_INET_ATON_FALSE@
+HAVE_INET_ATON_TRUE = @HAVE_INET_ATON_TRUE@
+HAVE_LOCALTIME_R_FALSE = @HAVE_LOCALTIME_R_FALSE@
+HAVE_LOCALTIME_R_TRUE = @HAVE_LOCALTIME_R_TRUE@
+HAVE_STRPTIME_FALSE = @HAVE_STRPTIME_FALSE@
+HAVE_STRPTIME_TRUE = @HAVE_STRPTIME_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -555,6 +580,7 @@ STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WINSOCK_LIBS = @WINSOCK_LIBS@
 XGETTEXT = @XGETTEXT@
 XML2_CONFIG = @XML2_CONFIG@
 XML_CPPFLAGS = @XML_CPPFLAGS@
@@ -606,7 +632,11 @@ psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
+target = @target@
 target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
 aria2c_SOURCES = main.cc
 SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	AbstractCommand.cc AbstractCommand.h \
@@ -668,13 +698,15 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	RequestGroupEntry.cc RequestGroupEntry.h Cookie.cc Cookie.h \
 	CookieParser.cc CookieParser.h CookieBoxFactory.cc \
 	CookieBoxFactory.h HttpHeaderProcessor.cc \
-	HttpHeaderProcessor.h FileEntry.cc FileEntry.h $(am__append_1) \
-	$(am__append_2) $(am__append_3)
+	HttpHeaderProcessor.h FileEntry.cc FileEntry.h Platform.cc \
+	Platform.h $(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ # -lprofiler
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ # -lprofiler
 
 #aria2c_LDFLAGS =  #-pg
 AM_CPPFLAGS = -Wall\
@@ -686,7 +718,7 @@ AM_CPPFLAGS = -Wall\
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .o .obj
+.SUFFIXES: .c .cc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -880,6 +912,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Platform.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealtimeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactory.Po@am__quote@
@@ -908,7 +941,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getaddrinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inet_aton.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localtime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strptime.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

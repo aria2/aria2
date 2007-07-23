@@ -32,53 +32,29 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
-#include <time.h>
+#ifndef _D_LIBGEN_H
+#define _D_LIBGEN_H 1
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
-  SimpleRandomizer() {}
-public:
+#ifdef __MINGW32__
 
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
+char *basename (char *path);
+char *dirname (char *path);
+
 #else
-    srand(time(0));
-#endif
-  }
 
-  virtual ~SimpleRandomizer() {}
+char *basename (const char *path);
+char *dirname (const char *path);
 
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
+#endif // __MINGW32__
 
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
-};
+#endif /* not _D_LIBGEN_H */
 
-#endif // _D_SIMPLE_RANDOMIZER_H_

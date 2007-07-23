@@ -269,8 +269,8 @@ void RequestGroup::validateTotalLength(int64_t expectedTotalLength,
   }
   if(expectedTotalLength != actualTotalLength) {
     throw new DlAbortEx(EX_SIZE_MISMATCH,
-			expectedTotalLength,
-			actualTotalLength);
+			Util::llitos(expectedTotalLength, true).c_str(),
+			Util::llitos(actualTotalLength, true).c_str());
   }
 }
 

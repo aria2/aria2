@@ -40,6 +40,7 @@
 #include "message.h"
 #include "File.h"
 #include "Util.h"
+#include "a2io.h"
 #include <errno.h>
 
 DefaultBtProgressInfoFile::DefaultBtProgressInfoFile(const BtContextHandle& btContext,
@@ -59,7 +60,7 @@ DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() {}
 
 void DefaultBtProgressInfoFile::save() {
   logger->info(MSG_SAVING_SEGMENT_FILE, filename.c_str());
-  FILE* file = openFile(filename, "w");
+  FILE* file = openFile(filename, "wb");
   try {
     if(fwrite(btContext->getInfoHash(),
 	      btContext->getInfoHashLength(), 1, file) < 1) {
@@ -93,7 +94,7 @@ void DefaultBtProgressInfoFile::save() {
 
 void DefaultBtProgressInfoFile::load() {
   logger->info(MSG_LOADING_SEGMENT_FILE, filename.c_str());
-  FILE* file = openFile(filename, "r+");
+  FILE* file = openFile(filename, "r+b");
   unsigned char* savedInfoHash = 0;
   unsigned char* savedBitfield = 0;
   try {
@@ -161,6 +162,9 @@ FILE* DefaultBtProgressInfoFile::openFile(const string& filename,
     throw new DlAbortEx(EX_SEGMENT_FILE_OPEN,
 			filename.c_str(), strerror(errno));
   }
+#ifdef HAVE_SETMODE
+  setmode(fileno(file), O_BINARY);
+#endif
   return file;
 }
 

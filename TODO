@@ -28,8 +28,22 @@
 
 * Fix log and stdout message in Metalink related class.
 * Fix Cookie header's value. ';' is not necessary at the end of it.
-* It is possible to replace all %lld to %s, using Util::llitos(...) ?.
 * Time::getTimeInMillis() returns int64_t.
 * Util::secfmt, What happens if sec is less than 0?
 * Rewrite ChunkedEncoding
 * typedef int32_t CUID in common.h or a2types.h
+
+* tempdir in HttpResponseCommand is not patched yet.
+* Is localtime.cc not needed?
+
+* io related headers and compatible macros and definition -> a2io.h
+* net related headers and compatible macros and definition -> a2netcompat.h
+* used globally -> common.h
+
+* Following files have copyright issue
+	libgen.c
+	libgen.h
+	inet_aton.c
+	inet_aton.h
+	localtime_r.{h,c}
+	strptime.h

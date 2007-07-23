@@ -54,6 +54,8 @@
 #include "CookieBoxFactory.h"
 #include "a2algo.h"
 #include "message.h"
+#include "a2io.h"
+#include "Platform.h"
 #include <deque>
 #include <algorithm>
 #include <time.h>
@@ -124,7 +126,9 @@ void showUsage() {
   cout << _(" -o, --out=FILE               The file name for downloaded file.") << endl;
   cout << _(" -l, --log=LOG                The file path to store log. If '-' is specified,\n"
 	    "                              log is written to stdout.") << endl;
+#ifdef HAVE_DAEMON
   cout << _(" -D, --daemon                 Run as daemon.") << endl;
+#endif // HAVE_DAEMON
   cout << _(" -s, --split=N                Download a file using N connections. N must be\n"
 	    "                              between 1 and 5. This option affects all URLs.\n"
 	    "                              Thus, aria2 connects to each URL with\n"
@@ -323,6 +327,10 @@ void showUsage() {
 }
 
 int main(int argc, char* argv[]) {
+#ifdef HAVE_WINSOCK2_H
+  Platform platform;
+#endif // HAVE_WINSOCK2_H
+
 #ifdef ENABLE_NLS
   setlocale (LC_CTYPE, "");
   setlocale (LC_MESSAGES, "");
@@ -388,7 +396,9 @@ int main(int argc, char* argv[]) {
     int32_t optIndex = 0;
     int32_t lopt;
     static struct option longOpts[] = {
+#ifdef HAVE_DAEMON
       { "daemon", no_argument, NULL, 'D' },
+#endif // HAVE_DAEMON
       { "dir", required_argument, NULL, 'd' },
       { "out", required_argument, NULL, 'o' },
       { "log", required_argument, NULL, 'l' },
@@ -565,9 +575,11 @@ int main(int argc, char* argv[]) {
       }
       break;
     }
+#ifdef HAVE_DAEMON
     case 'D':
       cmdstream << PREF_DAEMON << "=" << V_TRUE << "\n";
       break;
+#endif // HAVE_DAEMON
     case 'd':
       cmdstream << PREF_DIR << "=" << optarg << "\n";
       break;
@@ -670,12 +682,14 @@ int main(int argc, char* argv[]) {
       exit(EXIT_FAILURE);
     }
   }
+#ifdef HAVE_DAEMON
   if(op->getAsBool(PREF_DAEMON)) {
     if(daemon(1, 1) < 0) {
       perror(MSG_DAEMON_FAILED);
       exit(EXIT_FAILURE);
     }
   }
+#endif // HAVE_DAEMON
   Strings args(argv+optind, argv+argc);
   
 #ifdef HAVE_LIBSSL
@@ -693,11 +707,11 @@ int main(int argc, char* argv[]) {
   BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
   FileAllocationMonitorFactory::setFactory(new ConsoleFileAllocationMonitorFactory());
   if(op->getAsBool(PREF_STDOUT_LOG)) {
-    LogFactory::setLogFile("/dev/stdout");
+    LogFactory::setLogFile(DEV_STDOUT);
   } else if(op->get(PREF_LOG).size()) {
     LogFactory::setLogFile(op->get(PREF_LOG));
   } else {
-    LogFactory::setLogFile("/dev/null");
+    LogFactory::setLogFile(DEV_NULL);
   }
   int32_t exitStatus = EXIT_SUCCESS;
   try {
@@ -736,8 +750,9 @@ int main(int argc, char* argv[]) {
     RequestFactorySingletonHolder::instance(requestFactory);
     CUIDCounterHandle cuidCounter = new CUIDCounter();
     CUIDCounterSingletonHolder::instance(cuidCounter);
-
+#ifdef SIGPIPE
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
+#endif
 
     RequestInfo* firstReqInfo;
 #ifdef ENABLE_BITTORRENT

@@ -45,6 +45,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <string>
 #include <deque>
 #include <algorithm>
@@ -80,5 +81,23 @@ typedef deque<int32_t> Integers;
 
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
+
+#ifdef __MINGW32__
+# ifndef _WIN32_WINNT
+#  define _WIN32_WINNT 0x501
+# endif // _WIN32_WINNT
+#endif // __MINGW32__
+
+#ifdef __MINGW32__
+# define LONGLONG_PRINTF "%I64d"
+# define ULONGLONG_PRINTF "%I64u"
+# define LONGLONG_SCANF "%I64d"
+# define ULONGLONG_SCANF "%I64u"
+#else
+# define LONGLONG_PRINTF "%lld"
+# define ULONGLONG_PRINTF "%llu"
+# define LONGLONG_SCANF "%Ld"
+# define ULONGLONG_SCANF "%Lu"
+#endif // __MINGW32__
 
 #endif // _D_COMMON_H_

@@ -34,8 +34,9 @@
 /* copyright --> */
 #include "LogFactory.h"
 #include "SimpleLogger.h"
+#include "a2io.h"
 
-string LogFactory::filename = "/dev/null";
+string LogFactory::filename = DEV_NULL;
 Logger* LogFactory::logger = NULL;
 
 Logger* LogFactory::getInstance() {

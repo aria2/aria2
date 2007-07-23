@@ -32,53 +32,38 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
-#include <time.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif // HAVE_CONFIG_H
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
+#ifdef __MINGW32__
+# define _WIN32_WINNT 0x501
+# include <winsock2.h>
+# undef ERROR
+# include <ws2tcpip.h>
+#endif // __MINGW32__
 
-  SimpleRandomizer() {}
-public:
+#ifdef HAVE_NETDB_H
+# include <netdb.h>
+#endif // HAVE_NETDB_H
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif // HAVE_SYS_SOCKET_H
+#ifdef HAVE_NETINET_IN_H
+# include <netinet/in.h>
+#endif // HAVE_NETINET_IN_H
+#ifdef HAVE_ARPA_INET_H
+# include <arpa/inet.h>
+#endif // HAVE_ARPA_INET_H
 
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
-#else
-    srand(time(0));
-#endif
-  }
+#include <string.h>
 
-  virtual ~SimpleRandomizer() {}
-
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
-
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
-
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
-};
-
-#endif // _D_SIMPLE_RANDOMIZER_H_
+int inet_aton(const char *cp, struct in_addr *inp) {
+	unsigned long res = inet_addr(cp);
+	if (res == INADDR_NONE && strcmp(cp, "255.255.255.255"))
+		return 0;
+	if (inp)
+		inp->s_addr = res;
+	return 1;
+}

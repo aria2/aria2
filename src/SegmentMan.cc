@@ -43,9 +43,7 @@
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "ChunkChecksumValidator.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include "a2io.h"
 #include <errno.h>
 
 SegmentMan::SegmentMan():logger(LogFactory::getInstance()),
@@ -88,7 +86,7 @@ void SegmentMan::load() {
   }
   string segFilename = getSegmentFilePath();
   logger->info(MSG_LOADING_SEGMENT_FILE, segFilename.c_str());
-  FILE* segFile = openSegFile(segFilename, "r+");
+  FILE* segFile = openSegFile(segFilename, "r+b");
   try {
     read(segFile);
     fclose(segFile);
@@ -106,7 +104,7 @@ void SegmentMan::save() const {
   }
   string segFilename = getSegmentFilePath();
   logger->info(MSG_SAVING_SEGMENT_FILE, segFilename.c_str());
-  FILE* segFile = openSegFile(segFilename, "w");
+  FILE* segFile = openSegFile(segFilename, "wb");
   try {
     if(fwrite(&totalSize, sizeof(totalSize), 1, segFile) < 1) {
       throw string("writeError");
@@ -155,6 +153,9 @@ FILE* SegmentMan::openSegFile(const string& segFilename, const string& mode) con
     throw new DlAbortEx(EX_SEGMENT_FILE_OPEN,
 			segFilename.c_str(), strerror(errno));
   }
+#ifdef HAVE_SETMODE
+  setmode(fileno(segFile), O_BINARY);
+#endif
   return segFile;
 }
 
@@ -537,7 +538,7 @@ void SegmentMan::tryChunkChecksumValidation(const SegmentHandle& segment)
 	logger->info(MSG_GOOD_CHUNK_CHECKSUM);
       } else {
 	logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		     index, offset,
+		     index, Util::llitos(offset, true).c_str(),
 		     expectedChecksum.c_str(), actualChecksum.c_str());
 	logger->debug("Unset bit from %d to %d(inclusive)", startIndex, endIndex);
 	bitfield->unsetBitRange(startIndex, endIndex);

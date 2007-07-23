@@ -121,7 +121,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   }
   int64_t size = httpResponse->getEntityLength();
   if(size == INT64_MAX || size < 0) {
-    throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
+    throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
   }
   _requestGroup->getSegmentMan()->isSplittable = !(size == 0);
   _requestGroup->getSegmentMan()->downloadStarted = true;

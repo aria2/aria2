@@ -36,9 +36,11 @@
 #include "File.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "a2io.h"
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 Directory::Directory(const string& name):name(name) {}
 
@@ -61,7 +63,7 @@ void Directory::createDir(const string& parentDir, bool recursive) const {
       throw new DlAbortEx(EX_NOT_DIRECTORY, path.c_str());
     }
   } else {
-    if(mkdir(path.c_str(), OPEN_MODE) == -1) {
+    if(a2mkdir(path.c_str(), OPEN_MODE) == -1) {
       throw new DlAbortEx(EX_MAKE_DIR, path.c_str(), strerror(errno));
     }
   }

@@ -33,7 +33,7 @@
 /* copyright --> */
 #include "CompactPeerListProcessor.h"
 #include "Data.h"
-#include <netinet/in.h>
+#include "a2netcompat.h"
 
 bool CompactPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
   return dynamic_cast<const Data*>(peersEntry) != 0;

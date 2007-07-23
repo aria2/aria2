@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2007 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
+#ifndef _D_STRPTIME_H
+#define _D_STRPTIME_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #include <time.h>
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
+char * strptime (const char *buf, const char *format, struct tm *timeptr);
 
-  SimpleRandomizer() {}
-public:
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
-#else
-    srand(time(0));
-#endif
-  }
-
-  virtual ~SimpleRandomizer() {}
-
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
-
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
-
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
-};
-
-#endif // _D_SIMPLE_RANDOMIZER_H_
+#endif /* not _D_STRPTIME_H */

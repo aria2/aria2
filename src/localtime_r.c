@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2007 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,53 +32,30 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
 #include <time.h>
+#ifdef __MINGW32__
+#include <windows.h>
+#endif // __MINGW32__
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
+#include "localtime_r.h"
 
-  SimpleRandomizer() {}
-public:
+struct tm * localtime_r(const time_t *clock, struct tm *result)
+{
+	static struct tm *local_tm;
+#ifdef __MINGW32__
+	static CRITICAL_SECTION cs;
+	static int initialized = 0;
 
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
-#else
-    srand(time(0));
-#endif
-  }
+	if (!initialized) {
+		++initialized;
+		InitializeCriticalSection(&cs);
+	}
 
-  virtual ~SimpleRandomizer() {}
-
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
-
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
-
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
+	EnterCriticalSection(&cs);
+	local_tm = localtime(clock);
+	memcpy(result, local_tm, sizeof(struct tm));
+	LeaveCriticalSection(&cs);
+#endif // __MINGW32__
+	return result;
 };
-
-#endif // _D_SIMPLE_RANDOMIZER_H_

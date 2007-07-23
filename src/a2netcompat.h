@@ -1,4 +1,3 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
@@ -32,53 +31,45 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
+#ifndef _D_A2NETCOMPAT_H_
+#define _D_A2NETCOMPAT_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
-#include <time.h>
+#ifdef HAVE_NETDB_H
+# include <netdb.h>
+#endif // HAVE_NETDB_H
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
+#ifdef HAVE_SYS_SOCKET_H
+# include <sys/socket.h>
+#endif // HAVE_SYS_SOCKET_H
 
-  SimpleRandomizer() {}
-public:
+#ifdef HAVE_NETINET_IN_H
+# include <netinet/in.h>
+#endif // HAVE_NETINET_IN_H
 
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
+#ifdef HAVE_ARPA_INET_H
+# include <arpa/inet.h>
+#endif // HAVE_ARPA_INET_H
+
+#ifdef HAVE_NETINET_IN_H
+# include <netinet/in.h>
+#endif // HAVE_NETINET_IN_H
+
+#ifndef HAVE_INET_ATON
+# include "inet_aton.h"
+#endif // HAVE_INET_ATON
+
+#ifdef __MINGW32__
+# include <winsock2.h>
+# undef ERROR
+# include <ws2tcpip.h>
+# define SOCKOPT_T const char
+# define HAVE_GETADDRINFO
 #else
-    srand(time(0));
-#endif
-  }
+# define SOCKOPT_T socklen_t
+#endif // __MINGW32__
 
-  virtual ~SimpleRandomizer() {}
+#ifndef HAVE_GETADDRINFO
+# include "getaddrinfo.h"
+#endif // HAVE_GETADDRINFO
 
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
-
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
-
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
-};
-
-#endif // _D_SIMPLE_RANDOMIZER_H_
+#endif // _D_A2NETCOMPAT_H_

@@ -98,7 +98,8 @@ SRCS =  Socket.h\
 	CookieParser.cc CookieParser.h\
 	CookieBoxFactory.cc CookieBoxFactory.h\
 	HttpHeaderProcessor.cc HttpHeaderProcessor.h\
-	FileEntry.cc FileEntry.h
+	FileEntry.cc FileEntry.h\
+	Platform.cc Platform.h
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST
@@ -226,11 +227,31 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h
 endif # ENABLE_METALINK
 
+if !HAVE_BASENAME
+SRCS += libgen.c libgen.h
+endif # !HAVE_BASENAME
+
+if !HAVE_GETADDRINFO
+SRCS += getaddrinfo.c getaddrinfo.h
+endif # !HAVE_GETADDRINFO
+
+if !HAVE_INET_ATON
+SRCS += inet_aton.c inet_aton.h
+endif # !HAVE_INET_ATON
+
+if !HAVE_LOCALTIME_R
+SRCS += localtime_r.c localtime_r.h
+endif # !HAVE_LOCALTIME_R
+
+if !HAVE_STRPTIME
+SRCS += strptime.c strptime.h
+endif # !HAVE_STRPTIME
+
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ # -lprofiler
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ # -lprofiler
 #aria2c_LDFLAGS =  #-pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\

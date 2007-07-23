@@ -36,10 +36,7 @@
 #define _D_NAME_RESOLVER_H_
 
 #include "common.h"
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include "a2netcompat.h"
 
 #ifdef ENABLE_ASYNC_DNS
 

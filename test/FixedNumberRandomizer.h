@@ -19,6 +19,11 @@ public:
     return RAND_MAX;
   }
 
+  virtual long int getRandomNumber(long int to)
+  {
+    return getRandomNumber();
+  }
+
   void setFixedNumber(int32_t num) {
     this->fixedNumber = num;
   }

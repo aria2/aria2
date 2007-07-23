@@ -32,53 +32,14 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
+#ifndef _D_PLATFORM_H_
+#define _D_PLATFORM_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
-#include <time.h>
-
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
-
-  SimpleRandomizer() {}
+class Platform {
 public:
+  Platform();
 
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
-#else
-    srand(time(0));
-#endif
-  }
-
-  virtual ~SimpleRandomizer() {}
-
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
-
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
-
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
+  ~Platform();
 };
 
-#endif // _D_SIMPLE_RANDOMIZER_H_
+#endif // _D_PLATFORM_H_

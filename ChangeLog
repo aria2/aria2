@@ -1,3 +1,43 @@
+2007-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Merged Ross's win32 patch(manually)
+	In the course of merging, following files are added.
+	* src/strptime.{h,c}
+	* src/libgen.{h,c}
+	* src/inet_aton.{h,c}
+	* src/Platform.{h,cc}
+	* src/localtime_r.{h,c}
+	* src/getaddrinfo.{h,c}
+	I've gethered network related things, and put them to following file:
+	* src/a2netcompat.h
+	Also io related things are put to following file:
+	* src/a2io.h
+	
+	Changed %lld to %s because mingw32 doesn't recognize %lld.
+	* src/message.h
+	(MSG_ALLOCATION_COMPLETED)
+	(EX_TOO_LARGE_FILE)
+	(EX_SIZE_MISMATCH)
+	(EX_FILE_OFFSET_OUT_OF_RANGE)
+	(EX_INVALID_CHUNK_CHECKSUM)
+	(EX_INVALID_RANGE_HEADER)
+	* src/FileAllocationCommand.cc
+	* src/HttpResponse.cc
+	* src/RequestGroup.cc
+	* src/MultiDiskAdaptor.cc
+	* src/OptionHandlerImpl.h
+	* src/HttpResponseCommand.cc
+	* src/FtpNegotiateCommand.cc
+	* src/IteratableChecksumValidator.cc
+	* src/SegmentMan.cc
+	* src/ChunkChecksumValidator.cc
+	
+	Added Randomizer::getRandomNumber(long int)
+	* src/Randomizer.h (getRandomNumber)
+	* src/SimpleRandomizer.h (getRandomNumber)
+	* src/BitfieldMan.cc (getMissingIndexRandomly): Use this new function.
+	* src/Util.cc (randomAlpha): Use this new function.
+	
 2007-07-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Converted int's to in32_t. long long int's are also converted to

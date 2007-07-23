@@ -35,7 +35,7 @@
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
 #include "Util.h"
-#include <netinet/in.h>
+#include "a2netcompat.h"
 
 int8_t PeerMessageUtil::getId(const unsigned char* msg) {
   return msg[0];

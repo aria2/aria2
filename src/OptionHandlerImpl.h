@@ -40,7 +40,6 @@
 #include "Util.h"
 #include "FatalException.h"
 #include "prefs.h"
-#include <netinet/in.h>
 
 class NullOptionHandler : public OptionHandler {
 public:
@@ -91,14 +90,14 @@ public:
     } else {
       string msg = _optName+" ";
       if(_min == -1 && _max != -1) {
-	msg += _("must be smaller than or equal to %lld.");
-	throw new FatalException(msg.c_str(), _max);
+	msg += _("must be smaller than or equal to %s.");
+	throw new FatalException(msg.c_str(), Util::llitos(_max).c_str());
       } else if(_min != -1 && _max != -1) {
-	msg += _("must be between %lld and %lld.");
-	throw new FatalException(msg.c_str(), _min, _max);
+	msg += _("must be between %s and %s.");
+	throw new FatalException(msg.c_str(), Util::llitos(_min).c_str(), Util::llitos(_max).c_str());
       } else if(_min != -1 && _max == -1) {
-	msg += _("must be greater than or equal to %lld.");
-	throw new FatalException(msg.c_str(), _min);
+	msg += _("must be greater than or equal to %s.");
+	throw new FatalException(msg.c_str(), Util::llitos(_min).c_str());
       } else {
 	msg += _("must be a number.");
 	throw new FatalException(msg.c_str());
@@ -218,9 +217,9 @@ public:
   virtual void parseArg(Option* option, const string& optarg)
   {
     pair<string, string> proxy = Util::split(optarg, ":");
-    in_port_t port = strtol(proxy.second.c_str(), 0, 10);
+    int32_t port = strtol(proxy.second.c_str(), 0, 10);
     if(proxy.first.empty() || proxy.second.empty() ||
-       port <= 0) {
+       port <= 0 || 65535 < port) {
       throw new FatalException(_("unrecognized proxy format"));
     }
     option->put(PREF_HTTP_PROXY, optarg);

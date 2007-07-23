@@ -94,6 +94,8 @@ public:
   string getBasename() const;
 
   string getDirname() const;
+
+  static bool isDir(const string& filename);
 };
 
 #endif // _D_FILE_H_

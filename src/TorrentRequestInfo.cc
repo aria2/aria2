@@ -44,6 +44,10 @@
 #include "DNSCache.h"
 #include <signal.h>
 
+#ifndef SA_RESETHAND
+# define SA_RESETHAND 0x80000000
+#endif // SA_RESETHAND
+
 extern volatile sig_atomic_t btHaltRequested;
 
 void torrentHandler(int signal) {

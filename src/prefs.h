@@ -40,8 +40,11 @@
 /**
  * Constants
  */
+#undef V_TRUE
 #define V_TRUE "true"
+#undef V_FALSE
 #define V_FALSE "false"
+#undef V_NONE
 #define V_NONE "none"
 
 /**

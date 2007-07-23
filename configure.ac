@@ -3,10 +3,19 @@
 #
 AC_PREREQ(2.59)
 AC_INIT(aria2c, 0.11.1+1, t-tujikawa@users.sourceforge.net)
+AC_CANONICAL_HOST
+AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE()
 AM_PATH_CPPUNIT(1.10.2)
 AC_CONFIG_SRCDIR([src/Socket.h])
 AC_CONFIG_HEADERS([config.h])
+
+case "$target" in
+	*mingw*|*cygwin*)
+		WINSOCK_LIBS="-lws2_32"
+		AC_SUBST(WINSOCK_LIBS)
+		;;
+esac
 
 # Set localedir
 localedir=${datadir}/locale
@@ -102,7 +111,7 @@ fi
 # Checks for header files.
 AC_FUNC_ALLOCA
 #AC_HEADER_STDC
-AC_CHECK_HEADERS([argz.h arpa/inet.h fcntl.h inttypes.h langinfo.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/param.h sys/socket.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([winsock2.h ws2tcpip.h argz.h arpa/inet.h fcntl.h inttypes.h io.h langinfo.h libgen.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/param.h sys/socket.h sys/time.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -125,7 +134,31 @@ AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify ftruncate getcwd getpagesize gettimeofday inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo rmdir select setlocale socket stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul])
+AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify daemon ftruncate getcwd getpagesize gettimeofday inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo random rmdir select setlocale setmode sigaction sleep socket srandom stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul timegm usleep])
+
+AC_CHECK_FUNCS([basename],
+	[AM_CONDITIONAL([HAVE_BASENAME], true)],
+	[AM_CONDITIONAL([HAVE_BASENAME], false)])
+AC_CHECK_FUNCS([getaddrinfo],
+	[AM_CONDITIONAL([HAVE_GETADDRINFO], true)],
+	[AM_CONDITIONAL([HAVE_GETADDRINFO], false)])
+AC_CHECK_FUNCS([inet_aton],
+	[AM_CONDITIONAL([HAVE_INET_ATON], true)],
+	[AM_CONDITIONAL([HAVE_INET_ATON], false)])
+AC_CHECK_FUNCS([localtime_r],
+	[AM_CONDITIONAL([HAVE_LOCALTIME_R], true)],
+	[AM_CONDITIONAL([HAVE_LOCALTIME_R], false)])
+AC_CHECK_FUNCS([strptime],
+	[AM_CONDITIONAL([HAVE_STRPTIME], true)],
+	[AM_CONDITIONAL([HAVE_STRPTIME], false)])
+
+case "$target" in
+	*mingw*)
+		dnl true if _WIN32_WINNT >= 0x0501
+		AM_CONDITIONAL([HAVE_GETADDRINFO], true)
+		;;
+esac
+
 AC_CONFIG_FILES([Makefile
 		src/Makefile
 		test/Makefile

@@ -44,8 +44,6 @@
 #include "Logger.h"
 #include "HttpResponse.h"
 #include "HttpHeaderProcessor.h"
-#include <netinet/in.h>
-#include <string>
 
 class HttpRequestEntry {
 private:

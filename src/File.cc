@@ -34,9 +34,7 @@
 /* copyright --> */
 #include "File.h"
 #include "Util.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include "a2io.h"
 #include <libgen.h>
 
 File::File(const string& name):name(name) {}
@@ -106,7 +104,7 @@ bool File::mkdirs() {
     if(File(accDir).isDir()) {
       continue;
     }
-    if(mkdir(accDir.c_str(), DIR_OPEN_MODE) == -1) {
+    if(a2mkdir(accDir.c_str(), DIR_OPEN_MODE) == -1) {
       return false;
     }
   }
@@ -136,4 +134,9 @@ string File::getDirname() const
   string dname = dirname(s);
   free(s);
   return dname;
+}
+
+bool File::isDir(const string& filename)
+{
+  return File(filename).isDir();
 }

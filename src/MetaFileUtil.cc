@@ -36,18 +36,21 @@
 #include "File.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "a2io.h"
 #include <string.h>
-#include <stdlib.h>
 
 MetaEntry* MetaFileUtil::parseMetaFile(const string& file) {
   File f(file);
   int32_t len = f.size();
   char* buf = new char[len];
-  FILE* fp = fopen(file.c_str(), "r+");
+  FILE* fp = fopen(file.c_str(), "r+b");
   try {
     if(fp == NULL) {
       throw new DlAbortEx("cannot open metainfo file");
     }
+#ifdef HAVE_SETMODE
+    setmode(fileno(fp), O_BINARY);
+#endif
     if(fread(buf, len, 1, fp) != 1) {
       fclose(fp);
       throw new DlAbortEx("cannot read metainfo");

@@ -36,19 +36,19 @@
 #include "DlAbortEx.h"
 #include "File.h"
 #include "message.h"
+#include "SimpleRandomizer.h"
+#include "a2io.h"
+#include "a2netcompat.h"
 #include <ctype.h>
 #include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <unistd.h>
 #include <signal.h>
 #include <iomanip>
 
+#ifndef HAVE_STRPTIME
+# include "strptime.h"
+#endif // HAVE_STRPTIME
 
 template<typename T>
 string uint2str(T value, bool comma) {
@@ -311,6 +311,9 @@ string Util::toHex(const unsigned char* src, int32_t len) {
 
 FILE* Util::openFile(const string& filename, const string& mode) {
   FILE* file = fopen(filename.c_str(), mode.c_str());
+#ifdef HAVE_SETMODE
+  setmode(fileno(file), O_BINARY);
+#endif
   return file;
 }
 
@@ -325,10 +328,10 @@ void Util::rangedFileCopy(const string& dest, const string& src, int64_t srcOffs
   int32_t destFd = -1;
   int32_t srcFd = -1;
   try {
-    if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC, OPEN_MODE)) == -1) {
+    if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC|O_BINARY, OPEN_MODE)) == -1) {
       throw new DlAbortEx(EX_FILE_OPEN, dest.c_str(), strerror(errno));
     }
-    if((srcFd = open(src.c_str(), O_RDONLY, OPEN_MODE)) == -1) {
+    if((srcFd = open(src.c_str(), O_RDONLY|O_BINARY, OPEN_MODE)) == -1) {
       throw new DlAbortEx(EX_FILE_OPEN, src.c_str(), strerror(errno));
     }
     if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
@@ -508,7 +511,7 @@ void Util::fileChecksum(const string& filename, unsigned char* digest,
   char buf[BUFLEN];
 
   int32_t fd;
-  if((fd = open(filename.c_str(), O_RDWR, OPEN_MODE)) < 0) {
+  if((fd = open(filename.c_str(), O_RDWR|O_BINARY, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
   while(1) {
@@ -597,16 +600,11 @@ int32_t Util::countBit(uint32_t n) {
 }
 
 string Util::randomAlpha(int32_t length) {
+  static char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   string str;
   for(int32_t i = 0; i < length; i++) {
-    int32_t index = (int32_t)(((double)52)*random()/(RAND_MAX+1.0));
-    char ch;
-    if(index < 26) {
-      ch = (char)('A'+index);
-    } else {
-      ch = (char)('a'+index-26);
-    }
-    str += ch;
+    int32_t index = SimpleRandomizer::getInstance()->getRandomNumber(strlen(random_chars));
+    str += random_chars[index];
   }
   return str;
 }
@@ -647,11 +645,15 @@ bool Util::isNumbersAndDotsNotation(const string& name) {
 }
 
 void Util::setGlobalSignalHandler(int32_t signal, void (*handler)(int32_t), int32_t flags) {
+#ifdef HAVE_SIGACTION
   struct sigaction sigact;
   sigact.sa_handler = handler;
   sigact.sa_flags = flags;
   sigemptyset(&sigact.sa_mask);
   sigaction(signal, &sigact, NULL);
+#else
+  signal(sig, handler);
+#endif // HAVE_SIGACTION
 }
 
 void Util::indexRange(int32_t& startIndex, int32_t& endIndex,
@@ -715,8 +717,23 @@ time_t Util::httpGMT(const string& httpStdTime)
   struct tm tm;
   memset(&tm, 0, sizeof(tm));
   strptime(httpStdTime.c_str(), "%a, %Y-%m-%d %H:%M:%S GMT", &tm);
+#ifdef HAVE_TIMEGM
   time_t thetime = timegm(&tm);
   return thetime;
+#else
+  char *tz;
+  tz = getenv("TZ");
+  putenv("TZ=");
+  tzset();
+  time_t thetime = mktime(&tm);
+  if (tz) {
+    char s[256];
+    sprintf("TZ=%s", tz);
+    putenv(s);
+  }
+  tzset();
+  return thetime;
+#endif // HAVE_TIMEGM
 }
 
 void Util::toStream(ostream& os, const FileEntries& fileEntries)

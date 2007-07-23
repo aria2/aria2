@@ -135,9 +135,12 @@ int32_t
 BitfieldMan::getMissingIndexRandomly(const unsigned char* bitfield,
 				     int32_t bitfieldLength) const
 {
+  /*
   int32_t byte = (int32_t)(((double)bitfieldLength)*
 			   randomizer->getRandomNumber()/
 			   (randomizer->getMaxRandomNumber()+1.0));
+  */
+  int32_t byte = randomizer->getRandomNumber(bitfieldLength);
 
   unsigned char lastMask = 0;
   // the number of bytes in the last byte of bitfield

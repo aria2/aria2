@@ -38,6 +38,7 @@
 #include "Util.h"
 #include "message.h"
 #include "LogFactory.h"
+#include "a2io.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -79,7 +80,7 @@ void AbstractDiskWriter::openExistingFile(const string& filename, int64_t totalL
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), MSG_FILE_NOT_FOUND);
   }
 
-  if((fd = open(filename.c_str(), O_RDWR, OPEN_MODE)) < 0) {
+  if((fd = open(filename.c_str(), O_RDWR|O_BINARY, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
   if(f.size() < totalLength) {
@@ -99,7 +100,7 @@ void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags) {
 //   if(filename.empty()) {
 //     filename = "index.html";
 //   }
-  if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|addFlags, OPEN_MODE)) < 0) {
+  if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }  
 }

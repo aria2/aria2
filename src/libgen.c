@@ -32,53 +32,58 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_SIMPLE_RANDOMIZER_H_
-#define _D_SIMPLE_RANDOMIZER_H_
 
-#include "Randomizer.h"
-#include <stdlib.h>
-#include <time.h>
+#include <stdio.h>
+#include <string.h>
+#include <libgen.h>
 
-class SimpleRandomizer : public Randomizer {
-private:
-  static RandomizerHandle randomizer;
-
-  SimpleRandomizer() {}
-public:
-
-  static RandomizerHandle getInstance() {
-    if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
-    }
-    return randomizer;
-  }
-  
-  static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
+#if defined(__CYGWIN__) || defined(__DJGPP__) || defined(__MINGW32__)
+# define IS_PATH_SEPARATOR(c) (((c) == '/') || ((c) == '\\'))
 #else
-    srand(time(0));
+# define IS_PATH_SEPARATOR(c) ((c) == '/')
 #endif
-  }
 
-  virtual ~SimpleRandomizer() {}
+/* per http://www.scit.wlv.ac.uk/cgi-bin/mansec?3C+basename */
+char* basename(char* s) {
+	char* rv;
 
-  virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
-    return rand();
-#endif
-  }
+	if (!s || !*s)
+		return ".";
 
-  virtual long int getMaxRandomNumber() {
-      return RAND_MAX;
-  }
+	rv = s + strlen(s) - 1;
 
-  virtual long int getRandomNumber(long int to)
-  {
-    return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
-  }
-};
+	do {
+		if (IS_PATH_SEPARATOR(*rv))
+			return rv + 1;
+		--rv;
+	} while (rv >= s);
 
-#endif // _D_SIMPLE_RANDOMIZER_H_
+	return s;
+}
+
+/* per http://www.scit.wlv.ac.uk/cgi-bin/mansec?3C+dirname */
+char* dirname(char* path) {
+	char *p;
+
+	if (path == NULL || *path == '\0')
+		return ".";
+	p = path + strlen(path) - 1;
+	while (IS_PATH_SEPARATOR(*p)) {
+		if (p == path)
+			return path;
+		*p-- = '\0';
+	}
+
+	while (p >= path && !IS_PATH_SEPARATOR(*p))
+		p--;
+
+	if (p < path)
+		return ".";
+
+	if (p == path)
+		return "/";
+
+	*p = '\0';
+
+	return path;
+}

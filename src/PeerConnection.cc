@@ -39,7 +39,7 @@
 #include "Util.h"
 #include "LogFactory.h"
 #include "BtHandshakeMessage.h"
-#include <netinet/in.h>
+#include "a2netcompat.h"
 
 PeerConnection::PeerConnection(int32_t cuid,
 			       const SocketHandle& socket,

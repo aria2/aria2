@@ -187,7 +187,7 @@ bool FtpNegotiationCommand::recvSize() {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }
   if(size == INT64_MAX || size < 0) {
-    throw new DlAbortEx(EX_TOO_LARGE_FILE, size);
+    throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
   }
   if(!_requestGroup->getSegmentMan()->downloadStarted) {
     _requestGroup->getSegmentMan()->downloadStarted = true;
@@ -220,23 +220,8 @@ bool FtpNegotiationCommand::recvSize() {
     sequence = SEQ_FILE_PREPARATION;
     e->noWait = true;
     return false;
-
-    /*
-    _requestGroup->getSegmentMan()->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-						 _requestGroup->getSegmentMan()->totalSize);
-    bool segFileExists = _requestGroup->getSegmentMan()->segmentFileExists();
-    if(segFileExists) {
-      _requestGroup->getSegmentMan()->load();
-      _requestGroup->getSegmentMan()->diskWriter->openExistingFile(_requestGroup->getSegmentMan()->getFilePath());
-    } else {
-      _requestGroup->getSegmentMan()->diskWriter->initAndOpenFile(_requestGroup->getSegmentMan()->getFilePath(), size);
-    }
-    */
-
   } else {
     _requestGroup->validateTotalLength(size);
-    //if(_requestGroup->getSegmentMan()->totalSize != size) {
-    //throw new DlAbortEx(EX_SIZE_MISMATCH, _requestGroup->getSegmentMan()->totalSize, size);
   }
   if(e->option->get(PREF_FTP_PASV) == V_TRUE) {
     sequence = SEQ_SEND_PASV;

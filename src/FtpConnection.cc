@@ -201,7 +201,7 @@ int32_t FtpConnection::receiveSizeResponse(int64_t& size) {
   pair<int32_t, string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
-      sscanf(response.second.c_str(), "%*d %Ld", &size);
+      sscanf(response.second.c_str(), "%*d " LONGLONG_SCANF, &size);
     }
     return response.first;
   } else {

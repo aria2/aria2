@@ -44,6 +44,11 @@ public:
   virtual long int getRandomNumber() = 0;
 
   virtual long int getMaxRandomNumber() = 0;
+
+  /**
+   * Returns random number in [0, to).
+   */
+  virtual long int getRandomNumber(long int to) = 0;
 };
 
 typedef SharedHandle<Randomizer> RandomizerHandle;
