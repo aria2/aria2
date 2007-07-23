@@ -721,7 +721,9 @@ msgstr "ID %d は %s に対して使用できません. 期待する ID:%d"
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
-msgstr "部分チェックサムの検証が失敗しました. チェックサムインデックス=%d, オフセット=%s, 期待するハッシュ値:%s, 実際のハッシュ値:%s"
+msgstr ""
+"部分チェックサムの検証が失敗しました. チェックサムインデックス=%d, オフセット"
+"=%s, 期待するハッシュ値:%s, 実際のハッシュ値:%s"
 
 #: src/message.h:179
 msgid "Download aborted."
