@@ -33,7 +33,7 @@ void CookieBoxFactoryTest::testLoadDefaultCookie()
 
   Cookies cookies = factory.getDefaultCookies();
 
-  CPPUNIT_ASSERT_EQUAL(4, (int32_t)cookies.size());
+  CPPUNIT_ASSERT_EQUAL((int32_t)4, (int32_t)cookies.size());
 
   Cookie c = cookies[0];
   CPPUNIT_ASSERT_EQUAL(string("JSESSIONID"), c.name);
@@ -60,5 +60,5 @@ void CookieBoxFactoryTest::testCreateNewInstance()
   CookieBoxHandle box = factory.createNewInstance();
   Cookies cookies = box->criteriaFind("localhost", "/", 0, true);
 
-  CPPUNIT_ASSERT_EQUAL(4, (int32_t)cookies.size());
+  CPPUNIT_ASSERT_EQUAL((int32_t)4, (int32_t)cookies.size());
 }

@@ -33,7 +33,7 @@ void BtHaveMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[5], 12345);
   BtHaveMessageHandle pm = BtHaveMessage::create(&msg[4], 5);
   CPPUNIT_ASSERT_EQUAL((int8_t)4, pm->getId());
-  CPPUNIT_ASSERT_EQUAL(12345, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
 
   // case: payload size is wrong
   try {

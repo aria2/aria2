@@ -112,10 +112,10 @@ void BtPieceMessageTest::testCreate() {
   memcpy(&msg[13], data, sizeof(data));
   BtPieceMessageHandle pm = BtPieceMessage::create(&msg[4], 11);
   CPPUNIT_ASSERT_EQUAL((int8_t)7, pm->getId());
-  CPPUNIT_ASSERT_EQUAL(12345, pm->getIndex());
-  CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)256, pm->getBegin());
   CPPUNIT_ASSERT(memcmp(data, pm->getBlock(), sizeof(data)) == 0);
-  CPPUNIT_ASSERT_EQUAL(2, pm->getBlockLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)2, pm->getBlockLength());
 
   // case: payload size is wrong
   try {
@@ -172,9 +172,9 @@ void BtPieceMessageTest::testChokingEvent_allowedFastEnabled() {
   CPPUNIT_ASSERT(msg->isInvalidate());  
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
   MockBtMessage2* rej = (MockBtMessage2*)btMessageDispatcher->messageQueue.front().get();
-  CPPUNIT_ASSERT_EQUAL(1, rej->index);
-  CPPUNIT_ASSERT_EQUAL(1024, rej->begin);
-  CPPUNIT_ASSERT_EQUAL(16*1024, rej->length);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, rej->index);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1024, rej->begin);
+  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024, rej->length);
 }
 
 void BtPieceMessageTest::testChokingEvent_inAmAllowedIndexSet() {
@@ -257,9 +257,9 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_allowedFastEnabled() {
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
   MockBtMessage2* rej = (MockBtMessage2*)btMessageDispatcher->messageQueue.front().get();
-  CPPUNIT_ASSERT_EQUAL(1, rej->index);
-  CPPUNIT_ASSERT_EQUAL(1024, rej->begin);
-  CPPUNIT_ASSERT_EQUAL(16*1024, rej->length);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, rej->index);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1024, rej->begin);
+  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024, rej->length);
 }
 
 void BtPieceMessageTest::testCancelSendingPieceEvent_invalidate() {

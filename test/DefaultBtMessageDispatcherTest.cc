@@ -370,7 +370,7 @@ void DefaultBtMessageDispatcherTest::testIsSendingInProgress() {
 void DefaultBtMessageDispatcherTest::testCountOutstandingRequest() {
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
   btMessageDispatcher->addOutstandingRequest(slot);
-  CPPUNIT_ASSERT_EQUAL(1, btMessageDispatcher->countOutstandingRequest());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, btMessageDispatcher->countOutstandingRequest());
 }
 
 void DefaultBtMessageDispatcherTest::testIsOutstandingRequest() {

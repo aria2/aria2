@@ -61,7 +61,7 @@ void HttpHeaderProcessorTest::testGetPutBackDataLength()
     "\r\nputbackme";
   proc.update(hd1);
   CPPUNIT_ASSERT(proc.eoh());
-  CPPUNIT_ASSERT_EQUAL(9, proc.getPutBackDataLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)9, proc.getPutBackDataLength());
 
   proc.clear();
 
@@ -69,7 +69,7 @@ void HttpHeaderProcessorTest::testGetPutBackDataLength()
     "\nputbackme";
   proc.update(hd2);
   CPPUNIT_ASSERT(proc.eoh());
-  CPPUNIT_ASSERT_EQUAL(9, proc.getPutBackDataLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)9, proc.getPutBackDataLength());
 }
 
 void HttpHeaderProcessorTest::testGetPutBackDataLength_nullChar()
@@ -79,7 +79,7 @@ void HttpHeaderProcessorTest::testGetPutBackDataLength_nullChar()
 	      "foo: foo\0bar\r\n"
 	      "\r\nputbackme", 35+7);
   CPPUNIT_ASSERT(proc.eoh());
-  CPPUNIT_ASSERT_EQUAL(9, proc.getPutBackDataLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)9, proc.getPutBackDataLength());
   
 }
 

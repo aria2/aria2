@@ -22,6 +22,8 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( DefaultDiskWriterTest );
 
 void DefaultDiskWriterTest::testMessageDigest() {
+#ifdef ENABLE_MESSAGE_DIGEST
+  
   DefaultDiskWriter dw;
   dw.openExistingFile("4096chunk.txt");
   
@@ -32,4 +34,5 @@ void DefaultDiskWriterTest::testMessageDigest() {
 		       dw.messageDigest(5, 100, DIGEST_ALGO_SHA1));
 
   dw.closeFile();
+#endif // ENABLE_MESSAGE_DIGEST
 }

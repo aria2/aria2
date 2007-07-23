@@ -59,7 +59,7 @@ void CookieParserTest::testParse_file()
 
   Cookies cookies = CookieParser().parse(f);
 
-  CPPUNIT_ASSERT_EQUAL(3, (int32_t)cookies.size());
+  CPPUNIT_ASSERT_EQUAL((int32_t)3, (int32_t)cookies.size());
 
   Cookie c = cookies[0];
   CPPUNIT_ASSERT_EQUAL(string("JSESSIONID"), c.name);

@@ -9,7 +9,9 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MultiDiskAdaptorTest);
   CPPUNIT_TEST(testWriteData);
   CPPUNIT_TEST(testReadData);
+#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testMessageDigest);
+#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST_SUITE_END();
 private:
   Option* option;
@@ -30,7 +32,9 @@ public:
 
   void testWriteData();
   void testReadData();
+#ifdef ENABLE_MESSAGE_DIGEST
   void testMessageDigest();
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 
@@ -134,6 +138,8 @@ void MultiDiskAdaptorTest::testReadData() {
   CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDEFGHIJKLMNO"), string((char*)buf));
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
+
 void MultiDiskAdaptorTest::testMessageDigest() {
   FileEntryHandle entry1(new FileEntry("file1r.txt", 15, 0));
   FileEntryHandle entry2(new FileEntry("file2r.txt", 7, 15));
@@ -154,3 +160,5 @@ void MultiDiskAdaptorTest::testMessageDigest() {
   CPPUNIT_ASSERT_EQUAL(string("6238bf61dd8df8f77156b2378e9e39cd3939680c"), sha1sum);
   adaptor->closeFile();
 }
+
+#endif // ENABLE_MESSAGE_DIGEST

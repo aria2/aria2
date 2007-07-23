@@ -34,21 +34,21 @@ void SharedHandleTest::testSharedHandle() {
   cerr << "xh:" << endl;
   SharedHandle<int> xh = new int(1);
 
-  CPPUNIT_ASSERT_EQUAL(1, xh.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL(1, xh.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, xh.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, xh.getRefCount()->strongRefCount);
 
   cerr << "nullHandle:" << endl;
   SharedHandle<int> nullHandle = 0;
 
-  CPPUNIT_ASSERT_EQUAL(1, nullHandle.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL(1, nullHandle.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, nullHandle.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, nullHandle.getRefCount()->strongRefCount);
 
   cerr << "staticHandle:" << endl;
-  CPPUNIT_ASSERT_EQUAL(1, staticHandle.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL(1, staticHandle.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, staticHandle.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, staticHandle.getRefCount()->strongRefCount);
 
   SharedHandle<int> localStaticHandle = getInstance();
 
-  CPPUNIT_ASSERT_EQUAL(2, localStaticHandle.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL(2, localStaticHandle.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)2, localStaticHandle.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((int32_t)2, localStaticHandle.getRefCount()->strongRefCount);
 }

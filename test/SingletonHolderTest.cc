@@ -1,3 +1,4 @@
+#include <iostream>
 #include "SingletonHolder.h"
 #include "SharedHandle.h"
 #include <cppunit/extensions/HelperMacros.h>

@@ -53,13 +53,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPeerStorageTest);
 void DefaultPeerStorageTest::testCountPeer() {
   DefaultPeerStorage ps(btContext, option);
 
-  CPPUNIT_ASSERT_EQUAL(0,
+  CPPUNIT_ASSERT_EQUAL((int32_t)0,
 		       ps.countPeer());
 
   PeerHandle peer(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
 			   btContext->getTotalLength()));
   ps.addPeer(peer);
-  CPPUNIT_ASSERT_EQUAL(1,
+  CPPUNIT_ASSERT_EQUAL((int32_t)1,
 		       ps.countPeer());
 }
 
@@ -79,7 +79,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 
   ps.deleteUnusedPeer(2);
 
-  CPPUNIT_ASSERT_EQUAL(1, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.3"),
 		       ps.getPeer("192.168.0.3", 6889)->ipaddr);
 
@@ -91,7 +91,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   ps.deleteUnusedPeer(3);
 
   // peer2 has been in use, so it did't deleted.
-  CPPUNIT_ASSERT_EQUAL(1, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"),
 		       ps.getPeer("192.168.0.2", 6889)->ipaddr);
   
@@ -111,13 +111,13 @@ void DefaultPeerStorageTest::testAddPeer() {
   ps.addPeer(peer2);
   ps.addPeer(peer3);
 
-  CPPUNIT_ASSERT_EQUAL(3, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
 
   // this is true, because peer1 in the container has no errors and
   // it is replaced by peer1(self assignment).
   CPPUNIT_ASSERT_EQUAL(true, ps.addPeer(peer1));
   // the number of peers doesn't change.
-  CPPUNIT_ASSERT_EQUAL(3, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
 
   ps.setMaxPeerListSize(3);
 
@@ -126,7 +126,7 @@ void DefaultPeerStorageTest::testAddPeer() {
 
   CPPUNIT_ASSERT(ps.addPeer(peer4));
   // peer1 was deleted.
-  CPPUNIT_ASSERT_EQUAL(3, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
   
   peer4->startBadCondition();
 

@@ -1,4 +1,5 @@
 #include "ShaVisitor.h"
+
 #include "MetaFileUtil.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
@@ -10,6 +11,7 @@ class ShaVisitorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(ShaVisitorTest);
   CPPUNIT_TEST(testVisit);
   CPPUNIT_TEST(testVisitCompound);
+
   CPPUNIT_TEST_SUITE_END();
 private:
 

@@ -54,7 +54,7 @@ void DefaultBtContextTest::testGetInfoHash() {
 
   string correctHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
 
-  CPPUNIT_ASSERT_EQUAL(20, btContext.getInfoHashLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)20, btContext.getInfoHashLength());
   CPPUNIT_ASSERT_EQUAL(correctHash, Util::toHex(btContext.getInfoHash(),
 						btContext.getInfoHashLength()));
 }
@@ -208,7 +208,7 @@ void DefaultBtContextTest::testGetPieceLength() {
   DefaultBtContext btContext;
   btContext.load("test.torrent");
 
-  CPPUNIT_ASSERT_EQUAL(128,
+  CPPUNIT_ASSERT_EQUAL((int32_t)128,
 		       btContext.getPieceLength());
 }
 

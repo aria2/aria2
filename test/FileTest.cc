@@ -87,7 +87,11 @@ void FileTest::testRemove() {
   CPPUNIT_ASSERT(!f.remove());
 
   string dir = "/tmp/aria2testdir";
+#ifdef __MINGW32__
+  mkdir(dir.c_str());
+#else
   mkdir(dir.c_str(), 0777);
+#endif // __MINGW32__
   File d(dir);
   CPPUNIT_ASSERT(d.exists());
   CPPUNIT_ASSERT(d.remove());

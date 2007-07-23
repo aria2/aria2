@@ -146,7 +146,7 @@ void SegmentManTest::testMarkPieceDone_usedSegment()
   SegmentHandle segment = segmentMan.getSegment(0, 5);
   CPPUNIT_ASSERT(!segment.isNull());
   CPPUNIT_ASSERT_EQUAL(5, segment->index);
-  CPPUNIT_ASSERT_EQUAL(pieceLength, segment->length);
-  CPPUNIT_ASSERT_EQUAL(pieceLength, segment->segmentLength);
+  CPPUNIT_ASSERT_EQUAL(pieceLength, (int32_t) segment->length);
+  CPPUNIT_ASSERT_EQUAL(pieceLength, (int32_t) segment->segmentLength);
   CPPUNIT_ASSERT_EQUAL(100, segment->writtenLength);
 }

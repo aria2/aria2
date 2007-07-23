@@ -64,10 +64,12 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   CPPUNIT_ASSERT_EQUAL(string("0.5.1"), entry2->version);
   CPPUNIT_ASSERT_EQUAL(string("ja-JP"), entry2->language);
   CPPUNIT_ASSERT_EQUAL(string("Linux-m68k"), entry2->os);
+#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL(string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
 		       entry2->checksum->getMessageDigest());
+#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_ASSERT_EQUAL((int32_t)2, entry2->chunkChecksum->countChecksum());
-  CPPUNIT_ASSERT_EQUAL(262144, entry2->chunkChecksum->getChecksumLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)262144, entry2->chunkChecksum->getChecksumLength());
   CPPUNIT_ASSERT_EQUAL(string("179463a88d79cbf0b1923991708aead914f26142"),
 		       entry2->chunkChecksum->getChecksum(0));
   CPPUNIT_ASSERT_EQUAL(string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),

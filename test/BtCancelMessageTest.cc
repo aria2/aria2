@@ -66,9 +66,9 @@ void BtCancelMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[13], 1024);
   BtCancelMessageHandle pm = BtCancelMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((int8_t)8, pm->getId());
-  CPPUNIT_ASSERT_EQUAL(12345, pm->getIndex());
-  CPPUNIT_ASSERT_EQUAL(256, pm->getBegin());
-  CPPUNIT_ASSERT_EQUAL(1024, pm->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)256, pm->getBegin());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1024, pm->getLength());
 
   // case: payload size is wrong
   try {

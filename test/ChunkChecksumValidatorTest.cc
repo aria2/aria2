@@ -35,6 +35,7 @@ const char* ChunkChecksumValidatorTest::csArray[] = { "29b0e7878271645fffb7eec7d
 						      "0a4ea2f7dd7c52ddf2099a444ab2184b4d341bdb" };
 
 void ChunkChecksumValidatorTest::testValidate() {
+#ifdef ENABLE_MESSAGE_DIGEST
   BitfieldMan bitfieldMan(100, 250);
   bitfieldMan.setAllBit();
   Strings checksums(&csArray[0], &csArray[3]);
@@ -56,9 +57,11 @@ void ChunkChecksumValidatorTest::testValidate() {
   CPPUNIT_ASSERT(bitfieldMan.isBitSet(0));
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(1));
   CPPUNIT_ASSERT(bitfieldMan.isBitSet(2));
+#endif /* ENABLE_MESSAGE_DIGEST */
 }
 
 void ChunkChecksumValidatorTest::testValidate2() {
+#ifdef ENABLE_MESSAGE_DIGEST
   BitfieldMan bitfieldMan(50, 250);
   bitfieldMan.setAllBit();
   Strings checksums(&csArray[0], &csArray[3]);
@@ -81,9 +84,11 @@ void ChunkChecksumValidatorTest::testValidate2() {
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(2));
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(3));
   CPPUNIT_ASSERT(bitfieldMan.isBitSet(4));
+#endif /* ENABLE_MESSAGE_DIGEST */
 }
 
 void ChunkChecksumValidatorTest::testValidate3() {
+#ifdef ENABLE_MESSAGE_DIGEST
   BitfieldMan bitfieldMan(50, 250);
   bitfieldMan.setAllBit();
   Strings checksums;
@@ -108,9 +113,11 @@ void ChunkChecksumValidatorTest::testValidate3() {
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(2));
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(3));
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(4));
+#endif /* ENABLE_MESSAGE_DIGEST */
 }
 
 void ChunkChecksumValidatorTest::testValidate4() {
+#ifdef ENABLE_MESSAGE_DIGEST
   BitfieldMan bitfieldMan(70, 250);
   bitfieldMan.setAllBit();
   Strings checksums(&csArray[0], &csArray[3]);
@@ -132,4 +139,5 @@ void ChunkChecksumValidatorTest::testValidate4() {
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(1));
   CPPUNIT_ASSERT(!bitfieldMan.isBitSet(2));
   CPPUNIT_ASSERT(bitfieldMan.isBitSet(3));
+#endif /* ENABLE_MESSAGE_DIGEST */
 }

@@ -15,9 +15,13 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testStartsWith);
   // may be moved to other helper class in the future.
   CPPUNIT_TEST(testGetContentDispositionFilename);
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testComputeFastSet);
+#endif
   CPPUNIT_TEST(testRandomAlpha);
+#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testFileChecksum);
+#endif
   CPPUNIT_TEST(testToUpper);
   CPPUNIT_TEST(testToLower);
   CPPUNIT_TEST(testUrldecode);
@@ -38,11 +42,15 @@ public:
   void testEndsWith();
   void testReplace();
   void testStartsWith();
+#ifdef ENABLE_BITTORRENT
   void testComputeFastSet();
+#endif
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
   void testRandomAlpha();
+#ifdef ENABLE_MESSAGE_DIGEST
   void testFileChecksum();
+#endif
   void testToUpper();
   void testToLower();
   void testUrldecode();
@@ -235,6 +243,8 @@ public:
   }
 };
 
+#ifdef ENABLE_BITTORRENT
+
 void UtilTest::testComputeFastSet() {
   string ipaddr = "192.168.0.1";
   unsigned char infoHash[20];
@@ -258,9 +268,13 @@ void UtilTest::testComputeFastSet() {
   CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
 }
 
+#endif
+
 void UtilTest::testRandomAlpha() {
   CPPUNIT_ASSERT_EQUAL(string("rUopvKRn"), Util::randomAlpha(8));
 }
+
+#ifdef ENABLE_MESSAGE_DIGEST
 
 void UtilTest::testFileChecksum() {
   unsigned char buf[20];
@@ -275,6 +289,8 @@ void UtilTest::testFileChecksum() {
   CPPUNIT_ASSERT_EQUAL(string("82a7348c2e03731109d0cf45a7325b88"),
 		       md5);
 }
+
+#endif
 
 void UtilTest::testToUpper() {
   string src = "608cabc0f2fa18c260cafd974516865c772363d5";
@@ -314,8 +330,8 @@ void UtilTest::testUrldecode() {
 }
 
 void UtilTest::testCountBit() {
-  CPPUNIT_ASSERT_EQUAL(32, Util::countBit(UINT32_MAX));
-  CPPUNIT_ASSERT_EQUAL(8, Util::countBit(255));
+  CPPUNIT_ASSERT_EQUAL((int32_t)32, Util::countBit(UINT32_MAX));
+  CPPUNIT_ASSERT_EQUAL((int32_t)8, Util::countBit(255));
 }
 
 void UtilTest::testGetRealSize()

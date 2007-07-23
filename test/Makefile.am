@@ -36,13 +36,9 @@ aria2c_SOURCES = AllTest.cc\
 	DictionaryTest.cc\
 	ListTest.cc\
 	MetaFileUtilTest.cc\
-	ShaVisitorTest.cc\
 	PeerMessageUtilTest.cc\
 	DefaultDiskWriterTest.cc\
 	MultiDiskAdaptorTest.cc\
-	Xml2MetalinkProcessorTest.cc\
-	MetalinkerTest.cc\
-	MetalinkEntryTest.cc\
 	FeatureConfigTest.cc\
 	ShareRatioSeedCriteriaTest.cc\
 	TimeSeedCriteriaTest.cc\
@@ -50,17 +46,17 @@ aria2c_SOURCES = AllTest.cc\
 	DefaultPeerListProcessorTest.cc\
 	AnnounceListTest.cc\
 	TrackerWatcherCommandTest.cc\
-	DefaultBtContextTest.cc\
-	DefaultPieceStorageTest.cc\
-	DefaultBtAnnounceTest.cc\
-	BtRegistryTest.cc\
-	DefaultBtMessageDispatcherTest.cc\
 	MockPeerStorage.h\
-	DefaultBtRequestFactoryTest.cc\
-	BtAllowedFastMessageTest.cc\
+	FixedNumberRandomizer.h\
+	ConsoleFileAllocationMonitorTest.cc\
+	ChunkChecksumValidatorTest.cc
+	
+if ENABLE_BITTORRENT
+aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtBitfieldMessageTest.cc\
 	BtCancelMessageTest.cc\
 	BtChokeMessageTest.cc\
+	BtHandshakeMessageTest.cc\
 	BtHaveAllMessageTest.cc\
 	BtHaveMessageTest.cc\
 	BtHaveNoneMessageTest.cc\
@@ -69,24 +65,37 @@ aria2c_SOURCES = AllTest.cc\
 	BtNotInterestedMessageTest.cc\
 	BtPieceMessageTest.cc\
 	BtPortMessageTest.cc\
+	BtRegistryTest.cc\
 	BtRejectMessageTest.cc\
 	BtRequestMessageTest.cc\
 	BtSuggestPieceMessageTest.cc\
 	BtUnchokeMessageTest.cc\
-	BtHandshakeMessageTest.cc\
-	MockBtMessageDispatcher.h\
-	FixedNumberRandomizer.h\
-	MockBtMessageFactory.h\
+	DefaultBtAnnounceTest.cc\
+	DefaultBtContextTest.cc\
+	DefaultBtMessageDispatcherTest.cc\
+	DefaultBtRequestFactoryTest.cc\
+	DefaultPieceStorageTest.cc\
 	MockBtMessage.h\
-	ConsoleFileAllocationMonitorTest.cc\
-	ChunkChecksumValidatorTest.cc
+	MockBtMessageDispatcher.h\
+	MockBtMessageFactory.h\
+	ShaVisitorTest.cc
+endif # ENABLE_BITTORRENT
+
+if ENABLE_METALINK
+aria2c_SOURCES += MetalinkerTest.cc\
+	MetalinkEntryTest.cc\
+	Xml2MetalinkProcessorTest.cc
+endif # ENABLE_METALINK
+
+
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 
 aria2c_LDADD = ../src/libaria2c.a\
-	 ${CPPUNIT_LIBS} @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
-	@LIBARES_LIBS@ @LIBCARES_LIBS@
+    @LIBINTL@ @LIBGNUTLS_LIBS@\
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@\
+	${CPPUNIT_LIBS}
 AM_CPPFLAGS =  -Wall\
 	${CPPUNIT_CFLAGS}\
 	-I ../src\
