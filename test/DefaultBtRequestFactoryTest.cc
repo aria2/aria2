@@ -150,11 +150,11 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
   CPPUNIT_ASSERT_EQUAL(1, msg->index);
-  CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
   CPPUNIT_ASSERT_EQUAL(1, msg->index);
-  CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
 }
 
 void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {

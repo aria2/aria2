@@ -37,6 +37,38 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 check_PROGRAMS = $(am__EXEEXT_1)
+@ENABLE_BITTORRENT_TRUE@am__append_1 = BtAllowedFastMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtChokeMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtHandshakeMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtHaveAllMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtHaveMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtHaveNoneMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtInterestedMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtKeepAliveMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtNotInterestedMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtPieceMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtPortMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtRegistryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtRejectMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtRequestMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtSuggestPieceMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtUnchokeMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounceTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactoryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	MockBtMessage.h\
+@ENABLE_BITTORRENT_TRUE@	MockBtMessageDispatcher.h\
+@ENABLE_BITTORRENT_TRUE@	MockBtMessageFactory.h\
+@ENABLE_BITTORRENT_TRUE@	ShaVisitorTest.cc
+
+@ENABLE_METALINK_TRUE@am__append_2 = MetalinkerTest.cc\
+@ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
+@ENABLE_METALINK_TRUE@	Xml2MetalinkProcessorTest.cc
+
 subdir = test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -58,6 +90,70 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
+am__aria2c_SOURCES_DIST = AllTest.cc FileUriListParserTest.cc \
+	StreamUriListParserTest.cc HttpHeaderProcessorTest.cc \
+	UtilTest.cc CookieBoxTest.cc RequestTest.cc \
+	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
+	ByteArrayDiskWriterTest.cc RequestGroupManTest.cc \
+	IteratableChecksumValidatorTest.cc \
+	IteratableChunkChecksumValidatorTest.cc PeerTest.cc \
+	DefaultPeerStorageTest.cc RequestFactoryTest.cc \
+	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
+	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
+	GlowFileAllocatorTest.cc NetrcTest.cc SingletonHolderTest.cc \
+	HttpHeaderTest.cc HttpResponseTest.cc SharedHandleTest.cc \
+	ChunkedEncodingTest.cc FileTest.cc OptionTest.cc Base64Test.cc \
+	DataTest.cc DictionaryTest.cc ListTest.cc MetaFileUtilTest.cc \
+	PeerMessageUtilTest.cc DefaultDiskWriterTest.cc \
+	MultiDiskAdaptorTest.cc FeatureConfigTest.cc \
+	ShareRatioSeedCriteriaTest.cc TimeSeedCriteriaTest.cc \
+	SpeedCalcTest.cc DefaultPeerListProcessorTest.cc \
+	AnnounceListTest.cc TrackerWatcherCommandTest.cc \
+	MockPeerStorage.h FixedNumberRandomizer.h \
+	ConsoleFileAllocationMonitorTest.cc \
+	ChunkChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
+	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
+	BtChokeMessageTest.cc BtHandshakeMessageTest.cc \
+	BtHaveAllMessageTest.cc BtHaveMessageTest.cc \
+	BtHaveNoneMessageTest.cc BtInterestedMessageTest.cc \
+	BtKeepAliveMessageTest.cc BtNotInterestedMessageTest.cc \
+	BtPieceMessageTest.cc BtPortMessageTest.cc BtRegistryTest.cc \
+	BtRejectMessageTest.cc BtRequestMessageTest.cc \
+	BtSuggestPieceMessageTest.cc BtUnchokeMessageTest.cc \
+	DefaultBtAnnounceTest.cc DefaultBtContextTest.cc \
+	DefaultBtMessageDispatcherTest.cc \
+	DefaultBtRequestFactoryTest.cc DefaultPieceStorageTest.cc \
+	MockBtMessage.h MockBtMessageDispatcher.h \
+	MockBtMessageFactory.h ShaVisitorTest.cc MetalinkerTest.cc \
+	MetalinkEntryTest.cc Xml2MetalinkProcessorTest.cc
+@ENABLE_BITTORRENT_TRUE@am__objects_1 =  \
+@ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtBitfieldMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtCancelMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtChokeMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtHandshakeMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtHaveAllMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtHaveMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtHaveNoneMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtInterestedMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtKeepAliveMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtNotInterestedMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtPieceMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtPortMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtRegistryTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtRejectMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtRequestMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtSuggestPieceMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtUnchokeMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounceTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactoryTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	ShaVisitorTest.$(OBJEXT)
+@ENABLE_METALINK_TRUE@am__objects_2 = MetalinkerTest.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	Xml2MetalinkProcessorTest.$(OBJEXT)
 am_aria2c_OBJECTS = AllTest.$(OBJEXT) FileUriListParserTest.$(OBJEXT) \
 	StreamUriListParserTest.$(OBJEXT) \
 	HttpHeaderProcessorTest.$(OBJEXT) UtilTest.$(OBJEXT) \
@@ -78,34 +174,16 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) FileUriListParserTest.$(OBJEXT) \
 	ChunkedEncodingTest.$(OBJEXT) FileTest.$(OBJEXT) \
 	OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) DataTest.$(OBJEXT) \
 	DictionaryTest.$(OBJEXT) ListTest.$(OBJEXT) \
-	MetaFileUtilTest.$(OBJEXT) ShaVisitorTest.$(OBJEXT) \
-	PeerMessageUtilTest.$(OBJEXT) DefaultDiskWriterTest.$(OBJEXT) \
-	MultiDiskAdaptorTest.$(OBJEXT) \
-	Xml2MetalinkProcessorTest.$(OBJEXT) MetalinkerTest.$(OBJEXT) \
-	MetalinkEntryTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
+	MetaFileUtilTest.$(OBJEXT) PeerMessageUtilTest.$(OBJEXT) \
+	DefaultDiskWriterTest.$(OBJEXT) MultiDiskAdaptorTest.$(OBJEXT) \
+	FeatureConfigTest.$(OBJEXT) \
 	ShareRatioSeedCriteriaTest.$(OBJEXT) \
 	TimeSeedCriteriaTest.$(OBJEXT) SpeedCalcTest.$(OBJEXT) \
 	DefaultPeerListProcessorTest.$(OBJEXT) \
 	AnnounceListTest.$(OBJEXT) TrackerWatcherCommandTest.$(OBJEXT) \
-	DefaultBtContextTest.$(OBJEXT) \
-	DefaultPieceStorageTest.$(OBJEXT) \
-	DefaultBtAnnounceTest.$(OBJEXT) BtRegistryTest.$(OBJEXT) \
-	DefaultBtMessageDispatcherTest.$(OBJEXT) \
-	DefaultBtRequestFactoryTest.$(OBJEXT) \
-	BtAllowedFastMessageTest.$(OBJEXT) \
-	BtBitfieldMessageTest.$(OBJEXT) BtCancelMessageTest.$(OBJEXT) \
-	BtChokeMessageTest.$(OBJEXT) BtHaveAllMessageTest.$(OBJEXT) \
-	BtHaveMessageTest.$(OBJEXT) BtHaveNoneMessageTest.$(OBJEXT) \
-	BtInterestedMessageTest.$(OBJEXT) \
-	BtKeepAliveMessageTest.$(OBJEXT) \
-	BtNotInterestedMessageTest.$(OBJEXT) \
-	BtPieceMessageTest.$(OBJEXT) BtPortMessageTest.$(OBJEXT) \
-	BtRejectMessageTest.$(OBJEXT) BtRequestMessageTest.$(OBJEXT) \
-	BtSuggestPieceMessageTest.$(OBJEXT) \
-	BtUnchokeMessageTest.$(OBJEXT) \
-	BtHandshakeMessageTest.$(OBJEXT) \
 	ConsoleFileAllocationMonitorTest.$(OBJEXT) \
-	ChunkChecksumValidatorTest.$(OBJEXT)
+	ChunkChecksumValidatorTest.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -122,7 +200,7 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(aria2c_SOURCES)
-DIST_SOURCES = $(aria2c_SOURCES)
+DIST_SOURCES = $(am__aria2c_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -286,93 +364,36 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 TESTS = aria2c
-aria2c_SOURCES = AllTest.cc\
-	FileUriListParserTest.cc\
-	StreamUriListParserTest.cc\
-	HttpHeaderProcessorTest.cc\
-	UtilTest.cc\
-	CookieBoxTest.cc\
-	RequestTest.cc\
-	CookieParserTest.cc\
-	HttpRequestTest.cc\
-	CookieBoxFactoryTest.cc\
-	ByteArrayDiskWriterTest.cc\
-	RequestGroupManTest.cc\
-	IteratableChecksumValidatorTest.cc\
-	IteratableChunkChecksumValidatorTest.cc\
-	PeerTest.cc\
-	DefaultPeerStorageTest.cc\
-	RequestFactoryTest.cc\
-	NetrcAuthResolverTest.cc\
-	DefaultAuthResolverTest.cc\
-	OptionHandlerTest.cc\
-	SegmentManTest.cc\
-	BitfieldManTest.cc\
-	GlowFileAllocatorTest.cc\
-	NetrcTest.cc\
-	SingletonHolderTest.cc\
-	HttpHeaderTest.cc\
-	HttpResponseTest.cc\
-	SharedHandleTest.cc\
-	ChunkedEncodingTest.cc\
-	FileTest.cc\
-	OptionTest.cc\
-	Base64Test.cc\
-	DataTest.cc\
-	DictionaryTest.cc\
-	ListTest.cc\
-	MetaFileUtilTest.cc\
-	ShaVisitorTest.cc\
-	PeerMessageUtilTest.cc\
-	DefaultDiskWriterTest.cc\
-	MultiDiskAdaptorTest.cc\
-	Xml2MetalinkProcessorTest.cc\
-	MetalinkerTest.cc\
-	MetalinkEntryTest.cc\
-	FeatureConfigTest.cc\
-	ShareRatioSeedCriteriaTest.cc\
-	TimeSeedCriteriaTest.cc\
-	SpeedCalcTest.cc\
-	DefaultPeerListProcessorTest.cc\
-	AnnounceListTest.cc\
-	TrackerWatcherCommandTest.cc\
-	DefaultBtContextTest.cc\
-	DefaultPieceStorageTest.cc\
-	DefaultBtAnnounceTest.cc\
-	BtRegistryTest.cc\
-	DefaultBtMessageDispatcherTest.cc\
-	MockPeerStorage.h\
-	DefaultBtRequestFactoryTest.cc\
-	BtAllowedFastMessageTest.cc\
-	BtBitfieldMessageTest.cc\
-	BtCancelMessageTest.cc\
-	BtChokeMessageTest.cc\
-	BtHaveAllMessageTest.cc\
-	BtHaveMessageTest.cc\
-	BtHaveNoneMessageTest.cc\
-	BtInterestedMessageTest.cc\
-	BtKeepAliveMessageTest.cc\
-	BtNotInterestedMessageTest.cc\
-	BtPieceMessageTest.cc\
-	BtPortMessageTest.cc\
-	BtRejectMessageTest.cc\
-	BtRequestMessageTest.cc\
-	BtSuggestPieceMessageTest.cc\
-	BtUnchokeMessageTest.cc\
-	BtHandshakeMessageTest.cc\
-	MockBtMessageDispatcher.h\
-	FixedNumberRandomizer.h\
-	MockBtMessageFactory.h\
-	MockBtMessage.h\
-	ConsoleFileAllocationMonitorTest.cc\
-	ChunkChecksumValidatorTest.cc
+aria2c_SOURCES = AllTest.cc FileUriListParserTest.cc \
+	StreamUriListParserTest.cc HttpHeaderProcessorTest.cc \
+	UtilTest.cc CookieBoxTest.cc RequestTest.cc \
+	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
+	ByteArrayDiskWriterTest.cc RequestGroupManTest.cc \
+	IteratableChecksumValidatorTest.cc \
+	IteratableChunkChecksumValidatorTest.cc PeerTest.cc \
+	DefaultPeerStorageTest.cc RequestFactoryTest.cc \
+	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
+	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
+	GlowFileAllocatorTest.cc NetrcTest.cc SingletonHolderTest.cc \
+	HttpHeaderTest.cc HttpResponseTest.cc SharedHandleTest.cc \
+	ChunkedEncodingTest.cc FileTest.cc OptionTest.cc Base64Test.cc \
+	DataTest.cc DictionaryTest.cc ListTest.cc MetaFileUtilTest.cc \
+	PeerMessageUtilTest.cc DefaultDiskWriterTest.cc \
+	MultiDiskAdaptorTest.cc FeatureConfigTest.cc \
+	ShareRatioSeedCriteriaTest.cc TimeSeedCriteriaTest.cc \
+	SpeedCalcTest.cc DefaultPeerListProcessorTest.cc \
+	AnnounceListTest.cc TrackerWatcherCommandTest.cc \
+	MockPeerStorage.h FixedNumberRandomizer.h \
+	ConsoleFileAllocationMonitorTest.cc \
+	ChunkChecksumValidatorTest.cc $(am__append_1) $(am__append_2)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
 aria2c_LDADD = ../src/libaria2c.a\
-	 ${CPPUNIT_LIBS} @LIBGNUTLS_LIBS@\
-	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@\
-	@LIBARES_LIBS@ @LIBCARES_LIBS@
+    @LIBINTL@ @LIBGNUTLS_LIBS@\
+	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@\
+	${CPPUNIT_LIBS}
 
 AM_CPPFLAGS = -Wall\
 	${CPPUNIT_CFLAGS}\
