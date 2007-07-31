@@ -36,36 +36,16 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "a2io.h"
 #include "a2netcompat.h"
+#include "a2time.h"
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/time.h>
 #include <errno.h>
 
-#ifdef __MINGW32__
-
-static char *mingw_strerror(int err) {
-	err = WSAGetLastError();
-	static char buf[2048];
-	if (FormatMessage(
-		FORMAT_MESSAGE_FROM_SYSTEM |
-		FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
-		err,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-		(LPTSTR) &buf,
-		sizeof(buf),
-		NULL
-	) == 0) {
-		snprintf(buf, sizeof(buf), _("Unknown socket error %d"), err);
-	}
-	return buf;
-}
-
-#define strerror mingw_strerror
-#define gai_strerror mingw_strerror
-
+#ifndef __MINGW32__
+# define SOCKET_ERRNO (errno)
+#else
+# define SOCKET_ERRNO (WSAGetLastError())
 #endif // __MINGW32__
 
 SocketCore::SocketCore():sockfd(-1) {
@@ -78,6 +58,7 @@ SocketCore::SocketCore(int32_t sockfd):sockfd(sockfd) {
 
 void SocketCore::init() {
   use = 1;
+  blocking = true;
   secure = false;
 #ifdef HAVE_LIBSSL
   // for SSL
@@ -105,13 +86,17 @@ void SocketCore::beginListen(int32_t port) {
   //sockfd = socket(AF_UNSPEC, SOCK_STREAM, PF_UNSPEC);
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if(sockfd == -1) {
-    throw new DlAbortEx(EX_SOCKET_OPEN, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_OPEN, errorMsg());
   }
   SOCKOPT_T sockopt = 1;
   if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
+#ifdef __MINGW32__
+    ::closesocket(sockfd);
+#else
     close(sockfd);
+#endif // __MINGW32__
     sockfd = -1;
-    throw new DlAbortEx(EX_SOCKET_SET_OPT, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_SET_OPT, errorMsg());
   }
 
   struct sockaddr_in sockaddr;
@@ -121,11 +106,11 @@ void SocketCore::beginListen(int32_t port) {
   sockaddr.sin_port = htons(port);
   
   if(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1) {
-    throw new DlAbortEx(EX_SOCKET_BIND, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_BIND, errorMsg());
   }
 
   if(listen(sockfd, 1) == -1) {
-    throw new DlAbortEx(EX_SOCKET_LISTEN, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_LISTEN, errorMsg());
   }
 
   setNonBlockingMode();
@@ -137,7 +122,7 @@ SocketCore* SocketCore::acceptConnection() const {
   memset((char*)&sockaddr, 0, sizeof(sockaddr));
   int32_t fd;
   if((fd = accept(sockfd, (struct sockaddr*)&sockaddr, &len)) == -1) {
-    throw new DlAbortEx(EX_SOCKET_ACCEPT, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_ACCEPT, errorMsg());
   }
 
   SocketCore* s = new SocketCore(fd);
@@ -149,7 +134,7 @@ void SocketCore::getAddrInfo(pair<string, int32_t>& addrinfo) const {
   memset((char*)&listenaddr, 0, sizeof(listenaddr));
   socklen_t len = sizeof(listenaddr);
   if(getsockname(sockfd, (struct sockaddr*)&listenaddr, &len) == -1) {
-    throw new DlAbortEx(EX_SOCKET_GET_NAME, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_GET_NAME, errorMsg());
   }
   addrinfo.first = inet_ntoa(listenaddr.sin_addr);
   addrinfo.second = ntohs(listenaddr.sin_port);
@@ -160,7 +145,7 @@ void SocketCore::getPeerInfo(pair<string, int32_t>& peerinfo) const {
   memset(&peerin, 0, sizeof(peerin));
   int32_t len = sizeof(peerin);
   if(getpeername(sockfd, (struct sockaddr*)&peerin, (socklen_t*)&len) < 0) {
-    throw new DlAbortEx(EX_SOCKET_GET_PEER, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_GET_PEER, errorMsg());
   }
   peerinfo.first = inet_ntoa(peerin.sin_addr);
   peerinfo.second = ntohs(peerin.sin_port);
@@ -170,13 +155,13 @@ void SocketCore::establishConnection(const string& host, int32_t port) {
   closeConnection();
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if(sockfd == -1) {
-      throw new DlAbortEx(EX_SOCKET_OPEN, strerror(errno));
+      throw new DlAbortEx(EX_SOCKET_OPEN, errorMsg());
   }
   SOCKOPT_T sockopt = 1;
   if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
     close(sockfd);
     sockfd = -1;
-    throw new DlAbortEx(EX_SOCKET_SET_OPT, strerror(errno));
+    throw new DlAbortEx(EX_SOCKET_SET_OPT, errorMsg());
   }
 
   struct sockaddr_in sockaddr;
@@ -203,23 +188,27 @@ void SocketCore::establishConnection(const string& host, int32_t port) {
   }
   // make socket non-blocking mode
   setNonBlockingMode();
-  if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && errno != EINPROGRESS) {
-    throw new DlAbortEx(EX_SOCKET_CONNECT, host.c_str(), strerror(errno));
+  if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && SOCKET_ERRNO != EINPROGRESS) {
+    throw new DlAbortEx(EX_SOCKET_CONNECT, host.c_str(), errorMsg());
   }
 }
 
-void SocketCore::setNonBlockingMode() const {
+void SocketCore::setNonBlockingMode() {
 #ifdef __MINGW32__
   u_long flag = 0;
   ::ioctlsocket(sockfd, FIONBIO, &flag);
+  if (WSAGetLastError()) {
+    throw new DlAbortEx(EX_SOCKET_NONBLOCKING, errorMsg());
+  }
 #else
   int32_t flags = fcntl(sockfd, F_GETFL, 0);
   // TODO add error handling
   fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);
 #endif // __MINGW32__
+  blocking = false;
 }
 
-void SocketCore::setBlockingMode() const {
+void SocketCore::setBlockingMode() {
 #ifdef __MINGW32__
   u_long flag = 1;
   ::ioctlsocket(sockfd, FIONBIO, &flag);
@@ -228,6 +217,7 @@ void SocketCore::setBlockingMode() const {
   // TODO add error handling
   fcntl(sockfd, F_SETFL, flags&(~O_NONBLOCK));
 #endif // __MINGW32__
+  blocking = true;
 }
 
 void SocketCore::closeConnection() {
@@ -243,7 +233,11 @@ void SocketCore::closeConnection() {
   }
 #endif // HAVE_LIBGNUTLS
   if(sockfd != -1) {
+#ifdef __MINGW32__
+  ::closesocket(sockfd);
+#else
     close(sockfd);
+#endif // __MINGW32__
     sockfd = -1;
   }
 #ifdef HAVE_LIBSSL
@@ -277,10 +271,10 @@ bool SocketCore::isWritable(int32_t timeout) const {
     // time out
     return false;
   } else {
-    if(errno == EINPROGRESS || errno == EINTR) {
+    if(SOCKET_ERRNO == EINPROGRESS || SOCKET_ERRNO == EINTR) {
       return false;
     } else {
-      throw new DlRetryEx(EX_SOCKET_CHECK_WRITABLE, strerror(errno));
+      throw new DlRetryEx(EX_SOCKET_CHECK_WRITABLE, errorMsg());
     }
   }
 }
@@ -306,91 +300,84 @@ bool SocketCore::isReadable(int32_t timeout) const {
     // time out
     return false;
   } else {
-    if(errno == EINPROGRESS || errno == EINTR) {
+    if(SOCKET_ERRNO == EINPROGRESS || SOCKET_ERRNO == EINTR) {
       return false;
     } else {
-      throw new DlRetryEx(EX_SOCKET_CHECK_READABLE, strerror(errno));
+      throw new DlRetryEx(EX_SOCKET_CHECK_READABLE, errorMsg());
     }
   }
 }
 
 void SocketCore::writeData(const char* data, int32_t len) {
   int32_t ret = 0;
-  if(!secure && (ret = send(sockfd, data, (size_t)len, 0)) != len
+
+  if(!secure) {
+    if((ret = send(sockfd, data, (size_t)len, 0)) != len) {
+      throw new DlRetryEx(EX_SOCKET_SEND, errorMsg());
+    }
+  } else {
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required
-     || secure && (ret = SSL_write(ssl, data, len)) != len
+    if((ret = SSL_write(ssl, data, len)) != len) {
+      throw new DlRetryEx(EX_SOCKET_SEND, ERR_error_string(ERR_get_error(), NULL));
+    }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-     || secure && (ret = gnutls_record_send(sslSession, data, len)) != len
-#endif // HAVE_LIBGNUTLS
-     ) {
-    const char* errorMsg;
-#ifdef HAVE_LIBGNUTLS
-    if(secure) {
-      errorMsg = gnutls_strerror(ret);
-    } else {
-      errorMsg = strerror(errno);
+    if((ret = gnutls_record_send(sslSession, data, len)) == len) {
+      throw new DlRetryEx(EX_SOCKET_SEND, gnutls_strerror(ret));
     }
-#else // HAVE_LIBGNUTLS
-    errorMsg = strerror(errno);
-#endif
-    throw new DlRetryEx(EX_SOCKET_SEND, errorMsg);
+#endif // HAVE_LIBGNUTLS
   }
 }
 
 void SocketCore::readData(char* data, int32_t& len) {
   int32_t ret = 0;
-  if(!secure && (ret = recv(sockfd, data, (size_t)len, 0)) < 0
+
+  if(!secure) {
+    if ((ret = recv(sockfd, data, (size_t)len, 0)) < 0) {
+      throw new DlRetryEx(EX_SOCKET_RECV, errorMsg());
+    }
+  } else {
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required
-     || secure && (ret = SSL_read(ssl, data, len)) < 0
+    if ((ret = SSL_read(ssl, data, len)) < 0) {
+      throw new DlRetryEx(EX_SOCKET_RECV, ERR_error_string(ERR_get_error(), NULL));
+    }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-     || secure && (ret = gnutlsRecv(data, len)) < 0
-#endif // HAVE_LIBGNUTLS
-     ) {
-    const char* errorMsg;
-#ifdef HAVE_LIBGNUTLS
-    if(secure) {
-      errorMsg = gnutls_strerror(ret);
-    } else {
-      errorMsg = strerror(errno);
+    if ((ret = gnutlsRecv(data, len)) < 0) {
+      throw new DlRetryEx(EX_SOCKET_RECV, gnutls_strerror(ret));
     }
-#else // HAVE_LIBGNUTLS
-    errorMsg = strerror(errno);
-#endif
-    throw new DlRetryEx(EX_SOCKET_RECV, errorMsg);
+#endif // HAVE_LIBGNUTLS
   }
+
   len = ret;
 }
 
 void SocketCore::peekData(char* data, int32_t& len) {
   int32_t ret = 0;
-  if(!secure && (ret = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0
+
+  if(!secure) {
+    if ((ret = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0) {
+      throw new DlRetryEx(EX_SOCKET_PEEK, errorMsg());
+    }
+  } else {
 #ifdef HAVE_LIBSSL
      // for SSL
      // TODO handling len == 0 case required
-     || secure && (ret = SSL_peek(ssl, data, len)) < 0
+    if ((ret = SSL_peek(ssl, data, len)) < 0) {
+      throw new DlRetryEx(EX_SOCKET_PEEK, ERR_error_string(ERR_get_error(), NULL));
+    }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-     || secure && (ret = gnutlsPeek(data, len)) < 0
-#endif // HAVE_LIBGNUTLS
-     ) {
-    const char* errorMsg;
-#ifdef HAVE_LIBGNUTLS
-    if(secure) {
-      errorMsg = gnutls_strerror(ret);
-    } else {
-      errorMsg = strerror(errno);
+    if ((ret = gnutlsPeek(data, len)) < 0) {
+      throw new DlRetryEx(EX_SOCKET_PEEK, gnutls_strerror(ret));
     }
-#else // HAVE_LIBGNUTLS
-    errorMsg = strerror(errno);
-#endif
-    throw new DlRetryEx(EX_SOCKET_PEEK, errorMsg);
+#endif // HAVE_LIBGNUTLS
   }
+
   len = ret;
 }
 
@@ -460,21 +447,44 @@ void SocketCore::initiateSecureConnection() {
   if(!secure) {
     sslCtx = SSL_CTX_new(SSLv23_client_method());
     if(sslCtx == NULL) {
-      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), NULL));
     }
     SSL_CTX_set_mode(sslCtx, SSL_MODE_AUTO_RETRY);
     ssl = SSL_new(sslCtx);
     if(ssl == NULL) {
-      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), NULL));
     }
     if(SSL_set_fd(ssl, sockfd) == 0) {
-      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE, ERR_error_string(ERR_get_error(), NULL));
     }
      // TODO handling return value == 0 case required
-    if(SSL_connect(ssl) <= 0) {
-      throw new DlAbortEx(EX_SSL_INIT_FAILURE);
+    int e = SSL_connect(ssl);
+
+    if (e <= 0) {
+      int ssl_error = SSL_get_error(ssl, e);
+      switch(ssl_error) {
+        case SSL_ERROR_NONE:
+          break;
+
+        case SSL_ERROR_WANT_READ:
+        case SSL_ERROR_WANT_WRITE:
+        case SSL_ERROR_WANT_X509_LOOKUP:
+        case SSL_ERROR_ZERO_RETURN:
+          if (blocking) {
+            throw new DlAbortEx(EX_SSL_CONNECT_ERROR, ssl_error);
+          }
+          break;
+
+        case SSL_ERROR_SYSCALL:
+          throw new DlAbortEx(EX_SSL_IO_ERROR);
+
+        case SSL_ERROR_SSL:
+          throw new DlAbortEx(EX_SSL_PROTOCOL_ERROR);
+
+        default:
+          throw new DlAbortEx(EX_SSL_UNKNOWN_ERROR, ssl_error);
+      }
     }
-    secure = true;
   }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
@@ -493,9 +503,39 @@ void SocketCore::initiateSecureConnection() {
     gnutls_transport_set_ptr(sslSession, (gnutls_transport_ptr_t)sockfd);
     int32_t ret = gnutls_handshake(sslSession);
     if(ret < 0) {
-      throw new DlAbortEx(gnutls_strerror(ret));
+      throw new DlAbortEx(EX_SSL_INIT_FAILURE, gnutls_strerror(ret));
     }
-    secure = true;
   }
 #endif // HAVE_LIBGNUTLS
+
+  secure = true;
+}
+
+/* static */ int SocketCore::error() {
+  return SOCKET_ERRNO;
+}
+
+/* static */ const char *SocketCore::errorMsg() {
+  return errorMsg(SOCKET_ERRNO);
+}
+
+/* static */ const char *SocketCore::errorMsg(const int err) {
+#ifndef __MINGW32__
+  return strerror(err);
+#else
+  static char buf[256];
+  if (FormatMessage(
+    FORMAT_MESSAGE_FROM_SYSTEM |
+    FORMAT_MESSAGE_IGNORE_INSERTS,
+    NULL,
+    err,
+    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+    (LPTSTR) &buf,
+    sizeof(buf),
+    NULL
+  ) == 0) {
+    snprintf(buf, sizeof(buf), EX_SOCKET_UNKNOWN_ERROR, err, err);
+  }
+  return buf;
+#endif // __MINGW32__
 }

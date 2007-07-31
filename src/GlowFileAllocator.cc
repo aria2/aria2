@@ -35,6 +35,7 @@
 #include "GlowFileAllocator.h"
 #include "DlAbortEx.h"
 #include "TimeA2.h"
+#include "a2io.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

@@ -35,7 +35,6 @@
 #include "common.h"
 #include "LogFactory.h"
 #include "Util.h"
-#include "prefs.h"
 #include "FeatureConfig.h"
 #include "MultiUrlRequestInfo.h"
 #include "TorrentRequestInfo.h"
@@ -55,10 +54,11 @@
 #include "a2algo.h"
 #include "message.h"
 #include "a2io.h"
+#include "a2time.h"
 #include "Platform.h"
+#include "prefs.h"
 #include <deque>
 #include <algorithm>
-#include <time.h>
 #include <signal.h>
 #include <unistd.h>
 #include <libgen.h>

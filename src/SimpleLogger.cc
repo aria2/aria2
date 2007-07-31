@@ -37,13 +37,9 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "a2io.h"
-#include <time.h>
+#include "a2time.h"
 #include <stdarg.h>
 #include <errno.h>
-
-#ifndef HAVE_LOCALTIME_R
-# include "localtime_r.h"
-#endif // HAVE_LOCALTIME_R
 
 #define WRITE_LOG(LEVEL, MSG) \
 va_list ap;\

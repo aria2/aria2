@@ -36,6 +36,7 @@
 #include "LogFactory.h"
 #include "BtRegistry.h"
 #include "message.h"
+#include "a2time.h"
 
 DefaultPeerStorage::DefaultPeerStorage(BtContextHandle btContext,
 				       const Option* option):

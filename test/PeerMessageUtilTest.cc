@@ -1,8 +1,6 @@
 #include "common.h"
 #include "PeerMessageUtil.h"
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif // HAVE_NETINET_IN_H
+#include "a2netcompat.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;

@@ -35,6 +35,7 @@
 #include "DefaultFileAllocator.h"
 #include "DlAbortEx.h"
 #include "TimeA2.h"
+#include "a2io.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <errno.h>

@@ -36,8 +36,8 @@
 #define _D_SIMPLE_RANDOMIZER_H_
 
 #include "Randomizer.h"
+#include "a2time.h"
 #include <stdlib.h>
-#include <time.h>
 
 class SimpleRandomizer : public Randomizer {
 private:

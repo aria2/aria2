@@ -1,4 +1,3 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
@@ -32,27 +31,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif // HAVE_CONFIG_H
+#ifndef _D_A2TIME_H_
+#define _D_A2TIME_H_
 
-#ifdef HAVE_WINSOCK2_H
+#include <time.h>
+#include <sys/time.h>
 
-#include "common.h"
-#include "a2netcompat.h"
-#include "DlAbortEx.h"
-#include "Platform.h"
+#ifndef HAVE_LOCALTIME_R
+# include "localtime_r.h"
+#endif // HAVE_LOCALTIME_R
 
-Platform::Platform() {
-  WSADATA wsaData;
-  memset((char*)&wsaData, 0, sizeof(wsaData));
-  if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {
-    throw new DlAbortEx(_("Windows socket library initialization failed"));
-  }
-}
+#ifndef HAVE_GETTIMEOFDAY
+# include "gettimeofday.h"
+#endif // HAVE_GETTIMEOFDAY
 
-Platform::~Platform() {
-  WSACleanup();
-}
+#ifndef HAVE_STRPTIME
+# include "strptime.h"
+#endif // HAVE_STRPTIME
 
-#endif // HAVE_WINSOCK2_H
+#endif // _D_A2TIME_H_

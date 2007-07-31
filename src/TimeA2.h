@@ -36,7 +36,7 @@
 #define _D_TIME_H_
 
 #include "common.h"
-#include <sys/time.h>
+#include "a2time.h"
 
 class Time {
 private:

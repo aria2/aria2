@@ -1,3 +1,83 @@
+2007-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Make a2netcompat.h include a2io.h to fix compilation error:
+	* src/a2netcompat.h
+	* src/SocketCore.cc: Removed include of a2io.h
+	* src/Util.cc: Removed include of a2io.h
+	
+	Gather time related functions to a2time.h:
+	* src/a2time.h: New file.
+	* src/DefaultPeerStorage.cc
+	* src/SimpleLogger.cc
+	* src/Util.{h, cc}
+	* src/SimpleRandomizer.h
+	* src/TimeA2.{h,cc}
+	* src/DownloadCommand.cc
+	* src/main.cc
+
+	Removed #ifdef __MINGW32__ since gai_strerror is included in
+	a2netcompat.h:
+	* src/NameResolver.cc
+	
+	Fixed compilation error without openssl:
+	* src/SocketCore.{h,cc}: Moved include of openssl/err.h to SocketCore.h
+
+	Added default block to suppress compiler warnings:
+	* src/MetalinkRequestInfo.cc (AccumulateNonP2PUrl::operator())
+	
+2007-07-26  Ross Smith II  <aria2spam at smithii dot com>
+
+	MinGW build enhancements. The following files are added:
+	* src/gai_strerror.{c,h}
+	* src/gettimeofday.{c,h}
+
+	Changes to support the above new files:
+	* configure.ac
+	* src/Makefile.am
+	* src/a2netcompat.h
+	* src/TimeA2.cc
+	* src/DefaultPeerStorage.cc
+	* src/NameResolver.cc: removed mingw_strerror() function.
+	* src/SocketCore.cc: removed mingw_strerror() function.
+
+	Miscellaneous MinGW build fixes. 
+	* src/a2io.h: Use _lseeki64() instead of lseek()
+	* src/common.h
+	* src/DefaultFileAllocator.cc
+	* src/GlowFileAllocator.cc
+	* src/main.cc: Moved #include "prefs.h" to quiet compile error.
+	* src/NameResolver.cc
+	(callback): Changed int32_t to int.
+	(resolve): Changed int32_t to int.
+	* src/Platform.cc
+	* src/Platform.h
+	* test/MultiDiskWriterTest.cc
+	* test/PeerMessageUtilTest.cc
+	* src/localtime_r.c: Add DeleteCriticalSection() and at exit().
+
+	Other enhancements and fixes.
+	* src/HttpRequestCommand.cc
+	(executeInternal) Use non-blocking socket for HTTPS (MinGW only).
+	* src/SocketCore.cc: 
+	(error): New function to abstract errno/WSAGetLastError().
+	(errorMsg): New function to abstract errno/WSAGetLastError().
+	(initiateSecureConnection): Added more detailed error reporting.
+	* src/SocketCore.h: Added private variable blocking, to allow
+	proper handling of OpenSSL psuedo-errors.
+	* src/message.h
+	(EX_SSL_INIT_FAILURE)
+	(EX_SSL_IO_ERROR)
+	(EX_SSL_PROTOCOL_ERROR)
+	(EX_SSL_UNKNOWN_ERROR)
+	(EX_SSL_CONNECT_ERROR)
+	(EX_SOCKET_BLOCKING)
+	(EX_SOCKET_NONBLOCKING)
+	(EX_SOCKET_UNKNOWN_ERROR)
+	* src/Util.cc
+	(setGlobalSignalHandler): Renamed signal to sig as signal is a
+	reserved name.
+	(httpGMT): Fixed typo.
+
 2007-07-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Merged Ross's win32 patch(manually)

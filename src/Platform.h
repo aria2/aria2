@@ -35,11 +35,19 @@
 #ifndef _D_PLATFORM_H_
 #define _D_PLATFORM_H_
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif // HAVE_CONFIG_H
+
+#ifdef HAVE_WINSOCK2_H
+
 class Platform {
 public:
   Platform();
 
   ~Platform();
 };
+
+#endif // HAVE_WINSOCK2_H
 
 #endif // _D_PLATFORM_H_

@@ -109,8 +109,8 @@
 # define DEV_STDOUT "/dev/stdout"
 #endif // HAVE_WINSOCK2_H
 
-
 #ifdef __MINGW32__
+# define lseek(a, b, c) _lseeki64((a), (b), (c))
 # define a2mkdir(path, openMode) mkdir(path)
 #else
 # define a2mkdir(path, openMode) mkdir(path, openMode)

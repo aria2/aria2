@@ -42,6 +42,7 @@
 #ifdef HAVE_LIBSSL
 // for SSL
 # include <openssl/ssl.h>
+# include <openssl/err.h>
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
 # include <gnutls/gnutls.h>
@@ -58,6 +59,7 @@ private:
   int32_t sockfd;
   // reference counter for this object.
   int32_t use;
+  bool blocking;
   bool secure;
 #ifdef HAVE_LIBSSL
   // for SSL
@@ -79,6 +81,9 @@ private:
 
   void init();
   SocketCore(int32_t sockfd);
+  static int error();
+  static const char *errorMsg();
+  static const char *errorMsg(const int err);
 public:
   SocketCore();
   ~SocketCore();
@@ -123,12 +128,12 @@ public:
    */
   void establishConnection(const string& host, int32_t port);
 
-  void setNonBlockingMode() const;
+  void setNonBlockingMode();
 
   /**
    * Makes this socket blocking mode.
    */
-  void setBlockingMode() const;
+  void setBlockingMode();
 
   /**
    * Closes the connection of this socket.
@@ -207,6 +212,5 @@ public:
   bool operator<(const SocketCore& s) {
     return sockfd < s.sockfd;
   }
-
 };
 #endif // _D_SOCKET_CORE_H_

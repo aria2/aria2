@@ -235,6 +235,18 @@ if !HAVE_GETADDRINFO
 SRCS += getaddrinfo.c getaddrinfo.h
 endif # !HAVE_GETADDRINFO
 
+if !HAVE_GAI_STRERROR
+SRCS += gai_strerror.c gai_strerror.h
+endif # !HAVE_GAI_STRERROR
+
+if !HAVE_GETTIMEOFDAY
+SRCS += gettimeofday.c gettimeofday.h
+endif # !HAVE_GETTIMEOFDAY
+
+if !HAVE_GETTIMEOFDAY
+SRCS += gettimeofday.c gettimeofday.h
+endif # !HAVE_GETTIMEOFDAY
+
 if !HAVE_INET_ATON
 SRCS += inet_aton.c inet_aton.h
 endif # !HAVE_INET_ATON

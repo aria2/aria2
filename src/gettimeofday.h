@@ -2,7 +2,7 @@
 /*
  * aria2 - The high speed download utility
  *
- * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ * Copyright (C) 2007 Tatsuhiro Tsujikawa
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,27 +32,26 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif // HAVE_CONFIG_H
 
-#ifdef HAVE_WINSOCK2_H
+#ifndef _D_GETTIMEOFDAY_H
+#define _D_GETTIMEOFDAY_H 1
 
-#include "common.h"
-#include "a2netcompat.h"
-#include "DlAbortEx.h"
-#include "Platform.h"
+#include <sys/time.h>
 
-Platform::Platform() {
-  WSADATA wsaData;
-  memset((char*)&wsaData, 0, sizeof(wsaData));
-  if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {
-    throw new DlAbortEx(_("Windows socket library initialization failed"));
-  }
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+#ifndef HAVE_GETTIMEOFDAY
+
+int __cdecl gettimeofday(struct timeval *__restrict__ tp,
+			 void *__restrict__ tzp __attribute__((unused)));
+
+#endif // HAVE_GETTIMEOFDAY
+
+#ifdef __cplusplus
 }
+#endif /* __cplusplus */
 
-Platform::~Platform() {
-  WSACleanup();
-}
+#endif /* not _D_GETTIMEOFDAY_H */
 
-#endif // HAVE_WINSOCK2_H

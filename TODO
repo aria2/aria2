@@ -38,12 +38,5 @@
 
 * io related headers and compatible macros and definition -> a2io.h
 * net related headers and compatible macros and definition -> a2netcompat.h
+* time related headers and compatible macros and definition -> a2time.h
 * used globally -> common.h
-
-* Following files have copyright issue
-	libgen.c
-	libgen.h
-	inet_aton.c
-	inet_aton.h
-	localtime_r.{h,c}
-	strptime.h

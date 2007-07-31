@@ -127,21 +127,34 @@ AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION(0.12.1)
 AC_FUNC_ERROR_AT_LINE
 
+case "$target" in
+	*mingw*)
+		;;
+	*)
 AC_FUNC_MALLOC
+		AC_FUNC_REALLOC
+		;;
+esac
+
 AC_FUNC_MEMCMP
 AC_FUNC_MMAP
-AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify daemon ftruncate getcwd getpagesize gettimeofday inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo random rmdir select setlocale setmode sigaction sleep socket srandom stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul timegm usleep])
+AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify daemon ftruncate getcwd getpagesize inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo random rmdir select setlocale setmode sigaction sleep socket srandom stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul timegm usleep])
 
 AC_CHECK_FUNCS([basename],
 	[AM_CONDITIONAL([HAVE_BASENAME], true)],
 	[AM_CONDITIONAL([HAVE_BASENAME], false)])
+AC_CHECK_FUNCS([gai_strerror],
+	[AM_CONDITIONAL([HAVE_GAI_STRERROR], true)],
+ 	[AM_CONDITIONAL([HAVE_GAI_STRERROR], false)])
 AC_CHECK_FUNCS([getaddrinfo],
 	[AM_CONDITIONAL([HAVE_GETADDRINFO], true)],
 	[AM_CONDITIONAL([HAVE_GETADDRINFO], false)])
+AC_CHECK_FUNCS([gettimeofday],
+	[AM_CONDITIONAL([HAVE_GETTIMEOFDAY], true)],
+	[AM_CONDITIONAL([HAVE_GETTIMEOFDAY], false)])
 AC_CHECK_FUNCS([inet_aton],
 	[AM_CONDITIONAL([HAVE_INET_ATON], true)],
 	[AM_CONDITIONAL([HAVE_INET_ATON], false)])

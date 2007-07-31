@@ -43,7 +43,6 @@
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "ChecksumCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <sys/time.h>
 #include <stdlib.h>
 
 DownloadCommand::DownloadCommand(int cuid,

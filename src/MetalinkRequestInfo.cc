@@ -58,6 +58,8 @@ public:
 	urlsPtr->push_back(resource->url);
       }
       break;
+    default:
+      break;
     }
   }
 };

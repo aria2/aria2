@@ -36,7 +36,7 @@
 
 #ifdef ENABLE_ASYNC_DNS
 
-void callback(void* arg, int32_t status, struct hostent* host) {
+void callback(void* arg, int status, struct hostent* host) {
   NameResolver* resolverPtr = (NameResolver*)arg;
 #ifdef HAVE_LIBARES
   // This block is required since the assertion in ares_strerror fails
@@ -75,7 +75,7 @@ void NameResolver::resolve(const string& hostname)
   ai.ai_socktype = SOCK_STREAM;
   ai.ai_protocol = 0; 
   struct addrinfo* res;
-  int32_t ec;
+  int ec;
   if((ec = getaddrinfo(hostname.c_str(), 0, &ai, &res)) != 0) {
     throw new DlAbortEx(EX_RESOLVE_HOSTNAME,
 			hostname.c_str(), gai_strerror(ec));

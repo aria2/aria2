@@ -38,7 +38,6 @@
 #include "common.h"
 #include "SpeedCalc.h"
 #include "SharedHandle.h"
-#include <sys/time.h>
 
 class PeerStat {
 public:

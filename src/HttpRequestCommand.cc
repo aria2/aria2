@@ -52,6 +52,10 @@ HttpRequestCommand::~HttpRequestCommand() {}
 bool HttpRequestCommand::executeInternal() {
   socket->setBlockingMode();
   if(req->getProtocol() == "https") {
+#ifdef __MINGW32__
+    // it only works in non-blocking mode
+    socket->setNonBlockingMode();
+#endif // __MINGW32__
     socket->initiateSecureConnection();
   }
   if(!e->option->getAsBool(PREF_HTTP_KEEP_ALIVE)) {

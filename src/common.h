@@ -39,6 +39,16 @@
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
+
+#ifdef __MINGW32__
+#ifdef malloc
+#	undef malloc
+#endif
+#ifdef realloc
+#	undef realloc
+#endif
+#endif // __MINGW32__
+
 #include <stdio.h>
 #include <stdint.h>
 #include <iostream>
@@ -81,12 +91,6 @@ typedef deque<int32_t> Integers;
 
 #define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
 #define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
-
-#ifdef __MINGW32__
-# ifndef _WIN32_WINNT
-#  define _WIN32_WINNT 0x501
-# endif // _WIN32_WINNT
-#endif // __MINGW32__
 
 #ifdef __MINGW32__
 # define LONGLONG_PRINTF "%I64d"

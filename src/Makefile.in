@@ -161,9 +161,12 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 
 @HAVE_BASENAME_FALSE@am__append_4 = libgen.c libgen.h
 @HAVE_GETADDRINFO_FALSE@am__append_5 = getaddrinfo.c getaddrinfo.h
-@HAVE_INET_ATON_FALSE@am__append_6 = inet_aton.c inet_aton.h
-@HAVE_LOCALTIME_R_FALSE@am__append_7 = localtime_r.c localtime_r.h
-@HAVE_STRPTIME_FALSE@am__append_8 = strptime.c strptime.h
+@HAVE_GAI_STRERROR_FALSE@am__append_6 = gai_strerror.c gai_strerror.h
+@HAVE_GETTIMEOFDAY_FALSE@am__append_7 = gettimeofday.c gettimeofday.h \
+@HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.c gettimeofday.h
+@HAVE_INET_ATON_FALSE@am__append_8 = inet_aton.c inet_aton.h
+@HAVE_LOCALTIME_R_FALSE@am__append_9 = localtime_r.c localtime_r.h
+@HAVE_STRPTIME_FALSE@am__append_10 = strptime.c strptime.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -326,7 +329,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h libgen.c libgen.h \
-	getaddrinfo.c getaddrinfo.h inet_aton.c inet_aton.h \
+	getaddrinfo.c getaddrinfo.h gai_strerror.c gai_strerror.h \
+	gettimeofday.c gettimeofday.h inet_aton.c inet_aton.h \
 	localtime_r.c localtime_r.h strptime.c strptime.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksumValidator.$(OBJEXT) \
@@ -406,10 +410,13 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@	MetalinkRequestInfo.$(OBJEXT)
 @HAVE_BASENAME_FALSE@am__objects_4 = libgen.$(OBJEXT)
 @HAVE_GETADDRINFO_FALSE@am__objects_5 = getaddrinfo.$(OBJEXT)
-@HAVE_INET_ATON_FALSE@am__objects_6 = inet_aton.$(OBJEXT)
-@HAVE_LOCALTIME_R_FALSE@am__objects_7 = localtime_r.$(OBJEXT)
-@HAVE_STRPTIME_FALSE@am__objects_8 = strptime.$(OBJEXT)
-am__objects_9 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+@HAVE_GAI_STRERROR_FALSE@am__objects_6 = gai_strerror.$(OBJEXT)
+@HAVE_GETTIMEOFDAY_FALSE@am__objects_7 = gettimeofday.$(OBJEXT) \
+@HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.$(OBJEXT)
+@HAVE_INET_ATON_FALSE@am__objects_8 = inet_aton.$(OBJEXT)
+@HAVE_LOCALTIME_R_FALSE@am__objects_9 = localtime_r.$(OBJEXT)
+@HAVE_STRPTIME_FALSE@am__objects_10 = strptime.$(OBJEXT)
+am__objects_11 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -452,8 +459,8 @@ am__objects_9 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FileEntry.$(OBJEXT) Platform.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8)
-am_libaria2c_a_OBJECTS = $(am__objects_9)
+	$(am__objects_8) $(am__objects_9) $(am__objects_10)
+am_libaria2c_a_OBJECTS = $(am__objects_11)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -523,8 +530,12 @@ GMSGFMT = @GMSGFMT@
 GREP = @GREP@
 HAVE_BASENAME_FALSE = @HAVE_BASENAME_FALSE@
 HAVE_BASENAME_TRUE = @HAVE_BASENAME_TRUE@
+HAVE_GAI_STRERROR_FALSE = @HAVE_GAI_STRERROR_FALSE@
+HAVE_GAI_STRERROR_TRUE = @HAVE_GAI_STRERROR_TRUE@
 HAVE_GETADDRINFO_FALSE = @HAVE_GETADDRINFO_FALSE@
 HAVE_GETADDRINFO_TRUE = @HAVE_GETADDRINFO_TRUE@
+HAVE_GETTIMEOFDAY_FALSE = @HAVE_GETTIMEOFDAY_FALSE@
+HAVE_GETTIMEOFDAY_TRUE = @HAVE_GETTIMEOFDAY_TRUE@
 HAVE_INET_ATON_FALSE = @HAVE_INET_ATON_FALSE@
 HAVE_INET_ATON_TRUE = @HAVE_INET_ATON_TRUE@
 HAVE_LOCALTIME_R_FALSE = @HAVE_LOCALTIME_R_FALSE@
@@ -701,7 +712,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	HttpHeaderProcessor.h FileEntry.cc FileEntry.h Platform.cc \
 	Platform.h $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8)
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -941,7 +953,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gai_strerror.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getaddrinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gettimeofday.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inet_aton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localtime_r.Po@am__quote@

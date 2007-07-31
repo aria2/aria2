@@ -37,13 +37,13 @@
 
 #include "common.h"
 #include "FileEntry.h"
+#include "a2time.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include <string>
 #include <utility>
 #include <deque>
-#include <sys/time.h>
 #include <stdio.h>
 #include <ostream>
 

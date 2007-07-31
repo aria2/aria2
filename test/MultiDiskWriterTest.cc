@@ -1,11 +1,8 @@
 #include "common.h"
 #include "MultiDiskWriter.h"
+#include "a2io.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
-
-#ifdef HAVE_IO_H
-# include <io.h>
-#endif // HAVE_IO_H
 
 using namespace std;
 

@@ -37,7 +37,6 @@
 #include "File.h"
 #include "message.h"
 #include "SimpleRandomizer.h"
-#include "a2io.h"
 #include "a2netcompat.h"
 #include <ctype.h>
 #include <errno.h>
@@ -45,10 +44,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include <iomanip>
-
-#ifndef HAVE_STRPTIME
-# include "strptime.h"
-#endif // HAVE_STRPTIME
 
 template<typename T>
 string uint2str(T value, bool comma) {
@@ -644,13 +639,13 @@ bool Util::isNumbersAndDotsNotation(const string& name) {
   }
 }
 
-void Util::setGlobalSignalHandler(int32_t signal, void (*handler)(int32_t), int32_t flags) {
+void Util::setGlobalSignalHandler(int32_t sig, void (*handler)(int32_t), int32_t flags) {
 #ifdef HAVE_SIGACTION
   struct sigaction sigact;
   sigact.sa_handler = handler;
   sigact.sa_flags = flags;
   sigemptyset(&sigact.sa_mask);
-  sigaction(signal, &sigact, NULL);
+  sigaction(sig, &sigact, NULL);
 #else
   signal(sig, handler);
 #endif // HAVE_SIGACTION
@@ -728,7 +723,7 @@ time_t Util::httpGMT(const string& httpStdTime)
   time_t thetime = mktime(&tm);
   if (tz) {
     char s[256];
-    sprintf("TZ=%s", tz);
+    snprintf(s, sizeof(s), "TZ=%s", tz);
     putenv(s);
   }
   tzset();

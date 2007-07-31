@@ -34,6 +34,8 @@
 #ifndef _D_A2NETCOMPAT_H_
 #define _D_A2NETCOMPAT_H_
 
+#include "a2io.h"
+
 #ifdef HAVE_NETDB_H
 # include <netdb.h>
 #endif // HAVE_NETDB_H
@@ -58,15 +60,29 @@
 # include "inet_aton.h"
 #endif // HAVE_INET_ATON
 
-#ifdef __MINGW32__
+#ifdef HAVE_WINSOCK2_H
+#ifndef _WIN32_WINNT
+# define _WIN32_WINNT 0x501
+#endif // _WIN32_WINNT
 # include <winsock2.h>
 # undef ERROR
+#endif // HAVE_WINSOCK2_H
+
+#ifdef HAVE_WS2TCPIP_H
 # include <ws2tcpip.h>
+#endif // HAVE_WS2TCPIP_H
+
+#ifdef __MINGW32__
 # define SOCKOPT_T const char
 # define HAVE_GETADDRINFO
+# undef HAVE_GETADDRINFO
 #else
 # define SOCKOPT_T socklen_t
 #endif // __MINGW32__
+
+#ifndef HAVE_GAI_STRERROR
+# include "gai_strerror.h"
+#endif // HAVE_GAI_STRERROR
 
 #ifndef HAVE_GETADDRINFO
 # include "getaddrinfo.h"
