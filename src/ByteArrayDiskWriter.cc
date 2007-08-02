@@ -67,18 +67,18 @@ void ByteArrayDiskWriter::openExistingFile(const string& filename,
 
 void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_t position) {
   if(size() < position) {
-    buf.seekg(0, ios_base::end);
+    buf.seekg(0, ios::end);
     for(int32_t i = size(); i < position; ++i) {
       buf.put('\0');
     }
   } else {
-    buf.seekg(position, ios_base::beg);
+    buf.seekg(position, ios::beg);
   }
   buf.write(data, dataLength);
 }
 
 int32_t ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
-  buf.seekg(position, ios_base::beg);
+  buf.seekg(position, ios::beg);
   buf.read(data, len);
   // TODO we have to call buf.clear() here? YES
   buf.clear();

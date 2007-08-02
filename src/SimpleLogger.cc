@@ -41,6 +41,14 @@
 #include <stdarg.h>
 #include <errno.h>
 
+#if !defined(va_copy)
+# if defined(__va_copy)
+#  define va_copy(dest, src) __va_copy(dest, src)
+# else
+#  define va_copy(dest, src) (dest = src)
+# endif
+#endif
+
 #define WRITE_LOG(LEVEL, MSG) \
 va_list ap;\
 va_start(ap, MSG);\
@@ -89,6 +97,8 @@ void SimpleLogger::writeHeader(FILE* file, string date, string level) const {
 
 void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va_list ap, Exception* e, bool printHeader) const
 {
+  va_list apCopy;
+  va_copy(apCopy, ap);
   string levelStr;
   switch(level) {
   case Logger::DEBUG:
@@ -117,7 +127,7 @@ void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va
   if(printHeader) {
     writeHeader(file, datestr, levelStr);
   }
-  vfprintf(file, string(Util::replace(msg, "\r", "")+"\n").c_str(), ap);
+  vfprintf(file, string(Util::replace(msg, "\r", "")+"\n").c_str(), apCopy);
   for(Exception* nestedEx = e; nestedEx; nestedEx = nestedEx->getCause()) {
     // TODO a quick hack not to print header in console
     if(printHeader) {
@@ -126,6 +136,7 @@ void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va
     fprintf(file, "exception: %s\n", Util::replace(nestedEx->getMsg(), "\r", "").c_str());
   }
   fflush(file);
+  va_end(apCopy);
 }
 
 void SimpleLogger::writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e) const {
