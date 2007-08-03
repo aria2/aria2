@@ -6,6 +6,9 @@
 	Use va_copy to avoid core dump on amd64:
 	* src/SimpleLogger.cc
 
+	Updated contact info.
+	* src/main.cc
+
 2007-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Make a2netcompat.h include a2io.h to fix compilation error:
