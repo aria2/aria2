@@ -33,9 +33,6 @@
 * Rewrite ChunkedEncoding
 * typedef int32_t CUID in common.h or a2types.h
 
-* tempdir in HttpResponseCommand is not patched yet.
-* Is localtime.cc not needed?
-
 * io related headers and compatible macros and definition -> a2io.h
 * net related headers and compatible macros and definition -> a2netcompat.h
 * time related headers and compatible macros and definition -> a2time.h
