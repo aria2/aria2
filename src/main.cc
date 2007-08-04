@@ -107,7 +107,7 @@ void showVersion() {
       "along with this program; if not, write to the Free Software\n"
       "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n");
   cout << endl;
-  cout << _("Contact Info:\n") << endl;
+  cout << _("Contact Info:") << endl;
   cout << "Tatsuhiro Tsujikawa <tujikawa at users dot sourceforge dot net>" << endl;
   cout << "Ross Smith II <aria2spam at netebb dot com> (Windows port)" << endl;
   cout << endl;
