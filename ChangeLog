@@ -68,6 +68,10 @@
 	Applied Ross's patch
 	* src/a2netcompat.h
 	* src/main.cc
+
+	Fixed the bug that prevents a remote metalink from not being processed
+	even if '-o foo.metalink' is specified.
+	* src/MetalinkRequestInfo.cc
 	
 2007-08-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

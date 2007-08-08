@@ -39,4 +39,3 @@
 * used globally -> common.h
 
 * replace threw with thrown
-* fix the bug that causes a remote metalink fails.

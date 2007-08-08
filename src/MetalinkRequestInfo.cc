@@ -163,6 +163,8 @@ RequestInfos MetalinkRequestInfo::execute() {
 #endif // ENABLE_MESSAGE_DIGEST
       groups.push_front(rg);
     }
+    // clear PREF_OUT, because PREF_OUT is a filename for metalink file itself.
+    op->put(PREF_OUT, "");
     MultiUrlRequestInfoHandle reqInfo = new MultiUrlRequestInfo(groups, op);
     nextReqInfos.push_back(reqInfo);
   } catch(RecoverableException* ex) {
