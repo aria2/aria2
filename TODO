@@ -37,3 +37,6 @@
 * net related headers and compatible macros and definition -> a2netcompat.h
 * time related headers and compatible macros and definition -> a2time.h
 * used globally -> common.h
+
+* replace threw with thrown
+* fix the bug that causes a remote metalink fails.

@@ -64,6 +64,10 @@
 
 	Updated contact info.
 	* src/main.cc
+
+	Applied Ross's patch
+	* src/a2netcompat.h
+	* src/main.cc
 	
 2007-08-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

@@ -74,8 +74,9 @@
 
 #ifdef __MINGW32__
 # define SOCKOPT_T const char
-# define HAVE_GETADDRINFO
 # undef HAVE_GETADDRINFO
+# undef HAVE_GAI_STRERROR
+# undef gai_strerror
 #else
 # define SOCKOPT_T socklen_t
 #endif // __MINGW32__
