@@ -43,6 +43,9 @@
 #include "Request.h"
 #include "BitfieldMan.h"
 #include "PeerStat.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "ChunkChecksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 using namespace std;
 
@@ -156,12 +159,6 @@ public:
   const Option* option;
   DiskWriterHandle diskWriter;
   Requests reserved;
-
-#ifdef ENABLE_MESSAGE_DIGEST
-  Strings pieceHashes;
-  int32_t chunkHashLength;
-  MessageDigestContext::DigestAlgo digestAlgo;
-#endif // ENABLE_MESSAGE_DIGEST
 
   SegmentMan();
   ~SegmentMan();
@@ -300,11 +297,9 @@ public:
   }
 
 #ifdef ENABLE_MESSAGE_DIGEST
-  void checkIntegrity();
+  void tryChunkChecksumValidation(const SegmentHandle& segment, const ChunkChecksumHandle& chunkChecksum);
 
-  void tryChunkChecksumValidation(const SegmentHandle& segment);
-
-  bool isChunkChecksumValidationReady() const;
+  bool isChunkChecksumValidationReady(const ChunkChecksumHandle& chunkChecksum) const;
 #endif // ENABLE_MESSAGE_DIGEST
 };
 

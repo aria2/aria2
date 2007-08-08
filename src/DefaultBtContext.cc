@@ -40,6 +40,8 @@
 #include "DlAbortEx.h"
 #include "ShaVisitor.h"
 #include "Util.h"
+#include "MessageDigestHelper.h"
+#include "a2netcompat.h"
 #include <libgen.h>
 
 DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-") {}
@@ -244,4 +246,40 @@ int32_t DefaultBtContext::getPieceLength() const {
 
 int32_t DefaultBtContext::getNumPieces() const {
   return numPieces;
+}
+
+Integers DefaultBtContext::computeFastSet(const string& ipaddr, int32_t fastSetSize)
+{
+  Integers fastSet;
+  struct in_addr saddr;
+  if(inet_aton(ipaddr.c_str(), &saddr) == 0) {
+    abort();
+  }
+  unsigned char tx[24];
+  memcpy(tx, (void*)&saddr.s_addr, 4);
+  if((tx[0] & 0x80) == 0 || (tx[0] & 0x40) == 0) {
+    tx[2] = 0x00;
+    tx[3] = 0x00;
+  } else {
+    tx[3] = 0x00;
+  }
+  memcpy(tx+4, infoHash, 20);
+  unsigned char x[20];
+  MessageDigestHelper::digest(x, sizeof(x), "sha1", tx, 24);
+  while((int32_t)fastSet.size() < fastSetSize) {
+    for(int32_t i = 0; i < 5 && (int32_t)fastSet.size() < fastSetSize; i++) {
+      int32_t j = i*4;
+      uint32_t ny;
+      memcpy(&ny, x+j, 4);
+      uint32_t y = ntohl(ny);
+      int32_t index = y%numPieces;
+      if(find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
+	fastSet.push_back(index);
+      }
+    }
+    unsigned char temp[20];
+    MessageDigestHelper::digest(temp, sizeof(temp), "sha1", x, sizeof(x));
+    memcpy(x, temp, sizeof(x));
+  }
+  return fastSet;
 }

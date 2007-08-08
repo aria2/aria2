@@ -39,7 +39,7 @@
 MetalinkEntry::MetalinkEntry()
 #ifdef ENABLE_MESSAGE_DIGEST
   :checksum(0),
-  chunkChecksum(0)
+   chunkChecksum(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 
@@ -84,7 +84,9 @@ public:
     switch(res->type) {
     case MetalinkResource::TYPE_FTP:
     case MetalinkResource::TYPE_HTTP:
+#ifdef ENABLE_SSL
     case MetalinkResource::TYPE_HTTPS:
+#endif // ENABLE_SSL
 #ifdef ENABLE_BITTORRENT
     case MetalinkResource::TYPE_BITTORRENT:
 #endif // ENABLE_BITTORRENT

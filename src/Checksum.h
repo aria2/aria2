@@ -36,43 +36,39 @@
 #define _D_CHECKSUM_H_
 
 #include "common.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-#include "messageDigest.h"
 
 class Checksum {
 private:
-  string md;
-  MessageDigestContext::DigestAlgo algo;
+  string _algo;
+  string _messageDigest;
 public:
-  Checksum(const string& md, MessageDigestContext::DigestAlgo algo):
-    md(md),
-    algo(algo) {}
+  // _messageDigest is ascii hexadecimal notation.
+  Checksum(const string& algo, const string& messageDigest):
+    _algo(algo), _messageDigest(messageDigest) {}
   Checksum():
-    algo(DIGEST_ALGO_SHA1) {}
+    _algo("sha1") {}
+
   ~Checksum() {}
 
   bool isEmpty() const {
-    return md.size() == 0;
+    return _messageDigest.size() == 0;
   }
 
   void setMessageDigest(const string& md) {
-    this->md = md;
+    this->_messageDigest = md;
   }
   const string& getMessageDigest() const {
-    return md;
+    return _messageDigest;
   }
   
-  void setDigestAlgo(MessageDigestContext::DigestAlgo algo) {
-    this->algo = algo;
+  void setAlgo(const string& algo) {
+    this->_algo = algo;
   }
-  const MessageDigestContext::DigestAlgo& getDigestAlgo() const {
-    return algo;
+
+  const string& getAlgo() const {
+    return _algo;
   }
 };
-#else
-class Checksum {
-};
-#endif // ENABLE_MESSAGE_DIGEST
 
 typedef SharedHandle<Checksum> ChecksumHandle;
 

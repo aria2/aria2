@@ -36,10 +36,8 @@
 #define _D_MESSAGE_DIGEST_H_
 
 #include "common.h"
-
-#ifdef ENABLE_SSL
-
-#define MAX_MD_LENGTH (16+20)
+#include "FatalException.h"
+#include <map>
 
 #ifdef HAVE_LIBSSL
 #include <openssl/evp.h>
@@ -53,14 +51,11 @@ class MessageDigestContext {
 public:
 #ifdef HAVE_LIBSSL
   typedef const EVP_MD* DigestAlgo;
-# define DIGEST_ALGO_MD5 EVP_md5()
-# define DIGEST_ALGO_SHA1 EVP_sha1()
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGCRYPT
   typedef int32_t DigestAlgo;
-# define DIGEST_ALGO_MD5 GCRY_MD_MD5
-# define DIGEST_ALGO_SHA1 GCRY_MD_SHA1
 #endif // HAVE_LIBGCRYPT
+  typedef map<string, MessageDigestContext::DigestAlgo> DigestAlgoMap;
 private:
 #ifdef HAVE_LIBSSL
   EVP_MD_CTX ctx;
@@ -69,16 +64,57 @@ private:
   gcry_md_hd_t ctx;
 #endif // HAVE_LIBGCRYPT  
   DigestAlgo algo;
+
+  static DigestAlgoMap digestAlgos;
 public:
-  MessageDigestContext():
-    algo(DIGEST_ALGO_SHA1) {}
-  MessageDigestContext(DigestAlgo algo):
-    algo(algo) {}
+  MessageDigestContext():algo(getDigestAlgo("sha1"))
+  {}
 
   ~MessageDigestContext()
   {
     digestFree();
   }
+
+  void trySetAlgo(const string& algostring)
+  {
+    algo = getDigestAlgo(algostring);
+  }
+
+  static bool supports(const string& algostring)
+  {
+    DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
+    if(itr == digestAlgos.end()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static DigestAlgo getDigestAlgo(const string& algostring)
+  {
+    DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
+    if(itr == digestAlgos.end()) {
+      throw new FatalException("Digest algorithm %s is not supported.", algostring.c_str());
+    }
+    return (*itr).second;
+  }
+
+  static string getSupportedAlgoString()
+  {
+    string algos;
+    for(DigestAlgoMap::const_iterator itr = digestAlgos.begin();
+	itr != digestAlgos.end(); ++itr) {
+      algos += (*itr).first+" ";
+    }
+    return algos;
+  }
+
+  static int digestLength(const string& algostring)
+  {
+    return digestLength(getDigestAlgo(algostring));
+  }
+
+  string digestFinal();
 
 #if defined(HAVE_OLD_LIBSSL)
   void digestInit() {EVP_DigestInit(&ctx, algo);}
@@ -147,5 +183,4 @@ public:
 #endif // HAVE_LIBGCRYPT
 };
 typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
-#endif // ENABLE_SSL
 #endif // _D_MESSAGE_DIGEST_H_

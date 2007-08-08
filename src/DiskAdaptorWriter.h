@@ -78,12 +78,6 @@ public:
     return diskAdaptor->readData((unsigned char*)data, len, position);
   }
 
-  virtual string messageDigest(int64_t offset, int64_t length,
-			       const MessageDigestContext::DigestAlgo& algo)
-  {
-    return diskAdaptor->messageDigest(offset, length, algo);
-  }
-
   virtual void truncate(int64_t length)
   {
     throw new FatalException("DiskAdaptorWriter::truncate() is not implemented yet.");
@@ -91,7 +85,7 @@ public:
 
   virtual int64_t size() const
   {
-    throw new FatalException("DiskAdaptorWriter::size() is not implemented yet.");
+    return diskAdaptor->size();
   }
 };
 

@@ -39,6 +39,8 @@
 #include "DlAbortEx.h"
 #include "BtChokingEvent.h"
 #include "BtCancelSendingPieceEvent.h"
+#include "DiskAdaptorWriter.h"
+#include "MessageDigestHelper.h"
 
 void BtPieceMessage::setBlock(const unsigned char* block, int32_t blockLength) {
   delete [] this->block;
@@ -190,8 +192,9 @@ string BtPieceMessage::toString() const {
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
   int64_t offset =
     ((int64_t)piece->getIndex())*btContext->getPieceLength();
-  return pieceStorage->getDiskAdaptor()->messageDigest(offset, piece->getLength(), DIGEST_ALGO_SHA1) ==
-    btContext->getPieceHash(piece->getIndex());
+  
+  return MessageDigestHelper::digest("sha1", new DiskAdaptorWriter(pieceStorage->getDiskAdaptor()), offset, piece->getLength())
+    == btContext->getPieceHash(piece->getIndex());
 }
 
 void BtPieceMessage::onNewPiece(const PieceHandle& piece) {

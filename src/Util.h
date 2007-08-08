@@ -36,15 +36,10 @@
 #define _D_UTIL_H_
 
 #include "common.h"
-#include "FileEntry.h"
 #include "a2time.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-#include "messageDigest.h"
-#endif // ENABLE_MESSAGE_DIGEST
-#include <string>
+#include "FileEntry.h"
 #include <utility>
 #include <deque>
-#include <stdio.h>
 #include <ostream>
 
 #define STRTOLL(X) strtoll(X, (char**)NULL, 10);
@@ -111,28 +106,10 @@ public:
   // this function temporarily put here
   static string getContentDispositionFilename(const string& header);
 
-  // digest must be at least 20 bytes long.
-#ifdef ENABLE_MESSAGE_DIGEST
-  static void sha1Sum(unsigned char* digest, const void* data, int32_t dataLength);
-  static string simpleMessageDigest(const string& data);
-#endif // ENABLE_MESSAGE_DIGEST
-
-  // Before call this method, allocate enough memory to the parameter "digest".
-  // For sha1, you need 20 bytes. For md5, 16 bytes.
-#ifdef ENABLE_MESSAGE_DIGEST
-  static void fileChecksum(const string& filename, unsigned char* digest,
-			   MessageDigestContext::DigestAlgo algo);
-#endif // ENABLE_MESSAGE_DIGEST
-
-#ifdef ENABLE_BITTORRENT
-  static Integers computeFastSet(string ipaddr, const unsigned char* infoHash,
-				int32_t pieces, int32_t fastSetSize);
-#endif // ENABLE_BITTORRENT
-
   static int32_t countBit(uint32_t n);
-
+  
   static string randomAlpha(int32_t length);
-
+  
   static string toUpper(const string& src);
 
   static string toLower(const string& src);

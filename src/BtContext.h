@@ -84,6 +84,9 @@ public:
    * Returns the peer id of localhost, 20 byte length
    */
   virtual const unsigned char* getPeerId() = 0;
+
+  virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize) = 0;
+
 };
 
 typedef SharedHandle<BtContext> BtContextHandle;

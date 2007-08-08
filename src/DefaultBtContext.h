@@ -107,12 +107,26 @@ private:
     return (const unsigned char*)peerId.c_str();
   }
 
+  virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize);
+
   string generatePeerId() const;
 
   void setPeerIdPrefix(const string& peerIdPrefix)
   {
     _peerIdPrefix = peerIdPrefix;
   }
+
+  // for unit test
+  void setInfoHash(const unsigned char* infoHash)
+  {
+    memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
+  }
+
+  void setNumPieces(int32_t numPieces)
+  {
+    this->numPieces = numPieces;
+  }
+      
 };
 
 typedef SharedHandle<DefaultBtContext> DefaultBtContextHandle;

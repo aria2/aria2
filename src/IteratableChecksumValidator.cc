@@ -76,6 +76,7 @@ void IteratableChecksumValidator::init()
   _bitfield->setAllBit();
   _currentOffset = 0;
 
-  _ctx = new MessageDigestContext(_checksum->getDigestAlgo());
+  _ctx = new MessageDigestContext();
+  _ctx->trySetAlgo(_checksum->getAlgo());
   _ctx->digestInit();
 }

@@ -89,6 +89,11 @@ public:
   {
     return _bitfield->getTotalLength();
   }
+
+  ChunkChecksumHandle getChunkChecksum()
+  {
+    return _chunkChecksum;
+  }
 };
 
 typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;

@@ -16,6 +16,7 @@ private:
   unsigned char peerId[20];
   FileEntries fileEntries;
   AnnounceTiers announceTiers;
+  Integers fastSet;
 public:
   MockBtContext():totalLength(0),
 		  pieceLength(0),
@@ -115,6 +116,16 @@ public:
 
   void setPeerId(const unsigned char* peerId) {
     memcpy(this->peerId, peerId, sizeof(this->peerId));
+  }
+
+  virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize)
+  {
+    return fastSet;
+  }
+
+  void setFastSet(const Integers& fastSet)
+  {
+    this->fastSet = fastSet;
   }
 
 };

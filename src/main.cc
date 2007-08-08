@@ -71,7 +71,6 @@ extern int optind, opterr, optopt;
 
 #ifdef ENABLE_METALINK
 #include "MetalinkRequestInfo.h"
-#include "Xml2MetalinkProcessor.h"
 #endif
 
 #ifdef HAVE_LIBSSL
@@ -89,6 +88,9 @@ void showVersion() {
   cout << PACKAGE << _(" version ") << PACKAGE_VERSION << endl;
   cout << "**Configuration**" << endl;
   cout << FeatureConfig::getInstance()->getConfigurationSummary();
+#ifdef ENABLE_MESSAGE_DIGEST
+  cout << "message digest algorithms: " << MessageDigestContext::getSupportedAlgoString() << endl;
+#endif // ENABLE_MESSAGE_DIGEST
   cout << endl;
   cout << "Copyright (C) 2006, 2007 Tatsuhiro Tsujikawa" << endl;
   cout << endl;
@@ -109,7 +111,6 @@ void showVersion() {
   cout << endl;
   cout << _("Contact Info:") << endl;
   cout << "Tatsuhiro Tsujikawa <tujikawa at users dot sourceforge dot net>" << endl;
-  cout << "Ross Smith II <aria2spam at netebb dot com> (Windows port)" << endl;
   cout << endl;
 
 }

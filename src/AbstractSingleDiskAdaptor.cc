@@ -59,10 +59,6 @@ int32_t AbstractSingleDiskAdaptor::readData(unsigned char* data, int32_t len, in
   return diskWriter->readData(data, len, offset);
 }
 
-string AbstractSingleDiskAdaptor::messageDigest(int64_t offset, int64_t length, const MessageDigestContext::DigestAlgo& algo) {
-  return diskWriter->messageDigest(offset, length, algo);
-}
-
 bool AbstractSingleDiskAdaptor::fileExists()
 {
   return File(getFilePath()).exists();

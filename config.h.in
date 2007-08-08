@@ -53,6 +53,12 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
+/* Define to 1 if you have the `EVP_DigestInit_ex' function. */
+#undef HAVE_EVP_DIGESTINIT_EX
+
+/* Define to 1 if you have the `EVP_sha256' function. */
+#undef HAVE_EVP_SHA256
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
@@ -198,6 +204,9 @@
 
 /* Define to 1 if you have the <nl_types.h> header file. */
 #undef HAVE_NL_TYPES_H
+
+/* Define to 1 if you have old openssl. */
+#undef HAVE_OLD_LIBSSL
 
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV

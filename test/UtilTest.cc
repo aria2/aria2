@@ -15,13 +15,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testStartsWith);
   // may be moved to other helper class in the future.
   CPPUNIT_TEST(testGetContentDispositionFilename);
-#ifdef ENABLE_BITTORRENT
-  CPPUNIT_TEST(testComputeFastSet);
-#endif
   CPPUNIT_TEST(testRandomAlpha);
-#ifdef ENABLE_MESSAGE_DIGEST
-  CPPUNIT_TEST(testFileChecksum);
-#endif
   CPPUNIT_TEST(testToUpper);
   CPPUNIT_TEST(testToLower);
   CPPUNIT_TEST(testUrldecode);
@@ -42,15 +36,9 @@ public:
   void testEndsWith();
   void testReplace();
   void testStartsWith();
-#ifdef ENABLE_BITTORRENT
-  void testComputeFastSet();
-#endif
   // may be moved to other helper class in the future.
   void testGetContentDispositionFilename();
   void testRandomAlpha();
-#ifdef ENABLE_MESSAGE_DIGEST
-  void testFileChecksum();
-#endif
   void testToUpper();
   void testToLower();
   void testUrldecode();
@@ -243,54 +231,9 @@ public:
   }
 };
 
-#ifdef ENABLE_BITTORRENT
-
-void UtilTest::testComputeFastSet() {
-  string ipaddr = "192.168.0.1";
-  unsigned char infoHash[20];
-  memset(infoHash, 0, sizeof(infoHash));
-  infoHash[0] = 0xff;
-  
-  int pieces = 1000;
-  int fastSetSize = 10;
-
-  Integers fastSet = Util::computeFastSet(ipaddr, infoHash, pieces, fastSetSize);
-  //for_each(fastSet.begin(), fastSet.end(), Printer());
-  //cerr << endl;
-  int ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
-  Integers ansSet1(&ans1[0], &ans1[10]);
-  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
-
-  ipaddr = "10.0.0.1";
-  fastSet = Util::computeFastSet(ipaddr, infoHash, pieces, fastSetSize);
-  int ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
-  Integers ansSet2(&ans2[0], &ans2[10]);
-  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
-}
-
-#endif
-
 void UtilTest::testRandomAlpha() {
-  CPPUNIT_ASSERT_EQUAL(string("rUopvKRn"), Util::randomAlpha(8));
+  CPPUNIT_ASSERT_EQUAL((size_t)8, Util::randomAlpha(8).size());
 }
-
-#ifdef ENABLE_MESSAGE_DIGEST
-
-void UtilTest::testFileChecksum() {
-  unsigned char buf[20];
-  string filename = "4096chunk.txt";
-  Util::fileChecksum(filename, buf, DIGEST_ALGO_SHA1);
-  string sha1 = Util::toHex(buf, 20);
-  CPPUNIT_ASSERT_EQUAL(string("608cabc0f2fa18c260cafd974516865c772363d5"),
-		       sha1);
-
-  Util::fileChecksum(filename, buf, DIGEST_ALGO_MD5);
-  string md5 = Util::toHex(buf, 16);
-  CPPUNIT_ASSERT_EQUAL(string("82a7348c2e03731109d0cf45a7325b88"),
-		       md5);
-}
-
-#endif
 
 void UtilTest::testToUpper() {
   string src = "608cabc0f2fa18c260cafd974516865c772363d5";

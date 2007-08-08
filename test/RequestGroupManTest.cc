@@ -2,6 +2,7 @@
 #include "ConsoleDownloadEngine.h"
 #include "CUIDCounter.h"
 #include "prefs.h"
+#include "RequestFactory.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -60,6 +61,11 @@ void RequestGroupManTest::testGetInitialCommands()
   Option option;
   option.put(PREF_SPLIT, "1");
   option.put(PREF_TIMEOUT, "10");
+
+  RequestFactoryHandle requestFactory = new RequestFactory();
+  requestFactory->setOption(&option);
+  RequestFactorySingletonHolder::instance(requestFactory);
+
   RequestGroupMan gm;
 
   RequestGroupHandle rg1 = new RequestGroup("aria2.tar.bz2.metalink",

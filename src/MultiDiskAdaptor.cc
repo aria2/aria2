@@ -37,7 +37,6 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"
-#include <errno.h>
 
 void MultiDiskAdaptor::resetDiskWriterEntries() {
   diskWriterEntries.clear();
@@ -169,58 +168,11 @@ int32_t MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t off
   return totalReadLength;
 }
 
-void MultiDiskAdaptor::hashUpdate(MessageDigestContext& ctx,
-				  const DiskWriterEntryHandle& entry,
-				  int64_t offset, int64_t length)
-{
-  int32_t BUFSIZE = 16*1024;
-  unsigned char buf[BUFSIZE];
-  for(int64_t i = 0; i < length/BUFSIZE; i++) {
-    if(BUFSIZE != entry->getDiskWriter()->readData(buf, BUFSIZE, offset)) {
-      throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
-    }
-    ctx.digestUpdate(buf, BUFSIZE);
-    offset += BUFSIZE;
-  }
-  int32_t r = length%BUFSIZE;
-  if(r > 0) {
-    if((int32_t)r != entry->getDiskWriter()->readData(buf, r, offset)) {
-      throw new DlAbortEx(EX_FILE_SHA1SUM, "", strerror(errno));
-    }
-    ctx.digestUpdate(buf, r);
-  }
-}
-
-string MultiDiskAdaptor::messageDigest(int64_t offset, int64_t length,
-				       const MessageDigestContext::DigestAlgo& algo) {
-  int64_t fileOffset = offset;
-  bool reading = false;
-  int32_t rem = length;
-  MessageDigestContext ctx(algo);
-  ctx.digestInit();
-
-  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end() && rem != 0; itr++) {
-    if(isInRange(*itr, offset) || reading) {
-      int32_t readLength = calculateLength((*itr), fileOffset, rem);
-      hashUpdate(ctx, *itr, fileOffset, readLength);
-      rem -= readLength;
-      reading = true;
-      fileOffset = 0;
-    } else {
-      fileOffset -= (*itr)->getFileEntry()->getLength();
-    }
-  }
-  if(!reading) {
-    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, Util::llitos(offset, true).c_str());
-  }
-  unsigned char hashValue[20];
-  ctx.digestFinal(hashValue);
-  return Util::toHex(hashValue, 20);
-}
-
 bool MultiDiskAdaptor::fileExists()
 {
+  if(diskWriterEntries.empty()) {
+    resetDiskWriterEntries();
+  }
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
     if((*itr)->fileExists(getTopDirPath())) {
@@ -228,4 +180,15 @@ bool MultiDiskAdaptor::fileExists()
     }				   
   }
   return false;
+}
+
+// TODO call DiskWriter::openFile() before calling this function.
+int64_t MultiDiskAdaptor::size() const
+{
+  int64_t size = 0;
+  for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); itr++) {
+    size += (*itr)->size();
+  }
+  return size;
 }

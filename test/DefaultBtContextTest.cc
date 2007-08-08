@@ -23,6 +23,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetPieceLength);
   CPPUNIT_TEST(testGetInfoHashAsString);
   CPPUNIT_TEST(testGetPeerId);
+  CPPUNIT_TEST(testComputeFastSet);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -43,6 +44,7 @@ public:
   void testGetPieceLength();
   void testGetInfoHashAsString();
   void testGetPeerId();
+  void testComputeFastSet();
 };
 
 
@@ -223,4 +225,32 @@ void DefaultBtContextTest::testGetInfoHashAsString() {
 void DefaultBtContextTest::testGetPeerId() {
   DefaultBtContext btContext;
   Util::torrentUrlencode(btContext.getPeerId(), 20);
+}
+
+void DefaultBtContextTest::testComputeFastSet()
+{
+  string ipaddr = "192.168.0.1";
+  unsigned char infoHash[20];
+  memset(infoHash, 0, sizeof(infoHash));
+  infoHash[0] = 0xff;
+  
+  int pieces = 1000;
+  int fastSetSize = 10;
+
+  DefaultBtContext btContext;
+  btContext.setInfoHash(infoHash);
+  btContext.setNumPieces(pieces);
+
+  Integers fastSet = btContext.computeFastSet(ipaddr, fastSetSize);
+  //for_each(fastSet.begin(), fastSet.end(), Printer());
+  //cerr << endl;
+  int ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
+  Integers ansSet1(&ans1[0], &ans1[10]);
+  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
+
+  ipaddr = "10.0.0.1";
+  fastSet = btContext.computeFastSet(ipaddr, fastSetSize);
+  int ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
+  Integers ansSet2(&ans2[0], &ans2[10]);
+  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
 }

@@ -118,7 +118,7 @@ bool DownloadCommand::executeInternal() {
     _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
 #ifdef ENABLE_MESSAGE_DIGEST
     if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE) {
-      _requestGroup->getSegmentMan()->tryChunkChecksumValidation(segment);
+      _requestGroup->getSegmentMan()->tryChunkChecksumValidation(segment, _requestGroup->getChunkChecksum());
     }
 #endif // ENABLE_MESSAGE_DIGEST
     // this unit is going to download another segment.

@@ -448,10 +448,15 @@ void DefaultPieceStorage::checkIntegrity()
 {
   logger->notice(MSG_VALIDATING_FILE,
 		 diskAdaptor->getFilePath().c_str());
-  ChunkChecksumValidator v;
-  v.setDigestAlgo(DIGEST_ALGO_SHA1);
-  v.setDiskWriter(new DiskAdaptorWriter(diskAdaptor));
+  ChunkChecksumHandle chunkChecksum = new ChunkChecksum("sha1",
+							btContext->getPieceHashes(),
+							btContext->getPieceLength());
+  IteratableChunkChecksumValidatorHandle iv = new IteratableChunkChecksumValidator();
+  iv->setDiskWriter(new DiskAdaptorWriter(diskAdaptor));
+  iv->setBitfield(bitfieldMan);
+  iv->setChunkChecksum(chunkChecksum);
+
+  ChunkChecksumValidator v(iv);
   v.setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
-  v.validate(bitfieldMan, btContext->getPieceHashes(),
-	     btContext->getPieceLength());
+  v.validate();
 }

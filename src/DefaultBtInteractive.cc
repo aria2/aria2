@@ -96,10 +96,8 @@ void DefaultBtInteractive::addBitfieldMessageToQueue() {
 
 void DefaultBtInteractive::addAllowedFastMessageToQueue() {
   if(peer->isFastExtensionEnabled()) {
-    Integers fastSet = Util::computeFastSet(peer->ipaddr,
-					    btContext->getInfoHash(),
-					    btContext->getNumPieces(),
-					    allowedFastSetSize);
+    Integers fastSet = btContext->computeFastSet(peer->ipaddr,
+						 allowedFastSetSize);
     for(Integers::const_iterator itr = fastSet.begin();
 	itr != fastSet.end(); itr++) {
       dispatcher->addMessageToQueue(messageFactory->createAllowedFastMessage(*itr));

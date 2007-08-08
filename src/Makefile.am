@@ -45,7 +45,6 @@ SRCS =  Socket.h\
 	Option.cc Option.h\
 	Base64.cc Base64.h\
 	CookieBox.cc CookieBox.h\
-	messageDigest.h\
 	LogFactory.cc LogFactory.h\
 	NullLogger.h\
 	TimeA2.cc TimeA2.h\
@@ -109,7 +108,9 @@ SRCS += ChunkChecksumValidator.cc ChunkChecksumValidator.h\
 	ChecksumCommand.cc ChecksumCommand.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
-	CheckIntegrityMan.h
+	CheckIntegrityMan.h\
+	messageDigest.cc messageDigest.h\
+	MessageDigestHelper.cc MessageDigestHelper.h
 endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT

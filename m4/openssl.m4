@@ -18,17 +18,24 @@ CPPFLAGS_save=$CPPFLAGS
 LIBS="-L$openssl_prefix_lib $LIBS"
 CPPFLAGS="-I$openssl_prefix_include $CPPFLAGS"
 
-AC_CHECK_LIB([ssl], [SSL_library_init], [have_openssl=yes])
+AC_CHECK_LIB([ssl], [SSL_library_init], [have_openssl=yes; LIBS="-lssl $LIBS"])
 
 if test "x$have_openssl" = "xyes"; then
   have_openssl=no
-  AC_CHECK_LIB([crypto], [main], [have_openssl=yes])
+  AC_CHECK_LIB([crypto], [main], [have_openssl=yes; LIBS="-lcrypto $LIBS"])
   if test "x$have_openssl" = "xyes"; then
     AC_DEFINE([HAVE_LIBSSL], [1], [Define to 1 if you have openssl.])
+    dnl check whether EVP_DigestInit_ex exists. Old openssl doesn't have it.
+    AC_CHECK_FUNCS([EVP_DigestInit_ex], [have_digestinit_ex=yes])
+    if test "x$have_digestinit_ex" = "x"; then
+      AC_DEFINE([HAVE_OLD_LIBSSL], [1], [Define to 1 if you have old openssl.])
+    fi
     OPENSSL_LIBS="-L$openssl_prefix_lib -lssl -lcrypto"
     OPENSSL_CFLAGS="-I$openssl_prefix_include"
     AC_SUBST(OPENSSL_LIBS)
     AC_SUBST(OPENSSL_CFLAGS)
+    dnl search for sha256 support
+    AC_CHECK_FUNCS([EVP_sha256])
   fi
 fi
 

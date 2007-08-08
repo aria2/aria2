@@ -35,8 +35,9 @@
 #include "ShaVisitor.h"
 #include "Util.h"
 
-ShaVisitor::ShaVisitor():
-  ctx(DIGEST_ALGO_SHA1) {
+ShaVisitor::ShaVisitor()
+{
+  ctx.trySetAlgo("sha1");
   ctx.digestInit();
 }
 

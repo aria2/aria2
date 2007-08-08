@@ -31,8 +31,13 @@ void FeatureConfigTest::testGetDefaultPort() {
 void FeatureConfigTest::testIsSupported() {
   CPPUNIT_ASSERT_EQUAL(true,
 		       FeatureConfig::getInstance()->isSupported("http"));
+#ifdef ENABLE_SSL
   CPPUNIT_ASSERT_EQUAL(true,
 		       FeatureConfig::getInstance()->isSupported("https"));
+#else
+  CPPUNIT_ASSERT_EQUAL(false,
+		       FeatureConfig::getInstance()->isSupported("https"));
+#endif // ENABLE_SSL
   CPPUNIT_ASSERT_EQUAL(true,
 		       FeatureConfig::getInstance()->isSupported("ftp"));
   CPPUNIT_ASSERT_EQUAL(false,
@@ -41,11 +46,32 @@ void FeatureConfigTest::testIsSupported() {
 
 void FeatureConfigTest::testGetConfigurationSummary() {
   CPPUNIT_ASSERT_EQUAL(string("http: yes\n")
+#ifdef ENABLE_SSL
 		       +"https: yes\n"
+#else
+		       +"https: no\n"
+#endif // ENABLE_SSL
 		       +"ftp: yes\n"
+#ifdef ENABLE_BITTORRENT
 		       +"bittorrent: yes\n"
+#else
+		       +"bittorrent: no\n"
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
 		       +"metalink: yes\n"
+#else
+		       +"metalink: no\n"
+#endif // ENABLE_METALINK
+#ifdef ENABLE_MESSAGE_DIGEST
 		       +"message digest: yes\n"
-		       +"async dns: yes\n",
+#else
+		       +"message digest: no\n"
+#endif // ENABLE_MESSAGE_DIGEST
+#ifdef ENABLE_ASYNC_DNS
+		       +"async dns: yes\n"
+#else
+		       +"async dns: no\n"
+#endif // ENABLE_ASYNC_DNS
+		       ,
 		       FeatureConfig::getInstance()->getConfigurationSummary());
 }

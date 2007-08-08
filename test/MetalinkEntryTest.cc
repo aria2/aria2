@@ -64,17 +64,27 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   MetalinkEntry* entry = createTestEntry();
 
   entry->dropUnsupportedResource();
-
+#if defined ENABLE_SSL && ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL(4, (int)entry->resources.size());
+#elif defined ENABLE_SSL || ENABLE_BITTORRENT
+  CPPUNIT_ASSERT_EQUAL(3, (int)entry->resources.size());
+#else
+  CPPUNIT_ASSERT_EQUAL(2, (int)entry->resources.size());
+#endif // ENABLE_MESSAGE_DIGEST
   
+  MetalinkResources::const_iterator itr = entry->resources.begin();
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
-		       entry->resources.at(0)->type);
+		       (*itr++)->type);
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP,
-		       entry->resources.at(1)->type);
+		       (*itr++)->type);
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_BITTORRENT,
-		       entry->resources.at(2)->type);
+		       (*itr++)->type);
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_SSL
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTPS,
-		       entry->resources.at(3)->type);
+		       (*itr++)->type);
+#endif // ENABLE_SSL
 }
 
 void MetalinkEntryTest::testReorderResourcesByPreference() {

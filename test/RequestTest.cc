@@ -296,12 +296,18 @@ void RequestTest::testMetalink() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com/download/aria.tar.bz2#!metalink3!http://aria2.sourceforge.net/download/aria.metalink");
   CPPUNIT_ASSERT(v);
+#ifdef ENABLE_METALINK
   CPPUNIT_ASSERT_EQUAL(string("aria2.sourceforge.net"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("aria.metalink"), req.getFile());
 
   bool v2 = req.setUrl("http://aria.rednoah.com/download/aria.tar.bz2#!metalink3!");
   CPPUNIT_ASSERT(!v2);
+#else
+  CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("aria.tar.bz2"), req.getFile());
+#endif // ENABLE_METALINK
 }
 
 void RequestTest::testResolveHttpAuthConfig()

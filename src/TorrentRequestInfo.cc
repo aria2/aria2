@@ -80,7 +80,7 @@ RequestInfos TorrentRequestInfo::execute() {
   if(BT_PROGRESS_INFO_FILE(btContext)->exists()) {
     // load .aria2 file if it exists.
     BT_PROGRESS_INFO_FILE(btContext)->load();
-    PIECE_STORAGE(btContext)->getDiskAdaptor()->openExistingFile();
+    PIECE_STORAGE(btContext)->getDiskAdaptor()->openFile();
 #ifdef ENABLE_MESSAGE_DIGEST
     if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
       PIECE_STORAGE(btContext)->checkIntegrity();
@@ -94,7 +94,7 @@ RequestInfos TorrentRequestInfo::execute() {
 		       BT_PROGRESS_INFO_FILE(btContext)->getFilename().c_str());
 	throw new FatalException(EX_DOWNLOAD_ABORTED);
       } else {
-	PIECE_STORAGE(btContext)->getDiskAdaptor()->openExistingFile();
+	PIECE_STORAGE(btContext)->getDiskAdaptor()->openFile();
 #ifdef ENABLE_MESSAGE_DIGEST
 	if(op->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
 	  PIECE_STORAGE(btContext)->markAllPiecesDone();
@@ -103,7 +103,7 @@ RequestInfos TorrentRequestInfo::execute() {
 #endif // ENABLE_MESSAGE_DIGEST
       }
     } else {
-      PIECE_STORAGE(btContext)->getDiskAdaptor()->initAndOpenFile();
+      PIECE_STORAGE(btContext)->getDiskAdaptor()->openFile();
     }
   }
 

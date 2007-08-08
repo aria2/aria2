@@ -32,37 +32,46 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHUNK_CHECKSUM_VALIDATOR_H_
-#define _D_CHUNK_CHECKSUM_VALIDATOR_H_
+#ifndef _D_MESSAGE_DIGEST_HELPER_H_
+#define _D_MESSAGE_DIGEST_HELPER_H_
 
 #include "common.h"
-#include "LogFactory.h"
-#include "FileAllocationMonitor.h"
-#include "NullFileAllocationMonitor.h"
-#include "IteratableChunkChecksumValidator.h"
+#include "DiskWriter.h"
 
-class ChunkChecksumValidator {
-private:
-  IteratableChunkChecksumValidatorHandle _validator;
-
-  FileAllocationMonitorHandle fileAllocationMonitor;
-
-  const Logger* logger;
+class MessageDigestHelper {
 public:
-  ChunkChecksumValidator(const IteratableChunkChecksumValidatorHandle v):
-    _validator(v),
-    fileAllocationMonitor(new NullFileAllocationMonitor()),
-    logger(LogFactory::getInstance())
-  {}
+  /**
+   * Returns message digest in hexadecimal notation.
+   * Digest algorithm is specified by algo.
+   */
+  static string digest(const string& algo, DiskWriterHandle diskWriter, int64_t offset, int64_t length);
 
-  ~ChunkChecksumValidator() {}
-
-  void validate();
-
-  void setFileAllocationMonitor(const FileAllocationMonitorHandle& monitor) {
-    this->fileAllocationMonitor = monitor;
+  /**
+   * Calculates message digest of file opened by diskWriter.
+   */
+  static string digest(const string& algo, DiskWriterHandle diskWriter)
+  {
+    return digest(algo, diskWriter, 0, diskWriter->size());
   }
+
+  /**
+   * Calculates message digest of file denoted by filename.
+   */
+  static string digest(const string& algo, const string& filename);
+
+  static string digest(const string& algo, const void* data, int32_t length);
+
+  static string digestString(const string& algo, const string& data)
+  {
+    return digest(algo, data.c_str(), data.size());
+  }
+
+  /**
+   * Stores *raw* message digest into md.
+   * Throws exception when mdLength is less than the size of message digest.
+   */
+  static void digest(unsigned char* md, int32_t mdLength,
+		     const string& algo, const void* data, int32_t length);
 };
 
-typedef SharedHandle<ChunkChecksumValidator> ChunkChecksumValidatorHandle;
-#endif // _D_CHUNK_CHECKSUM_VALIDATOR_H_
+#endif // _D_MESSAGE_DIGEST_HELPER_H_

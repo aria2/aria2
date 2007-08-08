@@ -40,11 +40,11 @@
 
 class ChunkChecksum {
 private:
-  MessageDigestContext::DigestAlgo _algo;
+  string _algo;
   Strings _checksums;
   int32_t _checksumLength;
 public:
-  ChunkChecksum(const MessageDigestContext::DigestAlgo& algo,
+  ChunkChecksum(const string& algo,
 		const Strings& checksums,
 		int32_t checksumLength):
     _algo(algo),
@@ -85,7 +85,7 @@ public:
     return _checksumLength;
   }
 
-  MessageDigestContext::DigestAlgo getAlgo() const
+  const string& getAlgo() const
   {
     return _algo;
   }

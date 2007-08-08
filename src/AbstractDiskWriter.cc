@@ -113,36 +113,6 @@ int32_t AbstractDiskWriter::readDataInternal(char* data, int32_t len) {
   return read(fd, data, len);
 }
 
-#ifdef ENABLE_MESSAGE_DIGEST
-string AbstractDiskWriter::messageDigest(int64_t offset, int64_t length,
-					 const MessageDigestContext::DigestAlgo& algo)
-{
-  MessageDigestContext ctx(algo);
-  ctx.digestInit();
-
-  int32_t BUFSIZE = 16*1024;
-  char buf[BUFSIZE];
-  for(int64_t i = 0; i < length/BUFSIZE; i++) {
-    if(BUFSIZE != readData(buf, BUFSIZE, offset)) {
-      throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
-    }
-    ctx.digestUpdate(buf, BUFSIZE);
-    offset += BUFSIZE;
-  }
-  int32_t r = length%BUFSIZE;
-  if(r > 0) {
-    if(r != readData(buf, r, offset)) {
-      throw new DlAbortEx(EX_FILE_SHA1SUM, filename.c_str(), strerror(errno));
-    }
-    ctx.digestUpdate(buf, r);
-  }
-  unsigned char hashValue[20];
-  ctx.digestFinal(hashValue);
-
-  return Util::toHex(hashValue, 20);
-}
-#endif // ENABLE_MESSAGE_DIGEST
-
 void AbstractDiskWriter::seek(int64_t offset) {
   if(offset != lseek(fd, offset, SEEK_SET)) {
     throw new DlAbortEx(EX_FILE_SEEK, filename.c_str(), strerror(errno));
@@ -170,6 +140,7 @@ void AbstractDiskWriter::truncate(int64_t length)
   ftruncate(fd, length);
 }
 
+// TODO the file descriptor fd must be opened before calling this function.
 int64_t AbstractDiskWriter::size() const
 {
   struct stat fileStat;

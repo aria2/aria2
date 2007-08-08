@@ -9,9 +9,6 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MultiDiskAdaptorTest);
   CPPUNIT_TEST(testWriteData);
   CPPUNIT_TEST(testReadData);
-#ifdef ENABLE_MESSAGE_DIGEST
-  CPPUNIT_TEST(testMessageDigest);
-#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST_SUITE_END();
 private:
   Option* option;
@@ -32,9 +29,6 @@ public:
 
   void testWriteData();
   void testReadData();
-#ifdef ENABLE_MESSAGE_DIGEST
-  void testMessageDigest();
-#endif // ENABLE_MESSAGE_DIGEST
 };
 
 
@@ -137,28 +131,3 @@ void MultiDiskAdaptorTest::testReadData() {
   buf[25] = '\0';
   CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDEFGHIJKLMNO"), string((char*)buf));
 }
-
-#ifdef ENABLE_MESSAGE_DIGEST
-
-void MultiDiskAdaptorTest::testMessageDigest() {
-  FileEntryHandle entry1(new FileEntry("file1r.txt", 15, 0));
-  FileEntryHandle entry2(new FileEntry("file2r.txt", 7, 15));
-  FileEntryHandle entry3(new FileEntry("file3r.txt", 3, 22));
-  FileEntries entries;
-  entries.push_back(entry1);
-  entries.push_back(entry2);
-  entries.push_back(entry3);
-
-  adaptor->setFileEntries(entries);
-
-  adaptor->openFile();
-  string sha1sum = adaptor->messageDigest(0, 25, DIGEST_ALGO_SHA1);
-  CPPUNIT_ASSERT_EQUAL(string("76495faf71ca63df66dce99547d2c58da7266d9e"), sha1sum);
-  sha1sum = adaptor->messageDigest(15, 7, DIGEST_ALGO_SHA1);
-  CPPUNIT_ASSERT_EQUAL(string("737660d816fb23c2d5bc74f62d9b01b852b2aaca"), sha1sum);
-  sha1sum = adaptor->messageDigest(10, 14, DIGEST_ALGO_SHA1);
-  CPPUNIT_ASSERT_EQUAL(string("6238bf61dd8df8f77156b2378e9e39cd3939680c"), sha1sum);
-  adaptor->closeFile();
-}
-
-#endif // ENABLE_MESSAGE_DIGEST

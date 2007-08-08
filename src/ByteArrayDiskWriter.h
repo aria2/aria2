@@ -66,14 +66,6 @@ public:
   {
     return buf.str().size();
   }
-
-  // not implemented yet
-#ifdef ENABLE_MESSAGE_DIGEST
-  virtual string messageDigest(int64_t offset, int64_t length,
-			       const MessageDigestContext::DigestAlgo& algo) {
-    return "";
-  }
-#endif // ENABLE_MESSAGE_DIGEST
 };
 
 #endif // _D_BYTE_ARRAY_DISK_WRITER_H_

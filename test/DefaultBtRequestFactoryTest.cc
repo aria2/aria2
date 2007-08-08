@@ -55,6 +55,24 @@ public:
     }
   };
 
+  class SortMockBtRequestMessage {
+  public:
+    bool operator()(const SharedHandle<MockBtRequestMessage>& a,
+		    const SharedHandle<MockBtRequestMessage>& b) {
+      if(a->index < b->index) {
+	return true;
+      } else if(b->index < a->index) {
+	return false;
+      } else if(a->blockIndex < b->blockIndex) {
+	return true;
+      } else if(b->blockIndex < a->blockIndex) {
+	return false;
+      } else {
+	return true;
+      }
+    }
+  };
+
   void setUp() {
     BtRegistry::clear();
     btContext = new MockBtContext();
@@ -142,6 +160,8 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
 
   BtMessages msgs = btRequestFactory->createRequestMessagesOnEndGame(3);
 
+  sort(msgs.begin(), msgs.end(), SortMockBtRequestMessage());
+
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
   BtMessages::iterator itr = msgs.begin();
   MockBtRequestMessage* msg = (MockBtRequestMessage*)itr->get();
@@ -150,11 +170,11 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
   CPPUNIT_ASSERT_EQUAL(1, msg->index);
-  CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
   CPPUNIT_ASSERT_EQUAL(1, msg->index);
-  CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
 }
 
 void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {

@@ -32,37 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHUNK_CHECKSUM_VALIDATOR_H_
-#define _D_CHUNK_CHECKSUM_VALIDATOR_H_
+#include "messageDigest.h"
 
-#include "common.h"
-#include "LogFactory.h"
-#include "FileAllocationMonitor.h"
-#include "NullFileAllocationMonitor.h"
-#include "IteratableChunkChecksumValidator.h"
-
-class ChunkChecksumValidator {
-private:
-  IteratableChunkChecksumValidatorHandle _validator;
-
-  FileAllocationMonitorHandle fileAllocationMonitor;
-
-  const Logger* logger;
-public:
-  ChunkChecksumValidator(const IteratableChunkChecksumValidatorHandle v):
-    _validator(v),
-    fileAllocationMonitor(new NullFileAllocationMonitor()),
-    logger(LogFactory::getInstance())
-  {}
-
-  ~ChunkChecksumValidator() {}
-
-  void validate();
-
-  void setFileAllocationMonitor(const FileAllocationMonitorHandle& monitor) {
-    this->fileAllocationMonitor = monitor;
-  }
+static MessageDigestContext::DigestAlgoMap::value_type digests[] = {
+#ifdef HAVE_LIBSSL
+  MessageDigestContext::DigestAlgoMap::value_type("md5", EVP_md5()),
+  MessageDigestContext::DigestAlgoMap::value_type("sha1", EVP_sha1()),
+# ifdef HAVE_EVP_SHA256
+  MessageDigestContext::DigestAlgoMap::value_type("sha256", EVP_sha256()),
+# endif // HAVE_EVP_SHA256
+#elif HAVE_LIBGCRYPT
+  MessageDigestContext::DigestAlgoMap::value_type("md5", GCRY_MD_MD5),
+  MessageDigestContext::DigestAlgoMap::value_type("sha1", GCRY_MD_SHA1),
+  MessageDigestContext::DigestAlgoMap::value_type("sha256", GCRY_MD_SHA256),
+#endif // HAVE_LIBGCRYPT
 };
 
-typedef SharedHandle<ChunkChecksumValidator> ChunkChecksumValidatorHandle;
-#endif // _D_CHUNK_CHECKSUM_VALIDATOR_H_
+MessageDigestContext::DigestAlgoMap
+MessageDigestContext::digestAlgos(&digests[0],
+				  &digests[sizeof(digests)/sizeof(DigestAlgoMap::value_type)]);
+
+string MessageDigestContext::digestFinal()
+{
+  int32_t length = digestLength(algo);
+  unsigned char* rawMD = new unsigned char[length];
+  digestFinal(rawMD);
+  string rawMDString(&rawMD[0], &rawMD[length]);
+  delete [] rawMD;
+  return rawMDString;
+}

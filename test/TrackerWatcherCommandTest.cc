@@ -22,20 +22,21 @@ class TrackerWatcherCommandTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateCommand);
   CPPUNIT_TEST_SUITE_END();
 private:
-  Option* op;
+  Option op;
 public:
-  TrackerWatcherCommandTest():op(new Option())
+  TrackerWatcherCommandTest()
   {
-    op->put(PREF_TRACKER_MAX_TRIES, "10");
-    RequestFactoryHandle requestFactory = new RequestFactory();
-    requestFactory->setOption(op);
-    RequestFactorySingletonHolder::instance(requestFactory);
   }
 
   void setUp() 
   {
     CUIDCounterHandle counter = new CUIDCounter();
     CUIDCounterSingletonHolder::instance(counter);
+
+    op.put(PREF_TRACKER_MAX_TRIES, "10");
+    RequestFactoryHandle requestFactory = new RequestFactory();
+    requestFactory->setOption(&op);
+    RequestFactorySingletonHolder::instance(requestFactory);
   }
 
   void testCreateCommand();
@@ -53,21 +54,23 @@ void TrackerWatcherCommandTest::testCreateCommand() {
     BtRuntimeHandle btRuntime;
     BtRegistry::registerBtRuntime(btContext->getInfoHashAsString(), btRuntime);
     
-    PieceStorageHandle pieceStorage(new DefaultPieceStorage(btContext, op));
+    PieceStorageHandle pieceStorage(new DefaultPieceStorage(btContext, &op));
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				     pieceStorage);
 
-    PeerStorageHandle peerStorage(new DefaultPeerStorage(btContext, op));
+    PeerStorageHandle peerStorage(new DefaultPeerStorage(btContext, &op));
     BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(),
 				    peerStorage);
 
-    BtAnnounceHandle btAnnounce(new DefaultBtAnnounce(btContext, op));
+    BtAnnounceHandle btAnnounce(new DefaultBtAnnounce(btContext, &op));
     BtRegistry::registerBtAnnounce(btContext->getInfoHashAsString(), btAnnounce);
     TorrentConsoleDownloadEngine* te = new TorrentConsoleDownloadEngine();
-    te->option = op;
+    te->option = &op;
     te->_requestGroupMan = new RequestGroupMan();
 
     TrackerWatcherCommand command(1, te, btContext);
+
+    RequestFactorySingletonHolder::instance()->createHttpAuthResolver();
 
     CPPUNIT_ASSERT(dynamic_cast<HttpInitiateConnectionCommand*>(command.createCommand()));
     //cerr << btAnnounce->getAnnounceUrl() << endl;

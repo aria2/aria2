@@ -33,90 +33,34 @@
  */
 /* copyright --> */
 #include "ChunkChecksumValidator.h"
-#include "Util.h"
-#include "Exception.h"
 #include "TimeA2.h"
 #include "message.h"
 
-#ifdef ENABLE_MESSAGE_DIGEST
-void ChunkChecksumValidator::validateSameLengthChecksum(BitfieldMan* bitfieldMan,
-							int32_t index,
-							const string& expectedChecksum,
-							int32_t dataLength,
-							int32_t checksumLength)
+void ChunkChecksumValidator::validate()
 {
-  int64_t offset = ((int64_t)index)*checksumLength;
-  string actualChecksum = diskWriter->messageDigest(offset, dataLength, algo);
-  if(actualChecksum != expectedChecksum) {
-    logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		 index, Util::llitos(offset, true).c_str(),
-		 expectedChecksum.c_str(), actualChecksum.c_str());
-    bitfieldMan->unsetBit(index);
-  }
-}
-
-void ChunkChecksumValidator::validateDifferentLengthChecksum(BitfieldMan* bitfieldMan,
-							     int32_t index,
-							     const string& expectedChecksum,
-							     int32_t dataLength,
-							     int32_t checksumLength)
-{
-  int64_t offset = ((int64_t)index)*checksumLength;
-  int32_t startIndex;
-  int32_t endIndex;
-  Util::indexRange(startIndex, endIndex, offset,
-		   checksumLength, bitfieldMan->getBlockLength());
-  if(bitfieldMan->isBitRangeSet(startIndex, endIndex)) {
-    string actualChecksum = diskWriter->messageDigest(offset, dataLength, algo);
-    if(expectedChecksum != actualChecksum) {
-      // wrong checksum
-      logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		   index, Util::llitos(offset, true).c_str(),
-		   expectedChecksum.c_str(), actualChecksum.c_str());
-      bitfieldMan->unsetBitRange(startIndex, endIndex);
-    }
-  }
-}
-
-void ChunkChecksumValidator::validate(BitfieldMan* bitfieldMan,
-				      const Strings& checksums,
-				      int32_t checksumLength)
-{
-  // We assume file is already opened using DiskWriter::open or openExistingFile.
-  if(((int64_t)checksumLength*checksums.size()) < bitfieldMan->getTotalLength()) {
+  if(!_validator->canValidate()) {
     // insufficient checksums.
     logger->error(MSG_INSUFFICIENT_CHECKSUM,
-		  checksumLength, checksums.size());
+		  _validator->getChunkChecksum()->getChecksumLength(),
+		  _validator->getChunkChecksum()->countChecksum());
     return;
   }
-  assert(bitfieldMan->getTotalLength()/checksumLength <= INT32_MAX);
-  int32_t x = bitfieldMan->getTotalLength()/checksumLength;
-  int32_t r = bitfieldMan->getTotalLength()%checksumLength;
-  void (ChunkChecksumValidator::*f)(BitfieldMan*, int32_t, const string&, int32_t, int32_t);
+  _validator->init();
 
-  if(checksumLength == bitfieldMan->getBlockLength()) {
-    f = &ChunkChecksumValidator::validateSameLengthChecksum;
-  } else {
-    f = &ChunkChecksumValidator::validateDifferentLengthChecksum;
-  }
-
+  int32_t numChecksum = _validator->getChunkChecksum()->countChecksum();
   fileAllocationMonitor->setMinValue(0);
-  fileAllocationMonitor->setMaxValue(bitfieldMan->getTotalLength());
+  fileAllocationMonitor->setMaxValue(numChecksum);
   fileAllocationMonitor->setCurrentValue(0);
   fileAllocationMonitor->showProgress();
   Time cp;
-  for(int32_t i = 0; i < x; ++i) {
-    (this->*f)(bitfieldMan, i, checksums[i], checksumLength, checksumLength);
+  for(int32_t i = 0; i < numChecksum; ++i) {
+    _validator->validateChunk();
     if(cp.elapsedInMillis(500)) {
-      fileAllocationMonitor->setCurrentValue(i*checksumLength);
+      fileAllocationMonitor->setCurrentValue(i+1);
       fileAllocationMonitor->showProgress();
       cp.reset();
     }
   }
-  if(r) {
-    (this->*f)(bitfieldMan, x, checksums[x], r, checksumLength);
-  }
-  fileAllocationMonitor->setCurrentValue(bitfieldMan->getTotalLength());
+  fileAllocationMonitor->setCurrentValue(numChecksum);
   fileAllocationMonitor->showProgress();
 }
-#endif // ENABLE_MESSAGE_DIGEST

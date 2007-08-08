@@ -111,20 +111,36 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
   entry->language = Util::trim(xpathContent(xpath+"/m:language"));
   entry->os = Util::trim(xpathContent(xpath+"/m:os"));
 #ifdef ENABLE_MESSAGE_DIGEST
-  string md;
-  md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"sha1\"]")));
-  if(md.size() > 0) {
-    entry->checksum = new Checksum();
-    entry->checksum->setMessageDigest(md);
-    entry->checksum->setDigestAlgo(DIGEST_ALGO_SHA1);
-  } else {
-    md = Util::toLower(Util::trim(xpathContent(xpath+"/m:verification/m:hash[@type=\"md5\"]")));
-    if(md.size() > 0) {
-      entry->checksum = new Checksum();
-      entry->checksum->setMessageDigest(md);
-      entry->checksum->setDigestAlgo(DIGEST_ALGO_MD5);
+  xmlXPathObjectPtr hashPathObj = xpathEvaluation(xpath+"/m:verification/m:hash");
+  if(hashPathObj) {
+    xmlNodeSetPtr nodeSet = hashPathObj->nodesetval;
+    for(int32_t i = 0; i < nodeSet->nodeNr; ++i) {
+      xmlNodePtr node = nodeSet->nodeTab[i];
+      string algo = Util::trim(xmlAttribute(node, "type"));
+      if(MessageDigestContext::supports(algo)) {
+	entry->checksum = new Checksum(algo, Util::trim(xmlContent(node)));
+	break;
+      }
     }
   }
+  xmlXPathFreeObject(hashPathObj);
+
+  string piecesPath = xpath+"/m:verification/m:pieces";
+  xmlXPathObjectPtr pieceHashPathObj = xpathEvaluation(piecesPath);
+  if(pieceHashPathObj) {
+    xmlNodeSetPtr nodeSet = pieceHashPathObj->nodesetval;
+    for(int32_t i = 0; i < nodeSet->nodeNr; ++i) {
+      xmlNodePtr node = nodeSet->nodeTab[i];
+      string algo = Util::trim(xmlAttribute(node, "type"));
+      if(MessageDigestContext::supports(algo)) {
+	entry->chunkChecksum = getPieceHash(piecesPath+"[@type=\""+algo+"\"]",
+					    entry->getLength());
+	break;
+      }
+    }
+  }
+  xmlXPathFreeObject(pieceHashPathObj);
+  /*
   string piecesPath = xpath+"/m:verification/m:pieces";
   string sha1PiecesPath = piecesPath+"[@type=\"sha1\"]";
   string md5PiecesPath = piecesPath+"[@type=\"md5\"]";
@@ -133,6 +149,7 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
   } else if(xpathExists(md5PiecesPath)) {
     entry->chunkChecksum = getPieceHash(md5PiecesPath, entry->getLength());
   }
+  */
 #endif // ENABLE_MESSAGE_DIGEST
   for(int index = 1; 1; index++) {
     MetalinkResourceHandle resource(getResource(xpath+"/m:resources/m:url["+Util::itos(index)+"]"));
@@ -159,12 +176,8 @@ ChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
   int64_t checksumLength = STRTOLL(Util::trim(xmlAttribute(node, "length")).c_str());
   string algoString = Util::trim(xmlAttribute(node, "type"));
   xmlXPathFreeObject(result);
-  MessageDigestContext::DigestAlgo algo;
-  if(algoString == "sha1") {
-    algo = DIGEST_ALGO_SHA1;
-  } else if(algoString == "md5") {
-    algo = DIGEST_ALGO_MD5;
-  } else {
+
+  if(!MessageDigestContext::supports(algoString)) {
     // unknown checksum type
     return 0;
   }
@@ -178,7 +191,7 @@ ChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
     }
     checksums.push_back(pieceHash);
   }
-  return new ChunkChecksum(algo, checksums, checksumLength);
+  return new ChunkChecksum(algoString, checksums, checksumLength);
 }
 #endif // ENABLE_MESSAGE_DIGEST
 

@@ -27,7 +27,8 @@ void IteratableChecksumValidatorTest::testValidate() {
   BitfieldMan bitfieldMan(100, 250);
   bitfieldMan.setAllBit();
 
-  ChecksumHandle checksum = new Checksum("898a81b8e0181280ae2ee1b81e269196d91e869a", DIGEST_ALGO_SHA1);
+  ChecksumHandle checksum = new Checksum("sha1",
+					 "898a81b8e0181280ae2ee1b81e269196d91e869a");
 
   DefaultDiskWriterHandle diskWriter = new DefaultDiskWriter();
   diskWriter->openExistingFile("chunkChecksumTestFile250.txt");
@@ -48,7 +49,7 @@ void IteratableChecksumValidatorTest::testValidate2() {
   BitfieldMan bitfieldMan(100, 250);
   bitfieldMan.setAllBit();
 
-  ChecksumHandle checksum = new Checksum("ffffffffffffffffffffffffffffffffffffffff", DIGEST_ALGO_SHA1);
+  ChecksumHandle checksum = new Checksum("sha1", "ffffffffffffffffffffffffffffffffffffffff");
 
   DefaultDiskWriterHandle diskWriter = new DefaultDiskWriter();
   diskWriter->openExistingFile("chunkChecksumTestFile250.txt");

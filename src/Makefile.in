@@ -46,7 +46,9 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCommand.cc ChecksumCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityMan.h
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityMan.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.cc messageDigest.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.cc MessageDigestHelper.h
 
 @ENABLE_BITTORRENT_TRUE@am__append_2 = MetaEntry.h\
 @ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
@@ -219,8 +221,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ChunkedEncoding.h DiskWriter.h AbstractDiskWriter.cc \
 	AbstractDiskWriter.h DefaultDiskWriter.cc DefaultDiskWriter.h \
 	File.cc File.h Option.cc Option.h Base64.cc Base64.h \
-	CookieBox.cc CookieBox.h messageDigest.h LogFactory.cc \
-	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
+	CookieBox.cc CookieBox.h LogFactory.cc LogFactory.h \
+	NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
 	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
 	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
@@ -259,9 +261,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityCommand.cc \
 	CheckIntegrityCommand.h CheckIntegrityEntry.cc \
-	CheckIntegrityEntry.h CheckIntegrityMan.h MetaEntry.h Data.cc \
-	Data.h Dictionary.cc Dictionary.h List.cc List.h \
-	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
+	CheckIntegrityEntry.h CheckIntegrityMan.h messageDigest.cc \
+	messageDigest.h MessageDigestHelper.cc MessageDigestHelper.h \
+	MetaEntry.h Data.cc Data.h Dictionary.cc Dictionary.h List.cc \
+	List.h MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
 	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
 	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
@@ -338,7 +341,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
 @ENABLE_BITTORRENT_TRUE@am__objects_2 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
@@ -676,8 +681,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	ChunkedEncoding.h DiskWriter.h AbstractDiskWriter.cc \
 	AbstractDiskWriter.h DefaultDiskWriter.cc DefaultDiskWriter.h \
 	File.cc File.h Option.cc Option.h Base64.cc Base64.h \
-	CookieBox.cc CookieBox.h messageDigest.h LogFactory.cc \
-	LogFactory.h NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
+	CookieBox.cc CookieBox.h LogFactory.cc LogFactory.h \
+	NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
 	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
 	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
 	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
@@ -902,6 +907,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MessageDigestHelper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkRequestInfo.Po@am__quote@
@@ -960,6 +966,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localtime_r.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messageDigest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strptime.Po@am__quote@
 
 .c.o:

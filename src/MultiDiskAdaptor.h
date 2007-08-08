@@ -81,6 +81,11 @@ public:
     return File(getFilePath(topDir)).exists();
   }
 
+  int64_t size() const
+  {
+    return diskWriter->size();
+  }
+
   FileEntryHandle getFileEntry() const {
     return fileEntry;
   }
@@ -115,10 +120,6 @@ private:
 			  int64_t fileOffset,
 			  int32_t rem) const;
 
-  void hashUpdate(MessageDigestContext& ctx,
-		  const DiskWriterEntryHandle& entry,
-		  int64_t offset, int64_t length);
-
   string getTopDirPath() const;
 public:
   MultiDiskAdaptor():pieceLength(0),
@@ -142,14 +143,13 @@ public:
 
   virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
 
-  virtual string messageDigest(int64_t offset, int64_t length,
-			       const MessageDigestContext::DigestAlgo& algo);
-
   virtual bool fileExists();
 
   virtual string getFilePath() {
     return getTopDirPath();
   }
+
+  virtual int64_t size() const;
 
   void setTopDir(const string& topDir) {
     this->topDir = topDir;

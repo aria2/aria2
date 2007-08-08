@@ -10,12 +10,7 @@ aria2c_SOURCES = AllTest.cc\
 	CookieParserTest.cc\
 	HttpRequestTest.cc\
 	CookieBoxFactoryTest.cc\
-	ByteArrayDiskWriterTest.cc\
 	RequestGroupManTest.cc\
-	IteratableChecksumValidatorTest.cc\
-	IteratableChunkChecksumValidatorTest.cc\
-	PeerTest.cc\
-	DefaultPeerStorageTest.cc\
 	RequestFactoryTest.cc\
 	NetrcAuthResolverTest.cc\
 	DefaultAuthResolverTest.cc\
@@ -32,25 +27,19 @@ aria2c_SOURCES = AllTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
 	Base64Test.cc\
-	DataTest.cc\
-	DictionaryTest.cc\
-	ListTest.cc\
-	MetaFileUtilTest.cc\
-	PeerMessageUtilTest.cc\
 	DefaultDiskWriterTest.cc\
-	MultiDiskAdaptorTest.cc\
 	FeatureConfigTest.cc\
-	ShareRatioSeedCriteriaTest.cc\
-	TimeSeedCriteriaTest.cc\
 	SpeedCalcTest.cc\
-	DefaultPeerListProcessorTest.cc\
-	AnnounceListTest.cc\
-	TrackerWatcherCommandTest.cc\
-	MockPeerStorage.h\
 	FixedNumberRandomizer.h\
-	ConsoleFileAllocationMonitorTest.cc\
-	ChunkChecksumValidatorTest.cc
-	
+	ConsoleFileAllocationMonitorTest.cc
+
+if ENABLE_MESSAGE_DIGEST
+aria2c_SOURCES += ChunkChecksumValidatorTest.cc\
+	IteratableChecksumValidatorTest.cc\
+	IteratableChunkChecksumValidatorTest.cc\
+	MessageDigestHelperTest.cc
+endif # ENABLE_MESSAGE_DIGEST
+
 if ENABLE_BITTORRENT
 aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtBitfieldMessageTest.cc\
@@ -78,7 +67,22 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MockBtMessage.h\
 	MockBtMessageDispatcher.h\
 	MockBtMessageFactory.h\
-	ShaVisitorTest.cc
+	ShaVisitorTest.cc\
+	DefaultPeerListProcessorTest.cc\
+	AnnounceListTest.cc\
+	TrackerWatcherCommandTest.cc\
+	DefaultPeerStorageTest.cc\
+	MockPeerStorage.h\
+	DataTest.cc\
+	DictionaryTest.cc\
+	ListTest.cc\
+	MetaFileUtilTest.cc\
+	MultiDiskAdaptorTest.cc\
+	ByteArrayDiskWriterTest.cc\
+	PeerTest.cc\
+	PeerMessageUtilTest.cc\
+	ShareRatioSeedCriteriaTest.cc\
+	TimeSeedCriteriaTest.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

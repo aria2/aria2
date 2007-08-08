@@ -35,6 +35,7 @@
 #include "Peer.h"
 #include "BitfieldManFactory.h"
 #include "Util.h"
+#include "MessageDigestHelper.h"
 
 Peer::Peer(string ipaddr, int32_t port, int32_t pieceLength, int64_t totalLength):
   ipaddr(ipaddr),
@@ -50,7 +51,7 @@ Peer::Peer(string ipaddr, int32_t port, int32_t pieceLength, int64_t totalLength
   this->bitfield = BitfieldManFactory::getFactoryInstance()->
     createBitfieldMan(pieceLength, totalLength);
   string idSeed = ipaddr+":"+Util::itos(port);
-  id = Util::simpleMessageDigest(idSeed);
+  id = MessageDigestHelper::digestString("sha1", idSeed);
 }
 
 /*

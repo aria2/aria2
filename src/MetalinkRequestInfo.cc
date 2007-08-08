@@ -131,15 +131,19 @@ RequestInfos MetalinkRequestInfo::execute() {
 		entry->resources.end(),
 		FindBitTorrentUrl());
       Strings urls;
+#ifdef ENABLE_MESSAGE_DIGEST
       ChecksumHandle checksum = 0;
+#endif // ENABLE_MESSAGE_DIGEST
       if(itr == entry->resources.end()) {
 	entry->reorderResourcesByPreference();
 	
 	for_each(entry->resources.begin(), entry->resources.end(),
 		 AccumulateNonP2PUrl(&urls, op->getAsInt(PREF_SPLIT)));
+#ifdef ENABLE_MESSAGE_DIGEST
 	// TODO
 	// set checksum
 	checksum = entry->checksum;
+#endif // ENABLE_MESSAGE_DIGEST
       } else {
 	// BitTorrent downloading
 	urls.push_back((*itr)->url);

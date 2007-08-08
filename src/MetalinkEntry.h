@@ -55,10 +55,9 @@ public:
   string version;
   string language;
   string os;
-  ChecksumHandle checksum;
-public:
   MetalinkResources resources;
 #ifdef ENABLE_MESSAGE_DIGEST
+  ChecksumHandle checksum;
   ChunkChecksumHandle chunkChecksum;
 #endif // ENABLE_MESSAGE_DIGEST
 public:
@@ -72,8 +71,8 @@ public:
       this->version = metalinkEntry.version;
       this->language = metalinkEntry.language;
       this->os = metalinkEntry.os;
-      this->checksum = metalinkEntry.checksum;
 #ifdef ENABLE_MESSAGE_DIGEST
+      this->checksum = metalinkEntry.checksum;
       this->chunkChecksum = metalinkEntry.chunkChecksum;
 #endif // ENABLE_MESSAGE_DIGEST
     }

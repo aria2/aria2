@@ -35,6 +35,7 @@
 #include "IteratableChunkChecksumValidator.h"
 #include "Util.h"
 #include "message.h"
+#include "MessageDigestHelper.h"
 
 void IteratableChunkChecksumValidator::validateChunk()
 {
@@ -65,7 +66,7 @@ string IteratableChunkChecksumValidator::calculateActualChecksum()
 {
   int64_t offset = ((int64_t)_currentIndex)*_chunkChecksum->getChecksumLength();
   int32_t length = _diskWriter->size() < offset+_chunkChecksum->getChecksumLength() ? _diskWriter->size()-offset : _chunkChecksum->getChecksumLength();
-  return _diskWriter->messageDigest(offset, length, _chunkChecksum->getAlgo());
+  return MessageDigestHelper::digest(_chunkChecksum->getAlgo(), _diskWriter, offset, length);
 }
 
 bool IteratableChunkChecksumValidator::canValidate() const

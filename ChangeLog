@@ -1,3 +1,70 @@
+2007-08-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	MessageDigestHelper is introduced in order to simplify the use
+	of message digest. Removed repeated code.
+	The message digest algorithm is now specified by string, like "sha1",
+	"md5".
+	* src/messageDigest.{h, cc}
+	* src/MessageDigestHelper.{h, cc}: New class.
+	* src/DefaultPieceStorage.cc
+	* src/DefaultBtContext.{h, cc}
+	(computeFastSet): New function.
+	(setInfoHash): Added for unit testing.
+	(setNumPieces): Added for unit testing.
+	* src/DefaultBtInteractive.cc
+	* src/BtPieceMessage.cc
+	* src/Peer.cc
+	* src/Checksum.h
+	* src/message.h
+	* src/IteratableChecksumValidator.h
+	* src/ChunkChecksumValidator.{h, cc}: Use IteratableChecksumValidator
+	inside it.
+	* src/SegmentMan.{h, cc}
+	(checkIntegrity): Removed.
+	* src/IteratableChunkChecksumValidator.{h, cc}
+	* src/Util.h
+	(sha1Sum): Removed.
+	(simpleMessageDigest): Removed.
+	(fileChecksum): Removed.
+	(computeFastSet): Removed.
+	* src/ShaVisitor.cc
+	* src/ChunkChecksum.h
+	* src/DownloadCommand.cc
+
+	Removed messageDigest virtual functions.
+	* src/MultiDiskAdaptor.{h, cc}
+	* src/DiskAdaptor.h
+	* src/ByteArrayDiskWriter.h
+	* src/DiskWriter.h
+	* src/DiskAdaptorWriter.h
+	* src/AbstractSingleDiskAdaptor.{h, cc}
+	* src/AbstractDiskWriter.{h, cc}
+	
+	Fixed comilation error when message digest is disabled.
+	* src/MetalinkEntry.{h, cc}
+	* src/MetalinkRequestInfo.cc
+	
+	Removed srandom and random.
+	* src/SimpleRandomizer.h
+
+	Added size() virtual function to DiskAdaptor
+	* src/MultiDiskAdaptor.h
+
+	Fixed the bug that causes that files are not opened correctly in
+	multi-file torrent.
+	* src/TorrentRequestInfo.cc
+	* src/MultiDiskAdaptor.cc
+	
+	Added SHA256 support
+	* src/messageDigest.cc
+	* src/Xml2MetalinkProcessor.cc
+
+	Show supported message digest algorithms
+	* src/main.cc
+
+	Updated contact info.
+	* src/main.cc
+	
 2007-08-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Merged Dan's patch:
@@ -9,6 +76,10 @@
 	Updated contact info.
 	* src/main.cc
 
+	Added #ifdef ENABLE_MESSAGE_DIGEST to fix test errors when message
+	digest is not available.
+	* src/MetalinkEntry.h
+	
 2007-08-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Make a2netcompat.h include a2io.h to fix compilation error:

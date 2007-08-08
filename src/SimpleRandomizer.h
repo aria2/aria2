@@ -54,27 +54,22 @@ public:
   }
   
   static void init() {
-#ifdef HAVE_SRANDOM
-    srandom(time(0));
-#else
     srand(time(0));
-#endif
   }
 
   virtual ~SimpleRandomizer() {}
 
   virtual long int getRandomNumber() {
-#ifdef HAVE_RANDOM
-    return random();
-#else
     return rand();
-#endif
   }
 
   virtual long int getMaxRandomNumber() {
       return RAND_MAX;
   }
 
+  /**
+   * Returns random number in [0, to).
+   */
   virtual long int getRandomNumber(long int to)
   {
     return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));

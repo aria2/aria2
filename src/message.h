@@ -118,7 +118,7 @@
 #define MSG_SEEDING_END _("Seeding is over.")
 #define MSG_SEGMENT_FORWARDING _("CUID#%d cancels segment index=%d. CUID#%d handles it instead.")
 #define MSG_NO_CHUNK_CHECKSUM _("No chunk to verify.")
-#define MSG_GOOD_CHUNK_CHECKSUM _("Good chunk checksum.")
+#define MSG_GOOD_CHUNK_CHECKSUM _("Good chunk checksum. hash=%s")
 #define MSG_LOADING_COOKIE_FAILED _("Failed to load cookies from %s")
 #define MSG_INCORRECT_NETRC_PERMISSION _(".netrc file %s does not have correct permissions. It should be 600. netrc support disabled.")
 #define MSG_LOGGING_STARTED _("Logging started.")

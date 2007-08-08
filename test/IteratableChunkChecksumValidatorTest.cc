@@ -46,7 +46,7 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   DefaultDiskWriterHandle diskWriter = new DefaultDiskWriter();
   diskWriter->openExistingFile("chunkChecksumTestFile250.txt");
 
-  ChunkChecksumHandle chunkChecksum = new ChunkChecksum(DIGEST_ALGO_SHA1,
+  ChunkChecksumHandle chunkChecksum = new ChunkChecksum("sha1",
 							checksums,
 							100);
   IteratableChunkChecksumValidator validator;
@@ -64,7 +64,7 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   CPPUNIT_ASSERT(bitfieldMan.isAllBitSet());
 
   checksums[1] = "ffffffffffffffffffffffffffffffffffffffff";
-  chunkChecksum = new ChunkChecksum(DIGEST_ALGO_SHA1,
+  chunkChecksum = new ChunkChecksum("sha1",
 				    checksums,
 				    100);
   validator.setChunkChecksum(chunkChecksum);
