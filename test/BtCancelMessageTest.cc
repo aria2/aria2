@@ -75,7 +75,7 @@ void BtCancelMessageTest::testCreate() {
     unsigned char msg[18];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 14, 8);
     BtCancelMessage::create(&msg[4], 14);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -83,7 +83,7 @@ void BtCancelMessageTest::testCreate() {
     unsigned char msg[17];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 13, 9);
     BtCancelMessage::create(&msg[4], 13);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }

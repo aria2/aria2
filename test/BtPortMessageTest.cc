@@ -37,7 +37,7 @@ void BtPortMessageTest::testCreate() {
     unsigned char msg[8];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 4, 9);
     BtPortMessage::create(&msg[4], 4);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -45,7 +45,7 @@ void BtPortMessageTest::testCreate() {
     unsigned char msg[7];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 3, 10);
     BtPortMessage::create(&msg[4], 3);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }

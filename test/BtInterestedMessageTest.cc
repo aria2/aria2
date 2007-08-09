@@ -40,7 +40,7 @@ void BtInterestedMessageTest::testCreate() {
     unsigned char msg[6];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 2, 2);
     BtInterestedMessage::create(&msg[4], 2);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -48,7 +48,7 @@ void BtInterestedMessageTest::testCreate() {
     unsigned char msg[5];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 3);
     BtInterestedMessage::create(&msg[4], 1);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }

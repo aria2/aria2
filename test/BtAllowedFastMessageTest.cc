@@ -43,7 +43,7 @@ void BtAllowedFastMessageTest::testCreate() {
     unsigned char msg[10];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 6, 17);
     BtAllowedFastMessage::create(&msg[4], 6);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -51,7 +51,7 @@ void BtAllowedFastMessageTest::testCreate() {
     unsigned char msg[9];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 18);
     BtAllowedFastMessage::create(&msg[4], 5);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }
@@ -78,7 +78,7 @@ void BtAllowedFastMessageTest::testDoReceivedAction() {
   peer->setFastExtensionEnabled(false);
   try {
     msg.doReceivedAction();
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {}
 }
 

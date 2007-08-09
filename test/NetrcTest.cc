@@ -81,7 +81,7 @@ void NetrcTest::testParse_fileNotFound()
   Netrc netrc;
   try {
     netrc.parse("");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -101,7 +101,7 @@ void NetrcTest::testParse_malformedNetrc()
   Netrc netrc;
   try {
     netrc.parse("malformed.netrc");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;

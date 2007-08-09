@@ -38,7 +38,7 @@ void BtSuggestPieceMessageTest::testCreate() {
     unsigned char msg[10];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 6, 13);
     BtSuggestPieceMessage::create(&msg[4], 2);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -46,7 +46,7 @@ void BtSuggestPieceMessageTest::testCreate() {
     unsigned char msg[9];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 14);
     BtSuggestPieceMessage::create(&msg[4], 1);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }

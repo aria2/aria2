@@ -107,7 +107,7 @@ void BtRejectMessageTest::testCreate() {
     unsigned char msg[18];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 14, 16);
     BtRejectMessage::create(&msg[4], 14);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -115,7 +115,7 @@ void BtRejectMessageTest::testCreate() {
     unsigned char msg[17];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 13, 17);
     BtRejectMessage::create(&msg[4], 13);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }
@@ -165,7 +165,7 @@ void BtRejectMessageTest::testDoReceivedActionFastExtensionDisabled() {
   CPPUNIT_ASSERT(!RequestSlot::isNull(dispatcher->getOutstandingRequest(1, 16, 32)));
   try {
     msg->doReceivedAction();
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {}
 
 }

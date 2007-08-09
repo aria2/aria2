@@ -67,7 +67,7 @@ void OptionHandlerTest::testBooleanOptionHandler()
   CPPUNIT_ASSERT_EQUAL(string(V_FALSE), option.get("foo"));
   try {
     handler.parseArg(&option, "hello");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -92,7 +92,7 @@ void OptionHandlerTest::testNumberOptionHandler_min()
   CPPUNIT_ASSERT_EQUAL(string("1"), option.get("foo"));
   try {
     handler.parseArg(&option, "0");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -108,7 +108,7 @@ void OptionHandlerTest::testNumberOptionHandler_max()
   CPPUNIT_ASSERT_EQUAL(string("100"), option.get("foo"));
   try {
     handler.parseArg(&option, "101");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -125,14 +125,14 @@ void OptionHandlerTest::testNumberOptionHandler_min_max()
   CPPUNIT_ASSERT_EQUAL(string("100"), option.get("foo"));
   try {
     handler.parseArg(&option, "0");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
   }
   try {
     handler.parseArg(&option, "101");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -169,7 +169,7 @@ void OptionHandlerTest::testParameterOptionHandler_1argInit()
   CPPUNIT_ASSERT_EQUAL(string("value1"), option.get("foo"));
   try {
     handler.parseArg(&option, "value3");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -188,7 +188,7 @@ void OptionHandlerTest::testParameterOptionHandler_2argsInit()
   CPPUNIT_ASSERT_EQUAL(string("value2"), option.get("foo"));
   try {
     handler.parseArg(&option, "value3");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -211,7 +211,7 @@ void OptionHandlerTest::testParameterOptionHandler_listInit()
   CPPUNIT_ASSERT_EQUAL(string("value2"), option.get("foo"));
   try {
     handler.parseArg(&option, "value3");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -248,7 +248,7 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min()
   CPPUNIT_ASSERT_EQUAL(string("0.0"), option.get("foo"));
   try {
     handler.parseArg(&option, "-0.1");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -263,7 +263,7 @@ void OptionHandlerTest::testFloatNumberOptionHandler_max()
   CPPUNIT_ASSERT_EQUAL(string("10.0"), option.get("foo"));
   try {
     handler.parseArg(&option, "10.1");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -280,14 +280,14 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
   CPPUNIT_ASSERT_EQUAL(string("10.0"), option.get("foo"));
   try {
     handler.parseArg(&option, "-0.1");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
   }
   try {
     handler.parseArg(&option, "10.1");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
@@ -324,35 +324,35 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
 
   try {
     handler.parseArg(&option, "bar");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
   }
   try {
     handler.parseArg(&option, "bar:");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
   }
   try {
     handler.parseArg(&option, ":");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
   }
   try {
     handler.parseArg(&option, ":80");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
   }
   try {
     handler.parseArg(&option, "foo:bar");
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;

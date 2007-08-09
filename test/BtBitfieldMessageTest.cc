@@ -43,7 +43,7 @@ void BtBitfieldMessageTest::testCreate() {
     unsigned char msg[5];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 5);
     BtBitfieldMessage::create(&msg[4], 1);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -51,7 +51,7 @@ void BtBitfieldMessageTest::testCreate() {
     unsigned char msg[5+2];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 3, 6);
     BtBitfieldMessage::create(&msg[4], 3);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }

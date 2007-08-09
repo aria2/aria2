@@ -226,7 +226,7 @@ void HttpResponseTest::testValidateResponse()
 
   try {
     httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     delete e;
   }
@@ -235,7 +235,7 @@ void HttpResponseTest::testValidateResponse()
 
   try {
     httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     delete e;
   }
@@ -245,7 +245,7 @@ void HttpResponseTest::testValidateResponse()
   httpResponse.setHttpHeader(httpHeader);
   try {
     httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     delete e;
   }
@@ -256,7 +256,7 @@ void HttpResponseTest::testValidateResponse()
     httpResponse.validateResponse();
   } catch(Exception* e) {
     delete e;
-    CPPUNIT_FAIL("exception must not be threw.");
+    CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
  
@@ -286,7 +286,7 @@ void HttpResponseTest::testValidateResponse_good_range()
   } catch(Exception* e) {
     cerr << e->getMsg() << endl;
     delete e;
-    CPPUNIT_FAIL("exception must not be threw.");
+    CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
 
@@ -313,7 +313,7 @@ void HttpResponseTest::testValidateResponse_bad_range()
 
   try {
     httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     delete e;
   }
@@ -346,6 +346,6 @@ void HttpResponseTest::testValidateResponse_chunked()
     httpResponse.validateResponse();
   } catch(Exception* e) {
     delete e;
-    CPPUNIT_FAIL("exception must not be threw.");
+    CPPUNIT_FAIL("exception must not be thrown.");
   }
 }

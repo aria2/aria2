@@ -122,7 +122,7 @@ void BtPieceMessageTest::testCreate() {
     unsigned char msg[13];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 9, 7);
     BtPieceMessage::create(&msg[4], 9);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
   // case: id is wrong
@@ -130,7 +130,7 @@ void BtPieceMessageTest::testCreate() {
     unsigned char msg[13+2];
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 11, 8);
     BtPieceMessage::create(&msg[4], 11);
-    CPPUNIT_FAIL("exception must be threw.");
+    CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {
   }
 }

@@ -115,7 +115,7 @@ void HttpHeaderProcessorTest::testGetHttpStatusHeader_empty()
 
   try {
     pair<string, HttpHeaderHandle> statusHeader = proc.getHttpStatusHeader();
-    CPPUNIT_FAIL("Exception must be threw.");
+    CPPUNIT_FAIL("Exception must be thrown.");
   } catch(DlRetryEx* ex) {
     cout << ex->getMsg() << endl;
     delete ex;
@@ -142,7 +142,7 @@ void HttpHeaderProcessorTest::testGetHttpStatusHeader_insufficientStatusLength()
   proc.update(hd);  
   try {
     pair<string, HttpHeaderHandle> statusHeader = proc.getHttpStatusHeader();
-    CPPUNIT_FAIL("Exception must be threw.");
+    CPPUNIT_FAIL("Exception must be thrown.");
   } catch(DlRetryEx* ex) {
     cout << ex->getMsg() << endl;
     delete ex;
@@ -162,7 +162,7 @@ void HttpHeaderProcessorTest::testBeyondLimit()
   
   try {
     proc.update(hd2);
-    CPPUNIT_FAIL("Exception must be threw.");
+    CPPUNIT_FAIL("Exception must be thrown.");
   } catch(DlAbortEx* ex) {
     cout << ex->getMsg() << endl;
     delete ex;
