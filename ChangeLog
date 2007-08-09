@@ -6,6 +6,8 @@
 	Added the usage message of --peer-id-prefix option.
 	* src/main.cc
 
+	* Release 0.11.2
+	
 2007-08-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	MessageDigestHelper is introduced in order to simplify the use

@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.72.0 <http://docbook.sf.net/>
-.\"      Date: 08/09/2007
+.\"      Date: 08/10/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "08/09/2007" "" ""
+.TH "ARIA2C" "1" "08/10/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -300,6 +300,11 @@ Specify seeding time in minutes. Also see the \-\-seed\-ratio option.
 \-\-seed\-ratio=RATIO
 .RS 4
 Specify share ratio. Seed completed torrents until share ratio reaches RATIO. 1.0 is encouraged. If \-\-seed\-time option is specified along with this option, seeding ends when at least one of the conditions is satisfied.
+.RE
+.PP
+\-\-peer\-id\-prefix=PEERI_ID_PREFIX
+.RS 4
+Specify the prefix of peer ID. The peer ID in in BitTorrent is 20 byte length. If more than 20 bytes are specified, only first 20 bytes are used. If less than 20 bytes are specified, the random alphabet characters are added to make it's length 20 bytes. Default: \-aria2\-
 .RE
 .PP
 \-M, \-\-metalink\-file=METALINK_FILE

@@ -230,6 +230,15 @@ OPTIONS
                               along with this option, seeding ends when at
                               least one of the conditions is satisfied.
 
+ --peer-id-prefix=PEERI_ID_PREFIX::
+             Specify the prefix of peer ID. The peer ID in
+                              in BitTorrent is 20 byte length. If more than 20
+                              bytes are specified, only first 20
+                              bytes are used. If less than 20 bytes are
+                              specified, the random alphabet characters are
+                              added to make it's length 20 bytes.
+                              Default: -aria2-
+ 
  -M, --metalink-file=METALINK_FILE::
  The file path to .metalink file.
 
