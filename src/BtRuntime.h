@@ -38,7 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 
-#define MIN_PEERS 15
+#define MIN_PEERS 40
 
 class BtRuntime {
 private:

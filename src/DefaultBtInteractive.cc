@@ -278,7 +278,7 @@ void DefaultBtInteractive::detectMessageFlooding() {
 void DefaultBtInteractive::checkActiveInteraction()
 {
   int32_t interval = 5*60;
-  if(inactiveCheckPoint.elapsed(interval) && btRuntime->getConnections() >= MAX_PEERS) {
+  if(inactiveCheckPoint.elapsed(interval)) {
     throw new DlAbortEx(EX_DROP_INACTIVE_CONNECTION, interval);
   }
 }
