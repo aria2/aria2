@@ -38,4 +38,3 @@
 * time related headers and compatible macros and definition -> a2time.h
 * used globally -> common.h
 
-* replace threw with thrown
