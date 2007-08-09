@@ -259,6 +259,13 @@ void showUsage() {
 	    "                              encouraged. If --seed-time option is specified\n"
 	    "                              along with this option, seeding ends when at\n"
 	    "                              least one of the conditions is satisfied.") << endl;
+  cout << _(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID in\n"
+	    "                              in BitTorrent is 20 byte length. If more than 20\n"
+	    "                              bytes are specified, only first 20\n"
+	    "                              bytes are used. If less than 20 bytes are\n"
+	    "                              specified, the random alphabet characters are\n"
+	    "                              added to make it's length 20 bytes.\n"
+	    "                              Default: -aria2-") << endl;
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   cout << _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.") << endl;
