@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-08-05 00:15+0900\n"
+"POT-Creation-Date: 2007-08-09 23:54+0900\n"
 "PO-Revision-Date: 2006-05-05 19:44+0900\n"
 "Last-Translator: Hermann J. Beckers <hj.beckers@onlinehome.de>\n"
 "Language-Team: deutsch <de@li.org>\n"
@@ -433,7 +433,8 @@ msgid "No chunk to verify."
 msgstr ""
 
 #: src/message.h:121
-msgid "Good chunk checksum."
+#, c-format
+msgid "Good chunk checksum. hash=%s"
 msgstr ""
 
 #: src/message.h:122
@@ -821,7 +822,7 @@ msgstr "Fehler beim Binden an Port aufgetreten.\n"
 msgid " version "
 msgstr " Version "
 
-#: src/main.cc:96
+#: src/main.cc:99
 #, fuzzy
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
@@ -853,56 +854,59 @@ msgstr ""
 "along with this program; if not, write to the Free Software\n"
 "Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
 
-#: src/main.cc:110
+#: src/main.cc:113
 #, fuzzy
 msgid "Contact Info:"
 msgstr "Kontakt-Info: %s\n"
 
-#: src/main.cc:118
+#: src/main.cc:120
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
 msgstr "Aufruf: %s [Optionen] URL ...\n"
 
-#: src/main.cc:120
+#: src/main.cc:122
 #, c-format
 msgid "       %s [options] -T TORRENT_FILE FILE ...\n"
 msgstr "       %s [Optionen] -T TORRENT_FILE FILE ...\n"
 
-#: src/main.cc:123
+#: src/main.cc:125
 #, fuzzy, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
 msgstr "       %s [Optionen] -T TORRENT_FILE FILE ...\n"
 
-#: src/main.cc:126
+#: src/main.cc:128
 msgid "Options:"
 msgstr "Optionen:"
 
-#: src/main.cc:127
-msgid " -d, --dir=DIR                The directory to store downloaded file."
+#: src/main.cc:129
+#, fuzzy
+msgid ""
+" -d, --dir=DIR                The directory to store the downloaded file."
 msgstr ""
 " -d, --dir=DIR                Verzeichnis zum Speichern der abgerufenen "
 "Datei."
 
-#: src/main.cc:128
-msgid " -o, --out=FILE               The file name for downloaded file."
+#: src/main.cc:130
+#, fuzzy
+msgid " -o, --out=FILE               The file name of the downloaded file."
 msgstr " -o, --out=FILE               Dateiname für die abgerufene Datei."
 
-#: src/main.cc:129
+#: src/main.cc:131
+#, fuzzy
 msgid ""
-" -l, --log=LOG                The file path to store log. If '-' is "
-"specified,\n"
-"                              log is written to stdout."
+" -l, --log=LOG                The file name of the log file. If '-' is\n"
+"                              specified, log is written to stdout."
 msgstr ""
 " -l, --log=LOG                Dateipfad für die Log-Speicherung. Wenn '-' "
 "angegeben wird,\n"
 "                              wird das Log auf die Standardausgabe "
 "geschrieben."
 
-#: src/main.cc:132
+#: src/main.cc:134
 msgid " -D, --daemon                 Run as daemon."
 msgstr " -D, --daemon                 Start als Daemon-Prozeß."
 
-#: src/main.cc:134
+#: src/main.cc:136
 #, fuzzy
 msgid ""
 " -s, --split=N                Download a file using N connections. N must "
@@ -920,10 +924,13 @@ msgstr ""
 "                              Daher verbindet sich aria2 zu jeder URL mit\n"
 "                              N Verbindungen."
 
-#: src/main.cc:139
+#: src/main.cc:141
+#, fuzzy
 msgid ""
-" --retry-wait=SEC             Set amount of time in second between requests\n"
-"                              for errors. Specify a value between 0 and 60.\n"
+" --retry-wait=SEC             Set the seconds to wait to retry after an "
+"error\n"
+"                              has occured. Specify a value between 0 and "
+"60.\n"
 "                              Default: 5"
 msgstr ""
 " --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
@@ -932,12 +939,13 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:142
-msgid " -t, --timeout=SEC            Set timeout in second. Default: 60"
+#: src/main.cc:144
+#, fuzzy
+msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
 msgstr ""
 " -t, --timeout=SEC            Setzt Wartezeit in Sekunden. Fehlwert: 60"
 
-#: src/main.cc:143
+#: src/main.cc:145
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
@@ -945,42 +953,44 @@ msgstr ""
 " -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:151
-msgid ""
-" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
-"                              URLs."
-msgstr ""
-" --http-proxy=HOST:PORT       HTTP-Proxyserver benutzen. Dies betrifft alle\n"
-"                              URLs."
-
 #: src/main.cc:153
-msgid " --http-user=USER             Set HTTP user. This affects to all URLs."
-msgstr ""
-" --http-user=USER             HTTP-Anwendername angeben. Dies betrifft alle "
-"URLs."
-
-#: src/main.cc:154
+#, fuzzy
 msgid ""
-" --http-passwd=PASSWD         Set HTTP password. This affects to all URLs."
-msgstr ""
-" --http-passwd=PASSWD         HTTP-Passwort setzen. Dies betrifft alle URLs."
-
-#: src/main.cc:155
-msgid ""
-" --http-proxy-user=USER       Set HTTP proxy user. This affects to all URLs"
+" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
 " --http-proxy-user=USER       HTTP-Proxy-Anwender setzen. Dies betrifft alle "
 "URLs."
 
-#: src/main.cc:156
-msgid ""
-" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects to all "
+#: src/main.cc:154
+#, fuzzy
+msgid " --http-user=USER             Set HTTP user. This affects all URLs."
+msgstr ""
+" --http-user=USER             HTTP-Anwendername angeben. Dies betrifft alle "
 "URLs."
+
+#: src/main.cc:155
+#, fuzzy
+msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
+msgstr ""
+" --http-passwd=PASSWD         HTTP-Passwort setzen. Dies betrifft alle URLs."
+
+#: src/main.cc:156
+#, fuzzy
+msgid ""
+" --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
+msgstr ""
+" --http-proxy-user=USER       HTTP-Proxy-Anwender setzen. Dies betrifft alle "
+"URLs."
+
+#: src/main.cc:157
+#, fuzzy
+msgid ""
+" --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
 " --http-proxy-passwd=PASSWD   HTTP-Proxy-Passwort setzen. Dies betrifft alle "
 "URLs."
 
-#: src/main.cc:157
+#: src/main.cc:158
 msgid ""
 " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 "                              METHOD is either 'get' or 'tunnel'.\n"
@@ -991,7 +1001,7 @@ msgstr ""
 "                              METHOD ist entweder 'get' oder 'tunnel'.\n"
 "                              Fehlwert: tunnel"
 
-#: src/main.cc:160
+#: src/main.cc:161
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
@@ -1003,27 +1013,30 @@ msgstr ""
 "                              das einzig zulässige Schema.\n"
 "                              Fehlwert: basic"
 
-#: src/main.cc:163
-msgid " --referer=REFERER            Set Referer. This affects to all URLs."
+#: src/main.cc:164
+#, fuzzy
+msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr " --referer=REFERER            Referer setzen. Dies betrifft alle URLs."
 
-#: src/main.cc:164
+#: src/main.cc:165
+#, fuzzy
 msgid ""
-" --ftp-user=USER              Set FTP user. This affects to all URLs.\n"
+" --ftp-user=USER              Set FTP user. This affects all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
 " --ftp-user=USER              FTP-Anwender setzen. Dies betrifft alle URLs.\n"
 "                              Fehlwert: anonymous"
 
-#: src/main.cc:166
+#: src/main.cc:167
+#, fuzzy
 msgid ""
-" --ftp-passwd=PASSWD          Set FTP password. This affects to all URLs.\n"
+" --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
 " --ftp-passwd=PASSWD          FTP-Passwort setzen. Dies betrifft alle URLs.\n"
 "                              Fehlwert: ARIA2USER@"
 
-#: src/main.cc:168
+#: src/main.cc:169
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
@@ -1035,11 +1048,11 @@ msgstr ""
 "                              oder 'ascii'.\n"
 "                              Fehlwert: binary"
 
-#: src/main.cc:171
+#: src/main.cc:172
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
 msgstr " -p, --ftp-pasv               Passiv-Modus für FTP benutzen."
 
-#: src/main.cc:172
+#: src/main.cc:173
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
@@ -1051,17 +1064,17 @@ msgstr ""
 "                              'tunnel'.\n"
 "                              Fehlwert: tunnel"
 
-#: src/main.cc:175
+#: src/main.cc:176
 #, fuzzy
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
 "                              or equal to this value(bytes per sec).\n"
-"                              0 means aria2 does not care lowest speed "
+"                              0 means aria2 does not have a lowest speed "
 "limit.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              This option does not affect BitTorrent "
-"download.\n"
+"downloads.\n"
 "                              Default: 0"
 msgstr ""
 " --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
@@ -1070,7 +1083,7 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:182
+#: src/main.cc:183
 #, fuzzy
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
@@ -1084,19 +1097,18 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:186
+#: src/main.cc:187
 #, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method. METHOD is "
 "either\n"
-"                              'none' or 'prealloc'.\n"
-"                              'none' doesn't pre-allocate file space. "
-"'prealloc'\n"
-"                              pre-allocates file space before download "
-"begins.\n"
-"                              This may take some time depending on the size "
-"of\n"
-"                              file.\n"
+"                              'none' or 'prealloc'. 'none' doesn't pre-"
+"allocate\n"
+"                              file space. 'prealloc' pre-allocates file "
+"space\n"
+"                              before download begins. This may take some "
+"time\n"
+"                              depending on the size of the file.\n"
 "                              Default: none"
 msgstr ""
 " --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
@@ -1108,12 +1120,10 @@ msgstr ""
 #: src/main.cc:193
 #, fuzzy
 msgid ""
-" --allow-overwrite=true|false  If this option set to false, aria2 doesn't\n"
-"                              download a file which already exists in the "
+" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
+"                              already exists but the corresponding .aria2 "
 "file\n"
-"                              system but its corresponding .aria2 file "
-"doesn't\n"
-"                              exist.\n"
+"                              doesn't exist.\n"
 "                              Default: false"
 msgstr ""
 " --follow-torrent=true|false  Setzen dieser Option auf false verhindert die "
@@ -1123,20 +1133,20 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:199
+#: src/main.cc:198
 #, fuzzy
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
-"                              This option makes effect in BitTorrent "
-"download\n"
-"                              and Metalink with chunk checksums.\n"
-"                              Use this option to redownload a damaged "
-"portion of\n"
-"                              file.\n"
+"                              This option only affects in BitTorrent "
+"downloads\n"
+"                              and Metalink downloads with chunk checksums.\n"
+"                              Use this option to re-download a damaged "
+"portion\n"
+"                              of a file.\n"
 "                              You may need to specify --allow-"
 "overwrite=true\n"
-"                              option if .aria2 file doesn't exist.\n"
+"                              if the .aria2 file doesn't exist.\n"
 "                              Default: false"
 msgstr ""
 " --retry-wait=SEC             Setzt Wartezeit in Sekunden zwischen "
@@ -1145,14 +1155,14 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:207
+#: src/main.cc:206
 #, fuzzy
 msgid ""
-" --realtime-chunk-checksum=true|false  Validate chunk checksum while "
-"downloading\n"
-"                              a file in Metalink mode. This option makes "
-"effect\n"
-"                              in Metalink with chunk checksums.\n"
+" --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
+"                              downloading a file in Metalink mode. This "
+"option\n"
+"                              on affects Metalink mode with chunk "
+"checksums.\n"
 "                              Default: true"
 msgstr ""
 " --follow-torrent=true|false  Setzen dieser Option auf false verhindert die "
@@ -1162,52 +1172,51 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:212
+#: src/main.cc:211
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
-"                              file. Use this option to resume a download "
-"started\n"
-"                              by web browsers or another programs\n"
-"                              which download files sequentially from the\n"
-"                              beginning. Currently this option is applicable "
-"to\n"
-"                              http(s)/ftp downloads."
+"                              file. Use this option to resume a download\n"
+"                              started by a web browser or another program\n"
+"                              which downloads files sequentially from the\n"
+"                              beginning. Currently this option is only\n"
+"                              applicable to http(s)/ftp downloads."
 msgstr ""
 
-#: src/main.cc:218
+#: src/main.cc:217
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 
-#: src/main.cc:219
+#: src/main.cc:218
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr ""
 
-#: src/main.cc:220
+#: src/main.cc:219
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
-"                              multiple URIs for a single entity: deliminate\n"
-"                              URIs by Tab in a single line.\n"
+"                              multiple URIs for a single entity: separate\n"
+"                              URIs on a single line using the TAB "
+"character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
 
-#: src/main.cc:224
+#: src/main.cc:223
 #, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of concurrent "
 "downloads.\n"
-"                              It should be used with -i option.\n"
+"                              It should be used with the -i option.\n"
 "                              Default: 5"
 msgstr ""
 " -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:227
+#: src/main.cc:226
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
-"                              one used by Netscape and Mozilla."
+"                              the same used by Netscape and Mozilla."
 msgstr ""
 
-#: src/main.cc:230
+#: src/main.cc:229
 #, fuzzy
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
@@ -1217,20 +1226,19 @@ msgstr ""
 " -S, --show-files             Dateiliste der .torrent-Datei ausgeben und "
 "beenden."
 
-#: src/main.cc:232
+#: src/main.cc:231
 #, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
-"                              You can know file index through --show-files\n"
-"                              option. Multiple indexes can be specified by "
-"using\n"
-"                              ',' like \"3,6\".\n"
-"                              You can also use '-' to specify rangelike \"1-5"
+"                              You can find the file index using the\n"
+"                              --show-files option. Multiple indexes can be\n"
+"                              specified by using ',', for example: \"3,6\".\n"
+"                              You can also use '-' to specify a range: \"1-5"
 "\".\n"
 "                              ',' and '-' can be used together.\n"
-"                              When used with -M option, index may vary "
-"depending\n"
-"                              on the query(see --metalink-* options)."
+"                              When used with the -M option, index may vary\n"
+"                              depending on the query(see --metalink-* "
+"options)."
 msgstr ""
 " --select-file=INDEX...       Abzurufende Datei durch die Index-Angabe "
 "benennen.\n"
@@ -1241,16 +1249,18 @@ msgstr ""
 "                              Sie können auch '-' verwenden wie in \"1-5\".\n"
 "                              ',' und '-' können zusammen benutzt werden."
 
-#: src/main.cc:242
-msgid " -T, --torrent-file=TORRENT_FILE  The file path to .torrent file."
+#: src/main.cc:241
+#, fuzzy
+msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  Datenpfad zur torrent-Datei."
 
-#: src/main.cc:243
+#: src/main.cc:242
+#, fuzzy
 msgid ""
-" --follow-torrent=true|false  Setting this option to false prevents aria2 "
-"to\n"
-"                              enter BitTorrent mode even if the filename of\n"
-"                              downloaded file ends with .torrent.\n"
+" --follow-torrent=true|false  Set to false to prevent aria2 from\n"
+"                              entering BitTorrent mode even if the filename "
+"of\n"
+"                              the downloaded file ends with .torrent.\n"
 "                              Default: true"
 msgstr ""
 " --follow-torrent=true|false  Setzen dieser Option auf false verhindert die "
@@ -1260,7 +1270,7 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:247
+#: src/main.cc:246
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -1270,17 +1280,16 @@ msgstr ""
 "                              .torrent-Datei erwähnten Datei.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:250
+#: src/main.cc:249
 #, fuzzy
 msgid ""
-" --listen-port=PORT           Set port number to listen to for peer "
-"connection.\n"
+" --listen-port=PORT           Set TCP port number for BitTorrent downloads.\n"
 "                              Default: 6881-6999"
 msgstr ""
 " --listen-port=PORT           Port-Nummer zum Lauschen auf Peer-Verbindungen "
 "setzen."
 
-#: src/main.cc:252
+#: src/main.cc:251
 #, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
@@ -1294,25 +1303,24 @@ msgstr ""
 "und 60 an.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:256
+#: src/main.cc:255
 #, fuzzy
 msgid ""
-" --seed-time=MINUTES          Specify seeding time in minutes. See also\n"
+" --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
 " -m, --max-tries=N            Anzahl Versuche. 0 bedeutet unbegrenzt.\n"
 "                              Fehlwert: 5"
 
-#: src/main.cc:258
+#: src/main.cc:257
 #, fuzzy
 msgid ""
-" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents "
-"until\n"
-"                              share ratio reaches RATIO. 1.0 is encouraged.\n"
-"                              If --seed-time option is specified along with\n"
-"                              this option, seeding ends when at least one "
-"of\n"
-"                              the conditions is satisfied."
+" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
+"                              until share ratio reaches RATIO. 1.0 is\n"
+"                              encouraged. If --seed-time option is "
+"specified\n"
+"                              along with this option, seeding ends when at\n"
+"                              least one of the conditions is satisfied."
 msgstr ""
 " -s, --split=N                Abruf einer Datei mittels N Verbindungen. N "
 "muss\n"
@@ -1321,12 +1329,25 @@ msgstr ""
 "                              Daher verbindet sich aria2 zu jeder URL mit\n"
 "                              N Verbindungen."
 
-#: src/main.cc:265
+#: src/main.cc:262
+msgid ""
+" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
+"in\n"
+"                              in BitTorrent is 20 byte length. If more than "
+"20\n"
+"                              bytes are specified, only first 20\n"
+"                              bytes are used. If less than 20 bytes are\n"
+"                              specified, the random alphabet characters are\n"
+"                              added to make it's length 20 bytes.\n"
+"                              Default: -aria2-"
+msgstr ""
+
+#: src/main.cc:271
 #, fuzzy
-msgid " -M, --metalink-file=METALINK_FILE The file path to .metalink file."
+msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -T, --torrent-file=TORRENT_FILE  Datenpfad zur torrent-Datei."
 
-#: src/main.cc:266
+#: src/main.cc:272
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
@@ -1340,30 +1361,30 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:269
-msgid " --metalink-version=VERSION   The version of file to download."
+#: src/main.cc:275
+msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr ""
 
-#: src/main.cc:270
-msgid " --metalink-language=LANGUAGE The language of file to download."
+#: src/main.cc:276
+msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr ""
 
-#: src/main.cc:271
+#: src/main.cc:277
 msgid ""
-" --metalink-os=OS             The operating system the file is targeted."
+" --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 
-#: src/main.cc:272
+#: src/main.cc:278
 msgid " --metalink-location=LOCATION The location of the prefered server."
 msgstr ""
 
-#: src/main.cc:273
+#: src/main.cc:279
 #, fuzzy
 msgid ""
-" --follow-metalink=true|false  Setting this option to false prevents aria2 "
-"to\n"
-"                              enter Metalink mode even if the filename of\n"
-"                              downloaded file ends with .metalink.\n"
+" --follow-metalink=true|false Set to false to prevent aria2 from\n"
+"                              entering Metalink mode even if the filename "
+"of\n"
+"                              the downloaded file ends with .metalink.\n"
 "                              Default: true"
 msgstr ""
 " --follow-torrent=true|false  Setzen dieser Option auf false verhindert die "
@@ -1373,95 +1394,103 @@ msgstr ""
 "                              auf .torrent endet.\n"
 "                              Fehlwert: true"
 
-#: src/main.cc:278
+#: src/main.cc:284
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Versionsnummer ausgeben und beenden."
 
-#: src/main.cc:279
+#: src/main.cc:285
 msgid " -h, --help                   Print this message and exit."
 msgstr " -h, --help                   Diese Anzeige ausgeben und beenden."
 
-#: src/main.cc:282
+#: src/main.cc:288
+#, fuzzy
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
-" or downloading fails."
+" or downloading will fail."
 msgstr ""
 " Sie können mehrere URLs angeben. Alle URLs müssen auf die gleiche Datei "
 "verweisen\n"
 "oder der Abruf schlägt fehl."
 
-#: src/main.cc:287
+#: src/main.cc:293
+#, fuzzy
 msgid ""
-" Specify files in multi-file torrent to download. Use conjunction with\n"
-" -T option. This arguments are ignored if you specify --select-file option."
+" Specify files in multi-file torrent to download. Use in conjunction with "
+"the\n"
+" -T option. This argument is ignored if you specify the --select-file option."
 msgstr ""
 " Dateien im Mehrdatei-torrent zum Abruf spezifizieren. Benutzung in "
 "Verbindung mit der \n"
 " -T-Option. Diese Argumente werden ignoriert, wenn sie die Option --select-"
 "file angeben."
 
-#: src/main.cc:291
+#: src/main.cc:297
 msgid "Examples:"
 msgstr "Beispiele:"
 
-#: src/main.cc:292
-msgid " Download a file by 1 connection:"
+#: src/main.cc:298
+#, fuzzy
+msgid " Download a file using 1 connection:"
 msgstr " Abruf einer Datei über 1 Verbindung:"
 
-#: src/main.cc:294
-msgid " Download a file by 2 connections:"
+#: src/main.cc:300
+#, fuzzy
+msgid " Download a file using 2 connections:"
 msgstr " Abruf einer Datei mit 2 Verbindungen:"
 
-#: src/main.cc:296
-msgid " Download a file by 2 connections, each connects to a different server:"
+#: src/main.cc:302
+#, fuzzy
+msgid ""
+" Download a file using 2 connections, each connects to a different server:"
 msgstr ""
 " Abruf einer Datei über 2 Verbindungen, jede verbindet zu einem anderen "
 "Server:"
 
-#: src/main.cc:298
+#: src/main.cc:304
 msgid " You can mix up different protocols:"
 msgstr " Sie können verschiedene Protokolle mischen:"
 
-#: src/main.cc:302
+#: src/main.cc:308
 msgid " Download a torrent:"
 msgstr " Einen torrent abrufen:"
 
-#: src/main.cc:304
-msgid " Download a torrent using local .torrent file:"
+#: src/main.cc:310
+#, fuzzy
+msgid " Download a torrent using a local .torrent file:"
 msgstr " Einen torrent mit einer lokalen .torrent-Datei abrufen:"
 
-#: src/main.cc:306 src/main.cc:319
+#: src/main.cc:312 src/main.cc:325
 msgid " Download only selected files:"
 msgstr " Nur ausgewählte Dateien abrufen:"
 
-#: src/main.cc:308
+#: src/main.cc:314
 msgid " Print file listing of .torrent file:"
 msgstr " Dateiliste einer .torrent-Datei ausgeben:"
 
-#: src/main.cc:313
+#: src/main.cc:319
 msgid " Metalink downloading:"
-msgstr ""
-
-#: src/main.cc:315
-#, fuzzy
-msgid " Download a file using local .metalink file:"
-msgstr " Einen torrent mit einer lokalen .torrent-Datei abrufen:"
-
-#: src/main.cc:317
-msgid " Metalink downloading with preferences:"
 msgstr ""
 
 #: src/main.cc:321
 #, fuzzy
+msgid " Download a file using local .metalink file:"
+msgstr " Einen torrent mit einer lokalen .torrent-Datei abrufen:"
+
+#: src/main.cc:323
+msgid " Metalink downloading with preferences:"
+msgstr ""
+
+#: src/main.cc:327
+#, fuzzy
 msgid " Download only selected files using index:"
 msgstr " Nur ausgewählte Dateien abrufen:"
 
-#: src/main.cc:323
+#: src/main.cc:329
 #, fuzzy
 msgid " Print file listing of .metalink file:"
 msgstr " Dateiliste einer .torrent-Datei ausgeben:"
 
-#: src/main.cc:327
+#: src/main.cc:333
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Fehler an %s melden"
@@ -1479,6 +1508,14 @@ msgstr ""
 #, c-format
 msgid "done\n"
 msgstr "erledigt\n"
+
+#~ msgid ""
+#~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
+#~ "                              URLs."
+#~ msgstr ""
+#~ " --http-proxy=HOST:PORT       HTTP-Proxyserver benutzen. Dies betrifft "
+#~ "alle\n"
+#~ "                              URLs."
 
 #~ msgid "Files:"
 #~ msgstr "Dateien:"
