@@ -1,4 +1,5 @@
 #include "TimeSeedCriteria.h"
+#include "Util.h"
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <stdlib.h>
@@ -18,11 +19,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TimeSeedCriteriaTest);
 
 void TimeSeedCriteriaTest::testEvaluate() {
   TimeSeedCriteria cri(1);
-#ifdef HAVE_SLEEP
-  sleep(1);
-#else
-  _sleep(1);
-#endif
+  Util::sleep(1);
   CPPUNIT_ASSERT(cri.evaluate());
   cri.reset();
   cri.setDuration(10);

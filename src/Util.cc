@@ -38,12 +38,20 @@
 #include "message.h"
 #include "SimpleRandomizer.h"
 #include "a2netcompat.h"
+#include "a2time.h"
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
 #include <iomanip>
+
+#ifndef HAVE_SLEEP
+# ifdef HAVE_WINSOCK_H
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+# endif // HAVE_WINSOCK_H
+#endif // HAVE_SLEEP
 
 template<typename T>
 string uint2str(T value, bool comma) {
@@ -625,23 +633,8 @@ time_t Util::httpGMT(const string& httpStdTime)
   struct tm tm;
   memset(&tm, 0, sizeof(tm));
   strptime(httpStdTime.c_str(), "%a, %Y-%m-%d %H:%M:%S GMT", &tm);
-#ifdef HAVE_TIMEGM
   time_t thetime = timegm(&tm);
   return thetime;
-#else
-  char *tz;
-  tz = getenv("TZ");
-  putenv("TZ=");
-  tzset();
-  time_t thetime = mktime(&tm);
-  if (tz) {
-    char s[256];
-    snprintf(s, sizeof(s), "TZ=%s", tz);
-    putenv(s);
-  }
-  tzset();
-  return thetime;
-#endif // HAVE_TIMEGM
 }
 
 void Util::toStream(ostream& os, const FileEntries& fileEntries)
@@ -656,4 +649,51 @@ void Util::toStream(ostream& os, const FileEntries& fileEntries)
     os << "   |" << Util::llitos((*itr)->getLength(), true) << " bytes" << "\n";
     os << "---+---------------------------------------------------------------------------" << "\n";
   }
+}
+
+void Util::sleep(long seconds) {
+#ifdef HAVE_SLEEP
+  ::sleep(seconds);
+#elif defined(HAVE_USLEEP)
+  ::usleep(seconds * 1000000);
+#elif defined(HAVE_WINSOCK2_H)
+  ::Sleep(seconds * 1000);
+#else
+#error no sleep function is available (nanosleep?)
+#endif
+}
+
+void Util::usleep(long microseconds) {
+#ifdef HAVE_USLEEP
+  ::usleep(microseconds);
+#elif defined(HAVE_WINSOCK2_H)
+
+	LARGE_INTEGER current, freq, end;
+
+	static enum {GET_FREQUENCY, GET_MICROSECONDS, SKIP_MICROSECONDS} state = GET_FREQUENCY;
+
+	if (state == GET_FREQUENCY) {
+		if (QueryPerformanceFrequency(&freq))
+			state = GET_MICROSECONDS;
+		else
+			state = SKIP_MICROSECONDS;
+	}
+	
+	long msec = microseconds / 1000;
+	microseconds %= 1000;    
+
+	if (state == GET_MICROSECONDS && microseconds) {
+		QueryPerformanceCounter(&end);
+
+		end.QuadPart += (freq.QuadPart * microseconds) / 1000000;
+
+		while (QueryPerformanceCounter(&current) && (current.QuadPart <= end.QuadPart))
+			/* noop */ ;
+	}
+
+	if (msec)
+		Sleep(msec);
+#else
+	#error no usleep function is available (nanosleep?)
+#endif
 }

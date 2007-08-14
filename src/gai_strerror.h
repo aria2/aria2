@@ -26,8 +26,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _D_GETADDRINFO_H
-#define _D_GETADDRINFO_H
+#ifndef _D_GAI_STRERROR_H
+#define _D_GAI_STRERROR_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -131,7 +131,7 @@ extern "C" {
  * Fake struct and function names.
  * <netdb.h> might declares all or some of them.
  */
-#if defined(HAVE_GETADDRINFO) || defined(HAVE_GETNAMEINFO) || defined(HAVE_GAI_STRERROR)
+#if defined(HAVE_GAI_STRERROR)
 #define gai_strerror my_gai_strerror
 #endif
 
@@ -164,4 +164,4 @@ const char *gai_strerror();
 };
 #endif /* __cplusplus */
 
-#endif /* not _D_GETADDRINFO_H */
+#endif /* not _D_GAI_STRERROR_H */

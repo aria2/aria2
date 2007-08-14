@@ -141,7 +141,7 @@ AC_FUNC_MMAP
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_STAT
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify daemon ftruncate getcwd getpagesize inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo random rmdir select setlocale setmode sigaction sleep socket srandom stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul timegm usleep])
+AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify daemon ftruncate getcwd getpagesize inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo random rmdir select setlocale setmode sigaction sleep socket srandom stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul unsetenv usleep])
 
 AC_CHECK_FUNCS([basename],
 	[AM_CONDITIONAL([HAVE_BASENAME], true)],
@@ -164,11 +164,16 @@ AC_CHECK_FUNCS([localtime_r],
 AC_CHECK_FUNCS([strptime],
 	[AM_CONDITIONAL([HAVE_STRPTIME], true)],
 	[AM_CONDITIONAL([HAVE_STRPTIME], false)])
+AC_CHECK_FUNCS([timegm],
+	[AM_CONDITIONAL([HAVE_TIMEGM], true)],
+	[AM_CONDITIONAL([HAVE_TIMEGM], false)])
 
 case "$target" in
 	*mingw*)
-		dnl true if _WIN32_WINNT >= 0x0501
+		dnl defined in ws2tcpip.h, but only if _WIN32_WINNT >= 0x0501
 		AM_CONDITIONAL([HAVE_GETADDRINFO], true)
+		dnl defined in ws2tcpip.h, but missing in C:\mingw\lib\libws2_32.a
+		AM_CONDITIONAL([HAVE_GAI_STRERROR], false)
 		;;
 esac
 
@@ -180,3 +185,19 @@ AC_CONFIG_FILES([Makefile
 		intl/Makefile
 		doc/Makefile])
 AC_OUTPUT
+
+echo " "
+echo "Build:          $build"
+echo "Target:         $target"
+echo "Install prefix: $prefix"
+echo "CFLAGS:         $CFLAGS"
+echo "CPPFLAGS:       $CPPFLAGS"
+echo "LDFLAGS:        $LDFLAGS"
+echo "LIBS:           $LIBS"
+echo "GnuTLS:         $have_libgnutls"
+echo "OpenSSL:        $have_openssl"
+echo "LibXML2:        $have_libxml2"
+echo "LibAres:        $have_libares"
+echo "LibCares:       $have_libcares"
+echo "Bittorrent:     $enable_bittorrent"
+echo "Metalink:       $enable_metalink"

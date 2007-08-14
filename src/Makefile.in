@@ -169,6 +169,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @HAVE_INET_ATON_FALSE@am__append_8 = inet_aton.c inet_aton.h
 @HAVE_LOCALTIME_R_FALSE@am__append_9 = localtime_r.c localtime_r.h
 @HAVE_STRPTIME_FALSE@am__append_10 = strptime.c strptime.h
+@HAVE_TIMEGM_FALSE@am__append_11 = timegm.c timegm.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -334,7 +335,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MetalinkRequestInfo.cc MetalinkRequestInfo.h libgen.c libgen.h \
 	getaddrinfo.c getaddrinfo.h gai_strerror.c gai_strerror.h \
 	gettimeofday.c gettimeofday.h inet_aton.c inet_aton.h \
-	localtime_r.c localtime_r.h strptime.c strptime.h
+	localtime_r.c localtime_r.h strptime.c strptime.h timegm.c \
+	timegm.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidator.$(OBJEXT) \
@@ -421,7 +423,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @HAVE_INET_ATON_FALSE@am__objects_8 = inet_aton.$(OBJEXT)
 @HAVE_LOCALTIME_R_FALSE@am__objects_9 = localtime_r.$(OBJEXT)
 @HAVE_STRPTIME_FALSE@am__objects_10 = strptime.$(OBJEXT)
-am__objects_11 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+@HAVE_TIMEGM_FALSE@am__objects_11 = timegm.$(OBJEXT)
+am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -464,8 +467,9 @@ am__objects_11 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FileEntry.$(OBJEXT) Platform.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) $(am__objects_9) $(am__objects_10)
-am_libaria2c_a_OBJECTS = $(am__objects_11)
+	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
+	$(am__objects_11)
+am_libaria2c_a_OBJECTS = $(am__objects_12)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -547,6 +551,8 @@ HAVE_LOCALTIME_R_FALSE = @HAVE_LOCALTIME_R_FALSE@
 HAVE_LOCALTIME_R_TRUE = @HAVE_LOCALTIME_R_TRUE@
 HAVE_STRPTIME_FALSE = @HAVE_STRPTIME_FALSE@
 HAVE_STRPTIME_TRUE = @HAVE_STRPTIME_TRUE@
+HAVE_TIMEGM_FALSE = @HAVE_TIMEGM_FALSE@
+HAVE_TIMEGM_TRUE = @HAVE_TIMEGM_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -718,7 +724,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	Platform.h $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10)
+	$(am__append_10) $(am__append_11)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -968,6 +974,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messageDigest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strptime.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timegm.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

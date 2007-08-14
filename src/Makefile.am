@@ -260,6 +260,10 @@ if !HAVE_STRPTIME
 SRCS += strptime.c strptime.h
 endif # !HAVE_STRPTIME
 
+if !HAVE_TIMEGM
+SRCS += timegm.c timegm.h
+endif # !HAVE_TIMEGM
+
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

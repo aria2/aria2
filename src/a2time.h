@@ -49,4 +49,8 @@
 # include "strptime.h"
 #endif // HAVE_STRPTIME
 
+#ifndef HAVE_TIMEGM
+# include "timegm.h"
+#endif // HAVE_TIMEGM
+
 #endif // _D_A2TIME_H_

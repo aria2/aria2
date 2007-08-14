@@ -38,8 +38,16 @@
 
 #ifdef HAVE_WINSOCK2_H
 
+#ifndef _WIN32_WINNT
+# define _WIN32_WINNT 0x501
+#endif // _WIN32_WINNT
+#include <winsock2.h>
+#undef ERROR
+#ifdef HAVE_WS2TCPIP_H
+# include <ws2tcpip.h>
+#endif // HAVE_WS2TCPIP_H
+
 #include "common.h"
-#include "a2netcompat.h"
 #include "DlAbortEx.h"
 #include "Platform.h"
 

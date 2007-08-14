@@ -131,6 +131,10 @@ public:
   static time_t httpGMT(const string& httpTimeFormat);
 
   static void toStream(ostream& os, const FileEntries& entries);
+
+  static void sleep(long seconds);
+
+  static void usleep(long microseconds);
 };
 
 #endif // _D_UTIL_H_

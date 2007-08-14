@@ -211,6 +211,8 @@ extern "C" {
 #define PF_UNSPEC PF_INET
 #endif
 
+#ifndef __MINGW32__
+
 /*
  * struct addrinfo.
  */
@@ -224,6 +226,8 @@ struct addrinfo {
     struct sockaddr *ai_addr;
     struct addrinfo *ai_next;
 };
+
+#endif // __MINGW32__
 
 /*
  * Functions.

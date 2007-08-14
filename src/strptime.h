@@ -36,11 +36,11 @@
 #ifndef _D_STRPTIME_H
 #define _D_STRPTIME_H
 
+#include <time.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-#include <time.h>
 
 char * strptime (const char *buf, const char *format, struct tm *timeptr);
 

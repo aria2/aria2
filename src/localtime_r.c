@@ -35,6 +35,7 @@
 
 #include <time.h>
  #include <stdlib.h>
+
 #ifdef __MINGW32__
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -51,12 +52,9 @@ static void localtime_r_atexit()
 	DeleteCriticalSection(&localtime_r_cs);
 }
 
-#endif // __MINGW32__
-
 struct tm * localtime_r(const time_t *clock, struct tm *result)
 {
 	static struct tm *local_tm;
-#ifdef __MINGW32__
 	static int initialized = 0;
 
 	if (!initialized) {
@@ -69,7 +67,7 @@ struct tm * localtime_r(const time_t *clock, struct tm *result)
 	local_tm = localtime(clock);
 	memcpy(result, local_tm, sizeof(struct tm));
 	LeaveCriticalSection(&localtime_r_cs);
-#endif // __MINGW32__
 	return result;
 };
 
+#endif // __MINGW32__

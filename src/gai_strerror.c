@@ -26,15 +26,11 @@
  * SUCH DAMAGE.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "gai_strerror.h"
 
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #endif
-
-#include "gai_strerror.h"
 
 #ifdef ENABLE_NLS
 #define _(string) gettext(string)

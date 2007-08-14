@@ -30,12 +30,32 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
+#ifndef HAVE_CONFIG_H
+# include "config.h"
+#endif // HAVE_CONFIG_H
+
+#ifndef HAVE_LOCALTIME_R
+# include "localtime_r.h"
+#endif // HAVE_LOCALTIME_R
+
+#ifndef HAVE_TIMEGM
+# include "timegm.h"
+#endif // HAVE_TIMEGM
+
 #include <stddef.h>
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+
+#ifdef HAVE_ALLOCA_H
+# include <alloca.h>
+#endif // HAVE_ALLOCA_H
+
+#ifdef HAVE_MALLOC_H
+# include <malloc.h>
+#endif // HAVE_MALLOC_H
 
 #include "strptime.h"
 
@@ -198,8 +218,8 @@ set_week_number_mon4 (struct tm *timeptr, int wnum)
 
 /* strptime: roken */
 //extern "C"
-char *
-strptime (const char *buf, const char *format, struct tm *timeptr)
+static char *
+_strptime (const char *buf, const char *format, struct tm *timeptr, int *gmt)
 {
     char c;
 
@@ -414,7 +434,29 @@ strptime (const char *buf, const char *format, struct tm *timeptr)
 		buf = s;
 		break;
 	    case 'Z' :
-		/* Unsupported. Just ignore.  */
+	    /* source: cygwin-1.5.24-2-src/cygwin-1.5.24-2/winsup/cygwin/libc/strptime.cc */
+		{
+			const char *cp;
+			char *zonestr;
+
+			for (cp = buf; *cp && isupper((unsigned char)*cp); ++cp) {/*empty*/}
+			if (cp - buf) {
+				zonestr = (char *) alloca(cp - buf + 1);
+				strncpy(zonestr, buf, cp - buf);
+				zonestr[cp - buf] = '\0';
+				tzset();
+				if (0 == strcmp(zonestr, "GMT")) {
+					*gmt = 1;
+				} else if (0 == strcmp(zonestr, tzname[0])) {
+					timeptr->tm_isdst = 0;
+				} else if (0 == strcmp(zonestr, tzname[1])) {
+					timeptr->tm_isdst = 1;
+				} else {
+					return 0;
+				}
+				buf += cp - buf;
+			}
+		}
 		break;
 	    case '\0' :
 		--format;
@@ -440,4 +482,20 @@ strptime (const char *buf, const char *format, struct tm *timeptr)
 	}
     }
     return (char *)buf;
+}
+
+char *
+strptime (const char *buf, const char *format, struct tm *timeptr)
+{
+	char *ret;
+	int gmt;
+
+	gmt = 0;
+	ret = _strptime(buf, format, timeptr, &gmt);
+	if (ret && gmt) {
+		time_t t = timegm(timeptr);
+		localtime_r(&t, timeptr);
+	}
+
+	return (ret);
 }
