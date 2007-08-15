@@ -39,23 +39,23 @@ void DataTest::testGetData() {
   Data data("aria2", 5);
   int len;
   CPPUNIT_ASSERT_EQUAL(0, memcmp("aria2", data.getData(), 5));
-  CPPUNIT_ASSERT_EQUAL(5, data.getLen());  
+  CPPUNIT_ASSERT_EQUAL((int32_t)5, data.getLen());  
 
   Data null(NULL, 0);
   CPPUNIT_ASSERT_EQUAL((const char*)NULL, null.getData());
-  CPPUNIT_ASSERT_EQUAL(0, null.getLen());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, null.getLen());
 
 }
 
 void DataTest::testToInt() {
   Data data("1000", 4);
-  CPPUNIT_ASSERT_EQUAL(1000, data.toInt());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1000, data.toInt());
 
   Data null(NULL, 0);
-  CPPUNIT_ASSERT_EQUAL(0, null.toInt());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, null.toInt());
 
   Data alpha("abc", 3);
-  CPPUNIT_ASSERT_EQUAL(0, alpha.toInt());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, alpha.toInt());
 }
 
 void DataTest::testToLLInt() {

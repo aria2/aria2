@@ -48,10 +48,10 @@ extern "C" {
 } /* end of extern "C" */
 #endif
 
-void callback(void* arg, int32_t status, struct hostent* host);
+void callback(void* arg, int status, struct hostent* host);
 
 class NameResolver {
-  friend void callback(void* arg, int32_t status, struct hostent* host);
+  friend void callback(void* arg, int status, struct hostent* host);
 
 public:
   enum STATUS {

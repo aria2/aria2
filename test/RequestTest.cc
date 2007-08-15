@@ -72,7 +72,7 @@ void RequestTest::testSetUrl1() {
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/"), req.getCurrentUrl());
   CPPUNIT_ASSERT_EQUAL(string(""), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string(""), req.getFile());
@@ -90,7 +90,7 @@ void RequestTest::testSetUrl2() {
   // previousUrl must equal to referer;
   CPPUNIT_ASSERT_EQUAL(req.getReferer(), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(8080, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("index.html"), req.getFile());
@@ -102,7 +102,7 @@ void RequestTest::testSetUrl3() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("index.html"), req.getFile());
@@ -114,7 +114,7 @@ void RequestTest::testSetUrl4() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/aria2/aria3"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("index.html"), req.getFile());
@@ -126,7 +126,7 @@ void RequestTest::testSetUrl5() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/aria2/aria3"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string(""), req.getFile());
@@ -138,7 +138,7 @@ void RequestTest::testSetUrl6() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("aria3"), req.getFile());
@@ -212,7 +212,7 @@ void RequestTest::testSetUrl14() {
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL(8080, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("abc?query"), req.getFile());
 }
@@ -232,7 +232,7 @@ void RequestTest::testRedirectUrl() {
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080/aria2/index.html"), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.co.jp"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL(80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string(""), req.getFile());
 }
@@ -273,7 +273,7 @@ void RequestTest::testResetUrl() {
   // referer is unchanged
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080/"), req.getReferer());
   CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL(8080, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((int32_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("index.html"), req.getFile());

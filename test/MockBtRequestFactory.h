@@ -13,7 +13,7 @@ public:
 
   virtual void removeAllTargetPiece() {}
 
-  virtual int countTargetPiece() { return 0; }
+  virtual int32_t countTargetPiece() { return 0; }
 
   virtual void removeCompletedPiece() {}
 

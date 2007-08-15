@@ -75,8 +75,8 @@ MetalinkerHandle Xml2MetalinkProcessor::parseFile(const string& filename) {
   
   string xpath = "/m:metalink/m:files/m:file";
   MetalinkerHandle metalinker(new Metalinker());
-  for(int index = 1; 1; index++) {
-    MetalinkEntryHandle entry = getEntry(xpath+"["+Util::itos(index)+"]");
+  for(uint32_t index = 1; 1; index++) {
+    MetalinkEntryHandle entry = getEntry(xpath+"["+Util::uitos(index)+"]");
     if(!entry.get()) {
       break;
     } else {
@@ -151,8 +151,8 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
   }
   */
 #endif // ENABLE_MESSAGE_DIGEST
-  for(int index = 1; 1; index++) {
-    MetalinkResourceHandle resource(getResource(xpath+"/m:resources/m:url["+Util::itos(index)+"]"));
+  for(uint32_t index = 1; 1; index++) {
+    MetalinkResourceHandle resource(getResource(xpath+"/m:resources/m:url["+Util::uitos(index)+"]"));
     if(!resource.get()) {
       break;
     } else {
@@ -183,11 +183,11 @@ ChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
   }
 
   Strings checksums;
-  int64_t numPiece = (totalSize+checksumLength-1)/checksumLength;
-  for(int64_t i = 0; i < numPiece; ++i) {
+  uint64_t numPiece = (totalSize+checksumLength-1)/checksumLength;
+  for(uint64_t i = 0; i < numPiece; ++i) {
     string pieceHash = Util::trim(xpathContent(xpath+"/m:hash[@piece=\""+Util::ullitos(i)+"\"]"));
     if(pieceHash == "") {
-      throw new DlAbortEx("Piece hash missing. index=%d", i);
+      throw new DlAbortEx("Piece hash missing. index=%s", Util::ullitos(i));
     }
     checksums.push_back(pieceHash);
   }

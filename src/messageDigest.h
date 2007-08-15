@@ -121,8 +121,8 @@ public:
   void digestReset() {EVP_DigestInit(&ctx, algo);}
   void digestUpdate(const void* data, int32_t length) {EVP_DigestUpdate(&ctx, data, length);}
   void digestFinal(unsigned char* md) {
-    int32_t len;
-    EVP_DigestFinal(&ctx, md, (uint32_t*)&len);
+    unsigned int len;
+    EVP_DigestFinal(&ctx, md, &len);
   }
   void digestFree() {/*empty*/}
   int32_t digestLength() const {
@@ -144,8 +144,8 @@ public:
     EVP_DigestUpdate(&ctx, data, length);
   }
   void digestFinal(unsigned char* md) {
-    int32_t len;
-    EVP_DigestFinal_ex(&ctx, md, (uint32_t*)&len);
+    unsigned int len;
+    EVP_DigestFinal_ex(&ctx, md, &len);
   }
   void digestFree() {
     EVP_MD_CTX_cleanup(&ctx);

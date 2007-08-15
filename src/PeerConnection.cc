@@ -79,7 +79,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
     int32_t remain = 4-lenbufLength;
     int32_t temp = remain;
     // TODO fix this
-    socket->readData((char*)lenbuf+lenbufLength, (int&)temp);
+    socket->readData((char*)lenbuf+lenbufLength, temp);
     if(temp == 0) {
       // we got EOF
       throw new DlAbortEx(EX_EOF_FROM_PEER);
@@ -103,7 +103,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
   // we have currentPayloadLen-resbufLen bytes to read
   int32_t remaining = currentPayloadLength-resbufLength;
   if(remaining > 0) {
-    socket->readData((char*)resbuf+resbufLength, (int&)remaining);
+    socket->readData((char*)resbuf+resbufLength, remaining);
     if(remaining == 0) {
       // we got EOF
       throw new DlAbortEx(EX_EOF_FROM_PEER);
@@ -129,7 +129,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength) 
   }
   int32_t remain = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
   int32_t temp = remain;
-  socket->readData((char*)resbuf+resbufLength, (int&)temp);
+  socket->readData((char*)resbuf+resbufLength, temp);
   if(temp == 0) {
     // we got EOF
     throw new DlAbortEx(EX_EOF_FROM_PEER);

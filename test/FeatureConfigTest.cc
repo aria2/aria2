@@ -20,11 +20,11 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(FeatureConfigTest);
 
 void FeatureConfigTest::testGetDefaultPort() {
-  CPPUNIT_ASSERT_EQUAL(80,
+  CPPUNIT_ASSERT_EQUAL((int32_t)80,
 		       FeatureConfig::getInstance()->getDefaultPort("http"));
-  CPPUNIT_ASSERT_EQUAL(443,
+  CPPUNIT_ASSERT_EQUAL((int32_t)443,
 		       FeatureConfig::getInstance()->getDefaultPort("https"));
-  CPPUNIT_ASSERT_EQUAL(21,
+  CPPUNIT_ASSERT_EQUAL((int32_t)21,
 		       FeatureConfig::getInstance()->getDefaultPort("ftp"));
 }
 

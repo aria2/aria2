@@ -92,7 +92,7 @@ public:
   }
 };
 
-void SpeedCalc::update(int32_t bytes) {
+void SpeedCalc::update(int bytes) {
   accumulatedLength += bytes;
   for_each(&lengthArray[0], &lengthArray[2], Plus(bytes));
   if(isIntervalOver()) {

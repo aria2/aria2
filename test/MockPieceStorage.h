@@ -31,7 +31,7 @@ public:
     return new Piece();
   }
 
-  virtual PieceHandle getPiece(int index) {
+  virtual PieceHandle getPiece(int32_t index) {
     return new Piece();
   }
 
@@ -39,7 +39,7 @@ public:
 
   virtual void cancelPiece(const PieceHandle& piece) {}
 
-  virtual bool hasPiece(int index) {
+  virtual bool hasPiece(int32_t index) {
     return false;
   }
 

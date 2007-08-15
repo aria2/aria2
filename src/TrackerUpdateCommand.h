@@ -46,7 +46,7 @@ private:
   bool prepareForRetry();
   string getTrackerResponse();
 public:
-  TrackerUpdateCommand(int cuid,
+  TrackerUpdateCommand(int32_t cuid,
 		       TorrentDownloadEngine* e,
 		       const BtContextHandle& btContext);
 

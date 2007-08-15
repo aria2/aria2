@@ -1,5 +1,33 @@
 2007-08-10  Ross Smith II  <aria2spam at smithii dot com>
 
+	gcc 3.4.4 support:
+	* src/DefaultBtContext.cc: int32_t -> int
+	* src/main.cc: int -> int32_t, int32_t -> int
+	* src/messageDigest.h: uint32_t -> unsigned int
+	* src/NameResolver.h: int32_t -> int
+	* src/PeerConnection.cc: int -> int32_t
+	* src/SpeedCalc.cc: int32_t -> int
+	* src/TrackerUpdateCommand.h: int -> int32_t
+	* src/Util.cc: int32_t -> int
+	* src/Util.h: int32_t -> int
+	* src/Xml2MetalinkProcessor.cc: int -> uint32_t, int64_t -> uint64_t
+	* test/AnnounceListTest.cc: int -> int32_t
+	* test/ChunkedEncodingTest.cc: int -> int32_t
+	* test/DataTest.cc: int -> int32_t
+	* test/DefaultBtRequestFactoryTest.cc: int -> int32_t
+	* test/DefaultPeerListProcessorTest.cc: int -> int32_t
+	* test/DefaultPieceStorageTest.cc: int -> int32_t
+	* test/FeatureConfigTest.cc: int -> int32_t
+	* test/MetalinkEntryTest.cc: int -> int32_t
+	* test/MockBtRequestFactory.h: int -> int32_t
+	* test/MockPieceStorage.h: int -> int32_t
+	* test/OptionTest.cc: int -> int32_t
+	* test/RequestTest.cc: int -> int32_t
+	* test/SegmentManTest.cc: int -> int32_t
+	* test/Xml2MetalinkProcessorTest.cc: int -> int32_t
+	
+2007-08-10  Ross Smith II  <aria2spam at smithii dot com>
+
 	Move sleep functions to Util class:
 	* src/Util.cc
 	(sleep): New function.

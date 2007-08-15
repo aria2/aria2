@@ -560,7 +560,7 @@ bool Util::isNumbersAndDotsNotation(const string& name) {
   }
 }
 
-void Util::setGlobalSignalHandler(int32_t sig, void (*handler)(int32_t), int32_t flags) {
+void Util::setGlobalSignalHandler(int32_t sig, void (*handler)(int), int32_t flags) {
 #ifdef HAVE_SIGACTION
   struct sigaction sigact;
   sigact.sa_handler = handler;

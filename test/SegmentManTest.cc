@@ -83,15 +83,15 @@ void SegmentManTest::testSaveAndLoad() {
 void SegmentManTest::testNullBitfield() {
   SegmentMan segmentMan;
   Option op;
-  op.put(PREF_SEGMENT_SIZE, Util::itos(1024*1024));
+  op.put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
   segmentMan.option = &op;
 
   SegmentHandle segment = segmentMan.getSegment(1);
   CPPUNIT_ASSERT(!segment.isNull());
-  CPPUNIT_ASSERT_EQUAL(0, segment->index);
-  CPPUNIT_ASSERT_EQUAL(0, segment->length);
-  CPPUNIT_ASSERT_EQUAL(0, segment->segmentLength);
-  CPPUNIT_ASSERT_EQUAL(0, segment->writtenLength);
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->index);
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->length);
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->segmentLength);
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->writtenLength);
 
   SegmentHandle segment2 = segmentMan.getSegment(2);
   CPPUNIT_ASSERT(segment2.isNull());
@@ -145,8 +145,8 @@ void SegmentManTest::testMarkPieceDone_usedSegment()
 
   SegmentHandle segment = segmentMan.getSegment(0, 5);
   CPPUNIT_ASSERT(!segment.isNull());
-  CPPUNIT_ASSERT_EQUAL(5, segment->index);
+  CPPUNIT_ASSERT_EQUAL((int32_t)5, segment->index);
   CPPUNIT_ASSERT_EQUAL(pieceLength, (int32_t) segment->length);
   CPPUNIT_ASSERT_EQUAL(pieceLength, (int32_t) segment->segmentLength);
-  CPPUNIT_ASSERT_EQUAL(100, segment->writtenLength);
+  CPPUNIT_ASSERT_EQUAL((int32_t)100, segment->writtenLength);
 }

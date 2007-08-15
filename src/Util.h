@@ -116,7 +116,7 @@ public:
 
   static bool isNumbersAndDotsNotation(const string& name);
 
-  static void setGlobalSignalHandler(int32_t signal, void (*handler)(int32_t), int32_t flags);
+  static void setGlobalSignalHandler(int32_t signal, void (*handler)(int), int32_t flags);
 
   static void indexRange(int32_t& startIndex, int32_t& endIndex,
 			 int64_t offset,

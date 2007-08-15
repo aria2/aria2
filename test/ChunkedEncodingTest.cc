@@ -31,7 +31,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ChunkedEncodingTest );
 void ChunkedEncodingTest::testInflate1() {
   string msg = "a\r\n1234567890\r\n";
   char buf[100];
-  int len = sizeof(buf);
+  int32_t len = sizeof(buf);
   enc->inflate(buf, len, msg.c_str(), msg.size());
   buf[len] = '\0';
   CPPUNIT_ASSERT_EQUAL(string("1234567890"), string(buf));
@@ -54,7 +54,7 @@ void ChunkedEncodingTest::testInflateLargeChunk() {
   string body;
   is >> body;
   char buf[4097];
-  int len = sizeof(buf);
+  int32_t len = sizeof(buf);
   for(int i = 0; i < 2; i++) {
     string msg = "1000\r\n"+body+"\r\n";
     len = sizeof(buf);
@@ -63,7 +63,7 @@ void ChunkedEncodingTest::testInflateLargeChunk() {
     CPPUNIT_ASSERT_EQUAL(body, string(buf));
   }
   enc->inflate(buf, len, "0\r\n", 3);
-  CPPUNIT_ASSERT_EQUAL(0, len);
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, len);
   CPPUNIT_ASSERT(enc->finished());
 }
 

@@ -92,9 +92,9 @@ void MetalinkEntryTest::testReorderResourcesByPreference() {
   
   entry->reorderResourcesByPreference();
 
-  CPPUNIT_ASSERT_EQUAL(100, entry->resources.at(0)->preference);
-  CPPUNIT_ASSERT_EQUAL(90, entry->resources.at(1)->preference);
-  CPPUNIT_ASSERT_EQUAL(60, entry->resources.at(2)->preference);
-  CPPUNIT_ASSERT_EQUAL(50, entry->resources.at(3)->preference);
-  CPPUNIT_ASSERT_EQUAL(10, entry->resources.at(4)->preference);
+  CPPUNIT_ASSERT_EQUAL((int32_t)100, entry->resources.at(0)->preference);
+  CPPUNIT_ASSERT_EQUAL((int32_t)90, entry->resources.at(1)->preference);
+  CPPUNIT_ASSERT_EQUAL((int32_t)60, entry->resources.at(2)->preference);
+  CPPUNIT_ASSERT_EQUAL((int32_t)50, entry->resources.at(3)->preference);
+  CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources.at(4)->preference);
 }

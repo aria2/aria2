@@ -125,8 +125,8 @@ void DefaultPieceStorageTest::testGetPiece() {
   DefaultPieceStorage pss(btContext, option);
   
   PieceHandle pieceGot = pss.getPiece(0);
-  CPPUNIT_ASSERT_EQUAL(0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL(128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(false, pieceGot->pieceComplete());
 }
 
@@ -136,9 +136,9 @@ void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
   piece->completeBlock(0);
   pss.addUsedPiece(piece);
   PieceHandle pieceGot = pss.getPiece(0);
-  CPPUNIT_ASSERT_EQUAL(0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL(128, pieceGot->getLength());
-  CPPUNIT_ASSERT_EQUAL(1, pieceGot->countCompleteBlock());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, pieceGot->countCompleteBlock());
 }
 
 void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
@@ -146,7 +146,7 @@ void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
   PieceHandle piece = PieceHandle(new Piece(0, 128));
   pss.completePiece(piece);
   PieceHandle pieceGot = pss.getPiece(0);
-  CPPUNIT_ASSERT_EQUAL(0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL(128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(true, pieceGot->pieceComplete());
 }

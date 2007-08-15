@@ -106,7 +106,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtRequestFactoryTest);
 void DefaultBtRequestFactoryTest::testAddTargetPiece() {
   PieceHandle piece = new Piece(0, 16*1024);
   btRequestFactory->addTargetPiece(piece);
-  CPPUNIT_ASSERT_EQUAL(1, btRequestFactory->countTargetPiece());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, btRequestFactory->countTargetPiece());
 }
 
 void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
@@ -115,10 +115,10 @@ void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
   piece2->setAllBlock();
   btRequestFactory->addTargetPiece(piece1);
   btRequestFactory->addTargetPiece(piece2);
-  CPPUNIT_ASSERT_EQUAL(2, btRequestFactory->countTargetPiece());
+  CPPUNIT_ASSERT_EQUAL((int32_t)2, btRequestFactory->countTargetPiece());
   btRequestFactory->removeCompletedPiece();
-  CPPUNIT_ASSERT_EQUAL(1, btRequestFactory->countTargetPiece());
-  CPPUNIT_ASSERT_EQUAL(0, btRequestFactory->getTargetPieces().front()->getIndex());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, btRequestFactory->countTargetPiece());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, btRequestFactory->getTargetPieces().front()->getIndex());
 }
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages() {

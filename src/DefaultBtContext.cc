@@ -185,7 +185,7 @@ void DefaultBtContext::load(const string& torrentFile) {
   // retrieve infoHash
   ShaVisitor v;
   infoDic->accept(&v);
-  int32_t len;
+  int len;
   v.getHash(infoHash, len);
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces

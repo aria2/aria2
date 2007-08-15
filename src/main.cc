@@ -352,7 +352,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_DIR, ".");
   op->put(PREF_SPLIT, "1");
   op->put(PREF_DAEMON, V_FALSE);
-  op->put(PREF_SEGMENT_SIZE, Util::itos(1024*1024));
+  op->put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
   op->put(PREF_HTTP_KEEP_ALIVE, V_FALSE);
   op->put(PREF_LISTEN_PORT, "-1");
   op->put(PREF_METALINK_SERVERS, "5");
@@ -401,8 +401,8 @@ int main(int argc, char* argv[]) {
   op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "5");
   op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "15");
   while(1) {
-    int32_t optIndex = 0;
-    int32_t lopt;
+    int optIndex = 0;
+    int lopt;
     static struct option longOpts[] = {
 #ifdef HAVE_DAEMON
       { "daemon", no_argument, NULL, 'D' },

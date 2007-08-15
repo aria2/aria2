@@ -38,7 +38,7 @@ void OptionTest::testPutAndGetAsInt() {
   op.put("key", "1000");
 
   CPPUNIT_ASSERT(op.defined("key"));
-  CPPUNIT_ASSERT_EQUAL(1000, op.getAsInt("key"));
+  CPPUNIT_ASSERT_EQUAL((int32_t)1000, op.getAsInt("key"));
 }
 
 void OptionTest::testPutAndGetAsDouble() {
