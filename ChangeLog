@@ -1,3 +1,20 @@
+2007-08-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Avoid sparse files if possible, because VFAT32 doesn't support it.
+	* src/DefaultDiskWriter.cc (initAndOpenFile)
+
+	Fixed the bug that prevents file allocation is not done when
+	dowloading multi-torrent file.
+	* src/AbstractDiskWriter.cc (openFile)
+	
+	Increase the maximum number of -j option from 15 to 45.
+	* src/OptionHandlerFactory.cc (createOptionHandlers)
+
+	Added fr.po, thanks to Charles Landemaine.
+	* po/fr.po
+	* po/LINGUAS
+	
+
 2007-08-10  Ross Smith II  <aria2spam at smithii dot com>
 
 	gcc 3.4.4 support:

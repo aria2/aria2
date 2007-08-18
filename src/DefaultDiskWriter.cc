@@ -53,7 +53,7 @@ void DefaultDiskWriter::initAndOpenFile(const string& filename,
   try {
     if(totalLength > 0) {
       if(fileAllocator.isNull()) {
-	ftruncate(fd, totalLength);
+	ftruncate(fd, 0);
       } else {
 	logger->notice(MSG_ALLOCATING_FILE,
 		       filename.c_str(),

@@ -60,7 +60,7 @@ AbstractDiskWriter::~AbstractDiskWriter()
 void AbstractDiskWriter::openFile(const string& filename, int64_t totalLength) {
   File f(filename);
   if(f.exists()) {
-    openExistingFile(filename);
+    openExistingFile(filename, totalLength);
   } else {
     initAndOpenFile(filename, totalLength);
   }
