@@ -62,6 +62,10 @@
 	* src/Util.cc:
 	* src/strptime.c: Added support for %Z option.
 
+	Fixed MinGW non-blocking bug.
+	* src/SocketCore.cc
+	* src/HttpRequestCommand.cc
+
 	Miscellenous build fixes/enhancements.
 	* configure.ac: Added summary report.
 	* src/Platform.h: Tweaked #include's.

@@ -1,4 +1,3 @@
-/* <!-- copyright */
 /*
  * aria2 - The high speed download utility
  *
@@ -32,43 +31,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpRequestCommand.h"
-#include "HttpResponseCommand.h"
-#include "HttpConnection.h"
-#include "prefs.h"
+#ifndef _D_TIMEGM_H_
+#define _D_TIMEGM_H_
 
-HttpRequestCommand::HttpRequestCommand(int cuid,
-				       const RequestHandle& req,
-				       RequestGroup* requestGroup,
-				       DownloadEngine* e,
-				       const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s) {
-  disableReadCheckSocket();
-  setWriteCheckSocket(socket);
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif // HAVE_CONFIG_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+#include <time.h>
+
+#ifndef HAVE_TIMEGM
+
+time_t timegm(struct tm *tm);
+
+#endif // HAVE_TIMEGM
+
+#ifdef __cplusplus
 }
+#endif /* __cplusplus */
 
-HttpRequestCommand::~HttpRequestCommand() {}
-
-bool HttpRequestCommand::executeInternal() {
-  socket->setBlockingMode();
-  if(req->getProtocol() == "https") {
-    socket->initiateSecureConnection();
-  }
-  if(!e->option->getAsBool(PREF_HTTP_KEEP_ALIVE)) {
-    req->setKeepAlive(false);
-  }
-  HttpRequestHandle httpRequest = new HttpRequest();
-  httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
-  httpRequest->setRequest(req);
-  httpRequest->setSegment(segment);
-  httpRequest->setEntityLength(_requestGroup->getSegmentMan()->totalSize);
-  httpRequest->configure(e->option);
-
-  HttpConnectionHandle httpConnection = new HttpConnection(cuid, socket, e->option);
-
-  httpConnection->sendRequest(httpRequest);
-
-  Command* command = new HttpResponseCommand(cuid, req, _requestGroup, httpConnection, e, socket);
-  e->commands.push_back(command);
-  return true;
-}
+#endif // _D_TIMEGM_H_

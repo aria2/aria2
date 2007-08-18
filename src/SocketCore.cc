@@ -188,16 +188,21 @@ void SocketCore::establishConnection(const string& host, int32_t port) {
   }
   // make socket non-blocking mode
   setNonBlockingMode();
-  if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && SOCKET_ERRNO != EINPROGRESS) {
+  if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && SOCKET_ERRNO != 
+#ifndef __MINGW32__
+EINPROGRESS
+#else
+WSAEWOULDBLOCK
+#endif // __MINGW32__
+  ) {
     throw new DlAbortEx(EX_SOCKET_CONNECT, host.c_str(), errorMsg());
   }
 }
 
 void SocketCore::setNonBlockingMode() {
 #ifdef __MINGW32__
-  u_long flag = 0;
-  ::ioctlsocket(sockfd, FIONBIO, &flag);
-  if (WSAGetLastError()) {
+  static u_long flag = 1;
+  if (::ioctlsocket(sockfd, FIONBIO, &flag) == -1) {
     throw new DlAbortEx(EX_SOCKET_NONBLOCKING, errorMsg());
   }
 #else
@@ -210,8 +215,10 @@ void SocketCore::setNonBlockingMode() {
 
 void SocketCore::setBlockingMode() {
 #ifdef __MINGW32__
-  u_long flag = 1;
-  ::ioctlsocket(sockfd, FIONBIO, &flag);
+  static u_long flag = 0;
+  if (::ioctlsocket(sockfd, FIONBIO, &flag) == -1) {
+    throw new DlAbortEx(EX_SOCKET_BLOCKING, errorMsg());
+  }
 #else
   int32_t flags = fcntl(sockfd, F_GETFL, 0);
   // TODO add error handling
