@@ -38,3 +38,8 @@
 * time related headers and compatible macros and definition -> a2time.h
 * used globally -> common.h
 
+* Rewrite MetaFileUtil
+* Add parameterized URI support
+* Add pgp verification support. I have to use libgpgme??
+* Add outfile auto renaming
+* Disable segmented download in .metalink

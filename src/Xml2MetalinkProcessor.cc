@@ -187,7 +187,7 @@ ChunkChecksumHandle Xml2MetalinkProcessor::getPieceHash(const string& xpath,
   for(uint64_t i = 0; i < numPiece; ++i) {
     string pieceHash = Util::trim(xpathContent(xpath+"/m:hash[@piece=\""+Util::ullitos(i)+"\"]"));
     if(pieceHash == "") {
-      throw new DlAbortEx("Piece hash missing. index=%s", Util::ullitos(i));
+      throw new DlAbortEx("Piece hash missing. index=%s", Util::ullitos(i).c_str());
     }
     checksums.push_back(pieceHash);
   }

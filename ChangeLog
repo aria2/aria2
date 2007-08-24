@@ -1,3 +1,7 @@
+2007-08-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/Xml2MetalinkProcessor.cc (getPieceHash): Added missing .c_str().
+
 2007-08-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Avoid sparse files if possible, because VFAT32 doesn't support it.
