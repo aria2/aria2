@@ -148,9 +148,6 @@ FILE* SegmentMan::openSegFile(const string& segFilename, const string& mode) con
     throw new DlAbortEx(EX_SEGMENT_FILE_OPEN,
 			segFilename.c_str(), strerror(errno));
   }
-#ifdef HAVE_SETMODE
-  setmode(fileno(segFile), O_BINARY);
-#endif
   return segFile;
 }
 

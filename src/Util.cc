@@ -314,9 +314,6 @@ string Util::toHex(const unsigned char* src, int32_t len) {
 
 FILE* Util::openFile(const string& filename, const string& mode) {
   FILE* file = fopen(filename.c_str(), mode.c_str());
-#ifdef HAVE_SETMODE
-  setmode(fileno(file), O_BINARY);
-#endif
   return file;
 }
 

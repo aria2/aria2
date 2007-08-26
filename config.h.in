@@ -230,9 +230,6 @@
 /* Define to 1 if you have the `setlocale' function. */
 #undef HAVE_SETLOCALE
 
-/* Define to 1 if you have the `setmode' function. */
-#undef HAVE_SETMODE
-
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
 

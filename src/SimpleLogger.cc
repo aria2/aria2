@@ -72,9 +72,6 @@ void SimpleLogger::openFile(const string& filename) {
   if(file == NULL) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
-#ifdef HAVE_SETMODE
-  setmode(fileno(file), O_BINARY);
-#endif
 }
 
 void SimpleLogger::closeFile() {

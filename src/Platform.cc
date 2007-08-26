@@ -50,8 +50,11 @@
 #include "common.h"
 #include "DlAbortEx.h"
 #include "Platform.h"
+#include <stdlib.h> /* _fmode */
+#include <fcntl.h> /*  _O_BINARY */
 
 Platform::Platform() {
+  unsigned int _CRT_fmode = _O_BINARY;
   WSADATA wsaData;
   memset((char*)&wsaData, 0, sizeof(wsaData));
   if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {

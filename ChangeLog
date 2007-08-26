@@ -1,3 +1,14 @@
+2007-08-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Merged Ross's patch: Removed setmode(). Use _CRT_fmode to enable binary
+	IO.
+	* src/DefaultBtProgressInfoFile.cc
+	* src/MetaFileUtil.cc
+	* src/SimpleLogger.cc
+	* src/SegmentMan.cc
+	* src/Util.cc
+	* src/Platform.cc
+
 2007-08-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/Xml2MetalinkProcessor.cc (getPieceHash): Added missing .c_str().

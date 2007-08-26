@@ -48,9 +48,6 @@ MetaEntry* MetaFileUtil::parseMetaFile(const string& file) {
     if(fp == NULL) {
       throw new DlAbortEx("cannot open metainfo file");
     }
-#ifdef HAVE_SETMODE
-    setmode(fileno(fp), O_BINARY);
-#endif
     if(fread(buf, len, 1, fp) != 1) {
       fclose(fp);
       throw new DlAbortEx("cannot read metainfo");

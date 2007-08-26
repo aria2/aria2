@@ -162,9 +162,6 @@ FILE* DefaultBtProgressInfoFile::openFile(const string& filename,
     throw new DlAbortEx(EX_SEGMENT_FILE_OPEN,
 			filename.c_str(), strerror(errno));
   }
-#ifdef HAVE_SETMODE
-  setmode(fileno(file), O_BINARY);
-#endif
   return file;
 }
 
