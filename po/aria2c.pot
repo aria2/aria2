@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-08-28 20:46+0900\n"
+"POT-Creation-Date: 2007-08-29 00:46+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1008,13 +1008,25 @@ msgstr ""
 
 #: src/main.cc:199
 msgid ""
-" -Z, --force-sequential       Fetch URIs in the command-line sequentially "
-"and\n"
+" -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
+"sequentially and\n"
 "                              download each URI in a separate session, like\n"
-"                              the usual command-line download utilities."
+"                              the usual command-line download utilities.\n"
+"                              Default: false"
 msgstr ""
 
-#: src/main.cc:204
+#: src/main.cc:203
+msgid ""
+" --auto-file-renaming[=true|false] Rename file name if the same file "
+"already\n"
+"                              exists. This option works only in http(s)/ftp\n"
+"                              download.\n"
+"                              The new file name has a dot and a number"
+"(1..9999)\n"
+"                              appended. Default: true"
+msgstr ""
+
+#: src/main.cc:209
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
@@ -1030,7 +1042,7 @@ msgid ""
 "                              Default: false"
 msgstr ""
 
-#: src/main.cc:212
+#: src/main.cc:217
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -1040,7 +1052,7 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:217
+#: src/main.cc:222
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -1050,15 +1062,15 @@ msgid ""
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
 
-#: src/main.cc:223
+#: src/main.cc:228
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 
-#: src/main.cc:224
+#: src/main.cc:229
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr ""
 
-#: src/main.cc:225
+#: src/main.cc:230
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -1067,7 +1079,7 @@ msgid ""
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
 
-#: src/main.cc:229
+#: src/main.cc:234
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of concurrent "
 "downloads.\n"
@@ -1075,20 +1087,20 @@ msgid ""
 "                              Default: 5"
 msgstr ""
 
-#: src/main.cc:232
+#: src/main.cc:237
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
 msgstr ""
 
-#: src/main.cc:235
+#: src/main.cc:240
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
 "                              and exit."
 msgstr ""
 
-#: src/main.cc:237
+#: src/main.cc:242
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can find the file index using the\n"
@@ -1102,11 +1114,11 @@ msgid ""
 "options)."
 msgstr ""
 
-#: src/main.cc:247
+#: src/main.cc:252
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr ""
 
-#: src/main.cc:248
+#: src/main.cc:253
 msgid ""
 " --follow-torrent=true|false  Set to false to prevent aria2 from\n"
 "                              entering BitTorrent mode even if the filename "
@@ -1115,20 +1127,20 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:252
+#: src/main.cc:257
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:255
+#: src/main.cc:260
 msgid ""
 " --listen-port=PORT           Set TCP port number for BitTorrent downloads.\n"
 "                              Default: 6881-6999"
 msgstr ""
 
-#: src/main.cc:257
+#: src/main.cc:262
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -1136,13 +1148,13 @@ msgid ""
 "                              Default: 0"
 msgstr ""
 
-#: src/main.cc:261
+#: src/main.cc:266
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
 
-#: src/main.cc:263
+#: src/main.cc:268
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO. 1.0 is\n"
@@ -1152,7 +1164,7 @@ msgid ""
 "                              least one of the conditions is satisfied."
 msgstr ""
 
-#: src/main.cc:268
+#: src/main.cc:273
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -1165,35 +1177,35 @@ msgid ""
 "                              Default: -aria2-"
 msgstr ""
 
-#: src/main.cc:277
+#: src/main.cc:282
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr ""
 
-#: src/main.cc:278
+#: src/main.cc:283
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously.\n"
 "                              Default: 5"
 msgstr ""
 
-#: src/main.cc:281
+#: src/main.cc:286
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr ""
 
-#: src/main.cc:282
+#: src/main.cc:287
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr ""
 
-#: src/main.cc:283
+#: src/main.cc:288
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 
-#: src/main.cc:284
+#: src/main.cc:289
 msgid " --metalink-location=LOCATION The location of the prefered server."
 msgstr ""
 
-#: src/main.cc:285
+#: src/main.cc:290
 msgid ""
 " --follow-metalink=true|false Set to false to prevent aria2 from\n"
 "                              entering Metalink mode even if the filename "
@@ -1202,93 +1214,93 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/main.cc:290
+#: src/main.cc:295
 msgid " -v, --version                Print the version number and exit."
 msgstr ""
 
-#: src/main.cc:291
+#: src/main.cc:296
 msgid " -h, --help                   Print this message and exit."
 msgstr ""
 
-#: src/main.cc:294
+#: src/main.cc:299
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading will fail."
 msgstr ""
 
-#: src/main.cc:299
+#: src/main.cc:304
 msgid ""
 " Specify files in multi-file torrent to download. Use in conjunction with "
 "the\n"
 " -T option. This argument is ignored if you specify the --select-file option."
 msgstr ""
 
-#: src/main.cc:303
+#: src/main.cc:308
 msgid "Examples:"
 msgstr ""
 
-#: src/main.cc:304
+#: src/main.cc:309
 msgid " Download a file using 1 connection:"
 msgstr ""
 
-#: src/main.cc:306
+#: src/main.cc:311
 msgid " Download a file using 2 connections:"
 msgstr ""
 
-#: src/main.cc:308
+#: src/main.cc:313
 msgid ""
 " Download a file using 2 connections, each connects to a different server:"
 msgstr ""
 
-#: src/main.cc:310
+#: src/main.cc:315
 msgid " You can mix up different protocols:"
 msgstr ""
 
-#: src/main.cc:312
+#: src/main.cc:317
 msgid " Parameterized URI:"
 msgstr ""
 
-#: src/main.cc:314
+#: src/main.cc:319
 msgid " Parameterized URI. -Z option must be specified:"
 msgstr ""
 
-#: src/main.cc:318
+#: src/main.cc:323
 msgid " Download a torrent:"
 msgstr ""
 
-#: src/main.cc:320
+#: src/main.cc:325
 msgid " Download a torrent using a local .torrent file:"
 msgstr ""
 
-#: src/main.cc:322 src/main.cc:335
+#: src/main.cc:327 src/main.cc:340
 msgid " Download only selected files:"
 msgstr ""
 
-#: src/main.cc:324
+#: src/main.cc:329
 msgid " Print file listing of .torrent file:"
 msgstr ""
 
-#: src/main.cc:329
+#: src/main.cc:334
 msgid " Metalink downloading:"
 msgstr ""
 
-#: src/main.cc:331
+#: src/main.cc:336
 msgid " Download a file using local .metalink file:"
 msgstr ""
 
-#: src/main.cc:333
+#: src/main.cc:338
 msgid " Metalink downloading with preferences:"
 msgstr ""
 
-#: src/main.cc:337
+#: src/main.cc:342
 msgid " Download only selected files using index:"
 msgstr ""
 
-#: src/main.cc:339
+#: src/main.cc:344
 msgid " Print file listing of .metalink file:"
 msgstr ""
 
-#: src/main.cc:343
+#: src/main.cc:348
 #, c-format
 msgid "Report bugs to %s"
 msgstr ""
