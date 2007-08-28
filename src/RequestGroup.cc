@@ -115,12 +115,22 @@ void RequestGroup::markPieceDone(int64_t length)
 
 void RequestGroup::shouldCancelDownloadForSafety()
 {
-  if(_segmentMan->shouldCancelDownloadForSafety()) {
-    logger->notice(MSG_FILE_ALREADY_EXISTS,
-		   _segmentMan->getFilePath().c_str(),
-		   _segmentMan->getSegmentFilePath().c_str());
-    
-    throw new FatalException(EX_DOWNLOAD_ABORTED);
+  if(fileExists() && !segmentFileExists()) {
+    if(_option->get(PREF_AUTO_FILE_RENAMING) == V_TRUE) {
+      if(tryAutoFileRenaming()) {
+	logger->notice("File already exists. Renamed to %s.",
+		       getFilePath().c_str());
+      } else {
+	logger->notice("File renaming failed: %s",
+		       _segmentMan->getFilePath().c_str());
+	throw new FatalException(EX_DOWNLOAD_ABORTED);
+      }
+    } else if(_option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
+      logger->notice(MSG_FILE_ALREADY_EXISTS,
+		     _segmentMan->getFilePath().c_str(),
+		     _segmentMan->getSegmentFilePath().c_str());
+      throw new FatalException(EX_DOWNLOAD_ABORTED);
+    }
   }
 }
 
@@ -302,4 +312,23 @@ void RequestGroup::setUserDefinedFilename(const string& filename)
 int64_t RequestGroup::getExistingFileLength() const
 {
   return File(getFilePath()).size();
+}
+
+bool RequestGroup::tryAutoFileRenaming()
+{
+  string filepath = getFilePath();
+  if(filepath.empty()) {
+    return false;
+  }
+  for(int32_t i = 1; i < 10000; ++i) {
+    File newfile(filepath+"."+Util::itos(i));
+    if(!newfile.exists()) {
+      _ufilename = newfile.getBasename();
+      if(!_segmentMan.isNull()) {
+	_segmentMan->ufilename = _ufilename;
+      }
+      return true;
+    }
+  }
+  return false;
 }

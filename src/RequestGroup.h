@@ -312,6 +312,8 @@ public:
   {
     return _segmentMan->calculateDownloadSpeed();
   }
+
+  bool tryAutoFileRenaming();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

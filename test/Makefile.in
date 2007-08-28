@@ -110,12 +110,12 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am__aria2c_SOURCES_DIST = AllTest.cc PStringBuildVisitorTest.cc \
-	ParameterizedStringParserTest.cc UtilTest.cc \
-	AlphaNumberDecoratorTest.cc FileUriListParserTest.cc \
-	StreamUriListParserTest.cc HttpHeaderProcessorTest.cc \
-	CookieBoxTest.cc RequestTest.cc CookieParserTest.cc \
-	HttpRequestTest.cc CookieBoxFactoryTest.cc \
+am__aria2c_SOURCES_DIST = AllTest.cc RequestGroupTest.cc \
+	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
+	UtilTest.cc AlphaNumberDecoratorTest.cc \
+	FileUriListParserTest.cc StreamUriListParserTest.cc \
+	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
+	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
 	RequestGroupManTest.cc RequestFactoryTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
@@ -195,7 +195,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc PStringBuildVisitorTest.cc \
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessorTest.$(OBJEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) RequestGroupTest.$(OBJEXT) \
 	PStringBuildVisitorTest.$(OBJEXT) \
 	ParameterizedStringParserTest.$(OBJEXT) UtilTest.$(OBJEXT) \
 	AlphaNumberDecoratorTest.$(OBJEXT) \
@@ -403,12 +403,12 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 TESTS = aria2c
-aria2c_SOURCES = AllTest.cc PStringBuildVisitorTest.cc \
-	ParameterizedStringParserTest.cc UtilTest.cc \
-	AlphaNumberDecoratorTest.cc FileUriListParserTest.cc \
-	StreamUriListParserTest.cc HttpHeaderProcessorTest.cc \
-	CookieBoxTest.cc RequestTest.cc CookieParserTest.cc \
-	HttpRequestTest.cc CookieBoxFactoryTest.cc \
+aria2c_SOURCES = AllTest.cc RequestGroupTest.cc \
+	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
+	UtilTest.cc AlphaNumberDecoratorTest.cc \
+	FileUriListParserTest.cc StreamUriListParserTest.cc \
+	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
+	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
 	RequestGroupManTest.cc RequestFactoryTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
@@ -548,6 +548,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupManTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@

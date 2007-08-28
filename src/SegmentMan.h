@@ -282,8 +282,6 @@ public:
 
   bool fileExists() const;
 
-  bool shouldCancelDownloadForSafety() const;
-
   void markAllPiecesDone();
 
   void markPieceDone(int64_t length);

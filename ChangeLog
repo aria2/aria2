@@ -30,6 +30,22 @@
 	
 	Added '\n' after the error message
 	* src/RequestInfo.h (printDownloadAbortMessage)
+
+	Added auto file renaming feature in http(s)/ftp download.
+	* src/main.cc: Added --auto-file-renaming command-line option.
+	* src/OptionHandlerFactory.cc
+	* src/prefs.h: Added PREF_AUTO_FILE_RENAMING
+	* src/RequestGroup.{h, cc}
+	(shouldCancelDownloadForSafety): Rewritten
+	(tryAutoFileRenaming): New function.
+	* src/SegmentMan.{h, cc} (shouldCancelDownloadForSafety): Removed.
+	* src/HttpResponseCommand.cc
+	(executeInternal): Removed the call to RequestGroupMan::
+	isSameFileBeingDownloaded()
+	* src/FtpNegotiateCommand.cc
+	(recvSize): Removed the call to RequestGroupMan::
+	isSameFileBeingDownloaded()
+	* test/RequestGroupTest.cc: New class.
 	
 2007-08-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 

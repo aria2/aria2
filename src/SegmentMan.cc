@@ -431,11 +431,6 @@ bool SegmentMan::fileExists() const {
   return File(getFilePath()).exists();
 }
 
-bool SegmentMan::shouldCancelDownloadForSafety() const {
-  return fileExists() && !segmentFileExists() &&
-    option->get(PREF_ALLOW_OVERWRITE) != V_TRUE;
-}
-
 void SegmentMan::markAllPiecesDone()
 {
   if(bitfield) {

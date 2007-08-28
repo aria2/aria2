@@ -100,10 +100,6 @@ bool HttpResponseCommand::executeInternal()
     _requestGroup->validateTotalLengthByHint(httpResponse->getEntityLength());
 
     _requestGroup->getSegmentMan()->filename = httpResponse->determinFilename();
-    if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
-      throw new FatalException(EX_DUPLICATE_FILE_DOWNLOAD, _requestGroup->getFilePath().c_str());
-    }
-
     if(httpResponse->isTransferEncodingSpecified()) {
       return handleOtherEncoding(httpResponse);
     } else {

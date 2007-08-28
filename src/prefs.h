@@ -109,6 +109,8 @@
 #define PREF_DIRECT_DOWNLOAD_TIMEOUT "direct-download-timeout"
 // value:
 #define PREF_FORCE_SEQUENTIAL "force-sequential"
+// value:
+#define PREF_AUTO_FILE_RENAMING "auto-file-renaming"
 
 /**
  * FTP related preferences

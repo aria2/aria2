@@ -196,10 +196,15 @@ void showUsage() {
   		"                              already exists but the corresponding .aria2 file\n"
   		"                              doesn't exist.\n"
             "                              Default: false") << endl;
-  cout << _(" -Z, --force-sequential       Fetch URIs in the command-line sequentially and\n"
+  cout << _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially and\n"
 	    "                              download each URI in a separate session, like\n"
-	    "                              the usual command-line download utilities.") << endl;
-
+	    "                              the usual command-line download utilities.\n"
+	    "                              Default: false") << endl;
+  cout << _(" --auto-file-renaming[=true|false] Rename file name if the same file already\n"
+	    "                              exists. This option works only in http(s)/ftp\n"
+	    "                              download.\n"
+	    "                              The new file name has a dot and a number(1..9999)\n"
+	    "                              appended. Default: true") << endl;
 #ifdef ENABLE_MESSAGE_DIGEST
   cout << _(" --check-integrity=true|false  Check file integrity by validating piece hash.\n"
 	    "                              This option only affects in BitTorrent downloads\n"
@@ -358,6 +363,17 @@ Strings unfoldURI(const Strings& args)
   return nargs;
 }
 
+string toBoolArg(const char* optarg)
+{
+  string arg;
+  if(!optarg || string(optarg) == "") {
+    arg = V_TRUE;
+  } else {
+    arg = optarg;
+  }
+  return arg;
+}
+
 int main(int argc, char* argv[]) {
 #ifdef HAVE_WINSOCK2_H
   Platform platform;
@@ -425,6 +441,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "5");
   op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "15");
   op->put(PREF_FORCE_SEQUENTIAL, V_FALSE);
+  op->put(PREF_AUTO_FILE_RENAMING, V_TRUE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -457,7 +474,6 @@ int main(int argc, char* argv[]) {
       { "max-download-limit", required_argument, &lopt, 201 },
       { "file-allocation", required_argument, 0, 'a' },
       { "allow-overwrite", required_argument, &lopt, 202 },
-      { "force-sequential", no_argument, 0, 'Z' },
 #ifdef ENABLE_MESSAGE_DIGEST
       { "check-integrity", required_argument, &lopt, 203 },
       { "realtime-chunk-checksum", required_argument, &lopt, 204 },
@@ -468,6 +484,8 @@ int main(int argc, char* argv[]) {
       { "input-file", required_argument, 0, 'i' },
       { "max-concurrent-downloads", required_argument, 0, 'j' },
       { "load-cookies", required_argument, &lopt, 205 },
+      { "force-sequential", optional_argument, 0, 'Z' },
+      { "auto-file-renaming", optional_argument, &lopt, 206 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -606,6 +624,9 @@ int main(int argc, char* argv[]) {
       case 205:
 	cmdstream << PREF_LOAD_COOKIES << "=" << optarg << "\n";
 	break;
+      case 206:
+	cmdstream << PREF_AUTO_FILE_RENAMING << "=" << toBoolArg(optarg) << "\n";
+	break;
       }
       break;
     }
@@ -666,7 +687,7 @@ int main(int argc, char* argv[]) {
       cmdstream << PREF_MAX_CONCURRENT_DOWNLOADS << "=" << optarg << "\n";
       break;
     case 'Z':
-      cmdstream << PREF_FORCE_SEQUENTIAL << "=" << V_TRUE << "\n";
+      cmdstream << PREF_FORCE_SEQUENTIAL << "=" << toBoolArg(optarg) << "\n";
       break;
     case 'v':
       showVersion();
