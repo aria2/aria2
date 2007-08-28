@@ -32,50 +32,37 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_INFO_H_
-#define _D_REQUEST_INFO_H_
+#ifndef _D_P_STRING_BUILD_VISITOR_H_
+#define _D_P_STRING_BUILD_VISITOR_H_
 
-#include "common.h"
-#include "LogFactory.h"
-#include "Option.h"
+#include "PStringSegment.h"
 
-class RequestInfo;
+class PStringBuildVisitor : public PStringVisitor, public PStringSegmentVisitor
+{
+private:
 
-typedef SharedHandle<RequestInfo> RequestInfoHandle;
-typedef deque<RequestInfoHandle> RequestInfos;
+  Strings _buildQueue;
 
-class RequestInfo {
-protected:
-  Option* op;
-  const Logger* logger;
-  bool fail;
+  Strings _uris;
 
-  void printDownloadCompeleteMessage(const string& filename) {
-    printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
-  }
-  
-  void printDownloadCompeleteMessage() {
-    printf("\nThe download was complete.\n");
-  }
-  
-  void printDownloadAbortMessage() {
-    printf(_("\nSome downloads were not complete because of errors."
-	     " Check the log.\n"
-	     "aria2 will resume download if the transfer is restarted."));
-    printf("\n");
-  }
 public:
-  RequestInfo(Option* op):
-    op(op),
-    logger(LogFactory::getInstance()),
-    fail(false)
-  {}
+  
+  virtual void hello(PStringSegment* segment);
 
-  virtual ~RequestInfo() {}
+  virtual void goodbye(PStringSegment* segment);
 
-  virtual RequestInfos execute() = 0;
+  const Strings& getURIs() const
+  {
+    return _uris;
+  }
 
-  bool isFail() const { return fail; }
+  void reset()
+  {
+    _buildQueue.clear();
+    _uris.clear();
+  }
 };
 
-#endif // _D_REQUEST_INFO_H_
+typedef SharedHandle<PStringBuildVisitor> PStringBuildVisitorHandle;
+
+#endif // _D_P_STRING_BUILD_VISITOR_H_

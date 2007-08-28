@@ -23,6 +23,10 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetRealSize);
   CPPUNIT_TEST(testAbbrevSize);
   CPPUNIT_TEST(testToStream);
+  CPPUNIT_TEST(testIsNumber);
+  CPPUNIT_TEST(testIsLowercase);
+  CPPUNIT_TEST(testIsUppercase);
+  CPPUNIT_TEST(testAlphaToNum);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -46,6 +50,10 @@ public:
   void testGetRealSize();
   void testAbbrevSize();
   void testToStream();
+  void testIsNumber();
+  void testIsLowercase();
+  void testIsUppercase();
+  void testAlphaToNum();
 };
 
 
@@ -316,4 +324,41 @@ void UtilTest::testToStream()
 			      "   |556 bytes\n"
 			      "---+---------------------------------------------------------------------------\n"),
 		       os.str());
+}
+
+void UtilTest::testIsNumber()
+{
+  CPPUNIT_ASSERT_EQUAL(true, Util::isNumber("000"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isNumber("a"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isNumber("0a"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isNumber(""));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isNumber(" "));
+}
+
+void UtilTest::testIsLowercase()
+{
+  CPPUNIT_ASSERT_EQUAL(true, Util::isLowercase("alpha"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isLowercase("Alpha"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isLowercase("1alpha"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isLowercase(""));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isLowercase(" "));
+}
+
+void UtilTest::testIsUppercase()
+{
+  CPPUNIT_ASSERT_EQUAL(true, Util::isUppercase("ALPHA"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isUppercase("Alpha"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isUppercase("1ALPHA"));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isUppercase(""));
+  CPPUNIT_ASSERT_EQUAL(false, Util::isUppercase(" "));
+}
+
+void UtilTest::testAlphaToNum()
+{
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, Util::alphaToNum("a"));
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, Util::alphaToNum("aa"));
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, Util::alphaToNum("b"));
+  CPPUNIT_ASSERT_EQUAL((int32_t)675, Util::alphaToNum("zz")); // 25*26+25
+  CPPUNIT_ASSERT_EQUAL((int32_t)675, Util::alphaToNum("ZZ")); // 25*26+25
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, Util::alphaToNum(""));
 }

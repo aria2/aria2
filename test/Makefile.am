@@ -1,10 +1,13 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	PStringBuildVisitorTest.cc\
+	ParameterizedStringParserTest.cc\
+	UtilTest.cc\
+	AlphaNumberDecoratorTest.cc\
 	FileUriListParserTest.cc\
 	StreamUriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
-	UtilTest.cc\
 	CookieBoxTest.cc\
 	RequestTest.cc\
 	CookieParserTest.cc\

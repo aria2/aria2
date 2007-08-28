@@ -694,3 +694,62 @@ void Util::usleep(long microseconds) {
 	#error no usleep function is available (nanosleep?)
 #endif
 }
+
+bool Util::isNumber(const string& what)
+{
+  if(what.empty()) {
+    return false;
+  }
+  for(uint32_t i = 0; i < what.size(); ++i) {
+    if(!isdigit(what[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool Util::isLowercase(const string& what)
+{
+  if(what.empty()) {
+    return false;
+  }
+  for(uint32_t i = 0; i < what.size(); ++i) {
+    if(!('a' <= what[i] && what[i] <= 'z')) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool Util::isUppercase(const string& what)
+{
+  if(what.empty()) {
+    return false;
+  }
+  for(uint32_t i = 0; i < what.size(); ++i) {
+    if(!('A' <= what[i] && what[i] <= 'Z')) {
+      return false;
+    }
+  }
+  return true;
+}
+
+int32_t Util::alphaToNum(const string& alphabets)
+{
+  if(alphabets.empty()) {
+    return 0;
+  }
+  char base;
+  if(islower(alphabets[0])) {
+    base = 'a';
+  } else {
+    base = 'A';
+  }
+  int32_t num = 0;
+  for(uint32_t i = 0; i < alphabets.size(); ++i) {
+    int32_t v = alphabets[i]-base;
+    num = num*26+v;
+  }
+  return num;
+}
+

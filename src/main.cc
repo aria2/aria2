@@ -57,6 +57,8 @@
 #include "a2time.h"
 #include "Platform.h"
 #include "prefs.h"
+#include "ParameterizedStringParser.h"
+#include "PStringBuildVisitor.h"
 #include <deque>
 #include <algorithm>
 #include <signal.h>
@@ -194,6 +196,10 @@ void showUsage() {
   		"                              already exists but the corresponding .aria2 file\n"
   		"                              doesn't exist.\n"
             "                              Default: false") << endl;
+  cout << _(" -Z, --force-sequential       Fetch URIs in the command-line sequentially and\n"
+	    "                              download each URI in a separate session, like\n"
+	    "                              the usual command-line download utilities.") << endl;
+
 #ifdef ENABLE_MESSAGE_DIGEST
   cout << _(" --check-integrity=true|false  Check file integrity by validating piece hash.\n"
 	    "                              This option only affects in BitTorrent downloads\n"
@@ -303,6 +309,10 @@ void showUsage() {
   cout << "  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip" << endl;
   cout << _(" You can mix up different protocols:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
+  cout << _(" Parameterized URI:") << endl;
+  cout << "  aria2c http://{server1,server2,server3}/file.iso" << endl;
+  cout << _(" Parameterized URI. -Z option must be specified:") << endl;
+  cout << "  aria2c -Z http://host/file[001-100].img" << endl;
 #ifdef ENABLE_BITTORRENT
   cout << endl;
   cout << _(" Download a torrent:") << endl;
@@ -332,6 +342,20 @@ void showUsage() {
   cout << endl;
   printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
+}
+
+Strings unfoldURI(const Strings& args)
+{
+  Strings nargs;
+  ParameterizedStringParser p;
+  PStringBuildVisitorHandle v = new PStringBuildVisitor();
+  for(Strings::const_iterator itr = args.begin(); itr != args.end();
+      ++itr) {
+    v->reset();
+    p.parse(*itr)->accept(v);
+    nargs.insert(nargs.end(), v->getURIs().begin(), v->getURIs().end()); 
+  }
+  return nargs;
 }
 
 int main(int argc, char* argv[]) {
@@ -400,6 +424,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_NO_NETRC, V_FALSE);
   op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "5");
   op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "15");
+  op->put(PREF_FORCE_SEQUENTIAL, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -432,6 +457,7 @@ int main(int argc, char* argv[]) {
       { "max-download-limit", required_argument, &lopt, 201 },
       { "file-allocation", required_argument, 0, 'a' },
       { "allow-overwrite", required_argument, &lopt, 202 },
+      { "force-sequential", no_argument, 0, 'Z' },
 #ifdef ENABLE_MESSAGE_DIGEST
       { "check-integrity", required_argument, &lopt, 203 },
       { "realtime-chunk-checksum", required_argument, &lopt, 204 },
@@ -472,7 +498,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:j:", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:j:Z", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -639,6 +665,9 @@ int main(int argc, char* argv[]) {
     case 'j':
       cmdstream << PREF_MAX_CONCURRENT_DOWNLOADS << "=" << optarg << "\n";
       break;
+    case 'Z':
+      cmdstream << PREF_FORCE_SEQUENTIAL << "=" << V_TRUE << "\n";
+      break;
     case 'v':
       showVersion();
       exit(EXIT_SUCCESS);
@@ -800,7 +829,17 @@ int main(int argc, char* argv[]) {
 	  RequestGroups groups;
 	  while(flparser->hasNext()) {
 	    Strings uris = flparser->next();
-	    if(!uris.empty()) {
+	    if(uris.size() == 1) {
+	      Strings unfoldedURIs = unfoldURI(uris);
+	      for(Strings::const_iterator itr = unfoldedURIs.begin();
+		  itr != unfoldedURIs.end(); ++itr) {
+		Strings xuris;
+		ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT),
+		    back_inserter(xuris));
+		RequestGroupHandle rg = new RequestGroup(xuris, op);
+		groups.push_back(rg);
+	      }
+	    } else if(uris.size() > 1) {
 	      Strings xuris;
 	      ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
 		    back_inserter(xuris));
@@ -812,10 +851,25 @@ int main(int argc, char* argv[]) {
 	}
 	else
 	  {
-	    Strings xargs;
-	    ncopy(args.begin(), args.end(), op->getAsInt(PREF_SPLIT),
-		  back_inserter(xargs));
-	    firstReqInfo = new MultiUrlRequestInfo(xargs, op);
+	    
+	    Strings nargs = unfoldURI(args);
+	    if(op->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
+	      RequestGroups groups;
+	      for(Strings::const_iterator itr = nargs.begin();
+		  itr != nargs.end(); ++itr) {
+		Strings xuris;
+		ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT),
+		    back_inserter(xuris));
+		RequestGroupHandle rg = new RequestGroup(xuris, op);
+		groups.push_back(rg);
+	      }
+	      firstReqInfo = new MultiUrlRequestInfo(groups, op);
+	    } else {
+	      Strings xargs;
+	      ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
+		    back_inserter(xargs));
+	      firstReqInfo = new MultiUrlRequestInfo(xargs, op);
+	    }
 	  }
 
     RequestInfos reqInfos;

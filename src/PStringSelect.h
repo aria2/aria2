@@ -32,50 +32,45 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_INFO_H_
-#define _D_REQUEST_INFO_H_
+#ifndef _D_P_STRING_SELECT_H_
+#define _D_P_STRING_SELECT_H_
 
-#include "common.h"
-#include "LogFactory.h"
-#include "Option.h"
+#include "PStringDatum.h"
+#include "PStringSegment.h"
 
-class RequestInfo;
-
-typedef SharedHandle<RequestInfo> RequestInfoHandle;
-typedef deque<RequestInfoHandle> RequestInfos;
-
-class RequestInfo {
-protected:
-  Option* op;
-  const Logger* logger;
-  bool fail;
-
-  void printDownloadCompeleteMessage(const string& filename) {
-    printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
-  }
+class PStringSelect : public PStringDatum
+{
+private:
   
-  void printDownloadCompeleteMessage() {
-    printf("\nThe download was complete.\n");
-  }
-  
-  void printDownloadAbortMessage() {
-    printf(_("\nSome downloads were not complete because of errors."
-	     " Check the log.\n"
-	     "aria2 will resume download if the transfer is restarted."));
-    printf("\n");
-  }
+  Strings _values;
+
+  PStringDatumHandle _next;
+
 public:
-  RequestInfo(Option* op):
-    op(op),
-    logger(LogFactory::getInstance()),
-    fail(false)
-  {}
+  PStringSelect(const Strings& values, const PStringDatumHandle& next = 0):
+    _values(values),
+    _next(next) {}
 
-  virtual ~RequestInfo() {}
+  virtual ~PStringSelect() {}
 
-  virtual RequestInfos execute() = 0;
+  virtual void accept(const PStringVisitorHandle& visitor)
+  {
+    for(Strings::iterator itr = _values.begin(); itr != _values.end(); ++itr) {
+      PStringSegment(*itr, _next).accept(visitor);
+    }
+  }
 
-  bool isFail() const { return fail; }
+  const Strings& getValues() const
+  {
+    return _values;
+  }
+
+  PStringDatumHandle getNext() const
+  {
+    return _next;
+  }
 };
 
-#endif // _D_REQUEST_INFO_H_
+typedef SharedHandle<PStringSelect> PStringSelectHandle;
+
+#endif // _D_P_STRING_SELECT_H_

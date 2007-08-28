@@ -32,50 +32,53 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_INFO_H_
-#define _D_REQUEST_INFO_H_
+#ifndef _D_ALPHA_NUMBER_DECORATOR_H_
+#define _D_ALPHA_NUMBER_DECORATOR_H_
 
-#include "common.h"
-#include "LogFactory.h"
-#include "Option.h"
+#include "NumberDecorator.h"
+#include "FatalException.h"
 
-class RequestInfo;
+class AlphaNumberDecorator : public NumberDecorator
+{
+private:
 
-typedef SharedHandle<RequestInfo> RequestInfoHandle;
-typedef deque<RequestInfoHandle> RequestInfos;
+  int32_t _width;
 
-class RequestInfo {
-protected:
-  Option* op;
-  const Logger* logger;
-  bool fail;
+  string _zero;
 
-  void printDownloadCompeleteMessage(const string& filename) {
-    printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
+  string widen(const string& s, int32_t width)
+  {
+    string t = s;
+    while(t.size() < (size_t)width) {
+      t.insert(0, _zero);
+    }
+    return t;
   }
-  
-  void printDownloadCompeleteMessage() {
-    printf("\nThe download was complete.\n");
-  }
-  
-  void printDownloadAbortMessage() {
-    printf(_("\nSome downloads were not complete because of errors."
-	     " Check the log.\n"
-	     "aria2 will resume download if the transfer is restarted."));
-    printf("\n");
-  }
+
 public:
-  RequestInfo(Option* op):
-    op(op),
-    logger(LogFactory::getInstance()),
-    fail(false)
-  {}
+  AlphaNumberDecorator(int32_t width, bool uppercase = false):
+    _width(width), _zero(uppercase?"A":"a") {}
 
-  virtual ~RequestInfo() {}
+  virtual ~AlphaNumberDecorator() {}
 
-  virtual RequestInfos execute() = 0;
-
-  bool isFail() const { return fail; }
+  virtual string decorate(int32_t number)
+  {
+    if(number < 0) {
+      throw new FatalException("The number must be greater than 0.");
+    }
+    if(number == 0) {
+      return widen(_zero, _width);
+    }
+    int32_t base = 26;
+    string x;
+    while(number > 0) {
+      int32_t r = number%base;
+      char alpha = _zero[0]+r;
+      x.insert(0, string(1, alpha));
+      number /= base;
+    }
+    return widen(x, _width);
+  }
 };
 
-#endif // _D_REQUEST_INFO_H_
+#endif // _D_ALPHA_NUMBER_DECORATOR_H_

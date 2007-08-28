@@ -32,50 +32,69 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_INFO_H_
-#define _D_REQUEST_INFO_H_
+#ifndef _D_P_STRING_NUM_LOOP_H_
+#define _D_P_STRING_NUM_LOOP_H_
 
-#include "common.h"
-#include "LogFactory.h"
-#include "Option.h"
+#include "PStringDatum.h"
+#include "Util.h"
+#include "PStringSegment.h"
+#include "NumberDecorator.h"
 
-class RequestInfo;
-
-typedef SharedHandle<RequestInfo> RequestInfoHandle;
-typedef deque<RequestInfoHandle> RequestInfos;
-
-class RequestInfo {
-protected:
-  Option* op;
-  const Logger* logger;
-  bool fail;
-
-  void printDownloadCompeleteMessage(const string& filename) {
-    printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
-  }
+class PStringNumLoop : public PStringDatum
+{
+private:
   
-  void printDownloadCompeleteMessage() {
-    printf("\nThe download was complete.\n");
-  }
-  
-  void printDownloadAbortMessage() {
-    printf(_("\nSome downloads were not complete because of errors."
-	     " Check the log.\n"
-	     "aria2 will resume download if the transfer is restarted."));
-    printf("\n");
-  }
+  int32_t _startValue;
+
+  int32_t _endValue;
+
+  int32_t _step;
+
+  NumberDecoratorHandle _numberDecorator;
+
+  PStringDatumHandle _next;
+
 public:
-  RequestInfo(Option* op):
-    op(op),
-    logger(LogFactory::getInstance()),
-    fail(false)
-  {}
+  PStringNumLoop(int32_t startValue, int32_t endValue, int32_t step,
+		 const NumberDecoratorHandle& nd,
+		 const PStringDatumHandle& next = 0):
+    _startValue(startValue),
+    _endValue(endValue),
+    _step(step),
+    _numberDecorator(nd),
+    _next(next) {}
 
-  virtual ~RequestInfo() {}
+  virtual ~PStringNumLoop() {}
 
-  virtual RequestInfos execute() = 0;
+  virtual void accept(const PStringVisitorHandle& visitor)
+  {
+    for(int32_t i = _startValue; i <= _endValue; i += _step) {
+      PStringSegment(_numberDecorator->decorate(i), _next).accept(visitor);
+    }
+  }
 
-  bool isFail() const { return fail; }
+  PStringDatumHandle getNext() const
+  {
+    return _next;
+  }
+
+  int32_t getStartValue() const
+  {
+    return _startValue;
+  }
+
+  int32_t getEndValue() const
+  {
+    return _endValue;
+  }
+
+  int32_t getStep() const
+  {
+    return _step;
+  }
+
 };
 
-#endif // _D_REQUEST_INFO_H_
+typedef SharedHandle<PStringNumLoop> PStringNumLoopHandle;
+
+#endif // _D_P_STRING_NUM_LOOP_H_

@@ -32,50 +32,58 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_INFO_H_
-#define _D_REQUEST_INFO_H_
+#ifndef _D_P_STRING_SEGMENT_H_
+#define _D_P_STRING_SEGMENT_H_
 
-#include "common.h"
-#include "LogFactory.h"
-#include "Option.h"
+#include "PStringDatum.h"
 
-class RequestInfo;
+class PStringSegmentVisitor;
 
-typedef SharedHandle<RequestInfo> RequestInfoHandle;
-typedef deque<RequestInfoHandle> RequestInfos;
+typedef SharedHandle<PStringSegmentVisitor> PStringSegmentVisitorHandle;
 
-class RequestInfo {
-protected:
-  Option* op;
-  const Logger* logger;
-  bool fail;
+class PStringSegment : public PStringDatum
+{
+private:
 
-  void printDownloadCompeleteMessage(const string& filename) {
-    printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
-  }
-  
-  void printDownloadCompeleteMessage() {
-    printf("\nThe download was complete.\n");
-  }
-  
-  void printDownloadAbortMessage() {
-    printf(_("\nSome downloads were not complete because of errors."
-	     " Check the log.\n"
-	     "aria2 will resume download if the transfer is restarted."));
-    printf("\n");
-  }
+  string _value;
+
+  PStringDatumHandle _next;
+
 public:
-  RequestInfo(Option* op):
-    op(op),
-    logger(LogFactory::getInstance()),
-    fail(false)
-  {}
+  PStringSegment(const string& value, const PStringDatumHandle& next = 0):
+    _value(value), _next(next) {}
 
-  virtual ~RequestInfo() {}
+  virtual ~PStringSegment() {}
 
-  virtual RequestInfos execute() = 0;
+  virtual void accept(const PStringVisitorHandle& visitor);
 
-  bool isFail() const { return fail; }
+  const string& getValue() const
+  {
+    return _value;
+  }
+
+  bool hasNext() const
+  {
+    return !_next.isNull();
+  }
+
+  PStringDatumHandle getNext() const
+  {
+    return _next;
+  }
 };
 
-#endif // _D_REQUEST_INFO_H_
+typedef SharedHandle<PStringSegment> PStringSegmentHandle;
+
+class PStringSegmentVisitor {
+public:
+  virtual ~PStringSegmentVisitor() {}
+
+  virtual void hello(PStringSegment* s) = 0;
+  
+  virtual void goodbye(PStringSegment* s) = 0;
+};
+
+typedef SharedHandle<PStringSegmentVisitor> PStringSegmentVisitorHandle;
+
+#endif // _D_P_STRING_SEGMENT_H_

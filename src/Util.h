@@ -135,6 +135,14 @@ public:
   static void sleep(long seconds);
 
   static void usleep(long microseconds);
+
+  static bool isNumber(const string& what);
+
+  static bool isLowercase(const string& what);
+
+  static bool isUppercase(const string& what);
+
+  static int32_t alphaToNum(const string& alphabets);
 };
 
 #endif // _D_UTIL_H_

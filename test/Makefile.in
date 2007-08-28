@@ -110,10 +110,12 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am__aria2c_SOURCES_DIST = AllTest.cc FileUriListParserTest.cc \
+am__aria2c_SOURCES_DIST = AllTest.cc PStringBuildVisitorTest.cc \
+	ParameterizedStringParserTest.cc UtilTest.cc \
+	AlphaNumberDecoratorTest.cc FileUriListParserTest.cc \
 	StreamUriListParserTest.cc HttpHeaderProcessorTest.cc \
-	UtilTest.cc CookieBoxTest.cc RequestTest.cc \
-	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
+	CookieBoxTest.cc RequestTest.cc CookieParserTest.cc \
+	HttpRequestTest.cc CookieBoxFactoryTest.cc \
 	RequestGroupManTest.cc RequestFactoryTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
@@ -193,13 +195,17 @@ am__aria2c_SOURCES_DIST = AllTest.cc FileUriListParserTest.cc \
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessorTest.$(OBJEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) FileUriListParserTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) \
+	PStringBuildVisitorTest.$(OBJEXT) \
+	ParameterizedStringParserTest.$(OBJEXT) UtilTest.$(OBJEXT) \
+	AlphaNumberDecoratorTest.$(OBJEXT) \
+	FileUriListParserTest.$(OBJEXT) \
 	StreamUriListParserTest.$(OBJEXT) \
-	HttpHeaderProcessorTest.$(OBJEXT) UtilTest.$(OBJEXT) \
-	CookieBoxTest.$(OBJEXT) RequestTest.$(OBJEXT) \
-	CookieParserTest.$(OBJEXT) HttpRequestTest.$(OBJEXT) \
-	CookieBoxFactoryTest.$(OBJEXT) RequestGroupManTest.$(OBJEXT) \
-	RequestFactoryTest.$(OBJEXT) NetrcAuthResolverTest.$(OBJEXT) \
+	HttpHeaderProcessorTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) \
+	RequestTest.$(OBJEXT) CookieParserTest.$(OBJEXT) \
+	HttpRequestTest.$(OBJEXT) CookieBoxFactoryTest.$(OBJEXT) \
+	RequestGroupManTest.$(OBJEXT) RequestFactoryTest.$(OBJEXT) \
+	NetrcAuthResolverTest.$(OBJEXT) \
 	DefaultAuthResolverTest.$(OBJEXT) OptionHandlerTest.$(OBJEXT) \
 	SegmentManTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
 	GlowFileAllocatorTest.$(OBJEXT) NetrcTest.$(OBJEXT) \
@@ -397,10 +403,12 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 TESTS = aria2c
-aria2c_SOURCES = AllTest.cc FileUriListParserTest.cc \
+aria2c_SOURCES = AllTest.cc PStringBuildVisitorTest.cc \
+	ParameterizedStringParserTest.cc UtilTest.cc \
+	AlphaNumberDecoratorTest.cc FileUriListParserTest.cc \
 	StreamUriListParserTest.cc HttpHeaderProcessorTest.cc \
-	UtilTest.cc CookieBoxTest.cc RequestTest.cc \
-	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
+	CookieBoxTest.cc RequestTest.cc CookieParserTest.cc \
+	HttpRequestTest.cc CookieBoxFactoryTest.cc \
 	RequestGroupManTest.cc RequestFactoryTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
@@ -474,6 +482,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlphaNumberDecoratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
@@ -533,6 +542,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PStringBuildVisitorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterizedStringParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactoryTest.Po@am__quote@

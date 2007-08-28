@@ -1,3 +1,36 @@
+2007-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added parameterized URI support.
+	* src/main.cc: -Z option added.
+	* src/OptionHandlerFactory.cc
+	* src/prefs.h: Added PREF_FORCE_SEQUENTIAL.
+	* src/PStringDatum.h: New class.
+	* src/PStringSegment.{h,cc}: New class.
+	* src/PStringNumLoop.h: New class.
+	* src/PStringSelect.h: New class.
+	* src/NumberDecorator.h: New class.
+	* src/FixedWidthNumberDecorator.h: New class.
+	* src/AlphaNumberDecorator.h: New class.
+	* src/PStringVisitor.h: New class.
+	* src/PStringBuildVisitor.{h,cc}: New class.
+	* src/ParameterizedStringParser.{h,cc}: New class.
+	* src/Util.{h,cc}
+	(isNumber): New function.
+	(isLowercase): New function.
+	(isUppercase): New function.
+	(alphaToNum): New function.
+	* test/ParameterizedStringParserTest.cc: New class.
+	* test/AlphaNumberDecoratorTest.cc: New class.
+	* test/PStringBuildVisitorTest.cc: New class.
+	* test/UtilTest.cc
+	(testIsNumber): New function.
+	(testIsLowercase): New function.
+	(testIsUppercase): New function.
+	(testAlphaToNum): New function.
+	
+	Added '\n' after the error message
+	* src/RequestInfo.h (printDownloadAbortMessage)
+	
 2007-08-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Merged Ross's patch: Removed setmode(). Use _CRT_fmode to enable binary

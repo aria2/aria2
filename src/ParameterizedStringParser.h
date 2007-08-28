@@ -32,50 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_INFO_H_
-#define _D_REQUEST_INFO_H_
+#ifndef _D_PARAMETERIZED_STRING_PARSER_H_
+#define _D_PARAMETERIZED_STRING_PARSER_H_
 
 #include "common.h"
-#include "LogFactory.h"
-#include "Option.h"
+#include "PStringDatum.h"
 
-class RequestInfo;
+class ParameterizedStringParser {
+private:
+  PStringDatumHandle diggPString(const string& src, int32_t& offset);
 
-typedef SharedHandle<RequestInfo> RequestInfoHandle;
-typedef deque<RequestInfoHandle> RequestInfos;
+  PStringDatumHandle createSegment(const string& src, int32_t& offset);
 
-class RequestInfo {
-protected:
-  Option* op;
-  const Logger* logger;
-  bool fail;
+  PStringDatumHandle createLoop(const string& src, int32_t& offset);
 
-  void printDownloadCompeleteMessage(const string& filename) {
-    printf(_("\nThe download was complete. <%s>\n"), filename.c_str());
-  }
-  
-  void printDownloadCompeleteMessage() {
-    printf("\nThe download was complete.\n");
-  }
-  
-  void printDownloadAbortMessage() {
-    printf(_("\nSome downloads were not complete because of errors."
-	     " Check the log.\n"
-	     "aria2 will resume download if the transfer is restarted."));
-    printf("\n");
-  }
+  PStringDatumHandle createSelect(const string& src, int32_t& offset);
+
+
 public:
-  RequestInfo(Option* op):
-    op(op),
-    logger(LogFactory::getInstance()),
-    fail(false)
-  {}
-
-  virtual ~RequestInfo() {}
-
-  virtual RequestInfos execute() = 0;
-
-  bool isFail() const { return fail; }
+  PStringDatumHandle parse(const string& parameterizedUri);
 };
 
-#endif // _D_REQUEST_INFO_H_
+#endif // _D_PARAMETERIZED_STRING_PARSER_H_

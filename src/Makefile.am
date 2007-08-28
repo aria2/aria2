@@ -98,7 +98,17 @@ SRCS =  Socket.h\
 	CookieBoxFactory.cc CookieBoxFactory.h\
 	HttpHeaderProcessor.cc HttpHeaderProcessor.h\
 	FileEntry.cc FileEntry.h\
-	Platform.cc Platform.h
+	Platform.cc Platform.h\
+	PStringDatum.h\
+	PStringSegment.cc PStringSegment.h\
+	PStringNumLoop.h\
+	PStringSelect.h\
+	PStringVisitor.h\
+	PStringBuildVisitor.cc PStringBuildVisitor.h\
+	ParameterizedStringParser.cc ParameterizedStringParser.h\
+	FixedWidthNumberDecorator.h\
+	NumberDecorator.h\
+	AlphaNumberDecorator.h
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST
