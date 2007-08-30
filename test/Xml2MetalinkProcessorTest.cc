@@ -37,6 +37,7 @@ void Xml2MetalinkProcessorTest::testParseFile() {
     CPPUNIT_ASSERT_EQUAL(string("0.5.2"), entry1->version);
     CPPUNIT_ASSERT_EQUAL(string("en-US"), entry1->language);
     CPPUNIT_ASSERT_EQUAL(string("Linux-x86"), entry1->os);
+    CPPUNIT_ASSERT_EQUAL((int32_t)1, entry1->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(string("a96cf3f0266b91d87d5124cf94326422800b627d"),
 			 entry1->checksum->getMessageDigest());
@@ -49,6 +50,8 @@ void Xml2MetalinkProcessorTest::testParseFile() {
     CPPUNIT_ASSERT_EQUAL((int32_t)100, resource1->preference);
     CPPUNIT_ASSERT_EQUAL(string("ftp://ftphost/aria2-0.5.2.tar.bz2"),
 			 resource1->url);
+    CPPUNIT_ASSERT_EQUAL((int32_t)1, resource1->maxConnections);
+
     resourceItr1++;
     MetalinkResourceHandle resource2 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, resource2->type);
@@ -56,6 +59,7 @@ void Xml2MetalinkProcessorTest::testParseFile() {
     CPPUNIT_ASSERT_EQUAL((int32_t)100, resource2->preference);
     CPPUNIT_ASSERT_EQUAL(string("http://httphost/aria2-0.5.2.tar.bz2"),
 			 resource2->url);
+    CPPUNIT_ASSERT_EQUAL((int32_t)-1, resource2->maxConnections);
 
     entryItr++;
 
@@ -65,6 +69,7 @@ void Xml2MetalinkProcessorTest::testParseFile() {
     CPPUNIT_ASSERT_EQUAL(string("0.5.1"), entry2->version);
     CPPUNIT_ASSERT_EQUAL(string("ja-JP"), entry2->language);
     CPPUNIT_ASSERT_EQUAL(string("Linux-m68k"), entry2->os);
+    CPPUNIT_ASSERT_EQUAL((int32_t)-1, entry2->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
 			 entry2->checksum->getMessageDigest());

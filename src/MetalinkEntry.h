@@ -56,6 +56,7 @@ public:
   string language;
   string os;
   MetalinkResources resources;
+  int32_t maxConnections;
 #ifdef ENABLE_MESSAGE_DIGEST
   ChecksumHandle checksum;
   ChunkChecksumHandle chunkChecksum;
@@ -71,6 +72,7 @@ public:
       this->version = metalinkEntry.version;
       this->language = metalinkEntry.language;
       this->os = metalinkEntry.os;
+      this->maxConnections = metalinkEntry.maxConnections;
 #ifdef ENABLE_MESSAGE_DIGEST
       this->checksum = metalinkEntry.checksum;
       this->chunkChecksum = metalinkEntry.chunkChecksum;

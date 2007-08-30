@@ -51,6 +51,7 @@ public:
   TYPE type;
   string location;
   int32_t preference;
+  int32_t maxConnections;
 public:
   MetalinkResource();
   ~MetalinkResource();
@@ -61,6 +62,7 @@ public:
       this->type = metalinkResource.type;
       this->location = metalinkResource.location;
       this->preference = metalinkResource.preference;
+      this->maxConnections = metalinkResource.maxConnections;
     }
     return *this;
   }

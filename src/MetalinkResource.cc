@@ -34,6 +34,8 @@
 /* copyright --> */
 #include "MetalinkResource.h"
 
-MetalinkResource::MetalinkResource() {}
+MetalinkResource::MetalinkResource():
+  maxConnections(-1)
+{}
 
 MetalinkResource::~MetalinkResource() {}

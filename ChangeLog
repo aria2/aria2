@@ -1,3 +1,14 @@
+2007-08-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added the ability to disable segmented download in .metalink.
+	aria2 can now recognize 'maxconnections' attribute in 'resources' and
+	'url' tag.
+	* src/MetalinkEntry.{h, cc}
+	* src/RequestResource.{h, cc}
+	* src/MetalinkRequestInfo.cc
+	* src/Xml2MetalinkProcessor.cc
+	* test/Xml2MetalinkProcessorTest.cc
+	
 2007-08-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added parameterized URI support.

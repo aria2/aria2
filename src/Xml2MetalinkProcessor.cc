@@ -140,17 +140,18 @@ MetalinkEntryHandle Xml2MetalinkProcessor::getEntry(const string& xpath) {
     }
   }
   xmlXPathFreeObject(pieceHashPathObj);
-  /*
-  string piecesPath = xpath+"/m:verification/m:pieces";
-  string sha1PiecesPath = piecesPath+"[@type=\"sha1\"]";
-  string md5PiecesPath = piecesPath+"[@type=\"md5\"]";
-  if(xpathExists(sha1PiecesPath)) {
-    entry->chunkChecksum = getPieceHash(sha1PiecesPath, entry->getLength());
-  } else if(xpathExists(md5PiecesPath)) {
-    entry->chunkChecksum = getPieceHash(md5PiecesPath, entry->getLength());
-  }
-  */
 #endif // ENABLE_MESSAGE_DIGEST
+  
+  string resourcesPath = xpath+"/m:resources[@maxconnections]";
+  xmlXPathObjectPtr resourcesPathObj = xpathEvaluation(resourcesPath);
+  if(resourcesPathObj) {
+    xmlNodeSetPtr nodeSet = resourcesPathObj->nodesetval;
+    xmlNodePtr node = nodeSet->nodeTab[0];
+    int32_t maxConnections = strtol(Util::trim(xmlAttribute(node, "maxconnections")).c_str(), 0, 10);
+    entry->maxConnections = maxConnections;
+  }
+  xmlXPathFreeObject(resourcesPathObj);
+
   for(uint32_t index = 1; 1; index++) {
     MetalinkResourceHandle resource(getResource(xpath+"/m:resources/m:url["+Util::uitos(index)+"]"));
     if(!resource.get()) {
@@ -226,6 +227,13 @@ MetalinkResourceHandle Xml2MetalinkProcessor::getResource(const string& xpath) {
   resource->location = Util::trim(xmlAttribute(node, "location"));
 
   resource->url = Util::trim(xmlContent(node));
+
+  {
+    string cnn = Util::trim(xmlAttribute(node, "maxconnections"));
+    if(!cnn.empty()) {
+      resource->maxConnections = strtol(cnn.c_str(), 0, 10);
+    }
+  }
 
   xmlXPathFreeObject(result);
 

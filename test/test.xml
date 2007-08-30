@@ -14,8 +14,8 @@
         <hash type="sha1">a96cf3f0266b91d87d5124cf94326422800b627d</hash>
         <hash type="md5">fc4d834e89c18c99b2615d902750948c</hash>
       </verification>
-      <resources>
-        <url type="ftp" location="jp" preference="100">ftp://ftphost/aria2-0.5.2.tar.bz2</url>
+      <resources maxconnections="1">
+        <url type="ftp" location="jp" preference="100" maxconnections="1">ftp://ftphost/aria2-0.5.2.tar.bz2</url>
         <url type="http" location="us" preference="100">http://httphost/aria2-0.5.2.tar.bz2</url>
       </resources>
     </file>

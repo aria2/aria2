@@ -50,11 +50,17 @@ public:
      split(split) {}
 
   void operator()(const MetalinkResourceHandle& resource) {
+    int32_t maxConnections;
+    if(resource->maxConnections < 0) {
+      maxConnections = split;
+    } else {
+      maxConnections = min<int32_t>(resource->maxConnections, split);
+    }
     switch(resource->type) {
     case MetalinkResource::TYPE_HTTP:
     case MetalinkResource::TYPE_HTTPS:
     case MetalinkResource::TYPE_FTP:
-      for(int32_t s = 1; s <= split; s++) {
+      for(int32_t s = 1; s <= maxConnections; s++) {
 	urlsPtr->push_back(resource->url);
       }
       break;
@@ -152,7 +158,9 @@ RequestInfos MetalinkRequestInfo::execute() {
       rg->setHintFilename(entry->file->getBasename());
       rg->setTopDir(entry->file->getDirname());
       rg->setHintTotalLength(entry->getLength());
-      rg->setNumConcurrentCommand(op->getAsInt(PREF_METALINK_SERVERS));
+      rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
+				  op->getAsInt(PREF_METALINK_SERVERS) :
+				  min<int32_t>(op->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
 
 #ifdef ENABLE_MESSAGE_DIGEST
       if(entry->chunkChecksum.isNull()) {

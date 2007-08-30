@@ -36,10 +36,12 @@
 #include "Util.h"
 #include <algorithm>
 
-MetalinkEntry::MetalinkEntry()
+MetalinkEntry::MetalinkEntry():
+  maxConnections(-1)
 #ifdef ENABLE_MESSAGE_DIGEST
-  :checksum(0),
-   chunkChecksum(0)
+  ,
+  checksum(0),
+  chunkChecksum(0)
 #endif // ENABLE_MESSAGE_DIGEST
 {}
 

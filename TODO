@@ -39,7 +39,4 @@
 * used globally -> common.h
 
 * Add pgp verification support. I have to use libgpgme??
-* Disable segmented download in .metalink
-
-* Add outfile auto renaming
 * Rewrite MetaFileUtil
