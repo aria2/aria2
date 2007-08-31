@@ -1,3 +1,9 @@
+2007-09-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Reduced the fragmentation of bitfield in http/ftp download.
+	* src/BitfieldMan.cc (getSparseMissingUnusedIndex)
+	* test/BitfieldManTest.cc
+
 2007-08-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added the ability to disable segmented download in .metalink.

@@ -336,8 +336,10 @@ int32_t BitfieldMan::getSparseMissingUnusedIndex() const {
   if(maxRange.getSize()) {
     if(maxRange.startIndex == 0) {
       return 0;
+    } else if(isUseBitSet(maxRange.startIndex-1)) {
+      return maxRange.getMidIndex();      
     } else {
-      return maxRange.getMidIndex();
+      return maxRange.startIndex;
     }
   } else {
     return -1;
