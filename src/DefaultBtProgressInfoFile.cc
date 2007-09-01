@@ -60,7 +60,8 @@ DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() {}
 
 void DefaultBtProgressInfoFile::save() {
   logger->info(MSG_SAVING_SEGMENT_FILE, filename.c_str());
-  FILE* file = openFile(filename, "wb");
+  string filenameTemp = filename+"__temp";
+  FILE* file = openFile(filenameTemp, "wb");
   try {
     if(fwrite(btContext->getInfoHash(),
 	      btContext->getInfoHashLength(), 1, file) < 1) {
@@ -87,6 +88,11 @@ void DefaultBtProgressInfoFile::save() {
     logger->info(MSG_SAVED_SEGMENT_FILE);
   } catch(string ex) {
     fclose(file);
+    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
+			filename.c_str(), strerror(errno));
+  }
+
+  if(rename(filenameTemp.c_str(), filename.c_str()) == -1) {
     throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
 			filename.c_str(), strerror(errno));
   }

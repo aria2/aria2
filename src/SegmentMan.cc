@@ -99,7 +99,9 @@ void SegmentMan::save() const {
   }
   string segFilename = getSegmentFilePath();
   logger->info(MSG_SAVING_SEGMENT_FILE, segFilename.c_str());
-  FILE* segFile = openSegFile(segFilename, "wb");
+
+  string segFilenameTemp = segFilename+"__temp";
+  FILE* segFile = openSegFile(segFilenameTemp, "wb");
   try {
     if(fwrite(&totalSize, sizeof(totalSize), 1, segFile) < 1) {
       throw string("writeError");
@@ -137,6 +139,11 @@ void SegmentMan::save() const {
     logger->info(MSG_SAVED_SEGMENT_FILE);
   } catch(string ex) {
     fclose(segFile);
+    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
+			segFilename.c_str(), strerror(errno));
+  }
+
+  if(rename(segFilenameTemp.c_str(), segFilename.c_str()) == -1) {
     throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
 			segFilename.c_str(), strerror(errno));
   }
