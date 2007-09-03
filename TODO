@@ -39,4 +39,12 @@
 * used globally -> common.h
 
 * Add pgp verification support. I have to use libgpgme??
+
+* Rewrite following classes using TimeBasedCommand
+	src/ActivePeerConnectionCommand.h
+	src/FillRequestGroupCommand.h
+	src/HaveEraseCommand.h
+	src/PeerChokeCommand.h
+	src/TorrentAutoSaveCommand.h
 * Rewrite MetaFileUtil
+* Integrate FTP/HTTP/BitTorrent downloads from metalinks

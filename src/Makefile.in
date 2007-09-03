@@ -261,7 +261,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PStringBuildVisitor.cc PStringBuildVisitor.h \
 	ParameterizedStringParser.cc ParameterizedStringParser.h \
 	FixedWidthNumberDecorator.h NumberDecorator.h \
-	AlphaNumberDecorator.h ChunkChecksumValidator.cc \
+	AlphaNumberDecorator.h TimeBasedCommand.cc TimeBasedCommand.h \
+	AutoSaveCommand.cc AutoSaveCommand.h ChunkChecksumValidator.cc \
 	ChunkChecksumValidator.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
@@ -471,11 +472,11 @@ am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	CookieBoxFactory.$(OBJEXT) HttpHeaderProcessor.$(OBJEXT) \
 	FileEntry.$(OBJEXT) Platform.$(OBJEXT) \
 	PStringSegment.$(OBJEXT) PStringBuildVisitor.$(OBJEXT) \
-	ParameterizedStringParser.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
-	$(am__objects_11)
+	ParameterizedStringParser.$(OBJEXT) TimeBasedCommand.$(OBJEXT) \
+	AutoSaveCommand.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
+	$(am__objects_9) $(am__objects_10) $(am__objects_11)
 am_libaria2c_a_OBJECTS = $(am__objects_12)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -733,10 +734,12 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	PStringBuildVisitor.cc PStringBuildVisitor.h \
 	ParameterizedStringParser.cc ParameterizedStringParser.h \
 	FixedWidthNumberDecorator.h NumberDecorator.h \
-	AlphaNumberDecorator.h $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11)
+	AlphaNumberDecorator.h TimeBasedCommand.cc TimeBasedCommand.h \
+	AutoSaveCommand.cc AutoSaveCommand.h $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5) $(am__append_6) $(am__append_7) \
+	$(am__append_8) $(am__append_9) $(am__append_10) \
+	$(am__append_11)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -832,6 +835,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActivePeerConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfig.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoSaveCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManFactory.Po@am__quote@
@@ -970,6 +974,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeBasedCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentAutoSaveCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentConsoleDownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TorrentDownloadEngine.Po@am__quote@

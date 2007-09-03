@@ -108,7 +108,9 @@ SRCS =  Socket.h\
 	ParameterizedStringParser.cc ParameterizedStringParser.h\
 	FixedWidthNumberDecorator.h\
 	NumberDecorator.h\
-	AlphaNumberDecorator.h
+	AlphaNumberDecorator.h\
+	TimeBasedCommand.cc TimeBasedCommand.h\
+	AutoSaveCommand.cc AutoSaveCommand.h
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST

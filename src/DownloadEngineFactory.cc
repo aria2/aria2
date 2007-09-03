@@ -43,6 +43,7 @@
 #include "CUIDCounter.h"
 #include "FileAllocationDispatcherCommand.h"
 #include "FileAllocationMan.h"
+#include "AutoSaveCommand.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityMan.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -94,6 +95,7 @@ DownloadEngineFactory::newConsoleEngine(const Option* op,
 #endif // ENABLE_MESSAGE_DIGEST
   e->commands.push_back(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e, 1));
   e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e));
+  e->commands.push_back(new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
   return e;
 }
 
