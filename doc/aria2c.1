@@ -1,467 +1,497 @@
 .\"     Title: aria2c
 .\"    Author: 
-.\" Generator: DocBook XSL Stylesheets v1.72.0 <http://docbook.sf.net/>
-.\"      Date: 08/10/2007
+.\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
+.\"      Date: 09/03/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "08/10/2007" "" ""
+.TH "ARIA2C" "1" "09/03/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
 .SH "NAME"
-aria2c \- The high speed download utility
+aria2c - The high speed download utility
 .SH "SYNOPSIS"
 .sp
 .RS 4
 .nf
-aria2c [OPTIONS] URL ...
-aria2c [OPTIONS] \-T TORRENT_FILE FILE ...
+aria2c [OPTIONS] URL \.\.\.
+aria2c [OPTIONS] \-T TORRENT_FILE FILE \.\.\.
 aria2c [OPTIONS] \-M METALINK_FILE
 .fi
 .RE
 .SH "DESCRIPTION"
-aria2 is a utility for downloading files. It has completely new design concept from its predecessor, Aria, and is written from scratch. aria2 has a segmented downloading engine in its core. It can download one file from multiple URLs or multiple connections from one URL. This results in very high speed downloading, much faster than ordinary browsers. This engine in was implemented in a single\-thread model. The architecture is clean and easy to extend. aria2 currently supports HTTP, FTP, and BitTorrent. It also supports Metalink version 3.0.
+aria2 is a utility for downloading files\. It has completely new design concept from its predecessor, Aria, and is written from scratch\. aria2 has a segmented downloading engine in its core\. It can download one file from multiple URLs or multiple connections from one URL\. This results in very high speed downloading, much faster than ordinary browsers\. This engine in was implemented in a single\-thread model\. The architecture is clean and easy to extend\. aria2 currently supports HTTP, FTP, and BitTorrent\. It also supports Metalink version 3\.0\.
 .sp
-Please visit the project web site at http://aria2.sourceforge.net/
+Please visit the project web site at http://aria2\.sourceforge\.net/
 .sp
 .SH "OPTIONS"
 .PP
 \-d, \-\-dir=DIR
 .RS 4
-The directory to store the downloaded file.
+The directory to store the downloaded file\.
 .RE
 .PP
 \-o, \-\-out=FILE
 .RS 4
-The file name of the downloaded file.
+The file name of the downloaded file\.
 .RE
 .PP
 \-l, \-\-log=LOG
 .RS 4
-The file name of the log file. If
+The file name of the log file\. If
 \fI\-\fR
-is specified, log is written to stdout.
+is specified, log is written to stdout\.
 .RE
 .PP
 \-D, \-\-daemon
 .RS 4
-Run as daemon.
+Run as daemon\.
 .RE
 .PP
 \-s, \-\-split=N
 .RS 4
 Download a file using
 \fIN\fR
-connections.
+connections\.
 \fIN\fR
 must be between
 \fI1\fR
 and
-\fI5\fR. This option affects all URLs. Thus, aria2 connects to each URL with
+\fI5\fR\. This option affects all URLs\. Thus, aria2 connects to each URL with
 \fIN\fR
-connections. Default:
+connections\. Default:
 \fI1\fR
 .RE
 .PP
 \-\-retry\-wait=SEC
 .RS 4
-Set the seconds to wait to retry after an error has occured. Specify a value between 0 and 60. Default: 5
+Set the seconds to wait to retry after an error has occured\. Specify a value between 0 and 60\. Default: 5
 .RE
 .PP
 \-t, \-\-timeout=SEC
 .RS 4
-Set timeout in seconds. Default: 60
+Set timeout in seconds\. Default: 60
 .RE
 .PP
 \-m, \-\-max\-tries=N
 .RS 4
-Set number of tries.
+Set number of tries\.
 \fI0\fR
-means unlimited. Default:
+means unlimited\. Default:
 \fI5\fR
 .RE
 .PP
 \-\-http\-proxy=HOST:PORT
 .RS 4
-Use HTTP proxy server. This affects all URLs.
+Use HTTP proxy server\. This affects all URLs\.
 .RE
 .PP
 \-\-http\-user=USER
 .RS 4
-Set HTTP user. This affects all URLs.
+Set HTTP user\. This affects all URLs\.
 .RE
 .PP
 \-\-http\-passwd=PASSWD
 .RS 4
-Set HTTP password. This affects all URLs.
+Set HTTP password\. This affects all URLs\.
 .RE
 .PP
 \-\-http\-proxy\-user=USER
 .RS 4
-Set HTTP proxy user. This affects all URLs.
+Set HTTP proxy user\. This affects all URLs\.
 .RE
 .PP
 \-\-http\-proxy\-passwd=PASSWD
 .RS 4
-Set HTTP proxy password. This affects all URLs.
+Set HTTP proxy password\. This affects all URLs\.
 .RE
 .PP
 \-\-http\-proxy\-method=METHOD
 .RS 4
-Set the method to use in proxy request.
+Set the method to use in proxy request\.
 \fIMETHOD\fR
 is either
 \fIget\fR
 or
-\fItunnel\fR. Default:
+\fItunnel\fR\. Default:
 \fItunnel\fR
 .RE
 .PP
 \-\-http\-auth\-scheme=SCHEME
 .RS 4
-Set HTTP authentication scheme. Currently,
+Set HTTP authentication scheme\. Currently,
 \fIbasic\fR
-is the only supported scheme. Default:
+is the only supported scheme\. Default:
 \fIbasic\fR
 .RE
 .PP
 \-\-referer=REFERER
 .RS 4
-Set Referer. This affects all URLs.
+Set Referer\. This affects all URLs\.
 .RE
 .PP
 \-\-ftp\-user=USER
 .RS 4
-Set FTP user. This affects all URLs. Default: anonymous
+Set FTP user\. This affects all URLs\. Default: anonymous
 .RE
 .PP
 \-\-ftp\-passwd=PASSWD
 .RS 4
-Set FTP password. This affects all URLs. Default: ARIA2USER@
+Set FTP password\. This affects all URLs\. Default: ARIA2USER@
 .RE
 .PP
 \-\-ftp\-type=TYPE
 .RS 4
-Set FTP transfer type. TYPE is either
+Set FTP transfer type\. TYPE is either
 \fIbinary\fR
 or
-\fIascii\fR. Default:
+\fIascii\fR\. Default:
 \fIbinary\fR
 .RE
 .PP
 \-p, \-\-ftp\-pasv
 .RS 4
-Use passive mode in FTP.
+Use passive mode in FTP\.
 .RE
 .PP
 \-\-ftp\-via\-http\-proxy=METHOD
 .RS 4
 Use HTTP proxy in
-\fIFTP\fR.
+\fIFTP\fR\.
 \fIMETHOD\fR
 is either
 \fIget\fR
 or
-\fItunnel\fR. Default:
+\fItunnel\fR\. Default:
 \fItunnel\fR
 .RE
 .PP
 \-\-lowest\-speed\-limit=SPEED
 .RS 4
-Close connection if download speed is lower than or equal to this value(bytes per sec). 0 means aria2 does not have a lowest speed limit. You can append K or M(1K = 1024, 1M = 1024K). This option does not affect BitTorrent downloads. Default: 0
+Close connection if download speed is lower than or equal to this value(bytes per sec)\. 0 means aria2 does not have a lowest speed limit\. You can append K or M(1K = 1024, 1M = 1024K)\. This option does not affect BitTorrent downloads\. Default: 0
 .RE
 .PP
 \-\-max\-download\-limit=SPEED
 .RS 4
-Set max download speed in bytes per sec.
+Set max download speed in bytes per sec\.
 \fI0\fR
-means unrestricted. You can append
+means unrestricted\. You can append
 \fIK\fR
 or
-\fIM\fR(1K = 1024, 1M = 1024K). Default:
+\fIM\fR(1K = 1024, 1M = 1024K)\. Default:
 \fI0\fR
 .RE
 .PP
 \-\-file\-allocation=METHOD
 .RS 4
-Specify file allocation method. METHOD is either
+Specify file allocation method\. METHOD is either
 \fInone\fR
 or
-\fIprealloc\fR.
+\fIprealloc\fR\.
 \fInone\fR
-doesn't pre\-allocate file space.
+doesn\'t pre\-allocate file space\.
 \fIprealloc\fR
-pre\-allocates file space before download begins. This may take some time depending on the size of the file. Default: none
+pre\-allocates file space before download begins\. This may take some time depending on the size of the file\. Default: none
 .RE
 .PP
 \-\-allow\-overwrite=true|false
 .RS 4
-If false, aria2 doesn't download a file which already exists but the corresponding .aria2 file doesn't exist. Default: false
+If false, aria2 doesn\'t download a file which already exists but the corresponding \.aria2 file doesn\'t exist\. Default: false
+.RE
+.PP
+\-Z, \-\-force\-sequential[=true|false]
+.RS 4
+Fetch URIs in the command\-line sequentially and download each URI in a separate session, like the usual command\-line download utilities\. Default: false
+.RE
+.PP
+\-\-auto\-file\-renaming[=true|false]
+.RS 4
+Rename file name if the same file already exists\. This option works only in http(s)/ftp download\. The new file name has a dot and a number(1\.\.9999) appended\. Default: true
+.RE
+.PP
+\-P, \-\-parameterized\-uri[=true|false]
+.RS 4
+Enable parameterized URI support\. You can specify set of parts:
+\fIhttp://{sv1,sv2,sv3}/foo\.iso\fR
+Also you can specify numeric sequences with step counter:
+\fI000\-100:2\fR\fI\.img\fR
+A step counter can be omitted\. If all URIs do not point to the same file, such as the second example above, \-Z option is required\. Default: false
 .RE
 .PP
 \-\-check\-integrity=true|false
 .RS 4
-Check file integrity by validating piece hash. This option only affects in BitTorrent downloads and Metalink downloads with chunk checksums. Use this option to re\-download a damaged portion of a file. You may need to specify \-\-allow\-overwrite=true if the .aria2 file doesn't exist. Default: false
+Check file integrity by validating piece hash\. This option only affects in BitTorrent downloads and Metalink downloads with chunk checksums\. Use this option to re\-download a damaged portion of a file\. You may need to specify \-\-allow\-overwrite=true if the \.aria2 file doesn\'t exist\. Default: false
 .RE
 .PP
 \-\-realtime\-chunk\-checksum=true|false
 .RS 4
-Validate chunk checksum while downloading a file in Metalink mode. This option on affects Metalink mode with chunk checksums. Default: true
+Validate chunk checksum while downloading a file in Metalink mode\. This option on affects Metalink mode with chunk checksums\. Default: true
 .RE
 .PP
 \-c, \-\-continue
 .RS 4
-Continue downloading a partially downloaded file. Use this option to resume a download started by a web browser or another program which downloads files sequentially from the beginning. Currently this option is only applicable to http(s)/ftp downloads.
+Continue downloading a partially downloaded file\. Use this option to resume a download started by a web browser or another program which downloads files sequentially from the beginning\. Currently this option is only applicable to http(s)/ftp downloads\.
 .RE
 .PP
 \-U, \-\-user\-agent=USER_AGENT
 .RS 4
-Set user agent for http(s) downloads.
+Set user agent for http(s) downloads\.
 .RE
 .PP
 \-n, \-\-no\-netrc
 .RS 4
-Disables netrc support.
+Disables netrc support\.
 .RE
 .PP
 \-i, \-\-input\-file=FILE
 .RS 4
-Downloads URIs found in FILE. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character. Reads input from stdin when
+Downloads URIs found in FILE\. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\. Reads input from stdin when
 \fI\-\fR
-is specified.
+is specified\.
 .RE
 .PP
 \-j, \-\-max\-concurrent\-downloads=N
 .RS 4
-Set maximum number of concurrent downloads. It should be used with the \-i option. Default: 5
+Set maximum number of concurrent downloads\. It should be used with the \-i option\. Default: 5
 .RE
 .PP
 \-\-load\-cookies=FILE
 .RS 4
-Load cookies from FILE. The format of FILE is the same used by Netscape and Mozilla.
+Load cookies from FILE\. The format of FILE is the same used by Netscape and Mozilla\.
 .RE
 .PP
 \-S, \-\-show\-files
 .RS 4
-Print file listing of .torrent or .metalink file and exit.
+Print file listing of \.torrent or \.metalink file and exit\.
 .RE
 .PP
 \-\-select\-file=INDEX\&...
 .RS 4
-Set file to download by specifing its index. You can find the file index using the \-\-show\-files option. Multiple indexes can be specified by using
-\fI,\fR, for example: "3,6". You can also use
+Set file to download by specifing its index\. You can find the file index using the \-\-show\-files option\. Multiple indexes can be specified by using
+\fI,\fR, for example: "3,6"\. You can also use
 \fI\-\fR
-to specify a range: "1\-5".
+to specify a range: "1\-5"\.
 \fI,\fR
 and
 \fI\-\fR
-can be used together. When used with the \-M option, index may vary depending on the query(see \-\-metalink\-* options).
+can be used together\. When used with the \-M option, index may vary depending on the query(see \-\-metalink\-* options)\.
 .RE
 .PP
 \-T, \-\-torrent\-file=TORRENT_FILE
 .RS 4
-The path to the .torrent file.
+The path to the \.torrent file\.
 .RE
 .PP
 \-\-follow\-torrent=true|false
 .RS 4
-Set to false to prevent aria2 from entering BitTorrent mode even if the filename of the downloaded file ends with .torrent. Default: true
+Set to false to prevent aria2 from entering BitTorrent mode even if the filename of the downloaded file ends with \.torrent\. Default: true
 .RE
 .PP
 \-\-direct\-file\-mapping=true|false
 .RS 4
-Directly read from and write to each file mentioned in .torrent file. Default:
+Directly read from and write to each file mentioned in \.torrent file\. Default:
 \fItrue\fR
 .RE
 .PP
 \-\-listen\-port=PORT
 .RS 4
-Set TCP port number for BitTorrent downloads. Default: 6881\-6999
+Set TCP port number for BitTorrent downloads\. Default: 6881\-6999
 .RE
 .PP
 \-\-max\-upload\-limit=SPEED
 .RS 4
-Set max upload speed in bytes per sec.
+Set max upload speed in bytes per sec\.
 \fI0\fR
-means unrestricted. You can append
+means unrestricted\. You can append
 \fIK\fR
 or
-\fIM\fR(1K = 1024, 1M = 1024K). Default:
+\fIM\fR(1K = 1024, 1M = 1024K)\. Default:
 \fI0\fR
 .RE
 .PP
 \-\-seed\-time=MINUTES
 .RS 4
-Specify seeding time in minutes. Also see the \-\-seed\-ratio option.
+Specify seeding time in minutes\. Also see the \-\-seed\-ratio option\.
 .RE
 .PP
 \-\-seed\-ratio=RATIO
 .RS 4
-Specify share ratio. Seed completed torrents until share ratio reaches RATIO. 1.0 is encouraged. If \-\-seed\-time option is specified along with this option, seeding ends when at least one of the conditions is satisfied.
+Specify share ratio\. Seed completed torrents until share ratio reaches RATIO\. 1\.0 is encouraged\. If \-\-seed\-time option is specified along with this option, seeding ends when at least one of the conditions is satisfied\.
 .RE
 .PP
 \-\-peer\-id\-prefix=PEERI_ID_PREFIX
 .RS 4
-Specify the prefix of peer ID. The peer ID in in BitTorrent is 20 byte length. If more than 20 bytes are specified, only first 20 bytes are used. If less than 20 bytes are specified, the random alphabet characters are added to make it's length 20 bytes. Default: \-aria2\-
+Specify the prefix of peer ID\. The peer ID in in BitTorrent is 20 byte length\. If more than 20 bytes are specified, only first 20 bytes are used\. If less than 20 bytes are specified, the random alphabet characters are added to make it\'s length 20 bytes\. Default: \-aria2\-
 .RE
 .PP
 \-M, \-\-metalink\-file=METALINK_FILE
 .RS 4
-The file path to .metalink file.
+The file path to \.metalink file\.
 .RE
 .PP
 \-C, \-\-metalink\-servers=NUM_SERVERS
 .RS 4
-The number of servers to connect to simultaneously. Default:
+The number of servers to connect to simultaneously\. Default:
 \fI5\fR
 .RE
 .PP
 \-\-metalink\-version=VERSION
 .RS 4
-The version of the file to download.
+The version of the file to download\.
 .RE
 .PP
 \-\-metalink\-language=LANGUAGE
 .RS 4
-The language of the file to download.
+The language of the file to download\.
 .RE
 .PP
 \-\-metalink\-os=OS
 .RS 4
-The operating system of the file to download.
+The operating system of the file to download\.
 .RE
 .PP
 \-\-metalink\-location=LOCATION
 .RS 4
-The location of the prefered server.
+The location of the prefered server\.
 .RE
 .PP
 \-\-follow\-metalink=true|false
 .RS 4
-Set to false to prevent aria2 from entering Metalink mode even if the filename of the downloaded file ends with .metalink. Default: true
+Set to false to prevent aria2 from entering Metalink mode even if the filename of the downloaded file ends with \.metalink\. Default: true
 .RE
 .PP
 \-v, \-\-version
 .RS 4
-Print the version number and exit.
+Print the version number and exit\.
 .RE
 .PP
 \-h, \-\-help
 .RS 4
-Print this message and exit.
+Print this message and exit\.
 .RE
 .PP
 URL
 .RS 4
-You can specify multiple URLs. All URLs must point to the same file or downloading will fail.
+You can specify multiple URLs\. All URLs must point to the same file or downloading will fail\.
 .RE
 .PP
 FILE
 .RS 4
-Specify files in multi\-file torrent to download. Use in conjunction with the \-T option. This argument is ignored if you specify the \-\-select\-file option.
+Specify files in multi\-file torrent to download\. Use in conjunction with the \-T option\. This argument is ignored if you specify the \-\-select\-file option\.
 .RE
 .SH "EXAMPLES"
 .PP
 Download a file using 1 connection
 .RS 4
-aria2c http://AAA.BBB.CCC/file.zip
+aria2c http://AAA\.BBB\.CCC/file\.zip
 .RE
 .PP
 Download a file using 2 connections
 .RS 4
-aria2c \-s 2 http://AAA.BBB.CCC/file.zip
+aria2c \-s 2 http://AAA\.BBB\.CCC/file\.zip
 .RE
 .PP
 Download a file using 2 connections, each connects to a different server
 .RS 4
-aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip
+aria2c http://AAA\.BBB\.CCC/file\.zip http://DDD\.EEE\.FFF/GGG/file\.zip
 .RE
 .PP
 You can mix up different protocols
 .RS 4
-aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip
+aria2c http://AAA\.BBB\.CCC/file\.zip ftp://DDD\.EEE\.FFF/GGG/file\.zip
 .RE
 .PP
-Download files listed in a text file. 5 files are downloaded concurrently
+Download files listed in a text file\. 5 files are downloaded concurrently
 .RS 4
-aria2c \-i uris.txt \-j 5
+aria2c \-i uris\.txt \-j 5
 .RE
 .PP
 Download files passed through stdin
 .RS 4
-cat uris.txt | aria2c \-i \-
+cat uris\.txt | aria2c \-i \-
 .RE
 .PP
 Download a file using local cookies
 .RS 4
-aria2c \-\-load\-cookies cookies.txt http://AAA.BBB.CCC/file.zip
+aria2c \-\-load\-cookies cookies\.txt http://AAA\.BBB\.CCC/file\.zip
+.RE
+.PP
+Parameterized URI
+.RS 4
+aria2c \-P http://{server1,server2,server3}/file\.iso
+.RE
+.PP
+Parameterized URI\. \-Z option is required in this case
+.RS 4
+aria2c \-P \-Z
+001\-100:2\.img
 .RE
 .PP
 Download a torrent
 .RS 4
-aria2c \-o test.torrent http://AAA.BBB.CCC/file.torrent
+aria2c \-o test\.torrent http://AAA\.BBB\.CCC/file\.torrent
 .RE
 .PP
-Download a torrent using a local .torrent file
+Download a torrent using a local \.torrent file
 .RS 4
-aria2c \-T test.torrent
+aria2c \-T test\.torrent
 .RE
 .PP
 Download only selected files
 .RS 4
-aria2c \-T test.torrent dir/file1.zip dir/file2.zip
+aria2c \-T test\.torrent dir/file1\.zip dir/file2\.zip
 .RE
 .PP
 Download only selected files using index
 .RS 4
-aria2c \-T test.torrent \-\-select\-file 1,3\-5
+aria2c \-T test\.torrent \-\-select\-file 1,3\-5
 .RE
 .PP
-Print file listing of .torrent file
+Print file listing of \.torrent file
 .RS 4
-aria2c \-T test.torrent \-S
+aria2c \-T test\.torrent \-S
 .RE
 .PP
 Metalink downloading
 .RS 4
-aria2c \-\-lowest\-speed\-limit 10K http://AAA.BBB.CCC/file.metalink
+aria2c \-\-lowest\-speed\-limit 10K http://AAA\.BBB\.CCC/file\.metalink
 .RE
 .PP
-Download a file using a local .metalink file
+Download a file using a local \.metalink file
 .RS 4
-aria2c \-M test.metalink
+aria2c \-M test\.metalink
 .RE
 .PP
 Metalink downloading with preferences
 .RS 4
-aria2c \-M test.metalink \-\-metalink\-version=1.1.1 \-\-metalink\-language=en\-US
+aria2c \-M test\.metalink \-\-metalink\-version=1\.1\.1 \-\-metalink\-language=en\-US
 .RE
 .PP
 Download only selected files
 .RS 4
-aria2c \-M test.metalink \-\-metalink\-language=en\-US dir/file1.zip dir/file2.zip
+aria2c \-M test\.metalink \-\-metalink\-language=en\-US dir/file1\.zip dir/file2\.zip
 .RE
 .PP
 Download only selected files using index
 .RS 4
-aria2c \-M test.metalink \-\-metalink\-language=en\-US \-\-select\-file 1,3\-5
+aria2c \-M test\.metalink \-\-metalink\-language=en\-US \-\-select\-file 1,3\-5
 .RE
 .PP
-Print file listing of .metalink file
+Print file listing of \.metalink file
 .RS 4
-aria2c \-M test.metalink \-S \-\-metalink\-language=en\-US
+aria2c \-M test\.metalink \-S \-\-metalink\-language=en\-US
 .RE
 .SH "FILES"
 .PP
-aria2.conf
+aria2\.conf
 .RS 4
-User configuration file. It must be placed under ~/.aria2 and must be named as aria2.conf. In each line, there is 1 parameter whose syntax is name=value pair, where name is the long command\-line option name without
+User configuration file\. It must be placed under ~/\.aria2 and must be named as aria2\.conf\. In each line, there is 1 parameter whose syntax is name=value pair, where name is the long command\-line option name without
 \fI\-\-\fR
-prefix. The lines beginning
+prefix\. The lines beginning
 \fI#\fR
-are treated as comments.
+are treated as comments\.
 .sp
 .RS 4
 .nf
@@ -474,18 +504,29 @@ Example:
 # sample configuration file for aria2c
 file\-allocation=prealloc
 listen\-port=60000
-seed\-ratio=1.0
+seed\-ratio=1\.0
 max\-upload\-limit=40K
 ftp\-pasv=true
 .fi
 .RE
 .RE
 .SH "REPORTING BUGS"
-Report bugs to Tatsuhiro Tsujikawa <t\-tujikawa@users.sourceforge.net>
+Report bugs to Tatsuhiro Tsujikawa <t\-tujikawa@users\.sourceforge\.net>
 .sp
 .SH "AUTHOR"
-Tatsuhiro Tsujikawa <t\-tujikawa@users.sourceforge.net>
+Tatsuhiro Tsujikawa <t\-tujikawa@users\.sourceforge\.net>
 .sp
 .SH "COPYRIGHT"
 Copyright \(co 2006, 2007 Tatsuhiro Tsujikawa
 .sp
+.SH "NOTES"
+.IP " 1." 4
+000-100:2
+.RS 4
+\%http://host/image
+.RE
+.IP " 2." 4
+001-100:2
+.RS 4
+\%http://host/file
+.RE

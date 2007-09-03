@@ -14,7 +14,12 @@
 
 	Updated Japanese translation.
 	* po/ja.po
+
+	Updated man page.
+	* doc/aria2.1.txt
 	
+	* Release 0.11.3-rc
+
 2007-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Now *.aria2 contorol file is first saved to *.aria2__temp and if
