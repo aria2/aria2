@@ -6,6 +6,15 @@
 	* src/TimeBasedCommand.{h, cc}: New class.
 	* src/DownloadEngineFactory.cc (newConsoleEngine)
 
+	Disable parameterized URI support by default. Added -P option to
+	enable the feature.
+	* src/prefs.h: Added PREF_PARAMETERIZED_URI
+	* src/OptionHandlerFactory.cc
+	* src/main.cc: Also updated usages for -Z and --auto-file-renaming
+
+	Updated Japanese translation.
+	* po/ja.po
+	
 2007-09-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Now *.aria2 contorol file is first saved to *.aria2__temp and if

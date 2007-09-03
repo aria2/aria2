@@ -96,6 +96,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new DefaultOptionHandler(PREF_PEER_ID_PREFIX));
   handlers.push_back(new BooleanOptionHandler(PREF_FORCE_SEQUENTIAL));  
   handlers.push_back(new BooleanOptionHandler(PREF_AUTO_FILE_RENAMING));  
+  handlers.push_back(new BooleanOptionHandler(PREF_PARAMETERIZED_URI));  
 
   return handlers;
 }

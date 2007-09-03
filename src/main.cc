@@ -196,15 +196,27 @@ void showUsage() {
   		"                              already exists but the corresponding .aria2 file\n"
   		"                              doesn't exist.\n"
             "                              Default: false") << endl;
-  cout << _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially and\n"
-	    "                              download each URI in a separate session, like\n"
+  cout << _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially\n"
+	    "                              and download each URI in a separate session, like\n"
 	    "                              the usual command-line download utilities.\n"
 	    "                              Default: false") << endl;
   cout << _(" --auto-file-renaming[=true|false] Rename file name if the same file already\n"
 	    "                              exists. This option works only in http(s)/ftp\n"
 	    "                              download.\n"
 	    "                              The new file name has a dot and a number(1..9999)\n"
-	    "                              appended. Default: true") << endl;
+	    "                              appended.\n"
+	    "                              Default: true") << endl;
+  cout << _(" -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
+	    "                              You can specify set of parts:\n"
+	    "                              http://{sv1,sv2,sv3}/foo.iso\n"
+	    "                              Also you can specify numeric sequences with step\n"
+	    "                              counter:\n"
+	    "                              http://host/image[000-100:2].img\n"
+	    "                              A step counter can be omitted.\n"
+	    "                              If all URIs do not point to the same file, such\n"
+	    "                              as the second example above, -Z option is\n"
+	    "                              required.\n"
+	    "                              Default: false") << endl;
 #ifdef ENABLE_MESSAGE_DIGEST
   cout << _(" --check-integrity=true|false  Check file integrity by validating piece hash.\n"
 	    "                              This option only affects in BitTorrent downloads\n"
@@ -315,9 +327,9 @@ void showUsage() {
   cout << _(" You can mix up different protocols:") << endl;
   cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
   cout << _(" Parameterized URI:") << endl;
-  cout << "  aria2c http://{server1,server2,server3}/file.iso" << endl;
-  cout << _(" Parameterized URI. -Z option must be specified:") << endl;
-  cout << "  aria2c -Z http://host/file[001-100].img" << endl;
+  cout << "  aria2c -P http://{server1,server2,server3}/file.iso" << endl;
+  cout << _(" Parameterized URI. -Z option is required in this case:") << endl;
+  cout << "  aria2c -P -Z http://host/file[001-100:2].img" << endl;
 #ifdef ENABLE_BITTORRENT
   cout << endl;
   cout << _(" Download a torrent:") << endl;
@@ -442,6 +454,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "15");
   op->put(PREF_FORCE_SEQUENTIAL, V_FALSE);
   op->put(PREF_AUTO_FILE_RENAMING, V_TRUE);
+  op->put(PREF_PARAMETERIZED_URI, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -486,6 +499,7 @@ int main(int argc, char* argv[]) {
       { "load-cookies", required_argument, &lopt, 205 },
       { "force-sequential", optional_argument, 0, 'Z' },
       { "auto-file-renaming", optional_argument, &lopt, 206 },
+      { "parameterized-uri", optional_argument, 0, 'P' },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -516,7 +530,7 @@ int main(int argc, char* argv[]) {
       { "help", no_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:j:Z", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:j:Z::P::", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -689,6 +703,9 @@ int main(int argc, char* argv[]) {
     case 'Z':
       cmdstream << PREF_FORCE_SEQUENTIAL << "=" << toBoolArg(optarg) << "\n";
       break;
+    case 'P':
+      cmdstream << PREF_PARAMETERIZED_URI << "=" << toBoolArg(optarg) << "\n";
+      break;
     case 'v':
       showVersion();
       exit(EXIT_SUCCESS);
@@ -850,7 +867,7 @@ int main(int argc, char* argv[]) {
 	  RequestGroups groups;
 	  while(flparser->hasNext()) {
 	    Strings uris = flparser->next();
-	    if(uris.size() == 1) {
+	    if(uris.size() == 1 && op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
 	      Strings unfoldedURIs = unfoldURI(uris);
 	      for(Strings::const_iterator itr = unfoldedURIs.begin();
 		  itr != unfoldedURIs.end(); ++itr) {
@@ -860,7 +877,7 @@ int main(int argc, char* argv[]) {
 		RequestGroupHandle rg = new RequestGroup(xuris, op);
 		groups.push_back(rg);
 	      }
-	    } else if(uris.size() > 1) {
+	    } else if(uris.size() > 0) {
 	      Strings xuris;
 	      ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
 		    back_inserter(xuris));
@@ -872,8 +889,12 @@ int main(int argc, char* argv[]) {
 	}
 	else
 	  {
-	    
-	    Strings nargs = unfoldURI(args);
+	    Strings nargs;
+	    if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+	      nargs = unfoldURI(args);
+	    } else {
+	      nargs = args;
+	    }
 	    if(op->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
 	      RequestGroups groups;
 	      for(Strings::const_iterator itr = nargs.begin();

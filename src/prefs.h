@@ -107,10 +107,12 @@
 #define PREF_MAX_CONCURRENT_DOWNLOADS "max-concurrent-downloads"
 // value: 1*digit
 #define PREF_DIRECT_DOWNLOAD_TIMEOUT "direct-download-timeout"
-// value:
+// value: true | false
 #define PREF_FORCE_SEQUENTIAL "force-sequential"
-// value:
+// value: true | false
 #define PREF_AUTO_FILE_RENAMING "auto-file-renaming"
+// value: true | false
+#define PREF_PARAMETERIZED_URI "parameterized-uri"
 
 /**
  * FTP related preferences
