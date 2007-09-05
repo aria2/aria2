@@ -155,9 +155,11 @@ RequestInfos MetalinkRequestInfo::execute() {
 	urls.push_back((*itr)->url);
       }
       RequestGroupHandle rg = new RequestGroup(urls, op);
-      rg->setHintFilename(entry->file->getBasename());
+      if(itr == entry->resources.end()) {
+	rg->setHintFilename(entry->file->getBasename());
+	rg->setHintTotalLength(entry->getLength());
+      }
       rg->setTopDir(entry->file->getDirname());
-      rg->setHintTotalLength(entry->getLength());
       rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				  op->getAsInt(PREF_METALINK_SERVERS) :
 				  min<int32_t>(op->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));

@@ -1,3 +1,8 @@
+2007-09-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/MetalinkRequestInfo.cc (execute): Fixed BitTorrent download
+	failure in Metalink.
+
 2007-09-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Automatically save *.aria2 control file of http/ftp download in every
