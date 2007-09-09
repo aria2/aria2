@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 09/03/2007
+.\"      Date: 09/10/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "09/03/2007" "" ""
+.TH "ARIA2C" "1" "09/10/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -214,10 +214,35 @@ Rename file name if the same file already exists\. This option works only in htt
 \-P, \-\-parameterized\-uri[=true|false]
 .RS 4
 Enable parameterized URI support\. You can specify set of parts:
-\fIhttp://{sv1,sv2,sv3}/foo\.iso\fR
-Also you can specify numeric sequences with step counter:
-\fI000\-100:2\fR\fI\.img\fR
-A step counter can be omitted\. If all URIs do not point to the same file, such as the second example above, \-Z option is required\. Default: false
+.RE
+.sp
+.RS 4
+.nf
+http://{sv1,sv2,sv3}/foo\.iso
+.fi
+.RE
+.sp
+.RS 4
+.nf
+Also you can specify numeric sequences with step
+counter:
+.fi
+.RE
+.sp
+.RS 4
+.nf
+http://host/image[000\-100:2]\.img
+.fi
+.RE
+.sp
+.RS 4
+.nf
+A step counter can be omitted\.
+If all URIs do not point to the same file, such
+as the second example above, \-Z option is
+required\.
+Default: false
+.fi
 .RE
 .PP
 \-\-check\-integrity=true|false
@@ -425,8 +450,7 @@ aria2c \-P http://{server1,server2,server3}/file\.iso
 .PP
 Parameterized URI\. \-Z option is required in this case
 .RS 4
-aria2c \-P \-Z
-001\-100:2\.img
+aria2c \-P \-Z http://host/file[001\-100:2]\.img
 .RE
 .PP
 Download a torrent
@@ -519,14 +543,3 @@ Tatsuhiro Tsujikawa <t\-tujikawa@users\.sourceforge\.net>
 .SH "COPYRIGHT"
 Copyright \(co 2006, 2007 Tatsuhiro Tsujikawa
 .sp
-.SH "NOTES"
-.IP " 1." 4
-000-100:2
-.RS 4
-\%http://host/image
-.RE
-.IP " 2." 4
-001-100:2
-.RS 4
-\%http://host/file
-.RE

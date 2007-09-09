@@ -152,10 +152,14 @@ OPTIONS
  -P, --parameterized-uri[=true|false]::
   Enable parameterized URI support.
                               You can specify set of parts:
-                              'http://{sv1,sv2,sv3}/foo.iso'
+----------------------------
+http://{sv1,sv2,sv3}/foo.iso
+----------------------------
                               Also you can specify numeric sequences with step
                               counter:
-                              'http://host/image[000-100:2].img'
+--------------------------------
+http://host/image[000-100:2].img
+--------------------------------
                               A step counter can be omitted.
                               If all URIs do not point to the same file, such
                               as the second example above, -Z option is
@@ -325,7 +329,7 @@ EXAMPLES
  Parameterized URI::
   aria2c -P http://{server1,server2,server3}/file.iso
  Parameterized URI. -Z option is required in this case::
-  aria2c -P -Z http://host/file[001-100:2].img
+  aria2c -P -Z \http://host/file[001-100:2].img
 
  Download a torrent::
   aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent

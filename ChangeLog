@@ -3,6 +3,11 @@
 	Updated fr.po by sebone
 	* po/fr.po
 
+	Updated man page.
+	* doc/aria2c.1.txt
+	
+	* Release 0.11.3
+	
 2007-09-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/MetalinkRequestInfo.cc (execute): Fixed BitTorrent download
@@ -26,7 +31,7 @@
 	* po/ja.po
 
 	Updated man page.
-	* doc/aria2.1.txt
+	* doc/aria2c.1.txt
 	
 	* Release 0.11.3-rc
 
