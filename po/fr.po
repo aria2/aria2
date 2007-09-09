@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2007-09-03 20:34+0900\n"
-"PO-Revision-Date: 2007-08-16 01:11+0900\n"
-"Last-Translator: Charles <landemaine@gmail.com>\n"
+"PO-Revision-Date: 2007-09-06 21:47+0100\n"
+"Last-Translator: Sebastien WILLEMIJNS <seb@willemijns.com>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -142,34 +142,34 @@ msgid "CUID#%d - Bad checksum: %s"
 msgstr "CUID#%d - Somme de contr&ocirc;le incorrecte: %s"
 
 #: src/message.h:63
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - Redirection vers %s"
+msgstr "CUID#%d - Résolution du nom de domaine %s"
 
 #: src/message.h:64
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - T&eacute;l&eacute;chargement incomplet: %s"
+msgstr "CUID#%d - Résolution du nom complète: %s -> %s"
 
 #: src/message.h:65
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - Redirection vers %s"
+msgstr "CUID#%d - La résolution du nom pour %s a échoué:%s"
 
 #: src/message.h:66
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr "CUID#%d - Somme de contr&ocirc;le incorrecte: %s"
+msgstr ""
 
 #: src/message.h:67
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - T&eacute;l&eacute;chargement stopp&eacute;."
+msgstr "CUID#%d - Arrêt demandé."
 
 #: src/message.h:68
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - Connexion &agrave; %s:%d"
+msgstr "CUID#%d - Connexion au peer %s"
 
 #: src/message.h:69
 #, c-format
@@ -177,11 +177,13 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
+"CUID#%d - Pièce reçue. index=%d, commencement=%d, taille=%d, offset=%llu, "
+"blockIndex=%d"
 
 #: src/message.h:70
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr "CUID#%d - Redirection vers %s"
+msgstr ""
 
 #: src/message.h:71
 #, c-format
@@ -189,6 +191,8 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - Rejet du message de la pièce dans la queue suite à une reception "
+"d'un message d'annulation. index=%d, begin=%d, length=%d"
 
 #: src/message.h:72
 #, c-format
@@ -196,6 +200,8 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - Rejet du message de la pièce dans la queue suite à une reception "
+"d'un message d'annulation. index=%d, begin=%d, length=%d"
 
 #: src/message.h:73
 #, c-format
@@ -203,14 +209,14 @@ msgid "CUID#%d - Exception caught while validating file integrity."
 msgstr ""
 
 #: src/message.h:74
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - Redirection vers %s"
+msgstr ""
 
 #: src/message.h:75
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - Redirection vers %s"
+msgstr ""
 
 #: src/message.h:76
 #, c-format
@@ -237,9 +243,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:80
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - Pas de segment disponible."
+msgstr ""
 
 #: src/message.h:81
 #, c-format
@@ -250,21 +256,23 @@ msgstr ""
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr ""
+"CUID#%d - Content-Disposition détecté. Utilisation de %s comme nom de "
+"fichier."
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr ""
+msgstr "CUID#%d - le peer %s:%d est banni."
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr ""
+msgstr "CUID#%d - Utilisation du port %d pour accepter de nouvellesconnexions"
 
 #: src/message.h:85
-#, fuzzy, c-format
+#, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr "La jonction du port a engendré des erreurs.\n"
+msgstr "CUID#%d - La jonction du port a engendré une erreur=%d"
 
 #: src/message.h:86
 #, c-format
@@ -280,11 +288,13 @@ msgstr ""
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
 msgstr ""
+"CUID#%d - Une érreur s'est produite durant le traitement de la réponse du "
+"tracker."
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr ""
+msgstr "CUID#%d - Impossible de créer la requête du tracker."
 
 #: src/message.h:90
 #, c-format
@@ -294,7 +304,7 @@ msgstr ""
 #: src/message.h:92
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr ""
+msgstr "URI non reconnue ou protocole non supporté: %s"
 
 #: src/message.h:93
 #, c-format
@@ -351,16 +361,15 @@ msgstr ""
 #: src/message.h:102
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr ""
+msgstr "Allocation du fichier %s, %s octets"
 
 #: src/message.h:103
 msgid "File not found"
-msgstr ""
+msgstr "Fichier non trouvé"
 
 #: src/message.h:104
-#, fuzzy
 msgid "Not a directory"
-msgstr "%s n'est pas un dossier"
+msgstr "Ce n'est pas un dossier"
 
 #: src/message.h:105
 #, c-format
@@ -370,16 +379,16 @@ msgstr ""
 #: src/message.h:106
 #, c-format
 msgid "Writing file %s"
-msgstr ""
+msgstr "En train d'écrire le fichier %s"
 
 #: src/message.h:107
 msgid "No peer list received."
-msgstr ""
+msgstr "Aucune liste de peer reçcue."
 
 #: src/message.h:108
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr ""
+msgstr "Ajout d'un peer %s: %d"
 
 #: src/message.h:109
 #, c-format
@@ -402,12 +411,12 @@ msgstr ""
 #: src/message.h:113
 #, c-format
 msgid "Validating file %s"
-msgstr ""
+msgstr "Validation du fichier %s"
 
 #: src/message.h:114
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr ""
+msgstr "%d secondes pour allouer %s octet(s)"
 
 #: src/message.h:115
 #, c-format
@@ -420,9 +429,9 @@ msgid "Metalink: Queueing %s for download."
 msgstr ""
 
 #: src/message.h:117
-#, fuzzy, c-format
+#, c-format
 msgid "Download complete: %s"
-msgstr "CUID#%d - T&eacute;l&eacute;chargement incomplet: %s"
+msgstr "T&eacute;l&eacute;chargement terminé: %s"
 
 #: src/message.h:118
 msgid "Seeding is over."
@@ -443,9 +452,9 @@ msgid "Good chunk checksum. hash=%s"
 msgstr ""
 
 #: src/message.h:122
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to load cookies from %s"
-msgstr "Impossible d'ouvrir une connexion socket, cause: %s"
+msgstr "Impossible d'ouvrir les cookies depuis %s"
 
 #: src/message.h:123
 #, c-format
@@ -453,20 +462,20 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
+"le fichier .netrc %s n'a pas les bonnes permissions. Il devrait être 600. "
+"Lesupport de ce fichier n'est donc pas pris en compte."
 
 #: src/message.h:124
 msgid "Logging started."
 msgstr ""
 
 #: src/message.h:125
-#, fuzzy
 msgid "Specify at least one URL."
-msgstr "spécifiez au moins un URL"
+msgstr "Spécifiez au moins une URL."
 
 #: src/message.h:126
-#, fuzzy
 msgid "daemon failed."
-msgstr "le service a échoué"
+msgstr "Le service a échoué."
 
 #: src/message.h:128
 msgid "Timeout."
@@ -520,9 +529,9 @@ msgid "The response status is not successful. status=%d"
 msgstr "La réponse a échoué. Status=%d"
 
 #: src/message.h:139
-#, fuzzy, c-format
+#, c-format
 msgid "Too large file size. size=%s"
-msgstr "Fichier trop grand. Taille=%lld"
+msgstr "Fichier trop grand. Taille=%s"
 
 #: src/message.h:140
 #, c-format
@@ -530,17 +539,17 @@ msgid "Transfer encoding %s is not supported."
 msgstr "Le type de transfert %s n'est pas supporté."
 
 #: src/message.h:141
-#, fuzzy, c-format
+#, c-format
 msgid "SSL initialization failed: %s"
-msgstr "L'initialisation SSL a échoué."
+msgstr "L'initialisation SSL a échouée: %s"
 
 #: src/message.h:142
 msgid "SSL I/O error"
-msgstr ""
+msgstr "Erreur E/S SSL"
 
 #: src/message.h:143
 msgid "SSL protocol error"
-msgstr ""
+msgstr "erreur de protocole SSL"
 
 #: src/message.h:144
 #, c-format
@@ -548,14 +557,14 @@ msgid "SSL unknown error %d"
 msgstr ""
 
 #: src/message.h:145
-#, fuzzy, c-format
+#, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr "L'initialisation SSL a échoué."
+msgstr "L'initialisation SSL a échouée: érreur de connexion OpenSSL SSL %d"
 
 #: src/message.h:146
-#, fuzzy, c-format
+#, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "La taille ne coïncide pas Attendu: %lld En réalité: %lld"
+msgstr "La taille ne coïncide pas. Attendue: %s En réalité: %s"
 
 #: src/message.h:147
 msgid "Authorization failed."
@@ -589,9 +598,8 @@ msgid "Failed to read from the file %s, cause: %s"
 msgstr "Impossible de lire le fichier %s, cause: %s"
 
 #: src/message.h:155
-#, fuzzy
 msgid "Failed to read data from disk."
-msgstr "Impossible d'envoyer les données, cause: %s"
+msgstr "Impossible de lire les données depuis le disque."
 
 #: src/message.h:156
 #, c-format
@@ -606,9 +614,9 @@ msgid "Failed to seek the file %s, cause: %s"
 msgstr "Impossible de chercher le fichier %s, cause: %s"
 
 #: src/message.h:158
-#, fuzzy, c-format
+#, c-format
 msgid "The offset is out of range, offset=%s"
-msgstr "Le décallage est trop grand, décallage=%lld"
+msgstr "Le décalage est trop grand, décalage=%s"
 
 #: src/message.h:159
 #, c-format
@@ -646,14 +654,14 @@ msgid "Failed to set a socket option, cause: %s"
 msgstr "Impossible de définir une option de connexion socket, cause: %s"
 
 #: src/message.h:167
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
-msgstr "Impossible de définir une option de connexion socket, cause: %s"
+msgstr ""
 
 #: src/message.h:168
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
-msgstr "Impossible de définir une option de connexion socket, cause: %s"
+msgstr ""
 
 #: src/message.h:169
 #, c-format
@@ -719,7 +727,7 @@ msgstr "Impossible de lire les données, cause: %s"
 #: src/message.h:181
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
-msgstr ""
+msgstr "Erreur de socket inconnue %d (0x%x)"
 
 #: src/message.h:182
 #, c-format
@@ -737,13 +745,13 @@ msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "ID invalide=%d pour %s. Ça devrait être %d."
 
 #: src/message.h:185
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
-"La validation du block a échoué. Hash=%d, décallage=%lld, Hash attendu=%s, "
-"Hash =%s"
+"La validation du bloc a échoué. Hash=%d, décalage=%s, Hash attendu=%s, Hash ="
+"%s"
 
 #: src/message.h:186
 msgid "Download aborted."
@@ -760,9 +768,9 @@ msgid "Insufficient checksums."
 msgstr ""
 
 #: src/message.h:189
-#, fuzzy, c-format
+#, c-format
 msgid "Tracker returned failure reason: %s"
-msgstr "Le Tracker a retourn&eacute; le message d'alerte suivant: %s"
+msgstr "Le Tracker a retourné le message d'alerte suivant: %s"
 
 #: src/message.h:190
 msgid "Flooding detected."
@@ -787,12 +795,11 @@ msgstr ""
 #: src/message.h:194
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr ""
+msgstr "La vitesse de téléchargement est trop lente: %d <= %d(B/s), hôte:%s"
 
 #: src/message.h:195
-#, fuzzy
 msgid "No HttpRequestEntry found."
-msgstr "Aucun en-tête trouvé"
+msgstr "Aucune en-tête trouvée."
 
 #: src/message.h:196
 #, c-format
@@ -806,7 +813,7 @@ msgstr ""
 
 #: src/message.h:198
 msgid "No file matched with your preference."
-msgstr ""
+msgstr "Aucun fichier ne correspond à votre préférence"
 
 #: src/message.h:199
 msgid "Exception caught"
@@ -1143,7 +1150,6 @@ msgstr ""
 "                              Défaut: false"
 
 #: src/main.cc:199
-#, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -1152,16 +1158,8 @@ msgid ""
 "                              the usual command-line download utilities.\n"
 "                              Default: false"
 msgstr ""
-" --follow-metalink=true|false  Définir cette option comme false empêche à "
-"aria2\n"
-"                              d'entrer en mode Metalink même si le nom de "
-"fichier\n"
-"                              du fichier téléchargé se termine en ."
-"metalink.\n"
-"                              Défaut: true"
 
 #: src/main.cc:203
-#, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -1172,13 +1170,6 @@ msgid ""
 "                              appended.\n"
 "                              Default: true"
 msgstr ""
-" --follow-metalink=true|false  Définir cette option comme false empêche à "
-"aria2\n"
-"                              d'entrer en mode Metalink même si le nom de "
-"fichier\n"
-"                              du fichier téléchargé se termine en ."
-"metalink.\n"
-"                              Défaut: true"
 
 #: src/main.cc:209
 msgid ""
@@ -1518,26 +1509,26 @@ msgstr ""
 
 #: src/main.cc:320
 msgid "Examples:"
-msgstr "Exemples:"
+msgstr " Exemples:"
 
 #: src/main.cc:321
 msgid " Download a file using 1 connection:"
-msgstr " Téléchargez un fichier avec 1 connexion:"
+msgstr "Téléchargez un fichier avec 1 connexion:"
 
 #: src/main.cc:323
 msgid " Download a file using 2 connections:"
-msgstr " Téléchargez un fichier avec 2 connexion:"
+msgstr "Téléchargez un fichier avec 2 connexions:"
 
 #: src/main.cc:325
 msgid ""
 " Download a file using 2 connections, each connects to a different server:"
 msgstr ""
-" Téléchargez un fichier avec 2 connexion, chacune se connectant à un serveur "
+"Téléchargez un fichier avec 2 connexions, chacune se connectant à un serveur "
 "différent:"
 
 #: src/main.cc:327
 msgid " You can mix up different protocols:"
-msgstr " Vous pouvez mélanger différents protocoles:"
+msgstr "Vous pouvez mélanger différents protocoles:"
 
 #: src/main.cc:329
 msgid " Parameterized URI:"
@@ -1600,7 +1591,7 @@ msgstr ""
 #: src/ConsoleDownloadEngine.cc:202
 #, c-format
 msgid "done\n"
-msgstr "terminé\n"
+msgstr "Terminé\n"
 
 #~ msgid ""
 #~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
