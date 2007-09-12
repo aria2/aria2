@@ -1,3 +1,4 @@
+#include <fstream>
 #include "DefaultBtProgressInfoFile.h"
 #include "DefaultBtContext.h"
 #include "Option.h"
