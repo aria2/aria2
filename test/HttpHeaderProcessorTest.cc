@@ -105,7 +105,7 @@ void HttpHeaderProcessorTest::testGetHttpStatusHeader()
   CPPUNIT_ASSERT_EQUAL(string("200"), status);
   CPPUNIT_ASSERT_EQUAL(string("Mon, 25 Jun 2007 16:04:59 GMT"), header->getFirst("Date"));
   CPPUNIT_ASSERT_EQUAL(string("Apache/2.2.3 (Debian)"), header->getFirst("Server"));
-  CPPUNIT_ASSERT_EQUAL(9187LL, header->getFirstAsLLInt("Content-Length"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)9187LL, header->getFirstAsLLInt("Content-Length"));
   CPPUNIT_ASSERT_EQUAL(string("text/html; charset=UTF-8"), header->getFirst("Content-Type"));
 }
 
