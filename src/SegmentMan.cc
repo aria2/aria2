@@ -143,7 +143,7 @@ void SegmentMan::save() const {
 			segFilename.c_str(), strerror(errno));
   }
 
-  if(rename(segFilenameTemp.c_str(), segFilename.c_str()) == -1) {
+  if(!File(segFilenameTemp).renameTo(segFilename)) {
     throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
 			segFilename.c_str(), strerror(errno));
   }

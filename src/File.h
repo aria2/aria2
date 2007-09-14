@@ -96,6 +96,8 @@ public:
   string getDirname() const;
 
   static bool isDir(const string& filename);
+
+  bool renameTo(const string& dest);
 };
 
 #endif // _D_FILE_H_

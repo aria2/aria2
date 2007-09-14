@@ -18,6 +18,7 @@ class FileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMkdir);
   CPPUNIT_TEST(testGetDirname);
   CPPUNIT_TEST(testGetBasename);
+  CPPUNIT_TEST(testRenameTo);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -33,6 +34,7 @@ public:
   void testMkdir();
   void testGetDirname();
   void testGetBasename();
+  void testRenameTo();
 };
 
 
@@ -131,4 +133,24 @@ void FileTest::testGetBasename()
 {
   File f("/tmp/dist/aria2.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), f.getBasename());
+}
+
+void FileTest::testRenameTo()
+{
+  string fname = "FileTest_testRenameTo.txt";
+  ofstream of(fname.c_str());
+  of.close();
+
+  File f(fname);
+  string fnameTo = "FileTest_testRenameTo_dest.txt";
+  CPPUNIT_ASSERT(f.renameTo(fnameTo));
+  CPPUNIT_ASSERT(f.exists());
+  CPPUNIT_ASSERT(!File(fname).exists());
+  CPPUNIT_ASSERT_EQUAL(fnameTo, f.getBasename());
+
+  // to see renameTo() work even when the destination file exists
+  of.open(fname.c_str());
+  of.close();
+  
+  CPPUNIT_ASSERT(f.renameTo(fname));
 }

@@ -1,3 +1,12 @@
+2007-09-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed: control file cannot be saved in the second attempt because of
+	the nature of win32's rename() function.
+	* src/File.{h, cc} (renameTo): New function. Thanks to Ross.
+	* src/DefaultBtProgressInfoFile.cc: Use File::renameTo()
+	* src/SegmentMan.cc: Use File::renameTo()
+	* test/FileTest.cc (testRenameTo): Added.
+
 2007-09-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the compilation error on 64bit platform.

@@ -37,6 +37,11 @@
 #include "a2io.h"
 #include <libgen.h>
 
+#ifdef __MINGW32__
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+#endif // __MINGW32__
+
 File::File(const string& name):name(name) {}
 
 File::~File() {}
@@ -139,4 +144,22 @@ string File::getDirname() const
 bool File::isDir(const string& filename)
 {
   return File(filename).isDir();
+}
+
+bool File::renameTo(const string& dest)
+{
+#ifdef __MINGW32__
+  /* MinGW's rename() doesn't delete an existing destination */
+  if (_access(dest.c_str(), 0) == 0) {
+    if (_unlink(dest.c_str()) != 0) {
+      return false;
+    }
+  }
+#endif // __MINGW32__
+  if(rename(name.c_str(), dest.c_str()) == 0) {
+    name = dest;
+    return true;
+  } else {
+    return false;
+  }
 }
