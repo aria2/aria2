@@ -83,7 +83,7 @@ string HttpRequest::createRequest() const
   }
   requestLine +=
     string(" HTTP/1.1\r\n")+
-    "User-Agent: "+Util::urlencode(userAgent)+"\r\n"+
+    "User-Agent: "+userAgent+"\r\n"+
     "Accept: */*\r\n"+        /* */
     "Host: "+getHostText(getHost(), getPort())+"\r\n"+
     "Pragma: no-cache\r\n"+
