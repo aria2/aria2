@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string>
+#include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;

@@ -1,5 +1,9 @@
 2007-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* test/FileTest.cc: Included fstream.
+
+2007-10-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/HttpRequest.cc (createRequest):
 	Fixed the bug that user-agent is URL-encoded.
 
