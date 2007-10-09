@@ -73,13 +73,13 @@ void FtpConnection::sendType() const {
 }
 
 void FtpConnection::sendCwd() const {
-  string request = "CWD "+req->getDir()+"\r\n";
+  string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendSize() const {
-  string request = "SIZE "+req->getFile()+"\r\n";
+  string request = "SIZE "+Util::urldecode(req->getFile())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
@@ -116,7 +116,7 @@ void FtpConnection::sendRest(const SegmentHandle& segment) const {
 }
 
 void FtpConnection::sendRetr() const {
-  string request = "RETR "+req->getFile()+"\r\n";
+  string request = "RETR "+Util::urldecode(req->getFile())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
