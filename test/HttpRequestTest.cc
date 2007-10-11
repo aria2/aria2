@@ -171,7 +171,6 @@ void HttpRequestTest::testCreateRequest()
     "Cache-Control: no-cache\r\n"
     "Connection: close\r\n"
     "Range: bytes=1048576-\r\n"
-    "Referer: http://localhost:8080/archives/aria2-1.0.0.tar.bz2\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
