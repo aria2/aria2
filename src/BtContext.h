@@ -35,24 +35,21 @@
 #ifndef _D_BT_CONTEXT_H_
 #define _D_BT_CONTEXT_H_
 
-#include "common.h"
-#include "FileEntry.h"
-#include "AnnounceTier.h"
+#include "DownloadContext.h"
 
 #define INFO_HASH_LENGTH 20
 #define MAX_PEER_ERROR 5
 #define MAX_PEERS 55
 
+class AnnounceTier;
+extern typedef SharedHandle<AnnounceTier> AnnounceTierHandle;
 typedef deque<AnnounceTierHandle> AnnounceTiers;
 
-class BtContext {
+class RequestGroup;
+
+class BtContext:public DownloadContext {
 public:
   virtual ~BtContext() {}
-
-  enum FILE_MODE {
-    SINGLE,
-    MULTI
-  };
 
   virtual const unsigned char* getInfoHash() const = 0;
 
@@ -60,25 +57,9 @@ public:
 
   virtual string getInfoHashAsString() const = 0;
 
-  virtual string getPieceHash(int32_t index) const = 0;
-  
-  virtual const Strings& getPieceHashes() const = 0;
-
-  virtual int64_t getTotalLength() const = 0;
-
-  virtual FILE_MODE getFileMode() const = 0;
-
-  virtual FileEntries getFileEntries() const = 0;
-
   virtual AnnounceTiers getAnnounceTiers() const = 0;
 
   virtual void load(const string& torrentFile) = 0;
-
-  virtual string getName() const = 0;
-  
-  virtual int32_t getPieceLength() const = 0;
-
-  virtual int32_t getNumPieces() const = 0;
 
   /**
    * Returns the peer id of localhost, 20 byte length
@@ -86,6 +67,8 @@ public:
   virtual const unsigned char* getPeerId() = 0;
 
   virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize) = 0;
+  
+  virtual RequestGroup* getOwnerRequestGroup() = 0;
 
 };
 

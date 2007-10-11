@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "AbstractProxyResponseCommand.h"
+#include "HttpConnection.h"
+#include "Request.h"
+#include "RequestGroup.h"
+#include "DownloadEngine.h"
+#include "HttpResponse.h"
 #include "HttpRequestCommand.h"
 #include "DlRetryEx.h"
 #include "message.h"

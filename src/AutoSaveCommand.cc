@@ -33,10 +33,17 @@
  */
 /* copyright --> */
 #include "AutoSaveCommand.h"
+#include "DownloadEngine.h"
+#include "RequestGroupMan.h"
+
+AutoSaveCommand::AutoSaveCommand(int32_t cuid, DownloadEngine* e, int32_t interval):
+  TimeBasedCommand(cuid, e, interval) {}
+
+AutoSaveCommand::~AutoSaveCommand() {}
 
 void AutoSaveCommand::preProcess()
 {
-  if(_e->_requestGroupMan->downloadFinished()) {
+  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     _exit = true;
   }
 }

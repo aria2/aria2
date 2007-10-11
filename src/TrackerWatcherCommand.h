@@ -35,28 +35,43 @@
 #ifndef _D_TRACKER_WATCHER_COMMAND_H_
 #define _D_TRACKER_WATCHER_COMMAND_H_
 
+#include "Command.h"
 #include "BtContextAwareCommand.h"
-#include "TorrentDownloadEngine.h"
+#include "RequestGroupAware.h"
 
-class TrackerWatcherCommand : public BtContextAwareCommand {
+class DownloadEngine;
+class RequestGroup;
+extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
+
+class TrackerWatcherCommand : public Command,
+			      public BtContextAwareCommand,
+			      public RequestGroupAware
+{
 private:
-  TorrentDownloadEngine* e;
+  DownloadEngine* e;
 
+  RequestGroupHandle _trackerRequestGroup;
   /**
    * Returns a command for announce request. Returns 0 if no announce request
    * is needed.
    */
-  Command* createRequestCommand(const string& url);
+  RequestGroupHandle createRequestGroup(const string& url);
+
+  string getTrackerResponse(const RequestGroupHandle& requestGroup);
+
+  void processTrackerResponse(const string& response);
+
 public:
-  TrackerWatcherCommand(int cuid,
-			TorrentDownloadEngine* e,
+  TrackerWatcherCommand(int32_t cuid,
+			RequestGroup* requestGroup,
+			DownloadEngine* e,
 			const BtContextHandle& btContext);
 
-  ~TrackerWatcherCommand();
+  virtual ~TrackerWatcherCommand();
 
-  Command* createCommand();
+  RequestGroupHandle createAnnounce();
 
-  bool execute();
+  virtual bool execute();
 };
 
 #endif // _D_TRACKER_WATCHER_COMMAND_H_

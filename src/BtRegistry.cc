@@ -35,6 +35,7 @@
 #include "BtRegistry.h"
 #include "DlAbortEx.h"
 
+BtContextMap BtRegistry::btContextMap;
 PeerStorageMap BtRegistry::peerStorageMap;
 PieceStorageMap BtRegistry::pieceStorageMap;
 BtAnnounceMap BtRegistry::btAnnounceMap;
@@ -42,93 +43,77 @@ BtRuntimeMap BtRegistry::btRuntimeMap;
 BtProgressInfoFileMap BtRegistry::btProgressInfoFileMap;
 PeerObjectClusterRegistry BtRegistry::peerObjectClusterRegistry;
 
-PeerStorageHandle BtRegistry::getPeerStorage(const string& key) {
-  PeerStorageMap::iterator itr = peerStorageMap.find(key);
-  if(itr == peerStorageMap.end()) {
-    return PeerStorageHandle(0);
-  } else {
-    return itr->second;
-  }
+PeerStorageHandle BtRegistry::getPeerStorage(const string& key)
+{
+  return peerStorageMap.getHandle(key);
 }
 
-bool BtRegistry::registerPeerStorage(const string& key,
-				     const PeerStorageHandle& peerStorage) {
-  PeerStorageMap::value_type p(key, peerStorage);
-  pair<PeerStorageMap::iterator, bool> retval = peerStorageMap.insert(p);
-  return retval.second;
+void BtRegistry::registerPeerStorage(const string& key,
+				     const PeerStorageHandle& peerStorage)
+{
+  peerStorageMap.registerHandle(key, peerStorage);
 }
 				  
 PieceStorageHandle
-BtRegistry::getPieceStorage(const string& key) {
-  PieceStorageMap::iterator itr = pieceStorageMap.find(key);
-  if(itr == pieceStorageMap.end()) {
-    return PieceStorageHandle(0);
-  } else {
-    return itr->second;
-  }
+BtRegistry::getPieceStorage(const string& key)
+{
+  return pieceStorageMap.getHandle(key);
 }
 
-bool
+void
 BtRegistry::registerPieceStorage(const string& key,
-				 const PieceStorageHandle& pieceStorage) {
-  pieceStorageMap.erase(key);
-  PieceStorageMap::value_type p(key, pieceStorage);
-  pair<PieceStorageMap::iterator, bool> retval = pieceStorageMap.insert(p);
-  return retval.second;
+				 const PieceStorageHandle& pieceStorage)
+{
+  pieceStorageMap.registerHandle(key, pieceStorage);
 }
 
-BtRuntimeHandle BtRegistry::getBtRuntime(const string& key) {
-  BtRuntimeMap::iterator itr = btRuntimeMap.find(key);
-  if(itr == btRuntimeMap.end()) {
-    return BtRuntimeHandle(0);
-  } else {
-    return itr->second;
-  }
+BtRuntimeHandle BtRegistry::getBtRuntime(const string& key)
+{
+  return btRuntimeMap.getHandle(key);
 }
 
-bool
+void
 BtRegistry::registerBtRuntime(const string& key,
-			      const BtRuntimeHandle& btRuntime) {
-  BtRuntimeMap::value_type p(key, btRuntime);
-  pair<BtRuntimeMap::iterator, bool> retval =
-    btRuntimeMap.insert(p);
-  return retval.second;
+			      const BtRuntimeHandle& btRuntime)
+{
+  btRuntimeMap.registerHandle(key, btRuntime);
 }
 
-BtAnnounceHandle BtRegistry::getBtAnnounce(const string& key) {
-  BtAnnounceMap::iterator itr = btAnnounceMap.find(key);
-  if(itr == btAnnounceMap.end()) {
-    return BtAnnounceHandle(0);
-  } else {
-    return itr->second;
-  }
+BtAnnounceHandle BtRegistry::getBtAnnounce(const string& key)
+{
+  return btAnnounceMap.getHandle(key);
 }
 
-bool
+void
 BtRegistry::registerBtAnnounce(const string& key,
-			       const BtAnnounceHandle& btAnnounce) {
-  BtAnnounceMap::value_type p(key, btAnnounce);
-  pair<BtAnnounceMap::iterator, bool> retval =
-    btAnnounceMap.insert(p);
-  return retval.second;
+			       const BtAnnounceHandle& btAnnounce)
+{
+  btAnnounceMap.registerHandle(key, btAnnounce);
 }
 
-BtProgressInfoFileHandle BtRegistry::getBtProgressInfoFile(const string& key) {
-  BtProgressInfoFileMap::iterator itr = btProgressInfoFileMap.find(key);
-  if(itr == btProgressInfoFileMap.end()) {
-    return BtProgressInfoFileHandle(0);
-  } else {
-    return itr->second;
-  }
+BtProgressInfoFileHandle BtRegistry::getBtProgressInfoFile(const string& key)
+{
+  return btProgressInfoFileMap.getHandle(key);
 }
 
-bool
+void
 BtRegistry::registerBtProgressInfoFile(const string& key,
-				       const BtProgressInfoFileHandle& btProgressInfoFile) {
-  BtProgressInfoFileMap::value_type p(key, btProgressInfoFile);
-  pair<BtProgressInfoFileMap::iterator, bool> retval =
-    btProgressInfoFileMap.insert(p);
-  return retval.second;
+				       const BtProgressInfoFileHandle& btProgressInfoFile)
+{
+  btProgressInfoFileMap.registerHandle(key, btProgressInfoFile);
+}
+
+BtContextHandle
+BtRegistry::getBtContext(const string& key)
+{
+  return btContextMap.getHandle(key);
+}
+
+void
+BtRegistry::registerBtContext(const string& key,
+			      const BtContextHandle& btContext)
+{
+  btContextMap.registerHandle(key, btContext);
 }
 
 PeerObjectClusterHandle
@@ -150,11 +135,23 @@ BtRegistry::unregisterPeerObjectCluster(const string& key)
   peerObjectClusterRegistry.unregisterHandle(key);
 }
 
-void BtRegistry::clear() {
+void BtRegistry::unregisterAll() {
+  btContextMap.clear();
   peerStorageMap.clear();
   pieceStorageMap.clear();
   btAnnounceMap.clear();
   btRuntimeMap.clear();
   btProgressInfoFileMap.clear();
   peerObjectClusterRegistry.clear();
+}
+
+void BtRegistry::unregister(const string& key)
+{
+  btContextMap.unregisterHandle(key);
+  peerStorageMap.unregisterHandle(key);
+  pieceStorageMap.unregisterHandle(key);
+  btAnnounceMap.unregisterHandle(key);
+  btRuntimeMap.unregisterHandle(key);
+  btProgressInfoFileMap.unregisterHandle(key);
+  peerObjectClusterRegistry.unregisterHandle(key);
 }

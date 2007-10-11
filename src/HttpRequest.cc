@@ -40,7 +40,7 @@
 RangeHandle HttpRequest::getRange() const
 {
   // content-length is always 0
-  if(segment->isNull()) {
+  if(segment.isNull()) {
     return new Range(0, 0, 0);
   } else {
     return new Range(getStartByte(), getEndByte(), entityLength);
@@ -49,7 +49,7 @@ RangeHandle HttpRequest::getRange() const
 
 bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
 {
-  if(segment->isNull()) {
+  if(segment.isNull()) {
     return true;
   }
   if(getStartByte() == range->getStartByte() &&
@@ -83,7 +83,7 @@ string HttpRequest::createRequest() const
   }
   requestLine +=
     string(" HTTP/1.1\r\n")+
-    "User-Agent: "+Util::urlencode(userAgent)+"\r\n"+
+    "User-Agent: "+userAgent+"\r\n"+
     "Accept: */*\r\n"+        /* */
     "Host: "+getHostText(getHost(), getPort())+"\r\n"+
     "Pragma: no-cache\r\n"+
@@ -91,7 +91,8 @@ string HttpRequest::createRequest() const
   if(!request->isKeepAlive()) {
     requestLine += "Connection: close\r\n";
   }
-  if(segment->length > 0) {
+  if(!segment.isNull() && segment->getLength() > 0 &&
+     (request->isKeepAlive() || getStartByte() > 0)) {
     requestLine += "Range: bytes="+Util::llitos(getStartByte());
     requestLine += "-";
     if(request->isKeepAlive()) {
@@ -112,7 +113,6 @@ string HttpRequest::createRequest() const
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";
   }
-
   string cookiesValue;
   Cookies cookies = request->cookieBox->criteriaFind(getHost(),
 						     getDir(),

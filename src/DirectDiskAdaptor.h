@@ -36,6 +36,7 @@
 #define _D_DIRECT_DISK_ADAPTOR_H_
 
 #include "AbstractSingleDiskAdaptor.h"
+#include "DlAbortEx.h"
 
 class DirectDiskAdaptor : public AbstractSingleDiskAdaptor {
 public:
@@ -44,7 +45,7 @@ public:
 
   virtual string getFilePath();
 
-  virtual void onDownloadComplete();
+  virtual void onDownloadComplete() throw(DlAbortEx*);
 };
 
 typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;

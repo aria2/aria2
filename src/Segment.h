@@ -36,55 +36,34 @@
 #define _D_SEGMENT_H_
 
 #include "common.h"
-#include <deque>
 
-using namespace std;
+class Piece;
+extern typedef SharedHandle<Piece> PieceHandle;
 
 class Segment {
 public:
-  int32_t index;
-  int32_t length;
-  int32_t segmentLength;
-  int32_t writtenLength;
+  virtual ~Segment() {}
 
-  Segment(int32_t index, int32_t length, int32_t segmentLength, int32_t writtenLength = 0)
-    :index(index), length(length), segmentLength(segmentLength),
-     writtenLength(writtenLength) {}
+  virtual bool complete() const = 0;
 
-  Segment():index(-1), length(0), segmentLength(0), writtenLength(0) {}
+  virtual int32_t getIndex() const = 0;
 
-  bool complete() const {
-    return length <= writtenLength;
-  }
+  virtual int64_t getPosition() const = 0;
+  
+  virtual int64_t getPositionToWrite() const = 0;
 
-  bool isNull() const {
-    return index == -1;
-  }
+  virtual int32_t getLength() const = 0;
 
-  int64_t getPosition() const {
-    return ((int64_t)index)*segmentLength;
-  }
+  virtual int32_t getSegmentLength() const = 0;
 
-  int64_t getPositionToWrite() const
-  {
-    return getPosition()+writtenLength;
-  }
+  virtual int32_t getWrittenLength() const = 0;
 
-  bool operator==(const Segment& segment) const {
-    return index == segment.index &&
-      length == segment.length &&
-      segmentLength == segment.segmentLength &&
-      writtenLength == segment.writtenLength;
-  }
+  virtual int32_t getOverflowLength() const = 0;
 
-  bool operator!=(const Segment& segment) const {
-    return !(*this == segment);
-  }
+  virtual void updateWrittenLength(int32_t bytes) = 0;
 
-  friend ostream& operator<<(ostream& o, const Segment& segment);
+  virtual PieceHandle getPiece() const = 0;
 };
-
-ostream& operator<<(ostream& o, const Segment& segment);
 
 typedef SharedHandle<Segment> SegmentHandle;
 

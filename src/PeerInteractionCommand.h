@@ -36,9 +36,15 @@
 #define _D_PEER_INTERACTION_COMMAND_H_
 
 #include "PeerAbstractCommand.h"
+#include "RequestGroupAware.h"
+#include "BtContextAwareCommand.h"
 #include "BtInteractive.h"
+#include "PeerConnection.h"
 
-class PeerInteractionCommand : public PeerAbstractCommand {
+class PeerInteractionCommand : public PeerAbstractCommand,
+			       public BtContextAwareCommand,
+			       public RequestGroupAware
+{
 public:
   enum Seq {
     INITIATOR_SEND_HANDSHAKE,
@@ -55,13 +61,16 @@ protected:
   virtual bool prepareForRetry(int32_t wait);
   virtual bool prepareForNextPeer(int32_t wait);
   virtual void onAbort(Exception* ex);
+  virtual bool exitBeforeExecute();
 public:
   PeerInteractionCommand(int32_t cuid,
+			 RequestGroup* requestGroup,
 			 const PeerHandle& peer,
-			 TorrentDownloadEngine* e,
+			 DownloadEngine* e,
 			 const BtContextHandle& btContext,
 			 const SocketHandle& s,
-			 Seq sequence);
+			 Seq sequence,
+			 const PeerConnectionHandle& peerConnection = 0);
 
   virtual ~PeerInteractionCommand();
 

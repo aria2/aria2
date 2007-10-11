@@ -39,16 +39,17 @@
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "Exception.h"
+#include "RequestGroupAware.h"
 
-class RealtimeCommand : public Command {
+class RealtimeCommand : public Command, public RequestGroupAware {
 protected:
-  RequestGroup* _requestGroup;
   DownloadEngine* _e;
 public:
   RealtimeCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e):
     Command(cuid),
-    _requestGroup(requestGroup),
-    _e(e) {}
+    RequestGroupAware(requestGroup),
+    _e(e)
+  {}
 
   virtual ~RealtimeCommand() {}
 

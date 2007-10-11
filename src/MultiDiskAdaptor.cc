@@ -34,17 +34,19 @@
 /* copyright --> */
 #include "MultiDiskAdaptor.h"
 #include "DefaultDiskWriter.h"
-#include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"
+#include "MultiFileAllocationIterator.h"
+#include "DefaultDiskWriterFactory.h"
 
-void MultiDiskAdaptor::resetDiskWriterEntries() {
+void MultiDiskAdaptor::resetDiskWriterEntries()
+{
   diskWriterEntries.clear();
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     DiskWriterEntryHandle entry = new DiskWriterEntry(*itr);
     if((*itr)->isRequested()) {
-      entry->setDiskWriter(DefaultDiskWriter::createNewDiskWriter(option));
+      entry->setDiskWriter(DefaultDiskWriterFactory().newDiskWriter());
     } else {
       entry->setDiskWriter(new DefaultDiskWriter());
     }
@@ -52,18 +54,23 @@ void MultiDiskAdaptor::resetDiskWriterEntries() {
   }
 }
 
-string MultiDiskAdaptor::getTopDirPath() const {
+string MultiDiskAdaptor::getTopDirPath() const
+{
   return storeDir+"/"+topDir;
 }
 
-void MultiDiskAdaptor::mkdir() const {
+void MultiDiskAdaptor::mkdir() const
+  throw(DlAbortEx*)
+{
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     (*itr)->setupDir(getTopDirPath());
   }
 }
 
-void MultiDiskAdaptor::openFile() {
+void MultiDiskAdaptor::openFile()
+  throw(DlAbortEx*)
+{
   mkdir();
   resetDiskWriterEntries();
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
@@ -72,7 +79,9 @@ void MultiDiskAdaptor::openFile() {
   }
 }
 
-void MultiDiskAdaptor::initAndOpenFile() {
+void MultiDiskAdaptor::initAndOpenFile()
+  throw(DlAbortEx*)
+{
   mkdir();
   resetDiskWriterEntries();
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
@@ -81,7 +90,9 @@ void MultiDiskAdaptor::initAndOpenFile() {
   }
 }
 
-void MultiDiskAdaptor::openExistingFile() {
+void MultiDiskAdaptor::openExistingFile()
+  throw(DlAbortEx*)
+{
   resetDiskWriterEntries();
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
@@ -89,20 +100,24 @@ void MultiDiskAdaptor::openExistingFile() {
   }
 }
 
-void MultiDiskAdaptor::closeFile() {
+void MultiDiskAdaptor::closeFile()
+{
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
     (*itr)->closeFile();
   }
 }
 
-void MultiDiskAdaptor::onDownloadComplete() {
+void MultiDiskAdaptor::onDownloadComplete()
+  throw(DlAbortEx*)
+{
   closeFile();
   openFile();
 }
 
 void MultiDiskAdaptor::writeData(const unsigned char* data, int32_t len,
 				 int64_t offset)
+  throw(DlAbortEx*)
 {
   int64_t fileOffset = offset;
   bool writing = false;
@@ -145,6 +160,7 @@ int32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
 }
 
 int32_t MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
+  throw(DlAbortEx*)
 {
   int64_t fileOffset = offset;
   bool reading = false;
@@ -184,6 +200,7 @@ bool MultiDiskAdaptor::fileExists()
 
 // TODO call DiskWriter::openFile() before calling this function.
 int64_t MultiDiskAdaptor::size() const
+  throw(DlAbortEx*)
 {
   int64_t size = 0;
   for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();
@@ -191,4 +208,9 @@ int64_t MultiDiskAdaptor::size() const
     size += (*itr)->size();
   }
   return size;
+}
+
+FileAllocationIteratorHandle MultiDiskAdaptor::fileAllocationIterator()
+{
+  return new MultiFileAllocationIterator(this);
 }

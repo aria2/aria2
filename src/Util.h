@@ -36,6 +36,7 @@
 #define _D_UTIL_H_
 
 #include "common.h"
+#include "DlAbortEx.h"
 #include "a2time.h"
 #include "FileEntry.h"
 #include <utility>
@@ -93,7 +94,7 @@ public:
 
   static void fileCopy(const string& destFile, const string& src);
 
-  static void rangedFileCopy(const string& destFile, const string& src, int64_t srcOffset, int64_t length);
+  static void rangedFileCopy(const string& destFile, const string& src, int64_t srcOffset, int64_t length) throw(DlAbortEx*);
 
   static bool isPowerOf(int32_t num, int32_t base);
 

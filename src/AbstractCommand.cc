@@ -33,44 +33,64 @@
  */
 /* copyright --> */
 #include "AbstractCommand.h"
+#include "SegmentMan.h"
+#include "NameResolver.h"
+#include "CUIDCounter.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
+#include "FatalException.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "Util.h"
 #include "message.h"
 #include "SleepCommand.h"
 #include "prefs.h"
 #include "DNSCache.h"
-#include "FatalException.h"
+#include "SingleFileDownloadContext.h"
+#include "DefaultPieceStorage.h"
+#include "UnknownLengthPieceStorage.h"
+#include "File.h"
+#include "StreamCheckIntegrityEntry.h"
+#include "DefaultBtProgressInfoFile.h"
+#include "CheckIntegrityCommand.h"
+#include "DiskAdaptor.h"
+#include "PeerStat.h"
+#include "Segment.h"
+#include "DiskWriterFactory.h"
+#include "Option.h"
 
 AbstractCommand::AbstractCommand(int32_t cuid,
 				 const RequestHandle& req,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  Command(cuid), req(req), _requestGroup(requestGroup), e(e), socket(s),
+  Command(cuid), RequestGroupAware(requestGroup),
+  req(req), e(e), socket(s),
+  segment(0),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
-  nameResolverCheck(false) {
-  
+  nameResolverCheck(false)
+{ 
   setReadCheckSocket(socket);
   timeout = this->e->option->getAsInt(PREF_TIMEOUT);
-  ++_requestGroup->numConnection;
+  _requestGroup->increaseStreamConnection();
 }
 
 AbstractCommand::~AbstractCommand() {
   disableReadCheckSocket();
   disableWriteCheckSocket();
-  --_requestGroup->numConnection;
+  _requestGroup->decreaseStreamConnection();
 }
 
 bool AbstractCommand::execute() {
   try {
-    if(_requestGroup->getSegmentMan()->finished()) {
+    if(_requestGroup->downloadFinished() || _requestGroup->isHaltRequested()) {
       //logger->debug("CUID#%d - finished.", cuid);
       return true;
     }
-    PeerStatHandle peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
-    if(peerStat.get()) {
+    PeerStatHandle peerStat = 0;
+    if(!_requestGroup->getSegmentMan().isNull()) {
+      peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
+    }
+    if(!peerStat.isNull()) {
       if(peerStat->getStatus() == PeerStat::REQUEST_IDLE) {
 	logger->info(MSG_ABORT_REQUESTED, cuid);
 	onAbort(0);
@@ -86,9 +106,8 @@ bool AbstractCommand::execute() {
 #endif // ENABLE_ASYNC_DNS
        !checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck) {
       checkPoint.reset();
-      if(_requestGroup->getSegmentMan()->downloadStarted) {
-	// TODO Segment::isNull(), Change method name, it is very confusing.
-	if(segment->isNull()) {
+      if(!_requestGroup->getPieceStorage().isNull()) {
+	if(segment.isNull()) {
 	  segment = _requestGroup->getSegmentMan()->getSegment(cuid);
 	  if(segment.isNull()) {
 	    logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
@@ -98,26 +117,17 @@ bool AbstractCommand::execute() {
       }
       return executeInternal();
     } else {
-
       if(checkPoint.elapsed(timeout)) {
 	throw new DlRetryEx(EX_TIME_OUT);
       }
       e->commands.push_back(this);
       return false;
     }
-  } catch(FatalException* err) {
-    logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
-    onAbort(err);
-    delete(err);
-    req->resetUrl();
-    _requestGroup->getSegmentMan()->errors++;
-    return true;    
   } catch(DlAbortEx* err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
     onAbort(err);
     delete(err);
     req->resetUrl();
-    _requestGroup->getSegmentMan()->errors++;
     tryReserved();
     return true;
   } catch(DlRetryEx* err) {
@@ -132,13 +142,16 @@ bool AbstractCommand::execute() {
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
       logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
       delete(err);
-      _requestGroup->getSegmentMan()->errors++;
       tryReserved();
       return true;
     } else {
       delete(err);
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
     }
+  } catch(FatalException* err) {
+    delete(err);
+    _requestGroup->setHaltRequested(true);
+    return true;
   }
 }
 
@@ -148,7 +161,9 @@ void AbstractCommand::tryReserved() {
 }
 
 bool AbstractCommand::prepareForRetry(int32_t wait) {
-  _requestGroup->getSegmentMan()->cancelSegment(cuid);
+  if(!_requestGroup->getPieceStorage().isNull()) {
+    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+  }
   Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, _requestGroup, e);
   if(wait == 0) {
     e->commands.push_back(command);
@@ -162,7 +177,9 @@ bool AbstractCommand::prepareForRetry(int32_t wait) {
 void AbstractCommand::onAbort(Exception* ex) {
   logger->debug(MSG_UNREGISTER_CUID, cuid);
   //_segmentMan->unregisterId(cuid);
-  _requestGroup->getSegmentMan()->cancelSegment(cuid);
+  if(!_requestGroup->getPieceStorage().isNull()) {
+    _requestGroup->getSegmentMan()->cancelSegment(cuid);
+  }
 }
 
 void AbstractCommand::disableReadCheckSocket() {
@@ -272,3 +289,138 @@ bool AbstractCommand::nameResolveFinished() const {
   return false;
 }
 #endif // ENABLE_ASYNC_DNS
+
+void AbstractCommand::loadAndOpenFile()
+{
+  if(!_requestGroup->isPreLocalFileCheckEnabled()) {
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+    return;
+  }
+
+  //_requestGroup->setProgressInfoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
+  BtProgressInfoFileHandle progressInfoFile =
+    new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
+  if(progressInfoFile->exists()) {
+    progressInfoFile->load();
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
+  } else {
+    File outfile(_requestGroup->getFilePath());    
+    if(outfile.exists() && e->option->get(PREF_CONTINUE) == V_TRUE) {
+      if(_requestGroup->getTotalLength() < outfile.size()) {
+	throw new FatalException(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
+				 _requestGroup->getFilePath().c_str(),
+				 Util::llitos(outfile.size()).c_str(),
+				 Util::llitos(_requestGroup->getTotalLength()).c_str());
+      }
+      _requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
+      _requestGroup->getPieceStorage()->markPiecesDone(outfile.size());
+    } else {
+#ifdef ENABLE_MESSAGE_DIGEST
+      if(outfile.exists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+	_requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
+      } else {
+	shouldCancelDownloadForSafety();
+	_requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+      }
+#else // ENABLE_MESSAGE_DIGEST
+      shouldCancelDownloadForSafety();
+      _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
+#endif // ENABLE_MESSAGE_DIGEST
+    }
+  }
+  _requestGroup->setProgressInfoFile(progressInfoFile);
+}
+
+void AbstractCommand::shouldCancelDownloadForSafety()
+{
+  File outfile(_requestGroup->getFilePath());
+  if(outfile.exists() && !_requestGroup->getProgressInfoFile()->exists()) {
+    if(e->option->get(PREF_AUTO_FILE_RENAMING) == V_TRUE) {
+      if(tryAutoFileRenaming()) {
+	logger->notice("File already exists. Renamed to %s.",
+		       _requestGroup->getFilePath().c_str());
+      } else {
+	logger->notice("File renaming failed: %s",
+		       _requestGroup->getFilePath().c_str());
+	throw new FatalException(EX_DOWNLOAD_ABORTED);
+      }
+    } else if(e->option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
+      logger->notice(MSG_FILE_ALREADY_EXISTS,
+		     _requestGroup->getFilePath().c_str(),
+		     _requestGroup->getProgressInfoFile()->getFilename().c_str());
+      throw new FatalException(EX_DOWNLOAD_ABORTED);
+    }
+  }
+}
+
+bool AbstractCommand::tryAutoFileRenaming()
+{
+  string filepath = _requestGroup->getFilePath();
+  if(filepath.empty()) {
+    return false;
+  }
+  for(int32_t i = 1; i < 10000; ++i) {
+    File newfile(filepath+"."+Util::itos(i));
+    if(!newfile.exists()) {
+      SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setUFilename(newfile.getBasename());
+      return true;
+    }
+  }
+  return false;
+}
+
+void AbstractCommand::initPieceStorage()
+{
+  if(_requestGroup->getDownloadContext()->getTotalLength() == 0) {
+    UnknownLengthPieceStorageHandle ps = new UnknownLengthPieceStorage(_requestGroup->getDownloadContext(), e->option);
+    if(!_requestGroup->getDiskWriterFactory().isNull()) {
+      ps->setDiskWriterFactory(_requestGroup->getDiskWriterFactory());
+    }
+    _requestGroup->setPieceStorage(ps);
+  } else {
+    DefaultPieceStorageHandle ps = new DefaultPieceStorage(_requestGroup->getDownloadContext(), e->option);
+    if(!_requestGroup->getDiskWriterFactory().isNull()) {
+      ps->setDiskWriterFactory(_requestGroup->getDiskWriterFactory());
+    }
+    _requestGroup->setPieceStorage(ps);
+  }
+  _requestGroup->getPieceStorage()->initStorage();
+  _requestGroup->initSegmentMan();
+}
+
+bool AbstractCommand::downloadFinishedByFileLength()
+{
+  // check existence of control file using ProgressInfoFile class.
+  if(_requestGroup->getProgressInfoFile()->exists()) {
+    return false;
+  }
+  // TODO consider the case when the getFilePath() returns dir path. 
+  File outfile(_requestGroup->getFilePath());
+  if(outfile.exists() &&
+     _requestGroup->getTotalLength() == outfile.size()) {
+    _requestGroup->getPieceStorage()->markAllPiecesDone();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void AbstractCommand::prepareForNextAction(Command* nextCommand)
+{
+  CheckIntegrityEntryHandle entry =
+    new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand);
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(File(_requestGroup->getFilePath()).size() > 0 &&
+     e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
+     entry->isValidationReady()) {
+    entry->initValidator();
+    logger->debug("Issuing CheckIntegrityCommand.");
+    CheckIntegrityCommand* command =
+      new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), _requestGroup, e, entry);
+    e->commands.push_back(command);
+  } else
+#endif // ENABLE_MESSAGE_DIGEST
+    {
+      e->addCommand(entry->prepareForNextAction(e));
+    }
+}

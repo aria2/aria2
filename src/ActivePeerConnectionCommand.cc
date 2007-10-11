@@ -37,6 +37,22 @@
 #include "CUIDCounter.h"
 #include "message.h"
 
+ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
+							 RequestGroup* requestGroup,
+							 DownloadEngine* e,
+							 const BtContextHandle& btContext,
+							 int32_t interval)
+  :Command(cuid),
+   BtContextAwareCommand(btContext),
+   RequestGroupAware(requestGroup),
+   interval(interval),
+   e(e),
+   _lowestSpeedLimit(20*1024),
+   _numNewConnection(5)
+{}
+
+ActivePeerConnectionCommand::~ActivePeerConnectionCommand() {}
+
 bool ActivePeerConnectionCommand::execute() {
   if(btRuntime->isHalt()) {
     return true;
@@ -63,7 +79,7 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   }
   peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
   PeerInitiateConnectionCommand* command =
-    new PeerInitiateConnectionCommand(peer->cuid, peer, e, btContext);
+    new PeerInitiateConnectionCommand(peer->cuid, _requestGroup, peer, e, btContext);
   e->commands.push_back(command);
   logger->info(MSG_CONNECTING_TO_PEER,
 	       cuid, peer->ipaddr.c_str());

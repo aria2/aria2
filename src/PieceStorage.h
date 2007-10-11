@@ -36,9 +36,15 @@
 #define _D_PIECE_STORAGE_H_
 
 #include "common.h"
-#include "Peer.h"
-#include "Piece.h"
-#include "DiskAdaptor.h"
+#include "TimeA2.h"
+
+class Piece;
+extern typedef SharedHandle<Piece> PieceHandle;
+extern typedef deque<PieceHandle> Pieces;
+class Peer;
+extern typedef SharedHandle<Peer> PeerHandle;
+class DiskAdaptor;
+extern typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
 
 class PieceStorage {
 public:
@@ -67,10 +73,28 @@ public:
   virtual PieceHandle getMissingFastPiece(const PeerHandle& peer) = 0;
 
   /**
+   * Returns a missing piece if available. Otherwise returns 0;
+   */
+  virtual PieceHandle getMissingPiece() = 0;
+
+  /**
+   * Returns a missing piece whose index is index.
+   * If a piece whose index is index is already acquired or currently used,
+   * then returns 0.
+   * Also returns 0 if any of missing piece is not available.
+   */
+  virtual PieceHandle getMissingPiece(int32_t index) = 0;
+
+  /**
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
   virtual PieceHandle getPiece(int32_t index) = 0;
+
+  /**
+   * Marks the piece whose index is index as missing.
+   */
+  virtual void markPieceMissing(int32_t index) = 0;
 
   /**
    * Tells that the download of the specfied piece completes.
@@ -87,6 +111,8 @@ public:
    * Otherwise returns false.
    */
   virtual bool hasPiece(int32_t index) = 0;
+
+  virtual bool isPieceUsed(int32_t index) = 0;
 
   virtual int64_t getTotalLength() = 0;
 
@@ -163,9 +189,15 @@ public:
   virtual void markAllPiecesDone() = 0;
 
   /**
-   * Validates file integrity by comparing checksums.
+   * Sets all bits in bitfield(0 to length) to 1.
    */
-  virtual void checkIntegrity() = 0;
+  virtual void markPiecesDone(int64_t length) = 0;
+
+  virtual void addInFlightPiece(const Pieces& pieces) = 0;
+
+  virtual int32_t countInFlightPiece() = 0;
+
+  virtual Pieces getInFlightPieces() = 0;
 };
 
 typedef SharedHandle<PieceStorage> PieceStorageHandle;

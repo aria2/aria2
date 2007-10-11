@@ -101,3 +101,16 @@ BlockIndexes Piece::getAllMissingBlockIndexes() const {
 string Piece::toString() const {
   return "piece: index="+Util::itos(index)+", length="+Util::itos(length);
 }
+
+void Piece::reconfigure(int32_t length)
+{
+  this->length = length;
+  bitfield =
+    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(BLOCK_LENGTH, length);
+}
+
+void Piece::setBitfield(const unsigned char* bitfield, int32_t len)
+{
+  this->bitfield->setBitfield(bitfield, len);
+}
+

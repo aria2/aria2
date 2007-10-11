@@ -37,70 +37,7 @@
 
 #include "common.h"
 #include "Peer.h"
-
-class TransferStat {
-public:
-  int32_t downloadSpeed;
-  int32_t uploadSpeed;
-  int64_t sessionDownloadLength;
-  int64_t sessionUploadLength;
-
-  void copy(const TransferStat& stat)
-  {
-    downloadSpeed = stat.downloadSpeed;
-    uploadSpeed = stat.uploadSpeed;
-    sessionDownloadLength = stat.sessionDownloadLength;
-    sessionUploadLength = stat.sessionUploadLength;
-  }
-public:
-  TransferStat():downloadSpeed(0), uploadSpeed(0),
-		 sessionDownloadLength(0), sessionUploadLength(0) {}
-
-  TransferStat(const TransferStat& stat)
-  {
-    copy(stat);
-  }
-
-  TransferStat& operator=(const TransferStat& stat)
-  {
-    if(this != &stat) {
-      copy(stat);
-    }
-    return *this;
-  }
-
-  int32_t getDownloadSpeed() const {
-    return downloadSpeed;
-  }
-
-  void setDownloadSpeed(int32_t s) { downloadSpeed = s; }
-
-  int32_t getUploadSpeed() const {
-    return uploadSpeed;
-  }
-
-  void setUploadSpeed(int32_t s) { uploadSpeed = s; }
-
-  /**
-   * Returns the number of bytes downloaded since the program started.
-   * This is not the total number of bytes downloaded.
-   */
-  int64_t getSessionDownloadLength() const {
-    return sessionDownloadLength;
-  }
-
-  void setSessionDownloadLength(int64_t s) { sessionDownloadLength = s; }
-
-  /**
-   * Returns the number of bytes uploaded since the program started.
-   * This is not the total number of bytes uploaded.
-   */
-  int64_t getSessionUploadLength() const {
-    return sessionUploadLength;
-  }
-
-  void setSessionUploadLength(int64_t s) { sessionUploadLength = s; }
-};
+#include "TransferStat.h"
 
 class PeerStorage {
 public:

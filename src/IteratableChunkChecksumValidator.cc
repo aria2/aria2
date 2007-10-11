@@ -36,47 +36,57 @@
 #include "Util.h"
 #include "message.h"
 #include "MessageDigestHelper.h"
+#include "DiskAdaptor.h"
 
 void IteratableChunkChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    string actualChecksum = calculateActualChecksum();
-
-
-    if(!_chunkChecksum->validateChunk(actualChecksum, _currentIndex)) {
-      int64_t offset = ((int64_t)_currentIndex)*_chunkChecksum->getChecksumLength();
-      // wrong checksum
-      logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		   _currentIndex,
-		   Util::llitos(offset, true).c_str(),
-		   _chunkChecksum->getChecksum(_currentIndex).c_str(),
-		   actualChecksum.c_str());
-      int32_t startIndex;
-      int32_t endIndex;
-      Util::indexRange(startIndex, endIndex, offset,
-		       _chunkChecksum->getChecksumLength(),
-		       _bitfield->getBlockLength());
-      _bitfield->unsetBitRange(startIndex, endIndex);
+    string actualChecksum;
+    try {
+      actualChecksum = calculateActualChecksum();
+    } catch(DlAbortEx* ex) {
+      _logger->debug("Caught exception while validating piece index=%d. Some part of file may be missing. Continue operation.", ex, _currentIndex);
+      delete ex;
+      _bitfield->unsetBit(_currentIndex);
+      _currentIndex++;
+      return;
     }
-    _currentIndex++;	  
+    if(actualChecksum == _dctx->getPieceHashes()[_currentIndex]) {
+      _bitfield->setBit(_currentIndex);
+    } else {
+      _logger->info(EX_INVALID_CHUNK_CHECKSUM,
+		    _currentIndex,
+		    Util::llitos(getCurrentOffset(), true).c_str(),
+		    _dctx->getPieceHashes()[_currentIndex].c_str(),
+		    actualChecksum.c_str());
+      _bitfield->unsetBit(_currentIndex);
+    }
+    _currentIndex++;
   }
 }
 
 string IteratableChunkChecksumValidator::calculateActualChecksum()
 {
-  int64_t offset = ((int64_t)_currentIndex)*_chunkChecksum->getChecksumLength();
-  int32_t length = _diskWriter->size() < offset+_chunkChecksum->getChecksumLength() ? _diskWriter->size()-offset : _chunkChecksum->getChecksumLength();
-  return MessageDigestHelper::digest(_chunkChecksum->getAlgo(), _diskWriter, offset, length);
-}
-
-bool IteratableChunkChecksumValidator::canValidate() const
-{
-  // We assume file is already opened using DiskWriter::open or openExistingFile.
-  return _chunkChecksum->getEstimatedDataLength() >= _diskWriter->size();
+  int64_t offset = getCurrentOffset();
+  int32_t length;
+  // When validating last piece
+  if(_currentIndex+1 == (uint32_t)_dctx->getNumPieces()) {
+    length = _dctx->getTotalLength()-offset;
+  } else {
+    length = _dctx->getPieceLength();
+  }
+  return MessageDigestHelper::digest(_dctx->getPieceHashAlgo(),
+				     _pieceStorage->getDiskAdaptor(),
+				     offset, length);
 }
 
 void IteratableChunkChecksumValidator::init()
 {
-  _bitfield->setAllBit();
+  _bitfield->clearAllBit();
   _currentIndex = 0;
+}
+
+void IteratableChunkChecksumValidator::updatePieceStorage()
+{
+  _pieceStorage->setBitfield(_bitfield->getBitfield(), _bitfield->getBitfieldLength());
 }

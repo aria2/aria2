@@ -35,15 +35,14 @@
 #ifndef _D_DISK_WRITER_H_
 #define _D_DISK_WRITER_H_
 
-#include "common.h"
-
-using namespace std;
+#include "BinaryStream.h"
+#include "DlAbortEx.h"
 
 /**
  * Interface for writing to a binary stream of bytes.
  *
  */
-class DiskWriter {
+class DiskWriter:public BinaryStream {
 public:
   virtual ~DiskWriter() {}
   /**
@@ -51,13 +50,14 @@ public:
    * If the file exists, then it is truncated to 0 length.
    * @param filename the file name to be opened.
    */
-  virtual void initAndOpenFile(const string& filename, int64_t totalLength = 0) = 0;
+  virtual void initAndOpenFile(const string& filename, int64_t totalLength = 0)  = 0;
   
   virtual void openFile(const string& filename, int64_t totalLength = 0) = 0;
 
   /**
    * Closes this output stream.
    */
+  // TODO we have to examine the return value of close()
   virtual void closeFile() = 0;
 
   /**
@@ -67,26 +67,6 @@ public:
    * @param filename the file name to be opened.
    */
   virtual void openExistingFile(const string& filename, int64_t totalLength = 0) = 0;
-
-  /*
-   * Writes len bytes from data to this binary stream at offset position.
-   * In case where offset position is not concerned(just write data
-   * sequencially, for example), those subclasses can ignore the offset value.
-   *
-   * @param data the data
-   * @param len the number of bytes to write
-   * @param position the offset of this binary stream
-   */
-  virtual void writeData(const char* data, int32_t len, int64_t position = 0) = 0;
-  virtual void writeData(const unsigned char* data, int32_t len, int64_t position = 0)
-  {
-    writeData((const char*)data, len, position);
-  }
-
-  virtual int32_t readData(char* data, int32_t len, int64_t position) = 0;
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t position) {
-    return readData((char*)data, len, position);
-  }
 
   virtual void truncate(int64_t length) = 0;
 

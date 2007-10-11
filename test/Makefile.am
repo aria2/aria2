@@ -1,7 +1,11 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	SegmentTest.cc\
+	GrowSegmentTest.cc\
+	SingleFileAllocationIteratorTest.cc\
 	DefaultBtProgressInfoFileTest.cc\
+	SingleFileDownloadContextTest.cc\
 	RequestGroupTest.cc\
 	PStringBuildVisitorTest.cc\
 	ParameterizedStringParserTest.cc\
@@ -22,7 +26,6 @@ aria2c_SOURCES = AllTest.cc\
 	OptionHandlerTest.cc\
 	SegmentManTest.cc\
 	BitfieldManTest.cc\
-	GlowFileAllocatorTest.cc\
 	NetrcTest.cc\
 	SingletonHolderTest.cc\
 	HttpHeaderTest.cc\
@@ -35,14 +38,11 @@ aria2c_SOURCES = AllTest.cc\
 	DefaultDiskWriterTest.cc\
 	FeatureConfigTest.cc\
 	SpeedCalcTest.cc\
-	FixedNumberRandomizer.h\
-	ConsoleFileAllocationMonitorTest.cc
+	FixedNumberRandomizer.h
 
 if ENABLE_MESSAGE_DIGEST
-aria2c_SOURCES += ChunkChecksumValidatorTest.cc\
-	IteratableChecksumValidatorTest.cc\
-	IteratableChunkChecksumValidatorTest.cc\
-	MessageDigestHelperTest.cc
+aria2c_SOURCES += MessageDigestHelperTest.cc\
+	IteratableChunkChecksumValidatorTest.cc
 endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT
@@ -59,7 +59,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtNotInterestedMessageTest.cc\
 	BtPieceMessageTest.cc\
 	BtPortMessageTest.cc\
-	BtRegistryTest.cc\
 	BtRejectMessageTest.cc\
 	BtRequestMessageTest.cc\
 	BtSuggestPieceMessageTest.cc\
@@ -75,7 +74,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	ShaVisitorTest.cc\
 	DefaultPeerListProcessorTest.cc\
 	AnnounceListTest.cc\
-	TrackerWatcherCommandTest.cc\
 	DefaultPeerStorageTest.cc\
 	MockPeerStorage.h\
 	DataTest.cc\
@@ -87,13 +85,19 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	PeerTest.cc\
 	PeerMessageUtilTest.cc\
 	ShareRatioSeedCriteriaTest.cc\
+	BtRegistryTest.cc\
+	MultiFileAllocationIteratorTest.cc\
+	BtDependencyTest.cc\
+	BtPostDownloadHandlerTest.cc\
 	TimeSeedCriteriaTest.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
 aria2c_SOURCES += MetalinkerTest.cc\
 	MetalinkEntryTest.cc\
-	Xml2MetalinkProcessorTest.cc
+	Xml2MetalinkProcessorTest.cc\
+	Metalink2RequestGroupTest.cc\
+	MetalinkPostDownloadHandlerTest.cc
 endif # ENABLE_METALINK
 
 

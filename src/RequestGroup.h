@@ -36,38 +36,86 @@
 #define _D_REQUEST_GROUP_H_
 
 #include "common.h"
-#include "SegmentMan.h"
-#include "LogFactory.h"
-#include "Command.h"
-#include "SegmentManFactory.h"
-#include "DefaultSegmentManFactory.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "ChunkChecksum.h"
-# include "Checksum.h"
-#endif // ENABLE_MESSAGE_DIGEST
-
-class DownloadCommand;
+#include "TransferStat.h"
 
 class DownloadEngine;
+class SegmentMan;
+extern typedef SharedHandle<SegmentMan> SegmentManHandle;
+class SegmentManFactory;
+extern typedef SharedHandle<SegmentManFactory> SegmentManFactoryHandle;
+class Command;
+extern typedef deque<Command*> Commands;
+class DownloadContext;
+extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+class PieceStorage;
+extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+class BtProgressInfoFile;
+extern typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
+class Dependency;
+extern typedef SharedHandle<Dependency> DependencyHandle;
+class DlAbortEx;
+class PostDownloadHandler;
+extern typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;
+extern typedef deque<PostDownloadHandlerHandle> PostDownloadHandlers;
+class DiskWriterFactory;
+extern typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
+class Option;
+class Logger;
+
+class RequestGroup;
+extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
+extern typedef deque<RequestGroupHandle> RequestGroups;
 
 class RequestGroup {
 private:
+  static int32_t _gidCounter;
+
   int32_t _gid;
+
+  /**
+   * Hint for total length and filename.
+   * These values are used to verify whether the file http/ftp server sends back
+   * is correct one.
+   */
   int64_t _hintTotalLength;
   string _hintFilename;
-  string _ufilename;
-  string _topDir;
+
   Strings _uris;
   Strings _spentUris;
+
+  int32_t _numConcurrentCommand;
+
+  /**
+   * This is the number of connections used in streaming protocol(http/ftp)
+   */
+  int32_t _numStreamConnection;
+
+  int32_t _numCommand;
+
   SegmentManHandle _segmentMan;
   SegmentManFactoryHandle _segmentManFactory;
+
+  DownloadContextHandle _downloadContext;
+
+  PieceStorageHandle _pieceStorage;
+
+  BtProgressInfoFileHandle _progressInfoFile;
+
+  DiskWriterFactoryHandle _diskWriterFactory;
+
+  DependencyHandle _dependency;
+
+  bool _fileAllocationEnabled;
+
+  bool _preLocalFileCheckEnabled;
+
+  bool _haltRequested;
+
+  PostDownloadHandlers _postDownloadHandlers;
+
   const Option* _option;
-  const Logger* logger;
-#ifdef ENABLE_MESSAGE_DIGEST
-  ChunkChecksumHandle _chunkChecksum;
-  ChecksumHandle _checksum;
-#endif // ENABLE_MESSAGE_DIGEST
-  int32_t _numConcurrentCommand;
+
+  const Logger* _logger;
 
   void validateFilename(const string& expectedFilename,
 			const string& actualFilename) const;
@@ -75,56 +123,20 @@ private:
   void validateTotalLength(int64_t expectedTotalLength,
 			   int64_t actualTotalLength) const;
 
+  void initializePostDownloadHandler();
 public:
+  RequestGroup(const Option* option, const Strings& uris);
 
-  int32_t numConnection;
-
-  bool isTorrent;
-
-  RequestGroup(const Strings& uris, const Option* option):
-    _gid(0),
-    _hintTotalLength(0),
-    _uris(uris),
-    _segmentMan(0),
-    _segmentManFactory(new DefaultSegmentManFactory(option)),
-    _option(option),
-    logger(LogFactory::getInstance()),
-#ifdef ENABLE_MESSAGE_DIGEST
-    _chunkChecksum(0),
-    _checksum(0),
-#endif // ENABLE_MESSAGE_DIGEST
-    _numConcurrentCommand(0),
-    numConnection(0),
-    isTorrent(false) {}
-
-  RequestGroup(const string& uri, const Option* option):
-    _gid(0),
-    _hintTotalLength(0),
-    _segmentMan(0),
-    _segmentManFactory(new DefaultSegmentManFactory(option)),
-    _option(option),
-    logger(LogFactory::getInstance()),
-#ifdef ENABLE_MESSAGE_DIGEST
-    _chunkChecksum(0),
-    _checksum(0),
-#endif // ENABLE_MESSAGE_DIGEST
-    _numConcurrentCommand(0),
-    numConnection(0),
-    isTorrent(false)
-  {
-    _uris.push_back(uri);
-  }
-
+  ~RequestGroup();
   /**
    * Reinitializes SegmentMan based on current property values and
    * returns new one.
    */
   SegmentManHandle initSegmentMan();
 
-  SegmentManHandle getSegmentMan() const
-  {
-    return _segmentMan;
-  }
+  SegmentManHandle getSegmentMan() const;
+
+  Commands createInitialCommand(DownloadEngine* e);
 
   Commands createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj);
 
@@ -135,98 +147,17 @@ public:
     _uris.push_back(uri);
   }
 
-#ifdef ENABLE_MESSAGE_DIGEST
-  void setChunkChecksum(const ChunkChecksumHandle& chunkChecksum)
-  {
-    _chunkChecksum = chunkChecksum;
-  }
+  bool downloadFinished() const;
 
-  ChunkChecksumHandle getChunkChecksum() const
-  {
-    return _chunkChecksum;
-  }
-
-  void setChecksum(const ChecksumHandle& checksum)
-  {
-    _checksum = checksum;
-  }
-
-  ChecksumHandle getChecksum() const
-  {
-    return _checksum;
-  }
-#endif // ENABLE_MESSAGE_DIGEST
-
-  void initBitfield();
-
-  void openExistingFile();
-
-  void markAllPiecesDone();
-
-  void markExistingPiecesDone();
-
-  void markPieceDone(int64_t length);
-
-  void shouldCancelDownloadForSafety();
-
-  void initAndOpenFile();
-  
-  bool needsFileAllocation() const;
-  
-  bool downloadFinished() const
-  {
-    if(_segmentMan.isNull()) {
-      return false;
-    } else {
-      return _segmentMan->finished();
-    }
-  }
-
-  void load()
-  {
-    _segmentMan->load();
-  }
-
-  void save()
-  {
-    _segmentMan->save();
-  }
-
-  void remove()
-  {
-    _segmentMan->remove();
-  }
-
-  void closeFile()
-  {
-    _segmentMan->diskWriter->closeFile();
-  }
-
-  bool fileExists() const;
-
-  bool segmentFileExists() const;
+  void closeFile();
 
   string getFilePath() const;
 
   string getDir() const;
 
-  int64_t getExistingFileLength() const;
+  int64_t getTotalLength() const;
 
-  int64_t getTotalLength() const
-  {
-    return _segmentMan->totalSize;
-  }
-
-  int64_t getDownloadLength() const
-  {
-    return _segmentMan->getDownloadLength();
-  }
-
-  void loadAndOpenFile();
-
-  void prepareForNextAction(int cuid, const RequestHandle& req, DownloadEngine* e, DownloadCommand* downloadCommand = 0);
-
-  bool downloadFinishedByFileLength();
+  int64_t getCompletedLength() const;
 
   const string& getHintFilename() const
   {
@@ -258,12 +189,7 @@ public:
     return _spentUris;
   }
 
-  Strings getUris() const
-  {
-    Strings temp(_spentUris.begin(), _spentUris.end());
-    temp.insert(temp.end(), _uris.begin(), _uris.end());
-    return temp;
-  }
+  Strings getUris() const;
 
   /**
    * Compares expected filename with specified actualFilename.
@@ -281,21 +207,11 @@ public:
 
   void validateTotalLengthByHint(int64_t actualTotalLength) const;
 
-  void setSegmentManFactory(const SegmentManFactoryHandle& segmentManFactory)
-  {
-    _segmentManFactory = segmentManFactory;
-  }
+  void setSegmentManFactory(const SegmentManFactoryHandle& segmentManFactory);
 
   void setNumConcurrentCommand(int32_t num)
   {
     _numConcurrentCommand = num;
-  }
-
-  void setUserDefinedFilename(const string& filename);
-
-  void setGID(int32_t gid)
-  {
-    _gid = gid;
   }
 
   int32_t getGID() const
@@ -303,20 +219,87 @@ public:
     return _gid;
   }
 
-  void setTopDir(const string& topDir)
+  TransferStat calculateStat();
+
+  DownloadContextHandle getDownloadContext() const;
+
+  void setDownloadContext(const DownloadContextHandle& downloadContext);
+
+  PieceStorageHandle getPieceStorage() const;
+
+  void setPieceStorage(const PieceStorageHandle& pieceStorage);
+
+  BtProgressInfoFileHandle getProgressInfoFile() const;
+
+  void setProgressInfoFile(const BtProgressInfoFileHandle& progressInfoFile);
+
+  void increaseStreamConnection();
+
+  void decreaseStreamConnection();
+
+  int32_t getNumConnection() const;
+
+  void increaseNumCommand();
+
+  void decreaseNumCommand();
+
+  int32_t getNumCommand() const
   {
-    _topDir = topDir;
+    return _numCommand;
   }
 
-  int32_t calculateDownloadSpeed() const
+  // TODO is it better to move the following 2 methods to SingleFileDownloadContext?
+  void setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory);
+
+  DiskWriterFactoryHandle getDiskWriterFactory() const;
+
+  void setFileAllocationEnabled(bool f)
   {
-    return _segmentMan->calculateDownloadSpeed();
+    _fileAllocationEnabled = f;
   }
 
-  bool tryAutoFileRenaming();
+  bool isFileAllocationEnabled() const
+  {
+    return _fileAllocationEnabled;
+  }
+
+  /**
+   * Setting _preLocalFileCheckEnabled to false, then skip the check to see
+   * if a file is already exists and control file exists etc.
+   * Always open file with DiskAdaptor::initAndOpenFile()
+   */
+  void setPreLocalFileCheckEnabled(bool f)
+  {
+    _preLocalFileCheckEnabled = f;
+  }
+
+  bool isPreLocalFileCheckEnabled() const
+  {
+    return _preLocalFileCheckEnabled;
+  }
+
+  void setHaltRequested(bool f);
+
+  bool isHaltRequested() const
+  {
+    return _haltRequested;
+  }
+
+  void dependsOn(const DependencyHandle& dep);
+
+  bool isDependencyResolved();
+
+  void releaseRuntimeResource();
+
+  RequestGroups postDownloadProcessing();
+
+  void addPostDownloadHandler(const PostDownloadHandlerHandle& handler);
+
+  void clearPostDowloadHandler();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
+typedef WeakHandle<RequestGroup> RequestGroupWeakHandle;
 typedef deque<RequestGroupHandle> RequestGroups;
 
 #endif // _D_REQUEST_GROUP_H_

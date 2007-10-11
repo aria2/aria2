@@ -59,6 +59,8 @@ private:
   string _peerIdPrefix;
   AnnounceTiers announceTiers;
 
+  RequestGroup* _ownerRequestGroup;
+
   void clear();
   void extractPieceHash(const unsigned char* hashData,
 			int32_t hashDataLength,
@@ -90,6 +92,11 @@ private:
 
   virtual FileEntries getFileEntries() const;
 
+  virtual string getPieceHashAlgo() const
+  {
+    return "sha1";
+  }
+
   virtual AnnounceTiers getAnnounceTiers() const;
 
   virtual void load(const string& torrentFile);
@@ -100,6 +107,8 @@ private:
   
   virtual int32_t getNumPieces() const;
 
+  virtual string getActualBasePath() const;
+
   virtual const unsigned char* getPeerId() {
     if(peerId == "") {
       peerId = generatePeerId();
@@ -108,6 +117,11 @@ private:
   }
 
   virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize);
+
+  virtual RequestGroup* getOwnerRequestGroup()
+  {
+    return _ownerRequestGroup;
+  }
 
   string generatePeerId() const;
 
@@ -126,7 +140,11 @@ private:
   {
     this->numPieces = numPieces;
   }
-      
+   
+  void setOwnerRequestGroup(RequestGroup* owner)
+  {
+    _ownerRequestGroup = owner;
+  }
 };
 
 typedef SharedHandle<DefaultBtContext> DefaultBtContextHandle;

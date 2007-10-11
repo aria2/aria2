@@ -30,7 +30,7 @@ void MessageDigestHelperTest::testDigestDiskWriter() {
   DiskWriterHandle diskio = new DefaultDiskWriter();
   diskio->openExistingFile("4096chunk.txt");
   CPPUNIT_ASSERT_EQUAL(string("608cabc0f2fa18c260cafd974516865c772363d5"),
-		       MessageDigestHelper::digest("sha1", diskio));
+		       MessageDigestHelper::digest("sha1", diskio, 0, 4096));
 
   CPPUNIT_ASSERT_EQUAL(string("7a4a9ae537ebbbb826b1060e704490ad0f365ead"),
 		       MessageDigestHelper::digest("sha1", diskio, 5, 100));

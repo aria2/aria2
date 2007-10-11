@@ -41,7 +41,7 @@ const string Request::METHOD_GET = "get";
 
 const string Request::METHOD_HEAD = "head";
 
-Request::Request():port(0), tryCount(0), keepAlive(true), method(METHOD_GET),
+Request::Request():port(0), tryCount(0), keepAlive(false), method(METHOD_GET),
 		   _httpAuthResolver(0),
 		   _httpProxyAuthResolver(0),
 		   _ftpAuthResolver(0),

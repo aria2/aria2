@@ -36,10 +36,13 @@
 #include "message.h"
 
 SeedCheckCommand::SeedCheckCommand(int cuid,
-				   TorrentDownloadEngine* e,
+				   RequestGroup* requestGroup,
+				   DownloadEngine* e,
 				   const BtContextHandle& btContext,
 				   SeedCriteriaHandle seedCriteria)
-  :BtContextAwareCommand(cuid, btContext),
+  :Command(cuid),
+   BtContextAwareCommand(btContext),
+   RequestGroupAware(requestGroup),
    e(e),
    seedCriteria(seedCriteria),
    checkStarted(false) {}

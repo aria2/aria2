@@ -44,6 +44,8 @@
 #include "Logger.h"
 #include "HttpResponse.h"
 #include "HttpHeaderProcessor.h"
+#include "DlRetryEx.h"
+#include "DlAbortEx.h"
 
 class HttpRequestEntry {
 private:
@@ -93,12 +95,12 @@ public:
    * HTTP proxy(GET method).
    * @param segment indicates starting postion of the file for downloading
    */
-  void sendRequest(const HttpRequestHandle& httpRequest);
+  void sendRequest(const HttpRequestHandle& httpRequest) throw(DlRetryEx*);
 
   /**
    * Sends Http proxy request using CONNECT method.
    */
-  void sendProxyRequest(const HttpRequestHandle& httpRequest);
+  void sendProxyRequest(const HttpRequestHandle& httpRequest) throw(DlRetryEx*);
 
   /**
    * Receives HTTP response from the server and returns HttpResponseHandle
@@ -111,7 +113,7 @@ public:
    * 
    * @return HttpResponse or 0 if whole response header is not received
    */
-  HttpResponseHandle receiveResponse();
+  HttpResponseHandle receiveResponse() throw(DlAbortEx*, DlRetryEx*);
 
   HttpRequestHandle getFirstHttpRequest() const
   {

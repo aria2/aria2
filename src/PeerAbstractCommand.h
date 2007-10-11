@@ -35,25 +35,29 @@
 #ifndef _D_PEER_ABSTRACT_COMMAND_H_
 #define _D_PEER_ABSTRACT_COMMAND_H_
 
-#include "BtContextAwareCommand.h"
-#include "Request.h"
-#include "TorrentDownloadEngine.h"
+#include "Command.h"
 #include "TimeA2.h"
-#include "Exception.h"
+#include "Socket.h"
 
-class PeerAbstractCommand : public BtContextAwareCommand {
+class DownloadEngine;
+class Exception;
+class Peer;
+extern typedef SharedHandle<Peer> PeerHandle;
+
+class PeerAbstractCommand : public Command {
 private:
   Time checkPoint;
   int32_t timeout;
 protected:
-  TorrentDownloadEngine* e;
+  DownloadEngine* e;
   SocketHandle socket;
   PeerHandle peer;
 
   void setTimeout(int32_t timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(int32_t wait);
   virtual bool prepareForRetry(int32_t wait);
-  virtual void onAbort(Exception* ex);
+  virtual void onAbort(Exception* ex) {};
+  virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
   void setReadCheckSocket(const SocketHandle& socket);
   void setWriteCheckSocket(const SocketHandle& socket);
@@ -71,12 +75,13 @@ private:
   int32_t uploadLimit;
   bool noCheck;
 public:
-  PeerAbstractCommand(int32_t cuid, const PeerHandle& peer,
-		      TorrentDownloadEngine* e,
-		      const BtContextHandle& btContext,
+  PeerAbstractCommand(int32_t cuid,
+		      const PeerHandle& peer,
+		      DownloadEngine* e,
 		      const SocketHandle& s = SocketHandle());
   virtual ~PeerAbstractCommand();
-  bool execute();
+
+  virtual bool execute();
 };
 
 #endif // _D_PEER_ABSTRACT_COMMAND_H_

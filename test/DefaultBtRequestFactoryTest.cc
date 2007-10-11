@@ -74,7 +74,8 @@ public:
   };
 
   void setUp() {
-    BtRegistry::clear();
+    BtRegistry::unregisterAll();
+
     btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     btContext->setPieceLength(16*1024);

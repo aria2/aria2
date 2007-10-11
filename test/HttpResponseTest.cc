@@ -1,5 +1,7 @@
 #include "HttpResponse.h"
 #include "prefs.h"
+#include "PiecedSegment.h"
+#include "Piece.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -267,11 +269,7 @@ void HttpResponseTest::testValidateResponse_good_range()
   httpResponse.setHttpHeader(httpHeader);
 
   HttpRequestHandle httpRequest = new HttpRequest();
-  SegmentHandle segment = new Segment();
-  segment->index = 1;
-  segment->length = 1024*1024;
-  segment->segmentLength = 1024*1024;
-  segment->writtenLength = 0;
+  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
   httpRequest->setSegment(segment);
   RequestHandle request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -297,11 +295,7 @@ void HttpResponseTest::testValidateResponse_bad_range()
   httpResponse.setHttpHeader(httpHeader);
 
   HttpRequestHandle httpRequest = new HttpRequest();
-  SegmentHandle segment = new Segment();
-  segment->index = 1;
-  segment->length = 1024*1024;
-  segment->segmentLength = 1024*1024;
-  segment->writtenLength = 0;
+  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
   httpRequest->setSegment(segment);
   RequestHandle request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
@@ -326,11 +320,7 @@ void HttpResponseTest::testValidateResponse_chunked()
   httpResponse.setHttpHeader(httpHeader);
 
   HttpRequestHandle httpRequest = new HttpRequest();
-  SegmentHandle segment = new Segment();
-  segment->index = 1;
-  segment->length = 1024*1024;
-  segment->segmentLength = 1024*1024;
-  segment->writtenLength = 0;
+  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
   httpRequest->setSegment(segment);
   RequestHandle request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");

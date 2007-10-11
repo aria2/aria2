@@ -1,5 +1,7 @@
 bin_PROGRAMS = aria2c
-aria2c_SOURCES = main.cc
+aria2c_SOURCES = main.cc\
+	option_processing.cc\
+	version_usage.cc
 SRCS =  Socket.h\
 	SocketCore.cc SocketCore.h\
 	Command.cc Command.h\
@@ -22,8 +24,9 @@ SRCS =  Socket.h\
 	FtpTunnelResponseCommand.cc FtpTunnelResponseCommand.h\
 	SleepCommand.cc SleepCommand.h\
 	DownloadEngine.cc DownloadEngine.h\
-	ConsoleDownloadEngine.cc ConsoleDownloadEngine.h\
-	Segment.cc Segment.h\
+	Segment.h\
+	GrowSegment.cc GrowSegment.h\
+	PiecedSegment.cc PiecedSegment.h\
 	SegmentMan.cc SegmentMan.h\
 	Util.cc Util.h\
 	Request.cc Request.h\
@@ -60,8 +63,6 @@ SRCS =  Socket.h\
 	Randomizer.h\
 	SimpleRandomizer.cc SimpleRandomizer.h\
 	FileAllocator.h\
-	FileAllocationMonitor.cc FileAllocationMonitor.h\
-	ConsoleFileAllocationMonitor.cc ConsoleFileAllocationMonitor.h\
 	HttpResponse.cc HttpResponse.h\
 	HttpRequest.cc HttpRequest.h\
 	Range.h\
@@ -74,17 +75,18 @@ SRCS =  Socket.h\
 	DefaultAuthResolver.cc DefaultAuthResolver.h\
 	NetrcAuthResolver.cc NetrcAuthResolver.h\
 	RequestFactory.cc RequestFactory.h\
-	DefaultFileAllocator.cc DefaultFileAllocator.h\
-	GlowFileAllocator.cc GlowFileAllocator.h\
 	OptionParser.cc OptionParser.h\
 	OptionHandlerFactory.cc OptionHandlerFactory.h\
 	NameResolver.cc NameResolver.h\
 	RequestGroup.cc RequestGroup.h\
+	RequestGroupAware.cc RequestGroupAware.h\
 	RequestGroupMan.cc RequestGroupMan.h\
+	FileAllocationMan.cc FileAllocationMan.h\
 	FileAllocationCommand.cc FileAllocationCommand.h\
 	FillRequestGroupCommand.cc FillRequestGroupCommand.h\
 	FileAllocationDispatcherCommand.cc FileAllocationDispatcherCommand.h\
 	FileAllocationEntry.cc FileAllocationEntry.h\
+	StreamFileAllocationEntry.cc StreamFileAllocationEntry.h\
 	MultiUrlRequestInfo.cc MultiUrlRequestInfo.h\
 	UriListParser.cc UriListParser.h\
 	SegmentManFactory.h\
@@ -110,17 +112,30 @@ SRCS =  Socket.h\
 	NumberDecorator.h\
 	AlphaNumberDecorator.h\
 	TimeBasedCommand.cc TimeBasedCommand.h\
-	AutoSaveCommand.cc AutoSaveCommand.h
+	AutoSaveCommand.cc AutoSaveCommand.h\
+	UnknownLengthPieceStorage.cc UnknownLengthPieceStorage.h\
+	StatCalc.h\
+	ConsoleStatCalc.cc ConsoleStatCalc.h\
+	TransferStat.cc TransferStat.h\
+	Dependency.h\
+	BtProgressInfoFile.h\
+	DefaultBtProgressInfoFile.cc DefaultBtProgressInfoFile.h\
+	NullProgressInfoFile.h\
+	FileAllocationIterator.h\
+	SingleFileAllocationIterator.cc SingleFileAllocationIterator.h\
+	PostDownloadHandler.cc PostDownloadHandler.h\
+	HaveEraseCommand.cc HaveEraseCommand.h\
+	Piece.cc Piece.h
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST
-SRCS += ChunkChecksumValidator.cc ChunkChecksumValidator.h\
-	IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
 	ChecksumCommand.cc ChecksumCommand.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
-	CheckIntegrityMan.h\
+	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
+	CheckIntegrityMan.cc CheckIntegrityMan.h\
 	messageDigest.cc messageDigest.h\
 	MessageDigestHelper.cc MessageDigestHelper.h
 endif # ENABLE_MESSAGE_DIGEST
@@ -139,12 +154,8 @@ SRCS += MetaEntry.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
 	PeerInteractionCommand.cc PeerInteractionCommand.h\
 	Peer.cc Peer.h\
-	TorrentDownloadEngine.cc TorrentDownloadEngine.h\
-	TorrentConsoleDownloadEngine.cc TorrentConsoleDownloadEngine.h\
 	PeerListenCommand.cc PeerListenCommand.h\
-	Piece.cc Piece.h\
 	RequestSlot.cc RequestSlot.h\
-	TorrentAutoSaveCommand.cc TorrentAutoSaveCommand.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	DiskAdaptor.cc DiskAdaptor.h\
@@ -152,11 +163,8 @@ SRCS += MetaEntry.h\
 	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
-	TrackerUpdateCommand.cc TrackerUpdateCommand.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
-	HaveEraseCommand.cc HaveEraseCommand.h\
-	TorrentRequestInfo.cc TorrentRequestInfo.h\
 	SeedCriteria.h\
 	TimeSeedCriteria.h\
 	ShareRatioSeedCriteria.h\
@@ -177,8 +185,6 @@ SRCS += MetaEntry.h\
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
 	BtRegistry.cc BtRegistry.h\
 	BtRuntime.h\
-	BtProgressInfoFile.h\
-	DefaultBtProgressInfoFile.cc DefaultBtProgressInfoFile.h\
 	BtContextAwareCommand.cc BtContextAwareCommand.h\
 	BtMessage.h\
 	AbstractBtMessage.h\
@@ -228,7 +234,13 @@ SRCS += MetaEntry.h\
 	DefaultBtInteractive.cc DefaultBtInteractive.h\
 	PeerObject.h\
 	ActivePeerConnectionCommand.cc ActivePeerConnectionCommand.h\
-	TrackerSegmentManFactory.cc TrackerSegmentManFactory.h
+	BtDependency.cc BtDependency.h\
+	PeerReceiveHandshakeCommand.cc PeerReceiveHandshakeCommand.h\
+	BtSetup.cc BtSetup.h\
+	BtFileAllocationEntry.cc BtFileAllocationEntry.h\
+	BtPostDownloadHandler.cc BtPostDownloadHandler.h\
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
+	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
@@ -237,7 +249,8 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
-	MetalinkRequestInfo.cc MetalinkRequestInfo.h
+	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
+	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h
 endif # ENABLE_METALINK
 
 if !HAVE_BASENAME
@@ -280,10 +293,10 @@ noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ # -lprofiler
-#aria2c_LDFLAGS =  #-pg
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ #-lprofiler
+#aria2c_LDFLAGS =  -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ # -pg
+	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg

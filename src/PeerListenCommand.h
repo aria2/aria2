@@ -35,22 +35,22 @@
 #ifndef _D_PEER_LISTEN_COMMAND_H_
 #define _D_PEER_LISTEN_COMMAND_H_
 
-#include "BtContextAwareCommand.h"
-#include "TorrentDownloadEngine.h"
+#include "Command.h"
+#include "Socket.h"
 
-class PeerListenCommand : public BtContextAwareCommand {
+class DownloadEngine;
+
+class PeerListenCommand : public Command {
 private:
-  TorrentDownloadEngine* e;
+  DownloadEngine* e;
   SocketHandle socket;
   int32_t _lowestSpeedLimit;
 public:
-  PeerListenCommand(int32_t cuid,
-		    TorrentDownloadEngine* e,
-		    const BtContextHandle& btContext);
+  PeerListenCommand(int32_t cuid, DownloadEngine* e);
 
   virtual ~PeerListenCommand();
   
-  bool execute();
+  virtual bool execute();
 
   int32_t bindPort(int32_t portRangeStart, int32_t portRangeEnd);
 

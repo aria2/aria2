@@ -35,30 +35,30 @@
 #ifndef _D_ACTIVE_PEER_CONNECTION_COMMAND_H_
 #define _D_ACTIVE_PEER_CONNECTION_COMMAND_H_
 
+#include "Command.h"
 #include "BtContextAwareCommand.h"
-#include "TorrentDownloadEngine.h"
+#include "DownloadEngine.h"
 #include "TimeA2.h"
+#include "RequestGroupAware.h"
 
-class ActivePeerConnectionCommand : public BtContextAwareCommand {
+class ActivePeerConnectionCommand : public Command,
+				    public BtContextAwareCommand,
+				    public RequestGroupAware
+{
 private:
   int32_t interval; // UNIT: sec
-  TorrentDownloadEngine* e;
+  DownloadEngine* e;
   Time checkPoint;
   int32_t _lowestSpeedLimit; // UNIT: byte/sec
   int32_t _numNewConnection; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(int cuid,
-			      TorrentDownloadEngine* e,
+			      RequestGroup* requestGroup,
+			      DownloadEngine* e,
 			      const BtContextHandle& btContext,
-			      int32_t interval)
-    :BtContextAwareCommand(cuid, btContext),
-     interval(interval),
-     e(e),
-    _lowestSpeedLimit(20*1024),
-    _numNewConnection(5)
-    {}
+			      int32_t interval);
      
-  virtual ~ActivePeerConnectionCommand() {}
+  virtual ~ActivePeerConnectionCommand();
 
   virtual bool execute();
 

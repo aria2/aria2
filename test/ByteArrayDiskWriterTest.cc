@@ -27,10 +27,10 @@ void ByteArrayDiskWriterTest::testWriteAndRead() {
   ByteArrayDiskWriter bw;
 
   string msg1 = "Hello world!";
-  bw.writeData(msg1.c_str(), msg1.size(), 0);
+  bw.writeData((const unsigned char*)msg1.c_str(), msg1.size(), 0);
   
   char buf[100];
-  int32_t c = bw.readData(buf, sizeof(buf), 0);
+  int32_t c = bw.readData((unsigned char*)buf, sizeof(buf), 0);
   buf[c] = '\0';
 
   CPPUNIT_ASSERT_EQUAL(msg1, string(buf));
@@ -38,7 +38,7 @@ void ByteArrayDiskWriterTest::testWriteAndRead() {
   // second call
   memset(buf, '\0', sizeof(buf));
 
-  c = bw.readData(buf, sizeof(buf), 0);
+  c = bw.readData((unsigned char*)buf, sizeof(buf), 0);
   buf[c] = '\0';
 
   CPPUNIT_ASSERT_EQUAL(msg1, string(buf));
@@ -48,10 +48,10 @@ void ByteArrayDiskWriterTest::testWriteAndRead2() {
   ByteArrayDiskWriter bw;
 
   string msg1 = "Hello world!";
-  bw.writeData(msg1.c_str(), msg1.size(), 16);
+  bw.writeData((const unsigned char*)msg1.c_str(), msg1.size(), 16);
   
   char buf[100];
-  int32_t c = bw.readData(buf, sizeof(buf), 16);
+  int32_t c = bw.readData((unsigned char*)buf, sizeof(buf), 16);
   buf[c] = '\0';
 
   CPPUNIT_ASSERT_EQUAL(msg1, string(buf));
@@ -59,7 +59,7 @@ void ByteArrayDiskWriterTest::testWriteAndRead2() {
   // second call
   memset(buf, '\0', sizeof(buf));
 
-  c = bw.readData(buf, sizeof(buf), 16);
+  c = bw.readData((unsigned char*)buf, sizeof(buf), 16);
   buf[c] = '\0';
 
   CPPUNIT_ASSERT_EQUAL(msg1, string(buf));

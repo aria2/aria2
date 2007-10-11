@@ -33,6 +33,15 @@
  */
 /* copyright --> */
 #include "DownloadEngine.h"
+#include "Socket.h"
+#include "NameResolver.h"
+#include "StatCalc.h"
+#include "RequestGroup.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationMan.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#include "CheckIntegrityMan.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include "Util.h"
 #include "LogFactory.h"
 #include "TimeA2.h"
@@ -41,11 +50,38 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <signal.h>
 #include <algorithm>
 
-using namespace std;
+volatile sig_atomic_t globalHaltRequested;
+
+SocketEntry::SocketEntry(const SocketHandle& socket,
+			 Command* command,
+			 TYPE type):
+  socket(socket), command(command), type(type) {}
+
+bool SocketEntry::operator==(const SocketEntry& entry)
+{
+  return socket == entry.socket &&
+    command == entry.command &&
+    type == entry.type;
+}
+
+#ifdef ENABLE_ASYNC_DNS
+NameResolverEntry::NameResolverEntry(const NameResolverHandle& nameResolver,
+					     Command* command):
+  nameResolver(nameResolver), command(command) {}
+
+bool NameResolverEntry::operator==(const NameResolverEntry& entry)
+{
+  return nameResolver == entry.nameResolver &&
+    command == entry.command;
+}
+#endif // ENABLE_ASYNC_DNS
 
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
+				 _statCalc(0),
+				 _haltRequested(false),
 				 noWait(false),
 				 _requestGroupMan(0),
 				 _fileAllocationMan(0)
@@ -83,7 +119,6 @@ void DownloadEngine::executeCommand(Command::STATUS statusFilter)
 }
 
 void DownloadEngine::run() {
-  initStatistics();
   Time cp;
   cp.setTimeInSec(0);
   Commands activeCommands;
@@ -232,6 +267,38 @@ bool DownloadEngine::deleteSocketForWriteCheck(const SocketHandle& socket,
   return deleteSocket(entry);
 }
 
+void DownloadEngine::calculateStatistics()
+{
+  if(!_statCalc.isNull()) {
+    _statCalc->calculateStat(_requestGroupMan, _fileAllocationMan, _checkIntegrityMan);
+  }
+}
+
+void DownloadEngine::onEndOfRun()
+{
+  _requestGroupMan->closeFile();
+  _requestGroupMan->save();
+}
+
+void DownloadEngine::afterEachIteration()
+{
+  if(globalHaltRequested) {
+    globalHaltRequested = false;
+    _haltRequested = true;
+    _requestGroupMan->halt();
+  }
+}
+
+void DownloadEngine::fillCommand()
+{
+  addCommand(_requestGroupMan->getInitialCommands(this));
+}
+
+void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
+{
+  _statCalc = statCalc;
+}
+
 #ifdef ENABLE_ASYNC_DNS
 bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
 					  Command* command) {
@@ -262,4 +329,10 @@ bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
     return true;
   }
 }
+
+void DownloadEngine::addCommand(const Commands& commands)
+{
+  this->commands.insert(this->commands.end(), commands.begin(), commands.end());
+}
+
 #endif // ENABLE_ASYNC_DNS

@@ -41,7 +41,7 @@ bool RealtimeCommand::execute()
   try {
     return executeInternal();
   } catch(Exception* e) {
-    _requestGroup->getSegmentMan()->errors++;
+    //_requestGroup->getSegmentMan()->errors++;
     bool r =  handleException(e);
     delete e;
     return r;

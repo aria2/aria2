@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "AbstractDiskWriter.h"
-#include "DlAbortEx.h"
 #include "File.h"
 #include "Util.h"
 #include "message.h"
@@ -47,8 +46,6 @@
 
 AbstractDiskWriter::AbstractDiskWriter():
   fd(-1),
-  fileAllocator(0),
-  glowFileAllocator(0),
   logger(LogFactory::getInstance())
 {}
 
@@ -57,7 +54,9 @@ AbstractDiskWriter::~AbstractDiskWriter()
   closeFile();
 }
 
-void AbstractDiskWriter::openFile(const string& filename, int64_t totalLength) {
+void AbstractDiskWriter::openFile(const string& filename, int64_t totalLength)
+  throw(DlAbortEx*)
+{
   File f(filename);
   if(f.exists()) {
     openExistingFile(filename, totalLength);
@@ -66,14 +65,18 @@ void AbstractDiskWriter::openFile(const string& filename, int64_t totalLength) {
   }
 }
 
-void AbstractDiskWriter::closeFile() {
+void AbstractDiskWriter::closeFile()
+{
   if(fd >= 0) {
     close(fd);
     fd = -1;
   }
 }
 
-void AbstractDiskWriter::openExistingFile(const string& filename, int64_t totalLength) {
+void AbstractDiskWriter::openExistingFile(const string& filename,
+					  int64_t totalLength)
+  throw(DlAbortEx*)
+{
   this->filename = filename;
   File f(filename);
   if(!f.isFile()) {
@@ -83,17 +86,11 @@ void AbstractDiskWriter::openExistingFile(const string& filename, int64_t totalL
   if((fd = open(filename.c_str(), O_RDWR|O_BINARY, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
-  if(f.size() < totalLength) {
-    if(!fileAllocator.isNull()) {
-      logger->notice(MSG_ALLOCATING_FILE,
-		     filename.c_str(),
-		     Util::ullitos(totalLength).c_str());
-      glowFileAllocator->allocate(fd, totalLength);
-    }
-  }
 }
 
-void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags) {
+void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags)
+  throw(DlAbortEx*)
+{
   this->filename = filename;
   // TODO proper filename handling needed
   assert(filename.size());
@@ -105,28 +102,36 @@ void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags) {
   }  
 }
 
-int32_t AbstractDiskWriter::writeDataInternal(const char* data, int32_t len) {
+int32_t AbstractDiskWriter::writeDataInternal(const unsigned char* data, int32_t len)
+{
   return write(fd, data, len);
 }
 
-int32_t AbstractDiskWriter::readDataInternal(char* data, int32_t len) {
+int32_t AbstractDiskWriter::readDataInternal(unsigned char* data, int32_t len)
+{
   return read(fd, data, len);
 }
 
-void AbstractDiskWriter::seek(int64_t offset) {
+void AbstractDiskWriter::seek(int64_t offset)
+  throw(DlAbortEx*)
+{
   if(offset != lseek(fd, offset, SEEK_SET)) {
     throw new DlAbortEx(EX_FILE_SEEK, filename.c_str(), strerror(errno));
   }
 }
 
-void AbstractDiskWriter::writeData(const char* data, int32_t len, int64_t offset) {
+void AbstractDiskWriter::writeData(const unsigned char* data, int32_t len, int64_t offset)
+  throw(DlAbortEx*)
+{
   seek(offset);
   if(writeDataInternal(data, len) < 0) {
     throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
   }
 }
 
-int32_t AbstractDiskWriter::readData(char* data, int32_t len, int64_t offset) {
+int32_t AbstractDiskWriter::readData(unsigned char* data, int32_t len, int64_t offset)
+  throw(DlAbortEx*)
+{
   int32_t ret;
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {
@@ -136,13 +141,21 @@ int32_t AbstractDiskWriter::readData(char* data, int32_t len, int64_t offset) {
 }
 
 void AbstractDiskWriter::truncate(int64_t length)
+  throw(DlAbortEx*)
 {
+  if(fd == -1) {
+    throw new DlAbortEx("File not opened.");
+  }
   ftruncate(fd, length);
 }
 
 // TODO the file descriptor fd must be opened before calling this function.
 int64_t AbstractDiskWriter::size() const
+  throw(DlAbortEx*)
 {
+  if(fd == -1) {
+    throw new DlAbortEx("File not opened.");
+  }
   struct stat fileStat;
   if(fstat(fd, &fileStat) < 0) {
     return 0;

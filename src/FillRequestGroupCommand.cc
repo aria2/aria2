@@ -33,11 +33,33 @@
  */
 /* copyright --> */
 #include "FillRequestGroupCommand.h"
+#include "DownloadEngine.h"
+#include "RequestGroupMan.h"
+#include "RequestGroup.h"
+#include "DlAbortEx.h"
+#include "message.h"
+
+FillRequestGroupCommand::FillRequestGroupCommand(int32_t cuid,
+						 DownloadEngine* e,
+						 int32_t interval):
+  Command(cuid),
+  _e(e),
+  _interval(interval)
+{
+  setStatusRealtime();
+}
+
+FillRequestGroupCommand::~FillRequestGroupCommand() {}
 
 bool FillRequestGroupCommand::execute()
 {
-  _e->_requestGroupMan->fillRequestGroupFromReserver(_e);
-  if(_e->_requestGroupMan->downloadFinished()) {
+  try {
+    _e->_requestGroupMan->fillRequestGroupFromReserver(_e);
+  } catch(DlAbortEx* ex) {
+    logger->error(EX_EXCEPTION_CAUGHT, ex);
+    delete ex;
+  }
+  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
   _e->commands.push_back(this);

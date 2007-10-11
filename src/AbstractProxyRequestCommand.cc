@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "AbstractProxyRequestCommand.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "Request.h"
 #include "HttpConnection.h"
 #include "prefs.h"
 

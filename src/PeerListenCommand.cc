@@ -33,17 +33,18 @@
  */
 /* copyright --> */
 #include "PeerListenCommand.h"
-#include "PeerInteractionCommand.h"
+#include "DownloadEngine.h"
+#include "Peer.h"
+#include "RequestGroupMan.h"
 #include "RecoverableException.h"
 #include "CUIDCounter.h"
 #include "message.h"
+#include "PeerReceiveHandshakeCommand.h"
 
-PeerListenCommand::PeerListenCommand(int32_t cuid,
-				     TorrentDownloadEngine* e,
-				     const BtContextHandle& btContext)
-  :BtContextAwareCommand(cuid, btContext),
-   e(e),
-   _lowestSpeedLimit(20*1024) {}
+PeerListenCommand::PeerListenCommand(int32_t cuid, DownloadEngine* e):
+  Command(cuid),
+  e(e),
+  _lowestSpeedLimit(20*1024) {}
 
 PeerListenCommand::~PeerListenCommand() {}
 
@@ -68,7 +69,7 @@ int32_t PeerListenCommand::bindPort(int32_t portRangeStart, int32_t portRangeEnd
 }
 
 bool PeerListenCommand::execute() {
-  if(btRuntime->isHalt()) {
+  if(e->isHaltRequested() || e->_requestGroupMan->countRequestGroup() == 0) {
     return true;
   }
   for(int32_t i = 0; i < 3 && socket->isReadable(0); i++) {
@@ -80,24 +81,20 @@ bool PeerListenCommand::execute() {
       pair<string, int32_t> localInfo;
       peerSocket->getAddrInfo(localInfo);
 
-      TransferStat tstat = peerStorage->calculateStat();
-      if(peerInfo.first != localInfo.first &&
-	 (!pieceStorage->downloadFinished() && tstat.getDownloadSpeed() < _lowestSpeedLimit ||
-	  btRuntime->getConnections() < MAX_PEERS)) {
-	PeerHandle peer = PeerHandle(new Peer(peerInfo.first, peerInfo.second,
-					      btContext->getPieceLength(),
-					      btContext->getTotalLength()));
-	if(peerStorage->addIncomingPeer(peer)) {
-	  peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
-	  PeerInteractionCommand* command =
-	    new PeerInteractionCommand(peer->cuid, peer, e,
-				       btContext,
-				       peerSocket,
-				       PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE);
-	  e->commands.push_back(command);
-	  logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->cuid);
-	}
+      if(peerInfo.first == localInfo.first) {
+	continue;
       }
+      PeerHandle peer = new Peer(peerInfo.first, peerInfo.second, 0, 0);
+      PeerReceiveHandshakeCommand* command =
+	new PeerReceiveHandshakeCommand(CUIDCounterSingletonHolder::instance()->newID(),
+					peer, e, peerSocket);
+      e->commands.push_back(command);
+      logger->debug("Accepted the connection from %s:%d.",
+		    peer->ipaddr.c_str(),
+		    peer->port);
+      logger->debug("Added CUID#%d to receive Bt handshake.",
+		    command->getCuid());
+
     } catch(RecoverableException* ex) {
       logger->debug(MSG_ACCEPT_FAILURE, ex, cuid);
       delete ex;

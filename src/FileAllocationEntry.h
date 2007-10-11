@@ -37,32 +37,29 @@
 
 #include "RequestGroupEntry.h"
 
-class FileAllocationEntry : public RequestGroupEntry {
+class FileAllocationIterator;
+extern typedef SharedHandle<FileAllocationIterator> FileAllocationIteratorHandle;
+class Command;
+extern typedef deque<Command*> Commands;
+class DownloadEngine;
+
+class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry {
 private:
-  int64_t _offset;
+  FileAllocationIteratorHandle _fileAllocationIterator;
 public:
-  FileAllocationEntry(int cuid,
-		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      DownloadCommand* nextDownloadCommand = 0,
-		      int64_t offset = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup, nextDownloadCommand),
-    _offset(offset)
-  {}
+  FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
-  virtual ~FileAllocationEntry() {}
+  ~FileAllocationEntry();
 
-  virtual int64_t getCurrentLength() const
-  {
-    return _offset;
-  }
+  virtual int64_t getCurrentLength();
 
-  virtual bool finished() const
-  {
-    return _requestGroup->getTotalLength() <= _offset;
-  }
+  virtual int64_t getTotalLength();
+
+  virtual bool finished();
 
   void allocateChunk();
+
+  virtual Commands prepareForNextAction(DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;

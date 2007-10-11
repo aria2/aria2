@@ -47,12 +47,12 @@ public:
     RealtimeCommand(cuid, requestGroup, e),
     _validator(0)
   {
-    ++_requestGroup->numConnection;
+    _requestGroup->increaseNumCommand();
   }
 
   virtual ~ChecksumCommand()
   {
-    --_requestGroup->numConnection;
+    _requestGroup->decreaseNumCommand();
   }
 
   void initValidator();

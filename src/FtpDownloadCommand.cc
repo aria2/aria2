@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "FtpDownloadCommand.h"
+#include "Request.h"
 
 FtpDownloadCommand::FtpDownloadCommand(int cuid,
 				       const RequestHandle req,

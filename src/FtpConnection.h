@@ -35,15 +35,15 @@
 #ifndef _D_FTP_CONNECTION_H_
 #define _D_FTP_CONNECTION_H_
 
+#include "common.h"
 #include "Socket.h"
 #include "Option.h"
 #include "Logger.h"
 #include "Segment.h"
 #include "Request.h"
-#include "common.h"
+#include "DlAbortEx.h"
+#include "DlRetryEx.h"
 #include <utility>
-
-using namespace std;
 
 class FtpConnection {
 private:
@@ -57,24 +57,24 @@ private:
 
   int32_t getStatus(const string& response) const;
   bool isEndOfResponse(int32_t status, const string& response) const;
-  bool bulkReceiveResponse(pair<int32_t, string>& response);
+  bool bulkReceiveResponse(pair<int32_t, string>& response) throw(DlRetryEx*);
 public:
   FtpConnection(int32_t cuid, const SocketHandle& socket,
 		const RequestHandle req, const Option* op);
   ~FtpConnection();
-  void sendUser() const;
-  void sendPass() const;
-  void sendType() const;
-  void sendCwd() const;
-  void sendSize() const;
-  void sendPasv() const;
-  SocketHandle sendPort() const;
-  void sendRest(const SegmentHandle& segment) const;
-  void sendRetr() const;
+  void sendUser() const throw(DlRetryEx*);
+  void sendPass() const throw(DlRetryEx*);
+  void sendType() const throw(DlRetryEx*);
+  void sendCwd() const throw(DlRetryEx*);
+  void sendSize() const throw(DlRetryEx*);
+  void sendPasv() const throw(DlRetryEx*);
+  SocketHandle sendPort() const throw(DlAbortEx*, DlRetryEx*);
+  void sendRest(const SegmentHandle& segment) const throw(DlRetryEx*);
+  void sendRetr() const throw(DlRetryEx*);
 
-  int32_t receiveResponse();
-  int32_t receiveSizeResponse(int64_t& size);
-  int32_t receivePasvResponse(pair<string, int32_t>& dest);
+  int32_t receiveResponse() throw(DlRetryEx*);
+  int32_t receiveSizeResponse(int64_t& size) throw(DlRetryEx*);
+  int32_t receivePasvResponse(pair<string, int32_t>& dest) throw(DlRetryEx*);
 };
 
 #endif // _D_FTP_CONNECTION_H_

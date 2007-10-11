@@ -50,19 +50,9 @@ public:
 
   FileEntry(const string& path, int64_t length, int64_t offset);
 
-  FileEntry& operator=(const FileEntry& entry)
-  {
-    if(this != &entry) {
-      path = entry.path;
-      length = entry.length;
-      offset = entry.offset;
-      extracted = entry.extracted;
-      requested = entry.requested;
-    }
-    return *this;
-  }
-
   ~FileEntry();
+
+  FileEntry& operator=(const FileEntry& entry);
 
   string getBasename() const
   {

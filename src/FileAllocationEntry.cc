@@ -33,22 +33,35 @@
  */
 /* copyright --> */
 #include "FileAllocationEntry.h"
+#include "FileAllocationIterator.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
 
-#define BUFSIZE 16*1024
+FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand):
+  RequestGroupEntry(requestGroup, nextCommand),
+  _fileAllocationIterator(requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator())
+{}
+
+FileAllocationEntry:: ~FileAllocationEntry() {}
+
+int64_t FileAllocationEntry::getCurrentLength()
+{
+  return _fileAllocationIterator->getCurrentLength();
+}
+
+int64_t FileAllocationEntry::getTotalLength()
+{
+  return _fileAllocationIterator->getTotalLength();
+}
+
+bool FileAllocationEntry::finished()
+{
+  return _fileAllocationIterator->finished();
+}
 
 void FileAllocationEntry::allocateChunk()
 {
-  int32_t bufSize = BUFSIZE;
-  char buf[BUFSIZE];
-  memset(buf, 0, bufSize);
-  
-  _requestGroup->getSegmentMan()->diskWriter->writeData(buf, bufSize, _offset);
-  _offset += bufSize;
-
-  int64_t totalLength = _requestGroup->getSegmentMan()->totalSize;
-  if(totalLength < _offset) {
-    _requestGroup->getSegmentMan()->diskWriter->truncate(totalLength);
-    _offset = totalLength;
-  }
+  _fileAllocationIterator->allocateChunk();
 }
-

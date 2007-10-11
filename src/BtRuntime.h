@@ -46,12 +46,14 @@ private:
   int32_t port;
   bool halt;
   int32_t connections;
+  bool _ready;
 public:
   BtRuntime():
     uploadLengthAtStartup(0),
     port(0),
     halt(false),
-    connections(0)
+    connections(0),
+    _ready(false)
     {}
   ~BtRuntime() {}
 
@@ -83,7 +85,11 @@ public:
 
   bool lessThanMinPeer() const { return connections < MIN_PEERS; }
 
-  bool lessThanEqMinPeer() const { return connections <= MIN_PEERS; }  
+  bool lessThanEqMinPeer() const { return connections <= MIN_PEERS; }
+
+  bool ready() { return _ready; }
+
+  void setReady(bool go) { _ready = go; }
 };
 
 typedef SharedHandle<BtRuntime> BtRuntimeHandle;

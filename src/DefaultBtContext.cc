@@ -42,9 +42,10 @@
 #include "Util.h"
 #include "MessageDigestHelper.h"
 #include "a2netcompat.h"
+#include "AnnounceTier.h"
 #include <libgen.h>
 
-DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-") {}
+DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-"), _ownerRequestGroup(0) {}
 
 DefaultBtContext::~DefaultBtContext() {}
 
@@ -246,6 +247,11 @@ int32_t DefaultBtContext::getPieceLength() const {
 
 int32_t DefaultBtContext::getNumPieces() const {
   return numPieces;
+}
+
+string DefaultBtContext::getActualBasePath() const
+{
+  return _dir+"/"+name;
 }
 
 Integers DefaultBtContext::computeFastSet(const string& ipaddr, int32_t fastSetSize)

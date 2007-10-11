@@ -54,6 +54,14 @@ Peer::Peer(string ipaddr, int32_t port, int32_t pieceLength, int64_t totalLength
   id = MessageDigestHelper::digestString("sha1", idSeed);
 }
 
+void Peer::reconfigure(int32_t pieceLength, int64_t totalLength)
+{
+  delete bitfield;
+  this->pieceLength = pieceLength;
+  this->bitfield = BitfieldManFactory::getFactoryInstance()->
+    createBitfieldMan(this->pieceLength, totalLength);  
+}
+
 /*
 Peer::Peer():entryId(0), ipaddr(""), port(0), bitfield(0),
        sessionUploadLength(0), sessionDownloadLength(0),

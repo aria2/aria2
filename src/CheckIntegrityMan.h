@@ -36,43 +36,26 @@
 #define _D_CHECK_INTEGRITY_MAN_H_
 
 #include "common.h"
-#include "CheckIntegrityEntry.h"
+
+class CheckIntegrityEntry;
+extern typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
+extern typedef deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
 
 class CheckIntegrityMan {
 private:
   CheckIntegrityEntries _checkIntegrityEntries;
 public:
-  void addCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry)
-  {
-    _checkIntegrityEntries.push_back(entry);
-  }
+  CheckIntegrityMan();
 
-  bool removeCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry)
-  {
-    CheckIntegrityEntries::iterator itr = find(_checkIntegrityEntries.begin(),
-					       _checkIntegrityEntries.end(),
-					       entry);
-    if(itr == _checkIntegrityEntries.end()) {
-      return false;
-    } else {
-      _checkIntegrityEntries.erase(itr);
-      return true;
-    }
-  }
+  ~CheckIntegrityMan();
 
-  CheckIntegrityEntryHandle getFirstCheckIntegrityEntry() const
-  {
-    if(_checkIntegrityEntries.empty()) {
-      return 0;
-    } else {
-      return _checkIntegrityEntries.front();
-    }
-  }
+  void addCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry);
 
-  int32_t countCheckIntegrityEntry() const
-  {
-    return _checkIntegrityEntries.size();
-  }
+  bool removeCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry);
+
+  CheckIntegrityEntryHandle getFirstCheckIntegrityEntry() const;
+
+  int32_t countCheckIntegrityEntry() const;
 };
 
 typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;

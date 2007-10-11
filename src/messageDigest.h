@@ -36,7 +36,7 @@
 #define _D_MESSAGE_DIGEST_H_
 
 #include "common.h"
-#include "FatalException.h"
+#include "DlAbortEx.h"
 #include <map>
 
 #ifdef HAVE_LIBSSL
@@ -94,7 +94,7 @@ public:
   {
     DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
     if(itr == digestAlgos.end()) {
-      throw new FatalException("Digest algorithm %s is not supported.", algostring.c_str());
+      throw new DlAbortEx("Digest algorithm %s is not supported.", algostring.c_str());
     }
     return (*itr).second;
   }

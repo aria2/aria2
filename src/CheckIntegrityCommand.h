@@ -36,16 +36,17 @@
 #define _D_CHECK_INTEGRITY_COMMAND_H_
 
 #include "RealtimeCommand.h"
-#include "IteratableChunkChecksumValidator.h"
-#include "CheckIntegrityEntry.h"
 #include "TimeA2.h"
+
+class CheckIntegrityEntry;
+extern typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
 
 class CheckIntegrityCommand : public RealtimeCommand {
 private:
   CheckIntegrityEntryHandle _entry;
   Time _timer;
 public:
-  CheckIntegrityCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const CheckIntegrityEntryHandle& entry);
+  CheckIntegrityCommand(int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e, const CheckIntegrityEntryHandle& entry);
 
   virtual ~CheckIntegrityCommand();
 

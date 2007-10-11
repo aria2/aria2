@@ -36,74 +36,32 @@
 #define _D_REQUEST_GROUP_ENTRY_H_
 
 #include "ProgressAwareEntry.h"
-#include "Request.h"
-#include "RequestGroup.h"
 
+class RequestGroup;
+class Command;
 class DownloadCommand;
 
-class RequestGroupEntry : public ProgressAwareEntry {
+class RequestGroupEntry {
 protected:
-  int32_t _cuid;
-  RequestHandle _currentRequest;
   RequestGroup* _requestGroup;
-  DownloadCommand* _nextDownloadCommand;
-  bool _shouldAddNumConnection;
+  Command* _nextCommand;
 public:
-  RequestGroupEntry(int32_t cuid,
-		    const RequestHandle& currentRequest,
-		    RequestGroup* requestGroup,
-		    DownloadCommand* nextDownloadCommand = 0):
-    _cuid(cuid),
-    _currentRequest(currentRequest),
-    _requestGroup(requestGroup),
-    _nextDownloadCommand(nextDownloadCommand)
-  {
-    if(nextDownloadCommand) {
-      _shouldAddNumConnection = false;
-    } else {
-      _shouldAddNumConnection = true;
-      ++_requestGroup->numConnection;
-    }
-  }
+  RequestGroupEntry(RequestGroup* requestGroup,
+		    Command* nextCommand = 0);
 
   virtual ~RequestGroupEntry();
-
-  virtual int64_t getTotalLength() const
-  {
-    return _requestGroup->getTotalLength();
-  }
-
-  int32_t getCUID() const
-  {
-    return _cuid;
-  }
-
-  RequestHandle getCurrentRequest() const
-  {
-    return _currentRequest;
-  }
 
   RequestGroup* getRequestGroup() const
   {
     return _requestGroup;
   }
-  /*
-  void setNextDownloadCommand(DownloadCommand* command)
+
+  Command* getNextCommand() const
   {
-    _nextDownloadCommand = command;
-  }
-  */
-  DownloadCommand* getNextDownloadCommand() const
-  {
-    return _nextDownloadCommand;
+    return _nextCommand;
   }
 
-  DownloadCommand* popNextDownloadCommand()
-  {
-    DownloadCommand* temp = _nextDownloadCommand;
-    _nextDownloadCommand = 0;
-    return temp;
-  }
+  Command* popNextCommand();
   
   bool operator==(const RequestGroupEntry& entry) const
   {

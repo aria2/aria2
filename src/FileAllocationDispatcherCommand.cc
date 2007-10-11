@@ -33,22 +33,35 @@
  */
 /* copyright --> */
 #include "FileAllocationDispatcherCommand.h"
+#include "DownloadEngine.h"
+#include "RequestGroupMan.h"
+#include "FileAllocationMan.h"
+#include "FileAllocationEntry.h"
 #include "FileAllocationCommand.h"
 #include "message.h"
+#include "CUIDCounter.h"
+
+FileAllocationDispatcherCommand::FileAllocationDispatcherCommand(int32_t cuid, DownloadEngine* e):
+  Command(cuid), _e(e)
+{
+  setStatusRealtime();
+}
+
+FileAllocationDispatcherCommand::~FileAllocationDispatcherCommand() {}
 
 bool FileAllocationDispatcherCommand::execute()
 {
-  if(_e->_requestGroupMan->downloadFinished()) {
+  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-  
   if(!_e->_fileAllocationMan->isFileAllocationBeingExecuted() &&
      _e->_fileAllocationMan->nextFileAllocationEntryExists()) {
     FileAllocationEntryHandle entry = _e->_fileAllocationMan->popNextFileAllocationEntry();
-    logger->info(MSG_FILE_ALLOCATION_DISPATCH,
-		 entry->getCUID());
+    // TODO we have to change message
+    int32_t newCUID = CUIDCounterSingletonHolder::instance()->newID();
+    logger->info(MSG_FILE_ALLOCATION_DISPATCH, newCUID);
     FileAllocationCommand* command =
-      new FileAllocationCommand(entry->getCUID(),
+      new FileAllocationCommand(newCUID,
 				entry->getRequestGroup(),
 				_e,
 				entry);

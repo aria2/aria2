@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "DiskAdaptor.h"
-#include "DlAbortEx.h"
 #include "LogFactory.h"
 #include "message.h"
 
@@ -41,7 +40,9 @@ DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
 
 DiskAdaptor::~DiskAdaptor() {}
 
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const {
+FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const
+  throw(DlAbortEx*)
+{
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     if((*itr)->getPath() == fileEntryPath) {
@@ -51,7 +52,8 @@ FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) c
   throw new DlAbortEx(EX_NO_SUCH_FILE_ENTRY, fileEntryPath.c_str());
 }
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
+bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath)
+{
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     if((*itr)->getPath() == fileEntryPath) {
@@ -62,7 +64,8 @@ bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath) {
   return false;
 }
 
-bool DiskAdaptor::addDownloadEntry(int index) {
+bool DiskAdaptor::addDownloadEntry(int index)
+{
   if(fileEntries.size() <= (unsigned int)index) {
     return false;
   }
@@ -70,14 +73,16 @@ bool DiskAdaptor::addDownloadEntry(int index) {
   return true;
 }
 
-void DiskAdaptor::addAllDownloadEntry() {
+void DiskAdaptor::addAllDownloadEntry()
+{
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     (*itr)->setRequested(true);
   }
 }
 
-void DiskAdaptor::removeAllDownloadEntry() {
+void DiskAdaptor::removeAllDownloadEntry()
+{
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     (*itr)->setRequested(false);

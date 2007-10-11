@@ -4,6 +4,7 @@
      ../src/TorrentRequestInfo.cc \
      ../src/UrlRequestInfo.cc \
      ../src/main.cc \
+     ../src/version_usage.cc \
      ../src/DefaultPieceStorage.cc \
      ../src/DefaultBtAnnounce.cc \
      ../src/DefaultBtProgressInfoFile.cc \

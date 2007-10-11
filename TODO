@@ -47,4 +47,9 @@
 	src/PeerChokeCommand.h
 	src/TorrentAutoSaveCommand.h
 * Rewrite MetaFileUtil
-* Integrate FTP/HTTP/BitTorrent downloads from metalinks
+* Reconsider the use of RecoverableException and FatalException
+* Limit the number of opening file to,say,100 in MultiDiskAdaptor.
+
+* Implement duplicate download checking in Bt
+* Implement the feature to treat http/ftp as auxuality download method for BitTorrent
+* Fixed the download error when sending "CWD //*" to the ftp server

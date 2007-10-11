@@ -33,29 +33,31 @@
  */
 /* copyright --> */
 #include "DefaultPieceStorage.h"
+#include "DownloadContext.h"
+#include "Piece.h"
+#include "Peer.h"
 #include "LogFactory.h"
 #include "prefs.h"
 #include "DirectDiskAdaptor.h"
 #include "MultiDiskAdaptor.h"
 #include "CopyDiskAdaptor.h"
-#include "DefaultDiskWriter.h"
-#include "DlAbortEx.h"
+#include "DiskWriter.h"
 #include "BitfieldManFactory.h"
-#include "FileAllocationMonitor.h"
-#include "DiskAdaptorWriter.h"
-#include "ChunkChecksumValidator.h"
 #include "message.h"
+#include "DefaultDiskWriterFactory.h"
+#include "DlAbortEx.h"
 
-DefaultPieceStorage::DefaultPieceStorage(BtContextHandle btContext, const Option* option):
-  btContext(btContext),
+DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option):
+  downloadContext(downloadContext),
   diskAdaptor(0),
+  _diskWriterFactory(new DefaultDiskWriterFactory()),
   endGamePieceNum(END_GAME_PIECE_NUM),
   option(option)
 {
   bitfieldMan =
     BitfieldManFactory::getFactoryInstance()->
-    createBitfieldMan(btContext->getPieceLength(),
-		      btContext->getTotalLength());
+    createBitfieldMan(downloadContext->getPieceLength(),
+		      downloadContext->getTotalLength());
   logger = LogFactory::getInstance();
 }
 
@@ -63,16 +65,19 @@ DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan;
 }
 
-bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer) {
+bool DefaultPieceStorage::hasMissingPiece(const PeerHandle& peer)
+{
   return bitfieldMan->hasMissingPiece(peer->getBitfield(),
 				      peer->getBitfieldLength());
 }
 
-bool DefaultPieceStorage::isEndGame() {
+bool DefaultPieceStorage::isEndGame()
+{
   return bitfieldMan->countMissingBlock() <= endGamePieceNum;
 }
 
-int32_t DefaultPieceStorage::getMissingPieceIndex(const PeerHandle& peer) {
+int32_t DefaultPieceStorage::getMissingPieceIndex(const PeerHandle& peer)
+{
   int32_t index = -1;
   if(isEndGame()) {
     index = bitfieldMan->getMissingIndex(peer->getBitfield(),
@@ -84,7 +89,8 @@ int32_t DefaultPieceStorage::getMissingPieceIndex(const PeerHandle& peer) {
   return index;
 }
 
-PieceHandle DefaultPieceStorage::checkOutPiece(int32_t index) {
+PieceHandle DefaultPieceStorage::checkOutPiece(int32_t index)
+{
   if(index == -1) {
     return 0;
   }
@@ -104,7 +110,8 @@ PieceHandle DefaultPieceStorage::checkOutPiece(int32_t index) {
  * Newly instantiated piece is not added to usedPieces.
  * Because it is waste of memory and there is no chance to use them later.
  */
-PieceHandle DefaultPieceStorage::getPiece(int32_t index) {
+PieceHandle DefaultPieceStorage::getPiece(int32_t index)
+{
   if(0 <= index && index <= bitfieldMan->getMaxIndex()) {
     PieceHandle piece = findUsedPiece(index);
     if(piece.isNull()) {
@@ -119,7 +126,8 @@ PieceHandle DefaultPieceStorage::getPiece(int32_t index) {
   }
 }
 
-void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece) {
+void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece)
+{
   usedPieces.push_back(piece);
 }
 
@@ -134,7 +142,8 @@ public:
   }
 };
 
-PieceHandle DefaultPieceStorage::findUsedPiece(int32_t index) const {
+PieceHandle DefaultPieceStorage::findUsedPiece(int32_t index) const
+{
   Pieces::const_iterator itr = find_if(usedPieces.begin(),
 				       usedPieces.end(),
 				       FindPiece(index));
@@ -145,12 +154,14 @@ PieceHandle DefaultPieceStorage::findUsedPiece(int32_t index) const {
   }
 }
 
-PieceHandle DefaultPieceStorage::getMissingPiece(const PeerHandle& peer) {
+PieceHandle DefaultPieceStorage::getMissingPiece(const PeerHandle& peer)
+{
   int32_t index = getMissingPieceIndex(peer);
   return checkOutPiece(index);
 }
 
-int32_t DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer) {
+int32_t DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer)
+{
   int32_t index = -1;
   if(peer->isFastExtensionEnabled() && peer->countFastSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan->getBlockLength(),
@@ -172,12 +183,28 @@ int32_t DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer) {
   return index;
 }
 
-PieceHandle DefaultPieceStorage::getMissingFastPiece(const PeerHandle& peer) {
+PieceHandle DefaultPieceStorage::getMissingFastPiece(const PeerHandle& peer)
+{
   int32_t index = getMissingFastPieceIndex(peer);
   return checkOutPiece(index);
 }
 
-void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece) {
+PieceHandle DefaultPieceStorage::getMissingPiece()
+{
+  return checkOutPiece(bitfieldMan->getSparseMissingUnusedIndex());
+}
+
+PieceHandle DefaultPieceStorage::getMissingPiece(int32_t index)
+{
+  if(hasPiece(index) || isPieceUsed(index)) {
+    return 0;
+  } else {
+    return checkOutPiece(index);
+  }
+}
+
+void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece)
+{
   if(piece.isNull()) {
     return;
   }
@@ -187,7 +214,8 @@ void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece) {
   }
 }
 
-void DefaultPieceStorage::reduceUsedPieces(int32_t delMax) {
+void DefaultPieceStorage::reduceUsedPieces(int32_t delMax)
+{
   int32_t toDelete = usedPieces.size()-delMax;
   if(toDelete <= 0) {
     return;
@@ -204,7 +232,8 @@ void DefaultPieceStorage::reduceUsedPieces(int32_t delMax) {
 }
 
 int32_t DefaultPieceStorage::deleteUsedPiecesByFillRate(int32_t fillRate,
-							   int32_t toDelete) {
+							int32_t toDelete)
+{
   int32_t deleted = 0;
   for(Pieces::iterator itr = usedPieces.begin();
       itr != usedPieces.end() && deleted < toDelete;) {
@@ -224,7 +253,8 @@ int32_t DefaultPieceStorage::deleteUsedPiecesByFillRate(int32_t fillRate,
   return deleted;
 }
 
-void DefaultPieceStorage::completePiece(const PieceHandle& piece) {
+void DefaultPieceStorage::completePiece(const PieceHandle& piece)
+{
   if(piece.isNull()) {
     return;
   }
@@ -250,17 +280,20 @@ void DefaultPieceStorage::completePiece(const PieceHandle& piece) {
   }
 }
 
-bool DefaultPieceStorage::isSelectiveDownloadingMode() {
+bool DefaultPieceStorage::isSelectiveDownloadingMode()
+{
   return bitfieldMan->isFilterEnabled();
 }
 
-void DefaultPieceStorage::finishSelectiveDownloadingMode() {
+void DefaultPieceStorage::finishSelectiveDownloadingMode()
+{
   bitfieldMan->clearFilter();
   diskAdaptor->addAllDownloadEntry();
 }
 
 // not unittested
-void DefaultPieceStorage::cancelPiece(const PieceHandle& piece) {
+void DefaultPieceStorage::cancelPiece(const PieceHandle& piece)
+{
   if(piece.isNull()) {
     return;
   }
@@ -272,29 +305,40 @@ void DefaultPieceStorage::cancelPiece(const PieceHandle& piece) {
   }
 }
 
-bool DefaultPieceStorage::hasPiece(int32_t index) {
+bool DefaultPieceStorage::hasPiece(int32_t index)
+{
   return bitfieldMan->isBitSet(index);
 }
 
-int64_t DefaultPieceStorage::getTotalLength() {
+bool DefaultPieceStorage::isPieceUsed(int32_t index)
+{
+  return bitfieldMan->isUseBitSet(index);
+}
+
+int64_t DefaultPieceStorage::getTotalLength()
+{
   return bitfieldMan->getTotalLength();
 }
 
-int64_t DefaultPieceStorage::getFilteredTotalLength() {
+int64_t DefaultPieceStorage::getFilteredTotalLength()
+{
   return bitfieldMan->getFilteredTotalLength();
 }
 
-int64_t DefaultPieceStorage::getCompletedLength() {
+int64_t DefaultPieceStorage::getCompletedLength()
+{
   return bitfieldMan->getCompletedLength();
 }
 
-int64_t DefaultPieceStorage::getFilteredCompletedLength() {
+int64_t DefaultPieceStorage::getFilteredCompletedLength()
+{
   return bitfieldMan->getFilteredCompletedLength();
 }
 
 // not unittested
-void DefaultPieceStorage::setFileFilter(const Strings& filePaths) {
-  if(btContext->getFileMode() != BtContext::MULTI || filePaths.empty()) {
+void DefaultPieceStorage::setFileFilter(const Strings& filePaths)
+{
+  if(downloadContext->getFileMode() != DownloadContext::MULTI || filePaths.empty()) {
     return;
   }
   diskAdaptor->removeAllDownloadEntry();
@@ -309,7 +353,8 @@ void DefaultPieceStorage::setFileFilter(const Strings& filePaths) {
   bitfieldMan->enableFilter();
 }
 
-void DefaultPieceStorage::setFileFilter(const Integers& fileIndexes) {
+void DefaultPieceStorage::setFileFilter(const Integers& fileIndexes)
+{
   Strings filePaths;
   const FileEntries& entries = diskAdaptor->getFileEntries();
   for(int32_t i = 0; i < (int32_t)entries.size(); i++) {
@@ -322,66 +367,77 @@ void DefaultPieceStorage::setFileFilter(const Integers& fileIndexes) {
 }
 
 // not unittested
-void DefaultPieceStorage::clearFileFilter() {
+void DefaultPieceStorage::clearFileFilter()
+{
   bitfieldMan->clearFilter();
   diskAdaptor->addAllDownloadEntry();
 }
 
 // not unittested
-bool DefaultPieceStorage::downloadFinished() {
+bool DefaultPieceStorage::downloadFinished()
+{
   return bitfieldMan->isFilteredAllBitSet();
 }
 
 // not unittested
-bool DefaultPieceStorage::allDownloadFinished() {
+bool DefaultPieceStorage::allDownloadFinished()
+{
   return bitfieldMan->isAllBitSet();
 }
 
 // not unittested
-void DefaultPieceStorage::initStorage() {
-  if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
-    if(btContext->getFileMode() == BtContext::SINGLE) {
-      DefaultDiskWriterHandle writer = DefaultDiskWriter::createNewDiskWriter(option);
-      DirectDiskAdaptorHandle directDiskAdaptor = new DirectDiskAdaptor();
-      directDiskAdaptor->setDiskWriter(writer);
-      directDiskAdaptor->setTotalLength(btContext->getTotalLength());
-      this->diskAdaptor = directDiskAdaptor;
-    } else {
+void DefaultPieceStorage::initStorage()
+{
+  if(downloadContext->getFileMode() == DownloadContext::SINGLE) {
+    logger->debug("Instantiating DirectDiskAdaptor");
+    DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
+    DirectDiskAdaptorHandle directDiskAdaptor = new DirectDiskAdaptor();
+    directDiskAdaptor->setDiskWriter(writer);
+    directDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
+    this->diskAdaptor = directDiskAdaptor;
+  } else {
+    // file mode == DownloadContext::MULTI
+    if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
+      logger->debug("Instantiating MultiDiskAdaptor");
       MultiDiskAdaptorHandle multiDiskAdaptor = new MultiDiskAdaptor();
-      multiDiskAdaptor->setPieceLength(btContext->getPieceLength());
-      multiDiskAdaptor->setTopDir(btContext->getName());
+      multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
+      multiDiskAdaptor->setTopDir(downloadContext->getName());
       multiDiskAdaptor->setOption(option);
       this->diskAdaptor = multiDiskAdaptor;
+    } else {
+      logger->debug("Instantiating CopyDiskAdaptor");
+      DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
+      CopyDiskAdaptorHandle copyDiskAdaptor = new CopyDiskAdaptor();
+      copyDiskAdaptor->setDiskWriter(writer);
+      copyDiskAdaptor->setTempFilename(downloadContext->getName()+".a2tmp");
+      copyDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
+      if(downloadContext->getFileMode() == DownloadContext::MULTI) {
+	copyDiskAdaptor->setTopDir(downloadContext->getName());
+      }
+      this->diskAdaptor = copyDiskAdaptor;
     }
-  } else {
-    DefaultDiskWriterHandle writer = DefaultDiskWriter::createNewDiskWriter(option);
-    CopyDiskAdaptorHandle copyDiskAdaptor = new CopyDiskAdaptor();
-    copyDiskAdaptor->setDiskWriter(writer);
-    copyDiskAdaptor->setTempFilename(btContext->getName()+".a2tmp");
-    copyDiskAdaptor->setTotalLength(btContext->getTotalLength());
-    if(btContext->getFileMode() == BtContext::MULTI) {
-      copyDiskAdaptor->setTopDir(btContext->getName());
-    }
-    this->diskAdaptor = copyDiskAdaptor;
   }
-  string storeDir = option->get(PREF_DIR);
-  if(storeDir == "") {
-    storeDir = ".";
-  }
+  string storeDir = downloadContext->getDir();//option->get(PREF_DIR);
+//   if(storeDir == "") {
+//     storeDir = ".";
+//   }
   diskAdaptor->setStoreDir(storeDir);
-  diskAdaptor->setFileEntries(btContext->getFileEntries());
+  diskAdaptor->setFileEntries(downloadContext->getFileEntries());
 }
 
 void DefaultPieceStorage::setBitfield(const unsigned char* bitfield,
-				      int32_t bitfieldLength) {
+				      int32_t bitfieldLength)
+{
   bitfieldMan->setBitfield(bitfield, bitfieldLength);
 }
   
-int32_t DefaultPieceStorage::getBitfieldLength() {
+int32_t DefaultPieceStorage::getBitfieldLength()
+{
   return bitfieldMan->getBitfieldLength();
 }
 
-const unsigned char* DefaultPieceStorage::getBitfield() {
+const unsigned char* DefaultPieceStorage::getBitfield()
+{
   return bitfieldMan->getBitfield();
 }
 
@@ -389,17 +445,20 @@ DiskAdaptorHandle DefaultPieceStorage::getDiskAdaptor() {
   return diskAdaptor;
 }
 
-int32_t DefaultPieceStorage::getPieceLength(int32_t index) {
+int32_t DefaultPieceStorage::getPieceLength(int32_t index)
+{
   return bitfieldMan->getBlockLength(index);
 }
 
-void DefaultPieceStorage::advertisePiece(int32_t cuid, int32_t index) {
+void DefaultPieceStorage::advertisePiece(int32_t cuid, int32_t index)
+{
   HaveEntry entry(cuid, index);
   haves.push_front(entry);
 }
 
 Integers DefaultPieceStorage::getAdvertisedPieceIndexes(int32_t myCuid,
-							const Time& lastCheckTime) {
+							const Time& lastCheckTime)
+{
   Integers indexes;
   for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
     const Haves::value_type& have = *itr;
@@ -430,7 +489,8 @@ public:
   }
 };
   
-void DefaultPieceStorage::removeAdvertisedPiece(int32_t elapsed) {
+void DefaultPieceStorage::removeAdvertisedPiece(int32_t elapsed)
+{
   Haves::iterator itr =
     find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
   if(itr != haves.end()) {
@@ -444,19 +504,33 @@ void DefaultPieceStorage::markAllPiecesDone()
   bitfieldMan->setAllBit();
 }
 
-void DefaultPieceStorage::checkIntegrity()
+void DefaultPieceStorage::markPiecesDone(int64_t length)
 {
-  logger->notice(MSG_VALIDATING_FILE,
-		 diskAdaptor->getFilePath().c_str());
-  ChunkChecksumHandle chunkChecksum = new ChunkChecksum("sha1",
-							btContext->getPieceHashes(),
-							btContext->getPieceLength());
-  IteratableChunkChecksumValidatorHandle iv = new IteratableChunkChecksumValidator();
-  iv->setDiskWriter(new DiskAdaptorWriter(diskAdaptor));
-  iv->setBitfield(bitfieldMan);
-  iv->setChunkChecksum(chunkChecksum);
+  // TODO implement this
+  abort();
+}
 
-  ChunkChecksumValidator v(iv);
-  v.setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
-  v.validate();
+void DefaultPieceStorage::markPieceMissing(int32_t index)
+{
+  bitfieldMan->unsetBit(index);
+}
+
+void DefaultPieceStorage::addInFlightPiece(const Pieces& pieces)
+{
+  copy(pieces.begin(), pieces.end(), back_inserter(usedPieces));
+}
+
+int32_t DefaultPieceStorage::countInFlightPiece()
+{
+  return usedPieces.size();
+}
+
+Pieces DefaultPieceStorage::getInFlightPieces()
+{
+  return usedPieces;
+}
+
+void DefaultPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory)
+{
+  _diskWriterFactory = diskWriterFactory;
 }

@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "Util.h"
-#include "DlAbortEx.h"
 #include "File.h"
 #include "message.h"
 #include "SimpleRandomizer.h"
@@ -54,7 +53,8 @@
 #endif // HAVE_SLEEP
 
 template<typename T>
-string uint2str(T value, bool comma) {
+string uint2str(T value, bool comma)
+{
   string str;
   if(value == 0) {
     str = "0";
@@ -74,7 +74,8 @@ string uint2str(T value, bool comma) {
 }
 
 template<typename T>
-string int2str(T value, bool comma) {
+string int2str(T value, bool comma)
+{
   bool flag = false;
   if(value < 0) {
     flag = true;
@@ -89,23 +90,28 @@ string int2str(T value, bool comma) {
 
 
 
-string Util::uitos(uint16_t value, bool comma) {
+string Util::uitos(uint16_t value, bool comma)
+{
   return uint2str<uint16_t>(value, comma);
 }
 
-string Util::itos(int16_t value, bool comma) {
+string Util::itos(int16_t value, bool comma)
+{
   return int2str<int16_t>(value, comma);
 }
 
-string Util::uitos(uint32_t value, bool comma) {
+string Util::uitos(uint32_t value, bool comma)
+{
   return uint2str<uint32_t>(value, comma);
 }
 
-string Util::itos(int32_t value, bool comma) {
+string Util::itos(int32_t value, bool comma)
+{
   return int2str<int32_t>(value, comma);
 }
 
-string Util::ullitos(uint64_t value, bool comma) {
+string Util::ullitos(uint64_t value, bool comma)
+{
   return uint2str<uint64_t>(value, comma);
 }
 
@@ -114,7 +120,8 @@ string Util::llitos(int64_t value, bool comma)
   return int2str<int64_t>(value, comma);
 }
 
-string Util::trim(const string& src, const string& trimCharset) {
+string Util::trim(const string& src, const string& trimCharset)
+{
   string::size_type sp = src.find_first_not_of(trimCharset);
   string::size_type ep = src.find_last_not_of(trimCharset);
   if(sp == string::npos || ep == string::npos) {
@@ -124,7 +131,8 @@ string Util::trim(const string& src, const string& trimCharset) {
   }
 }
 
-void Util::split(pair<string, string>& hp, const string& src, char delim) {
+void Util::split(pair<string, string>& hp, const string& src, char delim)
+{
   hp.first = "";
   hp.second = "";
   string::size_type p = src.find(delim);
@@ -322,7 +330,9 @@ void Util::fileCopy(const string& dest, const string& src) {
   rangedFileCopy(dest, src, 0, file.size());
 }
 
-void Util::rangedFileCopy(const string& dest, const string& src, int64_t srcOffset, int64_t length) {
+void Util::rangedFileCopy(const string& dest, const string& src, int64_t srcOffset, int64_t length)
+  throw(DlAbortEx*)
+{
   int32_t bufSize = 4096;
   char buf[bufSize];
   int32_t destFd = -1;

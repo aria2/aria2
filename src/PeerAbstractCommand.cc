@@ -33,33 +33,34 @@
  */
 /* copyright --> */
 #include "PeerAbstractCommand.h"
+#include "Peer.h"
+#include "DownloadEngine.h"
+#include "Option.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "Util.h"
 #include "message.h"
 #include "prefs.h"
 
-PeerAbstractCommand::PeerAbstractCommand(int32_t cuid, const PeerHandle& peer,
-					 TorrentDownloadEngine* e,
-					 const BtContextHandle& btContext,
+PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
+					 const PeerHandle& peer,
+					 DownloadEngine* e,
 					 const SocketHandle& s)
-  :BtContextAwareCommand(cuid, btContext), e(e), socket(s), peer(peer),
+  :Command(cuid), e(e), socket(s), peer(peer),
    checkSocketIsReadable(false), checkSocketIsWritable(false),
    uploadLimitCheck(false), uploadLimit(0), noCheck(false)
 {
   setReadCheckSocket(socket);
   timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
-  btRuntime->increaseConnections();
 }
 
 PeerAbstractCommand::~PeerAbstractCommand() {
   disableReadCheckSocket();
   disableWriteCheckSocket();
-  btRuntime->decreaseConnections();
 }
 
 bool PeerAbstractCommand::execute() {
-  if(btRuntime->isHalt()) {
+  if(exitBeforeExecute()) {
     peer->resetStatus();
     return true;
   }
@@ -94,10 +95,6 @@ bool PeerAbstractCommand::prepareForNextPeer(int32_t wait) {
 
 bool PeerAbstractCommand::prepareForRetry(int32_t wait) {
   return true;
-}
-
-void PeerAbstractCommand::onAbort(Exception* ex) {
-  peerStorage->returnPeer(peer);
 }
 
 void PeerAbstractCommand::disableReadCheckSocket() {

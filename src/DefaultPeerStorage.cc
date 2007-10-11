@@ -192,6 +192,8 @@ TransferStat DefaultPeerStorage::calculateStat() {
   TransferStat stat = calStat.getTransferStat();
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
+  stat.setAllTimeUploadLength(btRuntime->getUploadLengthAtStartup()+
+			      stat.getSessionUploadLength());
   return stat;
 }
 

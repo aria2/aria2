@@ -36,7 +36,7 @@
 #define _D_ALPHA_NUMBER_DECORATOR_H_
 
 #include "NumberDecorator.h"
-#include "FatalException.h"
+#include "DlAbortEx.h"
 
 class AlphaNumberDecorator : public NumberDecorator
 {
@@ -64,7 +64,7 @@ public:
   virtual string decorate(int32_t number)
   {
     if(number < 0) {
-      throw new FatalException("The number must be greater than 0.");
+      throw new DlAbortEx("The number must be greater than 0.");
     }
     if(number == 0) {
       return widen(_zero, _width);

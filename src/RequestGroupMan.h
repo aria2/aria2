@@ -36,73 +36,37 @@
 #define _D_REQUEST_GROUP_MAN_H_
 
 #include "common.h"
-#include "RequestGroup.h"
-#include "LogFactory.h"
+#include "TransferStat.h"
 
 class DownloadEngine;
+class RequestGroup;
+extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
+extern typedef deque<RequestGroupHandle> RequestGroups;
+class Command;
+extern typedef deque<Command*> Commands;
+class Logger;
 
 class RequestGroupMan {
 private:
   RequestGroups _requestGroups;
   RequestGroups _reservedGroups;
+  RequestGroups _spentGroups;
   const Logger* _logger;
   int32_t _maxSimultaneousDownloads;
   int32_t _gidCounter;
+
+  string formatDownloadResult(const string& status, const RequestGroupHandle& requestGroup) const;
+
 public:
-  RequestGroupMan(const RequestGroups& requestGroups = RequestGroups(), int32_t maxSimultaneousDownloads = 1):
-    _requestGroups(requestGroups),
-    _logger(LogFactory::getInstance()),
-    _maxSimultaneousDownloads(maxSimultaneousDownloads),
-    _gidCounter(0) {}
+  RequestGroupMan(const RequestGroups& requestGroups, int32_t maxSimultaneousDownloads = 1);
 
-  bool downloadFinished()
-  {
-    for(RequestGroups::iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      if((*itr)->numConnection > 0 || !(*itr)->getSegmentMan()->finished()) {
-	return false;
-      }
-    }
-    return true;
-  }
+  bool downloadFinished();
 
-  void save()
-  {
-    for(RequestGroups::iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      if(!(*itr)->getSegmentMan()->finished()) {
-	(*itr)->getSegmentMan()->save();
-      }
-    }
-  }
+  void save();
 
-  void closeFile()
-  {
-    for(RequestGroups::iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      (*itr)->getSegmentMan()->diskWriter->closeFile();
-    }
-  }
+  void closeFile();
   
-  int64_t getDownloadLength() const
-  {
-    int64_t downloadLength = 0;
-    for(RequestGroups::const_iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      downloadLength += (*itr)->getSegmentMan()->getDownloadLength();
-    }
-    return downloadLength;
-  }
-
-  int64_t getTotalLength() const
-  {
-    int64_t totalLength = 0;
-    for(RequestGroups::const_iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      totalLength += (*itr)->getSegmentMan()->totalSize;
-    }
-    return totalLength;
-  }
+  void halt();
 
   Commands getInitialCommands(DownloadEngine* e);
 
@@ -110,48 +74,21 @@ public:
 
   void fillRequestGroupFromReserver(DownloadEngine* e);
 
-  void addRequestGroup(const RequestGroupHandle& group)
-  {
-    _requestGroups.push_back(group);
-  }
+  void addRequestGroup(const RequestGroupHandle& group);
 
-  void addReservedGroup(const RequestGroups& groups)
-  {
-    _reservedGroups.insert(_reservedGroups.end(), groups.begin(), groups.end());
-  }
+  void addReservedGroup(const RequestGroups& groups);
 
-  void addReservedGroup(const RequestGroupHandle& group)
-  {
-    _reservedGroups.push_back(group);
-  }
+  void addReservedGroup(const RequestGroupHandle& group);
 
-  int32_t countRequestGroup() const
-  {
-    return _requestGroups.size();
-  }
+  int32_t countRequestGroup() const;
 		  
-  RequestGroupHandle getRequestGroup(int32_t index) const
-  {
-    if(index < (int32_t)_requestGroups.size()) {
-      return _requestGroups[index];
-    } else {
-      return 0;
-    }
-  }
+  RequestGroupHandle getRequestGroup(int32_t index) const;
 		  
   void showDownloadResults(ostream& o) const;
 
-  int32_t getErrors() const
-  {
-    int32_t errors = 0;
-    for(RequestGroups::const_iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      errors += (*itr)->getSegmentMan()->errors;
-    }
-    return errors;
-  }
-
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
+
+  TransferStat calculateStat();
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

@@ -59,5 +59,11 @@
         <url type="ftp" preference="100">ftp://host/file</url>
       </resources>
     </file>
+    <file name="torrent-http.integrated">
+      <resources>
+        <url type="http" preference="100">http://host/torrent-http.integrated</url>
+        <url type="bittorrent" preference="100">http://host/torrent-http.integrated.torrent</url>
+      </resources>
+    </file>
   </files>
 </metalink>

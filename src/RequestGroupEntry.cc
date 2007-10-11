@@ -33,12 +33,26 @@
  */
 /* copyright --> */
 #include "RequestGroupEntry.h"
-#include "DownloadCommand.h"
+#include "RequestGroup.h"
+#include "Command.h"
+
+RequestGroupEntry::RequestGroupEntry(RequestGroup* requestGroup,
+				     Command* nextCommand):
+  _requestGroup(requestGroup),
+  _nextCommand(nextCommand)
+{
+  _requestGroup->increaseNumCommand();
+}
 
 RequestGroupEntry::~RequestGroupEntry()
 {
-  if(_shouldAddNumConnection) {
-    --_requestGroup->numConnection;
-  }
-  delete _nextDownloadCommand;
+  _requestGroup->decreaseNumCommand();
+  delete _nextCommand;
+}
+
+Command* RequestGroupEntry::popNextCommand()
+{
+  Command* temp = _nextCommand;
+  _nextCommand = 0;
+  return temp;
 }

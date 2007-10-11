@@ -4,6 +4,9 @@
 #include "Exception.h"
 #include "FixedNumberRandomizer.h"
 #include "BitfieldManFactory.h"
+#include "Piece.h"
+#include "Peer.h"
+#include "Option.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;

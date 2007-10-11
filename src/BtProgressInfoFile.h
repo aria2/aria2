@@ -43,8 +43,6 @@ public:
 
   virtual string getFilename() = 0;
 
-  virtual void setFilename(const string& filename) = 0;
-
   virtual bool exists() = 0;
 
   virtual void save() = 0;

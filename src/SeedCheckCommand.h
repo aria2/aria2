@@ -35,20 +35,26 @@
 #ifndef _D_SEED_CHECK_COMMAND_H_
 #define _D_SEED_CHECK_COMMAND_H_
 
+#include "Command.h"
 #include "BtContextAwareCommand.h"
-#include "TorrentDownloadEngine.h"
+#include "DownloadEngine.h"
 #include "TimeA2.h"
 #include "SeedCriteria.h"
+#include "RequestGroupAware.h"
 
-class SeedCheckCommand : public BtContextAwareCommand {
+class SeedCheckCommand : public Command,
+			 public BtContextAwareCommand,
+			 public RequestGroupAware
+{
 private:
-  TorrentDownloadEngine* e;
+  DownloadEngine* e;
   Time checkPoint;
   SeedCriteriaHandle seedCriteria;
   bool checkStarted;
 public:
   SeedCheckCommand(int cuid,
-		   TorrentDownloadEngine* e,
+		   RequestGroup* requestGroup,
+		   DownloadEngine* e,
 		   const BtContextHandle& btContext,
 		   SeedCriteriaHandle seedCriteria);
 

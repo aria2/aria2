@@ -36,6 +36,7 @@
 #define _D_BT_REGISTRY_H_
 
 #include "common.h"
+#include "BtContext.h"
 #include "PeerStorage.h"
 #include "PieceStorage.h"
 #include "BtAnnounce.h"
@@ -45,11 +46,12 @@
 #include "HandleRegistry.h"
 #include <map>
 
-typedef map<string, PeerStorageHandle> PeerStorageMap;
-typedef map<string, PieceStorageHandle> PieceStorageMap;
-typedef map<string, BtAnnounceHandle> BtAnnounceMap;
-typedef map<string, BtRuntimeHandle> BtRuntimeMap;
-typedef map<string, BtProgressInfoFileHandle> BtProgressInfoFileMap;
+typedef HandleRegistry<string, PeerStorage> PeerStorageMap;
+typedef HandleRegistry<string, PieceStorage> PieceStorageMap;
+typedef HandleRegistry<string, BtAnnounce> BtAnnounceMap;
+typedef HandleRegistry<string, BtRuntime> BtRuntimeMap;
+typedef HandleRegistry<string, BtProgressInfoFile> BtProgressInfoFileMap;
+typedef HandleRegistry<string, BtContext>  BtContextMap;
 
 // for BtMessageFactory
 typedef HandleRegistry<string, PeerObject> PeerObjectCluster;
@@ -60,6 +62,7 @@ class BtRegistry {
 private:
   BtRegistry() {}
 
+  static BtContextMap btContextMap;
   static PeerStorageMap peerStorageMap;
   static PieceStorageMap pieceStorageMap;
   static BtAnnounceMap btAnnounceMap;
@@ -67,24 +70,28 @@ private:
   static BtProgressInfoFileMap btProgressInfoFileMap;
   static PeerObjectClusterRegistry peerObjectClusterRegistry;
 public:
+  static BtContextHandle getBtContext(const string& key);
+  static void registerBtContext(const string& key,
+				const BtContextHandle& btContext);
+
   static PeerStorageHandle getPeerStorage(const string& key);
-  static bool registerPeerStorage(const string& key,
+  static void registerPeerStorage(const string& key,
 				  const PeerStorageHandle& peer);
 				  
   static PieceStorageHandle getPieceStorage(const string& key);
-  static bool registerPieceStorage(const string& key,
+  static void registerPieceStorage(const string& key,
 				   const PieceStorageHandle& pieceStorage);
 
   static BtRuntimeHandle getBtRuntime(const string& key);
-  static bool registerBtRuntime(const string& key,
+  static void registerBtRuntime(const string& key,
 				const BtRuntimeHandle& btRuntime);
 
   static BtAnnounceHandle getBtAnnounce(const string& key);
-  static bool registerBtAnnounce(const string& key,
+  static void registerBtAnnounce(const string& key,
 				 const BtAnnounceHandle& btAnnounce);
 
   static BtProgressInfoFileHandle getBtProgressInfoFile(const string& key);
-  static bool registerBtProgressInfoFile(const string& key,
+  static void registerBtProgressInfoFile(const string& key,
 					 const BtProgressInfoFileHandle& btProgressInfoFile);
 
   // for PeerObject
@@ -98,7 +105,9 @@ public:
   static void
   unregisterPeerObjectCluster(const string& key);
 
-  static void clear();
+  static void unregisterAll();
+
+  static void unregister(const string& key);
 };
 
 #define PEER_STORAGE(btContext) \

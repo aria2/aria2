@@ -37,6 +37,8 @@
 
 #include "common.h"
 #include "HttpHeader.h"
+#include "DlRetryEx.h"
+#include "DlAbortEx.h"
 #include <utility>
 #include <sstream>
 
@@ -45,16 +47,16 @@ private:
   stringstream strm;
   int32_t _limit;
 
-  void checkHeaderLimit(int32_t incomingLength);
+  void checkHeaderLimit(int32_t incomingLength) throw(DlAbortEx*);
 
 public:
   HttpHeaderProcessor():_limit(4096) {}
 
   ~HttpHeaderProcessor() {}
 
-  void update(const char* data, int32_t length);
+  void update(const char* data, int32_t length) throw(DlAbortEx*);
 
-  void update(const string& data);
+  void update(const string& data) throw(DlAbortEx*);
 
   /**
    * Returns true if end of header is reached.
@@ -66,7 +68,7 @@ public:
    */
   int32_t getPutBackDataLength() const;
 
-  pair<string, HttpHeaderHandle> getHttpStatusHeader();
+  pair<string, HttpHeaderHandle> getHttpStatusHeader() throw(DlRetryEx*);
 
   string getHeaderString() const;
 

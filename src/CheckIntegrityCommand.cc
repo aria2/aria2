@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "CheckIntegrityCommand.h"
+#include "CheckIntegrityMan.h"
+#include "CheckIntegrityEntry.h"
+#include "RequestGroup.h"
 #include "FileAllocationEntry.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "DlAbortEx.h"
@@ -40,7 +43,7 @@
 #include "DownloadCommand.h"
 #include "prefs.h"
 
-CheckIntegrityCommand::CheckIntegrityCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const CheckIntegrityEntryHandle& entry):
+CheckIntegrityCommand::CheckIntegrityCommand(int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e, const CheckIntegrityEntryHandle& entry):
   RealtimeCommand(cuid, requestGroup, e),
   _entry(entry)
 {
@@ -54,25 +57,16 @@ CheckIntegrityCommand::~CheckIntegrityCommand()
 
 bool CheckIntegrityCommand::executeInternal()
 {
+  if(_requestGroup->isHaltRequested()) {
+    return true;
+  }
   _entry->validateChunk();
   if(_entry->finished()) {
+    _entry->updatePieceStorage();
     if(_requestGroup->downloadFinished()) {
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
-      return true;
-    }
-    if(_requestGroup->needsFileAllocation()) {
-      FileAllocationEntryHandle entry = new FileAllocationEntry(cuid, _entry->getCurrentRequest(), _requestGroup, _entry->popNextDownloadCommand(), _requestGroup->getExistingFileLength());
-      _e->_fileAllocationMan->pushFileAllocationEntry(entry); 
     } else {
-      if(_timer.difference() <= _e->option->getAsInt(PREF_DIRECT_DOWNLOAD_TIMEOUT) &&
-	 _entry->getNextDownloadCommand()) {
-	_e->commands.push_back(_entry->popNextDownloadCommand());
-      } else {
-	Commands commands = _requestGroup->createNextCommandWithAdj(_e, -1);
-	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _entry->getCurrentRequest(), _requestGroup, _e);
-	commands.push_front(command);
-	_e->addCommand(commands);
-      }
+      _e->addCommand(_entry->prepareForNextAction(_e));
     }
     return true;
   } else {
@@ -84,12 +78,6 @@ bool CheckIntegrityCommand::executeInternal()
 bool CheckIntegrityCommand::handleException(Exception* e)
 {
   logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
-  delete e;
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
-  // TODO this is wrong. There may exist invalid chunk data before catching
-  // exception. Fix this.
-  // The one of the solution is having a copy of bitfield before settting its
-  // all bit to 1. If exception is thrown, then assign the copy to the bitfield.
-  _requestGroup->markPieceDone(_entry->getCurrentLength());
   return true;
 }

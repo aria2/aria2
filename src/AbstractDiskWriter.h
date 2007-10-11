@@ -36,52 +36,40 @@
 #define _D_ABSTRACT_DISK_WRITER_H_
 
 #include "DiskWriter.h"
-#include "FileAllocator.h"
 #include "Logger.h"
+#include "DlAbortEx.h"
 
 class AbstractDiskWriter : public DiskWriter {
 protected:
   string filename;
   int32_t fd;
-  FileAllocatorHandle fileAllocator;
-  FileAllocatorHandle glowFileAllocator;
   const Logger* logger;
 
-  void createFile(const string& filename, int32_t addFlags = 0);
+  void createFile(const string& filename, int32_t addFlags = 0) throw(DlAbortEx*);
 
 private:
-  int32_t writeDataInternal(const char* data, int32_t len);
-  int32_t readDataInternal(char* data, int32_t len);
+  int32_t writeDataInternal(const unsigned char* data, int32_t len);
+  int32_t readDataInternal(unsigned char* data, int32_t len);
 
-  void seek(int64_t offset);
+  void seek(int64_t offset) throw(DlAbortEx*);
 
 public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(const string& filename, int64_t totalLength = 0);
+  virtual void openFile(const string& filename, int64_t totalLength = 0) throw(DlAbortEx*);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const string& filename, int64_t totalLength = 0);
+  virtual void openExistingFile(const string& filename, int64_t totalLength = 0) throw(DlAbortEx*);
 
-  virtual void writeData(const char* data, int32_t len, int64_t offset);
+  virtual void writeData(const unsigned char* data, int32_t len, int64_t offset) throw(DlAbortEx*);
 
-  virtual int32_t readData(char* data, int32_t len, int64_t offset);
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) throw(DlAbortEx*);
 
-  void setFileAllocator(const FileAllocatorHandle& fileAllocator)
-  {
-    this->fileAllocator = fileAllocator;
-  }
+  virtual void truncate(int64_t length) throw(DlAbortEx*);
 
-  void setGlowFileAllocator(const FileAllocatorHandle& fileAllocator)
-  {
-    this->glowFileAllocator = fileAllocator;
-  }
-
-  virtual void truncate(int64_t length);
-
-  virtual int64_t size() const;
+  virtual int64_t size() const throw(DlAbortEx*);
 };
 
 #endif // _D_ABSTRACT_DISK_WRITER_H_

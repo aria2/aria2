@@ -3,6 +3,8 @@
 
 #include "PieceStorage.h"
 #include "BitfieldMan.h"
+#include "Piece.h"
+#include "DiskAdaptor.h"
 
 class MockPieceStorage : public PieceStorage {
 private:
@@ -15,6 +17,7 @@ private:
   bool endGame;
   DiskAdaptorHandle diskAdaptor;
   Integers pieceLengthList;
+  Pieces inFlightPieces;
 public:
   MockPieceStorage():diskAdaptor(0) {}
   virtual ~MockPieceStorage() {}
@@ -30,6 +33,25 @@ public:
   virtual PieceHandle getMissingFastPiece(const PeerHandle& peer) {
     return new Piece();
   }
+
+  virtual PieceHandle getMissingPiece()
+  {
+    return new Piece();
+  }
+
+  virtual PieceHandle getMissingPiece(int32_t index)
+  {
+    return new Piece();
+  }
+
+  virtual bool isPieceUsed(int32_t index)
+  {
+    return false;
+  }
+
+  virtual void markPieceMissing(int32_t index) {}
+
+  virtual void markPiecesDone(int64_t) {}
 
   virtual PieceHandle getPiece(int32_t index) {
     return new Piece();
@@ -153,7 +175,21 @@ public:
 
   virtual void markAllPiecesDone() {}
 
-  virtual void checkIntegrity() {}
+  virtual void addInFlightPiece(const Pieces& pieces)
+  {
+    copy(pieces.begin(), pieces.end(), back_inserter(inFlightPieces));
+  }
+
+  virtual int32_t countInFlightPiece()
+  {
+    return inFlightPieces.size();
+  }
+
+  virtual Pieces getInFlightPieces()
+  {
+    return inFlightPieces;
+  }
+
 };
 
 typedef SharedHandle<MockPieceStorage> MockPieceStorageHandle;

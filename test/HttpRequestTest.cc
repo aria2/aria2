@@ -1,6 +1,8 @@
 #include "HttpRequest.h"
 #include "prefs.h"
 #include "RequestFactory.h"
+#include "PiecedSegment.h"
+#include "Piece.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -36,13 +38,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( HttpRequestTest );
 void HttpRequestTest::testGetStartByte()
 {
   HttpRequest httpRequest;
-  SegmentHandle segment = new Segment(1, 1024*1024, 1024*1024, 0);
+  SegmentHandle segment = new PiecedSegment(1024, new Piece(1, 1024));
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getStartByte());
 
   httpRequest.setSegment(segment);
   
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024*1024, httpRequest.getStartByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)1024, httpRequest.getStartByte());
 
 }
 
@@ -54,14 +56,15 @@ void HttpRequestTest::testGetEndByte()
   int32_t writtenLength = 1024;
 
   HttpRequest httpRequest;
-  SegmentHandle segment = new Segment(index, length, segmentLength, writtenLength);
+  SegmentHandle segment = new PiecedSegment(segmentLength,
+					    new Piece(index, length));
+  
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getEndByte());
 
   httpRequest.setSegment(segment);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)0,
-		       httpRequest.getEndByte());
+  CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getEndByte());
 
   RequestHandle request = new Request();
   request->setKeepAlive(true);
@@ -95,12 +98,14 @@ void HttpRequestTest::testCreateRequest()
 
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SegmentHandle segment = new Segment();
+  SegmentHandle segment = new PiecedSegment(1024, new Piece(0, 1024));
 
   HttpRequest httpRequest;
 
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
+
+  request->setKeepAlive(true);
 
   string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -108,6 +113,7 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Range: bytes=0-1023\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -125,10 +131,8 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  segment->index = 1;
-  segment->length = 1024*1024;
-  segment->segmentLength = 1024*1024;
-  segment->writtenLength = 0;
+  segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  httpRequest.setSegment(segment);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -155,7 +159,7 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  httpRequest.setSegment(new Segment());
+  request->setKeepAlive(false);
 
   request->redirectUrl("http://localhost:8080/archives/download/aria2-1.0.0.tar.bz2");
 
@@ -165,12 +169,17 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "Range: bytes=1048576-\r\n"
     "Referer: http://localhost:8080/archives/aria2-1.0.0.tar.bz2\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
   
   request->resetUrl();
+
+  segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  httpRequest.setSegment(segment);
 
   // enable http auth
   option->put(PREF_HTTP_AUTH_ENABLED, V_TRUE);
@@ -183,6 +192,7 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
 
@@ -199,6 +209,7 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
 
@@ -214,6 +225,7 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
 
@@ -229,6 +241,7 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Proxy-Connection: close\r\n"
     "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
@@ -246,6 +259,7 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Proxy-Connection: close\r\n"
     "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
     "\r\n";
@@ -271,10 +285,8 @@ void HttpRequestTest::testCreateRequest_ftp()
   RequestHandle request = requestFactory.createRequest();
   request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SegmentHandle segment = new Segment();
-
   HttpRequest httpRequest;
-
+  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
@@ -286,6 +298,7 @@ void HttpRequestTest::testCreateRequest_ftp()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
@@ -303,6 +316,7 @@ void HttpRequestTest::testCreateRequest_ftp()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Proxy-Connection: close\r\n"
     "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
     "\r\n";
@@ -315,7 +329,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 {
   RequestHandle request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SegmentHandle segment = new Segment();
+  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
 
   Cookie cookie1("name1", "value1", "/archives", "localhost", false);
   Cookie cookie2("name2", "value2", "/archives/download", "localhost", false);
@@ -338,6 +352,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     "Host: localhost\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Cookie: name1=value1;\r\n"
     "\r\n";
 
@@ -351,6 +366,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     "Host: localhost\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Cookie: name1=value1;name2=value2;\r\n"
     "\r\n";
 
@@ -364,6 +380,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     "Host: tt.localhost\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Cookie: name1=value1;name2=value2;name3=value3;\r\n"
     "\r\n";
 
@@ -377,6 +394,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
     "Host: tt.localhost\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
     "Cookie: name1=value1;name2=value2;name3=value3;name4=value4;\r\n"
     "\r\n";
 
@@ -388,7 +406,7 @@ void HttpRequestTest::testCreateProxyRequest()
 {
   RequestHandle request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SegmentHandle segment = new Segment();
+  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
 
   HttpRequest httpRequest;
 
@@ -410,7 +428,7 @@ void HttpRequestTest::testIsRangeSatisfied()
   RequestHandle request = new Request();
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
-  SegmentHandle segment = new Segment();
+  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
 
   HttpRequest httpRequest;
 
@@ -421,14 +439,12 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  segment->index = 1;
-  segment->length = 1024*1024;
-  segment->segmentLength = 1024*1024;
-  segment->writtenLength = 0;
-
-  int64_t entityLength = segment->segmentLength*10;
+  segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  httpRequest.setSegment(segment);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
+
+  int64_t entityLength = segment->getSegmentLength()*10;
 
   range = new Range(segment->getPosition(), 0, entityLength);
 
@@ -447,11 +463,13 @@ void HttpRequestTest::testIsRangeSatisfied()
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
   range = new Range(segment->getPosition(),
-		    segment->getPosition()+segment->length-1, entityLength);
+		    segment->getPosition()+segment->getLength()-1,
+		    entityLength);
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  range = new Range(0, segment->getPosition()+segment->length-1, entityLength);
+  range = new Range(0, segment->getPosition()+segment->getLength()-1,
+		    entityLength);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 }

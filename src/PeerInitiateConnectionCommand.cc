@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "PeerInitiateConnectionCommand.h"
+#include "DownloadEngine.h"
 #include "PeerInteractionCommand.h"
 #include "Util.h"
 #include "DlAbortEx.h"
@@ -41,12 +42,21 @@
 #include "CUIDCounter.h"
 
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand(int cuid,
+							     RequestGroup* requestGroup,
 							     const PeerHandle& peer,
-							     TorrentDownloadEngine* e,
+							     DownloadEngine* e,
 							     const BtContextHandle& btContext)
-  :PeerAbstractCommand(cuid, peer, e, btContext) {}
+  :PeerAbstractCommand(cuid, peer, e),
+   BtContextAwareCommand(btContext),
+   RequestGroupAware(requestGroup)
+{
+  btRuntime->increaseConnections();
+}
 
-PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand() {}
+PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
+{
+  btRuntime->decreaseConnections();
+}
 
 bool PeerInitiateConnectionCommand::executeInternal() {
   Command* command;
@@ -55,6 +65,7 @@ bool PeerInitiateConnectionCommand::executeInternal() {
   socket->establishConnection(peer->ipaddr, peer->port);
   command =
     new PeerInteractionCommand(cuid,
+			       _requestGroup,
 			       peer,
 			       e,
 			       btContext,
@@ -72,6 +83,7 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
     peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->cuid,
+					_requestGroup,
 					peer,
 					e,
 					btContext);
@@ -83,9 +95,19 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
 bool PeerInitiateConnectionCommand::prepareForRetry(int wait) {
   PeerInitiateConnectionCommand* command =
     new PeerInitiateConnectionCommand(cuid,
+				      _requestGroup,
 				      peer,
 				      e,
 				      btContext);
   e->commands.push_back(command);
   return true;
+}
+
+void PeerInitiateConnectionCommand::onAbort(Exception* ex) {
+  peerStorage->returnPeer(peer);
+}
+
+bool PeerInitiateConnectionCommand::exitBeforeExecute()
+{
+  return btRuntime->isHalt();
 }

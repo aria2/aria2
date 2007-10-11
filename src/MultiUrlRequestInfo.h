@@ -35,27 +35,30 @@
 #ifndef _D_MULTI_URL_REQUEST_INFO_H_
 #define _D_MULTI_URL_REQUEST_INFO_H_
 
-#include "RequestInfo.h"
-#include "RequestGroup.h"
+#include "common.h"
 
-class MultiUrlRequestInfo : public RequestInfo {
+class RequestGroup;
+extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
+extern typedef deque<RequestGroupHandle> RequestGroups;
+class Option;
+class Logger;
+
+class MultiUrlRequestInfo {
 private:
   RequestGroups _requestGroups;
 
-  RequestInfoHandle createNextRequestInfo(const string& filename) const;
+  Option* _option;
+
+  const Logger* _logger;
+
+  void printDownloadAbortMessage();
+
 public:
-  MultiUrlRequestInfo(const RequestGroups& requestGroups, Option* op):
-    RequestInfo(op),
-    _requestGroups(requestGroups) {}
+  MultiUrlRequestInfo(const RequestGroups& requestGroups, Option* op);
+  
+  virtual ~MultiUrlRequestInfo();
 
-  MultiUrlRequestInfo(const Strings& uris, Option* op):RequestInfo(op)
-  {
-    _requestGroups.push_back(new RequestGroup(uris, op));
-  }
-
-  virtual ~MultiUrlRequestInfo() {}
-
-  virtual RequestInfos execute();
+  void execute();
 };
 
 typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;

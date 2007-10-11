@@ -79,6 +79,11 @@ public:
       return "";
     }
   }
+  
+  const Strings& getChecksums() const
+  {
+    return _checksums;
+  }
 
   int32_t getChecksumLength() const
   {

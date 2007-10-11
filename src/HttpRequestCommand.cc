@@ -33,6 +33,8 @@
  */
 /* copyright --> */
 #include "HttpRequestCommand.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
 #include "HttpResponseCommand.h"
 #include "HttpConnection.h"
 #include "prefs.h"
@@ -61,7 +63,7 @@ bool HttpRequestCommand::executeInternal() {
   httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setSegment(segment);
-  httpRequest->setEntityLength(_requestGroup->getSegmentMan()->totalSize);
+  httpRequest->setEntityLength(_requestGroup->getTotalLength());
   httpRequest->configure(e->option);
 
   HttpConnectionHandle httpConnection = new HttpConnection(cuid, socket, e->option);

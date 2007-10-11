@@ -122,17 +122,20 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
   return true;
 }
 
-bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength) {
-  if(!socket->isReadable(0)) {
+bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
+				      bool peek) {
+  int32_t remain = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
+  if(remain != 0 && !socket->isReadable(0)) {
     dataLength = 0;
     return false;
   }
-  int32_t remain = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
   int32_t temp = remain;
-  socket->readData((char*)resbuf+resbufLength, temp);
-  if(temp == 0) {
-    // we got EOF
-    throw new DlAbortEx(EX_EOF_FROM_PEER);
+  if(remain != 0) {
+    socket->readData((char*)resbuf+resbufLength, temp);
+    if(temp == 0) {
+      // we got EOF
+      throw new DlAbortEx(EX_EOF_FROM_PEER);
+    }
   }
   bool retval;
   if(remain != temp) {
@@ -141,11 +144,11 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength) 
     retval = true;
   }
   resbufLength += temp;
-  // we got whole handshake payload
+
   int32_t writeLength = resbufLength > dataLength ? dataLength : resbufLength;
   memcpy(data, resbuf, writeLength);
   dataLength = writeLength;
-  if(retval) {
+  if(retval && !peek) {
     resbufLength = 0;
   }
   return retval;

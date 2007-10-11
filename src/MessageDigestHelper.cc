@@ -40,18 +40,21 @@
 #include "Util.h"
 #include <errno.h>
 
-string MessageDigestHelper::digest(const string& algo, DiskWriterHandle diskWriter, int64_t offset, int64_t length)
+string MessageDigestHelper::digest(const string& algo,
+				   const BinaryStreamHandle& bs,
+				   int64_t offset,
+				   int64_t length)
 {
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);
   ctx.digestInit();
 
   int32_t BUFSIZE = 4096;
-  char BUF[BUFSIZE];
+  unsigned char BUF[BUFSIZE];
   int64_t iteration = length/BUFSIZE;
   int32_t tail = length%BUFSIZE;
   for(int64_t i = 0; i < iteration; ++i) {
-    int32_t readLength = diskWriter->readData(BUF, BUFSIZE, offset);
+    int32_t readLength = bs->readData(BUF, BUFSIZE, offset);
     if(readLength != BUFSIZE) {
       throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
     }
@@ -59,7 +62,7 @@ string MessageDigestHelper::digest(const string& algo, DiskWriterHandle diskWrit
     offset += readLength;
   }
   if(tail) {
-    int32_t readLength = diskWriter->readData(BUF, tail, offset);
+    int32_t readLength = bs->readData(BUF, tail, offset);
     if(readLength != tail) {
       throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
     }
@@ -73,7 +76,7 @@ string MessageDigestHelper::digest(const string& algo, const string& filename)
 {
   DiskWriterHandle writer = new DefaultDiskWriter();
   writer->openExistingFile(filename);
-  return digest(algo, writer);
+  return digest(algo, writer, 0, writer->size());
 }
 
 string MessageDigestHelper::digest(const string& algo, const void* data, int32_t length)

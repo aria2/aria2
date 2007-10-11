@@ -35,14 +35,19 @@
 #ifndef _D_PEER_CHOKE_COMMAND_H_
 #define _D_PEER_CHOKE_COMMAND_H_
 
+#include "Command.h"
 #include "BtContextAwareCommand.h"
-#include "TorrentDownloadEngine.h"
+#include "DownloadEngine.h"
 #include "TimeA2.h"
+#include "RequestGroupAware.h"
 
-class PeerChokeCommand : public BtContextAwareCommand {
+class PeerChokeCommand : public Command,
+			 public BtContextAwareCommand,
+			 public RequestGroupAware
+{
 private:
   int32_t interval;
-  TorrentDownloadEngine* e;
+  DownloadEngine* e;
   int32_t rotate;
   Time checkPoint;
 
@@ -52,13 +57,14 @@ private:
 
 public:
   PeerChokeCommand(int32_t cuid,
-		   TorrentDownloadEngine* e,
+		   RequestGroup* requestGroup,
+		   DownloadEngine* e,
 		   const BtContextHandle& btContext,
 		   int32_t interval);
 
   virtual ~PeerChokeCommand();
 
-  bool execute();
+  virtual bool execute();
 };
 
 #endif // _D_PEER_CHOKE_COMMAND_H_

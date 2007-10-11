@@ -37,16 +37,19 @@
 
 #include "RealtimeCommand.h"
 #include "TimeA2.h"
-#include "FileAllocationEntry.h"
+
+class FileAllocationEntry;
+extern typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
+class Exception;
 
 class FileAllocationCommand : public RealtimeCommand {
 private:
   FileAllocationEntryHandle _fileAllocationEntry;
   Time _timer;
 public:
-  FileAllocationCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
-    RealtimeCommand(cuid, requestGroup, e),
-    _fileAllocationEntry(fileAllocationEntry) {}
+  FileAllocationCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry);
+
+  virtual ~FileAllocationCommand();
 
   virtual bool executeInternal();
 

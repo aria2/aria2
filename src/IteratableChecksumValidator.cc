@@ -42,7 +42,7 @@ void IteratableChecksumValidator::validateChunk()
 {
   if(!finished()) {
     
-    char data[BUFSIZE];
+    unsigned char data[BUFSIZE];
 
     int32_t size = _diskWriter->readData(data, sizeof(data), _currentOffset);
 

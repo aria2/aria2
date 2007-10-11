@@ -36,17 +36,16 @@
 #define _D_FILE_ALLOCATION_DISPATCHER_COMMAND_H_
 
 #include "Command.h"
-#include "DownloadEngine.h"
+
+class DownloadEngine;
 
 class FileAllocationDispatcherCommand : public Command {
 private:
   DownloadEngine* _e;
 public:
-  FileAllocationDispatcherCommand(int cuid, DownloadEngine* e):
-    Command(cuid), _e(e)
-  {
-    setStatusRealtime();
-  }
+  FileAllocationDispatcherCommand(int32_t cuid, DownloadEngine* e);
+  
+  virtual ~FileAllocationDispatcherCommand();
 
   virtual bool execute();
 };

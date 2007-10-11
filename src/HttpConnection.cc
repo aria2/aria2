@@ -33,10 +33,7 @@
  */
 /* copyright --> */
 #include "HttpConnection.h"
-#include "DlRetryEx.h"
-#include "DlAbortEx.h"
 #include "Util.h"
-#include "Base64.h"
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"
@@ -66,6 +63,7 @@ string HttpConnection::eraseConfidentialInfo(const string& request)
 }
 
 void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
+  throw(DlRetryEx*)
 {
   string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
@@ -75,6 +73,7 @@ void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
 }
 
 void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
+  throw(DlRetryEx*)
 {
   string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
@@ -83,7 +82,9 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 							 new HttpHeaderProcessor()));
 }
 
-HttpResponseHandle HttpConnection::receiveResponse() {
+HttpResponseHandle HttpConnection::receiveResponse()
+  throw(DlAbortEx*, DlRetryEx*)
+{
   if(outstandingHttpRequests.size() == 0) {
     throw new DlAbortEx(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }

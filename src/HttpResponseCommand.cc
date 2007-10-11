@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "HttpResponseCommand.h"
+#include "DownloadEngine.h"
+#include "HttpResponse.h"
+#include "HttpConnection.h"
+#include "SegmentMan.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "HttpDownloadCommand.h"
@@ -41,7 +45,9 @@
 #include "prefs.h"
 #include "File.h"
 #include "InitiateConnectionCommandFactory.h"
-#include "FatalException.h"
+#include "SingleFileDownloadContext.h"
+#include "DiskAdaptor.h"
+#include "PieceStorage.h"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -59,10 +65,6 @@ HttpResponseCommand::~HttpResponseCommand() {}
 bool HttpResponseCommand::executeInternal()
 {
   HttpRequestHandle httpRequest = httpConnection->getFirstHttpRequest();
-  if(!(httpRequest->getSegment() == segment)) {
-    logger->info(MSG_SEGMENT_CHANGED, cuid);
-    return prepareForRetry(0);
-  }
   HttpResponseHandle httpResponse = httpConnection->receiveResponse();
   if(httpResponse.isNull()) {
     // The server has not responded to our request yet.
@@ -87,7 +89,7 @@ bool HttpResponseCommand::executeInternal()
     e->noWait = true;
     return prepareForRetry(0);
   }
-  if(_requestGroup->getSegmentMan()->downloadStarted) {
+  if(!_requestGroup->getPieceStorage().isNull()) {
     // validate totalsize
     _requestGroup->validateFilename(httpResponse->determinFilename());
     _requestGroup->validateTotalLength(httpResponse->getEntityLength());
@@ -99,7 +101,7 @@ bool HttpResponseCommand::executeInternal()
     _requestGroup->validateFilenameByHint(httpResponse->determinFilename());
     _requestGroup->validateTotalLengthByHint(httpResponse->getEntityLength());
 
-    _requestGroup->getSegmentMan()->filename = httpResponse->determinFilename();
+    SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setFilename(httpResponse->determinFilename());
     if(httpResponse->isTransferEncodingSpecified()) {
       return handleOtherEncoding(httpResponse);
     } else {
@@ -111,27 +113,26 @@ bool HttpResponseCommand::executeInternal()
 bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpResponse)
 {
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
-  // TODO quick and dirty way 
-  if(_requestGroup->isTorrent) {
-    return doTorrentStuff(httpResponse);
-  }
   int64_t size = httpResponse->getEntityLength();
   if(size == INT64_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
   }
-  _requestGroup->getSegmentMan()->isSplittable = !(size == 0);
-  _requestGroup->getSegmentMan()->downloadStarted = true;
-  _requestGroup->getSegmentMan()->totalSize = size;
-  
+  //_requestGroup->getSegmentMan()->isSplittable = !(size == 0);
+  //_requestGroup->getSegmentMan()->totalSize = size;
+  //_requestGroup->getSegmentMan()->initDownloadContext(size);
+
+  SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setTotalLength(size);
+  initPieceStorage();
+
   // quick hack for method 'head'
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {
     // TODO because we don't want segment file to be saved.
-    _requestGroup->getSegmentMan()->isSplittable = false;
+    //_requestGroup->getSegmentMan()->isSplittable = false;
     return true;
   }
 
   if(e->option->get(PREF_CHECK_INTEGRITY) != V_TRUE) {
-    if(_requestGroup->downloadFinishedByFileLength()) {
+    if(downloadFinishedByFileLength()) {
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
       return true;
     }
@@ -143,8 +144,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     if(_requestGroup->getRemainingUris().empty() && !file.exists()) {
       command = createHttpDownloadCommand(httpResponse);
     }
-    _requestGroup->loadAndOpenFile();
-    _requestGroup->prepareForNextAction(cuid, req, e, command);
+    loadAndOpenFile();
+    prepareForNextAction(command);
     e->noWait = true;
   } catch(Exception* e) {
     delete command;
@@ -156,18 +157,22 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
 bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
   // we ignore content-length when transfer-encoding is set
-  _requestGroup->getSegmentMan()->downloadStarted = true;
-  _requestGroup->getSegmentMan()->isSplittable = false;
-  _requestGroup->getSegmentMan()->totalSize = 0;
+  //_requestGroup->getSegmentMan()->isSplittable = false;
+  //_requestGroup->getSegmentMan()->totalSize = 0;
   // quick hack for method 'head'
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {
     return true;
   }
   // disable keep-alive
   req->setKeepAlive(false);
-  segment = _requestGroup->getSegmentMan()->getSegment(cuid);	
-  _requestGroup->shouldCancelDownloadForSafety();
-  _requestGroup->getSegmentMan()->diskWriter->initAndOpenFile(_requestGroup->getSegmentMan()->getFilePath());
+
+  initPieceStorage();
+
+  //segment = _requestGroup->getSegmentMan()->getSegment(cuid);
+
+  shouldCancelDownloadForSafety();
+  // TODO handle file-size unknown case
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();//_requestGroup->getFilePath());
   e->commands.push_back(createHttpDownloadCommand(httpResponse));
   return true;
 }
@@ -191,21 +196,4 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpRe
   command->setTransferDecoder(enc);
 
   return command;
-}
-
-bool HttpResponseCommand::doTorrentStuff(const HttpResponseHandle& httpResponse)
-{
-  int64_t size = httpResponse->getEntityLength();
-  _requestGroup->getSegmentMan()->totalSize = size;
-  if(size > 0) {
-    _requestGroup->getSegmentMan()->initBitfield(e->option->getAsInt(PREF_SEGMENT_SIZE),
-			      _requestGroup->getSegmentMan()->totalSize);
-  }
-  // disable keep-alive
-  httpResponse->getHttpRequest()->getRequest()->setKeepAlive(false);
-  _requestGroup->getSegmentMan()->isSplittable = false;
-  _requestGroup->getSegmentMan()->downloadStarted = true;
-  _requestGroup->getSegmentMan()->diskWriter->initAndOpenFile("/tmp/aria2"+Util::itos((int32_t)getpid()));
-  e->commands.push_back(createHttpDownloadCommand(httpResponse));
-  return true;
 }

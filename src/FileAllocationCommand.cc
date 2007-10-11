@@ -33,45 +33,48 @@
  */
 /* copyright --> */
 #include "FileAllocationCommand.h"
-#include "InitiateConnectionCommandFactory.h"
+#include "FileAllocationMan.h"
+#include "FileAllocationEntry.h"
 #include "message.h"
 #include "DownloadCommand.h"
 #include "prefs.h"
 #include "Util.h"
 
+FileAllocationCommand::FileAllocationCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
+  RealtimeCommand(cuid, requestGroup, e),
+  _fileAllocationEntry(fileAllocationEntry) {}
+
+FileAllocationCommand::~FileAllocationCommand() {}
+
 bool FileAllocationCommand::executeInternal()
 {
-  _fileAllocationEntry->allocateChunk();
-  
-  if(_fileAllocationEntry->finished()) {
-    logger->debug(MSG_ALLOCATION_COMPLETED,
-		  _timer.difference(),
-		  Util::llitos(_requestGroup->getTotalLength(), true).c_str());
-    
-    _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
-    
-    if(_timer.difference() <= _e->option->getAsInt(PREF_DIRECT_DOWNLOAD_TIMEOUT) &&
-       _fileAllocationEntry->getNextDownloadCommand()) {
-      _e->commands.push_back(_fileAllocationEntry->popNextDownloadCommand());
-    } else {
-      Commands commands = _requestGroup->createNextCommandWithAdj(_e, -1);
-      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, _fileAllocationEntry->getCurrentRequest(), _requestGroup, _e);
-      
-      commands.push_front(command);
-    
-      _e->addCommand(commands);
-    }
+  if(_e->isHaltRequested()) {
     return true;
-  } else {
-    _e->commands.push_back(this);
-    return false;
+  }
+  try {
+    _fileAllocationEntry->allocateChunk();
+    if(_fileAllocationEntry->finished()) {
+      logger->debug(MSG_ALLOCATION_COMPLETED,
+		    _timer.difference(),
+		    Util::llitos(_requestGroup->getTotalLength(), true).c_str());
+      _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
+      
+      _e->addCommand(_fileAllocationEntry->prepareForNextAction(_e));
+      
+      return true;
+    } else {
+      _e->commands.push_back(this);
+      return false;
+    }
+  } catch(Exception* e) {
+    _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
+    throw;
   }
 }
 
 bool FileAllocationCommand::handleException(Exception* e)
 {
   logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);
-  delete e;
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   return true;
 }

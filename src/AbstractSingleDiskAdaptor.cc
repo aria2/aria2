@@ -34,32 +34,49 @@
 /* copyright --> */
 #include "AbstractSingleDiskAdaptor.h"
 #include "File.h"
+#include "SingleFileAllocationIterator.h"
 
-void AbstractSingleDiskAdaptor::initAndOpenFile() {
+void AbstractSingleDiskAdaptor::initAndOpenFile()
+  throw(DlAbortEx*)
+{
   diskWriter->initAndOpenFile(getFilePath(), totalLength);
 }
 
-void AbstractSingleDiskAdaptor::openFile() {
+void AbstractSingleDiskAdaptor::openFile()
+  throw(DlAbortEx*)
+{
   diskWriter->openFile(getFilePath(), totalLength);
 }
 
-void AbstractSingleDiskAdaptor::closeFile() {
+void AbstractSingleDiskAdaptor::closeFile()
+{
   diskWriter->closeFile();
 }
 
-void AbstractSingleDiskAdaptor::openExistingFile() {
+void AbstractSingleDiskAdaptor::openExistingFile()
+  throw(DlAbortEx*)
+{
   diskWriter->openExistingFile(getFilePath(), totalLength);
 }
 
-void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, int32_t len, int64_t offset) {
+void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, int32_t len, int64_t offset)
+  throw(DlAbortEx*)
+{
   diskWriter->writeData(data, len, offset);
 }
 
-int32_t AbstractSingleDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset) {
+int32_t AbstractSingleDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
+  throw(DlAbortEx*)
+{
   return diskWriter->readData(data, len, offset);
 }
 
 bool AbstractSingleDiskAdaptor::fileExists()
 {
   return File(getFilePath()).exists();
+}
+
+FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
+{
+  return new SingleFileAllocationIterator(this);
 }

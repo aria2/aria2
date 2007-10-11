@@ -33,50 +33,56 @@
  */
 /* copyright --> */
 #include "MultiUrlRequestInfo.h"
+#include "RequestGroupMan.h"
+#include "DownloadEngine.h"
+#include "LogFactory.h"
+#include "RequestGroup.h"
 #include "prefs.h"
 #include "DownloadEngineFactory.h"
 #include "RecoverableException.h"
 #include "message.h"
 #include "DNSCache.h"
-#include "TorrentRequestInfo.h"
-#include "MetalinkRequestInfo.h"
 #include "Util.h"
+#include "ConsoleStatCalc.h"
 #include <signal.h>
 
-extern volatile sig_atomic_t haltRequested;
+#ifndef SA_RESETHAND
+# define SA_RESETHAND 0x80000000
+#endif // SA_RESETHAND
 
-RequestInfoHandle MultiUrlRequestInfo::createNextRequestInfo(const string& filename) const
-{
-#ifdef ENABLE_BITTORRENT
-  if(op->getAsBool(PREF_FOLLOW_TORRENT) &&
-     Util::endsWith(filename, ".torrent")) {
-    return new TorrentRequestInfo(filename, op);
-  } else
-#endif // ENABLE_BITTORRENT
-#ifdef ENABLE_METALINK
-    if(op->getAsBool(PREF_FOLLOW_METALINK) &&
-       Util::endsWith(filename, ".metalink")) {
-      return new MetalinkRequestInfo(filename, op);
-    } else
-#endif // ENABLE_METALINK
-      {
-	return 0;
-      }
-}
+extern volatile sig_atomic_t globalHaltRequested;
 
 static void handler(int signal) {
-  haltRequested = true;
+  globalHaltRequested = true;
 }
 
-RequestInfos MultiUrlRequestInfo::execute() {
+MultiUrlRequestInfo::MultiUrlRequestInfo(const RequestGroups& requestGroups, Option* op):
+  _requestGroups(requestGroups),
+  _option(op),
+  _logger(LogFactory::getInstance())
+{}
+
+MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
+
+void MultiUrlRequestInfo::printDownloadAbortMessage()
+{
+  printf(_("\nSome downloads were not complete because of errors."
+	   " Check the log.\n"
+	   "aria2 will resume download if the transfer is restarted."));
+  printf("\n");
+}
+
+void MultiUrlRequestInfo::execute()
+{
   {
     DNSCacheHandle dnsCache = new SimpleDNSCache();
     DNSCacheSingletonHolder::instance(dnsCache);
   }
 
-  RequestInfos nextReqInfos;
   try {
-    SharedHandle<ConsoleDownloadEngine> e(DownloadEngineFactory::newConsoleEngine(op, _requestGroups));
+    DownloadEngineHandle e =
+      DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
+    e->setStatCalc(new ConsoleStatCalc());
 
     e->fillCommand();
 
@@ -87,35 +93,21 @@ RequestInfos MultiUrlRequestInfo::execute() {
     // This is done every 1 second. At the same time, it removes finished/error
     // RequestGroup from DownloadEngine.
 
-    Util::setGlobalSignalHandler(SIGINT, handler, 0);
-    Util::setGlobalSignalHandler(SIGTERM, handler, 0);
+    Util::setGlobalSignalHandler(SIGINT, handler, SA_RESETHAND);
+    Util::setGlobalSignalHandler(SIGTERM, handler, SA_RESETHAND);
     
     e->run();
     
-    for(RequestGroups::iterator itr = _requestGroups.begin();
-	itr != _requestGroups.end(); ++itr) {
-      if((*itr)->downloadFinished()) {
-	RequestInfoHandle reqInfo = createNextRequestInfo((*itr)->getFilePath());
-	if(!reqInfo.isNull()) {
-	  nextReqInfos.push_back(reqInfo);
-	}
-      }
-    }
-    RequestGroupMan rgman(_requestGroups);
-    // TODO print summary of the download result
-    rgman.showDownloadResults(cout);
+    e->_requestGroupMan->showDownloadResults(cout);
     cout << flush;
-    // TODO Do we have to print a message when some of the downloads are failed?
-    if(!rgman.downloadFinished()) {
+
+    if(!e->_requestGroupMan->downloadFinished()) {
       printDownloadAbortMessage();
     }
   } catch(RecoverableException *ex) {
-    logger->error(EX_EXCEPTION_CAUGHT, ex);
+    _logger->error(EX_EXCEPTION_CAUGHT, ex);
     delete ex;
-    fail = true;
   }
   Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
   Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
-  
-  return nextReqInfos;
 }

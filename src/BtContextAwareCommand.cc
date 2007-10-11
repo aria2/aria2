@@ -35,9 +35,7 @@
 #include "BtContextAwareCommand.h"
 #include "BtRegistry.h"
 
-BtContextAwareCommand::BtContextAwareCommand(int cuid,
-					     const BtContextHandle& btContext):
-  Command(cuid),
+BtContextAwareCommand::BtContextAwareCommand(const BtContextHandle& btContext):
   btContext(btContext),
   btRuntime(BT_RUNTIME(btContext)),
   pieceStorage(PIECE_STORAGE(btContext)),

@@ -37,7 +37,8 @@
 
 #include "Command.h"
 #include "TimeA2.h"
-#include "DownloadEngine.h"
+
+class DownloadEngine;
 
 class TimeBasedCommand : public Command
 {
@@ -73,10 +74,9 @@ public:
   virtual void postProcess() {};
 
 public:
-  TimeBasedCommand(int32_t cuid, DownloadEngine* e, int32_t interval):
-    Command(cuid), _e(e),_exit(false), _interval(interval) {}
+  TimeBasedCommand(int32_t cuid, DownloadEngine* e, int32_t interval);
 
-  virtual ~TimeBasedCommand() {}
+  virtual ~TimeBasedCommand();
 
   virtual bool execute();
 };

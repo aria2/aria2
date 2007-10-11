@@ -41,11 +41,11 @@ class ProgressAwareEntry {
 public:
   virtual ~ProgressAwareEntry() {}
 
-  virtual int64_t getCurrentLength() const = 0;
+  virtual int64_t getCurrentLength() = 0;
 
-  virtual int64_t getTotalLength() const = 0;
+  virtual int64_t getTotalLength() = 0;
 
-  virtual bool finished() const = 0;
+  virtual bool finished() = 0;
 };
 
 typedef SharedHandle<ProgressAwareEntry> ProgressAwareEntryHandle;

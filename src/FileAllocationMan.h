@@ -36,57 +36,33 @@
 #define _D_FILE_ALLOCATION_MAN_H_
 
 #include "common.h"
-#include "Request.h"
-#include "RequestGroup.h"
-#include "FileAllocationEntry.h"
+
+class FileAllocationEntry;
+extern typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
+extern typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
 
 class FileAllocationMan {
 private:
   FileAllocationEntries _fileAllocationEntries;
   FileAllocationEntryHandle _currentFileAllocationEntry;
 public:
-  FileAllocationMan():_currentFileAllocationEntry(0) {}
+  FileAllocationMan();
 
-  bool isFileAllocationBeingExecuted() const
-  {
-    return _currentFileAllocationEntry.get() != 0;
-  }
+  ~FileAllocationMan();
 
-  FileAllocationEntryHandle getCurrentFileAllocationEntry()
-  {
-    return _currentFileAllocationEntry;
-  }
+  bool isFileAllocationBeingExecuted() const;
 
-  void markCurrentFileAllocationEntryDone()
-  {
-    _currentFileAllocationEntry = 0;
-  }
+  FileAllocationEntryHandle getCurrentFileAllocationEntry();
 
-  bool nextFileAllocationEntryExists() const
-  {
-    return !_fileAllocationEntries.empty();
-  }
+  void markCurrentFileAllocationEntryDone();
 
-  FileAllocationEntryHandle popNextFileAllocationEntry()
-  {
-    if(!nextFileAllocationEntryExists()) {
-      return 0;
-    }
-    FileAllocationEntryHandle entry = _fileAllocationEntries.front();
-    _fileAllocationEntries.pop_front();
-    _currentFileAllocationEntry = entry;
-    return entry;
-  }
+  bool nextFileAllocationEntryExists() const;
 
-  void pushFileAllocationEntry(const FileAllocationEntryHandle& entry)
-  {
-    _fileAllocationEntries.push_back(entry);
-  }
+  FileAllocationEntryHandle popNextFileAllocationEntry();
 
-  int32_t countFileAllocationEntryInQueue() const
-  {
-    return _fileAllocationEntries.size();
-  }
+  void pushFileAllocationEntry(const FileAllocationEntryHandle& entry);
+
+  int32_t countFileAllocationEntryInQueue() const;
 };
 
 typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;

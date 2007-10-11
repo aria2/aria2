@@ -36,19 +36,28 @@
 #define _D_PEER_INITIATE_CONNECTION_H_
 
 #include "PeerAbstractCommand.h"
+#include "RequestGroupAware.h"
+#include "BtContextAwareCommand.h"
 
-class PeerInitiateConnectionCommand : public PeerAbstractCommand {
+class PeerInitiateConnectionCommand : public PeerAbstractCommand,
+				      public BtContextAwareCommand,
+				      public RequestGroupAware
+{
 protected:
-  bool executeInternal();
-  bool prepareForRetry(int wait);
-  bool prepareForNextPeer(int wait);
+  virtual bool executeInternal();
+  virtual bool prepareForRetry(int wait);
+  virtual bool prepareForNextPeer(int wait);
+  virtual void onAbort(Exception* ex);
+  virtual bool exitBeforeExecute();
+
 public:
   PeerInitiateConnectionCommand(int cuid,
+				RequestGroup* requestGroup,
 				const PeerHandle& peer,
-				TorrentDownloadEngine* e,
+				DownloadEngine* e,
 				const BtContextHandle& btContext);
 
-  ~PeerInitiateConnectionCommand();
+  virtual ~PeerInitiateConnectionCommand();
 };
 
 #endif // _D_PEER_INITIATE_CONNECTION_H_

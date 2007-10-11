@@ -33,13 +33,17 @@
  */
 /* copyright --> */
 #include "FtpNegotiationCommand.h"
+#include "DownloadEngine.h"
+#include "FtpConnection.h"
+#include "RequestGroup.h"
+#include "PieceStorage.h"
 #include "FtpDownloadCommand.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "message.h"
 #include "prefs.h"
 #include "Util.h"
-#include "FatalException.h"
+#include "SingleFileDownloadContext.h"
 
 FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     const RequestHandle& req,
@@ -189,28 +193,29 @@ bool FtpNegotiationCommand::recvSize() {
   if(size == INT64_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
   }
-  if(!_requestGroup->getSegmentMan()->downloadStarted) {
-    _requestGroup->getSegmentMan()->downloadStarted = true;
-    _requestGroup->getSegmentMan()->totalSize = size;
-    _requestGroup->getSegmentMan()->filename = Util::urldecode(req->getFile());
+  if(_requestGroup->getPieceStorage().isNull()) {
+    SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setTotalLength(size);
+    SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setFilename(Util::urldecode(req->getFile()));
+
+    initPieceStorage();
 
     // TODO validate filename and totalsize against hintFilename and hintTotalSize if these are provided.
     _requestGroup->validateTotalLengthByHint(size);
     if(req->getMethod() == Request::METHOD_HEAD) {
-      _requestGroup->getSegmentMan()->isSplittable = false; // TODO because we don't want segment file to be saved.
+      //_requestGroup->getSegmentMan()->isSplittable = false; // TODO because we don't want segment file to be saved.
       sequence = SEQ_HEAD_OK;
       return false;
     }
 
     if(e->option->get(PREF_CHECK_INTEGRITY) != V_TRUE) {
-      if(_requestGroup->downloadFinishedByFileLength()) {
+      if(downloadFinishedByFileLength()) {
 	logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
 	sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
 	return false;
       }
     }
-    _requestGroup->loadAndOpenFile();
-    _requestGroup->prepareForNextAction(cuid, req, e);
+    loadAndOpenFile();
+    prepareForNextAction();
     
     sequence = SEQ_FILE_PREPARATION;
     e->noWait = true;

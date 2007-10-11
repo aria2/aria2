@@ -36,28 +36,23 @@
 #define _D_DOWNLOAD_ENGINE_FACTORY_H_
 
 #include "common.h"
-#include "ConsoleDownloadEngine.h"
-#ifdef ENABLE_BITTORRENT
-# include "TorrentConsoleDownloadEngine.h"
-#endif // ENABLE_BITTORRENT
+
+class Logger;
+class Option;
+class RequestGroup;
+extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
+extern typedef deque<RequestGroupHandle> RequestGroups;
+class DownloadEngine;
+extern typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
 
 class DownloadEngineFactory {
+private:
+  const Logger* _logger;
 public:
-  static ConsoleDownloadEngine*
-  newConsoleEngine(const Option* op,
-		   const RequestGroups& requestGroups);
+  DownloadEngineFactory();
 
-  static ConsoleDownloadEngine*
-  newConsoleEngine(const Option* option,
-		   const Requests& requests,
-		   const Requests& reserved);
-
-#ifdef ENABLE_BITTORRENT
-  static TorrentConsoleDownloadEngine*
-  newTorrentConsoleEngine(const BtContextHandle& btContext,
-			  const Option* option, 
-			  const Strings& targetFiles);
-#endif // ENABLE_BITTORRENT
+  DownloadEngineHandle
+  newDownloadEngine(Option* op, const RequestGroups& requestGroups);
 };
 
 #endif // _D_DOWNLOAD_ENGINE_FACTORY_H_

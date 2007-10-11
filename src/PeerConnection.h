@@ -72,7 +72,7 @@ public:
    * In both cases, 'msg' is filled with received bytes and the filled length
    * is assigned to 'length'.
    */
-  bool receiveHandshake(unsigned char* data, int32_t& dataLength);
+  bool receiveHandshake(unsigned char* data, int32_t& dataLength, bool peek = false);
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;

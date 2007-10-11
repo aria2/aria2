@@ -35,20 +35,26 @@
 #ifndef _D_DOWNLOAD_ENGINE_H_
 #define _D_DOWNLOAD_ENGINE_H_
 
-#include "Command.h"
-#include "Socket.h"
-#include "SegmentMan.h"
 #include "common.h"
-#include "Logger.h"
-#include "Option.h"
-#include "NameResolver.h"
-#include "RequestGroupMan.h"
-#include "FileAllocationMan.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "CheckIntegrityMan.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "Command.h"
 
-typedef deque<SocketHandle> Sockets;
+class SocketCore;
+extern typedef SharedHandle<SocketCore> SocketHandle;
+extern typedef deque<SocketHandle> Sockets;
+class Logger;
+class Option;
+class NameResolver;
+extern typedef SharedHandle<NameResolver> NameResolverHandle;
+class RequestGroupMan;
+extern typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
+class FileAllocationMan;
+extern typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
+class StatCalc;
+extern typedef SharedHandle<StatCalc> StatCalcHandle;
+#ifdef ENABLE_MESSAGE_DIGEST
+class CheckIntegrityMan;
+extern typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
+#endif // ENABLE_MESSAGE_DIGEST
 
 class SocketEntry {
 public:
@@ -63,15 +69,9 @@ public:
 public:
   SocketEntry(const SocketHandle& socket,
 	      Command* command,
-	      TYPE type):
-    socket(socket), command(command), type(type) {}
-  ~SocketEntry() {}
+	      TYPE type);
 
-  bool operator==(const SocketEntry& entry) {
-    return socket == entry.socket &&
-      command == entry.command &&
-      type == entry.type;
-  }
+  bool operator==(const SocketEntry& entry);
 };
 
 typedef deque<SocketEntry> SocketEntries;
@@ -83,14 +83,9 @@ public:
   Command* command;
 public:
   NameResolverEntry(const NameResolverHandle& nameResolver,
-		    Command* command):
-    nameResolver(nameResolver), command(command) {}
-  ~NameResolverEntry() {}
+		    Command* command);
 
-  bool operator==(const NameResolverEntry& entry) {
-    return nameResolver == entry.nameResolver &&
-      command == entry.command;
-  }
+  bool operator==(const NameResolverEntry& entry);
 };
 
 typedef deque<NameResolverEntry> NameResolverEntries;
@@ -108,16 +103,26 @@ private:
   fd_set wfdset;
   int32_t fdmax;
 
+  const Logger* logger;
+  
+  StatCalcHandle _statCalc;
+
+  bool _haltRequested;
+
   void shortSleep() const;
   bool addSocket(const SocketEntry& socketEntry);
   bool deleteSocket(const SocketEntry& socketEntry);
   void executeCommand(Command::STATUS statusFilter);
-protected:
-  const Logger* logger;
-  virtual void initStatistics() = 0;
-  virtual void calculateStatistics() = 0;
-  virtual void onEndOfRun() = 0;
-  virtual void afterEachIteration() {}
+
+  /**
+   * Delegates to StatCalc
+   */
+  void calculateStatistics();
+
+  void onEndOfRun();
+
+  void afterEachIteration();
+
 public:
   bool noWait;
   Commands commands;
@@ -152,11 +157,19 @@ public:
 			       Command* command);
 #endif // ENABLE_ASYNC_DNS
 
-  void addCommand(const Commands& commands)
+  void addCommand(const Commands& commands);
+
+  void fillCommand();
+
+  void setStatCalc(const StatCalcHandle& statCalc);
+
+  bool isHaltRequested() const
   {
-    this->commands.insert(this->commands.end(), commands.begin(), commands.end());
+    return _haltRequested;
   }
 };
+
+typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
 
 #endif // _D_DOWNLOAD_ENGINE_H_
 

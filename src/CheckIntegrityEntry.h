@@ -36,29 +36,37 @@
 #define _D_CHECK_INTEGRITY_ENTRY_H_
 
 #include "RequestGroupEntry.h"
-#include "IteratableChunkChecksumValidator.h"
 
-class CheckIntegrityEntry : public RequestGroupEntry {
+class IteratableChunkChecksumValidator;
+extern typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;
+class Command;
+extern typedef deque<Command*> Commands;
+class DownloadEngine;
+
+class CheckIntegrityEntry : public RequestGroupEntry,
+			    public ProgressAwareEntry {
 private:
   IteratableChunkChecksumValidatorHandle _validator;
 public:
-  CheckIntegrityEntry(int cuid,
-		      const RequestHandle& currentRequest,
-		      RequestGroup* requestGroup,
-		      DownloadCommand* nextDownloadCommand = 0):
-    RequestGroupEntry(cuid, currentRequest, requestGroup, nextDownloadCommand),
-    _validator(0)
-  {}
+  CheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
-  virtual ~CheckIntegrityEntry() {}
+  virtual ~CheckIntegrityEntry();
 
-  virtual int64_t getCurrentLength() const;
+  virtual int64_t getTotalLength();
 
-  virtual bool finished() const;
+  virtual int64_t getCurrentLength();
+
+  virtual bool finished();
+
+  bool isValidationReady();
 
   void initValidator();
 
   void validateChunk();
+
+  void updatePieceStorage();
+
+  virtual Commands prepareForNextAction(DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;

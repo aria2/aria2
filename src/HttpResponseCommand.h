@@ -36,8 +36,12 @@
 #define _D_HTTP_RESPONSE_COMMAND_H_
 
 #include "AbstractCommand.h"
-#include "HttpConnection.h"
-#include "HttpDownloadCommand.h"
+
+class HttpConnection;
+extern typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+class HttpDownloadCommand;
+class HttpResponse;
+extern typedef SharedHandle<HttpResponse> HttpResponseHandle;
 
 class HttpResponseCommand : public AbstractCommand {
 private:
@@ -46,7 +50,6 @@ private:
   bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
   bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
   HttpDownloadCommand* createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
-  bool doTorrentStuff(const HttpResponseHandle& httpResponse);
 protected:
   bool executeInternal();
 public:

@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "HttpInitiateConnectionCommand.h"
+#include "NameResolver.h"
+#include "DownloadEngine.h"
+#include "Option.h"
+#include "Request.h"
 #include "HttpRequestCommand.h"
 #include "HttpProxyRequestCommand.h"
 #include "Util.h"
@@ -110,3 +114,10 @@ bool HttpInitiateConnectionCommand::useProxyGet() {
 bool HttpInitiateConnectionCommand::useProxyTunnel() {
   return e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL;
 }
+
+#ifdef ENABLE_ASYNC_DNS
+bool HttpInitiateConnectionCommand::nameResolveFinished() const {
+  return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
+    nameResolver->getStatus() == NameResolver::STATUS_ERROR;
+}
+#endif // ENABLE_ASYNC_DNS

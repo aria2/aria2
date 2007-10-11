@@ -36,11 +36,11 @@
 #define _D_DOWNLOAD_COMMAND_H_
 
 #include "AbstractCommand.h"
-#include "TransferEncoding.h"
-#include "TimeA2.h"
-#include "PeerStat.h"
 
-using namespace std;
+class TransferEncoding;
+extern typedef SharedHandle<TransferEncoding> TransferEncodingHandle;
+class PeerStat;
+extern typedef SharedHandle<PeerStat> PeerStatHandle;
 
 class DownloadCommand : public AbstractCommand {
 private:
@@ -62,10 +62,7 @@ public:
 		  const SocketHandle& s);
   virtual ~DownloadCommand();
 
-  void setTransferDecoder(const TransferEncodingHandle& transferDecoder)
-  {
-    this->transferDecoder = transferDecoder;
-  }
+  void setTransferDecoder(const TransferEncodingHandle& transferDecoder);
 
   void setMaxDownloadSpeedLimit(int32_t maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;

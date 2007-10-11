@@ -134,7 +134,7 @@ public:
 		    btContext->getTotalLength());    
     peerStorage = new MockPeerStorage();
     pieceStorage = new MockPieceStorage();
-    BtRegistry::clear();
+    BtRegistry::unregisterAll();
     BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(),
 				    peerStorage);
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
@@ -281,8 +281,8 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
 
   SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
   pieceStorage->setPiece(piece);
-  CPPUNIT_ASSERT(BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-						  pieceStorage));
+  BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
+				   pieceStorage);
 
   btMessageDispatcher = new DefaultBtMessageDispatcher();
   btMessageDispatcher->setCuid(1);
@@ -308,8 +308,8 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
 
   SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
   pieceStorage->setPiece(piece);
-  CPPUNIT_ASSERT(BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-						  pieceStorage));
+  BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
+				   pieceStorage);
 
   btMessageDispatcher = new DefaultBtMessageDispatcher();
   btMessageDispatcher->setCuid(1);
@@ -337,8 +337,8 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
 
   SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
   pieceStorage->setPiece(piece);
-  CPPUNIT_ASSERT(BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
-						  pieceStorage));
+  BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
+				   pieceStorage);
 
 
   btMessageDispatcher = new DefaultBtMessageDispatcher();

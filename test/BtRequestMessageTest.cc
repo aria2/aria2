@@ -86,7 +86,7 @@ public:
   BtRequestMessageTest():peer(0), dispatcher(0), msg(0) {}
 
   void setUp() {
-    BtRegistry::clear();
+    BtRegistry::unregisterAll();
 
     MockBtContextHandle btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");

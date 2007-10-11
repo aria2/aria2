@@ -36,7 +36,8 @@
 #define _D_FTP_NEGOTIATION_COMMAND_H_
 
 #include "AbstractCommand.h"
-#include "FtpConnection.h"
+
+class FtpConnection;
 
 class FtpNegotiationCommand : public AbstractCommand {
 private:

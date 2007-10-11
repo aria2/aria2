@@ -210,6 +210,8 @@ public:
   void startBadCondition();
 
   bool isGood() const;
+
+  void reconfigure(int32_t pieceLength, int64_t totalLength);
 };
 
 typedef SharedHandle<Peer> PeerHandle;

@@ -33,10 +33,7 @@
  */
 /* copyright --> */
 #include "DefaultDiskWriter.h"
-#include "DlAbortEx.h"
 #include "message.h"
-#include "DefaultFileAllocator.h"
-#include "GlowFileAllocator.h"
 #include "prefs.h"
 #include "Util.h"
 #include <errno.h>
@@ -48,38 +45,7 @@ DefaultDiskWriter::~DefaultDiskWriter() {}
 
 void DefaultDiskWriter::initAndOpenFile(const string& filename,
 					int64_t totalLength)
+  throw(DlAbortEx*)
 {
   createFile(filename);
-  try {
-    if(totalLength > 0) {
-      if(fileAllocator.isNull()) {
-	ftruncate(fd, 0);
-      } else {
-	logger->notice(MSG_ALLOCATING_FILE,
-		       filename.c_str(),
-		       Util::ullitos(totalLength).c_str());
-	fileAllocator->allocate(fd, totalLength);
-      }
-    }
-  } catch(RecoverableException *e) {
-    throw new DlAbortEx(e, EX_FILE_WRITE, filename.c_str(), strerror(errno));
-  }
-}
-
-DefaultDiskWriter* DefaultDiskWriter::createNewDiskWriter(const Option* option)
-{
-  DefaultDiskWriter* diskWriter = new DefaultDiskWriter();
-  if(option->get(PREF_FILE_ALLOCATION) == V_PREALLOC) {
-    DefaultFileAllocatorHandle allocator = new DefaultFileAllocator();
-    allocator->setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
-    diskWriter->setFileAllocator(allocator);
-
-    GlowFileAllocatorHandle glowAllocator = new GlowFileAllocator();
-    glowAllocator->setFileAllocationMonitor(FileAllocationMonitorFactory::getFactory()->createNewMonitor());
-    diskWriter->setGlowFileAllocator(glowAllocator);
-  } else {
-    diskWriter->setFileAllocator(0);
-    diskWriter->setGlowFileAllocator(0);
-  }
-  return diskWriter;
 }

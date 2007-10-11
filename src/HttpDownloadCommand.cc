@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "HttpDownloadCommand.h"
+#include "RequestGroup.h"
+#include "DownloadEngine.h"
+#include "Request.h"
 #include "HttpRequestCommand.h"
 #include "Util.h"
 #include "message.h"
@@ -47,7 +50,7 @@ HttpDownloadCommand::HttpDownloadCommand(int cuid,
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
 bool HttpDownloadCommand::prepareForNextSegment() {
-  if(!_requestGroup->getSegmentMan()->finished()) {
+  if(!_requestGroup->downloadFinished()) {
     if(req->isKeepAlive()) {
       Command* command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
       e->commands.push_back(command);

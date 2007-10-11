@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DefaultBtProgressInfoFile.h"
+#include "DownloadContext.h"
+#include "PieceStorage.h"
+#include "Option.h"
 #include "BtRegistry.h"
 #include "LogFactory.h"
 #include "prefs.h"
@@ -41,143 +44,245 @@
 #include "File.h"
 #include "Util.h"
 #include "a2io.h"
+#include <fstream>
 #include <errno.h>
 
-DefaultBtProgressInfoFile::DefaultBtProgressInfoFile(const BtContextHandle& btContext,
+DefaultBtProgressInfoFile::DefaultBtProgressInfoFile(const DownloadContextHandle& dctx,
+						     const PieceStorageHandle& pieceStorage,
 						     const Option* option):
-  btContext(btContext),
-  option(option),
-  pieceStorage(PIECE_STORAGE(btContext)),
-  btRuntime(BT_RUNTIME(btContext)),
-  peerStorage(PEER_STORAGE(btContext))
+  _dctx(dctx),
+  _pieceStorage(pieceStorage),
+  _option(option),
+  _logger(LogFactory::getInstance())
 {
-  logger = LogFactory::getInstance();
-  string storeDir = option->get(PREF_DIR);
-  filename = storeDir+"/"+btContext->getName()+".aria2";
+  _filename = _dctx->getActualBasePath()+".aria2";
 }
 
 DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() {}
 
-void DefaultBtProgressInfoFile::save() {
-  logger->info(MSG_SAVING_SEGMENT_FILE, filename.c_str());
-  string filenameTemp = filename+"__temp";
-  FILE* file = openFile(filenameTemp, "wb");
-  try {
-    if(fwrite(btContext->getInfoHash(),
-	      btContext->getInfoHashLength(), 1, file) < 1) {
-      throw string("writeError:info hash");
-    }
-    if(fwrite(pieceStorage->getBitfield(),
-	      pieceStorage->getBitfieldLength(), 1, file) < 1) {
-      throw string("writeError:bitfield");
-    }
-    TransferStat stat = peerStorage->calculateStat();
-    int64_t allTimeDownloadLength = pieceStorage->getCompletedLength();
-    if(fwrite(&allTimeDownloadLength,
-	      sizeof(allTimeDownloadLength), 1, file) < 1) {
-      throw string("writeError:download length");
-    }
-    int64_t allTimeUploadLength =
-      btRuntime->getUploadLengthAtStartup()+
-      stat.getSessionUploadLength();
-    if(fwrite(&allTimeUploadLength,
-	      sizeof(allTimeUploadLength), 1, file) < 1) {
-      throw string("writeError:upload length");
-    }
-    fclose(file);
-    logger->info(MSG_SAVED_SEGMENT_FILE);
-  } catch(string ex) {
-    fclose(file);
-    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
-			filename.c_str(), strerror(errno));
-  }
+bool DefaultBtProgressInfoFile::isTorrentDownload()
+{
+  return !BtContextHandle(_dctx).isNull();
+}
 
-  if(rename(filenameTemp.c_str(), filename.c_str()) == -1) {
+void DefaultBtProgressInfoFile::save() {
+  _logger->info(MSG_SAVING_SEGMENT_FILE, _filename.c_str());
+  string filenameTemp = _filename+"__temp";
+  ofstream o(filenameTemp.c_str(), ios::out|ios::binary);
+  o.exceptions(ios::failbit);
+  try {
+    bool torrentDownload = isTorrentDownload();
+    // file version: 16 bits
+    // value: '0'
+    int16_t version = 0;
+    o.write(reinterpret_cast<const char*>(&version), sizeof(int16_t));
+    // extension: 32 bits
+    // If this is BitTorrent download, then 0x00000001
+    // Otherwise, 0x00000000
+    char extension[4];
+    memset(extension, 0, sizeof(extension));
+    if(torrentDownload) {
+      extension[3] = 1;
+    }
+    o.write(reinterpret_cast<const char*>(&extension), sizeof(extension));
+    if(torrentDownload) {
+      // infoHashLength:
+      // length: 32 bits
+      BtContextHandle btContext = _dctx;
+      int32_t infoHashLength = btContext->getInfoHashLength();
+      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(int32_t));
+      // infoHash:
+      o.write(reinterpret_cast<const char*>(btContext->getInfoHash()),
+	      btContext->getInfoHashLength());
+    } else {
+      // infoHashLength:
+      // length: 32 bits
+      int32_t infoHashLength = 0;
+      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(int32_t));
+    }
+    // pieceLength: 32 bits
+    int32_t pieceLength = _dctx->getPieceLength();
+    o.write(reinterpret_cast<const char*>(&pieceLength), sizeof(int32_t));
+    // totalLength: 64 bits
+    int64_t totalLength = _dctx->getTotalLength();
+    o.write(reinterpret_cast<const char*>(&totalLength), sizeof(int64_t));
+    // uploadLength: 64 bits
+    int64_t uploadLength = 0;
+    if(torrentDownload) {
+      BtContextHandle btContext = _dctx;
+      TransferStat stat = PEER_STORAGE(btContext)->calculateStat();
+      uploadLength = stat.getAllTimeUploadLength();
+    }
+    o.write(reinterpret_cast<const char*>(&uploadLength), sizeof(int64_t));
+    // bitfieldLength: 32 bits
+    int32_t bitfieldLength = _pieceStorage->getBitfieldLength();
+    o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(int32_t));
+    // bitfield
+    o.write(reinterpret_cast<const char*>(_pieceStorage->getBitfield()), _pieceStorage->getBitfieldLength());
+    // the number of in-flight piece: 32 bits
+    // TODO implement this
+    int32_t numInFlightPiece = _pieceStorage->countInFlightPiece();
+    o.write(reinterpret_cast<const char*>(&numInFlightPiece), sizeof(int32_t));
+    Pieces inFlightPieces = _pieceStorage->getInFlightPieces();
+    for(Pieces::const_iterator itr = inFlightPieces.begin();
+	itr != inFlightPieces.end(); ++itr) {
+      int32_t index = (*itr)->getIndex();
+      o.write(reinterpret_cast<const char*>(&index), sizeof(int32_t));
+      int32_t length = (*itr)->getLength();
+      o.write(reinterpret_cast<const char*>(&length), sizeof(int32_t));
+      int32_t bitfieldLength = (*itr)->getBitfieldLength();
+      o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(int32_t));
+      o.write(reinterpret_cast<const char*>((*itr)->getBitfield()), bitfieldLength);
+    }
+
+    o.close();
+    _logger->info(MSG_SAVED_SEGMENT_FILE);
+  } catch(ios::failure const& exception) {
+    // TODO ios::failure doesn't give us the reasons of failure...
     throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
-			filename.c_str(), strerror(errno));
+			_filename.c_str(), strerror(errno));
+  }
+  if(rename(filenameTemp.c_str(), _filename.c_str()) == -1) {
+    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
+			_filename.c_str(), strerror(errno));
   }
 }
 
-void DefaultBtProgressInfoFile::load() {
-  logger->info(MSG_LOADING_SEGMENT_FILE, filename.c_str());
-  FILE* file = openFile(filename, "r+b");
+void DefaultBtProgressInfoFile::load() 
+{
+  _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
+  ifstream in(_filename.c_str(), ios::in|ios::binary);
+  in.exceptions(ios::failbit);
   unsigned char* savedInfoHash = 0;
   unsigned char* savedBitfield = 0;
   try {
-    savedInfoHash = new unsigned char[btContext->getInfoHashLength()];
-    savedBitfield = new unsigned char[pieceStorage->getBitfieldLength()];
-    if(fread(savedInfoHash, btContext->getInfoHashLength(), 1, file) < 1) {
-      throw string("readError");
+    unsigned char version[2];
+    in.read((char*)version, sizeof(version));
+    if(string("0000") != Util::toHex(version, sizeof(version))) {
+      throw new DlAbortEx("Unsupported ctrl file version: %s",
+			  Util::toHex(version, sizeof(version)).c_str());
     }
-    if(Util::toHex(savedInfoHash, btContext->getInfoHashLength()) != 
-       btContext->getInfoHashAsString()) {
-      throw string("infoHashMismatch");
+    unsigned char extension[4];
+    in.read((char*)extension, sizeof(extension));
+
+    bool infoHashCheckEnabled = false;
+    if(extension[3]&1 && isTorrentDownload()) {
+      infoHashCheckEnabled = true;
+      _logger->debug("InfoHash checking enabled.");
     }
-    if(fread(savedBitfield, pieceStorage->getBitfieldLength(), 1, file) < 1) {
-      throw string("readError");
+
+    int32_t infoHashLength;
+    in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
+    if(infoHashLength < 0 || infoHashLength == 0 && infoHashCheckEnabled) {
+      throw new DlAbortEx("Invalid info hash length: %d", infoHashLength);
     }
-    pieceStorage->setBitfield(savedBitfield,
-			      pieceStorage->getBitfieldLength());
-    // allTimeDownloadLength exists for only a compatibility reason.
-    int64_t allTimeDownloadLength;
-    if(fread(&allTimeDownloadLength,
-	     sizeof(allTimeDownloadLength), 1, file) < 1) {
-      throw string("readError");
+    if(infoHashLength > 0) {
+      savedInfoHash = new unsigned char[infoHashLength];
+      in.read(reinterpret_cast<char*>(savedInfoHash), infoHashLength);
+      BtContextHandle btContext = _dctx;
+      if(infoHashCheckEnabled &&
+	 Util::toHex(savedInfoHash, infoHashLength) != btContext->getInfoHashAsString()) {
+	throw new DlAbortEx("info hash mismatch. expected: %s, actual: %s",
+			    btContext->getInfoHashAsString().c_str(),
+			    Util::toHex(savedInfoHash, infoHashLength).c_str());
+      }
+      delete [] savedInfoHash;
+      savedInfoHash = 0;
     }
-    int64_t allTimeUploadLength;
-    if(fread(&allTimeUploadLength,
-	     sizeof(allTimeUploadLength), 1, file) < 1) {
-      throw string("readError");
+
+    // TODO implement the conversion mechanism between different piece length.
+    int32_t pieceLength;
+    in.read(reinterpret_cast<char*>(&pieceLength), sizeof(pieceLength));
+    if(pieceLength != _dctx->getPieceLength()) {
+      throw new DlAbortEx("piece length mismatch. expected: %d, actual: %d",
+			  _dctx->getPieceLength(), pieceLength);
     }
-    btRuntime->setUploadLengthAtStartup(allTimeUploadLength);
+
+    int64_t totalLength;
+    in.read(reinterpret_cast<char*>(&totalLength), sizeof(totalLength));
+    if(totalLength != _dctx->getTotalLength()) {
+      throw new DlAbortEx("total length mismatch. expected: %s, actual: %s",
+			  Util::llitos(_dctx->getTotalLength()).c_str(),
+			  Util::llitos(totalLength).c_str());
+    }
+    int64_t uploadLength;
+    in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
+    if(isTorrentDownload()) {
+      BT_RUNTIME(BtContextHandle(_dctx))->setUploadLengthAtStartup(uploadLength);
+    }
+
+    // TODO implement the conversion mechanism between different piece length.
+    int32_t bitfieldLength;
+    in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
+    if(_pieceStorage->getBitfieldLength() != bitfieldLength) {
+      throw new DlAbortEx("bitfield length mismatch. expected: %d, actual: %d",
+			  _pieceStorage->getBitfieldLength(),
+			  bitfieldLength);
+    }
+
+    // TODO implement the conversion mechanism between different piece length.
+    savedBitfield = new unsigned char[bitfieldLength];
+    in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
+    _pieceStorage->setBitfield(savedBitfield, bitfieldLength);
     delete [] savedBitfield;
     savedBitfield = 0;
-    delete [] savedInfoHash;
-    savedInfoHash = 0;
-    fclose(file);
-  } catch(string ex) {
-    if(savedBitfield) {
+
+    int32_t numInFlightPiece;
+    in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
+    
+    Pieces inFlightPieces;
+    while(numInFlightPiece--) {
+      int32_t index;
+      in.read(reinterpret_cast<char*>(&index), sizeof(index));
+      if(!(0 <= index && index < _dctx->getNumPieces())) {
+	throw new DlAbortEx("piece index out of range: %d", index);
+      }
+      int32_t length;
+      in.read(reinterpret_cast<char*>(&length), sizeof(length));
+      if(!(0 < length && length <=_dctx->getPieceLength())) {
+	throw new DlAbortEx("piece length out of range: %d", length);
+      }
+      PieceHandle piece = new Piece(index, length);
+      int32_t bitfieldLength;
+      in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
+      if(piece->getBitfieldLength() != bitfieldLength) {
+	throw new DlAbortEx("piece bitfield length mismatch. expected: %d actual: %d",
+			    piece->getBitfieldLength(), bitfieldLength);
+      }
+      savedBitfield = new unsigned char[bitfieldLength];
+      in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
+      piece->setBitfield(savedBitfield, bitfieldLength);
       delete [] savedBitfield;
+      savedBitfield = 0;
+      
+      inFlightPieces.push_back(piece);
     }
-    if(savedInfoHash) {
-      delete [] savedInfoHash;
-    }
-    fclose(file);
-    if(ex == "infoHashMismatch") {
-      throw new DlAbortEx(EX_INFOHASH_MISMATCH_IN_SEGFILE);
-    } else {
-      throw new DlAbortEx(EX_SEGMENT_FILE_READ,
-			  filename.c_str(), strerror(errno));
-    }
-  }
-  logger->info(MSG_LOADED_SEGMENT_FILE);
+    _pieceStorage->addInFlightPiece(inFlightPieces);
+
+    _logger->info(MSG_LOADED_SEGMENT_FILE);
+  } catch(ios::failure const& exception) {
+    delete [] savedBitfield;
+    delete [] savedInfoHash;
+    // TODO ios::failure doesn't give us the reasons of failure...
+    throw new DlAbortEx(EX_SEGMENT_FILE_READ,
+			_filename.c_str(), strerror(errno));
+  } 
 }
 
 void DefaultBtProgressInfoFile::removeFile() {
   if(exists()) {
-    File f(filename);
+    File f(_filename);
     f.remove();
   }
 }
 
-FILE* DefaultBtProgressInfoFile::openFile(const string& filename,
-					  const string& mode) const
-{
-  FILE* file = fopen(filename.c_str(), mode.c_str());
-  if(!file) {
-    throw new DlAbortEx(EX_SEGMENT_FILE_OPEN,
-			filename.c_str(), strerror(errno));
-  }
-  return file;
-}
-
 bool DefaultBtProgressInfoFile::exists() {
-  File f(filename);
+  File f(_filename);
   if(f.isFile()) {
-    logger->info(MSG_SEGMENT_FILE_EXISTS, filename.c_str());
+    _logger->info(MSG_SEGMENT_FILE_EXISTS, _filename.c_str());
     return true;
   } else {
-    logger->info(MSG_SEGMENT_FILE_DOES_NOT_EXIST, filename.c_str());
+    _logger->info(MSG_SEGMENT_FILE_DOES_NOT_EXIST, _filename.c_str());
     return false;
   }
 }

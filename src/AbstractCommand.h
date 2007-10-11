@@ -36,20 +36,24 @@
 #define _D_ABSTRACT_COMMAND_H_
 
 #include "Command.h"
-#include "Request.h"
-#include "DownloadEngine.h"
-#include "SegmentMan.h"
 #include "TimeA2.h"
-#include "RecoverableException.h"
-#include "RequestGroup.h"
+#include "RequestGroupAware.h"
+#include "Socket.h"
 
-class AbstractCommand : public Command {
+class Request;
+extern typedef SharedHandle<Request> RequestHandle;
+class DownloadEngine;
+class Segment;
+extern typedef SharedHandle<Segment> SegmentHandle;
+class NameResolver;
+extern typedef SharedHandle<NameResolver> NameResolverHandle;
+
+class AbstractCommand : public Command, public RequestGroupAware {
 private:
   Time checkPoint;
   int32_t timeout;
 protected:
   RequestHandle req;
-  RequestGroup* _requestGroup;
   DownloadEngine* e;
   SocketHandle socket;
   SegmentHandle segment;
@@ -70,12 +74,26 @@ protected:
   virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
   void setTimeout(int32_t timeout) { this->timeout = timeout; }
+
+  void loadAndOpenFile();
+
+  bool tryAutoFileRenaming();
+
+  void initPieceStorage();
+
+  bool downloadFinishedByFileLength();
+
+  void prepareForNextAction(Command* nextCommand = 0);
+
+  void shouldCancelDownloadForSafety();
+
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
   SocketHandle readCheckTarget;
   SocketHandle writeCheckTarget;
   bool nameResolverCheck;
+
 public:
   AbstractCommand(int32_t cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const SocketHandle& s = SocketHandle());
   virtual ~AbstractCommand();

@@ -34,33 +34,64 @@
 /* copyright --> */
 #include "CheckIntegrityEntry.h"
 #include "DlAbortEx.h"
+#include "Command.h"
+#include "RequestGroup.h"
+#include "IteratableChunkChecksumValidator.h"
+#include "DownloadContext.h"
+#include "DownloadEngine.h"
+
+CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
+					 Command* nextCommand):
+  RequestGroupEntry(requestGroup, nextCommand),
+  _validator(0)
+{}
+
+CheckIntegrityEntry::~CheckIntegrityEntry() {}
 
 void CheckIntegrityEntry::validateChunk()
 {
   _validator->validateChunk();
 }
 
-bool CheckIntegrityEntry::finished() const
+int64_t CheckIntegrityEntry::getTotalLength()
+{
+  if(_validator.isNull()) {
+    return 0;
+  } else {
+    return _validator->getTotalLength();
+  }
+}
+
+int64_t CheckIntegrityEntry::getCurrentLength()
+{
+  if(_validator.isNull()) {
+    return 0;
+  } else {
+    return _validator->getCurrentOffset();
+  }
+}
+
+bool CheckIntegrityEntry::finished()
 {
   return _validator->finished();
 }
 
-int64_t CheckIntegrityEntry::getCurrentLength() const
+bool CheckIntegrityEntry::isValidationReady()
 {
-  return _validator->getCurrentOffset();
+  DownloadContextHandle dctx = _requestGroup->getDownloadContext();
+  return dctx->getPieceHashes().size() > 0 &&
+    dctx->getPieceHashes().size() == (uint32_t)dctx->getNumPieces();
 }
 
 void CheckIntegrityEntry::initValidator()
 {
   IteratableChunkChecksumValidatorHandle validator =
-    new IteratableChunkChecksumValidator();
-  validator->setChunkChecksum(_requestGroup->getChunkChecksum());
-  validator->setDiskWriter(_requestGroup->getSegmentMan()->diskWriter);
-  validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
-  if(!validator->canValidate()) {
-    // insufficient checksums.
-    throw new DlAbortEx("Insufficient checksums.");
-  }
-  validator->init();
+    new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
+					 _requestGroup->getPieceStorage());
   _validator = validator;
+}
+
+void CheckIntegrityEntry::updatePieceStorage()
+{
+  _validator->updatePieceStorage();
 }

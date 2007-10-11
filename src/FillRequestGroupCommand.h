@@ -37,8 +37,11 @@
 
 #include "Command.h"
 #include "TimeA2.h"
-#include "RequestGroup.h"
-#include "DownloadEngine.h"
+
+class RequestGroup;
+extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
+extern typedef deque<RequestGroupHandle> RequestGroups;
+class DownloadEngine;
 
 class FillRequestGroupCommand : public Command {
 private:
@@ -47,13 +50,9 @@ private:
   int32_t _interval;
   Time _checkPoint;
 public:
-  FillRequestGroupCommand(int cuid, DownloadEngine* e, int32_t interval):
-    Command(cuid),
-    _e(e),
-    _interval(interval)
-  {
-    setStatusRealtime();
-  }
+  FillRequestGroupCommand(int32_t cuid, DownloadEngine* e, int32_t interval);
+
+  virtual ~FillRequestGroupCommand();
 
   virtual bool execute();
 

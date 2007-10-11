@@ -33,23 +33,29 @@
  */
 /* copyright --> */
 #include "HaveEraseCommand.h"
+#include "DownloadEngine.h"
+#include "RequestGroupMan.h"
+#include "PieceStorage.h"
+#include "RequestGroup.h"
 
-HaveEraseCommand::HaveEraseCommand(int32_t cuid,
-				   TorrentDownloadEngine* e,
-				   const BtContextHandle& btContext,
-				   int32_t interval)
-  :BtContextAwareCommand(cuid, btContext),
-   e(e),
-   interval(interval) {}
+HaveEraseCommand::HaveEraseCommand(int32_t cuid, DownloadEngine* e, int32_t interval)
+  :TimeBasedCommand(cuid, e, interval) {}
 
-bool HaveEraseCommand::execute() {
-  if(btRuntime->isHalt()) {
-    return true;
+HaveEraseCommand::~HaveEraseCommand() {}
+
+void HaveEraseCommand::preProcess()
+{
+  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+    _exit = true;
   }
-  if(cp.elapsed(interval)) {
-    cp.reset();
-    pieceStorage->removeAdvertisedPiece(5);
+}
+
+void HaveEraseCommand::process()
+{
+  for(int32_t i = 0; i < _e->_requestGroupMan->countRequestGroup(); ++i) {
+    PieceStorageHandle ps = _e->_requestGroupMan->getRequestGroup(i)->getPieceStorage();
+    if(!ps.isNull()) {
+      ps->removeAdvertisedPiece(5);
+    }
   }
-  e->commands.push_back(this);
-  return false;
 }

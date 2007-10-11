@@ -43,7 +43,8 @@ public:
 
   virtual ~DefaultSegmentManFactory() {}
 
-  virtual SegmentManHandle createNewInstance();
+  virtual SegmentManHandle createNewInstance(const DownloadContextHandle& dc,
+					     const PieceStorageHandle& ps);
 };
 
 typedef SharedHandle<DefaultSegmentManFactory> DefaultSegmentManFactoryHandle;

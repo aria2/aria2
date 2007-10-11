@@ -37,6 +37,7 @@
 
 #include "DiskAdaptor.h"
 #include "DiskWriter.h"
+#include "DlAbortEx.h"
 
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
 protected:
@@ -47,26 +48,33 @@ public:
 
   virtual ~AbstractSingleDiskAdaptor() {}
 
-  virtual void initAndOpenFile();
+  virtual void initAndOpenFile() throw(DlAbortEx*);
 
-  virtual void openFile();
+  virtual void openFile() throw(DlAbortEx*);
 
   virtual void closeFile();
 
-  virtual void openExistingFile();
+  virtual void openExistingFile() throw(DlAbortEx*);
 
   virtual void writeData(const unsigned char* data, int32_t len,
-			 int64_t offset);
+			 int64_t offset) throw(DlAbortEx*);
 
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) throw(DlAbortEx*);
 
   virtual bool fileExists();
 
-  virtual int64_t size() const
+  virtual int64_t size() const throw(DlAbortEx*)
   {
-    return getTotalLength();
+    return diskWriter->size();
   }
-    
+
+  virtual void truncate(int64_t length) throw(DlAbortEx*)
+  {
+    diskWriter->truncate(length);
+  }
+  
+  virtual FileAllocationIteratorHandle fileAllocationIterator();
+
   void setDiskWriter(const DiskWriterHandle diskWriter) {
     this->diskWriter = diskWriter;
   }

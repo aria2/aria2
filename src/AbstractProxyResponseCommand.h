@@ -36,7 +36,9 @@
 #define _D_ABSTRACT_PROXY_RESPONSE_COMMAND_H_
 
 #include "AbstractCommand.h"
-#include "HttpConnection.h"
+
+class HttpConnection;
+extern typedef SharedHandle<HttpConnection> HttpConnectionHandle;
 
 class AbstractProxyResponseCommand : public AbstractCommand {
 protected:

@@ -36,25 +36,29 @@
 #define _D_ITERATABLE_CHUNK_CHECKSUM_VALIDATOR_H_
 
 #include "common.h"
+#include "DownloadContext.h"
+#include "PieceStorage.h"
 #include "BitfieldMan.h"
-#include "ChunkChecksum.h"
-#include "DiskWriter.h"
 #include "LogFactory.h"
 
 class IteratableChunkChecksumValidator
 {
 private:
-  DiskWriterHandle _diskWriter;
+  DownloadContextHandle _dctx;
+  PieceStorageHandle _pieceStorage;
   BitfieldMan* _bitfield;
-  int32_t _currentIndex;
-  ChunkChecksumHandle _chunkChecksum;
-  const Logger* logger;
+  uint32_t _currentIndex;
+  const Logger* _logger;
 
   string calculateActualChecksum();
 public:
-  IteratableChunkChecksumValidator():_diskWriter(0), _bitfield(0), _currentIndex(0), _chunkChecksum(0), logger(LogFactory::getInstance()) {}
-
-  bool canValidate() const;
+  IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
+				   const PieceStorageHandle& pieceStorage):
+    _dctx(dctx),
+    _pieceStorage(pieceStorage),
+    _bitfield(new BitfieldMan(_dctx->getPieceLength(), _dctx->getTotalLength())),
+    _currentIndex(0),
+    _logger(LogFactory::getInstance()) {}
 
   void init();
 
@@ -62,38 +66,20 @@ public:
 
   bool finished() const
   {
-    return _currentIndex >= _chunkChecksum->countChecksum();
-  }
-
-  void setDiskWriter(const DiskWriterHandle& diskWriter)
-  {
-    _diskWriter = diskWriter;
-  }
-
-  void setBitfield(BitfieldMan* bitfield)
-  {
-    _bitfield = bitfield;
-  }
-
-  void setChunkChecksum(const ChunkChecksumHandle& chunkChecksum)
-  {
-    _chunkChecksum = chunkChecksum;
+    return _currentIndex >= (uint32_t)_dctx->getNumPieces();
   }
 
   int64_t getCurrentOffset() const
   {
-    return ((int64_t)_currentIndex)*_chunkChecksum->getChecksumLength();
+    return ((int64_t)_currentIndex)*_dctx->getPieceLength();
   }
 
   int64_t getTotalLength() const
   {
-    return _bitfield->getTotalLength();
+    return _dctx->getTotalLength();
   }
 
-  ChunkChecksumHandle getChunkChecksum()
-  {
-    return _chunkChecksum;
-  }
+  void updatePieceStorage();
 };
 
 typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;

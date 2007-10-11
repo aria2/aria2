@@ -38,34 +38,35 @@
 ByteArrayDiskWriter::ByteArrayDiskWriter() {
 }
 
-ByteArrayDiskWriter::~ByteArrayDiskWriter() {
-  closeFile();
-}
+ByteArrayDiskWriter::~ByteArrayDiskWriter() {}
 
-void ByteArrayDiskWriter::clear() {
+void ByteArrayDiskWriter::clear()
+{
   buf.str("");
 }
 
 void ByteArrayDiskWriter::initAndOpenFile(const string& filename,
-					  int64_t totalLength) {
+					  int64_t totalLength)
+{
   clear();
 }
 
 void ByteArrayDiskWriter::openFile(const string& filename,
-				   int64_t totalLength) {
-  initAndOpenFile(filename);
+				   int64_t totalLength)
+{
 }
 
-void ByteArrayDiskWriter::closeFile() {
-  clear();
-}
+void ByteArrayDiskWriter::closeFile()
+{}
 
 void ByteArrayDiskWriter::openExistingFile(const string& filename,
-					   int64_t totalLength) {
+					   int64_t totalLength)
+{
   openFile(filename);
 }
 
-void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_t position) {
+void ByteArrayDiskWriter::writeData(const unsigned char* data, int32_t dataLength, int64_t position)
+{
   if(size() < position) {
     buf.seekg(0, ios::end);
     for(int32_t i = size(); i < position; ++i) {
@@ -74,12 +75,13 @@ void ByteArrayDiskWriter::writeData(const char* data, int32_t dataLength, int64_
   } else {
     buf.seekg(position, ios::beg);
   }
-  buf.write(data, dataLength);
+  buf.write(reinterpret_cast<const char*>(data), dataLength);
 }
 
-int32_t ByteArrayDiskWriter::readData(char* data, int32_t len, int64_t position) {
+int32_t ByteArrayDiskWriter::readData(unsigned char* data, int32_t len, int64_t position)
+{
   buf.seekg(position, ios::beg);
-  buf.read(data, len);
+  buf.read(reinterpret_cast<char*>(data), len);
   // TODO we have to call buf.clear() here? YES
   buf.clear();
   return buf.gcount();

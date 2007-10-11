@@ -168,7 +168,7 @@ public:
       return 0;
     } else {
       if(request->isKeepAlive()) {
-	return segment->getPosition()+segment->length-1;
+	return segment->getPosition()+segment->getLength()-1;
       } else {
 	return 0;
       }

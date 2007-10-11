@@ -3,6 +3,7 @@
 
 #include "BtContext.h"
 #include "Util.h"
+#include "AnnounceTier.h"
 
 class MockBtContext : public BtContext  {
 private:
@@ -128,6 +129,20 @@ public:
     this->fastSet = fastSet;
   }
 
+  virtual string getPieceHashAlgo() const
+  {
+    return "sha1";
+  }
+
+  virtual string getActualBasePath() const
+  {
+    return _dir+"/"+name;
+  }
+
+  virtual RequestGroup* getOwnerRequestGroup()
+  {
+    return 0;
+  }
 };
 
 typedef SharedHandle<MockBtContext> MockBtContextHandle;

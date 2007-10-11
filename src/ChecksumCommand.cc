@@ -39,9 +39,11 @@
 void ChecksumCommand::initValidator()
 {
   _validator = new IteratableChecksumValidator();
-  _validator->setChecksum(_requestGroup->getChecksum());
-  _validator->setDiskWriter(_requestGroup->getSegmentMan()->diskWriter);
-  _validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
+  // TODO checksum will be held by DownloadContext
+  _validator->setChecksum(0);
+  //_validator->setDiskWriter(new DiskAdaptorWriter(_requestGroup->getSegmentMan()->getDiskAdaptor()));
+  // TODO we should use PieceStorage instead of BitfieldMan
+  //_validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
   if(!_validator->canValidate()) {
     // insufficient checksums.
     throw new DlAbortEx(EX_INSUFFICIENT_CHECKSUM);
@@ -51,6 +53,9 @@ void ChecksumCommand::initValidator()
 
 bool ChecksumCommand::executeInternal()
 {
+  if(_e->isHaltRequested()) {
+    return true;
+  }
   _validator->validateChunk();
   if(_validator->finished()) {
     if(_requestGroup->downloadFinished()) {
@@ -70,7 +75,6 @@ bool ChecksumCommand::executeInternal()
 bool ChecksumCommand::handleException(Exception* e)
 {
   logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
-  delete e;
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   // TODO We need to set bitfield back to the state when validation begun.
   // The one of the solution is having a copy of bitfield before settting its

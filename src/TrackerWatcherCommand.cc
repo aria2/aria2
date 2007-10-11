@@ -33,18 +33,28 @@
  */
 /* copyright --> */
 #include "TrackerWatcherCommand.h"
-#include "InitiateConnectionCommandFactory.h"
+#include "DownloadEngine.h"
 #include "Util.h"
-#include "SleepCommand.h"
 #include "prefs.h"
-#include "RequestFactory.h"
-#include "TrackerSegmentManFactory.h"
 #include "message.h"
+#include "SingleFileDownloadContext.h"
+#include "ByteArrayDiskWriterFactory.h"
+#include "RecoverableException.h"
+#include "CUIDCounter.h"
+#include "PeerInitiateConnectionCommand.h"
+#include "DiskAdaptor.h"
+#include "RequestGroup.h"
+#include "Option.h"
 
-TrackerWatcherCommand::TrackerWatcherCommand(int cuid,
-					     TorrentDownloadEngine* e,
+TrackerWatcherCommand::TrackerWatcherCommand(int32_t cuid,
+					     RequestGroup* requestGroup,
+					     DownloadEngine* e,
 					     const BtContextHandle& btContext):
-  BtContextAwareCommand(cuid, btContext), e(e)
+  Command(cuid),
+  BtContextAwareCommand(btContext),
+  RequestGroupAware(requestGroup),
+  e(e),
+  _trackerRequestGroup(0)
 {
 }
 
@@ -53,53 +63,107 @@ TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 bool TrackerWatcherCommand::execute() {
   if(btAnnounce->noMoreAnnounce()) {
+    logger->debug("no more announce");
     return true;
   }
-  Command* command = createCommand();
-  if(command) {
-    e->commands.push_back(command);
+  if(_trackerRequestGroup.isNull()) {
+    _trackerRequestGroup = createAnnounce();
+    if(!_trackerRequestGroup.isNull()) {
+      //e->_requestGroupMan->addReservedGroup(_trackerRequestGroup); 
+      //e->_requestGroupMan->fillRequestGroupFromReserver(e);
+      e->addCommand(_trackerRequestGroup->createInitialCommand(e));
+      logger->debug("added tracker request command");
+    }
+  } else if(_trackerRequestGroup->downloadFinished()){
+    try {
+      string trackerResponse = getTrackerResponse(_trackerRequestGroup);
+
+      processTrackerResponse(trackerResponse);
+      btAnnounce->announceSuccess();
+      btAnnounce->resetAnnounce();
+    } catch(DlAbortEx* ex) {
+      btAnnounce->announceFailure();
+      if(btAnnounce->isAllAnnounceFailed()) {
+	btAnnounce->resetAnnounce();
+      }
+      delete ex;
+    }
+    _trackerRequestGroup = 0;
+  } else if(_trackerRequestGroup->getNumCommand() == 0){
+    // handle errors here
+    btAnnounce->announceFailure(); // inside it, trackers = 0.
+    _trackerRequestGroup = 0;
+    if(btAnnounce->isAllAnnounceFailed()) {
+      btAnnounce->resetAnnounce();
+    }
   }
   e->commands.push_back(this);
   return false;
 }
 
-Command* TrackerWatcherCommand::createCommand() {
-  Command* command = 0;
-
-  if(btAnnounce->isAnnounceReady()) {
-    command = createRequestCommand(btAnnounce->getAnnounceUrl());
-    btAnnounce->announceStart(); // inside it, trackers++.
-  } else if(e->_requestGroupMan->getErrors() > 0) {
-    btAnnounce->announceFailure(); // inside it, trackers = 0.
-    e->_requestGroupMan->removeStoppedGroup();
-    if(btAnnounce->isAllAnnounceFailed()) {
-      btAnnounce->resetAnnounce();
-      return 0;
-    } else if(btAnnounce->isAnnounceReady()) {
-      command =
-	new SleepCommand(cuid, e,
-			 createRequestCommand(btAnnounce->getAnnounceUrl()),
-			 e->option->getAsInt(PREF_RETRY_WAIT));
-      btAnnounce->announceStart(); // inside it, tracker++.
+string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& requestGroup)
+{
+  stringstream strm;
+  char data[2048];
+  requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
+  while(1) {
+    int32_t dataLength = requestGroup->getPieceStorage()->getDiskAdaptor()->readData((unsigned char*)data, sizeof(data), strm.tellp());
+    strm.write(data, dataLength);
+    if(dataLength == 0) {
+      break;
     }
   }
-  return command;
+  return strm.str();
 }
 
-Command* TrackerWatcherCommand::createRequestCommand(const string& url)
+// TODO we have to deal with the exception thrown By BtAnnounce
+void TrackerWatcherCommand::processTrackerResponse(const string& trackerResponse)
 {
-  RequestGroupHandle rg = new RequestGroup(url, e->option);
-  rg->setUserDefinedFilename("[tracker.announce]");
-  rg->isTorrent = true;
-  rg->setSegmentManFactory(new TrackerSegmentManFactory(e->option));
-  e->_requestGroupMan->addRequestGroup(rg);
-  Commands commands = e->_requestGroupMan->getInitialCommands(e);
-
-  if(commands.empty()) {
-    logger->error(MSG_TRACKER_REQUEST_CREATION_FAILED, cuid);
-    return 0;
+  btAnnounce->processAnnounceResponse(trackerResponse.c_str(),
+				      trackerResponse.size());
+  while(!btRuntime->isHalt() && btRuntime->lessThanMinPeer()) {
+    PeerHandle peer = peerStorage->getUnusedPeer();
+    if(peer.isNull()) {
+      break;
+    }
+    peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
+    PeerInitiateConnectionCommand* command =
+      new PeerInitiateConnectionCommand(peer->cuid,
+					_requestGroup,
+					peer,
+					e,
+					btContext);
+    e->commands.push_back(command);
+    logger->debug("CUID#%d - Adding new command CUID#%d", cuid, peer->cuid);
   }
-  logger->info(MSG_CREATING_TRACKER_REQUEST, cuid,
-	       commands.front()->getCuid());
-  return commands.front();
+}
+
+RequestGroupHandle TrackerWatcherCommand::createAnnounce() {
+  RequestGroupHandle rg = 0;
+  if(btAnnounce->isAnnounceReady()) {
+    rg = createRequestGroup(btAnnounce->getAnnounceUrl());
+    btAnnounce->announceStart(); // inside it, trackers++.
+  }
+  return rg;
+}
+
+RequestGroupHandle
+TrackerWatcherCommand::createRequestGroup(const string& uri)
+{
+  Strings uris;
+  uris.push_back(uri);
+  RequestGroupHandle rg = new RequestGroup(e->option, uris);
+
+  SingleFileDownloadContextHandle dctx =
+    new SingleFileDownloadContext(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				  0,
+				  "",
+				  "[tracker.announce]");
+  dctx->setDir("");
+  rg->setDownloadContext(dctx);
+  rg->setDiskWriterFactory(new ByteArrayDiskWriterFactory());
+  rg->setFileAllocationEnabled(false);
+  rg->setPreLocalFileCheckEnabled(false);
+  logger->info("Creating tracker request group GID#%d", rg->getGID());
+  return rg;
 }

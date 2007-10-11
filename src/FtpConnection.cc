@@ -34,8 +34,6 @@
 /* copyright --> */
 #include "FtpConnection.h"
 #include "Util.h"
-#include "DlAbortEx.h"
-#include "DlRetryEx.h"
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"
@@ -48,19 +46,25 @@ FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
 
 FtpConnection::~FtpConnection() {}
 
-void FtpConnection::sendUser() const {
+void FtpConnection::sendUser() const
+  throw(DlRetryEx*)
+{
   string request = "USER "+req->resolveFtpAuthConfig()->getUser()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
-void FtpConnection::sendPass() const {
+void FtpConnection::sendPass() const
+  throw(DlRetryEx*)
+{
   string request = "PASS "+req->resolveFtpAuthConfig()->getPassword()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
   socket->writeData(request);
 }
 
-void FtpConnection::sendType() const {
+void FtpConnection::sendType() const
+  throw(DlRetryEx*)
+{
   string type;
   if(option->get(PREF_FTP_TYPE) == V_ASCII) {
     type = "A";
@@ -72,25 +76,33 @@ void FtpConnection::sendType() const {
   socket->writeData(request);
 }
 
-void FtpConnection::sendCwd() const {
-  string request = "CWD "+req->getDir()+"\r\n";
+void FtpConnection::sendCwd() const
+  throw(DlRetryEx*)
+{
+  string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
-void FtpConnection::sendSize() const {
-  string request = "SIZE "+req->getFile()+"\r\n";
+void FtpConnection::sendSize() const
+  throw(DlRetryEx*)
+{
+  string request = "SIZE "+Util::urldecode(req->getFile())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
-void FtpConnection::sendPasv() const {
+void FtpConnection::sendPasv() const
+  throw(DlRetryEx*)
+{
   string request = "PASV\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
-SocketHandle FtpConnection::sendPort() const {
+SocketHandle FtpConnection::sendPort() const
+  throw(DlAbortEx*, DlRetryEx*)
+{
   SocketHandle serverSocket;
   serverSocket->beginListen();
   
@@ -109,19 +121,24 @@ SocketHandle FtpConnection::sendPort() const {
   return serverSocket;
 }
 
-void FtpConnection::sendRest(const SegmentHandle& segment) const {
+void FtpConnection::sendRest(const SegmentHandle& segment) const
+  throw(DlRetryEx*)
+{
   string request = "REST "+Util::llitos(segment->getPositionToWrite())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
-void FtpConnection::sendRetr() const {
-  string request = "RETR "+req->getFile()+"\r\n";
+void FtpConnection::sendRetr() const
+  throw(DlRetryEx*)
+{
+  string request = "RETR "+Util::urldecode(req->getFile())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
-int32_t FtpConnection::getStatus(const string& response) const {
+int32_t FtpConnection::getStatus(const string& response) const
+{
   int32_t status;
   // When the response is not like "%d %*s",
   // we return 0.
@@ -136,7 +153,8 @@ int32_t FtpConnection::getStatus(const string& response) const {
   }
 }
 
-bool FtpConnection::isEndOfResponse(int32_t status, const string& response) const {
+bool FtpConnection::isEndOfResponse(int32_t status, const string& response) const
+{
   if(response.size() <= 4) {
     return false;
   }
@@ -156,7 +174,9 @@ bool FtpConnection::isEndOfResponse(int32_t status, const string& response) cons
   }
 }
 
-bool FtpConnection::bulkReceiveResponse(pair<int32_t, string>& response) {
+bool FtpConnection::bulkReceiveResponse(pair<int32_t, string>& response)
+  throw(DlRetryEx*)
+{
   char buf[1024];  
   while(socket->isReadable(0)) {
     int32_t size = sizeof(buf)-1;
@@ -188,7 +208,9 @@ bool FtpConnection::bulkReceiveResponse(pair<int32_t, string>& response) {
   }
 }
 
-int32_t FtpConnection::receiveResponse() {
+int32_t FtpConnection::receiveResponse()
+  throw(DlRetryEx*)
+{
   pair<int32_t, string> response;
   if(bulkReceiveResponse(response)) {
     return response.first;
@@ -197,7 +219,9 @@ int32_t FtpConnection::receiveResponse() {
   }
 }
 
-int32_t FtpConnection::receiveSizeResponse(int64_t& size) {
+int32_t FtpConnection::receiveSizeResponse(int64_t& size)
+  throw(DlRetryEx*)
+{
   pair<int32_t, string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
@@ -209,7 +233,9 @@ int32_t FtpConnection::receiveSizeResponse(int64_t& size) {
   }
 }
 
-int32_t FtpConnection::receivePasvResponse(pair<string, int32_t>& dest) {
+int32_t FtpConnection::receivePasvResponse(pair<string, int32_t>& dest)
+  throw(DlRetryEx*)
+{
   pair<int32_t, string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 227) {

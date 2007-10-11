@@ -36,13 +36,17 @@
 #include "Util.h"
 #include "message.h"
 
-void CopyDiskAdaptor::onDownloadComplete() {
+void CopyDiskAdaptor::onDownloadComplete()
+  throw(DlAbortEx*)
+{
   closeFile();
   fixFilename();
   openFile();
 }
 
-void CopyDiskAdaptor::fixFilename() {
+void CopyDiskAdaptor::fixFilename()
+  throw(DlAbortEx*)
+{
   int64_t offset = 0;
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
@@ -59,6 +63,7 @@ void CopyDiskAdaptor::fixFilename() {
   }
 }
 
-string CopyDiskAdaptor::getFilePath() {
+string CopyDiskAdaptor::getFilePath()
+{
   return storeDir+"/"+tempFilename;
 }

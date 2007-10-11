@@ -36,9 +36,13 @@
 #include "Segment.h"
 
 ostream& operator<<(ostream& o, const Segment& segment) {
-  o << "index = " << segment.index << ", ";
-  o << "length = " << segment.length << ", ";
-  o << "segmentLength = " << segment.segmentLength << ", ";
-  o << "writtenLength = " << segment.writtenLength;
+  o << "index = " << segment._piece->getIndex() << ", ";
+  o << "length = " << segment._piece->getLength() << ", ";
+  o << "segmentLength = " << segment._pieceLength << ", ";
+  if(segment.complete()) {
+    o << "writtenLength = " << segment._piece->getLength();
+  } else {
+    o << "writtenLength = " << (segment._piece->getMissingUnusedBlockIndex()-1)*BLOCK_LENGTH;
+  }
   return o;
 }

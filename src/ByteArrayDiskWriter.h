@@ -55,9 +55,8 @@ public:
 
   virtual void openExistingFile(const string& filename, int64_t totalLength = 0);
 
-  // position is ignored
-  virtual void writeData(const char* data, int32_t len, int64_t position = 0);
-  virtual int32_t readData(char* data, int32_t len, int64_t position);
+  virtual void writeData(const unsigned char* data, int32_t len, int64_t position);
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t position);
 
   // Not implemented yet
   virtual void truncate(int64_t length) {}

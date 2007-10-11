@@ -40,10 +40,9 @@
 class AutoSaveCommand : public TimeBasedCommand
 {
 public:
-  AutoSaveCommand(int32_t cuid, DownloadEngine* e, int32_t interval):
-    TimeBasedCommand(cuid, e, interval) {}
+  AutoSaveCommand(int32_t cuid, DownloadEngine* e, int32_t interval);
 
-  virtual ~AutoSaveCommand() {}
+  virtual ~AutoSaveCommand();
 
   virtual void preProcess();
 

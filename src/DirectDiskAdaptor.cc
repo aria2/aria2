@@ -34,11 +34,14 @@
 /* copyright --> */
 #include "DirectDiskAdaptor.h"
 
-string DirectDiskAdaptor::getFilePath() {
+string DirectDiskAdaptor::getFilePath()
+{
   return storeDir+"/"+fileEntries.front()->getPath();
 }
 
-void DirectDiskAdaptor::onDownloadComplete() {
+void DirectDiskAdaptor::onDownloadComplete()
+  throw(DlAbortEx*)
+{
   closeFile();
   openFile();
 }

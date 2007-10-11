@@ -35,11 +35,13 @@
 #ifndef _D_DISK_ADAPTOR_H_
 #define _D_DISK_ADAPTOR_H_
 
-#include "common.h"
+#include "BinaryStream.h"
 #include "FileEntry.h"
 #include "Logger.h"
+#include "FileAllocationIterator.h"
+#include "DlAbortEx.h"
 
-class DiskAdaptor {
+class DiskAdaptor:public BinaryStream {
 protected:
   string storeDir;
   FileEntries fileEntries;
@@ -56,10 +58,6 @@ public:
 
   virtual void initAndOpenFile() = 0;
 
-  virtual void writeData(const unsigned char* data, int32_t len, int64_t offset) = 0;
-
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) = 0;
-
   virtual void onDownloadComplete() = 0;  
 
   virtual bool fileExists() = 0;
@@ -68,11 +66,15 @@ public:
 
   virtual int64_t size() const = 0;
 
+  // optional behavior
+  virtual void truncate(int64_t length) {}
+
   void setFileEntries(const FileEntries& fileEntries) {
     this->fileEntries = fileEntries;
   }
 
-  FileEntryHandle getFileEntryFromPath(const string& fileEntryPath) const;
+  FileEntryHandle
+  getFileEntryFromPath(const string& fileEntryPath) const throw(DlAbortEx*);
 
   const FileEntries& getFileEntries() const { return fileEntries; }
 
@@ -87,6 +89,8 @@ public:
   void setStoreDir(const string& storeDir) { this->storeDir = storeDir; }
 
   const string& getStoreDir() const { return this->storeDir; }
+
+  virtual FileAllocationIteratorHandle fileAllocationIterator() = 0;
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

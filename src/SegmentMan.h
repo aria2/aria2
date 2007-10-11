@@ -36,18 +36,20 @@
 #define _D_SEGMENT_MAN_H_
 
 #include "common.h"
-#include "Logger.h"
-#include "Segment.h"
-#include "Option.h"
-#include "DiskWriter.h"
-#include "Request.h"
-#include "BitfieldMan.h"
-#include "PeerStat.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "ChunkChecksum.h"
-#endif // ENABLE_MESSAGE_DIGEST
 
-using namespace std;
+class Segment;
+extern typedef SharedHandle<Segment> SegmentHandle;
+class Logger;
+class Option;
+class PeerStat;
+extern typedef SharedHandle<PeerStat> PeerStatHandle;
+typedef deque<PeerStatHandle> PeerStats;
+class DownloadContext;
+extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+class PieceStorage;
+extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+class Piece;
+extern typedef SharedHandle<Piece> PieceHandle;
 
 #define SEGMENT_FILE_EXTENSION ".aria2"
 
@@ -56,162 +58,67 @@ public:
   int32_t cuid;
   SegmentHandle segment;
 public:
-  SegmentEntry(int32_t cuid, const SegmentHandle& segment)
-    :cuid(cuid), segment(segment) {}
-  ~SegmentEntry() {}
+  SegmentEntry(int32_t cuid, const SegmentHandle& segment);
+
+  ~SegmentEntry();
 };
 
 typedef SharedHandle<SegmentEntry> SegmentEntryHandle;
 typedef deque<SegmentEntryHandle> SegmentEntries;
-typedef deque<PeerStatHandle> PeerStats;
 
 /**
  * This class holds the download progress of the one download entry.
  */
 class SegmentMan {
 private:
+  const Option* _option;
+
   const Logger* logger;
-  BitfieldMan* bitfield;
+
+  DownloadContextHandle _downloadContext;
+
+  PieceStorageHandle _pieceStorage;
+
   SegmentEntries usedSegmentEntries;
+
   PeerStats peerStats;
 
-  void read(FILE* file);
-  FILE* openSegFile(const string& segFilename, const string& mode) const;
-  SegmentHandle onNullBitfield(int32_t cuid);
-  SegmentHandle checkoutSegment(int32_t cuid, int32_t index);
-  SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
-  SegmentEntryHandle getSegmentEntryByIndex(int32_t index) {
-    for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
-	itr != usedSegmentEntries.end(); ++itr) {
-      const SegmentEntryHandle& segmentEntry = *itr;
-      if(segmentEntry->segment->index == index) {
-	return segmentEntry;
-      }
-    }
-    return 0;
-  }
-  
-  SegmentEntryHandle getSegmentEntryByCuid(int32_t cuid) {
-    for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
-	itr != usedSegmentEntries.end(); ++itr) {
-      const SegmentEntryHandle& segmentEntry = *itr;
-      if(segmentEntry->cuid == cuid) {
-	return segmentEntry;
-      }
-    }
-    return 0;    
-  }
+  SegmentHandle checkoutSegment(int32_t cuid, const PieceHandle& piece);
 
-  SegmentEntries::iterator getSegmentEntryIteratorByCuid(int32_t cuid) {
-    for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
-	itr != usedSegmentEntries.end(); ++itr) {
-      const SegmentEntryHandle& segmentEntry = *itr;
-      if(segmentEntry->cuid == cuid) {
-	return itr;
-      }
-    }
-    return usedSegmentEntries.end();    
-  }
+  SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
+
+  SegmentEntryHandle getSegmentEntryByIndex(int32_t index);
+  
+  SegmentEntryHandle getSegmentEntryByCuid(int32_t cuid);
+
+  SegmentEntries::iterator getSegmentEntryIteratorByCuid(int32_t cuid);
 
 public:
-  /**
-   * The total number of bytes to download.
-   * If Transfer-Encoding is Chunked or Content-Length header is not provided,
-   * then this value is set to be 0.
-   */
-  int64_t totalSize;
-  /**
-   * Represents whether this download is splittable.
-   * In Split download(or segmented download), http client establishes
-   * more than one connections to the server, and downloads sevral parts of
-   * a file at the same time. This boosts download speed.
-   * This value is true by default. If total number of bytes is not known or
-   * Chunked transfer encoding is used, then this value is set to be 0 by
-   * DownloadCommand class.
-   */
-  bool isSplittable;
-  /**
-   * Represents whether the download is start or not.
-   * The default value is false.
-   */
-  bool downloadStarted;
-  /**
-   * Respresents the file name of the downloaded file.
-   * If the URL does not contain file name part(http://www.rednoah.com/, for 
-   * example), this value may be 0 length string.
-   * The default value is 0 length string.
-   */
-  string filename;
-  /**
-   * directory to store a file
-   */
-  string dir;
-  /**
-   * User defined file name for downloaded content
-   */
-  string ufilename;
+  SegmentMan(const Option* option,
+	     const DownloadContextHandle& downloadContext = 0,
+	     const PieceStorageHandle& pieceStorage = 0);
 
-  /**
-   * Represents the number of failures(usually, DlAbortEx) in downloads.
-   */
-  int32_t errors;
-
-  const Option* option;
-  DiskWriterHandle diskWriter;
-  Requests reserved;
-
-  SegmentMan();
   ~SegmentMan();
-  
+
+
   // Initializes totalSize, isSplittable, downloadStarted, errors.
   // Clears command queue. Also, closes diskWriter.
   void init();
 
   /**
-   * Returns dir+"/"+filename.
-   * If filename is empty, then returns dir+"/"+"inex.html";
+   * The total number of bytes to download.
+   * If Transfer-Encoding is Chunked or Content-Length header is not provided,
+   * then this value is set to be 0.
    */
-  string getFilePath() const {
-    return (dir == "" ? "." : dir)+"/"+
-      (ufilename == "" ? 
-       (filename == "" ? "index.html" : filename) : ufilename);
-  }
+  int64_t getTotalLength() const;
 
-  string getSegmentFilePath() const {
-    return getFilePath()+SEGMENT_FILE_EXTENSION;
-  }
-
-  /**
-   * Returns true only if the segment data file exists.
-   * The file name of the segment data is filename appended by ".aria2".
-   * If isSplittable is false, then returns simply false without any operation.
-   */
-  bool segmentFileExists() const;
-  /**
-   * Loads the segment data file.
-   * If isSplittable is false, then returns without any operation.
-   */
-  void load();
-  /**
-   * Saves the segment data file.
-   * If isSplittable is false, then returns without any operation.
-   */
-  void save() const;
-  /**
-   * Removes the segment data file.
-   * If isSplittable is false, then returns without any operation.
-   */
-  void remove() const;
   /**
    * Returs true when the download has finished.
    * If downloadStarted is false or the number of the segments of this object
    * holds is 0, then returns false.
    */
-  bool finished() const;
-  /**
-   * if finished() is true, then call remove()
-   */
-  void removeIfFinished() const;
+  bool downloadFinished() const;
+
   /**
    * Returns a vacant segment.
    * If there is no vacant segment, then returns a segment instance whose
@@ -238,14 +145,17 @@ public:
    * Tells SegmentMan that the segment has been downloaded successfully.
    */
   bool completeSegment(int32_t cuid, const SegmentHandle& segment);
+
   /**
-   * Initializes bitfield with the provided length parameters.
+   * Injects PieceStorage.
    */
-  void initBitfield(int32_t segmentLength, int64_t totalLength);
-  BitfieldMan* getBitfield() const
-  {
-    return bitfield;
-  }
+  void setPieceStorage(const PieceStorageHandle& pieceStorage);
+
+  /**
+   * Injects DownloadContext.
+   */
+  void setDownloadContext(const DownloadContextHandle& downloadContext);
+
   /**
    * Returns true if the segment whose index is index has been downloaded.
    */
@@ -265,39 +175,25 @@ public:
    * Returns peerStat whose cuid is given cuid. If it is not found, returns
    * 0.
    */
-  PeerStatHandle getPeerStat(int32_t cuid) const {
-    for(PeerStats::const_iterator itr = peerStats.begin(); itr != peerStats.end(); ++itr) {
-      const PeerStatHandle& peerStat = *itr;
-      if(peerStat->getCuid() == cuid) {
-	return peerStat;
-      }
-    }
-    return 0;
-  }
+  PeerStatHandle getPeerStat(int32_t cuid) const;
 
   /**
    * Returns current download speed in bytes per sec. 
    */
   int32_t calculateDownloadSpeed() const;
 
-  bool fileExists() const;
-
   void markAllPiecesDone();
 
   void markPieceDone(int64_t length);
 
-  /**
-   * This function must be called when none of segment entries is used.
-   */
-  void purgeSegmentEntry()
-  {
-    usedSegmentEntries.clear();
-  }
-
 #ifdef ENABLE_MESSAGE_DIGEST
+
+  void validatePieceHash(const SegmentHandle& segment, const string& pieceHash);
+  /*
   void tryChunkChecksumValidation(const SegmentHandle& segment, const ChunkChecksumHandle& chunkChecksum);
 
   bool isChunkChecksumValidationReady(const ChunkChecksumHandle& chunkChecksum) const;
+  */
 #endif // ENABLE_MESSAGE_DIGEST
 };
 

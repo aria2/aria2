@@ -36,13 +36,17 @@
 #include "Util.h"
 
 PeerChokeCommand::PeerChokeCommand(int32_t cuid,
-				   TorrentDownloadEngine* e,
+				   RequestGroup* requestGroup,
+				   DownloadEngine* e,
 				   const BtContextHandle& btContext,
 				   int32_t interval):
-  BtContextAwareCommand(cuid, btContext),
+  Command(cuid),
+  BtContextAwareCommand(btContext),
+  RequestGroupAware(requestGroup),
   interval(interval),
   e(e),
-  rotate(0) {}
+  rotate(0)
+{}
 
 PeerChokeCommand::~PeerChokeCommand() {}
 

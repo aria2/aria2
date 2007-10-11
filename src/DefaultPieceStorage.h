@@ -36,13 +36,15 @@
 #define _D_DEFAULT_PIECE_STORAGE_H_
 
 #include "PieceStorage.h"
-#include "BtContext.h"
-#include "DiskAdaptor.h"
-#include "BitfieldMan.h"
-#include "Logger.h"
-#include "Option.h"
-#include "Piece.h"
-#include "FileAllocator.h"
+
+class DownloadContext;
+extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+class BitfieldMan;
+class Logger;
+class Option;
+extern typedef deque<PieceHandle> Pieces;
+class DiskWriterFactory;
+extern typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 
 #define END_GAME_PIECE_NUM 20
 
@@ -67,15 +69,15 @@ typedef deque<HaveEntry> Haves;
 
 class DefaultPieceStorage : public PieceStorage {
 private:
-  BtContextHandle btContext;
+  DownloadContextHandle downloadContext;
   BitfieldMan* bitfieldMan;
   DiskAdaptorHandle diskAdaptor;
+  DiskWriterFactoryHandle _diskWriterFactory;
   Pieces usedPieces;
   int32_t endGamePieceNum;
   Logger* logger;
   const Option* option;
   Haves haves;
-  FileAllocatorHandle createFileAllocator();
 
   int32_t getMissingPieceIndex(const PeerHandle& peer);
   int32_t getMissingFastPieceIndex(const PeerHandle& peer);
@@ -85,7 +87,7 @@ private:
   void deleteUsedPiece(const PieceHandle& piece);
   PieceHandle findUsedPiece(int32_t index) const;
 public:
-  DefaultPieceStorage(BtContextHandle btContext, const Option* option);
+  DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option);
   virtual ~DefaultPieceStorage();
 
   virtual bool hasMissingPiece(const PeerHandle& peer);
@@ -94,6 +96,10 @@ public:
 
   virtual PieceHandle getMissingFastPiece(const PeerHandle& peer);
 
+  virtual PieceHandle getMissingPiece();
+
+  virtual PieceHandle getMissingPiece(int32_t index);
+
   virtual PieceHandle getPiece(int32_t index);
 
   virtual void completePiece(const PieceHandle& piece);
@@ -101,6 +107,8 @@ public:
   virtual void cancelPiece(const PieceHandle& piece);
 
   virtual bool hasPiece(int32_t index);
+
+  virtual bool isPieceUsed(int32_t index);
 
   virtual int64_t getTotalLength();
 
@@ -156,13 +164,24 @@ public:
 
   virtual void markAllPiecesDone();
 
-  virtual void checkIntegrity();
+  virtual void markPiecesDone(int64_t length);
+
+  virtual void markPieceMissing(int32_t index);
+
+  virtual void addInFlightPiece(const Pieces& pieces);
+
+  virtual int32_t countInFlightPiece();
+
+  virtual Pieces getInFlightPieces();
 
   /**
    * This method is made private for test purpose only.
    */
   void addUsedPiece(const PieceHandle& piece);
 
+  void setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory);
 };
+
+typedef SharedHandle<DefaultPieceStorage> DefaultPieceStorageHandle;
 
 #endif // _D_DEFAULT_PIECE_STORAGE_H_

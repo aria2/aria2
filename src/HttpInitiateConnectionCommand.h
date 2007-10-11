@@ -54,10 +54,7 @@ protected:
    */
   virtual bool executeInternal();
 #ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const {
-    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
-  }
+  virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
 public:
   HttpInitiateConnectionCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e);

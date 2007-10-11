@@ -38,6 +38,7 @@
 
 void ChunkChecksumValidator::validate()
 {
+  /*
   if(!_validator->canValidate()) {
     // insufficient checksums.
     logger->error(MSG_INSUFFICIENT_CHECKSUM,
@@ -63,4 +64,5 @@ void ChunkChecksumValidator::validate()
   }
   fileAllocationMonitor->setCurrentValue(numChecksum);
   fileAllocationMonitor->showProgress();
+*/
 }

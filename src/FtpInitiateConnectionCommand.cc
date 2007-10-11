@@ -33,6 +33,11 @@
  */
 /* copyright --> */
 #include "FtpInitiateConnectionCommand.h"
+#include "NameResolver.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "Option.h"
+#include "Request.h"
 #include "FtpNegotiationCommand.h"
 #include "HttpRequestCommand.h"
 #include "FtpTunnelRequestCommand.h"
@@ -111,3 +116,10 @@ bool FtpInitiateConnectionCommand::useHttpProxyGet() const {
 bool FtpInitiateConnectionCommand::useHttpProxyConnect() const {
   return useHttpProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_TUNNEL;
 }
+
+#ifdef ENABLE_ASYNC_DNS
+bool FtpInitiateConnectionCommand::nameResolveFinished() const {
+  return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
+    nameResolver->getStatus() == NameResolver::STATUS_ERROR;
+}
+#endif // ENABLE_ASYNC_DNS

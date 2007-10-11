@@ -1,6 +1,7 @@
 #include "DefaultBtContext.h"
 #include "Util.h"
 #include "Exception.h"
+#include "AnnounceTier.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;

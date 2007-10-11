@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "PeerInteractionCommand.h"
+#include "DownloadEngine.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "PeerMessageUtil.h"
 #include "DefaultBtInteractive.h"
@@ -45,17 +46,20 @@
 #include "DefaultBtRequestFactory.h"
 #include "DefaultBtMessageFactory.h"
 #include "DefaultBtInteractive.h"
-#include "PeerConnection.h"
 #include "CUIDCounter.h"
 #include <algorithm>
 
 PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
+					       RequestGroup* requestGroup,
 					       const PeerHandle& p,
-					       TorrentDownloadEngine* e,
+					       DownloadEngine* e,
 					       const BtContextHandle& btContext,
 					       const SocketHandle& s,
-					       Seq sequence)
-  :PeerAbstractCommand(cuid, p, e, btContext, s),
+					       Seq sequence,
+					       const PeerConnectionHandle& passedPeerConnection)
+  :PeerAbstractCommand(cuid, p, e, s),
+   BtContextAwareCommand(btContext),
+   RequestGroupAware(requestGroup),
    sequence(sequence),
    btInteractive(0),
    maxDownloadSpeedLimit(0)
@@ -71,8 +75,8 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   factory->setBtContext(btContext);
   factory->setPeer(peer);
 
-  PeerConnectionHandle peerConnection =
-    new PeerConnection(cuid, socket, e->option);
+  PeerConnectionHandle peerConnection = passedPeerConnection.isNull() ?
+    new PeerConnection(cuid, socket, e->option) : passedPeerConnection;
 
   DefaultBtMessageDispatcherHandle dispatcher = new DefaultBtMessageDispatcher();
   dispatcher->setCuid(cuid);
@@ -128,12 +132,15 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   peer->activate();
 
   maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
+
+  btRuntime->increaseConnections();
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
   peer->deactivate();
   PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getId());
-							  
+					
+  btRuntime->decreaseConnections();
   //logger->debug("CUID#%d - unregistered message factory using ID:%s",
   //cuid, peer->getId().c_str());
 }
@@ -205,6 +212,7 @@ bool PeerInteractionCommand::prepareForNextPeer(int32_t wait) {
     peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
     PeerInitiateConnectionCommand* command =
       new PeerInitiateConnectionCommand(peer->cuid,
+					_requestGroup,
 					peer,
 					e,
 					btContext);
@@ -220,5 +228,12 @@ bool PeerInteractionCommand::prepareForRetry(int32_t wait) {
 
 void PeerInteractionCommand::onAbort(Exception* ex) {
   btInteractive->cancelAllPiece();
-  PeerAbstractCommand::onAbort(ex);
+  peerStorage->returnPeer(peer);
+  //PeerAbstractCommand::onAbort(ex);
 }
+
+bool PeerInteractionCommand::exitBeforeExecute()
+{
+  return btRuntime->isHalt();
+}
+

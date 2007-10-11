@@ -36,7 +36,7 @@
 #define _D_MESSAGE_DIGEST_HELPER_H_
 
 #include "common.h"
-#include "DiskWriter.h"
+#include "BinaryStream.h"
 
 class MessageDigestHelper {
 public:
@@ -44,15 +44,7 @@ public:
    * Returns message digest in hexadecimal notation.
    * Digest algorithm is specified by algo.
    */
-  static string digest(const string& algo, DiskWriterHandle diskWriter, int64_t offset, int64_t length);
-
-  /**
-   * Calculates message digest of file opened by diskWriter.
-   */
-  static string digest(const string& algo, DiskWriterHandle diskWriter)
-  {
-    return digest(algo, diskWriter, 0, diskWriter->size());
-  }
+  static string digest(const string& algo, const BinaryStreamHandle& bs, int64_t offset, int64_t length);
 
   /**
    * Calculates message digest of file denoted by filename.

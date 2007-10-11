@@ -43,10 +43,10 @@ void AlphaNumberDecoratorTest::testDecorate_minus()
   try {
     AlphaNumberDecorator(1, true).decorate(-1);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
+  } catch(DlAbortEx* e) {
     cerr << e->getMsg() << endl;
     delete e;
   } catch(...) {
-    CPPUNIT_FAIL("FatalException must be thrown.");
+    CPPUNIT_FAIL("DlAbortEx must be thrown.");
   }
 }

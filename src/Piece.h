@@ -117,6 +117,11 @@ public:
   bool isBlockUsed(int32_t index) const {
     return bitfield->isUseBitSet(index);
   }
+
+  /**
+   * Loses current bitfield state.
+   */
+  void reconfigure(int32_t length);
 };
 
 typedef SharedHandle<Piece> PieceHandle;

@@ -36,13 +36,14 @@
 #define _D_COPY_DISK_ADAPTOR_H_
 
 #include "AbstractSingleDiskAdaptor.h"
+#include "DlAbortEx.h"
 
 class CopyDiskAdaptor : public AbstractSingleDiskAdaptor {
 private:
   string tempFilename;
   string topDir;
 
-  void fixFilename();
+  void fixFilename() throw(DlAbortEx*);
 public:
   CopyDiskAdaptor() {}
 
@@ -50,7 +51,7 @@ public:
 
   virtual string getFilePath();
 
-  virtual void onDownloadComplete();
+  virtual void onDownloadComplete() throw(DlAbortEx*);
 
   // tempFilename is relative to storeDir
   void setTempFilename(const string& tempFilename) {

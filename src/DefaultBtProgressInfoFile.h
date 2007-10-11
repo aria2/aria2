@@ -36,49 +36,33 @@
 #define _D_DEFAULT_BT_PROGRESS_INFO_FILE_H_
 
 #include "BtProgressInfoFile.h"
-#include "BtContext.h"
-#include "PieceStorage.h"
-#include "BtRuntime.h"
-#include "PeerStorage.h"
-#include "Logger.h"
-#include "Option.h"
+
+class DownloadContext;
+extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+class PieceStorage;
+extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+class Logger;
+class Option;
 
 class DefaultBtProgressInfoFile : public BtProgressInfoFile {
 private:
-  BtContextHandle btContext;
-  const Option* option;
-  Logger* logger;
-  PieceStorageHandle pieceStorage;
-  BtRuntimeHandle btRuntime;
-  PeerStorageHandle peerStorage;
-  string filename;
+  DownloadContextHandle _dctx;
+  PieceStorageHandle _pieceStorage;
+  const Option* _option;
+  const Logger* _logger;
+  string _filename;
 
-  FILE* openFile(const string& filename, const string& mode) const;
+  bool isTorrentDownload();
+
 public:
-  DefaultBtProgressInfoFile(const BtContextHandle& btContext,
+  DefaultBtProgressInfoFile(const DownloadContextHandle& btContext,
+			    const PieceStorageHandle& pieceStorage,
 			    const Option* option);
+
   virtual ~DefaultBtProgressInfoFile();
 
-  void setBtRuntime(const BtRuntimeHandle& btRuntime) {
-    this->btRuntime = btRuntime;
-  }
-  BtRuntimeHandle getBtRuntime() const { return btRuntime; }
-
-  void setPieceStorage(const PieceStorageHandle& pieceStorage) {
-    this->pieceStorage = pieceStorage;
-  }
-  PieceStorageHandle getPieceStorage() const { return pieceStorage; }
-
-  void setPeerStorage(const PeerStorageHandle& peerStorage) {
-    this->peerStorage = peerStorage;
-  }
-  PeerStorageHandle getPeerStorage() const { return peerStorage; }
-
-  virtual void setFilename(const string& filename) {
-    this->filename = filename;
-  }
-  virtual string getFilename() { return filename; }
-
+  virtual string getFilename() { return _filename; }
+  
   virtual bool exists();
 
   virtual void save();

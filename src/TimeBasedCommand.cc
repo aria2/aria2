@@ -33,6 +33,12 @@
  */
 /* copyright --> */
 #include "TimeBasedCommand.h"
+#include "DownloadEngine.h"
+
+TimeBasedCommand::TimeBasedCommand(int32_t cuid, DownloadEngine* e, int32_t interval):
+  Command(cuid), _e(e),_exit(false), _interval(interval) {}
+
+TimeBasedCommand::~TimeBasedCommand() {}
 
 bool TimeBasedCommand::execute()
 {

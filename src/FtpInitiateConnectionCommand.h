@@ -44,10 +44,7 @@ private:
   bool useHttpProxyGet() const;
   bool useHttpProxyConnect() const;
 #ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const {
-    return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-      nameResolver->getStatus() == NameResolver::STATUS_ERROR;
-  }
+  virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
 protected:
   virtual bool executeInternal();

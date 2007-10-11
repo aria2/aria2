@@ -45,7 +45,8 @@ FileEntry::FileEntry(const string& path,
 
 FileEntry::~FileEntry() {}
 
-void FileEntry::setupDir(const string& parentDir) {
+void FileEntry::setupDir(const string& parentDir)
+{
   string absPath = parentDir+"/"+path;
   char* temp = strdup(absPath.c_str());
   string dir = string(dirname(temp));
@@ -61,4 +62,16 @@ void FileEntry::setupDir(const string& parentDir) {
   } else if(!f.mkdirs()) {
     throw new DlAbortEx("Failed to create directory %s.", dir.c_str());
   }  
+}
+
+FileEntry& FileEntry::operator=(const FileEntry& entry)
+{
+  if(this != &entry) {
+    path = entry.path;
+    length = entry.length;
+    offset = entry.offset;
+    extracted = entry.extracted;
+    requested = entry.requested;
+  }
+  return *this;
 }

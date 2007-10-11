@@ -35,7 +35,7 @@
 #ifndef _D_BT_CONTEXT_AWARE_COMMAND_H_
 #define _D_BT_CONTEXT_AWARE_COMMAND_H_
 
-#include "Command.h"
+#include "common.h"
 #include "BtContext.h"
 #include "BtRuntime.h"
 #include "PieceStorage.h"
@@ -43,7 +43,8 @@
 #include "BtAnnounce.h"
 #include "BtProgressInfoFile.h"
 
-class BtContextAwareCommand : public Command {
+class BtContextAwareCommand
+{
 protected:
   BtContextHandle btContext;
   BtRuntimeHandle btRuntime;
@@ -52,7 +53,7 @@ protected:
   BtAnnounceHandle btAnnounce;
   BtProgressInfoFileHandle btProgressInfoFile;
 public:
-  BtContextAwareCommand(int cuid, const BtContextHandle& btContext);
+  BtContextAwareCommand(const BtContextHandle& btContext);
 
   virtual ~BtContextAwareCommand();
 };

@@ -25,7 +25,7 @@ public:
   MockBtContextHandle btContext;
 
   void setUp() {
-    BtRegistry::clear();    
+    BtRegistry::unregisterAll();    
     peer = new Peer("host", 6969, 16*1024, 256*1024);
     btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
