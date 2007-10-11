@@ -1,5 +1,12 @@
 2007-10-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Do not send referer when redirected.
+	* src/Request.cc (redirectUrl)
+	* test/RequestTest.cc
+	* test/HttpRequestTest.cc
+
+2007-10-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that causes exception when reading beyond end of file.
 	* src/IteratableChunkChecksumValidator.cc (validateChunk)
 

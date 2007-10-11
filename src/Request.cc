@@ -60,7 +60,7 @@ bool Request::resetUrl() {
 }
 
 bool Request::redirectUrl(const string& url) {
-  previousUrl = currentUrl;
+  previousUrl = "";
   return parseUrl(url);
 }
 

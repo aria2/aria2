@@ -165,7 +165,6 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
-    "Referer: http://localhost:8080/archives/aria2-1.0.0.tar.bz2\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
