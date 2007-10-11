@@ -36,13 +36,28 @@
 #include "Util.h"
 #include "message.h"
 #include "MessageDigestHelper.h"
+#include "DlAbortEx.h"
 
 void IteratableChunkChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    string actualChecksum = calculateActualChecksum();
+    string actualChecksum;
+    try {
+      actualChecksum = calculateActualChecksum();
+    } catch(DlAbortEx* ex) {
+      logger->debug("Caught exception while validating piece index=%d. Some part of file may be missing. Continue operation.", ex, _currentIndex);
+      delete ex;
 
-
+      int64_t offset = ((int64_t)_currentIndex)*_chunkChecksum->getChecksumLength();
+      int32_t startIndex;
+      int32_t endIndex;
+      Util::indexRange(startIndex, endIndex, offset,
+		       _chunkChecksum->getChecksumLength(),
+		       _bitfield->getBlockLength());
+      _bitfield->unsetBitRange(startIndex, endIndex);
+      _currentIndex++;
+      return;
+    }
     if(!_chunkChecksum->validateChunk(actualChecksum, _currentIndex)) {
       int64_t offset = ((int64_t)_currentIndex)*_chunkChecksum->getChecksumLength();
       // wrong checksum
