@@ -11,6 +11,7 @@ class SegmentTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testUpdateWrittenLength_overflow);
   CPPUNIT_TEST(testUpdateWrittenLength_lastPiece);
   CPPUNIT_TEST(testUpdateWrittenLength_incompleteLastPiece);
+  CPPUNIT_TEST(testClear);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -21,6 +22,7 @@ public:
   void testUpdateWrittenLength_overflow();
   void testUpdateWrittenLength_lastPiece();
   void testUpdateWrittenLength_incompleteLastPiece();
+  void testClear();
 };
 
 
@@ -68,4 +70,16 @@ void SegmentTest::testUpdateWrittenLength_incompleteLastPiece()
   CPPUNIT_ASSERT(!p->pieceComplete());
   s.updateWrittenLength(1);
   CPPUNIT_ASSERT(p->pieceComplete());
+}
+
+void SegmentTest::testClear()
+{
+  PieceHandle p = new Piece(0, 16*1024*10);
+  PiecedSegment s(16*1024*10, p);
+  s.updateWrittenLength(16*1024*11);
+  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024*10, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024, s.getOverflowLength());
+  s.clear();
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, s.getOverflowLength());
 }

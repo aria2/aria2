@@ -47,6 +47,12 @@ void GrowSegment::updateWrittenLength(int32_t bytes)
   _piece->setAllBlock();
 }
 
+void GrowSegment::clear()
+{
+  _writtenLength = 0;
+  _piece->clearAllBlock();
+}
+
 PieceHandle GrowSegment::getPiece() const
 {
   return _piece;

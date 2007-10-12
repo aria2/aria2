@@ -185,16 +185,6 @@ public:
   void markAllPiecesDone();
 
   void markPieceDone(int64_t length);
-
-#ifdef ENABLE_MESSAGE_DIGEST
-
-  void validatePieceHash(const SegmentHandle& segment, const string& pieceHash);
-  /*
-  void tryChunkChecksumValidation(const SegmentHandle& segment, const ChunkChecksumHandle& chunkChecksum);
-
-  bool isChunkChecksumValidationReady(const ChunkChecksumHandle& chunkChecksum) const;
-  */
-#endif // ENABLE_MESSAGE_DIGEST
 };
 
 typedef SharedHandle<SegmentMan> SegmentManHandle;

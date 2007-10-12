@@ -62,6 +62,8 @@ public:
 
   virtual void updateWrittenLength(int32_t bytes) = 0;
 
+  virtual void clear() = 0;
+
   virtual PieceHandle getPiece() const = 0;
 };
 

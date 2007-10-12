@@ -84,6 +84,13 @@ void PiecedSegment::updateWrittenLength(int32_t bytes)
   _writtenLength = newWrittenLength;
 }
 
+void PiecedSegment::clear()
+{
+  _writtenLength = 0;
+  _overflowLength = 0;
+  _piece->clearAllBlock();
+}
+
 PieceHandle PiecedSegment::getPiece() const
 {
   return _piece;

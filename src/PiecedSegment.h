@@ -80,6 +80,8 @@ public:
 
   virtual void updateWrittenLength(int32_t bytes);
 
+  virtual void clear();
+
   virtual PieceHandle getPiece() const;
 
   bool operator==(const PiecedSegment& segment) const;

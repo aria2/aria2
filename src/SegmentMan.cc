@@ -47,9 +47,6 @@
 #include "Option.h"
 #include "DownloadContext.h"
 #include "Piece.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-#include "MessageDigestHelper.h"
-#endif // ENABLE_MESSAGE_DIGEST
 #include "a2io.h"
 #include <errno.h>
 
@@ -281,96 +278,6 @@ void SegmentMan::markPieceDone(int64_t length)
   }
   */
 }
-
-#ifdef ENABLE_MESSAGE_DIGEST
-void SegmentMan::validatePieceHash(const SegmentHandle& segment,
-				   const string& expectedPieceHash)
-{
-  string actualPieceHash =
-    MessageDigestHelper::digest("sha1",
-				_pieceStorage->getDiskAdaptor(),
-				segment->getPosition(),
-				segment->getLength());
-  if(actualPieceHash == expectedPieceHash) {
-    logger->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
-  } else {
-    _pieceStorage->markPieceMissing(segment->getIndex());
-    logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		 segment->getIndex(),
-		 Util::llitos(segment->getPosition(), true).c_str(),
-		 expectedPieceHash.c_str(),
-		 actualPieceHash.c_str());
-  }
-}
-
-/*
-bool SegmentMan::isChunkChecksumValidationReady(const ChunkChecksumHandle& chunkChecksum) const {
-  return false;
-  // TODO fix this
-  return !chunkChecksum.isNull() && !_downloadContext.isNull() && totalSize > 0 &&
-    chunkChecksum->getEstimatedDataLength() >= totalSize;
-}
-*/
-#endif // ENABLE_MESSAGE_DIGEST
-
-#ifdef ENABLE_MESSAGE_DIGEST
-  /*
-void SegmentMan::tryChunkChecksumValidation(const SegmentHandle& segment, const ChunkChecksumHandle& chunkChecksum)
-{
-  // TODO implement this function later
-  if(!isChunkChecksumValidationReady(chunkChecksum)) {
-    return;
-  }
-  int32_t hashStartIndex;
-  int32_t hashEndIndex;
-  Util::indexRange(hashStartIndex, hashEndIndex,
-		   segment->getPosition(),
-		   segment->writtenLength,
-		   chunkChecksum->getChecksumLength());
-  if(!bitfield->isBitSetOffsetRange((int64_t)hashStartIndex*chunkChecksum->getChecksumLength(),
-				    chunkChecksum->getChecksumLength())) {
-    ++hashStartIndex;
-  }
-  if(!bitfield->isBitSetOffsetRange((int64_t)hashEndIndex*chunkChecksum->getChecksumLength(),
-				    chunkChecksum->getChecksumLength())) {
-    --hashEndIndex;
-  }
-  logger->debug("hashStartIndex=%d, hashEndIndex=%d",
-		hashStartIndex, hashEndIndex);
-  if(hashStartIndex > hashEndIndex) {
-    logger->debug(MSG_NO_CHUNK_CHECKSUM);
-    return;
-  }
-  int64_t hashOffset = ((int64_t)hashStartIndex)*chunkChecksum->getChecksumLength();
-  int32_t startIndex;
-  int32_t endIndex;
-  Util::indexRange(startIndex, endIndex,
-		   hashOffset,
-		   (hashEndIndex-hashStartIndex+1)*chunkChecksum->getChecksumLength(),
-		   bitfield->getBlockLength());
-  logger->debug("startIndex=%d, endIndex=%d", startIndex, endIndex);
-  if(bitfield->isBitRangeSet(startIndex, endIndex)) {
-    for(int32_t index = hashStartIndex; index <= hashEndIndex; ++index) {
-      int64_t offset = ((int64_t)index)*chunkChecksum->getChecksumLength();
-      int32_t dataLength =
-	offset+chunkChecksum->getChecksumLength() <= totalSize ?
-	chunkChecksum->getChecksumLength() : totalSize-offset;
-      string actualChecksum = MessageDigestHelper::digest(chunkChecksum->getAlgo(), diskWriter, offset, dataLength);
-      if(chunkChecksum->validateChunk(actualChecksum, index)) {
-	logger->info(MSG_GOOD_CHUNK_CHECKSUM, actualChecksum.c_str());
-      } else {
-	logger->info(EX_INVALID_CHUNK_CHECKSUM,
-		     index, Util::llitos(offset, true).c_str(),
-		     chunkChecksum->getChecksum(index).c_str(), actualChecksum.c_str());
-	logger->debug("Unset bit from %d to %d(inclusive)", startIndex, endIndex);
-	bitfield->unsetBitRange(startIndex, endIndex);
-	break;
-      }
-    }
-  }
-}
-  */
-#endif // ENABLE_MESSAGE_DIGEST
 
 SegmentEntryHandle SegmentMan::getSegmentEntryByIndex(int32_t index)
 {

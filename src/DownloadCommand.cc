@@ -47,6 +47,9 @@
 #include "Segment.h"
 #include "PieceStorage.h"
 #include "Option.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+#include "MessageDigestHelper.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <stdlib.h>
 
 DownloadCommand::DownloadCommand(int cuid,
@@ -121,30 +124,13 @@ bool DownloadCommand::executeInternal() {
      || bufSize == 0) {
     if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
-    _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
-    // TODO According to the current plan, checksum is held by DownloadContext.
-#ifdef ENABLE_MESSAGE_DIGEST
-    if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE) {
-      string pieceHash = _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
-      if(!pieceHash.empty()) {
-	_requestGroup->getSegmentMan()->validatePieceHash(segment, pieceHash);
-      }
-    }
-#endif // ENABLE_MESSAGE_DIGEST
-    /*
-#ifdef ENABLE_MESSAGE_DIGEST
-    if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE) {
-      _requestGroup->getSegmentMan()->tryChunkChecksumValidation(segment, _requestGroup->getChunkChecksum());
-    }
-#endif // ENABLE_MESSAGE_DIGEST
-    */
+    validatePieceHash(segment);
     // this unit is going to download another segment.
     return prepareForNextSegment();
   } else {
     e->commands.push_back(this);
     return false;
   }
-  
 }
 
 bool DownloadCommand::prepareForNextSegment() {
@@ -175,9 +161,8 @@ bool DownloadCommand::prepareForNextSegment() {
 	  return prepareForRetry(0);
 	}
 	nextSegment->updateWrittenLength(tempSegment->getOverflowLength());
-	//tempSegment->writtenLength-tempSegment->length;
 	if(nextSegment->complete()) {
-	  _requestGroup->getSegmentMan()->completeSegment(cuid, nextSegment);
+	  validatePieceHash(nextSegment);
 	  tempSegment = nextSegment;
 	} else {
 	  segment = nextSegment;
@@ -188,6 +173,38 @@ bool DownloadCommand::prepareForNextSegment() {
     }
     return prepareForRetry(0);
   }
+}
+
+void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  string expectedPieceHash =
+    _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
+  if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
+     !expectedPieceHash.empty()) {
+    string actualPieceHash =
+      MessageDigestHelper::digest("sha1",
+				  _requestGroup->getPieceStorage()->getDiskAdaptor(),
+				  segment->getPosition(),
+				  segment->getLength());
+    if(actualPieceHash == expectedPieceHash) {
+      logger->info(MSG_GOOD_CHUNK_CHECKSUM, actualPieceHash.c_str());
+      _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+    } else {
+      logger->info(EX_INVALID_CHUNK_CHECKSUM,
+		   segment->getIndex(),
+		   Util::llitos(segment->getPosition(), true).c_str(),
+		   expectedPieceHash.c_str(),
+		   actualPieceHash.c_str());
+      segment->clear();
+      _requestGroup->getSegmentMan()->cancelSegment(cuid);
+      throw new DlRetryEx("Invalid checksum index=%d", segment->getIndex());
+    }
+  } else
+#endif // ENABLE_MESSAGE_DIGEST
+    {
+      _requestGroup->getSegmentMan()->completeSegment(cuid, segment);
+    }
 }
 
 void DownloadCommand::setTransferDecoder(const TransferEncodingHandle& transferDecoder)

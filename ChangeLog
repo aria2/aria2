@@ -1,5 +1,16 @@
 2007-10-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Throw exception when chunck checksum verification fails.
+	* src/DownloadCommand.cc (validatePieceHash): New function.
+	* src/PiecedSegment.{h, cc} (clear): New function.
+	* src/GrowSegment.{h, cc} (clear): New function.
+	* src/Segment.h (clear): New function.
+	* src/SegmentMan.{h, cc} (validatePieceHash): Removed.
+	* test/SegmentTest.cc
+	* test/GrowSegmentTest.cc
+
+2007-10-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Do not send referer when redirected.
 	* src/Request.cc (redirectUrl)
 	* test/RequestTest.cc

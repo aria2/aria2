@@ -48,12 +48,16 @@ private:
   int32_t startupIdleTime;
   int32_t lowestDownloadSpeedLimit;
   PeerStatHandle peerStat;
+
+  void validatePieceHash(const SegmentHandle& segment);
+
 protected:
   TransferEncodingHandle transferDecoder;
 
   virtual bool executeInternal();
 
   virtual bool prepareForNextSegment();
+
 public:
   DownloadCommand(int cuid,
 		  const RequestHandle req,
