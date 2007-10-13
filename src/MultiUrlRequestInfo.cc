@@ -64,12 +64,13 @@ MultiUrlRequestInfo::MultiUrlRequestInfo(const RequestGroups& requestGroups, Opt
 
 MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
 
-void MultiUrlRequestInfo::printDownloadAbortMessage()
+void MultiUrlRequestInfo::printMessageForContinue()
 {
-  printf(_("\nSome downloads were not complete because of errors."
-	   " Check the log.\n"
-	   "aria2 will resume download if the transfer is restarted."));
-  printf("\n");
+  cout << "\n"
+       << _("aria2 will resume download if the transfer is restarted.")
+       << "\n"
+       << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
+       << "\n";
 }
 
 void MultiUrlRequestInfo::execute()
@@ -102,7 +103,7 @@ void MultiUrlRequestInfo::execute()
     cout << flush;
 
     if(!e->_requestGroupMan->downloadFinished()) {
-      printDownloadAbortMessage();
+      printMessageForContinue();
     }
   } catch(RecoverableException *ex) {
     _logger->error(EX_EXCEPTION_CAUGHT, ex);

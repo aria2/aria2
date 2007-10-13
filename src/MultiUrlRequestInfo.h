@@ -51,7 +51,7 @@ private:
 
   const Logger* _logger;
 
-  void printDownloadAbortMessage();
+  void printMessageForContinue();
 
 public:
   MultiUrlRequestInfo(const RequestGroups& requestGroups, Option* op);

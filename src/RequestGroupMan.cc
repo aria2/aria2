@@ -208,17 +208,9 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
   // ===+====+=======================================================================
   o << "\n"
     <<_("Download Results:") << "\n"
+    << " (OK):download completed.(ERR):error occurred.(INPR):download in-progress." << "\n"
     << "idx|stat|path/URI" << "\n"
     << "===+====+======================================================================" << "\n";
-  /*
-  RequestGroups groups(_spentGroups.begin(), _spentGroups.end());
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
-    if((*itr)->downloadFinished()) {
-      groups.push_back(*itr);
-    }
-  }
-  */
   for(RequestGroups::const_iterator itr = _spentGroups.begin();
       itr != _spentGroups.end(); ++itr) {
     o << formatDownloadResult((*itr)->downloadFinished()?"OK":"ERR", *itr) << "\n";
