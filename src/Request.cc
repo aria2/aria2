@@ -77,7 +77,6 @@ bool Request::parseUrl(const string& url) {
   } else {
     tempUrl = url;
   }
-
   currentUrl = tempUrl;
   string query;
   host = "";
@@ -122,7 +121,16 @@ bool Request::parseUrl(const string& url) {
     dir = "/";
     direp = hep;
   } else {
-    dir = tempUrl.substr(hep, direp-hep);
+    string rawDir = tempUrl.substr(hep, direp-hep);
+    string::size_type p = rawDir.find_first_not_of("/");
+    if(p != string::npos) {
+      rawDir.erase(0, p-1);
+    }
+    p = rawDir.find_last_not_of("/");
+    if(p != string::npos) {
+      rawDir.erase(p+1);
+    }
+    dir = rawDir;
   }
   if(tempUrl.size() > direp+1) {
     file = tempUrl.substr(direp+1);

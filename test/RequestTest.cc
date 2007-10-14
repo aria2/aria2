@@ -21,6 +21,8 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl12);
   CPPUNIT_TEST(testSetUrl13);
   CPPUNIT_TEST(testSetUrl14);
+  CPPUNIT_TEST(testSetUrl15);
+  CPPUNIT_TEST(testSetUrl16);
   CPPUNIT_TEST(testRedirectUrl);
   CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testResetUrl);
@@ -48,6 +50,8 @@ public:
   void testSetUrl12();
   void testSetUrl13();
   void testSetUrl14();
+  void testSetUrl15();
+  void testSetUrl16();
   void testRedirectUrl();
   void testRedirectUrl2();
   void testResetUrl();
@@ -215,6 +219,30 @@ void RequestTest::testSetUrl14() {
   CPPUNIT_ASSERT_EQUAL((int32_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string("abc?query"), req.getFile());
+}
+
+void RequestTest::testSetUrl15()
+{
+  Request req;
+  // 2 slashes after host name and dir
+  bool v = req.setUrl("http://host//dir1/dir2//file");
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/dir1/dir2"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("file"), req.getFile());
+}
+
+void RequestTest::testSetUrl16()
+{
+  Request req;
+  // 2 slashes before file
+  bool v = req.setUrl("http://host//file");
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("file"), req.getFile());
 }
 
 void RequestTest::testRedirectUrl() {
