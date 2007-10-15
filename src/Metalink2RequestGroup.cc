@@ -40,7 +40,6 @@
 #include "Xml2MetalinkProcessor.h"
 #include "Util.h"
 #include "message.h"
-#include "RecoverableException.h"
 #include "BtDependency.h"
 #include "SingleFileDownloadContext.h"
 
@@ -94,102 +93,101 @@ public:
 RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
 {
   Xml2MetalinkProcessor proc;
-  try {
-    MetalinkerHandle metalinker = proc.parseFile(metalinkFile);
-    MetalinkEntries entries =
-      metalinker->queryEntry(_option->get(PREF_METALINK_VERSION),
-			     _option->get(PREF_METALINK_LANGUAGE),
-			     _option->get(PREF_METALINK_OS));
-    if(entries.size() == 0) {
-      return RequestGroups();
+
+  MetalinkerHandle metalinker = proc.parseFile(metalinkFile);
+  if(metalinker->entries.empty()) {
+    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
+  }
+  MetalinkEntries entries =
+    metalinker->queryEntry(_option->get(PREF_METALINK_VERSION),
+			   _option->get(PREF_METALINK_LANGUAGE),
+			   _option->get(PREF_METALINK_OS));
+  if(entries.size() == 0) {
+    _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
+    return RequestGroups();
+  }
+  bool useIndex;
+  Integers selectIndexes;
+  Util::unfoldRange(_option->get(PREF_SELECT_FILE), selectIndexes);
+  if(selectIndexes.size()) {
+    useIndex = true;
+  } else {
+    useIndex = false;
+  }
+  RequestGroups groups;
+  int32_t count = 0;
+  for(MetalinkEntries::iterator itr = entries.begin(); itr != entries.end();
+      itr++, ++count) {
+    MetalinkEntryHandle& entry = *itr;
+    if(_option->defined(PREF_METALINK_LOCATION)) {
+      entry->setLocationPreference(_option->get(PREF_METALINK_LOCATION), 100);
     }
-    bool useIndex;
-    Integers selectIndexes;
-    Util::unfoldRange(_option->get(PREF_SELECT_FILE), selectIndexes);
-    if(selectIndexes.size()) {
-      useIndex = true;
-    } else {
-      useIndex = false;
-    }
-    RequestGroups groups;
-    int32_t count = 0;
-    for(MetalinkEntries::iterator itr = entries.begin(); itr != entries.end();
-	itr++, ++count) {
-      MetalinkEntryHandle& entry = *itr;
-      if(_option->defined(PREF_METALINK_LOCATION)) {
-	entry->setLocationPreference(_option->get(PREF_METALINK_LOCATION), 100);
-      }
-      if(useIndex) {
-	if(find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {
-	  continue;
-	}
-      }
-      entry->dropUnsupportedResource();
-      if(entry->resources.size() == 0) {
+    if(useIndex) {
+      if(find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {
 	continue;
       }
-      _logger->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
-      MetalinkResources::iterator itr = find_if(entry->resources.begin(),
-						entry->resources.end(),
-						FindBitTorrentUrl());
-      RequestGroupHandle torrentRg = 0;
-      // there is torrent entry
-      if(itr != entry->resources.end()) {
-	Strings uris;
-	uris.push_back((*itr)->url);
-	torrentRg = new RequestGroup(_option, uris);
-	SingleFileDownloadContextHandle dctx =
-	  new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
-					0,
-					"");
-	dctx->setDir(_option->get(PREF_DIR));
-	torrentRg->setDownloadContext(dctx);
-	torrentRg->clearPostDowloadHandler();
-	groups.push_back(torrentRg);
-      }
-      entry->reorderResourcesByPreference();
+    }
+    entry->dropUnsupportedResource();
+    if(entry->resources.size() == 0) {
+      continue;
+    }
+    _logger->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
+    MetalinkResources::iterator itr = find_if(entry->resources.begin(),
+					      entry->resources.end(),
+					      FindBitTorrentUrl());
+    RequestGroupHandle torrentRg = 0;
+    // there is torrent entry
+    if(itr != entry->resources.end()) {
       Strings uris;
-      for_each(entry->resources.begin(), entry->resources.end(),
-	       AccumulateNonP2PUrl(&uris, _option->getAsInt(PREF_SPLIT)));
-      RequestGroupHandle rg = new RequestGroup(_option, uris);
-      // If piece hash is specified in the metalink,
-      // make segment size equal to piece hash size.
-      int32_t pieceLength;
-      if(entry->chunkChecksum.isNull()) {
-	pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
-      } else {
-	pieceLength = entry->chunkChecksum->getChecksumLength();
-      }
+      uris.push_back((*itr)->url);
+      torrentRg = new RequestGroup(_option, uris);
       SingleFileDownloadContextHandle dctx =
-	new SingleFileDownloadContext(pieceLength,
+	new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
 				      0,
 				      "");
       dctx->setDir(_option->get(PREF_DIR));
-      if(!entry->chunkChecksum.isNull()) {
-	dctx->setPieceHashes(entry->chunkChecksum->getChecksums());
-	dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
-      }
-      // TODO set checksum here to DownloadContext
-      // * hash and hash algorithm
-
-      rg->setDownloadContext(dctx);
-      rg->setHintFilename(entry->file->getBasename());
-      rg->setHintTotalLength(entry->getLength());
-      rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
-				  _option->getAsInt(PREF_METALINK_SERVERS) :
-				  min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
-
-      // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
-      if(!torrentRg.isNull()) {
-	rg->dependsOn(new BtDependency(rg, torrentRg, _option));
-      }
-
-      groups.push_back(rg);
+      torrentRg->setDownloadContext(dctx);
+      torrentRg->clearPostDowloadHandler();
+      groups.push_back(torrentRg);
     }
-    return groups;
-  } catch(RecoverableException* ex) {
-    _logger->error(EX_EXCEPTION_CAUGHT, ex);
-    delete ex;
-    return RequestGroups();
+    entry->reorderResourcesByPreference();
+    Strings uris;
+    for_each(entry->resources.begin(), entry->resources.end(),
+	     AccumulateNonP2PUrl(&uris, _option->getAsInt(PREF_SPLIT)));
+    RequestGroupHandle rg = new RequestGroup(_option, uris);
+    // If piece hash is specified in the metalink,
+    // make segment size equal to piece hash size.
+    int32_t pieceLength;
+    if(entry->chunkChecksum.isNull()) {
+      pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
+    } else {
+      pieceLength = entry->chunkChecksum->getChecksumLength();
+    }
+    SingleFileDownloadContextHandle dctx =
+      new SingleFileDownloadContext(pieceLength,
+				    0,
+				    "");
+    dctx->setDir(_option->get(PREF_DIR));
+    if(!entry->chunkChecksum.isNull()) {
+      dctx->setPieceHashes(entry->chunkChecksum->getChecksums());
+      dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
+    }
+    // TODO set checksum here to DownloadContext
+    // * hash and hash algorithm
+
+    rg->setDownloadContext(dctx);
+    rg->setHintFilename(entry->file->getBasename());
+    rg->setHintTotalLength(entry->getLength());
+    rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
+				_option->getAsInt(PREF_METALINK_SERVERS) :
+				min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
+
+    // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
+    if(!torrentRg.isNull()) {
+      rg->dependsOn(new BtDependency(rg, torrentRg, _option));
+    }
+
+    groups.push_back(rg);
   }
+  return groups;
 }

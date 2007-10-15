@@ -49,6 +49,7 @@
 #include "LogFactory.h"
 #include "DiskAdaptor.h"
 #include "DiskWriterFactory.h"
+#include "RecoverableException.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -410,11 +411,17 @@ void RequestGroup::releaseRuntimeResource()
 RequestGroups RequestGroup::postDownloadProcessing()
 {
   _logger->debug("Finding PostDownloadHandler for path %s.", getFilePath().c_str());
-  for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
-      itr != _postDownloadHandlers.end(); ++itr) {
-    if((*itr)->canHandle(getFilePath())) {
-      return (*itr)->getNextRequestGroups(getFilePath());
+  try {
+    for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
+	itr != _postDownloadHandlers.end(); ++itr) {
+      if((*itr)->canHandle(getFilePath())) {
+	return (*itr)->getNextRequestGroups(getFilePath());
+      }
     }
+  } catch(RecoverableException* ex) {
+    _logger->error(EX_EXCEPTION_CAUGHT, ex);
+    delete ex;
+    return RequestGroups();
   }
   _logger->debug("No PostDownloadHandler found.");
   return RequestGroups();
