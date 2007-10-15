@@ -34,9 +34,9 @@
 /* copyright --> */
 #include "PostDownloadHandler.h"
 #include "Util.h"
+#include "LogFactory.h"
 
-PostDownloadHandler::PostDownloadHandler(const string& extension, const Option* option):_extension(extension), _option(option)
-{}
+PostDownloadHandler::PostDownloadHandler(const string& extension, const Option* option):_extension(extension), _option(option), _logger(LogFactory::getInstance()) {}
 
 PostDownloadHandler::~PostDownloadHandler() {}
 

@@ -35,6 +35,7 @@
 #include "MetalinkPostDownloadHandler.h"
 #include "RequestGroup.h"
 #include "Metalink2RequestGroup.h"
+#include "Logger.h"
 
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler(const Option* option):
   PostDownloadHandler(".metalink", option)
@@ -44,5 +45,6 @@ MetalinkPostDownloadHandler::~MetalinkPostDownloadHandler() {}
 
 RequestGroups MetalinkPostDownloadHandler::getNextRequestGroups(const string& path)
 {
+  _logger->debug("Generating RequestGroups for Metalink file %s", path.c_str());
   return Metalink2RequestGroup(_option).generate(path);
 }

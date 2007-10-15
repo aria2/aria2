@@ -41,6 +41,7 @@ class Option;
 class RequestGroup;
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
 typedef deque<RequestGroupHandle> RequestGroups;
+class Logger;
 
 class PostDownloadHandler
 {
@@ -48,6 +49,7 @@ private:
   string _extension;
 protected:
   const Option* _option;
+  const Logger* _logger;
 public:
   PostDownloadHandler(const string& extension, const Option* option);
 

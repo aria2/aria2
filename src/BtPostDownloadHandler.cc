@@ -37,6 +37,7 @@
 #include "prefs.h"
 #include "RequestGroup.h"
 #include "Option.h"
+#include "Logger.h"
 
 BtPostDownloadHandler::BtPostDownloadHandler(const Option* option):
   PostDownloadHandler(".torrent", option)
@@ -46,6 +47,7 @@ BtPostDownloadHandler::~BtPostDownloadHandler() {}
 
 RequestGroups BtPostDownloadHandler::getNextRequestGroups(const string& path)
 {
+  _logger->debug("Generating RequestGroups for Torrent file %s", path.c_str());
   RequestGroupHandle rg = new RequestGroup(_option, Strings());
   DefaultBtContextHandle btContext = new DefaultBtContext();
   btContext->load(path);

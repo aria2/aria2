@@ -409,12 +409,14 @@ void RequestGroup::releaseRuntimeResource()
 
 RequestGroups RequestGroup::postDownloadProcessing()
 {
+  _logger->debug("Finding PostDownloadHandler for path %s.", getFilePath().c_str());
   for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
       itr != _postDownloadHandlers.end(); ++itr) {
     if((*itr)->canHandle(getFilePath())) {
       return (*itr)->getNextRequestGroups(getFilePath());
     }
   }
+  _logger->debug("No PostDownloadHandler found.");
   return RequestGroups();
 }
 

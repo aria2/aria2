@@ -101,13 +101,16 @@ void RequestGroupMan::removeStoppedGroup()
     if((*itr)->getNumCommand() > 0) {
       temp.push_back(*itr);
     } else {
-      (*itr)->closeFile();
-      RequestGroups nextGroups = (*itr)->postDownloadProcessing();
-      
+      (*itr)->closeFile();      
       if((*itr)->downloadFinished()) {
 	_logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
 			(*itr)->getFilePath().c_str());
 	(*itr)->getProgressInfoFile()->removeFile();
+	RequestGroups nextGroups = (*itr)->postDownloadProcessing();
+	if(nextGroups.size() > 0) {
+	  _logger->debug("Adding %d RequestGroups as a result of PostDownloadHandler.", (int32_t)nextGroups.size());
+	  copy(nextGroups.rbegin(), nextGroups.rend(), front_inserter(_reservedGroups));
+	}
       } else {
 	try {
 	  (*itr)->getProgressInfoFile()->save();
