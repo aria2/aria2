@@ -1,3 +1,9 @@
+2007-10-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* src/MetalinkRequestInfo.cc: When no file entry is found in a
+	metalink without querying user preferences, print the error message
+	that suggests metalink file is probably broken. 
+
 2007-10-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Do not send referer when redirected.

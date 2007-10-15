@@ -88,6 +88,9 @@ RequestInfos MetalinkRequestInfo::execute() {
   RequestInfos nextReqInfos;
   try {
     MetalinkerHandle metalinker = proc.parseFile(metalinkFile);
+    if(metalinker->entries.empty()) {
+      throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
+    }
     MetalinkEntries entries =
       metalinker->queryEntry(op->get(PREF_METALINK_VERSION),
 			     op->get(PREF_METALINK_LANGUAGE),
