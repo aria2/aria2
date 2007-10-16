@@ -52,4 +52,4 @@
 
 * Implement duplicate download checking in Bt
 * Implement the feature to treat http/ftp as auxuality download method for BitTorrent
-
+* Add PeerListenCommand to DownloadEngine only when it is really necessary.

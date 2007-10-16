@@ -79,9 +79,11 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
     cout << " "
 	 << "CN:"
 	 << firstRequestGroup->getNumConnection();
-    cout << " "
-	 << "SPD:"
-	 << fixed << setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s";
+    if(!firstRequestGroup->downloadFinished()) {
+      cout << " "
+	   << "SPD:"
+	   << fixed << setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s";
+    }
     if(stat.getSessionUploadLength() > 0) {
       cout << " "
 	   << "UP:"
