@@ -47,6 +47,7 @@
 #include "Segment.h"
 #include "PieceStorage.h"
 #include "Option.h"
+#include "HttpRequestCommand.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -82,8 +83,16 @@ bool DownloadCommand::executeInternal() {
     e->commands.push_back(this);
     return false;
   }
-  int32_t bufSize = 16*1024;
-  char buf[bufSize];
+  SegmentHandle segment = _segments.front();
+
+  int32_t BUFSIZE = 16*1024;
+  char buf[BUFSIZE];
+  int32_t bufSize;
+  if(segment->getLength()-segment->getWrittenLength() < BUFSIZE) {
+    bufSize = segment->getLength()-segment->getWrittenLength();
+  } else {
+    bufSize = BUFSIZE;
+  }
   socket->readData(buf, bufSize);
 
   if(transferDecoder.isNull()) {
@@ -149,7 +158,8 @@ bool DownloadCommand::prepareForNextSegment() {
     return true;
   } else {
     // Merge segment with next segment, if segment.index+1 == nextSegment.index
-    SegmentHandle tempSegment = segment;
+
+    SegmentHandle tempSegment = _segments.front();
     while(1) {
       SegmentHandle nextSegment =
 	_requestGroup->getSegmentMan()->getSegment(cuid,
@@ -165,12 +175,12 @@ bool DownloadCommand::prepareForNextSegment() {
 	  validatePieceHash(nextSegment);
 	  tempSegment = nextSegment;
 	} else {
-	  segment = nextSegment;
 	  e->commands.push_back(this);
 	  return false;
 	}
       }
     }
+
     return prepareForRetry(0);
   }
 }

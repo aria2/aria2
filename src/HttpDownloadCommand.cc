@@ -39,25 +39,24 @@
 #include "HttpRequestCommand.h"
 #include "Util.h"
 #include "message.h"
+#include "HttpConnection.h"
 
 HttpDownloadCommand::HttpDownloadCommand(int cuid,
 					 const RequestHandle req,
 					 RequestGroup* requestGroup,
+					 const HttpConnectionHandle& httpConnection,
 					 DownloadEngine* e,
 					 const SocketHandle& socket)
-  :DownloadCommand(cuid, req, requestGroup, e, socket) {}
+  :DownloadCommand(cuid, req, requestGroup, e, socket),
+   _httpConnection(httpConnection) {}
 
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
 bool HttpDownloadCommand::prepareForNextSegment() {
-  if(!_requestGroup->downloadFinished()) {
-    if(req->isKeepAlive()) {
-      Command* command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
-      e->commands.push_back(command);
-      return true;
-    } else {
-      return DownloadCommand::prepareForNextSegment();
-    }
+  if(!_requestGroup->downloadFinished() && req->isKeepAlive()) {
+    Command* command = new HttpRequestCommand(cuid, req, _requestGroup, _httpConnection, e, socket);
+    e->commands.push_back(command);
+    return true;
   } else {
     return DownloadCommand::prepareForNextSegment();
   }

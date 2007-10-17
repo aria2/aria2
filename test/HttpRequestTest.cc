@@ -248,6 +248,24 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
+  request->setKeepAlive(true);
+
+  expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: localhost:8080\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Range: bytes=0-1048575\r\n"
+    "Proxy-Connection: Keep-Alive\r\n"
+    "Proxy-Authorization: Basic YXJpYTJwcm94eXVzZXI6YXJpYTJwcm94eXBhc3N3ZA==\r\n"
+    "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+
+  request->setKeepAlive(false);
+
   option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
 
   httpRequest.configure(option.get());
@@ -414,8 +432,18 @@ void HttpRequestTest::testCreateProxyRequest()
 
   string expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
-    "Proxy-Connection: close\r\n"
     "Host: localhost:80\r\n"
+    "Proxy-Connection: close\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
+
+  request->setKeepAlive(true);
+
+  expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Host: localhost:80\r\n"
+    "Proxy-Connection: Keep-Alive\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());

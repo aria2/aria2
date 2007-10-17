@@ -101,7 +101,11 @@ string HttpRequest::createRequest() const
     requestLine += "\r\n";
   }
   if(proxyEnabled) {
-    requestLine += "Proxy-Connection: close\r\n";
+    if(request->isKeepAlive()) {
+      requestLine += "Proxy-Connection: Keep-Alive\r\n";
+    } else {
+      requestLine += "Proxy-Connection: close\r\n";
+    }
   }
   if(proxyEnabled && proxyAuthEnabled) {
     requestLine += getProxyAuthString();
@@ -135,8 +139,12 @@ string HttpRequest::createProxyRequest() const
     string("CONNECT ")+getHost()+":"+Util::itos(getPort())+
     string(" HTTP/1.1\r\n")+
     "User-Agent: "+Util::urlencode(userAgent)+"\r\n"+
-    "Proxy-Connection: close\r\n"+
     "Host: "+getHost()+":"+Util::itos(getPort())+"\r\n";
+  if(request->isKeepAlive()) {
+    requestLine += "Proxy-Connection: Keep-Alive\r\n";
+  }else {
+    requestLine += "Proxy-Connection: close\r\n";
+  }
   if(proxyAuthEnabled) {
     requestLine += getProxyAuthString();
   }

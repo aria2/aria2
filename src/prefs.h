@@ -140,12 +140,16 @@
 #  define V_BASIC "basic"
 // values: true | false
 #define PREF_HTTP_AUTH_ENABLED "http-auth-enabled"
-// values: true | false
-#define PREF_HTTP_KEEP_ALIVE "http-keep-alive"
 // values: string
 #define PREF_USER_AGENT "user-agent"
 // value: string that your file system recognizes as a file name.
 #define PREF_LOAD_COOKIES "load-cookies"
+// values: true | false
+#define PREF_ENABLE_HTTP_KEEP_ALIVE "enable-http-keep-alive"
+// values: true | false
+#define PREF_ENABLE_HTTP_PIPELINING "enable-http-pipelining"
+// value: 1*digit
+#define PREF_MAX_HTTP_PIPELINING "max-http-pipelining"
 
 /** 
  * HTTP proxy related preferences

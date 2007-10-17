@@ -37,13 +37,19 @@
 
 #include "AbstractCommand.h"
 
+class HttpConnection;
+extern typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+
 class HttpRequestCommand:public AbstractCommand {
+private:
+  HttpConnectionHandle _httpConnection;
 protected:
   virtual bool executeInternal();
 public:
   HttpRequestCommand(int cuid,
 		     const RequestHandle& req,
 		     RequestGroup* requestGroup,
+		     const HttpConnectionHandle& httpConnection,
 		     DownloadEngine* e,
 		     const SocketHandle& s);
   virtual ~HttpRequestCommand();

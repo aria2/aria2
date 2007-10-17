@@ -68,6 +68,7 @@ public:
 };
 
 typedef SharedHandle<Segment> SegmentHandle;
+typedef deque<SegmentHandle> Segments;
 
 #endif // _D_SEGMENT_H_
 

@@ -110,6 +110,10 @@ HttpResponseHandle HttpConnection::receiveResponse()
   logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
 
   pair<string, HttpHeaderHandle> httpStatusHeader = proc->getHttpStatusHeader();
+  if(Util::toLower(httpStatusHeader.second->getFirst("Connection")).find("close") != string::npos) {
+    entry->getHttpRequest()->getRequest()->setKeepAlive(false);
+  }
+
   HttpResponseHandle httpResponse = new HttpResponse();
   httpResponse->setCuid(cuid);
   httpResponse->setStatus(strtol(httpStatusHeader.first.c_str(), 0, 10));
@@ -120,3 +124,17 @@ HttpResponseHandle HttpConnection::receiveResponse()
 
   return httpResponse;
 }
+
+bool HttpConnection::isIssued(const SegmentHandle& segment) const
+{
+  for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests.begin();
+      itr != outstandingHttpRequests.end(); ++itr) {
+    HttpRequestHandle httpRequest = (*itr)->getHttpRequest();
+    // TODO fix this using operator==
+    if(httpRequest->getSegment().get() == segment.get()) {
+      return true;
+    }
+  }
+  return false;
+}
+

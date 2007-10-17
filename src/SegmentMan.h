@@ -39,6 +39,7 @@
 
 class Segment;
 extern typedef SharedHandle<Segment> SegmentHandle;
+extern typedef deque<SegmentHandle> Segments;
 class Logger;
 class Option;
 class PeerStat;
@@ -124,6 +125,7 @@ public:
    * If there is no vacant segment, then returns a segment instance whose
    * isNull call is true.
    */
+  Segments getInFlightSegment(int32_t cuid);
   SegmentHandle getSegment(int32_t cuid);
   /**
    * Returns a segment whose index is index. 
@@ -185,6 +187,8 @@ public:
   void markAllPiecesDone();
 
   void markPieceDone(int64_t length);
+
+  int32_t countFreePieceFrom(int32_t index) const;
 };
 
 typedef SharedHandle<SegmentMan> SegmentManHandle;

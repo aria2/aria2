@@ -247,10 +247,13 @@ void RequestTest::testSetUrl16()
 
 void RequestTest::testRedirectUrl() {
   Request req;
+  req.setKeepAlive(true);
   bool v = req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
   
   bool v2 = req.redirectUrl("http://aria.rednoah.co.jp/");
   CPPUNIT_ASSERT(v2);
+  // keep-alive set to be false after redirection
+  CPPUNIT_ASSERT(!req.isKeepAlive());
   // url must be the same
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com:8080/aria2/index.html"),
 		       req.getUrl());

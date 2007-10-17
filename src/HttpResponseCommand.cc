@@ -122,6 +122,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   //_requestGroup->getSegmentMan()->initDownloadContext(size);
 
   SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setTotalLength(size);
+
   initPieceStorage();
 
   // quick hack for method 'head'
@@ -189,7 +190,7 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpRe
     enc->init();
   }
   HttpDownloadCommand* command =
-    new HttpDownloadCommand(cuid, req, _requestGroup, e, socket);
+    new HttpDownloadCommand(cuid, req, _requestGroup, httpConnection, e, socket);
   command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
   command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));

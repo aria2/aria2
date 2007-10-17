@@ -62,7 +62,7 @@ FtpNegotiationCommand::~FtpNegotiationCommand() {
 }
 
 bool FtpNegotiationCommand::executeInternal() {
-  while(processSequence(segment));
+  while(processSequence(_segments.front()));
   if(sequence == SEQ_RETRY) {
     return prepareForRetry(0);
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {

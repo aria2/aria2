@@ -38,13 +38,17 @@
 #include "HttpResponseCommand.h"
 #include "HttpConnection.h"
 #include "prefs.h"
+#include "SegmentMan.h"
 
 HttpRequestCommand::HttpRequestCommand(int cuid,
 				       const RequestHandle& req,
 				       RequestGroup* requestGroup,
+				       const HttpConnectionHandle& httpConnection,
 				       DownloadEngine* e,
 				       const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s) {
+  :AbstractCommand(cuid, req, requestGroup, e, s),
+   _httpConnection(httpConnection)
+{
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
@@ -56,21 +60,43 @@ bool HttpRequestCommand::executeInternal() {
   if(req->getProtocol() == "https") {
     socket->initiateSecureConnection();
   }
-  if(!e->option->getAsBool(PREF_HTTP_KEEP_ALIVE)) {
+  if(e->option->get(PREF_ENABLE_HTTP_PIPELINING) == V_TRUE) {
+    req->setKeepAlive(true);
+  } else if(e->option->get(PREF_ENABLE_HTTP_KEEP_ALIVE) == V_TRUE &&
+	    !_requestGroup->getSegmentMan().isNull() &&
+	    _requestGroup->getSegmentMan()->countFreePieceFrom(_segments.front()->getIndex()+1) <= 4) {
+    // TODO Do we need to consider the case where content-length is unknown?
+    // TODO parameterize the value which enables keep-alive, '4'
+    req->setKeepAlive(true);
+  } else {
     req->setKeepAlive(false);
   }
-  HttpRequestHandle httpRequest = new HttpRequest();
-  httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
-  httpRequest->setRequest(req);
-  httpRequest->setSegment(segment);
-  httpRequest->setEntityLength(_requestGroup->getTotalLength());
-  httpRequest->configure(e->option);
 
-  HttpConnectionHandle httpConnection = new HttpConnection(cuid, socket, e->option);
+  if(_segments.empty()) {
+    HttpRequestHandle httpRequest = new HttpRequest();
+    httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
+    httpRequest->setRequest(req);
+    httpRequest->setSegment(0);
+    httpRequest->setEntityLength(_requestGroup->getTotalLength());
+    httpRequest->configure(e->option);
+    
+    _httpConnection->sendRequest(httpRequest);
+  } else {
+    for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
+      SegmentHandle segment = *itr;
+      if(!_httpConnection->isIssued(segment)) {
+	HttpRequestHandle httpRequest = new HttpRequest();
+	httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
+	httpRequest->setRequest(req);
+	httpRequest->setSegment(segment);
+	httpRequest->setEntityLength(_requestGroup->getTotalLength());
+	httpRequest->configure(e->option);
 
-  httpConnection->sendRequest(httpRequest);
-
-  Command* command = new HttpResponseCommand(cuid, req, _requestGroup, httpConnection, e, socket);
+	_httpConnection->sendRequest(httpRequest);
+      }
+    }
+  }
+  Command* command = new HttpResponseCommand(cuid, req, _requestGroup, _httpConnection, e, socket);
   e->commands.push_back(command);
   return true;
 }

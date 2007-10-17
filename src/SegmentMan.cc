@@ -148,11 +148,20 @@ SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peer
   return slowSegmentEntry;
 }
 
-SegmentHandle SegmentMan::getSegment(int32_t cuid) {
-  SegmentEntryHandle segmentEntry = getSegmentEntryByCuid(cuid);
-  if(!segmentEntry.isNull()) {
-    return segmentEntry->segment;
+Segments SegmentMan::getInFlightSegment(int32_t cuid)
+{
+  Segments temp;
+  for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
+      itr != usedSegmentEntries.end(); ++itr) {
+    const SegmentEntryHandle& segmentEntry = *itr;
+    if(segmentEntry->cuid == cuid) {
+      temp.push_back(segmentEntry->segment);
+    }
   }
+  return temp;
+}
+
+SegmentHandle SegmentMan::getSegment(int32_t cuid) {
   PieceHandle piece = _pieceStorage->getMissingPiece();
   if(piece.isNull()) {
     PeerStatHandle myPeerStat = getPeerStat(cuid);
@@ -186,11 +195,12 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid, int32_t index) {
 
 void SegmentMan::cancelSegment(int32_t cuid) {
   for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end(); ++itr) {
+      itr != usedSegmentEntries.end();) {
     if((*itr)->cuid == cuid) {
       _pieceStorage->cancelPiece((*itr)->segment->getPiece());
-      usedSegmentEntries.erase(itr);
-      break;
+      itr = usedSegmentEntries.erase(itr);
+    } else {
+      ++itr;
     }
   }
 }
@@ -314,3 +324,14 @@ SegmentEntries::iterator SegmentMan::getSegmentEntryIteratorByCuid(int32_t cuid)
   }
   return usedSegmentEntries.end();    
 }
+
+int32_t SegmentMan::countFreePieceFrom(int32_t index) const
+{
+  for(int32_t i = index; i < _downloadContext->getNumPieces(); ++i) {
+    if(_pieceStorage->hasPiece(i) || _pieceStorage->isPieceUsed(i)) {
+      return i-index;
+    }
+  }
+  return _downloadContext->getNumPieces()-index;
+}
+

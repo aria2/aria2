@@ -61,6 +61,7 @@ bool Request::resetUrl() {
 
 bool Request::redirectUrl(const string& url) {
   previousUrl = "";
+  keepAlive = false;
   return parseUrl(url);
 }
 

@@ -123,6 +123,8 @@ public:
       return 0;
     }
   }
+
+  bool isIssued(const SegmentHandle& segment) const;
 };
 
 typedef SharedHandle<HttpConnection> HttpConnectionHandle;

@@ -47,5 +47,5 @@ HttpProxyResponseCommand::~HttpProxyResponseCommand() {}
 
 Command* HttpProxyResponseCommand::getNextCommand()
 {
-  return new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
+  return new HttpRequestCommand(cuid, req, _requestGroup, httpConnection, e, socket);
 }

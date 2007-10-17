@@ -1,3 +1,29 @@
+2007-10-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added HTTP/1.1 keep alive and pipelining support.
+	See --enable-http-keep-alive and --enable-http-pipelining option.
+	* src/AbstractCommand.{h, cc}: Now it has one-to-many relation to
+	Segment.
+	* src/HttpDownloadCommand.{h, cc}
+	* src/OptionHandlerFactory.cc
+	* src/HttpConnection.{h, cc}
+	* src/version_usage.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/Segment.h
+	* src/HttpRequestCommand.{h, cc}
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/HttpResponseCommand.cc
+	* src/SegmentMan.{h, cc}
+	* src/FtpNegotiateCommand.cc
+	* src/HttpProxyResponseCommand.cc
+	* src/Request.cc
+	* src/HttpRequest.cc
+	* src/DownloadCommand.cc
+	* test/HttpRequestTest.cc
+	* test/RequestTest.cc
+
 2007-10-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/ConsoleCalc.cc (calculateStat): Hide SPD after the download

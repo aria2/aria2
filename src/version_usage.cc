@@ -166,6 +166,10 @@ void showUsage() {
 	    "                              as the second example above, -Z option is\n"
 	    "                              required.\n"
 	    "                              Default: false") << endl;
+  cout << _(" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistant connection.\n"
+	    "                              Default: false") << endl;
+  cout << _(" --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
+	    "                              Default: false") << endl;
 #ifdef ENABLE_MESSAGE_DIGEST
   cout << _(" --check-integrity=true|false  Check file integrity by validating piece hash.\n"
 	    "                              This option only affects in BitTorrent downloads\n"

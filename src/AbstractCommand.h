@@ -45,6 +45,7 @@ extern typedef SharedHandle<Request> RequestHandle;
 class DownloadEngine;
 class Segment;
 extern typedef SharedHandle<Segment> SegmentHandle;
+extern typedef deque<SegmentHandle> Segments;
 class NameResolver;
 extern typedef SharedHandle<NameResolver> NameResolverHandle;
 
@@ -56,7 +57,7 @@ protected:
   RequestHandle req;
   DownloadEngine* e;
   SocketHandle socket;
-  SegmentHandle segment;
+  Segments _segments;
 
   void tryReserved();
   virtual bool prepareForRetry(int32_t wait);

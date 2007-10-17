@@ -44,6 +44,7 @@
 #include "DlRetryEx.h"
 #include "message.h"
 #include "prefs.h"
+#include "HttpConnection.h"
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
 							     const RequestHandle& req,
@@ -88,7 +89,7 @@ bool HttpInitiateConnectionCommand::executeInternal() {
     if(useProxyTunnel()) {
       command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e, socket);
     } else if(useProxyGet()) {
-      command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
+      command = new HttpRequestCommand(cuid, req, _requestGroup, new HttpConnection(cuid, socket, e->option), e, socket);
     } else {
       // TODO
       throw new DlAbortEx("ERROR");
@@ -97,7 +98,7 @@ bool HttpInitiateConnectionCommand::executeInternal() {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		 req->getPort());
     socket->establishConnection(hostname, req->getPort());
-    command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
+    command = new HttpRequestCommand(cuid, req, _requestGroup, new HttpConnection(cuid, socket, e->option), e, socket);
   }
   e->commands.push_back(command);
   return true;

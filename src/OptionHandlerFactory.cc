@@ -97,6 +97,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new BooleanOptionHandler(PREF_FORCE_SEQUENTIAL));  
   handlers.push_back(new BooleanOptionHandler(PREF_AUTO_FILE_RENAMING));  
   handlers.push_back(new BooleanOptionHandler(PREF_PARAMETERIZED_URI));  
+  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_HTTP_KEEP_ALIVE));
+  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_HTTP_PIPELINING));
 
   return handlers;
 }

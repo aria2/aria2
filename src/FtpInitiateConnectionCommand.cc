@@ -45,6 +45,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "Util.h"
+#include "HttpConnection.h"
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
 							   const RequestHandle& req,
@@ -88,7 +89,7 @@ bool FtpInitiateConnectionCommand::executeInternal() {
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     
     if(useHttpProxyGet()) {
-      command = new HttpRequestCommand(cuid, req, _requestGroup, e, socket);
+      command = new HttpRequestCommand(cuid, req, _requestGroup, new HttpConnection(cuid, socket, e->option), e, socket);
     } else if(useHttpProxyConnect()) {
       command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e, socket);
     } else {

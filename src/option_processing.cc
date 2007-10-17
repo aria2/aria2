@@ -70,7 +70,6 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_SPLIT, "1");
   op->put(PREF_DAEMON, V_FALSE);
   op->put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
-  op->put(PREF_HTTP_KEEP_ALIVE, V_FALSE);
   op->put(PREF_LISTEN_PORT, "-1");
   op->put(PREF_METALINK_SERVERS, "5");
   op->put(PREF_FOLLOW_TORRENT,
@@ -120,6 +119,9 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_FORCE_SEQUENTIAL, V_FALSE);
   op->put(PREF_AUTO_FILE_RENAMING, V_TRUE);
   op->put(PREF_PARAMETERIZED_URI, V_FALSE);
+  op->put(PREF_ENABLE_HTTP_KEEP_ALIVE, V_FALSE);
+  op->put(PREF_ENABLE_HTTP_PIPELINING, V_FALSE);
+  op->put(PREF_MAX_HTTP_PIPELINING, "2");
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -165,6 +167,8 @@ Option* option_processing(int argc, char* const argv[])
       { "force-sequential", optional_argument, 0, 'Z' },
       { "auto-file-renaming", optional_argument, &lopt, 206 },
       { "parameterized-uri", optional_argument, 0, 'P' },
+      { "enable-http-keep-alive", optional_argument, &lopt, 207 },
+      { "enable-http-pipelining", optional_argument, &lopt, 208 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -305,6 +309,12 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 206:
 	cmdstream << PREF_AUTO_FILE_RENAMING << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 207:
+	cmdstream << PREF_ENABLE_HTTP_KEEP_ALIVE << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 208:
+	cmdstream << PREF_ENABLE_HTTP_PIPELINING << "=" << toBoolArg(optarg) << "\n";
 	break;
       }
       break;

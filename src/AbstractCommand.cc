@@ -65,7 +65,6 @@ AbstractCommand::AbstractCommand(int32_t cuid,
 				 const SocketHandle& s):
   Command(cuid), RequestGroupAware(requestGroup),
   req(req), e(e), socket(s),
-  segment(0),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   nameResolverCheck(false)
 { 
@@ -107,12 +106,23 @@ bool AbstractCommand::execute() {
        !checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck) {
       checkPoint.reset();
       if(!_requestGroup->getPieceStorage().isNull()) {
-	if(segment.isNull()) {
-	  segment = _requestGroup->getSegmentMan()->getSegment(cuid);
+	_segments = _requestGroup->getSegmentMan()->getInFlightSegment(cuid);
+	int32_t maxSegments;
+	if(req->isKeepAlive() && e->option->get(PREF_ENABLE_HTTP_PIPELINING) == V_TRUE) {
+	  maxSegments = e->option->getAsInt(PREF_MAX_HTTP_PIPELINING);
+	} else {
+	  maxSegments = 1;
+	}
+	while((int32_t)_segments.size() < maxSegments) {
+	  SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid);
 	  if(segment.isNull()) {
-	    logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
-	    return prepareForRetry(1);
+	    break;
 	  }
+	  _segments.push_back(segment);
+	}
+	if(_segments.empty()) {
+	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
+	  return prepareForRetry(1);
 	}
       }
       return executeInternal();

@@ -37,13 +37,19 @@
 
 #include "DownloadCommand.h"
 
+class HttpConnection;
+extern typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+
 class HttpDownloadCommand : public DownloadCommand {
+private:
+  HttpConnectionHandle _httpConnection;
 protected:
   virtual bool prepareForNextSegment();
 public:
   HttpDownloadCommand(int cuid,
 		      const RequestHandle req,
 		      RequestGroup* requestGroup,
+		      const HttpConnectionHandle& httpConnection,
 		      DownloadEngine* e,
 		      const SocketHandle& s);
   virtual ~HttpDownloadCommand();
