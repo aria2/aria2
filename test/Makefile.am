@@ -1,6 +1,8 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	PieceTest.cc\
+	DefaultPieceStorageTest.cc\
 	SegmentTest.cc\
 	GrowSegmentTest.cc\
 	SingleFileAllocationIteratorTest.cc\
@@ -67,7 +69,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	DefaultBtContextTest.cc\
 	DefaultBtMessageDispatcherTest.cc\
 	DefaultBtRequestFactoryTest.cc\
-	DefaultPieceStorageTest.cc\
 	MockBtMessage.h\
 	MockBtMessageDispatcher.h\
 	MockBtMessageFactory.h\

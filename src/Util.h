@@ -43,7 +43,10 @@
 #include <deque>
 #include <ostream>
 
-#define STRTOLL(X) strtoll(X, (char**)NULL, 10);
+#define STRTOLL(X) strtoll(X, (char**)NULL, 10)
+
+#define START_INDEX(OFFSET, PIECE_LENGTH) ((OFFSET)/(PIECE_LENGTH))
+#define END_INDEX(OFFSET, LENGTH, PIECE_LENGTH) (((OFFSET)+(LENGTH)-1)/(PIECE_LENGTH))
 
 class Util {
 public:

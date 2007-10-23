@@ -49,8 +49,13 @@
 * Rewrite MetaFileUtil
 * Reconsider the use of RecoverableException and FatalException
 * Limit the number of opening file to,say,100 in MultiDiskAdaptor.
-
-* Implement duplicate download checking in Bt
 * Implement the feature to treat http/ftp as auxuality download method for BitTorrent
+
+-- remaining features to be implemented for 0.12.0 release
+* Reimplement ChecksumCommand(validation using 1 checksum for 1 file)
+* Implement duplicate download checking in Bt
 * Add PeerListenCommand to DownloadEngine only when it is really necessary.
+* ftp://USER:PASSWD@Servername automatic parsing
+* improve --metalink-location field
 * Use content-type for PostDownloadHandler
+* Torrent information

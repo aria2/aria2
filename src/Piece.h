@@ -38,17 +38,25 @@
 #include "BitfieldMan.h"
 #include "common.h"
 
-#define BLOCK_LENGTH (16*1024)
+class Piece;
+typedef SharedHandle<Piece> PieceHandle;
+typedef deque<PieceHandle> Pieces;
 
 class Piece {
 private:
   int32_t index;
   int32_t length;
+  int32_t _blockLength;
   BitfieldMan* bitfield;
+
+  Pieces _subPieces;
 public:
+
+  static const int32_t BLOCK_LENGTH  = 16*1024;
+
   Piece();
 
-  Piece(int32_t index, int32_t length);
+  Piece(int32_t index, int32_t length, int32_t blockLength = BLOCK_LENGTH);
 
   Piece(const Piece& piece);
 
@@ -117,6 +125,19 @@ public:
   bool isBlockUsed(int32_t index) const {
     return bitfield->isUseBitSet(index);
   }
+
+  void addSubPiece(const PieceHandle& subPiece);
+
+  PieceHandle getSubPiece(int32_t blockIndex);
+  
+  void removeSubPiece(int32_t blockIndex);
+
+  Pieces::iterator getSubPieceIterator(int32_t blockIndex);
+
+  bool isRangeComplete(int32_t offset, int32_t length);
+
+  // Calculates completed length, taking into account SubPieces
+  int32_t getCompletedLength();
 
   /**
    * Loses current bitfield state.

@@ -42,7 +42,7 @@ ostream& operator<<(ostream& o, const Segment& segment) {
   if(segment.complete()) {
     o << "writtenLength = " << segment._piece->getLength();
   } else {
-    o << "writtenLength = " << (segment._piece->getMissingUnusedBlockIndex()-1)*BLOCK_LENGTH;
+    o << "writtenLength = " << (segment._piece->getMissingUnusedBlockIndex()-1)*segment._piece->getBlockLength();
   }
   return o;
 }

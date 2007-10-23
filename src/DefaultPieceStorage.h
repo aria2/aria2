@@ -45,6 +45,8 @@ class Option;
 extern typedef deque<PieceHandle> Pieces;
 class DiskWriterFactory;
 extern typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
+class FileEntry;
+extern typedef SharedHandle<FileEntry> FileEntryHandle;
 
 #define END_GAME_PIECE_NUM 20
 
@@ -97,6 +99,7 @@ public:
   virtual PieceHandle getMissingFastPiece(const PeerHandle& peer);
 
   virtual PieceHandle getMissingPiece();
+  virtual PieceHandle getMissingPiece(const FileEntryHandle& fileEntry);
 
   virtual PieceHandle getMissingPiece(int32_t index);
 

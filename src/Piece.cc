@@ -36,16 +36,17 @@
 #include "Util.h"
 #include "BitfieldManFactory.h"
 
-Piece::Piece():index(0), length(0), bitfield(0) {}
+Piece::Piece():index(0), length(0), _blockLength(BLOCK_LENGTH), bitfield(0) {}
 
-Piece::Piece(int32_t index, int32_t length):index(index), length(length) {
+Piece::Piece(int32_t index, int32_t length, int32_t blockLength):index(index), length(length), _blockLength(blockLength) {
   bitfield =
-    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(BLOCK_LENGTH, length);
+    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(_blockLength, length);
 }
 
 Piece::Piece(const Piece& piece) {
   index = piece.index;
   length = piece.length;
+  _blockLength = piece._blockLength;
   if(piece.bitfield == 0) {
     bitfield = 0;
   } else {
@@ -53,10 +54,10 @@ Piece::Piece(const Piece& piece) {
   }
 }
 
-
 void Piece::completeBlock(int32_t blockIndex) {
   bitfield->setBit(blockIndex);
   bitfield->unsetUseBit(blockIndex);
+  removeSubPiece(blockIndex);
 }
 
 void Piece::clearAllBlock() {
@@ -106,11 +107,104 @@ void Piece::reconfigure(int32_t length)
 {
   this->length = length;
   bitfield =
-    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(BLOCK_LENGTH, length);
+    BitfieldManFactory::getFactoryInstance()->createBitfieldMan(_blockLength, length);
 }
 
 void Piece::setBitfield(const unsigned char* bitfield, int32_t len)
 {
   this->bitfield->setBitfield(bitfield, len);
+}
+
+void Piece::addSubPiece(const PieceHandle& subPiece)
+{
+  _subPieces.push_back(subPiece);
+}
+
+PieceHandle Piece::getSubPiece(int32_t blockIndex)
+{
+  Pieces::iterator itr = getSubPieceIterator(blockIndex);
+  if(itr == _subPieces.end()) {
+    return 0;
+  } else {
+    return *itr;
+  }
+}
+
+void Piece::removeSubPiece(int32_t blockIndex)
+{
+  Pieces::iterator itr = getSubPieceIterator(blockIndex);
+  if(itr != _subPieces.end()) {
+    _subPieces.erase(itr);
+  }  
+}
+
+Pieces::iterator Piece::getSubPieceIterator(int32_t blockIndex)
+{
+  for(Pieces::iterator itr = _subPieces.begin(); itr != _subPieces.end(); ++itr) {
+    if((*itr)->getIndex() == blockIndex) {
+      return itr;
+    }
+  }
+  return _subPieces.end();
+}
+
+bool Piece::isRangeComplete(int32_t offset, int32_t length)
+{
+  int32_t startIndex = START_INDEX(offset, _blockLength);
+  int32_t endIndex = END_INDEX(offset, length, _blockLength);
+  if(countBlock() <= endIndex) {
+    endIndex = countBlock()-1;
+  }
+  if(startIndex+1 < endIndex) {
+    if(!bitfield->isBitRangeSet(startIndex+1, endIndex-1)) {
+      return false;
+    }
+  }
+  if(startIndex == endIndex) {
+    if(hasBlock(startIndex)) {
+      return true;
+    }
+    PieceHandle subPiece = getSubPiece(startIndex);
+    if(subPiece.isNull()) {
+      return false;
+    }
+    return subPiece->isRangeComplete(offset, length);
+  } else {
+    if(!hasBlock(startIndex)) {
+      PieceHandle subPiece = getSubPiece(startIndex);
+      if(subPiece.isNull()) {
+	return false;
+      }
+      if(!subPiece->isRangeComplete(offset-startIndex*_blockLength, length)) {
+	return false;
+      }
+    }
+    if(!hasBlock(endIndex)) {
+      PieceHandle subPiece = getSubPiece(endIndex);
+      if(subPiece.isNull()) {
+	return false;
+      }
+      if(!subPiece->isRangeComplete(0, offset+length-endIndex*_blockLength)) {
+	return false;
+      }
+    }
+    return true;
+  }
+}
+
+int32_t Piece::getCompletedLength()
+{
+  int32_t length = 0;
+  for(int32_t i = 0; i < countBlock(); ++i) {
+    if(hasBlock(i)) {
+      length += getBlockLength(i);
+    } else {
+      PieceHandle subPiece = getSubPiece(i);
+      if(!subPiece.isNull()) {
+	length += subPiece->getCompletedLength();
+      }
+    }
+  }
+  return length;
 }
 

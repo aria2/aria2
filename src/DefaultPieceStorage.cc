@@ -46,6 +46,7 @@
 #include "message.h"
 #include "DefaultDiskWriterFactory.h"
 #include "DlAbortEx.h"
+#include "Util.h"
 
 DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option):
   downloadContext(downloadContext),
@@ -194,6 +195,36 @@ PieceHandle DefaultPieceStorage::getMissingPiece()
   return checkOutPiece(bitfieldMan->getSparseMissingUnusedIndex());
 }
 
+PieceHandle DefaultPieceStorage::getMissingPiece(const FileEntryHandle& fileEntry)
+{
+  BitfieldMan temp(*bitfieldMan);
+  temp.clearFilter();
+  temp.addFilter(fileEntry->getOffset(), fileEntry->getLength());
+  temp.enableFilter();
+
+  int32_t firstPieceIndex = START_INDEX(fileEntry->getOffset(), downloadContext->getPieceLength());
+  int32_t endPieceIndex = END_INDEX(fileEntry->getOffset(), fileEntry->getLength(), downloadContext->getPieceLength());
+  if(!temp.isBitSet(firstPieceIndex) && !temp.isUseBitSet(firstPieceIndex)) {
+    PieceHandle piece = findUsedPiece(firstPieceIndex);
+    if(!piece.isNull()) {
+      if(piece->isRangeComplete(fileEntry->getOffset()-firstPieceIndex*downloadContext->getPieceLength(),
+				fileEntry->getLength() > downloadContext->getPieceLength() ?
+				downloadContext->getPieceLength():fileEntry->getLength())) {
+	temp.setBit(firstPieceIndex);
+      }
+    }
+  }
+  if(firstPieceIndex != endPieceIndex && !temp.isBitSet(endPieceIndex) && !temp.isUseBitSet(endPieceIndex)) {
+    PieceHandle piece = findUsedPiece(endPieceIndex);
+    if(!piece.isNull()) {
+      if(piece->isRangeComplete(0, fileEntry->getOffset()+fileEntry->getLength()-endPieceIndex*downloadContext->getPieceLength())) {
+	temp.setBit(endPieceIndex);
+      }
+    }    
+  }
+  return checkOutPiece(temp.getSparseMissingUnusedIndex());
+}
+
 PieceHandle DefaultPieceStorage::getMissingPiece(int32_t index)
 {
   if(hasPiece(index) || isPieceUsed(index)) {
@@ -299,7 +330,7 @@ void DefaultPieceStorage::cancelPiece(const PieceHandle& piece)
   }
   bitfieldMan->unsetUseBit(piece->getIndex());
   if(!isEndGame()) {
-    if(piece->countCompleteBlock() == 0) {
+    if(piece->getCompletedLength() == 0) {
       deleteUsedPiece(piece);
     }
   }
@@ -376,6 +407,7 @@ void DefaultPieceStorage::clearFileFilter()
 // not unittested
 bool DefaultPieceStorage::downloadFinished()
 {
+  // TODO iterate all requested FileEntry and Call bitfieldMan->isBitSetOffsetRange()
   return bitfieldMan->isFilteredAllBitSet();
 }
 

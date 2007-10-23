@@ -38,7 +38,7 @@
 PiecedSegment::PiecedSegment(int32_t pieceLength, const PieceHandle& piece):
   _pieceLength(pieceLength), _overflowLength(0), _piece(piece)
 {
-  _writtenLength = _piece->getAllMissingBlockIndexes().front()*BLOCK_LENGTH;
+  _writtenLength = _piece->getAllMissingBlockIndexes().front()*_piece->getBlockLength();
 }
 
 PiecedSegment::~PiecedSegment() {}
@@ -75,7 +75,7 @@ void PiecedSegment::updateWrittenLength(int32_t bytes)
     _overflowLength = newWrittenLength-_piece->getLength();
     newWrittenLength = _piece->getLength();
   }
-  for(int32_t i = _writtenLength/BLOCK_LENGTH; i < newWrittenLength/BLOCK_LENGTH; ++i) {
+  for(int32_t i = _writtenLength/_piece->getBlockLength(); i < newWrittenLength/_piece->getBlockLength(); ++i) {
     _piece->completeBlock(i);
   }
   if(newWrittenLength == _piece->getLength()) {

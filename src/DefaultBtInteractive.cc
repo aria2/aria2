@@ -236,7 +236,7 @@ void DefaultBtInteractive::addRequests() {
   if(pieceStorage->isEndGame()) {
     pieceNum = 1;
   } else {
-    int32_t blocks = DIV_FLOOR(btContext->getPieceLength(), BLOCK_LENGTH);
+    int32_t blocks = DIV_FLOOR(btContext->getPieceLength(), Piece::BLOCK_LENGTH);
     pieceNum = DIV_FLOOR(MAX_PENDING_REQUEST, blocks);
   }
   fillPiece(pieceNum);
