@@ -191,7 +191,7 @@ void showUsage() {
 	    "                              file space. 'prealloc' pre-allocates file space\n"
 	    "                              before download begins. This may take some time\n"
 	    "                              depending on the size of the file.\n"
-	    "                              Default: none") << endl;
+	    "                              Default: prealloc") << endl;
   cout << _(" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
   		"                              already exists but the corresponding .aria2 file\n"
   		"                              doesn't exist.\n"
@@ -442,7 +442,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_MAX_UPLOAD_LIMIT, "0");
   op->put(PREF_STARTUP_IDLE_TIME, "10");
   op->put(PREF_TRACKER_MAX_TRIES, "10");
-  op->put(PREF_FILE_ALLOCATION, V_NONE);
+  op->put(PREF_FILE_ALLOCATION, V_PREALLOC);
   op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
   op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
   op->put(PREF_CHECK_INTEGRITY, V_FALSE);

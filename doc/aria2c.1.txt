@@ -128,7 +128,7 @@ OPTIONS
                               file space. 'prealloc' pre-allocates file space
                               before download begins. This may take some time
                               depending on the size of the file.
-                              Default: none
+                              Default: prealloc
 
  --allow-overwrite=true|false::
   If false, aria2 doesn't download a file which
