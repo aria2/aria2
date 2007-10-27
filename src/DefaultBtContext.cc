@@ -98,7 +98,8 @@ void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
 }
 
 void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
-					  const string& defaultName) {
+					  const string& defaultName,
+					  const Strings& urlList) {
   // TODO use dynamic_cast
   Data* nameData = (Data*)infoDic->get("name");
   if(nameData) {
@@ -134,9 +135,13 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
       Data* lastPath = (Data*)paths.back();
       path += lastPath->toString();
 
+      Strings uris;
+      transform(urlList.begin(), urlList.end(), back_inserter(uris),
+		bind2nd(plus<string>(), "/"+name+"/"+path));
       FileEntryHandle fileEntry(new FileEntry(path,
 					      lengthData->toLLInt(),
-					      offset));
+					      offset,
+					      uris));
       fileEntries.push_back(fileEntry);
       offset += fileEntry->getLength();
     }
@@ -146,7 +151,7 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
     fileMode = BtContext::SINGLE;
     Data* length = (Data*)infoDic->get("length");
     totalLength = length->toLLInt();
-    FileEntryHandle fileEntry(new FileEntry(name, totalLength, 0));
+    FileEntryHandle fileEntry(new FileEntry(name, totalLength, 0, urlList));
     fileEntries.push_back(fileEntry);
   }
 }
@@ -174,6 +179,25 @@ void DefaultBtContext::extractAnnounceList(List* announceListData) {
   }
 }
 
+Strings DefaultBtContext::extractUrlList(const MetaEntry* obj)
+{
+  Strings uris;
+  if(dynamic_cast<const List*>(obj)) {
+    const List* urlList = (const List*)obj;
+    for(MetaList::const_iterator itr = urlList->getList().begin();
+	itr != urlList->getList().end(); ++itr) {
+      Data* data = dynamic_cast<Data*>(*itr);
+      if(data) {
+	uris.push_back(data->toString());
+      }
+    }
+  } else if(dynamic_cast<const Data*>(obj)) {
+    const Data* urlData = (const Data*)obj;
+    uris.push_back(urlData->toString());
+  }
+  return uris;
+}
+
 void DefaultBtContext::load(const string& torrentFile) {
   clear();
   MetaEntry* rootEntry = MetaFileUtil::parseMetaFile(torrentFile);
@@ -199,8 +223,12 @@ void DefaultBtContext::load(const string& torrentFile) {
   extractPieceHash((unsigned char*)pieceHashData->getData(),
 		   pieceHashData->getLen(),
 		   PIECE_HASH_LENGTH);
+  // retrieve uri-list.
+  // This implemantation obeys HTTP-Seeding specification:
+  // see http://www.getright.com/seedtorrent.html
+  Strings urlList = extractUrlList(rootDic->get("url-list"));
   // retrieve file entries
-  extractFileEntries(infoDic, torrentFile);
+  extractFileEntries(infoDic, torrentFile, urlList);
   // retrieve announce
   Data* announceData = (Data*)rootDic->get("announce");
   List* announceListData = (List*)rootDic->get("announce-list");

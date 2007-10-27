@@ -41,6 +41,7 @@
 class FileEntry {
 private:
   string path;
+  Strings _uris;
   int64_t length;
   int64_t offset;
   bool extracted;
@@ -48,7 +49,7 @@ private:
 public:
   FileEntry():length(0), offset(0), extracted(false), requested(false) {}
 
-  FileEntry(const string& path, int64_t length, int64_t offset);
+  FileEntry(const string& path, int64_t length, int64_t offset, const Strings& uris = Strings());
 
   ~FileEntry();
 
@@ -85,6 +86,11 @@ public:
   void setRequested(bool flag) { this->requested = flag; }
 
   void setupDir(const string& parentDir);
+
+  const Strings& getAssociatedUris() const
+  {
+    return _uris;
+  }
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

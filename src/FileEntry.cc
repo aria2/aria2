@@ -39,8 +39,9 @@
 
 FileEntry::FileEntry(const string& path,
 		     int64_t length,
-		     int64_t offset):
-  path(path), length(length), offset(offset),
+		     int64_t offset,
+		     const Strings& uris):
+  path(path), _uris(uris), length(length), offset(offset),
   extracted(false), requested(true) {}
 
 FileEntry::~FileEntry() {}

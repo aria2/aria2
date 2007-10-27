@@ -25,6 +25,8 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetInfoHashAsString);
   CPPUNIT_TEST(testGetPeerId);
   CPPUNIT_TEST(testComputeFastSet);
+  CPPUNIT_TEST(testGetFileEntries_multiFileUrlList);
+  CPPUNIT_TEST(testGetFileEntries_singleFileUrlList);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -46,6 +48,8 @@ public:
   void testGetInfoHashAsString();
   void testGetPeerId();
   void testComputeFastSet();
+  void testGetFileEntries_multiFileUrlList();
+  void testGetFileEntries_singleFileUrlList();
 };
 
 
@@ -254,4 +258,52 @@ void DefaultBtContextTest::testComputeFastSet()
   int ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
   Integers ansSet2(&ans2[0], &ans2[10]);
   CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
+}
+
+void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {
+  DefaultBtContext btContext;
+  btContext.load("url-list-multiFile.torrent");
+  // This is multi-file torrent.
+  FileEntries fileEntries = btContext.getFileEntries();
+  // There are 2 file entries.
+  CPPUNIT_ASSERT_EQUAL((size_t)2, fileEntries.size());
+  FileEntries::iterator itr = fileEntries.begin();
+
+  FileEntryHandle fileEntry1 = *itr;
+  CPPUNIT_ASSERT_EQUAL(string("aria2/src/aria2c"),
+		       fileEntry1->getPath());
+  Strings uris1 = fileEntry1->getAssociatedUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)2, uris1.size());
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost/dist/aria2-test/aria2/src/aria2c"),
+		       uris1[0]);
+  CPPUNIT_ASSERT_EQUAL(string("http://mirror/dist/aria2-test/aria2/src/aria2c"),
+		       uris1[1]);
+
+  itr++;
+  FileEntryHandle fileEntry2 = *itr;
+  CPPUNIT_ASSERT_EQUAL(string("aria2-0.2.2.tar.bz2"),
+		       fileEntry2->getPath());
+  Strings uris2 = fileEntry2->getAssociatedUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)2, uris2.size());
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost/dist/aria2-test/aria2-0.2.2.tar.bz2"),
+		       uris2[0]);
+  CPPUNIT_ASSERT_EQUAL(string("http://mirror/dist/aria2-test/aria2-0.2.2.tar.bz2"),
+		       uris2[1]);
+}
+
+void DefaultBtContextTest::testGetFileEntries_singleFileUrlList() {
+  DefaultBtContext btContext;
+  btContext.load("url-list-singleFile.torrent");
+  // This is multi-file torrent.
+  FileEntries fileEntries = btContext.getFileEntries();
+  // There are 1 file entries.
+  CPPUNIT_ASSERT_EQUAL((size_t)1, fileEntries.size());
+
+  FileEntryHandle fileEntry1 = fileEntries.front();
+  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"),
+		       fileEntry1->getPath());
+  Strings uris1 = fileEntry1->getAssociatedUris();
+  CPPUNIT_ASSERT_EQUAL((size_t)1, uris1.size());
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost/dist/aria2.tar.bz2"),
+		       uris1[0]);
 }

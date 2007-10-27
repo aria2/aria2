@@ -66,9 +66,13 @@ private:
 			int32_t hashDataLength,
 			int32_t hashLength);
   void extractFileEntries(Dictionary* infoDic,
-			  const string& defaultName);
+			  const string& defaultName,
+			  const Strings& urlList);
   void extractAnnounce(Data* announceData);
   void extractAnnounceList(List* announceListData);
+
+  Strings extractUrlList(const MetaEntry* obj);
+
  public:
   DefaultBtContext();
   virtual ~DefaultBtContext();
