@@ -40,6 +40,9 @@
 #include "CheckIntegrityMan.h"
 #include "CheckIntegrityEntry.h"
 #include "Util.h"
+#ifdef ENABLE_BITTORRENT
+# include "BtContext.h"
+#endif // ENABLE_BITTORRENT
 #include <iomanip>
 
 void
@@ -64,18 +67,28 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
     }
 
     cout << "["
-	 << "#" << firstRequestGroup->getGID() << " "
-	 << "SIZE:"
-	 << Util::abbrevSize(firstRequestGroup->getCompletedLength())
-	 << "B"
-	 << "/"
-	 << Util::abbrevSize(firstRequestGroup->getTotalLength())
-	 << "B";
-    if(firstRequestGroup->getTotalLength() > 0) {
-      cout << "("
-	   << 100*firstRequestGroup->getCompletedLength()/firstRequestGroup->getTotalLength()
-	   << "%)";
-    }
+	 << "#" << firstRequestGroup->getGID() << " ";
+#ifdef ENABLE_BITTORRENT
+    if(firstRequestGroup->downloadFinished() &&
+       !BtContextHandle(firstRequestGroup->getDownloadContext()).isNull()) {
+      cout << "SEEDING" << "(" << "ratio:"
+	   << fixed << setprecision(1) << stat.getAllTimeUploadLength()*1.0/firstRequestGroup->getCompletedLength()
+	   << ")";
+    } else
+#endif // ENABLE_BITTORRENT
+      {
+	cout << "SIZE:"
+	     << Util::abbrevSize(firstRequestGroup->getCompletedLength())
+	     << "B"
+	     << "/"
+	     << Util::abbrevSize(firstRequestGroup->getTotalLength())
+	     << "B";
+	if(firstRequestGroup->getTotalLength() > 0) {
+	  cout << "("
+	       << 100*firstRequestGroup->getCompletedLength()/firstRequestGroup->getTotalLength()
+	       << "%)";
+	}
+      }
     cout << " "
 	 << "CN:"
 	 << firstRequestGroup->getNumConnection();
