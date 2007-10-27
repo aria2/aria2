@@ -149,7 +149,8 @@ void RequestGroup::initAndOpenFile()
 bool RequestGroup::needsFileAllocation() const
 {
   return _option->get(PREF_FILE_ALLOCATION) == V_PREALLOC
-    && File(_segmentMan->getFilePath()).size() < _segmentMan->totalSize;
+    && File(_segmentMan->getFilePath()).size() < _segmentMan->totalSize
+    && _option->getAsLLInt(PREF_NO_FILE_ALLOCATION_LIMIT) < _segmentMan->totalSize;
 }
   
 bool RequestGroup::fileExists() const

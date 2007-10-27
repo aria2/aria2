@@ -87,6 +87,8 @@
 // value: prealloc | none
 #define PREF_FILE_ALLOCATION "file-allocation"
 #  define V_PREALLOC "prealloc"
+#// value: 1*digit
+#define PREF_NO_FILE_ALLOCATION_LIMIT "no-file-allocation-limit"
 // value: true | false
 #define PREF_ALLOW_OVERWRITE "allow-overwrite"
 // value: true | false

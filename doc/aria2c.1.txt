@@ -130,6 +130,13 @@ OPTIONS
                               depending on the size of the file.
                               Default: prealloc
 
+ --no-file-allocation-limit=SIZE::
+ No file allocation is made for files whose
+                              size is smaller than SIZE.
+                              You can append K or M(1K = 1024, 1M = 1024K).
+                              BitTorrent downloads ignore this option.
+                              Default: 5M
+
  --allow-overwrite=true|false::
   If false, aria2 doesn't download a file which
                               already exists but the corresponding .aria2 file

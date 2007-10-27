@@ -192,6 +192,11 @@ void showUsage() {
 	    "                              before download begins. This may take some time\n"
 	    "                              depending on the size of the file.\n"
 	    "                              Default: prealloc") << endl;
+  cout << _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
+	    "                              size is smaller than SIZE.\n"
+	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+	    "                              BitTorrent downloads ignore this option.\n"
+	    "                              Default: 5M") << endl;
   cout << _(" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
   		"                              already exists but the corresponding .aria2 file\n"
   		"                              doesn't exist.\n"
@@ -443,6 +448,7 @@ int main(int argc, char* argv[]) {
   op->put(PREF_STARTUP_IDLE_TIME, "10");
   op->put(PREF_TRACKER_MAX_TRIES, "10");
   op->put(PREF_FILE_ALLOCATION, V_PREALLOC);
+  op->put(PREF_NO_FILE_ALLOCATION_LIMIT, "5242880"); // 5MiB
   op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
   op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
   op->put(PREF_CHECK_INTEGRITY, V_FALSE);
@@ -500,6 +506,7 @@ int main(int argc, char* argv[]) {
       { "force-sequential", optional_argument, 0, 'Z' },
       { "auto-file-renaming", optional_argument, &lopt, 206 },
       { "parameterized-uri", optional_argument, 0, 'P' },
+      { "no-file-allocation-limit", required_argument, &lopt, 207 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -640,6 +647,9 @@ int main(int argc, char* argv[]) {
 	break;
       case 206:
 	cmdstream << PREF_AUTO_FILE_RENAMING << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 207:
+	cmdstream << PREF_NO_FILE_ALLOCATION_LIMIT << "=" << optarg << "\n";
 	break;
       }
       break;
