@@ -1,5 +1,13 @@
 2007-10-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added the ability to recognize url-list in a torrent file.
+	The retrieved URLs are attached to the corresponding FileEntry.
+	* src/DefaultBtContext.{h, cc}
+	* src/FileEntry.{h, cc}
+	* test/DefaultBtContextTest.cc
+
+2007-10-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/ConsoleStatCalc.cc: Let the user know that aria2 is now seeding
 	after the download finishes.
 
