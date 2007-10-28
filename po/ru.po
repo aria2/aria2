@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-09-03 20:34+0900\n"
+"POT-Creation-Date: 2007-10-28 18:47+0900\n"
 "PO-Revision-Date: 2006-07-28 18:04+0600\n"
 "Last-Translator: Azamat H. Hackimov <azamat.hackimov@gmail.com>\n"
 "Language-Team:  <ru@li.org>\n"
@@ -1106,7 +1106,7 @@ msgid ""
 "                              before download begins. This may take some "
 "time\n"
 "                              depending on the size of the file.\n"
-"                              Default: none"
+"                              Default: prealloc"
 msgstr ""
 " --retry-wait=SEC             Установить промежуток времени между запросами\n"
 "                              при ошибках. Значение должно быть между 0 и "
@@ -1114,6 +1114,20 @@ msgstr ""
 "                              По умолчанию: 5"
 
 #: src/main.cc:195
+#, fuzzy
+msgid ""
+" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
+"                              size is smaller than SIZE.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              BitTorrent downloads ignore this option.\n"
+"                              Default: 5M"
+msgstr ""
+" --retry-wait=SEC             Установить промежуток времени между запросами\n"
+"                              при ошибках. Значение должно быть между 0 и "
+"60.\n"
+"                              По умолчанию: 5"
+
+#: src/main.cc:200
 #, fuzzy
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
@@ -1128,7 +1142,7 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:199
+#: src/main.cc:204
 #, fuzzy
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
@@ -1144,7 +1158,7 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:203
+#: src/main.cc:208
 #, fuzzy
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
@@ -1162,7 +1176,7 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:209
+#: src/main.cc:214
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -1179,7 +1193,7 @@ msgid ""
 "                              Default: false"
 msgstr ""
 
-#: src/main.cc:221
+#: src/main.cc:226
 #, fuzzy
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
@@ -1200,7 +1214,7 @@ msgstr ""
 "60.\n"
 "                              По умолчанию: 5"
 
-#: src/main.cc:229
+#: src/main.cc:234
 #, fuzzy
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
@@ -1216,7 +1230,7 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:234
+#: src/main.cc:239
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -1226,15 +1240,15 @@ msgid ""
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
 
-#: src/main.cc:240
+#: src/main.cc:245
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 
-#: src/main.cc:241
+#: src/main.cc:246
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr ""
 
-#: src/main.cc:242
+#: src/main.cc:247
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -1243,7 +1257,7 @@ msgid ""
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
 
-#: src/main.cc:246
+#: src/main.cc:251
 #, fuzzy
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of concurrent "
@@ -1254,13 +1268,13 @@ msgstr ""
 " -m, --max-tries=N            Установить число попыток. 0 означает\n"
 "                              неограниченное число. По умолчанию: 5"
 
-#: src/main.cc:249
+#: src/main.cc:254
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
 msgstr ""
 
-#: src/main.cc:252
+#: src/main.cc:257
 #, fuzzy
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
@@ -1269,7 +1283,7 @@ msgid ""
 msgstr ""
 " -S, --show-files             Вывести перечисленные .torrent файлы и выйти."
 
-#: src/main.cc:254
+#: src/main.cc:259
 #, fuzzy
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
@@ -1291,12 +1305,12 @@ msgstr ""
 "                              Также вы можете использовать тире (\"1-5\").\n"
 "                              \",\" и \"-\" могут быть использованы вместе."
 
-#: src/main.cc:264
+#: src/main.cc:269
 #, fuzzy
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr " -T, --torrent-file=TORRENT_FILE  Путь до .torrent-файла."
 
-#: src/main.cc:265
+#: src/main.cc:270
 #, fuzzy
 msgid ""
 " --follow-torrent=true|false  Set to false to prevent aria2 from\n"
@@ -1311,7 +1325,7 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:269
+#: src/main.cc:274
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -1321,7 +1335,7 @@ msgstr ""
 "                              описанный в .torrent-файл.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:272
+#: src/main.cc:277
 #, fuzzy
 msgid ""
 " --listen-port=PORT           Set TCP port number for BitTorrent downloads.\n"
@@ -1329,7 +1343,7 @@ msgid ""
 msgstr ""
 " --listen-port=PORT           Установить порт для прослушивания соединения."
 
-#: src/main.cc:274
+#: src/main.cc:279
 #, fuzzy
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
@@ -1342,7 +1356,7 @@ msgstr ""
 "60.\n"
 "                              По умолчанию: 5"
 
-#: src/main.cc:278
+#: src/main.cc:283
 #, fuzzy
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
@@ -1351,7 +1365,7 @@ msgstr ""
 " -m, --max-tries=N            Установить число попыток. 0 означает\n"
 "                              неограниченное число. По умолчанию: 5"
 
-#: src/main.cc:280
+#: src/main.cc:285
 #, fuzzy
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
@@ -1368,7 +1382,7 @@ msgstr ""
 "                              Следуя этому, aria2 соединяется к каждому URL\n"
 "                              используя N соединений."
 
-#: src/main.cc:285
+#: src/main.cc:290
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -1381,12 +1395,12 @@ msgid ""
 "                              Default: -aria2-"
 msgstr ""
 
-#: src/main.cc:294
+#: src/main.cc:299
 #, fuzzy
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Путь к .metalink-файлу."
 
-#: src/main.cc:295
+#: src/main.cc:300
 #, fuzzy
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
@@ -1399,27 +1413,27 @@ msgstr ""
 "параметр -s.\n"
 "                              По умолчанию: 15"
 
-#: src/main.cc:298
+#: src/main.cc:303
 #, fuzzy
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   Версия файла для скачивания."
 
-#: src/main.cc:299
+#: src/main.cc:304
 #, fuzzy
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE Язык файла для скачивания."
 
-#: src/main.cc:300
+#: src/main.cc:305
 #, fuzzy
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr " --metalink-os=OS             Целевая операционная система файла."
 
-#: src/main.cc:301
+#: src/main.cc:306
 msgid " --metalink-location=LOCATION The location of the prefered server."
 msgstr ""
 
-#: src/main.cc:302
+#: src/main.cc:307
 #, fuzzy
 msgid ""
 " --follow-metalink=true|false Set to false to prevent aria2 from\n"
@@ -1434,15 +1448,15 @@ msgstr ""
 "                              файлы.\n"
 "                              По умолчанию: true"
 
-#: src/main.cc:307
+#: src/main.cc:312
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Вывести номер версии и выйти."
 
-#: src/main.cc:308
+#: src/main.cc:313
 msgid " -h, --help                   Print this message and exit."
 msgstr " -h, --help                   Вывести это сообщение и выйти."
 
-#: src/main.cc:311
+#: src/main.cc:316
 #, fuzzy
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
@@ -1451,7 +1465,7 @@ msgstr ""
 " Вы можете указать несколько URL. Все URL должны указывать на один и тот же\n"
 " файл, иначе скачивание завершится неудачей."
 
-#: src/main.cc:316
+#: src/main.cc:321
 #, fuzzy
 msgid ""
 " Specify files in multi-file torrent to download. Use in conjunction with "
@@ -1461,78 +1475,78 @@ msgstr ""
 " Указать файлы для скачивания при многофайловом torent. Используйте вместе\n"
 " с параметром -T. Этот параметр игнорируется при указании --select-file."
 
-#: src/main.cc:320
+#: src/main.cc:325
 msgid "Examples:"
 msgstr "Примеры:"
 
-#: src/main.cc:321
+#: src/main.cc:326
 #, fuzzy
 msgid " Download a file using 1 connection:"
 msgstr " Скачать файл с помощью 1 соединения:"
 
-#: src/main.cc:323
+#: src/main.cc:328
 #, fuzzy
 msgid " Download a file using 2 connections:"
 msgstr " Скачать файл с помощью 2 соединений:"
 
-#: src/main.cc:325
+#: src/main.cc:330
 #, fuzzy
 msgid ""
 " Download a file using 2 connections, each connects to a different server:"
 msgstr " Скачать файл с помощью 2 соединений к различным серверам:"
 
-#: src/main.cc:327
+#: src/main.cc:332
 msgid " You can mix up different protocols:"
 msgstr " Вы можете смешивать различные протоколы:"
 
-#: src/main.cc:329
+#: src/main.cc:334
 msgid " Parameterized URI:"
 msgstr ""
 
-#: src/main.cc:331
+#: src/main.cc:336
 msgid " Parameterized URI. -Z option is required in this case:"
 msgstr ""
 
-#: src/main.cc:335
+#: src/main.cc:340
 msgid " Download a torrent:"
 msgstr " Скачать torrent:"
 
-#: src/main.cc:337
+#: src/main.cc:342
 #, fuzzy
 msgid " Download a torrent using a local .torrent file:"
 msgstr " Скачать torrent с помощью локального .torrent-файла:"
 
-#: src/main.cc:339 src/main.cc:352
+#: src/main.cc:344 src/main.cc:357
 msgid " Download only selected files:"
 msgstr " Скачать только выбранные файлы:"
 
-#: src/main.cc:341
+#: src/main.cc:346
 msgid " Print file listing of .torrent file:"
 msgstr " Вывести список фалов из .torrent"
 
-#: src/main.cc:346
+#: src/main.cc:351
 msgid " Metalink downloading:"
 msgstr " Скачать metalink:"
 
-#: src/main.cc:348
+#: src/main.cc:353
 msgid " Download a file using local .metalink file:"
 msgstr " Скачать файл с помощью локального .metalink-файла:"
 
-#: src/main.cc:350
+#: src/main.cc:355
 msgid " Metalink downloading with preferences:"
 msgstr " Скачивание metalink с настройками:"
 
-#: src/main.cc:354
+#: src/main.cc:359
 #, fuzzy
 msgid " Download only selected files using index:"
 msgstr " Скачать только выбранные файлы:"
 
-#: src/main.cc:356
+#: src/main.cc:361
 #, fuzzy
 msgid " Print file listing of .metalink file:"
 msgstr " Вывести список фалов из .torrent"
 
-#: src/main.cc:360
+#: src/main.cc:365
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Сообщения об ошибках направляйте на адрес %s"

@@ -1,3 +1,12 @@
+2007-10-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	* po/LINGUAS: Added nl for Dutch translation.
+	* po/ja.po: Updated.
+	* po/nl.po: Added Dutch translation, thanks to A. Bram Neijt.
+	* po/de.po: Updated German translation, thanks to Patrick Ruckstuhl.
+
+	* Release 0.11.4
+
 2007-10-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added --no-file-allocation-limit command-line option.
