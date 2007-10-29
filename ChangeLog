@@ -1,3 +1,34 @@
+2007-10-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Use File::renameTo()
+	* src/DefaultBtProgressInfoFile.cc
+
+	Added --no-file-allocation-limit command-line option.
+        * src/version_usage.cc
+	* src/option_processing.cc
+        * src/OptionHandlerFactory.cc
+        * src/RequestGroup.{h, cc}
+	* src/BtCheckIntegrityEntry.cc
+	* src/StreamCheckIntegrityEntry.cc
+        * src/prefs.h
+        * doc/aria2c.1.txt
+        * doc/aria2c.1
+
+	Now prealloc is the default value for --file-allocation option.
+        * src/version_usage.cc
+	* src/option_processing.cc
+        * doc/aria2c.1.txt
+        * doc/aria2c.1
+
+	Don't URL-encode user-agent.
+	* src/HttpRequest.cc
+
+	Updated translations
+        * po/LINGUAS: Added nl for Dutch translation.
+        * po/nl.po: Added Dutch translation, thanks to A. Bram Neijt.
+        * po/de.po: Updated German translation, thanks to Patrick Ruckstuhl.
+	* po/POTFILES.in: Updated.
+	
 2007-10-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added the ability to recognize url-list in a torrent file.

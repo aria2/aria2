@@ -51,7 +51,7 @@ Commands BtCheckIntegrityEntry::prepareForNextAction(DownloadEngine* e)
 {
   Commands commands;
   FileAllocationEntryHandle entry = new BtFileAllocationEntry(_requestGroup);
-  if(_requestGroup->isFileAllocationEnabled() && !_requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator()->finished()) {
+  if(_requestGroup->needsFileAllocation()) {
     e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {
     commands = entry->prepareForNextAction(e);

@@ -263,6 +263,8 @@ public:
     return _fileAllocationEnabled;
   }
 
+  bool needsFileAllocation() const;
+
   /**
    * Setting _preLocalFileCheckEnabled to false, then skip the check to see
    * if a file is already exists and control file exists etc.

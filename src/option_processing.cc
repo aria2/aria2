@@ -106,7 +106,8 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_MAX_UPLOAD_LIMIT, "0");
   op->put(PREF_STARTUP_IDLE_TIME, "10");
   op->put(PREF_TRACKER_MAX_TRIES, "10");
-  op->put(PREF_FILE_ALLOCATION, V_NONE);
+  op->put(PREF_FILE_ALLOCATION, V_PREALLOC);
+  op->put(PREF_NO_FILE_ALLOCATION_LIMIT, "5242880"); // 5MiB
   op->put(PREF_ALLOW_OVERWRITE, V_FALSE);
   op->put(PREF_REALTIME_CHUNK_CHECKSUM, V_TRUE);
   op->put(PREF_CHECK_INTEGRITY, V_FALSE);
@@ -169,6 +170,7 @@ Option* option_processing(int argc, char* const argv[])
       { "parameterized-uri", optional_argument, 0, 'P' },
       { "enable-http-keep-alive", optional_argument, &lopt, 207 },
       { "enable-http-pipelining", optional_argument, &lopt, 208 },
+      { "no-file-allocation-limit", required_argument, &lopt, 209 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -315,6 +317,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 208:
 	cmdstream << PREF_ENABLE_HTTP_PIPELINING << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 209:
+	cmdstream << PREF_NO_FILE_ALLOCATION_LIMIT << "=" << optarg << "\n";
 	break;
       }
       break;

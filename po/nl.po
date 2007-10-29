@@ -1,19 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Tatsuhiro Tsujikawa
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Dutch translation for aria2
+# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# This file is distributed under the same license as the aria2 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2 0.11.2\n"
+"Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2007-10-29 21:34+0900\n"
-"PO-Revision-Date: 2007-09-06 21:47+0100\n"
-"Last-Translator: Sebastien WILLEMIJNS <seb@willemijns.com>\n"
-"Language-Team: Fran&ccedil;ais\n"
+"PO-Revision-Date: 2007-09-23 15:15+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2007-10-20 15:58+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:65
 msgid "must be either 'true' or 'false'."
@@ -68,7 +70,7 @@ msgid ""
 "The download was complete. <%s>\n"
 msgstr ""
 "\n"
-"Le t&eacute;l&eacute;chargement est complet. <%s>\n"
+"De download is compleet. <%s>\n"
 
 #: src/RequestInfo.h:62
 #, c-format
@@ -78,24 +80,23 @@ msgid ""
 "aria2 will resume download if the transfer is restarted."
 msgstr ""
 "\n"
-"Certains t&eacute;l&eacute;chargements ne sont pas complets &agrave; cause "
-"d'&eacute;rreurs. V&eacute;rifiez le log.\n"
-"aria2 reprendra le transfert si le transfert est relanc&eacute;."
+"Sommige downloads zijn mislukt door fouten. Controleer de log.\n"
+"aria2 zal het downloaden hervatten wanneer deze opnieuw wordt gestart."
 
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - Le t&eacute;l&eacute;chargement d'un segment est complet."
+msgstr "CUID#%d - Het downloaden van een segment is voltooid."
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - Pas de segment disponible."
+msgstr "CUID#%d - Geen segment beschikbaar."
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - Connexion &agrave; %s:%d"
+msgstr "CUID#%d - Verbinden met %s:%d"
 
 #: src/message.h:43
 #, c-format
@@ -103,13 +104,13 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - Le segment a chang&eacute;. Nous envoyons une nouvelle requ&ecirc;"
-"te.header."
+"CUID#%d - Het segment is verandert. We vragen het opnieuw met een nieuwe "
+"Range header."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - Redirection vers %s"
+msgstr "CUID#%d - Doorverwijzing naar %s"
 
 #: src/message.h:45
 #, c-format
@@ -117,7 +118,7 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - Demande:\n"
+"CUID#%d - Verzoekt:\n"
 "%s"
 
 #: src/message.h:46
@@ -126,96 +127,93 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - R&eacute;ponse re&ccedil;:\n"
+"CUID#%d - Antwoord ontvangen:\n"
 "%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - T&eacute;l&eacute;chargement stopp&eacute;. URI=%s"
+msgstr "CUID#%d - Download afgelast. URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - Red&eacute;marrage du t&eacute;l&eacute;chargement. URI=%s"
+msgstr "CUID#%d - Herstart de download. URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - T&eacute;l&eacute;chargement stopp&eacute;."
+msgstr "CUID#%d - Download afgelast."
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr ""
-"CUID#%d - %d tentatives sans succ&egrave;s. T&eacute;l&eacute;chargement "
-"int&eacute;rrompu."
+msgstr "CUID#%d - %d maal geprobeerd, zonder success. Download afgelast."
 
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - Suppression du CUID dans le gestionnaire de segment."
+msgstr "CUID#%d - cuid uit registratie van segmentManager gehaald."
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - Nous avons une nouvelle partie. index=%d"
+msgstr "CUID#%d - nieuw stuk ontvangen. index=%d"
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - Nous avons une partie mauvaise. index=%d"
+msgstr "CUID#%d - verkeerde stuk ontvangen. index=%d"
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - T&eacute;l&eacute;chargement incomplet: %s"
+msgstr "CUID#%d - Download afgerond: %s"
 
 #: src/message.h:60
 #, c-format
 msgid "CUID#%d - Download has already completed: %s"
-msgstr ""
-"CUID#%d - Ce t&eacute;l&eacute;chargement est d&eacute;j&agrave; complet: %s"
+msgstr "CUID#%d - Download is al afgerond: %s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - Somme de contr&ocirc;le correcte: %s"
+msgstr "CUID#%d - Correcte checksum: %s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - Somme de contr&ocirc;le incorrecte: %s"
+msgstr "CUID#%d - Foutieve checksum: %s"
 
 #: src/message.h:63
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - Résolution du nom de domaine %s"
+msgstr "CUID#%d - Opzoeken van hostname %s"
 
 #: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - Résolution du nom complète: %s -> %s"
+msgstr "CUID#%d - Name resolution compleet: %s -> %s"
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - La résolution du nom pour %s a échoué:%s"
+msgstr "CUID#%d - Name resolution for %s mislukt:%s"
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr ""
+msgstr "CUID#%d - DNS cache gevonden: %s -> %s"
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - Arrêt demandé."
+msgstr "CUID#%d - Aflasting gevraagd."
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - Connexion au peer %s"
+msgstr "CUID#%d - Maak een connectie met peer %s"
 
 #: src/message.h:69
 #, c-format
@@ -223,13 +221,13 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
-"CUID#%d - Pièce reçue. index=%d, commencement=%d, taille=%d, offset=%llu, "
+"CUID#%d - Stuk ontvangen. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr ""
+msgstr "CUID#%d - Bitfield van stuk %s"
 
 #: src/message.h:71
 #, c-format
@@ -237,8 +235,6 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - Rejet du message de la pièce dans la queue suite à une reception "
-"d'un message d'annulation. index=%d, begin=%d, length=%d"
 
 #: src/message.h:72
 #, c-format
@@ -246,23 +242,23 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - Rejet du message de la pièce dans la queue suite à une reception "
-"d'un message d'annulation. index=%d, begin=%d, length=%d"
 
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
 msgstr ""
+"CUID#%d - Uitzondering opgetreden tijdens het controleren van de bestands "
+"integriteit."
 
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr ""
+msgstr "CUID#%d - Geïntereseerd in de peer"
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr ""
+msgstr "CUID#%d - Niet geïntereseerd in de peer"
 
 #: src/message.h:76
 #, c-format
@@ -289,36 +285,35 @@ msgid ""
 msgstr ""
 
 #: src/message.h:80
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr ""
+msgstr "CUID#%d - Fast extension ingeschakeld."
 
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
 msgstr ""
+"CUID#%d - Uitzondering ontvangen tijdens het alloceren van bestands ruimte."
 
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr ""
-"CUID#%d - Content-Disposition détecté. Utilisation de %s comme nom de "
-"fichier."
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr "CUID#%d - le peer %s:%d est banni."
+msgstr "CUID#%d - Peer %s:%d verbannen."
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - Utilisation du port %d pour accepter de nouvellesconnexions"
+msgstr ""
 
 #: src/message.h:85
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr "CUID#%d - La jonction du port a engendré une erreur=%d"
+msgstr ""
 
 #: src/message.h:86
 #, c-format
@@ -328,68 +323,66 @@ msgstr ""
 #: src/message.h:87
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr ""
+msgstr "CUID#%d - Fout in het accepteren van de connectie"
 
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
 msgstr ""
-"CUID#%d - Une érreur s'est produite durant le traitement de la réponse du "
-"tracker."
+"CUID#%d - Er is een fout opgetreden bij het afhandelen van het antwoord van "
+"de tracker."
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - Impossible de créer la requête du tracker."
+msgstr "CUID#%d - Kan tracker request niet maken."
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr ""
+msgstr "CUID#%d - Nieuw tracker request gemaakt met opdracht #%d"
 
 #: src/message.h:92
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr "URI non reconnue ou protocole non supporté: %s"
+msgstr "Onherkende URI of niet ondersteund protocol: %s"
 
 #: src/message.h:93
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr "Le Tracker a retourn&eacute; le message d'alerte suivant: %s"
+msgstr "Tracker retourneerde waarschuwings bericht: %s"
 
 #: src/message.h:94
 #, c-format
 msgid "The segment file %s exists."
-msgstr "Le fichier segment %s existe."
+msgstr "Het segmentsbestand %s bestaat."
 
 #: src/message.h:95
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr "Le fichier segment %s n'existe pas."
+msgstr "Het segmentsbestand %s bestaat niet."
 
 #: src/message.h:96
 #, c-format
 msgid "Saving the segment file %s"
-msgstr "Sauvegarde du fichier segment %s"
+msgstr "Bezig met het opslaan van egmentsbestand %s"
 
 #: src/message.h:97
 msgid "The segment file was saved successfully."
-msgstr ""
-"Le fichier segment a &eacute;t&eacute; sauvegard&eacute; avec succ&egrave;s."
+msgstr "Het segmentsbestand is succesvol opgeslagen"
 
 #: src/message.h:98
 #, c-format
 msgid "Loading the segment file %s."
-msgstr "Chargement du fichier segment %s."
+msgstr "Bezig met het laden van segmentsbestand %s"
 
 #: src/message.h:99
 msgid "The segment file was loaded successfully."
-msgstr ""
-"Le fichier segment a &eacute;t&eacute; charg&eacute; avec succ&eagrave;s."
+msgstr "Segmentsbestand was succesvol geladen"
 
 #: src/message.h:100
 msgid "No URI to download. Download aborted."
-msgstr "Aucune URI &agrave; t&eacute;l&eacute;charger."
+msgstr "Geen URI om te downloaden. Download afgelast."
 
 #: src/message.h:101
 #, c-format
@@ -399,70 +392,70 @@ msgid ""
 "file all over again, then delete it or add --allow-overwrite=true option and "
 "restart aria2."
 msgstr ""
-"Le fichier %s existe mais %s n'existe pas. Le téléchargement a été annulé "
-"pour empêcher que votre fichier ne soit écrasé. Si vous voulez retélécharger "
-"le fichier, supprimez-le ou ajouter l'option --allow-overwrite=true et "
-"redémarrez aria2"
+"Bestand %s bestaat, maar %s bestaat niet. De download is afgelast om te "
+"voorkomen dat het bestand word afgekapt tot 0. Als u zeker weet dat u het "
+"bestand helemaal overnieuw wilt downloaden, gooi het bestand dan weg of voeg "
+"--allow-overwrite=true toe aan de opties en herstart aria2."
 
 #: src/message.h:102
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr "Allocation du fichier %s, %s octets"
+msgstr "Alloceer file %s, %s bytes"
 
 #: src/message.h:103
 msgid "File not found"
-msgstr "Fichier non trouvé"
+msgstr "Bestand niet gevonden"
 
 #: src/message.h:104
 msgid "Not a directory"
-msgstr "Ce n'est pas un dossier"
+msgstr "Niet een map"
 
 #: src/message.h:105
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr ""
+msgstr "Onvoldoende checksums. checksumLength=%d, numChecksum=%d"
 
 #: src/message.h:106
 #, c-format
 msgid "Writing file %s"
-msgstr "En train d'écrire le fichier %s"
+msgstr "Bezig met het schrijven naar bestand %s"
 
 #: src/message.h:107
 msgid "No peer list received."
-msgstr "Aucune liste de peer reçcue."
+msgstr "Geen peer lijst ontvangen."
 
 #: src/message.h:108
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr "Ajout d'un peer %s: %d"
+msgstr "Toevoegen van peer %s:%d"
 
 #: src/message.h:109
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr ""
+msgstr "Verwijderen gebruikt stuk index=%d, fillRate(%%)=%d<=%d"
 
 #: src/message.h:110
 msgid "Download of selected files was complete."
-msgstr "Le téléchargement des fichiers sélectionnés est terminé."
+msgstr "Het downloaden van de geselecteerde bestanden is voltooid."
 
 #: src/message.h:111
 msgid "The download was complete."
-msgstr "Le téléchargement est terminé."
+msgstr "De download was compleet."
 
 #: src/message.h:112
 #, c-format
 msgid "Removed %d have entries."
-msgstr ""
+msgstr "Verwijderde %d have entries."
 
 #: src/message.h:113
 #, c-format
 msgid "Validating file %s"
-msgstr "Validation du fichier %s"
+msgstr "Valideren van bestand %s"
 
 #: src/message.h:114
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr "%d secondes pour allouer %s octet(s)"
+msgstr "%d seconden om %s byte(s) te alloceren"
 
 #: src/message.h:115
 #, c-format
@@ -472,12 +465,12 @@ msgstr ""
 #: src/message.h:116
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr ""
+msgstr "Metalink: Plaats %s voor downloaden in de wachtrij."
 
 #: src/message.h:117
 #, c-format
 msgid "Download complete: %s"
-msgstr "T&eacute;l&eacute;chargement terminé: %s"
+msgstr "Download afgerond: %s"
 
 #: src/message.h:118
 msgid "Seeding is over."
@@ -490,17 +483,17 @@ msgstr ""
 
 #: src/message.h:120
 msgid "No chunk to verify."
-msgstr ""
+msgstr "Geen stuk om te verifieren"
 
 #: src/message.h:121
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr ""
+msgstr "Correcte stuk checksum. hash=%s"
 
 #: src/message.h:122
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr "Impossible d'ouvrir les cookies depuis %s"
+msgstr "Kon geen cookies laden van %s"
 
 #: src/message.h:123
 #, c-format
@@ -508,57 +501,58 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
-"le fichier .netrc %s n'a pas les bonnes permissions. Il devrait être 600. "
-"Lesupport de ce fichier n'est donc pas pris en compte."
+".netrc bestand %s heeft niet de correcte permissies. Het zou 600 moeten "
+"zijn. netrc ondersteuning uigeschakeld."
 
 #: src/message.h:124
+#, fuzzy
 msgid "Logging started."
-msgstr ""
+msgstr "Logging gestart."
 
 #: src/message.h:125
 msgid "Specify at least one URL."
-msgstr "Spécifiez au moins une URL."
+msgstr "Specificeer minimaal één URL."
 
 #: src/message.h:126
 msgid "daemon failed."
-msgstr "Le service a échoué."
+msgstr ""
 
 #: src/message.h:128
 msgid "Timeout."
-msgstr "temps d'attente d&eacute;pass&eacute; (timeout)."
+msgstr "Time-out."
 
 #: src/message.h:129
 msgid "Invalid chunk size."
-msgstr "Taille de block invalide"
+msgstr "Ongeldige chunk grootte."
 
 #: src/message.h:130
 #, c-format
 msgid "Too large chunk. size=%d"
-msgstr "Bloc trop grand. taille=%d"
+msgstr "Te groot stuk. grootte=%d"
 
 #: src/message.h:131
 msgid "Invalid header."
-msgstr "En-tête invalide"
+msgstr "Ongeldige header."
 
 #: src/message.h:132
 msgid "Invalid response."
-msgstr "Réponse invalide"
+msgstr "Ongeldige respons."
 
 #: src/message.h:133
 msgid "No header found."
-msgstr "Aucun en-tête trouvé"
+msgstr "Geen header gevonden"
 
 #: src/message.h:134
 msgid "No status header."
-msgstr "Aucun en-tête de status."
+msgstr "Geen status header"
 
 #: src/message.h:135
 msgid "Proxy connection failed."
-msgstr "La connexion proxy a échoué."
+msgstr "Proxy connectie mislukt."
 
 #: src/message.h:136
 msgid "Connection failed."
-msgstr "La connexion a échoué."
+msgstr "Verbinding mislukt"
 
 #: src/message.h:137
 #, c-format
@@ -566,138 +560,136 @@ msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
-"Le fichié demandé et celui enregistré précédemment sont différents. Taille "
-"du fichier attendue: %s En réalité: %s"
 
 #: src/message.h:138
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr "La réponse a échoué. Status=%d"
+msgstr ""
 
 #: src/message.h:139
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr "Fichier trop grand. Taille=%s"
+msgstr "Te groot bestand. grootte=%s"
 
 #: src/message.h:140
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr "Le type de transfert %s n'est pas supporté."
+msgstr ""
 
 #: src/message.h:141
 #, c-format
 msgid "SSL initialization failed: %s"
-msgstr "L'initialisation SSL a échouée: %s"
+msgstr "SSL initialisatie mislukt: %s"
 
 #: src/message.h:142
 msgid "SSL I/O error"
-msgstr "Erreur E/S SSL"
+msgstr "SSL I/O fout"
 
 #: src/message.h:143
 msgid "SSL protocol error"
-msgstr "erreur de protocole SSL"
+msgstr "SSL protocol fout"
 
 #: src/message.h:144
 #, c-format
 msgid "SSL unknown error %d"
-msgstr ""
+msgstr "Onbekende SSL fout %d"
 
 #: src/message.h:145
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr "L'initialisation SSL a échouée: érreur de connexion OpenSSL SSL %d"
+msgstr ""
 
 #: src/message.h:146
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "La taille ne coïncide pas. Attendue: %s En réalité: %s"
+msgstr ""
 
 #: src/message.h:147
 msgid "Authorization failed."
-msgstr "L'autorisation a échoué."
+msgstr "Autorisatie mislukt."
 
 #: src/message.h:148
 msgid "Got EOF from the server."
-msgstr "Obtenir la fin du fichier (EOF) du serveur."
+msgstr "Ontving EOF van de server."
 
 #: src/message.h:149
 msgid "Got EOF from peer."
-msgstr "Obtenir la fin du fichier (EOF) du partenaire."
+msgstr ""
 
 #: src/message.h:150
 msgid "Malformed meta info."
-msgstr "Métainfos malformées."
+msgstr "Verkeerd geformuleerde meta informatie."
 
 #: src/message.h:152
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
-msgstr "Impossible d'ouvrir le fichier %s, cause: %s"
+msgstr "Kon bestand %s niet openen, oorzaak: %s"
 
 #: src/message.h:153
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
-msgstr "Impossible d'écrire le fichier %s, cause: %s"
+msgstr "Kon in bestand %s niet schrijven, oorzaak: %s"
 
 #: src/message.h:154
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
-msgstr "Impossible de lire le fichier %s, cause: %s"
+msgstr "Kon niet lezen uit bestand %s, reden: %s"
 
 #: src/message.h:155
 msgid "Failed to read data from disk."
-msgstr "Impossible de lire les données depuis le disque."
+msgstr "Kon geen data van de hardeschijf lezen."
 
 #: src/message.h:156
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
-"Impossible de calculer la somme SHA1 du ou d'une partie du fichier %s, "
-"cause: %s"
+"Kon geen SHA1 checksum berekenen van het bestand %s of een deel hiervan, "
+"reden: %s"
 
 #: src/message.h:157
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
-msgstr "Impossible de chercher le fichier %s, cause: %s"
+msgstr ""
 
 #: src/message.h:158
 #, c-format
 msgid "The offset is out of range, offset=%s"
-msgstr "Le décalage est trop grand, décalage=%s"
+msgstr ""
 
 #: src/message.h:159
 #, c-format
 msgid "%s is not a directory."
-msgstr "%s n'est pas un dossier"
+msgstr "%s is geen map."
 
 #: src/message.h:160
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
-msgstr "Impossible de créer le dossier %s, cause: %s"
+msgstr ""
 
 #: src/message.h:161
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
-msgstr "Impossible d'ouvrir le fichier de segment %s, cause: %s"
+msgstr ""
 
 #: src/message.h:162
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
-msgstr "Impossible d'écrire dans le fichier de segment %s, cause: %s"
+msgstr ""
 
 #: src/message.h:163
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
-msgstr "Impossible de lire à partir du fichier de segment %s, cause: %s"
+msgstr ""
 
 #: src/message.h:165
 #, c-format
 msgid "Failed to open a socket, cause: %s"
-msgstr "Impossible d'ouvrir une connexion socket, cause: %s"
+msgstr "Kon socket niet openen, oorzaak: %s"
 
 #: src/message.h:166
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
-msgstr "Impossible de définir une option de connexion socket, cause: %s"
+msgstr ""
 
 #: src/message.h:167
 #, c-format
@@ -712,83 +704,82 @@ msgstr ""
 #: src/message.h:169
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
-msgstr "Impossible d'unir une connexion socket, cause: %s"
+msgstr ""
 
 #: src/message.h:170
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
-msgstr "Impossible d'écouter une connexion socket, cause: %s"
+msgstr "Kon niet luisteren op socket, oorzaak: %s"
 
 #: src/message.h:171
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
-msgstr "Impossible d'accepter une connexion à un autre ordinateur, cause: %s"
+msgstr ""
 
 #: src/message.h:172
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
-msgstr "Impossible de récupérer le nom de la connexion socket, cause: %s"
+msgstr ""
 
 #: src/message.h:173
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
-msgstr "Impossible d'obtenir le nom de l'autre ordinateur, cause: %s"
+msgstr ""
 
 #: src/message.h:174
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
-msgstr "Impossible de récupérer le nom de l'hôte %s, cause: %s"
+msgstr ""
 
 #: src/message.h:175
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
-msgstr "Impossible de se connecter à l'hôte %s, cause: %s"
+msgstr ""
 
 #: src/message.h:176
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr ""
-"Impossible de vérifier si la connexion socket est inscriptible, cause: %s"
 
 #: src/message.h:177
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
-msgstr "Impossible de vérifier si la connexion socket est lisible, cause: %s"
+msgstr ""
 
 #: src/message.h:178
 #, c-format
 msgid "Failed to send data, cause: %s"
-msgstr "Impossible d'envoyer les données, cause: %s"
+msgstr ""
 
 #: src/message.h:179
 #, c-format
 msgid "Failed to receive data, cause: %s"
-msgstr "Impossible de recevoir les données, cause: %s"
+msgstr ""
 
 #: src/message.h:180
 #, c-format
 msgid "Failed to peek data, cause: %s"
-msgstr "Impossible de lire les données, cause: %s"
+msgstr ""
 
 #: src/message.h:181
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
-msgstr "Erreur de socket inconnue %d (0x%x)"
+msgstr ""
 
 #: src/message.h:182
 #, c-format
 msgid "File %s exists, but %s does not exist."
-msgstr "Le fichier %s existe, mais %s n'existe pas"
+msgstr ""
 
 #: src/message.h:183
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
-msgstr "Taille du fichier %s invalide, taille=%d. Il devrait faire %d."
+msgstr ""
 
 #: src/message.h:184
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
-msgstr "ID invalide=%d pour %s. Ça devrait être %d."
+msgstr ""
 
 #: src/message.h:185
 #, c-format
@@ -796,18 +787,15 @@ msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
-"La validation du bloc a échoué. Hash=%d, décalage=%s, Hash attendu=%s, Hash ="
-"%s"
 
 #: src/message.h:186
 msgid "Download aborted."
-msgstr "Téléchargement interrompu."
+msgstr "Download afgebroken."
 
 #: src/message.h:187
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr ""
-"Le fichier %s est déjà en train d'être téléchargé par une autre commande."
 
 #: src/message.h:188
 msgid "Insufficient checksums."
@@ -816,7 +804,7 @@ msgstr ""
 #: src/message.h:189
 #, c-format
 msgid "Tracker returned failure reason: %s"
-msgstr "Le Tracker a retourné le message d'alerte suivant: %s"
+msgstr ""
 
 #: src/message.h:190
 msgid "Flooding detected."
@@ -841,11 +829,11 @@ msgstr ""
 #: src/message.h:194
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr "La vitesse de téléchargement est trop lente: %d <= %d(B/s), hôte:%s"
+msgstr ""
 
 #: src/message.h:195
 msgid "No HttpRequestEntry found."
-msgstr "Aucune en-tête trouvée."
+msgstr ""
 
 #: src/message.h:196
 #, c-format
@@ -859,7 +847,7 @@ msgstr ""
 
 #: src/message.h:198
 msgid "No file matched with your preference."
-msgstr "Aucun fichier ne correspond à votre préférence"
+msgstr ""
 
 #: src/message.h:199
 msgid "Exception caught"
@@ -877,16 +865,15 @@ msgstr ""
 
 #: src/DownloadEngineFactory.cc:97
 msgid "Errors occurred while binding port.\n"
-msgstr "La jonction du port a engendré des erreurs.\n"
+msgstr ""
 
 #: src/MultiUrlRequestInfo.cc:70
 #, fuzzy
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
 "\n"
-"Certains t&eacute;l&eacute;chargements ne sont pas complets &agrave; cause "
-"d'&eacute;rreurs. V&eacute;rifiez le log.\n"
-"aria2 reprendra le transfert si le transfert est relanc&eacute;."
+"Sommige downloads zijn mislukt door fouten. Controleer de log.\n"
+"aria2 zal het downloaden hervatten wanneer deze opnieuw wordt gestart."
 
 #: src/MultiUrlRequestInfo.cc:72
 msgid ""
@@ -897,7 +884,7 @@ msgstr ""
 #: src/RequestGroupMan.cc:213
 #, fuzzy
 msgid "Download Results:"
-msgstr "Téléchargez un torrent:"
+msgstr " Download een torrent:"
 
 #: src/Util.cc:649
 msgid "Files:"
@@ -905,7 +892,7 @@ msgstr ""
 
 #: src/version_usage.cc:40
 msgid " version "
-msgstr " version "
+msgstr ""
 
 #: src/version_usage.cc:50
 msgid ""
@@ -924,68 +911,62 @@ msgid ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
 "USA\n"
 msgstr ""
-"Ce programme est un logiciel libre et gratuit; vous pouvez le redistribuer "
-"et/ou le modifier\n"
-"selon les termes de la Licence Publique Générale GNU telle qu'elle est "
-"publiée par la Free Software Foundation; soit la version 2 de la License, "
-"ou \n"
-"(comme vous le souhaitez) n'importe quelle nouvelle version.\n"
-"[\n"
-"Ce programme est distribué en espérant être utile,\n"
-"mais SANS AUCUNE GARANTIE que ce soit; ni même la garantie implicite de\n"
-"VENTE ou CORRESPONDANCE DANS UN BUT PARTICULIER. Consultez la\n"
-"Licence Publique Générale GNU pour plus d'informations.\n"
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
 "\n"
-"Vous devez avoir une copie de la  Licence Publique Générale GNU\n"
-"avec ce programme; sinon écrivez à la Free Software\n"
-"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program; if not, write to the Free Software\n"
+"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 "
 "USA\n"
 
 #: src/version_usage.cc:64
 msgid "Contact Info:"
-msgstr "Informations de Contact:"
+msgstr "Contact informatie:"
 
 #: src/version_usage.cc:71
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
-msgstr "Utilisation: %s [options] URL ...\n"
+msgstr "Gebruik: %s [opties] URL ...\n"
 
 #: src/version_usage.cc:73
 #, fuzzy, c-format
 msgid "       %s [options] -T TORRENT_FILE URL ...\n"
-msgstr "       %s [options] -T FICHIER FICHIER_TORRENT...\n"
+msgstr "       %s [opties] -T TORRENT_BESTAND BESTAND ...\n"
 
 #: src/version_usage.cc:76
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
-msgstr "       %s [options] -M FICHIER_METALINK\n"
+msgstr "       %s [opties] -M METALINK_BESTAND\n"
 
 #: src/version_usage.cc:79
 msgid "Options:"
-msgstr "Options:"
+msgstr "Opties:"
 
 #: src/version_usage.cc:80
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=DIR                Le dossier pour enregistrer le fichier."
+msgstr " -d, --dir=MAP De map om de gedownloade bestanden in op te slaan."
 
 #: src/version_usage.cc:81
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr ""
-" -o, --out=FILE               Le nom de fichier pour le fichier téléchargé."
+msgstr " -o, --out=FILE De bestandsnaam van het gedownloade bestand."
 
 #: src/version_usage.cc:82
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG                Le chemin du fichier pour enregistrer le log. "
-"Si '-' est spécifié,\n"
-"                              le log est redirigé vers stdout."
 
 #: src/version_usage.cc:85
 msgid " -D, --daemon                 Run as daemon."
-msgstr " -D, --daemon                 Exécuter en tant que service."
+msgstr ""
 
 #: src/version_usage.cc:87
 msgid ""
@@ -997,14 +978,6 @@ msgid ""
 "                              N connections.\n"
 "                              Default: 1"
 msgstr ""
-" -s, --split=N                Télécharger un fichier en utilisant N "
-"connexions. N doit être\n"
-"                              entre 1 et 5. Cette option affecte tous les "
-"URLs.\n"
-"                              Ainsi, aria2 se connecte à chaque URL en "
-"utilisant\n"
-"                              N connexions.\n"
-"                              Défaut: 1"
 
 #: src/version_usage.cc:92
 msgid ""
@@ -1014,59 +987,39 @@ msgid ""
 "60.\n"
 "                              Default: 5"
 msgstr ""
-" --retry-wait=SEC             Définit le temps entre chaque requête\n"
-"                              pour les erreurs. Spécifiez une valeur entre 0 "
-"et 60.\n"
-"                              Défaut: 5"
 
 #: src/version_usage.cc:95
 msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
 msgstr ""
-" -t, --timeout=SEC            Définir le délai d'expiration en secondes. "
-"Défaut: 60"
 
 #: src/version_usage.cc:96
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
-" -m, --max-tries=N            Définir le nombre d'essais. 0 veut dire "
-"illimité.\n"
-"                              Défaut: 5"
 
 #: src/version_usage.cc:104
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
-" --http-proxy=HOST:PORT       Utiliser un serveur proxy HTTP. Ceci affecte "
-"tous\n"
-"                              les URLs."
 
 #: src/version_usage.cc:105
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
-" --http-user=USER             Définir un utilisateur HTTP. Ceci affecte tous "
-"les URLs."
 
 #: src/version_usage.cc:106
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
-" --http-passwd=PASSWD         Définir un mot de passe HTTP. Ceci affecte "
-"tous les URLs."
 
 #: src/version_usage.cc:107
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
-" --http-proxy-user=USER       Définir un utilisateur proxy HTTP. Ceci "
-"affecte tous les URLs"
 
 #: src/version_usage.cc:108
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
-" --http-proxy-passwd=PASSWD   Définir un mot de passe HTTP. Ceci affecte "
-"tous les URLs."
 
 #: src/version_usage.cc:109
 msgid ""
@@ -1074,10 +1027,6 @@ msgid ""
 "                              METHOD is either 'get' or 'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
-" --http-proxy-method=METHOD   Définir la méthode à utiliser lors de requêtes "
-"proxy.\n"
-"                              METHOD est soit 'get' ou 'tunnel'.\n"
-"                              Défaut: tunnel"
 
 #: src/version_usage.cc:112
 msgid ""
@@ -1086,34 +1035,22 @@ msgid ""
 "                              is the only supported scheme.\n"
 "                              Default: basic"
 msgstr ""
-" --http-auth-scheme=SCHEME    Définir un type d'identification HTTP. En ce "
-"moment, basic\n"
-"                              est le seul type d'identification supporté.\n"
-"                              Défaut: basic"
 
 #: src/version_usage.cc:115
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
-" --referer=REFERER            Définir le Référant. Ceci affecte tous les "
-"URLs."
 
 #: src/version_usage.cc:116
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
-" --ftp-user=USER              Définir l'utilisateur FTP. Ceci affecte tous "
-"les URLs.\n"
-"                              Défaut: anonymous"
 
 #: src/version_usage.cc:118
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
-" --ftp-passwd=PASSWD          Définir un mot de passe FTP. Ceci affecte tous "
-"les URLs.\n"
-"                              Default: ARIA2USER@"
 
 #: src/version_usage.cc:120
 msgid ""
@@ -1122,14 +1059,10 @@ msgid ""
 "                              or 'ascii'.\n"
 "                              Default: binary"
 msgstr ""
-" --ftp-type=TYPE              Définir un type de transfert FTP. TYPE est "
-"soit 'binary'\n"
-"                              ou 'ascii'.\n"
-"                              Défaut: binary"
 
 #: src/version_usage.cc:123
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv               Utiliser le mode passif de FTP."
+msgstr " -p, --ftp-pasv Gebruik passive mode bij FTP."
 
 #: src/version_usage.cc:124
 msgid ""
@@ -1138,10 +1071,6 @@ msgid ""
 "                              'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
-" --ftp-via-http-proxy=METHOD  Utiliser un proxy HTTP en FTP. METHOD est soit "
-"'get' ou\n"
-"                              'tunnel'.\n"
-"                              Défaut: tunnel"
 
 #: src/version_usage.cc:127
 msgid ""
@@ -1155,16 +1084,6 @@ msgid ""
 "downloads.\n"
 "                              Default: 0"
 msgstr ""
-" --lowest-speed-limit=SPEED   Fermer la connexiion si la vitesse de "
-"téléchargement est inférieure à \n"
-"                              ou égal à cette valeur(octets par sec).\n"
-"                              0 veut dire que aria2 n'a pas de vitesse "
-"minimale.\n"
-"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Cette option n'affecte pas le téléchargement "
-"BitTorrent .\n"
-"                              Default: 0"
 
 #: src/version_usage.cc:134
 msgid ""
@@ -1173,15 +1092,8 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
-" --max-download-limit=SPEED   Définir la vitesse maximale de téléchargement "
-"en octets par sec.\n"
-"                              0 veut dire illimité.\n"
-"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Défaut: 0"
 
 #: src/version_usage.cc:138
-#, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method. METHOD is "
 "either\n"
@@ -1194,19 +1106,8 @@ msgid ""
 "                              depending on the size of the file.\n"
 "                              Default: prealloc"
 msgstr ""
-" --file-allocation=METHOD     Spécifier la méthode d'allocation de fichier. "
-"METHOD est soit\n"
-"                              'none' ou 'prealloc'.\n"
-"                              'none' n'alloue pas d'espace disque au "
-"préalable pour le fichier. 'prealloc'\n"
-"                              alloue de l'espace disque au préalable pour le "
-"fichier.\n"
-"                              Ceci peut prendre du temps selon la taille du "
-"fichier\n"
-"                              Défaut: none"
 
 #: src/version_usage.cc:144
-#, fuzzy
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
@@ -1214,16 +1115,6 @@ msgid ""
 "                              BitTorrent downloads ignore this option.\n"
 "                              Default: 5M"
 msgstr ""
-" --lowest-speed-limit=SPEED   Fermer la connexiion si la vitesse de "
-"téléchargement est inférieure à \n"
-"                              ou égal à cette valeur(octets par sec).\n"
-"                              0 veut dire que aria2 n'a pas de vitesse "
-"minimale.\n"
-"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Cette option n'affecte pas le téléchargement "
-"BitTorrent .\n"
-"                              Default: 0"
 
 #: src/version_usage.cc:149
 msgid ""
@@ -1233,11 +1124,6 @@ msgid ""
 "                              doesn't exist.\n"
 "                              Default: false"
 msgstr ""
-" --allow-overwrite=true|false  Si cette option est définie comme false, "
-"aria2 ne\n"
-"                              télécharge pas un fichier qui existe déjà sur\n"
-"                              l'ordinateur\n"
-"                              Défaut: false"
 
 #: src/version_usage.cc:153
 msgid ""
@@ -1306,17 +1192,6 @@ msgid ""
 "                              if the .aria2 file doesn't exist.\n"
 "                              Default: false"
 msgstr ""
-" --check-integrity=true|false Vérifier l'intégrité en utilisant le hash.\n"
-"                              Cette option affecte les téléchargements "
-"BitTorrent\n"
-"                              et Metalink en sommant les blocks de données.\n"
-"                              Utilisez cette option pour retélécharger des "
-"portions endommagées\n"
-"                              d'un fichier.\n"
-"                              Il se peut que vous deviez spécifier l'option "
-"--allow-overwrite=true\n"
-"                              si le fichier .aria2 n'existe pas.\n"
-"                              Défaut: false"
 
 #: src/version_usage.cc:187
 msgid ""
@@ -1327,12 +1202,6 @@ msgid ""
 "checksums.\n"
 "                              Default: true"
 msgstr ""
-" --realtime-chunk-checksum=true|false  Valider l'intégrité du fichier en "
-"téléchargeant\n"
-"                              un fichier en mode Metalink. Cette option "
-"affecte\n"
-"                              Metalink avec vérification d'intégrité.\n"
-"                              Défaut: true"
 
 #: src/version_usage.cc:192
 msgid ""
@@ -1343,26 +1212,14 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
-" -c, --continue               Continuer le téléchargement d'un fichier "
-"téléchargé partiellement\n"
-"                              Utilisez cette option pour reprendre un "
-"téléchargement commencé par\n"
-"                              un navigateur ou n'importe quel autre "
-"programme\n"
-"                              qui télécharge des fichiers de manière "
-"séquencielle du début\n"
-"                              En ce moment cette option s'applique aux\n"
-"                              téléchargements http(s)/ftp."
 
 #: src/version_usage.cc:198
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
-" -U, --user-agent=USER_AGENT  Définit le nom du programme pour les "
-"téléchargements http(s)."
 
 #: src/version_usage.cc:199
 msgid " -n, --no-netrc               Disables netrc support."
-msgstr " -n, --no-netrc               Désactiver le support netrc."
+msgstr " -n, --no-netrc Schakel netrc ondersteuning uit."
 
 #: src/version_usage.cc:200
 msgid ""
@@ -1372,12 +1229,6 @@ msgid ""
 "character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
-" -i, --input-file=FILE        Télécharger les URIs se trouvant dans FILE. "
-"Vous pouvez spécifier\n"
-"                              plusieurs URIs pour une seule entité: "
-"délimitez les\n"
-"                              URIs par des tabulations sur une seule ligne.\n"
-"                              Lit la sortie de stdin quand '-' est spécifié."
 
 #: src/version_usage.cc:204
 msgid ""
@@ -1386,19 +1237,12 @@ msgid ""
 "                              It should be used with the -i option.\n"
 "                              Default: 5"
 msgstr ""
-" -j, --max-concurrent-downloads=N Définit le nombre maximum de "
-"téléchargements simultanés.\n"
-"                              Doit être utilisé avec l'option -i.\n"
-"                              Défaut: 5"
 
 #: src/version_usage.cc:207
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
 msgstr ""
-" --load-cookies=FILE          Charge les cookies de FILE. Le format de FILE "
-"est\n"
-"                              celui utilisé par Netscape et Mozilla."
 
 #: src/version_usage.cc:210
 msgid ""
@@ -1406,9 +1250,6 @@ msgid ""
 "file\n"
 "                              and exit."
 msgstr ""
-" -S, --show-files             Imprime la liste des fichiers .torrent ou ."
-"metalink\n"
-"                              et quitte."
 
 #: src/version_usage.cc:212
 msgid ""
@@ -1423,24 +1264,10 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
-" --select-file=INDEX...       Définit le téléchargement en spécifiant son "
-"index.\n"
-"                              Vous pouvez savoir l'index du fichier grace à "
-"l'option --show-files.\n"
-"                              Vou pouvez spécifier plusieurs index en "
-"utilisant\n"
-"                              ',' comme \"3,6\".\n"
-"                              Vous pouvez aussi utiliser '-' pour spécifier "
-"un intervalle \"1-5\".\n"
-"                              ',' et '-' peuvent être utilisés ensemble.\n"
-"                              Quand vous utilisez l'option -M, l'index peut "
-"varier selon\n"
-"                              la requête (consultez l'option --metalink-*)."
 
 #: src/version_usage.cc:222
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr ""
-" -T, --torrent-file=TORRENT_FILE  Le chemin complet du fichier .torrent."
 
 #: src/version_usage.cc:223
 msgid ""
@@ -1450,12 +1277,6 @@ msgid ""
 "                              the downloaded file ends with .torrent.\n"
 "                              Default: true"
 msgstr ""
-" --follow-torrent=true|false  Définir cette option comme false empêche à  "
-"aria2\n"
-"                              d'entrer en mode BitTorrent même si le nom du "
-"fichier\n"
-"                              téléchargé termine pas l'extension .torrent.\n"
-"                              Défaut: true"
 
 #: src/version_usage.cc:227
 msgid ""
@@ -1463,19 +1284,12 @@ msgid ""
 "                              mentioned in .torrent file.\n"
 "                              Default: true"
 msgstr ""
-" --direct-file-mapping=true|false Lire directement à partir de et écrit sur "
-"chaque fichier\n"
-"                              mentioné dans le fichier .torrent.\n"
-"                              Défaut: true"
 
 #: src/version_usage.cc:230
 msgid ""
 " --listen-port=PORT           Set TCP port number for BitTorrent downloads.\n"
 "                              Default: 6881-6999"
 msgstr ""
-" --listen-port=PORT           Définir le numéro de port pour écouter dans le "
-"cas d'une connexion P2P.\n"
-"                              Default: 6881-6999"
 
 #: src/version_usage.cc:232
 msgid ""
@@ -1484,21 +1298,12 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
-" --max-upload-limit=SPEED     Définir la vitesse maximale de téléchargement "
-"en octets par sec.\n"
-"                              0 signifie débridé.\n"
-"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Défaut: 0"
 
 #: src/version_usage.cc:236
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
-" --seed-time=MINUTES          Définir le temps de partage en minutes. "
-"Consultez aussi\n"
-"                              l'option --seed-ratio."
 
 #: src/version_usage.cc:238
 msgid ""
@@ -1509,15 +1314,6 @@ msgid ""
 "                              along with this option, seeding ends when at\n"
 "                              least one of the conditions is satisfied."
 msgstr ""
-" --seed-ratio=RATIO           Définir le ratio de partage. Partager les "
-"torrents téléchargés jusqu'à\n"
-"                              ce que le ratio de partage atteigne RATIO. 1.0 "
-"est recommandé.\n"
-"                              Si l'option --seed-time est spécifiée avec "
-"cette option,\n"
-"                              le partage s'arrête dès qu'une des deux "
-"conditions\n"
-"                              est satisfaite."
 
 #: src/version_usage.cc:243
 msgid ""
@@ -1535,7 +1331,7 @@ msgstr ""
 #: src/version_usage.cc:252
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr ""
-" -M, --metalink-file=METALINK_FILE Le chemin vers le fichier .metalink."
+" -M, --metalink-file=METALINK_BESTAND Het pad naar het .metalink bestand."
 
 #: src/version_usage.cc:253
 msgid ""
@@ -1543,29 +1339,27 @@ msgid ""
 "                              simultaneously.\n"
 "                              Default: 5"
 msgstr ""
-" -C, --metalink-servers=NUM_SERVERS Le nombre de serveurs auxquels se "
-"connecter\n"
-"                              simultanément.\n"
-"                              Défaut: 5"
+" -C, --metalink-servers=AANTAL_SERVERS Het aantal servers om simultaan een\n"
+"                              connectie mee te maken.\n"
+"                              Standaard: 5"
 
 #: src/version_usage.cc:256
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr " --metalink-version=VERSION   La version du fichier à télécharger."
+msgstr " --metalink-version=VERSIE De versie van het te downloaden betand."
 
 #: src/version_usage.cc:257
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr " --metalink-language=LANGUAGE La langua du fichier à télécharger."
+msgstr " --metalink-language=TAAL De taal van het te downloaden bestand."
 
 #: src/version_usage.cc:258
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
-msgstr ""
-" --metalink-os=OS             Le système d'exploitation auquel est destiné "
-"le fichier."
+msgstr " --metalink-os=OS Het besturingssysteem van het te downloaden bestand."
 
 #: src/version_usage.cc:259
+#, fuzzy
 msgid " --metalink-location=LOCATION The location of the prefered server."
-msgstr " --metalink-location=LOCATION La localisation du serveur préféré."
+msgstr " --metalink-location=LOCATIE De locatie van de server met voorkeur."
 
 #: src/version_usage.cc:260
 msgid ""
@@ -1575,127 +1369,106 @@ msgid ""
 "                              the downloaded file ends with .metalink.\n"
 "                              Default: true"
 msgstr ""
-" --follow-metalink=true|false  Définir cette option comme false empêche à "
-"aria2\n"
-"                              d'entrer en mode Metalink même si le nom de "
-"fichier\n"
-"                              du fichier téléchargé se termine en ."
-"metalink.\n"
-"                              Défaut: true"
+" --follow-metalink=true|false Zet op false om Metalink modus niet\n"
+"                              automatisch te laten inschakelen door aira2\n"
+"                              wanneer een gedownload bestand in .metalink "
+"eindigt.\n"
+"                              Standaard: true"
 
 #: src/version_usage.cc:265
 msgid " -v, --version                Print the version number and exit."
-msgstr " -v, --version                Imprime le numéro de version et quitte."
+msgstr " -v, --version Toon het versie nummer en sluit."
 
 #: src/version_usage.cc:266
 msgid " -h, --help                   Print this message and exit."
-msgstr " -h, --help                   Imprime ce message et quitte."
+msgstr " -h, --help Toon deze text en sluit."
 
 #: src/version_usage.cc:269
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading will fail."
 msgstr ""
-" Vous pouvez spécifier plusieurs URLs. Tous les URLs doivent pointer vers le "
-"même fichier\n"
-" sinon le téléchargement échoue."
+" U kunt meerdere URLs specificeren. Alle URLS moeten naar hetzelfde bestand "
+"verwijzen\n"
+" anders zal het downloaden mislukken."
 
 #: src/version_usage.cc:272
 msgid "Examples:"
-msgstr " Exemples:"
+msgstr "Voorbeelden:"
 
 #: src/version_usage.cc:273
 msgid " Download a file using 1 connection:"
-msgstr "Téléchargez un fichier avec 1 connexion:"
+msgstr " Download een bestand m.b.v. 1 connectie:"
 
 #: src/version_usage.cc:275
 msgid " Download a file using 2 connections:"
-msgstr "Téléchargez un fichier avec 2 connexions:"
+msgstr " Download een bestand m.b.v. 2 connecties:"
 
 #: src/version_usage.cc:277
 msgid ""
 " Download a file using 2 connections, each connects to a different server:"
 msgstr ""
-"Téléchargez un fichier avec 2 connexions, chacune se connectant à un serveur "
-"différent:"
+" Download een bestand m.b.v. 2 connecties, elk met een verschillende server:"
 
 #: src/version_usage.cc:279
 msgid " You can mix up different protocols:"
-msgstr "Vous pouvez mélanger différents protocoles:"
+msgstr " U kunt verschillende protocollen door elkaar gebruiken:"
 
 #: src/version_usage.cc:281
 msgid " Parameterized URI:"
-msgstr ""
+msgstr " Geparametriseerde URI:"
 
 #: src/version_usage.cc:283
 msgid " Parameterized URI. -Z option is required in this case:"
-msgstr ""
+msgstr " Geparametriseerde URI. -Z is verplicht in dit geval:"
 
 #: src/version_usage.cc:287
 msgid " Download a torrent:"
-msgstr "Téléchargez un torrent:"
+msgstr " Download een torrent:"
 
 #: src/version_usage.cc:289
 msgid " Download a torrent using a local .torrent file:"
-msgstr "Téléchargez un torrent en utilisant un fichier local .torrent:"
+msgstr " Download een torrent m.b.v. een lokaal .torrent bestand:"
 
 #: src/version_usage.cc:291 src/version_usage.cc:304
 msgid " Download only selected files:"
-msgstr "Télécharger seulement les fichiers séléctionnés:"
+msgstr " Download allen geselecteerde bestanden:"
 
 #: src/version_usage.cc:293
 msgid " Print file listing of .torrent file:"
-msgstr "Imprimer la liste des fichiers .torrent:"
+msgstr " Toon bestandslijst van .torrent bestand:"
 
 #: src/version_usage.cc:298
 msgid " Metalink downloading:"
-msgstr "Téléchargement Metalink:"
+msgstr " Metalink downloaden:"
 
 #: src/version_usage.cc:300
 msgid " Download a file using local .metalink file:"
-msgstr "Télécharger un fichier en utilisant un fichier local .metalink:"
+msgstr " Download een file met een lokaal .metalink bestand:"
 
 #: src/version_usage.cc:302
 msgid " Metalink downloading with preferences:"
-msgstr "Téléchargement Metalink avec comme préférences:"
+msgstr " Metalink downloaden met voorkeuren:"
 
 #: src/version_usage.cc:306
 msgid " Download only selected files using index:"
-msgstr "Télécharger seulement les fichiers sélectionnés en utilisant l'index:"
+msgstr " Download alleen geselecteerde bestanden m.b.v. index:"
 
 #: src/version_usage.cc:308
 msgid " Print file listing of .metalink file:"
-msgstr "Imprimer la liste de fichiers du fichier .metalink:"
+msgstr " Toon bestandslijst van .metalink bestand:"
 
 #: src/version_usage.cc:312
 #, c-format
 msgid "Report bugs to %s"
-msgstr "Faire part des bugs à %s"
-
-#~ msgid ""
-#~ " Specify files in multi-file torrent to download. Use in conjunction with "
-#~ "the\n"
-#~ " -T option. This argument is ignored if you specify the --select-file "
-#~ "option."
-#~ msgstr ""
-#~ " Spécifiez les fichiers du torrent multi-fichiers à télécharger. Utilisez "
-#~ "avec l'option\n"
-#~ " -T. Ces arguments sont ignorés si vous spécifiez l'option --select-file."
+msgstr "Rapporteer bugs aan %s"
 
 #~ msgid ""
 #~ "\n"
 #~ "stopping application...\n"
 #~ msgstr ""
 #~ "\n"
-#~ "arrêt de l'application en cours...\n"
+#~ "beëindigen programma...\n"
 
 #~ msgid "done\n"
-#~ msgstr "Terminé\n"
-
-#~ msgid ""
-#~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
-#~ "                              URLs."
-#~ msgstr ""
-#~ " --http-proxy=HOST:PORT       Utiliser un serveur proxy HTTP. Ceci "
-#~ "affecte tous les\n"
-#~ "                              URLs."
+#~ msgstr "voltooid\n"

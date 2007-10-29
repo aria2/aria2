@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 09/10/2007
+.\"      Date: 10/29/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "09/10/2007" "" ""
+.TH "ARIA2C" "1" "10/29/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -193,7 +193,12 @@ or
 \fInone\fR
 doesn\'t pre\-allocate file space\.
 \fIprealloc\fR
-pre\-allocates file space before download begins\. This may take some time depending on the size of the file\. Default: none
+pre\-allocates file space before download begins\. This may take some time depending on the size of the file\. Default: prealloc
+.RE
+.PP
+\-\-no\-file\-allocation\-limit=SIZE
+.RS 4
+No file allocation is made for files whose size is smaller than SIZE\. You can append K or M(1K = 1024, 1M = 1024K)\. Default: 5M
 .RE
 .PP
 \-\-allow\-overwrite=true|false

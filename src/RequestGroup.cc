@@ -512,3 +512,10 @@ void RequestGroup::setProgressInfoFile(const BtProgressInfoFileHandle& progressI
 {
   _progressInfoFile = progressInfoFile;
 }
+
+bool RequestGroup::needsFileAllocation() const
+{
+  return isFileAllocationEnabled() &&
+    _option->getAsLLInt(PREF_NO_FILE_ALLOCATION_LIMIT) <= getTotalLength() &&
+    !_pieceStorage->getDiskAdaptor()->fileAllocationIterator()->finished();
+}

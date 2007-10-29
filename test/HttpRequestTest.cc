@@ -17,6 +17,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequest_with_cookie);
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
+  CPPUNIT_TEST(testUserAgent);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -30,6 +31,7 @@ public:
   void testCreateRequest_with_cookie();
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
+  void testUserAgent();
 };
 
 
@@ -499,4 +501,41 @@ void HttpRequestTest::testIsRangeSatisfied()
 		    entityLength);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
+}
+
+void HttpRequestTest::testUserAgent()
+{
+  SharedHandle<Option> option = new Option();
+  RequestFactory requestFactory;
+  requestFactory.setOption(option.get());
+
+  RequestHandle request = requestFactory.createRequest();
+  request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
+
+  SegmentHandle segment = new PiecedSegment(1024, new Piece(0, 1024));
+
+  HttpRequest httpRequest;
+
+  httpRequest.setRequest(request);
+  httpRequest.setSegment(segment);
+  httpRequest.setUserAgent("aria2 (Linux)");
+
+  string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2 (Linux)\r\n"
+    "Accept: */*\r\n"
+    "Host: localhost:8080\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+
+  string expectedTextForProxy = "CONNECT localhost:8080 HTTP/1.1\r\n"
+    "User-Agent: aria2 (Linux)\r\n"
+    "Host: localhost:8080\r\n"
+    "Proxy-Connection: close\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedTextForProxy, httpRequest.createProxyRequest());
 }

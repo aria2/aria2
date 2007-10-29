@@ -3,7 +3,6 @@
 * Add SSL server cert verification
 * Add SSL client cert support
 * Better HTTP status handling
-* Download files listed in a specifed file.
 * Add the feature which adds or removes URLs on-the-fly.
 * Add port range command-line option
 * Add max peers command-line option
@@ -14,14 +13,11 @@
 * Add silent mode.
 * Save URLs and command-line arguments to .aria2 file.
 * Add a control port for GUI frontend
-* Add a version header to .aria2 file to check the compatibiliy.
 * Use SharedHandle where it is useful.
 * Rewrite Util::countBit
 * Add --bt-timeout command line option.
-* Fix DefaultBtProgressInfoFile.cc: save(), load()
 * remove blockIndex
 * Add seed mode.
-* Make trakcerwatchercommand and trackerUploadCommand posses requestGroup 
 * consider life cycle of requestGroup and segmentMan
 * exit status: all downloads have been successful-> EXIT_SUCCESS,
 		some of downloads have been failed -> EXIT_FAILURE
@@ -50,6 +46,7 @@
 * Reconsider the use of RecoverableException and FatalException
 * Limit the number of opening file to,say,100 in MultiDiskAdaptor.
 * Implement the feature to treat http/ftp as auxuality download method for BitTorrent
+* http-seeding(single and multi-file torrent)
 
 -- remaining features to be implemented for 0.12.0 release
 * Reimplement ChecksumCommand(validation using 1 checksum for 1 file)
@@ -59,3 +56,7 @@
 * improve --metalink-location field
 * Use content-type for PostDownloadHandler
 * Torrent information
+* Fix SleepCommand to catch halt signal
+* set prealloc default for --file-allocaiton option.
+* Add allDownloadFinished to RequestGroup to erase .aria2 file after download finished. RequestGroup::downloadFinished() can not be used here because it doesn't work properly when selective download
+* Call Segment::updateSubPiece to reflect partial download information to subpiece.

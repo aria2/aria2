@@ -54,7 +54,7 @@ StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 Commands StreamCheckIntegrityEntry::prepareForNextAction(DownloadEngine* e)
 {
   Commands commands;
-  if(_requestGroup->isFileAllocationEnabled() && !_requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator()->finished()) {
+  if(_requestGroup->needsFileAllocation()) {
     FileAllocationEntryHandle entry =
       new StreamFileAllocationEntry(_currentRequest, _requestGroup,
 				    popNextCommand());

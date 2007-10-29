@@ -140,7 +140,12 @@ void showUsage() {
 	    "                              file space. 'prealloc' pre-allocates file space\n"
 	    "                              before download begins. This may take some time\n"
 	    "                              depending on the size of the file.\n"
-	    "                              Default: none") << endl;
+	    "                              Default: prealloc") << endl;
+  cout << _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
+	    "                              size is smaller than SIZE.\n"
+	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+	    "                              BitTorrent downloads ignore this option.\n"
+	    "                              Default: 5M") << endl;
   cout << _(" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
   		"                              already exists but the corresponding .aria2 file\n"
   		"                              doesn't exist.\n"

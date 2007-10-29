@@ -138,7 +138,7 @@ string HttpRequest::createProxyRequest() const
   string requestLine =
     string("CONNECT ")+getHost()+":"+Util::itos(getPort())+
     string(" HTTP/1.1\r\n")+
-    "User-Agent: "+Util::urlencode(userAgent)+"\r\n"+
+    "User-Agent: "+userAgent+"\r\n"+
     "Host: "+getHost()+":"+Util::itos(getPort())+"\r\n";
   if(request->isKeepAlive()) {
     requestLine += "Proxy-Connection: Keep-Alive\r\n";

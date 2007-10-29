@@ -142,7 +142,7 @@ void DefaultBtProgressInfoFile::save() {
     throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
 			_filename.c_str(), strerror(errno));
   }
-  if(rename(filenameTemp.c_str(), _filename.c_str()) == -1) {
+  if(!File(filenameTemp).renameTo(_filename)) {
     throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
 			_filename.c_str(), strerror(errno));
   }
