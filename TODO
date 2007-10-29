@@ -57,6 +57,4 @@
 * Use content-type for PostDownloadHandler
 * Torrent information
 * Fix SleepCommand to catch halt signal
-* set prealloc default for --file-allocaiton option.
-* Add allDownloadFinished to RequestGroup to erase .aria2 file after download finished. RequestGroup::downloadFinished() can not be used here because it doesn't work properly when selective download
-* Call Segment::updateSubPiece to reflect partial download information to subpiece.
+

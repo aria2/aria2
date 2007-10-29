@@ -149,6 +149,8 @@ public:
 
   bool downloadFinished() const;
 
+  bool allDownloadFinished() const;
+
   void closeFile();
 
   string getFilePath() const;

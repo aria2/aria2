@@ -105,7 +105,11 @@ void RequestGroupMan::removeStoppedGroup()
       if((*itr)->downloadFinished()) {
 	_logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
 			(*itr)->getFilePath().c_str());
-	(*itr)->getProgressInfoFile()->removeFile();
+	if((*itr)->allDownloadFinished()) {
+	  (*itr)->getProgressInfoFile()->removeFile();
+	} else {
+	  (*itr)->getProgressInfoFile()->save();
+	}
 	RequestGroups nextGroups = (*itr)->postDownloadProcessing();
 	if(nextGroups.size() > 0) {
 	  _logger->debug("Adding %d RequestGroups as a result of PostDownloadHandler.", (int32_t)nextGroups.size());
@@ -185,7 +189,9 @@ void RequestGroupMan::save()
 {
   for(RequestGroups::iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
-    if(!(*itr)->downloadFinished()) {
+    if((*itr)->allDownloadFinished()) {
+      (*itr)->getProgressInfoFile()->removeFile();
+    } else {
       try {
 	(*itr)->getProgressInfoFile()->save();
       } catch(DlAbortEx* e) {

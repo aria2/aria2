@@ -1,5 +1,12 @@
 2007-10-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use RequestGroup::allDownloadFinished() to decide whether the control
+	file should be removed or saved.
+	* src/RequestGroup.{h, cc} (allDownloadFinished): New function.
+	* src/RequestGroupMan.cc (removeStoppedGroup) (save)
+
+2007-10-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use File::renameTo()
 	* src/DefaultBtProgressInfoFile.cc
 

@@ -116,6 +116,15 @@ bool RequestGroup::downloadFinished() const
   }
 }
 
+bool RequestGroup::allDownloadFinished() const
+{
+  if(_pieceStorage.isNull()) {
+    return false;
+  } else {
+    return _pieceStorage->allDownloadFinished();
+  }
+}
+
 void RequestGroup::closeFile()
 {
   if(!_pieceStorage.isNull()) {
