@@ -40,7 +40,7 @@
 #include "BitfieldManFactory.h"
 #include "SimpleRandomizer.h"
 #include "Netrc.h"
-#include "RequestFactory.h"
+#include "AuthConfigFactory.h"
 #include "FatalException.h"
 #include "File.h"
 #include "CUIDCounter.h"
@@ -58,6 +58,7 @@
 #include "SingleFileDownloadContext.h"
 #include "DefaultBtContext.h"
 #include "RequestGroup.h"
+#include "Option.h"
 #include <deque>
 #include <algorithm>
 #include <signal.h>
@@ -153,8 +154,7 @@ int main(int argc, char* argv[]) {
     logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
     logger->info(MSG_LOGGING_STARTED);
 
-    RequestFactoryHandle requestFactory = new RequestFactory();
-    requestFactory->setOption(op);
+    AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(op);
     File netrccf(op->get(PREF_NETRC_PATH));
     if(!op->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();
@@ -164,7 +164,7 @@ int main(int argc, char* argv[]) {
       } else {
 	NetrcHandle netrc = new Netrc();
 	netrc->parse(op->get(PREF_NETRC_PATH));
-	requestFactory->setNetrc(netrc);
+	authConfigFactory->setNetrc(netrc);
       }
     }
 
@@ -181,7 +181,7 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    RequestFactorySingletonHolder::instance(requestFactory);
+    AuthConfigFactorySingleton::instance(authConfigFactory);
     CUIDCounterHandle cuidCounter = new CUIDCounter();
     CUIDCounterSingletonHolder::instance(cuidCounter);
 #ifdef SIGPIPE

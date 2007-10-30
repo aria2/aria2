@@ -23,16 +23,15 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl14);
   CPPUNIT_TEST(testSetUrl15);
   CPPUNIT_TEST(testSetUrl16);
+  CPPUNIT_TEST(testSetUrl_username);
+  CPPUNIT_TEST(testSetUrl_usernamePassword);
+  CPPUNIT_TEST(testSetUrl_zeroUsername);
   CPPUNIT_TEST(testRedirectUrl);
   CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testResetUrl);
   CPPUNIT_TEST(testSafeChar);
   CPPUNIT_TEST(testInnerLink);
   CPPUNIT_TEST(testMetalink);
-  CPPUNIT_TEST(testResolveHttpAuthConfig);
-  CPPUNIT_TEST(testResolveHttpAuthConfig_noCandidate);
-  CPPUNIT_TEST(testResolveHttpProxyAuthConfig);
-  CPPUNIT_TEST(testResolveFtpAuthConfig);
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -52,16 +51,15 @@ public:
   void testSetUrl14();
   void testSetUrl15();
   void testSetUrl16();
+  void testSetUrl_username();
+  void testSetUrl_usernamePassword();
+  void testSetUrl_zeroUsername();
   void testRedirectUrl();
   void testRedirectUrl2();
   void testResetUrl();
   void testSafeChar();
   void testInnerLink();
   void testMetalink();
-  void testResolveHttpAuthConfig();
-  void testResolveHttpAuthConfig_noCandidate();
-  void testResolveHttpProxyAuthConfig();
-  void testResolveFtpAuthConfig();
 };
 
 
@@ -80,6 +78,8 @@ void RequestTest::testSetUrl1() {
   CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(string(""), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getPassword());
 }
 
 void RequestTest::testSetUrl2() {
@@ -341,77 +341,66 @@ void RequestTest::testMetalink() {
 #endif // ENABLE_METALINK
 }
 
-void RequestTest::testResolveHttpAuthConfig()
+void RequestTest::testSetUrl_zeroUsername()
 {
   Request req;
-  req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-  // with DefaultAuthResolver
-  DefaultAuthResolverHandle defaultAuthResolver = new DefaultAuthResolver();
-  req.setHttpAuthResolver(defaultAuthResolver);
-  CPPUNIT_ASSERT(!req.resolveHttpAuthConfig().isNull());
-  CPPUNIT_ASSERT_EQUAL(string(":"),
-		       req.resolveHttpAuthConfig()->getAuthText());
+  CPPUNIT_ASSERT(req.setUrl("ftp://@localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT_EQUAL(string("ftp"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL(string("localhost"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("aria2-1.0.0.tar.bz2"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getPassword());
 
-  // with Netrc
-  NetrcHandle netrc = new Netrc();
-  netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
-  NetrcAuthResolverHandle netrcAuthResolver = new NetrcAuthResolver();
-  netrcAuthResolver->setNetrc(netrc);
-  req.setHttpAuthResolver(netrcAuthResolver);
-  AuthConfigHandle authConfig1 = req.resolveHttpAuthConfig();
-  CPPUNIT_ASSERT(!authConfig1.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("default:defaultpassword"),
-		       authConfig1->getAuthText());
+  CPPUNIT_ASSERT(req.setUrl("ftp://:@localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT_EQUAL(string("ftp"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL(string("localhost"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("aria2-1.0.0.tar.bz2"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getPassword());
 
-  // with Netrc + user defined
-  AuthConfigHandle authConfig =
-    new AuthConfig("userDefinedUser", "userDefinedPassword");
-  netrcAuthResolver->setUserDefinedAuthConfig(authConfig);
-  AuthConfigHandle authConfig2 = req.resolveHttpAuthConfig();
-  CPPUNIT_ASSERT(!authConfig2.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("userDefinedUser:userDefinedPassword"),
-		       authConfig2->getAuthText());
+  CPPUNIT_ASSERT(req.setUrl("ftp://:pass@localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT_EQUAL(string("ftp"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL(string("localhost"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("aria2-1.0.0.tar.bz2"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(string("pass"), req.getPassword());
+
 }
 
-void RequestTest::testResolveHttpAuthConfig_noCandidate()
+void RequestTest::testSetUrl_username()
 {
   Request req;
-  req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-
-  DefaultAuthResolverHandle defaultAuthResolver = new DefaultAuthResolver();
-  req.setHttpAuthResolver(defaultAuthResolver);
-  CPPUNIT_ASSERT_EQUAL(string(":"),
-		       req.resolveHttpAuthConfig()->getAuthText());
+  CPPUNIT_ASSERT(req.setUrl("ftp://aria2user@localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT_EQUAL(string("ftp"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL(string("localhost"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("aria2-1.0.0.tar.bz2"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(string("aria2user"), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getPassword());
 }
 
-void RequestTest::testResolveHttpProxyAuthConfig()
+void RequestTest::testSetUrl_usernamePassword()
 {
   Request req;
-  req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-  // with Netrc
-  NetrcHandle netrc = new Netrc();
-  netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
-  NetrcAuthResolverHandle netrcAuthResolver = new NetrcAuthResolver();
-  netrcAuthResolver->setNetrc(netrc);
-  req.setHttpProxyAuthResolver(netrcAuthResolver);
-  AuthConfigHandle authConfig1 = req.resolveHttpProxyAuthConfig();
-  CPPUNIT_ASSERT(!authConfig1.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("default:defaultpassword"),
-		       authConfig1->getAuthText());
-}
+  CPPUNIT_ASSERT(req.setUrl("ftp://aria2user%40:aria2pass%40@localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT_EQUAL(string("ftp"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL(string("localhost"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("aria2-1.0.0.tar.bz2"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(string("aria2user@"), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(string("aria2pass@"), req.getPassword());
 
-void RequestTest::testResolveFtpAuthConfig()
-{
-  Request req;
-  req.setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
-  // with Netrc
-  NetrcHandle netrc = new Netrc();
-  netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
-  NetrcAuthResolverHandle netrcAuthResolver = new NetrcAuthResolver();
-  netrcAuthResolver->setNetrc(netrc);
-  req.setFtpAuthResolver(netrcAuthResolver);
-  AuthConfigHandle authConfig1 = req.resolveFtpAuthConfig();
-  CPPUNIT_ASSERT(!authConfig1.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("default:defaultpassword"),
-		       authConfig1->getAuthText());
+  // make sure that after new url is set, username and password are updated.
+  CPPUNIT_ASSERT(req.setUrl("ftp://localhost/download/aria2-1.0.0.tar.bz2"));
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getUsername());
+  CPPUNIT_ASSERT_EQUAL(string(""), req.getPassword());
+
 }

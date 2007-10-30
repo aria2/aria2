@@ -1,6 +1,6 @@
 #include "HttpRequest.h"
 #include "prefs.h"
-#include "RequestFactory.h"
+#include "AuthConfigFactory.h"
 #include "PiecedSegment.h"
 #include "Piece.h"
 #include <cppunit/extensions/HelperMacros.h>
@@ -84,31 +84,30 @@ void HttpRequestTest::testGetEndByte()
 
 void HttpRequestTest::testCreateRequest()
 {
-  SharedHandle<Option> option = new Option();
-  option->put(PREF_HTTP_AUTH_ENABLED, V_FALSE);
-  option->put(PREF_HTTP_PROXY_ENABLED, V_FALSE);
-  option->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
-  option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
-  option->put(PREF_HTTP_USER, "aria2user");
-  option->put(PREF_HTTP_PASSWD, "aria2passwd");
-  option->put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
-  option->put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
-  RequestFactory requestFactory;
-  requestFactory.setOption(option.get());
+  Option option;
+  option.put(PREF_HTTP_AUTH_ENABLED, V_FALSE);
+  option.put(PREF_HTTP_PROXY_ENABLED, V_FALSE);
+  option.put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
+  option.put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
+  option.put(PREF_HTTP_USER, "aria2user");
+  option.put(PREF_HTTP_PASSWD, "aria2passwd");
+  option.put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
+  option.put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
-  RequestHandle request = requestFactory.createRequest();
+  AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(&option);
+  AuthConfigFactorySingleton::instance(authConfigFactory);
 
+  RequestHandle request = new Request();
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   SegmentHandle segment = new PiecedSegment(1024, new Piece(0, 1024));
 
   HttpRequest httpRequest;
-
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
   request->setKeepAlive(true);
-
+  
   string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
@@ -158,7 +157,7 @@ void HttpRequestTest::testCreateRequest()
     "Cache-Control: no-cache\r\n"
     "Range: bytes=1048576-2097151\r\n"
     "\r\n";
-
+  
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   request->setKeepAlive(false);
@@ -183,9 +182,9 @@ void HttpRequestTest::testCreateRequest()
   httpRequest.setSegment(segment);
 
   // enable http auth
-  option->put(PREF_HTTP_AUTH_ENABLED, V_TRUE);
-
-  httpRequest.configure(option.get());
+  option.put(PREF_HTTP_AUTH_ENABLED, V_TRUE);
+  
+  httpRequest.configure(&option);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -200,25 +199,9 @@ void HttpRequestTest::testCreateRequest()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   // enable http proxy auth
-  option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
+  option.put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
 
-  httpRequest.configure(option.get());
-
-  expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
-    "User-Agent: aria2\r\n"
-    "Accept: */*\r\n"
-    "Host: localhost:8080\r\n"
-    "Pragma: no-cache\r\n"
-    "Cache-Control: no-cache\r\n"
-    "Connection: close\r\n"
-    "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
-    "\r\n";
-
-  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
-
-  option->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
-
-  httpRequest.configure(option.get());
+  httpRequest.configure(&option);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -232,9 +215,25 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  option->put(PREF_HTTP_PROXY_METHOD, V_GET);
+  option.put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
 
-  httpRequest.configure(option.get());
+  httpRequest.configure(&option);
+
+  expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: localhost:8080\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "Authorization: Basic YXJpYTJ1c2VyOmFyaWEycGFzc3dk\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+
+  option.put(PREF_HTTP_PROXY_METHOD, V_GET);
+
+  httpRequest.configure(&option);
 
   expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -268,9 +267,9 @@ void HttpRequestTest::testCreateRequest()
 
   request->setKeepAlive(false);
 
-  option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
+  option.put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
 
-  httpRequest.configure(option.get());
+  httpRequest.configure(&option);
 
   expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -288,20 +287,20 @@ void HttpRequestTest::testCreateRequest()
 
 void HttpRequestTest::testCreateRequest_ftp()
 {
-  SharedHandle<Option> option = new Option();
-  option->put(PREF_HTTP_AUTH_ENABLED, V_FALSE);
-  option->put(PREF_HTTP_PROXY_ENABLED, V_FALSE);
-  option->put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
-  option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
-  option->put(PREF_HTTP_USER, "aria2user");
-  option->put(PREF_HTTP_PASSWD, "aria2passwd");
-  option->put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
-  option->put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
+  Option option;
+  option.put(PREF_HTTP_AUTH_ENABLED, V_FALSE);
+  option.put(PREF_HTTP_PROXY_ENABLED, V_FALSE);
+  option.put(PREF_HTTP_PROXY_METHOD, V_TUNNEL);
+  option.put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
+  option.put(PREF_HTTP_USER, "aria2user");
+  option.put(PREF_HTTP_PASSWD, "aria2passwd");
+  option.put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
+  option.put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
-  RequestFactory requestFactory;
-  requestFactory.setOption(option.get());
+  AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(&option);
+  AuthConfigFactorySingleton::instance(authConfigFactory);
 
-  RequestHandle request = requestFactory.createRequest();
+  RequestHandle request = new Request();
   request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
@@ -309,7 +308,7 @@ void HttpRequestTest::testCreateRequest_ftp()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
-  httpRequest.configure(option.get());
+  httpRequest.configure(&option);
 
   string expectedText = "GET ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -323,11 +322,11 @@ void HttpRequestTest::testCreateRequest_ftp()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
   // How to enable HTTP proxy authorization in FTP download via HTTP proxy
-  option->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
-  option->put(PREF_HTTP_PROXY_METHOD, V_GET);
-  option->put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
+  option.put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
+  option.put(PREF_HTTP_PROXY_METHOD, V_GET);
+  option.put(PREF_HTTP_PROXY_AUTH_ENABLED, V_TRUE);
 
-  httpRequest.configure(option.get());
+  httpRequest.configure(&option);
 
   expectedText = "GET ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -505,17 +504,17 @@ void HttpRequestTest::testIsRangeSatisfied()
 
 void HttpRequestTest::testUserAgent()
 {
-  SharedHandle<Option> option = new Option();
-  RequestFactory requestFactory;
-  requestFactory.setOption(option.get());
+  Option option;
 
-  RequestHandle request = requestFactory.createRequest();
+  AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(&option);
+  AuthConfigFactorySingleton::instance(authConfigFactory);
+
+  RequestHandle request = new Request();
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   SegmentHandle segment = new PiecedSegment(1024, new Piece(0, 1024));
 
   HttpRequest httpRequest;
-
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setUserAgent("aria2 (Linux)");

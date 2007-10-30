@@ -36,6 +36,8 @@
 #include "Util.h"
 #include "Base64.h"
 #include "prefs.h"
+#include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 RangeHandle HttpRequest::getRange() const
 {
@@ -112,7 +114,7 @@ string HttpRequest::createRequest() const
   }
   if(authEnabled) {
     requestLine += "Authorization: Basic "+
-	Base64::encode(request->resolveHttpAuthConfig()->getAuthText())+"\r\n";
+      Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfig(request)->getAuthText())+"\r\n";
   }
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";
@@ -154,7 +156,7 @@ string HttpRequest::createProxyRequest() const
 
 string HttpRequest::getProxyAuthString() const {
   return "Proxy-Authorization: Basic "+
-    Base64::encode(request->resolveHttpProxyAuthConfig()->getAuthText())+"\r\n";
+    Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfigForHttpProxy(request)->getAuthText())+"\r\n";
 }
 
 void HttpRequest::configure(const Option* option)

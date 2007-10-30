@@ -42,9 +42,6 @@ const string Request::METHOD_GET = "get";
 const string Request::METHOD_HEAD = "head";
 
 Request::Request():port(0), tryCount(0), keepAlive(false), method(METHOD_GET),
-		   _httpAuthResolver(0),
-		   _httpProxyAuthResolver(0),
-		   _ftpAuthResolver(0),
 		   cookieBox(CookieBoxFactorySingletonHolder::instance()->createNewInstance()) {}
 
 Request::~Request() {}
@@ -84,14 +81,18 @@ bool Request::parseUrl(const string& url) {
   port = 0;
   dir = "";
   file = "";
+  _username = "";
+  _password = "";
   if(tempUrl.find_first_not_of(SAFE_CHARS) != string::npos) {
     return false;
   }
+  // find query part
   string::size_type startQueryIndex = tempUrl.find("?");
   if(startQueryIndex != string::npos) {
     query = tempUrl.substr(startQueryIndex);
     tempUrl.erase(startQueryIndex);
   }
+  // find protocol
   string::size_type hp = tempUrl.find("://");
   if(hp == string::npos) return false;
   protocol = tempUrl.substr(0, hp);
@@ -100,13 +101,24 @@ bool Request::parseUrl(const string& url) {
     return false;
   }
   hp += 3;
+  // find host part
   if(tempUrl.size() <= hp) return false;
   string::size_type hep = tempUrl.find("/", hp);
   if(hep == string::npos) {
     hep = tempUrl.size();
   }
+  string hostPart = tempUrl.substr(hp, hep-hp);
+  //   find username and password in host part if they exist
+  string::size_type atmarkp =  hostPart.find_last_of("@");
+  if(atmarkp != string::npos) {
+    string authPart = hostPart.substr(0, atmarkp);
+    pair<string, string> userPass = Util::split(authPart, ":");
+    _username = Util::urldecode(userPass.first);
+    _password = Util::urldecode(userPass.second);
+    hostPart.erase(0, atmarkp+1);
+  }
   pair<string, string> hostAndPort;
-  Util::split(hostAndPort, tempUrl.substr(hp, hep-hp), ':');
+  Util::split(hostAndPort, hostPart, ':');
   host = hostAndPort.first;
   if(hostAndPort.second != "") {
     port = strtol(hostAndPort.second.c_str(), NULL, 10);
@@ -117,6 +129,7 @@ bool Request::parseUrl(const string& url) {
     // If port is not specified, then we set it to default port of its protocol..
     port = defPort;
   }
+  // find directory and file part
   string::size_type direp = tempUrl.find_last_of("/");
   if(direp == string::npos || direp <= hep) {
     dir = "/";
@@ -138,19 +151,4 @@ bool Request::parseUrl(const string& url) {
   }
   file += query;
   return true;
-}
-
-AuthConfigHandle Request::resolveHttpAuthConfig()
-{
-  return _httpAuthResolver->resolveAuthConfig(getHost());
-}
-
-AuthConfigHandle Request::resolveFtpAuthConfig()
-{
-  return _ftpAuthResolver->resolveAuthConfig(getHost());
-}
-
-AuthConfigHandle Request::resolveHttpProxyAuthConfig()
-{
-  return _httpProxyAuthResolver->resolveAuthConfig(getHost());
 }

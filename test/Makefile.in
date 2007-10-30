@@ -121,7 +121,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc PieceTest.cc \
 	FileUriListParserTest.cc StreamUriListParserTest.cc \
 	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
 	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
-	RequestGroupManTest.cc RequestFactoryTest.cc \
+	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
 	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
@@ -215,7 +215,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) PieceTest.$(OBJEXT) \
 	HttpHeaderProcessorTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) \
 	RequestTest.$(OBJEXT) CookieParserTest.$(OBJEXT) \
 	HttpRequestTest.$(OBJEXT) CookieBoxFactoryTest.$(OBJEXT) \
-	RequestGroupManTest.$(OBJEXT) RequestFactoryTest.$(OBJEXT) \
+	RequestGroupManTest.$(OBJEXT) AuthConfigFactoryTest.$(OBJEXT) \
 	NetrcAuthResolverTest.$(OBJEXT) \
 	DefaultAuthResolverTest.$(OBJEXT) OptionHandlerTest.$(OBJEXT) \
 	SegmentManTest.$(OBJEXT) BitfieldManTest.$(OBJEXT) \
@@ -422,7 +422,7 @@ aria2c_SOURCES = AllTest.cc PieceTest.cc DefaultPieceStorageTest.cc \
 	FileUriListParserTest.cc StreamUriListParserTest.cc \
 	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
 	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
-	RequestGroupManTest.cc RequestFactoryTest.cc \
+	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
 	NetrcAuthResolverTest.cc DefaultAuthResolverTest.cc \
 	OptionHandlerTest.cc SegmentManTest.cc BitfieldManTest.cc \
 	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
@@ -497,6 +497,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlphaNumberDecoratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessageTest.Po@am__quote@
@@ -563,7 +564,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@

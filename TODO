@@ -52,7 +52,6 @@
 * Reimplement ChecksumCommand(validation using 1 checksum for 1 file)
 * Implement duplicate download checking in Bt
 * Add PeerListenCommand to DownloadEngine only when it is really necessary.
-* ftp://USER:PASSWD@Servername automatic parsing
 * improve --metalink-location field
 * Use content-type for PostDownloadHandler
 * Torrent information

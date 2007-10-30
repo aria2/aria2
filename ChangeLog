@@ -1,3 +1,19 @@
+2007-10-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added ftp://USER:PASSWD@Servername automatic parsing.
+	* src/Request.{h, cc}: Removed AuthResolvers. Added _username and
+	_password. Recognize username and password in URI.
+	* src/main.cc: Use AuthConfigFactory instead of RequestFactory.
+	* src/RequestGroup.cc: Use AuthConfigFactory instead of RequestFactory.
+	* src/RequestFactory.{h, cc}: Removed.
+	* src/AuthConfigFactory.{h, cc}: New class.
+	* src/FtpConnection.cc: Use AuthConfigFactory.
+	* src/HttpRequest.cc: Use AuthConfigFactory.
+	* test/HttpRequestTest.cc: Updated.
+	* test/RequestTest.cc: Updated.
+	* test/AuthConfigFactoryTest.cc: New class.
+	* test/RequestFactoryTest.cc: Removed.
+
 2007-10-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use RequestGroup::allDownloadFinished() to decide whether the control

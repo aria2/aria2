@@ -74,7 +74,7 @@ SRCS =  Socket.h\
 	AbstractAuthResolver.h\
 	DefaultAuthResolver.cc DefaultAuthResolver.h\
 	NetrcAuthResolver.cc NetrcAuthResolver.h\
-	RequestFactory.cc RequestFactory.h\
+	AuthConfigFactory.cc AuthConfigFactory.h\
 	OptionParser.cc OptionParser.h\
 	OptionHandlerFactory.cc OptionHandlerFactory.h\
 	NameResolver.cc NameResolver.h\

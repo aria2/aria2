@@ -32,59 +32,49 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_REQUEST_FACTORY_H_
-#define _D_REQUEST_FACTORY_H_
+#ifndef _D_AUTH_CONFIG_FACTORY_H_
+#define _D_AUTH_CONFIG_FACTORY_H_
 
 #include "common.h"
-#include "Request.h"
-#include "Option.h"
-#include "Netrc.h"
 
-class RequestFactory {
+class Option;
+class Netrc;
+extern typedef SharedHandle<Netrc> NetrcHandle;
+class AuthConfig;
+extern typedef SharedHandle<AuthConfig> AuthConfigHandle;
+class Request;
+extern typedef SharedHandle<Request> RequestHandle;
+class AuthResolver;
+extern typedef SharedHandle<AuthResolver> AuthResolverHandle;
+
+class AuthConfigFactory {
 private:
   const Option* _option;
-  NetrcHandle _netrc;
-  string _method;
-  string _referer;
 
+  NetrcHandle _netrc;
+  
   AuthConfigHandle createAuthConfig(const string& user, const string& password) const;
 
+  AuthResolverHandle createHttpAuthResolver() const;
+  
+  AuthResolverHandle createHttpProxyAuthResolver() const;
+  
+  AuthResolverHandle createFtpAuthResolver() const;
+
 public:
-  RequestFactory():_option(0),
-		   _netrc(0),
-		   _method(Request::METHOD_GET)
-  {}
+  
+  AuthConfigFactory(const Option* option);
 
-  RequestHandle createRequest();
+  ~AuthConfigFactory();
 
-  AuthResolverHandle createHttpAuthResolver();
+  AuthConfigHandle createAuthConfig(const RequestHandle& request) const;
 
-  AuthResolverHandle createHttpProxyAuthResolver();
+  AuthConfigHandle createAuthConfigForHttpProxy(const RequestHandle& request) const;
 
-  AuthResolverHandle createFtpAuthResolver();
-
-  void setOption(const Option* option)
-  {
-    _option = option;
-  }
-
-  void setNetrc(const NetrcHandle& netrc)
-  {
-    _netrc = netrc;
-  }
-
-  void setMethod(const string& method)
-  {
-    _method = method;
-  }
-
-  void setReferer(const string& referer)
-  {
-    _referer = referer;
-  }
+  void setNetrc(const NetrcHandle& netrc);
 };
 
-typedef SharedHandle<RequestFactory> RequestFactoryHandle;
-typedef SingletonHolder<RequestFactoryHandle> RequestFactorySingletonHolder;
+typedef SharedHandle<AuthConfigFactory> AuthConfigFactoryHandle;
+typedef SingletonHolder<AuthConfigFactoryHandle> AuthConfigFactorySingleton;
 
-#endif // _D_REQUEST_FACTORY_H_
+#endif // _D_AUTH_CONFIG_FACTORY_H_

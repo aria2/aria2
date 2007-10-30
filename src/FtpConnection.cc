@@ -37,6 +37,8 @@
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"
+#include "AuthConfigFactory.h"
+#include "AuthConfig.h"
 
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
 			     const RequestHandle req, const Option* op)
@@ -49,7 +51,7 @@ FtpConnection::~FtpConnection() {}
 void FtpConnection::sendUser() const
   throw(DlRetryEx*)
 {
-  string request = "USER "+req->resolveFtpAuthConfig()->getUser()+"\r\n";
+  string request = "USER "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getUser()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
@@ -57,7 +59,7 @@ void FtpConnection::sendUser() const
 void FtpConnection::sendPass() const
   throw(DlRetryEx*)
 {
-  string request = "PASS "+req->resolveFtpAuthConfig()->getPassword()+"\r\n";
+  string request = "PASS "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getPassword()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
   socket->writeData(request);
 }

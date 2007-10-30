@@ -1,9 +1,9 @@
 #include "RequestGroupMan.h"
 #include "CUIDCounter.h"
 #include "prefs.h"
-#include "RequestFactory.h"
 #include "SingleFileDownloadContext.h"
 #include "RequestGroup.h"
+#include "Option.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -64,28 +64,4 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
 void RequestGroupManTest::testGetInitialCommands()
 {
   // TODO implement later
-  /*
-  Option option;
-  option.put(PREF_SPLIT, "1");
-  option.put(PREF_TIMEOUT, "10");
-
-  RequestFactoryHandle requestFactory = new RequestFactory();
-  requestFactory->setOption(&option);
-  RequestFactorySingletonHolder::instance(requestFactory);
-
-  RequestGroupMan gm;
-
-  RequestGroupHandle rg1 = new RequestGroup("aria2.tar.bz2.metalink",
-					    &option);
-  RequestGroupHandle rg2 = new RequestGroup("http://localhost/aria2.tar.bz2",
-					    &option);
-
-  gm.addRequestGroup(rg1);
-  gm.addRequestGroup(rg2);
-
-  ConsoleDownloadEngine e;
-  e.option = &option;
-  Commands commands = gm.getInitialCommands(&e);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, commands.size());
-  */
 }

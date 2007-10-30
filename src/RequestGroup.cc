@@ -39,7 +39,6 @@
 #include "SegmentManFactory.h"
 #include "Dependency.h"
 #include "prefs.h"
-#include "RequestFactory.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "CUIDCounter.h"
 #include "File.h"
@@ -236,7 +235,7 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, 
   for(;!_uris.empty() && numCommand--; _uris.pop_front()) {
     string uri = _uris.front();
     _spentUris.push_back(uri);
-    RequestHandle req = RequestFactorySingletonHolder::instance()->createRequest();
+    RequestHandle req = new Request();
     req->setReferer(_option->get(PREF_REFERER));
     req->setMethod(method);
     if(req->setUrl(uri)) {

@@ -32,24 +32,41 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "RequestFactory.h"
-#include "prefs.h"
-#include "AbstractAuthResolver.h"
-#include "NetrcAuthResolver.h"
+#include "AuthConfigFactory.h"
+#include "Option.h"
+#include "AuthConfig.h"
+#include "Netrc.h"
 #include "DefaultAuthResolver.h"
+#include "NetrcAuthResolver.h"
+#include "prefs.h"
+#include "Request.h"
 
-RequestHandle RequestFactory::createRequest()
+AuthConfigFactory::AuthConfigFactory(const Option* option):
+  _option(option), _netrc(0) {}
+
+AuthConfigFactory::~AuthConfigFactory() {}
+
+AuthConfigHandle AuthConfigFactory::createAuthConfig(const RequestHandle& request) const
 {
-  RequestHandle request = new Request();
-  request->setMethod(_method);
-  request->setReferer(_referer);
-  request->setHttpAuthResolver(createHttpAuthResolver());
-  request->setHttpProxyAuthResolver(createHttpProxyAuthResolver());
-  request->setFtpAuthResolver(createFtpAuthResolver());
-  return request;
+  if(request->getProtocol() == "http" || request->getProtocol() == "https") {
+    return createHttpAuthResolver()->resolveAuthConfig(request->getHost());
+  } else if(request->getProtocol() == "ftp") {
+    if(!request->getUsername().empty()) {
+      return createAuthConfig(request->getUsername(), request->getPassword());
+    } else {
+      return createFtpAuthResolver()->resolveAuthConfig(request->getHost());
+    }
+  } else {
+    return new AuthConfig();
+  }
 }
 
-AuthConfigHandle RequestFactory::createAuthConfig(const string& user, const string& password) const
+AuthConfigHandle AuthConfigFactory::createAuthConfigForHttpProxy(const RequestHandle& request) const
+{
+  return createHttpProxyAuthResolver()->resolveAuthConfig(request->getHost());
+}
+
+AuthConfigHandle AuthConfigFactory::createAuthConfig(const string& user, const string& password) const
 {
   if(user.length() > 0) {
     return new AuthConfig(user, password);
@@ -58,7 +75,7 @@ AuthConfigHandle RequestFactory::createAuthConfig(const string& user, const stri
   }
 }
 
-AuthResolverHandle RequestFactory::createHttpAuthResolver()
+AuthResolverHandle AuthConfigFactory::createHttpAuthResolver() const
 {
   AbstractAuthResolverHandle resolver = 0;
   if(true || _option->getAsBool(PREF_NO_NETRC)) {
@@ -72,7 +89,7 @@ AuthResolverHandle RequestFactory::createHttpAuthResolver()
   return resolver;
 }
 
-AuthResolverHandle RequestFactory::createFtpAuthResolver()
+AuthResolverHandle AuthConfigFactory::createFtpAuthResolver() const
 {
   AbstractAuthResolverHandle resolver = 0;
   if(_option->getAsBool(PREF_NO_NETRC)) {
@@ -87,7 +104,7 @@ AuthResolverHandle RequestFactory::createFtpAuthResolver()
   return resolver;
 }
 
-AuthResolverHandle RequestFactory::createHttpProxyAuthResolver()
+AuthResolverHandle AuthConfigFactory::createHttpProxyAuthResolver() const
 {
   AbstractAuthResolverHandle resolver = 0;
   if(true || _option->getAsBool(PREF_NO_NETRC)) {
@@ -99,4 +116,9 @@ AuthResolverHandle RequestFactory::createHttpProxyAuthResolver()
   }
   resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_HTTP_PROXY_USER), _option->get(PREF_HTTP_PROXY_PASSWD)));
   return resolver;
+}
+
+void AuthConfigFactory::setNetrc(const NetrcHandle& netrc)
+{
+  _netrc = netrc;
 }

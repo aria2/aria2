@@ -36,8 +36,6 @@
 #define _D_REQUEST_H_
 #include "common.h"
 #include "CookieBox.h"
-#include "AuthConfig.h"
-#include "AuthResolver.h"
 
 #define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
@@ -80,11 +78,9 @@ private:
   bool keepAlive;
   string method;
 
-  AuthResolverHandle _httpAuthResolver;
+  string _username;
 
-  AuthResolverHandle _httpProxyAuthResolver;
-
-  AuthResolverHandle _ftpAuthResolver;
+  string _password;
 
   bool parseUrl(const string& url);
 public:
@@ -125,26 +121,15 @@ public:
     this->method = method;
   }
 
-  void setHttpAuthResolver(const AuthResolverHandle& authResolver)
+  const string& getUsername() const
   {
-    _httpAuthResolver = authResolver;
+    return _username;
   }
 
-  void setHttpProxyAuthResolver(const AuthResolverHandle& authResolver)
+  const string& getPassword() const
   {
-    _httpProxyAuthResolver = authResolver;
+    return _password;
   }
-
-  void setFtpAuthResolver(const AuthResolverHandle& authResolver)
-  {
-    _ftpAuthResolver = authResolver;
-  }
-
-  AuthConfigHandle resolveHttpAuthConfig();
-
-  AuthConfigHandle resolveFtpAuthConfig();
-
-  AuthConfigHandle resolveHttpProxyAuthConfig();
 
   const string& getMethod() const {
     return method;
