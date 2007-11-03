@@ -1,5 +1,14 @@
 2007-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Re-implemented a file listing for Metalink, which was dropped while
+	http/ftp/torrent integration was being implemented.
+	* src/MetalinkHelper.{h, cc}: New class.
+	* test/MetalinkHelperTest.cc
+	* src/main.cc
+	* src/Metalink2RequestGroup.cc
+
+2007-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the ability to display the detailed torrent file information.
 	Now -S option gives not only a file listing, but also total download
 	length, info hash, announce URI, piece length, the number of pieces,

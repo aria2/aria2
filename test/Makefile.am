@@ -98,7 +98,8 @@ aria2c_SOURCES += MetalinkerTest.cc\
 	MetalinkEntryTest.cc\
 	Xml2MetalinkProcessorTest.cc\
 	Metalink2RequestGroupTest.cc\
-	MetalinkPostDownloadHandlerTest.cc
+	MetalinkPostDownloadHandlerTest.cc\
+	MetalinkHelperTest.cc
 endif # ENABLE_METALINK
 
 

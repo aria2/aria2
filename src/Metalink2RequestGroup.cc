@@ -42,6 +42,7 @@
 #include "message.h"
 #include "BtDependency.h"
 #include "SingleFileDownloadContext.h"
+#include "MetalinkHelper.h"
 
 Metalink2RequestGroup::Metalink2RequestGroup(const Option* option):_option(option), _logger(LogFactory::getInstance()) {}
 
@@ -92,16 +93,8 @@ public:
 
 RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
 {
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFile(metalinkFile);
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(_option->get(PREF_METALINK_VERSION),
-			   _option->get(PREF_METALINK_LANGUAGE),
-			   _option->get(PREF_METALINK_OS));
+  MetalinkEntries entries = MetalinkHelper::parseAndQuery(metalinkFile,
+							  _option);
   if(entries.size() == 0) {
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
     return RequestGroups();

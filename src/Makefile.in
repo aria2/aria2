@@ -157,7 +157,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
-@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h
+@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
+@ENABLE_METALINK_TRUE@	MetalinkHelper.cc MetalinkHelper.h
 
 @HAVE_BASENAME_FALSE@am__append_4 = libgen.c libgen.h
 @HAVE_GETADDRINFO_FALSE@am__append_5 = getaddrinfo.c getaddrinfo.h
@@ -344,10 +345,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h \
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h \
-	libgen.c libgen.h getaddrinfo.c getaddrinfo.h gai_strerror.c \
-	gai_strerror.h gettimeofday.c gettimeofday.h inet_aton.c \
-	inet_aton.h localtime_r.c localtime_r.h strptime.c strptime.h \
-	timegm.c timegm.h
+	MetalinkHelper.cc MetalinkHelper.h libgen.c libgen.h \
+	getaddrinfo.c getaddrinfo.h gai_strerror.c gai_strerror.h \
+	gettimeofday.c gettimeofday.h inet_aton.c inet_aton.h \
+	localtime_r.c localtime_r.h strptime.c strptime.h timegm.c \
+	timegm.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCommand.$(OBJEXT) \
@@ -425,7 +427,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.$(OBJEXT) \
-@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT)
+@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkHelper.$(OBJEXT)
 @HAVE_BASENAME_FALSE@am__objects_4 = libgen.$(OBJEXT)
 @HAVE_GETADDRINFO_FALSE@am__objects_5 = getaddrinfo.$(OBJEXT)
 @HAVE_GAI_STRERROR_FALSE@am__objects_6 = gai_strerror.$(OBJEXT)
@@ -959,6 +962,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkHelper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkPostDownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@

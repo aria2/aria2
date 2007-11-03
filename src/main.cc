@@ -59,6 +59,7 @@
 #include "DefaultBtContext.h"
 #include "RequestGroup.h"
 #include "Option.h"
+#include "MetalinkHelper.h"
 #include <deque>
 #include <algorithm>
 #include <signal.h>
@@ -300,7 +301,11 @@ int main(int argc, char* argv[]) {
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       if(op->defined(PREF_METALINK_FILE)) {
-	downloadMetalink(op);
+	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+	  Util::toStream(cout, MetalinkEntry::toFileEntry(MetalinkHelper::parseAndQuery(op->get(PREF_METALINK_FILE), op)));
+	} else {
+	  downloadMetalink(op);
+	}
       }
       else
 #endif // ENABLE_METALINK

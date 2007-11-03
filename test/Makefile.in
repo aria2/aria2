@@ -88,7 +88,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessorTest.cc\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.cc\
-@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.cc
+@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.cc\
+@ENABLE_METALINK_TRUE@	MetalinkHelperTest.cc
 
 subdir = test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -152,7 +153,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc PieceTest.cc \
 	BtPostDownloadHandlerTest.cc TimeSeedCriteriaTest.cc \
 	MetalinkerTest.cc MetalinkEntryTest.cc \
 	Xml2MetalinkProcessorTest.cc Metalink2RequestGroupTest.cc \
-	MetalinkPostDownloadHandlerTest.cc
+	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelperTest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChunkChecksumValidatorTest.$(OBJEXT)
@@ -200,7 +201,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc PieceTest.cc \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Xml2MetalinkProcessorTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
-@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.$(OBJEXT)
+@ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkHelperTest.$(OBJEXT)
 am_aria2c_OBJECTS = AllTest.$(OBJEXT) PieceTest.$(OBJEXT) \
 	DefaultPieceStorageTest.$(OBJEXT) SegmentTest.$(OBJEXT) \
 	GrowSegmentTest.$(OBJEXT) \
@@ -551,6 +553,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetaFileUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroupTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkHelperTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkPostDownloadHandlerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptorTest.Po@am__quote@

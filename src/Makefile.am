@@ -250,7 +250,8 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkProcessor.h\
 	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
-	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h
+	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
+	MetalinkHelper.cc MetalinkHelper.h
 endif # ENABLE_METALINK
 
 if !HAVE_BASENAME
