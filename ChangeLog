@@ -1,3 +1,15 @@
+2007-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added the ability to display the detailed torrent file information.
+	Now -S option gives not only a file listing, but also total download
+	length, info hash, announce URI, piece length, the number of pieces,
+	and mode(single or multi-torrent).
+	* src/DefaultBtContext.{h, cc} (operator<<): New function.
+	* src/Util.cc (toStream): Show file length in a abbreviated form(like
+	KiB)
+	* test/UtilTest.cc
+	* src/main.cc
+
 2007-10-30  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added ftp://USER:PASSWD@Servername automatic parsing.

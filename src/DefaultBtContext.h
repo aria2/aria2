@@ -149,6 +149,8 @@ private:
   {
     _ownerRequestGroup = owner;
   }
+
+  friend ostream& operator<<(ostream& o, const DefaultBtContext& ctx);
 };
 
 typedef SharedHandle<DefaultBtContext> DefaultBtContextHandle;

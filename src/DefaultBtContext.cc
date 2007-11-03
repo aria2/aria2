@@ -317,3 +317,28 @@ Integers DefaultBtContext::computeFastSet(const string& ipaddr, int32_t fastSetS
   }
   return fastSet;
 }
+
+ostream& operator<<(ostream& o, const DefaultBtContext& ctx)
+{
+  o << "*** BitTorrent File Information ***" << "\n";
+  o << "Mode: " << (ctx.getFileMode() == DownloadContext::SINGLE ? "Single File Torrent":"Multi File Torrent") << "\n";
+  o << "Announce:" << "\n";
+  AnnounceTiers tiers = ctx.getAnnounceTiers();
+  for(AnnounceTiers::const_iterator itr = tiers.begin(); itr != tiers.end(); ++itr) {
+    const AnnounceTierHandle& tier = *itr;
+    for(Strings::const_iterator uriItr = tier->urls.begin(); uriItr != tier->urls.end(); ++uriItr) {
+      o << " " << *uriItr;
+    }
+    o << "\n";
+  }
+  o << "Info Hash: " << ctx.getInfoHashAsString() << "\n";
+  o << "Piece Length: " << Util::abbrevSize(ctx.getPieceLength()) << "B\n";
+  o << "The Number of Pieces: " << ctx.getNumPieces() << "\n";
+  o << "Total Length: " << Util::abbrevSize(ctx.getTotalLength()) << "B\n";
+  if(ctx.getFileMode() == DownloadContext::MULTI) {
+    o << "Name: " << ctx.getName() << "\n";
+  }
+  Util::toStream(o, ctx.getFileEntries());
+  return o;
+}
+

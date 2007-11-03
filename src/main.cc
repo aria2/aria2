@@ -114,6 +114,104 @@ RequestGroupHandle createRequestGroup(const Option* op, const Strings& uris,
 
 extern Option* option_processing(int argc, char* const argv[]);
 
+void downloadBitTorrent(Option* op, const Strings& uri)
+{
+  Strings nargs;
+  if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+    nargs = unfoldURI(uri);
+  } else {
+    nargs = uri;
+  }
+  Strings xargs;
+  ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
+	back_inserter(xargs));
+  
+  RequestGroupHandle rg = new RequestGroup(op, xargs);
+  DefaultBtContextHandle btContext = new DefaultBtContext();
+  btContext->load(op->get(PREF_TORRENT_FILE));
+  if(op->defined(PREF_PEER_ID_PREFIX)) {
+    btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
+  }
+  btContext->setDir(op->get(PREF_DIR));
+  rg->setDownloadContext(btContext);
+  btContext->setOwnerRequestGroup(rg.get());
+  
+  RequestGroups groups;
+  groups.push_back(rg);
+  MultiUrlRequestInfo(groups, op).execute();
+}
+
+void downloadMetalink(Option* op)
+{
+  RequestGroups groups = Metalink2RequestGroup(op).generate(op->get(PREF_METALINK_FILE));
+  if(groups.empty()) {
+    throw new FatalException("No files to download.");
+  }
+  MultiUrlRequestInfo(groups, op).execute();
+}
+
+void downloadUriList(Option* op)
+{
+  SharedHandle<UriListParser> flparser(0);
+  if(op->get(PREF_INPUT_FILE) == "-") {
+    flparser = new StreamUriListParser(cin);
+  } else {
+    if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
+      throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
+    }
+    flparser = new FileUriListParser(op->get(PREF_INPUT_FILE));
+  }
+  RequestGroups groups;
+  while(flparser->hasNext()) {
+    Strings uris = flparser->next();
+    if(uris.size() == 1 && op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+      Strings unfoldedURIs = unfoldURI(uris);
+      for(Strings::const_iterator itr = unfoldedURIs.begin();
+	  itr != unfoldedURIs.end(); ++itr) {
+	Strings xuris;
+	ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT), back_inserter(xuris));
+	RequestGroupHandle rg = createRequestGroup(op, xuris);
+	groups.push_back(rg);
+      }
+    } else if(uris.size() > 0) {
+      Strings xuris;
+      ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
+	    back_inserter(xuris));
+      RequestGroupHandle rg = createRequestGroup(op, xuris);
+      groups.push_back(rg);
+    }
+  }
+  MultiUrlRequestInfo(groups, op).execute();
+}
+
+void downloadUri(Option* op, const Strings& uris)
+{
+  Strings nargs;
+  if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
+    nargs = unfoldURI(uris);
+  } else {
+    nargs = uris;
+  }
+  RequestGroups groups;
+  if(op->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
+    for(Strings::const_iterator itr = nargs.begin();
+	itr != nargs.end(); ++itr) {
+      Strings xuris;
+      ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT),
+	    back_inserter(xuris));
+      RequestGroupHandle rg = createRequestGroup(op, xuris);
+      groups.push_back(rg);
+    }
+  } else {
+    Strings xargs;
+    ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
+	  back_inserter(xargs));
+    RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
+    groups.push_back(rg);
+  }
+  MultiUrlRequestInfo(groups, op).execute();
+}
+
 int main(int argc, char* argv[]) {
 #ifdef HAVE_WINSOCK2_H
   Platform platform;
@@ -188,110 +286,29 @@ int main(int argc, char* argv[]) {
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
 
-    MultiUrlRequestInfo* firstReqInfo;
-    // TODO added _X for test. Please remove this later on.
 #ifdef ENABLE_BITTORRENT
     if(op->defined(PREF_TORRENT_FILE)) {
-      Strings nargs;
-      if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
-	nargs = unfoldURI(args);
+      if(op->get(PREF_SHOW_FILES) == V_TRUE) {
+	DefaultBtContextHandle btContext = new DefaultBtContext();
+	btContext->load(op->get(PREF_TORRENT_FILE));
+	cout << btContext << endl;
       } else {
-	nargs = args;
+	downloadBitTorrent(op, args);
       }
-      Strings xargs;
-      ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
-	    back_inserter(xargs));
-
-      RequestGroupHandle rg = new RequestGroup(op, xargs);
-      DefaultBtContextHandle btContext = new DefaultBtContext();
-      btContext->load(op->get(PREF_TORRENT_FILE));
-      if(op->defined(PREF_PEER_ID_PREFIX)) {
-	btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
-      }
-      btContext->setDir(op->get(PREF_DIR));
-      rg->setDownloadContext(btContext);
-      btContext->setOwnerRequestGroup(rg.get());
-
-      RequestGroups groups;
-      groups.push_back(rg);
-      firstReqInfo = new MultiUrlRequestInfo(groups, op);
     }
     else
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       if(op->defined(PREF_METALINK_FILE)) {
-	RequestGroups groups = Metalink2RequestGroup(op).generate(op->get(PREF_METALINK_FILE));
-	if(groups.empty()) {
-	  throw new FatalException("No files to download.");
-	}
-	firstReqInfo = new MultiUrlRequestInfo(groups, op);
+	downloadMetalink(op);
       }
       else
 #endif // ENABLE_METALINK
 	if(op->defined(PREF_INPUT_FILE)) {
-	  SharedHandle<UriListParser> flparser(0);
-	  if(op->get(PREF_INPUT_FILE) == "-") {
-	    flparser = new StreamUriListParser(cin);
-	  } else {
-	    if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
-	      throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
-	    }
-	    flparser = new FileUriListParser(op->get(PREF_INPUT_FILE));
-	  }
-	  RequestGroups groups;
-	  while(flparser->hasNext()) {
-	    Strings uris = flparser->next();
-	    if(uris.size() == 1 && op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
-	      Strings unfoldedURIs = unfoldURI(uris);
-	      for(Strings::const_iterator itr = unfoldedURIs.begin();
-		  itr != unfoldedURIs.end(); ++itr) {
-		Strings xuris;
-		ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT), back_inserter(xuris));
-		RequestGroupHandle rg = createRequestGroup(op, xuris);
-		groups.push_back(rg);
-	      }
-	    } else if(uris.size() > 0) {
-	      Strings xuris;
-	      ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
-		    back_inserter(xuris));
-	      RequestGroupHandle rg = createRequestGroup(op, xuris);
-	      groups.push_back(rg);
-	    }
-	  }
-	  firstReqInfo = new MultiUrlRequestInfo(groups, op);
+	  downloadUriList(op);
+	} else {
+	  downloadUri(op, args);
 	}
-	else
-	  {
-	    Strings nargs;
-	    if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
-	      nargs = unfoldURI(args);
-	    } else {
-	      nargs = args;
-	    }
-	    if(op->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
-	      RequestGroups groups;
-	      for(Strings::const_iterator itr = nargs.begin();
-		  itr != nargs.end(); ++itr) {
-		Strings xuris;
-		ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT),
-		      back_inserter(xuris));
-		RequestGroupHandle rg = createRequestGroup(op, xuris);
-		groups.push_back(rg);
-	      }
-	      firstReqInfo = new MultiUrlRequestInfo(groups, op);
-	    } else {
-	      Strings xargs;
-	      ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
-		    back_inserter(xargs));
-	      RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
-	      RequestGroups groups;
-	      groups.push_back(rg);
-	      firstReqInfo = new MultiUrlRequestInfo(groups, op);
-	    }
-	  }
-
-    firstReqInfo->execute();
-
   } catch(Exception* ex) {
     cerr << EX_EXCEPTION_CAUGHT << "\n" << ex->getMsg() << endl;
     delete ex;

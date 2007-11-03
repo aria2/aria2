@@ -653,7 +653,7 @@ void Util::toStream(ostream& os, const FileEntries& fileEntries)
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); count++, itr++) {
     os << setw(3) << count << "|" << (*itr)->getPath() << "\n";
-    os << "   |" << Util::llitos((*itr)->getLength(), true) << " bytes" << "\n";
+    os << "   |" << Util::abbrevSize((*itr)->getLength()) << "B" << "\n";
     os << "---+---------------------------------------------------------------------------" << "\n";
   }
 }
