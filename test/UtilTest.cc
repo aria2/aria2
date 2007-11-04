@@ -1,4 +1,5 @@
 #include "Util.h"
+#include "FixedNumberRandomizer.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -240,7 +241,8 @@ public:
 };
 
 void UtilTest::testRandomAlpha() {
-  CPPUNIT_ASSERT_EQUAL((size_t)8, Util::randomAlpha(8).size());
+  string s = Util::randomAlpha(8, new FixedNumberRandomizer());
+  CPPUNIT_ASSERT_EQUAL(string("AAAAAAAA"), s);
 }
 
 void UtilTest::testToUpper() {

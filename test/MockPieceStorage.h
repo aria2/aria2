@@ -18,8 +18,18 @@ private:
   DiskAdaptorHandle diskAdaptor;
   Integers pieceLengthList;
   Pieces inFlightPieces;
+  bool _allDownloadFinished;
 public:
-  MockPieceStorage():diskAdaptor(0) {}
+  MockPieceStorage():totalLength(0),
+		     filteredTotalLength(0),
+		     completedLength(0),
+		     filteredCompletedLength(0),
+		     bitfieldMan(0),
+		     selectiveDownloadingMode(false),
+		     endGame(false),
+		     diskAdaptor(0),
+		     _allDownloadFinished(false) {}
+
   virtual ~MockPieceStorage() {}
 
   virtual bool hasMissingPiece(const PeerHandle& peer) {
@@ -108,7 +118,12 @@ public:
   }
 
   virtual bool allDownloadFinished() {
-    return false;
+    return _allDownloadFinished;
+  }
+
+  void setAllDownloadFinished(bool f)
+  {
+    _allDownloadFinished = f;
   }
 
   virtual void initStorage() {}

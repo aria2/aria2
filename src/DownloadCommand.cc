@@ -88,7 +88,7 @@ bool DownloadCommand::executeInternal() {
   int32_t BUFSIZE = 16*1024;
   char buf[BUFSIZE];
   int32_t bufSize;
-  if(segment->getLength()-segment->getWrittenLength() < BUFSIZE) {
+  if(segment->getLength() > 0 && segment->getLength()-segment->getWrittenLength() < BUFSIZE) {
     bufSize = segment->getLength()-segment->getWrittenLength();
   } else {
     bufSize = BUFSIZE;
@@ -157,31 +157,16 @@ bool DownloadCommand::prepareForNextSegment() {
     */
     return true;
   } else {
-    // Merge segment with next segment, if segment.index+1 == nextSegment.index
-
     SegmentHandle tempSegment = _segments.front();
-    while(1) {
-      SegmentHandle nextSegment =
-	_requestGroup->getSegmentMan()->getSegment(cuid,
-						   tempSegment->getIndex()+1);
-      if(nextSegment.isNull()) {
-	break;
-      } else {
-	if(nextSegment->getWrittenLength() > 0) {
-	  return prepareForRetry(0);
-	}
-	nextSegment->updateWrittenLength(tempSegment->getOverflowLength());
-	if(nextSegment->complete()) {
-	  validatePieceHash(nextSegment);
-	  tempSegment = nextSegment;
-	} else {
-	  e->commands.push_back(this);
-	  return false;
-	}
-      }
+    SegmentHandle nextSegment =
+      _requestGroup->getSegmentMan()->getSegment(cuid,
+						 tempSegment->getIndex()+1);
+    if(!nextSegment.isNull() && nextSegment->getWrittenLength() == 0) {
+      e->commands.push_back(this);
+      return false;
+    } else {
+      return prepareForRetry(0);
     }
-
-    return prepareForRetry(0);
   }
 }
 

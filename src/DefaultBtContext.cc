@@ -43,15 +43,18 @@
 #include "MessageDigestHelper.h"
 #include "a2netcompat.h"
 #include "AnnounceTier.h"
+#include "SimpleRandomizer.h"
 #include <libgen.h>
 
-DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-"), _ownerRequestGroup(0) {}
+DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-"),
+				     _randomizer(SimpleRandomizer::getInstance()),
+				     _ownerRequestGroup(0) {}
 
 DefaultBtContext::~DefaultBtContext() {}
 
 string DefaultBtContext::generatePeerId() const {
   string peerId = _peerIdPrefix;
-  peerId += Util::randomAlpha(20-_peerIdPrefix.size());
+  peerId += Util::randomAlpha(20-_peerIdPrefix.size(), _randomizer);
   if(peerId.size() > 20) {
     peerId.erase(20);
   }
@@ -342,3 +345,7 @@ ostream& operator<<(ostream& o, const DefaultBtContext& ctx)
   return o;
 }
 
+void DefaultBtContext::setRandomizer(const RandomizerHandle& randomizer)
+{
+  _randomizer = randomizer;
+}

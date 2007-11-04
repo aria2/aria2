@@ -45,6 +45,9 @@
 #include "PieceStorage.h"
 #include "PeerStorage.h"
 
+class Randomizer;
+extern typedef SharedHandle<Randomizer> RandomizerHandle;
+
 #define DEFAULT_ANNOUNCE_INTERVAL 1800
 
 class DefaultBtAnnounce : public BtAnnounce {
@@ -62,6 +65,7 @@ private:
   int32_t trackerNumTry;
   const Option* option;
   Logger* logger;
+  RandomizerHandle _randomizer;
   BtRuntimeHandle btRuntime;
   PieceStorageHandle pieceStorage;
   PeerStorageHandle peerStorage;
@@ -111,7 +115,9 @@ public:
 
   virtual void shuffleAnnounce();
 
-  string generateKey() const;  
+  void generateKey();
+
+  void setRandomizer(const RandomizerHandle& randomizer);
 };
 
 #endif // _D_DEFAULT_BT_ANNOUNCE_H_

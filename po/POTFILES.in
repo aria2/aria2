@@ -6,3 +6,4 @@ src/MultiUrlRequestInfo.cc
 src/RequestGroupMan.cc
 src/Util.cc
 src/version_usage.cc
+src/BtSetup.cc

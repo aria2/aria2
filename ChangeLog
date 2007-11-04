@@ -1,3 +1,45 @@
+2007-11-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed: the listen port sent to the tracker is wrong. If aria2 fails
+	to open listen port, then remove the port number from the tracker
+	request.
+	* src/DefaultBtAnnounce.cc 
+	* test/DefaultBtAnnounceTest.cc
+	* test/MockPieceStorage.h
+	
+	Inject randomizer to DefaultBtAnnounce and DefaultBtContext to make
+	them more testable.
+	* src/DefaultBtAnnounce.{h, cc}
+	* src/DefaultBtContext.{h, cc}
+	* src/Util.{h, cc}
+	* test/DefaultBtAnnounceTest.cc
+	* test/DefaultBtContextTest.cc
+	* test/UtilTest.cc
+	
+	Added 'B' to upload bytes readout.
+	* src/ConsoleStatCalc.cc
+
+	Now the listen port for BitTorrent download is opened when it is
+	needed.
+	* src/DownloadEngineFactory.cc
+	* src/BtSetup.{h, cc}
+	* src/PeerListenCommand.{h, cc}
+	
+	Now an exception thrown while parsing tracker response is now logged.
+	If DlAbortEx is catched, then btAnnounce->resetAnnounce() immediately
+	called, which means no retry is made in this case, assuming a tracker
+	has a problem.
+	* src/TrackerWatcherCommand.cc
+	
+	Fixed: downloading a file whose length is unkown fails.
+	* src/DownloadCommand.cc
+
+	Simplified prepareForNextSegment()
+	* src/DownloadCommand.cc
+
+	Updated
+	* po/POTFILES.in
+	
 2007-11-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Re-implemented a file listing for Metalink, which was dropped while

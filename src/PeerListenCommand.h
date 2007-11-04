@@ -45,6 +45,11 @@ private:
   DownloadEngine* e;
   SocketHandle socket;
   int32_t _lowestSpeedLimit;
+
+  static int32_t __numInstance;
+
+  static PeerListenCommand* __instance;
+
 public:
   PeerListenCommand(int32_t cuid, DownloadEngine* e);
 
@@ -58,6 +63,14 @@ public:
   {
     _lowestSpeedLimit = speed;
   }
+
+  static PeerListenCommand* getInstance(DownloadEngine* e);
+
+  static int32_t getNumInstance()
+  {
+    return __numInstance;
+  }
+  
 };
 
 #endif // _D_PEER_LISTEN_COMMAND_H_

@@ -37,6 +37,7 @@
 
 #include "common.h"
 
+class Logger;
 class RequestGroup;
 class DownloadEngine;
 class Option;
@@ -44,7 +45,11 @@ class Command;
 extern typedef deque<Command*> Commands;
 
 class BtSetup {
+private:
+  const Logger* _logger;
 public:
+  BtSetup();
+
   Commands setup(RequestGroup* requestGroup,
 		 DownloadEngine* e,
 		 const Option* option);

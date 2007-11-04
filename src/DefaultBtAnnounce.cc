@@ -44,6 +44,7 @@
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "SimpleRandomizer.h"
 
 DefaultBtAnnounce::DefaultBtAnnounce(BtContextHandle btContext,
 				     const Option* option):
@@ -56,20 +57,22 @@ DefaultBtAnnounce::DefaultBtAnnounce(BtContextHandle btContext,
   announceList(btContext->getAnnounceTiers()),
   trackerNumTry(0),
   option(option),
+  logger(LogFactory::getInstance()),
+  _randomizer(SimpleRandomizer::getInstance()),
   btRuntime(BT_RUNTIME(btContext)),
   pieceStorage(PIECE_STORAGE(btContext)),
   peerStorage(PEER_STORAGE(btContext))
 {
   prevAnnounceTime.setTimeInSec(0);
-  key = generateKey();
-  logger = LogFactory::getInstance();
+  generateKey();
 }
 
 DefaultBtAnnounce::~DefaultBtAnnounce() {
 }
 
-string DefaultBtAnnounce::generateKey() const {
-  return Util::randomAlpha(8);
+void DefaultBtAnnounce::generateKey()
+{
+  key = Util::randomAlpha(8, _randomizer);
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
@@ -125,7 +128,6 @@ string DefaultBtAnnounce::getAnnounceUrl() {
     "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
 					btContext->getInfoHashLength())+"&"+
     "peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+"&"+
-    "port="+Util::itos(btRuntime->getListenPort())+"&"+
     "uploaded="+Util::llitos(stat.getSessionUploadLength())+"&"+
     "downloaded="+Util::llitos(stat.getSessionDownloadLength())+"&"+
     "left="+Util::llitos(left)+"&"+
@@ -133,6 +135,9 @@ string DefaultBtAnnounce::getAnnounceUrl() {
     "key="+key+"&"+
     "numwant="+Util::itos(numWant)+"&"+
     "no_peer_id=1";
+  if(btRuntime->getListenPort() > 0) {
+    url += string("&")+"port="+Util::itos(btRuntime->getListenPort());
+  }
   string event = announceList.getEventString();
   if(!event.empty()) {
     url += string("&")+"event="+event;
@@ -171,7 +176,7 @@ void DefaultBtAnnounce::resetAnnounce() {
 
 void
 DefaultBtAnnounce::processAnnounceResponse(const char* trackerResponse,
-						  size_t trackerResponseLength)
+					   size_t trackerResponseLength)
 {
   SharedHandle<MetaEntry> entry(MetaFileUtil::bdecoding(trackerResponse,
 							trackerResponseLength));
@@ -236,4 +241,9 @@ bool DefaultBtAnnounce::noMoreAnnounce() {
 
 void DefaultBtAnnounce::shuffleAnnounce() {
   announceList.shuffle();
+}
+
+void DefaultBtAnnounce::setRandomizer(const RandomizerHandle& randomizer)
+{
+  _randomizer = randomizer;
 }

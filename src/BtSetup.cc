@@ -42,6 +42,7 @@
 #include "SeedCheckCommand.h"
 #include "PeerChokeCommand.h"
 #include "ActivePeerConnectionCommand.h"
+#include "PeerListenCommand.h"
 #include "UnionSeedCriteria.h"
 #include "TimeSeedCriteria.h"
 #include "ShareRatioSeedCriteria.h"
@@ -49,6 +50,11 @@
 #include "DefaultBtProgressInfoFile.h"
 #include "CUIDCounter.h"
 #include "prefs.h"
+#include "LogFactory.h"
+#include "Logger.h"
+#include "Util.h"
+
+BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
 
 Commands BtSetup::setup(RequestGroup* requestGroup,
 			DownloadEngine* e,
@@ -90,6 +96,24 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
 					    e,
 					    btContext,
 					    unionCri));
+  }
+
+  if(PeerListenCommand::getNumInstance() == 0) {
+    PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
+    int32_t port;
+    int32_t listenPort = option->getAsInt(PREF_LISTEN_PORT);
+    if(listenPort == -1) {
+      port = listenCommand->bindPort(6881, 6999);
+    } else {
+      port = listenCommand->bindPort(listenPort, listenPort);
+    }
+    if(port == -1) {
+      _logger->error(_("Errors occurred while binding port.\n"));
+      delete listenCommand;
+    } else {
+      BT_RUNTIME(btContext)->setListenPort(port);
+      commands.push_back(listenCommand);
+    }
   }
 
   BT_RUNTIME(btContext)->setReady(true);

@@ -82,11 +82,17 @@ bool TrackerWatcherCommand::execute() {
       btAnnounce->announceSuccess();
       btAnnounce->resetAnnounce();
     } catch(DlAbortEx* ex) {
+      logger->error(EX_EXCEPTION_CAUGHT, ex);
+      delete ex;
+      btAnnounce->announceFailure();
+      btAnnounce->resetAnnounce();
+    } catch(DlRetryEx* ex) {
+      logger->error(EX_EXCEPTION_CAUGHT, ex);      
+      delete ex;
       btAnnounce->announceFailure();
       if(btAnnounce->isAllAnnounceFailed()) {
 	btAnnounce->resetAnnounce();
       }
-      delete ex;
     }
     _trackerRequestGroup = 0;
   } else if(_trackerRequestGroup->getNumCommand() == 0){

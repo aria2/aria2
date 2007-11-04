@@ -39,6 +39,10 @@
 #include "Dictionary.h"
 #include "Data.h"
 #include "List.h"
+
+class Randomizer;
+extern typedef SharedHandle<Randomizer> RandomizerHandle;
+
 #define INFO_HASH_LENGTH 20
 #define PIECE_HASH_LENGTH 20
 
@@ -58,6 +62,7 @@ private:
   string peerId;
   string _peerIdPrefix;
   AnnounceTiers announceTiers;
+  RandomizerHandle _randomizer;
 
   RequestGroup* _ownerRequestGroup;
 
@@ -149,6 +154,8 @@ private:
   {
     _ownerRequestGroup = owner;
   }
+
+  void setRandomizer(const RandomizerHandle& randomizer);
 
   friend ostream& operator<<(ostream& o, const DefaultBtContext& ctx);
 };

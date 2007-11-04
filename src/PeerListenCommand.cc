@@ -41,14 +41,26 @@
 #include "message.h"
 #include "PeerReceiveHandshakeCommand.h"
 
+int32_t PeerListenCommand::__numInstance = 0;
+
+PeerListenCommand* PeerListenCommand::__instance = 0;
+
 PeerListenCommand::PeerListenCommand(int32_t cuid, DownloadEngine* e):
   Command(cuid),
   e(e),
-  _lowestSpeedLimit(20*1024) {}
+  _lowestSpeedLimit(20*1024)
+{
+  ++__numInstance;
+}
 
-PeerListenCommand::~PeerListenCommand() {}
+PeerListenCommand::~PeerListenCommand()
+{
+  --__numInstance;
+}
 
-int32_t PeerListenCommand::bindPort(int32_t portRangeStart, int32_t portRangeEnd) {
+int32_t PeerListenCommand::bindPort(int32_t portRangeStart,
+				    int32_t portRangeEnd)
+{
   if(portRangeStart > portRangeEnd) {
     return -1;
   }
@@ -102,4 +114,12 @@ bool PeerListenCommand::execute() {
   }
   e->commands.push_back(this);
   return false;
+}
+
+PeerListenCommand* PeerListenCommand::getInstance(DownloadEngine* e)
+{
+  if(__numInstance == 0) {
+    __instance = new PeerListenCommand(CUIDCounterSingletonHolder::instance()->newID(), e);
+  }
+  return __instance;
 }

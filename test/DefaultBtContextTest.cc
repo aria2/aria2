@@ -2,6 +2,7 @@
 #include "Util.h"
 #include "Exception.h"
 #include "AnnounceTier.h"
+#include "FixedNumberRandomizer.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -229,7 +230,8 @@ void DefaultBtContextTest::testGetInfoHashAsString() {
 
 void DefaultBtContextTest::testGetPeerId() {
   DefaultBtContext btContext;
-  Util::torrentUrlencode(btContext.getPeerId(), 20);
+  btContext.setRandomizer(new FixedNumberRandomizer());
+  CPPUNIT_ASSERT_EQUAL(string("%2daria2%2dAAAAAAAAAAAAA"), Util::torrentUrlencode(btContext.getPeerId(), 20));
 }
 
 void DefaultBtContextTest::testComputeFastSet()

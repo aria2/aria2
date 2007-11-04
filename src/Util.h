@@ -43,6 +43,9 @@
 #include <deque>
 #include <ostream>
 
+class Randomizer;
+extern typedef SharedHandle<Randomizer> RandomizerHandle;
+
 #define STRTOLL(X) strtoll(X, (char**)NULL, 10)
 
 #define START_INDEX(OFFSET, PIECE_LENGTH) ((OFFSET)/(PIECE_LENGTH))
@@ -112,7 +115,7 @@ public:
 
   static int32_t countBit(uint32_t n);
   
-  static string randomAlpha(int32_t length);
+  static string randomAlpha(int32_t length, const RandomizerHandle& randomizer);
   
   static string toUpper(const string& src);
 

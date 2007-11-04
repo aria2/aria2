@@ -49,7 +49,6 @@
 #include "FileAllocationDispatcherCommand.h"
 #include "AutoSaveCommand.h"
 #include "HaveEraseCommand.h"
-#include "PeerListenCommand.h"
 
 DownloadEngineFactory::DownloadEngineFactory():
   _logger(LogFactory::getInstance()) {}
@@ -83,24 +82,6 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get()));
   e->commands.push_back(new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
   e->commands.push_back(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 10));
-
-  PeerListenCommand* listenCommand =
-    new PeerListenCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get());
-  int32_t port;
-  int32_t listenPort = op->getAsInt(PREF_LISTEN_PORT);
-  if(listenPort == -1) {
-    port = listenCommand->bindPort(6881, 6999);
-  } else {
-    port = listenCommand->bindPort(listenPort, listenPort);
-  }
-  if(port == -1) {
-    _logger->error(_("Errors occurred while binding port.\n"));
-    delete listenCommand;
-  } else {
-    op->put(PREF_LISTEN_PORT, Util::itos(port).c_str());
-    e->commands.push_back(listenCommand);
-  }
-  //btRuntime->setListenPort(port);
 
   return e;
 }

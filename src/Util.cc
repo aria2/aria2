@@ -35,7 +35,7 @@
 #include "Util.h"
 #include "File.h"
 #include "message.h"
-#include "SimpleRandomizer.h"
+#include "Randomizer.h"
 #include "a2netcompat.h"
 #include "a2time.h"
 #include <ctype.h>
@@ -522,11 +522,11 @@ int32_t Util::countBit(uint32_t n) {
     nbits[(n >> 24)&0xffu];
 }
 
-string Util::randomAlpha(int32_t length) {
+string Util::randomAlpha(int32_t length, const RandomizerHandle& randomizer) {
   static char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   string str;
   for(int32_t i = 0; i < length; i++) {
-    int32_t index = SimpleRandomizer::getInstance()->getRandomNumber(strlen(random_chars));
+    int32_t index = randomizer->getRandomNumber(strlen(random_chars));
     str += random_chars[index];
   }
   return str;

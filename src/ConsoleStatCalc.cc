@@ -101,7 +101,7 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
       cout << " "
 	   << "UP:"
 	   << fixed << setprecision(2) << stat.getUploadSpeed()/1024.0 << "KiB/s"
-	   << "(" << Util::abbrevSize(stat.getAllTimeUploadLength()) << ")";
+	   << "(" << Util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
     }
     if(eta > 0) {
       cout << " "
