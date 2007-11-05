@@ -50,7 +50,7 @@
 #include "UnknownLengthPieceStorage.h"
 #include "File.h"
 #include "StreamCheckIntegrityEntry.h"
-#include "DefaultBtProgressInfoFile.h"
+#include "BtProgressInfoFile.h"
 #include "CheckIntegrityCommand.h"
 #include "DiskAdaptor.h"
 #include "PeerStat.h"
@@ -300,7 +300,7 @@ bool AbstractCommand::nameResolveFinished() const {
 }
 #endif // ENABLE_ASYNC_DNS
 
-void AbstractCommand::loadAndOpenFile()
+void AbstractCommand::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile)
 {
   if(!_requestGroup->isPreLocalFileCheckEnabled()) {
     _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
@@ -308,8 +308,6 @@ void AbstractCommand::loadAndOpenFile()
   }
 
   //_requestGroup->setProgressInfoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
-  BtProgressInfoFileHandle progressInfoFile =
-    new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
   if(progressInfoFile->exists()) {
     progressInfoFile->load();
     _requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
@@ -400,10 +398,6 @@ void AbstractCommand::initPieceStorage()
 
 bool AbstractCommand::downloadFinishedByFileLength()
 {
-  // check existence of control file using ProgressInfoFile class.
-  if(_requestGroup->getProgressInfoFile()->exists()) {
-    return false;
-  }
   // TODO consider the case when the getFilePath() returns dir path. 
   File outfile(_requestGroup->getFilePath());
   if(outfile.exists() &&

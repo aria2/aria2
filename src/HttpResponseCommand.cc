@@ -48,6 +48,7 @@
 #include "SingleFileDownloadContext.h"
 #include "DiskAdaptor.h"
 #include "PieceStorage.h"
+#include "DefaultBtProgressInfoFile.h"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -130,8 +131,9 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     return true;
   }
 
+  BtProgressInfoFileHandle infoFile = new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
   if(e->option->get(PREF_CHECK_INTEGRITY) != V_TRUE) {
-    if(downloadFinishedByFileLength()) {
+    if(!infoFile->exists() && downloadFinishedByFileLength()) {
       logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
       return true;
     }
@@ -139,11 +141,11 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
 
   DownloadCommand* command = 0;
   try {
+    loadAndOpenFile(infoFile);
     File file(_requestGroup->getFilePath());
     if(_requestGroup->getRemainingUris().empty() && !file.exists()) {
       command = createHttpDownloadCommand(httpResponse);
     }
-    loadAndOpenFile();
     prepareForNextAction(command);
     e->noWait = true;
   } catch(Exception* e) {

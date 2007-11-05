@@ -48,6 +48,8 @@ extern typedef SharedHandle<Segment> SegmentHandle;
 extern typedef deque<SegmentHandle> Segments;
 class NameResolver;
 extern typedef SharedHandle<NameResolver> NameResolverHandle;
+class BtProgressInfoFile;
+extern typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
 
 class AbstractCommand : public Command, public RequestGroupAware {
 private:
@@ -76,7 +78,7 @@ protected:
 #endif // ENABLE_ASYNC_DNS
   void setTimeout(int32_t timeout) { this->timeout = timeout; }
 
-  void loadAndOpenFile();
+  void loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile);
 
   bool tryAutoFileRenaming();
 

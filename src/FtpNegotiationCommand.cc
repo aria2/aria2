@@ -44,6 +44,7 @@
 #include "prefs.h"
 #include "Util.h"
 #include "SingleFileDownloadContext.h"
+#include "DefaultBtProgressInfoFile.h"
 
 FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     const RequestHandle& req,
@@ -207,14 +208,15 @@ bool FtpNegotiationCommand::recvSize() {
       return false;
     }
 
+    BtProgressInfoFileHandle infoFile = new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
     if(e->option->get(PREF_CHECK_INTEGRITY) != V_TRUE) {
-      if(downloadFinishedByFileLength()) {
+      if(!infoFile->exists() && downloadFinishedByFileLength()) {
 	logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
 	sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
 	return false;
       }
     }
-    loadAndOpenFile();
+    loadAndOpenFile(infoFile);
     prepareForNextAction();
     
     sequence = SEQ_FILE_PREPARATION;
