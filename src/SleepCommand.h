@@ -45,6 +45,9 @@ private:
   Command* nextCommand;
   int32_t wait;
   Time checkPoint;
+
+  bool isHaltRequested() const;
+
 public:
   SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, int32_t wait);
   virtual ~SleepCommand();

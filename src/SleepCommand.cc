@@ -34,20 +34,22 @@
 /* copyright --> */
 #include "SleepCommand.h"
 #include "Util.h"
+#include "RequestGroupAware.h"
+#include "RequestGroup.h"
 
 SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, int32_t wait):
   Command(cuid), engine(e), nextCommand(nextCommand), wait(wait) {}
 
 SleepCommand::~SleepCommand() {
-  if(nextCommand != NULL) {
+  if(nextCommand) {
     delete(nextCommand);
   }
 }
 
 bool SleepCommand::execute() {
-  if(checkPoint.elapsed(wait)) {
+  if(checkPoint.elapsed(wait) || isHaltRequested()) {
     engine->commands.push_back(nextCommand);
-    nextCommand = NULL;
+    nextCommand = 0;
     return true;
   } else {
     engine->commands.push_back(this);
@@ -55,3 +57,16 @@ bool SleepCommand::execute() {
   }
 }
 
+bool SleepCommand::isHaltRequested() const
+{
+  if(engine->isHaltRequested()) {
+    return true;
+  }
+  RequestGroupAware* requestGroupAware = dynamic_cast<RequestGroupAware*>(nextCommand);
+  if(requestGroupAware) {
+    if(requestGroupAware->getRequestGroup()->isHaltRequested()) {
+      return true;
+    }
+  }
+  return false;
+}

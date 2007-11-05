@@ -45,3 +45,8 @@ RequestGroupAware::~RequestGroupAware()
 {
   _requestGroup->decreaseNumCommand();
 }
+
+RequestGroup* RequestGroupAware::getRequestGroup() const
+{
+  return _requestGroup;
+}

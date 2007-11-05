@@ -46,6 +46,8 @@ public:
   RequestGroupAware(RequestGroup* requestGroup);
 
   ~RequestGroupAware();
+
+  RequestGroup* getRequestGroup() const;
 };
 
 #endif // _D_REQUEST_GROUP_AWARE_H_
