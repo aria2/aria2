@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "FileEntry.h"
 #include "File.h"
-#include "DlAbortEx.h"
+#include "Util.h"
 #include <libgen.h>
 
 FileEntry::FileEntry(const string& path,
@@ -48,21 +48,7 @@ FileEntry::~FileEntry() {}
 
 void FileEntry::setupDir(const string& parentDir)
 {
-  string absPath = parentDir+"/"+path;
-  char* temp = strdup(absPath.c_str());
-  string dir = string(dirname(temp));
-  free(temp);
-  if(!dir.size()) {
-    return;
-  }
-  File f(dir);
-  if(f.isDir()) {
-    // nothing to do
-  } else if(f.exists()) {
-    throw new DlAbortEx("%s is not a directory.", dir.c_str());
-  } else if(!f.mkdirs()) {
-    throw new DlAbortEx("Failed to create directory %s.", dir.c_str());
-  }  
+  Util::mkdirs(File(parentDir+"/"+path).getDirname());
 }
 
 FileEntry& FileEntry::operator=(const FileEntry& entry)

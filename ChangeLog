@@ -1,3 +1,27 @@
+2007-11-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Now a file is stored in the directory specified in .metalnk file
+	(file[@name]).
+	* src/Metalink2RequestGroup.cc
+
+	Create the directory structure when opening the file if it doesn't
+	exist.
+	* src/AbstractDiskWriter.cc
+	* src/Util.{h, cc}
+	* src/File.h
+	* test/UtilTest.cc
+	
+	Removed file name comparison
+	* src/Metalink2RequestGroup.cc
+	* src/HttpResponseCommand.cc
+
+	Rewritten using Util::mkdirs()
+	* src/FileEntry.cc (setupDir)
+	* test/FileEntryTest.cc
+	
+	Updated doc
+	* src/SingleFileDownloadContext.h
+	
 2007-11-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Now SleepCommand dispatches nextCommand when halt is requested.

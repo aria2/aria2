@@ -95,6 +95,11 @@ public:
 
   string getDirname() const;
 
+  const string& getPath() const
+  {
+    return name;
+  }
+
   static bool isDir(const string& filename);
 
   bool renameTo(const string& dest);

@@ -28,6 +28,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsLowercase);
   CPPUNIT_TEST(testIsUppercase);
   CPPUNIT_TEST(testAlphaToNum);
+  CPPUNIT_TEST(testMkdirs);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -55,6 +56,7 @@ public:
   void testIsLowercase();
   void testIsUppercase();
   void testAlphaToNum();
+  void testMkdirs();
 };
 
 
@@ -363,4 +365,27 @@ void UtilTest::testAlphaToNum()
   CPPUNIT_ASSERT_EQUAL((int32_t)675, Util::alphaToNum("zz")); // 25*26+25
   CPPUNIT_ASSERT_EQUAL((int32_t)675, Util::alphaToNum("ZZ")); // 25*26+25
   CPPUNIT_ASSERT_EQUAL((int32_t)0, Util::alphaToNum(""));
+}
+
+void UtilTest::testMkdirs()
+{
+  string dir = "/tmp/aria2-UtilTest-testMkdirs";
+  File d(dir);
+  if(d.exists()) {
+    CPPUNIT_ASSERT(d.remove());
+  }
+  CPPUNIT_ASSERT(!d.exists());
+  Util::mkdirs(dir);
+  CPPUNIT_ASSERT(d.isDir());
+
+  string file = "./UtilTest.cc";
+  File f(file);
+  CPPUNIT_ASSERT(f.isFile());
+  try {
+    Util::mkdirs(file);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(DlAbortEx* ex) {
+    cerr << ex->getMsg() << endl;
+    delete ex;
+  }
 }

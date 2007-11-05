@@ -91,14 +91,12 @@ bool HttpResponseCommand::executeInternal()
   }
   if(!_requestGroup->getPieceStorage().isNull()) {
     // validate totalsize
-    _requestGroup->validateFilename(httpResponse->determinFilename());
     _requestGroup->validateTotalLength(httpResponse->getEntityLength());
 
     e->commands.push_back(createHttpDownloadCommand(httpResponse));
     return true;
   } else {
     // validate totalsize against hintTotalSize if it is provided.
-    _requestGroup->validateFilenameByHint(httpResponse->determinFilename());
     _requestGroup->validateTotalLengthByHint(httpResponse->getEntityLength());
 
     SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setFilename(httpResponse->determinFilename());

@@ -1,6 +1,7 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	FileEntryTest.cc\
 	PieceTest.cc\
 	DefaultPieceStorageTest.cc\
 	SegmentTest.cc\

@@ -150,6 +150,8 @@ public:
   static bool isUppercase(const string& what);
 
   static int32_t alphaToNum(const string& alphabets);
+
+  static void mkdirs(const string& dirpath);
 };
 
 #endif // _D_UTIL_H_

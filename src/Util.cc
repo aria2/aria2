@@ -763,3 +763,14 @@ int32_t Util::alphaToNum(const string& alphabets)
   return num;
 }
 
+void Util::mkdirs(const string& dirpath)
+{
+  File dir(dirpath);
+  if(dir.isDir()) {
+    // do nothing
+  } else if(dir.exists()) {
+    throw new DlAbortEx(EX_MAKE_DIR, dir.getPath().c_str(), "File already exists.");
+  } else if(!dir.mkdirs()) {
+    throw new DlAbortEx(EX_MAKE_DIR, dir.getPath().c_str(), strerror(errno));
+  }
+}

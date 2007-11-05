@@ -53,4 +53,4 @@
 * Implement duplicate download checking in Bt
 * improve --metalink-location field
 * Use content-type for PostDownloadHandler
-* Fix SleepCommand to catch halt signal
+

@@ -92,11 +92,8 @@ void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags)
   throw(DlAbortEx*)
 {
   this->filename = filename;
-  // TODO proper filename handling needed
   assert(filename.size());
-//   if(filename.empty()) {
-//     filename = "index.html";
-//   }
+  Util::mkdirs(File(filename).getDirname());
   if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags, OPEN_MODE)) < 0) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }  

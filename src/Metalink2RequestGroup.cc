@@ -159,7 +159,8 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
     SingleFileDownloadContextHandle dctx =
       new SingleFileDownloadContext(pieceLength,
 				    0,
-				    "");
+				    "",
+				    entry->file->getPath());
     dctx->setDir(_option->get(PREF_DIR));
     if(!entry->chunkChecksum.isNull()) {
       dctx->setPieceHashes(entry->chunkChecksum->getChecksums());
@@ -169,7 +170,6 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
     // * hash and hash algorithm
 
     rg->setDownloadContext(dctx);
-    rg->setHintFilename(entry->file->getBasename());
     rg->setHintTotalLength(entry->getLength());
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :
