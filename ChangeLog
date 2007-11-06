@@ -1,5 +1,12 @@
 2007-11-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed: Can not resume: aria2 reports download already finished.
+	* src/AbstractCommand.{h, cc}
+	* src/HttpResponseCommand.cc
+	* src/FtpNegotiateCommand.cc
+
+2007-11-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Now a file is stored in the directory specified in .metalnk file
 	(file[@name]).
 	* src/Metalink2RequestGroup.cc
