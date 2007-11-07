@@ -39,8 +39,10 @@
 #include "LogFactory.h"
 #include "DownloadEngine.h"
 #include "message.h"
+#include "a2functional.h"
 #include <iomanip>
 #include <sstream>
+#include <numeric>
 
 RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
 				 int32_t maxSimultaneousDownloads):
@@ -277,10 +279,6 @@ void RequestGroupMan::halt()
 
 TransferStat RequestGroupMan::calculateStat()
 {
-  TransferStat stat;
-  for(RequestGroups::const_iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
-    stat = stat+(*itr)->calculateStat();
-  }
-  return stat;
+  return accumulate(_requestGroups.begin(), _requestGroups.end(), TransferStat(),
+		    adopt2nd(plus<TransferStat>(), mem_fun_sh(&RequestGroup::calculateStat)));
 }

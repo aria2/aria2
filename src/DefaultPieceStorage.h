@@ -88,6 +88,9 @@ private:
   void reduceUsedPieces(int32_t delMax);
   void deleteUsedPiece(const PieceHandle& piece);
   PieceHandle findUsedPiece(int32_t index) const;
+
+  int32_t getInFlightPieceCompletedLength() const;
+
 public:
   DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option);
   virtual ~DefaultPieceStorage();

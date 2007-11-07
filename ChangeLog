@@ -1,3 +1,28 @@
+2007-11-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Reflect the download length of in-flight pieces.
+	It makes the download length readout more precise.
+	* src/DefaultPieceStorage.{h, cc}
+	* test/DefaultPieceStorageTest.cc
+	* src/a2functional.h
+	* test/a2functionalTest.cc
+	
+	Lower CPU load when --max-download-limit is used.
+	There is up and down in speed indicator when enabling
+	http-pipelining but a download goes well. I think the problem is that
+	because http-pipelining is enabled, DownloadCommand is created for
+	each segment and in its constructor, PeerStat::downloadStart() is
+	called. In PeerStat::downloadStart(), speed calculation object is
+	reseted, which makes download speed zero.
+	* src/DownloadCommand.cc
+
+	Rewritten using accumulate.
+	* src/RequestGroupMan.cc (calculateStat)
+	
+	Code clearnup.
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponseCommand.cc
+
 2007-11-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed: Can not resume: aria2 reports download already finished.

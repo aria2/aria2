@@ -47,6 +47,8 @@
 #include "DefaultDiskWriterFactory.h"
 #include "DlAbortEx.h"
 #include "Util.h"
+#include "a2functional.h"
+#include <numeric>
 
 DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option):
   downloadContext(downloadContext),
@@ -358,12 +360,17 @@ int64_t DefaultPieceStorage::getFilteredTotalLength()
 
 int64_t DefaultPieceStorage::getCompletedLength()
 {
-  return bitfieldMan->getCompletedLength();
+  return bitfieldMan->getCompletedLength()+getInFlightPieceCompletedLength();
 }
 
 int64_t DefaultPieceStorage::getFilteredCompletedLength()
 {
-  return bitfieldMan->getFilteredCompletedLength();
+  return bitfieldMan->getFilteredCompletedLength()+getInFlightPieceCompletedLength();
+}
+
+int32_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
+{
+  return accumulate(usedPieces.begin(), usedPieces.end(), 0, adopt2nd(plus<int32_t>(), mem_fun_sh(&Piece::getCompletedLength)));
 }
 
 // not unittested

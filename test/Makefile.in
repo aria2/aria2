@@ -112,8 +112,9 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am__aria2c_SOURCES_DIST = AllTest.cc FileEntryTest.cc PieceTest.cc \
-	DefaultPieceStorageTest.cc SegmentTest.cc GrowSegmentTest.cc \
+am__aria2c_SOURCES_DIST = AllTest.cc a2functionalTest.cc \
+	FileEntryTest.cc PieceTest.cc DefaultPieceStorageTest.cc \
+	SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
@@ -203,9 +204,10 @@ am__aria2c_SOURCES_DIST = AllTest.cc FileEntryTest.cc PieceTest.cc \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandlerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkHelperTest.$(OBJEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) FileEntryTest.$(OBJEXT) \
-	PieceTest.$(OBJEXT) DefaultPieceStorageTest.$(OBJEXT) \
-	SegmentTest.$(OBJEXT) GrowSegmentTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) a2functionalTest.$(OBJEXT) \
+	FileEntryTest.$(OBJEXT) PieceTest.$(OBJEXT) \
+	DefaultPieceStorageTest.$(OBJEXT) SegmentTest.$(OBJEXT) \
+	GrowSegmentTest.$(OBJEXT) \
 	SingleFileAllocationIteratorTest.$(OBJEXT) \
 	DefaultBtProgressInfoFileTest.$(OBJEXT) \
 	SingleFileDownloadContextTest.$(OBJEXT) \
@@ -414,9 +416,9 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 TESTS = aria2c
-aria2c_SOURCES = AllTest.cc FileEntryTest.cc PieceTest.cc \
-	DefaultPieceStorageTest.cc SegmentTest.cc GrowSegmentTest.cc \
-	SingleFileAllocationIteratorTest.cc \
+aria2c_SOURCES = AllTest.cc a2functionalTest.cc FileEntryTest.cc \
+	PieceTest.cc DefaultPieceStorageTest.cc SegmentTest.cc \
+	GrowSegmentTest.cc SingleFileAllocationIteratorTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
@@ -584,6 +586,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a2functionalTest.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

@@ -119,20 +119,24 @@ void DefaultPieceStorageTest::testCompletePiece() {
   DefaultPieceStorage pss(btContext, option);
   pss.setEndGamePieceNum(0);
 
-    peer->setAllBitfield();
+  peer->setAllBitfield();
 
   PieceHandle piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT_EQUAL(string("piece: index=0, length=128"),
 		       piece->toString());
 
-  CPPUNIT_ASSERT_EQUAL((long long int)0,
+  CPPUNIT_ASSERT_EQUAL((int64_t)0,
 		       pss.getCompletedLength());
 
   pss.completePiece(piece);
 
-  CPPUNIT_ASSERT_EQUAL((long long int)128,
+  CPPUNIT_ASSERT_EQUAL((int64_t)128,
 		       pss.getCompletedLength());
 
+  PieceHandle incompletePiece = pss.getMissingPiece(peer);
+  incompletePiece->completeBlock(0);
+  CPPUNIT_ASSERT_EQUAL((int64_t)256,
+		       pss.getCompletedLength());
 }
 
 void DefaultPieceStorageTest::testGetPiece() {

@@ -79,10 +79,11 @@ bool DownloadCommand::executeInternal() {
   // TODO we need to specify the sum of all segmentMan's download speed here.
   if(maxDownloadSpeedLimit > 0 &&
      maxDownloadSpeedLimit < _requestGroup->getSegmentMan()->calculateDownloadSpeed()) {
-  Util::usleep(1);
     e->commands.push_back(this);
+    disableReadCheckSocket();
     return false;
   }
+  setReadCheckSocket(socket);
   SegmentHandle segment = _segments.front();
 
   int32_t BUFSIZE = 16*1024;

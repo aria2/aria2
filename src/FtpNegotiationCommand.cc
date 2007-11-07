@@ -200,10 +200,11 @@ bool FtpNegotiationCommand::recvSize() {
 
     initPieceStorage();
 
-    // TODO validate filename and totalsize against hintFilename and hintTotalSize if these are provided.
+    // TODO validate totalsize against hintTotalSize if it is provided.
     _requestGroup->validateTotalLengthByHint(size);
+    // TODO Is this really necessary?
     if(req->getMethod() == Request::METHOD_HEAD) {
-      //_requestGroup->getSegmentMan()->isSplittable = false; // TODO because we don't want segment file to be saved.
+      // TODO because we don't want segment file to be saved.
       sequence = SEQ_HEAD_OK;
       return false;
     }

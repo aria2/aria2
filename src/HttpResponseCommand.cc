@@ -75,12 +75,6 @@ bool HttpResponseCommand::executeInternal()
   // check HTTP status number
   httpResponse->validateResponse();
   httpResponse->retrieveCookie();
-  // check whether the server supports persistent connections.
-  /*
-  if(Util::toLower(headers.getFirst("Connection")).find("close") != string::npos) {
-    req->setKeepAlive(false);
-  }
-  */
   // check whether Location header exists. If it does, update request object
   // with redirected URL.
   // then establish a connection to the new host and port
@@ -116,18 +110,13 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   if(size == INT64_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
   }
-  //_requestGroup->getSegmentMan()->isSplittable = !(size == 0);
-  //_requestGroup->getSegmentMan()->totalSize = size;
-  //_requestGroup->getSegmentMan()->initDownloadContext(size);
-
   SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setTotalLength(size);
 
   initPieceStorage();
 
-  // quick hack for method 'head'
+  // quick hack for method 'head',, is it necessary?
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {
     // TODO because we don't want segment file to be saved.
-    //_requestGroup->getSegmentMan()->isSplittable = false;
     return true;
   }
 
@@ -156,11 +145,9 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
 }
 
 bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
-  HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
   // we ignore content-length when transfer-encoding is set
-  //_requestGroup->getSegmentMan()->isSplittable = false;
-  //_requestGroup->getSegmentMan()->totalSize = 0;
-  // quick hack for method 'head'
+  HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
+  // quick hack for method 'head',, is it necessary?
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {
     return true;
   }
@@ -169,11 +156,9 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
 
   initPieceStorage();
 
-  //segment = _requestGroup->getSegmentMan()->getSegment(cuid);
-
   shouldCancelDownloadForSafety();
   // TODO handle file-size unknown case
-  _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();//_requestGroup->getFilePath());
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
   e->commands.push_back(createHttpDownloadCommand(httpResponse));
   return true;
 }
