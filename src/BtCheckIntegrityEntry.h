@@ -43,7 +43,9 @@ public:
 
   virtual ~BtCheckIntegrityEntry();
 
-  virtual Commands prepareForNextAction(DownloadEngine* e);
+  virtual Commands onDownloadFinished(DownloadEngine* e);
+
+  virtual Commands onDownloadIncomplete(DownloadEngine* e);
 };
 
 typedef SharedHandle<BtCheckIntegrityEntry> BtCheckIntegrityEntryHandle;

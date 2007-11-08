@@ -47,10 +47,11 @@
 * Limit the number of opening file to,say,100 in MultiDiskAdaptor.
 * Implement the feature to treat http/ftp as auxuality download method for BitTorrent
 * http-seeding(single and multi-file torrent)
+* Use content-type for PostDownloadHandler
 
 -- remaining features to be implemented for 0.12.0 release
 * Reimplement ChecksumCommand(validation using 1 checksum for 1 file)
 * Implement duplicate download checking in Bt
 * improve --metalink-location field
-* Use content-type for PostDownloadHandler
-
+* Do not connect a server when before checking file integrity.
+* If size and filename is provided(for example, metalink), "HEAD" like behavior is unnecessary.

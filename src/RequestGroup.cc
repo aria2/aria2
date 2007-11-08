@@ -214,7 +214,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
       } else
 #endif // ENABLE_MESSAGE_DIGEST
 	{
-	  commands = entry->prepareForNextAction(e);
+	  commands = entry->onDownloadIncomplete(e);
 	}
       return commands;
     }

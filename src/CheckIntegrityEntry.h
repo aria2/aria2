@@ -66,7 +66,9 @@ public:
 
   void updatePieceStorage();
 
-  virtual Commands prepareForNextAction(DownloadEngine* e) = 0;
+  virtual Commands onDownloadFinished(DownloadEngine* e) = 0;
+
+  virtual Commands onDownloadIncomplete(DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;

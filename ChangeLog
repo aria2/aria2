@@ -1,3 +1,17 @@
+2007-11-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
+	Changed CheckIntegrityEntry interface so that it can define
+	the action when all the chunk checksums are valid.
+	* src/CheckIntegrityEntry.h
+	* src/StreamCheckIntegrityEntry.{h, cc}
+	* src/BtCheckIntegrityEntry.{h, cc}: Currently,when all the checksums
+	are valid, then aira2 goes to seeding mode. Sometimes it is better
+	to exit rather than doing seeding. So, it would be good to toggle this
+	behavior.
+	* src/CheckIntegrityCommand.cc
+	* src/AbstractCommand.cc
+	* src/RequestGroup.cc
+
 2007-11-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Reflect the download length of in-flight pieces.

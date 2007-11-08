@@ -51,7 +51,7 @@ StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(const RequestHandle& curren
 
 StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 
-Commands StreamCheckIntegrityEntry::prepareForNextAction(DownloadEngine* e)
+Commands StreamCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
 {
   Commands commands;
   if(_requestGroup->needsFileAllocation()) {
@@ -72,4 +72,9 @@ Commands StreamCheckIntegrityEntry::prepareForNextAction(DownloadEngine* e)
     }
   }
   return commands;
+}
+
+Commands StreamCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
+{
+  return Commands();
 }

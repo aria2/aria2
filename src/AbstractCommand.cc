@@ -425,6 +425,6 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
   } else
 #endif // ENABLE_MESSAGE_DIGEST
     {
-      e->addCommand(entry->prepareForNextAction(e));
+      e->addCommand(entry->onDownloadIncomplete(e));
     }
 }

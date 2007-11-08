@@ -47,7 +47,7 @@ BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
 
 BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 
-Commands BtCheckIntegrityEntry::prepareForNextAction(DownloadEngine* e)
+Commands BtCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
 {
   Commands commands;
   FileAllocationEntryHandle entry = new BtFileAllocationEntry(_requestGroup);
@@ -57,4 +57,13 @@ Commands BtCheckIntegrityEntry::prepareForNextAction(DownloadEngine* e)
     commands = entry->prepareForNextAction(e);
   }
   return commands;
+}
+
+Commands BtCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
+{
+  // TODO Currently,when all the checksums
+  // are valid, then aira2 goes to seeding mode. Sometimes it is better
+  // to exit rather than doing seeding. So, it would be good to toggle this
+  // behavior.
+  return onDownloadIncomplete(e);
 }
