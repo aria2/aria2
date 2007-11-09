@@ -36,6 +36,8 @@
 #include "message.h"
 #include "a2netcompat.h"
 #include "a2time.h"
+#include "DlRetryEx.h"
+#include "DlAbortEx.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -81,7 +83,6 @@ SocketCore::~SocketCore() {
 }
 
 void SocketCore::beginListen(int32_t port)
-  throw(DlAbortEx*)
 {
   closeConnection();
   //sockfd = socket(AF_UNSPEC, SOCK_STREAM, PF_UNSPEC);
@@ -118,7 +119,6 @@ void SocketCore::beginListen(int32_t port)
 }
 
 SocketCore* SocketCore::acceptConnection() const
-  throw(DlAbortEx*)
 {
   struct sockaddr_in sockaddr;
   socklen_t len = sizeof(sockaddr);
@@ -133,7 +133,6 @@ SocketCore* SocketCore::acceptConnection() const
 }
 
 void SocketCore::getAddrInfo(pair<string, int32_t>& addrinfo) const
-  throw(DlAbortEx*)
 {
   struct sockaddr_in listenaddr;
   memset((char*)&listenaddr, 0, sizeof(listenaddr));
@@ -146,7 +145,6 @@ void SocketCore::getAddrInfo(pair<string, int32_t>& addrinfo) const
 }
 
 void SocketCore::getPeerInfo(pair<string, int32_t>& peerinfo) const
-  throw(DlAbortEx*)
 {
   struct sockaddr_in peerin;
   memset(&peerin, 0, sizeof(peerin));
@@ -159,7 +157,6 @@ void SocketCore::getPeerInfo(pair<string, int32_t>& peerinfo) const
 }
 
 void SocketCore::establishConnection(const string& host, int32_t port)
-  throw(DlAbortEx*)
 {
   closeConnection();
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -209,7 +206,6 @@ WSAEWOULDBLOCK
 }
 
 void SocketCore::setNonBlockingMode()
-  throw(DlAbortEx*)
 {
 #ifdef __MINGW32__
   static u_long flag = 1;
@@ -225,7 +221,6 @@ void SocketCore::setNonBlockingMode()
 }
 
 void SocketCore::setBlockingMode()
-  throw(DlAbortEx*)
 {
 #ifdef __MINGW32__
   static u_long flag = 0;
@@ -277,7 +272,6 @@ void SocketCore::closeConnection()
 }
 
 bool SocketCore::isWritable(int32_t timeout) const
-  throw(DlRetryEx*)
 {
   fd_set fds;
   FD_ZERO(&fds);
@@ -303,7 +297,6 @@ bool SocketCore::isWritable(int32_t timeout) const
 }
 
 bool SocketCore::isReadable(int32_t timeout) const
-  throw(DlRetryEx*)
 {
 #ifdef HAVE_LIBGNUTLS
   if(secure && peekBufLength > 0) {
@@ -334,7 +327,6 @@ bool SocketCore::isReadable(int32_t timeout) const
 }
 
 void SocketCore::writeData(const char* data, int32_t len)
-  throw(DlRetryEx*)
 {
   int32_t ret = 0;
 
@@ -351,7 +343,7 @@ void SocketCore::writeData(const char* data, int32_t len)
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-    if((ret = gnutls_record_send(sslSession, data, len)) == len) {
+    if((ret = gnutls_record_send(sslSession, data, len)) != len) {
       throw new DlRetryEx(EX_SOCKET_SEND, gnutls_strerror(ret));
     }
 #endif // HAVE_LIBGNUTLS
@@ -359,7 +351,6 @@ void SocketCore::writeData(const char* data, int32_t len)
 }
 
 void SocketCore::readData(char* data, int32_t& len)
-  throw(DlRetryEx*)
 {
   int32_t ret = 0;
 
@@ -386,7 +377,6 @@ void SocketCore::readData(char* data, int32_t& len)
 }
 
 void SocketCore::peekData(char* data, int32_t& len)
-  throw(DlRetryEx*)
 {
   int32_t ret = 0;
 
@@ -446,7 +436,6 @@ void SocketCore::addPeekData(char* data, int32_t len)
 }
 
 int32_t SocketCore::gnutlsRecv(char* data, int32_t len)
-  throw(DlRetryEx*)
 {
   int32_t plen = shiftPeekData(data, len);
   if(plen < len) {
@@ -461,7 +450,6 @@ int32_t SocketCore::gnutlsRecv(char* data, int32_t len)
 }
 
 int32_t SocketCore::gnutlsPeek(char* data, int32_t len)
-  throw(DlRetryEx*)
 {
   if(peekBufLength >= len) {
     memcpy(data, peekBuf, len);
@@ -479,7 +467,6 @@ int32_t SocketCore::gnutlsPeek(char* data, int32_t len)
 #endif // HAVE_LIBGNUTLS
 
 void SocketCore::initiateSecureConnection()
-  throw(DlAbortEx*)
 {
 #ifdef HAVE_LIBSSL
   // for SSL

@@ -73,7 +73,7 @@ MetaEntry* MetaFileUtil::bdecoding(const char* buf, int32_t len) {
     const char* end = buf+len;
     entry = bdecodingR(&p, end);
     return entry;
-  } catch(DlAbortEx* ex) {
+  } catch(RecoverableException* ex) {
     if(entry != NULL) {
       delete entry;
     }

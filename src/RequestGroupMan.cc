@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "RequestGroupMan.h"
 #include "BtProgressInfoFile.h"
-#include "DlAbortEx.h"
+#include "RecoverableException.h"
 #include "RequestGroup.h"
 #include "LogFactory.h"
 #include "DownloadEngine.h"
@@ -120,7 +120,7 @@ void RequestGroupMan::removeStoppedGroup()
       } else {
 	try {
 	  (*itr)->getProgressInfoFile()->save();
-	} catch(DlAbortEx* ex) {
+	} catch(RecoverableException* ex) {
 	  _logger->error(EX_EXCEPTION_CAUGHT, ex);
 	  delete ex;
 	}
@@ -154,7 +154,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       Commands commands = groupToAdd->createInitialCommand(e);
       ++count;
       e->addCommand(commands);
-    } catch(DlAbortEx* ex) {
+    } catch(RecoverableException* ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
       delete ex;
     }
@@ -175,7 +175,7 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
 	Commands nextCommands = (*itr)->createInitialCommand(e);
 	copy(nextCommands.begin(), nextCommands.end(), back_inserter(commands));
 	++itr;
-      } catch(DlAbortEx* e) {
+      } catch(RecoverableException* e) {
 	_logger->error(EX_EXCEPTION_CAUGHT, e);
 	delete e;
       }
@@ -196,7 +196,7 @@ void RequestGroupMan::save()
     } else {
       try {
 	(*itr)->getProgressInfoFile()->save();
-      } catch(DlAbortEx* e) {
+      } catch(RecoverableException* e) {
 	_logger->error(EX_EXCEPTION_CAUGHT, e);
 	delete e;
       }
@@ -220,7 +220,7 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
   o << "\n"
     <<_("Download Results:") << "\n"
     << " (OK):download completed.(ERR):error occurred.(INPR):download in-progress." << "\n"
-    << "idx|stat|path/URI" << "\n"
+    << "gid|stat|path/URI" << "\n"
     << "===+====+======================================================================" << "\n";
   for(RequestGroups::const_iterator itr = _spentGroups.begin();
       itr != _spentGroups.end(); ++itr) {

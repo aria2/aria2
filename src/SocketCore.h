@@ -36,8 +36,6 @@
 #define _D_SOCKET_CORE_H_
 
 #include "common.h"
-#include "DlRetryEx.h"
-#include "DlAbortEx.h"
 #include <string>
 #include <utility>
 
@@ -77,8 +75,8 @@ private:
 
   int32_t shiftPeekData(char* data, int32_t len);
   void addPeekData(char* data, int32_t len);
-  int32_t gnutlsRecv(char* data, int32_t len) throw(DlRetryEx*);
-  int32_t gnutlsPeek(char* data, int32_t len) throw(DlRetryEx*);
+  int32_t gnutlsRecv(char* data, int32_t len);
+  int32_t gnutlsPeek(char* data, int32_t len);
 #endif // HAVE_LIBGNUTLS
 
   void init();
@@ -99,26 +97,26 @@ public:
    * @param port port to listen. If 0 is specified, os automaticaly
    * choose avaiable port.
    */
-  void beginListen(int32_t port = 0) throw(DlAbortEx*);
+  void beginListen(int32_t port = 0);
 
   /**
    * Stores host address and port of this socket to addrinfo.
    * @param addrinfo placeholder to store host address and port.
    */
-  void getAddrInfo(pair<string, int32_t>& addrinfo) const throw(DlAbortEx*);
+  void getAddrInfo(pair<string, int32_t>& addrinfo) const;
   
   /**
    * Stores peer's address and port to peerinfo.
    * @param peerinfo placeholder to store peer's address and port.
    */
-  void getPeerInfo(pair<string, int32_t>& peerinfo) const throw(DlAbortEx*);
+  void getPeerInfo(pair<string, int32_t>& peerinfo) const;
 
   /**
    * Accepts incoming connection on this socket.
    * You must call beginListen() before calling this method.
    * @return accepted socket. The caller must delete it after using it.
    */
-  SocketCore* acceptConnection() const throw(DlAbortEx*);
+  SocketCore* acceptConnection() const;
 
   /**
    * Connects to the server named host and the destination port is port.
@@ -128,14 +126,14 @@ public:
    * @param host hostname or ip address to connect to
    * @param port service port number to connect to
    */
-  void establishConnection(const string& host, int32_t port) throw(DlAbortEx*);
+  void establishConnection(const string& host, int32_t port);
 
-  void setNonBlockingMode() throw(DlAbortEx*);
+  void setNonBlockingMode();
 
   /**
    * Makes this socket blocking mode.
    */
-  void setBlockingMode() throw(DlAbortEx*);
+  void setBlockingMode();
 
   /**
    * Closes the connection of this socket.
@@ -149,7 +147,7 @@ public:
    * @return true if the socket is available for writing,
    * otherwise returns false.
    */
-  bool isWritable(int32_t timeout) const throw(DlRetryEx*);
+  bool isWritable(int32_t timeout) const;
 
   /**
    * Checks whether this socket is available for reading.
@@ -158,7 +156,7 @@ public:
    * @return true if the socket is available for reading,
    * otherwise returns false.
    */
-  bool isReadable(int32_t timeout) const throw(DlRetryEx*);
+  bool isReadable(int32_t timeout) const;
 
   /**
    * Writes characters into this socket. data is a pointer pointing the first
@@ -168,8 +166,8 @@ public:
    * @param data data to write
    * @param len length of data
    */
-  void writeData(const char* data, int32_t len) throw(DlRetryEx*);
-  void writeData(const string& msg) throw(DlRetryEx*)
+  void writeData(const char* data, int32_t len);
+  void writeData(const string& msg)
   {
     writeData(msg.c_str(), msg.size());
   }
@@ -186,7 +184,7 @@ public:
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
    */
-  void readData(char* data, int32_t& len) throw(DlRetryEx*);
+  void readData(char* data, int32_t& len);
 
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from
@@ -197,14 +195,14 @@ public:
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
    */
-  void peekData(char* data, int32_t& len) throw(DlRetryEx*);
+  void peekData(char* data, int32_t& len);
   
   /**
    * Makes this socket secure.
    * If the system has not OpenSSL, then this method do nothing.
    * connection must be established  before calling this method.
    */
-  void initiateSecureConnection() throw(DlAbortEx*);
+  void initiateSecureConnection();
 
   bool operator==(const SocketCore& s) {
     return sockfd == s.sockfd;

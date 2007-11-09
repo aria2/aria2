@@ -35,13 +35,13 @@
 #include "DiskAdaptor.h"
 #include "LogFactory.h"
 #include "message.h"
+#include "DlAbortEx.h"
 
 DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
 
 DiskAdaptor::~DiskAdaptor() {}
 
 FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const
-  throw(DlAbortEx*)
 {
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {

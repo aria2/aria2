@@ -58,12 +58,16 @@ Commands StreamFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
      _nextCommand) {
     commands.push_back(popNextCommand());
   } else {
-    Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);
-    Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
-											 _currentRequest, _requestGroup, e);
-    
-    commands.push_back(command);
-    copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
+    if(_currentRequest.isNull()) {
+      commands = _requestGroup->createNextCommandWithAdj(e, 0);
+    } else {
+      Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);
+      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
+											   _currentRequest, _requestGroup, e);
+      
+      commands.push_back(command);
+      copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
+    }
   }
   return commands;
 }

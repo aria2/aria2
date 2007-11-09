@@ -35,23 +35,22 @@
 #include "HttpHeaderProcessor.h"
 #include "message.h"
 #include "Util.h"
+#include "DlRetryEx.h"
+#include "DlAbortEx.h"
 
 void HttpHeaderProcessor::update(const char* data, int32_t length)
-  throw(DlAbortEx*)
 {
   checkHeaderLimit(length);
   strm.write(data, length);
 }
 
 void HttpHeaderProcessor::update(const string& data)
-  throw(DlAbortEx*)
 {
   checkHeaderLimit(data.size());
   strm << data;
 }
 
 void HttpHeaderProcessor::checkHeaderLimit(int32_t incomingLength)
-  throw(DlAbortEx*)
 {
   strm.seekg(0, ios::end);
   if((int32_t)strm.tellg()+incomingLength > _limit) {
@@ -88,7 +87,6 @@ void HttpHeaderProcessor::clear()
 }
 
 pair<string, HttpHeaderHandle> HttpHeaderProcessor::getHttpStatusHeader()
-  throw(DlRetryEx*)
 {
   strm.seekg(0, ios::beg);
   string line;

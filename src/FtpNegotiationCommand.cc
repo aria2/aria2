@@ -195,29 +195,26 @@ bool FtpNegotiationCommand::recvSize() {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
   }
   if(_requestGroup->getPieceStorage().isNull()) {
-    SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setTotalLength(size);
-    SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setFilename(Util::urldecode(req->getFile()));
+    SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
+    dctx->setTotalLength(size);
+    dctx->setFilename(Util::urldecode(req->getFile()));
 
-    initPieceStorage();
+    _requestGroup->initPieceStorage();
 
-    // TODO validate totalsize against hintTotalSize if it is provided.
+    // validate totalsize against hintTotalSize if it is provided.
     _requestGroup->validateTotalLengthByHint(size);
     // TODO Is this really necessary?
     if(req->getMethod() == Request::METHOD_HEAD) {
-      // TODO because we don't want segment file to be saved.
       sequence = SEQ_HEAD_OK;
       return false;
     }
 
     BtProgressInfoFileHandle infoFile = new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
-    if(e->option->get(PREF_CHECK_INTEGRITY) != V_TRUE) {
-      if(!infoFile->exists() && downloadFinishedByFileLength()) {
-	logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
-	sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-	return false;
-      }
+    if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
+      sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+      return false;
     }
-    loadAndOpenFile(infoFile);
+    _requestGroup->loadAndOpenFile(infoFile);
     prepareForNextAction();
     
     sequence = SEQ_FILE_PREPARATION;

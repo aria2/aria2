@@ -39,7 +39,6 @@
 #include "Option.h"
 #include "DiskWriter.h"
 #include "File.h"
-#include "DlAbortEx.h"
 
 class DiskWriterEntry {
 private:
@@ -58,19 +57,16 @@ public:
   }
 
   void initAndOpenFile(const string& topDir)
-    throw(DlAbortEx*)
   {
     diskWriter->initAndOpenFile(getFilePath(topDir), fileEntry->getLength());
   }
 
   void openFile(const string& topDir)
-    throw(DlAbortEx*)
   {
     diskWriter->openFile(getFilePath(topDir), fileEntry->getLength());
   }
 
   void openExistingFile(const string& topDir)
-    throw(DlAbortEx*)
   {
     diskWriter->openExistingFile(getFilePath(topDir), fileEntry->getLength());
   }
@@ -86,7 +82,6 @@ public:
   }
 
   int64_t size() const
-    throw(DlAbortEx*)
   {
     return diskWriter->size();
   }
@@ -117,7 +112,7 @@ private:
 
   void resetDiskWriterEntries();
 
-  void mkdir() const throw(DlAbortEx*);
+  void mkdir() const;
 
   bool isInRange(const DiskWriterEntryHandle entry, int64_t offset) const;
 
@@ -133,20 +128,20 @@ public:
 
   virtual ~MultiDiskAdaptor() {}
 
-  virtual void initAndOpenFile() throw(DlAbortEx*);
+  virtual void initAndOpenFile();
 
-  virtual void openFile() throw(DlAbortEx*);
+  virtual void openFile();
 
-  virtual void openExistingFile() throw(DlAbortEx*);
+  virtual void openExistingFile();
 
   virtual void closeFile();
 
-  virtual void onDownloadComplete() throw(DlAbortEx*);
+  virtual void onDownloadComplete();
 
   virtual void writeData(const unsigned char* data, int32_t len,
-			 int64_t offset) throw(DlAbortEx*);
+			 int64_t offset);
 
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) throw(DlAbortEx*);
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
 
   virtual bool fileExists();
 
@@ -155,7 +150,7 @@ public:
     return getTopDirPath();
   }
 
-  virtual int64_t size() const throw(DlAbortEx*);
+  virtual int64_t size() const;
 
   virtual FileAllocationIteratorHandle fileAllocationIterator();
 

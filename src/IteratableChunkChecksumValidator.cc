@@ -37,6 +37,7 @@
 #include "message.h"
 #include "MessageDigestHelper.h"
 #include "DiskAdaptor.h"
+#include "RecoverableException.h"
 
 void IteratableChunkChecksumValidator::validateChunk()
 {
@@ -44,7 +45,7 @@ void IteratableChunkChecksumValidator::validateChunk()
     string actualChecksum;
     try {
       actualChecksum = calculateActualChecksum();
-    } catch(DlAbortEx* ex) {
+    } catch(RecoverableException* ex) {
       _logger->debug("Caught exception while validating piece index=%d. Some part of file may be missing. Continue operation.", ex, _currentIndex);
       delete ex;
       _bitfield->unsetBit(_currentIndex);

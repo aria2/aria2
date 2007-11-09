@@ -37,7 +37,6 @@
 #include "message.h"
 
 void CopyDiskAdaptor::onDownloadComplete()
-  throw(DlAbortEx*)
 {
   closeFile();
   fixFilename();
@@ -45,7 +44,6 @@ void CopyDiskAdaptor::onDownloadComplete()
 }
 
 void CopyDiskAdaptor::fixFilename()
-  throw(DlAbortEx*)
 {
   int64_t offset = 0;
   for(FileEntries::iterator itr = fileEntries.begin();

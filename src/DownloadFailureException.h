@@ -32,21 +32,31 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DIRECT_DISK_ADAPTOR_H_
-#define _D_DIRECT_DISK_ADAPTOR_H_
+#ifndef _D_DOWNLOAD_FAILURE_EXCEPTION_H_
+#define _D_DOWNLOAD_FAILURE_EXCEPTION_H_
+#include "RecoverableException.h"
 
-#include "AbstractSingleDiskAdaptor.h"
-
-class DirectDiskAdaptor : public AbstractSingleDiskAdaptor {
+/**
+ * Throw this exception when a RequestGroup should aborted.
+ * FYI, DlAbortEx is the exception to abort 1 Request.
+ */
+class DownloadFailureException : public RecoverableException {
 public:
-  DirectDiskAdaptor() {};
-  virtual ~DirectDiskAdaptor() {};
+  DownloadFailureException(Exception* cause = 0):RecoverableException(cause) {}
 
-  virtual string getFilePath();
+  DownloadFailureException(const char* msg, ...) {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(string(msg), ap);
+    va_end(ap);
+  }
 
-  virtual void onDownloadComplete();
+  DownloadFailureException(Exception* cause, const char* msg, ...):RecoverableException(cause) {
+    va_list ap;
+    va_start(ap, msg);
+    setMsg(string(msg), ap);
+    va_end(ap);
+  }
 };
 
-typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;
-
-#endif // _D_DIRECT_DISK_ADAPTOR_H_
+#endif // _D_DOWNLOAD_FAILURE_EXCEPTION_H_

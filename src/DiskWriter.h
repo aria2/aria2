@@ -36,7 +36,6 @@
 #define _D_DISK_WRITER_H_
 
 #include "BinaryStream.h"
-#include "DlAbortEx.h"
 
 /**
  * Interface for writing to a binary stream of bytes.

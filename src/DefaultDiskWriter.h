@@ -37,7 +37,6 @@
 
 #include "AbstractDiskWriter.h"
 #include "Option.h"
-#include "DlAbortEx.h"
 
 class DefaultDiskWriter:public AbstractDiskWriter {
 public:
@@ -45,8 +44,7 @@ public:
 
   virtual ~DefaultDiskWriter();
 
-  virtual void initAndOpenFile(const string& filename,
-			       int64_t totalLength = 0) throw(DlAbortEx*);
+  virtual void initAndOpenFile(const string& filename, int64_t totalLength = 0);
 };
 
 typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;

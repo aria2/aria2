@@ -61,10 +61,12 @@ class DiskWriterFactory;
 extern typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 class Option;
 class Logger;
-
 class RequestGroup;
 extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
 extern typedef deque<RequestGroupHandle> RequestGroups;
+class CheckIntegrityEntry;
+extern typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
+
 
 class RequestGroup {
 private:
@@ -124,6 +126,9 @@ private:
 			   int64_t actualTotalLength) const;
 
   void initializePostDownloadHandler();
+
+  bool tryAutoFileRenaming();
+
 public:
   RequestGroup(const Option* option, const Strings& uris);
 
@@ -300,6 +305,16 @@ public:
   void addPostDownloadHandler(const PostDownloadHandlerHandle& handler);
 
   void clearPostDowloadHandler();
+
+  Commands processCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry, DownloadEngine* e);
+
+  void initPieceStorage();
+
+  bool downloadFinishedByFileLength();
+
+  void loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile);
+
+  void shouldCancelDownloadForSafety();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

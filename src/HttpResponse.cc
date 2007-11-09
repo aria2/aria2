@@ -36,9 +36,10 @@
 #include "ChunkedEncoding.h"
 #include "Util.h"
 #include "message.h"
+#include "DlAbortEx.h"
+#include "DlRetryEx.h"
 
 void HttpResponse::validateResponse() const
-  throw(DlAbortEx*, DlRetryEx*)
 {
   if(status == 401) {
     throw new DlAbortEx(EX_AUTH_FAILED);

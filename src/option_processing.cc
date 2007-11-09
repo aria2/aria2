@@ -39,6 +39,7 @@
 #include "OptionHandlerFactory.h"
 #include "Util.h"
 #include "message.h"
+#include "Exception.h"
 #include <fstream>
 #include <sstream>
 

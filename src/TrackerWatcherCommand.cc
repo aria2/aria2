@@ -45,6 +45,8 @@
 #include "DiskAdaptor.h"
 #include "RequestGroup.h"
 #include "Option.h"
+#include "DlRetryEx.h"
+#include "DlAbortEx.h"
 
 TrackerWatcherCommand::TrackerWatcherCommand(int32_t cuid,
 					     RequestGroup* requestGroup,
@@ -87,6 +89,7 @@ bool TrackerWatcherCommand::execute() {
       btAnnounce->announceFailure();
       btAnnounce->resetAnnounce();
     } catch(DlRetryEx* ex) {
+      // TODO Can I remove this catch clause?
       logger->error(EX_EXCEPTION_CAUGHT, ex);      
       delete ex;
       btAnnounce->announceFailure();

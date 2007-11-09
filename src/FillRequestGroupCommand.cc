@@ -36,7 +36,7 @@
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 #include "RequestGroup.h"
-#include "DlAbortEx.h"
+#include "RecoverableException.h"
 #include "message.h"
 
 FillRequestGroupCommand::FillRequestGroupCommand(int32_t cuid,
@@ -55,7 +55,7 @@ bool FillRequestGroupCommand::execute()
 {
   try {
     _e->_requestGroupMan->fillRequestGroupFromReserver(_e);
-  } catch(DlAbortEx* ex) {
+  } catch(RecoverableException* ex) {
     logger->error(EX_EXCEPTION_CAUGHT, ex);
     delete ex;
   }

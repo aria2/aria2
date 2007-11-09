@@ -158,7 +158,7 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
     }
     SingleFileDownloadContextHandle dctx =
       new SingleFileDownloadContext(pieceLength,
-				    0,
+				    entry->getLength(),
 				    "",
 				    entry->file->getPath());
     dctx->setDir(_option->get(PREF_DIR));

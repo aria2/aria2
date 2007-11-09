@@ -1,5 +1,6 @@
 #include "Util.h"
 #include "FixedNumberRandomizer.h"
+#include "DlAbortEx.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 

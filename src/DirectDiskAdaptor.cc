@@ -40,7 +40,6 @@ string DirectDiskAdaptor::getFilePath()
 }
 
 void DirectDiskAdaptor::onDownloadComplete()
-  throw(DlAbortEx*)
 {
   closeFile();
   openFile();

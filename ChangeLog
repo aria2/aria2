@@ -1,3 +1,65 @@
+2007-11-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Don't connect server before checking file integrity at startup, if
+	filesize and output file path are known.
+	* src/AbstractCommand.cc
+	* src/StreamFileAllocationEntry.cc
+	* src/Metalink2RequestGroup.cc
+	* src/RequestGroup.{h, cc}
+	* src/HttpResponseCommand.cc
+	* src/FtpNegotiationCommand.cc
+
+	Added DownloadFailureException. If it is thrown, RequestGroup should
+	halt.
+	* src/AbstractCommand.cc
+	* src/DownloadFailureException.h
+	* src/RequestGroup.cc
+
+	Catch RecoverableException, instead of DlAbortEx.
+	* src/RequestGroupMan.cc
+	* src/FillRequestGroupCommand.cc
+	* src/MetaFileUtil.cc
+	* src/IteratableChunkChecksumValidator.cc
+
+	Now first parameter of MSG_DOWNLOAD_ABORTED is gid(RequestGroup::
+	getGID())
+	* src/CheckIntegrityCommand.cc
+	* src/message.h
+	
+	Print gid instead of idx.
+	* src/RequestGroupMan.cc
+
+	Removed exception throwers declaration.
+	* src/DirectDiskAdaptor.{h, cc}
+	* src/SocketCore.{h, cc}
+	* src/MultiDiskAdaptor.{h, cc}
+	* src/HttpConnection.{h, cc}
+	* src/HttpResponse.{h, cc}
+	* src/DiskAdaptor.{h, cc}
+	* src/CopyDiskAdaptor.{h, cc}
+	* src/MultiDiskAdaptor.{h, cc}
+	* src/HttpHeaderProcessor.{h, cc}
+	* src/AbstractSingleDiskAdaptor.{h, cc}
+	* src/Util.{h, cc}
+	* test/UtilTest.cc
+	* src/DefaultDiskWriter.{h, cc}
+	* src/FtpConnection.{h, cc}
+	* src/AbstractDiskWriter.{h, cc}
+
+	Removed duplicate code.
+	* src/StreamCheckIntegrityEntry.cc
+
+	Removed unnecessary include.
+	* src/DiskWriter.h
+
+	Included Exception.h
+	* src/option_processing.cc
+
+	Included 2 files and added doc
+	* src/TrackerWatcherCommand.cc
+
+	* src/SocketCore.cc (writeData): Fixed send error with GnuTLS.
+
 2007-11-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 	
 	Changed CheckIntegrityEntry interface so that it can define

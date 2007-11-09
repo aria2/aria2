@@ -84,35 +84,32 @@ bool HttpResponseCommand::executeInternal()
     e->noWait = true;
     return prepareForRetry(0);
   }
-  if(!_requestGroup->getPieceStorage().isNull()) {
-    // validate totalsize
-    _requestGroup->validateTotalLength(httpResponse->getEntityLength());
-
-    e->commands.push_back(createHttpDownloadCommand(httpResponse));
-    return true;
-  } else {
+  if(_requestGroup->getPieceStorage().isNull()) {
     // validate totalsize against hintTotalSize if it is provided.
-    _requestGroup->validateTotalLengthByHint(httpResponse->getEntityLength());
-
-    SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setFilename(httpResponse->determinFilename());
-    if(httpResponse->isTransferEncodingSpecified()) {
+    int64_t totalLength = httpResponse->getEntityLength();
+    _requestGroup->validateTotalLengthByHint(totalLength);
+    SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
+    dctx->setTotalLength(totalLength);
+    dctx->setFilename(httpResponse->determinFilename());
+    if(totalLength == 0 || httpResponse->isTransferEncodingSpecified()) {
+      // we ignore content-length when transfer-encoding is set
+      dctx->setTotalLength(0);
       return handleOtherEncoding(httpResponse);
     } else {
       return handleDefaultEncoding(httpResponse);
     }
+  } else {
+    // validate totalsize
+    _requestGroup->validateTotalLength(httpResponse->getEntityLength());
+    e->commands.push_back(createHttpDownloadCommand(httpResponse));
+    return true;
   }
 }
 
 bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpResponse)
 {
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
-  int64_t size = httpResponse->getEntityLength();
-  if(size == INT64_MAX || size < 0) {
-    throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
-  }
-  SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setTotalLength(size);
-
-  initPieceStorage();
+  _requestGroup->initPieceStorage();
 
   // quick hack for method 'head',, is it necessary?
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {
@@ -121,16 +118,13 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   }
 
   BtProgressInfoFileHandle infoFile = new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
-  if(e->option->get(PREF_CHECK_INTEGRITY) != V_TRUE) {
-    if(!infoFile->exists() && downloadFinishedByFileLength()) {
-      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
-      return true;
-    }
+  if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
+    return true;
   }
 
   DownloadCommand* command = 0;
   try {
-    loadAndOpenFile(infoFile);
+    _requestGroup->loadAndOpenFile(infoFile);
     File file(_requestGroup->getFilePath());
     if(_requestGroup->getRemainingUris().empty() && !file.exists()) {
       command = createHttpDownloadCommand(httpResponse);
@@ -145,7 +139,6 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
 }
 
 bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResponse) {
-  // we ignore content-length when transfer-encoding is set
   HttpRequestHandle httpRequest = httpResponse->getHttpRequest();
   // quick hack for method 'head',, is it necessary?
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {
@@ -153,11 +146,8 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   }
   // disable keep-alive
   req->setKeepAlive(false);
-
-  initPieceStorage();
-
-  shouldCancelDownloadForSafety();
-  // TODO handle file-size unknown case
+  _requestGroup->initPieceStorage();
+  _requestGroup->shouldCancelDownloadForSafety();
   _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
   e->commands.push_back(createHttpDownloadCommand(httpResponse));
   return true;

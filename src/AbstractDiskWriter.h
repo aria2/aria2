@@ -37,7 +37,6 @@
 
 #include "DiskWriter.h"
 #include "Logger.h"
-#include "DlAbortEx.h"
 
 class AbstractDiskWriter : public DiskWriter {
 protected:
@@ -45,31 +44,31 @@ protected:
   int32_t fd;
   const Logger* logger;
 
-  void createFile(const string& filename, int32_t addFlags = 0) throw(DlAbortEx*);
+  void createFile(const string& filename, int32_t addFlags = 0);
 
 private:
   int32_t writeDataInternal(const unsigned char* data, int32_t len);
   int32_t readDataInternal(unsigned char* data, int32_t len);
 
-  void seek(int64_t offset) throw(DlAbortEx*);
+  void seek(int64_t offset);
 
 public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(const string& filename, int64_t totalLength = 0) throw(DlAbortEx*);
+  virtual void openFile(const string& filename, int64_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const string& filename, int64_t totalLength = 0) throw(DlAbortEx*);
+  virtual void openExistingFile(const string& filename, int64_t totalLength = 0);
 
-  virtual void writeData(const unsigned char* data, int32_t len, int64_t offset) throw(DlAbortEx*);
+  virtual void writeData(const unsigned char* data, int32_t len, int64_t offset);
 
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) throw(DlAbortEx*);
+  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
 
-  virtual void truncate(int64_t length) throw(DlAbortEx*);
+  virtual void truncate(int64_t length);
 
-  virtual int64_t size() const throw(DlAbortEx*);
+  virtual int64_t size() const;
 };
 
 #endif // _D_ABSTRACT_DISK_WRITER_H_

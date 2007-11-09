@@ -38,6 +38,7 @@
 #include "message.h"
 #include "LogFactory.h"
 #include "a2io.h"
+#include "DlAbortEx.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -55,7 +56,6 @@ AbstractDiskWriter::~AbstractDiskWriter()
 }
 
 void AbstractDiskWriter::openFile(const string& filename, int64_t totalLength)
-  throw(DlAbortEx*)
 {
   File f(filename);
   if(f.exists()) {
@@ -75,7 +75,6 @@ void AbstractDiskWriter::closeFile()
 
 void AbstractDiskWriter::openExistingFile(const string& filename,
 					  int64_t totalLength)
-  throw(DlAbortEx*)
 {
   this->filename = filename;
   File f(filename);
@@ -89,7 +88,6 @@ void AbstractDiskWriter::openExistingFile(const string& filename,
 }
 
 void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags)
-  throw(DlAbortEx*)
 {
   this->filename = filename;
   assert(filename.size());
@@ -110,7 +108,6 @@ int32_t AbstractDiskWriter::readDataInternal(unsigned char* data, int32_t len)
 }
 
 void AbstractDiskWriter::seek(int64_t offset)
-  throw(DlAbortEx*)
 {
   if(offset != lseek(fd, offset, SEEK_SET)) {
     throw new DlAbortEx(EX_FILE_SEEK, filename.c_str(), strerror(errno));
@@ -118,7 +115,6 @@ void AbstractDiskWriter::seek(int64_t offset)
 }
 
 void AbstractDiskWriter::writeData(const unsigned char* data, int32_t len, int64_t offset)
-  throw(DlAbortEx*)
 {
   seek(offset);
   if(writeDataInternal(data, len) < 0) {
@@ -127,7 +123,6 @@ void AbstractDiskWriter::writeData(const unsigned char* data, int32_t len, int64
 }
 
 int32_t AbstractDiskWriter::readData(unsigned char* data, int32_t len, int64_t offset)
-  throw(DlAbortEx*)
 {
   int32_t ret;
   seek(offset);
@@ -138,7 +133,6 @@ int32_t AbstractDiskWriter::readData(unsigned char* data, int32_t len, int64_t o
 }
 
 void AbstractDiskWriter::truncate(int64_t length)
-  throw(DlAbortEx*)
 {
   if(fd == -1) {
     throw new DlAbortEx("File not opened.");
@@ -148,7 +142,6 @@ void AbstractDiskWriter::truncate(int64_t length)
 
 // TODO the file descriptor fd must be opened before calling this function.
 int64_t AbstractDiskWriter::size() const
-  throw(DlAbortEx*)
 {
   if(fd == -1) {
     throw new DlAbortEx("File not opened.");

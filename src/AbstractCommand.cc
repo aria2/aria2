@@ -38,25 +38,18 @@
 #include "CUIDCounter.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
-#include "FatalException.h"
+#include "DownloadFailureException.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "Util.h"
 #include "message.h"
 #include "SleepCommand.h"
 #include "prefs.h"
 #include "DNSCache.h"
-#include "SingleFileDownloadContext.h"
-#include "DefaultPieceStorage.h"
-#include "UnknownLengthPieceStorage.h"
-#include "File.h"
 #include "StreamCheckIntegrityEntry.h"
-#include "BtProgressInfoFile.h"
-#include "CheckIntegrityCommand.h"
-#include "DiskAdaptor.h"
 #include "PeerStat.h"
 #include "Segment.h"
-#include "DiskWriterFactory.h"
 #include "Option.h"
+#include "PieceStorage.h"
 
 AbstractCommand::AbstractCommand(int32_t cuid,
 				 const RequestHandle& req,
@@ -158,7 +151,8 @@ bool AbstractCommand::execute() {
       delete(err);
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
     }
-  } catch(FatalException* err) {
+  } catch(DownloadFailureException* err) {
+    logger->error(EX_EXCEPTION_CAUGHT, err);
     delete(err);
     _requestGroup->setHaltRequested(true);
     return true;
@@ -300,131 +294,9 @@ bool AbstractCommand::nameResolveFinished() const {
 }
 #endif // ENABLE_ASYNC_DNS
 
-void AbstractCommand::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile)
-{
-  if(!_requestGroup->isPreLocalFileCheckEnabled()) {
-    _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
-    return;
-  }
-
-  //_requestGroup->setProgressInfoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
-  if(progressInfoFile->exists()) {
-    progressInfoFile->load();
-    _requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
-  } else {
-    File outfile(_requestGroup->getFilePath());    
-    if(outfile.exists() && e->option->get(PREF_CONTINUE) == V_TRUE) {
-      if(_requestGroup->getTotalLength() < outfile.size()) {
-	throw new FatalException(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
-				 _requestGroup->getFilePath().c_str(),
-				 Util::llitos(outfile.size()).c_str(),
-				 Util::llitos(_requestGroup->getTotalLength()).c_str());
-      }
-      _requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
-      _requestGroup->getPieceStorage()->markPiecesDone(outfile.size());
-    } else {
-#ifdef ENABLE_MESSAGE_DIGEST
-      if(outfile.exists() && e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
-	_requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
-      } else {
-	shouldCancelDownloadForSafety();
-	_requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
-      }
-#else // ENABLE_MESSAGE_DIGEST
-      shouldCancelDownloadForSafety();
-      _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();
-#endif // ENABLE_MESSAGE_DIGEST
-    }
-  }
-  _requestGroup->setProgressInfoFile(progressInfoFile);
-}
-
-void AbstractCommand::shouldCancelDownloadForSafety()
-{
-  File outfile(_requestGroup->getFilePath());
-  if(outfile.exists() && !_requestGroup->getProgressInfoFile()->exists()) {
-    if(e->option->get(PREF_AUTO_FILE_RENAMING) == V_TRUE) {
-      if(tryAutoFileRenaming()) {
-	logger->notice("File already exists. Renamed to %s.",
-		       _requestGroup->getFilePath().c_str());
-      } else {
-	logger->notice("File renaming failed: %s",
-		       _requestGroup->getFilePath().c_str());
-	throw new FatalException(EX_DOWNLOAD_ABORTED);
-      }
-    } else if(e->option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
-      logger->notice(MSG_FILE_ALREADY_EXISTS,
-		     _requestGroup->getFilePath().c_str(),
-		     _requestGroup->getProgressInfoFile()->getFilename().c_str());
-      throw new FatalException(EX_DOWNLOAD_ABORTED);
-    }
-  }
-}
-
-bool AbstractCommand::tryAutoFileRenaming()
-{
-  string filepath = _requestGroup->getFilePath();
-  if(filepath.empty()) {
-    return false;
-  }
-  for(int32_t i = 1; i < 10000; ++i) {
-    File newfile(filepath+"."+Util::itos(i));
-    if(!newfile.exists()) {
-      SingleFileDownloadContextHandle(_requestGroup->getDownloadContext())->setUFilename(newfile.getBasename());
-      return true;
-    }
-  }
-  return false;
-}
-
-void AbstractCommand::initPieceStorage()
-{
-  if(_requestGroup->getDownloadContext()->getTotalLength() == 0) {
-    UnknownLengthPieceStorageHandle ps = new UnknownLengthPieceStorage(_requestGroup->getDownloadContext(), e->option);
-    if(!_requestGroup->getDiskWriterFactory().isNull()) {
-      ps->setDiskWriterFactory(_requestGroup->getDiskWriterFactory());
-    }
-    _requestGroup->setPieceStorage(ps);
-  } else {
-    DefaultPieceStorageHandle ps = new DefaultPieceStorage(_requestGroup->getDownloadContext(), e->option);
-    if(!_requestGroup->getDiskWriterFactory().isNull()) {
-      ps->setDiskWriterFactory(_requestGroup->getDiskWriterFactory());
-    }
-    _requestGroup->setPieceStorage(ps);
-  }
-  _requestGroup->getPieceStorage()->initStorage();
-  _requestGroup->initSegmentMan();
-}
-
-bool AbstractCommand::downloadFinishedByFileLength()
-{
-  // TODO consider the case when the getFilePath() returns dir path. 
-  File outfile(_requestGroup->getFilePath());
-  if(outfile.exists() &&
-     _requestGroup->getTotalLength() == outfile.size()) {
-    _requestGroup->getPieceStorage()->markAllPiecesDone();
-    return true;
-  } else {
-    return false;
-  }
-}
-
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
   CheckIntegrityEntryHandle entry =
     new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand);
-#ifdef ENABLE_MESSAGE_DIGEST
-  if(File(_requestGroup->getFilePath()).size() > 0 &&
-     e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
-     entry->isValidationReady()) {
-    entry->initValidator();
-    logger->debug("Issuing CheckIntegrityCommand.");
-    CheckIntegrityCommand* command =
-      new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), _requestGroup, e, entry);
-    e->commands.push_back(command);
-  } else
-#endif // ENABLE_MESSAGE_DIGEST
-    {
-      e->addCommand(entry->onDownloadIncomplete(e));
-    }
+  e->addCommand(_requestGroup->processCheckIntegrityEntry(entry, e));
 }

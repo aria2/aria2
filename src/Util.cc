@@ -38,6 +38,7 @@
 #include "Randomizer.h"
 #include "a2netcompat.h"
 #include "a2time.h"
+#include "DlAbortEx.h"
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -331,7 +332,6 @@ void Util::fileCopy(const string& dest, const string& src) {
 }
 
 void Util::rangedFileCopy(const string& dest, const string& src, int64_t srcOffset, int64_t length)
-  throw(DlAbortEx*)
 {
   int32_t bufSize = 4096;
   char buf[bufSize];

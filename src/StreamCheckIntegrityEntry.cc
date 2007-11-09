@@ -54,22 +54,13 @@ StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 Commands StreamCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
 {
   Commands commands;
+  FileAllocationEntryHandle entry =
+    new StreamFileAllocationEntry(_currentRequest, _requestGroup,
+				  popNextCommand());
   if(_requestGroup->needsFileAllocation()) {
-    FileAllocationEntryHandle entry =
-      new StreamFileAllocationEntry(_currentRequest, _requestGroup,
-				    popNextCommand());
     e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {
-    if(_nextCommand) {
-      commands.push_back(popNextCommand());
-    } else {
-      Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);
-      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
-											   _currentRequest, _requestGroup, e);
-      
-      commands.push_front(command);
-      copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
-    }
+    commands = entry->prepareForNextAction(e);
   }
   return commands;
 }

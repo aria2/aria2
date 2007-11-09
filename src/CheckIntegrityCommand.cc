@@ -64,7 +64,8 @@ bool CheckIntegrityCommand::executeInternal()
   if(_entry->finished()) {
     _entry->updatePieceStorage();
     if(_requestGroup->downloadFinished()) {
-      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, cuid, _requestGroup->getFilePath().c_str());
+      logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, _requestGroup->getGID(),
+		     _requestGroup->getFilePath().c_str());
       _e->addCommand(_entry->onDownloadFinished(_e));
     } else {
       _e->addCommand(_entry->onDownloadIncomplete(_e));

@@ -38,6 +38,7 @@
 #include "Util.h"
 #include "MultiFileAllocationIterator.h"
 #include "DefaultDiskWriterFactory.h"
+#include "DlAbortEx.h"
 
 void MultiDiskAdaptor::resetDiskWriterEntries()
 {
@@ -60,7 +61,6 @@ string MultiDiskAdaptor::getTopDirPath() const
 }
 
 void MultiDiskAdaptor::mkdir() const
-  throw(DlAbortEx*)
 {
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
@@ -69,7 +69,6 @@ void MultiDiskAdaptor::mkdir() const
 }
 
 void MultiDiskAdaptor::openFile()
-  throw(DlAbortEx*)
 {
   mkdir();
   resetDiskWriterEntries();
@@ -80,7 +79,6 @@ void MultiDiskAdaptor::openFile()
 }
 
 void MultiDiskAdaptor::initAndOpenFile()
-  throw(DlAbortEx*)
 {
   mkdir();
   resetDiskWriterEntries();
@@ -91,7 +89,6 @@ void MultiDiskAdaptor::initAndOpenFile()
 }
 
 void MultiDiskAdaptor::openExistingFile()
-  throw(DlAbortEx*)
 {
   resetDiskWriterEntries();
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
@@ -109,7 +106,6 @@ void MultiDiskAdaptor::closeFile()
 }
 
 void MultiDiskAdaptor::onDownloadComplete()
-  throw(DlAbortEx*)
 {
   closeFile();
   openFile();
@@ -117,7 +113,6 @@ void MultiDiskAdaptor::onDownloadComplete()
 
 void MultiDiskAdaptor::writeData(const unsigned char* data, int32_t len,
 				 int64_t offset)
-  throw(DlAbortEx*)
 {
   int64_t fileOffset = offset;
   bool writing = false;
@@ -160,7 +155,6 @@ int32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
 }
 
 int32_t MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
-  throw(DlAbortEx*)
 {
   int64_t fileOffset = offset;
   bool reading = false;
@@ -200,7 +194,6 @@ bool MultiDiskAdaptor::fileExists()
 
 // TODO call DiskWriter::openFile() before calling this function.
 int64_t MultiDiskAdaptor::size() const
-  throw(DlAbortEx*)
 {
   int64_t size = 0;
   for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();

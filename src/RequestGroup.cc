@@ -49,6 +49,12 @@
 #include "DiskAdaptor.h"
 #include "DiskWriterFactory.h"
 #include "RecoverableException.h"
+#include "StreamCheckIntegrityEntry.h"
+#include "CheckIntegrityCommand.h"
+#include "UnknownLengthPieceStorage.h"
+#include "SingleFileDownloadContext.h"
+#include "DlAbortEx.h"
+#include "DownloadFailureException.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -149,10 +155,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	_logger->debug("Clearing http/ftp URIs because the current implementation does not allow integrating multi-file torrent and http/ftp.");
 	_uris.clear();
       }
-
-      _pieceStorage = new DefaultPieceStorage(btContext, _option);
-      _pieceStorage->initStorage();
-      initSegmentMan();
+      initPieceStorage();
 
       BtProgressInfoFileHandle progressInfoFile =
 	new DefaultBtProgressInfoFile(_downloadContext,
@@ -201,26 +204,159 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	}
       }
       _progressInfoFile = progressInfoFile;
-      Commands commands;
       CheckIntegrityEntryHandle entry =	new BtCheckIntegrityEntry(this);
-#ifdef ENABLE_MESSAGE_DIGEST
-      if(File(getFilePath()).size() > 0 &&
-	 e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
-	 entry->isValidationReady()) {
-	entry->initValidator();
-	CheckIntegrityCommand* command =
-	  new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), this, e, entry);
-	commands.push_back(command);
-      } else
-#endif // ENABLE_MESSAGE_DIGEST
-	{
-	  commands = entry->onDownloadIncomplete(e);
-	}
-      return commands;
+      
+      return processCheckIntegrityEntry(entry, e);
     }
   }
 #endif // ENABLE_BITTORRENT
-  return createNextCommand(e, 1);
+  // TODO I assume here when totallength is set to DownloadContext and it is
+  // not 0, then filepath is also set DownloadContext correctly....
+  if(_downloadContext->getTotalLength() == 0) {
+    return createNextCommand(e, 1);
+  }else {
+    initPieceStorage();
+    BtProgressInfoFileHandle infoFile =
+      new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option);
+    if(!infoFile->exists() && downloadFinishedByFileLength()) {
+      return Commands();
+    }
+    loadAndOpenFile(infoFile);
+    return processCheckIntegrityEntry(new StreamCheckIntegrityEntry(0, this), e);
+  }
+}
+
+Commands RequestGroup::processCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry, DownloadEngine* e)
+{
+#ifdef ENABLE_MESSAGE_DIGEST
+  if(File(getFilePath()).size() > 0 &&
+     e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
+     entry->isValidationReady()) {
+    entry->initValidator();
+    CheckIntegrityCommand* command =
+      new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), this, e, entry);
+    Commands commands;
+    commands.push_back(command);
+    return commands;
+  } else
+#endif // ENABLE_MESSAGE_DIGEST
+    {
+      return entry->onDownloadIncomplete(e);
+    }
+}
+
+void RequestGroup::initPieceStorage()
+{
+  if(_downloadContext->getTotalLength() == 0) {
+    UnknownLengthPieceStorageHandle ps = new UnknownLengthPieceStorage(_downloadContext, _option);
+    if(!_diskWriterFactory.isNull()) {
+      ps->setDiskWriterFactory(_diskWriterFactory);
+    }
+    _pieceStorage = ps;
+  } else {
+    DefaultPieceStorageHandle ps = new DefaultPieceStorage(_downloadContext, _option);
+    if(!_diskWriterFactory.isNull()) {
+      ps->setDiskWriterFactory(_diskWriterFactory);
+    }
+    _pieceStorage = ps;
+  }
+  _pieceStorage->initStorage();
+  initSegmentMan();
+}
+
+bool RequestGroup::downloadFinishedByFileLength()
+{
+  if(_option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
+     !_downloadContext->getPieceHashes().empty()) {
+    return false;
+  }
+  // TODO consider the case when the getFilePath() returns dir path. 
+  File outfile(getFilePath());
+  if(outfile.exists() && getTotalLength() == outfile.size()) {
+    _pieceStorage->markAllPiecesDone();
+    _logger->notice(MSG_DOWNLOAD_ALREADY_COMPLETED, _gid, getFilePath().c_str());
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile)
+{
+  try {
+    if(!isPreLocalFileCheckEnabled()) {
+      _pieceStorage->getDiskAdaptor()->initAndOpenFile();
+      return;
+    }
+    if(progressInfoFile->exists()) {
+      progressInfoFile->load();
+      _pieceStorage->getDiskAdaptor()->openExistingFile();
+    } else {
+      File outfile(getFilePath());    
+      if(outfile.exists() && _option->get(PREF_CONTINUE) == V_TRUE) {
+	if(getTotalLength() < outfile.size()) {
+	  throw new DlAbortEx(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
+			      getFilePath().c_str(),
+			      Util::llitos(outfile.size()).c_str(),
+			      Util::llitos(getTotalLength()).c_str());
+	}
+	_pieceStorage->getDiskAdaptor()->openExistingFile();
+	_pieceStorage->markPiecesDone(outfile.size());
+      } else {
+#ifdef ENABLE_MESSAGE_DIGEST
+	if(outfile.exists() && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+	  _pieceStorage->getDiskAdaptor()->openExistingFile();
+	} else {
+	  shouldCancelDownloadForSafety();
+	  _pieceStorage->getDiskAdaptor()->initAndOpenFile();
+	}
+#else // ENABLE_MESSAGE_DIGEST
+	shouldCancelDownloadForSafety();
+	_pieceStorage->getDiskAdaptor()->initAndOpenFile();
+#endif // ENABLE_MESSAGE_DIGEST
+      }
+    }
+    setProgressInfoFile(progressInfoFile);
+  } catch(RecoverableException* e) {
+    throw new DownloadFailureException(e, EX_DOWNLOAD_ABORTED);
+  }
+}
+
+void RequestGroup::shouldCancelDownloadForSafety()
+{
+  File outfile(getFilePath());
+  if(outfile.exists() && !_progressInfoFile->exists()) {
+    if(_option->get(PREF_AUTO_FILE_RENAMING) == V_TRUE) {
+      if(tryAutoFileRenaming()) {
+	_logger->notice("File already exists. Renamed to %s.",
+		       getFilePath().c_str());
+      } else {
+	_logger->notice("File renaming failed: %s", getFilePath().c_str());
+	throw new DownloadFailureException(EX_DOWNLOAD_ABORTED);
+      }
+    } else if(_option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
+      _logger->notice(MSG_FILE_ALREADY_EXISTS,
+		     getFilePath().c_str(),
+		     _progressInfoFile->getFilename().c_str());
+      throw new DownloadFailureException(EX_DOWNLOAD_ABORTED);
+    }
+  }
+}
+
+bool RequestGroup::tryAutoFileRenaming()
+{
+  string filepath = getFilePath();
+  if(filepath.empty()) {
+    return false;
+  }
+  for(int32_t i = 1; i < 10000; ++i) {
+    File newfile(filepath+"."+Util::itos(i));
+    if(!newfile.exists()) {
+      SingleFileDownloadContextHandle(_downloadContext)->setUFilename(newfile.getBasename());
+      return true;
+    }
+  }
+  return false;
 }
 
 Commands RequestGroup::createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj)

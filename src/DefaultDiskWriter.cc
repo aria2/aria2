@@ -45,7 +45,6 @@ DefaultDiskWriter::~DefaultDiskWriter() {}
 
 void DefaultDiskWriter::initAndOpenFile(const string& filename,
 					int64_t totalLength)
-  throw(DlAbortEx*)
 {
   createFile(filename);
 }

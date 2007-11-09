@@ -39,7 +39,6 @@
 #include "FileEntry.h"
 #include "Logger.h"
 #include "FileAllocationIterator.h"
-#include "DlAbortEx.h"
 
 class DiskAdaptor:public BinaryStream {
 protected:
@@ -73,8 +72,7 @@ public:
     this->fileEntries = fileEntries;
   }
 
-  FileEntryHandle
-  getFileEntryFromPath(const string& fileEntryPath) const throw(DlAbortEx*);
+  FileEntryHandle getFileEntryFromPath(const string& fileEntryPath) const;
 
   const FileEntries& getFileEntries() const { return fileEntries; }
 

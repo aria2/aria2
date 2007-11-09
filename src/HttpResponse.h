@@ -40,8 +40,6 @@
 #include "HttpHeader.h"
 #include "TransferEncoding.h"
 #include "LogFactory.h"
-#include "DlAbortEx.h"
-#include "DlRetryEx.h"
 
 class HttpResponse {
 private:
@@ -60,7 +58,7 @@ public:
   
   ~HttpResponse() {}
 
-  void validateResponse() const throw(DlAbortEx*, DlRetryEx*);
+  void validateResponse() const;
 
   /**
    * Returns filename.

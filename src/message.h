@@ -57,7 +57,7 @@
 #define MSG_GOT_NEW_PIECE _("CUID#%d - we got new piece. index=%d")
 #define MSG_GOT_WRONG_PIECE _("CUID#%d - we got wrong piece. index=%d")
 #define MSG_DOWNLOAD_NOT_COMPLETE _("CUID#%d - Download not complete: %s")
-#define MSG_DOWNLOAD_ALREADY_COMPLETED _("CUID#%d - Download has already completed: %s")
+#define MSG_DOWNLOAD_ALREADY_COMPLETED _("#%d - Download has already completed: %s")
 #define MSG_GOOD_CHECKSUM _("CUID#%d - Good checksum: %s")
 #define MSG_BAD_CHECKSUM _("CUID#%d - Bad checksum: %s")
 #define MSG_RESOLVING_HOSTNAME _("CUID#%d - Resolving hostname %s")
