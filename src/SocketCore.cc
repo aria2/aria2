@@ -331,7 +331,7 @@ void SocketCore::writeData(const char* data, int32_t len) {
     }
 #endif // HAVE_LIBSSL
 #ifdef HAVE_LIBGNUTLS
-    if((ret = gnutls_record_send(sslSession, data, len)) == len) {
+    if((ret = gnutls_record_send(sslSession, data, len)) != len) {
       throw new DlRetryEx(EX_SOCKET_SEND, gnutls_strerror(ret));
     }
 #endif // HAVE_LIBGNUTLS
