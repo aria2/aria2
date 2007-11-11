@@ -238,18 +238,26 @@ string Util::replace(const string& target, const string& oldstr, const string& n
   return result;
 }
 
+bool Util::shouldUrlencode(const char c)
+{
+  return !(// ALPHA
+	   'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' ||
+	   // DIGIT
+	   '0' <= c && c <= '9' ||
+	   // safe
+	   '$' == c || '-' == c || '_' == c || '.' == c ||
+	   // extra
+	   '!' == c || '*' == c || '\'' == c ||'(' == c ||
+	   ')' == c || ',' == c ||
+	   // reserved
+	   ';' == c || '/' == c || '?' == c  || ':' == c ||
+	   '@' == c || '&' == c || '=' == c || '+' == c);   
+}
+
 string Util::urlencode(const unsigned char* target, int32_t len) {
   string dest;
   for(int32_t i = 0; i < len; i++) {
-    if(!('0' <= target[i] && target[i] <= '9' ||
-	 'A' <= target[i] && target[i] <= 'Z' ||
-	 'a' <= target[i] && target[i] <= 'z' ||
-	 '$' == target[i] || '-' == target[i] ||
-	 '_' == target[i] || '.' == target[i] ||
-	 '+' == target[i] || '!' == target[i] ||
-	 '*' == target[i] || '\'' == target[i] ||
-	 '(' == target[i] || ')' == target[i] ||
-	 ',' == target[i])) {
+    if(shouldUrlencode(target[i])) {
       char temp[4];
       sprintf(temp, "%%%02x", target[i]);
       temp[sizeof(temp)-1] = '\0';

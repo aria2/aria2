@@ -68,14 +68,9 @@ bool Request::parseUrl(const string& url) {
   string tempUrl;
   string::size_type sharpIndex = url.find("#");
   if(sharpIndex != string::npos) {
-    if(FeatureConfig::getInstance()->isSupported("metalink") &&
-       url.find(METALINK_MARK) == sharpIndex) {
-      tempUrl = url.substr(sharpIndex+strlen(METALINK_MARK));
-    } else {
-      tempUrl = url.substr(0, sharpIndex);
-    }
+    tempUrl = urlencode(url.substr(0, sharpIndex));
   } else {
-    tempUrl = url;
+    tempUrl = urlencode(url);
   }
 
   currentUrl = tempUrl;
@@ -144,4 +139,32 @@ AuthConfigHandle Request::resolveFtpAuthConfig()
 AuthConfigHandle Request::resolveHttpProxyAuthConfig()
 {
   return _httpProxyAuthResolver->resolveAuthConfig(getHost());
+}
+
+bool Request::isHexNumber(const char c) const
+{
+  return '0' <= c && c <= '9' || 'A' <= c && c <= 'F' || 'a' <= c && c <= 'f';
+}
+
+string Request::urlencode(const string& src) const
+{
+  int32_t lastIndex = src.size()-1;
+  string result = src+"  ";
+  for(int32_t index = lastIndex; index >= 0; --index) {
+    const char c = result[index];
+    // '/' is not urlencoded because src is expected to be a path.
+    if(Util::shouldUrlencode(c)) {
+      if(c == '%') {
+	if(!isHexNumber(result[index+1]) || !isHexNumber(result[index+2])) {
+	  result.replace(index, 1, "%25");
+	}
+      } else {
+	char temp[4];
+	sprintf(temp, "%%%02x", c);
+	temp[3] = '\0';
+	result.replace(index, 1, temp);
+      }
+    }
+  }
+  return result.substr(0, result.size()-2);
 }

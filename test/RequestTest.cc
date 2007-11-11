@@ -21,12 +21,11 @@ class RequestTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSetUrl12);
   CPPUNIT_TEST(testSetUrl13);
   CPPUNIT_TEST(testSetUrl14);
+  CPPUNIT_TEST(testSetUrl17);
   CPPUNIT_TEST(testRedirectUrl);
   CPPUNIT_TEST(testRedirectUrl2);
   CPPUNIT_TEST(testResetUrl);
-  CPPUNIT_TEST(testSafeChar);
   CPPUNIT_TEST(testInnerLink);
-  CPPUNIT_TEST(testMetalink);
   CPPUNIT_TEST(testResolveHttpAuthConfig);
   CPPUNIT_TEST(testResolveHttpAuthConfig_noCandidate);
   CPPUNIT_TEST(testResolveHttpProxyAuthConfig);
@@ -48,12 +47,11 @@ public:
   void testSetUrl12();
   void testSetUrl13();
   void testSetUrl14();
+  void testSetUrl17();
   void testRedirectUrl();
   void testRedirectUrl2();
   void testResetUrl();
-  void testSafeChar();
   void testInnerLink();
-  void testMetalink();
   void testResolveHttpAuthConfig();
   void testResolveHttpAuthConfig_noCandidate();
   void testResolveHttpProxyAuthConfig();
@@ -217,6 +215,17 @@ void RequestTest::testSetUrl14() {
   CPPUNIT_ASSERT_EQUAL(string("abc?query"), req.getFile());
 }
 
+void RequestTest::testSetUrl17()
+{
+  Request req;
+  bool v = req.setUrl("http://host:80/file<with%2 %20space/file with space;param?a=/?");
+  CPPUNIT_ASSERT(v);
+  CPPUNIT_ASSERT_EQUAL(string("http"), req.getProtocol());
+  CPPUNIT_ASSERT_EQUAL(string("host"), req.getHost());
+  CPPUNIT_ASSERT_EQUAL(string("/file%3cwith%252%20%20space"), req.getDir());
+  CPPUNIT_ASSERT_EQUAL(string("file%20with%20space;param?a=/?"), req.getFile());
+}
+
 void RequestTest::testRedirectUrl() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
@@ -279,35 +288,11 @@ void RequestTest::testResetUrl() {
   CPPUNIT_ASSERT_EQUAL(string("index.html"), req.getFile());
 }
 
-void RequestTest::testSafeChar() {
-  Request req;
-  bool v = req.setUrl("http://aria.rednoah.com/|<>");
-  CPPUNIT_ASSERT(!v);
-}
-
 void RequestTest::testInnerLink() {
   Request req;
   bool v = req.setUrl("http://aria.rednoah.com/index.html#download");
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(string("index.html"), req.getFile());
-}
-
-void RequestTest::testMetalink() {
-  Request req;
-  bool v = req.setUrl("http://aria.rednoah.com/download/aria.tar.bz2#!metalink3!http://aria2.sourceforge.net/download/aria.metalink");
-  CPPUNIT_ASSERT(v);
-#ifdef ENABLE_METALINK
-  CPPUNIT_ASSERT_EQUAL(string("aria2.sourceforge.net"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(string("aria.metalink"), req.getFile());
-
-  bool v2 = req.setUrl("http://aria.rednoah.com/download/aria.tar.bz2#!metalink3!");
-  CPPUNIT_ASSERT(!v2);
-#else
-  CPPUNIT_ASSERT_EQUAL(string("aria.rednoah.com"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL(string("/download"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(string("aria.tar.bz2"), req.getFile());
-#endif // ENABLE_METALINK
 }
 
 void RequestTest::testResolveHttpAuthConfig()

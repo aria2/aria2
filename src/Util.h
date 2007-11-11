@@ -76,6 +76,8 @@ public:
 
   static string replace(const string& target, const string& oldstr, const string& newstr);
 
+  static bool shouldUrlencode(const char c);
+
   static string urlencode(const unsigned char* target, int32_t len);
 
   static string urlencode(const string& target)
