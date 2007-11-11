@@ -1,3 +1,15 @@
+2007-11-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	urlencode the given url inside Request::parseUrl(...)
+	* src/Request.{h, cc}
+	* src/Util.{h, cc}
+	* test/RequestTest.cc
+
+	Removed #!metalink3! notation support because it is deleted from
+	the metalink specification.
+	* src/Request.{h, cc}
+	* test/RequestTest.cc
+
 2007-11-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Don't connect server before checking file integrity at startup, if

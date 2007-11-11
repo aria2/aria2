@@ -46,8 +46,6 @@
 "%"\
 "#"
 
-#define METALINK_MARK "#!metalink3!"
-
 class Request {
 public:
   enum TRACKER_EVENT {
@@ -83,6 +81,11 @@ private:
   string _password;
 
   bool parseUrl(const string& url);
+
+  bool isHexNumber(const char c) const;
+
+  string urlencode(const string& src) const;
+
 public:
   CookieBoxHandle cookieBox;
 public:

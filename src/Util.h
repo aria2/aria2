@@ -89,6 +89,8 @@ public:
     return urlencode((const unsigned char*)target.c_str(), target.size());
   }
 
+  static bool shouldUrlencode(const char c);
+
   static string urldecode(const string& target);
 
   static string torrentUrlencode(const unsigned char* target, int32_t len);
