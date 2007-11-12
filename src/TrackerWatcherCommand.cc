@@ -71,8 +71,6 @@ bool TrackerWatcherCommand::execute() {
   if(_trackerRequestGroup.isNull()) {
     _trackerRequestGroup = createAnnounce();
     if(!_trackerRequestGroup.isNull()) {
-      //e->_requestGroupMan->addReservedGroup(_trackerRequestGroup); 
-      //e->_requestGroupMan->fillRequestGroupFromReserver(e);
       e->addCommand(_trackerRequestGroup->createInitialCommand(e));
       logger->debug("added tracker request command");
     }
@@ -83,13 +81,7 @@ bool TrackerWatcherCommand::execute() {
       processTrackerResponse(trackerResponse);
       btAnnounce->announceSuccess();
       btAnnounce->resetAnnounce();
-    } catch(DlAbortEx* ex) {
-      logger->error(EX_EXCEPTION_CAUGHT, ex);
-      delete ex;
-      btAnnounce->announceFailure();
-      btAnnounce->resetAnnounce();
-    } catch(DlRetryEx* ex) {
-      // TODO Can I remove this catch clause?
+    } catch(RecoverableException* ex) {
       logger->error(EX_EXCEPTION_CAUGHT, ex);      
       delete ex;
       btAnnounce->announceFailure();

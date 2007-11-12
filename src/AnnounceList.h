@@ -115,6 +115,10 @@ public:
    */
   void moveToStoppedAllowedTier();
   void moveToCompletedAllowedTier();
+
+  bool allTiersFailed() const;
+
+  void resetTier();
 };
 
 #endif // _D_ANNOUNCE_LIST_H_

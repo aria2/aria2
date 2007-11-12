@@ -103,16 +103,16 @@ void AnnounceList::announceSuccess() {
   }
 }
 
-// TODO if currentTier reaches tiers.end(), then getAllTierTried() returns true
 void AnnounceList::announceFailure() {
   if(currentTrackerInitialized) {
     currentTracker++;
     if(currentTracker == (*currentTier)->urls.end()) {
       currentTier++;
       if(currentTier == tiers.end()) {
-	currentTier = tiers.begin();
+	currentTrackerInitialized = false;
+      } else {
+	currentTracker = (*currentTier)->urls.begin();
       }
-      currentTracker = (*currentTier)->urls.begin();
     }
   }
 }
@@ -224,4 +224,14 @@ void AnnounceList::shuffle() {
     Strings& urls = (*itr)->urls;
     random_shuffle(urls.begin(), urls.end());
   }
+}
+
+bool AnnounceList::allTiersFailed() const
+{
+  return currentTier == tiers.end();
+}
+
+void AnnounceList::resetTier()
+{
+  resetIterator();
 }

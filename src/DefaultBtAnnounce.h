@@ -62,7 +62,6 @@ private:
   AnnounceList announceList;
   string trackerId;
   string key;
-  int32_t trackerNumTry;
   const Option* option;
   Logger* logger;
   RandomizerHandle _randomizer;

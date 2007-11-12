@@ -1,5 +1,18 @@
 2007-11-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Do not rotate tiers in announce-list.
+	* src/DefaultBtAnnounce.{h, cc}: Removed trackerNumTry.
+	AnnounceList::allTiersFailed() used instead to detect whether all
+	tiers are tried and failed.
+	* test/DefaultBtAnnounceTest.cc
+	* src/AnnounceList.{h, cc}: If all tiers are tried and failed then
+	allTiersFailed() returns true. To reset tier pointer, call resetTier();
+	* test/AnnounceListTest.cc
+	* src/TrackerWatcherCommand.cc (execute): Removed DlAbortEx catch
+	clause. Catch RecoverableException instead of DlRetryEx instead.
+
+2007-11-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Implemented checksum validation feature(1 checksum for each file)
 	The validation takes place after the download.
 	* src/PieceHashCheckIntegrityEntry.{h, cc}: New class.

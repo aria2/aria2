@@ -55,7 +55,6 @@ DefaultBtAnnounce::DefaultBtAnnounce(BtContextHandle btContext,
   complete(0),
   incomplete(0),
   announceList(btContext->getAnnounceTiers()),
-  trackerNumTry(0),
   option(option),
   logger(LogFactory::getInstance()),
   _randomizer(SimpleRandomizer::getInstance()),
@@ -76,7 +75,8 @@ void DefaultBtAnnounce::generateKey()
 }
 
 bool DefaultBtAnnounce::isDefaultAnnounceReady() {
-  return (trackers == 0 && prevAnnounceTime.elapsed(minInterval));
+  return (trackers == 0 && prevAnnounceTime.elapsed(minInterval) &&
+	  !announceList.allTiersFailed());
 }
 
 bool DefaultBtAnnounce::isStoppedAnnounceReady() {
@@ -113,6 +113,8 @@ string DefaultBtAnnounce::getAnnounceUrl() {
        announceList.getEvent() == AnnounceTier::STARTED) {
       announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
     }
+  } else {
+    return "";
   }
   int32_t numWant = 50;
   if(!btRuntime->lessThanEqMinPeer() ||
@@ -160,18 +162,16 @@ void DefaultBtAnnounce::announceSuccess() {
 
 void DefaultBtAnnounce::announceFailure() {
   trackers = 0;
-  trackerNumTry++;
   announceList.announceFailure();
 }
 
 bool DefaultBtAnnounce::isAllAnnounceFailed() {
-  return 
-    trackerNumTry >= option->getAsInt(PREF_TRACKER_MAX_TRIES);
+  return announceList.allTiersFailed();
 }
 
 void DefaultBtAnnounce::resetAnnounce() {
   prevAnnounceTime.reset();
-  trackerNumTry = 0;
+  announceList.resetTier();
 }
 
 void

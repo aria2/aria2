@@ -44,7 +44,8 @@ void AnnounceListTest::testSingleElementList() {
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
   AnnounceList announceList(announces);
-
+  
+  CPPUNIT_ASSERT(!announceList.allTiersFailed());
   string url =  announceList.getAnnounce();
   string event = announceList.getEventString();
   CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
@@ -56,6 +57,9 @@ void AnnounceListTest::testSingleElementList() {
   url =  announceList.getAnnounce();
   CPPUNIT_ASSERT_EQUAL(string("tracker3"), url);
   announceList.announceFailure();
+  CPPUNIT_ASSERT(announceList.allTiersFailed());
+  announceList.resetTier();
+  CPPUNIT_ASSERT(!announceList.allTiersFailed());
   // back to the first list
   url = announceList.getAnnounce();
   event = announceList.getEventString();
@@ -86,6 +90,7 @@ void AnnounceListTest::testMultiElementList() {
   // [ [ tracker1, tracker2, tracker3 ] ]
   AnnounceList announceList(announces);
   
+  CPPUNIT_ASSERT(!announceList.allTiersFailed());
   string url = announceList.getAnnounce();
   CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
   announceList.announceFailure();
@@ -102,8 +107,11 @@ void AnnounceListTest::testMultiElementList() {
   url = announceList.getAnnounce();
   CPPUNIT_ASSERT_EQUAL(string("tracker3"), url);
   announceList.announceFailure();
-  url = announceList.getAnnounce();
+  CPPUNIT_ASSERT(announceList.allTiersFailed());
+  announceList.resetTier();
+  CPPUNIT_ASSERT(!announceList.allTiersFailed());
   // back to the first list because there is no other list.
+  url = announceList.getAnnounce();
   CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
 }
 
