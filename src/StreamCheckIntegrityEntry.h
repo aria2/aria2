@@ -35,17 +35,13 @@
 #ifndef _D_STREAM_CHECK_INTEGRITY_ENTRY_H_
 #define _D_STREAM_CHECK_INTEGRITY_ENTRY_H_
 
-#include "CheckIntegrityEntry.h"
+#include "PieceHashCheckIntegrityEntry.h"
 #include "TimeA2.h"
 
 class Request;
 typedef SharedHandle<Request> RequestHandle;
-class Command;
-typedef deque<Command*> Commands;
-class RequestGroup;
-class DownloadEngine;
 
-class StreamCheckIntegrityEntry:public CheckIntegrityEntry
+class StreamCheckIntegrityEntry:public PieceHashCheckIntegrityEntry
 {
 private:
   RequestHandle _currentRequest;

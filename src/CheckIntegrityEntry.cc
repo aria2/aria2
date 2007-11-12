@@ -33,12 +33,9 @@
  */
 /* copyright --> */
 #include "CheckIntegrityEntry.h"
-#include "DlAbortEx.h"
 #include "Command.h"
 #include "RequestGroup.h"
-#include "IteratableChunkChecksumValidator.h"
-#include "DownloadContext.h"
-#include "DownloadEngine.h"
+#include "IteratableValidator.h"
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
 					 Command* nextCommand):
@@ -74,24 +71,4 @@ int64_t CheckIntegrityEntry::getCurrentLength()
 bool CheckIntegrityEntry::finished()
 {
   return _validator->finished();
-}
-
-bool CheckIntegrityEntry::isValidationReady()
-{
-  DownloadContextHandle dctx = _requestGroup->getDownloadContext();
-  return dctx->getPieceHashes().size() > 0 &&
-    dctx->getPieceHashes().size() == (uint32_t)dctx->getNumPieces();
-}
-
-void CheckIntegrityEntry::initValidator()
-{
-  IteratableChunkChecksumValidatorHandle validator =
-    new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
-					 _requestGroup->getPieceStorage());
-  _validator = validator;
-}
-
-void CheckIntegrityEntry::updatePieceStorage()
-{
-  _validator->updatePieceStorage();
 }

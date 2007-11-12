@@ -35,57 +35,47 @@
 #ifndef _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
 #define _D_ITERATABLE_CHECKSUM_VALIDATOR_H_
 
-#include "common.h"
-#include "BitfieldMan.h"
-#include "Checksum.h"
-#include "DiskWriter.h"
-#include "LogFactory.h"
-#include "messageDigest.h"
+#include "IteratableValidator.h"
 
-class IteratableChecksumValidator
+class SingleFileDownloadContext;
+extern typedef SharedHandle<SingleFileDownloadContext> SingleFileDownloadContextHandle;
+class PieceStorage;
+extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+class Logger;
+class MessageDigestContext;
+extern typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
+
+class IteratableChecksumValidator:public IteratableValidator
 {
 private:
-  DiskWriterHandle _diskWriter;
-  BitfieldMan* _bitfield;
+  SingleFileDownloadContextHandle _dctx;
+
+  PieceStorageHandle _pieceStorage;
+
   int64_t _currentOffset;
-  ChecksumHandle _checksum;
-  const Logger* logger;
+
   MessageDigestContextHandle _ctx;
 
-  string calculateActualChecksum();
+  const Logger* _logger;
+
 public:
-  IteratableChecksumValidator():_diskWriter(0), _bitfield(0), _currentOffset(0), _checksum(0), logger(LogFactory::getInstance()), _ctx(0) {}
+  IteratableChecksumValidator(const SingleFileDownloadContextHandle& dctx,
+			      const PieceStorageHandle& pieceStorage);
 
-  bool canValidate() const;
+  virtual ~IteratableChecksumValidator();
 
-  void init();
+  virtual void init();
 
-  void validateChunk();
+  virtual void validateChunk();
 
-  bool finished() const
-  {
-    return _currentOffset >= _bitfield->getTotalLength();
-  }
+  virtual bool finished() const;
 
-  void setDiskWriter(const DiskWriterHandle& diskWriter)
-  {
-    _diskWriter = diskWriter;
-  }
-
-  void setBitfield(BitfieldMan* bitfield)
-  {
-    _bitfield = bitfield;
-  }
-
-  void setChecksum(const ChecksumHandle& checksum)
-  {
-    _checksum = checksum;
-  }
-
-  int64_t getCurrentOffset() const
+  virtual int64_t getCurrentOffset() const
   {
     return _currentOffset;
   }
+
+  virtual int64_t getTotalLength() const;
 };
 
 typedef SharedHandle<IteratableChecksumValidator> IteratableChecksumValidatorHandle;

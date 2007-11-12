@@ -46,7 +46,8 @@ aria2c_SOURCES = AllTest.cc\
 
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
-	IteratableChunkChecksumValidatorTest.cc
+	IteratableChunkChecksumValidatorTest.cc\
+	IteratableChecksumValidatorTest.cc
 endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT

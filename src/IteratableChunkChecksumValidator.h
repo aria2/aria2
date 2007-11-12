@@ -35,13 +35,16 @@
 #ifndef _D_ITERATABLE_CHUNK_CHECKSUM_VALIDATOR_H_
 #define _D_ITERATABLE_CHUNK_CHECKSUM_VALIDATOR_H_
 
-#include "common.h"
-#include "DownloadContext.h"
-#include "PieceStorage.h"
-#include "BitfieldMan.h"
-#include "LogFactory.h"
+#include "IteratableValidator.h"
 
-class IteratableChunkChecksumValidator
+class DownloadContext;
+extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+class PieceStorage;
+extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+class BitfieldMan;
+class Logger;
+
+class IteratableChunkChecksumValidator:public IteratableValidator
 {
 private:
   DownloadContextHandle _dctx;
@@ -53,33 +56,19 @@ private:
   string calculateActualChecksum();
 public:
   IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
-				   const PieceStorageHandle& pieceStorage):
-    _dctx(dctx),
-    _pieceStorage(pieceStorage),
-    _bitfield(new BitfieldMan(_dctx->getPieceLength(), _dctx->getTotalLength())),
-    _currentIndex(0),
-    _logger(LogFactory::getInstance()) {}
+				   const PieceStorageHandle& pieceStorage);
 
-  void init();
+  virtual ~IteratableChunkChecksumValidator();
 
-  void validateChunk();
+  virtual void init();
 
-  bool finished() const
-  {
-    return _currentIndex >= (uint32_t)_dctx->getNumPieces();
-  }
+  virtual void validateChunk();
 
-  int64_t getCurrentOffset() const
-  {
-    return ((int64_t)_currentIndex)*_dctx->getPieceLength();
-  }
+  virtual bool finished() const;
 
-  int64_t getTotalLength() const
-  {
-    return _dctx->getTotalLength();
-  }
+  virtual int64_t getCurrentOffset() const;
 
-  void updatePieceStorage();
+  virtual int64_t getTotalLength() const;
 };
 
 typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;

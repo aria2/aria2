@@ -178,6 +178,7 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
       } catch(RecoverableException* e) {
 	_logger->error(EX_EXCEPTION_CAUGHT, e);
 	delete e;
+	itr = _requestGroups.erase(itr);
       }
     } else {
       _reservedGroups.push_front((*itr));

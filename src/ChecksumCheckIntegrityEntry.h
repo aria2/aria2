@@ -32,37 +32,25 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "BtCheckIntegrityEntry.h"
-#include "BtSetup.h"
-#include "BtFileAllocationEntry.h"
-#include "CUIDCounter.h"
-#include "RequestGroup.h"
-#include "PieceStorage.h"
-#include "DownloadEngine.h"
-#include "FileAllocationMan.h"
+#ifndef _D_CHECKSUM_CHECK_INTEGRITY_ENTRY_H_
+#define _D_CHECKSUM_CHECK_INTEGRITY_ENTRY_H_
 
-BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
-  PieceHashCheckIntegrityEntry(requestGroup, 0) {}
+#include "CheckIntegrityEntry.h"
 
-BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
-
-Commands BtCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
+class ChecksumCheckIntegrityEntry:public CheckIntegrityEntry
 {
-  Commands commands;
-  FileAllocationEntryHandle entry = new BtFileAllocationEntry(_requestGroup);
-  if(_requestGroup->needsFileAllocation()) {
-    e->_fileAllocationMan->pushFileAllocationEntry(entry);
-  } else {
-    commands = entry->prepareForNextAction(e);
-  }
-  return commands;
-}
+public:
+  ChecksumCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
-Commands BtCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
-{
-  // TODO Currently,when all the checksums
-  // are valid, then aira2 goes to seeding mode. Sometimes it is better
-  // to exit rather than doing seeding. So, it would be good to toggle this
-  // behavior.
-  return onDownloadIncomplete(e);
-}
+  virtual ~ChecksumCheckIntegrityEntry();
+
+  virtual bool isValidationReady();
+
+  virtual void initValidator();
+
+  virtual Commands onDownloadFinished(DownloadEngine* e);
+
+  virtual Commands onDownloadIncomplete(DownloadEngine* e);
+};
+
+#endif // _D_CHECKSUM_CHECK_INTEGRITY_ENTRY_H_

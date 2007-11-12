@@ -40,13 +40,12 @@
 #include "CUIDCounter.h"
 #include "PieceStorage.h"
 #include "FileAllocationMan.h"
-#include "DiskAdaptor.h"
 
 StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(const RequestHandle& currentRequest,
 						     RequestGroup* requestGroup,
 						     Command* nextCommand):
-  CheckIntegrityEntry(requestGroup, nextCommand),
-    _currentRequest(currentRequest)
+  PieceHashCheckIntegrityEntry(requestGroup, nextCommand),
+  _currentRequest(currentRequest)
 {}
 
 StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}

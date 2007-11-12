@@ -47,7 +47,6 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   CPPUNIT_ASSERT(!validator.finished());
   validator.validateChunk();
   CPPUNIT_ASSERT(validator.finished());
-  validator.updatePieceStorage();
   CPPUNIT_ASSERT(ps->downloadFinished());
 
   // make the test fail
@@ -60,7 +59,6 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   while(!validator.finished()) {
     validator.validateChunk();
   }
-  validator.updatePieceStorage();
   CPPUNIT_ASSERT(ps->hasPiece(0));
   CPPUNIT_ASSERT(!ps->hasPiece(1));
   CPPUNIT_ASSERT(ps->hasPiece(2));

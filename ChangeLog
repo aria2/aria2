@@ -1,3 +1,32 @@
+2007-11-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Implemented checksum validation feature(1 checksum for each file)
+	The validation takes place after the download.
+	* src/PieceHashCheckIntegrityEntry.{h, cc}: New class.
+	* src/IteratableChecksumValidator.{h, cc}: Rewritten.
+	* src/CheckIntegrityCommand.cc: Changed log message.
+	* src/Metalink2RequestGroup.cc: Set checksum to
+	SingleFileDownloadContext.
+	* src/StreamCheckIntegrityEntry.{h, cc}: Now derived from
+	PieceHashCheckIntegrity class.
+	* src/BtCheckIntegrityEntry.{h, cc}: Now derived from
+	PieceHashCheckIntegrity class.
+	* src/ChecksumCheckIntegrityEntry.{h, cc}: New class.
+	* src/IteratableValidator.h: New class.
+	* src/message.h
+	* src/CheckIntegrityEntry.{h, cc}
+	* src/IteratableChunkChecksumValidator.{h, cc}
+	* src/SingleFileDownloadContext.h
+	* src/DownloadCommand.cc
+	
+	--allow-overwrite=true is no longer needed to check file integrity
+	before download in BitTorrent download.
+	* src/RequestGroup.cc (getInitialCommand)
+
+	Removed RequestGroup from queue when RequestGroup::getInitialCommand()
+	throws exception.
+	* src/RequestGroupMan.cc (getInitialCommands)
+	
 2007-11-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	urlencode the given url inside Request::parseUrl(...)

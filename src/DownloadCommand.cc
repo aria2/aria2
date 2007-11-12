@@ -48,6 +48,9 @@
 #include "PieceStorage.h"
 #include "Option.h"
 #include "HttpRequestCommand.h"
+#include "ChecksumCheckIntegrityEntry.h"
+#include "CheckIntegrityCommand.h"
+#include "CUIDCounter.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -145,17 +148,15 @@ bool DownloadCommand::executeInternal() {
 
 bool DownloadCommand::prepareForNextSegment() {
   if(_requestGroup->downloadFinished()) {
-    // TODO According to the current plan, checksum is held by DownloadContext.
-    /*
 #ifdef ENABLE_MESSAGE_DIGEST
-    if(!_requestGroup->getChecksum().isNull() &&
-       !_requestGroup->getChecksum()->isEmpty()) {
-      ChecksumCommand* command = new ChecksumCommand(cuid, _requestGroup, e);
-      command->initValidator();
+    CheckIntegrityEntryHandle entry = new ChecksumCheckIntegrityEntry(_requestGroup);
+    if(entry->isValidationReady()) {
+      entry->initValidator();
+      CheckIntegrityCommand* command =
+	new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), _requestGroup, e, entry);
       e->commands.push_back(command);
     }
 #endif // ENABLE_MESSAGE_DIGEST
-    */
     return true;
   } else {
     SegmentHandle tempSegment = _segments.front();

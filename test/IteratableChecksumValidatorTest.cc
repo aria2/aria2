@@ -1,5 +1,8 @@
 #include "IteratableChecksumValidator.h"
-#include "DefaultDiskWriter.h"
+#include "SingleFileDownloadContext.h"
+#include "DefaultPieceStorage.h"
+#include "Option.h"
+#include "DiskAdaptor.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -8,7 +11,7 @@ class IteratableChecksumValidatorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(IteratableChecksumValidatorTest);
   CPPUNIT_TEST(testValidate);
-  CPPUNIT_TEST(testValidate2);
+  CPPUNIT_TEST(testValidate_fail);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -17,103 +20,47 @@ public:
   }
 
   void testValidate();
-  void testValidate2();
+  void testValidate_fail();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( IteratableChecksumValidatorTest );
 
 void IteratableChecksumValidatorTest::testValidate() {
-  BitfieldMan bitfieldMan(100, 250);
-  bitfieldMan.setAllBit();
+  Option option;
+  SingleFileDownloadContextHandle dctx =
+    new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt");
+  dctx->setChecksum("898a81b8e0181280ae2ee1b81e269196d91e869a");
+  dctx->setChecksumHashAlgo("sha1");
+  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, &option);
+  ps->initStorage();
+  ps->getDiskAdaptor()->openFile();
 
-  ChecksumHandle checksum = new Checksum("sha1",
-					 "898a81b8e0181280ae2ee1b81e269196d91e869a");
-
-  DefaultDiskWriterHandle diskWriter = new DefaultDiskWriter();
-  diskWriter->openExistingFile("chunkChecksumTestFile250.txt");
-
-  IteratableChecksumValidator validator;
-  validator.setDiskWriter(diskWriter);
-  validator.setBitfield(&bitfieldMan);
-  validator.setChecksum(checksum);
-
+  IteratableChecksumValidator validator(dctx, ps);
   validator.init();
   while(!validator.finished()) {
     validator.validateChunk();
   }
-  CPPUNIT_ASSERT(bitfieldMan.isAllBitSet());
+
+  CPPUNIT_ASSERT(ps->downloadFinished());
 }
 
-void IteratableChecksumValidatorTest::testValidate2() {
-  BitfieldMan bitfieldMan(100, 250);
-  bitfieldMan.setAllBit();
+void IteratableChecksumValidatorTest::testValidate_fail() {
+  Option option;
+  SingleFileDownloadContextHandle dctx =
+    new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt");
+  dctx->setChecksum(string(40, '0')); // set wrong checksum
+  dctx->setChecksumHashAlgo("sha1");
+  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, &option);
+  ps->initStorage();
+  ps->getDiskAdaptor()->openFile();
 
-  ChecksumHandle checksum = new Checksum("sha1", "ffffffffffffffffffffffffffffffffffffffff");
-
-  DefaultDiskWriterHandle diskWriter = new DefaultDiskWriter();
-  diskWriter->openExistingFile("chunkChecksumTestFile250.txt");
-
-  IteratableChecksumValidator validator;
-  validator.setDiskWriter(diskWriter);
-  validator.setBitfield(&bitfieldMan);
-  validator.setChecksum(checksum);
-
+  IteratableChecksumValidator validator(dctx, ps);
   validator.init();
+  
   while(!validator.finished()) {
     validator.validateChunk();
   }
-  CPPUNIT_ASSERT(!bitfieldMan.isAllBitSet());
+
+  CPPUNIT_ASSERT(!ps->downloadFinished());
 }
-/*
-void IteratableChecksumValidatorTest::testValidate3() {
-  BitfieldMan bitfieldMan(50, 250);
-  bitfieldMan.setAllBit();
-  Strings checksums;
-  checksums.push_back("898a81b8e0181280ae2ee1b81e269196d91e869a");
-
-  DefaultDiskWriterHandle diskWriter = new DefaultDiskWriter();
-  diskWriter->openExistingFile("chunkChecksumTestFile250.txt");
-
-  IteratableChecksumValidator validator;
-  validator.setDiskWriter(diskWriter);
-
-  validator.validate(&bitfieldMan, checksums, 250);
-
-  CPPUNIT_ASSERT(bitfieldMan.isAllBitSet());
-
-  checksums[0] = "ffffffffffffffffffffffffffffffffffffffff";
-
-  validator.validate(&bitfieldMan, checksums, 250);
-
-  CPPUNIT_ASSERT(!bitfieldMan.isBitSet(0));
-  CPPUNIT_ASSERT(!bitfieldMan.isBitSet(1));
-  CPPUNIT_ASSERT(!bitfieldMan.isBitSet(2));
-  CPPUNIT_ASSERT(!bitfieldMan.isBitSet(3));
-  CPPUNIT_ASSERT(!bitfieldMan.isBitSet(4));
-}
-
-void IteratableChecksumValidatorTest::testValidate4() {
-  BitfieldMan bitfieldMan(70, 250);
-  bitfieldMan.setAllBit();
-  Strings checksums(&csArray[0], &csArray[3]);
-
-  DefaultDiskWriterHandle diskWriter = new DefaultDiskWriter();
-  diskWriter->openExistingFile("chunkChecksumTestFile250.txt");
-
-  IteratableChecksumValidator validator;
-  validator.setDiskWriter(diskWriter);
-
-  validator.validate(&bitfieldMan, checksums, 100);
-
-  CPPUNIT_ASSERT(bitfieldMan.isAllBitSet());
-
-  checksums[1] = "ffffffffffffffffffffffffffffffffffffffff";
-  validator.validate(&bitfieldMan, checksums, 100);
-
-  CPPUNIT_ASSERT(bitfieldMan.isBitSet(0));
-  CPPUNIT_ASSERT(!bitfieldMan.isBitSet(1));
-  CPPUNIT_ASSERT(!bitfieldMan.isBitSet(2));
-  CPPUNIT_ASSERT(bitfieldMan.isBitSet(3));
-}
-*/

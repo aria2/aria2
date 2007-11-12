@@ -32,37 +32,30 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "BtCheckIntegrityEntry.h"
-#include "BtSetup.h"
-#include "BtFileAllocationEntry.h"
-#include "CUIDCounter.h"
+#include "PieceHashCheckIntegrityEntry.h"
+#include "Command.h"
 #include "RequestGroup.h"
+#include "IteratableChunkChecksumValidator.h"
+#include "DownloadContext.h"
 #include "PieceStorage.h"
-#include "DownloadEngine.h"
-#include "FileAllocationMan.h"
 
-BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
-  PieceHashCheckIntegrityEntry(requestGroup, 0) {}
+PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry(RequestGroup* requestGroup,
+							   Command* nextCommand):
+  CheckIntegrityEntry(requestGroup, nextCommand) {}
 
-BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
+PieceHashCheckIntegrityEntry::~PieceHashCheckIntegrityEntry() {}
 
-Commands BtCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
+bool PieceHashCheckIntegrityEntry::isValidationReady()
 {
-  Commands commands;
-  FileAllocationEntryHandle entry = new BtFileAllocationEntry(_requestGroup);
-  if(_requestGroup->needsFileAllocation()) {
-    e->_fileAllocationMan->pushFileAllocationEntry(entry);
-  } else {
-    commands = entry->prepareForNextAction(e);
-  }
-  return commands;
+  DownloadContextHandle dctx = _requestGroup->getDownloadContext();
+  return dctx->getPieceHashes().size() > 0 &&
+    dctx->getPieceHashes().size() == (uint32_t)dctx->getNumPieces();
 }
 
-Commands BtCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
+void PieceHashCheckIntegrityEntry::initValidator()
 {
-  // TODO Currently,when all the checksums
-  // are valid, then aira2 goes to seeding mode. Sometimes it is better
-  // to exit rather than doing seeding. So, it would be good to toggle this
-  // behavior.
-  return onDownloadIncomplete(e);
+  IteratableChunkChecksumValidatorHandle validator =
+    new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
+					 _requestGroup->getPieceStorage());
+  _validator = validator;
 }

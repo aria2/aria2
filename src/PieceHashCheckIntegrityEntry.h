@@ -32,52 +32,21 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ChecksumCommand.h"
-#include "DlAbortEx.h"
-#include "message.h"
+#ifndef _D_PIECE_HASH_CHECK_INTEGRITY_ENTRY_H_
+#define _D_PIECE_HASH_CHECK_INTEGRITY_ENTRY_H_
 
-void ChecksumCommand::initValidator()
+#include "CheckIntegrityEntry.h"
+
+class PieceHashCheckIntegrityEntry : public CheckIntegrityEntry
 {
-  _validator = new IteratableChecksumValidator();
-  // TODO checksum will be held by DownloadContext
-  _validator->setChecksum(0);
-  //_validator->setDiskWriter(new DiskAdaptorWriter(_requestGroup->getSegmentMan()->getDiskAdaptor()));
-  // TODO we should use PieceStorage instead of BitfieldMan
-  //_validator->setBitfield(_requestGroup->getSegmentMan()->getBitfield());
-  if(!_validator->canValidate()) {
-    // insufficient checksums.
-    throw new DlAbortEx(EX_INSUFFICIENT_CHECKSUM);
-  }
-  _validator->init();
-}
+public:
+  PieceHashCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
-bool ChecksumCommand::executeInternal()
-{
-  if(_e->isHaltRequested()) {
-    return true;
-  }
-  _validator->validateChunk();
-  if(_validator->finished()) {
-    if(_requestGroup->downloadFinished()) {
-      logger->notice(MSG_GOOD_CHECKSUM, cuid, _requestGroup->getFilePath().c_str());
-      return true;
-    } else {
-      logger->error(MSG_BAD_CHECKSUM, cuid, _requestGroup->getFilePath().c_str());
-      return true;
-    }
-  } else {
-    _e->commands.push_back(this);
-    return false;
-  }
+  virtual ~PieceHashCheckIntegrityEntry();
 
-}
+  virtual bool isValidationReady();
 
-bool ChecksumCommand::handleException(Exception* e)
-{
-  logger->error(MSG_FILE_VALIDATION_FAILURE, e, cuid);
-  logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
-  // TODO We need to set bitfield back to the state when validation begun.
-  // The one of the solution is having a copy of bitfield before settting its
-  // all bit to 1. If exception is thrown, then assign the copy to the bitfield.
-  return true;
-}
+  virtual void initValidator();
+};
+
+#endif // _D_PIECE_HASH_CHECK_INTEGRITY_ENTRY_H_

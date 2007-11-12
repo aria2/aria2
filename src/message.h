@@ -124,6 +124,8 @@
 #define MSG_LOGGING_STARTED _("Logging started.")
 #define MSG_URI_REQUIRED _("Specify at least one URL.")
 #define MSG_DAEMON_FAILED _("daemon failed.")
+#define MSG_VERIFICATION_SUCCESSFUL _("Verification finished successfully. file=%s")
+#define MSG_VERIFICATION_FAILED _("Checksum error detected. file=%s")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

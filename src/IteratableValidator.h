@@ -32,35 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHECKSUM_COMMAND_H_
-#define _D_CHECKSUM_COMMAND_H_
+#ifndef _D_ITERATABLE_VALIDATOR_H_
+#define _D_ITERATABLE_VALIDATOR_H_
 
-#include "RealtimeCommand.h"
-#include "IteratableChecksumValidator.h"
+#include "common.h"
 
-class ChecksumCommand : public RealtimeCommand
+/**
+ * This class provides the interface to validate files.
+ *
+ * Be aware to call init() before first validateChunk() call.
+ * Then, call validateChunk() until finished() returns true.
+ * The progress information is available using getCurrentOffset() and
+ * getTotalLength().
+ */
+class IteratableValidator
 {
-private:
-  IteratableChecksumValidatorHandle _validator;
 public:
-  ChecksumCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e):
-    RealtimeCommand(cuid, requestGroup, e),
-    _validator(0)
-  {
-    _requestGroup->increaseNumCommand();
-  }
+  virtual ~IteratableValidator() {}
 
-  virtual ~ChecksumCommand()
-  {
-    _requestGroup->decreaseNumCommand();
-  }
+  virtual void init() = 0;
 
-  void initValidator();
+  virtual void validateChunk() = 0;
 
-  virtual bool executeInternal();
+  virtual bool finished() const = 0;
 
-  virtual bool handleException(Exception* e);
+  virtual int64_t getCurrentOffset() const = 0;
+
+  virtual int64_t getTotalLength() const = 0;
 };
 
+typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;
 
-#endif // _D_CHECKSUM_COMMAND_H_
+#endif // _D_ITERATABLE_VALIDATOR_H_

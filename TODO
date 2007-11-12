@@ -56,7 +56,6 @@
   FatalException .... Program should abort.
 
 -- remaining features to be implemented for 0.12.0 release
-* Reimplement ChecksumCommand(validation using 1 checksum for 1 file)
 * Implement duplicate download checking in Bt
 * improve --metalink-location field
 * Piece length conversion when loading file

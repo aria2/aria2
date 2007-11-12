@@ -162,12 +162,15 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
 				    "",
 				    entry->file->getPath());
     dctx->setDir(_option->get(PREF_DIR));
-    if(!entry->chunkChecksum.isNull()) {
+    if(entry->chunkChecksum.isNull()) {
+      if(!entry->checksum.isNull()) {
+	dctx->setChecksum(entry->checksum->getMessageDigest());
+	dctx->setChecksumHashAlgo(entry->checksum->getAlgo());
+      }
+    } else {
       dctx->setPieceHashes(entry->chunkChecksum->getChecksums());
       dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
     }
-    // TODO set checksum here to DownloadContext
-    // * hash and hash algorithm
 
     rg->setDownloadContext(dctx);
     rg->setHintTotalLength(entry->getLength());

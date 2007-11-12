@@ -56,6 +56,9 @@ private:
   Strings _pieceHashes;
   string _pieceHashAlgo;
 
+  string _checksum;
+  string _checksumHashAlgo;
+
   void updateFileEntry()
   {
     if(_ufilename != "") {
@@ -136,11 +139,31 @@ public:
     return _pieceHashAlgo;
   }
 
+  const string& getChecksumHashAlgo() const
+  {
+    return _checksumHashAlgo;
+  }
+
+  const string& getChecksum() const
+  {
+    return _checksum;
+  }
+
   void setPieceHashes(const Strings& pieceHashes)
   {
     _pieceHashes = pieceHashes;
   }
   
+  void setChecksumHashAlgo(const string& algo)
+  {
+    _checksumHashAlgo = algo;
+  }
+
+  void setChecksum(const string& checksum)
+  {
+    _checksum = checksum;
+  }
+
   void setFilename(const string& filename)
   {
     _filename = filename;

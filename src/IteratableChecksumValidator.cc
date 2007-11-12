@@ -35,48 +35,59 @@
 #include "IteratableChecksumValidator.h"
 #include "Util.h"
 #include "message.h"
+#include "SingleFileDownloadContext.h"
+#include "PieceStorage.h"
+#include "messageDigest.h"
+#include "LogFactory.h"
+#include "Logger.h"
+#include "DiskAdaptor.h"
+#include "BitfieldMan.h"
 
 #define BUFSIZE 16*1024
+
+IteratableChecksumValidator::IteratableChecksumValidator(const SingleFileDownloadContextHandle& dctx,
+							 const PieceStorageHandle& pieceStorage):
+  _dctx(dctx),
+  _pieceStorage(pieceStorage),
+  _currentOffset(0),
+  _ctx(0),
+  _logger(LogFactory::getInstance()) {}
+
+IteratableChecksumValidator::~IteratableChecksumValidator() {}
 
 void IteratableChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    
     unsigned char data[BUFSIZE];
-
-    int32_t size = _diskWriter->readData(data, sizeof(data), _currentOffset);
-
-    _ctx->digestUpdate(data, size);
-    _currentOffset += sizeof(data);    
-
+    int32_t length = _pieceStorage->getDiskAdaptor()->readData(data, sizeof(data), _currentOffset);
+    _ctx->digestUpdate(data, length);
+    _currentOffset += length;
     if(finished()) {
-      unsigned char* digest = new unsigned char[_ctx->digestLength()];
-      try {
-	_ctx->digestFinal(digest);
-	if(_checksum->getMessageDigest() != Util::toHex(digest, _ctx->digestLength())) {
-	  _bitfield->clearAllBit();
-	}
-	delete [] digest;
-      } catch(...) {
-	delete [] digest;
-	throw;
+      string actualChecksum = Util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
+      if(_dctx->getChecksum() == actualChecksum) {
+	_pieceStorage->markAllPiecesDone();
+      } else {
+	BitfieldMan bitfield(_dctx->getPieceLength(), _dctx->getTotalLength());
+	_pieceStorage->setBitfield(bitfield.getBitfield(), bitfield.getBitfieldLength());
       }
     }
   }
 }
 
-bool IteratableChecksumValidator::canValidate() const
+bool IteratableChecksumValidator::finished() const
 {
-  // We assume file is already opened using DiskWriter::open or openExistingFile.
-  return !_checksum.isNull() && !_checksum->isEmpty();
+  return _currentOffset >= _dctx->getTotalLength();
+}
+
+int64_t IteratableChecksumValidator::getTotalLength() const
+{
+  return _dctx->getTotalLength();
 }
 
 void IteratableChecksumValidator::init()
 {
-  _bitfield->setAllBit();
   _currentOffset = 0;
-
   _ctx = new MessageDigestContext();
-  _ctx->trySetAlgo(_checksum->getAlgo());
+  _ctx->trySetAlgo(_dctx->getChecksumHashAlgo());
   _ctx->digestInit();
 }

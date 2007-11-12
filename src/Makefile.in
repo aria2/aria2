@@ -42,10 +42,12 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 #	debug_new.cpp
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_1 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCommand.cc ChecksumCommand.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
+@ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityMan.cc CheckIntegrityMan.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.cc messageDigest.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.cc MessageDigestHelper.h
@@ -272,10 +274,12 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Piece.cc Piece.h IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
-	ChecksumCommand.cc ChecksumCommand.h CheckIntegrityCommand.cc \
+	IteratableValidator.h CheckIntegrityCommand.cc \
 	CheckIntegrityCommand.h CheckIntegrityEntry.cc \
-	CheckIntegrityEntry.h StreamCheckIntegrityEntry.cc \
-	StreamCheckIntegrityEntry.h CheckIntegrityMan.cc \
+	CheckIntegrityEntry.h PieceHashCheckIntegrityEntry.cc \
+	PieceHashCheckIntegrityEntry.h StreamCheckIntegrityEntry.cc \
+	StreamCheckIntegrityEntry.h ChecksumCheckIntegrityEntry.cc \
+	ChecksumCheckIntegrityEntry.h CheckIntegrityMan.cc \
 	CheckIntegrityMan.h messageDigest.cc messageDigest.h \
 	MessageDigestHelper.cc MessageDigestHelper.h MetaEntry.h \
 	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
@@ -352,10 +356,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	timegm.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	PieceHashCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	StreamCheckIntegrityEntry.$(OBJEXT) \
+@ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityMan.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
@@ -893,7 +898,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CheckIntegrityMan.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChecksumCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ChunkedEncoding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CompactPeerListProcessor.Po@am__quote@
@@ -988,6 +993,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerReceiveHandshakeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceHashCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PiecedSegment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Platform.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PostDownloadHandler.Po@am__quote@

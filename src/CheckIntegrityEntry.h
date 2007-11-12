@@ -37,16 +37,16 @@
 
 #include "RequestGroupEntry.h"
 
-class IteratableChunkChecksumValidator;
-extern typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;
+class IteratableValidator;
+extern typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;
 class Command;
 extern typedef deque<Command*> Commands;
 class DownloadEngine;
 
 class CheckIntegrityEntry : public RequestGroupEntry,
 			    public ProgressAwareEntry {
-private:
-  IteratableChunkChecksumValidatorHandle _validator;
+protected:
+  IteratableValidatorHandle _validator;
 public:
   CheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
@@ -56,15 +56,13 @@ public:
 
   virtual int64_t getCurrentLength();
 
+  virtual void validateChunk();
+
   virtual bool finished();
 
-  bool isValidationReady();
+  virtual bool isValidationReady() = 0;
 
-  void initValidator();
-
-  void validateChunk();
-
-  void updatePieceStorage();
+  virtual void initValidator() = 0;
 
   virtual Commands onDownloadFinished(DownloadEngine* e) = 0;
 

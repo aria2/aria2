@@ -38,6 +38,23 @@
 #include "MessageDigestHelper.h"
 #include "DiskAdaptor.h"
 #include "RecoverableException.h"
+#include "DownloadContext.h"
+#include "PieceStorage.h"
+#include "BitfieldMan.h"
+#include "LogFactory.h"
+#include "Logger.h"
+
+IteratableChunkChecksumValidator::
+IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
+				 const PieceStorageHandle& pieceStorage):
+  _dctx(dctx),
+  _pieceStorage(pieceStorage),
+  _bitfield(new BitfieldMan(_dctx->getPieceLength(), _dctx->getTotalLength())),
+  _currentIndex(0),
+  _logger(LogFactory::getInstance()) {}
+
+IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator() {}
+
 
 void IteratableChunkChecksumValidator::validateChunk()
 {
@@ -63,6 +80,9 @@ void IteratableChunkChecksumValidator::validateChunk()
       _bitfield->unsetBit(_currentIndex);
     }
     _currentIndex++;
+    if(finished()) {
+      _pieceStorage->setBitfield(_bitfield->getBitfield(), _bitfield->getBitfieldLength());
+    }
   }
 }
 
@@ -87,7 +107,17 @@ void IteratableChunkChecksumValidator::init()
   _currentIndex = 0;
 }
 
-void IteratableChunkChecksumValidator::updatePieceStorage()
+bool IteratableChunkChecksumValidator::finished() const
 {
-  _pieceStorage->setBitfield(_bitfield->getBitfield(), _bitfield->getBitfieldLength());
+  return _currentIndex >= (uint32_t)_dctx->getNumPieces();
+}
+
+int64_t IteratableChunkChecksumValidator::getCurrentOffset() const
+{
+  return (int64_t)_currentIndex*_dctx->getPieceLength();
+}
+
+int64_t IteratableChunkChecksumValidator::getTotalLength() const
+{
+  return _dctx->getTotalLength();
 }

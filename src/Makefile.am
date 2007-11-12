@@ -131,10 +131,12 @@ SRCS =  Socket.h\
 if ENABLE_MESSAGE_DIGEST
 SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
-	ChecksumCommand.cc ChecksumCommand.h\
+	IteratableValidator.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
+	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h\
 	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
+	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
 	CheckIntegrityMan.cc CheckIntegrityMan.h\
 	messageDigest.cc messageDigest.h\
 	MessageDigestHelper.cc MessageDigestHelper.h

@@ -103,6 +103,7 @@ void AnnounceList::announceSuccess() {
   }
 }
 
+// TODO if currentTier reaches tiers.end(), then getAllTierTried() returns true
 void AnnounceList::announceFailure() {
   if(currentTrackerInitialized) {
     currentTracker++;

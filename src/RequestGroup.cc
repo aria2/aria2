@@ -190,7 +190,8 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	_pieceStorage->getDiskAdaptor()->openFile();
       } else {
 	if(_pieceStorage->getDiskAdaptor()->fileExists()) {
-	  if(_option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
+	  if(_option->get(PREF_CHECK_INTEGRITY) != V_TRUE &&
+	     _option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
 	    _logger->error(MSG_FILE_ALREADY_EXISTS,
 			   getFilePath().c_str(),
 			   progressInfoFile->getFilename().c_str());

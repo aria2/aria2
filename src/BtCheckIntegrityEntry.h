@@ -35,9 +35,9 @@
 #ifndef _D_BT_CHECK_INTEGRITY_ENTRY_H_
 #define _D_BT_CHECK_INTEGRITY_ENTRY_H_
 
-#include "CheckIntegrityEntry.h"
+#include "PieceHashCheckIntegrityEntry.h"
 
-class BtCheckIntegrityEntry : public CheckIntegrityEntry {
+class BtCheckIntegrityEntry : public PieceHashCheckIntegrityEntry {
 public:
   BtCheckIntegrityEntry(RequestGroup* requestGroup);
 
