@@ -45,6 +45,8 @@
 #include "Util.h"
 #include "SingleFileDownloadContext.h"
 #include "DefaultBtProgressInfoFile.h"
+#include "RequestGroupMan.h"
+#include "DownloadFailureException.h"
 
 FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     const RequestHandle& req,
@@ -198,6 +200,11 @@ bool FtpNegotiationCommand::recvSize() {
     SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
     dctx->setTotalLength(size);
     dctx->setFilename(Util::urldecode(req->getFile()));
+
+    if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
+      throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
+					 _requestGroup->getFilePath().c_str());
+    }
 
     _requestGroup->initPieceStorage();
 

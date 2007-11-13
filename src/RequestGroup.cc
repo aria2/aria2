@@ -55,6 +55,7 @@
 #include "SingleFileDownloadContext.h"
 #include "DlAbortEx.h"
 #include "DownloadFailureException.h"
+#include "RequestGroupMan.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -139,15 +140,14 @@ void RequestGroup::closeFile()
 
 Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 {
-  // If this includes torrent download, then this method returns
-  // the command that torrent download requires, such as
-  // TrackerWatcherCommand and so on.
-
-  // It is better to avoid to using BtTorrent specific classes here.
 #ifdef ENABLE_BITTORRENT
   {
     BtContextHandle btContext = _downloadContext;
     if(!btContext.isNull()) {
+      if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
+	throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
+					   getFilePath().c_str());
+      }
       if(btContext->getFileEntries().size() > 1) {
 	// this is really multi file torrent.
 	// clear http/ftp uris because the current implementation does not
@@ -155,6 +155,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	_logger->debug("Clearing http/ftp URIs because the current implementation does not allow integrating multi-file torrent and http/ftp.");
 	_uris.clear();
       }
+
       initPieceStorage();
 
       BtProgressInfoFileHandle progressInfoFile =
@@ -216,6 +217,10 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
   if(_downloadContext->getTotalLength() == 0) {
     return createNextCommand(e, 1);
   }else {
+    if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
+      throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
+					 getFilePath().c_str());
+    }
     initPieceStorage();
     BtProgressInfoFileHandle infoFile =
       new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option);
@@ -545,7 +550,12 @@ void RequestGroup::releaseRuntimeResource()
 #ifdef ENABLE_BITTORRENT
   BtContextHandle btContext = _downloadContext;
   if(!btContext.isNull()) {
-    BtRegistry::unregister(btContext->getInfoHashAsString());
+    BtContextHandle btContextInReg = BtRegistry::getBtContext(btContext->getInfoHashAsString());
+    if(!btContextInReg.isNull() &&
+       btContextInReg->getOwnerRequestGroup()->getGID() ==
+	btContext->getOwnerRequestGroup()->getGID()) {
+      BtRegistry::unregister(btContext->getInfoHashAsString());
+    }
   }
 #endif // ENABLE_BITTORRENT
   if(!_pieceStorage.isNull()) {
