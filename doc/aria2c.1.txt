@@ -292,9 +292,10 @@ http://host/image[000-100:2].img
  --metalink-os=OS::
    The operating system of the file to download.
 
- --metalink-location=LOCATION::
- The location of the prefered server.
-
+ --metalink-location=LOCATION[,...]::
+    The location of the preferred server.
+    A comma-deliminated list of locations is acceptable.
+ 
  --follow-metalink=true|false::
    Set to false to prevent aria2 from
                               entering Metalink mode even if the filename of

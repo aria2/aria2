@@ -113,7 +113,9 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
       itr++, ++count) {
     MetalinkEntryHandle& entry = *itr;
     if(_option->defined(PREF_METALINK_LOCATION)) {
-      entry->setLocationPreference(_option->get(PREF_METALINK_LOCATION), 100);
+      Strings locations;
+      Util::slice(locations, _option->get(PREF_METALINK_LOCATION), ',', true);
+      entry->setLocationPreference(locations, 100);
     }
     if(useIndex) {
       if(find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {

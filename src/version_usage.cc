@@ -256,7 +256,9 @@ void showUsage() {
   cout << _(" --metalink-version=VERSION   The version of the file to download.") << endl;
   cout << _(" --metalink-language=LANGUAGE The language of the file to download.") << endl;
   cout << _(" --metalink-os=OS             The operating system of the file to download.") << endl;
-  cout << _(" --metalink-location=LOCATION The location of the prefered server.") << endl;
+  cout << _(" --metalink-location=LOCATION[,...] The location of the preferred server.\n"
+	    "                              A comma-deliminated list of locations is\n"
+	    "                              acceptable.") << endl;
   cout << _(" --follow-metalink=true|false Set to false to prevent aria2 from\n"
 	    "                              entering Metalink mode even if the filename of\n"
 	    "                              the downloaded file ends with .metalink.\n"

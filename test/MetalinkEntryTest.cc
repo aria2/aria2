@@ -8,6 +8,7 @@ class MetalinkEntryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MetalinkEntryTest);
   CPPUNIT_TEST(testDropUnsupportedResource);
   CPPUNIT_TEST(testReorderResourcesByPreference);
+  CPPUNIT_TEST(testSetLocationPreference);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -19,13 +20,14 @@ public:
 
   void testDropUnsupportedResource();
   void testReorderResourcesByPreference();
+  void testSetLocationPreference();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkEntryTest );
 
-MetalinkEntry* createTestEntry() {
-  MetalinkEntry* entry = new MetalinkEntry();
+MetalinkEntryHandle createTestEntry() {
+  MetalinkEntryHandle entry = new MetalinkEntry();
   MetalinkResource* res1 = new MetalinkResource();
   res1->url = "ftp://myhost/aria2.tar.bz2";
   res1->type = MetalinkResource::TYPE_FTP;
@@ -39,17 +41,17 @@ MetalinkEntry* createTestEntry() {
   MetalinkResource* res3 = new MetalinkResource();
   res3->url = "http://myhost/aria2.torrent";
   res3->type = MetalinkResource::TYPE_BITTORRENT;
-  res3->location = "al";
+  res3->location = "AL";
   res3->preference = 60;
   MetalinkResource* res4 = new MetalinkResource();
   res4->url = "http://myhost/aria2.ext";
   res4->type = MetalinkResource::TYPE_NOT_SUPPORTED;
-  res4->location = "ad";
+  res4->location = "AD";
   res4->preference = 10;
   MetalinkResource* res5 = new MetalinkResource();
   res5->url = "https://myhost/aria2.tar.bz2";
   res5->type = MetalinkResource::TYPE_HTTPS;
-  res5->location = "jp";
+  res5->location = "JP";
   res5->preference = 90;
 
   entry->resources.push_back(res1);
@@ -61,7 +63,7 @@ MetalinkEntry* createTestEntry() {
 }
 
 void MetalinkEntryTest::testDropUnsupportedResource() {
-  MetalinkEntry* entry = createTestEntry();
+  MetalinkEntryHandle entry = createTestEntry();
 
   entry->dropUnsupportedResource();
 #if defined ENABLE_SSL && ENABLE_BITTORRENT
@@ -88,7 +90,7 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 }
 
 void MetalinkEntryTest::testReorderResourcesByPreference() {
-  MetalinkEntry* entry = createTestEntry();
+  MetalinkEntryHandle entry = createTestEntry();
   
   entry->reorderResourcesByPreference();
 
@@ -97,4 +99,26 @@ void MetalinkEntryTest::testReorderResourcesByPreference() {
   CPPUNIT_ASSERT_EQUAL((int32_t)60, entry->resources.at(2)->preference);
   CPPUNIT_ASSERT_EQUAL((int32_t)50, entry->resources.at(3)->preference);
   CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources.at(4)->preference);
+}
+
+void MetalinkEntryTest::testSetLocationPreference()
+{
+  MetalinkEntryHandle entry = createTestEntry();
+
+  const char* locationsSrc[] = { "jp", "al", "RO" };
+
+  Strings locations(&locationsSrc[0], &locationsSrc[3]);
+
+  entry->setLocationPreference(locations, 100);
+
+  CPPUNIT_ASSERT_EQUAL(string("RO"), entry->resources[0]->location);
+  CPPUNIT_ASSERT_EQUAL((int32_t)150, entry->resources[0]->preference);
+  CPPUNIT_ASSERT_EQUAL(string("AT"), entry->resources[1]->location);
+  CPPUNIT_ASSERT_EQUAL((int32_t)100, entry->resources[1]->preference);
+  CPPUNIT_ASSERT_EQUAL(string("AL"), entry->resources[2]->location);
+  CPPUNIT_ASSERT_EQUAL((int32_t)160, entry->resources[2]->preference);
+  CPPUNIT_ASSERT_EQUAL(string("AD"), entry->resources[3]->location);
+  CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources[3]->preference);
+  CPPUNIT_ASSERT_EQUAL(string("JP"), entry->resources[4]->location);
+  CPPUNIT_ASSERT_EQUAL((int32_t)190, entry->resources[4]->preference);
 }

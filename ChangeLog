@@ -1,5 +1,19 @@
 2007-11-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Now --metalink-location accepts a comma-deliminated list of locations.
+	* src/MetalinkEntry.{h, cc}
+	* test/MetalinkEntryTest.cc
+	* src/version_usage.cc
+	* src/Metalink2RequestGroup.cc
+	* src/Xml2MetalinkProcessor.cc
+	* test/Xml2MetalinkProcessorTest.cc
+	* doc/aria2c.1.txt
+	* doc/aria2c.1
+
+	* src/Util.cc (toUpper)(toLower): Rewritten.
+
+2007-11-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the ability to detect duplicate download entry which is about to
 	download the same file other RequestGroup is downloading.
 	* src/RequestGroup.cc

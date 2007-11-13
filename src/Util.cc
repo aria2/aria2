@@ -541,29 +541,15 @@ string Util::randomAlpha(int32_t length, const RandomizerHandle& randomizer) {
   return str;
 }
 
-class UpperCase {
-public:
-  void operator()(char& ch) {
-    ch = toupper(ch);
-  }
-};
-
 string Util::toUpper(const string& src) {
   string temp = src;
-  for_each(temp.begin(), temp.end(), UpperCase());
+  transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
   return temp;
 }
 
-class LowerCase {
-public:
-  void operator()(char& ch) {
-    ch = tolower(ch);
-  }
-};
-
 string Util::toLower(const string& src) {
   string temp = src;
-  for_each(temp.begin(), temp.end(), LowerCase());
+  transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
   return temp;
 }
 

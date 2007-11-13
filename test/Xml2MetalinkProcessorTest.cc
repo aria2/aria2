@@ -46,7 +46,7 @@ void Xml2MetalinkProcessorTest::testParseFile() {
     MetalinkResources::iterator resourceItr1 = entry1->resources.begin();
     MetalinkResourceHandle resource1 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, resource1->type);
-    CPPUNIT_ASSERT_EQUAL(string("jp"), resource1->location);
+    CPPUNIT_ASSERT_EQUAL(string("JP"), resource1->location);
     CPPUNIT_ASSERT_EQUAL((int32_t)100, resource1->preference);
     CPPUNIT_ASSERT_EQUAL(string("ftp://ftphost/aria2-0.5.2.tar.bz2"),
 			 resource1->url);
@@ -55,7 +55,7 @@ void Xml2MetalinkProcessorTest::testParseFile() {
     resourceItr1++;
     MetalinkResourceHandle resource2 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, resource2->type);
-    CPPUNIT_ASSERT_EQUAL(string("us"), resource2->location);
+    CPPUNIT_ASSERT_EQUAL(string("US"), resource2->location);
     CPPUNIT_ASSERT_EQUAL((int32_t)100, resource2->preference);
     CPPUNIT_ASSERT_EQUAL(string("http://httphost/aria2-0.5.2.tar.bz2"),
 			 resource2->url);

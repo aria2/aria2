@@ -49,22 +49,28 @@ MetalinkEntry::~MetalinkEntry() {}
 
 class AddLocationPreference {
 private:
-  string location;
-  int32_t preferenceToAdd;
+  Strings _locations;
+  int32_t _preferenceToAdd;
 public:
-  AddLocationPreference(const string& location, int32_t preferenceToAdd):
-    location(location), preferenceToAdd(preferenceToAdd) {}
+  AddLocationPreference(const Strings& locations, int32_t preferenceToAdd):
+    _locations(locations), _preferenceToAdd(preferenceToAdd)
+  {
+    transform(_locations.begin(), _locations.end(), _locations.begin(), Util::toUpper);
+    sort(_locations.begin(), _locations.end());
+  }
 
   void operator()(MetalinkResourceHandle& res) {
-    if(res->location == location) {
-      res->preference += preferenceToAdd;
+    if(binary_search(_locations.begin(), _locations.end(), res->location)) {
+      res->preference += _preferenceToAdd;
     }
   }
 };
 
-void MetalinkEntry::setLocationPreference(const string& location, int32_t preferenceToAdd) {
+void MetalinkEntry::setLocationPreference(const Strings& locations,
+					  int32_t preferenceToAdd)
+{
   for_each(resources.begin(), resources.end(),
-	   AddLocationPreference(location, preferenceToAdd));
+	   AddLocationPreference(locations, preferenceToAdd));
 }
 
 class PrefOrder {

@@ -224,7 +224,7 @@ MetalinkResourceHandle Xml2MetalinkProcessor::getResource(const string& xpath) {
   } else {
     resource->preference = STRTOLL(pref.c_str());
   }
-  resource->location = Util::trim(xmlAttribute(node, "location"));
+  resource->location = Util::toUpper(Util::trim(xmlAttribute(node, "location")));
 
   resource->url = Util::trim(xmlContent(node));
 
