@@ -24,20 +24,15 @@ aria2 is in very early development stage. Currently it has following features:
 * BitTorrent protocol support with fast extension.
 * Selective download in multi-file torrent/metalink.
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent).
-* Limiting download/upload speed.
+* Limits download/upload speed.
 * Chunk checksum validation in Metalink.
 * netrc support.
 * Configuration file support.
-* Download URIs found in a text file or stdin.
+* Downloads URIs found in a text file or stdin.
+* Integrates HTTP/FTP/BitTorrent downloads; downloading a file from several
+  different sources.
 
-3. How to build
----------------
-$ ./configure
-$ make
-
-The executable is aria2c in src directory.
-
-4. Dependency
+3. Dependency
 -------------
 In order to enable HTTPS support, you need GNU TLS or OpenSSL.
 In order to enable BitTorrent support, you need GNU TLS+libgcrypt or OpenSSL.
@@ -53,6 +48,27 @@ You can disable BitTorrent, Metalink support by providing --disable-bittorrent,
 In order to enable async DNS support, you need c-ares or ares.
 c-ares: http://daniel.haxx.se/projects/c-ares/
 ares: ftp://athena-dist.mit.edu/pub/ATHENA/ares
+
+4. How to build
+---------------
+In order to build aria2 from the source package, you need following development
+packages(package name may vary depending on the distribution you use):
+
+* libgnutls-dev    (Required for HTTPS, BitTorrent support)
+* libgpg-error-dev (Required for BitTorrent support)
+* libgcrypt-dev    (Required for BitTorrent support)
+* libares-dev      (Required for async DNS support)
+* libxml2-dev      (Required for Metalink support)
+
+You can use libssl-dev instead of libgnutls-dev,libgpg-error-dev,libgcrypt-dev:
+* libssl-dev       (Required for HTTPS, BitTorrent support)
+
+The build process is fairly standard way for *nix programs:
+
+$ ./configure
+$ make
+
+The executable is aria2c in src directory.
 
 5. BitTorrrent
 --------------
@@ -84,7 +100,6 @@ and copies whole file or a part of it to the destination.
 
 Note:
 *  -o option is used to change the filename of downloaded .torrent file.
-* This version only supports compact peers list format.
 * The ports aria2c uses are 6881-6999.
 * The maximum number of peers is 55. This limit may be exceeded when download
 rate is low.
@@ -94,7 +109,6 @@ rate is low.
 6. Metalink
 -----------
 The current implementation supports HTTP/FTP/BitTorrent.
-BitTorrent always has precedence over HTTP/FTP.
 The other P2P protocols are ignored.
 
 For checksum checking, both MD5 and SHA1 are supported. If both values are
