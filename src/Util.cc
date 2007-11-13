@@ -39,6 +39,7 @@
 #include "a2netcompat.h"
 #include "a2time.h"
 #include "DlAbortEx.h"
+#include "BitfieldMan.h"
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -780,5 +781,15 @@ void Util::mkdirs(const string& dirpath)
     throw new DlAbortEx(EX_MAKE_DIR, dir.getPath().c_str(), "File already exists.");
   } else if(!dir.mkdirs()) {
     throw new DlAbortEx(EX_MAKE_DIR, dir.getPath().c_str(), strerror(errno));
+  }
+}
+
+void Util::convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
+{
+  for(int32_t index = 0; index < dest->countBlock(); ++index) {
+    if(src->isBitSetOffsetRange((int64_t)index*dest->getBlockLength(),
+				dest->getBlockLength())) {
+      dest->setBit(index);
+    }
   }
 }

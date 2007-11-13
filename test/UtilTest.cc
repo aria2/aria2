@@ -1,6 +1,7 @@
 #include "Util.h"
 #include "FixedNumberRandomizer.h"
 #include "DlAbortEx.h"
+#include "BitfieldMan.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -30,6 +31,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsUppercase);
   CPPUNIT_TEST(testAlphaToNum);
   CPPUNIT_TEST(testMkdirs);
+  CPPUNIT_TEST(testConvertBitfield);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -58,6 +60,7 @@ public:
   void testIsUppercase();
   void testAlphaToNum();
   void testMkdirs();
+  void testConvertBitfield();
 };
 
 
@@ -389,4 +392,18 @@ void UtilTest::testMkdirs()
     cerr << ex->getMsg() << endl;
     delete ex;
   }
+}
+
+void UtilTest::testConvertBitfield()
+{
+  BitfieldMan srcBitfield(384*1024, 256*1024*256+1);
+  BitfieldMan destBitfield(512*1024, srcBitfield.getTotalLength());
+  srcBitfield.setAllBit();
+  srcBitfield.unsetBit(2);// <- range [768, 1152)
+  // which corresponds to the index [1,2] in destBitfield
+  Util::convertBitfield(&destBitfield, &srcBitfield);
+  
+  CPPUNIT_ASSERT_EQUAL(string("9fffffffffffffffffffffffffffffff80"),
+		       Util::toHex(destBitfield.getBitfield(),
+				   destBitfield.getBitfieldLength()));
 }

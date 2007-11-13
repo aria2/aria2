@@ -1,3 +1,13 @@
+2007-11-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Recalculates download progress when loading a control file,
+	if the piece length of DownloadContext is different from the one saved
+	in the control file. Currently in-flight pieces are ignored.
+	* src/DefaultBtProgressInfoFile.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* src/Util.{h, cc}
+	* test/UtilTest.cc
+
 2007-11-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Do not rotate tiers in announce-list.

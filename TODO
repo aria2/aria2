@@ -56,6 +56,5 @@
   FatalException .... Program should abort.
 
 -- remaining features to be implemented for 0.12.0 release
-* Implement duplicate download checking in Bt
+* Implement duplicate download checking
 * improve --metalink-location field
-* Piece length conversion when loading file

@@ -24,6 +24,7 @@ class DefaultBtProgressInfoFileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testSave_nonBt);
   CPPUNIT_TEST(testLoad);
   CPPUNIT_TEST(testLoad_nonBt);
+  CPPUNIT_TEST(testLoad_nonBt_pieceLengthShorter);
   CPPUNIT_TEST_SUITE_END();
 private:
   MockBtContextHandle _btContext;
@@ -35,19 +36,22 @@ public:
 
   void setUp() {
     BtRegistry::unregisterAll();
-
+  }
+   
+  void initializeMembers(int32_t pieceLength, int64_t totalLength)
+  {
     static unsigned char infoHash[] = {
       0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa,
       0xbb, 0xcc, 0xdd, 0xee, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff,
     };
-
+  
     _option = new Option();
     _option->put(PREF_DIR, ".");
 
     _btContext = new MockBtContext();
     _btContext->setInfoHash(infoHash);
 
-    _bitfield = new BitfieldMan(1024, 80*1024);
+    _bitfield = new BitfieldMan(pieceLength, totalLength);
 
     _pieceStorage = new MockPieceStorage();
     _pieceStorage->setBitfield(_bitfield.get());
@@ -75,6 +79,7 @@ public:
   void testLoad();
   void testSave_nonBt();
   void testLoad_nonBt();
+  void testLoad_nonBt_pieceLengthShorter();
 };
 
 #undef BLOCK_LENGTH
@@ -84,7 +89,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtProgressInfoFileTest);
 
 void DefaultBtProgressInfoFileTest::testLoad()
 {
-  try {
+  initializeMembers(1024, 81920);
+
   _btContext->setName("load");
   _btContext->setPieceLength(1024);
   _btContext->setTotalLength(81920);
@@ -121,16 +127,11 @@ void DefaultBtProgressInfoFileTest::testLoad()
   PieceHandle piece2 = inFlightPieces[1];
   CPPUNIT_ASSERT_EQUAL((int32_t)2, piece2->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)512, piece2->getLength());
-  
-  } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
-    delete e;
-  }
 }
 
 void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 {
-  BtRegistry::unregisterAll();
+  initializeMembers(1024, 81920);
 
   SingleFileDownloadContextHandle dctx =
     new SingleFileDownloadContext(1024, 81920, "load-nonBt");
@@ -165,9 +166,31 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 
 }
 
+void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
+{
+  initializeMembers(512, 81920);
+
+  SingleFileDownloadContextHandle dctx =
+    new SingleFileDownloadContext(512, 81920, "load-nonBt");
+
+  DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
+  CPPUNIT_ASSERT_EQUAL(string("./load-nonBt.aria2"), infoFile.getFilename());
+  infoFile.load();
+
+  // check the contents of objects
+
+  // bitfield
+  CPPUNIT_ASSERT_EQUAL(string("fffffffffffffffffffffffffffffffffffffffc"),
+		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
+
+  // the number of in-flight pieces
+  CPPUNIT_ASSERT_EQUAL((int32_t)0,
+		       _pieceStorage->countInFlightPiece());
+}
+
 void DefaultBtProgressInfoFileTest::testSave_nonBt()
 {
-  BtRegistry::unregisterAll();
+  initializeMembers(1024, 81920);
 
   SingleFileDownloadContextHandle dctx =
     new SingleFileDownloadContext(1024, 81920, "save-temp");
@@ -261,6 +284,8 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 
 void DefaultBtProgressInfoFileTest::testSave()
 {
+  initializeMembers(1024, 81920);
+
   _btContext->setName("save-temp");
   _btContext->setPieceLength(1024);
   _btContext->setTotalLength(81920);

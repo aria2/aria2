@@ -44,6 +44,7 @@
 
 class Randomizer;
 extern typedef SharedHandle<Randomizer> RandomizerHandle;
+class BitfieldMan;
 
 #define STRTOLL(X) strtoll(X, (char**)NULL, 10)
 
@@ -153,6 +154,8 @@ public:
   static int32_t alphaToNum(const string& alphabets);
 
   static void mkdirs(const string& dirpath);
+
+  static void convertBitfield(BitfieldMan* dest, const BitfieldMan* src);
 };
 
 #endif // _D_UTIL_H_

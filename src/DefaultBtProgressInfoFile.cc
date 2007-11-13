@@ -190,13 +190,8 @@ void DefaultBtProgressInfoFile::load()
       savedInfoHash = 0;
     }
 
-    // TODO implement the conversion mechanism between different piece length.
     int32_t pieceLength;
     in.read(reinterpret_cast<char*>(&pieceLength), sizeof(pieceLength));
-    if(pieceLength != _dctx->getPieceLength()) {
-      throw new DlAbortEx("piece length mismatch. expected: %d, actual: %d",
-			  _dctx->getPieceLength(), pieceLength);
-    }
 
     int64_t totalLength;
     in.read(reinterpret_cast<char*>(&totalLength), sizeof(totalLength));
@@ -214,51 +209,61 @@ void DefaultBtProgressInfoFile::load()
     // TODO implement the conversion mechanism between different piece length.
     int32_t bitfieldLength;
     in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
-    if(_pieceStorage->getBitfieldLength() != bitfieldLength) {
+    int32_t expectedBitfieldLength = ((totalLength+pieceLength-1)/pieceLength+7)/8;
+    if(expectedBitfieldLength != bitfieldLength) {
       throw new DlAbortEx("bitfield length mismatch. expected: %d, actual: %d",
-			  _pieceStorage->getBitfieldLength(),
+			  expectedBitfieldLength,
 			  bitfieldLength);
     }
 
-    // TODO implement the conversion mechanism between different piece length.
     savedBitfield = new unsigned char[bitfieldLength];
     in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
-    _pieceStorage->setBitfield(savedBitfield, bitfieldLength);
-    delete [] savedBitfield;
-    savedBitfield = 0;
 
-    int32_t numInFlightPiece;
-    in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
-    
-    Pieces inFlightPieces;
-    while(numInFlightPiece--) {
-      int32_t index;
-      in.read(reinterpret_cast<char*>(&index), sizeof(index));
-      if(!(0 <= index && index < _dctx->getNumPieces())) {
-	throw new DlAbortEx("piece index out of range: %d", index);
-      }
-      int32_t length;
-      in.read(reinterpret_cast<char*>(&length), sizeof(length));
-      if(!(0 < length && length <=_dctx->getPieceLength())) {
-	throw new DlAbortEx("piece length out of range: %d", length);
-      }
-      PieceHandle piece = new Piece(index, length);
-      int32_t bitfieldLength;
-      in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
-      if(piece->getBitfieldLength() != bitfieldLength) {
-	throw new DlAbortEx("piece bitfield length mismatch. expected: %d actual: %d",
-			    piece->getBitfieldLength(), bitfieldLength);
-      }
-      savedBitfield = new unsigned char[bitfieldLength];
-      in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
-      piece->setBitfield(savedBitfield, bitfieldLength);
+    if(pieceLength == _dctx->getPieceLength()) {
+      _pieceStorage->setBitfield(savedBitfield, bitfieldLength);
       delete [] savedBitfield;
       savedBitfield = 0;
-      
-      inFlightPieces.push_back(piece);
-    }
-    _pieceStorage->addInFlightPiece(inFlightPieces);
 
+      int32_t numInFlightPiece;
+      in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
+      
+      Pieces inFlightPieces;
+      while(numInFlightPiece--) {
+	int32_t index;
+	in.read(reinterpret_cast<char*>(&index), sizeof(index));
+	if(!(0 <= index && index < _dctx->getNumPieces())) {
+	  throw new DlAbortEx("piece index out of range: %d", index);
+	}
+	int32_t length;
+	in.read(reinterpret_cast<char*>(&length), sizeof(length));
+	if(!(0 < length && length <=_dctx->getPieceLength())) {
+	  throw new DlAbortEx("piece length out of range: %d", length);
+	}
+	PieceHandle piece = new Piece(index, length);
+	int32_t bitfieldLength;
+	in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
+	if(piece->getBitfieldLength() != bitfieldLength) {
+	  throw new DlAbortEx("piece bitfield length mismatch. expected: %d actual: %d",
+			      piece->getBitfieldLength(), bitfieldLength);
+	}
+	savedBitfield = new unsigned char[bitfieldLength];
+	in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
+	piece->setBitfield(savedBitfield, bitfieldLength);
+	delete [] savedBitfield;
+	savedBitfield = 0;
+	
+	inFlightPieces.push_back(piece);
+      }
+      _pieceStorage->addInFlightPiece(inFlightPieces);
+    } else {
+      BitfieldMan src(pieceLength, totalLength);
+      src.setBitfield(savedBitfield, bitfieldLength);
+      BitfieldMan dest(_dctx->getPieceLength(), totalLength);
+      Util::convertBitfield(&dest, &src);
+      _pieceStorage->setBitfield(dest.getBitfield(), dest.getBitfieldLength());
+      delete [] savedBitfield;
+      savedBitfield = 0;
+    }
     _logger->info(MSG_LOADED_SEGMENT_FILE);
   } catch(ios::failure const& exception) {
     delete [] savedBitfield;
