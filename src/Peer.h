@@ -37,13 +37,9 @@
 
 #include "common.h"
 #include "BitfieldMan.h"
-#include "SharedHandle.h"
 #include "PeerStat.h"
 #include "TimeA2.h"
 #include <string.h>
-#include <string>
-
-using namespace std;
 
 #define PEER_ID_LENGTH 20
 #define DEFAULT_LATENCY 1500

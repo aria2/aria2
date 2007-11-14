@@ -38,6 +38,7 @@
 #include "Xml2MetalinkProcessor.h"
 #include "Metalinker.h"
 #include "prefs.h"
+#include "DlAbortEx.h"
 
 MetalinkHelper::MetalinkHelper() {}
 

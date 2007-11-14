@@ -42,13 +42,8 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 #	debug_new.cpp
 @ENABLE_MESSAGE_DIGEST_TRUE@am__append_1 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	IteratableValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
-@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityMan.cc CheckIntegrityMan.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.cc messageDigest.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.cc MessageDigestHelper.h
 
@@ -59,7 +54,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.cc MetaFileUtil.h\
 @ENABLE_BITTORRENT_TRUE@	MetaEntryVisitor.h\
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.cc ShaVisitor.h\
-@ENABLE_BITTORRENT_TRUE@	PeerConnection.cc PeerConnection.h\
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.cc PeerMessageUtil.h\
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.cc PeerAbstractCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
@@ -69,11 +63,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	RequestSlot.cc RequestSlot.h\
 @ENABLE_BITTORRENT_TRUE@	Directory.cc Directory.h\
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-@ENABLE_BITTORRENT_TRUE@	DiskAdaptor.cc DiskAdaptor.h\
-@ENABLE_BITTORRENT_TRUE@	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
-@ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
-@ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
-@ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.cc PeerChokeCommand.h\
 @ENABLE_BITTORRENT_TRUE@	SeedCriteria.h\
@@ -89,12 +78,9 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc\
 @ENABLE_BITTORRENT_TRUE@	BtContext.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.cc DefaultBtContext.h\
-@ENABLE_BITTORRENT_TRUE@	PieceStorage.h\
-@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorage.cc DefaultPieceStorage.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.cc DefaultPeerStorage.h\
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
-@ENABLE_BITTORRENT_TRUE@	BtRegistry.cc BtRegistry.h\
 @ENABLE_BITTORRENT_TRUE@	BtRuntime.h\
 @ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.cc BtContextAwareCommand.h\
 @ENABLE_BITTORRENT_TRUE@	BtMessage.h\
@@ -150,7 +136,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtSetup.cc BtSetup.h\
 @ENABLE_BITTORRENT_TRUE@	BtFileAllocationEntry.cc BtFileAllocationEntry.h\
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandler.cc BtPostDownloadHandler.h\
-@ENABLE_BITTORRENT_TRUE@	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 @ENABLE_BITTORRENT_TRUE@	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h
 
 @ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
@@ -262,7 +247,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ParameterizedStringParser.cc ParameterizedStringParser.h \
 	FixedWidthNumberDecorator.h NumberDecorator.h \
 	AlphaNumberDecorator.h TimeBasedCommand.cc TimeBasedCommand.h \
-	AutoSaveCommand.cc AutoSaveCommand.h \
+	AutoSaveCommand.cc AutoSaveCommand.h PieceStorage.h \
+	DefaultPieceStorage.cc DefaultPieceStorage.h \
 	UnknownLengthPieceStorage.cc UnknownLengthPieceStorage.h \
 	StatCalc.h ConsoleStatCalc.cc ConsoleStatCalc.h \
 	TransferStat.cc TransferStat.h Dependency.h \
@@ -271,49 +257,51 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	FileAllocationIterator.h SingleFileAllocationIterator.cc \
 	SingleFileAllocationIterator.h PostDownloadHandler.cc \
 	PostDownloadHandler.h HaveEraseCommand.cc HaveEraseCommand.h \
-	Piece.cc Piece.h IteratableChunkChecksumValidator.cc \
+	Piece.cc Piece.h CheckIntegrityMan.cc CheckIntegrityMan.h \
+	CheckIntegrityEntry.cc CheckIntegrityEntry.h \
+	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h \
+	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h \
+	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
+	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
+	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
+	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
+	Peer.cc Peer.h BtRegistry.cc BtRegistry.h \
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
+	PeerConnection.cc PeerConnection.h \
+	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
-	IteratableValidator.h CheckIntegrityCommand.cc \
-	CheckIntegrityCommand.h CheckIntegrityEntry.cc \
-	CheckIntegrityEntry.h PieceHashCheckIntegrityEntry.cc \
-	PieceHashCheckIntegrityEntry.h StreamCheckIntegrityEntry.cc \
-	StreamCheckIntegrityEntry.h ChecksumCheckIntegrityEntry.cc \
-	ChecksumCheckIntegrityEntry.h CheckIntegrityMan.cc \
-	CheckIntegrityMan.h messageDigest.cc messageDigest.h \
-	MessageDigestHelper.cc MessageDigestHelper.h MetaEntry.h \
-	Data.cc Data.h Dictionary.cc Dictionary.h List.cc List.h \
-	MetaFileUtil.cc MetaFileUtil.h MetaEntryVisitor.h \
-	ShaVisitor.cc ShaVisitor.h PeerConnection.cc PeerConnection.h \
+	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
+	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h \
+	messageDigest.cc messageDigest.h MessageDigestHelper.cc \
+	MessageDigestHelper.h MetaEntry.h Data.cc Data.h Dictionary.cc \
+	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
+	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
 	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
 	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
-	PeerInteractionCommand.h Peer.cc Peer.h PeerListenCommand.cc \
+	PeerInteractionCommand.h PeerListenCommand.cc \
 	PeerListenCommand.h RequestSlot.cc RequestSlot.h Directory.cc \
 	Directory.h TrackerWatcherCommand.cc TrackerWatcherCommand.h \
-	DiskAdaptor.cc DiskAdaptor.h AbstractSingleDiskAdaptor.cc \
-	AbstractSingleDiskAdaptor.h CopyDiskAdaptor.cc \
-	CopyDiskAdaptor.h DirectDiskAdaptor.cc DirectDiskAdaptor.h \
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h ByteArrayDiskWriter.cc \
-	ByteArrayDiskWriter.h PeerChokeCommand.cc PeerChokeCommand.h \
-	SeedCriteria.h TimeSeedCriteria.h ShareRatioSeedCriteria.h \
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
+	PeerChokeCommand.cc PeerChokeCommand.h SeedCriteria.h \
+	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
 	PeerListProcessor.h DefaultPeerListProcessor.cc \
 	DefaultPeerListProcessor.h CompactPeerListProcessor.cc \
 	CompactPeerListProcessor.h DelegatingPeerListProcessor.cc \
 	DelegatingPeerListProcessor.h AnnounceTier.h AnnounceList.h \
 	AnnounceList.cc BtContext.h DefaultBtContext.cc \
-	DefaultBtContext.h PieceStorage.h DefaultPieceStorage.cc \
-	DefaultPieceStorage.h DefaultPeerStorage.cc \
-	DefaultPeerStorage.h BtAnnounce.h DefaultBtAnnounce.cc \
-	DefaultBtAnnounce.h BtRegistry.cc BtRegistry.h BtRuntime.h \
-	BtContextAwareCommand.cc BtContextAwareCommand.h BtMessage.h \
-	AbstractBtMessage.h SimpleBtMessage.cc SimpleBtMessage.h \
-	BtAllowedFastMessage.cc BtAllowedFastMessage.h \
-	BtBitfieldMessage.cc BtBitfieldMessage.h BtCancelMessage.cc \
-	BtCancelMessage.h BtChokeMessage.cc BtChokeMessage.h \
-	BtHaveAllMessage.cc BtHaveAllMessage.h BtHaveMessage.cc \
-	BtHaveMessage.h BtHaveNoneMessage.cc BtHaveNoneMessage.h \
+	DefaultBtContext.h DefaultPeerStorage.cc DefaultPeerStorage.h \
+	BtAnnounce.h DefaultBtAnnounce.cc DefaultBtAnnounce.h \
+	BtRuntime.h BtContextAwareCommand.cc BtContextAwareCommand.h \
+	BtMessage.h AbstractBtMessage.h SimpleBtMessage.cc \
+	SimpleBtMessage.h BtAllowedFastMessage.cc \
+	BtAllowedFastMessage.h BtBitfieldMessage.cc \
+	BtBitfieldMessage.h BtCancelMessage.cc BtCancelMessage.h \
+	BtChokeMessage.cc BtChokeMessage.h BtHaveAllMessage.cc \
+	BtHaveAllMessage.h BtHaveMessage.cc BtHaveMessage.h \
+	BtHaveNoneMessage.cc BtHaveNoneMessage.h \
 	BtInterestedMessage.cc BtInterestedMessage.h \
 	BtKeepAliveMessage.cc BtKeepAliveMessage.h \
 	BtNotInterestedMessage.cc BtNotInterestedMessage.h \
@@ -342,7 +330,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerReceiveHandshakeCommand.h BtSetup.cc BtSetup.h \
 	BtFileAllocationEntry.cc BtFileAllocationEntry.h \
 	BtPostDownloadHandler.cc BtPostDownloadHandler.h \
-	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
 	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h Metalinker.cc \
 	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
@@ -357,18 +344,13 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityEntry.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	PieceHashCheckIntegrityEntry.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	StreamCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
-@ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityMan.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
 @ENABLE_BITTORRENT_TRUE@am__objects_2 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	PeerConnection.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.$(OBJEXT) \
@@ -378,11 +360,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	RequestSlot.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Directory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DiskAdaptor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	AbstractSingleDiskAdaptor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	CopyDiskAdaptor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DirectDiskAdaptor.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT) \
@@ -391,10 +368,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BtRegistry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SimpleBtMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtAllowedFastMessage.$(OBJEXT) \
@@ -425,7 +400,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	BtSetup.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtFileAllocationEntry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandler.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MultiFileAllocationIterator.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtCheckIntegrityEntry.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
@@ -487,15 +461,23 @@ am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	Platform.$(OBJEXT) PStringSegment.$(OBJEXT) \
 	PStringBuildVisitor.$(OBJEXT) \
 	ParameterizedStringParser.$(OBJEXT) TimeBasedCommand.$(OBJEXT) \
-	AutoSaveCommand.$(OBJEXT) UnknownLengthPieceStorage.$(OBJEXT) \
-	ConsoleStatCalc.$(OBJEXT) TransferStat.$(OBJEXT) \
-	DefaultBtProgressInfoFile.$(OBJEXT) \
+	AutoSaveCommand.$(OBJEXT) DefaultPieceStorage.$(OBJEXT) \
+	UnknownLengthPieceStorage.$(OBJEXT) ConsoleStatCalc.$(OBJEXT) \
+	TransferStat.$(OBJEXT) DefaultBtProgressInfoFile.$(OBJEXT) \
 	SingleFileAllocationIterator.$(OBJEXT) \
 	PostDownloadHandler.$(OBJEXT) HaveEraseCommand.$(OBJEXT) \
-	Piece.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9) $(am__objects_10) $(am__objects_11)
+	Piece.$(OBJEXT) CheckIntegrityMan.$(OBJEXT) \
+	CheckIntegrityEntry.$(OBJEXT) \
+	PieceHashCheckIntegrityEntry.$(OBJEXT) \
+	StreamCheckIntegrityEntry.$(OBJEXT) DiskAdaptor.$(OBJEXT) \
+	AbstractSingleDiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
+	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
+	Peer.$(OBJEXT) BtRegistry.$(OBJEXT) \
+	MultiFileAllocationIterator.$(OBJEXT) PeerConnection.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
+	$(am__objects_10) $(am__objects_11)
 am_libaria2c_a_OBJECTS = $(am__objects_12)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -757,7 +739,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	ParameterizedStringParser.cc ParameterizedStringParser.h \
 	FixedWidthNumberDecorator.h NumberDecorator.h \
 	AlphaNumberDecorator.h TimeBasedCommand.cc TimeBasedCommand.h \
-	AutoSaveCommand.cc AutoSaveCommand.h \
+	AutoSaveCommand.cc AutoSaveCommand.h PieceStorage.h \
+	DefaultPieceStorage.cc DefaultPieceStorage.h \
 	UnknownLengthPieceStorage.cc UnknownLengthPieceStorage.h \
 	StatCalc.h ConsoleStatCalc.cc ConsoleStatCalc.h \
 	TransferStat.cc TransferStat.h Dependency.h \
@@ -766,10 +749,21 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	FileAllocationIterator.h SingleFileAllocationIterator.cc \
 	SingleFileAllocationIterator.h PostDownloadHandler.cc \
 	PostDownloadHandler.h HaveEraseCommand.cc HaveEraseCommand.h \
-	Piece.cc Piece.h $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11)
+	Piece.cc Piece.h CheckIntegrityMan.cc CheckIntegrityMan.h \
+	CheckIntegrityEntry.cc CheckIntegrityEntry.h \
+	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h \
+	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h \
+	IteratableValidator.h DiskAdaptor.cc DiskAdaptor.h \
+	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h \
+	CopyDiskAdaptor.cc CopyDiskAdaptor.h DirectDiskAdaptor.cc \
+	DirectDiskAdaptor.h MultiDiskAdaptor.cc MultiDiskAdaptor.h \
+	Peer.cc Peer.h BtRegistry.cc BtRegistry.h \
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
+	PeerConnection.cc PeerConnection.h $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5) $(am__append_6) $(am__append_7) \
+	$(am__append_8) $(am__append_9) $(am__append_10) \
+	$(am__append_11)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

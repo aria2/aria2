@@ -56,13 +56,14 @@
 #include "DlAbortEx.h"
 #include "DownloadFailureException.h"
 #include "RequestGroupMan.h"
+#include "DefaultBtProgressInfoFile.h"
+#include "DefaultPieceStorage.h"
+#include "PostDownloadHandler.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #ifdef ENABLE_BITTORRENT
 # include "BtCheckIntegrityEntry.h"
-# include "DefaultPieceStorage.h"
-# include "DefaultBtProgressInfoFile.h"
 # include "DefaultPeerStorage.h"
 # include "DefaultBtAnnounce.h"
 # include "BtSetup.h"
@@ -584,8 +585,12 @@ RequestGroups RequestGroup::postDownloadProcessing()
 
 void RequestGroup::initializePostDownloadHandler()
 {
+#ifdef ENABLE_BITTORRENT
   _postDownloadHandlers.push_back(new BtPostDownloadHandler(_option));
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
   _postDownloadHandlers.push_back(new MetalinkPostDownloadHandler(_option));
+#endif // ENABLE_METALINK
 }
 
 Strings RequestGroup::getUris() const

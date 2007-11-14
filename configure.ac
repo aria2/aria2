@@ -17,6 +17,8 @@ case "$target" in
 		;;
 esac
 
+AC_DEFINE_UNQUOTED([TARGET], ["$target"], [Define target-type])
+
 # Set localedir
 localedir=${datadir}/locale
 AC_SUBST(localedir)
@@ -91,6 +93,7 @@ if test "x$enable_bittorrent" = "xyes" && test "x$enable_message_digest" = "xyes
     AC_DEFINE([ENABLE_BITTORRENT], [1], [Define to 1 if BitTorrent support is enabled.])
     AM_CONDITIONAL([ENABLE_BITTORRENT], true)
 else
+    enable_bittorrent=no
     AM_CONDITIONAL([ENABLE_BITTORRENT], false)
 fi
 
@@ -98,6 +101,7 @@ if test "x$have_libxml2" = "xyes" && test "x$enable_metalink" = "xyes"; then
     AC_DEFINE([ENABLE_METALINK], [1], [Define to 1 if Metalink support is enabled.])
     AM_CONDITIONAL([ENABLE_METALINK], true)
 else
+    enable_metalink=no
     AM_CONDITIONAL([ENABLE_METALINK], false)
 fi
 

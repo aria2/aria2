@@ -1,3 +1,27 @@
+2007-11-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added ifdef and some modifications to compile without BitTorrent,
+	Metalink, MessageDigest
+	support.
+	* src/PieceHashCheckIntegrityEntry.cc
+	* src/MetalinkEntry.h
+	* src/version_usage.cc
+	* src/main.cc
+	* src/DownloadEngine.{h, cc}
+	* src/Metalink2RequestGroup.cc
+	* src/Peer.cc
+	* src/RequestGroup.cc
+	* src/MetalinkHelper.cc
+	* test/DefaultPieceStorageTest.cc
+	* test/MetalinkPostDownloadHandlerTest.cc
+	* test/Metalink2RequestGroupTest.cc
+
+	Hide TOTAL SPD when all downloads complete.
+	* src/ConsoleStatCalc.cc
+
+	Log target system information.
+	* src/main.cc
+	
 2007-11-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Now --metalink-location accepts a comma-deliminated list of locations.

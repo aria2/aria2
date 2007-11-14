@@ -34,5 +34,9 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
   Option op;
   MetalinkPostDownloadHandler handler(&op);
   RequestGroups groups = handler.getNextRequestGroups("test.xml");
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)6/* 5 + 1 torrent file download */, groups.size());
+#else
+  CPPUNIT_ASSERT_EQUAL((size_t)5, groups.size());
+#endif // ENABLE_BITTORRENT
 }

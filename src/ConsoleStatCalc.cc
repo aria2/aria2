@@ -116,7 +116,8 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
     }
   }
 
-  if(requestGroupMan->countRequestGroup() > 1) {
+  if(requestGroupMan->countRequestGroup() > 1 &&
+     !requestGroupMan->downloadFinished()) {
     TransferStat stat = requestGroupMan->calculateStat();
     cout << " "
 	 << "[TOTAL SPD:"

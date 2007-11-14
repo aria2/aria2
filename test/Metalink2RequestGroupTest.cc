@@ -39,9 +39,11 @@ void Metalink2RequestGroupTest::testGenerate()
     SingleFileDownloadContextHandle dctx = rg->getDownloadContext();
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL((int64_t)0, dctx->getTotalLength());
+#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(string("sha1"), dctx->getChecksumHashAlgo());
     CPPUNIT_ASSERT_EQUAL(string("a96cf3f0266b91d87d5124cf94326422800b627d"),
 			 dctx->getChecksum());
+#endif // ENABLE_MESSAGE_DIGEST
   }
   // second file
   {
@@ -50,13 +52,16 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
     SingleFileDownloadContextHandle dctx = rg->getDownloadContext();
     CPPUNIT_ASSERT(!dctx.isNull());
+#ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(string("sha1"), dctx->getPieceHashAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)2, dctx->getPieceHashes().size());
     CPPUNIT_ASSERT_EQUAL((int32_t)262144, dctx->getPieceLength());
     CPPUNIT_ASSERT_EQUAL(string(""), dctx->getChecksumHashAlgo());
     CPPUNIT_ASSERT_EQUAL(string(""), dctx->getChecksum());
+#endif // ENABLE_MESSAGE_DIGEST
   }
 
+#ifdef ENABLE_BITTORRENT
   // fifth file <- downloading .torrent file
   {
     RequestGroupHandle rg = groups[4];
@@ -67,9 +72,15 @@ void Metalink2RequestGroupTest::testGenerate()
     SingleFileDownloadContextHandle dctx = rg->getDownloadContext();
     CPPUNIT_ASSERT(!dctx.isNull());
   }
+#endif // ENABLE_BITTORRENT
+
   // sixth file <- depends on thrid file
   {
+#ifdef ENABLE_BITTORRENT
     RequestGroupHandle rg = groups[5];
+#else
+    RequestGroupHandle rg = groups[4];
+#endif // ENABLE_BITTORRENT
     Strings uris = rg->getUris();
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(string("http://host/torrent-http.integrated"), uris[0]);

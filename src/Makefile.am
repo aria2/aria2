@@ -113,6 +113,8 @@ SRCS =  Socket.h\
 	AlphaNumberDecorator.h\
 	TimeBasedCommand.cc TimeBasedCommand.h\
 	AutoSaveCommand.cc AutoSaveCommand.h\
+	PieceStorage.h\
+	DefaultPieceStorage.cc DefaultPieceStorage.h\
 	UnknownLengthPieceStorage.cc UnknownLengthPieceStorage.h\
 	StatCalc.h\
 	ConsoleStatCalc.cc ConsoleStatCalc.h\
@@ -125,19 +127,28 @@ SRCS =  Socket.h\
 	SingleFileAllocationIterator.cc SingleFileAllocationIterator.h\
 	PostDownloadHandler.cc PostDownloadHandler.h\
 	HaveEraseCommand.cc HaveEraseCommand.h\
-	Piece.cc Piece.h
+	Piece.cc Piece.h\
+	CheckIntegrityMan.cc CheckIntegrityMan.h\
+	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
+	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h\
+	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
+	IteratableValidator.h\
+	DiskAdaptor.cc DiskAdaptor.h\
+	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
+	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
+	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
+	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
+	Peer.cc Peer.h\
+	BtRegistry.cc BtRegistry.h\
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
+	PeerConnection.cc PeerConnection.h
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST
 SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
-	IteratableValidator.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
-	CheckIntegrityEntry.cc CheckIntegrityEntry.h\
-	PieceHashCheckIntegrityEntry.cc PieceHashCheckIntegrityEntry.h\
-	StreamCheckIntegrityEntry.cc StreamCheckIntegrityEntry.h\
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
-	CheckIntegrityMan.cc CheckIntegrityMan.h\
 	messageDigest.cc messageDigest.h\
 	MessageDigestHelper.cc MessageDigestHelper.h
 endif # ENABLE_MESSAGE_DIGEST
@@ -150,7 +161,6 @@ SRCS += MetaEntry.h\
 	MetaFileUtil.cc MetaFileUtil.h\
 	MetaEntryVisitor.h\
 	ShaVisitor.cc ShaVisitor.h\
-	PeerConnection.cc PeerConnection.h\
 	PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerAbstractCommand.cc PeerAbstractCommand.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
@@ -160,11 +170,6 @@ SRCS += MetaEntry.h\
 	RequestSlot.cc RequestSlot.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-	DiskAdaptor.cc DiskAdaptor.h\
-	AbstractSingleDiskAdaptor.cc AbstractSingleDiskAdaptor.h\
-	CopyDiskAdaptor.cc CopyDiskAdaptor.h\
-	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
 	SeedCriteria.h\
@@ -180,12 +185,9 @@ SRCS += MetaEntry.h\
 	AnnounceList.h AnnounceList.cc\
 	BtContext.h\
 	DefaultBtContext.cc DefaultBtContext.h\
-	PieceStorage.h\
-	DefaultPieceStorage.cc DefaultPieceStorage.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
 	BtAnnounce.h\
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
-	BtRegistry.cc BtRegistry.h\
 	BtRuntime.h\
 	BtContextAwareCommand.cc BtContextAwareCommand.h\
 	BtMessage.h\
@@ -241,7 +243,6 @@ SRCS += MetaEntry.h\
 	BtSetup.cc BtSetup.h\
 	BtFileAllocationEntry.cc BtFileAllocationEntry.h\
 	BtPostDownloadHandler.cc BtPostDownloadHandler.h\
-	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h
 endif # ENABLE_BITTORRENT
 

@@ -58,6 +58,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BtRequestMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtSuggestPieceMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtUnchokeMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounceTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.cc\
@@ -74,13 +75,11 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	DictionaryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ListTest.cc\
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtilTest.cc\
-@ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriterTest.cc\
 @ENABLE_BITTORRENT_TRUE@	PeerTest.cc\
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtilTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ShareRatioSeedCriteriaTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.cc\
-@ENABLE_BITTORRENT_TRUE@	MultiFileAllocationIteratorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.cc\
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.cc
@@ -114,9 +113,8 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
 am__aria2c_SOURCES_DIST = AllTest.cc a2functionalTest.cc \
-	FileEntryTest.cc PieceTest.cc DefaultPieceStorageTest.cc \
-	SegmentTest.cc GrowSegmentTest.cc \
-	SingleFileAllocationIteratorTest.cc \
+	FileEntryTest.cc PieceTest.cc SegmentTest.cc \
+	GrowSegmentTest.cc SingleFileAllocationIteratorTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
@@ -131,7 +129,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc a2functionalTest.cc \
 	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
 	FileTest.cc OptionTest.cc Base64Test.cc \
 	DefaultDiskWriterTest.cc FeatureConfigTest.cc SpeedCalcTest.cc \
-	FixedNumberRandomizer.h MessageDigestHelperTest.cc \
+	FixedNumberRandomizer.h MultiDiskAdaptorTest.cc \
+	MultiFileAllocationIteratorTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -142,17 +141,16 @@ am__aria2c_SOURCES_DIST = AllTest.cc a2functionalTest.cc \
 	BtPieceMessageTest.cc BtPortMessageTest.cc \
 	BtRejectMessageTest.cc BtRequestMessageTest.cc \
 	BtSuggestPieceMessageTest.cc BtUnchokeMessageTest.cc \
-	DefaultBtAnnounceTest.cc DefaultBtContextTest.cc \
-	DefaultBtMessageDispatcherTest.cc \
+	DefaultPieceStorageTest.cc DefaultBtAnnounceTest.cc \
+	DefaultBtContextTest.cc DefaultBtMessageDispatcherTest.cc \
 	DefaultBtRequestFactoryTest.cc MockBtMessage.h \
 	MockBtMessageDispatcher.h MockBtMessageFactory.h \
 	ShaVisitorTest.cc DefaultPeerListProcessorTest.cc \
 	AnnounceListTest.cc DefaultPeerStorageTest.cc \
 	MockPeerStorage.h DataTest.cc DictionaryTest.cc ListTest.cc \
-	MetaFileUtilTest.cc MultiDiskAdaptorTest.cc \
-	ByteArrayDiskWriterTest.cc PeerTest.cc PeerMessageUtilTest.cc \
-	ShareRatioSeedCriteriaTest.cc BtRegistryTest.cc \
-	MultiFileAllocationIteratorTest.cc BtDependencyTest.cc \
+	MetaFileUtilTest.cc ByteArrayDiskWriterTest.cc PeerTest.cc \
+	PeerMessageUtilTest.cc ShareRatioSeedCriteriaTest.cc \
+	BtRegistryTest.cc BtDependencyTest.cc \
 	BtPostDownloadHandlerTest.cc TimeSeedCriteriaTest.cc \
 	MetalinkerTest.cc MetalinkEntryTest.cc \
 	Xml2MetalinkProcessorTest.cc Metalink2RequestGroupTest.cc \
@@ -179,6 +177,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc a2functionalTest.cc \
 @ENABLE_BITTORRENT_TRUE@	BtRequestMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtSuggestPieceMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtUnchokeMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultPieceStorageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounceTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.$(OBJEXT) \
@@ -191,13 +190,11 @@ am__aria2c_SOURCES_DIST = AllTest.cc a2functionalTest.cc \
 @ENABLE_BITTORRENT_TRUE@	DictionaryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ListTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtilTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MultiDiskAdaptorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriterTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtilTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShareRatioSeedCriteriaTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MultiFileAllocationIteratorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.$(OBJEXT)
@@ -209,8 +206,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc a2functionalTest.cc \
 @ENABLE_METALINK_TRUE@	MetalinkHelperTest.$(OBJEXT)
 am_aria2c_OBJECTS = AllTest.$(OBJEXT) a2functionalTest.$(OBJEXT) \
 	FileEntryTest.$(OBJEXT) PieceTest.$(OBJEXT) \
-	DefaultPieceStorageTest.$(OBJEXT) SegmentTest.$(OBJEXT) \
-	GrowSegmentTest.$(OBJEXT) \
+	SegmentTest.$(OBJEXT) GrowSegmentTest.$(OBJEXT) \
 	SingleFileAllocationIteratorTest.$(OBJEXT) \
 	DefaultBtProgressInfoFileTest.$(OBJEXT) \
 	SingleFileDownloadContextTest.$(OBJEXT) \
@@ -231,8 +227,9 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) a2functionalTest.$(OBJEXT) \
 	SharedHandleTest.$(OBJEXT) ChunkedEncodingTest.$(OBJEXT) \
 	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) Base64Test.$(OBJEXT) \
 	DefaultDiskWriterTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
-	SpeedCalcTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	SpeedCalcTest.$(OBJEXT) MultiDiskAdaptorTest.$(OBJEXT) \
+	MultiFileAllocationIteratorTest.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -420,8 +417,8 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 TESTS = aria2c
 aria2c_SOURCES = AllTest.cc a2functionalTest.cc FileEntryTest.cc \
-	PieceTest.cc DefaultPieceStorageTest.cc SegmentTest.cc \
-	GrowSegmentTest.cc SingleFileAllocationIteratorTest.cc \
+	PieceTest.cc SegmentTest.cc GrowSegmentTest.cc \
+	SingleFileAllocationIteratorTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
@@ -436,8 +433,9 @@ aria2c_SOURCES = AllTest.cc a2functionalTest.cc FileEntryTest.cc \
 	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
 	FileTest.cc OptionTest.cc Base64Test.cc \
 	DefaultDiskWriterTest.cc FeatureConfigTest.cc SpeedCalcTest.cc \
-	FixedNumberRandomizer.h $(am__append_1) $(am__append_2) \
-	$(am__append_3)
+	FixedNumberRandomizer.h MultiDiskAdaptorTest.cc \
+	MultiFileAllocationIteratorTest.cc $(am__append_1) \
+	$(am__append_2) $(am__append_3)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}

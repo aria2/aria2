@@ -40,9 +40,11 @@
 #include "Xml2MetalinkProcessor.h"
 #include "Util.h"
 #include "message.h"
-#include "BtDependency.h"
 #include "SingleFileDownloadContext.h"
 #include "MetalinkHelper.h"
+#ifdef ENABLE_BITTORRENT
+# include "BtDependency.h"
+#endif // ENABLE_BITTORRENT
 
 Metalink2RequestGroup::Metalink2RequestGroup(const Option* option):_option(option), _logger(LogFactory::getInstance()) {}
 
@@ -130,6 +132,7 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
     MetalinkResources::iterator itr = find_if(entry->resources.begin(),
 					      entry->resources.end(),
 					      FindBitTorrentUrl());
+#ifdef ENABLE_BITTORRENT
     RequestGroupHandle torrentRg = 0;
     // there is torrent entry
     if(itr != entry->resources.end()) {
@@ -145,6 +148,7 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
       torrentRg->clearPostDowloadHandler();
       groups.push_back(torrentRg);
     }
+#endif // ENABLE_BITTORRENT
     entry->reorderResourcesByPreference();
     Strings uris;
     for_each(entry->resources.begin(), entry->resources.end(),
@@ -153,17 +157,22 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.
     int32_t pieceLength;
+#ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
     } else {
       pieceLength = entry->chunkChecksum->getChecksumLength();
     }
+#else
+    pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
+#endif // ENABLE_MESSAGE_DIGEST
     SingleFileDownloadContextHandle dctx =
       new SingleFileDownloadContext(pieceLength,
 				    entry->getLength(),
 				    "",
 				    entry->file->getPath());
     dctx->setDir(_option->get(PREF_DIR));
+#ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       if(!entry->checksum.isNull()) {
 	dctx->setChecksum(entry->checksum->getMessageDigest());
@@ -173,18 +182,19 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
       dctx->setPieceHashes(entry->chunkChecksum->getChecksums());
       dctx->setPieceHashAlgo(entry->chunkChecksum->getAlgo());
     }
-
+#endif // ENABLE_MESSAGE_DIGEST
     rg->setDownloadContext(dctx);
     rg->setHintTotalLength(entry->getLength());
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :
 				min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
 
+#ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
     if(!torrentRg.isNull()) {
       rg->dependsOn(new BtDependency(rg, torrentRg, _option));
     }
-
+#endif // ENABLE_BITTORRENT
     groups.push_back(rg);
   }
   return groups;

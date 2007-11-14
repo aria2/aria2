@@ -38,7 +38,7 @@ public:
   }
 
   void setUp() {
-    btContext = BtContextHandle(new DefaultBtContext());
+    btContext = new DefaultBtContext();
     btContext->load("test.torrent");
     peer = PeerHandle(new Peer("192.168.0.1", 6889,
 			       btContext->getPieceLength(),

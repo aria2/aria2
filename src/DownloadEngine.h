@@ -51,10 +51,8 @@ class FileAllocationMan;
 extern typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
 class StatCalc;
 extern typedef SharedHandle<StatCalc> StatCalcHandle;
-#ifdef ENABLE_MESSAGE_DIGEST
 class CheckIntegrityMan;
 extern typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
-#endif // ENABLE_MESSAGE_DIGEST
 
 class SocketEntry {
 public:
@@ -128,9 +126,7 @@ public:
   Commands commands;
   RequestGroupManHandle _requestGroupMan;
   FileAllocationManHandle _fileAllocationMan;
-#ifdef ENABLE_MESSAGE_DIGEST
   CheckIntegrityManHandle _checkIntegrityMan;
-#endif // ENABLE_MESSAGE_DIGEST
   const Option* option;
   
   DownloadEngine();

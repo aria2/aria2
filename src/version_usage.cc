@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "common.h"
 #include "FeatureConfig.h"
-#include "messageDigest.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "messageDigest.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 void showVersion() {
   cout << PACKAGE << _(" version ") << PACKAGE_VERSION << endl;

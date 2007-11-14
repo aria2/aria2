@@ -4,7 +4,6 @@ aria2c_SOURCES = AllTest.cc\
 	a2functionalTest.cc\
 	FileEntryTest.cc\
 	PieceTest.cc\
-	DefaultPieceStorageTest.cc\
 	SegmentTest.cc\
 	GrowSegmentTest.cc\
 	SingleFileAllocationIteratorTest.cc\
@@ -42,7 +41,9 @@ aria2c_SOURCES = AllTest.cc\
 	DefaultDiskWriterTest.cc\
 	FeatureConfigTest.cc\
 	SpeedCalcTest.cc\
-	FixedNumberRandomizer.h
+	FixedNumberRandomizer.h\
+	MultiDiskAdaptorTest.cc\
+	MultiFileAllocationIteratorTest.cc
 
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
@@ -68,6 +69,7 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtRequestMessageTest.cc\
 	BtSuggestPieceMessageTest.cc\
 	BtUnchokeMessageTest.cc\
+	DefaultPieceStorageTest.cc\
 	DefaultBtAnnounceTest.cc\
 	DefaultBtContextTest.cc\
 	DefaultBtMessageDispatcherTest.cc\
@@ -84,13 +86,11 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	DictionaryTest.cc\
 	ListTest.cc\
 	MetaFileUtilTest.cc\
-	MultiDiskAdaptorTest.cc\
 	ByteArrayDiskWriterTest.cc\
 	PeerTest.cc\
 	PeerMessageUtilTest.cc\
 	ShareRatioSeedCriteriaTest.cc\
 	BtRegistryTest.cc\
-	MultiFileAllocationIteratorTest.cc\
 	BtDependencyTest.cc\
 	BtPostDownloadHandlerTest.cc\
 	TimeSeedCriteriaTest.cc

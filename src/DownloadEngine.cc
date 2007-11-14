@@ -39,9 +39,7 @@
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "FileAllocationMan.h"
-#ifdef ENABLE_MESSAGE_DIGEST
 #include "CheckIntegrityMan.h"
-#endif // ENABLE_MESSAGE_DIGEST
 #include "Util.h"
 #include "LogFactory.h"
 #include "TimeA2.h"
@@ -84,11 +82,8 @@ DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 _haltRequested(false),
 				 noWait(false),
 				 _requestGroupMan(0),
-				 _fileAllocationMan(0)
-#ifdef ENABLE_MESSAGE_DIGEST
-				,
+				 _fileAllocationMan(0),
 				 _checkIntegrityMan(0)
-#endif // ENABLE_MESSAGE_DIGEST
 {}
 
 DownloadEngine::~DownloadEngine() {

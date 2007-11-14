@@ -115,6 +115,7 @@ RequestGroupHandle createRequestGroup(const Option* op, const Strings& uris,
 
 extern Option* option_processing(int argc, char* const argv[]);
 
+#ifdef ENABLE_BITTORRENT
 void downloadBitTorrent(Option* op, const Strings& uri)
 {
   Strings nargs;
@@ -141,7 +142,9 @@ void downloadBitTorrent(Option* op, const Strings& uri)
   groups.push_back(rg);
   MultiUrlRequestInfo(groups, op).execute();
 }
+#endif // ENABLE_BITTORRENT
 
+#ifdef ENABLE_METALINK
 void downloadMetalink(Option* op)
 {
   RequestGroups groups = Metalink2RequestGroup(op).generate(op->get(PREF_METALINK_FILE));
@@ -150,6 +153,7 @@ void downloadMetalink(Option* op)
   }
   MultiUrlRequestInfo(groups, op).execute();
 }
+#endif // ENABLE_METALINK
 
 void downloadUriList(Option* op)
 {
@@ -250,7 +254,7 @@ int main(int argc, char* argv[]) {
   int32_t exitStatus = EXIT_SUCCESS;
   try {
     Logger* logger = LogFactory::getInstance();
-    logger->info("%s %s", PACKAGE, PACKAGE_VERSION);
+    logger->info("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET);
     logger->info(MSG_LOGGING_STARTED);
 
     AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(op);

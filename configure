@@ -2598,6 +2598,12 @@ case "$target" in
 		;;
 esac
 
+
+cat >>confdefs.h <<_ACEOF
+#define TARGET "$target"
+_ACEOF
+
+
 # Set localedir
 localedir=${datadir}/locale
 
@@ -5832,6 +5838,7 @@ else
 fi
 
 else
+    enable_bittorrent=no
 
 
 if false; then
@@ -5861,6 +5868,7 @@ else
 fi
 
 else
+    enable_metalink=no
 
 
 if false; then
