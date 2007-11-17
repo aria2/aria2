@@ -1135,6 +1135,26 @@ msgstr ""
 "fichier\n"
 "                              Défaut: prealloc"
 
+#: src/main.cc:195
+#, fuzzy
+msgid ""
+" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
+"                              size is smaller than SIZE.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              BitTorrent downloads ignore this option.\n"
+"                              Default: 5M"
+msgstr ""
+" --lowest-speed-limit=SPEED   Fermer la connexiion si la vitesse de "
+"téléchargement est inférieure à \n"
+"                              ou égal à cette valeur(octets par sec).\n"
+"                              0 veut dire que aria2 n'a pas de vitesse "
+"minimale.\n"
+"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
+"1024K).\n"
+"                              Cette option n'affecte pas le téléchargement "
+"BitTorrent .\n"
+"                              Default: 0"
+
 #: src/main.cc:200
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
@@ -1592,4 +1612,3 @@ msgstr ""
 #, c-format
 msgid "done\n"
 msgstr "Terminé\n"
-

@@ -30,6 +30,14 @@ msgstr ""
 "\n"
 "Скачивание завершено. <%s>\n"
 
+#: src/RequestInfo.h:62
+#, c-format
+msgid ""
+"\n"
+"Some downloads were not complete because of errors. Check the log.\n"
+"aria2 will resume download if the transfer is restarted."
+msgstr ""
+
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
@@ -77,6 +85,16 @@ msgstr ""
 "CUID#%d - Получен ответ:\n"
 "%s"
 
+#: src/message.h:47
+#, fuzzy, c-format
+msgid "CUID#%d - Download aborted. URI=%s"
+msgstr "CUID#%d - Скачивание отменено."
+
+#: src/message.h:48
+#, fuzzy, c-format
+msgid "CUID#%d - Restarting the download. URI=%s"
+msgstr "CUID#%d - Перенаправление на %s"
+
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
@@ -102,10 +120,55 @@ msgstr "CUID#%d - получен новая часть. индекс=%d"
 msgid "CUID#%d - we got wrong piece. index=%d"
 msgstr "CUID#%d - получен неправильная часть. индекс=%d"
 
+#: src/message.h:59
+#, fuzzy, c-format
+msgid "CUID#%d - Download not complete: %s"
+msgstr "CUID#%d - Скачивание отменено."
+
+#: src/message.h:60
+#, fuzzy, c-format
+msgid "CUID#%d - Download has already completed: %s"
+msgstr "CUID#%d - Скачивание отменено."
+
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
 msgstr ""
+
+#: src/message.h:62
+#, fuzzy, c-format
+msgid "CUID#%d - Bad checksum: %s"
+msgstr "CUID#%d - Перенаправление на %s"
+
+#: src/message.h:63
+#, fuzzy, c-format
+msgid "CUID#%d - Resolving hostname %s"
+msgstr "CUID#%d - Перенаправление на %s"
+
+#: src/message.h:64
+#, c-format
+msgid "CUID#%d - Name resolution complete: %s -> %s"
+msgstr ""
+
+#: src/message.h:65
+#, fuzzy, c-format
+msgid "CUID#%d - Name resolution for %s failed:%s"
+msgstr "CUID#%d - Перенаправление на %s"
+
+#: src/message.h:66
+#, c-format
+msgid "CUID#%d - DNS cache hit: %s -> %s"
+msgstr ""
+
+#: src/message.h:67
+#, fuzzy, c-format
+msgid "CUID#%d - Abort requested."
+msgstr "CUID#%d - Скачивание отменено."
+
+#: src/message.h:68
+#, fuzzy, c-format
+msgid "CUID#%d - Connecting to the peer %s"
+msgstr "CUID#%d - Соединение к %s:%d"
 
 #: src/message.h:69
 #, c-format
@@ -113,6 +176,11 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
+
+#: src/message.h:70
+#, fuzzy, c-format
+msgid "CUID#%d - Piece bitfield %s"
+msgstr "CUID#%d - Перенаправление на %s"
 
 #: src/message.h:71
 #, c-format
@@ -132,6 +200,16 @@ msgstr ""
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
 msgstr ""
+
+#: src/message.h:74
+#, fuzzy, c-format
+msgid "CUID#%d - Interested in the peer"
+msgstr "CUID#%d - Перенаправление на %s"
+
+#: src/message.h:75
+#, fuzzy, c-format
+msgid "CUID#%d - Not interested in the peer"
+msgstr "CUID#%d - Перенаправление на %s"
 
 #: src/message.h:76
 #, c-format
@@ -157,6 +235,11 @@ msgid ""
 "acquired."
 msgstr ""
 
+#: src/message.h:80
+#, fuzzy, c-format
+msgid "CUID#%d - Fast extension enabled."
+msgstr "CUID#%d - Нет доступного сегмента."
+
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
@@ -177,6 +260,11 @@ msgstr ""
 msgid "CUID#%d - Using port %d for accepting new connections"
 msgstr ""
 
+#: src/message.h:85
+#, fuzzy, c-format
+msgid "CUID#%d - An error occurred while binding port=%d"
+msgstr "Ошибка при открытии порта.\n"
+
 #: src/message.h:86
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
@@ -187,6 +275,11 @@ msgstr ""
 msgid "CUID#%d - Error in accepting connection"
 msgstr ""
 
+#: src/message.h:88
+#, c-format
+msgid "CUID#%d - Error occurred while processing tracker response."
+msgstr ""
+
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
@@ -195,6 +288,11 @@ msgstr ""
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
+msgstr ""
+
+#: src/message.h:92
+#, c-format
+msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr ""
 
 #: src/message.h:93
@@ -230,6 +328,11 @@ msgstr "Загрузка сегмента файл %sа"
 msgid "The segment file was loaded successfully."
 msgstr "Сегмент файла успешно загружен."
 
+#: src/message.h:100
+#, fuzzy
+msgid "No URI to download. Download aborted."
+msgstr "CUID#%d - Скачивание отменено."
+
 #: src/message.h:101
 #, c-format
 msgid ""
@@ -247,6 +350,11 @@ msgstr ""
 #: src/message.h:103
 msgid "File not found"
 msgstr ""
+
+#: src/message.h:104
+#, fuzzy
+msgid "Not a directory"
+msgstr "%s не является каталогом."
 
 #: src/message.h:105
 #, c-format
@@ -271,6 +379,18 @@ msgstr ""
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
 msgstr ""
+
+#: src/message.h:110
+#, fuzzy
+msgid "Download of selected files was complete."
+msgstr " Скачать только выбранные файлы:"
+
+#: src/message.h:111
+#, fuzzy
+msgid "The download was complete."
+msgstr ""
+"\n"
+"Скачивание завершено. <%s>\n"
 
 #: src/message.h:112
 #, c-format
@@ -297,6 +417,13 @@ msgstr ""
 msgid "Metalink: Queueing %s for download."
 msgstr ""
 
+#: src/message.h:117
+#, fuzzy, c-format
+msgid "Download complete: %s"
+msgstr ""
+"\n"
+"Скачивание завершено. <%s>\n"
+
 #: src/message.h:118
 msgid "Seeding is over."
 msgstr ""
@@ -315,6 +442,11 @@ msgstr ""
 msgid "Good chunk checksum. hash=%s"
 msgstr ""
 
+#: src/message.h:122
+#, fuzzy, c-format
+msgid "Failed to load cookies from %s"
+msgstr "Ошибка открытия сокета: %s"
+
 #: src/message.h:123
 #, c-format
 msgid ""
@@ -325,6 +457,15 @@ msgstr ""
 #: src/message.h:124
 msgid "Logging started."
 msgstr ""
+
+#: src/message.h:125
+msgid "Specify at least one URL."
+msgstr ""
+
+#: src/message.h:126
+#, fuzzy
+msgid "daemon failed."
+msgstr "Ошибка подключения."
 
 #: src/message.h:128
 msgid "Timeout."
@@ -363,15 +504,32 @@ msgstr "Ошибка подключения к прокси."
 msgid "Connection failed."
 msgstr "Ошибка подключения."
 
+#: src/message.h:137
+#, c-format
+msgid ""
+"The requested filename and the previously registered one are not same. "
+"Expected:%s Actual:%s"
+msgstr ""
+
 #: src/message.h:138
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "Статус ответа - незавершенный. статус=%d"
 
+#: src/message.h:139
+#, fuzzy, c-format
+msgid "Too large file size. size=%s"
+msgstr "Слишком большой кусок. размер=%d"
+
 #: src/message.h:140
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Кодировка передачи %s не поддерживается."
+
+#: src/message.h:141
+#, fuzzy, c-format
+msgid "SSL initialization failed: %s"
+msgstr "Ошибка авторизации."
 
 #: src/message.h:142
 msgid "SSL I/O error"
@@ -384,6 +542,16 @@ msgstr ""
 #: src/message.h:144
 #, c-format
 msgid "SSL unknown error %d"
+msgstr ""
+
+#: src/message.h:145
+#, c-format
+msgid "SSL initialization failed: OpenSSL connect error %d"
+msgstr ""
+
+#: src/message.h:146
+#, c-format
+msgid "Size mismatch Expected:%s Actual:%s"
 msgstr ""
 
 #: src/message.h:147
@@ -417,6 +585,11 @@ msgstr "Ошибка записи в файл %s: %s"
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Ошибка чтения из файла %s: %s"
 
+#: src/message.h:155
+#, fuzzy
+msgid "Failed to read data from disk."
+msgstr "Ошибка отправки данных: %s"
+
 #: src/message.h:156
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
@@ -426,6 +599,11 @@ msgstr "Ошибка подсчета дайджеста SHA1 файла %s ил
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Ошибка позиционирования в файле %s: %s"
+
+#: src/message.h:158
+#, c-format
+msgid "The offset is out of range, offset=%s"
+msgstr ""
 
 #: src/message.h:159
 #, c-format
@@ -460,6 +638,16 @@ msgstr "Ошибка открытия сокета: %s"
 #: src/message.h:166
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
+msgstr "Ошибка установки настроек для сокета: %s"
+
+#: src/message.h:167
+#, fuzzy, c-format
+msgid "Failed to set a socket as blocking, cause: %s"
+msgstr "Ошибка установки настроек для сокета: %s"
+
+#: src/message.h:168
+#, fuzzy, c-format
+msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr "Ошибка установки настроек для сокета: %s"
 
 #: src/message.h:169
@@ -527,6 +715,11 @@ msgstr "Ошибка запроса данных: %s"
 msgid "Unknown socket error %d (0x%x)"
 msgstr ""
 
+#: src/message.h:182
+#, fuzzy, c-format
+msgid "File %s exists, but %s does not exist."
+msgstr "Сегмент файла %s не существует."
+
 #: src/message.h:183
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
@@ -544,6 +737,11 @@ msgid ""
 "s, actualHash=%s"
 msgstr ""
 
+#: src/message.h:186
+#, fuzzy
+msgid "Download aborted."
+msgstr "CUID#%d - Скачивание отменено."
+
 #: src/message.h:187
 #, c-format
 msgid "File %s is being downloaded by other command."
@@ -552,6 +750,11 @@ msgstr ""
 #: src/message.h:188
 msgid "Insufficient checksums."
 msgstr ""
+
+#: src/message.h:189
+#, fuzzy, c-format
+msgid "Tracker returned failure reason: %s"
+msgstr "Трекер вернул предупреждение: %s"
 
 #: src/message.h:190
 msgid "Flooding detected."
@@ -577,6 +780,11 @@ msgstr ""
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr ""
+
+#: src/message.h:195
+#, fuzzy
+msgid "No HttpRequestEntry found."
+msgstr "Не найден заголовок."
 
 #: src/message.h:196
 #, c-format
@@ -614,6 +822,28 @@ msgstr "Ошибка при открытии порта.\n"
 #: src/main.cc:91
 msgid " version "
 msgstr " версия "
+
+#: src/main.cc:101
+msgid ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program; if not, write to the Free Software\n"
+"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
+"USA\n"
+msgstr ""
+
+#: src/main.cc:115
+msgid "Contact Info:"
+msgstr ""
 
 #: src/main.cc:122
 #, c-format
@@ -697,6 +927,14 @@ msgid ""
 msgstr ""
 " -m, --max-tries=N            Установить число попыток. 0 означает\n"
 "                              неограниченное число. По умолчанию: 5"
+
+#: src/main.cc:155
+#, fuzzy
+msgid ""
+" --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
+msgstr ""
+" --http-proxy-user=USER       Установить пользователя для прокси HTTP. Это "
+"влияет на все URL."
 
 #: src/main.cc:156
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
@@ -796,6 +1034,106 @@ msgstr ""
 "                              быть \"get\" или \"tunnel\".\n"
 "                              По умолчанию: tunnel"
 
+#: src/main.cc:178
+msgid ""
+" --lowest-speed-limit=SPEED   Close connection if download speed is lower "
+"than\n"
+"                              or equal to this value(bytes per sec).\n"
+"                              0 means aria2 does not have a lowest speed "
+"limit.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              This option does not affect BitTorrent "
+"downloads.\n"
+"                              Default: 0"
+msgstr ""
+
+#: src/main.cc:185
+#, fuzzy
+msgid ""
+" --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
+"                              0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              Default: 0"
+msgstr ""
+" --follow-torrent=true|false  При установке в \"false\" aria2 не переходит "
+"в\n"
+"                              режим BitTorrent и может скачивать .torrent-\n"
+"                              файлы.\n"
+"                              По умолчанию: true"
+
+#: src/main.cc:189
+msgid ""
+" --file-allocation=METHOD     Specify file allocation method. METHOD is "
+"either\n"
+"                              'none' or 'prealloc'. 'none' doesn't pre-"
+"allocate\n"
+"                              file space. 'prealloc' pre-allocates file "
+"space\n"
+"                              before download begins. This may take some "
+"time\n"
+"                              depending on the size of the file.\n"
+"                              Default: prealloc"
+msgstr ""
+
+#: src/main.cc:195
+#, fuzzy
+msgid ""
+" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
+"                              size is smaller than SIZE.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              BitTorrent downloads ignore this option.\n"
+"                              Default: 5M"
+msgstr ""
+" -s, --split=N                Скачать файл, используя N соединений. N\n"
+"                              должен быть в пределах от 1 до 5. Этот "
+"параметр\n"
+"                              влияет на все URL.\n"
+"                              Следуя этому, aria2 соединяется к каждому URL\n"
+"                              используя N соединений."
+
+#: src/main.cc:200
+#, fuzzy
+msgid ""
+" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
+"                              already exists but the corresponding .aria2 "
+"file\n"
+"                              doesn't exist.\n"
+"                              Default: false"
+msgstr ""
+" --follow-torrent=true|false  При установке в \"false\" aria2 не переходит "
+"в\n"
+"                              режим BitTorrent и может скачивать .torrent-\n"
+"                              файлы.\n"
+"                              По умолчанию: true"
+
+#: src/main.cc:204
+#, fuzzy
+msgid ""
+" -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
+"sequentially\n"
+"                              and download each URI in a separate session, "
+"like\n"
+"                              the usual command-line download utilities.\n"
+"                              Default: false"
+msgstr ""
+" --follow-metalink=true|false При установке в \"false\" aria2 не переходит "
+"в\n"
+"                              режим Metalink и может скачивать .metalink-\n"
+"                              файлы.\n"
+"                              По умолчанию: true"
+
+#: src/main.cc:208
+msgid ""
+" --auto-file-renaming[=true|false] Rename file name if the same file "
+"already\n"
+"                              exists. This option works only in http(s)/ftp\n"
+"                              download.\n"
+"                              The new file name has a dot and a number"
+"(1..9999)\n"
+"                              appended.\n"
+"                              Default: true"
+msgstr ""
+
 #: src/main.cc:214
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
@@ -812,6 +1150,38 @@ msgid ""
 "                              required.\n"
 "                              Default: false"
 msgstr ""
+
+#: src/main.cc:226
+msgid ""
+" --check-integrity=true|false  Check file integrity by validating piece "
+"hash.\n"
+"                              This option only affects in BitTorrent "
+"downloads\n"
+"                              and Metalink downloads with chunk checksums.\n"
+"                              Use this option to re-download a damaged "
+"portion\n"
+"                              of a file.\n"
+"                              You may need to specify --allow-"
+"overwrite=true\n"
+"                              if the .aria2 file doesn't exist.\n"
+"                              Default: false"
+msgstr ""
+
+#: src/main.cc:234
+#, fuzzy
+msgid ""
+" --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
+"                              downloading a file in Metalink mode. This "
+"option\n"
+"                              on affects Metalink mode with chunk "
+"checksums.\n"
+"                              Default: true"
+msgstr ""
+" --follow-metalink=true|false При установке в \"false\" aria2 не переходит "
+"в\n"
+"                              режим Metalink и может скачивать .metalink-\n"
+"                              файлы.\n"
+"                              По умолчанию: true"
 
 #: src/main.cc:239
 msgid ""
@@ -839,10 +1209,49 @@ msgid ""
 "character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
+
+#: src/main.cc:251
+#, fuzzy
+msgid ""
+" -j, --max-concurrent-downloads=N Set maximum number of concurrent "
+"downloads.\n"
+"                              It should be used with the -i option.\n"
+"                              Default: 5"
+msgstr ""
+" --http-proxy-method=METHOD   Установить метод, используемый\n"
+"                              в запросах к прокси. METHOD может быть \"get"
+"\"\n"
+"                              или \"tunnel\".\n"
+"                              По умолчанию: tunnel"
+
 #: src/main.cc:254
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
+msgstr ""
+
+#: src/main.cc:257
+#, fuzzy
+msgid ""
+" -S, --show-files             Print file listing of .torrent or .metalink "
+"file\n"
+"                              and exit."
+msgstr ""
+" -m, --max-tries=N            Установить число попыток. 0 означает\n"
+"                              неограниченное число. По умолчанию: 5"
+
+#: src/main.cc:259
+msgid ""
+" --select-file=INDEX...       Set file to download by specifing its index.\n"
+"                              You can find the file index using the\n"
+"                              --show-files option. Multiple indexes can be\n"
+"                              specified by using ',', for example: \"3,6\".\n"
+"                              You can also use '-' to specify a range: \"1-5"
+"\".\n"
+"                              ',' and '-' can be used together.\n"
+"                              When used with the -M option, index may vary\n"
+"                              depending on the query(see --metalink-* "
+"options)."
 msgstr ""
 
 #: src/main.cc:269
@@ -873,6 +1282,42 @@ msgstr ""
 "                              описанный в .torrent-файл.\n"
 "                              По умолчанию: true"
 
+#: src/main.cc:277
+#, fuzzy
+msgid ""
+" --listen-port=PORT           Set TCP port number for BitTorrent downloads.\n"
+"                              Default: 6881-6999"
+msgstr ""
+" -m, --max-tries=N            Установить число попыток. 0 означает\n"
+"                              неограниченное число. По умолчанию: 5"
+
+#: src/main.cc:279
+msgid ""
+" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
+"                              0 means unrestricted.\n"
+"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
+"                              Default: 0"
+msgstr ""
+
+#: src/main.cc:283
+#, fuzzy
+msgid ""
+" --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
+"                              --seed-ratio option."
+msgstr ""
+" -m, --max-tries=N            Установить число попыток. 0 означает\n"
+"                              неограниченное число. По умолчанию: 5"
+
+#: src/main.cc:285
+msgid ""
+" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
+"                              until share ratio reaches RATIO. 1.0 is\n"
+"                              encouraged. If --seed-time option is "
+"specified\n"
+"                              along with this option, seeding ends when at\n"
+"                              least one of the conditions is satisfied."
+msgstr ""
+
 #: src/main.cc:290
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
@@ -889,6 +1334,18 @@ msgstr ""
 #: src/main.cc:299
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr " -M, --metalink-file=METALINK_FILE Путь к .metalink-файлу."
+
+#: src/main.cc:300
+#, fuzzy
+msgid ""
+" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
+"                              simultaneously.\n"
+"                              Default: 5"
+msgstr ""
+" --ftp-via-http-proxy=METHOD  Использовать HTTP-прокси для FTP. METHOD "
+"может\n"
+"                              быть \"get\" или \"tunnel\".\n"
+"                              По умолчанию: tunnel"
 
 #: src/main.cc:303
 msgid " --metalink-version=VERSION   The version of the file to download."
@@ -929,9 +1386,37 @@ msgstr " -v, --version                Вывести номер версии и 
 msgid " -h, --help                   Print this message and exit."
 msgstr " -h, --help                   Вывести это сообщение и выйти."
 
+#: src/main.cc:316
+msgid ""
+" You can specify multiple URLs. All URLs must point to the same file\n"
+" or downloading will fail."
+msgstr ""
+
+#: src/main.cc:321
+msgid ""
+" Specify files in multi-file torrent to download. Use in conjunction with "
+"the\n"
+" -T option. This argument is ignored if you specify the --select-file option."
+msgstr ""
+
 #: src/main.cc:325
 msgid "Examples:"
 msgstr "Примеры:"
+
+#: src/main.cc:326
+#, fuzzy
+msgid " Download a file using 1 connection:"
+msgstr " Скачать файл с помощью локального .metalink-файла:"
+
+#: src/main.cc:328
+#, fuzzy
+msgid " Download a file using 2 connections:"
+msgstr " Скачать файл с помощью локального .metalink-файла:"
+
+#: src/main.cc:330
+msgid ""
+" Download a file using 2 connections, each connects to a different server:"
+msgstr ""
 
 #: src/main.cc:332
 msgid " You can mix up different protocols:"
@@ -948,6 +1433,11 @@ msgstr ""
 #: src/main.cc:340
 msgid " Download a torrent:"
 msgstr " Скачать torrent:"
+
+#: src/main.cc:342
+#, fuzzy
+msgid " Download a torrent using a local .torrent file:"
+msgstr " Скачать файл с помощью локального .metalink-файла:"
 
 #: src/main.cc:344 src/main.cc:357
 msgid " Download only selected files:"
@@ -969,6 +1459,16 @@ msgstr " Скачать файл с помощью локального .metalin
 msgid " Metalink downloading with preferences:"
 msgstr " Скачивание metalink с настройками:"
 
+#: src/main.cc:359
+#, fuzzy
+msgid " Download only selected files using index:"
+msgstr " Скачать только выбранные файлы:"
+
+#: src/main.cc:361
+#, fuzzy
+msgid " Print file listing of .metalink file:"
+msgstr " Вывести список фалов из .torrent"
+
 #: src/main.cc:365
 #, c-format
 msgid "Report bugs to %s"
@@ -987,4 +1487,3 @@ msgstr ""
 #, c-format
 msgid "done\n"
 msgstr "завершено\n"
-
