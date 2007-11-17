@@ -184,10 +184,6 @@ public:
    */
   int32_t calculateDownloadSpeed() const;
 
-  void markAllPiecesDone();
-
-  void markPieceDone(int64_t length);
-
   int32_t countFreePieceFrom(int32_t index) const;
 };
 

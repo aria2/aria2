@@ -25,6 +25,7 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetPieceCompletedPiece);
   CPPUNIT_TEST(testGetMissingPiece_fileEntry);
   CPPUNIT_TEST(testCancelPiece);
+  CPPUNIT_TEST(testMarkPiecesDone);
   CPPUNIT_TEST_SUITE_END();
 private:
   BtContextHandle btContext;
@@ -62,6 +63,7 @@ public:
   void testGetPieceCompletedPiece();
   void testGetMissingPiece_fileEntry();
   void testCancelPiece();
+  void testMarkPiecesDone();
 };
 
 
@@ -264,6 +266,32 @@ void DefaultPieceStorageTest::testCancelPiece()
   // See the sub piece is also hibernated...
   PieceHandle p2 = ps->getMissingPiece(file1);
 
-  CPPUNIT_ASSERT(!p2->getSubPiece(0).isNull());
-  
+  CPPUNIT_ASSERT(!p2->getSubPiece(0).isNull());  
+}
+
+void DefaultPieceStorageTest::testMarkPiecesDone()
+{
+  int32_t pieceLength = 256*1024;
+  int64_t totalLength = 4*1024*1024;
+  MockBtContextHandle dctx = new MockBtContext();
+  dctx->setPieceLength(pieceLength);
+  dctx->setTotalLength(totalLength);
+
+  DefaultPieceStorage ps(dctx, option);
+
+  ps.markPiecesDone(pieceLength*10+16*1024*2+1);
+
+  for(int32_t i = 0; i < 10; ++i) {
+    CPPUNIT_ASSERT(ps.hasPiece(i));
+  }
+  for(int32_t i = 10; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
+    CPPUNIT_ASSERT(!ps.hasPiece(i));
+  }
+  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength*10+16*1024*2, ps.getCompletedLength());
+
+  ps.markPiecesDone(totalLength);
+
+  for(int32_t i = 0; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
+    CPPUNIT_ASSERT(ps.hasPiece(i));
+  }
 }

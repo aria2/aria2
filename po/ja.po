@@ -1,5 +1,5 @@
 # Japanese translations for aria2c package
-# aria2c ¥Ñ¥Ã¥±¡¼¥¸¤ËÂĞ¤¹¤ë±ÑÌõ.
+# aria2c ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã«å¯¾ã™ã‚‹è‹±è¨³.
 # Copyright (C) 2006 Tatsuhiro Tsujikawa
 # Tatsuhiro Tsujikawa <tujikawa at rednoah dot com>, 2006.
 #
@@ -7,12 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-10-29 21:34+0900\n"
+"POT-Creation-Date: 2007-11-14 21:24+0900\n"
 "PO-Revision-Date: 2007-10-28 18:52+0900\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=EUC-JP\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -69,7 +69,7 @@ msgid ""
 "The download was complete. <%s>\n"
 msgstr ""
 "\n"
-"<%s> ¤Î¥À¥¦¥ó¥í¡¼¥É¤¬´°Î»¤·¤Ş¤·¤¿.\n"
+"<%s> ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒå®Œäº†ã—ã¾ã—ãŸ.\n"
 
 #: src/RequestInfo.h:62
 #, c-format
@@ -79,23 +79,23 @@ msgid ""
 "aria2 will resume download if the transfer is restarted."
 msgstr ""
 "\n"
-"¥À¥¦¥ó¥í¡¼¥É¤Ï¥¨¥é¡¼¤Î¤¿¤á´°Î»¤·¤Æ¤¤¤Ş¤»¤ó. ¥í¥°¤ò³ÎÇ§¤·¤Æ¤¯¤À¤µ¤¤.\n"
-"¼¡²ó¤Î¥À¥¦¥ó¥í¡¼¥É¤Ï¥¨¥é¡¼¤Î»şÅÀ¤«¤éºÆ³«¤Ç¤­¤Ş¤¹."
+"ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯ã‚¨ãƒ©ãƒ¼ã®ãŸã‚å®Œäº†ã—ã¦ã„ã¾ã›ã‚“. ãƒ­ã‚°ã‚’ç¢ºèªã—ã¦ãã ã•ã„.\n"
+"æ¬¡å›ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯ã‚¨ãƒ©ãƒ¼ã®æ™‚ç‚¹ã‹ã‚‰å†é–‹ã§ãã¾ã™."
 
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - 1 ¥»¥°¥á¥ó¥È¤Î¥À¥¦¥ó¥í¡¼¥É¤¬´°Î»."
+msgstr "CUID#%d - 1 ã‚»ã‚°ãƒ¡ãƒ³ãƒˆã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒå®Œäº†."
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - ÍøÍÑ²ÄÇ½¤Ê¥»¥°¥á¥ó¥È¤Ï¤¢¤ê¤Ş¤»¤ó."
+msgstr "CUID#%d - åˆ©ç”¨å¯èƒ½ãªã‚»ã‚°ãƒ¡ãƒ³ãƒˆã¯ã‚ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - %s:%d ¤ËÀÜÂ³¤·¤Æ¤¤¤Ş¤¹."
+msgstr "CUID#%d - %s:%d ã«æ¥ç¶šã—ã¦ã„ã¾ã™."
 
 #: src/message.h:43
 #, c-format
@@ -103,13 +103,13 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - ¥»¥°¥á¥ó¥È¤¬ÊÑ¹¹¤µ¤ì¤Æ¤¤¤Ş¤¹. ¿·¤¿¤Ê Range ¥Ø¥Ã¥À¡¼¤ÇºÆ¥ê¥¯¥¨¥¹¥È¤ò"
-"È¯¹Ô¤·¤Ş¤¹."
+"CUID#%d - ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãŒå¤‰æ›´ã•ã‚Œã¦ã„ã¾ã™. æ–°ãŸãª Range ãƒ˜ãƒƒãƒ€ãƒ¼ã§å†ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’"
+"ç™ºè¡Œã—ã¾ã™."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - %s ¤Ë¥ê¥À¥¤¥ì¥¯¥È¤·¤Ş¤¹."
+msgstr "CUID#%d - %s ã«ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆã—ã¾ã™."
 
 #: src/message.h:45
 #, c-format
@@ -117,7 +117,7 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - ¥ê¥¯¥¨¥¹¥È:\n"
+"CUID#%d - ãƒªã‚¯ã‚¨ã‚¹ãƒˆ:\n"
 "%s"
 
 #: src/message.h:46
@@ -126,95 +126,95 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - ¥µ¡¼¥Ğ¡¼¤«¤é¤Î¥ì¥¹¥İ¥ó¥¹:\n"
+"CUID#%d - ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰ã®ãƒ¬ã‚¹ãƒãƒ³ã‚¹:\n"
 "%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - ¥À¥¦¥ó¥í¡¼¥É¤òÃæ»ß¤·¤Ş¤¹. URI=%s"
+msgstr "CUID#%d - ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ä¸­æ­¢ã—ã¾ã™. URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - ¥À¥¦¥ó¥í¡¼¥É¥·¡¼¥±¥ó¥¹¤òºÆ³«¤·¤Ş¤¹. URI=%s"
+msgstr "CUID#%d - ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ã‚’å†é–‹ã—ã¾ã™. URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - ¥À¥¦¥ó¥í¡¼¥É¤òÃæ»ß¤·¤Ş¤¹."
+msgstr "CUID#%d - ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ä¸­æ­¢ã—ã¾ã™."
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
 msgstr ""
-"CUID#%d - %d ²ó¥À¥¦¥ó¥í¡¼¥É¤ò¹Ô¤¤¤Ş¤·¤¿¤¬¤¹¤Ù¤Æ¼ºÇÔ¤·¤Ş¤·¤¿. ¥À¥¦¥ó¥í¡¼¥É¤òÃæ"
-"»ß¤·¤Ş¤¹."
+"CUID#%d - %d å›ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’è¡Œã„ã¾ã—ãŸãŒã™ã¹ã¦å¤±æ•—ã—ã¾ã—ãŸ. ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ä¸­"
+"æ­¢ã—ã¾ã™."
 
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - cuid ¤ò¥»¥°¥á¥ó¥È¥Ş¥Í¥¸¥ã¡¼¤«¤éºï½ü¤·¤Ş¤¹."
+msgstr "CUID#%d - cuid ã‚’ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒãƒã‚¸ãƒ£ãƒ¼ã‹ã‚‰å‰Šé™¤ã—ã¾ã™."
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - ¿·¤·¤¤¥Ô¡¼¥¹¤òÆş¼ê¤·¤Ş¤·¤¿. index=%d"
+msgstr "CUID#%d - æ–°ã—ã„ãƒ”ãƒ¼ã‚¹ã‚’å…¥æ‰‹ã—ã¾ã—ãŸ. index=%d"
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - ¥Ô¡¼¥¹¤òÆş¼ê¤·¤Ş¤·¤¿¤¬, ¥Ç¡¼¥¿¤Ë¸í¤ê¤¬¤¢¤ê¤Ş¤¹. index=%d"
+msgstr "CUID#%d - ãƒ”ãƒ¼ã‚¹ã‚’å…¥æ‰‹ã—ã¾ã—ãŸãŒ, ãƒ‡ãƒ¼ã‚¿ã«èª¤ã‚ŠãŒã‚ã‚Šã¾ã™. index=%d"
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - ¥À¥¦¥ó¥í¡¼¥É¤Ï´°Î»¤·¤Æ¤¤¤Ş¤»¤ó: %s"
+msgstr "CUID#%d - ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯å®Œäº†ã—ã¦ã„ã¾ã›ã‚“: %s"
 
 #: src/message.h:60
 #, c-format
-msgid "CUID#%d - Download has already completed: %s"
-msgstr "CUID#%d - ¥À¥¦¥ó¥í¡¼¥ÉºÑ¤ß¤Ç¤¹: %s"
+msgid "#%d - Download has already completed: %s"
+msgstr "#%d - ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰æ¸ˆã¿ã§ã™: %s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - ¥Á¥§¥Ã¥¯¥µ¥à¤¬¹çÃ×¤·¤Ş¤·¤¿: %s"
+msgstr "CUID#%d - ãƒã‚§ãƒƒã‚¯ã‚µãƒ ãŒåˆè‡´ã—ã¾ã—ãŸ: %s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - ¥Á¥§¥Ã¥¯¥µ¥à¤¬°ã¤¤¤Ş¤¹: %s"
+msgstr "CUID#%d - ãƒã‚§ãƒƒã‚¯ã‚µãƒ ãŒé•ã„ã¾ã™: %s"
 
 #: src/message.h:63
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - ¥Û¥¹¥ÈÌ¾ %s ¤ò²ò·è¤·¤Æ¤¤¤Ş¤¹."
+msgstr "CUID#%d - ãƒ›ã‚¹ãƒˆå %s ã‚’è§£æ±ºã—ã¦ã„ã¾ã™."
 
 #: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - Ì¾Á°²ò·è¤¬´°Î»¤·¤Ş¤·¤¿: %s -> %s"
+msgstr "CUID#%d - åå‰è§£æ±ºãŒå®Œäº†ã—ã¾ã—ãŸ: %s -> %s"
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - ¥Û¥¹¥ÈÌ¾ %s ¤ÎÌ¾Á°²ò·è¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ÍıÍ³:%s"
+msgstr "CUID#%d - ãƒ›ã‚¹ãƒˆå %s ã®åå‰è§£æ±ºã«å¤±æ•—ã—ã¾ã—ãŸ. ç†ç”±:%s"
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr "CUID#%d - DNS ¥­¥ã¥Ã¥·¥å¥Ò¥Ã¥È: %s -> %s"
+msgstr "CUID#%d - DNS ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ’ãƒƒãƒˆ: %s -> %s"
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - ¥ê¥¯¥¨¥¹¥È¤òÃæ»ß¤·¤Ş¤¹."
+msgstr "CUID#%d - ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’ä¸­æ­¢ã—ã¾ã™."
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - %s ¤ËÀÜÂ³¤·¤Æ¤¤¤Ş¤¹."
+msgstr "CUID#%d - %s ã«æ¥ç¶šã—ã¦ã„ã¾ã™."
 
 #: src/message.h:69
 #, c-format
@@ -222,13 +222,13 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
-"CUID#%d - ¥Ô¡¼¥¹¤ò¼õ¤±¤È¤ê¤Ş¤·¤¿. index=%d, begin=%d, length=%d, offset=%"
+"CUID#%d - ãƒ”ãƒ¼ã‚¹ã‚’å—ã‘ã¨ã‚Šã¾ã—ãŸ. index=%d, begin=%d, length=%d, offset=%"
 "llu, blockIndex=%d"
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr "CUID#%d - ¥Ô¡¼¥¹¤Î¥Ó¥Ã¥È¥Õ¥£¡¼¥ë¥É:%s"
+msgstr "CUID#%d - ãƒ”ãƒ¼ã‚¹ã®ãƒ“ãƒƒãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰:%s"
 
 #: src/message.h:71
 #, c-format
@@ -236,7 +236,7 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - ¥Ô¥¢¤ò¥Á¥ç¡¼¥¯¤·¤¿¤¿¤á, ¥­¥å¡¼Ãæ¤Î piece ¥á¥Ã¥»¡¼¥¸¤òµÑ²¼¤·¤Ş¤¹. "
+"CUID#%d - ãƒ”ã‚¢ã‚’ãƒãƒ§ãƒ¼ã‚¯ã—ãŸãŸã‚, ã‚­ãƒ¥ãƒ¼ä¸­ã® piece ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å´ä¸‹ã—ã¾ã™. "
 "index=%d, begin=%d, length=%d"
 
 #: src/message.h:72
@@ -245,28 +245,28 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - cancel ¥á¥Ã¥»¡¼¥¸¤¬ÆÏ¤¤¤¿¤¿¤á, ¥­¥å¡¼Ãæ¤Î piece ¥á¥Ã¥»¡¼¥¸¤òµÑ²¼¤·"
-"¤Ş¤¹. index=%d, begin=%d, length=%d"
+"CUID#%d - cancel ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒå±Šã„ãŸãŸã‚, ã‚­ãƒ¥ãƒ¼ä¸­ã® piece ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å´ä¸‹ã—"
+"ã¾ã™. index=%d, begin=%d, length=%d"
 
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr "CUID#%d - ¥Õ¥¡¥¤¥ë¤ò¸¡¾Ú¤·¤Æ¤¤¤ëºÇÃæ¤ËÎã³°¤¬È¯À¸¤·¤Ş¤·¤¿."
+msgstr "CUID#%d - ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¤œè¨¼ã—ã¦ã„ã‚‹æœ€ä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸ."
 
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - ¤³¤Î¥Ô¥¢¤Ï²æ¡¹¤¬¤â¤Ã¤Æ¤¤¤Ê¤¤¥Ô¡¼¥¹¤ò¤â¤Ã¤Æ¤¤¤Ş¤¹."
+msgstr "CUID#%d - ã“ã®ãƒ”ã‚¢ã¯æˆ‘ã€…ãŒã‚‚ã£ã¦ã„ãªã„ãƒ”ãƒ¼ã‚¹ã‚’ã‚‚ã£ã¦ã„ã¾ã™."
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - ¸½»şÅÀ¤Ç¤Ï¤³¤Î¥Ô¥¢¤Ë¤Ï¶½Ì£¤¬¤¢¤ê¤Ş¤»¤ó."
+msgstr "CUID#%d - ç¾æ™‚ç‚¹ã§ã¯ã“ã®ãƒ”ã‚¢ã«ã¯èˆˆå‘³ãŒã‚ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:76
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr "CUID#%d - request slot ¤òºï½ü¤·¤Ş¤¹. index=%d, blockIndex=%d"
+msgstr "CUID#%d - request slot ã‚’å‰Šé™¤ã—ã¾ã™. index=%d, blockIndex=%d"
 
 #: src/message.h:77
 #, c-format
@@ -274,13 +274,13 @@ msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
 "got choked."
 msgstr ""
-"CUID#%d - ²æ¡¹¤¬¥Á¥ç¡¼¥¯¤µ¤ì¤¿¤¿¤á, request slot ¤òºï½ü¤·¤Ş¤¹. index=%d, "
+"CUID#%d - æˆ‘ã€…ãŒãƒãƒ§ãƒ¼ã‚¯ã•ã‚ŒãŸãŸã‚, request slot ã‚’å‰Šé™¤ã—ã¾ã™. index=%d, "
 "blockIndex=%d"
 
 #: src/message.h:78
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr "CUID#%d - ¥¿¥¤¥à¥¢¥¦¥È¤Î¤¿¤á, request slot ¤òºï½ü¤·¤Ş¤¹. blockIndex=%d"
+msgstr "CUID#%d - ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã®ãŸã‚, request slot ã‚’å‰Šé™¤ã—ã¾ã™. blockIndex=%d"
 
 #: src/message.h:79
 #, c-format
@@ -288,109 +288,109 @@ msgid ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
 "acquired."
 msgstr ""
-"CUID#%d - ¼èÆÀºÑ¤ß¥Ö¥í¥Ã¥¯¤Î¤¿¤á, request slot ¤òºï½ü¤·¤Ş¤¹. blockIndex=%d"
+"CUID#%d - å–å¾—æ¸ˆã¿ãƒ–ãƒ­ãƒƒã‚¯ã®ãŸã‚, request slot ã‚’å‰Šé™¤ã—ã¾ã™. blockIndex=%d"
 
 #: src/message.h:80
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - Fast extension ¤¬Í­¸ú¤Ë¤Ê¤ê¤Ş¤·¤¿."
+msgstr "CUID#%d - Fast extension ãŒæœ‰åŠ¹ã«ãªã‚Šã¾ã—ãŸ."
 
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
-msgstr "CUID#%d - ¥Õ¥¡¥¤¥ëÎÎ°è¤ò³ÎÊİÃæ¤ËÎã³°¤¬È¯À¸¤·¤Ş¤·¤¿."
+msgstr "CUID#%d - ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸã‚’ç¢ºä¿ä¸­ã«ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸ."
 
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
 msgstr ""
-"CUID#%d - Content-Disposition ¥Ø¥Ã¥À¡¼¤¬¸«¤Ä¤«¤ê¤Ş¤·¤¿. %s ¤ò¥Õ¥¡¥¤¥ëÌ¾¤È¤·¤Æ"
-"»ÈÍÑ¤·¤Ş¤¹."
+"CUID#%d - Content-Disposition ãƒ˜ãƒƒãƒ€ãƒ¼ãŒè¦‹ã¤ã‹ã‚Šã¾ã—ãŸ. %s ã‚’ãƒ•ã‚¡ã‚¤ãƒ«åã¨ã—ã¦"
+"ä½¿ç”¨ã—ã¾ã™."
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr "CUID#%d - °Ê¸å¤·¤Ğ¤é¤¯¤Î´Ö ¥Ô¥¢ %s:%d ¤òÌµ»ë¤·¤Ş¤¹."
+msgstr "CUID#%d - ä»¥å¾Œã—ã°ã‚‰ãã®é–“ ãƒ”ã‚¢ %s:%d ã‚’ç„¡è¦–ã—ã¾ã™."
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - ¥İ¡¼¥ÈÈÖ¹æ %d ¤ò»È¤Ã¤Æ, ¥³¥Í¥¯¥·¥ç¥ó¤òÂÔ¤Á¤Ş¤¹."
+msgstr "CUID#%d - ãƒãƒ¼ãƒˆç•ªå· %d ã‚’ä½¿ã£ã¦, ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‚’å¾…ã¡ã¾ã™."
 
 #: src/message.h:85
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr "CUID#%d - ¥İ¡¼¥È¤ò¥Ğ¥¤¥ó¥ÉÃæ¤Ë¥¨¥é¡¼¤¬È¯À¸¤·¤Ş¤·¤¿. ¥İ¡¼¥ÈÈÖ¹æ=%d"
+msgstr "CUID#%d - ãƒãƒ¼ãƒˆã‚’ãƒã‚¤ãƒ³ãƒ‰ä¸­ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ. ãƒãƒ¼ãƒˆç•ªå·=%d"
 
 #: src/message.h:86
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
 msgstr ""
-"CUID#%d - ¿·¤·¤¤¥Ô¥¢¤«¤é¤ÎÀÜÂ³¤ò³ÎÇ§, CUID#%d ¤Ç¿·µ¬¥³¥Ş¥ó¥É¤òÄÉ²Ã¤·¤Ş¤·¤¿."
+"CUID#%d - æ–°ã—ã„ãƒ”ã‚¢ã‹ã‚‰ã®æ¥ç¶šã‚’ç¢ºèª, CUID#%d ã§æ–°è¦ã‚³ãƒãƒ³ãƒ‰ã‚’è¿½åŠ ã—ã¾ã—ãŸ."
 
 #: src/message.h:87
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr "CUID#%d - ÀÜÂ³¤ò¼õ¤±Æş¤ì¤ëºİ¤Ë¥¨¥é¡¼¤¬È¯À¸¤·¤Ş¤·¤¿. "
+msgstr "CUID#%d - æ¥ç¶šã‚’å—ã‘å…¥ã‚Œã‚‹éš›ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ. "
 
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr "CUID#%d - ¥È¥é¥Ã¥«¡¼¤«¤é¤Î±şÅú¤ò²òÀÏÃæ¤Ë¥¨¥é¡¼¤¬È¯À¸¤·¤Ş¤·¤¿."
+msgstr "CUID#%d - ãƒˆãƒ©ãƒƒã‚«ãƒ¼ã‹ã‚‰ã®å¿œç­”ã‚’è§£æä¸­ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ."
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - ¥È¥é¥Ã¥«¡¼¤Ø¤ÎÍ×µá¤ÎºîÀ®¤Ë¼ºÇÔ¤·¤Ş¤·¤¿."
+msgstr "CUID#%d - ãƒˆãƒ©ãƒƒã‚«ãƒ¼ã¸ã®è¦æ±‚ã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ."
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
 msgstr ""
-"CUID#%d - ¥È¥é¥Ã¥«¡¼¤Ø¤ÎÍ×µá¤òºîÀ®¤·, CUID#%d ¤Î¥³¥Ş¥ó¥É¤Ë¥¢¥µ¥¤¥ó¤·¤Ş¤·¤¿."
+"CUID#%d - ãƒˆãƒ©ãƒƒã‚«ãƒ¼ã¸ã®è¦æ±‚ã‚’ä½œæˆã—, CUID#%d ã®ã‚³ãƒãƒ³ãƒ‰ã«ã‚¢ã‚µã‚¤ãƒ³ã—ã¾ã—ãŸ."
 
 #: src/message.h:92
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
 msgstr ""
-"%s ¤Ï, Íı²ò¤Ç¤­¤Ê¤¤ URL ¥Õ¥©¡¼¥Ş¥Ã¥È, ¤Ş¤¿¤Ï, ¥µ¥İ¡¼¥È¤µ¤ì¤Ê¤¤¥×¥í¥È¥³¥ë¤Ç¤¹."
+"%s ã¯, ç†è§£ã§ããªã„ URL ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ, ã¾ãŸã¯, ã‚µãƒãƒ¼ãƒˆã•ã‚Œãªã„ãƒ—ãƒ­ãƒˆã‚³ãƒ«ã§ã™."
 
 #: src/message.h:93
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr "¥È¥é¥Ã¥«¡¼¤¬·Ù¹ğ¥á¥Ã¥»¡¼¥¸¤òÊÖ¤·¤Ş¤·¤¿: %s"
+msgstr "ãƒˆãƒ©ãƒƒã‚«ãƒ¼ãŒè­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿”ã—ã¾ã—ãŸ: %s"
 
 #: src/message.h:94
 #, c-format
 msgid "The segment file %s exists."
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤¬Â¸ºß¤·¤Ş¤¹."
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ãŒå­˜åœ¨ã—ã¾ã™."
 
 #: src/message.h:95
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤¬Â¸ºß¤·¤Ş¤»¤ó."
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ãŒå­˜åœ¨ã—ã¾ã›ã‚“."
 
 #: src/message.h:96
 #, c-format
 msgid "Saving the segment file %s"
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤òÊİÂ¸¤·¤Æ¤¤¤Ş¤¹."
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ã‚’ä¿å­˜ã—ã¦ã„ã¾ã™."
 
 #: src/message.h:97
 msgid "The segment file was saved successfully."
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë¤ÎÊİÂ¸¤¬´°Î»¤·¤Ş¤·¤¿."
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ä¿å­˜ãŒå®Œäº†ã—ã¾ã—ãŸ."
 
 #: src/message.h:98
 #, c-format
 msgid "Loading the segment file %s."
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤ò¥í¡¼¥É¤·¤Æ¤¤¤Ş¤¹."
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¦ã„ã¾ã™."
 
 #: src/message.h:99
 msgid "The segment file was loaded successfully."
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë¤Î¥í¡¼¥É¤¬´°Î»¤·¤Ş¤·¤¿."
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ­ãƒ¼ãƒ‰ãŒå®Œäº†ã—ã¾ã—ãŸ."
 
 #: src/message.h:100
 msgid "No URI to download. Download aborted."
-msgstr "¥À¥¦¥ó¥í¡¼¥É¤¹¤ë URI ¤¬¤¢¤ê¤Ş¤»¤ó. ¥À¥¦¥ó¥í¡¼¥É¤òÃæ»ß¤·¤Ş¤¹."
+msgstr "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ URI ãŒã‚ã‚Šã¾ã›ã‚“. ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ä¸­æ­¢ã—ã¾ã™."
 
 #: src/message.h:101
 #, c-format
@@ -400,110 +400,110 @@ msgid ""
 "file all over again, then delete it or add --allow-overwrite=true option and "
 "restart aria2."
 msgstr ""
-"¥Õ¥¡¥¤¥ë %s ¤¬Â¸ºß¤·¤Ş¤¹¤¬, ¤½¤ì¤ËÂĞ±ş¤¹¤ë %s ¤¬Â¸ºß¤·¤Ş¤»¤ó. ¥í¡¼¥«¥ë¥Ç¥£¥¹"
-"¥¯¾å¤Î¥Õ¥¡¥¤¥ë¤Î¾å½ñ¤­¤òËÉ¤°¤¿¤á¥À¥¦¥ó¥í¡¼¥É¤Ï¥­¥ã¥ó¥»¥ë¤µ¤ì¤Ş¤·¤¿. ËÜÅö¤Ë¾å"
-"½ñ¤­¥À¥¦¥ó¥í¡¼¥É¤·¤Æ¤è¤¤¤Ê¤é, --allow-overwrite=true ¤ò»ØÄê¤·¤Æ aria2 ¤ò¼Â¹Ô"
-"¤·¤Æ¤¯¤À¤µ¤¤."
+"ãƒ•ã‚¡ã‚¤ãƒ« %s ãŒå­˜åœ¨ã—ã¾ã™ãŒ, ãã‚Œã«å¯¾å¿œã™ã‚‹ %s ãŒå­˜åœ¨ã—ã¾ã›ã‚“. ãƒ­ãƒ¼ã‚«ãƒ«ãƒ‡ã‚£ã‚¹"
+"ã‚¯ä¸Šã®ãƒ•ã‚¡ã‚¤ãƒ«ã®ä¸Šæ›¸ãã‚’é˜²ããŸã‚ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã¾ã—ãŸ. æœ¬å½“ã«ä¸Š"
+"æ›¸ããƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ã¦ã‚ˆã„ãªã‚‰, --allow-overwrite=true ã‚’æŒ‡å®šã—ã¦ aria2 ã‚’å®Ÿè¡Œ"
+"ã—ã¦ãã ã•ã„."
 
 #: src/message.h:102
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr "¥Õ¥¡¥¤¥ë %s ¤Î¥Õ¥¡¥¤¥ëÎÎ°è (%s ¥Ğ¥¤¥È) ¤ò³ÎÊİ¤·¤Æ¤¤¤Ş¤¹."
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã®ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸ (%s ãƒã‚¤ãƒˆ) ã‚’ç¢ºä¿ã—ã¦ã„ã¾ã™."
 
 #: src/message.h:103
 msgid "File not found"
-msgstr "¥Õ¥¡¥¤¥ë¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó."
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:104
 msgid "Not a directory"
-msgstr "%s ¤Ï¥Ç¥£¥ì¥¯¥È¥ê¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó."
+msgstr "%s ã¯ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã§ã¯ã‚ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:105
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr "¥Á¥§¥Ã¥¯¥µ¥à¤¬ÉÔÂ­¤·¤Æ¤¤¤Ş¤¹. checksumLength=%d, numChecksum=%d"
+msgstr "ãƒã‚§ãƒƒã‚¯ã‚µãƒ ãŒä¸è¶³ã—ã¦ã„ã¾ã™. checksumLength=%d, numChecksum=%d"
 
 #: src/message.h:106
 #, c-format
 msgid "Writing file %s"
-msgstr "¥Õ¥¡¥¤¥ë %s ¤Ë½ñ¤­¹ş¤ó¤Ç¤¤¤Ş¤¹."
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã«æ›¸ãè¾¼ã‚“ã§ã„ã¾ã™."
 
 #: src/message.h:107
 msgid "No peer list received."
-msgstr "¥Ô¥¢¤Î¥ê¥¹¥È¤Ï¶õ¤Ç¤·¤¿."
+msgstr "ãƒ”ã‚¢ã®ãƒªã‚¹ãƒˆã¯ç©ºã§ã—ãŸ."
 
 #: src/message.h:108
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr "¥Ô¥¢ %s:%d ¤òÄÉ²Ã¤·¤Æ¤¤¤Ş¤¹."
+msgstr "ãƒ”ã‚¢ %s:%d ã‚’è¿½åŠ ã—ã¦ã„ã¾ã™."
 
 #: src/message.h:109
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr "»ÈÍÑÃæ¥Ô¡¼¥¹¤òºï½ü¤·¤Æ¤¤¤Ş¤¹. index=%d, fillRate(%%)=%d<=%d"
+msgstr "ä½¿ç”¨ä¸­ãƒ”ãƒ¼ã‚¹ã‚’å‰Šé™¤ã—ã¦ã„ã¾ã™. index=%d, fillRate(%%)=%d<=%d"
 
 #: src/message.h:110
 msgid "Download of selected files was complete."
-msgstr "¤´»ØÄê¤Î¥Õ¥¡¥¤¥ë¤Î¥À¥¦¥ó¥í¡¼¥É¤¬´°Î»."
+msgstr "ã”æŒ‡å®šã®ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒå®Œäº†."
 
 #: src/message.h:111
 msgid "The download was complete."
-msgstr "¥À¥¦¥ó¥í¡¼¥É¤¬´°Î»."
+msgstr "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒå®Œäº†."
 
 #: src/message.h:112
 #, c-format
 msgid "Removed %d have entries."
-msgstr "%d ¸Ä¤Î have ¥¨¥ó¥È¥ê¡¼¤òºï½ü¤·¤Ş¤·¤¿."
+msgstr "%d å€‹ã® have ã‚¨ãƒ³ãƒˆãƒªãƒ¼ã‚’å‰Šé™¤ã—ã¾ã—ãŸ."
 
 #: src/message.h:113
 #, c-format
 msgid "Validating file %s"
-msgstr "¥Õ¥¡¥¤¥ë %s ¤ò¸¡¾Ú¤·¤Æ¤¤¤Ş¤¹."
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã‚’æ¤œè¨¼ã—ã¦ã„ã¾ã™."
 
 #: src/message.h:114
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr "%d ÉÃ¤¬ %s ¥Ğ¥¤¥È¤ò³ÎÊİ¤¹¤ë¤Î¤ËÉ¬Í×¤Ç¤·¤¿."
+msgstr "%d ç§’ãŒ %s ãƒã‚¤ãƒˆã‚’ç¢ºä¿ã™ã‚‹ã®ã«å¿…è¦ã§ã—ãŸ."
 
 #: src/message.h:115
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr "FileAllocationCommand ¤ò CUID#%d ¤ÇÈ¯¹Ô¤·¤Ş¤·¤¿."
+msgstr "FileAllocationCommand ã‚’ CUID#%d ã§ç™ºè¡Œã—ã¾ã—ãŸ."
 
 #: src/message.h:116
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr "Metalink: %s ¤ò¥­¥å¡¼¥¤¥ó¥°¤·¤Æ¤¤¤Ş¤¹."
+msgstr "Metalink: %s ã‚’ã‚­ãƒ¥ãƒ¼ã‚¤ãƒ³ã‚°ã—ã¦ã„ã¾ã™."
 
 #: src/message.h:117
 #, c-format
 msgid "Download complete: %s"
-msgstr "¥À¥¦¥ó¥í¡¼¥É´°Î»: %s"
+msgstr "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰å®Œäº†: %s"
 
 #: src/message.h:118
 msgid "Seeding is over."
-msgstr "¥·¡¼¥É¤Î´ü´Ö¤¬½ªÎ»¤·¤Ş¤·¤¿."
+msgstr "ã‚·ãƒ¼ãƒ‰ã®æœŸé–“ãŒçµ‚äº†ã—ã¾ã—ãŸ."
 
 #: src/message.h:119
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
 msgstr ""
-"CUID#%d ¤Ï index=%d ¤Î¥»¥°¥á¥ó¥È¤Î¥À¥¦¥ó¥í¡¼¥É¤ò¥­¥ã¥ó¥»¥ë¤·¤Ş¤·¤¿. Âå¤ï¤ê¤Ë "
-"CUID#%d ¤¬¤½¤ì¤ò¥À¥¦¥ó¥í¡¼¥É¤·¤Ş¤¹."
+"CUID#%d ã¯ index=%d ã®ã‚»ã‚°ãƒ¡ãƒ³ãƒˆã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¾ã—ãŸ. ä»£ã‚ã‚Šã« "
+"CUID#%d ãŒãã‚Œã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ã¾ã™."
 
 #: src/message.h:120
 msgid "No chunk to verify."
-msgstr "¸¡¾Ú¤¹¤ë¥Á¥ã¥ó¥¯¤¬¤¢¤ê¤Ş¤»¤ó."
+msgstr "æ¤œè¨¼ã™ã‚‹ãƒãƒ£ãƒ³ã‚¯ãŒã‚ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:121
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr "Àµ¤·¤¤¥Á¥§¥Ã¥¯¥µ¥à¤Ç¤¹. ¥Ï¥Ã¥·¥åÃÍ=%s"
+msgstr "æ­£ã—ã„ãƒã‚§ãƒƒã‚¯ã‚µãƒ ã§ã™. ãƒãƒƒã‚·ãƒ¥å€¤=%s"
 
 #: src/message.h:122
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr "¥¯¥Ã¥­¡¼¤ò %s ¤«¤é¥í¡¼¥É¤Ç¤­¤Ş¤»¤ó¤Ç¤·¤¿."
+msgstr "ã‚¯ãƒƒã‚­ãƒ¼ã‚’ %s ã‹ã‚‰ãƒ­ãƒ¼ãƒ‰ã§ãã¾ã›ã‚“ã§ã—ãŸ."
 
 #: src/message.h:123
 #, c-format
@@ -511,391 +511,397 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
-".netrc ¥Õ¥¡¥¤¥ë %s ¤Î¥Ñ¡¼¥ß¥Ã¥·¥ç¥ó¤¬ÉÔÀµ¤Ç¤¹. ¥Ñ¡¼¥ß¥Ã¥·¥ç¥ó¤¬ 600 °Ê³°¤À"
-"¤È .netrc ¥µ¥İ¡¼¥È¤ÏÌµ¸ú¤È¤Ê¤ê¤Ş¤¹."
+".netrc ãƒ•ã‚¡ã‚¤ãƒ« %s ã®ãƒ‘ãƒ¼ãƒŸãƒƒã‚·ãƒ§ãƒ³ãŒä¸æ­£ã§ã™. ãƒ‘ãƒ¼ãƒŸãƒƒã‚·ãƒ§ãƒ³ãŒ 600 ä»¥å¤–ã "
+"ã¨ .netrc ã‚µãƒãƒ¼ãƒˆã¯ç„¡åŠ¹ã¨ãªã‚Šã¾ã™."
 
 #: src/message.h:124
 msgid "Logging started."
-msgstr "¥í¥®¥ó¥°¤ò¥¹¥¿¡¼¥È¤·¤Ş¤·¤¿."
+msgstr "ãƒ­ã‚®ãƒ³ã‚°ã‚’ã‚¹ã‚¿ãƒ¼ãƒˆã—ã¾ã—ãŸ."
 
 #: src/message.h:125
 msgid "Specify at least one URL."
-msgstr "°ì¸Ä°Ê¾å¤Î URL ¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤."
+msgstr "ä¸€å€‹ä»¥ä¸Šã® URL ã‚’æŒ‡å®šã—ã¦ãã ã•ã„."
 
 #: src/message.h:126
 msgid "daemon failed."
-msgstr "¥Ç¡¼¥â¥óµ¯Æ°¤Ë¼ºÇÔ"
+msgstr "ãƒ‡ãƒ¼ãƒ¢ãƒ³èµ·å‹•ã«å¤±æ•—"
+
+#: src/message.h:127
+#, c-format
+msgid "Verification finished successfully. file=%s"
+msgstr ""
 
 #: src/message.h:128
-msgid "Timeout."
-msgstr "¥¿¥¤¥à¥¢¥¦¥È¤·¤Ş¤·¤¿."
-
-#: src/message.h:129
-msgid "Invalid chunk size."
-msgstr "chunk ¥µ¥¤¥º¤¬ÉÔÀµ¤Ç¤¹."
+#, c-format
+msgid "Checksum error detected. file=%s"
+msgstr ""
 
 #: src/message.h:130
-#, c-format
-msgid "Too large chunk. size=%d"
-msgstr "chunk ¥µ¥¤¥º (%d) ¤¬Âç¤­¤¹¤®¤Ş¤¹."
+msgid "Timeout."
+msgstr "ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã—ã¾ã—ãŸ."
 
 #: src/message.h:131
-msgid "Invalid header."
-msgstr "¥Ø¥Ã¥À¡¼¤¬ÉÔÀµ¤Ç¤¹."
+msgid "Invalid chunk size."
+msgstr "chunk ã‚µã‚¤ã‚ºãŒä¸æ­£ã§ã™."
 
 #: src/message.h:132
-msgid "Invalid response."
-msgstr "¥µ¡¼¥Ğ¡¼¤«¤éÉÔÀµ¤Ê¥ì¥¹¥İ¥ó¥¹¤ò¼õ¤±¼è¤ê¤Ş¤·¤¿."
+#, c-format
+msgid "Too large chunk. size=%d"
+msgstr "chunk ã‚µã‚¤ã‚º (%d) ãŒå¤§ãã™ãã¾ã™."
 
 #: src/message.h:133
-msgid "No header found."
-msgstr "¥Ø¥Ã¥À¡¼¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó."
+msgid "Invalid header."
+msgstr "ãƒ˜ãƒƒãƒ€ãƒ¼ãŒä¸æ­£ã§ã™."
 
 #: src/message.h:134
-msgid "No status header."
-msgstr "status ¥Ø¥Ã¥À¡¼¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó."
+msgid "Invalid response."
+msgstr "ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰ä¸æ­£ãªãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚’å—ã‘å–ã‚Šã¾ã—ãŸ."
 
 #: src/message.h:135
-msgid "Proxy connection failed."
-msgstr "Proxy ÀÜÂ³¤Ë¼ºÇÔ¤·¤Ş¤·¤¿."
+msgid "No header found."
+msgstr "ãƒ˜ãƒƒãƒ€ãƒ¼ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:136
-msgid "Connection failed."
-msgstr "ÀÜÂ³¤Ë¼ºÇÔ¤·¤Ş¤·¤¿."
+msgid "No status header."
+msgstr "status ãƒ˜ãƒƒãƒ€ãƒ¼ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:137
+msgid "Proxy connection failed."
+msgstr "Proxy æ¥ç¶šã«å¤±æ•—ã—ã¾ã—ãŸ."
+
+#: src/message.h:138
+msgid "Connection failed."
+msgstr "æ¥ç¶šã«å¤±æ•—ã—ã¾ã—ãŸ."
+
+#: src/message.h:139
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
-"¥ê¥¯¥¨¥¹¥È¤·¤¿¥Õ¥¡¥¤¥ëÌ¾¤ÈÅĞÏ¿ºÑ¤ß¥Õ¥¡¥¤¥ëÌ¾¤¬°Û¤Ê¤ê¤Ş¤¹. ´üÂÔ¤¹¤ë¥Õ¥¡¥¤¥ë"
-"Ì¾: %s ¼Âºİ¤Î¥Õ¥¡¥¤¥ëÌ¾: %s"
-
-#: src/message.h:138
-#, c-format
-msgid "The response status is not successful. status=%d"
-msgstr "¥ì¥¹¥İ¥ó¥¹¤Î¥¹¥Æ¡¼¥¿¥¹ (%d) ¤¬°Û¾ï¤Ç¤¹."
-
-#: src/message.h:139
-#, c-format
-msgid "Too large file size. size=%s"
-msgstr "¥Õ¥¡¥¤¥ë¥µ¥¤¥º (%s) ¤¬Âç¤­¤¹¤®¤Ş¤¹."
+"ãƒªã‚¯ã‚¨ã‚¹ãƒˆã—ãŸãƒ•ã‚¡ã‚¤ãƒ«åã¨ç™»éŒ²æ¸ˆã¿ãƒ•ã‚¡ã‚¤ãƒ«åãŒç•°ãªã‚Šã¾ã™. æœŸå¾…ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«"
+"å: %s å®Ÿéš›ã®ãƒ•ã‚¡ã‚¤ãƒ«å: %s"
 
 #: src/message.h:140
 #, c-format
-msgid "Transfer encoding %s is not supported."
-msgstr "¥È¥é¥ó¥¹¥Õ¥¡¡¼¡¦¥¨¥ó¥³¡¼¥Ç¥£¥ó¥° %s ¤Ï¥µ¥İ¡¼¥È¤µ¤ì¤Æ¤¤¤Ş¤»¤ó."
+msgid "The response status is not successful. status=%d"
+msgstr "ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ (%d) ãŒç•°å¸¸ã§ã™."
 
 #: src/message.h:141
 #, c-format
-msgid "SSL initialization failed: %s"
-msgstr "SSL ½é´ü²½¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø:%s"
+msgid "Too large file size. size=%s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º (%s) ãŒå¤§ãã™ãã¾ã™."
 
 #: src/message.h:142
-msgid "SSL I/O error"
-msgstr "SSL Æş½ĞÎÏ¥¨¥é¡¼"
+#, c-format
+msgid "Transfer encoding %s is not supported."
+msgstr "ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚¡ãƒ¼ãƒ»ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚° %s ã¯ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ã¾ã›ã‚“."
 
 #: src/message.h:143
-msgid "SSL protocol error"
-msgstr "SSL ¥×¥í¥È¥³¥ë¥¨¥é¡¼"
+#, c-format
+msgid "SSL initialization failed: %s"
+msgstr "SSL åˆæœŸåŒ–ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› :%s"
 
 #: src/message.h:144
-#, c-format
-msgid "SSL unknown error %d"
-msgstr "SSL Ì¤ÄêµÁ¤Î¥¨¥é¡¼ %d"
+msgid "SSL I/O error"
+msgstr "SSL å…¥å‡ºåŠ›ã‚¨ãƒ©ãƒ¼"
 
 #: src/message.h:145
-#, c-format
-msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr "SSL ½é´ü²½¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: OpenSSL connect error %d"
+msgid "SSL protocol error"
+msgstr "SSL ãƒ—ãƒ­ãƒˆã‚³ãƒ«ã‚¨ãƒ©ãƒ¼"
 
 #: src/message.h:146
 #, c-format
-msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "¥µ¥¤¥º¤¬¹ç¤¤¤Ş¤»¤ó. ´üÂÔ¤¹¤ë¥µ¥¤¥º:%s ¼Âºİ¤Î¥µ¥¤¥º:%s"
+msgid "SSL unknown error %d"
+msgstr "SSL æœªå®šç¾©ã®ã‚¨ãƒ©ãƒ¼ %d"
 
 #: src/message.h:147
-msgid "Authorization failed."
-msgstr "Ç§¾Ú¤Ë¼ºÇÔ¤·¤Ş¤·¤¿."
+#, c-format
+msgid "SSL initialization failed: OpenSSL connect error %d"
+msgstr "SSL åˆæœŸåŒ–ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : OpenSSL connect error %d"
 
 #: src/message.h:148
-msgid "Got EOF from the server."
-msgstr "¥µ¡¼¥Ğ¡¼¤«¤é EOF ¤ò¼õ¤±¤È¤ê¤Ş¤·¤¿."
+#, c-format
+msgid "Size mismatch Expected:%s Actual:%s"
+msgstr "ã‚µã‚¤ã‚ºãŒåˆã„ã¾ã›ã‚“. æœŸå¾…ã™ã‚‹ã‚µã‚¤ã‚º:%s å®Ÿéš›ã®ã‚µã‚¤ã‚º:%s"
 
 #: src/message.h:149
-msgid "Got EOF from peer."
-msgstr "¥Ô¥¢¤«¤é EOF ¤ò¼õ¤±¼è¤ê¤Ş¤·¤¿."
+msgid "Authorization failed."
+msgstr "èªè¨¼ã«å¤±æ•—ã—ã¾ã—ãŸ."
 
 #: src/message.h:150
-msgid "Malformed meta info."
-msgstr "¥á¥¿¾ğÊó¥Õ¥¡¥¤¥ë¤Îµ­½Ò¤¬ÉÔÀµ¤Ç¤¹."
+msgid "Got EOF from the server."
+msgstr "ã‚µãƒ¼ãƒãƒ¼ã‹ã‚‰ EOF ã‚’å—ã‘ã¨ã‚Šã¾ã—ãŸ."
+
+#: src/message.h:151
+msgid "Got EOF from peer."
+msgstr "ãƒ”ã‚¢ã‹ã‚‰ EOF ã‚’å—ã‘å–ã‚Šã¾ã—ãŸ."
 
 #: src/message.h:152
-#, c-format
-msgid "Failed to open the file %s, cause: %s"
-msgstr "¥Õ¥¡¥¤¥ë %s ¤ò¥ª¡¼¥×¥ó¤Ç¤­¤Ş¤»¤ó¤Ç¤·¤¿. ¸¶°ø: %s"
-
-#: src/message.h:153
-#, c-format
-msgid "Failed to write into the file %s, cause: %s"
-msgstr "¥Õ¥¡¥¤¥ë %s ¤Ø¤Î½ñ¤­¹ş¤ß¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Malformed meta info."
+msgstr "ãƒ¡ã‚¿æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«ã®è¨˜è¿°ãŒä¸æ­£ã§ã™."
 
 #: src/message.h:154
 #, c-format
-msgid "Failed to read from the file %s, cause: %s"
-msgstr "¥Õ¥¡¥¤¥ë %s ¤«¤é¤ÎÆÉ¤ß¤È¤ê¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to open the file %s, cause: %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã‚’ã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“ã§ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:155
-msgid "Failed to read data from disk."
-msgstr "¥Ç¡¼¥¿¤ÎÆÉ¤ß¹ş¤ß¤Ë¼ºÇÔ¤·¤Ş¤·¤¿."
+#, c-format
+msgid "Failed to write into the file %s, cause: %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã¸ã®æ›¸ãè¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:156
 #, c-format
-msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr ""
-"¥Õ¥¡¥¤¥ë %s ¤Î (¤Ş¤¿¤Ï¤½¤Î°ìÉô¤Î) SHA1 ¥À¥¤¥¸¥§¥¹¥È¤Î·×»»¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶"
-"°ø: %s"
+msgid "Failed to read from the file %s, cause: %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã‹ã‚‰ã®èª­ã¿ã¨ã‚Šã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:157
-#, c-format
-msgid "Failed to seek the file %s, cause: %s"
-msgstr "¥Õ¥¡¥¤¥ë %s ¤Î¥·¡¼¥¯¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to read data from disk."
+msgstr "ãƒ‡ãƒ¼ã‚¿ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ."
 
 #: src/message.h:158
 #, c-format
-msgid "The offset is out of range, offset=%s"
-msgstr "¥ª¥Õ¥»¥Ã¥È (%s) ¤¬ÈÏ°Ï³°¤Ç¤¹."
+msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
+msgstr ""
+"ãƒ•ã‚¡ã‚¤ãƒ« %s ã® (ã¾ãŸã¯ãã®ä¸€éƒ¨ã®) SHA1 ãƒ€ã‚¤ã‚¸ã‚§ã‚¹ãƒˆã®è¨ˆç®—ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸ"
+"å› : %s"
 
 #: src/message.h:159
 #, c-format
-msgid "%s is not a directory."
-msgstr "%s ¤Ï¥Ç¥£¥ì¥¯¥È¥ê¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó."
+msgid "Failed to seek the file %s, cause: %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã®ã‚·ãƒ¼ã‚¯ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:160
 #, c-format
-msgid "Failed to make the directory %s, cause: %s"
-msgstr "¥Ç¥£¥ì¥¯¥È¥ê %s ¤òºîÀ®¤Ç¤­¤Ş¤»¤ó¤Ç¤·¤¿. ¸¶°ø: %s"
+msgid "The offset is out of range, offset=%s"
+msgstr "ã‚ªãƒ•ã‚»ãƒƒãƒˆ (%s) ãŒç¯„å›²å¤–ã§ã™."
 
 #: src/message.h:161
 #, c-format
-msgid "Failed to open the segment file %s, cause: %s"
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤ò¥ª¡¼¥×¥ó¤Ç¤­¤Ş¤»¤ó¤Ç¤·¤¿. ¸¶°ø: %s"
+msgid "%s is not a directory."
+msgstr "%s ã¯ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã§ã¯ã‚ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:162
 #, c-format
-msgid "Failed to write into the segment file %s, cause: %s"
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤Ø¤Î½ñ¤­¹ş¤ß¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to make the directory %s, cause: %s"
+msgstr "ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª %s ã‚’ä½œæˆã§ãã¾ã›ã‚“ã§ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:163
 #, c-format
-msgid "Failed to read from the segment file %s, cause: %s"
-msgstr "¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤«¤é¤ÎÆÉ¤ß¹ş¤ß¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to open the segment file %s, cause: %s"
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ã‚’ã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“ã§ã—ãŸ. åŸå› : %s"
+
+#: src/message.h:164
+#, c-format
+msgid "Failed to write into the segment file %s, cause: %s"
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ã¸ã®æ›¸ãè¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:165
 #, c-format
-msgid "Failed to open a socket, cause: %s"
-msgstr "¥½¥±¥Ã¥È¤ò¥ª¡¼¥×¥ó¤Ç¤­¤Ş¤»¤ó¤Ç¤·¤¿. ¸¶°ø: %s"
-
-#: src/message.h:166
-#, c-format
-msgid "Failed to set a socket option, cause: %s"
-msgstr "¥½¥±¥Ã¥È¤Î¥ª¥×¥·¥ç¥ó¤ÎÀßÄê¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to read from the segment file %s, cause: %s"
+msgstr "ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ã‹ã‚‰ã®èª­ã¿è¾¼ã¿ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:167
 #, c-format
-msgid "Failed to set a socket as blocking, cause: %s"
-msgstr "¥½¥±¥Ã¥È¤ò¥Ö¥í¥Ã¥­¥ó¥°¥â¡¼¥É¤Ë¤¹¤ë¤³¤È¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to open a socket, cause: %s"
+msgstr "ã‚½ã‚±ãƒƒãƒˆã‚’ã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“ã§ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:168
 #, c-format
-msgid "Failed to set a socket as non-blocking, cause: %s"
-msgstr "¥½¥±¥Ã¥È¤ò¥Î¥ó¥Ö¥í¥Ã¥­¥ó¥°¥â¡¼¥É¤Ë¤¹¤ë¤³¤È¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to set a socket option, cause: %s"
+msgstr "ã‚½ã‚±ãƒƒãƒˆã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®è¨­å®šã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:169
 #, c-format
-msgid "Failed to bind a socket, cause: %s"
-msgstr "¥½¥±¥Ã¥È¤Î bind ¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to set a socket as blocking, cause: %s"
+msgstr "ã‚½ã‚±ãƒƒãƒˆã‚’ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ãƒ¢ãƒ¼ãƒ‰ã«ã™ã‚‹ã“ã¨ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:170
 #, c-format
-msgid "Failed to listen to a socket, cause: %s"
-msgstr "¥½¥±¥Ã¥È¤Î listen ¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to set a socket as non-blocking, cause: %s"
+msgstr "ã‚½ã‚±ãƒƒãƒˆã‚’ãƒãƒ³ãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ãƒ¢ãƒ¼ãƒ‰ã«ã™ã‚‹ã“ã¨ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:171
 #, c-format
-msgid "Failed to accept a peer connection, cause: %s"
-msgstr "¥Ô¥¢¤«¤é¤ÎÀÜÂ³¤Î¼õÉÕ¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to bind a socket, cause: %s"
+msgstr "ã‚½ã‚±ãƒƒãƒˆã® bind ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:172
 #, c-format
-msgid "Failed to get the name of socket, cause: %s"
-msgstr "¥½¥±¥Ã¥È¤ÎÌ¾Á°¤Î¼èÆÀ¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to listen to a socket, cause: %s"
+msgstr "ã‚½ã‚±ãƒƒãƒˆã® listen ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:173
 #, c-format
-msgid "Failed to get the name of connected peer, cause: %s"
-msgstr "ÀÜÂ³¥Ô¥¢¤ÎÌ¾Á°¤Î¼èÆÀ¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to accept a peer connection, cause: %s"
+msgstr "ãƒ”ã‚¢ã‹ã‚‰ã®æ¥ç¶šã®å—ä»˜ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:174
 #, c-format
-msgid "Failed to resolve the hostname %s, cause: %s"
-msgstr "¥Û¥¹¥ÈÌ¾ %s ¤Î¥¢¥É¥ì¥¹²ò·è¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to get the name of socket, cause: %s"
+msgstr "ã‚½ã‚±ãƒƒãƒˆã®åå‰ã®å–å¾—ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:175
 #, c-format
-msgid "Failed to connect to the host %s, cause: %s"
-msgstr "¥Û¥¹¥È %s ¤Ø¤ÎÀÜÂ³¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to get the name of connected peer, cause: %s"
+msgstr "æ¥ç¶šãƒ”ã‚¢ã®åå‰ã®å–å¾—ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:176
 #, c-format
-msgid "Failed to check whether the socket is writable, cause: %s"
-msgstr ""
-"¥½¥±¥Ã¥È¤Ø¥Ç¡¼¥¿¤ò½ñ¤­¹ş¤ß²ÄÇ½¤«¤É¤¦¤«¤Î¥Á¥§¥Ã¥¯¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to resolve the hostname %s, cause: %s"
+msgstr "ãƒ›ã‚¹ãƒˆå %s ã®ã‚¢ãƒ‰ãƒ¬ã‚¹è§£æ±ºã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:177
 #, c-format
-msgid "Failed to check whether the socket is readable, cause: %s"
-msgstr ""
-"¥½¥±¥Ã¥È¤«¤é¥Ç¡¼¥¿¤òÆÉ¤ß¤È¤ê²ÄÇ½¤«¤É¤¦¤«¤Î¥Á¥§¥Ã¥¯¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to connect to the host %s, cause: %s"
+msgstr "ãƒ›ã‚¹ãƒˆ %s ã¸ã®æ¥ç¶šã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:178
 #, c-format
-msgid "Failed to send data, cause: %s"
-msgstr "¥Ç¡¼¥¿¤ÎÁ÷¿®¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to check whether the socket is writable, cause: %s"
+msgstr ""
+"ã‚½ã‚±ãƒƒãƒˆã¸ãƒ‡ãƒ¼ã‚¿ã‚’æ›¸ãè¾¼ã¿å¯èƒ½ã‹ã©ã†ã‹ã®ãƒã‚§ãƒƒã‚¯ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:179
 #, c-format
-msgid "Failed to receive data, cause: %s"
-msgstr "¥Ç¡¼¥¿¤Î¼õ¿®¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to check whether the socket is readable, cause: %s"
+msgstr ""
+"ã‚½ã‚±ãƒƒãƒˆã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿ã¨ã‚Šå¯èƒ½ã‹ã©ã†ã‹ã®ãƒã‚§ãƒƒã‚¯ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:180
 #, c-format
-msgid "Failed to peek data, cause: %s"
-msgstr "¥Ç¡¼¥¿¤Î peek ¤Ë¼ºÇÔ¤·¤Ş¤·¤¿. ¸¶°ø: %s"
+msgid "Failed to send data, cause: %s"
+msgstr "ãƒ‡ãƒ¼ã‚¿ã®é€ä¿¡ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:181
 #, c-format
-msgid "Unknown socket error %d (0x%x)"
-msgstr "Ì¤ÄêµÁ¤Î¥½¥±¥Ã¥È¥¨¥é¡¼ %d (0x%x)"
+msgid "Failed to receive data, cause: %s"
+msgstr "ãƒ‡ãƒ¼ã‚¿ã®å—ä¿¡ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:182
 #, c-format
-msgid "File %s exists, but %s does not exist."
-msgstr ""
-"¥Õ¥¡¥¤¥ë %s ¤¬Â¸ºß¤·¤Ş¤¹¤¬, ¤½¤ì¤ËÂĞ±ş¤¹¤ë¥»¥°¥á¥ó¥È¥Õ¥¡¥¤¥ë %s ¤¬Â¸ºß¤·¤Ş¤»"
-"¤ó."
+msgid "Failed to peek data, cause: %s"
+msgstr "ãƒ‡ãƒ¼ã‚¿ã® peek ã«å¤±æ•—ã—ã¾ã—ãŸ. åŸå› : %s"
 
 #: src/message.h:183
 #, c-format
-msgid "Invalid payload size for %s, size=%d. It should be %d."
-msgstr ""
-"%s ¤ËÂĞ¤¹¤ë¥Ú¥¤¥í¡¼¥É¥µ¥¤¥º¤¬ÉÔÀµ¤Ç¤¹. ¼Âºİ¤Î¥µ¥¤¥º:%d ´üÂÔ¤¹¤ë¥µ¥¤¥º:%d"
+msgid "Unknown socket error %d (0x%x)"
+msgstr "æœªå®šç¾©ã®ã‚½ã‚±ãƒƒãƒˆã‚¨ãƒ©ãƒ¼ %d (0x%x)"
 
 #: src/message.h:184
 #, c-format
-msgid "Invalid ID=%d for %s. It should be %d."
-msgstr "ID %d ¤Ï %s ¤ËÂĞ¤·¤Æ»ÈÍÑ¤Ç¤­¤Ş¤»¤ó. ´üÂÔ¤¹¤ë ID:%d"
+msgid "File %s exists, but %s does not exist."
+msgstr ""
+"ãƒ•ã‚¡ã‚¤ãƒ« %s ãŒå­˜åœ¨ã—ã¾ã™ãŒ, ãã‚Œã«å¯¾å¿œã™ã‚‹ã‚»ã‚°ãƒ¡ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ« %s ãŒå­˜åœ¨ã—ã¾ã›"
+"ã‚“."
 
 #: src/message.h:185
+#, c-format
+msgid "Invalid payload size for %s, size=%d. It should be %d."
+msgstr ""
+"%s ã«å¯¾ã™ã‚‹ãƒšã‚¤ãƒ­ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºãŒä¸æ­£ã§ã™. å®Ÿéš›ã®ã‚µã‚¤ã‚º:%d æœŸå¾…ã™ã‚‹ã‚µã‚¤ã‚º:%d"
+
+#: src/message.h:186
+#, c-format
+msgid "Invalid ID=%d for %s. It should be %d."
+msgstr "ID %d ã¯ %s ã«å¯¾ã—ã¦ä½¿ç”¨ã§ãã¾ã›ã‚“. æœŸå¾…ã™ã‚‹ ID:%d"
+
+#: src/message.h:187
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
-"ÉôÊ¬¥Á¥§¥Ã¥¯¥µ¥à¤Î¸¡¾Ú¤¬¼ºÇÔ¤·¤Ş¤·¤¿. ¥Á¥§¥Ã¥¯¥µ¥à¥¤¥ó¥Ç¥Ã¥¯¥¹=%d, ¥ª¥Õ¥»¥Ã¥È"
-"=%s, ´üÂÔ¤¹¤ë¥Ï¥Ã¥·¥åÃÍ:%s, ¼Âºİ¤Î¥Ï¥Ã¥·¥åÃÍ:%s"
-
-#: src/message.h:186
-msgid "Download aborted."
-msgstr "¥À¥¦¥ó¥í¡¼¥É¤òÃæ»ß¤·¤Ş¤¹."
-
-#: src/message.h:187
-#, c-format
-msgid "File %s is being downloaded by other command."
-msgstr "¥Õ¥¡¥¤¥ë %s ¤ÏÂ¾¤Î¥³¥Ş¥ó¥É¤¬¥À¥¦¥ó¥í¡¼¥ÉÃæ¤Ç¤¹."
+"éƒ¨åˆ†ãƒã‚§ãƒƒã‚¯ã‚µãƒ ã®æ¤œè¨¼ãŒå¤±æ•—ã—ã¾ã—ãŸ. ãƒã‚§ãƒƒã‚¯ã‚µãƒ ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹=%d, ã‚ªãƒ•ã‚»ãƒƒãƒˆ"
+"=%s, æœŸå¾…ã™ã‚‹ãƒãƒƒã‚·ãƒ¥å€¤:%s, å®Ÿéš›ã®ãƒãƒƒã‚·ãƒ¥å€¤:%s"
 
 #: src/message.h:188
-msgid "Insufficient checksums."
-msgstr "¥Á¥§¥Ã¥¯¥µ¥à¤¬Â­¤ê¤Ş¤»¤ó."
+msgid "Download aborted."
+msgstr "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ä¸­æ­¢ã—ã¾ã™."
 
 #: src/message.h:189
 #, c-format
-msgid "Tracker returned failure reason: %s"
-msgstr "¥È¥é¥Ã¥«¡¼¤¬·Ù¹ğ¥á¥Ã¥»¡¼¥¸¤òÊÖ¤·¤Ş¤·¤¿: %s"
+msgid "File %s is being downloaded by other command."
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ« %s ã¯ä»–ã®ã‚³ãƒãƒ³ãƒ‰ãŒãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ä¸­ã§ã™."
 
 #: src/message.h:190
-msgid "Flooding detected."
-msgstr "¥Õ¥é¥Ã¥Ç¥£¥ó¥° (¤¤¤ï¤æ¤ë¹Ó¤é¤·¹Ô°Ù) ¤ò¸¡½Ğ¤·¤Ş¤·¤¿."
+msgid "Insufficient checksums."
+msgstr "ãƒã‚§ãƒƒã‚¯ã‚µãƒ ãŒè¶³ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:191
+#, c-format
+msgid "Tracker returned failure reason: %s"
+msgstr "ãƒˆãƒ©ãƒƒã‚«ãƒ¼ãŒè­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿”ã—ã¾ã—ãŸ: %s"
+
+#: src/message.h:192
+msgid "Flooding detected."
+msgstr "ãƒ•ãƒ©ãƒƒãƒ‡ã‚£ãƒ³ã‚° (ã„ã‚ã‚†ã‚‹è’ã‚‰ã—è¡Œç‚º) ã‚’æ¤œå‡ºã—ã¾ã—ãŸ."
+
+#: src/message.h:193
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
-"°ìÄê´ü´Ö (%d ÉÃ) request/piece ¥á¥Ã¥»¡¼¥¸¤Î¸ò´¹¤¬¤Ê¤µ¤ì¤Æ¤¤¤Ê¤¤¤Î¤Ç, ÀÜÂ³¤òÊÄ"
-"¤¸¤Ş¤¹."
-
-#: src/message.h:192
-msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
-"torrent ¥Õ¥¡¥¤¥ëÃæ¤Î infoHash ¤È .aria2 ¥Õ¥¡¥¤¥ëÃæ¤Î¤½¤ì¤¬°ìÃ×¤·¤Ş¤»¤ó."
-
-#: src/message.h:193
-#, c-format
-msgid "No such file entry %s"
-msgstr "¥Õ¥¡¥¤¥ë¥¨¥ó¥È¥ê¡¼ %s ¤ÏÂ¸ºß¤·¤Ş¤»¤ó."
+"ä¸€å®šæœŸé–“ (%d ç§’) request/piece ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®äº¤æ›ãŒãªã•ã‚Œã¦ã„ãªã„ã®ã§, æ¥ç¶šã‚’é–‰"
+"ã˜ã¾ã™."
 
 #: src/message.h:194
-#, c-format
-msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr "¥À¥¦¥ó¥í¡¼¥ÉÂ®ÅÙ¤¬ÃÙ¤¹¤®¤Ş¤¹: %d <= %d(B/s), host:%s"
+msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
+msgstr ""
+"torrent ãƒ•ã‚¡ã‚¤ãƒ«ä¸­ã® infoHash ã¨ .aria2 ãƒ•ã‚¡ã‚¤ãƒ«ä¸­ã®ãã‚ŒãŒä¸€è‡´ã—ã¾ã›ã‚“."
 
 #: src/message.h:195
-msgid "No HttpRequestEntry found."
-msgstr "HttpRequestEntry ¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó."
+#, c-format
+msgid "No such file entry %s"
+msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã‚¨ãƒ³ãƒˆãƒªãƒ¼ %s ã¯å­˜åœ¨ã—ã¾ã›ã‚“."
 
 #: src/message.h:196
 #, c-format
-msgid "Got %d status, but no location header provided."
-msgstr "¥¹¥Æ¡¼¥¿¥¹ %d ¤ò¼õ¤±¤È¤ê¤Ş¤·¤¿¤¬, location ¥Ø¥Ã¥À¡¼¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó."
+msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
+msgstr "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰é€Ÿåº¦ãŒé…ã™ãã¾ã™: %d <= %d(B/s), host:%s"
 
 #: src/message.h:197
-#, c-format
-msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
-msgstr "range ¥Ø¥Ã¥À¡¼¤ÎÃÍ¤¬ÉÔÀµ¤Ç¤¹. Í×µá: %s-%s/%s, ±şÅú: %s-%s/%s"
+msgid "No HttpRequestEntry found."
+msgstr "HttpRequestEntry ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:198
-msgid "No file matched with your preference."
-msgstr "¸¡º÷¾ò·ï¤Ë¹çÃ×¤¹¤ë¥Õ¥¡¥¤¥ë¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó."
+#, c-format
+msgid "Got %d status, but no location header provided."
+msgstr "ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ %d ã‚’å—ã‘ã¨ã‚Šã¾ã—ãŸãŒ, location ãƒ˜ãƒƒãƒ€ãƒ¼ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:199
-msgid "Exception caught"
-msgstr "Îã³°È¯À¸"
+#, c-format
+msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
+msgstr "range ãƒ˜ãƒƒãƒ€ãƒ¼ã®å€¤ãŒä¸æ­£ã§ã™. è¦æ±‚: %s-%s/%s, å¿œç­”: %s-%s/%s"
 
 #: src/message.h:200
-#, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
-msgstr "¥Ú¥¤¥í¡¼¥ÉÄ¹¤¬´ûÄêÃÍ¤ò±Û¤¨¤Æ¤¤¤ë¤«, ÉÔÀµ¤Ç¤¹. length=%d"
+msgid "No file matched with your preference."
+msgstr "æ¤œç´¢æ¡ä»¶ã«åˆè‡´ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“."
 
 #: src/message.h:201
+msgid "Exception caught"
+msgstr "ä¾‹å¤–ç™ºç”Ÿ"
+
+#: src/message.h:202
+#, c-format
+msgid "Max payload length exceeded or invalid. length = %d"
+msgstr "ãƒšã‚¤ãƒ­ãƒ¼ãƒ‰é•·ãŒæ—¢å®šå€¤ã‚’è¶Šãˆã¦ã„ã‚‹ã‹, ä¸æ­£ã§ã™. length=%d"
+
+#: src/message.h:203
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
-"¥Õ¥¡¥¤¥ëÄ¹¤¬ÉÔÀµ¤Ç¤¹. %s ¤Î¥À¥¦¥ó¥í¡¼¥É¤ò·ÑÂ³¤Ç¤­¤Ş¤»¤ó: local %s, remote %s"
-
-#: src/DownloadEngineFactory.cc:97
-msgid "Errors occurred while binding port.\n"
-msgstr "¥İ¡¼¥È¤ò¥Ğ¥¤¥ó¥ÉÃæ¤Ë¥¨¥é¡¼¤¬È¯À¸¤·¤Ş¤·¤¿.\n"
+"ãƒ•ã‚¡ã‚¤ãƒ«é•·ãŒä¸æ­£ã§ã™. %s ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ç¶™ç¶šã§ãã¾ã›ã‚“: local %s, remote %s"
 
 #: src/MultiUrlRequestInfo.cc:70
 #, fuzzy
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
 "\n"
-"¥À¥¦¥ó¥í¡¼¥É¤Ï¥¨¥é¡¼¤Î¤¿¤á´°Î»¤·¤Æ¤¤¤Ş¤»¤ó. ¥í¥°¤ò³ÎÇ§¤·¤Æ¤¯¤À¤µ¤¤.\n"
-"¼¡²ó¤Î¥À¥¦¥ó¥í¡¼¥É¤Ï¥¨¥é¡¼¤Î»şÅÀ¤«¤éºÆ³«¤Ç¤­¤Ş¤¹."
+"ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯ã‚¨ãƒ©ãƒ¼ã®ãŸã‚å®Œäº†ã—ã¦ã„ã¾ã›ã‚“. ãƒ­ã‚°ã‚’ç¢ºèªã—ã¦ãã ã•ã„.\n"
+"æ¬¡å›ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯ã‚¨ãƒ©ãƒ¼ã®æ™‚ç‚¹ã‹ã‚‰å†é–‹ã§ãã¾ã™."
 
 #: src/MultiUrlRequestInfo.cc:72
 msgid ""
@@ -903,20 +909,20 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:213
+#: src/RequestGroupMan.cc:222
 #, fuzzy
 msgid "Download Results:"
-msgstr " torrent ¤ò¥À¥¦¥ó¥í¡¼¥É:"
+msgstr " torrent ã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
-#: src/Util.cc:649
+#: src/Util.cc:644
 msgid "Files:"
 msgstr ""
 
-#: src/version_usage.cc:40
+#: src/version_usage.cc:42
 msgid " version "
-msgstr " ¥Ğ¡¼¥¸¥ç¥ó "
+msgstr " ãƒãƒ¼ã‚¸ãƒ§ãƒ³ "
 
-#: src/version_usage.cc:50
+#: src/version_usage.cc:52
 msgid ""
 "This program is free software; you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -948,54 +954,54 @@ msgstr ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
 "USA\n"
 
-#: src/version_usage.cc:64
+#: src/version_usage.cc:66
 msgid "Contact Info:"
-msgstr "Ï¢ÍíÀè:"
-
-#: src/version_usage.cc:71
-#, c-format
-msgid "Usage: %s [options] URL ...\n"
-msgstr "»È¤¤Êı: %s [¥ª¥×¥·¥ç¥ó] URL ...\n"
+msgstr "é€£çµ¡å…ˆ:"
 
 #: src/version_usage.cc:73
-#, fuzzy, c-format
-msgid "       %s [options] -T TORRENT_FILE URL ...\n"
-msgstr "        %s [¥ª¥×¥·¥ç¥ó] -T TORRENT_FILE FILE ...\n"
+#, c-format
+msgid "Usage: %s [options] URL ...\n"
+msgstr "ä½¿ã„æ–¹: %s [ã‚ªãƒ—ã‚·ãƒ§ãƒ³] URL ...\n"
 
-#: src/version_usage.cc:76
+#: src/version_usage.cc:75
+#, c-format
+msgid "       %s [options] -T TORRENT_FILE URL ...\n"
+msgstr "        %s [ã‚ªãƒ—ã‚·ãƒ§ãƒ³] -T TORRENT_FILE URL ...\n"
+
+#: src/version_usage.cc:78
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
-msgstr "        %s [¥ª¥×¥·¥ç¥ó] -M METALINK_FILE\n"
+msgstr "        %s [ã‚ªãƒ—ã‚·ãƒ§ãƒ³] -M METALINK_FILE\n"
 
-#: src/version_usage.cc:79
+#: src/version_usage.cc:81
 msgid "Options:"
-msgstr "¥ª¥×¥·¥ç¥ó:"
+msgstr "ã‚ªãƒ—ã‚·ãƒ§ãƒ³:"
 
-#: src/version_usage.cc:80
+#: src/version_usage.cc:82
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
 msgstr ""
-" -d, --dir=DIR                ¥À¥¦¥ó¥í¡¼¥É¤·¤¿¥Õ¥¡¥¤¥ë¤òÊİÂ¸¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê."
+" -d, --dir=DIR                ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿å­˜ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª."
 
-#: src/version_usage.cc:81
+#: src/version_usage.cc:83
 msgid " -o, --out=FILE               The file name of the downloaded file."
 msgstr ""
-" -o, --out=FILE               ¥À¥¦¥ó¥í¡¼¥É¤·¤¿¥Õ¥¡¥¤¥ë¤ÎÊİÂ¸Àè¥Õ¥¡¥¤¥ëÌ¾."
+" -o, --out=FILE               ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã®ä¿å­˜å…ˆãƒ•ã‚¡ã‚¤ãƒ«å."
 
-#: src/version_usage.cc:82
+#: src/version_usage.cc:84
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG                ¥í¥°¤òÊİÂ¸¤¹¤ë¥Ñ¥¹. '-' ¤ò»ØÄê¤·¤¿¾ì¹ç, É¸½à½Ğ"
-"ÎÏ\n"
-"                              ¤Ë½ĞÎÏ¤·¤Ş¤¹."
-
-#: src/version_usage.cc:85
-msgid " -D, --daemon                 Run as daemon."
-msgstr " -D, --daemon                 ¥Ç¡¼¥â¥ó¤È¤·¤Æµ¯Æ°¤·¤Ş¤¹."
+" -l, --log=LOG                ãƒ­ã‚°ã‚’ä¿å­˜ã™ã‚‹ãƒ‘ã‚¹. '-' ã‚’æŒ‡å®šã—ãŸå ´åˆ, æ¨™æº–å‡º"
+"åŠ›\n"
+"                              ã«å‡ºåŠ›ã—ã¾ã™."
 
 #: src/version_usage.cc:87
+msgid " -D, --daemon                 Run as daemon."
+msgstr " -D, --daemon                 ãƒ‡ãƒ¼ãƒ¢ãƒ³ã¨ã—ã¦èµ·å‹•ã—ã¾ã™."
+
+#: src/version_usage.cc:89
 msgid ""
 " -s, --split=N                Download a file using N connections. N must "
 "be\n"
@@ -1005,18 +1011,18 @@ msgid ""
 "                              N connections.\n"
 "                              Default: 1"
 msgstr ""
-" -s, --split=N                N ¸Ä¤Î¥³¥Í¥¯¥·¥ç¥ó¤ò»È¤Ã¤Æ¥Õ¥¡¥¤¥ë¤ò¥À¥¦¥ó¥í¡¼"
-"¥É\n"
-"                              ¤·¤Ş¤¹. N ¤Ï 1 ¤«¤é 5 ¤Î¿ô»ú¤ò»ØÄê¤·¤Æ¤¯¤À¤µ"
-"¤¤.\n"
-"                              ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤¹¤Ù¤Æ¤Î URL °ú¿ô¤Ë±Æ¶Á¤·¤Ş"
-"¤¹.\n"
-"                              ¤Ä¤Ş¤ê, ¤½¤ì¤¾¤ì¤Î URL ¤ËÂĞ¤·¤Æ N ¸Ä¤Î¥³¥Í¥¯"
-"¥·¥ç\n"
-"                              ¥ó¤ò³ÎÎ©¤·¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 1"
+" -s, --split=N                N å€‹ã®ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã‚’ä½¿ã£ã¦ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼"
+"ãƒ‰\n"
+"                              ã—ã¾ã™. N ã¯ 1 ã‹ã‚‰ 5 ã®æ•°å­—ã‚’æŒ‡å®šã—ã¦ãã ã•"
+"ã„.\n"
+"                              ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ã™ã¹ã¦ã® URL å¼•æ•°ã«å½±éŸ¿ã—ã¾"
+"ã™.\n"
+"                              ã¤ã¾ã‚Š, ãã‚Œãã‚Œã® URL ã«å¯¾ã—ã¦ N å€‹ã®ã‚³ãƒã‚¯"
+"ã‚·ãƒ§\n"
+"                              ãƒ³ã‚’ç¢ºç«‹ã—ã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 1"
 
-#: src/version_usage.cc:92
+#: src/version_usage.cc:94
 msgid ""
 " --retry-wait=SEC             Set the seconds to wait to retry after an "
 "error\n"
@@ -1024,146 +1030,146 @@ msgid ""
 "60.\n"
 "                              Default: 5"
 msgstr ""
-" --retry-wait=SEC             ¥¨¥é¡¼¤Ë¤è¤ëºÆ»î¹Ô»ş¤ÎÂÔ¤Á»ş´Ö¤òÉÃÃ±°Ì¤Ç»ØÄê¤·"
-"¤Ş\n"
-"                              ¤¹. 0 - 60 ¤ÎÃÍ¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 5"
+" --retry-wait=SEC             ã‚¨ãƒ©ãƒ¼ã«ã‚ˆã‚‹å†è©¦è¡Œæ™‚ã®å¾…ã¡æ™‚é–“ã‚’ç§’å˜ä½ã§æŒ‡å®šã—"
+"ã¾\n"
+"                              ã™. 0 - 60 ã®å€¤ã‚’æŒ‡å®šã—ã¦ãã ã•ã„.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 5"
 
-#: src/version_usage.cc:95
+#: src/version_usage.cc:97
 msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
 msgstr ""
-" -t, --timeout=SEC            ¥¿¥¤¥à¥¢¥¦¥È¤È¤Ê¤ë»ş´Ö¤òÉÃ¤Ç»ØÄê¤·¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 60"
+" -t, --timeout=SEC            ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã¨ãªã‚‹æ™‚é–“ã‚’ç§’ã§æŒ‡å®šã—ã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 60"
 
-#: src/version_usage.cc:96
+#: src/version_usage.cc:98
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
-" -m, --max-tries=N            »î¹Ô²ó¿ô¤ò»ØÄê¤·¤Ş¤¹. 0 ¤ò»ØÄê¤¹¤ë¤È²¿ÅÙ¤Ç¤â»î"
-"¹Ô\n"
-"                              ¤·¤Ş¤¹. ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 5"
+" -m, --max-tries=N            è©¦è¡Œå›æ•°ã‚’æŒ‡å®šã—ã¾ã™. 0 ã‚’æŒ‡å®šã™ã‚‹ã¨ä½•åº¦ã§ã‚‚è©¦"
+"è¡Œ\n"
+"                              ã—ã¾ã™. ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 5"
 
-#: src/version_usage.cc:104
+#: src/version_usage.cc:106
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
-" --http-proxy=HOST:PORT       HTTP ¥×¥í¥­¥·¡¦¥µ¡¼¥Ğ¡¼¤ò»ÈÍÑ¤·¤Ş¤¹.\n"
-"                              ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤¹¤Ù¤Æ¤Î URL ¤Ë±Æ¶Á¤·¤Ş¤¹."
-
-#: src/version_usage.cc:105
-msgid " --http-user=USER             Set HTTP user. This affects all URLs."
-msgstr ""
-" --http-user=USER             HTTP ¤Ç¤ÎÇ§¾Ú¥æ¡¼¥¶¡¼¤ò»ØÄê¤·¤Ş¤¹. ¤³¤Î¥ª¥×¥·¥ç"
-"¥ó\n"
-"                              ¤Ï¤¹¤Ù¤Æ¤Î URL ¤Ë±Æ¶Á¤·¤Ş¤¹."
-
-#: src/version_usage.cc:106
-msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
-msgstr ""
-" --http-passwd=PASSWD         HTTP ¤Ç¤ÎÇ§¾Ú¥Ñ¥¹¥ï¡¼¥É¤ò»ØÄê¤·¤Ş¤¹. ¤³¤Î¥ª¥×"
-"¥·¥ç\n"
-"                              ¥ó¤Ï¤¹¤Ù¤Æ¤Î URL ¤Ë±Æ¶Á¤·¤Ş¤¹."
+" --http-proxy=HOST:PORT       HTTP ãƒ—ãƒ­ã‚­ã‚·ãƒ»ã‚µãƒ¼ãƒãƒ¼ã‚’ä½¿ç”¨ã—ã¾ã™.\n"
+"                              ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ã™ã¹ã¦ã® URL ã«å½±éŸ¿ã—ã¾ã™."
 
 #: src/version_usage.cc:107
+msgid " --http-user=USER             Set HTTP user. This affects all URLs."
+msgstr ""
+" --http-user=USER             HTTP ã§ã®èªè¨¼ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚’æŒ‡å®šã—ã¾ã™. ã“ã®ã‚ªãƒ—ã‚·ãƒ§"
+"ãƒ³\n"
+"                              ã¯ã™ã¹ã¦ã® URL ã«å½±éŸ¿ã—ã¾ã™."
+
+#: src/version_usage.cc:108
+msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
+msgstr ""
+" --http-passwd=PASSWD         HTTP ã§ã®èªè¨¼ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’æŒ‡å®šã—ã¾ã™. ã“ã®ã‚ªãƒ—"
+"ã‚·ãƒ§\n"
+"                              ãƒ³ã¯ã™ã¹ã¦ã® URL ã«å½±éŸ¿ã—ã¾ã™."
+
+#: src/version_usage.cc:109
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
-" --http-proxy-user=USER       HTTP ¥×¥í¥­¥·¡¦¥µ¡¼¥Ğ¡¼¤Ç¤ÎÇ§¾Ú¤Ç»È¤¦¥æ¡¼¥¶¡¼¤ò"
-"»Ø\n"
-"                              Äê¤·¤Ş¤¹. ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤¹¤Ù¤Æ¤Î URL ¤Ë±Æ¶Á¤·"
-"¤Ş\n"
-"                              ¤¹."
+" --http-proxy-user=USER       HTTP ãƒ—ãƒ­ã‚­ã‚·ãƒ»ã‚µãƒ¼ãƒãƒ¼ã§ã®èªè¨¼ã§ä½¿ã†ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚’"
+"æŒ‡\n"
+"                              å®šã—ã¾ã™. ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ã™ã¹ã¦ã® URL ã«å½±éŸ¿ã—"
+"ã¾\n"
+"                              ã™."
 
-#: src/version_usage.cc:108
+#: src/version_usage.cc:110
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
-" --http-proxy-passwd=PASSWD   HTTP ¥×¥í¥­¥·¡¦¥µ¡¼¥Ğ¡¼¤Ç¤ÎÇ§¾Ú¤Ç»È¤¦¥Ñ¥¹¥ï¡¼¥É"
-"¤ò\n"
-"                              »ØÄê¤·¤Ş¤¹. ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤¹¤Ù¤Æ¤Î URL ¤Ë±Æ¶Á"
-"¤·\n"
-"                              ¤Ş¤¹."
+" --http-proxy-passwd=PASSWD   HTTP ãƒ—ãƒ­ã‚­ã‚·ãƒ»ã‚µãƒ¼ãƒãƒ¼ã§ã®èªè¨¼ã§ä½¿ã†ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰"
+"ã‚’\n"
+"                              æŒ‡å®šã—ã¾ã™. ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ã™ã¹ã¦ã® URL ã«å½±éŸ¿"
+"ã—\n"
+"                              ã¾ã™."
 
-#: src/version_usage.cc:109
+#: src/version_usage.cc:111
 msgid ""
 " --http-proxy-method=METHOD   Set the method to use in proxy request.\n"
 "                              METHOD is either 'get' or 'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
-" --http-proxy-method=METHOD   HTTP ¥×¥í¥­¥·¡¦¥ê¥¯¥¨¥¹¥È¤Ç»È¤¦¥á¥½¥Ã¥É¤ò»ØÄê¤·"
-"¤Ş\n"
-"                              ¤¹. 'get' ¤Ş¤¿¤Ï 'tunnel' ¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: tunnel"
+" --http-proxy-method=METHOD   HTTP ãƒ—ãƒ­ã‚­ã‚·ãƒ»ãƒªã‚¯ã‚¨ã‚¹ãƒˆã§ä½¿ã†ãƒ¡ã‚½ãƒƒãƒ‰ã‚’æŒ‡å®šã—"
+"ã¾\n"
+"                              ã™. 'get' ã¾ãŸã¯ 'tunnel' ã‚’æŒ‡å®šã—ã¦ãã ã•ã„.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: tunnel"
 
-#: src/version_usage.cc:112
+#: src/version_usage.cc:114
 msgid ""
 " --http-auth-scheme=SCHEME    Set HTTP authentication scheme. Currently, "
 "basic\n"
 "                              is the only supported scheme.\n"
 "                              Default: basic"
 msgstr ""
-" --http-auth-scheme=SCHEME    HTTP ¤Ç¤ÎÇ§¾ÚÊıË¡¤ò»ØÄê¤·¤Ş¤¹. ¸½ºß¥µ¥İ¡¼¥È¤µ¤ì"
-"¤Æ\n"
-"                              ¤¤¤ë¤Î¤Ï basic ¤Ç¤¹. \n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: basic"
+" --http-auth-scheme=SCHEME    HTTP ã§ã®èªè¨¼æ–¹æ³•ã‚’æŒ‡å®šã—ã¾ã™. ç¾åœ¨ã‚µãƒãƒ¼ãƒˆã•ã‚Œ"
+"ã¦\n"
+"                              ã„ã‚‹ã®ã¯ basic ã§ã™. \n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: basic"
 
-#: src/version_usage.cc:115
+#: src/version_usage.cc:117
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
-" --referer=REFERER            ¥ê¥Õ¥¡¥é¡¼¤ò»ØÄê¤·¤Ş¤¹. ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï¤¹¤Ù¤Æ"
-"¤Î\n"
-"                               URL ¤Ë±Æ¶Á¤·¤Ş¤¹."
+" --referer=REFERER            ãƒªãƒ•ã‚¡ãƒ©ãƒ¼ã‚’æŒ‡å®šã—ã¾ã™. ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ã™ã¹ã¦"
+"ã®\n"
+"                               URL ã«å½±éŸ¿ã—ã¾ã™."
 
-#: src/version_usage.cc:116
+#: src/version_usage.cc:118
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
-" --ftp-user=USER              FTP ¤Ç¤ÎÇ§¾Ú¥æ¡¼¥¶¡¼¤ò»ØÄê¤·¤Ş¤¹. ¤³¤Î¥ª¥×¥·¥ç"
-"¥ó\n"
-"                              ¤Ï¤¹¤Ù¤Æ¤Î URL ¤Ë±Æ¶Á¤·¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: anonymous"
+" --ftp-user=USER              FTP ã§ã®èªè¨¼ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚’æŒ‡å®šã—ã¾ã™. ã“ã®ã‚ªãƒ—ã‚·ãƒ§"
+"ãƒ³\n"
+"                              ã¯ã™ã¹ã¦ã® URL ã«å½±éŸ¿ã—ã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: anonymous"
 
-#: src/version_usage.cc:118
+#: src/version_usage.cc:120
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
-" --ftp-passwd=PASSWD          FTP ¤Ç¤ÎÇ§¾Ú¥Ñ¥¹¥ï¡¼¥É¤ò»ØÄê¤·¤Ş¤¹. ¤³¤Î¥ª¥×"
-"¥·¥ç\n"
-"                              ¥ó¤Ï¤¹¤Ù¤Æ¤Î URL ¤Ë±Æ¶Á¤·¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: ARIA2USER@"
+" --ftp-passwd=PASSWD          FTP ã§ã®èªè¨¼ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’æŒ‡å®šã—ã¾ã™. ã“ã®ã‚ªãƒ—"
+"ã‚·ãƒ§\n"
+"                              ãƒ³ã¯ã™ã¹ã¦ã® URL ã«å½±éŸ¿ã—ã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: ARIA2USER@"
 
-#: src/version_usage.cc:120
+#: src/version_usage.cc:122
 msgid ""
 " --ftp-type=TYPE              Set FTP transfer type. TYPE is either "
 "'binary'\n"
 "                              or 'ascii'.\n"
 "                              Default: binary"
 msgstr ""
-" --ftp-type=TYPE              FTP Å¾Á÷¥â¡¼¥É¤ò»ØÄê¤·¤Ş¤¹. 'binary' ¤Ş¤¿¤Ï\n"
-"                              'ascii' ¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤. ¥Ç¥Õ¥©¥ë¥ÈÃÍ: "
+" --ftp-type=TYPE              FTP è»¢é€ãƒ¢ãƒ¼ãƒ‰ã‚’æŒ‡å®šã—ã¾ã™. 'binary' ã¾ãŸã¯\n"
+"                              'ascii' ã‚’æŒ‡å®šã—ã¦ãã ã•ã„. ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: "
 "binary"
 
-#: src/version_usage.cc:123
+#: src/version_usage.cc:125
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv               FTP ¤Ç passive ¥â¡¼¥É¤ò»ÈÍÑ¤·¤Ş¤¹."
+msgstr " -p, --ftp-pasv               FTP ã§ passive ãƒ¢ãƒ¼ãƒ‰ã‚’ä½¿ç”¨ã—ã¾ã™."
 
-#: src/version_usage.cc:124
+#: src/version_usage.cc:126
 msgid ""
 " --ftp-via-http-proxy=METHOD  Use HTTP proxy in FTP. METHOD is either 'get' "
 "or\n"
 "                              'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
-" --ftp-via-http-proxy=METHOD  FTP ¤Ç HTTP ¥×¥í¥­¥·¡¦¥µ¡¼¥Ğ¡¼¤ò»ÈÍÑ¤¹¤ëºİ¤ÎÊı"
-"Ë¡\n"
-"                              ¤ò»ØÄê¤·¤Ş¤¹. 'get' ¤Ş¤¿¤Ï 'tunnel' ¤ò»ØÄê¤·¤Æ"
-"¤¯\n"
-"                              ¤À¤µ¤¤. ¥Ç¥Õ¥©¥ë¥ÈÃÍ: tunnel"
+" --ftp-via-http-proxy=METHOD  FTP ã§ HTTP ãƒ—ãƒ­ã‚­ã‚·ãƒ»ã‚µãƒ¼ãƒãƒ¼ã‚’ä½¿ç”¨ã™ã‚‹éš›ã®æ–¹"
+"æ³•\n"
+"                              ã‚’æŒ‡å®šã—ã¾ã™. 'get' ã¾ãŸã¯ 'tunnel' ã‚’æŒ‡å®šã—ã¦"
+"ã\n"
+"                              ã ã•ã„. ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: tunnel"
 
-#: src/version_usage.cc:127
+#: src/version_usage.cc:129
 msgid ""
 " --lowest-speed-limit=SPEED   Close connection if download speed is lower "
 "than\n"
@@ -1175,33 +1181,33 @@ msgid ""
 "downloads.\n"
 "                              Default: 0"
 msgstr ""
-" --lowest-speed-limit=SPEED   ¤³¤³¤Ç»ØÄê¤¹¤ë¥À¥¦¥ó¥í¡¼¥ÉÂ®ÅÙ¤ò²¼²ó¤Ã¤¿¾ì¹ç, "
-"¥À\n"
-"                              ¥¦¥ó¥í¡¼¥É¤òÃæ»ß¤·¤Ş¤¹. Â®ÅÙ¤Ï¥Ğ¥¤¥È/ÉÃ¤Ç¤¹.\n"
-"                              0 ¤ò»ØÄê¤¹¤ë¤È, Â®ÅÙ¤ÎÈ½Äê¤ò¹Ô¤¤¤Ş¤»¤ó.\n"
-"                              K ¤Ş¤¿¤Ï M ¤òÉÕ²Ã¤¹¤ë¤³¤È¤¬¤Ç¤­¤Ş¤¹ (1K = "
+" --lowest-speed-limit=SPEED   ã“ã“ã§æŒ‡å®šã™ã‚‹ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰é€Ÿåº¦ã‚’ä¸‹å›ã£ãŸå ´åˆ, "
+"ãƒ€\n"
+"                              ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ä¸­æ­¢ã—ã¾ã™. é€Ÿåº¦ã¯ãƒã‚¤ãƒˆ/ç§’ã§ã™.\n"
+"                              0 ã‚’æŒ‡å®šã™ã‚‹ã¨, é€Ÿåº¦ã®åˆ¤å®šã‚’è¡Œã„ã¾ã›ã‚“.\n"
+"                              K ã¾ãŸã¯ M ã‚’ä»˜åŠ ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ (1K = "
 "1024,\n"
-"                              1M = 1024K). ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï, BitTorrent ¥À¥¦"
-"¥ó¥í\n"
-"                              ¡¼¥É¤Ë¤Ï±Æ¶Á¤·¤Ş¤»¤ó.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 0"
+"                              1M = 1024K). ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯, BitTorrent ãƒ€ã‚¦"
+"ãƒ³ãƒ­\n"
+"                              ãƒ¼ãƒ‰ã«ã¯å½±éŸ¿ã—ã¾ã›ã‚“.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 0"
 
-#: src/version_usage.cc:134
+#: src/version_usage.cc:136
 msgid ""
 " --max-download-limit=SPEED   Set max download speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
-" --max-download-limit=SPEED   ¥À¥¦¥ó¥í¡¼¥É¤ÎºÇÂçÂ®ÅÙ (¥Ğ¥¤¥È/ÉÃ) ¤ò»ØÄê¤·¤Ş"
-"¤¹.\n"
-"                              0 ¤ò»ØÄê¤¹¤ë¤ÈÂ®ÅÙ¤ÎÀ©¸Â¤ò¤·¤Ş¤»¤ó. K ¤Ş¤¿¤Ï M"
-"¤ò\n"
-"                              ÉÕ²Ã¤¹¤ë¤³¤È¤¬¤Ç¤­¤Ş¤¹ (1K = 1024, 1M = "
+" --max-download-limit=SPEED   ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã®æœ€å¤§é€Ÿåº¦ (ãƒã‚¤ãƒˆ/ç§’) ã‚’æŒ‡å®šã—ã¾"
+"ã™.\n"
+"                              0 ã‚’æŒ‡å®šã™ã‚‹ã¨é€Ÿåº¦ã®åˆ¶é™ã‚’ã—ã¾ã›ã‚“. K ã¾ãŸã¯ M"
+"ã‚’\n"
+"                              ä»˜åŠ ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ (1K = 1024, 1M = "
 "1024K).\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 0"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 0"
 
-#: src/version_usage.cc:138
+#: src/version_usage.cc:140
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method. METHOD is "
 "either\n"
@@ -1214,19 +1220,19 @@ msgid ""
 "                              depending on the size of the file.\n"
 "                              Default: prealloc"
 msgstr ""
-" --file-allocation=METHOD     ¥Õ¥¡¥¤¥ëÎÎ°è¤ò³ÎÊİ¤¹¤ëÊıË¡¤ò»ØÄê¤·¤Ş¤¹. 'none' "
-"Ëô\n"
-"                              ¤Ï 'prealloc' ¤¬»ØÄê¤Ç¤­¤Ş¤¹.\n"
-"                              'none' ¤ò»ØÄê¤¹¤ë¤È¥Õ¥¡¥¤¥ëÎÎ°è¤ò»öÁ°³ÎÊİ¤·¤Ş¤»"
-"¤ó.\n"
-"                              'prealloc' ¤ò»ØÄê¤¹¤ë¤È¥Õ¥¡¥¤¥ëÎÎ°è¤ò»öÁ°³ÎÊİ¤·"
-"¤Ş\n"
-"                              ¤¹. ¤³¤Î½èÍı¤Ï, ¥Õ¥¡¥¤¥ë¥µ¥¤¥º¤Ë¤è¤Ã¤Æ»ş´Ö¤¬¤«"
-"¤«\n"
-"                              ¤ë¾ì¹ç¤¬¤¢¤ê¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: prealloc"
+" --file-allocation=METHOD     ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸã‚’ç¢ºä¿ã™ã‚‹æ–¹æ³•ã‚’æŒ‡å®šã—ã¾ã™. 'none' "
+"åˆ\n"
+"                              ã¯ 'prealloc' ãŒæŒ‡å®šã§ãã¾ã™.\n"
+"                              'none' ã‚’æŒ‡å®šã™ã‚‹ã¨ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸã‚’äº‹å‰ç¢ºä¿ã—ã¾ã›"
+"ã‚“.\n"
+"                              'prealloc' ã‚’æŒ‡å®šã™ã‚‹ã¨ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸã‚’äº‹å‰ç¢ºä¿ã—"
+"ã¾\n"
+"                              ã™. ã“ã®å‡¦ç†ã¯, ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã«ã‚ˆã£ã¦æ™‚é–“ãŒã‹"
+"ã‹\n"
+"                              ã‚‹å ´åˆãŒã‚ã‚Šã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: prealloc"
 
-#: src/version_usage.cc:144
+#: src/version_usage.cc:146
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
@@ -1234,17 +1240,17 @@ msgid ""
 "                              BitTorrent downloads ignore this option.\n"
 "                              Default: 5M"
 msgstr ""
-" --no-file-allocation-limit=SIZE »ØÄê¤·¤¿ SIZE °Ê²¼¤Î¥Õ¥¡¥¤¥ë¤ËÂĞ¤·¤Æ, ¥Õ¥¡¥¤"
-"¥ë\n"
-"                              ÎÎ°è³ÎÊİ¤ò¹Ô¤¤¤Ş¤»¤ó.\n"
-"                              K ¤Ş¤¿¤Ï M ¤òÉÕ²Ã¤¹¤ë¤³¤È¤¬¤Ç¤­¤Ş¤¹ (1K = "
+" --no-file-allocation-limit=SIZE æŒ‡å®šã—ãŸ SIZE ä»¥ä¸‹ã®ãƒ•ã‚¡ã‚¤ãƒ«ã«å¯¾ã—ã¦, ãƒ•ã‚¡ã‚¤"
+"ãƒ«\n"
+"                              é ˜åŸŸç¢ºä¿ã‚’è¡Œã„ã¾ã›ã‚“.\n"
+"                              K ã¾ãŸã¯ M ã‚’ä»˜åŠ ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ (1K = "
 "1024,\n"
-"                              1M = 1024K). ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ï, BitTorrent ¥À¥¦"
-"¥ó¥í\n"
-"                              ¡¼¥É¤Ë¤Ï±Æ¶Á¤·¤Ş¤»¤ó.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 5M"
+"                              1M = 1024K). ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯, BitTorrent ãƒ€ã‚¦"
+"ãƒ³ãƒ­\n"
+"                              ãƒ¼ãƒ‰ã«ã¯å½±éŸ¿ã—ã¾ã›ã‚“.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 5M"
 
-#: src/version_usage.cc:149
+#: src/version_usage.cc:151
 msgid ""
 " --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
 "                              already exists but the corresponding .aria2 "
@@ -1252,16 +1258,16 @@ msgid ""
 "                              doesn't exist.\n"
 "                              Default: false"
 msgstr ""
-" --allow-overwrite=true|false  ¤³¤Î¥ª¥×¥·¥ç¥ó¤ò false ¤ËÀßÄê¤¹¤ë¤È, ¥í¡¼¥«"
-"¥ë\n"
-"                              ¥Ç¥£¥¹¥¯¾å¤Ë¥Õ¥¡¥¤¥ë¤¬Â¸ºß¤¹¤ë¤¬, ¤½¤ì¤ËÂĞ±ş¤¹"
-"¤ë\n"
-"                              *.aria2 ¥Õ¥¡¥¤¥ë¤¬Â¸ºß¤·¤Ê¤¤¾ì¹ç, ¥À¥¦¥ó¥í¡¼¥É"
-"¤ò\n"
-"                              Ãæ»ß¤·¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: false"
+" --allow-overwrite=true|false  ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ false ã«è¨­å®šã™ã‚‹ã¨, ãƒ­ãƒ¼ã‚«"
+"ãƒ«\n"
+"                              ãƒ‡ã‚£ã‚¹ã‚¯ä¸Šã«ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã™ã‚‹ãŒ, ãã‚Œã«å¯¾å¿œã™"
+"ã‚‹\n"
+"                              *.aria2 ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ãªã„å ´åˆ, ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰"
+"ã‚’\n"
+"                              ä¸­æ­¢ã—ã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: false"
 
-#: src/version_usage.cc:153
+#: src/version_usage.cc:155
 msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
@@ -1270,22 +1276,22 @@ msgid ""
 "                              the usual command-line download utilities.\n"
 "                              Default: false"
 msgstr ""
-" -Z, --force-sequential[=true|false] ¥³¥Ş¥ó¥É¥é¥¤¥ó¤Ç»ØÄê¤µ¤ì¤¿ URI ¤ò¤½¤ì¤¾"
-"¤ì\n"
-"                              °ã¤¦¥Õ¥¡¥¤¥ë¤Ç¤¢¤ë¤È¤·¤Æ°·¤¦. aria2c ¤Î¥Ç¥Õ¥©"
-"¥ë\n"
-"                              ¥ÈÆ°ºî (false »ØÄê) ¤È¤Ï, »ØÄê¤µ¤ì¤¿ URI ¤¬¤¹"
-"¤Ù\n"
-"                              ¤ÆÆ±¤¸¥Õ¥¡¥¤¥ë¤ò¤µ¤·¤Æ¤¤¤ë¤È¤·¤Æ°·¤¦ÅÀ¤¬°Û¤Ê"
-"¤ë.\n"
-"                              ÂçÄñ¤Î¥³¥Ş¥ó¥É¥é¥¤¥ó·¿¥À¥¦¥ó¥í¡¼¥É¥æ¡¼¥Æ¥£¥ê"
-"¥Æ¥£\n"
-"                              ¤Ï, ¤³¤Î¥ª¥×¥·¥ç¥ó¤Ç true ¤ò»ØÄê¤·¤¿¤è¤¦¤Ë¿¶¤ë"
-"Éñ\n"
-"                              ¤¦¤Ï¤º¤Ç¤¢¤ë.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: false"
+" -Z, --force-sequential[=true|false] ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³ã§æŒ‡å®šã•ã‚ŒãŸ URI ã‚’ãã‚Œã"
+"ã‚Œ\n"
+"                              é•ã†ãƒ•ã‚¡ã‚¤ãƒ«ã§ã‚ã‚‹ã¨ã—ã¦æ‰±ã†. aria2c ã®ãƒ‡ãƒ•ã‚©"
+"ãƒ«\n"
+"                              ãƒˆå‹•ä½œ (false æŒ‡å®š) ã¨ã¯, æŒ‡å®šã•ã‚ŒãŸ URI ãŒã™"
+"ã¹\n"
+"                              ã¦åŒã˜ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã•ã—ã¦ã„ã‚‹ã¨ã—ã¦æ‰±ã†ç‚¹ãŒç•°ãª"
+"ã‚‹.\n"
+"                              å¤§æŠµã®ã‚³ãƒãƒ³ãƒ‰ãƒ©ã‚¤ãƒ³å‹ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ¦ãƒ¼ãƒ†ã‚£ãƒª"
+"ãƒ†ã‚£\n"
+"                              ã¯, ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§ true ã‚’æŒ‡å®šã—ãŸã‚ˆã†ã«æŒ¯ã‚‹"
+"èˆ\n"
+"                              ã†ã¯ãšã§ã‚ã‚‹.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: false"
 
-#: src/version_usage.cc:157
+#: src/version_usage.cc:159
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -1296,17 +1302,17 @@ msgid ""
 "                              appended.\n"
 "                              Default: true"
 msgstr ""
-" --auto-file-renaming[=true|false] Æ±¤¸¥Õ¥¡¥¤¥ëÌ¾¤Î¥Õ¥¡¥¤¥ë¤¬¤¹¤Ç¤Ë¥Õ¥¡¥¤¥ë"
-"¥·\n"
-"                             ¥¹¥Æ¥à¤ËÂ¸ºß¤¹¤ë¾ì¹ç, ¥Õ¥¡¥¤¥ëÌ¾¤ò¼«Æ°¤ÇÊÑ¹¹¤¹"
-"¤ë.\n"
-"                             http(s)/ftp ¤Î¥À¥¦¥ó¥í¡¼¥É¤Î¤ß¤ÇÍ­¸ú¤Ç¤¢¤ë.\n"
-"                             ÊÑ¹¹¤Î»ÅÊı¤Ï, ¥Õ¥¡¥¤¥ëÌ¾ËöÈø¤Ë¥É¥Ã¥È (.) ¤ÈÈÖ"
-"¹æ\n"
-"                             (1..9999) ¤òÉÕ²Ã¤¹¤ë.\n"
-"                             ¥Ç¥Õ¥©¥ë¥ÈÃÍ: true"
+" --auto-file-renaming[=true|false] åŒã˜ãƒ•ã‚¡ã‚¤ãƒ«åã®ãƒ•ã‚¡ã‚¤ãƒ«ãŒã™ã§ã«ãƒ•ã‚¡ã‚¤ãƒ«"
+"ã‚·\n"
+"                             ã‚¹ãƒ†ãƒ ã«å­˜åœ¨ã™ã‚‹å ´åˆ, ãƒ•ã‚¡ã‚¤ãƒ«åã‚’è‡ªå‹•ã§å¤‰æ›´ã™"
+"ã‚‹.\n"
+"                             http(s)/ftp ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã®ã¿ã§æœ‰åŠ¹ã§ã‚ã‚‹.\n"
+"                             å¤‰æ›´ã®ä»•æ–¹ã¯, ãƒ•ã‚¡ã‚¤ãƒ«åæœ«å°¾ã«ãƒ‰ãƒƒãƒˆ (.) ã¨ç•ª"
+"å·\n"
+"                             (1..9999) ã‚’ä»˜åŠ ã™ã‚‹.\n"
+"                             ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: true"
 
-#: src/version_usage.cc:163
+#: src/version_usage.cc:165
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -1322,37 +1328,37 @@ msgid ""
 "                              required.\n"
 "                              Default: false"
 msgstr ""
-" -P, --parameterized-uri[=true|false] ¥Ñ¥é¥á¡¼¥¿²½¤µ¤ì¤¿ URI ¤ÎÅ¸³«¤Î¥µ¥İ¡¼"
-"¥È\n"
-"                              ¤òÍ­¸ú¤Ë¤¹¤ë.\n"
-"                              ¥Ñ¥é¥á¡¼¥¿²½¤µ¤ì¤¿ URI ¤Ç¤Ï, URI ¤ÎÉôÊ¬¥Ñ¡¼¥Ä"
-"¤Î\n"
-"                              ½¸¹ç¤ò»ØÄê¤Ç¤­¤ë:\n"
+" -P, --parameterized-uri[=true|false] ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿åŒ–ã•ã‚ŒãŸ URI ã®å±•é–‹ã®ã‚µãƒãƒ¼"
+"ãƒˆ\n"
+"                              ã‚’æœ‰åŠ¹ã«ã™ã‚‹.\n"
+"                              ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿åŒ–ã•ã‚ŒãŸ URI ã§ã¯, URI ã®éƒ¨åˆ†ãƒ‘ãƒ¼ãƒ„"
+"ã®\n"
+"                              é›†åˆã‚’æŒ‡å®šã§ãã‚‹:\n"
 "                              http://{sv1,sv2,sv3}/foo.iso\n"
-"                              ¤Ş¤¿, ¿ôÃÍ¤Î¥·¡¼¥±¥ó¥¹¤â»ØÄê¤Ç¤­¤ë (¥¹¥Æ¥Ã¥×¥«"
-"¥¦\n"
-"                              ¥ó¥È¤ò»ØÄê²ÄÇ½):\n"
+"                              ã¾ãŸ, æ•°å€¤ã®ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ã‚‚æŒ‡å®šã§ãã‚‹ (ã‚¹ãƒ†ãƒƒãƒ—ã‚«"
+"ã‚¦\n"
+"                              ãƒ³ãƒˆã‚’æŒ‡å®šå¯èƒ½):\n"
 "                              http://host/image[000-100:2].img\n"
-"                              ¥¹¥Æ¥Ã¥×¥«¥¦¥ó¥È¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë.\n"
-"                              Å¸³«·ë²Ì¤Î¤¹¤Ù¤Æ¤Î URI ¤¬Æ±¤¸¥Õ¥¡¥¤¥ë¤ò»Ø¤·¤Æ"
-"¤¤\n"
-"                              ¤Ê¤¤¾ì¹ç¤Ï, -Z ¥ª¥×¥·¥ç¥ó¤¬É¬Í×¤Ç¤¢¤ë.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: false"
+"                              ã‚¹ãƒ†ãƒƒãƒ—ã‚«ã‚¦ãƒ³ãƒˆã¯çœç•¥å¯èƒ½ã§ã‚ã‚‹.\n"
+"                              å±•é–‹çµæœã®ã™ã¹ã¦ã® URI ãŒåŒã˜ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡ã—ã¦"
+"ã„\n"
+"                              ãªã„å ´åˆã¯, -Z ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒå¿…è¦ã§ã‚ã‚‹.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: false"
 
-#: src/version_usage.cc:174
+#: src/version_usage.cc:176
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistant "
 "connection.\n"
 "                              Default: false"
 msgstr ""
 
-#: src/version_usage.cc:176
+#: src/version_usage.cc:178
 msgid ""
 " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
 "                              Default: false"
 msgstr ""
 
-#: src/version_usage.cc:179
+#: src/version_usage.cc:181
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
@@ -1367,19 +1373,19 @@ msgid ""
 "                              if the .aria2 file doesn't exist.\n"
 "                              Default: false"
 msgstr ""
-" --check-integrity=true|false  ¥Õ¥¡¥¤¥ë¤òÉôÊ¬¥Á¥§¥Ã¥¯¥µ¥à¤Ë¤è¤ê, Àµ¾ï¤Ë¥À¥¦¥ó"
-"¥í\n"
-"                              ¡¼¥É¤µ¤ì¤Æ¤¤¤ë¤«¸¡¾Ú¤·¤Ş¤¹.\n"
-"                              BitTorrent ¤È ÉôÊ¬¥Á¥§¥Ã¥¯¥µ¥àÉÕ¤­¤Î Metalink "
-"¤Ç\n"
-"                              »ÈÍÑ¤Ç¤­¤Ş¤¹.\n"
-"                              ¸í¤ê¤Î¤¢¤ëÉôÊ¬¤À¤±¤ò¥À¥¦¥ó¥í¡¼¥É¤·¤Ê¤ª¤»¤Ğ¤è¤¤"
-"¤Î\n"
-"                              ¤ÇÊØÍø¤Ç¤¹. -c ¥ª¥×¥·¥ç¥ó¤ÈÁÈ¤ß¹ç¤ï¤»¤ë¤È¤è¤¤\n"
-"                              ¤«¤â¤·¤ì¤Ş¤»¤ó.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: false"
+" --check-integrity=true|false  ãƒ•ã‚¡ã‚¤ãƒ«ã‚’éƒ¨åˆ†ãƒã‚§ãƒƒã‚¯ã‚µãƒ ã«ã‚ˆã‚Š, æ­£å¸¸ã«ãƒ€ã‚¦ãƒ³"
+"ãƒ­\n"
+"                              ãƒ¼ãƒ‰ã•ã‚Œã¦ã„ã‚‹ã‹æ¤œè¨¼ã—ã¾ã™.\n"
+"                              BitTorrent ã¨ éƒ¨åˆ†ãƒã‚§ãƒƒã‚¯ã‚µãƒ ä»˜ãã® Metalink "
+"ã§\n"
+"                              ä½¿ç”¨ã§ãã¾ã™.\n"
+"                              èª¤ã‚Šã®ã‚ã‚‹éƒ¨åˆ†ã ã‘ã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ãªãŠã›ã°ã‚ˆã„"
+"ã®\n"
+"                              ã§ä¾¿åˆ©ã§ã™. -c ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨çµ„ã¿åˆã‚ã›ã‚‹ã¨ã‚ˆã„\n"
+"                              ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: false"
 
-#: src/version_usage.cc:187
+#: src/version_usage.cc:189
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -1388,14 +1394,14 @@ msgid ""
 "checksums.\n"
 "                              Default: true"
 msgstr ""
-" --realtime-chunk-checksum=true|false  Metalink »ÈÍÑ»ş¤ËÉôÊ¬¥Á¥§¥Ã¥¯¥µ¥à¤ò¥À"
-"¥¦¥ó\n"
-"                              ¥í¡¼¥É¤·¤Ê¤¬¤é¸¡¾Ú¤·¤Ş¤¹. ÉôÊ¬¥Á¥§¥Ã¥¯¥µ¥àÉÕ¤­"
-"¤Î\n"
-"                              Metalink ¤Ç¤Î¤ß»ÈÍÑ¤Ç¤­¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: true"
+" --realtime-chunk-checksum=true|false  Metalink ä½¿ç”¨æ™‚ã«éƒ¨åˆ†ãƒã‚§ãƒƒã‚¯ã‚µãƒ ã‚’ãƒ€"
+"ã‚¦ãƒ³\n"
+"                              ãƒ­ãƒ¼ãƒ‰ã—ãªãŒã‚‰æ¤œè¨¼ã—ã¾ã™. éƒ¨åˆ†ãƒã‚§ãƒƒã‚¯ã‚µãƒ ä»˜ã"
+"ã®\n"
+"                              Metalink ã§ã®ã¿ä½¿ç”¨ã§ãã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: true"
 
-#: src/version_usage.cc:192
+#: src/version_usage.cc:194
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -1404,25 +1410,25 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
-" -c, --continue               ¥¦¥§¥Ö¥Ö¥é¥¦¥¶¤äÂ¾¤Î¥×¥í¥°¥é¥à¤¬¥·¡¼¥±¥ó¥·¥ã¥ë"
-"¤Ë\n"
-"                              ¥À¥¦¥ó¥í¡¼¥É¤·¤Æ¤¤¤¿¤¬, ÅÓÃæ¤Ç¥À¥¦¥ó¥í¡¼¥É¤òÃæ"
-"»ß\n"
-"                              ¤·¤¿¥Õ¥¡¥¤¥ë¤Î¥À¥¦¥ó¥í¡¼¥É¤ò·ÑÂ³¤¹¤ë¾ì¹ç¤Ë»ÈÍÑ"
-"¤·\n"
-"                              ¤Ş¤¹. http(s)/ftp ¤Î¥À¥¦¥ó¥í¡¼¥É¤ËÂĞ¤·¤Æ¤Î¤ß»È"
-"ÍÑ\n"
-"                              ¤Ç¤­¤Ş¤¹."
-
-#: src/version_usage.cc:198
-msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
-msgstr " -U, --user-agent=USER_AGENT  ¥æ¡¼¥¶¡¼¥¨¡¼¥¸¥§¥ó¥È¤òÀßÄê¤·¤Ş¤¹."
-
-#: src/version_usage.cc:199
-msgid " -n, --no-netrc               Disables netrc support."
-msgstr " -n, --no-netrc               netrc ¥µ¥İ¡¼¥È¤ò»ß¤á¤Ş¤¹."
+" -c, --continue               ã‚¦ã‚§ãƒ–ãƒ–ãƒ©ã‚¦ã‚¶ã‚„ä»–ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ãŒã‚·ãƒ¼ã‚±ãƒ³ã‚·ãƒ£ãƒ«"
+"ã«\n"
+"                              ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ã¦ã„ãŸãŒ, é€”ä¸­ã§ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ä¸­"
+"æ­¢\n"
+"                              ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã‚’ç¶™ç¶šã™ã‚‹å ´åˆã«ä½¿ç”¨"
+"ã—\n"
+"                              ã¾ã™. http(s)/ftp ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¯¾ã—ã¦ã®ã¿ä½¿"
+"ç”¨\n"
+"                              ã§ãã¾ã™."
 
 #: src/version_usage.cc:200
+msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
+msgstr " -U, --user-agent=USER_AGENT  ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆã‚’è¨­å®šã—ã¾ã™."
+
+#: src/version_usage.cc:201
+msgid " -n, --no-netrc               Disables netrc support."
+msgstr " -n, --no-netrc               netrc ã‚µãƒãƒ¼ãƒˆã‚’æ­¢ã‚ã¾ã™."
+
+#: src/version_usage.cc:202
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -1430,50 +1436,50 @@ msgid ""
 "character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
-" -i, --input-file=FILE        ¥Õ¥¡¥¤¥ë¤Ëµ­½Ò¤µ¤ì¤¿ URI ¤Î¥ê¥¹¥È¤òÆÉ¤ß¹ş¤ß, ¤½"
-"¤ì\n"
-"                              ¤é¤ò¥À¥¦¥ó¥í¡¼¥É¤·¤Ş¤¹. Ê£¿ô URI ¤ÎÆ±»ş¥À¥¦¥ó"
-"¥í¡¼\n"
-"                              ¥É¤¬²ÄÇ½¤Ç¤¹. 1 ¥¨¥ó¥È¥ê¤ËÂĞ¤·¤ÆÊ£¿ô¤Î URI ¤ò»Ø"
-"Äê\n"
-"                              ¤¹¤ë¤Ë¤Ï¥¿¥Ö¤Ç¶èÀÚ¤Ã¤Æ°ì¹Ô¤Ë URI ¤òÊ£¿ôµ­½Ò¤·¤Ş"
-"¤¹.\n"
-"                              FILE ¤Ë '-' ¤ò»ØÄê¤¹¤ë¤È, É¸½àÆşÎÏ¤«¤éÆÉ¤ß¹ş¤ß"
-"¤Ş\n"
-"                              ¤¹."
+" -i, --input-file=FILE        ãƒ•ã‚¡ã‚¤ãƒ«ã«è¨˜è¿°ã•ã‚ŒãŸ URI ã®ãƒªã‚¹ãƒˆã‚’èª­ã¿è¾¼ã¿, ã"
+"ã‚Œ\n"
+"                              ã‚‰ã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã—ã¾ã™. è¤‡æ•° URI ã®åŒæ™‚ãƒ€ã‚¦ãƒ³"
+"ãƒ­ãƒ¼\n"
+"                              ãƒ‰ãŒå¯èƒ½ã§ã™. 1 ã‚¨ãƒ³ãƒˆãƒªã«å¯¾ã—ã¦è¤‡æ•°ã® URI ã‚’æŒ‡"
+"å®š\n"
+"                              ã™ã‚‹ã«ã¯ã‚¿ãƒ–ã§åŒºåˆ‡ã£ã¦ä¸€è¡Œã« URI ã‚’è¤‡æ•°è¨˜è¿°ã—ã¾"
+"ã™.\n"
+"                              FILE ã« '-' ã‚’æŒ‡å®šã™ã‚‹ã¨, æ¨™æº–å…¥åŠ›ã‹ã‚‰èª­ã¿è¾¼ã¿"
+"ã¾\n"
+"                              ã™."
 
-#: src/version_usage.cc:204
+#: src/version_usage.cc:206
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of concurrent "
 "downloads.\n"
 "                              It should be used with the -i option.\n"
 "                              Default: 5"
 msgstr ""
-" -j, --max-concurrent-downloads=N Æ±»ş¥À¥¦¥ó¥í¡¼¥É¿ô¤ò»ØÄê¤·¤Ş¤¹. -i ¥ª¥×¥·¥ç"
-"¥ó\n"
-"                              ¤È¶¦¤Ë»È¤Ã¤Æ¤¯¤À¤µ¤¤.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 5"
+" -j, --max-concurrent-downloads=N åŒæ™‚ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰æ•°ã‚’æŒ‡å®šã—ã¾ã™. -i ã‚ªãƒ—ã‚·ãƒ§"
+"ãƒ³\n"
+"                              ã¨å…±ã«ä½¿ã£ã¦ãã ã•ã„.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 5"
 
-#: src/version_usage.cc:207
+#: src/version_usage.cc:209
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
 msgstr ""
-" --load-cookies=FILE          cookie ¤ò FILE ¤«¤éÆÉ¤ß¹ş¤ß¤Ş¤¹. FILE ¤Î¥Õ¥©¡¼"
-"¥Ş¥Ã\n"
-"                              ¥È¤Ï, Netscape ¤ä Mozilla ¤Ç»È¤ï¤ì¤Æ¤¤¤ë¤â¤Î¤Ç"
-"¤¹."
+" --load-cookies=FILE          cookie ã‚’ FILE ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™. FILE ã®ãƒ•ã‚©ãƒ¼"
+"ãƒãƒƒ\n"
+"                              ãƒˆã¯, Netscape ã‚„ Mozilla ã§ä½¿ã‚ã‚Œã¦ã„ã‚‹ã‚‚ã®ã§"
+"ã™."
 
-#: src/version_usage.cc:210
+#: src/version_usage.cc:212
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
 "                              and exit."
 msgstr ""
-" -S, --show-files             .torrent/.metalink ¥Õ¥¡¥¤¥ë¤Ë´Ş¤Ş¤ì¤ë¥Õ¥¡¥¤¥ë\n"
-"                              ¥ê¥¹¥È¤ò½ĞÎÏ¤·½ªÎ»¤·¤Ş¤¹."
+" -S, --show-files             .torrent/.metalink ãƒ•ã‚¡ã‚¤ãƒ«ã«å«ã¾ã‚Œã‚‹ãƒ•ã‚¡ã‚¤ãƒ«\n"
+"                              ãƒªã‚¹ãƒˆã‚’å‡ºåŠ›ã—çµ‚äº†ã—ã¾ã™."
 
-#: src/version_usage.cc:212
+#: src/version_usage.cc:214
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can find the file index using the\n"
@@ -1486,26 +1492,26 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
-" --select-file=INDEX...       ¥¤¥ó¥Ç¥Ã¥¯¥¹¤Ç¥À¥¦¥ó¥í¡¼¥ÉÂĞ¾İ¥Õ¥¡¥¤¥ë¤ò»ØÄê¤·"
-"¤Ş\n"
-"                              ¤¹. ¥¤¥ó¥Ç¥Ã¥¯¥¹¤Ï --show-files ¥ª¥×¥·¥ç¥ó¤ÇÃÎ"
-"¤ë\n"
-"                              ¤³¤È¤¬¤Ç¤­¤Ş¤¹. Ê£¿ô¤Î¥¤¥ó¥Ç¥Ã¥¯¥¹¤ò ',' ¤Ç¶è"
-"ÀÚ¤Ã\n"
-"                              ¤Æ»ØÄê¤Ç¤­¤Ş¤¹: \"3,6\"\n"
-"                              ¤Ş¤¿, '-' ¤ò»È¤Ã¤ÆÈÏ°Ï»ØÄê¤â¤Ç¤­¤Ş¤¹: \"1-5\"\n"
-"                              ',' ¤È '-' ¤ÏÁÈ¤ß¹ç¤ï¤»¤Æ»È¤¦¤³¤È¤¬¤Ç¤­¤Ş¤¹.\n"
-"                              -M ¥ª¥×¥·¥ç¥ó¤È¶¦¤Ë»È¤¦¾ì¹ç, Metalink ¤Î¥¯¥¨"
-"¥ê\n"
-"                              ¥ª¥×¥·¥ç¥ó (--metalink-* ¥ª¥×¥·¥ç¥ó¤ò»²¾È) ¤Ë"
-"¤è¤Ã\n"
-"                              ¤Æ¥¤¥ó¥Ç¥Ã¥¯¥¹¤ÏÊÑ²½¤¹¤ë¾ì¹ç¤¬¤¢¤ê¤Ş¤¹."
+" --select-file=INDEX...       ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã§ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡å®šã—"
+"ã¾\n"
+"                              ã™. ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¯ --show-files ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§çŸ¥"
+"ã‚‹\n"
+"                              ã“ã¨ãŒã§ãã¾ã™. è¤‡æ•°ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ ',' ã§åŒº"
+"åˆ‡ã£\n"
+"                              ã¦æŒ‡å®šã§ãã¾ã™: \"3,6\"\n"
+"                              ã¾ãŸ, '-' ã‚’ä½¿ã£ã¦ç¯„å›²æŒ‡å®šã‚‚ã§ãã¾ã™: \"1-5\"\n"
+"                              ',' ã¨ '-' ã¯çµ„ã¿åˆã‚ã›ã¦ä½¿ã†ã“ã¨ãŒã§ãã¾ã™.\n"
+"                              -M ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨å…±ã«ä½¿ã†å ´åˆ, Metalink ã®ã‚¯ã‚¨"
+"ãƒª\n"
+"                              ã‚ªãƒ—ã‚·ãƒ§ãƒ³ (--metalink-* ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’å‚ç…§) ã«"
+"ã‚ˆã£\n"
+"                              ã¦ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¯å¤‰åŒ–ã™ã‚‹å ´åˆãŒã‚ã‚Šã¾ã™."
 
-#: src/version_usage.cc:222
+#: src/version_usage.cc:224
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr " -T, --torrent-file=TORRENT_FILE  .torrent ¥Õ¥¡¥¤¥ë¤Î¥Ñ¥¹¤ò»ØÄê."
+msgstr " -T, --torrent-file=TORRENT_FILE  .torrent ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’æŒ‡å®š."
 
-#: src/version_usage.cc:223
+#: src/version_usage.cc:225
 msgid ""
 " --follow-torrent=true|false  Set to false to prevent aria2 from\n"
 "                              entering BitTorrent mode even if the filename "
@@ -1513,56 +1519,56 @@ msgid ""
 "                              the downloaded file ends with .torrent.\n"
 "                              Default: true"
 msgstr ""
-" --follow-torrent=true|false  ¤³¤Î¥ª¥×¥·¥ç¥ó¤ò false ¤ËÀßÄê¤¹¤ë¤È, ¥À¥¦¥ó¥í¡¼"
-"¥É\n"
-"                              ¤·¤¿¥Õ¥¡¥¤¥ë¤Î³ÈÄ¥»Ò¤¬ .torrent ¤Ç¤¢¤Ã¤Æ¤â, "
+" --follow-torrent=true|false  ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ false ã«è¨­å®šã™ã‚‹ã¨, ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼"
+"ãƒ‰\n"
+"                              ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã®æ‹¡å¼µå­ãŒ .torrent ã§ã‚ã£ã¦ã‚‚, "
 "aria2\n"
-"                              ¤Ï, BitTorrent ¥â¡¼¥É¤ËÆş¤ê¤Ş¤»¤ó.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: true"
+"                              ã¯, BitTorrent ãƒ¢ãƒ¼ãƒ‰ã«å…¥ã‚Šã¾ã›ã‚“.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: true"
 
-#: src/version_usage.cc:227
+#: src/version_usage.cc:229
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
 "                              Default: true"
 msgstr ""
-" --direct-file-mapping=true|false .torrent ¥Õ¥¡¥¤¥ëµ­ºÜ¤Î¥Õ¥¡¥¤¥ë¤ËÄ¾ÀÜÆÉ¤ß½ñ"
-"¤­\n"
-"                              ¤·¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: true"
+" --direct-file-mapping=true|false .torrent ãƒ•ã‚¡ã‚¤ãƒ«è¨˜è¼‰ã®ãƒ•ã‚¡ã‚¤ãƒ«ã«ç›´æ¥èª­ã¿æ›¸"
+"ã\n"
+"                              ã—ã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: true"
 
-#: src/version_usage.cc:230
+#: src/version_usage.cc:232
 msgid ""
 " --listen-port=PORT           Set TCP port number for BitTorrent downloads.\n"
 "                              Default: 6881-6999"
 msgstr ""
-" --listen-port=PORT           ¥Ô¥¢¤«¤é¤ÎÀÜÂ³¤ò¼õ¤±ÉÕ¤±¤ë¥İ¡¼¥ÈÈÖ¹æ¤ò»ØÄê.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 6881-6999"
+" --listen-port=PORT           ãƒ”ã‚¢ã‹ã‚‰ã®æ¥ç¶šã‚’å—ã‘ä»˜ã‘ã‚‹ãƒãƒ¼ãƒˆç•ªå·ã‚’æŒ‡å®š.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 6881-6999"
 
-#: src/version_usage.cc:232
+#: src/version_usage.cc:234
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
-" --max-upload-limit=SPEED     ¥¢¥Ã¥×¥í¡¼¥É¤ÎºÇÂçÂ®ÅÙ (¥Ğ¥¤¥È/ÉÃ) ¤ò»ØÄê¤·¤Ş"
-"¤¹.\n"
-"                              0 ¤ò»ØÄê¤¹¤ë¤ÈÂ®ÅÙ¤ÎÀ©¸Â¤ò¤·¤Ş¤»¤ó. K ¤Ş¤¿¤Ï M"
-"¤ò\n"
-"                              ÉÕ²Ã¤¹¤ë¤³¤È¤¬¤Ç¤­¤Ş¤¹ (1K = 1024, 1M = "
+" --max-upload-limit=SPEED     ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰ã®æœ€å¤§é€Ÿåº¦ (ãƒã‚¤ãƒˆ/ç§’) ã‚’æŒ‡å®šã—ã¾"
+"ã™.\n"
+"                              0 ã‚’æŒ‡å®šã™ã‚‹ã¨é€Ÿåº¦ã®åˆ¶é™ã‚’ã—ã¾ã›ã‚“. K ã¾ãŸã¯ M"
+"ã‚’\n"
+"                              ä»˜åŠ ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ (1K = 1024, 1M = "
 "1024K).\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 0"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 0"
 
-#: src/version_usage.cc:236
+#: src/version_usage.cc:238
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
-" --seed-time=MINUTES          ¥·¡¼¥É¤ò¹Ô¤¦»ş´Ö¤òÊ¬Ã±°Ì¤Ç»ØÄê¤·¤Ş¤¹. \n"
-"                              --seed-ratio ¥ª¥×¥·¥ç¥ó¤â»²¾È¤·¤Æ¤¯¤À¤µ¤¤."
+" --seed-time=MINUTES          ã‚·ãƒ¼ãƒ‰ã‚’è¡Œã†æ™‚é–“ã‚’åˆ†å˜ä½ã§æŒ‡å®šã—ã¾ã™. \n"
+"                              --seed-ratio ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚‚å‚ç…§ã—ã¦ãã ã•ã„."
 
-#: src/version_usage.cc:238
+#: src/version_usage.cc:240
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO. 1.0 is\n"
@@ -1571,16 +1577,16 @@ msgid ""
 "                              along with this option, seeding ends when at\n"
 "                              least one of the conditions is satisfied."
 msgstr ""
-" --seed-ratio=RATIO           ¥·¥§¥¢¥ì¥·¥ª¤ò»ØÄê¤·¤Ş¤¹. ¥·¥§¥¢¥ì¥·¥ª¤¬ RATIO "
-"¤Ë\n"
-"                              Ã£¤¹¤ë¤È¥·¡¼¥É¤ò½ªÎ»¤·¤Ş¤¹. ¥³¥ß¥å¥Ë¥Æ¥£¤Î¤¿¤á"
-"¤Ë\n"
-"                              1.0 ¤ò¶¯¤¯¿ä¾©¤·¤Ş¤¹.\n"
-"                              --seed-time ¥ª¥×¥·¥ç¥ó¤È¶¦¤Ë»ÈÍÑ¤·¤¿¾ì¹ç, ¾¯¤Ê"
-"¤¯\n"
-"                              ¤È¤â°ìÊı¤Î¾ò·ï¤¬À®Î©¤¹¤ë¤È¥·¡¼¥É¤ò½ªÎ»¤·¤Ş¤¹."
+" --seed-ratio=RATIO           ã‚·ã‚§ã‚¢ãƒ¬ã‚·ã‚ªã‚’æŒ‡å®šã—ã¾ã™. ã‚·ã‚§ã‚¢ãƒ¬ã‚·ã‚ªãŒ RATIO "
+"ã«\n"
+"                              é”ã™ã‚‹ã¨ã‚·ãƒ¼ãƒ‰ã‚’çµ‚äº†ã—ã¾ã™. ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£ã®ãŸã‚"
+"ã«\n"
+"                              1.0 ã‚’å¼·ãæ¨å¥¨ã—ã¾ã™.\n"
+"                              --seed-time ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨å…±ã«ä½¿ç”¨ã—ãŸå ´åˆ, å°‘ãª"
+"ã\n"
+"                              ã¨ã‚‚ä¸€æ–¹ã®æ¡ä»¶ãŒæˆç«‹ã™ã‚‹ã¨ã‚·ãƒ¼ãƒ‰ã‚’çµ‚äº†ã—ã¾ã™."
 
-#: src/version_usage.cc:243
+#: src/version_usage.cc:245
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -1592,52 +1598,55 @@ msgid ""
 "                              added to make it's length 20 bytes.\n"
 "                              Default: -aria2-"
 msgstr ""
-" --peer-id-prefix=PEERI_ID_PREFIX peer ID ¤ò»ØÄê¤·¤Ş¤¹. BitTorrent ¤Ë¤ª¤¤"
-"¤Æ,\n"
-"                               peer ID ¤Ï, 20 ¥Ğ¥¤¥È¤Ç¤¹. 20 ¥Ğ¥¤¥È¤ò±Û¤¨¤Æ"
-"»Ø\n"
-"                               Äê¤·¤¿¾ì¹ç, ÀèÆ¬¤«¤é 20 ¥Ğ¥¤¥È¤¬»ÈÍÑ¤µ¤ì¤Ş"
-"¤¹.\n"
-"                               20 ¥Ğ¥¤¥È¤ËËş¤¿¤Ê¤¤Ê¸»úÎó¤ò»ØÄê¤·¤¿¾ì¹ç, ¥é¥ó"
-"¥À\n"
-"                               ¥à¤Ê¥¢¥ë¥Õ¥¡¥Ù¥Ã¥È¤òÉÕ²Ã¤·¤Æ 20 ¥Ğ¥¤¥È¤Ë¤·¤Ş"
-"¤¹.\n"
-"                               ¥Ç¥Õ¥©¥ë¥ÈÃÍ: -aria2-"
+" --peer-id-prefix=PEERI_ID_PREFIX peer ID ã‚’æŒ‡å®šã—ã¾ã™. BitTorrent ã«ãŠã„"
+"ã¦,\n"
+"                               peer ID ã¯, 20 ãƒã‚¤ãƒˆã§ã™. 20 ãƒã‚¤ãƒˆã‚’è¶Šãˆã¦"
+"æŒ‡\n"
+"                               å®šã—ãŸå ´åˆ, å…ˆé ­ã‹ã‚‰ 20 ãƒã‚¤ãƒˆãŒä½¿ç”¨ã•ã‚Œã¾"
+"ã™.\n"
+"                               20 ãƒã‚¤ãƒˆã«æº€ãŸãªã„æ–‡å­—åˆ—ã‚’æŒ‡å®šã—ãŸå ´åˆ, ãƒ©ãƒ³"
+"ãƒ€\n"
+"                               ãƒ ãªã‚¢ãƒ«ãƒ•ã‚¡ãƒ™ãƒƒãƒˆã‚’ä»˜åŠ ã—ã¦ 20 ãƒã‚¤ãƒˆã«ã—ã¾"
+"ã™.\n"
+"                               ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: -aria2-"
 
-#: src/version_usage.cc:252
+#: src/version_usage.cc:254
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
-msgstr " -M, --metalink-file=METALINK_FILE .metalink ¥Õ¥¡¥¤¥ë¤Î¥Ñ¥¹¤ò»ØÄê."
+msgstr " -M, --metalink-file=METALINK_FILE .metalink ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’æŒ‡å®š."
 
-#: src/version_usage.cc:253
+#: src/version_usage.cc:255
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously.\n"
 "                              Default: 5"
 msgstr ""
-" -C, --metalink-servers=NUM_SERVERS Æ±»ş¤ËÀÜÂ³¤¹¤ë¥µ¡¼¥Ğ¤Î¿ô¤ò»ØÄê¤·¤Ş¤¹.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: 5"
-
-#: src/version_usage.cc:256
-msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr " --metalink-version=VERSION   ¥À¥¦¥ó¥í¡¼¥É¤¹¤ë¥Õ¥¡¥¤¥ë¤Î¥Ğ¡¼¥¸¥ç¥ó."
-
-#: src/version_usage.cc:257
-msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr " --metalink-language=LANGUAGE ¥À¥¦¥ó¥í¡¼¥É¤¹¤ë¥Õ¥¡¥¤¥ë¤Î¸À¸ì."
+" -C, --metalink-servers=NUM_SERVERS åŒæ™‚ã«æ¥ç¶šã™ã‚‹ã‚µãƒ¼ãƒã®æ•°ã‚’æŒ‡å®šã—ã¾ã™.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: 5"
 
 #: src/version_usage.cc:258
+msgid " --metalink-version=VERSION   The version of the file to download."
+msgstr " --metalink-version=VERSION   ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³."
+
+#: src/version_usage.cc:259
+msgid " --metalink-language=LANGUAGE The language of the file to download."
+msgstr " --metalink-language=LANGUAGE ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®è¨€èª."
+
+#: src/version_usage.cc:260
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
-" --metalink-os=OS             ¥À¥¦¥ó¥í¡¼¥É¤¹¤ë¥Õ¥¡¥¤¥ë¤¬¥¿¡¼¥²¥Ã¥È¤È¤¹¤ë¥ª¥Ú"
-"¥ì¡¼\n"
-"                              ¥Æ¥£¥ó¥°¡¦¥·¥¹¥Æ¥à."
+" --metalink-os=OS             ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã™ã‚‹ã‚ªãƒš"
+"ãƒ¬ãƒ¼\n"
+"                              ãƒ†ã‚£ãƒ³ã‚°ãƒ»ã‚·ã‚¹ãƒ†ãƒ ."
 
-#: src/version_usage.cc:259
-msgid " --metalink-location=LOCATION The location of the prefered server."
-msgstr " --metalink-location=LOCATION Í¥ÀèÅª¤Ë¥À¥¦¥ó¥í¡¼¥É¤¹¤ë¥µ¡¼¥Ğ¡¼¤Î¾ì½ê."
+#: src/version_usage.cc:261
+msgid ""
+" --metalink-location=LOCATION[,...] The location of the preferred server.\n"
+"                              A comma-deliminated list of locations is\n"
+"                              acceptable."
+msgstr ""
 
-#: src/version_usage.cc:260
+#: src/version_usage.cc:264
 msgid ""
 " --follow-metalink=true|false Set to false to prevent aria2 from\n"
 "                              entering Metalink mode even if the filename "
@@ -1645,117 +1654,101 @@ msgid ""
 "                              the downloaded file ends with .metalink.\n"
 "                              Default: true"
 msgstr ""
-" --follow-metalink=true|false  ¤³¤Î¥ª¥×¥·¥ç¥ó¤ò false ¤ËÀßÄê¤¹¤ë¤È, ¥À¥¦¥ó"
-"¥í¡¼¥É\n"
-"                              ¤·¤¿¥Õ¥¡¥¤¥ë¤Î³ÈÄ¥»Ò¤¬ .metalink ¤Ç¤¢¤Ã¤Æ¤â, "
+" --follow-metalink=true|false  ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ false ã«è¨­å®šã™ã‚‹ã¨, ãƒ€ã‚¦ãƒ³"
+"ãƒ­ãƒ¼ãƒ‰\n"
+"                              ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã®æ‹¡å¼µå­ãŒ .metalink ã§ã‚ã£ã¦ã‚‚, "
 "aria2\n"
-"                              ¤Ï, Metalink ¥â¡¼¥É¤ËÆş¤ê¤Ş¤»¤ó.\n"
-"                              ¥Ç¥Õ¥©¥ë¥ÈÃÍ: true"
-
-#: src/version_usage.cc:265
-msgid " -v, --version                Print the version number and exit."
-msgstr " -v, --version                ¥Ğ¡¼¥¸¥ç¥óÈÖ¹æ¤òÉ½¼¨¤·, ½ªÎ»¤·¤Ş¤¹."
-
-#: src/version_usage.cc:266
-msgid " -h, --help                   Print this message and exit."
-msgstr ""
-" -h, --help                   ¤³¤Î¥Ø¥ë¥×¥á¥Ã¥»¡¼¥¸¤òÉ½¼¨¤·, ½ªÎ»¤·¤Ş¤¹."
+"                              ã¯, Metalink ãƒ¢ãƒ¼ãƒ‰ã«å…¥ã‚Šã¾ã›ã‚“.\n"
+"                              ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤: true"
 
 #: src/version_usage.cc:269
+msgid " -v, --version                Print the version number and exit."
+msgstr " -v, --version                ãƒãƒ¼ã‚¸ãƒ§ãƒ³ç•ªå·ã‚’è¡¨ç¤ºã—, çµ‚äº†ã—ã¾ã™."
+
+#: src/version_usage.cc:270
+msgid " -h, --help                   Print this message and exit."
+msgstr ""
+" -h, --help                   ã“ã®ãƒ˜ãƒ«ãƒ—ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤ºã—, çµ‚äº†ã—ã¾ã™."
+
+#: src/version_usage.cc:273
 msgid ""
 " You can specify multiple URLs. All URLs must point to the same file\n"
 " or downloading will fail."
 msgstr ""
-" Ê£¿ô¤Î URL ¤ò»ØÄê¤Ç¤­¤Ş¤¹. ¤¿¤À¤·, ¤¹¤Ù¤Æ¤Î URL ¤¬Æ±¤¸¥Õ¥¡¥¤¥ë¤ò»Ø¤·¤Æ¤¤¤Ê¤±"
-"¤ì\n"
-" ¤Ğ¤Ê¤ê¤Ş¤»¤ó. ¤µ¤â¤Ê¤¯¤Ğ¥À¥¦¥ó¥í¡¼¥É¤Ï¼ºÇÔ¤·¤Ş¤¹."
+" è¤‡æ•°ã® URL ã‚’æŒ‡å®šã§ãã¾ã™. ãŸã ã—, ã™ã¹ã¦ã® URL ãŒåŒã˜ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡ã—ã¦ã„ãªã‘"
+"ã‚Œ\n"
+" ã°ãªã‚Šã¾ã›ã‚“. ã•ã‚‚ãªãã°ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã¯å¤±æ•—ã—ã¾ã™."
 
-#: src/version_usage.cc:272
+#: src/version_usage.cc:276
 msgid "Examples:"
-msgstr "Îã:"
-
-#: src/version_usage.cc:273
-msgid " Download a file using 1 connection:"
-msgstr " 1 ¥³¥Í¥¯¥·¥ç¥ó¤Ç¤Î¥À¥¦¥ó¥í¡¼¥É:"
-
-#: src/version_usage.cc:275
-msgid " Download a file using 2 connections:"
-msgstr " 2 ¥³¥Í¥¯¥·¥ç¥ó¤Ç¤Î¥À¥¦¥ó¥í¡¼¥É:"
+msgstr "ä¾‹:"
 
 #: src/version_usage.cc:277
-msgid ""
-" Download a file using 2 connections, each connects to a different server:"
-msgstr " Æó¤Ä¤Î°Û¤Ê¤ë¥µ¡¼¥Ğ¡¼¤ËÀÜÂ³¤·¤Æ¥À¥¦¥ó¥í¡¼¥É:"
+msgid " Download a file using 1 connection:"
+msgstr " 1 ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã§ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
 #: src/version_usage.cc:279
-msgid " You can mix up different protocols:"
-msgstr " °Û¤Ê¤ë¥×¥í¥È¥³¥ë¤òº®¹ç¤µ¤»¤Æ¥À¥¦¥ó¥í¡¼¥É:"
+msgid " Download a file using 2 connections:"
+msgstr " 2 ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã§ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
 #: src/version_usage.cc:281
-msgid " Parameterized URI:"
-msgstr " ¥Ñ¥é¥á¡¼¥¿²½¤µ¤ì¤¿ URI:"
+msgid ""
+" Download a file using 2 connections, each connects to a different server:"
+msgstr " äºŒã¤ã®ç•°ãªã‚‹ã‚µãƒ¼ãƒãƒ¼ã«æ¥ç¶šã—ã¦ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
 #: src/version_usage.cc:283
-msgid " Parameterized URI. -Z option is required in this case:"
-msgstr " ¥Ñ¥é¥á¡¼¥¿²½¤µ¤ì¤¿ URI. ¤³¤Î¾ì¹ç, -Z ¥ª¥×¥·¥ç¥ó¤¬É¬Í×:"
+msgid " You can mix up different protocols:"
+msgstr " ç•°ãªã‚‹ãƒ—ãƒ­ãƒˆã‚³ãƒ«ã‚’æ··åˆã•ã›ã¦ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
+
+#: src/version_usage.cc:285
+msgid " Parameterized URI:"
+msgstr " ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿åŒ–ã•ã‚ŒãŸ URI:"
 
 #: src/version_usage.cc:287
+msgid " Parameterized URI. -Z option is required in this case:"
+msgstr " ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿åŒ–ã•ã‚ŒãŸ URI. ã“ã®å ´åˆ, -Z ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒå¿…è¦:"
+
+#: src/version_usage.cc:291
 msgid " Download a torrent:"
-msgstr " torrent ¤ò¥À¥¦¥ó¥í¡¼¥É:"
-
-#: src/version_usage.cc:289
-msgid " Download a torrent using a local .torrent file:"
-msgstr " ¥í¡¼¥«¥ë .torrent ¥Õ¥¡¥¤¥ë¤ò»È¤Ã¤Æ¥À¥¦¥ó¥í¡¼¥É:"
-
-#: src/version_usage.cc:291 src/version_usage.cc:304
-msgid " Download only selected files:"
-msgstr " ¥Õ¥¡¥¤¥ë¤ò»ØÄê¤·¤Æ¥À¥¦¥ó¥í¡¼¥É:"
+msgstr " torrent ã‚’ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
 #: src/version_usage.cc:293
+msgid " Download a torrent using a local .torrent file:"
+msgstr " ãƒ­ãƒ¼ã‚«ãƒ« .torrent ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½¿ã£ã¦ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
+
+#: src/version_usage.cc:295 src/version_usage.cc:308
+msgid " Download only selected files:"
+msgstr " ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡å®šã—ã¦ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
+
+#: src/version_usage.cc:297
 msgid " Print file listing of .torrent file:"
-msgstr " ¤³¤Î .torrent ¥Õ¥¡¥¤¥ë¤Ë´Ş¤Ş¤ì¤ë¥Õ¥¡¥¤¥ë¥ê¥¹¥È¤òÉ½¼¨:"
-
-#: src/version_usage.cc:298
-msgid " Metalink downloading:"
-msgstr " Metalink ¤Ç¥À¥¦¥ó¥í¡¼¥É:"
-
-#: src/version_usage.cc:300
-msgid " Download a file using local .metalink file:"
-msgstr " ¥í¡¼¥«¥ë .metalink ¥Õ¥¡¥¤¥ë¤ò»È¤Ã¤Æ¥À¥¦¥ó¥í¡¼¥É:"
+msgstr " ã“ã® .torrent ãƒ•ã‚¡ã‚¤ãƒ«ã«å«ã¾ã‚Œã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆã‚’è¡¨ç¤º:"
 
 #: src/version_usage.cc:302
-msgid " Metalink downloading with preferences:"
-msgstr " ¥æ¡¼¥¶ÀßÄê¤Ë¤è¤ë Metalink ¥À¥¦¥ó¥í¡¼¥É:"
+msgid " Metalink downloading:"
+msgstr " Metalink ã§ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
+
+#: src/version_usage.cc:304
+msgid " Download a file using local .metalink file:"
+msgstr " ãƒ­ãƒ¼ã‚«ãƒ« .metalink ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½¿ã£ã¦ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
 #: src/version_usage.cc:306
-msgid " Download only selected files using index:"
-msgstr " ¥Õ¥¡¥¤¥ë¤Î¥¤¥ó¥Ç¥Ã¥¯¥¹¤ò»ØÄê¤·¤Æ¥À¥¦¥ó¥í¡¼¥É:"
+msgid " Metalink downloading with preferences:"
+msgstr " ãƒ¦ãƒ¼ã‚¶è¨­å®šã«ã‚ˆã‚‹ Metalink ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
-#: src/version_usage.cc:308
-msgid " Print file listing of .metalink file:"
-msgstr " ¤³¤Î .metalink ¥Õ¥¡¥¤¥ë¤Ë´Ş¤Ş¤ì¤ë¥Õ¥¡¥¤¥ë¥ê¥¹¥È¤òÉ½¼¨:"
+#: src/version_usage.cc:310
+msgid " Download only selected files using index:"
+msgstr " ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æŒ‡å®šã—ã¦ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰:"
 
 #: src/version_usage.cc:312
+msgid " Print file listing of .metalink file:"
+msgstr " ã“ã® .metalink ãƒ•ã‚¡ã‚¤ãƒ«ã«å«ã¾ã‚Œã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆã‚’è¡¨ç¤º:"
+
+#: src/version_usage.cc:316
 #, c-format
 msgid "Report bugs to %s"
-msgstr "¥Ğ¥°¥ì¥İ¡¼¥È¤Ï¤³¤Á¤é¤Ø: %s"
+msgstr "ãƒã‚°ãƒ¬ãƒãƒ¼ãƒˆã¯ã“ã¡ã‚‰ã¸: %s"
 
-#~ msgid ""
-#~ " Specify files in multi-file torrent to download. Use in conjunction with "
-#~ "the\n"
-#~ " -T option. This argument is ignored if you specify the --select-file "
-#~ "option."
-#~ msgstr ""
-#~ " multi-file torrent ¤Î¤È¤­, ¥À¥¦¥ó¥í¡¼¥É¤¹¤ë¥Õ¥¡¥¤¥ë¤ò»ØÄê¤·¤Ş¤¹. -T ¥ª¥×"
-#~ "¥·¥ç¥ó\n"
-#~ " ¤È¶¦¤Ë»ÈÍÑ¤·¤Ş¤¹. --select-file ¥ª¥×¥·¥ç¥ó¤ÈÊ»ÍÑ¤Ï¤Ç¤­¤Ş¤»¤ó."
-
-#~ msgid ""
-#~ "\n"
-#~ "stopping application...\n"
-#~ msgstr ""
-#~ "\n"
-#~ "¥¢¥×¥ê¥±¡¼¥·¥ç¥ó¤ò½ªÎ»¤·¤Æ¤¤¤Ş¤¹...\n"
-
-#~ msgid "done\n"
-#~ msgstr "´°Î»\n"
+#: src/BtSetup.cc:111
+msgid "Errors occurred while binding port.\n"
+msgstr "ãƒãƒ¼ãƒˆã‚’ãƒã‚¤ãƒ³ãƒ‰ä¸­ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ.\n"

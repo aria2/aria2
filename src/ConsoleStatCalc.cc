@@ -60,7 +60,6 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
   if(requestGroupMan->countRequestGroup() > 0) {
     RequestGroupHandle firstRequestGroup = requestGroupMan->getRequestGroup(0);
     TransferStat stat = firstRequestGroup->calculateStat();
-    //int32_t dlSpeed = firstRequestGroup->calculateDownloadSpeed();
     int32_t eta = 0;
     if(firstRequestGroup->getTotalLength() > 0 && stat.getDownloadSpeed() > 0) {
       eta = (firstRequestGroup->getTotalLength()-firstRequestGroup->getCompletedLength())/stat.getDownloadSpeed();

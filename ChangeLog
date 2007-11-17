@@ -1,3 +1,21 @@
+2007-11-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Implemented. Now -c option works fine.
+	* src/DefaultPieceStorage.cc (markPiecesDone)
+	* test/DefaultPieceStorageTest.cc
+
+	Removed.
+	* src/SegmentMan.{h, cc}
+	(markAllPiecesDone)
+	(markPieceDone)
+
+	Synchronized po files with 
+	https://translations.launchpad.net/aria2/trunk/+pots/aria2c
+	* src/fr.po
+	* src/ru.po
+	* src/de.po
+	* src/ja.po
+	
 2007-11-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added ifdef and some modifications to compile without BitTorrent,

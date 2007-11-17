@@ -545,8 +545,22 @@ void DefaultPieceStorage::markAllPiecesDone()
 
 void DefaultPieceStorage::markPiecesDone(int64_t length)
 {
-  // TODO implement this
-  abort();
+  if(length == bitfieldMan->getTotalLength()) {
+    bitfieldMan->setAllBit();
+  } else {
+    int32_t numPiece = length/bitfieldMan->getBlockLength();
+    if(numPiece > 0) {
+      bitfieldMan->setBitRange(0, numPiece-1);
+    }
+    int32_t r = (length%bitfieldMan->getBlockLength())/Piece::BLOCK_LENGTH;
+    if(r > 0) {
+      PieceHandle p = new Piece(numPiece, bitfieldMan->getBlockLength(numPiece));
+      for(int32_t i = 0; i < r; ++i) {
+	p->completeBlock(i);
+      }
+      addUsedPiece(p);
+    }
+  }
 }
 
 void DefaultPieceStorage::markPieceMissing(int32_t index)

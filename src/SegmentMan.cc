@@ -259,36 +259,6 @@ int32_t SegmentMan::calculateDownloadSpeed() const {
   return speed;
 }
 
-void SegmentMan::markAllPiecesDone()
-{
-  _pieceStorage->markAllPiecesDone();
-}
-
-void SegmentMan::markPieceDone(int64_t length)
-{
-  // TODO implement this function later
-  /*
-  if(bitfield) {
-    if(length == bitfield->getTotalLength()) {
-      bitfield->setAllBit();
-    } else {
-      bitfield->clearAllBit();
-      int32_t numSegment = length/bitfield->getBlockLength();
-      int32_t remainingLength = length%bitfield->getBlockLength();
-      bitfield->setBitRange(0, numSegment-1);
-      if(remainingLength > 0) {
-	SegmentHandle segment = new Segment();
-	segment->index = numSegment;
-	segment->length = bitfield->getBlockLength(numSegment);
-	segment->segmentLength = bitfield->getBlockLength();
-	segment->writtenLength = remainingLength;
-	usedSegmentEntries.push_back(new SegmentEntry(0, segment));
-      }
-    }
-  }
-  */
-}
-
 SegmentEntryHandle SegmentMan::getSegmentEntryByIndex(int32_t index)
 {
   for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
