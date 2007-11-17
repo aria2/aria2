@@ -1112,7 +1112,6 @@ msgstr ""
 "                              Défaut: 0"
 
 #: src/main.cc:189
-#, fuzzy
 msgid ""
 " --file-allocation=METHOD     Specify file allocation method. METHOD is "
 "either\n"
@@ -1134,27 +1133,7 @@ msgstr ""
 "fichier.\n"
 "                              Ceci peut prendre du temps selon la taille du "
 "fichier\n"
-"                              Défaut: none"
-
-#: src/main.cc:195
-#, fuzzy
-msgid ""
-" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
-"                              size is smaller than SIZE.\n"
-"                              You can append K or M(1K = 1024, 1M = 1024K).\n"
-"                              BitTorrent downloads ignore this option.\n"
-"                              Default: 5M"
-msgstr ""
-" --lowest-speed-limit=SPEED   Fermer la connexiion si la vitesse de "
-"téléchargement est inférieure à \n"
-"                              ou égal à cette valeur(octets par sec).\n"
-"                              0 veut dire que aria2 n'a pas de vitesse "
-"minimale.\n"
-"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Cette option n'affecte pas le téléchargement "
-"BitTorrent .\n"
-"                              Default: 0"
+"                              Défaut: prealloc"
 
 #: src/main.cc:200
 msgid ""
@@ -1614,10 +1593,3 @@ msgstr ""
 msgid "done\n"
 msgstr "Terminé\n"
 
-#~ msgid ""
-#~ " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects to all\n"
-#~ "                              URLs."
-#~ msgstr ""
-#~ " --http-proxy=HOST:PORT       Utiliser un serveur proxy HTTP. Ceci "
-#~ "affecte tous les\n"
-#~ "                              URLs."
