@@ -65,6 +65,11 @@ public:
   virtual void clear() = 0;
 
   virtual PieceHandle getPiece() const = 0;
+
+  bool operator==(const Segment& segment) const
+  {
+    return getIndex() == segment.getIndex();
+  }
 };
 
 typedef SharedHandle<Segment> SegmentHandle;

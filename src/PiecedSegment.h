@@ -83,11 +83,6 @@ public:
   virtual void clear();
 
   virtual PieceHandle getPiece() const;
-
-  bool operator==(const PiecedSegment& segment) const;
-
-  bool operator!=(const PiecedSegment& segment) const;
-
 };
 
 typedef SharedHandle<PiecedSegment> PiecedSegmentHandle;

@@ -99,12 +99,23 @@ void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags)
 
 int32_t AbstractDiskWriter::writeDataInternal(const unsigned char* data, int32_t len)
 {
-  return write(fd, data, len);
+  int32_t writtenLength = 0;
+  while(writtenLength < len) {
+    int32_t ret = 0;
+    while((ret = write(fd, data+writtenLength, len-writtenLength)) == -1 && errno == EINTR);
+    if(ret == -1) {
+      return -1;
+    }
+    writtenLength += ret;
+  }
+  return writtenLength;
 }
 
 int32_t AbstractDiskWriter::readDataInternal(unsigned char* data, int32_t len)
 {
-  return read(fd, data, len);
+  int32_t ret = 0;
+  while((ret = read(fd, data, len)) == -1 && errno == EINTR);
+  return ret;
 }
 
 void AbstractDiskWriter::seek(int64_t offset)

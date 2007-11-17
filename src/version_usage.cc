@@ -210,7 +210,8 @@ void showUsage() {
 	    "                              the same used by Netscape and Mozilla.") << endl;
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
   cout << _(" -S, --show-files             Print file listing of .torrent or .metalink file\n"
-	    "                              and exit.") << endl;
+	    "                              and exit. More detailed information will be listed\n"
+	    "                              in case of torrent file.") << endl;
   cout << _(" --select-file=INDEX...       Set file to download by specifing its index.\n"
 	    "                              You can find the file index using the\n"
 	    "                              --show-files option. Multiple indexes can be\n"
@@ -270,8 +271,12 @@ void showUsage() {
   cout << _(" -h, --help                   Print this message and exit.") << endl;
   cout << endl;
   cout << "URL:" << endl;
-  cout << _(" You can specify multiple URLs. All URLs must point to the same file\n"
-	    " or downloading will fail.") << endl;
+  cout << _(" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
+	    " point to the same file or downloading will fail.") << endl;
+  cout << _(" You can specify both torrent file with -T option and URLs. By doing this,\n"
+	    " download a file from both torrent swarm and http/ftp server at the same time,\n"
+	    " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
+	    " only single file torrent can be integrated with http/ftp.") << endl;
   cout << endl;
   cout << _("Examples:") << endl;
   cout << _(" Download a file using 1 connection:") << endl;
@@ -295,7 +300,9 @@ void showUsage() {
   cout << _(" Download only selected files:") << endl;
   cout << "  aria2c -T test.torrent dir/file1.zip dir/file2.zip" << endl;
   cout << _(" Print file listing of .torrent file:") << endl;
-  cout << "  aria2c -T test.torrent -S" << endl;  
+  cout << "  aria2c -T test.torrent -S" << endl;
+  cout << _(" Download a file using torrent and http/ftp server") << endl;
+  cout << "  aria2c -T test.torrent http://host1/file ftp://host2/file" << endl;
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   cout << endl;

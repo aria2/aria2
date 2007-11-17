@@ -1,3 +1,22 @@
+2007-11-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Removed.
+	* src/PiecedSegment.{h, cc} (operator==)(operator!=)
+
+	Use Segment::operator==()
+	* src/HttpConnection.cc
+	* src/Segment.h
+
+	Updated usage
+	* src/version_usage.cc
+
+	Added EINTR treatment.
+	* src/SocketCore.cc
+	* src/AbstractDiskWriter.cc
+
+	Rewritten.
+	* src/Util.cc (rangedFileCopy)
+	
 2007-11-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed typo.

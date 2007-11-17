@@ -57,7 +57,6 @@ bool FileAllocationDispatcherCommand::execute()
   if(!_e->_fileAllocationMan->isFileAllocationBeingExecuted() &&
      _e->_fileAllocationMan->nextFileAllocationEntryExists()) {
     FileAllocationEntryHandle entry = _e->_fileAllocationMan->popNextFileAllocationEntry();
-    // TODO we have to change message
     int32_t newCUID = CUIDCounterSingletonHolder::instance()->newID();
     logger->info(MSG_FILE_ALLOCATION_DISPATCH, newCUID);
     FileAllocationCommand* command =

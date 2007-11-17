@@ -129,11 +129,9 @@ bool HttpConnection::isIssued(const SegmentHandle& segment) const
   for(HttpRequestEntries::const_iterator itr = outstandingHttpRequests.begin();
       itr != outstandingHttpRequests.end(); ++itr) {
     HttpRequestHandle httpRequest = (*itr)->getHttpRequest();
-    // TODO fix this using operator==
-    if(httpRequest->getSegment().get() == segment.get()) {
+    if(httpRequest->getSegment() == segment) {
       return true;
     }
   }
   return false;
 }
-

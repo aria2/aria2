@@ -95,13 +95,3 @@ PieceHandle PiecedSegment::getPiece() const
 {
   return _piece;
 }
-
-bool PiecedSegment::operator==(const PiecedSegment& segment) const
-{
-  return _piece == segment._piece;
-}
-
-bool PiecedSegment::operator!=(const PiecedSegment& segment) const
-{
-  return !(*this == segment);
-}

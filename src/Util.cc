@@ -40,6 +40,7 @@
 #include "a2time.h"
 #include "DlAbortEx.h"
 #include "BitfieldMan.h"
+#include "DefaultDiskWriter.h"
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -343,52 +344,35 @@ void Util::fileCopy(const string& dest, const string& src) {
 void Util::rangedFileCopy(const string& dest, const string& src, int64_t srcOffset, int64_t length)
 {
   int32_t bufSize = 4096;
-  char buf[bufSize];
-  int32_t destFd = -1;
-  int32_t srcFd = -1;
-  try {
-    if((destFd = open(dest.c_str(), O_CREAT|O_WRONLY|O_TRUNC|O_BINARY, OPEN_MODE)) == -1) {
-      throw new DlAbortEx(EX_FILE_OPEN, dest.c_str(), strerror(errno));
+  unsigned char buf[bufSize];
+  DefaultDiskWriter srcdw;
+  DefaultDiskWriter destdw;
+
+  srcdw.openExistingFile(src);
+  destdw.initAndOpenFile(dest);
+
+  int32_t x = length/bufSize;
+  int32_t r = length%bufSize;
+
+  int64_t initialOffset = srcOffset;
+  for(int32_t i = 0; i < x; ++i) {
+    int32_t readLength = 0;
+    while(readLength < bufSize) {
+      int32_t ret = srcdw.readData(buf, bufSize-readLength, srcOffset);
+      destdw.writeData(buf, ret, srcOffset-initialOffset);
+      srcOffset += ret;
+      readLength += ret;
     }
-    if((srcFd = open(src.c_str(), O_RDONLY|O_BINARY, OPEN_MODE)) == -1) {
-      throw new DlAbortEx(EX_FILE_OPEN, src.c_str(), strerror(errno));
-    }
-    if(lseek(srcFd, srcOffset, SEEK_SET) != srcOffset) {
-      throw new DlAbortEx(EX_FILE_SEEK, src.c_str(), strerror(errno));
-    }
-    int32_t x = length/bufSize;
-    int32_t r = length%bufSize;
-    for(int32_t i = 0; i < x; i++) {
-      int32_t readLength;
-      if((readLength = read(srcFd, buf, bufSize)) == -1 || readLength != bufSize) {
-	throw new DlAbortEx(EX_FILE_READ, src.c_str(), strerror(errno));
-      }
-      if(write(destFd, buf, readLength) == -1) {
-	throw new DlAbortEx(EX_FILE_WRITE, dest.c_str(), strerror(errno));
-      }
-    }
-    if(r > 0) {
-      int32_t readLength;
-      if((readLength = read(srcFd, buf, r)) == -1 || readLength != r) {
-	throw new DlAbortEx(EX_FILE_READ, src.c_str(), strerror(errno));
-      }
-      if(write(destFd, buf, r) == -1) {
-	throw new DlAbortEx(EX_FILE_WRITE, dest.c_str(), strerror(errno));
-      }
-    }
-    close(srcFd);
-    close(destFd);
-    srcFd = -1;
-    destFd = -1;
-  } catch(RecoverableException* e) {
-    if(srcFd != -1) {
-      close(srcFd);
-    }
-    if(destFd != -1) {
-      close(destFd);
-    }
-    throw;
   }
+  if(r > 0) {
+    int32_t readLength = 0;
+    while(readLength < r) { 
+      int32_t ret = srcdw.readData(buf, r-readLength, srcOffset);
+      destdw.writeData(buf, ret, srcOffset-initialOffset);
+      srcOffset += ret;
+      readLength += ret;
+    }
+  }     
 }
 
 bool Util::isPowerOf(int32_t num, int32_t base) {

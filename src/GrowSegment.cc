@@ -57,4 +57,3 @@ PieceHandle GrowSegment::getPiece() const
 {
   return _piece;
 }
-

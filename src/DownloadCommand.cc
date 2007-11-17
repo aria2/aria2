@@ -79,7 +79,6 @@ DownloadCommand::~DownloadCommand() {
 }
 
 bool DownloadCommand::executeInternal() {
-  // TODO we need to specify the sum of all segmentMan's download speed here.
   if(maxDownloadSpeedLimit > 0 &&
      maxDownloadSpeedLimit < _requestGroup->getSegmentMan()->calculateDownloadSpeed()) {
     e->commands.push_back(this);

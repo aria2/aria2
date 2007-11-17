@@ -65,8 +65,6 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
   if(btContext.isNull()) {
     return commands;
   }
-  // TODO following process is moved to BtSetup
-
   // commands
   commands.push_back(new TrackerWatcherCommand(CUIDCounterSingletonHolder::instance()->newID(),
 					       requestGroup,

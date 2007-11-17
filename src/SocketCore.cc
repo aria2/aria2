@@ -95,7 +95,7 @@ void SocketCore::beginListen(int32_t port)
 #ifdef __MINGW32__
     ::closesocket(sockfd);
 #else
-    close(sockfd);
+    while(close(sockfd) == -1 && errno == EINTR);
 #endif // __MINGW32__
     sockfd = -1;
     throw new DlAbortEx(EX_SOCKET_SET_OPT, errorMsg());
@@ -124,10 +124,10 @@ SocketCore* SocketCore::acceptConnection() const
   socklen_t len = sizeof(sockaddr);
   memset((char*)&sockaddr, 0, sizeof(sockaddr));
   int32_t fd;
-  if((fd = accept(sockfd, (struct sockaddr*)&sockaddr, &len)) == -1) {
+  while((fd = accept(sockfd, (struct sockaddr*)&sockaddr, &len)) == -1 && errno == EINTR);
+  if(fd == -1) {
     throw new DlAbortEx(EX_SOCKET_ACCEPT, errorMsg());
   }
-
   SocketCore* s = new SocketCore(fd);
   return s;
 }
@@ -165,7 +165,7 @@ void SocketCore::establishConnection(const string& host, int32_t port)
   }
   SOCKOPT_T sockopt = 1;
   if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
-    close(sockfd);
+    while(close(sockfd) == -1 && errno == EINTR);
     sockfd = -1;
     throw new DlAbortEx(EX_SOCKET_SET_OPT, errorMsg());
   }
@@ -250,9 +250,9 @@ void SocketCore::closeConnection()
 #endif // HAVE_LIBGNUTLS
   if(sockfd != -1) {
 #ifdef __MINGW32__
-  ::closesocket(sockfd);
+    ::closesocket(sockfd);
 #else
-    close(sockfd);
+    while(close(sockfd) == -1 && errno == EINTR);
 #endif // __MINGW32__
     sockfd = -1;
   }
@@ -331,7 +331,9 @@ void SocketCore::writeData(const char* data, int32_t len)
   int32_t ret = 0;
 
   if(!secure) {
-    if((ret = send(sockfd, data, (size_t)len, 0)) != len) {
+    while((ret = send(sockfd, data, (size_t)len, 0)) == -1 && errno == EINTR);
+    // TODO assuming Blocking mode.
+    if(ret != len) {
       throw new DlRetryEx(EX_SOCKET_SEND, errorMsg());
     }
   } else {
@@ -354,8 +356,9 @@ void SocketCore::readData(char* data, int32_t& len)
 {
   int32_t ret = 0;
 
-  if(!secure) {
-    if ((ret = recv(sockfd, data, (size_t)len, 0)) < 0) {
+  if(!secure) {    
+    while((ret = recv(sockfd, data, (size_t)len, 0)) == -1 && errno == EINTR);
+    if(ret == -1) {
       throw new DlRetryEx(EX_SOCKET_RECV, errorMsg());
     }
   } else {
@@ -381,7 +384,8 @@ void SocketCore::peekData(char* data, int32_t& len)
   int32_t ret = 0;
 
   if(!secure) {
-    if ((ret = recv(sockfd, data, (size_t)len, MSG_PEEK)) < 0) {
+    while((ret = recv(sockfd, data, (size_t)len, MSG_PEEK)) == -1 && errno == EINTR);
+    if(ret == -1) {
       throw new DlRetryEx(EX_SOCKET_PEEK, errorMsg());
     }
   } else {

@@ -82,7 +82,6 @@ int32_t ByteArrayDiskWriter::readData(unsigned char* data, int32_t len, int64_t 
 {
   buf.seekg(position, ios::beg);
   buf.read(reinterpret_cast<char*>(data), len);
-  // TODO we have to call buf.clear() here? YES
   buf.clear();
   return buf.gcount();
 }
