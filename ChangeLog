@@ -6,6 +6,8 @@
 	* po/de.po: Now utf-8 encoding
 	* po/ja.po: Now utf-8 encoding
 
+	* Release 0.11.5
+	
 2007-11-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	urlencode the given url inside Request::parseUrl(...)
