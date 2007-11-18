@@ -1,5 +1,24 @@
 2007-11-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/version_usage.cc
+	(showVersion): Reworked.
+	(showUsage): Added examples.
+
+	Removed Hint for total length and file name.
+	* src/Metalink2RequestGroup.cc
+	* src/RequestGroup.{h, cc}
+	* src/HttpResponseCommand.cc
+	* src/FtpNegotiationCommand.cc
+
+	Now --follow-torrent and --follow-metalink option work properly.
+	* src/RequestGroup.cc
+
+	Updated man page
+	* doc/aria2c.1.txt
+	* doc/aria2c.1
+	
+2007-11-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed.
 	* src/PiecedSegment.{h, cc} (operator==)(operator!=)
 

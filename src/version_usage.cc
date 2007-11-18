@@ -39,16 +39,10 @@
 #endif // ENABLE_MESSAGE_DIGEST
 
 void showVersion() {
-  cout << PACKAGE << _(" version ") << PACKAGE_VERSION << endl;
-  cout << "**Configuration**" << endl;
-  cout << FeatureConfig::getInstance()->getConfigurationSummary();
-#ifdef ENABLE_MESSAGE_DIGEST
-  cout << "message digest algorithms: " << MessageDigestContext::getSupportedAlgoString() << endl;
-#endif // ENABLE_MESSAGE_DIGEST
-  cout << endl;
-  cout << "Copyright (C) 2006, 2007 Tatsuhiro Tsujikawa" << endl;
-  cout << endl;
-  cout <<
+  cout << PACKAGE << _(" version ") << PACKAGE_VERSION << "\n"
+       << "Copyright (C) 2006, 2007 Tatsuhiro Tsujikawa" << "\n"
+       << "\n"
+       <<
     _("This program is free software; you can redistribute it and/or modify\n"
       "it under the terms of the GNU General Public License as published by\n"
       "the Free Software Foundation; either version 2 of the License, or\n"
@@ -61,12 +55,32 @@ void showVersion() {
       "\n"
       "You should have received a copy of the GNU General Public License\n"
       "along with this program; if not, write to the Free Software\n"
-      "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n");
-  cout << endl;
-  cout << _("Contact Info:") << endl;
-  cout << "Tatsuhiro Tsujikawa <tujikawa at users dot sourceforge dot net>" << endl;
-  cout << endl;
+      "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n")
+       << "\n"
 
+       <<
+    "In addition, as a special exception, the copyright holders give\n"
+    "permission to link the code of portions of this program with the\n"
+    "OpenSSL library under certain conditions as described in each\n"
+    "individual source file, and distribute linked combinations\n"
+    "including the two.\n"
+    "You must obey the GNU General Public License in all respects\n"
+    "for all of the code used other than OpenSSL.  If you modify\n"
+    "file(s) with this exception, you may extend this exception to your\n"
+    "version of the file(s), but you are not obligated to do so.  If you\n"
+    "do not wish to do so, delete this exception statement from your\n"
+    "version.  If you delete this exception statement from all source\n"
+    "files in the program, then also delete it here.\n"
+       << "\n"
+       << "** Configuration **" << "\n"
+       << FeatureConfig::getInstance()->getConfigurationSummary()
+#ifdef ENABLE_MESSAGE_DIGEST
+       << "message digest algorithms: " << MessageDigestContext::getSupportedAlgoString() << "\n"
+#endif // ENABLE_MESSAGE_DIGEST
+       << "\n"
+       << _("Contact Info:") << "\n"
+       << "Tatsuhiro Tsujikawa <tujikawa at users dot sourceforge dot net>"
+       << endl;
 }
 
 void showUsage() {
@@ -183,8 +197,6 @@ void showUsage() {
 	    "                              and Metalink downloads with chunk checksums.\n"
 	    "                              Use this option to re-download a damaged portion\n"
 	    "                              of a file.\n"
-	    "                              You may need to specify --allow-overwrite=true\n"
-	    "                              if the .aria2 file doesn't exist.\n"
 	    "                              Default: false") << endl;
   cout << _(" --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 	    "                              downloading a file in Metalink mode. This option\n"
@@ -310,6 +322,9 @@ void showUsage() {
   cout << "  aria2c http://AAA.BBB.CCC/file.metalink" << endl;
   cout << _(" Download a file using local .metalink file:") << endl;
   cout << "  aria2c -M test.metalink" << endl;
+
+  cout << _(" Download a file using a local .metalink file with preferred server locations:") << endl;
+  cout << "  aria2c -M test.metalink --metalink-location=JP,US" << endl;
   cout << _(" Metalink downloading with preferences:") << endl;
   cout << "  aria2c -M test.metalink --metalink-version=1.1.1 --metalink-language=en-US" << endl;
   cout << _(" Download only selected files:") << endl;

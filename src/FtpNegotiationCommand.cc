@@ -208,8 +208,6 @@ bool FtpNegotiationCommand::recvSize() {
 
     _requestGroup->initPieceStorage();
 
-    // validate totalsize against hintTotalSize if it is provided.
-    _requestGroup->validateTotalLengthByHint(size);
     // TODO Is this really necessary?
     if(req->getMethod() == Request::METHOD_HEAD) {
       sequence = SEQ_HEAD_OK;

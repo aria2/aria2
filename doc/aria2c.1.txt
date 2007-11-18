@@ -4,26 +4,27 @@ Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
 
 NAME
 ----
-aria2c - The high speed download utility
+aria2c - The ultra fast download utility
 
 SYNOPSIS
 --------
 -----------------------------------------
 aria2c [OPTIONS] URL ...
-aria2c [OPTIONS] -T TORRENT_FILE FILE ...
+aria2c [OPTIONS] -T TORRENT_FILE URL ...
 aria2c [OPTIONS] -M METALINK_FILE
 -----------------------------------------
 
 DESCRIPTION
 -----------
-aria2 is a utility for downloading files. It has completely new design
-concept from its predecessor, Aria, and is written from scratch.
-aria2 has a segmented downloading engine in its core.
-It can download one file from multiple URLs or multiple connections from one
-URL. This results in very high speed downloading, much faster than ordinary
-browsers. This engine in was implemented in a single-thread model.
-The architecture is clean and easy to extend. aria2 currently supports HTTP,
-FTP, and BitTorrent. It also supports Metalink version 3.0.
+aria2 is a utility for downloading files.
+The supporting protocols are http(s)/ftp/BitTorrent/Metalink.
+aria2 has powerful segmented downloading ability, downloading a file
+from multiple sources and multiple protocols, utilizing your download bandwidth to the max.
+It even supports downloading a file from http/ftp and BitTorrent at the same time, while the data downloaded form http/ftp is uploaded to BitTorrent swarm.
+
+aria2 also provides most reliable http/ftp downloading experience ever.
+Using Metalink's chunk checksums, aria2 automatically validates chunk of data
+while downloading like BitTorrent.
 
 Please visit the project web site at http://aria2.sourceforge.net/
 
@@ -172,14 +173,20 @@ http://host/image[000-100:2].img
                               required.
                               Default: false
 
+ --enable-http-keep-alive[=true|false]::
+	Enable HTTP/1.1 persistent connection.
+	Default: false
+
+ --enable-http-pipelining[=true|false]::
+	Enable HTTP/1.1 pipelining.
+	Default: false
+
  --check-integrity=true|false::
   Check file integrity by validating piece hash.
                               This option only affects in BitTorrent downloads
                               and Metalink downloads with chunk checksums.
                               Use this option to re-download a damaged portion
                               of a file.
-                              You may need to specify --allow-overwrite=true
-                              if the .aria2 file doesn't exist.
                               Default: false
 
  --realtime-chunk-checksum=true|false::
@@ -309,12 +316,12 @@ http://host/image[000-100:2].img
                    Print this message and exit.
 
 URL::
- You can specify multiple URLs. All URLs must point to the same file
- or downloading will fail.
-
-FILE::
- Specify files in multi-file torrent to download. Use in conjunction with the
- -T option. This argument is ignored if you specify the --select-file option.
+ You can specify multiple URLs. Unless you specify -Z option, all URLs must
+ point to the same file or downloading will fail.
+ You can specify both torrent file with -T option and URLs. By doing this,
+ download a file from both torrent swarm and http/ftp server at the same time,
+ while the data from http/ftp are uploaded to the torrent swarm. Note that
+ only single file torrent can be integrated with http/ftp.
 
 EXAMPLES
 --------
@@ -348,11 +355,15 @@ EXAMPLES
   aria2c -T test.torrent --select-file 1,3-5
  Print file listing of .torrent file::
   aria2c -T test.torrent -S
+ Download a file using torrent and http/ftp server
+  aria2c -T test.torrent http://host1/file ftp://host2/file
 
  Metalink downloading::
   aria2c --lowest-speed-limit 10K http://AAA.BBB.CCC/file.metalink
  Download a file using a local .metalink file::
   aria2c -M test.metalink
+ Download a file using a local .metalink file with preferred server locations::
+  aria2c -M test.metalink --metalink-location=JP,US
  Metalink downloading with preferences::
   aria2c -M test.metalink --metalink-version=1.1.1 --metalink-language=en-US
  Download only selected files::

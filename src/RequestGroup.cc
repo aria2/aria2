@@ -80,7 +80,6 @@ int32_t RequestGroup::_gidCounter = 0;
 RequestGroup::RequestGroup(const Option* option,
 			   const Strings& uris):
   _gid(++_gidCounter),
-  _hintTotalLength(0),
   _uris(uris),
   _numConcurrentCommand(0),
   _numStreamConnection(0),
@@ -462,16 +461,6 @@ void RequestGroup::validateTotalLength(int64_t actualTotalLength) const
   validateTotalLength(getTotalLength(), actualTotalLength);
 }
 
-void RequestGroup::validateFilenameByHint(const string& actualFilename) const
-{
-  validateFilename(_hintFilename, actualFilename);
-}
-
-void RequestGroup::validateTotalLengthByHint(int64_t actualTotalLength) const
-{
-  validateTotalLength(_hintTotalLength, actualTotalLength);
-}
-
 void RequestGroup::increaseStreamConnection()
 {
   ++_numStreamConnection;
@@ -586,10 +575,14 @@ RequestGroups RequestGroup::postDownloadProcessing()
 void RequestGroup::initializePostDownloadHandler()
 {
 #ifdef ENABLE_BITTORRENT
-  _postDownloadHandlers.push_back(new BtPostDownloadHandler(_option));
+  if(_option->get(PREF_FOLLOW_TORRENT) == V_TRUE) {
+    _postDownloadHandlers.push_back(new BtPostDownloadHandler(_option));
+  }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-  _postDownloadHandlers.push_back(new MetalinkPostDownloadHandler(_option));
+  if(_option->get(PREF_FOLLOW_METALINK) == V_TRUE) {
+    _postDownloadHandlers.push_back(new MetalinkPostDownloadHandler(_option));
+  }
 #endif // ENABLE_METALINK
 }
 

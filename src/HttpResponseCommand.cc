@@ -87,9 +87,7 @@ bool HttpResponseCommand::executeInternal()
     return prepareForRetry(0);
   }
   if(_requestGroup->getPieceStorage().isNull()) {
-    // validate totalsize against hintTotalSize if it is provided.
     int64_t totalLength = httpResponse->getEntityLength();
-    _requestGroup->validateTotalLengthByHint(totalLength);
     SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
     dctx->setTotalLength(totalLength);
     dctx->setFilename(httpResponse->determinFilename());

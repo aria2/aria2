@@ -74,14 +74,6 @@ private:
 
   int32_t _gid;
 
-  /**
-   * Hint for total length and filename.
-   * These values are used to verify whether the file http/ftp server sends back
-   * is correct one.
-   */
-  int64_t _hintTotalLength;
-  string _hintFilename;
-
   Strings _uris;
   Strings _spentUris;
 
@@ -166,26 +158,6 @@ public:
 
   int64_t getCompletedLength() const;
 
-  const string& getHintFilename() const
-  {
-    return _hintFilename;
-  }
-
-  void setHintFilename(const string& filename)
-  {
-    _hintFilename = filename;
-  }
-
-  int64_t getHintTotalLength() const
-  {
-    return _hintTotalLength;
-  }
-
-  void setHintTotalLength(int64_t totalLength)
-  {
-    _hintTotalLength = totalLength;
-  }
-
   const Strings& getRemainingUris() const
   {
     return _uris;
@@ -200,19 +172,12 @@ public:
 
   /**
    * Compares expected filename with specified actualFilename.
-   * The expected filename refers to SegmentMan::filename.
+   * The expected filename refers to FileEntry::getBasename() of the first
+   * element of DownloadContext::getFileEntries()
    */
   void validateFilename(const string& actualFilename) const;
 
   void validateTotalLength(int64_t actualTotalLength) const;
-
-  /**
-   * Compares expected filename with specified actualFilename.
-   * The expected filename refers to RequestGroup::hintFilename.
-   */
-  void validateFilenameByHint(const string& actualFilename) const;
-
-  void validateTotalLengthByHint(int64_t actualTotalLength) const;
 
   void setSegmentManFactory(const SegmentManFactoryHandle& segmentManFactory);
 

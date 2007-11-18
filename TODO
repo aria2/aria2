@@ -56,5 +56,4 @@
   FatalException .... Program should abort.
 
 -- remaining issues to be implemented for 0.12.0 release
-* Update man page
 * Update translation

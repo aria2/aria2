@@ -184,7 +184,6 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
     }
 #endif // ENABLE_MESSAGE_DIGEST
     rg->setDownloadContext(dctx);
-    rg->setHintTotalLength(entry->getLength());
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :
 				min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));

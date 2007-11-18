@@ -1,5 +1,4 @@
 src/OptionHandlerImpl.h
-src/RequestInfo.h
 src/message.h
 src/DownloadEngineFactory.cc
 src/MultiUrlRequestInfo.cc
