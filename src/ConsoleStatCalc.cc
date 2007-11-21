@@ -71,7 +71,7 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
     if(firstRequestGroup->downloadFinished() &&
        !BtContextHandle(firstRequestGroup->getDownloadContext()).isNull()) {
       cout << "SEEDING" << "(" << "ratio:"
-	   << fixed << setprecision(1) << stat.getAllTimeUploadLength()*1.0/firstRequestGroup->getCompletedLength()
+	   << fixed << setprecision(2) << stat.getAllTimeUploadLength()*1.0/firstRequestGroup->getCompletedLength()
 	   << ")";
     } else
 #endif // ENABLE_BITTORRENT

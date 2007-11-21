@@ -57,4 +57,3 @@
 -- remaining issues to be implemented for 0.12.0 release
 * Update translation
 * replace strtol with Util::parseInt
-* precision of share ratio

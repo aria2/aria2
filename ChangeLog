@@ -1,3 +1,9 @@
+2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Set precision to 2 because share ratio is rounded into 1.0 if precision
+	set to 1.
+	* src/ConsoleStatCalc.cc (calculateStat)
+
 2007-11-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Preallocate non-requested file which is adjacent forward to requested
