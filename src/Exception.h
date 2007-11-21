@@ -63,6 +63,8 @@ public:
   const string& getMsg() const { return msg; }
 
   Exception* getCause() const { return cause; }
+
+  friend ostream& operator<<(ostream& o, const Exception& e);
 };
 
 #endif // _D_EXCEPTION_H_

@@ -38,6 +38,7 @@
 #include "OptionHandler.h"
 #include "NameMatchOptionHandler.h"
 #include "Util.h"
+#include "DlAbortEx.h"
 #include "FatalException.h"
 #include "prefs.h"
 
@@ -47,7 +48,7 @@ public:
 
   virtual bool canHandle(const string& optName) { return true; }
 
-  virtual void parseArg(Option* option, const string& arg) {}
+  virtual void parse(Option* option, const string& arg) {}
 };
 
 class BooleanOptionHandler : public NameMatchOptionHandler {
@@ -68,6 +69,29 @@ public:
   }
 };
 
+class IntegerRangeOptionHandler : public NameMatchOptionHandler {
+private:
+  int32_t _min;
+  int32_t _max;
+public:
+  IntegerRangeOptionHandler(const string& optName, int32_t min, int32_t max):NameMatchOptionHandler(optName), _min(min), _max(max) {}
+
+  virtual ~IntegerRangeOptionHandler() {}
+
+  virtual void parseArg(Option* option, const string& optarg)
+  {
+    IntSequence seq = Util::parseIntRange(optarg);
+    while(seq.hasNext()) {
+      int32_t v = seq.next();
+      if(v < _min || _max < v) {
+	string msg = _optName+" "+_("must be between %s and %s.");
+	throw new DlAbortEx(msg.c_str(), Util::llitos(_min).c_str(), Util::llitos(_max).c_str());
+      }
+      option->put(_optName, optarg);
+    }
+  }
+};
+
 class NumberOptionHandler : public NameMatchOptionHandler {
 private:
   int64_t _min;
@@ -79,7 +103,7 @@ public:
 
   virtual void parseArg(Option* option, const string& optarg)
   {
-    int64_t num = strtoll(optarg.c_str(), 0, 10);
+    int64_t num = Util::parseLLInt(optarg);
     parseArg(option, num);
   }
 
@@ -217,7 +241,7 @@ public:
   virtual void parseArg(Option* option, const string& optarg)
   {
     pair<string, string> proxy = Util::split(optarg, ":");
-    int32_t port = strtol(proxy.second.c_str(), 0, 10);
+    int32_t port = Util::parseInt(proxy.second);
     if(proxy.first.empty() || proxy.second.empty() ||
        port <= 0 || 65535 < port) {
       throw new FatalException(_("unrecognized proxy format"));

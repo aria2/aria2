@@ -32,46 +32,13 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
-#define _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
+#include "Exception.h"
 
-#include "FileAllocationIterator.h"
-
-class MultiDiskAdaptor;
-class FileEntry;
-extern typedef SharedHandle<FileEntry> FileEntryHandle;
-extern typedef deque<FileEntryHandle> FileEntries;
-
-class MultiFileAllocationIterator:public FileAllocationIterator
+ostream& operator<<(ostream& o, const Exception& e)
 {
-private:
-  MultiDiskAdaptor* _diskAdaptor;
-  FileEntries _entries;
-  FileEntryHandle _currentEntry;
-  int64_t _offset;
-
-  FileEntries makeFileEntries(const FileEntries& srcEntries, int32_t pieceLength) const;
-public:
-  MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
-
-  virtual ~MultiFileAllocationIterator();
-
-  void prepareNextEntry();
-
-  virtual void allocateChunk();
-  
-  virtual bool finished();
-
-  virtual int64_t getCurrentLength()
-  {
-    return _offset;
+  o << e.getMsg() << "\n";
+  for(Exception* cause = e.getCause(); cause; cause = cause->getCause()) {
+    o << "Cause: " << cause->getMsg() << "\n";
   }
-
-  virtual int64_t getTotalLength();
-
-  const FileEntries& getFileEntries() const;
-};
-
-typedef SharedHandle<MultiFileAllocationIterator> MultiFileAllocationIteratorHandle;
-
-#endif // _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
+  return o;
+}

@@ -464,6 +464,58 @@ void Util::unfoldRange(const string& src, Integers& range) {
   range.erase(unique(range.begin(), range.end()), range.end());
 }
 
+int32_t Util::parseInt(const string& s, int32_t base)
+{
+  char* stop;
+  errno = 0;
+  long int v = strtol(s.c_str(), &stop, base);
+  if(*stop != '\0') {
+    throw new DlAbortEx(MSG_ILLEGAL_CHARACTER, stop);
+  } else if((v == LONG_MIN || v == LONG_MAX) && errno == ERANGE || v > INT32_MAX || v < INT32_MIN) {
+    throw new DlAbortEx(MSG_OVERFLOW_UNDERFLOW_DETECTED, s.c_str());
+  }
+  return v;
+}
+
+int64_t Util::parseLLInt(const string& s, int32_t base)
+{
+  char* stop;
+  errno = 0;
+  int64_t v = strtoll(s.c_str(), &stop, base);
+  if(*stop != '\0') {
+    throw new DlAbortEx(MSG_ILLEGAL_CHARACTER, stop);
+  } else if((v == INT64_MIN || v == INT64_MAX) && errno == ERANGE) {
+    throw new DlAbortEx(MSG_OVERFLOW_UNDERFLOW_DETECTED, s.c_str());
+  }
+  return v;
+}
+
+IntSequence Util::parseIntRange(const string& src)
+{
+  IntSequence::Values values;
+  string temp = src;
+  while(temp.size()) {
+    pair<string, string> p = Util::split(temp, ",");
+    temp = p.second;
+    if(p.first.empty()) {
+      continue;
+    }
+    if(p.first.find("-") == string::npos) {
+      int32_t v = Util::parseInt(p.first.c_str());
+      values.push_back(IntSequence::Value(v, v+1));
+    } else {
+      pair<string, string> vp = Util::split(p.first.c_str(), "-");
+      if(vp.first.empty() || vp.second.empty()) {
+	throw new DlAbortEx(MSG_INCOMPLETE_RANGE, p.first.c_str());
+      }
+      int32_t v1 = Util::parseInt(vp.first.c_str());
+      int32_t v2 = Util::parseInt(vp.second.c_str());
+      values.push_back(IntSequence::Value(v1, v2+1));
+    } 
+  }
+  return values;
+}
+
 string Util::getContentDispositionFilename(const string& header) {
   string keyName = "filename=";
   string::size_type attributesp = header.find(keyName);

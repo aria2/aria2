@@ -1,3 +1,69 @@
+2007-11-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Preallocate non-requested file which is adjacent forward to requested
+	file('requested' files means the files given in --select-file option)
+	if they share a same piece.
+	This fixes long pause in the file system which doesn't support sparse
+	files like FAT32 while downloading.
+	* src/MultiFileAllocationIterator.{h, cc}
+	* test/MultiFileAllocationIteratorTest.cc
+	* src/FileEntry.{h, cc}
+
+	Removed unused _option.
+	* src/MultiDiskAdaptor.h
+	* test/MultiDiskAdaptorTest.cc
+	* src/DefaultPieceStorage.cc
+
+	Set the default value of --seed-ratio to 1.0.
+	If 0.0 is given, then seeding continues regardless of share ratio.
+	* src/version_usage.cc
+	* src/option_processing.cc
+	* src/BtSetup.cc
+	* doc/aria2c.1.txt
+	* doc/aria2c.1
+
+	Fixed: Selective download is not working in BitTorrent
+	* src/RequestGroup.cc
+
+	Introduced Sequence class. Use this instead of Util::unfoldRange()
+	* src/PieceStorage.h
+	* test/MockPieceStorage.h
+	* src/UnknownLengthPieceStorage.h
+	* src/DefaultPieceStorage.{h, cc}
+	* src/Metalink2RequestGroup.cc
+	* src/RequestGroup.cc
+	* src/Sequence.h
+	* test/SequenceTest.cc
+	* src/IntSequence.h
+	* src/message.h
+	* src/Util.{h, cc}
+	* test/UtilTest.cc
+
+	Added new function 'parse' to catch exception thrown by subclass's
+	parseArg
+	* src/OptionHandler.h
+	* src/OptionParser.cc
+	* src/NameMatchOptionHandler.h
+	* src/OptionHandlerImpl.h
+	* test/OptionHandlerTest.cc
+
+	Added IntegerRangeOptionHandler. Used for --listen-port and
+	--select-file. Now --listen-port accepts range of port.
+	* src/OptionHandlerFactory.cc
+	* src/version_usage.cc
+	* src/OptionHandlerImpl.h
+	* src/option_processing.cc
+	* src/BtSetup.cc
+	* src/PeerListenCommand.{h, cc}
+	* doc/aria2c.1.txt
+	* doc/aria2c.1
+	
+	Implemented operator< for Exception class to provide easy way to print
+	exception stack trace.
+	* src/Exception.{h, cc}
+	* src/main.cc
+	* src/option_processing.cc
+	
 2007-11-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	* src/version_usage.cc

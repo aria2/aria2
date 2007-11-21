@@ -126,6 +126,9 @@
 #define MSG_DAEMON_FAILED _("daemon failed.")
 #define MSG_VERIFICATION_SUCCESSFUL _("Verification finished successfully. file=%s")
 #define MSG_VERIFICATION_FAILED _("Checksum error detected. file=%s")
+#define MSG_ILLEGAL_CHARACTER _("Illegal character detected: %s")
+#define MSG_INCOMPLETE_RANGE _("Incomplete range specified. %s")
+#define MSG_OVERFLOW_UNDERFLOW_DETECTED _("Overflow/underflow detected: %s")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

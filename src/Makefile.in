@@ -202,29 +202,29 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DownloadEngine.cc DownloadEngine.h Segment.h GrowSegment.cc \
 	GrowSegment.h PiecedSegment.cc PiecedSegment.h SegmentMan.cc \
 	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
-	message.h Exception.h FatalException.h RecoverableException.h \
-	DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
-	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
-	ChunkedEncoding.h DiskWriter.h AbstractDiskWriter.cc \
-	AbstractDiskWriter.h DefaultDiskWriter.cc DefaultDiskWriter.h \
-	File.cc File.h Option.cc Option.h Base64.cc Base64.h \
-	CookieBox.cc CookieBox.h LogFactory.cc LogFactory.h \
-	NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
-	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
-	BitfieldMan.h BitfieldManFactory.cc BitfieldManFactory.h \
-	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
-	FileAllocator.h HttpResponse.cc HttpResponse.h HttpRequest.cc \
-	HttpRequest.h Range.h AbstractProxyRequestCommand.cc \
-	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
-	AuthConfig.h AuthResolver.h AbstractAuthResolver.h \
-	DefaultAuthResolver.cc DefaultAuthResolver.h \
-	NetrcAuthResolver.cc NetrcAuthResolver.h AuthConfigFactory.cc \
-	AuthConfigFactory.h OptionParser.cc OptionParser.h \
-	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
-	NameResolver.h RequestGroup.cc RequestGroup.h \
+	message.h Exception.cc Exception.h FatalException.h \
+	RecoverableException.h DlAbortEx.h DlRetryEx.h Logger.h \
+	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
+	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
+	AbstractDiskWriter.cc AbstractDiskWriter.h \
+	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
+	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
+	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
+	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
+	DownloadEngineFactory.h RequestInfo.h SpeedCalc.cc SpeedCalc.h \
+	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
+	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
+	SimpleRandomizer.h FileAllocator.h HttpResponse.cc \
+	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
+	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
+	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
+	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
+	AbstractAuthResolver.h DefaultAuthResolver.cc \
+	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
+	AuthConfigFactory.cc AuthConfigFactory.h OptionParser.cc \
+	OptionParser.h OptionHandlerFactory.cc OptionHandlerFactory.h \
+	NameResolver.cc NameResolver.h RequestGroup.cc RequestGroup.h \
 	RequestGroupAware.cc RequestGroupAware.h RequestGroupMan.cc \
 	RequestGroupMan.h FileAllocationMan.cc FileAllocationMan.h \
 	FileAllocationCommand.cc FileAllocationCommand.h \
@@ -433,7 +433,7 @@ am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	FtpTunnelResponseCommand.$(OBJEXT) SleepCommand.$(OBJEXT) \
 	DownloadEngine.$(OBJEXT) GrowSegment.$(OBJEXT) \
 	PiecedSegment.$(OBJEXT) SegmentMan.$(OBJEXT) Util.$(OBJEXT) \
-	Request.$(OBJEXT) SimpleLogger.$(OBJEXT) \
+	Request.$(OBJEXT) Exception.$(OBJEXT) SimpleLogger.$(OBJEXT) \
 	ChunkedEncoding.$(OBJEXT) AbstractDiskWriter.$(OBJEXT) \
 	DefaultDiskWriter.$(OBJEXT) File.$(OBJEXT) Option.$(OBJEXT) \
 	Base64.$(OBJEXT) CookieBox.$(OBJEXT) LogFactory.$(OBJEXT) \
@@ -694,29 +694,29 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	DownloadEngine.cc DownloadEngine.h Segment.h GrowSegment.cc \
 	GrowSegment.h PiecedSegment.cc PiecedSegment.h SegmentMan.cc \
 	SegmentMan.h Util.cc Util.h Request.cc Request.h common.h \
-	message.h Exception.h FatalException.h RecoverableException.h \
-	DlAbortEx.h DlRetryEx.h Logger.h SimpleLogger.cc \
-	SimpleLogger.h TransferEncoding.h ChunkedEncoding.cc \
-	ChunkedEncoding.h DiskWriter.h AbstractDiskWriter.cc \
-	AbstractDiskWriter.h DefaultDiskWriter.cc DefaultDiskWriter.h \
-	File.cc File.h Option.cc Option.h Base64.cc Base64.h \
-	CookieBox.cc CookieBox.h LogFactory.cc LogFactory.h \
-	NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
-	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
-	BitfieldMan.h BitfieldManFactory.cc BitfieldManFactory.h \
-	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
-	FileAllocator.h HttpResponse.cc HttpResponse.h HttpRequest.cc \
-	HttpRequest.h Range.h AbstractProxyRequestCommand.cc \
-	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
-	AuthConfig.h AuthResolver.h AbstractAuthResolver.h \
-	DefaultAuthResolver.cc DefaultAuthResolver.h \
-	NetrcAuthResolver.cc NetrcAuthResolver.h AuthConfigFactory.cc \
-	AuthConfigFactory.h OptionParser.cc OptionParser.h \
-	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
-	NameResolver.h RequestGroup.cc RequestGroup.h \
+	message.h Exception.cc Exception.h FatalException.h \
+	RecoverableException.h DlAbortEx.h DlRetryEx.h Logger.h \
+	SimpleLogger.cc SimpleLogger.h TransferEncoding.h \
+	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
+	AbstractDiskWriter.cc AbstractDiskWriter.h \
+	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
+	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
+	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
+	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
+	FeatureConfig.h DownloadEngineFactory.cc \
+	DownloadEngineFactory.h RequestInfo.h SpeedCalc.cc SpeedCalc.h \
+	PeerStat.h BitfieldMan.cc BitfieldMan.h BitfieldManFactory.cc \
+	BitfieldManFactory.h Randomizer.h SimpleRandomizer.cc \
+	SimpleRandomizer.h FileAllocator.h HttpResponse.cc \
+	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
+	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
+	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
+	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
+	AbstractAuthResolver.h DefaultAuthResolver.cc \
+	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
+	AuthConfigFactory.cc AuthConfigFactory.h OptionParser.cc \
+	OptionParser.h OptionHandlerFactory.cc OptionHandlerFactory.h \
+	NameResolver.cc NameResolver.h RequestGroup.cc RequestGroup.h \
 	RequestGroupAware.cc RequestGroupAware.h RequestGroupMan.cc \
 	RequestGroupMan.h FileAllocationMan.cc FileAllocationMan.h \
 	FileAllocationCommand.cc FileAllocationCommand.h \
@@ -925,6 +925,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadEngineFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationCommand.Po@am__quote@

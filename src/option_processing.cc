@@ -71,7 +71,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_SPLIT, "1");
   op->put(PREF_DAEMON, V_FALSE);
   op->put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
-  op->put(PREF_LISTEN_PORT, "-1");
+  op->put(PREF_LISTEN_PORT, "6881-6999");
   op->put(PREF_METALINK_SERVERS, "5");
   op->put(PREF_FOLLOW_TORRENT,
 #ifdef ENABLE_BITTORRENT
@@ -124,6 +124,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_ENABLE_HTTP_KEEP_ALIVE, V_FALSE);
   op->put(PREF_ENABLE_HTTP_PIPELINING, V_FALSE);
   op->put(PREF_MAX_HTTP_PIPELINING, "2");
+  op->put(PREF_SEED_RATIO, "1.0");
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -407,14 +408,14 @@ Option* option_processing(int argc, char* const argv[])
       oparser.parse(op, cfstream);
     } catch(Exception* e) {
       cerr << "Parse error in " << cfname << endl;
-      cerr << e->getMsg() << endl;
+      cerr << *e << endl;
       delete e;
       exit(EXIT_FAILURE);
     }
     try {
       oparser.parse(op, cmdstream);
     } catch(Exception* e) {
-      cerr << e->getMsg() << endl;
+      cerr << *e << endl;
       delete e;
       exit(EXIT_FAILURE);
     }

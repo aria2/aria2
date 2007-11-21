@@ -101,9 +101,8 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
     return RequestGroups();
   }
+  Integers selectIndexes = Util::parseIntRange(_option->get(PREF_SELECT_FILE)).flush();
   bool useIndex;
-  Integers selectIndexes;
-  Util::unfoldRange(_option->get(PREF_SELECT_FILE), selectIndexes);
   if(selectIndexes.size()) {
     useIndex = true;
   } else {

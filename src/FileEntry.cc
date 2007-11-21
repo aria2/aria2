@@ -62,3 +62,8 @@ FileEntry& FileEntry::operator=(const FileEntry& entry)
   }
   return *this;
 }
+
+bool FileEntry::operator<(const FileEntry& fileEntry) const
+{
+  return offset < fileEntry.offset;
+}

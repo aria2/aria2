@@ -43,7 +43,7 @@ public:
   virtual ~OptionHandler() {}
   
   virtual bool canHandle(const string& optName) = 0;
-  virtual void parseArg(Option* option, const string& arg) = 0;
+  virtual void parse(Option* option, const string& arg) = 0;
 };
 
 typedef SharedHandle<OptionHandler> OptionHandlerHandle;

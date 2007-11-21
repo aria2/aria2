@@ -154,7 +154,7 @@ public:
   
   virtual void setFileFilter(const Strings& filePaths) {}
 
-  virtual void setFileFilter(const Integers& fileIndexes) {}
+  virtual void setFileFilter(IntSequence seq) {}
 
   virtual void clearFileFilter() {}
   

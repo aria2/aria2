@@ -32,7 +32,7 @@ SRCS =  Socket.h\
 	Request.cc Request.h\
 	common.h\
 	message.h\
-	Exception.h\
+	Exception.cc Exception.h\
 	FatalException.h\
 	RecoverableException.h\
 	DlAbortEx.h\

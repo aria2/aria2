@@ -32,46 +32,11 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
-#define _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
+#ifndef _D_INT_SEQUENCE_H_
+#define _D_INT_SEQUENCE_H_
 
-#include "FileAllocationIterator.h"
+#include "Sequence.h"
 
-class MultiDiskAdaptor;
-class FileEntry;
-extern typedef SharedHandle<FileEntry> FileEntryHandle;
-extern typedef deque<FileEntryHandle> FileEntries;
+typedef Sequence<int32_t> IntSequence;
 
-class MultiFileAllocationIterator:public FileAllocationIterator
-{
-private:
-  MultiDiskAdaptor* _diskAdaptor;
-  FileEntries _entries;
-  FileEntryHandle _currentEntry;
-  int64_t _offset;
-
-  FileEntries makeFileEntries(const FileEntries& srcEntries, int32_t pieceLength) const;
-public:
-  MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
-
-  virtual ~MultiFileAllocationIterator();
-
-  void prepareNextEntry();
-
-  virtual void allocateChunk();
-  
-  virtual bool finished();
-
-  virtual int64_t getCurrentLength()
-  {
-    return _offset;
-  }
-
-  virtual int64_t getTotalLength();
-
-  const FileEntries& getFileEntries() const;
-};
-
-typedef SharedHandle<MultiFileAllocationIterator> MultiFileAllocationIteratorHandle;
-
-#endif // _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
+#endif // _D_INT_SEQUENCE_H_

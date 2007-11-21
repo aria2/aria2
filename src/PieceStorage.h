@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "TimeA2.h"
+#include "IntSequence.h"
 
 class Piece;
 extern typedef SharedHandle<Piece> PieceHandle;
@@ -124,7 +125,7 @@ public:
   
   virtual void setFileFilter(const Strings& filePaths) = 0;
 
-  virtual void setFileFilter(const Integers& fileIndexes) = 0;
+  virtual void setFileFilter(IntSequence seq) = 0;
 
   virtual void clearFileFilter() = 0;
   

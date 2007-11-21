@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 11/18/2007
+.\"      Date: 11/22/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "11/18/2007" "" ""
+.TH "ARIA2C" "1" "11/22/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -319,6 +319,15 @@ to specify a range: "1\-5"\.
 and
 \fI\-\fR
 can be used together\. When used with the \-M option, index may vary depending on the query(see \-\-metalink\-* options)\.
+.sp
+.RS 4
+.nf
+Note: In multi file torrent, it seems that adjacent files specified
+by this option are downloaded\. This is by design, not a bug\.
+A single piece may include several files or part of files,
+and aria2 writes the piece to the appropriate files\.
+.fi
+.RE
 .RE
 .PP
 \-T, \-\-torrent\-file=TORRENT_FILE
@@ -335,11 +344,18 @@ Set to false to prevent aria2 from entering BitTorrent mode even if the filename
 .RS 4
 Directly read from and write to each file mentioned in \.torrent file\. Default:
 \fItrue\fR
-.RE
-.PP
-\-\-listen\-port=PORT
+.sp
 .RS 4
-Set TCP port number for BitTorrent downloads\. Default: 6881\-6999
+.nf
+\-\-listen\-port=PORT\.\.\.
+       Set TCP port number for BitTorrent downloads\.
+       Multiple values can be specified by using \',\',
+       for example: "6881,6885"\.
+       You can also use \'\-\' to specify a range: "6881\-6999"\.
+       \',\' and \'\-\' can be used together\.
+       Default: 6881\-6999
+.fi
+.RE
 .RE
 .PP
 \-\-max\-upload\-limit=SPEED
@@ -360,7 +376,7 @@ Specify seeding time in minutes\. Also see the \-\-seed\-ratio option\.
 .PP
 \-\-seed\-ratio=RATIO
 .RS 4
-Specify share ratio\. Seed completed torrents until share ratio reaches RATIO\. 1\.0 is encouraged\. If \-\-seed\-time option is specified along with this option, seeding ends when at least one of the conditions is satisfied\.
+Specify share ratio\. Seed completed torrents until share ratio reaches RATIO\. 1\.0 is encouraged\. Specify 0\.0 if you intend to do seeding regardless of share ratio\. If \-\-seed\-time option is specified along with this option, seeding ends when at least one of the conditions is satisfied\. Default: 1\.0
 .RE
 .PP
 \-\-peer\-id\-prefix=PEERI_ID_PREFIX

@@ -36,7 +36,6 @@
 #define _D_MULTI_DISK_ADAPTOR_H_
 
 #include "DiskAdaptor.h"
-#include "Option.h"
 #include "DiskWriter.h"
 #include "File.h"
 
@@ -108,7 +107,6 @@ private:
   string topDir;
   int32_t pieceLength;
   DiskWriterEntries diskWriterEntries;
-  const Option* option;
 
   void resetDiskWriterEntries();
 
@@ -122,8 +120,7 @@ private:
 
   string getTopDirPath() const;
 public:
-  MultiDiskAdaptor():pieceLength(0),
-		     option(0)
+  MultiDiskAdaptor():pieceLength(0)
   {}
 
   virtual ~MultiDiskAdaptor() {}
@@ -168,14 +165,6 @@ public:
 
   int32_t getPieceLength() const {
     return pieceLength;
-  }
-
-  void setOption(const Option* option) {
-    this->option = option;
-  }
-
-  const Option* getOption() const {
-    return option;
   }
 };
 

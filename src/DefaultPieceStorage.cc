@@ -391,8 +391,11 @@ void DefaultPieceStorage::setFileFilter(const Strings& filePaths)
   bitfieldMan->enableFilter();
 }
 
-void DefaultPieceStorage::setFileFilter(const Integers& fileIndexes)
+void DefaultPieceStorage::setFileFilter(IntSequence seq)
 {
+  Integers fileIndexes = seq.flush();
+  sort(fileIndexes.begin(), fileIndexes.end());
+  fileIndexes.erase(unique(fileIndexes.begin(), fileIndexes.end()), fileIndexes.end());
   Strings filePaths;
   const FileEntries& entries = diskAdaptor->getFileEntries();
   for(int32_t i = 0; i < (int32_t)entries.size(); i++) {
@@ -441,7 +444,6 @@ void DefaultPieceStorage::initStorage()
       MultiDiskAdaptorHandle multiDiskAdaptor = new MultiDiskAdaptor();
       multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
       multiDiskAdaptor->setTopDir(downloadContext->getName());
-      multiDiskAdaptor->setOption(option);
       this->diskAdaptor = multiDiskAdaptor;
     } else {
       logger->debug("Instantiating CopyDiskAdaptor");
@@ -456,11 +458,7 @@ void DefaultPieceStorage::initStorage()
       this->diskAdaptor = copyDiskAdaptor;
     }
   }
-  string storeDir = downloadContext->getDir();//option->get(PREF_DIR);
-//   if(storeDir == "") {
-//     storeDir = ".";
-//   }
-  diskAdaptor->setStoreDir(storeDir);
+  diskAdaptor->setStoreDir(downloadContext->getDir());
   diskAdaptor->setFileEntries(downloadContext->getFileEntries());
 }
 

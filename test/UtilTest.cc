@@ -32,6 +32,10 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testAlphaToNum);
   CPPUNIT_TEST(testMkdirs);
   CPPUNIT_TEST(testConvertBitfield);
+  CPPUNIT_TEST(testParseIntRange);
+  CPPUNIT_TEST(testParseIntRange_invalidRange);
+  CPPUNIT_TEST(testParseInt);
+  CPPUNIT_TEST(testParseLLInt);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -61,6 +65,10 @@ public:
   void testAlphaToNum();
   void testMkdirs();
   void testConvertBitfield();
+  void testParseIntRange();
+  void testParseIntRange_invalidRange();
+  void testParseInt();
+  void testParseLLInt();
 };
 
 
@@ -406,4 +414,124 @@ void UtilTest::testConvertBitfield()
   CPPUNIT_ASSERT_EQUAL(string("9fffffffffffffffffffffffffffffff80"),
 		       Util::toHex(destBitfield.getBitfield(),
 				   destBitfield.getBitfieldLength()));
+}
+
+void UtilTest::testParseIntRange()
+{
+  IntSequence seq = Util::parseIntRange("1,3-8,10");
+
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)1, seq.next());
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)3, seq.next());
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)4, seq.next());
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)5, seq.next());
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)6, seq.next());
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)7, seq.next());
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)8, seq.next());
+  CPPUNIT_ASSERT(seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)10, seq.next());
+  CPPUNIT_ASSERT(!seq.hasNext());
+  CPPUNIT_ASSERT_EQUAL((int32_t)0, seq.next()); 
+}
+
+void UtilTest::testParseIntRange_invalidRange()
+{
+  try {
+    IntSequence seq = Util::parseIntRange("-1");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    IntSequence seq = Util::parseIntRange("2147483648");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    IntSequence seq = Util::parseIntRange("2147483647-2147483648");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    IntSequence seq = Util::parseIntRange("1-2x");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    IntSequence seq = Util::parseIntRange("3x-4");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+}
+
+void UtilTest::testParseInt()
+{
+  CPPUNIT_ASSERT_EQUAL((int32_t)-1, Util::parseInt("-1"));
+  CPPUNIT_ASSERT_EQUAL((int32_t)2147483647, Util::parseInt("2147483647"));
+  try {
+    Util::parseInt("2147483648");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::parseInt("-2147483649");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::parseInt("12x");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+
+}
+
+void UtilTest::testParseLLInt()
+{
+  CPPUNIT_ASSERT_EQUAL((int64_t)-1, Util::parseLLInt("-1"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
+		       Util::parseLLInt("9223372036854775807"));
+  try {
+    Util::parseLLInt("9223372036854775808");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::parseLLInt("-9223372036854775809");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::parseLLInt("12x");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+
 }

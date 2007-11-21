@@ -36,10 +36,13 @@
 #define _D_NAME_MATCH_OPTION_HANDLER_H_
 
 #include "OptionHandler.h"
+#include "DlAbortEx.h"
 
 class NameMatchOptionHandler : public OptionHandler {
 protected:
   string _optName;
+
+  virtual void parseArg(Option* option, const string& arg) = 0;
 public:
   NameMatchOptionHandler(const string& optName):_optName(optName) {}
 
@@ -48,6 +51,15 @@ public:
   virtual bool canHandle(const string& optName)
   {
     return strcasecmp(_optName.c_str(), optName.c_str()) == 0;
+  }
+
+  virtual void parse(Option* option, const string& arg)
+  {
+    try {
+      parseArg(option, arg);
+    } catch(Exception* e) {
+      throw new DlAbortEx(e, "Exception occurred while processing option %s", _optName.c_str());
+    }
   }
 };
 

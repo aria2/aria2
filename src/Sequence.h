@@ -32,46 +32,68 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
-#define _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
+#ifndef _D_SEQUENCE_H_
+#define _D_SEQUENCE_H_
 
-#include "FileAllocationIterator.h"
+#include <deque>
 
-class MultiDiskAdaptor;
-class FileEntry;
-extern typedef SharedHandle<FileEntry> FileEntryHandle;
-extern typedef deque<FileEntryHandle> FileEntries;
+using namespace std;
 
-class MultiFileAllocationIterator:public FileAllocationIterator
+template<typename T>
+class Sequence
 {
-private:
-  MultiDiskAdaptor* _diskAdaptor;
-  FileEntries _entries;
-  FileEntryHandle _currentEntry;
-  int64_t _offset;
-
-  FileEntries makeFileEntries(const FileEntries& srcEntries, int32_t pieceLength) const;
 public:
-  MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
+  // Generates value in [_first, _last). _last is not included.
+  class Value {
+  private:
+    T _first;
+    T _last;
+  public:
+    Value(const T& first, const T& last):_first(first), _last(last) {}
 
-  virtual ~MultiFileAllocationIterator();
+    T next()
+    {
+      return _first++;
+    }
+    
+    bool hasNext() const
+    {
+      return _first != _last;
+    }
+  };
 
-  void prepareNextEntry();
+  typedef deque<Value> Values;
+private:
+  Values _values;
+public:
+  Sequence(const Values& values):
+    _values(values) {}
 
-  virtual void allocateChunk();
-  
-  virtual bool finished();
-
-  virtual int64_t getCurrentLength()
+  T next()
   {
-    return _offset;
+    if(_values.empty()) {
+      return T();
+    }
+    T t = _values.front().next();
+    if(!_values.front().hasNext()) {
+      _values.pop_front();
+    }
+    return t;
   }
 
-  virtual int64_t getTotalLength();
+  bool hasNext()
+  {
+    return !_values.empty();
+  }
 
-  const FileEntries& getFileEntries() const;
+  deque<T> flush()
+  {
+    deque<T> r;
+    while(hasNext()) {
+      r.push_back(next());
+    }
+    return r;
+  }
 };
 
-typedef SharedHandle<MultiFileAllocationIterator> MultiFileAllocationIteratorHandle;
-
-#endif // _D_MULTI_FILE_ALLOCATION_ITERATOR_H_
+#endif // _D_SEQUENCE_H_

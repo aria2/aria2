@@ -55,11 +55,11 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new UnitNumberOptionHandler(PREF_MIN_SEGMENT_SIZE, 1024));
   handlers.push_back(new ParameterOptionHandler(PREF_HTTP_PROXY_METHOD,
 						V_GET, V_TUNNEL));
-  handlers.push_back(new NumberOptionHandler(PREF_LISTEN_PORT, 1024, UINT16_MAX));
+  handlers.push_back(new IntegerRangeOptionHandler(PREF_LISTEN_PORT, 1024, UINT16_MAX));
   handlers.push_back(new BooleanOptionHandler(PREF_FOLLOW_TORRENT));
   handlers.push_back(new BooleanOptionHandler(PREF_NO_PREALLOCATION));
   handlers.push_back(new BooleanOptionHandler(PREF_DIRECT_FILE_MAPPING));
-  handlers.push_back(new DefaultOptionHandler(PREF_SELECT_FILE));
+  handlers.push_back(new IntegerRangeOptionHandler(PREF_SELECT_FILE, 1, INT32_MAX));
   handlers.push_back(new NumberOptionHandler(PREF_SEED_TIME, 0));
   handlers.push_back(new FloatNumberOptionHandler(PREF_SEED_RATIO, 0.0));
   handlers.push_back(new UnitNumberOptionHandler(PREF_MAX_UPLOAD_LIMIT, 0));

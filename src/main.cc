@@ -319,7 +319,7 @@ int main(int argc, char* argv[]) {
 	  downloadUri(op, args);
 	}
   } catch(Exception* ex) {
-    cerr << EX_EXCEPTION_CAUGHT << "\n" << ex->getMsg() << endl;
+    cerr << EX_EXCEPTION_CAUGHT << "\n" << *ex << endl;
     delete ex;
     exit(EXIT_FAILURE);
   }

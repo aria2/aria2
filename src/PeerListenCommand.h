@@ -37,6 +37,7 @@
 
 #include "Command.h"
 #include "Socket.h"
+#include "IntSequence.h"
 
 class DownloadEngine;
 
@@ -57,7 +58,7 @@ public:
   
   virtual bool execute();
 
-  int32_t bindPort(int32_t portRangeStart, int32_t portRangeEnd);
+  int32_t bindPort(IntSequence& seq);
 
   void setLowestSpeedLimit(int32_t speed)
   {

@@ -229,14 +229,19 @@ http://host/image[000-100:2].img
      and exit.
 
  --select-file=INDEX...::
-       Set file to download by specifing its index.
-                              You can find the file index using the
-                              --show-files option. Multiple indexes can be
-                              specified by using ',', for example: "3,6".
-                              You can also use '-' to specify a range: "1-5".
-                              ',' and '-' can be used together.
-                              When used with the -M option, index may vary
-                              depending on the query(see --metalink-* options).
+	Set file to download by specifing its index.
+	You can find the file index using the
+	--show-files option. Multiple indexes can be
+	specified by using ',', for example: "3,6".
+        You can also use '-' to specify a range: "1-5".
+        ',' and '-' can be used together.
+        When used with the -M option, index may vary
+        depending on the query(see --metalink-* options).
+
+	Note: In multi file torrent, it seems that adjacent files specified
+	by this option are downloaded. This is by design, not a bug.
+	A single piece may include several files or part of files,
+	and aria2 writes the piece to the appropriate files.
 
  -T, --torrent-file=TORRENT_FILE::
   The path to the .torrent file.
@@ -252,9 +257,13 @@ http://host/image[000-100:2].img
                               mentioned in .torrent file.
                               Default: 'true'
 
- --listen-port=PORT::
-         Set TCP port number for BitTorrent downloads.
-                              Default: 6881-6999
+ --listen-port=PORT...
+	Set TCP port number for BitTorrent downloads.
+        Multiple values can be specified by using ',',
+        for example: "6881,6885".
+        You can also use '-' to specify a range: "6881-6999".
+        ',' and '-' can be used together.
+        Default: 6881-6999
 
  --max-upload-limit=SPEED::
      Set max upload speed in bytes per sec.
@@ -267,11 +276,14 @@ http://host/image[000-100:2].img
                               --seed-ratio option.
 
  --seed-ratio=RATIO::
-           Specify share ratio. Seed completed torrents
-                              until share ratio reaches RATIO. 1.0 is
-                              encouraged. If --seed-time option is specified
-                              along with this option, seeding ends when at
-                              least one of the conditions is satisfied.
+	Specify share ratio. Seed completed torrents
+	until share ratio reaches RATIO. 1.0 is
+	encouraged. Specify 0.0 if you intend to do
+	seeding regardless of share ratio.
+	If --seed-time option is specified along with
+	this option, seeding ends when at least one of
+	the conditions is satisfied.
+	Default: 1.0
 
  --peer-id-prefix=PEERI_ID_PREFIX::
              Specify the prefix of peer ID. The peer ID in

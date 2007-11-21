@@ -38,6 +38,7 @@
 #include "common.h"
 #include "a2time.h"
 #include "FileEntry.h"
+#include "IntSequence.h"
 #include <utility>
 #include <deque>
 #include <ostream>
@@ -111,6 +112,12 @@ public:
   static int32_t expandBuffer(char** pbuf, int32_t curLength, int32_t newLength);
 
   static void unfoldRange(const string& src, Integers& range);
+
+  static int32_t parseInt(const string& s, int32_t base = 10);
+
+  static int64_t parseLLInt(const string& s, int32_t base = 10);
+
+  static IntSequence parseIntRange(const string& src);
 
   // this function temporarily put here
   static string getContentDispositionFilename(const string& header);

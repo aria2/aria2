@@ -73,7 +73,6 @@
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
 #endif // ENABLE_METALINK
-#include <cerrno>
 
 int32_t RequestGroup::_gidCounter = 0;
 
@@ -148,16 +147,17 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
 					   getFilePath().c_str());
       }
+      initPieceStorage();
       if(btContext->getFileEntries().size() > 1) {
 	// this is really multi file torrent.
 	// clear http/ftp uris because the current implementation does not
 	// allow integrating multi-file torrent and http/ftp.
 	_logger->debug("Clearing http/ftp URIs because the current implementation does not allow integrating multi-file torrent and http/ftp.");
 	_uris.clear();
+
+	_pieceStorage->setFileFilter(Util::parseIntRange(_option->get(PREF_SELECT_FILE)));
       }
-
-      initPieceStorage();
-
+      
       BtProgressInfoFileHandle progressInfoFile =
 	new DefaultBtProgressInfoFile(_downloadContext,
 				      _pieceStorage,

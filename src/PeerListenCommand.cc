@@ -58,13 +58,10 @@ PeerListenCommand::~PeerListenCommand()
   --__numInstance;
 }
 
-int32_t PeerListenCommand::bindPort(int32_t portRangeStart,
-				    int32_t portRangeEnd)
+int32_t PeerListenCommand::bindPort(IntSequence& seq)
 {
-  if(portRangeStart > portRangeEnd) {
-    return -1;
-  }
-  for(int32_t port = portRangeStart; port <= portRangeEnd; port++) {
+  while(seq.hasNext()) {
+    int32_t port = seq.next();
     try {
       socket->beginListen(port);
       logger->info(MSG_LISTENING_PORT,

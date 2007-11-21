@@ -48,7 +48,6 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include "a2io.h"
-#include <errno.h>
 
 SegmentEntry::SegmentEntry(int32_t cuid, const SegmentHandle& segment):
   cuid(cuid), segment(segment) {}

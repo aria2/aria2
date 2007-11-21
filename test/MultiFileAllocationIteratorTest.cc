@@ -7,6 +7,7 @@ class MultiFileAllocationIteratorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MultiFileAllocationIteratorTest);
   CPPUNIT_TEST(testAllocate);
+  CPPUNIT_TEST(testMakeFileEntries);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -14,10 +15,53 @@ public:
   void setUp() {}
 
   void testAllocate();
+  void testMakeFileEntries();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MultiFileAllocationIteratorTest );
+
+void MultiFileAllocationIteratorTest::testMakeFileEntries()
+{
+  FileEntryHandle fs[] = {
+    new FileEntry("file1", 1536, 0),
+    new FileEntry("file2", 2048, 1536),
+    new FileEntry("file3", 1024, 3584),
+    new FileEntry("file4", 1024, 4608),
+    new FileEntry("file5", 1024, 5632),
+    new FileEntry("file6", 1024, 6656),
+    new FileEntry("file7",  256, 7680),
+    new FileEntry("file8",  768, 7936),
+    new FileEntry("file9",  256, 8704),
+    new FileEntry("fileA",  256, 8960),
+  };
+  fs[1]->setRequested(false);
+  fs[3]->setRequested(false);
+  fs[4]->setRequested(false);
+  fs[5]->setRequested(false);
+  fs[6]->setRequested(false);
+  fs[8]->setRequested(false);
+  fs[9]->setRequested(false);
+  
+  MultiDiskAdaptorHandle diskAdaptor = new MultiDiskAdaptor();
+  diskAdaptor->setFileEntries(FileEntries(&fs[0], &fs[10]));
+  diskAdaptor->setPieceLength(1024);
+
+  MultiFileAllocationIteratorHandle itr = diskAdaptor->fileAllocationIterator();
+
+  FileEntries entries = itr->getFileEntries();
+
+  sort(entries.begin(), entries.end());
+
+  CPPUNIT_ASSERT_EQUAL((size_t)6, entries.size());
+
+  CPPUNIT_ASSERT_EQUAL(string("file1"), entries[0]->getPath());
+  CPPUNIT_ASSERT_EQUAL(string("file2"), entries[1]->getPath());
+  CPPUNIT_ASSERT_EQUAL(string("file3"), entries[2]->getPath());
+  CPPUNIT_ASSERT_EQUAL(string("file6"), entries[3]->getPath());
+  CPPUNIT_ASSERT_EQUAL(string("file7"), entries[4]->getPath());
+  CPPUNIT_ASSERT_EQUAL(string("file8"), entries[5]->getPath());
+}
 
 void MultiFileAllocationIteratorTest::testAllocate()
 {

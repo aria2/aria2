@@ -47,7 +47,7 @@ void OptionParser::parse(Option* option, istream& is)
     }
     pair<string, string> nv = Util::split(line, "=");
     OptionHandlerHandle handler = getOptionHandlerByName(nv.first);
-    handler->parseArg(option, nv.second);
+    handler->parse(option, nv.second);
   }
 }
 

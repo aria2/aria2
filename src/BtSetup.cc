@@ -53,6 +53,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Util.h"
+#include "IntSequence.h"
 
 BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
 
@@ -85,9 +86,12 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
   if(option->defined(PREF_SEED_TIME)) {
     unionCri->addSeedCriteria(new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
   }
-  if(option->defined(PREF_SEED_RATIO)) {
-    unionCri->addSeedCriteria(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO), btContext));
-      }
+  {
+    double ratio = option->getAsDouble(PREF_SEED_RATIO);
+    if(ratio > 0.0) {
+      unionCri->addSeedCriteria(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO), btContext));
+    }
+  }
   if(unionCri->getSeedCriterion().size() > 0) {
     commands.push_back(new SeedCheckCommand(CUIDCounterSingletonHolder::instance()->newID(),
 					    requestGroup,
@@ -98,13 +102,8 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
 
   if(PeerListenCommand::getNumInstance() == 0) {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
-    int32_t port;
-    int32_t listenPort = option->getAsInt(PREF_LISTEN_PORT);
-    if(listenPort == -1) {
-      port = listenCommand->bindPort(6881, 6999);
-    } else {
-      port = listenCommand->bindPort(listenPort, listenPort);
-    }
+    IntSequence seq = Util::parseIntRange(option->get(PREF_LISTEN_PORT));
+    int32_t port = listenCommand->bindPort(seq);
     if(port == -1) {
       _logger->error(_("Errors occurred while binding port.\n"));
       delete listenCommand;

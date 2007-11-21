@@ -91,6 +91,8 @@ public:
   {
     return _uris;
   }
+
+  bool operator<(const FileEntry& fileEntry) const;
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;

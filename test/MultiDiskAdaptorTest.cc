@@ -11,18 +11,13 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReadData);
   CPPUNIT_TEST_SUITE_END();
 private:
-  Option* option;
   MultiDiskAdaptorHandle adaptor;
 public:
-  MultiDiskAdaptorTest():option(0), adaptor(0) {}
+  MultiDiskAdaptorTest():adaptor(0) {}
 
   void setUp() {
-    delete option;
-    option = new Option();
-
     adaptor = new MultiDiskAdaptor();
     adaptor->setPieceLength(2);
-    adaptor->setOption(new Option());
     adaptor->setStoreDir(".");
     adaptor->setTopDir(".");
   }

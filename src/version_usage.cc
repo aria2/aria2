@@ -242,7 +242,11 @@ void showUsage() {
   cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
-  cout << _(" --listen-port=PORT           Set TCP port number for BitTorrent downloads.\n"
+  cout << _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
+	    "                              Multiple values can be specified by using ',',\n"
+	    "                              for example: \"6881,6885\".\n"
+	    "                              You can also use '-' to specify a range: \"6881-6999\".\n"
+	    "                              ',' and '-' can be used together.\n"
 	    "                              Default: 6881-6999") << endl;
   cout << _(" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 	    "                              0 means unrestricted.\n"
@@ -252,9 +256,12 @@ void showUsage() {
 	    "                              --seed-ratio option.") << endl;
   cout << _(" --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 	    "                              until share ratio reaches RATIO. 1.0 is\n"
-	    "                              encouraged. If --seed-time option is specified\n"
-	    "                              along with this option, seeding ends when at\n"
-	    "                              least one of the conditions is satisfied.") << endl;
+	    "                              encouraged. Specify 0.0 if you intend to do\n"
+	    "                              seeding regardless of share ratio.\n"
+	    "                              If --seed-time option is specified along with\n"
+	    "                              this option, seeding ends when at least one of\n"
+	    "                              the conditions is satisfied.\n"
+	    "                              Default: 1.0") << endl;
   cout << _(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID in\n"
 	    "                              in BitTorrent is 20 byte length. If more than 20\n"
 	    "                              bytes are specified, only first 20\n"

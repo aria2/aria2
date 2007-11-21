@@ -33,11 +33,6 @@
  */
 /* copyright --> */
 #include "DefaultDiskWriter.h"
-#include "message.h"
-#include "prefs.h"
-#include "Util.h"
-#include <errno.h>
-#include <unistd.h>
 
 DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter() {}
 

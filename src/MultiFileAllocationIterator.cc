@@ -40,7 +40,7 @@
 
 MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
   _diskAdaptor(diskAdaptor),
-  _entries(diskAdaptor->getFileEntries()),
+  _entries(makeFileEntries(diskAdaptor->getFileEntries(), diskAdaptor->getPieceLength())),
   _currentEntry(0),
   _offset(0)
 {}
@@ -51,16 +51,14 @@ void MultiFileAllocationIterator::prepareNextEntry()
 {
   _currentEntry = 0;
   _offset = 0;
-  while(!_entries.empty()) {
+  if(!_entries.empty()) {
     FileEntryHandle entry = _entries.front();
     _entries.pop_front();
-    if(entry->isRequested()) {
-      _currentEntry = entry;
-      _offset = File(_diskAdaptor->getStoreDir()+"/"+
-		     _diskAdaptor->getTopDir()+"/"+
-		     _currentEntry->getPath()).size();
-      break;
-    }
+
+    _currentEntry = entry;
+    _offset = File(_diskAdaptor->getStoreDir()+"/"+
+		   _diskAdaptor->getTopDir()+"/"+
+		   _currentEntry->getPath()).size();
   }
 }
 
@@ -98,4 +96,42 @@ int64_t MultiFileAllocationIterator::getTotalLength()
   } else {
     return _currentEntry->getLength();
   }
+}
+
+const FileEntries& MultiFileAllocationIterator::getFileEntries() const
+{
+  return _entries;
+}
+
+FileEntries MultiFileAllocationIterator::makeFileEntries(const FileEntries& srcEntries, int32_t pieceLength) const
+{
+  if(pieceLength == 0) {
+    FileEntries entries;
+    for(FileEntries::const_iterator itr = srcEntries.begin(); itr != srcEntries.end(); ++itr) {
+      if((*itr)->isRequested()) {
+	entries.push_back(*itr);
+      }
+    }
+    return entries;
+  }
+  FileEntries temp(srcEntries);
+  temp.push_front(new FileEntry());
+  FileEntries entries;
+  FileEntries::const_iterator done = temp.begin();
+  for(FileEntries::const_iterator itr = temp.begin()+1; itr != temp.end(); ++itr) {
+    if(!(*itr)->isRequested()) {
+      continue;
+    }
+    int64_t pieceStartOffset = ((*itr)->getOffset()/pieceLength)*pieceLength;
+    for(FileEntries::const_iterator i = itr-1; i != done; --i) {
+      if(pieceStartOffset < (*i)->getOffset()+(*i)->getLength()) {
+	entries.push_back(*i);
+      } else {
+	break;
+      }
+    }
+    entries.push_back(*itr);
+    done = itr;
+  }
+  return entries;
 }
