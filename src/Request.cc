@@ -36,6 +36,7 @@
 #include "Util.h"
 #include "FeatureConfig.h"
 #include "CookieBoxFactory.h"
+#include "RecoverableException.h"
 
 const string Request::METHOD_GET = "get";
 
@@ -113,8 +114,13 @@ bool Request::parseUrl(const string& url) {
   Util::split(hostAndPort, hostPart, ':');
   host = hostAndPort.first;
   if(hostAndPort.second != "") {
-    port = strtol(hostAndPort.second.c_str(), NULL, 10);
-    if(!(0 < port && port <= 65535)) {
+    try {
+      port = Util::parseInt(hostAndPort.second);
+      if(!(0 < port && port <= 65535)) {
+	return false;
+      }
+    } catch(RecoverableException* e) {
+      delete e;
       return false;
     }
   } else {

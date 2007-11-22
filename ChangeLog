@@ -1,5 +1,22 @@
 2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Replaced strtol with Util::parseInt
+	* src/ChunkedEncoding.cc
+	* src/HttpConnection.cc
+	* src/CookieBoxFactory.cc
+	* src/ParameterizedStringParser.cc
+	* src/Util.cc
+	* test/UtilTest.cc
+	* test/OptionHandlerTest.cc
+	* src/Request.cc
+
+	Throw exception when empty string is given. The message for exception
+	changed.
+	* src/Util.cc (parseInt)(parseLLInt)
+	* src/message.h
+
+2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Set precision to 2 because share ratio is rounded into 1.0 if precision
 	set to 1.
 	* src/ConsoleStatCalc.cc (calculateStat)

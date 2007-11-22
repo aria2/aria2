@@ -115,7 +115,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
 
   HttpResponseHandle httpResponse = new HttpResponse();
   httpResponse->setCuid(cuid);
-  httpResponse->setStatus(strtol(httpStatusHeader.first.c_str(), 0, 10));
+  httpResponse->setStatus(Util::parseInt(httpStatusHeader.first));
   httpResponse->setHttpHeader(httpStatusHeader.second);
   httpResponse->setHttpRequest(entry->getHttpRequest());
 

@@ -305,8 +305,41 @@ void UtilTest::testGetRealSize()
 {
   CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, Util::getRealSize("4096M"));
   CPPUNIT_ASSERT_EQUAL((int64_t)1024, Util::getRealSize("1K"));
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, Util::getRealSize(""));
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, Util::getRealSize("foo"));
+  try {
+    Util::getRealSize("");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::getRealSize("foo");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::getRealSize("-1");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::getRealSize("9223372036854775807K");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    Util::getRealSize("9223372036854775807M");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
 }
 
 void UtilTest::testAbbrevSize()
@@ -504,7 +537,13 @@ void UtilTest::testParseInt()
     cerr << *e;
     delete e;
   }
-
+  try {
+    Util::parseInt("");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
 }
 
 void UtilTest::testParseLLInt()
@@ -533,5 +572,11 @@ void UtilTest::testParseLLInt()
     cerr << *e;
     delete e;
   }
-
+  try {
+    Util::parseLLInt("");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
 }

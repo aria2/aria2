@@ -35,6 +35,7 @@
 #include "ChunkedEncoding.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Util.h"
 #include <string.h>
 #include <strings.h>
 #include <errno.h>
@@ -155,23 +156,15 @@ int32_t ChunkedEncoding::readChunkSize(char** pp) {
     return -1;
   }
   p = rp;
-
   // We ignore chunk-extension
   char* exsp = (char*)memchr(*pp, ';', strbufTail-*pp);
-  if(exsp == NULL) {
+  if(exsp == 0 || p < exsp) {
     exsp = p;
   }
-  // TODO check invalid characters in buffer
-  char* temp = new char[exsp-*pp+1];
-  memcpy(temp, *pp, exsp-*pp);
-  temp[exsp-*pp] = '\0';
-
-  chunkSize = strtol(temp, NULL, 16);
-  delete [] temp;
+  string temp(*pp, exsp);
+  chunkSize = Util::parseInt(temp, 16);
   if(chunkSize < 0) {
     throw new DlAbortEx(EX_INVALID_CHUNK_SIZE);
-  } else if(errno == ERANGE && (chunkSize == INT32_MAX || chunkSize == INT32_MIN)) {
-    throw new DlAbortEx(strerror(errno));
   }
   *pp = p+2;
   return 0;

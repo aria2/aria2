@@ -111,7 +111,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const string& src,
   if(colonIndex != string::npos) {
     string stepStr = loopStr.substr(colonIndex+1);
     if(Util::isNumber(stepStr)) {
-      step = strtol(stepStr.c_str(), 0, 10);
+      step = Util::parseInt(stepStr);
     } else {
       throw new FatalException("A step count must be a number.");
     }
@@ -126,8 +126,8 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const string& src,
   int32_t end;
   if(Util::isNumber(range.first) && Util::isNumber(range.second)) {
     nd = new FixedWidthNumberDecorator(range.first.size());
-    start = strtol(range.first.c_str(), 0, 10);
-    end = strtol(range.second.c_str(), 0, 10);
+    start = Util::parseInt(range.first);
+    end = Util::parseInt(range.second);
   } else if(Util::isLowercase(range.first) && Util::isLowercase(range.second)) {
     nd = new AlphaNumberDecorator(range.first.size());
     start = Util::alphaToNum(range.first);

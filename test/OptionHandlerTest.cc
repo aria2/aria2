@@ -151,12 +151,26 @@ void OptionHandlerTest::testUnitNumberOptionHandler()
   CPPUNIT_ASSERT_EQUAL(string("4294967296"), option.get("foo"));
   handler.parse(&option, "4096K");
   CPPUNIT_ASSERT_EQUAL(string("4194304"), option.get("foo"));
-  handler.parse(&option, "K");
-  CPPUNIT_ASSERT_EQUAL(string("0"), option.get("foo"));
-  handler.parse(&option, "M");
-  CPPUNIT_ASSERT_EQUAL(string("0"), option.get("foo"));
-  handler.parse(&option, "");
-  CPPUNIT_ASSERT_EQUAL(string("0"), option.get("foo"));
+  try {
+    handler.parse(&option, "K");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    handler.parse(&option, "M");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
+  try {
+    handler.parse(&option, "");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e;
+    delete e;
+  }
 }
 
 void OptionHandlerTest::testParameterOptionHandler_1argInit()

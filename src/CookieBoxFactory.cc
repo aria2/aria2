@@ -68,7 +68,7 @@ Cookie CookieBoxFactory::parseNsCookie(const string& nsCookieStr) const
   c.domain = vs[0];
   c.path = vs[2];
   c.secure = vs[3] == "TRUE" ? true : false;
-  c.expires = strtol(vs[4].c_str(), NULL, 10);
+  c.expires = Util::parseInt(vs[4]);
   c.name = vs[5];
   if(vs.size() >= 7) {
     c.value = vs[6];

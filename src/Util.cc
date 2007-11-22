@@ -304,11 +304,7 @@ string Util::urldecode(const string& target) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
 	 isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
-	char temp[3];
-	temp[0] = *(itr+1);
-	temp[1] = *(itr+2);
-	temp[2] = '\0';
-	result += strtol(temp, 0, 16);
+	result += Util::parseInt(string(itr+1, itr+3), 16);
 	itr += 2;
       } else {
 	result += *itr;
@@ -466,26 +462,38 @@ void Util::unfoldRange(const string& src, Integers& range) {
 
 int32_t Util::parseInt(const string& s, int32_t base)
 {
+  if(s.empty()) {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"empty string");
+  }
   char* stop;
   errno = 0;
   long int v = strtol(s.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw new DlAbortEx(MSG_ILLEGAL_CHARACTER, stop);
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"illegal character");
   } else if((v == LONG_MIN || v == LONG_MAX) && errno == ERANGE || v > INT32_MAX || v < INT32_MIN) {
-    throw new DlAbortEx(MSG_OVERFLOW_UNDERFLOW_DETECTED, s.c_str());
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"overflow/underflow");
   }
   return v;
 }
 
 int64_t Util::parseLLInt(const string& s, int32_t base)
 {
+  if(s.empty()) {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"empty string");
+  }
   char* stop;
   errno = 0;
   int64_t v = strtoll(s.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw new DlAbortEx(MSG_ILLEGAL_CHARACTER, stop);
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"illegal character");
   } else if((v == INT64_MIN || v == INT64_MAX) && errno == ERANGE) {
-    throw new DlAbortEx(MSG_OVERFLOW_UNDERFLOW_DETECTED, s.c_str());
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"overflow/underflow");
   }
   return v;
 }
@@ -646,7 +654,15 @@ int64_t Util::getRealSize(const string& sizeWithUnit)
     }
     size = sizeWithUnit.substr(0, p);
   }
-  return strtoll(size.c_str(), 0, 10)*mult;
+  int64_t v = Util::parseLLInt(size);
+
+  if(v < 0) {
+    throw new DlAbortEx("Negative value detected: %s", sizeWithUnit.c_str());
+  } else if(v*mult < 0) {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"overflow/underflow");
+  }
+  return v*mult;
 }
 
 string Util::abbrevSize(int64_t size)
