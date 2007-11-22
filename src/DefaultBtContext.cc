@@ -161,7 +161,7 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
 
 void DefaultBtContext::extractAnnounce(Data* announceData) {
   Strings urls;
-  urls.push_back(announceData->toString());
+  urls.push_back(Util::trim(announceData->toString()));
   announceTiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
 }
 
@@ -173,7 +173,7 @@ void DefaultBtContext::extractAnnounceList(List* announceListData) {
     for(MetaList::const_iterator elemItr = elem->getList().begin();
 	elemItr != elem->getList().end(); elemItr++) {
       const Data* data = (Data*)*elemItr;
-      urls.push_back(data->toString());
+      urls.push_back(Util::trim(data->toString()));
     }
     if(urls.size()) {
       AnnounceTierHandle tier(new AnnounceTier(urls));

@@ -54,6 +54,7 @@
     DownloadFailureException .... RequestGroup should halt.
   FatalException .... Program should abort.
 * replace strtol with Util::parseInt
+* do performance tuning against Xml2MetalinkProcessor
 
 -- remaining issues to be implemented for 0.12.0 release
 * Update translation

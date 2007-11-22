@@ -514,7 +514,7 @@ void UtilTest::testParseIntRange_invalidRange()
 
 void UtilTest::testParseInt()
 {
-  CPPUNIT_ASSERT_EQUAL((int32_t)-1, Util::parseInt("-1"));
+  CPPUNIT_ASSERT_EQUAL((int32_t)-1, Util::parseInt(" -1 "));
   CPPUNIT_ASSERT_EQUAL((int32_t)2147483647, Util::parseInt("2147483647"));
   try {
     Util::parseInt("2147483648");
@@ -548,7 +548,7 @@ void UtilTest::testParseInt()
 
 void UtilTest::testParseLLInt()
 {
-  CPPUNIT_ASSERT_EQUAL((int64_t)-1, Util::parseLLInt("-1"));
+  CPPUNIT_ASSERT_EQUAL((int64_t)-1, Util::parseLLInt(" -1 "));
   CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
 		       Util::parseLLInt("9223372036854775807"));
   try {

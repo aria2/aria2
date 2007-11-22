@@ -462,38 +462,40 @@ void Util::unfoldRange(const string& src, Integers& range) {
 
 int32_t Util::parseInt(const string& s, int32_t base)
 {
-  if(s.empty()) {
+  string trimed = Util::trim(s);
+  if(trimed.empty()) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			"empty string");
   }
   char* stop;
   errno = 0;
-  long int v = strtol(s.c_str(), &stop, base);
+  long int v = strtol(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"illegal character");
+			trimed.c_str());
   } else if((v == LONG_MIN || v == LONG_MAX) && errno == ERANGE || v > INT32_MAX || v < INT32_MIN) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"overflow/underflow");
+			trimed.c_str());
   }
   return v;
 }
 
 int64_t Util::parseLLInt(const string& s, int32_t base)
 {
-  if(s.empty()) {
+  string trimed = Util::trim(s);
+  if(trimed.empty()) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			"empty string");
   }
   char* stop;
   errno = 0;
-  int64_t v = strtoll(s.c_str(), &stop, base);
+  int64_t v = strtoll(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"illegal character");
+			trimed.c_str());
   } else if((v == INT64_MIN || v == INT64_MAX) && errno == ERANGE) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"overflow/underflow");
+			trimed.c_str());
   }
   return v;
 }

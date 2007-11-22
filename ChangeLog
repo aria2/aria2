@@ -1,5 +1,15 @@
 2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Trim announce URL
+	* src/DefaultBtContext.cc
+	* test/ShaVisitorTest.cc
+	
+	Trim argument s. Give trimed s to exception constructor.
+	* src/Util.cc (parseInt)(parseLLInt)
+	* test/UtilTest.cc
+
+2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Set precision back to 1.
 	* src/ConsoleStatCalc.cc (calculateStat)
 
