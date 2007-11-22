@@ -1,5 +1,10 @@
 2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Set precision back to 1.
+	* src/ConsoleStatCalc.cc (calculateStat)
+
+2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Replaced strtol with Util::parseInt
 	* src/ChunkedEncoding.cc
 	* src/HttpConnection.cc
