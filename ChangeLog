@@ -1,5 +1,10 @@
 2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated usage
+	* src/version_usage.cc
+
+2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Trim announce URL
 	* src/DefaultBtContext.cc
 	* test/ShaVisitorTest.cc

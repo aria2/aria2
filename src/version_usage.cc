@@ -243,10 +243,10 @@ void showUsage() {
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
   cout << _(" --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
-	    "                              Multiple values can be specified by using ',',\n"
-	    "                              for example: \"6881,6885\".\n"
-	    "                              You can also use '-' to specify a range: \"6881-6999\".\n"
-	    "                              ',' and '-' can be used together.\n"
+	    "                              Multiple ports can be specified by using ',',\n"
+	    "                              for example: \"6881,6885\". You can also use '-'\n"
+	    "                              to specify a range: \"6881-6999\". ',' and '-' can\n"
+	    "                              be used together.\n"
 	    "                              Default: 6881-6999") << endl;
   cout << _(" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 	    "                              0 means unrestricted.\n"
