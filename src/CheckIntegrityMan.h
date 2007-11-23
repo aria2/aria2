@@ -38,8 +38,8 @@
 #include "common.h"
 
 class CheckIntegrityEntry;
-extern typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
-extern typedef deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
+typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
+typedef deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
 
 class CheckIntegrityMan {
 private:

@@ -38,10 +38,10 @@
 #include "AbstractCommand.h"
 
 class HttpConnection;
-extern typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+typedef SharedHandle<HttpConnection> HttpConnectionHandle;
 class HttpDownloadCommand;
 class HttpResponse;
-extern typedef SharedHandle<HttpResponse> HttpResponseHandle;
+typedef SharedHandle<HttpResponse> HttpResponseHandle;
 
 class HttpResponseCommand : public AbstractCommand {
 private:

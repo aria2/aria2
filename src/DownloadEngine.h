@@ -39,20 +39,20 @@
 #include "Command.h"
 
 class SocketCore;
-extern typedef SharedHandle<SocketCore> SocketHandle;
-extern typedef deque<SocketHandle> Sockets;
+typedef SharedHandle<SocketCore> SocketHandle;
+typedef deque<SocketHandle> Sockets;
 class Logger;
 class Option;
 class NameResolver;
-extern typedef SharedHandle<NameResolver> NameResolverHandle;
+typedef SharedHandle<NameResolver> NameResolverHandle;
 class RequestGroupMan;
-extern typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
+typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
 class FileAllocationMan;
-extern typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
+typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
 class StatCalc;
-extern typedef SharedHandle<StatCalc> StatCalcHandle;
+typedef SharedHandle<StatCalc> StatCalcHandle;
 class CheckIntegrityMan;
-extern typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
+typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
 
 class SocketEntry {
 public:

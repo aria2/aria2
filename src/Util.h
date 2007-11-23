@@ -44,7 +44,7 @@
 #include <ostream>
 
 class Randomizer;
-extern typedef SharedHandle<Randomizer> RandomizerHandle;
+typedef SharedHandle<Randomizer> RandomizerHandle;
 class BitfieldMan;
 
 #define STRTOLL(X) strtoll(X, (char**)NULL, 10)

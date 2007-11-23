@@ -38,9 +38,9 @@
 #include "IteratableValidator.h"
 
 class DownloadContext;
-extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class PieceStorage;
-extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class BitfieldMan;
 class Logger;
 

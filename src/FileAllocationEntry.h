@@ -38,9 +38,9 @@
 #include "RequestGroupEntry.h"
 
 class FileAllocationIterator;
-extern typedef SharedHandle<FileAllocationIterator> FileAllocationIteratorHandle;
+typedef SharedHandle<FileAllocationIterator> FileAllocationIteratorHandle;
 class Command;
-extern typedef deque<Command*> Commands;
+typedef deque<Command*> Commands;
 class DownloadEngine;
 
 class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry {

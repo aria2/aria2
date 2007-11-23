@@ -38,19 +38,19 @@
 #include "common.h"
 
 class Segment;
-extern typedef SharedHandle<Segment> SegmentHandle;
-extern typedef deque<SegmentHandle> Segments;
+typedef SharedHandle<Segment> SegmentHandle;
+typedef deque<SegmentHandle> Segments;
 class Logger;
 class Option;
 class PeerStat;
-extern typedef SharedHandle<PeerStat> PeerStatHandle;
+typedef SharedHandle<PeerStat> PeerStatHandle;
 typedef deque<PeerStatHandle> PeerStats;
 class DownloadContext;
-extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class PieceStorage;
-extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class Piece;
-extern typedef SharedHandle<Piece> PieceHandle;
+typedef SharedHandle<Piece> PieceHandle;
 
 #define SEGMENT_FILE_EXTENSION ".aria2"
 

@@ -38,9 +38,9 @@
 #include "AbstractCommand.h"
 
 class TransferEncoding;
-extern typedef SharedHandle<TransferEncoding> TransferEncodingHandle;
+typedef SharedHandle<TransferEncoding> TransferEncodingHandle;
 class PeerStat;
-extern typedef SharedHandle<PeerStat> PeerStatHandle;
+typedef SharedHandle<PeerStat> PeerStatHandle;
 
 class DownloadCommand : public AbstractCommand {
 private:

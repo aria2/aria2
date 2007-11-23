@@ -39,7 +39,7 @@
 #include "TimeA2.h"
 
 class Request;
-extern typedef SharedHandle<Request> RequestHandle;
+typedef SharedHandle<Request> RequestHandle;
 
 class StreamFileAllocationEntry : public FileAllocationEntry {
 private:

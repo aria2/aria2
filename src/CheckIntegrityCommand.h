@@ -39,7 +39,7 @@
 #include "TimeA2.h"
 
 class CheckIntegrityEntry;
-extern typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
+typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
 
 class CheckIntegrityCommand : public RealtimeCommand {
 private:

@@ -41,7 +41,7 @@
 #include "List.h"
 
 class Randomizer;
-extern typedef SharedHandle<Randomizer> RandomizerHandle;
+typedef SharedHandle<Randomizer> RandomizerHandle;
 
 #define INFO_HASH_LENGTH 20
 #define PIECE_HASH_LENGTH 20

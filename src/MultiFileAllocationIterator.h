@@ -39,8 +39,8 @@
 
 class MultiDiskAdaptor;
 class FileEntry;
-extern typedef SharedHandle<FileEntry> FileEntryHandle;
-extern typedef deque<FileEntryHandle> FileEntries;
+typedef SharedHandle<FileEntry> FileEntryHandle;
+typedef deque<FileEntryHandle> FileEntries;
 
 class MultiFileAllocationIterator:public FileAllocationIterator
 {

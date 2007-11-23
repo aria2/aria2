@@ -42,7 +42,7 @@
 #define MAX_PEERS 55
 
 class AnnounceTier;
-extern typedef SharedHandle<AnnounceTier> AnnounceTierHandle;
+typedef SharedHandle<AnnounceTier> AnnounceTierHandle;
 typedef deque<AnnounceTierHandle> AnnounceTiers;
 
 class RequestGroup;

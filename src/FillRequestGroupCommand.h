@@ -39,8 +39,8 @@
 #include "TimeA2.h"
 
 class RequestGroup;
-extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
-extern typedef deque<RequestGroupHandle> RequestGroups;
+typedef SharedHandle<RequestGroup> RequestGroupHandle;
+typedef deque<RequestGroupHandle> RequestGroups;
 class DownloadEngine;
 
 class FillRequestGroupCommand : public Command {

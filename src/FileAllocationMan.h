@@ -38,8 +38,8 @@
 #include "common.h"
 
 class FileAllocationEntry;
-extern typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-extern typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
+typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
+typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
 
 class FileAllocationMan {
 private:

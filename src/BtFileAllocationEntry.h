@@ -40,7 +40,7 @@
 class RequestGroup;
 class DownloadEngine;
 class Command;
-extern typedef deque<Command*> Commands;
+typedef deque<Command*> Commands;
 
 class BtFileAllocationEntry : public FileAllocationEntry {
 public:

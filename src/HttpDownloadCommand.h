@@ -38,7 +38,7 @@
 #include "DownloadCommand.h"
 
 class HttpConnection;
-extern typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+typedef SharedHandle<HttpConnection> HttpConnectionHandle;
 
 class HttpDownloadCommand : public DownloadCommand {
 private:

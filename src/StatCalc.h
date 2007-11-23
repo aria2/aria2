@@ -38,11 +38,11 @@
 #include "common.h"
 
 class RequestGroupMan;
-extern typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
+typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
 class FileAllocationMan;
-extern typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
+typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
 class CheckIntegrityMan;
-extern typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
+typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
 
 class StatCalc {
 public:

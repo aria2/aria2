@@ -38,7 +38,7 @@
 #include "Dependency.h"
 
 class RequestGroup;
-extern typedef WeakHandle<RequestGroup> RequestGroupWeakHandle;
+typedef WeakHandle<RequestGroup> RequestGroupWeakHandle;
 class Option;
 class Logger;
 

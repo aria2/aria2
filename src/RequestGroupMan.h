@@ -40,10 +40,10 @@
 
 class DownloadEngine;
 class RequestGroup;
-extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
-extern typedef deque<RequestGroupHandle> RequestGroups;
+typedef SharedHandle<RequestGroup> RequestGroupHandle;
+typedef deque<RequestGroupHandle> RequestGroups;
 class Command;
-extern typedef deque<Command*> Commands;
+typedef deque<Command*> Commands;
 class Logger;
 
 class RequestGroupMan {

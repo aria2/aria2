@@ -42,7 +42,7 @@
 class DownloadEngine;
 class Exception;
 class Peer;
-extern typedef SharedHandle<Peer> PeerHandle;
+typedef SharedHandle<Peer> PeerHandle;
 
 class PeerAbstractCommand : public Command {
 private:

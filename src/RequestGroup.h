@@ -40,32 +40,32 @@
 
 class DownloadEngine;
 class SegmentMan;
-extern typedef SharedHandle<SegmentMan> SegmentManHandle;
+typedef SharedHandle<SegmentMan> SegmentManHandle;
 class SegmentManFactory;
-extern typedef SharedHandle<SegmentManFactory> SegmentManFactoryHandle;
+typedef SharedHandle<SegmentManFactory> SegmentManFactoryHandle;
 class Command;
-extern typedef deque<Command*> Commands;
+typedef deque<Command*> Commands;
 class DownloadContext;
-extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class PieceStorage;
-extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class BtProgressInfoFile;
-extern typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
+typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
 class Dependency;
-extern typedef SharedHandle<Dependency> DependencyHandle;
+typedef SharedHandle<Dependency> DependencyHandle;
 class DlAbortEx;
 class PostDownloadHandler;
-extern typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;
-extern typedef deque<PostDownloadHandlerHandle> PostDownloadHandlers;
+typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;
+typedef deque<PostDownloadHandlerHandle> PostDownloadHandlers;
 class DiskWriterFactory;
-extern typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
+typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 class Option;
 class Logger;
 class RequestGroup;
-extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
-extern typedef deque<RequestGroupHandle> RequestGroups;
+typedef SharedHandle<RequestGroup> RequestGroupHandle;
+typedef deque<RequestGroupHandle> RequestGroups;
 class CheckIntegrityEntry;
-extern typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
+typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
 
 
 class RequestGroup {

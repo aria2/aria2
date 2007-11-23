@@ -41,7 +41,7 @@
 
 class DownloadEngine;
 class RequestGroup;
-extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
+typedef SharedHandle<RequestGroup> RequestGroupHandle;
 
 class TrackerWatcherCommand : public Command,
 			      public BtContextAwareCommand,

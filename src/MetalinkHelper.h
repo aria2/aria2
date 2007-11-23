@@ -39,8 +39,8 @@
 
 class Option;
 class MetalinkEntry;
-extern typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
-extern typedef deque<MetalinkEntryHandle> MetalinkEntries;
+typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
+typedef deque<MetalinkEntryHandle> MetalinkEntries;
 
 class MetalinkHelper {
 private:

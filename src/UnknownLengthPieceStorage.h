@@ -39,9 +39,9 @@
 
 class Option;
 class DownloadContext;
-extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class DiskWriterFactory;
-extern typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
+typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 
 class UnknownLengthPieceStorage:public PieceStorage {
 private:

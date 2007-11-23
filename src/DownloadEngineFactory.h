@@ -40,10 +40,10 @@
 class Logger;
 class Option;
 class RequestGroup;
-extern typedef SharedHandle<RequestGroup> RequestGroupHandle;
-extern typedef deque<RequestGroupHandle> RequestGroups;
+typedef SharedHandle<RequestGroup> RequestGroupHandle;
+typedef deque<RequestGroupHandle> RequestGroups;
 class DownloadEngine;
-extern typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
+typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
 
 class DownloadEngineFactory {
 private:

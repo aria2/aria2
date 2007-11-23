@@ -39,7 +39,7 @@
 #include "TimeA2.h"
 
 class FileAllocationEntry;
-extern typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
+typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
 class Exception;
 
 class FileAllocationCommand : public RealtimeCommand {

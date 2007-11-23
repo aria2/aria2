@@ -38,15 +38,15 @@
 #include "PieceStorage.h"
 
 class DownloadContext;
-extern typedef SharedHandle<DownloadContext> DownloadContextHandle;
+typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class BitfieldMan;
 class Logger;
 class Option;
-extern typedef deque<PieceHandle> Pieces;
+typedef deque<PieceHandle> Pieces;
 class DiskWriterFactory;
-extern typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
+typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 class FileEntry;
-extern typedef SharedHandle<FileEntry> FileEntryHandle;
+typedef SharedHandle<FileEntry> FileEntryHandle;
 
 #define END_GAME_PIECE_NUM 20
 

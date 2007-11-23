@@ -41,15 +41,15 @@
 #include "Socket.h"
 
 class Request;
-extern typedef SharedHandle<Request> RequestHandle;
+typedef SharedHandle<Request> RequestHandle;
 class DownloadEngine;
 class Segment;
-extern typedef SharedHandle<Segment> SegmentHandle;
-extern typedef deque<SegmentHandle> Segments;
+typedef SharedHandle<Segment> SegmentHandle;
+typedef deque<SegmentHandle> Segments;
 class NameResolver;
-extern typedef SharedHandle<NameResolver> NameResolverHandle;
+typedef SharedHandle<NameResolver> NameResolverHandle;
 class BtProgressInfoFile;
-extern typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
+typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
 
 class AbstractCommand : public Command, public RequestGroupAware {
 private:

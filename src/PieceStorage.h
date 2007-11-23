@@ -40,12 +40,12 @@
 #include "IntSequence.h"
 
 class Piece;
-extern typedef SharedHandle<Piece> PieceHandle;
-extern typedef deque<PieceHandle> Pieces;
+typedef SharedHandle<Piece> PieceHandle;
+typedef deque<PieceHandle> Pieces;
 class Peer;
-extern typedef SharedHandle<Peer> PeerHandle;
+typedef SharedHandle<Peer> PeerHandle;
 class DiskAdaptor;
-extern typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
+typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
 
 class PieceStorage {
 public:

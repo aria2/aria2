@@ -38,12 +38,12 @@
 #include "IteratableValidator.h"
 
 class SingleFileDownloadContext;
-extern typedef SharedHandle<SingleFileDownloadContext> SingleFileDownloadContextHandle;
+typedef SharedHandle<SingleFileDownloadContext> SingleFileDownloadContextHandle;
 class PieceStorage;
-extern typedef SharedHandle<PieceStorage> PieceStorageHandle;
+typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class Logger;
 class MessageDigestContext;
-extern typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
+typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
 
 class IteratableChecksumValidator:public IteratableValidator
 {

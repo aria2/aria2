@@ -38,9 +38,9 @@
 #include "RequestGroupEntry.h"
 
 class IteratableValidator;
-extern typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;
+typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;
 class Command;
-extern typedef deque<Command*> Commands;
+typedef deque<Command*> Commands;
 class DownloadEngine;
 
 class CheckIntegrityEntry : public RequestGroupEntry,

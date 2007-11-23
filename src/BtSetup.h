@@ -42,7 +42,7 @@ class RequestGroup;
 class DownloadEngine;
 class Option;
 class Command;
-extern typedef deque<Command*> Commands;
+typedef deque<Command*> Commands;
 
 class BtSetup {
 private:

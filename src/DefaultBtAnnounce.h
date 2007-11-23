@@ -46,7 +46,7 @@
 #include "PeerStorage.h"
 
 class Randomizer;
-extern typedef SharedHandle<Randomizer> RandomizerHandle;
+typedef SharedHandle<Randomizer> RandomizerHandle;
 
 #define DEFAULT_ANNOUNCE_INTERVAL 1800
 

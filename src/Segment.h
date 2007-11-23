@@ -38,7 +38,7 @@
 #include "common.h"
 
 class Piece;
-extern typedef SharedHandle<Piece> PieceHandle;
+typedef SharedHandle<Piece> PieceHandle;
 
 class Segment {
 public:

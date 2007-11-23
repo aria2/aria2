@@ -39,13 +39,13 @@
 
 class Option;
 class Netrc;
-extern typedef SharedHandle<Netrc> NetrcHandle;
+typedef SharedHandle<Netrc> NetrcHandle;
 class AuthConfig;
-extern typedef SharedHandle<AuthConfig> AuthConfigHandle;
+typedef SharedHandle<AuthConfig> AuthConfigHandle;
 class Request;
-extern typedef SharedHandle<Request> RequestHandle;
+typedef SharedHandle<Request> RequestHandle;
 class AuthResolver;
-extern typedef SharedHandle<AuthResolver> AuthResolverHandle;
+typedef SharedHandle<AuthResolver> AuthResolverHandle;
 
 class AuthConfigFactory {
 private:

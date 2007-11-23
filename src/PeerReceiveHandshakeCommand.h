@@ -38,7 +38,7 @@
 #include "PeerAbstractCommand.h"
 
 class PeerConnection;
-extern typedef SharedHandle<PeerConnection> PeerConnectionHandle;
+typedef SharedHandle<PeerConnection> PeerConnectionHandle;
 
 class PeerReceiveHandshakeCommand:public PeerAbstractCommand
 {
