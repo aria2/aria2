@@ -1,5 +1,18 @@
 2007-11-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Throw DlAbortEx when a remote file is not found.
+	* src/HttpResponse.cc
+	* src/FtpNegotiationCommand.cc
+	* src/message.h
+
+	Overwrite an existing file if --allow-overwrite=true is given.
+	* src/RequestGroup.cc
+
+	Removed unused functions
+	* src/AbstractCommand.h
+	
+2007-11-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed 'extern' from 'extern typedef ...' in src/*.h
 
 2007-11-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>

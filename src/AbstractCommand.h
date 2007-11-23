@@ -78,17 +78,7 @@ protected:
 #endif // ENABLE_ASYNC_DNS
   void setTimeout(int32_t timeout) { this->timeout = timeout; }
 
-  void loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile);
-
-  bool tryAutoFileRenaming();
-
-  void initPieceStorage();
-
-  bool downloadFinishedByFileLength();
-
   void prepareForNextAction(Command* nextCommand = 0);
-
-  void shouldCancelDownloadForSafety();
 
 private:
   bool checkSocketIsReadable;

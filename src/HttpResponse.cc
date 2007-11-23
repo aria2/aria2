@@ -44,6 +44,9 @@ void HttpResponse::validateResponse() const
   if(status == 401) {
     throw new DlAbortEx(EX_AUTH_FAILED);
   }
+  if(status == 404) {
+    throw new DlAbortEx(MSG_RESOURCE_NOT_FOUND);
+  }
   if(status >= 400) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }

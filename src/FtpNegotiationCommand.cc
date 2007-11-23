@@ -190,6 +190,14 @@ bool FtpNegotiationCommand::recvSize() {
   if(status == 0) {
     return false;
   }
+  if(status == 550) {
+    // If file is not found in a server, then SIZE command fails.
+    // TODO There exist ftp servers that don't support SIZE command...
+    // the message "MSG_RESOURCE_NOT_FOUND" may be a little bit confusing.
+    // Nevertheless, curretly aria2 doesn't support such ftp servers,
+    // I don't care that.
+    throw new DlAbortEx(MSG_RESOURCE_NOT_FOUND);
+  }
   if(status != 213) {
     throw new DlRetryEx(EX_BAD_STATUS, status);
   }

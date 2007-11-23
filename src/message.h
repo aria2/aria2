@@ -98,7 +98,7 @@
 #define MSG_LOADING_SEGMENT_FILE _("Loading the segment file %s.")
 #define MSG_LOADED_SEGMENT_FILE _("The segment file was loaded successfully.")
 #define MSG_NO_URL_TO_DOWNLOAD _("No URI to download. Download aborted.")
-#define MSG_FILE_ALREADY_EXISTS _("File %s exists, but %s does not exist. The download was canceled in order to prevent your file from being truncated to 0. If you are sure to download file all over again, then delete it or add --allow-overwrite=true option and restart aria2.")
+#define MSG_FILE_ALREADY_EXISTS _("File %s exists, but a control file(*.aria2) does not exist. Download was canceled in order to prevent your file from being truncated to 0. If you are sure to download the file all over again, then delete it or add --allow-overwrite=true option and restart aria2.")
 #define MSG_ALLOCATING_FILE _("Allocating file %s, %s bytes")
 #define MSG_FILE_NOT_FOUND _("File not found")
 #define MSG_NOT_DIRECTORY _("Not a directory")
@@ -128,6 +128,8 @@
 #define MSG_VERIFICATION_FAILED _("Checksum error detected. file=%s")
 #define MSG_INCOMPLETE_RANGE _("Incomplete range specified. %s")
 #define MSG_STRING_INTEGER_CONVERSION_FAILURE _("Failed to convert string into value: %s")
+#define MSG_RESOURCE_NOT_FOUND _("Resource not found")
+#define MSG_FILE_RENAMED _("File already exists. Renamed to %s.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

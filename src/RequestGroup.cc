@@ -193,11 +193,9 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	if(_pieceStorage->getDiskAdaptor()->fileExists()) {
 	  if(_option->get(PREF_CHECK_INTEGRITY) != V_TRUE &&
 	     _option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
-	    _logger->error(MSG_FILE_ALREADY_EXISTS,
-			   getFilePath().c_str(),
-			   progressInfoFile->getFilename().c_str());
 	    // TODO we need this->haltRequested = true?
-	    return Commands();
+	    throw new DownloadFailureException(MSG_FILE_ALREADY_EXISTS,
+					       getFilePath().c_str());
 	  } else {
 	    _pieceStorage->getDiskAdaptor()->openFile();
 	  }
@@ -272,7 +270,9 @@ void RequestGroup::initPieceStorage()
 
 bool RequestGroup::downloadFinishedByFileLength()
 {
-  if(_option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
+  // assuming that a control file doesn't exist.
+  if(_option->get(PREF_ALLOW_OVERWRITE) == V_TRUE ||
+     _option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
      !_downloadContext->getPieceHashes().empty()) {
     return false;
   }
@@ -328,23 +328,24 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
   }
 }
 
+// assuming that a control file does not exist
 void RequestGroup::shouldCancelDownloadForSafety()
 {
+  if(_option->get(PREF_ALLOW_OVERWRITE) == V_TRUE) {
+    return;
+  }
   File outfile(getFilePath());
-  if(outfile.exists() && !_progressInfoFile->exists()) {
+  if(outfile.exists()) {
     if(_option->get(PREF_AUTO_FILE_RENAMING) == V_TRUE) {
       if(tryAutoFileRenaming()) {
-	_logger->notice("File already exists. Renamed to %s.",
-		       getFilePath().c_str());
+	_logger->notice(MSG_FILE_RENAMED, getFilePath().c_str());
       } else {
-	_logger->notice("File renaming failed: %s", getFilePath().c_str());
-	throw new DownloadFailureException(EX_DOWNLOAD_ABORTED);
+	throw new DownloadFailureException("File renaming failed: %s",
+					   getFilePath().c_str());
       }
-    } else if(_option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
-      _logger->notice(MSG_FILE_ALREADY_EXISTS,
-		     getFilePath().c_str(),
-		     _progressInfoFile->getFilename().c_str());
-      throw new DownloadFailureException(EX_DOWNLOAD_ABORTED);
+    } else {
+      throw new DownloadFailureException(MSG_FILE_ALREADY_EXISTS,
+					 getFilePath().c_str());
     }
   }
 }
