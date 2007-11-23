@@ -263,7 +263,7 @@ void showUsage() {
 	    "                              the conditions is satisfied.\n"
 	    "                              Default: 1.0") << endl;
   cout << _(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID in\n"
-	    "                              in BitTorrent is 20 byte length. If more than 20\n"
+	    "                              BitTorrent is 20 byte length. If more than 20\n"
 	    "                              bytes are specified, only first 20\n"
 	    "                              bytes are used. If less than 20 bytes are\n"
 	    "                              specified, the random alphabet characters are\n"
@@ -297,50 +297,7 @@ void showUsage() {
 	    " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
 	    " only single file torrent can be integrated with http/ftp.") << endl;
   cout << endl;
-  cout << _("Examples:") << endl;
-  cout << _(" Download a file using 1 connection:") << endl;
-  cout << "  aria2c http://AAA.BBB.CCC/file.zip" << endl;
-  cout << _(" Download a file using 2 connections:") << endl;
-  cout << "  aria2c -s 2 http://AAA.BBB.CCC/file.zip" << endl;
-  cout << _(" Download a file using 2 connections, each connects to a different server:") << endl;
-  cout << "  aria2c http://AAA.BBB.CCC/file.zip http://DDD.EEE.FFF/GGG/file.zip" << endl;
-  cout << _(" You can mix up different protocols:") << endl;
-  cout << "  aria2c http://AAA.BBB.CCC/file.zip ftp://DDD.EEE.FFF/GGG/file.zip" << endl;
-  cout << _(" Parameterized URI:") << endl;
-  cout << "  aria2c -P http://{server1,server2,server3}/file.iso" << endl;
-  cout << _(" Parameterized URI. -Z option is required in this case:") << endl;
-  cout << "  aria2c -P -Z http://host/file[001-100:2].img" << endl;
-#ifdef ENABLE_BITTORRENT
-  cout << endl;
-  cout << _(" Download a torrent:") << endl;
-  cout << "  aria2c -o test.torrent http://AAA.BBB.CCC/file.torrent" << endl;
-  cout << _(" Download a torrent using a local .torrent file:") << endl;
-  cout << "  aria2c -T test.torrent" << endl;
-  cout << _(" Download only selected files:") << endl;
-  cout << "  aria2c -T test.torrent dir/file1.zip dir/file2.zip" << endl;
-  cout << _(" Print file listing of .torrent file:") << endl;
-  cout << "  aria2c -T test.torrent -S" << endl;
-  cout << _(" Download a file using torrent and http/ftp server") << endl;
-  cout << "  aria2c -T test.torrent http://host1/file ftp://host2/file" << endl;
-#endif // ENABLE_BITTORRENT
-#ifdef ENABLE_METALINK
-  cout << endl;
-  cout << _(" Metalink downloading:") << endl;
-  cout << "  aria2c http://AAA.BBB.CCC/file.metalink" << endl;
-  cout << _(" Download a file using local .metalink file:") << endl;
-  cout << "  aria2c -M test.metalink" << endl;
-
-  cout << _(" Download a file using a local .metalink file with preferred server locations:") << endl;
-  cout << "  aria2c -M test.metalink --metalink-location=JP,US" << endl;
-  cout << _(" Metalink downloading with preferences:") << endl;
-  cout << "  aria2c -M test.metalink --metalink-version=1.1.1 --metalink-language=en-US" << endl;
-  cout << _(" Download only selected files:") << endl;
-  cout << "  aria2c -M test.metalink --metalink-language=en-US dir/file1.zip dir/file2.zip" << endl;
-  cout << _(" Download only selected files using index:") << endl;
-  cout << "  aria2c -M test.metalink --metalink-language=en-US --select-file 1,3-5" << endl;
-  cout << _(" Print file listing of .metalink file:") << endl;
-  cout << "  aria2c -M test.metalink -S --metalink-language=en-US" << endl;
-#endif // ENABLE_METALINK
+  cout << _("Refer to  man page for some examples.") << endl;
   cout << endl;
   printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
