@@ -1,5 +1,16 @@
 2007-11-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Corrected typo. Examples are removed since they are available in man
+	page.
+	* src/version_usage.cc
+
+	Updated man page.
+	* doc/aria2c.1
+	* doc/aria2c.1.txt
+	* doc/makeman: Commented out sed command.
+	
+2007-11-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Throw DlAbortEx when a remote file is not found.
 	* src/HttpResponse.cc
 	* src/FtpNegotiationCommand.cc
