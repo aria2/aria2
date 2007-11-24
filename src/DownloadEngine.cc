@@ -292,6 +292,11 @@ void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)
   _statCalc = statCalc;
 }
 
+void DownloadEngine::addCommand(const Commands& commands)
+{
+  this->commands.insert(this->commands.end(), commands.begin(), commands.end());
+}
+
 #ifdef ENABLE_ASYNC_DNS
 bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
 					  Command* command) {
@@ -322,10 +327,4 @@ bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
     return true;
   }
 }
-
-void DownloadEngine::addCommand(const Commands& commands)
-{
-  this->commands.insert(this->commands.end(), commands.begin(), commands.end());
-}
-
 #endif // ENABLE_ASYNC_DNS

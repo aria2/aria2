@@ -1,3 +1,11 @@
+2007-11-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed: compilation fails without c-ares/ares
+	* src/DownloadEngine.cc (addCommand): Moved outside #ifdef
+
+	Generate http/ftp commands only when download is incomplete.
+	* src/BtFileAllocationEntry.cc (prepareForNextAction)
+
 2007-11-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Corrected typo. Examples are removed since they are available in man

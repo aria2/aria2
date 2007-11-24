@@ -46,8 +46,9 @@ BtFileAllocationEntry::~BtFileAllocationEntry() {}
 Commands BtFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
 {
   Commands commands = BtSetup().setup(_requestGroup, e, e->option);
-  // TODO don't integerate http/ftp when multi-file torrent
-  Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, 0);
-  copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
+  if(!_requestGroup->downloadFinished()) {
+    Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, 0);
+    copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
+  }
   return commands;
 }
