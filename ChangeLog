@@ -1,5 +1,10 @@
 2007-11-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed syntax error
+	* test/SequenceTest.cc
+
+2007-11-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Return false if RequestGroup::isPreLocalFileCheckEnabled() == true
 	* src/RequestGroupMan.cc (isSameFileBeingDownloaded)
 

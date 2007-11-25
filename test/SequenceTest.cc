@@ -28,7 +28,7 @@ void SequenceTest::testParseAndNext()
     IntSequence::Value(3, 9),
     IntSequence::Value(10, 11),
   };
-  IntSequence seq(IntSequence::Values(&params[0], &params[3]));
+  IntSequence seq = IntSequence(IntSequence::Values(&params[0], &params[3]));
   CPPUNIT_ASSERT(seq.hasNext());
   CPPUNIT_ASSERT_EQUAL((int32_t)1, seq.next());
   CPPUNIT_ASSERT(seq.hasNext());
@@ -55,7 +55,7 @@ void SequenceTest::testParseAndNext2()
   IntSequence::Value params[] = {
     IntSequence::Value(1, 2),
   };
-  IntSequence seq(IntSequence::Values(&params[0], &params[1]));
+  IntSequence seq = IntSequence(IntSequence::Values(&params[0], &params[1]));
   CPPUNIT_ASSERT(seq.hasNext());
   CPPUNIT_ASSERT_EQUAL((int32_t)1, seq.next());
   CPPUNIT_ASSERT(!seq.hasNext());
@@ -70,7 +70,7 @@ void SequenceTest::testFlush()
     IntSequence::Value(3, 9),
     IntSequence::Value(10, 11),
   };
-  IntSequence seq(IntSequence::Values(&params[0], &params[3]));
+  IntSequence seq = IntSequence(IntSequence::Values(&params[0], &params[3]));
   deque<int32_t> r = seq.flush();
 
   int32_t answers[] = { 1, 3, 4, 5, 6, 7, 8, 10 };
