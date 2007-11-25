@@ -260,6 +260,10 @@ string RequestGroupMan::formatDownloadResult(const string& status, const Request
 
 bool RequestGroupMan::isSameFileBeingDownloaded(RequestGroup* requestGroup) const
 {
+  // TODO it may be good to use dedicated method rather than use isPreLocalFileCheckEnabled
+  if(!requestGroup->isPreLocalFileCheckEnabled()) {
+    return false;
+  }
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     if((*itr).get() != requestGroup &&

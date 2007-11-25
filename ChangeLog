@@ -1,5 +1,13 @@
 2007-11-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Return false if RequestGroup::isPreLocalFileCheckEnabled() == true
+	* src/RequestGroupMan.cc (isSameFileBeingDownloaded)
+
+	Return false if RequestGroup::isPreLocalFileCheckEnabled() == true
+	* src/RequestGroup.cc (downloadFinishedByFileLength)
+	
+2007-11-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the check to see whether ares_host_callback accepts timeouts
 	with c-ares; only c-ares 1.5.0 or newer accepts it.
 	* src/NameResolver.{h, cc}

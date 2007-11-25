@@ -271,7 +271,8 @@ void RequestGroup::initPieceStorage()
 bool RequestGroup::downloadFinishedByFileLength()
 {
   // assuming that a control file doesn't exist.
-  if(_option->get(PREF_ALLOW_OVERWRITE) == V_TRUE ||
+  if(!isPreLocalFileCheckEnabled() ||
+     _option->get(PREF_ALLOW_OVERWRITE) == V_TRUE ||
      _option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
      !_downloadContext->getPieceHashes().empty()) {
     return false;
