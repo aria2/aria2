@@ -40,6 +40,9 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_PROG_YACC
 
+# Setting language choice
+AC_LANG([C++])
+
 # Checks for libraries.
 if test "x$with_libxml2" = "xyes"; then
    AM_PATH_XML2([2.6.24], [have_libxml2=yes])

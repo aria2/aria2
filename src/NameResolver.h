@@ -48,10 +48,18 @@ extern "C" {
 } /* end of extern "C" */
 #endif
 
+#ifdef HAVE_LIBCARES1_5
+void callback(void* arg, int status, int timeouts, struct hostent* host);
+#else
 void callback(void* arg, int status, struct hostent* host);
+#endif // HAVE_LIBCARES1_5
 
 class NameResolver {
+#ifdef HAVE_LIBCARES1_5
+  friend void callback(void* arg, int status, int timeouts, struct hostent* host);
+#else
   friend void callback(void* arg, int status, struct hostent* host);
+#endif // HAVE_LIBCARES1_5
 
 public:
   enum STATUS {

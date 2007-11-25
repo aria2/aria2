@@ -138,6 +138,9 @@
 /* Define to 1 if you have libcares. */
 #undef HAVE_LIBCARES
 
+/* Define 1 if ares_host_callback accepts timeouts(c-ares >= 1.5) */
+#undef HAVE_LIBCARES1_5
+
 /* Define to 1 if you have libgcrypt. */
 #undef HAVE_LIBGCRYPT
 

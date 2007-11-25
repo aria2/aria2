@@ -36,7 +36,11 @@
 
 #ifdef ENABLE_ASYNC_DNS
 
+#ifdef HAVE_LIBCARES1_5
+void callback(void* arg, int status, int timeouts, struct hostent* host) {
+#else
 void callback(void* arg, int status, struct hostent* host) {
+#endif // HAVE_LIBCARES1_5
   NameResolver* resolverPtr = (NameResolver*)arg;
 #ifdef HAVE_LIBARES
   // This block is required since the assertion in ares_strerror fails

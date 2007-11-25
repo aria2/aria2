@@ -1,3 +1,11 @@
+2007-11-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added the check to see whether ares_host_callback accepts timeouts
+	with c-ares; only c-ares 1.5.0 or newer accepts it.
+	* src/NameResolver.{h, cc}
+	* m4/libcares.m4
+	* configure.ac: Set C++ for language choice.
+
 2007-11-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed: compilation fails without c-ares/ares

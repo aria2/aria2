@@ -16,10 +16,30 @@ LIBS_save=$LIBS
 CPPFLAGS_save=$CPPFLAGS
 
 LIBS="-L$libcares_prefix_lib $LIBS"
-CPPFLAGS="-I$libcares_prefix_include $CPPFLAGS"
+CPPFLAGS="-I$libcares_prefix_include -Wall $CPPFLAGS"
 
 AC_CHECK_LIB([cares], [ares_init], [have_libcares=yes])
+
 if test "x$have_libcares" = "xyes"; then
+
+    AC_MSG_CHECKING([whether ares_host_callback accepts timeouts(c-ares >= 1.5)])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+    #include <ares.h>
+
+    void callback(void* arg, int status, int timeouts, struct hostent* host);
+    ]],
+    [[
+    ares_channel channel;
+    ares_gethostbyname(channel, "foo", 0, callback, 0);
+    ]])],
+    [have_libcares1_5=yes],
+    [have_libcares1_5=no])
+    AC_MSG_RESULT([$have_libcares1_5])
+
+    if test "x$have_libcares1_5" = "xyes"; then
+        AC_DEFINE([HAVE_LIBCARES1_5], [1], [Define 1 if ares_host_callback accepts timeouts(c-ares >= 1.5)])
+    fi
+
     AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 if you have libcares.])
     LIBCARES_LIBS="-L$libcares_prefix_lib -lcares"
     LIBCARES_CPPFLAGS="-I$libcares_prefix_include"
