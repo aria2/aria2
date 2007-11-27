@@ -89,6 +89,8 @@ public:
 
   int64_t getEntityLength() const;
 
+  string getContentType() const;
+
   void setHttpHeader(const HttpHeaderHandle& httpHeader)
   {
     this->httpHeader = httpHeader;

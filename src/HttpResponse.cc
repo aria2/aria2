@@ -146,3 +146,12 @@ int64_t HttpResponse::getEntityLength() const
     return httpHeader->getRange()->getEntityLength();
   }
 }
+
+string HttpResponse::getContentType() const
+{
+  if(httpHeader.isNull()) {
+    return "";
+  } else {
+    return httpHeader->getFirst("Content-Type");
+  }
+}

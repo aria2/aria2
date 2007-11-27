@@ -91,6 +91,7 @@ bool HttpResponseCommand::executeInternal()
     SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
     dctx->setTotalLength(totalLength);
     dctx->setFilename(httpResponse->determinFilename());
+    dctx->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
       throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,

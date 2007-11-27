@@ -13,6 +13,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetContentLength_contentLength);
   //CPPUNIT_TEST(testGetContentLength_range);
   CPPUNIT_TEST(testGetEntityLength);
+  CPPUNIT_TEST(testGetContentType);
   CPPUNIT_TEST(testDeterminFilename_without_ContentDisposition);
   CPPUNIT_TEST(testDeterminFilename_with_ContentDisposition_zero_length);
   CPPUNIT_TEST(testDeterminFilename_with_ContentDisposition);
@@ -36,6 +37,7 @@ public:
   void testGetContentLength_null();
   void testGetContentLength_contentLength();
   void testGetEntityLength();
+  void testGetContentType();
   void testDeterminFilename_without_ContentDisposition();
   void testDeterminFilename_with_ContentDisposition_zero_length();
   void testDeterminFilename_with_ContentDisposition();
@@ -88,6 +90,16 @@ void HttpResponseTest::testGetEntityLength()
 
   CPPUNIT_ASSERT_EQUAL((int64_t)4294967297LL, httpResponse.getEntityLength());
 
+}
+
+void HttpResponseTest::testGetContentType()
+{
+  HttpResponse httpResponse;
+  HttpHeaderHandle httpHeader = new HttpHeader();
+  httpHeader->put("content-type", "application/octet-stream");
+  httpResponse.setHttpHeader(httpHeader);
+  CPPUNIT_ASSERT_EQUAL(string("application/octet-stream"),
+		       httpResponse.getContentType());
 }
 
 void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
