@@ -32,43 +32,45 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#ifndef _D_DOWNLOAD_RESULT_H_
+#define _D_DOWNLOAD_RESULT_H_
 
-MetalinkHelper::MetalinkHelper() {}
+#include "common.h"
 
-MetalinkHelper::~MetalinkHelper() {}
-
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+class DownloadResult
 {
-  Xml2MetalinkProcessor proc;
+public:
+  enum RESULT {
+    FINISHED,
+    NOT_YET,
+  };
 
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
-}
+  int32_t gid;
+ 
+  string filePath;
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
-{
-  Xml2MetalinkProcessor proc;
+  int64_t totalLength;
 
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
+  string uri;
 
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
-}
+  int32_t numUri;
+
+  RESULT result;
+
+  DownloadResult(int32_t gid,
+		 const string& filePath,
+		 int64_t totalLength,
+		 const string& uri,
+		 int32_t numUri,
+		 RESULT result):
+    gid(gid),
+    filePath(filePath),
+    totalLength(totalLength),
+    uri(uri),
+    numUri(numUri),
+    result(result) {}
+};
+
+typedef SharedHandle<DownloadResult> DownloadResultHandle;
+
+#endif // _D_DOWNLOAD_RESULT_H_

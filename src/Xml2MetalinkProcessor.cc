@@ -35,6 +35,7 @@
 #include "Xml2MetalinkProcessor.h"
 #include "DlAbortEx.h"
 #include "Util.h"
+#include "BinaryStream.h"
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
@@ -62,6 +63,49 @@ MetalinkerHandle Xml2MetalinkProcessor::parseFile(const string& filename) {
   if(!doc) {
     throw new DlAbortEx("Cannot parse metalink file %s", filename.c_str());
   }
+  return processDoc(doc);
+}
+
+MetalinkerHandle Xml2MetalinkProcessor::parseFromBinaryStream(const BinaryStreamHandle& binaryStream) {
+  release();
+  int32_t bufSize = 4096;
+  unsigned char buf[bufSize];
+
+  int32_t res = binaryStream->readData(buf, 4, 0);
+  if(res != 4) {
+    throw new DlAbortEx("Too small data for metalink parsing.");
+  }
+
+  xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt(0, 0, (const char*)buf, res, 0);
+  try {
+    int64_t readOffset = res;
+    while(1) {
+      int32_t res = binaryStream->readData(buf, bufSize, readOffset);
+      if(res == 0) {
+	break;
+      }
+      if(xmlParseChunk(ctx, (const char*)buf, res, 0) != 0) {
+	throw new DlAbortEx("Cannot parse metalink file");
+      }
+      readOffset += res;
+    }
+    xmlParseChunk(ctx, (const char*)buf, 0, 1);
+    doc = ctx->myDoc;
+
+    xmlFreeParserCtxt(ctx);
+  } catch(Exception* e) {
+    xmlFreeParserCtxt(ctx);
+    throw;
+  }
+
+  if(!doc) {
+    throw new DlAbortEx("Cannot parse metalink file");
+  }
+  return processDoc(doc);
+}
+
+MetalinkerHandle Xml2MetalinkProcessor::processDoc(xmlDocPtr doc)
+{
   context = xmlXPathNewContext(doc);
   if(!context) {
     throw new DlAbortEx("Cannot create new xpath context");

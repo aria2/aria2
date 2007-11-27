@@ -42,6 +42,8 @@ class DownloadContext;
 typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class DiskWriterFactory;
 typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
+class DirectDiskAdaptor;
+typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;
 
 class UnknownLengthPieceStorage:public PieceStorage {
 private:
@@ -49,7 +51,7 @@ private:
 
   const Option* _option;
   
-  DiskAdaptorHandle _diskAdaptor;
+  DirectDiskAdaptorHandle _diskAdaptor;
 
   DiskWriterFactoryHandle _diskWriterFactory;
 

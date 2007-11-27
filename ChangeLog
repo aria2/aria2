@@ -1,3 +1,67 @@
+2007-11-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Rewritten to add content-type support.
+	* src/DownloadHandler.{h, cc}
+	* src/BtPostDownloadHandler.{h, cc}
+	* test/BtPostDownloadHandlerTest.cc
+	* src/MetalinkPostDownloadHandler.{h, cc}
+	* test/MetalinkPostDownloadHandlerTest.cc
+	* src/PostDownloadHandler.{h, cc}
+	* src/DownloadHandlerConstants.{h, cc}
+	* src/RequestGroup.cc
+	* src/HttpResponseCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/SingleFileDownloadContext.{h, cc}
+	* src/RequestGroup.h
+	* src/RequestGroupCriteria.h
+	* src/ContentTypeRequestGroupCriteria.h
+
+	Added 'mem' option value for --follow-metalink, --follow-torrent.
+	If it is give, metalink/torrent file is not written to the disk, but
+	just is kept in memory. Parsing is occurred on memory.
+	* src/MetalinkHelper.{h, cc}
+	* src/MetalinkProcessor.h
+	* src/Xml2MetalinkProcessor.{h, cc}
+	* test/Xml2MetalinkProcessorTest.cc
+	* src/DownloadHandlerFactory.{h, cc}
+	* test/DownloadHandlerFactoryTest.cc
+	* src/PreDownloadHandler.{h, cc}
+	* src/OptionHandlerFactory.cc
+	* src/DefaultBtContext.{h, cc}
+	* test/DefaultBtContextTest.cc
+	* src/version_usage.cc
+	* src/Metalink2RequestGroup.{h, cc}
+	* src/RequestGroup.{h, cc}
+	* src/a2functional.h
+	* test/a2functionalTest.cc
+	* src/MemoryBufferPreDownloadHandler.{h, cc}
+	* src/OptionHandlerImpl.h
+	* src/prefs.h
+	* src/Util.{h, cc}
+	* test/UtilTest.cc
+	
+	Keep DownloadResult rather than RequestGroup after downloads to reduce
+	memory usage.
+	* src/RequestGroupMan.{h, cc}
+	* src/DownloadEngine.cc
+	* src/BtDependency.{h, cc}: Changed the type of dependee from
+	WeakHandle to SharedHandle because WeakHandle could be null.
+	* src/RequestGroup.{h, cc}
+	* src/DownloadEngineFactory.cc
+	* src/DownloadResult.h
+	
+	Set totalLength after download finished
+	* src/UnknownLengthPieceStorage.{h, cc}
+
+	Keep torrent file specified in metalink in memory.
+	* src/Metalink2RequestGroup.cc
+	* src/BtDependency.cc
+	* src/TrueRequestGroupCriteria.h
+
+	Fixed the bug: seekg is used where seekp should be used.
+	* src/ByteArrayDiskWriter.cc
+	* test/ByteArraydiskWriterTest.cc
+	
 2007-11-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed syntax error

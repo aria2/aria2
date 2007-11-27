@@ -4,6 +4,7 @@
 #include "SingleFileDownloadContext.h"
 #include "RequestGroup.h"
 #include "Option.h"
+#include "DownloadResult.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;

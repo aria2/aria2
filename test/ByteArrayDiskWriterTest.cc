@@ -26,41 +26,36 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ByteArrayDiskWriterTest );
 void ByteArrayDiskWriterTest::testWriteAndRead() {
   ByteArrayDiskWriter bw;
 
-  string msg1 = "Hello world!";
+  string msg1 = "Hello";
   bw.writeData((const unsigned char*)msg1.c_str(), msg1.size(), 0);
-  
+  // write at the end of stream
+  string msg2 = " World";
+  bw.writeData((const unsigned char*)msg2.c_str(), msg2.size(), 5);
+  // write at the end of stream +1
+  string msg3 = "!!";
+  bw.writeData((const unsigned char*)msg3.c_str(), msg3.size(), 12);
+  // write space at the 'hole'
+  string msg4 = " ";
+  bw.writeData((const unsigned char*)msg4.c_str(), msg4.size(), 11);
+
   char buf[100];
-  int32_t c = bw.readData((unsigned char*)buf, sizeof(buf), 0);
+  int32_t c = bw.readData((unsigned char*)buf, sizeof(buf), 1);
   buf[c] = '\0';
 
-  CPPUNIT_ASSERT_EQUAL(msg1, string(buf));
-
-  // second call
-  memset(buf, '\0', sizeof(buf));
-
-  c = bw.readData((unsigned char*)buf, sizeof(buf), 0);
-  buf[c] = '\0';
-
-  CPPUNIT_ASSERT_EQUAL(msg1, string(buf));
+  CPPUNIT_ASSERT_EQUAL(string("ello World !!"), string(buf));
 }
 
 void ByteArrayDiskWriterTest::testWriteAndRead2() {
   ByteArrayDiskWriter bw;
 
-  string msg1 = "Hello world!";
-  bw.writeData((const unsigned char*)msg1.c_str(), msg1.size(), 16);
-  
+  string msg1 = "Hello World";
+  bw.writeData((const unsigned char*)msg1.c_str(), msg1.size(), 0);
+  string msg2 = "From Mars";
+  bw.writeData((const unsigned char*)msg2.c_str(), msg2.size(), 6);
+
   char buf[100];
-  int32_t c = bw.readData((unsigned char*)buf, sizeof(buf), 16);
+  int32_t c = bw.readData((unsigned char*)buf, sizeof(buf), 0);
   buf[c] = '\0';
 
-  CPPUNIT_ASSERT_EQUAL(msg1, string(buf));
-
-  // second call
-  memset(buf, '\0', sizeof(buf));
-
-  c = bw.readData((unsigned char*)buf, sizeof(buf), 16);
-  buf[c] = '\0';
-
-  CPPUNIT_ASSERT_EQUAL(msg1, string(buf));
+  CPPUNIT_ASSERT_EQUAL(string("Hello From Mars"), string(buf));
 }

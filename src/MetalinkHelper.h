@@ -41,14 +41,23 @@ class Option;
 class MetalinkEntry;
 typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
 typedef deque<MetalinkEntryHandle> MetalinkEntries;
+class BinaryStream;
+typedef SharedHandle<BinaryStream> BinaryStreamHandle;
+class Metalinker;
+typedef SharedHandle<Metalinker> MetalinkerHandle;
 
 class MetalinkHelper {
 private:
   MetalinkHelper();
 
   ~MetalinkHelper();
+
+  static MetalinkEntries query(const MetalinkerHandle& metalinker, const Option* option);
+
 public:
   static MetalinkEntries parseAndQuery(const string& filename, const Option* option);
+
+  static MetalinkEntries parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option);
 };
 
 #endif // _D_METALINK_HELPER_H_

@@ -68,12 +68,12 @@ void ByteArrayDiskWriter::openExistingFile(const string& filename,
 void ByteArrayDiskWriter::writeData(const unsigned char* data, int32_t dataLength, int64_t position)
 {
   if(size() < position) {
-    buf.seekg(0, ios::end);
-    for(int32_t i = size(); i < position; ++i) {
+    buf.seekp(size(), ios::beg);
+    for(int64_t i = size(); i < position; ++i) {
       buf.put('\0');
     }
   } else {
-    buf.seekg(position, ios::beg);
+    buf.seekp(position, ios::beg);
   }
   buf.write(reinterpret_cast<const char*>(data), dataLength);
 }

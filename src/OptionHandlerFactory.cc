@@ -56,7 +56,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new ParameterOptionHandler(PREF_HTTP_PROXY_METHOD,
 						V_GET, V_TUNNEL));
   handlers.push_back(new IntegerRangeOptionHandler(PREF_LISTEN_PORT, 1024, UINT16_MAX));
-  handlers.push_back(new BooleanOptionHandler(PREF_FOLLOW_TORRENT));
+  handlers.push_back(new ParameterOptionHandler(PREF_FOLLOW_TORRENT, V_TRUE, V_MEM, V_FALSE));
   handlers.push_back(new BooleanOptionHandler(PREF_NO_PREALLOCATION));
   handlers.push_back(new BooleanOptionHandler(PREF_DIRECT_FILE_MAPPING));
   handlers.push_back(new IntegerRangeOptionHandler(PREF_SELECT_FILE, 1, INT32_MAX));
@@ -66,7 +66,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new DefaultOptionHandler(PREF_METALINK_VERSION));
   handlers.push_back(new DefaultOptionHandler(PREF_METALINK_LANGUAGE));
   handlers.push_back(new DefaultOptionHandler(PREF_METALINK_OS));
-  handlers.push_back(new BooleanOptionHandler(PREF_FOLLOW_METALINK));
+  handlers.push_back(new ParameterOptionHandler(PREF_FOLLOW_METALINK, V_TRUE, V_MEM, V_FALSE));
   handlers.push_back(new DefaultOptionHandler(PREF_METALINK_LOCATION));
   handlers.push_back(new UnitNumberOptionHandler(PREF_LOWEST_SPEED_LIMIT, 0));
   handlers.push_back(new UnitNumberOptionHandler(PREF_MAX_DOWNLOAD_LIMIT, 0));

@@ -46,7 +46,7 @@
 #define V_FALSE "false"
 #undef V_NONE
 #define V_NONE "none"
-
+#define V_MEM "mem"
 /**
  * General preferences
  */
@@ -189,7 +189,7 @@
 #define PREF_TORRENT_FILE "torrent-file"
 // values: 1*digit
 #define PREF_LISTEN_PORT "listen-port"
-// values: true | false
+// values: true | false | mem
 #define PREF_FOLLOW_TORRENT "follow-torrent"
 // values: 1*digit *( (,|-) 1*digit)
 #define PREF_SELECT_FILE "select-file"
@@ -219,7 +219,7 @@
 #define PREF_METALINK_LOCATION "metalink-location"
 // values: 1*digit
 #define PREF_METALINK_SERVERS "metalink-servers"
-// values: true | false
+// values: true | false | mem
 #define PREF_FOLLOW_METALINK "follow-metalink"
 
 #endif // _D_PREFS_H_

@@ -82,6 +82,7 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DownloadHandlerFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
@@ -152,8 +153,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SequenceTest.cc \
 	MetaFileUtilTest.cc ByteArrayDiskWriterTest.cc PeerTest.cc \
 	PeerMessageUtilTest.cc ShareRatioSeedCriteriaTest.cc \
 	BtRegistryTest.cc BtDependencyTest.cc \
-	BtPostDownloadHandlerTest.cc TimeSeedCriteriaTest.cc \
-	MetalinkerTest.cc MetalinkEntryTest.cc \
+	BtPostDownloadHandlerTest.cc DownloadHandlerFactoryTest.cc \
+	TimeSeedCriteriaTest.cc MetalinkerTest.cc MetalinkEntryTest.cc \
 	Xml2MetalinkProcessorTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
@@ -198,6 +199,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SequenceTest.cc \
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DownloadHandlerFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
@@ -544,6 +546,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandlerFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@

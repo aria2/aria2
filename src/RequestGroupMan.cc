@@ -40,6 +40,7 @@
 #include "DownloadEngine.h"
 #include "message.h"
 #include "a2functional.h"
+#include "DownloadResult.h"
 #include <iomanip>
 #include <sstream>
 #include <numeric>
@@ -103,31 +104,31 @@ void RequestGroupMan::removeStoppedGroup()
     if((*itr)->getNumCommand() > 0) {
       temp.push_back(*itr);
     } else {
-      (*itr)->closeFile();      
-      if((*itr)->downloadFinished()) {
-	_logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
-			(*itr)->getFilePath().c_str());
-	if((*itr)->allDownloadFinished()) {
-	  (*itr)->getProgressInfoFile()->removeFile();
+      try {
+	(*itr)->closeFile();      
+	if((*itr)->downloadFinished()) {
+	  _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
+			  (*itr)->getFilePath().c_str());
+	  if((*itr)->allDownloadFinished()) {
+	    (*itr)->getProgressInfoFile()->removeFile();
+	  } else {
+	    (*itr)->getProgressInfoFile()->save();
+	  }
+	  RequestGroups nextGroups = (*itr)->postDownloadProcessing();
+	  if(nextGroups.size() > 0) {
+	    _logger->debug("Adding %d RequestGroups as a result of PostDownloadHandler.", (int32_t)nextGroups.size());
+	    copy(nextGroups.rbegin(), nextGroups.rend(), front_inserter(_reservedGroups));
+	  }
 	} else {
 	  (*itr)->getProgressInfoFile()->save();
 	}
-	RequestGroups nextGroups = (*itr)->postDownloadProcessing();
-	if(nextGroups.size() > 0) {
-	  _logger->debug("Adding %d RequestGroups as a result of PostDownloadHandler.", (int32_t)nextGroups.size());
-	  copy(nextGroups.rbegin(), nextGroups.rend(), front_inserter(_reservedGroups));
-	}
-      } else {
-	try {
-	  (*itr)->getProgressInfoFile()->save();
-	} catch(RecoverableException* ex) {
-	  _logger->error(EX_EXCEPTION_CAUGHT, ex);
-	  delete ex;
-	}
+      } catch(RecoverableException* ex) {
+	_logger->error(EX_EXCEPTION_CAUGHT, ex);
+	delete ex;
       }
       (*itr)->releaseRuntimeResource();
       ++count;
-      _spentGroups.push_back(*itr);
+      _downloadResults.push_back((*itr)->createDownloadResult());
     }
   }
   _requestGroups = temp;
@@ -145,11 +146,11 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       num > 0 && _reservedGroups.size() > 0; --num) {
     RequestGroupHandle groupToAdd = _reservedGroups.front();
     _reservedGroups.pop_front();
-    if(!groupToAdd->isDependencyResolved()) {
-      temp.push_front(groupToAdd);
-      continue;
-    }
     try {
+      if(!groupToAdd->isDependencyResolved()) {
+	temp.push_front(groupToAdd);
+	continue;
+      }
       _requestGroups.push_back(groupToAdd);
       Commands commands = groupToAdd->createInitialCommand(e);
       ++count;
@@ -157,6 +158,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     } catch(RecoverableException* ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
       delete ex;
+      _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
   }
   copy(temp.begin(), temp.end(), front_inserter(_reservedGroups));
@@ -170,20 +172,21 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
   Commands commands;
   for(RequestGroups::iterator itr = _requestGroups.begin();
 	itr != _requestGroups.end();) {
-    if((*itr)->isDependencyResolved()) {
-      try {
+    try {
+      if((*itr)->isDependencyResolved()) {
 	Commands nextCommands = (*itr)->createInitialCommand(e);
 	copy(nextCommands.begin(), nextCommands.end(), back_inserter(commands));
 	++itr;
-      } catch(RecoverableException* e) {
-	_logger->error(EX_EXCEPTION_CAUGHT, e);
-	delete e;
+      } else {
+	_reservedGroups.push_front((*itr));
 	itr = _requestGroups.erase(itr);
       }
-    } else {
-      _reservedGroups.push_front((*itr));
+    } catch(RecoverableException* e) {
+      _logger->error(EX_EXCEPTION_CAUGHT, e);
+      delete e;
+      _downloadResults.push_back((*itr)->createDownloadResult());
       itr = _requestGroups.erase(itr);
-    }
+    }  
   }
   return commands;
 }
@@ -223,35 +226,37 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
     << " (OK):download completed.(ERR):error occurred.(INPR):download in-progress." << "\n"
     << "gid|stat|path/URI" << "\n"
     << "===+====+======================================================================" << "\n";
-  for(RequestGroups::const_iterator itr = _spentGroups.begin();
-      itr != _spentGroups.end(); ++itr) {
-    o << formatDownloadResult((*itr)->downloadFinished()?"OK":"ERR", *itr) << "\n";
+  for(DownloadResults::const_iterator itr = _downloadResults.begin();
+      itr != _downloadResults.end(); ++itr) {
+    string status = (*itr)->result == DownloadResult::FINISHED ? "OK" : "ERR";
+    o << formatDownloadResult(status, *itr) << "\n";
   }
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
-    o << formatDownloadResult((*itr)->downloadFinished()?"OK":"INPR", *itr) << "\n";
+    DownloadResultHandle result = (*itr)->createDownloadResult();
+    string status = result->result == DownloadResult::FINISHED ? "OK" : "INPR";
+    o << formatDownloadResult(status, result) << "\n";
   }
 }
 
-string RequestGroupMan::formatDownloadResult(const string& status, const RequestGroupHandle& requestGroup) const
+string RequestGroupMan::formatDownloadResult(const string& status, const DownloadResultHandle& downloadResult) const
 {
   stringstream o;
-  o << setw(3) << requestGroup->getGID() << "|"
+  o << setw(3) << downloadResult->gid << "|"
     << setw(4) << status << "|";
-  if(requestGroup->downloadFinished()) {
-    o << requestGroup->getFilePath();
+  if(downloadResult->result == DownloadResult::FINISHED) {
+    o << downloadResult->filePath;
   } else {
-    Strings uris = requestGroup->getUris();
-    if(uris.empty()) {
-      if(requestGroup->getFilePath().empty()) {
+    if(downloadResult->numUri == 0) {
+      if(downloadResult->filePath.empty()) {
 	o << "n/a";
       } else {
-	o << requestGroup->getFilePath();
+	o << downloadResult->filePath;
       }
     } else {
-      o << uris.front();
-      if(uris.size() > 1) {
-	o << " (" << uris.size()-1 << "more)";
+      o << downloadResult->uri;
+      if(downloadResult->numUri > 1) {
+	o << " (" << downloadResult->numUri-1 << "more)";
       }
     }
   }

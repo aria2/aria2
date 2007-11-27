@@ -40,11 +40,11 @@
 class MetalinkPostDownloadHandler:public PostDownloadHandler
 {
 public:
-  MetalinkPostDownloadHandler(const Option* option);
+  MetalinkPostDownloadHandler();
 
   virtual ~MetalinkPostDownloadHandler();
 
-  virtual RequestGroups getNextRequestGroups(const string& path);
+  virtual RequestGroups getNextRequestGroups(RequestGroup* requestGroup);
 };
 
 typedef SharedHandle<MetalinkPostDownloadHandler> MetalinkPostDownloadHandlerHandle;

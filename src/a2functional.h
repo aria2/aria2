@@ -107,3 +107,20 @@ adopt2nd(const BinaryOp& binaryOp, const UnaryOp& unaryOp)
 {
   return adopt2nd_t<BinaryOp, UnaryOp>(binaryOp, unaryOp);
 };
+
+template<typename T, std::size_t N>
+char (&char_array_ref(T (&)[N]))[N];
+
+template<typename T, std::size_t N>
+std::size_t
+arrayLength(T (&a)[N])
+{
+  return sizeof(char_array_ref(a));
+}
+
+template<typename T>
+std::size_t
+arrayLength(T (&a)[0u])
+{
+  return 0;
+}

@@ -45,17 +45,21 @@ typedef deque<RequestGroupHandle> RequestGroups;
 class Command;
 typedef deque<Command*> Commands;
 class Logger;
+class DownloadResult;
+typedef SharedHandle<DownloadResult> DownloadResultHandle;
+typedef deque<DownloadResultHandle> DownloadResults;
 
 class RequestGroupMan {
 private:
   RequestGroups _requestGroups;
   RequestGroups _reservedGroups;
-  RequestGroups _spentGroups;
+  DownloadResults _downloadResults;
   const Logger* _logger;
   int32_t _maxSimultaneousDownloads;
   int32_t _gidCounter;
 
-  string formatDownloadResult(const string& status, const RequestGroupHandle& requestGroup) const;
+  string formatDownloadResult(const string& status,
+			      const DownloadResultHandle& downloadResult) const;
 
 public:
   RequestGroupMan(const RequestGroups& requestGroups, int32_t maxSimultaneousDownloads = 1);

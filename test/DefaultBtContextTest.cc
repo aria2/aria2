@@ -28,6 +28,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testComputeFastSet);
   CPPUNIT_TEST(testGetFileEntries_multiFileUrlList);
   CPPUNIT_TEST(testGetFileEntries_singleFileUrlList);
+  CPPUNIT_TEST(testLoadFromMemory);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -51,6 +52,7 @@ public:
   void testComputeFastSet();
   void testGetFileEntries_multiFileUrlList();
   void testGetFileEntries_singleFileUrlList();
+  void testLoadFromMemory();
 };
 
 
@@ -308,4 +310,18 @@ void DefaultBtContextTest::testGetFileEntries_singleFileUrlList() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, uris1.size());
   CPPUNIT_ASSERT_EQUAL(string("http://localhost/dist/aria2.tar.bz2"),
 		       uris1[0]);
+}
+
+void DefaultBtContextTest::testLoadFromMemory()
+{
+  string memory = "d8:announce36:http://aria.rednoah.com/announce.php13:announce-listll16:http://tracker1 el15:http://tracker2el15:http://tracker3ee7:comment17:REDNOAH.COM RULES13:creation datei1123456789e4:infod5:filesld6:lengthi284e4:pathl5:aria23:src6:aria2ceed6:lengthi100e4:pathl19:aria2-0.2.2.tar.bz2eee4:name10:aria2-test12:piece lengthi128e6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCee";
+
+  DefaultBtContext btContext;
+  btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+
+  string correctHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
+
+  CPPUNIT_ASSERT_EQUAL((int32_t)20, btContext.getInfoHashLength());
+  CPPUNIT_ASSERT_EQUAL(correctHash, Util::toHex(btContext.getInfoHash(),
+						btContext.getInfoHashLength()));
 }

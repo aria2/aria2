@@ -209,6 +209,17 @@ public:
     _validParamValues.push_back(validParamValue1);
     _validParamValues.push_back(validParamValue2);
   }
+
+  ParameterOptionHandler(const string& optName,
+			 const string& validParamValue1,
+			 const string& validParamValue2,
+			 const string& validParamValue3):
+    NameMatchOptionHandler(optName)
+  {
+    _validParamValues.push_back(validParamValue1);
+    _validParamValues.push_back(validParamValue2);
+    _validParamValues.push_back(validParamValue3);
+  }
    
   virtual ~ParameterOptionHandler() {}
 

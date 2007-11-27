@@ -49,6 +49,7 @@
 #include "FileAllocationDispatcherCommand.h"
 #include "AutoSaveCommand.h"
 #include "HaveEraseCommand.h"
+#include "DownloadResult.h"
 
 DownloadEngineFactory::DownloadEngineFactory():
   _logger(LogFactory::getInstance()) {}

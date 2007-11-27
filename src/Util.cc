@@ -41,12 +41,14 @@
 #include "DlAbortEx.h"
 #include "BitfieldMan.h"
 #include "DefaultDiskWriter.h"
+#include "BinaryStream.h"
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
 #include <iomanip>
+#include <sstream>
 
 #ifndef HAVE_SLEEP
 # ifdef HAVE_WINSOCK_H
@@ -832,4 +834,18 @@ void Util::convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
       dest->setBit(index);
     }
   }
+}
+
+string Util::toString(const BinaryStreamHandle& binaryStream)
+{
+  stringstream strm;
+  char data[2048];
+  while(1) {
+    int32_t dataLength = binaryStream->readData((unsigned char*)data, sizeof(data), strm.tellp());
+    strm.write(data, dataLength);
+    if(dataLength == 0) {
+      break;
+    }
+  }
+  return strm.str();
 }

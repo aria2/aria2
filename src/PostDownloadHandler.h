@@ -35,29 +35,19 @@
 #ifndef _D_POST_DOWNLOAD_HANDLER_H_
 #define _D_POST_DOWNLOAD_HANDLER_H_
 
-#include "common.h"
+#include "DownloadHandler.h"
 
-class Option;
-class RequestGroup;
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
 typedef deque<RequestGroupHandle> RequestGroups;
-class Logger;
 
-class PostDownloadHandler
+class PostDownloadHandler:public DownloadHandler
 {
-private:
-  string _extension;
-protected:
-  const Option* _option;
-  const Logger* _logger;
 public:
-  PostDownloadHandler(const string& extension, const Option* option);
+  PostDownloadHandler() {}
 
-  virtual ~PostDownloadHandler();
+  virtual ~PostDownloadHandler() {}
 
-  bool canHandle(const string& path);
-
-  virtual RequestGroups getNextRequestGroups(const string& path) = 0;
+  virtual RequestGroups getNextRequestGroups(RequestGroup* requestGroup) = 0;
 };
 
 typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;

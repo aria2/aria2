@@ -42,18 +42,27 @@ class Logger;
 class RequestGroup;
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
 typedef deque<RequestGroupHandle> RequestGroups;
+class BinaryStream;
+typedef SharedHandle<BinaryStream> BinaryStreamHandle;
+class MetalinkEntry;
+typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
+typedef deque<MetalinkEntryHandle> MetalinkEntries;
 
 class Metalink2RequestGroup {
 private:
   const Option* _option;
 
   const Logger* _logger;
+
+  RequestGroups createRequestGroup(MetalinkEntries entries);
 public:
   Metalink2RequestGroup(const Option* option);
 
   ~Metalink2RequestGroup();
 
   RequestGroups generate(const string& metalinkFile);
+
+  RequestGroups generate(const BinaryStreamHandle& binaryStream);
 };
 
 #endif // _D_METALINK_2_REQUEST_GROUP_H_

@@ -40,9 +40,12 @@
 #include "RecoverableException.h"
 #include "message.h"
 #include "prefs.h"
+#include "Util.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
 
 BtDependency::BtDependency(const RequestGroupWeakHandle& dependant,
-			   const RequestGroupWeakHandle& dependee,
+			   const RequestGroupHandle& dependee,
 			   const Option* option):
   _dependant(dependant),
   _dependee(dependee),
@@ -54,9 +57,16 @@ BtDependency::~BtDependency() {}
 bool BtDependency::resolve()
 {
   if(_dependee->getNumCommand() == 0 && _dependee->downloadFinished()) {
+    RequestGroupHandle dependee = _dependee;
+    // cut reference here
+    _dependee = 0;
     DefaultBtContextHandle btContext = new DefaultBtContext();
     try {
-      btContext->load(_dependee->getFilePath());
+      DiskAdaptorHandle diskAdaptor = dependee->getPieceStorage()->getDiskAdaptor();
+      diskAdaptor->openExistingFile();
+      string content = Util::toString(diskAdaptor);
+      btContext->loadFromMemory(content.c_str(), content.size(),
+				File(dependee->getFilePath()).getBasename());
       if(_option->defined(PREF_PEER_ID_PREFIX)) {
 	btContext->setPeerIdPrefix(_option->get(PREF_PEER_ID_PREFIX));
       }
@@ -74,6 +84,8 @@ bool BtDependency::resolve()
     return true;
   } else if(_dependee->getNumCommand() == 0) {
     // _dependee's download failed.
+    // cut reference here
+    _dependee = 0;
     _logger->debug("BtDependency for GID#%d failed. Go without Bt.",
 		   _dependant->getGID());    
     return true;

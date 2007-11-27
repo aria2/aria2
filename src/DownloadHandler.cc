@@ -32,43 +32,23 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#include "DownloadHandler.h"
+#include "LogFactory.h"
+#include "RequestGroup.h"
+#include "RequestGroupCriteria.h"
 
-MetalinkHelper::MetalinkHelper() {}
+DownloadHandler::DownloadHandler():
+  _criteria(0),
+  _logger(LogFactory::getInstance()) {}
 
-MetalinkHelper::~MetalinkHelper() {}
+DownloadHandler::~DownloadHandler() {}
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+bool DownloadHandler::canHandle(const RequestGroup* requestGroup) const
 {
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
+  return !_criteria.isNull() && _criteria->match(requestGroup);
 }
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
+void DownloadHandler::setCriteria(const RequestGroupCriteriaHandle& criteria)
 {
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
-
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
+  _criteria = criteria;
 }

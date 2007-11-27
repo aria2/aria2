@@ -42,6 +42,9 @@
 #include "message.h"
 #include "SingleFileDownloadContext.h"
 #include "MetalinkHelper.h"
+#include "BinaryStream.h"
+#include "MemoryBufferPreDownloadHandler.h"
+#include "TrueRequestGroupCriteria.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 #endif // ENABLE_BITTORRENT
@@ -97,6 +100,18 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
 {
   MetalinkEntries entries = MetalinkHelper::parseAndQuery(metalinkFile,
 							  _option);
+  return createRequestGroup(entries);
+}
+
+RequestGroups Metalink2RequestGroup::generate(const BinaryStreamHandle& binaryStream)
+{
+  MetalinkEntries entries = MetalinkHelper::parseAndQuery(binaryStream,
+							  _option);
+  return createRequestGroup(entries);
+}
+
+RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
+{
   if(entries.size() == 0) {
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
     return RequestGroups();
@@ -142,9 +157,14 @@ RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
 	new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
 				      0,
 				      "");
-      dctx->setDir(_option->get(PREF_DIR));
+      //dctx->setDir(_option->get(PREF_DIR));
       torrentRg->setDownloadContext(dctx);
+      torrentRg->clearPreDowloadHandler();
       torrentRg->clearPostDowloadHandler();
+      // make it in-memory download
+      PreDownloadHandlerHandle preh = new MemoryBufferPreDownloadHandler();
+      preh->setCriteria(new TrueRequestGroupCriteria());
+      torrentRg->addPreDownloadHandler(preh);
       groups.push_back(torrentRg);
     }
 #endif // ENABLE_BITTORRENT

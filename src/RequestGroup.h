@@ -54,6 +54,9 @@ typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
 class Dependency;
 typedef SharedHandle<Dependency> DependencyHandle;
 class DlAbortEx;
+class PreDownloadHandler;
+typedef SharedHandle<PreDownloadHandler> PreDownloadHandlerHandle;
+typedef deque<PreDownloadHandlerHandle> PreDownloadHandlers;
 class PostDownloadHandler;
 typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;
 typedef deque<PostDownloadHandlerHandle> PostDownloadHandlers;
@@ -66,7 +69,8 @@ typedef SharedHandle<RequestGroup> RequestGroupHandle;
 typedef deque<RequestGroupHandle> RequestGroups;
 class CheckIntegrityEntry;
 typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
-
+class DownloadResult;
+typedef SharedHandle<DownloadResult> DownloadResultHandle;
 
 class RequestGroup {
 private:
@@ -105,6 +109,8 @@ private:
 
   bool _haltRequested;
 
+  PreDownloadHandlers _preDownloadHandlers;
+
   PostDownloadHandlers _postDownloadHandlers;
 
   const Option* _option;
@@ -116,6 +122,8 @@ private:
 
   void validateTotalLength(int64_t expectedTotalLength,
 			   int64_t actualTotalLength) const;
+
+  void initializePreDownloadHandler();
 
   void initializePostDownloadHandler();
 
@@ -271,6 +279,12 @@ public:
 
   void clearPostDowloadHandler();
 
+  void preDownloadProcessing();
+
+  void addPreDownloadHandler(const PreDownloadHandlerHandle& handler);
+
+  void clearPreDowloadHandler();
+
   Commands processCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry, DownloadEngine* e);
 
   void initPieceStorage();
@@ -280,6 +294,13 @@ public:
   void loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile);
 
   void shouldCancelDownloadForSafety();
+
+  DownloadResultHandle createDownloadResult() const;
+
+  const Option* getOption() const
+  {
+    return _option;
+  }
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

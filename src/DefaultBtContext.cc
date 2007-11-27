@@ -201,12 +201,26 @@ Strings DefaultBtContext::extractUrlList(const MetaEntry* obj)
   return uris;
 }
 
+void DefaultBtContext::loadFromMemory(const char* content, int32_t length, const string& defaultName)
+{
+  MetaEntry* rootEntry = MetaFileUtil::bdecoding(content, length);
+  if(!dynamic_cast<Dictionary*>(rootEntry)) {
+    throw new DlAbortEx("torrent file does not contain a root dictionary .");
+  }
+  processMetaInfo(rootEntry, defaultName);
+}
+
 void DefaultBtContext::load(const string& torrentFile) {
-  clear();
   MetaEntry* rootEntry = MetaFileUtil::parseMetaFile(torrentFile);
   if(!dynamic_cast<Dictionary*>(rootEntry)) {
     throw new DlAbortEx("torrent file does not contain a root dictionary .");
   }
+  processMetaInfo(rootEntry, torrentFile);
+}
+
+void DefaultBtContext::processMetaInfo(const MetaEntry* rootEntry, const string& defaultName)
+{
+  clear();
   SharedHandle<Dictionary> rootDic =
     SharedHandle<Dictionary>((Dictionary*)rootEntry);
   Dictionary* infoDic = (Dictionary*)rootDic->get("info");
@@ -231,7 +245,7 @@ void DefaultBtContext::load(const string& torrentFile) {
   // see http://www.getright.com/seedtorrent.html
   Strings urlList = extractUrlList(rootDic->get("url-list"));
   // retrieve file entries
-  extractFileEntries(infoDic, torrentFile, urlList);
+  extractFileEntries(infoDic, defaultName, urlList);
   // retrieve announce
   Data* announceData = (Data*)rootDic->get("announce");
   List* announceListData = (List*)rootDic->get("announce-list");

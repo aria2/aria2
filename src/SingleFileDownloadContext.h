@@ -53,6 +53,8 @@ private:
   string _filename;
   string _ufilename;
 
+  string _contentType;
+
   Strings _pieceHashes;
   string _pieceHashAlgo;
 
@@ -184,6 +186,16 @@ public:
   void setPieceHashAlgo(const string& algo)
   {
     _pieceHashAlgo = algo;
+  }
+
+  void setContentType(const string& contentType)
+  {
+    _contentType = contentType;
+  }
+
+  const string& getContentType()
+  {
+    return _contentType;
   }
 };
 

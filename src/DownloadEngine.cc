@@ -36,6 +36,7 @@
 #include "Socket.h"
 #include "NameResolver.h"
 #include "StatCalc.h"
+#include "DownloadResult.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "FileAllocationMan.h"

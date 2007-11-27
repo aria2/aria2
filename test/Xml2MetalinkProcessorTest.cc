@@ -1,5 +1,6 @@
 #include "Xml2MetalinkProcessor.h"
 #include "Exception.h"
+#include "DefaultDiskWriter.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -8,6 +9,7 @@ class Xml2MetalinkProcessorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(Xml2MetalinkProcessorTest);
   CPPUNIT_TEST(testParseFile);
+  CPPUNIT_TEST(testParseFromBinaryStream);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -20,6 +22,7 @@ public:
   }
 
   void testParseFile();
+  void testParseFromBinaryStream();
 };
 
 
@@ -110,5 +113,26 @@ void Xml2MetalinkProcessorTest::testParseFile() {
   } catch(Exception* e) {
     CPPUNIT_FAIL(e->getMsg());
     delete e;
+  }
+}
+
+void Xml2MetalinkProcessorTest::testParseFromBinaryStream() {
+  Xml2MetalinkProcessor proc;
+  try {
+    DefaultDiskWriterHandle dw = new DefaultDiskWriter();
+    dw->openExistingFile("test.xml");
+    
+    MetalinkerHandle metalinker = proc.parseFromBinaryStream(dw);
+
+    dw->closeFile();
+
+    MetalinkEntries::iterator entryItr = metalinker->entries.begin();
+    MetalinkEntryHandle entry1 = *entryItr;
+    CPPUNIT_ASSERT_EQUAL(string("aria2-0.5.2.tar.bz2"), entry1->getPath());
+  } catch(Exception* e) {
+    cerr << *e;
+    CPPUNIT_FAIL(e->getMsg());
+    delete e;
+    throw;
   }
 }

@@ -78,6 +78,8 @@ private:
 
   Strings extractUrlList(const MetaEntry* obj);
 
+  void processMetaInfo(const MetaEntry* rootEntry, const string& defaultName);
+
  public:
   DefaultBtContext();
   virtual ~DefaultBtContext();
@@ -109,6 +111,8 @@ private:
   virtual AnnounceTiers getAnnounceTiers() const;
 
   virtual void load(const string& torrentFile);
+
+  void loadFromMemory(const char* content, int32_t length, const string& defaultName);
 
   virtual string getName() const;
 

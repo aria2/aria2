@@ -108,6 +108,7 @@ void UnknownLengthPieceStorage::completePiece(const PieceHandle& piece)
   if(_piece == piece) {
     _downloadFinished = true;
     _totalLength = _piece->getLength();
+    _diskAdaptor->setTotalLength(_totalLength);
     _piece = 0;
   }
 }

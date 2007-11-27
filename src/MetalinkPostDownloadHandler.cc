@@ -36,15 +36,32 @@
 #include "RequestGroup.h"
 #include "Metalink2RequestGroup.h"
 #include "Logger.h"
+#include "DiskAdaptor.h"
+#include "PieceStorage.h"
+#include "DownloadHandlerConstants.h"
+#include "ContentTypeRequestGroupCriteria.h"
 
-MetalinkPostDownloadHandler::MetalinkPostDownloadHandler(const Option* option):
-  PostDownloadHandler(".metalink", option)
-{}
+MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
+{
+  setCriteria(new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getMetalinkContentTypes(),
+						  DownloadHandlerConstants::getMetalinkExtensions()));
+}
 
 MetalinkPostDownloadHandler::~MetalinkPostDownloadHandler() {}
 
-RequestGroups MetalinkPostDownloadHandler::getNextRequestGroups(const string& path)
+RequestGroups MetalinkPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
 {
-  _logger->debug("Generating RequestGroups for Metalink file %s", path.c_str());
-  return Metalink2RequestGroup(_option).generate(path);
+  const Option* op = requestGroup->getOption();
+  _logger->debug("Generating RequestGroups for Metalink file %s",
+		 requestGroup->getFilePath().c_str());
+  DiskAdaptorHandle diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
+  try {
+    diskAdaptor->openExistingFile();
+    RequestGroups rgs = Metalink2RequestGroup(op).generate(diskAdaptor);
+    diskAdaptor->closeFile();
+    return rgs;
+  } catch(Exception* e) {
+    diskAdaptor->closeFile();
+    throw;
+  }
 }

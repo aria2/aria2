@@ -32,43 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#ifndef _D_DOWNLOAD_HANDLER_FACTORY_H_
+#define _D_DOWNLOAD_HANDLER_FACTORY_H_
 
-MetalinkHelper::MetalinkHelper() {}
+#include "common.h"
 
-MetalinkHelper::~MetalinkHelper() {}
+class MemoryBufferPreDownloadHandler;
+typedef SharedHandle<MemoryBufferPreDownloadHandler> MemoryBufferPreDownloadHandlerHandle;
+#ifdef ENABLE_METALINK
+class MetalinkPostDownloadHandler;
+typedef SharedHandle<MetalinkPostDownloadHandler> MetalinkPostDownloadHandlerHandle;
+#endif // ENABLE_METALINK
+#ifdef ENABLE_BITTORRENT
+class BtPostDownloadHandler;
+typedef SharedHandle<BtPostDownloadHandler> BtPostDownloadHandlerHandle;
+#endif // ENABLE_BITTORRENT
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+class DownloadHandlerFactory
 {
-  Xml2MetalinkProcessor proc;
+private:
+#ifdef ENABLE_METALINK
+  static MemoryBufferPreDownloadHandlerHandle _metalinkPreDownloadHandler;
 
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
-}
+  static MetalinkPostDownloadHandlerHandle _metalinkPostDownloadHandler;
+#endif // ENABLE_METALINK
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
-{
-  Xml2MetalinkProcessor proc;
+#ifdef ENABLE_BITTORRENT
+  static MemoryBufferPreDownloadHandlerHandle _btPreDownloadHandler;
 
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
+  static BtPostDownloadHandlerHandle _btPostDownloadHandler;
+#endif // ENABLE_BITTORRENT
+public:
+#ifdef ENABLE_METALINK
+  static MemoryBufferPreDownloadHandlerHandle getMetalinkPreDownloadHandler();
 
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
-}
+  static MetalinkPostDownloadHandlerHandle getMetalinkPostDownloadHandler();
+#endif // ENABLE_METALINK
+
+#ifdef ENABLE_BITTORRENT
+  static MemoryBufferPreDownloadHandlerHandle getBtPreDownloadHandler();
+
+  static BtPostDownloadHandlerHandle getBtPostDownloadHandler();
+#endif // ENABLE_BITTORRENT
+};
+
+#endif // _D_DOWNLOAD_HANDLER_FACTORY_H_

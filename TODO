@@ -46,7 +46,6 @@
 * Limit the number of opening file to,say,100 in MultiDiskAdaptor.
 * Implement the feature to treat http/ftp as auxuality download method for BitTorrent
 * http-seeding(single and multi-file torrent)
-* Use content-type for PostDownloadHandler
 * Rewrite exception usage:
   RecoverableException
     DlRetryEx .... Retry using same connection/url. Should be renamed to TemporaryFailureException
@@ -55,6 +54,8 @@
   FatalException .... Program should abort.
 * replace strtol with Util::parseInt
 * do performance tuning against Xml2MetalinkProcessor
+* remove header files from Makefile.am
+* create MetalinkProcessorFactory and get Xml2MetalinkProcessor from it.
 
 -- remaining issues to be implemented for 0.12.0 release
 * Update translation

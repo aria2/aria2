@@ -32,43 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#include "MemoryBufferPreDownloadHandler.h"
+#include "RequestGroup.h"
+#include "ByteArrayDiskWriterFactory.h"
+#include "DownloadContext.h"
 
-MetalinkHelper::MetalinkHelper() {}
+MemoryBufferPreDownloadHandler::MemoryBufferPreDownloadHandler() {}
 
-MetalinkHelper::~MetalinkHelper() {}
+MemoryBufferPreDownloadHandler::~MemoryBufferPreDownloadHandler() {}
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+void MemoryBufferPreDownloadHandler::execute(RequestGroup* requestGroup)
 {
-  Xml2MetalinkProcessor proc;
+  requestGroup->setDiskWriterFactory(new ByteArrayDiskWriterFactory());
+  requestGroup->setFileAllocationEnabled(false);
+  requestGroup->setPreLocalFileCheckEnabled(false);
 
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
-}
-
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
-{
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
-
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
+  requestGroup->getDownloadContext()->setDir("[MEMORY]");
 }

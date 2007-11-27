@@ -235,9 +235,15 @@ void showUsage() {
 #endif // ENABLE_BITTORRENT || ENABLE_METALINK
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The path to the .torrent file.") << endl;
-  cout << _(" --follow-torrent=true|false  Set to false to prevent aria2 from\n"
-	    "                              entering BitTorrent mode even if the filename of\n"
-	    "                              the downloaded file ends with .torrent.\n"
+  cout << _(" --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
+	    "                              whose suffix is .metaink or content type is\n"
+	    "                              application/x-bittorrent is downloaded, aria2\n"
+	    "                              parses it as a torrent file and downloads files\n"
+	    "                              mentioned in it.\n"
+	    "                              If mem is specified, a metalink file is not\n"
+	    "                              written to the disk, but is just kept in memory.\n"
+	    "                              If false is specified, the action mentioned above\n"
+	    "                              is not taken.\n"
 	    "                              Default: true") << endl;
   cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
 	    "                              mentioned in .torrent file.\n"
@@ -281,9 +287,15 @@ void showUsage() {
   cout << _(" --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 	    "                              A comma-deliminated list of locations is\n"
 	    "                              acceptable.") << endl;
-  cout << _(" --follow-metalink=true|false Set to false to prevent aria2 from\n"
-	    "                              entering Metalink mode even if the filename of\n"
-	    "                              the downloaded file ends with .metalink.\n"
+  cout << _(" --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
+	    "                              whose suffix is .metaink or content type is\n"
+	    "                              application/metalink+xml is downloaded, aria2\n"
+	    "                              parses it as a metalink file and downloads files\n"
+	    "                              mentioned in it.\n"
+	    "                              If mem is specified, a metalink file is not\n"
+	    "                              written to the disk, but is just kept in memory.\n"
+	    "                              If false is specified, the action mentioned above\n"
+	    "                              is not taken.\n"
 	    "                              Default: true") << endl;
 #endif // ENABLE_METALINK
   cout << _(" -v, --version                Print the version number and exit.") << endl;

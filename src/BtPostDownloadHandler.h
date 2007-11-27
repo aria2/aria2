@@ -40,11 +40,11 @@
 class BtPostDownloadHandler:public PostDownloadHandler
 {
 public:
-  BtPostDownloadHandler(const Option* option);
+  BtPostDownloadHandler();
 
   virtual ~BtPostDownloadHandler();
 
-  virtual RequestGroups getNextRequestGroups(const string& path);
+  virtual RequestGroups getNextRequestGroups(RequestGroup* requestGroup);
 };
 
 typedef SharedHandle<BtPostDownloadHandler> BtPostDownloadHandlerHandle;

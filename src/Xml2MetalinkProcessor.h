@@ -39,6 +39,9 @@
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 
+class BinaryStream;
+typedef SharedHandle<BinaryStream> BinaryStreamHandle;
+
 class Xml2MetalinkProcessor : public MetalinkProcessor {
 private:
   xmlDocPtr doc;
@@ -59,12 +62,16 @@ private:
   bool xpathExists(const string& xpath);
 
   void release();
+
+  MetalinkerHandle processDoc(xmlDocPtr doc);
+
 public:
   Xml2MetalinkProcessor();
   virtual ~Xml2MetalinkProcessor();
 
   virtual MetalinkerHandle parseFile(const string& filename);
-  
+
+  virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream);  
 };
 
 #endif // _D_XML2_METALINK_PROCESSOR_H_

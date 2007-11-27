@@ -94,6 +94,7 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtRegistryTest.cc\
 	BtDependencyTest.cc\
 	BtPostDownloadHandlerTest.cc\
+	DownloadHandlerFactoryTest.cc\
 	TimeSeedCriteriaTest.cc
 endif # ENABLE_BITTORRENT
 

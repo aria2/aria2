@@ -32,43 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#include "ContentTypeRequestGroupCriteria.h"
+#include "RequestGroup.h"
+#include "SingleFileDownloadContext.h"
+#include "Util.h"
 
-MetalinkHelper::MetalinkHelper() {}
+ContentTypeRequestGroupCriteria::ContentTypeRequestGroupCriteria(const Strings& contentTypes,
+								 const Strings& extensions):
+  _contentTypes(contentTypes),
+  _extensions(extensions) {}
 
-MetalinkHelper::~MetalinkHelper() {}
+ContentTypeRequestGroupCriteria::~ContentTypeRequestGroupCriteria() {}
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+bool ContentTypeRequestGroupCriteria::match(const RequestGroup* requestGroup) const
 {
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
-}
-
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
-{
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
-
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
+  if(forwardMatch(requestGroup->getFilePath(), _extensions)) {
+    return true;
+  } else {
+    SingleFileDownloadContextHandle dctx = requestGroup->getDownloadContext();
+    if(dctx.isNull()) {
+      return false;
+    } else {
+      return exactMatch(dctx->getContentType(), _contentTypes);
+    }
   }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
+}
+
+bool ContentTypeRequestGroupCriteria::forwardMatch(const string& target, const Strings& candidates) const
+{
+  for(Strings::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
+    if(Util::endsWith(target, *itr)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool ContentTypeRequestGroupCriteria::exactMatch(const string& target, const Strings& candidates) const
+{
+  for(Strings::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
+    if(target == *itr) {
+      return true;
+    }
+  }
+  return false;
 }

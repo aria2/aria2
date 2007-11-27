@@ -2,6 +2,7 @@
 #include "FixedNumberRandomizer.h"
 #include "DlAbortEx.h"
 #include "BitfieldMan.h"
+#include "ByteArrayDiskWriter.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -36,6 +37,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseIntRange_invalidRange);
   CPPUNIT_TEST(testParseInt);
   CPPUNIT_TEST(testParseLLInt);
+  CPPUNIT_TEST(testToString_binaryStream);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -69,6 +71,7 @@ public:
   void testParseIntRange_invalidRange();
   void testParseInt();
   void testParseLLInt();
+  void testToString_binaryStream();
 };
 
 
@@ -579,4 +582,16 @@ void UtilTest::testParseLLInt()
     cerr << *e;
     delete e;
   }
+}
+
+void UtilTest::testToString_binaryStream()
+{
+  DiskWriterHandle dw = new ByteArrayDiskWriter();
+  string data = string(16*1024+256, 'a');
+  dw->initAndOpenFile("dummy");
+  dw->writeData((const unsigned char*)data.c_str(), data.size(), 0);
+
+  string readData = Util::toString(dw);
+
+  CPPUNIT_ASSERT_EQUAL(data, readData);
 }

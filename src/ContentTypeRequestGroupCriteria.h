@@ -32,43 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#ifndef _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_
+#define _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_
 
-MetalinkHelper::MetalinkHelper() {}
+#include "RequestGroupCriteria.h"
 
-MetalinkHelper::~MetalinkHelper() {}
-
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+class ContentTypeRequestGroupCriteria:public RequestGroupCriteria
 {
-  Xml2MetalinkProcessor proc;
+private:
+  Strings _contentTypes;
+  Strings _extensions;
 
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
-}
+  bool forwardMatch(const string& target, const Strings& candidates) const;
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
-{
-  Xml2MetalinkProcessor proc;
+  bool exactMatch(const string& target, const Strings& candidates) const;
 
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
+public:
+  ContentTypeRequestGroupCriteria(const Strings& contentTypes,
+				  const Strings& extensions);
 
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
-}
+  virtual ~ContentTypeRequestGroupCriteria();
+
+  virtual bool match(const RequestGroup* requestGroup) const;
+};
+
+#endif // _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_

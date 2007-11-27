@@ -39,6 +39,7 @@
 
 class RequestGroup;
 typedef WeakHandle<RequestGroup> RequestGroupWeakHandle;
+typedef SharedHandle<RequestGroup> RequestGroupHandle;
 class Option;
 class Logger;
 
@@ -46,12 +47,12 @@ class BtDependency : public Dependency
 {
 private:
   RequestGroupWeakHandle _dependant;
-  RequestGroupWeakHandle _dependee;
+  RequestGroupHandle _dependee;
   const Option* _option;
   const Logger* _logger;
 public:
   BtDependency(const RequestGroupWeakHandle& dependant,
-	       const RequestGroupWeakHandle& dependee,
+	       const RequestGroupHandle& dependee,
 	       const Option* option);
 
   virtual ~BtDependency();

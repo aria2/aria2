@@ -38,11 +38,16 @@
 #include "Metalinker.h"
 #include "common.h"
 
+class BinaryStream;
+typedef SharedHandle<BinaryStream> BinaryStreamHandle;
+
 class MetalinkProcessor {
 public:
   virtual ~MetalinkProcessor() {}
 
   virtual MetalinkerHandle parseFile(const string& filename) = 0;
+
+  virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream) = 0;
 };
 
 #endif // _D_METALINK_PROCESSOR_H_

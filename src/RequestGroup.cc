@@ -58,7 +58,10 @@
 #include "RequestGroupMan.h"
 #include "DefaultBtProgressInfoFile.h"
 #include "DefaultPieceStorage.h"
-#include "PostDownloadHandler.h"
+#include "DownloadResult.h"
+#include "DownloadHandlerFactory.h"
+#include "MemoryBufferPreDownloadHandler.h"
+#include "DownloadHandlerConstants.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -100,6 +103,7 @@ RequestGroup::RequestGroup(const Option* option,
   } else {
     _fileAllocationEnabled = false;
   }
+  initializePreDownloadHandler();
   initializePostDownloadHandler();
 }
 
@@ -555,14 +559,34 @@ void RequestGroup::releaseRuntimeResource()
   }
 }
 
+void RequestGroup::preDownloadProcessing()
+{
+  _logger->debug("Finding PreDownloadHandler for path %s.", getFilePath().c_str());
+  try {
+    for(PreDownloadHandlers::const_iterator itr = _preDownloadHandlers.begin();
+	itr != _preDownloadHandlers.end(); ++itr) {
+      if((*itr)->canHandle(this)) {
+	(*itr)->execute(this);
+	break;
+      }
+    }
+  } catch(RecoverableException* ex) {
+    _logger->error(EX_EXCEPTION_CAUGHT, ex);
+    delete ex;
+    return;
+  }
+  _logger->debug("No PreDownloadHandler found.");
+  return;
+}
+
 RequestGroups RequestGroup::postDownloadProcessing()
 {
   _logger->debug("Finding PostDownloadHandler for path %s.", getFilePath().c_str());
   try {
     for(PostDownloadHandlers::const_iterator itr = _postDownloadHandlers.begin();
 	itr != _postDownloadHandlers.end(); ++itr) {
-      if((*itr)->canHandle(getFilePath())) {
-	return (*itr)->getNextRequestGroups(getFilePath());
+      if((*itr)->canHandle(this)) {
+	return (*itr)->getNextRequestGroups(this);
       }
     }
   } catch(RecoverableException* ex) {
@@ -574,16 +598,32 @@ RequestGroups RequestGroup::postDownloadProcessing()
   return RequestGroups();
 }
 
-void RequestGroup::initializePostDownloadHandler()
+void RequestGroup::initializePreDownloadHandler()
 {
 #ifdef ENABLE_BITTORRENT
-  if(_option->get(PREF_FOLLOW_TORRENT) == V_TRUE) {
-    _postDownloadHandlers.push_back(new BtPostDownloadHandler(_option));
+  if(_option->get(PREF_FOLLOW_TORRENT) == V_MEM) {
+    _preDownloadHandlers.push_back(DownloadHandlerFactory::getBtPreDownloadHandler());
   }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-  if(_option->get(PREF_FOLLOW_METALINK) == V_TRUE) {
-    _postDownloadHandlers.push_back(new MetalinkPostDownloadHandler(_option));
+  if(_option->get(PREF_FOLLOW_METALINK) == V_MEM) {
+    _preDownloadHandlers.push_back(DownloadHandlerFactory::getMetalinkPreDownloadHandler());
+  }
+#endif // ENABLE_METALINK
+}
+
+void RequestGroup::initializePostDownloadHandler()
+{
+#ifdef ENABLE_BITTORRENT
+  if(_option->get(PREF_FOLLOW_TORRENT) == V_TRUE ||
+     _option->get(PREF_FOLLOW_TORRENT) == V_MEM) {
+    _postDownloadHandlers.push_back(DownloadHandlerFactory::getBtPostDownloadHandler());
+  }
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+  if(_option->get(PREF_FOLLOW_METALINK) == V_TRUE ||
+     _option->get(PREF_FOLLOW_METALINK) == V_MEM) {
+    _postDownloadHandlers.push_back(DownloadHandlerFactory::getMetalinkPostDownloadHandler());
   }
 #endif // ENABLE_METALINK
 }
@@ -628,9 +668,19 @@ void RequestGroup::addPostDownloadHandler(const PostDownloadHandlerHandle& handl
   _postDownloadHandlers.push_back(handler);
 }
 
+void RequestGroup::addPreDownloadHandler(const PreDownloadHandlerHandle& handler)
+{
+  _preDownloadHandlers.push_back(handler);
+}
+
 void RequestGroup::clearPostDowloadHandler()
 {
   _postDownloadHandlers.clear();
+}
+
+void RequestGroup::clearPreDowloadHandler()
+{
+  _preDownloadHandlers.clear();
 }
 
 SegmentManHandle RequestGroup::getSegmentMan() const
@@ -673,4 +723,17 @@ bool RequestGroup::needsFileAllocation() const
   return isFileAllocationEnabled() &&
     _option->getAsLLInt(PREF_NO_FILE_ALLOCATION_LIMIT) <= getTotalLength() &&
     !_pieceStorage->getDiskAdaptor()->fileAllocationIterator()->finished();
+}
+
+DownloadResultHandle RequestGroup::createDownloadResult() const
+{
+  Strings uris = getUris();
+  return new DownloadResult(_gid,
+			    getFilePath(),
+			    getTotalLength(),
+			    uris.empty() ? "":uris.front(),
+			    uris.size(),
+			    downloadFinished()?
+			    DownloadResult::FINISHED :
+			    DownloadResult::NOT_YET);
 }

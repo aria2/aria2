@@ -1,12 +1,14 @@
 #include "MetalinkPostDownloadHandler.h"
 #include "RequestGroup.h"
 #include "Option.h"
+#include "SingleFileDownloadContext.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 class MetalinkPostDownloadHandlerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MetalinkPostDownloadHandlerTest);
-  CPPUNIT_TEST(testCanHandle);
+  CPPUNIT_TEST(testCanHandle_extension);
+  CPPUNIT_TEST(testCanHandle_contentType);
   CPPUNIT_TEST(testGetNextRequestGroups);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -14,26 +16,55 @@ private:
 public:
   void setUp() {}
 
-  void testCanHandle();
+  void testCanHandle_extension();
+  void testCanHandle_contentType();
   void testGetNextRequestGroups();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkPostDownloadHandlerTest );
 
-void MetalinkPostDownloadHandlerTest::testCanHandle()
+void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 {
   Option op;
-  MetalinkPostDownloadHandler handler(&op);
-  CPPUNIT_ASSERT(!handler.canHandle(".metalink!!"));
-  CPPUNIT_ASSERT(handler.canHandle(".metalink"));
+  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test.metalink");
+  RequestGroup rg(&op, Strings());
+  rg.setDownloadContext(dctx);
+
+  MetalinkPostDownloadHandler handler;
+
+  CPPUNIT_ASSERT(handler.canHandle(&rg));
+
+  dctx->setFilename("test.metalink2");
+  CPPUNIT_ASSERT(!handler.canHandle(&rg));
+}
+
+void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
+{
+  Option op;
+  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test");
+  dctx->setContentType("application/metalink+xml");
+  RequestGroup rg(&op, Strings());
+  rg.setDownloadContext(dctx);
+
+  MetalinkPostDownloadHandler handler;
+
+  CPPUNIT_ASSERT(handler.canHandle(&rg));
+
+  dctx->setContentType("application/octet-stream");
+  CPPUNIT_ASSERT(!handler.canHandle(&rg));
 }
 
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   Option op;
-  MetalinkPostDownloadHandler handler(&op);
-  RequestGroups groups = handler.getNextRequestGroups("test.xml");
+  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test.xml");
+  RequestGroup rg(&op, Strings());
+  rg.setDownloadContext(dctx);
+  rg.initPieceStorage();
+
+  MetalinkPostDownloadHandler handler;
+  RequestGroups groups = handler.getNextRequestGroups(&rg);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)6/* 5 + 1 torrent file download */, groups.size());
 #else

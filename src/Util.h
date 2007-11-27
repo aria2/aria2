@@ -46,6 +46,8 @@
 class Randomizer;
 typedef SharedHandle<Randomizer> RandomizerHandle;
 class BitfieldMan;
+class BinaryStream;
+typedef SharedHandle<BinaryStream> BinaryStreamHandle;
 
 #define STRTOLL(X) strtoll(X, (char**)NULL, 10)
 
@@ -163,6 +165,9 @@ public:
   static void mkdirs(const string& dirpath);
 
   static void convertBitfield(BitfieldMan* dest, const BitfieldMan* src);
+
+  // binaryStream has to be opened before calling this function.
+  static string toString(const BinaryStreamHandle& binaryStream);
 };
 
 #endif // _D_UTIL_H_

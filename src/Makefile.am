@@ -125,7 +125,11 @@ SRCS =  Socket.h\
 	NullProgressInfoFile.h\
 	FileAllocationIterator.h\
 	SingleFileAllocationIterator.cc SingleFileAllocationIterator.h\
-	PostDownloadHandler.cc PostDownloadHandler.h\
+	ContentTypeRequestGroupCriteria.cc ContentTypeRequestGroupCriteria.h\
+	DownloadHandler.cc DownloadHandler.h\
+	DownloadHandlerConstants.cc DownloadHandlerConstants.h\
+	DownloadHandlerFactory.cc DownloadHandlerFactory.h\
+	MemoryBufferPreDownloadHandler.cc MemoryBufferPreDownloadHandler.h\
 	HaveEraseCommand.cc HaveEraseCommand.h\
 	Piece.cc Piece.h\
 	CheckIntegrityMan.cc CheckIntegrityMan.h\

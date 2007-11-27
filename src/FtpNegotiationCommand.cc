@@ -208,7 +208,7 @@ bool FtpNegotiationCommand::recvSize() {
     SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
     dctx->setTotalLength(size);
     dctx->setFilename(Util::urldecode(req->getFile()));
-
+    _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
       throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
 					 _requestGroup->getFilePath().c_str());

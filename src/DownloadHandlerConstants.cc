@@ -32,43 +32,40 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#include "DownloadHandlerConstants.h"
 
-MetalinkHelper::MetalinkHelper() {}
+char* DownloadHandlerConstants::METALINK_EXTENSIONS[] = { ".metalink" };
 
-MetalinkHelper::~MetalinkHelper() {}
+char* DownloadHandlerConstants::METALINK_CONTENT_TYPES[] = {
+  "application/metalink+xml"
+};
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+char* DownloadHandlerConstants::BT_EXTENSIONS[] = { ".torrent" };
+
+char* DownloadHandlerConstants::BT_CONTENT_TYPES[] = {
+  "application/x-bittorrent"
+};
+
+Strings DownloadHandlerConstants::getMetalinkExtensions()
 {
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
+  return Strings(&METALINK_EXTENSIONS[0],
+		 &METALINK_EXTENSIONS[arrayLength(METALINK_EXTENSIONS)]);
 }
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
+Strings DownloadHandlerConstants::getMetalinkContentTypes()
 {
-  Xml2MetalinkProcessor proc;
-
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
+  return Strings(&METALINK_CONTENT_TYPES[0],
+		 &METALINK_CONTENT_TYPES[arrayLength(METALINK_CONTENT_TYPES)]);
 }
 
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
+Strings DownloadHandlerConstants::getBtExtensions()
 {
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
+  return Strings(&BT_EXTENSIONS[0],
+		 &BT_EXTENSIONS[arrayLength(BT_EXTENSIONS)]);
+}
+
+Strings DownloadHandlerConstants::getBtContentTypes()
+{
+  return Strings(&BT_CONTENT_TYPES[0],
+		 &BT_CONTENT_TYPES[arrayLength(BT_CONTENT_TYPES)]);
 }

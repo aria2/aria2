@@ -32,43 +32,21 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#ifndef _D_REQUEST_GROUP_CRITERIA_H_
+#define _D_REQUEST_GROUP_CRITERIA_H_
 
-MetalinkHelper::MetalinkHelper() {}
+#include "common.h"
 
-MetalinkHelper::~MetalinkHelper() {}
+class RequestGroup;
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+class RequestGroupCriteria
 {
-  Xml2MetalinkProcessor proc;
+public:
+  virtual ~RequestGroupCriteria() {}
 
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
-}
+  virtual bool match(const RequestGroup* requestGroup) const = 0;
+};
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
-{
-  Xml2MetalinkProcessor proc;
+typedef SharedHandle<RequestGroupCriteria> RequestGroupCriteriaHandle;
 
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
-
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
-}
+#endif // _D_REQUEST_GROUP_CRITERIA_H_

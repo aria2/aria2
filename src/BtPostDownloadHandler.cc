@@ -38,23 +38,44 @@
 #include "RequestGroup.h"
 #include "Option.h"
 #include "Logger.h"
+#include "DownloadHandlerConstants.h"
+#include "File.h"
+#include "PieceStorage.h"
+#include "DiskAdaptor.h"
+#include "Util.h"
+#include "ContentTypeRequestGroupCriteria.h"
 
-BtPostDownloadHandler::BtPostDownloadHandler(const Option* option):
-  PostDownloadHandler(".torrent", option)
-{}
+BtPostDownloadHandler::BtPostDownloadHandler()
+{
+  setCriteria(new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getBtContentTypes(),
+						  DownloadHandlerConstants::getBtExtensions()));
+}
 
 BtPostDownloadHandler::~BtPostDownloadHandler() {}
 
-RequestGroups BtPostDownloadHandler::getNextRequestGroups(const string& path)
+RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
 {
-  _logger->debug("Generating RequestGroups for Torrent file %s", path.c_str());
-  RequestGroupHandle rg = new RequestGroup(_option, Strings());
-  DefaultBtContextHandle btContext = new DefaultBtContext();
-  btContext->load(path);
-  if(_option->defined(PREF_PEER_ID_PREFIX)) {
-    btContext->setPeerIdPrefix(_option->get(PREF_PEER_ID_PREFIX));
+  const Option* op = requestGroup->getOption();
+  _logger->debug("Generating RequestGroups for Torrent file %s",
+		 requestGroup->getFilePath().c_str());
+  RequestGroupHandle rg = new RequestGroup(op, Strings());
+
+  string content;
+  try {
+    requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
+    content = Util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
+    requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();    
+  } catch(Exception* e) {
+    requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
+    throw;
   }
-  btContext->setDir(_option->get(PREF_DIR));
+  DefaultBtContextHandle btContext = new DefaultBtContext();
+  btContext->loadFromMemory(content.c_str(), content.size(),
+			    File(requestGroup->getFilePath()).getBasename());
+  if(op->defined(PREF_PEER_ID_PREFIX)) {
+    btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
+  }
+  btContext->setDir(op->get(PREF_DIR));
   rg->setDownloadContext(btContext);
   btContext->setOwnerRequestGroup(rg.get());
   

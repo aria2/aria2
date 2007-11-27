@@ -32,43 +32,36 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkHelper.h"
-#include "Option.h"
-#include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
-#include "Metalinker.h"
-#include "prefs.h"
-#include "DlAbortEx.h"
-#include "BinaryStream.h"
+#ifndef _D_DOWNLOAD_HANDLER_H_
+#define _D_DOWNLOAD_HANDLER_H_
 
-MetalinkHelper::MetalinkHelper() {}
+#include "common.h"
 
-MetalinkHelper::~MetalinkHelper() {}
+class RequestGroup;
+class Logger;
+class RequestGroupCriteria;
+typedef SharedHandle<RequestGroupCriteria> RequestGroupCriteriaHandle;
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+class DownloadHandler
 {
-  Xml2MetalinkProcessor proc;
+protected:
+  RequestGroupCriteriaHandle _criteria;
 
-  MetalinkerHandle metalinker = proc.parseFile(filename);
-  return query(metalinker, option);
-}
+  const Logger* _logger;
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
-{
-  Xml2MetalinkProcessor proc;
+private:
+  bool forwardMatch(const string& target, const Strings& candidates) const;
 
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
-}
+  bool exactMatch(const string& target, const Strings& candidates) const;
 
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
-{
-  if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
-  }
-  MetalinkEntries entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
-}
+public:
+  DownloadHandler();
+
+  virtual ~DownloadHandler();
+
+  bool canHandle(const RequestGroup* requestGroup) const;
+
+  void setCriteria(const RequestGroupCriteriaHandle& criteria);
+};
+
+#endif // _D_DOWNLOAD_HANDLER_H_

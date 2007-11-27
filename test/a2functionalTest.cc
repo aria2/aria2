@@ -10,10 +10,12 @@ class a2functionalTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(a2functionalTest);
   CPPUNIT_TEST(testMemFunSh);
   CPPUNIT_TEST(testAdopt2nd);
+  CPPUNIT_TEST(testArrayLength);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testMemFunSh();
   void testAdopt2nd();
+  void testArrayLength();
 
   class Greeting {
   public:
@@ -61,4 +63,13 @@ void a2functionalTest::testAdopt2nd()
 
   CPPUNIT_ASSERT_EQUAL(string("A Japanese said:HAROO WAARUDO"),
 		       adopt2nd(plus<string>(), mem_fun_sh(&Greeting::sayGreeting))("A Japanese said:", greeting));
+}
+
+void a2functionalTest::testArrayLength()
+{
+  int64_t ia[] = { 1, 2, 3, 4, 5 };
+  int64_t zeroLengthArray[] = {};
+
+  CPPUNIT_ASSERT_EQUAL((size_t)5, arrayLength(ia));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, arrayLength(zeroLengthArray));
 }
