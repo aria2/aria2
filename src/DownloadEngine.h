@@ -36,6 +36,7 @@
 #define _D_DOWNLOAD_ENGINE_H_
 
 #include "common.h"
+#include "a2netcompat.h"
 #include "Command.h"
 
 class SocketCore;
