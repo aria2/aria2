@@ -38,6 +38,8 @@
 # include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
+#define DEFAULT_MSG _("                              Default: ")
+
 void showVersion() {
   cout << PACKAGE << _(" version ") << PACKAGE_VERSION << "\n"
        << "Copyright (C) 2006, 2007 Tatsuhiro Tsujikawa" << "\n"
@@ -243,8 +245,8 @@ void showUsage() {
 	    "                              If mem is specified, a metalink file is not\n"
 	    "                              written to the disk, but is just kept in memory.\n"
 	    "                              If false is specified, the action mentioned above\n"
-	    "                              is not taken.\n"
-	    "                              Default: true") << endl;
+	    "                              is not taken.") << "\n"
+       << DEFAULT_MSG << "true" << "\n";
   cout << _(" --direct-file-mapping=true|false Directly read from and write to each file\n"
 	    "                              mentioned in .torrent file.\n"
 	    "                              Default: true") << endl;
@@ -252,8 +254,8 @@ void showUsage() {
 	    "                              Multiple ports can be specified by using ',',\n"
 	    "                              for example: \"6881,6885\". You can also use '-'\n"
 	    "                              to specify a range: \"6881-6999\". ',' and '-' can\n"
-	    "                              be used together.\n"
-	    "                              Default: 6881-6999") << endl;
+	    "                              be used together.") << "\n"
+       << DEFAULT_MSG << "6881-6999" << "\n";
   cout << _(" --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 	    "                              0 means unrestricted.\n"
 	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
@@ -266,8 +268,8 @@ void showUsage() {
 	    "                              seeding regardless of share ratio.\n"
 	    "                              If --seed-time option is specified along with\n"
 	    "                              this option, seeding ends when at least one of\n"
-	    "                              the conditions is satisfied.\n"
-	    "                              Default: 1.0") << endl;
+	    "                              the conditions is satisfied.") << "\n"
+       << DEFAULT_MSG << "1.0" << "\n";
   cout << _(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID in\n"
 	    "                              BitTorrent is 20 byte length. If more than 20\n"
 	    "                              bytes are specified, only first 20\n"
@@ -295,8 +297,8 @@ void showUsage() {
 	    "                              If mem is specified, a metalink file is not\n"
 	    "                              written to the disk, but is just kept in memory.\n"
 	    "                              If false is specified, the action mentioned above\n"
-	    "                              is not taken.\n"
-	    "                              Default: true") << endl;
+	    "                              is not taken.") << "\n"
+       << DEFAULT_MSG << "true" << "\n";
 #endif // ENABLE_METALINK
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
@@ -309,7 +311,7 @@ void showUsage() {
 	    " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
 	    " only single file torrent can be integrated with http/ftp.") << endl;
   cout << endl;
-  cout << _("Refer to  man page for some examples.") << endl;
+  cout << _("Refer to man page for more information.") << endl;
   cout << endl;
   printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
   cout << endl;
