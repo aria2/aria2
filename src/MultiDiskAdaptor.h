@@ -39,6 +39,8 @@
 #include "DiskWriter.h"
 #include "File.h"
 
+class MultiFileAllocationIterator;
+
 class DiskWriterEntry {
 private:
   FileEntryHandle fileEntry;
@@ -96,6 +98,11 @@ public:
   DiskWriterHandle getDiskWriter() const {
     return diskWriter;
   }
+
+  bool operator<(const DiskWriterEntry& entry) const
+  {
+    return fileEntry < entry.fileEntry;
+  }
 };
 
 typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
@@ -103,6 +110,7 @@ typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
 typedef deque<DiskWriterEntryHandle> DiskWriterEntries;
 
 class MultiDiskAdaptor : public DiskAdaptor {
+  friend class MultiFileAllocationIterator;
 private:
   string topDir;
   int32_t pieceLength;
@@ -150,6 +158,10 @@ public:
   virtual int64_t size() const;
 
   virtual FileAllocationIteratorHandle fileAllocationIterator();
+
+  virtual void enableDirectIO();
+
+  virtual void disableDirectIO();
 
   void setTopDir(const string& topDir) {
     this->topDir = topDir;

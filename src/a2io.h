@@ -116,4 +116,8 @@
 # define a2mkdir(path, openMode) mkdir(path, openMode)
 #endif // __MINGW32__
 
+#if defined HAVE_POSIX_MEMALIGN && O_DIRECT
+//# define ENABLE_DIRECT_IO 1
+#endif // HAVE_POSIX_MEMALIGN && O_DIRECT
+#undef HAVE_POSIX_MEMALIGN
 #endif // _D_A2IO_H_

@@ -74,6 +74,10 @@ public:
   
   virtual FileAllocationIteratorHandle fileAllocationIterator();
 
+  virtual void enableDirectIO();
+
+  virtual void disableDirectIO();
+
   void setDiskWriter(const DiskWriterHandle diskWriter) {
     this->diskWriter = diskWriter;
   }

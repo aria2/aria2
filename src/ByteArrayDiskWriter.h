@@ -65,6 +65,10 @@ public:
   {
     return buf.str().size();
   }
+
+  virtual void enableDirectIO() {}
+
+  virtual void disableDirectIO() {}
 };
 
 #endif // _D_BYTE_ARRAY_DISK_WRITER_H_

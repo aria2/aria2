@@ -7,7 +7,7 @@ class MultiFileAllocationIteratorTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(MultiFileAllocationIteratorTest);
   CPPUNIT_TEST(testAllocate);
-  CPPUNIT_TEST(testMakeFileEntries);
+  CPPUNIT_TEST(testMakeDiskWriterEntries);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -15,13 +15,13 @@ public:
   void setUp() {}
 
   void testAllocate();
-  void testMakeFileEntries();
+  void testMakeDiskWriterEntries();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MultiFileAllocationIteratorTest );
 
-void MultiFileAllocationIteratorTest::testMakeFileEntries()
+void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 {
   FileEntryHandle fs[] = {
     new FileEntry("file1", 1536, 0),
@@ -43,24 +43,27 @@ void MultiFileAllocationIteratorTest::testMakeFileEntries()
   fs[8]->setRequested(false);
   fs[9]->setRequested(false);
   
+  string storeDir = "/tmp/aria2_MultiFileAllocationIteratorTest_testMakeDiskWriterEntries";
   MultiDiskAdaptorHandle diskAdaptor = new MultiDiskAdaptor();
   diskAdaptor->setFileEntries(FileEntries(&fs[0], &fs[10]));
   diskAdaptor->setPieceLength(1024);
+  diskAdaptor->setStoreDir(storeDir);
+  diskAdaptor->openFile();
 
   MultiFileAllocationIteratorHandle itr = diskAdaptor->fileAllocationIterator();
 
-  FileEntries entries = itr->getFileEntries();
+  DiskWriterEntries entries = itr->getDiskWriterEntries();
 
   sort(entries.begin(), entries.end());
 
   CPPUNIT_ASSERT_EQUAL((size_t)6, entries.size());
 
-  CPPUNIT_ASSERT_EQUAL(string("file1"), entries[0]->getPath());
-  CPPUNIT_ASSERT_EQUAL(string("file2"), entries[1]->getPath());
-  CPPUNIT_ASSERT_EQUAL(string("file3"), entries[2]->getPath());
-  CPPUNIT_ASSERT_EQUAL(string("file6"), entries[3]->getPath());
-  CPPUNIT_ASSERT_EQUAL(string("file7"), entries[4]->getPath());
-  CPPUNIT_ASSERT_EQUAL(string("file8"), entries[5]->getPath());
+  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file1"), entries[0]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file2"), entries[1]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file3"), entries[2]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file6"), entries[3]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file7"), entries[4]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file8"), entries[5]->getFilePath(storeDir));
 }
 
 void MultiFileAllocationIteratorTest::testAllocate()

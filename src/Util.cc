@@ -42,6 +42,7 @@
 #include "BitfieldMan.h"
 #include "DefaultDiskWriter.h"
 #include "BinaryStream.h"
+#include "FatalException.h"
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -849,3 +850,18 @@ string Util::toString(const BinaryStreamHandle& binaryStream)
   }
   return strm.str();
 }
+
+#ifdef HAVE_POSIX_MEMALIGN
+/**
+ * In linux 2.6, alignment and size should be a multiple of 512.
+ */
+void* Util::allocateAlignedMemory(size_t alignment, size_t size)
+{
+  void* buffer;
+  int32_t res;
+  if((res = posix_memalign(&buffer, alignment, size)) != 0) {
+    throw new FatalException("Error in posix_memalign: %s", strerror(res));
+  }
+  return buffer;
+}
+#endif // HAVE_POSIX_MEMALIGN

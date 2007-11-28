@@ -45,6 +45,8 @@ public:
   virtual void writeData(const unsigned char* data, int32_t len, int64_t offset) = 0;
 
   virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) = 0;
+
+  virtual void truncate(int64_t length) = 0;
 };
 
 typedef SharedHandle<BinaryStream> BinaryStreamHandle;

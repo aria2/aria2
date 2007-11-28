@@ -199,7 +199,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	     _option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
 	    // TODO we need this->haltRequested = true?
 	    throw new DownloadFailureException(MSG_FILE_ALREADY_EXISTS,
-					       getFilePath().c_str());
+					       _pieceStorage->getDiskAdaptor()->getFilePath().c_str());
 	  } else {
 	    _pieceStorage->getDiskAdaptor()->openFile();
 	  }
@@ -237,7 +237,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 Commands RequestGroup::processCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry, DownloadEngine* e)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  if(File(getFilePath()).size() > 0 &&
+  if(//File(getFilePath()).size() > 0 &&
      e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
      entry->isValidationReady()) {
     entry->initValidator();

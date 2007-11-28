@@ -394,6 +394,7 @@ void DefaultPieceStorage::setFileFilter(const Strings& filePaths)
 void DefaultPieceStorage::setFileFilter(IntSequence seq)
 {
   Integers fileIndexes = seq.flush();
+  // TODO Is sorting necessary?
   sort(fileIndexes.begin(), fileIndexes.end());
   fileIndexes.erase(unique(fileIndexes.begin(), fileIndexes.end()), fileIndexes.end());
   Strings filePaths;

@@ -51,29 +51,25 @@ bool FileAllocationCommand::executeInternal()
   if(_e->isHaltRequested()) {
     return true;
   }
-  try {
-    _fileAllocationEntry->allocateChunk();
-    if(_fileAllocationEntry->finished()) {
-      logger->debug(MSG_ALLOCATION_COMPLETED,
-		    _timer.difference(),
-		    Util::llitos(_requestGroup->getTotalLength(), true).c_str());
-      _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
-      
-      _e->addCommand(_fileAllocationEntry->prepareForNextAction(_e));
-      
-      return true;
-    } else {
-      _e->commands.push_back(this);
-      return false;
-    }
-  } catch(Exception* e) {
+  _fileAllocationEntry->allocateChunk();
+  if(_fileAllocationEntry->finished()) {
+    logger->debug(MSG_ALLOCATION_COMPLETED,
+		  _timer.difference(),
+		  Util::llitos(_requestGroup->getTotalLength(), true).c_str());
     _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
-    throw;
+    
+    _e->addCommand(_fileAllocationEntry->prepareForNextAction(_e));
+    
+    return true;
+  } else {
+    _e->commands.push_back(this);
+    return false;
   }
 }
 
 bool FileAllocationCommand::handleException(Exception* e)
 {
+  _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
   logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   return true;

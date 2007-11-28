@@ -89,6 +89,10 @@ public:
   const string& getStoreDir() const { return this->storeDir; }
 
   virtual FileAllocationIteratorHandle fileAllocationIterator() = 0;
+
+  virtual void enableDirectIO() {};
+
+  virtual void disableDirectIO() {};
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

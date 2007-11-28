@@ -40,6 +40,7 @@
 #include "Util.h"
 #include "message.h"
 #include "Exception.h"
+#include "a2io.h"
 #include <fstream>
 #include <sstream>
 
@@ -125,6 +126,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_ENABLE_HTTP_PIPELINING, V_FALSE);
   op->put(PREF_MAX_HTTP_PIPELINING, "2");
   op->put(PREF_SEED_RATIO, "1.0");
+  op->put(PREF_ENABLE_DIRECT_IO, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -173,6 +175,9 @@ Option* option_processing(int argc, char* const argv[])
       { "enable-http-keep-alive", optional_argument, &lopt, 207 },
       { "enable-http-pipelining", optional_argument, &lopt, 208 },
       { "no-file-allocation-limit", required_argument, &lopt, 209 },
+#ifdef ENABLE_DIRECT_IO
+      { PREF_ENABLE_DIRECT_IO, optional_argument, &lopt, 210 },
+#endif // ENABLE_DIRECT_IO
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -322,6 +327,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 209:
 	cmdstream << PREF_NO_FILE_ALLOCATION_LIMIT << "=" << optarg << "\n";
+	break;
+      case 210:
+	cmdstream << PREF_ENABLE_DIRECT_IO << "=" << toBoolArg(optarg) << "\n";
 	break;
       }
       break;

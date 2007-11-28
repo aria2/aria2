@@ -69,6 +69,10 @@ public:
   virtual void truncate(int64_t length);
 
   virtual int64_t size() const;
+  
+  virtual void enableDirectIO();
+
+  virtual void disableDirectIO();
 };
 
 #endif // _D_ABSTRACT_DISK_WRITER_H_

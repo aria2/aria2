@@ -37,15 +37,20 @@
 
 #include "FileAllocationIterator.h"
 
-class AbstractSingleDiskAdaptor;
+class BinaryStream;
 
 class SingleFileAllocationIterator:public FileAllocationIterator
 {
 private:
-  AbstractSingleDiskAdaptor* _diskAdaptor;
+  BinaryStream* _stream;
+
   int64_t _offset;
+
+  int64_t _totalLength;
+
+  unsigned char* _buffer;
 public:
-  SingleFileAllocationIterator(AbstractSingleDiskAdaptor* diskAdaptor);
+  SingleFileAllocationIterator(BinaryStream* stream, int64_t offset, int64_t totalLength);
 
   virtual ~SingleFileAllocationIterator();
 
@@ -58,7 +63,15 @@ public:
     return _offset;
   }
 
-  virtual int64_t getTotalLength();
+  virtual int64_t getTotalLength()
+  {
+    return _totalLength;
+  }
+
+  /**
+   * Must be called only once, before calling allocateChunk()
+   */
+  void init();
 };
 
 typedef SharedHandle<SingleFileAllocationIterator> SingleFileAllocationIteratorHandle;

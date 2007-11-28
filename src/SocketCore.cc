@@ -213,9 +213,10 @@ void SocketCore::setNonBlockingMode()
     throw new DlAbortEx(EX_SOCKET_NONBLOCKING, errorMsg());
   }
 #else
-  int32_t flags = fcntl(sockfd, F_GETFL, 0);
+  int32_t flags;
+  while((flags = fcntl(sockfd, F_GETFL, 0)) == -1 && errno == EINTR);
   // TODO add error handling
-  fcntl(sockfd, F_SETFL, flags|O_NONBLOCK);
+  while(fcntl(sockfd, F_SETFL, flags|O_NONBLOCK) == -1 && errno == EINTR);
 #endif // __MINGW32__
   blocking = false;
 }
@@ -228,9 +229,10 @@ void SocketCore::setBlockingMode()
     throw new DlAbortEx(EX_SOCKET_BLOCKING, errorMsg());
   }
 #else
-  int32_t flags = fcntl(sockfd, F_GETFL, 0);
+  int32_t flags;
+  while((flags = fcntl(sockfd, F_GETFL, 0)) == -1 && errno == EINTR);
   // TODO add error handling
-  fcntl(sockfd, F_SETFL, flags&(~O_NONBLOCK));
+  while(fcntl(sockfd, F_SETFL, flags&(~O_NONBLOCK)) == -1 && errno == EINTR);
 #endif // __MINGW32__
   blocking = true;
 }

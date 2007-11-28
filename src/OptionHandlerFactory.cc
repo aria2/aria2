@@ -100,6 +100,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_HTTP_KEEP_ALIVE));
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_HTTP_PIPELINING));
   handlers.push_back(new UnitNumberOptionHandler(PREF_NO_FILE_ALLOCATION_LIMIT, 0));
+  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_DIRECT_IO));
 
   return handlers;
 }

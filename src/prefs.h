@@ -115,6 +115,8 @@
 #define PREF_AUTO_FILE_RENAMING "auto-file-renaming"
 // value: true | false
 #define PREF_PARAMETERIZED_URI "parameterized-uri"
+// value: true | false
+#define PREF_ENABLE_DIRECT_IO "enable-direct-io"
 
 /**
  * FTP related preferences

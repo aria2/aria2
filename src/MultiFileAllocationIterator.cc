@@ -35,96 +35,92 @@
 #include "MultiFileAllocationIterator.h"
 #include "MultiDiskAdaptor.h"
 #include "FileEntry.h"
-
-#define BUFSIZE 16*1024
+#include "SingleFileAllocationIterator.h"
 
 MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
   _diskAdaptor(diskAdaptor),
-  _entries(makeFileEntries(diskAdaptor->getFileEntries(), diskAdaptor->getPieceLength())),
-  _currentEntry(0),
+  _entries(makeDiskWriterEntries(diskAdaptor->diskWriterEntries,
+				 diskAdaptor->getPieceLength())),
+  _fileAllocationIterator(0),
   _offset(0)
 {}
 
 MultiFileAllocationIterator::~MultiFileAllocationIterator() {}
 
-void MultiFileAllocationIterator::prepareNextEntry()
-{
-  _currentEntry = 0;
-  _offset = 0;
-  if(!_entries.empty()) {
-    FileEntryHandle entry = _entries.front();
-    _entries.pop_front();
-
-    _currentEntry = entry;
-    _offset = File(_diskAdaptor->getStoreDir()+"/"+
-		   _diskAdaptor->getTopDir()+"/"+
-		   _currentEntry->getPath()).size();
-  }
-}
-
-
 void MultiFileAllocationIterator::allocateChunk()
 {
-  while(_currentEntry.isNull() || _currentEntry->getLength() <= _offset) {
-    prepareNextEntry();
-    if(_currentEntry.isNull()) {
+  while(_fileAllocationIterator.isNull() || _fileAllocationIterator->finished()) {
+    if(_entries.empty()) {
       break;
+    }
+    DiskWriterEntryHandle entry = _entries.front();
+    _entries.pop_front();
+    FileEntryHandle fileEntry = entry->getFileEntry();
+    if(entry->size() < fileEntry->getLength()) {
+      _fileAllocationIterator =
+	new SingleFileAllocationIterator(entry->getDiskWriter().get(),
+					 entry->size(),
+					 fileEntry->getLength());
+      _fileAllocationIterator->init();
     }
   }
   if(finished()) {
     return;
   }
-  int32_t bufSize = BUFSIZE;
-  unsigned char buf[BUFSIZE];
-  memset(buf, 0, bufSize);
-  
-  int32_t wsize = _offset+bufSize > _currentEntry->getLength() ?
-    _currentEntry->getLength()-_offset:bufSize;
-  _diskAdaptor->writeData(buf, wsize, _offset+_currentEntry->getOffset());
-  _offset += wsize;  
+  _fileAllocationIterator->allocateChunk();
 }
 
 bool MultiFileAllocationIterator::finished()
 {
-  return _entries.empty() && _currentEntry.isNull();
+  return _entries.empty() && (_fileAllocationIterator.isNull() || _fileAllocationIterator->finished());
+}
+
+int64_t MultiFileAllocationIterator::getCurrentLength()
+{
+  if(_fileAllocationIterator.isNull()) {
+    return 0;
+  } else {
+    return _fileAllocationIterator->getCurrentLength();
+  }
 }
 
 int64_t MultiFileAllocationIterator::getTotalLength()
 {
-  if(_currentEntry.isNull()) {
+  if(_fileAllocationIterator.isNull()) {
     return 0;
   } else {
-    return _currentEntry->getLength();
+    return _fileAllocationIterator->getTotalLength();
   }
 }
 
-const FileEntries& MultiFileAllocationIterator::getFileEntries() const
+const DiskWriterEntries& MultiFileAllocationIterator::getDiskWriterEntries() const
 {
   return _entries;
 }
 
-FileEntries MultiFileAllocationIterator::makeFileEntries(const FileEntries& srcEntries, int32_t pieceLength) const
+DiskWriterEntries MultiFileAllocationIterator::makeDiskWriterEntries(const DiskWriterEntries& srcEntries, int32_t pieceLength) const
 {
   if(pieceLength == 0) {
-    FileEntries entries;
-    for(FileEntries::const_iterator itr = srcEntries.begin(); itr != srcEntries.end(); ++itr) {
-      if((*itr)->isRequested()) {
+    DiskWriterEntries entries;
+    for(DiskWriterEntries::const_iterator itr = srcEntries.begin(); itr != srcEntries.end(); ++itr) {
+      if((*itr)->getFileEntry()->isRequested()) {
 	entries.push_back(*itr);
       }
     }
     return entries;
   }
-  FileEntries temp(srcEntries);
-  temp.push_front(new FileEntry());
-  FileEntries entries;
-  FileEntries::const_iterator done = temp.begin();
-  for(FileEntries::const_iterator itr = temp.begin()+1; itr != temp.end(); ++itr) {
-    if(!(*itr)->isRequested()) {
+  DiskWriterEntries temp(srcEntries);
+  temp.push_front(new DiskWriterEntry(new FileEntry()));
+  DiskWriterEntries entries;
+  DiskWriterEntries::const_iterator done = temp.begin();
+  for(DiskWriterEntries::const_iterator itr = temp.begin()+1; itr != temp.end(); ++itr) {
+    FileEntryHandle fileEntry = (*itr)->getFileEntry();
+    if(!fileEntry->isRequested()) {
       continue;
     }
-    int64_t pieceStartOffset = ((*itr)->getOffset()/pieceLength)*pieceLength;
-    for(FileEntries::const_iterator i = itr-1; i != done; --i) {
-      if(pieceStartOffset < (*i)->getOffset()+(*i)->getLength()) {
+    int64_t pieceStartOffset = (fileEntry->getOffset()/pieceLength)*pieceLength;
+    for(DiskWriterEntries::const_iterator i = itr-1; i != done; --i) {
+      if(pieceStartOffset < (*i)->getFileEntry()->getOffset()+(*i)->getFileEntry()->getLength()) {
 	entries.push_back(*i);
       } else {
 	break;

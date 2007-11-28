@@ -163,3 +163,21 @@ int64_t AbstractDiskWriter::size() const
   }
   return fileStat.st_size;
 }
+
+void AbstractDiskWriter::enableDirectIO()
+{
+#ifdef ENABLE_DIRECT_IO
+  int32_t flg;
+  while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
+  while(fcntl(fd, F_SETFL, flg|O_DIRECT) == -1 && errno == EINTR);
+#endif // ENABLE_DIRECT_IO
+}
+
+void AbstractDiskWriter::disableDirectIO()
+{
+#ifdef ENABLE_DIRECT_IO
+  int32_t flg;
+  while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
+  while(fcntl(fd, F_SETFL, flg&(~O_DIRECT)) == -1 && errno == EINTR);
+#endif // ENABLE_DIRECT_IO
+}

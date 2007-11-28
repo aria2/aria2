@@ -73,5 +73,20 @@ bool AbstractSingleDiskAdaptor::fileExists()
 
 FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
-  return new SingleFileAllocationIterator(this);
+  SingleFileAllocationIteratorHandle h =
+    new SingleFileAllocationIterator(this,
+				     size(),
+				     totalLength);
+  h->init();
+  return h;
+}
+
+void AbstractSingleDiskAdaptor::enableDirectIO()
+{
+  diskWriter->enableDirectIO();
+}
+
+void AbstractSingleDiskAdaptor::disableDirectIO()
+{
+  diskWriter->disableDirectIO();
 }

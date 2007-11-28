@@ -168,6 +168,10 @@ public:
 
   // binaryStream has to be opened before calling this function.
   static string toString(const BinaryStreamHandle& binaryStream);
+
+#ifdef HAVE_POSIX_MEMALIGN
+  static void* allocateAlignedMemory(size_t alignment, size_t size);
+#endif // HAVE_POSIX_MEMALIGN
 };
 
 #endif // _D_UTIL_H_

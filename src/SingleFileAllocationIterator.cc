@@ -33,35 +33,42 @@
  */
 /* copyright --> */
 #include "SingleFileAllocationIterator.h"
-#include "AbstractSingleDiskAdaptor.h"
+#include "BinaryStream.h"
+#include "Util.h"
+#include "a2io.h"
 
-#define BUFSIZE 16*1024
+#define BUFSIZE (256*1024)
 
-SingleFileAllocationIterator::SingleFileAllocationIterator(AbstractSingleDiskAdaptor* diskAdaptor):_diskAdaptor(diskAdaptor), _offset(diskAdaptor->size()) {}
+SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, int64_t offset, int64_t totalLength):_stream(stream), _offset(offset), _totalLength(totalLength), _buffer(0)
+{}
 
-SingleFileAllocationIterator::~SingleFileAllocationIterator() {}
+SingleFileAllocationIterator::~SingleFileAllocationIterator()
+{
+  delete [] _buffer;
+}
+
+void SingleFileAllocationIterator::init()
+{
+#ifdef HAVE_POSIX_MEMALIGN
+  _buffer = (unsigned char*)Util::allocateAlignedMemory(512, BUFSIZE);
+#else
+  _buffer = new unsigned char[BUFSIZE];
+#endif // HAVE_POSIX_MEMALIGN
+  memset(_buffer, 0, BUFSIZE);
+}
 
 void SingleFileAllocationIterator::allocateChunk()
 {
-  int32_t bufSize = BUFSIZE;
-  unsigned char buf[BUFSIZE];
-  memset(buf, 0, bufSize);
-  
-  _diskAdaptor->writeData(buf, bufSize, _offset);
-  _offset += bufSize;
-  
-  if(_diskAdaptor->getTotalLength() < _offset) {
-    _diskAdaptor->truncate(getTotalLength());
-    _offset = getTotalLength();
+  _stream->writeData(_buffer, BUFSIZE, _offset);
+  _offset += BUFSIZE;
+
+  if(_totalLength < _offset) {
+    _stream->truncate(_totalLength);
+    _offset = _totalLength;
   }
 }
 
 bool SingleFileAllocationIterator::finished()
 {
-  return getCurrentLength() >= getTotalLength();
-}
-
-int64_t SingleFileAllocationIterator::getTotalLength()
-{
-  return _diskAdaptor->getTotalLength();
+  return _offset >= _totalLength;
 }

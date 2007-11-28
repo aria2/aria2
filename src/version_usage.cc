@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "common.h"
+#include "a2io.h"
 #include "FeatureConfig.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "messageDigest.h"
@@ -161,9 +162,15 @@ void showUsage() {
 	    "                              Default: prealloc") << endl;
   cout << _(" --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 	    "                              size is smaller than SIZE.\n"
-	    "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
-	    "                              BitTorrent downloads ignore this option.\n"
-	    "                              Default: 5M") << endl;
+	    "                              You can append K or M(1K = 1024, 1M = 1024K).") << "\n"
+       << DEFAULT_MSG << "5M" << "\n";
+#ifdef ENABLE_DIRECT_IO
+  cout << _(" --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage while\n"
+	    "                              allocating files.\n"
+	    "                              Turn off if you encounter any error") << "\n"
+	    "                              Tested in Linux 2.6.21" << "\n"
+       << DEFAULT_MSG << "false" << "\n";
+#endif // ENABLE_DIRECT_IO
   cout << _(" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
   		"                              already exists but the corresponding .aria2 file\n"
   		"                              doesn't exist.\n"

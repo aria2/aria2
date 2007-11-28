@@ -38,13 +38,24 @@
 #include "RequestGroup.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
+#include "prefs.h"
+#include "Option.h"
 
 FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand):
   RequestGroupEntry(requestGroup, nextCommand),
   _fileAllocationIterator(requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator())
-{}
+{
+  if(_requestGroup->getOption()->getAsBool(PREF_ENABLE_DIRECT_IO)) {
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->enableDirectIO();
+  }
+}
 
-FileAllocationEntry:: ~FileAllocationEntry() {}
+FileAllocationEntry:: ~FileAllocationEntry()
+{
+  if(_requestGroup->getOption()->getAsBool(PREF_ENABLE_DIRECT_IO)) {
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
+  }
+}
 
 int64_t FileAllocationEntry::getCurrentLength()
 {

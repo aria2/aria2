@@ -38,38 +38,35 @@
 #include "FileAllocationIterator.h"
 
 class MultiDiskAdaptor;
-class FileEntry;
-typedef SharedHandle<FileEntry> FileEntryHandle;
-typedef deque<FileEntryHandle> FileEntries;
+class DiskWriterEntry;
+typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
+typedef deque<DiskWriterEntryHandle> DiskWriterEntries;
+class SingleFileAllocationIterator;
+typedef SharedHandle<SingleFileAllocationIterator> SingleFileAllocationIteratorHandle;
 
 class MultiFileAllocationIterator:public FileAllocationIterator
 {
 private:
   MultiDiskAdaptor* _diskAdaptor;
-  FileEntries _entries;
-  FileEntryHandle _currentEntry;
+  DiskWriterEntries _entries;
+  SingleFileAllocationIteratorHandle _fileAllocationIterator;
   int64_t _offset;
 
-  FileEntries makeFileEntries(const FileEntries& srcEntries, int32_t pieceLength) const;
+  DiskWriterEntries makeDiskWriterEntries(const DiskWriterEntries& srcEntries, int32_t pieceLength) const;
 public:
   MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor);
 
   virtual ~MultiFileAllocationIterator();
 
-  void prepareNextEntry();
-
   virtual void allocateChunk();
   
   virtual bool finished();
 
-  virtual int64_t getCurrentLength()
-  {
-    return _offset;
-  }
+  virtual int64_t getCurrentLength();
 
   virtual int64_t getTotalLength();
 
-  const FileEntries& getFileEntries() const;
+  const DiskWriterEntries& getDiskWriterEntries() const;
 };
 
 typedef SharedHandle<MultiFileAllocationIterator> MultiFileAllocationIteratorHandle;

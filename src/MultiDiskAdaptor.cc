@@ -207,3 +207,19 @@ FileAllocationIteratorHandle MultiDiskAdaptor::fileAllocationIterator()
 {
   return new MultiFileAllocationIterator(this);
 }
+
+void MultiDiskAdaptor::enableDirectIO()
+{
+  for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); ++itr) {
+    (*itr)->getDiskWriter()->enableDirectIO();
+  }
+}
+
+void MultiDiskAdaptor::disableDirectIO()
+{
+  for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();
+      itr != diskWriterEntries.end(); ++itr) {
+    (*itr)->getDiskWriter()->disableDirectIO();
+  }
+}

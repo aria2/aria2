@@ -71,6 +71,10 @@ public:
 
   // Returns file length
   virtual int64_t size() const = 0;
+
+  virtual void enableDirectIO() = 0;
+
+  virtual void disableDirectIO() = 0;
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;
