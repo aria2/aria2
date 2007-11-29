@@ -237,8 +237,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 Commands RequestGroup::processCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry, DownloadEngine* e)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  if(//File(getFilePath()).size() > 0 &&
-     e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
+  if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
      entry->isValidationReady()) {
     entry->initValidator();
     CheckIntegrityCommand* command =

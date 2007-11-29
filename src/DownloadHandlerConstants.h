@@ -41,19 +41,19 @@
 class DownloadHandlerConstants
 {
 public:
-  static char* METALINK_EXTENSIONS[];
+  static const char* METALINK_EXTENSIONS[];
 
   static Strings getMetalinkExtensions();
 
-  static char* METALINK_CONTENT_TYPES[];
+  static const char* METALINK_CONTENT_TYPES[];
 
   static Strings getMetalinkContentTypes();
 
-  static char* BT_EXTENSIONS[];
+  static const char* BT_EXTENSIONS[];
 
   static Strings getBtExtensions();
 
-  static char* BT_CONTENT_TYPES[];
+  static const char* BT_CONTENT_TYPES[];
 
   static Strings getBtContentTypes();
 };

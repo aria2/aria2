@@ -581,7 +581,7 @@ int32_t Util::countBit(uint32_t n) {
 }
 
 string Util::randomAlpha(int32_t length, const RandomizerHandle& randomizer) {
-  static char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  static const char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   string str;
   for(int32_t i = 0; i < length; i++) {
     int32_t index = randomizer->getRandomNumber(strlen(random_chars));

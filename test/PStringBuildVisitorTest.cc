@@ -30,7 +30,7 @@ void PStringBuildVisitorTest::testVisit_select()
 {
   PStringSegmentHandle segment1 = new PStringSegment("/tango");
 
-  char* select1data[] = { "alpha", "bravo", "charlie" };
+  const char* select1data[] = { "alpha", "bravo", "charlie" };
   
   PStringSelectHandle select1 =
     new PStringSelect(Strings(&select1data[0], &select1data[3]), segment1);
@@ -66,7 +66,7 @@ void PStringBuildVisitorTest::testVisit_select_numLoop()
 {
   PStringSegmentHandle segment1 = new PStringSegment("/tango");
 
-  char* select1data[] = { "alpha", "bravo", "charlie" };
+  const char* select1data[] = { "alpha", "bravo", "charlie" };
   
   PStringSelectHandle select1 =
     new PStringSelect(Strings(&select1data[0], &select1data[3]), segment1);

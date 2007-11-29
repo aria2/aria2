@@ -1,5 +1,17 @@
 2007-11-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Eliminated g++-4.2 warning
+	* src/DownloadHandlerConstants.{h, cc}
+	* src/Util.cc
+	* test/MetaFileUtilTest.cc
+	* test/PStringBuildVisitorTest.cc
+	
+	Fixed bug: --check-integrity dones't work for multi file torrent.
+	* src/RequestGroup.cc
+	* src/BtCheckIntegrityEntry.cc
+	
+2007-11-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed a2io.h
 	* src/a2io.h
 

@@ -34,15 +34,15 @@
 /* copyright --> */
 #include "DownloadHandlerConstants.h"
 
-char* DownloadHandlerConstants::METALINK_EXTENSIONS[] = { ".metalink" };
+const char* DownloadHandlerConstants::METALINK_EXTENSIONS[] = { ".metalink" };
 
-char* DownloadHandlerConstants::METALINK_CONTENT_TYPES[] = {
+const char* DownloadHandlerConstants::METALINK_CONTENT_TYPES[] = {
   "application/metalink+xml"
 };
 
-char* DownloadHandlerConstants::BT_EXTENSIONS[] = { ".torrent" };
+const char* DownloadHandlerConstants::BT_EXTENSIONS[] = { ".torrent" };
 
-char* DownloadHandlerConstants::BT_CONTENT_TYPES[] = {
+const char* DownloadHandlerConstants::BT_CONTENT_TYPES[] = {
   "application/x-bittorrent"
 };
 

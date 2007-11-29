@@ -40,6 +40,7 @@
 #include "PieceStorage.h"
 #include "DownloadEngine.h"
 #include "FileAllocationMan.h"
+#include "DiskAdaptor.h"
 
 BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
   PieceHashCheckIntegrityEntry(requestGroup, 0) {}
@@ -60,6 +61,7 @@ Commands BtCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
 
 Commands BtCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
 {
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->onDownloadComplete();
   // TODO Currently,when all the checksums
   // are valid, then aira2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
