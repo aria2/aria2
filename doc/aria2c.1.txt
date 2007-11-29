@@ -17,14 +17,14 @@ SYNOPSIS
 DESCRIPTION
 -----------
 aria2 is a utility for downloading files.
-The supporting protocols are http(s)/ftp/BitTorrent/Metalink.
+The supported protocols are http(s)/ftp/BitTorrent/Metalink.
 aria2 has powerful segmented downloading ability, downloading a file
 from multiple sources and multiple protocols, utilizing your download bandwidth to the max.
 It even supports downloading a file from http(s)/ftp and BitTorrent at the same time, while the data downloaded form http(s)/ftp is uploaded to BitTorrent swarm.
 
 aria2 also provides most reliable http(s)/ftp downloading experience ever.
 Using Metalink's chunk checksums, aria2 automatically validates chunk of data
-while downloading like BitTorrent.
+while downloading a file like BitTorrent.
 
 OPTIONS
 -------
@@ -134,7 +134,12 @@ OPTIONS
   No file allocation is made for files whose size is smaller than SIZE.
   You can append 'K' or 'M'(1K = 1024, 1M = 1024K).
   Default: '5M'
- 	  	
+
+--enable-direct-io[='true'|'false']::
+  Enable directI/O, which lowers cpu usage while allocating files.
+  Turn off if you encounter any error.
+  Default: 'false'
+
 --allow-overwrite='true'|'false'::
   If 'false' is given, aria2 doesn't download a file which already exists but
   the corresponding .aria2 file doesn't exist.
@@ -155,7 +160,7 @@ OPTIONS
 
 -P, --parameterized-uri[='true'|'false']::
   Enable parameterized URI support.
-  You can specify set of parts: '\http://{sv1,sv2,sv3}/foo.iso'.
+  You can specify set of parts: 'http://{sv1,sv2,sv3}/foo.iso'.
   Also you can specify numeric sequences with step counter:
   '\http://host/image[000-100:2].img'.
   A step counter can be omitted.
@@ -232,10 +237,14 @@ OPTIONS
 -T, --torrent-file=TORRENT_FILE::
   The path to the .torrent file.
 
---follow-torrent='true'|'false'::
-  Set to 'false' to prevent aria2 from entering BitTorrent mode even if the
-  filename of the downloaded file ends with .torrent.
-  Default: 'true'
+--follow-torrent='true'|'false'|'mem'::
+  If true or mem is specified, when a file whose suffix is .metaink or content
+  type is application/x-bittorrent is downloaded, aria2 parses it as a torrent
+  file and downloads files mentioned in it.
+  If mem is specified, a metalink file is not written to the disk, but is just
+  kept in memory.
+  If false is specified, the action mentioned above is not taken.
+  Default: true
 
 --direct-file-mapping='true'|'false'::
   Directly read from and write to each file mentioned in .torrent file.
@@ -283,22 +292,26 @@ OPTIONS
   aria2 respects them.
   Default: '5'
 
- --metalink-version=VERSION::
+--metalink-version=VERSION::
   The version of the file to download.
 
- --metalink-language=LANGUAGE::
+--metalink-language=LANGUAGE::
   The language of the file to download.
 
- --metalink-os=OS::
+--metalink-os=OS::
   The operating system of the file to download.
 
- --metalink-location=LOCATION[,...]::
+--metalink-location=LOCATION[,...]::
   The location of the preferred server.
   A comma-deliminated list of locations is acceptable, for example, 'JP,US'.
  
- --follow-metalink='true'|'false'::
-  Set to false to prevent aria2 from entering Metalink mode even if the
-  filename of the downloaded file ends with .metalink.
+--follow-metalink='true'|'false'|'mem'::
+  If true or mem is specified, when a file whose suffix is .metaink or content
+  type is application/metalink+xml is downloaded, aria2 parses it as a metalink
+  file and downloads files mentioned in it.
+  If mem is specified, a metalink file is not written to the disk, but is just
+  kept in memory.
+  If false is specified, the action mentioned above is not taken.
   Default: 'true'
 
 -v, --version::
@@ -358,9 +371,9 @@ Metalink Download
 ~~~~~~~~~~~~~~~~~
 Download files with remote Metalink
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
---------------------------------
-aria2c http://host/file.metalink
---------------------------------
+------------------------------------------------------
+aria2c --follow-metalink=mem http://host/file.metalink
+------------------------------------------------------
 
 Download using a local metalink file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -390,9 +403,9 @@ BitTorrent Download
 ~~~~~~~~~~~~~~~~~~~
 Download files from remote BitTorrent file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
------------------------------------------------
-aria2c -o test.torrent http://host/file.torrent
------------------------------------------------
+-------------------------------------------------------
+aria2c --follow-bittorrent=mem http://host/file.torrent
+-------------------------------------------------------
 
 Download using a local torrent file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -501,6 +514,43 @@ You can specify step counter:
 aria2c -Z -P http://host/image[A-Z:2].png 
 -----------------------------------------
 
+RESUME DOWNLOAD
+---------------
+Usually, you can resume transfer by just issuing same command(aria2c URL)
+if the previous transfer is made by aria2.
+
+If the previous transfer is made by a browser or wget like sequencial
+download manager, then use -c option to continue the transfer(aria2c -c URL).
+
+CONTROL FILE
+------------
+aria2 uses a control file to keep track the progress of download.
+A control file is placed at the same directory of the dowloading file and
+its filename is the filename of downloading file with ".aria2" appended.
+For example, if you are downloading file.zip, then the control file should be
+file.zip.aria2.
+(There is a exception for this naming convention.
+If you are downloading a multi torrent, its control file is the "top directory"
+name of the torrent with ".aria2" appended.
+The "top directory" name is a value of "name" key in "info" directory in a torrent file.)
+
+Usually a control file is deleted once download completed.
+If aria2 decides that download cannot be resumed(for example, when downloading
+a file from a http server which doesn't support resume), a control file is
+not created.
+
+Normally if you lose a control file, you cannot resume download.
+But if you have a torrent or metalink with chunk checksums for the file,
+you can resume the download without a control file by giving
+--check-integrity=true option to aria2c in command-line.
+
+SEEDING DOWNLOADED FILE IN BITTORRENT
+-------------------------------------
+You can seed downloaded file using --check-integrity=true option.
+---------------------------------------------
+aria2c --check-integrity=true -T file.torrent
+---------------------------------------------
+
 FILES
 -----
 aria2.conf
@@ -516,7 +566,7 @@ The lines beginning '#' are treated as comments.
 file-allocation=prealloc
 listen-port=60000
 seed-ratio=1.0
-max-upload-limit=40K
+max-upload-limit=100K
 ftp-pasv=true
 --------------------------------------
 

@@ -168,7 +168,6 @@ void showUsage() {
   cout << _(" --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage while\n"
 	    "                              allocating files.\n"
 	    "                              Turn off if you encounter any error") << "\n"
-	    "                              Tested in Linux 2.6.21" << "\n"
        << DEFAULT_MSG << "false" << "\n";
 #endif // ENABLE_DIRECT_IO
   cout << _(" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
