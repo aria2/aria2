@@ -132,7 +132,9 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
   try {
     _requestGroup->loadAndOpenFile(infoFile);
     File file(_requestGroup->getFilePath());
-    if(_requestGroup->getRemainingUris().empty() && !file.exists()) {
+
+    SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid, 0);
+    if(!segment.isNull() && segment->getPositionToWrite() == 0) {
       command = createHttpDownloadCommand(httpResponse);
     }
     prepareForNextAction(command);

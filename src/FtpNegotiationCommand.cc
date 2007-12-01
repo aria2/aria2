@@ -76,8 +76,15 @@ bool FtpNegotiationCommand::executeInternal() {
     command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
     e->commands.push_back(command);
     return true;
-  } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED || sequence == SEQ_FILE_PREPARATION) {
+  } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
     return true;
+  } else if(sequence == SEQ_FILE_PREPARATION) {
+    if(e->option->get(PREF_FTP_PASV) == V_TRUE) {
+      sequence = SEQ_SEND_PASV;
+    } else {
+      sequence = SEQ_SEND_PORT;
+    }
+    return false;
   } else {
     e->commands.push_back(this);
     return false;
@@ -228,10 +235,14 @@ bool FtpNegotiationCommand::recvSize() {
       return false;
     }
     _requestGroup->loadAndOpenFile(infoFile);
-    prepareForNextAction();
+
+    prepareForNextAction(this);
     
     sequence = SEQ_FILE_PREPARATION;
-    e->noWait = true;
+    disableReadCheckSocket();
+    setWriteCheckSocket(dataSocket);
+
+    //e->noWait = true;
     return false;
   } else {
     _requestGroup->validateTotalLength(size);

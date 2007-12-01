@@ -1,3 +1,16 @@
+2007-12-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug#1841757: aria2 will connect to server to only get
+	file size.
+	* src/StreamFileAllocationEntry.cc
+	* src/option_processing.cc
+	* src/HttpResponseCommand.cc: Now reuse connection in segmented
+	downloads.
+	* src/FtpNegotiationCommand.cc
+	
+	Suppressed wrong message when finding PreDownloadHandler
+	* src/RequestGroup.cc
+	
 2007-11-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Updated usage
@@ -20,7 +33,7 @@
 	* test/MetaFileUtilTest.cc
 	* test/PStringBuildVisitorTest.cc
 	
-	Fixed bug: --check-integrity dones't work for multi file torrent.
+	Fixed bug: --check-integrity doesn't work for multi file torrent.
 	* src/RequestGroup.cc
 	* src/BtCheckIntegrityEntry.cc
 	

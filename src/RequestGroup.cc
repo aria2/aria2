@@ -566,7 +566,7 @@ void RequestGroup::preDownloadProcessing()
 	itr != _preDownloadHandlers.end(); ++itr) {
       if((*itr)->canHandle(this)) {
 	(*itr)->execute(this);
-	break;
+	return;
       }
     }
   } catch(RecoverableException* ex) {
