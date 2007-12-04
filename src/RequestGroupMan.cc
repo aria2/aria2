@@ -151,8 +151,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 	temp.push_front(groupToAdd);
 	continue;
       }
-      _requestGroups.push_back(groupToAdd);
       Commands commands = groupToAdd->createInitialCommand(e);
+      _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
     } catch(RecoverableException* ex) {

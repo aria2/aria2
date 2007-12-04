@@ -36,6 +36,7 @@
 #include "BinaryStream.h"
 #include "MetalinkParserStateMachine.h"
 #include "Util.h"
+#include "message.h"
 
 class SessionData {
 public:
@@ -127,7 +128,7 @@ MetalinkerHandle XML2SAXMetalinkProcessor::parseFile(const string& filename)
   int32_t retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
 				       filename.c_str());
   if(retval != 0) {
-    throw new DlAbortEx("Cannot parse metalink XML file. XML may be malformed.");
+    throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
   }
   return _stm->getResult();
 }
@@ -153,7 +154,7 @@ MetalinkerHandle XML2SAXMetalinkProcessor::parseFromBinaryStream(const BinaryStr
       break;
     }
     if(xmlParseChunk(ctx, (const char*)buf, res, 0) != 0) {
-      throw new DlAbortEx("Cannot parse metalink XML file. XML may be malformed.");
+      throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
     }
     readOffset += res;
   }
@@ -161,7 +162,7 @@ MetalinkerHandle XML2SAXMetalinkProcessor::parseFromBinaryStream(const BinaryStr
   xmlFreeParserCtxt(ctx);
 
   if(!_stm->finished()) {
-    throw new DlAbortEx("Cannot parse metalink XML file. XML may be malformed.");
+    throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
   }
   return _stm->getResult();
 }

@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 11/29/2007
+.\"      Date: 12/04/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "11/29/2007" "" ""
+.TH "ARIA2C" "1" "12/04/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -228,6 +228,12 @@ If
 \fIfalse\fR
 is given, aria2 doesn\'t download a file which already exists but the corresponding \.aria2 file doesn\'t exist\. In http(s)/ftp download, if \-\-auto\-file\-renaming=\fItrue\fR
 then, file name will be renamed\. See \-\-auto\-file\-renaming for details\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-\-allow\-piece\-length\-change=\fItrue\fR|\fIfalse\fR
+.RS 4
+If false is given, aria2 aborts download when a piece length is different from one in a control file\. If true is given, you can proceed but some download progress will be lost\. Default:
 \fIfalse\fR
 .RE
 .PP

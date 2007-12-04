@@ -171,9 +171,14 @@ void showUsage() {
        << DEFAULT_MSG << "false" << "\n";
 #endif // ENABLE_DIRECT_IO
   cout << _(" --allow-overwrite=true|false If false, aria2 doesn't download a file which\n"
-  		"                              already exists but the corresponding .aria2 file\n"
-  		"                              doesn't exist.\n"
-            "                              Default: false") << endl;
+	    "                              already exists but the corresponding .aria2 file\n"
+	    "                              doesn't exist.\n"
+	    "                              Default: false") << endl;
+  cout << _(" --allow-piece-length-change=true|false If false is given, aria2 aborts download\n"
+	    "                              when a piece length is different from one in\n"
+	    "                              a control file. If true is given, you can proceed\n"
+	    "                              but some download progress will be lost.") << "\n"
+       << DEFAULT_MSG << "false" << "\n";
   cout << _(" -Z, --force-sequential[=true|false] Fetch URIs in the command-line sequentially\n"
 	    "                              and download each URI in a separate session, like\n"
 	    "                              the usual command-line download utilities.\n"

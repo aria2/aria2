@@ -1,5 +1,27 @@
 2007-12-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --allow-piece-length-change option.
+	* src/DefaultBtProgressInfoFile.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/version_usage.cc
+	* doc/aria2c.1.txt
+	* doc/aria2c.1
+	
+	Fixed: duplicated result entry appears when exception is thrown in
+	RequestGroup::createInitiateConnectionCommand().
+	* src/RequestGroupMan.cc (fillRequestGroupFromReserver):
+	Add RequestGroup to _requestGroup after RequetGroup::
+	createInitiateConnectionCommand() succeeds.
+
+	Externalized  message
+	* src/XML2SAXMetalinkProcessor.cc
+	* src/message.h
+	
+2007-12-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Forced download abort when received negative response from http/ftp
 	server.
 	* src/HttpResponseCommand.cc

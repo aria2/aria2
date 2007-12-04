@@ -44,6 +44,7 @@
 #include "File.h"
 #include "Util.h"
 #include "a2io.h"
+#include "DownloadFailureException.h"
 #include <fstream>
 #include <errno.h>
 
@@ -256,8 +257,14 @@ void DefaultBtProgressInfoFile::load()
       }
       _pieceStorage->addInFlightPiece(inFlightPieces);
     } else {
+      int32_t numInFlightPiece;
+      in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
       BitfieldMan src(pieceLength, totalLength);
       src.setBitfield(savedBitfield, bitfieldLength);
+      if((src.getCompletedLength() || numInFlightPiece) &&
+	 !_option->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
+	throw new DownloadFailureException("WARNING: Detected a change in piece length. You can proceed with --allow-piece-length-change=true, but you may lose some download progress.");
+      }
       BitfieldMan dest(_dctx->getPieceLength(), totalLength);
       Util::convertBitfield(&dest, &src);
       _pieceStorage->setBitfield(dest.getBitfield(), dest.getBitfieldLength());

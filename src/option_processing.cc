@@ -127,6 +127,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_MAX_HTTP_PIPELINING, "2");
   op->put(PREF_SEED_RATIO, "1.0");
   op->put(PREF_ENABLE_DIRECT_IO, V_FALSE);
+  op->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_FALSE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -178,6 +179,7 @@ Option* option_processing(int argc, char* const argv[])
 #ifdef ENABLE_DIRECT_IO
       { PREF_ENABLE_DIRECT_IO, optional_argument, &lopt, 210 },
 #endif // ENABLE_DIRECT_IO
+      { PREF_ALLOW_PIECE_LENGTH_CHANGE, required_argument, &lopt, 211 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -330,6 +332,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 210:
 	cmdstream << PREF_ENABLE_DIRECT_IO << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 211:
+	cmdstream << PREF_ALLOW_PIECE_LENGTH_CHANGE << "=" << optarg << "\n";
 	break;
       }
       break;

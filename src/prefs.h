@@ -117,6 +117,8 @@
 #define PREF_PARAMETERIZED_URI "parameterized-uri"
 // value: true | false
 #define PREF_ENABLE_DIRECT_IO "enable-direct-io"
+// value: true | false
+#define PREF_ALLOW_PIECE_LENGTH_CHANGE "allow-piece-length-change"
 
 /**
  * FTP related preferences

@@ -147,6 +147,12 @@ OPTIONS
   file name will be renamed. See --auto-file-renaming for details.
   Default: 'false'
 
+--allow-piece-length-change='true'|'false'::
+  If false is given, aria2 aborts download when a piece length is different
+  from one in a control file.
+  If true is given, you can proceed but some download progress will be lost.
+  Default: 'false'
+ 
 -Z, --force-sequential[='true'|'false']::
   Fetch URIs in the command-line sequentially and download each URI in a
   separate session, like the usual command-line download utilities.
