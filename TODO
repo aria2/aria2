@@ -53,7 +53,6 @@
     DownloadFailureException .... RequestGroup should halt.
   FatalException .... Program should abort.
 * replace strtol with Util::parseInt
-* do performance tuning against Xml2MetalinkProcessor
 * remove header files from Makefile.am
 * create MetalinkProcessorFactory and get Xml2MetalinkProcessor from it.
 

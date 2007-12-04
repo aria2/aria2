@@ -142,7 +142,25 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
-@ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
+@ENABLE_METALINK_TRUE@	MetalinkParserController.cc\
+@ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.cc\
+@ENABLE_METALINK_TRUE@	InitialMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	MetalinkMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	FilesMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	FileMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	SizeMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	VersionMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	LanguageMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	OSMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	VerificationMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	HashMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	PiecesMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	PieceHashMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	ResourcesMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	URLMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	FinMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	SkipTagMetalinkParserState.cc\
+@ENABLE_METALINK_TRUE@	XML2SAXMetalinkProcessor.cc\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 @ENABLE_METALINK_TRUE@	MetalinkHelper.cc MetalinkHelper.h
@@ -208,7 +226,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
-	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
+	Option.cc Option.h Base64.cc CookieBox.cc CookieBox.h \
 	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
 	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
 	FeatureConfig.h DownloadEngineFactory.cc \
@@ -338,14 +356,22 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h Metalinker.cc \
 	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
-	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h \
-	Metalink2RequestGroup.cc Metalink2RequestGroup.h \
-	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h \
-	MetalinkHelper.cc MetalinkHelper.h libgen.c libgen.h \
-	getaddrinfo.c getaddrinfo.h gai_strerror.c gai_strerror.h \
-	gettimeofday.c gettimeofday.h inet_aton.c inet_aton.h \
-	localtime_r.c localtime_r.h strptime.c strptime.h timegm.c \
-	timegm.h
+	MetalinkParserController.cc MetalinkParserStateMachine.cc \
+	InitialMetalinkParserState.cc MetalinkMetalinkParserState.cc \
+	FilesMetalinkParserState.cc FileMetalinkParserState.cc \
+	SizeMetalinkParserState.cc VersionMetalinkParserState.cc \
+	LanguageMetalinkParserState.cc OSMetalinkParserState.cc \
+	VerificationMetalinkParserState.cc HashMetalinkParserState.cc \
+	PiecesMetalinkParserState.cc PieceHashMetalinkParserState.cc \
+	ResourcesMetalinkParserState.cc URLMetalinkParserState.cc \
+	FinMetalinkParserState.cc SkipTagMetalinkParserState.cc \
+	XML2SAXMetalinkProcessor.cc Metalink2RequestGroup.cc \
+	Metalink2RequestGroup.h MetalinkPostDownloadHandler.cc \
+	MetalinkPostDownloadHandler.h MetalinkHelper.cc \
+	MetalinkHelper.h libgen.c libgen.h getaddrinfo.c getaddrinfo.h \
+	gai_strerror.c gai_strerror.h gettimeofday.c gettimeofday.h \
+	inet_aton.c inet_aton.h localtime_r.c localtime_r.h strptime.c \
+	strptime.h timegm.c timegm.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
@@ -409,7 +435,25 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
-@ENABLE_METALINK_TRUE@	Xml2MetalinkProcessor.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkParserController.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	InitialMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	FilesMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	FileMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	SizeMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	VersionMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	LanguageMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	OSMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	VerificationMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	HashMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	PiecesMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	PieceHashMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	ResourcesMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	URLMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	FinMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	SkipTagMetalinkParserState.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	XML2SAXMetalinkProcessor.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkHelper.$(OBJEXT)
@@ -708,7 +752,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	ChunkedEncoding.cc ChunkedEncoding.h DiskWriter.h \
 	AbstractDiskWriter.cc AbstractDiskWriter.h \
 	DefaultDiskWriter.cc DefaultDiskWriter.h File.cc File.h \
-	Option.cc Option.h Base64.cc Base64.h CookieBox.cc CookieBox.h \
+	Option.cc Option.h Base64.cc CookieBox.cc CookieBox.h \
 	LogFactory.cc LogFactory.h NullLogger.h TimeA2.cc TimeA2.h \
 	SharedHandle.h HandleRegistry.h FeatureConfig.cc \
 	FeatureConfig.h DownloadEngineFactory.cc \
@@ -950,7 +994,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileMetalinkParserState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FilesMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FillRequestGroupCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FinMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpInitiateConnectionCommand.Po@am__quote@
@@ -958,6 +1005,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegment.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HashMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveEraseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpDownloadCommand.Po@am__quote@
@@ -970,9 +1018,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitialMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChecksumValidator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChunkChecksumValidator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LanguageMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/List.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MemoryBufferPreDownloadHandler.Po@am__quote@
@@ -981,6 +1031,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalink2RequestGroup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkHelper.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkMetalinkParserState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserController.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserStateMachine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkPostDownloadHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@
@@ -990,6 +1043,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NameResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Netrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetrcAuthResolver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OSMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Option.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionHandlerFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OptionParser.Po@am__quote@
@@ -1007,7 +1061,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerReceiveHandshakeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceHashCheckIntegrityEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceHashMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PiecedSegment.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PiecesMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Platform.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealtimeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
@@ -1016,6 +1072,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestSlot.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ResourcesMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitor.Po@am__quote@
@@ -1023,6 +1080,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleRandomizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIterator.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SizeMetalinkParserState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SkipTagMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SleepCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCore.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalc.Po@am__quote@
@@ -1032,10 +1091,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeBasedCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TransferStat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/URLMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnknownLengthPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xml2MetalinkProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VerificationMetalinkParserState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/VersionMetalinkParserState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XML2SAXMetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gai_strerror.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getaddrinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gettimeofday.Po@am__quote@

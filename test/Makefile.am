@@ -1,6 +1,7 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	Base64Test.cc\
 	SequenceTest.cc\
 	a2functionalTest.cc\
 	FileEntryTest.cc\
@@ -38,7 +39,6 @@ aria2c_SOURCES = AllTest.cc\
 	ChunkedEncodingTest.cc\
 	FileTest.cc\
 	OptionTest.cc\
-	Base64Test.cc\
 	DefaultDiskWriterTest.cc\
 	FeatureConfigTest.cc\
 	SpeedCalcTest.cc\
@@ -101,12 +101,12 @@ endif # ENABLE_BITTORRENT
 if ENABLE_METALINK
 aria2c_SOURCES += MetalinkerTest.cc\
 	MetalinkEntryTest.cc\
-	Xml2MetalinkProcessorTest.cc\
 	Metalink2RequestGroupTest.cc\
 	MetalinkPostDownloadHandlerTest.cc\
-	MetalinkHelperTest.cc
+	MetalinkHelperTest.cc\
+	MetalinkParserControllerTest.cc\
+	XML2SAXMetalinkProcessorTest.cc
 endif # ENABLE_METALINK
-
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}

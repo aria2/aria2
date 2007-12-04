@@ -37,7 +37,6 @@
 #include "Option.h"
 #include "LogFactory.h"
 #include "prefs.h"
-#include "Xml2MetalinkProcessor.h"
 #include "Util.h"
 #include "message.h"
 #include "SingleFileDownloadContext.h"
@@ -45,6 +44,7 @@
 #include "BinaryStream.h"
 #include "MemoryBufferPreDownloadHandler.h"
 #include "TrueRequestGroupCriteria.h"
+#include "MetalinkEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 #endif // ENABLE_BITTORRENT

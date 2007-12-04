@@ -35,7 +35,8 @@
 #include "MetalinkHelper.h"
 #include "Option.h"
 #include "MetalinkEntry.h"
-#include "Xml2MetalinkProcessor.h"
+#include "XML2SAXMetalinkProcessor.h"
+#include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
@@ -47,7 +48,7 @@ MetalinkHelper::~MetalinkHelper() {}
 
 MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
 {
-  Xml2MetalinkProcessor proc;
+  XML2SAXMetalinkProcessor proc;
 
   MetalinkerHandle metalinker = proc.parseFile(filename);
   return query(metalinker, option);
@@ -55,7 +56,7 @@ MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Opti
 
 MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
 {
-  Xml2MetalinkProcessor proc;
+  XML2SAXMetalinkProcessor proc;
 
   MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
   return query(metalinker, option);

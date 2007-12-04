@@ -69,6 +69,12 @@ public:
   virtual void enableDirectIO() {}
 
   virtual void disableDirectIO() {}
+
+  void setString(const string& s)
+  {
+    buf.str(s);
+  }
 };
 
+typedef SharedHandle<ByteArrayDiskWriter> ByteArrayDiskWriterHandle;
 #endif // _D_BYTE_ARRAY_DISK_WRITER_H_

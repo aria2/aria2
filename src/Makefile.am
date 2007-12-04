@@ -46,7 +46,7 @@ SRCS =  Socket.h\
 	DefaultDiskWriter.cc DefaultDiskWriter.h\
 	File.cc File.h\
 	Option.cc Option.h\
-	Base64.cc Base64.h\
+	Base64.cc\
 	CookieBox.cc CookieBox.h\
 	LogFactory.cc LogFactory.h\
 	NullLogger.h\
@@ -255,7 +255,25 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
-	Xml2MetalinkProcessor.cc Xml2MetalinkProcessor.h\
+	MetalinkParserController.cc\
+	MetalinkParserStateMachine.cc\
+	InitialMetalinkParserState.cc\
+	MetalinkMetalinkParserState.cc\
+	FilesMetalinkParserState.cc\
+	FileMetalinkParserState.cc\
+	SizeMetalinkParserState.cc\
+	VersionMetalinkParserState.cc\
+	LanguageMetalinkParserState.cc\
+	OSMetalinkParserState.cc\
+	VerificationMetalinkParserState.cc\
+	HashMetalinkParserState.cc\
+	PiecesMetalinkParserState.cc\
+	PieceHashMetalinkParserState.cc\
+	ResourcesMetalinkParserState.cc\
+	URLMetalinkParserState.cc\
+	FinMetalinkParserState.cc\
+	SkipTagMetalinkParserState.cc\
+	XML2SAXMetalinkProcessor.cc\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 	MetalinkHelper.cc MetalinkHelper.h

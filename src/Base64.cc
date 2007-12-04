@@ -34,7 +34,7 @@
 /* copyright --> */
 #include "Base64.h"
 
-static char base64_table[64] = {
+static const char CHAR_TABLE[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
   'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
   'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
@@ -45,103 +45,158 @@ static char base64_table[64] = {
   '4', '5', '6', '7', '8', '9', '+', '/',
 };
 
-void Base64::part_encode(const unsigned char* sub, int32_t subLength,
-			 unsigned char* buf)
+static const int INDEX_TABLE[] = {
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 
+  52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, 
+  -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 
+  15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, 
+  -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
+  41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+};
+
+void Base64::encode(unsigned char*& result, size_t& rlength,
+			const unsigned char* src, size_t slength)
 {
-  int32_t shift = 2;
-  unsigned char carry = 0;
-  int32_t index;
-  for(index = 0; index < subLength; index++) {
-    unsigned char cur = sub[index] >> shift | carry;
-    carry = (sub[index] << (6-shift)) & 0x3f;
-    shift += 2;
-    buf[index] = base64_table[(uint32_t)cur];
+  if(slength == 0) {
+    rlength = 0;
+    return;
   }
-  if(subLength == 1) {
-    buf[index] = base64_table[(uint32_t)carry];
-    buf[index+1] = buf[index+2] = '=';
-  } else if(subLength == 2) {
-    buf[index] = base64_table[(uint32_t)carry];
-    buf[index+1] = '=';
+  size_t trituple = (slength+2)/3;
+  int r = slength%3;
+  rlength = trituple*4;
+  result = new unsigned char[rlength];
+
+  unsigned char* p = result;
+  const unsigned char* s = src;
+  const unsigned char* smax = s+slength-r;
+  while(s != smax) {
+    int n = *s++ << 16;
+    n += *s++ << 8;
+    n += *s++;
+    *p++ = CHAR_TABLE[n >> 18];
+    *p++ = CHAR_TABLE[n >> 12&0x3f];
+    *p++ = CHAR_TABLE[n >> 6&0x3f];
+    *p++ = CHAR_TABLE[n&0x3f];
+  }
+  if(r == 2) {
+    int n = (*s << 16)+(*(s+1) << 8);
+    *p++ = CHAR_TABLE[n >> 18];
+    *p++ = CHAR_TABLE[n >> 12&0x3f];
+    *p++ = CHAR_TABLE[n >> 6&0x3f];
+    *p++ = '=';
+  } else if(r == 1) {
+    int n = (*s << 16);
+    *p++ = CHAR_TABLE[n >> 18];
+    *p++ = CHAR_TABLE[n >> 12&0x3f];
+    *p++ = '=';
+    *p++ = '=';
+  }
+}
+
+void Base64::removeNonBase64Chars(unsigned char*& nsrc,
+				      size_t& nlength,
+				      const unsigned char* src,
+				      size_t slength)
+{
+  unsigned char* temp = new unsigned char[slength];
+  const unsigned char* end = src+slength;
+  size_t n = 0;
+  for(const unsigned char*s = src; s != end; ++s) {
+    if(INDEX_TABLE[*s] != -1 || *s == '=') {
+      *(temp+n++) = *s;
+    }
+  }
+  unsigned char* ret = new unsigned char[n];
+  memcpy(ret, temp, n);
+  delete [] temp;
+  nlength = n;
+  nsrc = ret;
+}
+
+void Base64::decode(unsigned char*& result, size_t& rlength,
+			const unsigned char* src, size_t slength)
+{
+  if(slength == 0) {
+    rlength = 0;
+    return;
+  }
+  unsigned char* nsrc;
+  size_t nlength;
+  removeNonBase64Chars(nsrc, nlength, src, slength);
+
+  if(nlength%4 != 0) {
+    delete [] nsrc;
+    rlength = 0;
+    return;
+  }
+
+  size_t quadtuple = nlength/4;
+  size_t len;
+  if(nsrc[nlength-1] == '=') {
+    if(nsrc[nlength-2] == '=') {
+      len = nlength-2;
+    } else {
+      len = nlength-1;
+    }
   } else {
-    unsigned char cur = sub[subLength-1] & 0x3f;
-    buf[index] = base64_table[(uint32_t)cur];
+    len = nlength;
   }
+  rlength = len-quadtuple;
+  result = new unsigned char[rlength];
+  int r = len%4;
+
+  unsigned char* p = result;
+  const unsigned char* s = nsrc;
+  const unsigned char* smax = s+len-r;
+  while(s != smax) {
+    int n = INDEX_TABLE[*s++] << 18;
+    n += INDEX_TABLE[*s++] << 12;
+    n += INDEX_TABLE[*s++] << 6;
+    n += INDEX_TABLE[*s++];
+    *p++ = n >> 16;
+    *p++ = n >> 8&0xff;
+    *p++ = n&0xff;
+  }
+  if(r == 2) {
+    int n = INDEX_TABLE[*s++] << 18;
+    n += INDEX_TABLE[*s++] << 12;
+    *p++ = n >> 16;
+  } else if(r == 3) {
+    int n = INDEX_TABLE[*s++] << 18;
+    n += INDEX_TABLE[*s++] << 12;
+    n += INDEX_TABLE[*s++] << 6;
+    *p++ = n >> 16;
+    *p++ = n >> 8&0xff;
+  }
+  delete [] nsrc;
 }
 
-string Base64::encode(const string& plainSrc)
+string Base64::encode(const string& s)
 {
-  unsigned char* result = 0;
-  int32_t resultLength = 0;
-
-  encode((const unsigned char*)plainSrc.c_str(), plainSrc.size(),
-	 result, resultLength);
-  string encoded(&result[0], &result[resultLength]);
-  delete [] result;
-  return encoded;
+  unsigned char* buf = 0;
+  size_t len;
+  encode(buf, len, s.c_str(), s.size());
+  string r(&buf[0], &buf[len]);
+  delete [] buf;
+  return r;
 }
 
-void Base64::encode(const unsigned char* src, int32_t srcLength,
-		    unsigned char*& result, int32_t& resultLength) {
-  resultLength = (srcLength+(srcLength%3 == 0 ? 0 : 3-srcLength%3))/3*4;
-  result = new unsigned char[resultLength];
-  unsigned char* tail = result;
-  for(int32_t index = 0; srcLength > index; index += 3) {
-    unsigned char temp[4];
-    part_encode(&src[index],
-		srcLength >= index+3 ? 3 : srcLength-index,
-		temp);
-    memcpy(tail, temp, sizeof(temp)); 
-    tail += sizeof(temp);
-  }
-}
-
-
-char Base64::getValue(char ch)
+string Base64::decode(const string& s)
 {
-  char retch;
-
-  if(ch >= 'A' && ch <= 'Z') {
-    retch = ch-'A';
-  } else if(ch >= 'a' && ch <= 'z') {
-    retch = ch-'a'+26;
-  } else if(ch >= '0' && ch <= '9') {
-    retch = ch-'0'+52;
-  } else if(ch == '+') {
-    retch = 62;
-  } else if(ch == '/') {
-    retch = 63;
-  } else {
-    retch = 0;
-  }
-  return retch;
-}
-
-string Base64::part_decode(const string& subCrypted)
-{
-  int32_t shift = 2;
-  string plain;
-
-  for(uint32_t index = 0; index < subCrypted.size()-1; ++index) {
-    if(subCrypted.at(index) == '=') break;
-    char cur = getValue(subCrypted.at(index)) << shift;
-    char carry = getValue(subCrypted.at(index+1)) >> (6-shift);
-    shift += 2;
-    plain += cur | carry;
-  }
-
-  return plain;
-}
-
-string Base64::decode(const string& crypted)
-{
-  string plain;
-  int32_t sIndex = 0;
-  for(int32_t index = 0; crypted.size() > (uint32_t)index; index +=4) {
-    string subCrypted = crypted.substr(sIndex, 4);
-    string subPlain = part_decode(subCrypted);
-    sIndex += 4;
-    plain += subPlain;
-  }
-  return plain;
+  unsigned char* buf = 0;
+  size_t len;
+  decode(buf, len, s.c_str(), s.size());
+  string r(&buf[0], &buf[len]);
+  delete [] buf;
+  return r;
 }

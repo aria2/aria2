@@ -32,30 +32,57 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _BASE64_H_
-#define _BASE64_H_
+#ifndef _D_BASE64_H_
+#define _D_BASE64_H_
 #include <string>
-#include "common.h"
+
 using namespace std;
 
 class Base64
 {
 private:
-  static void part_encode(const unsigned char* sub, int32_t subLength,
-			  unsigned char* buf);
+  static void removeNonBase64Chars(unsigned char*& nsrc, size_t& nlength,
+				   const unsigned char* src, size_t slength);
 
-  static string part_encode(const string& subplain);
-  static string part_decode(const string& subCrypted);
-  static char getValue(char ch);
 public:
-  static string encode(const string& plain);
-  // caller must deallocate the memory used by result.
-  static void encode(const unsigned char* src, int32_t srcLength,
-		     unsigned char*& result, int32_t& resultLength);
-  static string decode(const string& crypted);
-  // caller must deallocate the memory used by result.
-  static void decode(const unsigned char* src, int32_t srcLength,
-		     unsigned char*& result, int32_t& resultLength);
+  /**
+   * Encods src whose length is slength into base64 encoded data
+   * and stores them to result.
+   * result is allocated in this function and the length is stored to rlength.
+   * If slength is equal to 0, then return with rlength set to 0 and result
+   * is left untouched.
+   * A caller must deallocate the memory used by result.
+   */
+  static void encode(unsigned char*& result, size_t& rlength,
+		     const unsigned char* src, size_t slength);
+
+  static void encode(unsigned char*& result, size_t& rlength,
+		     const char* src, size_t slength)
+  {
+    encode(result, rlength, (const unsigned char*)src, slength);
+  }
+
+  static string encode(const string& s);
+
+  /**
+   * Dencods base64 encoded src whose length is slength and stores them to
+   * result.
+   * result is allocated in this function and the length is stored to rlength.
+   * If slength is equal to 0 or is not multiple of 4, then return with rlength
+   * set to 0 and result is left untouched.
+   * The function removes non-base64 characters before decoding.
+   * A caller must deallocate the memory used by result.
+   */
+  static void decode(unsigned char*& result, size_t& rlength,
+		     const unsigned char* src, size_t slength);
+
+  static void decode(unsigned char*& result, size_t& rlength,
+		     const char* src, size_t slength)
+  {
+    decode(result, rlength, (const unsigned char*)src, slength);
+  }
+
+  static string decode(const string& s);
 };
 
 #endif // _BASE64_H_

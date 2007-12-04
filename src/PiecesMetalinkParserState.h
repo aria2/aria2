@@ -32,87 +32,19 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHUNK_CHECKSUM_H_
-#define _D_CHUNK_CHECKSUM_H_
+#ifndef _D_PIECES_METALINK_PARSER_STATE_H_
+#define _D_PIECES_METALINK_PARSER_STATE_H_
 
-#include "common.h"
-#include "messageDigest.h"
+#include "MetalinkParserState.h"
 
-class ChunkChecksum {
-private:
-  string _algo;
-  Strings _checksums;
-  int32_t _checksumLength;
+class PiecesMetalinkParserState:public MetalinkParserState
+{
 public:
-  ChunkChecksum():_checksumLength(0) {}    
+  void beginElement(MetalinkParserStateMachine* stm,
+		    const string& name, const map<string, string>& attrs);
 
-  ChunkChecksum(const string& algo,
-		const Strings& checksums,
-		int32_t checksumLength):
-    _algo(algo),
-    _checksums(checksums),
-    _checksumLength(checksumLength) {}
-
-  bool validateChunk(const string& actualChecksum,
-		     int32_t checksumIndex) const
-  {
-    if(checksumIndex < (int32_t)_checksums.size()) {
-      return actualChecksum == getChecksum(checksumIndex);
-    } else {
-      return false;
-    }
-  }
-
-  int64_t getEstimatedDataLength() const
-  {
-    return ((int64_t)_checksumLength)*_checksums.size();
-  }
-
-  int32_t countChecksum() const
-  {
-    return _checksums.size();
-  }
-
-  string getChecksum(int32_t index) const
-  {
-    if(index < (int32_t)_checksums.size()) {
-      return _checksums[index];
-    } else {
-      return "";
-    }
-  }
-  
-  const Strings& getChecksums() const
-  {
-    return _checksums;
-  }
-
-  int32_t getChecksumLength() const
-  {
-    return _checksumLength;
-  }
-
-  const string& getAlgo() const
-  {
-    return _algo;
-  }
-
-  void setAlgo(const string& algo)
-  {
-    _algo = algo;
-  }
-
-  void setChecksumLength(int32_t length)
-  {
-    _checksumLength = length;
-  }
-
-  void setChecksums(const Strings& mds)
-  {
-    _checksums = mds;
-  }
+  void endElement(MetalinkParserStateMachine* stm,
+		  const string& name, const string& characters);
 };
 
-typedef SharedHandle<ChunkChecksum> ChunkChecksumHandle;
-
-#endif // _D_CHUNK_CHECKSUM_H_
+#endif // _D_PIECES_METALINK_PARSER_STATE_H_

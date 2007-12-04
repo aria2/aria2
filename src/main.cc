@@ -72,9 +72,11 @@ extern int optind, opterr, optopt;
 #include <getopt.h>
 
 #ifdef ENABLE_METALINK
-#include "Xml2MetalinkProcessor.h"
-#include "Metalink2RequestGroup.h"
-#endif
+# include "Metalink2RequestGroup.h"
+# include "MetalinkEntry.h"
+# include <libxml/parser.h>
+# include <libxml/xpath.h>
+#endif // ENABLE_METALINK
 
 #ifdef HAVE_LIBSSL
 // for SSL

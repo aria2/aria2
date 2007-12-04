@@ -32,87 +32,22 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHUNK_CHECKSUM_H_
-#define _D_CHUNK_CHECKSUM_H_
+#include "URLMetalinkParserState.h"
+#include "MetalinkParserStateMachine.h"
 
-#include "common.h"
-#include "messageDigest.h"
+void URLMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
+					  const string& name,
+					  const map<string, string>& attrs)
+{
+  stm->setSkipTagState(this);
 
-class ChunkChecksum {
-private:
-  string _algo;
-  Strings _checksums;
-  int32_t _checksumLength;
-public:
-  ChunkChecksum():_checksumLength(0) {}    
+}
 
-  ChunkChecksum(const string& algo,
-		const Strings& checksums,
-		int32_t checksumLength):
-    _algo(algo),
-    _checksums(checksums),
-    _checksumLength(checksumLength) {}
-
-  bool validateChunk(const string& actualChecksum,
-		     int32_t checksumIndex) const
-  {
-    if(checksumIndex < (int32_t)_checksums.size()) {
-      return actualChecksum == getChecksum(checksumIndex);
-    } else {
-      return false;
-    }
-  }
-
-  int64_t getEstimatedDataLength() const
-  {
-    return ((int64_t)_checksumLength)*_checksums.size();
-  }
-
-  int32_t countChecksum() const
-  {
-    return _checksums.size();
-  }
-
-  string getChecksum(int32_t index) const
-  {
-    if(index < (int32_t)_checksums.size()) {
-      return _checksums[index];
-    } else {
-      return "";
-    }
-  }
-  
-  const Strings& getChecksums() const
-  {
-    return _checksums;
-  }
-
-  int32_t getChecksumLength() const
-  {
-    return _checksumLength;
-  }
-
-  const string& getAlgo() const
-  {
-    return _algo;
-  }
-
-  void setAlgo(const string& algo)
-  {
-    _algo = algo;
-  }
-
-  void setChecksumLength(int32_t length)
-  {
-    _checksumLength = length;
-  }
-
-  void setChecksums(const Strings& mds)
-  {
-    _checksums = mds;
-  }
-};
-
-typedef SharedHandle<ChunkChecksum> ChunkChecksumHandle;
-
-#endif // _D_CHUNK_CHECKSUM_H_
+void URLMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
+					const string& name,
+					const string& characters)
+{
+  stm->setURLOfResource(characters);
+  stm->commitResourceTransaction();
+  stm->setResourcesState();
+}

@@ -1,3 +1,25 @@
+2007-12-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added XML2SAXMetalinkProcessor class, which is a lot faster than
+	the predecessor, Xml2MetalinkParser class.
+	I tested them against 94KB metalink file with 1234 chunk checksums.
+	The new one parsed it in 22msec, while it took 6000msec with old one.
+	* src/XML2SAXMetalinkProcessor.{h, cc}
+	* test/XML2SAXMetalinkProcessorTest.cc
+	* src/MetalinkParserController.{h, cc}
+	* test/MetalinkParserControllerTest.cc
+	* src/MetalinkParserState.h: Also added 16 subclasses.
+	* src/main.cc
+	* src/Metalink2RequestGroup.cc
+	* src/MetalinkHelper.cc
+	* src/MetalinkEntry.cc
+	* src/ChunkChecksum.h
+	
+	Rewritten Base64 class for better performance.
+	* src/Base64.{h, cc}
+	* test/Base64Test.cc
+	* src/HttpRequest.cc
+
 2007-12-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug#1841757: aria2 will connect to server to only get

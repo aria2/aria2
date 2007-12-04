@@ -37,6 +37,7 @@
 #include <algorithm>
 
 MetalinkEntry::MetalinkEntry():
+  file(0),
   maxConnections(-1)
 #ifdef ENABLE_MESSAGE_DIGEST
   ,

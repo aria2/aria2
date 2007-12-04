@@ -32,87 +32,61 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHUNK_CHECKSUM_H_
-#define _D_CHUNK_CHECKSUM_H_
+#include "VerificationMetalinkParserState.h"
+#include "MetalinkParserStateMachine.h"
+#include "DlAbortEx.h"
+#include "Util.h"
 
-#include "common.h"
-#include "messageDigest.h"
-
-class ChunkChecksum {
-private:
-  string _algo;
-  Strings _checksums;
-  int32_t _checksumLength;
-public:
-  ChunkChecksum():_checksumLength(0) {}    
-
-  ChunkChecksum(const string& algo,
-		const Strings& checksums,
-		int32_t checksumLength):
-    _algo(algo),
-    _checksums(checksums),
-    _checksumLength(checksumLength) {}
-
-  bool validateChunk(const string& actualChecksum,
-		     int32_t checksumIndex) const
-  {
-    if(checksumIndex < (int32_t)_checksums.size()) {
-      return actualChecksum == getChecksum(checksumIndex);
+void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
+						   const string& name,
+						   const map<string, string>& attrs)
+{
+  if(name == "hash") {
+    stm->setHashState();
+    map<string, string>::const_iterator itr = attrs.find("type");
+    if(itr == attrs.end()) {
+      return;
     } else {
-      return false;
+      string type = (*itr).second;
+      stm->newChecksumTransaction();
+      stm->setTypeOfChecksum(type);
     }
-  }
-
-  int64_t getEstimatedDataLength() const
-  {
-    return ((int64_t)_checksumLength)*_checksums.size();
-  }
-
-  int32_t countChecksum() const
-  {
-    return _checksums.size();
-  }
-
-  string getChecksum(int32_t index) const
-  {
-    if(index < (int32_t)_checksums.size()) {
-      return _checksums[index];
-    } else {
-      return "";
+  } else if(name == "pieces") {
+    stm->setPiecesState();
+    try {
+      int32_t length;
+      {
+	map<string, string>::const_iterator itr = attrs.find("length");
+	if(itr == attrs.end()) {
+	  return;
+	} else {
+	  length = Util::parseInt((*itr).second);
+	}
+      }
+      string type;
+      {
+	map<string, string>::const_iterator itr = attrs.find("type");
+	if(itr == attrs.end()) {
+	  return;
+	} else {
+	  type = (*itr).second;
+	}
+      }
+      stm->newChunkChecksumTransaction();
+      stm->setLengthOfChunkChecksum(length);
+      stm->setTypeOfChunkChecksum(type);
+    } catch(RecoverableException* e) {
+      delete e;
+      stm->cancelChunkChecksumTransaction();
     }
+  } else {
+    stm->setSkipTagState(this);
   }
-  
-  const Strings& getChecksums() const
-  {
-    return _checksums;
-  }
+}
 
-  int32_t getChecksumLength() const
-  {
-    return _checksumLength;
-  }
-
-  const string& getAlgo() const
-  {
-    return _algo;
-  }
-
-  void setAlgo(const string& algo)
-  {
-    _algo = algo;
-  }
-
-  void setChecksumLength(int32_t length)
-  {
-    _checksumLength = length;
-  }
-
-  void setChecksums(const Strings& mds)
-  {
-    _checksums = mds;
-  }
-};
-
-typedef SharedHandle<ChunkChecksum> ChunkChecksumHandle;
-
-#endif // _D_CHUNK_CHECKSUM_H_
+void VerificationMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
+						 const string& name,
+						 const string& characters)
+{
+  stm->setFileState();
+}

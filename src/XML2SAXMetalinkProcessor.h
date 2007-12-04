@@ -32,87 +32,28 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_CHUNK_CHECKSUM_H_
-#define _D_CHUNK_CHECKSUM_H_
+#ifndef _D_XML2_SAX_METALINK_PROCESSOR_H_
+#define _D_XML2_SAX_METALINK_PROCESSOR_H_
 
-#include "common.h"
-#include "messageDigest.h"
+#include "MetalinkProcessor.h"
+#include <libxml/parser.h>
+#include <libxml/xpath.h>
 
-class ChunkChecksum {
+class MetalinkParserStateMachine;
+typedef SharedHandle<MetalinkParserStateMachine> MetalinkParserStateMachineHandle;
+
+class XML2SAXMetalinkProcessor:public MetalinkProcessor {
 private:
-  string _algo;
-  Strings _checksums;
-  int32_t _checksumLength;
+  MetalinkParserStateMachineHandle _stm;
+
 public:
-  ChunkChecksum():_checksumLength(0) {}    
+  XML2SAXMetalinkProcessor();
 
-  ChunkChecksum(const string& algo,
-		const Strings& checksums,
-		int32_t checksumLength):
-    _algo(algo),
-    _checksums(checksums),
-    _checksumLength(checksumLength) {}
+  virtual ~XML2SAXMetalinkProcessor() {}
 
-  bool validateChunk(const string& actualChecksum,
-		     int32_t checksumIndex) const
-  {
-    if(checksumIndex < (int32_t)_checksums.size()) {
-      return actualChecksum == getChecksum(checksumIndex);
-    } else {
-      return false;
-    }
-  }
+  virtual MetalinkerHandle parseFile(const string& filename);
 
-  int64_t getEstimatedDataLength() const
-  {
-    return ((int64_t)_checksumLength)*_checksums.size();
-  }
-
-  int32_t countChecksum() const
-  {
-    return _checksums.size();
-  }
-
-  string getChecksum(int32_t index) const
-  {
-    if(index < (int32_t)_checksums.size()) {
-      return _checksums[index];
-    } else {
-      return "";
-    }
-  }
-  
-  const Strings& getChecksums() const
-  {
-    return _checksums;
-  }
-
-  int32_t getChecksumLength() const
-  {
-    return _checksumLength;
-  }
-
-  const string& getAlgo() const
-  {
-    return _algo;
-  }
-
-  void setAlgo(const string& algo)
-  {
-    _algo = algo;
-  }
-
-  void setChecksumLength(int32_t length)
-  {
-    _checksumLength = length;
-  }
-
-  void setChecksums(const Strings& mds)
-  {
-    _checksums = mds;
-  }
+  virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream);
 };
 
-typedef SharedHandle<ChunkChecksum> ChunkChecksumHandle;
-
-#endif // _D_CHUNK_CHECKSUM_H_
+#endif // _D_XML2_SAX_METALINK_PROCESSOR_H_
