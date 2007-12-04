@@ -40,6 +40,7 @@
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "DlRetryEx.h"
+#include "DlAbortEx.h"
 
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
 			     const RequestHandle req, const Option* op)
@@ -184,7 +185,7 @@ bool FtpConnection::bulkReceiveResponse(pair<int32_t, string>& response)
   if(strbuf.size() >= 4) {
     status = getStatus(strbuf);
     if(status == 0) {
-      throw new DlRetryEx(EX_INVALID_RESPONSE);
+      throw new DlAbortEx(EX_INVALID_RESPONSE);
     }
   } else {
     return false;

@@ -37,7 +37,6 @@
 #include "Util.h"
 #include "message.h"
 #include "DlAbortEx.h"
-#include "DlRetryEx.h"
 
 void HttpResponse::validateResponse() const
 {
@@ -48,11 +47,11 @@ void HttpResponse::validateResponse() const
     throw new DlAbortEx(MSG_RESOURCE_NOT_FOUND);
   }
   if(status >= 400) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   if(status >= 300) {
     if(!httpHeader->defined("Location")) {
-      throw new DlRetryEx(EX_LOCATION_HEADER_REQUIRED,
+      throw new DlAbortEx(EX_LOCATION_HEADER_REQUIRED,
 			  status);
     }
   } else {
@@ -60,7 +59,7 @@ void HttpResponse::validateResponse() const
       // compare the received range against the requested range
       RangeHandle responseRange = httpHeader->getRange();
       if(!httpRequest->isRangeSatisfied(responseRange)) {
-	throw new DlRetryEx(EX_INVALID_RANGE_HEADER,
+	throw new DlAbortEx(EX_INVALID_RANGE_HEADER,
 			    Util::llitos(httpRequest->getStartByte(), true).c_str(),
 			    Util::llitos(httpRequest->getEndByte(), true).c_str(),
 			    Util::llitos(httpRequest->getEntityLength(), true).c_str(),

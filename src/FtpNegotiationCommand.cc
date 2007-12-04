@@ -39,7 +39,6 @@
 #include "PieceStorage.h"
 #include "FtpDownloadCommand.h"
 #include "DlAbortEx.h"
-#include "DlRetryEx.h"
 #include "message.h"
 #include "prefs.h"
 #include "Util.h"
@@ -101,7 +100,7 @@ bool FtpNegotiationCommand::recvGreeting() {
     return false;
   }
   if(status != 220) {
-    throw new DlRetryEx(EX_CONNECTION_FAILED);
+    throw new DlAbortEx(EX_CONNECTION_FAILED);
   }
   sequence = SEQ_SEND_USER;
 
@@ -126,7 +125,7 @@ bool FtpNegotiationCommand::recvUser() {
     sequence = SEQ_SEND_PASS;
     break;
   default:
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   return true;
 }
@@ -143,7 +142,7 @@ bool FtpNegotiationCommand::recvPass() {
     return false;
   }
   if(status != 230) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   sequence = SEQ_SEND_TYPE;
   return true;
@@ -161,7 +160,7 @@ bool FtpNegotiationCommand::recvType() {
     return false;
   }
   if(status != 200) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   sequence = SEQ_SEND_CWD;
   return true;
@@ -179,7 +178,7 @@ bool FtpNegotiationCommand::recvCwd() {
     return false;
   }
   if(status != 250) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   sequence = SEQ_SEND_SIZE;
   return true;
@@ -197,16 +196,8 @@ bool FtpNegotiationCommand::recvSize() {
   if(status == 0) {
     return false;
   }
-  if(status == 550) {
-    // If file is not found in a server, then SIZE command fails.
-    // TODO There exist ftp servers that don't support SIZE command...
-    // the message "MSG_RESOURCE_NOT_FOUND" may be a little bit confusing.
-    // Nevertheless, curretly aria2 doesn't support such ftp servers,
-    // I don't care that.
-    throw new DlAbortEx(MSG_RESOURCE_NOT_FOUND);
-  }
   if(status != 213) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   if(size == INT64_MAX || size < 0) {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
@@ -267,7 +258,7 @@ bool FtpNegotiationCommand::recvPort() {
     return false;
   }
   if(status != 200) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   sequence = SEQ_SEND_REST;
   return true;
@@ -286,7 +277,7 @@ bool FtpNegotiationCommand::recvPasv() {
     return false;
   }
   if(status != 227) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   // make a data connection to the server.
   logger->info(MSG_CONNECTING_TO_SERVER, cuid,
@@ -321,7 +312,7 @@ bool FtpNegotiationCommand::recvRest() {
   }
   // TODO if we recieve negative response, then we set _requestGroup->getSegmentMan()->splittable = false, and continue.
   if(status != 350) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   sequence = SEQ_SEND_RETR;
   return true;
@@ -339,7 +330,7 @@ bool FtpNegotiationCommand::recvRetr() {
     return false;
   }
   if(status != 150 && status != 125) {
-    throw new DlRetryEx(EX_BAD_STATUS, status);
+    throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   if(e->option->get(PREF_FTP_PASV) != V_TRUE) {
     assert(serverSocket->getSockfd() != -1);

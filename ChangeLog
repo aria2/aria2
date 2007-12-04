@@ -1,5 +1,14 @@
 2007-12-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Forced download abort when received negative response from http/ftp
+	server.
+	* src/HttpResponseCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpResponse.cc
+	* src/FtpConnection.cc
+
+2007-12-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added XML2SAXMetalinkProcessor class, which is a lot faster than
 	the predecessor, Xml2MetalinkParser class.
 	I tested them against 94KB metalink file with 1234 chunk checksums.

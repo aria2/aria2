@@ -38,7 +38,6 @@
 #include "HttpConnection.h"
 #include "SegmentMan.h"
 #include "DlAbortEx.h"
-#include "DlRetryEx.h"
 #include "HttpDownloadCommand.h"
 #include "message.h"
 #include "Util.h"
