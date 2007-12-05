@@ -136,7 +136,7 @@ OPTIONS
   Default: '5M'
 
 --enable-direct-io[='true'|'false']::
-  Enable directI/O, which lowers cpu usage while allocating files.
+  Enable directI/O, which lowers cpu usage while allocating/checking files.
   Turn off if you encounter any error.
   Default: 'false'
 
@@ -244,10 +244,10 @@ OPTIONS
   The path to the .torrent file.
 
 --follow-torrent='true'|'false'|'mem'::
-  If true or mem is specified, when a file whose suffix is .metaink or content
+  If true or mem is specified, when a file whose suffix is .torrent or content
   type is application/x-bittorrent is downloaded, aria2 parses it as a torrent
   file and downloads files mentioned in it.
-  If mem is specified, a metalink file is not written to the disk, but is just
+  If mem is specified, a torrent file is not written to the disk, but is just
   kept in memory.
   If false is specified, the action mentioned above is not taken.
   Default: true

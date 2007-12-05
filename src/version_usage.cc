@@ -249,11 +249,11 @@ void showUsage() {
 #ifdef ENABLE_BITTORRENT
   cout << _(" -T, --torrent-file=TORRENT_FILE  The path to the .torrent file.") << endl;
   cout << _(" --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
-	    "                              whose suffix is .metaink or content type is\n"
+	    "                              whose suffix is .torrent or content type is\n"
 	    "                              application/x-bittorrent is downloaded, aria2\n"
 	    "                              parses it as a torrent file and downloads files\n"
 	    "                              mentioned in it.\n"
-	    "                              If mem is specified, a metalink file is not\n"
+	    "                              If mem is specified, a torrent file is not\n"
 	    "                              written to the disk, but is just kept in memory.\n"
 	    "                              If false is specified, the action mentioned above\n"
 	    "                              is not taken.") << "\n"
