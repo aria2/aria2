@@ -1,5 +1,21 @@
 2007-12-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Rewritten direct I/O support routine
+	* src/SingleFileAllocationIterator.cc
+	* src/MultiDiskAdaptor.{h, cc}
+	* src/ByteArrayDiskWriter.h
+	* src/AbstractSingleDiskAdaptor.h
+	* src/AbstractDiskWriter.cc
+	* src/DefaultPieceStorage.cc
+	* src/DiskWriter.h
+	* src/BinaryStream.h
+	* src/IteratableChunkChecksumValidator.cc
+	* src/IteratableChecksumValidator.cc
+	* src/CheckIntegrityEntry.cc
+	* src/FileAllocationEntry.cc
+
+2007-12-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed typo
 	* src/version_usage.cc
 

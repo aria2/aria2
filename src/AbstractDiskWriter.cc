@@ -47,8 +47,7 @@
 
 AbstractDiskWriter::AbstractDiskWriter():
   fd(-1),
-  logger(LogFactory::getInstance())
-{}
+  logger(LogFactory::getInstance()) {}
 
 AbstractDiskWriter::~AbstractDiskWriter()
 {
@@ -167,9 +166,11 @@ int64_t AbstractDiskWriter::size() const
 void AbstractDiskWriter::enableDirectIO()
 {
 #ifdef ENABLE_DIRECT_IO
-  int32_t flg;
-  while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
-  while(fcntl(fd, F_SETFL, flg|O_DIRECT) == -1 && errno == EINTR);
+  if(_directIOAllowed) {
+    int32_t flg;
+    while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
+    while(fcntl(fd, F_SETFL, flg|O_DIRECT) == -1 && errno == EINTR);
+  }
 #endif // ENABLE_DIRECT_IO
 }
 

@@ -82,7 +82,12 @@ void IteratableChecksumValidator::validateChunk()
 
 bool IteratableChecksumValidator::finished() const
 {
-  return _currentOffset >= _dctx->getTotalLength();
+  if(_currentOffset >= _dctx->getTotalLength()) {
+    _pieceStorage->getDiskAdaptor()->disableDirectIO();
+    return true;
+  } else {
+    return false;
+  }
 }
 
 int64_t IteratableChecksumValidator::getTotalLength() const
@@ -97,6 +102,7 @@ void IteratableChecksumValidator::init()
 #else
   _buffer = new unsigned char[BUFSIZE];
 #endif // HAVE_POSIX_MEMALIGN
+  _pieceStorage->getDiskAdaptor()->enableDirectIO();
   _currentOffset = 0;
   _ctx = new MessageDigestContext();
   _ctx->trySetAlgo(_dctx->getChecksumHashAlgo());

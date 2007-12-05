@@ -70,6 +70,11 @@ public:
 
   virtual void disableDirectIO() {}
 
+  virtual bool directIOAllowed() const
+  {
+    return false;
+  }
+
   void setString(const string& s)
   {
     buf.str(s);

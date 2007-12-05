@@ -90,9 +90,9 @@ public:
 
   virtual FileAllocationIteratorHandle fileAllocationIterator() = 0;
 
-  virtual void enableDirectIO() {};
+  virtual void enableDirectIO() {}
 
-  virtual void disableDirectIO() {};
+  virtual void disableDirectIO() {}
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;

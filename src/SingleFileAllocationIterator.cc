@@ -40,11 +40,16 @@
 #define BUFSIZE (256*1024)
 
 SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, int64_t offset, int64_t totalLength):_stream(stream), _offset(offset), _totalLength(totalLength), _buffer(0)
-{}
+{
+  if(_offset%512 == 0) {
+    _stream->enableDirectIO();
+  }
+}
 
 SingleFileAllocationIterator::~SingleFileAllocationIterator()
 {
   delete [] _buffer;
+  _stream->disableDirectIO();
 }
 
 void SingleFileAllocationIterator::init()

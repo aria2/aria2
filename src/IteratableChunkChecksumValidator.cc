@@ -116,6 +116,9 @@ void IteratableChunkChecksumValidator::init()
 #else
   _buffer = new unsigned char[BUFSIZE];
 #endif // HAVE_POSIX_MEMALIGN
+  if(_dctx->getFileEntries().size() == 1) {
+    _pieceStorage->getDiskAdaptor()->enableDirectIO();
+  }
   _ctx = new MessageDigestContext();
   _ctx->trySetAlgo(_dctx->getPieceHashAlgo());
   _ctx->digestInit();
@@ -157,7 +160,12 @@ string IteratableChunkChecksumValidator::digest(int64_t offset, int32_t length)
 
 bool IteratableChunkChecksumValidator::finished() const
 {
-  return _currentIndex >= (uint32_t)_dctx->getNumPieces();
+  if(_currentIndex >= (uint32_t)_dctx->getNumPieces()) {
+    _pieceStorage->getDiskAdaptor()->disableDirectIO();
+    return true;
+  } else {
+    return false;
+  }
 }
 
 int64_t IteratableChunkChecksumValidator::getCurrentOffset() const

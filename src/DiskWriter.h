@@ -42,7 +42,12 @@
  *
  */
 class DiskWriter:public BinaryStream {
+protected:
+  bool _directIOAllowed;
+
 public:
+  DiskWriter():_directIOAllowed(false) {}
+
   virtual ~DiskWriter() {}
   /**
    * Creates a file output stream to write to the file with the specified name.
@@ -75,6 +80,16 @@ public:
   virtual void enableDirectIO() = 0;
 
   virtual void disableDirectIO() = 0;
+
+  virtual bool directIOAllowed() const
+  {
+    return _directIOAllowed;
+  }
+
+  void setDirectIOAllowed(bool f)
+  {
+    _directIOAllowed = f;
+  }
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;

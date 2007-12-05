@@ -116,6 +116,8 @@ private:
   int32_t pieceLength;
   DiskWriterEntries diskWriterEntries;
 
+  bool _directIOAllowed;
+
   void resetDiskWriterEntries();
 
   void mkdir() const;
@@ -177,6 +179,16 @@ public:
 
   int32_t getPieceLength() const {
     return pieceLength;
+  }
+
+  virtual bool directIOAllowed() const
+  {
+    return _directIOAllowed;
+  }
+
+  void setDirectIOAllowed(bool b)
+  {
+    _directIOAllowed = b;
   }
 };
 

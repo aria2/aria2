@@ -77,7 +77,12 @@ public:
   virtual void enableDirectIO();
 
   virtual void disableDirectIO();
-
+  
+  virtual bool directIOAllowed() const
+  {
+    return diskWriter->directIOAllowed();
+  }
+  
   void setDiskWriter(const DiskWriterHandle diskWriter) {
     this->diskWriter = diskWriter;
   }

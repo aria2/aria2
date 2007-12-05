@@ -434,6 +434,7 @@ void DefaultPieceStorage::initStorage()
   if(downloadContext->getFileMode() == DownloadContext::SINGLE) {
     logger->debug("Instantiating DirectDiskAdaptor");
     DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
+    writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
     DirectDiskAdaptorHandle directDiskAdaptor = new DirectDiskAdaptor();
     directDiskAdaptor->setDiskWriter(writer);
     directDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
@@ -443,12 +444,14 @@ void DefaultPieceStorage::initStorage()
     if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
       logger->debug("Instantiating MultiDiskAdaptor");
       MultiDiskAdaptorHandle multiDiskAdaptor = new MultiDiskAdaptor();
+      multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
       multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
       multiDiskAdaptor->setTopDir(downloadContext->getName());
       this->diskAdaptor = multiDiskAdaptor;
     } else {
       logger->debug("Instantiating CopyDiskAdaptor");
       DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
+      writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
       CopyDiskAdaptorHandle copyDiskAdaptor = new CopyDiskAdaptor();
       copyDiskAdaptor->setDiskWriter(writer);
       copyDiskAdaptor->setTempFilename(downloadContext->getName()+".a2tmp");

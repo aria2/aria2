@@ -51,6 +51,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
     } else {
       entry->setDiskWriter(new DefaultDiskWriter());
     }
+    entry->getDiskWriter()->setDirectIOAllowed(_directIOAllowed);
     diskWriterEntries.push_back(entry);
   }
 }
