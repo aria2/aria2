@@ -100,7 +100,7 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
 
   peer->setAllBitfield();
   peer->setFastExtensionEnabled(true);
-  peer->addFastSetIndex(2);
+  peer->addPeerAllowedIndex(2);
 
   PieceHandle piece = pss.getMissingFastPiece(peer);
   CPPUNIT_ASSERT_EQUAL(string("piece: index=2, length=128"),

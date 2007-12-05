@@ -1,5 +1,12 @@
 2007-12-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug: aria2 doesn't utilize fast set index offered by peer.
+	* src/Peer.{h, cc}
+	* src/DefaultPieceStorage.cc
+	* test/DefaultPieceStorageTest.cc
+
+2007-12-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten direct I/O support routine
 	* src/SingleFileAllocationIterator.cc
 	* src/MultiDiskAdaptor.{h, cc}

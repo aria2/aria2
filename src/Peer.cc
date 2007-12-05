@@ -114,20 +114,9 @@ void Peer::resetStatus() {
   snubbing = false;
   fastExtensionEnabled = false;
   latency = DEFAULT_LATENCY;
-  fastSet.clear();
   peerAllowedIndexSet.clear();
   amAllowedIndexSet.clear();
   peerStat.reset();
-}
-
-bool Peer::isInFastSet(int32_t index) const {
-  return find(fastSet.begin(), fastSet.end(), index) != fastSet.end();
-}
-
-void Peer::addFastSetIndex(int32_t index) {
-  if(!isInFastSet(index)) {
-    fastSet.push_back(index);
-  }
 }
 
 bool Peer::isInPeerAllowedIndexSet(int32_t index) const {

@@ -63,8 +63,6 @@ private:
   unsigned char peerId[PEER_ID_LENGTH];
   BitfieldMan* bitfield;
   bool fastExtensionEnabled;
-  // allowed fast indexes that peer has sent by Allowed Fast message
-  Integers fastSet;
   // fast index set which a peer has sent to localhost.
   Integers peerAllowedIndexSet;
   // fast index set which localhost has sent to a peer.
@@ -179,13 +177,18 @@ public:
   }
   bool isFastExtensionEnabled() const { return fastExtensionEnabled; }
 
-  void addFastSetIndex(int32_t index);
-  const Integers& getFastSet() const { return fastSet; }
-  bool isInFastSet(int32_t index) const;
-  int32_t countFastSet() const { return fastSet.size(); }
-
   void addPeerAllowedIndex(int32_t index);
   bool isInPeerAllowedIndexSet(int32_t index) const;
+
+  int32_t countPeerAllowedIndexSet() const
+  {
+    return peerAllowedIndexSet.size();
+  }
+
+  const Integers& getPeerAllowedIndexSet() const
+  {
+    return peerAllowedIndexSet;
+  }
 
   void addAmAllowedIndex(int32_t index);
   bool isInAmAllowedIndexSet(int32_t index) const;

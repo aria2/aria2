@@ -166,11 +166,11 @@ PieceHandle DefaultPieceStorage::getMissingPiece(const PeerHandle& peer)
 int32_t DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer)
 {
   int32_t index = -1;
-  if(peer->isFastExtensionEnabled() && peer->countFastSet() > 0) {
+  if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan->getBlockLength(),
 			     bitfieldMan->getTotalLength());
-    for(Integers::const_iterator itr = peer->getFastSet().begin();
-	itr != peer->getFastSet().end(); itr++) {
+    for(Integers::const_iterator itr = peer->getPeerAllowedIndexSet().begin();
+	itr != peer->getPeerAllowedIndexSet().end(); itr++) {
       if(!bitfieldMan->isBitSet(index) && peer->hasPiece(*itr)) {
 	tempBitfield.setBit(*itr);
       }
