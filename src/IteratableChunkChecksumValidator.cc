@@ -43,6 +43,11 @@
 #include "BitfieldMan.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "messageDigest.h"
+#include <cerrno>
+
+#define BUFSIZE (256*1024)
+#define ALIGNMENT 512
 
 IteratableChunkChecksumValidator::
 IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
@@ -51,9 +56,14 @@ IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
   _pieceStorage(pieceStorage),
   _bitfield(new BitfieldMan(_dctx->getPieceLength(), _dctx->getTotalLength())),
   _currentIndex(0),
-  _logger(LogFactory::getInstance()) {}
+  _logger(LogFactory::getInstance()),
+  _ctx(0),
+  _buffer(0) {}
 
-IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator() {}
+IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
+{
+  delete [] _buffer;
+}
 
 
 void IteratableChunkChecksumValidator::validateChunk()
@@ -96,16 +106,54 @@ string IteratableChunkChecksumValidator::calculateActualChecksum()
   } else {
     length = _dctx->getPieceLength();
   }
-  return MessageDigestHelper::digest(_dctx->getPieceHashAlgo(),
-				     _pieceStorage->getDiskAdaptor(),
-				     offset, length);
+  return digest(offset, length);
 }
 
 void IteratableChunkChecksumValidator::init()
 {
+#ifdef HAVE_POSIX_MEMALIGN
+  _buffer = (unsigned char*)Util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
+#else
+  _buffer = new unsigned char[BUFSIZE];
+#endif // HAVE_POSIX_MEMALIGN
+  _ctx = new MessageDigestContext();
+  _ctx->trySetAlgo(_dctx->getPieceHashAlgo());
+  _ctx->digestInit();
   _bitfield->clearAllBit();
   _currentIndex = 0;
 }
+
+string IteratableChunkChecksumValidator::digest(int64_t offset, int32_t length)
+{
+  _ctx->digestReset();
+  int64_t curoffset = offset/ALIGNMENT*ALIGNMENT;
+  int64_t max = offset+length;
+  int32_t woffset;
+  if(curoffset < offset) {
+    woffset = offset-curoffset;
+  } else {
+    woffset = 0;
+  }
+  while(curoffset < max) {
+    int32_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
+							  curoffset);
+    if(r == 0) {
+      throw new DlAbortEx(EX_FILE_READ, _dctx->getActualBasePath().c_str(),
+			  strerror(errno));
+    }
+    int32_t wlength;
+    if(max < curoffset+r) {
+      wlength = max-curoffset-woffset;
+    } else {
+      wlength = r-woffset;
+    }
+    _ctx->digestUpdate(_buffer+woffset, wlength);
+    curoffset += r;
+    woffset = 0;
+  }
+  return Util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
+}
+
 
 bool IteratableChunkChecksumValidator::finished() const
 {

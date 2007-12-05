@@ -58,6 +58,7 @@ void PieceHashCheckIntegrityEntry::initValidator()
   IteratableChunkChecksumValidatorHandle validator =
     new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
 					 _requestGroup->getPieceStorage());
+  validator->init();
   _validator = validator;
 #endif // ENABLE_MESSAGE_DIGEST
 }

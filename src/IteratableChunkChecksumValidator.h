@@ -43,6 +43,8 @@ class PieceStorage;
 typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class BitfieldMan;
 class Logger;
+class MessageDigestContext;
+typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
 
 class IteratableChunkChecksumValidator:public IteratableValidator
 {
@@ -52,8 +54,13 @@ private:
   BitfieldMan* _bitfield;
   uint32_t _currentIndex;
   const Logger* _logger;
+  MessageDigestContextHandle _ctx;
+  unsigned char* _buffer;
 
   string calculateActualChecksum();
+
+  string digest(int64_t offset, int32_t length);
+
 public:
   IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
 				   const PieceStorageHandle& pieceStorage);

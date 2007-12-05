@@ -58,6 +58,8 @@ private:
 
   const Logger* _logger;
 
+  unsigned char* _buffer;
+
 public:
   IteratableChecksumValidator(const SingleFileDownloadContextHandle& dctx,
 			      const PieceStorageHandle& pieceStorage);

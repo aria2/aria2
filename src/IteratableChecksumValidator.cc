@@ -43,7 +43,8 @@
 #include "DiskAdaptor.h"
 #include "BitfieldMan.h"
 
-#define BUFSIZE 16*1024
+#define BUFSIZE (256*1024)
+#define ALIGNMENT 512
 
 IteratableChecksumValidator::IteratableChecksumValidator(const SingleFileDownloadContextHandle& dctx,
 							 const PieceStorageHandle& pieceStorage):
@@ -51,16 +52,21 @@ IteratableChecksumValidator::IteratableChecksumValidator(const SingleFileDownloa
   _pieceStorage(pieceStorage),
   _currentOffset(0),
   _ctx(0),
-  _logger(LogFactory::getInstance()) {}
+  _logger(LogFactory::getInstance()),
+  _buffer(0) {}
 
-IteratableChecksumValidator::~IteratableChecksumValidator() {}
+IteratableChecksumValidator::~IteratableChecksumValidator()
+{
+  delete [] _buffer;
+}
 
 void IteratableChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    unsigned char data[BUFSIZE];
-    int32_t length = _pieceStorage->getDiskAdaptor()->readData(data, sizeof(data), _currentOffset);
-    _ctx->digestUpdate(data, length);
+    int32_t length = _pieceStorage->getDiskAdaptor()->readData(_buffer,
+							       BUFSIZE,
+							       _currentOffset);
+    _ctx->digestUpdate(_buffer, length);
     _currentOffset += length;
     if(finished()) {
       string actualChecksum = Util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
@@ -86,6 +92,11 @@ int64_t IteratableChecksumValidator::getTotalLength() const
 
 void IteratableChecksumValidator::init()
 {
+#ifdef HAVE_POSIX_MEMALIGN
+  _buffer = (unsigned char*)Util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
+#else
+  _buffer = new unsigned char[BUFSIZE];
+#endif // HAVE_POSIX_MEMALIGN
   _currentOffset = 0;
   _ctx = new MessageDigestContext();
   _ctx->trySetAlgo(_dctx->getChecksumHashAlgo());

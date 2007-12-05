@@ -40,7 +40,8 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   ps->getDiskAdaptor()->openFile();
 
   IteratableChunkChecksumValidator validator(dctx, ps);
-  
+  validator.init();
+
   validator.validateChunk();
   CPPUNIT_ASSERT(!validator.finished());
   validator.validateChunk();

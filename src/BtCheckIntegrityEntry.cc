@@ -66,5 +66,7 @@ Commands BtCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
   // are valid, then aira2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
+  // TODO If FileAllocationEntry is not going to be used, call
+  // DiskAdaptor::disableDirectIO() manually here.
   return onDownloadIncomplete(e);
 }

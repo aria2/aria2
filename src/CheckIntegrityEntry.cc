@@ -36,14 +36,27 @@
 #include "Command.h"
 #include "RequestGroup.h"
 #include "IteratableValidator.h"
+#include "prefs.h"
+#include "PieceStorage.h"
+#include "DownloadContext.h"
+#include "DiskAdaptor.h"
+#include "Option.h"
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
 					 Command* nextCommand):
   RequestGroupEntry(requestGroup, nextCommand),
   _validator(0)
-{}
+{
+  if(_requestGroup->getOption()->getAsBool(PREF_ENABLE_DIRECT_IO) &&
+     _requestGroup->getDownloadContext()->getFileEntries().size() == 1) {
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->enableDirectIO();
+  }
+}
 
-CheckIntegrityEntry::~CheckIntegrityEntry() {}
+CheckIntegrityEntry::~CheckIntegrityEntry()
+{
+  // TODO DiskAdaptor::disableIO() will be called from ~FileAllocationEntry
+}
 
 void CheckIntegrityEntry::validateChunk()
 {
