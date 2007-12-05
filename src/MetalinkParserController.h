@@ -43,10 +43,13 @@ class MetalinkEntry;
 typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
 class MetalinkResource;
 typedef SharedHandle<MetalinkResource> MetalinkResourceHandle;
+
+#ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
 typedef SharedHandle<Checksum> ChecksumHandle;
 class ChunkChecksum;
 typedef SharedHandle<ChunkChecksum> ChunkChecksumHandle;
+#endif // ENABLE_MESSAGE_DIGEST
 
 class MetalinkParserController {
 private:
@@ -56,6 +59,7 @@ private:
 
   MetalinkResourceHandle _tResource;
 
+#ifdef ENABLE_MESSAGE_DIGEST
   ChecksumHandle _tChecksum;
 
   ChunkChecksumHandle _tChunkChecksum;
@@ -63,6 +67,7 @@ private:
   deque<pair<int32_t, string> > _tempChunkChecksums;
   
   pair<int32_t, string> _tempHashPair;
+#endif // ENABLE_MESSAGE_DIGEST
 
 public:
   MetalinkParserController();

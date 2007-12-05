@@ -17,11 +17,13 @@ class XML2SAXMetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testNoName);
   CPPUNIT_TEST(testBadURLPrefs);
   CPPUNIT_TEST(testBadURLMaxConn);
+#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testUnsupportedType);
   CPPUNIT_TEST(testMultiplePieces);
   CPPUNIT_TEST(testBadPieceNo);
   CPPUNIT_TEST(testBadPieceLength);
   CPPUNIT_TEST(testUnsupportedType_piece);
+#endif // ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -42,11 +44,13 @@ public:
   void testNoName();
   void testBadURLPrefs();
   void testBadURLMaxConn();
+#ifdef ENABLE_MESSAGE_DIGEST
   void testUnsupportedType();
   void testMultiplePieces();
   void testBadPieceNo();
   void testBadPieceLength();
   void testUnsupportedType_piece();
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 
@@ -347,6 +351,7 @@ void XML2SAXMetalinkProcessorTest::testBadURLMaxConn()
   }
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
 void XML2SAXMetalinkProcessorTest::testUnsupportedType()
 {
   XML2SAXMetalinkProcessor proc;
@@ -509,3 +514,4 @@ void XML2SAXMetalinkProcessorTest::testUnsupportedType_piece()
     delete e;
   }
 }
+#endif // ENABLE_MESSAGE_DIGEST

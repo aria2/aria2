@@ -36,15 +36,21 @@
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
-#include "Checksum.h"
-#include "ChunkChecksum.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "Checksum.h"
+# include "ChunkChecksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
 
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker()),
   _tEntry(0),
-  _tResource(0),
+  _tResource(0)
+#ifdef ENABLE_MESSAGE_DIGEST
+  ,
   _tChecksum(0),
-  _tChunkChecksum(0) {}
+  _tChunkChecksum(0)
+#endif // ENABLE_MESSAGE_DIGEST
+{}
 
 MetalinkParserController::~MetalinkParserController() {}
 
@@ -57,8 +63,10 @@ void MetalinkParserController::newEntryTransaction()
 {
   _tEntry = new MetalinkEntry();
   _tResource = 0;
+#ifdef ENABLE_MESSAGE_DIGEST
   _tChecksum = 0;
   _tChunkChecksum = 0;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setFileNameOfEntry(const string& filename)
@@ -211,14 +219,17 @@ void MetalinkParserController::cancelResourceTransaction()
 
 void MetalinkParserController::newChecksumTransaction()
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tEntry.isNull()) {
     return;
   }
   _tChecksum = new Checksum();
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setTypeOfChecksum(const string& type)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChecksum.isNull()) {
     return;
   }
@@ -227,18 +238,22 @@ void MetalinkParserController::setTypeOfChecksum(const string& type)
   } else {
     cancelChecksumTransaction();
   }
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setHashOfChecksum(const string& md)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChecksum.isNull()) {
     return;
   }
   _tChecksum->setMessageDigest(md);
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::commitChecksumTransaction()
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChecksum.isNull()) {
     return;
   }
@@ -246,24 +261,30 @@ void MetalinkParserController::commitChecksumTransaction()
     _tEntry->checksum = _tChecksum;
   }
   _tChecksum = 0;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::cancelChecksumTransaction()
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   _tChecksum = 0;
+#endif // ENABLE_MESSAGE_DIGEST
 }
   
 void MetalinkParserController::newChunkChecksumTransaction()
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tEntry.isNull()) {
     return;
   }
   _tChunkChecksum = new ChunkChecksum();
   _tempChunkChecksums.clear();
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setTypeOfChunkChecksum(const string& type)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
@@ -272,10 +293,12 @@ void MetalinkParserController::setTypeOfChunkChecksum(const string& type)
   } else {
     cancelChunkChecksumTransaction();
   }
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setLengthOfChunkChecksum(int32_t length)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
@@ -284,38 +307,47 @@ void MetalinkParserController::setLengthOfChunkChecksum(int32_t length)
   } else {
     cancelChunkChecksumTransaction();
   }
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::addHashOfChunkChecksum(int32_t order, const string& md)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
   _tempChunkChecksums.push_back(pair<int32_t, string>(order, md));
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::createNewHashOfChunkChecksum(int32_t order)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
   _tempHashPair.first = order;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::setMessageDigestOfChunkChecksum(const string& md)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
   _tempHashPair.second = md;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::addHashOfChunkChecksum()
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
   _tempChunkChecksums.push_back(_tempHashPair);
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 bool firstAsc(const pair<int32_t, string>& p1, const pair<int32_t, string>& p2)
@@ -338,6 +370,7 @@ public:
 
 void MetalinkParserController::commitChunkChecksumTransaction()
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
@@ -350,11 +383,14 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     _tEntry->chunkChecksum = _tChunkChecksum;
   }
   _tChunkChecksum = 0;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::cancelChunkChecksumTransaction()
 {
+#ifdef ENABLE_MESSAGE_DIGEST
   _tChunkChecksum = 0;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 

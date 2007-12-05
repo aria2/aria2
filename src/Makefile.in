@@ -63,7 +63,6 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	RequestSlot.cc RequestSlot.h\
 @ENABLE_BITTORRENT_TRUE@	Directory.cc Directory.h\
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-@ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.cc PeerChokeCommand.h\
 @ENABLE_BITTORRENT_TRUE@	SeedCriteria.h\
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteria.h\
@@ -291,7 +290,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc Peer.h \
 	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
 	MultiFileAllocationIterator.h PeerConnection.cc \
-	PeerConnection.h IteratableChunkChecksumValidator.cc \
+	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
+	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
@@ -306,7 +306,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerInteractionCommand.h PeerListenCommand.cc \
 	PeerListenCommand.h RequestSlot.cc RequestSlot.h Directory.cc \
 	Directory.h TrackerWatcherCommand.cc TrackerWatcherCommand.h \
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
 	PeerChokeCommand.cc PeerChokeCommand.h SeedCriteria.h \
 	TimeSeedCriteria.h ShareRatioSeedCriteria.h \
 	UnionSeedCriteria.h SeedCheckCommand.cc SeedCheckCommand.h \
@@ -391,7 +390,6 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	RequestSlot.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Directory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TrackerWatcherCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	ByteArrayDiskWriter.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerChokeCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	SeedCheckCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessor.$(OBJEXT) \
@@ -526,10 +524,11 @@ am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
 	Peer.$(OBJEXT) BtRegistry.$(OBJEXT) \
 	MultiFileAllocationIterator.$(OBJEXT) PeerConnection.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11)
+	ByteArrayDiskWriter.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
+	$(am__objects_11)
 am_libaria2c_a_OBJECTS = $(am__objects_12)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -817,10 +816,11 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc Peer.h \
 	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
 	MultiFileAllocationIterator.h PeerConnection.cc \
-	PeerConnection.h $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11)
+	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\

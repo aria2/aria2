@@ -2,8 +2,10 @@
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
+#ifdef ENABLE_MESSAGE_DIGEST
 #include "Checksum.h"
 #include "ChunkChecksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <cppunit/extensions/HelperMacros.h>
 
 class MetalinkParserControllerTest:public CppUnit::TestFixture {
@@ -11,8 +13,10 @@ class MetalinkParserControllerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(MetalinkParserControllerTest);
   CPPUNIT_TEST(testEntryTransaction);
   CPPUNIT_TEST(testResourceTransaction);
+#ifdef ENABLE_MESSAGE_DIGEST
   CPPUNIT_TEST(testChecksumTransaction);
   CPPUNIT_TEST(testChunkChecksumTransaction);
+#endif // ENABLE_MESSAGE_DIGEST
 
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -24,8 +28,10 @@ public:
 
   void testEntryTransaction();
   void testResourceTransaction();
+#ifdef ENABLE_MESSAGE_DIGEST
   void testChecksumTransaction();
   void testChunkChecksumTransaction();
+#endif // ENABLE_MESSAGE_DIGEST
 };
 
 
@@ -86,6 +92,7 @@ void MetalinkParserControllerTest::testResourceTransaction()
   CPPUNIT_ASSERT_EQUAL((size_t)1, ctrl.getResult()->entries.front()->resources.size());
 }
 
+#ifdef ENABLE_MESSAGE_DIGEST
 void MetalinkParserControllerTest::testChecksumTransaction()
 {
   MetalinkParserController ctrl;
@@ -138,3 +145,4 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
   ctrl.commitEntryTransaction();
   CPPUNIT_ASSERT(ctrl.getResult()->entries[1]->chunkChecksum.isNull());
 }
+#endif // ENABLE_MESSAGE_DIGEST

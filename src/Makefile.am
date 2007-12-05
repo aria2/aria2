@@ -145,7 +145,8 @@ SRCS =  Socket.h\
 	Peer.cc Peer.h\
 	BtRegistry.cc BtRegistry.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
-	PeerConnection.cc PeerConnection.h
+	PeerConnection.cc PeerConnection.h\
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST
@@ -174,7 +175,6 @@ SRCS += MetaEntry.h\
 	RequestSlot.cc RequestSlot.h\
 	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
 	SeedCriteria.h\
 	TimeSeedCriteria.h\
