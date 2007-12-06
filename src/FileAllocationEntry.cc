@@ -42,10 +42,14 @@
 FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand):
   RequestGroupEntry(requestGroup, nextCommand),
   _fileAllocationIterator(requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator())
-{}
+{
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->enableDirectIO();
+}
 
 FileAllocationEntry:: ~FileAllocationEntry()
-{}
+{
+  _requestGroup->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
+}
 
 int64_t FileAllocationEntry::getCurrentLength()
 {

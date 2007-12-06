@@ -57,6 +57,7 @@ void MultiFileAllocationIterator::allocateChunk()
     _entries.pop_front();
     FileEntryHandle fileEntry = entry->getFileEntry();
     if(entry->size() < fileEntry->getLength()) {
+      entry->getDiskWriter()->enableDirectIO();
       _fileAllocationIterator =
 	new SingleFileAllocationIterator(entry->getDiskWriter().get(),
 					 entry->size(),

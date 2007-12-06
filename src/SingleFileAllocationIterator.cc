@@ -38,24 +38,24 @@
 #include "a2io.h"
 
 #define BUFSIZE (256*1024)
+#define ALIGNMENT 512
 
 SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, int64_t offset, int64_t totalLength):_stream(stream), _offset(offset), _totalLength(totalLength), _buffer(0)
 {
-  if(_offset%512 == 0) {
-    _stream->enableDirectIO();
+  if(_offset%ALIGNMENT != 0) {
+    _stream->disableDirectIO();
   }
 }
 
 SingleFileAllocationIterator::~SingleFileAllocationIterator()
 {
   delete [] _buffer;
-  _stream->disableDirectIO();
 }
 
 void SingleFileAllocationIterator::init()
 {
 #ifdef HAVE_POSIX_MEMALIGN
-  _buffer = (unsigned char*)Util::allocateAlignedMemory(512, BUFSIZE);
+  _buffer = (unsigned char*)Util::allocateAlignedMemory(ALIGNMENT, BUFSIZE);
 #else
   _buffer = new unsigned char[BUFSIZE];
 #endif // HAVE_POSIX_MEMALIGN

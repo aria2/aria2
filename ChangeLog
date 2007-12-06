@@ -1,5 +1,18 @@
 2007-12-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed Direct/IO enable/disable procesure in file allocation routine.
+	* src/SingleFileAllocationIterator.cc
+	(SingleFileAllocationIterator):
+	Disable directIO if offset is not multiple of 512.
+	(~SingleFileAllocationIterator): Removed a call to disableDirectIO.
+	* src/MultiFileAllocationIterator.cc (allocateChunk):
+	Enable created SingleFileAllocationIterator's directIO.
+	* src/FileAllocationEntry.cc
+	(FileAllocationEntry): Enable directIO here.
+	(~FileAllocationEntry): Disable directIO here.
+
+2007-12-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug: aria2 doesn't utilize fast set index offered by peer.
 	* src/Peer.{h, cc}
 	* src/DefaultPieceStorage.cc
