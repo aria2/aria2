@@ -89,13 +89,14 @@ void Base64::encode(unsigned char*& result, size_t& rlength,
     *p++ = CHAR_TABLE[n&0x3f];
   }
   if(r == 2) {
-    int n = (*s << 16)+(*(s+1) << 8);
+    int n = *s++ << 16;
+    n += *s++ << 8;
     *p++ = CHAR_TABLE[n >> 18];
     *p++ = CHAR_TABLE[n >> 12&0x3f];
     *p++ = CHAR_TABLE[n >> 6&0x3f];
     *p++ = '=';
   } else if(r == 1) {
-    int n = (*s << 16);
+    int n = *s++ << 16;
     *p++ = CHAR_TABLE[n >> 18];
     *p++ = CHAR_TABLE[n >> 12&0x3f];
     *p++ = '=';
