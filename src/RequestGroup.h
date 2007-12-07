@@ -109,6 +109,8 @@ private:
 
   bool _haltRequested;
 
+  bool _forceHaltRequested;
+
   PreDownloadHandlers _preDownloadHandlers;
 
   PostDownloadHandlers _postDownloadHandlers;
@@ -262,9 +264,16 @@ public:
 
   void setHaltRequested(bool f);
 
+  void setForceHaltRequested(bool f);
+
   bool isHaltRequested() const
   {
     return _haltRequested;
+  }
+
+  bool isForceHaltRequested() const
+  {
+    return _forceHaltRequested;
   }
 
   void dependsOn(const DependencyHandle& dep);

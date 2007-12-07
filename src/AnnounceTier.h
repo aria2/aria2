@@ -72,6 +72,20 @@ public:
       break;
     }
   }
+
+  void nextEventIfAfterStarted()
+  {
+    switch(event) {
+    case STOPPED:
+      event = HALTED;
+      break;
+    case COMPLETED:
+      event = SEEDING;
+      break;
+    default:
+      break;
+    }
+  }
 };
 
 typedef SharedHandle<AnnounceTier> AnnounceTierHandle;

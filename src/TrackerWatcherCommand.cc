@@ -64,6 +64,17 @@ TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
 
 bool TrackerWatcherCommand::execute() {
+  if(_requestGroup->isForceHaltRequested()) {
+    if(_trackerRequestGroup.isNull()) {
+      return true;
+    } else if(_trackerRequestGroup->getNumCommand() == 0 ||
+	      _trackerRequestGroup->downloadFinished()) {
+      return true;
+    } else {
+      _trackerRequestGroup->setForceHaltRequested(true);
+      return false;
+    }
+  }
   if(btAnnounce->noMoreAnnounce()) {
     logger->debug("no more announce");
     return true;

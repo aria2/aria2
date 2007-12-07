@@ -1,3 +1,19 @@
+2007-12-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah com>
+
+	Fixed the bug#1845750; CTRL+C does not stop torrent.
+	aria2 repeatedly sends stopped request when tracker returns error code.
+	* src/AnnounceList.cc
+	* test/AnnounceListTest.cc
+	* src/AnnounceTier.h
+
+	Added a message when ctrl-c is hit.
+	Now second ctrl-c is also handled in signal handler.
+	* src/RequestGroupMan.{h, cc}
+	* src/RequestGroup.{h, cc}
+	* src/MultiUrlRequestInfo.cc
+	* src/DownloadEngine.cc
+	* src/TrackerWatcherCommand.cc
+
 2007-12-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Code cleanup

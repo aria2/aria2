@@ -72,6 +72,8 @@ public:
   
   void halt();
 
+  void forceHalt();
+
   Commands getInitialCommands(DownloadEngine* e);
 
   void removeStoppedGroup();

@@ -95,6 +95,7 @@ RequestGroup::RequestGroup(const Option* option,
   _dependency(0),
   _preLocalFileCheckEnabled(true),
   _haltRequested(false),
+  _forceHaltRequested(false),
   _option(option),
   _logger(LogFactory::getInstance())
 {
@@ -538,6 +539,12 @@ void RequestGroup::setHaltRequested(bool f)
     }
   }
 #endif // ENABLE_BITTORRENT
+}
+
+void RequestGroup::setForceHaltRequested(bool f)
+{
+  setHaltRequested(f);
+  _forceHaltRequested = f;
 }
 
 void RequestGroup::releaseRuntimeResource()

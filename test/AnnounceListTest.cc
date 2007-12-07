@@ -12,6 +12,8 @@ class AnnounceListTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMultiElementList);
   CPPUNIT_TEST(testSingleAndMulti);
   CPPUNIT_TEST(testNoGroup);
+  CPPUNIT_TEST(testEvent);
+  CPPUNIT_TEST(testNextEventIfAfterStarted);
   CPPUNIT_TEST(testCountStoppedAllowedTier);
   CPPUNIT_TEST(testCountCompletedAllowedTier);
   CPPUNIT_TEST(testMoveToStoppedAllowedTier);
@@ -28,6 +30,7 @@ public:
   void testSingleAndMulti();
   void testNoGroup();
   void testEvent();
+  void testNextEventIfAfterStarted();
   void testCountStoppedAllowedTier();
   void testCountCompletedAllowedTier();
   void testMoveToStoppedAllowedTier();
@@ -148,6 +151,26 @@ void AnnounceListTest::testNoGroup() {
   AnnounceList announceList(announces);
 
   CPPUNIT_ASSERT(announceList.countTier() == 0);
+}
+
+void AnnounceListTest::testNextEventIfAfterStarted() {
+  string peersString = "ll8:tracker1ee";
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+
+  // ANNOUNCE_LIST
+  // [ [ tracker1 ] ]
+  AnnounceList announceList(announces);
+  announceList.setEvent(AnnounceTier::STOPPED);
+  announceList.announceFailure();
+  announceList.resetTier();
+  CPPUNIT_ASSERT_EQUAL(string(""), announceList.getEventString());
+  CPPUNIT_ASSERT_EQUAL(AnnounceTier::HALTED, announceList.getEvent());
+
+  announceList.setEvent(AnnounceTier::COMPLETED);
+  announceList.announceFailure();
+  announceList.resetTier();
+  CPPUNIT_ASSERT_EQUAL(string(""), announceList.getEventString());
+  CPPUNIT_ASSERT_EQUAL(AnnounceTier::SEEDING, announceList.getEvent());
 }
 
 void AnnounceListTest::testEvent() {

@@ -287,6 +287,14 @@ void RequestGroupMan::halt()
   }
 }
 
+void RequestGroupMan::forceHalt()
+{
+  for(RequestGroups::const_iterator itr = _requestGroups.begin();
+      itr != _requestGroups.end(); ++itr) {
+    (*itr)->setForceHaltRequested(true);
+  }
+}
+
 TransferStat RequestGroupMan::calculateStat()
 {
   return accumulate(_requestGroups.begin(), _requestGroups.end(), TransferStat(),

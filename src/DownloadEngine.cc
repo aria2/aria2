@@ -50,7 +50,12 @@
 #include <fcntl.h>
 #include <signal.h>
 
-volatile sig_atomic_t globalHaltRequested;
+// 0 ... running
+// 1 ... stop signal detected
+// 2 ... stop signal processed by DownloadEngine
+// 3 ... 2nd stop signal(force shutdown) detected
+// 4 ... 2nd stop signal processed by DownloadEngine
+volatile sig_atomic_t globalHaltRequested = 0;
 
 SocketEntry::SocketEntry(const SocketHandle& socket,
 			 Command* command,
@@ -276,10 +281,15 @@ void DownloadEngine::onEndOfRun()
 
 void DownloadEngine::afterEachIteration()
 {
-  if(globalHaltRequested) {
-    globalHaltRequested = false;
+  if(globalHaltRequested == 1) {
+    logger->notice(_("Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."));
     _haltRequested = true;
     _requestGroupMan->halt();
+    globalHaltRequested = 2;
+  } else if(globalHaltRequested == 3) {
+    logger->notice(_("Emergency shutdown sequence commencing..."));
+    _requestGroupMan->forceHalt();
+    globalHaltRequested = 4;
   }
 }
 

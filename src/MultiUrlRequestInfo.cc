@@ -53,7 +53,11 @@
 extern volatile sig_atomic_t globalHaltRequested;
 
 static void handler(int signal) {
-  globalHaltRequested = true;
+  if(globalHaltRequested == 0) {
+    globalHaltRequested = 1;
+  } else if(globalHaltRequested == 2) {
+    globalHaltRequested = 3;
+  }
 }
 
 MultiUrlRequestInfo::MultiUrlRequestInfo(const RequestGroups& requestGroups, Option* op):
@@ -94,8 +98,8 @@ void MultiUrlRequestInfo::execute()
     // This is done every 1 second. At the same time, it removes finished/error
     // RequestGroup from DownloadEngine.
 
-    Util::setGlobalSignalHandler(SIGINT, handler, SA_RESETHAND);
-    Util::setGlobalSignalHandler(SIGTERM, handler, SA_RESETHAND);
+    Util::setGlobalSignalHandler(SIGINT, handler, 0);
+    Util::setGlobalSignalHandler(SIGTERM, handler, 0);
     
     e->run();
     

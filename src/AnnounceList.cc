@@ -107,6 +107,8 @@ void AnnounceList::announceFailure() {
   if(currentTrackerInitialized) {
     currentTracker++;
     if(currentTracker == (*currentTier)->urls.end()) {
+      // force next event
+      (*currentTier)->nextEventIfAfterStarted();
       currentTier++;
       if(currentTier == tiers.end()) {
 	currentTrackerInitialized = false;
