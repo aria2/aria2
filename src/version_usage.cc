@@ -321,6 +321,9 @@ void showUsage() {
 	    " download a file from both torrent swarm and http/ftp server at the same time,\n"
 	    " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
 	    " only single file torrent can be integrated with http/ftp.") << endl;
+  cout << "\n"
+       << _(" Make sure that URL is quoted with single(\') or double(\") quotation if it\n"
+	    " contains \"&\" or any characters that have special meaning in shell.") << "\n";
   cout << endl;
   cout << _("Refer to man page for more information.") << endl;
   cout << endl;

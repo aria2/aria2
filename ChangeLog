@@ -1,3 +1,8 @@
+2007-12-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added a notice about URL
+	* src/version_usage.cc
+
 2007-12-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah com>
 
 	Fixed the bug#1845750; CTRL+C does not stop torrent.
