@@ -55,6 +55,4 @@
 * replace strtol with Util::parseInt
 * remove header files from Makefile.am
 * create MetalinkProcessorFactory and get Xml2MetalinkProcessor from it.
-
--- remaining issues to be implemented for 0.12.0 release
-* Update translation
+* Reconsider the location where DiskAdaptor::enable/disableDirectIO() are called
