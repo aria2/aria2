@@ -65,7 +65,7 @@ static const int INDEX_TABLE[] = {
 };
 
 void Base64::encode(unsigned char*& result, size_t& rlength,
-			const unsigned char* src, size_t slength)
+		    const unsigned char* src, size_t slength)
 {
   if(slength == 0) {
     rlength = 0;
@@ -105,9 +105,9 @@ void Base64::encode(unsigned char*& result, size_t& rlength,
 }
 
 void Base64::removeNonBase64Chars(unsigned char*& nsrc,
-				      size_t& nlength,
-				      const unsigned char* src,
-				      size_t slength)
+				  size_t& nlength,
+				  const unsigned char* src,
+				  size_t slength)
 {
   unsigned char* temp = new unsigned char[slength];
   const unsigned char* end = src+slength;
@@ -117,15 +117,12 @@ void Base64::removeNonBase64Chars(unsigned char*& nsrc,
       *(temp+n++) = *s;
     }
   }
-  unsigned char* ret = new unsigned char[n];
-  memcpy(ret, temp, n);
-  delete [] temp;
   nlength = n;
-  nsrc = ret;
+  nsrc = temp;
 }
 
 void Base64::decode(unsigned char*& result, size_t& rlength,
-			const unsigned char* src, size_t slength)
+		    const unsigned char* src, size_t slength)
 {
   if(slength == 0) {
     rlength = 0;

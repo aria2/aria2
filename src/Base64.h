@@ -41,6 +41,11 @@ using namespace std;
 class Base64
 {
 private:
+  /**
+   * Removes non base64 chars(including '=') from src, and results are
+   * stored in nsrc and its length is stored in nlength.
+   * Caller must delete nsrc.
+   */
   static void removeNonBase64Chars(unsigned char*& nsrc, size_t& nlength,
 				   const unsigned char* src, size_t slength);
 
