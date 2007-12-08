@@ -117,7 +117,7 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
   CPPUNIT_ASSERT_EQUAL(string("userDefinedUser:userDefinedPassword"),
 		       factory.createAuthConfig(req)->getAuthText());
 
-  // username and password in URI: disabled by default.
+  // username and password in URI
   req->setUrl("ftp://aria2user:aria2password@localhost/download/aria2-1.0.0.tar.bz2");
   CPPUNIT_ASSERT_EQUAL(string("aria2user:aria2password"),
  		       factory.createAuthConfig(req)->getAuthText());
