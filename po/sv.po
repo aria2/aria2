@@ -1,20 +1,21 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Tatsuhiro Tsujikawa
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Swedish translation for aria2
+# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# This file is distributed under the same license as the aria2 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2007-12-09 00:02+0900\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2007-12-09 00:07+0900\n"
+"Last-Translator: Hampus Wessman <hw@vox.nu>\n"
+"Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
 msgid "must be either 'true' or 'false'."
@@ -65,17 +66,17 @@ msgstr ""
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr ""
+msgstr "CUID#%d - Nedladdningen av ett segment slutfördes framgångsrikt."
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr ""
+msgstr "CUID#%d - Inget segment tillgängligt."
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr ""
+msgstr "CUID#%d - Ansluter till %s:%d"
 
 #: src/message.h:43
 #, c-format
@@ -83,11 +84,13 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
+"CUID#%d - Segmentet förändrades. Vi sänder förfrågningen igen med ny Range "
+"header."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr ""
+msgstr "CUID#%d - Dirigerar om till %s"
 
 #: src/message.h:45
 #, c-format
@@ -95,6 +98,8 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
+"CUID#%d - Begär:\n"
+"%s"
 
 #: src/message.h:46
 #, c-format
@@ -102,6 +107,8 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
+"CUID#%d - Svar mottaget:\n"
+"%s"
 
 #: src/message.h:47
 #, c-format
@@ -311,44 +318,44 @@ msgstr ""
 #: src/message.h:92
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr ""
+msgstr "Felaktig URI eller protokoll som inte stöds: %s"
 
 #: src/message.h:93
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr ""
+msgstr "Tracker returnerade varningsmeddelande: %s"
 
 #: src/message.h:94
 #, c-format
 msgid "The segment file %s exists."
-msgstr ""
+msgstr "Segmentsfilen %s existerar."
 
 #: src/message.h:95
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr ""
+msgstr "Segmentsfilen %s existerar inte."
 
 #: src/message.h:96
 #, c-format
 msgid "Saving the segment file %s"
-msgstr ""
+msgstr "Sparar segmentsfilen %s"
 
 #: src/message.h:97
 msgid "The segment file was saved successfully."
-msgstr ""
+msgstr "Segmentsfilen sparades."
 
 #: src/message.h:98
 #, c-format
 msgid "Loading the segment file %s."
-msgstr ""
+msgstr "Laddar segmentsfilen %s."
 
 #: src/message.h:99
 msgid "The segment file was loaded successfully."
-msgstr ""
+msgstr "Segmentsfilen är laddad."
 
 #: src/message.h:100
 msgid "No URI to download. Download aborted."
-msgstr ""
+msgstr "Ingen URI att ladda ner. Nedladdning misslyckades."
 
 #: src/message.h:101
 #, c-format
@@ -362,100 +369,100 @@ msgstr ""
 #: src/message.h:102
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr ""
+msgstr "Allokerar filen %s, %s bytes"
 
 #: src/message.h:103
 msgid "File not found"
-msgstr ""
+msgstr "Filen hittades ej"
 
 #: src/message.h:104
 msgid "Not a directory"
-msgstr ""
+msgstr "Inte en katalog"
 
 #: src/message.h:105
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr ""
+msgstr "Otillräckliga kontrollsummor. checksumLength=%d, numChecksum=%d"
 
 #: src/message.h:106
 #, c-format
 msgid "Writing file %s"
-msgstr ""
+msgstr "Skriver fil %s"
 
 #: src/message.h:107
 msgid "No peer list received."
-msgstr ""
+msgstr "Ingen lista med peers togs emot."
 
 #: src/message.h:108
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr ""
+msgstr "Lägger till peer %s:%d"
 
 #: src/message.h:109
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr ""
+msgstr "Raderar använd del index=%d, fillRate(%%)=%d<=%d"
 
 #: src/message.h:110
 msgid "Download of selected files was complete."
-msgstr ""
+msgstr "Nedladdningen av de valda filerna slutfördes."
 
 #: src/message.h:111
 msgid "The download was complete."
-msgstr ""
+msgstr "Nedladdningen slutfördes."
 
 #: src/message.h:112
 #, c-format
 msgid "Removed %d have entries."
-msgstr ""
+msgstr "Raderade %d har-poster"
 
 #: src/message.h:113
 #, c-format
 msgid "Validating file %s"
-msgstr ""
+msgstr "Validerar filen %s"
 
 #: src/message.h:114
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr ""
+msgstr "%d sekunder för att allokera %s byte(s)"
 
 #: src/message.h:115
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr ""
+msgstr "Delegerar FileAllocationCommand för CUID#%d."
 
 #: src/message.h:116
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr ""
+msgstr "Metalänk: Lägger %s i kö för nedladdning."
 
 #: src/message.h:117
 #, c-format
 msgid "Download complete: %s"
-msgstr ""
+msgstr "Nedladdning slutförd: %s"
 
 #: src/message.h:118
 msgid "Seeding is over."
-msgstr ""
+msgstr "Seeding är över."
 
 #: src/message.h:119
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-msgstr ""
+msgstr "CUID#%d avbryter segment index=%d. CUID#%d tar över det istället."
 
 #: src/message.h:120
 msgid "No chunk to verify."
-msgstr ""
+msgstr "Inge del att verifiera."
 
 #: src/message.h:121
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr ""
+msgstr "Bra delkontrollsumma. hash=%s"
 
 #: src/message.h:122
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr ""
+msgstr "Misslyckades med att ladda kakor från %s"
 
 #: src/message.h:123
 #, c-format
@@ -466,15 +473,15 @@ msgstr ""
 
 #: src/message.h:124
 msgid "Logging started."
-msgstr ""
+msgstr "Loggning startad."
 
 #: src/message.h:125
 msgid "Specify at least one URL."
-msgstr ""
+msgstr "Ange minst en URL."
 
 #: src/message.h:126
 msgid "daemon failed."
-msgstr ""
+msgstr "demonen misslyckades."
 
 #: src/message.h:127
 #, c-format
@@ -511,40 +518,40 @@ msgstr ""
 
 #: src/message.h:135
 msgid "Timeout."
-msgstr ""
+msgstr "Timeout."
 
 #: src/message.h:136
 msgid "Invalid chunk size."
-msgstr ""
+msgstr "Ogiltig delstorlek."
 
 #: src/message.h:137
 #, c-format
 msgid "Too large chunk. size=%d"
-msgstr ""
+msgstr "För stor del. storlek=%d"
 
 #: src/message.h:138
 msgid "Invalid header."
-msgstr ""
+msgstr "Ogiltig header."
 
 #: src/message.h:139
 msgid "Invalid response."
-msgstr ""
+msgstr "Ogiltig respons."
 
 #: src/message.h:140
 msgid "No header found."
-msgstr ""
+msgstr "Ingen header funnen."
 
 #: src/message.h:141
 msgid "No status header."
-msgstr ""
+msgstr "Ingen statusheader."
 
 #: src/message.h:142
 msgid "Proxy connection failed."
-msgstr ""
+msgstr "Misslyckades med uppkoppling till proxy."
 
 #: src/message.h:143
 msgid "Connection failed."
-msgstr ""
+msgstr "Uppkoppling misslyckades."
 
 #: src/message.h:144
 #, c-format
@@ -552,21 +559,23 @@ msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
+"Det begärda filnamnet och det tidigare registrerade överrensstämmer inte. "
+"Förväntat:%s Faktisktl:%s"
 
 #: src/message.h:145
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr ""
+msgstr "Förfrågan misslyckades. status=%d"
 
 #: src/message.h:146
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr ""
+msgstr "För stor filstorlek. size=%s"
 
 #: src/message.h:147
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr ""
+msgstr "Överföringskodning %s stöds ej."
 
 #: src/message.h:148
 #, c-format
@@ -610,7 +619,7 @@ msgstr ""
 
 #: src/message.h:157
 msgid "Malformed meta info."
-msgstr ""
+msgstr "Felformaterad metainfo."
 
 #: src/message.h:159
 #, c-format
@@ -649,7 +658,7 @@ msgstr ""
 #: src/message.h:166
 #, c-format
 msgid "%s is not a directory."
-msgstr ""
+msgstr "%s är inte en katalog."
 
 #: src/message.h:167
 #, c-format
@@ -789,7 +798,7 @@ msgstr ""
 
 #: src/message.h:195
 msgid "Insufficient checksums."
-msgstr ""
+msgstr "Otillräckliga kontrollsummor."
 
 #: src/message.h:196
 #, c-format
@@ -841,7 +850,7 @@ msgstr ""
 
 #: src/message.h:206
 msgid "Exception caught"
-msgstr ""
+msgstr "Undantag fångat"
 
 #: src/message.h:207
 #, c-format
@@ -877,7 +886,7 @@ msgstr ""
 
 #: src/version_usage.cc:45
 msgid " version "
-msgstr ""
+msgstr " version "
 
 #: src/version_usage.cc:49
 msgid ""
@@ -896,15 +905,29 @@ msgid ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
 "USA\n"
 msgstr ""
+"This program is free software; you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation; either version 2 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program; if not, write to the Free Software\n"
+"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
+"USA\n"
 
 #: src/version_usage.cc:84
 msgid "Contact Info:"
-msgstr ""
+msgstr "Kontaktinfo:"
 
 #: src/version_usage.cc:90
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
-msgstr ""
+msgstr "Användning: %s [inställningar] URL ...\n"
 
 #: src/version_usage.cc:92
 #, c-format
@@ -914,30 +937,32 @@ msgstr ""
 #: src/version_usage.cc:95
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
-msgstr ""
+msgstr "       %s [inställningar] -M METALÄNK_FIL\n"
 
 #: src/version_usage.cc:98
 msgid "Options:"
-msgstr ""
+msgstr "Inställningar:"
 
 #: src/version_usage.cc:99
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr ""
+msgstr " -d, --dir=DIR                Katalogen som filen ska laddas ner till."
 
 #: src/version_usage.cc:100
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr ""
+msgstr " -o, --out=FILE               Filnamnet för den nedladdade filen."
 
 #: src/version_usage.cc:101
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
+" -l, --log=LOG               Loggfilens filnamn. Om du anger '-'\n"
+"                              kommer loggen att skrivas till stdout."
 
 #: src/version_usage.cc:104
 msgid " -D, --daemon                 Run as daemon."
-msgstr ""
+msgstr " -D, --daemon                 Kör som demon."
 
 #: src/version_usage.cc:106
 msgid ""
@@ -949,6 +974,13 @@ msgid ""
 "                              N connections.\n"
 "                              Default: 1"
 msgstr ""
+" -s, --split=N                Ladda ner en fil med N uppkopplingar. N måste "
+"vara\n"
+"                              mellan 1 och 5. Den här inställningen påverkar "
+"alla\n"
+"                               URLer. Aria2 gör alltså N uppkopplingar till "
+"varje URL.\n"
+"                              Förvalt: 1"
 
 #: src/version_usage.cc:111
 msgid ""
@@ -968,6 +1000,8 @@ msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
+" -m, --max-tries=N            Ange antalet försök. 0 innebär obegränsat.\n"
+"                              Förvalt: 5"
 
 #: src/version_usage.cc:123
 msgid ""
@@ -1010,6 +1044,7 @@ msgstr ""
 #: src/version_usage.cc:134
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
+" --referer=REFERER            Ange Referer. Detta påverkar allal URLer."
 
 #: src/version_usage.cc:135
 msgid ""
@@ -1033,7 +1068,7 @@ msgstr ""
 
 #: src/version_usage.cc:142
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr ""
+msgstr " -p, --ftp-pasv               Använd passivt läge för FTP."
 
 #: src/version_usage.cc:143
 msgid ""
@@ -1186,6 +1221,12 @@ msgid ""
 "checksums.\n"
 "                              Default: true"
 msgstr ""
+" --realtime-chunk-checksum=true|false  Kontrollera delkontrollsummor när\n"
+"                              en fil laddas ner i Metalänkläge. Den här "
+"inställningen\n"
+"                              påverkar bara Metalänkläge med "
+"delkontrollsummor.\n"
+"                              Förvalt: true"
 
 #: src/version_usage.cc:219
 msgid ""
@@ -1196,14 +1237,24 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
+" -c, --continue               Fortsätt ladda ner en delvis nerladdad\n"
+"                              fil. Använd den här inställningen för att "
+"fortsätta en\n"
+"                              nedladdning startad av en webbläsare eller "
+"annat\n"
+"                              program som laddar ner filer kontinuerligt "
+"från\n"
+"                              början av filen. För tillfället är "
+"inställningen bara\n"
+"                              applicerbar på http(s)/ftp nedladdningar."
 
 #: src/version_usage.cc:225
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
-msgstr ""
+msgstr " -U, --user-agent=USER_AGENT  Ange \"user agent\" för http(s)."
 
 #: src/version_usage.cc:226
 msgid " -n, --no-netrc               Disables netrc support."
-msgstr ""
+msgstr " -n, --no-netrc               Avaktiverar stöd för netrc."
 
 #: src/version_usage.cc:227
 msgid ""
@@ -1213,6 +1264,10 @@ msgid ""
 "character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
+" -i, --input-file=FIL         Laddar ner URIer funna i FIL. Du kan ange\n"
+"                              flera URIer för en specifik fil: separera\n"
+"                              URIerna på en rad med TAB-tecken.\n"
+"                              Läser datan från stdin om '-' anges."
 
 #: src/version_usage.cc:231
 msgid ""
@@ -1221,12 +1276,18 @@ msgid ""
 "                              It should be used with the -i option.\n"
 "                              Default: 5"
 msgstr ""
+" -j, --max-concurrent-downloads=N Ange det maximala antalet samtidiga "
+"nedladdningar.\n"
+"                             Används tillsammans med inställningen -i.\n"
+"                              Förvalt: 5"
 
 #: src/version_usage.cc:234
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
 msgstr ""
+" --load-cookies=FIL          Ladda kakor från FIL. Filformatet är\n"
+"                              samma som Netscapes and Mozillas."
 
 #: src/version_usage.cc:237
 msgid ""
@@ -1329,7 +1390,7 @@ msgstr ""
 
 #: src/version_usage.cc:293
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
-msgstr ""
+msgstr " -M, --metalink-file=METALÄNKFIL Sökvägen till .metlink-filen."
 
 #: src/version_usage.cc:294
 msgid ""
@@ -1337,19 +1398,23 @@ msgid ""
 "                              simultaneously.\n"
 "                              Default: 5"
 msgstr ""
+" -C, --metalink-servers=ANTAL_SERVRAR Antalet servrar att koppla upp till\n"
+"                              samtidigt.\n"
+"                              Förvalt: 5"
 
 #: src/version_usage.cc:297
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr ""
+msgstr " --metalink-version=VERSION   Versionen av filen som ska laddas ner."
 
 #: src/version_usage.cc:298
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr ""
+msgstr " --metalink-language=SPRÅK Språket för filen som ska laddas ner."
 
 #: src/version_usage.cc:299
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
+" --metalink-os=OS             Operativsystemet för filen som ska laddas ner."
 
 #: src/version_usage.cc:300
 msgid ""
@@ -1376,11 +1441,11 @@ msgstr ""
 
 #: src/version_usage.cc:314
 msgid " -v, --version                Print the version number and exit."
-msgstr ""
+msgstr " -v, --version                Skriv ut versionsnumret och avsluta."
 
 #: src/version_usage.cc:315
 msgid " -h, --help                   Print this message and exit."
-msgstr ""
+msgstr " -h, --help                   Skriv ut detta meddelande och avsluta."
 
 #: src/version_usage.cc:318
 msgid ""
@@ -1410,7 +1475,7 @@ msgstr ""
 #: src/version_usage.cc:330
 #, c-format
 msgid "Report bugs to %s"
-msgstr ""
+msgstr "Rapportera buggar till %s"
 
 #: src/BtSetup.cc:108
 msgid "Errors occurred while binding port.\n"

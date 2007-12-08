@@ -7,64 +7,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-11-29 23:17+0900\n"
-"PO-Revision-Date: 2007-09-06 21:47+0100\n"
+"POT-Creation-Date: 2007-12-09 00:02+0900\n"
+"PO-Revision-Date: 2007-12-07 14:45+0000\n"
 "Last-Translator: Sebastien WILLEMIJNS <seb@willemijns.com>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
 msgid "must be either 'true' or 'false'."
-msgstr ""
+msgstr "doit contenir comme valeur soit \"true\" ou \"false\""
 
 #: src/OptionHandlerImpl.h:87 src/OptionHandlerImpl.h:120
 #, c-format
 msgid "must be between %s and %s."
-msgstr ""
+msgstr "doit être compris entre %s et %s"
 
 #: src/OptionHandlerImpl.h:117
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr ""
+msgstr "doit être plus petit ou égal à %s"
 
 #: src/OptionHandlerImpl.h:123
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr ""
+msgstr "doit être plus grand ou égal à %s"
 
 #: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:172
 msgid "must be a number."
-msgstr ""
+msgstr "doit être un nombre"
 
 #: src/OptionHandlerImpl.h:163
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr ""
+msgstr "doit être plus petit ou égal à %.1f."
 
 #: src/OptionHandlerImpl.h:166
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr ""
+msgstr "doit être compris entre %.1f et %.1f."
 
 #: src/OptionHandlerImpl.h:169
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr ""
+msgstr "doit être plus grand ou égal à %.1f."
 
 #: src/OptionHandlerImpl.h:230
 msgid "must be one of the following:"
-msgstr ""
+msgstr "doit être l'une de ces valeurs suivantes:"
 
 #: src/OptionHandlerImpl.h:258
 msgid "unrecognized proxy format"
-msgstr ""
+msgstr "format de proxy non reconnu"
 
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - Le t&eacute;l&eacute;chargement d'un segment est complet."
+msgstr "CUID#%d - Le téléchargement d'un segment est complet."
 
 #: src/message.h:41
 #, c-format
@@ -74,7 +76,7 @@ msgstr "CUID#%d - Pas de segment disponible."
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - Connexion &agrave; %s:%d"
+msgstr "CUID#%d - Connexion à %s:%d"
 
 #: src/message.h:43
 #, c-format
@@ -82,8 +84,8 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - Le segment a chang&eacute;. Nous envoyons une nouvelle requ&ecirc;"
-"te.header."
+"CUID#%d - Le segment a changé. Nous envoyons une nouvelle requête sur l'en-"
+"tête."
 
 #: src/message.h:44
 #, c-format
@@ -105,30 +107,28 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - R&eacute;ponse re&ccedil;:\n"
+"CUID#%d - Réponse reçue:\n"
 "%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - T&eacute;l&eacute;chargement stopp&eacute;. URI=%s"
+msgstr "CUID#%d - Téléchargement stoppé;. URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - Red&eacute;marrage du t&eacute;l&eacute;chargement. URI=%s"
+msgstr "CUID#%d - Redémarrage du téléchargement. URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - T&eacute;l&eacute;chargement stopp&eacute;."
+msgstr "CUID#%d - Téléchargement stoppé."
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr ""
-"CUID#%d - %d tentatives sans succ&egrave;s. T&eacute;l&eacute;chargement "
-"int&eacute;rrompu."
+msgstr "CUID#%d - %d tentatives sans succès. Téléchargement intérrompu."
 
 #: src/message.h:51
 #, c-format
@@ -148,23 +148,22 @@ msgstr "CUID#%d - Nous avons une partie mauvaise. index=%d"
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - T&eacute;l&eacute;chargement incomplet: %s"
+msgstr "CUID#%d - Téléchargement incomplet: %s"
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr ""
-"#%d - Ce t&eacute;l&eacute;chargement est d&eacute;j&agrave; complet: %s"
+msgstr "#%d - Ce t&éléchargement est déjà complet: %s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - Somme de contr&ocirc;le correcte: %s"
+msgstr "CUID#%d - Somme de contrôle correcte: %s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - Somme de contr&ocirc;le incorrecte: %s"
+msgstr "CUID#%d - Somme de contrôle incorrecte: %s"
 
 #: src/message.h:63
 #, c-format
@@ -184,7 +183,7 @@ msgstr "CUID#%d - La résolution du nom pour %s a échoué:%s"
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr ""
+msgstr "CUID#%d - Le cache DNS vous donne cette valeur: %s -> %s"
 
 #: src/message.h:67
 #, c-format
@@ -236,12 +235,12 @@ msgstr ""
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr ""
+msgstr "CUID#%d - Intéréssé par le peer"
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr ""
+msgstr "CUID#%d - Non intéréssé par le peer"
 
 #: src/message.h:76
 #, c-format
@@ -371,17 +370,13 @@ msgid "No URI to download. Download aborted."
 msgstr "Aucune URI &agrave; t&eacute;l&eacute;charger."
 
 #: src/message.h:101
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "File %s exists, but a control file(*.aria2) does not exist. Download was "
 "canceled in order to prevent your file from being truncated to 0. If you are "
 "sure to download the file all over again, then delete it or add --allow-"
 "overwrite=true option and restart aria2."
 msgstr ""
-"Le fichier %s existe mais %s n'existe pas. Le téléchargement a été annulé "
-"pour empêcher que votre fichier ne soit écrasé. Si vous voulez retélécharger "
-"le fichier, supprimez-le ou ajouter l'option --allow-overwrite=true et "
-"redémarrez aria2"
 
 #: src/message.h:102
 #, c-format
@@ -451,7 +446,7 @@ msgstr ""
 #: src/message.h:116
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr ""
+msgstr "Metalink: place en file d'attente %s pour un téléchargement."
 
 #: src/message.h:117
 #, c-format
@@ -505,12 +500,12 @@ msgstr "Le service a échoué."
 #: src/message.h:127
 #, c-format
 msgid "Verification finished successfully. file=%s"
-msgstr ""
+msgstr "La vérification s'est bien passée. fichier=%s"
 
 #: src/message.h:128
 #, c-format
 msgid "Checksum error detected. file=%s"
-msgstr ""
+msgstr "Erreur d'intégrité détectée. fichier=%s"
 
 #: src/message.h:129
 #, c-format
@@ -518,58 +513,61 @@ msgid "Incomplete range specified. %s"
 msgstr ""
 
 #: src/message.h:130
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to convert string into value: %s"
-msgstr "Impossible de se connecter à l'hôte %s, cause: %s"
+msgstr ""
 
 #: src/message.h:131
-#, fuzzy
 msgid "Resource not found"
-msgstr "Fichier non trouvé"
+msgstr ""
 
 #: src/message.h:132
 #, c-format
 msgid "File already exists. Renamed to %s."
 msgstr ""
 
-#: src/message.h:134
+#: src/message.h:133
+msgid "Cannot parse metalink XML file. XML may be malformed."
+msgstr ""
+
+#: src/message.h:135
 msgid "Timeout."
 msgstr "temps d'attente d&eacute;pass&eacute; (timeout)."
 
-#: src/message.h:135
+#: src/message.h:136
 msgid "Invalid chunk size."
 msgstr "Taille de block invalide"
 
-#: src/message.h:136
+#: src/message.h:137
 #, c-format
 msgid "Too large chunk. size=%d"
 msgstr "Bloc trop grand. taille=%d"
 
-#: src/message.h:137
+#: src/message.h:138
 msgid "Invalid header."
 msgstr "En-tête invalide"
 
-#: src/message.h:138
+#: src/message.h:139
 msgid "Invalid response."
 msgstr "Réponse invalide"
 
-#: src/message.h:139
+#: src/message.h:140
 msgid "No header found."
 msgstr "Aucun en-tête trouvé"
 
-#: src/message.h:140
+#: src/message.h:141
 msgid "No status header."
 msgstr "Aucun en-tête de status."
 
-#: src/message.h:141
+#: src/message.h:142
 msgid "Proxy connection failed."
 msgstr "La connexion proxy a échoué."
 
-#: src/message.h:142
+#: src/message.h:143
 msgid "Connection failed."
 msgstr "La connexion a échoué."
 
-#: src/message.h:143
+#: src/message.h:144
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
@@ -578,228 +576,228 @@ msgstr ""
 "Le fichié demandé et celui enregistré précédemment sont différents. Taille "
 "du fichier attendue: %s En réalité: %s"
 
-#: src/message.h:144
+#: src/message.h:145
 #, c-format
 msgid "The response status is not successful. status=%d"
 msgstr "La réponse a échoué. Status=%d"
 
-#: src/message.h:145
+#: src/message.h:146
 #, c-format
 msgid "Too large file size. size=%s"
 msgstr "Fichier trop grand. Taille=%s"
 
-#: src/message.h:146
+#: src/message.h:147
 #, c-format
 msgid "Transfer encoding %s is not supported."
 msgstr "Le type de transfert %s n'est pas supporté."
 
-#: src/message.h:147
+#: src/message.h:148
 #, c-format
 msgid "SSL initialization failed: %s"
 msgstr "L'initialisation SSL a échouée: %s"
 
-#: src/message.h:148
+#: src/message.h:149
 msgid "SSL I/O error"
 msgstr "Erreur E/S SSL"
 
-#: src/message.h:149
+#: src/message.h:150
 msgid "SSL protocol error"
 msgstr "erreur de protocole SSL"
 
-#: src/message.h:150
+#: src/message.h:151
 #, c-format
 msgid "SSL unknown error %d"
-msgstr ""
+msgstr "érreur SSL inconnue %d"
 
-#: src/message.h:151
+#: src/message.h:152
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
 msgstr "L'initialisation SSL a échouée: érreur de connexion OpenSSL SSL %d"
 
-#: src/message.h:152
+#: src/message.h:153
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
 msgstr "La taille ne coïncide pas. Attendue: %s En réalité: %s"
 
-#: src/message.h:153
+#: src/message.h:154
 msgid "Authorization failed."
 msgstr "L'autorisation a échoué."
 
-#: src/message.h:154
+#: src/message.h:155
 msgid "Got EOF from the server."
 msgstr "Obtenir la fin du fichier (EOF) du serveur."
 
-#: src/message.h:155
+#: src/message.h:156
 msgid "Got EOF from peer."
 msgstr "Obtenir la fin du fichier (EOF) du partenaire."
 
-#: src/message.h:156
+#: src/message.h:157
 msgid "Malformed meta info."
 msgstr "Métainfos malformées."
 
-#: src/message.h:158
+#: src/message.h:159
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
 msgstr "Impossible d'ouvrir le fichier %s, cause: %s"
 
-#: src/message.h:159
+#: src/message.h:160
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
 msgstr "Impossible d'écrire le fichier %s, cause: %s"
 
-#: src/message.h:160
+#: src/message.h:161
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
 msgstr "Impossible de lire le fichier %s, cause: %s"
 
-#: src/message.h:161
+#: src/message.h:162
 msgid "Failed to read data from disk."
 msgstr "Impossible de lire les données depuis le disque."
 
-#: src/message.h:162
+#: src/message.h:163
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
 msgstr ""
 "Impossible de calculer la somme SHA1 du ou d'une partie du fichier %s, "
 "cause: %s"
 
-#: src/message.h:163
+#: src/message.h:164
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
 msgstr "Impossible de chercher le fichier %s, cause: %s"
 
-#: src/message.h:164
+#: src/message.h:165
 #, c-format
 msgid "The offset is out of range, offset=%s"
 msgstr "Le décalage est trop grand, décalage=%s"
 
-#: src/message.h:165
+#: src/message.h:166
 #, c-format
 msgid "%s is not a directory."
 msgstr "%s n'est pas un dossier"
 
-#: src/message.h:166
+#: src/message.h:167
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
 msgstr "Impossible de créer le dossier %s, cause: %s"
 
-#: src/message.h:167
+#: src/message.h:168
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
 msgstr "Impossible d'ouvrir le fichier de segment %s, cause: %s"
 
-#: src/message.h:168
+#: src/message.h:169
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
 msgstr "Impossible d'écrire dans le fichier de segment %s, cause: %s"
 
-#: src/message.h:169
+#: src/message.h:170
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
 msgstr "Impossible de lire à partir du fichier de segment %s, cause: %s"
 
-#: src/message.h:171
+#: src/message.h:172
 #, c-format
 msgid "Failed to open a socket, cause: %s"
 msgstr "Impossible d'ouvrir une connexion socket, cause: %s"
 
-#: src/message.h:172
+#: src/message.h:173
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
 msgstr "Impossible de définir une option de connexion socket, cause: %s"
 
-#: src/message.h:173
+#: src/message.h:174
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
 msgstr ""
 
-#: src/message.h:174
+#: src/message.h:175
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
 msgstr ""
 
-#: src/message.h:175
+#: src/message.h:176
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
 msgstr "Impossible d'unir une connexion socket, cause: %s"
 
-#: src/message.h:176
+#: src/message.h:177
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
 msgstr "Impossible d'écouter une connexion socket, cause: %s"
 
-#: src/message.h:177
+#: src/message.h:178
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
 msgstr "Impossible d'accepter une connexion à un autre ordinateur, cause: %s"
 
-#: src/message.h:178
+#: src/message.h:179
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
 msgstr "Impossible de récupérer le nom de la connexion socket, cause: %s"
 
-#: src/message.h:179
+#: src/message.h:180
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
 msgstr "Impossible d'obtenir le nom de l'autre ordinateur, cause: %s"
 
-#: src/message.h:180
+#: src/message.h:181
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
 msgstr "Impossible de récupérer le nom de l'hôte %s, cause: %s"
 
-#: src/message.h:181
+#: src/message.h:182
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
 msgstr "Impossible de se connecter à l'hôte %s, cause: %s"
 
-#: src/message.h:182
+#: src/message.h:183
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
 msgstr ""
 "Impossible de vérifier si la connexion socket est inscriptible, cause: %s"
 
-#: src/message.h:183
+#: src/message.h:184
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
 msgstr "Impossible de vérifier si la connexion socket est lisible, cause: %s"
 
-#: src/message.h:184
+#: src/message.h:185
 #, c-format
 msgid "Failed to send data, cause: %s"
 msgstr "Impossible d'envoyer les données, cause: %s"
 
-#: src/message.h:185
+#: src/message.h:186
 #, c-format
 msgid "Failed to receive data, cause: %s"
 msgstr "Impossible de recevoir les données, cause: %s"
 
-#: src/message.h:186
+#: src/message.h:187
 #, c-format
 msgid "Failed to peek data, cause: %s"
 msgstr "Impossible de lire les données, cause: %s"
 
-#: src/message.h:187
+#: src/message.h:188
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
 msgstr "Erreur de socket inconnue %d (0x%x)"
 
-#: src/message.h:188
+#: src/message.h:189
 #, c-format
 msgid "File %s exists, but %s does not exist."
 msgstr "Le fichier %s existe, mais %s n'existe pas"
 
-#: src/message.h:189
+#: src/message.h:190
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr "Taille du fichier %s invalide, taille=%d. Il devrait faire %d."
 
-#: src/message.h:190
+#: src/message.h:191
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
 msgstr "ID invalide=%d pour %s. Ça devrait être %d."
 
-#: src/message.h:191
+#: src/message.h:192
 #, c-format
 msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
@@ -808,105 +806,103 @@ msgstr ""
 "La validation du bloc a échoué. Hash=%d, décalage=%s, Hash attendu=%s, Hash ="
 "%s"
 
-#: src/message.h:192
+#: src/message.h:193
 msgid "Download aborted."
 msgstr "Téléchargement interrompu."
 
-#: src/message.h:193
+#: src/message.h:194
 #, c-format
 msgid "File %s is being downloaded by other command."
 msgstr ""
 "Le fichier %s est déjà en train d'être téléchargé par une autre commande."
 
-#: src/message.h:194
+#: src/message.h:195
 msgid "Insufficient checksums."
 msgstr ""
 
-#: src/message.h:195
+#: src/message.h:196
 #, c-format
 msgid "Tracker returned failure reason: %s"
 msgstr "Le Tracker a retourné le message d'alerte suivant: %s"
 
-#: src/message.h:196
+#: src/message.h:197
 msgid "Flooding detected."
 msgstr ""
 
-#: src/message.h:197
+#: src/message.h:198
 #, c-format
 msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
 
-#: src/message.h:198
-msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
-
 #: src/message.h:199
-#, c-format
-msgid "No such file entry %s"
+msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
 
 #: src/message.h:200
 #, c-format
+msgid "No such file entry %s"
+msgstr ""
+
+#: src/message.h:201
+#, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
 msgstr "La vitesse de téléchargement est trop lente: %d <= %d(B/s), hôte:%s"
 
-#: src/message.h:201
+#: src/message.h:202
 msgid "No HttpRequestEntry found."
 msgstr "Aucune en-tête trouvée."
 
-#: src/message.h:202
+#: src/message.h:203
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr ""
 
-#: src/message.h:203
+#: src/message.h:204
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr ""
 
-#: src/message.h:204
+#: src/message.h:205
 msgid "No file matched with your preference."
 msgstr "Aucun fichier ne correspond à votre préférence"
 
-#: src/message.h:205
-msgid "Exception caught"
-msgstr ""
-
 #: src/message.h:206
-#, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
+msgid "Exception caught"
 msgstr ""
 
 #: src/message.h:207
 #, c-format
+msgid "Max payload length exceeded or invalid. length = %d"
+msgstr ""
+
+#: src/message.h:208
+#, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
+"Taille de fichier invalide. Ne peut continuer le téléchargement %s: local %"
+"s, distant %s"
 
-#: src/MultiUrlRequestInfo.cc:70
-#, fuzzy
+#: src/MultiUrlRequestInfo.cc:74
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
-"\n"
-"Certains t&eacute;l&eacute;chargements ne sont pas complets &agrave; cause "
-"d'&eacute;rreurs. V&eacute;rifiez le log.\n"
-"aria2 reprendra le transfert si le transfert est relanc&eacute;."
+msgstr "aria2c va recommencer ce téléchargement si le transfert est relancé."
 
-#: src/MultiUrlRequestInfo.cc:72
+#: src/MultiUrlRequestInfo.cc:76
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
+"En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
+"d'informations."
 
 #: src/RequestGroupMan.cc:225
-#, fuzzy
 msgid "Download Results:"
-msgstr "Téléchargez un torrent:"
+msgstr ""
 
 #: src/Util.cc:701
 msgid "Files:"
-msgstr ""
+msgstr "Fichiers:"
 
 #: src/version_usage.cc:42
 msgid "                              Default: "
@@ -960,9 +956,9 @@ msgid "Usage: %s [options] URL ...\n"
 msgstr "Utilisation: %s [options] URL ...\n"
 
 #: src/version_usage.cc:92
-#, fuzzy, c-format
+#, c-format
 msgid "       %s [options] -T TORRENT_FILE URL ...\n"
-msgstr "       %s [options] -M FICHIER_METALINK\n"
+msgstr ""
 
 #: src/version_usage.cc:95
 #, c-format
@@ -1214,35 +1210,19 @@ msgstr ""
 "                              Défaut: prealloc"
 
 #: src/version_usage.cc:163
-#, fuzzy
 msgid ""
 " --no-file-allocation-limit=SIZE No file allocation is made for files whose\n"
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
-" --lowest-speed-limit=SPEED   Fermer la connexiion si la vitesse de "
-"téléchargement est inférieure à \n"
-"                              ou égal à cette valeur(octets par sec).\n"
-"                              0 veut dire que aria2 n'a pas de vitesse "
-"minimale.\n"
-"                              Vous pouvez ajouter K ou M(1K = 1024, 1M = "
-"1024K).\n"
-"                              Cette option n'affecte pas le téléchargement "
-"BitTorrent .\n"
-"                              Default: 0"
 
 #: src/version_usage.cc:168
-#, fuzzy
 msgid ""
 " --enable-direct-io[=true|false] Enable directI/O, which lowers cpu usage "
 "while\n"
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
-" --direct-file-mapping=true|false Lire directement à partir de et écrit sur "
-"chaque fichier\n"
-"                              mentioné dans le fichier .torrent.\n"
-"                              Défaut: true"
 
 #: src/version_usage.cc:173
 msgid ""
@@ -1260,6 +1240,16 @@ msgstr ""
 
 #: src/version_usage.cc:177
 msgid ""
+" --allow-piece-length-change=true|false If false is given, aria2 aborts "
+"download\n"
+"                              when a piece length is different from one in\n"
+"                              a control file. If true is given, you can "
+"proceed\n"
+"                              but some download progress will be lost."
+msgstr ""
+
+#: src/version_usage.cc:182
+msgid ""
 " -Z, --force-sequential[=true|false] Fetch URIs in the command-line "
 "sequentially\n"
 "                              and download each URI in a separate session, "
@@ -1268,7 +1258,7 @@ msgid ""
 "                              Default: false"
 msgstr ""
 
-#: src/version_usage.cc:181
+#: src/version_usage.cc:186
 msgid ""
 " --auto-file-renaming[=true|false] Rename file name if the same file "
 "already\n"
@@ -1280,7 +1270,7 @@ msgid ""
 "                              Default: true"
 msgstr ""
 
-#: src/version_usage.cc:187
+#: src/version_usage.cc:192
 msgid ""
 " -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"
 "                              You can specify set of parts:\n"
@@ -1297,21 +1287,20 @@ msgid ""
 "                              Default: false"
 msgstr ""
 
-#: src/version_usage.cc:198
+#: src/version_usage.cc:203
 msgid ""
 " --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent "
 "connection.\n"
 "                              Default: false"
 msgstr ""
 
-#: src/version_usage.cc:200
+#: src/version_usage.cc:205
 msgid ""
 " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
 "                              Default: false"
 msgstr ""
 
-#: src/version_usage.cc:203
-#, fuzzy
+#: src/version_usage.cc:208
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
@@ -1323,19 +1312,8 @@ msgid ""
 "                              of a file.\n"
 "                              Default: false"
 msgstr ""
-" --check-integrity=true|false Vérifier l'intégrité en utilisant le hash.\n"
-"                              Cette option affecte les téléchargements "
-"BitTorrent\n"
-"                              et Metalink en sommant les blocks de données.\n"
-"                              Utilisez cette option pour retélécharger des "
-"portions endommagées\n"
-"                              d'un fichier.\n"
-"                              Il se peut que vous deviez spécifier l'option "
-"--allow-overwrite=true\n"
-"                              si le fichier .aria2 n'existe pas.\n"
-"                              Défaut: false"
 
-#: src/version_usage.cc:209
+#: src/version_usage.cc:214
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -1351,7 +1329,7 @@ msgstr ""
 "                              Metalink avec vérification d'intégrité.\n"
 "                              Défaut: true"
 
-#: src/version_usage.cc:214
+#: src/version_usage.cc:219
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -1371,17 +1349,17 @@ msgstr ""
 "                              En ce moment cette option s'applique aux\n"
 "                              téléchargements http(s)/ftp."
 
-#: src/version_usage.cc:220
+#: src/version_usage.cc:225
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 " -U, --user-agent=USER_AGENT  Définit le nom du programme pour les "
 "téléchargements http(s)."
 
-#: src/version_usage.cc:221
+#: src/version_usage.cc:226
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc               Désactiver le support netrc."
 
-#: src/version_usage.cc:222
+#: src/version_usage.cc:227
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -1396,7 +1374,7 @@ msgstr ""
 "                              URIs par des tabulations sur une seule ligne.\n"
 "                              Lit la sortie de stdin quand '-' est spécifié."
 
-#: src/version_usage.cc:226
+#: src/version_usage.cc:231
 msgid ""
 " -j, --max-concurrent-downloads=N Set maximum number of concurrent "
 "downloads.\n"
@@ -1408,7 +1386,7 @@ msgstr ""
 "                              Doit être utilisé avec l'option -i.\n"
 "                              Défaut: 5"
 
-#: src/version_usage.cc:229
+#: src/version_usage.cc:234
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
@@ -1417,8 +1395,7 @@ msgstr ""
 "est\n"
 "                              celui utilisé par Netscape et Mozilla."
 
-#: src/version_usage.cc:232
-#, fuzzy
+#: src/version_usage.cc:237
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -1426,11 +1403,8 @@ msgid ""
 "listed\n"
 "                              in case of torrent file."
 msgstr ""
-" -S, --show-files             Imprime la liste des fichiers .torrent ou ."
-"metalink\n"
-"                              et quitte."
 
-#: src/version_usage.cc:235
+#: src/version_usage.cc:240
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can find the file index using the\n"
@@ -1457,38 +1431,28 @@ msgstr ""
 "varier selon\n"
 "                              la requête (consultez l'option --metalink-*)."
 
-#: src/version_usage.cc:245
+#: src/version_usage.cc:250
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr ""
 " -T, --torrent-file=TORRENT_FILE  Le chemin complet du fichier .torrent."
 
-#: src/version_usage.cc:246
-#, fuzzy
+#: src/version_usage.cc:251
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
-"                              whose suffix is .metaink or content type is\n"
+"                              whose suffix is .torrent or content type is\n"
 "                              application/x-bittorrent is downloaded, aria2\n"
 "                              parses it as a torrent file and downloads "
 "files\n"
 "                              mentioned in it.\n"
-"                              If mem is specified, a metalink file is not\n"
+"                              If mem is specified, a torrent file is not\n"
 "                              written to the disk, but is just kept in "
 "memory.\n"
 "                              If false is specified, the action mentioned "
 "above\n"
 "                              is not taken."
 msgstr ""
-" --seed-ratio=RATIO           Définir le ratio de partage. Partager les "
-"torrents téléchargés jusqu'à\n"
-"                              ce que le ratio de partage atteigne RATIO. 1.0 "
-"est recommandé.\n"
-"                              Si l'option --seed-time est spécifiée avec "
-"cette option,\n"
-"                              le partage s'arrête dès qu'une des deux "
-"conditions\n"
-"                              est satisfaite."
 
-#: src/version_usage.cc:256
+#: src/version_usage.cc:261
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -1499,8 +1463,7 @@ msgstr ""
 "                              mentioné dans le fichier .torrent.\n"
 "                              Défaut: true"
 
-#: src/version_usage.cc:259
-#, fuzzy
+#: src/version_usage.cc:264
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -1510,21 +1473,8 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
-" --select-file=INDEX...       Définit le téléchargement en spécifiant son "
-"index.\n"
-"                              Vous pouvez savoir l'index du fichier grace à "
-"l'option --show-files.\n"
-"                              Vou pouvez spécifier plusieurs index en "
-"utilisant\n"
-"                              ',' comme \"3,6\".\n"
-"                              Vous pouvez aussi utiliser '-' pour spécifier "
-"un intervalle \"1-5\".\n"
-"                              ',' et '-' peuvent être utilisés ensemble.\n"
-"                              Quand vous utilisez l'option -M, l'index peut "
-"varier selon\n"
-"                              la requête (consultez l'option --metalink-*)."
 
-#: src/version_usage.cc:265
+#: src/version_usage.cc:270
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -1538,7 +1488,7 @@ msgstr ""
 "1024K).\n"
 "                              Défaut: 0"
 
-#: src/version_usage.cc:269
+#: src/version_usage.cc:274
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -1547,8 +1497,7 @@ msgstr ""
 "Consultez aussi\n"
 "                              l'option --seed-ratio."
 
-#: src/version_usage.cc:271
-#, fuzzy
+#: src/version_usage.cc:276
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO. 1.0 is\n"
@@ -1559,18 +1508,8 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
-" --seed-ratio=RATIO           Définir le ratio de partage. Partager les "
-"torrents téléchargés jusqu'à\n"
-"                              ce que le ratio de partage atteigne RATIO. 1.0 "
-"est recommandé.\n"
-"                              Si l'option --seed-time est spécifiée avec "
-"cette option,\n"
-"                              le partage s'arrête dès qu'une des deux "
-"conditions\n"
-"                              est satisfaite."
 
-#: src/version_usage.cc:279
-#, fuzzy
+#: src/version_usage.cc:284
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -1581,22 +1520,13 @@ msgid ""
 "                              added to make it's length 20 bytes.\n"
 "                              Default: -aria2-"
 msgstr ""
-" --seed-ratio=RATIO           Définir le ratio de partage. Partager les "
-"torrents téléchargés jusqu'à\n"
-"                              ce que le ratio de partage atteigne RATIO. 1.0 "
-"est recommandé.\n"
-"                              Si l'option --seed-time est spécifiée avec "
-"cette option,\n"
-"                              le partage s'arrête dès qu'une des deux "
-"conditions\n"
-"                              est satisfaite."
 
-#: src/version_usage.cc:288
+#: src/version_usage.cc:293
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr ""
 " -M, --metalink-file=METALINK_FILE Le chemin vers le fichier .metalink."
 
-#: src/version_usage.cc:289
+#: src/version_usage.cc:294
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
 "                              simultaneously.\n"
@@ -1607,30 +1537,31 @@ msgstr ""
 "                              simultanément.\n"
 "                              Défaut: 5"
 
-#: src/version_usage.cc:292
+#: src/version_usage.cc:297
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   La version du fichier à télécharger."
 
-#: src/version_usage.cc:293
+#: src/version_usage.cc:298
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE La langua du fichier à télécharger."
 
-#: src/version_usage.cc:294
+#: src/version_usage.cc:299
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 " --metalink-os=OS             Le système d'exploitation auquel est destiné "
 "le fichier."
 
-#: src/version_usage.cc:295
+#: src/version_usage.cc:300
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-deliminated list of locations is\n"
 "                              acceptable."
 msgstr ""
+" --metalink-location=LOCATION[,...] L'emplacement du serveur préféré.\n"
+"La liste (délimité par des virgules) est"
 
-#: src/version_usage.cc:298
-#, fuzzy
+#: src/version_usage.cc:303
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type is\n"
@@ -1645,35 +1576,22 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
-" --seed-ratio=RATIO           Définir le ratio de partage. Partager les "
-"torrents téléchargés jusqu'à\n"
-"                              ce que le ratio de partage atteigne RATIO. 1.0 "
-"est recommandé.\n"
-"                              Si l'option --seed-time est spécifiée avec "
-"cette option,\n"
-"                              le partage s'arrête dès qu'une des deux "
-"conditions\n"
-"                              est satisfaite."
 
-#: src/version_usage.cc:309
+#: src/version_usage.cc:314
 msgid " -v, --version                Print the version number and exit."
-msgstr " -v, --version                Imprime le numéro de version et quitte."
+msgstr " -v, --version"
 
-#: src/version_usage.cc:310
+#: src/version_usage.cc:315
 msgid " -h, --help                   Print this message and exit."
 msgstr " -h, --help                   Imprime ce message et quitte."
 
-#: src/version_usage.cc:313
-#, fuzzy
+#: src/version_usage.cc:318
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 msgstr ""
-" Vous pouvez spécifier plusieurs URLs. Tous les URLs doivent pointer vers le "
-"même fichier\n"
-" sinon le téléchargement échoue."
 
-#: src/version_usage.cc:315
+#: src/version_usage.cc:320
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1682,11 +1600,17 @@ msgid ""
 " only single file torrent can be integrated with http/ftp."
 msgstr ""
 
-#: src/version_usage.cc:320
-msgid "Refer to man page for more information."
+#: src/version_usage.cc:325
+msgid ""
+" Make sure that URL is quoted with single(') or double(\") quotation if it\n"
+" contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
 
-#: src/version_usage.cc:322
+#: src/version_usage.cc:328
+msgid "Refer to man page for more information."
+msgstr "Merci de vous reférer au manuel pour plus d'information."
+
+#: src/version_usage.cc:330
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Faire part des bugs à %s"
@@ -1694,6 +1618,54 @@ msgstr "Faire part des bugs à %s"
 #: src/BtSetup.cc:108
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
+
+#~ msgid ""
+#~ "File %s exists, but %s does not exist. The download was canceled in order "
+#~ "to prevent your file from being truncated to 0. If you are sure to "
+#~ "download file all over again, then delete it or add --allow-"
+#~ "overwrite=true option and restart aria2."
+#~ msgstr ""
+#~ "Le fichier %s existe mais %s n'existe pas. Le téléchargement a été annulé "
+#~ "pour empêcher que votre fichier ne soit écrasé. Si vous voulez "
+#~ "retélécharger le fichier, supprimez-le ou ajouter l'option --allow-"
+#~ "overwrite=true et redémarrez aria2"
+
+#~ msgid ""
+#~ " --check-integrity=true|false  Check file integrity by validating piece "
+#~ "hash.\n"
+#~ "                              This option only affects in BitTorrent "
+#~ "downloads\n"
+#~ "                              and Metalink downloads with chunk "
+#~ "checksums.\n"
+#~ "                              Use this option to re-download a damaged "
+#~ "portion\n"
+#~ "                              of a file.\n"
+#~ "                              You may need to specify --allow-"
+#~ "overwrite=true\n"
+#~ "                              if the .aria2 file doesn't exist.\n"
+#~ "                              Default: false"
+#~ msgstr ""
+#~ " --check-integrity=true|false Vérifier l'intégrité en utilisant le hash.\n"
+#~ "                              Cette option affecte les téléchargements "
+#~ "BitTorrent\n"
+#~ "                              et Metalink en sommant les blocks de "
+#~ "données.\n"
+#~ "                              Utilisez cette option pour retélécharger "
+#~ "des portions endommagées\n"
+#~ "                              d'un fichier.\n"
+#~ "                              Il se peut que vous deviez spécifier "
+#~ "l'option --allow-overwrite=true\n"
+#~ "                              si le fichier .aria2 n'existe pas.\n"
+#~ "                              Défaut: false"
+
+#~ msgid ""
+#~ " -S, --show-files             Print file listing of .torrent or .metalink "
+#~ "file\n"
+#~ "                              and exit."
+#~ msgstr ""
+#~ " -S, --show-files             Imprime la liste des fichiers .torrent ou ."
+#~ "metalink\n"
+#~ "                              et quitte."
 
 #~ msgid ""
 #~ " --follow-torrent=true|false  Set to false to prevent aria2 from\n"
@@ -1711,6 +1683,35 @@ msgstr "La jonction du port a engendré des erreurs.\n"
 #~ "                              Défaut: true"
 
 #~ msgid ""
+#~ " --listen-port=PORT           Set TCP port number for BitTorrent "
+#~ "downloads.\n"
+#~ "                              Default: 6881-6999"
+#~ msgstr ""
+#~ " --listen-port=PORT           Définir le numéro de port pour écouter dans "
+#~ "le cas d'une connexion P2P.\n"
+#~ "                              Default: 6881-6999"
+
+#~ msgid ""
+#~ " --seed-ratio=RATIO           Specify share ratio. Seed completed "
+#~ "torrents\n"
+#~ "                              until share ratio reaches RATIO. 1.0 is\n"
+#~ "                              encouraged. If --seed-time option is "
+#~ "specified\n"
+#~ "                              along with this option, seeding ends when "
+#~ "at\n"
+#~ "                              least one of the conditions is satisfied."
+#~ msgstr ""
+#~ " --seed-ratio=RATIO           Définir le ratio de partage. Partager les "
+#~ "torrents téléchargés jusqu'à\n"
+#~ "                              ce que le ratio de partage atteigne RATIO. "
+#~ "1.0 est recommandé.\n"
+#~ "                              Si l'option --seed-time est spécifiée avec "
+#~ "cette option,\n"
+#~ "                              le partage s'arrête dès qu'une des deux "
+#~ "conditions\n"
+#~ "                              est satisfaite."
+
+#~ msgid ""
 #~ " --follow-metalink=true|false Set to false to prevent aria2 from\n"
 #~ "                              entering Metalink mode even if the filename "
 #~ "of\n"
@@ -1725,84 +1726,56 @@ msgstr "La jonction du port a engendré des erreurs.\n"
 #~ "metalink.\n"
 #~ "                              Défaut: true"
 
+#~ msgid ""
+#~ " You can specify multiple URLs. All URLs must point to the same file\n"
+#~ " or downloading will fail."
+#~ msgstr ""
+#~ " Vous pouvez spécifier plusieurs URLs. Tous les URLs doivent pointer vers "
+#~ "le même fichier\n"
+#~ " sinon le téléchargement échoue."
+
 #~ msgid "Examples:"
-#~ msgstr " Exemples:"
+#~ msgstr "Exemples:"
 
 #~ msgid " Download a file using 1 connection:"
-#~ msgstr "Téléchargez un fichier avec 1 connexion:"
+#~ msgstr " Téléchargez un fichier avec 1 connexion:"
 
 #~ msgid " Download a file using 2 connections:"
-#~ msgstr "Téléchargez un fichier avec 2 connexions:"
+#~ msgstr " Téléchargez un fichier avec 2 connexions:"
 
 #~ msgid ""
 #~ " Download a file using 2 connections, each connects to a different server:"
 #~ msgstr ""
-#~ "Téléchargez un fichier avec 2 connexions, chacune se connectant à un "
+#~ " Téléchargez un fichier avec 2 connexions, chacune se connectant à un "
 #~ "serveur différent:"
 
 #~ msgid " You can mix up different protocols:"
-#~ msgstr "Vous pouvez mélanger différents protocoles:"
+#~ msgstr " Vous pouvez mélanger différents protocoles:"
 
 #~ msgid " Download a torrent:"
-#~ msgstr "Téléchargez un torrent:"
+#~ msgstr " Téléchargez un torrent:"
 
 #~ msgid " Download a torrent using a local .torrent file:"
-#~ msgstr "Téléchargez un torrent en utilisant un fichier local .torrent:"
+#~ msgstr " Téléchargez un torrent en utilisant un fichier local .torrent:"
 
 #~ msgid " Download only selected files:"
-#~ msgstr "Télécharger seulement les fichiers séléctionnés:"
+#~ msgstr " Télécharger seulement les fichiers séléctionnés:"
 
 #~ msgid " Print file listing of .torrent file:"
-#~ msgstr "Imprimer la liste des fichiers .torrent:"
-
-#, fuzzy
-#~ msgid " Download a file using torrent and http/ftp server"
-#~ msgstr "Télécharger un fichier en utilisant un fichier local .metalink:"
+#~ msgstr " Imprimer la liste des fichiers .torrent:"
 
 #~ msgid " Metalink downloading:"
-#~ msgstr "Téléchargement Metalink:"
+#~ msgstr " Téléchargement Metalink:"
 
 #~ msgid " Download a file using local .metalink file:"
-#~ msgstr "Télécharger un fichier en utilisant un fichier local .metalink:"
-
-#, fuzzy
-#~ msgid ""
-#~ " Download a file using a local .metalink file with preferred server "
-#~ "locations:"
-#~ msgstr "Télécharger un fichier en utilisant un fichier local .metalink:"
+#~ msgstr " Télécharger un fichier en utilisant un fichier local .metalink:"
 
 #~ msgid " Metalink downloading with preferences:"
-#~ msgstr "Téléchargement Metalink avec comme préférences:"
+#~ msgstr " Téléchargement Metalink avec comme préférences:"
 
 #~ msgid " Download only selected files using index:"
 #~ msgstr ""
-#~ "Télécharger seulement les fichiers sélectionnés en utilisant l'index:"
+#~ " Télécharger seulement les fichiers sélectionnés en utilisant l'index:"
 
 #~ msgid " Print file listing of .metalink file:"
-#~ msgstr "Imprimer la liste de fichiers du fichier .metalink:"
-
-#~ msgid ""
-#~ " --listen-port=PORT           Set TCP port number for BitTorrent "
-#~ "downloads.\n"
-#~ "                              Default: 6881-6999"
-#~ msgstr ""
-#~ " --listen-port=PORT           Définir le numéro de port pour écouter dans "
-#~ "le cas d'une connexion P2P.\n"
-#~ "                              Default: 6881-6999"
-
-#~ msgid ""
-#~ "\n"
-#~ "The download was complete. <%s>\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Le t&eacute;l&eacute;chargement est complet. <%s>\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Some downloads were not complete because of errors. Check the log.\n"
-#~ "aria2 will resume download if the transfer is restarted."
-#~ msgstr ""
-#~ "\n"
-#~ "Certains t&eacute;l&eacute;chargements ne sont pas complets &agrave; "
-#~ "cause d'&eacute;rreurs. V&eacute;rifiez le log.\n"
-#~ "aria2 reprendra le transfert si le transfert est relanc&eacute;."
+#~ msgstr " Imprimer la liste de fichiers du fichier .metalink:"

@@ -1,3 +1,13 @@
+2007-12-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Updated translations
+	* po/{de,fr,ja,nl,ru}.po
+	
+	Added Brazilian Portuguese, Catalan, Italian, Spanish, Swedish
+	translations. Many thanks to translators.
+	* po/{ca,es,it,pt_BR,sv}.po
+	* po/LINGUAS
+
 2007-12-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added a notice about URL

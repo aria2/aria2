@@ -9,7 +9,7 @@
 # General Public License and is *not* in the public domain.
 
 PACKAGE = aria2c
-VERSION = 0.12.0rc
+VERSION = 0.12.0
 
 SHELL = /bin/sh
 
