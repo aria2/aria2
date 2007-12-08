@@ -55,7 +55,6 @@ void HttpRequestTest::testGetEndByte()
   int32_t index = 1;
   int32_t length = 1024*1024-1024;
   int32_t segmentLength = 1024*1024;
-  int32_t writtenLength = 1024;
 
   HttpRequest httpRequest;
   SegmentHandle segment = new PiecedSegment(segmentLength,

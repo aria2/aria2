@@ -37,7 +37,6 @@ void DataTest::testToString() {
 
 void DataTest::testGetData() {
   Data data("aria2", 5);
-  int len;
   CPPUNIT_ASSERT_EQUAL(0, memcmp("aria2", data.getData(), 5));
   CPPUNIT_ASSERT_EQUAL((int32_t)5, data.getLen());  
 

@@ -257,7 +257,7 @@ void RequestTest::testSetUrl17()
 void RequestTest::testRedirectUrl() {
   Request req;
   req.setKeepAlive(true);
-  bool v = req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
+  req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
   
   bool v2 = req.redirectUrl("http://aria.rednoah.co.jp/");
   CPPUNIT_ASSERT(v2);
@@ -279,19 +279,19 @@ void RequestTest::testRedirectUrl() {
 
 void RequestTest::testRedirectUrl2() {
   Request req;
-  bool v = req.setUrl("http://aria.rednoah.com/download.html");
+  req.setUrl("http://aria.rednoah.com/download.html");
   CPPUNIT_ASSERT_EQUAL(string(""), req.getPreviousUrl());
   req.setReferer("http://aria.rednoah.com/");
   // previousUrl is updated when referer is specified
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/"), req.getPreviousUrl());
-  bool v2 = req.redirectUrl("http://aria.rednoah.com/403.html");
+  req.redirectUrl("http://aria.rednoah.com/403.html");
 
   // previousUrl must be "" when redirection
   CPPUNIT_ASSERT_EQUAL(string(""), req.getPreviousUrl());
   // referer is unchagned
   CPPUNIT_ASSERT_EQUAL(string("http://aria.rednoah.com/"), req.getReferer());
 
-  bool v3 = req.redirectUrl("http://aria.rednoah.com/error.html");
+  req.redirectUrl("http://aria.rednoah.com/error.html");
 
   // previousUrl must be "" when redirection
   CPPUNIT_ASSERT_EQUAL(string(""), req.getPreviousUrl());
@@ -299,9 +299,9 @@ void RequestTest::testRedirectUrl2() {
   
 void RequestTest::testResetUrl() {
   Request req;
-  bool v = req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
+  req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
   req.setReferer("http://aria.rednoah.com:8080/");
-  bool v2 = req.redirectUrl("ftp://aria.rednoah.co.jp/");
+  req.redirectUrl("ftp://aria.rednoah.co.jp/");
 
   bool v3 = req.resetUrl();
   CPPUNIT_ASSERT(v3);

@@ -2,6 +2,12 @@
 
 	Removed unnecessary string copy. Updated doc and corrected indentation.
 	* src/Base64.cc
+
+	Fixed compilation warnings
+	* test/DataTest.cc
+	* test/HttpRequestTest.cc
+	* test/MetaFileUtilTest.cc
+	* test/RequestTest.cc
 	
 	* Release 0.12.0
 
