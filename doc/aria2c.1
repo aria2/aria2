@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 12/05/2007
+.\"      Date: 12/08/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "12/05/2007" "" ""
+.TH "ARIA2C" "1" "12/08/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -34,6 +34,11 @@ The directory to store the downloaded file\.
 \-o, \-\-out=FILE
 .RS 4
 The file name of the downloaded file\.
+.PP
+Note
+.RS 4
+In Metalink, BitTorrent download you cannot specify file name\. The file name specified here is only used when the URLs fed to aria2 is done by command line without \-i option, like this: aria2c \-o myfile\.zip http://mirror1/file\.zip http://mirror2/file\.zip
+.RE
 .RE
 .PP
 \-l, \-\-log=LOG
@@ -355,6 +360,11 @@ Set TCP port number for BitTorrent downloads\. Multiple ports can be specified b
 \fI6881\-6999\fR\. "," and "\-" can be used together:
 \fI6881\-6889,6999\fR\. Default:
 \fI6881\-6999\fR
+.PP
+Note
+.RS 4
+Make sure that the specified ports are open for incoming TCP traffic\.
+.RE
 .RE
 .PP
 \-\-max\-upload\-limit=SPEED
@@ -440,6 +450,11 @@ Print this message and exit\.
 URL
 .RS 4
 You can specify multiple URLs\. Unless you specify \-Z option, all URLs must point to the same file or downloading will fail\. You can specify both torrent file with \-T option and URLs\. By doing this, download a file from both torrent swarm and http(s)/ftp server at the same time, while the data from http(s)/ftp are uploaded to the torrent swarm\. Note that only single file torrent can be integrated with http(s)/ftp\.
+.PP
+Note
+.RS 4
+Make sure that URL is quoted with single(\') or double(") quotation if it contains "&" or any characters that have special meaning in shell\.
+.RE
 .RE
 .SH "EXAMPLES"
 .SS "HTTP/FTP Segmented Download"

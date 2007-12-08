@@ -33,6 +33,11 @@ OPTIONS
 
 -o, --out=FILE::
   The file name of the downloaded file.
+  Note;;
+    In Metalink, BitTorrent download you cannot specify file name.
+    The file name specified here is only used when the URLs fed to aria2
+    is done by command line without -i option, like this:
+    aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
 
 -l, --log=LOG::
   The file name of the log file. If '-' is specified, log is written to
@@ -264,6 +269,8 @@ OPTIONS
   You can also use "-" to specify a range: '6881-6999'.
   "," and "-" can be used together: '6881-6889,6999'.
   Default: '6881-6999'
+  Note;;
+    Make sure that the specified ports are open for incoming TCP traffic.
 
 --max-upload-limit=SPEED::
   Set max upload speed in bytes per sec. '0' means unrestricted.
@@ -334,6 +341,9 @@ URL::
  download a file from both torrent swarm and http(s)/ftp server at the same time,
  while the data from http(s)/ftp are uploaded to the torrent swarm. Note that
  only single file torrent can be integrated with http(s)/ftp.
+ Note;;
+   Make sure that URL is quoted with single(\') or double(") quotation if it
+   contains "&" or any characters that have special meaning in shell.
 
 EXAMPLES
 --------
