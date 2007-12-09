@@ -100,10 +100,14 @@ bool DefaultBtAnnounce::isAnnounceReady() {
 
 string DefaultBtAnnounce::getAnnounceUrl() {
   if(isStoppedAnnounceReady()) {
-    announceList.moveToStoppedAllowedTier();
+    if(!announceList.currentTierAcceptsStoppedEvent()) {
+      announceList.moveToStoppedAllowedTier();
+    }
     announceList.setEvent(AnnounceTier::STOPPED);
   } else if(isCompletedAnnounceReady()) {
-    announceList.moveToCompletedAllowedTier();
+    if(!announceList.currentTierAcceptsCompletedEvent()) {
+      announceList.moveToCompletedAllowedTier();
+    }
     announceList.setEvent(AnnounceTier::COMPLETED);
   } else if(isDefaultAnnounceReady()) {
     // If download completed before "started" event is sent to a tracker,

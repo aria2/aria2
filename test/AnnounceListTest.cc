@@ -270,10 +270,13 @@ void AnnounceListTest::testMoveToStoppedAllowedTier() {
 
   AnnounceList announceList(tiers);
 
+  CPPUNIT_ASSERT(!announceList.currentTierAcceptsStoppedEvent());
   CPPUNIT_ASSERT_EQUAL(string("tracker1"), announceList.getAnnounce());
   announceList.moveToStoppedAllowedTier();
+  CPPUNIT_ASSERT(announceList.currentTierAcceptsStoppedEvent());
   CPPUNIT_ASSERT_EQUAL(string("tracker2"), announceList.getAnnounce());
   announceList.announceFailure();
+  CPPUNIT_ASSERT(!announceList.currentTierAcceptsStoppedEvent());
   CPPUNIT_ASSERT_EQUAL(string("tracker3"), announceList.getAnnounce());
   // test wrapped search
   announceList.moveToStoppedAllowedTier();
@@ -293,10 +296,13 @@ void AnnounceListTest::testMoveToCompletedAllowedTier() {
 
   AnnounceList announceList(tiers);
 
+  CPPUNIT_ASSERT(!announceList.currentTierAcceptsCompletedEvent());
   CPPUNIT_ASSERT_EQUAL(string("tracker1"), announceList.getAnnounce());
   announceList.moveToStoppedAllowedTier();
+  CPPUNIT_ASSERT(announceList.currentTierAcceptsCompletedEvent());
   CPPUNIT_ASSERT_EQUAL(string("tracker2"), announceList.getAnnounce());
   announceList.announceFailure();
+  CPPUNIT_ASSERT(!announceList.currentTierAcceptsCompletedEvent());
   CPPUNIT_ASSERT_EQUAL(string("tracker3"), announceList.getAnnounce());
   // test wrapped search
   announceList.moveToStoppedAllowedTier();

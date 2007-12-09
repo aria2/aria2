@@ -119,6 +119,10 @@ public:
   bool allTiersFailed() const;
 
   void resetTier();
+
+  bool currentTierAcceptsStoppedEvent() const;
+
+  bool currentTierAcceptsCompletedEvent() const;
 };
 
 #endif // _D_ANNOUNCE_LIST_H_

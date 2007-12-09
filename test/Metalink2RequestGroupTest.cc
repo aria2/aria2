@@ -33,6 +33,7 @@ void Metalink2RequestGroupTest::testGenerate()
   {
     RequestGroupHandle rg = groups[0];
     Strings uris = rg->getUris();
+    sort(uris.begin(), uris.end());
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
     CPPUNIT_ASSERT_EQUAL(string("ftp://ftphost/aria2-0.5.2.tar.bz2"), uris[0]);
     CPPUNIT_ASSERT_EQUAL(string("http://httphost/aria2-0.5.2.tar.bz2"), uris[1]);

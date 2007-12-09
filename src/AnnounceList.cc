@@ -237,3 +237,21 @@ void AnnounceList::resetTier()
 {
   resetIterator();
 }
+
+bool AnnounceList::currentTierAcceptsStoppedEvent() const
+{
+  if(currentTrackerInitialized) {
+    return FindStoppedAllowedTier()(*currentTier);
+  } else {
+    return false;
+  }
+}
+
+bool AnnounceList::currentTierAcceptsCompletedEvent() const
+{
+  if(currentTrackerInitialized) {
+    return FindCompletedAllowedTier()(*currentTier);
+  } else {
+    return false;
+  }
+}
