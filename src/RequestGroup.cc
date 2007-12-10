@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "RequestGroup.h"
+#include "PostDownloadHandler.h"
 #include "DownloadEngine.h"
 #include "DefaultSegmentManFactory.h"
 #include "NullProgressInfoFile.h"
