@@ -20,7 +20,7 @@ aria2 is a utility for downloading files.
 The supported protocols are http(s)/ftp/BitTorrent/Metalink.
 aria2 has powerful segmented downloading ability, downloading a file
 from multiple sources and multiple protocols, utilizing your download bandwidth to the max.
-It even supports downloading a file from http(s)/ftp and BitTorrent at the same time, while the data downloaded form http(s)/ftp is uploaded to BitTorrent swarm.
+It even supports downloading a file from http(s)/ftp and BitTorrent at the same time, while the data downloaded from http(s)/ftp is uploaded to BitTorrent swarm.
 
 aria2 also provides most reliable http(s)/ftp downloading experience ever.
 Using Metalink's chunk checksums, aria2 automatically validates chunk of data
