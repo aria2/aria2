@@ -32,14 +32,9 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkResource.h"
+#include "ServerHost.h"
 
-string MetalinkResource::type2String[] = {
-  "ftp", "http", "https", "bittorrent", "not_supported"
-};
+ServerHost::ServerHost(int32_t cuid, const string& hostname):
+  _cuid(cuid), _hostname(hostname) {}
 
-MetalinkResource::MetalinkResource():
-  maxConnections(-1)
-{}
-
-MetalinkResource::~MetalinkResource() {}
+ServerHost::~ServerHost() {}

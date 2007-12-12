@@ -146,7 +146,8 @@ SRCS =  Socket.h\
 	BtRegistry.cc BtRegistry.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 	PeerConnection.cc PeerConnection.h\
-	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h
+	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
+	ServerHost.cc
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST

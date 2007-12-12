@@ -160,6 +160,7 @@ bool AbstractCommand::execute() {
 }
 
 void AbstractCommand::tryReserved() {
+  _requestGroup->removeServerHost(cuid);
   Commands commands = _requestGroup->createNextCommand(e, 1);
   e->addCommand(commands);
 }

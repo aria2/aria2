@@ -46,6 +46,7 @@
 #include "DefaultBtProgressInfoFile.h"
 #include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
+#include "ServerHost.h"
 
 FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     const RequestHandle& req,
@@ -73,6 +74,9 @@ bool FtpNegotiationCommand::executeInternal() {
     command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
     command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
+    if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
+      _requestGroup->removeURIWhoseHostnameIs(_requestGroup->searchServerHost(cuid)->getHostname());
+    }
     e->commands.push_back(command);
     return true;
   } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {

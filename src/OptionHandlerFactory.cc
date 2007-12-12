@@ -35,6 +35,7 @@
 #include "OptionHandlerFactory.h"
 #include "prefs.h"
 #include "OptionHandlerImpl.h"
+#include "a2functional.h"
 
 OptionHandlers OptionHandlerFactory::createOptionHandlers()
 {
@@ -102,6 +103,11 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new UnitNumberOptionHandler(PREF_NO_FILE_ALLOCATION_LIMIT, 0));
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_DIRECT_IO));
   handlers.push_back(new BooleanOptionHandler(PREF_ALLOW_PIECE_LENGTH_CHANGE));
+  {
+    const char* params[] = { V_HTTP, V_HTTPS, V_FTP, V_NONE };
+    handlers.push_back(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
+						  Strings(&params[0], &params[arrayLength(params)])));
+  }
 
   return handlers;
 }

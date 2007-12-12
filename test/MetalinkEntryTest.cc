@@ -9,6 +9,7 @@ class MetalinkEntryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDropUnsupportedResource);
   CPPUNIT_TEST(testReorderResourcesByPreference);
   CPPUNIT_TEST(testSetLocationPreference);
+  CPPUNIT_TEST(testSetProtocolPreference);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -21,6 +22,7 @@ public:
   void testDropUnsupportedResource();
   void testReorderResourcesByPreference();
   void testSetLocationPreference();
+  void testSetProtocolPreference();
 };
 
 
@@ -121,4 +123,15 @@ void MetalinkEntryTest::testSetLocationPreference()
   CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources[3]->preference);
   CPPUNIT_ASSERT_EQUAL(string("JP"), entry->resources[4]->location);
   CPPUNIT_ASSERT_EQUAL((int32_t)190, entry->resources[4]->preference);
+}
+
+void MetalinkEntryTest::testSetProtocolPreference()
+{
+  MetalinkEntryHandle entry = createTestEntry();
+  entry->setProtocolPreference("http", 1);
+  CPPUNIT_ASSERT_EQUAL(50, entry->resources[0]->preference); // ftp
+  CPPUNIT_ASSERT_EQUAL(101, entry->resources[1]->preference); // http, +1
+  CPPUNIT_ASSERT_EQUAL(60, entry->resources[2]->preference); // bittorrent
+  CPPUNIT_ASSERT_EQUAL(10, entry->resources[3]->preference); // not supported
+  CPPUNIT_ASSERT_EQUAL(90, entry->resources[4]->preference); // https
 }

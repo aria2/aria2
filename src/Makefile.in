@@ -291,7 +291,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
 	MultiFileAllocationIterator.h PeerConnection.cc \
 	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	IteratableChunkChecksumValidator.cc \
+	ServerHost.cc IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
@@ -524,11 +524,11 @@ am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
 	Peer.$(OBJEXT) BtRegistry.$(OBJEXT) \
 	MultiFileAllocationIterator.$(OBJEXT) PeerConnection.$(OBJEXT) \
-	ByteArrayDiskWriter.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
-	$(am__objects_11)
+	ByteArrayDiskWriter.$(OBJEXT) ServerHost.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
+	$(am__objects_10) $(am__objects_11)
 am_libaria2c_a_OBJECTS = $(am__objects_12)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -817,7 +817,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
 	MultiFileAllocationIterator.h PeerConnection.cc \
 	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
+	ServerHost.cc $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11)
@@ -1075,6 +1075,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ResourcesMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SeedCheckCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentMan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ServerHost.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBtMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleLogger.Po@am__quote@

@@ -128,6 +128,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_SEED_RATIO, "1.0");
   op->put(PREF_ENABLE_DIRECT_IO, V_FALSE);
   op->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_FALSE);
+  op->put(PREF_METALINK_PREFERRED_PROTOCOL, V_NONE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -205,6 +206,7 @@ Option* option_processing(int argc, char* const argv[])
       { "metalink-os", required_argument, &lopt, 102 },
       { "follow-metalink", required_argument, &lopt, 103 },
       { "metalink-location", required_argument, &lopt, 104 },
+      { "metalink-preferred-protocol", required_argument, &lopt, 105 },
 #endif // ENABLE_METALINK
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
@@ -299,6 +301,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 104:
 	cmdstream << PREF_METALINK_LOCATION << "=" << optarg << "\n";
+	break;
+      case 105:
+	cmdstream << PREF_METALINK_PREFERRED_PROTOCOL << "=" << optarg << "\n";
 	break;
       case 200:
 	cmdstream << PREF_LOWEST_SPEED_LIMIT << "=" << optarg << "\n";

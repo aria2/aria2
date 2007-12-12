@@ -74,6 +74,29 @@ void MetalinkEntry::setLocationPreference(const Strings& locations,
 	   AddLocationPreference(locations, preferenceToAdd));
 }
 
+class AddProtocolPreference {
+private:
+  const string& _protocol;
+  int32_t _preferenceToAdd;
+public:
+  AddProtocolPreference(const string& protocol, int32_t prefToAdd):
+    _protocol(protocol), _preferenceToAdd(prefToAdd) {}
+
+  void operator()(const MetalinkResourceHandle& res) const
+  {
+    if(_protocol == MetalinkResource::getTypeString(res->type)) {
+      res->preference += _preferenceToAdd;
+    }
+  }
+};
+
+void MetalinkEntry::setProtocolPreference(const string& protocol,
+					  int32_t preferenceToAdd)
+{
+  for_each(resources.begin(), resources.end(),
+	   AddProtocolPreference(protocol, preferenceToAdd));
+}
+
 class PrefOrder {
 public:
   bool operator()(const MetalinkResourceHandle& res1,

@@ -50,6 +50,7 @@
 #include "DefaultBtProgressInfoFile.h"
 #include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
+#include "ServerHost.h"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -84,6 +85,9 @@ bool HttpResponseCommand::executeInternal()
     logger->info(MSG_REDIRECT, cuid, httpResponse->getRedirectURI().c_str());
     e->noWait = true;
     return prepareForRetry(0);
+  }
+  if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
+    _requestGroup->removeURIWhoseHostnameIs(_requestGroup->searchServerHost(cuid)->getHostname());
   }
   if(_requestGroup->getPieceStorage().isNull()) {
     int64_t totalLength = httpResponse->getEntityLength();

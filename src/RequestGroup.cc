@@ -63,6 +63,7 @@
 #include "DownloadHandlerFactory.h"
 #include "MemoryBufferPreDownloadHandler.h"
 #include "DownloadHandlerConstants.h"
+#include "ServerHost.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -97,6 +98,7 @@ RequestGroup::RequestGroup(const Option* option,
   _preLocalFileCheckEnabled(true),
   _haltRequested(false),
   _forceHaltRequested(false),
+  _singleHostMultiConnectionEnabled(true),
   _option(option),
   _logger(LogFactory::getInstance())
 {
@@ -381,18 +383,28 @@ Commands RequestGroup::createNextCommandWithAdj(DownloadEngine* e, int32_t numAd
 Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, const string& method)
 {
   Commands commands;
+  Strings pendingURIs;
   for(;!_uris.empty() && numCommand--; _uris.pop_front()) {
     string uri = _uris.front();
-    _spentUris.push_back(uri);
     RequestHandle req = new Request();
-    req->setReferer(_option->get(PREF_REFERER));
-    req->setMethod(method);
     if(req->setUrl(uri)) {
-      commands.push_back(InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e));
+      ServerHostHandle sv = _singleHostMultiConnectionEnabled ? 0 : searchServerHost(req->getHost());
+      if(sv.isNull()) {
+	_spentUris.push_back(uri);
+	req->setReferer(_option->get(PREF_REFERER));
+	req->setMethod(method);
+	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e);
+	ServerHostHandle sv = new ServerHost(command->getCuid(), req->getHost());
+	registerServerHost(sv);
+	commands.push_back(command);
+      } else {
+	pendingURIs.push_front(uri);
+      }
     } else {
       _logger->error(MSG_UNRECOGNIZED_URI, req->getUrl().c_str());
     }
   }
+  copy(pendingURIs.begin(), pendingURIs.end(), front_inserter(_uris));
   return commands;
 }
 
@@ -743,4 +755,79 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
 			    downloadFinished()?
 			    DownloadResult::FINISHED :
 			    DownloadResult::NOT_YET);
+}
+
+void RequestGroup::registerServerHost(const ServerHostHandle& serverHost)
+{
+  _serverHosts.push_back(serverHost);
+}
+
+class FindServerHostByCUID
+{
+private:
+  int32_t _cuid;
+public:
+  FindServerHostByCUID(int32_t cuid):_cuid(cuid) {}
+
+  bool operator()(const ServerHostHandle& sv) const
+  {
+    return sv->getCuid() == _cuid;
+  }
+};
+
+ServerHostHandle RequestGroup::searchServerHost(int32_t cuid) const
+{
+  ServerHosts::const_iterator itr = find_if(_serverHosts.begin(),
+					    _serverHosts.end(),
+					    FindServerHostByCUID(cuid));
+  if(itr == _serverHosts.end()) {
+    return 0;
+  } else {
+    return *itr;
+  }
+}
+
+class FindServerHostByHostname
+{
+private:
+  const string& _hostname;
+public:
+  FindServerHostByHostname(const string& hostname):_hostname(hostname) {}
+
+  bool operator()(const ServerHostHandle& sv) const
+  {
+    return sv->getHostname() == _hostname;
+  }
+};
+
+ServerHostHandle RequestGroup::searchServerHost(const string& hostname) const
+{
+  ServerHosts::const_iterator itr = find_if(_serverHosts.begin(),
+					    _serverHosts.end(),
+					    FindServerHostByHostname(hostname));
+  if(itr == _serverHosts.end()) {
+    return 0;
+  } else {
+    return *itr;
+  }
+}
+
+void RequestGroup::removeServerHost(int32_t cuid)
+{
+  remove_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid));
+}
+  
+void RequestGroup::removeURIWhoseHostnameIs(const string& hostname)
+{
+  Strings newURIs;
+  Request req;
+  for(Strings::const_iterator itr = _uris.begin(); itr != _uris.end(); ++itr) {
+    if((*itr).find(hostname) == string::npos ||
+       req.setUrl(*itr) && req.getHost() != hostname) {
+      newURIs.push_back(*itr);
+    }
+  }
+  _logger->debug("GUID#%d - Removed %d duplicate hostname URIs",
+		 _gid, _uris.size()-newURIs.size());
+  _uris = newURIs;
 }

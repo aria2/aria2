@@ -32,14 +32,38 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "MetalinkResource.h"
+#ifndef _D_SERVER_HOST_H_
+#define _D_SERVER_HOST_H_
 
-string MetalinkResource::type2String[] = {
-  "ftp", "http", "https", "bittorrent", "not_supported"
+#include "common.h"
+
+class ServerHost {
+private:
+  int32_t _cuid;
+
+  string _hostname;
+  
+public:
+  ServerHost(int32_t cuid, const string& hostname);
+
+  ~ServerHost();
+
+  int32_t getCuid() const
+  {
+    return _cuid;
+  }
+
+  const string& getHostname() const
+  {
+    return _hostname;
+  }
+
+  bool operator<(const ServerHost& server) const
+  {
+    return this->_cuid < server._cuid;
+  }
 };
 
-MetalinkResource::MetalinkResource():
-  maxConnections(-1)
-{}
+typedef SharedHandle<ServerHost> ServerHostHandle;
 
-MetalinkResource::~MetalinkResource() {}
+#endif // _D_SERVER_HOST_H_

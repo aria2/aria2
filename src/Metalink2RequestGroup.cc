@@ -133,6 +133,9 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
       Util::slice(locations, _option->get(PREF_METALINK_LOCATION), ',', true);
       entry->setLocationPreference(locations, 100);
     }
+    if(_option->get(PREF_METALINK_PREFERRED_PROTOCOL) != V_NONE) {
+      entry->setProtocolPreference(_option->get(PREF_METALINK_PREFERRED_PROTOCOL), 100);
+    }
     if(useIndex) {
       if(find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {
 	continue;
@@ -206,6 +209,8 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :
 				min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
+    // In metalink, multi connection to a single host is not allowed.
+    rg->setSingleHostMultiConnectionEnabled(false);
 
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false

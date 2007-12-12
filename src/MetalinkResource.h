@@ -40,12 +40,14 @@
 class MetalinkResource {
 public:
   enum TYPE {
-    TYPE_FTP,
+    TYPE_FTP = 0,
     TYPE_HTTP,
     TYPE_HTTPS,
     TYPE_BITTORRENT,
     TYPE_NOT_SUPPORTED
   };
+
+  static string type2String[];
 public:
   string url;
   TYPE type;
@@ -65,6 +67,11 @@ public:
       this->maxConnections = metalinkResource.maxConnections;
     }
     return *this;
+  }
+
+  static const string& getTypeString(TYPE type)
+  {
+    return type2String[type];
   }
 };
 

@@ -71,6 +71,9 @@ class CheckIntegrityEntry;
 typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
 class DownloadResult;
 typedef SharedHandle<DownloadResult> DownloadResultHandle;
+class ServerHost;
+typedef SharedHandle<ServerHost> ServerHostHandle;
+typedef deque<ServerHostHandle> ServerHosts;
 
 class RequestGroup {
 private:
@@ -103,6 +106,8 @@ private:
 
   DependencyHandle _dependency;
 
+  ServerHosts _serverHosts;
+
   bool _fileAllocationEnabled;
 
   bool _preLocalFileCheckEnabled;
@@ -110,6 +115,8 @@ private:
   bool _haltRequested;
 
   bool _forceHaltRequested;
+
+  bool _singleHostMultiConnectionEnabled;
 
   PreDownloadHandlers _preDownloadHandlers;
 
@@ -310,6 +317,33 @@ public:
   {
     return _option;
   }
+
+  bool isSingleHostMultiConnectionEnabled() const
+  {
+    return _singleHostMultiConnectionEnabled;
+  }
+
+  void setSingleHostMultiConnectionEnabled(bool f)
+  {
+    _singleHostMultiConnectionEnabled = f;
+  }
+
+  /**
+   * Registers given ServerHost.
+   */
+  void registerServerHost(const ServerHostHandle& serverHost);
+
+  /**
+   * Returns ServerHost whose cuid is given cuid. If it is not found, returns
+   * 0.
+   */
+  ServerHostHandle searchServerHost(int32_t cuid) const;
+
+  ServerHostHandle searchServerHost(const string& hostname) const;
+
+  void removeServerHost(int32_t cuid);
+  
+  void removeURIWhoseHostnameIs(const string& hostname);
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

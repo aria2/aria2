@@ -225,5 +225,10 @@
 #define PREF_METALINK_SERVERS "metalink-servers"
 // values: true | false | mem
 #define PREF_FOLLOW_METALINK "follow-metalink"
+// values: http | https | ftp | none
+#define PREF_METALINK_PREFERRED_PROTOCOL "metalink-preferred-protocol"
+#  define V_HTTP "http"
+#  define V_HTTPS "https"
+#  define V_FTP "ftp"
 
 #endif // _D_PREFS_H_

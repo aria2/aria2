@@ -300,6 +300,10 @@ void showUsage() {
   cout << _(" --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 	    "                              A comma-deliminated list of locations is\n"
 	    "                              acceptable.") << endl;
+  cout << _(" --metalink-preferred-protocol=PROTO Specify preferred protocol. The possible\n"
+	    "                              values are 'http', 'https', 'ftp' and 'none'.\n"
+	    "                              Specifiy none to disable this feature.") << "\n"
+       << DEFAULT_MSG << "none" << "\n";
   cout << _(" --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 	    "                              whose suffix is .metaink or content type is\n"
 	    "                              application/metalink+xml is downloaded, aria2\n"
