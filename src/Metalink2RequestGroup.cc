@@ -55,27 +55,17 @@ Metalink2RequestGroup::~Metalink2RequestGroup() {}
 
 class AccumulateNonP2PUrl {
 private:
-  Strings* urlsPtr;
-  int32_t split;
+  Strings& urlsPtr;
 public:
-  AccumulateNonP2PUrl(Strings* urlsPtr, int32_t split)
-    :urlsPtr(urlsPtr),
-     split(split) {}
+  AccumulateNonP2PUrl(Strings& urlsPtr)
+    :urlsPtr(urlsPtr) {}
 
   void operator()(const MetalinkResourceHandle& resource) {
-    int32_t maxConnections;
-    if(resource->maxConnections < 0) {
-      maxConnections = split;
-    } else {
-      maxConnections = min<int32_t>(resource->maxConnections, split);
-    }
     switch(resource->type) {
     case MetalinkResource::TYPE_HTTP:
     case MetalinkResource::TYPE_HTTPS:
     case MetalinkResource::TYPE_FTP:
-      for(int32_t s = 1; s <= maxConnections; s++) {
-	urlsPtr->push_back(resource->url);
-      }
+      urlsPtr.push_back(resource->url);
       break;
     default:
       break;
@@ -174,7 +164,7 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
     entry->reorderResourcesByPreference();
     Strings uris;
     for_each(entry->resources.begin(), entry->resources.end(),
-	     AccumulateNonP2PUrl(&uris, _option->getAsInt(PREF_SPLIT)));
+	     AccumulateNonP2PUrl(uris));
     RequestGroupHandle rg = new RequestGroup(_option, uris);
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.

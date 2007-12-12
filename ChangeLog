@@ -1,8 +1,13 @@
 2007-12-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	If several protocols are available for a mirror, aria2 now use one of
-	them. --metalink-preferred-protocol option was added to specify the
-	preference of protocol.
+	Disabled -s option in metalink download.
+	* src/Metalink2RequestGroup.cc
+
+2007-12-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	If several protocols are available for a mirror in metalink file,
+	aria2 now use one of them. --metalink-preferred-protocol option was
+	added to specify the preference of protocol.
 	* src/AbstractCommand.cc
 	* src/OptionHandlerFactory.cc
 	* src/ServerHost.{h, cc}
