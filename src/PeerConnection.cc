@@ -71,10 +71,10 @@ int32_t PeerConnection::sendMessage(const unsigned char* data, int32_t dataLengt
 }
 
 bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
-  if(!socket->isReadable(0)) {
-    return false;
-  }
   if(resbufLength == 0 && lenbufLength != 4) {
+    if(!socket->isReadable(0)) {
+      return false;
+    }
     // read payload size, 4-byte integer
     int32_t remain = 4-lenbufLength;
     int32_t temp = remain;
@@ -82,6 +82,8 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
     socket->readData((char*)lenbuf+lenbufLength, temp);
     if(temp == 0) {
       // we got EOF
+      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%d",
+		    cuid, remain);
       throw new DlAbortEx(EX_EOF_FROM_PEER);
     }
     if(remain != temp) {
@@ -106,6 +108,8 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
     socket->readData((char*)resbuf+resbufLength, remaining);
     if(remaining == 0) {
       // we got EOF
+      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), payloadlen=%d, remaining=%d",
+		    cuid, currentPayloadLength, remaining);
       throw new DlAbortEx(EX_EOF_FROM_PEER);
     }
     resbufLength += remaining;
@@ -134,6 +138,8 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
     socket->readData((char*)resbuf+resbufLength, temp);
     if(temp == 0) {
       // we got EOF
+      logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%d",
+		    cuid, remain);
       throw new DlAbortEx(EX_EOF_FROM_PEER);
     }
   }
