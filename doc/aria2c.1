@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 12/10/2007
+.\"      Date: 12/12/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "12/10/2007" "" ""
+.TH "ARIA2C" "1" "12/12/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -344,7 +344,16 @@ The path to the \.torrent file\.
 .PP
 \-\-follow\-torrent=\fItrue\fR|\fIfalse\fR|\fImem\fR
 .RS 4
-If true or mem is specified, when a file whose suffix is \.torrent or content type is application/x\-bittorrent is downloaded, aria2 parses it as a torrent file and downloads files mentioned in it\. If mem is specified, a torrent file is not written to the disk, but is just kept in memory\. If false is specified, the action mentioned above is not taken\. Default: true
+If
+\fItrue\fR
+or
+\fImem\fR
+is specified, when a file whose suffix is "\.torrent" or content type is "application/x\-bittorrent" is downloaded, aria2 parses it as a torrent file and downloads files mentioned in it\. If
+\fImem\fR
+is specified, a torrent file is not written to the disk, but is just kept in memory\. If
+\fIfalse\fR
+is specified, the action mentioned above is not taken\. Default:
+\fItrue\fR
 .RE
 .PP
 \-\-direct\-file\-mapping=\fItrue\fR|\fIfalse\fR
@@ -431,9 +440,30 @@ The location of the preferred server\. A comma\-deliminated list of locations is
 \fIJP,US\fR\.
 .RE
 .PP
+\-\-metalink\-preferred\-protocol=PROTO
+.RS 4
+Specify preferred protocol\. The possible values are
+\fIhttp\fR,
+\fIhttps\fR,
+\fIftp\fR
+and
+\fInone\fR\. Specifiy
+\fInone\fR
+to disable this feature\. Default:
+\fInone\fR
+.RE
+.PP
 \-\-follow\-metalink=\fItrue\fR|\fIfalse\fR|\fImem\fR
 .RS 4
-If true or mem is specified, when a file whose suffix is \.metaink or content type is application/metalink+xml is downloaded, aria2 parses it as a metalink file and downloads files mentioned in it\. If mem is specified, a metalink file is not written to the disk, but is just kept in memory\. If false is specified, the action mentioned above is not taken\. Default:
+If
+\fItrue\fR
+or
+\fImem\fR
+is specified, when a file whose suffix is "\.metaink" or content type is "application/metalink+xml" is downloaded, aria2 parses it as a metalink file and downloads files mentioned in it\. If
+\fImem\fR
+is specified, a metalink file is not written to the disk, but is just kept in memory\. If
+\fIfalse\fR
+is specified, the action mentioned above is not taken\. Default:
 \fItrue\fR
 .RE
 .PP
