@@ -1,13 +1,13 @@
-#include "XML2SAXMetalinkProcessor.h"
+#include "MetalinkProcessorFactory.h"
 #include "MetalinkParserStateMachine.h"
 #include "Exception.h"
 #include "DefaultDiskWriter.h"
 #include "ByteArrayDiskWriter.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-class XML2SAXMetalinkProcessorTest:public CppUnit::TestFixture {
+class MetalinkProcessorTest:public CppUnit::TestFixture {
 
-  CPPUNIT_TEST_SUITE(XML2SAXMetalinkProcessorTest);
+  CPPUNIT_TEST_SUITE(MetalinkProcessorTest);
   CPPUNIT_TEST(testParseFile);
   CPPUNIT_TEST(testParseFromBinaryStream);
   CPPUNIT_TEST(testMalformedXML);
@@ -28,13 +28,6 @@ class XML2SAXMetalinkProcessorTest:public CppUnit::TestFixture {
 private:
 
 public:
-  void setUp() {
-    xmlInitParser();
-  }
-  void tearDown() {
-    xmlCleanupParser();
-  }
-
   void testParseFile();
   void testParseFromBinaryStream();
   void testMalformedXML();
@@ -54,13 +47,13 @@ public:
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION( XML2SAXMetalinkProcessorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkProcessorTest );
 
-void XML2SAXMetalinkProcessorTest::testParseFile()
+void MetalinkProcessorTest::testParseFile()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   try {
-    MetalinkerHandle metalinker = proc.parseFile("test.xml");
+    MetalinkerHandle metalinker = proc->parseFile("test.xml");
 
     MetalinkEntries::iterator entryItr = metalinker->entries.begin();
 
@@ -146,14 +139,14 @@ void XML2SAXMetalinkProcessorTest::testParseFile()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testParseFromBinaryStream()
+void MetalinkProcessorTest::testParseFromBinaryStream()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   DefaultDiskWriterHandle dw = new DefaultDiskWriter();
   dw->openExistingFile("test.xml");
   
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
 
     MetalinkEntries::iterator entryItr = m->entries.begin();
     MetalinkEntryHandle entry1 = *entryItr;
@@ -164,14 +157,14 @@ void XML2SAXMetalinkProcessorTest::testParseFromBinaryStream()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testMalformedXML()
+void MetalinkProcessorTest::testMalformedXML()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink><files></file></metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << *e << endl;
@@ -179,14 +172,14 @@ void XML2SAXMetalinkProcessorTest::testMalformedXML()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testMalformedXML2()
+void MetalinkProcessorTest::testMalformedXML2()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink><files></files>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     cerr << *e << endl;
@@ -194,9 +187,9 @@ void XML2SAXMetalinkProcessorTest::testMalformedXML2()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testBadSize()
+void MetalinkProcessorTest::testBadSize()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -210,7 +203,7 @@ void XML2SAXMetalinkProcessorTest::testBadSize()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
 
     MetalinkEntries::iterator entryItr = m->entries.begin();
     MetalinkEntryHandle e = *entryItr;
@@ -226,9 +219,9 @@ void XML2SAXMetalinkProcessorTest::testBadSize()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testBadMaxConn()
+void MetalinkProcessorTest::testBadMaxConn()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -243,7 +236,7 @@ void XML2SAXMetalinkProcessorTest::testBadMaxConn()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
 
     MetalinkEntries::iterator entryItr = m->entries.begin();
     MetalinkEntryHandle e = *entryItr;
@@ -254,9 +247,9 @@ void XML2SAXMetalinkProcessorTest::testBadMaxConn()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testNoName()
+void MetalinkProcessorTest::testNoName()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -276,7 +269,7 @@ void XML2SAXMetalinkProcessorTest::testNoName()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
     MetalinkEntries::iterator entryItr = m->entries.begin();
     MetalinkEntryHandle e = *entryItr;
@@ -287,9 +280,9 @@ void XML2SAXMetalinkProcessorTest::testNoName()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testBadURLPrefs()
+void MetalinkProcessorTest::testBadURLPrefs()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -306,7 +299,7 @@ void XML2SAXMetalinkProcessorTest::testBadURLPrefs()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     MetalinkEntryHandle e = m->entries[0];
     MetalinkResourceHandle r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
@@ -319,9 +312,9 @@ void XML2SAXMetalinkProcessorTest::testBadURLPrefs()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testBadURLMaxConn()
+void MetalinkProcessorTest::testBadURLMaxConn()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -338,7 +331,7 @@ void XML2SAXMetalinkProcessorTest::testBadURLMaxConn()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     MetalinkEntryHandle e = m->entries[0];
     MetalinkResourceHandle r = e->resources[0];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, r->type);
@@ -352,9 +345,9 @@ void XML2SAXMetalinkProcessorTest::testBadURLMaxConn()
 }
 
 #ifdef ENABLE_MESSAGE_DIGEST
-void XML2SAXMetalinkProcessorTest::testUnsupportedType()
+void MetalinkProcessorTest::testUnsupportedType()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -373,7 +366,7 @@ void XML2SAXMetalinkProcessorTest::testUnsupportedType()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     MetalinkEntryHandle e = m->entries[0];
     CPPUNIT_ASSERT_EQUAL((size_t)3, e->resources.size());
     MetalinkResourceHandle r1 = e->resources[0];
@@ -388,9 +381,9 @@ void XML2SAXMetalinkProcessorTest::testUnsupportedType()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testMultiplePieces()
+void MetalinkProcessorTest::testMultiplePieces()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -409,7 +402,7 @@ void XML2SAXMetalinkProcessorTest::testMultiplePieces()
 
   try {
     // aria2 prefers sha1
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     MetalinkEntryHandle e = m->entries[0];
     ChunkChecksumHandle c = e->chunkChecksum;
  
@@ -421,9 +414,9 @@ void XML2SAXMetalinkProcessorTest::testMultiplePieces()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testBadPieceNo()
+void MetalinkProcessorTest::testBadPieceNo()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -442,7 +435,7 @@ void XML2SAXMetalinkProcessorTest::testBadPieceNo()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     MetalinkEntryHandle e = m->entries[0];
     ChunkChecksumHandle c = e->chunkChecksum;
  
@@ -453,9 +446,9 @@ void XML2SAXMetalinkProcessorTest::testBadPieceNo()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testBadPieceLength()
+void MetalinkProcessorTest::testBadPieceLength()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -473,7 +466,7 @@ void XML2SAXMetalinkProcessorTest::testBadPieceLength()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     MetalinkEntryHandle e = m->entries[0];
     ChunkChecksumHandle c = e->chunkChecksum;
  
@@ -484,9 +477,9 @@ void XML2SAXMetalinkProcessorTest::testBadPieceLength()
   }
 }
 
-void XML2SAXMetalinkProcessorTest::testUnsupportedType_piece()
+void MetalinkProcessorTest::testUnsupportedType_piece()
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
   ByteArrayDiskWriterHandle dw = new ByteArrayDiskWriter();
   dw->setString("<metalink>"
 		"<files>"
@@ -504,7 +497,7 @@ void XML2SAXMetalinkProcessorTest::testUnsupportedType_piece()
 		"</metalink>");
 
   try {
-    MetalinkerHandle m = proc.parseFromBinaryStream(dw);
+    MetalinkerHandle m = proc->parseFromBinaryStream(dw);
     MetalinkEntryHandle e = m->entries[0];
     ChunkChecksumHandle c = e->chunkChecksum;
  

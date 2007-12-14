@@ -141,6 +141,9 @@
 /* Define 1 if ares_host_callback accepts timeouts(c-ares >= 1.5) */
 #undef HAVE_LIBCARES1_5
 
+/* Define to 1 if you have libexpat. */
+#undef HAVE_LIBEXPAT
+
 /* Define to 1 if you have libgcrypt. */
 #undef HAVE_LIBGCRYPT
 
@@ -432,6 +435,11 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Enable GNU extensions on systems that have them.  */
+#ifndef _GNU_SOURCE
+# undef _GNU_SOURCE
+#endif
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

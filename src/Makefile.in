@@ -141,6 +141,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
+@ENABLE_METALINK_TRUE@	MetalinkProcessorFactory.cc\
 @ENABLE_METALINK_TRUE@	MetalinkParserController.cc\
 @ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.cc\
 @ENABLE_METALINK_TRUE@	InitialMetalinkParserState.cc\
@@ -159,20 +160,21 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	URLMetalinkParserState.cc\
 @ENABLE_METALINK_TRUE@	FinMetalinkParserState.cc\
 @ENABLE_METALINK_TRUE@	SkipTagMetalinkParserState.cc\
-@ENABLE_METALINK_TRUE@	XML2SAXMetalinkProcessor.cc\
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 @ENABLE_METALINK_TRUE@	MetalinkHelper.cc MetalinkHelper.h
 
-@HAVE_BASENAME_FALSE@am__append_4 = libgen.c libgen.h
-@HAVE_GETADDRINFO_FALSE@am__append_5 = getaddrinfo.c getaddrinfo.h
-@HAVE_GAI_STRERROR_FALSE@am__append_6 = gai_strerror.c gai_strerror.h
-@HAVE_GETTIMEOFDAY_FALSE@am__append_7 = gettimeofday.c gettimeofday.h \
+@ENABLE_LIBXML2_TRUE@am__append_4 = XML2SAXMetalinkProcessor.cc
+@ENABLE_LIBEXPAT_TRUE@am__append_5 = ExpatMetalinkProcessor.cc
+@HAVE_BASENAME_FALSE@am__append_6 = libgen.c libgen.h
+@HAVE_GETADDRINFO_FALSE@am__append_7 = getaddrinfo.c getaddrinfo.h
+@HAVE_GAI_STRERROR_FALSE@am__append_8 = gai_strerror.c gai_strerror.h
+@HAVE_GETTIMEOFDAY_FALSE@am__append_9 = gettimeofday.c gettimeofday.h \
 @HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.c gettimeofday.h
-@HAVE_INET_ATON_FALSE@am__append_8 = inet_aton.c inet_aton.h
-@HAVE_LOCALTIME_R_FALSE@am__append_9 = localtime_r.c localtime_r.h
-@HAVE_STRPTIME_FALSE@am__append_10 = strptime.c strptime.h
-@HAVE_TIMEGM_FALSE@am__append_11 = timegm.c timegm.h
+@HAVE_INET_ATON_FALSE@am__append_10 = inet_aton.c inet_aton.h
+@HAVE_LOCALTIME_R_FALSE@am__append_11 = localtime_r.c localtime_r.h
+@HAVE_STRPTIME_FALSE@am__append_12 = strptime.c strptime.h
+@HAVE_TIMEGM_FALSE@am__append_13 = timegm.c timegm.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -184,10 +186,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/codeset.m4 \
 	$(top_srcdir)/m4/lcmessage.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libares.m4 $(top_srcdir)/m4/libcares.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/openssl.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
-	$(top_srcdir)/m4/ulonglong.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libexpat.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/stdint_h.m4 \
+	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/ulonglong.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -355,22 +358,23 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h Metalinker.cc \
 	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
-	MetalinkParserController.cc MetalinkParserStateMachine.cc \
-	InitialMetalinkParserState.cc MetalinkMetalinkParserState.cc \
-	FilesMetalinkParserState.cc FileMetalinkParserState.cc \
-	SizeMetalinkParserState.cc VersionMetalinkParserState.cc \
-	LanguageMetalinkParserState.cc OSMetalinkParserState.cc \
-	VerificationMetalinkParserState.cc HashMetalinkParserState.cc \
-	PiecesMetalinkParserState.cc PieceHashMetalinkParserState.cc \
+	MetalinkProcessorFactory.cc MetalinkParserController.cc \
+	MetalinkParserStateMachine.cc InitialMetalinkParserState.cc \
+	MetalinkMetalinkParserState.cc FilesMetalinkParserState.cc \
+	FileMetalinkParserState.cc SizeMetalinkParserState.cc \
+	VersionMetalinkParserState.cc LanguageMetalinkParserState.cc \
+	OSMetalinkParserState.cc VerificationMetalinkParserState.cc \
+	HashMetalinkParserState.cc PiecesMetalinkParserState.cc \
+	PieceHashMetalinkParserState.cc \
 	ResourcesMetalinkParserState.cc URLMetalinkParserState.cc \
 	FinMetalinkParserState.cc SkipTagMetalinkParserState.cc \
-	XML2SAXMetalinkProcessor.cc Metalink2RequestGroup.cc \
-	Metalink2RequestGroup.h MetalinkPostDownloadHandler.cc \
-	MetalinkPostDownloadHandler.h MetalinkHelper.cc \
-	MetalinkHelper.h libgen.c libgen.h getaddrinfo.c getaddrinfo.h \
-	gai_strerror.c gai_strerror.h gettimeofday.c gettimeofday.h \
-	inet_aton.c inet_aton.h localtime_r.c localtime_r.h strptime.c \
-	strptime.h timegm.c timegm.h
+	Metalink2RequestGroup.cc Metalink2RequestGroup.h \
+	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h \
+	MetalinkHelper.cc MetalinkHelper.h XML2SAXMetalinkProcessor.cc \
+	ExpatMetalinkProcessor.cc libgen.c libgen.h getaddrinfo.c \
+	getaddrinfo.h gai_strerror.c gai_strerror.h gettimeofday.c \
+	gettimeofday.h inet_aton.c inet_aton.h localtime_r.c \
+	localtime_r.h strptime.c strptime.h timegm.c timegm.h
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
@@ -433,6 +437,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@	MetalinkProcessorFactory.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserController.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserStateMachine.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	InitialMetalinkParserState.$(OBJEXT) \
@@ -451,20 +456,23 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@	URLMetalinkParserState.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	FinMetalinkParserState.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	SkipTagMetalinkParserState.$(OBJEXT) \
-@ENABLE_METALINK_TRUE@	XML2SAXMetalinkProcessor.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkHelper.$(OBJEXT)
-@HAVE_BASENAME_FALSE@am__objects_4 = libgen.$(OBJEXT)
-@HAVE_GETADDRINFO_FALSE@am__objects_5 = getaddrinfo.$(OBJEXT)
-@HAVE_GAI_STRERROR_FALSE@am__objects_6 = gai_strerror.$(OBJEXT)
-@HAVE_GETTIMEOFDAY_FALSE@am__objects_7 = gettimeofday.$(OBJEXT) \
+@ENABLE_LIBXML2_TRUE@am__objects_4 =  \
+@ENABLE_LIBXML2_TRUE@	XML2SAXMetalinkProcessor.$(OBJEXT)
+@ENABLE_LIBEXPAT_TRUE@am__objects_5 =  \
+@ENABLE_LIBEXPAT_TRUE@	ExpatMetalinkProcessor.$(OBJEXT)
+@HAVE_BASENAME_FALSE@am__objects_6 = libgen.$(OBJEXT)
+@HAVE_GETADDRINFO_FALSE@am__objects_7 = getaddrinfo.$(OBJEXT)
+@HAVE_GAI_STRERROR_FALSE@am__objects_8 = gai_strerror.$(OBJEXT)
+@HAVE_GETTIMEOFDAY_FALSE@am__objects_9 = gettimeofday.$(OBJEXT) \
 @HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.$(OBJEXT)
-@HAVE_INET_ATON_FALSE@am__objects_8 = inet_aton.$(OBJEXT)
-@HAVE_LOCALTIME_R_FALSE@am__objects_9 = localtime_r.$(OBJEXT)
-@HAVE_STRPTIME_FALSE@am__objects_10 = strptime.$(OBJEXT)
-@HAVE_TIMEGM_FALSE@am__objects_11 = timegm.$(OBJEXT)
-am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+@HAVE_INET_ATON_FALSE@am__objects_10 = inet_aton.$(OBJEXT)
+@HAVE_LOCALTIME_R_FALSE@am__objects_11 = localtime_r.$(OBJEXT)
+@HAVE_STRPTIME_FALSE@am__objects_12 = strptime.$(OBJEXT)
+@HAVE_TIMEGM_FALSE@am__objects_13 = timegm.$(OBJEXT)
+am__objects_14 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -528,8 +536,9 @@ am__objects_12 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
 	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11)
-am_libaria2c_a_OBJECTS = $(am__objects_12)
+	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
+	$(am__objects_13)
+am_libaria2c_a_OBJECTS = $(am__objects_14)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -589,6 +598,10 @@ ENABLE_ASYNC_DNS_FALSE = @ENABLE_ASYNC_DNS_FALSE@
 ENABLE_ASYNC_DNS_TRUE = @ENABLE_ASYNC_DNS_TRUE@
 ENABLE_BITTORRENT_FALSE = @ENABLE_BITTORRENT_FALSE@
 ENABLE_BITTORRENT_TRUE = @ENABLE_BITTORRENT_TRUE@
+ENABLE_LIBEXPAT_FALSE = @ENABLE_LIBEXPAT_FALSE@
+ENABLE_LIBEXPAT_TRUE = @ENABLE_LIBEXPAT_TRUE@
+ENABLE_LIBXML2_FALSE = @ENABLE_LIBXML2_FALSE@
+ENABLE_LIBXML2_TRUE = @ENABLE_LIBXML2_TRUE@
 ENABLE_MESSAGE_DIGEST_FALSE = @ENABLE_MESSAGE_DIGEST_FALSE@
 ENABLE_MESSAGE_DIGEST_TRUE = @ENABLE_MESSAGE_DIGEST_TRUE@
 ENABLE_METALINK_FALSE = @ENABLE_METALINK_FALSE@
@@ -628,6 +641,8 @@ LIBARES_CPPFLAGS = @LIBARES_CPPFLAGS@
 LIBARES_LIBS = @LIBARES_LIBS@
 LIBCARES_CPPFLAGS = @LIBCARES_CPPFLAGS@
 LIBCARES_LIBS = @LIBCARES_LIBS@
+LIBEXPAT_CPPFLAGS = @LIBEXPAT_CPPFLAGS@
+LIBEXPAT_LIBS = @LIBEXPAT_LIBS@
 LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
 LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
 LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@
@@ -820,12 +835,13 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	ServerHost.cc $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11)
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ #-lprofiler
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ -lexpat #-lprofiler
 
 #aria2c_LDFLAGS =  -pg
 AM_CPPFLAGS = -Wall\
@@ -987,6 +1003,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandlerConstants.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandlerFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Exception.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExpatMetalinkProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/File.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileAllocationCommand.Po@am__quote@
@@ -1035,6 +1052,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserController.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkParserStateMachine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkPostDownloadHandler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkProcessorFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MetalinkResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Metalinker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MultiDiskAdaptor.Po@am__quote@

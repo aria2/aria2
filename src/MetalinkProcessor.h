@@ -50,4 +50,6 @@ public:
   virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream) = 0;
 };
 
+typedef SharedHandle<MetalinkProcessor> MetalinkProcessorHandle;
+
 #endif // _D_METALINK_PROCESSOR_H_

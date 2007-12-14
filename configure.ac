@@ -27,6 +27,7 @@ AC_SUBST(localedir)
 AC_ARG_WITH([gnutls],  [  --with-gnutls              use gnutls library if installed. Default: yes], [with_gnutls=$withval], [with_gnutls=yes])
 AC_ARG_WITH([openssl], [  --with-openssl             use openssl library if installed. Default: yes], [with_openssl=$withval], [with_openssl=yes])
 AC_ARG_WITH([libxml2], [  --with-libxml2             use libxml2 library if installed. Default: yes], [with_libxml2=$withval], [with_libxml2=yes])
+AC_ARG_WITH([libexpat], [  --with-libexpat            use libexpat library if installed. Default: yes], [with_libexpat=$withval], [with_libexpat=yes])
 AC_ARG_WITH([libares], [  --with-libares             use ares library if installed. Default: yes], [with_libares=$withval], [with_libares=yes])
 AC_ARG_WITH([libcares], [  --with-libcares            use c-ares library if installed. Default: yes], [with_libcares=$withval], [with_libcares=yes])
 
@@ -43,12 +44,19 @@ AC_PROG_YACC
 # Setting language choice
 AC_LANG([C++])
 
+# Check for GNU library
+AC_GNU_SOURCE
+
 # Checks for libraries.
 if test "x$with_libxml2" = "xyes"; then
    AM_PATH_XML2([2.6.24], [have_libxml2=yes])
    if test "x$have_libxml2" = "xyes"; then
       AC_DEFINE([HAVE_LIBXML2], [1], [Define to 1 if you have libxml2.])
    fi
+fi
+
+if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
+  AM_PATH_LIBEXPAT
 fi
 
 if test "x$with_gnutls" = "xyes"; then
@@ -100,13 +108,16 @@ else
     AM_CONDITIONAL([ENABLE_BITTORRENT], false)
 fi
 
-if test "x$have_libxml2" = "xyes" && test "x$enable_metalink" = "xyes"; then
+if (test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes") && test "x$enable_metalink" = "xyes"; then
     AC_DEFINE([ENABLE_METALINK], [1], [Define to 1 if Metalink support is enabled.])
     AM_CONDITIONAL([ENABLE_METALINK], true)
 else
     enable_metalink=no
     AM_CONDITIONAL([ENABLE_METALINK], false)
 fi
+
+AM_CONDITIONAL([ENABLE_LIBXML2], [test "x$enable_metalink" = "xyes" && test "x$have_libxml2" = "xyes"])
+AM_CONDITIONAL([ENABLE_LIBEXPAT], [test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"])
 
 if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
     AC_DEFINE([ENABLE_ASYNC_DNS], [1], [Define to 1 if asynchronous DNS support is enabled.])
@@ -204,6 +215,7 @@ echo "LIBS:           $LIBS"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "LibXML2:        $have_libxml2"
+echo "LibExpat:       $have_libexpat"
 echo "LibAres:        $have_libares"
 echo "LibCares:       $have_libcares"
 echo "Bittorrent:     $enable_bittorrent"

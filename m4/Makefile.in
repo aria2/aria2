@@ -47,10 +47,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/codeset.m4 \
 	$(top_srcdir)/m4/lcmessage.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
 	$(top_srcdir)/m4/libares.m4 $(top_srcdir)/m4/libcares.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/openssl.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/stdint_h.m4 $(top_srcdir)/m4/uintmax_t.m4 \
-	$(top_srcdir)/m4/ulonglong.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libexpat.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/openssl.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/stdint_h.m4 \
+	$(top_srcdir)/m4/uintmax_t.m4 $(top_srcdir)/m4/ulonglong.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -93,6 +94,10 @@ ENABLE_ASYNC_DNS_FALSE = @ENABLE_ASYNC_DNS_FALSE@
 ENABLE_ASYNC_DNS_TRUE = @ENABLE_ASYNC_DNS_TRUE@
 ENABLE_BITTORRENT_FALSE = @ENABLE_BITTORRENT_FALSE@
 ENABLE_BITTORRENT_TRUE = @ENABLE_BITTORRENT_TRUE@
+ENABLE_LIBEXPAT_FALSE = @ENABLE_LIBEXPAT_FALSE@
+ENABLE_LIBEXPAT_TRUE = @ENABLE_LIBEXPAT_TRUE@
+ENABLE_LIBXML2_FALSE = @ENABLE_LIBXML2_FALSE@
+ENABLE_LIBXML2_TRUE = @ENABLE_LIBXML2_TRUE@
 ENABLE_MESSAGE_DIGEST_FALSE = @ENABLE_MESSAGE_DIGEST_FALSE@
 ENABLE_MESSAGE_DIGEST_TRUE = @ENABLE_MESSAGE_DIGEST_TRUE@
 ENABLE_METALINK_FALSE = @ENABLE_METALINK_FALSE@
@@ -132,6 +137,8 @@ LIBARES_CPPFLAGS = @LIBARES_CPPFLAGS@
 LIBARES_LIBS = @LIBARES_LIBS@
 LIBCARES_CPPFLAGS = @LIBCARES_CPPFLAGS@
 LIBCARES_LIBS = @LIBCARES_LIBS@
+LIBEXPAT_CPPFLAGS = @LIBEXPAT_CPPFLAGS@
+LIBEXPAT_LIBS = @LIBEXPAT_LIBS@
 LIBGCRYPT_CFLAGS = @LIBGCRYPT_CFLAGS@
 LIBGCRYPT_CONFIG = @LIBGCRYPT_CONFIG@
 LIBGCRYPT_LIBS = @LIBGCRYPT_LIBS@

@@ -1,3 +1,26 @@
+2007-12-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed possible memory leak when an exception is thrown.
+	* src/XML2SAXMetalinkProcessor.cc
+
+	Added Expat support. If both libxml2 and Expat are installed, then
+	libxml2 is used by default.
+	MetalinkProcessorFactory chooses from XML2SAXMetalinkProcessor and
+	ExpatMetalinkProcessor according to the configuration.
+	* src/ExpatMetalinkProcessor.{h, cc}
+	* src/main.cc: Removed libxml2 specific header and init/free function.
+	* src/MetalinkProcessorFactory.{h, cc}
+	* src/MetalinkHelper.cc
+	* src/Metalinker.h: Removed unnecessary libxml2 header.
+	* src/MetalinkProcessor.h
+	* test/XML2SAXMetalinkProcessorTest.cc: Removed because
+	MetalinkProcessorTest is used instead.
+	* test/MetalinkProcessorTest.cc: Added. It is actually the same with
+	XML2SAXMetalinkProcessor, replaced XML2SAXMetalinkProcessor with
+	MetalinkProcessorFactory::newInstance().
+	* m4/libexpat.m4
+	* configure.ac: Added configuration options for libexpat.
+	
 2007-12-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Disabled -s option in metalink download.

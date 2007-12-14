@@ -32,32 +32,27 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINKER_H_
-#define _D_METALINKER_H_
+#ifndef _D_EXPAT_METALINK_PROCESSOR_H_
+#define _D_EXPAT_METALINK_PROCESSOR_H_
 
-#include "common.h"
-#include "MetalinkEntry.h"
-#include <deque>
+#include "MetalinkProcessor.h"
+#include <expat.h>
 
-class Metalinker {
+class MetalinkParserStateMachine;
+typedef SharedHandle<MetalinkParserStateMachine> MetalinkParserStateMachineHandle;
+
+class ExpatMetalinkProcessor:public MetalinkProcessor {
+private:
+  MetalinkParserStateMachineHandle _stm;
+
 public:
-  MetalinkEntries entries;
-public:
-  Metalinker();
-  ~Metalinker();
+  ExpatMetalinkProcessor();
 
-  Metalinker& operator=(const Metalinker& metalinker) {
-    if(this != &metalinker) {
-      this->entries = metalinker.entries;
-    }
-    return *this;
-  }
+  virtual ~ExpatMetalinkProcessor() {}
 
-  MetalinkEntries queryEntry(const string& version,
-			     const string& language,
-			     const string& os) const;
+  virtual MetalinkerHandle parseFile(const string& filename);
+
+  virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream);
 };
 
-typedef SharedHandle<Metalinker> MetalinkerHandle;
-
-#endif // _D_METALINKER_H_
+#endif // _D_EXPAT_METALINK_PROCESSOR_H_

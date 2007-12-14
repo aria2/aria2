@@ -36,11 +36,17 @@ aria2 is in very early development stage. Currently it has following features:
 -------------
 In order to enable HTTPS support, you need GNU TLS or OpenSSL.
 In order to enable BitTorrent support, you need GNU TLS+libgcrypt or OpenSSL.
-In order to enable Metalink support, you need libxml2. Optionally GNU TLS+
-libgcrypt or OpenSSL are required for checksum checking support(MD5, SHA1).
+In order to enable Metalink support, you need libxml2 or Expat. Optionally
+GNU TLS+libgcrypt or OpenSSL are required for checksum checking support(MD5,
+SHA1, SHA256).
 
-GNU TLS has precedence over OpenSSL if both libraries are installed.
-If you prefer OpenSSL, run configure with "--without-gnutls".
+Note;;
+  GNU TLS has precedence over OpenSSL if both libraries are installed.
+  If you prefer OpenSSL, run configure with "--without-gnutls".
+
+Note;;
+  libxml2 has precedence over Expat if both libraries are installed.
+  If you prefer Expat, run configure with "--without-libxml2".
 
 You can disable BitTorrent, Metalink support by providing --disable-bittorrent,
 --disable-metalink respectively to configure script.
@@ -62,6 +68,9 @@ packages(package name may vary depending on the distribution you use):
 
 You can use libssl-dev instead of libgnutls-dev,libgpg-error-dev,libgcrypt-dev:
 * libssl-dev       (Required for HTTPS, BitTorrent support)
+
+You can use libexpat1-dev instead of libxml2-dev:
+* libexpat1-dev    (Required for Metalink support)
 
 The build process is fairly standard way for *nix programs:
 
@@ -111,11 +120,12 @@ rate is low.
 The current implementation supports HTTP/FTP/BitTorrent.
 The other P2P protocols are ignored.
 
-For checksum checking, both MD5 and SHA1 are supported. If both values are
-provided, then aria2 uses SHA1. If checksum checking is failed, aria2 doesn't
-retry the download and just exits with non-zero return code.
+For checksum checking, MD5, SHA1, SHA256 are supported. If multiple hash
+algorithms are provided, aria2 uses SHA1. If checksum checking is failed, aria2
+doesn't retry the download and just exits with non-zero return code.
 
-The supported user preferences are version, language and os.
+The supported user preferences are version, language, location, protocol and
+os.
 
 If chunk checksums are provided in Metalink file, aria2 automatically validate
 a chunk of file while downloading it. This behavior can be turned off by

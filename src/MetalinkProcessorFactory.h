@@ -32,32 +32,17 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINKER_H_
-#define _D_METALINKER_H_
+#ifndef _D_METALINK_PROCESSOR_FACTORY_H_
+#define _D_METALINK_PROCESSOR_FACTORY_H_
 
 #include "common.h"
-#include "MetalinkEntry.h"
-#include <deque>
+#include "MetalinkProcessor.h"
 
-class Metalinker {
+class MetalinkProcessorFactory {
+private:
+  MetalinkProcessorFactory() {}
 public:
-  MetalinkEntries entries;
-public:
-  Metalinker();
-  ~Metalinker();
-
-  Metalinker& operator=(const Metalinker& metalinker) {
-    if(this != &metalinker) {
-      this->entries = metalinker.entries;
-    }
-    return *this;
-  }
-
-  MetalinkEntries queryEntry(const string& version,
-			     const string& language,
-			     const string& os) const;
+  static MetalinkProcessorHandle newInstance(); 
 };
 
-typedef SharedHandle<Metalinker> MetalinkerHandle;
-
-#endif // _D_METALINKER_H_
+#endif // _D_METALINK_PROCESSOR_FACTORY_H__

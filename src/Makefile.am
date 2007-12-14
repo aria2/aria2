@@ -256,6 +256,7 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
+	MetalinkProcessorFactory.cc\
 	MetalinkParserController.cc\
 	MetalinkParserStateMachine.cc\
 	InitialMetalinkParserState.cc\
@@ -274,11 +275,18 @@ SRCS += Metalinker.cc Metalinker.h\
 	URLMetalinkParserState.cc\
 	FinMetalinkParserState.cc\
 	SkipTagMetalinkParserState.cc\
-	XML2SAXMetalinkProcessor.cc\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 	MetalinkHelper.cc MetalinkHelper.h
 endif # ENABLE_METALINK
+
+if ENABLE_LIBXML2
+SRCS += XML2SAXMetalinkProcessor.cc
+endif # ENABLE_LIBXML2
+
+if ENABLE_LIBEXPAT
+SRCS += ExpatMetalinkProcessor.cc
+endif # ENABLE_LIBEXPAT
 
 if !HAVE_BASENAME
 SRCS += libgen.c libgen.h
@@ -320,7 +328,7 @@ noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
-	@LIBCARES_LIBS@ @WINSOCK_LIBS@ #-lprofiler
+	@LIBCARES_LIBS@ @WINSOCK_LIBS@ -lexpat #-lprofiler
 #aria2c_LDFLAGS =  -pg
 AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\

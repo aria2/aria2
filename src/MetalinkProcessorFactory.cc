@@ -32,32 +32,21 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_METALINKER_H_
-#define _D_METALINKER_H_
+#include "MetalinkProcessorFactory.h"
+#ifdef HAVE_LIBXML2
+# include "XML2SAXMetalinkProcessor.h"
+#elif HAVE_LIBEXPAT
+# include "ExpatMetalinkProcessor.h"
+#endif
+#include "MetalinkParserStateMachine.h"
 
-#include "common.h"
-#include "MetalinkEntry.h"
-#include <deque>
-
-class Metalinker {
-public:
-  MetalinkEntries entries;
-public:
-  Metalinker();
-  ~Metalinker();
-
-  Metalinker& operator=(const Metalinker& metalinker) {
-    if(this != &metalinker) {
-      this->entries = metalinker.entries;
-    }
-    return *this;
-  }
-
-  MetalinkEntries queryEntry(const string& version,
-			     const string& language,
-			     const string& os) const;
-};
-
-typedef SharedHandle<Metalinker> MetalinkerHandle;
-
-#endif // _D_METALINKER_H_
+MetalinkProcessorHandle MetalinkProcessorFactory::newInstance()
+{
+#ifdef HAVE_LIBXML2
+  return new XML2SAXMetalinkProcessor();
+#elif HAVE_LIBEXPAT
+  return new ExpatMetalinkProcessor();
+#else
+  return 0;
+#endif
+}

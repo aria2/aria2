@@ -35,7 +35,7 @@
 #include "MetalinkHelper.h"
 #include "Option.h"
 #include "MetalinkEntry.h"
-#include "XML2SAXMetalinkProcessor.h"
+#include "MetalinkProcessorFactory.h"
 #include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
 #include "prefs.h"
@@ -48,17 +48,17 @@ MetalinkHelper::~MetalinkHelper() {}
 
 MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
 
-  MetalinkerHandle metalinker = proc.parseFile(filename);
+  MetalinkerHandle metalinker = proc->parseFile(filename);
   return query(metalinker, option);
 }
 
 MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
 {
-  XML2SAXMetalinkProcessor proc;
+  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
 
-  MetalinkerHandle metalinker = proc.parseFromBinaryStream(binaryStream);
+  MetalinkerHandle metalinker = proc->parseFromBinaryStream(binaryStream);
   return query(metalinker, option);
 }
 

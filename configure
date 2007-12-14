@@ -717,6 +717,8 @@ YFLAGS
 XML2_CONFIG
 XML_CPPFLAGS
 XML_LIBS
+LIBEXPAT_LIBS
+LIBEXPAT_CPPFLAGS
 LIBGNUTLS_CONFIG
 LIBGNUTLS_CFLAGS
 LIBGNUTLS_LIBS
@@ -735,6 +737,10 @@ ENABLE_BITTORRENT_TRUE
 ENABLE_BITTORRENT_FALSE
 ENABLE_METALINK_TRUE
 ENABLE_METALINK_FALSE
+ENABLE_LIBXML2_TRUE
+ENABLE_LIBXML2_FALSE
+ENABLE_LIBEXPAT_TRUE
+ENABLE_LIBEXPAT_FALSE
 ENABLE_ASYNC_DNS_TRUE
 ENABLE_ASYNC_DNS_FALSE
 ALLOCA
@@ -1392,10 +1398,12 @@ Optional Packages:
   --with-gnutls              use gnutls library if installed. Default: yes
   --with-openssl             use openssl library if installed. Default: yes
   --with-libxml2             use libxml2 library if installed. Default: yes
+  --with-libexpat            use libexpat library if installed. Default: yes
   --with-libares             use ares library if installed. Default: yes
   --with-libcares            use c-ares library if installed. Default: yes
   --with-xml-prefix=PFX   Prefix where libxml is installed (optional)
   --with-xml-exec-prefix=PFX Exec prefix where libxml is installed (optional)
+  --with-libexpat-prefix=PREFIX  Prefix where libexpat installed (optional)
   --with-libgnutls-prefix=PFX   Prefix where libgnutls is installed (optional)
   --with-libgcrypt-prefix=PFX
                           prefix where LIBGCRYPT is installed (optional)
@@ -2631,6 +2639,14 @@ if test "${with_libxml2+set}" = set; then
   withval=$with_libxml2; with_libxml2=$withval
 else
   with_libxml2=yes
+fi
+
+
+# Check whether --with-libexpat was given.
+if test "${with_libexpat+set}" = set; then
+  withval=$with_libexpat; with_libexpat=$withval
+else
+  with_libexpat=yes
 fi
 
 
@@ -4460,6 +4476,14 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
+# Check for GNU library
+
+cat >>confdefs.h <<\_ACEOF
+#define _GNU_SOURCE 1
+_ACEOF
+
+
+
 # Checks for libraries.
 if test "x$with_libxml2" = "xyes"; then
 
@@ -4783,6 +4807,113 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
    fi
+fi
+
+if test "x$with_libexpat" = "xyes" && test "x$have_libxml2" != "xyes"; then
+
+
+# Check whether --with-libexpat-prefix was given.
+if test "${with_libexpat_prefix+set}" = set; then
+  withval=$with_libexpat_prefix; libexpat_prefix=$withval
+else
+  libexpat_prefix=""
+fi
+
+
+if test "x$libexpat_prefix" = "x"; then
+  libexpat_prefix="/usr"
+fi
+
+libexpat_prefix_lib=$libexpat_prefix/lib
+libexpat_prefix_include=$libexpat_prefix/include
+
+LIBS_save=$LIBS
+CPPFLAGS_save=$CPPFLAGS
+
+LIBS="-L$libexpat_prefix_lib $LIBS"
+CPPFLAGS="-I$libexpat_prefix_include $CPPFLAGS"
+
+{ echo "$as_me:$LINENO: checking for XML_ParserCreate in -lexpat" >&5
+echo $ECHO_N "checking for XML_ParserCreate in -lexpat... $ECHO_C" >&6; }
+if test "${ac_cv_lib_expat_XML_ParserCreate+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lexpat  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char XML_ParserCreate ();
+int
+main ()
+{
+return XML_ParserCreate ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_expat_XML_ParserCreate=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_expat_XML_ParserCreate=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_expat_XML_ParserCreate" >&5
+echo "${ECHO_T}$ac_cv_lib_expat_XML_ParserCreate" >&6; }
+if test $ac_cv_lib_expat_XML_ParserCreate = yes; then
+  have_libexpat=yes
+fi
+
+if test "x$have_libexpat" = "xyes"; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBEXPAT 1
+_ACEOF
+
+    LIBEXPAT_LIBS="-L$libexpat_prefix_lib -lexpat"
+    LIBEXPAT_CPPFLAGS="-I$libexpat_prefix_include"
+
+
+fi
+
+LIBS=$LIBS_save
+CPPFLAGS=$CPPFLAGS_save
+
+
 fi
 
 if test "x$with_gnutls" = "xyes"; then
@@ -5922,7 +6053,7 @@ fi
 
 fi
 
-if test "x$have_libxml2" = "xyes" && test "x$enable_metalink" = "xyes"; then
+if (test "x$have_libxml2" = "xyes" || test "x$have_libexpat" = "xyes") && test "x$enable_metalink" = "xyes"; then
 
 cat >>confdefs.h <<\_ACEOF
 #define ENABLE_METALINK 1
@@ -5951,6 +6082,27 @@ else
 fi
 
 fi
+
+
+
+if test "x$enable_metalink" = "xyes" && test "x$have_libxml2" = "xyes"; then
+  ENABLE_LIBXML2_TRUE=
+  ENABLE_LIBXML2_FALSE='#'
+else
+  ENABLE_LIBXML2_TRUE='#'
+  ENABLE_LIBXML2_FALSE=
+fi
+
+
+
+if test "x$enable_metalink" = "xyes" && test "x$have_libexpat" = "xyes"; then
+  ENABLE_LIBEXPAT_TRUE=
+  ENABLE_LIBEXPAT_FALSE='#'
+else
+  ENABLE_LIBEXPAT_TRUE='#'
+  ENABLE_LIBEXPAT_FALSE=
+fi
+
 
 if test "x$have_libcares" = "xyes" || test "x$have_libares" = "xyes"; then
 
@@ -13963,6 +14115,20 @@ echo "$as_me: error: conditional \"ENABLE_METALINK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${ENABLE_LIBXML2_TRUE}" && test -z "${ENABLE_LIBXML2_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_LIBXML2\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLE_LIBXML2\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${ENABLE_LIBEXPAT_TRUE}" && test -z "${ENABLE_LIBEXPAT_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"ENABLE_LIBEXPAT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"ENABLE_LIBEXPAT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${ENABLE_ASYNC_DNS_TRUE}" && test -z "${ENABLE_ASYNC_DNS_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"ENABLE_ASYNC_DNS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -14791,6 +14957,8 @@ YFLAGS!$YFLAGS$ac_delim
 XML2_CONFIG!$XML2_CONFIG$ac_delim
 XML_CPPFLAGS!$XML_CPPFLAGS$ac_delim
 XML_LIBS!$XML_LIBS$ac_delim
+LIBEXPAT_LIBS!$LIBEXPAT_LIBS$ac_delim
+LIBEXPAT_CPPFLAGS!$LIBEXPAT_CPPFLAGS$ac_delim
 LIBGNUTLS_CONFIG!$LIBGNUTLS_CONFIG$ac_delim
 LIBGNUTLS_CFLAGS!$LIBGNUTLS_CFLAGS$ac_delim
 LIBGNUTLS_LIBS!$LIBGNUTLS_LIBS$ac_delim
@@ -14809,6 +14977,10 @@ ENABLE_BITTORRENT_TRUE!$ENABLE_BITTORRENT_TRUE$ac_delim
 ENABLE_BITTORRENT_FALSE!$ENABLE_BITTORRENT_FALSE$ac_delim
 ENABLE_METALINK_TRUE!$ENABLE_METALINK_TRUE$ac_delim
 ENABLE_METALINK_FALSE!$ENABLE_METALINK_FALSE$ac_delim
+ENABLE_LIBXML2_TRUE!$ENABLE_LIBXML2_TRUE$ac_delim
+ENABLE_LIBXML2_FALSE!$ENABLE_LIBXML2_FALSE$ac_delim
+ENABLE_LIBEXPAT_TRUE!$ENABLE_LIBEXPAT_TRUE$ac_delim
+ENABLE_LIBEXPAT_FALSE!$ENABLE_LIBEXPAT_FALSE$ac_delim
 ENABLE_ASYNC_DNS_TRUE!$ENABLE_ASYNC_DNS_TRUE$ac_delim
 ENABLE_ASYNC_DNS_FALSE!$ENABLE_ASYNC_DNS_FALSE$ac_delim
 ALLOCA!$ALLOCA$ac_delim
@@ -14857,7 +15029,7 @@ HAVE_TIMEGM_FALSE!$HAVE_TIMEGM_FALSE$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 69; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 75; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -15561,6 +15733,7 @@ echo "LIBS:           $LIBS"
 echo "GnuTLS:         $have_libgnutls"
 echo "OpenSSL:        $have_openssl"
 echo "LibXML2:        $have_libxml2"
+echo "LibExpat:       $have_libexpat"
 echo "LibAres:        $have_libares"
 echo "LibCares:       $have_libcares"
 echo "Bittorrent:     $enable_bittorrent"

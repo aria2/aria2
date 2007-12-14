@@ -74,8 +74,6 @@ extern int optind, opterr, optopt;
 #ifdef ENABLE_METALINK
 # include "Metalink2RequestGroup.h"
 # include "MetalinkEntry.h"
-# include <libxml/parser.h>
-# include <libxml/xpath.h>
 #endif // ENABLE_METALINK
 
 #ifdef HAVE_LIBSSL
@@ -241,9 +239,6 @@ int main(int argc, char* argv[]) {
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_init();
 #endif // HAVE_LIBGNUTLS
-#ifdef ENABLE_METALINK
-  xmlInitParser();
-#endif // ENABLE_METALINK
   SimpleRandomizer::init();
   BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
   if(op->getAsBool(PREF_STDOUT_LOG)) {
@@ -330,9 +325,6 @@ int main(int argc, char* argv[]) {
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
 #endif // HAVE_LIBGNUTLS
-#ifdef ENABLE_METALINK
-  xmlCleanupParser();
-#endif // ENABLE_METALINK
   FeatureConfig::release();
   return exitStatus;
 }

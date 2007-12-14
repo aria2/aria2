@@ -105,7 +105,7 @@ aria2c_SOURCES += MetalinkerTest.cc\
 	MetalinkPostDownloadHandlerTest.cc\
 	MetalinkHelperTest.cc\
 	MetalinkParserControllerTest.cc\
-	XML2SAXMetalinkProcessorTest.cc
+	MetalinkProcessorTest.cc
 endif # ENABLE_METALINK
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
@@ -115,7 +115,7 @@ aria2c_LDADD = ../src/libaria2c.a\
     @LIBINTL@ @LIBGNUTLS_LIBS@\
 	@LIBGCRYPT_LIBS@ @OPENSSL_LIBS@ @XML_LIBS@ @LIBARES_LIBS@\
 	@LIBCARES_LIBS@ @WINSOCK_LIBS@\
-	${CPPUNIT_LIBS}
+	${CPPUNIT_LIBS} -lexpat
 AM_CPPFLAGS =  -Wall\
 	${CPPUNIT_CFLAGS}\
 	-I ../src\
