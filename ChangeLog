@@ -1,3 +1,10 @@
+2007-12-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that prevents aria2 from loading cookie file when expire
+	value is greater than 2^31-1. BUG#1851066
+	* src/CookieBoxFactory.cc
+	* test/CookieBoxFactoryTest.cc
+
 2007-12-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed possible memory leak when an exception is thrown.
