@@ -1,3 +1,9 @@
+2007-12-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that -lexpat is always added to aria2c_LDADD.
+	* src/Makefie.am
+	* test/Makefile.am
+
 2007-12-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that prevents aria2 from loading cookie file when expire
