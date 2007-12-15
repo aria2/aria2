@@ -223,7 +223,6 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
   // ===+====+=======================================================================
   o << "\n"
     <<_("Download Results:") << "\n"
-    << " (OK):download completed.(ERR):error occurred.(INPR):download in-progress." << "\n"
     << "gid|stat|path/URI" << "\n"
     << "===+====+======================================================================" << "\n";
   for(DownloadResults::const_iterator itr = _downloadResults.begin();
@@ -237,6 +236,9 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
     string status = result->result == DownloadResult::FINISHED ? "OK" : "INPR";
     o << formatDownloadResult(status, result) << "\n";
   }
+  o << "\n"
+    << _("Status Legend:") << "\n"
+    << " (OK):download completed.(ERR):error occurred.(INPR):download in-progress." << "\n";
 }
 
 string RequestGroupMan::formatDownloadResult(const string& status, const DownloadResultHandle& downloadResult) const

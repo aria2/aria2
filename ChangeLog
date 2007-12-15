@@ -1,4 +1,10 @@
 2007-12-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
+	Added "Status Legend" label to the explanation text of 'stat' in
+	download result and moved it to the last. BUG#1848214
+	* src/RequestGroupMan.cc
+
+2007-12-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that -lexpat is always added to aria2c_LDADD.
 	* src/Makefie.am
