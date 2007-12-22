@@ -139,6 +139,8 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid, 0);
     if(!segment.isNull() && segment->getPositionToWrite() == 0) {
       command = createHttpDownloadCommand(httpResponse);
+    } else {
+      _requestGroup->getSegmentMan()->cancelSegment(cuid);
     }
     prepareForNextAction(command);
     e->noWait = true;

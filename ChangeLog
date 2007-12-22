@@ -1,5 +1,18 @@
 2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that causes aria2 not to finish download. BUG#1855875.
+	I could reproduce this bug in following procedure:
+	1. Stop the download at the very beginning(1% or 100KB downloaded).
+	2. Restart aria2.
+	3. You see the download stopped around 99%.
+	* src/HttpResponseCommand.cc (handleDefaultEncoding)
+	* src/StreamFileAllocationEntry.cc: Removed the timeout handling.
+	If timeout is reached, then _nextCommand is unused and it may contains
+	segments and they won't be canceled. Actually, timeout is not needed
+	here because if the server dropped connection, then retry is made.
+
+2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added uTorrent compatible Peer Exchange.
 	* src/BencodeVisitor.{h, cc}
 	* test/BencodeVisitorTest.cc

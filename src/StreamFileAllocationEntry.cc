@@ -54,8 +54,7 @@ StreamFileAllocationEntry::~StreamFileAllocationEntry() {}
 Commands StreamFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
 {
   Commands commands;
-  if(_timer.difference() <= e->option->getAsInt(PREF_DIRECT_DOWNLOAD_TIMEOUT) &&
-     _nextCommand) {
+  if(_nextCommand) {
     commands.push_back(popNextCommand());
     // try remaining uris
     Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);
