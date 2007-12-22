@@ -1,5 +1,11 @@
 2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Allow a peer in incomingPeer to be added peers.
+	* src/DefaultPeerStorage.cc
+	* test/DefaultPeerStorageTest.cc
+
+2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that causes aria2 not to finish download. BUG#1855875.
 	I could reproduce this bug in following procedure:
 	1. Stop the download at the very beginning(1% or 100KB downloaded).

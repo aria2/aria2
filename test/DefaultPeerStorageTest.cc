@@ -12,6 +12,7 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountPeer);
   CPPUNIT_TEST(testDeleteUnusedPeer);
   CPPUNIT_TEST(testAddPeer);
+  CPPUNIT_TEST(testAddPeer_incomingPeer);
   CPPUNIT_TEST(testGetPeer);
   CPPUNIT_TEST(testIsPeerAvailable);
   CPPUNIT_TEST(testActivatePeer);
@@ -38,6 +39,7 @@ public:
   void testCountPeer();
   void testDeleteUnusedPeer();
   void testAddPeer();
+  void testAddPeer_incomingPeer();
   void testGetPeer();
   void testIsPeerAvailable();
   void testActivatePeer();
@@ -95,6 +97,22 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"),
 		       ps.getPeer("192.168.0.2", 6889)->ipaddr);
   
+}
+
+void DefaultPeerStorageTest::testAddPeer_incomingPeer()
+{
+  DefaultPeerStorage ps(btContext, option);
+
+  PeerHandle peer1 = new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
+			      btContext->getTotalLength());
+  PeerHandle peer2 = new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
+			      btContext->getTotalLength());
+  
+  CPPUNIT_ASSERT(ps.addIncomingPeer(peer1));
+  CPPUNIT_ASSERT(ps.addPeer(peer1));// because same instance is stored in incomingPeers and peers.
+  CPPUNIT_ASSERT(!ps.addPeer(peer2));
+
+
 }
 
 void DefaultPeerStorageTest::testAddPeer() {
