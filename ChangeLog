@@ -1,5 +1,15 @@
 2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --metalink-enable-unique-protocol option.
+	* src/Metalink2RequestGroup.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/version_usage.cc
+	* doc/aria2c.1.txt
+	* doc/aria2c.1
+
+2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Allow a peer in incomingPeer to be added peers.
 	* src/DefaultPeerStorage.cc
 	* test/DefaultPeerStorageTest.cc

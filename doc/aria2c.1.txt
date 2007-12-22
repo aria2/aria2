@@ -333,6 +333,13 @@ OPTIONS
   If 'false' is specified, the action mentioned above is not taken.
   Default: 'true'
 
+--metalink-enable-unique-protocol='true'|'false'::
+  If 'true' is given and several protocols are available for a mirror in a
+  metalink file, aria2 uses one of them.
+  Use --metalink-preferred-protocol option to specify the preference of
+  protocol.
+  Default: true
+
 -v, --version::
   Print the version number, copyright and the configuration information and
   exit.

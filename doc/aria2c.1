@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 12/12/2007
+.\"      Date: 12/22/2007
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "12/12/2007" "" ""
+.TH "ARIA2C" "1" "12/22/2007" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -465,6 +465,13 @@ is specified, a metalink file is not written to the disk, but is just kept in me
 \fIfalse\fR
 is specified, the action mentioned above is not taken\. Default:
 \fItrue\fR
+.RE
+.PP
+\-\-metalink\-enable\-unique\-protocol=\fItrue\fR|\fIfalse\fR
+.RS 4
+If
+\fItrue\fR
+is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them\. Use \-\-metalink\-preferred\-protocol option to specify the preference of protocol\. Default: true
 .RE
 .PP
 \-v, \-\-version

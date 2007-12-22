@@ -232,5 +232,7 @@
 #  define V_HTTP "http"
 #  define V_HTTPS "https"
 #  define V_FTP "ftp"
+// values: true | false
+#define PREF_METALINK_ENABLE_UNIQUE_PROTOCOL "metalink-enable-unique-protocol"
 
 #endif // _D_PREFS_H_

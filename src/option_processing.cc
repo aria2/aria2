@@ -130,6 +130,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_FALSE);
   op->put(PREF_METALINK_PREFERRED_PROTOCOL, V_NONE);
   op->put(PREF_ENABLE_PEER_EXCHANGE, V_TRUE);
+  op->put(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL, V_TRUE);
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -208,6 +209,7 @@ Option* option_processing(int argc, char* const argv[])
       { "follow-metalink", required_argument, &lopt, 103 },
       { "metalink-location", required_argument, &lopt, 104 },
       { "metalink-preferred-protocol", required_argument, &lopt, 105 },
+      { "metalink-enable-unique-protocol", optional_argument, &lopt, 106 },
 #endif // ENABLE_METALINK
       { "version", no_argument, NULL, 'v' },
       { "help", no_argument, NULL, 'h' },
@@ -305,6 +307,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 105:
 	cmdstream << PREF_METALINK_PREFERRED_PROTOCOL << "=" << optarg << "\n";
+	break;
+      case 106:
+	cmdstream << PREF_METALINK_ENABLE_UNIQUE_PROTOCOL << "=" << toBoolArg(optarg) << "\n";
 	break;
       case 200:
 	cmdstream << PREF_LOWEST_SPEED_LIMIT << "=" << optarg << "\n";

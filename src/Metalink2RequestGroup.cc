@@ -199,9 +199,9 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :
 				min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
-    // In metalink, multi connection to a single host is not allowed.
-    rg->setSingleHostMultiConnectionEnabled(false);
-
+    // In metalink, multi connection to a single host is not allowed by default.
+    rg->setSingleHostMultiConnectionEnabled(!_option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
+    
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
     if(!torrentRg.isNull()) {

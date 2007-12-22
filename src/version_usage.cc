@@ -314,6 +314,12 @@ void showUsage() {
 	    "                              If false is specified, the action mentioned above\n"
 	    "                              is not taken.") << "\n"
        << DEFAULT_MSG << "true" << "\n";
+  cout << _(" --metalink-enable-unique-protocol=true|false If true is given and several\n"
+	    "                              protocols are available for a mirror in a metalink\n"
+	    "                              file, aria2 uses one of them.\n"
+	    "                              Use --metalink-preferred-protocol option to\n"
+	    "                              specify the preference of protocol.") << "\n"
+       << DEFAULT_MSG << "true" << "\n";
 #endif // ENABLE_METALINK
   cout << _(" -v, --version                Print the version number and exit.") << endl;
   cout << _(" -h, --help                   Print this message and exit.") << endl;
