@@ -32,39 +32,39 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DATA_H_
-#define _D_DATA_H_
+#ifndef _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
+#define _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_
 
-#include "MetaEntry.h"
-#include <string>
+#include "ExtensionMessageFactory.h"
 
-using namespace std;
+class BtContext;
+typedef SharedHandle<BtContext> BtContextHandle;
+class Peer;
+typedef SharedHandle<Peer> PeerHandle;
+class Logger;
 
-class Data : public MetaEntry {
+class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
-  int32_t len;
-  char* data;
-  bool number;
+  BtContextHandle _btContext;
+
+  PeerHandle _peer;
+
+  const Logger* _logger;
+
 public:
-  /**
-   * This class stores the copy of data. So caller must take care of freeing
-   * memory of data.
-   */
-  Data(const char* data, int32_t len, bool number = false);
+  DefaultExtensionMessageFactory();
 
-  Data(const string& data, bool number = false);
+  DefaultExtensionMessageFactory(const BtContextHandle& btContext,
+				 const PeerHandle& peer);
 
-  ~Data();
+  virtual ~DefaultExtensionMessageFactory();
 
-  string toString() const;
-  int32_t toInt() const;
-  int64_t toLLInt() const;
-  
-  const char* getData() const;
-  int32_t getLen() const;
-  bool isNumber() const;
+  virtual ExtensionMessageHandle createMessage(const char* data, size_t length);
 
-  void accept(MetaEntryVisitor* v) const;
+  void setBtContext(const BtContextHandle& btContext);
+
+  void setPeer(const PeerHandle& peer);
 };
 
-#endif // _D_DATA_H_
+typedef SharedHandle<DefaultExtensionMessageFactory> DefaultExtensionMessageFactoryHandle;
+#endif // _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_

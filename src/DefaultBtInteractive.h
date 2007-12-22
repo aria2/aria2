@@ -102,13 +102,16 @@ private:
   Time floodingCheckPoint;
   FloodingStat floodingStat;
   Time inactiveCheckPoint;
+  Time _pexCheckPoint;
   int32_t keepAliveInterval;
   int32_t maxDownloadSpeedLimit;
+  bool _utPexEnabled;
 
   static const int32_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
   void addAllowedFastMessageToQueue();
+  void addHandshakeExtendedMessageToQueue();
   void decideChoking();
   void checkHave();
   void sendKeepAlive();
@@ -117,6 +120,7 @@ private:
   void addRequests();
   void detectMessageFlooding();
   void checkActiveInteraction();
+  void addPeerExchangeMessage();
 
 public:
   DefaultBtInteractive():peer(0),
@@ -131,7 +135,8 @@ public:
 			 logger(LogFactory::getInstance()),
 			 allowedFastSetSize(10),
 			 keepAliveInterval(120),
-			 maxDownloadSpeedLimit(0)
+			 maxDownloadSpeedLimit(0),
+			 _utPexEnabled(false)
   {}
 
   virtual ~DefaultBtInteractive() {}
@@ -201,6 +206,11 @@ public:
 
   void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
     this->messageFactory = factory;
+  }
+
+  void setUTPexEnabled(bool f)
+  {
+    _utPexEnabled = f;
   }
 };
 

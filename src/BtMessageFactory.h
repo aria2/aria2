@@ -39,6 +39,9 @@
 #include "BtMessage.h"
 #include "Piece.h"
 
+class ExtensionMessage;
+typedef SharedHandle<ExtensionMessage> ExensionMessageHandle;
+
 class BtMessageFactory {
 public:
   virtual ~BtMessageFactory() {}
@@ -84,6 +87,8 @@ public:
   createRejectMessage(int32_t index, int32_t begin, int32_t length) = 0;
 
   virtual BtMessageHandle createAllowedFastMessage(int32_t index) = 0;
+
+  virtual BtMessageHandle createBtExtendedMessage(const ExensionMessageHandle& msg) = 0;
 };
 
 typedef SharedHandle<BtMessageFactory> BtMessageFactoryHandle;

@@ -113,9 +113,8 @@ void DefaultPeerStorageTest::testAddPeer() {
 
   CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
 
-  // this is true, because peer1 in the container has no errors and
-  // it is replaced by peer1(self assignment).
-  CPPUNIT_ASSERT_EQUAL(true, ps.addPeer(peer1));
+  // this returns false, because peer1 is already in the container
+  CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer1));
   // the number of peers doesn't change.
   CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
 

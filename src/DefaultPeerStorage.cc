@@ -52,29 +52,34 @@ DefaultPeerStorage::DefaultPeerStorage(BtContextHandle btContext,
 
 DefaultPeerStorage::~DefaultPeerStorage() {}
 
+bool DefaultPeerStorage::isPeerAlreadyAdded(const PeerHandle& peer)
+{
+  return find(peers.begin(), peers.end(), peer) != peers.end() ||
+    find(incomingPeers.begin(), incomingPeers.end(), peer) != incomingPeers.end();
+}
+
 bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
-  Peers::iterator itr = find(peers.begin(), peers.end(), peer);
-  if(itr == peers.end()) {
+  if(isPeerAlreadyAdded(peer)) {
+    logger->debug("Adding %s:%u is rejected because it is already in PeerStorage.", peer->ipaddr.c_str(), peer->port);
+    return false;
+  } else {
     if(peers.size() >= (size_t)maxPeerListSize) {
       deleteUnusedPeer(peers.size()-maxPeerListSize+1);
     }
     peers.push_front(peer);
     return true;
-  } else {
-    const PeerHandle& peer = *itr;
-    if(!peer->isGood() || peer->cuid != 0) {
-      return false;
-    } else {
-      *itr = peer;
-      return true;
-    }      
   }
 }
 
 bool DefaultPeerStorage::addIncomingPeer(const PeerHandle& peer)
 {
-  incomingPeers.push_back(peer);
-  return true;
+  if(isPeerAlreadyAdded(peer)) {
+    logger->debug("Adding %s:%u is rejected because it is already in PeerStorage.", peer->ipaddr.c_str(), peer->port);
+    return false;
+  } else {
+    incomingPeers.push_back(peer);
+    return true;
+  }
 }
 
 void DefaultPeerStorage::addPeer(const Peers& peers) {

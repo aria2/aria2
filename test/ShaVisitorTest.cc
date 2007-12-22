@@ -51,12 +51,13 @@ void ShaVisitorTest::testVisit() {
 
 void ShaVisitorTest::testVisitCompound() {
   ShaVisitor v;
-  MetaEntry* e = MetaFileUtil::parseMetaFile("test.torrent");
+  string data = "d4:name5:aria24:listli123eee";
+  MetaEntry* e = MetaFileUtil::bdecoding(data.c_str(), data.size());
   e->accept(&v);
   unsigned char md[20];
   int len = 0;
   v.getHash(md, len);
   string hashHex = hexHash(md, len);
-  CPPUNIT_ASSERT_EQUAL(string("5a2bf55fb6ec71a9cd3e06537aa7795cafccffab"),
+  CPPUNIT_ASSERT_EQUAL(string("75538fbac9a074bb98c6a19b6bca3bc87ef9bf8e"),
 		       hashHex);
 }

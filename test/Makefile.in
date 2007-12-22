@@ -83,7 +83,13 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DownloadHandlerFactoryTest.cc\
-@ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.cc
+@ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BencodeVisitorTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BtExtendedMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -156,8 +162,11 @@ am__aria2c_SOURCES_DIST = AllTest.cc Base64Test.cc SequenceTest.cc \
 	PeerMessageUtilTest.cc ShareRatioSeedCriteriaTest.cc \
 	BtRegistryTest.cc BtDependencyTest.cc \
 	BtPostDownloadHandlerTest.cc DownloadHandlerFactoryTest.cc \
-	TimeSeedCriteriaTest.cc MetalinkerTest.cc MetalinkEntryTest.cc \
-	Metalink2RequestGroupTest.cc \
+	TimeSeedCriteriaTest.cc BencodeVisitorTest.cc \
+	BtExtendedMessageTest.cc HandshakeExtensionMessageTest.cc \
+	UTPexExtensionMessageTest.cc DefaultBtMessageFactoryTest.cc \
+	DefaultExtensionMessageFactoryTest.cc MetalinkerTest.cc \
+	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
@@ -203,7 +212,13 @@ am__aria2c_SOURCES_DIST = AllTest.cc Base64Test.cc SequenceTest.cc \
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DownloadHandlerFactoryTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BencodeVisitorTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtExtendedMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -518,12 +533,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtBitfieldMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCancelMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtChokeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtDependencyTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtExtendedMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHandshakeMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHaveAllMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHaveMessageTest.Po@am__quote@
@@ -549,9 +566,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtContextTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtMessageDispatcherTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtMessageFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtProgressInfoFileTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtRequestFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriterTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultExtensionMessageFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorageTest.Po@am__quote@
@@ -562,6 +581,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileUriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestTest.Po@am__quote@
@@ -604,6 +624,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamUriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a2functionalTest.Po@am__quote@
 

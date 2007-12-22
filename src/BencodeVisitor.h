@@ -32,39 +32,33 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DATA_H_
-#define _D_DATA_H_
+#ifndef _D_BENCODE_VISITOR_H_
+#define _D_BENCODE_VISITOR_H_
 
-#include "MetaEntry.h"
-#include <string>
+#include "MetaEntryVisitor.h"
 
-using namespace std;
+class Data;
+class Dictionary;
+class List;
+class MetaEntry;
 
-class Data : public MetaEntry {
+class BencodeVisitor : public MetaEntryVisitor {
 private:
-  int32_t len;
-  char* data;
-  bool number;
+  string _bencodedData;
 public:
-  /**
-   * This class stores the copy of data. So caller must take care of freeing
-   * memory of data.
-   */
-  Data(const char* data, int32_t len, bool number = false);
+  BencodeVisitor();
+  ~BencodeVisitor();
 
-  Data(const string& data, bool number = false);
+  void visit(const Data* d);
+  void visit(const Dictionary* d);
+  void visit(const List* l);
 
-  ~Data();
+  virtual void visit(const MetaEntry* e);
 
-  string toString() const;
-  int32_t toInt() const;
-  int64_t toLLInt() const;
-  
-  const char* getData() const;
-  int32_t getLen() const;
-  bool isNumber() const;
-
-  void accept(MetaEntryVisitor* v) const;
+  const string& getBencodedData() const
+  {
+    return _bencodedData;
+  }
 };
 
-#endif // _D_DATA_H_
+#endif // _D_BENCODE_VISITOR_H_

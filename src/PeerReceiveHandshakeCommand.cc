@@ -77,21 +77,22 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     if(!PIECE_STORAGE(btContext)->downloadFinished() && tstat.getDownloadSpeed() < _lowestSpeedLimit ||
        BT_RUNTIME(btContext)->getConnections() < MAX_PEERS) {
       peer->reconfigure(btContext->getPieceLength(), btContext->getTotalLength());
-      PEER_STORAGE(btContext)->addIncomingPeer(peer);
+      if(PEER_STORAGE(btContext)->addIncomingPeer(peer)) {
 
-      peer->cuid = cuid;
-
-      PeerInteractionCommand* command =
-	new PeerInteractionCommand(cuid,
-				   btContext->getOwnerRequestGroup(),
-				   peer,
-				   e,
-				   btContext,
-				   socket,
-				   PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
-				   _peerConnection);
-      e->commands.push_back(command);
-      logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->cuid);
+	peer->cuid = cuid;
+	
+	PeerInteractionCommand* command =
+	  new PeerInteractionCommand(cuid,
+				     btContext->getOwnerRequestGroup(),
+				     peer,
+				     e,
+				     btContext,
+				     socket,
+				     PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
+				     _peerConnection);
+	e->commands.push_back(command);
+	logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->cuid);
+      }
     }
     return true;
   } else {

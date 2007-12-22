@@ -61,6 +61,8 @@ void BtHandshakeMessage::init() {
   memset(this->reserved, 0, RESERVED_LENGTH);
   // fast extension
   this->reserved[7] |= 0x04;
+  // extended messaging
+  this->reserved[5] |= 0x10;
 }
 
 BtHandshakeMessageHandle BtHandshakeMessage::create(const unsigned char* data, int32_t dataLength) {
@@ -97,4 +99,9 @@ string BtHandshakeMessage::toString() const {
 
 bool BtHandshakeMessage::isFastExtensionSupported() const {
   return reserved[7]&0x04;
+}
+
+bool BtHandshakeMessage::isExtendedMessagingEnabled() const
+{
+  return reserved[5]&0x10;
 }

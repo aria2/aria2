@@ -32,39 +32,26 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DATA_H_
-#define _D_DATA_H_
+#ifndef _D_EXTENSION_MESSAGE_H_
+#define _D_EXTENSION_MESSAGE_H_
 
-#include "MetaEntry.h"
-#include <string>
+#include "common.h"
 
-using namespace std;
-
-class Data : public MetaEntry {
-private:
-  int32_t len;
-  char* data;
-  bool number;
+class ExtensionMessage {
 public:
-  /**
-   * This class stores the copy of data. So caller must take care of freeing
-   * memory of data.
-   */
-  Data(const char* data, int32_t len, bool number = false);
+  virtual ~ExtensionMessage() {}
 
-  Data(const string& data, bool number = false);
+  virtual string getBencodedData() = 0;
 
-  ~Data();
-
-  string toString() const;
-  int32_t toInt() const;
-  int64_t toLLInt() const;
+  virtual uint8_t getExtensionMessageID() = 0;
   
-  const char* getData() const;
-  int32_t getLen() const;
-  bool isNumber() const;
+  virtual const string& getExtensionName() const = 0;
 
-  void accept(MetaEntryVisitor* v) const;
+  virtual string toString() const = 0;
+
+  virtual void doReceivedAction() = 0;
 };
 
-#endif // _D_DATA_H_
+typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
+
+#endif // _D_EXTENSION_MESSAGE_H_

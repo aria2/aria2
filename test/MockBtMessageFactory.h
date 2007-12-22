@@ -3,6 +3,9 @@
 
 #include "BtMessageFactory.h"
 
+class ExtensionMessage;
+typedef SharedHandle<ExtensionMessage> ExensionMessageHandle;
+
 class MockBtMessageFactory : public BtMessageFactory {
 public:
   MockBtMessageFactory() {}
@@ -82,6 +85,11 @@ public:
   }
 
   virtual BtMessageHandle createAllowedFastMessage(int32_t index) {
+    return BtMessageHandle(0);
+  }
+  
+  virtual BtMessageHandle createBtExtendedMessage(const ExensionMessageHandle&)
+  {
     return BtMessageHandle(0);
   }
 };

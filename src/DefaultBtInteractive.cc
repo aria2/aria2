@@ -43,10 +43,16 @@
 #include "BtRequestMessage.h"
 #include "BtPieceMessage.h"
 #include "DlAbortEx.h"
+#include "BtExtendedMessage.h"
+#include "HandshakeExtensionMessage.h"
+#include "UTPexExtensionMessage.h"
+#include "DefaultExtensionMessageFactory.h"
+#include "BtRegistry.h"
 
 void DefaultBtInteractive::initiateHandshake() {
-  BtMessageHandle message = messageFactory->createHandshakeMessage(btContext->getInfoHash(),
-								   btContext->getPeerId());
+  BtHandshakeMessageHandle message =
+    messageFactory->createHandshakeMessage(btContext->getInfoHash(),
+					   btContext->getPeerId());
   dispatcher->addMessageToQueue(message);
   dispatcher->sendMessages();
 }
@@ -58,6 +64,18 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
       return 0;
     }
     peer->setPeerId(message->getPeerId());
+    
+    if(message->isFastExtensionSupported()) {
+      peer->setFastExtensionEnabled(true);
+      logger->info(MSG_FAST_EXTENSION_ENABLED, cuid);
+    }
+    if(message->isExtendedMessagingEnabled()) {
+      peer->setExtendedMessagingEnabled(true);
+      PEER_OBJECT(btContext, peer)->extensionMessageFactory =
+	new DefaultExtensionMessageFactory(btContext, peer);
+      logger->info(MSG_EXTENDED_MESSAGING_ENABLED, cuid);
+    }
+
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
 		 peer->ipaddr.c_str(), peer->port,
 		 message->toString().c_str());
@@ -73,9 +91,26 @@ void DefaultBtInteractive::doPostHandshakeProcessing() {
   haveCheckPoint.reset();
   keepAliveCheckPoint.reset();
   floodingCheckPoint.reset();
+  _pexCheckPoint.setTimeInSec(0);
+  if(peer->isExtendedMessagingEnabled()) {
+    addHandshakeExtendedMessageToQueue();
+  }
   addBitfieldMessageToQueue();
   addAllowedFastMessageToQueue();  
   sendPendingMessage();
+}
+
+void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
+{
+  HandshakeExtensionMessageHandle m = new HandshakeExtensionMessage();
+  m->setClientVersion("aria2");
+  m->setTCPPort(btRuntime->getListenPort());
+  m->setExtensions(btRuntime->getExtensions());
+  
+  BtExtendedMessageHandle msg =
+    messageFactory->createBtExtendedMessage(m);
+  
+  dispatcher->addMessageToQueue(msg);
 }
 
 void DefaultBtInteractive::addBitfieldMessageToQueue() {
@@ -283,6 +318,45 @@ void DefaultBtInteractive::checkActiveInteraction()
   }
 }
 
+void DefaultBtInteractive::addPeerExchangeMessage()
+{
+  time_t interval = 60;
+  if(_pexCheckPoint.elapsed(interval)) {
+    UTPexExtensionMessageHandle m =
+      new UTPexExtensionMessage(peer->getExtensionMessageID("ut_pex"));
+    const Peers& peers = peerStorage->getPeers();
+    {
+      size_t max = 30;
+      for(Peers::const_iterator i = peers.begin();
+	  i != peers.end() && max; ++i) {
+	const PeerHandle& cpeer = *i;
+	if(peer->ipaddr != cpeer->ipaddr &&
+	   !cpeer->getFirstContactTime().elapsed(interval) &&
+	   Util::isNumbersAndDotsNotation(cpeer->ipaddr)) {
+	  m->addFreshPeer(cpeer);
+	  --max;
+	}
+      }
+    }
+    {
+      size_t max = 10;
+      for(Peers::const_reverse_iterator i = peers.rbegin();
+	  i != peers.rend() && max; ++i) {
+	const PeerHandle& cpeer = *i;
+	if(peer->ipaddr != cpeer->ipaddr &&
+	   !cpeer->getBadConditionStartTime().elapsed(interval) &&
+	   Util::isNumbersAndDotsNotation(cpeer->ipaddr)) {
+	  m->addDroppedPeer(cpeer);
+	  --max;
+	}
+      }
+    }
+    BtExtendedMessageHandle msg = messageFactory->createBtExtendedMessage(m);
+    dispatcher->addMessageToQueue(msg);
+    _pexCheckPoint.reset();
+  }
+}
+
 void DefaultBtInteractive::doInteractionProcessing() {
   checkActiveInteraction();
 
@@ -304,5 +378,10 @@ void DefaultBtInteractive::doInteractionProcessing() {
   if(!pieceStorage->downloadFinished()) {
     addRequests();
   }
+
+  if(peer->getExtensionMessageID("ut_pex") && _utPexEnabled) {
+    addPeerExchangeMessage();
+  }
+
   sendPendingMessage();
 }

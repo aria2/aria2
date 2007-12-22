@@ -167,6 +167,7 @@ SRCS += MetaEntry.h\
 	MetaFileUtil.cc MetaFileUtil.h\
 	MetaEntryVisitor.h\
 	ShaVisitor.cc ShaVisitor.h\
+	BencodeVisitor.cc\
 	PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerAbstractCommand.cc PeerAbstractCommand.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
@@ -248,7 +249,11 @@ SRCS += MetaEntry.h\
 	BtSetup.cc BtSetup.h\
 	BtFileAllocationEntry.cc BtFileAllocationEntry.h\
 	BtPostDownloadHandler.cc BtPostDownloadHandler.h\
-	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h
+	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h\
+	BtExtendedMessage.cc\
+	DefaultExtensionMessageFactory.cc\
+	HandshakeExtensionMessage.cc\
+	UTPexExtensionMessage.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

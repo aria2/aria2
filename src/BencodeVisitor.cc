@@ -32,39 +32,53 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DATA_H_
-#define _D_DATA_H_
+#include "BencodeVisitor.h"
+#include "Data.h"
+#include "List.h"
+#include "Dictionary.h"
+#include "Util.h"
 
-#include "MetaEntry.h"
-#include <string>
+BencodeVisitor::BencodeVisitor() {}
 
-using namespace std;
+BencodeVisitor::~BencodeVisitor() {}
 
-class Data : public MetaEntry {
-private:
-  int32_t len;
-  char* data;
-  bool number;
-public:
-  /**
-   * This class stores the copy of data. So caller must take care of freeing
-   * memory of data.
-   */
-  Data(const char* data, int32_t len, bool number = false);
+void BencodeVisitor::visit(const Data* d)
+{
+  if(d->isNumber()) {
+    _bencodedData += "i"+d->toString()+"e";
+  } else {
+    _bencodedData += Util::itos(d->getLen())+":"+d->toString();
+  }
+}
 
-  Data(const string& data, bool number = false);
+void BencodeVisitor::visit(const List* l)
+{
+  _bencodedData += "l";
+  for_each(l->getList().begin(), l->getList().end(),
+	   bind2nd(mem_fun(&MetaEntry::accept), this));
+  _bencodedData += "e";
+}
 
-  ~Data();
+void BencodeVisitor::visit(const Dictionary* d)
+{
+  _bencodedData += "d";
 
-  string toString() const;
-  int32_t toInt() const;
-  int64_t toLLInt() const;
-  
-  const char* getData() const;
-  int32_t getLen() const;
-  bool isNumber() const;
+  for(Order::const_iterator itr = d->getOrder().begin(); itr != d->getOrder().end(); ++itr) {
+    _bencodedData += Util::itos((int32_t)(*itr).size());
+    _bencodedData += ":";
+    _bencodedData += *itr;
+    d->get(*itr)->accept(this);
+  }
+  _bencodedData += "e";
+}
 
-  void accept(MetaEntryVisitor* v) const;
-};
-
-#endif // _D_DATA_H_
+void BencodeVisitor::visit(const MetaEntry* e)
+{
+  if(dynamic_cast<const Data*>(e) != 0) {
+    visit((const Data*)e);
+  } else if(dynamic_cast<const List*>(e) != 0) {
+    visit((const List*)e);
+  } else if(dynamic_cast<const Dictionary*>(e) != 0) {
+    visit((const Dictionary*)e);
+  }
+}

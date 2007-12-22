@@ -55,6 +55,8 @@ private:
   BtRuntimeHandle btRuntime;
   int64_t removedPeerSessionDownloadLength;
   int64_t removedPeerSessionUploadLength;
+
+  bool isPeerAlreadyAdded(const PeerHandle& peer);
 public:
   DefaultPeerStorage(BtContextHandle btContext, const Option* option);
   virtual ~DefaultPeerStorage();

@@ -87,6 +87,8 @@ public:
 
   bool isFastExtensionSupported() const;
 
+  bool isExtendedMessagingEnabled() const;
+
   int8_t getPstrlen() const {
     return pstrlen;
   }

@@ -83,7 +83,7 @@ MetaEntry* MetaFileUtil::bdecoding(const char* buf, int32_t len) {
 
 MetaEntry* MetaFileUtil::bdecodingR(const char** pp, const char* end) {
   if(*pp >= end) {
-    throw new DlAbortEx("mulformed metainfo");
+    throw new DlAbortEx("Malformed metainfo");
   }
   MetaEntry* e;
   switch(**pp) {
@@ -107,7 +107,7 @@ MetaEntry* MetaFileUtil::bdecodingR(const char** pp, const char* end) {
 
 Dictionary* MetaFileUtil::parseDictionaryTree(const char** pp, const char* end) {
   if(*pp >= end) {
-    throw new DlAbortEx("mulformed metainfo");
+    throw new DlAbortEx("Malformed metainfo");
   }
   Dictionary* dic = new Dictionary();
   try {
@@ -129,7 +129,7 @@ Dictionary* MetaFileUtil::parseDictionaryTree(const char** pp, const char* end) 
 
 List* MetaFileUtil::parseListTree(const char** pp, const char* end) {
   if(*pp >= end) {
-    throw new DlAbortEx("mulformed metainfo");
+    throw new DlAbortEx("Malformed metainfo");
   }
   List* lis = new List();
   try {
@@ -150,12 +150,12 @@ List* MetaFileUtil::parseListTree(const char** pp, const char* end) {
 
 Data* MetaFileUtil::decodeInt(const char** pp, const char* end) {
   if(*pp >= end) {
-    throw new DlAbortEx(EX_MULFORMED_META_INFO);
+    throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }
   char* endTerm = (char*)memchr(*pp, 'e', end-*pp);
   // TODO if endTerm is null
   if(endTerm == NULL) {
-    throw new DlAbortEx(EX_MULFORMED_META_INFO);
+    throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }
   int32_t numSize = endTerm-*pp;
 
@@ -166,12 +166,12 @@ Data* MetaFileUtil::decodeInt(const char** pp, const char* end) {
 
 Data* MetaFileUtil::decodeWord(const char** pp, const char* end) {
   if(*pp >= end) {
-    throw new DlAbortEx("mulformed metainfo");
+    throw new DlAbortEx("Malformed metainfo");
   }
   char* delim = (char*)memchr(*pp, ':', end-*pp);
   // TODO if delim is null
   if(delim == *pp || delim == NULL) {
-    throw new DlAbortEx(EX_MULFORMED_META_INFO);
+    throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }
   int32_t numSize = delim-*pp;
   char* temp = new char[numSize+1];
@@ -181,12 +181,12 @@ Data* MetaFileUtil::decodeWord(const char** pp, const char* end) {
   int32_t size = strtol(temp, &endptr, 10);
   if(*endptr != '\0') {
     delete [] temp;
-    throw new DlAbortEx(EX_MULFORMED_META_INFO);
+    throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }    
   delete [] temp;
 
   if(delim+1+size > end) {
-    throw new DlAbortEx(EX_MULFORMED_META_INFO);
+    throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }
 
   Data* data = new Data(delim+1, size);

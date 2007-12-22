@@ -78,6 +78,7 @@
 #define MSG_DELETING_REQUEST_SLOT_TIMEOUT _("CUID#%d - Deleting request slot blockIndex=%d because of time out")
 #define MSG_DELETING_REQUEST_SLOT_ACQUIRED _("CUID#%d - Deleting request slot blockIndex=%d because the block has been acquired.")
 #define MSG_FAST_EXTENSION_ENABLED _("CUID#%d - Fast extension enabled.")
+#define MSG_EXTENDED_MESSAGING_ENABLED _("CUID#%d - Extended Messaging enabled.")
 #define MSG_FILE_ALLOCATION_FAILURE _("CUID#%d - Exception caught while allocating file space.")
 #define MSG_CONTENT_DISPOSITION_DETECTED _("CUID#%d - Content-Disposition detected. Use %s as filename")
 #define MSG_PEER_BANNED _("CUID#%d - Peer %s:%d banned.")
@@ -131,6 +132,7 @@
 #define MSG_RESOURCE_NOT_FOUND _("Resource not found")
 #define MSG_FILE_RENAMED _("File already exists. Renamed to %s.")
 #define MSG_CANNOT_PARSE_METALINK _("Cannot parse metalink XML file. XML may be malformed.")
+#define MSG_TOO_SMALL_PAYLOAD_SIZE _("Too small payload size for %s, size=%d.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
@@ -154,7 +156,7 @@
 #define EX_AUTH_FAILED _("Authorization failed.")
 #define EX_GOT_EOF _("Got EOF from the server.")
 #define EX_EOF_FROM_PEER _("Got EOF from peer.")
-#define EX_MULFORMED_META_INFO _("Malformed meta info.")
+#define EX_MALFORMED_META_INFO _("Malformed meta info.")
 
 #define EX_FILE_OPEN _("Failed to open the file %s, cause: %s")
 #define EX_FILE_WRITE _("Failed to write into the file %s, cause: %s")

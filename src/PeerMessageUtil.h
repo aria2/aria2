@@ -65,6 +65,16 @@ public:
 				      int32_t msgLength,
 				      int32_t payloadLength,
 				      int8_t messageId);
+
+  /**
+   * Creates compact tracker format(6bytes for ipv4 address and port)
+   * and stores the results in compact.
+   * compact must be at least 6 bytes and pre-allocated.
+   * Returns true if creation is successful, otherwise returns false.
+   * The example of failure reason is that addr is not numbers-and-dots
+   * notation.
+   */
+  static bool createcompact(char* compact, const string& addr, uint16_t port);
 };
 
 #endif // _D_PEER_MESSAGE_UTIL_H_

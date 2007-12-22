@@ -54,6 +54,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.cc MetaFileUtil.h\
 @ENABLE_BITTORRENT_TRUE@	MetaEntryVisitor.h\
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.cc ShaVisitor.h\
+@ENABLE_BITTORRENT_TRUE@	BencodeVisitor.cc\
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.cc PeerMessageUtil.h\
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.cc PeerAbstractCommand.h\
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
@@ -135,7 +136,11 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtSetup.cc BtSetup.h\
 @ENABLE_BITTORRENT_TRUE@	BtFileAllocationEntry.cc BtFileAllocationEntry.h\
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandler.cc BtPostDownloadHandler.h\
-@ENABLE_BITTORRENT_TRUE@	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h
+@ENABLE_BITTORRENT_TRUE@	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h\
+@ENABLE_BITTORRENT_TRUE@	BtExtendedMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.cc\
+@ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -303,8 +308,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	MessageDigestHelper.h MetaEntry.h Data.cc Data.h Dictionary.cc \
 	Dictionary.h List.cc List.h MetaFileUtil.cc MetaFileUtil.h \
 	MetaEntryVisitor.h ShaVisitor.cc ShaVisitor.h \
-	PeerMessageUtil.cc PeerMessageUtil.h PeerAbstractCommand.cc \
-	PeerAbstractCommand.h PeerInitiateConnectionCommand.cc \
+	BencodeVisitor.cc PeerMessageUtil.cc PeerMessageUtil.h \
+	PeerAbstractCommand.cc PeerAbstractCommand.h \
+	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
 	PeerInteractionCommand.h PeerListenCommand.cc \
 	PeerListenCommand.h RequestSlot.cc RequestSlot.h Directory.cc \
@@ -355,8 +361,10 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerReceiveHandshakeCommand.h BtSetup.cc BtSetup.h \
 	BtFileAllocationEntry.cc BtFileAllocationEntry.h \
 	BtPostDownloadHandler.cc BtPostDownloadHandler.h \
-	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h Metalinker.cc \
-	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h \
+	BtExtendedMessage.cc DefaultExtensionMessageFactory.cc \
+	HandshakeExtensionMessage.cc UTPexExtensionMessage.cc \
+	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkProcessorFactory.cc MetalinkParserController.cc \
 	MetalinkParserStateMachine.cc InitialMetalinkParserState.cc \
@@ -385,6 +393,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ShaVisitor.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BencodeVisitor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerMessageUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerAbstractCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	PeerInitiateConnectionCommand.$(OBJEXT) \
@@ -433,7 +442,11 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	BtSetup.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtFileAllocationEntry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandler.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	BtCheckIntegrityEntry.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	BtCheckIntegrityEntry.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtExtendedMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -935,6 +948,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoSaveCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessage.Po@am__quote@
@@ -944,6 +958,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtChokeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtContextAwareCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtDependency.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtExtendedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtFileAllocationEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHandshakeMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHaveAllMessage.Po@am__quote@
@@ -987,6 +1002,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtProgressInfoFile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtRequestFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultDiskWriter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultExtensionMessageFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerListProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPeerStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorage.Po@am__quote@
@@ -1022,6 +1038,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegment.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HashMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HaveEraseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpConnection.Po@am__quote@
@@ -1111,6 +1128,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TransferStat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/URLMetalinkParserState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UnknownLengthPieceStorage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Util.Po@am__quote@

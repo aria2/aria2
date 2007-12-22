@@ -32,39 +32,20 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DATA_H_
-#define _D_DATA_H_
+#ifndef _D_EXTENSION_MESSAGE_FACTORY_H_
+#define _D_EXTENSION_MESSAGE_FACTORY_H_
 
-#include "MetaEntry.h"
-#include <string>
+#include "common.h"
 
-using namespace std;
+class ExtensionMessage;
+typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
 
-class Data : public MetaEntry {
-private:
-  int32_t len;
-  char* data;
-  bool number;
+class ExtensionMessageFactory {
 public:
-  /**
-   * This class stores the copy of data. So caller must take care of freeing
-   * memory of data.
-   */
-  Data(const char* data, int32_t len, bool number = false);
+  virtual ~ExtensionMessageFactory() {}
 
-  Data(const string& data, bool number = false);
-
-  ~Data();
-
-  string toString() const;
-  int32_t toInt() const;
-  int64_t toLLInt() const;
-  
-  const char* getData() const;
-  int32_t getLen() const;
-  bool isNumber() const;
-
-  void accept(MetaEntryVisitor* v) const;
+  virtual ExtensionMessageHandle createMessage(const char* data, size_t length) = 0;
 };
 
-#endif // _D_DATA_H_
+typedef SharedHandle<ExtensionMessageFactory> ExtensionMessageFactoryHandle;
+#endif // _D_EXTENSION_MESSAGE_FACTORY_H_

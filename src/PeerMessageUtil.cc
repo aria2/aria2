@@ -125,3 +125,17 @@ void PeerMessageUtil::createPeerMessageString(unsigned char* msg,
   setIntParam(msg, payloadLength);
   msg[4] = messageId;
 }
+
+bool PeerMessageUtil::createcompact(char* compact, const string& addr, uint16_t port)
+{
+  struct in_addr in;
+  if(inet_aton(addr.c_str(), &in) == 0) {
+    return false;
+  }
+  uint32_t* addrp = (uint32_t*)compact;
+  *addrp = in.s_addr;
+  uint16_t* portp = (uint16_t*)(compact+4);
+  *portp = htons(port);
+  return true;
+}
+

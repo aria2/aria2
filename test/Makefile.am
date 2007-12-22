@@ -95,7 +95,13 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtDependencyTest.cc\
 	BtPostDownloadHandlerTest.cc\
 	DownloadHandlerFactoryTest.cc\
-	TimeSeedCriteriaTest.cc
+	TimeSeedCriteriaTest.cc\
+	BencodeVisitorTest.cc\
+	BtExtendedMessageTest.cc\
+	HandshakeExtensionMessageTest.cc\
+	UTPexExtensionMessageTest.cc\
+	DefaultBtMessageFactoryTest.cc\
+	DefaultExtensionMessageFactoryTest.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

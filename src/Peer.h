@@ -39,6 +39,7 @@
 #include "BitfieldMan.h"
 #include "PeerStat.h"
 #include "TimeA2.h"
+#include "BtConstants.h"
 #include <string.h>
 
 #define PEER_ID_LENGTH 20
@@ -49,7 +50,7 @@ class Peer {
   friend bool operator!=(const Peer& p1, const Peer& p2);
 public:
   string ipaddr;
-  int32_t port;
+  uint16_t port;
   bool amChoking;
   bool amInterested;
   bool peerChoking;
@@ -67,6 +68,8 @@ private:
   Integers peerAllowedIndexSet;
   // fast index set which localhost has sent to a peer.
   Integers amAllowedIndexSet;
+  bool _extendedMessagingEnabled;
+  Extensions _extensions;
   PeerStat peerStat;
   int64_t sessionUploadLength;
   int64_t sessionDownloadLength;
@@ -74,10 +77,11 @@ private:
   int32_t latency;
   bool active;
   string id;
+  Time _firstContactTime;
   Time _badConditionStartTime;
   int32_t _badConditionInterval;
 public:
-  Peer(string ipaddr, int32_t port, int32_t pieceLength, int64_t totalLength);
+  Peer(string ipaddr, uint16_t port, int32_t pieceLength, int64_t totalLength);
 
   ~Peer() {
     delete bitfield;
@@ -193,6 +197,16 @@ public:
   void addAmAllowedIndex(int32_t index);
   bool isInAmAllowedIndexSet(int32_t index) const;
 
+  void setExtendedMessagingEnabled(bool enabled)
+  {
+    _extendedMessagingEnabled = enabled;
+  }
+
+  bool isExtendedMessagingEnabled() const
+  {
+    return _extendedMessagingEnabled;
+  }
+
   bool shouldBeChoking() const;
 
   bool hasPiece(int32_t index) const;
@@ -211,6 +225,22 @@ public:
   bool isGood() const;
 
   void reconfigure(int32_t pieceLength, int64_t totalLength);
+
+  Time getFirstContactTime() const
+  {
+    return _firstContactTime;
+  }
+
+  Time getBadConditionStartTime() const
+  {
+    return _badConditionStartTime;
+  }
+
+  uint8_t getExtensionMessageID(const string& name);
+
+  string getExtensionName(uint8_t id);
+
+  void setExtension(const string& name, uint8_t id);
 };
 
 typedef SharedHandle<Peer> PeerHandle;

@@ -112,6 +112,9 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   btInteractive->setKeepAliveInterval(e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   btInteractive->setBtMessageFactory(factory);
+  if(!btContext->isPrivate() && e->option->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
+    btInteractive->setUTPexEnabled(true);
+  }
   this->btInteractive = btInteractive;
 
   // reverse depends

@@ -84,6 +84,7 @@ void DefaultBtContext::clear() {
   numPieces = 0;
   name = "";
   announceTiers.clear();
+  _private = false;
 }
 
 void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
@@ -240,6 +241,12 @@ void DefaultBtContext::processMetaInfo(const MetaEntry* rootEntry, const string&
   extractPieceHash((unsigned char*)pieceHashData->getData(),
 		   pieceHashData->getLen(),
 		   PIECE_HASH_LENGTH);
+  const Data* privateFlag = dynamic_cast<const Data*>(infoDic->get("private"));
+  if(privateFlag) {
+    if(privateFlag->toString() == "1") {
+      _private = true;
+    }
+  }
   // retrieve uri-list.
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html

@@ -32,39 +32,48 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DATA_H_
-#define _D_DATA_H_
+#ifndef _D_BT_EXTENDED_MESSAGE_H_
+#define _D_BT_EXTENDED_MESSAGE_H_
+#include "SimpleBtMessage.h"
 
-#include "MetaEntry.h"
-#include <string>
+class BtExtendedMessage;
+typedef SharedHandle<BtExtendedMessage> BtExtendedMessageHandle;
+class ExtensionMessage;
+typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
 
-using namespace std;
-
-class Data : public MetaEntry {
+class BtExtendedMessage:public SimpleBtMessage
+{
 private:
-  int32_t len;
-  char* data;
-  bool number;
+  ExtensionMessageHandle _extensionMessage;
+
+  unsigned char* _msg;
+
+  size_t _msgLength;
 public:
-  /**
-   * This class stores the copy of data. So caller must take care of freeing
-   * memory of data.
-   */
-  Data(const char* data, int32_t len, bool number = false);
+  BtExtendedMessage(const ExtensionMessageHandle& extensionMessage = 0);
 
-  Data(const string& data, bool number = false);
+  virtual ~BtExtendedMessage();
 
-  ~Data();
+  static const uint8_t ID = 20;
 
-  string toString() const;
-  int32_t toInt() const;
-  int64_t toLLInt() const;
-  
-  const char* getData() const;
-  int32_t getLen() const;
-  bool isNumber() const;
+  static BtExtendedMessageHandle create(const BtContextHandle& btContext,
+					const PeerHandle& peer,
+					const char* data,
+					size_t dataLength);
 
-  void accept(MetaEntryVisitor* v) const;
+  virtual int8_t getId() { return ID; }
+
+  virtual void doReceivedAction();
+
+  virtual const unsigned char* getMessage();
+
+  virtual int32_t getMessageLength();
+
+  virtual bool sendPredicate() const;
+
+  virtual string toString() const;
+
+  ExtensionMessageHandle getExtensionMessage() const;
 };
 
-#endif // _D_DATA_H_
+#endif // _D_BT_EXTENDED_MESSAGE_H_

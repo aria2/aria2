@@ -1,3 +1,62 @@
+2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added uTorrent compatible Peer Exchange.
+	* src/BencodeVisitor.{h, cc}
+	* test/BencodeVisitorTest.cc
+	* src/BtConstants.h
+	* src/BtContext.h: Added 'private' flag.
+	* src/BtExtendedMessage.{h, cc}
+	* test/BtExtendedMessageTest.cc
+	* src/BtHandshakeMessage.{h, cc}: Set extended messaging bit in
+	reserved field.
+	* test/BtHandshakeMessageTest.cc
+	* src/BtMessageFactory.h
+	* src/BtRegistry.h
+	* src/BtRuntime.h: This class holds default extension message IDs for
+	aria2. By default, aria2 uses ID 8 for ut_pex.
+	* src/DefaultBtContext.cc
+	* src/DefaultBtInteractive.{h, cc}: This class holds _utPexEnabled.
+	When it is true, aria2 enables ut_pex. This value is set by
+	PeerInteractionCommand.
+	* src/DefaultBtMessageFactory.{h, cc}
+	* test/DefaultBtMessageFactoryTest.cc
+	* src/DefaultBtMessageReceiver.cc: Moved the code of fast extension
+	handling to DefaultBtInteractive class.
+	* src/DefaultExtensionMessageFactory.{h, cc}
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* src/DefaultPeerStorage.cc: Returns false if a peer is already in
+	the container(peers and incomingPeers. The equality is determined by
+	Peer::id).
+	* test/DefaultPeerStorageTest.cc
+	* src/ExtensionMessage.h
+	* test/MockExtensionMessage.h
+	* src/ExtensionMessageFactory.h
+	* test/MockExtensionMessageFactory.h
+	* src/HandshakeExtensionMessage.{h, cc}
+	* test/HandshakeExtensionMessageTest.cc
+	* src/MetaEntry.h
+	* src/Peer.{h, cc}
+	* src/PeerInteractionCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc: Evaluate the return value of
+	addIncomingPeer.
+	* src/PeerMessageUtil.{h, cc}
+	* src/PeerObject.h
+	* src/UTPexExtensionMessage.{h, cc}
+	* test/UTPexExtensionMessageTest.cc
+	* src/message.h
+	* src/prefs.h
+
+	Fixed the bug that returns incomplete data when it contains null
+	character. A convenient constructor was also added.
+	* src/Data.{h, cc}
+
+	Rewritten.
+	* src/CompactPeerListProcessor.cc
+
+	Fixed typos.
+	* src/message.h
+	* src/MetaFileUtil.cc
+	
 2007-12-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 	
 	Added "Status Legend" label to the explanation text of 'stat' in

@@ -146,4 +146,7 @@ PEER_OBJECT(btContext, peer)->btRequestFactory
 #define PEER_CONNECTION(btContext, peer) \
 PEER_OBJECT(btContext, peer)->peerConnection
 
+#define EXTENSION_MESSAGE_FACTORY(btContext, peer) \
+PEER_OBJECT(btContext, peer)->extensionMessageFactory
+
 #endif // _D_BT_REGISTRY_H_

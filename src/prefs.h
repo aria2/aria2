@@ -207,6 +207,8 @@
 #define PREF_BT_KEEP_ALIVE_INTERVAL "bt-keep-alive-interval"
 // values: a string, less than or equals to 20 bytes length
 #define PREF_PEER_ID_PREFIX "peer-id-prefix"
+// values: true | false
+#define PREF_ENABLE_PEER_EXCHANGE "enable-peer-exchange"
 
 /**
  * Metalink related preferences

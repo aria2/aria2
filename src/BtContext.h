@@ -48,7 +48,11 @@ typedef deque<AnnounceTierHandle> AnnounceTiers;
 class RequestGroup;
 
 class BtContext:public DownloadContext {
+protected:
+  bool _private;
 public:
+  BtContext():_private(false) {}
+  
   virtual ~BtContext() {}
 
   virtual const unsigned char* getInfoHash() const = 0;
@@ -65,6 +69,11 @@ public:
    * Returns the peer id of localhost, 20 byte length
    */
   virtual const unsigned char* getPeerId() = 0;
+
+  bool isPrivate() const
+  {
+    return _private;
+  }
 
   virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize) = 0;
   

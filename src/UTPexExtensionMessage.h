@@ -32,39 +32,68 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DATA_H_
-#define _D_DATA_H_
+#ifndef _D_UT_PEX_EXTENSION_MESSAGE_H_
+#define _D_UT_PEX_EXTENSION_MESSAGE_H_
 
-#include "MetaEntry.h"
-#include <string>
+#include "ExtensionMessage.h"
 
-using namespace std;
+class BtContext;
+typedef SharedHandle<BtContext> BtContextHandle;
+class Peer;
+typedef SharedHandle<Peer> PeerHandle;
+typedef deque<PeerHandle> Peers;
+class UTPexExtensionMessage;
+typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
 
-class Data : public MetaEntry {
+class UTPexExtensionMessage:public ExtensionMessage {
 private:
-  int32_t len;
-  char* data;
-  bool number;
+  uint8_t _extensionMessageID;
+
+  Peers _freshPeers;
+
+  Peers _droppedPeers;
+
+  BtContextHandle _btContext;
+
+  pair<string, string> createCompactPeerListAndFlag(const Peers& peers);
+
 public:
-  /**
-   * This class stores the copy of data. So caller must take care of freeing
-   * memory of data.
-   */
-  Data(const char* data, int32_t len, bool number = false);
+  UTPexExtensionMessage(uint8_t extensionMessageID);
 
-  Data(const string& data, bool number = false);
+  virtual ~UTPexExtensionMessage();
 
-  ~Data();
+  virtual string getBencodedData();
 
-  string toString() const;
-  int32_t toInt() const;
-  int64_t toLLInt() const;
+  virtual uint8_t getExtensionMessageID()
+  {
+    return _extensionMessageID;
+  }
   
-  const char* getData() const;
-  int32_t getLen() const;
-  bool isNumber() const;
+  virtual const string& getExtensionName() const
+  {
+    return EXTENSION_NAME;
+  }
 
-  void accept(MetaEntryVisitor* v) const;
+  static const string EXTENSION_NAME;
+
+  virtual string toString() const;
+
+  virtual void doReceivedAction();
+
+  void addFreshPeer(const PeerHandle& peer);
+
+  const Peers& getFreshPeers() const;
+
+  void addDroppedPeer(const PeerHandle& peer);
+
+  const Peers& getDroppedPeers() const;
+
+  void setBtContext(const BtContextHandle& btContext);
+
+  static UTPexExtensionMessageHandle create(const BtContextHandle& btContext,
+					    const char* data, size_t len);
 };
 
-#endif // _D_DATA_H_
+typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
+
+#endif // _D_UT_PEX_EXTENSION_MESSAGE_H_

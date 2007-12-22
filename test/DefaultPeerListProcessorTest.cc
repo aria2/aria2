@@ -36,7 +36,7 @@ void DefaultPeerListProcessorTest::testExtractPeer() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
   PeerHandle peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), peer->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((int32_t)2006, peer->port);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->port);
 }
 
 void DefaultPeerListProcessorTest::testExtract2Peers() {
@@ -49,9 +49,9 @@ void DefaultPeerListProcessorTest::testExtract2Peers() {
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   PeerHandle peer = *peers.begin();
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), peer->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((int32_t)2006, peer->port);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->port);
 
   peer = *(peers.begin()+1);
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"), peer->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((int32_t)2007, peer->port);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)2007, peer->port);
 }

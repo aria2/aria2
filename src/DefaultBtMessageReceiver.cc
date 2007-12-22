@@ -53,14 +53,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   }
   BtHandshakeMessageHandle msg = messageFactory->createHandshakeMessage(data, dataLength);
   Errors errors;
-  if(msg->validate(errors)) {
-    if(msg->isFastExtensionSupported()) {
-      peer->setFastExtensionEnabled(true);
-      logger->info(MSG_FAST_EXTENSION_ENABLED, cuid);
-    }
-  } else {
-    // TODO throw exception here based on errors
-  }
+  msg->validate(errors);
   return msg;
 }
 

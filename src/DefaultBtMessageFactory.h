@@ -110,6 +110,8 @@ public:
 
   virtual BtMessageHandle createAllowedFastMessage(int32_t index);
 
+  virtual BtMessageHandle createBtExtendedMessage(const ExensionMessageHandle& msg);
+
   void setPeer(const PeerHandle& peer) {
     this->peer = peer;
   }

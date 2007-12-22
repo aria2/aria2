@@ -129,6 +129,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_ENABLE_DIRECT_IO, V_FALSE);
   op->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_FALSE);
   op->put(PREF_METALINK_PREFERRED_PROTOCOL, V_NONE);
+  op->put(PREF_ENABLE_PEER_EXCHANGE, V_TRUE);
   while(1) {
     int optIndex = 0;
     int lopt;

@@ -61,6 +61,8 @@
 #include "BtAllowedFastMessageValidator.h"
 #include "BtHandshakeMessage.h"
 #include "BtHandshakeMessageValidator.h"
+#include "BtExtendedMessage.h"
+#include "ExtensionMessage.h"
 
 BtMessageHandle
 DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t dataLength)
@@ -159,6 +161,14 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t data
 					  btContext->getNumPieces());
       temp->setBtMessageValidator(validator);
       msg = temp;
+      break;
+    }
+    case BtExtendedMessage::ID: {
+      if(peer->isExtendedMessagingEnabled()) {
+	msg = BtExtendedMessage::create(btContext, peer, (const char*)data, dataLength);
+      } else {
+	throw new DlAbortEx("Received extended message from peer during a session with extended messaging disabled.");
+      }
       break;
     }
     default:
@@ -348,4 +358,12 @@ DefaultBtMessageFactory::createAllowedFastMessage(int32_t index)
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
+}
+
+BtMessageHandle
+DefaultBtMessageFactory::createBtExtendedMessage(const ExensionMessageHandle& msg)
+{
+  BtExtendedMessageHandle m = new BtExtendedMessage(msg);
+  setCommonProperty(m);
+  return m;
 }

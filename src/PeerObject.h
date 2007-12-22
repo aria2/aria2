@@ -41,6 +41,7 @@
 #include "BtMessageDispatcher.h"
 #include "PeerConnection.h"
 #include "BtMessageReceiver.h"
+#include "ExtensionMessageFactory.h"
 
 class PeerObject {
 public:
@@ -48,13 +49,15 @@ public:
 	       btRequestFactory(0),
 	       btMessageDispatcher(0),
 	       btMessageReceiver(0),
-	       peerConnection(0) {}
-
+	       peerConnection(0),
+	       extensionMessageFactory(0) {}
+  
   BtMessageFactoryHandle btMessageFactory;
   BtRequestFactoryHandle btRequestFactory;
   BtMessageDispatcherHandle btMessageDispatcher;
   BtMessageReceiverHandle btMessageReceiver;
   PeerConnectionHandle peerConnection;
+  ExtensionMessageFactoryHandle extensionMessageFactory;
 };
 
 typedef SharedHandle<PeerObject> PeerObjectHandle;

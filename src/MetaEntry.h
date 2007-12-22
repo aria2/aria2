@@ -49,4 +49,5 @@ public:
 
 };
 
+typedef SharedHandle<MetaEntry> MetaEntryHandle;
 #endif // _D_META_ENTRY_H_

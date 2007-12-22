@@ -39,7 +39,7 @@
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
-Peer::Peer(string ipaddr, int32_t port, int32_t pieceLength, int64_t totalLength):
+Peer::Peer(string ipaddr, uint16_t port, int32_t pieceLength, int64_t totalLength):
   ipaddr(ipaddr),
   port(port),
   sessionUploadLength(0),
@@ -113,6 +113,8 @@ void Peer::resetStatus() {
   optUnchoking = false;
   snubbing = false;
   fastExtensionEnabled = false;
+  _extendedMessagingEnabled = false;
+  _extensions.clear();
   latency = DEFAULT_LATENCY;
   peerAllowedIndexSet.clear();
   amAllowedIndexSet.clear();
@@ -157,4 +159,31 @@ void Peer::startBadCondition()
 bool Peer::isGood() const
 {
   return _badConditionStartTime.elapsed(_badConditionInterval);
+}
+
+uint8_t Peer::getExtensionMessageID(const string& name)
+{
+  Extensions::const_iterator itr = _extensions.find(name);
+  if(itr == _extensions.end()) {
+    return 0;
+  } else {
+    return (*itr).second;
+  }
+}
+
+string Peer::getExtensionName(uint8_t id)
+{
+  for(Extensions::const_iterator itr = _extensions.begin();
+      itr != _extensions.end(); ++itr) {
+    const Extensions::value_type& p = *itr;
+    if(p.second == id) {
+      return p.first;
+    }
+  }
+  return "";
+}
+
+void Peer::setExtension(const string& name, uint8_t id)
+{
+  _extensions[name] = id;
 }

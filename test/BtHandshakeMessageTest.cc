@@ -34,7 +34,7 @@ void createHandshakeMessageData(unsigned char* msg) {
   msg[0] = 19;
   memcpy(&msg[1], BtHandshakeMessageTest::BTPSTR.c_str(),
 	 BtHandshakeMessageTest::BTPSTR.size());
-  unsigned char reserved[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04 };
+  unsigned char reserved[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x04 };
   memcpy(&msg[20], reserved, sizeof(reserved));
   unsigned char infoHash[] = { 0xff, 0xff, 0xff, 0xff, 0xff,
 			       0xff, 0xff, 0xff, 0xff, 0xff,
@@ -56,7 +56,7 @@ void BtHandshakeMessageTest::testCreate() {
   CPPUNIT_ASSERT_EQUAL((int8_t)19, message->getPstrlen());
   CPPUNIT_ASSERT_EQUAL(Util::toHex((const unsigned char*)BTPSTR.c_str(), BTPSTR.size()),
 		       Util::toHex(message->getPstr(), BtHandshakeMessage::PSTR_LENGTH));
-  CPPUNIT_ASSERT_EQUAL(string("0000000000000004"),
+  CPPUNIT_ASSERT_EQUAL(string("0000000000100004"),
 		       Util::toHex(message->getReserved(), BtHandshakeMessage::RESERVED_LENGTH));
   CPPUNIT_ASSERT_EQUAL(string("ffffffffffffffffffffffffffffffffffffffff"),
 		       Util::toHex(message->getInfoHash(), INFO_HASH_LENGTH));
@@ -98,5 +98,5 @@ void BtHandshakeMessageTest::testToString() {
   msg.setInfoHash(infoHash);
   msg.setPeerId(peerId);
 
-  CPPUNIT_ASSERT_EQUAL(string("handshake peerId=%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0, reserved=0000000000000004"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(string("handshake peerId=%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0, reserved=0000000000100004"), msg.toString());
 }
