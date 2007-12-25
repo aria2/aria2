@@ -50,12 +50,6 @@ public:
   virtual bool addPeer(const PeerHandle& peer) = 0;
 
   /**
-   * Adds new incoming peer to the internal peer list.
-   * If the peer is added successfully, returns true. Otherwise returns false.
-   */
-  virtual bool addIncomingPeer(const PeerHandle& peer) = 0;
-
-  /**
    * Adds all peers in peers to internal peer list.
    */
   virtual void addPeer(const Peers& peers) = 0;

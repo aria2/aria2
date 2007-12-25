@@ -12,12 +12,10 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountPeer);
   CPPUNIT_TEST(testDeleteUnusedPeer);
   CPPUNIT_TEST(testAddPeer);
-  CPPUNIT_TEST(testAddPeer_incomingPeer);
   CPPUNIT_TEST(testGetPeer);
   CPPUNIT_TEST(testIsPeerAvailable);
   CPPUNIT_TEST(testActivatePeer);
   CPPUNIT_TEST(testCalculateStat);
-  CPPUNIT_TEST(testAddIncomingPeer);
   CPPUNIT_TEST(testReturnPeer);
   CPPUNIT_TEST(testOnErasingPeer);
   CPPUNIT_TEST(testReturnPeer);
@@ -39,12 +37,10 @@ public:
   void testCountPeer();
   void testDeleteUnusedPeer();
   void testAddPeer();
-  void testAddPeer_incomingPeer();
   void testGetPeer();
   void testIsPeerAvailable();
   void testActivatePeer();
   void testCalculateStat();
-  void testAddIncomingPeer();
   void testReturnPeer();
   void testOnErasingPeer();
 };
@@ -99,22 +95,6 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   
 }
 
-void DefaultPeerStorageTest::testAddPeer_incomingPeer()
-{
-  DefaultPeerStorage ps(btContext, option);
-
-  PeerHandle peer1 = new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			      btContext->getTotalLength());
-  PeerHandle peer2 = new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			      btContext->getTotalLength());
-  
-  CPPUNIT_ASSERT(ps.addIncomingPeer(peer1));
-  CPPUNIT_ASSERT(ps.addPeer(peer1));// because same instance is stored in incomingPeers and peers.
-  CPPUNIT_ASSERT(!ps.addPeer(peer2));
-
-
-}
-
 void DefaultPeerStorageTest::testAddPeer() {
   DefaultPeerStorage ps(btContext, option);
 
@@ -145,22 +125,12 @@ void DefaultPeerStorageTest::testAddPeer() {
   // peer1 was deleted.
   CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
   
-  peer4->startBadCondition();
-
-  PeerHandle peer5(new Peer("192.168.0.4", 6889, btContext->getPieceLength(),
+  PeerHandle peer5(new Peer("192.168.0.4", 0, btContext->getPieceLength(),
 			    btContext->getTotalLength()));
+  peer5->port = 6889;
 
-  // this returns false, because peer4 in the container has error.
+  // this returns false because the peer which has same ip and port has already added
   CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer5));
-
-  peer3->cuid = 1;
-
-  PeerHandle peer6(new Peer("192.168.0.3", 6889, btContext->getPieceLength(),
-			    btContext->getTotalLength()));
-
-  // this is false, because peer3's cuid is not zero
-  CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer6));
-  
 }
 
 void DefaultPeerStorageTest::testGetPeer() {
@@ -231,18 +201,6 @@ void DefaultPeerStorageTest::testActivatePeer() {
 void DefaultPeerStorageTest::testCalculateStat() {
 }
 
-
-void DefaultPeerStorageTest::testAddIncomingPeer()
-{
-  DefaultPeerStorage ps(btContext, option);
- 
-  CPPUNIT_ASSERT(ps.addIncomingPeer(new Peer("192.168.0.1", 6889,
-					     btContext->getPieceLength(),
-					     btContext->getTotalLength())));
-
-  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getIncomingPeers().size());
-}
-
 void DefaultPeerStorageTest::testReturnPeer()
 {
   DefaultPeerStorage ps(btContext, option);
@@ -254,20 +212,18 @@ void DefaultPeerStorageTest::testReturnPeer()
   ps.addPeer(peer1);
   ps.addPeer(peer2);
 
-  PeerHandle peer3(new Peer("192.168.0.3", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
-  
-  ps.addIncomingPeer(peer3);
+  PeerHandle peer3(new Peer("192.168.0.3", 0, btContext->getPieceLength(),
+			   btContext->getTotalLength()));  
+  ps.addPeer(peer3);
 
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"),
-		       ps.getPeers().front()->ipaddr);
   ps.returnPeer(peer2);
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"),
-		       ps.getPeers().front()->ipaddr);
+  // peer2 is moved to the end of container
+  CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"),
+		       ps.getPeers().back()->ipaddr);
 
-  ps.returnPeer(peer3);
-  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getIncomingPeers().size());
-
+  ps.returnPeer(peer3); // peer3 is removed from the container
+  CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getPeers().size());
+  CPPUNIT_ASSERT(find(ps.getPeers().begin(), ps.getPeers().end(), peer3) == ps.getPeers().end());
 }
 
 void DefaultPeerStorageTest::testOnErasingPeer()

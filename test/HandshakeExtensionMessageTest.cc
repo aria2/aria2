@@ -1,8 +1,7 @@
 #include "HandshakeExtensionMessage.h"
 #include "Peer.h"
 #include "MockBtContext.h"
-#include "MockPeerStorage.h"
-#include "BtRegistry.h"
+#include "Exception.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 class HandshakeExtensionMessageTest:public CppUnit::TestFixture {
@@ -21,23 +20,9 @@ private:
 public:
   HandshakeExtensionMessageTest():_btContext(0) {}
 
-  void setUp()
-  {
-    BtRegistry::unregisterAll();
-    MockBtContextHandle btContext = new MockBtContext();
-    unsigned char infohash[20];
-    memset(infohash, 0, sizeof(infohash));
-    btContext->setInfoHash(infohash);
-    _btContext = btContext;
-    MockPeerStorageHandle peerStorage = new MockPeerStorage();
-    BtRegistry::registerPeerStorage(_btContext->getInfoHashAsString(),
-				    peerStorage);
-  }
+  void setUp() {}
 
-  void tearDown()
-  {
-    BtRegistry::unregisterAll();
-  }
+  void tearDown() {}
 
   void testGetExtensionMessageID();
   void testGetExtensionName();
@@ -99,11 +84,6 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
   CPPUNIT_ASSERT_EQUAL((uint16_t)6889, peer->port);
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, peer->getExtensionMessageID("ut_pex"));
   CPPUNIT_ASSERT_EQUAL((uint8_t)2, peer->getExtensionMessageID("a2_dht"));
-
-  CPPUNIT_ASSERT_EQUAL((size_t)1, PEER_STORAGE(_btContext)->getPeers().size());
-  PeerHandle p1 = PEER_STORAGE(_btContext)->getPeers().front();
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), p1->ipaddr);
-  CPPUNIT_ASSERT_EQUAL((uint16_t)6889, p1->port);
 }
 
 void HandshakeExtensionMessageTest::testCreate()

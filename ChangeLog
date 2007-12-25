@@ -1,3 +1,16 @@
+2007-12-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Removed incomingPeer. Set 0 to peer's port if it is not a listening
+	port.
+	* src/DefaultPeerStorage.{h, cc}
+	* test/DefaultPeerStorageTest.cc
+	* src/HandshakeExtensionMessage.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* src/Peer.{h, cc}: Added ipaddr and port to identity comparison.
+	* src/PeerStorage.h
+	* test/MockPeerStorage.h
+	* src/PeerListenCommand.cc
+
 2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added --metalink-enable-unique-protocol option.

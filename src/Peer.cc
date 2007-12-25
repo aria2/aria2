@@ -44,7 +44,6 @@ Peer::Peer(string ipaddr, uint16_t port, int32_t pieceLength, int64_t totalLengt
   port(port),
   sessionUploadLength(0),
   sessionDownloadLength(0),
-  pieceLength(pieceLength),
   active(false),
   _badConditionStartTime(0),
   _badConditionInterval(10)
@@ -63,19 +62,9 @@ Peer::Peer(string ipaddr, uint16_t port, int32_t pieceLength, int64_t totalLengt
 void Peer::reconfigure(int32_t pieceLength, int64_t totalLength)
 {
   delete bitfield;
-  this->pieceLength = pieceLength;
   this->bitfield = BitfieldManFactory::getFactoryInstance()->
-    createBitfieldMan(this->pieceLength, totalLength);  
+    createBitfieldMan(pieceLength, totalLength);  
 }
-
-/*
-Peer::Peer():entryId(0), ipaddr(""), port(0), bitfield(0),
-       sessionUploadLength(0), sessionDownloadLength(0),
-       pieceLength(0)
-{
-  resetStatus();
-}
-*/
 
 void Peer::updateBitfield(int32_t index, int32_t operation) {
   if(operation == 1) {

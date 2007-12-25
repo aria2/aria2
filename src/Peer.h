@@ -46,10 +46,11 @@
 #define DEFAULT_LATENCY 1500
 
 class Peer {
-  friend bool operator==(const Peer& p1, const Peer& p2);
-  friend bool operator!=(const Peer& p1, const Peer& p2);
 public:
   string ipaddr;
+  // TCP port which this peer is listening for incoming connections.
+  // If it is unknown, for example, localhost accepted the incoming connection
+  // from this peer, set port to 0.
   uint16_t port;
   bool amChoking;
   bool amInterested;
@@ -73,7 +74,6 @@ private:
   PeerStat peerStat;
   int64_t sessionUploadLength;
   int64_t sessionDownloadLength;
-  int32_t pieceLength;
   int32_t latency;
   bool active;
   string id;
@@ -88,8 +88,7 @@ public:
   }
 
   bool operator==(const Peer& p) {
-    //return ipaddr == p.ipaddr && port == p.port;
-    return id == p.id;
+    return id == p.id || ipaddr == p.ipaddr && port == p.port;
   }
   
   bool operator!=(const Peer& p) {

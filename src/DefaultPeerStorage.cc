@@ -54,35 +54,19 @@ DefaultPeerStorage::~DefaultPeerStorage() {}
 
 bool DefaultPeerStorage::isPeerAlreadyAdded(const PeerHandle& peer)
 {
-  return find(peers.begin(), peers.end(), peer) != peers.end() ||
-    find(incomingPeers.begin(), incomingPeers.end(), peer) != incomingPeers.end();
+  return find(peers.begin(), peers.end(), peer) != peers.end();
 }
 
 bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
-  {
-    Peers::iterator i = find(incomingPeers.begin(), incomingPeers.end(), peer);
-    if(i != incomingPeers.end() && (*i).get() != peer.get() ||
-       find(peers.begin(), peers.end(), peer) != peers.end()) {
-      logger->debug("Adding %s:%u is rejected because it is already in PeerStorage.", peer->ipaddr.c_str(), peer->port);
-      return false;
-    }
+  if(isPeerAlreadyAdded(peer)) {
+    logger->debug("Adding %s:%u is rejected because it has been already added.", peer->ipaddr.c_str(), peer->port);
+    return false;
   }
   if(peers.size() >= (size_t)maxPeerListSize) {
     deleteUnusedPeer(peers.size()-maxPeerListSize+1);
   }
   peers.push_front(peer);
   return true;
-}
-
-bool DefaultPeerStorage::addIncomingPeer(const PeerHandle& peer)
-{
-  if(isPeerAlreadyAdded(peer)) {
-    logger->debug("Adding %s:%u is rejected because it is already in PeerStorage.", peer->ipaddr.c_str(), peer->port);
-    return false;
-  } else {
-    incomingPeers.push_back(peer);
-    return true;
-  }
 }
 
 void DefaultPeerStorage::addPeer(const Peers& peers) {
@@ -163,10 +147,7 @@ public:
 };
 
 Peers DefaultPeerStorage::getActivePeers() {
-  CollectActivePeer funcObj;
-  funcObj = for_each(peers.begin(), peers.end(), funcObj);
-  funcObj = for_each(incomingPeers.begin(), incomingPeers.end(), funcObj);
-  return funcObj.getActivePeers();
+  return for_each(peers.begin(), peers.end(), CollectActivePeer()).getActivePeers();
 }
 
 class CalculateStat {
@@ -193,11 +174,7 @@ public:
 };
 
 TransferStat DefaultPeerStorage::calculateStat() {
-  CalculateStat calStat;
-  calStat = for_each(peers.begin(), peers.end(), calStat);
-  calStat = for_each(incomingPeers.begin(), incomingPeers.end(), calStat);
-
-  TransferStat stat = calStat.getTransferStat();
+  TransferStat stat = for_each(peers.begin(), peers.end(), CalculateStat()).getTransferStat();
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
   stat.setAllTimeUploadLength(btRuntime->getUploadLengthAtStartup()+
@@ -231,19 +208,16 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
 {
   Peers::iterator itr = find(peers.begin(), peers.end(), peer);
   if(itr == peers.end()) {
-    itr = find(incomingPeers.begin(), incomingPeers.end(), peer);
-    if(itr == peers.end()) {
-      // do nothing
-    } else {
-      // erase incoming peer because we cannot connect to it with port number
-      // (*itr)->port. It is not the listening port.
-      onErasingPeer(*itr);
-      incomingPeers.erase(itr);
-    }
+    logger->debug("Cannot find peer %s:%u in PeerStorage.", peer->ipaddr.c_str(), peer->port);
   } else {
-    peer->startBadCondition();
-    peer->resetStatus();
-    peers.erase(itr);
-    peers.push_back(peer);
+    if((*itr)->port == 0) {
+      onErasingPeer(*itr);
+      peers.erase(itr);
+    } else {
+      peer->startBadCondition();
+      peer->resetStatus();
+      peers.erase(itr);
+      peers.push_back(peer);
+    }
   }
 }

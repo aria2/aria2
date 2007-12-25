@@ -49,7 +49,6 @@ private:
   BtContextHandle btContext;
   const Option* option;
   Peers peers;
-  Peers incomingPeers;
   int32_t maxPeerListSize;
   Logger* logger;
   BtRuntimeHandle btRuntime;
@@ -67,8 +66,6 @@ public:
   BtRuntimeHandle getBtRuntime() const { return btRuntime; }
 
   virtual bool addPeer(const PeerHandle& peer);
-
-  virtual bool addIncomingPeer(const PeerHandle& peer);
 
   int32_t countPeer() const;
 
@@ -95,8 +92,6 @@ public:
   void deleteUnusedPeer(int32_t delSize);
   
   void onErasingPeer(const PeerHandle& peer);
-
-  const Peers& getIncomingPeers() const { return incomingPeers; }
 };
 
 #endif // _D_DEFAULT_PEER_STORAGE_H_

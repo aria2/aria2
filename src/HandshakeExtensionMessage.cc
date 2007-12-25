@@ -39,7 +39,6 @@
 #include "Data.h"
 #include "Util.h"
 #include "BencodeVisitor.h"
-#include "BtRegistry.h"
 #include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
@@ -106,14 +105,6 @@ void HandshakeExtensionMessage::doReceivedAction()
       itr != _extensions.end(); ++itr) {
     const map<string, uint8_t>::value_type& vt = *itr;
     _peer->setExtension(vt.first, vt.second);
-  }
-  if(_peer->port > 0) {
-    // This is needed when _peer is a connection initiator, listen port of
-    // _peer is now available, which is initially unknown.
-    // If _peer is a receiver or already its port is known, _peer has to be
-    // already added to PeerStorage using addPeer() and call
-    // PeerStorage::addPeer() here does nothing and just returns false.
-    PEER_STORAGE(_btContext)->addPeer(_peer);
   }
 }
 

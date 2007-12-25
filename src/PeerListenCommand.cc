@@ -93,12 +93,12 @@ bool PeerListenCommand::execute() {
       if(peerInfo.first == localInfo.first) {
 	continue;
       }
-      PeerHandle peer = new Peer(peerInfo.first, peerInfo.second, 0, 0);
+      PeerHandle peer = new Peer(peerInfo.first, 0, 0, 0);
       PeerReceiveHandshakeCommand* command =
 	new PeerReceiveHandshakeCommand(CUIDCounterSingletonHolder::instance()->newID(),
 					peer, e, peerSocket);
       e->commands.push_back(command);
-      logger->debug("Accepted the connection from %s:%d.",
+      logger->debug("Accepted the connection from %s:%u.",
 		    peer->ipaddr.c_str(),
 		    peer->port);
       logger->debug("Added CUID#%d to receive Bt handshake.",
