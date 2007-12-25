@@ -1,5 +1,10 @@
 2007-12-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Send have message to peer if it already has the piece.
+	* src/BtHaveMessage.{h, cc}
+
+2007-12-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed incomingPeer. Set 0 to peer's port if it is not a listening
 	port.
 	* src/DefaultPeerStorage.{h, cc}

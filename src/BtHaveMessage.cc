@@ -55,10 +55,6 @@ void BtHaveMessage::doReceivedAction() {
   peer->updateBitfield(index, 1);
 }
 
-bool BtHaveMessage::sendPredicate() const {
-  return !peer->hasPiece(index);
-}
-
 int32_t BtHaveMessage::MESSAGE_LENGTH = 9;
 
 const unsigned char* BtHaveMessage::getMessage() {

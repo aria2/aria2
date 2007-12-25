@@ -71,8 +71,6 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual bool sendPredicate() const;
-
   virtual string toString() const;
 };
 
