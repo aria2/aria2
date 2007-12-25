@@ -1,5 +1,13 @@
 2007-12-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed the default value of PREF_PEER_CONNECTION_TIMEOUT and
+	lowestSpeedLimit in ActivePeerConnectionCommand. TODO: Make them
+	command-line options.
+	* src/option_processing.cc
+	* src/ActivePeerConnectionCommand.cc
+
+2007-12-25  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Send have message to peer if it already has the piece.
 	* src/BtHaveMessage.{h, cc}
 

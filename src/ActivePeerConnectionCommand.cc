@@ -47,7 +47,7 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
    RequestGroupAware(requestGroup),
    interval(interval),
    e(e),
-   _lowestSpeedLimit(20*1024),
+   _lowestSpeedLimit(50*1024),
    _numNewConnection(5)
 {}
 

@@ -91,7 +91,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_RETRY_WAIT, "5");
   op->put(PREF_TIMEOUT, "60");
   op->put(PREF_DNS_TIMEOUT, "10");
-  op->put(PREF_PEER_CONNECTION_TIMEOUT, "60");
+  op->put(PREF_PEER_CONNECTION_TIMEOUT, "20");
   op->put(PREF_BT_TIMEOUT, "180");
   op->put(PREF_BT_REQUEST_TIMEOUT, "60");
   op->put(PREF_BT_KEEP_ALIVE_INTERVAL, "120");
