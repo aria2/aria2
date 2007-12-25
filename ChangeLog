@@ -10,6 +10,7 @@
 	* src/PeerStorage.h
 	* test/MockPeerStorage.h
 	* src/PeerListenCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
 
 2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
