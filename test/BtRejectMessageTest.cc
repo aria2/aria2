@@ -66,7 +66,7 @@ public:
 
   void setUp() {
     BtRegistry::unregisterAll();
-    peer = new Peer("host", 6969, 16*1024, 256*1024);
+    peer = new Peer("host", 6969);
 
     MockBtContextHandle btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");

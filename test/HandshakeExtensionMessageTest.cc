@@ -70,7 +70,7 @@ void HandshakeExtensionMessageTest::testToString()
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
-  PeerHandle peer = new Peer("192.168.0.1", 0, 1, 1);
+  PeerHandle peer = new Peer("192.168.0.1", 0);
   HandshakeExtensionMessage msg;
   msg.setClientVersion("aria2");
   msg.setTCPPort(6889);

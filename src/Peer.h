@@ -63,7 +63,7 @@ public:
   bool snubbing;
 private:
   unsigned char peerId[PEER_ID_LENGTH];
-  BitfieldMan* bitfield;
+  BitfieldMan* _bitfield;
   bool fastExtensionEnabled;
   // fast index set which a peer has sent to localhost.
   Integers peerAllowedIndexSet;
@@ -79,12 +79,14 @@ private:
   string id;
   Time _firstContactTime;
   Time _badConditionStartTime;
-  int32_t _badConditionInterval;
+  bool _seeder;
+
+  void updateSeeder();
 public:
-  Peer(string ipaddr, uint16_t port, int32_t pieceLength, int64_t totalLength);
+  Peer(string ipaddr, uint16_t port);
 
   ~Peer() {
-    delete bitfield;
+    delete _bitfield;
   }
 
   bool operator==(const Peer& p) {
@@ -163,10 +165,21 @@ public:
   const unsigned char* getPeerId() const { return this->peerId; }
   
   void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength) {
-    this->bitfield->setBitfield(bitfield, bitfieldLength);
+    assert(_bitfield);
+    _bitfield->setBitfield(bitfield, bitfieldLength);
+    updateSeeder();
   }
-  const unsigned char* getBitfield() const { return bitfield->getBitfield(); }
-  int32_t getBitfieldLength() const { return bitfield->getBitfieldLength(); }
+
+  const unsigned char* getBitfield() const {
+    assert(_bitfield);
+    return _bitfield->getBitfield();
+  }
+
+  int32_t getBitfieldLength() const {
+    assert(_bitfield);
+    return _bitfield->getBitfieldLength();
+  }
+
   void setAllBitfield();
 
   /**
@@ -210,7 +223,10 @@ public:
 
   bool hasPiece(int32_t index) const;
 
-  bool isSeeder() const;
+  bool isSeeder() const
+  {
+    return _seeder;
+  }
 
   void updateLatency(int32_t latency);
   int32_t getLatency() const { return latency; }
@@ -223,7 +239,9 @@ public:
 
   bool isGood() const;
 
-  void reconfigure(int32_t pieceLength, int64_t totalLength);
+  void allocateBitfield(int32_t pieceLength, int64_t totalLength);
+
+  void deallocateBitfield();
 
   Time getFirstContactTime() const
   {

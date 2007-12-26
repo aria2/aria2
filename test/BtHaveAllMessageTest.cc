@@ -58,7 +58,8 @@ void BtHaveAllMessageTest::testGetMessage() {
 
 void BtHaveAllMessageTest::testDoReceivedAction() {
   BtHaveAllMessage msg;
-  PeerHandle peer = new Peer("host", 6969, 16*1024, 256*1024);
+  PeerHandle peer = new Peer("host", 6969);
+  peer->allocateBitfield(16*1024, 256*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   

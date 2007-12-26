@@ -62,7 +62,7 @@ void BtInterestedMessageTest::testGetMessage() {
 
 void BtInterestedMessageTest::testDoReceivedAction() {
   BtInterestedMessage msg;
-  PeerHandle peer = new Peer("host", 6969, 16*1024, 256*1024);
+  PeerHandle peer = new Peer("host", 6969);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->peerInterested);
   msg.doReceivedAction();
@@ -71,7 +71,7 @@ void BtInterestedMessageTest::testDoReceivedAction() {
 
 void BtInterestedMessageTest::testOnSendComplete() {
   BtInterestedMessage msg;
-  PeerHandle peer = new Peer("host", 6969, 16*1024, 256*1024);
+  PeerHandle peer = new Peer("host", 6969);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->amInterested);
   msg.onSendComplete();

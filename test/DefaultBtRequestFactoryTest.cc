@@ -84,7 +84,7 @@ public:
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				     new MockPieceStorage());
 
-    PeerHandle peer = new Peer("host", 6969, btContext->getPieceLength(), btContext->getTotalLength());
+    PeerHandle peer = new Peer("host", 6969);
 
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());

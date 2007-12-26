@@ -80,7 +80,7 @@ public:
     btContext->setPieceLength(16*1024);
     btContext->setTotalLength(256*1024);
 
-    peer = new Peer("host", 6969, 16*1024, 256*1024);
+    peer = new Peer("host", 6969);
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
     PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), new PeerObject());

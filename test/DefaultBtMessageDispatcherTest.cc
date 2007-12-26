@@ -129,9 +129,7 @@ public:
   void setUp() {
     btContext = new DefaultBtContext();
     btContext->load("test.torrent");
-    peer = new Peer("192.168.0.1", 6969,
-		    btContext->getPieceLength(),
-		    btContext->getTotalLength());    
+    peer = new Peer("192.168.0.1", 6969);
     peerStorage = new MockPeerStorage();
     pieceStorage = new MockPieceStorage();
     BtRegistry::unregisterAll();

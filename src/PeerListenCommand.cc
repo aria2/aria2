@@ -93,7 +93,7 @@ bool PeerListenCommand::execute() {
       if(peerInfo.first == localInfo.first) {
 	continue;
       }
-      PeerHandle peer = new Peer(peerInfo.first, 0, 0, 0);
+      PeerHandle peer = new Peer(peerInfo.first, 0);
       PeerReceiveHandshakeCommand* command =
 	new PeerReceiveHandshakeCommand(CUIDCounterSingletonHolder::instance()->newID(),
 					peer, e, peerSocket);

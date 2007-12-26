@@ -67,14 +67,15 @@ void UTPexExtensionMessageTest::testGetExtensionName()
 void UTPexExtensionMessageTest::testGetBencodedData()
 {
   UTPexExtensionMessage msg(1);
-  PeerHandle p1 = new Peer("192.168.0.1", 6881, 1, 1);
+  PeerHandle p1 = new Peer("192.168.0.1", 6881);
+  p1->allocateBitfield(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  PeerHandle p2 = new Peer("10.1.1.2", 9999, 1, 1);
+  PeerHandle p2 = new Peer("10.1.1.2", 9999);
   msg.addFreshPeer(p2);
-  PeerHandle p3 = new Peer("192.168.0.2", 6882, 1, 1);
+  PeerHandle p3 = new Peer("192.168.0.2", 6882);
   msg.addDroppedPeer(p3);
-  PeerHandle p4 = new Peer("10.1.1.3", 10000, 1, 1);
+  PeerHandle p4 = new Peer("10.1.1.3", 10000);
   msg.addDroppedPeer(p4);
 
   char c1[6];
@@ -99,14 +100,15 @@ void UTPexExtensionMessageTest::testGetBencodedData()
 void UTPexExtensionMessageTest::testToString()
 {
   UTPexExtensionMessage msg(1);
-  PeerHandle p1 = new Peer("192.168.0.1", 6881, 1, 1);
+  PeerHandle p1 = new Peer("192.168.0.1", 6881);
+  p1->allocateBitfield(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  PeerHandle p2 = new Peer("10.1.1.2", 9999, 1, 1);
+  PeerHandle p2 = new Peer("10.1.1.2", 9999);
   msg.addFreshPeer(p2);
-  PeerHandle p3 = new Peer("192.168.0.2", 6882, 1, 1);
+  PeerHandle p3 = new Peer("192.168.0.2", 6882);
   msg.addDroppedPeer(p3);
-  PeerHandle p4 = new Peer("10.1.1.3", 10000, 1, 1);
+  PeerHandle p4 = new Peer("10.1.1.3", 10000);
   msg.addDroppedPeer(p4);
   CPPUNIT_ASSERT_EQUAL(string("ut_pex added=2, dropped=2"), msg.toString());
 }
@@ -114,14 +116,15 @@ void UTPexExtensionMessageTest::testToString()
 void UTPexExtensionMessageTest::testDoReceivedAction()
 {
   UTPexExtensionMessage msg(1);
-  PeerHandle p1 = new Peer("192.168.0.1", 6881, 1, 1);
+  PeerHandle p1 = new Peer("192.168.0.1", 6881);
+  p1->allocateBitfield(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  PeerHandle p2 = new Peer("10.1.1.2", 9999, 1, 1);
+  PeerHandle p2 = new Peer("10.1.1.2", 9999);
   msg.addFreshPeer(p2);
-  PeerHandle p3 = new Peer("192.168.0.2", 6882, 1, 1);
+  PeerHandle p3 = new Peer("192.168.0.2", 6882);
   msg.addDroppedPeer(p3);
-  PeerHandle p4 = new Peer("10.1.1.3", 10000, 1, 1);
+  PeerHandle p4 = new Peer("10.1.1.3", 10000);
   msg.addDroppedPeer(p4);
   msg.setBtContext(_btContext);
 

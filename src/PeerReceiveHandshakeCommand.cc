@@ -76,7 +76,6 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     TransferStat tstat = PEER_STORAGE(btContext)->calculateStat();
     if(!PIECE_STORAGE(btContext)->downloadFinished() && tstat.getDownloadSpeed() < _lowestSpeedLimit ||
        BT_RUNTIME(btContext)->getConnections() < MAX_PEERS) {
-      peer->reconfigure(btContext->getPieceLength(), btContext->getTotalLength());
       if(PEER_STORAGE(btContext)->addPeer(peer)) {
 
 	peer->cuid = cuid;

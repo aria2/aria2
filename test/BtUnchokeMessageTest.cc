@@ -60,7 +60,7 @@ void BtUnchokeMessageTest::testGetMessage() {
 }
 
 void BtUnchokeMessageTest::testDoReceivedAction() {
-  PeerHandle peer = new Peer("host", 6969, 16*1024, 256*1024);
+  PeerHandle peer = new Peer("host", 6969);
   peer->peerChoking = true;
   BtUnchokeMessage msg;
   msg.setPeer(peer);
@@ -71,7 +71,7 @@ void BtUnchokeMessageTest::testDoReceivedAction() {
 }
 
 void BtUnchokeMessageTest::testOnSendComplete() {
-  PeerHandle peer = new Peer("host", 6969, 16*1024, 256*1024);
+  PeerHandle peer = new Peer("host", 6969);
   peer->amChoking = true;
   BtUnchokeMessage msg;
   msg.setPeer(peer);

@@ -37,7 +37,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(BtExtendedMessageTest);
 
 void BtExtendedMessageTest::testCreate() {
-  PeerHandle peer = new Peer("192.168.0.1", 6969, 16*1024, 256*1024);
+  PeerHandle peer = new Peer("192.168.0.1", 6969);
   peer->setExtension("charlie", 1);
   MockBtContextHandle ctx = new MockBtContext();
   unsigned char infohash[20];

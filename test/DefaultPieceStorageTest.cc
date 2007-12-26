@@ -41,9 +41,9 @@ public:
   void setUp() {
     btContext = new DefaultBtContext();
     btContext->load("test.torrent");
-    peer = PeerHandle(new Peer("192.168.0.1", 6889,
-			       btContext->getPieceLength(),
-			       btContext->getTotalLength()));
+    peer = new Peer("192.168.0.1", 6889);
+    peer->allocateBitfield(btContext->getPieceLength(),
+			   btContext->getTotalLength());
     option = new Option();
   }
 

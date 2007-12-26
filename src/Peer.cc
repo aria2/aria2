@@ -39,18 +39,19 @@
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 
-Peer::Peer(string ipaddr, uint16_t port, int32_t pieceLength, int64_t totalLength):
+#define BAD_CONDITION_INTERVAL 10
+
+Peer::Peer(string ipaddr, uint16_t port):
   ipaddr(ipaddr),
   port(port),
+  _bitfield(0),
   sessionUploadLength(0),
   sessionDownloadLength(0),
   active(false),
   _badConditionStartTime(0),
-  _badConditionInterval(10)
+  _seeder(false)
 {
   resetStatus();
-  this->bitfield = BitfieldManFactory::getFactoryInstance()->
-    createBitfieldMan(pieceLength, totalLength);
   string idSeed = ipaddr+":"+Util::itos(port);
 #ifdef ENABLE_MESSAGE_DIGEST
   id = MessageDigestHelper::digestString("sha1", idSeed);
@@ -59,19 +60,34 @@ Peer::Peer(string ipaddr, uint16_t port, int32_t pieceLength, int64_t totalLengt
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void Peer::reconfigure(int32_t pieceLength, int64_t totalLength)
+void Peer::allocateBitfield(int32_t pieceLength, int64_t totalLength)
 {
-  delete bitfield;
-  this->bitfield = BitfieldManFactory::getFactoryInstance()->
-    createBitfieldMan(pieceLength, totalLength);  
+  delete _bitfield;
+  _bitfield = BitfieldManFactory::getFactoryInstance()->createBitfieldMan(pieceLength, totalLength);  
+}
+
+void Peer::deallocateBitfield()
+{
+  delete _bitfield;
+  _bitfield = 0;
+}
+
+void Peer::updateSeeder()
+{
+  assert(_bitfield);
+  if(_bitfield->isAllBitSet()) {
+    _seeder = true;
+  }  
 }
 
 void Peer::updateBitfield(int32_t index, int32_t operation) {
+  assert(_bitfield);
   if(operation == 1) {
-    bitfield->setBit(index);
+    _bitfield->setBit(index);
   } else if(operation == 0) {
-    bitfield->unsetBit(index);
+    _bitfield->unsetBit(index);
   }
+  updateSeeder();
 }
 
 #define THRESHOLD 1024*1024*2
@@ -84,11 +100,8 @@ bool Peer::shouldBeChoking() const {
 }
 
 bool Peer::hasPiece(int32_t index) const {
-  return bitfield->isBitSet(index);
-}
-
-bool Peer::isSeeder() const {
-  return bitfield->isAllBitSet();
+  assert(_bitfield);
+  return _bitfield->isBitSet(index);
 }
 
 void Peer::resetStatus() {
@@ -133,7 +146,9 @@ void Peer::addAmAllowedIndex(int32_t index) {
 }
 
 void Peer::setAllBitfield() {
-  bitfield->setAllBit();
+  assert(_bitfield);
+  _bitfield->setAllBit();
+  _seeder = true;
 }
 
 void Peer::updateLatency(int32_t latency) {
@@ -147,7 +162,7 @@ void Peer::startBadCondition()
 
 bool Peer::isGood() const
 {
-  return _badConditionStartTime.elapsed(_badConditionInterval);
+  return _badConditionStartTime.elapsed(BAD_CONDITION_INTERVAL);
 }
 
 uint8_t Peer::getExtensionMessageID(const string& name)

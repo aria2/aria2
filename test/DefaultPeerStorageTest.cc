@@ -54,8 +54,8 @@ void DefaultPeerStorageTest::testCountPeer() {
   CPPUNIT_ASSERT_EQUAL((int32_t)0,
 		       ps.countPeer());
 
-  PeerHandle peer(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
+  PeerHandle peer(new Peer("192.168.0.1", 6889));
+
   ps.addPeer(peer);
   CPPUNIT_ASSERT_EQUAL((int32_t)1,
 		       ps.countPeer());
@@ -64,12 +64,9 @@ void DefaultPeerStorageTest::testCountPeer() {
 void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   DefaultPeerStorage ps(btContext, option);
 
-  PeerHandle peer1(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
-  PeerHandle peer2(new Peer("192.168.0.2", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
-  PeerHandle peer3(new Peer("192.168.0.3", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
+  PeerHandle peer1(new Peer("192.168.0.1", 6889));
+  PeerHandle peer2(new Peer("192.168.0.2", 6889));
+  PeerHandle peer3(new Peer("192.168.0.3", 6889));
 
   ps.addPeer(peer1);
   ps.addPeer(peer2);
@@ -98,12 +95,9 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 void DefaultPeerStorageTest::testAddPeer() {
   DefaultPeerStorage ps(btContext, option);
 
-  PeerHandle peer1(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
-  PeerHandle peer2(new Peer("192.168.0.2", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
-  PeerHandle peer3(new Peer("192.168.0.3", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
+  PeerHandle peer1(new Peer("192.168.0.1", 6889));
+  PeerHandle peer2(new Peer("192.168.0.2", 6889));
+  PeerHandle peer3(new Peer("192.168.0.3", 6889));
 
   ps.addPeer(peer1);
   ps.addPeer(peer2);
@@ -118,15 +112,14 @@ void DefaultPeerStorageTest::testAddPeer() {
 
   ps.setMaxPeerListSize(3);
 
-  PeerHandle peer4(new Peer("192.168.0.4", 6889, btContext->getPieceLength(),
-			    btContext->getTotalLength()));
+  PeerHandle peer4(new Peer("192.168.0.4", 6889));
 
   CPPUNIT_ASSERT(ps.addPeer(peer4));
   // peer1 was deleted.
   CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
   
-  PeerHandle peer5(new Peer("192.168.0.4", 0, btContext->getPieceLength(),
-			    btContext->getTotalLength()));
+  PeerHandle peer5(new Peer("192.168.0.4", 0));
+
   peer5->port = 6889;
 
   // this returns false because the peer which has same ip and port has already added
@@ -137,8 +130,7 @@ void DefaultPeerStorageTest::testGetPeer() {
   DefaultPeerStorage ps(btContext, option);
   ps.setBtRuntime(btRuntime);
 
-  PeerHandle peer1(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
+  PeerHandle peer1(new Peer("192.168.0.1", 6889));
 
   ps.addPeer(peer1);
 
@@ -161,8 +153,7 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
 
   CPPUNIT_ASSERT_EQUAL(false, ps.isPeerAvailable());
 
-  PeerHandle peer1(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
+  PeerHandle peer1(new Peer("192.168.0.1", 6889));
 
   ps.addPeer(peer1);
 
@@ -184,8 +175,7 @@ void DefaultPeerStorageTest::testActivatePeer() {
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getActivePeers().size());
 
-  PeerHandle peer1(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
+  PeerHandle peer1(new Peer("192.168.0.1", 6889));
 
   ps.addPeer(peer1);
 
@@ -205,15 +195,12 @@ void DefaultPeerStorageTest::testReturnPeer()
 {
   DefaultPeerStorage ps(btContext, option);
 
-  PeerHandle peer1(new Peer("192.168.0.1", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
-  PeerHandle peer2(new Peer("192.168.0.2", 6889, btContext->getPieceLength(),
-			   btContext->getTotalLength()));
+  PeerHandle peer1(new Peer("192.168.0.1", 6889));
+  PeerHandle peer2(new Peer("192.168.0.2", 6889));
   ps.addPeer(peer1);
   ps.addPeer(peer2);
 
-  PeerHandle peer3(new Peer("192.168.0.3", 0, btContext->getPieceLength(),
-			   btContext->getTotalLength()));  
+  PeerHandle peer3(new Peer("192.168.0.3", 0));
   ps.addPeer(peer3);
 
   ps.returnPeer(peer2);

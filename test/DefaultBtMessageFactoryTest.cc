@@ -27,7 +27,7 @@ public:
     btContext->setInfoHash(infohash);
     _btContext = btContext;
 
-    _peer = new Peer("192.168.0.1", 6969, 16*1024, 256*1024);
+    _peer = new Peer("192.168.0.1", 6969);
     _peer->setExtendedMessagingEnabled(true);
 
     MockExtensionMessageFactoryHandle exmsgFactory = new MockExtensionMessageFactory();

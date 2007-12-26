@@ -68,7 +68,7 @@ void BtAllowedFastMessageTest::testGetMessage() {
 void BtAllowedFastMessageTest::testDoReceivedAction() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  PeerHandle peer = new Peer("localhost", 6969, 16*1024, 256*1024*1024);
+  PeerHandle peer = new Peer("localhost", 6969);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInPeerAllowedIndexSet(1));
@@ -85,7 +85,7 @@ void BtAllowedFastMessageTest::testDoReceivedAction() {
 void BtAllowedFastMessageTest::testOnSendComplete() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  PeerHandle peer = new Peer("localhost", 6969, 16*1024, 256*1024*1024);
+  PeerHandle peer = new Peer("localhost", 6969);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));

@@ -16,7 +16,7 @@ public:
   PeerTest():peer(0) {}
 
   void setUp() {
-    peer = new Peer("localhost", 6969, 16*1024, 256*1024*1024);
+    peer = new Peer("localhost", 6969);
   }
 
   void testPeerAllowedIndexSet();

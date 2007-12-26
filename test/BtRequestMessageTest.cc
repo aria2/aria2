@@ -98,7 +98,7 @@ public:
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				     pieceStorage);
 
-    peer = new Peer("host", 6969, btContext->getPieceLength(), btContext->getTotalLength());
+    peer = new Peer("host", 6969);
 
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());

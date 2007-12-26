@@ -133,6 +133,7 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
 
   setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
   peer->activate();
+  peer->allocateBitfield(btContext->getPieceLength(), btContext->getTotalLength());
 
   maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
 
@@ -140,6 +141,7 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
+  peer->deallocateBitfield();
   peer->deactivate();
   PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getId());
 					

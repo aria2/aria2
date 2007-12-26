@@ -26,7 +26,7 @@ public:
 
   void setUp() {
     BtRegistry::unregisterAll();    
-    peer = new Peer("host", 6969, 16*1024, 256*1024);
+    peer = new Peer("host", 6969);
     btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
@@ -108,7 +108,6 @@ void BtChokeMessageTest::testGetMessage() {
 
 void BtChokeMessageTest::testDoReceivedAction() {
   BtChokeMessage msg;
-  PeerHandle peer = new Peer("host", 6969, 16*1024, 256*1024);
   msg.setPeer(peer);
   msg.setBtContext(btContext);
 
@@ -125,7 +124,6 @@ void BtChokeMessageTest::testDoReceivedAction() {
 
 void BtChokeMessageTest::testOnSendComplete() {
   BtChokeMessage msg;
-  PeerHandle peer = new Peer("host", 6969, 16*1024, 256*1024);
   msg.setPeer(peer);
   msg.setBtContext(btContext);
 

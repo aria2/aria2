@@ -60,8 +60,7 @@ Peers DefaultPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
     if(!ip || !port || !port->isNumber()) {
       continue;
     }
-    PeerHandle peer = new Peer(ip->toString(), port->toInt(), pieceLength,
-			       totalLength);
+    PeerHandle peer = new Peer(ip->toString(), port->toInt());
     peers.push_back(peer);
   }
   return peers;
