@@ -192,6 +192,13 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
       BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					    new PeerObjectCluster());
 
+      // Remove the control file if download file doesn't exist
+      if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
+	progressInfoFile->removeFile();
+	_logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
+			progressInfoFile->getFilename().c_str(),
+			_pieceStorage->getDiskAdaptor()->getFilePath().c_str());
+      }
       // Call Load, Save and file allocation command here
       if(progressInfoFile->exists()) {
 	// load .aria2 file if it exists.
@@ -301,6 +308,13 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
     if(!isPreLocalFileCheckEnabled()) {
       _pieceStorage->getDiskAdaptor()->initAndOpenFile();
       return;
+    }
+    // Remove the control file if download file doesn't exist
+    if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
+      progressInfoFile->removeFile();
+      _logger->notice(MSG_REMOVED_DEFUNCT_CONTROL_FILE,
+		      progressInfoFile->getFilename().c_str(),
+		      _pieceStorage->getDiskAdaptor()->getFilePath().c_str());
     }
     if(progressInfoFile->exists()) {
       progressInfoFile->load();

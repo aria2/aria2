@@ -133,6 +133,7 @@
 #define MSG_FILE_RENAMED _("File already exists. Renamed to %s.")
 #define MSG_CANNOT_PARSE_METALINK _("Cannot parse metalink XML file. XML may be malformed.")
 #define MSG_TOO_SMALL_PAYLOAD_SIZE _("Too small payload size for %s, size=%d.")
+#define MSG_REMOVED_DEFUNCT_CONTROL_FILE _("Removed the defunct control file %s because the download file %s doesn't exist.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")
