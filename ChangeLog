@@ -1,5 +1,11 @@
 2007-12-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added missing "B"(=Byte). So now the message looks like this:
+	Your share ratio was 1.0, uploaded/downloaded=12MiB/12MiB	
+	* src/message.h (MSG_SHARE_RATIO_REPORT)
+
+2007-12-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Show the seed ratio after torrent downloads.
 	For example, after torrent download completed and --seed-time and
 	--seed-ratio conditions are fulfilled, following message is printed
