@@ -344,6 +344,8 @@ public:
   void removeServerHost(int32_t cuid);
   
   void removeURIWhoseHostnameIs(const string& hostname);
+
+  void reportDownloadFinished();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

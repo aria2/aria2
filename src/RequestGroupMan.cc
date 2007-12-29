@@ -107,8 +107,7 @@ void RequestGroupMan::removeStoppedGroup()
       try {
 	(*itr)->closeFile();      
 	if((*itr)->downloadFinished()) {
-	  _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
-			  (*itr)->getFilePath().c_str());
+	  (*itr)->reportDownloadFinished();
 	  if((*itr)->allDownloadFinished()) {
 	    (*itr)->getProgressInfoFile()->removeFile();
 	  } else {

@@ -1,3 +1,14 @@
+2007-12-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Show the seed ratio after torrent downloads.
+	For example, after torrent download completed and --seed-time and
+	--seed-ratio conditions are fulfilled, following message is printed
+	right after "Download complete: .....":
+	Your share ratio was 1.0, uploaded/downloaded=12M/12M
+	* src/RequestGroupMan.cc
+	* src/RequestGroup.{h, cc}
+	* src/message.h
+
 2007-12-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Remove a defunct control file. A defunct control file means that while

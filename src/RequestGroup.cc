@@ -845,3 +845,19 @@ void RequestGroup::removeURIWhoseHostnameIs(const string& hostname)
 		 _gid, _uris.size()-newURIs.size());
   _uris = newURIs;
 }
+
+void RequestGroup::reportDownloadFinished()
+{
+  _logger->notice(MSG_FILE_DOWNLOAD_COMPLETED,
+		  getFilePath().c_str());
+#ifdef ENABLE_BITTORRENT
+  TransferStat stat = calculateStat();
+  if(!BtContextHandle(_downloadContext).isNull()) {
+    double shareRatio = ((stat.getAllTimeUploadLength()*10)/getCompletedLength())/10.0;
+    _logger->notice(MSG_SHARE_RATIO_REPORT,
+		    shareRatio,
+		    Util::abbrevSize(stat.getAllTimeUploadLength()).c_str(),
+		    Util::abbrevSize(getCompletedLength()).c_str());
+  }
+#endif // ENABLE_BITTORRENT
+}
