@@ -51,12 +51,17 @@ void AnnounceList::reconfigure(const MetaEntry* announceListEntry) {
   if(l) {
     for(MetaList::const_iterator itr = l->getList().begin();
 	itr != l->getList().end(); itr++) {
-      const List* elem = (List*)*itr;
+      const List* elem = dynamic_cast<const List*>(*itr);
+      if(!elem) {
+	continue;
+      }
       Strings urls;
       for(MetaList::const_iterator elemItr = elem->getList().begin();
 	  elemItr != elem->getList().end(); elemItr++) {
-	const Data* data = (Data*)*elemItr;
-	urls.push_back(data->toString());
+	const Data* data = dynamic_cast<const Data*>(*elemItr);
+	if(data) {
+	  urls.push_back(data->toString());
+	}
       }
       if(urls.size()) {
 	AnnounceTierHandle tier(new AnnounceTier(urls));

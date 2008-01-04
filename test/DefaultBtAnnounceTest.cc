@@ -21,6 +21,9 @@ class DefaultBtAnnounceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsAllAnnounceFailed);
   CPPUNIT_TEST(testURLOrderInStoppedEvent);
   CPPUNIT_TEST(testURLOrderInCompletedEvent);
+  CPPUNIT_TEST(testProcessAnnounceResponse_malformed);
+  CPPUNIT_TEST(testProcessAnnounceResponse_failureReason);
+  CPPUNIT_TEST(testProcessAnnounceResponse);
   CPPUNIT_TEST_SUITE_END();
 private:
   MockBtContextHandle _btContext;
@@ -78,6 +81,9 @@ public:
   void testIsAllAnnounceFailed();
   void testURLOrderInStoppedEvent();
   void testURLOrderInCompletedEvent();
+  void testProcessAnnounceResponse_malformed();
+  void testProcessAnnounceResponse_failureReason();
+  void testProcessAnnounceResponse();
 };
 
 
@@ -274,4 +280,48 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   CPPUNIT_ASSERT_EQUAL(string("http://localhost2/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
+}
+
+void DefaultBtAnnounceTest::testProcessAnnounceResponse_malformed()
+{
+  try {
+    string res = "i123e";
+    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(res.c_str(), res.size());
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e << endl;
+    delete e;
+  }
+}
+
+void DefaultBtAnnounceTest::testProcessAnnounceResponse_failureReason()
+{
+  try {
+    string res = "d14:failure reason11:hello worlde";
+    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(res.c_str(), res.size());
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e << endl;
+    delete e;
+  }
+}
+
+void DefaultBtAnnounceTest::testProcessAnnounceResponse()
+{
+  string res = "d"
+    "15:warning message11:hello world"
+    "10:tracker id3:foo"
+    "8:intervali3000e"
+    "12:min intervali1800e"
+    "8:completei100e"
+    "10:incompletei200e"
+    "e";
+  
+  DefaultBtAnnounce an(new MockBtContext(), _option);
+  an.processAnnounceResponse(res.c_str(), res.size());
+  CPPUNIT_ASSERT_EQUAL(string("foo"), an.getTrackerID());
+  CPPUNIT_ASSERT_EQUAL(3000, an.getInterval());
+  CPPUNIT_ASSERT_EQUAL(1800, an.getMinInterval());
+  CPPUNIT_ASSERT_EQUAL(100, an.getComplete());
+  CPPUNIT_ASSERT_EQUAL(200, an.getIncomplete());
 }

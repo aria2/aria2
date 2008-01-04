@@ -42,6 +42,7 @@
 
 class Randomizer;
 typedef SharedHandle<Randomizer> RandomizerHandle;
+class Logger;
 
 #define INFO_HASH_LENGTH 20
 #define PIECE_HASH_LENGTH 20
@@ -66,19 +67,21 @@ private:
 
   RequestGroup* _ownerRequestGroup;
 
+  const Logger* _logger;
+
   void clear();
   void extractPieceHash(const unsigned char* hashData,
 			int32_t hashDataLength,
 			int32_t hashLength);
-  void extractFileEntries(Dictionary* infoDic,
+  void extractFileEntries(const Dictionary* infoDic,
 			  const string& defaultName,
 			  const Strings& urlList);
-  void extractAnnounce(Data* announceData);
-  void extractAnnounceList(List* announceListData);
+  void extractAnnounce(const Data* announceData);
+  void extractAnnounceList(const List* announceListData);
 
   Strings extractUrlList(const MetaEntry* obj);
 
-  void processMetaInfo(const MetaEntry* rootEntry, const string& defaultName);
+  void processRootDictionary(const Dictionary* rootDic, const string& defaultName);
 
  public:
   DefaultBtContext();

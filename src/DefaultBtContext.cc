@@ -44,11 +44,14 @@
 #include "a2netcompat.h"
 #include "AnnounceTier.h"
 #include "SimpleRandomizer.h"
+#include "LogFactory.h"
+#include "message.h"
 #include <libgen.h>
 
 DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-"),
 				     _randomizer(SimpleRandomizer::getInstance()),
-				     _ownerRequestGroup(0) {}
+				     _ownerRequestGroup(0),
+				     _logger(LogFactory::getInstance()) {}
 
 DefaultBtContext::~DefaultBtContext() {}
 
@@ -101,11 +104,10 @@ void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
   }
 }
 
-void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
+void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 					  const string& defaultName,
 					  const Strings& urlList) {
-  // TODO use dynamic_cast
-  Data* nameData = (Data*)infoDic->get("name");
+  const Data* nameData = dynamic_cast<const Data*>(infoDic->get("name"));
   if(nameData) {
     name = nameData->toString();
   } else {
@@ -113,8 +115,7 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
     name = string(basename(basec))+".file";
     free(basec);
   }
-  // TODO use dynamic_cast
-  List* files = (List*)infoDic->get("files");
+  const List* files = dynamic_cast<const List*>(infoDic->get("files"));
   if(files) {
     int64_t length = 0;
     int64_t offset = 0;
@@ -123,21 +124,36 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
     const MetaList& metaList = files->getList();
     for(MetaList::const_iterator itr = metaList.begin();
 	itr != metaList.end(); itr++) {
-      Dictionary* fileDic = (Dictionary*)(*itr);
-      // TODO use dynamic_cast
-      Data* lengthData = (Data*)fileDic->get("length");
-      length += lengthData->toLLInt();
-      // TODO use dynamic_cast
-      List* pathList = (List*)fileDic->get("path");
+      const Dictionary* fileDic = dynamic_cast<const Dictionary*>((*itr));
+      if(!fileDic) {
+	continue;
+      }
+      const Data* lengthData = dynamic_cast<const Data*>(fileDic->get("length"));
+      if(lengthData) {
+	length += lengthData->toLLInt();
+      } else {
+	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file length");
+      }
+      const List* pathList = dynamic_cast<const List*>(fileDic->get("path"));
+      if(!pathList) {
+	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path list");
+      }
       const MetaList& paths = pathList->getList();
       string path;
       for(int32_t i = 0; i < (int32_t)paths.size()-1; i++) {
-	Data* subpath = (Data*)paths[i];
-	path += subpath->toString()+"/";
+	const Data* subpath = dynamic_cast<const Data*>(paths[i]);
+	if(subpath) {
+	  path += subpath->toString()+"/";
+	} else {
+	  throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element");
+	}
       }
-      // TODO use dynamic_cast
-      Data* lastPath = (Data*)paths.back();
-      path += lastPath->toString();
+      const Data* lastPath = dynamic_cast<const Data*>(paths.back());
+      if(lastPath) {
+	path += lastPath->toString();
+      } else {
+	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element");
+      }
 
       Strings uris;
       transform(urlList.begin(), urlList.end(), back_inserter(uris),
@@ -153,28 +169,37 @@ void DefaultBtContext::extractFileEntries(Dictionary* infoDic,
   } else {
     // single-file mode;
     fileMode = BtContext::SINGLE;
-    Data* length = (Data*)infoDic->get("length");
-    totalLength = length->toLLInt();
+    const Data* length = dynamic_cast<const Data*>(infoDic->get("length"));
+    if(length) {
+      totalLength = length->toLLInt();
+    } else {
+      throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file length");
+    }
     FileEntryHandle fileEntry(new FileEntry(name, totalLength, 0, urlList));
     fileEntries.push_back(fileEntry);
   }
 }
 
-void DefaultBtContext::extractAnnounce(Data* announceData) {
+void DefaultBtContext::extractAnnounce(const Data* announceData) {
   Strings urls;
   urls.push_back(Util::trim(announceData->toString()));
   announceTiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
 }
 
-void DefaultBtContext::extractAnnounceList(List* announceListData) {
+void DefaultBtContext::extractAnnounceList(const List* announceListData) {
   for(MetaList::const_iterator itr = announceListData->getList().begin();
       itr != announceListData->getList().end(); itr++) {
-    const List* elem = (List*)*itr;
+    const List* elem = dynamic_cast<const List*>(*itr);
+    if(!elem) {
+      continue;
+    }
     Strings urls;
     for(MetaList::const_iterator elemItr = elem->getList().begin();
 	elemItr != elem->getList().end(); elemItr++) {
-      const Data* data = (Data*)*elemItr;
-      urls.push_back(Util::trim(data->toString()));
+      const Data* data = dynamic_cast<const Data*>(*elemItr);
+      if(data) {
+	urls.push_back(Util::trim(data->toString()));
+      }
     }
     if(urls.size()) {
       AnnounceTierHandle tier(new AnnounceTier(urls));
@@ -187,16 +212,16 @@ Strings DefaultBtContext::extractUrlList(const MetaEntry* obj)
 {
   Strings uris;
   if(dynamic_cast<const List*>(obj)) {
-    const List* urlList = (const List*)obj;
+    const List* urlList = reinterpret_cast<const List*>(obj);
     for(MetaList::const_iterator itr = urlList->getList().begin();
 	itr != urlList->getList().end(); ++itr) {
-      Data* data = dynamic_cast<Data*>(*itr);
+      const Data* data = dynamic_cast<const Data*>(*itr);
       if(data) {
 	uris.push_back(data->toString());
       }
     }
   } else if(dynamic_cast<const Data*>(obj)) {
-    const Data* urlData = (const Data*)obj;
+    const Data* urlData = reinterpret_cast<const Data*>(obj);
     uris.push_back(urlData->toString());
   }
   return uris;
@@ -204,27 +229,30 @@ Strings DefaultBtContext::extractUrlList(const MetaEntry* obj)
 
 void DefaultBtContext::loadFromMemory(const char* content, int32_t length, const string& defaultName)
 {
-  MetaEntry* rootEntry = MetaFileUtil::bdecoding(content, length);
-  if(!dynamic_cast<Dictionary*>(rootEntry)) {
+  SharedHandle<MetaEntry> rootEntry = MetaFileUtil::bdecoding(content, length);
+  const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
+  if(!rootDic) {
     throw new DlAbortEx("torrent file does not contain a root dictionary .");
   }
-  processMetaInfo(rootEntry, defaultName);
+  processRootDictionary(rootDic, defaultName);
 }
 
 void DefaultBtContext::load(const string& torrentFile) {
-  MetaEntry* rootEntry = MetaFileUtil::parseMetaFile(torrentFile);
-  if(!dynamic_cast<Dictionary*>(rootEntry)) {
+  SharedHandle<MetaEntry> rootEntry = MetaFileUtil::parseMetaFile(torrentFile);
+  const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
+  if(!rootDic) {
     throw new DlAbortEx("torrent file does not contain a root dictionary .");
   }
-  processMetaInfo(rootEntry, torrentFile);
+  processRootDictionary(rootDic, torrentFile);
 }
 
-void DefaultBtContext::processMetaInfo(const MetaEntry* rootEntry, const string& defaultName)
+void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const string& defaultName)
 {
   clear();
-  SharedHandle<Dictionary> rootDic =
-    SharedHandle<Dictionary>((Dictionary*)rootEntry);
-  Dictionary* infoDic = (Dictionary*)rootDic->get("info");
+  const Dictionary* infoDic = dynamic_cast<const Dictionary*>(rootDic->get("info"));
+  if(!infoDic) {
+    throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "info directory");
+  }
   // retrieve infoHash
   ShaVisitor v;
   infoDic->accept(&v);
@@ -232,10 +260,16 @@ void DefaultBtContext::processMetaInfo(const MetaEntry* rootEntry, const string&
   v.getHash(infoHash, len);
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces
-  Data* pieceHashData = (Data*)infoDic->get("pieces");
+  const Data* pieceHashData = dynamic_cast<const Data*>(infoDic->get("pieces"));
+  if(!pieceHashData) {
+    throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "pieces");
+  }
   numPieces = pieceHashData->getLen()/PIECE_HASH_LENGTH;
   // retrieve piece length
-  Data* pieceLengthData = (Data*)infoDic->get("piece length");
+  const Data* pieceLengthData = dynamic_cast<const Data*>(infoDic->get("piece length"));
+  if(!pieceLengthData) {
+    throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "piece length");
+  }
   pieceLength = pieceLengthData->toInt();
   // retrieve piece hashes
   extractPieceHash((unsigned char*)pieceHashData->getData(),
@@ -253,9 +287,12 @@ void DefaultBtContext::processMetaInfo(const MetaEntry* rootEntry, const string&
   Strings urlList = extractUrlList(rootDic->get("url-list"));
   // retrieve file entries
   extractFileEntries(infoDic, defaultName, urlList);
+  if((totalLength+pieceLength-1)/pieceLength != numPieces) {
+    throw new DlAbortEx("Too few/many piece hash.");
+  }
   // retrieve announce
-  Data* announceData = (Data*)rootDic->get("announce");
-  List* announceListData = (List*)rootDic->get("announce-list");
+  const Data* announceData = dynamic_cast<const Data*>(rootDic->get("announce"));
+  const List* announceListData = dynamic_cast<const List*>(rootDic->get("announce-list"));
   if(announceListData) {
     extractAnnounceList(announceListData);
   } else if(announceData) {

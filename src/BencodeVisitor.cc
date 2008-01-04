@@ -75,10 +75,10 @@ void BencodeVisitor::visit(const Dictionary* d)
 void BencodeVisitor::visit(const MetaEntry* e)
 {
   if(dynamic_cast<const Data*>(e) != 0) {
-    visit((const Data*)e);
+    visit(reinterpret_cast<const Data*>(e));
   } else if(dynamic_cast<const List*>(e) != 0) {
-    visit((const List*)e);
+    visit(reinterpret_cast<const List*>(e));
   } else if(dynamic_cast<const Dictionary*>(e) != 0) {
-    visit((const Dictionary*)e);
+    visit(reinterpret_cast<const Dictionary*>(e));
   }
 }

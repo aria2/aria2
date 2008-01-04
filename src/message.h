@@ -135,6 +135,8 @@
 #define MSG_TOO_SMALL_PAYLOAD_SIZE _("Too small payload size for %s, size=%d.")
 #define MSG_REMOVED_DEFUNCT_CONTROL_FILE _("Removed the defunct control file %s because the download file %s doesn't exist.")
 #define MSG_SHARE_RATIO_REPORT _("Your share ratio was %.1f, uploaded/downloaded=%sB/%sB")
+#define MSG_SOMETHING_MISSING_IN_TORRENT _("Missing %s in torrent metainfo.")
+#define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

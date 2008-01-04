@@ -41,8 +41,10 @@ bool CompactPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
 
 Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
   Peers peers;
-
-  const Data* peersData = (const Data*)peersEntry;
+  const Data* peersData = dynamic_cast<const Data*>(peersEntry);
+  if(!peersData) {
+    return peers;
+  }
   if(peersData->getLen()%6 == 0) {
     for(int32_t i = 0; i < peersData->getLen(); i += 6) {
       struct in_addr in;

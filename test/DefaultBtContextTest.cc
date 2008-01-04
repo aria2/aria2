@@ -29,6 +29,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFileEntries_multiFileUrlList);
   CPPUNIT_TEST(testGetFileEntries_singleFileUrlList);
   CPPUNIT_TEST(testLoadFromMemory);
+  CPPUNIT_TEST(testLoadFromMemory_somethingMissing);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -53,6 +54,7 @@ public:
   void testGetFileEntries_multiFileUrlList();
   void testGetFileEntries_singleFileUrlList();
   void testLoadFromMemory();
+  void testLoadFromMemory_somethingMissing();
 };
 
 
@@ -324,4 +326,18 @@ void DefaultBtContextTest::testLoadFromMemory()
   CPPUNIT_ASSERT_EQUAL((int32_t)20, btContext.getInfoHashLength());
   CPPUNIT_ASSERT_EQUAL(correctHash, Util::toHex(btContext.getInfoHash(),
 						btContext.getInfoHashLength()));
+}
+
+void DefaultBtContextTest::testLoadFromMemory_somethingMissing()
+{
+  // pieces missing
+  try {
+    string memory = "d8:announce36:http://aria.rednoah.com/announce.php4:infod4:name13:aria2.tar.bz26:lengthi262144eee";
+    DefaultBtContext btContext;
+    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    cerr << *e << endl;
+    delete e;
+  }
 }

@@ -184,41 +184,50 @@ DefaultBtAnnounce::processAnnounceResponse(const char* trackerResponse,
 {
   SharedHandle<MetaEntry> entry(MetaFileUtil::bdecoding(trackerResponse,
 							trackerResponseLength));
-  Dictionary* response = (Dictionary*)entry.get();
-  Data* failureReasonData = (Data*)response->get("failure reason");
+  const Dictionary* response = dynamic_cast<const Dictionary*>(entry.get());
+  if(!response) {
+    throw new DlAbortEx(MSG_NULL_TRACKER_RESPONSE);
+  }
+  const Data* failureReasonData = dynamic_cast<const Data*>(response->get("failure reason"));
   if(failureReasonData) {
     throw new DlAbortEx(EX_TRACKER_FAILURE,
 			failureReasonData->toString().c_str());
   }
-  Data* warningMessageData = (Data*)response->get("warning message");
+  const Data* warningMessageData = dynamic_cast<const Data*>(response->get("warning message"));
   if(warningMessageData) {
     logger->warn(MSG_TRACKER_WARNING_MESSAGE,
 		 warningMessageData->toString().c_str());
   }
-  Data* trackerIdData = (Data*)response->get("tracker id");
+  const Data* trackerIdData = dynamic_cast<const Data*>(response->get("tracker id"));
   if(trackerIdData) {
     trackerId = trackerIdData->toString();
     logger->debug("Tracker ID:%s", trackerId.c_str());
   }
-  Data* intervalData = (Data*)response->get("interval");
+  const Data* intervalData = dynamic_cast<const Data*>(response->get("interval"));
   if(intervalData) {
-    interval = intervalData->toInt();
-    logger->debug("Interval:%d", interval);
+    int32_t t = intervalData->toInt();
+    if(t > 0) {
+      interval = intervalData->toInt();
+      logger->debug("Interval:%d", interval);
+    }
   }
-  Data* minIntervalData = (Data*)response->get("min interval");
+  const Data* minIntervalData = dynamic_cast<const Data*>(response->get("min interval"));
   if(minIntervalData) {
-    minInterval = minIntervalData->toInt();
-    logger->debug("Min interval:%d", minInterval);
+    int32_t t = minIntervalData->toInt();
+    if(t > 0) {
+      minInterval = minIntervalData->toInt();
+      logger->debug("Min interval:%d", minInterval);
+    }
   }
   if(minInterval > interval) {
     minInterval = interval;
   }
-  Data* completeData = (Data*)response->get("complete");
+  const Data* completeData = dynamic_cast<const Data*>(response->get("complete"));
   if(completeData) {
     complete = completeData->toInt();
     logger->debug("Complete:%d", complete);
   }
-  Data* incompleteData = (Data*)response->get("incomplete");
+  const Data* incompleteData = dynamic_cast<const Data*>(response->get("incomplete"));
   if(incompleteData) {
     incomplete = incompleteData->toInt();
     logger->debug("Incomplete:%d", incomplete);

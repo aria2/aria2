@@ -117,6 +117,31 @@ public:
   void generateKey();
 
   void setRandomizer(const RandomizerHandle& randomizer);
+
+  int32_t getInterval() const
+  {
+    return interval;
+  }
+
+  int32_t getMinInterval() const
+  {
+    return minInterval;
+  }
+
+  int32_t getComplete() const
+  {
+    return complete;
+  }
+
+  int32_t getIncomplete() const
+  {
+    return incomplete;
+  }
+
+  const string& getTrackerID() const
+  {
+    return trackerId;
+  }
 };
 
 #endif // _D_DEFAULT_BT_ANNOUNCE_H_
