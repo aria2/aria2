@@ -121,7 +121,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am__aria2c_SOURCES_DIST = AllTest.cc Base64Test.cc SequenceTest.cc \
+am__aria2c_SOURCES_DIST = AllTest.cc HelpItemTest.cc TaggedItemTest.cc \
+	TagContainerTest.cc Base64Test.cc SequenceTest.cc \
 	a2functionalTest.cc FileEntryTest.cc PieceTest.cc \
 	SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
@@ -226,10 +227,12 @@ am__aria2c_SOURCES_DIST = AllTest.cc Base64Test.cc SequenceTest.cc \
 @ENABLE_METALINK_TRUE@	MetalinkHelperTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserControllerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkProcessorTest.$(OBJEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) Base64Test.$(OBJEXT) \
-	SequenceTest.$(OBJEXT) a2functionalTest.$(OBJEXT) \
-	FileEntryTest.$(OBJEXT) PieceTest.$(OBJEXT) \
-	SegmentTest.$(OBJEXT) GrowSegmentTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) HelpItemTest.$(OBJEXT) \
+	TaggedItemTest.$(OBJEXT) TagContainerTest.$(OBJEXT) \
+	Base64Test.$(OBJEXT) SequenceTest.$(OBJEXT) \
+	a2functionalTest.$(OBJEXT) FileEntryTest.$(OBJEXT) \
+	PieceTest.$(OBJEXT) SegmentTest.$(OBJEXT) \
+	GrowSegmentTest.$(OBJEXT) \
 	SingleFileAllocationIteratorTest.$(OBJEXT) \
 	DefaultBtProgressInfoFileTest.$(OBJEXT) \
 	SingleFileDownloadContextTest.$(OBJEXT) \
@@ -445,7 +448,8 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 TESTS = aria2c
-aria2c_SOURCES = AllTest.cc Base64Test.cc SequenceTest.cc \
+aria2c_SOURCES = AllTest.cc HelpItemTest.cc TaggedItemTest.cc \
+	TagContainerTest.cc Base64Test.cc SequenceTest.cc \
 	a2functionalTest.cc FileEntryTest.cc PieceTest.cc \
 	SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
@@ -582,6 +586,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileUriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpItemTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestTest.Po@am__quote@
@@ -623,6 +628,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamUriListParserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TagContainerTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaggedItemTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@

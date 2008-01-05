@@ -147,7 +147,11 @@ SRCS =  Socket.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 	PeerConnection.cc PeerConnection.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
-	ServerHost.cc
+	ServerHost.cc\
+	HelpItem.cc\
+	TaggedItem.cc\
+	TagContainer.cc\
+	HelpItemFactory.cc
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST

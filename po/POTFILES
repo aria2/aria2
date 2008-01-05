@@ -1,8 +1,10 @@
      ../src/OptionHandlerImpl.h \
      ../src/message.h \
-     ../src/DownloadEngineFactory.cc \
+     ../src/usage_text.h \
+     ../src/BtSetup.cc \
+     ../src/DownloadEngine.cc \
+     ../src/HelpItem.cc \
      ../src/MultiUrlRequestInfo.cc \
      ../src/RequestGroupMan.cc \
      ../src/Util.cc \
-     ../src/version_usage.cc \
-     ../src/BtSetup.cc
+     ../src/version_usage.cc

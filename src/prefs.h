@@ -47,6 +47,7 @@
 #undef V_NONE
 #define V_NONE "none"
 #define V_MEM "mem"
+#define V_ALL "all"
 /**
  * General preferences
  */

@@ -1,3 +1,20 @@
+2008-01-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added categorized option help. Specify category using --help option.
+	Also added the ability to search options in forward match.
+	* src/HelpItem.{h, cc}
+	* test/HelpItemTest.cc
+	* src/HelpItemFactory.{h, cc}
+	* src/TagContainer.{h, cc}
+	* test/TagContainerTest.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/TaggedItem.{h, cc}
+	* test/TaggedItemTest.cc
+	* src/version_usage.cc
+	* src/help_tags.h
+	* src/usage_text.h
+
 2008-01-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed segmentation fault when bad torrent metainfo is parsed.

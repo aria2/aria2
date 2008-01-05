@@ -41,6 +41,7 @@
 #include "message.h"
 #include "Exception.h"
 #include "a2io.h"
+#include "help_tags.h"
 #include <fstream>
 #include <sstream>
 
@@ -49,7 +50,7 @@ extern int optind, opterr, optopt;
 #include <getopt.h>
 
 extern void showVersion();
-extern void showUsage();
+extern void showUsage(const string& category);
 
 static string toBoolArg(const char* optarg)
 {
@@ -212,10 +213,10 @@ Option* option_processing(int argc, char* const argv[])
       { "metalink-enable-unique-protocol", optional_argument, &lopt, 106 },
 #endif // ENABLE_METALINK
       { "version", no_argument, NULL, 'v' },
-      { "help", no_argument, NULL, 'h' },
+      { "help", optional_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vhST:M:C:a:cU:ni:j:Z::P::", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -416,8 +417,16 @@ Option* option_processing(int argc, char* const argv[])
       showVersion();
       exit(EXIT_SUCCESS);
     case 'h':
-      showUsage();
-      exit(EXIT_SUCCESS);
+      {
+	string category;
+	if(optarg == 0 || string(optarg) == "") {
+	  category = TAG_BASIC;
+	} else {
+	  category = optarg;
+	}
+	showUsage(category);
+	exit(EXIT_SUCCESS);
+      }
     default:
       exit(EXIT_FAILURE);
     }
