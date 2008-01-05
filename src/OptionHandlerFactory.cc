@@ -108,6 +108,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
 						  Strings(&params[0], &params[arrayLength(params)])));
   }
+  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE));
 
   return handlers;
 }

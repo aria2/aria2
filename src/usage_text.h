@@ -254,6 +254,8 @@ _(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID 
   "                              specified, the random alphabet characters are\n"\
   "                              added to make it's length 20 bytes.\n"\
   "                              Default: -aria2-")
+#define TEXT_ENABLE_PEER_EXCHANGE \
+_(" --enable-peer-exchange[=true|false] Enable peer exchange extension.")
 #define TEXT_METALINK_FILE \
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \

@@ -329,6 +329,11 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
+  {
+    HelpItemHandle item = new HelpItem(PREF_ENABLE_PEER_EXCHANGE, TEXT_ENABLE_PEER_EXCHANGE, V_TRUE);
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   {

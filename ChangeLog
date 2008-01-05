@@ -1,5 +1,13 @@
 2008-01-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --enable-peer-exchange command-line option.
+	* src/OptionHandlerFactory.cc
+	* src/HelpItemFactory.cc
+	* src/option_processing.cc
+	* src/usage_text.h
+
+2008-01-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Move extension from BtRuntime to ExtensionMessageFactory, because
 	extension can be specified per peer, not per torrent.
 	* src/DefaultBtInteractive.cc

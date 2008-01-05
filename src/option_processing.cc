@@ -200,6 +200,7 @@ Option* option_processing(int argc, char* const argv[])
       { "seed-ratio", required_argument, &lopt, 23 },
       { "max-upload-limit", required_argument, &lopt, 24 },
       { "peer-id-prefix", required_argument, &lopt, 25 },
+      { "enable-peer-exchange", optional_argument, &lopt, 26 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { "metalink-file", required_argument, NULL, 'M' },
@@ -291,6 +292,10 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 25:
 	cmdstream << PREF_PEER_ID_PREFIX << "=" << optarg << "\n";
+	break;
+      case 26:
+	cmdstream << PREF_ENABLE_PEER_EXCHANGE << "=" << toBoolArg(optarg) << "\n";
+	break;
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";
 	break;
