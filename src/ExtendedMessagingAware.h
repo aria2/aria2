@@ -32,20 +32,54 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_EXTENSION_MESSAGE_FACTORY_H_
-#define _D_EXTENSION_MESSAGE_FACTORY_H_
+#ifndef _D_EXTENDED_MESSAGING_AWARE_H_
+#define _D_EXTENDED_MESSAGING_AWARE_H_
 
-#include "ExtendedMessagingAware.h"
+#include "common.h"
+#include "BtConstants.h"
 
-class ExtensionMessage;
-typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
-
-class ExtensionMessageFactory:public ExtendedMessagingAware {
+class ExtendedMessagingAware {
+private:
+  Extensions _extensions;
 public:
-  virtual ~ExtensionMessageFactory() {}
+  ExtendedMessagingAware()
+  {
+    _extensions["ut_pex"] = 8;
+  }
 
-  virtual ExtensionMessageHandle createMessage(const char* data, size_t length) = 0;
+  virtual ~ExtendedMessagingAware() {}
+
+  const Extensions& getExtensions() const
+  {
+    return _extensions;
+  }
+
+  uint8_t getExtensionMessageID(const string& name) const
+  {
+    Extensions::const_iterator itr = _extensions.find(name);
+    if(itr == _extensions.end()) {
+      return 0;
+    } else {
+      return (*itr).second;
+    }
+  }
+
+  string getExtensionName(uint8_t id) const
+  {
+    for(Extensions::const_iterator itr = _extensions.begin();
+      itr != _extensions.end(); ++itr) {
+      const Extensions::value_type& p = *itr;
+      if(p.second == id) {
+	return p.first;
+      }
+    }
+    return "";
+  }
+
+  void removeExtension(const string& name)
+  {
+    _extensions.erase(name);
+  }
 };
 
-typedef SharedHandle<ExtensionMessageFactory> ExtensionMessageFactoryHandle;
-#endif // _D_EXTENSION_MESSAGE_FACTORY_H_
+#endif // _D_EXTENDED_MESSAGING_AWARE_H_

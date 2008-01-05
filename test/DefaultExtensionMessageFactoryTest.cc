@@ -63,6 +63,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_unknown()
 
   string data = string(&id[0], &id[1]);
   try {
+    // this test fails because localhost doesn't have extension id = 255.
     factory.createMessage(data.c_str(), data.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
@@ -99,7 +100,7 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
   PeerMessageUtil::createcompact(c3, "192.168.0.2", 6882);
   PeerMessageUtil::createcompact(c4, "10.1.1.3",10000);
 
-  char id[1] = { BT_RUNTIME(_btContext)->getExtensionMessageID("ut_pex") };
+  char id[1] = { factory.getExtensionMessageID("ut_pex") };
 
   string data = string(&id[0], &id[1])+"d5:added12:"+
     string(&c1[0], &c1[6])+string(&c2[0], &c2[6])+
@@ -108,6 +109,6 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
     "e";
 
   UTPexExtensionMessageHandle m = factory.createMessage(data.c_str(), data.size());
-  CPPUNIT_ASSERT_EQUAL(BT_RUNTIME(_btContext)->getExtensionMessageID("ut_pex"),
+  CPPUNIT_ASSERT_EQUAL(factory.getExtensionMessageID("ut_pex"),
 		       m->getExtensionMessageID());
 }

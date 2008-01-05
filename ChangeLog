@@ -1,3 +1,14 @@
+2008-01-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Move extension from BtRuntime to ExtensionMessageFactory, because
+	extension can be specified per peer, not per torrent.
+	* src/DefaultBtInteractive.cc
+	* src/BtRuntime.h
+	* src/ExtendedMessagingAware.h
+	* src/ExtensionMessageFactory.h
+	* src/DefaultExtensionMessageFactory.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+
 2008-01-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added categorized option help. Specify category using --help option.

@@ -71,8 +71,12 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
     }
     if(message->isExtendedMessagingEnabled()) {
       peer->setExtendedMessagingEnabled(true);
-      PEER_OBJECT(btContext, peer)->extensionMessageFactory =
+      DefaultExtensionMessageFactoryHandle factory = 
 	new DefaultExtensionMessageFactory(btContext, peer);
+      if(!_utPexEnabled) {
+	factory->removeExtension("ut_pex");
+      }
+      PEER_OBJECT(btContext, peer)->extensionMessageFactory = factory;
       logger->info(MSG_EXTENDED_MESSAGING_ENABLED, cuid);
     }
 
@@ -105,11 +109,9 @@ void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
   HandshakeExtensionMessageHandle m = new HandshakeExtensionMessage();
   m->setClientVersion("aria2");
   m->setTCPPort(btRuntime->getListenPort());
-  m->setExtensions(btRuntime->getExtensions());
+  m->setExtensions(EXTENSION_MESSAGE_FACTORY(btContext, peer)->getExtensions());
   
-  BtExtendedMessageHandle msg =
-    messageFactory->createBtExtendedMessage(m);
-  
+  BtExtendedMessageHandle msg = messageFactory->createBtExtendedMessage(m);
   dispatcher->addMessageToQueue(msg);
 }
 

@@ -65,7 +65,7 @@ DefaultExtensionMessageFactory::createMessage(const char* data, size_t length)
     m->setPeer(_peer);
     return m;
   } else {
-    string extensionName = BT_RUNTIME(_btContext)->getExtensionName(extensionMessageID);
+    string extensionName = getExtensionName(extensionMessageID);
     if(extensionName.empty()) {
       throw new DlAbortEx("No extension registered for extended message ID %u",
 			  extensionMessageID);

@@ -47,8 +47,6 @@ private:
   bool halt;
   int32_t connections;
   bool _ready;
-
-  Extensions _extensions;
 public:
   BtRuntime():
     uploadLengthAtStartup(0),
@@ -56,9 +54,8 @@ public:
     halt(false),
     connections(0),
     _ready(false)
-  {
-    _extensions["ut_pex"] = 8;
-  }
+  {}
+
   ~BtRuntime() {}
 
   int64_t getUploadLengthAtStartup() const {
@@ -94,33 +91,6 @@ public:
   bool ready() { return _ready; }
 
   void setReady(bool go) { _ready = go; }
-
-  const Extensions& getExtensions() const
-  {
-    return _extensions;
-  }
-
-  uint8_t getExtensionMessageID(const string& name)
-  {
-    Extensions::const_iterator itr = _extensions.find(name);
-    if(itr == _extensions.end()) {
-      return 0;
-    } else {
-      return (*itr).second;
-    }
-  }
-
-  string getExtensionName(uint8_t id)
-  {
-    for(Extensions::const_iterator itr = _extensions.begin();
-      itr != _extensions.end(); ++itr) {
-      const Extensions::value_type& p = *itr;
-      if(p.second == id) {
-	return p.first;
-      }
-    }
-    return "";
-  }
 };
 
 typedef SharedHandle<BtRuntime> BtRuntimeHandle;
