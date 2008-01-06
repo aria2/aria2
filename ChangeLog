@@ -1,5 +1,10 @@
 2008-01-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed: hash algorithm 'sha1' is always used. 
+	* src/DownloadCommand.cc (validatePieceHash) 
+
+2008-01-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added --enable-peer-exchange command-line option.
 	* src/OptionHandlerFactory.cc
 	* src/HelpItemFactory.cc

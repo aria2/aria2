@@ -179,7 +179,7 @@ void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
   if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
      !expectedPieceHash.empty()) {
     string actualPieceHash =
-      MessageDigestHelper::digest("sha1",
+      MessageDigestHelper::digest(_requestGroup->getDownloadContext()->getPieceHashAlgo(),
 				  _requestGroup->getPieceStorage()->getDiskAdaptor(),
 				  segment->getPosition(),
 				  segment->getLength());
