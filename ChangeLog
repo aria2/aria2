@@ -1,3 +1,10 @@
+2008-01-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that SegmentMan::completeSegment() is not called
+	even if Segment is complete when --lowest-speed-limit is enabled.
+	BUG#1864525
+	* src/DownloadCommand.{h, cc}
+
 2008-01-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed: hash algorithm 'sha1' is always used. 

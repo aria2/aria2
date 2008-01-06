@@ -51,6 +51,7 @@ private:
 
   void validatePieceHash(const SegmentHandle& segment);
 
+  void checkLowestDownloadSpeed() const;
 protected:
   TransferEncodingHandle transferDecoder;
 
