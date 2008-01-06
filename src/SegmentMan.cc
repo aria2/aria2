@@ -204,10 +204,24 @@ void SegmentMan::cancelSegment(int32_t cuid) {
   }
 }
 
+class FindSegmentEntry {
+private:
+  SegmentHandle _segment;
+public:
+  FindSegmentEntry(const SegmentHandle& segment):_segment(segment) {}
+
+  bool operator()(const SegmentEntryHandle& segmentEntry) const
+  {
+    return segmentEntry->segment->getIndex() == _segment->getIndex();
+  }
+};
+
 bool SegmentMan::completeSegment(int32_t cuid, const SegmentHandle& segment) {
   _pieceStorage->completePiece(segment->getPiece());
   _pieceStorage->advertisePiece(cuid, segment->getPiece()->getIndex());
-  SegmentEntries::iterator itr = getSegmentEntryIteratorByCuid(cuid);
+  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
+					 usedSegmentEntries.end(),
+					 FindSegmentEntry(segment));
   if(itr == usedSegmentEntries.end()) {
     return false;
   } else {
@@ -256,42 +270,6 @@ int32_t SegmentMan::calculateDownloadSpeed() const {
     }
   }
   return speed;
-}
-
-SegmentEntryHandle SegmentMan::getSegmentEntryByIndex(int32_t index)
-{
-  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end(); ++itr) {
-    const SegmentEntryHandle& segmentEntry = *itr;
-    if(segmentEntry->segment->getIndex() == index) {
-      return segmentEntry;
-    }
-  }
-  return 0;
-}
-  
-SegmentEntryHandle SegmentMan::getSegmentEntryByCuid(int32_t cuid)
-{
-  for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end(); ++itr) {
-    const SegmentEntryHandle& segmentEntry = *itr;
-    if(segmentEntry->cuid == cuid) {
-      return segmentEntry;
-    }
-  }
-  return 0;    
-}
-
-SegmentEntries::iterator SegmentMan::getSegmentEntryIteratorByCuid(int32_t cuid)
-{
-  for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
-      itr != usedSegmentEntries.end(); ++itr) {
-    const SegmentEntryHandle& segmentEntry = *itr;
-    if(segmentEntry->cuid == cuid) {
-      return itr;
-    }
-  }
-  return usedSegmentEntries.end();    
 }
 
 int32_t SegmentMan::countFreePieceFrom(int32_t index) const

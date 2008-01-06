@@ -1,5 +1,15 @@
 2008-01-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that always first found Segment is removed from
+	usedSegmentEntries. Removed unused functions.
+	* src/SegmentMan.{h, cc}
+	* test/SegmentManTest.cc
+
+	Fixed the bug that ServerHost is not removed.
+	* src/RequestGroup.cc
+	
+2008-01-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that SegmentMan::completeSegment() is not called
 	even if Segment is complete when --lowest-speed-limit is enabled.
 	BUG#1864525

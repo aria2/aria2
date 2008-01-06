@@ -828,7 +828,7 @@ ServerHostHandle RequestGroup::searchServerHost(const string& hostname) const
 
 void RequestGroup::removeServerHost(int32_t cuid)
 {
-  remove_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid));
+  _serverHosts.erase(remove_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid)), _serverHosts.end());
 }
   
 void RequestGroup::removeURIWhoseHostnameIs(const string& hostname)

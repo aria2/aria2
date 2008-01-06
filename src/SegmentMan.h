@@ -87,13 +87,6 @@ private:
   SegmentHandle checkoutSegment(int32_t cuid, const PieceHandle& piece);
 
   SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
-
-  SegmentEntryHandle getSegmentEntryByIndex(int32_t index);
-  
-  SegmentEntryHandle getSegmentEntryByCuid(int32_t cuid);
-
-  SegmentEntries::iterator getSegmentEntryIteratorByCuid(int32_t cuid);
-
 public:
   SegmentMan(const Option* option,
 	     const DownloadContextHandle& downloadContext = 0,
