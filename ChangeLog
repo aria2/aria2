@@ -5,7 +5,7 @@
 	is not updated in this particular case and successive call of
 	receiveMessage() overwrites payload length with bytes recieved which
 	are payload body.
-	* src/PeerConnection.cc
+	* src/PeerConnection.{h, cc}
 	* src/message.h
 
 2008-01-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
