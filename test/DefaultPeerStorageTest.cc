@@ -12,13 +12,12 @@ class DefaultPeerStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountPeer);
   CPPUNIT_TEST(testDeleteUnusedPeer);
   CPPUNIT_TEST(testAddPeer);
-  CPPUNIT_TEST(testGetPeer);
+  CPPUNIT_TEST(testGetUnusedPeer);
   CPPUNIT_TEST(testIsPeerAvailable);
   CPPUNIT_TEST(testActivatePeer);
   CPPUNIT_TEST(testCalculateStat);
   CPPUNIT_TEST(testReturnPeer);
   CPPUNIT_TEST(testOnErasingPeer);
-  CPPUNIT_TEST(testReturnPeer);
   CPPUNIT_TEST_SUITE_END();
 private:
   BtContextHandle btContext;
@@ -37,7 +36,7 @@ public:
   void testCountPeer();
   void testDeleteUnusedPeer();
   void testAddPeer();
-  void testGetPeer();
+  void testGetUnusedPeer();
   void testIsPeerAvailable();
   void testActivatePeer();
   void testCalculateStat();
@@ -114,10 +113,12 @@ void DefaultPeerStorageTest::testAddPeer() {
 
   PeerHandle peer4(new Peer("192.168.0.4", 6889));
 
+  peer1->cuid = 1;
   CPPUNIT_ASSERT(ps.addPeer(peer4));
-  // peer1 was deleted.
+  // peer2 was deleted. While peer1 is oldest, its cuid is not 0.
   CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
-  
+  CPPUNIT_ASSERT(find(ps.getPeers().begin(), ps.getPeers().end(), peer2) == ps.getPeers().end());
+
   PeerHandle peer5(new Peer("192.168.0.4", 0));
 
   peer5->port = 6889;
@@ -126,7 +127,7 @@ void DefaultPeerStorageTest::testAddPeer() {
   CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer5));
 }
 
-void DefaultPeerStorageTest::testGetPeer() {
+void DefaultPeerStorageTest::testGetUnusedPeer() {
   DefaultPeerStorage ps(btContext, option);
   ps.setBtRuntime(btRuntime);
 
@@ -195,12 +196,11 @@ void DefaultPeerStorageTest::testReturnPeer()
 {
   DefaultPeerStorage ps(btContext, option);
 
-  PeerHandle peer1(new Peer("192.168.0.1", 6889));
+  PeerHandle peer1(new Peer("192.168.0.1", 0));
   PeerHandle peer2(new Peer("192.168.0.2", 6889));
+  PeerHandle peer3(new Peer("192.168.0.1", 6889));
   ps.addPeer(peer1);
   ps.addPeer(peer2);
-
-  PeerHandle peer3(new Peer("192.168.0.3", 0));
   ps.addPeer(peer3);
 
   ps.returnPeer(peer2);
@@ -208,9 +208,9 @@ void DefaultPeerStorageTest::testReturnPeer()
   CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"),
 		       ps.getPeers().back()->ipaddr);
 
-  ps.returnPeer(peer3); // peer3 is removed from the container
+  ps.returnPeer(peer1); // peer1 is removed from the container
   CPPUNIT_ASSERT_EQUAL((size_t)2, ps.getPeers().size());
-  CPPUNIT_ASSERT(find(ps.getPeers().begin(), ps.getPeers().end(), peer3) == ps.getPeers().end());
+  CPPUNIT_ASSERT(find(ps.getPeers().begin(), ps.getPeers().end(), peer1) == ps.getPeers().end());
 }
 
 void DefaultPeerStorageTest::testOnErasingPeer()

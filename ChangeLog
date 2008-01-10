@@ -1,3 +1,14 @@
+2008-01-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that DefaultPeerStorage::returnPeer() may delete wrong
+	peer if there are peers that have same ipaddr and port.
+	I've experiened segmentation fault and "pure virtual function was
+	called" error.
+	* src/Peer.h
+	* test/PeerTest.cc
+	* src/DefaultPeerStorage.cc
+	* test/DefaultPeerStorageTest.cc
+
 2008-01-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Removed a call to isPowerOf() because it is no longer necessary here

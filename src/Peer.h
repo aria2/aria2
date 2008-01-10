@@ -90,7 +90,7 @@ public:
   }
 
   bool operator==(const Peer& p) {
-    return id == p.id || ipaddr == p.ipaddr && port == p.port;
+    return id == p.id;
   }
   
   bool operator!=(const Peer& p) {

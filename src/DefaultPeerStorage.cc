@@ -52,9 +52,21 @@ DefaultPeerStorage::DefaultPeerStorage(BtContextHandle btContext,
 
 DefaultPeerStorage::~DefaultPeerStorage() {}
 
+class FindIdenticalPeer {
+private:
+  PeerHandle _peer;
+public:
+  FindIdenticalPeer(const PeerHandle& peer):_peer(peer) {}
+
+  bool operator()(const PeerHandle& peer) const {
+    return _peer == peer ||
+      _peer->ipaddr == peer->ipaddr && _peer->port == peer->port;
+  }
+};
+
 bool DefaultPeerStorage::isPeerAlreadyAdded(const PeerHandle& peer)
 {
-  return find(peers.begin(), peers.end(), peer) != peers.end();
+  return find_if(peers.begin(), peers.end(), FindIdenticalPeer(peer)) != peers.end();
 }
 
 bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {

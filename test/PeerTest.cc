@@ -9,6 +9,7 @@ class PeerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testPeerAllowedIndexSet);
   CPPUNIT_TEST(testAmAllowedIndexSet);
   CPPUNIT_TEST(testGetId);
+  CPPUNIT_TEST(testOperatorEqual);
   CPPUNIT_TEST_SUITE_END();
 private:
   PeerHandle peer;
@@ -22,6 +23,7 @@ public:
   void testPeerAllowedIndexSet();
   void testAmAllowedIndexSet();
   void testGetId();
+  void testOperatorEqual();
 };
 
 
@@ -42,4 +44,16 @@ void PeerTest::testAmAllowedIndexSet() {
 void PeerTest::testGetId() {
   CPPUNIT_ASSERT_EQUAL(string("f05897fc14a41cb3400e283e189158656d7184da"),
 		       peer->getId());
+}
+
+void PeerTest::testOperatorEqual()
+{
+  CPPUNIT_ASSERT(Peer("localhost", 6881) == Peer("localhost", 6881));
+
+  {
+    Peer p1("localhost", 6881);
+    Peer p2("localhsot", 0);
+    p2.port = 6881;
+    CPPUNIT_ASSERT(p1 != p2);
+  }
 }
