@@ -210,6 +210,6 @@
 #define EX_INVALID_RANGE_HEADER _("Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s")
 #define EX_NO_RESULT_WITH_YOUR_PREFS _("No file matched with your preference.")
 #define EX_EXCEPTION_CAUGHT _("Exception caught")
-#define EX_TOO_LONG_PAYLOAD _("Max payload length exceeded or invalid. length = %d")
+#define EX_TOO_LONG_PAYLOAD _("Max payload length exceeded or invalid. length = %u")
 #define EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE _("Invalid file length. Cannot continue download %s: local %s, remote %s")
 #endif // _D_MESSAGE_H_
