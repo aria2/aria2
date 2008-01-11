@@ -95,6 +95,11 @@ int32_t Piece::getMissingBlockIndex() const {
   return blockIndex;
 }
 
+int32_t Piece::getFirstMissingBlockIndexWithoutLock() const
+{
+  return bitfield->getFirstMissingIndex();
+}
+
 BlockIndexes Piece::getAllMissingBlockIndexes() const {
   return bitfield->getAllMissingIndexes();
 }

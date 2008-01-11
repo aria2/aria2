@@ -86,6 +86,7 @@ public:
 
   int32_t getMissingUnusedBlockIndex() const;
   int32_t getMissingBlockIndex() const;
+  int32_t getFirstMissingBlockIndexWithoutLock() const;
   BlockIndexes getAllMissingBlockIndexes() const;
   void completeBlock(int32_t blockIndex);
   void cancelBlock(int32_t blockIndex);

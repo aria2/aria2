@@ -1,5 +1,15 @@
 2008-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added Piece::getFirstMissingBlockIndexWithoutLock() and it is called
+	from PiecedSegment's ctor.
+	Previously Piece::getAllMissingBlockIndexes() is called from
+	PiecedSegment() but it is rather expensive since only first element is
+	used.
+	* src/PiecedSegment.cc
+	* src/Piece.{h, cc}
+
+2008-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten get*Missing*Index functions. Now no need to allocate memory
 	each time these functions are called.
 	* src/BitfieldMan.{h, cc}

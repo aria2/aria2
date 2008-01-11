@@ -38,7 +38,7 @@
 PiecedSegment::PiecedSegment(int32_t pieceLength, const PieceHandle& piece):
   _pieceLength(pieceLength), _overflowLength(0), _piece(piece)
 {
-  _writtenLength = _piece->getAllMissingBlockIndexes().front()*_piece->getBlockLength();
+  _writtenLength = _piece->getFirstMissingBlockIndexWithoutLock()*_piece->getBlockLength();
 }
 
 PiecedSegment::~PiecedSegment() {}
