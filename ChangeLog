@@ -1,3 +1,17 @@
+2008-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Rewritten get*Missing*Index functions. Now no need to allocate memory
+	each time these functions are called.
+	* src/BitfieldMan.{h, cc}
+	* test/BitfieldManTest.cc
+	* src/array_fun.h
+	* test/array_funTest.cc 
+
+	Now BitfieldMan::countBlock() returns BitfieldMan::blocks.
+	Added new BitfieldMan::countFilteredBlock() to get the number of blocks
+	filtered. Removed unnecessary cast to int32_t.
+	* src/BitfieldMan.{h, cc}
+	
 2008-01-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that EX_TOO_LONG_PAYLOAD exception is thrown if just

@@ -63,6 +63,17 @@ private:
   int32_t countSetBit(const unsigned char* bitfield, int32_t len) const;
   int32_t getNthBitIndex(const unsigned char bit, int32_t nth) const;
   int32_t getMissingIndexRandomly(const unsigned char* bitfield, int32_t len) const;
+
+  template<typename Array>
+  int32_t
+  getMissingIndexRandomly(const Array& bitfield,
+			  int32_t bitfieldLength) const;
+  template<typename Array>
+  int32_t getFirstMissingIndex(const Array& bitfield, int32_t bitfieldLength) const;
+
+  template<typename Array>
+  BlockIndexes getAllMissingIndexes(const Array& bitfield, int32_t bitfieldLength) const;
+
   bool isBitSetInternal(const unsigned char* bitfield, int32_t index) const;
   bool setBitInternal(unsigned char* bitfield, int32_t index, bool on);
   bool setFilterBit(int32_t index);
@@ -112,9 +123,9 @@ public:
   }
 
   int32_t getBlockLength(int32_t index) const {
-    if(index == (int32_t)(blocks-1)) {
+    if(index == blocks-1) {
       return getLastBlockLength();
-    } else if(0 <= index && index < (int32_t)(blocks-1)) {
+    } else if(0 <= index && index < blocks-1) {
       return getBlockLength();
     } else {
       return 0;
@@ -143,6 +154,10 @@ public:
    * affected by filter
    */
   int32_t getFirstMissingUnusedIndex() const;
+  /**
+   * affected by filter
+   */
+  int32_t getFirstMissingIndex() const;
   /**
    * affected by filter
    */
@@ -194,6 +209,8 @@ public:
   /**
    * affected by filter
    */
+  int32_t countFilteredBlock() const;
+
   int32_t countBlock() const;
   /**
    * affected by filter
