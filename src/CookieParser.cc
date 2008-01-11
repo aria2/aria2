@@ -55,7 +55,14 @@ void CookieParser::setField(Cookie& cookie, const string& name, const string& va
 
 Cookie CookieParser::parse(const string& cookieStr) const
 {
+  return parse(cookieStr, "", "");
+}
+
+Cookie CookieParser::parse(const string& cookieStr, const string& defaultDomain, const string& defaultPath) const
+{
   Cookie cookie;
+  cookie.domain = defaultDomain;
+  cookie.path = defaultPath;
   Strings terms;
   Util::slice(terms, Util::trim(cookieStr), ';', true);
   for(Strings::iterator itr = terms.begin(); itr != terms.end(); itr++) {

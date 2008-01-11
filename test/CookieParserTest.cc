@@ -38,13 +38,13 @@ void CookieParserTest::testParse()
   CPPUNIT_ASSERT_EQUAL(false, c.onetime);
 
   string str2 = "JSESSIONID=123456789";
-  c = CookieParser().parse(str2);
+  c = CookieParser().parse(str2, "default.domain", "/default/path");
   CPPUNIT_ASSERT(c.good());
   CPPUNIT_ASSERT_EQUAL(string("JSESSIONID"), c.name);
   CPPUNIT_ASSERT_EQUAL(string("123456789"), c.value);
   CPPUNIT_ASSERT_EQUAL((time_t)0, c.expires);
-  CPPUNIT_ASSERT_EQUAL(string(""), c.path);
-  CPPUNIT_ASSERT_EQUAL(string(""), c.domain);
+  CPPUNIT_ASSERT_EQUAL(string("default.domain"), c.domain);
+  CPPUNIT_ASSERT_EQUAL(string("/default/path"), c.path);
   CPPUNIT_ASSERT_EQUAL(false, c.secure);
   CPPUNIT_ASSERT_EQUAL(true, c.onetime);
 

@@ -44,8 +44,9 @@ void CookieBox::add(const Cookie& cookie) {
   cookies.push_back(cookie);
 }
 
-void CookieBox::add(const string& cookieStr) {
-  Cookie c = CookieParser().parse(cookieStr);
+void CookieBox::add(const string& cookieStr, const string& defaultDomain, const string& defaultPath)
+{
+  Cookie c = CookieParser().parse(cookieStr, defaultDomain, defaultPath);
   if(c.good()) {
     cookies.push_back(c);
   }

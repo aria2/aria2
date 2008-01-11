@@ -46,7 +46,8 @@ public:
   ~CookieBox();
   void clear();
   void add(const Cookie& cookie);
-  void add(const string& cookieStr);
+  void add(const string& cookieStr,
+	   const string& defaultDomain, const string& defaultPath);
   void add(const Cookies& cookies);
   Cookies criteriaFind(const string& host, const string& dir, time_t date, bool secure) const;
 };

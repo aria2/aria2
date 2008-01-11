@@ -47,6 +47,8 @@ public:
 
   ~CookieParser() {}
 
+  Cookie parse(const string& cookieStr, const string& defaultDomain, const string& defaultPath) const;
+
   Cookie parse(const string& cookieStr) const;
 
   Cookies parse(istream& s) const;
