@@ -38,7 +38,7 @@
 #include "List.h"
 #include "Data.h"
 #include "DlAbortEx.h"
-#include "ShaVisitor.h"
+#include "BencodeVisitor.h"
 #include "Util.h"
 #include "MessageDigestHelper.h"
 #include "a2netcompat.h"
@@ -254,10 +254,11 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
     throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "info directory");
   }
   // retrieve infoHash
-  ShaVisitor v;
+  BencodeVisitor v;
   infoDic->accept(&v);
-  int len;
-  v.getHash(infoHash, len);
+  MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH, "sha1",
+			      v.getBencodedData().c_str(),
+			      v.getBencodedData().size());
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
   // calculate the number of pieces
   const Data* pieceHashData = dynamic_cast<const Data*>(infoDic->get("pieces"));

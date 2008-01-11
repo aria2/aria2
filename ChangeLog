@@ -1,5 +1,11 @@
 2008-01-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use BencodeVisitor and MessageDigestHelper instead of ShaVisitor.
+	ShaVisitor is now deprecated and slated to be removed.
+	* src/DefaultBtContext.cc
+
+2008-01-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Externalize message to message.h
 	* src/Platform.cc
 	* src/message.h
