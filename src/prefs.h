@@ -120,6 +120,10 @@
 #define PREF_ENABLE_DIRECT_IO "enable-direct-io"
 // value: true | false
 #define PREF_ALLOW_PIECE_LENGTH_CHANGE "allow-piece-length-change"
+// value: true | false
+#define PREF_NO_CONF "no-conf"
+// value: string
+#define PREF_CONF_PATH "conf-path"
 
 /**
  * FTP related preferences

@@ -1,5 +1,17 @@
 2008-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --no-conf and --conf-path command-line option.
+	--no-conf option disables loading aria2.conf file.
+	--conf-path option changes the configuration file path. The default
+	file path is $HOME/.aria2/aria2.conf
+	Added a warning message when the configuration file is not found.
+	* src/HelpItemFactory.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2008-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the message to inform users that other help categories are
 	available in -h option.
 	* src/version_usage.cc

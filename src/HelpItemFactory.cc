@@ -389,12 +389,22 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
+    HelpItemHandle item = new HelpItem("no-conf", TEXT_NO_CONF);
+    item->addTag(TAG_ADVANCED);
+    tc->addItem(item);
+  }
+  {
+    HelpItemHandle item = new HelpItem("conf-path", TEXT_CONF_PATH, "$HOME/.aria2/aria2.conf");
+    item->addTag(TAG_ADVANCED);
+    tc->addItem(item);
+  }
+  {
     HelpItemHandle item = new HelpItem("help", TEXT_HELP, TAG_BASIC);
     char buf[64];
     snprintf(buf, sizeof(buf), "%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT);
     item->setAvailableValues(buf);
     item->addTag(TAG_BASIC);
     tc->addItem(item);
-  }    
+  }
   return tc;
 }

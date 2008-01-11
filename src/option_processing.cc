@@ -42,6 +42,7 @@
 #include "Exception.h"
 #include "a2io.h"
 #include "help_tags.h"
+#include "LogFactory.h"
 #include <fstream>
 #include <sstream>
 
@@ -132,6 +133,11 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_METALINK_PREFERRED_PROTOCOL, V_NONE);
   op->put(PREF_ENABLE_PEER_EXCHANGE, V_TRUE);
   op->put(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL, V_TRUE);
+
+  // following options are not parsed by OptionHandler and not stored in Option.
+  bool noConf = false;
+  string cfname = Util::getHomeDir()+"/.aria2/aria2.conf";
+
   while(1) {
     int optIndex = 0;
     int lopt;
@@ -184,6 +190,8 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_ENABLE_DIRECT_IO, optional_argument, &lopt, 210 },
 #endif // ENABLE_DIRECT_IO
       { PREF_ALLOW_PIECE_LENGTH_CHANGE, required_argument, &lopt, 211 },
+      { PREF_NO_CONF, no_argument, &lopt, 212 },
+      { PREF_CONF_PATH, required_argument, &lopt, 213 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -353,6 +361,12 @@ Option* option_processing(int argc, char* const argv[])
       case 211:
 	cmdstream << PREF_ALLOW_PIECE_LENGTH_CHANGE << "=" << optarg << "\n";
 	break;
+      case 212:
+	noConf = true;
+	break;
+      case 213:
+	cfname = optarg;
+	break;
       }
       break;
     }
@@ -440,15 +454,20 @@ Option* option_processing(int argc, char* const argv[])
   {
     OptionParser oparser;
     oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
-    string cfname = Util::getHomeDir()+"/.aria2/aria2.conf";
-    ifstream cfstream(cfname.c_str());
-    try {
-      oparser.parse(op, cfstream);
-    } catch(Exception* e) {
-      cerr << "Parse error in " << cfname << endl;
-      cerr << *e << endl;
-      delete e;
-      exit(EXIT_FAILURE);
+    if(!noConf) {
+      if(File(cfname).isFile()) {
+	ifstream cfstream(cfname.c_str());
+	try {
+	  oparser.parse(op, cfstream);
+	} catch(Exception* e) {
+	  cerr << "Parse error in " << cfname << endl;
+	  cerr << *e << endl;
+	  delete e;
+	  exit(EXIT_FAILURE);
+	}
+      } else {
+	LogFactory::getInstance()->warn("Configuration file %s is not found.", cfname.c_str());
+      }
     }
     try {
       oparser.parse(op, cmdstream);

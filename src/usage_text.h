@@ -302,3 +302,7 @@ _(" -h, --help[=CATEGORY]        Print usage and exit.\n"\
   "                              http. If no matching category is found, search\n"\
   "                              option name in forward match and print the\n"\
   "                              result.")
+#define TEXT_NO_CONF \
+_(" --no-conf                    Disable loading aria2.conf file.")
+#define TEXT_CONF_PATH \
+_(" --conf-path=PATH             Change the configuration file path to PATH.")
