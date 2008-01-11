@@ -95,6 +95,16 @@ TaggedItems TagContainer::nameMatchForward(const string& name) const
   return for_each(_taggedItems.begin(), _taggedItems.end(), NameMatchForward(name)).getResult();
 }
 
+TaggedItemHandle TagContainer::nameMatch(const string& name) const
+{
+  TaggedItems::const_iterator itr = find(_taggedItems.begin(), _taggedItems.end(), TaggedItemHandle(new TaggedItem(name)));
+  if(itr == _taggedItems.end()) {
+    return 0;
+  } else {
+    return *itr;
+  }
+}
+
 const TaggedItems& TagContainer::getAllItems() const
 {
   return _taggedItems;

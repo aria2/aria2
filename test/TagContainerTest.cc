@@ -8,13 +8,14 @@ class TagContainerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(TagContainerTest);
   CPPUNIT_TEST(testSearch);
+  CPPUNIT_TEST(testNameMatch);
   CPPUNIT_TEST_SUITE_END();
 private:
-
 public:
   void setUp() {}
 
   void testSearch();
+  void testNameMatch();
 };
 
 
@@ -45,5 +46,25 @@ void TagContainerTest::testSearch()
     CPPUNIT_ASSERT_EQUAL((size_t)1, res.size());
     CPPUNIT_ASSERT_EQUAL(string("charlie"), res[0]->getName());
     CPPUNIT_ASSERT_EQUAL(string("foo"), res[0]->toTagString());
+  }
+}
+
+void TagContainerTest::testNameMatch()
+{
+  TaggedItemHandle items[] = {
+    new TaggedItem("alpha"),
+    new TaggedItem("bravo"),
+    new TaggedItem("charlie"),
+    new TaggedItem("bravo")
+  };
+  items[1]->addTag("foo");
+  TagContainer tc(TaggedItems(&items[0], &items[3]));
+  {
+    TaggedItemHandle item = tc.nameMatch("bravo");
+    CPPUNIT_ASSERT_EQUAL(string("bravo"), item->getName());
+    CPPUNIT_ASSERT_EQUAL(string("foo"), item->toTagString());
+  }
+  {
+    CPPUNIT_ASSERT(tc.nameMatch("delta").isNull());
   }
 }

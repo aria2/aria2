@@ -65,3 +65,8 @@ bool TaggedItem::operator<(const TaggedItem& item) const
 {
   return _name < item._name;
 }
+
+bool TaggedItem::operator==(const TaggedItem& item) const
+{
+  return _name == item._name;
+}

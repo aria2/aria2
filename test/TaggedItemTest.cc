@@ -6,6 +6,7 @@ class TaggedItemTest:public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TaggedItemTest);
   CPPUNIT_TEST(testHasTag);
   CPPUNIT_TEST(testToTagString);
+  CPPUNIT_TEST(testOperatorEqual);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -14,6 +15,7 @@ public:
 
   void testHasTag();
   void testToTagString();
+  void testOperatorEqual();
 };
 
 
@@ -36,4 +38,15 @@ void TaggedItemTest::testToTagString()
   item.addTag("bar");
 
   CPPUNIT_ASSERT_EQUAL(string("foo,bar"), item.toTagString());
+}
+
+void TaggedItemTest::testOperatorEqual()
+{
+  TaggedItem none("");
+  TaggedItem foo("foo");
+  TaggedItem foo2("foo");
+  TaggedItem bar("bar");
+  CPPUNIT_ASSERT(!(none == foo));
+  CPPUNIT_ASSERT(!(bar == foo));
+  CPPUNIT_ASSERT(foo == foo);
 }

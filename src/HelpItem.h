@@ -61,6 +61,11 @@ public:
     _availableValues = availableValues;
   }
 
+  const string& getAvailableValues() const
+  {
+    return _availableValues;
+  }
+
   friend ostream& operator<<(ostream& o, const HelpItem& helpItem);
 
   friend ostream& operator<<(ostream& o, const HelpItemHandle& helpItem);

@@ -37,6 +37,9 @@
 
 #include "common.h"
 
+class TaggedItem;
+typedef SharedHandle<TaggedItem> TaggedItemHandle;
+
 class TaggedItem {
 private:
   string _name;
@@ -62,8 +65,9 @@ public:
   }
 
   bool operator<(const TaggedItem& item) const;
+
+  bool operator==(const TaggedItem& item) const;
 };
 
-typedef SharedHandle<TaggedItem> TaggedItemHandle;
 typedef deque<TaggedItemHandle> TaggedItems;
 #endif // _D_TAGGED_ITEM_H_

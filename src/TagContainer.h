@@ -57,6 +57,8 @@ public:
 
   TaggedItems nameMatchForward(const string& name) const;
 
+  TaggedItemHandle nameMatch(const string& name) const;
+
   const TaggedItems& getAllItems() const;
 };
 

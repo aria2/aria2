@@ -1,5 +1,16 @@
 2008-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added the message to inform users that other help categories are
+	available in -h option.
+	* src/version_usage.cc
+	* src/TagContainer.{h, cc}
+	* test/TagContainerTest.cc
+	* src/TaggedItem.{h, cc}
+	* test/TaggedItemTest.cc
+	* src/HelpItem.h
+
+2008-01-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added Piece::getFirstMissingBlockIndexWithoutLock() and it is called
 	from PiecedSegment's ctor.
 	Previously Piece::getAllMissingBlockIndexes() is called from

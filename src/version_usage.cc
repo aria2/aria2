@@ -106,6 +106,9 @@ void showUsage(const string& category) {
       printf(_("Printing all options."));
     } else {
       printf(_("Printing options tagged with '%s'."), category.c_str());
+      cout << "\n";
+      printf(_("See -h option to know other command-line options(%s)."),
+	       HelpItemHandle(tc->nameMatch("help"))->getAvailableValues().c_str());
     }
     cout << "\n";
     cout << _("Options:") << endl;
@@ -120,7 +123,7 @@ void showUsage(const string& category) {
     } else {
       printf(_("No help category or option name matching with '%s'."), category.c_str());
       cout << "\n";
-      cout << HelpItemHandle(tc->nameMatchForward("help").front()) << "\n";
+      cout << HelpItemHandle(tc->nameMatch("help")) << "\n";
     }
   }
   if(category == TAG_BASIC) {
