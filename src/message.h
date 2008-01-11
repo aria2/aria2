@@ -137,6 +137,7 @@
 #define MSG_SHARE_RATIO_REPORT _("Your share ratio was %.1f, uploaded/downloaded=%sB/%sB")
 #define MSG_SOMETHING_MISSING_IN_TORRENT _("Missing %s in torrent metainfo.")
 #define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
+#define MSG_WINSOCK_INIT_FAILD _("Windows socket library initialization failed")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

@@ -50,6 +50,7 @@
 #include "common.h"
 #include "DlAbortEx.h"
 #include "Platform.h"
+#include "message.h"
 #include <stdlib.h> /* _fmode */
 #include <fcntl.h> /*  _O_BINARY */
 
@@ -58,7 +59,7 @@ Platform::Platform() {
   WSADATA wsaData;
   memset((char*)&wsaData, 0, sizeof(wsaData));
   if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {
-    throw new DlAbortEx(_("Windows socket library initialization failed"));
+    throw new DlAbortEx(MSG_WINSOCK_INIT_FAILD);
   }
 }
 
