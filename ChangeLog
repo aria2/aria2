@@ -1,3 +1,14 @@
+2008-01-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that log file is not written when configuration file doesn't exist.
+	This is caused by using Logger class before LogFactory is not configured.
+	BUG #1875079
+	* src/option_processing.cc
+
+	Warning message "configuration doesn't exist" is only printed when --conf is
+	given.
+	* src/option_processing.cc
+	
 2008-01-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use BencodeVisitor and MessageDigestHelper instead of ShaVisitor.

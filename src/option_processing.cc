@@ -136,7 +136,8 @@ Option* option_processing(int argc, char* const argv[])
 
   // following options are not parsed by OptionHandler and not stored in Option.
   bool noConf = false;
-  string cfname = Util::getHomeDir()+"/.aria2/aria2.conf";
+  string defaultCfname = Util::getHomeDir()+"/.aria2/aria2.conf";
+  string ucfname;
 
   while(1) {
     int optIndex = 0;
@@ -365,7 +366,7 @@ Option* option_processing(int argc, char* const argv[])
 	noConf = true;
 	break;
       case 213:
-	cfname = optarg;
+	ucfname = optarg;
 	break;
       }
       break;
@@ -455,6 +456,12 @@ Option* option_processing(int argc, char* const argv[])
     OptionParser oparser;
     oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
     if(!noConf) {
+      string cfname;
+      if(ucfname.size()) {
+	cfname = ucfname;
+      } else {
+	cfname = defaultCfname;
+      }
       if(File(cfname).isFile()) {
 	ifstream cfstream(cfname.c_str());
 	try {
@@ -465,8 +472,9 @@ Option* option_processing(int argc, char* const argv[])
 	  delete e;
 	  exit(EXIT_FAILURE);
 	}
-      } else {
-	LogFactory::getInstance()->warn("Configuration file %s is not found.", cfname.c_str());
+      } else if(ucfname.size()) {
+	printf("Configuration file %s is not found.", cfname.c_str());
+	cout << "\n";
       }
     }
     try {
