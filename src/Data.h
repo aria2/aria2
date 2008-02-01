@@ -45,12 +45,16 @@ private:
   int32_t len;
   char* data;
   bool number;
+
+  void init(const char* data, int32_t len);
 public:
   /**
    * This class stores the copy of data. So caller must take care of freeing
    * memory of data.
    */
   Data(const char* data, int32_t len, bool number = false);
+
+  Data(const unsigned char* data, int32_t len, bool number = false);
 
   Data(const string& data, bool number = false);
 

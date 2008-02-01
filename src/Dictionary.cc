@@ -61,6 +61,12 @@ void Dictionary::put(const string& name, MetaEntry* entry) {
   order.push_back(name);
 }
 
+void Dictionary::remove(const string& name)
+{
+  table.erase(name);
+  order.erase(std::remove(order.begin(), order.end(), name), order.end());
+}
+
 void Dictionary::accept(MetaEntryVisitor* v) const {
   v->visit(this);
 }

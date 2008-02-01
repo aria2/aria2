@@ -11,6 +11,7 @@ class BtHandshakeMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST(testGetMessage);
   CPPUNIT_TEST(testToString);
+  CPPUNIT_TEST(testSetDHTEnabled);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -21,6 +22,7 @@ public:
   void testCreate();
   void testGetMessage();
   void testToString();
+  void testSetDHTEnabled();
 
   static string BTPSTR;
 };
@@ -99,4 +101,14 @@ void BtHandshakeMessageTest::testToString() {
   msg.setPeerId(peerId);
 
   CPPUNIT_ASSERT_EQUAL(string("handshake peerId=%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0%f0, reserved=0000000000100004"), msg.toString());
+}
+
+void BtHandshakeMessageTest::testSetDHTEnabled()
+{
+  BtHandshakeMessage msg;
+  CPPUNIT_ASSERT(!msg.isDHTEnabled());
+  msg.setDHTEnabled(false);
+  CPPUNIT_ASSERT(!msg.isDHTEnabled());
+  msg.setDHTEnabled(true);
+  CPPUNIT_ASSERT(msg.isDHTEnabled());
 }

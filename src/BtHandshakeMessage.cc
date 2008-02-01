@@ -105,3 +105,9 @@ bool BtHandshakeMessage::isExtendedMessagingEnabled() const
 {
   return reserved[5]&0x10;
 }
+
+bool BtHandshakeMessage::isDHTEnabled() const
+{
+  return reserved[7]&0x01;
+}
+

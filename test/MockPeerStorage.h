@@ -33,6 +33,11 @@ public:
     return false;
   }
   
+  void setActivePeers(const Peers& activePeers)
+  {
+    this->activePeers = activePeers;
+  }
+
   virtual Peers getActivePeers() {
     return activePeers;
   }

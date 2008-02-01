@@ -38,6 +38,7 @@
 #include "common.h"
 #include <string>
 #include <utility>
+#include <sys/socket.h>
 
 #ifdef HAVE_LIBSSL
 // for SSL
@@ -55,6 +56,8 @@ class SocketCore {
   friend bool operator!=(const SocketCore& s1, const SocketCore& s2);
   friend bool operator<(const SocketCore& s1, const SocketCore& s2);
 private:
+  // socket type defined in <sys/socket.h>
+  int _sockType;
   // socket endpoint descriptor
   int32_t sockfd;
   // reference counter for this object.
@@ -80,12 +83,12 @@ private:
 #endif // HAVE_LIBGNUTLS
 
   void init();
-  SocketCore(int32_t sockfd);
+  SocketCore(int32_t sockfd, int sockType);
   static int error();
   static const char *errorMsg();
   static const char *errorMsg(const int err);
 public:
-  SocketCore();
+  SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();
 
   int32_t getSockfd() const { return sockfd; }
@@ -93,11 +96,17 @@ public:
   bool isOpen() const { return sockfd != -1; }
 
   /**
-   * Creates a socket and listens form connection on it.
+   * Creates a socket and bind it with locahost's address and port.
    * @param port port to listen. If 0 is specified, os automaticaly
    * choose avaiable port.
    */
-  void beginListen(int32_t port = 0);
+  void bind(uint16_t port);
+
+  /**
+   * Listens form connection on it.
+   * Call bind(uint16_t) before calling this function.
+   */
+  void beginListen();
 
   /**
    * Stores host address and port of this socket to addrinfo.
@@ -172,6 +181,8 @@ public:
     writeData(msg.c_str(), msg.size());
   }
 
+  void writeData(const char* data, size_t len, const string& host, uint16_t port);
+
   /**
    * Reads up to len bytes from this socket.
    * data is a pointer pointing the first
@@ -185,6 +196,15 @@ public:
    * the number of bytes read to len.
    */
   void readData(char* data, int32_t& len);
+
+  ssize_t readDataFrom(char* data, size_t len, struct sockaddr* sender,
+		       socklen_t* senderLength);
+
+  ssize_t readDataFrom(char*, size_t len,
+		       pair<string /* numerichost */,
+		       uint16_t /* port */>& sender);
+
+  ssize_t readDataFrom(char* data, size_t len);
 
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from

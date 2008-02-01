@@ -36,26 +36,28 @@
 #include "MetaEntryVisitor.h"
 
 Data::Data(const char* data, int32_t len, bool number):number(number) {
-  if(data == NULL) {
-    this->data = NULL;
-    this->len = 0;
-  } else {
-    this->data = new char[len];
-    memcpy(this->data, data, len);
-    this->len = len;
-  }
+  init(data, len);
+}
+
+Data::Data(const unsigned char* data, int32_t len, bool number):number(number) {
+  init(reinterpret_cast<const char*>(data), len);
 }
 
 Data::Data(const string& data, bool number):number(number)
 {
-  if(data.empty()) {
-    this->data = 0;
-    this->len = 0;
-  } else {
-    this->data = new char[data.size()];
-    memcpy(this->data, data.c_str(), data.size());
-    this->len = data.size();
-  }
+  init(data.c_str(), data.size());
+}
+
+void Data::init(const char* src, int32_t slen)
+{
+  if(src) {
+    data = new char[slen];
+    memcpy(data, src, slen);
+    len = slen;
+  } else { 
+    data = 0;
+    len = 0;
+  }  
 }
 
 Data::~Data() {

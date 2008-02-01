@@ -54,6 +54,10 @@
 #include "Logger.h"
 #include "Util.h"
 #include "IntSequence.h"
+#include "DHTGetPeersCommand.h"
+#include "DHTPeerAnnounceStorage.h"
+#include "DHTSetup.h"
+#include "DHTRegistry.h"
 
 BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
 
@@ -80,8 +84,17 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
 						     requestGroup,
 						     e,
 						     btContext,
-						     30));
-
+						     10));
+  if(!btContext->isPrivate() && DHTSetup::initialized()) {
+    DHTRegistry::_peerAnnounceStorage->addPeerAnnounce(btContext);
+    DHTGetPeersCommand* command = new DHTGetPeersCommand(CUIDCounterSingletonHolder::instance()->newID(),
+							 requestGroup,
+							 e,
+							 btContext);
+    command->setTaskQueue(DHTRegistry::_taskQueue);
+    command->setTaskFactory(DHTRegistry::_taskFactory);
+    commands.push_back(command);
+  }
   SharedHandle<UnionSeedCriteria> unionCri = new UnionSeedCriteria();
   if(option->defined(PREF_SEED_TIME)) {
     unionCri->addSeedCriteria(new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));

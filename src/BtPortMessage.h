@@ -35,36 +35,43 @@
 #ifndef _D_BT_PORT_MESSAGE_H_
 #define _D_BT_PORT_MESSAGE_H_
 
-#include "AbstractBtMessage.h"
+#include "SimpleBtMessage.h"
+#include "DHTTaskQueueDecl.h"
+#include "DHTTaskFactoryDecl.h"
 
-class BtPortMessage;
-
-typedef SharedHandle<BtPortMessage> BtPortMessageHandle;
-
-class BtPortMessage : public AbstractBtMessage {
+class BtPortMessage : public SimpleBtMessage {
 private:
-  int16_t port;
-public:
-  BtPortMessage(int16_t port = 0):port(port) {}
+  uint16_t _port;
+  unsigned char* _msg;
+  static const size_t MESSAGE_LENGTH = 7;
 
-  virtual ~BtPortMessage() {}
+  WeakHandle<DHTTaskQueue> _taskQueue;
+
+  WeakHandle<DHTTaskFactory> _taskFactory;
+public:
+  BtPortMessage(uint16_t port);
+
+  virtual ~BtPortMessage();
 
   static const int8_t ID = 9;
 
-  int16_t getPort() const { return port; }
+  uint16_t getPort() const { return _port; }
 
-  void setPort(int16_t port) { this->port = port; }
+  static SharedHandle<BtPortMessage> create(const unsigned char* data, int32_t dataLength);
 
   virtual int8_t getId() { return ID; }
 
-  static BtPortMessageHandle create(const unsigned char* data, int32_t dataLength);
+  virtual void doReceivedAction();
 
-  virtual void doReceivedAction() {
-    logger->info("DHT is not supported yet.");
-  }
-  virtual void send() {}
+  virtual const unsigned char* getMessage();
+
+  virtual int32_t getMessageLength();
 
   virtual string toString() const;
+
+  void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
+
+  void setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory);
 };
 
 #endif // _D_BT_PORT_MESSAGE_H_

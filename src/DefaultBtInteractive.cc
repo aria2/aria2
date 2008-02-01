@@ -48,6 +48,7 @@
 #include "UTPexExtensionMessage.h"
 #include "DefaultExtensionMessageFactory.h"
 #include "BtRegistry.h"
+#include "DHTNode.h"
 
 void DefaultBtInteractive::initiateHandshake() {
   BtHandshakeMessageHandle message =
@@ -79,7 +80,10 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
       PEER_OBJECT(btContext, peer)->extensionMessageFactory = factory;
       logger->info(MSG_EXTENDED_MESSAGING_ENABLED, cuid);
     }
-
+    if(message->isDHTEnabled()) {
+      peer->setDHTEnabled(true);
+      logger->info(MSG_DHT_ENABLED_PEER, cuid);
+    }
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
 		 peer->ipaddr.c_str(), peer->port,
 		 message->toString().c_str());
@@ -100,8 +104,16 @@ void DefaultBtInteractive::doPostHandshakeProcessing() {
     addHandshakeExtendedMessageToQueue();
   }
   addBitfieldMessageToQueue();
+  if(peer->isDHTEnabled() && _dhtEnabled) {
+    addPortMessageToQueue();
+  }
   addAllowedFastMessageToQueue();  
   sendPendingMessage();
+}
+
+void DefaultBtInteractive::addPortMessageToQueue()
+{
+  dispatcher->addMessageToQueue(messageFactory->createPortMessage(_localNode->getPort()));
 }
 
 void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
@@ -386,4 +398,9 @@ void DefaultBtInteractive::doInteractionProcessing() {
   }
 
   sendPendingMessage();
+}
+
+void DefaultBtInteractive::setLocalNode(const WeakHandle<DHTNode>& node)
+{
+  _localNode = node;
 }

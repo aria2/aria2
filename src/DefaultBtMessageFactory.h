@@ -39,6 +39,8 @@
 #include "Peer.h"
 #include "AbstractBtMessage.h"
 #include "BtRegistry.h"
+#include "DHTTaskQueueDecl.h"
+#include "DHTTaskFactoryDecl.h"
 
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
@@ -47,26 +49,23 @@ private:
   PieceStorageHandle pieceStorage;
   PeerHandle peer;
 
+  bool _dhtEnabled;
+
   BtMessageDispatcherWeakHandle dispatcher;
 
   BtRequestFactoryWeakHandle requestFactory;
 
   PeerConnectionWeakHandle peerConnection;
 
+  WeakHandle<DHTTaskQueue> _taskQueue;
+
+  WeakHandle<DHTTaskFactory> _taskFactory;
+
   void setCommonProperty(const AbstractBtMessageHandle& msg);
 public:
-  DefaultBtMessageFactory():cuid(0),
-			    btContext(0),
-			    pieceStorage(0),
-			    peer(0)
-  {
-    LogFactory::getInstance()->debug("DefaultBtMessageFactory::instantiated");
-  }
+  DefaultBtMessageFactory();
 
-  virtual ~DefaultBtMessageFactory()
-  {
-    LogFactory::getInstance()->debug("DefaultBtMessageFactory::deleted");
-  }
+  virtual ~DefaultBtMessageFactory();
 
   virtual BtMessageHandle
   createBtMessage(const unsigned char* msg, int32_t msgLength);
@@ -110,6 +109,8 @@ public:
 
   virtual BtMessageHandle createAllowedFastMessage(int32_t index);
 
+  virtual BtMessageHandle createPortMessage(uint16_t port);
+
   virtual BtMessageHandle createBtExtendedMessage(const ExensionMessageHandle& msg);
 
   void setPeer(const PeerHandle& peer) {
@@ -133,6 +134,10 @@ public:
     this->cuid = cuid;
   }
 
+  void setDHTEnabled(bool enabled) {
+    _dhtEnabled = enabled;
+  }
+
   void setBtMessageDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
   {
     this->dispatcher = dispatcher;
@@ -146,6 +151,9 @@ public:
     this->peerConnection = connection;
   }
   
+  void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
+
+  void setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory);
 };
 
 typedef SharedHandle<DefaultBtMessageFactory> DefaultBtMessageFactoryHandle;

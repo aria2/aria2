@@ -36,6 +36,7 @@
 #define _D_BT_CONTEXT_H_
 
 #include "DownloadContext.h"
+#include "BtContextDecl.h"
 
 #define INFO_HASH_LENGTH 20
 #define MAX_PEER_ERROR 5
@@ -80,7 +81,5 @@ public:
   virtual RequestGroup* getOwnerRequestGroup() = 0;
 
 };
-
-typedef SharedHandle<BtContext> BtContextHandle;
 
 #endif // _D_BT_CONTEXT_H_

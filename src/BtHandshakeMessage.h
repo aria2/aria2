@@ -89,6 +89,17 @@ public:
 
   bool isExtendedMessagingEnabled() const;
 
+  bool isDHTEnabled() const;
+
+  void setDHTEnabled(bool enabled)
+  {
+    if(enabled) {
+      this->reserved[7] |= 0x01;
+    } else {
+      this->reserved[7] &= ~0x01;
+    }
+  }
+
   int8_t getPstrlen() const {
     return pstrlen;
   }

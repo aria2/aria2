@@ -214,6 +214,18 @@
 #define PREF_PEER_ID_PREFIX "peer-id-prefix"
 // values: true | false
 #define PREF_ENABLE_PEER_EXCHANGE "enable-peer-exchange"
+// values: true | false
+#define PREF_ENABLE_DHT "enable-dht"
+// values: 1*digit
+#define PREF_DHT_LISTEN_PORT "dht-listen-port"
+// values: a string
+#define PREF_DHT_ENTRY_POINT_HOST "dht-entry-point-host"
+// values: 1*digit
+#define PREF_DHT_ENTRY_POINT_PORT "dht-entry-point-port"
+// values: a string (hostname:port)
+#define PREF_DHT_ENTRY_POINT "dht-entry-point"
+// values: a string
+#define PREF_DHT_FILE_PATH "dht-file-path"
 
 /**
  * Metalink related preferences

@@ -89,6 +89,7 @@
 #define MSG_TRACKER_RESPONSE_PROCESSING_FAILED _("CUID#%d - Error occurred while processing tracker response.")
 #define MSG_TRACKER_REQUEST_CREATION_FAILED _("CUID#%d - Cannot create tracker request.")
 #define MSG_CREATING_TRACKER_REQUEST _("CUID#%d - Creating new tracker request command #%d")
+#define MSG_DHT_ENABLED_PEER _("CUID#%d - The peer is DHT-enabled.")
 
 #define MSG_UNRECOGNIZED_URI _("Unrecognized URI or unsupported protocol: %s")
 #define MSG_TRACKER_WARNING_MESSAGE _("Tracker returned warning message: %s")

@@ -334,6 +334,21 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
+  {
+    HelpItemHandle item = new HelpItem(PREF_ENABLE_DHT, TEXT_ENABLE_DHT, V_FALSE);
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
+  {
+    HelpItemHandle item = new HelpItem(PREF_DHT_LISTEN_PORT, TEXT_DHT_LISTEN_PORT, "6881-6999");
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
+  {
+    HelpItemHandle item = new HelpItem(PREF_DHT_ENTRY_POINT, TEXT_DHT_ENTRY_POINT);
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   {

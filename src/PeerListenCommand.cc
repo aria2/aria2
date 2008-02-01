@@ -63,7 +63,8 @@ int32_t PeerListenCommand::bindPort(IntSequence& seq)
   while(seq.hasNext()) {
     int32_t port = seq.next();
     try {
-      socket->beginListen(port);
+      socket->bind(port);
+      socket->beginListen();
       logger->info(MSG_LISTENING_PORT,
 		   cuid, port);
       return port;

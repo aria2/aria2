@@ -131,8 +131,11 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_ENABLE_DIRECT_IO, V_FALSE);
   op->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_FALSE);
   op->put(PREF_METALINK_PREFERRED_PROTOCOL, V_NONE);
-  op->put(PREF_ENABLE_PEER_EXCHANGE, V_TRUE);
   op->put(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL, V_TRUE);
+  op->put(PREF_ENABLE_PEER_EXCHANGE, V_TRUE);
+  op->put(PREF_ENABLE_DHT, V_FALSE);
+  op->put(PREF_DHT_LISTEN_PORT, "6881-6999");
+  op->put(PREF_DHT_FILE_PATH, Util::getHomeDir()+"/.aria2/dht.dat");
 
   // following options are not parsed by OptionHandler and not stored in Option.
   bool noConf = false;
@@ -210,6 +213,9 @@ Option* option_processing(int argc, char* const argv[])
       { "max-upload-limit", required_argument, &lopt, 24 },
       { "peer-id-prefix", required_argument, &lopt, 25 },
       { "enable-peer-exchange", optional_argument, &lopt, 26 },
+      { "enable-dht", optional_argument, &lopt, 27 },
+      { "dht-listen-port", required_argument, &lopt, 28 },
+      { "dht-entry-point", required_argument, &lopt, 29 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { "metalink-file", required_argument, NULL, 'M' },
@@ -304,6 +310,15 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 26:
 	cmdstream << PREF_ENABLE_PEER_EXCHANGE << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 27:
+	cmdstream << PREF_ENABLE_DHT << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 28:
+	cmdstream << PREF_DHT_LISTEN_PORT << "=" << optarg << "\n";
+	break;
+      case 29:
+	cmdstream << PREF_DHT_ENTRY_POINT << "=" << optarg << "\n";
 	break;
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";

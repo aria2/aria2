@@ -74,6 +74,9 @@
 # include "BtSetup.h"
 # include "BtFileAllocationEntry.h"
 # include "BtPostDownloadHandler.h"
+# include "DHTSetup.h"
+# include "DHTRegistry.h"
+# include "DHTPeerAnnounceStorage.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
@@ -219,6 +222,10 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	}
       }
       _progressInfoFile = progressInfoFile;
+
+      if(!btContext->isPrivate() && _option->getAsBool(PREF_ENABLE_DHT)) {
+	e->addCommand(DHTSetup().setup(e, _option));
+      }
       CheckIntegrityEntryHandle entry =	new BtCheckIntegrityEntry(this);
       
       return processCheckIntegrityEntry(entry, e);
@@ -584,6 +591,7 @@ void RequestGroup::releaseRuntimeResource()
        btContextInReg->getOwnerRequestGroup()->getGID() ==
 	btContext->getOwnerRequestGroup()->getGID()) {
       BtRegistry::unregister(btContext->getInfoHashAsString());
+      DHTRegistry::_peerAnnounceStorage->removePeerAnnounce(btContext);
     }
   }
 #endif // ENABLE_BITTORRENT

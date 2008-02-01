@@ -5,12 +5,14 @@
 #include "MockBtContext.h"
 #include "MockExtensionMessageFactory.h"
 #include "BtExtendedMessage.h"
+#include "BtPortMessage.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 class DefaultBtMessageFactoryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DefaultBtMessageFactoryTest);
   CPPUNIT_TEST(testCreateBtMessage_BtExtendedMessage);
+  CPPUNIT_TEST(testCreatePortMessage);
   CPPUNIT_TEST_SUITE_END();
 private:
   MockBtContextHandle _btContext;
@@ -45,6 +47,7 @@ public:
   }
 
   void testCreateBtMessage_BtExtendedMessage();
+  void testCreatePortMessage();
 };
 
 
@@ -74,5 +77,32 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
   } catch(Exception* e) {
     cerr << *e << endl;
     delete e;
+  }
+}
+
+void DefaultBtMessageFactoryTest::testCreatePortMessage()
+{
+  DefaultBtMessageFactory factory;
+  factory.setBtContext(_btContext);
+  factory.setPeer(_peer);
+
+  {
+    unsigned char data[7];
+    PeerMessageUtil::createPeerMessageString(data, sizeof(data), 3, 9);
+    PeerMessageUtil::setShortIntParam(&data[5], 6881);
+    try {
+      SharedHandle<BtPortMessage> m = factory.createBtMessage(&data[4], sizeof(data)-4);
+      CPPUNIT_ASSERT(!m.isNull());
+      CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
+    } catch(Exception* e) {
+      cerr << *e << endl;
+      string msg = e->getMsg();
+      delete e;
+      CPPUNIT_FAIL(msg);
+    }
+  }
+  {
+    SharedHandle<BtPortMessage> m = factory.createPortMessage(6881);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
   }
 }

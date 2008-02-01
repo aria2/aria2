@@ -135,3 +135,11 @@ bool PeerMessageUtil::createcompact(char* compact, const string& addr, uint16_t 
   return true;
 }
 
+pair<string, uint16_t> PeerMessageUtil::unpackcompact(const char* compact)
+{
+  struct in_addr in;
+  in.s_addr = *(uint32_t*)(compact);
+  string ipaddr = inet_ntoa(in);
+  uint16_t port = ntohs(*(uint16_t*)(compact+sizeof(uint32_t)));
+  return pair<string, uint16_t>(ipaddr, port);
+}

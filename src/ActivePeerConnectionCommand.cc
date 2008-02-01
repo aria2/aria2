@@ -59,10 +59,10 @@ bool ActivePeerConnectionCommand::execute() {
   }
   if(!pieceStorage->downloadFinished() && checkPoint.elapsed(interval)) {
     checkPoint.reset();
-
     TransferStat tstat = peerStorage->calculateStat();
-    if(tstat.getDownloadSpeed() < _lowestSpeedLimit) {
-      for(int i = 0; i < _numNewConnection && peerStorage->isPeerAvailable(); ++i) {
+    size_t numAdd = btRuntime->lessThanEqMinPeer() ? MIN_PEERS-btRuntime->getConnections():_numNewConnection;
+    if(tstat.getDownloadSpeed() < _lowestSpeedLimit || btRuntime->lessThanEqMinPeer()) {
+      for(; numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = peerStorage->getUnusedPeer();
 	connectToPeer(peer);
       }

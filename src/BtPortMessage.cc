@@ -37,8 +37,20 @@
 #include "DlAbortEx.h"
 #include "Util.h"
 #include "message.h"
+#include "DHTNode.h"
+#include "DHTTaskQueue.h"
+#include "DHTTaskFactory.h"
+#include "DHTTask.h"
 
-BtPortMessageHandle BtPortMessage::create(const unsigned char* data, int32_t dataLength) {
+BtPortMessage::BtPortMessage(uint16_t port): _port(port), _msg(0) {}
+
+BtPortMessage::~BtPortMessage()
+{
+  delete [] _msg;
+}
+
+SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, int32_t dataLength)
+{
   if(dataLength != 3) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "port", dataLength, 3);
   }
@@ -46,11 +58,55 @@ BtPortMessageHandle BtPortMessage::create(const unsigned char* data, int32_t dat
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
   }
-  BtPortMessageHandle message = new BtPortMessage();
-  message->setPort(PeerMessageUtil::getShortIntParam(data, 1));
+  uint16_t port = PeerMessageUtil::getShortIntParam(data, 1);
+  SharedHandle<BtPortMessage> message = new BtPortMessage(port);
   return message;
 }
 
+void BtPortMessage::doReceivedAction()
+{
+  if(!_taskFactory.isNull() && !_taskQueue.isNull()) {
+    // node id is random at this point. When ping reply received, new DHTNode
+    // instance created with proper node ID and is added to a routing table.
+    DHTNodeHandle node = new DHTNode();
+    node->setIPAddress(peer->ipaddr);
+    node->setPort(_port);
+    DHTTaskHandle task = _taskFactory->createPingTask(node);
+    _taskQueue->addImmediateTask(task);
+  } else {
+    logger->info("DHT port message received while localhost didn't declare support it.");
+  }
+}
+
+const unsigned char* BtPortMessage::getMessage() {
+  if(!_msg) {
+    /**
+     * len --- 5, 4bytes
+     * id --- 4, 1byte
+     * port --- port number, 2bytes
+     * total: 7bytes
+     */
+    _msg = new unsigned char[MESSAGE_LENGTH];
+    PeerMessageUtil::createPeerMessageString(_msg, MESSAGE_LENGTH, 3, ID);
+    PeerMessageUtil::setShortIntParam(&_msg[5], _port);
+  }
+  return _msg;
+}
+
+int32_t BtPortMessage::getMessageLength() {
+  return MESSAGE_LENGTH;
+}
+
 string BtPortMessage::toString() const {
-  return "port port="+Util::itos(port);
+  return "port port="+Util::uitos(_port);
+}
+
+void BtPortMessage::setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue)
+{
+  _taskQueue = taskQueue;
+}
+
+void BtPortMessage::setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory)
+{
+  _taskFactory = taskFactory;
 }

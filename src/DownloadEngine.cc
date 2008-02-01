@@ -135,6 +135,7 @@ void DownloadEngine::run() {
     noWait = false;
     calculateStatistics();
   }
+  cerr << commands.size() << endl;
   onEndOfRun();
 }
 

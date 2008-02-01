@@ -31,7 +31,7 @@ void DataTest::testToString() {
   Data data("aria2", 5);
   CPPUNIT_ASSERT_EQUAL(string("aria2"), data.toString());
 
-  Data null(NULL, 0);
+  Data null(reinterpret_cast<const char*>(0), 0);
   CPPUNIT_ASSERT_EQUAL(string(""), null.toString());
 }
 
@@ -40,7 +40,7 @@ void DataTest::testGetData() {
   CPPUNIT_ASSERT_EQUAL(0, memcmp("aria2", data.getData(), 5));
   CPPUNIT_ASSERT_EQUAL((int32_t)5, data.getLen());  
 
-  Data null(NULL, 0);
+  Data null(reinterpret_cast<const char*>(0), 0);
   CPPUNIT_ASSERT_EQUAL((const char*)NULL, null.getData());
   CPPUNIT_ASSERT_EQUAL((int32_t)0, null.getLen());
 
@@ -50,7 +50,7 @@ void DataTest::testToInt() {
   Data data("1000", 4);
   CPPUNIT_ASSERT_EQUAL((int32_t)1000, data.toInt());
 
-  Data null(NULL, 0);
+  Data null(reinterpret_cast<const char*>(0), 0);
   CPPUNIT_ASSERT_EQUAL((int32_t)0, null.toInt());
 
   Data alpha("abc", 3);
@@ -61,7 +61,7 @@ void DataTest::testToLLInt() {
   Data data("1000", 4);
   CPPUNIT_ASSERT_EQUAL(1000, (int)data.toLLInt());
 
-  Data null(NULL, 0);
+  Data null(reinterpret_cast<const char*>(0), 0);
   CPPUNIT_ASSERT_EQUAL(0, (int)null.toLLInt());
 
   Data alpha("abc", 3);

@@ -1,0 +1,116 @@
+/* <!-- copyright */
+/*
+ * aria2 - The high speed download utility
+ *
+ * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * In addition, as a special exception, the copyright holders give
+ * permission to link the code of portions of this program with the
+ * OpenSSL library under certain conditions as described in each
+ * individual source file, and distribute linked combinations
+ * including the two.
+ * You must obey the GNU General Public License in all respects
+ * for all of the code used other than OpenSSL.  If you modify
+ * file(s) with this exception, you may extend this exception to your
+ * version of the file(s), but you are not obligated to do so.  If you
+ * do not wish to do so, delete this exception statement from your
+ * version.  If you delete this exception statement from all source
+ * files in the program, then also delete it here.
+ */
+/* copyright --> */
+#include "DHTRoutingTableSerializer.h"
+#include "DHTNode.h"
+#include "DlAbortEx.h"
+#include "DHTConstants.h"
+#include "PeerMessageUtil.h"
+#include <arpa/inet.h>
+#include <cerrno>
+#include <cstring>
+#include <ostream>
+
+DHTRoutingTableSerializer::DHTRoutingTableSerializer():_localNode(0) {}
+
+DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
+
+void DHTRoutingTableSerializer::setLocalNode(const DHTNodeHandle& localNode)
+{
+  _localNode = localNode;
+}
+
+void DHTRoutingTableSerializer::setNodes(const DHTNodes& nodes)
+{
+  _nodes = nodes;
+}
+
+void DHTRoutingTableSerializer::serialize(ostream& o)
+{
+  char header[8];
+  memset(header, 0, sizeof(header));
+  // magic
+  header[0] = 0xa1;
+  header[1] = 0xa2;
+  // format ID
+  header[2] = 0x02;
+  // version
+  header[6] = 0;
+  header[7] = 0x01;
+  
+  char zero[8];
+  memset(zero, 0, sizeof(zero));
+  try {
+    o.write(header, 8);
+    // write save date
+    uint32_t ntime = htonl(Time().getTime());
+    o.write(reinterpret_cast<const char*>(&ntime), sizeof(uint32_t));
+    // 4bytes reserved
+    o.write(zero, 4);
+
+    // localnode
+    // 8bytes reserved
+    o.write(zero, 8);
+    // 20bytes localnode ID
+    o.write(reinterpret_cast<const char*>(_localNode->getID()), DHT_ID_LENGTH);
+    // 4bytes reserved
+    o.write(zero, 4);
+
+    // number of nodes
+    uint32_t numNodes = htonl(_nodes.size());
+    o.write(reinterpret_cast<const char*>(&numNodes), sizeof(uint32_t));
+    // 4bytes reserved
+    o.write(zero, 4);
+
+    // nodes
+    for(DHTNodes::const_iterator i = _nodes.begin(); i != _nodes.end(); ++i) {
+      const DHTNodeHandle& node = *i;
+      // 6bytes: write IP address + port in Compact IP-address/port info form.
+      char compactPeer[6];
+      if(!PeerMessageUtil::createcompact(compactPeer, node->getIPAddress(), node->getPort())) {
+	memset(compactPeer, 0, 6);
+      }
+      o.write(compactPeer, 6);
+      // 2bytes reserved
+      o.write(zero, 2);
+      // 20bytes: node ID
+      o.write(reinterpret_cast<const char*>(node->getID()), DHT_ID_LENGTH);
+      // 4bytes reserved
+      o.write(zero, 4);
+    }
+  } catch(ios::failure const& exception) {
+    throw new DlAbortEx("Failed to save DHT routing table. cause:%s",
+			strerror(errno));
+  }
+}

@@ -40,6 +40,7 @@
 #include "PeerStat.h"
 #include "TimeA2.h"
 #include "BtConstants.h"
+#include "PeerDecl.h"
 #include <string.h>
 
 #define PEER_ID_LENGTH 20
@@ -71,6 +72,7 @@ private:
   Integers amAllowedIndexSet;
   bool _extendedMessagingEnabled;
   Extensions _extensions;
+  bool _dhtEnabled;
   PeerStat peerStat;
   int64_t sessionUploadLength;
   int64_t sessionDownloadLength;
@@ -219,6 +221,16 @@ public:
     return _extendedMessagingEnabled;
   }
 
+  void setDHTEnabled(bool enabled)
+  {
+    _dhtEnabled = enabled;
+  }
+
+  bool isDHTEnabled() const
+  {
+    return _dhtEnabled;
+  }
+
   bool shouldBeChoking() const;
 
   bool hasPiece(int32_t index) const;
@@ -259,8 +271,5 @@ public:
 
   void setExtension(const string& name, uint8_t id);
 };
-
-typedef SharedHandle<Peer> PeerHandle;
-typedef deque<PeerHandle> Peers;
 
 #endif // _D_PEER_H_

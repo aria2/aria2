@@ -256,6 +256,17 @@ _(" --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID 
   "                              Default: -aria2-")
 #define TEXT_ENABLE_PEER_EXCHANGE \
 _(" --enable-peer-exchange[=true|false] Enable peer exchange extension.")
+#define TEXT_ENABLE_DHT \
+_(" --enable-dht[=true|false]    Enable DHT functionality.")
+#define TEXT_DHT_LISTEN_PORT \
+_(" --dht-listen-port...         Set UDP listening port for DHT.\n"\
+  "                              Multiple ports can be specified by using ',',\n"\
+  "                              for example: \"6881,6885\". You can also use '-'\n"\
+  "                              to specify a range: \"6881-6999\". ',' and '-' can\n"\
+  "                              be used together.")
+#define TEXT_DHT_ENTRY_POINT \
+_(" --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"\
+  "                              network.")
 #define TEXT_METALINK_FILE \
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \

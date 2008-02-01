@@ -326,8 +326,10 @@ void OptionHandlerTest::testLogOptionHandler()
 
 void OptionHandlerTest::testHttpProxyOptionHandler()
 {
-  HttpProxyOptionHandler handler("foo");
-  CPPUNIT_ASSERT(handler.canHandle("foo"));
+  HttpProxyOptionHandler handler(PREF_HTTP_PROXY,
+				 PREF_HTTP_PROXY_HOST,
+				 PREF_HTTP_PROXY_PORT);
+  CPPUNIT_ASSERT(handler.canHandle(PREF_HTTP_PROXY));
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "bar:80");

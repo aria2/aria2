@@ -121,10 +121,11 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = aria2c$(EXEEXT)
-am__aria2c_SOURCES_DIST = AllTest.cc array_funTest.cc HelpItemTest.cc \
-	TaggedItemTest.cc TagContainerTest.cc Base64Test.cc \
-	SequenceTest.cc a2functionalTest.cc FileEntryTest.cc \
-	PieceTest.cc SegmentTest.cc GrowSegmentTest.cc \
+am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
+	array_funTest.cc HelpItemTest.cc TaggedItemTest.cc \
+	TagContainerTest.cc Base64Test.cc SequenceTest.cc \
+	a2functionalTest.cc FileEntryTest.cc PieceTest.cc \
+	SegmentTest.cc GrowSegmentTest.cc \
 	SingleFileAllocationIteratorTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
@@ -227,12 +228,13 @@ am__aria2c_SOURCES_DIST = AllTest.cc array_funTest.cc HelpItemTest.cc \
 @ENABLE_METALINK_TRUE@	MetalinkHelperTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkParserControllerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkProcessorTest.$(OBJEXT)
-am_aria2c_OBJECTS = AllTest.$(OBJEXT) array_funTest.$(OBJEXT) \
-	HelpItemTest.$(OBJEXT) TaggedItemTest.$(OBJEXT) \
-	TagContainerTest.$(OBJEXT) Base64Test.$(OBJEXT) \
-	SequenceTest.$(OBJEXT) a2functionalTest.$(OBJEXT) \
-	FileEntryTest.$(OBJEXT) PieceTest.$(OBJEXT) \
-	SegmentTest.$(OBJEXT) GrowSegmentTest.$(OBJEXT) \
+am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
+	array_funTest.$(OBJEXT) HelpItemTest.$(OBJEXT) \
+	TaggedItemTest.$(OBJEXT) TagContainerTest.$(OBJEXT) \
+	Base64Test.$(OBJEXT) SequenceTest.$(OBJEXT) \
+	a2functionalTest.$(OBJEXT) FileEntryTest.$(OBJEXT) \
+	PieceTest.$(OBJEXT) SegmentTest.$(OBJEXT) \
+	GrowSegmentTest.$(OBJEXT) \
 	SingleFileAllocationIteratorTest.$(OBJEXT) \
 	DefaultBtProgressInfoFileTest.$(OBJEXT) \
 	SingleFileDownloadContextTest.$(OBJEXT) \
@@ -448,11 +450,11 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 TESTS = aria2c
-aria2c_SOURCES = AllTest.cc array_funTest.cc HelpItemTest.cc \
-	TaggedItemTest.cc TagContainerTest.cc Base64Test.cc \
-	SequenceTest.cc a2functionalTest.cc FileEntryTest.cc \
-	PieceTest.cc SegmentTest.cc GrowSegmentTest.cc \
-	SingleFileAllocationIteratorTest.cc \
+aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
+	HelpItemTest.cc TaggedItemTest.cc TagContainerTest.cc \
+	Base64Test.cc SequenceTest.cc a2functionalTest.cc \
+	FileEntryTest.cc PieceTest.cc SegmentTest.cc \
+	GrowSegmentTest.cc SingleFileAllocationIteratorTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
@@ -626,6 +628,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIteratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileDownloadContextTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamUriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TagContainerTest.Po@am__quote@
@@ -889,6 +892,29 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
 
+@ENABLE_BITTORRENT_TRUE@	DHTNodeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTBucketTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTConnectionImplTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPingMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPingReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImplTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BNodeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTTokenTrackerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	XORCloserTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.cc
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

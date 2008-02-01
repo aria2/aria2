@@ -64,6 +64,15 @@
 #include "BtExtendedMessage.h"
 #include "ExtensionMessage.h"
 
+DefaultBtMessageFactory::DefaultBtMessageFactory():cuid(0),
+						   btContext(0),
+						   pieceStorage(0),
+						   peer(0),
+						   _dhtEnabled(false)
+{}
+
+DefaultBtMessageFactory::~DefaultBtMessageFactory() {}
+
 BtMessageHandle
 DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t dataLength)
 {
@@ -126,9 +135,6 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t data
       msg = temp;
       break;
     }
-    case BtPortMessage::ID:
-      msg = BtPortMessage::create(data, dataLength);
-      break;
     case BtHaveAllMessage::ID:
       msg = BtHaveAllMessage::create(data, dataLength);
       break;
@@ -160,6 +166,13 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t data
 	new BtAllowedFastMessageValidator(temp.get(),
 					  btContext->getNumPieces());
       temp->setBtMessageValidator(validator);
+      msg = temp;
+      break;
+    }
+    case BtPortMessage::ID: {
+      SharedHandle<BtPortMessage> temp = BtPortMessage::create(data, dataLength);
+      temp->setTaskQueue(_taskQueue);
+      temp->setTaskFactory(_taskFactory);
       msg = temp;
       break;
     }
@@ -210,6 +223,7 @@ DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
     new BtHandshakeMessageValidator(msg.get(),
 				    btContext->getInfoHash());
   msg->setBtMessageValidator(validator);
+  msg->setDHTEnabled(_dhtEnabled);
   setCommonProperty(msg);
   return msg;
 }
@@ -361,9 +375,27 @@ DefaultBtMessageFactory::createAllowedFastMessage(int32_t index)
 }
 
 BtMessageHandle
+DefaultBtMessageFactory::createPortMessage(uint16_t port)
+{
+  SharedHandle<BtPortMessage> msg = new BtPortMessage(port);
+  setCommonProperty(msg);
+  return msg;
+}
+
+BtMessageHandle
 DefaultBtMessageFactory::createBtExtendedMessage(const ExensionMessageHandle& msg)
 {
   BtExtendedMessageHandle m = new BtExtendedMessage(msg);
   setCommonProperty(m);
   return m;
+}
+
+void DefaultBtMessageFactory::setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue)
+{
+  _taskQueue = taskQueue;
+}
+
+void DefaultBtMessageFactory::setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory)
+{
+  _taskFactory = taskFactory;
 }

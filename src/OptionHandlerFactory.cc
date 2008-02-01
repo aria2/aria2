@@ -40,7 +40,9 @@
 OptionHandlers OptionHandlerFactory::createOptionHandlers()
 {
   OptionHandlers handlers;
-  handlers.push_back(new HttpProxyOptionHandler(PREF_HTTP_PROXY));
+  handlers.push_back(new HttpProxyOptionHandler(PREF_HTTP_PROXY,
+						PREF_HTTP_PROXY_HOST,
+						PREF_HTTP_PROXY_PORT));
   handlers.push_back(new DefaultOptionHandler(PREF_HTTP_USER));
   handlers.push_back(new DefaultOptionHandler(PREF_HTTP_PASSWD));
   handlers.push_back(new DefaultOptionHandler(PREF_HTTP_PROXY_USER));
@@ -109,6 +111,11 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 						  Strings(&params[0], &params[arrayLength(params)])));
   }
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE));
+  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_DHT));
+  handlers.push_back(new IntegerRangeOptionHandler(PREF_DHT_LISTEN_PORT, 1024, UINT16_MAX));
+  handlers.push_back(new HostPortOptionHandler(PREF_DHT_ENTRY_POINT,
+					       PREF_DHT_ENTRY_POINT_HOST,
+					       PREF_DHT_ENTRY_POINT_PORT));
 
   return handlers;
 }

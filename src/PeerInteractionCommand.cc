@@ -47,6 +47,11 @@
 #include "DefaultBtMessageFactory.h"
 #include "DefaultBtInteractive.h"
 #include "CUIDCounter.h"
+#include "DHTTaskQueue.h"
+#include "DHTTaskFactory.h"
+#include "DHTNode.h"
+#include "DHTSetup.h"
+#include "DHTRegistry.h"
 #include <algorithm>
 
 PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
@@ -74,6 +79,8 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   factory->setCuid(cuid);
   factory->setBtContext(btContext);
   factory->setPeer(peer);
+  factory->setTaskQueue(DHTRegistry::_taskQueue);
+  factory->setTaskFactory(DHTRegistry::_taskFactory);
 
   PeerConnectionHandle peerConnection = passedPeerConnection.isNull() ?
     new PeerConnection(cuid, socket, e->option) : passedPeerConnection;
@@ -112,8 +119,15 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   btInteractive->setKeepAliveInterval(e->option->getAsInt(PREF_BT_KEEP_ALIVE_INTERVAL));
   btInteractive->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
   btInteractive->setBtMessageFactory(factory);
-  if(!btContext->isPrivate() && e->option->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
-    btInteractive->setUTPexEnabled(true);
+  if(!btContext->isPrivate()) {
+    if(e->option->getAsBool(PREF_ENABLE_PEER_EXCHANGE)) {
+      btInteractive->setUTPexEnabled(true);
+    }
+    if(DHTSetup::initialized()) {
+      btInteractive->setDHTEnabled(true);
+      btInteractive->setLocalNode(DHTRegistry::_localNode);
+      factory->setDHTEnabled(true);
+    }
   }
   this->btInteractive = btInteractive;
 

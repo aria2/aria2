@@ -101,6 +101,7 @@ void FtpConnection::sendPasv() const
 SocketHandle FtpConnection::sendPort() const
 {
   SocketHandle serverSocket;
+  serverSocket->bind(0);
   serverSocket->beginListen();
   
   pair<string, int32_t> addrinfo;

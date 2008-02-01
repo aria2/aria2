@@ -243,11 +243,20 @@ public:
   }
 };
 
-class HttpProxyOptionHandler : public NameMatchOptionHandler {
+class HostPortOptionHandler : public NameMatchOptionHandler {
+private:
+  string _hostOptionName;
+  
+  string _portOptionName;
 public:
-  HttpProxyOptionHandler(const string& optName):NameMatchOptionHandler(optName) {}
+  HostPortOptionHandler(const string& optName,
+			const string& hostOptionName,
+			const string& portOptionName):
+    NameMatchOptionHandler(optName),
+    _hostOptionName(hostOptionName),
+    _portOptionName(portOptionName) {}
 
-  virtual ~HttpProxyOptionHandler() {}
+  virtual ~HostPortOptionHandler() {}
 
   virtual void parseArg(Option* option, const string& optarg)
   {
@@ -257,9 +266,29 @@ public:
        port <= 0 || 65535 < port) {
       throw new FatalException(_("unrecognized proxy format"));
     }
-    option->put(PREF_HTTP_PROXY, optarg);
-    option->put(PREF_HTTP_PROXY_HOST, proxy.first);
-    option->put(PREF_HTTP_PROXY_PORT, Util::itos(port));
+    option->put(_optName, optarg);
+    setHostAndPort(option, proxy.first, port);
+  }
+
+  void setHostAndPort(Option* option, const string& hostname, uint16_t port)
+  {
+    option->put(_hostOptionName, hostname);
+    option->put(_portOptionName, Util::uitos(port));
+  }
+};
+
+class HttpProxyOptionHandler : public HostPortOptionHandler {
+public:
+  HttpProxyOptionHandler(const string& optName,
+			 const string& hostOptionName,
+			 const string& portOptionName):
+    HostPortOptionHandler(optName, hostOptionName, portOptionName) {}
+
+  virtual ~HttpProxyOptionHandler() {}
+
+  virtual void parseArg(Option* option, const string& optarg)
+  {
+    HostPortOptionHandler::parseArg(option, optarg);
     option->put(PREF_HTTP_PROXY_ENABLED, V_TRUE);
   }
 };

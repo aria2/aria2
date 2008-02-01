@@ -140,7 +140,56 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtExtendedMessage.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.cc\
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.cc\
-@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.cc
+@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTNode.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTUtil.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTBucket.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcher.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageReceiver.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTracker.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntry.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTConnectionImpl.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAbstractMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTQueryMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTResponseMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPingMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPingReplyMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeReplyMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImpl.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTNodeLookupTask.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTNodeLookupEntry.cc\
+@ENABLE_BITTORRENT_TRUE@	BNode.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageCallbackImpl.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAbstractTask.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPingTask.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTTaskQueueImpl.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshTask.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAbstractNodeLookupTask.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTask.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTSetup.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTTaskFactoryImpl.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTInteractionCommand.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntry.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTTokenTracker.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersCommand.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTTokenUpdateCommand.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshCommand.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceCommand.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTReplaceNodeTask.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTEntryPointNameResolveCommand.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializer.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializer.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAutoSaveCommand.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRegistry.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -365,7 +414,28 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h \
 	BtExtendedMessage.cc DefaultExtensionMessageFactory.cc \
 	HandshakeExtensionMessage.cc UTPexExtensionMessage.cc \
-	Metalinker.cc Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
+	DHTNode.cc DHTUtil.cc DHTBucket.cc DHTRoutingTable.cc \
+	DHTMessageEntry.cc DHTMessageDispatcher.cc \
+	DHTMessageReceiver.cc DHTMessageTracker.cc \
+	DHTMessageTrackerEntry.cc DHTMessage.cc DHTConnectionImpl.cc \
+	DHTAbstractMessage.cc DHTQueryMessage.cc DHTResponseMessage.cc \
+	DHTPingMessage.cc DHTPingReplyMessage.cc DHTFindNodeMessage.cc \
+	DHTFindNodeReplyMessage.cc DHTGetPeersMessage.cc \
+	DHTGetPeersReplyMessage.cc DHTAnnouncePeerMessage.cc \
+	DHTAnnouncePeerReplyMessage.cc DHTMessageFactoryImpl.cc \
+	DHTNodeLookupTask.cc DHTNodeLookupEntry.cc BNode.cc \
+	DHTMessageCallbackImpl.cc DHTAbstractTask.cc DHTPingTask.cc \
+	DHTTaskQueueImpl.cc DHTBucketRefreshTask.cc \
+	DHTAbstractNodeLookupTask.cc DHTPeerLookupTask.cc DHTSetup.cc \
+	DHTTaskFactoryImpl.cc DHTInteractionCommand.cc \
+	DHTPeerAnnounceEntry.cc DHTPeerAnnounceStorage.cc \
+	DHTTokenTracker.cc DHTGetPeersCommand.cc \
+	DHTTokenUpdateCommand.cc DHTBucketRefreshCommand.cc \
+	DHTPeerAnnounceCommand.cc DHTReplaceNodeTask.cc \
+	DHTEntryPointNameResolveCommand.cc \
+	DHTRoutingTableSerializer.cc DHTRoutingTableDeserializer.cc \
+	DHTAutoSaveCommand.cc DHTRegistry.cc Metalinker.cc \
+	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
 	MetalinkResource.cc MetalinkResource.h MetalinkProcessor.h \
 	MetalinkProcessorFactory.cc MetalinkParserController.cc \
 	MetalinkParserStateMachine.cc InitialMetalinkParserState.cc \
@@ -447,7 +517,55 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	BtExtendedMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactory.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessage.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTNode.$(OBJEXT) DHTUtil.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTBucket.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcher.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageReceiver.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTracker.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntry.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTConnectionImpl.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAbstractMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTQueryMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTResponseMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPingMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPingReplyMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeReplyMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImpl.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTNodeLookupTask.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTNodeLookupEntry.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BNode.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageCallbackImpl.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAbstractTask.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPingTask.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTTaskQueueImpl.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshTask.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAbstractNodeLookupTask.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPeerLookupTask.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTSetup.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTTaskFactoryImpl.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTInteractionCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntry.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTTokenTracker.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTTokenUpdateCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTBucketRefreshCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTReplaceNodeTask.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTEntryPointNameResolveCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializer.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializer.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAutoSaveCommand.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTRegistry.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -950,6 +1068,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoSaveCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeVisitor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
@@ -994,6 +1113,54 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CopyDiskAdaptor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractNodeLookupTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAbstractTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerReplyMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAutoSaveCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTBucket.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTBucketRefreshCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTBucketRefreshTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTConnectionImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTEntryPointNameResolveCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTFindNodeMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTFindNodeReplyMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTGetPeersCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTGetPeersMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTGetPeersReplyMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTInteractionCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageCallbackImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageDispatcher.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageFactoryImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageReceiver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageTracker.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageTrackerEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNodeLookupEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNodeLookupTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceEntry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceStorage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerLookupTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingReplyMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTQueryMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRegistry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTReplaceNodeTask.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTResponseMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableDeserializer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableSerializer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTSetup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTaskFactoryImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTaskQueueImpl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTracker.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenUpdateCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounce.Po@am__quote@

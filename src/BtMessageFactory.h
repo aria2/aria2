@@ -88,6 +88,8 @@ public:
 
   virtual BtMessageHandle createAllowedFastMessage(int32_t index) = 0;
 
+  virtual BtMessageHandle createPortMessage(uint16_t port) = 0;
+
   virtual BtMessageHandle createBtExtendedMessage(const ExensionMessageHandle& msg) = 0;
 };
 

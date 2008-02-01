@@ -1,6 +1,7 @@
 TESTS = aria2c
 check_PROGRAMS = $(TESTS)
 aria2c_SOURCES = AllTest.cc\
+	SocketCoreTest.cc\
 	array_funTest.cc\
 	HelpItemTest.cc\
 	TaggedItemTest.cc\
@@ -106,6 +107,29 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	UTPexExtensionMessageTest.cc\
 	DefaultBtMessageFactoryTest.cc\
 	DefaultExtensionMessageFactoryTest.cc
+	DHTNodeTest.cc\
+	DHTBucketTest.cc\
+	DHTRoutingTableTest.cc\
+	DHTMessageTrackerEntryTest.cc\
+	DHTMessageTrackerTest.cc\
+	DHTConnectionImplTest.cc\
+	DHTPingMessageTest.cc\
+	DHTPingReplyMessageTest.cc\
+	DHTFindNodeMessageTest.cc\
+	DHTFindNodeReplyMessageTest.cc\
+	DHTGetPeersMessageTest.cc\
+	DHTGetPeersReplyMessageTest.cc\
+	DHTAnnouncePeerMessageTest.cc\
+	DHTAnnouncePeerReplyMessageTest.cc\
+	DHTMessageFactoryImplTest.cc\
+	BNodeTest.cc\
+	DHTPeerAnnounceEntryTest.cc\
+	DHTPeerAnnounceStorageTest.cc\
+	DHTTokenTrackerTest.cc\
+	XORCloserTest.cc\
+	DHTIDCloserTest.cc\
+	DHTRoutingTableSerializerTest.cc\
+	DHTRoutingTableDeserializerTest.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

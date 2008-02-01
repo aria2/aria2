@@ -75,6 +75,8 @@ public:
    * notation.
    */
   static bool createcompact(char* compact, const string& addr, uint16_t port);
+
+  static pair<string, uint16_t> unpackcompact(const char* compact);
 };
 
 #endif // _D_PEER_MESSAGE_UTIL_H_

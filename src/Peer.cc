@@ -117,6 +117,7 @@ void Peer::resetStatus() {
   fastExtensionEnabled = false;
   _extendedMessagingEnabled = false;
   _extensions.clear();
+  _dhtEnabled = false;
   latency = DEFAULT_LATENCY;
   peerAllowedIndexSet.clear();
   amAllowedIndexSet.clear();

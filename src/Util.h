@@ -101,6 +101,11 @@ public:
 
   static string toHex(const unsigned char* src, int32_t len);
 
+  static string toHex(const string& src)
+  {
+    return toHex(reinterpret_cast<const unsigned char*>(src.c_str()), src.size());
+  }
+
   static FILE* openFile(const string& filename, const string& mode);
 
   static void fileCopy(const string& destFile, const string& src);

@@ -48,11 +48,11 @@
 # define SOCKET_ERRNO (WSAGetLastError())
 #endif // __MINGW32__
 
-SocketCore::SocketCore():sockfd(-1) {
+SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1) {
   init();
 }
 
-SocketCore::SocketCore(int32_t sockfd):sockfd(sockfd) {
+SocketCore::SocketCore(int32_t sockfd, int sockType):_sockType(sockType), sockfd(sockfd) {
   init();
 }
 
@@ -82,11 +82,11 @@ SocketCore::~SocketCore() {
 #endif // HAVE_LIBGNUTLS
 }
 
-void SocketCore::beginListen(int32_t port)
+void SocketCore::bind(uint16_t port)
 {
   closeConnection();
-  //sockfd = socket(AF_UNSPEC, SOCK_STREAM, PF_UNSPEC);
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  //sockfd = socket(AF_UNSPEC, _sockType, PF_UNSPEC);
+  sockfd = socket(AF_INET, _sockType, 0);
   if(sockfd == -1) {
     throw new DlAbortEx(EX_SOCKET_OPEN, errorMsg());
   }
@@ -107,15 +107,16 @@ void SocketCore::beginListen(int32_t port)
   sockaddr.sin_addr.s_addr = INADDR_ANY;
   sockaddr.sin_port = htons(port);
   
-  if(bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1) {
+  if(::bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1) {
     throw new DlAbortEx(EX_SOCKET_BIND, errorMsg());
   }
+}
 
+void SocketCore::beginListen()
+{
   if(listen(sockfd, 1) == -1) {
     throw new DlAbortEx(EX_SOCKET_LISTEN, errorMsg());
   }
-
-  setNonBlockingMode();
 }
 
 SocketCore* SocketCore::acceptConnection() const
@@ -128,7 +129,7 @@ SocketCore* SocketCore::acceptConnection() const
   if(fd == -1) {
     throw new DlAbortEx(EX_SOCKET_ACCEPT, errorMsg());
   }
-  SocketCore* s = new SocketCore(fd);
+  SocketCore* s = new SocketCore(fd, _sockType);
   return s;
 }
 
@@ -159,7 +160,7 @@ void SocketCore::getPeerInfo(pair<string, int32_t>& peerinfo) const
 void SocketCore::establishConnection(const string& host, int32_t port)
 {
   closeConnection();
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  sockfd = socket(AF_INET, _sockType, 0);
   if(sockfd == -1) {
       throw new DlAbortEx(EX_SOCKET_OPEN, errorMsg());
   }
@@ -181,7 +182,7 @@ void SocketCore::establishConnection(const string& host, int32_t port)
     memset((char*)&ai, 0, sizeof(ai));
     ai.ai_flags = 0;
     ai.ai_family = PF_INET;
-    ai.ai_socktype = SOCK_STREAM;
+    ai.ai_socktype = _sockType;
     ai.ai_protocol = 0; 
     struct addrinfo* res;
     int32_t ec;
@@ -194,6 +195,7 @@ void SocketCore::establishConnection(const string& host, int32_t port)
   }
   // make socket non-blocking mode
   setNonBlockingMode();
+  // TODO handle EINTR
   if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && SOCKET_ERRNO != 
 #ifndef __MINGW32__
 EINPROGRESS
@@ -574,3 +576,94 @@ void SocketCore::initiateSecureConnection()
   return buf;
 #endif // __MINGW32__
 }
+
+template<typename T>
+string uitos(T value)
+{
+  string str;
+  if(value == 0) {
+    str = "0";
+    return str;
+  }
+  int32_t count = 0;
+  while(value) {
+    ++count;
+    char digit = value%10+'0';
+    str.insert(str.begin(), digit);
+    value /= 10;
+  }
+  return str;
+}
+
+void fillSockaddr(sockaddr* addr, int sockType, const string& host, uint16_t port)
+{
+  struct addrinfo hints;
+  struct addrinfo* result;
+  memset(&hints, 0, sizeof(struct addrinfo));
+  hints.ai_family = AF_INET;
+  hints.ai_socktype = sockType;
+  hints.ai_flags = 0;
+  hints.ai_protocol = 0;
+  {
+    int r = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &result);
+    if(r != 0) {
+      throw new DlAbortEx(EX_RESOLVE_HOSTNAME,
+			  host.c_str(), gai_strerror(r));
+    }
+  }
+  memcpy(addr, result->ai_addr, result->ai_addrlen);
+  freeaddrinfo(result);
+}
+
+void SocketCore::writeData(const char* data, size_t len, const string& host, uint16_t port)
+{
+  struct sockaddr_storage addrPeer;
+  fillSockaddr((struct sockaddr*)&addrPeer, _sockType, host, port);
+  ssize_t r;
+  while((r = sendto(sockfd, data, len, 0, (const sockaddr*)&addrPeer, sizeof(struct sockaddr_storage))) == -1 && EINTR == errno);
+  if(r == -1) {
+    throw new DlAbortEx(EX_SOCKET_SEND, errorMsg());
+  }
+}
+
+ssize_t SocketCore::readDataFrom(char* data, size_t len, struct sockaddr* sender, socklen_t* senderLength)
+{
+  ssize_t r;
+  while((r = recvfrom(sockfd, data, len, 0, sender, senderLength)) == -1 &&
+	EINTR == errno);
+  if(r == -1) {
+    throw new DlAbortEx(EX_SOCKET_RECV, errorMsg());
+  }
+  return r;
+}
+
+ssize_t SocketCore::readDataFrom(char* data, size_t len)
+{
+  
+  return readDataFrom(data, len, 0, 0);
+}
+
+ssize_t SocketCore::readDataFrom(char* data, size_t len,
+				 pair<string /* numerichost */,
+				 uint16_t /* port */>& sender)
+{
+  struct sockaddr_storage addrSender;
+  socklen_t addrSenderLength = sizeof(struct sockaddr_storage);
+  ssize_t rlength = readDataFrom(data, len, (struct sockaddr*)&addrSender, &addrSenderLength);
+
+  char host[NI_MAXHOST];
+  char service[NI_MAXSERV];
+  {
+    int s = getnameinfo((struct sockaddr*)&addrSender, addrSenderLength,
+			host, NI_MAXHOST, service, NI_MAXSERV,
+			NI_NUMERICHOST|NI_NUMERICSERV);
+    if(s != 0) {
+      throw new DlAbortEx("Failed to get peer's hostname and port. cause: %s",
+			  gai_strerror(s));
+    }
+  }
+  sender.first = host;
+  sender.second = atoi(service); // TODO
+  return rlength;
+}
+

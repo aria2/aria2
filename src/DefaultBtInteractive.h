@@ -48,6 +48,7 @@
 #include "Logger.h"
 #include "LogFactory.h"
 #include "TimeA2.h"
+#include "DHTNodeDecl.h"
 
 class FloodingStat {
 private:
@@ -95,6 +96,7 @@ private:
   BtRequestFactoryWeakHandle btRequestFactory;
   PeerConnectionWeakHandle peerConnection;
   BtMessageFactoryWeakHandle messageFactory;
+  WeakHandle<DHTNode> _localNode;
   const Logger* logger;
   int32_t allowedFastSetSize;
   Time haveCheckPoint;
@@ -106,6 +108,7 @@ private:
   int32_t keepAliveInterval;
   int32_t maxDownloadSpeedLimit;
   bool _utPexEnabled;
+  bool _dhtEnabled;
 
   static const int32_t FLOODING_CHECK_INTERVAL = 5;
 
@@ -121,6 +124,7 @@ private:
   void detectMessageFlooding();
   void checkActiveInteraction();
   void addPeerExchangeMessage();
+  void addPortMessageToQueue();
 
 public:
   DefaultBtInteractive():peer(0),
@@ -136,7 +140,8 @@ public:
 			 allowedFastSetSize(10),
 			 keepAliveInterval(120),
 			 maxDownloadSpeedLimit(0),
-			 _utPexEnabled(false)
+			 _utPexEnabled(false),
+			 _dhtEnabled(false)
   {}
 
   virtual ~DefaultBtInteractive() {}
@@ -211,6 +216,13 @@ public:
   void setUTPexEnabled(bool f)
   {
     _utPexEnabled = f;
+  }
+
+  void setLocalNode(const WeakHandle<DHTNode>& node);
+
+  void setDHTEnabled(bool f)
+  {
+    _dhtEnabled = f;
   }
 };
 

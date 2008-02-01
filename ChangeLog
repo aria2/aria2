@@ -1,3 +1,39 @@
+2008-02-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added DHT functionality, compatible with mainline.
+	DHT is disabled by default. To enable it, give --enable-dht to aria2c.
+	You may need to specify entry point to DHT network using
+	--dht-entry-point. DHT uses UDP port to listen incoming message.
+	Use --dht-listen-port to specify port number. Make sure that your
+	firewall configuration can pass through UDP traffic to the port.
+	The routing table is saved in $HOME/.aria2/dht.dat.
+	* src/DHT*
+	* src/BNode.{h, cc}
+	* src/PeerInteractionCommand.cc: enable DHT functionality for a
+	particular torrent.
+	* src/Data.cc: Rewritten ctor.
+	* src/OptionHandlerFactory.cc: Added --enable-dht, --dht-listen-port,
+	--dht-entry-point.
+	* src/DefaultBtInteractive.cc: Send port message if dht is enabled.
+	* src/RequestGroup.cc: Initialize DHT functionality. When download
+	ends, remove BtContext from DHTPeerAnnounceStorage.
+	* src/BtPortMessage.{h, cc}: Rewritten.
+	* src/message.h
+	* src/OptionHandlerImpl.cc
+	* src/option_processing.cc: Added --enable-dht, --dht-listen-port,
+	--dht-entry-point.
+	* src/Dictionary.{h, cc} (remove): New function.
+	* src/prefs.h
+	* src/DefaultBtMessageFactory.h
+	* src/BtHandshakeMessage.cc
+	* src/ActivePeerConnectionCommand.cc
+	* src/SocketCore.{h, cc}: Added datagram socket support.
+	* src/DefaultBtMessageFactory.cc
+	* src/BtSetup.cc: Add BtContext to DHTPeerAnnounceStorage here.
+	Create DHT commands.
+	* src/BtMessageFactory.h
+	* src/PeerMessageUtil.{h, cc}
+
 2008-01-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that log file is not written when configuration file doesn't exist.

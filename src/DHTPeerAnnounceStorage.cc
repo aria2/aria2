@@ -1,0 +1,165 @@
+/* <!-- copyright */
+/*
+ * aria2 - The high speed download utility
+ *
+ * Copyright (C) 2006 Tatsuhiro Tsujikawa
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * In addition, as a special exception, the copyright holders give
+ * permission to link the code of portions of this program with the
+ * OpenSSL library under certain conditions as described in each
+ * individual source file, and distribute linked combinations
+ * including the two.
+ * You must obey the GNU General Public License in all respects
+ * for all of the code used other than OpenSSL.  If you modify
+ * file(s) with this exception, you may extend this exception to your
+ * version of the file(s), but you are not obligated to do so.  If you
+ * do not wish to do so, delete this exception statement from your
+ * version.  If you delete this exception statement from all source
+ * files in the program, then also delete it here.
+ */
+/* copyright --> */
+#include "DHTPeerAnnounceStorage.h"
+#include "DHTPeerAnnounceEntry.h"
+#include "Peer.h"
+#include "BtContext.h"
+#include "DHTConstants.h"
+#include "DHTTaskQueue.h"
+#include "DHTTaskFactory.h"
+#include "DHTTask.h"
+#include "LogFactory.h"
+#include "Util.h"
+
+DHTPeerAnnounceStorage::DHTPeerAnnounceStorage():_taskQueue(0),
+						 _taskFactory(0),
+						 _logger(LogFactory::getInstance()) {}
+
+DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
+
+class FindPeerAnnounceEntry {
+private:
+  unsigned char _infoHash[DHT_ID_LENGTH];
+public:
+  FindPeerAnnounceEntry(const unsigned char* infoHash)
+  {
+    memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
+  }
+
+  bool operator()(const DHTPeerAnnounceEntryHandle& entry) const
+  {
+    return memcmp(_infoHash, entry->getInfoHash(), DHT_ID_LENGTH) == 0;
+  }
+};
+
+DHTPeerAnnounceEntryHandle
+DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
+{
+  DHTPeerAnnounceEntries::iterator i = 
+    find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash));
+  DHTPeerAnnounceEntryHandle entry = 0;
+  if(i == _entries.end()) {
+    entry = new DHTPeerAnnounceEntry(infoHash);
+    _entries.push_back(entry);
+  } else {
+    entry = *i;
+  }
+  return entry;
+}
+
+void
+DHTPeerAnnounceStorage::addPeerAnnounce(const unsigned char* infoHash,
+					const string& ipaddr, uint16_t port)
+{
+  _logger->debug("Adding %s:%u to peer announce list: infoHash=%s",
+		 ipaddr.c_str(), port, Util::toHex(infoHash, DHT_ID_LENGTH).c_str());
+  getPeerAnnounceEntry(infoHash)->addPeerAddrEntry(PeerAddrEntry(ipaddr, port));
+}
+
+// add peer announce as localhost downloading the content
+void DHTPeerAnnounceStorage::addPeerAnnounce(const BtContextHandle& ctx)
+{
+  _logger->debug("Adding localhost to peer announce list: infoHash=%s",
+		 ctx->getInfoHashAsString().c_str());
+  getPeerAnnounceEntry(ctx->getInfoHash())->setBtContext(ctx);
+}
+
+void DHTPeerAnnounceStorage::removePeerAnnounce(const BtContextHandle& ctx)
+{
+  DHTPeerAnnounceEntries::iterator i = 
+    find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(ctx->getInfoHash()));
+  if(i != _entries.end()) {
+    (*i)->setBtContext(0);
+    if((*i)->empty()) {
+      _entries.erase(i);
+    }
+  }
+}
+
+bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
+{
+  return 
+    find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash))
+    != _entries.end();
+}
+
+Peers DHTPeerAnnounceStorage::getPeers(const unsigned char* infoHash)
+{
+  DHTPeerAnnounceEntries::iterator i = 
+    find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash));
+  if(i == _entries.end() || (*i)->empty()) {
+    return Peers();
+  }
+  return (*i)->getPeers();
+}
+
+void DHTPeerAnnounceStorage::handleTimeout()
+{
+  _logger->debug("Now purge peer announces which are timed out.");
+  for(DHTPeerAnnounceEntries::iterator i = _entries.begin(); i != _entries.end();) {
+    (*i)->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
+    if((*i)->empty()) {
+      _logger->debug("1 entry purged: infoHash=%s",
+		     Util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
+      i = _entries.erase(i);
+    } else {
+      ++i;
+    }
+  }
+}
+
+void DHTPeerAnnounceStorage::announcePeer()
+{
+  _logger->debug("Now announcing peer.");
+  for(DHTPeerAnnounceEntries::iterator i = _entries.begin(); i != _entries.end(); ++i) {
+    if((*i)->getLastUpdated().elapsed(DHT_PEER_ANNOUNCE_INTERVAL)) {
+      (*i)->notifyUpdate();
+      DHTTaskHandle task = _taskFactory->createPeerAnnounceTask((*i)->getInfoHash());
+      _taskQueue->addPeriodicTask2(task);
+      _logger->debug("Added 1 peer announce: infoHash=%s",
+		     Util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
+    }
+  }
+}
+
+void DHTPeerAnnounceStorage::setTaskQueue(const DHTTaskQueueHandle& taskQueue)
+{
+  _taskQueue = taskQueue;
+}
+
+void DHTPeerAnnounceStorage::setTaskFactory(const DHTTaskFactoryHandle& taskFactory)
+{
+  _taskFactory = taskFactory;
+}

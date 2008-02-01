@@ -257,7 +257,56 @@ SRCS += MetaEntry.h\
 	BtExtendedMessage.cc\
 	DefaultExtensionMessageFactory.cc\
 	HandshakeExtensionMessage.cc\
-	UTPexExtensionMessage.cc
+	UTPexExtensionMessage.cc\
+	DHTNode.cc\
+	DHTUtil.cc\
+	DHTBucket.cc\
+	DHTRoutingTable.cc\
+	DHTMessageEntry.cc\
+	DHTMessageDispatcher.cc\
+	DHTMessageReceiver.cc\
+	DHTMessageTracker.cc\
+	DHTMessageTrackerEntry.cc\
+	DHTMessage.cc\
+	DHTConnectionImpl.cc\
+	DHTAbstractMessage.cc\
+	DHTQueryMessage.cc\
+	DHTResponseMessage.cc\
+	DHTPingMessage.cc\
+	DHTPingReplyMessage.cc\
+	DHTFindNodeMessage.cc\
+	DHTFindNodeReplyMessage.cc\
+	DHTGetPeersMessage.cc\
+	DHTGetPeersReplyMessage.cc\
+	DHTAnnouncePeerMessage.cc\
+	DHTAnnouncePeerReplyMessage.cc\
+	DHTMessageFactoryImpl.cc\
+	DHTNodeLookupTask.cc\
+	DHTNodeLookupEntry.cc\
+	BNode.cc\
+	DHTMessageCallbackImpl.cc\
+	DHTAbstractTask.cc\
+	DHTPingTask.cc\
+	DHTTaskQueueImpl.cc\
+	DHTBucketRefreshTask.cc\
+	DHTAbstractNodeLookupTask.cc\
+	DHTPeerLookupTask.cc\
+	DHTSetup.cc\
+	DHTTaskFactoryImpl.cc\
+	DHTInteractionCommand.cc\
+	DHTPeerAnnounceEntry.cc\
+	DHTPeerAnnounceStorage.cc\
+	DHTTokenTracker.cc\
+	DHTGetPeersCommand.cc\
+	DHTTokenUpdateCommand.cc\
+	DHTBucketRefreshCommand.cc\
+	DHTPeerAnnounceCommand.cc\
+	DHTReplaceNodeTask.cc\
+	DHTEntryPointNameResolveCommand.cc\
+	DHTRoutingTableSerializer.cc\
+	DHTRoutingTableDeserializer.cc\
+	DHTAutoSaveCommand.cc\
+	DHTRegistry.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

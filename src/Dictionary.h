@@ -56,6 +56,7 @@ public:
 
   const MetaEntry* get(const string& name) const;
   void put(const string& name, MetaEntry* entry);
+  void remove(const string& name);
 
   void accept(MetaEntryVisitor* v) const;
   const Order& getOrder() const;
