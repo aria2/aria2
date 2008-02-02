@@ -1,0 +1,38 @@
+/* Resources for intl.dll */
+
+#include <winver.h>
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION PACKAGE_VERSION_MAJOR,PACKAGE_VERSION_MINOR,PACKAGE_VERSION_SUBMINOR,0
+ PRODUCTVERSION PACKAGE_VERSION_MAJOR,PACKAGE_VERSION_MINOR,PACKAGE_VERSION_SUBMINOR,0
+ FILEFLAGSMASK 0x3fL /* VS_FFI_FILEFLAGSMASK */
+#ifdef _DEBUG
+ FILEFLAGS 0x1L  /* VS_FF_DEBUG */
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x10004L  /* VOS_DOS_WINDOWS32 */
+ FILETYPE 0x2L  /* VFT_DLL */
+ FILESUBTYPE 0x0L  /* VFT2_UNKNOWN */
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "04090000"  /* Lang = US English, Charset = ASCII */
+        BEGIN
+            VALUE "Comments", "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License. You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA\0"
+            VALUE "CompanyName", "Free Software Foundation\0"
+            VALUE "FileDescription", "LGPLed libintl for Windows NT/2000/XP/Vista and Windows 95/98/ME\0"
+            VALUE "FileVersion", PACKAGE_VERSION_STRING "\0"
+            VALUE "InternalName", "intl.dll\0"
+            VALUE "LegalCopyright", "Copyright (C) 1995-2007\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "intl.dll\0"
+            VALUE "ProductName", "libintl: accessing NLS message catalogs\0"
+            VALUE "ProductVersion", PACKAGE_VERSION_STRING "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 0  /* US English, ASCII */
+    END
+END

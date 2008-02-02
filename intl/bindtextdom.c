@@ -1,5 +1,5 @@
 /* Implementation of the bindtextdomain(3) function
-   Copyright (C) 1995-1998, 2000, 2001, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2003, 2005-2006 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU Library General Public License as published
@@ -13,7 +13,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,29 +24,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "gettextP.h"
 #ifdef _LIBC
 # include <libintl.h>
 #else
 # include "libgnuintl.h"
 #endif
-#include "gettextP.h"
 
+/* Handle multi-threaded applications.  */
 #ifdef _LIBC
-/* We have to handle multi-threaded applications.  */
 # include <bits/libc-lock.h>
+# define gl_rwlock_define __libc_rwlock_define
+# define gl_rwlock_wrlock __libc_rwlock_wrlock
+# define gl_rwlock_unlock __libc_rwlock_unlock
 #else
-/* Provide dummy implementation if this is outside glibc.  */
-# define __libc_rwlock_define(CLASS, NAME)
-# define __libc_rwlock_wrlock(NAME)
-# define __libc_rwlock_unlock(NAME)
-#endif
-
-/* The internal variables in the standalone libintl.a must have different
-   names than the internal variables in GNU libc, otherwise programs
-   using libintl.a cannot be linked statically.  */
-#if !defined _LIBC
-# define _nl_default_dirname libintl_nl_default_dirname
-# define _nl_domain_bindings libintl_nl_domain_bindings
+# include "lock.h"
 #endif
 
 /* Some compilers, like SunOS4 cc, don't have offsetof in <stddef.h>.  */
@@ -56,19 +48,8 @@
 
 /* @@ end of prolog @@ */
 
-/* Contains the default location of the message catalogs.  */
-extern const char _nl_default_dirname[];
-#ifdef _LIBC
-extern const char _nl_default_dirname_internal[] attribute_hidden;
-#else
-# define INTUSE(name) name
-#endif
-
-/* List with bindings of specific domains.  */
-extern struct binding *_nl_domain_bindings;
-
 /* Lock variable to protect the global data in the gettext implementation.  */
-__libc_rwlock_define (extern, _nl_state_lock attribute_hidden)
+gl_rwlock_define (extern, _nl_state_lock attribute_hidden)
 
 
 /* Names for the libintl functions are a problem.  They must not clash
@@ -86,11 +67,6 @@ __libc_rwlock_define (extern, _nl_state_lock attribute_hidden)
 # define BIND_TEXTDOMAIN_CODESET libintl_bind_textdomain_codeset
 #endif
 
-/* Prototypes for local functions.  */
-static void set_binding_values PARAMS ((const char *domainname,
-					const char **dirnamep,
-					const char **codesetp));
-
 /* Specifies the directory name *DIRNAMEP and the output codeset *CODESETP
    to be used for the DOMAINNAME message catalog.
    If *DIRNAMEP or *CODESETP is NULL, the corresponding attribute is not
@@ -98,10 +74,8 @@ static void set_binding_values PARAMS ((const char *domainname,
    If DIRNAMEP or CODESETP is NULL, the corresponding attribute is neither
    modified nor returned.  */
 static void
-set_binding_values (domainname, dirnamep, codesetp)
-     const char *domainname;
-     const char **dirnamep;
-     const char **codesetp;
+set_binding_values (const char *domainname,
+		    const char **dirnamep, const char **codesetp)
 {
   struct binding *binding;
   int modified;
@@ -116,7 +90,7 @@ set_binding_values (domainname, dirnamep, codesetp)
       return;
     }
 
-  __libc_rwlock_wrlock (_nl_state_lock);
+  gl_rwlock_wrlock (_nl_state_lock);
 
   modified = 0;
 
@@ -151,8 +125,8 @@ set_binding_values (domainname, dirnamep, codesetp)
 	      char *result = binding->dirname;
 	      if (strcmp (dirname, result) != 0)
 		{
-		  if (strcmp (dirname, INTUSE(_nl_default_dirname)) == 0)
-		    result = (char *) INTUSE(_nl_default_dirname);
+		  if (strcmp (dirname, _nl_default_dirname) == 0)
+		    result = (char *) _nl_default_dirname;
 		  else
 		    {
 #if defined _LIBC || defined HAVE_STRDUP
@@ -167,7 +141,7 @@ set_binding_values (domainname, dirnamep, codesetp)
 
 		  if (__builtin_expect (result != NULL, 1))
 		    {
-		      if (binding->dirname != INTUSE(_nl_default_dirname))
+		      if (binding->dirname != _nl_default_dirname)
 			free (binding->dirname);
 
 		      binding->dirname = result;
@@ -208,7 +182,6 @@ set_binding_values (domainname, dirnamep, codesetp)
 			free (binding->codeset);
 
 		      binding->codeset = result;
-		      binding->codeset_cntr++;
 		      modified = 1;
 		    }
 		}
@@ -221,7 +194,7 @@ set_binding_values (domainname, dirnamep, codesetp)
     {
       /* Simply return the default values.  */
       if (dirnamep)
-	*dirnamep = INTUSE(_nl_default_dirname);
+	*dirnamep = _nl_default_dirname;
       if (codesetp)
 	*codesetp = NULL;
     }
@@ -243,11 +216,11 @@ set_binding_values (domainname, dirnamep, codesetp)
 
 	  if (dirname == NULL)
 	    /* The default value.  */
-	    dirname = INTUSE(_nl_default_dirname);
+	    dirname = _nl_default_dirname;
 	  else
 	    {
-	      if (strcmp (dirname, INTUSE(_nl_default_dirname)) == 0)
-		dirname = INTUSE(_nl_default_dirname);
+	      if (strcmp (dirname, _nl_default_dirname) == 0)
+		dirname = _nl_default_dirname;
 	      else
 		{
 		  char *result;
@@ -270,9 +243,7 @@ set_binding_values (domainname, dirnamep, codesetp)
 	}
       else
 	/* The default value.  */
-	new_binding->dirname = (char *) INTUSE(_nl_default_dirname);
-
-      new_binding->codeset_cntr = 0;
+	new_binding->dirname = (char *) _nl_default_dirname;
 
       if (codesetp)
 	{
@@ -294,7 +265,6 @@ set_binding_values (domainname, dirnamep, codesetp)
 	      memcpy (result, codeset, len);
 #endif
 	      codeset = result;
-	      new_binding->codeset_cntr++;
 	    }
 	  *codesetp = codeset;
 	  new_binding->codeset = (char *) codeset;
@@ -326,7 +296,7 @@ set_binding_values (domainname, dirnamep, codesetp)
       if (0)
 	{
 	failed_codeset:
-	  if (new_binding->dirname != INTUSE(_nl_default_dirname))
+	  if (new_binding->dirname != _nl_default_dirname)
 	    free (new_binding->dirname);
 	failed_dirname:
 	  free (new_binding);
@@ -342,15 +312,13 @@ set_binding_values (domainname, dirnamep, codesetp)
   if (modified)
     ++_nl_msg_cat_cntr;
 
-  __libc_rwlock_unlock (_nl_state_lock);
+  gl_rwlock_unlock (_nl_state_lock);
 }
 
 /* Specify that the DOMAINNAME message catalog will be found
    in DIRNAME rather than in the system locale data base.  */
 char *
-BINDTEXTDOMAIN (domainname, dirname)
-     const char *domainname;
-     const char *dirname;
+BINDTEXTDOMAIN (const char *domainname, const char *dirname)
 {
   set_binding_values (domainname, &dirname, NULL);
   return (char *) dirname;
@@ -359,9 +327,7 @@ BINDTEXTDOMAIN (domainname, dirname)
 /* Specify the character encoding in which the messages from the
    DOMAINNAME message catalog will be returned.  */
 char *
-BIND_TEXTDOMAIN_CODESET (domainname, codeset)
-     const char *domainname;
-     const char *codeset;
+BIND_TEXTDOMAIN_CODESET (const char *domainname, const char *codeset)
 {
   set_binding_values (domainname, NULL, &codeset);
   return (char *) codeset;

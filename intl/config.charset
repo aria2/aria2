@@ -1,7 +1,7 @@
 #! /bin/sh
 # Output a system dependent table of character encoding aliases.
 #
-#   Copyright (C) 2000-2003 Free Software Foundation, Inc.
+#   Copyright (C) 2000-2004, 2006 Free Software Foundation, Inc.
 #
 #   This program is free software; you can redistribute it and/or modify it
 #   under the terms of the GNU Library General Public License as published
@@ -15,7 +15,7 @@
 #
 #   You should have received a copy of the GNU Library General Public
 #   License along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 #   USA.
 #
 # The table consists of lines of the form
@@ -30,77 +30,77 @@
 # MIME charset name is preferred.
 # The current list of GNU canonical charset names is as follows.
 #
-#       name                         used by which systems         a MIME name?
-#   ASCII, ANSI_X3.4-1968     glibc solaris freebsd
-#   ISO-8859-1                glibc aix hpux irix osf solaris freebsd   yes
-#   ISO-8859-2                glibc aix hpux irix osf solaris freebsd   yes
-#   ISO-8859-3                glibc solaris                             yes
-#   ISO-8859-4                osf solaris freebsd                       yes
-#   ISO-8859-5                glibc aix hpux irix osf solaris freebsd   yes
-#   ISO-8859-6                glibc aix hpux solaris                    yes
-#   ISO-8859-7                glibc aix hpux irix osf solaris           yes
-#   ISO-8859-8                glibc aix hpux osf solaris                yes
-#   ISO-8859-9                glibc aix hpux irix osf solaris           yes
-#   ISO-8859-13               glibc
-#   ISO-8859-14               glibc
-#   ISO-8859-15               glibc aix osf solaris freebsd
-#   KOI8-R                    glibc solaris freebsd                     yes
-#   KOI8-U                    glibc freebsd                             yes
-#   KOI8-T                    glibc
-#   CP437                     dos
-#   CP775                     dos
-#   CP850                     aix osf dos
-#   CP852                     dos
-#   CP855                     dos
-#   CP856                     aix
-#   CP857                     dos
-#   CP861                     dos
-#   CP862                     dos
-#   CP864                     dos
-#   CP865                     dos
-#   CP866                     freebsd dos
-#   CP869                     dos
-#   CP874                     woe32 dos
-#   CP922                     aix
-#   CP932                     aix woe32 dos
-#   CP943                     aix
-#   CP949                     osf woe32 dos
-#   CP950                     woe32 dos
-#   CP1046                    aix
-#   CP1124                    aix
-#   CP1125                    dos
-#   CP1129                    aix
-#   CP1250                    woe32
-#   CP1251                    glibc solaris woe32
-#   CP1252                    aix woe32
-#   CP1253                    woe32
-#   CP1254                    woe32
-#   CP1255                    glibc woe32
-#   CP1256                    woe32
-#   CP1257                    woe32
-#   GB2312                    glibc aix hpux irix solaris freebsd       yes
-#   EUC-JP                    glibc aix hpux irix osf solaris freebsd   yes
-#   EUC-KR                    glibc aix hpux irix osf solaris freebsd   yes
-#   EUC-TW                    glibc aix hpux irix osf solaris
-#   BIG5                      glibc aix hpux osf solaris freebsd        yes
-#   BIG5-HKSCS                glibc solaris
-#   GBK                       glibc aix osf solaris woe32 dos
-#   GB18030                   glibc solaris
-#   SHIFT_JIS                 hpux osf solaris freebsd                  yes
-#   JOHAB                     glibc solaris woe32
-#   TIS-620                   glibc aix hpux osf solaris
-#   VISCII                    glibc                                     yes
-#   TCVN5712-1                glibc
-#   GEORGIAN-PS               glibc
-#   HP-ROMAN8                 hpux
-#   HP-ARABIC8                hpux
-#   HP-GREEK8                 hpux
-#   HP-HEBREW8                hpux
-#   HP-TURKISH8               hpux
-#   HP-KANA8                  hpux
-#   DEC-KANJI                 osf
-#   DEC-HANYU                 osf
-#   UTF-8                     glibc aix hpux osf solaris                yes
+#       name              MIME?             used by which systems
+#   ASCII, ANSI_X3.4-1968       glibc solaris freebsd netbsd darwin
+#   ISO-8859-1              Y   glibc aix hpux irix osf solaris freebsd netbsd darwin
+#   ISO-8859-2              Y   glibc aix hpux irix osf solaris freebsd netbsd darwin
+#   ISO-8859-3              Y   glibc solaris
+#   ISO-8859-4              Y   osf solaris freebsd netbsd darwin
+#   ISO-8859-5              Y   glibc aix hpux irix osf solaris freebsd netbsd darwin
+#   ISO-8859-6              Y   glibc aix hpux solaris
+#   ISO-8859-7              Y   glibc aix hpux irix osf solaris netbsd darwin
+#   ISO-8859-8              Y   glibc aix hpux osf solaris
+#   ISO-8859-9              Y   glibc aix hpux irix osf solaris darwin
+#   ISO-8859-13                 glibc netbsd darwin
+#   ISO-8859-14                 glibc
+#   ISO-8859-15                 glibc aix osf solaris freebsd darwin
+#   KOI8-R                  Y   glibc solaris freebsd netbsd darwin
+#   KOI8-U                  Y   glibc freebsd netbsd darwin
+#   KOI8-T                      glibc
+#   CP437                       dos
+#   CP775                       dos
+#   CP850                       aix osf dos
+#   CP852                       dos
+#   CP855                       dos
+#   CP856                       aix
+#   CP857                       dos
+#   CP861                       dos
+#   CP862                       dos
+#   CP864                       dos
+#   CP865                       dos
+#   CP866                       freebsd netbsd darwin dos
+#   CP869                       dos
+#   CP874                       woe32 dos
+#   CP922                       aix
+#   CP932                       aix woe32 dos
+#   CP943                       aix
+#   CP949                       osf woe32 dos
+#   CP950                       woe32 dos
+#   CP1046                      aix
+#   CP1124                      aix
+#   CP1125                      dos
+#   CP1129                      aix
+#   CP1250                      woe32
+#   CP1251                      glibc solaris netbsd darwin woe32
+#   CP1252                      aix woe32
+#   CP1253                      woe32
+#   CP1254                      woe32
+#   CP1255                      glibc woe32
+#   CP1256                      woe32
+#   CP1257                      woe32
+#   GB2312                  Y   glibc aix hpux irix solaris freebsd netbsd darwin
+#   EUC-JP                  Y   glibc aix hpux irix osf solaris freebsd netbsd darwin
+#   EUC-KR                  Y   glibc aix hpux irix osf solaris freebsd netbsd darwin
+#   EUC-TW                      glibc aix hpux irix osf solaris netbsd
+#   BIG5                    Y   glibc aix hpux osf solaris freebsd netbsd darwin
+#   BIG5-HKSCS                  glibc solaris
+#   GBK                         glibc aix osf solaris woe32 dos
+#   GB18030                     glibc solaris netbsd
+#   SHIFT_JIS               Y   hpux osf solaris freebsd netbsd darwin
+#   JOHAB                       glibc solaris woe32
+#   TIS-620                     glibc aix hpux osf solaris
+#   VISCII                  Y   glibc
+#   TCVN5712-1                  glibc
+#   GEORGIAN-PS                 glibc
+#   HP-ROMAN8                   hpux
+#   HP-ARABIC8                  hpux
+#   HP-GREEK8                   hpux
+#   HP-HEBREW8                  hpux
+#   HP-TURKISH8                 hpux
+#   HP-KANA8                    hpux
+#   DEC-KANJI                   osf
+#   DEC-HANYU                   osf
+#   UTF-8                   Y   glibc aix hpux osf solaris netbsd darwin
 #
 # Note: Names which are not marked as being a MIME name should not be used in
 # Internet protocols for information interchange (mail, news, etc.).
@@ -121,6 +121,105 @@ echo "# It was automatically generated from config.charset."
 # List of references, updated during installation:
 echo "# Packages using this file: "
 case "$os" in
+    linux-gnulibc1*)
+	# Linux libc5 doesn't have nl_langinfo(CODESET); therefore
+	# localcharset.c falls back to using the full locale name
+	# from the environment variables.
+	echo "C ASCII"
+	echo "POSIX ASCII"
+	for l in af af_ZA ca ca_ES da da_DK de de_AT de_BE de_CH de_DE de_LU \
+	         en en_AU en_BW en_CA en_DK en_GB en_IE en_NZ en_US en_ZA \
+	         en_ZW es es_AR es_BO es_CL es_CO es_DO es_EC es_ES es_GT \
+	         es_HN es_MX es_PA es_PE es_PY es_SV es_US es_UY es_VE et \
+	         et_EE eu eu_ES fi fi_FI fo fo_FO fr fr_BE fr_CA fr_CH fr_FR \
+	         fr_LU ga ga_IE gl gl_ES id id_ID in in_ID is is_IS it it_CH \
+	         it_IT kl kl_GL nl nl_BE nl_NL no no_NO pt pt_BR pt_PT sv \
+	         sv_FI sv_SE; do
+	  echo "$l ISO-8859-1"
+	  echo "$l.iso-8859-1 ISO-8859-1"
+	  echo "$l.iso-8859-15 ISO-8859-15"
+	  echo "$l.iso-8859-15@euro ISO-8859-15"
+	  echo "$l@euro ISO-8859-15"
+	  echo "$l.cp-437 CP437"
+	  echo "$l.cp-850 CP850"
+	  echo "$l.cp-1252 CP1252"
+	  echo "$l.cp-1252@euro CP1252"
+	  #echo "$l.atari-st ATARI-ST" # not a commonly used encoding
+	  echo "$l.utf-8 UTF-8"
+	  echo "$l.utf-8@euro UTF-8"
+	done
+	for l in cs cs_CZ hr hr_HR hu hu_HU pl pl_PL ro ro_RO sk sk_SK sl \
+	         sl_SI sr sr_CS sr_YU; do
+	  echo "$l ISO-8859-2"
+	  echo "$l.iso-8859-2 ISO-8859-2"
+	  echo "$l.cp-852 CP852"
+	  echo "$l.cp-1250 CP1250"
+	  echo "$l.utf-8 UTF-8"
+	done
+	for l in mk mk_MK ru ru_RU; do
+	  echo "$l ISO-8859-5"
+	  echo "$l.iso-8859-5 ISO-8859-5"
+	  echo "$l.koi8-r KOI8-R"
+	  echo "$l.cp-866 CP866"
+	  echo "$l.cp-1251 CP1251"
+	  echo "$l.utf-8 UTF-8"
+	done
+	for l in ar ar_SA; do
+	  echo "$l ISO-8859-6"
+	  echo "$l.iso-8859-6 ISO-8859-6"
+	  echo "$l.cp-864 CP864"
+	  #echo "$l.cp-868 CP868" # not a commonly used encoding
+	  echo "$l.cp-1256 CP1256"
+	  echo "$l.utf-8 UTF-8"
+	done
+	for l in el el_GR gr gr_GR; do
+	  echo "$l ISO-8859-7"
+	  echo "$l.iso-8859-7 ISO-8859-7"
+	  echo "$l.cp-869 CP869"
+	  echo "$l.cp-1253 CP1253"
+	  echo "$l.cp-1253@euro CP1253"
+	  echo "$l.utf-8 UTF-8"
+	  echo "$l.utf-8@euro UTF-8"
+	done
+	for l in he he_IL iw iw_IL; do
+	  echo "$l ISO-8859-8"
+	  echo "$l.iso-8859-8 ISO-8859-8"
+	  echo "$l.cp-862 CP862"
+	  echo "$l.cp-1255 CP1255"
+	  echo "$l.utf-8 UTF-8"
+	done
+	for l in tr tr_TR; do
+	  echo "$l ISO-8859-9"
+	  echo "$l.iso-8859-9 ISO-8859-9"
+	  echo "$l.cp-857 CP857"
+	  echo "$l.cp-1254 CP1254"
+	  echo "$l.utf-8 UTF-8"
+	done
+	for l in lt lt_LT lv lv_LV; do
+	  #echo "$l BALTIC" # not a commonly used encoding, wrong encoding name
+	  echo "$l ISO-8859-13"
+	done
+	for l in ru_UA uk uk_UA; do
+	  echo "$l KOI8-U"
+	done
+	for l in zh zh_CN; do
+	  #echo "$l GB_2312-80" # not a commonly used encoding, wrong encoding name
+	  echo "$l GB2312"
+	done
+	for l in ja ja_JP ja_JP.EUC; do
+	  echo "$l EUC-JP"
+	done
+	for l in ko ko_KR; do
+	  echo "$l EUC-KR"
+	done
+	for l in th th_TH; do
+	  echo "$l TIS-620"
+	done
+	for l in fa fa_IR; do
+	  #echo "$l ISIRI-3342" # a broken encoding
+	  echo "$l.utf-8 UTF-8"
+	done
+	;;
     linux* | *-gnu*)
 	# With glibc-2.1 or newer, we don't need any canonicalization,
 	# because glibc has iconv and both glibc and libiconv support all
@@ -289,6 +388,8 @@ case "$os" in
 	echo "ISO8859-2 ISO-8859-2"
 	echo "ISO8859-4 ISO-8859-4"
 	echo "ISO8859-5 ISO-8859-5"
+	echo "ISO8859-7 ISO-8859-7"
+	echo "ISO8859-13 ISO-8859-13"
 	echo "ISO8859-15 ISO-8859-15"
 	echo "eucCN GB2312"
 	echo "eucJP EUC-JP"
@@ -296,6 +397,77 @@ case "$os" in
 	echo "eucTW EUC-TW"
 	echo "BIG5 BIG5"
 	echo "SJIS SHIFT_JIS"
+	;;
+    darwin[56]*)
+	# Darwin 6.8 doesn't have nl_langinfo(CODESET); therefore
+	# localcharset.c falls back to using the full locale name
+	# from the environment variables.
+	echo "C ASCII"
+	for l in en_AU en_CA en_GB en_US la_LN; do
+	  echo "$l.US-ASCII ASCII"
+	done
+	for l in da_DK de_AT de_CH de_DE en_AU en_CA en_GB en_US es_ES \
+	         fi_FI fr_BE fr_CA fr_CH fr_FR is_IS it_CH it_IT nl_BE \
+	         nl_NL no_NO pt_PT sv_SE; do
+	  echo "$l ISO-8859-1"
+	  echo "$l.ISO8859-1 ISO-8859-1"
+	  echo "$l.ISO8859-15 ISO-8859-15"
+	done
+	for l in la_LN; do
+	  echo "$l.ISO8859-1 ISO-8859-1"
+	  echo "$l.ISO8859-15 ISO-8859-15"
+	done
+	for l in cs_CZ hr_HR hu_HU la_LN pl_PL sl_SI; do
+	  echo "$l.ISO8859-2 ISO-8859-2"
+	done
+	for l in la_LN lt_LT; do
+	  echo "$l.ISO8859-4 ISO-8859-4"
+	done
+	for l in ru_RU; do
+	  echo "$l.KOI8-R KOI8-R"
+	  echo "$l.ISO8859-5 ISO-8859-5"
+	  echo "$l.CP866 CP866"
+	done
+	for l in bg_BG; do
+	  echo "$l.CP1251 CP1251"
+	done
+	echo "uk_UA.KOI8-U KOI8-U"
+	echo "zh_TW.BIG5 BIG5"
+	echo "zh_TW.Big5 BIG5"
+	echo "zh_CN.EUC GB2312"
+	echo "ja_JP.EUC EUC-JP"
+	echo "ja_JP.SJIS SHIFT_JIS"
+	echo "ko_KR.EUC EUC-KR"
+	;;
+    darwin*)
+	# Darwin 7.5 has nl_langinfo(CODESET), but it is useless:
+	# - It returns the empty string when LANG is set to a locale of the
+	#   form ll_CC, although ll_CC/LC_CTYPE is a symlink to an UTF-8
+	#   LC_CTYPE file.
+	# - The environment variables LANG, LC_CTYPE, LC_ALL are not set by
+	#   the system; nl_langinfo(CODESET) returns "US-ASCII" in this case.
+	# - The documentation says:
+	#     "... all code that calls BSD system routines should ensure
+	#      that the const *char parameters of these routines are in UTF-8
+	#      encoding. All BSD system functions expect their string
+	#      parameters to be in UTF-8 encoding and nothing else."
+	#   It also says
+	#     "An additional caveat is that string parameters for files,
+	#      paths, and other file-system entities must be in canonical
+	#      UTF-8. In a canonical UTF-8 Unicode string, all decomposable
+	#      characters are decomposed ..."
+	#   but this is not true: You can pass non-decomposed UTF-8 strings
+	#   to file system functions, and it is the OS which will convert
+	#   them to decomposed UTF-8 before accessing the file system.
+	# - The Apple Terminal application displays UTF-8 by default.
+	# - However, other applications are free to use different encodings:
+	#   - xterm uses ISO-8859-1 by default.
+	#   - TextEdit uses MacRoman by default.
+	# We prefer UTF-8 over decomposed UTF-8-MAC because one should
+	# minimize the use of decomposed Unicode. Unfortunately, through the
+	# Darwin file system, decomposed UTF-8 strings are leaked into user
+	# space nevertheless.
+	echo "* UTF-8"
 	;;
     beos*)
 	# BeOS has a single locale, and it has UTF-8 encoding.
@@ -310,7 +482,7 @@ case "$os" in
 	echo "# If you find that the encoding given for your language and"
 	echo "# country is not the one your DOS machine actually uses, just"
 	echo "# correct it in this file, and send a mail to"
-	echo "# Juan Manuel Guerrero <st001906@hrz1.hrz.tu-darmstadt.de>"
+	echo "# Juan Manuel Guerrero <juan.guerrero@gmx.de>"
 	echo "# and Bruno Haible <bruno@clisp.org>."
 	echo "#"
 	echo "C ASCII"
@@ -410,6 +582,7 @@ case "$os" in
 	echo "sq CP852"
 	echo "sq_AL CP852"
 	echo "sr CP852"    # CP852 or CP866 or CP855 ??
+	echo "sr_CS CP852" # CP852 or CP866 or CP855 ??
 	echo "sr_YU CP852" # CP852 or CP866 or CP855 ??
 	# ISO-8859-3 languages
 	echo "mt CP850"

@@ -1,3 +1,19 @@
+2008-02-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed compiler warning about redefinition of SIZE_MAX.
+	Use common.h instead of config.h directly here.
+	* src/Platform.{h, cc}
+
+	The check of ENABLE_NLS is made in gettext.h, so it is not required
+	here.
+	* common.h
+	
+2008-02-02  gettextize  <bug-gnu-gettext@gnu.org>
+
+	Updated gettext related files.
+	* configure.ac (AC_CONFIG_FILES): Add intl/Makefile.
+	* configure.ac (AM_GNU_GETTEXT_VERSION): Bump to 0.17.
+	
 2008-02-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added DHT functionality, compatible with mainline.

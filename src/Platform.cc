@@ -32,10 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif // HAVE_CONFIG_H
-
+#include "Platform.h"
 #ifdef HAVE_WINSOCK2_H
 
 #ifndef _WIN32_WINNT
@@ -47,9 +44,7 @@
 # include <ws2tcpip.h>
 #endif // HAVE_WS2TCPIP_H
 
-#include "common.h"
 #include "DlAbortEx.h"
-#include "Platform.h"
 #include "message.h"
 #include <stdlib.h> /* _fmode */
 #include <fcntl.h> /*  _O_BINARY */

@@ -1,3 +1,39 @@
+2008-02-02  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* codeset.m4: Upgrade to gettext-0.17.
+	* glibc2.m4: New file, from gettext-0.17.
+	* glibc21.m4: Upgrade to gettext-0.17.
+	* intdiv0.m4: Upgrade to gettext-0.17.
+	* intl.m4: New file, from gettext-0.17.
+	* intldir.m4: New file, from gettext-0.17.
+	* intlmacosx.m4: New file, from gettext-0.17.
+	* intmax.m4: New file, from gettext-0.17.
+	* inttypes_h.m4: Upgrade to gettext-0.17.
+	* inttypes-pri.m4: Upgrade to gettext-0.17.
+	* lcmessage.m4: Upgrade to gettext-0.17.
+	* lock.m4: New file, from gettext-0.17.
+	* longlong.m4: New file, from gettext-0.17.
+	* printf-posix.m4: New file, from gettext-0.17.
+	* size_max.m4: Upgrade to gettext-0.17.
+	* stdint_h.m4: Upgrade to gettext-0.17.
+	* uintmax_t.m4: Upgrade to gettext-0.17.
+	* visibility.m4: New file, from gettext-0.17.
+	* wchar_t.m4: New file, from gettext-0.17.
+	* wint_t.m4: New file, from gettext-0.17.
+	* xsize.m4: New file, from gettext-0.17.
+	* Makefile.am (EXTRA_DIST): Add the new files.
+
+2008-02-02  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* gettext.m4: Upgrade to gettext-0.17.
+	* iconv.m4: Upgrade to gettext-0.17.
+	* lib-ld.m4: Upgrade to gettext-0.17.
+	* lib-link.m4: Upgrade to gettext-0.17.
+	* lib-prefix.m4: Upgrade to gettext-0.17.
+	* nls.m4: Upgrade to gettext-0.17.
+	* po.m4: Upgrade to gettext-0.17.
+	* progtest.m4: Upgrade to gettext-0.17.
+
 2006-03-02  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* codeset.m4: New file, from gettext-0.12.1.

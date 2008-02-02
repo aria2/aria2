@@ -1,5 +1,5 @@
 /* Expression parsing and evaluation for plural form selection.
-   Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc.
+   Copyright (C) 2000-2003, 2005-2007 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@cygnus.com>, 2000.
 
    This program is free software; you can redistribute it and/or modify it
@@ -14,19 +14,11 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 #ifndef _PLURAL_EXP_H
 #define _PLURAL_EXP_H
-
-#ifndef PARAMS
-# if __STDC__ || defined __GNUC__ || defined __SUNPRO_C || defined __cplusplus || __PROTOTYPES
-#  define PARAMS(args) args
-# else
-#  define PARAMS(args) ()
-# endif
-#endif
 
 #ifndef internal_function
 # define internal_function
@@ -36,36 +28,42 @@
 # define attribute_hidden
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+enum expression_operator
+{
+  /* Without arguments:  */
+  var,				/* The variable "n".  */
+  num,				/* Decimal number.  */
+  /* Unary operators:  */
+  lnot,				/* Logical NOT.  */
+  /* Binary operators:  */
+  mult,				/* Multiplication.  */
+  divide,			/* Division.  */
+  module,			/* Modulo operation.  */
+  plus,				/* Addition.  */
+  minus,			/* Subtraction.  */
+  less_than,			/* Comparison.  */
+  greater_than,			/* Comparison.  */
+  less_or_equal,		/* Comparison.  */
+  greater_or_equal,		/* Comparison.  */
+  equal,			/* Comparison for equality.  */
+  not_equal,			/* Comparison for inequality.  */
+  land,				/* Logical AND.  */
+  lor,				/* Logical OR.  */
+  /* Ternary operators:  */
+  qmop				/* Question mark operator.  */
+};
 
 /* This is the representation of the expressions to determine the
    plural form.  */
 struct expression
 {
   int nargs;			/* Number of arguments.  */
-  enum operator
-  {
-    /* Without arguments:  */
-    var,			/* The variable "n".  */
-    num,			/* Decimal number.  */
-    /* Unary operators:  */
-    lnot,			/* Logical NOT.  */
-    /* Binary operators:  */
-    mult,			/* Multiplication.  */
-    divide,			/* Division.  */
-    module,			/* Modulo operation.  */
-    plus,			/* Addition.  */
-    minus,			/* Subtraction.  */
-    less_than,			/* Comparison.  */
-    greater_than,		/* Comparison.  */
-    less_or_equal,		/* Comparison.  */
-    greater_or_equal,		/* Comparison.  */
-    equal,			/* Comparison for equality.  */
-    not_equal,			/* Comparison for inequality.  */
-    land,			/* Logical AND.  */
-    lor,			/* Logical OR.  */
-    /* Ternary operators:  */
-    qmop			/* Question mark operator.  */
-  } operation;
+  enum expression_operator operation;
   union
   {
     unsigned long int num;	/* Number value for `num'.  */
@@ -109,18 +107,23 @@ struct parse_args
 # define EXTRACT_PLURAL_EXPRESSION extract_plural_expression
 #endif
 
-extern void FREE_EXPRESSION PARAMS ((struct expression *exp))
+extern void FREE_EXPRESSION (struct expression *exp)
      internal_function;
-extern int PLURAL_PARSE PARAMS ((void *arg));
+extern int PLURAL_PARSE (void *arg);
 extern struct expression GERMANIC_PLURAL attribute_hidden;
-extern void EXTRACT_PLURAL_EXPRESSION PARAMS ((const char *nullentry,
-					       struct expression **pluralp,
-					       unsigned long int *npluralsp))
+extern void EXTRACT_PLURAL_EXPRESSION (const char *nullentry,
+				       const struct expression **pluralp,
+				       unsigned long int *npluralsp)
      internal_function;
 
-#if !defined (_LIBC) && !defined (IN_LIBINTL)
-extern unsigned long int plural_eval PARAMS ((struct expression *pexp,
-					      unsigned long int n));
+#if !defined (_LIBC) && !defined (IN_LIBINTL) && !defined (IN_LIBGLOCALE)
+extern unsigned long int plural_eval (const struct expression *pexp,
+				      unsigned long int n);
+#endif
+
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* _PLURAL_EXP_H */
