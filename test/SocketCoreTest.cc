@@ -38,7 +38,8 @@ void SocketCoreTest::testWriteAndReadDatagram()
     pair<string, uint16_t> peer;
     {
       ssize_t rlength = s.readDataFrom(readbuffer, sizeof(readbuffer), peer);
-      CPPUNIT_ASSERT_EQUAL(string("127.0.0.1"), peer.first);
+      // commented out because ip address may vary
+      //CPPUNIT_ASSERT_EQUAL(string("127.0.0.1"), peer.first);
       CPPUNIT_ASSERT_EQUAL((ssize_t)message1.size(), rlength);
       readbuffer[rlength] = '\0';
       CPPUNIT_ASSERT_EQUAL(message1, string(readbuffer));
