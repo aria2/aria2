@@ -102,6 +102,9 @@ public:
   createAnnouncePeerReplyMessage(const DHTNodeHandle& remoteNode,
 				 const string& transactionID) = 0;
 
+  virtual DHTMessageHandle
+  createUnknownMessage(const char* data, size_t length, const string& ipaddr,
+		       uint16_t port) = 0;
 };
 
 #endif // _D_DHT_MESSAGE_FACTORY_H_

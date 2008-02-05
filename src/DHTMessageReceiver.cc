@@ -67,45 +67,63 @@ DHTMessageHandle DHTMessageReceiver::receiveMessage()
   if(length <= 0) {
     return 0;
   }
-  bool isReply = false;
-  MetaEntryHandle msgroot = MetaFileUtil::bdecoding(data, length);
-  const Dictionary* d = dynamic_cast<const Dictionary*>(msgroot.get());
-  if(d) {
-    const Data* y = dynamic_cast<const Data*>(d->get("y"));
-    if(y->toString() == "r" || y->toString() == "e") {
-      isReply = true;
+  try {
+    bool isReply = false;
+    MetaEntryHandle msgroot = MetaFileUtil::bdecoding(data, length);
+    const Dictionary* d = dynamic_cast<const Dictionary*>(msgroot.get());
+    if(d) {
+      const Data* y = dynamic_cast<const Data*>(d->get("y"));
+      if(y->toString() == "r" || y->toString() == "e") {
+	isReply = true;
+      }
+    } else {
+      _logger->info("Malformed DHT message. This is not a bencoded directory. From:%s:%u", remoteAddr.c_str(), remotePort);
+      return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
-  } else {
-    throw new DlAbortEx("Malformed DHT message. From:%s:%u", remoteAddr.c_str(), remotePort);
-  }
-  DHTMessageHandle message = 0;
-  DHTMessageCallbackHandle callback = 0;
-  if(isReply) {
-    std::pair<DHTMessageHandle, DHTMessageCallbackHandle> p = _tracker->messageArrived(d, remoteAddr, remotePort);
-    message = p.first;
-    callback = p.second;
-    if(message.isNull()) {
-      // timeout or malicious message
-      return 0;
+    DHTMessageHandle message = 0;
+    DHTMessageCallbackHandle callback = 0;
+    if(isReply) {
+      std::pair<DHTMessageHandle, DHTMessageCallbackHandle> p = _tracker->messageArrived(d, remoteAddr, remotePort);
+      message = p.first;
+      callback = p.second;
+      if(message.isNull()) {
+	// timeout or malicious? message
+	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
+      }
+    } else {
+      message = _factory->createQueryMessage(d, remoteAddr, remotePort);
     }
-  } else {
-    message = _factory->createQueryMessage(d, remoteAddr, remotePort);
+    _logger->info("Message received: %s", message->toString().c_str());
+    message->validate();
+    message->doReceivedAction();
+    message->getRemoteNode()->markGood();
+    message->getRemoteNode()->updateLastContact();
+    _routingTable->addGoodNode(message->getRemoteNode());
+    if(!callback.isNull()) {
+      callback->onReceived(message);
+    }
+    return message;
+  } catch(RecoverableException* e) {
+    _logger->info("Exception thrown while receiving DHT message.", e);
+    delete e;
+    return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
   }
-  _logger->info("Message received: %s", message->toString().c_str());
-  message->validate();
-  message->doReceivedAction();
-  message->getRemoteNode()->markGood();
-  message->getRemoteNode()->updateLastContact();
-  _routingTable->addGoodNode(message->getRemoteNode());
-  if(!callback.isNull()) {
-    callback->onReceived(message);
-  }
-  return message;
 }
 
 void DHTMessageReceiver::handleTimeout()
 {
   _tracker->handleTimeout();
+}
+
+SharedHandle<DHTMessage>
+DHTMessageReceiver::handleUnknownMessage(const char* data, size_t length,
+					 const string& remoteAddr,
+					 uint16_t remotePort)
+{
+  SharedHandle<DHTMessage> m =
+    _factory->createUnknownMessage(data, length, remoteAddr, remotePort);
+  _logger->info("Message received: %s", m->toString().c_str());
+  return m;
 }
 
 DHTConnectionHandle DHTMessageReceiver::getConnection() const

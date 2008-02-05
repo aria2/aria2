@@ -152,6 +152,10 @@ public:
   createAnnouncePeerReplyMessage(const DHTNodeHandle& remoteNode,
 				 const string& transactionID);
 
+  virtual DHTMessageHandle
+  createUnknownMessage(const char* data, size_t length, const string& ipaddr,
+		       uint16_t port);
+
   void setRoutingTable(const DHTRoutingTableHandle& routingTable);
 
   void setConnection(const DHTConnectionHandle& connection);

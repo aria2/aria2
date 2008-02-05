@@ -99,21 +99,26 @@ void DHTMessageTracker::handleTimeout()
   for(DHTMessageTrackerEntries::iterator i = _entries.begin();
       i != _entries.end();) {
     if((*i)->isTimeout()) {
-      DHTMessageTrackerEntryHandle entry = *i;
-      i = _entries.erase(i);
-      DHTNodeHandle node = entry->getTargetNode();
-      _logger->debug("Message timeout: To:%s:%u",
-		     node->getIPAddress().c_str(), node->getPort());
-      node->updateRTT(entry->getElapsedMillis());
-      node->timeout();
-      if(node->isBad()) {
-	_logger->debug("Marked bad: %s:%u",
+      try {
+	DHTMessageTrackerEntryHandle entry = *i;
+	i = _entries.erase(i);
+	DHTNodeHandle node = entry->getTargetNode();
+	_logger->debug("Message timeout: To:%s:%u",
 		       node->getIPAddress().c_str(), node->getPort());
-	_routingTable->dropNode(node);
-      }
-      DHTMessageCallbackHandle callback = entry->getCallback();
-      if(!callback.isNull()) {
-	callback->onTimeout(node);
+	node->updateRTT(entry->getElapsedMillis());
+	node->timeout();
+	if(node->isBad()) {
+	  _logger->debug("Marked bad: %s:%u",
+			 node->getIPAddress().c_str(), node->getPort());
+	  _routingTable->dropNode(node);
+	}
+	DHTMessageCallbackHandle callback = entry->getCallback();
+	if(!callback.isNull()) {
+	  callback->onTimeout(node);
+	}
+      } catch(RecoverableException* e) {
+	delete e;
+	_logger->info("Exception thrown while handling timeouts.");
       }
     } else {
       ++i;

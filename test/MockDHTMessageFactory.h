@@ -107,6 +107,13 @@ public:
     return 0;
   }
 
+  virtual DHTMessageHandle
+  createUnknownMessage(const char* data, size_t length, const string& ipaddr,
+		       uint16_t port)
+  {
+    return 0;
+  }
+
   void setLocalNode(const DHTNodeHandle& node)
   {
     _localNode = node;

@@ -1,3 +1,16 @@
+2008-02-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Catch exception inside DHTMessageReceiver::receiveMessage().
+	Log unknown message.
+	* src/DHTMessageReceiver.{h, cc}
+	* src/DHTMessageFactory.h
+	* src/DHTMessageFactoryImpl.{h, cc}
+	* src/DHTMessageTracker.cc (handleTimeout): Catch and handle exception.
+	* src/DHTInteractionCommand.cc
+	* src/DHTUnknownMessage.{h, cc}
+	* test/DHTUnknownMessageTest.cc
+	* test/MockDHTMessageFactory.h
+	
 2008-02-02  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Commented out ip address comparison because a host can have multiple

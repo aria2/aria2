@@ -76,16 +76,14 @@ bool DHTInteractionCommand::execute()
 
   _taskQueue->executeTask();
 
-  for(size_t i = 0; i < 20 && _readCheckSocket->isReadable(0); ++i) {
-    try {
-      _receiver->receiveMessage();
-    } catch(RecoverableException* e) {
-      logger->error(EX_EXCEPTION_CAUGHT, e);
-      delete e;
+  for(size_t i = 0; i < 20; ++i) {
+    SharedHandle<DHTMessage> m = _receiver->receiveMessage();
+    if(m.isNull()) {
+      break;
     }
   }
+  _receiver->handleTimeout();
   try {
-    _receiver->handleTimeout();
     _dispatcher->sendMessages();
   } catch(RecoverableException* e) {
     logger->error(EX_EXCEPTION_CAUGHT, e);

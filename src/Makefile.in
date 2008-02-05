@@ -163,6 +163,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessage.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessage.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessage.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTUnknownMessage.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImpl.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTNodeLookupTask.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTNodeLookupEntry.cc\
@@ -427,17 +428,17 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DHTPingMessage.cc DHTPingReplyMessage.cc DHTFindNodeMessage.cc \
 	DHTFindNodeReplyMessage.cc DHTGetPeersMessage.cc \
 	DHTGetPeersReplyMessage.cc DHTAnnouncePeerMessage.cc \
-	DHTAnnouncePeerReplyMessage.cc DHTMessageFactoryImpl.cc \
-	DHTNodeLookupTask.cc DHTNodeLookupEntry.cc BNode.cc \
-	DHTMessageCallbackImpl.cc DHTAbstractTask.cc DHTPingTask.cc \
-	DHTTaskQueueImpl.cc DHTBucketRefreshTask.cc \
-	DHTAbstractNodeLookupTask.cc DHTPeerLookupTask.cc DHTSetup.cc \
-	DHTTaskFactoryImpl.cc DHTInteractionCommand.cc \
-	DHTPeerAnnounceEntry.cc DHTPeerAnnounceStorage.cc \
-	DHTTokenTracker.cc DHTGetPeersCommand.cc \
-	DHTTokenUpdateCommand.cc DHTBucketRefreshCommand.cc \
-	DHTPeerAnnounceCommand.cc DHTReplaceNodeTask.cc \
-	DHTEntryPointNameResolveCommand.cc \
+	DHTAnnouncePeerReplyMessage.cc DHTUnknownMessage.cc \
+	DHTMessageFactoryImpl.cc DHTNodeLookupTask.cc \
+	DHTNodeLookupEntry.cc BNode.cc DHTMessageCallbackImpl.cc \
+	DHTAbstractTask.cc DHTPingTask.cc DHTTaskQueueImpl.cc \
+	DHTBucketRefreshTask.cc DHTAbstractNodeLookupTask.cc \
+	DHTPeerLookupTask.cc DHTSetup.cc DHTTaskFactoryImpl.cc \
+	DHTInteractionCommand.cc DHTPeerAnnounceEntry.cc \
+	DHTPeerAnnounceStorage.cc DHTTokenTracker.cc \
+	DHTGetPeersCommand.cc DHTTokenUpdateCommand.cc \
+	DHTBucketRefreshCommand.cc DHTPeerAnnounceCommand.cc \
+	DHTReplaceNodeTask.cc DHTEntryPointNameResolveCommand.cc \
 	DHTRoutingTableSerializer.cc DHTRoutingTableDeserializer.cc \
 	DHTAutoSaveCommand.cc DHTRegistry.cc Metalinker.cc \
 	Metalinker.h MetalinkEntry.cc MetalinkEntry.h \
@@ -544,6 +545,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTUnknownMessage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImpl.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTNodeLookupTask.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTNodeLookupEntry.$(OBJEXT) \
@@ -1189,6 +1191,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTaskQueueImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTracker.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenUpdateCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUnknownMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Data.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolver.Po@am__quote@

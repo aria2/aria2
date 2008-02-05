@@ -32,52 +32,41 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_MESSAGE_RECEIVER_H_
-#define _D_DHT_MESSAGE_RECEIVER_H_
+#ifndef _D_DHT_UNKNOWN_MESSAGE_H_
+#define _D_DHT_UNKNOWN_MESSAGE_H_
 
-#include "common.h"
-#include "DHTMessageReceiverDecl.h"
-#include "DHTMessageTrackerDecl.h"
-#include "DHTMessageDecl.h"
-#include "DHTConnectionDecl.h"
-#include "DHTMessageFactoryDecl.h"
-#include "DHTRoutingTableDecl.h"
+#include "DHTMessage.h"
 
-class Logger;
-
-class DHTMessageReceiver {
+class DHTUnknownMessage:public DHTMessage {
 private:
-  DHTMessageTrackerHandle _tracker;
-
-  DHTConnectionHandle _connection;
-
-  DHTMessageFactoryHandle _factory;
-
-  DHTRoutingTableHandle _routingTable;
-
-  const Logger* _logger;
-
-  SharedHandle<DHTMessage>
-  handleUnknownMessage(const char* data, size_t length,
-		       const string& remoteAddr, uint16_t remotePort);
+  char* _data;
+  size_t _length;
+  string _ipaddr;
+  uint16_t _port;
 public:
-  DHTMessageReceiver(const DHTMessageTrackerHandle& tracker);
+  // _remoteNode is always null
+  DHTUnknownMessage(const DHTNodeHandle& localNode,
+		    const char* data, size_t length,
+		    const string& ipaddr, uint16_t port);
+
+  virtual ~DHTUnknownMessage();
+
+  // do nothing
+  virtual void doReceivedAction();
+
+  // do nothing; we don't use this message as outgoing message.
+  virtual void send();
+
+  // always return false
+  virtual bool isReply() const;
+
+  virtual void validate() const;
   
-  ~DHTMessageReceiver();
+  // returns "unknown"
+  virtual string getMessageType() const;
 
-  DHTMessageHandle receiveMessage();
-
-  void handleTimeout();
-
-  DHTConnectionHandle getConnection() const;
-
-  DHTMessageTrackerHandle getMessageTracker() const;
-
-  void setConnection(const DHTConnectionHandle& connection);
-
-  void setMessageFactory(const DHTMessageFactoryHandle& factory);
-
-  void setRoutingTable(const DHTRoutingTableHandle& routingTable);
+  // show some sample bytes
+  virtual string toString() const;
 };
 
-#endif // _D_DHT_MESSAGE_RECEIVER_H_
+#endif // _D_DHT_UNKNOWN_MESSAGE_H_

@@ -121,6 +121,7 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	DHTGetPeersReplyMessageTest.cc\
 	DHTAnnouncePeerMessageTest.cc\
 	DHTAnnouncePeerReplyMessageTest.cc\
+	DHTUnknownMessageTest.cc\
 	DHTMessageFactoryImplTest.cc\
 	BNodeTest.cc\
 	DHTPeerAnnounceEntryTest.cc\

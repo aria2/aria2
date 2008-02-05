@@ -935,6 +935,7 @@ uninstall-am: uninstall-info-am
 @ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTUnknownMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImplTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BNodeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntryTest.cc\

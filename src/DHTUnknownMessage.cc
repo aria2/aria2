@@ -32,52 +32,56 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_MESSAGE_RECEIVER_H_
-#define _D_DHT_MESSAGE_RECEIVER_H_
+#include "DHTUnknownMessage.h"
+#include "DHTNode.h"
+#include "Util.h"
+#include <cstring>
 
-#include "common.h"
-#include "DHTMessageReceiverDecl.h"
-#include "DHTMessageTrackerDecl.h"
-#include "DHTMessageDecl.h"
-#include "DHTConnectionDecl.h"
-#include "DHTMessageFactoryDecl.h"
-#include "DHTRoutingTableDecl.h"
+DHTUnknownMessage::DHTUnknownMessage(const DHTNodeHandle& localNode,
+				     const char* data, size_t length,
+				     const string& ipaddr, uint16_t port):
+  DHTMessage(localNode, 0),
+  _length(length),
+  _ipaddr(ipaddr),
+  _port(port)
+{
+  if(_length == 0) {
+    _data = 0;
+  } else {
+    _data = new char[length];
+    memcpy(_data, data, length);
+  }
+}
 
-class Logger;
+DHTUnknownMessage::~DHTUnknownMessage()
+{
+  delete [] _data;
+}
 
-class DHTMessageReceiver {
-private:
-  DHTMessageTrackerHandle _tracker;
+void DHTUnknownMessage::doReceivedAction() {}
 
-  DHTConnectionHandle _connection;
+void DHTUnknownMessage::send() {}
 
-  DHTMessageFactoryHandle _factory;
+bool DHTUnknownMessage::isReply() const
+{
+  return false;
+}
 
-  DHTRoutingTableHandle _routingTable;
-
-  const Logger* _logger;
-
-  SharedHandle<DHTMessage>
-  handleUnknownMessage(const char* data, size_t length,
-		       const string& remoteAddr, uint16_t remotePort);
-public:
-  DHTMessageReceiver(const DHTMessageTrackerHandle& tracker);
+void DHTUnknownMessage::validate() const {}
   
-  ~DHTMessageReceiver();
+string DHTUnknownMessage::getMessageType() const
+{
+  return "unknown";
+}
 
-  DHTMessageHandle receiveMessage();
+string DHTUnknownMessage::toString() const
+{
+  size_t sampleLength = 8;
+  if(_length < sampleLength) {
+    sampleLength = _length;
+  }
+  string sample = string(&_data[0], &_data[sampleLength]);
 
-  void handleTimeout();
-
-  DHTConnectionHandle getConnection() const;
-
-  DHTMessageTrackerHandle getMessageTracker() const;
-
-  void setConnection(const DHTConnectionHandle& connection);
-
-  void setMessageFactory(const DHTMessageFactoryHandle& factory);
-
-  void setRoutingTable(const DHTRoutingTableHandle& routingTable);
-};
-
-#endif // _D_DHT_MESSAGE_RECEIVER_H_
+  return "dht unknown Remote:"+_ipaddr+":"+Util::uitos(_port)+" length="+
+    Util::uitos(_length)+", first 8 bytes(hex)="+Util::toHex(sample);
+}

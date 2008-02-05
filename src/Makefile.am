@@ -280,6 +280,7 @@ SRCS += MetaEntry.h\
 	DHTGetPeersReplyMessage.cc\
 	DHTAnnouncePeerMessage.cc\
 	DHTAnnouncePeerReplyMessage.cc\
+	DHTUnknownMessage.cc\
 	DHTMessageFactoryImpl.cc\
 	DHTNodeLookupTask.cc\
 	DHTNodeLookupEntry.cc\

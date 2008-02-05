@@ -48,6 +48,7 @@
 #include "DHTGetPeersReplyMessage.h"
 #include "DHTAnnouncePeerMessage.h"
 #include "DHTAnnouncePeerReplyMessage.h"
+#include "DHTUnknownMessage.h"
 #include "DHTConnection.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTPeerAnnounceStorage.h"
@@ -384,6 +385,16 @@ DHTMessageFactoryImpl::createAnnouncePeerReplyMessage(const DHTNodeHandle& remot
   SharedHandle<DHTAnnouncePeerReplyMessage> m =
     new DHTAnnouncePeerReplyMessage(_localNode, remoteNode, transactionID);
   setCommonProperty(m);
+  return m;
+}
+
+DHTMessageHandle
+DHTMessageFactoryImpl::createUnknownMessage(const char* data, size_t length,
+					    const string& ipaddr, uint16_t port)
+
+{
+  SharedHandle<DHTUnknownMessage> m = 
+    new DHTUnknownMessage(_localNode, data, length, ipaddr, port);
   return m;
 }
 
