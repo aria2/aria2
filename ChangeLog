@@ -1,3 +1,9 @@
+2008-02-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Create directory before saving DHT routing table.
+	Now ios::failure is now handled properly.
+	* src/DHTAutoSaveCommand.cc
+
 2008-02-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Removed unnecessary cerr.
