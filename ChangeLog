@@ -1,5 +1,10 @@
 2008-02-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed unnecessary cerr.
+	* src/DownloadEngine.cc
+
+2008-02-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Catch exception inside DHTMessageReceiver::receiveMessage().
 	Log unknown message.
 	* src/DHTMessageReceiver.{h, cc}
