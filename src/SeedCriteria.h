@@ -37,6 +37,9 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
 
 class SeedCriteria {
 public:
@@ -55,6 +58,8 @@ public:
 
 typedef SharedHandle<SeedCriteria> SeedCriteriaHandle;
 
-typedef deque<SeedCriteriaHandle> SeedCriterion;
+typedef std::deque<SeedCriteriaHandle> SeedCriterion;
+
+} // namespace aria2
 
 #endif // _D_SEED_CRITERIA_H_

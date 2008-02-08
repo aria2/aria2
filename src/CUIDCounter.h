@@ -36,6 +36,9 @@
 #define _D_CUID_COUNTER_H_
 
 #include "common.h"
+#include "SingletonHolder.h"
+
+namespace aria2 {
 
 typedef int32_t CUID;
 
@@ -55,5 +58,7 @@ public:
 
 typedef SharedHandle<CUIDCounter> CUIDCounterHandle;
 typedef SingletonHolder<CUIDCounterHandle> CUIDCounterSingletonHolder;
+
+}
 
 #endif // _D_CUID_COUNTER_H_

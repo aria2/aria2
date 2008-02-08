@@ -36,6 +36,9 @@
 #define _D_TRANSFER_STAT_H_
 
 #include "common.h"
+#include <stdint.h>
+
+namespace aria2 {
 
 class TransferStat {
 public:
@@ -117,5 +120,7 @@ public:
 };
 
 TransferStat operator+(const TransferStat& a, const TransferStat& b);
+
+} // namespace aria2
 
 #endif // _D_TRANSFER_STAT_H_

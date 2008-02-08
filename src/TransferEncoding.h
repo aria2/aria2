@@ -36,6 +36,10 @@
 #define _D_TRANSFER_ENCODING_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <stdint.h>
+
+namespace aria2 {
 
 class TransferEncoding {
 public:
@@ -47,6 +51,8 @@ public:
 };
 
 typedef SharedHandle<TransferEncoding> TransferEncodingHandle;
+
+} // namespace aria2
 
 #endif // _D_TRANSFER_ENCODING_H_
 

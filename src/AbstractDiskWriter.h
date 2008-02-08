@@ -36,15 +36,19 @@
 #define _D_ABSTRACT_DISK_WRITER_H_
 
 #include "DiskWriter.h"
-#include "Logger.h"
+#include <string>
+
+namespace aria2 {
+
+class Logger;
 
 class AbstractDiskWriter : public DiskWriter {
 protected:
-  string filename;
+  std::string filename;
   int32_t fd;
   const Logger* logger;
 
-  void createFile(const string& filename, int32_t addFlags = 0);
+  void createFile(const std::string& filename, int32_t addFlags = 0);
 
 private:
   int32_t writeDataInternal(const unsigned char* data, int32_t len);
@@ -56,11 +60,11 @@ public:
   AbstractDiskWriter();
   virtual ~AbstractDiskWriter();
 
-  virtual void openFile(const string& filename, int64_t totalLength = 0);
+  virtual void openFile(const std::string& filename, int64_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const string& filename, int64_t totalLength = 0);
+  virtual void openExistingFile(const std::string& filename, int64_t totalLength = 0);
 
   virtual void writeData(const unsigned char* data, int32_t len, int64_t offset);
 
@@ -74,5 +78,7 @@ public:
 
   virtual void disableDirectIO();
 };
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_DISK_WRITER_H_

@@ -35,16 +35,19 @@
 #include "DHTQueryMessage.h"
 #include "DHTNode.h"
 #include "Util.h"
+#include "Dictionary.h"
 #include "Data.h"
 
-DHTQueryMessage::DHTQueryMessage(const DHTNodeHandle& localNode,
-				 const DHTNodeHandle& remoteNode,
-				 const string& transactionID):
+namespace aria2 {
+
+DHTQueryMessage::DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
+				 const SharedHandle<DHTNode>& remoteNode,
+				 const std::string& transactionID):
   DHTAbstractMessage(localNode, remoteNode, transactionID) {}
 
 DHTQueryMessage::~DHTQueryMessage() {}
 
-string DHTQueryMessage::getType() const
+std::string DHTQueryMessage::getType() const
 {
   return "q";
 }
@@ -60,7 +63,7 @@ bool DHTQueryMessage::isReply() const
   return false;
 }
 
-string DHTQueryMessage::toString() const
+std::string DHTQueryMessage::toString() const
 {
   return "dht query "+getMessageType()+
     " TransactionID="+Util::toHex(_transactionID)+
@@ -68,3 +71,5 @@ string DHTQueryMessage::toString() const
     _remoteNode->getIPAddress()+":"+Util::itos(_remoteNode->getPort())+
     ", id="+Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH);
 }
+
+} // namespace aria2

@@ -39,20 +39,32 @@
 #include "DownloadHandlerConstants.h"
 #include "ContentTypeRequestGroupCriteria.h"
 
-#ifdef ENABLE_METALINK
-MemoryBufferPreDownloadHandlerHandle DownloadHandlerFactory::_metalinkPreDownloadHandler = 0;
+namespace aria2 {
 
-MetalinkPostDownloadHandlerHandle DownloadHandlerFactory::_metalinkPostDownloadHandler = 0;
+#ifdef ENABLE_METALINK
+
+MemoryBufferPreDownloadHandlerHandle
+DownloadHandlerFactory::_metalinkPreDownloadHandler = 0;
+
+MetalinkPostDownloadHandlerHandle
+DownloadHandlerFactory::_metalinkPostDownloadHandler = 0;
+
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-MemoryBufferPreDownloadHandlerHandle DownloadHandlerFactory::_btPreDownloadHandler = 0;
 
-BtPostDownloadHandlerHandle DownloadHandlerFactory::_btPostDownloadHandler = 0;
+MemoryBufferPreDownloadHandlerHandle
+DownloadHandlerFactory::_btPreDownloadHandler = 0;
+
+BtPostDownloadHandlerHandle
+DownloadHandlerFactory::_btPostDownloadHandler = 0;
+
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-MemoryBufferPreDownloadHandlerHandle DownloadHandlerFactory::getMetalinkPreDownloadHandler()
+
+MemoryBufferPreDownloadHandlerHandle
+DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 {
   if(_metalinkPreDownloadHandler.isNull()) {
     _metalinkPreDownloadHandler = new MemoryBufferPreDownloadHandler();
@@ -65,17 +77,21 @@ MemoryBufferPreDownloadHandlerHandle DownloadHandlerFactory::getMetalinkPreDownl
   return _metalinkPreDownloadHandler;
 }
 
-MetalinkPostDownloadHandlerHandle DownloadHandlerFactory::getMetalinkPostDownloadHandler()
+MetalinkPostDownloadHandlerHandle
+DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 {
   if(_metalinkPostDownloadHandler.isNull()) {
     _metalinkPostDownloadHandler = new MetalinkPostDownloadHandler();
   }
   return _metalinkPostDownloadHandler;
 }
+
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-MemoryBufferPreDownloadHandlerHandle DownloadHandlerFactory::getBtPreDownloadHandler()
+
+MemoryBufferPreDownloadHandlerHandle
+DownloadHandlerFactory::getBtPreDownloadHandler()
 {
   if(_btPreDownloadHandler.isNull()) {
     _btPreDownloadHandler = new MemoryBufferPreDownloadHandler();
@@ -95,4 +111,7 @@ BtPostDownloadHandlerHandle DownloadHandlerFactory::getBtPostDownloadHandler()
   }
   return _btPostDownloadHandler;
 }
+
 #endif // ENABLE_BITTORRENT
+
+} // namespace aria2

@@ -36,27 +36,27 @@
 #define _D_HTTP_RESPONSE_H_
 
 #include "common.h"
-#include "HttpRequest.h"
-#include "HttpHeader.h"
-#include "TransferEncoding.h"
-#include "LogFactory.h"
+#include "SharedHandle.h"
+#include <stdint.h>
+
+namespace aria2 {
+
+class HttpRequest;
+class HttpHeader;
+class TransferEncoding;
+class Logger;
 
 class HttpResponse {
 private:
   int32_t cuid;
   int32_t status;
-  HttpRequestHandle httpRequest;
-  HttpHeaderHandle httpHeader;
+  SharedHandle<HttpRequest> httpRequest;
+  SharedHandle<HttpHeader> httpHeader;
   const Logger* logger;
 public:
-  HttpResponse():cuid(0),
-		 status(0),
-		 httpRequest(0),
-		 httpHeader(0),
-		 logger(LogFactory::getInstance())
-  {}
+  HttpResponse();
   
-  ~HttpResponse() {}
+  ~HttpResponse();
 
   void validateResponse() const;
 
@@ -66,7 +66,7 @@ public:
    * this function returns the filename from it.
    * If it is not there, returns the part of filename from the request URL.
    */
-  string determinFilename() const;
+  std::string determinFilename() const;
 
   void retrieveCookie();
 
@@ -77,29 +77,23 @@ public:
 
   void processRedirect();
 
-  string getRedirectURI() const;
+  std::string getRedirectURI() const;
 
   bool isTransferEncodingSpecified() const;
 
-  string getTransferEncoding() const;
+  std::string getTransferEncoding() const;
 
-  TransferEncodingHandle getTransferDecoder() const;
+  SharedHandle<TransferEncoding> getTransferDecoder() const;
 
   int64_t getContentLength() const;
 
   int64_t getEntityLength() const;
 
-  string getContentType() const;
+  std::string getContentType() const;
 
-  void setHttpHeader(const HttpHeaderHandle& httpHeader)
-  {
-    this->httpHeader = httpHeader;
-  }
+  void setHttpHeader(const SharedHandle<HttpHeader>& httpHeader);
 
-  HttpHeaderHandle getHttpHeader() const
-  {
-    return httpHeader;
-  }
+  SharedHandle<HttpHeader> getHttpHeader() const;
 
   void setStatus(int32_t status)
   {
@@ -111,15 +105,9 @@ public:
     return status;
   }
 
-  void setHttpRequest(const HttpRequestHandle& httpRequest)
-  {
-    this->httpRequest = httpRequest;
-  }
+  void setHttpRequest(const SharedHandle<HttpRequest>& httpRequest);
 
-  HttpRequestHandle getHttpRequest() const
-  {
-    return httpRequest;
-  }
+  SharedHandle<HttpRequest> getHttpRequest() const;
 
   void setCuid(int32_t cuid)
   {
@@ -128,5 +116,7 @@ public:
 };
 
 typedef SharedHandle<HttpResponse> HttpResponseHandle;
+
+} // namespace aria2
 
 #endif // _D_HTTP_RESPONSE_H_

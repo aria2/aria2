@@ -36,62 +36,68 @@
 #define _D_DHT_ROUTING_TABLE_H_
 
 #include "common.h"
-#include "DHTBucketDecl.h"
-#include "DHTNodeDecl.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskFactoryDecl.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
 
+namespace aria2 {
+
+class DHTNode;
+class DHTBucket;
+class DHTTaskQueue;
+class DHTTaskFactory;
 class BNode;
-
 class Logger;
 
 class DHTRoutingTable {
 private:
-  DHTNodeHandle _localNode;
+  SharedHandle<DHTNode> _localNode;
 
   BNode* _root;
 
   size_t _numBucket;
 
-  DHTTaskQueueHandle _taskQueue;
+  SharedHandle<DHTTaskQueue> _taskQueue;
 
-  DHTTaskFactoryHandle _taskFactory;
+  SharedHandle<DHTTaskFactory> _taskFactory;
 
   const Logger* _logger;
 
-  bool addNode(const DHTNodeHandle& node, bool good);
+  bool addNode(const SharedHandle<DHTNode>& node, bool good);
 public:
-  DHTRoutingTable(const DHTNodeHandle& localNode);
+  DHTRoutingTable(const SharedHandle<DHTNode>& localNode);
 
   ~DHTRoutingTable();
 
-  bool addNode(const DHTNodeHandle& node);
+  bool addNode(const SharedHandle<DHTNode>& node);
 
-  bool addGoodNode(const DHTNodeHandle& node);
+  bool addGoodNode(const SharedHandle<DHTNode>& node);
 
-  DHTNodes getClosestKNodes(const unsigned char* key) const;
+  std::deque<SharedHandle<DHTNode> > getClosestKNodes(const unsigned char* key) const;
 
   size_t countBucket() const;
 
   void showBuckets() const;
 
-  void dropNode(const DHTNodeHandle& node);
+  void dropNode(const SharedHandle<DHTNode>& node);
 
-  void moveBucketHead(const DHTNodeHandle& node);
+  void moveBucketHead(const SharedHandle<DHTNode>& node);
 
-  void moveBucketTail(const DHTNodeHandle& node);
+  void moveBucketTail(const SharedHandle<DHTNode>& node);
   
-  DHTBucketHandle getBucketFor(const unsigned char* nodeID) const;
+  SharedHandle<DHTBucket> getBucketFor(const unsigned char* nodeID) const;
 
-  DHTBucketHandle getBucketFor(const DHTNodeHandle& node) const;
+  SharedHandle<DHTBucket> getBucketFor(const SharedHandle<DHTNode>& node) const;
 
-  DHTNodeHandle getNode(const unsigned char* id, const string& ipaddr, uint16_t port) const;
+  SharedHandle<DHTNode> getNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
   
-  DHTBuckets getBuckets() const;
+  std::deque<SharedHandle<DHTBucket> > getBuckets() const;
 
-  void setTaskQueue(const DHTTaskQueueHandle& taskQueue);
+  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 
-  void setTaskFactory(const DHTTaskFactoryHandle& taskFactory);
+  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_ROUTING_TABLE_H_

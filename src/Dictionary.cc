@@ -35,6 +35,8 @@
 #include "Dictionary.h"
 #include "MetaEntryVisitor.h"
 
+namespace aria2 {
+
 Dictionary::Dictionary() {}
 
 Dictionary::~Dictionary() {
@@ -42,13 +44,14 @@ Dictionary::~Dictionary() {
 }
 
 void Dictionary::clearTable() {
-  for(MetaTable::iterator itr = table.begin(); itr != table.end(); itr++) {
+  for(std::map<std::string, MetaEntry*>::iterator itr = table.begin();
+      itr != table.end(); itr++) {
     delete itr->second;
   }
 }
 
-const MetaEntry* Dictionary::get(const string& name) const {
-  MetaTable::const_iterator itr = table.find(name);
+const MetaEntry* Dictionary::get(const std::string& name) const {
+  std::map<std::string, MetaEntry*>::const_iterator itr = table.find(name);
   if(itr == table.end()) {
     return NULL;
   } else {
@@ -56,12 +59,12 @@ const MetaEntry* Dictionary::get(const string& name) const {
   }
 }
 
-void Dictionary::put(const string& name, MetaEntry* entry) {
+void Dictionary::put(const std::string& name, MetaEntry* entry) {
   table[name] = entry;
   order.push_back(name);
 }
 
-void Dictionary::remove(const string& name)
+void Dictionary::remove(const std::string& name)
 {
   table.erase(name);
   order.erase(std::remove(order.begin(), order.end(), name), order.end());
@@ -71,6 +74,8 @@ void Dictionary::accept(MetaEntryVisitor* v) const {
   v->visit(this);
 }
 
-const Order& Dictionary::getOrder() const {
+const std::deque<std::string>& Dictionary::getOrder() const {
   return order;
 }
+
+} // namespace aria2

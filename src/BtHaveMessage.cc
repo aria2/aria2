@@ -37,6 +37,9 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Peer.h"
+
+namespace aria2 {
 
 BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 5) {
@@ -76,6 +79,8 @@ int32_t BtHaveMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtHaveMessage::toString() const {
+std::string BtHaveMessage::toString() const {
   return "have index="+Util::itos(index);
 }
+
+} // namespace aria2

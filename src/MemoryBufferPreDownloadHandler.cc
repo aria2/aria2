@@ -37,6 +37,8 @@
 #include "ByteArrayDiskWriterFactory.h"
 #include "DownloadContext.h"
 
+namespace aria2 {
+
 MemoryBufferPreDownloadHandler::MemoryBufferPreDownloadHandler() {}
 
 MemoryBufferPreDownloadHandler::~MemoryBufferPreDownloadHandler() {}
@@ -49,3 +51,5 @@ void MemoryBufferPreDownloadHandler::execute(RequestGroup* requestGroup)
 
   requestGroup->getDownloadContext()->setDir("[MEMORY]");
 }
+
+} // namespace aria2

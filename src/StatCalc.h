@@ -36,23 +36,26 @@
 #define _D_STAT_CALC_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class RequestGroupMan;
-typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
 class FileAllocationMan;
-typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
 class CheckIntegrityMan;
-typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
 
 class StatCalc {
 public:
   virtual ~StatCalc() {}
 
-  virtual void calculateStat(const RequestGroupManHandle& requestGroupMan,
-			     const FileAllocationManHandle& fileAllocationMan,
-			     const CheckIntegrityManHandle& checkIntegrityMan) = 0;
+  virtual void 
+  calculateStat(const SharedHandle<RequestGroupMan>& requestGroupMan,
+		const SharedHandle<FileAllocationMan>& fileAllocationMan,
+		const SharedHandle<CheckIntegrityMan>& checkIntegrityMan) = 0;
 };
 
 typedef SharedHandle<StatCalc> StatCalcHandle;
+
+} // namespace aria2
 
 #endif // _D_STAT_CALC_H_

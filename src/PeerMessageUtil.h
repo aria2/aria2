@@ -36,6 +36,10 @@
 #define _D_PEER_MESSAGE_UTIL_H_
 
 #include "common.h"
+#include <string>
+#include <utility>
+
+namespace aria2 {
 
 #define MAX_BLOCK_LENGTH (128*1024)
 
@@ -74,9 +78,11 @@ public:
    * The example of failure reason is that addr is not numbers-and-dots
    * notation.
    */
-  static bool createcompact(char* compact, const string& addr, uint16_t port);
+  static bool createcompact(char* compact, const std::string& addr, uint16_t port);
 
-  static pair<string, uint16_t> unpackcompact(const char* compact);
+  static std::pair<std::string, uint16_t> unpackcompact(const char* compact);
 };
+
+} // namespace aria2
 
 #endif // _D_PEER_MESSAGE_UTIL_H_

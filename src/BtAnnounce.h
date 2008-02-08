@@ -36,6 +36,10 @@
 #define _D_BT_ANNOUNCE_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
 
 class BtAnnounce {
 public:
@@ -57,7 +61,7 @@ public:
   /**
    * Returns announe URL with all necessary parameters included.
    */
-  virtual string getAnnounceUrl() = 0;
+  virtual std::string getAnnounceUrl() = 0;
 
   /**
    * Tells that the announce process has just started.
@@ -102,5 +106,7 @@ public:
 };
 
 typedef SharedHandle<BtAnnounce> BtAnnounceHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_ANNOUNCE_H_

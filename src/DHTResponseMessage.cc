@@ -35,16 +35,19 @@
 #include "DHTResponseMessage.h"
 #include "DHTNode.h"
 #include "Util.h"
+#include "Dictionary.h"
 #include "Data.h"
 
-DHTResponseMessage::DHTResponseMessage(const DHTNodeHandle& localNode,
-				       const DHTNodeHandle& remoteNode,
-				       const string& transactionID):
+namespace aria2 {
+
+DHTResponseMessage::DHTResponseMessage(const SharedHandle<DHTNode>& localNode,
+				       const SharedHandle<DHTNode>& remoteNode,
+				       const std::string& transactionID):
   DHTAbstractMessage(localNode, remoteNode, transactionID) {}
 
 DHTResponseMessage::~DHTResponseMessage() {}
 
-string DHTResponseMessage::getType() const
+std::string DHTResponseMessage::getType() const
 {
   return "r";
 }
@@ -59,7 +62,7 @@ bool DHTResponseMessage::isReply() const
   return true;
 }
 
-string DHTResponseMessage::toString() const
+std::string DHTResponseMessage::toString() const
 {
   return "dht response "+getMessageType()+
     " TransactionID="+Util::toHex(_transactionID)+
@@ -67,3 +70,5 @@ string DHTResponseMessage::toString() const
     _remoteNode->getIPAddress()+":"+Util::itos(_remoteNode->getPort())+
     ", id="+Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH);
 }
+
+} // namespace aria2

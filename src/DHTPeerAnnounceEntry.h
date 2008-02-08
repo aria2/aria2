@@ -36,21 +36,24 @@
 #define _D_DHT_PEER_ANNOUNCE_ENTRY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "DHTConstants.h"
 #include "PeerAddrEntry.h"
-#include "PeerDecl.h"
 #include "TimeA2.h"
+#include <deque>
 
+namespace aria2 {
+
+class Peer;
 class BtContext;
-typedef SharedHandle<BtContext> BtContextHandle;
 
 class DHTPeerAnnounceEntry {
 private:
   unsigned char _infoHash[DHT_ID_LENGTH];
 
-  PeerAddrEntries _peerAddrEntries;
+  std::deque<PeerAddrEntry> _peerAddrEntries;
 
-  BtContextHandle _btCtx;
+  SharedHandle<BtContext> _btCtx;
 
   Time _lastUpdated;
 public:
@@ -62,11 +65,11 @@ public:
   // if it already exists, update "Last Updated" property.
   void addPeerAddrEntry(const PeerAddrEntry& entry);
 
-  void setBtContext(const BtContextHandle& btCtx);
+  void setBtContext(const SharedHandle<BtContext>& btCtx);
 
   size_t countPeerAddrEntry() const;
 
-  const PeerAddrEntries& getPeerAddrEntries() const;
+  const std::deque<PeerAddrEntry>& getPeerAddrEntries() const;
 
   void removeStalePeerAddrEntry(time_t timeout);
   
@@ -84,8 +87,10 @@ public:
     return _infoHash;
   }
 
-  Peers getPeers() const;
+  std::deque<SharedHandle<Peer> > getPeers() const;
 
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_PEER_ANNOUNCE_ENTRY_H_

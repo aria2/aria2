@@ -40,17 +40,23 @@
 #include "LogFactory.h"
 #include "Util.h"
 
+namespace aria2 {
+
 DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID):
   DHTAbstractNodeLookupTask(targetNodeID)
 {}
 
-DHTNodes DHTNodeLookupTask::getNodesFromMessage(const DHTMessageHandle& message)
+std::deque<SharedHandle<DHTNode> >
+DHTNodeLookupTask::getNodesFromMessage(const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTFindNodeReplyMessage> m = message;
   return m->getClosestKNodes();
 }
 
-DHTMessageHandle DHTNodeLookupTask::createMessage(const DHTNodeHandle& remoteNode)
+SharedHandle<DHTMessage>
+DHTNodeLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
 {
   return _factory->createFindNodeMessage(remoteNode, _targetID);
 }
+
+} // namespace aria2

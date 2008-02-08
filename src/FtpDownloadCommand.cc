@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "FtpDownloadCommand.h"
 #include "Request.h"
+#include "Socket.h"
+
+namespace aria2 {
 
 FtpDownloadCommand::FtpDownloadCommand(int cuid,
 				       const RequestHandle req,
@@ -45,3 +48,5 @@ FtpDownloadCommand::FtpDownloadCommand(int cuid,
    ctrlSocket(ctrlSocket) {}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
+
+} // namespace aria2

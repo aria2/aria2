@@ -1,8 +1,10 @@
 #include "BtHaveMessage.h"
 #include "PeerMessageUtil.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtHaveMessageTest:public CppUnit::TestFixture {
 
@@ -31,7 +33,7 @@ void BtHaveMessageTest::testCreate() {
   unsigned char msg[9];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 4);
   PeerMessageUtil::setIntParam(&msg[5], 12345);
-  BtHaveMessageHandle pm = BtHaveMessage::create(&msg[4], 5);
+  SharedHandle<BtHaveMessage> pm = BtHaveMessage::create(&msg[4], 5);
   CPPUNIT_ASSERT_EQUAL((int8_t)4, pm->getId());
   CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
 
@@ -63,7 +65,7 @@ void BtHaveMessageTest::testGetMessage() {
 }
 
 void BtHaveMessageTest::testDoReceivedAction() {
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   peer->allocateBitfield(16*1024, 256*1024);
   BtHaveMessage msg;
   msg.setIndex(1);
@@ -80,5 +82,7 @@ void BtHaveMessageTest::testToString() {
   BtHaveMessage msg;
   msg.setIndex(1);
 
-  CPPUNIT_ASSERT_EQUAL(string("have index=1"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("have index=1"), msg.toString());
 }
+
+} // namespace aria2

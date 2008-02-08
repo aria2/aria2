@@ -36,75 +36,82 @@
 #define _D_DHT_MESSAGE_FACTORY_H_
 
 #include "common.h"
-#include "DHTMessageDecl.h"
-#include "DHTNodeDecl.h"
-#include "PeerDecl.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
 
+namespace aria2 {
+
+class DHTMessage;
+class DHTNode;
+class Peer;
 class Dictionary;
 
 class DHTMessageFactory {
 public:
   virtual ~DHTMessageFactory() {}
 
-  virtual DHTMessageHandle
+  virtual SharedHandle<DHTMessage>
   createQueryMessage(const Dictionary* d,
-		     const string& ipaddr, uint16_t port) = 0;
+		     const std::string& ipaddr, uint16_t port) = 0;
 
-  virtual DHTMessageHandle
-  createResponseMessage(const string& messageType,
+  virtual SharedHandle<DHTMessage>
+  createResponseMessage(const std::string& messageType,
 			const Dictionary* d,
-			const DHTNodeHandle& remoteNode) = 0;
+			const SharedHandle<DHTNode>& remoteNode) = 0;
 
-  virtual DHTMessageHandle
-  createPingMessage(const DHTNodeHandle& remoteNode,
-		    const string& transactionID = "") = 0;
+  virtual SharedHandle<DHTMessage>
+  createPingMessage(const SharedHandle<DHTNode>& remoteNode,
+		    const std::string& transactionID = "") = 0;
 
-  virtual DHTMessageHandle
-  createPingReplyMessage(const DHTNodeHandle& remoteNode,
+  virtual SharedHandle<DHTMessage>
+  createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
 			 const unsigned char* id,
-			 const string& transactionID) = 0;
+			 const std::string& transactionID) = 0;
 
-  virtual DHTMessageHandle
-  createFindNodeMessage(const DHTNodeHandle& remoteNode,
+  virtual SharedHandle<DHTMessage>
+  createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
 			const unsigned char* targetNodeID,
-			const string& transactionID = "") = 0;
+			const std::string& transactionID = "") = 0;
 
-  virtual DHTMessageHandle
-  createFindNodeReplyMessage(const DHTNodeHandle& remoteNode,
-			     const DHTNodes& closestKNodes,
-			     const string& transactionID) = 0;
+  virtual SharedHandle<DHTMessage>
+  createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+			     const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+			     const std::string& transactionID) = 0;
 
-  virtual DHTMessageHandle
-  createGetPeersMessage(const DHTNodeHandle& remoteNode,
+  virtual SharedHandle<DHTMessage>
+  createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
 			const unsigned char* infoHash,
-			const string& transactionID = "") = 0;
+			const std::string& transactionID = "") = 0;
 
-  virtual DHTMessageHandle
-  createGetPeersReplyMessage(const DHTNodeHandle& remoteNode,
-			     const DHTNodes& closestKNodes,
-			     const string& token,
-			     const string& transactionID) = 0;
+  virtual SharedHandle<DHTMessage>
+  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+			     const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+			     const std::string& token,
+			     const std::string& transactionID) = 0;
 
-  virtual DHTMessageHandle
-  createGetPeersReplyMessage(const DHTNodeHandle& remoteNode,
-			     const Peers& peers,
-			     const string& token,
-			     const string& transactionID) = 0;
+  virtual SharedHandle<DHTMessage>
+  createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+			     const std::deque<SharedHandle<Peer> >& peers,
+			     const std::string& token,
+			     const std::string& transactionID) = 0;
 
-  virtual DHTMessageHandle
-  createAnnouncePeerMessage(const DHTNodeHandle& remoteNode,
+  virtual SharedHandle<DHTMessage>
+  createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
 			    const unsigned char* infoHash,
 			    uint16_t tcpPort,
-			    const string& token,
-			    const string& transactionID = "") = 0;
+			    const std::string& token,
+			    const std::string& transactionID = "") = 0;
 
-  virtual DHTMessageHandle
-  createAnnouncePeerReplyMessage(const DHTNodeHandle& remoteNode,
-				 const string& transactionID) = 0;
+  virtual SharedHandle<DHTMessage>
+  createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+				 const std::string& transactionID) = 0;
 
-  virtual DHTMessageHandle
-  createUnknownMessage(const char* data, size_t length, const string& ipaddr,
+  virtual SharedHandle<DHTMessage>
+  createUnknownMessage(const char* data, size_t length, const std::string& ipaddr,
 		       uint16_t port) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_FACTORY_H_

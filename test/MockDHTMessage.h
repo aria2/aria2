@@ -3,15 +3,17 @@
 
 #include "DHTMessage.h"
 
+namespace aria2 {
+
 class MockDHTMessage:public DHTMessage {
 private:
   bool _isReply;
 
-  string _messageType;
+  std::string _messageType;
 public:
-  MockDHTMessage(const DHTNodeHandle& localNode,
-		 const DHTNodeHandle& remoteNode,
-		 const string& transactionID = ""):
+  MockDHTMessage(const SharedHandle<DHTNode>& localNode,
+		 const SharedHandle<DHTNode>& remoteNode,
+		 const std::string& transactionID = ""):
     DHTMessage(localNode, remoteNode, transactionID), _isReply(false), _messageType("mock") {}
   
   virtual ~MockDHTMessage() {}
@@ -24,12 +26,13 @@ public:
 
   void setReply(bool f) { _isReply = f; }
 
-  virtual string getMessageType() const { return _messageType; }
+  virtual std::string getMessageType() const { return _messageType; }
 
-  virtual string toString() const { return "MockDHTMessage"; }
+  virtual std::string toString() const { return "MockDHTMessage"; }
 
   virtual void validate() const {}
 };
 
-typedef SharedHandle<MockDHTMessage> MockDHTMessageHandle;
+} // namespace aria2
+
 #endif // _D_MOCK_DHT_MESSAGE_H_

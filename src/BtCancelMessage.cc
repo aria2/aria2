@@ -37,6 +37,9 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "BtMessageDispatcher.h"
+
+namespace aria2 {
 
 BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 13) {
@@ -82,7 +85,9 @@ int32_t BtCancelMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtCancelMessage::toString() const {
+std::string BtCancelMessage::toString() const {
   return "cancel index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::itos(length);
 }
+
+} // namespace aria2

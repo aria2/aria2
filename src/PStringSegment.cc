@@ -34,11 +34,20 @@
 /* copyright --> */
 #include "PStringSegment.h"
 #include "FatalException.h"
+#include "PStringVisitor.h"
 
-void PStringSegment::accept(const PStringVisitorHandle& visitor)
+namespace aria2 {
+
+PStringSegment::PStringSegment(const std::string& value,
+			       const SharedHandle<PStringDatum>& next):
+  _value(value), _next(next) {}
+
+PStringSegment::~PStringSegment() {}
+
+void PStringSegment::accept(PStringVisitor* visitor)
 {
-  PStringSegmentVisitorHandle v = visitor;
-  if(v.isNull()) {
+  PStringSegmentVisitor* v = dynamic_cast<PStringSegmentVisitor*>(visitor);
+  if(!v) {
     throw new FatalException("Class cast exception");
   }
   v->hello(this);
@@ -47,3 +56,20 @@ void PStringSegment::accept(const PStringVisitorHandle& visitor)
   }
   v->goodbye(this);
 }
+
+const std::string& PStringSegment::getValue() const
+{
+  return _value;
+}
+
+bool PStringSegment::hasNext() const
+{
+  return !_next.isNull();
+}
+
+SharedHandle<PStringDatum> PStringSegment::getNext() const
+{
+  return _next;
+}
+
+} // namespace aria2

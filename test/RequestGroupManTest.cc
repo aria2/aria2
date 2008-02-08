@@ -5,9 +5,10 @@
 #include "RequestGroup.h"
 #include "Option.h"
 #include "DownloadResult.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class RequestGroupManTest : public CppUnit::TestFixture {
 
@@ -20,8 +21,8 @@ private:
 public:
   void setUp()
   {
-    CUIDCounterHandle counter = new CUIDCounter();
-    CUIDCounterSingletonHolder::instance(counter);
+    SharedHandle<CUIDCounter> counter = new CUIDCounter();
+    SingletonHolder<SharedHandle<CUIDCounter> >::instance(counter);
   }
 
   void testIsSameFileBeingDownloaded();
@@ -35,14 +36,14 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
 {
   Option option;
 
-  Strings uris;
+  std::deque<std::string> uris;
   uris.push_back("http://localhost/aria2.tar.bz2");
-  RequestGroupHandle rg1 = new RequestGroup(&option, uris);
-  RequestGroupHandle rg2 = new RequestGroup(&option, uris);
+  SharedHandle<RequestGroup> rg1 = new RequestGroup(&option, uris);
+  SharedHandle<RequestGroup> rg2 = new RequestGroup(&option, uris);
 
-  SingleFileDownloadContextHandle dctx1 =
+  SharedHandle<SingleFileDownloadContext> dctx1 =
     new SingleFileDownloadContext(0, 0, "aria2.tar.bz2");
-  SingleFileDownloadContextHandle dctx2 =
+  SharedHandle<SingleFileDownloadContext> dctx2 =
     new SingleFileDownloadContext(0, 0, "aria2.tar.bz2");
 
   rg1->setDownloadContext(dctx1);
@@ -66,3 +67,5 @@ void RequestGroupManTest::testGetInitialCommands()
 {
   // TODO implement later
 }
+
+} // namespace aria2

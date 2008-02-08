@@ -36,15 +36,19 @@
 #define _D_HELP_ITEM_FACTORY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class TagContainer;
-typedef SharedHandle<TagContainer> TagContainerHandle;
 
 class HelpItemFactory {
 private:
   HelpItemFactory();
 public:
-  static TagContainerHandle createHelpItems();
+  static SharedHandle<TagContainer> createHelpItems();
 };
+
+} // namespace aria2
 
 #endif // _D_HELP_ITEM_FACTORY_H_

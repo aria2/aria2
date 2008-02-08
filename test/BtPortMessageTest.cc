@@ -1,13 +1,15 @@
 #include "BtPortMessage.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "Peer.h"
 #include "DHTNode.h"
 #include "MockDHTTask.h"
 #include "MockDHTTaskFactory.h"
 #include "MockDHTTaskQueue.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtPortMessageTest:public CppUnit::TestFixture {
 
@@ -30,8 +32,8 @@ public:
 
   class MockDHTTaskFactory2:public MockDHTTaskFactory {
   public:
-    virtual DHTTaskHandle createPingTask(const DHTNodeHandle& remoteNode,
-					 size_t numRetry)
+    virtual SharedHandle<DHTTask>
+    createPingTask(const SharedHandle<DHTNode>& remoteNode, size_t numRetry)
     {
       return new MockDHTTask(remoteNode);
     }
@@ -69,7 +71,7 @@ void BtPortMessageTest::testCreate() {
 
 void BtPortMessageTest::testToString() {
   BtPortMessage msg(1);
-  CPPUNIT_ASSERT_EQUAL(string("port port=1"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("port port=1"), msg.toString());
 }
 
 void BtPortMessageTest::testGetMessage() {
@@ -82,7 +84,7 @@ void BtPortMessageTest::testGetMessage() {
 
 void BtPortMessageTest::testDoReceivedAction()
 {
-  PeerHandle peer = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> peer = new Peer("192.168.0.1", 6881);
   BtPortMessage msg(6881);
   MockDHTTaskQueue taskQueue;
   MockDHTTaskFactory2 taskFactory;
@@ -93,7 +95,9 @@ void BtPortMessageTest::testDoReceivedAction()
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, taskQueue._immediateTaskQueue.size());
-  DHTNodeHandle node = SharedHandle<MockDHTTask>(taskQueue._immediateTaskQueue.front())->_remoteNode;
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), node->getIPAddress());
+  SharedHandle<DHTNode> node = SharedHandle<MockDHTTask>(taskQueue._immediateTaskQueue.front())->_remoteNode;
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), node->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, node->getPort());
 }
+
+} // namespace aria2

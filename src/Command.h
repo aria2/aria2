@@ -36,7 +36,11 @@
 #define _D_COMMAND_H_
 
 #include "common.h"
-#include "LogFactory.h"
+#include <deque>
+
+namespace aria2 {
+
+class Logger;
 
 typedef int32_t CommandUuid;
 
@@ -56,13 +60,14 @@ protected:
   int32_t cuid;
   const Logger* logger;
 public:
-  Command(int32_t cuid):uuid(uuidGen++), status(STATUS_INACTIVE), cuid(cuid) {
-    logger = LogFactory::getInstance();
-  }
+  Command(int32_t cuid);
+
   virtual ~Command() {}
+
   virtual bool execute() = 0;
 
   int32_t getCuid() const { return cuid; }
+
   const CommandUuid& getUuid() const { return uuid; }
 
   void setStatusActive() { this->status = STATUS_ACTIVE; }
@@ -76,17 +81,11 @@ public:
     return statusFilter <= status;
   }
 
-  void transitStatus()
-  {
-    switch(status) {
-    case STATUS_REALTIME:
-      break;
-    default:
-      status = STATUS_INACTIVE;
-    }
-  }
+  void transitStatus();
 };
 
-typedef deque<Command*> Commands;
+typedef std::deque<Command*> Commands;
+
+} // namespace aria2
 
 #endif // _D_COMMAND_H_

@@ -37,6 +37,10 @@
 #include "List.h"
 #include "Dictionary.h"
 #include "Util.h"
+#include <functional>
+#include <algorithm>
+
+namespace aria2 {
 
 BencodeVisitor::BencodeVisitor() {}
 
@@ -54,8 +58,8 @@ void BencodeVisitor::visit(const Data* d)
 void BencodeVisitor::visit(const List* l)
 {
   _bencodedData += "l";
-  for_each(l->getList().begin(), l->getList().end(),
-	   bind2nd(mem_fun(&MetaEntry::accept), this));
+  std::for_each(l->getList().begin(), l->getList().end(),
+		std::bind2nd(std::mem_fun(&MetaEntry::accept), this));
   _bencodedData += "e";
 }
 
@@ -63,7 +67,7 @@ void BencodeVisitor::visit(const Dictionary* d)
 {
   _bencodedData += "d";
 
-  for(Order::const_iterator itr = d->getOrder().begin(); itr != d->getOrder().end(); ++itr) {
+  for(std::deque<std::string>::const_iterator itr = d->getOrder().begin(); itr != d->getOrder().end(); ++itr) {
     _bencodedData += Util::itos((int32_t)(*itr).size());
     _bencodedData += ":";
     _bencodedData += *itr;
@@ -82,3 +86,5 @@ void BencodeVisitor::visit(const MetaEntry* e)
     visit(reinterpret_cast<const Dictionary*>(e));
   }
 }
+
+} // namespace aria2

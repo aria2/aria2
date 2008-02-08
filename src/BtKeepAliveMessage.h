@@ -37,6 +37,8 @@
 
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
 class BtKeepAliveMessage;
 
 typedef SharedHandle<BtKeepAliveMessage> BtKeepAliveMessageHandle;
@@ -63,9 +65,11 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const {
+  virtual std::string toString() const {
     return "keep alive";
   }
 };
+
+} // namespace aria2
 
 #endif // _D_BT_KEEP_ALIVE_MESSAGE_H_

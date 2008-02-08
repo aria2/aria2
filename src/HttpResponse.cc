@@ -33,10 +33,30 @@
  */
 /* copyright --> */
 #include "HttpResponse.h"
+#include "Request.h"
+#include "Segment.h"
+#include "CookieBox.h"
+#include "HttpRequest.h"
+#include "HttpHeader.h"
+#include "Range.h"
+#include "LogFactory.h"
+#include "Logger.h"
 #include "ChunkedEncoding.h"
 #include "Util.h"
 #include "message.h"
 #include "DlAbortEx.h"
+#include <deque>
+
+namespace aria2 {
+
+HttpResponse::HttpResponse():cuid(0),
+			     status(0),
+			     httpRequest(0),
+			     httpHeader(0),
+			     logger(LogFactory::getInstance())
+{}
+
+HttpResponse::~HttpResponse() {}
 
 void HttpResponse::validateResponse() const
 {
@@ -71,12 +91,12 @@ void HttpResponse::validateResponse() const
   }
 }
 
-string HttpResponse::determinFilename() const
+std::string HttpResponse::determinFilename() const
 {
-  string contentDisposition =
+  std::string contentDisposition =
     Util::getContentDispositionFilename(httpHeader->getFirst("Content-Disposition"));
   if(contentDisposition.empty()) {
-    return Util::urldecode(httpRequest->getRequest()->getFile());
+    return Util::urldecode(httpRequest->getFile());
   } else {
     logger->info(MSG_CONTENT_DISPOSITION_DETECTED,
 		 cuid, contentDisposition.c_str());
@@ -86,10 +106,10 @@ string HttpResponse::determinFilename() const
 
 void HttpResponse::retrieveCookie()
 {
-  Strings v = httpHeader->get("Set-Cookie");
-  for(Strings::const_iterator itr = v.begin(); itr != v.end(); itr++) {
-    string domain = httpRequest->getRequest()->getHost();
-    string path = httpRequest->getDir();
+  std::deque<std::string> v = httpHeader->get("Set-Cookie");
+  for(std::deque<std::string>::const_iterator itr = v.begin(); itr != v.end(); itr++) {
+    std::string domain = httpRequest->getHost();
+    std::string path = httpRequest->getDir();
     httpRequest->getRequest()->cookieBox->add(*itr, domain, path);
   }
 }
@@ -105,7 +125,7 @@ void HttpResponse::processRedirect()
 
 }
 
-string HttpResponse::getRedirectURI() const
+std::string HttpResponse::getRedirectURI() const
 {
   return httpHeader->getFirst("Location");
 }
@@ -115,7 +135,7 @@ bool HttpResponse::isTransferEncodingSpecified() const
   return httpHeader->defined("Transfer-Encoding");
 }
 
-string HttpResponse::getTransferEncoding() const
+std::string HttpResponse::getTransferEncoding() const
 {
   return httpHeader->getFirst("Transfer-Encoding");
 }
@@ -148,7 +168,7 @@ int64_t HttpResponse::getEntityLength() const
   }
 }
 
-string HttpResponse::getContentType() const
+std::string HttpResponse::getContentType() const
 {
   if(httpHeader.isNull()) {
     return "";
@@ -156,3 +176,25 @@ string HttpResponse::getContentType() const
     return httpHeader->getFirst("Content-Type");
   }
 }
+
+void HttpResponse::setHttpHeader(const SharedHandle<HttpHeader>& httpHeader)
+{
+  this->httpHeader = httpHeader;
+}
+
+SharedHandle<HttpHeader> HttpResponse::getHttpHeader() const
+{
+  return httpHeader;
+}
+
+void HttpResponse::setHttpRequest(const SharedHandle<HttpRequest>& httpRequest)
+{
+  this->httpRequest = httpRequest;
+}
+
+SharedHandle<HttpRequest> HttpResponse::getHttpRequest() const
+{
+  return httpRequest;
+}
+
+} // namespace aria2

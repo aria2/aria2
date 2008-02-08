@@ -46,6 +46,9 @@
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
 #include "RequestGroupMan.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e):
   Command(cuid),
@@ -70,7 +73,7 @@ bool DHTEntryPointNameResolveCommand::execute()
   }
 
   try {
-    string hostname = _e->option->get(PREF_DHT_ENTRY_POINT_HOST);
+    std::string hostname = _e->option->get(PREF_DHT_ENTRY_POINT_HOST);
     if(!Util::isNumbersAndDotsNotation(hostname)) {
       if(resolveHostname(hostname, _resolver)) {
 	hostname = _resolver->getAddrString();
@@ -80,7 +83,7 @@ bool DHTEntryPointNameResolveCommand::execute()
       }
     }
     
-    DHTNodeHandle entryNode = new DHTNode();
+    SharedHandle<DHTNode> entryNode = new DHTNode();
     entryNode->setIPAddress(hostname);
     entryNode->setPort(_e->option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
  
@@ -94,10 +97,10 @@ bool DHTEntryPointNameResolveCommand::execute()
   return true;
 }
 
-bool DHTEntryPointNameResolveCommand::resolveHostname(const string& hostname,
+bool DHTEntryPointNameResolveCommand::resolveHostname(const std::string& hostname,
 						      const NameResolverHandle& resolver)
 {
-  string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
+  std::string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
   if(ipaddr.empty()) {
 #ifdef ENABLE_ASYNC_DNS
     switch(resolver->getStatus()) {
@@ -136,26 +139,28 @@ bool DHTEntryPointNameResolveCommand::resolveHostname(const string& hostname,
 }
 
 #ifdef ENABLE_ASYNC_DNS
-void DHTEntryPointNameResolveCommand::setNameResolverCheck(const NameResolverHandle& resolver) {
+void DHTEntryPointNameResolveCommand::setNameResolverCheck(const SharedHandle<NameResolver>& resolver) {
   _e->addNameResolverCheck(resolver, this);
 }
 
-void DHTEntryPointNameResolveCommand::disableNameResolverCheck(const NameResolverHandle& resolver) {
+void DHTEntryPointNameResolveCommand::disableNameResolverCheck(const SharedHandle<NameResolver>& resolver) {
   _e->deleteNameResolverCheck(resolver, this);
 }
 #endif // ENABLE_ASYNC_DNS
 
-void DHTEntryPointNameResolveCommand::setTaskQueue(const DHTTaskQueueHandle& taskQueue)
+void DHTEntryPointNameResolveCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
 
-void DHTEntryPointNameResolveCommand::setTaskFactory(const DHTTaskFactoryHandle& taskFactory)
+void DHTEntryPointNameResolveCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
 }
 
-void DHTEntryPointNameResolveCommand::setLocalNode(const DHTNodeHandle& localNode)
+void DHTEntryPointNameResolveCommand::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }
+
+} // namespace aria2

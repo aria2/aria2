@@ -36,9 +36,9 @@
 #define _D_BT_REQUEST_MESSAGE_H_
 
 #include "SimpleBtMessage.h"
-#include "BtContext.h"
-#include "PieceStorage.h"
 #include "AbstractBtEventListener.h"
+
+namespace aria2 {
 
 class BtRequestMessage;
 
@@ -60,9 +60,9 @@ private:
   public:
     BtAbortOutstandingRequestEventListener(BtRequestMessage* message):message(message) {}
 
-    virtual bool canHandle(const BtEventHandle& event);
+    virtual bool canHandle(const SharedHandle<BtEvent>& event);
 
-    virtual void handleEventInternal(const BtEventHandle& event);
+    virtual void handleEventInternal(const SharedHandle<BtEvent>& event);
   };
 
   typedef SharedHandle<BtAbortOutstandingRequestEventListener> BtAbortOutstandingRequestEventListenerHandle;
@@ -108,11 +108,13 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   virtual void onQueued();
 
-  virtual void handleAbortOutstandingRequestEvent(const BtEventHandle& event);
+  virtual void handleAbortOutstandingRequestEvent(const SharedHandle<BtEvent>& event);
 };
+
+} // namespace aria2
 
 #endif // _D_BT_REQUEST_MESSAGE_H_

@@ -2,7 +2,10 @@
 #include "Peer.h"
 #include "MockBtContext.h"
 #include "Exception.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class HandshakeExtensionMessageTest:public CppUnit::TestFixture {
 
@@ -16,7 +19,7 @@ class HandshakeExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate_stringnum);
   CPPUNIT_TEST_SUITE_END();
 private:
-  BtContextHandle _btContext;
+  SharedHandle<BtContext> _btContext;
 public:
   HandshakeExtensionMessageTest():_btContext(0) {}
 
@@ -45,7 +48,7 @@ void HandshakeExtensionMessageTest::testGetExtensionMessageID()
 void HandshakeExtensionMessageTest::testGetExtensionName()
 {
   HandshakeExtensionMessage msg;
-  CPPUNIT_ASSERT_EQUAL(string("handshake"), msg.getExtensionName());
+  CPPUNIT_ASSERT_EQUAL(std::string("handshake"), msg.getExtensionName());
 }
 
 void HandshakeExtensionMessageTest::testGetBencodedData()
@@ -55,7 +58,7 @@ void HandshakeExtensionMessageTest::testGetBencodedData()
   msg.setTCPPort(6889);
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
-  CPPUNIT_ASSERT_EQUAL(string("d1:v5:aria21:pi6889e1:md6:a2_dhti2e6:ut_pexi1eee"), msg.getBencodedData());
+  CPPUNIT_ASSERT_EQUAL(std::string("d1:v5:aria21:pi6889e1:md6:a2_dhti2e6:ut_pexi1eee"), msg.getBencodedData());
 }
 
 void HandshakeExtensionMessageTest::testToString()
@@ -65,12 +68,12 @@ void HandshakeExtensionMessageTest::testToString()
   msg.setTCPPort(6889);
   msg.setExtension("ut_pex", 1);
   msg.setExtension("a2_dht", 2);
-  CPPUNIT_ASSERT_EQUAL(string("handshake client=aria2, tcpPort=6889, a2_dht=2, ut_pex=1"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("handshake client=aria2, tcpPort=6889, a2_dht=2, ut_pex=1"), msg.toString());
 }
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
-  PeerHandle peer = new Peer("192.168.0.1", 0);
+  SharedHandle<Peer> peer = new Peer("192.168.0.1", 0);
   HandshakeExtensionMessage msg;
   msg.setClientVersion("aria2");
   msg.setTCPPort(6889);
@@ -88,48 +91,50 @@ void HandshakeExtensionMessageTest::testDoReceivedAction()
 
 void HandshakeExtensionMessageTest::testCreate()
 {
-  string in = "0d1:pi6881e1:v5:aria21:md6:ut_pexi1eee";
-  HandshakeExtensionMessageHandle m =
+  std::string in = "0d1:pi6881e1:v5:aria21:md6:ut_pexi1eee";
+  SharedHandle<HandshakeExtensionMessage> m =
     HandshakeExtensionMessage::create(in.c_str(), in.size());
-  CPPUNIT_ASSERT_EQUAL(string("aria2"), m->getClientVersion());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getTCPPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, m->getExtensionMessageID("ut_pex"));
 
   try {
     // bad payload format
-    string in = "011:hello world";
+    std::string in = "011:hello world";
     HandshakeExtensionMessage::create(in.c_str(), in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }
   try {
     // malformed dencoded message
-    string in = "011:hello";
+    std::string in = "011:hello";
     HandshakeExtensionMessage::create(in.c_str(), in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }
   try {
     // 0 length data
-    string in = "";
+    std::string in = "";
     HandshakeExtensionMessage::create(in.c_str(), in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }    
 }
 
 void HandshakeExtensionMessageTest::testCreate_stringnum()
 {
-  string in = "0d1:p4:68811:v5:aria21:md6:ut_pex1:1ee";
-  HandshakeExtensionMessageHandle m =
+  std::string in = "0d1:p4:68811:v5:aria21:md6:ut_pex1:1ee";
+  SharedHandle<HandshakeExtensionMessage> m =
     HandshakeExtensionMessage::create(in.c_str(), in.size());
-  CPPUNIT_ASSERT_EQUAL(string("aria2"), m->getClientVersion());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getTCPPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, m->getExtensionMessageID("ut_pex"));
 }
+
+} // namespace aria2

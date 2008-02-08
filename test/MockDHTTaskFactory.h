@@ -3,47 +3,51 @@
 
 #include "DHTTaskFactory.h"
 
+namespace aria2 {
+
 class MockDHTTaskFactory:public DHTTaskFactory {
 public:
   virtual ~MockDHTTaskFactory() {}
 
-  virtual DHTTaskHandle createPingTask(const DHTNodeHandle& remoteNode,
+  virtual SharedHandle<DHTTask> createPingTask(const SharedHandle<DHTNode>& remoteNode,
 				       size_t numRetry = 0)
   {
     return 0;
   }
 
-  virtual DHTTaskHandle createGetIDTask(const DHTNodeHandle& remoteNode,
+  virtual SharedHandle<DHTTask> createGetIDTask(const SharedHandle<DHTNode>& remoteNode,
 					size_t numRetry = 0)
   {
     return 0;
   }
 
-  virtual DHTTaskHandle createNodeLookupTask(const unsigned char* targetID)
+  virtual SharedHandle<DHTTask> createNodeLookupTask(const unsigned char* targetID)
   {
     return 0;
   }
 
-  virtual DHTTaskHandle createBucketRefreshTask()
+  virtual SharedHandle<DHTTask> createBucketRefreshTask()
   {
     return 0;
   }
 
-  virtual DHTTaskHandle createPeerLookupTask(const BtContextHandle& ctx)
+  virtual SharedHandle<DHTTask> createPeerLookupTask(const SharedHandle<BtContext>& ctx)
   {
     return 0;
   }
   
-  virtual DHTTaskHandle createPeerAnnounceTask(const unsigned char* infoHash)
+  virtual SharedHandle<DHTTask> createPeerAnnounceTask(const unsigned char* infoHash)
   {
     return 0;
   }
 
-  virtual DHTTaskHandle createReplaceNodeTask(const DHTBucketHandle& bucket,
-					      const DHTNodeHandle& newNode)
+  virtual SharedHandle<DHTTask> createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
+						      const SharedHandle<DHTNode>& newNode)
   {
     return 0;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_MOCK_DHT_TASK_FACTORY_H_

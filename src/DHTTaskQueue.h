@@ -36,8 +36,11 @@
 #define _D_DHT_TASK_QUEUE_H_
 
 #include "common.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DHTTask;
 
 class DHTTaskQueue {
 public:
@@ -45,11 +48,13 @@ public:
 
   virtual void executeTask() = 0;
 
-  virtual void addPeriodicTask1(const DHTTaskHandle& task) = 0;
+  virtual void addPeriodicTask1(const SharedHandle<DHTTask>& task) = 0;
 
-  virtual void addPeriodicTask2(const DHTTaskHandle& task) = 0;
+  virtual void addPeriodicTask2(const SharedHandle<DHTTask>& task) = 0;
 
-  virtual void addImmediateTask(const DHTTaskHandle& task) = 0;
+  virtual void addImmediateTask(const SharedHandle<DHTTask>& task) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_TASK_QUEUE_H_

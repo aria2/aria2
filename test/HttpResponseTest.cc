@@ -2,9 +2,14 @@
 #include "prefs.h"
 #include "PiecedSegment.h"
 #include "Piece.h"
+#include "TransferEncoding.h"
+#include "Request.h"
+#include "HttpHeader.h"
+#include "HttpRequest.h"
+#include "Exception.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class HttpResponseTest : public CppUnit::TestFixture {
 
@@ -67,7 +72,7 @@ void HttpResponseTest::testGetContentLength_contentLength()
 {
   HttpResponse httpResponse;
 
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpHeader->put("Content-Length", "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -79,7 +84,7 @@ void HttpResponseTest::testGetEntityLength()
 {
   HttpResponse httpResponse;
 
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpHeader->put("Content-Length", "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -95,89 +100,89 @@ void HttpResponseTest::testGetEntityLength()
 void HttpResponseTest::testGetContentType()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpHeader->put("content-type", "application/octet-stream");
   httpResponse.setHttpHeader(httpHeader);
-  CPPUNIT_ASSERT_EQUAL(string("application/octet-stream"),
+  CPPUNIT_ASSERT_EQUAL(std::string("application/octet-stream"),
 		       httpResponse.getContentType());
 }
 
 void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
-  HttpRequestHandle httpRequest = new HttpRequest();
-  RequestHandle request = new Request();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(httpHeader);
   httpResponse.setHttpRequest(httpRequest);
 
-  CPPUNIT_ASSERT_EQUAL(string("aria2-1.0.0.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
 		       httpResponse.determinFilename());
 }
 
 void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpHeader->put("Content-Disposition", "attachment; filename=\"\"");
-  HttpRequestHandle httpRequest = new HttpRequest();
-  RequestHandle request = new Request();
+  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(httpHeader);
   httpResponse.setHttpRequest(httpRequest);
 
-  CPPUNIT_ASSERT_EQUAL(string("aria2-1.0.0.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"),
 		       httpResponse.determinFilename());
 }
 
 void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpHeader->put("Content-Disposition", "attachment; filename=\"aria2-current.tar.bz2\"");
-  HttpRequestHandle httpRequest = new HttpRequest();
-  RequestHandle request = new Request();
+  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
   httpResponse.setHttpHeader(httpHeader);
   httpResponse.setHttpRequest(httpRequest);
 
-  CPPUNIT_ASSERT_EQUAL(string("aria2-current.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-current.tar.bz2"),
 		       httpResponse.determinFilename());
 }
 
 void HttpResponseTest::testGetRedirectURI_without_Location()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
 
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT_EQUAL(string(""),
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
 		       httpResponse.getRedirectURI());  
 }
 
 void HttpResponseTest::testGetRedirectURI_with_Location()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/download/aria2-1.0.0.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/download/aria2-1.0.0.tar.bz2"),
 		       httpResponse.getRedirectURI());
 }
 
 void HttpResponseTest::testIsRedirect()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -193,7 +198,7 @@ void HttpResponseTest::testIsRedirect()
 void HttpResponseTest::testIsTransferEncodingSpecified()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -207,21 +212,21 @@ void HttpResponseTest::testIsTransferEncodingSpecified()
 void HttpResponseTest::testGetTransferEncoding()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
 
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT_EQUAL(string(""), httpResponse.getTransferEncoding());  
+  CPPUNIT_ASSERT_EQUAL(std::string(""), httpResponse.getTransferEncoding());  
 
   httpHeader->put("Transfer-Encoding", "chunked");
 
-  CPPUNIT_ASSERT_EQUAL(string("chunked"), httpResponse.getTransferEncoding());
+  CPPUNIT_ASSERT_EQUAL(std::string("chunked"), httpResponse.getTransferEncoding());
 }
 
 void HttpResponseTest::testGetTransferDecoder()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -255,7 +260,7 @@ void HttpResponseTest::testValidateResponse()
   }
 
   httpResponse.setStatus(304);
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpResponse.setHttpHeader(httpHeader);
   try {
     httpResponse.validateResponse();
@@ -277,13 +282,13 @@ void HttpResponseTest::testValidateResponse()
 void HttpResponseTest::testValidateResponse_good_range()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpResponse.setHttpHeader(httpHeader);
 
-  HttpRequestHandle httpRequest = new HttpRequest();
-  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
+  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
   httpRequest->setSegment(segment);
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
@@ -294,7 +299,7 @@ void HttpResponseTest::testValidateResponse_good_range()
   try {
     httpResponse.validateResponse();
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
     CPPUNIT_FAIL("exception must not be thrown.");
   }
@@ -303,13 +308,13 @@ void HttpResponseTest::testValidateResponse_good_range()
 void HttpResponseTest::testValidateResponse_bad_range()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpResponse.setHttpHeader(httpHeader);
 
-  HttpRequestHandle httpRequest = new HttpRequest();
-  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
+  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
   httpRequest->setSegment(segment);
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
@@ -328,13 +333,13 @@ void HttpResponseTest::testValidateResponse_bad_range()
 void HttpResponseTest::testValidateResponse_chunked()
 {
   HttpResponse httpResponse;
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
   httpResponse.setHttpHeader(httpHeader);
 
-  HttpRequestHandle httpRequest = new HttpRequest();
-  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
+  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
   httpRequest->setSegment(segment);
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
@@ -351,3 +356,5 @@ void HttpResponseTest::testValidateResponse_chunked()
     CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
+
+} // namespace aria2

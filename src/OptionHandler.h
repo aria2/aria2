@@ -36,16 +36,25 @@
 #define _D_OPTION_HANDLER_H_
 
 #include "common.h"
-#include "Option.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
+
+class Option;
 
 class OptionHandler {
 public:
   virtual ~OptionHandler() {}
   
-  virtual bool canHandle(const string& optName) = 0;
-  virtual void parse(Option* option, const string& arg) = 0;
+  virtual bool canHandle(const std::string& optName) = 0;
+  virtual void parse(Option* option, const std::string& arg) = 0;
 };
 
 typedef SharedHandle<OptionHandler> OptionHandlerHandle;
-typedef deque<OptionHandlerHandle> OptionHandlers;
+typedef std::deque<OptionHandlerHandle> OptionHandlers;
+
+} // namespace aria2
+
 #endif // _D_OPTION_HANDLER_H_

@@ -38,6 +38,8 @@
 #include "SeedCriteria.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
 class TimeSeedCriteria : public SeedCriteria {
 private:
   // How much time the client does seeding in seconds.
@@ -63,5 +65,7 @@ public:
     return duration;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_TIME_SEED_CRITERIA_H_

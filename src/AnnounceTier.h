@@ -36,6 +36,11 @@
 #define _D_ANNOUNCE_TIER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class AnnounceTier {
 public:
@@ -50,9 +55,9 @@ public:
   };
 
   AnnounceEvent event;
-  Strings urls;
+  std::deque<std::string> urls;
 
-  AnnounceTier(const Strings& urls):event(STARTED), urls(urls) {}
+  AnnounceTier(const std::deque<std::string>& urls):event(STARTED), urls(urls) {}
 
   void nextEvent() {
     switch(event) {
@@ -89,6 +94,8 @@ public:
 };
 
 typedef SharedHandle<AnnounceTier> AnnounceTierHandle;
-typedef deque<AnnounceTierHandle> AnnounceTiers;
+typedef std::deque<AnnounceTierHandle> AnnounceTiers;
+
+} // namespace aria2
 
 #endif // _D_ANNOUNCE_TIER_H_

@@ -36,16 +36,18 @@
 #define _D_FILL_REQUEST_GROUP_COMMAND_H_
 
 #include "Command.h"
+#include "SharedHandle.h"
 #include "TimeA2.h"
+#include <deque>
+
+namespace aria2 {
 
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
-typedef deque<RequestGroupHandle> RequestGroups;
 class DownloadEngine;
 
 class FillRequestGroupCommand : public Command {
 private:
-  RequestGroups _reservedRequestGroups;
+  std::deque<SharedHandle<RequestGroup> > _reservedRequestGroups;
   DownloadEngine* _e;
   int32_t _interval;
   Time _checkPoint;
@@ -61,5 +63,7 @@ public:
     _interval = interval;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_FILL_REQUEST_GROUP_COMMAND_H_

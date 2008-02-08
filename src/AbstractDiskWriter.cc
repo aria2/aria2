@@ -37,13 +37,13 @@
 #include "Util.h"
 #include "message.h"
 #include "LogFactory.h"
-#include "a2io.h"
+#include "Logger.h"
 #include "DlAbortEx.h"
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
+#include "a2io.h"
+#include <cerrno>
+#include <cassert>
+
+namespace aria2 {
 
 AbstractDiskWriter::AbstractDiskWriter():
   fd(-1),
@@ -54,7 +54,7 @@ AbstractDiskWriter::~AbstractDiskWriter()
   closeFile();
 }
 
-void AbstractDiskWriter::openFile(const string& filename, int64_t totalLength)
+void AbstractDiskWriter::openFile(const std::string& filename, int64_t totalLength)
 {
   File f(filename);
   if(f.exists()) {
@@ -72,7 +72,7 @@ void AbstractDiskWriter::closeFile()
   }
 }
 
-void AbstractDiskWriter::openExistingFile(const string& filename,
+void AbstractDiskWriter::openExistingFile(const std::string& filename,
 					  int64_t totalLength)
 {
   this->filename = filename;
@@ -86,7 +86,7 @@ void AbstractDiskWriter::openExistingFile(const string& filename,
   }
 }
 
-void AbstractDiskWriter::createFile(const string& filename, int32_t addFlags)
+void AbstractDiskWriter::createFile(const std::string& filename, int32_t addFlags)
 {
   this->filename = filename;
   assert(filename.size());
@@ -182,3 +182,5 @@ void AbstractDiskWriter::disableDirectIO()
   while(fcntl(fd, F_SETFL, flg&(~O_DIRECT)) == -1 && errno == EINTR);
 #endif // ENABLE_DIRECT_IO
 }
+
+} // namespace aria2

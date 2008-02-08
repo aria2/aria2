@@ -36,20 +36,23 @@
 
 #include "PeerListProcessor.h"
 
+namespace aria2 {
+
 class CompactPeerListProcessor : public PeerListProcessor {
 private:
   int32_t pieceLength;
   int64_t totalLength;
 public:
-  CompactPeerListProcessor(int32_t pieceLength, int64_t totalLength)
-  :pieceLength(pieceLength),
-   totalLength(totalLength) {}
+  CompactPeerListProcessor(int32_t pieceLength, int64_t totalLength);
 
-  virtual ~CompactPeerListProcessor() {}
+  virtual ~CompactPeerListProcessor();
 
-  virtual Peers extractPeer(const MetaEntry* peersEntry);
+  virtual std::deque<SharedHandle<Peer> >
+  extractPeer(const MetaEntry* peersEntry);
 
   virtual bool canHandle(const MetaEntry* peersEntry) const;
 };
+
+} // namespace aria2
 
 #endif // _D_COMPACT_PEER_LIST_PROCESSOR_H_

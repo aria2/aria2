@@ -37,13 +37,16 @@
 
 #include "DHTAbstractTask.h"
 #include "DHTMessageCallbackListener.h"
-#include "DHTBucketDecl.h"
+
+namespace aria2 {
+
+class DHTBucket;
 
 class DHTReplaceNodeTask:public DHTAbstractTask, public DHTMessageCallbackListener {
 private:
-  DHTBucketHandle _bucket;
+  SharedHandle<DHTBucket> _bucket;
 
-  DHTNodeHandle _newNode;
+  SharedHandle<DHTNode> _newNode;
 
   static const size_t MAX_RETRY = 2;
 
@@ -53,15 +56,18 @@ private:
 
   void sendMessage();
 public:
-  DHTReplaceNodeTask(const DHTBucketHandle& bucket, const DHTNodeHandle& newNode);
+  DHTReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
+		     const SharedHandle<DHTNode>& newNode);
 
   virtual ~DHTReplaceNodeTask();
 
   virtual void startup();
 
-  virtual void onReceived(const DHTMessageHandle& message);
+  virtual void onReceived(const SharedHandle<DHTMessage>& message);
 
-  virtual void onTimeout(const DHTNodeHandle& node);  
+  virtual void onTimeout(const SharedHandle<DHTNode>& node);  
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_REPLACE_NODE_TASK_H_

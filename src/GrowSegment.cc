@@ -35,6 +35,8 @@
 #include "GrowSegment.h"
 #include "Piece.h"
 
+namespace aria2 {
+
 GrowSegment::GrowSegment(const PieceHandle& piece):
   _piece(piece), _writtenLength(0) {}
 
@@ -57,3 +59,5 @@ PieceHandle GrowSegment::getPiece() const
 {
   return _piece;
 }
+
+} // namespace aria2

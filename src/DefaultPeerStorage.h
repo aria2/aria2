@@ -36,54 +36,60 @@
 #define _D_DEFAULT_PEER_STORAGE_H_
 
 #include "PeerStorage.h"
-#include "BtContext.h"
-#include "Option.h"
-#include "Logger.h"
-#include "BtRuntime.h"
+
+namespace aria2 {
 
 #define MAX_PEER_LIST_SIZE 60
 #define MAX_PEER_ERROR 5
 
+class BtContext;
+class Option;
+class Logger;
+class BtRuntime;
+
 class DefaultPeerStorage : public PeerStorage {
 private:
-  BtContextHandle btContext;
+  SharedHandle<BtContext> btContext;
   const Option* option;
-  Peers peers;
+  std::deque<SharedHandle<Peer> > peers;
   int32_t maxPeerListSize;
   Logger* logger;
-  BtRuntimeHandle btRuntime;
+  SharedHandle<BtRuntime> btRuntime;
   int64_t removedPeerSessionDownloadLength;
   int64_t removedPeerSessionUploadLength;
 
-  bool isPeerAlreadyAdded(const PeerHandle& peer);
+  bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:
-  DefaultPeerStorage(BtContextHandle btContext, const Option* option);
+  DefaultPeerStorage(const SharedHandle<BtContext>& btContext,
+		     const Option* option);
+
   virtual ~DefaultPeerStorage();
 
-  void setBtRuntime(const BtRuntimeHandle& btRuntime) {
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime) {
     this->btRuntime = btRuntime;
   }
-  BtRuntimeHandle getBtRuntime() const { return btRuntime; }
 
-  virtual bool addPeer(const PeerHandle& peer);
+  SharedHandle<BtRuntime> getBtRuntime() const { return btRuntime; }
+
+  virtual bool addPeer(const SharedHandle<Peer>& peer);
 
   int32_t countPeer() const;
 
-  virtual PeerHandle getUnusedPeer();
+  virtual SharedHandle<Peer> getUnusedPeer();
 
-  PeerHandle getPeer(const string& ipaddr, int32_t port) const;
+  SharedHandle<Peer> getPeer(const std::string& ipaddr, int32_t port) const;
 
-  virtual void addPeer(const Peers& peers);
+  virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers);
 
-  virtual const Peers& getPeers();
+  virtual const std::deque<SharedHandle<Peer> >& getPeers();
 
   virtual bool isPeerAvailable();
 
-  virtual Peers getActivePeers();
+  virtual std::deque<SharedHandle<Peer> > getActivePeers();
 
   virtual TransferStat calculateStat();
 
-  virtual void returnPeer(const PeerHandle& peer);
+  virtual void returnPeer(const SharedHandle<Peer>& peer);
 
   void setMaxPeerListSize(int32_t size) { this->maxPeerListSize = size; }
  
@@ -91,7 +97,9 @@ public:
 
   void deleteUnusedPeer(int32_t delSize);
   
-  void onErasingPeer(const PeerHandle& peer);
+  void onErasingPeer(const SharedHandle<Peer>& peer);
 };
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_PEER_STORAGE_H_

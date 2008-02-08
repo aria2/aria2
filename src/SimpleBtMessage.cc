@@ -35,6 +35,11 @@
 #include "SimpleBtMessage.h"
 #include "message.h"
 #include "BtRegistry.h"
+#include "Peer.h"
+#include "PeerConnection.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 SimpleBtMessage::SimpleBtMessage():leftDataLength(0) {}
 
@@ -62,3 +67,5 @@ void SimpleBtMessage::send() {
     }
   }
 }
+
+} // namespace aria2

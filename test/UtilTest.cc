@@ -3,10 +3,13 @@
 #include "DlAbortEx.h"
 #include "BitfieldMan.h"
 #include "ByteArrayDiskWriter.h"
+#include "FileEntry.h"
+#include "File.h"
 #include <string>
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class UtilTest:public CppUnit::TestFixture {
 
@@ -78,68 +81,68 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( UtilTest );
 
 void UtilTest::testTrim() {
-  string str1 = "aria2";
+  std::string str1 = "aria2";
   CPPUNIT_ASSERT_EQUAL(str1, Util::trim("aria2"));
   CPPUNIT_ASSERT_EQUAL(str1, Util::trim(" aria2"));
   CPPUNIT_ASSERT_EQUAL(str1, Util::trim(" aria2 "));
   CPPUNIT_ASSERT_EQUAL(str1, Util::trim("  aria2  "));
-  string str2 = "aria2 debut";
+  std::string str2 = "aria2 debut";
   CPPUNIT_ASSERT_EQUAL(str2, Util::trim("aria2 debut"));
   CPPUNIT_ASSERT_EQUAL(str2, Util::trim(" aria2 debut "));
-  string str3 = "";
+  std::string str3 = "";
   CPPUNIT_ASSERT_EQUAL(str3, Util::trim(""));
   CPPUNIT_ASSERT_EQUAL(str3, Util::trim(" "));
   CPPUNIT_ASSERT_EQUAL(str3, Util::trim("  "));
-  string str4 = "A";
+  std::string str4 = "A";
   CPPUNIT_ASSERT_EQUAL(str4, Util::trim("A"));
   CPPUNIT_ASSERT_EQUAL(str4, Util::trim(" A "));
   CPPUNIT_ASSERT_EQUAL(str4, Util::trim("  A  "));
 }
 
 void UtilTest::testSplit() {
-  pair<string, string> p1;
+  std::pair<std::string, std::string> p1;
   Util::split(p1, "name=value", '=');
-  CPPUNIT_ASSERT_EQUAL(string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(string("value"), p1.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
+  CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
   Util::split(p1, " name = value ", '=');
-  CPPUNIT_ASSERT_EQUAL(string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(string("value"), p1.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
+  CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
   Util::split(p1, "=value", '=');
-  CPPUNIT_ASSERT_EQUAL(string(""), p1.first);
-  CPPUNIT_ASSERT_EQUAL(string("value"), p1.second);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), p1.first);
+  CPPUNIT_ASSERT_EQUAL(std::string("value"), p1.second);
   Util::split(p1, "name=", '=');
-  CPPUNIT_ASSERT_EQUAL(string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(string(""), p1.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), p1.second);
   Util::split(p1, "name", '=');
-  CPPUNIT_ASSERT_EQUAL(string("name"), p1.first);
-  CPPUNIT_ASSERT_EQUAL(string(""), p1.second);
+  CPPUNIT_ASSERT_EQUAL(std::string("name"), p1.first);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), p1.second);
 }
 
 void UtilTest::testSlice() {
-  Strings v1;
+  std::deque<std::string> v1;
   Util::slice(v1, "name1=value1; name2=value2; name3=value3;", ';', true);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   v1.clear();
   Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';', true);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
-  Strings::iterator itr = v1.begin();
-  CPPUNIT_ASSERT_EQUAL(string("name1=value1"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(string("name2=value2"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(string("name3=value3"), *itr++);
+  std::deque<std::string>::iterator itr = v1.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("name2=value2"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("name3=value3"), *itr++);
 
   v1.clear();
 
   Util::slice(v1, "name1=value1; name2=value2; name3=value3", ';', false);
   CPPUNIT_ASSERT_EQUAL(3, (int)v1.size());
   itr = v1.begin();
-  CPPUNIT_ASSERT_EQUAL(string("name1=value1"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(string(" name2=value2"), *itr++);
-  CPPUNIT_ASSERT_EQUAL(string(" name3=value3"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string("name1=value1"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(" name2=value2"), *itr++);
+  CPPUNIT_ASSERT_EQUAL(std::string(" name3=value3"), *itr++);
 }
 
 void UtilTest::testEndsWith() {
-  string target = "abcdefg";
-  string part = "fg";
+  std::string target = "abcdefg";
+  std::string part = "fg";
   CPPUNIT_ASSERT(Util::endsWith(target, part));
 
   target = "abdefg";
@@ -172,16 +175,16 @@ void UtilTest::testEndsWith() {
 }
 
 void UtilTest::testReplace() {
-  CPPUNIT_ASSERT_EQUAL(string("abc\n"), Util::replace("abc\r\n", "\r", ""));
-  CPPUNIT_ASSERT_EQUAL(string("abc"), Util::replace("abc\r\n", "\r\n", ""));
-  CPPUNIT_ASSERT_EQUAL(string(""), Util::replace("", "\r\n", ""));
-  CPPUNIT_ASSERT_EQUAL(string("abc"), Util::replace("abc", "", "a"));
-  CPPUNIT_ASSERT_EQUAL(string("xbc"), Util::replace("abc", "a", "x"));
+  CPPUNIT_ASSERT_EQUAL(std::string("abc\n"), Util::replace("abc\r\n", "\r", ""));
+  CPPUNIT_ASSERT_EQUAL(std::string("abc"), Util::replace("abc\r\n", "\r\n", ""));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), Util::replace("", "\r\n", ""));
+  CPPUNIT_ASSERT_EQUAL(std::string("abc"), Util::replace("abc", "", "a"));
+  CPPUNIT_ASSERT_EQUAL(std::string("xbc"), Util::replace("abc", "a", "x"));
 }
 
 void UtilTest::testStartsWith() {
-  string target;
-  string part;
+  std::string target;
+  std::string part;
 
   target = "abcdefg";
   part = "abc";
@@ -214,38 +217,38 @@ void UtilTest::testStartsWith() {
 }
 
 void UtilTest::testGetContentDispositionFilename() {
-  string h1 = "attachment; filename=\"aria2.tar.bz2\"";
-  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h1));
+  std::string h1 = "attachment; filename=\"aria2.tar.bz2\"";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), Util::getContentDispositionFilename(h1));
 
-  string h2 = "attachment; filename=\"\"";
-  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h2));
+  std::string h2 = "attachment; filename=\"\"";
+  CPPUNIT_ASSERT_EQUAL(std::string(""), Util::getContentDispositionFilename(h2));
 
-  string h3 = "attachment; filename=\"";
-  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h3));
+  std::string h3 = "attachment; filename=\"";
+  CPPUNIT_ASSERT_EQUAL(std::string(""), Util::getContentDispositionFilename(h3));
 
-  string h4 = "attachment;";
-  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h4));
+  std::string h4 = "attachment;";
+  CPPUNIT_ASSERT_EQUAL(std::string(""), Util::getContentDispositionFilename(h4));
 
-  string h5 = "attachment; filename=aria2.tar.bz2";
-  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h5));
+  std::string h5 = "attachment; filename=aria2.tar.bz2";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), Util::getContentDispositionFilename(h5));
 
-  string h6 = "attachment; filename='aria2.tar.bz2'";
-  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h6));
+  std::string h6 = "attachment; filename='aria2.tar.bz2'";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), Util::getContentDispositionFilename(h6));
 
-  string h7 = "attachment; filename='aria2.tar.bz2";
-  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h7));
+  std::string h7 = "attachment; filename='aria2.tar.bz2";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), Util::getContentDispositionFilename(h7));
 
-  string h8 = "attachment; filename=aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT";
-  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), Util::getContentDispositionFilename(h8));
+  std::string h8 = "attachment; filename=aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), Util::getContentDispositionFilename(h8));
 
-  string h9 = "attachment; filename=\"aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT\"";
-  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT"), Util::getContentDispositionFilename(h9));
+  std::string h9 = "attachment; filename=\"aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT\"";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2; creation-date=20 Jun 2007 00:00:00 GMT"), Util::getContentDispositionFilename(h9));
 
-  string h10 = "attachment; filename=";
-  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h10));
+  std::string h10 = "attachment; filename=";
+  CPPUNIT_ASSERT_EQUAL(std::string(""), Util::getContentDispositionFilename(h10));
 
-  string h11 = "attachment; filename=;";
-  CPPUNIT_ASSERT_EQUAL(string(""), Util::getContentDispositionFilename(h11));
+  std::string h11 = "attachment; filename=;";
+  CPPUNIT_ASSERT_EQUAL(std::string(""), Util::getContentDispositionFilename(h11));
 
 }
 
@@ -253,50 +256,48 @@ class Printer {
 public:
   template<class T>
   void operator()(T t) {
-    cerr << t << ", ";
+    std::cerr << t << ", ";
   }
 };
 
 void UtilTest::testRandomAlpha() {
-  string s = Util::randomAlpha(8, new FixedNumberRandomizer());
-  CPPUNIT_ASSERT_EQUAL(string("AAAAAAAA"), s);
+  std::string s = Util::randomAlpha(8, new FixedNumberRandomizer());
+  CPPUNIT_ASSERT_EQUAL(std::string("AAAAAAAA"), s);
 }
 
 void UtilTest::testToUpper() {
-  string src = "608cabc0f2fa18c260cafd974516865c772363d5";
-  string upp = "608CABC0F2FA18C260CAFD974516865C772363D5";
+  std::string src = "608cabc0f2fa18c260cafd974516865c772363d5";
+  std::string upp = "608CABC0F2FA18C260CAFD974516865C772363D5";
 
   CPPUNIT_ASSERT_EQUAL(upp, Util::toUpper(src));
 }
 
 void UtilTest::testToLower() {
-  string src = "608CABC0F2FA18C260CAFD974516865C772363D5";
-  string upp = "608cabc0f2fa18c260cafd974516865c772363d5";
+  std::string src = "608CABC0F2FA18C260CAFD974516865C772363D5";
+  std::string upp = "608cabc0f2fa18c260cafd974516865c772363d5";
 
   CPPUNIT_ASSERT_EQUAL(upp, Util::toLower(src));
 }
 
-#include "SharedHandle.h"
-
 void UtilTest::testUrldecode() {
-  string src = "http://aria2.sourceforge.net/aria2%200.7.0%20docs.html";
-  CPPUNIT_ASSERT_EQUAL(string("http://aria2.sourceforge.net/aria2 0.7.0 docs.html"),
+  std::string src = "http://aria2.sourceforge.net/aria2%200.7.0%20docs.html";
+  CPPUNIT_ASSERT_EQUAL(std::string("http://aria2.sourceforge.net/aria2 0.7.0 docs.html"),
 		       Util::urldecode(src));
 
-  string src2 = "aria2+aria2";
-  CPPUNIT_ASSERT_EQUAL(string("aria2+aria2"), Util::urldecode(src2));
+  std::string src2 = "aria2+aria2";
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2+aria2"), Util::urldecode(src2));
 
-  string src3 = "%5t%20";
-  CPPUNIT_ASSERT_EQUAL(string("%5t "), Util::urldecode(src3));
+  std::string src3 = "%5t%20";
+  CPPUNIT_ASSERT_EQUAL(std::string("%5t "), Util::urldecode(src3));
 
-  string src4 = "%";
-  CPPUNIT_ASSERT_EQUAL(string("%"), Util::urldecode(src4));
+  std::string src4 = "%";
+  CPPUNIT_ASSERT_EQUAL(std::string("%"), Util::urldecode(src4));
   
-  string src5 = "%3";
-  CPPUNIT_ASSERT_EQUAL(string("%3"), Util::urldecode(src5));
+  std::string src5 = "%3";
+  CPPUNIT_ASSERT_EQUAL(std::string("%3"), Util::urldecode(src5));
 
-  string src6 = "%2f";
-  CPPUNIT_ASSERT_EQUAL(string("/"), Util::urldecode(src6));
+  std::string src6 = "%2f";
+  CPPUNIT_ASSERT_EQUAL(std::string("/"), Util::urldecode(src6));
 }
 
 void UtilTest::testCountBit() {
@@ -312,61 +313,61 @@ void UtilTest::testGetRealSize()
     Util::getRealSize("");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::getRealSize("foo");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::getRealSize("-1");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::getRealSize("9223372036854775807K");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::getRealSize("9223372036854775807M");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
 }
 
 void UtilTest::testAbbrevSize()
 {
-  CPPUNIT_ASSERT_EQUAL(string("4,096.0Mi"), Util::abbrevSize(4294967296LL));
-  CPPUNIT_ASSERT_EQUAL(string("1.0Ki"), Util::abbrevSize(1024));
-  CPPUNIT_ASSERT_EQUAL(string("1,023"), Util::abbrevSize(1023));
-  CPPUNIT_ASSERT_EQUAL(string("0"), Util::abbrevSize(0));
-  CPPUNIT_ASSERT_EQUAL(string("1.1Ki"), Util::abbrevSize(1127));
-  CPPUNIT_ASSERT_EQUAL(string("1.5Mi"), Util::abbrevSize(1572864));
+  CPPUNIT_ASSERT_EQUAL(std::string("4,096.0Mi"), Util::abbrevSize(4294967296LL));
+  CPPUNIT_ASSERT_EQUAL(std::string("1.0Ki"), Util::abbrevSize(1024));
+  CPPUNIT_ASSERT_EQUAL(std::string("1,023"), Util::abbrevSize(1023));
+  CPPUNIT_ASSERT_EQUAL(std::string("0"), Util::abbrevSize(0));
+  CPPUNIT_ASSERT_EQUAL(std::string("1.1Ki"), Util::abbrevSize(1127));
+  CPPUNIT_ASSERT_EQUAL(std::string("1.5Mi"), Util::abbrevSize(1572864));
 
 }
 
 void UtilTest::testToStream()
 {
-  ostringstream os;
-  FileEntryHandle f1 = new FileEntry("aria2.tar.bz2", 12300, 0);
-  FileEntryHandle f2 = new FileEntry("aria2.txt", 556, 0);
-  FileEntries entries;
+  std::ostringstream os;
+  SharedHandle<FileEntry> f1 = new FileEntry("aria2.tar.bz2", 12300, 0);
+  SharedHandle<FileEntry> f2 = new FileEntry("aria2.txt", 556, 0);
+  std::deque<SharedHandle<FileEntry> > entries;
   entries.push_back(f1);
   entries.push_back(f2);
   Util::toStream(os, entries);
   CPPUNIT_ASSERT_EQUAL(
-		       string("Files:\n"
+		       std::string("Files:\n"
 			      "idx|path/length\n"
 			      "===+===========================================================================\n"
 			      "  1|aria2.tar.bz2\n"
@@ -417,7 +418,7 @@ void UtilTest::testAlphaToNum()
 
 void UtilTest::testMkdirs()
 {
-  string dir = "/tmp/aria2-UtilTest-testMkdirs";
+  std::string dir = "/tmp/aria2-UtilTest-testMkdirs";
   File d(dir);
   if(d.exists()) {
     CPPUNIT_ASSERT(d.remove());
@@ -426,14 +427,14 @@ void UtilTest::testMkdirs()
   Util::mkdirs(dir);
   CPPUNIT_ASSERT(d.isDir());
 
-  string file = "./UtilTest.cc";
+  std::string file = "./UtilTest.cc";
   File f(file);
   CPPUNIT_ASSERT(f.isFile());
   try {
     Util::mkdirs(file);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(DlAbortEx* ex) {
-    cerr << ex->getMsg() << endl;
+    std::cerr << ex->getMsg() << std::endl;
     delete ex;
   }
 }
@@ -447,7 +448,7 @@ void UtilTest::testConvertBitfield()
   // which corresponds to the index [1,2] in destBitfield
   Util::convertBitfield(&destBitfield, &srcBitfield);
   
-  CPPUNIT_ASSERT_EQUAL(string("9fffffffffffffffffffffffffffffff80"),
+  CPPUNIT_ASSERT_EQUAL(std::string("9fffffffffffffffffffffffffffffff80"),
 		       Util::toHex(destBitfield.getBitfield(),
 				   destBitfield.getBitfieldLength()));
 }
@@ -482,35 +483,35 @@ void UtilTest::testParseIntRange_invalidRange()
     IntSequence seq = Util::parseIntRange("-1");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     IntSequence seq = Util::parseIntRange("2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     IntSequence seq = Util::parseIntRange("2147483647-2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     IntSequence seq = Util::parseIntRange("1-2x");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     IntSequence seq = Util::parseIntRange("3x-4");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
 }
@@ -523,28 +524,28 @@ void UtilTest::testParseInt()
     Util::parseInt("2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::parseInt("-2147483649");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::parseInt("12x");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::parseInt("");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
 }
@@ -558,40 +559,42 @@ void UtilTest::testParseLLInt()
     Util::parseLLInt("9223372036854775808");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::parseLLInt("-9223372036854775809");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::parseLLInt("12x");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     Util::parseLLInt("");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
 }
 
 void UtilTest::testToString_binaryStream()
 {
-  DiskWriterHandle dw = new ByteArrayDiskWriter();
-  string data = string(16*1024+256, 'a');
+  SharedHandle<DiskWriter> dw = new ByteArrayDiskWriter();
+  std::string data(16*1024+256, 'a');
   dw->initAndOpenFile("dummy");
   dw->writeData((const unsigned char*)data.c_str(), data.size(), 0);
 
-  string readData = Util::toString(dw);
+  std::string readData = Util::toString(dw);
 
   CPPUNIT_ASSERT_EQUAL(data, readData);
 }
+
+} // namespace aria2

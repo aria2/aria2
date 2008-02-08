@@ -34,17 +34,22 @@
 /* copyright --> */
 #include "HttpInitiateConnectionCommand.h"
 #include "NameResolver.h"
-#include "DownloadEngine.h"
-#include "Option.h"
 #include "Request.h"
+#include "DownloadEngine.h"
+#include "HttpConnection.h"
+#include "HttpRequest.h"
+#include "Segment.h"
 #include "HttpRequestCommand.h"
 #include "HttpProxyRequestCommand.h"
-#include "Util.h"
 #include "DlAbortEx.h"
-#include "DlRetryEx.h"
+#include "Option.h"
+#include "Util.h"
+#include "Logger.h"
+#include "Socket.h"
 #include "message.h"
 #include "prefs.h"
-#include "HttpConnection.h"
+
+namespace aria2 {
 
 HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
 							     const RequestHandle& req,
@@ -65,7 +70,7 @@ HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {
 }
 
 bool HttpInitiateConnectionCommand::executeInternal() {
-  string hostname;
+  std::string hostname;
   if(useProxy()) {
     hostname = e->option->get(PREF_HTTP_PROXY_HOST);
   } else {
@@ -122,3 +127,5 @@ bool HttpInitiateConnectionCommand::nameResolveFinished() const {
     nameResolver->getStatus() == NameResolver::STATUS_ERROR;
 }
 #endif // ENABLE_ASYNC_DNS
+
+} // namespace aria2

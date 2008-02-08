@@ -32,14 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_NODE_LOOKUP_ENTRY_DECL_H_
-#define _D_DHT_NODE_LOOKUP_ENTRY_DECL_H_
+#include "AbstractAuthResolver.h"
+#include "AuthConfig.h"
 
-#include "SharedHandle.h"
-#include <deque>
+namespace aria2 {
 
-class DHTNodeLookupEntry;
-typedef SharedHandle<DHTNodeLookupEntry> DHTNodeLookupEntryHandle;
-typedef std::deque<DHTNodeLookupEntryHandle> DHTNodeLookupEntries;
+AbstractAuthResolver::AbstractAuthResolver():
+  _userDefinedAuthConfig(0),
+  _defaultAuthConfig(new AuthConfig()) {}
 
-#endif // _D_DHT_NODE_LOOKUP_ENTRY_DECL_H_
+AbstractAuthResolver::~AbstractAuthResolver() {}
+
+void AbstractAuthResolver::setUserDefinedAuthConfig(const AuthConfigHandle& authConfig)
+{
+  _userDefinedAuthConfig = authConfig;
+}
+
+AuthConfigHandle AbstractAuthResolver::getUserDefinedAuthConfig() const
+{
+  return _userDefinedAuthConfig;
+}
+
+void AbstractAuthResolver::setDefaultAuthConfig(const AuthConfigHandle& authConfig)
+{
+  _defaultAuthConfig = authConfig;
+}
+
+AuthConfigHandle AbstractAuthResolver::getDefaultAuthConfig() const
+{
+  return _defaultAuthConfig;
+}
+
+} // namespace aria2

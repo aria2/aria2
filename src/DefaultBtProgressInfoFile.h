@@ -37,31 +37,31 @@
 
 #include "BtProgressInfoFile.h"
 
+namespace aria2 {
+
 class DownloadContext;
-typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class PieceStorage;
-typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class Logger;
 class Option;
 
 class DefaultBtProgressInfoFile : public BtProgressInfoFile {
 private:
-  DownloadContextHandle _dctx;
-  PieceStorageHandle _pieceStorage;
+  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<PieceStorage> _pieceStorage;
   const Option* _option;
   const Logger* _logger;
-  string _filename;
+  std::string _filename;
 
   bool isTorrentDownload();
 
 public:
-  DefaultBtProgressInfoFile(const DownloadContextHandle& btContext,
-			    const PieceStorageHandle& pieceStorage,
+  DefaultBtProgressInfoFile(const SharedHandle<DownloadContext>& btContext,
+			    const SharedHandle<PieceStorage>& pieceStorage,
 			    const Option* option);
 
   virtual ~DefaultBtProgressInfoFile();
 
-  virtual string getFilename() { return _filename; }
+  virtual std::string getFilename() { return _filename; }
   
   virtual bool exists();
 
@@ -72,5 +72,7 @@ public:
   virtual void removeFile();
 
 };
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_BT_PROGRESS_INFO_FILE_H_

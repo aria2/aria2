@@ -36,6 +36,7 @@
 #include "RequestGroup.h"
 #include "Option.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "DefaultBtContext.h"
 #include "RecoverableException.h"
 #include "message.h"
@@ -43,6 +44,9 @@
 #include "Util.h"
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
+#include "File.h"
+
+namespace aria2 {
 
 BtDependency::BtDependency(const RequestGroupWeakHandle& dependant,
 			   const RequestGroupHandle& dependee,
@@ -64,7 +68,7 @@ bool BtDependency::resolve()
     try {
       DiskAdaptorHandle diskAdaptor = dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
-      string content = Util::toString(diskAdaptor);
+      std::string content = Util::toString(diskAdaptor);
       btContext->loadFromMemory(content.c_str(), content.size(),
 				File(dependee->getFilePath()).getBasename());
       if(_option->defined(PREF_PEER_ID_PREFIX)) {
@@ -93,3 +97,5 @@ bool BtDependency::resolve()
     return false;
   }
 }
+
+} // namespace aria2

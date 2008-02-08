@@ -36,6 +36,9 @@
 #define _D_ITERATABLE_VALIDATOR_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 /**
  * This class provides the interface to validate files.
@@ -62,5 +65,7 @@ public:
 };
 
 typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;
+
+} // namespace aria2
 
 #endif // _D_ITERATABLE_VALIDATOR_H_

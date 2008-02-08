@@ -35,12 +35,15 @@
 #ifndef _D_PIECE_H_
 #define _D_PIECE_H_
 
-#include "BitfieldMan.h"
 #include "common.h"
+#include "SharedHandle.h"
+#include <stdint.h>
+#include <deque>
+#include <string>
 
-class Piece;
-typedef SharedHandle<Piece> PieceHandle;
-typedef deque<PieceHandle> Pieces;
+namespace aria2 {
+
+class BitfieldMan;
 
 class Piece {
 private:
@@ -49,7 +52,7 @@ private:
   int32_t _blockLength;
   BitfieldMan* bitfield;
 
-  Pieces _subPieces;
+  std::deque<SharedHandle<Piece> > _subPieces;
 public:
 
   static const int32_t BLOCK_LENGTH  = 16*1024;
@@ -60,80 +63,64 @@ public:
 
   Piece(const Piece& piece);
 
-  ~Piece() {
-    delete bitfield;
-  }
+  ~Piece();
 
-  Piece& operator=(const Piece& piece) {
-    if(this != &piece) {
-      index = piece.index;
-      length = piece.length;
-      if(bitfield != NULL) {
-	delete bitfield;
-      }
-      if(piece.bitfield == NULL) {
-	bitfield = NULL;
-      } else {
-	bitfield = new BitfieldMan(*piece.bitfield);
-      }
-    }
-    return *this;
-  }
+  Piece& operator=(const Piece& piece);
   
-  bool operator==(const Piece& piece) const {
-    return index == piece.index;
-  }
+  bool operator==(const Piece& piece) const;
 
   int32_t getMissingUnusedBlockIndex() const;
   int32_t getMissingBlockIndex() const;
   int32_t getFirstMissingBlockIndexWithoutLock() const;
-  BlockIndexes getAllMissingBlockIndexes() const;
+  std::deque<int32_t> getAllMissingBlockIndexes() const;
   void completeBlock(int32_t blockIndex);
   void cancelBlock(int32_t blockIndex);
-  int32_t countCompleteBlock() const {
-    return bitfield->countBlock()-bitfield->countMissingBlock();
-  }
-  bool hasBlock(int32_t blockIndex) const {
-    return bitfield->isBitSet(blockIndex);
-  }
+
+  int32_t countCompleteBlock() const;
+
+  bool hasBlock(int32_t blockIndex) const;
+
   /**
    * Returns true if all blocks of this piece have been downloaded, otherwise
    * returns false.
    */
   bool pieceComplete() const;
-  int32_t countBlock() const { return bitfield->countBlock(); }
-  int32_t getBlockLength(int32_t index) const {
-    return bitfield->getBlockLength(index);
-  }
-  int32_t getBlockLength() const { return bitfield->getBlockLength(); }
+
+  int32_t countBlock() const;
+
+  int32_t getBlockLength(int32_t index) const;
+
+  int32_t getBlockLength() const;
+
   int32_t getIndex() const { return index; }
+
   void setIndex(int32_t index) { this->index = index; }
+
   int32_t getLength() const { return length; }
+
   void setLength(int32_t index) { this->length = length; }
 
-  const unsigned char* getBitfield() const { return bitfield->getBitfield(); }
+  const unsigned char* getBitfield() const;
+
   void setBitfield(const unsigned char* bitfield, int32_t len);
 
-  int32_t getBitfieldLength() const {
-    return bitfield->getBitfieldLength();
-  }
+  int32_t getBitfieldLength() const;
 
   void clearAllBlock();
   void setAllBlock();
 
-  string toString() const;
+  std::string toString() const;
 
-  bool isBlockUsed(int32_t index) const {
-    return bitfield->isUseBitSet(index);
-  }
+  bool isBlockUsed(int32_t index) const;
 
-  void addSubPiece(const PieceHandle& subPiece);
+  void addSubPiece(const SharedHandle<Piece>& subPiece);
 
-  PieceHandle getSubPiece(int32_t blockIndex);
+  SharedHandle<Piece> getSubPiece(int32_t blockIndex);
   
   void removeSubPiece(int32_t blockIndex);
 
-  Pieces::iterator getSubPieceIterator(int32_t blockIndex);
+  std::deque<SharedHandle<Piece> >::iterator
+  getSubPieceIterator(int32_t blockIndex);
 
   bool isRangeComplete(int32_t offset, int32_t length);
 
@@ -147,6 +134,8 @@ public:
 };
 
 typedef SharedHandle<Piece> PieceHandle;
-typedef deque<PieceHandle> Pieces;
+typedef std::deque<PieceHandle> Pieces;
+
+} // namespace aria2
 
 #endif // _D_PIECE_H_

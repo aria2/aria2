@@ -34,11 +34,13 @@
 /* copyright --> */
 #include "ChecksumCheckIntegrityEntry.h"
 #include "RequestGroup.h"
-#include "Command.h"
 #include "SingleFileDownloadContext.h"
+#include "FileEntry.h"
 #include "IteratableChecksumValidator.h"
 #include "DownloadEngine.h"
 #include "PieceStorage.h"
+
+namespace aria2 {
 
 ChecksumCheckIntegrityEntry::ChecksumCheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand):
   CheckIntegrityEntry(requestGroup, nextCommand) {}
@@ -59,13 +61,16 @@ void ChecksumCheckIntegrityEntry::initValidator()
   _validator->init();
 }
 
-Commands ChecksumCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
+std::deque<Command*>
+ChecksumCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
 {
-  return Commands();
+  return std::deque<Command*>();
 }
 
-Commands ChecksumCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
+std::deque<Command*>
+ChecksumCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
 {
-  return Commands();
+  return std::deque<Command*>();
 }
 
+} // namespace aria2

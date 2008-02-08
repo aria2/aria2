@@ -36,15 +36,22 @@
 #define _D_AUTH_RESOLVER_H_
 
 #include "common.h"
-#include "AuthConfig.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
+
+class AuthConfig;
 
 class AuthResolver {
 public:
   virtual ~AuthResolver() {}
 
-  virtual AuthConfigHandle resolveAuthConfig(const string& hostname) = 0;
+  virtual SharedHandle<AuthConfig> resolveAuthConfig(const std::string& hostname) = 0;
 };
 
 typedef SharedHandle<AuthResolver> AuthResolverHandle;
+
+} // namespace aria2
 
 #endif // _D_AUTH_RESOLVER_H_

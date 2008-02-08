@@ -35,10 +35,12 @@
 #include "DHTPeerAnnounceCommand.h"
 #include "DHTPeerAnnounceStorage.h"
 #include "DownloadEngine.h"
-#include "SingletonHolder.h"
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
 #include "message.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 DHTPeerAnnounceCommand::DHTPeerAnnounceCommand(int32_t cuid, DownloadEngine* e, time_t interval):
   TimeBasedCommand(cuid, e, interval),
@@ -62,7 +64,9 @@ void DHTPeerAnnounceCommand::process()
   }
 }
 
-void DHTPeerAnnounceCommand::setPeerAnnounceStorage(const DHTPeerAnnounceStorageHandle& storage)
+void DHTPeerAnnounceCommand::setPeerAnnounceStorage(const SharedHandle<DHTPeerAnnounceStorage>& storage)
 {
   _peerAnnounceStorage = storage;
 }
+
+} // namespace aria2

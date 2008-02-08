@@ -41,6 +41,13 @@
 #include "DHTPeerLookupTask.h"
 #include "DHTNode.h"
 #include "DHTNodeLookupEntry.h"
+#include "BtContext.h"
+#include "BtRuntime.h"
+#include "PeerStorage.h"
+#include "Peer.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 DHTGetPeersCommand::DHTGetPeersCommand(int32_t cuid,
 				       RequestGroup* requestGroup,
@@ -85,12 +92,14 @@ bool DHTGetPeersCommand::execute()
   return false;
 }
 
-void DHTGetPeersCommand::setTaskQueue(const DHTTaskQueueHandle& taskQueue)
+void DHTGetPeersCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
 
-void DHTGetPeersCommand::setTaskFactory(const DHTTaskFactoryHandle& taskFactory)
+void DHTGetPeersCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
 }
+
+} // namespace aria2

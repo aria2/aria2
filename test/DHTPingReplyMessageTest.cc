@@ -8,6 +8,8 @@
 #include "Util.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTPingReplyMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTPingReplyMessageTest);
@@ -26,19 +28,19 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTPingReplyMessageTest);
 
 void DHTPingReplyMessageTest::testGetBencodedMessage()
 {
-  DHTNodeHandle localNode = new DHTNode();
-  DHTNodeHandle remoteNode = new DHTNode();
+  SharedHandle<DHTNode> localNode = new DHTNode();
+  SharedHandle<DHTNode> remoteNode = new DHTNode();
 
   char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
-  string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
+  std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   char id[DHT_ID_LENGTH];
   DHTUtil::generateRandomData(id, DHT_ID_LENGTH);
 
   DHTPingReplyMessage msg(localNode, remoteNode, (const unsigned char*)id, transactionID);
 
-  string msgbody = msg.getBencodedMessage();
+  std::string msgbody = msg.getBencodedMessage();
 
   SharedHandle<Dictionary> cm = new Dictionary();
   cm->put("t", new Data(transactionID));
@@ -52,3 +54,5 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
 
   CPPUNIT_ASSERT_EQUAL(v.getBencodedData(), msgbody);
 }
+
+} // namespace aria2

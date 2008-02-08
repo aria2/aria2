@@ -35,7 +35,9 @@
 #ifndef _D_SHARED_HANDLE_H_
 #define _D_SHARED_HANDLE_H_
 
-#include <ostream>
+#include <iosfwd>
+
+namespace aria2 {
 
 class RefCount {
 public:
@@ -319,5 +321,7 @@ template<typename T1, typename T2>
 bool operator<(const WeakHandle<T1>& t1, const WeakHandle<T2>& t2) {
   return *t1.obj < *t2.obj;
 }
+
+} // namespace aria2
 
 #endif // _D_SHARED_HANDLE_H_

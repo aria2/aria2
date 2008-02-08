@@ -7,10 +7,11 @@
 #include "Piece.h"
 #include "Peer.h"
 #include "Option.h"
+#include "FileEntry.h"
 #include "MockBtContext.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DefaultPieceStorageTest:public CppUnit::TestFixture {
 
@@ -28,8 +29,8 @@ class DefaultPieceStorageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMarkPiecesDone);
   CPPUNIT_TEST_SUITE_END();
 private:
-  BtContextHandle btContext;
-  PeerHandle peer;
+  SharedHandle<BtContext> btContext;
+  SharedHandle<Peer> peer;
   Option* option;
 public:
   DefaultPieceStorageTest():btContext(0), peer(0) {
@@ -81,14 +82,14 @@ void DefaultPieceStorageTest::testGetMissingPiece() {
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
-  PieceHandle piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(string("piece: index=0, length=128"),
+  SharedHandle<Piece> piece = pss.getMissingPiece(peer);
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
 		       piece->toString());
   piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(string("piece: index=1, length=128"),
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
 		       piece->toString());
   piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(string("piece: index=2, length=128"),
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
 		       piece->toString());
   piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT(piece.isNull());
@@ -102,8 +103,8 @@ void DefaultPieceStorageTest::testGetMissingFastPiece() {
   peer->setFastExtensionEnabled(true);
   peer->addPeerAllowedIndex(2);
 
-  PieceHandle piece = pss.getMissingFastPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(string("piece: index=2, length=128"),
+  SharedHandle<Piece> piece = pss.getMissingFastPiece(peer);
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
 		       piece->toString());
 }
 
@@ -123,8 +124,8 @@ void DefaultPieceStorageTest::testCompletePiece() {
 
   peer->setAllBitfield();
 
-  PieceHandle piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(string("piece: index=0, length=128"),
+  SharedHandle<Piece> piece = pss.getMissingPiece(peer);
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
 		       piece->toString());
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0,
@@ -135,7 +136,7 @@ void DefaultPieceStorageTest::testCompletePiece() {
   CPPUNIT_ASSERT_EQUAL((int64_t)128,
 		       pss.getCompletedLength());
 
-  PieceHandle incompletePiece = pss.getMissingPiece(peer);
+  SharedHandle<Piece> incompletePiece = pss.getMissingPiece(peer);
   incompletePiece->completeBlock(0);
   CPPUNIT_ASSERT_EQUAL((int64_t)256,
 		       pss.getCompletedLength());
@@ -144,7 +145,7 @@ void DefaultPieceStorageTest::testCompletePiece() {
 void DefaultPieceStorageTest::testGetPiece() {
   DefaultPieceStorage pss(btContext, option);
   
-  PieceHandle pieceGot = pss.getPiece(0);
+  SharedHandle<Piece> pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(false, pieceGot->pieceComplete());
@@ -152,10 +153,10 @@ void DefaultPieceStorageTest::testGetPiece() {
 
 void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
   DefaultPieceStorage pss(btContext, option);
-  PieceHandle piece = PieceHandle(new Piece(0, 128));
+  SharedHandle<Piece> piece = SharedHandle<Piece>(new Piece(0, 128));
   piece->completeBlock(0);
   pss.addUsedPiece(piece);
-  PieceHandle pieceGot = pss.getPiece(0);
+  SharedHandle<Piece> pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL((int32_t)1, pieceGot->countCompleteBlock());
@@ -163,9 +164,9 @@ void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
 
 void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
   DefaultPieceStorage pss(btContext, option);
-  PieceHandle piece = PieceHandle(new Piece(0, 128));
+  SharedHandle<Piece> piece = SharedHandle<Piece>(new Piece(0, 128));
   pss.completePiece(piece);
-  PieceHandle pieceGot = pss.getPiece(0);
+  SharedHandle<Piece> pieceGot = pss.getPiece(0);
   CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(true, pieceGot->pieceComplete());
@@ -179,36 +180,36 @@ void DefaultPieceStorageTest::testGetMissingPiece_fileEntry()
   int32_t pieceLength = 256*1024;
   int64_t totalLength = 1*pieceLength;
   int32_t blockLength = 16*1024;
-  Strings uris1;
+  std::deque<std::string> uris1;
   uris1.push_back("http://localhost/src/file1.txt");
-  Strings uris2;
+  std::deque<std::string> uris2;
   uris2.push_back("http://localhost/src/file2.txt");
-  FileEntryHandle file1 = new FileEntry("src/file1.txt", 150*1024, 0/*, uris1*/);
-  FileEntryHandle file2 = new FileEntry("src/file2.txt", 106*1024, file1->getLength() /*, uris2*/);
+  SharedHandle<FileEntry> file1 = new FileEntry("src/file1.txt", 150*1024, 0/*, uris1*/);
+  SharedHandle<FileEntry> file2 = new FileEntry("src/file2.txt", 106*1024, file1->getLength() /*, uris2*/);
 
-  MockBtContextHandle dctx = new MockBtContext();
+  SharedHandle<MockBtContext> dctx = new MockBtContext();
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
   dctx->addFileEntry(file1);
   dctx->addFileEntry(file2);
 
-  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, option);
+  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, option);
 
-  PieceHandle p = ps->getMissingPiece(file1);
+  SharedHandle<Piece> p = ps->getMissingPiece(file1);
   CPPUNIT_ASSERT(!p.isNull());
   CPPUNIT_ASSERT_EQUAL((int32_t)0, p->getIndex());
 
   for(int32_t i = 0; i < 9; ++i) {
     p->completeBlock(i);
   }
-  PieceHandle subPiece = new Piece(9, blockLength, 1);
+  SharedHandle<Piece> subPiece = new Piece(9, blockLength, 1);
   p->addSubPiece(subPiece);
 
   ps->cancelPiece(p);
 
   // Piece index = 0 should be retrieved again because the part of file1 is
   // not complete
-  PieceHandle p2 = ps->getMissingPiece(file1);
+  SharedHandle<Piece> p2 = ps->getMissingPiece(file1);
   CPPUNIT_ASSERT(!p2.isNull());
   CPPUNIT_ASSERT_EQUAL((int32_t)0, p2->getIndex());
  
@@ -222,7 +223,7 @@ void DefaultPieceStorageTest::testGetMissingPiece_fileEntry()
   CPPUNIT_ASSERT(ps->getMissingPiece(file1).isNull());
 
   // Next, I retrive the piece giving file2
-  PieceHandle p3 = ps->getMissingPiece(file2);
+  SharedHandle<Piece> p3 = ps->getMissingPiece(file2);
   CPPUNIT_ASSERT(!p3.isNull());
   CPPUNIT_ASSERT_EQUAL((int32_t)0, p3->getIndex());
 
@@ -244,27 +245,27 @@ void DefaultPieceStorageTest::testCancelPiece()
   int32_t pieceLength = 256*1024;
   int64_t totalLength = 32*pieceLength; // <-- make the number of piece greater than END_GAME_PIECE_NUM
   int32_t blockLength = 16*1024;
-  Strings uris1;
+  std::deque<std::string> uris1;
   uris1.push_back("http://localhost/src/file1.txt");
-  FileEntryHandle file1 = new FileEntry("src/file1.txt", totalLength, 0 /*, uris1*/);
+  SharedHandle<FileEntry> file1 = new FileEntry("src/file1.txt", totalLength, 0 /*, uris1*/);
 
-  MockBtContextHandle dctx = new MockBtContext();
+  SharedHandle<MockBtContext> dctx = new MockBtContext();
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
   dctx->addFileEntry(file1);
 
-  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, option);
+  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, option);
 
-  PieceHandle p = ps->getMissingPiece(file1);
+  SharedHandle<Piece> p = ps->getMissingPiece(file1);
   
-  PieceHandle subPiece = new Piece(0, blockLength, 1);
+  SharedHandle<Piece> subPiece = new Piece(0, blockLength, 1);
   subPiece->completeBlock(0);
   p->addSubPiece(subPiece);
 
   ps->cancelPiece(p);
 
   // See the sub piece is also hibernated...
-  PieceHandle p2 = ps->getMissingPiece(file1);
+  SharedHandle<Piece> p2 = ps->getMissingPiece(file1);
 
   CPPUNIT_ASSERT(!p2->getSubPiece(0).isNull());  
 }
@@ -273,7 +274,7 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 {
   int32_t pieceLength = 256*1024;
   int64_t totalLength = 4*1024*1024;
-  MockBtContextHandle dctx = new MockBtContext();
+  SharedHandle<MockBtContext> dctx = new MockBtContext();
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
 
@@ -295,3 +296,5 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
     CPPUNIT_ASSERT(ps.hasPiece(i));
   }
 }
+
+} // namespace aria2

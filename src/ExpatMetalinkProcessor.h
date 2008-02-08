@@ -37,22 +37,26 @@
 
 #include "MetalinkProcessor.h"
 #include <expat.h>
+#include <string>
+
+namespace aria2 {
 
 class MetalinkParserStateMachine;
-typedef SharedHandle<MetalinkParserStateMachine> MetalinkParserStateMachineHandle;
 
 class ExpatMetalinkProcessor:public MetalinkProcessor {
 private:
-  MetalinkParserStateMachineHandle _stm;
+  SharedHandle<MetalinkParserStateMachine> _stm;
 
 public:
   ExpatMetalinkProcessor();
 
   virtual ~ExpatMetalinkProcessor() {}
 
-  virtual MetalinkerHandle parseFile(const string& filename);
+  virtual SharedHandle<Metalinker> parseFile(const std::string& filename);
 
-  virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream);
+  virtual SharedHandle<Metalinker> parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream);
 };
+
+} // namespace aria2
 
 #endif // _D_EXPAT_METALINK_PROCESSOR_H_

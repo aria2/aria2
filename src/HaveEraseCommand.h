@@ -37,6 +37,8 @@
 
 #include "TimeBasedCommand.h"
 
+namespace aria2 {
+
 class HaveEraseCommand : public TimeBasedCommand
 {
 public:
@@ -48,5 +50,7 @@ public:
 
   virtual void process();
 };
+
+} // namespace aria2
 
 #endif // _D_HAVE_ERASE_COMMAND_H_

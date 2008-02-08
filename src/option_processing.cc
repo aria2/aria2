@@ -37,26 +37,30 @@
 #include "prefs.h"
 #include "OptionParser.h"
 #include "OptionHandlerFactory.h"
+#include "OptionHandler.h"
 #include "Util.h"
 #include "message.h"
 #include "Exception.h"
 #include "a2io.h"
 #include "help_tags.h"
-#include "LogFactory.h"
+#include "File.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 extern char* optarg;
 extern int optind, opterr, optopt;
 #include <getopt.h>
 
-extern void showVersion();
-extern void showUsage(const string& category);
+namespace aria2 {
 
-static string toBoolArg(const char* optarg)
+extern void showVersion();
+extern void showUsage(const std::string& category);
+
+static std::string toBoolArg(const char* optarg)
 {
-  string arg;
-  if(!optarg || string(optarg) == "") {
+  std::string arg;
+  if(!optarg || std::string(optarg) == "") {
     arg = V_TRUE;
   } else {
     arg = optarg;
@@ -66,7 +70,7 @@ static string toBoolArg(const char* optarg)
 
 Option* option_processing(int argc, char* const argv[])
 {
-  stringstream cmdstream;
+  std::stringstream cmdstream;
   int32_t c;
   Option* op = new Option();
   op->put(PREF_STDOUT_LOG, V_FALSE);
@@ -139,8 +143,8 @@ Option* option_processing(int argc, char* const argv[])
 
   // following options are not parsed by OptionHandler and not stored in Option.
   bool noConf = false;
-  string defaultCfname = Util::getHomeDir()+"/.aria2/aria2.conf";
-  string ucfname;
+  std::string defaultCfname = Util::getHomeDir()+"/.aria2/aria2.conf";
+  std::string ucfname;
 
   while(1) {
     int optIndex = 0;
@@ -453,8 +457,8 @@ Option* option_processing(int argc, char* const argv[])
       exit(EXIT_SUCCESS);
     case 'h':
       {
-	string category;
-	if(optarg == 0 || string(optarg) == "") {
+	std::string category;
+	if(optarg == 0 || std::string(optarg) == "") {
 	  category = TAG_BASIC;
 	} else {
 	  category = optarg;
@@ -471,31 +475,31 @@ Option* option_processing(int argc, char* const argv[])
     OptionParser oparser;
     oparser.setOptionHandlers(OptionHandlerFactory::createOptionHandlers());
     if(!noConf) {
-      string cfname;
+      std::string cfname;
       if(ucfname.size()) {
 	cfname = ucfname;
       } else {
 	cfname = defaultCfname;
       }
       if(File(cfname).isFile()) {
-	ifstream cfstream(cfname.c_str());
+	std::ifstream cfstream(cfname.c_str());
 	try {
 	  oparser.parse(op, cfstream);
 	} catch(Exception* e) {
-	  cerr << "Parse error in " << cfname << endl;
-	  cerr << *e << endl;
+	  std::cerr << "Parse error in " << cfname << "\n"
+		    << *e << std::endl;
 	  delete e;
 	  exit(EXIT_FAILURE);
 	}
       } else if(ucfname.size()) {
 	printf("Configuration file %s is not found.", cfname.c_str());
-	cout << "\n";
+	std::cout << "\n";
       }
     }
     try {
       oparser.parse(op, cmdstream);
     } catch(Exception* e) {
-      cerr << *e << endl;
+      std::cerr << *e << std::endl;
       delete e;
       exit(EXIT_FAILURE);
     }
@@ -515,7 +519,7 @@ Option* option_processing(int argc, char* const argv[])
 #endif // ENABLE_METALINK
      !op->defined(PREF_INPUT_FILE)) {
     if(optind == argc) {
-      cerr << MSG_URI_REQUIRED << endl;
+      std::cerr << MSG_URI_REQUIRED << std::endl;
       exit(EXIT_FAILURE);
     }
   }
@@ -529,3 +533,5 @@ Option* option_processing(int argc, char* const argv[])
 #endif // HAVE_DAEMON
   return op;
 }
+
+} // namespace aria2

@@ -1,11 +1,20 @@
 #include "BtRejectMessage.h"
 #include "PeerMessageUtil.h"
 #include "Peer.h"
+#include "FileEntry.h"
+#include "BtRegistry.h"
+#include "PeerObject.h"
+#include "BtMessageFactory.h"
+#include "BtRequestFactory.h"
+#include "BtMessageReceiver.h"
+#include "ExtensionMessageFactory.h"
+#include "PeerConnection.h"
 #include "MockBtMessageDispatcher.h"
 #include "MockBtContext.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtRejectMessageTest:public CppUnit::TestFixture {
 
@@ -58,9 +67,9 @@ public:
 
   typedef SharedHandle<MockBtMessageDispatcher2> MockBtMessageDispatcher2Handle;
 
-  PeerHandle peer;
-  MockBtMessageDispatcher2Handle dispatcher;
-  BtRejectMessageHandle msg;
+  SharedHandle<Peer> peer;
+  SharedHandle<MockBtMessageDispatcher2> dispatcher;
+  SharedHandle<BtRejectMessage> msg;
 
   BtRejectMessageTest():peer(0), dispatcher(0), msg(0) {}
 
@@ -68,7 +77,7 @@ public:
     BtRegistry::unregisterAll();
     peer = new Peer("host", 6969);
 
-    MockBtContextHandle btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
@@ -96,7 +105,7 @@ void BtRejectMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[5], 12345);
   PeerMessageUtil::setIntParam(&msg[9], 256);
   PeerMessageUtil::setIntParam(&msg[13], 1024);
-  BtRejectMessageHandle pm = BtRejectMessage::create(&msg[4], 13);
+  SharedHandle<BtRejectMessage> pm = BtRejectMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((int8_t)16, pm->getId());
   CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)256, pm->getBegin());
@@ -171,6 +180,8 @@ void BtRejectMessageTest::testDoReceivedActionFastExtensionDisabled() {
 }
 
 void BtRejectMessageTest::testToString() {
-  CPPUNIT_ASSERT_EQUAL(string("reject index=1, begin=16, length=32"),
+  CPPUNIT_ASSERT_EQUAL(std::string("reject index=1, begin=16, length=32"),
 		       msg->toString());
 }
+
+} // namespace aria2

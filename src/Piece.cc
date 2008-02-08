@@ -35,6 +35,9 @@
 #include "Piece.h"
 #include "Util.h"
 #include "BitfieldManFactory.h"
+#include "BitfieldMan.h"
+
+namespace aria2 {
 
 Piece::Piece():index(0), length(0), _blockLength(BLOCK_LENGTH), bitfield(0) {}
 
@@ -52,6 +55,31 @@ Piece::Piece(const Piece& piece) {
   } else {
     bitfield = new BitfieldMan(*piece.bitfield);
   }
+}
+
+Piece::~Piece()
+{
+  delete bitfield;
+}
+
+Piece& Piece::operator=(const Piece& piece)
+{
+  if(this != &piece) {
+    index = piece.index;
+    length = piece.length;
+    delete bitfield;
+    if(piece.bitfield) {
+      bitfield = new BitfieldMan(*piece.bitfield);
+    } else {
+      bitfield = 0;
+    }
+  }
+  return *this;
+}
+
+bool Piece::operator==(const Piece& piece) const
+{
+  return index == piece.index;
 }
 
 void Piece::completeBlock(int32_t blockIndex) {
@@ -73,8 +101,48 @@ bool Piece::pieceComplete() const {
   return bitfield->isAllBitSet();
 }
 
+int32_t Piece::countBlock() const
+{
+  return bitfield->countBlock();
+}
+
+int32_t Piece::getBlockLength(int32_t index) const
+{
+  return bitfield->getBlockLength(index);
+}
+
+int32_t Piece::getBlockLength() const
+{
+  return bitfield->getBlockLength();
+}
+
+const unsigned char* Piece::getBitfield() const
+{
+  return bitfield->getBitfield();
+}
+
+int32_t Piece::getBitfieldLength() const
+{
+  return bitfield->getBitfieldLength();
+}
+
+bool Piece::isBlockUsed(int32_t index) const
+{
+  return bitfield->isUseBitSet(index);
+}
+
 void Piece::cancelBlock(int32_t blockIndex) {
   bitfield->unsetUseBit(blockIndex);
+}
+
+int32_t Piece::countCompleteBlock() const
+{
+  return bitfield->countBlock()-bitfield->countMissingBlock();
+}
+
+bool Piece::hasBlock(int32_t blockIndex) const
+{
+  return bitfield->isBitSet(blockIndex);
 }
 
 int32_t Piece::getMissingUnusedBlockIndex() const {
@@ -100,11 +168,11 @@ int32_t Piece::getFirstMissingBlockIndexWithoutLock() const
   return bitfield->getFirstMissingIndex();
 }
 
-BlockIndexes Piece::getAllMissingBlockIndexes() const {
+std::deque<int32_t> Piece::getAllMissingBlockIndexes() const {
   return bitfield->getAllMissingIndexes();
 }
 
-string Piece::toString() const {
+std::string Piece::toString() const {
   return "piece: index="+Util::itos(index)+", length="+Util::itos(length);
 }
 
@@ -214,3 +282,4 @@ int32_t Piece::getCompletedLength()
   return length;
 }
 
+} // namespace aria2

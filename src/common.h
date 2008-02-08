@@ -34,8 +34,7 @@
 /* copyright --> */
 #ifndef _D_COMMON_H_
 #define _D_COMMON_H_
-// use C99 limit macros
-#define __STDC_LIMIT_MACROS
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -49,55 +48,10 @@
 #endif
 #endif // __MINGW32__
 
-#include <stdio.h>
-#include <stdint.h>
-#include <iostream>
-#include <assert.h>
-#include <limits.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string>
-#include <deque>
-#include <algorithm>
 #include "gettext.h"
 #define _(String) gettext(String)
 
-#define USER_AGENT "aria2"
-
-#define BITFIELD_LEN_FROM_PIECES(X) ((X)/8+((X)%8? 1 : 0))
-
-#define DIV_FLOOR(X,Y) ((X)/(Y)+((X)%(Y)? 1:0))
-
-using namespace std;
-//#include "debug_new.h"
-
-class Deleter {
-public:
-  template<class T>
-  void operator()(T* ptr) {
-    delete ptr;
-  }
-};
-
-#include "SharedHandle.h"
-#include "SingletonHolder.h"
-
-typedef deque<string> Strings;
-typedef deque<int32_t> Integers;
-
-#define OPEN_MODE S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
-#define DIR_OPEN_MODE S_IRWXU|S_IRWXG|S_IRWXO
-
-#ifdef __MINGW32__
-# define LONGLONG_PRINTF "%I64d"
-# define ULONGLONG_PRINTF "%I64u"
-# define LONGLONG_SCANF "%I64d"
-# define ULONGLONG_SCANF "%I64u"
-#else
-# define LONGLONG_PRINTF "%lld"
-# define ULONGLONG_PRINTF "%llu"
-# define LONGLONG_SCANF "%Ld"
-# define ULONGLONG_SCANF "%Lu"
-#endif // __MINGW32__
+// use C99 limit macros
+#define __STDC_LIMIT_MACROS
 
 #endif // _D_COMMON_H_

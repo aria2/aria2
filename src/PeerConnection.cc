@@ -35,11 +35,14 @@
 #include "PeerConnection.h"
 #include "message.h"
 #include "DlAbortEx.h"
-#include "PeerMessageUtil.h"
-#include "Util.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "BtHandshakeMessage.h"
+#include "Socket.h"
 #include "a2netcompat.h"
+#include <cstring>
+
+namespace aria2 {
 
 PeerConnection::PeerConnection(int32_t cuid,
 			       const SocketHandle& socket,
@@ -51,14 +54,9 @@ PeerConnection::PeerConnection(int32_t cuid,
    resbufLength(0),
    currentPayloadLength(0),
    lenbufLength(0)
-{
-  //logger->debug("PeerConnection::instantiated");
-}
+{}
 
-PeerConnection::~PeerConnection()
-{
-  //logger->debug("PeerConnection::deleted");
-}
+PeerConnection::~PeerConnection() {}
 
 int32_t PeerConnection::sendMessage(const unsigned char* data, int32_t dataLength) {
   int32_t writtenLength = 0;
@@ -154,3 +152,5 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
   }
   return retval;
 }
+
+} // namespace aria2

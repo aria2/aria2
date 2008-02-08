@@ -36,12 +36,16 @@
 #define _D_BT_EVENT_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 
+namespace aria2 {
 class BtEvent {
 public:
   virtual ~BtEvent() {}
 };
 
 typedef SharedHandle<BtEvent> BtEventHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_EVENT_H_

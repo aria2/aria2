@@ -1,9 +1,10 @@
-#include "SharedHandle.h"
 #include "common.h"
+#include "SharedHandle.h"
 #include <string>
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class SharedHandleTest:public CppUnit::TestFixture {
 
@@ -31,19 +32,19 @@ SharedHandle<int> SharedHandleTest::staticHandle = 0;
 CPPUNIT_TEST_SUITE_REGISTRATION( SharedHandleTest );
 
 void SharedHandleTest::testSharedHandle() {
-  cerr << "xh:" << endl;
+  std::cerr << "xh:" << std::endl;
   SharedHandle<int> xh = new int(1);
 
   CPPUNIT_ASSERT_EQUAL((int32_t)1, xh.getRefCount()->totalRefCount);
   CPPUNIT_ASSERT_EQUAL((int32_t)1, xh.getRefCount()->strongRefCount);
 
-  cerr << "nullHandle:" << endl;
+  std::cerr << "nullHandle:" << std::endl;
   SharedHandle<int> nullHandle = 0;
 
   CPPUNIT_ASSERT_EQUAL((int32_t)1, nullHandle.getRefCount()->totalRefCount);
   CPPUNIT_ASSERT_EQUAL((int32_t)1, nullHandle.getRefCount()->strongRefCount);
 
-  cerr << "staticHandle:" << endl;
+  std::cerr << "staticHandle:" << std::endl;
   CPPUNIT_ASSERT_EQUAL((int32_t)1, staticHandle.getRefCount()->totalRefCount);
   CPPUNIT_ASSERT_EQUAL((int32_t)1, staticHandle.getRefCount()->strongRefCount);
 
@@ -52,3 +53,5 @@ void SharedHandleTest::testSharedHandle() {
   CPPUNIT_ASSERT_EQUAL((int32_t)2, localStaticHandle.getRefCount()->totalRefCount);
   CPPUNIT_ASSERT_EQUAL((int32_t)2, localStaticHandle.getRefCount()->strongRefCount);
 }
+
+} // namespace aria2

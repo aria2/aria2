@@ -37,7 +37,10 @@
 
 #include "AbstractCommand.h"
 
+namespace aria2 {
+
 class FtpConnection;
+class SocketCore;
 
 class FtpNegotiationCommand : public AbstractCommand {
 private:
@@ -83,26 +86,28 @@ private:
   bool recvPort();
   bool sendPasv();
   bool recvPasv();
-  bool sendRest(const SegmentHandle& segment);
-  bool sendRestPasv(const SegmentHandle& segment);
+  bool sendRest(const SharedHandle<Segment>& segment);
+  bool sendRestPasv(const SharedHandle<Segment>& segment);
   bool recvRest();
   bool sendRetr();
   bool recvRetr();
-  bool processSequence(const SegmentHandle& segment);
+  bool processSequence(const SharedHandle<Segment>& segment);
 
-  SocketHandle dataSocket;
-  SocketHandle serverSocket;
+  SharedHandle<SocketCore> dataSocket;
+  SharedHandle<SocketCore> serverSocket;
   int32_t sequence;
   FtpConnection* ftp;
 protected:
   virtual bool executeInternal();
 public:
   FtpNegotiationCommand(int32_t cuid,
-			const RequestHandle& req,
+			const SharedHandle<Request>& req,
 			RequestGroup* requestGroup,
 			DownloadEngine* e,
-			const SocketHandle& s);
+			const SharedHandle<SocketCore>& s);
   virtual ~FtpNegotiationCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_FTP_NEGOTIATION_COMMAND_H_

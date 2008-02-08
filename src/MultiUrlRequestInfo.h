@@ -36,16 +36,18 @@
 #define _D_MULTI_URL_REQUEST_INFO_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
 
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
-typedef deque<RequestGroupHandle> RequestGroups;
 class Option;
 class Logger;
 
 class MultiUrlRequestInfo {
 private:
-  RequestGroups _requestGroups;
+  std::deque<SharedHandle<RequestGroup> > _requestGroups;
 
   Option* _option;
 
@@ -54,7 +56,7 @@ private:
   void printMessageForContinue();
 
 public:
-  MultiUrlRequestInfo(const RequestGroups& requestGroups, Option* op);
+  MultiUrlRequestInfo(const std::deque<SharedHandle<RequestGroup> >& requestGroups, Option* op);
   
   virtual ~MultiUrlRequestInfo();
 
@@ -62,4 +64,7 @@ public:
 };
 
 typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;
+
+} // namespace aria2
+
 #endif // _D_MULTI_URL_REQUEST_INFO_H_

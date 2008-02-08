@@ -36,16 +36,22 @@
 #define _D_DHT_MESSAGE_CALLBACK_LISTENER_H_
 
 #include "common.h"
-#include "DHTMessageDecl.h"
-#include "DHTNodeDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DHTMessage;
+class DHTNode;
 
 class DHTMessageCallbackListener {
 public:
   virtual ~DHTMessageCallbackListener() {}
 
-  virtual void onReceived(const DHTMessageHandle& message) = 0;
+  virtual void onReceived(const SharedHandle<DHTMessage>& message) = 0;
 
-  virtual void onTimeout(const DHTNodeHandle& remoteNode) = 0;
+  virtual void onTimeout(const SharedHandle<DHTNode>& remoteNode) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_CALLBACK_LISTENER_H_

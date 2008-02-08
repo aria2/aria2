@@ -36,28 +36,34 @@
 #define _D_HTTP_HEADER_H_
 
 #include "common.h"
-#include "Range.h"
+#include "SharedHandle.h"
 #include <map>
 #include <deque>
 #include <string>
 
+namespace aria2 {
+
+class Range;
+
 class HttpHeader {
 private:
-  multimap<string, string> table;
+  std::multimap<std::string, std::string> table;
 public:
   HttpHeader() {}
   ~HttpHeader() {}
 
-  void put(const string& name, const string& value);
-  bool defined(const string& name) const;
-  string getFirst(const string& name) const;
-  Strings get(const string& name) const;
-  int32_t getFirstAsInt(const string& name) const;
-  int64_t getFirstAsLLInt(const string& name) const;
+  void put(const std::string& name, const std::string& value);
+  bool defined(const std::string& name) const;
+  std::string getFirst(const std::string& name) const;
+  std::deque<std::string> get(const std::string& name) const;
+  int32_t getFirstAsInt(const std::string& name) const;
+  int64_t getFirstAsLLInt(const std::string& name) const;
 
-  RangeHandle getRange() const;
+  SharedHandle<Range> getRange() const;
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;
+
+} // namespace std;
 
 #endif // _D_HTTP_HEADER_H_

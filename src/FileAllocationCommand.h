@@ -36,18 +36,21 @@
 #define _D_FILE_ALLOCATION_COMMAND_H_
 
 #include "RealtimeCommand.h"
+#include "SharedHandle.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
 class FileAllocationEntry;
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-class Exception;
 
 class FileAllocationCommand : public RealtimeCommand {
 private:
-  FileAllocationEntryHandle _fileAllocationEntry;
+  SharedHandle<FileAllocationEntry> _fileAllocationEntry;
   Time _timer;
 public:
-  FileAllocationCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry);
+  FileAllocationCommand(int cuid, RequestGroup* requestGroup,
+			DownloadEngine* e,
+			const SharedHandle<FileAllocationEntry>& fileAllocationEntry);
 
   virtual ~FileAllocationCommand();
 
@@ -55,5 +58,7 @@ public:
 
   virtual bool handleException(Exception* e);
 };
+
+} // namespace aria2
 
 #endif // _D_FILE_ALLOCATION_COMMAND_H_

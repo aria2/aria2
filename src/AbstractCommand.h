@@ -36,44 +36,44 @@
 #define _D_ABSTRACT_COMMAND_H_
 
 #include "Command.h"
+#include "SharedHandle.h"
 #include "TimeA2.h"
 #include "RequestGroupAware.h"
-#include "Socket.h"
+
+namespace aria2 {
 
 class Request;
-typedef SharedHandle<Request> RequestHandle;
 class DownloadEngine;
+class RequestGroup;
 class Segment;
-typedef SharedHandle<Segment> SegmentHandle;
-typedef deque<SegmentHandle> Segments;
 class NameResolver;
-typedef SharedHandle<NameResolver> NameResolverHandle;
-class BtProgressInfoFile;
-typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
+class Exception;
+class SocketCore;
 
 class AbstractCommand : public Command, public RequestGroupAware {
 private:
   Time checkPoint;
   int32_t timeout;
 protected:
-  RequestHandle req;
+  SharedHandle<Request> req;
   DownloadEngine* e;
-  SocketHandle socket;
-  Segments _segments;
+  SharedHandle<SocketCore> socket;
+  std::deque<SharedHandle<Segment> > _segments;
 
   void tryReserved();
   virtual bool prepareForRetry(int32_t wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal() = 0;
 
-  void setReadCheckSocket(const SocketHandle& socket);
-  void setWriteCheckSocket(const SocketHandle& socket);
+  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
+  void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
-  bool resolveHostname(const string& hostname, const NameResolverHandle& nameResolver);
+  bool resolveHostname(const std::string& hostname,
+		       const SharedHandle<NameResolver>& nameResolver);
 #ifdef ENABLE_ASYNC_DNS
-  void setNameResolverCheck(const NameResolverHandle& resolver);
-  void disableNameResolverCheck(const NameResolverHandle& resolver);
+  void setNameResolverCheck(const SharedHandle<NameResolver>& resolver);
+  void disableNameResolverCheck(const SharedHandle<NameResolver>& resolver);
   virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
   void setTimeout(int32_t timeout) { this->timeout = timeout; }
@@ -83,14 +83,22 @@ protected:
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
-  SocketHandle readCheckTarget;
-  SocketHandle writeCheckTarget;
+  SharedHandle<SocketCore> readCheckTarget;
+  SharedHandle<SocketCore> writeCheckTarget;
   bool nameResolverCheck;
 
 public:
-  AbstractCommand(int32_t cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e, const SocketHandle& s = SocketHandle());
+  AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
+		  RequestGroup* requestGroup, DownloadEngine* e,
+		  const SharedHandle<SocketCore>& s);
+
+  AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
+		  RequestGroup* requestGroup, DownloadEngine* e);
+
   virtual ~AbstractCommand();
   bool execute();
 };
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_COMMAND_H_

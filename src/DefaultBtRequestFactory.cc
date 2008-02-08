@@ -33,6 +33,38 @@
  */
 /* copyright --> */
 #include "DefaultBtRequestFactory.h"
+#include "LogFactory.h"
+#include "Logger.h"
+#include "Piece.h"
+#include "Peer.h"
+#include "BtContext.h"
+#include "PieceStorage.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageFactory.h"
+#include "BtMessage.h"
+#include "BtRegistry.h"
+
+namespace aria2 {
+
+DefaultBtRequestFactory::DefaultBtRequestFactory():
+  cuid(0),
+  btContext(0),
+  pieceStorage(0),
+  peer(0),
+  dispatcher(0)
+{
+  LogFactory::getInstance()->debug("DefaultBtRequestFactory::instantiated");
+}
+
+DefaultBtRequestFactory::~DefaultBtRequestFactory()
+{
+  LogFactory::getInstance()->debug("DefaultBtRequestFactory::deleted");
+}
+
+void DefaultBtRequestFactory::addTargetPiece(const PieceHandle& piece)
+{
+  pieces.push_back(piece);
+}
 
 void DefaultBtRequestFactory::removeCompletedPiece() {
   for(Pieces::iterator itr = pieces.begin(); itr != pieces.end();) {
@@ -95,9 +127,9 @@ BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(int32_t max) 
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < (size_t)max; itr++) {
     PieceHandle& piece = *itr;
-    BlockIndexes missingBlockIndexes = piece->getAllMissingBlockIndexes();
+    std::deque<int32_t> missingBlockIndexes = piece->getAllMissingBlockIndexes();
     random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
-    for(BlockIndexes::const_iterator bitr = missingBlockIndexes.begin();
+    for(std::deque<int32_t>::const_iterator bitr = missingBlockIndexes.begin();
 	bitr != missingBlockIndexes.end() && requests.size() < (size_t)max;
 	bitr++) {
       int32_t blockIndex = *bitr;
@@ -109,3 +141,31 @@ BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(int32_t max) 
   }
   return requests;
 }
+
+std::deque<SharedHandle<Piece> >& DefaultBtRequestFactory::getTargetPieces()
+{
+  return pieces;
+}
+
+void DefaultBtRequestFactory::setBtContext(const SharedHandle<BtContext>& btContext)
+{
+  this->btContext = btContext;
+  this->pieceStorage = PIECE_STORAGE(btContext);
+}
+
+void DefaultBtRequestFactory::setPeer(const SharedHandle<Peer>& peer)
+{
+  this->peer = peer;
+}
+
+void DefaultBtRequestFactory::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
+{
+  this->dispatcher = dispatcher;
+}
+
+void DefaultBtRequestFactory::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+{
+  this->messageFactory = factory;
+}
+
+} // namespace aria2

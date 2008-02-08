@@ -36,11 +36,15 @@
 #define _D_LOG_FACTORY_H_
 
 #include "common.h"
-#include "Logger.h"
+#include <string>
+
+namespace aria2 {
+
+class Logger;
 
 class LogFactory {
 private:
-  static string filename;
+  static std::string filename;
   static Logger* logger;
 public:
   /**
@@ -52,7 +56,7 @@ public:
   /**
    * Set a filename to write log.
    */
-  static void setLogFile(const string& name) {
+  static void setLogFile(const std::string& name) {
     filename = name;
   }
 
@@ -61,5 +65,7 @@ public:
    */
   static void release();
 };
+
+} // namespace aria2
 
 #endif // _D_LOG_FACTORY_H_

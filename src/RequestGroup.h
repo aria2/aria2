@@ -36,44 +36,30 @@
 #define _D_REQUEST_GROUP_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "TransferStat.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class DownloadEngine;
 class SegmentMan;
-typedef SharedHandle<SegmentMan> SegmentManHandle;
 class SegmentManFactory;
-typedef SharedHandle<SegmentManFactory> SegmentManFactoryHandle;
 class Command;
-typedef deque<Command*> Commands;
 class DownloadContext;
-typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class PieceStorage;
-typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class BtProgressInfoFile;
-typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
 class Dependency;
-typedef SharedHandle<Dependency> DependencyHandle;
-class DlAbortEx;
 class PreDownloadHandler;
-typedef SharedHandle<PreDownloadHandler> PreDownloadHandlerHandle;
-typedef deque<PreDownloadHandlerHandle> PreDownloadHandlers;
 class PostDownloadHandler;
-typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;
-typedef deque<PostDownloadHandlerHandle> PostDownloadHandlers;
 class DiskWriterFactory;
-typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 class Option;
 class Logger;
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
-typedef deque<RequestGroupHandle> RequestGroups;
 class CheckIntegrityEntry;
-typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
 class DownloadResult;
-typedef SharedHandle<DownloadResult> DownloadResultHandle;
 class ServerHost;
-typedef SharedHandle<ServerHost> ServerHostHandle;
-typedef deque<ServerHostHandle> ServerHosts;
 
 class RequestGroup {
 private:
@@ -81,8 +67,8 @@ private:
 
   int32_t _gid;
 
-  Strings _uris;
-  Strings _spentUris;
+  std::deque<std::string> _uris;
+  std::deque<std::string> _spentUris;
 
   int32_t _numConcurrentCommand;
 
@@ -93,20 +79,20 @@ private:
 
   int32_t _numCommand;
 
-  SegmentManHandle _segmentMan;
-  SegmentManFactoryHandle _segmentManFactory;
+  SharedHandle<SegmentMan> _segmentMan;
+  SharedHandle<SegmentManFactory> _segmentManFactory;
 
-  DownloadContextHandle _downloadContext;
+  SharedHandle<DownloadContext> _downloadContext;
 
-  PieceStorageHandle _pieceStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
 
-  BtProgressInfoFileHandle _progressInfoFile;
+  SharedHandle<BtProgressInfoFile> _progressInfoFile;
 
-  DiskWriterFactoryHandle _diskWriterFactory;
+  SharedHandle<DiskWriterFactory> _diskWriterFactory;
 
-  DependencyHandle _dependency;
+  SharedHandle<Dependency> _dependency;
 
-  ServerHosts _serverHosts;
+  std::deque<SharedHandle<ServerHost> > _serverHosts;
 
   bool _fileAllocationEnabled;
 
@@ -118,16 +104,16 @@ private:
 
   bool _singleHostMultiConnectionEnabled;
 
-  PreDownloadHandlers _preDownloadHandlers;
+  std::deque<SharedHandle<PreDownloadHandler> > _preDownloadHandlers;
 
-  PostDownloadHandlers _postDownloadHandlers;
+  std::deque<SharedHandle<PostDownloadHandler> > _postDownloadHandlers;
 
   const Option* _option;
 
   const Logger* _logger;
 
-  void validateFilename(const string& expectedFilename,
-			const string& actualFilename) const;
+  void validateFilename(const std::string& expectedFilename,
+			const std::string& actualFilename) const;
 
   void validateTotalLength(int64_t expectedTotalLength,
 			   int64_t actualTotalLength) const;
@@ -139,24 +125,24 @@ private:
   bool tryAutoFileRenaming();
 
 public:
-  RequestGroup(const Option* option, const Strings& uris);
+  RequestGroup(const Option* option, const std::deque<std::string>& uris);
 
   ~RequestGroup();
   /**
    * Reinitializes SegmentMan based on current property values and
    * returns new one.
    */
-  SegmentManHandle initSegmentMan();
+  SharedHandle<SegmentMan> initSegmentMan();
 
-  SegmentManHandle getSegmentMan() const;
+  SharedHandle<SegmentMan> getSegmentMan() const;
 
-  Commands createInitialCommand(DownloadEngine* e);
+  std::deque<Command*> createInitialCommand(DownloadEngine* e);
 
-  Commands createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj);
+  std::deque<Command*> createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj);
 
-  Commands createNextCommand(DownloadEngine* e, int32_t numCommand, const string& method = "GET");
+  std::deque<Command*> createNextCommand(DownloadEngine* e, int32_t numCommand, const std::string& method = "GET");
   
-  void addURI(const string& uri)
+  void addURI(const std::string& uri)
   {
     _uris.push_back(uri);
   }
@@ -167,36 +153,36 @@ public:
 
   void closeFile();
 
-  string getFilePath() const;
+  std::string getFilePath() const;
 
-  string getDir() const;
+  std::string getDir() const;
 
   int64_t getTotalLength() const;
 
   int64_t getCompletedLength() const;
 
-  const Strings& getRemainingUris() const
+  const std::deque<std::string>& getRemainingUris() const
   {
     return _uris;
   }
 
-  const Strings& getSpentUris() const
+  const std::deque<std::string>& getSpentUris() const
   {
     return _spentUris;
   }
 
-  Strings getUris() const;
+  std::deque<std::string> getUris() const;
 
   /**
    * Compares expected filename with specified actualFilename.
    * The expected filename refers to FileEntry::getBasename() of the first
    * element of DownloadContext::getFileEntries()
    */
-  void validateFilename(const string& actualFilename) const;
+  void validateFilename(const std::string& actualFilename) const;
 
   void validateTotalLength(int64_t actualTotalLength) const;
 
-  void setSegmentManFactory(const SegmentManFactoryHandle& segmentManFactory);
+  void setSegmentManFactory(const SharedHandle<SegmentManFactory>& segmentManFactory);
 
   void setNumConcurrentCommand(int32_t num)
   {
@@ -210,17 +196,17 @@ public:
 
   TransferStat calculateStat();
 
-  DownloadContextHandle getDownloadContext() const;
+  SharedHandle<DownloadContext> getDownloadContext() const;
 
-  void setDownloadContext(const DownloadContextHandle& downloadContext);
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
-  PieceStorageHandle getPieceStorage() const;
+  SharedHandle<PieceStorage> getPieceStorage() const;
 
-  void setPieceStorage(const PieceStorageHandle& pieceStorage);
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
-  BtProgressInfoFileHandle getProgressInfoFile() const;
+  SharedHandle<BtProgressInfoFile> getProgressInfoFile() const;
 
-  void setProgressInfoFile(const BtProgressInfoFileHandle& progressInfoFile);
+  void setProgressInfoFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 
   void increaseStreamConnection();
 
@@ -238,9 +224,9 @@ public:
   }
 
   // TODO is it better to move the following 2 methods to SingleFileDownloadContext?
-  void setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory);
+  void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
 
-  DiskWriterFactoryHandle getDiskWriterFactory() const;
+  SharedHandle<DiskWriterFactory> getDiskWriterFactory() const;
 
   void setFileAllocationEnabled(bool f)
   {
@@ -283,35 +269,37 @@ public:
     return _forceHaltRequested;
   }
 
-  void dependsOn(const DependencyHandle& dep);
+  void dependsOn(const SharedHandle<Dependency>& dep);
 
   bool isDependencyResolved();
 
   void releaseRuntimeResource();
 
-  RequestGroups postDownloadProcessing();
+  std::deque<SharedHandle<RequestGroup> > postDownloadProcessing();
 
-  void addPostDownloadHandler(const PostDownloadHandlerHandle& handler);
+  void addPostDownloadHandler(const SharedHandle<PostDownloadHandler>& handler);
 
   void clearPostDowloadHandler();
 
   void preDownloadProcessing();
 
-  void addPreDownloadHandler(const PreDownloadHandlerHandle& handler);
+  void addPreDownloadHandler(const SharedHandle<PreDownloadHandler>& handler);
 
   void clearPreDowloadHandler();
 
-  Commands processCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry, DownloadEngine* e);
+  std::deque<Command*>
+  processCheckIntegrityEntry(const SharedHandle<CheckIntegrityEntry>& entry,
+			     DownloadEngine* e);
 
   void initPieceStorage();
 
   bool downloadFinishedByFileLength();
 
-  void loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoFile);
+  void loadAndOpenFile(const SharedHandle<BtProgressInfoFile>& progressInfoFile);
 
   void shouldCancelDownloadForSafety();
 
-  DownloadResultHandle createDownloadResult() const;
+  SharedHandle<DownloadResult> createDownloadResult() const;
 
   const Option* getOption() const
   {
@@ -331,25 +319,27 @@ public:
   /**
    * Registers given ServerHost.
    */
-  void registerServerHost(const ServerHostHandle& serverHost);
+  void registerServerHost(const SharedHandle<ServerHost>& serverHost);
 
   /**
    * Returns ServerHost whose cuid is given cuid. If it is not found, returns
    * 0.
    */
-  ServerHostHandle searchServerHost(int32_t cuid) const;
+  SharedHandle<ServerHost> searchServerHost(int32_t cuid) const;
 
-  ServerHostHandle searchServerHost(const string& hostname) const;
+  SharedHandle<ServerHost> searchServerHost(const std::string& hostname) const;
 
   void removeServerHost(int32_t cuid);
   
-  void removeURIWhoseHostnameIs(const string& hostname);
+  void removeURIWhoseHostnameIs(const std::string& hostname);
 
   void reportDownloadFinished();
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;
 typedef WeakHandle<RequestGroup> RequestGroupWeakHandle;
-typedef deque<RequestGroupHandle> RequestGroups;
+typedef std::deque<RequestGroupHandle> RequestGroups;
+
+} // namespace aria2
 
 #endif // _D_REQUEST_GROUP_H_

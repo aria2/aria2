@@ -37,6 +37,10 @@
 
 #include "Sequence.h"
 
+namespace aria2 {
+
 typedef Sequence<int32_t> IntSequence;
+
+} // namespace aria2
 
 #endif // _D_INT_SEQUENCE_H_

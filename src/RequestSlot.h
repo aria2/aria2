@@ -37,6 +37,9 @@
 
 #include "common.h"
 #include "TimeA2.h"
+#include <deque>
+
+namespace aria2 {
 
 class RequestSlot {
 private:
@@ -49,20 +52,12 @@ private:
 public:
   RequestSlot(int32_t index, int32_t begin, int32_t length, int32_t blockIndex);
   RequestSlot(const RequestSlot& requestSlot);
+
   ~RequestSlot() {}
 
-  RequestSlot& operator=(const RequestSlot& requestSlot) {
-    if(this != &requestSlot) {
-      copy(requestSlot);
-    }
-    return *this;
-  }
+  RequestSlot& operator=(const RequestSlot& requestSlot);
 
-  bool operator==(const RequestSlot& requestSlot) const {
-    return index == requestSlot.index &&
-      begin == requestSlot.begin &&
-      length == requestSlot.length;
-  }
+  bool operator==(const RequestSlot& requestSlot) const;
 
   void setDispatchedTime();
   void setDispatchedTime(time_t secFromEpoch);
@@ -87,6 +82,8 @@ public:
   static bool isNull(const RequestSlot& requestSlot);
 };
 
-typedef deque<RequestSlot> RequestSlots;
+typedef std::deque<RequestSlot> RequestSlots;
+
+} // namespace aria2
 
 #endif // _D_REQUEST_SLOT_H_

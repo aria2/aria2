@@ -36,26 +36,31 @@
 #define _D_OPTION_PARSER_H_
 
 #include "common.h"
-#include "Option.h"
-#include "OptionHandler.h"
-#include <istream>
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+#include <iosfwd>
+
+namespace aria2 {
+
+class Option;
+class OptionHandler;
 
 class OptionParser {
 private:
-  OptionHandlers _optionHandlers;
+  std::deque<SharedHandle<OptionHandler> > _optionHandlers;
 public:
   ~OptionParser() {}
 
-  OptionHandlerHandle getOptionHandlerByName(const string& optName);
+  SharedHandle<OptionHandler> getOptionHandlerByName(const std::string& optName);
 
-  void parse(Option* option, istream& ios);
+  void parse(Option* option, std::istream& ios);
 
-  void setOptionHandlers(const OptionHandlers& optionHandlers)
-  {
-    _optionHandlers = optionHandlers;
-  }
+  void setOptionHandlers(const std::deque<SharedHandle<OptionHandler> >& optionHandlers);
 };
 
 typedef SharedHandle<OptionParser> OptionParserHandle;
+
+} // namespace aria2
 
 #endif // _D_OPTION_PARSER_H_

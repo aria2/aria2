@@ -35,11 +35,13 @@
 #ifndef _D_REALTIME_COMMAND_H_
 #define _D_REALTIME_COMMAND_H_
 
-#include "common.h"
-#include "RequestGroup.h"
-#include "DownloadEngine.h"
-#include "Exception.h"
+#include "Command.h"
 #include "RequestGroupAware.h"
+
+namespace aria2 {
+
+class DownloadEngine;
+class Exception;
 
 class RealtimeCommand : public Command, public RequestGroupAware {
 protected:
@@ -59,5 +61,7 @@ public:
 
   virtual bool handleException(Exception* e) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_REALTIME_COMMAND_H_

@@ -35,7 +35,11 @@
 #ifndef _D_META_ENTRY_VISITOR_H_
 #define _D_META_ENTRY_VISITOR_H_
 
-#include "MetaEntry.h"
+#include "common.h"
+
+namespace aria2 {
+
+class MetaEntry;
 
 class MetaEntryVisitor {
 public:
@@ -43,5 +47,7 @@ public:
 
   virtual void visit(const MetaEntry* e) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_META_ENTRY_VISITOR_H_

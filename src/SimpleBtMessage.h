@@ -37,6 +37,8 @@
 
 #include "AbstractBtMessage.h"
 
+namespace aria2 {
+
 class SimpleBtMessage : public AbstractBtMessage {
 private:
   int32_t leftDataLength;
@@ -56,5 +58,7 @@ public:
   virtual bool sendPredicate() const { return true; };
 
 };
+
+} // namespace aria2
 
 #endif // _D_SIMPLE_BT_MESSAGE_H_

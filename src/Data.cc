@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "Data.h"
 #include "MetaEntryVisitor.h"
+#include <cstring>
+
+namespace aria2 {
 
 Data::Data(const char* data, int32_t len, bool number):number(number) {
   init(data, len);
@@ -43,7 +46,7 @@ Data::Data(const unsigned char* data, int32_t len, bool number):number(number) {
   init(reinterpret_cast<const char*>(data), len);
 }
 
-Data::Data(const string& data, bool number):number(number)
+Data::Data(const std::string& data, bool number):number(number)
 {
   init(data.c_str(), data.size());
 }
@@ -64,8 +67,8 @@ Data::~Data() {
   delete [] data;
 }
 
-string Data::toString() const {
-  return string(&data[0], &data[len]);
+std::string Data::toString() const {
+  return std::string(&data[0], &data[len]);
 }
 
 const char* Data::getData() const {
@@ -99,3 +102,5 @@ bool Data::isNumber() const {
 void Data::accept(MetaEntryVisitor* v) const {
   v->visit(this);
 }
+
+} // namespace aria2

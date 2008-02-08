@@ -36,16 +36,21 @@
 #define _D_BT_REQUEST_FACTORY_H_
 
 #include "common.h"
-#include "BtMessage.h"
-#include "Piece.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
+
+class Piece;
+class BtMessage;
 
 class BtRequestFactory {
 public:
   virtual ~BtRequestFactory() {}
 
-  virtual void addTargetPiece(const PieceHandle& piece) = 0;
+  virtual void addTargetPiece(const SharedHandle<Piece>& piece) = 0;
 
-  virtual void removeTargetPiece(const PieceHandle& piece) = 0;
+  virtual void removeTargetPiece(const SharedHandle<Piece>& piece) = 0;
 
   virtual void removeAllTargetPiece() = 0;
 
@@ -60,16 +65,20 @@ public:
    * addTargetPiece() and returns them.
    * The number of objects returned is capped by max.
    */
-  virtual BtMessages createRequestMessages(int32_t max) = 0;
+  virtual std::deque<SharedHandle<BtMessage> >
+  createRequestMessages(int32_t max) = 0;
 
   /**
    * Use this method in end game mode.
    *
    */
-  virtual BtMessages createRequestMessagesOnEndGame(int32_t max) = 0;
+  virtual std::deque<SharedHandle<BtMessage> >
+  createRequestMessagesOnEndGame(int32_t max) = 0;
 };
 
 typedef SharedHandle<BtRequestFactory> BtRequestFactoryHandle;
 typedef WeakHandle<BtRequestFactory> BtRequestFactoryWeakHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_REQUEST_FACTORY_H_

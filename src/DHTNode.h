@@ -36,15 +36,18 @@
 #define _D_DHT_NODE_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "DHTConstants.h"
-#include "DHTNodeDecl.h"
 #include "TimeA2.h"
+#include <string>
+
+namespace aria2 {
 
 class DHTNode {
 private:
   unsigned char _id[DHT_ID_LENGTH];
 
-  string _ipaddr;
+  std::string _ipaddr;
 
   uint16_t _port;
 
@@ -74,12 +77,12 @@ public:
     _rtt = millisec;
   }
 
-  string getIPAddress() const
+  std::string getIPAddress() const
   {
     return _ipaddr;
   }
 
-  void setIPAddress(const string& ipaddr)
+  void setIPAddress(const std::string& ipaddr)
   {
     _ipaddr = ipaddr;
   }
@@ -117,7 +120,9 @@ public:
 
   bool operator<(const DHTNode& node) const;
 
-  string toString() const;
+  std::string toString() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_NODE_H_

@@ -37,18 +37,19 @@
 
 #include "common.h"
 #include <string>
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstdarg>
+#include <iosfwd>
 
-using namespace std;
+namespace aria2 {
 
 class Exception {
 private:
-  string msg;
+  std::string msg;
 protected:
   Exception* cause;
 
-  void setMsg(const string& msgsrc, va_list ap) {
+  void setMsg(const std::string& msgsrc, va_list ap) {
     char buf[1024];
     vsnprintf(buf, sizeof(buf), msgsrc.c_str(), ap);
     msg = buf;
@@ -60,11 +61,13 @@ public:
     delete cause;
   }
 
-  const string& getMsg() const { return msg; }
+  const std::string& getMsg() const { return msg; }
 
   Exception* getCause() const { return cause; }
 
-  friend ostream& operator<<(ostream& o, const Exception& e);
+  friend std::ostream& operator<<(std::ostream& o, const Exception& e);
 };
+
+} // namespace aria2
 
 #endif // _D_EXCEPTION_H_

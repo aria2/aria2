@@ -1,7 +1,7 @@
 #include "DefaultDiskWriter.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DefaultDiskWriterTest:public CppUnit::TestFixture {
 
@@ -27,3 +27,4 @@ void DefaultDiskWriterTest::testSize()
   CPPUNIT_ASSERT_EQUAL((int64_t)4096, dw.size());
 }
 
+} // namespace aria2

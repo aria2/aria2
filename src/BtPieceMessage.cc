@@ -41,6 +41,18 @@
 #include "BtCancelSendingPieceEvent.h"
 #include "MessageDigestHelper.h"
 #include "DiskAdaptor.h"
+#include "Logger.h"
+#include "Peer.h"
+#include "Piece.h"
+#include "BtContext.h"
+#include "PieceStorage.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageFactory.h"
+#include "BtRequestFactory.h"
+#include "PeerConnection.h"
+#include <cstring>
+
+namespace aria2 {
 
 void BtPieceMessage::setBlock(const unsigned char* block, int32_t blockLength) {
   delete [] this->block;
@@ -184,7 +196,7 @@ int32_t BtPieceMessage::sendPieceData(int64_t offset, int32_t length) const {
   return writtenLength;
 }
 
-string BtPieceMessage::toString() const {
+std::string BtPieceMessage::toString() const {
   return "piece index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::itos(blockLength);
 }
@@ -282,3 +294,5 @@ void BtPieceMessage::handleCancelSendingPieceEvent(const BtEventHandle& event) {
     invalidate = true;
   } 
 }
+
+} // namespace aria2

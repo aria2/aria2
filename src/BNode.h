@@ -36,13 +36,17 @@
 #define _D_BNODE_H_
 
 #include "common.h"
-#include "DHTBucketDecl.h"
-#include "BNodeDecl.h"
-#include "DHTNodeDecl.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
+
+class DHTBucket;
+class DHTNode;
 
 class BNode {
 private:
-  DHTBucketHandle _bucket;
+  SharedHandle<DHTBucket> _bucket;
 
   BNode* _up;
 
@@ -51,13 +55,13 @@ private:
   BNode* _right;
 
 public:
-  BNode(const DHTBucketHandle& bucket = 0);
+  BNode(const SharedHandle<DHTBucket>& bucket = 0);
 
   ~BNode();
 
-  DHTBucketHandle getBucket() const;
+  SharedHandle<DHTBucket> getBucket() const;
 
-  void setBucket(const DHTBucketHandle& bucket);
+  void setBucket(const SharedHandle<DHTBucket>& bucket);
 
   BNode* getLeft() const;
 
@@ -75,11 +79,13 @@ public:
 
   static BNode* findBNodeFor(BNode* b, const unsigned char* key);
 
-  static DHTBucketHandle findBucketFor(BNode* b, const unsigned char* key);
+  static SharedHandle<DHTBucket> findBucketFor(BNode* b, const unsigned char* key);
 
-  static DHTNodes findClosestKNodes(BNode* b, const unsigned char* key);
+  static std::deque<SharedHandle<DHTNode> > findClosestKNodes(BNode* b, const unsigned char* key);
 
-  static DHTBuckets enumerateBucket(const BNode* b);
+  static std::deque<SharedHandle<DHTBucket> > enumerateBucket(const BNode* b);
 };
+
+} // namespace aria2
 
 #endif // _D_BNODE_H_

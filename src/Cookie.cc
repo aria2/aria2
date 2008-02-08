@@ -35,7 +35,56 @@
 #include "Cookie.h"
 #include "Util.h"
 
-bool Cookie::match(const string& host, const string& dir, time_t date, bool secure) const
+namespace aria2 {
+
+Cookie::Cookie(const std::string& name,
+	       const std::string& value,
+	       time_t  expires,
+	       const std::string& path,
+	       const std::string& domain,
+	       bool secure):
+  name(name),
+  value(value),
+  expires(expires),
+  path(path),
+  domain(domain),
+  secure(secure),
+  onetime(false) {}
+
+Cookie::Cookie(const std::string& name,
+	       const std::string& value,
+	       const std::string& path,
+	       const std::string& domain,
+	       bool secure):
+  name(name),
+  value(value),
+  path(path),
+  domain(domain),
+  secure(secure),
+  onetime(true) {}
+
+Cookie::Cookie():expires(0), secure(false), onetime(true) {}
+
+Cookie::~Cookie() {}
+
+std::string Cookie::toString() const
+{
+  return name+"="+value;
+}
+
+void Cookie::clear()
+{
+  name = value = path = domain = "";
+  expires = 0;
+  secure = false;
+}
+
+bool Cookie::good() const
+{
+  return !name.empty();
+}
+
+bool Cookie::match(const std::string& host, const std::string& dir, time_t date, bool secure) const
 {
   if((secure || !this->secure && !secure) &&
      Util::endsWith("."+host, this->domain) &&
@@ -46,3 +95,5 @@ bool Cookie::match(const string& host, const string& dir, time_t date, bool secu
     return false;
   }
 }
+
+} // namespace aria2

@@ -35,21 +35,26 @@
 #include "DHTMessageCallbackImpl.h"
 #include "DHTMessage.h"
 #include "DHTNode.h"
+#include "DHTMessageCallbackListener.h"
+
+namespace aria2 {
  
 DHTMessageCallbackImpl::DHTMessageCallbackImpl(const WeakHandle<DHTMessageCallbackListener>& listener):_listener(listener) {}
 
 DHTMessageCallbackImpl::~DHTMessageCallbackImpl() {}
 
-void DHTMessageCallbackImpl::onReceived(const DHTMessageHandle& message)
+void DHTMessageCallbackImpl::onReceived(const SharedHandle<DHTMessage>& message)
 {
   if(!_listener.isNull()) {
     _listener->onReceived(message);
   }
 }
 
-void DHTMessageCallbackImpl::onTimeout(const DHTNodeHandle& remoteNode)
+void DHTMessageCallbackImpl::onTimeout(const SharedHandle<DHTNode>& remoteNode)
 {
   if(!_listener.isNull()) {
     _listener->onTimeout(remoteNode);
   }
 }
+
+} // namespace aria2

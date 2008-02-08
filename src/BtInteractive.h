@@ -36,7 +36,11 @@
 #define _D_BT_INTERACTIVE_H_
 
 #include "common.h"
-#include "BtMessage.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class BtMessage;
 
 class BtInteractive {
 public:
@@ -44,9 +48,9 @@ public:
 
   virtual void initiateHandshake() = 0;
 
-  virtual BtMessageHandle receiveHandshake(bool quickReply = false) = 0;
+  virtual SharedHandle<BtMessage> receiveHandshake(bool quickReply = false) = 0;
 
-  virtual BtMessageHandle receiveAndSendHandshake() = 0;
+  virtual SharedHandle<BtMessage> receiveAndSendHandshake() = 0;
 
   virtual void doPostHandshakeProcessing() = 0;
 
@@ -62,5 +66,7 @@ public:
 };
 
 typedef SharedHandle<BtInteractive> BtInteractiveHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_INTERACTIVE_H_

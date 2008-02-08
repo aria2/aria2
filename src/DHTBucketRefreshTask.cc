@@ -42,14 +42,16 @@
 #include "Util.h"
 #include "Logger.h"
 
+namespace aria2 {
+
 DHTBucketRefreshTask::DHTBucketRefreshTask() {}
 
 DHTBucketRefreshTask::~DHTBucketRefreshTask() {}
 
 void DHTBucketRefreshTask::startup()
 {
-  DHTBuckets buckets = _routingTable->getBuckets();
-  for(DHTBuckets::iterator i = buckets.begin(); i != buckets.end(); ++i) {
+  std::deque<SharedHandle<DHTBucket> > buckets = _routingTable->getBuckets();
+  for(std::deque<SharedHandle<DHTBucket> >::iterator i = buckets.begin(); i != buckets.end(); ++i) {
     if((*i)->needsRefresh()) {
       (*i)->notifyUpdate();
       unsigned char targetID[DHT_ID_LENGTH];
@@ -67,3 +69,5 @@ void DHTBucketRefreshTask::startup()
   }
   _finished = true;
 }
+
+} // namespace aria2

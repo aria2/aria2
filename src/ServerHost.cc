@@ -34,7 +34,11 @@
 /* copyright --> */
 #include "ServerHost.h"
 
-ServerHost::ServerHost(int32_t cuid, const string& hostname):
+namespace aria2 {
+
+ServerHost::ServerHost(int32_t cuid, const std::string& hostname):
   _cuid(cuid), _hostname(hostname) {}
 
 ServerHost::~ServerHost() {}
+
+} // namespace aria2

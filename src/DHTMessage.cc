@@ -36,9 +36,11 @@
 #include "DHTNode.h"
 #include "DHTUtil.h"
 
-DHTMessage::DHTMessage(const DHTNodeHandle& localNode,
-		       const DHTNodeHandle& remoteNode,
-		       const string& transactionID):
+namespace aria2 {
+
+DHTMessage::DHTMessage(const SharedHandle<DHTNode>& localNode,
+		       const SharedHandle<DHTNode>& remoteNode,
+		       const std::string& transactionID):
   _localNode(localNode), _remoteNode(remoteNode), _transactionID(transactionID)
 {
   if(transactionID.empty()) {
@@ -52,16 +54,18 @@ void DHTMessage::generateTransactionID()
 {
   char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
-  _transactionID = string(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
+  _transactionID = std::string(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 }
 
-DHTNodeHandle DHTMessage::getLocalNode() const
+SharedHandle<DHTNode> DHTMessage::getLocalNode() const
 {
   return _localNode;
 }
 
-DHTNodeHandle DHTMessage::getRemoteNode() const
+SharedHandle<DHTNode> DHTMessage::getRemoteNode() const
 {
   return _remoteNode;
 }
 
+
+} // namespace aria2

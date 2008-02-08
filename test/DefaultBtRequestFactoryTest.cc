@@ -5,9 +5,16 @@
 #include "MockBtContext.h"
 #include "BtRegistry.h"
 #include "MockPieceStorage.h"
+#include "Peer.h"
+#include "PeerObject.h"
+#include "BtMessageReceiver.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
+#include "FileEntry.h"
+#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DefaultBtRequestFactoryTest:public CppUnit::TestFixture {
 
@@ -19,8 +26,8 @@ class DefaultBtRequestFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testRemoveTargetPiece);
   CPPUNIT_TEST_SUITE_END();
 private:
-  DefaultBtRequestFactoryHandle btRequestFactory;
-  MockBtContextHandle btContext;
+  SharedHandle<DefaultBtRequestFactory> btRequestFactory;
+  SharedHandle<MockBtContext> btContext;
 public:
   DefaultBtRequestFactoryTest():btRequestFactory(0), btContext(0) {}
 
@@ -42,8 +49,8 @@ public:
   
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
-    virtual BtMessageHandle
-    createRequestMessage(const PieceHandle& piece, int32_t blockIndex) {
+    virtual SharedHandle<BtMessage>
+    createRequestMessage(const SharedHandle<Piece>& piece, int32_t blockIndex) {
       return new MockBtRequestMessage(piece->getIndex(), blockIndex);
     }
   };
@@ -84,11 +91,11 @@ public:
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				     new MockPieceStorage());
 
-    PeerHandle peer = new Peer("host", 6969);
+    SharedHandle<Peer> peer = new Peer("host", 6969);
 
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
-    PeerObjectHandle peerObject = new PeerObject();
+    SharedHandle<PeerObject> peerObject = new PeerObject();
     peerObject->btMessageFactory = new MockBtMessageFactory2();
     PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), peerObject);
 
@@ -105,14 +112,14 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtRequestFactoryTest);
 
 void DefaultBtRequestFactoryTest::testAddTargetPiece() {
-  PieceHandle piece = new Piece(0, 16*1024);
+  SharedHandle<Piece> piece = new Piece(0, 16*1024);
   btRequestFactory->addTargetPiece(piece);
   CPPUNIT_ASSERT_EQUAL((int32_t)1, btRequestFactory->countTargetPiece());
 }
 
 void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
-  PieceHandle piece1 = new Piece(0, 16*1024);
-  PieceHandle piece2 = new Piece(1, 16*1024);
+  SharedHandle<Piece> piece1 = new Piece(0, 16*1024);
+  SharedHandle<Piece> piece2 = new Piece(1, 16*1024);
   piece2->setAllBlock();
   btRequestFactory->addTargetPiece(piece1);
   btRequestFactory->addTargetPiece(piece2);
@@ -124,15 +131,15 @@ void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
   int PIECE_LENGTH = 16*1024*2;
-  PieceHandle piece1 = new Piece(0, PIECE_LENGTH);
-  PieceHandle piece2 = new Piece(1, PIECE_LENGTH);
+  SharedHandle<Piece> piece1 = new Piece(0, PIECE_LENGTH);
+  SharedHandle<Piece> piece2 = new Piece(1, PIECE_LENGTH);
   btRequestFactory->addTargetPiece(piece1);
   btRequestFactory->addTargetPiece(piece2);
 
-  BtMessages msgs = btRequestFactory->createRequestMessages(3);
+  std::deque<SharedHandle<BtMessage> > msgs = btRequestFactory->createRequestMessages(3);
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
-  BtMessages::iterator itr = msgs.begin();
+  std::deque<SharedHandle<BtMessage> >::iterator itr = msgs.begin();
   MockBtRequestMessage* msg = (MockBtRequestMessage*)itr->get();
   CPPUNIT_ASSERT_EQUAL(0, msg->index);
   CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
@@ -154,17 +161,17 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
   btRequestFactory->setBtMessageDispatcher(dispatcher);
 
   int PIECE_LENGTH = 16*1024*2;
-  PieceHandle piece1 = new Piece(0, PIECE_LENGTH);
-  PieceHandle piece2 = new Piece(1, PIECE_LENGTH);
+  SharedHandle<Piece> piece1 = new Piece(0, PIECE_LENGTH);
+  SharedHandle<Piece> piece2 = new Piece(1, PIECE_LENGTH);
   btRequestFactory->addTargetPiece(piece1);
   btRequestFactory->addTargetPiece(piece2);
 
-  BtMessages msgs = btRequestFactory->createRequestMessagesOnEndGame(3);
+  std::deque<SharedHandle<BtMessage> > msgs = btRequestFactory->createRequestMessagesOnEndGame(3);
 
-  sort(msgs.begin(), msgs.end(), SortMockBtRequestMessage());
+  std::sort(msgs.begin(), msgs.end(), SortMockBtRequestMessage());
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
-  BtMessages::iterator itr = msgs.begin();
+  std::deque<SharedHandle<BtMessage> >::iterator itr = msgs.begin();
   MockBtRequestMessage* msg = (MockBtRequestMessage*)itr->get();
   CPPUNIT_ASSERT_EQUAL(0, msg->index);
   CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
@@ -179,17 +186,19 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
 }
 
 void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {
-  PieceHandle piece1 = new Piece(0, 16*1024);
+  SharedHandle<Piece> piece1 = new Piece(0, 16*1024);
 
   btRequestFactory->addTargetPiece(piece1);
 
-  CPPUNIT_ASSERT(find(btRequestFactory->getTargetPieces().begin(),
-		      btRequestFactory->getTargetPieces().end(),
-		      piece1) != btRequestFactory->getTargetPieces().end());
+  CPPUNIT_ASSERT(std::find(btRequestFactory->getTargetPieces().begin(),
+			   btRequestFactory->getTargetPieces().end(),
+			   piece1) != btRequestFactory->getTargetPieces().end());
 
   btRequestFactory->removeTargetPiece(piece1);
 
-  CPPUNIT_ASSERT(find(btRequestFactory->getTargetPieces().begin(),
-		      btRequestFactory->getTargetPieces().end(),
-		      piece1) == btRequestFactory->getTargetPieces().end());
+  CPPUNIT_ASSERT(std::find(btRequestFactory->getTargetPieces().begin(),
+			   btRequestFactory->getTargetPieces().end(),
+			   piece1) == btRequestFactory->getTargetPieces().end());
 }
+
+} // namespace aria2

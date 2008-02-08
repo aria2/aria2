@@ -33,22 +33,24 @@
  */
 /* copyright --> */
 #include "DownloadEngine.h"
-#include "Socket.h"
 #include "NameResolver.h"
 #include "StatCalc.h"
-#include "DownloadResult.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
 #include "FileAllocationMan.h"
 #include "CheckIntegrityMan.h"
-#include "Util.h"
+#include "DownloadResult.h"
+#include "StatCalc.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "TimeA2.h"
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include "a2time.h"
+#include "Socket.h"
 #include <signal.h>
+#include <cstring>
+#include <algorithm>
+
+namespace aria2 {
 
 // 0 ... running
 // 1 ... stop signal detected
@@ -94,8 +96,16 @@ DownloadEngine::~DownloadEngine() {
   cleanQueue();
 }
 
+class Deleter {
+public:
+  template<class T>
+  void operator()(T* ptr) {
+    delete ptr;
+  }
+};
+
 void DownloadEngine::cleanQueue() {
-  for_each(commands.begin(), commands.end(), Deleter());
+  std::for_each(commands.begin(), commands.end(), Deleter());
   commands.clear();
 }
 
@@ -220,7 +230,7 @@ void DownloadEngine::updateFdSet() {
 
 bool DownloadEngine::addSocket(const SocketEntry& entry) {
   SocketEntries::iterator itr =
-    find(socketEntries.begin(), socketEntries.end(), entry);
+    std::find(socketEntries.begin(), socketEntries.end(), entry);
   if(itr == socketEntries.end()) {
     socketEntries.push_back(entry);
     updateFdSet();
@@ -232,7 +242,7 @@ bool DownloadEngine::addSocket(const SocketEntry& entry) {
 
 bool DownloadEngine::deleteSocket(const SocketEntry& entry) {
   SocketEntries::iterator itr =
-    find(socketEntries.begin(), socketEntries.end(), entry);
+    std::find(socketEntries.begin(), socketEntries.end(), entry);
   if(itr == socketEntries.end()) {
     return false;
   } else {
@@ -312,9 +322,9 @@ void DownloadEngine::addCommand(const Commands& commands)
 bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
 					  Command* command) {
   NameResolverEntry entry(resolver, command);
-  NameResolverEntries::iterator itr = find(nameResolverEntries.begin(),
-					   nameResolverEntries.end(),
-					   entry);
+  NameResolverEntries::iterator itr = std::find(nameResolverEntries.begin(),
+						nameResolverEntries.end(),
+						entry);
   if(itr == nameResolverEntries.end()) {
     nameResolverEntries.push_back(entry);
     updateFdSet();
@@ -327,9 +337,9 @@ bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
 bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
 					     Command* command) {
   NameResolverEntry entry(resolver, command);
-  NameResolverEntries::iterator itr = find(nameResolverEntries.begin(),
-					   nameResolverEntries.end(),
-					   entry);
+  NameResolverEntries::iterator itr = std::find(nameResolverEntries.begin(),
+						nameResolverEntries.end(),
+						entry);
   if(itr == nameResolverEntries.end()) {
     return false;
   } else {
@@ -339,3 +349,5 @@ bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
   }
 }
 #endif // ENABLE_ASYNC_DNS
+
+} // namespace aria2

@@ -34,8 +34,14 @@
 /* copyright --> */
 #include "DHTConnectionImpl.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "RecoverableException.h"
 #include "Util.h"
+#include "Socket.h"
+#include <utility>
+
+namespace aria2 {
+
 DHTConnectionImpl::DHTConnectionImpl():_socket(new SocketCore(SOCK_DGRAM)),
 				       _logger(LogFactory::getInstance()) {}
 
@@ -56,7 +62,7 @@ uint16_t DHTConnectionImpl::bind(uint16_t port)
 {
   try {
     _socket->bind(port);
-    pair<string, int32_t> svaddr;
+    std::pair<std::string, int32_t> svaddr;
     _socket->getAddrInfo(svaddr);
     _logger->info("Bind socket for DHT. port=%u", port);
     return svaddr.second;
@@ -67,10 +73,10 @@ uint16_t DHTConnectionImpl::bind(uint16_t port)
   return 0;
 }
 
-ssize_t DHTConnectionImpl::receiveMessage(char* data, size_t len, string& host, uint16_t& port)
+ssize_t DHTConnectionImpl::receiveMessage(char* data, size_t len, std::string& host, uint16_t& port)
 {
   if(_socket->isReadable(0)) {
-    pair<string, uint16_t> remoteHost;
+    std::pair<std::string, uint16_t> remoteHost;
     ssize_t length = _socket->readDataFrom(data, len, remoteHost);
     host = remoteHost.first;
     port = remoteHost.second;
@@ -80,12 +86,14 @@ ssize_t DHTConnectionImpl::receiveMessage(char* data, size_t len, string& host, 
   }
 }
 
-void DHTConnectionImpl::sendMessage(const char* data, size_t len, const string& host, uint16_t port)
+void DHTConnectionImpl::sendMessage(const char* data, size_t len, const std::string& host, uint16_t port)
 {
   _socket->writeData(data, len, host, port);
 }
 
-SocketHandle DHTConnectionImpl::getSocket() const
+SharedHandle<SocketCore> DHTConnectionImpl::getSocket() const
 {
   return _socket;
 }
+
+} // namespace aria2

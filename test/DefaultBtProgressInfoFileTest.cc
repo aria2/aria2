@@ -10,12 +10,11 @@
 #include "prefs.h"
 #include "SingleFileDownloadContext.h"
 #include "Piece.h"
-#include "AnnounceTier.h"
+#include "FileEntry.h"
 #include <fstream>
-#include <iomanip>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DefaultBtProgressInfoFileTest:public CppUnit::TestFixture {
 
@@ -27,8 +26,8 @@ class DefaultBtProgressInfoFileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoad_nonBt_pieceLengthShorter);
   CPPUNIT_TEST_SUITE_END();
 private:
-  MockBtContextHandle _btContext;
-  MockPieceStorageHandle _pieceStorage;
+  SharedHandle<MockBtContext> _btContext;
+  SharedHandle<MockPieceStorage> _pieceStorage;
   SharedHandle<Option> _option;
   SharedHandle<BitfieldMan> _bitfield;
 public:
@@ -56,9 +55,9 @@ public:
     _pieceStorage = new MockPieceStorage();
     _pieceStorage->setBitfield(_bitfield.get());
 
-    MockPeerStorageHandle peerStorage = new MockPeerStorage();
+    SharedHandle<MockPeerStorage> peerStorage = new MockPeerStorage();
 
-    BtRuntimeHandle btRuntime = new BtRuntime();
+    SharedHandle<BtRuntime> btRuntime = new BtRuntime();
 
     BtRegistry::registerBtContext(_btContext->getInfoHashAsString(),
 				  _btContext);
@@ -97,7 +96,7 @@ void DefaultBtProgressInfoFileTest::testLoad()
   _btContext->setNumPieces(80);
 
   DefaultBtProgressInfoFile infoFile(_btContext, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(string("./load.aria2"), infoFile.getFilename());
+  CPPUNIT_ASSERT_EQUAL(std::string("./load.aria2"), infoFile.getFilename());
 
   infoFile.load();
 
@@ -107,7 +106,7 @@ void DefaultBtProgressInfoFileTest::testLoad()
   CPPUNIT_ASSERT_EQUAL((int64_t)1024, BT_RUNTIME(_btContext)->getUploadLengthAtStartup());
 
   // bitfield
-  CPPUNIT_ASSERT_EQUAL(string("fffffffffffffffffffe"),
+  CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
 		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
@@ -115,16 +114,16 @@ void DefaultBtProgressInfoFileTest::testLoad()
 		       _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  Pieces inFlightPieces = _pieceStorage->getInFlightPieces();
-  PieceHandle piece1 = inFlightPieces[0];
+  std::deque<SharedHandle<Piece> > inFlightPieces = _pieceStorage->getInFlightPieces();
+  SharedHandle<Piece> piece1 = inFlightPieces[0];
   CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)1024, piece1->getLength());
   CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getBitfieldLength());
-  CPPUNIT_ASSERT_EQUAL(string("00"), Util::toHex(piece1->getBitfield(),
+  CPPUNIT_ASSERT_EQUAL(std::string("00"), Util::toHex(piece1->getBitfield(),
 						 piece1->getBitfieldLength()));
 
   // piece index 2
-  PieceHandle piece2 = inFlightPieces[1];
+  SharedHandle<Piece> piece2 = inFlightPieces[1];
   CPPUNIT_ASSERT_EQUAL((int32_t)2, piece2->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)512, piece2->getLength());
 }
@@ -133,17 +132,17 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 {
   initializeMembers(1024, 81920);
 
-  SingleFileDownloadContextHandle dctx =
+  SharedHandle<SingleFileDownloadContext> dctx =
     new SingleFileDownloadContext(1024, 81920, "load-nonBt");
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(string("./load-nonBt.aria2"), infoFile.getFilename());
+  CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt.aria2"), infoFile.getFilename());
   infoFile.load();
 
   // check the contents of objects
 
   // bitfield
-  CPPUNIT_ASSERT_EQUAL(string("fffffffffffffffffffe"),
+  CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
 		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
@@ -151,16 +150,16 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 		       _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  Pieces inFlightPieces = _pieceStorage->getInFlightPieces();
-  PieceHandle piece1 = inFlightPieces[0];
+  std::deque<SharedHandle<Piece> > inFlightPieces = _pieceStorage->getInFlightPieces();
+  SharedHandle<Piece> piece1 = inFlightPieces[0];
   CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)1024, piece1->getLength());
   CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getBitfieldLength());
-  CPPUNIT_ASSERT_EQUAL(string("00"), Util::toHex(piece1->getBitfield(),
+  CPPUNIT_ASSERT_EQUAL(std::string("00"), Util::toHex(piece1->getBitfield(),
 						 piece1->getBitfieldLength()));
 
   // piece index 2
-  PieceHandle piece2 = inFlightPieces[1];
+  SharedHandle<Piece> piece2 = inFlightPieces[1];
   CPPUNIT_ASSERT_EQUAL((int32_t)2, piece2->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)512, piece2->getLength());
 
@@ -171,17 +170,17 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
   initializeMembers(512, 81920);
   _option->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_TRUE);
 
-  SingleFileDownloadContextHandle dctx =
+  SharedHandle<SingleFileDownloadContext> dctx =
     new SingleFileDownloadContext(512, 81920, "load-nonBt");
 
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(string("./load-nonBt.aria2"), infoFile.getFilename());
+  CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt.aria2"), infoFile.getFilename());
   infoFile.load();
 
   // check the contents of objects
 
   // bitfield
-  CPPUNIT_ASSERT_EQUAL(string("fffffffffffffffffffffffffffffffffffffffc"),
+  CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffffffffffffffffffffffc"),
 		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
@@ -193,37 +192,37 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 {
   initializeMembers(1024, 81920);
 
-  SingleFileDownloadContextHandle dctx =
+  SharedHandle<SingleFileDownloadContext> dctx =
     new SingleFileDownloadContext(1024, 81920, "save-temp");
 
   _bitfield->setAllBit();
   _bitfield->unsetBit(79);
   _pieceStorage->setCompletedLength(80896);
 
-  PieceHandle p1 = new Piece(1, 1024);
-  PieceHandle p2 = new Piece(2, 512);
-  Pieces inFlightPieces;
+  SharedHandle<Piece> p1 = new Piece(1, 1024);
+  SharedHandle<Piece> p2 = new Piece(2, 512);
+  std::deque<SharedHandle<Piece> > inFlightPieces;
   inFlightPieces.push_back(p1);
   inFlightPieces.push_back(p2);
   _pieceStorage->addInFlightPiece(inFlightPieces);
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(string("./save-temp.aria2"), infoFile.getFilename());
+  CPPUNIT_ASSERT_EQUAL(std::string("./save-temp.aria2"), infoFile.getFilename());
 
   infoFile.save();
   
   // read and validate
-  ifstream in(infoFile.getFilename().c_str());
+  std::ifstream in(infoFile.getFilename().c_str());
 
   //in.exceptions(ios::failbit);
 
   unsigned char version[2];
   in.read((char*)version, sizeof(version));
-  CPPUNIT_ASSERT_EQUAL(string("0000"), Util::toHex(version, sizeof(version)));
+  CPPUNIT_ASSERT_EQUAL(std::string("0000"), Util::toHex(version, sizeof(version)));
 
   unsigned char extension[4];
   in.read((char*)extension, sizeof(extension));
-  CPPUNIT_ASSERT_EQUAL(string("00000000"), Util::toHex(extension, sizeof(extension)));
+  CPPUNIT_ASSERT_EQUAL(std::string("00000000"), Util::toHex(extension, sizeof(extension)));
 
   int32_t infoHashLength;
   in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
@@ -247,7 +246,7 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 
   unsigned char bitfieldRead[10];
   in.read((char*)bitfieldRead, sizeof(bitfieldRead));
-  CPPUNIT_ASSERT_EQUAL(string("fffffffffffffffffffe"),
+  CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
 		       Util::toHex(bitfieldRead, sizeof(bitfieldRead)));
 
   int32_t numInFlightPiece;
@@ -269,7 +268,7 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 
   unsigned char pieceBitfield1[1];
   in.read((char*)pieceBitfield1, sizeof(pieceBitfield1));
-  CPPUNIT_ASSERT_EQUAL(string("00"),
+  CPPUNIT_ASSERT_EQUAL(std::string("00"),
 		       Util::toHex(pieceBitfield1, sizeof(pieceBitfield1)));
 
   // piece index 2
@@ -295,32 +294,32 @@ void DefaultBtProgressInfoFileTest::testSave()
   _pieceStorage->setCompletedLength(80896);
   TransferStat stat;
   stat.setAllTimeUploadLength(1024);
-  MockPeerStorageHandle(PEER_STORAGE(_btContext))->setStat(stat);
+  SharedHandle<MockPeerStorage>(PEER_STORAGE(_btContext))->setStat(stat);
 
-  PieceHandle p1 = new Piece(1, 1024);
-  PieceHandle p2 = new Piece(2, 512);
-  Pieces inFlightPieces;
+  SharedHandle<Piece> p1 = new Piece(1, 1024);
+  SharedHandle<Piece> p2 = new Piece(2, 512);
+  std::deque<SharedHandle<Piece> > inFlightPieces;
   inFlightPieces.push_back(p1);
   inFlightPieces.push_back(p2);
   _pieceStorage->addInFlightPiece(inFlightPieces);
   
   DefaultBtProgressInfoFile infoFile(_btContext, _pieceStorage, _option.get());
-  CPPUNIT_ASSERT_EQUAL(string("./save-temp.aria2"), infoFile.getFilename());
+  CPPUNIT_ASSERT_EQUAL(std::string("./save-temp.aria2"), infoFile.getFilename());
 
   infoFile.save();
 
   // read and validate
-  ifstream in(infoFile.getFilename().c_str());
+  std::ifstream in(infoFile.getFilename().c_str());
 
   //in.exceptions(ios::failbit);
 
   unsigned char version[2];
   in.read((char*)version, sizeof(version));
-  CPPUNIT_ASSERT_EQUAL(string("0000"), Util::toHex(version, sizeof(version)));
+  CPPUNIT_ASSERT_EQUAL(std::string("0000"), Util::toHex(version, sizeof(version)));
 
   unsigned char extension[4];
   in.read((char*)extension, sizeof(extension));
-  CPPUNIT_ASSERT_EQUAL(string("00000001"), Util::toHex(extension, sizeof(extension)));
+  CPPUNIT_ASSERT_EQUAL(std::string("00000001"), Util::toHex(extension, sizeof(extension)));
 
   int32_t infoHashLength;
   in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
@@ -328,7 +327,7 @@ void DefaultBtProgressInfoFileTest::testSave()
 
   unsigned char infoHashRead[20];
   in.read((char*)infoHashRead, sizeof(infoHashRead));
-  CPPUNIT_ASSERT_EQUAL(string("112233445566778899aabbccddeeff00ffffffff"),
+  CPPUNIT_ASSERT_EQUAL(std::string("112233445566778899aabbccddeeff00ffffffff"),
 		       Util::toHex(infoHashRead, sizeof(infoHashRead)));
 
   int32_t pieceLength;
@@ -349,7 +348,7 @@ void DefaultBtProgressInfoFileTest::testSave()
 
   unsigned char bitfieldRead[10];
   in.read((char*)bitfieldRead, sizeof(bitfieldRead));
-  CPPUNIT_ASSERT_EQUAL(string("fffffffffffffffffffe"),
+  CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
 		       Util::toHex(bitfieldRead, sizeof(bitfieldRead)));
 
   int32_t numInFlightPiece;
@@ -371,7 +370,7 @@ void DefaultBtProgressInfoFileTest::testSave()
 
   unsigned char pieceBitfield1[1];
   in.read((char*)pieceBitfield1, sizeof(pieceBitfield1));
-  CPPUNIT_ASSERT_EQUAL(string("00"),
+  CPPUNIT_ASSERT_EQUAL(std::string("00"),
 		       Util::toHex(pieceBitfield1, sizeof(pieceBitfield1)));
 
   // piece index 2
@@ -385,3 +384,5 @@ void DefaultBtProgressInfoFileTest::testSave()
 
 
 }
+
+} // namespace aria2

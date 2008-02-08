@@ -38,29 +38,33 @@
 #include "PStringDatum.h"
 #include "PStringSegment.h"
 
+namespace aria2 {
+
+class PStringVisitor;
+
 class PStringSelect : public PStringDatum
 {
 private:
   
-  Strings _values;
+  std::deque<std::string> _values;
 
   PStringDatumHandle _next;
 
 public:
-  PStringSelect(const Strings& values, const PStringDatumHandle& next = 0):
+  PStringSelect(const std::deque<std::string>& values, const PStringDatumHandle& next = 0):
     _values(values),
     _next(next) {}
 
   virtual ~PStringSelect() {}
 
-  virtual void accept(const PStringVisitorHandle& visitor)
+  virtual void accept(PStringVisitor* visitor)
   {
-    for(Strings::iterator itr = _values.begin(); itr != _values.end(); ++itr) {
+    for(std::deque<std::string>::iterator itr = _values.begin(); itr != _values.end(); ++itr) {
       PStringSegment(*itr, _next).accept(visitor);
     }
   }
 
-  const Strings& getValues() const
+  const std::deque<std::string>& getValues() const
   {
     return _values;
   }
@@ -72,5 +76,7 @@ public:
 };
 
 typedef SharedHandle<PStringSelect> PStringSelectHandle;
+
+} // namespace aria2
 
 #endif // _D_P_STRING_SELECT_H_

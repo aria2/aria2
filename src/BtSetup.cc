@@ -46,8 +46,6 @@
 #include "UnionSeedCriteria.h"
 #include "TimeSeedCriteria.h"
 #include "ShareRatioSeedCriteria.h"
-#include "DefaultPieceStorage.h"
-#include "DefaultBtProgressInfoFile.h"
 #include "CUIDCounter.h"
 #include "prefs.h"
 #include "LogFactory.h"
@@ -58,6 +56,8 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTSetup.h"
 #include "DHTRegistry.h"
+
+namespace aria2 {
 
 BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
 
@@ -129,3 +129,5 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
   BT_RUNTIME(btContext)->setReady(true);
   return commands;
 }
+
+} // namespace aria2

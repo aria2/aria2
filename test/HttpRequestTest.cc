@@ -3,9 +3,13 @@
 #include "AuthConfigFactory.h"
 #include "PiecedSegment.h"
 #include "Piece.h"
+#include "Range.h"
+#include "Request.h"
+#include "CookieBox.h"
+#include "Option.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class HttpRequestTest : public CppUnit::TestFixture {
 
@@ -40,7 +44,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( HttpRequestTest );
 void HttpRequestTest::testGetStartByte()
 {
   HttpRequest httpRequest;
-  SegmentHandle segment = new PiecedSegment(1024, new Piece(1, 1024));
+  SharedHandle<Segment> segment = new PiecedSegment(1024, new Piece(1, 1024));
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getStartByte());
 
@@ -57,7 +61,7 @@ void HttpRequestTest::testGetEndByte()
   int32_t segmentLength = 1024*1024;
 
   HttpRequest httpRequest;
-  SegmentHandle segment = new PiecedSegment(segmentLength,
+  SharedHandle<Segment> segment = new PiecedSegment(segmentLength,
 					    new Piece(index, length));
   
 
@@ -67,7 +71,7 @@ void HttpRequestTest::testGetEndByte()
 
   CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getEndByte());
 
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setKeepAlive(true);
 
   httpRequest.setRequest(request);
@@ -93,13 +97,13 @@ void HttpRequestTest::testCreateRequest()
   option.put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
   option.put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
-  AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(&option);
-  AuthConfigFactorySingleton::instance(authConfigFactory);
+  SharedHandle<AuthConfigFactory> authConfigFactory = new AuthConfigFactory(&option);
+  SingletonHolder<SharedHandle<AuthConfigFactory> >::instance(authConfigFactory);
 
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SegmentHandle segment = new PiecedSegment(1024, new Piece(0, 1024));
+  SharedHandle<Segment> segment = new PiecedSegment(1024, new Piece(0, 1024));
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
@@ -107,7 +111,7 @@ void HttpRequestTest::testCreateRequest()
 
   request->setKeepAlive(true);
   
-  string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+  std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
     "Host: localhost:8080\r\n"
@@ -296,20 +300,20 @@ void HttpRequestTest::testCreateRequest_ftp()
   option.put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
   option.put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
-  AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(&option);
-  AuthConfigFactorySingleton::instance(authConfigFactory);
+  SharedHandle<AuthConfigFactory> authConfigFactory = new AuthConfigFactory(&option);
+  SingletonHolder<SharedHandle<AuthConfigFactory> >::instance(authConfigFactory);
 
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
-  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
   httpRequest.configure(&option);
 
-  string expectedText = "GET ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+  std::string expectedText = "GET ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
     "Host: localhost:8080\r\n"
@@ -344,9 +348,9 @@ void HttpRequestTest::testCreateRequest_ftp()
 
 void HttpRequestTest::testCreateRequest_with_cookie()
 {
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
 
   Cookie cookie1("name1", "value1", "/archives", "localhost", false);
   Cookie cookie2("name2", "value2", "/archives/download", "localhost", false);
@@ -363,7 +367,7 @@ void HttpRequestTest::testCreateRequest_with_cookie()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
-  string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+  std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Accept: */*\r\n"
     "Host: localhost\r\n"
@@ -421,16 +425,16 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
 void HttpRequestTest::testCreateProxyRequest()
 {
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
 
   HttpRequest httpRequest;
 
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
-  string expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
+  std::string expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Host: localhost:80\r\n"
     "Proxy-Connection: close\r\n"
@@ -452,17 +456,17 @@ void HttpRequestTest::testCreateProxyRequest()
 
 void HttpRequestTest::testIsRangeSatisfied()
 {
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
-  SegmentHandle segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
 
   HttpRequest httpRequest;
 
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
-  RangeHandle range = new Range(0, 0, 0);
+  SharedHandle<Range> range = new Range(0, 0, 0);
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
@@ -505,20 +509,20 @@ void HttpRequestTest::testUserAgent()
 {
   Option option;
 
-  AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(&option);
-  AuthConfigFactorySingleton::instance(authConfigFactory);
+  SharedHandle<AuthConfigFactory> authConfigFactory = new AuthConfigFactory(&option);
+  SingletonHolder<SharedHandle<AuthConfigFactory> >::instance(authConfigFactory);
 
-  RequestHandle request = new Request();
+  SharedHandle<Request> request = new Request();
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SegmentHandle segment = new PiecedSegment(1024, new Piece(0, 1024));
+  SharedHandle<Segment> segment = new PiecedSegment(1024, new Piece(0, 1024));
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
   httpRequest.setUserAgent("aria2 (Linux)");
 
-  string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+  std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2 (Linux)\r\n"
     "Accept: */*\r\n"
     "Host: localhost:8080\r\n"
@@ -529,7 +533,7 @@ void HttpRequestTest::testUserAgent()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  string expectedTextForProxy = "CONNECT localhost:8080 HTTP/1.1\r\n"
+  std::string expectedTextForProxy = "CONNECT localhost:8080 HTTP/1.1\r\n"
     "User-Agent: aria2 (Linux)\r\n"
     "Host: localhost:8080\r\n"
     "Proxy-Connection: close\r\n"
@@ -537,3 +541,5 @@ void HttpRequestTest::testUserAgent()
 
   CPPUNIT_ASSERT_EQUAL(expectedTextForProxy, httpRequest.createProxyRequest());
 }
+
+} // namespace aria2

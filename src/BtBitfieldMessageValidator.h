@@ -38,6 +38,8 @@
 #include "BtMessageValidator.h"
 #include "BtBitfieldMessage.h"
 
+namespace aria2 {
+
 class BtBitfieldMessageValidator : public BtMessageValidator {
 private:
   const BtBitfieldMessage* message;
@@ -58,4 +60,7 @@ public:
 };
 
 typedef SharedHandle<BtBitfieldMessageValidator> BtBitfieldMessageValidatorHandle;
+
+} // namespace aria2
+
 #endif // _D_BT_BITFIELD_MESSAGE_VALIDATOR_H_

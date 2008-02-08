@@ -2,6 +2,9 @@
 #define _D_MOCK_BT_MESSAGE_DISPATCHER_H_
 
 #include "BtMessageDispatcher.h"
+#include <algorithm>
+
+namespace aria2 {
 
 class MockBtMessageDispatcher : public BtMessageDispatcher {
 public:
@@ -9,21 +12,21 @@ public:
 
   virtual ~MockBtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const BtMessageHandle& btMessage) {
+  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage) {
     messageQueue.push_back(btMessage);
   }
 
-  virtual void addMessageToQueue(const BtMessages& btMessages) {
-    copy(btMessages.begin(), btMessages.end(), back_inserter(messageQueue));
+  virtual void addMessageToQueue(const std::deque<SharedHandle<BtMessage> >& btMessages) {
+    std::copy(btMessages.begin(), btMessages.end(), back_inserter(messageQueue));
   }
 
   virtual void sendMessages() {}
 
   virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, int32_t length) {}
 
-  virtual void doCancelSendingPieceAction(const PieceHandle& piece) {}
+  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) {}
 
-  virtual void doAbortOutstandingRequestAction(const PieceHandle& piece) {}
+  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece) {}
 
   virtual void doChokedAction() {}
 
@@ -56,6 +59,6 @@ public:
   virtual void addOutstandingRequest(const RequestSlot& slot) {}
 };
 
-typedef SharedHandle<MockBtMessageDispatcher> MockBtMessageDispatcherHandle;
+} // namespace aria2
 
 #endif // _D_MOCK_BT_MESSAGE_DISPATCHER_H_

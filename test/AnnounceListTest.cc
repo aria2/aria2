@@ -1,9 +1,10 @@
 #include "AnnounceList.h"
 #include "MetaFileUtil.h"
 #include "Exception.h"
+#include "Dictionary.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class AnnounceListTest:public CppUnit::TestFixture {
 
@@ -41,7 +42,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( AnnounceListTest );
 
 void AnnounceListTest::testSingleElementList() {
-  string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
+  std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
   // ANNOUNCE_LIST
@@ -49,16 +50,16 @@ void AnnounceListTest::testSingleElementList() {
   AnnounceList announceList(announces);
   
   CPPUNIT_ASSERT(!announceList.allTiersFailed());
-  string url =  announceList.getAnnounce();
-  string event = announceList.getEventString();
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
-  CPPUNIT_ASSERT_EQUAL(string("started"), event);
+  std::string url =  announceList.getAnnounce();
+  std::string event = announceList.getEventString();
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("started"), event);
   announceList.announceFailure();
   url =  announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), url);
   announceList.announceFailure();
   url =  announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker3"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker3"), url);
   announceList.announceFailure();
   CPPUNIT_ASSERT(announceList.allTiersFailed());
   announceList.resetTier();
@@ -66,86 +67,86 @@ void AnnounceListTest::testSingleElementList() {
   // back to the first list
   url = announceList.getAnnounce();
   event = announceList.getEventString();
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
-  CPPUNIT_ASSERT_EQUAL(string("started"), event);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("started"), event);
   announceList.announceFailure();
   url = announceList.getAnnounce();
   event = announceList.getEventString();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
-  CPPUNIT_ASSERT_EQUAL(string("started"), event);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("started"), event);
   announceList.announceSuccess();
   // back to the first list because announce to tracker2 succeeded.
   url = announceList.getAnnounce();
   event = announceList.getEventString();
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
-  CPPUNIT_ASSERT_EQUAL(string("started"), event);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("started"), event);
   announceList.announceFailure();
   url = announceList.getAnnounce();
   event = announceList.getEventString();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
-  CPPUNIT_ASSERT_EQUAL(string(""), event);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string(""), event);
 }
 
 void AnnounceListTest::testMultiElementList() {
-  string peersString = "ll8:tracker18:tracker28:tracker3ee";
+  std::string peersString = "ll8:tracker18:tracker28:tracker3ee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2, tracker3 ] ]
   AnnounceList announceList(announces);
   
   CPPUNIT_ASSERT(!announceList.allTiersFailed());
-  string url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
+  std::string url = announceList.getAnnounce();
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
   announceList.announceFailure();
   url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), url);
   announceList.announceSuccess();
   url = announceList.getAnnounce();
   // tracker2 returns because tracker2 is now first.
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), url);
   announceList.announceFailure();
   url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
   announceList.announceFailure();
   url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker3"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker3"), url);
   announceList.announceFailure();
   CPPUNIT_ASSERT(announceList.allTiersFailed());
   announceList.resetTier();
   CPPUNIT_ASSERT(!announceList.allTiersFailed());
   // back to the first list because there is no other list.
   url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), url);
 }
 
 void AnnounceListTest::testSingleAndMulti() {
-  string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
+  std::string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2 ], [ tracker3 ] ]
   AnnounceList announceList(announces);
 
-  string url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
+  std::string url = announceList.getAnnounce();
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
   announceList.announceSuccess();
   url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
   announceList.announceFailure();
   url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), url);
   announceList.announceFailure();
   url = announceList.getAnnounce();
-  CPPUNIT_ASSERT_EQUAL(string("tracker3"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker3"), url);
   announceList.announceSuccess();
   url = announceList.getAnnounce();
   // tracker1 returns because after the announce to tracker3 succeeds, list
   // pointer points to the first list.
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), url);
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), url);
 }
 
 void AnnounceListTest::testNoGroup() {
-  string peersString = "llee";
+  std::string peersString = "llee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
   AnnounceList announceList(announces);
@@ -154,7 +155,7 @@ void AnnounceListTest::testNoGroup() {
 }
 
 void AnnounceListTest::testNextEventIfAfterStarted() {
-  string peersString = "ll8:tracker1ee";
+  std::string peersString = "ll8:tracker1ee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
   // ANNOUNCE_LIST
@@ -163,18 +164,18 @@ void AnnounceListTest::testNextEventIfAfterStarted() {
   announceList.setEvent(AnnounceTier::STOPPED);
   announceList.announceFailure();
   announceList.resetTier();
-  CPPUNIT_ASSERT_EQUAL(string(""), announceList.getEventString());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), announceList.getEventString());
   CPPUNIT_ASSERT_EQUAL(AnnounceTier::HALTED, announceList.getEvent());
 
   announceList.setEvent(AnnounceTier::COMPLETED);
   announceList.announceFailure();
   announceList.resetTier();
-  CPPUNIT_ASSERT_EQUAL(string(""), announceList.getEventString());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), announceList.getEventString());
   CPPUNIT_ASSERT_EQUAL(AnnounceTier::SEEDING, announceList.getEvent());
 }
 
 void AnnounceListTest::testEvent() {
-  string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
+  std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
   // ANNOUNCE_LIST
@@ -183,22 +184,22 @@ void AnnounceListTest::testEvent() {
 
   announceList.setEvent(AnnounceTier::STOPPED);
   announceList.announceSuccess();
-  CPPUNIT_ASSERT_EQUAL(string(""), announceList.getEventString());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), announceList.getEventString());
   CPPUNIT_ASSERT_EQUAL(AnnounceTier::HALTED, announceList.getEvent());
 
   announceList.setEvent(AnnounceTier::COMPLETED);
   announceList.announceSuccess();
-  CPPUNIT_ASSERT_EQUAL(string(""), announceList.getEventString());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), announceList.getEventString());
   CPPUNIT_ASSERT_EQUAL(AnnounceTier::SEEDING, announceList.getEvent());
 
   announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
-  CPPUNIT_ASSERT_EQUAL(string("started"), announceList.getEventString());
+  CPPUNIT_ASSERT_EQUAL(std::string("started"), announceList.getEventString());
   announceList.announceSuccess();
   CPPUNIT_ASSERT_EQUAL(AnnounceTier::SEEDING, announceList.getEvent());
 }
 
 void AnnounceListTest::testCountStoppedAllowedTier() {
-  string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
+  std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
   // ANNOUNCE_LIST
@@ -225,7 +226,7 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
 }
 
 void AnnounceListTest::testCountCompletedAllowedTier() {
-  string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
+  std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
   Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
   // ANNOUNCE_LIST
@@ -251,19 +252,19 @@ void AnnounceListTest::testCountCompletedAllowedTier() {
 
 }
 
-Strings createUrls(const string& url) {
-  Strings urls;
+std::deque<std::string> createUrls(const std::string& url) {
+  std::deque<std::string> urls;
   urls.push_back(url);
   return urls;
 }
 
 void AnnounceListTest::testMoveToStoppedAllowedTier() {
-  AnnounceTierHandle t1(new AnnounceTier(createUrls("tracker1")));
-  AnnounceTierHandle t2(new AnnounceTier(createUrls("tracker2")));
+  SharedHandle<AnnounceTier> t1(new AnnounceTier(createUrls("tracker1")));
+  SharedHandle<AnnounceTier> t2(new AnnounceTier(createUrls("tracker2")));
   t2->event = AnnounceTier::COMPLETED;
-  AnnounceTierHandle t3(new AnnounceTier(createUrls("tracker3")));
+  SharedHandle<AnnounceTier> t3(new AnnounceTier(createUrls("tracker3")));
 
-  AnnounceTiers tiers;
+  std::deque<SharedHandle<AnnounceTier> > tiers;
   tiers.push_back(t1);
   tiers.push_back(t2);
   tiers.push_back(t3);
@@ -271,25 +272,25 @@ void AnnounceListTest::testMoveToStoppedAllowedTier() {
   AnnounceList announceList(tiers);
 
   CPPUNIT_ASSERT(!announceList.currentTierAcceptsStoppedEvent());
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), announceList.getAnnounce());
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), announceList.getAnnounce());
   announceList.moveToStoppedAllowedTier();
   CPPUNIT_ASSERT(announceList.currentTierAcceptsStoppedEvent());
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), announceList.getAnnounce());
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());
   announceList.announceFailure();
   CPPUNIT_ASSERT(!announceList.currentTierAcceptsStoppedEvent());
-  CPPUNIT_ASSERT_EQUAL(string("tracker3"), announceList.getAnnounce());
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker3"), announceList.getAnnounce());
   // test wrapped search
   announceList.moveToStoppedAllowedTier();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), announceList.getAnnounce());  
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());  
 }
 
 void AnnounceListTest::testMoveToCompletedAllowedTier() {
-  AnnounceTierHandle t1(new AnnounceTier(createUrls("tracker1")));
-  AnnounceTierHandle t2(new AnnounceTier(createUrls("tracker2")));
+  SharedHandle<AnnounceTier> t1(new AnnounceTier(createUrls("tracker1")));
+  SharedHandle<AnnounceTier> t2(new AnnounceTier(createUrls("tracker2")));
   t2->event = AnnounceTier::COMPLETED;
-  AnnounceTierHandle t3(new AnnounceTier(createUrls("tracker3")));
+  SharedHandle<AnnounceTier> t3(new AnnounceTier(createUrls("tracker3")));
 
-  AnnounceTiers tiers;
+  std::deque<SharedHandle<AnnounceTier> > tiers;
   tiers.push_back(t1);
   tiers.push_back(t2);
   tiers.push_back(t3);
@@ -297,14 +298,16 @@ void AnnounceListTest::testMoveToCompletedAllowedTier() {
   AnnounceList announceList(tiers);
 
   CPPUNIT_ASSERT(!announceList.currentTierAcceptsCompletedEvent());
-  CPPUNIT_ASSERT_EQUAL(string("tracker1"), announceList.getAnnounce());
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker1"), announceList.getAnnounce());
   announceList.moveToStoppedAllowedTier();
   CPPUNIT_ASSERT(announceList.currentTierAcceptsCompletedEvent());
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), announceList.getAnnounce());
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());
   announceList.announceFailure();
   CPPUNIT_ASSERT(!announceList.currentTierAcceptsCompletedEvent());
-  CPPUNIT_ASSERT_EQUAL(string("tracker3"), announceList.getAnnounce());
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker3"), announceList.getAnnounce());
   // test wrapped search
   announceList.moveToStoppedAllowedTier();
-  CPPUNIT_ASSERT_EQUAL(string("tracker2"), announceList.getAnnounce());  
+  CPPUNIT_ASSERT_EQUAL(std::string("tracker2"), announceList.getAnnounce());  
 }
+
+} // namespace aria2

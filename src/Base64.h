@@ -36,7 +36,7 @@
 #define _D_BASE64_H_
 #include <string>
 
-using namespace std;
+namespace aria2 {
 
 class Base64
 {
@@ -67,7 +67,7 @@ public:
     encode(result, rlength, (const unsigned char*)src, slength);
   }
 
-  static string encode(const string& s);
+  static std::string encode(const std::string& s);
 
   /**
    * Dencods base64 encoded src whose length is slength and stores them to
@@ -87,7 +87,9 @@ public:
     decode(result, rlength, (const unsigned char*)src, slength);
   }
 
-  static string decode(const string& s);
+  static std::string decode(const std::string& s);
 };
+
+} // namespace aria2
 
 #endif // _BASE64_H_

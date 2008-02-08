@@ -33,5 +33,26 @@
  */
 /* copyright --> */
 #include "Command.h"
+#include "LogFactory.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 int32_t Command::uuidGen = 0;
+
+Command::Command(int32_t cuid):uuid(uuidGen++),
+			       status(STATUS_INACTIVE),
+			       cuid(cuid),
+			       logger(LogFactory::getInstance()) {}
+
+void Command::transitStatus()
+{
+  switch(status) {
+  case STATUS_REALTIME:
+    break;
+  default:
+    status = STATUS_INACTIVE;
+    }
+}
+
+} // namespace aria2

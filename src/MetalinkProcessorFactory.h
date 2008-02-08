@@ -36,13 +36,19 @@
 #define _D_METALINK_PROCESSOR_FACTORY_H_
 
 #include "common.h"
-#include "MetalinkProcessor.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class MetalinkProcessor;
 
 class MetalinkProcessorFactory {
 private:
   MetalinkProcessorFactory() {}
 public:
-  static MetalinkProcessorHandle newInstance(); 
+  static SharedHandle<MetalinkProcessor> newInstance(); 
 };
+
+} // namespace aria2
 
 #endif // _D_METALINK_PROCESSOR_FACTORY_H__

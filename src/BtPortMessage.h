@@ -36,8 +36,11 @@
 #define _D_BT_PORT_MESSAGE_H_
 
 #include "SimpleBtMessage.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskFactoryDecl.h"
+
+namespace aria2 {
+
+class DHTTaskQueue;
+class DHTTaskFactory;
 
 class BtPortMessage : public SimpleBtMessage {
 private:
@@ -67,11 +70,13 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
 
   void setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory);
 };
+
+} // namespace aria2
 
 #endif // _D_BT_PORT_MESSAGE_H_

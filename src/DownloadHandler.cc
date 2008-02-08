@@ -34,8 +34,11 @@
 /* copyright --> */
 #include "DownloadHandler.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "RequestGroup.h"
 #include "RequestGroupCriteria.h"
+
+namespace aria2 {
 
 DownloadHandler::DownloadHandler():
   _criteria(0),
@@ -52,3 +55,5 @@ void DownloadHandler::setCriteria(const RequestGroupCriteriaHandle& criteria)
 {
   _criteria = criteria;
 }
+
+} // namespace aria2

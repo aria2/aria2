@@ -36,6 +36,10 @@
 #define _D_SINGLE_FILE_DOWNLOAD_CONTEXT_H_
 
 #include "DownloadContext.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class SingleFileDownloadContext:public DownloadContext
 {
@@ -45,48 +49,32 @@ private:
    * Actual file path is _dir + _filename.
    * If _ufilename is not zero-length string, then _dir + _ufilename.
    */
-  FileEntryHandle _fileEntry;
+  SharedHandle<FileEntry> _fileEntry;
   /**
    * _filename and _ufilename may contains directory path name.
    * So usr/local/aria2c is acceptable here.
    */
-  string _filename;
-  string _ufilename;
+  std::string _filename;
+  std::string _ufilename;
 
-  string _contentType;
+  std::string _contentType;
 
-  Strings _pieceHashes;
-  string _pieceHashAlgo;
+  std::deque<std::string> _pieceHashes;
+  std::string _pieceHashAlgo;
 
-  string _checksum;
-  string _checksumHashAlgo;
+  std::string _checksum;
+  std::string _checksumHashAlgo;
 
-  void updateFileEntry()
-  {
-    if(_ufilename != "") {
-      _fileEntry->setPath(_ufilename);
-    } else if(_filename != "") {
-      _fileEntry->setPath(_filename);
-    } else {
-      _fileEntry->setPath("index.html");
-    }
-  }
+  void updateFileEntry();
 public:
   SingleFileDownloadContext(int32_t pieceLength,
 			    int64_t totalLength,
-			    const string& filename,
-			    const string& ufilename = ""):
-    _pieceLength(pieceLength),
-    _fileEntry(new FileEntry(filename, totalLength, 0)),
-    _filename(filename),
-    _ufilename(ufilename)
-  {
-    updateFileEntry();
-  }
+			    const std::string& filename,
+			    const std::string& ufilename = "");
 
   virtual ~SingleFileDownloadContext() {}
 
-  virtual string getPieceHash(int32_t index) const
+  virtual std::string getPieceHash(int32_t index) const
   {
     if(index < 0 || _pieceHashes.size() <= (size_t)index) {
       return "";
@@ -94,29 +82,18 @@ public:
     return _pieceHashes[index];
   }
   
-  virtual const Strings& getPieceHashes() const
-  {
-    return _pieceHashes;
-  }
+  virtual const std::deque<std::string>& getPieceHashes() const;
 
-  virtual int64_t getTotalLength() const
-  {
-    return _fileEntry->getLength();
-  }
+  virtual int64_t getTotalLength() const;
 
   virtual FILE_MODE getFileMode() const
   {
     return SINGLE;
   }
 
-  virtual FileEntries getFileEntries() const
-  {
-    FileEntries fs;
-    fs.push_back(_fileEntry);
-    return fs;
-  }
+  virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;
 
-  virtual string getName() const
+  virtual std::string getName() const
   {
     return _filename;
   }
@@ -126,79 +103,72 @@ public:
     return _pieceLength;
   }
 
-  virtual int32_t getNumPieces() const
-  {
-    return (_fileEntry->getLength()+_pieceLength-1)/_pieceLength;
-  }
+  virtual int32_t getNumPieces() const;
 
-  virtual string getActualBasePath() const
-  {
-    return _dir+"/"+_fileEntry->getPath();
-  }
+  virtual std::string getActualBasePath() const;
 
-  virtual string getPieceHashAlgo() const
+  virtual std::string getPieceHashAlgo() const
   {
     return _pieceHashAlgo;
   }
 
-  const string& getChecksumHashAlgo() const
+  const std::string& getChecksumHashAlgo() const
   {
     return _checksumHashAlgo;
   }
 
-  const string& getChecksum() const
+  const std::string& getChecksum() const
   {
     return _checksum;
   }
 
-  void setPieceHashes(const Strings& pieceHashes)
+  void setPieceHashes(const std::deque<std::string>& pieceHashes)
   {
     _pieceHashes = pieceHashes;
   }
   
-  void setChecksumHashAlgo(const string& algo)
+  void setChecksumHashAlgo(const std::string& algo)
   {
     _checksumHashAlgo = algo;
   }
 
-  void setChecksum(const string& checksum)
+  void setChecksum(const std::string& checksum)
   {
     _checksum = checksum;
   }
 
-  void setFilename(const string& filename)
+  void setFilename(const std::string& filename)
   {
     _filename = filename;
     updateFileEntry();
   }
 
-  void setUFilename(const string& ufilename)
+  void setUFilename(const std::string& ufilename)
   {
     _ufilename = ufilename;
     updateFileEntry();
   }
 
-  void setTotalLength(int64_t totalLength)
-  {
-    _fileEntry->setLength(totalLength);
-  }
+  void setTotalLength(int64_t totalLength);
 
-  void setPieceHashAlgo(const string& algo)
+  void setPieceHashAlgo(const std::string& algo)
   {
     _pieceHashAlgo = algo;
   }
 
-  void setContentType(const string& contentType)
+  void setContentType(const std::string& contentType)
   {
     _contentType = contentType;
   }
 
-  const string& getContentType()
+  const std::string& getContentType()
   {
     return _contentType;
   }
 };
 
 typedef SharedHandle<SingleFileDownloadContext> SingleFileDownloadContextHandle;
+
+} // namespace aria2
 
 #endif // _D_SINGLE_FILE_DOWNLOAD_CONTEXT_H_

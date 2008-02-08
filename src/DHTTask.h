@@ -36,7 +36,8 @@
 #define _D_DHT_TASK_H_
 
 #include "common.h"
-#include "DHTTaskDecl.h"
+
+namespace aria2  {
 
 class DHTTask {
 public:
@@ -46,5 +47,7 @@ public:
 
   virtual bool finished() = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_TASK_H_

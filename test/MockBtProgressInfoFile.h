@@ -3,18 +3,20 @@
 
 #include "BtProgressInfoFile.h"
 
+namespace aria2 {
+
 class MockBtProgressInfoFile : public BtProgressInfoFile {
 private:
-  string filename;
+  std::string filename;
 public:
   MockBtProgressInfoFile() {}
   virtual ~MockBtProgressInfoFile() {}
 
-  virtual string getFilename() {
+  virtual std::string getFilename() {
     return filename;
   }
 
-  virtual void setFilename(const string& filename) {
+  virtual void setFilename(const std::string& filename) {
     this->filename = filename;
   }
 
@@ -28,5 +30,7 @@ public:
 
   virtual void removeFile() {}
 };
+
+} // namespace aria2
 
 #endif // _D_MOCK_BT_PROGRESS_INFO_FILE_H_

@@ -34,9 +34,11 @@
 /* copyright --> */
 #include "PStringBuildVisitor.h"
 
+namespace aria2 {
+
 void PStringBuildVisitor::hello(PStringSegment* segment)
 {
-  string uri;
+  std::string uri;
   if(_buildQueue.empty()) {
     uri += segment->getValue();
   } else {
@@ -52,3 +54,5 @@ void PStringBuildVisitor::goodbye(PStringSegment* segment)
 {
   _buildQueue.pop_front();
 }
+
+} // namespace aria2

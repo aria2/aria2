@@ -41,6 +41,8 @@
 #include "prefs.h"
 #include "Request.h"
 
+namespace aria2 {
+
 AuthConfigFactory::AuthConfigFactory(const Option* option):
   _option(option), _netrc(0) {}
 
@@ -66,7 +68,7 @@ AuthConfigHandle AuthConfigFactory::createAuthConfigForHttpProxy(const RequestHa
   return createHttpProxyAuthResolver()->resolveAuthConfig(request->getHost());
 }
 
-AuthConfigHandle AuthConfigFactory::createAuthConfig(const string& user, const string& password) const
+AuthConfigHandle AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& password) const
 {
   if(user.length() > 0) {
     return new AuthConfig(user, password);
@@ -122,3 +124,5 @@ void AuthConfigFactory::setNetrc(const NetrcHandle& netrc)
 {
   _netrc = netrc;
 }
+
+} // namespace aria2

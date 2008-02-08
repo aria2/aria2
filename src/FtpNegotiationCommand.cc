@@ -33,20 +33,31 @@
  */
 /* copyright --> */
 #include "FtpNegotiationCommand.h"
+#include "Request.h"
 #include "DownloadEngine.h"
 #include "FtpConnection.h"
 #include "RequestGroup.h"
 #include "PieceStorage.h"
 #include "FtpDownloadCommand.h"
+#include "FileEntry.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
 #include "Util.h"
+#include "Option.h"
+#include "Logger.h"
+#include "Segment.h"
 #include "SingleFileDownloadContext.h"
 #include "DefaultBtProgressInfoFile.h"
 #include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
 #include "ServerHost.h"
+#include "Socket.h"
+#include <stdint.h>
+#include <cassert>
+#include <utility>
+
+namespace aria2 {
 
 FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     const RequestHandle& req,
@@ -275,7 +286,7 @@ bool FtpNegotiationCommand::sendPasv() {
 }
 
 bool FtpNegotiationCommand::recvPasv() {
-  pair<string, int32_t> dest;
+  std::pair<std::string, int32_t> dest;
   int32_t status = ftp->receivePasvResponse(dest);
   if(status == 0) {
     return false;
@@ -393,3 +404,5 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
   }
   return doNextSequence;
 }
+
+} // namespace aria2

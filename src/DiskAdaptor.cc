@@ -33,15 +33,19 @@
  */
 /* copyright --> */
 #include "DiskAdaptor.h"
+#include "FileEntry.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "message.h"
 #include "DlAbortEx.h"
+
+namespace aria2 {
 
 DiskAdaptor::DiskAdaptor():logger(LogFactory::getInstance()) {}
 
 DiskAdaptor::~DiskAdaptor() {}
 
-FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) const
+FileEntryHandle DiskAdaptor::getFileEntryFromPath(const std::string& fileEntryPath) const
 {
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
@@ -52,7 +56,7 @@ FileEntryHandle DiskAdaptor::getFileEntryFromPath(const string& fileEntryPath) c
   throw new DlAbortEx(EX_NO_SUCH_FILE_ENTRY, fileEntryPath.c_str());
 }
 
-bool DiskAdaptor::addDownloadEntry(const string& fileEntryPath)
+bool DiskAdaptor::addDownloadEntry(const std::string& fileEntryPath)
 {
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
@@ -88,3 +92,14 @@ void DiskAdaptor::removeAllDownloadEntry()
     (*itr)->setRequested(false);
   }
 }
+
+void DiskAdaptor::setFileEntries(const FileEntries& fileEntries) {
+  this->fileEntries = fileEntries;
+}
+
+const FileEntries& DiskAdaptor::getFileEntries() const
+{
+  return fileEntries;
+}
+
+} // namespace aria2

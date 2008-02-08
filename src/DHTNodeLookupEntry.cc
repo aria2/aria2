@@ -35,7 +35,9 @@
 #include "DHTNodeLookupEntry.h"
 #include "DHTNode.h"
 
-DHTNodeLookupEntry::DHTNodeLookupEntry(const DHTNodeHandle& node):
+namespace aria2 {
+
+DHTNodeLookupEntry::DHTNodeLookupEntry(const SharedHandle<DHTNode>& node):
   _node(node), _used(false) {}
 
 DHTNodeLookupEntry::DHTNodeLookupEntry():
@@ -45,3 +47,5 @@ bool DHTNodeLookupEntry::operator==(const DHTNodeLookupEntry& entry) const
 {
   return _node == entry._node;
 }
+
+} // namespace aria2

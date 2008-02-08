@@ -35,6 +35,34 @@
 #include "DefaultBtMessageReceiver.h"
 #include "BtHandshakeMessage.h"
 #include "message.h"
+#include "BtContext.h"
+#include "BtRegistry.h"
+#include "Peer.h"
+#include "PeerConnection.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageFactory.h"
+#include "Logger.h"
+#include "LogFactory.h"
+#include <cstring>
+
+namespace aria2 {
+
+DefaultBtMessageReceiver::DefaultBtMessageReceiver():
+  cuid(0),
+  handshakeSent(false),
+  btContext(0),
+  peer(0),
+  peerConnection(0),
+  dispatcher(0),
+  logger(LogFactory::getInstance())
+{
+  logger->debug("DefaultBtMessageReceiver::instantiated");
+}
+
+DefaultBtMessageReceiver::~DefaultBtMessageReceiver()
+{
+  logger->debug("DefaultBtMessageReceiver::deleted");
+}
 
 BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
@@ -51,8 +79,8 @@ BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   if(!retval) {
     return 0;
   }
-  BtHandshakeMessageHandle msg = messageFactory->createHandshakeMessage(data, dataLength);
-  Errors errors;
+  SharedHandle<BtHandshakeMessage> msg = messageFactory->createHandshakeMessage(data, dataLength);
+  std::deque<std::string> errors;
   msg->validate(errors);
   return msg;
 }
@@ -62,7 +90,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveAndSendHandshake() {
 }
 
 void DefaultBtMessageReceiver::sendHandshake() {
-  BtHandshakeMessageHandle msg =
+  SharedHandle<BtHandshakeMessage> msg =
     messageFactory->createHandshakeMessage(btContext->getInfoHash(),
 					   btContext->getPeerId());
   dispatcher->addMessageToQueue(msg);
@@ -76,7 +104,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
     return 0;
   }
   BtMessageHandle msg = messageFactory->createBtMessage(data, dataLength);
-  Errors errors;
+  std::deque<std::string> errors;
   if(msg->validate(errors)) {
     return msg;
   } else {
@@ -85,3 +113,29 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
   }
 }
 
+void DefaultBtMessageReceiver::setBtContext(const SharedHandle<BtContext>& btContext)
+{
+  this->btContext = btContext;
+}
+
+void DefaultBtMessageReceiver::setPeer(const SharedHandle<Peer>& peer)
+{
+  this->peer = peer;
+}
+
+void DefaultBtMessageReceiver::setPeerConnection(const WeakHandle<PeerConnection>& peerConnection)
+{
+  this->peerConnection = peerConnection;
+}
+
+void DefaultBtMessageReceiver::setDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
+{
+  this->dispatcher = dispatcher;
+}
+
+void DefaultBtMessageReceiver::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+{
+  this->messageFactory = factory;
+}
+
+} // namespace aria2

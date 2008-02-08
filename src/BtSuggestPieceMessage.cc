@@ -38,6 +38,8 @@
 #include "DlAbortEx.h"
 #include "message.h"
 
+namespace aria2 {
+
 BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 5) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "suggest piece", dataLength, 5);
@@ -72,6 +74,8 @@ int32_t BtSuggestPieceMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtSuggestPieceMessage::toString() const {
+std::string BtSuggestPieceMessage::toString() const {
   return "suggest piece index="+Util::itos(index);
 }
+
+} // namespace aria2

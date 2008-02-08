@@ -36,25 +36,24 @@
 #define _D_FILE_H_
 
 #include "common.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include "a2io.h"
+#include <string>
 
-using namespace std;
+namespace aria2 {
 
 /**
  * Represents file and directory
  */
 class File {
 private:
-  string name;
+  std::string name;
   
   /**
    * Returns the return value of stat(...)
    */
   int32_t fillStat(struct stat& fstat);
 public:
-  File(const string& name);
+  File(const std::string& name);
   ~File();
 
   /**
@@ -91,18 +90,20 @@ public:
 
   mode_t mode();
 
-  string getBasename() const;
+  std::string getBasename() const;
 
-  string getDirname() const;
+  std::string getDirname() const;
 
-  const string& getPath() const
+  const std::string& getPath() const
   {
     return name;
   }
 
-  static bool isDir(const string& filename);
+  static bool isDir(const std::string& filename);
 
-  bool renameTo(const string& dest);
+  bool renameTo(const std::string& dest);
 };
+
+} // namespace aria2
 
 #endif // _D_FILE_H_

@@ -37,6 +37,8 @@
 #include "Util.h"
 #include "a2io.h"
 
+namespace aria2 {
+
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
 
@@ -77,3 +79,5 @@ bool SingleFileAllocationIterator::finished()
 {
   return _offset >= _totalLength;
 }
+
+} // namespace aria2

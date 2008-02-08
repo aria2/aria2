@@ -1,8 +1,10 @@
 #include "MultiDiskAdaptor.h"
+#include "FileEntry.h"
+#include "Exception.h"
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class MultiDiskAdaptorTest:public CppUnit::TestFixture {
 
@@ -11,7 +13,7 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testReadData);
   CPPUNIT_TEST_SUITE_END();
 private:
-  MultiDiskAdaptorHandle adaptor;
+  SharedHandle<MultiDiskAdaptor> adaptor;
 public:
   MultiDiskAdaptorTest():adaptor(0) {}
 
@@ -29,21 +31,21 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MultiDiskAdaptorTest );
 
-FileEntries createEntries() {
-  FileEntryHandle entry1(new FileEntry("file1.txt", 15, 0));
-  FileEntryHandle entry2(new FileEntry("file2.txt", 7, 15));
-  FileEntryHandle entry3(new FileEntry("file3.txt", 3, 22));
+std::deque<SharedHandle<FileEntry> > createEntries() {
+  SharedHandle<FileEntry> entry1(new FileEntry("file1.txt", 15, 0));
+  SharedHandle<FileEntry> entry2(new FileEntry("file2.txt", 7, 15));
+  SharedHandle<FileEntry> entry3(new FileEntry("file3.txt", 3, 22));
   unlink("file1.txt");
   unlink("file2.txt");
   unlink("file3.txt");
-  FileEntries entries;
+  std::deque<SharedHandle<FileEntry> > entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
   entries.push_back(entry3);
   return entries;
 }
 
-void readFile(const string& filename, char* buf, int bufLength) {
+void readFile(const std::string& filename, char* buf, int bufLength) {
   FILE* f = fopen(filename.c_str(), "r");
   if(f == NULL) {
     abort();
@@ -60,51 +62,51 @@ void MultiDiskAdaptorTest::testWriteData() {
   adaptor->setFileEntries(createEntries());
 
   adaptor->openFile();
-  string msg = "12345";
+  std::string msg = "12345";
   adaptor->writeData((const unsigned char*)msg.c_str(), msg.size(), 0);
   adaptor->closeFile();
 
   char buf[128];
   readFile("file1.txt", buf, 5);
   buf[5] = '\0';
-  CPPUNIT_ASSERT_EQUAL(msg, string(buf));
+  CPPUNIT_ASSERT_EQUAL(msg, std::string(buf));
 
   adaptor->openFile();
-  string msg2 = "67890ABCDEF";
+  std::string msg2 = "67890ABCDEF";
   adaptor->writeData((const unsigned char*)msg2.c_str(), msg2.size(), 5);
   adaptor->closeFile();
 
   readFile("file1.txt", buf, 15);
   buf[15] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDE"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDE"), std::string(buf));
   readFile("file2.txt", buf, 1);
   buf[1] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("F"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("F"), std::string(buf));
 
   adaptor->openFile();
-  string msg3 = "12345123456712";
+  std::string msg3 = "12345123456712";
   adaptor->writeData((const unsigned char*)msg3.c_str(), msg3.size(), 10);
   adaptor->closeFile();
 
   readFile("file1.txt", buf, 15);
   buf[15] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("123456789012345"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789012345"), std::string(buf));
   readFile("file2.txt", buf, 7);
   buf[7] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567"), std::string(buf));
   readFile("file3.txt", buf, 2);
   buf[2] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("12"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("12"), std::string(buf));
   } catch(Exception* e) {
     CPPUNIT_FAIL(e->getMsg());
   }
 }
 
 void MultiDiskAdaptorTest::testReadData() {
-  FileEntryHandle entry1(new FileEntry("file1r.txt", 15, 0));
-  FileEntryHandle entry2(new FileEntry("file2r.txt", 7, 15));
-  FileEntryHandle entry3(new FileEntry("file3r.txt", 3, 22));
-  FileEntries entries;
+  SharedHandle<FileEntry> entry1(new FileEntry("file1r.txt", 15, 0));
+  SharedHandle<FileEntry> entry2(new FileEntry("file2r.txt", 7, 15));
+  SharedHandle<FileEntry> entry3(new FileEntry("file3r.txt", 3, 22));
+  std::deque<SharedHandle<FileEntry> > entries;
   entries.push_back(entry1);
   entries.push_back(entry2);
   entries.push_back(entry3);
@@ -115,14 +117,16 @@ void MultiDiskAdaptorTest::testReadData() {
   unsigned char buf[128];
   adaptor->readData(buf, 15, 0);
   buf[15] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDE"), string((char*)buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDE"), std::string((char*)buf));
   adaptor->readData(buf, 10, 6);
   buf[10] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("7890ABCDEF"), string((char*)buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("7890ABCDEF"), std::string((char*)buf));
   adaptor->readData(buf, 4, 20);
   buf[4] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("KLMN"), string((char*)buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("KLMN"), std::string((char*)buf));
   adaptor->readData(buf, 25, 0);
   buf[25] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDEFGHIJKLMNO"), string((char*)buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDEFGHIJKLMNO"), std::string((char*)buf));
 }
+
+} // namespace aria2

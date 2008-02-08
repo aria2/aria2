@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "DHTSetup.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "Util.h"
+#include "File.h"
 #include "DHTNode.h"
 #include "DHTConnectionImpl.h"
 #include "DHTRoutingTable.h"
@@ -58,9 +60,12 @@
 #include "CUIDCounter.h"
 #include "prefs.h"
 #include "Option.h"
+#include "SocketCore.h"
 #include "DlAbortEx.h"
 #include "RecoverableException.h"
 #include <fstream>
+
+namespace aria2 {
 
 size_t DHTSetup::_initialized = 0;
 
@@ -76,14 +81,14 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
   try {
     // load routing table and localnode id here
 
-    DHTNodeHandle localNode = 0;
+    SharedHandle<DHTNode> localNode = 0;
 
     DHTRoutingTableDeserializer deserializer;
-    string dhtFile = option->get(PREF_DHT_FILE_PATH);
+    std::string dhtFile = option->get(PREF_DHT_FILE_PATH);
     if(File(dhtFile).isFile()) {
       try {
-	ifstream in(dhtFile.c_str());
-	in.exceptions(ios::failbit);
+	std::ifstream in(dhtFile.c_str());
+	in.exceptions(std::ios::failbit);
 	deserializer.deserialize(in);
 	localNode = deserializer.getLocalNode();
       } catch(RecoverableException* e) {
@@ -108,23 +113,23 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
     _logger->debug("Initialized local node ID=%s",
 		   Util::toHex(localNode->getID(), DHT_ID_LENGTH).c_str());
 
-    DHTRoutingTableHandle routingTable = new DHTRoutingTable(localNode);
+    SharedHandle<DHTRoutingTable> routingTable = new DHTRoutingTable(localNode);
 
     SharedHandle<DHTMessageFactoryImpl> factory = new DHTMessageFactoryImpl();
 
-    DHTMessageTrackerHandle tracker = new DHTMessageTracker();
+    SharedHandle<DHTMessageTracker> tracker = new DHTMessageTracker();
 
-    DHTMessageDispatcherHandle dispatcher = new DHTMessageDispatcher(tracker);
+    SharedHandle<DHTMessageDispatcher> dispatcher = new DHTMessageDispatcher(tracker);
 
-    DHTMessageReceiverHandle receiver = new DHTMessageReceiver(tracker);
+    SharedHandle<DHTMessageReceiver> receiver = new DHTMessageReceiver(tracker);
 
-    DHTTaskQueueHandle taskQueue = new DHTTaskQueueImpl();
+    SharedHandle<DHTTaskQueue> taskQueue = new DHTTaskQueueImpl();
 
     SharedHandle<DHTTaskFactoryImpl> taskFactory = new DHTTaskFactoryImpl();
 
-    DHTPeerAnnounceStorageHandle peerAnnounceStorage = new DHTPeerAnnounceStorage();
+    SharedHandle<DHTPeerAnnounceStorage> peerAnnounceStorage = new DHTPeerAnnounceStorage();
 
-    DHTTokenTrackerHandle tokenTracker = new DHTTokenTracker();
+    SharedHandle<DHTTokenTracker> tokenTracker = new DHTTokenTracker();
 
     // wiring up
     tracker->setRoutingTable(routingTable);
@@ -165,8 +170,8 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
     DHTRegistry::_messageFactory = factory;
 
     // add deserialized nodes to routing table
-    const DHTNodes& desnodes = deserializer.getNodes();
-    for(DHTNodes::const_iterator i = desnodes.begin(); i != desnodes.end(); ++i) {
+    const std::deque<SharedHandle<DHTNode> >& desnodes = deserializer.getNodes();
+    for(std::deque<SharedHandle<DHTNode> >::const_iterator i = desnodes.begin(); i != desnodes.end(); ++i) {
       routingTable->addNode(*i);
     }
     if(!desnodes.empty() && deserializer.getSerializedTime().elapsed(DHT_BUCKET_REFRESH_INTERVAL)) {
@@ -231,3 +236,5 @@ bool DHTSetup::initialized()
 {
   return _initialized;
 }
+
+} // namespace aria2

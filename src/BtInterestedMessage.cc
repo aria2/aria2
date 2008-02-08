@@ -36,6 +36,9 @@
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Peer.h"
+
+namespace aria2 {
 
 BtInterestedMessageHandle BtInterestedMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 1) {
@@ -80,6 +83,8 @@ void BtInterestedMessage::onSendComplete() {
   peer->amInterested = true;
 }
 
-string BtInterestedMessage::toString() const {
+std::string BtInterestedMessage::toString() const {
   return "interested";
 }
+
+} // namespace aria2

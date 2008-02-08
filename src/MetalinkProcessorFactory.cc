@@ -40,7 +40,9 @@
 #endif
 #include "MetalinkParserStateMachine.h"
 
-MetalinkProcessorHandle MetalinkProcessorFactory::newInstance()
+namespace aria2 {
+
+SharedHandle<MetalinkProcessor> MetalinkProcessorFactory::newInstance()
 {
 #ifdef HAVE_LIBXML2
   return new XML2SAXMetalinkProcessor();
@@ -50,3 +52,5 @@ MetalinkProcessorHandle MetalinkProcessorFactory::newInstance()
   return 0;
 #endif
 }
+
+} // namespace aria2

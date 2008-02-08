@@ -33,15 +33,39 @@
  */
 /* copyright --> */
 #include "DefaultBtMessageDispatcher.h"
-#include "BtRegistry.h"
 #include "prefs.h"
 #include "BtAbortOutstandingRequestEvent.h"
 #include "BtCancelSendingPieceEvent.h"
 #include "BtChokedEvent.h"
 #include "BtChokingEvent.h"
-#include "BtRegistry.h"
 #include "BtMessageFactory.h"
 #include "message.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtMessage.h"
+#include "BtRegistry.h"
+#include "Peer.h"
+#include "Piece.h"
+#include "LogFactory.h"
+#include "Logger.h"
+
+namespace aria2 {
+
+DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
+  cuid(0),
+  btContext(0),
+  peerStorage(0),
+  pieceStorage(0),
+  peer(0),
+  maxUploadSpeedLimit(0),
+  requestTimeout(0),
+  logger(LogFactory::getInstance()) {}
+
+DefaultBtMessageDispatcher::~DefaultBtMessageDispatcher()
+{
+  logger->debug("DefaultBtMessageDispatcher::deleted");
+}
 
 void DefaultBtMessageDispatcher::addMessageToQueue(const BtMessageHandle& btMessage)
 {
@@ -212,3 +236,61 @@ bool DefaultBtMessageDispatcher::isOutstandingRequest(int32_t index, int32_t blo
   }
   return false;
 }
+
+RequestSlot
+DefaultBtMessageDispatcher::getOutstandingRequest(int32_t index, int32_t begin, int32_t length)
+{
+  for(RequestSlots::iterator itr = requestSlots.begin();
+      itr != requestSlots.end(); itr++) {
+    if(itr->getIndex() == index &&
+       itr->getBegin() == begin &&
+       itr->getLength() == length) {
+      return *itr;
+    }
+  }
+  return RequestSlot::nullSlot;
+}
+
+void DefaultBtMessageDispatcher::removeOutstandingRequest(const RequestSlot& slot)
+{
+  RequestSlots temp;
+  std::remove_copy(requestSlots.begin(), requestSlots.end(), back_inserter(temp), slot);
+  requestSlots = temp;
+}
+
+void DefaultBtMessageDispatcher::addOutstandingRequest(const RequestSlot& requestSlot)
+{
+  if(!isOutstandingRequest(requestSlot.getIndex(), requestSlot.getBlockIndex())) {
+    requestSlots.push_back(requestSlot);
+  }
+}
+
+std::deque<SharedHandle<BtMessage> >&
+DefaultBtMessageDispatcher::getMessageQueue()
+{
+  return messageQueue;
+}
+
+std::deque<RequestSlot>& DefaultBtMessageDispatcher::getRequestSlots()
+{
+  return requestSlots;
+}
+
+void DefaultBtMessageDispatcher::setPeer(const SharedHandle<Peer>& peer)
+{
+  this->peer = peer;
+}
+
+void DefaultBtMessageDispatcher::setBtContext(const BtContextHandle& btContext)
+{
+  this->btContext = btContext;
+  this->pieceStorage = PIECE_STORAGE(btContext);
+  this->peerStorage = PEER_STORAGE(btContext);
+}
+
+void DefaultBtMessageDispatcher::setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory)
+{
+  this->messageFactory = factory;
+}
+
+} // namespace aria2

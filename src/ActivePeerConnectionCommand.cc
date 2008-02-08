@@ -36,6 +36,15 @@
 #include "PeerInitiateConnectionCommand.h"
 #include "CUIDCounter.h"
 #include "message.h"
+#include "DownloadEngine.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtRuntime.h"
+#include "Peer.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
 							 RequestGroup* requestGroup,
@@ -84,3 +93,5 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   logger->info(MSG_CONNECTING_TO_PEER,
 	       cuid, peer->ipaddr.c_str());
 }
+
+} // namespace aria2

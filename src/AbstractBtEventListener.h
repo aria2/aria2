@@ -37,19 +37,23 @@
 
 #include "BtEventListener.h"
 
+namespace aria2 {
+
 class AbstractBtEventListener : public BtEventListener {
 public:
   virtual ~AbstractBtEventListener() {}
 
-  virtual bool canHandle(const BtEventHandle& event) = 0;
+  virtual bool canHandle(const SharedHandle<BtEvent>& event) = 0;
 
-  virtual void handleEventInternal(const BtEventHandle& event) = 0;
+  virtual void handleEventInternal(const SharedHandle<BtEvent>& event) = 0;
 
-  virtual void handleEvent(const BtEventHandle& event) {
+  virtual void handleEvent(const SharedHandle<BtEvent>& event) {
     if(canHandle(event)) {
       handleEventInternal(event);
     }
   }
 };
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_BT_EVENT_LISTENER_H_

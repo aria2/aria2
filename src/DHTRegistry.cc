@@ -43,23 +43,25 @@
 #include "DHTMessageReceiver.h"
 #include "DHTMessageFactory.h"
 
-DHTNodeHandle DHTRegistry::_localNode = 0;
+namespace aria2 {
 
-DHTRoutingTableHandle DHTRegistry::_routingTable = 0;
+SharedHandle<DHTNode> DHTRegistry::_localNode = 0;
 
-DHTTaskQueueHandle DHTRegistry::_taskQueue = 0;
+SharedHandle<DHTRoutingTable> DHTRegistry::_routingTable = 0;
 
-DHTTaskFactoryHandle DHTRegistry::_taskFactory = 0;
+SharedHandle<DHTTaskQueue> DHTRegistry::_taskQueue = 0;
 
-DHTPeerAnnounceStorageHandle DHTRegistry::_peerAnnounceStorage = 0;
+SharedHandle<DHTTaskFactory> DHTRegistry::_taskFactory = 0;
 
-DHTTokenTrackerHandle DHTRegistry::_tokenTracker = 0;
+SharedHandle<DHTPeerAnnounceStorage> DHTRegistry::_peerAnnounceStorage = 0;
 
-DHTMessageDispatcherHandle DHTRegistry::_messageDispatcher = 0;
+SharedHandle<DHTTokenTracker> DHTRegistry::_tokenTracker = 0;
 
-DHTMessageReceiverHandle DHTRegistry::_messageReceiver = 0;
+SharedHandle<DHTMessageDispatcher> DHTRegistry::_messageDispatcher = 0;
 
-DHTMessageFactoryHandle DHTRegistry::_messageFactory = 0;
+SharedHandle<DHTMessageReceiver> DHTRegistry::_messageReceiver = 0;
+
+SharedHandle<DHTMessageFactory> DHTRegistry::_messageFactory = 0;
 
 void DHTRegistry::clear()
 {
@@ -73,3 +75,5 @@ void DHTRegistry::clear()
   _messageReceiver = 0;
   _messageFactory = 0;
 }
+
+} // namespace aria2

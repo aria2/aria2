@@ -26,13 +26,13 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ShaVisitorTest );
 
-string hexHash(unsigned char* md, int len) {
+std::stringhexHash(unsigned char* md, int len) {
   char* temp = new char[len*2+1];
   for(int i = 0; i < len; i++) {
     sprintf(temp+i*2, "%02x", md[i]);
   }
   temp[len*2] = '\0';
-  string h(temp);
+  std::stringh(temp);
   delete [] temp;
   return h;
 }
@@ -44,20 +44,20 @@ void ShaVisitorTest::testVisit() {
   unsigned char md[20];
   int len = 0;
   v.getHash(md, len);
-  string hashHex = hexHash(md, len);
-  CPPUNIT_ASSERT_EQUAL(string("20482dadd856f5ac908848f731d9235d2891c41e"),
+  std::stringhashHex = hexHash(md, len);
+  CPPUNIT_ASSERT_EQUAL(std::string("20482dadd856f5ac908848f731d9235d2891c41e"),
 		       hashHex);
 }
 
 void ShaVisitorTest::testVisitCompound() {
   ShaVisitor v;
-  string data = "d4:name5:aria24:listli123eee";
+  std::string data = "d4:name5:aria24:listli123eee";
   MetaEntry* e = MetaFileUtil::bdecoding(data.c_str(), data.size());
   e->accept(&v);
   unsigned char md[20];
   int len = 0;
   v.getHash(md, len);
-  string hashHex = hexHash(md, len);
-  CPPUNIT_ASSERT_EQUAL(string("75538fbac9a074bb98c6a19b6bca3bc87ef9bf8e"),
+  std::stringhashHex = hexHash(md, len);
+  CPPUNIT_ASSERT_EQUAL(std::string("75538fbac9a074bb98c6a19b6bca3bc87ef9bf8e"),
 		       hashHex);
 }

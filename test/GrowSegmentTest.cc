@@ -2,7 +2,7 @@
 #include "Piece.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class GrowSegmentTest : public CppUnit::TestFixture {
 
@@ -40,3 +40,5 @@ void GrowSegmentTest::testClear()
   segment.clear();
   CPPUNIT_ASSERT_EQUAL((int32_t)0, segment.getWrittenLength());  
 }
+
+} // namespace aria2

@@ -36,30 +36,31 @@
 #define _D_AUTH_CONFIG_FACTORY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include "SingletonHolder.h"
+#include <string>
+
+namespace aria2 {
 
 class Option;
 class Netrc;
-typedef SharedHandle<Netrc> NetrcHandle;
 class AuthConfig;
-typedef SharedHandle<AuthConfig> AuthConfigHandle;
 class Request;
-typedef SharedHandle<Request> RequestHandle;
 class AuthResolver;
-typedef SharedHandle<AuthResolver> AuthResolverHandle;
 
 class AuthConfigFactory {
 private:
   const Option* _option;
 
-  NetrcHandle _netrc;
+  SharedHandle<Netrc> _netrc;
   
-  AuthConfigHandle createAuthConfig(const string& user, const string& password) const;
+  SharedHandle<AuthConfig> createAuthConfig(const std::string& user, const std::string& password) const;
 
-  AuthResolverHandle createHttpAuthResolver() const;
+  SharedHandle<AuthResolver> createHttpAuthResolver() const;
   
-  AuthResolverHandle createHttpProxyAuthResolver() const;
+  SharedHandle<AuthResolver> createHttpProxyAuthResolver() const;
   
-  AuthResolverHandle createFtpAuthResolver() const;
+  SharedHandle<AuthResolver> createFtpAuthResolver() const;
 
 public:
   
@@ -67,14 +68,16 @@ public:
 
   ~AuthConfigFactory();
 
-  AuthConfigHandle createAuthConfig(const RequestHandle& request) const;
+  SharedHandle<AuthConfig> createAuthConfig(const SharedHandle<Request>& request) const;
 
-  AuthConfigHandle createAuthConfigForHttpProxy(const RequestHandle& request) const;
+  SharedHandle<AuthConfig> createAuthConfigForHttpProxy(const SharedHandle<Request>& request) const;
 
-  void setNetrc(const NetrcHandle& netrc);
+  void setNetrc(const SharedHandle<Netrc>& netrc);
 };
 
 typedef SharedHandle<AuthConfigFactory> AuthConfigFactoryHandle;
 typedef SingletonHolder<AuthConfigFactoryHandle> AuthConfigFactorySingleton;
+
+} // namespace aria2
 
 #endif // _D_AUTH_CONFIG_FACTORY_H_

@@ -36,23 +36,24 @@
 #define _D_DEFAULT_BT_ANNOUNCE_H_
 
 #include "BtAnnounce.h"
-#include "BtContext.h"
 #include "TimeA2.h"
 #include "AnnounceList.h"
-#include "Option.h"
-#include "Logger.h"
-#include "BtRuntime.h"
-#include "PieceStorage.h"
-#include "PeerStorage.h"
 
-class Randomizer;
-typedef SharedHandle<Randomizer> RandomizerHandle;
+namespace aria2 {
 
 #define DEFAULT_ANNOUNCE_INTERVAL 1800
 
+class BtContext;
+class Option;
+class Logger;
+class BtRuntime;
+class PieceStorage;
+class PeerStorage;
+class Randomizer;
+
 class DefaultBtAnnounce : public BtAnnounce {
 private:
-  BtContextHandle btContext;
+  SharedHandle<BtContext> btContext;
   int32_t trackers;
   Time prevAnnounceTime;
   int32_t interval;
@@ -60,32 +61,31 @@ private:
   int32_t complete;
   int32_t incomplete;
   AnnounceList announceList;
-  string trackerId;
-  string key;
+  std::string trackerId;
+  std::string key;
   const Option* option;
   Logger* logger;
-  RandomizerHandle _randomizer;
-  BtRuntimeHandle btRuntime;
-  PieceStorageHandle pieceStorage;
-  PeerStorageHandle peerStorage;
+  SharedHandle<Randomizer> _randomizer;
+  SharedHandle<BtRuntime> btRuntime;
+  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<PeerStorage> peerStorage;
 public:
-  DefaultBtAnnounce(BtContextHandle btContext, const Option* option);
+  DefaultBtAnnounce(const SharedHandle<BtContext>& btContext,
+		    const Option* option);
+
   virtual ~DefaultBtAnnounce();
 
-  void setBtRuntime(const BtRuntimeHandle& btRuntime) {
-    this->btRuntime = btRuntime;
-  }
-  BtRuntimeHandle getBtRuntime() const { return btRuntime; }
+  void setBtRuntime(const SharedHandle<BtRuntime>& btRuntime);
 
-  void setPieceStorage(const PieceStorageHandle& pieceStorage) {
-    this->pieceStorage = pieceStorage;
-  }
-  PieceStorageHandle getPieceStorage() const { return pieceStorage; }
+  SharedHandle<BtRuntime> getBtRuntime() const;
 
-  void setPeerStorage(const PeerStorageHandle& peerStorage) {
-    this->peerStorage = peerStorage;
-  }
-  PeerStorageHandle getPeerStorage() const { return peerStorage; }
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
+  SharedHandle<PieceStorage> getPieceStorage() const;
+
+  void setPeerStorage(const SharedHandle<PeerStorage>& peerStorage);
+
+  SharedHandle<PeerStorage> getPeerStorage() const;
 
   bool isDefaultAnnounceReady();
 
@@ -95,7 +95,7 @@ public:
 
   virtual bool isAnnounceReady();
 
-  virtual string getAnnounceUrl();
+  virtual std::string getAnnounceUrl();
 
   virtual void announceStart();
 
@@ -116,7 +116,7 @@ public:
 
   void generateKey();
 
-  void setRandomizer(const RandomizerHandle& randomizer);
+  void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
   int32_t getInterval() const
   {
@@ -138,10 +138,12 @@ public:
     return incomplete;
   }
 
-  const string& getTrackerID() const
+  const std::string& getTrackerID() const
   {
     return trackerId;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_BT_ANNOUNCE_H_

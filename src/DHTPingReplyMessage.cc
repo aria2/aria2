@@ -36,11 +36,14 @@
 #include "DHTNode.h"
 #include "Dictionary.h"
 #include "Data.h"
+#include <cstring>
 
-DHTPingReplyMessage::DHTPingReplyMessage(const DHTNodeHandle& localNode,
-					 const DHTNodeHandle& remoteNode,
+namespace aria2 {
+
+DHTPingReplyMessage::DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
+					 const SharedHandle<DHTNode>& remoteNode,
 					 const unsigned char* id,
-					 const string& transactionID):
+					 const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID)
 {
   memcpy(_id, id, DHT_ID_LENGTH);
@@ -57,9 +60,11 @@ Dictionary* DHTPingReplyMessage::getResponse()
   return r;
 }
 
-string DHTPingReplyMessage::getMessageType() const
+std::string DHTPingReplyMessage::getMessageType() const
 {
   return "ping";
 }
 
 void DHTPingReplyMessage::validate() const {}
+
+} // namespace aria2

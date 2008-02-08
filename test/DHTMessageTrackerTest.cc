@@ -12,6 +12,8 @@
 #include "Data.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTMessageTrackerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTMessageTrackerTest);
@@ -33,13 +35,11 @@ public:
 
     MockDHTMessageCallback2():_countOnRecivedCalled(0) {}
 
-    virtual void onReceived(const DHTMessageHandle& message)
+    virtual void onReceived(const SharedHandle<DHTMessage>& message)
     {
       ++_countOnRecivedCalled;
     }
   };
-
-  typedef SharedHandle<MockDHTMessageCallback2> MockDHTMessageCallback2Handle;
 };
 
 
@@ -47,14 +47,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerTest);
 
 void DHTMessageTrackerTest::testMessageArrived()
 {
-  DHTNodeHandle localNode = new DHTNode();
-  DHTRoutingTableHandle routingTable = new DHTRoutingTable(localNode);
-  MockDHTMessageFactoryHandle factory = new MockDHTMessageFactory();
+  SharedHandle<DHTNode> localNode = new DHTNode();
+  SharedHandle<DHTRoutingTable> routingTable = new DHTRoutingTable(localNode);
+  SharedHandle<MockDHTMessageFactory> factory = new MockDHTMessageFactory();
   factory->setLocalNode(localNode);
 
-  MockDHTMessageHandle m1 = new MockDHTMessage(localNode, new DHTNode());
-  MockDHTMessageHandle m2 = new MockDHTMessage(localNode, new DHTNode());
-  MockDHTMessageHandle m3 = new MockDHTMessage(localNode, new DHTNode());
+  SharedHandle<MockDHTMessage> m1 = new MockDHTMessage(localNode, new DHTNode());
+  SharedHandle<MockDHTMessage> m2 = new MockDHTMessage(localNode, new DHTNode());
+  SharedHandle<MockDHTMessage> m3 = new MockDHTMessage(localNode, new DHTNode());
 
   m1->getRemoteNode()->setIPAddress("192.168.0.1");
   m1->getRemoteNode()->setPort(6881);
@@ -63,7 +63,7 @@ void DHTMessageTrackerTest::testMessageArrived()
   m3->getRemoteNode()->setIPAddress("192.168.0.3");
   m3->getRemoteNode()->setPort(6883);
 
-  MockDHTMessageCallback2Handle c2 = new MockDHTMessageCallback2();
+  SharedHandle<MockDHTMessageCallback2> c2 = new MockDHTMessageCallback2();
   
   DHTMessageTracker tracker;
   tracker.setRoutingTable(routingTable);
@@ -76,9 +76,9 @@ void DHTMessageTrackerTest::testMessageArrived()
     SharedHandle<Dictionary> res = new Dictionary();
     res->put("t", new Data(m2->getTransactionID()));
     
-    std::pair<DHTMessageHandle, DHTMessageCallbackHandle> p =
+    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p =
       tracker.messageArrived(res.get(), m2->getRemoteNode()->getIPAddress(), m2->getRemoteNode()->getPort());
-    DHTMessageHandle reply = p.first;
+    SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(!reply.isNull());
     CPPUNIT_ASSERT_EQUAL((uint32_t)0, c2->_countOnRecivedCalled);
@@ -89,8 +89,8 @@ void DHTMessageTrackerTest::testMessageArrived()
     SharedHandle<Dictionary> res = new Dictionary();
     res->put("t", new Data(m3->getTransactionID()));
 
-    std::pair<DHTMessageHandle, DHTMessageCallbackHandle> p = tracker.messageArrived(res.get(), m3->getRemoteNode()->getIPAddress(), m3->getRemoteNode()->getPort());
-    DHTMessageHandle reply = p.first;
+    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p = tracker.messageArrived(res.get(), m3->getRemoteNode()->getIPAddress(), m3->getRemoteNode()->getPort());
+    SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(!reply.isNull());
     CPPUNIT_ASSERT(tracker.getEntryFor(m3).isNull());
@@ -100,8 +100,8 @@ void DHTMessageTrackerTest::testMessageArrived()
     SharedHandle<Dictionary> res = new Dictionary();
     res->put("t", new Data(m1->getTransactionID()));
 
-    std::pair<DHTMessageHandle, DHTMessageCallbackHandle> p = tracker.messageArrived(res.get(), "192.168.1.100", 6889);
-    DHTMessageHandle reply = p.first;
+    std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p = tracker.messageArrived(res.get(), "192.168.1.100", 6889);
+    SharedHandle<DHTMessage> reply = p.first;
 
     CPPUNIT_ASSERT(reply.isNull());
   }
@@ -110,3 +110,5 @@ void DHTMessageTrackerTest::testMessageArrived()
 void DHTMessageTrackerTest::testHandleTimeout()
 {
 }
+
+} // namespace aria2

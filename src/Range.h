@@ -36,6 +36,10 @@
 #define _D_RANGE_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <stdint.h>
+
+namespace aria2 {
 
 class Range {
 private:
@@ -86,5 +90,7 @@ public:
 };
 
 typedef SharedHandle<Range> RangeHandle;
+
+} // namespace aria2
 
 #endif // _D_RANGE_H_

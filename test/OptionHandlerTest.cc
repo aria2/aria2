@@ -1,7 +1,10 @@
 #include "OptionHandlerImpl.h"
 #include "prefs.h"
 #include "Exception.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class OptionHandlerTest:public CppUnit::TestFixture {
 
@@ -62,14 +65,14 @@ void OptionHandlerTest::testBooleanOptionHandler()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, V_TRUE);
-  CPPUNIT_ASSERT_EQUAL(string(V_TRUE), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string(V_TRUE), option.get("foo"));
   handler.parse(&option, V_FALSE);
-  CPPUNIT_ASSERT_EQUAL(string(V_FALSE), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string(V_FALSE), option.get("foo"));
   try {
     handler.parse(&option, "hello");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -81,7 +84,7 @@ void OptionHandlerTest::testNumberOptionHandler()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "0");
-  CPPUNIT_ASSERT_EQUAL(string("0"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("0"), option.get("foo"));
 }
 
 void OptionHandlerTest::testNumberOptionHandler_min()
@@ -89,12 +92,12 @@ void OptionHandlerTest::testNumberOptionHandler_min()
   NumberOptionHandler handler("foo", 1);
   Option option;
   handler.parse(&option, "1");
-  CPPUNIT_ASSERT_EQUAL(string("1"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("1"), option.get("foo"));
   try {
     handler.parse(&option, "0");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 
@@ -105,12 +108,12 @@ void OptionHandlerTest::testNumberOptionHandler_max()
   NumberOptionHandler handler("foo", -1, 100);
   Option option;
   handler.parse(&option, "100");
-  CPPUNIT_ASSERT_EQUAL(string("100"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("100"), option.get("foo"));
   try {
     handler.parse(&option, "101");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -120,21 +123,21 @@ void OptionHandlerTest::testNumberOptionHandler_min_max()
   NumberOptionHandler handler("foo", 1, 100);
   Option option;
   handler.parse(&option, "1");
-  CPPUNIT_ASSERT_EQUAL(string("1"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("1"), option.get("foo"));
   handler.parse(&option, "100");
-  CPPUNIT_ASSERT_EQUAL(string("100"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("100"), option.get("foo"));
   try {
     handler.parse(&option, "0");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
   try {
     handler.parse(&option, "101");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -146,29 +149,29 @@ void OptionHandlerTest::testUnitNumberOptionHandler()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "4294967296");
-  CPPUNIT_ASSERT_EQUAL(string("4294967296"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("4294967296"), option.get("foo"));
   handler.parse(&option, "4096M");
-  CPPUNIT_ASSERT_EQUAL(string("4294967296"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("4294967296"), option.get("foo"));
   handler.parse(&option, "4096K");
-  CPPUNIT_ASSERT_EQUAL(string("4194304"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("4194304"), option.get("foo"));
   try {
     handler.parse(&option, "K");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     handler.parse(&option, "M");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
   try {
     handler.parse(&option, "");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e;
+    std::cerr << *e;
     delete e;
   }
 }
@@ -180,12 +183,12 @@ void OptionHandlerTest::testParameterOptionHandler_1argInit()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "value1");
-  CPPUNIT_ASSERT_EQUAL(string("value1"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get("foo"));
   try {
     handler.parse(&option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -197,21 +200,21 @@ void OptionHandlerTest::testParameterOptionHandler_2argsInit()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "value1");
-  CPPUNIT_ASSERT_EQUAL(string("value1"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get("foo"));
   handler.parse(&option, "value2");
-  CPPUNIT_ASSERT_EQUAL(string("value2"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("value2"), option.get("foo"));
   try {
     handler.parse(&option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
 
 void OptionHandlerTest::testParameterOptionHandler_listInit()
 {
-  Strings validValues;
+  std::deque<std::string> validValues;
   validValues.push_back("value1");
   validValues.push_back("value2");
 
@@ -220,14 +223,14 @@ void OptionHandlerTest::testParameterOptionHandler_listInit()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "value1");
-  CPPUNIT_ASSERT_EQUAL(string("value1"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("value1"), option.get("foo"));
   handler.parse(&option, "value2");
-  CPPUNIT_ASSERT_EQUAL(string("value2"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("value2"), option.get("foo"));
   try {
     handler.parse(&option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -239,9 +242,9 @@ void OptionHandlerTest::testDefaultOptionHandler()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "bar");
-  CPPUNIT_ASSERT_EQUAL(string("bar"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("bar"), option.get("foo"));
   handler.parse(&option, "");
-  CPPUNIT_ASSERT_EQUAL(string(""), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), option.get("foo"));
 }
 
 void OptionHandlerTest::testFloatNumberOptionHandler()
@@ -251,7 +254,7 @@ void OptionHandlerTest::testFloatNumberOptionHandler()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "1.0");
-  CPPUNIT_ASSERT_EQUAL(string("1.0"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("1.0"), option.get("foo"));
 }
 
 void OptionHandlerTest::testFloatNumberOptionHandler_min()
@@ -259,12 +262,12 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min()
   FloatNumberOptionHandler handler("foo", 0.0);
   Option option;
   handler.parse(&option, "0.0");
-  CPPUNIT_ASSERT_EQUAL(string("0.0"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("0.0"), option.get("foo"));
   try {
     handler.parse(&option, "-0.1");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -274,12 +277,12 @@ void OptionHandlerTest::testFloatNumberOptionHandler_max()
   FloatNumberOptionHandler handler("foo", -1, 10.0);
   Option option;
   handler.parse(&option, "10.0");
-  CPPUNIT_ASSERT_EQUAL(string("10.0"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("10.0"), option.get("foo"));
   try {
     handler.parse(&option, "10.1");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -289,21 +292,21 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
   FloatNumberOptionHandler handler("foo", 0.0, 10.0);
   Option option;
   handler.parse(&option, "0.0");
-  CPPUNIT_ASSERT_EQUAL(string("0.0"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("0.0"), option.get("foo"));
   handler.parse(&option, "10.0");
-  CPPUNIT_ASSERT_EQUAL(string("10.0"), option.get("foo"));
+  CPPUNIT_ASSERT_EQUAL(std::string("10.0"), option.get("foo"));
   try {
     handler.parse(&option, "-0.1");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
   try {
     handler.parse(&option, "10.1");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -315,13 +318,13 @@ void OptionHandlerTest::testLogOptionHandler()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "/tmp/log.txt");
-  CPPUNIT_ASSERT_EQUAL(string("/tmp/log.txt"), option.get(PREF_LOG));
-  CPPUNIT_ASSERT_EQUAL(string(""), option.get(PREF_STDOUT_LOG));
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/log.txt"), option.get(PREF_LOG));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), option.get(PREF_STDOUT_LOG));
 
   option.clear();
   handler.parse(&option, "-");
-  CPPUNIT_ASSERT_EQUAL(string(""), option.get(PREF_LOG));
-  CPPUNIT_ASSERT_EQUAL(string(V_TRUE), option.get(PREF_STDOUT_LOG));
+  CPPUNIT_ASSERT_EQUAL(std::string(""), option.get(PREF_LOG));
+  CPPUNIT_ASSERT_EQUAL(std::string(V_TRUE), option.get(PREF_STDOUT_LOG));
 }
 
 void OptionHandlerTest::testHttpProxyOptionHandler()
@@ -333,44 +336,46 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
   CPPUNIT_ASSERT(!handler.canHandle("foobar"));
   Option option;
   handler.parse(&option, "bar:80");
-  CPPUNIT_ASSERT_EQUAL(string("bar:80"), option.get(PREF_HTTP_PROXY));
-  CPPUNIT_ASSERT_EQUAL(string("bar"), option.get(PREF_HTTP_PROXY_HOST));
-  CPPUNIT_ASSERT_EQUAL(string("80"), option.get(PREF_HTTP_PROXY_PORT));
-  CPPUNIT_ASSERT_EQUAL(string(V_TRUE), option.get(PREF_HTTP_PROXY_ENABLED));
+  CPPUNIT_ASSERT_EQUAL(std::string("bar:80"), option.get(PREF_HTTP_PROXY));
+  CPPUNIT_ASSERT_EQUAL(std::string("bar"), option.get(PREF_HTTP_PROXY_HOST));
+  CPPUNIT_ASSERT_EQUAL(std::string("80"), option.get(PREF_HTTP_PROXY_PORT));
+  CPPUNIT_ASSERT_EQUAL(std::string(V_TRUE), option.get(PREF_HTTP_PROXY_ENABLED));
 
   try {
     handler.parse(&option, "bar");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
   try {
     handler.parse(&option, "bar:");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
   try {
     handler.parse(&option, ":");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
   try {
     handler.parse(&option, ":80");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
   try {
     handler.parse(&option, "foo:bar");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
+
+} // namespace aria2

@@ -38,6 +38,8 @@
 #include "Command.h"
 #include "DownloadEngine.h"
 
+namespace aria2 {
+
 BtFileAllocationEntry::BtFileAllocationEntry(RequestGroup* requestGroup):
   FileAllocationEntry(requestGroup, 0) {}
 
@@ -52,3 +54,5 @@ Commands BtFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
   }
   return commands;
 }
+
+} // namespace aria2

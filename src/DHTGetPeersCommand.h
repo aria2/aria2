@@ -38,14 +38,15 @@
 #include "Command.h"
 #include "BtContextAwareCommand.h"
 #include "RequestGroupAware.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskFactoryDecl.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
+class DHTTaskQueue;
+class DHTTaskFactory;
 class DHTPeerLookupTask;
 class DownloadEngine;
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
 
 class DHTGetPeersCommand:public Command,
 			 public BtContextAwareCommand,
@@ -60,9 +61,9 @@ private:
 
   DownloadEngine* _e;
 
-  DHTTaskQueueHandle _taskQueue;
+  SharedHandle<DHTTaskQueue> _taskQueue;
 
-  DHTTaskFactoryHandle _taskFactory;
+  SharedHandle<DHTTaskFactory> _taskFactory;
 
   SharedHandle<DHTPeerLookupTask> _task;
 
@@ -71,15 +72,18 @@ private:
   Time _lastGetPeerTime;
 public:
   DHTGetPeersCommand(int32_t cuid, RequestGroup* requestGroup,
-		     DownloadEngine* e, const BtContextHandle& ctx);
+		     DownloadEngine* e,
+		     const SharedHandle<BtContext>& ctx);
 
   virtual ~DHTGetPeersCommand();
 
   virtual bool execute();
 
-  void setTaskQueue(const DHTTaskQueueHandle& taskQueue);
+  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 
-  void setTaskFactory(const DHTTaskFactoryHandle& taskFactory);
+  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_GET_PEERS_COMMAND_H_

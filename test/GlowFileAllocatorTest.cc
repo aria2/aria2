@@ -25,7 +25,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( GlowFileAllocatorTest );
 
 void GlowFileAllocatorTest::testAllocate()
 {
-  string fn = "/tmp/aria2_GlowFileAllocatorTest_testAllocate";
+  std::stringfn = "/tmp/aria2_GlowFileAllocatorTest_testAllocate";
   ofstream of(fn.c_str());
 
   of << "0123456789";

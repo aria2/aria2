@@ -1,7 +1,8 @@
 #include "MetalinkEntry.h"
+#include "MetalinkResource.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class MetalinkEntryTest:public CppUnit::TestFixture {
 
@@ -28,8 +29,8 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkEntryTest );
 
-MetalinkEntryHandle createTestEntry() {
-  MetalinkEntryHandle entry = new MetalinkEntry();
+MetalinkEntry* createTestEntry() {
+  MetalinkEntry* entry = new MetalinkEntry();
   MetalinkResource* res1 = new MetalinkResource();
   res1->url = "ftp://myhost/aria2.tar.bz2";
   res1->type = MetalinkResource::TYPE_FTP;
@@ -65,7 +66,7 @@ MetalinkEntryHandle createTestEntry() {
 }
 
 void MetalinkEntryTest::testDropUnsupportedResource() {
-  MetalinkEntryHandle entry = createTestEntry();
+  MetalinkEntry* entry = createTestEntry();
 
   entry->dropUnsupportedResource();
 #if defined ENABLE_SSL && ENABLE_BITTORRENT
@@ -76,7 +77,8 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   CPPUNIT_ASSERT_EQUAL(2, (int)entry->resources.size());
 #endif // ENABLE_MESSAGE_DIGEST
   
-  MetalinkResources::const_iterator itr = entry->resources.begin();
+  std::deque<SharedHandle<MetalinkResource> >::const_iterator itr =
+    entry->resources.begin();
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP,
 		       (*itr++)->type);
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP,
@@ -89,10 +91,11 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
   CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTPS,
 		       (*itr++)->type);
 #endif // ENABLE_SSL
+  delete entry;
 }
 
 void MetalinkEntryTest::testReorderResourcesByPreference() {
-  MetalinkEntryHandle entry = createTestEntry();
+  MetalinkEntry* entry = createTestEntry();
   
   entry->reorderResourcesByPreference();
 
@@ -101,37 +104,45 @@ void MetalinkEntryTest::testReorderResourcesByPreference() {
   CPPUNIT_ASSERT_EQUAL((int32_t)60, entry->resources.at(2)->preference);
   CPPUNIT_ASSERT_EQUAL((int32_t)50, entry->resources.at(3)->preference);
   CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources.at(4)->preference);
+
+  delete entry;
 }
 
 void MetalinkEntryTest::testSetLocationPreference()
 {
-  MetalinkEntryHandle entry = createTestEntry();
+  MetalinkEntry* entry = createTestEntry();
 
   const char* locationsSrc[] = { "jp", "al", "RO" };
 
-  Strings locations(&locationsSrc[0], &locationsSrc[3]);
+  std::deque<std::string> locations(&locationsSrc[0], &locationsSrc[3]);
 
   entry->setLocationPreference(locations, 100);
 
-  CPPUNIT_ASSERT_EQUAL(string("RO"), entry->resources[0]->location);
+  CPPUNIT_ASSERT_EQUAL(std::string("RO"), entry->resources[0]->location);
   CPPUNIT_ASSERT_EQUAL((int32_t)150, entry->resources[0]->preference);
-  CPPUNIT_ASSERT_EQUAL(string("AT"), entry->resources[1]->location);
+  CPPUNIT_ASSERT_EQUAL(std::string("AT"), entry->resources[1]->location);
   CPPUNIT_ASSERT_EQUAL((int32_t)100, entry->resources[1]->preference);
-  CPPUNIT_ASSERT_EQUAL(string("AL"), entry->resources[2]->location);
+  CPPUNIT_ASSERT_EQUAL(std::string("AL"), entry->resources[2]->location);
   CPPUNIT_ASSERT_EQUAL((int32_t)160, entry->resources[2]->preference);
-  CPPUNIT_ASSERT_EQUAL(string("AD"), entry->resources[3]->location);
+  CPPUNIT_ASSERT_EQUAL(std::string("AD"), entry->resources[3]->location);
   CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources[3]->preference);
-  CPPUNIT_ASSERT_EQUAL(string("JP"), entry->resources[4]->location);
+  CPPUNIT_ASSERT_EQUAL(std::string("JP"), entry->resources[4]->location);
   CPPUNIT_ASSERT_EQUAL((int32_t)190, entry->resources[4]->preference);
+
+  delete entry;
 }
 
 void MetalinkEntryTest::testSetProtocolPreference()
 {
-  MetalinkEntryHandle entry = createTestEntry();
+  MetalinkEntry* entry = createTestEntry();
   entry->setProtocolPreference("http", 1);
   CPPUNIT_ASSERT_EQUAL(50, entry->resources[0]->preference); // ftp
   CPPUNIT_ASSERT_EQUAL(101, entry->resources[1]->preference); // http, +1
   CPPUNIT_ASSERT_EQUAL(60, entry->resources[2]->preference); // bittorrent
   CPPUNIT_ASSERT_EQUAL(10, entry->resources[3]->preference); // not supported
   CPPUNIT_ASSERT_EQUAL(90, entry->resources[4]->preference); // https
+
+  delete entry;
 }
+
+} // namespace aria2

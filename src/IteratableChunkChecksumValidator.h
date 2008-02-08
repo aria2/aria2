@@ -37,33 +37,32 @@
 
 #include "IteratableValidator.h"
 
+namespace aria2 {
+
 class DownloadContext;
-typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class PieceStorage;
-typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class BitfieldMan;
 class Logger;
 class MessageDigestContext;
-typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
 
 class IteratableChunkChecksumValidator:public IteratableValidator
 {
 private:
-  DownloadContextHandle _dctx;
-  PieceStorageHandle _pieceStorage;
+  SharedHandle<DownloadContext> _dctx;
+  SharedHandle<PieceStorage> _pieceStorage;
   BitfieldMan* _bitfield;
   uint32_t _currentIndex;
   const Logger* _logger;
-  MessageDigestContextHandle _ctx;
+  SharedHandle<MessageDigestContext> _ctx;
   unsigned char* _buffer;
 
-  string calculateActualChecksum();
+  std::string calculateActualChecksum();
 
-  string digest(int64_t offset, int32_t length);
+  std::string digest(int64_t offset, int32_t length);
 
 public:
-  IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
-				   const PieceStorageHandle& pieceStorage);
+  IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
+				   const SharedHandle<PieceStorage>& pieceStorage);
 
   virtual ~IteratableChunkChecksumValidator();
 
@@ -79,5 +78,7 @@ public:
 };
 
 typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;
+
+} // namespace aria2
 
 #endif // _D_ITERATABLE_CHUNK_CHECKSUM_VALIDATOR_H_

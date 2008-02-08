@@ -36,6 +36,11 @@
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Peer.h"
+#include "BtMessageDispatcher.h"
+#include "BtRequestFactory.h"
+
+namespace aria2 {
 
 BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 1) {
@@ -83,6 +88,8 @@ void BtChokeMessage::onSendComplete() {
   dispatcher->doChokingAction();
 }
 
-string BtChokeMessage::toString() const {
+std::string BtChokeMessage::toString() const {
   return "choke";
 }
+
+} // namespace aria2

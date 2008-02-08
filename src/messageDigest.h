@@ -36,6 +36,7 @@
 #define _D_MESSAGE_DIGEST_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "DlAbortEx.h"
 #include <map>
 
@@ -47,6 +48,8 @@
 #include <gcrypt.h>
 #endif // HAVE_LIBGCRYPT
 
+namespace aria2 {
+
 class MessageDigestContext {
 public:
 #ifdef HAVE_LIBSSL
@@ -55,7 +58,7 @@ public:
 #ifdef HAVE_LIBGCRYPT
   typedef int32_t DigestAlgo;
 #endif // HAVE_LIBGCRYPT
-  typedef map<string, MessageDigestContext::DigestAlgo> DigestAlgoMap;
+  typedef std::map<std::string, MessageDigestContext::DigestAlgo> DigestAlgoMap;
 private:
 #ifdef HAVE_LIBSSL
   EVP_MD_CTX ctx;
@@ -75,12 +78,12 @@ public:
     digestFree();
   }
 
-  void trySetAlgo(const string& algostring)
+  void trySetAlgo(const std::string& algostring)
   {
     algo = getDigestAlgo(algostring);
   }
 
-  static bool supports(const string& algostring)
+  static bool supports(const std::string& algostring)
   {
     DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
     if(itr == digestAlgos.end()) {
@@ -90,7 +93,7 @@ public:
     }
   }
 
-  static DigestAlgo getDigestAlgo(const string& algostring)
+  static DigestAlgo getDigestAlgo(const std::string& algostring)
   {
     DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
     if(itr == digestAlgos.end()) {
@@ -99,9 +102,9 @@ public:
     return (*itr).second;
   }
 
-  static string getSupportedAlgoString()
+  static std::string getSupportedAlgoString()
   {
-    string algos;
+    std::string algos;
     for(DigestAlgoMap::const_iterator itr = digestAlgos.begin();
 	itr != digestAlgos.end(); ++itr) {
       algos += (*itr).first+" ";
@@ -109,12 +112,12 @@ public:
     return algos;
   }
 
-  static int digestLength(const string& algostring)
+  static int digestLength(const std::string& algostring)
   {
     return digestLength(getDigestAlgo(algostring));
   }
 
-  string digestFinal();
+  std::string digestFinal();
 
 #if defined(HAVE_OLD_LIBSSL)
   void digestInit() {EVP_DigestInit(&ctx, algo);}
@@ -183,4 +186,7 @@ public:
 #endif // HAVE_LIBGCRYPT
 };
 typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
+
+} // namespace aria2
+
 #endif // _D_MESSAGE_DIGEST_H_

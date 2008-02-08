@@ -51,6 +51,9 @@
 #include "FinMetalinkParserState.h"
 #include "SkipTagMetalinkParserState.h"
 #include "Metalinker.h"
+#include "MetalinkEntry.h"
+
+namespace aria2 {
 
 MetalinkParserState* MetalinkParserStateMachine::_initialState = new InitialMetalinkParserState();
 MetalinkParserState* MetalinkParserStateMachine::_metalinkState = new MetalinkMetalinkParserState();
@@ -170,7 +173,7 @@ void MetalinkParserStateMachine::newEntryTransaction()
   _ctrl->newEntryTransaction();
 }
 
-void MetalinkParserStateMachine::setFileNameOfEntry(const string& filename)
+void MetalinkParserStateMachine::setFileNameOfEntry(const std::string& filename)
 {
   _ctrl->setFileNameOfEntry(filename);
 }
@@ -180,17 +183,17 @@ void MetalinkParserStateMachine::setFileLengthOfEntry(int64_t length)
   _ctrl->setFileLengthOfEntry(length);
 }
 
-void MetalinkParserStateMachine::setVersionOfEntry(const string& version)
+void MetalinkParserStateMachine::setVersionOfEntry(const std::string& version)
 {
   _ctrl->setVersionOfEntry(version);
 }
 
-void MetalinkParserStateMachine::setLanguageOfEntry(const string& language)
+void MetalinkParserStateMachine::setLanguageOfEntry(const std::string& language)
 {
   _ctrl->setLanguageOfEntry(language);
 }
 
-void MetalinkParserStateMachine::setOSOfEntry(const string& os)
+void MetalinkParserStateMachine::setOSOfEntry(const std::string& os)
 {
   _ctrl->setOSOfEntry(os);
 }
@@ -210,17 +213,17 @@ void MetalinkParserStateMachine::newResourceTransaction()
   _ctrl->newResourceTransaction();
 }
 
-void MetalinkParserStateMachine::setURLOfResource(const string& url)
+void MetalinkParserStateMachine::setURLOfResource(const std::string& url)
 {
   _ctrl->setURLOfResource(url);
 }
 
-void MetalinkParserStateMachine::setTypeOfResource(const string& type)
+void MetalinkParserStateMachine::setTypeOfResource(const std::string& type)
 {
   _ctrl->setTypeOfResource(type);
 }
 
-void MetalinkParserStateMachine::setLocationOfResource(const string& location)
+void MetalinkParserStateMachine::setLocationOfResource(const std::string& location)
 {
   _ctrl->setLocationOfResource(location);
 }
@@ -250,12 +253,12 @@ void MetalinkParserStateMachine::newChecksumTransaction()
   _ctrl->newChecksumTransaction();
 }
 
-void MetalinkParserStateMachine::setTypeOfChecksum(const string& type)
+void MetalinkParserStateMachine::setTypeOfChecksum(const std::string& type)
 {
   _ctrl->setTypeOfChecksum(type);
 }
 
-void MetalinkParserStateMachine::setHashOfChecksum(const string& md)
+void MetalinkParserStateMachine::setHashOfChecksum(const std::string& md)
 {
   _ctrl->setHashOfChecksum(md);
 }
@@ -280,7 +283,7 @@ void MetalinkParserStateMachine::setLengthOfChunkChecksum(int32_t length)
   _ctrl->setLengthOfChunkChecksum(length);
 }
 
-void MetalinkParserStateMachine::setTypeOfChunkChecksum(const string& type)
+void MetalinkParserStateMachine::setTypeOfChunkChecksum(const std::string& type)
 {
   _ctrl->setTypeOfChunkChecksum(type);
 }
@@ -290,7 +293,7 @@ void MetalinkParserStateMachine::createNewHashOfChunkChecksum(int32_t order)
   _ctrl->createNewHashOfChunkChecksum(order);
 }
 
-void MetalinkParserStateMachine::setMessageDigestOfChunkChecksum(const string& md)
+void MetalinkParserStateMachine::setMessageDigestOfChunkChecksum(const std::string& md)
 {
   _ctrl->setMessageDigestOfChunkChecksum(md);
 }
@@ -310,18 +313,20 @@ void MetalinkParserStateMachine::cancelChunkChecksumTransaction()
   _ctrl->cancelChunkChecksumTransaction();
 }
 
-void MetalinkParserStateMachine::beginElement(const string& name,
-					      const map<string, string>& attrs)
+void MetalinkParserStateMachine::beginElement(const std::string& name,
+					      const std::map<std::string, std::string>& attrs)
 {
   _state->beginElement(this, name, attrs);
 }
   
-void MetalinkParserStateMachine::endElement(const string& name, const string& characters)
+void MetalinkParserStateMachine::endElement(const std::string& name, const std::string& characters)
 {
   _state->endElement(this, name, characters);
 }
 
-MetalinkerHandle MetalinkParserStateMachine::getResult() const
+SharedHandle<Metalinker> MetalinkParserStateMachine::getResult() const
 {
   return _ctrl->getResult();
 }
+
+} // namespace aria2

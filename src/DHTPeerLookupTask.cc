@@ -48,23 +48,25 @@
 #include "Util.h"
 #include "DHTBucket.h"
 
-DHTPeerLookupTask::DHTPeerLookupTask(const BtContextHandle& btContext):
+namespace aria2 {
+
+DHTPeerLookupTask::DHTPeerLookupTask(const SharedHandle<BtContext>& btContext):
   DHTAbstractNodeLookupTask(btContext->getInfoHash()),
   _ctx(btContext),
   _peerStorage(PEER_STORAGE(btContext)),
   _btRuntime(BT_RUNTIME(btContext)) {}
 
-DHTNodes DHTPeerLookupTask::getNodesFromMessage(const DHTMessageHandle& message)
+std::deque<SharedHandle<DHTNode> > DHTPeerLookupTask::getNodesFromMessage(const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTGetPeersReplyMessage> m = message;
   return m->getClosestKNodes();
 }
   
-void DHTPeerLookupTask::onReceivedInternal(const DHTMessageHandle& message)
+void DHTPeerLookupTask::onReceivedInternal(const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTGetPeersReplyMessage> m = message;
 
-  DHTNodeHandle remoteNode = m->getRemoteNode();
+  SharedHandle<DHTNode> remoteNode = m->getRemoteNode();
   _tokenStorage[Util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] = m->getToken();
 
   _peerStorage->addPeer(m->getValues());
@@ -72,7 +74,7 @@ void DHTPeerLookupTask::onReceivedInternal(const DHTMessageHandle& message)
   _logger->info("Received %u peers.", m->getValues().size());
 }
   
-DHTMessageHandle DHTPeerLookupTask::createMessage(const DHTNodeHandle& remoteNode)
+SharedHandle<DHTMessage> DHTPeerLookupTask::createMessage(const SharedHandle<DHTNode>& remoteNode)
 {
   return _factory->createGetPeersMessage(remoteNode, _targetID);
 }
@@ -81,11 +83,11 @@ void DHTPeerLookupTask::onFinish()
 {
   // send announce_peer message to K closest nodes
   size_t num = DHTBucket::K;
-  for(DHTNodeLookupEntries::const_iterator i = _entries.begin();
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i = _entries.begin();
       i != _entries.end() && num > 0; ++i, --num) {
     if((*i)->_used) {
-      const DHTNodeHandle& node = (*i)->_node;
-      DHTMessageHandle m = 
+      const SharedHandle<DHTNode>& node = (*i)->_node;
+      SharedHandle<DHTMessage> m = 
 	_factory->createAnnouncePeerMessage(node,
 					    _ctx->getInfoHash(),
 					    _btRuntime->getListenPort(),
@@ -96,7 +98,9 @@ void DHTPeerLookupTask::onFinish()
   }
 }
 
-const Peers& DHTPeerLookupTask::getPeers() const
+const std::deque<SharedHandle<Peer> >& DHTPeerLookupTask::getPeers() const
 {
   return _peers;
 }
+
+} // namespace aria2

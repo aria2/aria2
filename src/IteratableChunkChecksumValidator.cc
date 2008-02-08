@@ -37,6 +37,7 @@
 #include "message.h"
 #include "MessageDigestHelper.h"
 #include "DiskAdaptor.h"
+#include "FileEntry.h"
 #include "RecoverableException.h"
 #include "DownloadContext.h"
 #include "PieceStorage.h"
@@ -45,6 +46,8 @@
 #include "Logger.h"
 #include "messageDigest.h"
 #include <cerrno>
+
+namespace aria2 {
 
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
@@ -69,7 +72,7 @@ IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
 void IteratableChunkChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    string actualChecksum;
+    std::string actualChecksum;
     try {
       actualChecksum = calculateActualChecksum();
     } catch(RecoverableException* ex) {
@@ -96,7 +99,7 @@ void IteratableChunkChecksumValidator::validateChunk()
   }
 }
 
-string IteratableChunkChecksumValidator::calculateActualChecksum()
+std::string IteratableChunkChecksumValidator::calculateActualChecksum()
 {
   int64_t offset = getCurrentOffset();
   int32_t length;
@@ -126,7 +129,7 @@ void IteratableChunkChecksumValidator::init()
   _currentIndex = 0;
 }
 
-string IteratableChunkChecksumValidator::digest(int64_t offset, int32_t length)
+std::string IteratableChunkChecksumValidator::digest(int64_t offset, int32_t length)
 {
   _ctx->digestReset();
   int64_t curoffset = offset/ALIGNMENT*ALIGNMENT;
@@ -177,3 +180,5 @@ int64_t IteratableChunkChecksumValidator::getTotalLength() const
 {
   return _dctx->getTotalLength();
 }
+
+} // namespace aria2

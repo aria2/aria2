@@ -34,6 +34,21 @@
 /* copyright --> */
 #include "BtRegistry.h"
 #include "DlAbortEx.h"
+#include "BtContext.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtAnnounce.h"
+#include "BtRuntime.h"
+#include "BtProgressInfoFile.h"
+#include "PeerObject.h"
+#include "BtMessageFactory.h"
+#include "BtRequestFactory.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageReceiver.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
+
+namespace aria2 {
 
 BtContextMap BtRegistry::btContextMap;
 PeerStorageMap BtRegistry::peerStorageMap;
@@ -43,94 +58,94 @@ BtRuntimeMap BtRegistry::btRuntimeMap;
 BtProgressInfoFileMap BtRegistry::btProgressInfoFileMap;
 PeerObjectClusterRegistry BtRegistry::peerObjectClusterRegistry;
 
-PeerStorageHandle BtRegistry::getPeerStorage(const string& key)
+PeerStorageHandle BtRegistry::getPeerStorage(const std::string& key)
 {
   return peerStorageMap.getHandle(key);
 }
 
-void BtRegistry::registerPeerStorage(const string& key,
+void BtRegistry::registerPeerStorage(const std::string& key,
 				     const PeerStorageHandle& peerStorage)
 {
   peerStorageMap.registerHandle(key, peerStorage);
 }
 				  
 PieceStorageHandle
-BtRegistry::getPieceStorage(const string& key)
+BtRegistry::getPieceStorage(const std::string& key)
 {
   return pieceStorageMap.getHandle(key);
 }
 
 void
-BtRegistry::registerPieceStorage(const string& key,
+BtRegistry::registerPieceStorage(const std::string& key,
 				 const PieceStorageHandle& pieceStorage)
 {
   pieceStorageMap.registerHandle(key, pieceStorage);
 }
 
-BtRuntimeHandle BtRegistry::getBtRuntime(const string& key)
+BtRuntimeHandle BtRegistry::getBtRuntime(const std::string& key)
 {
   return btRuntimeMap.getHandle(key);
 }
 
 void
-BtRegistry::registerBtRuntime(const string& key,
+BtRegistry::registerBtRuntime(const std::string& key,
 			      const BtRuntimeHandle& btRuntime)
 {
   btRuntimeMap.registerHandle(key, btRuntime);
 }
 
-BtAnnounceHandle BtRegistry::getBtAnnounce(const string& key)
+BtAnnounceHandle BtRegistry::getBtAnnounce(const std::string& key)
 {
   return btAnnounceMap.getHandle(key);
 }
 
 void
-BtRegistry::registerBtAnnounce(const string& key,
+BtRegistry::registerBtAnnounce(const std::string& key,
 			       const BtAnnounceHandle& btAnnounce)
 {
   btAnnounceMap.registerHandle(key, btAnnounce);
 }
 
-BtProgressInfoFileHandle BtRegistry::getBtProgressInfoFile(const string& key)
+BtProgressInfoFileHandle BtRegistry::getBtProgressInfoFile(const std::string& key)
 {
   return btProgressInfoFileMap.getHandle(key);
 }
 
 void
-BtRegistry::registerBtProgressInfoFile(const string& key,
+BtRegistry::registerBtProgressInfoFile(const std::string& key,
 				       const BtProgressInfoFileHandle& btProgressInfoFile)
 {
   btProgressInfoFileMap.registerHandle(key, btProgressInfoFile);
 }
 
 BtContextHandle
-BtRegistry::getBtContext(const string& key)
+BtRegistry::getBtContext(const std::string& key)
 {
   return btContextMap.getHandle(key);
 }
 
 void
-BtRegistry::registerBtContext(const string& key,
+BtRegistry::registerBtContext(const std::string& key,
 			      const BtContextHandle& btContext)
 {
   btContextMap.registerHandle(key, btContext);
 }
 
 PeerObjectClusterHandle
-BtRegistry::getPeerObjectCluster(const string& key)
+BtRegistry::getPeerObjectCluster(const std::string& key)
 {
   return peerObjectClusterRegistry.getHandle(key);
 }
 
 void
-BtRegistry::registerPeerObjectCluster(const string& key,
+BtRegistry::registerPeerObjectCluster(const std::string& key,
 				      const PeerObjectClusterHandle& cluster)
 {
   peerObjectClusterRegistry.registerHandle(key, cluster);
 }
 
 void
-BtRegistry::unregisterPeerObjectCluster(const string& key)
+BtRegistry::unregisterPeerObjectCluster(const std::string& key)
 {
   peerObjectClusterRegistry.unregisterHandle(key);
 }
@@ -145,7 +160,7 @@ void BtRegistry::unregisterAll() {
   peerObjectClusterRegistry.clear();
 }
 
-void BtRegistry::unregister(const string& key)
+void BtRegistry::unregister(const std::string& key)
 {
   btContextMap.unregisterHandle(key);
   peerStorageMap.unregisterHandle(key);
@@ -155,3 +170,5 @@ void BtRegistry::unregister(const string& key)
   btProgressInfoFileMap.unregisterHandle(key);
   peerObjectClusterRegistry.unregisterHandle(key);
 }
+
+} // namespace aria2

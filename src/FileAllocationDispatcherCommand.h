@@ -37,6 +37,8 @@
 
 #include "Command.h"
 
+namespace aria2 {
+
 class DownloadEngine;
 
 class FileAllocationDispatcherCommand : public Command {
@@ -49,5 +51,7 @@ public:
 
   virtual bool execute();
 };
+
+} // namespace aria2
 
 #endif // _D_FILE_ALLOCATION_DISPATCHER_COMMAND_H_

@@ -33,8 +33,17 @@
  */
 /* copyright --> */
 #include "MetalinkEntry.h"
+#include "MetalinkResource.h"
+#include "FileEntry.h"
 #include "Util.h"
+#include "a2functional.h"
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "Checksum.h"
+# include "ChunkChecksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <algorithm>
+
+namespace aria2 {
 
 MetalinkEntry::MetalinkEntry():
   file(0),
@@ -50,39 +59,65 @@ MetalinkEntry::~MetalinkEntry() {}
 
 class AddLocationPreference {
 private:
-  Strings _locations;
+  std::deque<std::string> _locations;
   int32_t _preferenceToAdd;
 public:
-  AddLocationPreference(const Strings& locations, int32_t preferenceToAdd):
+  AddLocationPreference(const std::deque<std::string>& locations, int32_t preferenceToAdd):
     _locations(locations), _preferenceToAdd(preferenceToAdd)
   {
-    transform(_locations.begin(), _locations.end(), _locations.begin(), Util::toUpper);
-    sort(_locations.begin(), _locations.end());
+    std::transform(_locations.begin(), _locations.end(), _locations.begin(), Util::toUpper);
+    std::sort(_locations.begin(), _locations.end());
   }
 
-  void operator()(MetalinkResourceHandle& res) {
-    if(binary_search(_locations.begin(), _locations.end(), res->location)) {
+  void operator()(SharedHandle<MetalinkResource>& res) {
+    if(std::binary_search(_locations.begin(), _locations.end(), res->location)) {
       res->preference += _preferenceToAdd;
     }
   }
 };
 
-void MetalinkEntry::setLocationPreference(const Strings& locations,
+MetalinkEntry& MetalinkEntry::operator=(const MetalinkEntry& metalinkEntry)
+{
+  if(this != &metalinkEntry) {
+    this->file = metalinkEntry.file;
+    this->version = metalinkEntry.version;
+    this->language = metalinkEntry.language;
+    this->os = metalinkEntry.os;
+    this->maxConnections = metalinkEntry.maxConnections;
+#ifdef ENABLE_MESSAGE_DIGEST
+    this->checksum = metalinkEntry.checksum;
+    this->chunkChecksum = metalinkEntry.chunkChecksum;
+#endif // ENABLE_MESSAGE_DIGEST
+  }
+  return *this;
+}
+
+std::string MetalinkEntry::getPath() const
+{
+  return file->getPath();
+}
+
+int64_t MetalinkEntry::getLength() const
+{
+  return file->getLength();
+}
+
+void MetalinkEntry::setLocationPreference(const std::deque<std::string>& locations,
 					  int32_t preferenceToAdd)
 {
-  for_each(resources.begin(), resources.end(),
-	   AddLocationPreference(locations, preferenceToAdd));
+  std::for_each(resources.begin(), resources.end(),
+		AddLocationPreference(locations, preferenceToAdd));
 }
 
 class AddProtocolPreference {
 private:
-  const string& _protocol;
+  const std::string& _protocol;
   int32_t _preferenceToAdd;
 public:
-  AddProtocolPreference(const string& protocol, int32_t prefToAdd):
+  AddProtocolPreference(const std::string& protocol, int32_t prefToAdd):
     _protocol(protocol), _preferenceToAdd(prefToAdd) {}
 
-  void operator()(const MetalinkResourceHandle& res) const
+  void operator()(const SharedHandle<MetalinkResource>& res) const
   {
     if(_protocol == MetalinkResource::getTypeString(res->type)) {
       res->preference += _preferenceToAdd;
@@ -90,29 +125,30 @@ public:
   }
 };
 
-void MetalinkEntry::setProtocolPreference(const string& protocol,
+void MetalinkEntry::setProtocolPreference(const std::string& protocol,
 					  int32_t preferenceToAdd)
 {
-  for_each(resources.begin(), resources.end(),
-	   AddProtocolPreference(protocol, preferenceToAdd));
+  std::for_each(resources.begin(), resources.end(),
+		AddProtocolPreference(protocol, preferenceToAdd));
 }
 
 class PrefOrder {
 public:
-  bool operator()(const MetalinkResourceHandle& res1,
-		  const MetalinkResourceHandle& res2) {
+  bool operator()(const SharedHandle<MetalinkResource>& res1,
+		  const SharedHandle<MetalinkResource>& res2) {
     return res1->preference > res2->preference;
   }
 };
 
 void MetalinkEntry::reorderResourcesByPreference() {
-  random_shuffle(resources.begin(), resources.end());
-  sort(resources.begin(), resources.end(), PrefOrder());
+  std::random_shuffle(resources.begin(), resources.end());
+  std::sort(resources.begin(), resources.end(), PrefOrder());
 }
 
-class Supported {
+class Supported:public std::unary_function<SharedHandle<MetalinkResource>, bool> {
 public:
-  bool operator()(const MetalinkResourceHandle& res) {
+  bool operator()(const SharedHandle<MetalinkResource>& res) const
+  {
     switch(res->type) {
     case MetalinkResource::TYPE_FTP:
     case MetalinkResource::TYPE_HTTP:
@@ -130,18 +166,23 @@ public:
 };
 
 void MetalinkEntry::dropUnsupportedResource() {
-  MetalinkResources::iterator split =
-    partition(resources.begin(), resources.end(), Supported());
-  resources.erase(split, resources.end());
+  resources.erase(std::remove_if(resources.begin(), resources.end(),
+				 std::not1(Supported())),
+		  resources.end());
 }
 
-FileEntries MetalinkEntry::toFileEntry(const MetalinkEntries& metalinkEntries)
+std::deque<SharedHandle<FileEntry> >
+MetalinkEntry::toFileEntry(const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries)
 {
-  FileEntries entries;
-  for(MetalinkEntries::const_iterator itr = metalinkEntries.begin();
-      itr != metalinkEntries.end(); ++itr) {
-    entries.push_back((*itr)->file);
-  }
+  std::deque<SharedHandle<FileEntry> > entries;
+  std::transform(metalinkEntries.begin(), metalinkEntries.end(), back_inserter(entries),
+		 mem_fun_sh(&MetalinkEntry::getFile));
   return entries;
 }
 
+SharedHandle<FileEntry> MetalinkEntry::getFile() const
+{
+  return file;
+}
+
+} // namespace aria2

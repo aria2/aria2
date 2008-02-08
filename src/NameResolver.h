@@ -36,7 +36,9 @@
 #define _D_NAME_RESOLVER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "a2netcompat.h"
+#include <string>
 
 #ifdef ENABLE_ASYNC_DNS
 
@@ -47,6 +49,8 @@ extern "C" {
 #ifdef __cplusplus
 } /* end of extern "C" */
 #endif
+
+namespace aria2 {
 
 #ifdef HAVE_LIBCARES1_5
 void callback(void* arg, int status, int timeouts, struct hostent* host);
@@ -72,7 +76,7 @@ private:
   STATUS status;
   ares_channel channel;
   struct in_addr addr;
-  string error;
+  std::string error;
 public:
   NameResolver():
     status(STATUS_READY)
@@ -84,20 +88,15 @@ public:
     ares_destroy(channel);
   }
 
-  void resolve(const string& name) {
-    status = STATUS_QUERYING;
-    ares_gethostbyname(channel, name.c_str(), AF_INET, callback, this);
-  }
+  void resolve(const std::string& name);
 
-  string getAddrString() const {
-    return inet_ntoa(addr);
-  }
+  std::string getAddrString() const;
 
   const struct in_addr& getAddr() const {
     return addr;
   }
 
-  const string& getError() const {
+  const std::string& getError() const {
     return error;
   }
 
@@ -117,10 +116,7 @@ public:
     return this == &resolver;
   }
 
-  void setAddr(const string& addrString)
-  {
-    inet_aton(addrString.c_str(), &addr);
-  }
+  void setAddr(const std::string& addrString);
 };
 
 #else // ENABLE_ASYNC_DNS
@@ -129,20 +125,17 @@ class NameResolver {
 private:
   struct in_addr _addr;
 public:
-  void resolve(const string& hostname);
+  void resolve(const std::string& hostname);
 
-  string getAddrString() const {
-    return inet_ntoa(_addr);
-  }
+  std::string getAddrString() const;
   
-  void setAddr(const string& addrString)
-  {
-    inet_aton(addrString.c_str(), &_addr);
-  }
+  void setAddr(const std::string& addrString);
 };
 
 #endif // ENABLE_ASYNC_DNS
 
 typedef SharedHandle<NameResolver> NameResolverHandle;
+
+} // namespace aria2
 
 #endif // _D_NAME_RESOLVER_H_

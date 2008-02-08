@@ -35,11 +35,13 @@
 #ifndef _D_REQUEST_GROUP_ENTRY_H_
 #define _D_REQUEST_GROUP_ENTRY_H_
 
-#include "ProgressAwareEntry.h"
+#include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class RequestGroup;
 class Command;
-class DownloadCommand;
 
 class RequestGroupEntry {
 protected:
@@ -70,4 +72,7 @@ public:
 };
 
 typedef SharedHandle<RequestGroupEntry> RequestGroupEntryHandle;
+
+} // namespace aria2
+
 #endif // _D_REQUEST_GROUP_ENTRY_H_

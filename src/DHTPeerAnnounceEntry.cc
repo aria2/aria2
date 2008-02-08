@@ -36,6 +36,11 @@
 #include "BtContext.h"
 #include "Peer.h"
 #include "BtRegistry.h"
+#include "PeerStorage.h"
+#include <cstring>
+#include <algorithm>
+
+namespace aria2 {
 
 DHTPeerAnnounceEntry::DHTPeerAnnounceEntry(const unsigned char* infoHash):
   _btCtx(0)
@@ -47,7 +52,7 @@ DHTPeerAnnounceEntry::~DHTPeerAnnounceEntry() {}
 
 void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
 {
-  PeerAddrEntries::iterator i = find(_peerAddrEntries.begin(), _peerAddrEntries.end(), entry);
+  std::deque<PeerAddrEntry>::iterator i = std::find(_peerAddrEntries.begin(), _peerAddrEntries.end(), entry);
   if(i == _peerAddrEntries.end()) {
     _peerAddrEntries.push_back(entry);
   } else {
@@ -56,7 +61,7 @@ void DHTPeerAnnounceEntry::addPeerAddrEntry(const PeerAddrEntry& entry)
   notifyUpdate();
 }
 
-void DHTPeerAnnounceEntry::setBtContext(const BtContextHandle& btCtx)
+void DHTPeerAnnounceEntry::setBtContext(const SharedHandle<BtContext>& btCtx)
 {
   _btCtx = btCtx;
 }
@@ -66,7 +71,7 @@ size_t DHTPeerAnnounceEntry::countPeerAddrEntry() const
   return _peerAddrEntries.size();
 }
 
-const PeerAddrEntries& DHTPeerAnnounceEntry::getPeerAddrEntries() const
+const std::deque<PeerAddrEntry>& DHTPeerAnnounceEntry::getPeerAddrEntries() const
 {
   return _peerAddrEntries;
 }
@@ -89,8 +94,8 @@ public:
 
 void DHTPeerAnnounceEntry::removeStalePeerAddrEntry(time_t timeout)
 {
-  _peerAddrEntries.erase(remove_if(_peerAddrEntries.begin(), _peerAddrEntries.end(),
-				   FindStaleEntry(timeout)), _peerAddrEntries.end());
+  _peerAddrEntries.erase(std::remove_if(_peerAddrEntries.begin(), _peerAddrEntries.end(),
+					FindStaleEntry(timeout)), _peerAddrEntries.end());
 }
 
 bool DHTPeerAnnounceEntry::empty() const
@@ -100,13 +105,13 @@ bool DHTPeerAnnounceEntry::empty() const
 
 Peers DHTPeerAnnounceEntry::getPeers() const
 {
-  Peers peers;
-  for(PeerAddrEntries::const_iterator i = _peerAddrEntries.begin();
+  std::deque<SharedHandle<Peer> > peers;
+  for(std::deque<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin();
       i != _peerAddrEntries.end(); ++i) {
     peers.push_back(new Peer((*i).getIPAddress(), (*i).getPort()));
   }
   if(!_btCtx.isNull()) {
-    PeerStorageHandle peerStorage = PEER_STORAGE(_btCtx);
+    SharedHandle<PeerStorage> peerStorage = PEER_STORAGE(_btCtx);
     if(!peerStorage.isNull()) {
       const Peers& activePeers = peerStorage->getActivePeers();
       peers.insert(peers.end(), activePeers.begin(), activePeers.end());
@@ -119,3 +124,5 @@ void DHTPeerAnnounceEntry::notifyUpdate()
 {
   _lastUpdated.reset();
 }
+
+} // namespace aria2

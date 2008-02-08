@@ -37,6 +37,8 @@
 
 #include "PreDownloadHandler.h"
 
+namespace aria2 {
+
 class MemoryBufferPreDownloadHandler:public PreDownloadHandler
 {
 public:
@@ -48,4 +50,7 @@ public:
 };
 
 typedef SharedHandle<MemoryBufferPreDownloadHandler> MemoryBufferPreDownloadHandlerHandle;
+
+} // namespace aria2
+
 #endif // _D_MEMORY_BUFFER_PRE_DOWNLOAD_HANDLER_H_

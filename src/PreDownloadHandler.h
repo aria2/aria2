@@ -37,6 +37,8 @@
 
 #include "DownloadHandler.h"
 
+namespace aria2 {
+
 class PreDownloadHandler:public DownloadHandler
 {
 public:
@@ -48,5 +50,8 @@ public:
 };
 
 typedef SharedHandle<PreDownloadHandler> PreDownloadHandlerHandle;
-typedef deque<PreDownloadHandlerHandle> PreDownloadHandlers;
+typedef std::deque<PreDownloadHandlerHandle> PreDownloadHandlers;
+
+} // namespace aria2
+
 #endif // _D_PRE_DOWNLOAD_HANDLER_H_

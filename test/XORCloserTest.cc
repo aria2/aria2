@@ -3,7 +3,11 @@
 #include "Util.h"
 #include "DHTNodeLookupEntry.h"
 #include "DHTNode.h"
+#include <cstring>
+#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class XORCloserTest:public CppUnit::TestFixture {
 
@@ -35,7 +39,7 @@ void XORCloserTest::testOperator()
   keys[4][DHT_ID_LENGTH-1] = 0x01;
   keys[5][0] = 0x00;
 
-  deque<unsigned char*> l(&keys[0], &keys[NUM_KEY]);
+  std::deque<unsigned char*> l(&keys[0], &keys[NUM_KEY]);
 
   std::sort(l.begin(), l.end(), XORCloser(keys[2], DHT_ID_LENGTH));
 
@@ -46,3 +50,5 @@ void XORCloserTest::testOperator()
   CPPUNIT_ASSERT(memcmp(keys[5], l[4], DHT_ID_LENGTH) == 0);
   CPPUNIT_ASSERT(memcmp(keys[4], l[5], DHT_ID_LENGTH) == 0);
 }
+
+} // namespace aria2

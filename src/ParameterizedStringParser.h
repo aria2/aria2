@@ -38,19 +38,23 @@
 #include "common.h"
 #include "PStringDatum.h"
 
+namespace aria2 {
+
 class ParameterizedStringParser {
 private:
-  PStringDatumHandle diggPString(const string& src, int32_t& offset);
+  SharedHandle<PStringDatum> diggPString(const std::string& src, int32_t& offset);
 
-  PStringDatumHandle createSegment(const string& src, int32_t& offset);
+  SharedHandle<PStringDatum> createSegment(const std::string& src, int32_t& offset);
 
-  PStringDatumHandle createLoop(const string& src, int32_t& offset);
+  SharedHandle<PStringDatum> createLoop(const std::string& src, int32_t& offset);
 
-  PStringDatumHandle createSelect(const string& src, int32_t& offset);
+  SharedHandle<PStringDatum> createSelect(const std::string& src, int32_t& offset);
 
 
 public:
-  PStringDatumHandle parse(const string& parameterizedUri);
+  SharedHandle<PStringDatum> parse(const std::string& parameterizedUri);
 };
+
+} // namespace aria2
 
 #endif // _D_PARAMETERIZED_STRING_PARSER_H_

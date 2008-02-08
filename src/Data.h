@@ -38,7 +38,7 @@
 #include "MetaEntry.h"
 #include <string>
 
-using namespace std;
+namespace aria2 {
 
 class Data : public MetaEntry {
 private:
@@ -56,11 +56,11 @@ public:
 
   Data(const unsigned char* data, int32_t len, bool number = false);
 
-  Data(const string& data, bool number = false);
+  Data(const std::string& data, bool number = false);
 
   ~Data();
 
-  string toString() const;
+  std::string toString() const;
   int32_t toInt() const;
   int64_t toLLInt() const;
   
@@ -70,5 +70,7 @@ public:
 
   void accept(MetaEntryVisitor* v) const;
 };
+
+} // namespace aria2
 
 #endif // _D_DATA_H_

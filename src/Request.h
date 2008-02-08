@@ -35,7 +35,9 @@
 #ifndef _D_REQUEST_H_
 #define _D_REQUEST_H_
 #include "common.h"
-#include "CookieBox.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
 
 #define SAFE_CHARS "abcdefghijklmnopqrstuvwxyz"\
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"\
@@ -45,6 +47,10 @@
 "-._~"\
 "%"\
 "#"
+
+namespace aria2 {
+
+class CookieBox;
 
 class Request {
 public:
@@ -56,95 +62,97 @@ public:
     AFTER_COMPLETED
   };
 private:
-  string url;
-  string currentUrl;
+  std::string url;
+  std::string currentUrl;
   /**
    * URL previously requested to the server. This is used as Referer
    */
-  string previousUrl;
+  std::string previousUrl;
   /**
    * URL used as Referer in the initial request
    */
-  string referer;
-  string protocol;
-  string host;
+  std::string referer;
+  std::string protocol;
+  std::string host;
   int32_t port;
-  string dir;
-  string file;
+  std::string dir;
+  std::string file;
   int32_t tryCount;
   TRACKER_EVENT trackerEvent;
   bool keepAlive;
-  string method;
+  std::string method;
 
-  string _username;
+  std::string _username;
 
-  string _password;
+  std::string _password;
 
-  bool parseUrl(const string& url);
+  bool parseUrl(const std::string& url);
 
   bool isHexNumber(const char c) const;
 
-  string urlencode(const string& src) const;
+  std::string urlencode(const std::string& src) const;
 
 public:
-  CookieBoxHandle cookieBox;
+  SharedHandle<CookieBox> cookieBox;
 public:
   Request();
   virtual ~Request();
 
   // Parses URL and sets url, host, port, dir, file fields.
   // Returns true if parsing goes successful, otherwise returns false.
-  bool setUrl(const string& url);
+  bool setUrl(const std::string& url);
   // Parses URL and sets host, port, dir, file fields.
   // url field are not altered by this method.
   // Returns true if parsing goes successful, otherwise returns false.
-  bool redirectUrl(const string& url);
+  bool redirectUrl(const std::string& url);
   bool resetUrl();
   void resetTryCount() { tryCount = 0; }
   void addTryCount() { tryCount++; }
   int32_t getTryCount() const { return tryCount; }
   //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
 
-  string getUrl() const { return url; }
-  string getCurrentUrl() const { return currentUrl; }
-  string getPreviousUrl() const { return previousUrl; }
-  string getReferer() const { return referer; }
-  void setReferer(const string& url) { referer = previousUrl = url; }
-  string getProtocol() const { return protocol; }
-  string getHost() const { return host; }
+  std::string getUrl() const { return url; }
+  std::string getCurrentUrl() const { return currentUrl; }
+  std::string getPreviousUrl() const { return previousUrl; }
+  std::string getReferer() const { return referer; }
+  void setReferer(const std::string& url) { referer = previousUrl = url; }
+  std::string getProtocol() const { return protocol; }
+  std::string getHost() const { return host; }
   int32_t getPort() const { return port; }
-  string getDir() const { return dir; }
-  string getFile() const { return file;}
+  std::string getDir() const { return dir; }
+  std::string getFile() const { return file;}
   bool isKeepAlive() const { return keepAlive; }
   void setKeepAlive(bool keepAlive) { this->keepAlive = keepAlive; }
   void setTrackerEvent(TRACKER_EVENT event) { trackerEvent = event; }
   TRACKER_EVENT getTrackerEvent() const { return trackerEvent; }
 
-  void setMethod(const string& method) {
+  void setMethod(const std::string& method) {
     this->method = method;
   }
 
-  const string& getUsername() const
+  const std::string& getUsername() const
   {
     return _username;
   }
 
-  const string& getPassword() const
+  const std::string& getPassword() const
   {
     return _password;
   }
 
-  const string& getMethod() const {
+  const std::string& getMethod() const {
     return method;
   }
 
-  static const string METHOD_GET;
-  static const string METHOD_HEAD;
+  static const std::string METHOD_GET;
+  static const std::string METHOD_HEAD;
 
 };
 
 typedef SharedHandle<Request> RequestHandle;
-typedef deque<RequestHandle> Requests;
 typedef WeakHandle<Request> RequestWeakHandle;
+typedef std::deque<RequestHandle> Requests;
+
+} // namespace aria2
 
 #endif // _D_REQUEST_H_

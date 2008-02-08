@@ -36,44 +36,46 @@
 #define _D_DOWNLOAD_HANDLER_FACTORY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class MemoryBufferPreDownloadHandler;
-typedef SharedHandle<MemoryBufferPreDownloadHandler> MemoryBufferPreDownloadHandlerHandle;
 #ifdef ENABLE_METALINK
 class MetalinkPostDownloadHandler;
-typedef SharedHandle<MetalinkPostDownloadHandler> MetalinkPostDownloadHandlerHandle;
 #endif // ENABLE_METALINK
 #ifdef ENABLE_BITTORRENT
 class BtPostDownloadHandler;
-typedef SharedHandle<BtPostDownloadHandler> BtPostDownloadHandlerHandle;
 #endif // ENABLE_BITTORRENT
 
 class DownloadHandlerFactory
 {
 private:
 #ifdef ENABLE_METALINK
-  static MemoryBufferPreDownloadHandlerHandle _metalinkPreDownloadHandler;
+  static SharedHandle<MemoryBufferPreDownloadHandler> _metalinkPreDownloadHandler;
 
-  static MetalinkPostDownloadHandlerHandle _metalinkPostDownloadHandler;
+  static SharedHandle<MetalinkPostDownloadHandler> _metalinkPostDownloadHandler;
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-  static MemoryBufferPreDownloadHandlerHandle _btPreDownloadHandler;
+  static SharedHandle<MemoryBufferPreDownloadHandler> _btPreDownloadHandler;
 
-  static BtPostDownloadHandlerHandle _btPostDownloadHandler;
+  static SharedHandle<BtPostDownloadHandler> _btPostDownloadHandler;
 #endif // ENABLE_BITTORRENT
 public:
 #ifdef ENABLE_METALINK
-  static MemoryBufferPreDownloadHandlerHandle getMetalinkPreDownloadHandler();
+  static SharedHandle<MemoryBufferPreDownloadHandler> getMetalinkPreDownloadHandler();
 
-  static MetalinkPostDownloadHandlerHandle getMetalinkPostDownloadHandler();
+  static SharedHandle<MetalinkPostDownloadHandler> getMetalinkPostDownloadHandler();
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
-  static MemoryBufferPreDownloadHandlerHandle getBtPreDownloadHandler();
+  static SharedHandle<MemoryBufferPreDownloadHandler> getBtPreDownloadHandler();
 
-  static BtPostDownloadHandlerHandle getBtPostDownloadHandler();
+  static SharedHandle<BtPostDownloadHandler> getBtPostDownloadHandler();
 #endif // ENABLE_BITTORRENT
 };
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_HANDLER_FACTORY_H_

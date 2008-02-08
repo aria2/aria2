@@ -45,8 +45,16 @@
 #include "AnnounceTier.h"
 #include "SimpleRandomizer.h"
 #include "LogFactory.h"
+#include "Logger.h"
+#include "FileEntry.h"
 #include "message.h"
-#include <libgen.h>
+#include <cassert>
+#include <cstring>
+#include <ostream>
+#include <functional>
+#include <algorithm>
+
+namespace aria2 {
 
 DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-"),
 				     _randomizer(SimpleRandomizer::getInstance()),
@@ -55,8 +63,8 @@ DefaultBtContext::DefaultBtContext():_peerIdPrefix("-aria2-"),
 
 DefaultBtContext::~DefaultBtContext() {}
 
-string DefaultBtContext::generatePeerId() const {
-  string peerId = _peerIdPrefix;
+std::string DefaultBtContext::generatePeerId() const {
+  std::string peerId = _peerIdPrefix;
   peerId += Util::randomAlpha(20-_peerIdPrefix.size(), _randomizer);
   if(peerId.size() > 20) {
     peerId.erase(20);
@@ -72,7 +80,7 @@ int32_t DefaultBtContext::getInfoHashLength() const {
   return INFO_HASH_LENGTH;
 }
 
-string DefaultBtContext::getInfoHashAsString() const {
+std::string DefaultBtContext::getInfoHashAsString() const {
   return infoHashString;
 }
 
@@ -105,15 +113,13 @@ void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
 }
 
 void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
-					  const string& defaultName,
-					  const Strings& urlList) {
+					  const std::string& defaultName,
+					  const std::deque<std::string>& urlList) {
   const Data* nameData = dynamic_cast<const Data*>(infoDic->get("name"));
   if(nameData) {
     name = nameData->toString();
   } else {
-    char* basec = strdup(defaultName.c_str());
-    name = string(basename(basec))+".file";
-    free(basec);
+    name = File(defaultName).getBasename()+".file";
   }
   const List* files = dynamic_cast<const List*>(infoDic->get("files"));
   if(files) {
@@ -121,8 +127,8 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
     int64_t offset = 0;
     // multi-file mode
     fileMode = BtContext::MULTI;
-    const MetaList& metaList = files->getList();
-    for(MetaList::const_iterator itr = metaList.begin();
+    const std::deque<MetaEntry*>& metaList = files->getList();
+    for(std::deque<MetaEntry*>::const_iterator itr = metaList.begin();
 	itr != metaList.end(); itr++) {
       const Dictionary* fileDic = dynamic_cast<const Dictionary*>((*itr));
       if(!fileDic) {
@@ -138,8 +144,8 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
       if(!pathList) {
 	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path list");
       }
-      const MetaList& paths = pathList->getList();
-      string path;
+      const std::deque<MetaEntry*>& paths = pathList->getList();
+      std::string path;
       for(int32_t i = 0; i < (int32_t)paths.size()-1; i++) {
 	const Data* subpath = dynamic_cast<const Data*>(paths[i]);
 	if(subpath) {
@@ -155,9 +161,9 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element");
       }
 
-      Strings uris;
-      transform(urlList.begin(), urlList.end(), back_inserter(uris),
-		bind2nd(plus<string>(), "/"+name+"/"+path));
+      std::deque<std::string> uris;
+      std::transform(urlList.begin(), urlList.end(), back_inserter(uris),
+		     std::bind2nd(std::plus<std::string>(), "/"+name+"/"+path));
       FileEntryHandle fileEntry(new FileEntry(path,
 					      lengthData->toLLInt(),
 					      offset,
@@ -181,20 +187,20 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 }
 
 void DefaultBtContext::extractAnnounce(const Data* announceData) {
-  Strings urls;
+  std::deque<std::string> urls;
   urls.push_back(Util::trim(announceData->toString()));
   announceTiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
 }
 
 void DefaultBtContext::extractAnnounceList(const List* announceListData) {
-  for(MetaList::const_iterator itr = announceListData->getList().begin();
+  for(std::deque<MetaEntry*>::const_iterator itr = announceListData->getList().begin();
       itr != announceListData->getList().end(); itr++) {
     const List* elem = dynamic_cast<const List*>(*itr);
     if(!elem) {
       continue;
     }
-    Strings urls;
-    for(MetaList::const_iterator elemItr = elem->getList().begin();
+    std::deque<std::string> urls;
+    for(std::deque<MetaEntry*>::const_iterator elemItr = elem->getList().begin();
 	elemItr != elem->getList().end(); elemItr++) {
       const Data* data = dynamic_cast<const Data*>(*elemItr);
       if(data) {
@@ -208,12 +214,12 @@ void DefaultBtContext::extractAnnounceList(const List* announceListData) {
   }
 }
 
-Strings DefaultBtContext::extractUrlList(const MetaEntry* obj)
+std::deque<std::string> DefaultBtContext::extractUrlList(const MetaEntry* obj)
 {
-  Strings uris;
+  std::deque<std::string> uris;
   if(dynamic_cast<const List*>(obj)) {
     const List* urlList = reinterpret_cast<const List*>(obj);
-    for(MetaList::const_iterator itr = urlList->getList().begin();
+    for(std::deque<MetaEntry*>::const_iterator itr = urlList->getList().begin();
 	itr != urlList->getList().end(); ++itr) {
       const Data* data = dynamic_cast<const Data*>(*itr);
       if(data) {
@@ -227,7 +233,7 @@ Strings DefaultBtContext::extractUrlList(const MetaEntry* obj)
   return uris;
 }
 
-void DefaultBtContext::loadFromMemory(const char* content, int32_t length, const string& defaultName)
+void DefaultBtContext::loadFromMemory(const char* content, int32_t length, const std::string& defaultName)
 {
   SharedHandle<MetaEntry> rootEntry = MetaFileUtil::bdecoding(content, length);
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
@@ -237,7 +243,7 @@ void DefaultBtContext::loadFromMemory(const char* content, int32_t length, const
   processRootDictionary(rootDic, defaultName);
 }
 
-void DefaultBtContext::load(const string& torrentFile) {
+void DefaultBtContext::load(const std::string& torrentFile) {
   SharedHandle<MetaEntry> rootEntry = MetaFileUtil::parseMetaFile(torrentFile);
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
   if(!rootDic) {
@@ -246,7 +252,7 @@ void DefaultBtContext::load(const string& torrentFile) {
   processRootDictionary(rootDic, torrentFile);
 }
 
-void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const string& defaultName)
+void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const std::string& defaultName)
 {
   clear();
   const Dictionary* infoDic = dynamic_cast<const Dictionary*>(rootDic->get("info"));
@@ -285,7 +291,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   // retrieve uri-list.
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
-  Strings urlList = extractUrlList(rootDic->get("url-list"));
+  std::deque<std::string> urlList = extractUrlList(rootDic->get("url-list"));
   // retrieve file entries
   extractFileEntries(infoDic, defaultName, urlList);
   if((totalLength+pieceLength-1)/pieceLength != numPieces) {
@@ -304,7 +310,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   }
 }
 
-string DefaultBtContext::getPieceHash(int32_t index) const {
+std::string DefaultBtContext::getPieceHash(int32_t index) const {
   if(index < 0 || numPieces <= index) {
     return "";
   }
@@ -327,7 +333,7 @@ AnnounceTiers DefaultBtContext::getAnnounceTiers() const {
   return announceTiers;
 }
 
-string DefaultBtContext::getName() const {
+std::string DefaultBtContext::getName() const {
   return name;
 }
 
@@ -339,14 +345,14 @@ int32_t DefaultBtContext::getNumPieces() const {
   return numPieces;
 }
 
-string DefaultBtContext::getActualBasePath() const
+std::string DefaultBtContext::getActualBasePath() const
 {
   return _dir+"/"+name;
 }
 
-Integers DefaultBtContext::computeFastSet(const string& ipaddr, int32_t fastSetSize)
+std::deque<int32_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, int32_t fastSetSize)
 {
-  Integers fastSet;
+  std::deque<int32_t> fastSet;
   struct in_addr saddr;
   if(inet_aton(ipaddr.c_str(), &saddr) == 0) {
     abort();
@@ -369,7 +375,7 @@ Integers DefaultBtContext::computeFastSet(const string& ipaddr, int32_t fastSetS
       memcpy(&ny, x+j, 4);
       uint32_t y = ntohl(ny);
       int32_t index = y%numPieces;
-      if(find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
+      if(std::find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
 	fastSet.push_back(index);
       }
     }
@@ -380,7 +386,7 @@ Integers DefaultBtContext::computeFastSet(const string& ipaddr, int32_t fastSetS
   return fastSet;
 }
 
-ostream& operator<<(ostream& o, const DefaultBtContext& ctx)
+std::ostream& operator<<(std::ostream& o, const DefaultBtContext& ctx)
 {
   o << "*** BitTorrent File Information ***" << "\n";
   o << "Mode: " << (ctx.getFileMode() == DownloadContext::SINGLE ? "Single File Torrent":"Multi File Torrent") << "\n";
@@ -388,7 +394,7 @@ ostream& operator<<(ostream& o, const DefaultBtContext& ctx)
   AnnounceTiers tiers = ctx.getAnnounceTiers();
   for(AnnounceTiers::const_iterator itr = tiers.begin(); itr != tiers.end(); ++itr) {
     const AnnounceTierHandle& tier = *itr;
-    for(Strings::const_iterator uriItr = tier->urls.begin(); uriItr != tier->urls.end(); ++uriItr) {
+    for(std::deque<std::string>::const_iterator uriItr = tier->urls.begin(); uriItr != tier->urls.end(); ++uriItr) {
       o << " " << *uriItr;
     }
     o << "\n";
@@ -408,3 +414,5 @@ void DefaultBtContext::setRandomizer(const RandomizerHandle& randomizer)
 {
   _randomizer = randomizer;
 }
+
+} // namespace aria2

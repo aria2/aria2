@@ -2,7 +2,7 @@
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class PieceTest:public CppUnit::TestFixture {
 
@@ -32,7 +32,7 @@ void PieceTest::testCompleteBlock()
   Piece p(0, blockLength*10, blockLength);
   
   // 5 is a block index inside the Piece p.
-  PieceHandle subPiece = new Piece(5, blockLength, 1);
+  SharedHandle<Piece> subPiece = new Piece(5, blockLength, 1);
   p.addSubPiece(subPiece);
   
   CPPUNIT_ASSERT(!p.getSubPiece(5).isNull());
@@ -65,10 +65,10 @@ void PieceTest::testIsRangeComplete_subPiece()
   
   CPPUNIT_ASSERT(!p.isRangeComplete(8*1024, 32*1024));
 
-  PieceHandle startSubPiece = new Piece(0, blockLength, 1);
+  SharedHandle<Piece> startSubPiece = new Piece(0, blockLength, 1);
   p.addSubPiece(startSubPiece);
   
-  PieceHandle endSubPiece = new Piece(2, blockLength, 1);
+  SharedHandle<Piece> endSubPiece = new Piece(2, blockLength, 1);
   p.addSubPiece(endSubPiece);
   
   p.completeBlock(1);
@@ -92,7 +92,7 @@ void PieceTest::testGetCompletedLength()
   int32_t blockLength = 16*1024;
   Piece p(0, blockLength*10, blockLength);
   
-  PieceHandle subPiece = new Piece(0, blockLength, 1);
+  SharedHandle<Piece> subPiece = new Piece(0, blockLength, 1);
   for(int32_t i = 0; i < blockLength-1; ++i) {
     subPiece->completeBlock(i);
   }
@@ -104,3 +104,5 @@ void PieceTest::testGetCompletedLength()
   
   CPPUNIT_ASSERT_EQUAL(blockLength*3+blockLength-1, p.getCompletedLength());
 }
+
+} // namespace aria2

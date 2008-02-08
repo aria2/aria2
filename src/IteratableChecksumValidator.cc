@@ -41,7 +41,10 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "DiskAdaptor.h"
+#include "FileEntry.h"
 #include "BitfieldMan.h"
+
+namespace aria2 {
 
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
@@ -69,7 +72,7 @@ void IteratableChecksumValidator::validateChunk()
     _ctx->digestUpdate(_buffer, length);
     _currentOffset += length;
     if(finished()) {
-      string actualChecksum = Util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
+      std::string actualChecksum = Util::toHex((const unsigned char*)_ctx->digestFinal().c_str(), _ctx->digestLength());
       if(_dctx->getChecksum() == actualChecksum) {
 	_pieceStorage->markAllPiecesDone();
       } else {
@@ -108,3 +111,5 @@ void IteratableChecksumValidator::init()
   _ctx->trySetAlgo(_dctx->getChecksumHashAlgo());
   _ctx->digestInit();
 }
+
+} // namespace aria2

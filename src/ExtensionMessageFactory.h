@@ -36,16 +36,22 @@
 #define _D_EXTENSION_MESSAGE_FACTORY_H_
 
 #include "ExtendedMessagingAware.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class ExtensionMessage;
-typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
 
 class ExtensionMessageFactory:public ExtendedMessagingAware {
 public:
   virtual ~ExtensionMessageFactory() {}
 
-  virtual ExtensionMessageHandle createMessage(const char* data, size_t length) = 0;
+  virtual SharedHandle<ExtensionMessage>
+  createMessage(const char* data, size_t length) = 0;
 };
 
 typedef SharedHandle<ExtensionMessageFactory> ExtensionMessageFactoryHandle;
+
+} // namespace aria2
+
 #endif // _D_EXTENSION_MESSAGE_FACTORY_H_

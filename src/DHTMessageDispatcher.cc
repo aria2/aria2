@@ -39,26 +39,29 @@
 #include "DHTMessageTracker.h"
 #include "RecoverableException.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "DHTConstants.h"
 
-DHTMessageDispatcher::DHTMessageDispatcher(const DHTMessageTrackerHandle& tracker):_tracker(tracker), _logger(LogFactory::getInstance()) {}
+namespace aria2 {
+
+DHTMessageDispatcher::DHTMessageDispatcher(const SharedHandle<DHTMessageTracker>& tracker):_tracker(tracker), _logger(LogFactory::getInstance()) {}
 
 DHTMessageDispatcher::~DHTMessageDispatcher() {}
 
-void DHTMessageDispatcher::addMessageToQueue(const DHTMessageHandle& message,
+void DHTMessageDispatcher::addMessageToQueue(const SharedHandle<DHTMessage>& message,
 					     time_t timeout,
-					     const DHTMessageCallbackHandle& callback)
+					     const SharedHandle<DHTMessageCallback>& callback)
 {
   _messageQueue.push_back(new DHTMessageEntry(message, timeout, callback));
 }
 
-void DHTMessageDispatcher::addMessageToQueue(const DHTMessageHandle& message,
-					     const DHTMessageCallbackHandle& callback)
+void DHTMessageDispatcher::addMessageToQueue(const SharedHandle<DHTMessage>& message,
+					     const SharedHandle<DHTMessageCallback>& callback)
 {
   addMessageToQueue(message, DHT_MESSAGE_TIMEOUT, callback);
 }
 
-void DHTMessageDispatcher::sendMessage(const DHTMessageEntryHandle& entry)
+void DHTMessageDispatcher::sendMessage(const SharedHandle<DHTMessageEntry>& entry)
 {
   try {
     entry->_message->send();
@@ -74,7 +77,9 @@ void DHTMessageDispatcher::sendMessage(const DHTMessageEntryHandle& entry)
 
 void DHTMessageDispatcher::sendMessages()
 {
-  for(DHTMessageEntries::iterator itr = _messageQueue.begin(); itr != _messageQueue.end(); ++itr) {
+  // TODO I can't use bind1st and mem_fun here because bind1st cannot bind a
+  // function which takes a reference as an argument..
+  for(std::deque<SharedHandle<DHTMessageEntry> >::iterator itr = _messageQueue.begin(); itr != _messageQueue.end(); ++itr) {
     sendMessage(*itr);
   }
   _messageQueue.clear();
@@ -84,3 +89,5 @@ size_t DHTMessageDispatcher::countMessageInQueue() const
 {
   return _messageQueue.size();
 }
+
+} // namespace aria2

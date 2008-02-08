@@ -37,13 +37,16 @@
 
 #include "PeerAbstractCommand.h"
 
+namespace aria2 {
+
 class PeerConnection;
-typedef SharedHandle<PeerConnection> PeerConnectionHandle;
+class SocketCore;
+class Peer;
 
 class PeerReceiveHandshakeCommand:public PeerAbstractCommand
 {
 private:
-  PeerConnectionHandle _peerConnection;
+  SharedHandle<PeerConnection> _peerConnection;
 
   int32_t _lowestSpeedLimit;
 
@@ -56,13 +59,15 @@ protected:
   virtual bool exitBeforeExecute();
 public:
   PeerReceiveHandshakeCommand(int32_t cuid,
-			      const PeerHandle& peer,
+			      const SharedHandle<Peer>& peer,
 			      DownloadEngine* e,
-			      const SocketHandle& s);
+			      const SharedHandle<SocketCore>& s);
 
   virtual ~PeerReceiveHandshakeCommand();
 
 
 };
+
+} // namespace aria2
 
 #endif // _D_PEER_RECEIVE_HANDSHAKE_COMMAND_H_

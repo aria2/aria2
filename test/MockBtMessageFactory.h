@@ -3,8 +3,9 @@
 
 #include "BtMessageFactory.h"
 
+namespace aria2 {
+
 class ExtensionMessage;
-typedef SharedHandle<ExtensionMessage> ExensionMessageHandle;
 
 class MockBtMessageFactory : public BtMessageFactory {
 public:
@@ -12,93 +13,94 @@ public:
 
   virtual ~MockBtMessageFactory() {}
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createBtMessage(const unsigned char* msg, int32_t msgLength) {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   };
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createHandshakeMessage(const unsigned char* msg, int32_t msgLength) {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createHandshakeMessage(const unsigned char* infoHash,
 			 const unsigned char* peerId) {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle
-  createRequestMessage(const PieceHandle& piece, int32_t blockIndex) {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage>
+  createRequestMessage(const SharedHandle<Piece>& piece, int32_t blockIndex) {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createCancelMessage(int32_t index, int32_t begin, int32_t length) {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createPieceMessage(int32_t index, int32_t begin, int32_t length) {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createHaveMessage(int32_t index) {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createHaveMessage(int32_t index) {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createChokeMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createChokeMessage() {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createUnchokeMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createUnchokeMessage() {
+    return SharedHandle<BtMessage>(0);
   }
   
-  virtual BtMessageHandle createInterestedMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createInterestedMessage() {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createNotInterestedMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createNotInterestedMessage() {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createBitfieldMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createBitfieldMessage() {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createKeepAliveMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createKeepAliveMessage() {
+    return SharedHandle<BtMessage>(0);
   }
   
-  virtual BtMessageHandle createHaveAllMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createHaveAllMessage() {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createHaveNoneMessage() {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createHaveNoneMessage() {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createRejectMessage(int32_t index, int32_t begin, int32_t length) {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createAllowedFastMessage(int32_t index) {
-    return BtMessageHandle(0);
+  virtual SharedHandle<BtMessage> createAllowedFastMessage(int32_t index) {
+    return SharedHandle<BtMessage>(0);
   }
 
-  virtual BtMessageHandle createPortMessage(uint16_t port)
+  virtual SharedHandle<BtMessage> createPortMessage(uint16_t port)
   {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   }
   
-  virtual BtMessageHandle createBtExtendedMessage(const ExensionMessageHandle&)
+  virtual SharedHandle<BtMessage>
+  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& extmsg)
   {
-    return BtMessageHandle(0);
+    return SharedHandle<BtMessage>(0);
   }
 };
 
-typedef SharedHandle<MockBtMessageFactory> MockBtMessageFactoryHandle;
+} // namespace aria2
 
 #endif // _D_MOCK_BT_MESSAGE_FACTORY_H_

@@ -36,12 +36,15 @@
 #define _D_PEER_OBJECT_H_
 
 #include "common.h"
-#include "BtMessageFactory.h"
-#include "BtRequestFactory.h"
-#include "BtMessageDispatcher.h"
-#include "PeerConnection.h"
-#include "BtMessageReceiver.h"
-#include "ExtensionMessageFactory.h"
+
+namespace aria2 {
+
+class BtMessageFactory;
+class BtRequestFactory;
+class BtMessageDispatcher;
+class BtMessageReceiver;
+class ExtensionMessageFactory;
+class PeerConnection;
 
 class PeerObject {
 public:
@@ -52,14 +55,16 @@ public:
 	       peerConnection(0),
 	       extensionMessageFactory(0) {}
   
-  BtMessageFactoryHandle btMessageFactory;
-  BtRequestFactoryHandle btRequestFactory;
-  BtMessageDispatcherHandle btMessageDispatcher;
-  BtMessageReceiverHandle btMessageReceiver;
-  PeerConnectionHandle peerConnection;
-  ExtensionMessageFactoryHandle extensionMessageFactory;
+  SharedHandle<BtMessageFactory> btMessageFactory;
+  SharedHandle<BtRequestFactory> btRequestFactory;
+  SharedHandle<BtMessageDispatcher> btMessageDispatcher;
+  SharedHandle<BtMessageReceiver> btMessageReceiver;
+  SharedHandle<PeerConnection> peerConnection;
+  SharedHandle<ExtensionMessageFactory> extensionMessageFactory;
 };
 
 typedef SharedHandle<PeerObject> PeerObjectHandle;
+
+} // namespace aria2
 
 #endif // _D_PEER_OBJECT_H_

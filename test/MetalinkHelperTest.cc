@@ -4,7 +4,7 @@
 #include "prefs.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class MetalinkHelperTest:public CppUnit::TestFixture {
 
@@ -29,7 +29,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkHelperTest );
 void MetalinkHelperTest::testParseAndQuery()
 {
   Option option;
-  MetalinkEntries entries = MetalinkHelper::parseAndQuery("test.xml", &option);
+  std::deque<SharedHandle<MetalinkEntry> > entries =
+    MetalinkHelper::parseAndQuery("test.xml", &option);
   CPPUNIT_ASSERT_EQUAL((size_t)5, entries.size());
 }
 
@@ -37,8 +38,11 @@ void MetalinkHelperTest::testParseAndQuery_version()
 {
   Option option;
   option.put(PREF_METALINK_VERSION, "0.5.1");
-  MetalinkEntries entries = MetalinkHelper::parseAndQuery("test.xml", &option);
+  std::deque<SharedHandle<MetalinkEntry> > entries =
+    MetalinkHelper::parseAndQuery("test.xml", &option);
   CPPUNIT_ASSERT_EQUAL((size_t)1, entries.size());
-  MetalinkEntryHandle entry = entries.front();
-  CPPUNIT_ASSERT_EQUAL(string("aria2-0.5.1.tar.bz2"), entry->getPath());
+  SharedHandle<MetalinkEntry> entry = entries.front();
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry->getPath());
 }
+
+} // namespace aria2

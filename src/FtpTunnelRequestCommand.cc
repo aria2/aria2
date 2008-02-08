@@ -34,6 +34,10 @@
 /* copyright --> */
 #include "FtpTunnelRequestCommand.h"
 #include "FtpTunnelResponseCommand.h"
+#include "Request.h"
+#include "Socket.h"
+
+namespace aria2 {
 
 FtpTunnelRequestCommand::FtpTunnelRequestCommand(int cuid,
 						 const RequestHandle& req,
@@ -48,3 +52,5 @@ Command* FtpTunnelRequestCommand::getNextCommand()
 {
   return new FtpTunnelResponseCommand(cuid, req, _requestGroup, httpConnection, e, socket);
 }
+
+} // namespace aria2

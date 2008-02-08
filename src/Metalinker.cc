@@ -33,27 +33,29 @@
  */
 /* copyright --> */
 #include "Metalinker.h"
+#include "MetalinkEntry.h"
 #include <algorithm>
 
-Metalinker::Metalinker() {
-}
+namespace aria2 {
+
+Metalinker::Metalinker() {}
 
 Metalinker::~Metalinker() {}
 
-class EntryQuery {
+class EntryQuery:public std::unary_function<SharedHandle<MetalinkEntry>, bool> {
 private:
-  string version;
-  string language;
-  string os;
+  std::string version;
+  std::string language;
+  std::string os;
 public:
-  EntryQuery(const string& version,
-	     const string& language,
-	     const string& os):
+  EntryQuery(const std::string& version,
+	     const std::string& language,
+	     const std::string& os):
     version(version),
     language(language),
     os(os) {}
 
-  bool operator()(const MetalinkEntryHandle& entry) {
+  bool operator()(const SharedHandle<MetalinkEntry>& entry) const {
     if(!version.empty()) {
       if(version != entry->version) {
 	return false;
@@ -73,13 +75,17 @@ public:
   }
 };
 
-MetalinkEntries Metalinker::queryEntry(const string& version,
-				       const string& language,
-				       const string& os) const {
-  MetalinkEntries resultEntries(entries.begin(), entries.end());
-  MetalinkEntries::iterator split =
-    partition(resultEntries.begin(), resultEntries.end(),
-	      EntryQuery(version, language, os));
-  resultEntries.erase(split, resultEntries.end());
+std::deque<SharedHandle<MetalinkEntry> >
+Metalinker::queryEntry(const std::string& version,
+		       const std::string& language,
+		       const std::string& os) const
+{
+  std::deque<SharedHandle<MetalinkEntry> > resultEntries(entries);
+  resultEntries.erase(std::remove_if(resultEntries.begin(),
+				     resultEntries.end(),
+				     std::not1(EntryQuery(version, language, os))),
+		      resultEntries.end());
   return resultEntries;
 }
+
+} // namespace aria2

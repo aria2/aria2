@@ -37,31 +37,30 @@
 
 #include "PieceStorage.h"
 
+namespace aria2 {
+
 class Option;
 class DownloadContext;
-typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class DiskWriterFactory;
-typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 class DirectDiskAdaptor;
-typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;
 
 class UnknownLengthPieceStorage:public PieceStorage {
 private:
-  DownloadContextHandle _downloadContext;
+  SharedHandle<DownloadContext> _downloadContext;
 
   const Option* _option;
   
-  DirectDiskAdaptorHandle _diskAdaptor;
+  SharedHandle<DirectDiskAdaptor> _diskAdaptor;
 
-  DiskWriterFactoryHandle _diskWriterFactory;
+  SharedHandle<DiskWriterFactory> _diskWriterFactory;
 
   int64_t _totalLength;
 
   bool _downloadFinished;
 
-  PieceHandle _piece;
+  SharedHandle<Piece> _piece;
 public:
-  UnknownLengthPieceStorage(const DownloadContextHandle& downloadContext,
+  UnknownLengthPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
 			    const Option* option);
 
   virtual ~UnknownLengthPieceStorage();
@@ -70,7 +69,7 @@ public:
    * Returns true if the peer has a piece that localhost doesn't have.
    * Otherwise returns false.
    */
-  virtual bool hasMissingPiece(const PeerHandle& peer)
+  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer)
   {
     abort();
   }
@@ -81,7 +80,7 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual PieceHandle getMissingPiece(const PeerHandle& peer)
+  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer)
   {
     abort();
   }
@@ -92,14 +91,14 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual PieceHandle getMissingFastPiece(const PeerHandle& peer)
+  virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer)
   {
     abort();
   }
   /**
    * Returns a missing piece if available. Otherwise returns 0;
    */
-  virtual PieceHandle getMissingPiece();
+  virtual SharedHandle<Piece> getMissingPiece();
 
   /**
    * Returns a missing piece whose index is index.
@@ -107,23 +106,23 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual PieceHandle getMissingPiece(int32_t index);
+  virtual SharedHandle<Piece> getMissingPiece(int32_t index);
 
   /**
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
-  virtual PieceHandle getPiece(int32_t index);
+  virtual SharedHandle<Piece> getPiece(int32_t index);
 
   /**
    * Tells that the download of the specfied piece completes.
    */
-  virtual void completePiece(const PieceHandle& piece);
+  virtual void completePiece(const SharedHandle<Piece>& piece);
 
   /**
    * Tells that the download of the specified piece is canceled.
    */
-  virtual void cancelPiece(const PieceHandle& piece);
+  virtual void cancelPiece(const SharedHandle<Piece>& piece);
 
   /**
    * Returns true if the specified piece is already downloaded.
@@ -154,7 +153,7 @@ public:
     return getCompletedLength();
   }
   
-  virtual void setFileFilter(const Strings& filePaths) {}
+  virtual void setFileFilter(const std::deque<std::string>& filePaths) {}
 
   virtual void setFileFilter(IntSequence seq) {}
 
@@ -210,7 +209,7 @@ public:
     return false;
   }
 
-  virtual DiskAdaptorHandle getDiskAdaptor();
+  virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
   
   virtual int32_t getPieceLength(int32_t index);
 
@@ -224,10 +223,10 @@ public:
    * Returns piece index which is not advertised by the caller command and
    * newer than lastCheckTime.
    */
-  virtual Integers getAdvertisedPieceIndexes(int32_t myCuid,
-					     const Time& lastCheckTime)
+  virtual std::deque<int32_t>
+  getAdvertisedPieceIndexes(int32_t myCuid, const Time& lastCheckTime)
   {
-    return Integers();
+    return std::deque<int32_t>();
   }
 
   /**
@@ -257,18 +256,20 @@ public:
    * Do nothing because loading in-flight piece is not supported for this
    * class.
    */
-  virtual void addInFlightPiece(const Pieces& pieces) {}
+  virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces) {}
 
   virtual int32_t countInFlightPiece()
   {
     return 0;
   }
 
-  virtual Pieces getInFlightPieces();
+  virtual std::deque<SharedHandle<Piece> > getInFlightPieces();
 
-  void setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory);
+  void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
 };
 
 typedef SharedHandle<UnknownLengthPieceStorage> UnknownLengthPieceStorageHandle;
+
+} // namespace aria2
 
 #endif // _D_UNKNOWN_LENGTH_PIECE_STORAGE_H_

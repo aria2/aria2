@@ -3,7 +3,10 @@
 #include "DHTIDCloser.h"
 #include "Exception.h"
 #include "Util.h"
+#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class DHTIDCloserTest:public CppUnit::TestFixture {
 
@@ -26,21 +29,21 @@ void DHTIDCloserTest::testOperator()
   unsigned char id[DHT_ID_LENGTH];
   memset(id, 0xf0, DHT_ID_LENGTH);
 
-  DHTNodeLookupEntryHandle e1 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e1 = new DHTNodeLookupEntry(new DHTNode(id));
 
   id[0] = 0xb0;
-  DHTNodeLookupEntryHandle e2 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e2 = new DHTNodeLookupEntry(new DHTNode(id));
 
   id[0] = 0xa0;
-  DHTNodeLookupEntryHandle e3 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e3 = new DHTNodeLookupEntry(new DHTNode(id));
 
   id[0] = 0x80;
-  DHTNodeLookupEntryHandle e4 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e4 = new DHTNodeLookupEntry(new DHTNode(id));
 
   id[0] = 0x00;
-  DHTNodeLookupEntryHandle e5 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e5 = new DHTNodeLookupEntry(new DHTNode(id));
 
-  DHTNodeLookupEntries entries;
+  std::deque<SharedHandle<DHTNodeLookupEntry> > entries;
   entries.push_back(e1);
   entries.push_back(e2);
   entries.push_back(e3);
@@ -55,3 +58,5 @@ void DHTIDCloserTest::testOperator()
   CPPUNIT_ASSERT(e1 == entries[3]);
   CPPUNIT_ASSERT(e5 == entries[4]);
 }
+
+} // namespace aria2

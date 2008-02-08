@@ -36,7 +36,9 @@
 #define _D_DHT_TOKEN_TRACKER_H_
 
 #include "common.h"
-#include "DHTTokenTrackerDecl.h"
+#include <string>
+
+namespace aria2 {
 
 class DHTTokenTracker {
 private:
@@ -44,9 +46,9 @@ private:
 
   char _secret[2][SECRET_SIZE];
 
-  string generateToken(const unsigned char* infoHash,
-		       const string& ipaddr, uint16_t port,
-		       const char* secret) const;
+  std::string generateToken(const unsigned char* infoHash,
+			    const std::string& ipaddr, uint16_t port,
+			    const char* secret) const;
 public:
   DHTTokenTracker();
 
@@ -55,14 +57,16 @@ public:
   ~DHTTokenTracker();
 
   // TODO handle exception thrown by this function.
-  string generateToken(const unsigned char* infoHash,
-		       const string& ipaddr, uint16_t port) const;
+  std::string generateToken(const unsigned char* infoHash,
+			    const std::string& ipaddr, uint16_t port) const;
 
-  bool validateToken(const string& token,
+  bool validateToken(const std::string& token,
 		     const unsigned char* infoHash,
-		     const string& ipaddr, uint16_t port) const;
+		     const std::string& ipaddr, uint16_t port) const;
 
   void updateTokenSecret();
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_TOKEN_TRACKER_H_

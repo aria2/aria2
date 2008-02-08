@@ -33,48 +33,47 @@
  */
 /* copyright --> */
 #include "common.h"
+#include "SharedHandle.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "Util.h"
+#include "BitfieldManFactory.h"
+#include "AuthConfigFactory.h"
+#include "CookieBoxFactory.h"
 #include "FeatureConfig.h"
 #include "MultiUrlRequestInfo.h"
-#include "BitfieldManFactory.h"
 #include "SimpleRandomizer.h"
 #include "Netrc.h"
-#include "AuthConfigFactory.h"
 #include "FatalException.h"
 #include "File.h"
 #include "CUIDCounter.h"
-#include "FileUriListParser.h"
-#include "StreamUriListParser.h"
-#include "CookieBoxFactory.h"
-#include "a2algo.h"
+#include "UriListParser.h"
 #include "message.h"
+#include "prefs.h"
+#include "Option.h"
+#include "a2algo.h"
 #include "a2io.h"
 #include "a2time.h"
 #include "Platform.h"
-#include "prefs.h"
 #include "ParameterizedStringParser.h"
 #include "PStringBuildVisitor.h"
 #include "SingleFileDownloadContext.h"
 #include "DefaultBtContext.h"
+#include "FileEntry.h"
 #include "RequestGroup.h"
-#include "Option.h"
-#include "MetalinkHelper.h"
-#include <deque>
-#include <algorithm>
-#include <signal.h>
-#include <unistd.h>
-#include <libgen.h>
-#include <utility>
-#include <fstream>
-extern char* optarg;
-extern int optind, opterr, optopt;
-#include <getopt.h>
-
 #ifdef ENABLE_METALINK
+# include "MetalinkHelper.h"
 # include "Metalink2RequestGroup.h"
 # include "MetalinkEntry.h"
 #endif // ENABLE_METALINK
+#include <deque>
+#include <signal.h>
+#include <unistd.h>
+#include <fstream>
+#include <iostream>
+extern char* optarg;
+extern int optind, opterr, optopt;
+#include <getopt.h>
 
 #ifdef HAVE_LIBSSL
 // for SSL
@@ -85,22 +84,24 @@ extern int optind, opterr, optopt;
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
 
-Strings unfoldURI(const Strings& args)
+namespace aria2 {
+
+std::deque<std::string> unfoldURI(const std::deque<std::string>& args)
 {
-  Strings nargs;
+  std::deque<std::string> nargs;
   ParameterizedStringParser p;
-  PStringBuildVisitorHandle v = new PStringBuildVisitor();
-  for(Strings::const_iterator itr = args.begin(); itr != args.end();
+  PStringBuildVisitor v;
+  for(std::deque<std::string>::const_iterator itr = args.begin(); itr != args.end();
       ++itr) {
-    v->reset();
-    p.parse(*itr)->accept(v);
-    nargs.insert(nargs.end(), v->getURIs().begin(), v->getURIs().end()); 
+    v.reset();
+    p.parse(*itr)->accept(&v);
+    nargs.insert(nargs.end(), v.getURIs().begin(), v.getURIs().end()); 
   }
   return nargs;
 }
 
-RequestGroupHandle createRequestGroup(const Option* op, const Strings& uris,
-				      const string& ufilename = "")
+RequestGroupHandle createRequestGroup(const Option* op, const std::deque<std::string>& uris,
+				      const std::string& ufilename = "")
 {
   RequestGroupHandle rg = new RequestGroup(op, uris);
   SingleFileDownloadContextHandle dctx =
@@ -116,15 +117,15 @@ RequestGroupHandle createRequestGroup(const Option* op, const Strings& uris,
 extern Option* option_processing(int argc, char* const argv[]);
 
 #ifdef ENABLE_BITTORRENT
-void downloadBitTorrent(Option* op, const Strings& uri)
+void downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
 {
-  Strings nargs;
+  std::deque<std::string> nargs;
   if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
     nargs = unfoldURI(uri);
   } else {
     nargs = uri;
   }
-  Strings xargs;
+  std::deque<std::string> xargs;
   ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
 	back_inserter(xargs));
   
@@ -155,43 +156,48 @@ void downloadMetalink(Option* op)
 }
 #endif // ENABLE_METALINK
 
-void downloadUriList(Option* op)
+void downloadUriList(Option* op, std::istream& in)
 {
-  SharedHandle<UriListParser> flparser(0);
-  if(op->get(PREF_INPUT_FILE) == "-") {
-    flparser = new StreamUriListParser(cin);
-  } else {
-    if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
-      throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
-    }
-    flparser = new FileUriListParser(op->get(PREF_INPUT_FILE));
-  }
+  UriListParser p;
   RequestGroups groups;
-  while(flparser->hasNext()) {
-    Strings uris = flparser->next();
+  while(in) {
+    std::deque<std::string> uris = p.parseNext(in);
     if(uris.size() == 1 && op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
-      Strings unfoldedURIs = unfoldURI(uris);
-      for(Strings::const_iterator itr = unfoldedURIs.begin();
+      std::deque<std::string> unfoldedURIs = unfoldURI(uris);
+      for(std::deque<std::string>::const_iterator itr = unfoldedURIs.begin();
 	  itr != unfoldedURIs.end(); ++itr) {
-	Strings xuris;
+	std::deque<std::string> xuris;
 	ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT), back_inserter(xuris));
-	RequestGroupHandle rg = createRequestGroup(op, xuris);
+	SharedHandle<RequestGroup> rg = createRequestGroup(op, xuris);
 	groups.push_back(rg);
       }
     } else if(uris.size() > 0) {
-      Strings xuris;
+      std::deque<std::string> xuris;
       ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
 	    back_inserter(xuris));
-      RequestGroupHandle rg = createRequestGroup(op, xuris);
+      SharedHandle<RequestGroup> rg = createRequestGroup(op, xuris);
       groups.push_back(rg);
     }
   }
   MultiUrlRequestInfo(groups, op).execute();
 }
 
-void downloadUri(Option* op, const Strings& uris)
+void downloadUriList(Option* op)
 {
-  Strings nargs;
+  if(op->get(PREF_INPUT_FILE) == "-") {
+    downloadUriList(op, std::cin);
+  } else {
+    if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
+      throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
+    }
+    std::ifstream f(op->get(PREF_INPUT_FILE).c_str());
+    downloadUriList(op, f);
+  }
+}
+
+void downloadUri(Option* op, const std::deque<std::string>& uris)
+{
+  std::deque<std::string> nargs;
   if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
     nargs = unfoldURI(uris);
   } else {
@@ -199,16 +205,16 @@ void downloadUri(Option* op, const Strings& uris)
   }
   RequestGroups groups;
   if(op->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
-    for(Strings::const_iterator itr = nargs.begin();
+    for(std::deque<std::string>::const_iterator itr = nargs.begin();
 	itr != nargs.end(); ++itr) {
-      Strings xuris;
+      std::deque<std::string> xuris;
       ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT),
 	    back_inserter(xuris));
       RequestGroupHandle rg = createRequestGroup(op, xuris);
       groups.push_back(rg);
     }
   } else {
-    Strings xargs;
+    std::deque<std::string> xargs;
     ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
 	  back_inserter(xargs));
     RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
@@ -217,28 +223,11 @@ void downloadUri(Option* op, const Strings& uris)
   MultiUrlRequestInfo(groups, op).execute();
 }
 
-int main(int argc, char* argv[]) {
-#ifdef HAVE_WINSOCK2_H
-  Platform platform;
-#endif // HAVE_WINSOCK2_H
-
-#ifdef ENABLE_NLS
-  setlocale (LC_CTYPE, "");
-  setlocale (LC_MESSAGES, "");
-  bindtextdomain (PACKAGE, LOCALEDIR);
-  textdomain (PACKAGE);
-#endif // ENABLE_NLS
+int main(int argc, char* argv[])
+{
   Option* op = option_processing(argc, argv);
-  Strings args(argv+optind, argv+argc);
-  
-#ifdef HAVE_LIBSSL
-  // for SSL initialization
-  SSL_load_error_strings();
-  SSL_library_init();
-#endif // HAVE_LIBSSL
-#ifdef HAVE_LIBGNUTLS
-  gnutls_global_init();
-#endif // HAVE_LIBGNUTLS
+  std::deque<std::string> args(argv+optind, argv+argc);
+
   SimpleRandomizer::init();
   BitfieldManFactory::setDefaultRandomizer(SimpleRandomizer::getInstance());
   if(op->getAsBool(PREF_STDOUT_LOG)) {
@@ -273,7 +262,7 @@ int main(int argc, char* argv[]) {
     if(op->defined(PREF_LOAD_COOKIES)) {
       File cookieFile(op->get(PREF_LOAD_COOKIES));
       if(cookieFile.isFile()) {
-	ifstream in(op->get(PREF_LOAD_COOKIES).c_str());
+	std::ifstream in(op->get(PREF_LOAD_COOKIES).c_str());
 	CookieBoxFactorySingletonHolder::instance()->loadDefaultCookie(in);
       } else {
 	logger->error(MSG_LOADING_COOKIE_FAILED, op->get(PREF_LOAD_COOKIES).c_str());
@@ -293,7 +282,7 @@ int main(int argc, char* argv[]) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	DefaultBtContextHandle btContext = new DefaultBtContext();
 	btContext->load(op->get(PREF_TORRENT_FILE));
-	cout << btContext << endl;
+	std::cout << btContext << std::endl;
       } else {
 	downloadBitTorrent(op, args);
       }
@@ -303,7 +292,7 @@ int main(int argc, char* argv[]) {
 #ifdef ENABLE_METALINK
       if(op->defined(PREF_METALINK_FILE)) {
 	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	  Util::toStream(cout, MetalinkEntry::toFileEntry(MetalinkHelper::parseAndQuery(op->get(PREF_METALINK_FILE), op)));
+	  Util::toStream(std::cout, MetalinkEntry::toFileEntry(MetalinkHelper::parseAndQuery(op->get(PREF_METALINK_FILE), op)));
 	} else {
 	  downloadMetalink(op);
 	}
@@ -316,15 +305,44 @@ int main(int argc, char* argv[]) {
 	  downloadUri(op, args);
 	}
   } catch(Exception* ex) {
-    cerr << EX_EXCEPTION_CAUGHT << "\n" << *ex << endl;
+    std::cerr << EX_EXCEPTION_CAUGHT << "\n" << *ex << std::endl;
     delete ex;
     exit(EXIT_FAILURE);
   }
   delete op;
   LogFactory::release();
+  FeatureConfig::release();
+  return exitStatus;
+}
+
+} // namespace aria2
+
+int main(int argc, char* argv[]) {
+#ifdef HAVE_WINSOCK2_H
+  aria2::Platform platform;
+#endif // HAVE_WINSOCK2_H
+
+#ifdef ENABLE_NLS
+  setlocale (LC_CTYPE, "");
+  setlocale (LC_MESSAGES, "");
+  bindtextdomain (PACKAGE, LOCALEDIR);
+  textdomain (PACKAGE);
+#endif // ENABLE_NLS
+  
+#ifdef HAVE_LIBSSL
+  // for SSL initialization
+  SSL_load_error_strings();
+  SSL_library_init();
+#endif // HAVE_LIBSSL
+#ifdef HAVE_LIBGNUTLS
+  gnutls_global_init();
+#endif // HAVE_LIBGNUTLS
+
+  int r = aria2::main(argc, argv);
+
 #ifdef HAVE_LIBGNUTLS
   gnutls_global_deinit();
 #endif // HAVE_LIBGNUTLS
-  FeatureConfig::release();
-  return exitStatus;
+
+  return r;
 }

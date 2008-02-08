@@ -34,6 +34,16 @@
 /* copyright --> */
 #include "PeerChokeCommand.h"
 #include "Util.h"
+#include "Peer.h"
+#include "DownloadEngine.h"
+#include "BtContext.h"
+#include "BtRuntime.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
+#include "Logger.h"
+#include <algorithm>
+
+namespace aria2 {
 
 PeerChokeCommand::PeerChokeCommand(int32_t cuid,
 				   RequestGroup* requestGroup,
@@ -62,7 +72,7 @@ void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
   if(peers.empty()) {
     return;
   }
-  random_shuffle(peers.begin(), peers.end());
+  std::random_shuffle(peers.begin(), peers.end());
   int32_t optUnchokCount = 1;
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peers::value_type peer = *itr;
@@ -85,7 +95,7 @@ public:
 };
 
 void PeerChokeCommand::orderByUploadRate(Peers& peers) const {
-  sort(peers.begin(), peers.end(), UploadFaster());
+  std::sort(peers.begin(), peers.end(), UploadFaster());
 }
 
 class DownloadFaster {
@@ -96,7 +106,7 @@ public:
 };
 
 void PeerChokeCommand::orderByDownloadRate(Peers& peers) const {
-  sort(peers.begin(), peers.end(), DownloadFaster());
+  std::sort(peers.begin(), peers.end(), DownloadFaster());
 }
 
 bool PeerChokeCommand::execute() {
@@ -106,7 +116,7 @@ bool PeerChokeCommand::execute() {
   if(checkPoint.elapsed(interval)) {
     checkPoint.reset();
     Peers peers = peerStorage->getActivePeers();
-    for_each(peers.begin(), peers.end(), ChokePeer());
+    std::for_each(peers.begin(), peers.end(), ChokePeer());
     if(pieceStorage->downloadFinished()) {
       orderByUploadRate(peers);
     } else {
@@ -162,3 +172,5 @@ bool PeerChokeCommand::execute() {
   e->commands.push_back(this);
   return false;
 }
+
+} // namespace aria2

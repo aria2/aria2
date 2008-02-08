@@ -3,9 +3,10 @@
 #include "DefaultPieceStorage.h"
 #include "Option.h"
 #include "DiskAdaptor.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class IteratableChunkChecksumValidatorTest:public CppUnit::TestFixture {
 
@@ -31,11 +32,11 @@ const char* IteratableChunkChecksumValidatorTest::csArray[] = { "29b0e7878271645
 
 void IteratableChunkChecksumValidatorTest::testValidate() {
   Option option;
-  SingleFileDownloadContextHandle dctx =
+  SharedHandle<SingleFileDownloadContext> dctx =
     new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt");
-  dctx->setPieceHashes(Strings(&csArray[0], &csArray[3]));
+  dctx->setPieceHashes(std::deque<std::string>(&csArray[0], &csArray[3]));
   dctx->setPieceHashAlgo("sha1");
-  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, &option);
+  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, &option);
   ps->initStorage();
   ps->getDiskAdaptor()->openFile();
 
@@ -51,7 +52,7 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   CPPUNIT_ASSERT(ps->downloadFinished());
 
   // make the test fail
-  Strings badHashes(&csArray[0], &csArray[3]);
+  std::deque<std::string> badHashes(&csArray[0], &csArray[3]);
   badHashes[1] = "ffffffffffffffffffffffffffffffffffffffff";
   dctx->setPieceHashes(badHashes);
 
@@ -64,3 +65,5 @@ void IteratableChunkChecksumValidatorTest::testValidate() {
   CPPUNIT_ASSERT(!ps->hasPiece(1));
   CPPUNIT_ASSERT(ps->hasPiece(2));
 }
+
+} // namespace aria2

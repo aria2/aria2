@@ -39,7 +39,34 @@
 #include "LogFactory.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
+#include "Request.h"
+#include "Segment.h"
+#include "HttpRequest.h"
+#include "HttpResponse.h"
+#include "HttpHeaderProcessor.h"
+#include "HttpHeader.h"
+#include "Logger.h"
+#include "Socket.h"
 #include <sstream>
+
+namespace aria2 {
+
+HttpRequestEntry::HttpRequestEntry(const HttpRequestHandle& httpRequest,
+				   const HttpHeaderProcessorHandle& proc):
+  _httpRequest(httpRequest),
+  _proc(proc) {}
+
+HttpRequestEntry::~HttpRequestEntry() {}
+
+HttpRequestHandle HttpRequestEntry::getHttpRequest() const
+{
+  return _httpRequest;
+}
+
+HttpHeaderProcessorHandle HttpRequestEntry::getHttpHeaderProcessor() const
+{
+  return _proc;
+}
 
 HttpConnection::HttpConnection(int32_t cuid,
 			       const SocketHandle& socket,
@@ -47,11 +74,11 @@ HttpConnection::HttpConnection(int32_t cuid,
   cuid(cuid), socket(socket), option(op), logger(LogFactory::getInstance())
 {}
 
-string HttpConnection::eraseConfidentialInfo(const string& request)
+std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 {
-  istringstream istr(request);
-  ostringstream ostr;
-  string line;
+  std::istringstream istr(request);
+  std::ostringstream ostr;
+  std::string line;
   while(getline(istr, line)) {
     if(Util::startsWith(line, "Authorization: Basic")) {
       ostr << "Authorization: Basic ********\n";
@@ -66,7 +93,7 @@ string HttpConnection::eraseConfidentialInfo(const string& request)
 
 void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
 {
-  string request = httpRequest->createRequest();
+  std::string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
   outstandingHttpRequests.push_back(new HttpRequestEntry(httpRequest,
@@ -75,7 +102,7 @@ void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
 
 void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 {
-  string request = httpRequest->createProxyRequest();
+  std::string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
   outstandingHttpRequests.push_back(new HttpRequestEntry(httpRequest,
@@ -108,8 +135,8 @@ HttpResponseHandle HttpConnection::receiveResponse()
   // OK, we got all headers.
   logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
 
-  pair<string, HttpHeaderHandle> httpStatusHeader = proc->getHttpStatusHeader();
-  if(Util::toLower(httpStatusHeader.second->getFirst("Connection")).find("close") != string::npos) {
+  std::pair<std::string, HttpHeaderHandle> httpStatusHeader = proc->getHttpStatusHeader();
+  if(Util::toLower(httpStatusHeader.second->getFirst("Connection")).find("close") != std::string::npos) {
     entry->getHttpRequest()->getRequest()->setKeepAlive(false);
   }
 
@@ -135,3 +162,5 @@ bool HttpConnection::isIssued(const SegmentHandle& segment) const
   }
   return false;
 }
+
+} // namespace aria2

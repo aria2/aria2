@@ -36,8 +36,15 @@
 #define _D_COOKIE_BOX_FACTORY_H_
 
 #include "common.h"
-#include "CookieBox.h"
-#include <istream>
+#include "SharedHandle.h"
+#include "Cookie.h"
+#include "SingletonHolder.h"
+#include <string>
+#include <iosfwd>
+
+namespace aria2 {
+
+class CookieBox;
 
 class CookieBoxFactory {
 private:
@@ -48,11 +55,11 @@ public:
 
   ~CookieBoxFactory() {}
 
-  CookieBoxHandle createNewInstance();
+  SharedHandle<CookieBox> createNewInstance();
 
-  void loadDefaultCookie(istream& s);
+  void loadDefaultCookie(std::istream& s);
 
-  Cookie parseNsCookie(const string& nsCookieStr) const;
+  Cookie parseNsCookie(const std::string& nsCookieStr) const;
 
   const Cookies& getDefaultCookies() const
   {
@@ -62,5 +69,7 @@ public:
 
 typedef SharedHandle<CookieBoxFactory> CookieBoxFactoryHandle;
 typedef SingletonHolder<CookieBoxFactoryHandle> CookieBoxFactorySingletonHolder;
+
+} // namespace aria2
 
 #endif // _D_COOKIE_BOX_FACTORY_H_

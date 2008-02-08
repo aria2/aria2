@@ -36,17 +36,19 @@
 #define _D_BYTE_ARRAY_DISK_WRITER_FACTORY_H_
 
 #include "DiskWriterFactory.h"
-#include "ByteArrayDiskWriter.h"
+
+namespace aria2 {
+
+class ByteArrayDiskWriter;
 
 class ByteArrayDiskWriterFactory:public DiskWriterFactory
 {
 public:
-  DiskWriterHandle newDiskWriter()
-  {
-    return new ByteArrayDiskWriter();
-  }
+  SharedHandle<DiskWriter> newDiskWriter();
 };
 
 typedef SharedHandle<ByteArrayDiskWriterFactory> ByteArrayDiskWriterFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_BYTE_ARRAY_DISK_WRITER_FACTORY_H_

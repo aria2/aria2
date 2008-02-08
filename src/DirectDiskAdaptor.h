@@ -37,16 +37,20 @@
 
 #include "AbstractSingleDiskAdaptor.h"
 
+namespace aria2 {
+
 class DirectDiskAdaptor : public AbstractSingleDiskAdaptor {
 public:
   DirectDiskAdaptor() {};
   virtual ~DirectDiskAdaptor() {};
 
-  virtual string getFilePath();
+  virtual std::string getFilePath();
 
   virtual void onDownloadComplete();
 };
 
 typedef SharedHandle<DirectDiskAdaptor> DirectDiskAdaptorHandle;
+
+} // namespace aria2
 
 #endif // _D_DIRECT_DISK_ADAPTOR_H_

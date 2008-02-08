@@ -36,9 +36,13 @@
 #define _D_SEGMENT_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <stdint.h>
+#include <deque>
+
+namespace aria2 {
 
 class Piece;
-typedef SharedHandle<Piece> PieceHandle;
 
 class Segment {
 public:
@@ -64,7 +68,7 @@ public:
 
   virtual void clear() = 0;
 
-  virtual PieceHandle getPiece() const = 0;
+  virtual SharedHandle<Piece> getPiece() const = 0;
 
   bool operator==(const Segment& segment) const
   {
@@ -73,7 +77,9 @@ public:
 };
 
 typedef SharedHandle<Segment> SegmentHandle;
-typedef deque<SegmentHandle> Segments;
+typedef std::deque<SegmentHandle> Segments;
+
+} // namespace aria2
 
 #endif // _D_SEGMENT_H_
 

@@ -38,6 +38,8 @@
 #include "common.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
 class SpeedCalc {
 private:
   int64_t lengthArray[2];
@@ -75,5 +77,7 @@ public:
 
   void reset();
 };
+
+} // namespace aria2
 
 #endif // _D_SPEED_CALC_H_

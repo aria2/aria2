@@ -32,8 +32,17 @@
  */
 /* copyright --> */
 #include "CompactPeerListProcessor.h"
+#include "Peer.h"
 #include "Data.h"
 #include "a2netcompat.h"
+
+namespace aria2 {
+
+CompactPeerListProcessor::CompactPeerListProcessor(int32_t pieceLength, int64_t totalLength):
+  pieceLength(pieceLength),
+  totalLength(totalLength) {}
+
+CompactPeerListProcessor::~CompactPeerListProcessor() {}
 
 bool CompactPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
   return dynamic_cast<const Data*>(peersEntry) != 0;
@@ -49,7 +58,7 @@ Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
     for(int32_t i = 0; i < peersData->getLen(); i += 6) {
       struct in_addr in;
       in.s_addr = *(uint32_t*)(peersData->getData()+i);
-      string ipaddr = inet_ntoa(in);
+      std::string ipaddr = inet_ntoa(in);
       uint16_t port = ntohs(*(uint16_t*)(peersData->getData()+i+4));
       PeerHandle peer = new Peer(ipaddr, port);      
       peers.push_back(peer);
@@ -57,3 +66,5 @@ Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
   }
   return peers;
 }
+
+} // namespace aria2

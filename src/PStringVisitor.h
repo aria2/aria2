@@ -36,6 +36,9 @@
 #define _D_P_STRING_VISITOR_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class PStringVisitor {
 public:
@@ -43,5 +46,7 @@ public:
 };
 
 typedef SharedHandle<PStringVisitor> PStringVisitorHandle;
+
+} // namespace aria2
 
 #endif // _D_P_STRING_VISITOR_H_

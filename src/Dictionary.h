@@ -40,27 +40,26 @@
 #include <deque>
 #include <string>
 
-using namespace std;
-
-typedef map<string, MetaEntry*> MetaTable;
-typedef deque<string> Order;
+namespace aria2 {
 
 class Dictionary : public MetaEntry {
 private:
-  MetaTable table;
-  Order order;
+  std::map<std::string, MetaEntry*> table;
+  std::deque<std::string> order;
   void clearTable();
 public:
   Dictionary();
   ~Dictionary();
 
-  const MetaEntry* get(const string& name) const;
-  void put(const string& name, MetaEntry* entry);
-  void remove(const string& name);
+  const MetaEntry* get(const std::string& name) const;
+  void put(const std::string& name, MetaEntry* entry);
+  void remove(const std::string& name);
 
   void accept(MetaEntryVisitor* v) const;
-  const Order& getOrder() const;
+  const std::deque<std::string>& getOrder() const;
   
 };
+
+} // namespace aria2
 
 #endif // _D_DICTIONARY_H_

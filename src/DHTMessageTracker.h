@@ -36,23 +36,27 @@
 #define _D_DHT_MESSAGE_TRACKER_H_
 
 #include "common.h"
-#include "DHTMessageTrackerDecl.h"
-#include "DHTMessageDecl.h"
-#include "DHTMessageCallbackDecl.h"
-#include "DHTMessageTrackerEntryDecl.h"
-#include "DHTRoutingTableDecl.h"
-#include "DHTMessageFactoryDecl.h"
+#include "SharedHandle.h"
+#include <utility>
+#include <deque>
 
+namespace aria2 {
+
+class DHTMessage;
+class DHTMessageCallback;
+class DHTRoutingTable;
+class DHTMessageFactory;
+class DHTMessageTrackerEntry;
 class Logger;
 class Dictionary;
 
 class DHTMessageTracker {
 private:
-  DHTMessageTrackerEntries _entries;
+  std::deque<SharedHandle<DHTMessageTrackerEntry> > _entries;
   
-  DHTRoutingTableHandle _routingTable;
+  SharedHandle<DHTRoutingTable> _routingTable;
 
-  DHTMessageFactoryHandle _factory;
+  SharedHandle<DHTMessageFactory> _factory;
 
   const Logger* _logger;
 public:
@@ -60,22 +64,27 @@ public:
 
   ~DHTMessageTracker();
 
-  void addMessage(const DHTMessageHandle& message, time_t timeout, const DHTMessageCallbackHandle& callback = 0);
+  void addMessage(const SharedHandle<DHTMessage>& message,
+		  time_t timeout,
+		  const SharedHandle<DHTMessageCallback>& callback = 0);
 
-  void addMessage(const DHTMessageHandle& message, const DHTMessageCallbackHandle& callback = 0);
+  void addMessage(const SharedHandle<DHTMessage>& message,
+		  const SharedHandle<DHTMessageCallback>& callback = 0);
 
-  pair<DHTMessageHandle, DHTMessageCallbackHandle>
-  messageArrived(const Dictionary* d, const string& ipaddr, uint16_t port);
+  std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
+  messageArrived(const Dictionary* d, const std::string& ipaddr, uint16_t port);
 
   void handleTimeout();
 
-  DHTMessageTrackerEntryHandle getEntryFor(const DHTMessageHandle& message) const;
+  SharedHandle<DHTMessageTrackerEntry> getEntryFor(const SharedHandle<DHTMessage>& message) const;
 
   size_t countEntry() const;
 
-  void setRoutingTable(const DHTRoutingTableHandle& routingTable);
+  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
 
-  void setMessageFactory(const DHTMessageFactoryHandle& factory);
+  void setMessageFactory(const SharedHandle<DHTMessageFactory>& factory);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_TRACKER_H_

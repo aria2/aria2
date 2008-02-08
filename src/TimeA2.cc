@@ -36,6 +36,8 @@
 #include "TimeA2.h"
 #include "Util.h"
 
+namespace aria2 {
+
 Time::Time() {
   reset();
 }
@@ -49,6 +51,14 @@ Time::Time(int32_t sec) {
 }
 
 Time::~Time() {}
+
+Time& Time::operator=(const Time& time)
+{
+  if(this != &time) {
+    tv = time.tv;
+  }
+  return *this;
+}
 
 void Time::reset() {
   gettimeofday(&tv, 0);
@@ -85,7 +95,29 @@ int64_t Time::differenceInMillis(const struct timeval& now) const
   return Util::difftv(now, tv)/1000;
 }
 
+bool Time::isZero() const
+{
+  return tv.tv_sec == 0 && tv.tv_usec == 0;
+}
+
+int64_t Time::getTimeInMicros() const
+{
+  return (int64_t)tv.tv_sec*1000*1000+tv.tv_usec;
+}
+
+int64_t Time::getTimeInMillis() const
+{
+  return (int64_t)tv.tv_sec*1000+tv.tv_usec/1000;
+}
+
+int32_t Time::getTime() const
+{
+  return tv.tv_sec;
+}
+
 void Time::setTimeInSec(int32_t sec) {
   tv.tv_sec = sec;
   tv.tv_usec = 0;
 }
+
+} // namespace aria2

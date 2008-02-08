@@ -37,16 +37,18 @@
 #include "Util.h"
 #include "RecoverableException.h"
 
+namespace aria2 {
+
 void SizeMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					   const string& name,
-					   const map<string, string>& attrs)
+					   const std::string& name,
+					   const std::map<std::string, std::string>& attrs)
 {
   stm->setSkipTagState(this);
 }
 
 void SizeMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					  const string& name,
-					  const string& characters)
+					 const std::string& name,
+					 const std::string& characters)
 {
   try {
     stm->setFileLengthOfEntry(Util::parseInt(characters));
@@ -56,3 +58,5 @@ void SizeMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
   }
   stm->setFileState();
 }
+
+} // namespace aria2

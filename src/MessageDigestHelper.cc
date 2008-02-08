@@ -38,12 +38,14 @@
 #include "message.h"
 #include "DefaultDiskWriter.h"
 #include "Util.h"
-#include <errno.h>
+#include <cerrno>
 
-string MessageDigestHelper::digest(const string& algo,
-				   const BinaryStreamHandle& bs,
-				   int64_t offset,
-				   int64_t length)
+namespace aria2 {
+
+std::string MessageDigestHelper::digest(const std::string& algo,
+					const BinaryStreamHandle& bs,
+					int64_t offset,
+					int64_t length)
 {
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);
@@ -68,29 +70,29 @@ string MessageDigestHelper::digest(const string& algo,
     }
     ctx.digestUpdate(BUF, readLength);
   }
-  string rawMD = ctx.digestFinal();
+  std::string rawMD = ctx.digestFinal();
   return Util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
 }
 
-string MessageDigestHelper::digest(const string& algo, const string& filename)
+std::string MessageDigestHelper::digest(const std::string& algo, const std::string& filename)
 {
   DiskWriterHandle writer = new DefaultDiskWriter();
   writer->openExistingFile(filename);
   return digest(algo, writer, 0, writer->size());
 }
 
-string MessageDigestHelper::digest(const string& algo, const void* data, int32_t length)
+std::string MessageDigestHelper::digest(const std::string& algo, const void* data, int32_t length)
 {
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);
   ctx.digestInit();
   ctx.digestUpdate(data, length);
-  string rawMD = ctx.digestFinal();
+  std::string rawMD = ctx.digestFinal();
   return Util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
 }
 
 void MessageDigestHelper::digest(unsigned char* md, int32_t mdLength,
-				 const string& algo, const void* data, int32_t length)
+				 const std::string& algo, const void* data, int32_t length)
 {
   if(mdLength < MessageDigestContext::digestLength(algo)) {
     throw new DlAbortEx("Insufficient space for storing message digest: %d required, but only %d is allocated", MessageDigestContext::digestLength(algo), mdLength);
@@ -102,3 +104,4 @@ void MessageDigestHelper::digest(unsigned char* md, int32_t mdLength,
   ctx.digestFinal(md);
 }
 
+} // namespace aria2

@@ -36,25 +36,31 @@
 #define _D_BT_MESSAGE_DISPATCHER_H_
 
 #include "common.h"
-#include "Piece.h"
-#include "BtMessage.h"
+#include "SharedHandle.h"
 #include "RequestSlot.h"
+#include <deque>
+
+namespace aria2 {
+
+class Piece;
+class BtMessage;
 
 class BtMessageDispatcher {
 public:
   virtual ~BtMessageDispatcher() {}
 
-  virtual void addMessageToQueue(const BtMessageHandle& btMessage) = 0;
+  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage) = 0;
 
-  virtual void addMessageToQueue(const BtMessages& btMessages) = 0;
+  virtual void
+  addMessageToQueue(const std::deque<SharedHandle<BtMessage> >& btMessages) = 0;
 
   virtual void sendMessages() = 0;
 
   virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, int32_t length) = 0;
 
-  virtual void doCancelSendingPieceAction(const PieceHandle& piece) = 0;
+  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece) = 0;
 
-  virtual void doAbortOutstandingRequestAction(const PieceHandle& piece) = 0;
+  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece) = 0;
 
   virtual void doChokedAction() = 0;
 
@@ -79,4 +85,7 @@ public:
 
 typedef SharedHandle<BtMessageDispatcher> BtMessageDispatcherHandle;
 typedef WeakHandle<BtMessageDispatcher> BtMessageDispatcherWeakHandle;
+
+} // namespace aria2
+
 #endif // _D_BT_MESSAGE_DISPATCHER_H_

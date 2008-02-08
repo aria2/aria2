@@ -40,13 +40,18 @@
 #include "DHTRoutingTable.h"
 #include "DHTNode.h"
 #include "DHTMessageCallback.h"
-#include "MetaEntry.h"
+#include "Dictionary.h"
+#include "Data.h"
 #include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "Util.h"
+#include <utility>
 
-DHTMessageReceiver::DHTMessageReceiver(const DHTMessageTrackerHandle& tracker):
+namespace aria2 {
+
+DHTMessageReceiver::DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker):
   _tracker(tracker),
   _connection(0),
   _factory(0),
@@ -56,9 +61,9 @@ DHTMessageReceiver::DHTMessageReceiver(const DHTMessageTrackerHandle& tracker):
 
 DHTMessageReceiver::~DHTMessageReceiver() {}
 
-DHTMessageHandle DHTMessageReceiver::receiveMessage()
+SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
 {
-  string remoteAddr;
+  std::string remoteAddr;
   uint16_t remotePort;
   char data[64*1024];
   ssize_t length = _connection->receiveMessage(data, sizeof(data),
@@ -80,10 +85,10 @@ DHTMessageHandle DHTMessageReceiver::receiveMessage()
       _logger->info("Malformed DHT message. This is not a bencoded directory. From:%s:%u", remoteAddr.c_str(), remotePort);
       return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
-    DHTMessageHandle message = 0;
-    DHTMessageCallbackHandle callback = 0;
+    SharedHandle<DHTMessage> message = 0;
+    SharedHandle<DHTMessageCallback> callback = 0;
     if(isReply) {
-      std::pair<DHTMessageHandle, DHTMessageCallbackHandle> p = _tracker->messageArrived(d, remoteAddr, remotePort);
+      std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p = _tracker->messageArrived(d, remoteAddr, remotePort);
       message = p.first;
       callback = p.second;
       if(message.isNull()) {
@@ -117,7 +122,7 @@ void DHTMessageReceiver::handleTimeout()
 
 SharedHandle<DHTMessage>
 DHTMessageReceiver::handleUnknownMessage(const char* data, size_t length,
-					 const string& remoteAddr,
+					 const std::string& remoteAddr,
 					 uint16_t remotePort)
 {
   SharedHandle<DHTMessage> m =
@@ -126,27 +131,29 @@ DHTMessageReceiver::handleUnknownMessage(const char* data, size_t length,
   return m;
 }
 
-DHTConnectionHandle DHTMessageReceiver::getConnection() const
+SharedHandle<DHTConnection> DHTMessageReceiver::getConnection() const
 {
   return _connection;
 }
 
-DHTMessageTrackerHandle DHTMessageReceiver::getMessageTracker() const
+SharedHandle<DHTMessageTracker> DHTMessageReceiver::getMessageTracker() const
 {
   return _tracker;
 }
 
-void DHTMessageReceiver::setConnection(const DHTConnectionHandle& connection)
+void DHTMessageReceiver::setConnection(const SharedHandle<DHTConnection>& connection)
 {
   _connection = connection;
 }
 
-void DHTMessageReceiver::setMessageFactory(const DHTMessageFactoryHandle& factory)
+void DHTMessageReceiver::setMessageFactory(const SharedHandle<DHTMessageFactory>& factory)
 {
   _factory = factory;
 }
 
-void DHTMessageReceiver::setRoutingTable(const DHTRoutingTableHandle& routingTable)
+void DHTMessageReceiver::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
+
+} // namespace aria2

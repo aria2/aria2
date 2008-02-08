@@ -3,7 +3,7 @@
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DictionaryTest:public CppUnit::TestFixture {
 
@@ -30,6 +30,7 @@ void DictionaryTest::testGet() {
   d.put("platform", data2);
   Data* dataGot = (Data*)d.get("app_name");
   CPPUNIT_ASSERT(dataGot != NULL);
-  CPPUNIT_ASSERT_EQUAL(string("aria2"), dataGot->toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), dataGot->toString());
 }
 
+} // namespace aria2

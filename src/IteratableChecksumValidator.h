@@ -37,32 +37,31 @@
 
 #include "IteratableValidator.h"
 
+namespace aria2 {
+
 class SingleFileDownloadContext;
-typedef SharedHandle<SingleFileDownloadContext> SingleFileDownloadContextHandle;
 class PieceStorage;
-typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class Logger;
 class MessageDigestContext;
-typedef SharedHandle<MessageDigestContext> MessageDigestContextHandle;
 
 class IteratableChecksumValidator:public IteratableValidator
 {
 private:
-  SingleFileDownloadContextHandle _dctx;
+  SharedHandle<SingleFileDownloadContext> _dctx;
 
-  PieceStorageHandle _pieceStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
 
   int64_t _currentOffset;
 
-  MessageDigestContextHandle _ctx;
+  SharedHandle<MessageDigestContext> _ctx;
 
   const Logger* _logger;
 
   unsigned char* _buffer;
 
 public:
-  IteratableChecksumValidator(const SingleFileDownloadContextHandle& dctx,
-			      const PieceStorageHandle& pieceStorage);
+  IteratableChecksumValidator(const SharedHandle<SingleFileDownloadContext>& dctx,
+			      const SharedHandle<PieceStorage>& pieceStorage);
 
   virtual ~IteratableChecksumValidator();
 
@@ -81,5 +80,7 @@ public:
 };
 
 typedef SharedHandle<IteratableChecksumValidator> IteratableChecksumValidatorHandle;
+
+} // namespace aria2
 
 #endif // _D_ITERATABLE_CHECKSUM_VALIDATOR_H_

@@ -45,8 +45,11 @@
 #include "prefs.h"
 #include "Option.h"
 #include "message.h"
+#include "Logger.h"
 #include <cerrno>
 #include <fstream>
+
+namespace aria2 {
 
 DHTAutoSaveCommand::DHTAutoSaveCommand(int32_t cuid, DownloadEngine* e, int32_t interval):
   TimeBasedCommand(cuid, e, interval),
@@ -70,10 +73,10 @@ void DHTAutoSaveCommand::process()
 
 void DHTAutoSaveCommand::save()
 {
-  string dhtFile = _e->option->get(PREF_DHT_FILE_PATH);
+  std::string dhtFile = _e->option->get(PREF_DHT_FILE_PATH);
   logger->info("Saving DHT routing table to %s.", dhtFile.c_str());
 
-  string tempFile = dhtFile+"__temp";
+  std::string tempFile = dhtFile+"__temp";
   {
     File f(tempFile);
     if(!f.isFile()) {
@@ -89,11 +92,12 @@ void DHTAutoSaveCommand::save()
       }
     }
   }
-  DHTNodes nodes;
-  DHTBuckets buckets = _routingTable->getBuckets();
-  for(DHTBuckets::const_iterator i = buckets.begin(); i != buckets.end(); ++i) {
-    const DHTBucketHandle& bucket = *i;
-    DHTNodes goodNodes = bucket->getGoodNodes();
+  std::deque<SharedHandle<DHTNode> > nodes;
+  std::deque<SharedHandle<DHTBucket> > buckets = _routingTable->getBuckets();
+  for(std::deque<SharedHandle<DHTBucket> >::const_iterator i = buckets.begin(); i != buckets.end(); ++i) {
+
+    const SharedHandle<DHTBucket>& bucket = *i;
+    std::deque<SharedHandle<DHTNode> > goodNodes = bucket->getGoodNodes();
     nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
   }
 
@@ -102,8 +106,8 @@ void DHTAutoSaveCommand::save()
   serializer.setNodes(nodes);
 
   try {
-    ofstream o(tempFile.c_str(), ios::out|ios::binary);
-    o.exceptions(ios::failbit);
+    std::ofstream o(tempFile.c_str(), std::ios::out|std::ios::binary);
+    o.exceptions(std::ios::failbit);
 
     serializer.serialize(o);
 
@@ -111,7 +115,7 @@ void DHTAutoSaveCommand::save()
       logger->error("Cannot move file from %s to %s.",
 		    tempFile.c_str(), dhtFile.c_str());
     }
-  } catch(ios::failure const& e) {
+  } catch(std::ios::failure const& e) {
     logger->error("Failed to save DHT routing table to %s. cause:%s",
 		  tempFile.c_str(), strerror(errno));
   } catch(RecoverableException* e) {
@@ -121,12 +125,14 @@ void DHTAutoSaveCommand::save()
   }
 }
 
-void DHTAutoSaveCommand::setLocalNode(const DHTNodeHandle& localNode)
+void DHTAutoSaveCommand::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }
 
-void DHTAutoSaveCommand::setRoutingTable(const DHTRoutingTableHandle& routingTable)
+void DHTAutoSaveCommand::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
+
+} // namespace aria2

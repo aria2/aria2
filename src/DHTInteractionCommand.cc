@@ -42,6 +42,9 @@
 #include "Socket.h"
 #include "message.h"
 #include "RequestGroupMan.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 DHTInteractionCommand::DHTInteractionCommand(int32_t cuid, DownloadEngine* e):
   Command(cuid),
@@ -93,17 +96,19 @@ bool DHTInteractionCommand::execute()
   return false;
 }
 
-void DHTInteractionCommand::setMessageDispatcher(const DHTMessageDispatcherHandle& dispatcher)
+void DHTInteractionCommand::setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher)
 {
   _dispatcher = dispatcher;
 }
 
-void DHTInteractionCommand::setMessageReceiver(const DHTMessageReceiverHandle& receiver)
+void DHTInteractionCommand::setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver)
 {
   _receiver = receiver;
 }
 
-void DHTInteractionCommand::setTaskQueue(const DHTTaskQueueHandle& taskQueue)
+void DHTInteractionCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
+
+} // namespace aria2

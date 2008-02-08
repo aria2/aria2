@@ -36,9 +36,12 @@
 #include "RequestGroup.h"
 #include "SingleFileDownloadContext.h"
 #include "Util.h"
+#include "FileEntry.h"
 
-ContentTypeRequestGroupCriteria::ContentTypeRequestGroupCriteria(const Strings& contentTypes,
-								 const Strings& extensions):
+namespace aria2 {
+
+ContentTypeRequestGroupCriteria::ContentTypeRequestGroupCriteria(const std::deque<std::string>& contentTypes,
+								 const std::deque<std::string>& extensions):
   _contentTypes(contentTypes),
   _extensions(extensions) {}
 
@@ -58,9 +61,9 @@ bool ContentTypeRequestGroupCriteria::match(const RequestGroup* requestGroup) co
   }
 }
 
-bool ContentTypeRequestGroupCriteria::forwardMatch(const string& target, const Strings& candidates) const
+bool ContentTypeRequestGroupCriteria::forwardMatch(const std::string& target, const std::deque<std::string>& candidates) const
 {
-  for(Strings::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
+  for(std::deque<std::string>::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
     if(Util::endsWith(target, *itr)) {
       return true;
     }
@@ -68,12 +71,14 @@ bool ContentTypeRequestGroupCriteria::forwardMatch(const string& target, const S
   return false;
 }
 
-bool ContentTypeRequestGroupCriteria::exactMatch(const string& target, const Strings& candidates) const
+bool ContentTypeRequestGroupCriteria::exactMatch(const std::string& target, const std::deque<std::string>& candidates) const
 {
-  for(Strings::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
+  for(std::deque<std::string>::const_iterator itr = candidates.begin(); itr != candidates.end(); ++itr) {
     if(target == *itr) {
       return true;
     }
   }
   return false;
 }
+
+} // namespace aria2

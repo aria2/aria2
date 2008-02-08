@@ -9,9 +9,10 @@
 #include "BtRuntime.h"
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DefaultBtAnnounceTest:public CppUnit::TestFixture {
 
@@ -26,10 +27,10 @@ class DefaultBtAnnounceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testProcessAnnounceResponse);
   CPPUNIT_TEST_SUITE_END();
 private:
-  MockBtContextHandle _btContext;
-  MockPieceStorageHandle _pieceStorage;
-  MockPeerStorageHandle _peerStorage;
-  BtRuntimeHandle _btRuntime;
+  SharedHandle<MockBtContext> _btContext;
+  SharedHandle<MockPieceStorage> _pieceStorage;
+  SharedHandle<MockPeerStorage> _peerStorage;
+  SharedHandle<BtRuntime> _btRuntime;
   Option* _option;
 public:
   DefaultBtAnnounceTest():_btContext(0),
@@ -49,7 +50,7 @@ public:
 					       0x89, 0xab, 0xcd, 0xef,
 					       0x01, 0x23, 0x45, 0x67 };
     
-    string peerId = "-aria2-ultrafastdltl";
+    std::string peerId = "-aria2-ultrafastdltl";
 
     _btContext = new MockBtContext();
     _btContext->setInfoHash(infoHash);
@@ -91,15 +92,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtAnnounceTest);
 
 void DefaultBtAnnounceTest::testNoMoreAnnounce()
 {
-  string trackerURI1 = "http://localhost/announce";
-  Strings uris1;
+  std::string trackerURI1 = "http://localhost/announce";
+  std::deque<std::string> uris1;
   uris1.push_back(trackerURI1);
-  AnnounceTierHandle announceTier1 = new AnnounceTier(uris1);
+  SharedHandle<AnnounceTier> announceTier1 = new AnnounceTier(uris1);
 
-  string trackerURI2 = "http://backup/announce";
-  Strings uris2;
+  std::string trackerURI2 = "http://backup/announce";
+  std::deque<std::string> uris2;
   uris2.push_back(trackerURI2);
-  AnnounceTierHandle announceTier2 = new AnnounceTier(uris2);
+  SharedHandle<AnnounceTier> announceTier2 = new AnnounceTier(uris2);
 
 
   _btContext->addAnnounceTier(announceTier1);
@@ -112,35 +113,35 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   btAnnounce.setRandomizer(new FixedNumberRandomizer());
   btAnnounce.generateKey();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceFailure();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
   _pieceStorage->setAllDownloadFinished(true);
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
   _btRuntime->setHalt(true);
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
@@ -149,10 +150,10 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
 
 void DefaultBtAnnounceTest::testGetAnnounceUrl()
 {
-  string trackerURI = "http://localhost/announce";
-  Strings uris;
+  std::string trackerURI = "http://localhost/announce";
+  std::deque<std::string> uris;
   uris.push_back(trackerURI);
-  AnnounceTierHandle announceTier = new AnnounceTier(uris);
+  SharedHandle<AnnounceTier> announceTier = new AnnounceTier(uris);
 
   _btContext->addAnnounceTier(announceTier);
 
@@ -163,36 +164,36 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   btAnnounce.setRandomizer(new FixedNumberRandomizer());
   btAnnounce.generateKey();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
   _pieceStorage->setAllDownloadFinished(true);
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
   _btRuntime->setHalt(true);
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
 }
 
 void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
 {
-  string trackerURI1 = "http://localhost/announce";
-  Strings uris1;
+  std::string trackerURI1 = "http://localhost/announce";
+  std::deque<std::string> uris1;
   uris1.push_back(trackerURI1);
-  AnnounceTierHandle announceTier1 = new AnnounceTier(uris1);
+  SharedHandle<AnnounceTier> announceTier1 = new AnnounceTier(uris1);
 
-  string trackerURI2 = "http://backup/announce";
-  Strings uris2;
+  std::string trackerURI2 = "http://backup/announce";
+  std::deque<std::string> uris2;
   uris2.push_back(trackerURI2);
-  AnnounceTierHandle announceTier2 = new AnnounceTier(uris2);
+  SharedHandle<AnnounceTier> announceTier2 = new AnnounceTier(uris2);
 
 
   _btContext->addAnnounceTier(announceTier1);
@@ -205,16 +206,16 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   btAnnounce.setRandomizer(new FixedNumberRandomizer());
   btAnnounce.generateKey();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceFailure();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://backup/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceFailure();
 
   CPPUNIT_ASSERT(!btAnnounce.isAnnounceReady());
-  CPPUNIT_ASSERT_EQUAL(string(""), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), btAnnounce.getAnnounceUrl());
   CPPUNIT_ASSERT(btAnnounce.isAllAnnounceFailed());
   
   btAnnounce.resetAnnounce();
@@ -226,7 +227,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
 {
   const char* urls[] = { "http://localhost1/announce",
 			 "http://localhost2/announce" };
-  AnnounceTierHandle announceTier = new AnnounceTier(Strings(&urls[0], &urls[2]));
+  SharedHandle<AnnounceTier> announceTier = new AnnounceTier(std::deque<std::string>(&urls[0], &urls[2]));
 
   _btContext->addAnnounceTier(announceTier);
 
@@ -237,17 +238,17 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   btAnnounce.setRandomizer(new FixedNumberRandomizer());
   btAnnounce.generateKey();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
   _btRuntime->setHalt(true);
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceFailure();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost2/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost2/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 }
@@ -256,7 +257,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
 {
   const char* urls[] = { "http://localhost1/announce",
 			 "http://localhost2/announce" };
-  AnnounceTierHandle announceTier = new AnnounceTier(Strings(&urls[0], &urls[2]));
+  SharedHandle<AnnounceTier> announceTier = new AnnounceTier(std::deque<std::string>(&urls[0], &urls[2]));
 
   _btContext->addAnnounceTier(announceTier);
 
@@ -267,17 +268,17 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   btAnnounce.setRandomizer(new FixedNumberRandomizer());
   btAnnounce.generateKey();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 
   _pieceStorage->setAllDownloadFinished(true);
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceFailure();
 
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost2/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost2/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
 
   btAnnounce.announceSuccess();
 }
@@ -285,11 +286,11 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
 void DefaultBtAnnounceTest::testProcessAnnounceResponse_malformed()
 {
   try {
-    string res = "i123e";
+    std::string res = "i123e";
     DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(res.c_str(), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }
 }
@@ -297,18 +298,18 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_malformed()
 void DefaultBtAnnounceTest::testProcessAnnounceResponse_failureReason()
 {
   try {
-    string res = "d14:failure reason11:hello worlde";
+    std::string res = "d14:failure reason11:hello worlde";
     DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(res.c_str(), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }
 }
 
 void DefaultBtAnnounceTest::testProcessAnnounceResponse()
 {
-  string res = "d"
+  std::string res = "d"
     "15:warning message11:hello world"
     "10:tracker id3:foo"
     "8:intervali3000e"
@@ -319,9 +320,11 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   
   DefaultBtAnnounce an(new MockBtContext(), _option);
   an.processAnnounceResponse(res.c_str(), res.size());
-  CPPUNIT_ASSERT_EQUAL(string("foo"), an.getTrackerID());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo"), an.getTrackerID());
   CPPUNIT_ASSERT_EQUAL(3000, an.getInterval());
   CPPUNIT_ASSERT_EQUAL(1800, an.getMinInterval());
   CPPUNIT_ASSERT_EQUAL(100, an.getComplete());
   CPPUNIT_ASSERT_EQUAL(200, an.getIncomplete());
 }
+
+} // namespace aria2

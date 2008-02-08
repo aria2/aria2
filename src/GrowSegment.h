@@ -37,12 +37,14 @@
 
 #include "Segment.h"
 
+namespace aria2 {
+
 class GrowSegment:public Segment {
 private:
-  PieceHandle _piece;
+  SharedHandle<Piece> _piece;
   int32_t _writtenLength;
 public:
-  GrowSegment(const PieceHandle& piece);
+  GrowSegment(const SharedHandle<Piece>& piece);
 
   virtual ~GrowSegment();
 
@@ -90,10 +92,12 @@ public:
 
   virtual void clear();
 
-  virtual PieceHandle getPiece() const;
+  virtual SharedHandle<Piece> getPiece() const;
 };
 
 typedef SharedHandle<GrowSegment> GrowSegmentHandle;
+
+} // namespace aria2
 
 #endif // _D_GROW_SEGMENT_H_
 

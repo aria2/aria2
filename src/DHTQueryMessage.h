@@ -37,15 +37,17 @@
 
 #include "DHTAbstractMessage.h"
 
+namespace aria2 {
+
 class DHTQueryMessage:public DHTAbstractMessage {
 public:
-  DHTQueryMessage(const DHTNodeHandle& localNode,
-		  const DHTNodeHandle& remoteNode,
-		  const string& transactionID = "");
+  DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
+		  const SharedHandle<DHTNode>& remoteNode,
+		  const std::string& transactionID = "");
 
   virtual ~DHTQueryMessage();
 
-  virtual string getType() const;
+  virtual std::string getType() const;
 
   virtual void fillMessage(Dictionary* message);
 
@@ -53,7 +55,9 @@ public:
   
   virtual bool isReply() const;
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_QUERY_MESSAGE_H_

@@ -36,31 +36,36 @@
 #define _D_TAG_CONTAINER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
 
 class TaggedItem;
-typedef SharedHandle<TaggedItem> TaggedItemHandle;
-typedef deque<TaggedItemHandle> TaggedItems;
 
 class TagContainer {
 private:
-  TaggedItems _taggedItems;
+  std::deque<SharedHandle<TaggedItem> > _taggedItems;
 public:
   TagContainer();
 
-  TagContainer(const TaggedItems& items);
+  TagContainer(const std::deque<SharedHandle<TaggedItem> >& items);
 
   ~TagContainer();
   
-  void addItem(const TaggedItemHandle& item);
+  void addItem(const SharedHandle<TaggedItem>& item);
 
-  TaggedItems search(const string& tag) const;
+  std::deque<SharedHandle<TaggedItem> > search(const std::string& tag) const;
 
-  TaggedItems nameMatchForward(const string& name) const;
+  std::deque<SharedHandle<TaggedItem> > nameMatchForward(const std::string& name) const;
 
-  TaggedItemHandle nameMatch(const string& name) const;
+  SharedHandle<TaggedItem> nameMatch(const std::string& name) const;
 
-  const TaggedItems& getAllItems() const;
+  const std::deque<SharedHandle<TaggedItem> >& getAllItems() const;
 };
 
 typedef SharedHandle<TagContainer> TagContainerHandle;
+
+} // namespace aria2
+
 #endif // _D_TAG_CONTAINER_H_

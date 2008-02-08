@@ -36,38 +36,43 @@
 #define _D_DHT_MESSAGE_DISPATCHER_H_
 
 #include "common.h"
-#include "DHTMessageDispatcherDecl.h"
-#include "DHTMessageTrackerDecl.h"
-#include "DHTMessageCallbackDecl.h"
-#include "DHTMessageEntryDecl.h"
-#include "DHTMessageDecl.h"
+#include "SharedHandle.h"
+#include <deque>
 
+namespace aria2 {
+
+class DHTMessageTracker;
+class DHTMessageCallback;
+class DHTMessageEntry;
+class DHTMessage;
 class Logger;
 
 class DHTMessageDispatcher {
 private:
-  DHTMessageTrackerHandle _tracker;
+  SharedHandle<DHTMessageTracker> _tracker;
 
-  DHTMessageEntries _messageQueue;
+  std::deque<SharedHandle<DHTMessageEntry> > _messageQueue;
 
   const Logger* _logger;
 
-  void sendMessage(const DHTMessageEntryHandle& msg);
+  void sendMessage(const SharedHandle<DHTMessageEntry>& msg);
 public:
-  DHTMessageDispatcher(const DHTMessageTrackerHandle& tracker);
+  DHTMessageDispatcher(const SharedHandle<DHTMessageTracker>& tracker);
 
   ~DHTMessageDispatcher();
 
-  void addMessageToQueue(const DHTMessageHandle& message,
+  void addMessageToQueue(const SharedHandle<DHTMessage>& message,
 			 time_t timeout,
-			 const DHTMessageCallbackHandle& callback = 0);
+			 const SharedHandle<DHTMessageCallback>& callback = 0);
 
-  void addMessageToQueue(const DHTMessageHandle& message,
-			 const DHTMessageCallbackHandle& callback = 0);
+  void addMessageToQueue(const SharedHandle<DHTMessage>& message,
+			 const SharedHandle<DHTMessageCallback>& callback = 0);
 
   void sendMessages();
 
   size_t countMessageInQueue() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_DISPATCHER_H_

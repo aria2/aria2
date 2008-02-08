@@ -38,6 +38,8 @@
 #include "StatCalc.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
 class ConsoleStatCalc:public StatCalc
 {
 private:
@@ -45,11 +47,14 @@ private:
 public:
   virtual ~ConsoleStatCalc() {}
 
-  virtual void calculateStat(const RequestGroupManHandle& requestGroupMan,
-			     const FileAllocationManHandle& fileAllocationMan,
-			     const CheckIntegrityManHandle& checkIntegrityMan);
+  virtual void
+  calculateStat(const SharedHandle<RequestGroupMan>& requestGroupMan,
+		const SharedHandle<FileAllocationMan>& fileAllocationMan,
+		const SharedHandle<CheckIntegrityMan>& checkIntegrityMan);
 };
 
 typedef SharedHandle<ConsoleStatCalc> ConsoleStatCalcHandle;
+
+} // namespace aria2
 
 #endif // _D_CONSOLE_STAT_CALC_H_

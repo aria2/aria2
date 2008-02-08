@@ -35,6 +35,8 @@
 #include "FileAllocationMan.h"
 #include "FileAllocationEntry.h"
 
+namespace aria2 {
+
 FileAllocationMan::FileAllocationMan():_currentFileAllocationEntry(0) {}
 
 FileAllocationMan::~FileAllocationMan() {}
@@ -79,3 +81,5 @@ int32_t FileAllocationMan::countFileAllocationEntryInQueue() const
 {
   return _fileAllocationEntries.size();
 }
+
+} // namespace aria2

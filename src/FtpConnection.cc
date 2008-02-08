@@ -33,67 +33,73 @@
  */
 /* copyright --> */
 #include "FtpConnection.h"
+#include "Request.h"
+#include "Segment.h"
+#include "Option.h"
 #include "Util.h"
 #include "message.h"
 #include "prefs.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
+#include "Socket.h"
+
+namespace aria2 {
 
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
-			     const RequestHandle req, const Option* op)
-  :cuid(cuid), socket(socket), req(req), option(op) {
-  logger = LogFactory::getInstance();
-}
+			     const RequestHandle& req, const Option* op):
+  cuid(cuid), socket(socket), req(req), option(op),
+  logger(LogFactory::getInstance()) {}
 
 FtpConnection::~FtpConnection() {}
 
 void FtpConnection::sendUser() const
 {
-  string request = "USER "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getUser()+"\r\n";
+  std::string request = "USER "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getUser()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendPass() const
 {
-  string request = "PASS "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getPassword()+"\r\n";
+  std::string request = "PASS "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getPassword()+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, "PASS ********");
   socket->writeData(request);
 }
 
 void FtpConnection::sendType() const
 {
-  string type;
+  std::string type;
   if(option->get(PREF_FTP_TYPE) == V_ASCII) {
     type = "A";
   } else {
     type = "I";
   }
-  string request = "TYPE "+type+"\r\n";
+  std::string request = "TYPE "+type+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendCwd() const
 {
-  string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
+  std::string request = "CWD "+Util::urldecode(req->getDir())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendSize() const
 {
-  string request = "SIZE "+Util::urldecode(req->getFile())+"\r\n";
+  std::string request = "SIZE "+Util::urldecode(req->getFile())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendPasv() const
 {
-  string request = "PASV\r\n";
+  std::string request = "PASV\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
@@ -104,13 +110,13 @@ SocketHandle FtpConnection::sendPort() const
   serverSocket->bind(0);
   serverSocket->beginListen();
   
-  pair<string, int32_t> addrinfo;
+  std::pair<std::string, int32_t> addrinfo;
   socket->getAddrInfo(addrinfo);
   int32_t ipaddr[4]; 
   sscanf(addrinfo.first.c_str(), "%d.%d.%d.%d",
 	 &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
   serverSocket->getAddrInfo(addrinfo);
-  string request = "PORT "+
+  std::string request = "PORT "+
     Util::itos(ipaddr[0])+","+Util::itos(ipaddr[1])+","+
     Util::itos(ipaddr[2])+","+Util::itos(ipaddr[3])+","+
     Util::itos(addrinfo.second/256)+","+Util::itos(addrinfo.second%256)+"\r\n";
@@ -121,19 +127,19 @@ SocketHandle FtpConnection::sendPort() const
 
 void FtpConnection::sendRest(const SegmentHandle& segment) const
 {
-  string request = "REST "+Util::llitos(segment->getPositionToWrite())+"\r\n";
+  std::string request = "REST "+Util::llitos(segment->getPositionToWrite())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
 void FtpConnection::sendRetr() const
 {
-  string request = "RETR "+Util::urldecode(req->getFile())+"\r\n";
+  std::string request = "RETR "+Util::urldecode(req->getFile())+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
 
-int32_t FtpConnection::getStatus(const string& response) const
+int32_t FtpConnection::getStatus(const std::string& response) const
 {
   int32_t status;
   // When the response is not like "%d %*s",
@@ -149,7 +155,7 @@ int32_t FtpConnection::getStatus(const string& response) const
   }
 }
 
-bool FtpConnection::isEndOfResponse(int32_t status, const string& response) const
+bool FtpConnection::isEndOfResponse(int32_t status, const std::string& response) const
 {
   if(response.size() <= 4) {
     return false;
@@ -157,9 +163,9 @@ bool FtpConnection::isEndOfResponse(int32_t status, const string& response) cons
   // if 4th character of buf is '-', then multi line response is expected.
   if(response.at(3) == '-') {
     // multi line response
-    string::size_type p;
+    std::string::size_type p;
     p = response.find("\r\n"+Util::itos(status)+" ");
-    if(p == string::npos) {
+    if(p == std::string::npos) {
       return false;
     }
   }
@@ -170,7 +176,7 @@ bool FtpConnection::isEndOfResponse(int32_t status, const string& response) cons
   }
 }
 
-bool FtpConnection::bulkReceiveResponse(pair<int32_t, string>& response)
+bool FtpConnection::bulkReceiveResponse(std::pair<int32_t, std::string>& response)
 {
   char buf[1024];  
   while(socket->isReadable(0)) {
@@ -205,7 +211,7 @@ bool FtpConnection::bulkReceiveResponse(pair<int32_t, string>& response)
 
 int32_t FtpConnection::receiveResponse()
 {
-  pair<int32_t, string> response;
+  std::pair<int32_t, std::string> response;
   if(bulkReceiveResponse(response)) {
     return response.first;
   } else {
@@ -213,9 +219,21 @@ int32_t FtpConnection::receiveResponse()
   }
 }
 
+#ifdef __MINGW32__
+# define LONGLONG_PRINTF "%I64d"
+# define ULONGLONG_PRINTF "%I64u"
+# define LONGLONG_SCANF "%I64d"
+# define ULONGLONG_SCANF "%I64u"
+#else
+# define LONGLONG_PRINTF "%lld"
+# define ULONGLONG_PRINTF "%llu"
+# define LONGLONG_SCANF "%Ld"
+# define ULONGLONG_SCANF "%Lu"
+#endif // __MINGW32__
+
 int32_t FtpConnection::receiveSizeResponse(int64_t& size)
 {
-  pair<int32_t, string> response;
+  std::pair<int32_t, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
       sscanf(response.second.c_str(), "%*d " LONGLONG_SCANF, &size);
@@ -226,14 +244,14 @@ int32_t FtpConnection::receiveSizeResponse(int64_t& size)
   }
 }
 
-int32_t FtpConnection::receivePasvResponse(pair<string, int32_t>& dest)
+int32_t FtpConnection::receivePasvResponse(std::pair<std::string, int32_t>& dest)
 {
-  pair<int32_t, string> response;
+  std::pair<int32_t, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 227) {
       // we assume the format of response is "227 Entering Passive Mode (h1,h2,h3,h4,p1,p2)."
       int32_t h1, h2, h3, h4, p1, p2;
-      string::size_type p = response.second.find("(");
+      std::string::size_type p = response.second.find("(");
       if(p >= 4) {
 	sscanf(response.second.substr(response.second.find("(")).c_str(),
 	       "(%d,%d,%d,%d,%d,%d).",
@@ -251,3 +269,5 @@ int32_t FtpConnection::receivePasvResponse(pair<string, int32_t>& dest)
     return 0;
   }
 }
+
+} // namespace aria2

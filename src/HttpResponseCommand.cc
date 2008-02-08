@@ -34,25 +34,33 @@
 /* copyright --> */
 #include "HttpResponseCommand.h"
 #include "DownloadEngine.h"
+#include "SingleFileDownloadContext.h"
+#include "FileEntry.h"
+#include "RequestGroup.h"
+#include "ServerHost.h"
+#include "RequestGroupMan.h"
+#include "Request.h"
+#include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "HttpConnection.h"
+#include "TransferEncoding.h"
 #include "SegmentMan.h"
-#include "DlAbortEx.h"
+#include "Segment.h"
 #include "HttpDownloadCommand.h"
-#include "message.h"
-#include "Util.h"
-#include "prefs.h"
-#include "File.h"
-#include "InitiateConnectionCommandFactory.h"
-#include "SingleFileDownloadContext.h"
 #include "DiskAdaptor.h"
 #include "PieceStorage.h"
 #include "DefaultBtProgressInfoFile.h"
-#include "RequestGroupMan.h"
 #include "DownloadFailureException.h"
-#include "ServerHost.h"
-#include <sys/types.h>
-#include <unistd.h>
+#include "DlAbortEx.h"
+#include "Util.h"
+#include "File.h"
+#include "Option.h"
+#include "Logger.h"
+#include "Socket.h"
+#include "message.h"
+#include "prefs.h"
+
+namespace aria2 {
 
 HttpResponseCommand::HttpResponseCommand(int32_t cuid,
 					 const RequestHandle& req,
@@ -186,3 +194,5 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpRe
 
   return command;
 }
+
+} // namespace aria2

@@ -35,8 +35,9 @@
 #include "ByteArrayDiskWriter.h"
 #include "Util.h"
 
-ByteArrayDiskWriter::ByteArrayDiskWriter() {
-}
+namespace aria2 {
+
+ByteArrayDiskWriter::ByteArrayDiskWriter() {}
 
 ByteArrayDiskWriter::~ByteArrayDiskWriter() {}
 
@@ -45,21 +46,18 @@ void ByteArrayDiskWriter::clear()
   buf.str("");
 }
 
-void ByteArrayDiskWriter::initAndOpenFile(const string& filename,
+void ByteArrayDiskWriter::initAndOpenFile(const std::string& filename,
 					  int64_t totalLength)
 {
   clear();
 }
 
-void ByteArrayDiskWriter::openFile(const string& filename,
-				   int64_t totalLength)
-{
-}
+void ByteArrayDiskWriter::openFile(const std::string& filename,
+				   int64_t totalLength) {}
 
-void ByteArrayDiskWriter::closeFile()
-{}
+void ByteArrayDiskWriter::closeFile() {}
 
-void ByteArrayDiskWriter::openExistingFile(const string& filename,
+void ByteArrayDiskWriter::openExistingFile(const std::string& filename,
 					   int64_t totalLength)
 {
   openFile(filename);
@@ -68,20 +66,22 @@ void ByteArrayDiskWriter::openExistingFile(const string& filename,
 void ByteArrayDiskWriter::writeData(const unsigned char* data, int32_t dataLength, int64_t position)
 {
   if(size() < position) {
-    buf.seekp(size(), ios::beg);
+    buf.seekp(size(), std::ios::beg);
     for(int64_t i = size(); i < position; ++i) {
       buf.put('\0');
     }
   } else {
-    buf.seekp(position, ios::beg);
+    buf.seekp(position, std::ios::beg);
   }
   buf.write(reinterpret_cast<const char*>(data), dataLength);
 }
 
 int32_t ByteArrayDiskWriter::readData(unsigned char* data, int32_t len, int64_t position)
 {
-  buf.seekg(position, ios::beg);
+  buf.seekg(position, std::ios::beg);
   buf.read(reinterpret_cast<char*>(data), len);
   buf.clear();
   return buf.gcount();
 }
+
+} // namespace aria2

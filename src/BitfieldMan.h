@@ -36,10 +36,12 @@
 #define _D_BITFIELD_MAN_H_
 
 #include "common.h"
-#include "Randomizer.h"
+#include "SharedHandle.h"
 #include <deque>
 
-typedef deque<int> BlockIndexes;
+namespace aria2 {
+
+class Randomizer;
 
 class BitfieldMan {
 private:
@@ -51,7 +53,7 @@ private:
   int32_t bitfieldLength;
   int32_t blocks;
   bool filterEnabled;
-  RandomizerHandle randomizer;
+  SharedHandle<Randomizer> randomizer;
 
   // for caching
   int32_t cachedNumMissingBlock;
@@ -72,7 +74,7 @@ private:
   int32_t getFirstMissingIndex(const Array& bitfield, int32_t bitfieldLength) const;
 
   template<typename Array>
-  BlockIndexes getAllMissingIndexes(const Array& bitfield, int32_t bitfieldLength) const;
+  std::deque<int32_t> getAllMissingIndexes(const Array& bitfield, int32_t bitfieldLength) const;
 
   bool isBitSetInternal(const unsigned char* bitfield, int32_t index) const;
   bool setBitInternal(unsigned char* bitfield, int32_t index, bool on);
@@ -87,50 +89,13 @@ public:
   BitfieldMan(const BitfieldMan& bitfieldMan);
   ~BitfieldMan();
 
-  BitfieldMan& operator=(const BitfieldMan& bitfieldMan) {
-    if(this != &bitfieldMan) {
-      blockLength = bitfieldMan.blockLength;
-      totalLength = bitfieldMan.totalLength;
-      blocks = bitfieldMan.blocks;
-      bitfieldLength = bitfieldMan.bitfieldLength;
-      filterEnabled = bitfieldMan.filterEnabled;
+  BitfieldMan& operator=(const BitfieldMan& bitfieldMan);
 
-      delete [] bitfield;
-      bitfield = new unsigned char[bitfieldLength];
-      memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
+  int32_t getBlockLength() const;
 
-      delete [] useBitfield;
-      useBitfield = new unsigned char[bitfieldLength];
-      memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
+  int32_t getLastBlockLength() const;
 
-      delete [] filterBitfield;
-      if(filterEnabled) {
-	filterBitfield = new unsigned char[bitfieldLength];
-	memcpy(filterBitfield, bitfieldMan.filterBitfield, bitfieldLength);
-      } else {
-	filterBitfield = 0;
-      }
-
-      updateCache();
-    }
-    return *this;
-  }
-
-  int32_t getBlockLength() const { return blockLength; }
-
-  int32_t getLastBlockLength() const {
-    return totalLength-blockLength*(blocks-1);
-  }
-
-  int32_t getBlockLength(int32_t index) const {
-    if(index == blocks-1) {
-      return getLastBlockLength();
-    } else if(0 <= index && index < blocks-1) {
-      return getBlockLength();
-    } else {
-      return 0;
-    }
-  }
+  int32_t getBlockLength(int32_t index) const;
 
   int64_t getTotalLength() const { return totalLength; }
 
@@ -173,11 +138,11 @@ public:
   /**
    * affected by filter
    */
-  BlockIndexes getAllMissingIndexes() const;
+  std::deque<int32_t> getAllMissingIndexes() const;
   /**
    * affected by filter
    */
-  BlockIndexes getAllMissingIndexes(const unsigned char* bitfield, int32_t len) const;
+  std::deque<int32_t> getAllMissingIndexes(const unsigned char* bitfield, int32_t len) const;
   /**
    * affected by filter
    */
@@ -203,8 +168,9 @@ public:
 
   bool isAllBitSet() const;
 
-  const unsigned char* getBitfield() const { return bitfield; }
-  int32_t getBitfieldLength() const { return bitfieldLength; }
+  const unsigned char* getBitfield() const;
+
+  int32_t getBitfieldLength() const;
 
   /**
    * affected by filter
@@ -217,7 +183,7 @@ public:
    */
   int32_t countFilteredBlockNow() const;
 
-  int32_t getMaxIndex() const { return blocks-1; }
+  int32_t getMaxIndex() const;
 
   void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength);
 
@@ -258,13 +224,9 @@ public:
    */
   int64_t getFilteredCompletedLengthNow() const;
 
-  void setRandomizer(const RandomizerHandle& randomizer) {
-    this->randomizer = randomizer;
-  }
+  void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
-  RandomizerHandle getRandomizer() const {
-    return randomizer;
-  }
+  SharedHandle<Randomizer> getRandomizer() const;
 
   void updateCache();
 
@@ -279,5 +241,7 @@ public:
   int64_t getMissingUnusedLength(int32_t startingIndex) const;
 
 };
+
+} // namespace aria2
 
 #endif // _D_BITFIELD_MAN_H_

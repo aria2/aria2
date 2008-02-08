@@ -36,6 +36,8 @@
 #define _D_DOWNLOAD_FAILURE_EXCEPTION_H_
 #include "RecoverableException.h"
 
+namespace aria2 {
+
 /**
  * Throw this exception when a RequestGroup should aborted.
  * FYI, DlAbortEx is the exception to abort 1 Request.
@@ -47,16 +49,18 @@ public:
   DownloadFailureException(const char* msg, ...) {
     va_list ap;
     va_start(ap, msg);
-    setMsg(string(msg), ap);
+    setMsg(msg, ap);
     va_end(ap);
   }
 
   DownloadFailureException(Exception* cause, const char* msg, ...):RecoverableException(cause) {
     va_list ap;
     va_start(ap, msg);
-    setMsg(string(msg), ap);
+    setMsg(msg, ap);
     va_end(ap);
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_FAILURE_EXCEPTION_H_

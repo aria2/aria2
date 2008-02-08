@@ -36,8 +36,13 @@
 #define _D_PEER_STORAGE_H_
 
 #include "common.h"
-#include "Peer.h"
+#include "SharedHandle.h"
 #include "TransferStat.h"
+#include <deque>
+
+namespace aria2 {
+
+class Peer;
 
 class PeerStorage {
 public:
@@ -47,22 +52,22 @@ public:
    * Adds new peer to the internal peer list.
    * If the peer is added successfully, returns true. Otherwise returns false.
    */
-  virtual bool addPeer(const PeerHandle& peer) = 0;
+  virtual bool addPeer(const SharedHandle<Peer>& peer) = 0;
 
   /**
    * Adds all peers in peers to internal peer list.
    */
-  virtual void addPeer(const Peers& peers) = 0;
+  virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers) = 0;
 
   /**
    * Returns internal peer list.
    */
-  virtual const Peers& getPeers() = 0;
+  virtual const std::deque<SharedHandle<Peer> >& getPeers() = 0;
 
   /**
    * Returns one of the unused peers.
    */
-  virtual PeerHandle getUnusedPeer() = 0;
+  virtual SharedHandle<Peer> getUnusedPeer() = 0;
 
   /**
    * Returns true if at least one unused peer exists.
@@ -73,7 +78,7 @@ public:
   /**
    * Returns the list of peers which are currently connected from localhost.
    */
-  virtual Peers getActivePeers() = 0;
+  virtual std::deque<SharedHandle<Peer> > getActivePeers() = 0;
 
   /**
    * Calculates current download/upload statistics.
@@ -83,9 +88,11 @@ public:
   /**
    * Tells PeerStorage object that peer is no longer used in the session.
    */
-  virtual void returnPeer(const PeerHandle& peer) = 0;
+  virtual void returnPeer(const SharedHandle<Peer>& peer) = 0;
 };
 
 typedef SharedHandle<PeerStorage> PeerStorageHandle;
+
+} // namespace aria2
 
 #endif // _D_PEER_STORAGE_H_

@@ -36,6 +36,9 @@
 #define _D_METALINK_RESOURCE_H_
 
 #include "common.h"
+#include <string>
+
+namespace aria2 {
 
 class MetalinkResource {
 public:
@@ -47,11 +50,11 @@ public:
     TYPE_NOT_SUPPORTED
   };
 
-  static string type2String[];
+  static std::string type2String[];
 public:
-  string url;
+  std::string url;
   TYPE type;
-  string location;
+  std::string location;
   int32_t preference;
   int32_t maxConnections;
 public:
@@ -69,13 +72,12 @@ public:
     return *this;
   }
 
-  static const string& getTypeString(TYPE type)
+  static const std::string& getTypeString(TYPE type)
   {
     return type2String[type];
   }
 };
 
-typedef SharedHandle<MetalinkResource> MetalinkResourceHandle;
-typedef deque<MetalinkResourceHandle> MetalinkResources;
+} // namespace aria2
 
 #endif // _D_METALINK_RESOURCE_H_

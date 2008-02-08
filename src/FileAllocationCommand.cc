@@ -35,10 +35,14 @@
 #include "FileAllocationCommand.h"
 #include "FileAllocationMan.h"
 #include "FileAllocationEntry.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "Logger.h"
 #include "message.h"
-#include "DownloadCommand.h"
 #include "prefs.h"
 #include "Util.h"
+
+namespace aria2 {
 
 FileAllocationCommand::FileAllocationCommand(int cuid, RequestGroup* requestGroup, DownloadEngine* e, const FileAllocationEntryHandle& fileAllocationEntry):
   RealtimeCommand(cuid, requestGroup, e),
@@ -74,3 +78,5 @@ bool FileAllocationCommand::handleException(Exception* e)
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   return true;
 }
+
+} // namespace aria2

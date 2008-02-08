@@ -42,15 +42,17 @@
 #include "BtRuntime.h"
 #include "BtRegistry.h"
 
+namespace aria2 {
+
 class ShareRatioSeedCriteria : public SeedCriteria {
 private:
   double ratio;
-  BtContextHandle btContext;
-  PeerStorageHandle peerStorage;
-  PieceStorageHandle pieceStorage;
-  BtRuntimeHandle btRuntime;
+  SharedHandle<BtContext> btContext;
+  SharedHandle<PeerStorage> peerStorage;
+  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<BtRuntime> btRuntime;
 public:
-  ShareRatioSeedCriteria(double ratio, const BtContextHandle& btContext)
+  ShareRatioSeedCriteria(double ratio, const SharedHandle<BtContext>& btContext)
     :ratio(ratio),
      btContext(btContext),
      peerStorage(PEER_STORAGE(btContext)),
@@ -80,5 +82,7 @@ public:
     return ratio;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_SHARE_RATIO_SEED_CRITERIA_H_

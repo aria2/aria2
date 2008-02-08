@@ -34,6 +34,8 @@
 /* copyright --> */
 #include "TransferStat.h"
 
+namespace aria2 {
+
 TransferStat operator+(const TransferStat& a, const TransferStat& b)
 {
   TransferStat c;
@@ -43,3 +45,5 @@ TransferStat operator+(const TransferStat& a, const TransferStat& b)
   c.sessionDownloadLength = a.sessionDownloadLength+b.sessionDownloadLength;
   return c;
 }
+
+} // namespace aria2

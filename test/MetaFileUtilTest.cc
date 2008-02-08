@@ -6,7 +6,7 @@
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class MetaFileUtilTest:public CppUnit::TestFixture {
 
@@ -75,3 +75,4 @@ void MetaFileUtilTest::testBdecoding() {
   }
 }
     
+} // namespace aria2

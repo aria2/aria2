@@ -35,11 +35,15 @@
 #include "FinMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void FinMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					  const string& name,
-					  const map<string, string>& attrs)
+					  const std::string& name,
+					  const std::map<std::string, std::string>& attrs)
 {}
 
 void FinMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					const string& name, const string& characters)
+					const std::string& name, const std::string& characters)
 {}
+
+} // namespace aria2

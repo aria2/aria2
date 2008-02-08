@@ -2,9 +2,20 @@
 #include "PeerMessageUtil.h"
 #include "MockBtContext.h"
 #include "MockExtensionMessageFactory.h"
+#include "BtRegistry.h"
+#include "Peer.h"
+#include "PeerObject.h"
+#include "BtMessageFactory.h"
+#include "BtRequestFactory.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageReceiver.h"
+#include "PeerConnection.h"
+#include "Exception.h"
+#include "FileEntry.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtExtendedMessageTest:public CppUnit::TestFixture {
 
@@ -37,30 +48,30 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(BtExtendedMessageTest);
 
 void BtExtendedMessageTest::testCreate() {
-  PeerHandle peer = new Peer("192.168.0.1", 6969);
+  SharedHandle<Peer> peer = new Peer("192.168.0.1", 6969);
   peer->setExtension("charlie", 1);
-  MockBtContextHandle ctx = new MockBtContext();
+  SharedHandle<MockBtContext> ctx = new MockBtContext();
   unsigned char infohash[20];
   memset(infohash, 0, sizeof(infohash));
   ctx->setInfoHash(infohash);
-  MockExtensionMessageFactoryHandle exmsgFactory = new MockExtensionMessageFactory();
+  SharedHandle<MockExtensionMessageFactory> exmsgFactory = new MockExtensionMessageFactory();
   
 
   BtRegistry::registerPeerObjectCluster(ctx->getInfoHashAsString(), new PeerObjectCluster());
-  PeerObjectHandle peerObject = new PeerObject();
+  SharedHandle<PeerObject> peerObject = new PeerObject();
   peerObject->extensionMessageFactory = exmsgFactory;
 
   PEER_OBJECT_CLUSTER(ctx)->registerHandle(peer->getId(), peerObject);
 
   // payload:{4:name3:foo}->11bytes
-  string payload = "4:name3:foo";
+  std::string payload = "4:name3:foo";
   char msg[17];// 6+11bytes
   PeerMessageUtil::createPeerMessageString((unsigned char*)msg, sizeof(msg), 13, 20);
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
-  BtExtendedMessageHandle pm = BtExtendedMessage::create(ctx,
-							 peer,
-							 &msg[4], 13);
+  SharedHandle<BtExtendedMessage> pm = BtExtendedMessage::create(ctx,
+								 peer,
+								 &msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((int8_t)20, pm->getId());
   
   // case: payload size is wrong
@@ -70,7 +81,7 @@ void BtExtendedMessageTest::testCreate() {
     BtExtendedMessage::create(ctx, peer, &msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }
   // case: id is wrong
@@ -80,15 +91,15 @@ void BtExtendedMessageTest::testCreate() {
     BtExtendedMessage::create(ctx, peer, &msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }
 }
 
 void BtExtendedMessageTest::testGetMessage() {
-  string payload = "4:name3:foo";
+  std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
-  MockExtensionMessageHandle exmsg =
+  SharedHandle<MockExtensionMessage> exmsg =
     new MockExtensionMessage("charlie", extendedMessageID,
 			     payload.c_str(),
 			     payload.size());
@@ -102,7 +113,7 @@ void BtExtendedMessageTest::testGetMessage() {
 }
 
 void BtExtendedMessageTest::testDoReceivedAction() {
-  MockExtensionMessageHandle exmsg =
+  SharedHandle<MockExtensionMessage> exmsg =
     new MockExtensionMessage("charlie", 1, "", 0);
   BtExtendedMessage msg(exmsg);
   msg.doReceivedAction();
@@ -110,12 +121,14 @@ void BtExtendedMessageTest::testDoReceivedAction() {
 }
   
 void BtExtendedMessageTest::testToString() {
-  string payload = "4:name3:foo";
+  std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
-  MockExtensionMessageHandle exmsg =
+  SharedHandle<MockExtensionMessage> exmsg =
     new MockExtensionMessage("charlie", extendedMessageID,
 			     payload.c_str(),
 			     payload.size());
   BtExtendedMessage msg(exmsg);
-  CPPUNIT_ASSERT_EQUAL(string("extended charlie"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("extended charlie"), msg.toString());
 }
+
+} // namespace aria2

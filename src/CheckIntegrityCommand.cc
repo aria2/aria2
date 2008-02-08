@@ -35,13 +35,13 @@
 #include "CheckIntegrityCommand.h"
 #include "CheckIntegrityMan.h"
 #include "CheckIntegrityEntry.h"
+#include "DownloadEngine.h"
 #include "RequestGroup.h"
-#include "FileAllocationEntry.h"
-#include "InitiateConnectionCommandFactory.h"
-#include "DlAbortEx.h"
+#include "Logger.h"
 #include "message.h"
-#include "DownloadCommand.h"
 #include "prefs.h"
+
+namespace aria2 {
 
 CheckIntegrityCommand::CheckIntegrityCommand(int32_t cuid, RequestGroup* requestGroup, DownloadEngine* e, const CheckIntegrityEntryHandle& entry):
   RealtimeCommand(cuid, requestGroup, e),
@@ -84,3 +84,5 @@ bool CheckIntegrityCommand::handleException(Exception* e)
   logger->error(MSG_DOWNLOAD_NOT_COMPLETE, cuid, _requestGroup->getFilePath().c_str());
   return true;
 }
+
+} // namespace aria2

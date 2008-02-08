@@ -36,7 +36,8 @@
 #define _D_BT_CANCEL_MESSAGE_H_
 
 #include "SimpleBtMessage.h"
-#include "message.h"
+
+namespace aria2 {
 
 class BtCancelMessage;
 
@@ -86,7 +87,9 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 };
+
+} // namespace aria2
 
 #endif // _D_BT_CANCEL_MESSAGE_H_

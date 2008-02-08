@@ -37,11 +37,13 @@
 
 #include "DHTResponseMessage.h"
 
+namespace aria2 {
+
 class DHTAnnouncePeerReplyMessage:public DHTResponseMessage {
 public:
-  DHTAnnouncePeerReplyMessage(const DHTNodeHandle& localNode,
-			      const DHTNodeHandle& remoteNode,
-			      const string& transactionID);
+  DHTAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& localNode,
+			      const SharedHandle<DHTNode>& remoteNode,
+			      const std::string& transactionID);
 
   virtual ~DHTAnnouncePeerReplyMessage();
 
@@ -49,9 +51,11 @@ public:
 
   virtual Dictionary* getResponse();
 
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_ANNOUNCE_PEER_REPLY_MESSAGE_H_

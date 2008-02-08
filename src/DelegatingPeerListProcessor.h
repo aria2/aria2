@@ -35,29 +35,25 @@
 #define _D_DELEGATING_PEER_LIST_PROCESSOR_H_
 
 #include "PeerListProcessor.h"
-#include "DefaultPeerListProcessor.h"
-#include "CompactPeerListProcessor.h"
 
-typedef deque<PeerListProcessorHandle> PeerListProcessors;
+namespace aria2 {
 
 class DelegatingPeerListProcessor : public PeerListProcessor {
 private:
   int32_t pieceLength;
   int64_t totalLength;
-  PeerListProcessors processors;
+  std::deque<SharedHandle<PeerListProcessor> > processors;
 public:
-  DelegatingPeerListProcessor(int32_t pieceLength, int64_t totalLength)
-  :pieceLength(pieceLength),
-   totalLength(totalLength) {
-    processors.push_back(new DefaultPeerListProcessor(pieceLength, totalLength));
-    processors.push_back(new CompactPeerListProcessor(pieceLength, totalLength));
-  }
+  DelegatingPeerListProcessor(int32_t pieceLength, int64_t totalLength);
 
-  virtual ~DelegatingPeerListProcessor() {}
+  virtual ~DelegatingPeerListProcessor();
 
-  virtual Peers extractPeer(const MetaEntry* peersEntry);
+  virtual std::deque<SharedHandle<Peer> >
+  extractPeer(const MetaEntry* peersEntry);
 
   virtual bool canHandle(const MetaEntry* peersEntry) const;
 };
+
+} // namespace aria2
 
 #endif // _D_DELEGATING_PEER_LIST_PROCESSOR_H_

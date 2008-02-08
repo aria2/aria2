@@ -35,6 +35,8 @@
 #include "TimeBasedCommand.h"
 #include "DownloadEngine.h"
 
+namespace aria2 {
+
 TimeBasedCommand::TimeBasedCommand(int32_t cuid, DownloadEngine* e, int32_t interval):
   Command(cuid), _e(e),_exit(false), _interval(interval) {}
 
@@ -60,3 +62,5 @@ bool TimeBasedCommand::execute()
   _e->commands.push_back(this);
   return false;
 }
+
+} // namespace aria2

@@ -36,11 +36,12 @@
 #define _D_BT_PIECE_MESSAGE_H_
 
 #include "AbstractBtMessage.h"
-#include "BtContext.h"
-#include "PieceStorage.h"
-#include "BtEvent.h"
 #include "AbstractBtEventListener.h"
 
+namespace aria2 {
+
+class BtEvent;
+class Piece;
 class BtPieceMessage;
 
 typedef SharedHandle<BtPieceMessage> BtPieceMessageHandle;
@@ -57,13 +58,13 @@ private:
 
   static int32_t MESSAGE_HEADER_LENGTH;
 
-  bool checkPieceHash(const PieceHandle& piece);
+  bool checkPieceHash(const SharedHandle<Piece>& piece);
 
-  void onNewPiece(const PieceHandle& piece);
+  void onNewPiece(const SharedHandle<Piece>& piece);
 
-  void onWrongPiece(const PieceHandle& piece);
+  void onWrongPiece(const SharedHandle<Piece>& piece);
 
-  void erasePieceOnDisk(const PieceHandle& piece);
+  void erasePieceOnDisk(const SharedHandle<Piece>& piece);
 
   int32_t sendPieceData(int64_t offset, int32_t length) const;
 
@@ -73,9 +74,9 @@ private:
   public:
     BtChokingEventListener(BtPieceMessage* message):message(message) {}
 
-    virtual bool canHandle(const BtEventHandle& btEvent);
+    virtual bool canHandle(const SharedHandle<BtEvent>& btEvent);
 
-    virtual void handleEventInternal(const BtEventHandle& btEvent);
+    virtual void handleEventInternal(const SharedHandle<BtEvent>& btEvent);
   };
 
   typedef SharedHandle<BtChokingEventListener> BtChokingEventListenerHandle;
@@ -86,9 +87,9 @@ private:
   public:
     BtCancelSendingPieceEventListener(BtPieceMessage* message):message(message) {}
 
-    virtual bool canHandle(const BtEventHandle& btEvent);
+    virtual bool canHandle(const SharedHandle<BtEvent>& btEvent);
 
-    virtual void handleEventInternal(const BtEventHandle& btEvent);
+    virtual void handleEventInternal(const SharedHandle<BtEvent>& btEvent);
   };
 
   typedef SharedHandle<BtCancelSendingPieceEventListener> BtCancelSendingPieceEventListenerHandle;
@@ -142,11 +143,13 @@ public:
 
   virtual void send();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
-  void handleChokingEvent(const BtEventHandle& event);
+  void handleChokingEvent(const SharedHandle<BtEvent>& event);
   
-  void handleCancelSendingPieceEvent(const BtEventHandle& event);
+  void handleCancelSendingPieceEvent(const SharedHandle<BtEvent>& event);
 };
+
+} // namespace aria2
 
 #endif // _D_BT_PIECE_MESSAGE_H_

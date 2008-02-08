@@ -37,8 +37,6 @@
 
 #include "Logger.h"
 
-using namespace std;
-
 class NullLogger : public Logger {
 public:
   NullLogger() {}

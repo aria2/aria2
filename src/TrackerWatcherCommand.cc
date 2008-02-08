@@ -34,7 +34,12 @@
 /* copyright --> */
 #include "TrackerWatcherCommand.h"
 #include "DownloadEngine.h"
-#include "Util.h"
+#include "BtContext.h"
+#include "BtAnnounce.h"
+#include "BtRuntime.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
+#include "Peer.h"
 #include "prefs.h"
 #include "message.h"
 #include "SingleFileDownloadContext.h"
@@ -43,10 +48,14 @@
 #include "CUIDCounter.h"
 #include "PeerInitiateConnectionCommand.h"
 #include "DiskAdaptor.h"
+#include "FileEntry.h"
 #include "RequestGroup.h"
 #include "Option.h"
-#include "DlRetryEx.h"
 #include "DlAbortEx.h"
+#include "Logger.h"
+#include <sstream>
+
+namespace aria2 {
 
 TrackerWatcherCommand::TrackerWatcherCommand(int32_t cuid,
 					     RequestGroup* requestGroup,
@@ -87,7 +96,7 @@ bool TrackerWatcherCommand::execute() {
     }
   } else if(_trackerRequestGroup->downloadFinished()){
     try {
-      string trackerResponse = getTrackerResponse(_trackerRequestGroup);
+      std::string trackerResponse = getTrackerResponse(_trackerRequestGroup);
 
       processTrackerResponse(trackerResponse);
       btAnnounce->announceSuccess();
@@ -113,9 +122,9 @@ bool TrackerWatcherCommand::execute() {
   return false;
 }
 
-string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& requestGroup)
+std::string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& requestGroup)
 {
-  stringstream strm;
+  std::stringstream strm;
   char data[2048];
   requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
   while(1) {
@@ -129,7 +138,7 @@ string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& reque
 }
 
 // TODO we have to deal with the exception thrown By BtAnnounce
-void TrackerWatcherCommand::processTrackerResponse(const string& trackerResponse)
+void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerResponse)
 {
   btAnnounce->processAnnounceResponse(trackerResponse.c_str(),
 				      trackerResponse.size());
@@ -160,9 +169,9 @@ RequestGroupHandle TrackerWatcherCommand::createAnnounce() {
 }
 
 RequestGroupHandle
-TrackerWatcherCommand::createRequestGroup(const string& uri)
+TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 {
-  Strings uris;
+  std::deque<std::string> uris;
   uris.push_back(uri);
   RequestGroupHandle rg = new RequestGroup(e->option, uris);
 
@@ -179,3 +188,5 @@ TrackerWatcherCommand::createRequestGroup(const string& uri)
   logger->info("Creating tracker request group GID#%d", rg->getGID());
   return rg;
 }
+
+} // namespace aria2

@@ -36,58 +36,47 @@
 #define _D_DEFAULT_BT_MESSAGE_DISPATCHER_H_
 
 #include "BtMessageDispatcher.h"
-#include "BtContext.h"
-#include "PeerStorage.h"
-#include "PieceStorage.h"
-#include "RequestSlot.h"
-#include "BtMessage.h"
-#include "Peer.h"
-#include "LogFactory.h"
-#include "Logger.h"
-#include "BtRegistry.h"
+
+namespace aria2 {
+
+class BtContext;
+class PeerStorage;
+class PieceStorage;
+class BtMessage;
+class BtMessageFactory;
+class Peer;
+class Piece;
+class Logger;
 
 class DefaultBtMessageDispatcher : public BtMessageDispatcher {
 private:
   int32_t cuid;
-  BtMessages messageQueue;
-  RequestSlots requestSlots;
-  BtContextHandle btContext;
-  PeerStorageHandle peerStorage;
-  PieceStorageHandle pieceStorage;
-  BtMessageFactoryWeakHandle messageFactory;
-  PeerHandle peer;
+  std::deque<SharedHandle<BtMessage> > messageQueue;
+  std::deque<RequestSlot> requestSlots;
+  SharedHandle<BtContext> btContext;
+  SharedHandle<PeerStorage> peerStorage;
+  SharedHandle<PieceStorage> pieceStorage;
+  WeakHandle<BtMessageFactory> messageFactory;
+  SharedHandle<Peer> peer;
   int32_t maxUploadSpeedLimit;
   int32_t requestTimeout;
   const Logger* logger;
 public:
-  DefaultBtMessageDispatcher():
-    cuid(0),
-    btContext(0),
-    peerStorage(0),
-    pieceStorage(0),
-    peer(0),
-    maxUploadSpeedLimit(0),
-    requestTimeout(0),
-    logger(LogFactory::getInstance())
-  {
-    logger->debug("DefaultBtMessageDispatcher::instantiated");
-  }
+  DefaultBtMessageDispatcher();
 
-  virtual ~DefaultBtMessageDispatcher() {
-    logger->debug("DefaultBtMessageDispatcher::deleted");
-  }
+  virtual ~DefaultBtMessageDispatcher();
   
-  virtual void addMessageToQueue(const BtMessageHandle& btMessage);
+  virtual void addMessageToQueue(const SharedHandle<BtMessage>& btMessage);
 
-  virtual void addMessageToQueue(const BtMessages& btMessages);
+  virtual void addMessageToQueue(const std::deque<SharedHandle<BtMessage> >& btMessages);
 
   virtual void sendMessages();
 
   virtual void doCancelSendingPieceAction(int32_t index, int32_t begin, int32_t length);
 
-  virtual void doCancelSendingPieceAction(const PieceHandle& piece);
+  virtual void doCancelSendingPieceAction(const SharedHandle<Piece>& piece);
 
-  virtual void doAbortOutstandingRequestAction(const PieceHandle& piece);
+  virtual void doAbortOutstandingRequestAction(const SharedHandle<Piece>& piece);
 
   virtual void doChokedAction();
 
@@ -105,47 +94,21 @@ public:
 
   virtual bool isOutstandingRequest(int32_t index, int32_t blockIndex);
 
-  virtual RequestSlot getOutstandingRequest(int32_t index, int32_t begin, int32_t length) {
-    for(RequestSlots::iterator itr = requestSlots.begin();
-	itr != requestSlots.end(); itr++) {
-      if(itr->getIndex() == index &&
-	 itr->getBegin() == begin &&
-	 itr->getLength() == length) {
-	return *itr;
-      }
-    }
-    return RequestSlot::nullSlot;
-  }
+  virtual RequestSlot getOutstandingRequest(int32_t index, int32_t begin, int32_t length);
 
-  virtual void removeOutstandingRequest(const RequestSlot& slot) {
-    RequestSlots temp;
-    remove_copy(requestSlots.begin(), requestSlots.end(), back_inserter(temp), slot);
-    requestSlots = temp;
-  }
+  virtual void removeOutstandingRequest(const RequestSlot& slot);
 
-  virtual void addOutstandingRequest(const RequestSlot& requestSlot) {
-    if(!isOutstandingRequest(requestSlot.getIndex(), requestSlot.getBlockIndex())) {
-      requestSlots.push_back(requestSlot);
-    }
-  }
+  virtual void addOutstandingRequest(const RequestSlot& requestSlot);
 
-  BtMessages& getMessageQueue() {
-    return messageQueue;
-  }
+  std::deque<SharedHandle<BtMessage> >& getMessageQueue();
 
-  RequestSlots& getRequestSlots() {
-    return requestSlots;
-  }
+  RequestSlots& getRequestSlots();
 
-  void setPeer(const PeerHandle& peer) {
-    this->peer = peer;
-  }
+  void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtContext(const BtContextHandle& btContext) {
-    this->btContext = btContext;
-    this->pieceStorage = PIECE_STORAGE(btContext);
-    this->peerStorage = PEER_STORAGE(btContext);
-  }
+  void setBtContext(const SharedHandle<BtContext>& btContext);
+
+  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
@@ -159,10 +122,10 @@ public:
     this->requestTimeout = requestTimeout;
   }
 
-  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
-    this->messageFactory = factory;
-  }
 };
 
 typedef SharedHandle<DefaultBtMessageDispatcher> DefaultBtMessageDispatcherHandle;
+
+} // namespace aria2
+
 #endif // _D_DEFAULT_BT_MESSAGE_DISPATCHER_H_

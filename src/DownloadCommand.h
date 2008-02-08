@@ -37,23 +37,23 @@
 
 #include "AbstractCommand.h"
 
+namespace aria2 {
+
 class TransferEncoding;
-typedef SharedHandle<TransferEncoding> TransferEncodingHandle;
 class PeerStat;
-typedef SharedHandle<PeerStat> PeerStatHandle;
 
 class DownloadCommand : public AbstractCommand {
 private:
   int32_t maxDownloadSpeedLimit;
   int32_t startupIdleTime;
   int32_t lowestDownloadSpeedLimit;
-  PeerStatHandle peerStat;
+  SharedHandle<PeerStat> peerStat;
 
-  void validatePieceHash(const SegmentHandle& segment);
+  void validatePieceHash(const SharedHandle<Segment>& segment);
 
   void checkLowestDownloadSpeed() const;
 protected:
-  TransferEncodingHandle transferDecoder;
+  SharedHandle<TransferEncoding> transferDecoder;
 
   virtual bool executeInternal();
 
@@ -61,13 +61,13 @@ protected:
 
 public:
   DownloadCommand(int cuid,
-		  const RequestHandle req,
+		  const SharedHandle<Request>& req,
 		  RequestGroup* requestGroup,
 		  DownloadEngine* e,
-		  const SocketHandle& s);
+		  const SharedHandle<SocketCore>& s);
   virtual ~DownloadCommand();
 
-  void setTransferDecoder(const TransferEncodingHandle& transferDecoder);
+  void setTransferDecoder(const SharedHandle<TransferEncoding>& transferDecoder);
 
   void setMaxDownloadSpeedLimit(int32_t maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
@@ -81,5 +81,7 @@ public:
     this->lowestDownloadSpeedLimit = lowestDownloadSpeedLimit;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_COMMAND_H_

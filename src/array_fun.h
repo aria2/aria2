@@ -37,6 +37,8 @@
 
 #include <functional>
 
+namespace aria2 {
+
 template<typename T>
 class bit_negate:public std::unary_function<T, T> {
 public:
@@ -194,5 +196,26 @@ array_and(A a, B b)
 {
   return array_fun<typename B::result_type>(a, b, bit_and<typename B::result_type>());
 }
+
+// calculate length of array
+
+template<typename T, std::size_t N>
+char (&char_array_ref(T (&)[N]))[N];
+
+template<typename T, std::size_t N>
+std::size_t
+arrayLength(T (&a)[N])
+{
+  return sizeof(char_array_ref(a));
+}
+
+template<typename T>
+std::size_t
+arrayLength(T (&a)[0u])
+{
+  return 0;
+}
+
+} // namespace aria2
 
 #endif // _D_ARRAY_FUN_H_

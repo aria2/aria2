@@ -66,7 +66,6 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockBtMessage.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtMessageDispatcher.h\
 @ENABLE_BITTORRENT_TRUE@	MockBtMessageFactory.h\
-@ENABLE_BITTORRENT_TRUE@	ShaVisitorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	AnnounceListTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorageTest.cc\
@@ -89,7 +88,31 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessageTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.cc
+@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTNodeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTBucketTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTConnectionImplTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPingMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPingReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTUnknownMessageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImplTest.cc\
+@ENABLE_BITTORRENT_TRUE@	BNodeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntryTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorageTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTTokenTrackerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	XORCloserTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -135,8 +158,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
-	UtilTest.cc AlphaNumberDecoratorTest.cc \
-	FileUriListParserTest.cc StreamUriListParserTest.cc \
+	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
 	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
 	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
 	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
@@ -145,9 +167,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
 	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
-	FeatureConfigTest.cc SpeedCalcTest.cc FixedNumberRandomizer.h \
-	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
-	MessageDigestHelperTest.cc \
+	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
+	MultiFileAllocationIteratorTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -162,17 +183,29 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	DefaultBtContextTest.cc DefaultBtMessageDispatcherTest.cc \
 	DefaultBtRequestFactoryTest.cc MockBtMessage.h \
 	MockBtMessageDispatcher.h MockBtMessageFactory.h \
-	ShaVisitorTest.cc DefaultPeerListProcessorTest.cc \
-	AnnounceListTest.cc DefaultPeerStorageTest.cc \
-	MockPeerStorage.h DataTest.cc DictionaryTest.cc ListTest.cc \
-	MetaFileUtilTest.cc ByteArrayDiskWriterTest.cc PeerTest.cc \
-	PeerMessageUtilTest.cc ShareRatioSeedCriteriaTest.cc \
-	BtRegistryTest.cc BtDependencyTest.cc \
-	BtPostDownloadHandlerTest.cc DownloadHandlerFactoryTest.cc \
-	TimeSeedCriteriaTest.cc BencodeVisitorTest.cc \
-	BtExtendedMessageTest.cc HandshakeExtensionMessageTest.cc \
-	UTPexExtensionMessageTest.cc DefaultBtMessageFactoryTest.cc \
-	DefaultExtensionMessageFactoryTest.cc MetalinkerTest.cc \
+	DefaultPeerListProcessorTest.cc AnnounceListTest.cc \
+	DefaultPeerStorageTest.cc MockPeerStorage.h DataTest.cc \
+	DictionaryTest.cc ListTest.cc MetaFileUtilTest.cc \
+	ByteArrayDiskWriterTest.cc PeerTest.cc PeerMessageUtilTest.cc \
+	ShareRatioSeedCriteriaTest.cc BtRegistryTest.cc \
+	BtDependencyTest.cc BtPostDownloadHandlerTest.cc \
+	DownloadHandlerFactoryTest.cc TimeSeedCriteriaTest.cc \
+	BencodeVisitorTest.cc BtExtendedMessageTest.cc \
+	HandshakeExtensionMessageTest.cc UTPexExtensionMessageTest.cc \
+	DefaultBtMessageFactoryTest.cc \
+	DefaultExtensionMessageFactoryTest.cc DHTNodeTest.cc \
+	DHTBucketTest.cc DHTRoutingTableTest.cc \
+	DHTMessageTrackerEntryTest.cc DHTMessageTrackerTest.cc \
+	DHTConnectionImplTest.cc DHTPingMessageTest.cc \
+	DHTPingReplyMessageTest.cc DHTFindNodeMessageTest.cc \
+	DHTFindNodeReplyMessageTest.cc DHTGetPeersMessageTest.cc \
+	DHTGetPeersReplyMessageTest.cc DHTAnnouncePeerMessageTest.cc \
+	DHTAnnouncePeerReplyMessageTest.cc DHTUnknownMessageTest.cc \
+	DHTMessageFactoryImplTest.cc BNodeTest.cc \
+	DHTPeerAnnounceEntryTest.cc DHTPeerAnnounceStorageTest.cc \
+	DHTTokenTrackerTest.cc XORCloserTest.cc DHTIDCloserTest.cc \
+	DHTRoutingTableSerializerTest.cc \
+	DHTRoutingTableDeserializerTest.cc MetalinkerTest.cc \
 	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
@@ -203,7 +236,6 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContextTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageDispatcherTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtRequestFactoryTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	ShaVisitorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerListProcessorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AnnounceListTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorageTest.$(OBJEXT) \
@@ -225,7 +257,31 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	HandshakeExtensionMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	UTPexExtensionMessageTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtMessageFactoryTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	DefaultExtensionMessageFactoryTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTNodeTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTBucketTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntryTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTConnectionImplTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPingMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPingReplyMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTFindNodeReplyMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTUnknownMessageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImplTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BNodeTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntryTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorageTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTTokenTrackerTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	XORCloserTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -245,9 +301,7 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	SingleFileDownloadContextTest.$(OBJEXT) \
 	RequestGroupTest.$(OBJEXT) PStringBuildVisitorTest.$(OBJEXT) \
 	ParameterizedStringParserTest.$(OBJEXT) UtilTest.$(OBJEXT) \
-	AlphaNumberDecoratorTest.$(OBJEXT) \
-	FileUriListParserTest.$(OBJEXT) \
-	StreamUriListParserTest.$(OBJEXT) \
+	AlphaNumberDecoratorTest.$(OBJEXT) UriListParserTest.$(OBJEXT) \
 	HttpHeaderProcessorTest.$(OBJEXT) CookieBoxTest.$(OBJEXT) \
 	RequestTest.$(OBJEXT) CookieParserTest.$(OBJEXT) \
 	HttpRequestTest.$(OBJEXT) CookieBoxFactoryTest.$(OBJEXT) \
@@ -487,8 +541,7 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	DefaultBtProgressInfoFileTest.cc \
 	SingleFileDownloadContextTest.cc RequestGroupTest.cc \
 	PStringBuildVisitorTest.cc ParameterizedStringParserTest.cc \
-	UtilTest.cc AlphaNumberDecoratorTest.cc \
-	FileUriListParserTest.cc StreamUriListParserTest.cc \
+	UtilTest.cc AlphaNumberDecoratorTest.cc UriListParserTest.cc \
 	HttpHeaderProcessorTest.cc CookieBoxTest.cc RequestTest.cc \
 	CookieParserTest.cc HttpRequestTest.cc CookieBoxFactoryTest.cc \
 	RequestGroupManTest.cc AuthConfigFactoryTest.cc \
@@ -497,9 +550,9 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	NetrcTest.cc SingletonHolderTest.cc HttpHeaderTest.cc \
 	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
-	FeatureConfigTest.cc SpeedCalcTest.cc FixedNumberRandomizer.h \
-	MultiDiskAdaptorTest.cc MultiFileAllocationIteratorTest.cc \
-	$(am__append_1) $(am__append_2) $(am__append_3)
+	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
+	MultiFileAllocationIteratorTest.cc $(am__append_1) \
+	$(am__append_2) $(am__append_3)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -567,6 +620,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlphaNumberDecoratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactoryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BNodeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Base64Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BencodeVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManTest.Po@am__quote@
@@ -596,6 +650,28 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerReplyMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTBucketTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTConnectionImplTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTFindNodeMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTFindNodeReplyMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTGetPeersMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTGetPeersReplyMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTIDCloserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageFactoryImplTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageTrackerEntryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageTrackerTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTNodeTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceEntryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPeerAnnounceStorageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTPingReplyMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableDeserializerTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableSerializerTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTrackerTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUnknownMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolverTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@
@@ -614,7 +690,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileUriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GrowSegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HandshakeExtensionMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HelpItemTest.Po@am__quote@
@@ -651,7 +726,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SegmentTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SequenceTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShaVisitorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShareRatioSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SharedHandleTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingleFileAllocationIteratorTest.Po@am__quote@
@@ -659,12 +733,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SingletonHolderTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SocketCoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SpeedCalcTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StreamUriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TagContainerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaggedItemTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeSeedCriteriaTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTPexExtensionMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UriListParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UtilTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/XORCloserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/a2functionalTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/array_funTest.Po@am__quote@
 
@@ -921,30 +996,6 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
 
-@ENABLE_BITTORRENT_TRUE@	DHTNodeTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTBucketTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntryTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTConnectionImplTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTPingMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTPingReplyMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTFindNodeMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTFindNodeReplyMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTGetPeersMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTGetPeersReplyMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTAnnouncePeerReplyMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTUnknownMessageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTMessageFactoryImplTest.cc\
-@ENABLE_BITTORRENT_TRUE@	BNodeTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceEntryTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTPeerAnnounceStorageTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTTokenTrackerTest.cc\
-@ENABLE_BITTORRENT_TRUE@	XORCloserTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.cc
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

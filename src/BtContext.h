@@ -38,14 +38,9 @@
 #include "DownloadContext.h"
 #include "BtContextDecl.h"
 
-#define INFO_HASH_LENGTH 20
-#define MAX_PEER_ERROR 5
-#define MAX_PEERS 55
+namespace aria2 {
 
 class AnnounceTier;
-typedef SharedHandle<AnnounceTier> AnnounceTierHandle;
-typedef deque<AnnounceTierHandle> AnnounceTiers;
-
 class RequestGroup;
 
 class BtContext:public DownloadContext {
@@ -60,11 +55,12 @@ public:
 
   virtual int32_t getInfoHashLength() const = 0;
 
-  virtual string getInfoHashAsString() const = 0;
+  virtual std::string getInfoHashAsString() const = 0;
 
-  virtual AnnounceTiers getAnnounceTiers() const = 0;
+  virtual std::deque<SharedHandle<AnnounceTier> >
+  getAnnounceTiers() const = 0;
 
-  virtual void load(const string& torrentFile) = 0;
+  virtual void load(const std::string& torrentFile) = 0;
 
   /**
    * Returns the peer id of localhost, 20 byte length
@@ -76,10 +72,13 @@ public:
     return _private;
   }
 
-  virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize) = 0;
+  virtual std::deque<int32_t>
+  computeFastSet(const std::string& ipaddr, int32_t fastSetSize) = 0;
   
   virtual RequestGroup* getOwnerRequestGroup() = 0;
 
 };
+
+} // namespace aria2
 
 #endif // _D_BT_CONTEXT_H_

@@ -36,22 +36,27 @@
 #define _D_EXTENSION_MESSAGE_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
 
+namespace aria2 {
 class ExtensionMessage {
 public:
   virtual ~ExtensionMessage() {}
 
-  virtual string getBencodedData() = 0;
+  virtual std::string getBencodedData() = 0;
 
   virtual uint8_t getExtensionMessageID() = 0;
   
-  virtual const string& getExtensionName() const = 0;
+  virtual const std::string& getExtensionName() const = 0;
 
-  virtual string toString() const = 0;
+  virtual std::string toString() const = 0;
 
   virtual void doReceivedAction() = 0;
 };
 
 typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
+
+} // namespace aria2
 
 #endif // _D_EXTENSION_MESSAGE_H_

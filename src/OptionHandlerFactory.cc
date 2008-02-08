@@ -35,7 +35,9 @@
 #include "OptionHandlerFactory.h"
 #include "prefs.h"
 #include "OptionHandlerImpl.h"
-#include "a2functional.h"
+#include "array_fun.h"
+
+namespace aria2 {
 
 OptionHandlers OptionHandlerFactory::createOptionHandlers()
 {
@@ -108,7 +110,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   {
     const char* params[] = { V_HTTP, V_HTTPS, V_FTP, V_NONE };
     handlers.push_back(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
-						  Strings(&params[0], &params[arrayLength(params)])));
+						  std::deque<std::string>(&params[0], &params[arrayLength(params)])));
   }
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE));
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_DHT));
@@ -119,3 +121,5 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 
   return handlers;
 }
+
+} // namespace aria2

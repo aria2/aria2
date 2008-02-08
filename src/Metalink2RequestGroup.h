@@ -36,17 +36,17 @@
 #define _D_METALINK_2_REQUEST_GROUP_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class Option;
 class Logger;
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
-typedef deque<RequestGroupHandle> RequestGroups;
 class BinaryStream;
-typedef SharedHandle<BinaryStream> BinaryStreamHandle;
 class MetalinkEntry;
-typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
-typedef deque<MetalinkEntryHandle> MetalinkEntries;
 
 class Metalink2RequestGroup {
 private:
@@ -54,15 +54,18 @@ private:
 
   const Logger* _logger;
 
-  RequestGroups createRequestGroup(MetalinkEntries entries);
+  std::deque<SharedHandle<RequestGroup> >
+  createRequestGroup(std::deque<SharedHandle<MetalinkEntry> > entries);
 public:
   Metalink2RequestGroup(const Option* option);
 
   ~Metalink2RequestGroup();
 
-  RequestGroups generate(const string& metalinkFile);
+  std::deque<SharedHandle<RequestGroup> > generate(const std::string& metalinkFile);
 
-  RequestGroups generate(const BinaryStreamHandle& binaryStream);
+  std::deque<SharedHandle<RequestGroup> > generate(const SharedHandle<BinaryStream>& binaryStream);
 };
+
+} // namespace aria2
 
 #endif // _D_METALINK_2_REQUEST_GROUP_H_

@@ -37,6 +37,8 @@
 
 #include "PostDownloadHandler.h"
 
+namespace aria2 {
+
 class MetalinkPostDownloadHandler:public PostDownloadHandler
 {
 public:
@@ -44,8 +46,12 @@ public:
 
   virtual ~MetalinkPostDownloadHandler();
 
-  virtual RequestGroups getNextRequestGroups(RequestGroup* requestGroup);
+  virtual std::deque<SharedHandle<RequestGroup> >
+  getNextRequestGroups(RequestGroup* requestGroup);
 };
 
 typedef SharedHandle<MetalinkPostDownloadHandler> MetalinkPostDownloadHandlerHandle;
+
+} // namespace aria2
+
 #endif // _D_METALINK_POST_DOWNLOAD_HANDLER_H_

@@ -36,28 +36,32 @@
 #define _D_CHECK_INTEGRITY_MAN_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
 
 class CheckIntegrityEntry;
-typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
-typedef deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
 
 class CheckIntegrityMan {
 private:
-  CheckIntegrityEntries _checkIntegrityEntries;
+  std::deque<SharedHandle<CheckIntegrityEntry> > _checkIntegrityEntries;
 public:
   CheckIntegrityMan();
 
   ~CheckIntegrityMan();
 
-  void addCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry);
+  void addCheckIntegrityEntry(const SharedHandle<CheckIntegrityEntry>& entry);
 
-  bool removeCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry);
+  bool removeCheckIntegrityEntry(const SharedHandle<CheckIntegrityEntry>& entry);
 
-  CheckIntegrityEntryHandle getFirstCheckIntegrityEntry() const;
+  SharedHandle<CheckIntegrityEntry> getFirstCheckIntegrityEntry() const;
 
   int32_t countCheckIntegrityEntry() const;
 };
 
 typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
+
+} // namespace aria2
 
 #endif // _D_CHECK_INTEGRITY_MAN_H_

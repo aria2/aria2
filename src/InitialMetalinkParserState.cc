@@ -35,9 +35,11 @@
 #include "InitialMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void InitialMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					      const string& name,
-					      const map<string, string>& attrs)
+					      const std::string& name,
+					      const std::map<std::string, std::string>& attrs)
 {
   if(name == "metalink") {
     stm->setMetalinkState();
@@ -47,5 +49,7 @@ void InitialMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 }
 
 void InitialMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					    const string& name, const string& characters)
+					    const std::string& name, const std::string& characters)
 {}
+
+} // namespace aria2

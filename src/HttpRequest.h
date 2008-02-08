@@ -36,17 +36,25 @@
 #define _D_HTTP_REQUEST_H_
 
 #include "common.h"
-#include "Segment.h"
-#include "Range.h"
-#include "Request.h"
-#include "Option.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
+
+class Request;
+class Segment;
+class Range;
+class Option;
 
 class HttpRequest {
 private:
+  
+  static std::string USER_AGENT;
 
-  RequestHandle request;
+  SharedHandle<Request> request;
 
-  SegmentHandle segment;
+  SharedHandle<Segment> segment;
 
   int64_t entityLength;
 
@@ -56,36 +64,20 @@ private:
 
   bool proxyAuthEnabled;
 
-  string userAgent;
+  std::string userAgent;
 
-  string getHostText(const string& host, int32_t port) const;
+  std::string getHostText(const std::string& host, int32_t port) const;
 
-  string getProxyAuthString() const;
+  std::string getProxyAuthString() const;
 
 public:
-  HttpRequest():request(0),
-		segment(0),
-		entityLength(0),
-		authEnabled(false),
-		proxyEnabled(false),
-		proxyAuthEnabled(false),
-		userAgent(USER_AGENT)
-  {}
+  HttpRequest();
 
-  SegmentHandle getSegment() const
-  {
-    return segment;
-  }
+  SharedHandle<Segment> getSegment() const;
 
-  void setSegment(const SegmentHandle& segment)
-  {
-    this->segment = segment;
-  }
+  void setSegment(const SharedHandle<Segment>& segment);
 
-  void setRequest(const RequestHandle& request)
-  {
-    this->request = request;
-  }
+  void setRequest(const SharedHandle<Request>& request);
 
   /**
    * entityLength is used in isRangeSatisfied() method.
@@ -100,92 +92,47 @@ public:
     return entityLength;
   }
 
-  string getHost() const
-  {
-    return request->getHost();
-  }
+  std::string getHost() const;
 
-  int32_t getPort() const
-  {
-    return request->getPort();
-  }
+  int32_t getPort() const;
 
-  string getMethod() const
-  {
-    return request->getMethod();
-  }
+  std::string getMethod() const;
 
-  string getProtocol() const
-  {
-    return request->getProtocol();
-  }
+  std::string getProtocol() const;
 
-  string getCurrentURI() const
-  {
-    return request->getCurrentUrl();
-  }
+  std::string getCurrentURI() const;
   
-  string getDir() const
-  {
-    return request->getDir();
-  }
+  std::string getDir() const;
 
-  string getFile() const
-  {
-    return request->getFile();
-  }
+  std::string getFile() const;
 
-  string getPreviousURI() const
-  {
-    return request->getPreviousUrl();
-  }
+  std::string getPreviousURI() const;
 
-  RangeHandle getRange() const;
+  SharedHandle<Range> getRange() const;
 
   /**
    * Inspects whether the specified response range is satisfiable
    * with request range.
    */
-  bool isRangeSatisfied(const RangeHandle& range) const;
+  bool isRangeSatisfied(const SharedHandle<Range>& range) const;
 
-  RequestHandle getRequest() const
-  {
-    return request;
-  }
+  SharedHandle<Request> getRequest() const;
 
-  int64_t getStartByte() const
-  {
-    if(segment.isNull()) {
-      return 0;
-    } else {
-      return segment->getPositionToWrite();
-    }
-  }
+  int64_t getStartByte() const;
 
-  int64_t getEndByte() const
-  {
-    if(segment.isNull() || request.isNull()) {
-      return 0;
-    } else {
-      if(request->isKeepAlive()) {
-	return segment->getPosition()+segment->getLength()-1;
-      } else {
-	return 0;
-      }
-    }
-  }
+  int64_t getEndByte() const;
 
   /**
    * Returns string representation of http request.
    * It usually starts with "GET ..." and ends with "\r\n".
    */
-  string createRequest() const;
+  std::string createRequest() const;
 
   /**
    * Returns string representation of http tunnel request.
    * It usually starts with "CONNECT ..." and ends with "\r\n".
    */
-  string createProxyRequest() const;
+  std::string createProxyRequest() const;
 
   /**
    * Configures this object with option.
@@ -213,13 +160,15 @@ public:
     this->authEnabled = authEnabled;
   }
 
-  void setUserAgent(const string& userAgent)
+  void setUserAgent(const std::string& userAgent)
   {
     this->userAgent = userAgent;
   }
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;
-typedef deque<HttpRequestHandle> HttpRequests;
+typedef std::deque<HttpRequestHandle> HttpRequests;
+
+} // namespace aria2
 
 #endif // _D_HTTP_REQUEST_H_

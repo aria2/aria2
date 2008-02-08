@@ -36,12 +36,13 @@
 #define _D_DHT_SETUP_H_
 
 #include "common.h"
+#include <deque>
 
+namespace aria2 {
 class Logger;
 class Option;
 class DownloadEngine;
 class Command;
-typedef deque<Command*> Commands;
 
 class DHTSetup {
 private:
@@ -54,9 +55,11 @@ public:
 
   ~DHTSetup();
 
-  Commands setup(DownloadEngine* e, const Option* option);
+  std::deque<Command*> setup(DownloadEngine* e, const Option* option);
 
   static bool initialized();
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_SETUP_H_

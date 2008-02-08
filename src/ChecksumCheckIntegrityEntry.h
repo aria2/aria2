@@ -37,6 +37,8 @@
 
 #include "CheckIntegrityEntry.h"
 
+namespace aria2 {
+
 class ChecksumCheckIntegrityEntry:public CheckIntegrityEntry
 {
 public:
@@ -48,9 +50,11 @@ public:
 
   virtual void initValidator();
 
-  virtual Commands onDownloadFinished(DownloadEngine* e);
+  virtual std::deque<Command*> onDownloadFinished(DownloadEngine* e);
 
-  virtual Commands onDownloadIncomplete(DownloadEngine* e);
+  virtual std::deque<Command*> onDownloadIncomplete(DownloadEngine* e);
 };
+
+} // namespace aria2
 
 #endif // _D_CHECKSUM_CHECK_INTEGRITY_ENTRY_H_

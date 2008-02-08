@@ -34,6 +34,8 @@
 /* copyright --> */
 #include "Base64.h"
 
+namespace aria2 {
+
 static const char CHAR_TABLE[] = {
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
   'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -179,22 +181,24 @@ void Base64::decode(unsigned char*& result, size_t& rlength,
   delete [] nsrc;
 }
 
-string Base64::encode(const string& s)
+std::string Base64::encode(const std::string& s)
 {
   unsigned char* buf = 0;
   size_t len;
   encode(buf, len, s.c_str(), s.size());
-  string r(&buf[0], &buf[len]);
+  std::string r(&buf[0], &buf[len]);
   delete [] buf;
   return r;
 }
 
-string Base64::decode(const string& s)
+std::string Base64::decode(const std::string& s)
 {
   unsigned char* buf = 0;
   size_t len;
   decode(buf, len, s.c_str(), s.size());
-  string r(&buf[0], &buf[len]);
+  std::string r(&buf[0], &buf[len]);
   delete [] buf;
   return r;
 }
+
+} // namespace aria2

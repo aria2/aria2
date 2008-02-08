@@ -6,9 +6,19 @@
 #include "MockBtMessageDispatcher.h"
 #include "BtChokingEvent.h"
 #include "BtCancelSendingPieceEvent.h"
+#include "FileEntry.h"
+#include "Peer.h"
+#include "Piece.h"
+#include "BtRegistry.h"
+#include "PeerObject.h"
+#include "BtMessageReceiver.h"
+#include "BtRequestFactory.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtPieceMessageTest:public CppUnit::TestFixture {
 
@@ -54,28 +64,25 @@ public:
 
   };
 
-  typedef SharedHandle<MockBtMessage2> MockBtMessage2Handle;
-
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
-    virtual BtMessageHandle createRejectMessage(int32_t index,
-						int32_t begin,
-						int32_t length) {
-      MockBtMessage2Handle msg = new MockBtMessage2(index, begin, length);
+    virtual SharedHandle<BtMessage>
+    createRejectMessage(int32_t index,
+			int32_t begin,
+			int32_t length) {
+      SharedHandle<MockBtMessage2> msg = new MockBtMessage2(index, begin, length);
       return msg;
     }
   };
 
-  typedef SharedHandle<MockBtMessageFactory2> MockBtMessageFactory2Handle;
-
-  MockBtMessageDispatcherHandle btMessageDispatcher;
-  PeerHandle peer;
-  BtPieceMessageHandle msg;
+  SharedHandle<MockBtMessageDispatcher> btMessageDispatcher;
+  SharedHandle<Peer> peer;
+  SharedHandle<BtPieceMessage> msg;
 
   void setUp() {
     BtRegistry::unregisterAll();
 
-    MockBtContextHandle btContext;
+    SharedHandle<MockBtContext> btContext;
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     btContext->setPieceLength(16*1024);
     btContext->setTotalLength(256*1024);
@@ -110,7 +117,7 @@ void BtPieceMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[5], 12345);
   PeerMessageUtil::setIntParam(&msg[9], 256);
   memcpy(&msg[13], data, sizeof(data));
-  BtPieceMessageHandle pm = BtPieceMessage::create(&msg[4], 11);
+  SharedHandle<BtPieceMessage> pm = BtPieceMessage::create(&msg[4], 11);
   CPPUNIT_ASSERT_EQUAL((int8_t)7, pm->getId());
   CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)256, pm->getBegin());
@@ -287,6 +294,8 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_sendingInProgress() {
 }
 
 void BtPieceMessageTest::testToString() {
-  CPPUNIT_ASSERT_EQUAL(string("piece index=1, begin=1024, length=16384"),
+  CPPUNIT_ASSERT_EQUAL(std::string("piece index=1, begin=1024, length=16384"),
 		 msg->toString());
 }
+
+} // namespace aria2

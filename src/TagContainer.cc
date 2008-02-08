@@ -35,6 +35,9 @@
 #include "TagContainer.h"
 #include "TaggedItem.h"
 #include "Util.h"
+#include <algorithm>
+
+namespace aria2 {
 
 TagContainer::TagContainer() {}
 
@@ -45,11 +48,11 @@ TagContainer::~TagContainer() {}
 
 class SingleTagSearch {
 private:
-  string _tag;
+  std::string _tag;
 
   TaggedItems _result;
 public:
-  SingleTagSearch(const string& tag):_tag(tag) {}
+  SingleTagSearch(const std::string& tag):_tag(tag) {}
 
   void operator()(const TaggedItemHandle& item)
   {
@@ -64,18 +67,18 @@ public:
   }
 };
 
-TaggedItems TagContainer::search(const string& tag) const
+TaggedItems TagContainer::search(const std::string& tag) const
 {
-  return for_each(_taggedItems.begin(), _taggedItems.end(), SingleTagSearch(tag)).getResult();
+  return std::for_each(_taggedItems.begin(), _taggedItems.end(), SingleTagSearch(tag)).getResult();
 }
 
 class NameMatchForward {
 private:
-  string _name;
+  std::string _name;
 
   TaggedItems _result;
 public:
-  NameMatchForward(const string& name):_name(name) {}
+  NameMatchForward(const std::string& name):_name(name) {}
 
   void operator()(const TaggedItemHandle& item)
   {
@@ -90,14 +93,14 @@ public:
   }
 };
 
-TaggedItems TagContainer::nameMatchForward(const string& name) const
+TaggedItems TagContainer::nameMatchForward(const std::string& name) const
 {
-  return for_each(_taggedItems.begin(), _taggedItems.end(), NameMatchForward(name)).getResult();
+  return std::for_each(_taggedItems.begin(), _taggedItems.end(), NameMatchForward(name)).getResult();
 }
 
-TaggedItemHandle TagContainer::nameMatch(const string& name) const
+TaggedItemHandle TagContainer::nameMatch(const std::string& name) const
 {
-  TaggedItems::const_iterator itr = find(_taggedItems.begin(), _taggedItems.end(), TaggedItemHandle(new TaggedItem(name)));
+  TaggedItems::const_iterator itr = std::find(_taggedItems.begin(), _taggedItems.end(), TaggedItemHandle(new TaggedItem(name)));
   if(itr == _taggedItems.end()) {
     return 0;
   } else {
@@ -114,3 +117,5 @@ void TagContainer::addItem(const TaggedItemHandle& item)
 {
   _taggedItems.push_back(item);
 }
+
+} // namespace aria2

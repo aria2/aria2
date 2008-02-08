@@ -34,6 +34,8 @@
 /* copyright --> */
 #include "BtKeepAliveMessage.h"
 
+namespace aria2 {
+
 int32_t BtKeepAliveMessage::MESSAGE_LENGTH = 4;
 
 const unsigned char* BtKeepAliveMessage::getMessage() {
@@ -51,3 +53,5 @@ const unsigned char* BtKeepAliveMessage::getMessage() {
 int32_t BtKeepAliveMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
+
+} // namespace aria2

@@ -36,12 +36,16 @@
 #define _D_BT_PROGRESS_INFO_FILE_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
 
 class BtProgressInfoFile {
 public:
   virtual ~BtProgressInfoFile() {}
 
-  virtual string getFilename() = 0;
+  virtual std::string getFilename() = 0;
 
   virtual bool exists() = 0;
 
@@ -53,5 +57,7 @@ public:
 };
 
 typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_PROGRESS_INFO_FILE_H_

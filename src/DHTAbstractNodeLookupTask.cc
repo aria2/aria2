@@ -42,8 +42,13 @@
 #include "DHTMessageCallbackImpl.h"
 #include "DHTBucket.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "Util.h"
 #include "DHTIDCloser.h"
+#include <cstring>
+#include <algorithm>
+
+namespace aria2 {
 
 DHTAbstractNodeLookupTask::DHTAbstractNodeLookupTask(const unsigned char* targetID):
   _inFlightMessage(0)
@@ -51,13 +56,13 @@ DHTAbstractNodeLookupTask::DHTAbstractNodeLookupTask(const unsigned char* target
   memcpy(_targetID, targetID, DHT_ID_LENGTH);
 }
 
-void DHTAbstractNodeLookupTask::onReceived(const DHTMessageHandle& message)
+void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& message)
 {
   --_inFlightMessage;
   onReceivedInternal(message);
-  DHTNodeLookupEntries newEntries = toEntries(getNodesFromMessage(message));
+  std::deque<SharedHandle<DHTNodeLookupEntry> > newEntries = toEntries(getNodesFromMessage(message));
   size_t count = 0;
-  for(DHTNodeLookupEntries::const_iterator i = newEntries.begin();
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i = newEntries.begin();
       i != newEntries.end(); ++i) {
     if(memcmp(_localNode->getID(), (*i)->_node->getID(), DHT_ID_LENGTH) != 0) {
       _entries.push_front(*i);
@@ -65,8 +70,8 @@ void DHTAbstractNodeLookupTask::onReceived(const DHTMessageHandle& message)
     }
   }
   _logger->debug("%u node lookup entries added.", count);
-  stable_sort(_entries.begin(), _entries.end(), DHTIDCloser(_targetID));
-  _entries.erase(unique(_entries.begin(), _entries.end()), _entries.end());
+  std::stable_sort(_entries.begin(), _entries.end(), DHTIDCloser(_targetID));
+  _entries.erase(std::unique(_entries.begin(), _entries.end()), _entries.end());
   _logger->debug("%u node lookup entries are unique.", _entries.size());
   if(_entries.size() > DHTBucket::K) {
     _entries.erase(_entries.begin()+DHTBucket::K, _entries.end());
@@ -83,12 +88,12 @@ void DHTAbstractNodeLookupTask::onReceived(const DHTMessageHandle& message)
   }
 }
 
-void DHTAbstractNodeLookupTask::onTimeout(const DHTNodeHandle& node)
+void DHTAbstractNodeLookupTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   _logger->debug("node lookup message timeout for node ID=%s",
 		 Util::toHex(node->getID(), DHT_ID_LENGTH).c_str());
   --_inFlightMessage;
-  for(DHTNodeLookupEntries::iterator i = _entries.begin(); i != _entries.end(); ++i) {
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i = _entries.begin(); i != _entries.end(); ++i) {
     if((*i)->_node == node) {
       _entries.erase(i);
       break;
@@ -108,11 +113,11 @@ void DHTAbstractNodeLookupTask::onTimeout(const DHTNodeHandle& node)
 
 void DHTAbstractNodeLookupTask::sendMessage()
 {
-  for(DHTNodeLookupEntries::iterator i = _entries.begin(); i != _entries.end() && _inFlightMessage < ALPHA; ++i) {
+  for(std::deque<SharedHandle<DHTNodeLookupEntry> >::iterator i = _entries.begin(); i != _entries.end() && _inFlightMessage < ALPHA; ++i) {
     if((*i)->_used == false) {
       ++_inFlightMessage;
       (*i)->_used = true;
-      DHTMessageHandle m = createMessage((*i)->_node);
+      SharedHandle<DHTMessage> m = createMessage((*i)->_node);
       _dispatcher->addMessageToQueue(m, new DHTMessageCallbackImpl(this));
     }
   }
@@ -139,12 +144,15 @@ void DHTAbstractNodeLookupTask::startup()
   }
 }
 
-DHTNodeLookupEntries DHTAbstractNodeLookupTask::toEntries(const DHTNodes& nodes) const
+std::deque<SharedHandle<DHTNodeLookupEntry> >
+DHTAbstractNodeLookupTask::toEntries(const std::deque<SharedHandle<DHTNode> >& nodes) const
 {
-  DHTNodeLookupEntries entries;
-  for(DHTNodes::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
-    DHTNodeLookupEntryHandle e = new DHTNodeLookupEntry(*i);
+  std::deque<SharedHandle<DHTNodeLookupEntry> > entries;
+  for(std::deque<SharedHandle<DHTNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
+    SharedHandle<DHTNodeLookupEntry> e = new DHTNodeLookupEntry(*i);
     entries.push_back(e);
   }
   return entries;
 }
+
+} // namespace aria2

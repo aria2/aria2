@@ -37,18 +37,25 @@
 #include "Piece.h"
 #include "Peer.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "prefs.h"
 #include "DirectDiskAdaptor.h"
 #include "MultiDiskAdaptor.h"
 #include "CopyDiskAdaptor.h"
 #include "DiskWriter.h"
 #include "BitfieldManFactory.h"
+#include "BitfieldMan.h"
 #include "message.h"
 #include "DefaultDiskWriterFactory.h"
+#include "FileEntry.h"
 #include "DlAbortEx.h"
 #include "Util.h"
 #include "a2functional.h"
+#include "Option.h"
 #include <numeric>
+#include <algorithm>
+
+namespace aria2 {
 
 DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option):
   downloadContext(downloadContext),
@@ -147,9 +154,9 @@ public:
 
 PieceHandle DefaultPieceStorage::findUsedPiece(int32_t index) const
 {
-  Pieces::const_iterator itr = find_if(usedPieces.begin(),
-				       usedPieces.end(),
-				       FindPiece(index));
+  Pieces::const_iterator itr = std::find_if(usedPieces.begin(),
+					    usedPieces.end(),
+					    FindPiece(index));
   if(itr == usedPieces.end()) {
     return 0;
   } else {
@@ -169,7 +176,7 @@ int32_t DefaultPieceStorage::getMissingFastPieceIndex(const PeerHandle& peer)
   if(peer->isFastExtensionEnabled() && peer->countPeerAllowedIndexSet() > 0) {
     BitfieldMan tempBitfield(bitfieldMan->getBlockLength(),
 			     bitfieldMan->getTotalLength());
-    for(Integers::const_iterator itr = peer->getPeerAllowedIndexSet().begin();
+    for(std::deque<int32_t>::const_iterator itr = peer->getPeerAllowedIndexSet().begin();
 	itr != peer->getPeerAllowedIndexSet().end(); itr++) {
       if(!bitfieldMan->isBitSet(index) && peer->hasPiece(*itr)) {
 	tempBitfield.setBit(*itr);
@@ -241,7 +248,7 @@ void DefaultPieceStorage::deleteUsedPiece(const PieceHandle& piece)
   if(piece.isNull()) {
     return;
   }
-  Pieces::iterator itr = find(usedPieces.begin(), usedPieces.end(), piece);
+  Pieces::iterator itr = std::find(usedPieces.begin(), usedPieces.end(), piece);
   if(itr != usedPieces.end()) {
     usedPieces.erase(itr);
   }
@@ -370,17 +377,17 @@ int64_t DefaultPieceStorage::getFilteredCompletedLength()
 
 int32_t DefaultPieceStorage::getInFlightPieceCompletedLength() const
 {
-  return accumulate(usedPieces.begin(), usedPieces.end(), 0, adopt2nd(plus<int32_t>(), mem_fun_sh(&Piece::getCompletedLength)));
+  return std::accumulate(usedPieces.begin(), usedPieces.end(), 0, adopt2nd(std::plus<int32_t>(), mem_fun_sh(&Piece::getCompletedLength)));
 }
 
 // not unittested
-void DefaultPieceStorage::setFileFilter(const Strings& filePaths)
+void DefaultPieceStorage::setFileFilter(const std::deque<std::string>& filePaths)
 {
   if(downloadContext->getFileMode() != DownloadContext::MULTI || filePaths.empty()) {
     return;
   }
   diskAdaptor->removeAllDownloadEntry();
-  for(Strings::const_iterator pitr = filePaths.begin();
+  for(std::deque<std::string>::const_iterator pitr = filePaths.begin();
       pitr != filePaths.end(); pitr++) {
     if(!diskAdaptor->addDownloadEntry(*pitr)) {
       throw new DlAbortEx(EX_NO_SUCH_FILE_ENTRY, (*pitr).c_str());
@@ -393,14 +400,14 @@ void DefaultPieceStorage::setFileFilter(const Strings& filePaths)
 
 void DefaultPieceStorage::setFileFilter(IntSequence seq)
 {
-  Integers fileIndexes = seq.flush();
+  std::deque<int32_t> fileIndexes = seq.flush();
   // TODO Is sorting necessary?
-  sort(fileIndexes.begin(), fileIndexes.end());
-  fileIndexes.erase(unique(fileIndexes.begin(), fileIndexes.end()), fileIndexes.end());
-  Strings filePaths;
+  std::sort(fileIndexes.begin(), fileIndexes.end());
+  fileIndexes.erase(std::unique(fileIndexes.begin(), fileIndexes.end()), fileIndexes.end());
+  std::deque<std::string> filePaths;
   const FileEntries& entries = diskAdaptor->getFileEntries();
   for(int32_t i = 0; i < (int32_t)entries.size(); i++) {
-    if(find(fileIndexes.begin(), fileIndexes.end(), i+1) != fileIndexes.end()) {
+    if(std::find(fileIndexes.begin(), fileIndexes.end(), i+1) != fileIndexes.end()) {
       logger->debug("index=%d is %s", i+1, entries[i]->getPath().c_str());
       filePaths.push_back(entries[i]->getPath());
     }
@@ -497,10 +504,10 @@ void DefaultPieceStorage::advertisePiece(int32_t cuid, int32_t index)
   haves.push_front(entry);
 }
 
-Integers DefaultPieceStorage::getAdvertisedPieceIndexes(int32_t myCuid,
+std::deque<int32_t> DefaultPieceStorage::getAdvertisedPieceIndexes(int32_t myCuid,
 							const Time& lastCheckTime)
 {
-  Integers indexes;
+  std::deque<int32_t> indexes;
   for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
     const Haves::value_type& have = *itr;
     if(have.getCuid() == myCuid) {
@@ -533,7 +540,7 @@ public:
 void DefaultPieceStorage::removeAdvertisedPiece(int32_t elapsed)
 {
   Haves::iterator itr =
-    find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
+    std::find_if(haves.begin(), haves.end(), FindElapsedHave(elapsed));
   if(itr != haves.end()) {
     logger->debug(MSG_REMOVED_HAVE_ENTRY, haves.end()-itr);
     haves.erase(itr, haves.end());
@@ -589,3 +596,5 @@ void DefaultPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHandle& di
 {
   _diskWriterFactory = diskWriterFactory;
 }
+
+} // namespace aria2

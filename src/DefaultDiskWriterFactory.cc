@@ -32,14 +32,14 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_MESSAGE_DECL_H_
-#define _D_DHT_MESSAGE_DECL_H_
+#include "DefaultDiskWriterFactory.h"
+#include "DefaultDiskWriter.h"
 
-#include "SharedHandle.h"
-#include <deque>
+namespace aria2 {
 
-class DHTMessage;
-typedef SharedHandle<DHTMessage> DHTMessageHandle;
-typedef std::deque<DHTMessageHandle> DHTMessages;
+SharedHandle<DiskWriter> DefaultDiskWriterFactory::newDiskWriter()
+{
+  return new DefaultDiskWriter();
+}
 
-#endif // _D_DHT_MESSAGE_DECL_H_
+} // namespace aria2

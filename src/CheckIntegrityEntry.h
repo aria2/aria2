@@ -36,17 +36,18 @@
 #define _D_CHECK_INTEGRITY_ENTRY_H_
 
 #include "RequestGroupEntry.h"
+#include "ProgressAwareEntry.h"
+#include <deque>
+
+namespace aria2 {
 
 class IteratableValidator;
-typedef SharedHandle<IteratableValidator> IteratableValidatorHandle;
-class Command;
-typedef deque<Command*> Commands;
 class DownloadEngine;
 
 class CheckIntegrityEntry : public RequestGroupEntry,
 			    public ProgressAwareEntry {
 protected:
-  IteratableValidatorHandle _validator;
+  SharedHandle<IteratableValidator> _validator;
 public:
   CheckIntegrityEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
@@ -64,11 +65,14 @@ public:
 
   virtual void initValidator() = 0;
 
-  virtual Commands onDownloadFinished(DownloadEngine* e) = 0;
+  virtual std::deque<Command*> onDownloadFinished(DownloadEngine* e) = 0;
 
-  virtual Commands onDownloadIncomplete(DownloadEngine* e) = 0;
+  virtual std::deque<Command*> onDownloadIncomplete(DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;
-typedef deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
+typedef std::deque<CheckIntegrityEntryHandle> CheckIntegrityEntries;
+
+} // namespace aria2
+
 #endif // _D_CHECK_INTEGRITY_ENTRY_H_

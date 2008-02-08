@@ -41,16 +41,15 @@
 #include "DlAbortEx.h"
 #include "BitfieldMan.h"
 #include "DefaultDiskWriter.h"
-#include "BinaryStream.h"
 #include "FatalException.h"
-#include <ctype.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include "FileEntry.h"
 #include <signal.h>
+#include <cerrno>
+#include <cassert>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
-
+#include <algorithm>
 #ifndef HAVE_SLEEP
 # ifdef HAVE_WINSOCK_H
 #  define WIN32_LEAN_AND_MEAN
@@ -58,10 +57,12 @@
 # endif // HAVE_WINSOCK_H
 #endif // HAVE_SLEEP
 
+namespace aria2 {
+
 template<typename T>
-string uint2str(T value, bool comma)
+std::string uint2str(T value, bool comma)
 {
-  string str;
+  std::string str;
   if(value == 0) {
     str = "0";
     return str;
@@ -80,14 +81,14 @@ string uint2str(T value, bool comma)
 }
 
 template<typename T>
-string int2str(T value, bool comma)
+std::string int2str(T value, bool comma)
 {
   bool flag = false;
   if(value < 0) {
     flag = true;
     value = -value;
   }
-  string str = uint2str<T>(value, comma);
+  std::string str = uint2str<T>(value, comma);
   if(flag) {
     str.insert(str.begin(), '-');
   }
@@ -96,53 +97,53 @@ string int2str(T value, bool comma)
 
 
 
-string Util::uitos(uint16_t value, bool comma)
+std::string Util::uitos(uint16_t value, bool comma)
 {
   return uint2str<uint16_t>(value, comma);
 }
 
-string Util::itos(int16_t value, bool comma)
+std::string Util::itos(int16_t value, bool comma)
 {
   return int2str<int16_t>(value, comma);
 }
 
-string Util::uitos(uint32_t value, bool comma)
+std::string Util::uitos(uint32_t value, bool comma)
 {
   return uint2str<uint32_t>(value, comma);
 }
 
-string Util::itos(int32_t value, bool comma)
+std::string Util::itos(int32_t value, bool comma)
 {
   return int2str<int32_t>(value, comma);
 }
 
-string Util::ullitos(uint64_t value, bool comma)
+std::string Util::ullitos(uint64_t value, bool comma)
 {
   return uint2str<uint64_t>(value, comma);
 }
 
-string Util::llitos(int64_t value, bool comma)
+std::string Util::llitos(int64_t value, bool comma)
 {
   return int2str<int64_t>(value, comma);
 }
 
-string Util::trim(const string& src, const string& trimCharset)
+std::string Util::trim(const std::string& src, const std::string& trimCharset)
 {
-  string::size_type sp = src.find_first_not_of(trimCharset);
-  string::size_type ep = src.find_last_not_of(trimCharset);
-  if(sp == string::npos || ep == string::npos) {
+  std::string::size_type sp = src.find_first_not_of(trimCharset);
+  std::string::size_type ep = src.find_last_not_of(trimCharset);
+  if(sp == std::string::npos || ep == std::string::npos) {
     return "";
   } else {
     return src.substr(sp, ep-sp+1);
   }
 }
 
-void Util::split(pair<string, string>& hp, const string& src, char delim)
+void Util::split(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
 {
   hp.first = "";
   hp.second = "";
-  string::size_type p = src.find(delim);
-  if(p == string::npos) {
+  std::string::size_type p = src.find(delim);
+  if(p == std::string::npos) {
     hp.first = src;
     hp.second = "";
   } else {
@@ -151,13 +152,13 @@ void Util::split(pair<string, string>& hp, const string& src, char delim)
   }
 }
 
-pair<string, string> Util::split(const string& src, const string& delims)
+std::pair<std::string, std::string> Util::split(const std::string& src, const std::string& delims)
 {
-  pair<string, string> hp;
+  std::pair<std::string, std::string> hp;
   hp.first = "";
   hp.second = "";
-  string::size_type p = src.find_first_of(delims);
-  if(p == string::npos) {
+  std::string::size_type p = src.find_first_of(delims);
+  if(p == std::string::npos) {
     hp.first = src;
     hp.second = "";
   } else {
@@ -182,12 +183,12 @@ int32_t Util::difftvsec(struct timeval tv1, struct timeval tv2) {
   return tv1.tv_sec-tv2.tv_sec;
 }
 
-void Util::slice(Strings& result, const string& src, char delim, bool doTrim) {
-  string::size_type p = 0;
+void Util::slice(std::deque<std::string>& result, const std::string& src, char delim, bool doTrim) {
+  std::string::size_type p = 0;
   while(1) {
-    string::size_type np = src.find(delim, p);
-    if(np == string::npos) {
-      string term = src.substr(p);
+    std::string::size_type np = src.find(delim, p);
+    if(np == std::string::npos) {
+      std::string term = src.substr(p);
       if(doTrim) {
 	term = trim(term);
       }
@@ -196,7 +197,7 @@ void Util::slice(Strings& result, const string& src, char delim, bool doTrim) {
       }
       break;
     }
-    string term = src.substr(p, np-p);
+    std::string term = src.substr(p, np-p);
     if(doTrim) {
       term = trim(term);
     }
@@ -207,7 +208,7 @@ void Util::slice(Strings& result, const string& src, char delim, bool doTrim) {
   } 
 }
 
-bool Util::startsWith(const string& target, const string& part) {
+bool Util::startsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;
   }
@@ -221,7 +222,7 @@ bool Util::startsWith(const string& target, const string& part) {
   }
 }
 
-bool Util::endsWith(const string& target, const string& part) {
+bool Util::endsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;
   }
@@ -235,14 +236,14 @@ bool Util::endsWith(const string& target, const string& part) {
   }
 }
 
-string Util::replace(const string& target, const string& oldstr, const string& newstr) {
+std::string Util::replace(const std::string& target, const std::string& oldstr, const std::string& newstr) {
   if(target == "" || oldstr == "" ) {
     return target;
   }
-  string result;
-  string::size_type p = 0;
-  string::size_type np = target.find(oldstr);
-  while(np != string::npos) {
+  std::string result;
+  std::string::size_type p = 0;
+  std::string::size_type np = target.find(oldstr);
+  while(np != std::string::npos) {
     result += target.substr(p, np-p)+newstr;
     p = np+oldstr.size();
     np = target.find(oldstr, p);
@@ -268,8 +269,8 @@ bool Util::shouldUrlencode(const char c)
 	   '@' == c || '&' == c || '=' == c || '+' == c);	   
 }
 
-string Util::urlencode(const unsigned char* target, int32_t len) {
-  string dest;
+std::string Util::urlencode(const unsigned char* target, int32_t len) {
+  std::string dest;
   for(int32_t i = 0; i < len; i++) {
     if(shouldUrlencode(target[i])) {
       char temp[4];
@@ -283,8 +284,8 @@ string Util::urlencode(const unsigned char* target, int32_t len) {
   return dest;
 }
 
-string Util::torrentUrlencode(const unsigned char* target, int32_t len) {
-  string dest;
+std::string Util::torrentUrlencode(const unsigned char* target, int32_t len) {
+  std::string dest;
   for(int32_t i = 0; i < len; i++) {
     if('0' <= target[i] && target[i] <= '9' ||
        'A' <= target[i] && target[i] <= 'Z' ||
@@ -300,14 +301,14 @@ string Util::torrentUrlencode(const unsigned char* target, int32_t len) {
   return dest;
 }
 
-string Util::urldecode(const string& target) {
-  string result;
-  for(string::const_iterator itr = target.begin();
+std::string Util::urldecode(const std::string& target) {
+  std::string result;
+  for(std::string::const_iterator itr = target.begin();
       itr != target.end(); itr++) {
     if(*itr == '%') {
       if(itr+1 != target.end() && itr+2 != target.end() &&
 	 isxdigit(*(itr+1)) && isxdigit(*(itr+2))) {
-	result += Util::parseInt(string(itr+1, itr+3), 16);
+	result += Util::parseInt(std::string(itr+1, itr+3), 16);
 	itr += 2;
       } else {
 	result += *itr;
@@ -319,28 +320,28 @@ string Util::urldecode(const string& target) {
   return result;
 }
 
-string Util::toHex(const unsigned char* src, int32_t len) {
+std::string Util::toHex(const unsigned char* src, int32_t len) {
   char* temp = new char[len*2+1];
   for(int32_t i = 0; i < len; i++) {
     sprintf(temp+i*2, "%02x", src[i]);
   }
   temp[len*2] = '\0';
-  string hex = temp;
+  std::string hex = temp;
   delete [] temp;
   return hex;
 }
 
-FILE* Util::openFile(const string& filename, const string& mode) {
+FILE* Util::openFile(const std::string& filename, const std::string& mode) {
   FILE* file = fopen(filename.c_str(), mode.c_str());
   return file;
 }
 
-void Util::fileCopy(const string& dest, const string& src) {
+void Util::fileCopy(const std::string& dest, const std::string& src) {
   File file(src);
   rangedFileCopy(dest, src, 0, file.size());
 }
 
-void Util::rangedFileCopy(const string& dest, const string& src, int64_t srcOffset, int64_t length)
+void Util::rangedFileCopy(const std::string& dest, const std::string& src, int64_t srcOffset, int64_t length)
 {
   int32_t bufSize = 4096;
   unsigned char buf[bufSize];
@@ -387,8 +388,8 @@ bool Util::isPowerOf(int32_t num, int32_t base) {
   return false;
 }
 
-string Util::secfmt(int32_t sec) {
-  string str;
+std::string Util::secfmt(int32_t sec) {
+  std::string str;
   if(sec >= 3600) {
     str = itos(sec/3600)+"h";
     sec %= 3600;
@@ -425,14 +426,14 @@ int32_t getNum(const char* buf, int32_t offset, int32_t length) {
   return x;
 }
 
-void unfoldSubRange(const string& src, Integers& range) {
+void unfoldSubRange(const std::string& src, std::deque<int32_t>& range) {
   if(src.empty()) {
     return;
   }
-  string::size_type p = src.find_first_of(",-");
+  std::string::size_type p = src.find_first_of(",-");
   if(p == 0) {
     return;
-  } else if(p == string::npos) {
+  } else if(p == std::string::npos) {
     range.push_back(atoi(src.c_str()));
   } else {
     if(src.at(p) == ',') {
@@ -441,8 +442,8 @@ void unfoldSubRange(const string& src, Integers& range) {
       unfoldSubRange(src.substr(p+1), range);
     } else if(src.at(p) == '-') {
       int32_t rightNumBegin = p+1;
-      string::size_type nextDelim = src.find_first_of(",", rightNumBegin);
-      if(nextDelim == string::npos) {
+      std::string::size_type nextDelim = src.find_first_of(",", rightNumBegin);
+      if(nextDelim == std::string::npos) {
 	nextDelim = src.size();
       }
       int32_t left = getNum(src.c_str(), 0, p);
@@ -457,15 +458,15 @@ void unfoldSubRange(const string& src, Integers& range) {
   }
 }
 
-void Util::unfoldRange(const string& src, Integers& range) {
+void Util::unfoldRange(const std::string& src, std::deque<int32_t>& range) {
   unfoldSubRange(src, range);
-  sort(range.begin(), range.end());
-  range.erase(unique(range.begin(), range.end()), range.end());
+  std::sort(range.begin(), range.end());
+  range.erase(std::unique(range.begin(), range.end()), range.end());
 }
 
-int32_t Util::parseInt(const string& s, int32_t base)
+int32_t Util::parseInt(const std::string& s, int32_t base)
 {
-  string trimed = Util::trim(s);
+  std::string trimed = Util::trim(s);
   if(trimed.empty()) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			"empty string");
@@ -483,9 +484,9 @@ int32_t Util::parseInt(const string& s, int32_t base)
   return v;
 }
 
-int64_t Util::parseLLInt(const string& s, int32_t base)
+int64_t Util::parseLLInt(const std::string& s, int32_t base)
 {
-  string trimed = Util::trim(s);
+  std::string trimed = Util::trim(s);
   if(trimed.empty()) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			"empty string");
@@ -503,21 +504,21 @@ int64_t Util::parseLLInt(const string& s, int32_t base)
   return v;
 }
 
-IntSequence Util::parseIntRange(const string& src)
+IntSequence Util::parseIntRange(const std::string& src)
 {
   IntSequence::Values values;
-  string temp = src;
+  std::string temp = src;
   while(temp.size()) {
-    pair<string, string> p = Util::split(temp, ",");
+    std::pair<std::string, std::string> p = Util::split(temp, ",");
     temp = p.second;
     if(p.first.empty()) {
       continue;
     }
-    if(p.first.find("-") == string::npos) {
+    if(p.first.find("-") == std::string::npos) {
       int32_t v = Util::parseInt(p.first.c_str());
       values.push_back(IntSequence::Value(v, v+1));
     } else {
-      pair<string, string> vp = Util::split(p.first.c_str(), "-");
+      std::pair<std::string, std::string> vp = Util::split(p.first.c_str(), "-");
       if(vp.first.empty() || vp.second.empty()) {
 	throw new DlAbortEx(MSG_INCOMPLETE_RANGE, p.first.c_str());
       }
@@ -529,14 +530,14 @@ IntSequence Util::parseIntRange(const string& src)
   return values;
 }
 
-string Util::getContentDispositionFilename(const string& header) {
-  string keyName = "filename=";
-  string::size_type attributesp = header.find(keyName);
-  if(attributesp == string::npos) {
+std::string Util::getContentDispositionFilename(const std::string& header) {
+  std::string keyName = "filename=";
+  std::string::size_type attributesp = header.find(keyName);
+  if(attributesp == std::string::npos) {
     return "";
   }
-  string::size_type filenamesp = attributesp+strlen(keyName.c_str());
-  string::size_type filenameep;
+  std::string::size_type filenamesp = attributesp+strlen(keyName.c_str());
+  std::string::size_type filenameep;
   if(filenamesp == header.size()) {
     return "";
   }
@@ -547,7 +548,7 @@ string Util::getContentDispositionFilename(const string& header) {
   } else {
     filenameep = header.find(';', filenamesp);
   }
-  if(filenameep == string::npos) {
+  if(filenameep == std::string::npos) {
     filenameep = header.size();
   }
   return trim(header.substr(filenamesp, filenameep-filenamesp), "\r\n '\"");
@@ -580,9 +581,9 @@ int32_t Util::countBit(uint32_t n) {
     nbits[(n >> 24)&0xffu];
 }
 
-string Util::randomAlpha(int32_t length, const RandomizerHandle& randomizer) {
+std::string Util::randomAlpha(int32_t length, const RandomizerHandle& randomizer) {
   static const char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  string str;
+  std::string str;
   for(int32_t i = 0; i < length; i++) {
     int32_t index = randomizer->getRandomNumber(strlen(random_chars));
     str += random_chars[index];
@@ -590,19 +591,19 @@ string Util::randomAlpha(int32_t length, const RandomizerHandle& randomizer) {
   return str;
 }
 
-string Util::toUpper(const string& src) {
-  string temp = src;
-  transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
+std::string Util::toUpper(const std::string& src) {
+  std::string temp = src;
+  std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
   return temp;
 }
 
-string Util::toLower(const string& src) {
-  string temp = src;
-  transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+std::string Util::toLower(const std::string& src) {
+  std::string temp = src;
+  std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
   return temp;
 }
 
-bool Util::isNumbersAndDotsNotation(const string& name) {
+bool Util::isNumbersAndDotsNotation(const std::string& name) {
   struct sockaddr_in sockaddr;
   if(inet_aton(name.c_str(), &sockaddr.sin_addr)) {
     return true;
@@ -634,7 +635,7 @@ void Util::indexRange(int32_t& startIndex, int32_t& endIndex,
   endIndex = _endIndex;
 }
 
-string Util::getHomeDir()
+std::string Util::getHomeDir()
 {
   const char* p = getenv("HOME");
   if(p) {
@@ -644,12 +645,12 @@ string Util::getHomeDir()
   }
 }
 
-int64_t Util::getRealSize(const string& sizeWithUnit)
+int64_t Util::getRealSize(const std::string& sizeWithUnit)
 {
-  string::size_type p = sizeWithUnit.find_first_of("KM");
-  string size;
+  std::string::size_type p = sizeWithUnit.find_first_of("KM");
+  std::string size;
   int32_t mult = 1;
-  if(p == string::npos) {
+  if(p == std::string::npos) {
     size = sizeWithUnit;
   } else {
     if(sizeWithUnit[p] == 'K') {
@@ -670,7 +671,7 @@ int64_t Util::getRealSize(const string& sizeWithUnit)
   return v*mult;
 }
 
-string Util::abbrevSize(int64_t size)
+std::string Util::abbrevSize(int64_t size)
 {
   if(size < 1024) {
     return Util::llitos(size, true);
@@ -687,7 +688,7 @@ string Util::abbrevSize(int64_t size)
   return Util::llitos(size, true)+"."+Util::itos(r*10/1024)+units[i]+"i";
 }
 
-time_t Util::httpGMT(const string& httpStdTime)
+time_t Util::httpGMT(const std::string& httpStdTime)
 {
   struct tm tm;
   memset(&tm, 0, sizeof(tm));
@@ -696,7 +697,7 @@ time_t Util::httpGMT(const string& httpStdTime)
   return thetime;
 }
 
-void Util::toStream(ostream& os, const FileEntries& fileEntries)
+void Util::toStream(std::ostream& os, const FileEntries& fileEntries)
 {
   os << _("Files:") << "\n";
   os << "idx|path/length" << "\n";
@@ -704,7 +705,7 @@ void Util::toStream(ostream& os, const FileEntries& fileEntries)
   int32_t count = 1;
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); count++, itr++) {
-    os << setw(3) << count << "|" << (*itr)->getPath() << "\n";
+    os << std::setw(3) << count << "|" << (*itr)->getPath() << "\n";
     os << "   |" << Util::abbrevSize((*itr)->getLength()) << "B" << "\n";
     os << "---+---------------------------------------------------------------------------" << "\n";
   }
@@ -757,7 +758,7 @@ void Util::usleep(long microseconds) {
 #endif
 }
 
-bool Util::isNumber(const string& what)
+bool Util::isNumber(const std::string& what)
 {
   if(what.empty()) {
     return false;
@@ -770,7 +771,7 @@ bool Util::isNumber(const string& what)
   return true;
 }
 
-bool Util::isLowercase(const string& what)
+bool Util::isLowercase(const std::string& what)
 {
   if(what.empty()) {
     return false;
@@ -783,7 +784,7 @@ bool Util::isLowercase(const string& what)
   return true;
 }
 
-bool Util::isUppercase(const string& what)
+bool Util::isUppercase(const std::string& what)
 {
   if(what.empty()) {
     return false;
@@ -796,7 +797,7 @@ bool Util::isUppercase(const string& what)
   return true;
 }
 
-int32_t Util::alphaToNum(const string& alphabets)
+int32_t Util::alphaToNum(const std::string& alphabets)
 {
   if(alphabets.empty()) {
     return 0;
@@ -815,7 +816,7 @@ int32_t Util::alphaToNum(const string& alphabets)
   return num;
 }
 
-void Util::mkdirs(const string& dirpath)
+void Util::mkdirs(const std::string& dirpath)
 {
   File dir(dirpath);
   if(dir.isDir()) {
@@ -837,9 +838,9 @@ void Util::convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
   }
 }
 
-string Util::toString(const BinaryStreamHandle& binaryStream)
+std::string Util::toString(const BinaryStreamHandle& binaryStream)
 {
-  stringstream strm;
+  std::stringstream strm;
   char data[2048];
   while(1) {
     int32_t dataLength = binaryStream->readData((unsigned char*)data, sizeof(data), strm.tellp());
@@ -865,3 +866,5 @@ void* Util::allocateAlignedMemory(size_t alignment, size_t size)
   return buffer;
 }
 #endif // HAVE_POSIX_MEMALIGN
+
+} // namespace aria2

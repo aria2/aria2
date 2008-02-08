@@ -2,13 +2,15 @@
 #include "Exception.h"
 #include "Util.h"
 #include "DHTNode.h"
-#include "a2functional.h"
+#include "array_fun.h"
 #include "DHTConstants.h"
 #include "PeerMessageUtil.h"
 #include <arpa/inet.h>
 #include <cstring>
 #include <sstream>
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class DHTRoutingTableSerializerTest:public CppUnit::TestFixture {
 
@@ -28,22 +30,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTRoutingTableSerializerTest);
 
 void DHTRoutingTableSerializerTest::testSerialize()
 {
-  DHTNodeHandle localNode = new DHTNode();
+  SharedHandle<DHTNode> localNode = new DHTNode();
 
-  DHTNodeHandle nodesSrc[] = { 0, 0, 0 };
+  SharedHandle<DHTNode> nodesSrc[] = { 0, 0, 0 };
   for(size_t i = 0; i < arrayLength(nodesSrc); ++i) {
     nodesSrc[i] = new DHTNode();
     nodesSrc[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
     nodesSrc[i]->setPort(6881+i);
   }
   nodesSrc[1]->setIPAddress("non-numerical-name");
-  DHTNodes nodes(&nodesSrc[0], &nodesSrc[arrayLength(nodesSrc)]);
+  std::deque<SharedHandle<DHTNode> > nodes(&nodesSrc[0], &nodesSrc[arrayLength(nodesSrc)]);
   
   DHTRoutingTableSerializer s;
   s.setLocalNode(localNode);
   s.setNodes(nodes);
 
-  stringstream ss;
+  std::stringstream ss;
   s.serialize(ss);
 
   char zero[8];
@@ -68,7 +70,7 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // time
   ss.read(buf, 4);
   time_t time = ntohl(*reinterpret_cast<uint32_t*>(buf));
-  cerr << time << endl;
+  std::cerr << time << std::endl;
   // 4bytes reserved
   ss.read(buf, 4);
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
@@ -96,8 +98,8 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
-    pair<string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
-    CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), peer.first);
+    std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peer.second);
   }
   // 2bytes reserved
@@ -130,8 +132,8 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
-    pair<string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
-    CPPUNIT_ASSERT_EQUAL(string("192.168.0.3"), peer.first);
+    std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6883, peer.second);
   }
   // 2bytes reserved
@@ -149,3 +151,5 @@ void DHTRoutingTableSerializerTest::testSerialize()
   CPPUNIT_ASSERT_EQUAL((std::streamsize)0, ss.gcount());
   CPPUNIT_ASSERT(ss.eof());
 }
+
+} // namespace aria2

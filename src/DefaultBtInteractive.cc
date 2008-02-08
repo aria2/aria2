@@ -49,9 +49,40 @@
 #include "DefaultExtensionMessageFactory.h"
 #include "BtRegistry.h"
 #include "DHTNode.h"
+#include "PeerObject.h"
+#include "Peer.h"
+#include "Piece.h"
+#include "BtContext.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
+#include "BtRuntime.h"
+#include "BtMessageReceiver.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageFactory.h"
+#include "BtRequestFactory.h"
+#include "PeerConnection.h"
+#include "BtRegistry.h"
+#include "Logger.h"
+#include "LogFactory.h"
+
+namespace aria2 {
+
+DefaultBtInteractive::DefaultBtInteractive(const SharedHandle<BtContext>& btContext, const SharedHandle<Peer>& peer):
+  BtContextAwareCommand(btContext),
+  peer(peer),
+  logger(LogFactory::getInstance()),
+  allowedFastSetSize(10),
+  keepAliveInterval(120),
+  maxDownloadSpeedLimit(0),
+  _utPexEnabled(false),
+  _dhtEnabled(false)
+{}
+
+DefaultBtInteractive::~DefaultBtInteractive() {}
+
 
 void DefaultBtInteractive::initiateHandshake() {
-  BtHandshakeMessageHandle message =
+  SharedHandle<BtHandshakeMessage> message =
     messageFactory->createHandshakeMessage(btContext->getInfoHash(),
 					   btContext->getPeerId());
   dispatcher->addMessageToQueue(message);
@@ -59,35 +90,35 @@ void DefaultBtInteractive::initiateHandshake() {
 }
 
 BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
-    BtHandshakeMessageHandle message =
-      btMessageReceiver->receiveHandshake(quickReply);
-    if(message.isNull()) {
-      return 0;
-    }
-    peer->setPeerId(message->getPeerId());
+  SharedHandle<BtHandshakeMessage> message =
+    btMessageReceiver->receiveHandshake(quickReply);
+  if(message.isNull()) {
+    return 0;
+  }
+  peer->setPeerId(message->getPeerId());
     
-    if(message->isFastExtensionSupported()) {
-      peer->setFastExtensionEnabled(true);
-      logger->info(MSG_FAST_EXTENSION_ENABLED, cuid);
+  if(message->isFastExtensionSupported()) {
+    peer->setFastExtensionEnabled(true);
+    logger->info(MSG_FAST_EXTENSION_ENABLED, cuid);
+  }
+  if(message->isExtendedMessagingEnabled()) {
+    peer->setExtendedMessagingEnabled(true);
+    DefaultExtensionMessageFactoryHandle factory = 
+      new DefaultExtensionMessageFactory(btContext, peer);
+    if(!_utPexEnabled) {
+      factory->removeExtension("ut_pex");
     }
-    if(message->isExtendedMessagingEnabled()) {
-      peer->setExtendedMessagingEnabled(true);
-      DefaultExtensionMessageFactoryHandle factory = 
-	new DefaultExtensionMessageFactory(btContext, peer);
-      if(!_utPexEnabled) {
-	factory->removeExtension("ut_pex");
-      }
-      PEER_OBJECT(btContext, peer)->extensionMessageFactory = factory;
-      logger->info(MSG_EXTENDED_MESSAGING_ENABLED, cuid);
-    }
-    if(message->isDHTEnabled()) {
-      peer->setDHTEnabled(true);
-      logger->info(MSG_DHT_ENABLED_PEER, cuid);
-    }
-    logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
-		 peer->ipaddr.c_str(), peer->port,
-		 message->toString().c_str());
-    return message;
+    PEER_OBJECT(btContext, peer)->extensionMessageFactory = factory;
+    logger->info(MSG_EXTENDED_MESSAGING_ENABLED, cuid);
+  }
+  if(message->isDHTEnabled()) {
+    peer->setDHTEnabled(true);
+    logger->info(MSG_DHT_ENABLED_PEER, cuid);
+  }
+  logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
+	       peer->ipaddr.c_str(), peer->port,
+	       message->toString().c_str());
+  return message;
 }
 
 BtMessageHandle DefaultBtInteractive::receiveAndSendHandshake() {
@@ -145,9 +176,9 @@ void DefaultBtInteractive::addBitfieldMessageToQueue() {
 
 void DefaultBtInteractive::addAllowedFastMessageToQueue() {
   if(peer->isFastExtensionEnabled()) {
-    Integers fastSet = btContext->computeFastSet(peer->ipaddr,
+    std::deque<int32_t> fastSet = btContext->computeFastSet(peer->ipaddr,
 						 allowedFastSetSize);
-    for(Integers::const_iterator itr = fastSet.begin();
+    for(std::deque<int32_t>::const_iterator itr = fastSet.begin();
 	itr != fastSet.end(); itr++) {
       dispatcher->addMessageToQueue(messageFactory->createAllowedFastMessage(*itr));
     }
@@ -167,7 +198,7 @@ void DefaultBtInteractive::decideChoking() {
 }
 
 void DefaultBtInteractive::checkHave() {
-  Integers indexes =
+  std::deque<int32_t> indexes =
     pieceStorage->getAdvertisedPieceIndexes(cuid, haveCheckPoint);
   haveCheckPoint.reset();
   if(indexes.size() >= 20) {
@@ -177,7 +208,7 @@ void DefaultBtInteractive::checkHave() {
       dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
     }
   } else {
-    for(Integers::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+    for(std::deque<int32_t>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
       dispatcher->addMessageToQueue(messageFactory->createHaveMessage(*itr));
     }
   }
@@ -404,3 +435,45 @@ void DefaultBtInteractive::setLocalNode(const WeakHandle<DHTNode>& node)
 {
   _localNode = node;
 }
+
+int32_t DefaultBtInteractive::countPendingMessage()
+{
+  return dispatcher->countMessageInQueue();
+}
+  
+bool DefaultBtInteractive::isSendingMessageInProgress()
+{
+  return dispatcher->isSendingInProgress();
+}
+
+void DefaultBtInteractive::setPeer(const SharedHandle<Peer>& peer)
+{
+  this->peer = peer;
+}
+
+void DefaultBtInteractive::setBtMessageReceiver(const BtMessageReceiverWeakHandle& receiver)
+{
+  this->btMessageReceiver = receiver;
+}
+
+void DefaultBtInteractive::setDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
+{
+  this->dispatcher = dispatcher;
+}
+
+void DefaultBtInteractive::setBtRequestFactory(const BtRequestFactoryWeakHandle& factory)
+{
+  this->btRequestFactory = factory;
+}
+
+void DefaultBtInteractive::setPeerConnection(const PeerConnectionWeakHandle& peerConnection)
+{
+  this->peerConnection  = peerConnection;
+}
+
+void DefaultBtInteractive::setBtMessageFactory(const BtMessageFactoryWeakHandle& factory)
+{
+  this->messageFactory = factory;
+}
+
+} // namespace aria2

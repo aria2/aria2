@@ -38,8 +38,11 @@
 #include "PeerAbstractCommand.h"
 #include "RequestGroupAware.h"
 #include "BtContextAwareCommand.h"
-#include "BtInteractive.h"
-#include "PeerConnection.h"
+
+namespace aria2 {
+
+class BtInteractive;
+class PeerConnection;
 
 class PeerInteractionCommand : public PeerAbstractCommand,
 			       public BtContextAwareCommand,
@@ -49,12 +52,11 @@ public:
   enum Seq {
     INITIATOR_SEND_HANDSHAKE,
     INITIATOR_WAIT_HANDSHAKE,
-    //RECEIVER_SEND_HANDSHAKE,
     RECEIVER_WAIT_HANDSHAKE,
     WIRED};
 private:
   Seq sequence;
-  BtInteractiveHandle btInteractive;
+  SharedHandle<BtInteractive> btInteractive;
   int32_t maxDownloadSpeedLimit;
 protected:
   virtual bool executeInternal();
@@ -65,15 +67,17 @@ protected:
 public:
   PeerInteractionCommand(int32_t cuid,
 			 RequestGroup* requestGroup,
-			 const PeerHandle& peer,
+			 const SharedHandle<Peer>& peer,
 			 DownloadEngine* e,
-			 const BtContextHandle& btContext,
-			 const SocketHandle& s,
+			 const SharedHandle<BtContext>& btContext,
+			 const SharedHandle<SocketCore>& s,
 			 Seq sequence,
-			 const PeerConnectionHandle& peerConnection = 0);
+			 const SharedHandle<PeerConnection>& peerConnection = 0);
 
   virtual ~PeerInteractionCommand();
 
 };
+
+} // namespace aria2
 
 #endif // _D_PEER_INTERACTION_COMMAND_H_

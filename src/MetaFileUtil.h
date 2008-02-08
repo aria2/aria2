@@ -35,14 +35,15 @@
 #ifndef _D_META_FILE_UTIL_H_
 #define _D_META_FILE_UTIL_H_
 
-#include "MetaEntry.h"
-#include "Dictionary.h"
-#include "List.h"
-#include "Data.h"
 #include "common.h"
 #include <string>
 
-using namespace std;
+namespace aria2 {
+
+class MetaEntry;
+class Dictionary;
+class List;
+class Data;
 
 class MetaFileUtil {
 private:
@@ -53,11 +54,13 @@ private:
   static List* parseListTree(const char** pp, const char* end);
   static Data* decodeWord(const char** pp, const char* end);
   static Data* decodeInt(const char** pp, const char* end);
-  static string decodeWordAsString(const char** pp, const char* end);
+  static std::string decodeWordAsString(const char** pp, const char* end);
 
 public:
-  static MetaEntry* parseMetaFile(const string& file);
+  static MetaEntry* parseMetaFile(const std::string& file);
   static MetaEntry* bdecoding(const char* buf, int32_t len);
 };
+
+} // namespace aria2
 
 #endif // _D_META_FILE_UTIL_H_

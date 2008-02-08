@@ -33,14 +33,14 @@
  */
 /* copyright --> */
 #include "BtCheckIntegrityEntry.h"
-#include "BtSetup.h"
 #include "BtFileAllocationEntry.h"
-#include "CUIDCounter.h"
 #include "RequestGroup.h"
 #include "PieceStorage.h"
 #include "DownloadEngine.h"
 #include "FileAllocationMan.h"
 #include "DiskAdaptor.h"
+
+namespace aria2 {
 
 BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
   PieceHashCheckIntegrityEntry(requestGroup, 0) {}
@@ -68,3 +68,5 @@ Commands BtCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
   // behavior.
   return onDownloadIncomplete(e);
 }
+
+} // namespace aria2

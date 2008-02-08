@@ -38,6 +38,8 @@
 #include "NumberDecorator.h"
 #include "Util.h"
 
+namespace aria2 {
+
 class FixedWidthNumberDecorator : public NumberDecorator
 {
 private:
@@ -47,14 +49,16 @@ public:
 
   virtual ~FixedWidthNumberDecorator() {}
 
-  virtual string decorate(int32_t number)
+  virtual std::string decorate(int32_t number)
   {
-    string s = Util::itos(number);
+    std::string s = Util::itos(number);
     while(s.size() < (size_t)_width) {
       s.insert(0, "0");
     }
     return s;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_FIXED_WIDTH_NUMBER_DECORATOR_H_

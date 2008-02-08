@@ -38,14 +38,16 @@
 #include "DHTQueryMessage.h"
 #include "DHTConstants.h"
 
+namespace aria2 {
+
 class DHTFindNodeMessage:public DHTQueryMessage {
 private:
   unsigned char _targetNodeID[DHT_ID_LENGTH];
 public:
-  DHTFindNodeMessage(const DHTNodeHandle& localNode,
-		     const DHTNodeHandle& remoteNode,
+  DHTFindNodeMessage(const SharedHandle<DHTNode>& localNode,
+		     const SharedHandle<DHTNode>& remoteNode,
 		     const unsigned char* targetNodeID,
-		     const string& transactionID = "");
+		     const std::string& transactionID = "");
 
   virtual ~DHTFindNodeMessage();
 
@@ -53,7 +55,7 @@ public:
 
   virtual Dictionary* getArgument();
   
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 
@@ -62,5 +64,7 @@ public:
     return _targetNodeID;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_FIND_NODE_MESSAGE_H_

@@ -33,19 +33,22 @@
  */
 /* copyright --> */
 #include "HttpHeader.h"
+#include "Range.h"
 #include "Util.h"
 
-void HttpHeader::put(const string& name, const string& value) {
-  multimap<string, string>::value_type vt(Util::toLower(name), value);
+namespace aria2 {
+
+void HttpHeader::put(const std::string& name, const std::string& value) {
+  std::multimap<std::string, std::string>::value_type vt(Util::toLower(name), value);
   table.insert(vt);
 }
 
-bool HttpHeader::defined(const string& name) const {
+bool HttpHeader::defined(const std::string& name) const {
   return table.count(Util::toLower(name)) >= 1;
 }
 
-string HttpHeader::getFirst(const string& name) const {
-  multimap<string, string>::const_iterator itr = table.find(Util::toLower(name));
+std::string HttpHeader::getFirst(const std::string& name) const {
+  std::multimap<std::string, std::string>::const_iterator itr = table.find(Util::toLower(name));
   if(itr == table.end()) {
     return "";
   } else {
@@ -53,20 +56,20 @@ string HttpHeader::getFirst(const string& name) const {
   }
 }
 
-Strings HttpHeader::get(const string& name) const {
-  Strings v;
-  for(multimap<string, string>::const_iterator itr = table.find(Util::toLower(name)); itr != table.end(); itr++) {
+std::deque<std::string> HttpHeader::get(const std::string& name) const {
+  std::deque<std::string> v;
+  for(std::multimap<std::string, std::string>::const_iterator itr = table.find(Util::toLower(name)); itr != table.end(); itr++) {
     v.push_back((*itr).second);
   }
   return v;
 }
 
-int32_t HttpHeader::getFirstAsInt(const string& name) const {
+int32_t HttpHeader::getFirstAsInt(const std::string& name) const {
   return getFirstAsLLInt(name);
 }
 
-int64_t HttpHeader::getFirstAsLLInt(const string& name) const {
-  string value = getFirst(name);
+int64_t HttpHeader::getFirstAsLLInt(const std::string& name) const {
+  std::string value = getFirst(name);
   if(value == "") {
     return 0;
   } else {
@@ -76,9 +79,9 @@ int64_t HttpHeader::getFirstAsLLInt(const string& name) const {
 
 RangeHandle HttpHeader::getRange() const
 {
-  string rangeStr = getFirst("Content-Range");
+  std::string rangeStr = getFirst("Content-Range");
   if(rangeStr == "") {
-    string contentLengthStr = getFirst("Content-Length");
+    std::string contentLengthStr = getFirst("Content-Length");
     if(contentLengthStr == "") {
       return new Range(0, 0, 0);
     } else {
@@ -86,13 +89,13 @@ RangeHandle HttpHeader::getRange() const
       return new Range(0, contentLength-1, contentLength);
     }
   }
-  string::size_type rangeSpecIndex = rangeStr.find("bytes ");
-  if(rangeSpecIndex == string::npos) {
+  std::string::size_type rangeSpecIndex = rangeStr.find("bytes ");
+  if(rangeSpecIndex == std::string::npos) {
     return new Range(0, 0, 0);
   }
-  pair<string, string> rangePair;
+  std::pair<std::string, std::string> rangePair;
   Util::split(rangePair, rangeStr.substr(rangeSpecIndex+6), '/');
-  pair<string, string> startEndBytePair;
+  std::pair<std::string, std::string> startEndBytePair;
   Util::split(startEndBytePair, rangePair.first, '-');
 
   int64_t startByte = STRTOLL(startEndBytePair.first.c_str());
@@ -101,3 +104,5 @@ RangeHandle HttpHeader::getRange() const
 
   return new Range(startByte, endByte, entityLength);
 }
+
+} // namespace aria2

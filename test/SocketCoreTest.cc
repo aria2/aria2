@@ -2,6 +2,8 @@
 #include "Exception.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class SocketCoreTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SocketCoreTest);
@@ -26,33 +28,35 @@ void SocketCoreTest::testWriteAndReadDatagram()
     SocketCore c(SOCK_DGRAM);
     c.bind(0);
 
-    pair<string, int32_t> svaddr;
+    std::pair<std::string, int32_t> svaddr;
     s.getAddrInfo(svaddr);
 
-    string message1 = "hello world.";
+    std::string message1 = "hello world.";
     c.writeData(message1.c_str(), message1.size(), "localhost", svaddr.second);
-    string message2 = "chocolate coated pie";
+    std::string message2 = "chocolate coated pie";
     c.writeData(message2.c_str(), message2.size(), "localhost", svaddr.second);
 
     char readbuffer[100];
-    pair<string, uint16_t> peer;
+    std::pair<std::string, uint16_t> peer;
     {
       ssize_t rlength = s.readDataFrom(readbuffer, sizeof(readbuffer), peer);
       // commented out because ip address may vary
-      //CPPUNIT_ASSERT_EQUAL(string("127.0.0.1"), peer.first);
+      //CPPUNIT_ASSERT_EQUAL(std::std::string("127.0.0.1"), peer.first);
       CPPUNIT_ASSERT_EQUAL((ssize_t)message1.size(), rlength);
       readbuffer[rlength] = '\0';
-      CPPUNIT_ASSERT_EQUAL(message1, string(readbuffer));
+      CPPUNIT_ASSERT_EQUAL(message1, std::string(readbuffer));
     }
     {
       ssize_t rlength = s.readDataFrom(readbuffer, sizeof(readbuffer));
       CPPUNIT_ASSERT_EQUAL((ssize_t)message2.size(), rlength);
       readbuffer[rlength] = '\0';
-      CPPUNIT_ASSERT_EQUAL(message2, string(readbuffer));
+      CPPUNIT_ASSERT_EQUAL(message2, std::string(readbuffer));
     }
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
     CPPUNIT_FAIL("exception thrown");
   }
 }
+
+} // namespace aria2

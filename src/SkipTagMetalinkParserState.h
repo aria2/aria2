@@ -37,6 +37,8 @@
 
 #include "MetalinkParserState.h"
 
+namespace aria2 {
+
 class SkipTagMetalinkParserState:public MetalinkParserState
 {
 private:
@@ -46,15 +48,17 @@ public:
   SkipTagMetalinkParserState(MetalinkParserState* prevState);
 
   void beginElement(MetalinkParserStateMachine* stm,
-		    const string& name, const map<string, string>& attrs);
+		    const std::string& name, const std::map<std::string, std::string>& attrs);
 
   void endElement(MetalinkParserStateMachine* stm,
-		  const string& name, const string& characters);
+		  const std::string& name, const std::string& characters);
 
   MetalinkParserState* getPreviousState() const
   {
     return _prevState;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_SKIP_TAG_METALINK_PARSER_STATE_H_

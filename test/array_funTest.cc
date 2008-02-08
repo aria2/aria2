@@ -1,7 +1,7 @@
 #include "array_fun.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class array_funTest:public CppUnit::TestFixture {
 
@@ -10,12 +10,14 @@ class array_funTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testBit_and);
   CPPUNIT_TEST(testArray_negate);
   CPPUNIT_TEST(testArray_and);
+  CPPUNIT_TEST(testArrayLength);
   CPPUNIT_TEST_SUITE_END();
 public:
   void testBit_negate();
   void testBit_and();
   void testArray_negate();
   void testArray_and();
+  void testArrayLength();
 };
 
 
@@ -65,3 +67,14 @@ void array_funTest::testArray_and()
   CPPUNIT_ASSERT_EQUAL((unsigned char)0x45, f4[0]);
   CPPUNIT_ASSERT_EQUAL((unsigned char)0x8a, f4[1]);
 }
+
+void array_funTest::testArrayLength()
+{
+  int64_t ia[] = { 1, 2, 3, 4, 5 };
+  int64_t zeroLengthArray[] = {};
+
+  CPPUNIT_ASSERT_EQUAL((size_t)5, arrayLength(ia));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, arrayLength(zeroLengthArray));
+}
+
+} // namespace aria2

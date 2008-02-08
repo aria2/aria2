@@ -8,6 +8,8 @@
 #include "Util.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTAnnouncePeerMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTAnnouncePeerMessageTest);
@@ -26,22 +28,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTAnnouncePeerMessageTest);
 
 void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 {
-  DHTNodeHandle localNode = new DHTNode();
-  DHTNodeHandle remoteNode = new DHTNode();
+  SharedHandle<DHTNode> localNode = new DHTNode();
+  SharedHandle<DHTNode> remoteNode = new DHTNode();
 
   char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
-  string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
+  std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
   unsigned char infoHash[DHT_ID_LENGTH];
   DHTUtil::generateRandomData(infoHash, DHT_ID_LENGTH);
 
-  string token = "token";
+  std::string token = "token";
   uint16_t port = 6881;
 
   DHTAnnouncePeerMessage msg(localNode, remoteNode, infoHash, port, token, transactionID);
 
-  string msgbody = msg.getBencodedMessage();
+  std::string msgbody = msg.getBencodedMessage();
 
   SharedHandle<Dictionary> cm = new Dictionary();
   cm->put("t", new Data(transactionID));
@@ -60,3 +62,5 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
   CPPUNIT_ASSERT_EQUAL(Util::urlencode(v.getBencodedData()),
 		       Util::urlencode(msgbody));
 }
+
+} // namespace aria2

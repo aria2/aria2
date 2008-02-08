@@ -36,16 +36,20 @@
 #define _D_ABSTRACT_SINGLE_DISK_ADAPTOR_H_
 
 #include "DiskAdaptor.h"
-#include "DiskWriter.h"
+
+namespace aria2 {
+
+class DiskWriter;
+class FileAllocationIterator;
 
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
 protected:
-  DiskWriterHandle diskWriter;
+  SharedHandle<DiskWriter> diskWriter;
   int64_t totalLength;
 public:
-  AbstractSingleDiskAdaptor():diskWriter(0), totalLength(0) {}
+  AbstractSingleDiskAdaptor();
 
-  virtual ~AbstractSingleDiskAdaptor() {}
+  virtual ~AbstractSingleDiskAdaptor();
 
   virtual void initAndOpenFile();
 
@@ -62,38 +66,27 @@ public:
 
   virtual bool fileExists();
 
-  virtual int64_t size() const
-  {
-    return diskWriter->size();
-  }
+  virtual int64_t size() const;
 
-  virtual void truncate(int64_t length)
-  {
-    diskWriter->truncate(length);
-  }
+  virtual void truncate(int64_t length);
   
-  virtual FileAllocationIteratorHandle fileAllocationIterator();
+  virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 
   virtual void enableDirectIO();
 
   virtual void disableDirectIO();
   
-  virtual bool directIOAllowed() const
-  {
-    return diskWriter->directIOAllowed();
-  }
+  virtual bool directIOAllowed() const;
   
-  void setDiskWriter(const DiskWriterHandle diskWriter) {
-    this->diskWriter = diskWriter;
-  }
+  void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 
-  DiskWriterHandle getDiskWriter() const { return diskWriter; }
+  SharedHandle<DiskWriter> getDiskWriter() const;
 
-  void setTotalLength(const int64_t& totalLength) {
-    this->totalLength = totalLength;
-  }
+  void setTotalLength(const int64_t& totalLength);
 
-  int64_t getTotalLength() const { return totalLength; }
+  int64_t getTotalLength() const;
 };
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_SINGLE_DISK_ADAPTOR_H_

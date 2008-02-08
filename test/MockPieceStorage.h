@@ -5,6 +5,9 @@
 #include "BitfieldMan.h"
 #include "Piece.h"
 #include "DiskAdaptor.h"
+#include <algorithm>
+
+namespace aria2 {
 
 class MockPieceStorage : public PieceStorage {
 private:
@@ -15,9 +18,9 @@ private:
   BitfieldMan* bitfieldMan;
   bool selectiveDownloadingMode;
   bool endGame;
-  DiskAdaptorHandle diskAdaptor;
-  Integers pieceLengthList;
-  Pieces inFlightPieces;
+  SharedHandle<DiskAdaptor> diskAdaptor;
+  std::deque<int32_t> pieceLengthList;
+  std::deque<SharedHandle<Piece> > inFlightPieces;
   bool _allDownloadFinished;
 public:
   MockPieceStorage():totalLength(0),
@@ -32,24 +35,24 @@ public:
 
   virtual ~MockPieceStorage() {}
 
-  virtual bool hasMissingPiece(const PeerHandle& peer) {
+  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer) {
     return false;
   }
 
-  virtual PieceHandle getMissingPiece(const PeerHandle& peer) {
+  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer) {
     return new Piece();
   }
 
-  virtual PieceHandle getMissingFastPiece(const PeerHandle& peer) {
+  virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer) {
     return new Piece();
   }
 
-  virtual PieceHandle getMissingPiece()
+  virtual SharedHandle<Piece> getMissingPiece()
   {
     return new Piece();
   }
 
-  virtual PieceHandle getMissingPiece(int32_t index)
+  virtual SharedHandle<Piece> getMissingPiece(int32_t index)
   {
     return new Piece();
   }
@@ -63,13 +66,13 @@ public:
 
   virtual void markPiecesDone(int64_t) {}
 
-  virtual PieceHandle getPiece(int32_t index) {
+  virtual SharedHandle<Piece> getPiece(int32_t index) {
     return new Piece();
   }
 
-  virtual void completePiece(const PieceHandle& piece) {}
+  virtual void completePiece(const SharedHandle<Piece>& piece) {}
 
-  virtual void cancelPiece(const PieceHandle& piece) {}
+  virtual void cancelPiece(const SharedHandle<Piece>& piece) {}
 
   virtual bool hasPiece(int32_t index) {
     return false;
@@ -107,7 +110,7 @@ public:
     this->filteredCompletedLength = completedLength;
   }
   
-  virtual void setFileFilter(const Strings& filePaths) {}
+  virtual void setFileFilter(const std::deque<std::string>& filePaths) {}
 
   virtual void setFileFilter(IntSequence seq) {}
 
@@ -163,11 +166,11 @@ public:
     this->endGame = flag;
   }
 
-  virtual DiskAdaptorHandle getDiskAdaptor() {
+  virtual SharedHandle<DiskAdaptor> getDiskAdaptor() {
     return diskAdaptor;
   }
 
-  void setDiskAdaptor(const DiskAdaptorHandle adaptor) {
+  void setDiskAdaptor(const SharedHandle<DiskAdaptor> adaptor) {
     this->diskAdaptor = adaptor;
   }
   
@@ -181,18 +184,18 @@ public:
 
   virtual void advertisePiece(int32_t cuid, int32_t index) {}
 
-  virtual Integers getAdvertisedPieceIndexes(int32_t myCuid,
-					     const Time& lastCheckTime) {
-    return Integers();
+  virtual std::deque<int32_t> getAdvertisedPieceIndexes(int32_t myCuid,
+							const Time& lastCheckTime) {
+    return std::deque<int32_t>();
   }
 
   virtual void removeAdvertisedPiece(int32_t elapsed) {}
 
   virtual void markAllPiecesDone() {}
 
-  virtual void addInFlightPiece(const Pieces& pieces)
+  virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces)
   {
-    copy(pieces.begin(), pieces.end(), back_inserter(inFlightPieces));
+    std::copy(pieces.begin(), pieces.end(), back_inserter(inFlightPieces));
   }
 
   virtual int32_t countInFlightPiece()
@@ -200,13 +203,13 @@ public:
     return inFlightPieces.size();
   }
 
-  virtual Pieces getInFlightPieces()
+  virtual std::deque<SharedHandle<Piece> > getInFlightPieces()
   {
     return inFlightPieces;
   }
 
 };
 
-typedef SharedHandle<MockPieceStorage> MockPieceStorageHandle;
+} // namespace aria2
 
 #endif // _D_MOCK_PIECE_STORAGE_H_

@@ -36,6 +36,9 @@
 #define _D_DHT_UTIL_H_
 
 #include "common.h"
+#include <cstdlib>
+
+namespace aria2 {
 
 class DHTUtil {
 public:
@@ -52,5 +55,7 @@ public:
   static void flipBit(unsigned char* data, size_t length, size_t bitIndex);
 
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_UTIL_H_

@@ -36,19 +36,26 @@
 #define _D_DHT_MESSAGE_ENTRY_H_
 
 #include "common.h"
-#include "DHTMessageEntryDecl.h"
-#include "DHTMessageDecl.h"
-#include "DHTMessageCallbackDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DHTMessage;
+class DHTMessageCallback;
 
 class DHTMessageEntry {
 public:
-  DHTMessageHandle _message;
+  SharedHandle<DHTMessage> _message;
   time_t _timeout;
-  DHTMessageCallbackHandle _callback;
+  SharedHandle<DHTMessageCallback> _callback;
 
-  DHTMessageEntry(const DHTMessageHandle& message, time_t timeout, const DHTMessageCallbackHandle& callback);
+  DHTMessageEntry(const SharedHandle<DHTMessage>& message,
+		  time_t timeout,
+		  const SharedHandle<DHTMessageCallback>& callback);
 
   ~DHTMessageEntry();
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_ENTRY_H_

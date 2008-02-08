@@ -35,11 +35,11 @@
 #ifndef _D_LOGGER_H_
 #define _D_LOGGER_H_
 
-#include <string>
-#include "Exception.h"
 #include "common.h"
 
-using namespace std;
+namespace aria2 {
+
+class Exception;
 
 class Logger {
 public:
@@ -63,5 +63,7 @@ public:
     ERROR  = 1 << 4,
   };
 };
+
+} // namespace aria2
 
 #endif // _D_LOGGER_H_

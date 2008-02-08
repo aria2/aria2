@@ -36,9 +36,9 @@
 #define _D_SOCKET_CORE_H_
 
 #include "common.h"
+#include <sys/socket.h>
 #include <string>
 #include <utility>
-#include <sys/socket.h>
 
 #ifdef HAVE_LIBSSL
 // for SSL
@@ -49,7 +49,7 @@
 # include <gnutls/gnutls.h>
 #endif // HAVE_LIBGNUTLS
 
-using namespace std;
+namespace aria2 {
 
 class SocketCore {
   friend bool operator==(const SocketCore& s1, const SocketCore& s2);
@@ -112,13 +112,13 @@ public:
    * Stores host address and port of this socket to addrinfo.
    * @param addrinfo placeholder to store host address and port.
    */
-  void getAddrInfo(pair<string, int32_t>& addrinfo) const;
+  void getAddrInfo(std::pair<std::string, int32_t>& addrinfo) const;
   
   /**
    * Stores peer's address and port to peerinfo.
    * @param peerinfo placeholder to store peer's address and port.
    */
-  void getPeerInfo(pair<string, int32_t>& peerinfo) const;
+  void getPeerInfo(std::pair<std::string, int32_t>& peerinfo) const;
 
   /**
    * Accepts incoming connection on this socket.
@@ -135,7 +135,7 @@ public:
    * @param host hostname or ip address to connect to
    * @param port service port number to connect to
    */
-  void establishConnection(const string& host, int32_t port);
+  void establishConnection(const std::string& host, int32_t port);
 
   void setNonBlockingMode();
 
@@ -176,12 +176,12 @@ public:
    * @param len length of data
    */
   void writeData(const char* data, int32_t len);
-  void writeData(const string& msg)
+  void writeData(const std::string& msg)
   {
     writeData(msg.c_str(), msg.size());
   }
 
-  void writeData(const char* data, size_t len, const string& host, uint16_t port);
+  void writeData(const char* data, size_t len, const std::string& host, uint16_t port);
 
   /**
    * Reads up to len bytes from this socket.
@@ -201,7 +201,7 @@ public:
 		       socklen_t* senderLength);
 
   ssize_t readDataFrom(char*, size_t len,
-		       pair<string /* numerichost */,
+		       std::pair<std::string /* numerichost */,
 		       uint16_t /* port */>& sender);
 
   ssize_t readDataFrom(char* data, size_t len);
@@ -236,4 +236,7 @@ public:
     return sockfd < s.sockfd;
   }
 };
+
+} // namespace aria2
+
 #endif // _D_SOCKET_CORE_H_

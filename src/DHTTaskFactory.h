@@ -36,29 +36,39 @@
 #define _D_DHT_TASK_FACTORY_H_
 
 #include "common.h"
-#include "DHTTaskFactoryDecl.h"
-#include "DHTTaskDecl.h"
-#include "DHTNodeDecl.h"
-#include "DHTBucketDecl.h"
-#include "BtContextDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class BtContext;
+class DHTTask;
+class DHTNode;
+class DHTBucket;
 
 class DHTTaskFactory {
 public:
   virtual ~DHTTaskFactory() {}
 
-  virtual DHTTaskHandle createPingTask(const DHTNodeHandle& remoteNode,
-				       size_t numRetry = 0) = 0;
+  virtual SharedHandle<DHTTask>
+  createPingTask(const SharedHandle<DHTNode>& remoteNode,
+		 size_t numRetry = 0) = 0;
 
-  virtual DHTTaskHandle createNodeLookupTask(const unsigned char* targetID) = 0;
+  virtual SharedHandle<DHTTask>
+  createNodeLookupTask(const unsigned char* targetID) = 0;
 
-  virtual DHTTaskHandle createBucketRefreshTask() = 0;
+  virtual SharedHandle<DHTTask> createBucketRefreshTask() = 0;
 
-  virtual DHTTaskHandle createPeerLookupTask(const BtContextHandle& ctx) = 0;
+  virtual SharedHandle<DHTTask>
+  createPeerLookupTask(const SharedHandle<BtContext>& ctx) = 0;
   
-  virtual DHTTaskHandle createPeerAnnounceTask(const unsigned char* infoHash) = 0;
+  virtual SharedHandle<DHTTask>
+  createPeerAnnounceTask(const unsigned char* infoHash) = 0;
 
-  virtual DHTTaskHandle createReplaceNodeTask(const DHTBucketHandle& bucket,
-					      const DHTNodeHandle& newNode) = 0;
+  virtual SharedHandle<DHTTask>
+  createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
+			const SharedHandle<DHTNode>& newNode) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_TASK_FACTORY_H_

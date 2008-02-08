@@ -35,21 +35,25 @@
 #include "SkipTagMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 SkipTagMetalinkParserState::SkipTagMetalinkParserState(MetalinkParserState* prevState):
   _prevState(prevState), _depth(1) {}
 
 void SkipTagMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					      const string& name,
-					      const map<string, string>& attrs)
+					      const std::string& name,
+					      const std::map<std::string, std::string>& attrs)
 {
   ++_depth;
 }
 
 void SkipTagMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					    const string& name,
-					    const string& characters)
+					    const std::string& name,
+					    const std::string& characters)
 {
   if(--_depth == 0) {
     stm->restoreSavedState();
   }
 }
+
+} // namespace aria2

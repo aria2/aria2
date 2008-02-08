@@ -34,14 +34,20 @@
 /* copyright --> */
 #include "Peer.h"
 #include "BitfieldManFactory.h"
+#include "BitfieldMan.h"
 #include "Util.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include <cstring>
+#include <cassert>
+#include <algorithm>
+
+namespace aria2 {
 
 #define BAD_CONDITION_INTERVAL 10
 
-Peer::Peer(string ipaddr, uint16_t port):
+Peer::Peer(std::string ipaddr, uint16_t port):
   ipaddr(ipaddr),
   port(port),
   _bitfield(0),
@@ -52,12 +58,27 @@ Peer::Peer(string ipaddr, uint16_t port):
   _seeder(false)
 {
   resetStatus();
-  string idSeed = ipaddr+":"+Util::itos(port);
+  std::string idSeed = ipaddr+":"+Util::itos(port);
 #ifdef ENABLE_MESSAGE_DIGEST
   id = MessageDigestHelper::digestString("sha1", idSeed);
 #else
   id = idSeed;
 #endif // ENABLE_MESSAGE_DIGEST
+}
+
+Peer::~Peer()
+{
+  delete _bitfield;
+}
+
+bool Peer::operator==(const Peer& p)
+{
+  return id == p.id;
+}
+  
+bool Peer::operator!=(const Peer& p)
+{
+  return !(*this == p);
 }
 
 void Peer::allocateBitfield(int32_t pieceLength, int64_t totalLength)
@@ -70,6 +91,18 @@ void Peer::deallocateBitfield()
 {
   delete _bitfield;
   _bitfield = 0;
+}
+
+void Peer::updateUploadLength(int32_t bytes)
+{
+  peerStat.updateUploadLength(bytes);
+  sessionUploadLength += bytes;
+}
+
+void Peer::updateDownloadLength(int32_t bytes)
+{
+  peerStat.updateDownloadLength(bytes);
+  sessionDownloadLength += bytes;
 }
 
 void Peer::updateSeeder()
@@ -88,6 +121,82 @@ void Peer::updateBitfield(int32_t index, int32_t operation) {
     _bitfield->unsetBit(index);
   }
   updateSeeder();
+}
+
+int32_t Peer::calculateUploadSpeed()
+{
+  return peerStat.calculateUploadSpeed();
+}
+
+int32_t Peer::calculateUploadSpeed(const struct timeval& now)
+{
+  return peerStat.calculateUploadSpeed(now);
+}
+
+int32_t Peer::calculateDownloadSpeed()
+{
+  return peerStat.calculateDownloadSpeed();
+}
+
+int32_t Peer::calculateDownloadSpeed(const struct timeval& now)
+{
+  return peerStat.calculateDownloadSpeed(now);
+}
+
+int64_t Peer::getSessionUploadLength() const
+{
+  return sessionUploadLength;
+}
+
+int64_t Peer::getSessionDownloadLength() const
+{
+  return sessionDownloadLength;
+}
+
+void Peer::activate()
+{
+  peerStat.downloadStart();
+  active = true;
+}
+
+void Peer::deactivate()
+{
+  peerStat.downloadStop();
+  active = false;
+}
+
+bool Peer::isActive() const
+{
+  return active;
+}
+
+void Peer::setPeerId(const unsigned char* peerId)
+{
+  memcpy(this->peerId, peerId, PEER_ID_LENGTH);
+}
+
+const unsigned char* Peer::getPeerId() const
+{
+  return this->peerId;
+}
+  
+void Peer::setBitfield(const unsigned char* bitfield, int32_t bitfieldLength)
+{
+  assert(_bitfield);
+  _bitfield->setBitfield(bitfield, bitfieldLength);
+  updateSeeder();
+}
+
+const unsigned char* Peer::getBitfield() const
+{
+  assert(_bitfield);
+  return _bitfield->getBitfield();
+}
+
+int32_t Peer::getBitfieldLength() const
+{
+  assert(_bitfield);
+  return _bitfield->getBitfieldLength();
 }
 
 #define THRESHOLD 1024*1024*2
@@ -124,9 +233,29 @@ void Peer::resetStatus() {
   peerStat.reset();
 }
 
+void Peer::setFastExtensionEnabled(bool enabled)
+{
+  fastExtensionEnabled = enabled;
+}
+
+bool Peer::isFastExtensionEnabled() const
+{
+  return fastExtensionEnabled;
+}
+
+int32_t Peer::countPeerAllowedIndexSet() const
+{
+  return peerAllowedIndexSet.size();
+}
+
+const std::deque<int32_t>& Peer::getPeerAllowedIndexSet() const
+{
+  return peerAllowedIndexSet;
+}
+
 bool Peer::isInPeerAllowedIndexSet(int32_t index) const {
-  return find(peerAllowedIndexSet.begin(), peerAllowedIndexSet.end(),
-	      index) != peerAllowedIndexSet.end();
+  return std::find(peerAllowedIndexSet.begin(), peerAllowedIndexSet.end(),
+		   index) != peerAllowedIndexSet.end();
 }
 
 void Peer::addPeerAllowedIndex(int32_t index) {
@@ -136,8 +265,8 @@ void Peer::addPeerAllowedIndex(int32_t index) {
 }
 
 bool Peer::isInAmAllowedIndexSet(int32_t index) const {
-  return find(amAllowedIndexSet.begin(), amAllowedIndexSet.end(),
-	      index) != amAllowedIndexSet.end();
+  return std::find(amAllowedIndexSet.begin(), amAllowedIndexSet.end(),
+		   index) != amAllowedIndexSet.end();
 }
 
 void Peer::addAmAllowedIndex(int32_t index) {
@@ -166,7 +295,7 @@ bool Peer::isGood() const
   return _badConditionStartTime.elapsed(BAD_CONDITION_INTERVAL);
 }
 
-uint8_t Peer::getExtensionMessageID(const string& name)
+uint8_t Peer::getExtensionMessageID(const std::string& name)
 {
   Extensions::const_iterator itr = _extensions.find(name);
   if(itr == _extensions.end()) {
@@ -176,7 +305,7 @@ uint8_t Peer::getExtensionMessageID(const string& name)
   }
 }
 
-string Peer::getExtensionName(uint8_t id)
+std::string Peer::getExtensionName(uint8_t id)
 {
   for(Extensions::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
@@ -188,7 +317,9 @@ string Peer::getExtensionName(uint8_t id)
   return "";
 }
 
-void Peer::setExtension(const string& name, uint8_t id)
+void Peer::setExtension(const std::string& name, uint8_t id)
 {
   _extensions[name] = id;
 }
+
+} // namespace aria2

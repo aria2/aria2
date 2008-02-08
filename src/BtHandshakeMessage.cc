@@ -35,6 +35,10 @@
 #include "BtHandshakeMessage.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "BtConstants.h"
+#include <cstring>
+
+namespace aria2 {
 
 const unsigned char* BtHandshakeMessage::BT_PSTR = (const unsigned char*)"BitTorrent protocol";
 
@@ -65,8 +69,10 @@ void BtHandshakeMessage::init() {
   this->reserved[5] |= 0x10;
 }
 
-BtHandshakeMessageHandle BtHandshakeMessage::create(const unsigned char* data, int32_t dataLength) {
-  BtHandshakeMessageHandle message = new BtHandshakeMessage();
+SharedHandle<BtHandshakeMessage>
+BtHandshakeMessage::create(const unsigned char* data, int32_t dataLength)
+{
+  SharedHandle<BtHandshakeMessage> message = new BtHandshakeMessage();
   message->pstrlen = data[0];
   memcpy(message->pstr, &data[1], PSTR_LENGTH);
   memcpy(message->reserved, &data[20], RESERVED_LENGTH);
@@ -91,7 +97,7 @@ int32_t BtHandshakeMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtHandshakeMessage::toString() const {
+std::string BtHandshakeMessage::toString() const {
   return "handshake peerId="+
     Util::urlencode(peerId, PEER_ID_LENGTH)+
     ", reserved="+Util::toHex(reserved, RESERVED_LENGTH);
@@ -111,3 +117,14 @@ bool BtHandshakeMessage::isDHTEnabled() const
   return reserved[7]&0x01;
 }
 
+void BtHandshakeMessage::setInfoHash(const unsigned char* infoHash)
+{
+  memcpy(this->infoHash, infoHash, INFO_HASH_LENGTH);
+}
+
+void BtHandshakeMessage::setPeerId(const unsigned char* peerId)
+{
+  memcpy(this->peerId, peerId, PEER_ID_LENGTH);
+}
+
+} // namespace aria2

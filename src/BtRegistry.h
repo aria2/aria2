@@ -36,27 +36,32 @@
 #define _D_BT_REGISTRY_H_
 
 #include "common.h"
-#include "BtContext.h"
-#include "PeerStorage.h"
-#include "PieceStorage.h"
-#include "BtAnnounce.h"
-#include "BtRuntime.h"
-#include "BtProgressInfoFile.h"
-#include "PeerObject.h"
+#include "SharedHandle.h"
 #include "HandleRegistry.h"
+#include <string>
 #include <map>
 
-typedef HandleRegistry<string, PeerStorage> PeerStorageMap;
-typedef HandleRegistry<string, PieceStorage> PieceStorageMap;
-typedef HandleRegistry<string, BtAnnounce> BtAnnounceMap;
-typedef HandleRegistry<string, BtRuntime> BtRuntimeMap;
-typedef HandleRegistry<string, BtProgressInfoFile> BtProgressInfoFileMap;
-typedef HandleRegistry<string, BtContext>  BtContextMap;
+namespace aria2 {
+
+class PeerStorage;
+class PieceStorage;
+class BtAnnounce;
+class BtRuntime;
+class BtProgressInfoFile;
+class BtContext;
+class PeerObject;
+
+typedef HandleRegistry<std::string, PeerStorage> PeerStorageMap;
+typedef HandleRegistry<std::string, PieceStorage> PieceStorageMap;
+typedef HandleRegistry<std::string, BtAnnounce> BtAnnounceMap;
+typedef HandleRegistry<std::string, BtRuntime> BtRuntimeMap;
+typedef HandleRegistry<std::string, BtProgressInfoFile> BtProgressInfoFileMap;
+typedef HandleRegistry<std::string, BtContext>  BtContextMap;
 
 // for BtMessageFactory
-typedef HandleRegistry<string, PeerObject> PeerObjectCluster;
+typedef HandleRegistry<std::string, PeerObject> PeerObjectCluster;
 typedef SharedHandle<PeerObjectCluster> PeerObjectClusterHandle;
-typedef HandleRegistry<string, PeerObjectCluster> PeerObjectClusterRegistry;
+typedef HandleRegistry<std::string, PeerObjectCluster> PeerObjectClusterRegistry;
 
 class BtRegistry {
 private:
@@ -70,44 +75,44 @@ private:
   static BtProgressInfoFileMap btProgressInfoFileMap;
   static PeerObjectClusterRegistry peerObjectClusterRegistry;
 public:
-  static BtContextHandle getBtContext(const string& key);
-  static void registerBtContext(const string& key,
-				const BtContextHandle& btContext);
+  static SharedHandle<BtContext> getBtContext(const std::string& key);
+  static void registerBtContext(const std::string& key,
+				const SharedHandle<BtContext>& btContext);
 
-  static PeerStorageHandle getPeerStorage(const string& key);
-  static void registerPeerStorage(const string& key,
-				  const PeerStorageHandle& peer);
+  static SharedHandle<PeerStorage> getPeerStorage(const std::string& key);
+  static void registerPeerStorage(const std::string& key,
+				  const SharedHandle<PeerStorage>& peer);
 				  
-  static PieceStorageHandle getPieceStorage(const string& key);
-  static void registerPieceStorage(const string& key,
-				   const PieceStorageHandle& pieceStorage);
+  static SharedHandle<PieceStorage> getPieceStorage(const std::string& key);
+  static void registerPieceStorage(const std::string& key,
+				   const SharedHandle<PieceStorage>& pieceStorage);
 
-  static BtRuntimeHandle getBtRuntime(const string& key);
-  static void registerBtRuntime(const string& key,
-				const BtRuntimeHandle& btRuntime);
+  static SharedHandle<BtRuntime> getBtRuntime(const std::string& key);
+  static void registerBtRuntime(const std::string& key,
+				const SharedHandle<BtRuntime>& btRuntime);
 
-  static BtAnnounceHandle getBtAnnounce(const string& key);
-  static void registerBtAnnounce(const string& key,
-				 const BtAnnounceHandle& btAnnounce);
+  static SharedHandle<BtAnnounce> getBtAnnounce(const std::string& key);
+  static void registerBtAnnounce(const std::string& key,
+				 const SharedHandle<BtAnnounce>& btAnnounce);
 
-  static BtProgressInfoFileHandle getBtProgressInfoFile(const string& key);
-  static void registerBtProgressInfoFile(const string& key,
-					 const BtProgressInfoFileHandle& btProgressInfoFile);
+  static SharedHandle<BtProgressInfoFile> getBtProgressInfoFile(const std::string& key);
+  static void registerBtProgressInfoFile(const std::string& key,
+					 const SharedHandle<BtProgressInfoFile>& btProgressInfoFile);
 
   // for PeerObject
   static PeerObjectClusterHandle
-  getPeerObjectCluster(const string& key);
+  getPeerObjectCluster(const std::string& key);
 
   static void
-  registerPeerObjectCluster(const string& key,
+  registerPeerObjectCluster(const std::string& key,
 			    const PeerObjectClusterHandle& cluster);
 
   static void
-  unregisterPeerObjectCluster(const string& key);
+  unregisterPeerObjectCluster(const std::string& key);
 
   static void unregisterAll();
 
-  static void unregister(const string& key);
+  static void unregister(const std::string& key);
 };
 
 #define PEER_STORAGE(btContext) \
@@ -148,5 +153,7 @@ PEER_OBJECT(btContext, peer)->peerConnection
 
 #define EXTENSION_MESSAGE_FACTORY(btContext, peer) \
 PEER_OBJECT(btContext, peer)->extensionMessageFactory
+
+} // namespace aria2
 
 #endif // _D_BT_REGISTRY_H_

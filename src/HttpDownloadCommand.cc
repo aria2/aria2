@@ -37,9 +37,12 @@
 #include "DownloadEngine.h"
 #include "Request.h"
 #include "HttpRequestCommand.h"
-#include "Util.h"
-#include "message.h"
 #include "HttpConnection.h"
+#include "HttpRequest.h"
+#include "Segment.h"
+#include "Socket.h"
+
+namespace aria2 {
 
 HttpDownloadCommand::HttpDownloadCommand(int cuid,
 					 const RequestHandle req,
@@ -61,3 +64,5 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     return DownloadCommand::prepareForNextSegment();
   }
 }
+
+} // namespace aria2

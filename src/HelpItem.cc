@@ -33,12 +33,15 @@
  */
 /* copyright --> */
 #include "HelpItem.h"
+#include <ostream>
+
+namespace aria2 {
 
 #define DEFAULT_MSG   _("                              Default: ")
 #define    TAGS_MSG   _("                              Tags: ")
 #define AVAILABLE_MSG _("                              Available Values: ")
 
-ostream& operator<<(ostream& o, const HelpItem& helpItem)
+std::ostream& operator<<(std::ostream& o, const HelpItem& helpItem)
 {
   o << helpItem._usageText << "\n";
   if(!helpItem._availableValues.empty()) {
@@ -51,8 +54,10 @@ ostream& operator<<(ostream& o, const HelpItem& helpItem)
   return o;
 }
 
-ostream& operator<<(ostream& o, const HelpItemHandle& helpItem)
+std::ostream& operator<<(std::ostream& o, const HelpItemHandle& helpItem)
 {
   o << *helpItem.get();
   return o;
 }
+
+} // namespace aria2

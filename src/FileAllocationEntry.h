@@ -36,16 +36,18 @@
 #define _D_FILE_ALLOCATION_ENTRY_H_
 
 #include "RequestGroupEntry.h"
+#include "ProgressAwareEntry.h"
+#include <deque>
+
+namespace aria2 {
 
 class FileAllocationIterator;
-typedef SharedHandle<FileAllocationIterator> FileAllocationIteratorHandle;
 class Command;
-typedef deque<Command*> Commands;
 class DownloadEngine;
 
 class FileAllocationEntry : public RequestGroupEntry, public ProgressAwareEntry {
 private:
-  FileAllocationIteratorHandle _fileAllocationIterator;
+  SharedHandle<FileAllocationIterator> _fileAllocationIterator;
 public:
   FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand = 0);
 
@@ -59,10 +61,12 @@ public:
 
   void allocateChunk();
 
-  virtual Commands prepareForNextAction(DownloadEngine* e) = 0;
+  virtual std::deque<Command*> prepareForNextAction(DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
+typedef std::deque<FileAllocationEntryHandle> FileAllocationEntries;
+
+} // namespace aria2
 
 #endif // _D_FILE_ALLOCATION_ENTRY_H_

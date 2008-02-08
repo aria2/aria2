@@ -44,6 +44,7 @@ SRCS =  Socket.h\
 	DiskWriter.h\
 	AbstractDiskWriter.cc AbstractDiskWriter.h\
 	DefaultDiskWriter.cc DefaultDiskWriter.h\
+	DefaultDiskWriterFactory.cc\
 	File.cc File.h\
 	Option.cc Option.h\
 	Base64.cc\
@@ -71,7 +72,7 @@ SRCS =  Socket.h\
 	Netrc.cc Netrc.h\
 	AuthConfig.cc AuthConfig.h\
 	AuthResolver.h\
-	AbstractAuthResolver.h\
+	AbstractAuthResolver.cc\
 	DefaultAuthResolver.cc DefaultAuthResolver.h\
 	NetrcAuthResolver.cc NetrcAuthResolver.h\
 	AuthConfigFactory.cc AuthConfigFactory.h\
@@ -147,11 +148,13 @@ SRCS =  Socket.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 	PeerConnection.cc PeerConnection.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
+	ByteArrayDiskWriterFactory.cc\
 	ServerHost.cc\
 	HelpItem.cc\
 	TaggedItem.cc\
 	TagContainer.cc\
-	HelpItemFactory.cc
+	HelpItemFactory.cc\
+	SingleFileDownloadContext.cc
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST
@@ -170,7 +173,6 @@ SRCS += MetaEntry.h\
 	List.cc List.h\
 	MetaFileUtil.cc MetaFileUtil.h\
 	MetaEntryVisitor.h\
-	ShaVisitor.cc ShaVisitor.h\
 	BencodeVisitor.cc\
 	PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerAbstractCommand.cc PeerAbstractCommand.h\
@@ -179,7 +181,6 @@ SRCS += MetaEntry.h\
 	Peer.cc Peer.h\
 	PeerListenCommand.cc PeerListenCommand.h\
 	RequestSlot.cc RequestSlot.h\
-	Directory.cc Directory.h\
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h\
 	PeerChokeCommand.cc PeerChokeCommand.h\
 	SeedCriteria.h\
@@ -201,7 +202,7 @@ SRCS += MetaEntry.h\
 	BtRuntime.h\
 	BtContextAwareCommand.cc BtContextAwareCommand.h\
 	BtMessage.h\
-	AbstractBtMessage.h\
+	AbstractBtMessage.cc\
 	SimpleBtMessage.cc SimpleBtMessage.h\
 	BtAllowedFastMessage.cc BtAllowedFastMessage.h\
 	BtBitfieldMessage.cc BtBitfieldMessage.h\

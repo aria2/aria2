@@ -37,19 +37,22 @@
 
 #include "common.h"
 #include "TimeA2.h"
+#include <string>
+
+namespace aria2 {
 
 class PeerAddrEntry {
 private:
-  string _ipaddr;
+  std::string _ipaddr;
   
   uint16_t _port;
 
   Time _lastUpdated;
 public:
-  PeerAddrEntry(const string& ipaddr, uint16_t port, Time updated = Time()):
+  PeerAddrEntry(const std::string& ipaddr, uint16_t port, Time updated = Time()):
     _ipaddr(ipaddr), _port(port), _lastUpdated(updated) {}
 
-  const string& getIPAddress() const
+  const std::string& getIPAddress() const
   {
     return _ipaddr;
   }
@@ -75,6 +78,6 @@ public:
   }
 };
 
-typedef deque<PeerAddrEntry> PeerAddrEntries;
+} // namespace aria2
 
 #endif // _D_DHT_PEER_ADDR_ENTRY_H_

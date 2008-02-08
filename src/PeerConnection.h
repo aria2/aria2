@@ -35,10 +35,14 @@
 #ifndef _D_PEER_CONNECTION_H_
 #define _D_PEER_CONNECTION_H_
 
-#include "Option.h"
-#include "Socket.h"
-#include "Logger.h"
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class Option;
+class Logger;
+class SocketCore;
 
 // we assume maximum length of incoming message is "piece" message with 16KB
 // data. Messages beyond that size are dropped.
@@ -47,7 +51,7 @@
 class PeerConnection {
 private:
   int32_t cuid;
-  SocketHandle socket;
+  SharedHandle<SocketCore> socket;
   const Option* option;
   const Logger* logger;
 
@@ -58,7 +62,8 @@ private:
   int32_t lenbufLength;
 
 public:
-  PeerConnection(int32_t cuid, const SocketHandle& socket, const Option* op);
+  PeerConnection(int32_t cuid, const SharedHandle<SocketCore>& socket, const Option* op);
+
   ~PeerConnection();
   
   // Returns the number of bytes written
@@ -77,4 +82,7 @@ public:
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;
 typedef WeakHandle<PeerConnection> PeerConnectionWeakHandle;
+
+} // namespace aria2
+
 #endif // _D_PEER_CONNECTION_H_

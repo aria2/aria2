@@ -37,24 +37,26 @@
 
 #include "DownloadCommand.h"
 
+namespace aria2 {
+
 class HttpConnection;
-typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+class SocketCore;
 
 class HttpDownloadCommand : public DownloadCommand {
 private:
-  HttpConnectionHandle _httpConnection;
+  SharedHandle<HttpConnection> _httpConnection;
 protected:
   virtual bool prepareForNextSegment();
 public:
   HttpDownloadCommand(int cuid,
-		      const RequestHandle req,
+		      const SharedHandle<Request> req,
 		      RequestGroup* requestGroup,
-		      const HttpConnectionHandle& httpConnection,
+		      const SharedHandle<HttpConnection>& httpConnection,
 		      DownloadEngine* e,
-		      const SocketHandle& s);
+		      const SharedHandle<SocketCore>& s);
   virtual ~HttpDownloadCommand();
 };
 
-#endif // _D_HTTP_DOWNLOAD_COMMAND_H_
+} // namespace aria2
 
-  
+#endif // _D_HTTP_DOWNLOAD_COMMAND_H_

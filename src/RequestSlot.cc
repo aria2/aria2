@@ -35,6 +35,10 @@
 #include "RequestSlot.h"
 #include "Util.h"
 
+namespace aria2 {
+
+RequestSlot RequestSlot::nullSlot(0, 0, 0, 0);
+
 RequestSlot::RequestSlot(int32_t index, int32_t begin, int32_t length, int32_t blockIndex)
   :index(index), begin(begin), length(length), blockIndex(blockIndex) {}
 
@@ -50,7 +54,20 @@ void RequestSlot::copy(const RequestSlot& requestSlot) {
   dispatchedTime = requestSlot.dispatchedTime;
 }
 
-RequestSlot RequestSlot::nullSlot(0, 0, 0, 0);
+RequestSlot& RequestSlot::operator=(const RequestSlot& requestSlot)
+{
+  if(this != &requestSlot) {
+    copy(requestSlot);
+  }
+  return *this;
+}
+
+bool RequestSlot::operator==(const RequestSlot& requestSlot) const
+{
+  return index == requestSlot.index &&
+    begin == requestSlot.begin &&
+    length == requestSlot.length;
+}
 
 void RequestSlot::setDispatchedTime() {
   dispatchedTime.reset();
@@ -72,3 +89,5 @@ bool RequestSlot::isNull(const RequestSlot& requestSlot) {
   return requestSlot.index == 0 && requestSlot.begin == 0&&
     requestSlot.length == 0;
 }
+
+} // namespace aria2

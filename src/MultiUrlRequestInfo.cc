@@ -36,6 +36,7 @@
 #include "RequestGroupMan.h"
 #include "DownloadEngine.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "RequestGroup.h"
 #include "prefs.h"
 #include "DownloadEngineFactory.h"
@@ -45,6 +46,9 @@
 #include "Util.h"
 #include "ConsoleStatCalc.h"
 #include <signal.h>
+#include <iostream>
+
+namespace aria2 {
 
 #ifndef SA_RESETHAND
 # define SA_RESETHAND 0x80000000
@@ -70,11 +74,11 @@ MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
 
 void MultiUrlRequestInfo::printMessageForContinue()
 {
-  cout << "\n"
-       << _("aria2 will resume download if the transfer is restarted.")
-       << "\n"
-       << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
-       << "\n";
+  std::cout << "\n"
+	    << _("aria2 will resume download if the transfer is restarted.")
+	    << "\n"
+	    << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
+	    << "\n";
 }
 
 void MultiUrlRequestInfo::execute()
@@ -103,8 +107,8 @@ void MultiUrlRequestInfo::execute()
     
     e->run();
     
-    e->_requestGroupMan->showDownloadResults(cout);
-    cout << flush;
+    e->_requestGroupMan->showDownloadResults(std::cout);
+    std::cout << std::flush;
 
     if(!e->_requestGroupMan->downloadFinished()) {
       printMessageForContinue();
@@ -116,3 +120,5 @@ void MultiUrlRequestInfo::execute()
   Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
   Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
 }
+
+} // namespace aria2

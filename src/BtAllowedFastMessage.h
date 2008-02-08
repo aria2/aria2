@@ -37,6 +37,8 @@
 
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
 class BtAllowedFastMessage;
 
 typedef SharedHandle<BtAllowedFastMessage> BtAllowedFastMessageHandle;
@@ -74,10 +76,12 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   virtual void onSendComplete();
 
 };
+
+} // namespace aria2
 
 #endif // _D_BT_ALLOWED_FAST_MESSAGE_H_

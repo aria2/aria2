@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "DownloadHandlerConstants.h"
+#include "array_fun.h"
+
+namespace aria2 {
 
 const char* DownloadHandlerConstants::METALINK_EXTENSIONS[] = { ".metalink" };
 
@@ -46,26 +49,28 @@ const char* DownloadHandlerConstants::BT_CONTENT_TYPES[] = {
   "application/x-bittorrent"
 };
 
-Strings DownloadHandlerConstants::getMetalinkExtensions()
+std::deque<std::string> DownloadHandlerConstants::getMetalinkExtensions()
 {
-  return Strings(&METALINK_EXTENSIONS[0],
-		 &METALINK_EXTENSIONS[arrayLength(METALINK_EXTENSIONS)]);
+  return std::deque<std::string>(&METALINK_EXTENSIONS[0],
+				 &METALINK_EXTENSIONS[arrayLength(METALINK_EXTENSIONS)]);
 }
 
-Strings DownloadHandlerConstants::getMetalinkContentTypes()
+std::deque<std::string> DownloadHandlerConstants::getMetalinkContentTypes()
 {
-  return Strings(&METALINK_CONTENT_TYPES[0],
-		 &METALINK_CONTENT_TYPES[arrayLength(METALINK_CONTENT_TYPES)]);
+  return std::deque<std::string>(&METALINK_CONTENT_TYPES[0],
+				 &METALINK_CONTENT_TYPES[arrayLength(METALINK_CONTENT_TYPES)]);
 }
 
-Strings DownloadHandlerConstants::getBtExtensions()
+std::deque<std::string> DownloadHandlerConstants::getBtExtensions()
 {
-  return Strings(&BT_EXTENSIONS[0],
-		 &BT_EXTENSIONS[arrayLength(BT_EXTENSIONS)]);
+  return std::deque<std::string>(&BT_EXTENSIONS[0],
+				 &BT_EXTENSIONS[arrayLength(BT_EXTENSIONS)]);
 }
 
-Strings DownloadHandlerConstants::getBtContentTypes()
+std::deque<std::string> DownloadHandlerConstants::getBtContentTypes()
 {
-  return Strings(&BT_CONTENT_TYPES[0],
-		 &BT_CONTENT_TYPES[arrayLength(BT_CONTENT_TYPES)]);
+  return std::deque<std::string>(&BT_CONTENT_TYPES[0],
+				 &BT_CONTENT_TYPES[arrayLength(BT_CONTENT_TYPES)]);
 }
+
+} // namespace aria2

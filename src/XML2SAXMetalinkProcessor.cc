@@ -35,32 +35,35 @@
 #include "XML2SAXMetalinkProcessor.h"
 #include "BinaryStream.h"
 #include "MetalinkParserStateMachine.h"
+#include "Metalinker.h"
+#include "MetalinkEntry.h"
 #include "Util.h"
 #include "message.h"
+#include "DlAbortEx.h"
+
+namespace aria2 {
 
 class SessionData {
 public:
-  MetalinkParserStateMachineHandle _stm;
+  SharedHandle<MetalinkParserStateMachine> _stm;
 
-  Strings _charactersStack;
+  std::deque<std::string> _charactersStack;
 
-  SessionData(const MetalinkParserStateMachineHandle& stm):_stm(stm) {}
+  SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):_stm(stm) {}
 };
-
-typedef SharedHandle<SessionData> SessionDataHandle;
 
 static void mlStartElement(void* userData, const xmlChar* name, const xmlChar** attrs)
 {
-  ((SessionData*)userData)->_charactersStack.push_front(string());
-  map<string, string> attrmap;
+  ((SessionData*)userData)->_charactersStack.push_front(std::string());
+  std::map<std::string, std::string> attrmap;
   if(attrs) {
     const xmlChar** p = attrs;
     while(*p != 0) {
-      string name = (const char*)*p++;
+      std::string name = (const char*)*p++;
       if(*p == 0) {
 	break;
       }
-      string value = Util::trim((const char*)*p++);
+      std::string value = Util::trim((const char*)*p++);
       attrmap[name] = value;
     }
   }
@@ -77,7 +80,7 @@ static void mlEndElement(void* userData, const xmlChar* name)
 
 static void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
-  ((SessionData*)userData)->_charactersStack.front() += string(&ch[0], &ch[len]);
+  ((SessionData*)userData)->_charactersStack.front() += std::string(&ch[0], &ch[len]);
 }
 
 static xmlSAXHandler mySAXHandler =
@@ -119,12 +122,12 @@ static xmlSAXHandler mySAXHandler =
 XML2SAXMetalinkProcessor::XML2SAXMetalinkProcessor():
   _stm(0)
 {}
-	 
-	 
-MetalinkerHandle XML2SAXMetalinkProcessor::parseFile(const string& filename)
+
+SharedHandle<Metalinker>
+XML2SAXMetalinkProcessor::parseFile(const std::string& filename)
 {
   _stm = new MetalinkParserStateMachine();
-  SessionDataHandle sessionData = new SessionData(_stm);
+  SharedHandle<SessionData> sessionData = new SessionData(_stm);
   int32_t retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
 				       filename.c_str());
   if(retval != 0) {
@@ -133,7 +136,8 @@ MetalinkerHandle XML2SAXMetalinkProcessor::parseFile(const string& filename)
   return _stm->getResult();
 }
 	 
-MetalinkerHandle XML2SAXMetalinkProcessor::parseFromBinaryStream(const BinaryStreamHandle& binaryStream)
+SharedHandle<Metalinker>
+XML2SAXMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
   _stm = new MetalinkParserStateMachine();
   int32_t bufSize = 4096;
@@ -144,7 +148,7 @@ MetalinkerHandle XML2SAXMetalinkProcessor::parseFromBinaryStream(const BinaryStr
     throw new DlAbortEx("Too small data for parsing XML.");
   }
 
-  SessionDataHandle sessionData = new SessionData(_stm);
+  SharedHandle<SessionData> sessionData = new SessionData(_stm);
   xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt(&mySAXHandler, sessionData.get(), (const char*)buf, res, 0);
   try {
     int64_t readOffset = res;
@@ -170,3 +174,5 @@ MetalinkerHandle XML2SAXMetalinkProcessor::parseFromBinaryStream(const BinaryStr
   }
   return _stm->getResult();
 }
+
+} // namespace aria2

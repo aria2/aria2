@@ -35,9 +35,11 @@
 #include "MetalinkMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void MetalinkMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					       const string& name,
-					       const map<string, string>& attrs)
+					       const std::string& name,
+					       const std::map<std::string, std::string>& attrs)
 {
   if(name == "files") {
     stm->setFilesState();
@@ -47,8 +49,10 @@ void MetalinkMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 }
 
 void MetalinkMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					     const string& name,
-					     const string& characters)
+					     const std::string& name,
+					     const std::string& characters)
 {
   stm->setFinState();
 }
+
+} // namespace aria2

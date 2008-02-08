@@ -36,24 +36,21 @@
 #define _D_DOWNLOAD_ENGINE_H_
 
 #include "common.h"
-#include "a2netcompat.h"
+#include "SharedHandle.h"
 #include "Command.h"
+#include <deque>
+#include <sys/select.h>
 
-class SocketCore;
-typedef SharedHandle<SocketCore> SocketHandle;
-typedef deque<SocketHandle> Sockets;
+namespace aria2 {
+
 class Logger;
 class Option;
 class NameResolver;
-typedef SharedHandle<NameResolver> NameResolverHandle;
 class RequestGroupMan;
-typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
 class FileAllocationMan;
-typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
 class StatCalc;
-typedef SharedHandle<StatCalc> StatCalcHandle;
 class CheckIntegrityMan;
-typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;
+class SocketCore;
 
 class SocketEntry {
 public:
@@ -62,34 +59,33 @@ public:
     TYPE_WR,
   };
 
-  SocketHandle socket;
+  SharedHandle<SocketCore> socket;
   Command* command;
   TYPE type;
 public:
-  SocketEntry(const SocketHandle& socket,
+  SocketEntry(const SharedHandle<SocketCore>& socket,
 	      Command* command,
 	      TYPE type);
 
   bool operator==(const SocketEntry& entry);
 };
 
-typedef deque<SocketEntry> SocketEntries;
+typedef std::deque<SocketEntry> SocketEntries;
 
 #ifdef ENABLE_ASYNC_DNS
 class NameResolverEntry {
 public:
-  NameResolverHandle nameResolver;
+  SharedHandle<NameResolver> nameResolver;
   Command* command;
 public:
-  NameResolverEntry(const NameResolverHandle& nameResolver,
+  NameResolverEntry(const SharedHandle<NameResolver>& nameResolver,
 		    Command* command);
 
   bool operator==(const NameResolverEntry& entry);
 };
 
-typedef deque<NameResolverEntry> NameResolverEntries;
+typedef std::deque<NameResolverEntry> NameResolverEntries;
 #endif // ENABLE_ASYNC_DNS
-
 
 class DownloadEngine {
 private:
@@ -104,7 +100,7 @@ private:
 
   const Logger* logger;
   
-  StatCalcHandle _statCalc;
+  SharedHandle<StatCalc> _statCalc;
 
   bool _haltRequested;
 
@@ -124,13 +120,14 @@ private:
 
 public:
   bool noWait;
-  Commands commands;
-  RequestGroupManHandle _requestGroupMan;
-  FileAllocationManHandle _fileAllocationMan;
-  CheckIntegrityManHandle _checkIntegrityMan;
+  std::deque<Command*> commands;
+  SharedHandle<RequestGroupMan> _requestGroupMan;
+  SharedHandle<FileAllocationMan> _fileAllocationMan;
+  SharedHandle<CheckIntegrityMan> _checkIntegrityMan;
   const Option* option;
   
   DownloadEngine();
+
   virtual ~DownloadEngine();
 
   void run();
@@ -139,18 +136,18 @@ public:
 
   void updateFdSet();
 
-  bool addSocketForReadCheck(const SocketHandle& socket,
+  bool addSocketForReadCheck(const SharedHandle<SocketCore>& socket,
 			     Command* command);
-  bool deleteSocketForReadCheck(const SocketHandle& socket,
+  bool deleteSocketForReadCheck(const SharedHandle<SocketCore>& socket,
 				Command* command);
-  bool addSocketForWriteCheck(const SocketHandle& socket,
+  bool addSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
 			      Command* command);
-  bool deleteSocketForWriteCheck(const SocketHandle& socket,
+  bool deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
 				 Command* command);
 #ifdef ENABLE_ASYNC_DNS
-  bool addNameResolverCheck(const NameResolverHandle& resolver,
+  bool addNameResolverCheck(const SharedHandle<NameResolver>& resolver,
 			    Command* command);
-  bool deleteNameResolverCheck(const NameResolverHandle& resolver,
+  bool deleteNameResolverCheck(const SharedHandle<NameResolver>& resolver,
 			       Command* command);
 #endif // ENABLE_ASYNC_DNS
 
@@ -158,7 +155,7 @@ public:
 
   void fillCommand();
 
-  void setStatCalc(const StatCalcHandle& statCalc);
+  void setStatCalc(const SharedHandle<StatCalc>& statCalc);
 
   bool isHaltRequested() const
   {
@@ -167,6 +164,8 @@ public:
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_ENGINE_H_
 

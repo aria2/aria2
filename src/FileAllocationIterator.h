@@ -36,6 +36,9 @@
 #define _D_FILE_ALLOCATION_ITERATOR_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class FileAllocationIterator
 {
@@ -52,5 +55,7 @@ public:
 };
 
 typedef SharedHandle<FileAllocationIterator> FileAllocationIteratorHandle;
+
+} // namespace aria2
 
 #endif // _D_FILE_ALLOCATION_ITERATOR_H_

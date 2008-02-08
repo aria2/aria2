@@ -36,15 +36,19 @@
 #define _D_SERVER_HOST_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
 
 class ServerHost {
 private:
   int32_t _cuid;
 
-  string _hostname;
+  std::string _hostname;
   
 public:
-  ServerHost(int32_t cuid, const string& hostname);
+  ServerHost(int32_t cuid, const std::string& hostname);
 
   ~ServerHost();
 
@@ -53,7 +57,7 @@ public:
     return _cuid;
   }
 
-  const string& getHostname() const
+  const std::string& getHostname() const
   {
     return _hostname;
   }
@@ -65,5 +69,7 @@ public:
 };
 
 typedef SharedHandle<ServerHost> ServerHostHandle;
+
+} // namespace aria2
 
 #endif // _D_SERVER_HOST_H_

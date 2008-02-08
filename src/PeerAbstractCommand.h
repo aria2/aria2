@@ -36,13 +36,15 @@
 #define _D_PEER_ABSTRACT_COMMAND_H_
 
 #include "Command.h"
+#include "SharedHandle.h"
 #include "TimeA2.h"
-#include "Socket.h"
+
+namespace aria2 {
 
 class DownloadEngine;
 class Exception;
 class Peer;
-typedef SharedHandle<Peer> PeerHandle;
+class SocketCore;
 
 class PeerAbstractCommand : public Command {
 private:
@@ -50,8 +52,8 @@ private:
   int32_t timeout;
 protected:
   DownloadEngine* e;
-  SocketHandle socket;
-  PeerHandle peer;
+  SharedHandle<SocketCore> socket;
+  SharedHandle<Peer> peer;
 
   void setTimeout(int32_t timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(int32_t wait);
@@ -59,8 +61,8 @@ protected:
   virtual void onAbort(Exception* ex) {};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
-  void setReadCheckSocket(const SocketHandle& socket);
-  void setWriteCheckSocket(const SocketHandle& socket);
+  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
+  void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
   void setUploadLimit(int32_t uploadLimit);
@@ -69,19 +71,26 @@ protected:
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;
-  SocketHandle readCheckTarget;
-  SocketHandle writeCheckTarget;
+  SharedHandle<SocketCore> readCheckTarget;
+  SharedHandle<SocketCore> writeCheckTarget;
   bool uploadLimitCheck;
   int32_t uploadLimit;
   bool noCheck;
 public:
   PeerAbstractCommand(int32_t cuid,
-		      const PeerHandle& peer,
+		      const SharedHandle<Peer>& peer,
 		      DownloadEngine* e,
-		      const SocketHandle& s = SocketHandle());
+		      const SharedHandle<SocketCore>& s);
+
+  PeerAbstractCommand(int32_t cuid,
+		      const SharedHandle<Peer>& peer,
+		      DownloadEngine* e);
+
   virtual ~PeerAbstractCommand();
 
   virtual bool execute();
 };
+
+} // namespace aria2
 
 #endif // _D_PEER_ABSTRACT_COMMAND_H_

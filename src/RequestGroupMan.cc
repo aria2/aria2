@@ -37,6 +37,7 @@
 #include "RecoverableException.h"
 #include "RequestGroup.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "DownloadEngine.h"
 #include "message.h"
 #include "a2functional.h"
@@ -44,6 +45,8 @@
 #include <iomanip>
 #include <sstream>
 #include <numeric>
+
+namespace aria2 {
 
 RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
 				 int32_t maxSimultaneousDownloads):
@@ -215,7 +218,7 @@ void RequestGroupMan::closeFile()
   }
 }
 
-void RequestGroupMan::showDownloadResults(ostream& o) const
+void RequestGroupMan::showDownloadResults(std::ostream& o) const
 {
   // Download Results:
   // idx|stat|path/length
@@ -224,15 +227,15 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
     <<_("Download Results:") << "\n"
     << "gid|stat|path/URI" << "\n"
     << "===+====+======================================================================" << "\n";
-  for(DownloadResults::const_iterator itr = _downloadResults.begin();
+  for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
       itr != _downloadResults.end(); ++itr) {
-    string status = (*itr)->result == DownloadResult::FINISHED ? "OK" : "ERR";
+    std::string status = (*itr)->result == DownloadResult::FINISHED ? "OK" : "ERR";
     o << formatDownloadResult(status, *itr) << "\n";
   }
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
-    string status = result->result == DownloadResult::FINISHED ? "OK" : "INPR";
+    std::string status = result->result == DownloadResult::FINISHED ? "OK" : "INPR";
     o << formatDownloadResult(status, result) << "\n";
   }
   o << "\n"
@@ -240,11 +243,11 @@ void RequestGroupMan::showDownloadResults(ostream& o) const
     << " (OK):download completed.(ERR):error occurred.(INPR):download in-progress." << "\n";
 }
 
-string RequestGroupMan::formatDownloadResult(const string& status, const DownloadResultHandle& downloadResult) const
+std::string RequestGroupMan::formatDownloadResult(const std::string& status, const DownloadResultHandle& downloadResult) const
 {
-  stringstream o;
-  o << setw(3) << downloadResult->gid << "|"
-    << setw(4) << status << "|";
+  std::stringstream o;
+  o << std::setw(3) << downloadResult->gid << "|"
+    << std::setw(4) << status << "|";
   if(downloadResult->result == DownloadResult::FINISHED) {
     o << downloadResult->filePath;
   } else {
@@ -298,6 +301,8 @@ void RequestGroupMan::forceHalt()
 
 TransferStat RequestGroupMan::calculateStat()
 {
-  return accumulate(_requestGroups.begin(), _requestGroups.end(), TransferStat(),
-		    adopt2nd(plus<TransferStat>(), mem_fun_sh(&RequestGroup::calculateStat)));
+  return std::accumulate(_requestGroups.begin(), _requestGroups.end(), TransferStat(),
+			 adopt2nd(std::plus<TransferStat>(), mem_fun_sh(&RequestGroup::calculateStat)));
 }
+
+} // namespace aria2

@@ -36,41 +36,33 @@
 #define _D_P_STRING_SEGMENT_H_
 
 #include "PStringDatum.h"
+#include <string>
+
+namespace aria2 {
 
 class PStringSegmentVisitor;
-
-typedef SharedHandle<PStringSegmentVisitor> PStringSegmentVisitorHandle;
 
 class PStringSegment : public PStringDatum
 {
 private:
 
-  string _value;
+  std::string _value;
 
-  PStringDatumHandle _next;
+  SharedHandle<PStringDatum> _next;
 
 public:
-  PStringSegment(const string& value, const PStringDatumHandle& next = 0):
-    _value(value), _next(next) {}
+  PStringSegment(const std::string& value,
+		 const SharedHandle<PStringDatum>& next = 0);
 
-  virtual ~PStringSegment() {}
+  virtual ~PStringSegment();
 
-  virtual void accept(const PStringVisitorHandle& visitor);
+  virtual void accept(PStringVisitor* visitor);
 
-  const string& getValue() const
-  {
-    return _value;
-  }
+  const std::string& getValue() const;
 
-  bool hasNext() const
-  {
-    return !_next.isNull();
-  }
+  bool hasNext() const;
 
-  PStringDatumHandle getNext() const
-  {
-    return _next;
-  }
+  SharedHandle<PStringDatum> getNext() const;
 };
 
 typedef SharedHandle<PStringSegment> PStringSegmentHandle;
@@ -85,5 +77,7 @@ public:
 };
 
 typedef SharedHandle<PStringSegmentVisitor> PStringSegmentVisitorHandle;
+
+} // namespace aria2
 
 #endif // _D_P_STRING_SEGMENT_H_

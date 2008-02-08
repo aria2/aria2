@@ -1,7 +1,8 @@
 #include "Sequence.h"
+#include <deque>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class SequenceTest:public CppUnit::TestFixture {
 
@@ -71,9 +72,11 @@ void SequenceTest::testFlush()
     IntSequence::Value(10, 11),
   };
   IntSequence seq = IntSequence(IntSequence::Values(&params[0], &params[3]));
-  deque<int32_t> r = seq.flush();
+  std::deque<int32_t> r = seq.flush();
 
   int32_t answers[] = { 1, 3, 4, 5, 6, 7, 8, 10 };
 
   CPPUNIT_ASSERT(equal(r.begin(), r.end(), &answers[0])); 
 }
+
+} // namespace aria2

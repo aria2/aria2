@@ -2,6 +2,8 @@
 #include <sstream>
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class HelpItemTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HelpItemTest);
@@ -20,7 +22,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(HelpItemTest);
 
 void HelpItemTest::testOperatorStreamOut()
 {
-  string usage =
+  std::string usage =
     " -m, --max-tries=N            Set number of tries. 0 means unlimited.";
   HelpItem item("max-tries", usage, "5");
   item.setAvailableValues("0,5,10");
@@ -28,7 +30,7 @@ void HelpItemTest::testOperatorStreamOut()
   item.addTag("http");
   item.addTag("ftp");
   
-  stringstream s;
+  std::stringstream s;
   s << item;
 
   CPPUNIT_ASSERT_EQUAL(usage+"\n"+
@@ -37,3 +39,5 @@ void HelpItemTest::testOperatorStreamOut()
 		       "                              Tags: basic,http,ftp",
 		       s.str());
 }
+
+} // namespace aria2

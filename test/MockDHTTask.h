@@ -4,11 +4,13 @@
 #include "DHTTask.h"
 #include "DHTNode.h"
 
+namespace aria2 {
+
 class MockDHTTask:public DHTTask {
 public:
-  DHTNodeHandle _remoteNode;
+  SharedHandle<DHTNode> _remoteNode;
 
-  MockDHTTask(const DHTNodeHandle& remoteNode):_remoteNode(remoteNode) {}
+  MockDHTTask(const SharedHandle<DHTNode>& remoteNode):_remoteNode(remoteNode) {}
 
   virtual ~MockDHTTask() {}
 
@@ -19,5 +21,7 @@ public:
     return false;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_MOCK_DHT_TASK_H_

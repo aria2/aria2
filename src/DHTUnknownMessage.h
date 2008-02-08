@@ -37,17 +37,19 @@
 
 #include "DHTMessage.h"
 
+namespace aria2 {
+
 class DHTUnknownMessage:public DHTMessage {
 private:
   char* _data;
   size_t _length;
-  string _ipaddr;
+  std::string _ipaddr;
   uint16_t _port;
 public:
   // _remoteNode is always null
-  DHTUnknownMessage(const DHTNodeHandle& localNode,
+  DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
 		    const char* data, size_t length,
-		    const string& ipaddr, uint16_t port);
+		    const std::string& ipaddr, uint16_t port);
 
   virtual ~DHTUnknownMessage();
 
@@ -63,10 +65,12 @@ public:
   virtual void validate() const;
   
   // returns "unknown"
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   // show some sample bytes
-  virtual string toString() const;
+  virtual std::string toString() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_UNKNOWN_MESSAGE_H_

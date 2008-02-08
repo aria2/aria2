@@ -19,6 +19,8 @@
 #include "DHTAnnouncePeerReplyMessage.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTMessageFactoryImplTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTMessageFactoryImplTest);
@@ -37,9 +39,9 @@ public:
 
   DHTMessageFactoryImpl* factory;
 
-  DHTRoutingTableHandle routingTable;
+  SharedHandle<DHTRoutingTable> routingTable;
 
-  DHTNodeHandle localNode;
+  SharedHandle<DHTNode> localNode;
 
   unsigned char transactionID[DHT_TRANSACTION_ID_LENGTH];
 
@@ -86,7 +88,7 @@ void DHTMessageFactoryImplTest::testCreatePingMessage()
   d->put("a", a);
   
   SharedHandle<DHTPingMessage> m = factory->createQueryMessage(d.get(), "192.168.0.1", 6881);
-  DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+  SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
@@ -105,7 +107,7 @@ void DHTMessageFactoryImplTest::testCreatePingReplyMessage()
   r->put("id", new Data(remoteNodeID, DHT_ID_LENGTH));
   d->put("r", r);
 
-  DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+  SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
   
@@ -131,7 +133,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeMessage()
   d->put("a", a);
   
   SharedHandle<DHTFindNodeMessage> m = factory->createQueryMessage(d.get(), "192.168.0.1", 6881);
-  DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+  SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
@@ -151,8 +153,8 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     d->put("y", new Data("r"));
     Dictionary* r = new Dictionary();
     r->put("id", new Data(remoteNodeID, DHT_ID_LENGTH));
-    string compactNodeInfo;
-    DHTNodeHandle nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::string compactNodeInfo;
+    SharedHandle<DHTNode> nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     for(size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i] = new DHTNode();
       nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
@@ -161,13 +163,13 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
       char buf[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
-	string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-	string(&buf[0], &buf[sizeof(buf)]);
+	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
+	std::string(&buf[0], &buf[sizeof(buf)]);
     }
     r->put("nodes", new Data(compactNodeInfo));
     d->put("r", r);
 
-    DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+    SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
     remoteNode->setIPAddress("192.168.0.1");
     remoteNode->setPort(6881);
   
@@ -181,7 +183,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 			 Util::toHex(m->getTransactionID()));
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     CPPUNIT_FAIL("exception thrown.");
   }
 }
@@ -200,7 +202,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersMessage()
   d->put("a", a);
   
   SharedHandle<DHTGetPeersMessage> m = factory->createQueryMessage(d.get(), "192.168.0.1", 6881);
-  DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+  SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
@@ -220,8 +222,8 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
     d->put("y", new Data("r"));
     Dictionary* r = new Dictionary();
     r->put("id", new Data(remoteNodeID, DHT_ID_LENGTH));
-    string compactNodeInfo;
-    DHTNodeHandle nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::string compactNodeInfo;
+    SharedHandle<DHTNode> nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     for(size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i] = new DHTNode();
       nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
@@ -230,14 +232,14 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
       char buf[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
-	string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-	string(&buf[0], &buf[sizeof(buf)]);
+	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
+	std::string(&buf[0], &buf[sizeof(buf)]);
     }
     r->put("nodes", new Data(compactNodeInfo));
     r->put("token", new Data("token"));
     d->put("r", r);
 
-    DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+    SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
     remoteNode->setIPAddress("192.168.0.1");
     remoteNode->setPort(6881);
   
@@ -245,14 +247,14 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
-    CPPUNIT_ASSERT_EQUAL(string("token"), m->getToken());
+    CPPUNIT_ASSERT_EQUAL(std::string("token"), m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)DHTBucket::K, m->getClosestKNodes().size());
     CPPUNIT_ASSERT(nodes[0] == m->getClosestKNodes()[0]);
     CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 			 Util::toHex(m->getTransactionID()));
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     CPPUNIT_FAIL("exception thrown.");
   }
 }
@@ -266,11 +268,11 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
     Dictionary* r = new Dictionary();
     r->put("id", new Data(remoteNodeID, DHT_ID_LENGTH));
 
-    Peers peers;
+    std::deque<SharedHandle<Peer> > peers;
     List* values = new List();
     r->put("values", values);
     for(size_t i = 0; i < 4; ++i) {
-      PeerHandle peer = new Peer("192.168.0."+Util::uitos(i+1), 6881+i);
+      SharedHandle<Peer> peer = new Peer("192.168.0."+Util::uitos(i+1), 6881+i);
       char buffer[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port));
       values->add(new Data(buffer, sizeof(buffer)));
@@ -280,7 +282,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
     r->put("token", new Data("token"));
     d->put("r", r);
 
-    DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+    SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
     remoteNode->setIPAddress("192.168.0.1");
     remoteNode->setPort(6881);
   
@@ -288,14 +290,14 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
 
     CPPUNIT_ASSERT(localNode == m->getLocalNode());
     CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
-    CPPUNIT_ASSERT_EQUAL(string("token"), m->getToken());
+    CPPUNIT_ASSERT_EQUAL(std::string("token"), m->getToken());
     CPPUNIT_ASSERT_EQUAL((size_t)4, m->getValues().size());
     CPPUNIT_ASSERT(peers[0] == m->getValues()[0]);
     CPPUNIT_ASSERT(peers[3] == m->getValues()[3]);
     CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 			 Util::toHex(m->getTransactionID()));
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     CPPUNIT_FAIL("exception thrown.");
   }
 }
@@ -312,14 +314,14 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     unsigned char infoHash[DHT_ID_LENGTH];
     memset(infoHash, 0x11, DHT_ID_LENGTH);
     a->put("info_hash", new Data(infoHash, DHT_ID_LENGTH));
-    string token = "ffff";
+    std::string token = "ffff";
     uint16_t port = 6881;
     a->put("port", new Data(Util::uitos(port), true));
     a->put("token", new Data(token));
     d->put("a", a);
   
     SharedHandle<DHTAnnouncePeerMessage> m = factory->createQueryMessage(d.get(), "192.168.0.1", 6882);
-    DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+    SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
     remoteNode->setIPAddress("192.168.0.1");
     remoteNode->setPort(6882);
 
@@ -332,8 +334,8 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
 			 Util::toHex(m->getInfoHash(), DHT_ID_LENGTH));
     CPPUNIT_ASSERT_EQUAL(port, m->getTCPPort());
   } catch(Exception* e) {
-    cerr << *e << endl;
-    string msg = e->getMsg();
+    std::cerr << *e << std::endl;
+    std::string msg = e->getMsg();
     delete e;
     CPPUNIT_FAIL(msg);
   }
@@ -348,7 +350,7 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   r->put("id", new Data(remoteNodeID, DHT_ID_LENGTH));
   d->put("r", r);
 
-  DHTNodeHandle remoteNode = new DHTNode(remoteNodeID);
+  SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
   
@@ -359,3 +361,5 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 		       Util::toHex(m->getTransactionID()));
 }
+
+} // namespace aria2

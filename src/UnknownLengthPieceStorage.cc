@@ -38,8 +38,10 @@
 #include "prefs.h"
 #include "DefaultDiskWriterFactory.h"
 #include "DownloadContext.h"
-#include "PieceStorage.h"
 #include "Piece.h"
+#include "FileEntry.h"
+
+namespace aria2 {
 
 UnknownLengthPieceStorage::UnknownLengthPieceStorage(const DownloadContextHandle& downloadContext,
 						     const Option* option):
@@ -60,7 +62,7 @@ void UnknownLengthPieceStorage::initStorage()
   directDiskAdaptor->setDiskWriter(writer);
   directDiskAdaptor->setTotalLength(_downloadContext->getTotalLength());
   _diskAdaptor = directDiskAdaptor;
-  string storeDir = _downloadContext->getDir();
+  std::string storeDir = _downloadContext->getDir();
 //   if(storeDir == "") {
 //     storeDir = ".";
 //   }
@@ -170,3 +172,5 @@ void UnknownLengthPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHand
 {
   _diskWriterFactory = diskWriterFactory;
 }
+
+} // namespace aria2

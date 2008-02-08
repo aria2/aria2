@@ -37,6 +37,11 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Peer.h"
+#include "RequestSlot.h"
+#include "BtMessageDispatcher.h"
+
+namespace aria2 {
 
 BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 13) {
@@ -94,7 +99,9 @@ int32_t BtRejectMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtRejectMessage::toString() const {
+std::string BtRejectMessage::toString() const {
   return "reject index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::itos(length);
 }
+
+} // namespace aria2

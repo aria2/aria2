@@ -37,16 +37,21 @@
 
 #include "AbstractSegmentManFactory.h"
 
+namespace aria2 {
+
 class DefaultSegmentManFactory : public AbstractSegmentManFactory {
 public:
   DefaultSegmentManFactory(const Option* option):AbstractSegmentManFactory(option) {}
 
   virtual ~DefaultSegmentManFactory() {}
 
-  virtual SegmentManHandle createNewInstance(const DownloadContextHandle& dc,
-					     const PieceStorageHandle& ps);
+  virtual SharedHandle<SegmentMan>
+  createNewInstance(const SharedHandle<DownloadContext>& dc,
+		    const SharedHandle<PieceStorage>& ps);
 };
 
 typedef SharedHandle<DefaultSegmentManFactory> DefaultSegmentManFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_SEGMENT_MAN_FACTORY_H_

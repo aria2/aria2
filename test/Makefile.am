@@ -21,8 +21,7 @@ aria2c_SOURCES = AllTest.cc\
 	ParameterizedStringParserTest.cc\
 	UtilTest.cc\
 	AlphaNumberDecoratorTest.cc\
-	FileUriListParserTest.cc\
-	StreamUriListParserTest.cc\
+	UriListParserTest.cc\
 	HttpHeaderProcessorTest.cc\
 	CookieBoxTest.cc\
 	RequestTest.cc\
@@ -47,7 +46,6 @@ aria2c_SOURCES = AllTest.cc\
 	DefaultDiskWriterTest.cc\
 	FeatureConfigTest.cc\
 	SpeedCalcTest.cc\
-	FixedNumberRandomizer.h\
 	MultiDiskAdaptorTest.cc\
 	MultiFileAllocationIteratorTest.cc
 
@@ -83,7 +81,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	MockBtMessage.h\
 	MockBtMessageDispatcher.h\
 	MockBtMessageFactory.h\
-	ShaVisitorTest.cc\
 	DefaultPeerListProcessorTest.cc\
 	AnnounceListTest.cc\
 	DefaultPeerStorageTest.cc\
@@ -106,7 +103,7 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	HandshakeExtensionMessageTest.cc\
 	UTPexExtensionMessageTest.cc\
 	DefaultBtMessageFactoryTest.cc\
-	DefaultExtensionMessageFactoryTest.cc
+	DefaultExtensionMessageFactoryTest.cc\
 	DHTNodeTest.cc\
 	DHTBucketTest.cc\
 	DHTRoutingTableTest.cc\

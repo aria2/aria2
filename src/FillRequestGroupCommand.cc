@@ -38,6 +38,9 @@
 #include "RequestGroup.h"
 #include "RecoverableException.h"
 #include "message.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 FillRequestGroupCommand::FillRequestGroupCommand(int32_t cuid,
 						 DownloadEngine* e,
@@ -65,3 +68,5 @@ bool FillRequestGroupCommand::execute()
   _e->commands.push_back(this);
   return false;
 }
+
+} // namespace aria2

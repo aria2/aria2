@@ -36,29 +36,34 @@
 #define _D_AUTH_CONFIG_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <iosfwd>
+
+namespace aria2 {
 
 class AuthConfig {
 private:
-  string _authScheme;
-  string _user;
-  string _password;
+  std::string _authScheme;
+  std::string _user;
+  std::string _password;
 public:
 
   AuthConfig() {}
-  AuthConfig(const string& user, const string& password):
+  AuthConfig(const std::string& user, const std::string& password):
     _user(user), _password(password) {}
 
-  string getAuthText() const
+  std::string getAuthText() const
   {
     return _user+":"+_password;
   }
 
-  const string& getUser() const
+  const std::string& getUser() const
   {
     return _user;
   }
 
-  const string& getPassword() const
+  const std::string& getPassword() const
   {
     return _password;
   }
@@ -66,6 +71,8 @@ public:
 
 typedef SharedHandle<AuthConfig> AuthConfigHandle;
 
-ostream& operator<<(ostream& o, const AuthConfigHandle& authConfig);
+std::ostream& operator<<(std::ostream& o, const AuthConfigHandle& authConfig);
+
+} // namespace aria2
 
 #endif // _D_AUTH_CONFIG_H_

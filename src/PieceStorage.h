@@ -36,16 +36,17 @@
 #define _D_PIECE_STORAGE_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "TimeA2.h"
 #include "IntSequence.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class Piece;
-typedef SharedHandle<Piece> PieceHandle;
-typedef deque<PieceHandle> Pieces;
 class Peer;
-typedef SharedHandle<Peer> PeerHandle;
 class DiskAdaptor;
-typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
 
 class PieceStorage {
 public:
@@ -55,7 +56,7 @@ public:
    * Returns true if the peer has a piece that localhost doesn't have.
    * Otherwise returns false.
    */
-  virtual bool hasMissingPiece(const PeerHandle& peer) = 0;
+  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer) = 0;
 
   /**
    * Returns a piece that the peer has but localhost doesn't.
@@ -63,7 +64,9 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual PieceHandle getMissingPiece(const PeerHandle& peer) = 0;
+  virtual SharedHandle<Piece>
+  getMissingPiece(const SharedHandle<Peer>& peer) = 0;
+
   /**
    * Returns a piece that the peer has but localhost doesn't.
    * Only pieces that declared as "fast" are returned.
@@ -71,12 +74,13 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual PieceHandle getMissingFastPiece(const PeerHandle& peer) = 0;
+  virtual SharedHandle<Piece>
+  getMissingFastPiece(const SharedHandle<Peer>& peer) = 0;
 
   /**
    * Returns a missing piece if available. Otherwise returns 0;
    */
-  virtual PieceHandle getMissingPiece() = 0;
+  virtual SharedHandle<Piece> getMissingPiece() = 0;
 
   /**
    * Returns a missing piece whose index is index.
@@ -84,13 +88,13 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual PieceHandle getMissingPiece(int32_t index) = 0;
+  virtual SharedHandle<Piece> getMissingPiece(int32_t index) = 0;
 
   /**
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
-  virtual PieceHandle getPiece(int32_t index) = 0;
+  virtual SharedHandle<Piece> getPiece(int32_t index) = 0;
 
   /**
    * Marks the piece whose index is index as missing.
@@ -100,12 +104,12 @@ public:
   /**
    * Tells that the download of the specfied piece completes.
    */
-  virtual void completePiece(const PieceHandle& piece) = 0;
+  virtual void completePiece(const SharedHandle<Piece>& piece) = 0;
 
   /**
    * Tells that the download of the specified piece is canceled.
    */
-  virtual void cancelPiece(const PieceHandle& piece) = 0;
+  virtual void cancelPiece(const SharedHandle<Piece>& piece) = 0;
 
   /**
    * Returns true if the specified piece is already downloaded.
@@ -123,7 +127,7 @@ public:
 
   virtual int64_t getFilteredCompletedLength() = 0;
   
-  virtual void setFileFilter(const Strings& filePaths) = 0;
+  virtual void setFileFilter(const std::deque<std::string>& filePaths) = 0;
 
   virtual void setFileFilter(IntSequence seq) = 0;
 
@@ -161,7 +165,7 @@ public:
 
   virtual bool isEndGame() = 0;
 
-  virtual DiskAdaptorHandle getDiskAdaptor() = 0;
+  virtual SharedHandle<DiskAdaptor> getDiskAdaptor() = 0;
   
   virtual int32_t getPieceLength(int32_t index) = 0;
 
@@ -175,8 +179,8 @@ public:
    * Returns piece index which is not advertised by the caller command and
    * newer than lastCheckTime.
    */
-  virtual Integers getAdvertisedPieceIndexes(int32_t myCuid,
-					     const Time& lastCheckTime) = 0;
+  virtual std::deque<int32_t>
+  getAdvertisedPieceIndexes(int32_t myCuid, const Time& lastCheckTime) = 0;
 
   /**
    * Removes have entry if specified seconds have elapsed since its
@@ -194,13 +198,16 @@ public:
    */
   virtual void markPiecesDone(int64_t length) = 0;
 
-  virtual void addInFlightPiece(const Pieces& pieces) = 0;
+  virtual void
+  addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces) = 0;
 
   virtual int32_t countInFlightPiece() = 0;
 
-  virtual Pieces getInFlightPieces() = 0;
+  virtual std::deque<SharedHandle<Piece> > getInFlightPieces() = 0;
 };
 
 typedef SharedHandle<PieceStorage> PieceStorageHandle;
+
+} // namespace aria2
 
 #endif // _D_PIECE_STORAGE_H_

@@ -36,19 +36,20 @@
 #define _D_DEFAULT_BT_INTERACTIVE_H_
 
 #include "BtInteractive.h"
-#include "Peer.h"
-#include "BtContext.h"
-#include "PieceStorage.h"
-#include "PeerStorage.h"
-#include "BtMessageReceiver.h"
-#include "BtMessageDispatcher.h"
-#include "BtRequestFactory.h"
-#include "PeerConnection.h"
-#include "BtRegistry.h"
-#include "Logger.h"
-#include "LogFactory.h"
+#include "BtContextAwareCommand.h"
 #include "TimeA2.h"
-#include "DHTNodeDecl.h"
+
+namespace aria2 {
+
+class Peer;
+class BtMessage;
+class BtMessageReceiver;
+class BtMessageDispatcher;
+class BtMessageFactory;
+class BtRequestFactory;
+class PeerConnection;
+class DHTNode;
+class Logger;
 
 class FloodingStat {
 private:
@@ -83,20 +84,19 @@ public:
   }
 };
 
-class DefaultBtInteractive : public BtInteractive {
+class DefaultBtInteractive : public BtInteractive, public BtContextAwareCommand {
 private:
   int32_t cuid;
-  PeerHandle peer;
-  BtContextHandle btContext;
-  PeerStorageHandle peerStorage;
-  PieceStorageHandle pieceStorage;
-  BtRuntimeHandle btRuntime;
-  BtMessageReceiverWeakHandle btMessageReceiver;
-  BtMessageDispatcherWeakHandle dispatcher;
-  BtRequestFactoryWeakHandle btRequestFactory;
-  PeerConnectionWeakHandle peerConnection;
-  BtMessageFactoryWeakHandle messageFactory;
+  SharedHandle<Peer> peer;
+
+  WeakHandle<BtMessageReceiver> btMessageReceiver;
+  WeakHandle<BtMessageDispatcher> dispatcher;
+  WeakHandle<BtRequestFactory> btRequestFactory;
+  WeakHandle<PeerConnection> peerConnection;
+  WeakHandle<BtMessageFactory> messageFactory;
+
   WeakHandle<DHTNode> _localNode;
+
   const Logger* logger;
   int32_t allowedFastSetSize;
   Time haveCheckPoint;
@@ -127,30 +127,16 @@ private:
   void addPortMessageToQueue();
 
 public:
-  DefaultBtInteractive():peer(0),
-			 btContext(0),
-			 peerStorage(0),
-			 pieceStorage(0),
-			 btRuntime(0),
-			 btMessageReceiver(0),
-			 dispatcher(0),
-			 btRequestFactory(0),
-			 peerConnection(0),
-			 logger(LogFactory::getInstance()),
-			 allowedFastSetSize(10),
-			 keepAliveInterval(120),
-			 maxDownloadSpeedLimit(0),
-			 _utPexEnabled(false),
-			 _dhtEnabled(false)
-  {}
+  DefaultBtInteractive(const SharedHandle<BtContext>& btContext,
+		       const SharedHandle<Peer>& peer);
 
-  virtual ~DefaultBtInteractive() {}
+  virtual ~DefaultBtInteractive();
 
   virtual void initiateHandshake();
 
-  virtual BtMessageHandle receiveHandshake(bool quickReply = false);
+  virtual SharedHandle<BtMessage> receiveHandshake(bool quickReply = false);
 
-  virtual BtMessageHandle receiveAndSendHandshake();
+  virtual SharedHandle<BtMessage> receiveAndSendHandshake();
 
   virtual void doPostHandshakeProcessing();
 
@@ -162,44 +148,25 @@ public:
 
   void receiveMessages();
 
-  virtual int32_t countPendingMessage() {
-    return dispatcher->countMessageInQueue();
-  }
+  virtual int32_t countPendingMessage();
   
-  virtual bool isSendingMessageInProgress() {
-    return dispatcher->isSendingInProgress();
-  }
+  virtual bool isSendingMessageInProgress();
 
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
   }
 
-  void setPeer(const PeerHandle& peer) {
-    this->peer = peer;
-  }
+  void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtContext(const BtContextHandle& btContext) {
-    this->btContext = btContext;
-    this->peerStorage = PEER_STORAGE(btContext);
-    this->pieceStorage = PIECE_STORAGE(btContext);
-    this->btRuntime = BT_RUNTIME(btContext);
-  }
+  void setBtMessageReceiver(const WeakHandle<BtMessageReceiver>& receiver);
 
-  void setBtMessageReceiver(const BtMessageReceiverWeakHandle& receiver) {
-    this->btMessageReceiver = receiver;
-  }
+  void setDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
 
-  void setDispatcher(const BtMessageDispatcherWeakHandle& dispatcher) {
-    this->dispatcher = dispatcher;
-  }
+  void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
 
-  void setBtRequestFactory(const BtRequestFactoryWeakHandle& factory) {
-    this->btRequestFactory = factory;
-  }
+  void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
 
-  void setPeerConnection(const PeerConnectionWeakHandle& peerConnection) {
-    this->peerConnection  = peerConnection;
-  }
+  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 
   void setKeepAliveInterval(int32_t keepAliveInterval) {
     this->keepAliveInterval = keepAliveInterval;
@@ -207,10 +174,6 @@ public:
 
   void setMaxDownloadSpeedLimit(int32_t maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
-  }
-
-  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
-    this->messageFactory = factory;
   }
 
   void setUTPexEnabled(bool f)
@@ -227,5 +190,7 @@ public:
 };
 
 typedef SharedHandle<DefaultBtInteractive> DefaultBtInteractiveHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_BT_INTERACTIVE_H_

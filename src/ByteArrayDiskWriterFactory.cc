@@ -32,12 +32,14 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_MESSAGE_RECEIVER_DECL_H_
-#define _D_DHT_MESSAGE_RECEIVER_DECL_H_
+#include "ByteArrayDiskWriterFactory.h"
+#include "ByteArrayDiskWriter.h"
 
-#include "SharedHandle.h"
+namespace aria2 {
 
-class DHTMessageReceiver;
-typedef SharedHandle<DHTMessageReceiver> DHTMessageReceiverHandle;
+DiskWriterHandle ByteArrayDiskWriterFactory::newDiskWriter()
+{
+  return new ByteArrayDiskWriter();
+}
 
-#endif // _D_DHT_MESSAGE_RECEIVER_DECL_H_
+} // namespace aria2

@@ -40,6 +40,8 @@
 #include "a2io.h"
 #include "help_tags.h"
 
+namespace aria2 {
+
 HelpItemFactory::HelpItemFactory() {}
 
 TagContainerHandle HelpItemFactory::createHelpItems()
@@ -423,3 +425,5 @@ TagContainerHandle HelpItemFactory::createHelpItems()
   }
   return tc;
 }
+
+} // namespace aria2

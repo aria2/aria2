@@ -5,6 +5,8 @@
 #include "DHTConstants.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTTokenTrackerTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTTokenTrackerTest);
@@ -25,17 +27,19 @@ void DHTTokenTrackerTest::testGenerateToken()
 {
   unsigned char infohash[DHT_ID_LENGTH];
   DHTUtil::generateRandomData(reinterpret_cast<char*>(infohash), DHT_ID_LENGTH);
-  string ipaddr = "192.168.0.1";
+  std::string ipaddr = "192.168.0.1";
   uint16_t port = 6881;
   
   DHTTokenTracker tracker;
-  string token = tracker.generateToken(infohash, ipaddr, port);
+  std::string token = tracker.generateToken(infohash, ipaddr, port);
   CPPUNIT_ASSERT(tracker.validateToken(token, infohash, ipaddr, port));
 
   tracker.updateTokenSecret();
   CPPUNIT_ASSERT(tracker.validateToken(token, infohash, ipaddr, port));
-  string newtoken = tracker.generateToken(infohash, ipaddr, port);
+  std::string newtoken = tracker.generateToken(infohash, ipaddr, port);
   tracker.updateTokenSecret();
   CPPUNIT_ASSERT(!tracker.validateToken(token, infohash, ipaddr, port));
   CPPUNIT_ASSERT(tracker.validateToken(newtoken, infohash, ipaddr, port));
 }
+
+} // namespace aria2

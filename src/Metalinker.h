@@ -36,12 +36,17 @@
 #define _D_METALINKER_H_
 
 #include "common.h"
-#include "MetalinkEntry.h"
+#include "SharedHandle.h"
+#include <string>
 #include <deque>
+
+namespace aria2 {
+
+class MetalinkEntry;
 
 class Metalinker {
 public:
-  MetalinkEntries entries;
+  std::deque<SharedHandle<MetalinkEntry> > entries;
 public:
   Metalinker();
   ~Metalinker();
@@ -53,11 +58,11 @@ public:
     return *this;
   }
 
-  MetalinkEntries queryEntry(const string& version,
-			     const string& language,
-			     const string& os) const;
+  std::deque<SharedHandle<MetalinkEntry> >
+  queryEntry(const std::string& version, const std::string& language,
+	     const std::string& os) const;
 };
 
-typedef SharedHandle<Metalinker> MetalinkerHandle;
+} // namespace aria2
 
 #endif // _D_METALINKER_H_

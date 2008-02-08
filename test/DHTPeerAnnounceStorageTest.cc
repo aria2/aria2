@@ -4,7 +4,10 @@
 #include "MockBtContext.h"
 #include "DHTConstants.h"
 #include "Peer.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class DHTPeerAnnounceStorageTest:public CppUnit::TestFixture {
 
@@ -37,11 +40,11 @@ void DHTPeerAnnounceStorageTest::testAddAnnounce()
   storage.addPeerAnnounce(infohash2, "192.168.0.3", 6883);
   storage.addPeerAnnounce(infohash2, "192.168.0.4", 6884);
   
-  Peers peers = storage.getPeers(infohash2);
+  std::deque<SharedHandle<Peer> > peers = storage.getPeers(infohash2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.3"), peers[0]->ipaddr);
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.4"), peers[1]->ipaddr);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peers[0]->ipaddr);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.4"), peers[1]->ipaddr);
 }
 
 void DHTPeerAnnounceStorageTest::testRemovePeerAnnounce()
@@ -52,10 +55,10 @@ void DHTPeerAnnounceStorageTest::testRemovePeerAnnounce()
   memset(infohash2, 0xf0, DHT_ID_LENGTH);
   DHTPeerAnnounceStorage storage;
 
-  MockBtContextHandle ctx1 = new MockBtContext();
+  SharedHandle<MockBtContext> ctx1 = new MockBtContext();
   ctx1->setInfoHash(infohash1);
 
-  MockBtContextHandle ctx2 = new MockBtContext();
+  SharedHandle<MockBtContext> ctx2 = new MockBtContext();
   ctx2->setInfoHash(infohash2);
 
   storage.addPeerAnnounce(infohash1, "192.168.0.1", 6881);
@@ -68,3 +71,5 @@ void DHTPeerAnnounceStorageTest::testRemovePeerAnnounce()
   storage.removePeerAnnounce(ctx1);
   CPPUNIT_ASSERT(storage.contains(infohash1));
 }
+
+} // namespace aria2

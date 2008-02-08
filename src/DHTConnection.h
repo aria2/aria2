@@ -36,14 +36,19 @@
 #define _D_DHT_CONNECTION_H_
 
 #include "common.h"
+#include <string>
+
+namespace aria2 {
 
 class DHTConnection {
 public:
   virtual ~DHTConnection() {}
 
-  virtual ssize_t receiveMessage(char* data, size_t len, string& host, uint16_t& port) = 0;
+  virtual ssize_t receiveMessage(char* data, size_t len, std::string& host, uint16_t& port) = 0;
 
-  virtual void sendMessage(const char* data, size_t len, const string& host, uint16_t port) = 0;
+  virtual void sendMessage(const char* data, size_t len, const std::string& host, uint16_t port) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_CONNECTION_H_

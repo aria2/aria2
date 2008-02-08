@@ -44,13 +44,16 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTTokenTracker.h"
 #include "DlAbortEx.h"
+#include <cstring>
 
-DHTAnnouncePeerMessage::DHTAnnouncePeerMessage(const DHTNodeHandle& localNode,
-					       const DHTNodeHandle& remoteNode,
+namespace aria2 {
+
+DHTAnnouncePeerMessage::DHTAnnouncePeerMessage(const SharedHandle<DHTNode>& localNode,
+					       const SharedHandle<DHTNode>& remoteNode,
 					       const unsigned char* infoHash,
 					       uint16_t tcpPort,
-					       const string& token,
-					       const string& transactionID):
+					       const std::string& token,
+					       const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID),
   _token(token),
   _tcpPort(tcpPort),
@@ -67,7 +70,7 @@ void DHTAnnouncePeerMessage::doReceivedAction()
   _peerAnnounceStorage->addPeerAnnounce(_infoHash, _remoteNode->getIPAddress(),
 					_tcpPort);
 
-  DHTMessageHandle reply =
+  SharedHandle<DHTMessage> reply =
     _factory->createAnnouncePeerReplyMessage(_remoteNode, _transactionID);
   _dispatcher->addMessageToQueue(reply);
 }
@@ -85,7 +88,7 @@ Dictionary* DHTAnnouncePeerMessage::getArgument()
   return a;
 }
 
-string DHTAnnouncePeerMessage::getMessageType() const
+std::string DHTAnnouncePeerMessage::getMessageType() const
 {
   return "announce_peer";
 }
@@ -111,3 +114,5 @@ void DHTAnnouncePeerMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& 
 {
   _tokenTracker = tokenTracker;
 }
+
+} // namespace aria2

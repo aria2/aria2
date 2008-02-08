@@ -33,13 +33,15 @@
  */
 /* copyright --> */
 #include "Netrc.h"
-#include "Util.h"
 #include "RecoverableException.h"
 #include <fstream>
+#include <algorithm>
 
-string Netrc::getRequiredNextToken(ifstream& f) const
+namespace aria2 {
+
+std::string Netrc::getRequiredNextToken(std::ifstream& f) const
 {
-  string token;
+  std::string token;
   if(f >> token) {
     return token;
   } else {
@@ -47,9 +49,9 @@ string Netrc::getRequiredNextToken(ifstream& f) const
   }
 }
 
-void Netrc::skipMacdef(ifstream& f) const
+void Netrc::skipMacdef(std::ifstream& f) const
 {
-  string line;
+  std::string line;
   getline(f, line);
   while(getline(f, line)) {
     if(line == "\r" || line == "") {
@@ -58,17 +60,17 @@ void Netrc::skipMacdef(ifstream& f) const
   }
 }
 
-void Netrc::parse(const string& path)
+void Netrc::parse(const std::string& path)
 {
   authenticators.clear();
-  ifstream f(path.c_str());
+  std::ifstream f(path.c_str());
   
   if(!f) {
     throw new RecoverableException("File not found: %s", path.c_str());
   }
 
   AuthenticatorHandle authenticator = 0;
-  string token;
+  std::string token;
   while(f >> token) {
     if(token == "machine") {
       storeAuthenticator(authenticator);
@@ -105,9 +107,9 @@ void Netrc::storeAuthenticator(const AuthenticatorHandle& authenticator)
 
 class AuthHostMatch {
 private:
-  string hostname;
+  std::string hostname;
 public:
-  AuthHostMatch(const string& hostname):hostname(hostname) {}
+  AuthHostMatch(const std::string& hostname):hostname(hostname) {}
 
   bool operator()(const AuthenticatorHandle& authenticator)
   {
@@ -115,14 +117,16 @@ public:
   }
 };
 
-AuthenticatorHandle Netrc::findAuthenticator(const string& hostname) const
+AuthenticatorHandle Netrc::findAuthenticator(const std::string& hostname) const
 {
   Authenticators::const_iterator itr =
-    find_if(authenticators.begin(), authenticators.end(),
-	    AuthHostMatch(hostname));
+    std::find_if(authenticators.begin(), authenticators.end(),
+		 AuthHostMatch(hostname));
   if(itr == authenticators.end()) {
     return 0;
   } else {
     return *itr;
   }
 }
+
+} // namespace aria2

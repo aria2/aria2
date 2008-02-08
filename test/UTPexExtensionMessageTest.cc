@@ -6,7 +6,11 @@
 #include "BtRegistry.h"
 #include "MockBtContext.h"
 #include "MockPeerStorage.h"
+#include "Exception.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class UTPexExtensionMessageTest:public CppUnit::TestFixture {
 
@@ -19,19 +23,19 @@ class UTPexExtensionMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreate);
   CPPUNIT_TEST_SUITE_END();
 private:
-  MockBtContextHandle _btContext;
+  SharedHandle<MockBtContext> _btContext;
 public:
   UTPexExtensionMessageTest():_btContext(0) {}
 
   void setUp()
   {
     BtRegistry::unregisterAll();
-    MockBtContextHandle btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext = new MockBtContext();
     unsigned char infohash[20];
     memset(infohash, 0, sizeof(infohash));
     btContext->setInfoHash(infohash);
     _btContext = btContext;
-    MockPeerStorageHandle peerStorage = new MockPeerStorage();
+    SharedHandle<MockPeerStorage> peerStorage = new MockPeerStorage();
     BtRegistry::registerPeerStorage(_btContext->getInfoHashAsString(),
 				    peerStorage);
   }
@@ -61,21 +65,21 @@ void UTPexExtensionMessageTest::testGetExtensionMessageID()
 void UTPexExtensionMessageTest::testGetExtensionName()
 {
   UTPexExtensionMessage msg(1);
-  CPPUNIT_ASSERT_EQUAL(string("ut_pex"), msg.getExtensionName());
+  CPPUNIT_ASSERT_EQUAL(std::string("ut_pex"), msg.getExtensionName());
 }
 
 void UTPexExtensionMessageTest::testGetBencodedData()
 {
   UTPexExtensionMessage msg(1);
-  PeerHandle p1 = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
   p1->allocateBitfield(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  PeerHandle p2 = new Peer("10.1.1.2", 9999);
+  SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
   msg.addFreshPeer(p2);
-  PeerHandle p3 = new Peer("192.168.0.2", 6882);
+  SharedHandle<Peer> p3 = new Peer("192.168.0.2", 6882);
   msg.addDroppedPeer(p3);
-  PeerHandle p4 = new Peer("10.1.1.3", 10000);
+  SharedHandle<Peer> p4 = new Peer("10.1.1.3", 10000);
   msg.addDroppedPeer(p4);
 
   char c1[6];
@@ -87,12 +91,12 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   PeerMessageUtil::createcompact(c3, p3->ipaddr, p3->port);
   PeerMessageUtil::createcompact(c4, p4->ipaddr, p4->port);
 
-  string expected = "d5:added12:"+
-    string(&c1[0], &c1[6])+string(&c2[0], &c2[6])+
+  std::string expected = "d5:added12:"+
+    std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
     "7:added.f2:207:dropped12:"+
-    string(&c3[0], &c3[6])+string(&c4[0], &c4[6])+
+    std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "e";
-  string bd = msg.getBencodedData();
+  std::string bd = msg.getBencodedData();
   CPPUNIT_ASSERT_EQUAL(Util::urlencode(expected),
 		       Util::urlencode(bd));
 }
@@ -100,31 +104,31 @@ void UTPexExtensionMessageTest::testGetBencodedData()
 void UTPexExtensionMessageTest::testToString()
 {
   UTPexExtensionMessage msg(1);
-  PeerHandle p1 = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
   p1->allocateBitfield(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  PeerHandle p2 = new Peer("10.1.1.2", 9999);
+  SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
   msg.addFreshPeer(p2);
-  PeerHandle p3 = new Peer("192.168.0.2", 6882);
+  SharedHandle<Peer> p3 = new Peer("192.168.0.2", 6882);
   msg.addDroppedPeer(p3);
-  PeerHandle p4 = new Peer("10.1.1.3", 10000);
+  SharedHandle<Peer> p4 = new Peer("10.1.1.3", 10000);
   msg.addDroppedPeer(p4);
-  CPPUNIT_ASSERT_EQUAL(string("ut_pex added=2, dropped=2"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("ut_pex added=2, dropped=2"), msg.toString());
 }
 
 void UTPexExtensionMessageTest::testDoReceivedAction()
 {
   UTPexExtensionMessage msg(1);
-  PeerHandle p1 = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
   p1->allocateBitfield(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  PeerHandle p2 = new Peer("10.1.1.2", 9999);
+  SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
   msg.addFreshPeer(p2);
-  PeerHandle p3 = new Peer("192.168.0.2", 6882);
+  SharedHandle<Peer> p3 = new Peer("192.168.0.2", 6882);
   msg.addDroppedPeer(p3);
-  PeerHandle p4 = new Peer("10.1.1.3", 10000);
+  SharedHandle<Peer> p4 = new Peer("10.1.1.3", 10000);
   msg.addDroppedPeer(p4);
   msg.setBtContext(_btContext);
 
@@ -132,13 +136,13 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, PEER_STORAGE(_btContext)->getPeers().size());
   {
-    PeerHandle p = PEER_STORAGE(_btContext)->getPeers()[0];
-    CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), p->ipaddr);
+    SharedHandle<Peer> p = PEER_STORAGE(_btContext)->getPeers()[0];
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), p->ipaddr);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p->port);
   }
   {
-    PeerHandle p = PEER_STORAGE(_btContext)->getPeers()[1];
-    CPPUNIT_ASSERT_EQUAL(string("10.1.1.2"), p->ipaddr);
+    SharedHandle<Peer> p = PEER_STORAGE(_btContext)->getPeers()[1];
+    CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"), p->ipaddr);
     CPPUNIT_ASSERT_EQUAL((uint16_t)9999, p->port);
   }
 }
@@ -159,32 +163,34 @@ void UTPexExtensionMessageTest::testCreate()
 
   char id[1] = { 1 };
 
-  string data = string(&id[0], &id[1])+"d5:added12:"+
-    string(&c1[0], &c1[6])+string(&c2[0], &c2[6])+
+  std::string data = std::string(&id[0], &id[1])+"d5:added12:"+
+    std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
     "7:added.f2:207:dropped12:"+
-    string(&c3[0], &c3[6])+string(&c4[0], &c4[6])+
+    std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "e";
   
-  UTPexExtensionMessageHandle msg =
+  SharedHandle<UTPexExtensionMessage> msg =
     UTPexExtensionMessage::create(_btContext, data.c_str(), data.size());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
   CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getFreshPeers().size());
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), msg->getFreshPeers()[0]->ipaddr);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), msg->getFreshPeers()[0]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, msg->getFreshPeers()[0]->port);
-  CPPUNIT_ASSERT_EQUAL(string("10.1.1.2"), msg->getFreshPeers()[1]->ipaddr);
+  CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.2"), msg->getFreshPeers()[1]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)9999, msg->getFreshPeers()[1]->port);
   CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getDroppedPeers().size());
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"), msg->getDroppedPeers()[0]->ipaddr);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), msg->getDroppedPeers()[0]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)6882, msg->getDroppedPeers()[0]->port);
-  CPPUNIT_ASSERT_EQUAL(string("10.1.1.3"), msg->getDroppedPeers()[1]->ipaddr);
+  CPPUNIT_ASSERT_EQUAL(std::string("10.1.1.3"), msg->getDroppedPeers()[1]->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)10000, msg->getDroppedPeers()[1]->port);
   try {
     // 0 length data
-    string in = "";
+    std::string in = "";
     UTPexExtensionMessage::create(_btContext, in.c_str(), in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }    
 }
+
+} // namespace aria2

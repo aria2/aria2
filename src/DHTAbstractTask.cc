@@ -44,6 +44,8 @@
 #include "LogFactory.h"
 #include "Util.h"
 
+namespace aria2 {
+
 DHTAbstractTask::DHTAbstractTask():
   _finished(false),
   _logger(LogFactory::getInstance()),
@@ -75,7 +77,9 @@ void DHTAbstractTask::setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue)
   _taskQueue = taskQueue;
 }
 
-void DHTAbstractTask::setLocalNode(const DHTNodeHandle& localNode)
+void DHTAbstractTask::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }
+
+} // namespace aria2

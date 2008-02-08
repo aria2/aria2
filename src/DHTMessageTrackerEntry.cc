@@ -38,9 +38,11 @@
 #include "DHTMessageCallback.h"
 #include "DHTConstants.h"
 
-DHTMessageTrackerEntry::DHTMessageTrackerEntry(const DHTMessageHandle& sentMessage,
+namespace aria2 {
+
+DHTMessageTrackerEntry::DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
 					       time_t timeout,
-					       const DHTMessageCallbackHandle& callback):
+					       const SharedHandle<DHTMessageCallback>& callback):
   _targetNode(sentMessage->getRemoteNode()),
   _transactionID(sentMessage->getTransactionID()),
   _messageType(sentMessage->getMessageType()),
@@ -56,18 +58,20 @@ bool DHTMessageTrackerEntry::isTimeout() const
 void DHTMessageTrackerEntry::extendTimeout()
 {}
 
-bool DHTMessageTrackerEntry::match(const string& transactionID, const string& ipaddr, uint16_t port) const
+bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const
 {
   return _transactionID == transactionID &&
     _targetNode->getIPAddress() == ipaddr && _targetNode->getPort() == port;
 }
 
-DHTMessageCallbackHandle DHTMessageTrackerEntry::getCallback() const
+SharedHandle<DHTMessageCallback> DHTMessageTrackerEntry::getCallback() const
 {
   return _callback;
 }
 
-DHTNodeHandle DHTMessageTrackerEntry::getTargetNode() const
+SharedHandle<DHTNode> DHTMessageTrackerEntry::getTargetNode() const
 {
   return _targetNode;
 }
+
+} // namespace aria2

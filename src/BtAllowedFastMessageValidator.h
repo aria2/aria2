@@ -37,6 +37,9 @@
 
 #include "BtMessageValidator.h"
 #include "BtAllowedFastMessage.h"
+#include "PeerMessageUtil.h"
+
+namespace aria2 {
 
 class BtAllowedFastMessageValidator : public BtMessageValidator {
 private:
@@ -56,5 +59,7 @@ public:
 };
 
 typedef SharedHandle<BtAllowedFastMessageValidator> BtAllowedFastMessageValidatorHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_ALLOWED_FAST_MESSAGE_VALIDATOR_H_

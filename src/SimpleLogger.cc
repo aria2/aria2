@@ -38,8 +38,10 @@
 #include "message.h"
 #include "a2io.h"
 #include "a2time.h"
-#include <stdarg.h>
-#include <errno.h>
+#include <cstdarg>
+#include <cerrno>
+
+namespace aria2 {
 
 #if !defined(va_copy)
 # if defined(__va_copy)
@@ -67,7 +69,7 @@ SimpleLogger::~SimpleLogger() {
   closeFile();
 }
 
-void SimpleLogger::openFile(const string& filename) {
+void SimpleLogger::openFile(const std::string& filename) {
   file = fopen(filename.c_str(), "ab");
   if(file == NULL) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
@@ -88,7 +90,9 @@ void SimpleLogger::setStdout(Logger::LEVEL level, bool enabled) {
   }
 }
 
-void SimpleLogger::writeHeader(FILE* file, string date, string level) const {
+void SimpleLogger::writeHeader(FILE* file,
+			       const std::string& date, const std::string& level) const
+{
   fprintf(file, "%s %s - ", date.c_str(), level.c_str());
 }
 
@@ -96,7 +100,7 @@ void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va
 {
   va_list apCopy;
   va_copy(apCopy, ap);
-  string levelStr;
+  std::string levelStr;
   switch(level) {
   case Logger::DEBUG:
     levelStr = "DEBUG";
@@ -124,7 +128,7 @@ void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va
   if(printHeader) {
     writeHeader(file, datestr, levelStr);
   }
-  vfprintf(file, string(Util::replace(msg, "\r", "")+"\n").c_str(), apCopy);
+  vfprintf(file, std::string(Util::replace(msg, "\r", "")+"\n").c_str(), apCopy);
   for(Exception* nestedEx = e; nestedEx; nestedEx = nestedEx->getCause()) {
     // TODO a quick hack not to print header in console
     if(printHeader) {
@@ -184,4 +188,4 @@ void SimpleLogger::error(const char* msg, Exception* e, ...) const {
   WRITE_LOG_EX(ERROR, msg, e);
 }
 
-  
+} // namespace aria2

@@ -35,13 +35,16 @@
 #include "DHTTaskQueueImpl.h"
 #include "DHTTask.h"
 
+namespace aria2 {
+
 DHTTaskQueueImpl::DHTTaskQueueImpl():_periodicTask1(0),
 				     _periodicTask2(0),
 				     _immediateTask(0) {}
 
 DHTTaskQueueImpl::~DHTTaskQueueImpl() {}
 
-void DHTTaskQueueImpl::executeTask(DHTTaskHandle& task, DHTTasks& taskQueue)
+void DHTTaskQueueImpl::executeTask(SharedHandle<DHTTask>& task,
+				   std::deque<SharedHandle<DHTTask> >& taskQueue)
 {
   while(1) {
     if(task.isNull() || task->finished()) {
@@ -65,17 +68,19 @@ void DHTTaskQueueImpl::executeTask()
   executeTask(_immediateTask, _immediateTaskQueue);
 }
 
-void DHTTaskQueueImpl::addPeriodicTask1(const DHTTaskHandle& task)
+void DHTTaskQueueImpl::addPeriodicTask1(const SharedHandle<DHTTask>& task)
 {
   _periodicTaskQueue1.push_back(task);
 }
 
-void DHTTaskQueueImpl::addPeriodicTask2(const DHTTaskHandle& task)
+void DHTTaskQueueImpl::addPeriodicTask2(const SharedHandle<DHTTask>& task)
 {
   _periodicTaskQueue2.push_back(task);
 }
 
-void DHTTaskQueueImpl::addImmediateTask(const DHTTaskHandle& task)
+void DHTTaskQueueImpl::addImmediateTask(const SharedHandle<DHTTask>& task)
 {
   _immediateTaskQueue.push_back(task);
 }
+
+} // namespace aria2

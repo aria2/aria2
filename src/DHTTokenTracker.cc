@@ -38,6 +38,9 @@
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "MessageDigestHelper.h"
+#include <cstring>
+
+namespace aria2 {
 
 DHTTokenTracker::DHTTokenTracker()
 {
@@ -53,9 +56,9 @@ DHTTokenTracker::DHTTokenTracker(const char* initialSecret)
 
 DHTTokenTracker::~DHTTokenTracker() {}
 
-string DHTTokenTracker::generateToken(const unsigned char* infoHash,
-				      const string& ipaddr, uint16_t port,
-				      const char* secret) const
+std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
+					   const std::string& ipaddr, uint16_t port,
+					   const char* secret) const
 {
   char src[DHT_ID_LENGTH+6+SECRET_SIZE];
   if(!PeerMessageUtil::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
@@ -67,15 +70,15 @@ string DHTTokenTracker::generateToken(const unsigned char* infoHash,
   return MessageDigestHelper::digest("sha1", src, sizeof(src));
 }
 
-string DHTTokenTracker::generateToken(const unsigned char* infoHash,
-				      const string& ipaddr, uint16_t port) const
+std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
+					   const std::string& ipaddr, uint16_t port) const
 {
   return generateToken(infoHash, ipaddr, port, _secret[0]);
 }
 
-bool DHTTokenTracker::validateToken(const string& token,
+bool DHTTokenTracker::validateToken(const std::string& token,
 				    const unsigned char* infoHash,
-				    const string& ipaddr, uint16_t port) const
+				    const std::string& ipaddr, uint16_t port) const
 {
   for(int i = 0; i < 2; ++i) {
     if(generateToken(infoHash, ipaddr, port, _secret[i]) == token) {
@@ -90,3 +93,5 @@ void DHTTokenTracker::updateTokenSecret()
   memcpy(_secret[1], _secret[0], SECRET_SIZE);
   DHTUtil::generateRandomData(_secret[0], SECRET_SIZE);
 }
+
+} // namespace aria2

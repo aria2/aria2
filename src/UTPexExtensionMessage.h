@@ -36,12 +36,13 @@
 #define _D_UT_PEX_EXTENSION_MESSAGE_H_
 
 #include "ExtensionMessage.h"
+#include <utility>
+#include <deque>
+
+namespace aria2 {
 
 class BtContext;
-typedef SharedHandle<BtContext> BtContextHandle;
 class Peer;
-typedef SharedHandle<Peer> PeerHandle;
-typedef deque<PeerHandle> Peers;
 class UTPexExtensionMessage;
 typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
 
@@ -49,51 +50,54 @@ class UTPexExtensionMessage:public ExtensionMessage {
 private:
   uint8_t _extensionMessageID;
 
-  Peers _freshPeers;
+  std::deque<SharedHandle<Peer> > _freshPeers;
 
-  Peers _droppedPeers;
+  std::deque<SharedHandle<Peer> > _droppedPeers;
 
-  BtContextHandle _btContext;
+  SharedHandle<BtContext> _btContext;
 
-  pair<string, string> createCompactPeerListAndFlag(const Peers& peers);
+  std::pair<std::string, std::string>
+  createCompactPeerListAndFlag(const std::deque<SharedHandle<Peer> >& peers);
 
 public:
   UTPexExtensionMessage(uint8_t extensionMessageID);
 
   virtual ~UTPexExtensionMessage();
 
-  virtual string getBencodedData();
+  virtual std::string getBencodedData();
 
   virtual uint8_t getExtensionMessageID()
   {
     return _extensionMessageID;
   }
   
-  virtual const string& getExtensionName() const
+  virtual const std::string& getExtensionName() const
   {
     return EXTENSION_NAME;
   }
 
-  static const string EXTENSION_NAME;
+  static const std::string EXTENSION_NAME;
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   virtual void doReceivedAction();
 
-  void addFreshPeer(const PeerHandle& peer);
+  void addFreshPeer(const SharedHandle<Peer>& peer);
 
-  const Peers& getFreshPeers() const;
+  const std::deque<SharedHandle<Peer> >& getFreshPeers() const;
 
-  void addDroppedPeer(const PeerHandle& peer);
+  void addDroppedPeer(const SharedHandle<Peer>& peer);
 
-  const Peers& getDroppedPeers() const;
+  const std::deque<SharedHandle<Peer> >& getDroppedPeers() const;
 
-  void setBtContext(const BtContextHandle& btContext);
+  void setBtContext(const SharedHandle<BtContext>& btContext);
 
-  static UTPexExtensionMessageHandle create(const BtContextHandle& btContext,
+  static UTPexExtensionMessageHandle create(const SharedHandle<BtContext>& btContext,
 					    const char* data, size_t len);
 };
 
 typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;
+
+} // namespace aria2
 
 #endif // _D_UT_PEX_EXTENSION_MESSAGE_H_

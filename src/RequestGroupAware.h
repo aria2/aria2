@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+namespace aria2 {
+
 class RequestGroup;
 
 class RequestGroupAware {
@@ -49,5 +51,7 @@ public:
 
   RequestGroup* getRequestGroup() const;
 };
+
+} // namespace aria2
 
 #endif // _D_REQUEST_GROUP_AWARE_H_

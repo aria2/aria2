@@ -36,29 +36,34 @@
 #define _D_FTP_CONNECTION_H_
 
 #include "common.h"
-#include "Socket.h"
-#include "Option.h"
-#include "Logger.h"
-#include "Segment.h"
-#include "Request.h"
+#include "SharedHandle.h"
 #include <utility>
+#include <string>
+
+namespace aria2 {
+
+class Option;
+class Logger;
+class Segment;
+class Request;
+class SocketCore;
 
 class FtpConnection {
 private:
   int32_t cuid;
-  SocketHandle socket;
-  RequestHandle req;
+  SharedHandle<SocketCore> socket;
+  SharedHandle<Request> req;
   const Option* option;
   const Logger* logger;
 
-  string strbuf;
+  std::string strbuf;
 
-  int32_t getStatus(const string& response) const;
-  bool isEndOfResponse(int32_t status, const string& response) const;
-  bool bulkReceiveResponse(pair<int32_t, string>& response);
+  int32_t getStatus(const std::string& response) const;
+  bool isEndOfResponse(int32_t status, const std::string& response) const;
+  bool bulkReceiveResponse(std::pair<int32_t, std::string>& response);
 public:
-  FtpConnection(int32_t cuid, const SocketHandle& socket,
-		const RequestHandle req, const Option* op);
+  FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
+		const SharedHandle<Request>& req, const Option* op);
   ~FtpConnection();
   void sendUser() const;
   void sendPass() const;
@@ -66,13 +71,15 @@ public:
   void sendCwd() const;
   void sendSize() const;
   void sendPasv() const;
-  SocketHandle sendPort() const;
-  void sendRest(const SegmentHandle& segment) const;
+  SharedHandle<SocketCore> sendPort() const;
+  void sendRest(const SharedHandle<Segment>& segment) const;
   void sendRetr() const;
 
   int32_t receiveResponse();
   int32_t receiveSizeResponse(int64_t& size);
-  int32_t receivePasvResponse(pair<string, int32_t>& dest);
+  int32_t receivePasvResponse(std::pair<std::string, int32_t>& dest);
 };
+
+} // namespace aria2
 
 #endif // _D_FTP_CONNECTION_H_

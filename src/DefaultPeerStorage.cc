@@ -34,11 +34,18 @@
 /* copyright --> */
 #include "DefaultPeerStorage.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "BtRegistry.h"
 #include "message.h"
 #include "a2time.h"
+#include "Peer.h"
+#include "BtContext.h"
+#include "BtRuntime.h"
+#include <algorithm>
 
-DefaultPeerStorage::DefaultPeerStorage(BtContextHandle btContext,
+namespace aria2 {
+
+DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
 				       const Option* option):
   btContext(btContext),
   option(option),
@@ -66,7 +73,7 @@ public:
 
 bool DefaultPeerStorage::isPeerAlreadyAdded(const PeerHandle& peer)
 {
-  return find_if(peers.begin(), peers.end(), FindIdenticalPeer(peer)) != peers.end();
+  return std::find_if(peers.begin(), peers.end(), FindIdenticalPeer(peer)) != peers.end();
 }
 
 bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
@@ -104,8 +111,8 @@ public:
 };
 
 PeerHandle DefaultPeerStorage::getUnusedPeer() {
-  Peers::const_iterator itr = find_if(peers.begin(), peers.end(),
-				      FindFinePeer());
+  Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
+					   FindFinePeer());
   if(itr == peers.end()) {
     return 0;
   } else {
@@ -115,20 +122,20 @@ PeerHandle DefaultPeerStorage::getUnusedPeer() {
 
 class FindPeer {
 private:
-  string ipaddr;
+  std::string ipaddr;
   int32_t port;
 public:
-  FindPeer(const string& ipaddr, int32_t port):ipaddr(ipaddr), port(port) {}
+  FindPeer(const std::string& ipaddr, int32_t port):ipaddr(ipaddr), port(port) {}
 
   bool operator()(const PeerHandle& peer) const {
     return ipaddr == peer->ipaddr && port == peer->port;
   }
 };
 
-PeerHandle DefaultPeerStorage::getPeer(const string& ipaddr,
+PeerHandle DefaultPeerStorage::getPeer(const std::string& ipaddr,
 				       int32_t port) const {
-  Peers::const_iterator itr = find_if(peers.begin(), peers.end(),
-				      FindPeer(ipaddr, port));
+  Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
+					   FindPeer(ipaddr, port));
   if(itr == peers.end()) {
     return 0;
   } else {
@@ -159,7 +166,7 @@ public:
 };
 
 Peers DefaultPeerStorage::getActivePeers() {
-  return for_each(peers.begin(), peers.end(), CollectActivePeer()).getActivePeers();
+  return std::for_each(peers.begin(), peers.end(), CollectActivePeer()).getActivePeers();
 }
 
 class CalculateStat {
@@ -186,7 +193,7 @@ public:
 };
 
 TransferStat DefaultPeerStorage::calculateStat() {
-  TransferStat stat = for_each(peers.begin(), peers.end(), CalculateStat()).getTransferStat();
+  TransferStat stat = std::for_each(peers.begin(), peers.end(), CalculateStat()).getTransferStat();
   stat.sessionDownloadLength += removedPeerSessionDownloadLength;
   stat.sessionUploadLength += removedPeerSessionUploadLength;
   stat.setAllTimeUploadLength(btRuntime->getUploadLengthAtStartup()+
@@ -218,7 +225,7 @@ void DefaultPeerStorage::onErasingPeer(const PeerHandle& peer)
 
 void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
 {
-  Peers::iterator itr = find(peers.begin(), peers.end(), peer);
+  Peers::iterator itr = std::find(peers.begin(), peers.end(), peer);
   if(itr == peers.end()) {
     logger->debug("Cannot find peer %s:%u in PeerStorage.", peer->ipaddr.c_str(), peer->port);
   } else {
@@ -233,3 +240,5 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
     }
   }
 }
+
+} // namespace aria2

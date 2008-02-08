@@ -1,8 +1,10 @@
 #include "BtNotInterestedMessage.h"
 #include "PeerMessageUtil.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtNotInterestedMessageTest:public CppUnit::TestFixture {
 
@@ -61,7 +63,7 @@ void BtNotInterestedMessageTest::testGetMessage() {
 }
 
 void BtNotInterestedMessageTest::testDoReceivedAction() {
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   peer->peerInterested = true;
   BtNotInterestedMessage msg;
   msg.setPeer(peer);
@@ -71,7 +73,7 @@ void BtNotInterestedMessageTest::testDoReceivedAction() {
 }
 
 void BtNotInterestedMessageTest::testOnSendComplete() {
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   peer->amInterested = true;
   BtNotInterestedMessage msg;
   msg.setPeer(peer);
@@ -82,5 +84,7 @@ void BtNotInterestedMessageTest::testOnSendComplete() {
 
 void BtNotInterestedMessageTest::testToString() {
   BtNotInterestedMessage msg;
-  CPPUNIT_ASSERT_EQUAL(string("not interested"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("not interested"), msg.toString());
 }
+
+} // namespace aria2

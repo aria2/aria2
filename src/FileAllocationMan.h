@@ -36,15 +36,17 @@
 #define _D_FILE_ALLOCATION_MAN_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
 
 class FileAllocationEntry;
-typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;
-typedef deque<FileAllocationEntryHandle> FileAllocationEntries;
 
 class FileAllocationMan {
 private:
-  FileAllocationEntries _fileAllocationEntries;
-  FileAllocationEntryHandle _currentFileAllocationEntry;
+  std::deque<SharedHandle<FileAllocationEntry> > _fileAllocationEntries;
+  SharedHandle<FileAllocationEntry> _currentFileAllocationEntry;
 public:
   FileAllocationMan();
 
@@ -52,19 +54,21 @@ public:
 
   bool isFileAllocationBeingExecuted() const;
 
-  FileAllocationEntryHandle getCurrentFileAllocationEntry();
+  SharedHandle<FileAllocationEntry> getCurrentFileAllocationEntry();
 
   void markCurrentFileAllocationEntryDone();
 
   bool nextFileAllocationEntryExists() const;
 
-  FileAllocationEntryHandle popNextFileAllocationEntry();
+  SharedHandle<FileAllocationEntry> popNextFileAllocationEntry();
 
-  void pushFileAllocationEntry(const FileAllocationEntryHandle& entry);
+  void pushFileAllocationEntry(const SharedHandle<FileAllocationEntry>& entry);
 
   int32_t countFileAllocationEntryInQueue() const;
 };
 
 typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;
+
+} // namespace aria2
 
 #endif // _D_FILE_ALLOCATION_MAN_H_

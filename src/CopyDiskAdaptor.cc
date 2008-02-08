@@ -33,8 +33,12 @@
  */
 /* copyright --> */
 #include "CopyDiskAdaptor.h"
+#include "FileEntry.h"
+#include "Logger.h"
 #include "Util.h"
 #include "message.h"
+
+namespace aria2 {
 
 void CopyDiskAdaptor::onDownloadComplete()
 {
@@ -49,9 +53,9 @@ void CopyDiskAdaptor::fixFilename()
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     if(!(*itr)->isExtracted() && (*itr)->isRequested()) {
-      string topDirPath = storeDir+"/"+topDir;
+      std::string topDirPath = storeDir+"/"+topDir;
       (*itr)->setupDir(topDirPath);
-      string destFilePath = topDirPath+"/"+(*itr)->getPath();
+      std::string destFilePath = topDirPath+"/"+(*itr)->getPath();
       logger->info(MSG_WRITING_FILE, destFilePath.c_str());
       Util::rangedFileCopy(destFilePath, getFilePath(),
 			   offset, (*itr)->getLength());
@@ -61,7 +65,9 @@ void CopyDiskAdaptor::fixFilename()
   }
 }
 
-string CopyDiskAdaptor::getFilePath()
+std::string CopyDiskAdaptor::getFilePath()
 {
   return storeDir+"/"+tempFilename;
 }
+
+} // namespace aria2

@@ -1,9 +1,11 @@
 #include "DefaultPeerListProcessor.h"
 #include "MetaFileUtil.h"
 #include "Exception.h"
+#include "Dictionary.h"
+#include "Peer.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DefaultPeerListProcessorTest:public CppUnit::TestFixture {
 
@@ -26,32 +28,34 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DefaultPeerListProcessorTest );
 
 void DefaultPeerListProcessorTest::testExtractPeer() {
   DefaultPeerListProcessor proc(1024*1024, 10*1024*1024);
-  string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
+  std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
 
   Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
   
   CPPUNIT_ASSERT(proc.canHandle(dic->get("peers")));
 
-  Peers peers = proc.extractPeer(dic->get("peers"));
+  std::deque<SharedHandle<Peer> > peers = proc.extractPeer(dic->get("peers"));
   CPPUNIT_ASSERT_EQUAL((size_t)1, peers.size());
-  PeerHandle peer = *peers.begin();
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), peer->ipaddr);
+  SharedHandle<Peer> peer = *peers.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->port);
 }
 
 void DefaultPeerListProcessorTest::testExtract2Peers() {
   DefaultPeerListProcessor proc(1024*1024, 10*1024*1024);
-  string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
+  std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
 
   Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
 
-  Peers peers = proc.extractPeer(dic->get("peers"));
+  std::deque<SharedHandle<Peer> > peers = proc.extractPeer(dic->get("peers"));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
-  PeerHandle peer = *peers.begin();
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.1"), peer->ipaddr);
+  SharedHandle<Peer> peer = *peers.begin();
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)2006, peer->port);
 
   peer = *(peers.begin()+1);
-  CPPUNIT_ASSERT_EQUAL(string("192.168.0.2"), peer->ipaddr);
+  CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), peer->ipaddr);
   CPPUNIT_ASSERT_EQUAL((uint16_t)2007, peer->port);
 }
+
+} // namespace aria2

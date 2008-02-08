@@ -37,9 +37,7 @@
 
 #include "SimpleBtMessage.h"
 
-class BtHandshakeMessage;
-
-typedef SharedHandle<BtHandshakeMessage> BtHandshakeMessageHandle;
+namespace aria2 {
 
 class BtHandshakeMessage : public SimpleBtMessage {
 public:
@@ -63,7 +61,8 @@ public:
    */
   BtHandshakeMessage(const unsigned char* infoHash, const unsigned char* peerId);
 
-  static BtHandshakeMessageHandle create(const unsigned char* data, int32_t dataLength);
+  static SharedHandle<BtHandshakeMessage>
+  create(const unsigned char* data, int32_t dataLength);
 
   virtual ~BtHandshakeMessage() {
     delete [] msg;
@@ -83,7 +82,7 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   bool isFastExtensionSupported() const;
 
@@ -116,17 +115,15 @@ public:
     return infoHash;
   }
 
-  void setInfoHash(const unsigned char* infoHash) {
-    memcpy(this->infoHash, infoHash, INFO_HASH_LENGTH);
-  }
+  void setInfoHash(const unsigned char* infoHash);
 
   const unsigned char* getPeerId() const {
     return peerId;
   }
 
-  void setPeerId(const unsigned char* peerId) {
-    memcpy(this->peerId, peerId, PEER_ID_LENGTH);
-  }
+  void setPeerId(const unsigned char* peerId);
 };
+
+} // namespace aria2
 
 #endif // _D_HANDSHAKE_MESSAGE_H_

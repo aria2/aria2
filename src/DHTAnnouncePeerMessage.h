@@ -37,12 +37,15 @@
 
 #include "DHTQueryMessage.h"
 #include "DHTConstants.h"
-#include "DHTPeerAnnounceStorage.h"
-#include "DHTTokenTrackerDecl.h"
+
+namespace aria2 {
+
+class DHTPeerAnnounceStorage;
+class DHTTokenTracker;
 
 class DHTAnnouncePeerMessage:public DHTQueryMessage {
 private:
-  string _token;
+  std::string _token;
 
   unsigned char _infoHash[DHT_ID_LENGTH];
 
@@ -52,12 +55,12 @@ private:
 
   WeakHandle<DHTTokenTracker> _tokenTracker;
 public:
-  DHTAnnouncePeerMessage(const DHTNodeHandle& localNode,
-			 const DHTNodeHandle& remoteNode,
+  DHTAnnouncePeerMessage(const SharedHandle<DHTNode>& localNode,
+			 const SharedHandle<DHTNode>& remoteNode,
 			 const unsigned char* infoHash,
 			 uint16_t tcpPort,
-			 const string& token,
-			 const string& transactionID = "");
+			 const std::string& token,
+			 const std::string& transactionID = "");
 
   virtual ~DHTAnnouncePeerMessage();
 
@@ -65,7 +68,7 @@ public:
 
   virtual Dictionary* getArgument();
   
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 
@@ -74,7 +77,7 @@ public:
     return _infoHash;
   }
 
-  const string& getToken() const
+  const std::string& getToken() const
   {
     return _token;
   }
@@ -88,5 +91,7 @@ public:
 
   void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_ANNOUNCE_PEER_MESSAGE_H_

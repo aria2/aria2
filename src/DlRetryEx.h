@@ -36,6 +36,8 @@
 #define _D_DL_RETRY_EX_H_
 #include "RecoverableException.h"
 
+namespace aria2 {
+
 class DlRetryEx : public RecoverableException {
 public:
   DlRetryEx(Exception* cause = 0):RecoverableException(cause) {}
@@ -54,5 +56,7 @@ public:
     va_end(ap);
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DL_RETRY_EX_H_

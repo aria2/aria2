@@ -36,19 +36,20 @@
 #define _D_PEER_H_
 
 #include "common.h"
-#include "BitfieldMan.h"
-#include "PeerStat.h"
+#include "PeerDecl.h"
 #include "TimeA2.h"
 #include "BtConstants.h"
-#include "PeerDecl.h"
-#include <string.h>
+#include "PeerStat.h"
+#include <string>
+#include <deque>
 
-#define PEER_ID_LENGTH 20
-#define DEFAULT_LATENCY 1500
+namespace aria2 {
+
+class BitfieldMan;
 
 class Peer {
 public:
-  string ipaddr;
+  std::string ipaddr;
   // TCP port which this peer is listening for incoming connections.
   // If it is unknown, for example, localhost accepted the incoming connection
   // from this peer, set port to 0.
@@ -67,9 +68,9 @@ private:
   BitfieldMan* _bitfield;
   bool fastExtensionEnabled;
   // fast index set which a peer has sent to localhost.
-  Integers peerAllowedIndexSet;
+  std::deque<int32_t> peerAllowedIndexSet;
   // fast index set which localhost has sent to a peer.
-  Integers amAllowedIndexSet;
+  std::deque<int32_t> amAllowedIndexSet;
   bool _extendedMessagingEnabled;
   Extensions _extensions;
   bool _dhtEnabled;
@@ -78,109 +79,66 @@ private:
   int64_t sessionDownloadLength;
   int32_t latency;
   bool active;
-  string id;
+  std::string id;
   Time _firstContactTime;
   Time _badConditionStartTime;
   bool _seeder;
 
   void updateSeeder();
 public:
-  Peer(string ipaddr, uint16_t port);
+  Peer(std::string ipaddr, uint16_t port);
 
-  ~Peer() {
-    delete _bitfield;
-  }
+  ~Peer();
 
-  bool operator==(const Peer& p) {
-    return id == p.id;
-  }
+  bool operator==(const Peer& p);
   
-  bool operator!=(const Peer& p) {
-    return !(*this == p);
-  }
+  bool operator!=(const Peer& p);
 
   void resetStatus();
 
-  void updateUploadLength(int32_t bytes) {
-    peerStat.updateUploadLength(bytes);
-    sessionUploadLength += bytes;
-  }
+  void updateUploadLength(int32_t bytes);
 
-  void updateDownloadLength(int32_t bytes) {
-    peerStat.updateDownloadLength(bytes);
-    sessionDownloadLength += bytes;
-  }
+  void updateDownloadLength(int32_t bytes);
 
   /**
    * Returns the transfer rate from localhost to remote host.
    */
-  int32_t calculateUploadSpeed() {
-    return peerStat.calculateUploadSpeed();
-  }
+  int32_t calculateUploadSpeed();
 
-  int32_t calculateUploadSpeed(const struct timeval& now) {
-    return peerStat.calculateUploadSpeed(now);
-  }
+  int32_t calculateUploadSpeed(const struct timeval& now);
 
   /**
    * Returns the transfer rate from remote host to localhost.
    */
-  int32_t calculateDownloadSpeed() {
-    return peerStat.calculateDownloadSpeed();
-  }
+  int32_t calculateDownloadSpeed();
 
-  int32_t calculateDownloadSpeed(const struct timeval& now) {
-    return peerStat.calculateDownloadSpeed(now);
-  }
+  int32_t calculateDownloadSpeed(const struct timeval& now);
 
   /**
    * Returns the number of bytes uploaded to the remote host.
    */
-  int64_t getSessionUploadLength() const {
-    return sessionUploadLength;
-  }
+  int64_t getSessionUploadLength() const;
 
   /**
    * Returns the number of bytes downloaded from the remote host.
    */
-  int64_t getSessionDownloadLength() const {
-    return sessionDownloadLength;
-  }
+  int64_t getSessionDownloadLength() const;
 
-  void activate() {
-    peerStat.downloadStart();
-    active = true;
-  }
+  void activate();
 
-  void deactivate() {
-    peerStat.downloadStop();
-    active = false;
-  }
+  void deactivate();
 
-  bool isActive() const {
-    return active;
-  }
+  bool isActive() const;
 
-  void setPeerId(const unsigned char* peerId) {
-    memcpy(this->peerId, peerId, PEER_ID_LENGTH);
-  }
-  const unsigned char* getPeerId() const { return this->peerId; }
+  void setPeerId(const unsigned char* peerId);
+
+  const unsigned char* getPeerId() const;
   
-  void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength) {
-    assert(_bitfield);
-    _bitfield->setBitfield(bitfield, bitfieldLength);
-    updateSeeder();
-  }
+  void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength);
 
-  const unsigned char* getBitfield() const {
-    assert(_bitfield);
-    return _bitfield->getBitfield();
-  }
+  const unsigned char* getBitfield() const;
 
-  int32_t getBitfieldLength() const {
-    assert(_bitfield);
-    return _bitfield->getBitfieldLength();
-  }
+  int32_t getBitfieldLength() const;
 
   void setAllBitfield();
 
@@ -190,23 +148,16 @@ public:
    */
   void updateBitfield(int32_t index, int32_t operation);
   
-  void setFastExtensionEnabled(bool enabled) {
-    fastExtensionEnabled = enabled;
-  }
-  bool isFastExtensionEnabled() const { return fastExtensionEnabled; }
+  void setFastExtensionEnabled(bool enabled);
+
+  bool isFastExtensionEnabled() const;
 
   void addPeerAllowedIndex(int32_t index);
   bool isInPeerAllowedIndexSet(int32_t index) const;
 
-  int32_t countPeerAllowedIndexSet() const
-  {
-    return peerAllowedIndexSet.size();
-  }
+  int32_t countPeerAllowedIndexSet() const;
 
-  const Integers& getPeerAllowedIndexSet() const
-  {
-    return peerAllowedIndexSet;
-  }
+  const std::deque<int32_t>& getPeerAllowedIndexSet() const;
 
   void addAmAllowedIndex(int32_t index);
   bool isInAmAllowedIndexSet(int32_t index) const;
@@ -241,9 +192,10 @@ public:
   }
 
   void updateLatency(int32_t latency);
+
   int32_t getLatency() const { return latency; }
 
-  const string& getId() const {
+  const std::string& getId() const {
     return id;
   }
 
@@ -265,11 +217,13 @@ public:
     return _badConditionStartTime;
   }
 
-  uint8_t getExtensionMessageID(const string& name);
+  uint8_t getExtensionMessageID(const std::string& name);
 
-  string getExtensionName(uint8_t id);
+  std::string getExtensionName(uint8_t id);
 
-  void setExtension(const string& name, uint8_t id);
+  void setExtension(const std::string& name, uint8_t id);
 };
+
+} // namespace aria2
 
 #endif // _D_PEER_H_

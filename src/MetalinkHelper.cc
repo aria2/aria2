@@ -38,38 +38,47 @@
 #include "MetalinkProcessorFactory.h"
 #include "MetalinkParserStateMachine.h"
 #include "Metalinker.h"
+#include "MetalinkProcessor.h"
+#include "MetalinkProcessorFactory.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "BinaryStream.h"
+
+namespace aria2 {
 
 MetalinkHelper::MetalinkHelper() {}
 
 MetalinkHelper::~MetalinkHelper() {}
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const string& filename, const Option* option)
+std::deque<SharedHandle<MetalinkEntry> >
+MetalinkHelper::parseAndQuery(const std::string& filename, const Option* option)
 {
-  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
+  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
 
-  MetalinkerHandle metalinker = proc->parseFile(filename);
+  SharedHandle<Metalinker> metalinker = proc->parseFile(filename);
   return query(metalinker, option);
 }
 
-MetalinkEntries MetalinkHelper::parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option)
+std::deque<SharedHandle<MetalinkEntry> >
+MetalinkHelper::parseAndQuery(const SharedHandle<BinaryStream>& binaryStream, const Option* option)
 {
-  MetalinkProcessorHandle proc = MetalinkProcessorFactory::newInstance();
+  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
 
-  MetalinkerHandle metalinker = proc->parseFromBinaryStream(binaryStream);
+  SharedHandle<Metalinker> metalinker = proc->parseFromBinaryStream(binaryStream);
   return query(metalinker, option);
 }
 
-MetalinkEntries MetalinkHelper::query(const MetalinkerHandle& metalinker, const Option* option)
+std::deque<SharedHandle<MetalinkEntry> >
+MetalinkHelper::query(const SharedHandle<Metalinker>& metalinker, const Option* option)
 {
   if(metalinker->entries.empty()) {
     throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
   }
-  MetalinkEntries entries =
+  std::deque<SharedHandle<MetalinkEntry> > entries =
     metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
 			   option->get(PREF_METALINK_LANGUAGE),
 			   option->get(PREF_METALINK_OS));
   return entries;
 }
+
+} // namespace aria2

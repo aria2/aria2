@@ -37,43 +37,49 @@
 
 #include "DHTResponseMessage.h"
 #include "DHTConstants.h"
-#include "PeerDecl.h"
+#include <deque>
+
+namespace aria2 {
+
+class Peer;
 
 class DHTGetPeersReplyMessage:public DHTResponseMessage {
 private:
-  string _token;
+  std::string _token;
 
-  DHTNodes _closestKNodes;
+  std::deque<SharedHandle<DHTNode> > _closestKNodes;
 
-  Peers _values;
+  std::deque<SharedHandle<Peer> > _values;
 public:
-  DHTGetPeersReplyMessage(const DHTNodeHandle& localNode,
-			  const DHTNodeHandle& remoteNode,
-			  const string& token,
-			  const string& transactionID);
+  DHTGetPeersReplyMessage(const SharedHandle<DHTNode>& localNode,
+			  const SharedHandle<DHTNode>& remoteNode,
+			  const std::string& token,
+			  const std::string& transactionID);
 
   virtual ~DHTGetPeersReplyMessage();
 
   virtual void doReceivedAction();
 
   virtual Dictionary* getResponse();
-  
-  virtual string getMessageType() const;
+
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 
-  const DHTNodes& getClosestKNodes() const;
+  const std::deque<SharedHandle<DHTNode> >& getClosestKNodes() const;
 
-  const Peers& getValues() const;
+  const std::deque<SharedHandle<Peer> >& getValues() const;
 
-  void setClosestKNodes(const DHTNodes& closestKNodes);
+  void setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes);
 
-  void setValues(const Peers& peers);
+  void setValues(const std::deque<SharedHandle<Peer> >& peers);
   
-  const string& getToken() const
+  const std::string& getToken() const
   {
     return _token;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_GET_PEERS_REPLY_MESSAGE_H_

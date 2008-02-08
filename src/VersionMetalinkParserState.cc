@@ -35,17 +35,21 @@
 #include "VersionMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void VersionMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					      const string& name,
-					      const map<string, string>& attrs)
+					      const std::string& name,
+					      const std::map<std::string, std::string>& attrs)
 {
   stm->setSkipTagState(this);
 }
 
 void VersionMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					    const string& name,
-					    const string& characters)
+					    const std::string& name,
+					    const std::string& characters)
 {
   stm->setVersionOfEntry(characters);
   stm->setFileState();
 }
+
+} // namespace aria2

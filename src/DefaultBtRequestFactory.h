@@ -36,44 +36,33 @@
 #define _D_DEFAULT_BT_REQUEST_FACTORY_H_
 
 #include "BtRequestFactory.h"
-#include "BtContext.h"
-#include "PieceStorage.h"
-#include "Piece.h"
-#include "Peer.h"
-#include "BtMessageDispatcher.h"
-#include "BtRegistry.h"
-#include "LogFactory.h"
+
+namespace aria2 {
+
+class BtContext;
+class PieceStorage;
+class Peer;
+class BtMessageDispatcher;
+class BtMessageFactory;
+class Piece;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
   int32_t cuid;
-  BtContextHandle btContext;
-  PieceStorageHandle pieceStorage;
-  PeerHandle peer;
-  BtMessageDispatcherWeakHandle dispatcher;
-  BtMessageFactoryWeakHandle messageFactory;
-  Pieces pieces;
+  SharedHandle<BtContext> btContext;
+  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<Peer> peer;
+  WeakHandle<BtMessageDispatcher> dispatcher;
+  WeakHandle<BtMessageFactory> messageFactory;
+  std::deque<SharedHandle<Piece> > pieces;
 public:
-  DefaultBtRequestFactory():
-    cuid(0),
-    btContext(0),
-    pieceStorage(0),
-    peer(0),
-    dispatcher(0)
-  {
-    LogFactory::getInstance()->debug("DefaultBtRequestFactory::instantiated");
-  }
+  DefaultBtRequestFactory();
 
-  virtual ~DefaultBtRequestFactory()
-  {
-    LogFactory::getInstance()->debug("DefaultBtRequestFactory::deleted");
-  }
+  virtual ~DefaultBtRequestFactory();
 
-  virtual void addTargetPiece(const PieceHandle& piece) {
-    pieces.push_back(piece);
-  }
+  virtual void addTargetPiece(const SharedHandle<Piece>& piece);
 
-  virtual void removeTargetPiece(const PieceHandle& piece);
+  virtual void removeTargetPiece(const SharedHandle<Piece>& piece);
 
   virtual void removeAllTargetPiece();
 
@@ -85,49 +74,30 @@ public:
 
   virtual void doChokedAction();
 
-  virtual BtMessages createRequestMessages(int32_t max);
+  virtual std::deque<SharedHandle<BtMessage> >
+  createRequestMessages(int32_t max);
 
-  virtual BtMessages createRequestMessagesOnEndGame(int32_t max);
+  virtual std::deque<SharedHandle<BtMessage> >
+  createRequestMessagesOnEndGame(int32_t max);
 
-  Pieces& getTargetPieces() {
-    return pieces;
-  }
+  std::deque<SharedHandle<Piece> >& getTargetPieces();
 
-  void setCuid(int32_t cuid) {
+  void setCuid(int32_t cuid)
+  {
     this->cuid = cuid;
   }
 
-  int32_t getCuid() const {
-    return cuid;
-  }
+  void setBtContext(const SharedHandle<BtContext>& btContext);
 
-  void setBtContext(const BtContextHandle& btContext) {
-    this->btContext = btContext;
-    this->pieceStorage = PIECE_STORAGE(btContext);
-  }
+  void setPeer(const SharedHandle<Peer>& peer);
 
-  BtContextHandle getBtContext() const {
-    return btContext;
-  }
+  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
 
-  PeerHandle getPeer() const {
-    return peer;
-  }
-
-  void setPeer(const PeerHandle& peer) {
-    this->peer = peer;
-  }
-
-  void setBtMessageDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
-  {
-    this->dispatcher = dispatcher;
-  }
-
-  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
-    this->messageFactory = factory;
-  }
+  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 };
 
 typedef SharedHandle<DefaultBtRequestFactory> DefaultBtRequestFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_BT_REQUEST_FACTORY_H_

@@ -37,6 +37,10 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Peer.h"
+#include <cstring>
+
+namespace aria2 {
 
 void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, int32_t bitfieldLength) {
   if(this->bitfield == bitfield) {
@@ -90,6 +94,8 @@ int32_t BtBitfieldMessage::getMessageLength() {
   return msgLength;
 }
 
-string BtBitfieldMessage::toString() const {
+std::string BtBitfieldMessage::toString() const {
   return "bitfield "+Util::toHex(bitfield, bitfieldLength);
 }
+
+} // namespace aria2

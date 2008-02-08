@@ -37,16 +37,22 @@
 
 #include "AbstractProxyRequestCommand.h"
 
+namespace aria2 {
+
+class SocketCore;
+
 class HttpProxyRequestCommand : public AbstractProxyRequestCommand {
 public:
   HttpProxyRequestCommand(int cuid,
-			  const RequestHandle& req,
+			  const SharedHandle<Request>& req,
 			  RequestGroup* requestGroup,
 			  DownloadEngine* e,
-			  const SocketHandle& s);
+			  const SharedHandle<SocketCore>& s);
   virtual ~HttpProxyRequestCommand();
 
   virtual Command* getNextCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_HTTP_PROXY_REQUEST_COMMAND_H_

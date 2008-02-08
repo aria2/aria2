@@ -33,8 +33,11 @@
  */
 /* copyright --> */
 #include "Exception.h"
+#include <ostream>
 
-ostream& operator<<(ostream& o, const Exception& e)
+namespace aria2 {
+
+std::ostream& operator<<(std::ostream& o, const Exception& e)
 {
   o << e.getMsg() << "\n";
   for(Exception* cause = e.getCause(); cause; cause = cause->getCause()) {
@@ -42,3 +45,5 @@ ostream& operator<<(ostream& o, const Exception& e)
   }
   return o;
 }
+
+} // namespace aria2

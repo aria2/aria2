@@ -33,8 +33,13 @@
  */
 /* copyright --> */
 #include "DefaultAuthResolver.h"
+#include "AuthConfig.h"
 
-AuthConfigHandle DefaultAuthResolver::resolveAuthConfig(const string& hostname)
+namespace aria2 {
+
+DefaultAuthResolver::~DefaultAuthResolver() {}
+
+AuthConfigHandle DefaultAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
   if(_userDefinedAuthConfig.isNull()) {
     return _defaultAuthConfig;
@@ -42,3 +47,5 @@ AuthConfigHandle DefaultAuthResolver::resolveAuthConfig(const string& hostname)
     return _userDefinedAuthConfig;
   }
 }
+
+} // namespace aria2

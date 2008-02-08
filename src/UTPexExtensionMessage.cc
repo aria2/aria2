@@ -38,16 +38,18 @@
 #include "Dictionary.h"
 #include "Data.h"
 #include "BencodeVisitor.h"
-#include "a2netcompat.h"
 #include "Util.h"
 #include "PeerMessageUtil.h"
 #include "BtRegistry.h"
+#include "PeerStorage.h"
 #include "CompactPeerListProcessor.h"
 #include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "message.h"
 
-const string UTPexExtensionMessage::EXTENSION_NAME = "ut_pex";
+namespace aria2 {
+
+const std::string UTPexExtensionMessage::EXTENSION_NAME = "ut_pex";
 
 UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
   _extensionMessageID(extensionMessageID),
@@ -55,11 +57,11 @@ UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
 
 UTPexExtensionMessage::~UTPexExtensionMessage() {}
 
-string UTPexExtensionMessage::getBencodedData()
+std::string UTPexExtensionMessage::getBencodedData()
 {
   SharedHandle<Dictionary> d = new Dictionary();
-  pair<string, string> freshPeerPair = createCompactPeerListAndFlag(_freshPeers);
-  pair<string, string> droppedPeerPair = createCompactPeerListAndFlag(_droppedPeers);
+  std::pair<std::string, std::string> freshPeerPair = createCompactPeerListAndFlag(_freshPeers);
+  std::pair<std::string, std::string> droppedPeerPair = createCompactPeerListAndFlag(_droppedPeers);
   d->put("added", new Data(freshPeerPair.first));
   d->put("added.f", new Data(freshPeerPair.second));
   d->put("dropped", new Data(droppedPeerPair.first));
@@ -69,10 +71,10 @@ string UTPexExtensionMessage::getBencodedData()
   return v.getBencodedData();
 }
 
-pair<string, string> UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
+std::pair<std::string, std::string> UTPexExtensionMessage::createCompactPeerListAndFlag(const Peers& peers)
 {
-  string addrstring;
-  string flagstring;
+  std::string addrstring;
+  std::string flagstring;
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); ++itr) {
     char compact[6];
     if(PeerMessageUtil::createcompact(compact, (*itr)->ipaddr, (*itr)->port)) {
@@ -80,10 +82,10 @@ pair<string, string> UTPexExtensionMessage::createCompactPeerListAndFlag(const P
       flagstring += (*itr)->isSeeder() ? "2" : "0";
     }
   }
-  return pair<string, string>(addrstring, flagstring);
+  return std::pair<std::string, std::string>(addrstring, flagstring);
 }
 
-string UTPexExtensionMessage::toString() const
+std::string UTPexExtensionMessage::toString() const
 {
   return "ut_pex added="+Util::uitos(_freshPeers.size())+", dropped="+
     Util::uitos(_droppedPeers.size());
@@ -147,3 +149,5 @@ UTPexExtensionMessage::create(const BtContextHandle& btContext,
   }
   return msg;
 }
+
+} // namespace aria2

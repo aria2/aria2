@@ -35,6 +35,8 @@
 #include "List.h"
 #include "MetaEntryVisitor.h"
 
+namespace aria2 {
+
 List::List() {}
 
 List::~List() {
@@ -42,7 +44,7 @@ List::~List() {
 }
 
 void List::clearList() {
-  for(MetaList::iterator itr = mlist.begin(); itr != mlist.end(); itr++) {
+  for(std::deque<MetaEntry*>::iterator itr = mlist.begin(); itr != mlist.end(); itr++) {
     delete *itr;
   }
 }
@@ -51,10 +53,12 @@ void List::add(MetaEntry* entry) {
   mlist.push_back(entry);
 }
 
-const MetaList& List::getList() const {
+const std::deque<MetaEntry*>& List::getList() const {
   return mlist;
 }
 
 void List::accept(MetaEntryVisitor* v) const {
   v->visit(this);
 }
+
+} // namespace aria2

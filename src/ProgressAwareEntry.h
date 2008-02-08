@@ -36,6 +36,10 @@
 #define _D_PROGRESS_AWARE_ENTRY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <stdint.h>
+
+namespace aria2 {
 
 class ProgressAwareEntry {
 public:
@@ -49,5 +53,7 @@ public:
 };
 
 typedef SharedHandle<ProgressAwareEntry> ProgressAwareEntryHandle;
+
+} // namespace aria2
 
 #endif // _D_PROGRESS_AWARE_ENTRY_H_

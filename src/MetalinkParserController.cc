@@ -36,10 +36,16 @@
 #include "Metalinker.h"
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
+#include "FileEntry.h"
+#include "a2functional.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"
 # include "ChunkChecksum.h"
+# include "messageDigest.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include <algorithm>
+
+namespace aria2 {
 
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker()),
@@ -54,7 +60,7 @@ MetalinkParserController::MetalinkParserController():
 
 MetalinkParserController::~MetalinkParserController() {}
 
-MetalinkerHandle MetalinkParserController::getResult() const
+SharedHandle<Metalinker> MetalinkParserController::getResult() const
 {
   return _metalinker;
 }
@@ -69,7 +75,7 @@ void MetalinkParserController::newEntryTransaction()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setFileNameOfEntry(const string& filename)
+void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
 {
   if(_tEntry.isNull()) {
     return;
@@ -93,7 +99,7 @@ void MetalinkParserController::setFileLengthOfEntry(int64_t length)
   }
 }
 
-void MetalinkParserController::setVersionOfEntry(const string& version)
+void MetalinkParserController::setVersionOfEntry(const std::string& version)
 {
   if(_tEntry.isNull()) {
     return;
@@ -101,7 +107,7 @@ void MetalinkParserController::setVersionOfEntry(const string& version)
   _tEntry->version = version;
 }
 
-void MetalinkParserController::setLanguageOfEntry(const string& language)
+void MetalinkParserController::setLanguageOfEntry(const std::string& language)
 {
   if(_tEntry.isNull()) {
     return;
@@ -109,7 +115,7 @@ void MetalinkParserController::setLanguageOfEntry(const string& language)
   _tEntry->language = language;
 }
 
-void MetalinkParserController::setOSOfEntry(const string& os)
+void MetalinkParserController::setOSOfEntry(const std::string& os)
 {
   if(_tEntry.isNull()) {
     return;
@@ -153,7 +159,7 @@ void MetalinkParserController::newResourceTransaction()
   _tResource = new MetalinkResource();
 }
 
-void MetalinkParserController::setURLOfResource(const string& url)
+void MetalinkParserController::setURLOfResource(const std::string& url)
 {
   if(_tResource.isNull()) {
     return;
@@ -161,7 +167,7 @@ void MetalinkParserController::setURLOfResource(const string& url)
   _tResource->url = url;
 }
 
-void MetalinkParserController::setTypeOfResource(const string& type)
+void MetalinkParserController::setTypeOfResource(const std::string& type)
 {
   if(_tResource.isNull()) {
     return;
@@ -179,7 +185,7 @@ void MetalinkParserController::setTypeOfResource(const string& type)
   }
 }
 
-void MetalinkParserController::setLocationOfResource(const string& location)
+void MetalinkParserController::setLocationOfResource(const std::string& location)
 {
   if(_tResource.isNull()) {
     return;
@@ -227,7 +233,7 @@ void MetalinkParserController::newChecksumTransaction()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setTypeOfChecksum(const string& type)
+void MetalinkParserController::setTypeOfChecksum(const std::string& type)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChecksum.isNull()) {
@@ -241,7 +247,7 @@ void MetalinkParserController::setTypeOfChecksum(const string& type)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setHashOfChecksum(const string& md)
+void MetalinkParserController::setHashOfChecksum(const std::string& md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChecksum.isNull()) {
@@ -282,7 +288,7 @@ void MetalinkParserController::newChunkChecksumTransaction()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setTypeOfChunkChecksum(const string& type)
+void MetalinkParserController::setTypeOfChunkChecksum(const std::string& type)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
@@ -310,13 +316,13 @@ void MetalinkParserController::setLengthOfChunkChecksum(int32_t length)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::addHashOfChunkChecksum(int32_t order, const string& md)
+void MetalinkParserController::addHashOfChunkChecksum(int32_t order, const std::string& md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  _tempChunkChecksums.push_back(pair<int32_t, string>(order, md));
+  _tempChunkChecksums.push_back(std::pair<int32_t, std::string>(order, md));
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
@@ -330,7 +336,7 @@ void MetalinkParserController::createNewHashOfChunkChecksum(int32_t order)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setMessageDigestOfChunkChecksum(const string& md)
+void MetalinkParserController::setMessageDigestOfChunkChecksum(const std::string& md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
@@ -350,24 +356,6 @@ void MetalinkParserController::addHashOfChunkChecksum()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-bool firstAsc(const pair<int32_t, string>& p1, const pair<int32_t, string>& p2)
-{
-  return p1.first < p2.first;
-}
-
-class GetSecond
-{
-private:
-  Strings& ss;
-public:
-  GetSecond(Strings& s):ss(s) {}
-
-  void operator()(const pair<int32_t, string>& p)
-  {
-    ss.push_back(p.second);
-  }
-};
-
 void MetalinkParserController::commitChunkChecksumTransaction()
 {
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -375,10 +363,10 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     return;
   }
   if(_tEntry->chunkChecksum.isNull() || _tEntry->chunkChecksum->getAlgo() != "sha1") {
-    sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), firstAsc);
-    Strings checksums;
-    for_each(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), GetSecond(checksums));
-    
+    std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), Ascend1st<std::pair<int32_t, std::string> >());
+    std::deque<std::string> checksums;
+    std::transform(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
+		   back_inserter(checksums), select2nd<std::pair<int32_t, std::string> >());
     _tChunkChecksum->setChecksums(checksums);
     _tEntry->chunkChecksum = _tChunkChecksum;
   }
@@ -393,4 +381,4 @@ void MetalinkParserController::cancelChunkChecksumTransaction()
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-
+} // namespace aria2

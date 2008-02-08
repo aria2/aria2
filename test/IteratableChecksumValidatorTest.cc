@@ -3,9 +3,10 @@
 #include "DefaultPieceStorage.h"
 #include "Option.h"
 #include "DiskAdaptor.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class IteratableChecksumValidatorTest:public CppUnit::TestFixture {
 
@@ -28,11 +29,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( IteratableChecksumValidatorTest );
 
 void IteratableChecksumValidatorTest::testValidate() {
   Option option;
-  SingleFileDownloadContextHandle dctx =
+  SharedHandle<SingleFileDownloadContext> dctx =
     new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt");
   dctx->setChecksum("898a81b8e0181280ae2ee1b81e269196d91e869a");
   dctx->setChecksumHashAlgo("sha1");
-  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, &option);
+  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, &option);
   ps->initStorage();
   ps->getDiskAdaptor()->openFile();
 
@@ -47,11 +48,11 @@ void IteratableChecksumValidatorTest::testValidate() {
 
 void IteratableChecksumValidatorTest::testValidate_fail() {
   Option option;
-  SingleFileDownloadContextHandle dctx =
+  SharedHandle<SingleFileDownloadContext> dctx =
     new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt");
-  dctx->setChecksum(string(40, '0')); // set wrong checksum
+  dctx->setChecksum(std::string(40, '0')); // set wrong checksum
   dctx->setChecksumHashAlgo("sha1");
-  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, &option);
+  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, &option);
   ps->initStorage();
   ps->getDiskAdaptor()->openFile();
 
@@ -64,3 +65,5 @@ void IteratableChecksumValidatorTest::testValidate_fail() {
 
   CPPUNIT_ASSERT(!ps->downloadFinished());
 }
+
+} // namespace aria2

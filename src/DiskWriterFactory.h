@@ -36,15 +36,21 @@
 #define _D_DISK_WRITER_FACTORY_H_
 
 #include "common.h"
-#include "DiskWriter.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DiskWriter;
 
 class DiskWriterFactory {
 public:
   virtual ~DiskWriterFactory() {}
 
-  virtual DiskWriterHandle newDiskWriter() = 0;
+  virtual SharedHandle<DiskWriter> newDiskWriter() = 0;
 };
 
 typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_DISK_WRITER_FACTORY_H_

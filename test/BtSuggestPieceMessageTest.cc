@@ -1,8 +1,9 @@
 #include "BtSuggestPieceMessage.h"
 #include "PeerMessageUtil.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtSuggestPieceMessageTest:public CppUnit::TestFixture {
 
@@ -29,7 +30,7 @@ void BtSuggestPieceMessageTest::testCreate() {
   unsigned char msg[9];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 13);
   PeerMessageUtil::setIntParam(&msg[5], 12345);
-  BtSuggestPieceMessageHandle pm = BtSuggestPieceMessage::create(&msg[4], 5);
+  SharedHandle<BtSuggestPieceMessage> pm = BtSuggestPieceMessage::create(&msg[4], 5);
   CPPUNIT_ASSERT_EQUAL((int8_t)13, pm->getId());
   CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
 
@@ -64,6 +65,8 @@ void BtSuggestPieceMessageTest::testToString() {
   BtSuggestPieceMessage msg;
   msg.setIndex(12345);
 
-  CPPUNIT_ASSERT_EQUAL(string("suggest piece index=12345"),
+  CPPUNIT_ASSERT_EQUAL(std::string("suggest piece index=12345"),
 		       msg.toString());
 }
+
+} // namespace aria2

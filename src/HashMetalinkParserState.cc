@@ -35,18 +35,22 @@
 #include "HashMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void HashMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					   const string& name,
-					   const map<string, string>& attrs)
+					   const std::string& name,
+					   const std::map<std::string, std::string>& attrs)
 {
   stm->setSkipTagState(this);
 }
 
 void HashMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					 const string& name,
-					 const string& characters)
+					 const std::string& name,
+					 const std::string& characters)
 {
   stm->setHashOfChecksum(characters);
   stm->commitChecksumTransaction();
   stm->setVerificationState();
 }
+
+} // namespace aria2

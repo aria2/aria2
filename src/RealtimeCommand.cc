@@ -33,6 +33,10 @@
  */
 /* copyright --> */
 #include "RealtimeCommand.h"
+#include "DownloadEngine.h"
+#include "Exception.h"
+
+namespace aria2 {
 
 bool RealtimeCommand::execute()
 {
@@ -46,3 +50,5 @@ bool RealtimeCommand::execute()
     return r;
   }
 }
+
+} // namespace aria2

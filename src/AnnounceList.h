@@ -36,26 +36,30 @@
 #define _D_ANNOUNCE_LIST_H_
 
 #include "common.h"
-#include "MetaEntry.h"
+#include "SharedHandle.h"
 #include "AnnounceTier.h"
+
+namespace aria2 {
+
+class MetaEntry;
 
 class AnnounceList {
 public:
 private:
-  AnnounceTiers tiers;
-  AnnounceTiers::iterator currentTier;
-  Strings::iterator currentTracker;
+  std::deque<SharedHandle<AnnounceTier> > tiers;
+  std::deque<SharedHandle<AnnounceTier> >::iterator currentTier;
+  std::deque<std::string>::iterator currentTracker;
   bool currentTrackerInitialized;
 
   void resetIterator();
-  void setCurrentTier(const AnnounceTiers::iterator& itr);
+  void setCurrentTier(const std::deque<SharedHandle<AnnounceTier> >::iterator& itr);
 public:
   AnnounceList():currentTrackerInitialized(false) {}
   AnnounceList(const MetaEntry* announceListEntry);
-  AnnounceList(const AnnounceTiers& tiers);
+  AnnounceList(const std::deque<SharedHandle<AnnounceTier> >& tiers);
 
   void reconfigure(const MetaEntry* announceListEntry);
-  void reconfigure(const string& url);
+  void reconfigure(const std::string& url);
 
   int32_t countTier() const {
     return tiers.size();
@@ -69,12 +73,12 @@ public:
   /**
    * Returns announce URL.
    */
-  string getAnnounce() const;
+  std::string getAnnounce() const;
 
   /**
    * Returns announce event, such as started, stopped, completed, etc.
    */
-  string getEventString() const;
+  std::string getEventString() const;
 
   AnnounceTier::AnnounceEvent getEvent() const;
 
@@ -124,5 +128,7 @@ public:
 
   bool currentTierAcceptsCompletedEvent() const;
 };
+
+} // namespace aria2
 
 #endif // _D_ANNOUNCE_LIST_H_

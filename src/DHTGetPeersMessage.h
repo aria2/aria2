@@ -37,8 +37,11 @@
 
 #include "DHTQueryMessage.h"
 #include "DHTConstants.h"
-#include "DHTPeerAnnounceStorageDecl.h"
-#include "DHTTokenTrackerDecl.h"
+
+namespace aria2 {
+
+class DHTPeerAnnounceStorage;
+class DHTTokenTracker;
 
 class DHTGetPeersMessage:public DHTQueryMessage {
 private:
@@ -48,10 +51,10 @@ private:
 
   WeakHandle<DHTTokenTracker> _tokenTracker;
 public:
-  DHTGetPeersMessage(const DHTNodeHandle& localNode,
-		     const DHTNodeHandle& remoteNode,
+  DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
+		     const SharedHandle<DHTNode>& remoteNode,
 		     const unsigned char* infoHash,
-		     const string& transactionID = "");
+		     const std::string& transactionID = "");
 
   virtual ~DHTGetPeersMessage();
 
@@ -59,7 +62,7 @@ public:
 
   virtual Dictionary* getArgument();
   
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 
@@ -73,5 +76,7 @@ public:
 
   void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_GET_PEERS_MESSAGE_H_

@@ -34,6 +34,9 @@
 /* copyright --> */
 #include "CheckIntegrityMan.h"
 #include "CheckIntegrityEntry.h"
+#include <algorithm>
+
+namespace aria2 {
 
 CheckIntegrityMan::CheckIntegrityMan() {}
 
@@ -46,9 +49,8 @@ void CheckIntegrityMan::addCheckIntegrityEntry(const CheckIntegrityEntryHandle& 
 
 bool CheckIntegrityMan::removeCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry)
 {
-  CheckIntegrityEntries::iterator itr = find(_checkIntegrityEntries.begin(),
-					     _checkIntegrityEntries.end(),
-					     entry);
+  CheckIntegrityEntries::iterator itr =
+    std::find(_checkIntegrityEntries.begin(), _checkIntegrityEntries.end(), entry);
   if(itr == _checkIntegrityEntries.end()) {
     return false;
   } else {
@@ -70,3 +72,5 @@ int32_t CheckIntegrityMan::countCheckIntegrityEntry() const
 {
   return _checkIntegrityEntries.size();
 }
+
+} // namespace aria2

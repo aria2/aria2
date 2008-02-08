@@ -34,8 +34,8 @@
 /* copyright --> */
 #include "SpeedCalc.h"
 #include <algorithm>
-#include <ostream>
-#include <iterator>
+
+namespace aria2 {
 
 #define CHANGE_INTERVAL_SEC 15
 
@@ -47,8 +47,8 @@ public:
 };
 
 void SpeedCalc::reset() {
-  fill(&lengthArray[0], &lengthArray[2], 0);
-  for_each(&cpArray[0], &cpArray[2], Reset());
+  std::fill(&lengthArray[0], &lengthArray[2], 0);
+  std::for_each(&cpArray[0], &cpArray[2], Reset());
   sw = 0;
   maxSpeed = 0;
   prevSpeed = 0;
@@ -62,7 +62,7 @@ int32_t SpeedCalc::calculateSpeed() {
   if(milliElapsed) {
     int32_t speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
-    maxSpeed = max<int32_t>(speed, maxSpeed);
+    maxSpeed = std::max(speed, maxSpeed);
     return speed;
   } else {
     return prevSpeed;
@@ -74,7 +74,7 @@ int32_t SpeedCalc::calculateSpeed(const struct timeval& now) {
   if(milliElapsed) {
     int32_t speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
-    maxSpeed = max<int32_t>(speed, maxSpeed);
+    maxSpeed = std::max(speed, maxSpeed);
     return speed;
   } else {
     return prevSpeed;
@@ -94,7 +94,7 @@ public:
 
 void SpeedCalc::update(int bytes) {
   accumulatedLength += bytes;
-  for_each(&lengthArray[0], &lengthArray[2], Plus(bytes));
+  std::for_each(&lengthArray[0], &lengthArray[2], Plus(bytes));
   if(isIntervalOver()) {
     changeSw();
   }
@@ -120,3 +120,5 @@ int32_t SpeedCalc::getAvgSpeed() const {
     return 0;
   }
 }
+
+} // namespace aria2

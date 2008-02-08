@@ -36,24 +36,27 @@
 #define _D_DHT_PEER_ANNOUNCE_STORAGE_H_
 
 #include "common.h"
-#include "DHTPeerAnnounceStorageDecl.h"
-#include "DHTPeerAnnounceEntryDecl.h"
-#include "PeerDecl.h"
-#include "BtContextDecl.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskFactoryDecl.h"
+#include "SharedHandle.h"
+#include <deque>
 
+namespace aria2 {
+
+class BtContext;
+class Peer;
+class DHTPeerAnnounceEntry;
+class DHTTaskQueue;
+class DHTTaskFactory;
 class Logger;
 
 class DHTPeerAnnounceStorage {
 private:
-  DHTPeerAnnounceEntries _entries;
+  std::deque<SharedHandle<DHTPeerAnnounceEntry> > _entries;
 
-  DHTPeerAnnounceEntryHandle getPeerAnnounceEntry(const unsigned char* infoHash);
+  SharedHandle<DHTPeerAnnounceEntry> getPeerAnnounceEntry(const unsigned char* infoHash);
 
-  DHTTaskQueueHandle _taskQueue;
+  SharedHandle<DHTTaskQueue> _taskQueue;
 
-  DHTTaskFactoryHandle _taskFactory;
+  SharedHandle<DHTTaskFactory> _taskFactory;
 
   const Logger* _logger;
 public:
@@ -62,18 +65,18 @@ public:
   ~DHTPeerAnnounceStorage();
 
   void addPeerAnnounce(const unsigned char* infoHash,
-		       const string& ipaddr, uint16_t port);
+		       const std::string& ipaddr, uint16_t port);
 
   // add peer announce as localhost downloading the content
-  void addPeerAnnounce(const BtContextHandle& ctx);
+  void addPeerAnnounce(const SharedHandle<BtContext>& ctx);
   
   // give 0 to DHTPeerAnnounceEntry::setBtContext().
   // If DHTPeerAnnounceEntry is empty, it is erased.
-  void removePeerAnnounce(const BtContextHandle& ctx);
+  void removePeerAnnounce(const SharedHandle<BtContext>& ctx);
 
   bool contains(const unsigned char* infoHash) const;
 
-  Peers getPeers(const unsigned char* infoHash);
+  std::deque<SharedHandle<Peer> > getPeers(const unsigned char* infoHash);
 
   // drop peer announce entry which is not updated in the past
   // DHT_PEER_ANNOUNCE_PURGE_INTERVAL seconds.
@@ -84,9 +87,11 @@ public:
   // are excluded from announce.
   void announcePeer();
 
-  void setTaskQueue(const DHTTaskQueueHandle& taskQueue);
+  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 
-  void setTaskFactory(const DHTTaskFactoryHandle& taskFactory);
+  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_PEER_ANNOUNCE_STORAGE_H_

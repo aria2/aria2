@@ -39,13 +39,19 @@
 #include "Option.h"
 #include "Request.h"
 #include "FtpNegotiationCommand.h"
+#include "HttpRequest.h"
+#include "Segment.h"
 #include "HttpRequestCommand.h"
 #include "FtpTunnelRequestCommand.h"
 #include "DlAbortEx.h"
+#include "Logger.h"
 #include "message.h"
 #include "prefs.h"
 #include "Util.h"
 #include "HttpConnection.h"
+#include "Socket.h"
+
+namespace aria2 {
 
 FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
 							   const RequestHandle& req,
@@ -66,7 +72,7 @@ FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {
 }
 
 bool FtpInitiateConnectionCommand::executeInternal() {
-  string hostname;
+  std::string hostname;
   if(useHttpProxy()) {
     hostname = e->option->get(PREF_HTTP_PROXY_HOST);
   } else {
@@ -124,3 +130,5 @@ bool FtpInitiateConnectionCommand::nameResolveFinished() const {
     nameResolver->getStatus() == NameResolver::STATUS_ERROR;
 }
 #endif // ENABLE_ASYNC_DNS
+
+} // namespace aria2

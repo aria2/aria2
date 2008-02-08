@@ -2,7 +2,7 @@
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class CookieBoxTest:public CppUnit::TestFixture {
 
@@ -37,18 +37,18 @@ void CookieBoxTest::testCriteriaFind() {
   Cookies result1 = box.criteriaFind("rednoah.com", "/downloads", 1181473100, false);
   CPPUNIT_ASSERT_EQUAL(2, (int)result1.size());
   Cookies::iterator itr = result1.begin();
-  CPPUNIT_ASSERT_EQUAL(string("SESSIONID1=1"), (*itr).toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("SESSIONID1=1"), (*itr).toString());
   itr++;
-  CPPUNIT_ASSERT_EQUAL(string("SESSIONID2=2"), (*itr).toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("SESSIONID2=2"), (*itr).toString());
 
   result1 = box.criteriaFind("rednoah.com", "/downloads", 1181473100, true);
   CPPUNIT_ASSERT_EQUAL(3, (int)result1.size());
   itr = result1.begin();
-  CPPUNIT_ASSERT_EQUAL(string("SESSIONID1=1"), (*itr).toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("SESSIONID1=1"), (*itr).toString());
   itr++;
-  CPPUNIT_ASSERT_EQUAL(string("SESSIONID2=2"), (*itr).toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("SESSIONID2=2"), (*itr).toString());
   itr++;
-  CPPUNIT_ASSERT_EQUAL(string("PASS=pass"), (*itr).toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("PASS=pass"), (*itr).toString());
 
   result1 = box.criteriaFind("aria.rednoah.com", "/", 1181473100, false);
   CPPUNIT_ASSERT_EQUAL(0, (int)result1.size());
@@ -56,9 +56,10 @@ void CookieBoxTest::testCriteriaFind() {
   result1 = box.criteriaFind("aria.rednoah.com", "/home", 1181473100, false);
   CPPUNIT_ASSERT_EQUAL(1, (int)result1.size());
   itr = result1.begin();
-  CPPUNIT_ASSERT_EQUAL(string("USER=user"), (*itr).toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("USER=user"), (*itr).toString());
   
   result1 = box.criteriaFind("rednoah.com", "/downloads", 1181473200, false);
   CPPUNIT_ASSERT_EQUAL(0, (int)result1.size());
 }
 
+} // namespace aria2

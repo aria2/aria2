@@ -35,19 +35,23 @@
 #include "URLMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void URLMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					  const string& name,
-					  const map<string, string>& attrs)
+					  const std::string& name,
+					  const std::map<std::string, std::string>& attrs)
 {
   stm->setSkipTagState(this);
 
 }
 
 void URLMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					const string& name,
-					const string& characters)
+					const std::string& name,
+					const std::string& characters)
 {
   stm->setURLOfResource(characters);
   stm->commitResourceTransaction();
   stm->setResourcesState();
 }
+
+} // namespace aria2

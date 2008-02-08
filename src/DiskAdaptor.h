@@ -36,14 +36,19 @@
 #define _D_DISK_ADAPTOR_H_
 
 #include "BinaryStream.h"
-#include "FileEntry.h"
-#include "Logger.h"
-#include "FileAllocationIterator.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
+
+class FileEntry;
+class Logger;
+class FileAllocationIterator;
 
 class DiskAdaptor:public BinaryStream {
 protected:
-  string storeDir;
-  FileEntries fileEntries;
+  std::string storeDir;
+  std::deque<SharedHandle<FileEntry> > fileEntries;
   const Logger* logger;
 public:
   DiskAdaptor();
@@ -61,22 +66,20 @@ public:
 
   virtual bool fileExists() = 0;
 
-  virtual string getFilePath() = 0;
+  virtual std::string getFilePath() = 0;
 
   virtual int64_t size() const = 0;
 
   // optional behavior
   virtual void truncate(int64_t length) {}
 
-  void setFileEntries(const FileEntries& fileEntries) {
-    this->fileEntries = fileEntries;
-  }
+  void setFileEntries(const std::deque<SharedHandle<FileEntry> >& fileEntries);
 
-  FileEntryHandle getFileEntryFromPath(const string& fileEntryPath) const;
+  SharedHandle<FileEntry> getFileEntryFromPath(const std::string& fileEntryPath) const;
 
-  const FileEntries& getFileEntries() const { return fileEntries; }
+  const std::deque<SharedHandle<FileEntry> >& getFileEntries() const;
 
-  bool addDownloadEntry(const string& fileEntryPath);
+  bool addDownloadEntry(const std::string& fileEntryPath);
 
   bool addDownloadEntry(int index);
 
@@ -84,11 +87,11 @@ public:
 
   void removeAllDownloadEntry();
 
-  void setStoreDir(const string& storeDir) { this->storeDir = storeDir; }
+  void setStoreDir(const std::string& storeDir) { this->storeDir = storeDir; }
 
-  const string& getStoreDir() const { return this->storeDir; }
+  const std::string& getStoreDir() const { return this->storeDir; }
 
-  virtual FileAllocationIteratorHandle fileAllocationIterator() = 0;
+  virtual SharedHandle<FileAllocationIterator> fileAllocationIterator() = 0;
 
   virtual void enableDirectIO() {}
 
@@ -96,5 +99,7 @@ public:
 };
 
 typedef SharedHandle<DiskAdaptor> DiskAdaptorHandle;
+
+} // namespace aria2
 
 #endif // _D_DISK_ADAPTOR_H_

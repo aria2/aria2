@@ -40,6 +40,11 @@
 #include "CUIDCounter.h"
 #include "message.h"
 #include "PeerReceiveHandshakeCommand.h"
+#include "Logger.h"
+#include "Socket.h"
+#include <utility>
+
+namespace aria2 {
 
 int32_t PeerListenCommand::__numInstance = 0;
 
@@ -86,9 +91,9 @@ bool PeerListenCommand::execute() {
     SocketHandle peerSocket;
     try {
       peerSocket = socket->acceptConnection();
-      pair<string, int32_t> peerInfo;
+      std::pair<std::string, int32_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
-      pair<string, int32_t> localInfo;
+      std::pair<std::string, int32_t> localInfo;
       peerSocket->getAddrInfo(localInfo);
 
       if(peerInfo.first == localInfo.first) {
@@ -121,3 +126,5 @@ PeerListenCommand* PeerListenCommand::getInstance(DownloadEngine* e)
   }
   return __instance;
 }
+
+} // namespace aria2

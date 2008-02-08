@@ -36,18 +36,20 @@
 #define _D_DHT_TASK_FACTORY_IMPL_H_
 
 #include "DHTTaskFactory.h"
-#include "DHTNodeDecl.h"
-#include "DHTRoutingTableDecl.h"
-#include "DHTMessageDispatcherDecl.h"
-#include "DHTMessageFactoryDecl.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTAbstractTaskDecl.h"
 
+namespace aria2 {
+
+class DHTNode;
+class DHTRoutingTable;
+class DHTMessageDispatcher;
+class DHTMessageFactory;
+class DHTTaskQueue;
+class DHTAbstractTask;
 class Logger;
 
 class DHTTaskFactoryImpl:public DHTTaskFactory {
 private:
-  DHTNodeHandle _localNode;
+  SharedHandle<DHTNode> _localNode;
 
   WeakHandle<DHTRoutingTable> _routingTable;
 
@@ -59,25 +61,30 @@ private:
 
   const Logger* _logger;
 
-  void setCommonProperty(const DHTAbstractTaskHandle& task);
+  void setCommonProperty(const SharedHandle<DHTAbstractTask>& task);
 public:
   DHTTaskFactoryImpl();
 
   virtual ~DHTTaskFactoryImpl();
 
-  virtual DHTTaskHandle createPingTask(const DHTNodeHandle& remoteNode,
-				       size_t numRetry = 0);
+  virtual SharedHandle<DHTTask>
+  createPingTask(const SharedHandle<DHTNode>& remoteNode,
+		 size_t numRetry = 0);
 
-  virtual DHTTaskHandle createNodeLookupTask(const unsigned char* targetID);
+  virtual SharedHandle<DHTTask>
+  createNodeLookupTask(const unsigned char* targetID);
 
-  virtual DHTTaskHandle createBucketRefreshTask();
+  virtual SharedHandle<DHTTask> createBucketRefreshTask();
 
-  virtual DHTTaskHandle createPeerLookupTask(const BtContextHandle& ctx);
+  virtual SharedHandle<DHTTask>
+  createPeerLookupTask(const SharedHandle<BtContext>& ctx);
 
-  virtual DHTTaskHandle createPeerAnnounceTask(const unsigned char* infoHash);
+  virtual SharedHandle<DHTTask>
+  createPeerAnnounceTask(const unsigned char* infoHash);
 
-  virtual DHTTaskHandle createReplaceNodeTask(const DHTBucketHandle& bucket,
-					      const DHTNodeHandle& newNode);
+  virtual SharedHandle<DHTTask>
+  createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
+			const SharedHandle<DHTNode>& newNode);
 
   void setRoutingTable(const WeakHandle<DHTRoutingTable> routingTable);
 
@@ -87,8 +94,10 @@ public:
 
   void setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue);
 
-  void setLocalNode(const DHTNodeHandle& localNode);
+  void setLocalNode(const SharedHandle<DHTNode>& localNode);
 
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_TASK_FACTORY_IMPL_H_

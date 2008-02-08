@@ -38,22 +38,24 @@
 #include "DiskWriter.h"
 #include <sstream>
 
+namespace aria2 {
+
 class ByteArrayDiskWriter : public DiskWriter {
 private:
-  stringstream buf;
+  std::stringstream buf;
 
   void clear();
 public:
   ByteArrayDiskWriter();
   virtual ~ByteArrayDiskWriter();
 
-  virtual void initAndOpenFile(const string& filename, int64_t totalLength = 0);
+  virtual void initAndOpenFile(const std::string& filename, int64_t totalLength = 0);
 
-  virtual void openFile(const string& filename, int64_t totalLength = 0);
+  virtual void openFile(const std::string& filename, int64_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const string& filename, int64_t totalLength = 0);
+  virtual void openExistingFile(const std::string& filename, int64_t totalLength = 0);
 
   virtual void writeData(const unsigned char* data, int32_t len, int64_t position);
   virtual int32_t readData(unsigned char* data, int32_t len, int64_t position);
@@ -75,11 +77,14 @@ public:
     return false;
   }
 
-  void setString(const string& s)
+  void setString(const std::string& s)
   {
     buf.str(s);
   }
 };
 
 typedef SharedHandle<ByteArrayDiskWriter> ByteArrayDiskWriterHandle;
+
+} // namespace aria2
+
 #endif // _D_BYTE_ARRAY_DISK_WRITER_H_

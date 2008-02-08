@@ -36,23 +36,26 @@
 #include "DHTNode.h"
 #include "BencodeVisitor.h"
 #include "DHTConnection.h"
+#include "Dictionary.h"
 #include "Data.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTRoutingTable.h"
 
-DHTAbstractMessage::DHTAbstractMessage(const DHTNodeHandle& localNode,
-				       const DHTNodeHandle& remoteNode,
-				       const string& transactionID):
+namespace aria2 {
+
+DHTAbstractMessage::DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
+				       const SharedHandle<DHTNode>& remoteNode,
+				       const std::string& transactionID):
   DHTMessage(localNode, remoteNode, transactionID) {}
 
 DHTAbstractMessage::~DHTAbstractMessage() {}
 
-string DHTAbstractMessage::getBencodedMessage()
+std::string DHTAbstractMessage::getBencodedMessage()
 {
   SharedHandle<Dictionary> msg = new Dictionary();
-  msg->put(string("t"), new Data(_transactionID));
-  msg->put(string("y"), new Data(getType()));
+  msg->put(std::string("t"), new Data(_transactionID));
+  msg->put(std::string("y"), new Data(getType()));
   fillMessage(msg.get());
   
   BencodeVisitor v;
@@ -62,7 +65,7 @@ string DHTAbstractMessage::getBencodedMessage()
 
 void DHTAbstractMessage::send()
 {
-  string message = getBencodedMessage();
+  std::string message = getBencodedMessage();
   _connection->sendMessage(message.c_str(),
 			   message.size(),
 			   _remoteNode->getIPAddress(),
@@ -88,3 +91,5 @@ void DHTAbstractMessage::setRoutingTable(const WeakHandle<DHTRoutingTable>& rout
 {
   _routingTable = routingTable;
 }
+
+} // namespace aria2

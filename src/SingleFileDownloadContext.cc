@@ -32,14 +32,66 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_DHT_PEER_ANNOUNCE_ENTRY_DECL_H_
-#define _D_DHT_PEER_ANNOUNCE_ENTRY_DECL_H_
+#include "SingleFileDownloadContext.h"
+#include "FileEntry.h"
 
-#include "SharedHandle.h"
-#include <deque>
+namespace aria2 {
 
-class DHTPeerAnnounceEntry;
-typedef SharedHandle<DHTPeerAnnounceEntry> DHTPeerAnnounceEntryHandle;
-typedef std::deque<DHTPeerAnnounceEntryHandle> DHTPeerAnnounceEntries;
+SingleFileDownloadContext::SingleFileDownloadContext(int32_t pieceLength,
+						     int64_t totalLength,
+						     const std::string& filename,
+						     const std::string& ufilename):
+  _pieceLength(pieceLength),
+  _fileEntry(new FileEntry(filename, totalLength, 0)),
+  _filename(filename),
+  _ufilename(ufilename)
+{
+  updateFileEntry();
+}
 
-#endif // _D_DHT_PEER_ANNOUNCE_ENTRY_DECL_H_
+void SingleFileDownloadContext::updateFileEntry()
+{
+  if(_ufilename != "") {
+    _fileEntry->setPath(_ufilename);
+  } else if(_filename != "") {
+    _fileEntry->setPath(_filename);
+  } else {
+    _fileEntry->setPath("index.html");
+  }
+}
+
+const std::deque<std::string>&
+SingleFileDownloadContext::getPieceHashes() const
+{
+  return _pieceHashes;
+}
+
+int64_t SingleFileDownloadContext::getTotalLength() const
+{
+  return _fileEntry->getLength();
+}
+
+FileEntries
+SingleFileDownloadContext::getFileEntries() const
+{
+  FileEntries fs;
+  fs.push_back(_fileEntry);
+  return fs;
+}
+
+int32_t SingleFileDownloadContext::getNumPieces() const
+{
+  return (_fileEntry->getLength()+_pieceLength-1)/_pieceLength;
+}
+
+std::string SingleFileDownloadContext::getActualBasePath() const
+{
+  return _dir+"/"+_fileEntry->getPath();
+}
+
+void SingleFileDownloadContext::setTotalLength(int64_t totalLength)
+{
+  _fileEntry->setLength(totalLength);
+}
+
+} // namespace aria2

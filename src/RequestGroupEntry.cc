@@ -36,6 +36,8 @@
 #include "RequestGroup.h"
 #include "Command.h"
 
+namespace aria2 {
+
 RequestGroupEntry::RequestGroupEntry(RequestGroup* requestGroup,
 				     Command* nextCommand):
   _requestGroup(requestGroup),
@@ -56,3 +58,5 @@ Command* RequestGroupEntry::popNextCommand()
   _nextCommand = 0;
   return temp;
 }
+
+} // namespace aria2

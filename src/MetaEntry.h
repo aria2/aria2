@@ -36,6 +36,9 @@
 #define _D_META_ENTRY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class MetaEntryVisitor;
 
@@ -50,4 +53,7 @@ public:
 };
 
 typedef SharedHandle<MetaEntry> MetaEntryHandle;
+
+} // namespace aria2
+
 #endif // _D_META_ENTRY_H_

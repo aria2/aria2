@@ -35,6 +35,15 @@
 #include "AbstractSingleDiskAdaptor.h"
 #include "File.h"
 #include "SingleFileAllocationIterator.h"
+#include "DiskWriter.h"
+
+namespace aria2 {
+
+AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor():
+  diskWriter(0),
+  totalLength(0) {}
+
+AbstractSingleDiskAdaptor::~AbstractSingleDiskAdaptor() {}
 
 void AbstractSingleDiskAdaptor::initAndOpenFile()
 {
@@ -71,12 +80,20 @@ bool AbstractSingleDiskAdaptor::fileExists()
   return File(getFilePath()).exists();
 }
 
+int64_t AbstractSingleDiskAdaptor::size() const
+{
+  return diskWriter->size();
+}
+
+void AbstractSingleDiskAdaptor::truncate(int64_t length)
+{
+  diskWriter->truncate(length);
+}
+
 FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
   SingleFileAllocationIteratorHandle h =
-    new SingleFileAllocationIterator(this,
-				     size(),
-				     totalLength);
+    new SingleFileAllocationIterator(this, size(), totalLength);
   h->init();
   return h;
 }
@@ -90,3 +107,30 @@ void AbstractSingleDiskAdaptor::disableDirectIO()
 {
   diskWriter->disableDirectIO();
 }
+
+bool AbstractSingleDiskAdaptor::directIOAllowed() const
+{
+  return diskWriter->directIOAllowed();
+}
+  
+void AbstractSingleDiskAdaptor::setDiskWriter(const DiskWriterHandle& diskWriter)
+{
+  this->diskWriter = diskWriter;
+}
+
+DiskWriterHandle AbstractSingleDiskAdaptor::getDiskWriter() const
+{
+  return diskWriter;
+}
+
+void AbstractSingleDiskAdaptor::setTotalLength(const int64_t& totalLength)
+{
+  this->totalLength = totalLength;
+}
+
+int64_t AbstractSingleDiskAdaptor::getTotalLength() const
+{
+  return totalLength;
+}
+
+} // namespace aria2

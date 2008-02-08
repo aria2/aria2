@@ -37,11 +37,13 @@
 
 #include "BtProgressInfoFile.h"
 
+namespace aria2 {
+
 class NullProgressInfoFile:public BtProgressInfoFile {
 public:
   virtual ~NullProgressInfoFile() {}
 
-  virtual string getFilename()
+  virtual std::string getFilename()
   {
     return "";
   }
@@ -56,5 +58,7 @@ public:
 };
 
 typedef SharedHandle<NullProgressInfoFile> NullProgressInfoFileHandle;
+
+} // namespace aria2
 
 #endif // _D_NULL_PROGRESS_INFO_FILE_H_

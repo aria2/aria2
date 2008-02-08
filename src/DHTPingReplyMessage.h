@@ -38,14 +38,16 @@
 #include "DHTResponseMessage.h"
 #include "DHTConstants.h"
 
+namespace aria2 {
+
 class DHTPingReplyMessage:public DHTResponseMessage {
 private:
   unsigned char _id[DHT_ID_LENGTH];
 public:
-  DHTPingReplyMessage(const DHTNodeHandle& localNode,
-		      const DHTNodeHandle& remoteNode,
+  DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
+		      const SharedHandle<DHTNode>& remoteNode,
 		      const unsigned char* id,
-		      const string& transactionID);
+		      const std::string& transactionID);
 
   virtual ~DHTPingReplyMessage();
 
@@ -53,7 +55,7 @@ public:
 
   virtual Dictionary* getResponse();
 
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 
@@ -62,5 +64,7 @@ public:
     return _id;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_PING_REPLY_MESSAGE_H_

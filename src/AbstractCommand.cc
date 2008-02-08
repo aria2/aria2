@@ -33,31 +33,50 @@
  */
 /* copyright --> */
 #include "AbstractCommand.h"
+#include "RequestGroup.h"
+#include "Request.h"
+#include "DownloadEngine.h"
+#include "Option.h"
+#include "PeerStat.h"
 #include "SegmentMan.h"
-#include "NameResolver.h"
-#include "CUIDCounter.h"
+#include "Logger.h"
+#include "Segment.h"
 #include "DlAbortEx.h"
 #include "DlRetryEx.h"
 #include "DownloadFailureException.h"
 #include "InitiateConnectionCommandFactory.h"
-#include "Util.h"
-#include "message.h"
 #include "SleepCommand.h"
-#include "prefs.h"
+#include "NameResolver.h"
 #include "DNSCache.h"
 #include "StreamCheckIntegrityEntry.h"
-#include "PeerStat.h"
-#include "Segment.h"
-#include "Option.h"
 #include "PieceStorage.h"
+#include "Socket.h"
+#include "message.h"
+#include "prefs.h"
+
+namespace aria2 {
 
 AbstractCommand::AbstractCommand(int32_t cuid,
-				 const RequestHandle& req,
+				 const SharedHandle<Request>& req,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
   Command(cuid), RequestGroupAware(requestGroup),
   req(req), e(e), socket(s),
+  checkSocketIsReadable(false), checkSocketIsWritable(false),
+  nameResolverCheck(false)
+{ 
+  setReadCheckSocket(socket);
+  timeout = this->e->option->getAsInt(PREF_TIMEOUT);
+  _requestGroup->increaseStreamConnection();
+}
+
+AbstractCommand::AbstractCommand(int32_t cuid,
+				 const SharedHandle<Request>& req,
+				 RequestGroup* requestGroup,
+				 DownloadEngine* e):
+  Command(cuid), RequestGroupAware(requestGroup),
+  req(req), e(e), socket(new SocketCore()),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   nameResolverCheck(false)
 { 
@@ -239,9 +258,9 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
-bool AbstractCommand::resolveHostname(const string& hostname,
+bool AbstractCommand::resolveHostname(const std::string& hostname,
 				      const NameResolverHandle& resolver) {
-  string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
+  std::string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
   if(ipaddr.empty()) {
 #ifdef ENABLE_ASYNC_DNS
     switch(resolver->getStatus()) {
@@ -301,3 +320,5 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
     new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand);
   e->addCommand(_requestGroup->processCheckIntegrityEntry(entry, e));
 }
+
+} // namespace aria2

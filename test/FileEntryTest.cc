@@ -1,6 +1,8 @@
 #include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class FileEntryTest : public CppUnit::TestFixture {
   
   CPPUNIT_TEST_SUITE(FileEntryTest);
@@ -17,10 +19,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( FileEntryTest );
 
 void FileEntryTest::testSetupDir()
 {
-  string topDir = "/tmp";
-  string dir = "aria2-FileEntryTest-testSetupDir";
-  string filename = "filename";
-  string path = topDir+"/"+dir+"/"+filename;
+  std::string topDir = "/tmp";
+  std::string dir = "aria2-FileEntryTest-testSetupDir";
+  std::string filename = "filename";
+  std::string path = topDir+"/"+dir+"/"+filename;
   File d(topDir+"/"+dir);
   if(d.exists()) {
     CPPUNIT_ASSERT(d.remove());
@@ -32,3 +34,5 @@ void FileEntryTest::testSetupDir()
   File f(path);
   CPPUNIT_ASSERT(!f.exists());
 }
+
+} // namespace aria2

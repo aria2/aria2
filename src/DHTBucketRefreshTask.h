@@ -37,6 +37,8 @@
 
 #include "DHTAbstractTask.h"
 
+namespace aria2 {
+
 class DHTBucketRefreshTask:public DHTAbstractTask {
 public:
   DHTBucketRefreshTask();
@@ -45,5 +47,7 @@ public:
 
   virtual void startup();
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_BUCKET_REFRESH_TASK_H_

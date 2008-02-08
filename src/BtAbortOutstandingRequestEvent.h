@@ -37,21 +37,27 @@
 
 #include "BtEvent.h"
 
+namespace aria2 {
+
+class Piece;
+
 class BtAbortOutstandingRequestEvent : public BtEvent {
 private:
-  PieceHandle piece;
+  SharedHandle<Piece> piece;
 public:
-  BtAbortOutstandingRequestEvent(const PieceHandle& piece):piece(piece) {}
+  BtAbortOutstandingRequestEvent(const SharedHandle<Piece>& piece):piece(piece) {}
 
-  PieceHandle getPiece() const {
+  SharedHandle<Piece> getPiece() const {
     return piece;
   }
 
-  void setPiece(const PieceHandle& piece) {
+  void setPiece(const SharedHandle<Piece>& piece) {
     this->piece = piece;
   }
 };
 
 typedef SharedHandle<BtAbortOutstandingRequestEvent> BtAbortOutstandingRequestEventHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_ABORT_OUTSTANDING_REQUEST_EVENT_H_

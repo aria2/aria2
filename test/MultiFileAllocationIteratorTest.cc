@@ -1,7 +1,12 @@
 #include "MultiFileAllocationIterator.h"
 #include "File.h"
 #include "MultiDiskAdaptor.h"
+#include "FileEntry.h"
+#include "Exception.h"
+#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class MultiFileAllocationIteratorTest:public CppUnit::TestFixture {
 
@@ -23,7 +28,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MultiFileAllocationIteratorTest );
 
 void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 {
-  FileEntryHandle fs[] = {
+  SharedHandle<FileEntry> fs[] = {
     new FileEntry("file1", 1536, 0),
     new FileEntry("file2", 2048, 1536),
     new FileEntry("file3", 1024, 3584),
@@ -43,39 +48,39 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   fs[8]->setRequested(false);
   fs[9]->setRequested(false);
   
-  string storeDir = "/tmp/aria2_MultiFileAllocationIteratorTest_testMakeDiskWriterEntries";
-  MultiDiskAdaptorHandle diskAdaptor = new MultiDiskAdaptor();
-  diskAdaptor->setFileEntries(FileEntries(&fs[0], &fs[10]));
+  std::string storeDir = "/tmp/aria2_MultiFileAllocationIteratorTest_testMakeDiskWriterEntries";
+  SharedHandle<MultiDiskAdaptor> diskAdaptor = new MultiDiskAdaptor();
+  diskAdaptor->setFileEntries(std::deque<SharedHandle<FileEntry> >(&fs[0], &fs[10]));
   diskAdaptor->setPieceLength(1024);
   diskAdaptor->setStoreDir(storeDir);
   diskAdaptor->openFile();
 
-  MultiFileAllocationIteratorHandle itr = diskAdaptor->fileAllocationIterator();
+  SharedHandle<MultiFileAllocationIterator> itr = diskAdaptor->fileAllocationIterator();
 
   DiskWriterEntries entries = itr->getDiskWriterEntries();
 
-  sort(entries.begin(), entries.end());
+  std::sort(entries.begin(), entries.end());
 
   CPPUNIT_ASSERT_EQUAL((size_t)6, entries.size());
 
-  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file1"), entries[0]->getFilePath(storeDir));
-  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file2"), entries[1]->getFilePath(storeDir));
-  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file3"), entries[2]->getFilePath(storeDir));
-  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file6"), entries[3]->getFilePath(storeDir));
-  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file7"), entries[4]->getFilePath(storeDir));
-  CPPUNIT_ASSERT_EQUAL(storeDir+string("/file8"), entries[5]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file1"), entries[0]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file2"), entries[1]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file3"), entries[2]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file6"), entries[3]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file7"), entries[4]->getFilePath(storeDir));
+  CPPUNIT_ASSERT_EQUAL(storeDir+std::string("/file8"), entries[5]->getFilePath(storeDir));
 }
 
 void MultiFileAllocationIteratorTest::testAllocate()
 {
-  string dir = "/tmp";
-  string topDir = "aria2_MultiFileAllocationIteratorTest_testAllocate";
-  string fname1 = "file1";
-  string fname2 = "file2";
-  string fname3 = "file3";
-  string fname4 = "file4";
-  string fname5 = "file5";
-  string fname6 = "file6";
+  std::string dir = "/tmp";
+  std::string topDir = "aria2_MultiFileAllocationIteratorTest_testAllocate";
+  std::string fname1 = "file1";
+  std::string fname2 = "file2";
+  std::string fname3 = "file3";
+  std::string fname4 = "file4";
+  std::string fname5 = "file5";
+  std::string fname6 = "file6";
   int64_t length1 = 32769;
   int64_t length2 = 0;
   int64_t length3 = 8;
@@ -84,66 +89,69 @@ void MultiFileAllocationIteratorTest::testAllocate()
   int64_t length6 = 30;
 
   try {
-  MultiDiskAdaptorHandle diskAdaptor = new MultiDiskAdaptor();
-  diskAdaptor->setStoreDir(dir);
-  diskAdaptor->setTopDir(topDir);
+    SharedHandle<MultiDiskAdaptor> diskAdaptor = new MultiDiskAdaptor();
+    diskAdaptor->setStoreDir(dir);
+    diskAdaptor->setTopDir(topDir);
 
-  int64_t offset = 0;
-  FileEntryHandle fileEntry1 = new FileEntry(fname1,
-					     length1,
-					     offset);
-  offset += length1;
-  FileEntryHandle fileEntry2 = new FileEntry(fname2,
-					     length2,
-					     offset);
+    int64_t offset = 0;
+    SharedHandle<FileEntry> fileEntry1 = new FileEntry(fname1,
+						       length1,
+						       offset);
+    offset += length1;
+    SharedHandle<FileEntry> fileEntry2 = new FileEntry(fname2,
+						       length2,
+						       offset);
 
-  offset += length2;
-  FileEntryHandle fileEntry3 = new FileEntry(fname3,
-					     length3,
-					     offset);
+    offset += length2;
+    SharedHandle<FileEntry> fileEntry3 = new FileEntry(fname3,
+						       length3,
+						       offset);
 
-  offset += length3;
-  FileEntryHandle fileEntry4 = new FileEntry(fname4,
-					     length4,
-					     offset);
-  fileEntry4->setRequested(false);
+    offset += length3;
+    SharedHandle<FileEntry> fileEntry4 = new FileEntry(fname4,
+						       length4,
+						       offset);
+    fileEntry4->setRequested(false);
 
-  offset += length4;
-  FileEntryHandle fileEntry5 = new FileEntry(fname5,
-					     length5,
-					     offset);
+    offset += length4;
+    SharedHandle<FileEntry> fileEntry5 = new FileEntry(fname5,
+						       length5,
+						       offset);
 
-  offset += length5;
-  FileEntryHandle fileEntry6 = new FileEntry(fname6,
-					     length6,
-					     offset);
-  fileEntry6->setRequested(false);
+    offset += length5;
+    SharedHandle<FileEntry> fileEntry6 = new FileEntry(fname6,
+						       length6,
+						       offset);
+    fileEntry6->setRequested(false);
 
-  FileEntries fs;
-  fs.push_back(fileEntry1);
-  fs.push_back(fileEntry2);
-  fs.push_back(fileEntry3);
-  fs.push_back(fileEntry4);
-  fs.push_back(fileEntry5);
-  fs.push_back(fileEntry6);
-  diskAdaptor->setFileEntries(fs);
+    std::deque<SharedHandle<FileEntry> > fs;
+    fs.push_back(fileEntry1);
+    fs.push_back(fileEntry2);
+    fs.push_back(fileEntry3);
+    fs.push_back(fileEntry4);
+    fs.push_back(fileEntry5);
+    fs.push_back(fileEntry6);
+    diskAdaptor->setFileEntries(fs);
 
-  // we have to open file first.
-  diskAdaptor->initAndOpenFile();
-  MultiFileAllocationIteratorHandle itr = diskAdaptor->fileAllocationIterator();
-  while(!itr->finished()) {
-    itr->allocateChunk();
-  }
-  CPPUNIT_ASSERT_EQUAL((int64_t)length1, File(dir+"/"+topDir+"/"+fname1).size());
-  CPPUNIT_ASSERT_EQUAL((int64_t)length2, File(dir+"/"+topDir+"/"+fname2).size());
-  CPPUNIT_ASSERT_EQUAL((int64_t)length3, File(dir+"/"+topDir+"/"+fname3).size());
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, File(dir+"/"+topDir+"/"+fname4).size());
-  CPPUNIT_ASSERT_EQUAL((int64_t)length5, File(dir+"/"+topDir+"/"+fname5).size());
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, File(dir+"/"+topDir+"/"+fname6).size());
+    // we have to open file first.
+    diskAdaptor->initAndOpenFile();
+    SharedHandle<MultiFileAllocationIterator> itr = diskAdaptor->fileAllocationIterator();
+    while(!itr->finished()) {
+      itr->allocateChunk();
+    }
+    CPPUNIT_ASSERT_EQUAL((int64_t)length1, File(dir+"/"+topDir+"/"+fname1).size());
+    CPPUNIT_ASSERT_EQUAL((int64_t)length2, File(dir+"/"+topDir+"/"+fname2).size());
+    CPPUNIT_ASSERT_EQUAL((int64_t)length3, File(dir+"/"+topDir+"/"+fname3).size());
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, File(dir+"/"+topDir+"/"+fname4).size());
+    CPPUNIT_ASSERT_EQUAL((int64_t)length5, File(dir+"/"+topDir+"/"+fname5).size());
+    CPPUNIT_ASSERT_EQUAL((int64_t)0, File(dir+"/"+topDir+"/"+fname6).size());
 
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << *e << std::endl;
+    std::string m = e->getMsg();
     delete e;
-    CPPUNIT_FAIL("exception was thrown");
+    CPPUNIT_FAIL(m);
   }
 }
+
+} // namespace aria2

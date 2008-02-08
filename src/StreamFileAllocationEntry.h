@@ -38,24 +38,27 @@
 #include "FileAllocationEntry.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
 class Request;
-typedef SharedHandle<Request> RequestHandle;
 
 class StreamFileAllocationEntry : public FileAllocationEntry {
 private:
-  RequestHandle _currentRequest;
+  SharedHandle<Request> _currentRequest;
   Time _timer;
 public:
-  StreamFileAllocationEntry(const RequestHandle& currentRequest,
+  StreamFileAllocationEntry(const SharedHandle<Request>& currentRequest,
 			    RequestGroup* requestGroup,
 			    Command* nextCommand = 0);
 
   virtual ~StreamFileAllocationEntry();
 
-  virtual Commands prepareForNextAction(DownloadEngine* e);
+  virtual std::deque<Command*> prepareForNextAction(DownloadEngine* e);
 };
 
 typedef SharedHandle<StreamFileAllocationEntry> StreamFileAllocationEntryHandle;
-typedef deque<StreamFileAllocationEntryHandle> StreamFileAllocationEntries;
+typedef std::deque<StreamFileAllocationEntryHandle> StreamFileAllocationEntries;
+
+} // namespace aria2
 
 #endif // _D_STREAM_FILE_ALLOCATION_ENTRY_H_

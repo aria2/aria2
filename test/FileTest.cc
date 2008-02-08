@@ -6,7 +6,7 @@
 #include <fstream>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class FileTest:public CppUnit::TestFixture {
 
@@ -76,7 +76,7 @@ void FileTest::testIsDir() {
 
 void FileTest::testRemove() {
   int fd;
-  string name = "/tmp/aria2test";
+  std::string name = "/tmp/aria2test";
   unlink(name.c_str());
   if((fd = creat(name.c_str(), S_IRUSR|S_IWUSR)) < 0) {
     CPPUNIT_FAIL("cannot create test file");
@@ -89,7 +89,7 @@ void FileTest::testRemove() {
   // delete the file again
   CPPUNIT_ASSERT(!f.remove());
 
-  string dir = "/tmp/aria2testdir";
+  std::string dir = "/tmp/aria2testdir";
 #ifdef __MINGW32__
   mkdir(dir.c_str());
 #else
@@ -109,7 +109,7 @@ void FileTest::testSize() {
 }
 
 void FileTest::testMkdir() {
-  string dir = "/tmp/aria2test2/test";
+  std::string dir = "/tmp/aria2test2/test";
   File d(dir);
   if(d.exists()) {
     CPPUNIT_ASSERT(d.remove());
@@ -127,23 +127,23 @@ void FileTest::testMkdir() {
 void FileTest::testGetDirname()
 {
   File f("/tmp/dist/aria2.tar.bz2");
-  CPPUNIT_ASSERT_EQUAL(string("/tmp/dist"), f.getDirname());
+  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/dist"), f.getDirname());
 }
 
 void FileTest::testGetBasename()
 {
   File f("/tmp/dist/aria2.tar.bz2");
-  CPPUNIT_ASSERT_EQUAL(string("aria2.tar.bz2"), f.getBasename());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), f.getBasename());
 }
 
 void FileTest::testRenameTo()
 {
-  string fname = "FileTest_testRenameTo.txt";
-  ofstream of(fname.c_str());
+  std::string fname = "FileTest_testRenameTo.txt";
+  std::ofstream of(fname.c_str());
   of.close();
 
   File f(fname);
-  string fnameTo = "FileTest_testRenameTo_dest.txt";
+  std::string fnameTo = "FileTest_testRenameTo_dest.txt";
   CPPUNIT_ASSERT(f.renameTo(fnameTo));
   CPPUNIT_ASSERT(f.exists());
   CPPUNIT_ASSERT(!File(fname).exists());
@@ -155,3 +155,5 @@ void FileTest::testRenameTo()
   
   CPPUNIT_ASSERT(f.renameTo(fname));
 }
+
+} // namespace aria2

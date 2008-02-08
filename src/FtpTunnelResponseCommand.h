@@ -37,18 +37,24 @@
 
 #include "AbstractProxyResponseCommand.h"
 
+namespace aria2 {
+
+class SocketCore;
+
 class FtpTunnelResponseCommand : public AbstractProxyResponseCommand {
 public:
   FtpTunnelResponseCommand(int cuid,
-			   const RequestHandle& req,
+			   const SharedHandle<Request>& req,
 			   RequestGroup* requestGroup,
-			   const HttpConnectionHandle& httpConnection,
+			   const SharedHandle<HttpConnection>& httpConnection,
 			   DownloadEngine* e,
-			   const SocketHandle& s);
+			   const SharedHandle<SocketCore>& s);
   virtual ~FtpTunnelResponseCommand();
 
   virtual Command* getNextCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_FTP_TUNNEL_RESPONSE_COMMAND_H_
 

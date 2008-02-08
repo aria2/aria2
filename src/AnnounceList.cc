@@ -35,6 +35,9 @@
 #include "AnnounceList.h"
 #include "List.h"
 #include "Data.h"
+#include <algorithm>
+
+namespace aria2 {
 
 AnnounceList::AnnounceList(const MetaEntry* announceListEntry):
   currentTrackerInitialized(false) {
@@ -49,14 +52,14 @@ AnnounceList::AnnounceList(const AnnounceTiers& announceTiers):
 void AnnounceList::reconfigure(const MetaEntry* announceListEntry) {
   const List* l = dynamic_cast<const List*>(announceListEntry);
   if(l) {
-    for(MetaList::const_iterator itr = l->getList().begin();
+    for(std::deque<MetaEntry*>::const_iterator itr = l->getList().begin();
 	itr != l->getList().end(); itr++) {
       const List* elem = dynamic_cast<const List*>(*itr);
       if(!elem) {
 	continue;
       }
-      Strings urls;
-      for(MetaList::const_iterator elemItr = elem->getList().begin();
+      std::deque<std::string> urls;
+      for(std::deque<MetaEntry*>::const_iterator elemItr = elem->getList().begin();
 	  elemItr != elem->getList().end(); elemItr++) {
 	const Data* data = dynamic_cast<const Data*>(*elemItr);
 	if(data) {
@@ -72,8 +75,8 @@ void AnnounceList::reconfigure(const MetaEntry* announceListEntry) {
   }
 }
 
-void AnnounceList::reconfigure(const string& url) {
-  Strings urls;
+void AnnounceList::reconfigure(const std::string& url) {
+  std::deque<std::string> urls;
   urls.push_back(url);
   tiers.push_back(AnnounceTierHandle(new AnnounceTier(urls)));
   resetIterator();
@@ -89,7 +92,7 @@ void AnnounceList::resetIterator() {
   }
 }
 
-string AnnounceList::getAnnounce() const {
+std::string AnnounceList::getAnnounce() const {
   if(currentTrackerInitialized) {
     return *currentTracker;
   } else {
@@ -100,7 +103,7 @@ string AnnounceList::getAnnounce() const {
 void AnnounceList::announceSuccess() {
   if(currentTrackerInitialized) {
     (*currentTier)->nextEvent();
-    string url = *currentTracker;
+    std::string url = *currentTracker;
     (*currentTier)->urls.erase(currentTracker);
     (*currentTier)->urls.push_front(url);
     currentTier = tiers.begin();
@@ -138,7 +141,7 @@ void AnnounceList::setEvent(AnnounceTier::AnnounceEvent event) {
   }
 }
 
-string AnnounceList::getEventString() const {
+std::string AnnounceList::getEventString() const {
   if(currentTrackerInitialized) {
     switch((*currentTier)->event) {
     case AnnounceTier::STARTED:
@@ -203,10 +206,9 @@ template<class InputIterator, class Predicate>
 InputIterator
 find_wrap_if(InputIterator first, InputIterator last,
 	     InputIterator current, Predicate pred) {
-  InputIterator itr = find_if(current, last,
-			      pred);
+  InputIterator itr = std::find_if(current, last, pred);
   if(itr == last) {
-    itr = find_if(first, current, pred);
+    itr = std::find_if(first, current, pred);
   }
   return itr;
 }
@@ -228,7 +230,7 @@ void AnnounceList::moveToCompletedAllowedTier() {
 void AnnounceList::shuffle() {
   for(AnnounceTiers::iterator itr = tiers.begin();
       itr != tiers.end(); itr++) {
-    Strings& urls = (*itr)->urls;
+    std::deque<std::string>& urls = (*itr)->urls;
     random_shuffle(urls.begin(), urls.end());
   }
 }
@@ -260,3 +262,5 @@ bool AnnounceList::currentTierAcceptsCompletedEvent() const
     return false;
   }
 }
+
+} // namespace aria2

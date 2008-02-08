@@ -36,9 +36,13 @@
 #define _D_BT_MESSAGE_VALIDATOR_H_
 
 #include "common.h"
-#include "BtMessage.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
 
-typedef Strings Errors;
+namespace aria2 {
+
+typedef std::deque<std::string> Errors;
 
 class BtMessageValidator {
 public:
@@ -48,5 +52,7 @@ public:
 };
 
 typedef SharedHandle<BtMessageValidator> BtMessageValidatorHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_MESSAGE_VALIDATOR_H_

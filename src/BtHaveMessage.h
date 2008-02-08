@@ -37,6 +37,8 @@
 
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
 class BtHaveMessage;
 
 typedef SharedHandle<BtHaveMessage> BtHaveMessageHandle;
@@ -71,7 +73,9 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 };
+
+} // namespace aria2
 
 #endif // _D_BT_HAVE_MESSAGE_H_

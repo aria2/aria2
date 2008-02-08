@@ -1,8 +1,10 @@
 #include "BtInterestedMessage.h"
 #include "PeerMessageUtil.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtInterestedMessageTest:public CppUnit::TestFixture {
 
@@ -62,7 +64,7 @@ void BtInterestedMessageTest::testGetMessage() {
 
 void BtInterestedMessageTest::testDoReceivedAction() {
   BtInterestedMessage msg;
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->peerInterested);
   msg.doReceivedAction();
@@ -71,7 +73,7 @@ void BtInterestedMessageTest::testDoReceivedAction() {
 
 void BtInterestedMessageTest::testOnSendComplete() {
   BtInterestedMessage msg;
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->amInterested);
   msg.onSendComplete();
@@ -80,5 +82,7 @@ void BtInterestedMessageTest::testOnSendComplete() {
 
 void BtInterestedMessageTest::testToString() {
   BtInterestedMessage msg;
-  CPPUNIT_ASSERT_EQUAL(string("interested"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("interested"), msg.toString());
 }
+
+} // namespace aria2

@@ -33,14 +33,18 @@
  */
 /* copyright --> */
 #include "NameResolver.h"
+#include <cstring>
+
+namespace aria2 {
 
 #ifdef ENABLE_ASYNC_DNS
 
 #ifdef HAVE_LIBCARES1_5
-void callback(void* arg, int status, int timeouts, struct hostent* host) {
+void callback(void* arg, int status, int timeouts, struct hostent* host)
 #else
-void callback(void* arg, int status, struct hostent* host) {
+void callback(void* arg, int status, struct hostent* host)
 #endif // HAVE_LIBCARES1_5
+{
   NameResolver* resolverPtr = (NameResolver*)arg;
 #ifdef HAVE_LIBARES
   // This block is required since the assertion in ares_strerror fails
@@ -64,12 +68,28 @@ void callback(void* arg, int status, struct hostent* host) {
   resolverPtr->status = NameResolver::STATUS_SUCCESS;
 }
 
+void NameResolver::resolve(const std::string& name)
+{
+  status = STATUS_QUERYING;
+  ares_gethostbyname(channel, name.c_str(), AF_INET, callback, this);
+}
+
+std::string NameResolver::getAddrString() const
+{
+  return inet_ntoa(addr);
+}
+
+void NameResolver::setAddr(const std::string& addrString)
+{
+  inet_aton(addrString.c_str(), &addr);
+}
+ 
 #else // ENABLE_ASYNC_DNS
 
 #include "DlAbortEx.h"
 #include "message.h"
 
-void NameResolver::resolve(const string& hostname)
+void NameResolver::resolve(const std::string& hostname)
 {
   memset(&_addr, 0, sizeof(in_addr));
   struct addrinfo ai;
@@ -88,4 +108,16 @@ void NameResolver::resolve(const string& hostname)
   freeaddrinfo(res);
 }
 
+std::string NameResolver::getAddrString() const
+{
+  return inet_ntoa(_addr);
+}
+
+void NameResolver::setAddr(const std::string& addrString)
+{
+  inet_aton(addrString.c_str(), &_addr);
+}
+
 #endif // ENABLE_ASYNC_DNS
+
+} // namespace aria2

@@ -36,16 +36,24 @@
 #define _D_INITIATE_CONNECTION_COMMAND_FACTORY_H_
 
 #include "common.h"
-#include "Request.h"
-#include "RequestGroup.h"
-#include "DownloadEngine.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class Request;
+class RequestGroup;
+class DownloadEngine;
+class Command;
 
 class InitiateConnectionCommandFactory {
 public:
-  static Command* createInitiateConnectionCommand(int cuid,
-						  const RequestHandle req,
-						  RequestGroup* requestGroup,
-						  DownloadEngine* e);
+  static Command*
+  createInitiateConnectionCommand(int32_t cuid,
+				  const SharedHandle<Request>& req,
+				  RequestGroup* requestGroup,
+				  DownloadEngine* e);
 };
+
+} // namespace aria2
 
 #endif // _D_INITIATE_CONNECTION_COMMAND_FACTORY_H_

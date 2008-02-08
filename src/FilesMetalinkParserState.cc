@@ -35,13 +35,15 @@
 #include "FilesMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void FilesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					    const string& name,
-					    const map<string, string>& attrs)
+					    const std::string& name,
+					    const std::map<std::string, std::string>& attrs)
 {
   if(name == "file") {
     stm->setFileState();
-    map<string, string>::const_iterator itr = attrs.find("name");
+    std::map<std::string, std::string>::const_iterator itr = attrs.find("name");
     if(itr != attrs.end()) {
       stm->newEntryTransaction();
       stm->setFileNameOfEntry((*itr).second);
@@ -52,8 +54,10 @@ void FilesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 }
 
 void FilesMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					  const string& name,
-					  const string& characters)
+					  const std::string& name,
+					  const std::string& characters)
 {
   stm->setMetalinkState();
 }
+
+} // namespace aria2

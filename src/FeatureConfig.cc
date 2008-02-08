@@ -34,6 +34,8 @@
 /* copyright --> */
 #include "FeatureConfig.h"
 
+namespace aria2 {
+
 FeatureConfig* FeatureConfig::featureConfig = 0;
 
 #define FEATURE_HTTP "http"
@@ -102,3 +104,5 @@ FeatureConfig::FeatureConfig() {
     features.push_back(featureArray[i].first);
   }
 }
+
+} // namespace aria2

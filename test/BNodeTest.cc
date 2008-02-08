@@ -6,6 +6,8 @@
 #include "Util.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class BNodeTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BNodeTest);
@@ -33,11 +35,11 @@ void BNodeTest::testIsInRange()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xff, DHT_ID_LENGTH);
 
-  DHTNodeHandle localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
 
-  DHTBucketHandle bucket1 = new DHTBucket(localNode);
-  DHTBucketHandle bucket2 = bucket1->split();
-  DHTBucketHandle bucket3 = bucket1->split();
+  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket2 = bucket1->split();
+  SharedHandle<DHTBucket> bucket3 = bucket1->split();
 
   {
     BNode b(bucket1);
@@ -54,13 +56,13 @@ void BNodeTest::testFindBucketFor()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  DHTNodeHandle localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
 
-  DHTBucketHandle bucket1 = new DHTBucket(localNode);
-  DHTBucketHandle bucket2 = bucket1->split();
-  DHTBucketHandle bucket3 = bucket1->split();
-  DHTBucketHandle bucket4 = bucket3->split();
-  DHTBucketHandle bucket5 = bucket3->split();
+  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket2 = bucket1->split();
+  SharedHandle<DHTBucket> bucket3 = bucket1->split();
+  SharedHandle<DHTBucket> bucket4 = bucket3->split();
+  SharedHandle<DHTBucket> bucket5 = bucket3->split();
 
   {
     BNode b(bucket5);
@@ -104,13 +106,13 @@ void BNodeTest::testFindClosestKNodes()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  DHTNodeHandle localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
 
-  DHTBucketHandle bucket1 = new DHTBucket(localNode);
-  DHTBucketHandle bucket2 = bucket1->split();
-  DHTBucketHandle bucket3 = bucket1->split();
-  DHTBucketHandle bucket4 = bucket3->split();
-  DHTBucketHandle bucket5 = bucket3->split();
+  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket2 = bucket1->split();
+  SharedHandle<DHTBucket> bucket3 = bucket1->split();
+  SharedHandle<DHTBucket> bucket4 = bucket3->split();
+  SharedHandle<DHTBucket> bucket5 = bucket3->split();
 
   unsigned char id[DHT_ID_LENGTH];
   {
@@ -152,7 +154,7 @@ void BNodeTest::testFindClosestKNodes()
     {
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
-      DHTNodes nodes = BNode::findClosestKNodes(bp4, targetID);
+      std::deque<SharedHandle<DHTNode> > nodes = BNode::findClosestKNodes(bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket4->isInRange(nodes[0]));
       CPPUNIT_ASSERT(bucket4->isInRange(nodes[1]));
@@ -166,7 +168,7 @@ void BNodeTest::testFindClosestKNodes()
     {
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0xf0, DHT_ID_LENGTH);
-      DHTNodes nodes = BNode::findClosestKNodes(bp4, targetID);
+      std::deque<SharedHandle<DHTNode> > nodes = BNode::findClosestKNodes(bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       CPPUNIT_ASSERT(bucket1->isInRange(nodes[0]));
       CPPUNIT_ASSERT(bucket1->isInRange(nodes[1]));
@@ -184,7 +186,7 @@ void BNodeTest::testFindClosestKNodes()
       }
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
-      DHTNodes nodes = BNode::findClosestKNodes(bp4, targetID);
+      std::deque<SharedHandle<DHTNode> > nodes = BNode::findClosestKNodes(bp4, targetID);
       CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
       for(size_t i = 0; i < DHTBucket::K; ++i) {
 	CPPUNIT_ASSERT(bucket4->isInRange(nodes[i]));
@@ -200,17 +202,17 @@ void BNodeTest::testEnumerateBucket()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  DHTNodeHandle localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
 
-  DHTBucketHandle bucket1 = new DHTBucket(localNode);
-  DHTBucketHandle bucket2 = bucket1->split();
-  DHTBucketHandle bucket3 = bucket1->split();
-  DHTBucketHandle bucket4 = bucket3->split();
-  DHTBucketHandle bucket5 = bucket3->split();
+  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket2 = bucket1->split();
+  SharedHandle<DHTBucket> bucket3 = bucket1->split();
+  SharedHandle<DHTBucket> bucket4 = bucket3->split();
+  SharedHandle<DHTBucket> bucket5 = bucket3->split();
 
   {
     BNode b(bucket1);
-    DHTBuckets buckets = BNode::enumerateBucket(&b);
+    std::deque<SharedHandle<DHTBucket> > buckets = BNode::enumerateBucket(&b);
     CPPUNIT_ASSERT_EQUAL((size_t)1, buckets.size());
     CPPUNIT_ASSERT(bucket1 == buckets[0]);
   }
@@ -237,7 +239,7 @@ void BNodeTest::testEnumerateBucket()
     bp4->setLeft(bp3);
     bp4->setRight(b2);
 
-    DHTBuckets buckets = BNode::enumerateBucket(bp4);
+    std::deque<SharedHandle<DHTBucket> > buckets = BNode::enumerateBucket(bp4);
     CPPUNIT_ASSERT_EQUAL((size_t)5, buckets.size());
     CPPUNIT_ASSERT(bucket1 == buckets[0]);
     CPPUNIT_ASSERT(bucket3 == buckets[1]);
@@ -248,3 +250,5 @@ void BNodeTest::testEnumerateBucket()
     delete bp4;
   }
 }
+
+} // namespace aria2

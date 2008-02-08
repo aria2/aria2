@@ -36,63 +36,50 @@
 #define _D_COOKIE_H_
 
 #include "common.h"
+#include "a2time.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class Cookie {
 public:
-  string name;
-  string value;
+  std::string name;
+  std::string value;
   time_t expires;
-  string path;
-  string domain;
+  std::string path;
+  std::string domain;
   bool secure;
   bool onetime; // if true, this cookie will expire when the user's session ends.
 public:
-  Cookie(const string& name,
-	 const string& value,
+  Cookie(const std::string& name,
+	 const std::string& value,
 	 time_t  expires,
-	 const string& path,
-	 const string& domain,
-	 bool secure):
-    name(name),
-    value(value),
-    expires(expires),
-    path(path),
-    domain(domain),
-    secure(secure),
-    onetime(false) {}
+	 const std::string& path,
+	 const std::string& domain,
+	 bool secure);
 
-  Cookie(const string& name,
-	 const string& value,
-	 const string& path,
-	 const string& domain,
-	 bool secure):
-    name(name),
-    value(value),
-    path(path),
-    domain(domain),
-    secure(secure),
-    onetime(true) {}
+  Cookie(const std::string& name,
+	 const std::string& value,
+	 const std::string& path,
+	 const std::string& domain,
+	 bool secure);
 
-  Cookie():expires(0), secure(false), onetime(true) {}
+  Cookie();
 
-  ~Cookie() {}
-  string toString() const {
-    return name+"="+value;
-  }
-  void clear() {
-    name = value = path = domain = "";
-    expires = 0;
-    secure = false;
-  }
+  ~Cookie();
 
-  bool good() const
-  {
-    return !name.empty();
-  }
+  std::string toString() const;
 
-  bool match(const string& host, const string& dir, time_t date, bool secure) const;
+  void clear();
+
+  bool good() const;
+
+  bool match(const std::string& host, const std::string& dir, time_t date, bool secure) const;
 };
 
-typedef deque<Cookie> Cookies;
+typedef std::deque<Cookie> Cookies;
+
+} // namespace aria2
 
 #endif // _D_COOKIE_H_

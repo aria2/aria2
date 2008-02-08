@@ -39,24 +39,26 @@
 #include <string>
 #include <map>
 
-using namespace std;
+namespace aria2 {
 
 class Option {
 private:
-  map<string, string> table;
+  std::map<std::string, std::string> table;
 public:
   Option();
   ~Option();
 
-  void put(const string& name, const string& value);
-  bool defined(const string& name) const;
-  string get(const string& name) const;
-  int32_t getAsInt(const string& name) const;
-  int64_t getAsLLInt(const string& name) const;
-  bool getAsBool(const string& name) const;
-  double getAsDouble(const string& name) const;
+  void put(const std::string& name, const std::string& value);
+  bool defined(const std::string& name) const;
+  std::string get(const std::string& name) const;
+  int32_t getAsInt(const std::string& name) const;
+  int64_t getAsLLInt(const std::string& name) const;
+  bool getAsBool(const std::string& name) const;
+  double getAsDouble(const std::string& name) const;
   
   void clear();
 };
+
+} // namespace aria2
 
 #endif // _D_OPTION_H_

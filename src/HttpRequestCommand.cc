@@ -33,12 +33,19 @@
  */
 /* copyright --> */
 #include "HttpRequestCommand.h"
+#include "Request.h"
 #include "DownloadEngine.h"
 #include "RequestGroup.h"
 #include "HttpResponseCommand.h"
 #include "HttpConnection.h"
-#include "prefs.h"
+#include "HttpRequest.h"
 #include "SegmentMan.h"
+#include "Segment.h"
+#include "Option.h"
+#include "Socket.h"
+#include "prefs.h"
+
+namespace aria2 {
 
 HttpRequestCommand::HttpRequestCommand(int cuid,
 				       const RequestHandle& req,
@@ -100,3 +107,5 @@ bool HttpRequestCommand::executeInternal() {
   e->commands.push_back(command);
   return true;
 }
+
+} // namespace aria2

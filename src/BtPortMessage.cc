@@ -37,10 +37,14 @@
 #include "DlAbortEx.h"
 #include "Util.h"
 #include "message.h"
+#include "Logger.h"
+#include "Peer.h"
 #include "DHTNode.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
+
+namespace aria2 {
 
 BtPortMessage::BtPortMessage(uint16_t port): _port(port), _msg(0) {}
 
@@ -68,10 +72,10 @@ void BtPortMessage::doReceivedAction()
   if(!_taskFactory.isNull() && !_taskQueue.isNull()) {
     // node id is random at this point. When ping reply received, new DHTNode
     // instance created with proper node ID and is added to a routing table.
-    DHTNodeHandle node = new DHTNode();
+    SharedHandle<DHTNode> node = new DHTNode();
     node->setIPAddress(peer->ipaddr);
     node->setPort(_port);
-    DHTTaskHandle task = _taskFactory->createPingTask(node);
+    SharedHandle<DHTTask> task = _taskFactory->createPingTask(node);
     _taskQueue->addImmediateTask(task);
   } else {
     logger->info("DHT port message received while localhost didn't declare support it.");
@@ -97,7 +101,7 @@ int32_t BtPortMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtPortMessage::toString() const {
+std::string BtPortMessage::toString() const {
   return "port port="+Util::uitos(_port);
 }
 
@@ -110,3 +114,5 @@ void BtPortMessage::setTaskFactory(const WeakHandle<DHTTaskFactory>& taskFactory
 {
   _taskFactory = taskFactory;
 }
+
+} // namespace aria2

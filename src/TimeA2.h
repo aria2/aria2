@@ -37,6 +37,9 @@
 
 #include "common.h"
 #include "a2time.h"
+#include <stdint.h>
+
+namespace aria2 {
 
 class Time {
 private:
@@ -50,12 +53,7 @@ public:
   Time(const Time& time);
   Time(int32_t sec);
 
-  Time& operator=(const Time& time) {
-    if(this != &time) {
-      tv = time.tv;
-    }
-    return *this;
-  }
+  Time& operator=(const Time& time);
 
   ~Time();
 
@@ -72,24 +70,20 @@ public:
   int64_t differenceInMillis(const struct timeval& now) const;
 
   // Returns true if this object's time value is zero.
-  bool isZero() const { return tv.tv_sec == 0 && tv.tv_usec == 0; }
+  bool isZero() const;
 
-  int64_t getTimeInMicros() const {
-    return (int64_t)tv.tv_sec*1000*1000+tv.tv_usec;
-  }
+  int64_t getTimeInMicros() const;
 
-  int64_t getTimeInMillis() const {
-    return (int64_t)tv.tv_sec*1000+tv.tv_usec/1000;
-  }
+  int64_t getTimeInMillis() const;
 
   // Returns this object's time value in seconds.
-  int32_t getTime() const {
-    return tv.tv_sec;
-  }
+  int32_t getTime() const;
 
   void setTimeInSec(int32_t sec);
 
   bool isNewer(const Time& time) const;
 };
+
+} // namespace aria2
 
 #endif // _D_TIME_H_

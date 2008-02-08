@@ -39,6 +39,8 @@
 #include "PieceStorage.h"
 #include "DiskAdaptor.h"
 
+namespace aria2 {
+
 FileAllocationEntry::FileAllocationEntry(RequestGroup* requestGroup, Command* nextCommand):
   RequestGroupEntry(requestGroup, nextCommand),
   _fileAllocationIterator(requestGroup->getPieceStorage()->getDiskAdaptor()->fileAllocationIterator())
@@ -70,3 +72,5 @@ void FileAllocationEntry::allocateChunk()
 {
   _fileAllocationIterator->allocateChunk();
 }
+
+} // namespace aria2

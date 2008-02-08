@@ -57,16 +57,20 @@
 #include "BtRuntime.h"
 #include "Util.h"
 #include "Peer.h"
+#include <cstring>
+#include <utility>
+
+namespace aria2 {
 
 DHTMessageFactoryImpl::DHTMessageFactoryImpl():_localNode(0),
 					       _logger(LogFactory::getInstance()) {}
 
 DHTMessageFactoryImpl::~DHTMessageFactoryImpl() {}
 
-DHTNodeHandle
-DHTMessageFactoryImpl::getRemoteNode(const unsigned char* id, const string& ipaddr, uint16_t port) const
+SharedHandle<DHTNode>
+DHTMessageFactoryImpl::getRemoteNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const
 {
-  DHTNodeHandle node = _routingTable->getNode(id, ipaddr, port);
+  SharedHandle<DHTNode> node = _routingTable->getNode(id, ipaddr, port);
   if(node.isNull()) {
     node = new DHTNode(id);
     node->setIPAddress(ipaddr);
@@ -75,7 +79,7 @@ DHTMessageFactoryImpl::getRemoteNode(const unsigned char* id, const string& ipad
   return node;
 }
 
-static const Dictionary* getDictionary(const Dictionary* d, const string& key)
+static const Dictionary* getDictionary(const Dictionary* d, const std::string& key)
 {
   const Dictionary* c = dynamic_cast<const Dictionary*>(d->get(key));
   if(c) {
@@ -85,7 +89,7 @@ static const Dictionary* getDictionary(const Dictionary* d, const string& key)
   }
 }
 
-static const Data* getData(const Dictionary* d, const string& key)
+static const Data* getData(const Dictionary* d, const std::string& key)
 {
   const Data* c = dynamic_cast<const Data*>(d->get(key));
   if(c) {
@@ -95,7 +99,7 @@ static const Data* getData(const Dictionary* d, const string& key)
   }
 }
 
-static const List* getList(const Dictionary* d, const string& key)
+static const List* getList(const Dictionary* d, const std::string& key)
 {
   const List* l = dynamic_cast<const List*>(d->get(key));
   if(l) {
@@ -131,8 +135,8 @@ void DHTMessageFactoryImpl::validatePort(const Data* i) const
   }
 }
 
-DHTMessageHandle DHTMessageFactoryImpl::createQueryMessage(const Dictionary* d,
-							   const string& ipaddr,
+SharedHandle<DHTMessage> DHTMessageFactoryImpl::createQueryMessage(const Dictionary* d,
+							   const std::string& ipaddr,
 							   uint16_t port)
 {
   const Data* q = getData(d, "q");
@@ -144,9 +148,9 @@ DHTMessageHandle DHTMessageFactoryImpl::createQueryMessage(const Dictionary* d,
   }
   const Data* id = getData(getDictionary(d, "a"), "id");
   validateID(id);
-  DHTNodeHandle remoteNode = getRemoteNode((const unsigned char*)id->toString().c_str(), ipaddr, port);
-  string messageType = q->toString();
-  string transactionID = t->toString();
+  SharedHandle<DHTNode> remoteNode = getRemoteNode((const unsigned char*)id->toString().c_str(), ipaddr, port);
+  std::string messageType = q->toString();
+  std::string transactionID = t->toString();
   if(messageType == "ping") {
     return createPingMessage(remoteNode, transactionID);
   } else if(messageType == "find_node") {
@@ -177,9 +181,9 @@ DHTMessageHandle DHTMessageFactoryImpl::createQueryMessage(const Dictionary* d,
   }
 }
 
-DHTMessageHandle DHTMessageFactoryImpl::createResponseMessage(const string& messageType,
+SharedHandle<DHTMessage> DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
 							      const Dictionary* d,
-							      const DHTNodeHandle& remoteNode)
+							      const SharedHandle<DHTNode>& remoteNode)
 {
   const Data* t = getData(d, "t");
   const Data* y = getData(d, "y");
@@ -193,7 +197,7 @@ DHTMessageHandle DHTMessageFactoryImpl::createResponseMessage(const string& mess
   validateID(id);
   validateIDMatch(remoteNode->getID(),
 		      (const unsigned char*)id->toString().c_str());
-  string transactionID = t->toString();
+  std::string transactionID = t->toString();
   if(messageType == "ping") {
     return createPingReplyMessage(remoteNode, (const unsigned char*)id->getData(), transactionID);
   } else if(messageType == "find_node") {
@@ -225,37 +229,37 @@ void DHTMessageFactoryImpl::setCommonProperty(const SharedHandle<DHTAbstractMess
   m->setMessageFactory(this);
 }
 
-DHTMessageHandle DHTMessageFactoryImpl::createPingMessage(const DHTNodeHandle& remoteNode, const string& transactionID)
+SharedHandle<DHTMessage> DHTMessageFactoryImpl::createPingMessage(const SharedHandle<DHTNode>& remoteNode, const std::string& transactionID)
 {
   SharedHandle<DHTPingMessage> m = new DHTPingMessage(_localNode, remoteNode, transactionID);
   setCommonProperty(m);
   return m;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createPingReplyMessage(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
 					      const unsigned char* id,
-					      const string& transactionID)
+					      const std::string& transactionID)
 {
   SharedHandle<DHTPingReplyMessage> m = new DHTPingReplyMessage(_localNode, remoteNode, id, transactionID);
   setCommonProperty(m);
   return m;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createFindNodeMessage(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
 					     const unsigned char* targetNodeID,
-					     const string& transactionID)
+					     const std::string& transactionID)
 {
   SharedHandle<DHTFindNodeMessage> m = new DHTFindNodeMessage(_localNode, remoteNode, targetNodeID, transactionID);
   setCommonProperty(m);
   return m;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createFindNodeReplyMessage(const DHTNodeHandle& remoteNode,
-						  const DHTNodes& closestKNodes,
-						  const string& transactionID)
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+						  const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+						  const std::string& transactionID)
 {
   SharedHandle<DHTFindNodeReplyMessage> m = new DHTFindNodeReplyMessage(_localNode, remoteNode, transactionID);
   m->setClosestKNodes(closestKNodes);
@@ -263,15 +267,15 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage(const DHTNodeHandle& remoteNod
   return m;
 }
 
-DHTNodes DHTMessageFactoryImpl::extractNodes(const char* src, size_t length)
+std::deque<SharedHandle<DHTNode> > DHTMessageFactoryImpl::extractNodes(const char* src, size_t length)
 {
   if(length%26 != 0) {
     throw new DlAbortEx("Nodes length is not multiple of 26");
   }
-  DHTNodes nodes;
+  std::deque<SharedHandle<DHTNode> > nodes;
   for(size_t offset = 0; offset < length; offset += 26) {
-    DHTNodeHandle node = new DHTNode(reinterpret_cast<const unsigned char*>(src+offset));
-    pair<string, uint16_t> addr =
+    SharedHandle<DHTNode> node = new DHTNode(reinterpret_cast<const unsigned char*>(src+offset));
+    std::pair<std::string, uint16_t> addr =
       PeerMessageUtil::unpackcompact(src+offset+DHT_ID_LENGTH);
     node->setIPAddress(addr.first);
     node->setPort(addr.second);
@@ -280,20 +284,20 @@ DHTNodes DHTMessageFactoryImpl::extractNodes(const char* src, size_t length)
   return nodes;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createFindNodeReplyMessage(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
 						  const Dictionary* d,
-						  const string& transactionID)
+						  const std::string& transactionID)
 {
   const Data* nodesData = getData(getDictionary(d, "r"), "nodes");
-  DHTNodes nodes = extractNodes(nodesData->getData(), nodesData->getLen());
+  std::deque<SharedHandle<DHTNode> > nodes = extractNodes(nodesData->getData(), nodesData->getLen());
   return createFindNodeReplyMessage(remoteNode, nodes, transactionID);
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createGetPeersMessage(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
 					     const unsigned char* infoHash,
-					     const string& transactionID)
+					     const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersMessage> m = new DHTGetPeersMessage(_localNode,
 							      remoteNode,
@@ -305,43 +309,44 @@ DHTMessageFactoryImpl::createGetPeersMessage(const DHTNodeHandle& remoteNode,
   return m;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createGetPeersReplyMessageWithNodes(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createGetPeersReplyMessageWithNodes(const SharedHandle<DHTNode>& remoteNode,
 							   const Dictionary* d,
-							   const string& transactionID)
+							   const std::string& transactionID)
 {
   const Dictionary* r = getDictionary(d, "r");
   const Data* nodesData = getData(r, "nodes");
-  DHTNodes nodes = extractNodes(nodesData->getData(), nodesData->getLen());
+  std::deque<SharedHandle<DHTNode> > nodes = extractNodes(nodesData->getData(), nodesData->getLen());
   const Data* token = getData(r, "token");
   return createGetPeersReplyMessage(remoteNode, nodes, token->toString(),
 				    transactionID);
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createGetPeersReplyMessage(const DHTNodeHandle& remoteNode,
-						  const DHTNodes& closestKNodes,
-						  const string& token,
-						  const string& transactionID)
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+						  const std::deque<SharedHandle<DHTNode> >& closestKNodes,
+						  const std::string& token,
+						  const std::string& transactionID)
 {
-  SharedHandle<DHTGetPeersReplyMessage> m = new DHTGetPeersReplyMessage(_localNode, remoteNode, token, transactionID);
+  SharedHandle<DHTGetPeersReplyMessage> m =
+    new DHTGetPeersReplyMessage(_localNode, remoteNode, token, transactionID);
   m->setClosestKNodes(closestKNodes);
   setCommonProperty(m);
   return m;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues(const SharedHandle<DHTNode>& remoteNode,
 							    const Dictionary* d,
-							    const string& transactionID)
+							    const std::string& transactionID)
 {
   const Dictionary* r = getDictionary(d, "r");
   const List* valuesList = getList(r, "values");
-  Peers peers;
-  for(MetaList::const_iterator i = valuesList->getList().begin(); i != valuesList->getList().end(); ++i) {
+  std::deque<SharedHandle<Peer> > peers;
+  for(std::deque<MetaEntry*>::const_iterator i = valuesList->getList().begin(); i != valuesList->getList().end(); ++i) {
     const Data* data = dynamic_cast<const Data*>(*i);
     if(data && data->getLen() == 6) {
-      pair<string, uint16_t> addr = PeerMessageUtil::unpackcompact(data->getData());
+      std::pair<std::string, uint16_t> addr = PeerMessageUtil::unpackcompact(data->getData());
       PeerHandle peer = new Peer(addr.first, addr.second);
       peers.push_back(peer);
     }
@@ -351,11 +356,11 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues(const DHTNodeHandle&
 				    transactionID);
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createGetPeersReplyMessage(const DHTNodeHandle& remoteNode,
-						  const Peers& values,
-						  const string& token,
-						  const string& transactionID)
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+						  const std::deque<SharedHandle<Peer> >& values,
+						  const std::string& token,
+						  const std::string& transactionID)
 {
   SharedHandle<DHTGetPeersReplyMessage> m = new DHTGetPeersReplyMessage(_localNode, remoteNode, token, transactionID);
   m->setValues(values);
@@ -363,12 +368,12 @@ DHTMessageFactoryImpl::createGetPeersReplyMessage(const DHTNodeHandle& remoteNod
   return m;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createAnnouncePeerMessage(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createAnnouncePeerMessage(const SharedHandle<DHTNode>& remoteNode,
 						 const unsigned char* infoHash,
 						 uint16_t tcpPort,
-						 const string& token,
-						 const string& transactionID)
+						 const std::string& token,
+						 const std::string& transactionID)
 {
   SharedHandle<DHTAnnouncePeerMessage> m =
     new DHTAnnouncePeerMessage(_localNode, remoteNode, infoHash, tcpPort, token, transactionID);
@@ -378,9 +383,9 @@ DHTMessageFactoryImpl::createAnnouncePeerMessage(const DHTNodeHandle& remoteNode
   return m;
 }
 
-DHTMessageHandle
-DHTMessageFactoryImpl::createAnnouncePeerReplyMessage(const DHTNodeHandle& remoteNode,
-						      const string& transactionID)
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
+						      const std::string& transactionID)
 {
   SharedHandle<DHTAnnouncePeerReplyMessage> m =
     new DHTAnnouncePeerReplyMessage(_localNode, remoteNode, transactionID);
@@ -388,9 +393,9 @@ DHTMessageFactoryImpl::createAnnouncePeerReplyMessage(const DHTNodeHandle& remot
   return m;
 }
 
-DHTMessageHandle
+SharedHandle<DHTMessage>
 DHTMessageFactoryImpl::createUnknownMessage(const char* data, size_t length,
-					    const string& ipaddr, uint16_t port)
+					    const std::string& ipaddr, uint16_t port)
 
 {
   SharedHandle<DHTUnknownMessage> m = 
@@ -398,32 +403,34 @@ DHTMessageFactoryImpl::createUnknownMessage(const char* data, size_t length,
   return m;
 }
 
-void DHTMessageFactoryImpl::setRoutingTable(const DHTRoutingTableHandle& routingTable)
+void DHTMessageFactoryImpl::setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
 
-void DHTMessageFactoryImpl::setConnection(const DHTConnectionHandle& connection)
+void DHTMessageFactoryImpl::setConnection(const WeakHandle<DHTConnection>& connection)
 {
   _connection = connection;
 }
 
-void DHTMessageFactoryImpl::setMessageDispatcher(const DHTMessageDispatcherHandle& dispatcher)
+void DHTMessageFactoryImpl::setMessageDispatcher(const WeakHandle<DHTMessageDispatcher>& dispatcher)
 {
   _dispatcher = dispatcher;
 }
   
-void DHTMessageFactoryImpl::setPeerAnnounceStorage(const DHTPeerAnnounceStorageHandle& storage)
+void DHTMessageFactoryImpl::setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage)
 {
   _peerAnnounceStorage = storage;
 }
 
-void DHTMessageFactoryImpl::setTokenTracker(const DHTTokenTrackerHandle& tokenTracker)
+void DHTMessageFactoryImpl::setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
   _tokenTracker = tokenTracker;
 }
 
-void DHTMessageFactoryImpl::setLocalNode(const DHTNodeHandle& localNode)
+void DHTMessageFactoryImpl::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }
+
+} // namespace aria2

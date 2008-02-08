@@ -34,15 +34,20 @@
 /* copyright --> */
 #include "File.h"
 #include "Util.h"
-#include "a2io.h"
 #include <libgen.h>
+// use GNU version basename
+#undef basename
+#include <cstring>
+#include <deque>
+
+namespace aria2 {
 
 #ifdef __MINGW32__
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #endif // __MINGW32__
 
-File::File(const string& name):name(name) {}
+File::File(const std::string& name):name(name) {}
 
 File::~File() {}
 
@@ -93,17 +98,17 @@ bool File::mkdirs() {
   if(isDir()) {
     return false;
   }
-  Strings dirs;
+  std::deque<std::string> dirs;
   Util::slice(dirs, name, '/');
   if(!dirs.size()) {
     return true;
   }
 
-  string accDir;
+  std::string accDir;
   if(Util::startsWith(name, "/")) {
     accDir = "/";
   }
-  for(Strings::const_iterator itr = dirs.begin(); itr != dirs.end();
+  for(std::deque<std::string>::const_iterator itr = dirs.begin(); itr != dirs.end();
       itr++, accDir += "/") {
     accDir += *itr;
     if(File(accDir).isDir()) {
@@ -125,28 +130,28 @@ mode_t File::mode()
   return fstat.st_mode;
 }
 
-string File::getBasename() const
+std::string File::getBasename() const
 {
   char* s = strdup(name.c_str());
-  string bname = basename(s);
+  std::string bname = basename(s);
   free(s);
   return bname;
 }
 
-string File::getDirname() const
+std::string File::getDirname() const
 {
   char* s = strdup(name.c_str());
-  string dname = dirname(s);
+  std::string dname = dirname(s);
   free(s);
   return dname;
 }
 
-bool File::isDir(const string& filename)
+bool File::isDir(const std::string& filename)
 {
   return File(filename).isDir();
 }
 
-bool File::renameTo(const string& dest)
+bool File::renameTo(const std::string& dest)
 {
 #ifdef __MINGW32__
   /* MinGW's rename() doesn't delete an existing destination */
@@ -163,3 +168,5 @@ bool File::renameTo(const string& dest)
     return false;
   }
 }
+
+} // namespace aria2

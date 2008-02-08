@@ -36,6 +36,9 @@
 #define _D_BENCODE_VISITOR_H_
 
 #include "MetaEntryVisitor.h"
+#include <string>
+
+namespace aria2 {
 
 class Data;
 class Dictionary;
@@ -44,7 +47,7 @@ class MetaEntry;
 
 class BencodeVisitor : public MetaEntryVisitor {
 private:
-  string _bencodedData;
+  std::string _bencodedData;
 public:
   BencodeVisitor();
   ~BencodeVisitor();
@@ -55,10 +58,12 @@ public:
 
   virtual void visit(const MetaEntry* e);
 
-  const string& getBencodedData() const
+  const std::string& getBencodedData() const
   {
     return _bencodedData;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_BENCODE_VISITOR_H_

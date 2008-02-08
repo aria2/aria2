@@ -37,13 +37,15 @@
 #include "RecoverableException.h"
 #include "Util.h"
 
+namespace aria2 {
+
 void PiecesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					     const string& name,
-					     const map<string, string>& attrs)
+					     const std::string& name,
+					     const std::map<std::string, std::string>& attrs)
 {
   if(name == "hash") {
     stm->setPieceHashState();
-    map<string, string>::const_iterator itr = attrs.find("piece");
+    std::map<std::string, std::string>::const_iterator itr = attrs.find("piece");
     if(itr == attrs.end()) {
       stm->cancelChunkChecksumTransaction();
     } else {
@@ -60,9 +62,11 @@ void PiecesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 }
 
 void PiecesMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					   const string& name,
-					   const string& characters)
+					   const std::string& name,
+					   const std::string& characters)
 {
   stm->commitChunkChecksumTransaction();
   stm->setVerificationState();
 }
+
+} // namespace aria2

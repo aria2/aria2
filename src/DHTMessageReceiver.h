@@ -36,48 +36,53 @@
 #define _D_DHT_MESSAGE_RECEIVER_H_
 
 #include "common.h"
-#include "DHTMessageReceiverDecl.h"
-#include "DHTMessageTrackerDecl.h"
-#include "DHTMessageDecl.h"
-#include "DHTConnectionDecl.h"
-#include "DHTMessageFactoryDecl.h"
-#include "DHTRoutingTableDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DHTMessageTracker;
+class DHTMessage;
+class DHTConnection;
+class DHTMessageFactory;
+class DHTRoutingTable;
 
 class Logger;
 
 class DHTMessageReceiver {
 private:
-  DHTMessageTrackerHandle _tracker;
+  SharedHandle<DHTMessageTracker> _tracker;
 
-  DHTConnectionHandle _connection;
+  SharedHandle<DHTConnection> _connection;
 
-  DHTMessageFactoryHandle _factory;
+  SharedHandle<DHTMessageFactory> _factory;
 
-  DHTRoutingTableHandle _routingTable;
+  SharedHandle<DHTRoutingTable> _routingTable;
 
   const Logger* _logger;
 
   SharedHandle<DHTMessage>
   handleUnknownMessage(const char* data, size_t length,
-		       const string& remoteAddr, uint16_t remotePort);
+		       const std::string& remoteAddr, uint16_t remotePort);
 public:
-  DHTMessageReceiver(const DHTMessageTrackerHandle& tracker);
+  DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker);
   
   ~DHTMessageReceiver();
 
-  DHTMessageHandle receiveMessage();
+  SharedHandle<DHTMessage> receiveMessage();
 
   void handleTimeout();
 
-  DHTConnectionHandle getConnection() const;
+  SharedHandle<DHTConnection> getConnection() const;
 
-  DHTMessageTrackerHandle getMessageTracker() const;
+  SharedHandle<DHTMessageTracker> getMessageTracker() const;
 
-  void setConnection(const DHTConnectionHandle& connection);
+  void setConnection(const SharedHandle<DHTConnection>& connection);
 
-  void setMessageFactory(const DHTMessageFactoryHandle& factory);
+  void setMessageFactory(const SharedHandle<DHTMessageFactory>& factory);
 
-  void setRoutingTable(const DHTRoutingTableHandle& routingTable);
+  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_RECEIVER_H_

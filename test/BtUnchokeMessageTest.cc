@@ -1,8 +1,10 @@
 #include "BtUnchokeMessage.h"
 #include "PeerMessageUtil.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtUnchokeMessageTest:public CppUnit::TestFixture {
 
@@ -31,7 +33,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtUnchokeMessageTest);
 void BtUnchokeMessageTest::testCreate() {
   unsigned char msg[5];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 1);
-  BtUnchokeMessageHandle pm = BtUnchokeMessage::create(&msg[4], 1);
+  SharedHandle<BtUnchokeMessage> pm = BtUnchokeMessage::create(&msg[4], 1);
   CPPUNIT_ASSERT_EQUAL((int8_t)1, pm->getId());
 
   // case: payload size is wrong
@@ -60,7 +62,7 @@ void BtUnchokeMessageTest::testGetMessage() {
 }
 
 void BtUnchokeMessageTest::testDoReceivedAction() {
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   peer->peerChoking = true;
   BtUnchokeMessage msg;
   msg.setPeer(peer);
@@ -71,7 +73,7 @@ void BtUnchokeMessageTest::testDoReceivedAction() {
 }
 
 void BtUnchokeMessageTest::testOnSendComplete() {
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   peer->amChoking = true;
   BtUnchokeMessage msg;
   msg.setPeer(peer);
@@ -83,5 +85,7 @@ void BtUnchokeMessageTest::testOnSendComplete() {
 
 void BtUnchokeMessageTest::testToString() {
   BtUnchokeMessage msg;
-  CPPUNIT_ASSERT_EQUAL(string("unchoke"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("unchoke"), msg.toString());
 }
+
+} // namespace aria2

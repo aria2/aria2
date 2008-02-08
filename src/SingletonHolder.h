@@ -35,6 +35,8 @@
 #ifndef _D_SINGLETON_HOLDER_H_
 #define _D_SINGLETON_HOLDER_H_
 
+namespace aria2 {
+
 template<typename T>
 class SingletonHolder {
 private:
@@ -57,5 +59,7 @@ public:
 
 template<typename T>
 T SingletonHolder<T>::_instance = 0;
+
+} // namespace aria2
 
 #endif // _D_SINGLETON_HOLDER_H_

@@ -37,17 +37,21 @@
 
 #include "PieceHashCheckIntegrityEntry.h"
 
+namespace aria2 {
+
 class BtCheckIntegrityEntry : public PieceHashCheckIntegrityEntry {
 public:
   BtCheckIntegrityEntry(RequestGroup* requestGroup);
 
   virtual ~BtCheckIntegrityEntry();
 
-  virtual Commands onDownloadFinished(DownloadEngine* e);
+  virtual std::deque<Command*> onDownloadFinished(DownloadEngine* e);
 
-  virtual Commands onDownloadIncomplete(DownloadEngine* e);
+  virtual std::deque<Command*> onDownloadIncomplete(DownloadEngine* e);
 };
 
 typedef SharedHandle<BtCheckIntegrityEntry> BtCheckIntegrityEntryHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_FILE_ALLOCATION_ENTRY_H_

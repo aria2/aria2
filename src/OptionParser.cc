@@ -35,23 +35,28 @@
 #include "OptionParser.h"
 #include "Util.h"
 #include "OptionHandlerImpl.h"
+#include "Option.h"
+#include <istream>
+#include <utility>
 
-void OptionParser::parse(Option* option, istream& is)
+namespace aria2 {
+
+void OptionParser::parse(Option* option, std::istream& is)
 {
-  string line;
+  std::string line;
   int32_t linenum = 0;
   while(getline(is, line)) {
     ++linenum;
     if(Util::startsWith(line, "#")) {
       continue;
     }
-    pair<string, string> nv = Util::split(line, "=");
+    std::pair<std::string, std::string> nv = Util::split(line, "=");
     OptionHandlerHandle handler = getOptionHandlerByName(nv.first);
     handler->parse(option, nv.second);
   }
 }
 
-OptionHandlerHandle OptionParser::getOptionHandlerByName(const string& optName)
+OptionHandlerHandle OptionParser::getOptionHandlerByName(const std::string& optName)
 {
   for(OptionHandlers::iterator itr = _optionHandlers.begin();
       itr != _optionHandlers.end(); ++itr) {
@@ -61,3 +66,10 @@ OptionHandlerHandle OptionParser::getOptionHandlerByName(const string& optName)
   }
   return new NullOptionHandler();
 }
+
+void OptionParser::setOptionHandlers(const std::deque<SharedHandle<OptionHandler> >& optionHandlers)
+{
+  _optionHandlers = optionHandlers;
+}
+
+} // namespace aria2

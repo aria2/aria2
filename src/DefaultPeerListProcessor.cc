@@ -33,9 +33,18 @@
  */
 /* copyright --> */
 #include "DefaultPeerListProcessor.h"
+#include "Peer.h"
 #include "List.h"
 #include "Dictionary.h"
 #include "Data.h"
+
+namespace aria2 {
+
+DefaultPeerListProcessor::DefaultPeerListProcessor(int32_t pieceLength, int64_t totalLength):
+  pieceLength(pieceLength),
+  totalLength(totalLength) {}
+
+DefaultPeerListProcessor::~DefaultPeerListProcessor() {}
 
 bool DefaultPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
   const List* peersList = dynamic_cast<const List*>(peersEntry);
@@ -48,8 +57,8 @@ Peers DefaultPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
   if(!peersList) {
     return peers;
   }
-  const MetaList& metaList = peersList->getList();
-  for(MetaList::const_iterator itr = metaList.begin();
+  const std::deque<MetaEntry*>& metaList = peersList->getList();
+  for(std::deque<MetaEntry*>::const_iterator itr = metaList.begin();
       itr != metaList.end(); itr++) {
     const Dictionary* peerDic = dynamic_cast<const Dictionary*>(*itr);
     if(!peerDic) {
@@ -65,3 +74,5 @@ Peers DefaultPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
   }
   return peers;
 }
+
+} // namespace aria2

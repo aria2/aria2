@@ -36,13 +36,19 @@
 #include "DHTUtil.h"
 #include "DHTNode.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "Util.h"
 #include "DHTConstants.h"
 #include "a2functional.h"
+#include <cstring>
+#include <cassert>
+#include <algorithm>
+
+namespace aria2 {
 
 DHTBucket::DHTBucket(uint32_t prefixLength,
 		     const unsigned char* max, const unsigned char* min,
-		     const DHTNodeHandle& localNode):
+		     const SharedHandle<DHTNode>& localNode):
   _prefixLength(prefixLength),
   _localNode(localNode),
   _logger(LogFactory::getInstance())
@@ -51,7 +57,7 @@ DHTBucket::DHTBucket(uint32_t prefixLength,
   memcpy(_min, min, DHT_ID_LENGTH);
 }
 
-DHTBucket::DHTBucket(const DHTNodeHandle& localNode):
+DHTBucket::DHTBucket(const SharedHandle<DHTNode>& localNode):
   _prefixLength(0),
   _localNode(localNode),
   _logger(LogFactory::getInstance())
@@ -73,7 +79,7 @@ void DHTBucket::getRandomNodeID(unsigned char* nodeID) const
   }
 }
 
-bool DHTBucket::isInRange(const DHTNodeHandle& node) const
+bool DHTBucket::isInRange(const SharedHandle<DHTNode>& node) const
 {
   return isInRange(node->getID());
 }
@@ -97,10 +103,10 @@ bool DHTBucket::isInRange(const unsigned char* nodeID) const
   return true;
 }
 
-bool DHTBucket::addNode(const DHTNodeHandle& node)
+bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
 {
   notifyUpdate();
-  DHTNodes::iterator itr = find(_nodes.begin(), _nodes.end(), node);
+  std::deque<SharedHandle<DHTNode> >::iterator itr = std::find(_nodes.begin(), _nodes.end(), node);
   if(itr == _nodes.end()) {
     if(_nodes.size() < K) {
       _nodes.push_back(node);
@@ -117,7 +123,7 @@ bool DHTBucket::addNode(const DHTNodeHandle& node)
       } else if(splitAllowed()) {
 	return false;
       } else {
-	DHTNodes::iterator ci = find(_cachedNodes.begin(), _cachedNodes.end(), node);
+	std::deque<SharedHandle<DHTNode> >::iterator ci = find(_cachedNodes.begin(), _cachedNodes.end(), node);
 	if(ci == _cachedNodes.end()) {
 	  _cachedNodes.push_back(node);
 	  if(_cachedNodes.size() > CACHE_SIZE) {
@@ -138,11 +144,11 @@ bool DHTBucket::addNode(const DHTNodeHandle& node)
   }
 }
 
-void DHTBucket::dropNode(const DHTNodeHandle& node)
+void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 {
   return;
   /*
-  DHTNodes::iterator itr = find(_nodes.begin(), _nodes.end(), node);
+  std::deque<SharedHandle<DHTNode> >::iterator itr = find(_nodes.begin(), _nodes.end(), node);
   if(itr != _nodes.end()) {
     _nodes.erase(itr);
     if(_cachedNodes.size()) {
@@ -153,18 +159,20 @@ void DHTBucket::dropNode(const DHTNodeHandle& node)
   */
 }
 
-void DHTBucket::moveToHead(const DHTNodeHandle& node)
+void DHTBucket::moveToHead(const SharedHandle<DHTNode>& node)
 {
-  DHTNodes::iterator itr = find(_nodes.begin(), _nodes.end(), node);
+  std::deque<SharedHandle<DHTNode> >::iterator itr =
+    std::find(_nodes.begin(), _nodes.end(), node);
   if(itr != _nodes.end()) {
     _nodes.erase(itr);
     _nodes.push_front(node);
   }
 }
 
-void DHTBucket::moveToTail(const DHTNodeHandle& node)
+void DHTBucket::moveToTail(const SharedHandle<DHTNode>& node)
 {
-  DHTNodes::iterator itr = find(_nodes.begin(), _nodes.end(), node);
+  std::deque<SharedHandle<DHTNode> >::iterator itr =
+    std::find(_nodes.begin(), _nodes.end(), node);
   if(itr != _nodes.end()) {
     _nodes.erase(itr);
     _nodes.push_back(node);
@@ -176,7 +184,7 @@ bool DHTBucket::splitAllowed() const
   return _prefixLength < DHT_ID_LENGTH*8-1 && isInRange(_localNode);
 }
 
-DHTBucketHandle DHTBucket::split()
+SharedHandle<DHTBucket> DHTBucket::split()
 {
   assert(splitAllowed());
   size_t newPrefixLength = _prefixLength+1;
@@ -185,10 +193,11 @@ DHTBucketHandle DHTBucket::split()
   memcpy(rMax, _max, DHT_ID_LENGTH);
   DHTUtil::flipBit(rMax, DHT_ID_LENGTH, _prefixLength);
 
-  DHTBucketHandle rBucket = new DHTBucket(newPrefixLength,
-					  rMax, _min, _localNode);
-  DHTNodes tempNodes = _nodes;
-  for(DHTNodes::iterator i = tempNodes.begin(); i != tempNodes.end();) {
+  SharedHandle<DHTBucket> rBucket = new DHTBucket(newPrefixLength,
+						  rMax, _min, _localNode);
+  std::deque<SharedHandle<DHTNode> > tempNodes = _nodes;
+  for(std::deque<SharedHandle<DHTNode> >::iterator i = tempNodes.begin();
+      i != tempNodes.end();) {
     if(rBucket->isInRange(*i)) {
       assert(rBucket->addNode(*i));
       i = tempNodes.erase(i);
@@ -215,25 +224,26 @@ size_t DHTBucket::countNode() const
   return _nodes.size();
 }
 
-const DHTNodes& DHTBucket::getNodes() const
+const std::deque<SharedHandle<DHTNode> >& DHTBucket::getNodes() const
 {
   return _nodes;
 }
 
-DHTNodes DHTBucket::getGoodNodes() const
+std::deque<SharedHandle<DHTNode> > DHTBucket::getGoodNodes() const
 {
-  DHTNodes goodNodes = _nodes;
-  goodNodes.erase(remove_if(goodNodes.begin(), goodNodes.end(),
-			    mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
+  std::deque<SharedHandle<DHTNode> > goodNodes = _nodes;
+  goodNodes.erase(std::remove_if(goodNodes.begin(), goodNodes.end(),
+				 mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
   return goodNodes;
 }
 
-DHTNodeHandle DHTBucket::getNode(const unsigned char* nodeID, const string& ipaddr, uint16_t port) const
+SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const
 {
-  DHTNodeHandle node = new DHTNode(nodeID);
+  SharedHandle<DHTNode> node = new DHTNode(nodeID);
   node->setIPAddress(ipaddr);
   node->setPort(port);
-  DHTNodes::const_iterator itr = find(_nodes.begin(), _nodes.end(), node);
+  std::deque<SharedHandle<DHTNode> >::const_iterator itr =
+    std::find(_nodes.begin(), _nodes.end(), node);
   if(itr == _nodes.end()) {
     return 0;
   } else {
@@ -259,7 +269,7 @@ void DHTBucket::notifyUpdate()
 
 class FindQuestionableNode {
 public:
-  bool operator()(const DHTNodeHandle& node) const
+  bool operator()(const SharedHandle<DHTNode>& node) const
   {
     return node->isQuestionable();
   }
@@ -267,15 +277,18 @@ public:
 
 bool DHTBucket::containsQuestionableNode() const
 {
-  return find_if(_nodes.begin(), _nodes.end(), FindQuestionableNode()) != _nodes.end();
+  return std::find_if(_nodes.begin(), _nodes.end(), FindQuestionableNode()) != _nodes.end();
 }
 
-DHTNodeHandle DHTBucket::getLRUQuestionableNode() const
+SharedHandle<DHTNode> DHTBucket::getLRUQuestionableNode() const
 {
-  DHTNodes::const_iterator i = find_if(_nodes.begin(), _nodes.end(), FindQuestionableNode());
+  std::deque<SharedHandle<DHTNode> >::const_iterator i =
+    std::find_if(_nodes.begin(), _nodes.end(), FindQuestionableNode());
   if(i == _nodes.end()) {
     return 0;
   } else {
     return *i;
   }
 }
+
+} // namespace aria2

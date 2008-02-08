@@ -35,21 +35,24 @@
 #ifndef _D_METALINK_PROCESSOR_H_
 #define _D_METALINK_PROCESSOR_H_
 
-#include "Metalinker.h"
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
 
+namespace aria2 {
+
+class Metalinker;
 class BinaryStream;
-typedef SharedHandle<BinaryStream> BinaryStreamHandle;
 
 class MetalinkProcessor {
 public:
   virtual ~MetalinkProcessor() {}
 
-  virtual MetalinkerHandle parseFile(const string& filename) = 0;
+  virtual SharedHandle<Metalinker> parseFile(const std::string& filename) = 0;
 
-  virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream) = 0;
+  virtual SharedHandle<Metalinker> parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream) = 0;
 };
 
-typedef SharedHandle<MetalinkProcessor> MetalinkProcessorHandle;
+} // namespace aria2
 
 #endif // _D_METALINK_PROCESSOR_H_

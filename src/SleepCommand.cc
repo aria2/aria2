@@ -33,9 +33,11 @@
  */
 /* copyright --> */
 #include "SleepCommand.h"
-#include "Util.h"
 #include "RequestGroupAware.h"
 #include "RequestGroup.h"
+#include "DownloadEngine.h"
+
+namespace aria2 {
 
 SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, int32_t wait):
   Command(cuid), engine(e), nextCommand(nextCommand), wait(wait) {}
@@ -70,3 +72,5 @@ bool SleepCommand::isHaltRequested() const
   }
   return false;
 }
+
+} // namespace aria2

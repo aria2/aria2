@@ -3,13 +3,15 @@
 
 #include "BtRequestFactory.h"
 
+namespace aria2 {
+
 class MockBtRequestFactory : public BtRequestFactory {
 public:
   virtual ~MockBtRequestFactory() {}
 
-  virtual void addTargetPiece(const PieceHandle& piece) {}
+  virtual void addTargetPiece(const SharedHandle<Piece>& piece) {}
 
-  virtual void removeTargetPiece(const PieceHandle& piece) {}
+  virtual void removeTargetPiece(const SharedHandle<Piece>& piece) {}
 
   virtual void removeAllTargetPiece() {}
 
@@ -19,12 +21,13 @@ public:
 
   virtual void doChokedAction() {}
 
-  virtual BtMessages createRequestMessages(int32_t max) { return BtMessages(); }
+  virtual std::deque<SharedHandle<BtMessage> >
+  createRequestMessages(int32_t max) { return std::deque<SharedHandle<BtMessage> >(); }
 
-  virtual BtMessages createRequestMessagesOnEndGame(int32_t max) { return BtMessages(); }
+  virtual std::deque<SharedHandle<BtMessage> >
+  createRequestMessagesOnEndGame(int32_t max) { return std::deque<SharedHandle<BtMessage> >(); }
 };
 
-typedef SharedHandle<MockBtRequestFactory> MockBtRequestFactoryHandle;
-typedef WeakHandle<MockBtRequestFactory> MockBtRequestFactoryWeakHandle;
+} // namespace aria2
 
 #endif // _D_MOCK_BT_REQUEST_FACTORY_H_

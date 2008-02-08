@@ -36,7 +36,9 @@
 #define _D_BINARY_STREAM_H_
 
 #include "common.h"
-#include "DlAbortEx.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class BinaryStream {
 public:
@@ -56,5 +58,7 @@ public:
 };
 
 typedef SharedHandle<BinaryStream> BinaryStreamHandle;
+
+} // namespace aria2
 
 #endif // _D_BINARY_STREAM_H_

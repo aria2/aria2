@@ -36,9 +36,13 @@
 #define _D_BT_MESSAGE_H_
 
 #include "common.h"
-#include "Piece.h"
-#include "BtMessageValidator.h"
-#include "BtEvent.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
+
+class BtEvent;
 
 class BtMessage {
 public:
@@ -56,17 +60,19 @@ public:
 
   virtual void send() = 0;
 
-  virtual bool validate(Errors& errors) = 0;
+  virtual bool validate(std::deque<std::string>& errors) = 0;
 
-  virtual void handleEvent(const BtEventHandle& event) = 0;
+  virtual void handleEvent(const SharedHandle<BtEvent>& event) = 0;
 
   virtual void onQueued() = 0;
 
-  virtual string toString() const = 0;
+  virtual std::string toString() const = 0;
 
 };
 
 typedef SharedHandle<BtMessage> BtMessageHandle;
-typedef deque<BtMessageHandle> BtMessages;
+typedef std::deque<BtMessageHandle> BtMessages;
+
+} // namespace aria2
 
 #endif // _D_BT_MESSAGE_H_

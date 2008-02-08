@@ -36,14 +36,20 @@
 #define _D_NUMBER_DECORATOR_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
 
 class NumberDecorator {
 public:
   virtual ~NumberDecorator() {}
 
-  virtual string decorate(int32_t number) = 0;
+  virtual std::string decorate(int32_t number) = 0;
 };
 
 typedef SharedHandle<NumberDecorator> NumberDecoratorHandle;
+
+} // namespace aria2;
 
 #endif // _D_NUMBER_DECORATOR_H_

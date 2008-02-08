@@ -44,11 +44,14 @@
 #include "DHTUtil.h"
 #include "Peer.h"
 #include "DHTTokenTracker.h"
+#include <cstring>
 
-DHTGetPeersMessage::DHTGetPeersMessage(const DHTNodeHandle& localNode,
-				       const DHTNodeHandle& remoteNode,
+namespace aria2 {
+
+DHTGetPeersMessage::DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
+				       const SharedHandle<DHTNode>& remoteNode,
 				       const unsigned char* infoHash,
-				       const string& transactionID):
+				       const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID)
 {
   memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
@@ -58,14 +61,14 @@ DHTGetPeersMessage::~DHTGetPeersMessage() {}
 
 void DHTGetPeersMessage::doReceivedAction()
 {
-  string token = _tokenTracker->generateToken(_infoHash,
+  std::string token = _tokenTracker->generateToken(_infoHash,
 					      _remoteNode->getIPAddress(),
 					      _remoteNode->getPort());
   // Check to see localhost has the contents which has same infohash
   Peers peers = _peerAnnounceStorage->getPeers(_infoHash);
-  DHTMessageHandle reply = 0;
+  SharedHandle<DHTMessage> reply = 0;
   if(peers.empty()) {
-    DHTNodes nodes = _routingTable->getClosestKNodes(_infoHash);
+    std::deque<SharedHandle<DHTNode> > nodes = _routingTable->getClosestKNodes(_infoHash);
     reply =
       _factory->createGetPeersReplyMessage(_remoteNode, nodes, token,
 					   _transactionID);
@@ -85,7 +88,7 @@ Dictionary* DHTGetPeersMessage::getArgument()
   return a;
 }
 
-string DHTGetPeersMessage::getMessageType() const
+std::string DHTGetPeersMessage::getMessageType() const
 {
   return "get_peers";
 }
@@ -101,3 +104,5 @@ void DHTGetPeersMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& toke
 {
   _tokenTracker = tokenTracker;
 }
+
+} // namespace aria2

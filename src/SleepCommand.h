@@ -35,9 +35,12 @@
 #ifndef _D_SLEEP_COMMAND_H_
 #define _D_SLEEP_COMMAND_H_
 
-#include "DownloadEngine.h"
 #include "Command.h"
 #include "TimeA2.h"
+
+namespace aria2 {
+
+class DownloadEngine;
 
 class SleepCommand:public Command {
 private:
@@ -53,5 +56,7 @@ public:
   virtual ~SleepCommand();
   bool execute();
 };
+
+} // namespace aria2
 
 #endif // _D_SLEEP_COMMAND_H_

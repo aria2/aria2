@@ -33,31 +33,36 @@
  */
 /* copyright --> */
 #include "DownloadCommand.h"
-#include "SegmentMan.h"
+#include "Request.h"
+#include "RequestGroup.h"
+#include "DownloadEngine.h"
 #include "PeerStat.h"
 #include "TransferEncoding.h"
-#include "DownloadContext.h"
-#include "Util.h"
-#include "DlRetryEx.h"
 #include "DlAbortEx.h"
-#include "InitiateConnectionCommandFactory.h"
+#include "DlRetryEx.h"
+#include "SegmentMan.h"
+#include "Segment.h"
+#include "Logger.h"
+#include "ChecksumCheckIntegrityEntry.h"
+#include "PieceStorage.h"
+#include "CheckIntegrityCommand.h"
+#include "DiskAdaptor.h"
+#include "CUIDCounter.h"
+#include "DownloadContext.h"
+#include "Option.h"
+#include "Util.h"
+#include "Socket.h"
 #include "message.h"
 #include "prefs.h"
-#include "DiskAdaptor.h"
-#include "Segment.h"
-#include "PieceStorage.h"
-#include "Option.h"
-#include "HttpRequestCommand.h"
-#include "ChecksumCheckIntegrityEntry.h"
-#include "CheckIntegrityCommand.h"
-#include "CUIDCounter.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 #include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
-#include <stdlib.h>
+#include <cassert>
+
+namespace aria2 {
 
 DownloadCommand::DownloadCommand(int cuid,
-				 const RequestHandle req,
+				 const RequestHandle& req,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
@@ -180,11 +185,11 @@ bool DownloadCommand::prepareForNextSegment() {
 void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  string expectedPieceHash =
+  std::string expectedPieceHash =
     _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
   if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
      !expectedPieceHash.empty()) {
-    string actualPieceHash =
+    std::string actualPieceHash =
       MessageDigestHelper::digest(_requestGroup->getDownloadContext()->getPieceHashAlgo(),
 				  _requestGroup->getPieceStorage()->getDiskAdaptor(),
 				  segment->getPosition(),
@@ -213,3 +218,5 @@ void DownloadCommand::setTransferDecoder(const TransferEncodingHandle& transferD
 {
   this->transferDecoder = transferDecoder;
 }
+
+} // namespace aria2

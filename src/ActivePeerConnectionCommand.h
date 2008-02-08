@@ -37,9 +37,13 @@
 
 #include "Command.h"
 #include "BtContextAwareCommand.h"
-#include "DownloadEngine.h"
-#include "TimeA2.h"
 #include "RequestGroupAware.h"
+#include "TimeA2.h"
+
+namespace aria2 {
+
+class DownloadEngine;
+class Peer;
 
 class ActivePeerConnectionCommand : public Command,
 				    public BtContextAwareCommand,
@@ -55,14 +59,14 @@ public:
   ActivePeerConnectionCommand(int cuid,
 			      RequestGroup* requestGroup,
 			      DownloadEngine* e,
-			      const BtContextHandle& btContext,
+			      const SharedHandle<BtContext>& btContext,
 			      int32_t interval);
      
   virtual ~ActivePeerConnectionCommand();
 
   virtual bool execute();
 
-  void connectToPeer(const PeerHandle& peer);
+  void connectToPeer(const SharedHandle<Peer>& peer);
 
   void setLowestSpeedLimit(int32_t speed)
   {
@@ -74,5 +78,7 @@ public:
     _numNewConnection = numNewConnection;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_ACTIVE_PEER_CONNECTION_COMMAND_H_

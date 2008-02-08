@@ -38,16 +38,20 @@
 #include "common.h"
 #include <map>
 
+namespace aria2 {
+
 class MetalinkParserStateMachine;
 
 class MetalinkParserState
 {
 public:
   virtual void beginElement(MetalinkParserStateMachine* stm,
-			    const string& name, const map<string, string>& attrs) = 0;
+			    const std::string& name, const std::map<std::string, std::string>& attrs) = 0;
   
   virtual void endElement(MetalinkParserStateMachine* stm,
-			  const string& name, const string& characters) = 0;
+			  const std::string& name, const std::string& characters) = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_METALINK_PARSER_STATE_H_

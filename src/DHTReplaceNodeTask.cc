@@ -41,8 +41,10 @@
 #include "DHTMessageCallbackImpl.h"
 #include "Logger.h"
 
-DHTReplaceNodeTask::DHTReplaceNodeTask(const DHTBucketHandle& bucket,
-				       const DHTNodeHandle& newNode):
+namespace aria2 {
+
+DHTReplaceNodeTask::DHTReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
+				       const SharedHandle<DHTNode>& newNode):
   _bucket(bucket),
   _newNode(newNode),
   _numRetry(0),
@@ -58,23 +60,23 @@ void DHTReplaceNodeTask::startup()
 
 void DHTReplaceNodeTask::sendMessage()
 {
-  DHTNodeHandle questionableNode = _bucket->getLRUQuestionableNode();
+  SharedHandle<DHTNode> questionableNode = _bucket->getLRUQuestionableNode();
   if(questionableNode.isNull()) {
     _finished = true;
   } else {
-    DHTMessageHandle m = _factory->createPingMessage(questionableNode);
+    SharedHandle<DHTMessage> m = _factory->createPingMessage(questionableNode);
     _dispatcher->addMessageToQueue(m, _timeout, new DHTMessageCallbackImpl(this));
   }
 }
 
-void DHTReplaceNodeTask::onReceived(const DHTMessageHandle& message)
+void DHTReplaceNodeTask::onReceived(const SharedHandle<DHTMessage>& message)
 {
   _logger->info("ReplaceNode: Ping reply received from %s.",
 		message->getRemoteNode()->toString().c_str());
   _finished = true;
 }
 
-void DHTReplaceNodeTask::onTimeout(const DHTNodeHandle& node)
+void DHTReplaceNodeTask::onTimeout(const SharedHandle<DHTNode>& node)
 {
   ++_numRetry;
   if(_numRetry >= MAX_RETRY) {
@@ -89,3 +91,5 @@ void DHTReplaceNodeTask::onTimeout(const DHTNodeHandle& node)
     sendMessage();
   }
 }
+
+} // namespace aria2

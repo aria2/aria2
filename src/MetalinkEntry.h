@@ -36,69 +36,55 @@
 #define _D_METALINK_ENTRY_H_
 
 #include "common.h"
-#include "MetalinkResource.h"
-#include "FileEntry.h"
-#ifdef ENABLE_MESSAGE_DIGEST
-# include "Checksum.h"
-# include "ChunkChecksum.h"
-#endif // ENABLE_MESSAGE_DIGEST
+#include "SharedHandle.h"
+#include <string>
 #include <deque>
 
-class MetalinkEntry;
+namespace aria2 {
 
-typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
-typedef deque<MetalinkEntryHandle> MetalinkEntries;
+class MetalinkResource;
+class FileEntry;
+#ifdef ENABLE_MESSAGE_DIGEST
+class Checksum;
+class ChunkChecksum;
+#endif // ENABLE_MESSAGE_DIGEST
 
 class MetalinkEntry {
 public:
-  FileEntryHandle file;
-  string version;
-  string language;
-  string os;
-  MetalinkResources resources;
+  SharedHandle<FileEntry> file;
+  std::string version;
+  std::string language;
+  std::string os;
+  std::deque<SharedHandle<MetalinkResource> > resources;
   int32_t maxConnections;
 #ifdef ENABLE_MESSAGE_DIGEST
-  ChecksumHandle checksum;
-  ChunkChecksumHandle chunkChecksum;
+  SharedHandle<Checksum> checksum;
+  SharedHandle<ChunkChecksum> chunkChecksum;
 #endif // ENABLE_MESSAGE_DIGEST
 public:
   MetalinkEntry();
 
   ~MetalinkEntry();
 
-  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry) {
-    if(this != &metalinkEntry) {
-      this->file = metalinkEntry.file;
-      this->version = metalinkEntry.version;
-      this->language = metalinkEntry.language;
-      this->os = metalinkEntry.os;
-      this->maxConnections = metalinkEntry.maxConnections;
-#ifdef ENABLE_MESSAGE_DIGEST
-      this->checksum = metalinkEntry.checksum;
-      this->chunkChecksum = metalinkEntry.chunkChecksum;
-#endif // ENABLE_MESSAGE_DIGEST
-    }
-    return *this;
-  }
+  MetalinkEntry& operator=(const MetalinkEntry& metalinkEntry);
 
-  string getPath() const
-  {
-    return file->getPath();
-  }
+  std::string getPath() const;
 
-  int64_t getLength() const
-  {
-    return file->getLength();
-  }
+  int64_t getLength() const;
+
+  SharedHandle<FileEntry> getFile() const;
 
   void dropUnsupportedResource();
 
   void reorderResourcesByPreference();
   
-  void setLocationPreference(const Strings& locations, int32_t preferenceToAdd);
-  void setProtocolPreference(const string& protocol, int32_t preferenceToAdd);
+  void setLocationPreference(const std::deque<std::string>& locations, int32_t preferenceToAdd);
+  void setProtocolPreference(const std::string& protocol, int32_t preferenceToAdd);
 
-  static FileEntries toFileEntry(const MetalinkEntries& metalinkEntries);
+  static std::deque<SharedHandle<FileEntry> >
+  toFileEntry(const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);
 };
+
+} // namespace aria2
 
 #endif // _D_METALINK_ENTRY_H_

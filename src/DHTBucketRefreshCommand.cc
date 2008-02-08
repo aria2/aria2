@@ -38,8 +38,9 @@
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
 #include "DownloadEngine.h"
-#include "SingletonHolder.h"
 #include "RequestGroupMan.h"
+
+namespace aria2 {
 
 DHTBucketRefreshCommand::DHTBucketRefreshCommand(int32_t cuid, DownloadEngine* e, time_t interval):
   TimeBasedCommand(cuid, e, interval),
@@ -59,17 +60,19 @@ void DHTBucketRefreshCommand::process()
   _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
 }
 
-void DHTBucketRefreshCommand::setRoutingTable(const DHTRoutingTableHandle& routingTable)
+void DHTBucketRefreshCommand::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
 {
   _routingTable = routingTable;
 }
 
-void DHTBucketRefreshCommand::setTaskQueue(const DHTTaskQueueHandle& taskQueue)
+void DHTBucketRefreshCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
 
-void DHTBucketRefreshCommand::setTaskFactory(const DHTTaskFactoryHandle& taskFactory)
+void DHTBucketRefreshCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
 }
+
+} // namespace aria2

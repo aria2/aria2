@@ -39,6 +39,8 @@
 #include "a2time.h"
 #include <stdlib.h>
 
+namespace aria2 {
+
 class SimpleRandomizer : public Randomizer {
 private:
   static RandomizerHandle randomizer;
@@ -75,5 +77,7 @@ public:
     return(int32_t)(((double)to)*getRandomNumber()/(getMaxRandomNumber()+1.0));
   }
 };
+
+} // namespace aria2
 
 #endif // _D_SIMPLE_RANDOMIZER_H_

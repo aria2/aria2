@@ -12,6 +12,8 @@
 #include "Peer.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTGetPeersReplyMessageTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTGetPeersReplyMessageTest);
@@ -30,14 +32,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTGetPeersReplyMessageTest);
 
 void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 {
-  DHTNodeHandle localNode = new DHTNode();
-  DHTNodeHandle remoteNode = new DHTNode();
+  SharedHandle<DHTNode> localNode = new DHTNode();
+  SharedHandle<DHTNode> remoteNode = new DHTNode();
 
   char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
-  string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
+  std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  string token = "token";
+  std::string token = "token";
 
   DHTGetPeersReplyMessage msg(localNode, remoteNode, token, transactionID);
 
@@ -50,8 +52,8 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
   r->put("token", new Data(token));
 
   {
-    string compactNodeInfo;
-    DHTNodeHandle nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    std::string compactNodeInfo;
+    SharedHandle<DHTNode> nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
     for(size_t i = 0; i < DHTBucket::K; ++i) {
       nodes[i] = new DHTNode();
       nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
@@ -60,12 +62,12 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
       char buf[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
-	string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
-	string(&buf[0], &buf[sizeof(buf)]);
+	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
+	std::string(&buf[0], &buf[sizeof(buf)]);
     }
-    msg.setClosestKNodes(DHTNodes(&nodes[0], &nodes[DHTBucket::K]));
+    msg.setClosestKNodes(std::deque<SharedHandle<DHTNode> >(&nodes[0], &nodes[DHTBucket::K]));
 
-    string msgbody = msg.getBencodedMessage();
+    std::string msgbody = msg.getBencodedMessage();
 
     r->put("nodes", new Data(compactNodeInfo));
 
@@ -77,21 +79,23 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
   }
   r->remove("nodes");
   {
-    Peers peers;
+    std::deque<SharedHandle<Peer> > peers;
     List* values = new List();
     r->put("values", values);
     for(size_t i = 0; i < 4; ++i) {
-      PeerHandle peer = new Peer("192.168.0."+Util::uitos(i+1), 6881+i);
+      SharedHandle<Peer> peer = new Peer("192.168.0."+Util::uitos(i+1), 6881+i);
       char buffer[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port));
       values->add(new Data(buffer, sizeof(buffer)));
       peers.push_back(peer);
     }
     msg.setValues(peers);
-    string msgbody  = msg.getBencodedMessage();
+    std::string msgbody  = msg.getBencodedMessage();
     BencodeVisitor v;
     cm->accept(&v);
     CPPUNIT_ASSERT_EQUAL(Util::urlencode(v.getBencodedData()),
 			 Util::urlencode(msgbody));
   }
 }
+
+} // namespace aria2

@@ -3,7 +3,10 @@
 #include "Option.h"
 #include "SingleFileDownloadContext.h"
 #include "MemoryBufferPreDownloadHandler.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class DownloadHandlerFactoryTest:public CppUnit::TestFixture {
 
@@ -30,11 +33,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DownloadHandlerFactoryTest );
 void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_extension()
 {
   Option op;
-  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test.metalink");
-  RequestGroup rg(&op, Strings());
+  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test.metalink");
+  RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
-  PreDownloadHandlerHandle handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
+  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
@@ -45,12 +48,12 @@ void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_extension()
 void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_contentType()
 {
   Option op;
-  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test");
+  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test");
   dctx->setContentType("application/metalink+xml");
-  RequestGroup rg(&op, Strings());
+  RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
-  PreDownloadHandlerHandle handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
+  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getMetalinkPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
@@ -61,11 +64,11 @@ void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_contentType()
 void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 {
   Option op;
-  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test.torrent");
-  RequestGroup rg(&op, Strings());
+  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test.torrent");
+  RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
-  PreDownloadHandlerHandle handler = DownloadHandlerFactory::getBtPreDownloadHandler();
+  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getBtPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
@@ -76,15 +79,17 @@ void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_contentType()
 {
   Option op;
-  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test");
+  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test");
   dctx->setContentType("application/x-bittorrent");
-  RequestGroup rg(&op, Strings());
+  RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
-  PreDownloadHandlerHandle handler = DownloadHandlerFactory::getBtPreDownloadHandler();
+  SharedHandle<PreDownloadHandler> handler = DownloadHandlerFactory::getBtPreDownloadHandler();
 
   CPPUNIT_ASSERT(handler->canHandle(&rg));
 
   dctx->setContentType("application/octet-stream");
   CPPUNIT_ASSERT(!handler->canHandle(&rg));
 }
+
+} // namespace aria2

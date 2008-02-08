@@ -38,17 +38,19 @@
 #include "NumberDecorator.h"
 #include "DlAbortEx.h"
 
+namespace aria2 {
+
 class AlphaNumberDecorator : public NumberDecorator
 {
 private:
 
   int32_t _width;
 
-  string _zero;
+  std::string _zero;
 
-  string widen(const string& s, int32_t width)
+  std::string widen(const std::string& s, int32_t width)
   {
-    string t = s;
+    std::string t = s;
     while(t.size() < (size_t)width) {
       t.insert(0, _zero);
     }
@@ -61,7 +63,7 @@ public:
 
   virtual ~AlphaNumberDecorator() {}
 
-  virtual string decorate(int32_t number)
+  virtual std::string decorate(int32_t number)
   {
     if(number < 0) {
       throw new DlAbortEx("The number must be greater than 0.");
@@ -70,15 +72,17 @@ public:
       return widen(_zero, _width);
     }
     int32_t base = 26;
-    string x;
+    std::string x;
     while(number > 0) {
       int32_t r = number%base;
       char alpha = _zero[0]+r;
-      x.insert(0, string(1, alpha));
+      x.insert(0, std::string(1, alpha));
       number /= base;
     }
     return widen(x, _width);
   }
 };
+
+} // namespace aria2
 
 #endif // _D_ALPHA_NUMBER_DECORATOR_H_

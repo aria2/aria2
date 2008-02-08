@@ -3,6 +3,9 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 
+using aria2::SharedHandle;
+using aria2::SingletonHolder;
+
 int main(int argc, char* argv[]) {
   CppUnit::Test* suite = CppUnit::TestFactoryRegistry::getRegistry().makeTest();
   CppUnit::TextUi::TestRunner runner;
@@ -11,8 +14,8 @@ int main(int argc, char* argv[]) {
   runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
   
   // setup
-  CookieBoxFactoryHandle cookieBoxFactory = new CookieBoxFactory();
-  CookieBoxFactorySingletonHolder::instance(cookieBoxFactory);
+  SharedHandle<aria2::CookieBoxFactory> cookieBoxFactory = new aria2::CookieBoxFactory();
+  SingletonHolder<SharedHandle<aria2::CookieBoxFactory> >::instance(cookieBoxFactory);
 
   // Run the tests.
   bool successfull = runner.run();

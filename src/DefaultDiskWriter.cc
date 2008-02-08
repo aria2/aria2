@@ -34,12 +34,16 @@
 /* copyright --> */
 #include "DefaultDiskWriter.h"
 
+namespace aria2 {
+
 DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter() {}
 
 DefaultDiskWriter::~DefaultDiskWriter() {}
 
-void DefaultDiskWriter::initAndOpenFile(const string& filename,
+void DefaultDiskWriter::initAndOpenFile(const std::string& filename,
 					int64_t totalLength)
 {
   createFile(filename);
 }
+
+} // namespace aria2

@@ -36,14 +36,17 @@
 #define _D_DHT_FIND_NODE_REPLY_MESSAGE_H_
 
 #include "DHTResponseMessage.h"
+#include <deque>
+
+namespace aria2 {
 
 class DHTFindNodeReplyMessage:public DHTResponseMessage {
 private:
-  DHTNodes _closestKNodes;
+  std::deque<SharedHandle<DHTNode> > _closestKNodes;
 public:
-  DHTFindNodeReplyMessage(const DHTNodeHandle& localNode,
-			  const DHTNodeHandle& remoteNode,
-			  const string& transactionID);
+  DHTFindNodeReplyMessage(const SharedHandle<DHTNode>& localNode,
+			  const SharedHandle<DHTNode>& remoteNode,
+			  const std::string& transactionID);
 
   virtual ~DHTFindNodeReplyMessage();
 
@@ -51,13 +54,15 @@ public:
 
   virtual Dictionary* getResponse();
   
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 
-  const DHTNodes& getClosestKNodes() const;
+  const std::deque<SharedHandle<DHTNode> >& getClosestKNodes() const;
 
-  void setClosestKNodes(const DHTNodes& closestKNodes);
+  void setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_FIND_NODE_REPLY_MESSAGE_H_

@@ -32,6 +32,10 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+#ifndef _D_A2_ALGO_H_
+#define _D_A2_ALGO_H_
+
+namespace aria2 {
 
 template<typename InputIterator, typename OutputIterator>
 OutputIterator ncopy(InputIterator first, InputIterator last,
@@ -43,3 +47,7 @@ OutputIterator ncopy(InputIterator first, InputIterator last,
   }
   return x;
 }
+
+} // namespace aria2
+
+#endif // _D_A2_ALGO_H_

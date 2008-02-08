@@ -36,48 +36,38 @@
 #define _D_DEFAULT_BT_MESSAGE_RECEIVER_H_
 
 #include "BtMessageReceiver.h"
-#include "BtContext.h"
-#include "BtRegistry.h"
-#include "Peer.h"
-#include "PeerConnection.h"
-#include "BtMessageDispatcher.h"
-#include "Logger.h"
-#include "LogFactory.h"
+
+namespace aria2 {
+
+class BtContext;
+class Peer;
+class PeerConnection;
+class BtMessageDispatcher;
+class BtMessageFactory;
+class Logger;
 
 class DefaultBtMessageReceiver : public BtMessageReceiver {
 private:
   int32_t cuid;
   bool handshakeSent;
-  BtContextHandle btContext;
-  PeerHandle peer;
-  PeerConnectionWeakHandle peerConnection;
-  BtMessageDispatcherWeakHandle dispatcher;
-  BtMessageFactoryWeakHandle messageFactory;
+  SharedHandle<BtContext> btContext;
+  SharedHandle<Peer> peer;
+  WeakHandle<PeerConnection> peerConnection;
+  WeakHandle<BtMessageDispatcher> dispatcher;
+  WeakHandle<BtMessageFactory> messageFactory;
   const Logger* logger;
 
   void sendHandshake();
 public:
-  DefaultBtMessageReceiver():cuid(0),
-			     handshakeSent(false),
-			     btContext(0),
-			     peer(0),
-			     peerConnection(0),
-			     dispatcher(0),
-			     logger(LogFactory::getInstance())
-  {
-    logger->debug("DefaultBtMessageReceiver::instantiated");
-  }
+  DefaultBtMessageReceiver();
 
-  virtual ~DefaultBtMessageReceiver()
-  {
-    logger->debug("DefaultBtMessageReceiver::deleted");
-  }
+  virtual ~DefaultBtMessageReceiver();
 
-  virtual BtMessageHandle receiveHandshake(bool quickReply = false);
+  virtual SharedHandle<BtMessage> receiveHandshake(bool quickReply = false);
 
-  virtual BtMessageHandle receiveAndSendHandshake();
+  virtual SharedHandle<BtMessage> receiveAndSendHandshake();
 
-  virtual BtMessageHandle receiveMessage();
+  virtual SharedHandle<BtMessage> receiveMessage();
 
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
@@ -87,39 +77,19 @@ public:
     return cuid;
   }
 
-  void setPeerConnection(const PeerConnectionWeakHandle& peerConnection) {
-    this->peerConnection = peerConnection;
-  }
+  void setBtContext(const SharedHandle<BtContext>& btContext);
 
-  PeerConnectionWeakHandle getPeerConnection() const {
-    return peerConnection;
-  }
+  void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtContext(const BtContextHandle& btContext) {
-    this->btContext = btContext;
-  }
+  void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
 
-  BtContextHandle getBtContext() const {
-    return btContext;
-  }
+  void setDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
 
-  void setPeer(const PeerHandle& peer) {
-    this->peer = peer;
-  }
-
-  PeerHandle getPeer() const {
-    return peer;
-  }
-
-  void setDispatcher(const BtMessageDispatcherWeakHandle& dispatcher) {
-    this->dispatcher = dispatcher;
-  }
-
-  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
-    this->messageFactory = factory;
-  }
+  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 };
 
 typedef SharedHandle<DefaultBtMessageReceiver> DefaultBtMessageReceiverHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_BT_MESSAGE_RECEIVER_H_

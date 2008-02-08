@@ -36,6 +36,11 @@
 #define _D_DOWNLOAD_RESULT_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <stdint.h>
+#include <string>
+
+namespace aria2 {
 
 class DownloadResult
 {
@@ -47,20 +52,20 @@ public:
 
   int32_t gid;
  
-  string filePath;
+  std::string filePath;
 
   int64_t totalLength;
 
-  string uri;
+  std::string uri;
 
   int32_t numUri;
 
   RESULT result;
 
   DownloadResult(int32_t gid,
-		 const string& filePath,
+		 const std::string& filePath,
 		 int64_t totalLength,
-		 const string& uri,
+		 const std::string& uri,
 		 int32_t numUri,
 		 RESULT result):
     gid(gid),
@@ -72,5 +77,7 @@ public:
 };
 
 typedef SharedHandle<DownloadResult> DownloadResultHandle;
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_RESULT_H_

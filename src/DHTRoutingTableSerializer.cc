@@ -37,26 +37,29 @@
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "PeerMessageUtil.h"
+#include "Logger.h"
 #include <arpa/inet.h>
 #include <cerrno>
 #include <cstring>
 #include <ostream>
 
+namespace aria2 {
+
 DHTRoutingTableSerializer::DHTRoutingTableSerializer():_localNode(0) {}
 
 DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
 
-void DHTRoutingTableSerializer::setLocalNode(const DHTNodeHandle& localNode)
+void DHTRoutingTableSerializer::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }
 
-void DHTRoutingTableSerializer::setNodes(const DHTNodes& nodes)
+void DHTRoutingTableSerializer::setNodes(const std::deque<SharedHandle<DHTNode> >& nodes)
 {
   _nodes = nodes;
 }
 
-void DHTRoutingTableSerializer::serialize(ostream& o)
+void DHTRoutingTableSerializer::serialize(std::ostream& o)
 {
   char header[8];
   memset(header, 0, sizeof(header));
@@ -94,8 +97,8 @@ void DHTRoutingTableSerializer::serialize(ostream& o)
     o.write(zero, 4);
 
     // nodes
-    for(DHTNodes::const_iterator i = _nodes.begin(); i != _nodes.end(); ++i) {
-      const DHTNodeHandle& node = *i;
+    for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin(); i != _nodes.end(); ++i) {
+      const SharedHandle<DHTNode>& node = *i;
       // 6bytes: write IP address + port in Compact IP-address/port info form.
       char compactPeer[6];
       if(!PeerMessageUtil::createcompact(compactPeer, node->getIPAddress(), node->getPort())) {
@@ -109,8 +112,10 @@ void DHTRoutingTableSerializer::serialize(ostream& o)
       // 4bytes reserved
       o.write(zero, 4);
     }
-  } catch(ios::failure const& exception) {
+  } catch(std::ios::failure const& exception) {
     throw new DlAbortEx("Failed to save DHT routing table. cause:%s",
 			strerror(errno));
   }
 }
+
+} // namespace aria2

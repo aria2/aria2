@@ -2,9 +2,20 @@
 #include "PeerMessageUtil.h"
 #include "MockBtMessageDispatcher.h"
 #include "MockBtContext.h"
+#include "Peer.h"
+#include "FileEntry.h"
+#include "PeerObject.h"
+#include "Piece.h"
+#include "BtRegistry.h"
+#include "BtMessageFactory.h"
+#include "BtRequestFactory.h"
+#include "BtMessageReceiver.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtCancelMessageTest:public CppUnit::TestFixture {
 
@@ -18,8 +29,8 @@ private:
 public:
   BtCancelMessageTest():peer(0), btContext(0) {}
 
-  PeerHandle peer;
-  MockBtContextHandle btContext;
+  SharedHandle<Peer> peer;
+  SharedHandle<MockBtContext> btContext;
 
   void setUp() {
     BtRegistry::unregisterAll();    
@@ -51,8 +62,6 @@ public:
       this->length = length;
     }
   };
-
-  typedef SharedHandle<MockBtMessageDispatcher2> MockBtMessageDispatcher2Handle;
 };
 
 
@@ -64,7 +73,7 @@ void BtCancelMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[5], 12345);
   PeerMessageUtil::setIntParam(&msg[9], 256);
   PeerMessageUtil::setIntParam(&msg[13], 1024);
-  BtCancelMessageHandle pm = BtCancelMessage::create(&msg[4], 13);
+  SharedHandle<BtCancelMessage> pm = BtCancelMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((int8_t)8, pm->getId());
   CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)256, pm->getBegin());
@@ -108,7 +117,7 @@ void BtCancelMessageTest::testDoReceivedAction() {
   msg.setLength(16*1024);
   msg.setBtContext(btContext);
   msg.setPeer(peer);
-  MockBtMessageDispatcher2Handle dispatcher = new MockBtMessageDispatcher2();
+  SharedHandle<MockBtMessageDispatcher2> dispatcher = new MockBtMessageDispatcher2();
   msg.setBtMessageDispatcher(dispatcher);
 
   msg.doReceivedAction();
@@ -116,3 +125,5 @@ void BtCancelMessageTest::testDoReceivedAction() {
   CPPUNIT_ASSERT_EQUAL(msg.getBegin(), dispatcher->begin);
   CPPUNIT_ASSERT_EQUAL(msg.getLength(), dispatcher->length);
 }
+
+} // namespace aria2

@@ -35,11 +35,11 @@
 #include "PiecedSegment.h"
 #include "Piece.h"
 
+namespace aria2 {
+
 PiecedSegment::PiecedSegment(int32_t pieceLength, const PieceHandle& piece):
-  _pieceLength(pieceLength), _overflowLength(0), _piece(piece)
-{
-  _writtenLength = _piece->getFirstMissingBlockIndexWithoutLock()*_piece->getBlockLength();
-}
+  _pieceLength(pieceLength), _overflowLength(0), _piece(piece),
+  _writtenLength(_piece->getFirstMissingBlockIndexWithoutLock()*_piece->getBlockLength()) {}
 
 PiecedSegment::~PiecedSegment() {}
 
@@ -95,3 +95,5 @@ PieceHandle PiecedSegment::getPiece() const
 {
   return _piece;
 }
+
+} // namespace aria2

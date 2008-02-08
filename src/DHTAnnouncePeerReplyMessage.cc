@@ -37,9 +37,11 @@
 #include "Dictionary.h"
 #include "Data.h"
 
-DHTAnnouncePeerReplyMessage::DHTAnnouncePeerReplyMessage(const DHTNodeHandle& localNode,
-							 const DHTNodeHandle& remoteNode,
-							 const string& transactionID):
+namespace aria2 {
+
+DHTAnnouncePeerReplyMessage::DHTAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& localNode,
+							 const SharedHandle<DHTNode>& remoteNode,
+							 const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID) {}
 
 DHTAnnouncePeerReplyMessage::~DHTAnnouncePeerReplyMessage() {}
@@ -53,9 +55,11 @@ Dictionary* DHTAnnouncePeerReplyMessage::getResponse()
   return r;
 }
 
-string DHTAnnouncePeerReplyMessage::getMessageType() const
+std::string DHTAnnouncePeerReplyMessage::getMessageType() const
 {
   return "announce_peer";
 }
 
 void DHTAnnouncePeerReplyMessage::validate() const {}
+
+} // namespace aria2

@@ -1,9 +1,11 @@
 #include "BtAllowedFastMessage.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtAllowedFastMessageTest:public CppUnit::TestFixture {
 
@@ -34,7 +36,7 @@ void BtAllowedFastMessageTest::testCreate() {
   unsigned char msg[9];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 5, 17);
   PeerMessageUtil::setIntParam(&msg[5], 12345);
-  BtAllowedFastMessageHandle pm = BtAllowedFastMessage::create(&msg[4], 5);
+  SharedHandle<BtAllowedFastMessage> pm = BtAllowedFastMessage::create(&msg[4], 5);
   CPPUNIT_ASSERT_EQUAL((int8_t)17, pm->getId());
   CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
 
@@ -68,7 +70,7 @@ void BtAllowedFastMessageTest::testGetMessage() {
 void BtAllowedFastMessageTest::testDoReceivedAction() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  PeerHandle peer = new Peer("localhost", 6969);
+  SharedHandle<Peer> peer = new Peer("localhost", 6969);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInPeerAllowedIndexSet(1));
@@ -85,7 +87,7 @@ void BtAllowedFastMessageTest::testDoReceivedAction() {
 void BtAllowedFastMessageTest::testOnSendComplete() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  PeerHandle peer = new Peer("localhost", 6969);
+  SharedHandle<Peer> peer = new Peer("localhost", 6969);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
@@ -96,5 +98,7 @@ void BtAllowedFastMessageTest::testOnSendComplete() {
 void BtAllowedFastMessageTest::testToString() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  CPPUNIT_ASSERT_EQUAL(string("allowed fast index=1"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("allowed fast index=1"), msg.toString());
 }
+
+} // namespace aria2

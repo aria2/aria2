@@ -36,52 +36,38 @@
 #define _D_BITFIELD_MAN_FACTORY_H_
 
 #include "common.h"
-#include "Randomizer.h"
-#include "BitfieldMan.h"
+#include "SharedHandle.h"
 
-class BitfieldManFactory;
+namespace aria2 {
 
-typedef SharedHandle<BitfieldManFactory> BitfieldManFactoryHandle;
+class Randomizer;
+class BitfieldMan;
 
 class BitfieldManFactory {
 private:
-  static BitfieldManFactoryHandle factory;
+  static SharedHandle<BitfieldManFactory> factory;
 
-  RandomizerHandle randomizer;
+  SharedHandle<Randomizer> randomizer;
 
   BitfieldManFactory();
 public:
-  ~BitfieldManFactory() {}
+  ~BitfieldManFactory();
 
-  static BitfieldManFactoryHandle getFactoryInstance() {
-    if(factory.isNull()) {
-      factory = new BitfieldManFactory();
-    }
-    return factory;
-  }
+  static SharedHandle<BitfieldManFactory> getFactoryInstance();
 
-  BitfieldMan* createBitfieldMan(int32_t blockLength, int64_t totalLength) {
-    BitfieldMan* bitfieldMan = new BitfieldMan(blockLength, totalLength);
-    bitfieldMan->setRandomizer(randomizer);
-    return bitfieldMan;
-  }
+  BitfieldMan* createBitfieldMan(int32_t blockLength, int64_t totalLength);
 
-  static void setDefaultRandomizer(const RandomizerHandle& randomizer) {
-    BitfieldManFactoryHandle factory = getFactoryInstance();
-    factory->setRandomizer(randomizer);
-  }
+  static void setDefaultRandomizer(const SharedHandle<Randomizer>& randomizer);
 
-  static RandomizerHandle getDefaultRandomizer() {
-    return getFactoryInstance()->getRandomizer();
-  }
+  static SharedHandle<Randomizer> getDefaultRandomizer();
 
-  void setRandomizer(const RandomizerHandle& randomizer) {
-    this->randomizer = randomizer;
-  }
+  void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
-  RandomizerHandle getRandomizer() const {
-    return randomizer;
-  }
+  SharedHandle<Randomizer> getRandomizer() const;
 };
+
+typedef SharedHandle<BitfieldManFactory> BitfieldManFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_BITFIELD_MAN_FACTORY_H_

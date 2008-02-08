@@ -33,21 +33,20 @@
  */
 /* copyright --> */
 #include "SegmentMan.h"
-#include "DlAbortEx.h"
 #include "Util.h"
-#include "File.h"
 #include "message.h"
 #include "prefs.h"
 #include "PiecedSegment.h"
 #include "GrowSegment.h"
-#include "DiskAdaptor.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "PieceStorage.h"
 #include "PeerStat.h"
 #include "Option.h"
 #include "DownloadContext.h"
 #include "Piece.h"
-#include "a2io.h"
+
+namespace aria2 {
 
 SegmentEntry::SegmentEntry(int32_t cuid, const SegmentHandle& segment):
   cuid(cuid), segment(segment) {}
@@ -219,9 +218,9 @@ public:
 bool SegmentMan::completeSegment(int32_t cuid, const SegmentHandle& segment) {
   _pieceStorage->completePiece(segment->getPiece());
   _pieceStorage->advertisePiece(cuid, segment->getPiece()->getIndex());
-  SegmentEntries::iterator itr = find_if(usedSegmentEntries.begin(),
-					 usedSegmentEntries.end(),
-					 FindSegmentEntry(segment));
+  SegmentEntries::iterator itr = std::find_if(usedSegmentEntries.begin(),
+					      usedSegmentEntries.end(),
+					      FindSegmentEntry(segment));
   if(itr == usedSegmentEntries.end()) {
     return false;
   } else {
@@ -282,3 +281,4 @@ int32_t SegmentMan::countFreePieceFrom(int32_t index) const
   return _downloadContext->getNumPieces()-index;
 }
 
+} // namespace aria2

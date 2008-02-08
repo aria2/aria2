@@ -36,14 +36,17 @@
 #define _D_DHT_CONNECTION_IMPL_H_
 
 #include "DHTConnection.h"
-#include "Socket.h"
+#include "SharedHandle.h"
 #include "IntSequence.h"
 
+namespace aria2 {
+
+class SocketCore;
 class Logger;
 
 class DHTConnectionImpl:public DHTConnection {
 private:
-  SocketHandle _socket;
+  SharedHandle<SocketCore> _socket;
 
   const Logger* _logger;
 public:
@@ -55,11 +58,13 @@ public:
   
   uint16_t bind(uint16_t port);
 
-  virtual ssize_t receiveMessage(char* data, size_t len, string& host, uint16_t& port);
+  virtual ssize_t receiveMessage(char* data, size_t len, std::string& host, uint16_t& port);
 
-  virtual void sendMessage(const char* data, size_t len, const string& host, uint16_t port);
+  virtual void sendMessage(const char* data, size_t len, const std::string& host, uint16_t port);
 
-  SocketHandle getSocket() const;
+  SharedHandle<SocketCore> getSocket() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_CONNECTION_IMPL_H_

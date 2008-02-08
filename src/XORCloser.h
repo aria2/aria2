@@ -37,17 +37,19 @@
 
 #include <cstdlib>
 
+namespace aria2 {
+
 class XORCloser {
 private:
   const unsigned char* _key;
-  std::size_t _length;
+  size_t _length;
 public:
-  XORCloser(const unsigned char* key, std::size_t length):_key(key), _length(length) {}
+  XORCloser(const unsigned char* key, size_t length):_key(key), _length(length) {}
 
   bool operator()(const unsigned char* key1,
 		  const unsigned char* key2) const
   {
-    for(std::size_t i = 0; i < _length; ++i) {
+    for(size_t i = 0; i < _length; ++i) {
       unsigned char c1 = _key[i]^key1[i];
       unsigned char c2 = _key[i]^key2[i];
 
@@ -60,5 +62,7 @@ public:
     return true;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_XOR_CLOSER_H_

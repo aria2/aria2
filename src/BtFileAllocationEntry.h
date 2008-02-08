@@ -37,10 +37,7 @@
 
 #include "FileAllocationEntry.h"
 
-class RequestGroup;
-class DownloadEngine;
-class Command;
-typedef deque<Command*> Commands;
+namespace aria2 {
 
 class BtFileAllocationEntry : public FileAllocationEntry {
 public:
@@ -48,9 +45,11 @@ public:
 
   virtual ~BtFileAllocationEntry();
 
-  virtual Commands prepareForNextAction(DownloadEngine* e);
+  virtual std::deque<Command*> prepareForNextAction(DownloadEngine* e);
 };
 
 typedef SharedHandle<BtFileAllocationEntry> BtFileAllocationEntryHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_FILE_ALLOCATION_ENTRY_H_

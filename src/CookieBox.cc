@@ -33,8 +33,9 @@
  */
 /* copyright --> */
 #include "CookieBox.h"
-#include "Util.h"
 #include "CookieParser.h"
+
+namespace aria2 {
 
 CookieBox::CookieBox() {}
 
@@ -44,7 +45,7 @@ void CookieBox::add(const Cookie& cookie) {
   cookies.push_back(cookie);
 }
 
-void CookieBox::add(const string& cookieStr, const string& defaultDomain, const string& defaultPath)
+void CookieBox::add(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath)
 {
   Cookie c = CookieParser().parse(cookieStr, defaultDomain, defaultPath);
   if(c.good()) {
@@ -57,7 +58,7 @@ void CookieBox::add(const Cookies& cookies)
   this->cookies.insert(this->cookies.end(), cookies.begin(), cookies.end());
 }
 
-Cookies CookieBox::criteriaFind(const string& host, const string& dir, time_t date,  bool secure) const {
+Cookies CookieBox::criteriaFind(const std::string& host, const std::string& dir, time_t date,  bool secure) const {
   Cookies result;
   for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
     const Cookie& c = *itr;
@@ -68,3 +69,4 @@ Cookies CookieBox::criteriaFind(const string& host, const string& dir, time_t da
   return result;
 }
 
+} // namespace aria2

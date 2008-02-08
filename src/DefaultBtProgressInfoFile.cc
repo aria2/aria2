@@ -33,11 +33,17 @@
  */
 /* copyright --> */
 #include "DefaultBtProgressInfoFile.h"
-#include "DownloadContext.h"
+#include "BtContext.h"
 #include "PieceStorage.h"
+#include "Piece.h"
+#include "PeerStorage.h"
+#include "BtRuntime.h"
+#include "BitfieldMan.h"
 #include "Option.h"
+#include "TransferStat.h"
 #include "BtRegistry.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "prefs.h"
 #include "DlAbortEx.h"
 #include "message.h"
@@ -46,7 +52,9 @@
 #include "a2io.h"
 #include "DownloadFailureException.h"
 #include <fstream>
-#include <errno.h>
+#include <cerrno>
+
+namespace aria2 {
 
 DefaultBtProgressInfoFile::DefaultBtProgressInfoFile(const DownloadContextHandle& dctx,
 						     const PieceStorageHandle& pieceStorage,
@@ -68,9 +76,9 @@ bool DefaultBtProgressInfoFile::isTorrentDownload()
 
 void DefaultBtProgressInfoFile::save() {
   _logger->info(MSG_SAVING_SEGMENT_FILE, _filename.c_str());
-  string filenameTemp = _filename+"__temp";
-  ofstream o(filenameTemp.c_str(), ios::out|ios::binary);
-  o.exceptions(ios::failbit);
+  std::string filenameTemp = _filename+"__temp";
+  std::ofstream o(filenameTemp.c_str(), std::ios::out|std::ios::binary);
+  o.exceptions(std::ios::failbit);
   try {
     bool torrentDownload = isTorrentDownload();
     // file version: 16 bits
@@ -138,8 +146,8 @@ void DefaultBtProgressInfoFile::save() {
 
     o.close();
     _logger->info(MSG_SAVED_SEGMENT_FILE);
-  } catch(ios::failure const& exception) {
-    // TODO ios::failure doesn't give us the reasons of failure...
+  } catch(std::ios::failure const& exception) {
+    // TODO std::ios::failure doesn't give us the reasons of failure...
     throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
 			_filename.c_str(), strerror(errno));
   }
@@ -152,14 +160,14 @@ void DefaultBtProgressInfoFile::save() {
 void DefaultBtProgressInfoFile::load() 
 {
   _logger->info(MSG_LOADING_SEGMENT_FILE, _filename.c_str());
-  ifstream in(_filename.c_str(), ios::in|ios::binary);
-  in.exceptions(ios::failbit);
+  std::ifstream in(_filename.c_str(), std::ios::in|std::ios::binary);
+  in.exceptions(std::ios::failbit);
   unsigned char* savedInfoHash = 0;
   unsigned char* savedBitfield = 0;
   try {
     unsigned char version[2];
     in.read((char*)version, sizeof(version));
-    if(string("0000") != Util::toHex(version, sizeof(version))) {
+    if(std::string("0000") != Util::toHex(version, sizeof(version))) {
       throw new DlAbortEx("Unsupported ctrl file version: %s",
 			  Util::toHex(version, sizeof(version)).c_str());
     }
@@ -272,10 +280,10 @@ void DefaultBtProgressInfoFile::load()
       savedBitfield = 0;
     }
     _logger->info(MSG_LOADED_SEGMENT_FILE);
-  } catch(ios::failure const& exception) {
+  } catch(std::ios::failure const& exception) {
     delete [] savedBitfield;
     delete [] savedInfoHash;
-    // TODO ios::failure doesn't give us the reasons of failure...
+    // TODO std::ios::failure doesn't give us the reasons of failure...
     throw new DlAbortEx(EX_SEGMENT_FILE_READ,
 			_filename.c_str(), strerror(errno));
   } 
@@ -298,3 +306,5 @@ bool DefaultBtProgressInfoFile::exists() {
     return false;
   }
 }
+
+} // namespace aria2

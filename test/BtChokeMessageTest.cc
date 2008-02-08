@@ -3,9 +3,18 @@
 #include "MockBtMessageDispatcher.h"
 #include "MockBtRequestFactory.h"
 #include "MockBtContext.h"
+#include "Peer.h"
+#include "FileEntry.h"
+#include "BtRegistry.h"
+#include "PeerObject.h"
+#include "BtMessageFactory.h"
+#include "BtMessageReceiver.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtChokeMessageTest:public CppUnit::TestFixture {
 
@@ -21,8 +30,8 @@ private:
 public:
   BtChokeMessageTest():peer(0), btContext(0) {}
 
-  PeerHandle peer;
-  MockBtContextHandle btContext;
+  SharedHandle<Peer> peer;
+  SharedHandle<MockBtContext> btContext;
 
   void setUp() {
     BtRegistry::unregisterAll();    
@@ -56,8 +65,6 @@ public:
     }
   };
 
-  typedef SharedHandle<MockBtMessageDispatcher2> MockBtMessageDispatcher2Handle;
-
   class MockBtRequestFactory2 : public MockBtRequestFactory {
   public:
     bool doChokedActionCalled;
@@ -68,8 +75,6 @@ public:
       doChokedActionCalled = true;
     }
   };
-
-  typedef SharedHandle<MockBtRequestFactory2> MockBtRequestFactory2Handle;
 };
 
 
@@ -78,7 +83,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtChokeMessageTest);
 void BtChokeMessageTest::testCreate() {
   unsigned char msg[5];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 0);
-  BtChokeMessageHandle pm = BtChokeMessage::create(&msg[4], 1);
+  SharedHandle<BtChokeMessage> pm = BtChokeMessage::create(&msg[4], 1);
   CPPUNIT_ASSERT_EQUAL((int8_t)0, pm->getId());
 
   // case: payload size is wrong
@@ -111,9 +116,9 @@ void BtChokeMessageTest::testDoReceivedAction() {
   msg.setPeer(peer);
   msg.setBtContext(btContext);
 
-  MockBtMessageDispatcher2Handle dispatcher = new MockBtMessageDispatcher2();
+  SharedHandle<MockBtMessageDispatcher2> dispatcher = new MockBtMessageDispatcher2();
   msg.setBtMessageDispatcher(dispatcher);
-  MockBtRequestFactory2Handle requestFactory = new MockBtRequestFactory2();
+  SharedHandle<MockBtRequestFactory2> requestFactory = new MockBtRequestFactory2();
   msg.setBtRequestFactory(requestFactory);
 
   msg.doReceivedAction();
@@ -127,7 +132,7 @@ void BtChokeMessageTest::testOnSendComplete() {
   msg.setPeer(peer);
   msg.setBtContext(btContext);
 
-  MockBtMessageDispatcher2Handle dispatcher = new MockBtMessageDispatcher2();
+  SharedHandle<MockBtMessageDispatcher2> dispatcher = new MockBtMessageDispatcher2();
   msg.setBtMessageDispatcher(dispatcher);
 
   msg.onSendComplete();
@@ -138,5 +143,7 @@ void BtChokeMessageTest::testOnSendComplete() {
 
 void BtChokeMessageTest::testToString() {
   BtChokeMessage msg;
-  CPPUNIT_ASSERT_EQUAL(string("choke"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("choke"), msg.toString());
 }
+
+} // namespace aria2

@@ -36,6 +36,7 @@
 #include "RequestGroup.h"
 #include "Option.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "prefs.h"
 #include "Util.h"
 #include "message.h"
@@ -45,22 +46,33 @@
 #include "MemoryBufferPreDownloadHandler.h"
 #include "TrueRequestGroupCriteria.h"
 #include "MetalinkEntry.h"
+#include "MetalinkResource.h"
+#include "FileEntry.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 #endif // ENABLE_BITTORRENT
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "Checksum.h"
+# include "ChunkChecksum.h"
+#endif // ENABLE_MESSAGE_DIGEST
+#include <algorithm>
 
-Metalink2RequestGroup::Metalink2RequestGroup(const Option* option):_option(option), _logger(LogFactory::getInstance()) {}
+namespace aria2 {
+
+Metalink2RequestGroup::Metalink2RequestGroup(const Option* option):
+  _option(option),
+  _logger(LogFactory::getInstance()) {}
 
 Metalink2RequestGroup::~Metalink2RequestGroup() {}
 
 class AccumulateNonP2PUrl {
 private:
-  Strings& urlsPtr;
+  std::deque<std::string>& urlsPtr;
 public:
-  AccumulateNonP2PUrl(Strings& urlsPtr)
+  AccumulateNonP2PUrl(std::deque<std::string>& urlsPtr)
     :urlsPtr(urlsPtr) {}
 
-  void operator()(const MetalinkResourceHandle& resource) {
+  void operator()(const SharedHandle<MetalinkResource>& resource) {
     switch(resource->type) {
     case MetalinkResource::TYPE_HTTP:
     case MetalinkResource::TYPE_HTTPS:
@@ -77,7 +89,7 @@ class FindBitTorrentUrl {
 public:
   FindBitTorrentUrl() {}
 
-  bool operator()(const MetalinkResourceHandle& resource) {
+  bool operator()(const SharedHandle<MetalinkResource>& resource) {
     if(resource->type == MetalinkResource::TYPE_BITTORRENT) {
       return true;
     } else {
@@ -86,40 +98,43 @@ public:
   }
 };
 
-RequestGroups Metalink2RequestGroup::generate(const string& metalinkFile)
+std::deque<SharedHandle<RequestGroup> >
+Metalink2RequestGroup::generate(const std::string& metalinkFile)
 {
-  MetalinkEntries entries = MetalinkHelper::parseAndQuery(metalinkFile,
+  std::deque<SharedHandle<MetalinkEntry> > entries = MetalinkHelper::parseAndQuery(metalinkFile,
 							  _option);
   return createRequestGroup(entries);
 }
 
-RequestGroups Metalink2RequestGroup::generate(const BinaryStreamHandle& binaryStream)
+std::deque<SharedHandle<RequestGroup> >
+Metalink2RequestGroup::generate(const SharedHandle<BinaryStream>& binaryStream)
 {
-  MetalinkEntries entries = MetalinkHelper::parseAndQuery(binaryStream,
+  std::deque<SharedHandle<MetalinkEntry> > entries = MetalinkHelper::parseAndQuery(binaryStream,
 							  _option);
   return createRequestGroup(entries);
 }
 
-RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
+std::deque<SharedHandle<RequestGroup> >
+Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry> > entries)
 {
   if(entries.size() == 0) {
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
-    return RequestGroups();
+    return std::deque<SharedHandle<RequestGroup> >();
   }
-  Integers selectIndexes = Util::parseIntRange(_option->get(PREF_SELECT_FILE)).flush();
+  std::deque<int32_t> selectIndexes = Util::parseIntRange(_option->get(PREF_SELECT_FILE)).flush();
   bool useIndex;
   if(selectIndexes.size()) {
     useIndex = true;
   } else {
     useIndex = false;
   }
-  RequestGroups groups;
+  std::deque<SharedHandle<RequestGroup> > groups;
   int32_t count = 0;
-  for(MetalinkEntries::iterator itr = entries.begin(); itr != entries.end();
+  for(std::deque<SharedHandle<MetalinkEntry> >::iterator itr = entries.begin(); itr != entries.end();
       itr++, ++count) {
-    MetalinkEntryHandle& entry = *itr;
+    SharedHandle<MetalinkEntry>& entry = *itr;
     if(_option->defined(PREF_METALINK_LOCATION)) {
-      Strings locations;
+      std::deque<std::string> locations;
       Util::slice(locations, _option->get(PREF_METALINK_LOCATION), ',', true);
       entry->setLocationPreference(locations, 100);
     }
@@ -127,7 +142,7 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
       entry->setProtocolPreference(_option->get(PREF_METALINK_PREFERRED_PROTOCOL), 100);
     }
     if(useIndex) {
-      if(find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {
+      if(std::find(selectIndexes.begin(), selectIndexes.end(), count+1) == selectIndexes.end()) {
 	continue;
       }
     }
@@ -136,17 +151,17 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
       continue;
     }
     _logger->info(MSG_METALINK_QUEUEING, entry->getPath().c_str());
-    MetalinkResources::iterator itr = find_if(entry->resources.begin(),
-					      entry->resources.end(),
-					      FindBitTorrentUrl());
+    std::deque<SharedHandle<MetalinkResource> >::iterator itr =
+      std::find_if(entry->resources.begin(), entry->resources.end(), FindBitTorrentUrl());
+
 #ifdef ENABLE_BITTORRENT
-    RequestGroupHandle torrentRg = 0;
+    SharedHandle<RequestGroup> torrentRg = 0;
     // there is torrent entry
     if(itr != entry->resources.end()) {
-      Strings uris;
+      std::deque<std::string> uris;
       uris.push_back((*itr)->url);
       torrentRg = new RequestGroup(_option, uris);
-      SingleFileDownloadContextHandle dctx =
+      SharedHandle<SingleFileDownloadContext> dctx =
 	new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
 				      0,
 				      "");
@@ -155,17 +170,17 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
       torrentRg->clearPreDowloadHandler();
       torrentRg->clearPostDowloadHandler();
       // make it in-memory download
-      PreDownloadHandlerHandle preh = new MemoryBufferPreDownloadHandler();
+      SharedHandle<PreDownloadHandler> preh = new MemoryBufferPreDownloadHandler();
       preh->setCriteria(new TrueRequestGroupCriteria());
       torrentRg->addPreDownloadHandler(preh);
       groups.push_back(torrentRg);
     }
 #endif // ENABLE_BITTORRENT
     entry->reorderResourcesByPreference();
-    Strings uris;
-    for_each(entry->resources.begin(), entry->resources.end(),
-	     AccumulateNonP2PUrl(uris));
-    RequestGroupHandle rg = new RequestGroup(_option, uris);
+    std::deque<std::string> uris;
+    std::for_each(entry->resources.begin(), entry->resources.end(),
+		  AccumulateNonP2PUrl(uris));
+    SharedHandle<RequestGroup> rg = new RequestGroup(_option, uris);
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.
     int32_t pieceLength;
@@ -178,7 +193,7 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
 #else
     pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
 #endif // ENABLE_MESSAGE_DIGEST
-    SingleFileDownloadContextHandle dctx =
+    SharedHandle<SingleFileDownloadContext> dctx =
       new SingleFileDownloadContext(pieceLength,
 				    entry->getLength(),
 				    "",
@@ -198,7 +213,7 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
     rg->setDownloadContext(dctx);
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :
-				min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
+				std::min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
     // In metalink, multi connection to a single host is not allowed by default.
     rg->setSingleHostMultiConnectionEnabled(!_option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
     
@@ -212,3 +227,5 @@ RequestGroups Metalink2RequestGroup::createRequestGroup(MetalinkEntries entries)
   }
   return groups;
 }
+
+} // namespace aria2

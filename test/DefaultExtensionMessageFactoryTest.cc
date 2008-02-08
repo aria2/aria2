@@ -7,7 +7,10 @@
 #include "Exception.h"
 #include "BtRegistry.h"
 #include "BtRuntime.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class DefaultExtensionMessageFactoryTest:public CppUnit::TestFixture {
 
@@ -17,21 +20,21 @@ class DefaultExtensionMessageFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateMessage_UTPex);
   CPPUNIT_TEST_SUITE_END();
 private:
-  MockBtContextHandle _btContext;
-  PeerHandle _peer;
+  SharedHandle<MockBtContext> _btContext;
+  SharedHandle<Peer> _peer;
 public:
   DefaultExtensionMessageFactoryTest():_btContext(0), _peer(0) {}
 
   void setUp()
   {
     BtRegistry::unregisterAll();
-    MockBtContextHandle btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext = new MockBtContext();
     unsigned char infohash[20];
     memset(infohash, 0, sizeof(infohash));
     btContext->setInfoHash(infohash);
     _btContext = btContext;
 
-    BtRuntimeHandle btRuntime = new BtRuntime();
+    SharedHandle<BtRuntime> btRuntime = new BtRuntime();
     BtRegistry::registerBtRuntime(_btContext->getInfoHashAsString(),
 				  btRuntime);
 
@@ -61,13 +64,13 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_unknown()
 
   char id[1] = { 255 };
 
-  string data = string(&id[0], &id[1]);
+  std::string data = std::string(&id[0], &id[1]);
   try {
     // this test fails because localhost doesn't have extension id = 255.
     factory.createMessage(data.c_str(), data.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << *e << endl;
+    std::cerr << *e << std::endl;
     delete e;
   }
 }
@@ -80,9 +83,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_Handshake()
 
   char id[1] = { 0 };
 
-  string data = string(&id[0], &id[1])+"d1:v5:aria2e";
-  HandshakeExtensionMessageHandle m = factory.createMessage(data.c_str(), data.size());
-  CPPUNIT_ASSERT_EQUAL(string("aria2"), m->getClientVersion());
+  std::string data = std::string(&id[0], &id[1])+"d1:v5:aria2e";
+  SharedHandle<HandshakeExtensionMessage> m =
+    factory.createMessage(data.c_str(), data.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
 }
 
 void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
@@ -102,13 +106,16 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
 
   char id[1] = { factory.getExtensionMessageID("ut_pex") };
 
-  string data = string(&id[0], &id[1])+"d5:added12:"+
-    string(&c1[0], &c1[6])+string(&c2[0], &c2[6])+
+  std::string data = std::string(&id[0], &id[1])+"d5:added12:"+
+    std::string(&c1[0], &c1[6])+std::string(&c2[0], &c2[6])+
     "7:added.f2:207:dropped12:"+
-    string(&c3[0], &c3[6])+string(&c4[0], &c4[6])+
+    std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "e";
 
-  UTPexExtensionMessageHandle m = factory.createMessage(data.c_str(), data.size());
+  SharedHandle<UTPexExtensionMessage> m =
+    factory.createMessage(data.c_str(), data.size());
   CPPUNIT_ASSERT_EQUAL(factory.getExtensionMessageID("ut_pex"),
 		       m->getExtensionMessageID());
 }
+
+} // namespace aria2

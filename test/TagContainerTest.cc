@@ -2,7 +2,7 @@
 #include "TaggedItem.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class TagContainerTest:public CppUnit::TestFixture {
 
@@ -38,14 +38,14 @@ void TagContainerTest::testSearch()
   {
     TaggedItems res = tc.search("bar");
     CPPUNIT_ASSERT_EQUAL((size_t)1, res.size());
-    CPPUNIT_ASSERT_EQUAL(string("bravo"), res[0]->getName());
-    CPPUNIT_ASSERT_EQUAL(string("foo,bar"), res[0]->toTagString());
+    CPPUNIT_ASSERT_EQUAL(std::string("bravo"), res[0]->getName());
+    CPPUNIT_ASSERT_EQUAL(std::string("foo,bar"), res[0]->toTagString());
   }
   {
     TaggedItems res = tc.nameMatchForward("ch");
     CPPUNIT_ASSERT_EQUAL((size_t)1, res.size());
-    CPPUNIT_ASSERT_EQUAL(string("charlie"), res[0]->getName());
-    CPPUNIT_ASSERT_EQUAL(string("foo"), res[0]->toTagString());
+    CPPUNIT_ASSERT_EQUAL(std::string("charlie"), res[0]->getName());
+    CPPUNIT_ASSERT_EQUAL(std::string("foo"), res[0]->toTagString());
   }
 }
 
@@ -61,10 +61,12 @@ void TagContainerTest::testNameMatch()
   TagContainer tc(TaggedItems(&items[0], &items[3]));
   {
     TaggedItemHandle item = tc.nameMatch("bravo");
-    CPPUNIT_ASSERT_EQUAL(string("bravo"), item->getName());
-    CPPUNIT_ASSERT_EQUAL(string("foo"), item->toTagString());
+    CPPUNIT_ASSERT_EQUAL(std::string("bravo"), item->getName());
+    CPPUNIT_ASSERT_EQUAL(std::string("foo"), item->toTagString());
   }
   {
     CPPUNIT_ASSERT(tc.nameMatch("delta").isNull());
   }
 }
+
+} // namespace aria2

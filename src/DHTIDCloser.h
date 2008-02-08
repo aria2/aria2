@@ -35,9 +35,12 @@
 #ifndef _D_DHT_ID_CLOSER_H_
 #define _D_DHT_ID_CLOSER_H_
 
-#include "DHTNodeLookupEntryDecl.h"
+#include "common.h"
+#include "DHTNodeLookupEntry.h"
 #include "DHTConstants.h"
 #include "XORCloser.h"
+
+namespace aria2 {
 
 class DHTIDCloser {
 private:
@@ -47,11 +50,13 @@ private:
 public:
   DHTIDCloser(const unsigned char* targetID):_closer(targetID, DHT_ID_LENGTH) {}
 
-  bool operator()(const DHTNodeLookupEntryHandle& m1,
-		  const DHTNodeLookupEntryHandle& m2) const
+  bool operator()(const SharedHandle<DHTNodeLookupEntry>& m1,
+		  const SharedHandle<DHTNodeLookupEntry>& m2) const
   {
     return _closer(m1->_node->getID(), m2->_node->getID());
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_ID_CLOSER_H_

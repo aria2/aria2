@@ -40,6 +40,9 @@
 #include "PieceStorage.h"
 #include "DownloadHandlerConstants.h"
 #include "ContentTypeRequestGroupCriteria.h"
+#include "Exception.h"
+
+namespace aria2 {
 
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
@@ -49,15 +52,16 @@ MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 
 MetalinkPostDownloadHandler::~MetalinkPostDownloadHandler() {}
 
-RequestGroups MetalinkPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
+std::deque<SharedHandle<RequestGroup> >
+MetalinkPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
 {
   const Option* op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Metalink file %s",
 		 requestGroup->getFilePath().c_str());
-  DiskAdaptorHandle diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
+  SharedHandle<DiskAdaptor> diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();
-    RequestGroups rgs = Metalink2RequestGroup(op).generate(diskAdaptor);
+    std::deque<SharedHandle<RequestGroup> > rgs = Metalink2RequestGroup(op).generate(diskAdaptor);
     diskAdaptor->closeFile();
     return rgs;
   } catch(Exception* e) {
@@ -65,3 +69,5 @@ RequestGroups MetalinkPostDownloadHandler::getNextRequestGroups(RequestGroup* re
     throw;
   }
 }
+
+} // namespace aria2

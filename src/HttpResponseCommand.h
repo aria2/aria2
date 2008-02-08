@@ -37,29 +37,32 @@
 
 #include "AbstractCommand.h"
 
+namespace aria2 {
+
 class HttpConnection;
-typedef SharedHandle<HttpConnection> HttpConnectionHandle;
 class HttpDownloadCommand;
 class HttpResponse;
-typedef SharedHandle<HttpResponse> HttpResponseHandle;
+class SocketCore;
 
 class HttpResponseCommand : public AbstractCommand {
 private:
-  HttpConnectionHandle httpConnection;
+  SharedHandle<HttpConnection> httpConnection;
 
-  bool handleDefaultEncoding(const HttpResponseHandle& httpResponse);
-  bool handleOtherEncoding(const HttpResponseHandle& httpResponse);
-  HttpDownloadCommand* createHttpDownloadCommand(const HttpResponseHandle& httpResponse);
+  bool handleDefaultEncoding(const SharedHandle<HttpResponse>& httpResponse);
+  bool handleOtherEncoding(const SharedHandle<HttpResponse>& httpResponse);
+  HttpDownloadCommand* createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse);
 protected:
   bool executeInternal();
 public:
   HttpResponseCommand(int32_t cuid,
-		      const RequestHandle& req,
+		      const SharedHandle<Request>& req,
 		      RequestGroup* requestGroup,
-		      const HttpConnectionHandle& httpConnection,
+		      const SharedHandle<HttpConnection>& httpConnection,
 		      DownloadEngine* e,
-		      const SocketHandle& s);
+		      const SharedHandle<SocketCore>& s);
   ~HttpResponseCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_HTTP_RESPONSE_COMMAND_H_

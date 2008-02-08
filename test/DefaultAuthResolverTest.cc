@@ -1,8 +1,9 @@
 #include "DefaultAuthResolver.h"
 #include "prefs.h"
+#include "AuthConfig.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DefaultAuthResolverTest : public CppUnit::TestFixture {
 
@@ -13,7 +14,7 @@ class DefaultAuthResolverTest : public CppUnit::TestFixture {
 private:
   //NetrcHandle _netrc;
   //SharedHandle<Option> _option;
-  DefaultAuthResolverHandle _resolver;
+  SharedHandle<DefaultAuthResolver> _resolver;
 public:
   void setUp()
   {
@@ -33,13 +34,15 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DefaultAuthResolverTest );
 
 void DefaultAuthResolverTest::testResolveAuthConfig_without_userDefined()
 {
-  AuthConfigHandle authConfig = _resolver->resolveAuthConfig("localhost");
-  CPPUNIT_ASSERT_EQUAL(string("foo:bar"), authConfig->getAuthText());
+  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
+  CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
 }
 
 void DefaultAuthResolverTest::testResolveAuthConfig_with_userDefined()
 {
   _resolver->setUserDefinedAuthConfig(new AuthConfig("myname", "mypasswd"));
-  AuthConfigHandle authConfig = _resolver->resolveAuthConfig("localhost");
-  CPPUNIT_ASSERT_EQUAL(string("myname:mypasswd"), authConfig->getAuthText());
+  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
+  CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 }
+
+} // namespace aria2

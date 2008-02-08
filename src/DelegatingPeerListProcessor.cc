@@ -32,10 +32,25 @@
  */
 /* copyright --> */
 #include "DelegatingPeerListProcessor.h"
+#include "DefaultPeerListProcessor.h"
+#include "CompactPeerListProcessor.h"
+#include "Peer.h"
+
+namespace aria2 {
+
+DelegatingPeerListProcessor::DelegatingPeerListProcessor(int32_t pieceLength, int64_t totalLength):
+  pieceLength(pieceLength),
+  totalLength(totalLength)
+{
+  processors.push_back(new DefaultPeerListProcessor(pieceLength, totalLength));
+  processors.push_back(new CompactPeerListProcessor(pieceLength, totalLength));
+}
+
+DelegatingPeerListProcessor::~DelegatingPeerListProcessor() {}
 
 Peers DelegatingPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
   Peers peers;
-  for(PeerListProcessors::iterator itr = processors.begin();
+  for(std::deque<SharedHandle<PeerListProcessor> >::iterator itr = processors.begin();
       itr != processors.end(); itr++) {
     PeerListProcessorHandle processor = *itr;
     if(processor->canHandle(peersEntry)) {
@@ -48,7 +63,7 @@ Peers DelegatingPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
 }
 
 bool DelegatingPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
-  for(PeerListProcessors::const_iterator itr = processors.begin();
+  for(std::deque<SharedHandle<PeerListProcessor> >::const_iterator itr = processors.begin();
       itr != processors.end(); itr++) {
     if((*itr)->canHandle(peersEntry)) {
       return true;
@@ -56,3 +71,5 @@ bool DelegatingPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
   }
   return false;
 }
+
+} // namespace aria2

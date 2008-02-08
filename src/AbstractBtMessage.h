@@ -36,18 +36,20 @@
 #define _D_ABSTRACT_BT_MESSAGE_H_
 
 #include "BtMessage.h"
-#include "Peer.h"
-#include "Piece.h"
-#include "LogFactory.h"
-#include "Logger.h"
-#include "BtEvent.h"
-#include "BtEventListener.h"
-#include "BtContext.h"
-#include "BtRegistry.h"
-#include "BtMessageDispatcher.h"
-#include "PeerConnection.h"
-#include "BtRequestFactory.h"
-#include "BtMessageFactory.h"
+#include <deque>
+
+namespace aria2 {
+
+class BtContext;
+class PieceStorage;
+class Peer;
+class BtMessageDispatcher;
+class BtMessageFactory;
+class BtRequestFactory;
+class PeerConnection;
+class BtMessageValidator;
+class BtEventListener;
+class Logger;
 
 class AbstractBtMessage : public BtMessage {
 protected:
@@ -56,35 +58,29 @@ protected:
   bool uploading;
   int32_t cuid;
 
-  BtContextHandle btContext;
+  SharedHandle<BtContext> btContext;
 
-  PieceStorageHandle pieceStorage;
+  SharedHandle<PieceStorage> pieceStorage;
 
-  PeerHandle peer;
+  SharedHandle<Peer> peer;
 
-  BtMessageDispatcherWeakHandle dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher;
 
-  BtMessageFactoryWeakHandle messageFactory;
+  WeakHandle<BtMessageFactory> messageFactory;
 
-  BtRequestFactoryWeakHandle requestFactory;
+  WeakHandle<BtRequestFactory> requestFactory;
 
-  PeerConnectionWeakHandle peerConnection;
+  WeakHandle<PeerConnection> peerConnection;
 
-  BtMessageValidatorHandle validator;
-  BtEventListeners listeners;
+  SharedHandle<BtMessageValidator> validator;
+
+  std::deque<SharedHandle<BtEventListener> > listeners;
+
   const Logger* logger;
 public:
-  AbstractBtMessage():sendingInProgress(false),
-		      invalidate(false),
-		      uploading(false),
-		      cuid(0),
-		      btContext(0),
-		      pieceStorage(0),
-		      peer(0),
-		      validator(0),
-		      logger(LogFactory::getInstance())
-		      
-  {}
+  AbstractBtMessage();
+
+  virtual ~AbstractBtMessage();
 
   virtual bool isSendingInProgress() {
     return sendingInProgress;
@@ -118,72 +114,39 @@ public:
     this->cuid = cuid;
   }
 
-  PeerHandle getPeer() const {
-    return peer;
-  }
+  SharedHandle<Peer> getPeer() const;
 
-  void setPeer(const PeerHandle& peer) {
-    this->peer = peer;
-  }
+  void setPeer(const SharedHandle<Peer>& peer);
 
   virtual void doReceivedAction() {}
 
-  virtual bool validate(Errors& errors) {
-    if(validator.get()) {
-      return validator->validate(errors);
-    } else {
-      return true;
-    }
-  }
+  virtual bool validate(std::deque<std::string>& errors);
   
   virtual void onQueued() {}
 
-  virtual void handleEvent(const BtEventHandle& event) {
-    for(BtEventListeners::iterator itr = listeners.begin();
-	itr != listeners.end(); ++itr) {
-      (*itr)->handleEvent(event);
-    }
-  }
+  virtual void handleEvent(const SharedHandle<BtEvent>& event);
 
-  void addEventListener(const BtEventListenerHandle& listener) {
-    listeners.push_back(listener);
-  }
+  void addEventListener(const SharedHandle<BtEventListener>& listener);
 
-  void setBtMessageValidator(const BtMessageValidatorHandle& validator) {
-    this->validator = validator;
-  }
+  void setBtMessageValidator(const SharedHandle<BtMessageValidator>& validator);
 
-  BtMessageValidatorHandle getBtMessageValidator() const {
-    return validator;
-  }
+  SharedHandle<BtMessageValidator> getBtMessageValidator() const;
 
-  void setBtContext(const BtContextHandle& btContext) {
-    this->btContext = btContext;
-    this->pieceStorage = PIECE_STORAGE(btContext);
-  }
+  void setBtContext(const SharedHandle<BtContext>& btContext);
 
-  BtContextHandle getBtContext() const {
-    return btContext;
-  }
+  SharedHandle<BtContext> getBtContext() const;
 
-  void setBtMessageDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
-  {
-    this->dispatcher = dispatcher;
-  }
+  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
 
-  void setPeerConnection(const PeerConnectionWeakHandle& peerConnection) {
-    this->peerConnection = peerConnection;
-  }
+  void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);
 
-  void setBtMessageFactory(const BtMessageFactoryWeakHandle& factory) {
-    this->messageFactory = factory;
-  }
+  void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 
-  void setBtRequestFactory(const BtRequestFactoryWeakHandle& factory) {
-    this->requestFactory = factory;
-  }
+  void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
 };
 
 typedef SharedHandle<AbstractBtMessage> AbstractBtMessageHandle;
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_BT_MESSAGE_H_

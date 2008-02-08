@@ -37,13 +37,17 @@
 
 #include "DHTAbstractNodeLookupTask.h"
 
+namespace aria2 {
+
 class DHTNodeLookupTask:public DHTAbstractNodeLookupTask {
 public:
   DHTNodeLookupTask(const unsigned char* targetNodeID);
 
-  virtual DHTNodes getNodesFromMessage(const DHTMessageHandle& message);
+  virtual std::deque<SharedHandle<DHTNode> > getNodesFromMessage(const SharedHandle<DHTMessage>& message);
 
-  virtual DHTMessageHandle createMessage(const DHTNodeHandle& remoteNode);
+  virtual SharedHandle<DHTMessage> createMessage(const SharedHandle<DHTNode>& remoteNode);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_NODE_LOOKUP_TASK_H_

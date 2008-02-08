@@ -37,22 +37,26 @@
 
 #include "AbstractCommand.h"
 
+namespace aria2 {
+
 class HttpConnection;
-typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+class SocketCore;
 
 class HttpRequestCommand:public AbstractCommand {
 private:
-  HttpConnectionHandle _httpConnection;
+  SharedHandle<HttpConnection> _httpConnection;
 protected:
   virtual bool executeInternal();
 public:
   HttpRequestCommand(int cuid,
-		     const RequestHandle& req,
+		     const SharedHandle<Request>& req,
 		     RequestGroup* requestGroup,
-		     const HttpConnectionHandle& httpConnection,
+		     const SharedHandle<HttpConnection>& httpConnection,
 		     DownloadEngine* e,
-		     const SocketHandle& s);
+		     const SharedHandle<SocketCore>& s);
   virtual ~HttpRequestCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_HTTP_REQUEST_COMMAND_H_

@@ -36,99 +36,94 @@
 #define _D_DEFAULT_BT_MESSAGE_FACTORY_H_
 
 #include "BtMessageFactory.h"
-#include "Peer.h"
-#include "AbstractBtMessage.h"
-#include "BtRegistry.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskFactoryDecl.h"
+
+namespace aria2 {
+
+class BtContext;
+class Peer;
+class AbstractBtMessage;
+class BtMessageDispatcher;
+class BtRequestFactory;
+class PeerConnection;
+class PieceStorage;
+class DHTTaskQueue;
+class DHTTaskFactory;
 
 class DefaultBtMessageFactory : public BtMessageFactory {
 private:
   int32_t cuid;
-  BtContextHandle btContext;
-  PieceStorageHandle pieceStorage;
-  PeerHandle peer;
+  SharedHandle<BtContext> btContext;
+  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<Peer> peer;
 
   bool _dhtEnabled;
 
-  BtMessageDispatcherWeakHandle dispatcher;
+  WeakHandle<BtMessageDispatcher> dispatcher;
 
-  BtRequestFactoryWeakHandle requestFactory;
+  WeakHandle<BtRequestFactory> requestFactory;
 
-  PeerConnectionWeakHandle peerConnection;
+  WeakHandle<PeerConnection> peerConnection;
 
   WeakHandle<DHTTaskQueue> _taskQueue;
 
   WeakHandle<DHTTaskFactory> _taskFactory;
 
-  void setCommonProperty(const AbstractBtMessageHandle& msg);
+  void setCommonProperty(const SharedHandle<AbstractBtMessage>& msg);
 public:
   DefaultBtMessageFactory();
 
   virtual ~DefaultBtMessageFactory();
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createBtMessage(const unsigned char* msg, int32_t msgLength);
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createHandshakeMessage(const unsigned char* msg, int32_t msgLength);
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createHandshakeMessage(const unsigned char* infoHash,
 			 const unsigned char* peerId);
 
-  virtual BtMessageHandle
-  createRequestMessage(const PieceHandle& piece, int32_t blockIndex);
+  virtual SharedHandle<BtMessage>
+  createRequestMessage(const SharedHandle<Piece>& piece, int32_t blockIndex);
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createCancelMessage(int32_t index, int32_t begin, int32_t length);
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createPieceMessage(int32_t index, int32_t begin, int32_t length);
 
-  virtual BtMessageHandle createHaveMessage(int32_t index);
+  virtual SharedHandle<BtMessage> createHaveMessage(int32_t index);
 
-  virtual BtMessageHandle createChokeMessage();
+  virtual SharedHandle<BtMessage> createChokeMessage();
 
-  virtual BtMessageHandle createUnchokeMessage();
+  virtual SharedHandle<BtMessage> createUnchokeMessage();
   
-  virtual BtMessageHandle createInterestedMessage();
+  virtual SharedHandle<BtMessage> createInterestedMessage();
 
-  virtual BtMessageHandle createNotInterestedMessage();
+  virtual SharedHandle<BtMessage> createNotInterestedMessage();
 
-  virtual BtMessageHandle createBitfieldMessage();
+  virtual SharedHandle<BtMessage> createBitfieldMessage();
 
-  virtual BtMessageHandle createKeepAliveMessage();
+  virtual SharedHandle<BtMessage> createKeepAliveMessage();
   
-  virtual BtMessageHandle createHaveAllMessage();
+  virtual SharedHandle<BtMessage> createHaveAllMessage();
 
-  virtual BtMessageHandle createHaveNoneMessage();
+  virtual SharedHandle<BtMessage> createHaveNoneMessage();
 
-  virtual BtMessageHandle
+  virtual SharedHandle<BtMessage>
   createRejectMessage(int32_t index, int32_t begin, int32_t length);
 
-  virtual BtMessageHandle createAllowedFastMessage(int32_t index);
+  virtual SharedHandle<BtMessage> createAllowedFastMessage(int32_t index);
 
-  virtual BtMessageHandle createPortMessage(uint16_t port);
+  virtual SharedHandle<BtMessage> createPortMessage(uint16_t port);
 
-  virtual BtMessageHandle createBtExtendedMessage(const ExensionMessageHandle& msg);
+  virtual SharedHandle<BtMessage>
+  createBtExtendedMessage(const SharedHandle<ExtensionMessage>& msg);
 
-  void setPeer(const PeerHandle& peer) {
-    this->peer = peer;
-  }
+  void setPeer(const SharedHandle<Peer>& peer);
 
-  PeerHandle getPeer() const {
-    return peer;
-  }
-
-  void setBtContext(const BtContextHandle& btContext) {
-    this->btContext = btContext;
-    this->pieceStorage = PIECE_STORAGE(btContext);
-  }
-
-  BtContextHandle getBtContext() const {
-    return btContext;
-  }
+  void setBtContext(const SharedHandle<BtContext>& btContext);
 
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
@@ -138,18 +133,11 @@ public:
     _dhtEnabled = enabled;
   }
 
-  void setBtMessageDispatcher(const BtMessageDispatcherWeakHandle& dispatcher)
-  {
-    this->dispatcher = dispatcher;
-  }
+  void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
   
-  void setBtRequestFactory(const BtRequestFactoryWeakHandle& factory) {
-    this->requestFactory = factory;
-  }
+  void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
 
-  void setPeerConnection(const PeerConnectionWeakHandle& connection) {
-    this->peerConnection = connection;
-  }
+  void setPeerConnection(const WeakHandle<PeerConnection>& connection);
   
   void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
 
@@ -157,5 +145,7 @@ public:
 };
 
 typedef SharedHandle<DefaultBtMessageFactory> DefaultBtMessageFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_BT_MESSAGE_FACTORY_H_

@@ -36,19 +36,25 @@
 #define _D_DHT_NODE_LOOKUP_ENTRY_H_
 
 #include "common.h"
-#include "DHTNodeDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DHTNode;
 
 class DHTNodeLookupEntry {
 public:
-  DHTNodeHandle _node;
+  SharedHandle<DHTNode> _node;
 
   bool _used;
 
-  DHTNodeLookupEntry(const DHTNodeHandle& node);
+  DHTNodeLookupEntry(const SharedHandle<DHTNode>& node);
 
   DHTNodeLookupEntry();
 
   bool operator==(const DHTNodeLookupEntry& entry) const;
 };
+
+} // namespace aria2;
 
 #endif // _D_DHT_NODE_LOOKUP_ENTRY_H_

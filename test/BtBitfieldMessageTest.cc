@@ -1,9 +1,11 @@
 #include "BtBitfieldMessage.h"
 #include "PeerMessageUtil.h"
 #include "Util.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtBitfieldMessageTest:public CppUnit::TestFixture {
 
@@ -34,7 +36,7 @@ void BtBitfieldMessageTest::testCreate() {
   unsigned char bitfield[2];
   memset(bitfield, 0xff, sizeof(bitfield));
   memcpy(&msg[5], bitfield, sizeof(bitfield));
-  BtBitfieldMessageHandle pm = BtBitfieldMessage::create(&msg[4], 3);
+  SharedHandle<BtBitfieldMessage> pm = BtBitfieldMessage::create(&msg[4], 3);
   CPPUNIT_ASSERT_EQUAL((int8_t)5, pm->getId());
   CPPUNIT_ASSERT(memcmp(bitfield, pm->getBitfield(), sizeof(bitfield)) == 0);
   CPPUNIT_ASSERT_EQUAL((int32_t)2, pm->getBitfieldLength());
@@ -68,18 +70,18 @@ void BtBitfieldMessageTest::testGetMessage() {
 }
 
 void BtBitfieldMessageTest::testDoReceivedAction() {
-  PeerHandle peer = new Peer("host1", 6969);
+  SharedHandle<Peer> peer = new Peer("host1", 6969);
   peer->allocateBitfield(16*1024, 16*16*1024);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
   unsigned char bitfield[] = { 0xff, 0xff };
   msg.setBitfield(bitfield, sizeof(bitfield));
   
-  CPPUNIT_ASSERT_EQUAL(string("0000"), Util::toHex(peer->getBitfield(),
-						   peer->getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL(std::string("0000"), Util::toHex(peer->getBitfield(),
+							peer->getBitfieldLength()));
   msg.doReceivedAction();
-  CPPUNIT_ASSERT_EQUAL(string("ffff"), Util::toHex(peer->getBitfield(),
-						   peer->getBitfieldLength()));
+  CPPUNIT_ASSERT_EQUAL(std::string("ffff"), Util::toHex(peer->getBitfield(),
+							peer->getBitfieldLength()));
 }
 
 void BtBitfieldMessageTest::testToString() {
@@ -87,5 +89,7 @@ void BtBitfieldMessageTest::testToString() {
   unsigned char bitfield[] = { 0xff, 0xff };
   msg.setBitfield(bitfield, sizeof(bitfield));
 
-  CPPUNIT_ASSERT_EQUAL(string("bitfield ffff"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("bitfield ffff"), msg.toString());
 }
+
+} // namespace aria2

@@ -38,13 +38,11 @@
 #include "MetaEntry.h"
 #include <deque>
 
-using namespace std;
-
-typedef deque<MetaEntry*> MetaList;
+namespace aria2 {
 
 class List : public MetaEntry {
 private:
-  MetaList mlist;
+  std::deque<MetaEntry*> mlist;
 
   void clearList();
 public:
@@ -53,9 +51,11 @@ public:
 
   void add(MetaEntry* entry);
 
-  const MetaList& getList() const;
+  const std::deque<MetaEntry*>& getList() const;
 
   void accept(MetaEntryVisitor* v) const;
 };
+
+} // namespace aria2
 
 #endif // _D_LIST_H_

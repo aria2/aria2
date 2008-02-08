@@ -3,7 +3,7 @@
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class ListTest:public CppUnit::TestFixture {
 
@@ -31,3 +31,4 @@ void ListTest::testAdd() {
   CPPUNIT_ASSERT_EQUAL(2, (int)l.getList().size());
 }
 
+} // namespace aria2

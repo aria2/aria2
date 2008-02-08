@@ -36,34 +36,35 @@
 #define _D_DEFAULT_BT_CONTEXT_H_
 
 #include "BtContext.h"
-#include "Dictionary.h"
-#include "Data.h"
-#include "List.h"
+#include <iosfwd>
+
+namespace aria2 {
 
 class Randomizer;
-typedef SharedHandle<Randomizer> RandomizerHandle;
 class Logger;
+class MetaEntry;
+class Dictionary;
+class List;
+class Data;
 
 #define INFO_HASH_LENGTH 20
 #define PIECE_HASH_LENGTH 20
 
-typedef Strings PieceHashes;
-
 class DefaultBtContext : public BtContext {
 private:
   unsigned char infoHash[INFO_HASH_LENGTH];
-  string infoHashString;
-  PieceHashes pieceHashes;
-  FileEntries fileEntries;
+  std::string infoHashString;
+  std::deque<std::string> pieceHashes;
+  std::deque<SharedHandle<FileEntry> > fileEntries;
   FILE_MODE fileMode;
   int64_t totalLength;
   int32_t pieceLength;
-  string name;
+  std::string name;
   int32_t numPieces;
-  string peerId;
-  string _peerIdPrefix;
-  AnnounceTiers announceTiers;
-  RandomizerHandle _randomizer;
+  std::string peerId;
+  std::string _peerIdPrefix;
+  std::deque<SharedHandle<AnnounceTier> > announceTiers;
+  SharedHandle<Randomizer> _randomizer;
 
   RequestGroup* _ownerRequestGroup;
 
@@ -74,14 +75,14 @@ private:
 			int32_t hashDataLength,
 			int32_t hashLength);
   void extractFileEntries(const Dictionary* infoDic,
-			  const string& defaultName,
-			  const Strings& urlList);
+			  const std::string& defaultName,
+			  const std::deque<std::string>& urlList);
   void extractAnnounce(const Data* announceData);
   void extractAnnounceList(const List* announceListData);
 
-  Strings extractUrlList(const MetaEntry* obj);
+  std::deque<std::string> extractUrlList(const MetaEntry* obj);
 
-  void processRootDictionary(const Dictionary* rootDic, const string& defaultName);
+  void processRootDictionary(const Dictionary* rootDic, const std::string& defaultName);
 
  public:
   DefaultBtContext();
@@ -91,11 +92,11 @@ private:
 
   virtual int32_t getInfoHashLength() const;
 
-  virtual string getInfoHashAsString() const;
+  virtual std::string getInfoHashAsString() const;
 
-  virtual string getPieceHash(int32_t index) const;
+  virtual std::string getPieceHash(int32_t index) const;
 
-  virtual const Strings& getPieceHashes() const
+  virtual const std::deque<std::string>& getPieceHashes() const
   {
     return pieceHashes;
   }
@@ -104,26 +105,26 @@ private:
 
   virtual FILE_MODE getFileMode() const;
 
-  virtual FileEntries getFileEntries() const;
+  virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;
 
-  virtual string getPieceHashAlgo() const
+  virtual std::string getPieceHashAlgo() const
   {
     return "sha1";
   }
 
-  virtual AnnounceTiers getAnnounceTiers() const;
+  virtual std::deque<SharedHandle<AnnounceTier> > getAnnounceTiers() const;
 
-  virtual void load(const string& torrentFile);
+  virtual void load(const std::string& torrentFile);
 
-  void loadFromMemory(const char* content, int32_t length, const string& defaultName);
+  void loadFromMemory(const char* content, int32_t length, const std::string& defaultName);
 
-  virtual string getName() const;
+  virtual std::string getName() const;
 
   virtual int32_t getPieceLength() const;
   
   virtual int32_t getNumPieces() const;
 
-  virtual string getActualBasePath() const;
+  virtual std::string getActualBasePath() const;
 
   virtual const unsigned char* getPeerId() {
     if(peerId == "") {
@@ -132,16 +133,16 @@ private:
     return (const unsigned char*)peerId.c_str();
   }
 
-  virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize);
+  virtual std::deque<int32_t> computeFastSet(const std::string& ipaddr, int32_t fastSetSize);
 
   virtual RequestGroup* getOwnerRequestGroup()
   {
     return _ownerRequestGroup;
   }
 
-  string generatePeerId() const;
+  std::string generatePeerId() const;
 
-  void setPeerIdPrefix(const string& peerIdPrefix)
+  void setPeerIdPrefix(const std::string& peerIdPrefix)
   {
     _peerIdPrefix = peerIdPrefix;
   }
@@ -162,11 +163,13 @@ private:
     _ownerRequestGroup = owner;
   }
 
-  void setRandomizer(const RandomizerHandle& randomizer);
+  void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
-  friend ostream& operator<<(ostream& o, const DefaultBtContext& ctx);
+  friend std::ostream& operator<<(std::ostream& o, const DefaultBtContext& ctx);
 };
 
 typedef SharedHandle<DefaultBtContext> DefaultBtContextHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_BT_CONTEXT_H_

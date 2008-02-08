@@ -35,10 +35,16 @@
 #include "BNode.h"
 #include "DHTBucket.h"
 #include "DHTNode.h"
+#include <functional>
+#include <algorithm>
 
-BNode::BNode(const DHTBucketHandle& bucket):_bucket(bucket),
-					    _up(0),
-					    _left(0), _right(0) {}
+namespace aria2 {
+
+BNode::BNode(const SharedHandle<DHTBucket>& bucket):
+  _bucket(bucket),
+  _up(0),
+  _left(0),
+  _right(0) {}
 
 BNode::~BNode()
 {
@@ -46,7 +52,7 @@ BNode::~BNode()
   delete _right;
 }
 
-DHTBucketHandle BNode::getBucket() const
+SharedHandle<DHTBucket> BNode::getBucket() const
 {
   return _bucket;
 }
@@ -83,7 +89,7 @@ void BNode::setUp(BNode* up)
   _up = up;
 }
 
-void BNode::setBucket(const DHTBucketHandle& bucket)
+void BNode::setBucket(const SharedHandle<DHTBucket>& bucket)
 {
   _bucket = bucket;
 }
@@ -117,7 +123,7 @@ BNode* BNode::findBNodeFor(BNode* b, const unsigned char* key)
   return 0;
 }
 
-DHTBucketHandle BNode::findBucketFor(BNode* b, const unsigned char* key)
+SharedHandle<DHTBucket> BNode::findBucketFor(BNode* b, const unsigned char* key)
 {
   BNode* bnode = findBNodeFor(b, key);
   if(bnode) {
@@ -128,22 +134,22 @@ DHTBucketHandle BNode::findBucketFor(BNode* b, const unsigned char* key)
 }
 
 
-DHTNodes BNode::findClosestKNodes(BNode* b, const unsigned char* key)
+std::deque<SharedHandle<DHTNode> > BNode::findClosestKNodes(BNode* b, const unsigned char* key)
 {
   BNode* bnode = findBNodeFor(b, key);
-  DHTNodes nodes;
+  std::deque<SharedHandle<DHTNode> > nodes;
   if(!bnode) {
     return nodes;
   }
   {
-    DHTBucketHandle bucket = bnode->getBucket();
-    DHTNodes goodNodes = bucket->getGoodNodes();
+    SharedHandle<DHTBucket> bucket = bnode->getBucket();
+    std::deque<SharedHandle<DHTNode> > goodNodes = bucket->getGoodNodes();
     nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
   }
   if(nodes.size() >= DHTBucket::K) {
     return nodes;
   }
-  BNodes visited;
+  std::deque<const BNode*> visited;
   visited.push_back(bnode);
 
   BNode* up = bnode->getUp();
@@ -156,16 +162,16 @@ DHTNodes BNode::findClosestKNodes(BNode* b, const unsigned char* key)
   }
   bnode = up;
 
-  const_mem_fun_t<BNode*, BNode> firstfunc = leftFirst?mem_fun(&BNode::getLeft):mem_fun(&BNode::getRight);
-  const_mem_fun_t<BNode*, BNode> secondfunc = leftFirst?mem_fun(&BNode::getRight):mem_fun(&BNode::getLeft);
+  std::const_mem_fun_t<BNode*, BNode> firstfunc = leftFirst?std::mem_fun(&BNode::getLeft):std::mem_fun(&BNode::getRight);
+  std::const_mem_fun_t<BNode*, BNode> secondfunc = leftFirst?std::mem_fun(&BNode::getRight):std::mem_fun(&BNode::getLeft);
   while(nodes.size() < DHTBucket::K) {
     
     if(!bnode->getLeft() && !bnode->getRight()) {
       bnode = bnode->getUp();
     } else {
-      if(find(visited.begin(), visited.end(), firstfunc(bnode)) == visited.end()) {
+      if(std::find(visited.begin(), visited.end(), firstfunc(bnode)) == visited.end()) {
 	bnode = firstfunc(bnode);
-      } else if(find(visited.begin(), visited.end(), secondfunc(bnode)) == visited.end()) {
+      } else if(std::find(visited.begin(), visited.end(), secondfunc(bnode)) == visited.end()) {
 	bnode = secondfunc(bnode);
       } else {
 	bnode = bnode->getUp();
@@ -176,9 +182,9 @@ DHTNodes BNode::findClosestKNodes(BNode* b, const unsigned char* key)
       break;
     }
     {
-      DHTBucketHandle bucket = bnode->getBucket();
+      SharedHandle<DHTBucket> bucket = bnode->getBucket();
       if(!bucket.isNull()) {
-	DHTNodes goodNodes = bucket->getGoodNodes();
+	std::deque<SharedHandle<DHTNode> > goodNodes = bucket->getGoodNodes();
 	size_t r = DHTBucket::K-nodes.size();
 	if(goodNodes.size() <= r) {
 	  nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
@@ -191,10 +197,10 @@ DHTNodes BNode::findClosestKNodes(BNode* b, const unsigned char* key)
   return nodes;
 }
 
-DHTBuckets BNode::enumerateBucket(const BNode* b)
+std::deque<SharedHandle<DHTBucket> > BNode::enumerateBucket(const BNode* b)
 {
-  DHTBuckets buckets;
-  deque<const BNode*> visited;
+  std::deque<SharedHandle<DHTBucket> > buckets;
+  std::deque<const BNode*> visited;
   visited.push_back(b);
   while(1) {
     if(!b) {
@@ -203,10 +209,10 @@ DHTBuckets BNode::enumerateBucket(const BNode* b)
     if(!b->getBucket().isNull()) {
       buckets.push_back(b->getBucket());
       b = b->getUp();
-    } else if(find(visited.begin(), visited.end(), b->getLeft()) == visited.end()) {
+    } else if(std::find(visited.begin(), visited.end(), b->getLeft()) == visited.end()) {
       b = b->getLeft();
       visited.push_back(b);
-    } else if(find(visited.begin(), visited.end(), b->getRight()) == visited.end()) {
+    } else if(std::find(visited.begin(), visited.end(), b->getRight()) == visited.end()) {
       b = b->getRight();
       visited.push_back(b);
     } else {
@@ -215,3 +221,5 @@ DHTBuckets BNode::enumerateBucket(const BNode* b)
   }
   return buckets;
 }
+
+} // namespace aria2

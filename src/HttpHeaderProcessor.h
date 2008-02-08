@@ -36,25 +36,29 @@
 #define _D_HTTP_HEADER_PROCESSOR_H_
 
 #include "common.h"
-#include "HttpHeader.h"
+#include "SharedHandle.h"
 #include <utility>
 #include <sstream>
 
+namespace aria2 {
+
+class HttpHeader;
+
 class HttpHeaderProcessor {
 private:
-  stringstream strm;
+  std::stringstream strm;
   int32_t _limit;
 
   void checkHeaderLimit(int32_t incomingLength);
 
 public:
-  HttpHeaderProcessor():_limit(4096) {}
+  HttpHeaderProcessor();
 
-  ~HttpHeaderProcessor() {}
+  ~HttpHeaderProcessor();
 
   void update(const char* data, int32_t length);
 
-  void update(const string& data);
+  void update(const std::string& data);
 
   /**
    * Returns true if end of header is reached.
@@ -66,9 +70,9 @@ public:
    */
   int32_t getPutBackDataLength() const;
 
-  pair<string, HttpHeaderHandle> getHttpStatusHeader();
+  std::pair<std::string, SharedHandle<HttpHeader> > getHttpStatusHeader();
 
-  string getHeaderString() const;
+  std::string getHeaderString() const;
 
   void clear();
 
@@ -79,5 +83,7 @@ public:
 };
 
 typedef SharedHandle<HttpHeaderProcessor> HttpHeaderProcessorHandle;
+
+} // namespace aria2
 
 #endif // _D_HTTP_HEADER_PROCESSOR_H_

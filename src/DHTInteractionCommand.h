@@ -36,22 +36,24 @@
 #define _D_DHT_INTERACTION_COMMAND_H_
 
 #include "Command.h"
-#include "DHTMessageDispatcherDecl.h"
-#include "DHTMessageReceiverDecl.h"
-#include "DHTTaskQueueDecl.h"
+#include "SharedHandle.h"
 
+namespace aria2 {
+
+class DHTMessageDispatcher;
+class DHTMessageReceiver;
+class DHTTaskQueue;
 class DownloadEngine;
 class SocketCore;
-typedef SharedHandle<SocketCore> SocketHandle;
 
 class DHTInteractionCommand:public Command {
 protected:
   DownloadEngine* _e;
 private:
-  DHTMessageDispatcherHandle _dispatcher;
-  DHTMessageReceiverHandle _receiver;
-  DHTTaskQueueHandle _taskQueue;
-  SocketHandle _readCheckSocket;
+  SharedHandle<DHTMessageDispatcher> _dispatcher;
+  SharedHandle<DHTMessageReceiver> _receiver;
+  SharedHandle<DHTTaskQueue> _taskQueue;
+  SharedHandle<SocketCore> _readCheckSocket;
 
 public:
   DHTInteractionCommand(int32_t cuid, DownloadEngine* e);
@@ -60,15 +62,17 @@ public:
 
   virtual bool execute();
 
-  void setReadCheckSocket(const SocketHandle& socket);
+  void setReadCheckSocket(const SharedHandle<SocketCore>& socket);
 
-  void disableReadCheckSocket(const SocketHandle& socket);
+  void disableReadCheckSocket(const SharedHandle<SocketCore>& socket);
 
-  void setMessageDispatcher(const DHTMessageDispatcherHandle& dispatcher);
+  void setMessageDispatcher(const SharedHandle<DHTMessageDispatcher>& dispatcher);
 
-  void setMessageReceiver(const DHTMessageReceiverHandle& receiver);
+  void setMessageReceiver(const SharedHandle<DHTMessageReceiver>& receiver);
 
-  void setTaskQueue(const DHTTaskQueueHandle& taskQueue);
+  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_INTERACTION_COMMAND_H_

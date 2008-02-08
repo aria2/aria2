@@ -34,21 +34,25 @@
 /* copyright --> */
 #include "UriListParser.h"
 #include "Util.h"
+#include <istream>
 
-bool UriListParser::hasNext() const
-{
-  return getInputStream();
-}
+namespace aria2 {
 
-Strings UriListParser::next()
+UriListParser::UriListParser() {}
+
+UriListParser::~UriListParser() {}
+
+std::deque<std::string> UriListParser::parseNext(std::istream& in)
 {
-  string line;
-  while(getline(getInputStream(), line)) {
+  std::deque<std::string> uris;
+  std::string line;
+  while(getline(in, line)) {
     if(Util::trim(line) != "") {
-      Strings uris;
       Util::slice(uris, line, '\t', true);
       return uris;
     }
   }
-  return Strings();
+  return uris;
 }
+
+} // namespace aria2

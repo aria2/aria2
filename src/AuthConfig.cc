@@ -34,9 +34,12 @@
 /* copyright --> */
 #include "AuthConfig.h"
 
-ostream& operator<<(ostream& o, const AuthConfigHandle& authConfig)
+namespace aria2 {
+
+std::ostream& operator<<(std::ostream& o, const AuthConfigHandle& authConfig)
 {
   o << authConfig->getAuthText();
   return o;
 }
 
+} // namespace aria2

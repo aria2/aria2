@@ -38,8 +38,12 @@
 #include "SharedHandle.h"
 #include <deque>
 
+namespace aria2 {
+
 class Peer;
 typedef SharedHandle<Peer> PeerHandle;
 typedef std::deque<PeerHandle> Peers;
+
+} // namespace aria2
 
 #endif // _D_PEER_DECL_H_

@@ -36,10 +36,10 @@
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "StreamFileAllocationEntry.h"
-#include "InitiateConnectionCommandFactory.h"
-#include "CUIDCounter.h"
-#include "PieceStorage.h"
 #include "FileAllocationMan.h"
+#include "Request.h"
+
+namespace aria2 {
 
 StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(const RequestHandle& currentRequest,
 						     RequestGroup* requestGroup,
@@ -68,3 +68,5 @@ Commands StreamCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
 {
   return Commands();
 }
+
+} // namespace aria2

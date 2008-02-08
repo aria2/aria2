@@ -33,11 +33,17 @@
  */
 /* copyright --> */
 #include "DefaultSegmentManFactory.h"
-#include "prefs.h"
+#include "DownloadContext.h"
+#include "PieceStorage.h"
 #include "DefaultDiskWriter.h"
+#include "SegmentMan.h"
+#include "prefs.h"
 
-SegmentManHandle DefaultSegmentManFactory::createNewInstance(const DownloadContextHandle& dctx,
-							     const PieceStorageHandle& ps)
+namespace aria2 {
+
+SegmentManHandle
+DefaultSegmentManFactory::createNewInstance(const DownloadContextHandle& dctx,
+					    const PieceStorageHandle& ps)
 {
   SegmentManHandle segmentMan = new SegmentMan(_option, dctx, ps);
   //segmentMan->diskWriter = new DefaultDiskWriter();
@@ -47,3 +53,5 @@ SegmentManHandle DefaultSegmentManFactory::createNewInstance(const DownloadConte
   //segmentMan->option = _option;
   return segmentMan;
 }
+
+} // namespace aria2

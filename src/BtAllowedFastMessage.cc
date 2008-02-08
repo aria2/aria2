@@ -37,6 +37,9 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Peer.h"
+
+namespace aria2 {
 
 BtAllowedFastMessageHandle BtAllowedFastMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 5) {
@@ -84,6 +87,8 @@ void BtAllowedFastMessage::onSendComplete() {
   peer->addAmAllowedIndex(index);
 }
 
-string BtAllowedFastMessage::toString() const {
+std::string BtAllowedFastMessage::toString() const {
   return "allowed fast index="+Util::itos(index);
 }
+
+} // namespace aria2

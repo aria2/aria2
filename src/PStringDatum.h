@@ -36,16 +36,23 @@
 #define _D_P_STRING_DATUM_H_
 
 #include "common.h"
-#include "PStringVisitor.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
+
+class PStringVisitor;
 
 class PStringDatum {
 public:
   virtual ~PStringDatum() {}
 
-  virtual void accept(const PStringVisitorHandle& visitor) = 0;
+  virtual void accept(PStringVisitor* visitor) = 0;
 };
 
 typedef SharedHandle<PStringDatum> PStringDatumHandle;
-typedef deque<PStringDatumHandle> PStringData;
+typedef std::deque<PStringDatumHandle> PStringData;
+
+} // namespace aria2
 
 #endif // _D_P_STRING_DATUM_H_

@@ -1,9 +1,10 @@
 #include "common.h"
 #include "PeerMessageUtil.h"
 #include "a2netcompat.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class PeerMessageUtilTest:public CppUnit::TestFixture {
 
@@ -35,3 +36,5 @@ void createNLengthMessage(char* msg, int msgLen, int payloadLen, int id) {
   setIntParam(msg, payloadLen);
   msg[4] = (char)id;
 }
+
+} // namespace aria2

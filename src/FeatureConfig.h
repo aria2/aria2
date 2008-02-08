@@ -37,9 +37,13 @@
 
 #include "common.h"
 #include <map>
+#include <string>
+#include <deque>
 
-typedef map<string, int32_t> PortMap;
-typedef map<string, bool> FeatureMap;
+namespace aria2 {
+
+typedef std::map<std::string, int32_t> PortMap;
+typedef std::map<std::string, bool> FeatureMap;
 
 class FeatureConfig {
 private:
@@ -47,7 +51,7 @@ private:
 
   PortMap defaultPorts;
   FeatureMap supportedFeatures;
-  Strings features;
+  std::deque<std::string> features;
 
   FeatureConfig();
   ~FeatureConfig() {}
@@ -64,7 +68,7 @@ public:
     featureConfig = 0;
   }
 
-  int32_t getDefaultPort(const string& protocol) const {
+  int32_t getDefaultPort(const std::string& protocol) const {
     PortMap::const_iterator itr = defaultPorts.find(protocol);
     if(itr == defaultPorts.end()) {
       return 0;
@@ -73,7 +77,7 @@ public:
     }
   }
 
-  bool isSupported(const string& feature) const {
+  bool isSupported(const std::string& feature) const {
     FeatureMap::const_iterator itr = supportedFeatures.find(feature);
     if(itr == supportedFeatures.end()) {
       return false;
@@ -82,13 +86,13 @@ public:
     }
   }
 
-  const Strings& getFeatures() const {
+  const std::deque<std::string>& getFeatures() const {
     return features;
   }
 
-  string getConfigurationSummary() const {
-    string summary;
-    for(Strings::const_iterator itr = features.begin();
+  std::string getConfigurationSummary() const {
+    std::string summary;
+    for(std::deque<std::string>::const_iterator itr = features.begin();
 	itr != features.end(); itr++) {
       summary += *itr;
       if(isSupported(*itr)) {
@@ -101,5 +105,7 @@ public:
     return summary;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_FEATURE_CONFIG_H_

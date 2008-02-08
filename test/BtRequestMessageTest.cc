@@ -7,9 +7,18 @@
 #include "MockBtMessageDispatcher.h"
 #include "DefaultBtContext.h"
 #include "BtAbortOutstandingRequestEvent.h"
+#include "Peer.h"
+#include "BtRegistry.h"
+#include "PeerObject.h"
+#include "BtMessageReceiver.h"
+#include "BtRequestFactory.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
+#include "FileEntry.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtRequestMessageTest:public CppUnit::TestFixture {
 
@@ -52,48 +61,48 @@ public:
 
   class MockBtMessage2 : public MockBtMessage {
   public:
-    string type;
+    std::string type;
     int32_t index;
     int32_t begin;
     int32_t length;
   public:
-    MockBtMessage2(string type, int32_t index, int32_t begin, int32_t length):type(type), index(index), begin(begin), length(length) {}
+    MockBtMessage2(std::string type, int32_t index, int32_t begin, int32_t length):type(type), index(index), begin(begin), length(length) {}
   };
 
   typedef SharedHandle<MockBtMessage2> MockBtMessage2Handle;
 
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
-    virtual BtMessageHandle
+    virtual SharedHandle<BtMessage>
     createPieceMessage(int32_t index, int32_t begin, int32_t length) {
-      MockBtMessage2Handle btMsg = new MockBtMessage2("piece", index, begin, length);
+      SharedHandle<MockBtMessage2> btMsg = new MockBtMessage2("piece", index, begin, length);
       return btMsg;
     }
 
-    virtual BtMessageHandle
+    virtual SharedHandle<BtMessage>
     createRejectMessage(int32_t index, int32_t begin, int32_t length) {
-      MockBtMessage2Handle btMsg = new MockBtMessage2("reject", index, begin, length);
+      SharedHandle<MockBtMessage2> btMsg = new MockBtMessage2("reject", index, begin, length);
       return btMsg;
     }
   };
 
   typedef SharedHandle<MockBtMessageFactory2> MockBtMessageFactory2Handle;
 
-  PeerHandle peer;
-  MockBtMessageDispatcherHandle dispatcher;
-  BtRequestMessageHandle msg;
+  SharedHandle<Peer> peer;
+  SharedHandle<MockBtMessageDispatcher> dispatcher;
+  SharedHandle<BtRequestMessage> msg;
 
   BtRequestMessageTest():peer(0), dispatcher(0), msg(0) {}
 
   void setUp() {
     BtRegistry::unregisterAll();
 
-    MockBtContextHandle btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     btContext->setPieceLength(16*1024);
     btContext->setTotalLength(256*1024);
 
-    MockPieceStorageHandle pieceStorage = new MockPieceStorage2();
+    SharedHandle<MockPieceStorage> pieceStorage = new MockPieceStorage2();
 
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				     pieceStorage);
@@ -130,7 +139,7 @@ void BtRequestMessageTest::testCreate() {
   PeerMessageUtil::setIntParam(&msg[5], 12345);
   PeerMessageUtil::setIntParam(&msg[9], 256);
   PeerMessageUtil::setIntParam(&msg[13], 1024);
-  BtRequestMessageHandle pm = BtRequestMessage::create(&msg[4], 13);
+  SharedHandle<BtRequestMessage> pm = BtRequestMessage::create(&msg[4], 13);
   CPPUNIT_ASSERT_EQUAL((int8_t)6, pm->getId());
   CPPUNIT_ASSERT_EQUAL((int32_t)12345, pm->getIndex());
   CPPUNIT_ASSERT_EQUAL((int32_t)256, pm->getBegin());
@@ -173,7 +182,7 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
   
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher->messageQueue.size());
   MockBtMessage2* pieceMsg = (MockBtMessage2*)dispatcher->messageQueue.front().get();
-  CPPUNIT_ASSERT_EQUAL(string("piece"), pieceMsg->type);
+  CPPUNIT_ASSERT_EQUAL(std::string("piece"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((int32_t)1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((int32_t)16, pieceMsg->begin);
   CPPUNIT_ASSERT_EQUAL((int32_t)32, pieceMsg->length);
@@ -186,7 +195,7 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExten
   
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher->messageQueue.size());
   MockBtMessage2* pieceMsg = (MockBtMessage2*)dispatcher->messageQueue.front().get();
-  CPPUNIT_ASSERT_EQUAL(string("reject"), pieceMsg->type);
+  CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((int32_t)1, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((int32_t)16, pieceMsg->begin);
   CPPUNIT_ASSERT_EQUAL((int32_t)32, pieceMsg->length);
@@ -207,7 +216,7 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionE
   
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher->messageQueue.size());
   MockBtMessage2* pieceMsg = (MockBtMessage2*)dispatcher->messageQueue.front().get();
-  CPPUNIT_ASSERT_EQUAL(string("reject"), pieceMsg->type);
+  CPPUNIT_ASSERT_EQUAL(std::string("reject"), pieceMsg->type);
   CPPUNIT_ASSERT_EQUAL((int32_t)2, pieceMsg->index);
   CPPUNIT_ASSERT_EQUAL((int32_t)16, pieceMsg->begin);
   CPPUNIT_ASSERT_EQUAL((int32_t)32, pieceMsg->length);
@@ -222,8 +231,8 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionD
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent() {
-  PieceHandle piece = new Piece(1, 16*1024);
-  BtAbortOutstandingRequestEventHandle event =
+  SharedHandle<Piece> piece = new Piece(1, 16*1024);
+  SharedHandle<BtAbortOutstandingRequestEvent> event =
     new BtAbortOutstandingRequestEvent(piece);
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
@@ -233,8 +242,8 @@ void BtRequestMessageTest::testHandleAbortRequestEvent() {
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
-  PieceHandle piece = new Piece(2, 16*1024);
-  BtAbortOutstandingRequestEventHandle event =
+  SharedHandle<Piece> piece = new Piece(2, 16*1024);
+  SharedHandle<BtAbortOutstandingRequestEvent> event =
     new BtAbortOutstandingRequestEvent(piece);
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
@@ -244,8 +253,8 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
-  PieceHandle piece = new Piece(1, 16*1024);
-  BtAbortOutstandingRequestEventHandle event =
+  SharedHandle<Piece> piece = new Piece(1, 16*1024);
+  SharedHandle<BtAbortOutstandingRequestEvent> event =
     new BtAbortOutstandingRequestEvent(piece);
   msg->setInvalidate(true);
 
@@ -256,8 +265,8 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_sendingInProgress() {
-  PieceHandle piece = new Piece(1, 16*1024);
-  BtAbortOutstandingRequestEventHandle event =
+  SharedHandle<Piece> piece = new Piece(1, 16*1024);
+  SharedHandle<BtAbortOutstandingRequestEvent> event =
     new BtAbortOutstandingRequestEvent(piece);
   msg->setSendingInProgress(true);
 
@@ -268,6 +277,8 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_sendingInProgress() {
 }
 
 void BtRequestMessageTest::testToString() {
-  CPPUNIT_ASSERT_EQUAL(string("request index=1, begin=16, length=32"),
+  CPPUNIT_ASSERT_EQUAL(std::string("request index=1, begin=16, length=32"),
 		       msg->toString());
 }
+
+} // namespace aria2

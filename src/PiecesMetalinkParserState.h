@@ -37,14 +37,18 @@
 
 #include "MetalinkParserState.h"
 
+namespace aria2 {
+
 class PiecesMetalinkParserState:public MetalinkParserState
 {
 public:
   void beginElement(MetalinkParserStateMachine* stm,
-		    const string& name, const map<string, string>& attrs);
+		    const std::string& name, const std::map<std::string, std::string>& attrs);
 
   void endElement(MetalinkParserStateMachine* stm,
-		  const string& name, const string& characters);
+		  const std::string& name, const std::string& characters);
 };
+
+} // namespace aria2
 
 #endif // _D_PIECES_METALINK_PARSER_STATE_H_

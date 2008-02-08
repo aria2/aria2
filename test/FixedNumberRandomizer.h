@@ -3,6 +3,8 @@
 
 #include "Randomizer.h"
 
+namespace aria2 {
+
 class FixedNumberRandomizer : public Randomizer {
 private:
   int32_t fixedNumber;
@@ -32,5 +34,7 @@ public:
     return fixedNumber;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_FIXED_NUMBER_RANDOMIZER_H_

@@ -37,9 +37,11 @@
 
 #include "AbstractCommand.h"
 
+namespace aria2 {
+
 class FtpInitiateConnectionCommand : public AbstractCommand {
 private:
-  NameResolverHandle nameResolver;
+  SharedHandle<NameResolver> nameResolver;
   bool useHttpProxy() const;
   bool useHttpProxyGet() const;
   bool useHttpProxyConnect() const;
@@ -49,8 +51,12 @@ private:
 protected:
   virtual bool executeInternal();
 public:
-  FtpInitiateConnectionCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e);
+  FtpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
+			       RequestGroup* requestGroup, DownloadEngine* e);
+
   virtual ~FtpInitiateConnectionCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_FTP_INITIATE_CONNECTION_COMMAND_H_

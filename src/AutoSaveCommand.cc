@@ -36,6 +36,8 @@
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 
+namespace aria2 {
+
 AutoSaveCommand::AutoSaveCommand(int32_t cuid, DownloadEngine* e, int32_t interval):
   TimeBasedCommand(cuid, e, interval) {}
 
@@ -52,3 +54,5 @@ void AutoSaveCommand::process()
 {
   _e->_requestGroupMan->save();
 }
+
+} // namespace aria2

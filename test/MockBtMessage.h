@@ -37,6 +37,8 @@
 
 #include "BtMessage.h"
 
+namespace aria2 {
+
 class MockBtMessage : public BtMessage {
 private:
   bool sendingInProgress;
@@ -85,18 +87,18 @@ public:
 
   virtual void send() {}
 
-  virtual bool validate(Errors& errors) {
+  virtual bool validate(std::deque<std::string>& errors) {
     return false;
   }
 
-  virtual void handleEvent(const BtEventHandle& event) {}
+  virtual void handleEvent(const SharedHandle<BtEvent>& event) {}
 
   virtual void onQueued() {}
 
-  virtual string toString() const { return "MockBtMessage"; }
+  virtual std::string toString() const { return "MockBtMessage"; }
 
 };
 
-typedef SharedHandle<MockBtMessage> MockBtMessageHandle;
+} // namespace aria2
 
 #endif // _D_MOCK_BT_MESSAGE_H_

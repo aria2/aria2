@@ -36,30 +36,32 @@
 #define _D_TAGGED_ITEM_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
 
-class TaggedItem;
-typedef SharedHandle<TaggedItem> TaggedItemHandle;
+namespace aria2 {
 
 class TaggedItem {
 private:
-  string _name;
+  std::string _name;
 
-  Strings _tags;
+  std::deque<std::string> _tags;
 public:
-  TaggedItem(const string& name):_name(name) {}
+  TaggedItem(const std::string& name):_name(name) {}
 
   virtual ~TaggedItem() {}
 
-  void addTag(const string& tag)
+  void addTag(const std::string& tag)
   {
     _tags.push_back(tag);
   }
 
-  string toTagString() const;
+  std::string toTagString() const;
 
-  bool hasTag(const string& tag) const;
+  bool hasTag(const std::string& tag) const;
 
-  const string& getName() const
+  const std::string& getName() const
   {
     return _name;
   }
@@ -69,5 +71,9 @@ public:
   bool operator==(const TaggedItem& item) const;
 };
 
-typedef deque<TaggedItemHandle> TaggedItems;
+typedef SharedHandle<TaggedItem> TaggedItemHandle;
+typedef std::deque<TaggedItemHandle> TaggedItems;
+
+} // namespace aria2
+
 #endif // _D_TAGGED_ITEM_H_

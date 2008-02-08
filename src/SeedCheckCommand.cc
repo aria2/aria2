@@ -33,13 +33,21 @@
  */
 /* copyright --> */
 #include "SeedCheckCommand.h"
+#include "DownloadEngine.h"
+#include "BtRuntime.h"
+#include "PieceStorage.h"
+#include "BtContext.h"
+#include "Logger.h"
+#include "SeedCriteria.h"
 #include "message.h"
+
+namespace aria2 {
 
 SeedCheckCommand::SeedCheckCommand(int cuid,
 				   RequestGroup* requestGroup,
 				   DownloadEngine* e,
 				   const BtContextHandle& btContext,
-				   SeedCriteriaHandle seedCriteria)
+				   const SeedCriteriaHandle& seedCriteria)
   :Command(cuid),
    BtContextAwareCommand(btContext),
    RequestGroupAware(requestGroup),
@@ -71,3 +79,10 @@ bool SeedCheckCommand::execute() {
   e->commands.push_back(this);
   return false;
 }
+
+void SeedCheckCommand::setSeedCriteria(const SharedHandle<SeedCriteria>& seedCriteria)
+{
+  this->seedCriteria = seedCriteria;
+}
+
+} // namespace aria2

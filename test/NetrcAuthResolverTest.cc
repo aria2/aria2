@@ -1,8 +1,10 @@
 #include "NetrcAuthResolver.h"
 #include "prefs.h"
+#include "Netrc.h"
+#include "AuthConfig.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class NetrcAuthResolverTest : public CppUnit::TestFixture {
 
@@ -11,9 +13,9 @@ class NetrcAuthResolverTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testResolveAuthConfig_with_userDefined);
   CPPUNIT_TEST_SUITE_END();
 private:
-  NetrcHandle _netrc;
+  SharedHandle<Netrc> _netrc;
   //SharedHandle<Option> _option;
-  NetrcAuthResolverHandle _resolver;
+  SharedHandle<NetrcAuthResolver> _resolver;
 public:
   void setUp()
   {
@@ -36,28 +38,30 @@ CPPUNIT_TEST_SUITE_REGISTRATION( NetrcAuthResolverTest );
 
 void NetrcAuthResolverTest::testResolveAuthConfig_without_userDefined()
 {
-  AuthConfigHandle authConfig = _resolver->resolveAuthConfig("localhost");
-  CPPUNIT_ASSERT_EQUAL(string("name:passwd"), authConfig->getAuthText());
+  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
+  CPPUNIT_ASSERT_EQUAL(std::string("name:passwd"), authConfig->getAuthText());
 
   authConfig = _resolver->resolveAuthConfig("mymachine");
-  CPPUNIT_ASSERT_EQUAL(string("default:defaultpasswd"), authConfig->getAuthText());
+  CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpasswd"), authConfig->getAuthText());
 
   _resolver->setNetrc(0);
   authConfig = _resolver->resolveAuthConfig("localhost");
-  CPPUNIT_ASSERT_EQUAL(string("foo:bar"), authConfig->getAuthText());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
 
 }
 
 void NetrcAuthResolverTest::testResolveAuthConfig_with_userDefined()
 {
   _resolver->setUserDefinedAuthConfig(new AuthConfig("myname", "mypasswd"));
-  AuthConfigHandle authConfig = _resolver->resolveAuthConfig("localhost");
-  CPPUNIT_ASSERT_EQUAL(string("myname:mypasswd"), authConfig->getAuthText());
+  SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
+  CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 
   authConfig = _resolver->resolveAuthConfig("mymachine");
-  CPPUNIT_ASSERT_EQUAL(string("myname:mypasswd"), authConfig->getAuthText());
+  CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 
   _resolver->setNetrc(0);
   authConfig = _resolver->resolveAuthConfig("mymachine");
-  CPPUNIT_ASSERT_EQUAL(string("myname:mypasswd"), authConfig->getAuthText());
+  CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 }
+
+} // namespace aria2

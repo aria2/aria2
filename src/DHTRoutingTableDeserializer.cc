@@ -37,27 +37,31 @@
 #include "DHTConstants.h"
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
+#include "Logger.h"
 #include <arpa/inet.h>
 #include <cerrno>
 #include <cstring>
 #include <istream>
+#include <utility>
+
+namespace aria2 {
 
 DHTRoutingTableDeserializer::DHTRoutingTableDeserializer():
   _localNode(0) {}
 
 DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() {}
 
-DHTNodeHandle DHTRoutingTableDeserializer::getLocalNode() const
+SharedHandle<DHTNode> DHTRoutingTableDeserializer::getLocalNode() const
 {
   return _localNode;
 }
 
-const DHTNodes& DHTRoutingTableDeserializer::getNodes() const
+const std::deque<SharedHandle<DHTNode> >& DHTRoutingTableDeserializer::getNodes() const
 {
   return _nodes;
 }
 
-void DHTRoutingTableDeserializer::deserialize(istream& in)
+void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 {
   try {
     char header[8];
@@ -92,7 +96,7 @@ void DHTRoutingTableDeserializer::deserialize(istream& in)
     in.read(buf, 8);
     // localnode ID
     in.read(buf, DHT_ID_LENGTH);
-    DHTNodeHandle localNode = new DHTNode(reinterpret_cast<const unsigned char*>(buf));
+    SharedHandle<DHTNode> localNode = new DHTNode(reinterpret_cast<const unsigned char*>(buf));
     // 4bytes reserved
     in.read(buf, 4);
 
@@ -111,13 +115,13 @@ void DHTRoutingTableDeserializer::deserialize(istream& in)
 	in.read(buf, 26);
 	continue;
       }
-      pair<string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
+      std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
       // 2bytes reserved
       in.read(buf, 2);
       // localnode ID
       in.read(buf, DHT_ID_LENGTH);
 
-      DHTNodeHandle node = new DHTNode(reinterpret_cast<const unsigned char*>(buf));
+      SharedHandle<DHTNode> node = new DHTNode(reinterpret_cast<const unsigned char*>(buf));
       node->setIPAddress(peer.first);
       node->setPort(peer.second);
       // 4bytes reserved
@@ -126,9 +130,11 @@ void DHTRoutingTableDeserializer::deserialize(istream& in)
       _nodes.push_back(node);
     }
     _localNode = localNode;
-  } catch(ios::failure const& exception) {
+  } catch(std::ios::failure const& exception) {
     _nodes.clear();
     throw new DlAbortEx("Failed to load DHT routing table. cause:%s",
 			strerror(errno));
   }
 }
+
+} // namespace aria2

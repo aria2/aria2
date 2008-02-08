@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "DownloadEngineFactory.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "Option.h"
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
@@ -43,13 +44,14 @@
 # include "CheckIntegrityMan.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include "prefs.h"
-#include "Util.h"
 #include "CUIDCounter.h"
 #include "FillRequestGroupCommand.h"
 #include "FileAllocationDispatcherCommand.h"
 #include "AutoSaveCommand.h"
 #include "HaveEraseCommand.h"
 #include "DownloadResult.h"
+
+namespace aria2 {
 
 DownloadEngineFactory::DownloadEngineFactory():
   _logger(LogFactory::getInstance()) {}
@@ -86,3 +88,5 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 
   return e;
 }
+
+} // namespace aria2

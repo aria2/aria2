@@ -5,9 +5,18 @@
 #include "MockPieceStorage.h"
 #include "MockBtAnnounce.h"
 #include "MockBtProgressInfoFile.h"
+#include "BtRuntime.h"
+#include "FileEntry.h"
+#include "PeerObject.h"
+#include "BtMessageFactory.h"
+#include "BtRequestFactory.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageReceiver.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtRegistryTest:public CppUnit::TestFixture {
 
@@ -48,7 +57,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtRegistryTest );
 void BtRegistryTest::testGetBtContext()
 {
   CPPUNIT_ASSERT(BtRegistry::getBtContext("test").isNull());
-  BtContextHandle btContext = new MockBtContext();
+  SharedHandle<BtContext> btContext = new MockBtContext();
   BtRegistry::registerBtContext("test", btContext);
   CPPUNIT_ASSERT_EQUAL(btContext.get(),
 		       BtRegistry::getBtContext("test").get());
@@ -57,7 +66,7 @@ void BtRegistryTest::testGetBtContext()
 void BtRegistryTest::testGetPeerStorage() {
   CPPUNIT_ASSERT(!BtRegistry::getPeerStorage("test").get());
 
-  PeerStorageHandle peerStorage(new MockPeerStorage());
+  SharedHandle<PeerStorage> peerStorage(new MockPeerStorage());
 
   BtRegistry::registerPeerStorage("test", peerStorage);
   CPPUNIT_ASSERT_EQUAL(peerStorage.get(),
@@ -67,7 +76,7 @@ void BtRegistryTest::testGetPeerStorage() {
 void BtRegistryTest::testGetPieceStorage() {
   CPPUNIT_ASSERT(!BtRegistry::getPieceStorage("test").get());
 
-  PieceStorageHandle pieceStorage(new MockPieceStorage());
+  SharedHandle<PieceStorage> pieceStorage(new MockPieceStorage());
 
   BtRegistry::registerPieceStorage("test", pieceStorage);
   CPPUNIT_ASSERT_EQUAL(pieceStorage.get(),
@@ -77,7 +86,7 @@ void BtRegistryTest::testGetPieceStorage() {
 void BtRegistryTest::testGetBtRuntime() {
   CPPUNIT_ASSERT(!BtRegistry::getBtRuntime("test").get());
 
-  BtRuntimeHandle runtime;
+  SharedHandle<BtRuntime> runtime;
 
   BtRegistry::registerBtRuntime("test", runtime);
   CPPUNIT_ASSERT_EQUAL(runtime.get(),
@@ -87,7 +96,7 @@ void BtRegistryTest::testGetBtRuntime() {
 void BtRegistryTest::testGetBtAnnounce() {
   CPPUNIT_ASSERT(!BtRegistry::getBtAnnounce("test").get());
   
-  BtAnnounceHandle btAnnounce(new MockBtAnnounce());
+  SharedHandle<BtAnnounce> btAnnounce(new MockBtAnnounce());
 
   BtRegistry::registerBtAnnounce("test", btAnnounce);
   CPPUNIT_ASSERT_EQUAL(btAnnounce.get(),
@@ -97,7 +106,7 @@ void BtRegistryTest::testGetBtAnnounce() {
 void BtRegistryTest::testGetBtProgressInfoFile() {
   CPPUNIT_ASSERT(!BtRegistry::getBtProgressInfoFile("test").get());
 
-  BtProgressInfoFileHandle btProgressInfoFile(new MockBtProgressInfoFile());
+  SharedHandle<BtProgressInfoFile> btProgressInfoFile(new MockBtProgressInfoFile());
 
   BtRegistry::registerBtProgressInfoFile("test", btProgressInfoFile);
   CPPUNIT_ASSERT_EQUAL(btProgressInfoFile.get(),
@@ -115,3 +124,5 @@ void BtRegistryTest::testGetPeerObjectCluster() {
 
   CPPUNIT_ASSERT(!BtRegistry::getPeerObjectCluster("test").get());
 }
+
+} // namespace aria2

@@ -38,6 +38,10 @@
 #include "SocketCore.h"
 #include "SharedHandle.h"
 
+namespace aria2 {
+
 typedef SharedHandle<SocketCore> SocketHandle;
+
+} // namespace aria2
 
 #endif // _D_SOCKET_H_

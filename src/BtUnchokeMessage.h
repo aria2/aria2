@@ -37,6 +37,8 @@
 
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
 class BtUnchokeMessage;
 
 typedef SharedHandle<BtUnchokeMessage> BtUnchokeMessageHandle;
@@ -64,11 +66,13 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   virtual bool sendPredicate() const;
 
   virtual void onSendComplete();
 };
+
+} // namespace aria2
 
 #endif // _D_BT_UNCHOKE_MESSAGE_H_

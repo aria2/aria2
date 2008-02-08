@@ -36,9 +36,9 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"
-#include <string.h>
-#include <strings.h>
-#include <errno.h>
+#include <cstring>
+
+namespace aria2 {
 
 #define MAX_BUFSIZE (1024*1024)
 
@@ -51,9 +51,7 @@ ChunkedEncoding::ChunkedEncoding() {
 }
 
 ChunkedEncoding::~ChunkedEncoding() {
-  if(strbuf != NULL) {
-    delete [] strbuf;
-  }
+  delete [] strbuf;
 }
 
 void ChunkedEncoding::init() {
@@ -161,7 +159,7 @@ int32_t ChunkedEncoding::readChunkSize(char** pp) {
   if(exsp == 0 || p < exsp) {
     exsp = p;
   }
-  string temp(*pp, exsp);
+  std::string temp(*pp, exsp);
   chunkSize = Util::parseInt(temp, 16);
   if(chunkSize < 0) {
     throw new DlAbortEx(EX_INVALID_CHUNK_SIZE);
@@ -186,3 +184,5 @@ void ChunkedEncoding::addBuffer(const char* inbuf, int32_t inlen) {
   memcpy(strbufTail, inbuf, inlen);
   strbufTail += inlen;
 }
+
+} // namespace aria2

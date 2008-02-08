@@ -37,13 +37,17 @@
 
 #include "AbstractAuthResolver.h"
 
+namespace aria2 {
+
 class DefaultAuthResolver : public AbstractAuthResolver {
 public:
-  virtual ~DefaultAuthResolver() {}
+  virtual ~DefaultAuthResolver();
 
-  virtual AuthConfigHandle resolveAuthConfig(const string& hostname);
+  virtual SharedHandle<AuthConfig> resolveAuthConfig(const std::string& hostname);
 };
 
 typedef SharedHandle<DefaultAuthResolver> DefaultAuthResolverHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_AUTH_RESOLVER_H_

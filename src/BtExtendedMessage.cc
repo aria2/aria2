@@ -34,11 +34,24 @@
 /* copyright --> */
 #include "BtExtendedMessage.h"
 #include "BtRegistry.h"
+#include "PeerObject.h"
+#include "BtMessageFactory.h"
+#include "BtMessageReceiver.h"
+#include "BtMessageDispatcher.h"
+#include "BtRequestFactory.h"
+#include "PeerConnection.h"
 #include "ExtensionMessage.h"
+#include "ExtensionMessageFactory.h"
 #include "PeerMessageUtil.h"
+#include "Peer.h"
+#include "BtContext.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"
+#include <cassert>
+#include <cstring>
+
+namespace aria2 {
 
 BtExtendedMessage::BtExtendedMessage(const ExtensionMessageHandle& extensionMessage):_extensionMessage(extensionMessage), _msg(0), _msgLength(0)
 {}
@@ -57,7 +70,7 @@ const unsigned char* BtExtendedMessage::getMessage() {
      * extpayload --- extpayload, nbytes
      * total: 6+extpayload.length bytes
      */
-    string payload = _extensionMessage->getBencodedData();
+    std::string payload = _extensionMessage->getBencodedData();
     _msgLength = 6+payload.size();
     _msg = new unsigned char[_msgLength];
     PeerMessageUtil::createPeerMessageString(_msg, _msgLength, 2+payload.size(), ID);
@@ -77,7 +90,7 @@ bool BtExtendedMessage::sendPredicate() const
   return peer->isExtendedMessagingEnabled();
 }
 
-string BtExtendedMessage::toString() const {
+std::string BtExtendedMessage::toString() const {
   return "extended "+_extensionMessage->toString();
 }
 
@@ -113,3 +126,5 @@ ExtensionMessageHandle BtExtendedMessage::getExtensionMessage() const
 {
   return _extensionMessage;
 }
+
+} // namespace aria2

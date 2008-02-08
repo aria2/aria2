@@ -37,22 +37,22 @@
 
 #include "Dependency.h"
 
+namespace aria2 {
+
 class RequestGroup;
-typedef WeakHandle<RequestGroup> RequestGroupWeakHandle;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
 class Option;
 class Logger;
 
 class BtDependency : public Dependency
 {
 private:
-  RequestGroupWeakHandle _dependant;
-  RequestGroupHandle _dependee;
+  WeakHandle<RequestGroup> _dependant;
+  SharedHandle<RequestGroup> _dependee;
   const Option* _option;
   const Logger* _logger;
 public:
-  BtDependency(const RequestGroupWeakHandle& dependant,
-	       const RequestGroupHandle& dependee,
+  BtDependency(const WeakHandle<RequestGroup>& dependant,
+	       const SharedHandle<RequestGroup>& dependee,
 	       const Option* option);
 
   virtual ~BtDependency();
@@ -61,5 +61,7 @@ public:
 };
 
 typedef SharedHandle<BtDependency> BtDependencyHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_DEPENDENCY_H_

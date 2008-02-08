@@ -3,6 +3,8 @@
 #include "Util.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTNodeTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTNodeTest);
@@ -22,5 +24,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTNodeTest);
 void DHTNodeTest::testGenerateID()
 {
   DHTNode node;
-  cerr << Util::toHex(node.getID(), DHT_ID_LENGTH) << endl;
+  std::cerr << Util::toHex(node.getID(), DHT_ID_LENGTH) << std::endl;
 }
+
+} // namespace aria2

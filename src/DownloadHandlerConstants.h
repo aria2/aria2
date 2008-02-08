@@ -36,26 +36,31 @@
 #define _D_DOWNLOAD_HANDLER_CONSTANTS_H_
 
 #include "common.h"
-#include "a2functional.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class DownloadHandlerConstants
 {
 public:
   static const char* METALINK_EXTENSIONS[];
 
-  static Strings getMetalinkExtensions();
+  static std::deque<std::string> getMetalinkExtensions();
 
   static const char* METALINK_CONTENT_TYPES[];
 
-  static Strings getMetalinkContentTypes();
+  static std::deque<std::string> getMetalinkContentTypes();
 
   static const char* BT_EXTENSIONS[];
 
-  static Strings getBtExtensions();
+  static std::deque<std::string> getBtExtensions();
 
   static const char* BT_CONTENT_TYPES[];
 
-  static Strings getBtContentTypes();
+  static std::deque<std::string> getBtContentTypes();
 };
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_HANDLER_CONSTANTS_H_

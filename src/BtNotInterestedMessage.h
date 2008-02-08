@@ -37,6 +37,8 @@
 
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
 class BtNotInterestedMessage;
 
 typedef SharedHandle<BtNotInterestedMessage> BtNotInterestedMessageHandle;
@@ -65,11 +67,13 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   virtual bool sendPredicate() const;
 
   virtual void onSendComplete();
 };
+
+} // namespace aria2
 
 #endif // _D_BT_NOT_INTERESTED_MESSAGE_H_

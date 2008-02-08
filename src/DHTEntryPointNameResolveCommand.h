@@ -36,32 +36,34 @@
 #define _D_DHT_ENTRY_POINT_NAME_RESOVE_COMMAND_H_
 
 #include "Command.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskFactoryDecl.h"
-#include "DHTNodeDecl.h"
+#include "SharedHandle.h"
 
+namespace aria2 {
+
+class DHTTaskQueue;
+class DHTTaskFactory;
+class DHTNode;
 class DownloadEngine;
 class NameResolver;
-typedef SharedHandle<NameResolver> NameResolverHandle;
 
 class DHTEntryPointNameResolveCommand:public Command {
 protected:
   DownloadEngine* _e;
 private:
-  NameResolverHandle _resolver;
+  SharedHandle<NameResolver> _resolver;
 
-  DHTTaskQueueHandle _taskQueue;
+  SharedHandle<DHTTaskQueue> _taskQueue;
 
-  DHTTaskFactoryHandle _taskFactory;
+  SharedHandle<DHTTaskFactory> _taskFactory;
 
-  DHTNodeHandle _localNode;
+  SharedHandle<DHTNode> _localNode;
 
-  bool resolveHostname(const string& hostname,
-		       const NameResolverHandle& resolver);
+  bool resolveHostname(const std::string& hostname,
+		       const SharedHandle<NameResolver>& resolver);
 
-  void setNameResolverCheck(const NameResolverHandle& resolver);
+  void setNameResolverCheck(const SharedHandle<NameResolver>& resolver);
 
-  void disableNameResolverCheck(const NameResolverHandle& resolver);
+  void disableNameResolverCheck(const SharedHandle<NameResolver>& resolver);
 
 public:
   DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e);
@@ -70,11 +72,13 @@ public:
 
   virtual bool execute();
 
-  void setTaskQueue(const DHTTaskQueueHandle& taskQueue);
+  void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 
-  void setTaskFactory(const DHTTaskFactoryHandle& taskFactory);
+  void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
 
-  void setLocalNode(const DHTNodeHandle& localNode);
+  void setLocalNode(const SharedHandle<DHTNode>& localNode);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_ENTRY_POINT_NAME_RESOVE_COMMAND_H_

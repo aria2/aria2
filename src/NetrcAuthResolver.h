@@ -36,30 +36,28 @@
 #define _D_NETRC_AUTH_RESOLVER_H_
 
 #include "AbstractAuthResolver.h"
-#include "Netrc.h"
+
+namespace aria2 {
+
+class Netrc;
 
 class NetrcAuthResolver : public AbstractAuthResolver {
 private:
-  NetrcHandle _netrc;
+  SharedHandle<Netrc> _netrc;
 
-  AuthConfigHandle findNetrcAuthenticator(const string& hostname) const;
+  SharedHandle<AuthConfig> findNetrcAuthenticator(const std::string& hostname) const;
 public:
   virtual ~NetrcAuthResolver() {}
 
-  virtual AuthConfigHandle resolveAuthConfig(const string& hostname);
+  virtual SharedHandle<AuthConfig> resolveAuthConfig(const std::string& hostname);
 
-  void setNetrc(const NetrcHandle& netrc)
-  {
-    _netrc = netrc;
-  }
+  void setNetrc(const SharedHandle<Netrc>& netrc);
 
-  NetrcHandle getNetrc() const
-  {
-    return _netrc;
-  }
-      
+  SharedHandle<Netrc> getNetrc() const;
 };
 
 typedef SharedHandle<NetrcAuthResolver> NetrcAuthResolverHandle;
+
+} // namespace aria2
 
 #endif // _D_NETRC_AUTH_RESOLVER_H_

@@ -36,6 +36,9 @@
 #include "MultiDiskAdaptor.h"
 #include "FileEntry.h"
 #include "SingleFileAllocationIterator.h"
+#include "DiskWriter.h"
+
+namespace aria2 {
 
 MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskAdaptor):
   _diskAdaptor(diskAdaptor),
@@ -115,7 +118,7 @@ DiskWriterEntries MultiFileAllocationIterator::makeDiskWriterEntries(const DiskW
   DiskWriterEntries entries;
   DiskWriterEntries::const_iterator done = temp.begin();
   for(DiskWriterEntries::const_iterator itr = temp.begin()+1; itr != temp.end(); ++itr) {
-    FileEntryHandle fileEntry = (*itr)->getFileEntry();
+    const FileEntryHandle& fileEntry = (*itr)->getFileEntry();
     if(!fileEntry->isRequested()) {
       continue;
     }
@@ -132,3 +135,5 @@ DiskWriterEntries MultiFileAllocationIterator::makeDiskWriterEntries(const DiskW
   }
   return entries;
 }
+
+} // namespace aria2

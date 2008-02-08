@@ -1,9 +1,9 @@
-#include <iostream>
 #include "SingletonHolder.h"
 #include "SharedHandle.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class SingletonHolderTest : public CppUnit::TestFixture {
 
@@ -24,13 +24,13 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SingletonHolderTest );
 
 class M {
 private:
-  string _greeting;
+  std::string _greeting;
 public:
-  M(const string& greeting):_greeting(greeting) {}
+  M(const std::string& greeting):_greeting(greeting) {}
 
-  const string& greeting() const { return _greeting; }
+  const std::string& greeting() const { return _greeting; }
 
-  void greeting(const string& greeting) {
+  void greeting(const std::string& greeting) {
     _greeting = greeting;
   }
 };
@@ -43,16 +43,18 @@ void SingletonHolderTest::testInstance()
   MHandle m = new M("Hello world.");
   SingletonHolder<MHandle>::instance(m);
 
-  cerr << SingletonHolder<MHandle>::instance()->greeting() << endl;
+  std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
 
   SingletonHolder<MHandle>::instance()->greeting("Yes, it worked!");
 
-  cerr << SingletonHolder<MHandle>::instance()->greeting() << endl;
+  std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
 
   IntHandle i = new int(100);
   SingletonHolder<IntHandle>::instance(i);
-  cerr << SingletonHolder<IntHandle>::instance() << endl;
+  std::cerr << SingletonHolder<IntHandle>::instance() << std::endl;
 
-  cerr << SingletonHolder<MHandle>::instance()->greeting() << endl;
+  std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
 
 }
+
+} // namespace aria2

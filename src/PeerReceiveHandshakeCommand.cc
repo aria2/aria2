@@ -40,7 +40,17 @@
 #include "BtContext.h"
 #include "DlAbortEx.h"
 #include "PeerInteractionCommand.h"
+#include "Peer.h"
+#include "BtRegistry.h"
+#include "PeerStorage.h"
+#include "PieceStorage.h"
+#include "BtRuntime.h"
+#include "BtConstants.h"
 #include "message.h"
+#include "Socket.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(int32_t cuid,
 							 const PeerHandle& peer,
@@ -68,7 +78,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
   // To handle tracker's NAT-checking feature
   if(dataLength >= 48) {
     // check info_hash
-    string infoHash = Util::toHex(&data[28], INFO_HASH_LENGTH);
+    std::string infoHash = Util::toHex(&data[28], INFO_HASH_LENGTH);
     BtContextHandle btContext = BtRegistry::getBtContext(infoHash);
     if(btContext.isNull() || !BT_RUNTIME(btContext)->ready()) {
       throw new DlAbortEx("Unknown info hash %s", infoHash.c_str());
@@ -99,3 +109,5 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     return false;
   }
 }
+
+} // namespace aria2

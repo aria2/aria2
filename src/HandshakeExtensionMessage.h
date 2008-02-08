@@ -37,26 +37,27 @@
 
 #include "ExtensionMessage.h"
 #include "BtConstants.h"
+#include <map>
+
+namespace aria2 {
 
 class BtContext;
-typedef SharedHandle<BtContext> BtContextHandle;
 class Peer;
-typedef SharedHandle<Peer> PeerHandle;
+class Logger;
 class HandshakeExtensionMessage;
 typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;
-class Logger;
 
 class HandshakeExtensionMessage:public ExtensionMessage {
 private:
-  string _clientVersion;
+  std::string _clientVersion;
 
   uint16_t _tcpPort;
 
-  map<string, uint8_t> _extensions;
+  std::map<std::string, uint8_t> _extensions;
 
-  BtContextHandle _btContext;
+  SharedHandle<BtContext> _btContext;
 
-  PeerHandle _peer;
+  SharedHandle<Peer> _peer;
 
   const Logger* _logger;
 
@@ -65,30 +66,30 @@ public:
 
   virtual ~HandshakeExtensionMessage();
 
-  virtual string getBencodedData();
+  virtual std::string getBencodedData();
 
   virtual uint8_t getExtensionMessageID()
   {
     return 0;
   }
   
-  virtual const string& getExtensionName() const
+  virtual const std::string& getExtensionName() const
   {
     return EXTENSION_NAME;
   }
 
-  static const string EXTENSION_NAME;
+  static const std::string EXTENSION_NAME;
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   virtual void doReceivedAction();
 
-  void setClientVersion(const string& version)
+  void setClientVersion(const std::string& version)
   {
     _clientVersion = version;
   }
 
-  const string& getClientVersion() const
+  const std::string& getClientVersion() const
   {
     return _clientVersion;
   }
@@ -103,7 +104,7 @@ public:
     return _tcpPort;
   }
 
-  void setExtension(const string& name, uint8_t id)
+  void setExtension(const std::string& name, uint8_t id)
   {
     _extensions[name] = id;
   }
@@ -113,11 +114,11 @@ public:
     _extensions = extensions;
   }
 
-  uint8_t getExtensionMessageID(const string& name) const;
+  uint8_t getExtensionMessageID(const std::string& name) const;
 
-  void setPeer(const PeerHandle& peer);
+  void setPeer(const SharedHandle<Peer>& peer);
 
-  void setBtContext(const BtContextHandle& btContext);
+  void setBtContext(const SharedHandle<BtContext>& btContext);
 
   static HandshakeExtensionMessageHandle create(const char* data,
 						size_t dataLength);
@@ -125,4 +126,7 @@ public:
 };
 
 typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;
+
+} // namespace aria2
+
 #endif // _D_HANDSHAKE_EXTENSION_MESSAGE_H_

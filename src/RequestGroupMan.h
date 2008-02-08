@@ -36,33 +36,36 @@
 #define _D_REQUEST_GROUP_MAN_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "TransferStat.h"
+#include <string>
+#include <deque>
+#include <iosfwd>
+
+namespace aria2 {
 
 class DownloadEngine;
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
-typedef deque<RequestGroupHandle> RequestGroups;
 class Command;
-typedef deque<Command*> Commands;
 class Logger;
 class DownloadResult;
-typedef SharedHandle<DownloadResult> DownloadResultHandle;
-typedef deque<DownloadResultHandle> DownloadResults;
 
 class RequestGroupMan {
 private:
-  RequestGroups _requestGroups;
-  RequestGroups _reservedGroups;
-  DownloadResults _downloadResults;
+  std::deque<SharedHandle<RequestGroup> > _requestGroups;
+  std::deque<SharedHandle<RequestGroup> > _reservedGroups;
+  std::deque<SharedHandle<DownloadResult> > _downloadResults;
   const Logger* _logger;
   int32_t _maxSimultaneousDownloads;
   int32_t _gidCounter;
 
-  string formatDownloadResult(const string& status,
-			      const DownloadResultHandle& downloadResult) const;
+  std::string
+  formatDownloadResult(const std::string& status,
+		       const SharedHandle<DownloadResult>& downloadResult) const;
 
 public:
-  RequestGroupMan(const RequestGroups& requestGroups, int32_t maxSimultaneousDownloads = 1);
+  RequestGroupMan(const std::deque<SharedHandle<RequestGroup> >& requestGroups,
+		  int32_t maxSimultaneousDownloads = 1);
 
   bool downloadFinished();
 
@@ -74,23 +77,23 @@ public:
 
   void forceHalt();
 
-  Commands getInitialCommands(DownloadEngine* e);
+  std::deque<Command*> getInitialCommands(DownloadEngine* e);
 
   void removeStoppedGroup();
 
   void fillRequestGroupFromReserver(DownloadEngine* e);
 
-  void addRequestGroup(const RequestGroupHandle& group);
+  void addRequestGroup(const SharedHandle<RequestGroup>& group);
 
-  void addReservedGroup(const RequestGroups& groups);
+  void addReservedGroup(const std::deque<SharedHandle<RequestGroup> >& groups);
 
-  void addReservedGroup(const RequestGroupHandle& group);
+  void addReservedGroup(const SharedHandle<RequestGroup>& group);
 
   int32_t countRequestGroup() const;
 		  
-  RequestGroupHandle getRequestGroup(int32_t index) const;
+  SharedHandle<RequestGroup> getRequestGroup(int32_t index) const;
 		  
-  void showDownloadResults(ostream& o) const;
+  void showDownloadResults(std::ostream& o) const;
 
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
 
@@ -98,5 +101,7 @@ public:
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;
+
+} // namespace aria2
 
 #endif // _D_REQUEST_GROUP_MAN_H_

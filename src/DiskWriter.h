@@ -37,6 +37,8 @@
 
 #include "BinaryStream.h"
 
+namespace aria2 {
+
 /**
  * Interface for writing to a binary stream of bytes.
  *
@@ -54,9 +56,9 @@ public:
    * If the file exists, then it is truncated to 0 length.
    * @param filename the file name to be opened.
    */
-  virtual void initAndOpenFile(const string& filename, int64_t totalLength = 0)  = 0;
+  virtual void initAndOpenFile(const std::string& filename, int64_t totalLength = 0)  = 0;
   
-  virtual void openFile(const string& filename, int64_t totalLength = 0) = 0;
+  virtual void openFile(const std::string& filename, int64_t totalLength = 0) = 0;
 
   /**
    * Closes this output stream.
@@ -70,7 +72,7 @@ public:
    *
    * @param filename the file name to be opened.
    */
-  virtual void openExistingFile(const string& filename, int64_t totalLength = 0) = 0;
+  virtual void openExistingFile(const std::string& filename, int64_t totalLength = 0) = 0;
 
   virtual void truncate(int64_t length) = 0;
 
@@ -93,5 +95,7 @@ public:
 };
 
 typedef SharedHandle<DiskWriter> DiskWriterHandle;
+
+} // namespace aria2
 
 #endif // _D_DISK_WRITER_H_

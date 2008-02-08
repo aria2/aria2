@@ -36,24 +36,28 @@
 #define _D_CHUNK_CHECKSUM_H_
 
 #include "common.h"
-#include "messageDigest.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class ChunkChecksum {
 private:
-  string _algo;
-  Strings _checksums;
+  std::string _algo;
+  std::deque<std::string> _checksums;
   int32_t _checksumLength;
 public:
   ChunkChecksum():_checksumLength(0) {}    
 
-  ChunkChecksum(const string& algo,
-		const Strings& checksums,
+  ChunkChecksum(const std::string& algo,
+		const std::deque<std::string>& checksums,
 		int32_t checksumLength):
     _algo(algo),
     _checksums(checksums),
     _checksumLength(checksumLength) {}
 
-  bool validateChunk(const string& actualChecksum,
+  bool validateChunk(const std::string& actualChecksum,
 		     int32_t checksumIndex) const
   {
     if(checksumIndex < (int32_t)_checksums.size()) {
@@ -73,7 +77,7 @@ public:
     return _checksums.size();
   }
 
-  string getChecksum(int32_t index) const
+  std::string getChecksum(int32_t index) const
   {
     if(index < (int32_t)_checksums.size()) {
       return _checksums[index];
@@ -82,7 +86,7 @@ public:
     }
   }
   
-  const Strings& getChecksums() const
+  const std::deque<std::string>& getChecksums() const
   {
     return _checksums;
   }
@@ -92,12 +96,12 @@ public:
     return _checksumLength;
   }
 
-  const string& getAlgo() const
+  const std::string& getAlgo() const
   {
     return _algo;
   }
 
-  void setAlgo(const string& algo)
+  void setAlgo(const std::string& algo)
   {
     _algo = algo;
   }
@@ -107,12 +111,12 @@ public:
     _checksumLength = length;
   }
 
-  void setChecksums(const Strings& mds)
+  void setChecksums(const std::deque<std::string>& mds)
   {
     _checksums = mds;
   }
 };
 
-typedef SharedHandle<ChunkChecksum> ChunkChecksumHandle;
+} // namespace aria2
 
 #endif // _D_CHUNK_CHECKSUM_H_

@@ -40,6 +40,9 @@
 #include "FileAllocationCommand.h"
 #include "message.h"
 #include "CUIDCounter.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 FileAllocationDispatcherCommand::FileAllocationDispatcherCommand(int32_t cuid, DownloadEngine* e):
   Command(cuid), _e(e)
@@ -72,3 +75,5 @@ bool FileAllocationDispatcherCommand::execute()
 
   return false;
 }
+
+} // namespace aria2

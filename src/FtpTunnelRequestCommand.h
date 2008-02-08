@@ -37,16 +37,22 @@
 
 #include "AbstractProxyRequestCommand.h"
 
+namespace aria2 {
+
+class SocketCore;
+
 class FtpTunnelRequestCommand : public AbstractProxyRequestCommand {
 public:
   FtpTunnelRequestCommand(int cuid,
-			  const RequestHandle& req,
+			  const SharedHandle<Request>& req,
 			  RequestGroup* requestGroup,
 			  DownloadEngine* e,
-			  const SocketHandle& s);
+			  const SharedHandle<SocketCore>& s);
   virtual ~FtpTunnelRequestCommand();
 
   virtual Command* getNextCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_FTP_TUNNEL_REQUEST_COMMAND_H_

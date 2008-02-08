@@ -2,30 +2,33 @@
 #define _D_MOCK_PEER_STORAGE_H_
 
 #include "PeerStorage.h"
+#include "Peer.h"
+
+namespace aria2 {
 
 class MockPeerStorage : public PeerStorage {
 private:
   TransferStat stat;
-  Peers peers;
-  Peers activePeers;
+  std::deque<SharedHandle<Peer> > peers;
+  std::deque<SharedHandle<Peer> > activePeers;
 public:
   MockPeerStorage() {}
   virtual ~MockPeerStorage() {}
 
-  virtual bool addPeer(const PeerHandle& peer) {
+  virtual bool addPeer(const SharedHandle<Peer>& peer) {
     peers.push_back(peer);
     return true;
   }
 
-  virtual void addPeer(const Peers& peers) {
+  virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers) {
     copy(peers.begin(), peers.end(), back_inserter(this->peers));
   }
 
-  virtual const Peers& getPeers() {
+  virtual const std::deque<SharedHandle<Peer> >& getPeers() {
     return peers;
   }
 
-  virtual PeerHandle getUnusedPeer() {
+  virtual SharedHandle<Peer> getUnusedPeer() {
     return 0;
   }
 
@@ -33,12 +36,12 @@ public:
     return false;
   }
   
-  void setActivePeers(const Peers& activePeers)
+  void setActivePeers(const std::deque<SharedHandle<Peer> >& activePeers)
   {
     this->activePeers = activePeers;
   }
 
-  virtual Peers getActivePeers() {
+  virtual std::deque<SharedHandle<Peer> > getActivePeers() {
     return activePeers;
   }
 
@@ -50,11 +53,11 @@ public:
     this->stat = stat;
   }
 
-  virtual void returnPeer(const PeerHandle& peer)
+  virtual void returnPeer(const SharedHandle<Peer>& peer)
   {
   }
 };
 
-typedef SharedHandle<MockPeerStorage> MockPeerStorageHandle;
-
 #endif // _D_MOCK_PEER_STORAGE_H_
+
+} // namespace aria2

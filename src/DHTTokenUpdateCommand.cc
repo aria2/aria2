@@ -34,11 +34,13 @@
 /* copyright --> */
 #include "DHTTokenUpdateCommand.h"
 #include "DHTTokenTracker.h"
-#include "SingletonHolder.h"
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 #include "RecoverableException.h"
 #include "message.h"
+#include "Logger.h"
+
+namespace aria2 {
 
 DHTTokenUpdateCommand::DHTTokenUpdateCommand(int32_t cuid,
 					     DownloadEngine* e,
@@ -64,7 +66,9 @@ void DHTTokenUpdateCommand::process()
   }
 }
 
-void DHTTokenUpdateCommand::setTokenTracker(const DHTTokenTrackerHandle& tokenTracker)
+void DHTTokenUpdateCommand::setTokenTracker(const SharedHandle<DHTTokenTracker>& tokenTracker)
 {
   _tokenTracker = tokenTracker;
 }
+
+} // namespace aria2

@@ -34,6 +34,8 @@
 /* copyright --> */
 #include "messageDigest.h"
 
+namespace aria2 {
+
 static MessageDigestContext::DigestAlgoMap::value_type digests[] = {
 #ifdef HAVE_LIBSSL
   MessageDigestContext::DigestAlgoMap::value_type("md5", EVP_md5()),
@@ -52,12 +54,14 @@ MessageDigestContext::DigestAlgoMap
 MessageDigestContext::digestAlgos(&digests[0],
 				  &digests[sizeof(digests)/sizeof(DigestAlgoMap::value_type)]);
 
-string MessageDigestContext::digestFinal()
+std::string MessageDigestContext::digestFinal()
 {
   int32_t length = digestLength(algo);
   unsigned char* rawMD = new unsigned char[length];
   digestFinal(rawMD);
-  string rawMDString(&rawMD[0], &rawMD[length]);
+  std::string rawMDString(&rawMD[0], &rawMD[length]);
   delete [] rawMD;
   return rawMDString;
 }
+
+} // namespace aria2

@@ -34,21 +34,24 @@
 /* copyright --> */
 #include "Option.h"
 #include "prefs.h"
+#include <cstdlib>
+
+namespace aria2 {
 
 Option::Option() {}
 
 Option::~Option() {}
 
-void Option::put(const string& name, const string& value) {
+void Option::put(const std::string& name, const std::string& value) {
   table[name] = value;
 }
 
-bool Option::defined(const string& name) const {
+bool Option::defined(const std::string& name) const {
   return table.count(name) == 1;
 }
 
-string Option::get(const string& name) const {
-  map<string, string>::const_iterator itr = table.find(name);
+std::string Option::get(const std::string& name) const {
+  std::map<std::string, std::string>::const_iterator itr = table.find(name);
   if(itr == table.end()) {
     return "";
   } else {
@@ -56,8 +59,8 @@ string Option::get(const string& name) const {
   }
 }
 
-int32_t Option::getAsInt(const string& name) const {
-  string value = get(name);
+int32_t Option::getAsInt(const std::string& name) const {
+  std::string value = get(name);
   if(value == "") {
     return 0;
   } else {
@@ -65,8 +68,8 @@ int32_t Option::getAsInt(const string& name) const {
   }
 }
 
-int64_t Option::getAsLLInt(const string& name) const {
-  string value = get(name);
+int64_t Option::getAsLLInt(const std::string& name) const {
+  std::string value = get(name);
   if(value == "") {
     return 0;
   } else {
@@ -74,8 +77,8 @@ int64_t Option::getAsLLInt(const string& name) const {
   }
 }
 
-bool Option::getAsBool(const string& name) const {
-  string value = get(name);
+bool Option::getAsBool(const std::string& name) const {
+  std::string value = get(name);
   if(value == V_TRUE) {
     return true;
   } else {
@@ -83,8 +86,8 @@ bool Option::getAsBool(const string& name) const {
   }
 }
 
-double Option::getAsDouble(const string& name) const {
-  string value = get(name);
+double Option::getAsDouble(const std::string& name) const {
+  std::string value = get(name);
   if(value == "") {
     return 0.0;
   } else {
@@ -96,3 +99,5 @@ void Option::clear()
 {
   table.clear();
 }
+
+} // namespace aria2

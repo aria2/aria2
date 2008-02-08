@@ -36,6 +36,9 @@
 #include "DlAbortEx.h"
 #include "PeerMessageUtil.h"
 #include "message.h"
+#include "Peer.h"
+
+namespace aria2 {
 
 BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 1) {
@@ -75,6 +78,8 @@ int32_t BtHaveNoneMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtHaveNoneMessage::toString() const {
+std::string BtHaveNoneMessage::toString() const {
   return "have none";
 }
+
+} // namespace aria2

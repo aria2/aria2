@@ -33,9 +33,9 @@
  */
 /* copyright --> */
 #include "CheckIntegrityEntry.h"
-#include "Command.h"
-#include "RequestGroup.h"
 #include "IteratableValidator.h"
+
+namespace aria2 {
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
 					 Command* nextCommand):
@@ -72,3 +72,5 @@ bool CheckIntegrityEntry::finished()
 {
   return _validator->finished();
 }
+
+} // namespace aria2

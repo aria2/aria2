@@ -35,6 +35,9 @@
 #include "DHTNode.h"
 #include "DHTUtil.h"
 #include "Util.h"
+#include <cstring>
+
+namespace aria2 {
 
 DHTNode::DHTNode():_port(0), _rtt(0), _condition(0), _lastContact(0)
 {
@@ -106,10 +109,12 @@ void DHTNode::timeout()
   ++_condition;
 }
 
-string DHTNode::toString() const
+std::string DHTNode::toString() const
 {
   return "DHTNode ID="+Util::toHex(_id, DHT_ID_LENGTH)+
     ", Host="+_ipaddr+":"+Util::uitos(_port)+
     ", Condition="+Util::uitos(_condition)+
     ", RTT="+Util::itos(_rtt);
 }
+
+} // namespace aria2

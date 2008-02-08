@@ -36,24 +36,22 @@
 #define _D_DOWNLOAD_HANDLER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class RequestGroup;
 class Logger;
 class RequestGroupCriteria;
-typedef SharedHandle<RequestGroupCriteria> RequestGroupCriteriaHandle;
 
 class DownloadHandler
 {
 protected:
-  RequestGroupCriteriaHandle _criteria;
+  SharedHandle<RequestGroupCriteria> _criteria;
 
   const Logger* _logger;
-
-private:
-  bool forwardMatch(const string& target, const Strings& candidates) const;
-
-  bool exactMatch(const string& target, const Strings& candidates) const;
-
 public:
   DownloadHandler();
 
@@ -61,7 +59,9 @@ public:
 
   bool canHandle(const RequestGroup* requestGroup) const;
 
-  void setCriteria(const RequestGroupCriteriaHandle& criteria);
+  void setCriteria(const SharedHandle<RequestGroupCriteria>& criteria);
 };
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_HANDLER_H_

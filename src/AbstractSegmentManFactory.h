@@ -37,6 +37,10 @@
 
 #include "SegmentManFactory.h"
 
+namespace aria2 {
+
+class Option;
+
 class AbstractSegmentManFactory : public SegmentManFactory {
 protected:
   const Option* _option;
@@ -47,5 +51,7 @@ public:
 };
 
 typedef SharedHandle<AbstractSegmentManFactory> AbstractSegmentManFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_SEGMENT_MAN_FACTORY_H_

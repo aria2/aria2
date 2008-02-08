@@ -36,38 +36,40 @@
 #define _D_DHT_PEER_LOOKUP_TASK_H_
 
 #include "DHTAbstractNodeLookupTask.h"
-#include "BtContextDecl.h"
-#include "PeerDecl.h"
 #include <map>
 
+namespace aria2 {
+
+class BtContext;
+class Peer;
 class PeerStorage;
-typedef SharedHandle<PeerStorage> PeerStorageHandle;
 class BtRuntime;
-typedef SharedHandle<BtRuntime> BtRuntimeHandle;
 
 class DHTPeerLookupTask:public DHTAbstractNodeLookupTask {
 private:
-  std::map<string, string> _tokenStorage;
+  std::map<std::string, std::string> _tokenStorage;
 
-  Peers _peers;
+  std::deque<SharedHandle<Peer> > _peers;
 
-  BtContextHandle _ctx;
+  SharedHandle<BtContext> _ctx;
 
-  PeerStorageHandle _peerStorage;
+  SharedHandle<PeerStorage> _peerStorage;
 
-  BtRuntimeHandle _btRuntime;
+  SharedHandle<BtRuntime> _btRuntime;
 public:
-  DHTPeerLookupTask(const BtContextHandle& btContext);
+  DHTPeerLookupTask(const SharedHandle<BtContext>& btContext);
 
-  virtual DHTNodes getNodesFromMessage(const DHTMessageHandle& message);
+  virtual std::deque<SharedHandle<DHTNode> > getNodesFromMessage(const SharedHandle<DHTMessage>& message);
   
-  virtual void onReceivedInternal(const DHTMessageHandle& message);
+  virtual void onReceivedInternal(const SharedHandle<DHTMessage>& message);
   
-  virtual DHTMessageHandle createMessage(const DHTNodeHandle& remoteNode);
+  virtual SharedHandle<DHTMessage> createMessage(const SharedHandle<DHTNode>& remoteNode);
 
   virtual void onFinish();
   
-  const Peers& getPeers() const;
+  const std::deque<SharedHandle<Peer> >& getPeers() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_PEER_LOOKUP_TASK_H_

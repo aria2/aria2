@@ -1,8 +1,10 @@
 #include "BtHaveAllMessage.h"
 #include "PeerMessageUtil.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtHaveAllMessageTest:public CppUnit::TestFixture {
 
@@ -28,7 +30,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveAllMessageTest);
 void BtHaveAllMessageTest::testCreate() {
   unsigned char msg[5];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 14);
-  BtHaveAllMessageHandle pm = BtHaveAllMessage::create(&msg[4], 1);
+  SharedHandle<BtHaveAllMessage> pm = BtHaveAllMessage::create(&msg[4], 1);
   CPPUNIT_ASSERT_EQUAL((int8_t)14, pm->getId());
 
   // case: payload size is wrong
@@ -58,7 +60,7 @@ void BtHaveAllMessageTest::testGetMessage() {
 
 void BtHaveAllMessageTest::testDoReceivedAction() {
   BtHaveAllMessage msg;
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   peer->allocateBitfield(16*1024, 256*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
@@ -74,3 +76,5 @@ void BtHaveAllMessageTest::testDoReceivedAction() {
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(...) {}
 }
+
+} // namespace aria2

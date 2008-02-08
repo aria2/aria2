@@ -37,7 +37,11 @@
 
 #include "SharedHandle.h"
 
+namespace aria2 {
+
 class BtContext;
 typedef SharedHandle<BtContext> BtContextHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_CONTEXT_DECL_H_

@@ -37,10 +37,13 @@
 
 #include "Command.h"
 #include "BtContextAwareCommand.h"
-#include "DownloadEngine.h"
-#include "TimeA2.h"
-#include "SeedCriteria.h"
 #include "RequestGroupAware.h"
+#include "TimeA2.h"
+
+namespace aria2 {
+
+class DownloadEngine;
+class SeedCriteria;
 
 class SeedCheckCommand : public Command,
 			 public BtContextAwareCommand,
@@ -49,22 +52,22 @@ class SeedCheckCommand : public Command,
 private:
   DownloadEngine* e;
   Time checkPoint;
-  SeedCriteriaHandle seedCriteria;
+  SharedHandle<SeedCriteria> seedCriteria;
   bool checkStarted;
 public:
   SeedCheckCommand(int cuid,
 		   RequestGroup* requestGroup,
 		   DownloadEngine* e,
-		   const BtContextHandle& btContext,
-		   SeedCriteriaHandle seedCriteria);
+		   const SharedHandle<BtContext>& btContext,
+		   const SharedHandle<SeedCriteria>& seedCriteria);
 
   virtual ~SeedCheckCommand() {}
 
   virtual bool execute();
 
-  void setSeedCriteria(SeedCriteriaHandle seedCriteria) {
-    this->seedCriteria = seedCriteria;
-  }
+  void setSeedCriteria(const SharedHandle<SeedCriteria>& seedCriteria);
 };
+
+} // namespace aria2
 
 #endif // _D_SEED_CHECK_COMMAND_H_

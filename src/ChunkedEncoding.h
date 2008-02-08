@@ -37,6 +37,8 @@
 
 #include "TransferEncoding.h"
 
+namespace aria2 {
+
 class ChunkedEncoding:public TransferEncoding {
 private:
   enum STATE {
@@ -69,5 +71,7 @@ public:
   bool finished();
   void end();
 };
+
+} // namespace aria2
 
 #endif // _D_CHUNKED_ENCODING_H_

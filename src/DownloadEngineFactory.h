@@ -36,14 +36,15 @@
 #define _D_DOWNLOAD_ENGINE_FACTORY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
 
 class Logger;
 class Option;
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
-typedef deque<RequestGroupHandle> RequestGroups;
 class DownloadEngine;
-typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
 
 class DownloadEngineFactory {
 private:
@@ -51,8 +52,11 @@ private:
 public:
   DownloadEngineFactory();
 
-  DownloadEngineHandle
-  newDownloadEngine(Option* op, const RequestGroups& requestGroups);
+  SharedHandle<DownloadEngine>
+  newDownloadEngine(Option* op,
+		    const std::deque<SharedHandle<RequestGroup> >& requestGroups);
 };
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_ENGINE_FACTORY_H_

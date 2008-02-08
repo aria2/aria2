@@ -33,8 +33,12 @@
  */
 /* copyright --> */
 #include "NetrcAuthResolver.h"
+#include "AuthConfig.h"
+#include "Netrc.h"
 
-AuthConfigHandle NetrcAuthResolver::resolveAuthConfig(const string& hostname)
+namespace aria2 {
+
+AuthConfigHandle NetrcAuthResolver::resolveAuthConfig(const std::string& hostname)
 {
   if(_userDefinedAuthConfig.isNull()) {
     return findNetrcAuthenticator(hostname);
@@ -43,7 +47,7 @@ AuthConfigHandle NetrcAuthResolver::resolveAuthConfig(const string& hostname)
   }
 }
 
-AuthConfigHandle NetrcAuthResolver::findNetrcAuthenticator(const string& hostname) const
+AuthConfigHandle NetrcAuthResolver::findNetrcAuthenticator(const std::string& hostname) const
 {
   if(_netrc.isNull()) {
     return _defaultAuthConfig;
@@ -56,3 +60,15 @@ AuthConfigHandle NetrcAuthResolver::findNetrcAuthenticator(const string& hostnam
     }
   }
 }
+
+void NetrcAuthResolver::setNetrc(const NetrcHandle& netrc)
+{
+  _netrc = netrc;
+}
+
+NetrcHandle NetrcAuthResolver::getNetrc() const
+{
+  return _netrc;
+}
+
+} // namespace aria2

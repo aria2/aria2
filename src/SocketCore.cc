@@ -39,14 +39,15 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
-
+#include <cerrno>
+#include <cstring>
 #ifndef __MINGW32__
 # define SOCKET_ERRNO (errno)
 #else
 # define SOCKET_ERRNO (WSAGetLastError())
 #endif // __MINGW32__
+
+namespace aria2 {
 
 SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1) {
   init();
@@ -133,7 +134,7 @@ SocketCore* SocketCore::acceptConnection() const
   return s;
 }
 
-void SocketCore::getAddrInfo(pair<string, int32_t>& addrinfo) const
+void SocketCore::getAddrInfo(std::pair<std::string, int32_t>& addrinfo) const
 {
   struct sockaddr_in listenaddr;
   memset((char*)&listenaddr, 0, sizeof(listenaddr));
@@ -145,7 +146,7 @@ void SocketCore::getAddrInfo(pair<string, int32_t>& addrinfo) const
   addrinfo.second = ntohs(listenaddr.sin_port);
 }
 
-void SocketCore::getPeerInfo(pair<string, int32_t>& peerinfo) const
+void SocketCore::getPeerInfo(std::pair<std::string, int32_t>& peerinfo) const
 {
   struct sockaddr_in peerin;
   memset(&peerin, 0, sizeof(peerin));
@@ -157,7 +158,7 @@ void SocketCore::getPeerInfo(pair<string, int32_t>& peerinfo) const
   peerinfo.second = ntohs(peerin.sin_port);
 }
 
-void SocketCore::establishConnection(const string& host, int32_t port)
+void SocketCore::establishConnection(const std::string& host, int32_t port)
 {
   closeConnection();
   sockfd = socket(AF_INET, _sockType, 0);
@@ -578,9 +579,9 @@ void SocketCore::initiateSecureConnection()
 }
 
 template<typename T>
-string uitos(T value)
+std::string uitos(T value)
 {
-  string str;
+  std::string str;
   if(value == 0) {
     str = "0";
     return str;
@@ -595,7 +596,7 @@ string uitos(T value)
   return str;
 }
 
-void fillSockaddr(sockaddr* addr, int sockType, const string& host, uint16_t port)
+void fillSockaddr(sockaddr* addr, int sockType, const std::string& host, uint16_t port)
 {
   struct addrinfo hints;
   struct addrinfo* result;
@@ -615,7 +616,7 @@ void fillSockaddr(sockaddr* addr, int sockType, const string& host, uint16_t por
   freeaddrinfo(result);
 }
 
-void SocketCore::writeData(const char* data, size_t len, const string& host, uint16_t port)
+void SocketCore::writeData(const char* data, size_t len, const std::string& host, uint16_t port)
 {
   struct sockaddr_storage addrPeer;
   fillSockaddr((struct sockaddr*)&addrPeer, _sockType, host, port);
@@ -644,7 +645,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len)
 }
 
 ssize_t SocketCore::readDataFrom(char* data, size_t len,
-				 pair<string /* numerichost */,
+				 std::pair<std::string /* numerichost */,
 				 uint16_t /* port */>& sender)
 {
   struct sockaddr_storage addrSender;
@@ -667,3 +668,4 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   return rlength;
 }
 
+} // namespace aria2

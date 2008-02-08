@@ -35,17 +35,21 @@
 #include "OSMetalinkParserState.h"
 #include "MetalinkParserStateMachine.h"
 
+namespace aria2 {
+
 void OSMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					 const string& name,
-					 const map<string, string>& attrs)
+					 const std::string& name,
+					 const std::map<std::string, std::string>& attrs)
 {
   stm->setSkipTagState(this);
 }
 
 void OSMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-				       const string& name,
-				       const string& characters)
+				       const std::string& name,
+				       const std::string& characters)
 {
   stm->setOSOfEntry(characters);
   stm->setFileState();
 }
+
+} // namespace aria2

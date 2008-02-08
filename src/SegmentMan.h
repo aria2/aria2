@@ -36,36 +36,31 @@
 #define _D_SEGMENT_MAN_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
 
 class Segment;
-typedef SharedHandle<Segment> SegmentHandle;
-typedef deque<SegmentHandle> Segments;
 class Logger;
 class Option;
 class PeerStat;
-typedef SharedHandle<PeerStat> PeerStatHandle;
-typedef deque<PeerStatHandle> PeerStats;
 class DownloadContext;
-typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class PieceStorage;
-typedef SharedHandle<PieceStorage> PieceStorageHandle;
 class Piece;
-typedef SharedHandle<Piece> PieceHandle;
-
-#define SEGMENT_FILE_EXTENSION ".aria2"
 
 class SegmentEntry {
 public:
   int32_t cuid;
-  SegmentHandle segment;
+  SharedHandle<Segment> segment;
 public:
-  SegmentEntry(int32_t cuid, const SegmentHandle& segment);
+  SegmentEntry(int32_t cuid, const SharedHandle<Segment>& segment);
 
   ~SegmentEntry();
 };
 
 typedef SharedHandle<SegmentEntry> SegmentEntryHandle;
-typedef deque<SegmentEntryHandle> SegmentEntries;
+typedef std::deque<SegmentEntryHandle> SegmentEntries;
 
 /**
  * This class holds the download progress of the one download entry.
@@ -76,21 +71,22 @@ private:
 
   const Logger* logger;
 
-  DownloadContextHandle _downloadContext;
+  SharedHandle<DownloadContext> _downloadContext;
 
-  PieceStorageHandle _pieceStorage;
+  SharedHandle<PieceStorage> _pieceStorage;
 
   SegmentEntries usedSegmentEntries;
 
-  PeerStats peerStats;
+  std::deque<SharedHandle<PeerStat> > peerStats;
 
-  SegmentHandle checkoutSegment(int32_t cuid, const PieceHandle& piece);
+  SharedHandle<Segment> checkoutSegment(int32_t cuid,
+					const SharedHandle<Piece>& piece);
 
-  SegmentEntryHandle findSlowerSegmentEntry(const PeerStatHandle& peerStat) const;
+  SegmentEntryHandle findSlowerSegmentEntry(const SharedHandle<PeerStat>& peerStat) const;
 public:
   SegmentMan(const Option* option,
-	     const DownloadContextHandle& downloadContext = 0,
-	     const PieceStorageHandle& pieceStorage = 0);
+	     const SharedHandle<DownloadContext>& downloadContext = 0,
+	     const SharedHandle<PieceStorage>& pieceStorage = 0);
 
   ~SegmentMan();
 
@@ -118,15 +114,17 @@ public:
    * If there is no vacant segment, then returns a segment instance whose
    * isNull call is true.
    */
-  Segments getInFlightSegment(int32_t cuid);
-  SegmentHandle getSegment(int32_t cuid);
+  std::deque<SharedHandle<Segment> > getInFlightSegment(int32_t cuid);
+
+  SharedHandle<Segment> getSegment(int32_t cuid);
+
   /**
    * Returns a segment whose index is index. 
    * If it has already assigned
    * to another cuid or has been downloaded, then returns a segment instance
    * whose isNull call is true.
    */
-  SegmentHandle getSegment(int32_t cuid, int32_t index);
+  SharedHandle<Segment> getSegment(int32_t cuid, int32_t index);
   /**
    * Updates download status.
    */
@@ -139,17 +137,17 @@ public:
   /**
    * Tells SegmentMan that the segment has been downloaded successfully.
    */
-  bool completeSegment(int32_t cuid, const SegmentHandle& segment);
+  bool completeSegment(int32_t cuid, const SharedHandle<Segment>& segment);
 
   /**
    * Injects PieceStorage.
    */
-  void setPieceStorage(const PieceStorageHandle& pieceStorage);
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
 
   /**
    * Injects DownloadContext.
    */
-  void setDownloadContext(const DownloadContextHandle& downloadContext);
+  void setDownloadContext(const SharedHandle<DownloadContext>& downloadContext);
 
   /**
    * Returns true if the segment whose index is index has been downloaded.
@@ -164,13 +162,13 @@ public:
    * Registers given peerStat if it has not been registerd.
    * Otherwise does nothing.
    */
-  void registerPeerStat(const PeerStatHandle& peerStat);
+  void registerPeerStat(const SharedHandle<PeerStat>& peerStat);
 
   /**
    * Returns peerStat whose cuid is given cuid. If it is not found, returns
    * 0.
    */
-  PeerStatHandle getPeerStat(int32_t cuid) const;
+  SharedHandle<PeerStat> getPeerStat(int32_t cuid) const;
 
   /**
    * Returns current download speed in bytes per sec. 
@@ -181,4 +179,7 @@ public:
 };
 
 typedef SharedHandle<SegmentMan> SegmentManHandle;
+
+} // namespace aria2
+
 #endif // _D_SEGMENT_MAN_H_

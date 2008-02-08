@@ -37,6 +37,8 @@
 
 #include "RequestGroupCriteria.h"
 
+namespace aria2 {
+
 class TrueRequestGroupCriteria:public RequestGroupCriteria
 {
 public:
@@ -49,5 +51,7 @@ public:
     return true;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_TRUE_REQUEST_GROUP_CRITERIA_H_

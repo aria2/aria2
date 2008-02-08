@@ -36,12 +36,17 @@
 #define _D_FILE_ENTRY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "File.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class FileEntry {
 private:
-  string path;
-  Strings _uris;
+  std::string path;
+  std::deque<std::string> _uris;
   int64_t length;
   int64_t offset;
   bool extracted;
@@ -49,25 +54,26 @@ private:
 public:
   FileEntry():length(0), offset(0), extracted(false), requested(false) {}
 
-  FileEntry(const string& path, int64_t length, int64_t offset, const Strings& uris = Strings());
+  FileEntry(const std::string& path, int64_t length, int64_t offset,
+	    const std::deque<std::string>& uris = std::deque<std::string>());
 
   ~FileEntry();
 
   FileEntry& operator=(const FileEntry& entry);
 
-  string getBasename() const
+  std::string getBasename() const
   {
     return File(path).getBasename();
   }
 
-  string getDirname() const
+  std::string getDirname() const
   {
     return File(path).getDirname();
   }
 
-  const string& getPath() const { return path; }
+  const std::string& getPath() const { return path; }
 
-  void setPath(const string& path) { this->path = path; }
+  void setPath(const std::string& path) { this->path = path; }
 
   int64_t getLength() const { return length; }
 
@@ -85,9 +91,9 @@ public:
 
   void setRequested(bool flag) { this->requested = flag; }
 
-  void setupDir(const string& parentDir);
+  void setupDir(const std::string& parentDir);
 
-  const Strings& getAssociatedUris() const
+  const std::deque<std::string>& getAssociatedUris() const
   {
     return _uris;
   }
@@ -96,6 +102,8 @@ public:
 };
 
 typedef SharedHandle<FileEntry> FileEntryHandle;
-typedef deque<FileEntryHandle> FileEntries;
+typedef std::deque<FileEntryHandle> FileEntries;
+
+}
 
 #endif // _D_FILE_ENTRY_H_

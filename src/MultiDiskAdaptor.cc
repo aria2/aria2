@@ -36,9 +36,79 @@
 #include "DefaultDiskWriter.h"
 #include "message.h"
 #include "Util.h"
+#include "FileEntry.h"
 #include "MultiFileAllocationIterator.h"
 #include "DefaultDiskWriterFactory.h"
 #include "DlAbortEx.h"
+#include "File.h"
+
+namespace aria2 {
+
+DiskWriterEntry::DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry):
+  fileEntry(fileEntry),
+  diskWriter(0) {}
+
+DiskWriterEntry::~DiskWriterEntry() {}
+
+std::string DiskWriterEntry::getFilePath(const std::string& topDir) const
+{
+  return topDir+"/"+fileEntry->getPath();
+}
+
+void DiskWriterEntry::initAndOpenFile(const std::string& topDir)
+{
+  diskWriter->initAndOpenFile(getFilePath(topDir), fileEntry->getLength());
+}
+
+void DiskWriterEntry::openFile(const std::string& topDir)
+{
+  diskWriter->openFile(getFilePath(topDir), fileEntry->getLength());
+}
+
+void DiskWriterEntry::openExistingFile(const std::string& topDir)
+{
+  diskWriter->openExistingFile(getFilePath(topDir), fileEntry->getLength());
+}
+
+void DiskWriterEntry::closeFile()
+{
+  diskWriter->closeFile();
+}
+
+bool DiskWriterEntry::fileExists(const std::string& topDir)
+{
+  return File(getFilePath(topDir)).exists();
+}
+
+int64_t DiskWriterEntry::size() const
+{
+  return diskWriter->size();
+}
+
+SharedHandle<FileEntry> DiskWriterEntry::getFileEntry() const
+{
+  return fileEntry;
+}
+
+void DiskWriterEntry::setDiskWriter(const SharedHandle<DiskWriter>& diskWriter)
+{
+  this->diskWriter = diskWriter;
+}
+
+SharedHandle<DiskWriter> DiskWriterEntry::getDiskWriter() const
+{
+  return diskWriter;
+}
+
+bool DiskWriterEntry::operator<(const DiskWriterEntry& entry) const
+{
+  return fileEntry < entry.fileEntry;
+}
+
+MultiDiskAdaptor::MultiDiskAdaptor():
+  pieceLength(0) {}
+
+MultiDiskAdaptor::~MultiDiskAdaptor() {}
 
 void MultiDiskAdaptor::resetDiskWriterEntries()
 {
@@ -56,7 +126,7 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
   }
 }
 
-string MultiDiskAdaptor::getTopDirPath() const
+std::string MultiDiskAdaptor::getTopDirPath() const
 {
   return storeDir+"/"+topDir;
 }
@@ -224,3 +294,5 @@ void MultiDiskAdaptor::disableDirectIO()
     (*itr)->getDiskWriter()->disableDirectIO();
   }
 }
+
+} // namespace aria2

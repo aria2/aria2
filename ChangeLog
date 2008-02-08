@@ -1,3 +1,9 @@
+2008-02-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Removed "using namespace std;" from all sources. Appended std:: prefix to c++
+	standard classes.
+	Included string.h where mem* function are used.
+
 2008-02-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Create directory before saving DHT routing table.

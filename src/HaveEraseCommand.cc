@@ -38,6 +38,8 @@
 #include "PieceStorage.h"
 #include "RequestGroup.h"
 
+namespace aria2 {
+
 HaveEraseCommand::HaveEraseCommand(int32_t cuid, DownloadEngine* e, int32_t interval)
   :TimeBasedCommand(cuid, e, interval) {}
 
@@ -59,3 +61,5 @@ void HaveEraseCommand::process()
     }
   }
 }
+
+} // namespace aria2

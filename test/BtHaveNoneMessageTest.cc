@@ -1,8 +1,10 @@
 #include "BtHaveNoneMessage.h"
 #include "PeerMessageUtil.h"
+#include "Peer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtHaveNoneMessageTest:public CppUnit::TestFixture {
 
@@ -30,7 +32,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtHaveNoneMessageTest);
 void BtHaveNoneMessageTest::testCreate() {
   unsigned char msg[5];
   PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 15);
-  BtHaveNoneMessageHandle pm = BtHaveNoneMessage::create(&msg[4], 1);
+  SharedHandle<BtHaveNoneMessage> pm = BtHaveNoneMessage::create(&msg[4], 1);
   CPPUNIT_ASSERT_EQUAL((int8_t)15, pm->getId());
 
   // case: payload size is wrong
@@ -60,7 +62,7 @@ void BtHaveNoneMessageTest::testGetMessage() {
 
 void BtHaveNoneMessageTest::testDoReceivedAction() {
   BtHaveNoneMessage msg;
-  PeerHandle peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer = new Peer("host", 6969);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   msg.doReceivedAction();
@@ -74,5 +76,7 @@ void BtHaveNoneMessageTest::testDoReceivedAction() {
 
 void BtHaveNoneMessageTest::testToString() {
   BtHaveNoneMessage msg;
-  CPPUNIT_ASSERT_EQUAL(string("have none"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("have none"), msg.toString());
 }
+
+} // namespace aria2

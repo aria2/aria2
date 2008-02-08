@@ -37,9 +37,11 @@
 
 #include "AbstractCommand.h"
 
+namespace aria2 {
+
 class HttpInitiateConnectionCommand : public AbstractCommand {
 private:
-  NameResolverHandle nameResolver;
+  SharedHandle<NameResolver> nameResolver;
   bool useProxy();
   bool useProxyGet();
   bool useProxyTunnel();
@@ -57,9 +59,14 @@ protected:
   virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
 public:
-  HttpInitiateConnectionCommand(int cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e);
+  HttpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
+				RequestGroup* requestGroup,
+				DownloadEngine* e);
+
   virtual ~HttpInitiateConnectionCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_HTTP_INITIATE_CONNECTION_COMMAND_H_
 

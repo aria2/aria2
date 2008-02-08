@@ -38,22 +38,26 @@
 #include "OptionHandler.h"
 #include "DlAbortEx.h"
 
+namespace aria2 {
+
+class Option;
+
 class NameMatchOptionHandler : public OptionHandler {
 protected:
-  string _optName;
+  std::string _optName;
 
-  virtual void parseArg(Option* option, const string& arg) = 0;
+  virtual void parseArg(Option* option, const std::string& arg) = 0;
 public:
-  NameMatchOptionHandler(const string& optName):_optName(optName) {}
+  NameMatchOptionHandler(const std::string& optName):_optName(optName) {}
 
   virtual ~NameMatchOptionHandler() {}
   
-  virtual bool canHandle(const string& optName)
+  virtual bool canHandle(const std::string& optName)
   {
     return strcasecmp(_optName.c_str(), optName.c_str()) == 0;
   }
 
-  virtual void parse(Option* option, const string& arg)
+  virtual void parse(Option* option, const std::string& arg)
   {
     try {
       parseArg(option, arg);
@@ -64,5 +68,7 @@ public:
 };
 
 typedef SharedHandle<NameMatchOptionHandler> NameMatchOptionHandlerHandle;
+
+} // namespace aria2
 
 #endif // _D_NAME_MATCH_OPTION_HANDLER_H_

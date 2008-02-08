@@ -36,7 +36,12 @@
 #define _D_MESSAGE_DIGEST_HELPER_H_
 
 #include "common.h"
-#include "BinaryStream.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
+
+class BinaryStream;
 
 class MessageDigestHelper {
 public:
@@ -44,16 +49,16 @@ public:
    * Returns message digest in hexadecimal notation.
    * Digest algorithm is specified by algo.
    */
-  static string digest(const string& algo, const BinaryStreamHandle& bs, int64_t offset, int64_t length);
+  static std::string digest(const std::string& algo, const SharedHandle<BinaryStream>& bs, int64_t offset, int64_t length);
 
   /**
    * Calculates message digest of file denoted by filename.
    */
-  static string digest(const string& algo, const string& filename);
+  static std::string digest(const std::string& algo, const std::string& filename);
 
-  static string digest(const string& algo, const void* data, int32_t length);
+  static std::string digest(const std::string& algo, const void* data, int32_t length);
 
-  static string digestString(const string& algo, const string& data)
+  static std::string digestString(const std::string& algo, const std::string& data)
   {
     return digest(algo, data.c_str(), data.size());
   }
@@ -63,7 +68,9 @@ public:
    * Throws exception when mdLength is less than the size of message digest.
    */
   static void digest(unsigned char* md, int32_t mdLength,
-		     const string& algo, const void* data, int32_t length);
+		     const std::string& algo, const void* data, int32_t length);
 };
+
+} // namespace aria2
 
 #endif // _D_MESSAGE_DIGEST_HELPER_H_

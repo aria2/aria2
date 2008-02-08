@@ -39,6 +39,8 @@
 #include "BtHaveMessage.h"
 #include "PeerMessageUtil.h"
 
+namespace aria2 {
+
 class BtHaveMessageValidator : public BtMessageValidator {
 private:
   const BtHaveMessage* message;
@@ -56,5 +58,7 @@ public:
   }
 
 };
+
+} // namespace aria2
 
 #endif // _D_BT_HAVE_MESSAGE_VALIDATOR_H_

@@ -1,6 +1,7 @@
 #include "FeatureConfig.h"
-
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class FeatureConfigTest:public CppUnit::TestFixture {
 
@@ -45,7 +46,7 @@ void FeatureConfigTest::testIsSupported() {
 }
 
 void FeatureConfigTest::testGetConfigurationSummary() {
-  CPPUNIT_ASSERT_EQUAL(string("http: yes\n")
+  CPPUNIT_ASSERT_EQUAL(std::string("http: yes\n")
 #ifdef ENABLE_SSL
 		       +"https: yes\n"
 #else
@@ -75,3 +76,5 @@ void FeatureConfigTest::testGetConfigurationSummary() {
 		       ,
 		       FeatureConfig::getInstance()->getConfigurationSummary());
 }
+
+} // namespace aria2

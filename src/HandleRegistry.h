@@ -35,14 +35,15 @@
 #ifndef _D_HANDLE_REGISTRY_H_
 #define _D_HANDLE_REGISTRY_H_
 
+#include "common.h"
 #include "SharedHandle.h"
 #include <map>
 
-using namespace std;
+namespace aria2 {
 
 template<typename K, typename T>
 class HandleRegistry {
-  typedef map<K, SharedHandle<T> > HandleMap;
+  typedef std::map<K, SharedHandle<T> > HandleMap;
 private:
   HandleMap handleMap;
 public:
@@ -69,5 +70,7 @@ public:
     handleMap.clear();
   }
 };
+
+} // namespace aria2
 
 #endif // _D_HANDLE_REGISTRY_H_

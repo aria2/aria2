@@ -36,6 +36,9 @@
 #define _D_UNION_SEED_CRITERIA_H_
 
 #include "SeedCriteria.h"
+#include <algorithm>
+
+namespace aria2 {
 
 class UnionSeedCriteria : public SeedCriteria {
 private:
@@ -60,13 +63,13 @@ public:
 
     
   virtual void reset() {
-    for_each(criterion.begin(), criterion.end(), Reset());
+    std::for_each(criterion.begin(), criterion.end(), Reset());
   }
 
   virtual bool evaluate() {
-    SeedCriterion::iterator itr = find_if(criterion.begin(),
-					  criterion.end(),
-					  Eval());
+    SeedCriterion::iterator itr = std::find_if(criterion.begin(),
+					       criterion.end(),
+					       Eval());
     return itr != criterion.end();
   }
 
@@ -78,5 +81,7 @@ public:
     return criterion;
   }
 };
+
+} // namespace aria2
       
 #endif // _D_UNION_SEED_CRITERIA_H_

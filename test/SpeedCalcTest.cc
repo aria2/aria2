@@ -2,7 +2,7 @@
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class SpeedCalcTest:public CppUnit::TestFixture {
 
@@ -25,3 +25,5 @@ void SpeedCalcTest::testUpdate() {
   SpeedCalc calc;
   calc.update(1000);
 }
+
+} // namespace aria2

@@ -36,7 +36,8 @@
 #define _D_DEFAULT_DISK_WRITER_H_
 
 #include "AbstractDiskWriter.h"
-#include "Option.h"
+
+namespace aria2 {
 
 class DefaultDiskWriter:public AbstractDiskWriter {
 public:
@@ -44,9 +45,11 @@ public:
 
   virtual ~DefaultDiskWriter();
 
-  virtual void initAndOpenFile(const string& filename, int64_t totalLength = 0);
+  virtual void initAndOpenFile(const std::string& filename, int64_t totalLength = 0);
 };
 
 typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_DISK_WRITER_H_

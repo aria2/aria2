@@ -35,9 +35,15 @@
 #include "InitiateConnectionCommandFactory.h"
 #include "HttpInitiateConnectionCommand.h"
 #include "FtpInitiateConnectionCommand.h"
+#include "Request.h"
+#include "RequestGroup.h"
+#include "DownloadEngine.h"
 #include "DlAbortEx.h"
 
-Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int cuid, const RequestHandle req, RequestGroup* requestGroup, DownloadEngine* e) {
+namespace aria2 {
+
+Command*
+InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e) {
   if(req->getProtocol() == "http"
 #ifdef ENABLE_SSL
      // for SSL
@@ -52,3 +58,5 @@ Command* InitiateConnectionCommandFactory::createInitiateConnectionCommand(int c
     throw new DlAbortEx("%s is not supported yet.", req->getProtocol().c_str());
   }
 }
+
+} // namespace aria2

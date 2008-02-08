@@ -39,6 +39,8 @@
 #include "RequestGroupAware.h"
 #include "BtContextAwareCommand.h"
 
+namespace aria2 {
+
 class PeerInitiateConnectionCommand : public PeerAbstractCommand,
 				      public BtContextAwareCommand,
 				      public RequestGroupAware
@@ -53,11 +55,13 @@ protected:
 public:
   PeerInitiateConnectionCommand(int cuid,
 				RequestGroup* requestGroup,
-				const PeerHandle& peer,
+				const SharedHandle<Peer>& peer,
 				DownloadEngine* e,
-				const BtContextHandle& btContext);
+				const SharedHandle<BtContext>& btContext);
 
   virtual ~PeerInitiateConnectionCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_PEER_INITIATE_CONNECTION_H_

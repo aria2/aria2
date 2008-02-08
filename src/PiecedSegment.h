@@ -37,6 +37,8 @@
 
 #include "Segment.h"
 
+namespace aria2 {
+
 class PiecedSegment:public Segment {
 private:
   /**
@@ -44,12 +46,12 @@ private:
    * The last piece likely have shorter length than the other length.
    */
   int32_t _pieceLength;
-  int32_t _writtenLength;
   int32_t _overflowLength;
-  PieceHandle _piece;
+  SharedHandle<Piece> _piece;
+  int32_t _writtenLength;
 
 public:
-  PiecedSegment(int32_t pieceLength, const PieceHandle& piece);
+  PiecedSegment(int32_t pieceLength, const SharedHandle<Piece>& piece);
 
   virtual ~PiecedSegment();
 
@@ -82,10 +84,12 @@ public:
 
   virtual void clear();
 
-  virtual PieceHandle getPiece() const;
+  virtual SharedHandle<Piece> getPiece() const;
 };
 
 typedef SharedHandle<PiecedSegment> PiecedSegmentHandle;
+
+} // namespace aria2
 
 #endif // _D_PIECED_SEGMENT_H_
 

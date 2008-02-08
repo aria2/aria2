@@ -36,6 +36,9 @@
 #define _D_DEPENDENCY_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class Dependency {
 public:
@@ -45,5 +48,7 @@ public:
 };
 
 typedef SharedHandle<Dependency> DependencyHandle;
+
+} // namespace aria2
 
 #endif // _D_DEPENDENCY_H_

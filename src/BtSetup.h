@@ -36,13 +36,15 @@
 #define _D_BT_SETUP_H_
 
 #include "common.h"
+#include <deque>
+
+namespace aria2 {
 
 class Logger;
 class RequestGroup;
 class DownloadEngine;
 class Option;
 class Command;
-typedef deque<Command*> Commands;
 
 class BtSetup {
 private:
@@ -50,9 +52,11 @@ private:
 public:
   BtSetup();
 
-  Commands setup(RequestGroup* requestGroup,
-		 DownloadEngine* e,
-		 const Option* option);
+  std::deque<Command*> setup(RequestGroup* requestGroup,
+			     DownloadEngine* e,
+			     const Option* option);
 };
+
+} // namespace aria2
 
 #endif // _D_BT_SETUP_H_

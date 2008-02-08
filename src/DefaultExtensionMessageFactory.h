@@ -37,34 +37,38 @@
 
 #include "ExtensionMessageFactory.h"
 
+namespace aria2 {
+
 class BtContext;
-typedef SharedHandle<BtContext> BtContextHandle;
 class Peer;
-typedef SharedHandle<Peer> PeerHandle;
 class Logger;
 
 class DefaultExtensionMessageFactory:public ExtensionMessageFactory {
 private:
-  BtContextHandle _btContext;
+  SharedHandle<BtContext> _btContext;
 
-  PeerHandle _peer;
+  SharedHandle<Peer> _peer;
 
   const Logger* _logger;
 
 public:
   DefaultExtensionMessageFactory();
 
-  DefaultExtensionMessageFactory(const BtContextHandle& btContext,
-				 const PeerHandle& peer);
+  DefaultExtensionMessageFactory(const SharedHandle<BtContext>& btContext,
+				 const SharedHandle<Peer>& peer);
 
   virtual ~DefaultExtensionMessageFactory();
 
-  virtual ExtensionMessageHandle createMessage(const char* data, size_t length);
+  virtual SharedHandle<ExtensionMessage>
+  createMessage(const char* data, size_t length);
 
-  void setBtContext(const BtContextHandle& btContext);
+  void setBtContext(const SharedHandle<BtContext>& btContext);
 
-  void setPeer(const PeerHandle& peer);
+  void setPeer(const SharedHandle<Peer>& peer);
 };
 
 typedef SharedHandle<DefaultExtensionMessageFactory> DefaultExtensionMessageFactoryHandle;
+
+} // namespace aria2
+
 #endif // _D_DEFAULT_EXTENSION_MESSAGE_FACTORY_H_

@@ -36,24 +36,30 @@
 #define _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_
 
 #include "RequestGroupCriteria.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class ContentTypeRequestGroupCriteria:public RequestGroupCriteria
 {
 private:
-  Strings _contentTypes;
-  Strings _extensions;
+  std::deque<std::string> _contentTypes;
+  std::deque<std::string> _extensions;
 
-  bool forwardMatch(const string& target, const Strings& candidates) const;
+  bool forwardMatch(const std::string& target, const std::deque<std::string>& candidates) const;
 
-  bool exactMatch(const string& target, const Strings& candidates) const;
+  bool exactMatch(const std::string& target, const std::deque<std::string>& candidates) const;
 
 public:
-  ContentTypeRequestGroupCriteria(const Strings& contentTypes,
-				  const Strings& extensions);
+  ContentTypeRequestGroupCriteria(const std::deque<std::string>& contentTypes,
+				  const std::deque<std::string>& extensions);
 
   virtual ~ContentTypeRequestGroupCriteria();
 
   virtual bool match(const RequestGroup* requestGroup) const;
 };
+
+} // namespace aria2
 
 #endif // _D_CONTENT_TYPE_REQUEST_GROUP_CRITERIA_H_

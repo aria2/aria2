@@ -38,6 +38,8 @@
 #include "common.h"
 #include "BtConstants.h"
 
+namespace aria2 {
+
 #define MIN_PEERS 40
 
 class BtRuntime {
@@ -94,5 +96,7 @@ public:
 };
 
 typedef SharedHandle<BtRuntime> BtRuntimeHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_RUNTIME_H_

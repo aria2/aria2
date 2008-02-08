@@ -36,83 +36,53 @@
 #define _D_MULTI_DISK_ADAPTOR_H_
 
 #include "DiskAdaptor.h"
-#include "DiskWriter.h"
-#include "File.h"
+
+namespace aria2 {
 
 class MultiFileAllocationIterator;
+class FileEntry;
+class DiskWriter;
 
 class DiskWriterEntry {
 private:
-  FileEntryHandle fileEntry;
-  DiskWriterHandle diskWriter;
+  SharedHandle<FileEntry> fileEntry;
+  SharedHandle<DiskWriter> diskWriter;
 public:
-  DiskWriterEntry(const FileEntryHandle& fileEntry):
-    fileEntry(fileEntry),
-    diskWriter(0) {}
+  DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry);
 
-  ~DiskWriterEntry() {}
+  ~DiskWriterEntry();
 
-  string getFilePath(const string& topDir) const
-  {
-    return topDir+"/"+fileEntry->getPath();
-  }
+  std::string getFilePath(const std::string& topDir) const;
 
-  void initAndOpenFile(const string& topDir)
-  {
-    diskWriter->initAndOpenFile(getFilePath(topDir), fileEntry->getLength());
-  }
+  void initAndOpenFile(const std::string& topDir);
 
-  void openFile(const string& topDir)
-  {
-    diskWriter->openFile(getFilePath(topDir), fileEntry->getLength());
-  }
+  void openFile(const std::string& topDir);
 
-  void openExistingFile(const string& topDir)
-  {
-    diskWriter->openExistingFile(getFilePath(topDir), fileEntry->getLength());
-  }
+  void openExistingFile(const std::string& topDir);
 
-  void closeFile()
-  {
-    diskWriter->closeFile();
-  }
+  void closeFile();
 
-  bool fileExists(const string& topDir)
-  {
-    return File(getFilePath(topDir)).exists();
-  }
+  bool fileExists(const std::string& topDir);
 
-  int64_t size() const
-  {
-    return diskWriter->size();
-  }
+  int64_t size() const;
 
-  FileEntryHandle getFileEntry() const {
-    return fileEntry;
-  }
+  SharedHandle<FileEntry> getFileEntry() const;
 
-  void setDiskWriter(const DiskWriterHandle& diskWriter) {
-    this->diskWriter = diskWriter;
-  }
+  void setDiskWriter(const SharedHandle<DiskWriter>& diskWriter);
 
-  DiskWriterHandle getDiskWriter() const {
-    return diskWriter;
-  }
+  SharedHandle<DiskWriter> getDiskWriter() const;
 
-  bool operator<(const DiskWriterEntry& entry) const
-  {
-    return fileEntry < entry.fileEntry;
-  }
+  bool operator<(const DiskWriterEntry& entry) const;
 };
 
 typedef SharedHandle<DiskWriterEntry> DiskWriterEntryHandle;
 
-typedef deque<DiskWriterEntryHandle> DiskWriterEntries;
+typedef std::deque<DiskWriterEntryHandle> DiskWriterEntries;
 
 class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
 private:
-  string topDir;
+  std::string topDir;
   int32_t pieceLength;
   DiskWriterEntries diskWriterEntries;
 
@@ -128,12 +98,11 @@ private:
 			  int64_t fileOffset,
 			  int32_t rem) const;
 
-  string getTopDirPath() const;
+  std::string getTopDirPath() const;
 public:
-  MultiDiskAdaptor():pieceLength(0)
-  {}
+  MultiDiskAdaptor();
 
-  virtual ~MultiDiskAdaptor() {}
+  virtual ~MultiDiskAdaptor();
 
   virtual void initAndOpenFile();
 
@@ -152,24 +121,24 @@ public:
 
   virtual bool fileExists();
 
-  virtual string getFilePath()
+  virtual std::string getFilePath()
   {
     return getTopDirPath();
   }
 
   virtual int64_t size() const;
 
-  virtual FileAllocationIteratorHandle fileAllocationIterator();
+  virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 
   virtual void enableDirectIO();
 
   virtual void disableDirectIO();
 
-  void setTopDir(const string& topDir) {
+  void setTopDir(const std::string& topDir) {
     this->topDir = topDir;
   }
 
-  const string& getTopDir() const {
+  const std::string& getTopDir() const {
     return topDir;
   }
 
@@ -193,5 +162,7 @@ public:
 };
 
 typedef SharedHandle<MultiDiskAdaptor> MultiDiskAdaptorHandle;
+
+} // namespace aria2
 
 #endif // _D_MULTI_DISK_ADAPTOR_H_

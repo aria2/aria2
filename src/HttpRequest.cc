@@ -33,11 +33,72 @@
  */
 /* copyright --> */
 #include "HttpRequest.h"
+#include "Request.h"
+#include "Segment.h"
+#include "Range.h"
+#include "Cookie.h"
+#include "CookieBox.h"
+#include "Option.h"
 #include "Util.h"
 #include "Base64.h"
 #include "prefs.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+
+namespace aria2 {
+
+std::string HttpRequest::USER_AGENT = "aria2";
+
+HttpRequest::HttpRequest():request(0),
+			   segment(0),
+			   entityLength(0),
+			   authEnabled(false),
+			   proxyEnabled(false),
+			   proxyAuthEnabled(false),
+			   userAgent(USER_AGENT)
+{}
+
+SharedHandle<Segment> HttpRequest::getSegment() const
+{
+  return segment;
+}
+
+void HttpRequest::setSegment(const SharedHandle<Segment>& segment)
+{
+  this->segment = segment;
+}
+
+void HttpRequest::setRequest(const SharedHandle<Request>& request)
+{
+  this->request = request;
+}
+
+SharedHandle<Request> HttpRequest::getRequest() const
+{
+  return request;
+}
+
+int64_t HttpRequest::getStartByte() const
+{
+  if(segment.isNull()) {
+    return 0;
+  } else {
+    return segment->getPositionToWrite();
+  }
+}
+
+int64_t HttpRequest::getEndByte() const
+{
+  if(segment.isNull() || request.isNull()) {
+    return 0;
+  } else {
+    if(request->isKeepAlive()) {
+      return segment->getPosition()+segment->getLength()-1;
+    } else {
+      return 0;
+    }
+  }
+}
 
 RangeHandle HttpRequest::getRange() const
 {
@@ -65,14 +126,14 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
   }  
 }
 
-string HttpRequest::getHostText(const string& host, int32_t port) const
+std::string HttpRequest::getHostText(const std::string& host, int32_t port) const
 {
   return  host+(port == 80 || port == 443 ? "" : ":"+Util::llitos(port));
 }
 
-string HttpRequest::createRequest() const
+std::string HttpRequest::createRequest() const
 {
-  string requestLine = "GET ";
+  std::string requestLine = "GET ";
   if(getProtocol() == "ftp" || proxyEnabled) {
     requestLine += getCurrentURI();
   } else {
@@ -84,7 +145,7 @@ string HttpRequest::createRequest() const
     requestLine += getFile();
   }
   requestLine +=
-    string(" HTTP/1.1\r\n")+
+    std::string(" HTTP/1.1\r\n")+
     "User-Agent: "+userAgent+"\r\n"+
     "Accept: */*\r\n"+        /* */
     "Host: "+getHostText(getHost(), getPort())+"\r\n"+
@@ -119,7 +180,7 @@ string HttpRequest::createRequest() const
   if(getPreviousURI().size()) {
     requestLine += "Referer: "+getPreviousURI()+"\r\n";
   }
-  string cookiesValue;
+  std::string cookiesValue;
   Cookies cookies = request->cookieBox->criteriaFind(getHost(),
 						     getDir(),
 						     time(0),
@@ -129,17 +190,17 @@ string HttpRequest::createRequest() const
     cookiesValue += (*itr).toString()+";";
   }
   if(cookiesValue.size()) {
-    requestLine += string("Cookie: ")+cookiesValue+"\r\n";
+    requestLine += std::string("Cookie: ")+cookiesValue+"\r\n";
   }
   requestLine += "\r\n";
   return requestLine;
 }
 
-string HttpRequest::createProxyRequest() const
+std::string HttpRequest::createProxyRequest() const
 {
-  string requestLine =
-    string("CONNECT ")+getHost()+":"+Util::itos(getPort())+
-    string(" HTTP/1.1\r\n")+
+  std::string requestLine =
+    std::string("CONNECT ")+getHost()+":"+Util::itos(getPort())+
+    std::string(" HTTP/1.1\r\n")+
     "User-Agent: "+userAgent+"\r\n"+
     "Host: "+getHost()+":"+Util::itos(getPort())+"\r\n";
   if(request->isKeepAlive()) {
@@ -154,7 +215,7 @@ string HttpRequest::createProxyRequest() const
   return requestLine;
 }
 
-string HttpRequest::getProxyAuthString() const {
+std::string HttpRequest::getProxyAuthString() const {
   return "Proxy-Authorization: Basic "+
     Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfigForHttpProxy(request)->getAuthText())+"\r\n";
 }
@@ -167,3 +228,45 @@ void HttpRequest::configure(const Option* option)
     option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
   proxyAuthEnabled = option->get(PREF_HTTP_PROXY_AUTH_ENABLED) == V_TRUE;
 }
+
+std::string HttpRequest::getPreviousURI() const
+{
+  return request->getPreviousUrl();
+}
+
+std::string HttpRequest::getHost() const
+{
+  return request->getHost();
+}
+
+int32_t HttpRequest::getPort() const
+{
+  return request->getPort();
+}
+
+std::string HttpRequest::getMethod() const
+{
+  return request->getMethod();
+}
+
+std::string HttpRequest::getProtocol() const
+{
+  return request->getProtocol();
+}
+
+std::string HttpRequest::getCurrentURI() const
+{
+  return request->getCurrentUrl();
+}
+  
+std::string HttpRequest::getDir() const
+{
+  return request->getDir();
+}
+
+std::string HttpRequest::getFile() const
+{
+  return request->getFile();
+}
+
+} // namespace aria2

@@ -39,9 +39,10 @@
 #include "BtContextAwareCommand.h"
 #include "RequestGroupAware.h"
 
+namespace aria2 {
+
 class DownloadEngine;
 class RequestGroup;
-typedef SharedHandle<RequestGroup> RequestGroupHandle;
 
 class TrackerWatcherCommand : public Command,
 			      public BtContextAwareCommand,
@@ -50,28 +51,30 @@ class TrackerWatcherCommand : public Command,
 private:
   DownloadEngine* e;
 
-  RequestGroupHandle _trackerRequestGroup;
+  SharedHandle<RequestGroup> _trackerRequestGroup;
   /**
    * Returns a command for announce request. Returns 0 if no announce request
    * is needed.
    */
-  RequestGroupHandle createRequestGroup(const string& url);
+  SharedHandle<RequestGroup> createRequestGroup(const std::string& url);
 
-  string getTrackerResponse(const RequestGroupHandle& requestGroup);
+  std::string getTrackerResponse(const SharedHandle<RequestGroup>& requestGroup);
 
-  void processTrackerResponse(const string& response);
+  void processTrackerResponse(const std::string& response);
 
 public:
   TrackerWatcherCommand(int32_t cuid,
 			RequestGroup* requestGroup,
 			DownloadEngine* e,
-			const BtContextHandle& btContext);
+			const SharedHandle<BtContext>& btContext);
 
   virtual ~TrackerWatcherCommand();
 
-  RequestGroupHandle createAnnounce();
+  SharedHandle<RequestGroup> createAnnounce();
 
   virtual bool execute();
 };
+
+} // namespace aria2
 
 #endif // _D_TRACKER_WATCHER_COMMAND_H_

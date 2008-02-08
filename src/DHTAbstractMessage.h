@@ -36,11 +36,14 @@
 #define _D_DHT_ABSTRACT_MESSAGE_H_
 
 #include "DHTMessage.h"
-#include "Dictionary.h"
-#include "DHTConnectionDecl.h"
-#include "DHTMessageDispatcherDecl.h"
-#include "DHTMessageFactoryDecl.h"
-#include "DHTRoutingTableDecl.h"
+
+namespace aria2 {
+
+class Dictionary;
+class DHTConnection;
+class DHTMessageDispatcher;
+class DHTMessageFactory;
+class DHTRoutingTable;
 
 class DHTAbstractMessage:public DHTMessage {
 protected:
@@ -52,19 +55,19 @@ protected:
 
   WeakHandle<DHTRoutingTable> _routingTable;
 public:
-  DHTAbstractMessage(const DHTNodeHandle& localNode,
-		     const DHTNodeHandle& remoteNode,
-		     const string& transactionID = "");
+  DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
+		     const SharedHandle<DHTNode>& remoteNode,
+		     const std::string& transactionID = "");
 
   virtual ~DHTAbstractMessage();
 
   virtual void send();
 
-  virtual string getType() const = 0;
+  virtual std::string getType() const = 0;
 
   virtual void fillMessage(Dictionary* message) = 0;
 
-  string getBencodedMessage();
+  std::string getBencodedMessage();
 
   void setConnection(const WeakHandle<DHTConnection>& connection);
 
@@ -74,5 +77,7 @@ public:
 
   void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_ABSTRACT_MESSAGE_H_

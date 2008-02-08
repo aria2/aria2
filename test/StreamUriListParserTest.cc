@@ -15,7 +15,7 @@ class StreamUriListParserTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testHasNext);
   CPPUNIT_TEST_SUITE_END();
 private:
-  string list2String(const Strings& src);
+  std::stringlist2String(const Strings& src);
 public:
   void setUp() {
   }
@@ -26,7 +26,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION( StreamUriListParserTest );
 
-string StreamUriListParserTest::list2String(const Strings& src)
+std::stringStreamUriListParserTest::list2String(const Strings& src)
 {
   ostringstream strm;
   copy(src.begin(), src.end(), ostream_iterator<string>(strm, " "));
@@ -42,12 +42,12 @@ void StreamUriListParserTest::testHasNext()
   StreamUriListParser flp(s);
 
   CPPUNIT_ASSERT(flp.hasNext());
-  CPPUNIT_ASSERT_EQUAL(string("http://localhost/index.html http://localhost2/index.html"), list2String(flp.next()));
+  CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/index.html http://localhost2/index.html"), list2String(flp.next()));
   CPPUNIT_ASSERT(flp.hasNext());
-  CPPUNIT_ASSERT_EQUAL(string("ftp://localhost/aria2.tar.bz2"),
+  CPPUNIT_ASSERT_EQUAL(std::string("ftp://localhost/aria2.tar.bz2"),
 		       list2String(flp.next()));
   CPPUNIT_ASSERT(flp.hasNext());
-  CPPUNIT_ASSERT_EQUAL(string(""),
+  CPPUNIT_ASSERT_EQUAL(std::string(""),
 		       list2String(flp.next()));
   CPPUNIT_ASSERT(!flp.hasNext());
 }

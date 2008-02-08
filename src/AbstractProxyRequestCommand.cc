@@ -37,7 +37,13 @@
 #include "RequestGroup.h"
 #include "Request.h"
 #include "HttpConnection.h"
+#include "HttpRequest.h"
+#include "Segment.h"
+#include "Option.h"
 #include "prefs.h"
+#include "Socket.h"
+
+namespace aria2 {
 
 AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
 							 const RequestHandle& req,
@@ -66,3 +72,5 @@ bool AbstractProxyRequestCommand::executeInternal() {
   e->commands.push_back(getNextCommand());
   return true;
 }
+
+} // namespace aria2

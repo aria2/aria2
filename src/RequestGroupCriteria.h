@@ -36,6 +36,9 @@
 #define _D_REQUEST_GROUP_CRITERIA_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class RequestGroup;
 
@@ -48,5 +51,7 @@ public:
 };
 
 typedef SharedHandle<RequestGroupCriteria> RequestGroupCriteriaHandle;
+
+} // namespace aria2
 
 #endif // _D_REQUEST_GROUP_CRITERIA_H_

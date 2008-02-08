@@ -39,6 +39,8 @@
 #include "SpeedCalc.h"
 #include "SharedHandle.h"
 
+namespace aria2 {
+
 class PeerStat {
 public:
   enum STATUS {
@@ -135,5 +137,8 @@ public:
 };
 
 typedef SharedHandle<PeerStat> PeerStatHandle;
+typedef std::deque<PeerStatHandle> PeerStats;
+
+} // namespace aria2
 
 #endif // _D_PEER_STAT_H_

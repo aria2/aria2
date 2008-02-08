@@ -34,15 +34,18 @@
 /* copyright --> */
 #include "DHTPingMessage.h"
 #include "DHTNode.h"
+#include "Dictionary.h"
 #include "Data.h"
 #include "DHTConstants.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTMessageCallback.h"
 
-DHTPingMessage::DHTPingMessage(const DHTNodeHandle& localNode,
-			       const DHTNodeHandle& remoteNode,
-			       const string& transactionID):
+namespace aria2 {
+
+DHTPingMessage::DHTPingMessage(const SharedHandle<DHTNode>& localNode,
+			       const SharedHandle<DHTNode>& remoteNode,
+			       const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID) {}
 
 DHTPingMessage::~DHTPingMessage() {}
@@ -50,7 +53,7 @@ DHTPingMessage::~DHTPingMessage() {}
 void DHTPingMessage::doReceivedAction()
 {
   // send back ping reply
-  DHTMessageHandle reply = _factory->createPingReplyMessage(_remoteNode, _localNode->getID(), _transactionID);
+  SharedHandle<DHTMessage> reply = _factory->createPingReplyMessage(_remoteNode, _localNode->getID(), _transactionID);
   _dispatcher->addMessageToQueue(reply);
 }
 
@@ -62,9 +65,11 @@ Dictionary* DHTPingMessage::getArgument()
   return a;
 }
 
-string DHTPingMessage::getMessageType() const
+std::string DHTPingMessage::getMessageType() const
 {
   return "ping";
 }
 
 void DHTPingMessage::validate() const {}
+
+} // namespace aria2

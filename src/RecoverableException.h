@@ -36,6 +36,8 @@
 #define _D_RECOVERABLE_EXCEPTION_H_
 #include "Exception.h"
 
+namespace aria2 {
+
 class RecoverableException : public Exception {
 public:
   RecoverableException(Exception* cause = 0):Exception(cause) {}
@@ -43,16 +45,18 @@ public:
   RecoverableException(const char* msg, ...):Exception() {
     va_list ap;
     va_start(ap, msg);
-    setMsg(string(msg), ap);
+    setMsg(msg, ap);
     va_end(ap);
   }
 
   RecoverableException(Exception* cause, const char* msg, ...):Exception(cause) {
     va_list ap;
     va_start(ap, msg);
-    setMsg(string(msg), ap);
+    setMsg(msg, ap);
     va_end(ap);
   }
 };
+
+} // namespace aria2
 
 #endif // _D_RECOVERABLE_EXCEPTION_EX_H_

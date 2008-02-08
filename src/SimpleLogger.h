@@ -36,19 +36,26 @@
 #define _D_SIMPLE_LOGGER_H_
 
 #include "Logger.h"
+#include <cstdio>
+#include <string>
+
+namespace aria2 {
 
 class SimpleLogger:public Logger {
 private:
   void writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e = 0) const;
-  void writeHeader(FILE* file, string date, string level) const;
-  void writeLog(FILE* file, Logger::LEVEL level, const char* msg, va_list ap, Exception* e = 0, bool printHeader = true) const;
+  void writeHeader(FILE* file,
+		   const std::string& date, const std::string& level) const;
+  void writeLog(FILE* file, Logger::LEVEL level,
+		const char* msg, va_list ap,
+		Exception* e = 0, bool printHeader = true) const;
   FILE* file;
   int32_t stdoutField;
 public:
   SimpleLogger(FILE* logfile = 0);
   ~SimpleLogger();
 
-  void openFile(const string& filename);
+  void openFile(const std::string& filename);
   void closeFile();
   virtual void debug(const char* msg, ...) const;
   virtual void debug(const char* msg, Exception* ex, ...) const;
@@ -63,6 +70,8 @@ public:
 
   void setStdout(Logger::LEVEL level, bool enabled);
 };
+
+} // namespace aria2
 
 #endif // _D_SIMPLE_LOGGER_H_
 

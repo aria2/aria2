@@ -1,8 +1,8 @@
 #include "TimeSeedCriteria.h"
 #include "Util.h"
-
 #include <cppunit/extensions/HelperMacros.h>
-#include <stdlib.h>
+
+namespace aria2 {
 
 class TimeSeedCriteriaTest:public CppUnit::TestFixture {
 
@@ -25,3 +25,5 @@ void TimeSeedCriteriaTest::testEvaluate() {
   cri.setDuration(10);
   CPPUNIT_ASSERT(!cri.evaluate());
 }
+
+} // namespace aria2

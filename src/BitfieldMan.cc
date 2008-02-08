@@ -33,9 +33,12 @@
  */
 /* copyright --> */
 #include "BitfieldMan.h"
+#include "Randomizer.h"
 #include "Util.h"
 #include "array_fun.h"
-#include <string.h>
+#include <cstring>
+
+namespace aria2 {
 
 BitfieldMan::BitfieldMan(int32_t blockLength, int64_t totalLength)
   :blockLength(blockLength),
@@ -99,10 +102,61 @@ BitfieldMan::BitfieldMan(const BitfieldMan& bitfieldMan)
   updateCache();
 }
 
+BitfieldMan& BitfieldMan::operator=(const BitfieldMan& bitfieldMan)
+{
+  if(this != &bitfieldMan) {
+    blockLength = bitfieldMan.blockLength;
+    totalLength = bitfieldMan.totalLength;
+    blocks = bitfieldMan.blocks;
+    bitfieldLength = bitfieldMan.bitfieldLength;
+    filterEnabled = bitfieldMan.filterEnabled;
+
+    delete [] bitfield;
+    bitfield = new unsigned char[bitfieldLength];
+    memcpy(bitfield, bitfieldMan.bitfield, bitfieldLength);
+
+    delete [] useBitfield;
+    useBitfield = new unsigned char[bitfieldLength];
+    memcpy(useBitfield, bitfieldMan.useBitfield, bitfieldLength);
+
+    delete [] filterBitfield;
+    if(filterEnabled) {
+      filterBitfield = new unsigned char[bitfieldLength];
+      memcpy(filterBitfield, bitfieldMan.filterBitfield, bitfieldLength);
+    } else {
+      filterBitfield = 0;
+    }
+
+    updateCache();
+  }
+  return *this;
+}
+
 BitfieldMan::~BitfieldMan() {
   delete [] bitfield;
   delete [] useBitfield;
   delete [] filterBitfield;
+}
+
+int32_t BitfieldMan::getBlockLength() const
+{
+  return blockLength;
+}
+
+int32_t BitfieldMan::getLastBlockLength() const
+{
+  return totalLength-blockLength*(blocks-1);
+}
+
+int32_t BitfieldMan::getBlockLength(int32_t index) const
+{
+  if(index == blocks-1) {
+    return getLastBlockLength();
+  } else if(0 <= index && index < blocks-1) {
+    return getBlockLength();
+  } else {
+    return 0;
+  }
 }
 
 int32_t BitfieldMan::countSetBit(const unsigned char* bitfield, int32_t len) const {
@@ -332,9 +386,9 @@ int32_t BitfieldMan::getSparseMissingUnusedIndex() const {
 }
 
 template<typename Array>
-BlockIndexes BitfieldMan::getAllMissingIndexes(const Array& bitfield, int32_t bitfieldLength) const
+std::deque<int32_t> BitfieldMan::getAllMissingIndexes(const Array& bitfield, int32_t bitfieldLength) const
 {
-  BlockIndexes missingIndexes;
+  std::deque<int32_t> missingIndexes;
   for(int32_t i = 0; i < bitfieldLength; ++i) {
     int32_t base = i*8;
     for(int32_t bi = 0; bi < 8 && base+bi < blocks; ++bi) {
@@ -347,7 +401,7 @@ BlockIndexes BitfieldMan::getAllMissingIndexes(const Array& bitfield, int32_t bi
   return missingIndexes;
 }
 
-BlockIndexes BitfieldMan::getAllMissingIndexes() const {
+std::deque<int32_t> BitfieldMan::getAllMissingIndexes() const {
   array_fun<unsigned char> bf = array_negate(bitfield);
   if(filterEnabled) {
     bf = array_and(bf, filterBitfield);
@@ -355,9 +409,9 @@ BlockIndexes BitfieldMan::getAllMissingIndexes() const {
   return getAllMissingIndexes(bf, bitfieldLength);
 }
 
-BlockIndexes BitfieldMan::getAllMissingIndexes(const unsigned char* peerBitfield, int32_t peerBitfieldLength) const {
+std::deque<int32_t> BitfieldMan::getAllMissingIndexes(const unsigned char* peerBitfield, int32_t peerBitfieldLength) const {
   if(bitfieldLength != peerBitfieldLength) {
-    return BlockIndexes();
+    return std::deque<int32_t>();
   }
   array_fun<unsigned char> bf = array_and(array_negate(bitfield),
 					  peerBitfield);
@@ -400,6 +454,11 @@ int32_t BitfieldMan::countFilteredBlockNow() const {
   } else {
     return 0;
   }
+}
+
+int32_t BitfieldMan::getMaxIndex() const
+{
+  return blocks-1;
 }
 
 bool BitfieldMan::setBitInternal(unsigned char* bitfield, int32_t index, bool on) {
@@ -483,6 +542,16 @@ void BitfieldMan::setBitfield(const unsigned char* bitfield, int32_t bitfieldLen
   memcpy(this->bitfield, bitfield, this->bitfieldLength);
   memset(this->useBitfield, 0, this->bitfieldLength);
   updateCache();
+}
+
+const unsigned char* BitfieldMan::getBitfield() const
+{
+  return bitfield;
+}
+
+int32_t BitfieldMan::getBitfieldLength() const
+{
+  return bitfieldLength;
 }
 
 void BitfieldMan::clearAllBit() {
@@ -680,3 +749,15 @@ int64_t BitfieldMan::getMissingUnusedLength(int32_t startingIndex) const
   }
   return length;
 }
+
+void BitfieldMan::setRandomizer(const SharedHandle<Randomizer>& randomizer)
+{
+  this->randomizer = randomizer;
+}
+
+SharedHandle<Randomizer> BitfieldMan::getRandomizer() const
+{
+  return randomizer;
+}
+
+} // namespace aria2

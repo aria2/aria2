@@ -1,7 +1,7 @@
 #include "Peer.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class PeerTest:public CppUnit::TestFixture {
 
@@ -12,7 +12,7 @@ class PeerTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testOperatorEqual);
   CPPUNIT_TEST_SUITE_END();
 private:
-  PeerHandle peer;
+  SharedHandle<Peer> peer;
 public:
   PeerTest():peer(0) {}
 
@@ -42,7 +42,7 @@ void PeerTest::testAmAllowedIndexSet() {
 }
 
 void PeerTest::testGetId() {
-  CPPUNIT_ASSERT_EQUAL(string("f05897fc14a41cb3400e283e189158656d7184da"),
+  CPPUNIT_ASSERT_EQUAL(std::string("f05897fc14a41cb3400e283e189158656d7184da"),
 		       peer->getId());
 }
 
@@ -57,3 +57,5 @@ void PeerTest::testOperatorEqual()
     CPPUNIT_ASSERT(p1 != p2);
   }
 }
+
+} // namespace aria2

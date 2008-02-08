@@ -35,14 +35,17 @@
 #include "DHTRoutingTable.h"
 #include "DHTNode.h"
 #include "DHTBucket.h"
-#include "Util.h"
-#include "LogFactory.h"
 #include "BNode.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
+#include "Util.h"
+#include "LogFactory.h"
+#include "Logger.h"
 
-DHTRoutingTable::DHTRoutingTable(const DHTNodeHandle& localNode):
+namespace aria2 {
+
+DHTRoutingTable::DHTRoutingTable(const SharedHandle<DHTNode>& localNode):
   _localNode(localNode),
   _root(new BNode(new DHTBucket(localNode))),
   _numBucket(1),
@@ -56,21 +59,21 @@ DHTRoutingTable::~DHTRoutingTable()
   delete _root;
 }
 
-bool DHTRoutingTable::addNode(const DHTNodeHandle& node)
+bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node)
 {
   return addNode(node, false);
 }
 
-bool DHTRoutingTable::addGoodNode(const DHTNodeHandle& node)
+bool DHTRoutingTable::addGoodNode(const SharedHandle<DHTNode>& node)
 {
   return addNode(node, true);
 }
 
-bool DHTRoutingTable::addNode(const DHTNodeHandle& node, bool good)
+bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
 {
   _logger->debug("Trying to add node:%s", node->toString().c_str());
   BNode* bnode = BNode::findBNodeFor(_root, node->getID());
-  DHTBucketHandle bucket = bnode->getBucket();
+  SharedHandle<DHTBucket> bucket = bnode->getBucket();
   while(1) {
     if(bucket->addNode(node)) {
       _logger->debug("Added DHTNode.");
@@ -79,7 +82,7 @@ bool DHTRoutingTable::addNode(const DHTNodeHandle& node, bool good)
       _logger->debug("Splitting bucket. Range:%s-%s",
 		     Util::toHex(bucket->getMinID(), DHT_ID_LENGTH).c_str(),
 		     Util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
-      DHTBucketHandle r = bucket->split();
+      SharedHandle<DHTBucket> r = bucket->split();
 
       bnode->setBucket(0);
       BNode* lbnode = new BNode(bucket);
@@ -105,7 +108,7 @@ bool DHTRoutingTable::addNode(const DHTNodeHandle& node, bool good)
   return false;
 }
 
-DHTNodes DHTRoutingTable::getClosestKNodes(const unsigned char* key) const
+std::deque<SharedHandle<DHTNode> > DHTRoutingTable::getClosestKNodes(const unsigned char* key) const
 {
   return BNode::findClosestKNodes(_root, key);
 }
@@ -117,55 +120,57 @@ size_t DHTRoutingTable::countBucket() const
 
 void DHTRoutingTable::showBuckets() const
 {/*
-  for(DHTBuckets::const_iterator itr = _buckets.begin(); itr != _buckets.end(); ++itr) {
+  for(std::deque<SharedHandle<DHTBucket> >::const_iterator itr = _buckets.begin(); itr != _buckets.end(); ++itr) {
     cerr << "prefix = " << (*itr)->getPrefixLength() << ", "
 	 << "nodes = " << (*itr)->countNode() << endl;
   }
  */
 }
 
-DHTBucketHandle DHTRoutingTable::getBucketFor(const unsigned char* nodeID) const
+SharedHandle<DHTBucket> DHTRoutingTable::getBucketFor(const unsigned char* nodeID) const
 {
   return BNode::findBucketFor(_root, nodeID);
 }
 
-DHTBucketHandle DHTRoutingTable::getBucketFor(const DHTNodeHandle& node) const
+SharedHandle<DHTBucket> DHTRoutingTable::getBucketFor(const SharedHandle<DHTNode>& node) const
 {
   return getBucketFor(node->getID());
 }
 
-DHTNodeHandle DHTRoutingTable::getNode(const unsigned char* nodeID, const string& ipaddr, uint16_t port) const
+SharedHandle<DHTNode> DHTRoutingTable::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const
 {
-  DHTBucketHandle bucket = getBucketFor(nodeID);
+  SharedHandle<DHTBucket> bucket = getBucketFor(nodeID);
   return bucket->getNode(nodeID, ipaddr, port);
 }
 
-void DHTRoutingTable::dropNode(const DHTNodeHandle& node)
+void DHTRoutingTable::dropNode(const SharedHandle<DHTNode>& node)
 {
   getBucketFor(node)->dropNode(node);
 }
 /*
-void DHTRoutingTable::moveBucketHead(const DHTNodeHandle& node)
+void DHTRoutingTable::moveBucketHead(const SharedHandle<DHTNode>& node)
 {
   getBucketFor(node)->moveToHead(node);
 }
 */
-void DHTRoutingTable::moveBucketTail(const DHTNodeHandle& node)
+void DHTRoutingTable::moveBucketTail(const SharedHandle<DHTNode>& node)
 {
   getBucketFor(node)->moveToTail(node);
 }
 
-DHTBuckets DHTRoutingTable::getBuckets() const
+std::deque<SharedHandle<DHTBucket> > DHTRoutingTable::getBuckets() const
 {
   return BNode::enumerateBucket(_root);
 }
 
-void DHTRoutingTable::setTaskQueue(const DHTTaskQueueHandle& taskQueue)
+void DHTRoutingTable::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
 }
 
-void DHTRoutingTable::setTaskFactory(const DHTTaskFactoryHandle& taskFactory)
+void DHTRoutingTable::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
 }
+
+} // namespace aria2

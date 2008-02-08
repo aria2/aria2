@@ -36,17 +36,19 @@
 #define _D_DEFAULT_DISK_WRITER_FACTORY_H_
 
 #include "DiskWriterFactory.h"
-#include "DefaultDiskWriter.h"
+
+namespace aria2 {
+
+class DiskWriter;
 
 class DefaultDiskWriterFactory:public DiskWriterFactory
 {
 public:
-  DiskWriterHandle newDiskWriter()
-  {
-    return new DefaultDiskWriter();
-  }
+  virtual SharedHandle<DiskWriter> newDiskWriter();
 };
 
 typedef SharedHandle<DefaultDiskWriterFactory> DefaultDiskWriterFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_DISK_WRITER_FACTORY_H_

@@ -36,14 +36,18 @@
 #define _D_CHECKSUM_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
 
 class Checksum {
 private:
-  string _algo;
-  string _messageDigest;
+  std::string _algo;
+  std::string _messageDigest;
 public:
   // _messageDigest is ascii hexadecimal notation.
-  Checksum(const string& algo, const string& messageDigest):
+  Checksum(const std::string& algo, const std::string& messageDigest):
     _algo(algo), _messageDigest(messageDigest) {}
   Checksum():
     _algo("sha1") {}
@@ -51,25 +55,25 @@ public:
   ~Checksum() {}
 
   bool isEmpty() const {
-    return _messageDigest.size() == 0;
+    return _messageDigest.empty();
   }
 
-  void setMessageDigest(const string& md) {
+  void setMessageDigest(const std::string& md) {
     this->_messageDigest = md;
   }
-  const string& getMessageDigest() const {
+  const std::string& getMessageDigest() const {
     return _messageDigest;
   }
   
-  void setAlgo(const string& algo) {
+  void setAlgo(const std::string& algo) {
     this->_algo = algo;
   }
 
-  const string& getAlgo() const {
+  const std::string& getAlgo() const {
     return _algo;
   }
 };
 
-typedef SharedHandle<Checksum> ChecksumHandle;
+} // namespace aria2
 
 #endif // _D_CHECKSUM_H_

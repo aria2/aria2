@@ -36,8 +36,10 @@
 #include "SimpleLogger.h"
 #include "a2io.h"
 
-string LogFactory::filename = DEV_NULL;
-Logger* LogFactory::logger = NULL;
+namespace aria2 {
+
+std::string LogFactory::filename = DEV_NULL;
+Logger* LogFactory::logger = 0;
 
 Logger* LogFactory::getInstance() {
   if(logger == NULL) {
@@ -53,5 +55,7 @@ Logger* LogFactory::getInstance() {
 
 void LogFactory::release() {
   delete logger;
-  logger = NULL;
+  logger = 0;
 }
+
+} // namespace aria2

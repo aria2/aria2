@@ -35,6 +35,7 @@
 #include "DefaultBtAnnounce.h"
 #include "BtRegistry.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "MetaFileUtil.h"
 #include "Dictionary.h"
 #include "List.h"
@@ -45,8 +46,15 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "SimpleRandomizer.h"
+#include "BtContext.h"
+#include "PieceStorage.h"
+#include "BtRuntime.h"
+#include "PeerStorage.h"
+#include "Peer.h"
 
-DefaultBtAnnounce::DefaultBtAnnounce(BtContextHandle btContext,
+namespace aria2 {
+
+DefaultBtAnnounce::DefaultBtAnnounce(const BtContextHandle& btContext,
 				     const Option* option):
   btContext(btContext),
   trackers(0),
@@ -98,7 +106,7 @@ bool DefaultBtAnnounce::isAnnounceReady() {
     isDefaultAnnounceReady();
 }
 
-string DefaultBtAnnounce::getAnnounceUrl() {
+std::string DefaultBtAnnounce::getAnnounceUrl() {
   if(isStoppedAnnounceReady()) {
     if(!announceList.currentTierAcceptsStoppedEvent()) {
       announceList.moveToStoppedAllowedTier();
@@ -130,7 +138,7 @@ string DefaultBtAnnounce::getAnnounceUrl() {
   if(left < 0) {
     left = 0;
   }
-  string url = announceList.getAnnounce()+"?"+
+  std::string url = announceList.getAnnounce()+"?"+
     "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
 					btContext->getInfoHashLength())+"&"+
     "peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+"&"+
@@ -142,14 +150,14 @@ string DefaultBtAnnounce::getAnnounceUrl() {
     "numwant="+Util::itos(numWant)+"&"+
     "no_peer_id=1";
   if(btRuntime->getListenPort() > 0) {
-    url += string("&")+"port="+Util::itos(btRuntime->getListenPort());
+    url += std::string("&")+"port="+Util::itos(btRuntime->getListenPort());
   }
-  string event = announceList.getEventString();
+  std::string event = announceList.getEventString();
   if(!event.empty()) {
-    url += string("&")+"event="+event;
+    url += std::string("&")+"event="+event;
   }
   if(!trackerId.empty()) {
-    url += string("&")+"trackerid="+Util::torrentUrlencode((const unsigned char*)trackerId.c_str(),
+    url += std::string("&")+"trackerid="+Util::torrentUrlencode((const unsigned char*)trackerId.c_str(),
 							   trackerId.size());
   }
   return url;
@@ -260,3 +268,35 @@ void DefaultBtAnnounce::setRandomizer(const RandomizerHandle& randomizer)
 {
   _randomizer = randomizer;
 }
+
+void DefaultBtAnnounce::setBtRuntime(const BtRuntimeHandle& btRuntime)
+{
+  this->btRuntime = btRuntime;
+}
+
+BtRuntimeHandle DefaultBtAnnounce::getBtRuntime() const
+{
+  return btRuntime;
+}
+
+void DefaultBtAnnounce::setPieceStorage(const PieceStorageHandle& pieceStorage)
+{
+  this->pieceStorage = pieceStorage;
+}
+
+PieceStorageHandle DefaultBtAnnounce::getPieceStorage() const
+{
+  return pieceStorage;
+}
+
+void DefaultBtAnnounce::setPeerStorage(const PeerStorageHandle& peerStorage)
+{
+  this->peerStorage = peerStorage;
+}
+
+PeerStorageHandle DefaultBtAnnounce::getPeerStorage() const
+{
+  return peerStorage;
+}
+
+} // namespace aria2

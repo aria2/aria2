@@ -34,4 +34,8 @@
 /* copyright --> */
 #include "SimpleRandomizer.h"
 
+namespace aria2 {
+
 RandomizerHandle SimpleRandomizer::randomizer = 0;
+
+} // namespace aria2

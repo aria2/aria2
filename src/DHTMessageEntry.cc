@@ -36,9 +36,15 @@
 #include "DHTMessage.h"
 #include "DHTMessageCallback.h"
 
-DHTMessageEntry::DHTMessageEntry(const DHTMessageHandle& message, time_t timeout, const DHTMessageCallbackHandle& callback):
+namespace aria2 {
+
+DHTMessageEntry::DHTMessageEntry(const SharedHandle<DHTMessage>& message,
+				 time_t timeout,
+				 const SharedHandle<DHTMessageCallback>& callback):
   _message(message),
   _timeout(timeout),
   _callback(callback) {}
 
 DHTMessageEntry::~DHTMessageEntry() {}
+
+} // namespace aria2

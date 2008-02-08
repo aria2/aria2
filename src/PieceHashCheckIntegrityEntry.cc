@@ -33,11 +33,12 @@
  */
 /* copyright --> */
 #include "PieceHashCheckIntegrityEntry.h"
-#include "Command.h"
 #include "RequestGroup.h"
 #include "IteratableChunkChecksumValidator.h"
 #include "DownloadContext.h"
 #include "PieceStorage.h"
+
+namespace aria2 {
 
 PieceHashCheckIntegrityEntry::PieceHashCheckIntegrityEntry(RequestGroup* requestGroup,
 							   Command* nextCommand):
@@ -62,3 +63,5 @@ void PieceHashCheckIntegrityEntry::initValidator()
   _validator = validator;
 #endif // ENABLE_MESSAGE_DIGEST
 }
+
+} // namespace aria2

@@ -38,6 +38,10 @@
 #include "BtMessageValidator.h"
 #include "BtHandshakeMessage.h"
 #include "Util.h"
+#include "PeerMessageUtil.h"
+#include <cstring>
+
+namespace aria2 {
 
 class BtHandshakeMessageValidator : public BtMessageValidator {
 private:
@@ -71,5 +75,7 @@ public:
 };
 
 typedef SharedHandle<BtHandshakeMessageValidator> BtHandshakeMessageValidatorHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_HANDSHAKE_MESSAGE_VALIDATOR_H_

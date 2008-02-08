@@ -6,7 +6,10 @@
 #include "MockDHTTaskQueue.h"
 #include "MockDHTTaskFactory.h"
 #include "DHTTask.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class DHTRoutingTableTest:public CppUnit::TestFixture {
 
@@ -51,13 +54,13 @@ void DHTRoutingTableTest::testGetClosestKNodes()
 {
   unsigned char id[DHT_ID_LENGTH];
   createID(id, 0x81, 0);
-  DHTNodeHandle localNode = new DHTNode(id);
+  SharedHandle<DHTNode> localNode = new DHTNode(id);
 
   DHTRoutingTable table(localNode);
 
-  DHTNodeHandle nodes1[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-  DHTNodeHandle nodes2[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-  DHTNodeHandle nodes3[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  SharedHandle<DHTNode> nodes1[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  SharedHandle<DHTNode> nodes2[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  SharedHandle<DHTNode> nodes3[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
   for(size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
     nodes1[i] = new DHTNode(id);
@@ -75,10 +78,12 @@ void DHTRoutingTableTest::testGetClosestKNodes()
   }
   {
     createID(id, 0x80, 0x10);
-    DHTNodes nodes = table.getClosestKNodes(id);
+    std::deque<SharedHandle<DHTNode> > nodes = table.getClosestKNodes(id);
     CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
     for(size_t i = 0; i < nodes.size(); ++i) {
       CPPUNIT_ASSERT(memcmp(nodes2[0]->getID(), nodes[0]->getID(), DHT_ID_LENGTH) == 0);
     }
   }
 }
+
+} // namespace aria2

@@ -36,6 +36,9 @@
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "Peer.h"
+
+namespace aria2 {
 
 BtUnchokeMessageHandle BtUnchokeMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 1) {
@@ -80,6 +83,8 @@ void BtUnchokeMessage::onSendComplete() {
   peer->amChoking = false;
 }
 
-string BtUnchokeMessage::toString() const {
+std::string BtUnchokeMessage::toString() const {
   return "unchoke";
 }
+
+} // namespace aria2

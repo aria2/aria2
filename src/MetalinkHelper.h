@@ -36,15 +36,16 @@
 #define _D_METALINK_HELPER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
 
 class Option;
 class MetalinkEntry;
-typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
-typedef deque<MetalinkEntryHandle> MetalinkEntries;
 class BinaryStream;
-typedef SharedHandle<BinaryStream> BinaryStreamHandle;
 class Metalinker;
-typedef SharedHandle<Metalinker> MetalinkerHandle;
 
 class MetalinkHelper {
 private:
@@ -52,12 +53,17 @@ private:
 
   ~MetalinkHelper();
 
-  static MetalinkEntries query(const MetalinkerHandle& metalinker, const Option* option);
+  static std::deque<SharedHandle<MetalinkEntry> >
+  query(const SharedHandle<Metalinker>& metalinker, const Option* option);
 
 public:
-  static MetalinkEntries parseAndQuery(const string& filename, const Option* option);
+  static std::deque<SharedHandle<MetalinkEntry> >
+  parseAndQuery(const std::string& filename, const Option* option);
 
-  static MetalinkEntries parseAndQuery(const BinaryStreamHandle& binaryStream, const Option* option);
+  static std::deque<SharedHandle<MetalinkEntry> >
+  parseAndQuery(const SharedHandle<BinaryStream>& binaryStream, const Option* option);
 };
+
+} // namespace aria2
 
 #endif // _D_METALINK_HELPER_H_

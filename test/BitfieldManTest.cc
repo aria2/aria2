@@ -2,6 +2,8 @@
 #include "FixedNumberRandomizer.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class BitfieldManTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(BitfieldManTest);
@@ -24,7 +26,7 @@ class BitfieldManTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCountFilteredBlock);
   CPPUNIT_TEST_SUITE_END();
 private:
-  RandomizerHandle fixedNumberRandomizer;
+  SharedHandle<Randomizer> fixedNumberRandomizer;
 
 public:
   BitfieldManTest():fixedNumberRandomizer(0) {
@@ -490,8 +492,8 @@ void BitfieldManTest::testGetAllMissingIndexes()
   peerBf.unsetBit(62);
 
   {
-    Integers indexes = bf.getAllMissingIndexes(peerBf.getBitfield(),
-					       peerBf.getBitfieldLength());
+    std::deque<int32_t> indexes = bf.getAllMissingIndexes(peerBf.getBitfield(),
+							  peerBf.getBitfieldLength());
     
     CPPUNIT_ASSERT_EQUAL((size_t)1, indexes.size());
     CPPUNIT_ASSERT_EQUAL(63, indexes.front());
@@ -559,3 +561,5 @@ void BitfieldManTest::testCountFilteredBlock()
   CPPUNIT_ASSERT_EQUAL(256, bt.countBlock());
   CPPUNIT_ASSERT_EQUAL(0, bt.countFilteredBlock());
 }
+
+} // namespace aria2

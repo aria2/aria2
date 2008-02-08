@@ -36,24 +36,30 @@
 #define _D_COOKIE_PARSER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "Cookie.h"
-#include <istream>
+#include <string>
+#include <iosfwd>
+
+namespace aria2 {
 
 class CookieParser {
 private:
-  void setField(Cookie& cookie, const string& name, const string& value) const;
+  void setField(Cookie& cookie, const std::string& name, const std::string& value) const;
 public:
   CookieParser() {}
 
   ~CookieParser() {}
 
-  Cookie parse(const string& cookieStr, const string& defaultDomain, const string& defaultPath) const;
+  Cookie parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const;
 
-  Cookie parse(const string& cookieStr) const;
+  Cookie parse(const std::string& cookieStr) const;
 
-  Cookies parse(istream& s) const;
+  Cookies parse(std::istream& s) const;
 };
 
 typedef SharedHandle<CookieParser> CookieParserHandle;
+
+} // namespace aria2
 
 #endif // _D_COOKIE_PARSER_H_

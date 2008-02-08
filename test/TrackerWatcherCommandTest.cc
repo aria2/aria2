@@ -51,7 +51,7 @@ void TrackerWatcherCommandTest::testCreateCommand() {
     BtContextHandle btContext(new DefaultBtContext());
     btContext->load("test.torrent");
     
-    BtRuntimeHandle btRuntime;
+    SharedHandle<BtRuntime> btRuntime;
     BtRegistry::registerBtRuntime(btContext->getInfoHashAsString(), btRuntime);
     
     PieceStorageHandle pieceStorage(new DefaultPieceStorage(btContext, &op));

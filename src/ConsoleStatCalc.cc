@@ -44,6 +44,9 @@
 # include "BtContext.h"
 #endif // ENABLE_BITTORRENT
 #include <iomanip>
+#include <iostream>
+
+namespace aria2 {
 
 void
 ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
@@ -55,8 +58,8 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
   }
   _cp.reset();
 
-  cout << "\r                                                                             ";
-  cout << "\r";
+  std::cout << "\r                                                                             ";
+  std::cout << "\r";
   if(requestGroupMan->countRequestGroup() > 0) {
     RequestGroupHandle firstRequestGroup = requestGroupMan->getRequestGroup(0);
     TransferStat stat = firstRequestGroup->calculateStat();
@@ -65,88 +68,88 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
       eta = (firstRequestGroup->getTotalLength()-firstRequestGroup->getCompletedLength())/stat.getDownloadSpeed();
     }
 
-    cout << "["
-	 << "#" << firstRequestGroup->getGID() << " ";
+    std::cout << "["
+	      << "#" << firstRequestGroup->getGID() << " ";
 #ifdef ENABLE_BITTORRENT
     if(firstRequestGroup->downloadFinished() &&
        !BtContextHandle(firstRequestGroup->getDownloadContext()).isNull()) {
-      cout << "SEEDING" << "(" << "ratio:"
-	   << fixed << setprecision(1)
-	   << ((stat.getAllTimeUploadLength()*10)/firstRequestGroup->getCompletedLength())/10.0
-	   << ")";
+      std::cout << "SEEDING" << "(" << "ratio:"
+		<< std::fixed << std::setprecision(1)
+		<< ((stat.getAllTimeUploadLength()*10)/firstRequestGroup->getCompletedLength())/10.0
+		<< ")";
     } else
 #endif // ENABLE_BITTORRENT
       {
-	cout << "SIZE:"
-	     << Util::abbrevSize(firstRequestGroup->getCompletedLength())
-	     << "B"
-	     << "/"
-	     << Util::abbrevSize(firstRequestGroup->getTotalLength())
-	     << "B";
+	std::cout << "SIZE:"
+		  << Util::abbrevSize(firstRequestGroup->getCompletedLength())
+		  << "B"
+		  << "/"
+		  << Util::abbrevSize(firstRequestGroup->getTotalLength())
+		  << "B";
 	if(firstRequestGroup->getTotalLength() > 0) {
-	  cout << "("
-	       << 100*firstRequestGroup->getCompletedLength()/firstRequestGroup->getTotalLength()
-	       << "%)";
+	  std::cout << "("
+		    << 100*firstRequestGroup->getCompletedLength()/firstRequestGroup->getTotalLength()
+		    << "%)";
 	}
       }
-    cout << " "
-	 << "CN:"
-	 << firstRequestGroup->getNumConnection();
+    std::cout << " "
+	      << "CN:"
+	      << firstRequestGroup->getNumConnection();
     if(!firstRequestGroup->downloadFinished()) {
-      cout << " "
-	   << "SPD:"
-	   << fixed << setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s";
+      std::cout << " "
+		<< "SPD:"
+		<< std::fixed << std::setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s";
     }
     if(stat.getSessionUploadLength() > 0) {
-      cout << " "
-	   << "UP:"
-	   << fixed << setprecision(2) << stat.getUploadSpeed()/1024.0 << "KiB/s"
-	   << "(" << Util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
+      std::cout << " "
+		<< "UP:"
+		<< std::fixed << std::setprecision(2) << stat.getUploadSpeed()/1024.0 << "KiB/s"
+		<< "(" << Util::abbrevSize(stat.getAllTimeUploadLength()) << "B)";
     }
     if(eta > 0) {
-      cout << " "
-	   << "ETA:"
-	   << Util::secfmt(eta);
+      std::cout << " "
+		<< "ETA:"
+		<< Util::secfmt(eta);
     }
-    cout << "]";
+    std::cout << "]";
     if(requestGroupMan->countRequestGroup() > 1) {
-      cout << "("
-	   << requestGroupMan->countRequestGroup()-1
-	   << "more...)";
+      std::cout << "("
+		<< requestGroupMan->countRequestGroup()-1
+		<< "more...)";
     }
   }
 
   if(requestGroupMan->countRequestGroup() > 1 &&
      !requestGroupMan->downloadFinished()) {
     TransferStat stat = requestGroupMan->calculateStat();
-    cout << " "
-	 << "[TOTAL SPD:"
-	 << fixed << setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s" << "]";
+    std::cout << " "
+	      << "[TOTAL SPD:"
+	      << std::fixed << std::setprecision(2) << stat.getDownloadSpeed()/1024.0 << "KiB/s" << "]";
   }
 
   {
     FileAllocationEntryHandle entry = fileAllocationMan->getCurrentFileAllocationEntry();
     if(!entry.isNull()) {
-      cout << " "
-	   << "[FileAlloc:"
-	   << "#" << entry->getRequestGroup()->getGID() << " "
-	   << Util::abbrevSize(entry->getCurrentLength())
-	   << "B"
-	   << "/"
-	   << Util::abbrevSize(entry->getTotalLength())
-	   << "B"
-	   << "(";
+      std::cout << " "
+		<< "[FileAlloc:"
+		<< "#" << entry->getRequestGroup()->getGID() << " "
+		<< Util::abbrevSize(entry->getCurrentLength())
+		<< "B"
+		<< "/"
+		<< Util::abbrevSize(entry->getTotalLength())
+		<< "B"
+		<< "(";
       if(entry->getTotalLength() > 0) {
-	cout << 100*entry->getCurrentLength()/entry->getTotalLength();
+	std::cout << 100*entry->getCurrentLength()/entry->getTotalLength();
       } else {
-	cout << "--";
+	std::cout << "--";
       }
-      cout << "%)"
-	   << "]";
+      std::cout << "%)"
+		<< "]";
       if(fileAllocationMan->countFileAllocationEntryInQueue() > 0) {
-	cout << "("
-	     << fileAllocationMan->countFileAllocationEntryInQueue()
-	     << "waiting...)";
+	std::cout << "("
+		  << fileAllocationMan->countFileAllocationEntryInQueue()
+		  << "waiting...)";
       }
     }
   }
@@ -154,25 +157,27 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
   {
     CheckIntegrityEntryHandle entry = checkIntegrityMan->getFirstCheckIntegrityEntry();
     if(!entry.isNull()) {
-      cout << " "
-	   << "[Checksum:"
-	   << "#" << entry->getRequestGroup()->getGID() << " "
-	   << Util::abbrevSize(entry->getCurrentLength())
-	   << "B"
-	   << "/"
-	   << Util::abbrevSize(entry->getTotalLength())
-	   << "B"
-	   << "("
-	   << 100*entry->getCurrentLength()/entry->getTotalLength()
-	   << "%)";
-      cout << "]";
+      std::cout << " "
+		<< "[Checksum:"
+		<< "#" << entry->getRequestGroup()->getGID() << " "
+		<< Util::abbrevSize(entry->getCurrentLength())
+		<< "B"
+		<< "/"
+		<< Util::abbrevSize(entry->getTotalLength())
+		<< "B"
+		<< "("
+		<< 100*entry->getCurrentLength()/entry->getTotalLength()
+		<< "%)";
+      std::cout << "]";
       if(checkIntegrityMan->countCheckIntegrityEntry() > 1) {
-	cout << "("
-	     << checkIntegrityMan->countCheckIntegrityEntry()-1
-	     << "more...)";
+	std::cout << "("
+		  << checkIntegrityMan->countCheckIntegrityEntry()-1
+		  << "more...)";
       }
     }
   }
 #endif // ENABLE_MESSAGE_DIGEST
-  cout << flush;
+  std::cout << std::flush;
 }
+
+} // namespace aria2

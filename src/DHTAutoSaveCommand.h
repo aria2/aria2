@@ -36,15 +36,19 @@
 #define _D_DHT_AUTO_SAVE_COMMAND_H_
 
 #include "TimeBasedCommand.h"
-#include "DHTRoutingTableDecl.h"
-#include "DHTNodeDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DHTRoutingTable;
+class DHTNode;
 
 class DHTAutoSaveCommand : public TimeBasedCommand
 {
 private:
-  DHTNodeHandle _localNode;
+  SharedHandle<DHTNode> _localNode;
   
-  DHTRoutingTableHandle _routingTable;
+  SharedHandle<DHTRoutingTable> _routingTable;
 
   void save();
 public:
@@ -56,9 +60,11 @@ public:
 
   virtual void process();
 
-  void setLocalNode(const DHTNodeHandle& localNode);
+  void setLocalNode(const SharedHandle<DHTNode>& localNode);
 
-  void setRoutingTable(const DHTRoutingTableHandle& routingTable);
+  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_AUTO_SAVE_COMMAND_H_

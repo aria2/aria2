@@ -36,6 +36,8 @@
 #define _D_FATAL_EXCEPTION_H_
 #include "Exception.h"
 
+namespace aria2 {
+
 class FatalException : public Exception {
 public:
   FatalException(Exception* cause = 0):Exception(cause) {}
@@ -43,16 +45,18 @@ public:
   FatalException(const char* msg, ...):Exception() {
     va_list ap;
     va_start(ap, msg);
-    setMsg(string(msg), ap);
+    setMsg(msg, ap);
     va_end(ap);
   }
 
   FatalException(Exception* cause, const char* msg, ...):Exception(cause) {
     va_list ap;
     va_start(ap, msg);
-    setMsg(string(msg), ap);
+    setMsg(msg, ap);
     va_end(ap);
   }
 };
+
+} // namespace aria2
 
 #endif // _D_FATAL_EXCEPTION_EX_H_

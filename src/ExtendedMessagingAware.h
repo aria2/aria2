@@ -37,6 +37,9 @@
 
 #include "common.h"
 #include "BtConstants.h"
+#include <string>
+
+namespace aria2 {
 
 class ExtendedMessagingAware {
 private:
@@ -54,7 +57,7 @@ public:
     return _extensions;
   }
 
-  uint8_t getExtensionMessageID(const string& name) const
+  uint8_t getExtensionMessageID(const std::string& name) const
   {
     Extensions::const_iterator itr = _extensions.find(name);
     if(itr == _extensions.end()) {
@@ -64,7 +67,7 @@ public:
     }
   }
 
-  string getExtensionName(uint8_t id) const
+  std::string getExtensionName(uint8_t id) const
   {
     for(Extensions::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
@@ -76,10 +79,12 @@ public:
     return "";
   }
 
-  void removeExtension(const string& name)
+  void removeExtension(const std::string& name)
   {
     _extensions.erase(name);
   }
 };
+
+} // namespace aria2
 
 #endif // _D_EXTENDED_MESSAGING_AWARE_H_

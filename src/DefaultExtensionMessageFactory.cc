@@ -39,7 +39,10 @@
 #include "HandshakeExtensionMessage.h"
 #include "UTPexExtensionMessage.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "BtRegistry.h"
+
+namespace aria2 {
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
   _btContext(0),
@@ -65,7 +68,7 @@ DefaultExtensionMessageFactory::createMessage(const char* data, size_t length)
     m->setPeer(_peer);
     return m;
   } else {
-    string extensionName = getExtensionName(extensionMessageID);
+    std::string extensionName = getExtensionName(extensionMessageID);
     if(extensionName.empty()) {
       throw new DlAbortEx("No extension registered for extended message ID %u",
 			  extensionMessageID);
@@ -91,3 +94,5 @@ void DefaultExtensionMessageFactory::setPeer(const PeerHandle& peer)
 {
   _peer = peer;
 }
+
+} // namespace aria2

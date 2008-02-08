@@ -36,50 +36,56 @@
 #define _D_DHT_MESSAGE_TRACKER_ENTRY_H_
 
 #include "common.h"
-#include "DHTMessageTrackerEntryDecl.h"
+#include "SharedHandle.h"
 #include "DHTConstants.h"
-#include "DHTNodeDecl.h"
-#include "DHTMessageDecl.h"
-#include "DHTMessageCallbackDecl.h"
 #include "TimeA2.h"
+#include <string>
+
+namespace aria2 {
+
+class DHTNode;
+class DHTMessage;
+class DHTMessageCallback;
 
 class DHTMessageTrackerEntry {
 private:
-  DHTNodeHandle _targetNode;
+  SharedHandle<DHTNode> _targetNode;
 
-  string _transactionID;
+  std::string _transactionID;
 
-  string _messageType;
+  std::string _messageType;
   
-  DHTMessageCallbackHandle _callback;
+  SharedHandle<DHTMessageCallback> _callback;
 
   Time _dispatchedTime;
 
   time_t _timeout;
 public:
-  DHTMessageTrackerEntry(const DHTMessageHandle& sentMessage,
+  DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
 			 time_t timeout,
-			 const DHTMessageCallbackHandle& callback = 0);
+			 const SharedHandle<DHTMessageCallback>& callback = 0);
 
   bool isTimeout() const;
 
   void extendTimeout();
 
-  bool match(const string& transactionID, const string& ipaddr, uint16_t port) const;
+  bool match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const;
 
-  DHTNodeHandle getTargetNode() const;
+  SharedHandle<DHTNode> getTargetNode() const;
 
-  const string& getMessageType() const
+  const std::string& getMessageType() const
   {
     return _messageType;
   }
 
-  DHTMessageCallbackHandle getCallback() const;
+  SharedHandle<DHTMessageCallback> getCallback() const;
 
   int64_t getElapsedMillis() const
   {
     return _dispatchedTime.differenceInMillis();
   }
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_TRACKER_ENTRY_H_

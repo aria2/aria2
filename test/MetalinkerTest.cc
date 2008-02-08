@@ -1,7 +1,8 @@
 #include "Metalinker.h"
+#include "MetalinkEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class MetalinkerTest:public CppUnit::TestFixture {
 
@@ -23,32 +24,31 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkerTest );
 
 void MetalinkerTest::testQueryEntry() {
-  MetalinkerHandle metalinker(new Metalinker());
-  MetalinkEntryHandle entry1(new MetalinkEntry());
+  SharedHandle<Metalinker> metalinker(new Metalinker());
+  SharedHandle<MetalinkEntry> entry1(new MetalinkEntry());
   entry1->version = "0.5.2";
   entry1->language = "en-US";
   entry1->os = "Linux-x86";
-  MetalinkEntryHandle entry2(new MetalinkEntry());
+  SharedHandle<MetalinkEntry> entry2(new MetalinkEntry());
   entry2->version = "0.5.1";
   entry2->language = "ja-JP";
   entry2->os = "Linux-m68k";
   metalinker->entries.push_back(entry1);
   metalinker->entries.push_back(entry2);
 
-  string version;
-  string language;
-  string os;
+  std::string version;
+  std::string language;
+  std::string os;
 
   version = "0.5.1";
   language = "ja-JP";
   os = "Linux-m68k";
-  MetalinkEntries entries = metalinker->queryEntry(version,
-						 language,
-						 os);
+  std::deque<SharedHandle<MetalinkEntry> > entries =
+    metalinker->queryEntry(version, language, os);
   CPPUNIT_ASSERT_EQUAL((size_t)1, entries.size());
-  CPPUNIT_ASSERT_EQUAL(string("0.5.1"), entries.at(0)->version);
-  CPPUNIT_ASSERT_EQUAL(string("ja-JP"), entries.at(0)->language);
-  CPPUNIT_ASSERT_EQUAL(string("Linux-m68k"), entries.at(0)->os);
+  CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), entries.at(0)->version);
+  CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entries.at(0)->language);
+  CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entries.at(0)->os);
 
   version = "0.6.0";
   language = "";
@@ -61,7 +61,9 @@ void MetalinkerTest::testQueryEntry() {
   os = "";
   entries = metalinker->queryEntry(version, language, os);
   CPPUNIT_ASSERT_EQUAL((size_t)1, entries.size());
-  CPPUNIT_ASSERT_EQUAL(string("0.5.2"), entries.at(0)->version);
-  CPPUNIT_ASSERT_EQUAL(string("en-US"), entries.at(0)->language);
-  CPPUNIT_ASSERT_EQUAL(string("Linux-x86"), entries.at(0)->os);
+  CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), entries.at(0)->version);
+  CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entries.at(0)->language);
+  CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entries.at(0)->os);
 }
+
+} // namespace aria2

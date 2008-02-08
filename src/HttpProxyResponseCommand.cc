@@ -34,6 +34,13 @@
 /* copyright --> */
 #include "HttpProxyResponseCommand.h"
 #include "HttpRequestCommand.h"
+#include "Request.h"
+#include "HttpConnection.h"
+#include "HttpRequest.h"
+#include "Segment.h"
+#include "Socket.h"
+
+namespace aria2 {
 
 HttpProxyResponseCommand::HttpProxyResponseCommand(int cuid,
 						   const RequestHandle& req,
@@ -49,3 +56,5 @@ Command* HttpProxyResponseCommand::getNextCommand()
 {
   return new HttpRequestCommand(cuid, req, _requestGroup, httpConnection, e, socket);
 }
+
+} // namespace aria2

@@ -7,6 +7,8 @@
 #include "DHTMessageCallback.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class DHTMessageTrackerEntryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DHTMessageTrackerEntryTest);
@@ -28,10 +30,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerEntryTest);
 
 void DHTMessageTrackerEntryTest::testMatch()
 {
-  DHTNodeHandle localNode = new DHTNode();
+  SharedHandle<DHTNode> localNode = new DHTNode();
   try {
-    MockDHTMessageHandle msg1 = new MockDHTMessage(localNode, new DHTNode());
-    MockDHTMessageHandle msg2 = new MockDHTMessage(localNode, new DHTNode());
+    SharedHandle<MockDHTMessage> msg1 = new MockDHTMessage(localNode, new DHTNode());
+    SharedHandle<MockDHTMessage> msg2 = new MockDHTMessage(localNode, new DHTNode());
     
     DHTMessageTrackerEntry entry(msg1, 30);
     
@@ -42,11 +44,15 @@ void DHTMessageTrackerEntryTest::testMatch()
 				msg2->getRemoteNode()->getIPAddress(),
 				msg2->getRemoteNode()->getPort()));
   } catch(Exception* e) {
-    cerr << *e << endl;
-    CPPUNIT_FAIL("exception thrown.");
+    std::cerr << *e << std::endl;
+    std::string msg = e->getMsg();
+    delete e;
+    CPPUNIT_FAIL(msg);
   }
 }
 
 void DHTMessageTrackerEntryTest::testHandleTimeout()
 {
 }
+
+} // namespace aria2

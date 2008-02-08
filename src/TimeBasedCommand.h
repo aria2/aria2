@@ -38,6 +38,8 @@
 #include "Command.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
 class DownloadEngine;
 
 class TimeBasedCommand : public Command
@@ -80,5 +82,7 @@ public:
 
   virtual bool execute();
 };
+
+} // namespace aria2
 
 #endif // _D_TIME_BASED_COMMAND_H_

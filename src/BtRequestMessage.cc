@@ -38,6 +38,14 @@
 #include "DlAbortEx.h"
 #include "BtAbortOutstandingRequestEvent.h"
 #include "message.h"
+#include "Peer.h"
+#include "Piece.h"
+#include "BtContext.h"
+#include "PieceStorage.h"
+#include "BtMessageDispatcher.h"
+#include "BtMessageFactory.h"
+
+namespace aria2 {
 
 BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, int32_t dataLength) {
   if(dataLength != 13) {
@@ -97,7 +105,7 @@ int32_t BtRequestMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
-string BtRequestMessage::toString() const {
+std::string BtRequestMessage::toString() const {
   return "request index="+Util::itos(index)+", begin="+Util::itos(begin)+
     ", length="+Util::itos(length);
 }
@@ -124,3 +132,5 @@ void BtRequestMessage::handleAbortOutstandingRequestEvent(const BtEventHandle& e
     invalidate = true;
   }
 }
+
+} // namespace aria2

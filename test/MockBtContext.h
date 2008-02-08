@@ -5,19 +5,21 @@
 #include "Util.h"
 #include "AnnounceTier.h"
 
+namespace aria2 {
+
 class MockBtContext : public BtContext  {
 private:
   unsigned char infoHash[20];
-  Strings pieceHashes;
+  std::deque<std::string> pieceHashes;
   int64_t totalLength;
   FILE_MODE fileMode;
-  string name;
+  std::string name;
   int32_t pieceLength;
   int32_t numPieces;
   unsigned char peerId[20];
-  FileEntries fileEntries;
-  AnnounceTiers announceTiers;
-  Integers fastSet;
+  std::deque<SharedHandle<FileEntry> > fileEntries;
+  std::deque<SharedHandle<AnnounceTier> > announceTiers;
+  std::deque<int32_t> fastSet;
 public:
   MockBtContext():totalLength(0),
 		  pieceLength(0),
@@ -37,19 +39,19 @@ public:
     return sizeof(infoHash);
   }
 
-  virtual string getInfoHashAsString() const {
+  virtual std::string getInfoHashAsString() const {
     return Util::toHex(infoHash, sizeof(infoHash));
   }
 
-  virtual string getPieceHash(int32_t index) const {
+  virtual std::string getPieceHash(int32_t index) const {
     return pieceHashes.at(index);
   }
   
-  virtual const Strings& getPieceHashes() const {
+  virtual const std::deque<std::string>& getPieceHashes() const {
     return pieceHashes;
   }
 
-  void addPieceHash(const string pieceHash) {
+  void addPieceHash(const std::string& pieceHash) {
     pieceHashes.push_back(pieceHash);
   }
 
@@ -69,29 +71,29 @@ public:
     this->fileMode = fileMode;
   }
 
-  virtual FileEntries getFileEntries() const {
+  virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const {
     return fileEntries;
   }
 
-  void addFileEntry(const FileEntryHandle& fileEntry) {
+  void addFileEntry(const SharedHandle<FileEntry>& fileEntry) {
     fileEntries.push_back(fileEntry);
   }
 
-  virtual AnnounceTiers getAnnounceTiers() const {
+  virtual std::deque<SharedHandle<AnnounceTier> > getAnnounceTiers() const {
     return announceTiers;
   }
 
-  void addAnnounceTier(const AnnounceTierHandle& announceTier) {
+  void addAnnounceTier(const SharedHandle<AnnounceTier>& announceTier) {
     announceTiers.push_back(announceTier);
   }
 
-  virtual void load(const string& torrentFile) {}
+  virtual void load(const std::string& torrentFile) {}
 
-  virtual string getName() const {
+  virtual std::string getName() const {
     return name;
   }
 
-  void setName(const string& name) {
+  void setName(const std::string& name) {
     this->name = name;
   }
   
@@ -119,22 +121,22 @@ public:
     memcpy(this->peerId, peerId, sizeof(this->peerId));
   }
 
-  virtual Integers computeFastSet(const string& ipaddr, int32_t fastSetSize)
+  virtual std::deque<int32_t> computeFastSet(const std::string& ipaddr, int32_t fastSetSize)
   {
     return fastSet;
   }
 
-  void setFastSet(const Integers& fastSet)
+  void setFastSet(const std::deque<int32_t>& fastSet)
   {
     this->fastSet = fastSet;
   }
 
-  virtual string getPieceHashAlgo() const
+  virtual std::string getPieceHashAlgo() const
   {
     return "sha1";
   }
 
-  virtual string getActualBasePath() const
+  virtual std::string getActualBasePath() const
   {
     return _dir+"/"+name;
   }
@@ -145,6 +147,6 @@ public:
   }
 };
 
-typedef SharedHandle<MockBtContext> MockBtContextHandle;
+} // namespace aria2
 
 #endif // _D_MOCK_BT_CONTEXT_H_

@@ -36,8 +36,8 @@
 #include "PostDownloadHandler.h"
 #include "DownloadEngine.h"
 #include "DefaultSegmentManFactory.h"
+#include "SegmentMan.h"
 #include "NullProgressInfoFile.h"
-#include "SegmentManFactory.h"
 #include "Dependency.h"
 #include "prefs.h"
 #include "InitiateConnectionCommandFactory.h"
@@ -47,12 +47,14 @@
 #include "Util.h"
 #include "BtRegistry.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "DiskAdaptor.h"
 #include "DiskWriterFactory.h"
 #include "RecoverableException.h"
 #include "StreamCheckIntegrityEntry.h"
 #include "CheckIntegrityCommand.h"
 #include "UnknownLengthPieceStorage.h"
+#include "BtContext.h"
 #include "SingleFileDownloadContext.h"
 #include "DlAbortEx.h"
 #include "DownloadFailureException.h"
@@ -64,6 +66,10 @@
 #include "MemoryBufferPreDownloadHandler.h"
 #include "DownloadHandlerConstants.h"
 #include "ServerHost.h"
+#include "Option.h"
+#include "FileEntry.h"
+#include "Request.h"
+#include "FileAllocationIterator.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -71,21 +77,33 @@
 # include "BtCheckIntegrityEntry.h"
 # include "DefaultPeerStorage.h"
 # include "DefaultBtAnnounce.h"
+# include "BtRuntime.h"
 # include "BtSetup.h"
 # include "BtFileAllocationEntry.h"
 # include "BtPostDownloadHandler.h"
 # include "DHTSetup.h"
 # include "DHTRegistry.h"
+# include "PeerObject.h"
+# include "BtMessageFactory.h"
+# include "BtRequestFactory.h"
+# include "BtMessageDispatcher.h"
+# include "BtMessageReceiver.h"
+# include "PeerConnection.h"
+# include "ExtensionMessageFactory.h"
 # include "DHTPeerAnnounceStorage.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
 #endif // ENABLE_METALINK
+#include <cassert>
+#include <algorithm>
+
+namespace aria2 {
 
 int32_t RequestGroup::_gidCounter = 0;
 
 RequestGroup::RequestGroup(const Option* option,
-			   const Strings& uris):
+			   const std::deque<std::string>& uris):
   _gid(++_gidCounter),
   _uris(uris),
   _numConcurrentCommand(0),
@@ -381,7 +399,7 @@ void RequestGroup::shouldCancelDownloadForSafety()
 
 bool RequestGroup::tryAutoFileRenaming()
 {
-  string filepath = getFilePath();
+  std::string filepath = getFilePath();
   if(filepath.empty()) {
     return false;
   }
@@ -401,12 +419,12 @@ Commands RequestGroup::createNextCommandWithAdj(DownloadEngine* e, int32_t numAd
   return createNextCommand(e, numCommand, "GET");
 }
 
-Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, const string& method)
+Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, const std::string& method)
 {
   Commands commands;
-  Strings pendingURIs;
+  std::deque<std::string> pendingURIs;
   for(;!_uris.empty() && numCommand--; _uris.pop_front()) {
-    string uri = _uris.front();
+    std::string uri = _uris.front();
     RequestHandle req = new Request();
     if(req->setUrl(uri)) {
       ServerHostHandle sv = _singleHostMultiConnectionEnabled ? 0 : searchServerHost(req->getHost());
@@ -429,7 +447,7 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, 
   return commands;
 }
 
-string RequestGroup::getFilePath() const
+std::string RequestGroup::getFilePath() const
 {
   assert(!_downloadContext.isNull());
   if(_downloadContext.isNull()) {
@@ -465,8 +483,8 @@ int64_t RequestGroup::getCompletedLength() const
   }
 }
 
-void RequestGroup::validateFilename(const string& expectedFilename,
-				    const string& actualFilename) const
+void RequestGroup::validateFilename(const std::string& expectedFilename,
+				    const std::string& actualFilename) const
 {
   if(expectedFilename.empty()) {
     return;
@@ -491,7 +509,7 @@ void RequestGroup::validateTotalLength(int64_t expectedTotalLength,
   }
 }
 
-void RequestGroup::validateFilename(const string& actualFilename) const
+void RequestGroup::validateFilename(const std::string& actualFilename) const
 {
   validateFilename(_downloadContext->getFileEntries().front()->getBasename(), actualFilename);
 }
@@ -669,9 +687,9 @@ void RequestGroup::initializePostDownloadHandler()
 #endif // ENABLE_METALINK
 }
 
-Strings RequestGroup::getUris() const
+std::deque<std::string> RequestGroup::getUris() const
 {
-  Strings temp(_spentUris.begin(), _spentUris.end());
+  std::deque<std::string> temp(_spentUris.begin(), _spentUris.end());
   temp.insert(temp.end(), _uris.begin(), _uris.end());
   return temp;
 }
@@ -768,7 +786,7 @@ bool RequestGroup::needsFileAllocation() const
 
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
-  Strings uris = getUris();
+  std::deque<std::string> uris = getUris();
   return new DownloadResult(_gid,
 			    getFilePath(),
 			    getTotalLength(),
@@ -799,9 +817,8 @@ public:
 
 ServerHostHandle RequestGroup::searchServerHost(int32_t cuid) const
 {
-  ServerHosts::const_iterator itr = find_if(_serverHosts.begin(),
-					    _serverHosts.end(),
-					    FindServerHostByCUID(cuid));
+  std::deque<SharedHandle<ServerHost> >::const_iterator itr =
+    std::find_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid));
   if(itr == _serverHosts.end()) {
     return 0;
   } else {
@@ -812,9 +829,9 @@ ServerHostHandle RequestGroup::searchServerHost(int32_t cuid) const
 class FindServerHostByHostname
 {
 private:
-  const string& _hostname;
+  const std::string& _hostname;
 public:
-  FindServerHostByHostname(const string& hostname):_hostname(hostname) {}
+  FindServerHostByHostname(const std::string& hostname):_hostname(hostname) {}
 
   bool operator()(const ServerHostHandle& sv) const
   {
@@ -822,11 +839,10 @@ public:
   }
 };
 
-ServerHostHandle RequestGroup::searchServerHost(const string& hostname) const
+ServerHostHandle RequestGroup::searchServerHost(const std::string& hostname) const
 {
-  ServerHosts::const_iterator itr = find_if(_serverHosts.begin(),
-					    _serverHosts.end(),
-					    FindServerHostByHostname(hostname));
+  std::deque<SharedHandle<ServerHost> >::const_iterator itr =
+    std::find_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByHostname(hostname));
   if(itr == _serverHosts.end()) {
     return 0;
   } else {
@@ -836,15 +852,15 @@ ServerHostHandle RequestGroup::searchServerHost(const string& hostname) const
 
 void RequestGroup::removeServerHost(int32_t cuid)
 {
-  _serverHosts.erase(remove_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid)), _serverHosts.end());
+  _serverHosts.erase(std::remove_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid)), _serverHosts.end());
 }
   
-void RequestGroup::removeURIWhoseHostnameIs(const string& hostname)
+void RequestGroup::removeURIWhoseHostnameIs(const std::string& hostname)
 {
-  Strings newURIs;
+  std::deque<std::string> newURIs;
   Request req;
-  for(Strings::const_iterator itr = _uris.begin(); itr != _uris.end(); ++itr) {
-    if((*itr).find(hostname) == string::npos ||
+  for(std::deque<std::string>::const_iterator itr = _uris.begin(); itr != _uris.end(); ++itr) {
+    if((*itr).find(hostname) == std::string::npos ||
        req.setUrl(*itr) && req.getHost() != hostname) {
       newURIs.push_back(*itr);
     }
@@ -869,3 +885,5 @@ void RequestGroup::reportDownloadFinished()
   }
 #endif // ENABLE_BITTORRENT
 }
+
+} // namespace aria2

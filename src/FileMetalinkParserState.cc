@@ -37,9 +37,11 @@
 #include "Util.h"
 #include "RecoverableException.h"
 
+namespace aria2 {
+
 void FileMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-					   const string& name,
-					   const map<string, string>& attrs)
+					   const std::string& name,
+					   const std::map<std::string, std::string>& attrs)
 {
   if(name == "size") {
     stm->setSizeState();
@@ -57,7 +59,7 @@ void FileMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
     stm->setResourcesState();
     int32_t maxConnections;
     {
-      map<string, string>::const_iterator itr = attrs.find("maxconnections");
+      std::map<std::string, std::string>::const_iterator itr = attrs.find("maxconnections");
       if(itr == attrs.end()) {
 	maxConnections = -1;
       } else {
@@ -76,9 +78,11 @@ void FileMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 }
 
 void FileMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					  const string& name,
-					  const string& characters)
+					 const std::string& name,
+					 const std::string& characters)
 {
   stm->commitEntryTransaction();
   stm->setFilesState();
 }
+
+} //  namespace aria2

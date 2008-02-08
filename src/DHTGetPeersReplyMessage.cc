@@ -45,11 +45,14 @@
 #include "PeerMessageUtil.h"
 #include "Peer.h"
 #include "DHTUtil.h"
+#include <cstring>
 
-DHTGetPeersReplyMessage::DHTGetPeersReplyMessage(const DHTNodeHandle& localNode,
-						 const DHTNodeHandle& remoteNode,
-						 const string& token,
-						 const string& transactionID):
+namespace aria2 {
+
+DHTGetPeersReplyMessage::DHTGetPeersReplyMessage(const SharedHandle<DHTNode>& localNode,
+						 const SharedHandle<DHTNode>& remoteNode,
+						 const std::string& token,
+						 const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID),
   _token(token) {}
 
@@ -69,8 +72,8 @@ Dictionary* DHTGetPeersReplyMessage::getResponse()
   if(_values.size()) {
     List* valuesList = new List();
     r->put("values", valuesList);
-    for(Peers::const_iterator i = _values.begin(); i != _values.end(); ++i) {
-      PeerHandle peer = *i;
+    for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin(); i != _values.end(); ++i) {
+      const SharedHandle<Peer>& peer = *i;
       char buffer[6];
       if(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port)) {
 	valuesList->add(new Data(buffer, sizeof(buffer)));
@@ -79,8 +82,8 @@ Dictionary* DHTGetPeersReplyMessage::getResponse()
   } else {
     size_t offset = 0;
     char buffer[DHTBucket::K*26];
-    for(DHTNodes::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
-      DHTNodeHandle node = *i;
+    for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
+      SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
       if(PeerMessageUtil::createcompact(buffer+20+offset, node->getIPAddress(), node->getPort())) {
 	offset += 26;
@@ -91,29 +94,31 @@ Dictionary* DHTGetPeersReplyMessage::getResponse()
   return r;
 }
 
-string DHTGetPeersReplyMessage::getMessageType() const
+std::string DHTGetPeersReplyMessage::getMessageType() const
 {
   return "get_peers";
 }
 
 void DHTGetPeersReplyMessage::validate() const {}
 
-const DHTNodes& DHTGetPeersReplyMessage::getClosestKNodes() const
+const std::deque<SharedHandle<DHTNode> >& DHTGetPeersReplyMessage::getClosestKNodes() const
 {
   return _closestKNodes;
 }
 
-void DHTGetPeersReplyMessage::setClosestKNodes(const DHTNodes& closestKNodes)
+void DHTGetPeersReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes)
 {
   _closestKNodes = closestKNodes;
 }
 
-const Peers& DHTGetPeersReplyMessage::getValues() const
+const std::deque<SharedHandle<Peer> >& DHTGetPeersReplyMessage::getValues() const
 {
   return _values;
 }
 
-void DHTGetPeersReplyMessage::setValues(const Peers& peers)
+void DHTGetPeersReplyMessage::setValues(const std::deque<SharedHandle<Peer> >& peers)
 {
   _values = peers;
 }
+
+} // namespace aria2

@@ -36,29 +36,35 @@
 #define _D_NETRC_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+#include <iosfwd>
+
+namespace aria2 {
 
 class Authenticatable {
 public:
   virtual ~Authenticatable() {}
 
-  virtual bool match(const string& hostname) const = 0;
+  virtual bool match(const std::string& hostname) const = 0;
 };
 
 typedef SharedHandle<Authenticatable> AuthenticatableHandle;
 
 class Authenticator : public Authenticatable {
 private:
-  string machine;
-  string login;
-  string password;
-  string account;
+  std::string machine;
+  std::string login;
+  std::string password;
+  std::string account;
 public:
   Authenticator() {}
 
-  Authenticator(const string& machine,
-		const string& login,
-		const string& password,
-		const string& account)
+  Authenticator(const std::string& machine,
+		const std::string& login,
+		const std::string& password,
+		const std::string& account)
     :machine(machine),
      login(login),
      password(password),
@@ -66,55 +72,55 @@ public:
 
   virtual ~Authenticator() {}
 
-  virtual bool match(const string& hostname) const
+  virtual bool match(const std::string& hostname) const
   {
     return hostname == machine;
   }
 
-  const string& getMachine() const
+  const std::string& getMachine() const
   {
     return machine;
   }
 
-  void setMachine(const string& machine) { this->machine = machine; }
+  void setMachine(const std::string& machine) { this->machine = machine; }
 
-  const string& getLogin() const
+  const std::string& getLogin() const
   {
     return login;
   }
 
-  void setLogin(const string& login) { this->login = login; }
+  void setLogin(const std::string& login) { this->login = login; }
 
-  const string& getPassword() const
+  const std::string& getPassword() const
   {
     return password;
   }
 
-  void setPassword(const string& password) { this->password = password; }
+  void setPassword(const std::string& password) { this->password = password; }
 
-  const string& getAccount() const
+  const std::string& getAccount() const
   {
     return account;
   }
 
-  void setAccount(const string& account) { this->account = account; }
+  void setAccount(const std::string& account) { this->account = account; }
 };
 
 typedef SharedHandle<Authenticator> AuthenticatorHandle;
-typedef deque<AuthenticatorHandle> Authenticators;
+typedef std::deque<AuthenticatorHandle> Authenticators;
 
 class DefaultAuthenticator : public Authenticator {
 public:
   DefaultAuthenticator() {}
 
-  DefaultAuthenticator(const string& login,
-		       const string& password,
-		       const string& account)
+  DefaultAuthenticator(const std::string& login,
+		       const std::string& password,
+		       const std::string& account)
     :Authenticator("", login, password, account) {}
 
   virtual ~DefaultAuthenticator() {}
 
-  virtual bool match(const string& hostname) const
+  virtual bool match(const std::string& hostname) const
   {
     return true;
   }
@@ -128,15 +134,15 @@ private:
 
   void storeAuthenticator(const AuthenticatorHandle& authenticator);
 
-  string getRequiredNextToken(ifstream& f) const;
+  std::string getRequiredNextToken(std::ifstream& f) const;
   
-  void skipMacdef(ifstream& f) const;
+  void skipMacdef(std::ifstream& f) const;
 public:
   Netrc() {}
 
-  void parse(const string& path);
+  void parse(const std::string& path);
 
-  AuthenticatorHandle findAuthenticator(const string& hostname) const;
+  AuthenticatorHandle findAuthenticator(const std::string& hostname) const;
 
   const Authenticators& getAuthenticators() const
   {
@@ -150,6 +156,7 @@ public:
 };
 
 typedef SharedHandle<Netrc> NetrcHandle;
-//typedef SingletonHolder<NetrcHandle> NetrcSingletonHolder;
+
+} // namespace aria2
 
 #endif // _D_NETRC_H_

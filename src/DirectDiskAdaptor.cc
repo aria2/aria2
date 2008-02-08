@@ -33,8 +33,11 @@
  */
 /* copyright --> */
 #include "DirectDiskAdaptor.h"
+#include "FileEntry.h"
 
-string DirectDiskAdaptor::getFilePath()
+namespace aria2 {
+
+std::string DirectDiskAdaptor::getFilePath()
 {
   return storeDir+"/"+fileEntries.front()->getPath();
 }
@@ -44,3 +47,5 @@ void DirectDiskAdaptor::onDownloadComplete()
   closeFile();
   openFile();
 }
+
+} // namespace aria2

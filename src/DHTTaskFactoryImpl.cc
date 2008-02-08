@@ -39,6 +39,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTTaskQueue.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "DHTPingTask.h"
 #include "DHTNodeLookupTask.h"
 #include "DHTBucketRefreshTask.h"
@@ -50,6 +51,8 @@
 #include "PeerStorage.h"
 #include "BtRuntime.h"
 
+namespace aria2 {
+
 DHTTaskFactoryImpl::DHTTaskFactoryImpl():_localNode(0),
 					 _routingTable(0),
 					 _dispatcher(0),
@@ -59,8 +62,8 @@ DHTTaskFactoryImpl::DHTTaskFactoryImpl():_localNode(0),
 
 DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
-DHTTaskHandle
-DHTTaskFactoryImpl::createPingTask(const DHTNodeHandle& remoteNode,
+SharedHandle<DHTTask>
+DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
 				   size_t numRetry)
 {
   SharedHandle<DHTPingTask> task = new DHTPingTask(remoteNode, numRetry);
@@ -68,7 +71,7 @@ DHTTaskFactoryImpl::createPingTask(const DHTNodeHandle& remoteNode,
   return task;
 }
 
-DHTTaskHandle
+SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
 {
   SharedHandle<DHTNodeLookupTask> task = new DHTNodeLookupTask(targetID);
@@ -76,7 +79,7 @@ DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
   return task;
 }
 
-DHTTaskHandle
+SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createBucketRefreshTask()
 {
   SharedHandle<DHTBucketRefreshTask> task = new DHTBucketRefreshTask();
@@ -84,31 +87,31 @@ DHTTaskFactoryImpl::createBucketRefreshTask()
   return task;
 }
 
-DHTTaskHandle
-DHTTaskFactoryImpl::createPeerLookupTask(const BtContextHandle& ctx)
+SharedHandle<DHTTask>
+DHTTaskFactoryImpl::createPeerLookupTask(const SharedHandle<BtContext>& ctx)
 {
   SharedHandle<DHTPeerLookupTask> task = new DHTPeerLookupTask(ctx);
   setCommonProperty(task);
   return task;
 }
 
-DHTTaskHandle
+SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createPeerAnnounceTask(const unsigned char* infoHash)
 {
   // TODO
   return 0;
 }
 
-DHTTaskHandle
-DHTTaskFactoryImpl::createReplaceNodeTask(const DHTBucketHandle& bucket,
-					  const DHTNodeHandle& newNode)
+SharedHandle<DHTTask>
+DHTTaskFactoryImpl::createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
+					  const SharedHandle<DHTNode>& newNode)
 {
   SharedHandle<DHTReplaceNodeTask> task = new DHTReplaceNodeTask(bucket, newNode);
   setCommonProperty(task);
   return task;
 }
 
-void DHTTaskFactoryImpl::setCommonProperty(const DHTAbstractTaskHandle& task)
+void DHTTaskFactoryImpl::setCommonProperty(const SharedHandle<DHTAbstractTask>& task)
 {
   task->setRoutingTable(_routingTable);
   task->setMessageDispatcher(_dispatcher);
@@ -137,7 +140,9 @@ void DHTTaskFactoryImpl::setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue)
   _taskQueue = taskQueue;
 }
 
-void DHTTaskFactoryImpl::setLocalNode(const DHTNodeHandle& localNode)
+void DHTTaskFactoryImpl::setLocalNode(const SharedHandle<DHTNode>& localNode)
 {
   _localNode = localNode;
 }
+
+} // namespace aria2

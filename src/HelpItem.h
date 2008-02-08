@@ -37,38 +37,43 @@
 
 #include "TaggedItem.h"
 
-class HelpItem;
-typedef SharedHandle<HelpItem> HelpItemHandle;
+namespace aria2 {
 
 class HelpItem:public TaggedItem {
 private:
-  string _usageText;
+  std::string _usageText;
 
-  string _availableValues;
+  std::string _availableValues;
 
-  string _defaultValue;
+  std::string _defaultValue;
 
 public:
-  HelpItem(const string& name, const string& usageText, const string& defaultValue = ""):
+  HelpItem(const std::string& name, const std::string& usageText, const std::string& defaultValue = ""):
     TaggedItem(name),
     _usageText(usageText),
     _defaultValue(defaultValue) {}
 
   virtual ~HelpItem() {}
 
-  void setAvailableValues(const string& availableValues)
+  void setAvailableValues(const std::string& availableValues)
   {
     _availableValues = availableValues;
   }
 
-  const string& getAvailableValues() const
+  const std::string& getAvailableValues() const
   {
     return _availableValues;
   }
 
-  friend ostream& operator<<(ostream& o, const HelpItem& helpItem);
+  friend std::ostream&
+  operator<<(std::ostream& o, const HelpItem& helpItem);
 
-  friend ostream& operator<<(ostream& o, const HelpItemHandle& helpItem);
+  friend std::ostream&
+  operator<<(std::ostream& o, const SharedHandle<HelpItem>& helpItem);
 };
+
+typedef SharedHandle<HelpItem> HelpItemHandle;
+
+} // namespace aria2
 
 #endif // _D_HELP_ITEM_H_

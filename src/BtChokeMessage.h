@@ -37,6 +37,8 @@
 
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
 class BtChokeMessage;
 
 typedef SharedHandle<BtChokeMessage> BtChokeMessageHandle;
@@ -63,7 +65,7 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
   static BtChokeMessageHandle create(const unsigned char* data, int32_t dataLength);
 
@@ -71,5 +73,7 @@ public:
 
   virtual void onSendComplete();
 };
+
+} // namespace aria2
 
 #endif // _D_CHOKE_MESSAGE_H_

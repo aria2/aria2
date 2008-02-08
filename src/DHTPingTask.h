@@ -38,9 +38,11 @@
 #include "DHTAbstractTask.h"
 #include "DHTMessageCallbackListener.h"
 
+namespace aria2 {
+
 class DHTPingTask:public DHTAbstractTask, public DHTMessageCallbackListener {
 protected:
-  DHTNodeHandle _remoteNode;
+  SharedHandle<DHTNode> _remoteNode;
 
   size_t _numMaxRetry;
 
@@ -50,15 +52,15 @@ protected:
 
   time_t _timeout;
 public:
-  DHTPingTask(const DHTNodeHandle& remoteNode, size_t numMaxRetry = 0);
+  DHTPingTask(const SharedHandle<DHTNode>& remoteNode, size_t numMaxRetry = 0);
 
   virtual ~DHTPingTask();
 
   virtual void startup();
 
-  virtual void onReceived(const DHTMessageHandle& message);
+  virtual void onReceived(const SharedHandle<DHTMessage>& message);
 
-  virtual void onTimeout(const DHTNodeHandle& node);  
+  virtual void onTimeout(const SharedHandle<DHTNode>& node);  
 
   void setTimeout(time_t timeout)
   {
@@ -67,5 +69,7 @@ public:
 
   bool isPingSuccessful() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_PING_TASK_H_

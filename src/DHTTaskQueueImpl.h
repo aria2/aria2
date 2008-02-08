@@ -36,23 +36,26 @@
 #define _D_DHT_TASK_QUEUE_IMPL_H_
 
 #include "DHTTaskQueue.h"
+#include <deque>
+
+namespace aria2 {
 
 class DHTTaskQueueImpl:public DHTTaskQueue {
 private:
 
-  DHTTaskHandle _periodicTask1;
+  SharedHandle<DHTTask> _periodicTask1;
 
-  DHTTaskHandle _periodicTask2;
+  SharedHandle<DHTTask> _periodicTask2;
 
-  DHTTaskHandle _immediateTask;
+  SharedHandle<DHTTask> _immediateTask;
 
-  DHTTasks _periodicTaskQueue1;
+  std::deque<SharedHandle<DHTTask> > _periodicTaskQueue1;
 
-  DHTTasks _periodicTaskQueue2;
+  std::deque<SharedHandle<DHTTask> > _periodicTaskQueue2;
 
-  DHTTasks _immediateTaskQueue;
+  std::deque<SharedHandle<DHTTask> > _immediateTaskQueue;
 
-  void executeTask(DHTTaskHandle& task, DHTTasks& taskQueue);
+  void executeTask(SharedHandle<DHTTask>& task, std::deque<SharedHandle<DHTTask> >& taskQueue);
 public:
   DHTTaskQueueImpl();
 
@@ -60,11 +63,13 @@ public:
 
   virtual void executeTask();
 
-  virtual void addPeriodicTask1(const DHTTaskHandle& task);
+  virtual void addPeriodicTask1(const SharedHandle<DHTTask>& task);
 
-  virtual void addPeriodicTask2(const DHTTaskHandle& task);
+  virtual void addPeriodicTask2(const SharedHandle<DHTTask>& task);
 
-  virtual void addImmediateTask(const DHTTaskHandle& task);
+  virtual void addImmediateTask(const SharedHandle<DHTTask>& task);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_TASK_QUEUE_IMPL_H_

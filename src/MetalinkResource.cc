@@ -34,7 +34,9 @@
 /* copyright --> */
 #include "MetalinkResource.h"
 
-string MetalinkResource::type2String[] = {
+namespace aria2 {
+
+std::string MetalinkResource::type2String[] = {
   "ftp", "http", "https", "bittorrent", "not_supported"
 };
 
@@ -43,3 +45,5 @@ MetalinkResource::MetalinkResource():
 {}
 
 MetalinkResource::~MetalinkResource() {}
+
+} // namespace aria2

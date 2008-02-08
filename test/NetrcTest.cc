@@ -1,8 +1,9 @@
 #include "Netrc.h"
 #include "Exception.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class NetrcTest : public CppUnit::TestFixture {
 
@@ -36,44 +37,44 @@ void NetrcTest::testFindAuthenticator()
   netrc.addAuthenticator(new Authenticator("host2", "aria2", "aria2password", "aria2account"));
   netrc.addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
 
-  AuthenticatorHandle aria2auth = netrc.findAuthenticator("host2");
+  SharedHandle<Authenticator> aria2auth = netrc.findAuthenticator("host2");
   CPPUNIT_ASSERT(!aria2auth.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("aria2"), aria2auth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(string("aria2password"), aria2auth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(string("aria2account"), aria2auth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
 
-  AuthenticatorHandle defaultauth = netrc.findAuthenticator("host3");
+  SharedHandle<Authenticator> defaultauth = netrc.findAuthenticator("host3");
   CPPUNIT_ASSERT(!defaultauth.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("default"), defaultauth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(string("defaultpassword"), defaultauth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(string("defaultaccount"), defaultauth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("default"), defaultauth->getLogin());
+  CPPUNIT_ASSERT_EQUAL(std::string("defaultpassword"), defaultauth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("defaultaccount"), defaultauth->getAccount());
 }
 
 void NetrcTest::testParse()
 {
   Netrc netrc;
   netrc.parse("sample.netrc");
-  Authenticators::const_iterator itr = netrc.getAuthenticators().begin();
+  std::deque<SharedHandle<Authenticator> >::const_iterator itr = netrc.getAuthenticators().begin();
 
-  AuthenticatorHandle tujikawaauth = *itr;
+  SharedHandle<Authenticator> tujikawaauth = *itr;
   CPPUNIT_ASSERT(!tujikawaauth.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("host1"), tujikawaauth->getMachine());
-  CPPUNIT_ASSERT_EQUAL(string("tujikawa"), tujikawaauth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(string("tujikawapassword"), tujikawaauth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(string("tujikawaaccount"), tujikawaauth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("host1"), tujikawaauth->getMachine());
+  CPPUNIT_ASSERT_EQUAL(std::string("tujikawa"), tujikawaauth->getLogin());
+  CPPUNIT_ASSERT_EQUAL(std::string("tujikawapassword"), tujikawaauth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("tujikawaaccount"), tujikawaauth->getAccount());
   ++itr;
-  AuthenticatorHandle aria2auth = *itr;
+  SharedHandle<Authenticator> aria2auth = *itr;
   CPPUNIT_ASSERT(!aria2auth.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("host2"), aria2auth->getMachine());
-  CPPUNIT_ASSERT_EQUAL(string("aria2"), aria2auth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(string("aria2password"), aria2auth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(string("aria2account"), aria2auth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("host2"), aria2auth->getMachine());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), aria2auth->getLogin());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2password"), aria2auth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2account"), aria2auth->getAccount());
   ++itr;
-  DefaultAuthenticatorHandle defaultauth = *itr;
+  SharedHandle<Authenticator> defaultauth = *itr;
   CPPUNIT_ASSERT(!defaultauth.isNull());
-  CPPUNIT_ASSERT_EQUAL(string("anonymous"), defaultauth->getLogin());
-  CPPUNIT_ASSERT_EQUAL(string("ARIA2@USER"), defaultauth->getPassword());
-  CPPUNIT_ASSERT_EQUAL(string("ARIA2@ACCT"), defaultauth->getAccount());
+  CPPUNIT_ASSERT_EQUAL(std::string("anonymous"), defaultauth->getLogin());
+  CPPUNIT_ASSERT_EQUAL(std::string("ARIA2@USER"), defaultauth->getPassword());
+  CPPUNIT_ASSERT_EQUAL(std::string("ARIA2@ACCT"), defaultauth->getAccount());
 }
 
 void NetrcTest::testParse_fileNotFound()
@@ -83,7 +84,7 @@ void NetrcTest::testParse_fileNotFound()
     netrc.parse("");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
@@ -103,7 +104,9 @@ void NetrcTest::testParse_malformedNetrc()
     netrc.parse("malformed.netrc");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
-    cerr << e->getMsg() << endl;
+    std::cerr << e->getMsg() << std::endl;
     delete e;
   }
 }
+
+} // namespace aria2

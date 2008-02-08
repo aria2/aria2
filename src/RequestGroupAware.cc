@@ -35,6 +35,8 @@
 #include "RequestGroupAware.h"
 #include "RequestGroup.h"
 
+namespace aria2 {
+
 RequestGroupAware::RequestGroupAware(RequestGroup* requestGroup):
   _requestGroup(requestGroup)
 {
@@ -50,3 +52,5 @@ RequestGroup* RequestGroupAware::getRequestGroup() const
 {
   return _requestGroup;
 }
+
+} // namespace aria2

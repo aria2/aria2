@@ -36,15 +36,18 @@
 #define _D_PEER_LISTEN_COMMAND_H_
 
 #include "Command.h"
-#include "Socket.h"
+#include "SharedHandle.h"
 #include "IntSequence.h"
 
+namespace aria2 {
+
 class DownloadEngine;
+class SocketCore;
 
 class PeerListenCommand : public Command {
 private:
   DownloadEngine* e;
-  SocketHandle socket;
+  SharedHandle<SocketCore> socket;
   int32_t _lowestSpeedLimit;
 
   static int32_t __numInstance;
@@ -73,5 +76,7 @@ public:
   }
   
 };
+
+} // namespace aria2 
 
 #endif // _D_PEER_LISTEN_COMMAND_H_

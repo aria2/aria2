@@ -37,10 +37,12 @@
 
 #include "AbstractSingleDiskAdaptor.h"
 
+namespace aria2 {
+
 class CopyDiskAdaptor : public AbstractSingleDiskAdaptor {
 private:
-  string tempFilename;
-  string topDir;
+  std::string tempFilename;
+  std::string topDir;
 
   void fixFilename();
 public:
@@ -48,26 +50,28 @@ public:
 
   virtual ~CopyDiskAdaptor() {}
 
-  virtual string getFilePath();
+  virtual std::string getFilePath();
 
   virtual void onDownloadComplete();
 
   // tempFilename is relative to storeDir
-  void setTempFilename(const string& tempFilename) {
+  void setTempFilename(const std::string& tempFilename) {
     this->tempFilename = tempFilename;
   }
 
-  const string& getTempFile() const { return this->tempFilename; }
+  const std::string& getTempFile() const { return this->tempFilename; }
 
-  void setTopDir(const string& topDir) {
+  void setTopDir(const std::string& topDir) {
     this->topDir = topDir;
   }
 
-  const string& getTopDir() const {
+  const std::string& getTopDir() const {
     return topDir;
   }
 };
 
 typedef SharedHandle<CopyDiskAdaptor> CopyDiskAdaptorHandle;
+
+} // namespace aria2
 
 #endif // _D_COPY_DISK_ADAPTOR_H_

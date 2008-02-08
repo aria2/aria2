@@ -3,14 +3,16 @@
 
 #include "ExtensionMessage.h"
 
+namespace aria2 {
+
 class MockExtensionMessage:public ExtensionMessage {
 public:
-  string _extensionName;
+  std::string _extensionName;
   uint8_t _extensionMessageID;
-  string _data;
+  std::string _data;
   bool _doReceivedActionCalled;
 public:
-  MockExtensionMessage(const string& extensionName,
+  MockExtensionMessage(const std::string& extensionName,
 		       uint8_t extensionMessageID,
 		       const char* data,
 		       size_t length):_extensionName(extensionName),
@@ -20,7 +22,7 @@ public:
 
   virtual ~MockExtensionMessage() {}
 
-  virtual string getBencodedData()
+  virtual std::string getBencodedData()
   {
     return _data;
   }
@@ -30,12 +32,12 @@ public:
     return _extensionMessageID;
   }
   
-  virtual const string& getExtensionName() const
+  virtual const std::string& getExtensionName() const
   {
     return _extensionName;
   }
 
-  virtual string toString() const
+  virtual std::string toString() const
   {
     return _extensionName;
   }
@@ -46,6 +48,6 @@ public:
   }
 };
 
-typedef SharedHandle<MockExtensionMessage> MockExtensionMessageHandle;
+} // namespace aria2
 
 #endif // _D_MOCK_EXTENSION_MESSAGE_H_

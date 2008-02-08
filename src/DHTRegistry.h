@@ -36,39 +36,45 @@
 #define _D_DHT_REGISTRY_H_
 
 #include "common.h"
-#include "DHTNodeDecl.h"
-#include "DHTRoutingTableDecl.h"
-#include "DHTTaskQueueDecl.h"
-#include "DHTTaskFactoryDecl.h"
-#include "DHTPeerAnnounceStorageDecl.h"
-#include "DHTTokenTrackerDecl.h"
-#include "DHTMessageDispatcherDecl.h"
-#include "DHTMessageReceiverDecl.h"
-#include "DHTMessageFactoryDecl.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class DHTNode;
+class DHTRoutingTable;
+class DHTTaskQueue;
+class DHTTaskFactory;
+class DHTPeerAnnounceStorage;
+class DHTTokenTracker;
+class DHTMessageDispatcher;
+class DHTMessageReceiver;
+class DHTMessageFactory;
 
 class DHTRegistry {
 public:
-  static DHTNodeHandle _localNode;
+  static SharedHandle<DHTNode> _localNode;
 
-  static DHTRoutingTableHandle _routingTable;
+  static SharedHandle<DHTRoutingTable> _routingTable;
 
-  static DHTTaskQueueHandle _taskQueue;
+  static SharedHandle<DHTTaskQueue> _taskQueue;
 
-  static DHTTaskFactoryHandle _taskFactory;
+  static SharedHandle<DHTTaskFactory> _taskFactory;
 
-  static DHTPeerAnnounceStorageHandle _peerAnnounceStorage;
+  static SharedHandle<DHTPeerAnnounceStorage> _peerAnnounceStorage;
 
-  static DHTTokenTrackerHandle _tokenTracker;
+  static SharedHandle<DHTTokenTracker> _tokenTracker;
 
-  static DHTMessageDispatcherHandle _messageDispatcher;
+  static SharedHandle<DHTMessageDispatcher> _messageDispatcher;
 
-  static DHTMessageReceiverHandle _messageReceiver;
+  static SharedHandle<DHTMessageReceiver> _messageReceiver;
 
-  static DHTMessageFactoryHandle _messageFactory;
+  static SharedHandle<DHTMessageFactory> _messageFactory;
 
   static void clear();
 private:
   DHTRegistry();
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_REGISTRY_H_

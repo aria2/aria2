@@ -1,8 +1,8 @@
 #include "Data.h"
-#include <string>
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class DataTest:public CppUnit::TestFixture {
 
@@ -29,10 +29,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( DataTest );
 
 void DataTest::testToString() {
   Data data("aria2", 5);
-  CPPUNIT_ASSERT_EQUAL(string("aria2"), data.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2"), data.toString());
 
   Data null(reinterpret_cast<const char*>(0), 0);
-  CPPUNIT_ASSERT_EQUAL(string(""), null.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), null.toString());
 }
 
 void DataTest::testGetData() {
@@ -67,3 +67,5 @@ void DataTest::testToLLInt() {
   Data alpha("abc", 3);
   CPPUNIT_ASSERT_EQUAL(0, (int)alpha.toLLInt());
 }
+
+} // namespace aria2

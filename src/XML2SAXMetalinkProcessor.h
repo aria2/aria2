@@ -38,22 +38,26 @@
 #include "MetalinkProcessor.h"
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
+#include <string>
+
+namespace aria2 {
 
 class MetalinkParserStateMachine;
-typedef SharedHandle<MetalinkParserStateMachine> MetalinkParserStateMachineHandle;
 
 class XML2SAXMetalinkProcessor:public MetalinkProcessor {
 private:
-  MetalinkParserStateMachineHandle _stm;
+  SharedHandle<MetalinkParserStateMachine> _stm;
 
 public:
   XML2SAXMetalinkProcessor();
 
   virtual ~XML2SAXMetalinkProcessor() {}
 
-  virtual MetalinkerHandle parseFile(const string& filename);
+  virtual SharedHandle<Metalinker> parseFile(const std::string& filename);
 
-  virtual MetalinkerHandle parseFromBinaryStream(const BinaryStreamHandle& binaryStream);
+  virtual SharedHandle<Metalinker> parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream);
 };
+
+} // namespace aria2
 
 #endif // _D_XML2_SAX_METALINK_PROCESSOR_H_

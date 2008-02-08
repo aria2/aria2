@@ -63,6 +63,13 @@
 #include "BtHandshakeMessageValidator.h"
 #include "BtExtendedMessage.h"
 #include "ExtensionMessage.h"
+#include "Peer.h"
+#include "Piece.h"
+#include "BtRegistry.h"
+#include "BtContext.h"
+#include "PieceStorage.h"
+
+namespace aria2 {
 
 DefaultBtMessageFactory::DefaultBtMessageFactory():cuid(0),
 						   btContext(0),
@@ -205,7 +212,7 @@ void DefaultBtMessageFactory::setCommonProperty(const AbstractBtMessageHandle& m
 BtMessageHandle
 DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* data, int32_t dataLength)
 {
-  BtHandshakeMessageHandle msg = BtHandshakeMessage::create(data, dataLength);
+  SharedHandle<BtHandshakeMessage> msg = BtHandshakeMessage::create(data, dataLength);
   BtMessageValidatorHandle validator =
     new BtHandshakeMessageValidator(msg.get(),
 				    btContext->getInfoHash());
@@ -218,7 +225,7 @@ BtMessageHandle
 DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
 						const unsigned char* peerId)
 {
-  BtHandshakeMessageHandle msg = new BtHandshakeMessage(infoHash, peerId);
+  SharedHandle<BtHandshakeMessage> msg = new BtHandshakeMessage(infoHash, peerId);
   BtMessageValidatorHandle validator =
     new BtHandshakeMessageValidator(msg.get(),
 				    btContext->getInfoHash());
@@ -383,7 +390,7 @@ DefaultBtMessageFactory::createPortMessage(uint16_t port)
 }
 
 BtMessageHandle
-DefaultBtMessageFactory::createBtExtendedMessage(const ExensionMessageHandle& msg)
+DefaultBtMessageFactory::createBtExtendedMessage(const ExtensionMessageHandle& msg)
 {
   BtExtendedMessageHandle m = new BtExtendedMessage(msg);
   setCommonProperty(m);
@@ -399,3 +406,31 @@ void DefaultBtMessageFactory::setTaskFactory(const WeakHandle<DHTTaskFactory>& t
 {
   _taskFactory = taskFactory;
 }
+
+void DefaultBtMessageFactory::setPeer(const SharedHandle<Peer>& peer)
+{
+  this->peer = peer;
+}
+
+void DefaultBtMessageFactory::setBtContext(const SharedHandle<BtContext>& btContext)
+{
+  this->btContext = btContext;
+  this->pieceStorage = PIECE_STORAGE(btContext);
+}
+
+void DefaultBtMessageFactory::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
+{
+  this->dispatcher = dispatcher;
+}
+  
+void DefaultBtMessageFactory::setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory)
+{
+  this->requestFactory = factory;
+}
+
+void DefaultBtMessageFactory::setPeerConnection(const WeakHandle<PeerConnection>& connection)
+{
+  this->peerConnection = connection;
+}
+
+} // namespace aria2

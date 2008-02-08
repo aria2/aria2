@@ -1,6 +1,8 @@
 #include "TaggedItem.h"
 #include <cppunit/extensions/HelperMacros.h>
 
+namespace aria2 {
+
 class TaggedItemTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(TaggedItemTest);
@@ -37,7 +39,7 @@ void TaggedItemTest::testToTagString()
   item.addTag("foo");
   item.addTag("bar");
 
-  CPPUNIT_ASSERT_EQUAL(string("foo,bar"), item.toTagString());
+  CPPUNIT_ASSERT_EQUAL(std::string("foo,bar"), item.toTagString());
 }
 
 void TaggedItemTest::testOperatorEqual()
@@ -50,3 +52,5 @@ void TaggedItemTest::testOperatorEqual()
   CPPUNIT_ASSERT(!(bar == foo));
   CPPUNIT_ASSERT(foo == foo);
 }
+
+} // namespace aria2

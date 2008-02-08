@@ -36,12 +36,18 @@
 #define _D_DOWNLOAD_CONTEXT_H_
 
 #include "common.h"
-#include "FileEntry.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
+
+class FileEntry;
 
 class DownloadContext
 {
 protected:
-  string _dir;
+  std::string _dir;
 
 public:
   DownloadContext():_dir(".") {}
@@ -54,23 +60,23 @@ public:
     MULTI
   };
 
-  virtual string getPieceHash(int32_t index) const = 0;
+  virtual std::string getPieceHash(int32_t index) const = 0;
   
-  virtual const Strings& getPieceHashes() const = 0;
+  virtual const std::deque<std::string>& getPieceHashes() const = 0;
 
   virtual int64_t getTotalLength() const = 0;
 
   virtual FILE_MODE getFileMode() const = 0;
 
-  virtual FileEntries getFileEntries() const = 0;
+  virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const = 0;
 
-  virtual string getName() const = 0;
+  virtual std::string getName() const = 0;
   
   virtual int32_t getPieceLength() const = 0;
 
   virtual int32_t getNumPieces() const = 0;
 
-  virtual string getPieceHashAlgo() const = 0;
+  virtual std::string getPieceHashAlgo() const = 0;
 
   /**
    * Returns an actual file path.
@@ -80,14 +86,14 @@ public:
    * /tmp/downloads/aria2.bin), then returns its base dir path,
    * for example, "/tmp/downloads"
    */
-  virtual string getActualBasePath() const = 0;
+  virtual std::string getActualBasePath() const = 0;
 
-  string getDir() const
+  std::string getDir() const
   {
     return _dir;
   }
 
-  void setDir(const string& dir)
+  void setDir(const std::string& dir)
   {
     _dir = dir;
   }
@@ -95,5 +101,7 @@ public:
 };
 
 typedef SharedHandle<DownloadContext> DownloadContextHandle;
+
+} // namespace aria2
 
 #endif // _D_DOWNLOAD_CONTEXT_H_

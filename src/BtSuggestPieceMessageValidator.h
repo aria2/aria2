@@ -37,6 +37,9 @@
 
 #include "BtMessageValidator.h"
 #include "BtSuggestPieceMessage.h"
+#include "PeerMessageUtil.h"
+
+namespace aria2 {
 
 class BtSuggestPieceMessageValidator : public BtMessageValidator {
 private:
@@ -57,4 +60,7 @@ public:
 };
 
 typedef SharedHandle<BtSuggestPieceMessageValidator> BtSuggestPieceMessageValidatorHandle;
+
+} // namespace aria2
+
 #endif // _D_BT_SUGGEST_PIECE_MESSAGE_VALIDATOR_H_

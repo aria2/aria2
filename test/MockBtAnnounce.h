@@ -3,11 +3,13 @@
 
 #include "BtAnnounce.h"
 
+namespace aria2 {
+
 class MockBtAnnounce : public BtAnnounce {
 private:
   bool announceReady;
-  string announceUrl;
-  string peerId;
+  std::string announceUrl;
+  std::string peerId;
 public:
   MockBtAnnounce() {}
   virtual ~MockBtAnnounce() {}
@@ -20,11 +22,11 @@ public:
     this->announceReady = flag;
   }
 
-  virtual string getAnnounceUrl() {
+  virtual std::string getAnnounceUrl() {
     return announceUrl;
   }
 
-  void setAnnounceUrl(const string& url) {
+  void setAnnounceUrl(const std::string& url) {
     this->announceUrl = url;
   }
 
@@ -50,13 +52,15 @@ public:
   virtual void shuffleAnnounce() {
   }
 
-  virtual string getPeerId() {
+  virtual std::string getPeerId() {
     return peerId;
   }
 
-  void setPeerId(const string& peerId) {
+  void setPeerId(const std::string& peerId) {
     this->peerId = peerId;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_MOCK_BT_ANNOUNCE_H_

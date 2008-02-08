@@ -44,6 +44,9 @@
 #include "DiskAdaptor.h"
 #include "Util.h"
 #include "ContentTypeRequestGroupCriteria.h"
+#include "Exception.h"
+
+namespace aria2 {
 
 BtPostDownloadHandler::BtPostDownloadHandler()
 {
@@ -58,9 +61,9 @@ RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestG
   const Option* op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Torrent file %s",
 		 requestGroup->getFilePath().c_str());
-  RequestGroupHandle rg = new RequestGroup(op, Strings());
+  RequestGroupHandle rg = new RequestGroup(op, std::deque<std::string>());
 
-  string content;
+  std::string content;
   try {
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
     content = Util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
@@ -83,3 +86,5 @@ RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestG
   groups.push_back(rg);
   return groups;
 }
+
+} // namespace aria2

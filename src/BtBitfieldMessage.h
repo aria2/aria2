@@ -37,6 +37,8 @@
 
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
 class BtBitfieldMessage;
 
 typedef SharedHandle<BtBitfieldMessage> BtBitfieldMessageHandle;
@@ -90,7 +92,9 @@ public:
 
   virtual int32_t getMessageLength();
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 };
+
+} // namespace aria2
 
 #endif // _D_BT_BITFIELD_MESSAGE_H_

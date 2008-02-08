@@ -36,18 +36,22 @@
 #include "Util.h"
 #include "FeatureConfig.h"
 #include "CookieBoxFactory.h"
+#include "CookieBox.h"
 #include "RecoverableException.h"
+#include <utility>
 
-const string Request::METHOD_GET = "get";
+namespace aria2 {
 
-const string Request::METHOD_HEAD = "head";
+const std::string Request::METHOD_GET = "get";
+
+const std::string Request::METHOD_HEAD = "head";
 
 Request::Request():port(0), tryCount(0), keepAlive(false), method(METHOD_GET),
 		   cookieBox(CookieBoxFactorySingletonHolder::instance()->createNewInstance()) {}
 
 Request::~Request() {}
 
-bool Request::setUrl(const string& url) {
+bool Request::setUrl(const std::string& url) {
   this->url = url;
   return parseUrl(url);
 }
@@ -57,22 +61,22 @@ bool Request::resetUrl() {
   return setUrl(url);
 }
 
-bool Request::redirectUrl(const string& url) {
+bool Request::redirectUrl(const std::string& url) {
   previousUrl = "";
   keepAlive = false;
   return parseUrl(url);
 }
 
-bool Request::parseUrl(const string& url) {
-  string tempUrl;
-  string::size_type sharpIndex = url.find("#");
-  if(sharpIndex != string::npos) {
+bool Request::parseUrl(const std::string& url) {
+  std::string tempUrl;
+  std::string::size_type sharpIndex = url.find("#");
+  if(sharpIndex != std::string::npos) {
     tempUrl = urlencode(url.substr(0, sharpIndex));
   } else {
     tempUrl = urlencode(url);
   }
   currentUrl = tempUrl;
-  string query;
+  std::string query;
   host = "";
   port = 0;
   dir = "";
@@ -80,14 +84,14 @@ bool Request::parseUrl(const string& url) {
   _username = "";
   _password = "";
   // find query part
-  string::size_type startQueryIndex = tempUrl.find("?");
-  if(startQueryIndex != string::npos) {
+  std::string::size_type startQueryIndex = tempUrl.find("?");
+  if(startQueryIndex != std::string::npos) {
     query = tempUrl.substr(startQueryIndex);
     tempUrl.erase(startQueryIndex);
   }
   // find protocol
-  string::size_type hp = tempUrl.find("://");
-  if(hp == string::npos) return false;
+  std::string::size_type hp = tempUrl.find("://");
+  if(hp == std::string::npos) return false;
   protocol = tempUrl.substr(0, hp);
   int32_t defPort;
   if((defPort = FeatureConfig::getInstance()->getDefaultPort(protocol)) == 0) {
@@ -96,21 +100,21 @@ bool Request::parseUrl(const string& url) {
   hp += 3;
   // find host part
   if(tempUrl.size() <= hp) return false;
-  string::size_type hep = tempUrl.find("/", hp);
-  if(hep == string::npos) {
+  std::string::size_type hep = tempUrl.find("/", hp);
+  if(hep == std::string::npos) {
     hep = tempUrl.size();
   }
-  string hostPart = tempUrl.substr(hp, hep-hp);
+  std::string hostPart = tempUrl.substr(hp, hep-hp);
   //   find username and password in host part if they exist
-  string::size_type atmarkp =  hostPart.find_last_of("@");
-  if(atmarkp != string::npos) {
-    string authPart = hostPart.substr(0, atmarkp);
-    pair<string, string> userPass = Util::split(authPart, ":");
+  std::string::size_type atmarkp =  hostPart.find_last_of("@");
+  if(atmarkp != std::string::npos) {
+    std::string authPart = hostPart.substr(0, atmarkp);
+    std::pair<std::string, std::string> userPass = Util::split(authPart, ":");
     _username = Util::urldecode(userPass.first);
     _password = Util::urldecode(userPass.second);
     hostPart.erase(0, atmarkp+1);
   }
-  pair<string, string> hostAndPort;
+  std::pair<std::string, std::string> hostAndPort;
   Util::split(hostAndPort, hostPart, ':');
   host = hostAndPort.first;
   if(hostAndPort.second != "") {
@@ -128,18 +132,18 @@ bool Request::parseUrl(const string& url) {
     port = defPort;
   }
   // find directory and file part
-  string::size_type direp = tempUrl.find_last_of("/");
-  if(direp == string::npos || direp <= hep) {
+  std::string::size_type direp = tempUrl.find_last_of("/");
+  if(direp == std::string::npos || direp <= hep) {
     dir = "/";
     direp = hep;
   } else {
-    string rawDir = tempUrl.substr(hep, direp-hep);
-    string::size_type p = rawDir.find_first_not_of("/");
-    if(p != string::npos) {
+    std::string rawDir = tempUrl.substr(hep, direp-hep);
+    std::string::size_type p = rawDir.find_first_not_of("/");
+    if(p != std::string::npos) {
       rawDir.erase(0, p-1);
     }
     p = rawDir.find_last_not_of("/");
-    if(p != string::npos) {
+    if(p != std::string::npos) {
       rawDir.erase(p+1);
     }
     dir = rawDir;
@@ -156,10 +160,10 @@ bool Request::isHexNumber(const char c) const
   return '0' <= c && c <= '9' || 'A' <= c && c <= 'F' || 'a' <= c && c <= 'f';
 }
 
-string Request::urlencode(const string& src) const
+std::string Request::urlencode(const std::string& src) const
 {
   int32_t lastIndex = src.size()-1;
-  string result = src+"  ";
+  std::string result = src+"  ";
   for(int32_t index = lastIndex; index >= 0; --index) {
     const char c = result[index];
     // '/' is not urlencoded because src is expected to be a path.
@@ -178,3 +182,5 @@ string Request::urlencode(const string& src) const
   }
   return result.substr(0, result.size()-2);
 }
+
+} // namespace aria2

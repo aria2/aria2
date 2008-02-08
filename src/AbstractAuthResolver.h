@@ -37,42 +37,31 @@
 
 #include "AuthResolver.h"
 
+namespace aria2 {
+
 class AbstractAuthResolver : public AuthResolver {
 protected:
 
-  AuthConfigHandle _userDefinedAuthConfig;
+  SharedHandle<AuthConfig> _userDefinedAuthConfig;
 
-  AuthConfigHandle _defaultAuthConfig;
+  SharedHandle<AuthConfig> _defaultAuthConfig;
 
 public:
-  AbstractAuthResolver():_userDefinedAuthConfig(0),
-			 _defaultAuthConfig(new AuthConfig())
-  {}
+  AbstractAuthResolver();
 
-  virtual ~AbstractAuthResolver() {}
+  virtual ~AbstractAuthResolver();
 
-  void setUserDefinedAuthConfig(const AuthConfigHandle& authConfig)
-  {
-    _userDefinedAuthConfig = authConfig;
-  }
+  void setUserDefinedAuthConfig(const SharedHandle<AuthConfig>& authConfig);
 
-  AuthConfigHandle getUserDefinedAuthConfig() const
-  {
-    return _userDefinedAuthConfig;
-  }
+  SharedHandle<AuthConfig> getUserDefinedAuthConfig() const;
 
-  void setDefaultAuthConfig(const AuthConfigHandle& authConfig)
-  {
-    _defaultAuthConfig = authConfig;
-  }
+  void setDefaultAuthConfig(const SharedHandle<AuthConfig>& authConfig);
 
-  AuthConfigHandle getDefaultAuthConfig() const
-  {
-    return _defaultAuthConfig;
-  }
-
+  SharedHandle<AuthConfig> getDefaultAuthConfig() const;
 };
 
 typedef SharedHandle<AbstractAuthResolver> AbstractAuthResolverHandle;
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_AUTH_RESOLVER_H_

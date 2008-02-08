@@ -35,17 +35,26 @@
 #include "PeerInteractionCommand.h"
 #include "DownloadEngine.h"
 #include "PeerInitiateConnectionCommand.h"
-#include "PeerMessageUtil.h"
 #include "DefaultBtInteractive.h"
 #include "DlAbortEx.h"
-#include "Util.h"
 #include "message.h"
 #include "prefs.h"
+#include "Socket.h"
+#include "Option.h"
+#include "BtContext.h"
+#include "BtRegistry.h"
+#include "PeerObject.h"
+#include "Peer.h"
+#include "BtMessage.h"
+#include "BtRuntime.h"
+#include "PeerStorage.h"
 #include "DefaultBtMessageDispatcher.h"
 #include "DefaultBtMessageReceiver.h"
 #include "DefaultBtRequestFactory.h"
 #include "DefaultBtMessageFactory.h"
 #include "DefaultBtInteractive.h"
+#include "PeerConnection.h"
+#include "ExtensionMessageFactory.h"
 #include "CUIDCounter.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
@@ -53,6 +62,8 @@
 #include "DHTSetup.h"
 #include "DHTRegistry.h"
 #include <algorithm>
+
+namespace aria2 {
 
 PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
 					       RequestGroup* requestGroup,
@@ -108,10 +119,8 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   reqFactory->setBtMessageDispatcher(dispatcher);
   reqFactory->setBtMessageFactory(factory);
 
-  DefaultBtInteractiveHandle btInteractive = new DefaultBtInteractive();
+  DefaultBtInteractiveHandle btInteractive = new DefaultBtInteractive(btContext, peer);
   btInteractive->setCuid(cuid);
-  btInteractive->setPeer(peer);
-  btInteractive->setBtContext(btContext);
   btInteractive->setBtMessageReceiver(receiver);
   btInteractive->setDispatcher(dispatcher);
   btInteractive->setBtRequestFactory(reqFactory);
@@ -256,3 +265,4 @@ bool PeerInteractionCommand::exitBeforeExecute()
   return btRuntime->isHalt();
 }
 
+} // namespace aria2

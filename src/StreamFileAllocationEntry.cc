@@ -34,13 +34,14 @@
 /* copyright --> */
 #include "StreamFileAllocationEntry.h"
 #include "CUIDCounter.h"
-#include "Command.h"
 #include "DownloadEngine.h"
 #include "Option.h"
 #include "Request.h"
 #include "prefs.h"
 #include "RequestGroup.h"
 #include "InitiateConnectionCommandFactory.h"
+
+namespace aria2 {
 
 StreamFileAllocationEntry::StreamFileAllocationEntry(const RequestHandle& currentRequest,
 						     RequestGroup* requestGroup,
@@ -73,3 +74,5 @@ Commands StreamFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
   }
   return commands;
 }
+
+} // namespace aria2

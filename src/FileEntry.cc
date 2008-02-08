@@ -35,18 +35,19 @@
 #include "FileEntry.h"
 #include "File.h"
 #include "Util.h"
-#include <libgen.h>
 
-FileEntry::FileEntry(const string& path,
+namespace aria2 {
+
+FileEntry::FileEntry(const std::string& path,
 		     int64_t length,
 		     int64_t offset,
-		     const Strings& uris):
+		     const std::deque<std::string>& uris):
   path(path), _uris(uris), length(length), offset(offset),
   extracted(false), requested(true) {}
 
 FileEntry::~FileEntry() {}
 
-void FileEntry::setupDir(const string& parentDir)
+void FileEntry::setupDir(const std::string& parentDir)
 {
   Util::mkdirs(File(parentDir+"/"+path).getDirname());
 }
@@ -67,3 +68,5 @@ bool FileEntry::operator<(const FileEntry& fileEntry) const
 {
   return offset < fileEntry.offset;
 }
+
+} // namespace aria2

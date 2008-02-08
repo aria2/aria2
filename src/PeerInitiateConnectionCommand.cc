@@ -35,11 +35,22 @@
 #include "PeerInitiateConnectionCommand.h"
 #include "DownloadEngine.h"
 #include "PeerInteractionCommand.h"
-#include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
 #include "CUIDCounter.h"
+#include "Socket.h"
+#include "Logger.h"
+#include "Peer.h"
+#include "PeerConnection.h"
+#include "BtContext.h"
+#include "BtRuntime.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
+#include "BtAnnounce.h"
+#include "BtProgressInfoFile.h"
+
+namespace aria2 {
 
 PeerInitiateConnectionCommand::PeerInitiateConnectionCommand(int cuid,
 							     RequestGroup* requestGroup,
@@ -111,3 +122,5 @@ bool PeerInitiateConnectionCommand::exitBeforeExecute()
 {
   return btRuntime->isHalt();
 }
+
+} // namespace aria2

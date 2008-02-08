@@ -36,16 +36,25 @@
 #define _D_SEGMENT_MAN_FACTORY_H_
 
 #include "common.h"
-#include "SegmentMan.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class SegmentMan;
+class DownloadContext;
+class PieceStorage;
 
 class SegmentManFactory {
 public:
   virtual ~SegmentManFactory() {}
 
-  virtual SegmentManHandle createNewInstance(const DownloadContextHandle& dc,
-					     const PieceStorageHandle& ps) = 0;
+  virtual SharedHandle<SegmentMan>
+  createNewInstance(const SharedHandle<DownloadContext>& dc,
+		    const SharedHandle<PieceStorage>& ps) = 0;
 };
 
 typedef SharedHandle<SegmentManFactory> SegmentManFactoryHandle;
+
+} // namespace aria2
 
 #endif // _D_SEGMENT_MAN_FACTORY_H_

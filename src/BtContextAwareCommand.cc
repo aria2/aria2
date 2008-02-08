@@ -34,6 +34,14 @@
 /* copyright --> */
 #include "BtContextAwareCommand.h"
 #include "BtRegistry.h"
+#include "BtContext.h"
+#include "BtRuntime.h"
+#include "PieceStorage.h"
+#include "PeerStorage.h"
+#include "BtAnnounce.h"
+#include "BtProgressInfoFile.h"
+
+namespace aria2 {
 
 BtContextAwareCommand::BtContextAwareCommand(const BtContextHandle& btContext):
   btContext(btContext),
@@ -44,3 +52,5 @@ BtContextAwareCommand::BtContextAwareCommand(const BtContextHandle& btContext):
   btProgressInfoFile(BT_PROGRESS_INFO_FILE(btContext)) {}
 
 BtContextAwareCommand::~BtContextAwareCommand() {}
+
+} // namespace aria2

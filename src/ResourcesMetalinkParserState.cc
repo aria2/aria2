@@ -37,31 +37,33 @@
 #include "Util.h"
 #include "RecoverableException.h"
 
+namespace aria2 {
+
 void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-						const string& name,
-						const map<string, string>& attrs)
+						const std::string& name,
+						const std::map<std::string, std::string>& attrs)
 {
   if(name == "url") {
     stm->setURLState();
-    string type;
+    std::string type;
     {
-      map<string, string>::const_iterator itr = attrs.find("type");
+      std::map<std::string, std::string>::const_iterator itr = attrs.find("type");
       if(itr == attrs.end()) {
 	return;
       } else {
 	type = (*itr).second;
       }
     }
-    string location;
+    std::string location;
     {
-      map<string, string>::const_iterator itr = attrs.find("location");
+      std::map<std::string, std::string>::const_iterator itr = attrs.find("location");
       if(itr != attrs.end()) {
 	location = Util::toUpper((*itr).second);
       }
     }
     int32_t preference;
     {
-      map<string, string>::const_iterator itr = attrs.find("preference");
+      std::map<std::string, std::string>::const_iterator itr = attrs.find("preference");
       if(itr == attrs.end()) {
 	preference = 0;
       } else {
@@ -75,7 +77,7 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
     }
     int32_t maxConnections;
     {
-      map<string, string>::const_iterator itr = attrs.find("maxconnections");
+      std::map<std::string, std::string>::const_iterator itr = attrs.find("maxconnections");
       if(itr == attrs.end()) {
 	maxConnections = -1;
       } else {
@@ -98,8 +100,10 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 }
 
 void ResourcesMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-					      const string& name,
-					      const string& characters)
+					      const std::string& name,
+					      const std::string& characters)
 {
   stm->setFileState();
 }
+
+} // namespace aria2

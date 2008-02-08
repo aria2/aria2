@@ -37,6 +37,8 @@
 
 #include "BtEvent.h"
 
+namespace aria2 {
+
 class BtCancelSendingPieceEvent : public BtEvent {
 private:
   int32_t index;
@@ -74,5 +76,7 @@ public:
 };
 
 typedef SharedHandle<BtCancelSendingPieceEvent> BtCancelSendingPieceEventHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_CANCEL_SENDING_PIECE_EVENT_H_

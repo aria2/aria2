@@ -37,24 +37,28 @@
 
 #include "AbstractCommand.h"
 
+namespace aria2 {
+
 class HttpConnection;
-typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+class SocketCore;
 
 class AbstractProxyResponseCommand : public AbstractCommand {
 protected:
-  HttpConnectionHandle httpConnection;
+  SharedHandle<HttpConnection> httpConnection;
 
   virtual bool executeInternal();
 public:
   AbstractProxyResponseCommand(int cuid,
-			       const RequestHandle& req,
+			       const SharedHandle<Request>& req,
 			       RequestGroup* requestGroup,
-			       const HttpConnectionHandle& httpConnection,
+			       const SharedHandle<HttpConnection>& httpConnection,
 			       DownloadEngine* e,
-			       const SocketHandle& s);
+			       const SharedHandle<SocketCore>& s);
   virtual ~AbstractProxyResponseCommand();
 
   virtual Command* getNextCommand() = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_ABSTRACT_PROXY_RESPONSE_COMMAND_H_

@@ -40,11 +40,14 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
+#include <cstring>
 
-DHTFindNodeMessage::DHTFindNodeMessage(const DHTNodeHandle& localNode,
-				       const DHTNodeHandle& remoteNode,
+namespace aria2 {
+
+DHTFindNodeMessage::DHTFindNodeMessage(const SharedHandle<DHTNode>& localNode,
+				       const SharedHandle<DHTNode>& remoteNode,
 				       const unsigned char* targetNodeID,
-				       const string& transactionID):
+				       const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID)
 {
   memcpy(_targetNodeID, targetNodeID, DHT_ID_LENGTH);
@@ -54,8 +57,8 @@ DHTFindNodeMessage::~DHTFindNodeMessage() {}
 
 void DHTFindNodeMessage::doReceivedAction()
 {
-  DHTNodes nodes = _routingTable->getClosestKNodes(_targetNodeID);
-  DHTMessageHandle reply =
+  std::deque<SharedHandle<DHTNode> > nodes = _routingTable->getClosestKNodes(_targetNodeID);
+  SharedHandle<DHTMessage> reply =
     _factory->createFindNodeReplyMessage(_remoteNode, nodes, _transactionID);
   _dispatcher->addMessageToQueue(reply);
 }
@@ -70,9 +73,11 @@ Dictionary* DHTFindNodeMessage::getArgument()
   return a;
 }
 
-string DHTFindNodeMessage::getMessageType() const
+std::string DHTFindNodeMessage::getMessageType() const
 {
   return "find_node";
 }
 
 void DHTFindNodeMessage::validate() const {}
+
+} // namespace aria2

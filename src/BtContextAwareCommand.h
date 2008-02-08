@@ -36,26 +36,32 @@
 #define _D_BT_CONTEXT_AWARE_COMMAND_H_
 
 #include "common.h"
-#include "BtContext.h"
-#include "BtRuntime.h"
-#include "PieceStorage.h"
-#include "PeerStorage.h"
-#include "BtAnnounce.h"
-#include "BtProgressInfoFile.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class BtContext;
+class BtRuntime;
+class PieceStorage;
+class PeerStorage;
+class BtAnnounce;
+class BtProgressInfoFile;
 
 class BtContextAwareCommand
 {
 protected:
-  BtContextHandle btContext;
-  BtRuntimeHandle btRuntime;
-  PieceStorageHandle pieceStorage;
-  PeerStorageHandle peerStorage;
-  BtAnnounceHandle btAnnounce;
-  BtProgressInfoFileHandle btProgressInfoFile;
+  SharedHandle<BtContext> btContext;
+  SharedHandle<BtRuntime> btRuntime;
+  SharedHandle<PieceStorage> pieceStorage;
+  SharedHandle<PeerStorage> peerStorage;
+  SharedHandle<BtAnnounce> btAnnounce;
+  SharedHandle<BtProgressInfoFile> btProgressInfoFile;
 public:
-  BtContextAwareCommand(const BtContextHandle& btContext);
+  BtContextAwareCommand(const SharedHandle<BtContext>& btContext);
 
   virtual ~BtContextAwareCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_BT_CONTEXT_AWARE_COMMAND_H_

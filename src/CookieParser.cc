@@ -34,17 +34,21 @@
 /* copyright --> */
 #include "CookieParser.h"
 #include "Util.h"
+#include <utility>
+#include <istream>
 
-void CookieParser::setField(Cookie& cookie, const string& name, const string& value) const
+namespace aria2 {
+
+void CookieParser::setField(Cookie& cookie, const std::string& name, const std::string& value) const
 {
-  if(name.size() == string("secure").size() &&
+  if(name.size() == std::string("secure").size() &&
      strcasecmp(name.c_str(), "secure") == 0) {
     cookie.secure = true;
-  } else if(name.size() == string("domain").size() && strcasecmp(name.c_str(), "domain") == 0) {
+  } else if(name.size() == std::string("domain").size() && strcasecmp(name.c_str(), "domain") == 0) {
     cookie.domain = value;
-  } else if(name.size() == string("path").size() && strcasecmp(name.c_str(), "path") == 0) {
+  } else if(name.size() == std::string("path").size() && strcasecmp(name.c_str(), "path") == 0) {
     cookie.path = value;
-  } else if(name.size() == string("expires").size() && strcasecmp(name.c_str(), "expires") == 0) {
+  } else if(name.size() == std::string("expires").size() && strcasecmp(name.c_str(), "expires") == 0) {
     cookie.expires = Util::httpGMT(value);
     cookie.onetime = false;
   } else {
@@ -53,20 +57,20 @@ void CookieParser::setField(Cookie& cookie, const string& name, const string& va
   }
 }
 
-Cookie CookieParser::parse(const string& cookieStr) const
+Cookie CookieParser::parse(const std::string& cookieStr) const
 {
   return parse(cookieStr, "", "");
 }
 
-Cookie CookieParser::parse(const string& cookieStr, const string& defaultDomain, const string& defaultPath) const
+Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const
 {
   Cookie cookie;
   cookie.domain = defaultDomain;
   cookie.path = defaultPath;
-  Strings terms;
+  std::deque<std::string> terms;
   Util::slice(terms, Util::trim(cookieStr), ';', true);
-  for(Strings::iterator itr = terms.begin(); itr != terms.end(); itr++) {
-    pair<string, string> nv;
+  for(std::deque<std::string>::iterator itr = terms.begin(); itr != terms.end(); itr++) {
+    std::pair<std::string, std::string> nv;
     Util::split(nv, *itr, '=');
     setField(cookie, nv.first, nv.second);
   }
@@ -74,10 +78,10 @@ Cookie CookieParser::parse(const string& cookieStr, const string& defaultDomain,
 }
 
 
-Cookies CookieParser::parse(istream& s) const
+Cookies CookieParser::parse(std::istream& s) const
 {
   Cookies cookies;
-  string line;
+  std::string line;
   while(getline(s, line)) {
     if(Util::trim(line) == "" || Util::startsWith(line, "#")) {
       continue;
@@ -90,3 +94,4 @@ Cookies CookieParser::parse(istream& s) const
   return cookies;
 }
 
+} // namespace aria2

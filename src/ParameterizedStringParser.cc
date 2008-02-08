@@ -41,14 +41,17 @@
 #include "NumberDecorator.h"
 #include "FixedWidthNumberDecorator.h"
 #include "AlphaNumberDecorator.h"
+#include <utility>
 
-PStringDatumHandle ParameterizedStringParser::parse(const string& src)
+namespace aria2 {
+
+PStringDatumHandle ParameterizedStringParser::parse(const std::string& src)
 {
   int32_t offset = 0;
   return diggPString(src, offset);
 }
 
-PStringDatumHandle ParameterizedStringParser::diggPString(const string& src,
+PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src,
 							  int32_t& offset)
 {
   if(src.size() == (size_t)offset) {
@@ -64,28 +67,28 @@ PStringDatumHandle ParameterizedStringParser::diggPString(const string& src,
   } 
 }
 
-PStringDatumHandle ParameterizedStringParser::createSegment(const string& src,
+PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& src,
 							    int32_t& offset)
 {
-  string::size_type nextDelimiterIndex = src.find_first_of("[{", offset);
-  if(nextDelimiterIndex == string::npos) {
+  std::string::size_type nextDelimiterIndex = src.find_first_of("[{", offset);
+  if(nextDelimiterIndex == std::string::npos) {
     nextDelimiterIndex = src.size();
   }
-  string value = src.substr(offset, nextDelimiterIndex-offset);
+  std::string value = src.substr(offset, nextDelimiterIndex-offset);
   offset = nextDelimiterIndex;
   PStringDatumHandle next = diggPString(src, offset);
   return new PStringSegment(value, next);
 }
 
-PStringDatumHandle ParameterizedStringParser::createSelect(const string& src,
+PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& src,
 							   int32_t& offset)
 {
   ++offset;
-  string::size_type rightParenIndex = src.find("}", offset);
-  if(rightParenIndex == string::npos) {
+  std::string::size_type rightParenIndex = src.find("}", offset);
+  if(rightParenIndex == std::string::npos) {
     throw new FatalException("Missing '}' in the parameterized string.");
   }
-  Strings values;
+  std::deque<std::string> values;
   Util::slice(values, src.substr(offset, rightParenIndex-offset), ',', true);
   if(values.empty()) {
     throw new FatalException("Empty {} is not allowed.");
@@ -95,21 +98,21 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const string& src,
   return new PStringSelect(values, next);
 }
 
-PStringDatumHandle ParameterizedStringParser::createLoop(const string& src,
+PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
 							 int32_t& offset)
 {
   ++offset;
-  string::size_type rightParenIndex = src.find("]", offset);
-  if(rightParenIndex == string::npos) {
+  std::string::size_type rightParenIndex = src.find("]", offset);
+  if(rightParenIndex == std::string::npos) {
     throw new FatalException("Missing ']' in the parameterized string.");
   }
-  string loopStr = src.substr(offset, rightParenIndex-offset);
+  std::string loopStr = src.substr(offset, rightParenIndex-offset);
   offset = rightParenIndex+1;
 
   int32_t step = 1;
-  string::size_type colonIndex = loopStr.find(":");
-  if(colonIndex != string::npos) {
-    string stepStr = loopStr.substr(colonIndex+1);
+  std::string::size_type colonIndex = loopStr.find(":");
+  if(colonIndex != std::string::npos) {
+    std::string stepStr = loopStr.substr(colonIndex+1);
     if(Util::isNumber(stepStr)) {
       step = Util::parseInt(stepStr);
     } else {
@@ -117,7 +120,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const string& src,
     }
     loopStr.erase(colonIndex);
   }
-  pair<string, string> range = Util::split(loopStr, "-");
+  std::pair<std::string, std::string> range = Util::split(loopStr, "-");
   if(range.first == "" || range.second == "") {
     throw new FatalException("Loop range missing.");
   }
@@ -143,3 +146,5 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const string& src,
   PStringDatumHandle next = diggPString(src, offset);
   return new PStringNumLoop(start, end, step, nd, next);
 }
+
+} // namespace aria2

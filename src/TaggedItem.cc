@@ -34,31 +34,34 @@
 /* copyright --> */
 #include "TaggedItem.h"
 #include <numeric>
+#include <algorithm>
+
+namespace aria2 {
 
 class Concat {
 private:
-  string _delim;
+  std::string _delim;
 public:
-  Concat(const string& delim = ""):_delim(delim) {}
+  Concat(const std::string& delim = ""):_delim(delim) {}
 
-  string operator()(const string& s1, const string& s2) const
+  std::string operator()(const std::string& s1, const std::string& s2) const
   {
     return s1+_delim+s2;
   }
 };
 
-string TaggedItem::toTagString() const
+std::string TaggedItem::toTagString() const
 {
   if(_tags.size()) {
-    return accumulate(_tags.begin()+1, _tags.end(), _tags.front(), Concat(","));
+    return std::accumulate(_tags.begin()+1, _tags.end(), _tags.front(), Concat(","));
   } else {
     return "";
   }
 }
 
-bool TaggedItem::hasTag(const string& tag) const
+bool TaggedItem::hasTag(const std::string& tag) const
 {
-  return find(_tags.begin(), _tags.end(), tag) != _tags.end();
+  return std::find(_tags.begin(), _tags.end(), tag) != _tags.end();
 }
 
 bool TaggedItem::operator<(const TaggedItem& item) const
@@ -70,3 +73,5 @@ bool TaggedItem::operator==(const TaggedItem& item) const
 {
   return _name == item._name;
 }
+
+} // namespace aria2

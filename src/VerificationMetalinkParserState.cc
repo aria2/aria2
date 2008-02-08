@@ -37,17 +37,19 @@
 #include "DlAbortEx.h"
 #include "Util.h"
 
+namespace aria2 {
+
 void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
-						   const string& name,
-						   const map<string, string>& attrs)
+						   const std::string& name,
+						   const std::map<std::string, std::string>& attrs)
 {
   if(name == "hash") {
     stm->setHashState();
-    map<string, string>::const_iterator itr = attrs.find("type");
+    std::map<std::string, std::string>::const_iterator itr = attrs.find("type");
     if(itr == attrs.end()) {
       return;
     } else {
-      string type = (*itr).second;
+      std::string type = (*itr).second;
       stm->newChecksumTransaction();
       stm->setTypeOfChecksum(type);
     }
@@ -56,16 +58,16 @@ void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* s
     try {
       int32_t length;
       {
-	map<string, string>::const_iterator itr = attrs.find("length");
+	std::map<std::string, std::string>::const_iterator itr = attrs.find("length");
 	if(itr == attrs.end()) {
 	  return;
 	} else {
 	  length = Util::parseInt((*itr).second);
 	}
       }
-      string type;
+      std::string type;
       {
-	map<string, string>::const_iterator itr = attrs.find("type");
+	std::map<std::string, std::string>::const_iterator itr = attrs.find("type");
 	if(itr == attrs.end()) {
 	  return;
 	} else {
@@ -85,8 +87,10 @@ void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* s
 }
 
 void VerificationMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
-						 const string& name,
-						 const string& characters)
+						 const std::string& name,
+						 const std::string& characters)
 {
   stm->setFileState();
 }
+
+} //  namespace aria2

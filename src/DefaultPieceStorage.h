@@ -37,16 +37,14 @@
 
 #include "PieceStorage.h"
 
+namespace aria2 {
+
 class DownloadContext;
-typedef SharedHandle<DownloadContext> DownloadContextHandle;
 class BitfieldMan;
 class Logger;
 class Option;
-typedef deque<PieceHandle> Pieces;
 class DiskWriterFactory;
-typedef SharedHandle<DiskWriterFactory> DiskWriterFactoryHandle;
 class FileEntry;
-typedef SharedHandle<FileEntry> FileEntryHandle;
 
 #define END_GAME_PIECE_NUM 20
 
@@ -67,50 +65,50 @@ public:
   const Time& getRegisteredTime() const { return registeredTime; }
 };
 
-typedef deque<HaveEntry> Haves;
+typedef std::deque<HaveEntry> Haves;
 
 class DefaultPieceStorage : public PieceStorage {
 private:
-  DownloadContextHandle downloadContext;
+  SharedHandle<DownloadContext> downloadContext;
   BitfieldMan* bitfieldMan;
-  DiskAdaptorHandle diskAdaptor;
-  DiskWriterFactoryHandle _diskWriterFactory;
-  Pieces usedPieces;
+  SharedHandle<DiskAdaptor> diskAdaptor;
+  SharedHandle<DiskWriterFactory> _diskWriterFactory;
+  std::deque<SharedHandle<Piece> > usedPieces;
   int32_t endGamePieceNum;
   Logger* logger;
   const Option* option;
   Haves haves;
 
-  int32_t getMissingPieceIndex(const PeerHandle& peer);
-  int32_t getMissingFastPieceIndex(const PeerHandle& peer);
-  PieceHandle checkOutPiece(int32_t index);
+  int32_t getMissingPieceIndex(const SharedHandle<Peer>& peer);
+  int32_t getMissingFastPieceIndex(const SharedHandle<Peer>& peer);
+  SharedHandle<Piece> checkOutPiece(int32_t index);
   int32_t deleteUsedPiecesByFillRate(int32_t fillRate, int32_t toDelete);
   void reduceUsedPieces(int32_t delMax);
-  void deleteUsedPiece(const PieceHandle& piece);
-  PieceHandle findUsedPiece(int32_t index) const;
+  void deleteUsedPiece(const SharedHandle<Piece>& piece);
+  SharedHandle<Piece> findUsedPiece(int32_t index) const;
 
   int32_t getInFlightPieceCompletedLength() const;
 
 public:
-  DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option);
+  DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext, const Option* option);
   virtual ~DefaultPieceStorage();
 
-  virtual bool hasMissingPiece(const PeerHandle& peer);
+  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
 
-  virtual PieceHandle getMissingPiece(const PeerHandle& peer);
+  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
 
-  virtual PieceHandle getMissingFastPiece(const PeerHandle& peer);
+  virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
 
-  virtual PieceHandle getMissingPiece();
-  virtual PieceHandle getMissingPiece(const FileEntryHandle& fileEntry);
+  virtual SharedHandle<Piece> getMissingPiece();
+  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<FileEntry>& fileEntry);
 
-  virtual PieceHandle getMissingPiece(int32_t index);
+  virtual SharedHandle<Piece> getMissingPiece(int32_t index);
 
-  virtual PieceHandle getPiece(int32_t index);
+  virtual SharedHandle<Piece> getPiece(int32_t index);
 
-  virtual void completePiece(const PieceHandle& piece);
+  virtual void completePiece(const SharedHandle<Piece>& piece);
 
-  virtual void cancelPiece(const PieceHandle& piece);
+  virtual void cancelPiece(const SharedHandle<Piece>& piece);
 
   virtual bool hasPiece(int32_t index);
 
@@ -126,7 +124,7 @@ public:
 
   virtual void initStorage();
 
-  virtual void setFileFilter(const Strings& filePaths);
+  virtual void setFileFilter(const std::deque<std::string>& filePaths);
 
   virtual void setFileFilter(IntSequence seq);
 
@@ -157,14 +155,14 @@ public:
 
   virtual bool isEndGame();
   
-  virtual DiskAdaptorHandle getDiskAdaptor();
+  virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
 
   virtual int32_t getPieceLength(int32_t index);
 
   virtual void advertisePiece(int32_t cuid, int32_t index);
 
-  virtual Integers getAdvertisedPieceIndexes(int32_t myCuid,
-					     const Time& lastCheckTime);
+  virtual std::deque<int32_t> getAdvertisedPieceIndexes(int32_t myCuid,
+							const Time& lastCheckTime);
 
   virtual void removeAdvertisedPiece(int32_t elapsed);
 
@@ -174,20 +172,22 @@ public:
 
   virtual void markPieceMissing(int32_t index);
 
-  virtual void addInFlightPiece(const Pieces& pieces);
+  virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces);
 
   virtual int32_t countInFlightPiece();
 
-  virtual Pieces getInFlightPieces();
+  virtual std::deque<SharedHandle<Piece> > getInFlightPieces();
 
   /**
    * This method is made private for test purpose only.
    */
-  void addUsedPiece(const PieceHandle& piece);
+  void addUsedPiece(const SharedHandle<Piece>& piece);
 
-  void setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory);
+  void setDiskWriterFactory(const SharedHandle<DiskWriterFactory>& diskWriterFactory);
 };
 
 typedef SharedHandle<DefaultPieceStorage> DefaultPieceStorageHandle;
+
+} // namespace aria2
 
 #endif // _D_DEFAULT_PIECE_STORAGE_H_

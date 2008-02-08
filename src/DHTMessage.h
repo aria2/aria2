@@ -36,33 +36,37 @@
 #define _D_DHT_MESSAGE_H_
 
 #include "common.h"
-#include "DHTMessageDecl.h"
-#include "DHTNodeDecl.h"
+#include "SharedHandle.h"
+#include <string>
+
+namespace aria2 {
+
+class DHTNode;
 
 class DHTMessage {
 protected:
-  DHTNodeHandle _localNode;
+  SharedHandle<DHTNode> _localNode;
 
-  DHTNodeHandle _remoteNode;
+  SharedHandle<DHTNode> _remoteNode;
 
-  string _transactionID;
+  std::string _transactionID;
 
   void generateTransactionID();
 public:
-  DHTMessage(const DHTNodeHandle& localNode,
-	     const DHTNodeHandle& remoteNode,
-	     const string& transactionID = "");
+  DHTMessage(const SharedHandle<DHTNode>& localNode,
+	     const SharedHandle<DHTNode>& remoteNode,
+	     const std::string& transactionID = "");
 
   virtual ~DHTMessage();
 
-  const string& getTransactionID() const
+  const std::string& getTransactionID() const
   {
     return _transactionID;
   }
 
-  DHTNodeHandle getLocalNode() const;
+  SharedHandle<DHTNode> getLocalNode() const;
 
-  DHTNodeHandle getRemoteNode() const;
+  SharedHandle<DHTNode> getRemoteNode() const;
 
   virtual void doReceivedAction() = 0;
 
@@ -72,9 +76,11 @@ public:
 
   virtual void validate() const = 0;
   
-  virtual string getMessageType() const = 0;
+  virtual std::string getMessageType() const = 0;
 
-  virtual string toString() const = 0;
+  virtual std::string toString() const = 0;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_MESSAGE_H_

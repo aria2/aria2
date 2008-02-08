@@ -2,7 +2,7 @@
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class OptionTest:public CppUnit::TestFixture {
 
@@ -30,7 +30,7 @@ void OptionTest::testPutAndGet() {
   op.put("key", "value");
   
   CPPUNIT_ASSERT(op.defined("key"));
-  CPPUNIT_ASSERT_EQUAL(string("value"), op.get("key"));
+  CPPUNIT_ASSERT_EQUAL(std::string("value"), op.get("key"));
 }
 
 void OptionTest::testPutAndGetAsInt() {
@@ -47,3 +47,5 @@ void OptionTest::testPutAndGetAsDouble() {
   
   CPPUNIT_ASSERT_EQUAL(10.0, op.getAsDouble("key"));
 }
+
+} // namespace aria2

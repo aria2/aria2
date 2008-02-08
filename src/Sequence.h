@@ -37,7 +37,7 @@
 
 #include <deque>
 
-using namespace std;
+namespace aria2 {
 
 template<typename T>
 class Sequence
@@ -62,7 +62,7 @@ public:
     }
   };
 
-  typedef deque<Value> Values;
+  typedef std::deque<Value> Values;
 private:
   Values _values;
 public:
@@ -86,14 +86,16 @@ public:
     return !_values.empty();
   }
 
-  deque<T> flush()
+  std::deque<T> flush()
   {
-    deque<T> r;
+    std::deque<T> r;
     while(hasNext()) {
       r.push_back(next());
     }
     return r;
   }
 };
+
+} // namespace aria2
 
 #endif // _D_SEQUENCE_H_

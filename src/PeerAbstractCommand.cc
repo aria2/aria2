@@ -37,16 +37,29 @@
 #include "DownloadEngine.h"
 #include "Option.h"
 #include "DlAbortEx.h"
-#include "DlRetryEx.h"
-#include "Util.h"
+#include "Socket.h"
+#include "Logger.h"
 #include "message.h"
 #include "prefs.h"
+
+namespace aria2 {
 
 PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
 					 const PeerHandle& peer,
 					 DownloadEngine* e,
 					 const SocketHandle& s)
   :Command(cuid), e(e), socket(s), peer(peer),
+   checkSocketIsReadable(false), checkSocketIsWritable(false),
+   uploadLimitCheck(false), uploadLimit(0), noCheck(false)
+{
+  setReadCheckSocket(socket);
+  timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
+}
+
+PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
+					 const PeerHandle& peer,
+					 DownloadEngine* e)
+  :Command(cuid), e(e), socket(new SocketCore()), peer(peer),
    checkSocketIsReadable(false), checkSocketIsWritable(false),
    uploadLimitCheck(false), uploadLimit(0), noCheck(false)
 {
@@ -75,7 +88,7 @@ bool PeerAbstractCommand::execute() {
       checkPoint.reset();
     }
     if(checkPoint.elapsed(timeout)) {
-      throw new DlRetryEx(EX_TIME_OUT);
+      throw new DlAbortEx(EX_TIME_OUT);
     }
     return executeInternal();
   } catch(RecoverableException* err) {
@@ -160,3 +173,5 @@ void PeerAbstractCommand::setUploadLimitCheck(bool check) {
 void PeerAbstractCommand::setNoCheck(bool check) {
   this->noCheck = check;
 }
+
+} // namespace aria2

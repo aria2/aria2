@@ -34,8 +34,11 @@
 /* copyright --> */
 #include "DHTUtil.h"
 #include "MessageDigestHelper.h"
+#include <cassert>
 #include <fstream>
 #include <iomanip>
+
+namespace aria2 {
 
 void DHTUtil::generateRandomKey(unsigned char* key)
 {
@@ -46,7 +49,7 @@ void DHTUtil::generateRandomKey(unsigned char* key)
 
 void DHTUtil::generateRandomData(char* data, size_t length)
 {
-  ifstream i("/dev/urandom");
+  std::ifstream i("/dev/urandom");
   i.read(data, length);
 }
 
@@ -57,3 +60,5 @@ void DHTUtil::flipBit(unsigned char* data, size_t length, size_t bitIndex)
   unsigned char mask = 128 >> (bitIndex%8);
   data[byteIndex] ^= mask;
 }
+
+} // namespace aria2

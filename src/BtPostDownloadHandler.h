@@ -37,6 +37,8 @@
 
 #include "PostDownloadHandler.h"
 
+namespace aria2 {
+
 class BtPostDownloadHandler:public PostDownloadHandler
 {
 public:
@@ -44,8 +46,12 @@ public:
 
   virtual ~BtPostDownloadHandler();
 
-  virtual RequestGroups getNextRequestGroups(RequestGroup* requestGroup);
+  virtual std::deque<SharedHandle<RequestGroup> >
+  getNextRequestGroups(RequestGroup* requestGroup);
 };
 
 typedef SharedHandle<BtPostDownloadHandler> BtPostDownloadHandlerHandle;
+
+} // namespace aria2
+
 #endif // _D_BT_POST_DOWNLOAD_HANDLER_H_

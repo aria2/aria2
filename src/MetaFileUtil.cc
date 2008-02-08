@@ -33,13 +33,17 @@
  */
 /* copyright --> */
 #include "MetaFileUtil.h"
+#include "Data.h"
+#include "Dictionary.h"
+#include "List.h"
 #include "File.h"
 #include "DlAbortEx.h"
 #include "message.h"
-#include "a2io.h"
-#include <string.h>
+#include <cstring>
 
-MetaEntry* MetaFileUtil::parseMetaFile(const string& file) {
+namespace aria2 {
+
+MetaEntry* MetaFileUtil::parseMetaFile(const std::string& file) {
   File f(file);
   int32_t len = f.size();
   char* buf = new char[len];
@@ -116,7 +120,7 @@ Dictionary* MetaFileUtil::parseDictionaryTree(const char** pp, const char* end) 
 	(*pp)++;
 	break;
       }
-      string name = decodeWordAsString(pp, end);
+      std::string name = decodeWordAsString(pp, end);
       MetaEntry* e = bdecodingR(pp, end);
       dic->put(name, e);
     }
@@ -194,9 +198,11 @@ Data* MetaFileUtil::decodeWord(const char** pp, const char* end) {
   return data;
 }
 
-string MetaFileUtil::decodeWordAsString(const char** pp, const char* end) {
+std::string MetaFileUtil::decodeWordAsString(const char** pp, const char* end) {
   Data* data = decodeWord(pp, end);
-  string str = data->toString();
+  std::string str = data->toString();
   delete data;
   return str;
 }
+
+} // namespace aria2

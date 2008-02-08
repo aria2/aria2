@@ -58,7 +58,7 @@ void MultiDiskWriterTest::testWriteData() {
   dw.setFileEntries(createEntries());
 
   dw.openFile(".");
-  string msg = "12345";
+  std::string msg = "12345";
   dw.writeData(msg.c_str(), msg.size(), 0);
   dw.closeFile();
 
@@ -68,31 +68,31 @@ void MultiDiskWriterTest::testWriteData() {
   CPPUNIT_ASSERT_EQUAL(msg, string(buf));
 
   dw.openFile(".");
-  string msg2 = "67890ABCDEF";
+  std::string msg2 = "67890ABCDEF";
   dw.writeData(msg2.c_str(), msg2.size(), 5);
   dw.closeFile();
 
   readFile("file1.txt", buf, 15);
   buf[15] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDE"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDE"), string(buf));
   readFile("file2.txt", buf, 1);
   buf[1] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("F"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("F"), string(buf));
 
   dw.openFile(".");
-  string msg3 = "12345123456712";
+  std::string msg3 = "12345123456712";
   dw.writeData(msg3.c_str(), msg3.size(), 10);
   dw.closeFile();
 
   readFile("file1.txt", buf, 15);
   buf[15] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("123456789012345"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("123456789012345"), string(buf));
   readFile("file2.txt", buf, 7);
   buf[7] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567"), string(buf));
   readFile("file3.txt", buf, 2);
   buf[2] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("12"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("12"), string(buf));
 }
 
 void MultiDiskWriterTest::testReadData() {
@@ -110,16 +110,16 @@ void MultiDiskWriterTest::testReadData() {
   char buf[128];
   dw.readData(buf, 15, 0);
   buf[15] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDE"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDE"), string(buf));
   dw.readData(buf, 10, 6);
   buf[10] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("7890ABCDEF"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("7890ABCDEF"), string(buf));
   dw.readData(buf, 4, 20);
   buf[4] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("KLMN"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("KLMN"), string(buf));
   dw.readData(buf, 25, 0);
   buf[25] = '\0';
-  CPPUNIT_ASSERT_EQUAL(string("1234567890ABCDEFGHIJKLMNO"), string(buf));
+  CPPUNIT_ASSERT_EQUAL(std::string("1234567890ABCDEFGHIJKLMNO"), string(buf));
 }
 
 void MultiDiskWriterTest::testMessageDigest() {
@@ -134,11 +134,11 @@ void MultiDiskWriterTest::testMessageDigest() {
   dw.setFileEntries(entries);
 
   dw.openFile(".");
-  string sha1sum = dw.messageDigest(0, 25, DIGEST_ALGO_SHA1);
-  CPPUNIT_ASSERT_EQUAL(string("76495faf71ca63df66dce99547d2c58da7266d9e"), sha1sum);
+  std::string sha1sum = dw.messageDigest(0, 25, DIGEST_ALGO_SHA1);
+  CPPUNIT_ASSERT_EQUAL(std::string("76495faf71ca63df66dce99547d2c58da7266d9e"), sha1sum);
   sha1sum = dw.messageDigest(15, 7, DIGEST_ALGO_SHA1);
-  CPPUNIT_ASSERT_EQUAL(string("737660d816fb23c2d5bc74f62d9b01b852b2aaca"), sha1sum);
+  CPPUNIT_ASSERT_EQUAL(std::string("737660d816fb23c2d5bc74f62d9b01b852b2aaca"), sha1sum);
   sha1sum = dw.messageDigest(10, 14, DIGEST_ALGO_SHA1);
-  CPPUNIT_ASSERT_EQUAL(string("6238bf61dd8df8f77156b2378e9e39cd3939680c"), sha1sum);
+  CPPUNIT_ASSERT_EQUAL(std::string("6238bf61dd8df8f77156b2378e9e39cd3939680c"), sha1sum);
   dw.closeFile();
 }

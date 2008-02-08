@@ -34,8 +34,12 @@
 /* copyright --> */
 #include "CookieBoxFactory.h"
 #include "CookieParser.h"
+#include "CookieBox.h"
 #include "Util.h"
 #include "RecoverableException.h"
+#include <istream>
+
+namespace aria2 {
 
 CookieBoxHandle CookieBoxFactory::createNewInstance()
 {
@@ -44,9 +48,9 @@ CookieBoxHandle CookieBoxFactory::createNewInstance()
   return box;
 }
 
-void CookieBoxFactory::loadDefaultCookie(istream& s)
+void CookieBoxFactory::loadDefaultCookie(std::istream& s)
 {
-  string line;
+  std::string line;
   while(getline(s, line)) {
     if(Util::startsWith(line, "#")) {
       continue;
@@ -64,9 +68,9 @@ void CookieBoxFactory::loadDefaultCookie(istream& s)
   }
 }
 
-Cookie CookieBoxFactory::parseNsCookie(const string& nsCookieStr) const
+Cookie CookieBoxFactory::parseNsCookie(const std::string& nsCookieStr) const
 {
-  Strings vs;
+  std::deque<std::string> vs;
   Util::slice(vs, nsCookieStr, '\t', true);
   Cookie c;
   if(vs.size() < 6 ) {
@@ -87,3 +91,5 @@ Cookie CookieBoxFactory::parseNsCookie(const string& nsCookieStr) const
   }
   return c;
 }
+
+} // namespace aria2

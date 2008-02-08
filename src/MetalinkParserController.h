@@ -36,37 +36,38 @@
 #define _D_METALINK_PARSER_CONTROLLER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+#include <string>
+#include <utility>
+#include <deque>
+
+namespace aria2 {
 
 class Metalinker;
-typedef SharedHandle<Metalinker> MetalinkerHandle;
 class MetalinkEntry;
-typedef SharedHandle<MetalinkEntry> MetalinkEntryHandle;
 class MetalinkResource;
-typedef SharedHandle<MetalinkResource> MetalinkResourceHandle;
 
 #ifdef ENABLE_MESSAGE_DIGEST
 class Checksum;
-typedef SharedHandle<Checksum> ChecksumHandle;
 class ChunkChecksum;
-typedef SharedHandle<ChunkChecksum> ChunkChecksumHandle;
 #endif // ENABLE_MESSAGE_DIGEST
 
 class MetalinkParserController {
 private:
-  MetalinkerHandle _metalinker;
+  SharedHandle<Metalinker> _metalinker;
 
-  MetalinkEntryHandle _tEntry;
+  SharedHandle<MetalinkEntry> _tEntry;
 
-  MetalinkResourceHandle _tResource;
+  SharedHandle<MetalinkResource> _tResource;
 
 #ifdef ENABLE_MESSAGE_DIGEST
-  ChecksumHandle _tChecksum;
+  SharedHandle<Checksum> _tChecksum;
 
-  ChunkChecksumHandle _tChunkChecksum;
+  SharedHandle<ChunkChecksum> _tChunkChecksum;
 
-  deque<pair<int32_t, string> > _tempChunkChecksums;
+  std::deque<std::pair<int32_t, std::string> > _tempChunkChecksums;
   
-  pair<int32_t, string> _tempHashPair;
+  std::pair<int32_t, std::string> _tempHashPair;
 #endif // ENABLE_MESSAGE_DIGEST
 
 public:
@@ -74,19 +75,19 @@ public:
 
   ~MetalinkParserController();
 
-  MetalinkerHandle getResult() const;
+  SharedHandle<Metalinker> getResult() const;
 
   void newEntryTransaction();
 
-  void setFileNameOfEntry(const string& filename);
+  void setFileNameOfEntry(const std::string& filename);
 
   void setFileLengthOfEntry(int64_t length);
 
-  void setVersionOfEntry(const string& version);
+  void setVersionOfEntry(const std::string& version);
 
-  void setLanguageOfEntry(const string& language);
+  void setLanguageOfEntry(const std::string& language);
 
-  void setOSOfEntry(const string& os);
+  void setOSOfEntry(const std::string& os);
 
   void setMaxConnectionsOfEntry(int32_t maxConnections);
 
@@ -96,11 +97,11 @@ public:
 
   void newResourceTransaction();
 
-  void setURLOfResource(const string& url);
+  void setURLOfResource(const std::string& url);
 
-  void setTypeOfResource(const string& type);
+  void setTypeOfResource(const std::string& type);
 
-  void setLocationOfResource(const string& location);
+  void setLocationOfResource(const std::string& location);
 
   void setPreferenceOfResource(int32_t preference);
 
@@ -112,9 +113,9 @@ public:
 
   void newChecksumTransaction();
 
-  void setTypeOfChecksum(const string& type);
+  void setTypeOfChecksum(const std::string& type);
 
-  void setHashOfChecksum(const string& md);
+  void setHashOfChecksum(const std::string& md);
 
   void commitChecksumTransaction();
 
@@ -122,15 +123,15 @@ public:
   
   void newChunkChecksumTransaction();
 
-  void setTypeOfChunkChecksum(const string& type);
+  void setTypeOfChunkChecksum(const std::string& type);
 
   void setLengthOfChunkChecksum(int32_t length);
 
-  void addHashOfChunkChecksum(int32_t order, const string& md);
+  void addHashOfChunkChecksum(int32_t order, const std::string& md);
 
   void createNewHashOfChunkChecksum(int32_t order);
 
-  void setMessageDigestOfChunkChecksum(const string& md);
+  void setMessageDigestOfChunkChecksum(const std::string& md);
 
   void addHashOfChunkChecksum();
 
@@ -138,5 +139,7 @@ public:
 
   void cancelChunkChecksumTransaction();
 };
+
+} // namespace aria2
 
 #endif // _D_METALINK_PARSER_CONTROLLER_H_

@@ -1,7 +1,8 @@
 #include "BtKeepAliveMessage.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace std;
+namespace aria2 {
 
 class BtKeepAliveMessageTest:public CppUnit::TestFixture {
 
@@ -32,5 +33,7 @@ void BtKeepAliveMessageTest::testGetMessage() {
 
 void BtKeepAliveMessageTest::testToString() {
   BtKeepAliveMessage msg;
-  CPPUNIT_ASSERT_EQUAL(string("keep alive"), msg.toString());
+  CPPUNIT_ASSERT_EQUAL(std::string("keep alive"), msg.toString());
 }
+
+} // namespace aria2

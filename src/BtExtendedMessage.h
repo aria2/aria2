@@ -36,28 +36,30 @@
 #define _D_BT_EXTENDED_MESSAGE_H_
 #include "SimpleBtMessage.h"
 
+namespace aria2 {
+
+class ExtensionMessage;
+
 class BtExtendedMessage;
 typedef SharedHandle<BtExtendedMessage> BtExtendedMessageHandle;
-class ExtensionMessage;
-typedef SharedHandle<ExtensionMessage> ExtensionMessageHandle;
 
 class BtExtendedMessage:public SimpleBtMessage
 {
 private:
-  ExtensionMessageHandle _extensionMessage;
+  SharedHandle<ExtensionMessage> _extensionMessage;
 
   unsigned char* _msg;
 
   size_t _msgLength;
 public:
-  BtExtendedMessage(const ExtensionMessageHandle& extensionMessage = 0);
+  BtExtendedMessage(const SharedHandle<ExtensionMessage>& extensionMessage = 0);
 
   virtual ~BtExtendedMessage();
 
   static const uint8_t ID = 20;
 
-  static BtExtendedMessageHandle create(const BtContextHandle& btContext,
-					const PeerHandle& peer,
+  static BtExtendedMessageHandle create(const SharedHandle<BtContext>& btContext,
+					const SharedHandle<Peer>& peer,
 					const char* data,
 					size_t dataLength);
 
@@ -71,9 +73,11 @@ public:
 
   virtual bool sendPredicate() const;
 
-  virtual string toString() const;
+  virtual std::string toString() const;
 
-  ExtensionMessageHandle getExtensionMessage() const;
+  SharedHandle<ExtensionMessage> getExtensionMessage() const;
 };
+
+} // namespace aria2
 
 #endif // _D_BT_EXTENDED_MESSAGE_H_

@@ -35,15 +35,18 @@
 #ifndef _D_P_STRING_BUILD_VISITOR_H_
 #define _D_P_STRING_BUILD_VISITOR_H_
 
+#include "PStringVisitor.h"
 #include "PStringSegment.h"
+
+namespace aria2 {
 
 class PStringBuildVisitor : public PStringVisitor, public PStringSegmentVisitor
 {
 private:
 
-  Strings _buildQueue;
+  std::deque<std::string> _buildQueue;
 
-  Strings _uris;
+  std::deque<std::string> _uris;
 
 public:
   
@@ -51,7 +54,7 @@ public:
 
   virtual void goodbye(PStringSegment* segment);
 
-  const Strings& getURIs() const
+  const std::deque<std::string>& getURIs() const
   {
     return _uris;
   }
@@ -64,5 +67,7 @@ public:
 };
 
 typedef SharedHandle<PStringBuildVisitor> PStringBuildVisitorHandle;
+
+} // namespace aria2
 
 #endif // _D_P_STRING_BUILD_VISITOR_H_

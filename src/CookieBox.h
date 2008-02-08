@@ -36,7 +36,10 @@
 #define _D_COOKIE_BOX_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "Cookie.h"
+
+namespace aria2 {
 
 class CookieBox {
 private:
@@ -46,12 +49,14 @@ public:
   ~CookieBox();
   void clear();
   void add(const Cookie& cookie);
-  void add(const string& cookieStr,
-	   const string& defaultDomain, const string& defaultPath);
+  void add(const std::string& cookieStr,
+	   const std::string& defaultDomain, const std::string& defaultPath);
   void add(const Cookies& cookies);
-  Cookies criteriaFind(const string& host, const string& dir, time_t date, bool secure) const;
+  Cookies criteriaFind(const std::string& host, const std::string& dir, time_t date, bool secure) const;
 };
 
 typedef SharedHandle<CookieBox> CookieBoxHandle;
+
+} // namespace aria2
 
 #endif // _D_COOKIE_BOX_H_

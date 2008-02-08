@@ -36,10 +36,15 @@
 #define _D_BT_CHOKED_EVENT_H_
 
 #include "BtEvent.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class BtChokedEvent : public BtEvent {
 };
 
 typedef SharedHandle<BtChokedEvent> BtChokedEventHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_CHOKED_EVENT_H_

@@ -37,9 +37,11 @@
 #include "Util.h"
 #include <cstring>
 
-DHTUnknownMessage::DHTUnknownMessage(const DHTNodeHandle& localNode,
+namespace aria2 {
+
+DHTUnknownMessage::DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
 				     const char* data, size_t length,
-				     const string& ipaddr, uint16_t port):
+				     const std::string& ipaddr, uint16_t port):
   DHTMessage(localNode, 0),
   _length(length),
   _ipaddr(ipaddr),
@@ -69,19 +71,21 @@ bool DHTUnknownMessage::isReply() const
 
 void DHTUnknownMessage::validate() const {}
   
-string DHTUnknownMessage::getMessageType() const
+std::string DHTUnknownMessage::getMessageType() const
 {
   return "unknown";
 }
 
-string DHTUnknownMessage::toString() const
+std::string DHTUnknownMessage::toString() const
 {
   size_t sampleLength = 8;
   if(_length < sampleLength) {
     sampleLength = _length;
   }
-  string sample = string(&_data[0], &_data[sampleLength]);
+  std::string sample(&_data[0], &_data[sampleLength]);
 
   return "dht unknown Remote:"+_ipaddr+":"+Util::uitos(_port)+" length="+
     Util::uitos(_length)+", first 8 bytes(hex)="+Util::toHex(sample);
 }
+
+} // namespace aria2

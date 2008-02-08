@@ -37,11 +37,13 @@
 
 #include "DHTQueryMessage.h"
 
+namespace aria2 {
+
 class DHTPingMessage:public DHTQueryMessage {
 public:
-  DHTPingMessage(const DHTNodeHandle& localNode,
-		 const DHTNodeHandle& remoteNode,
-		 const string& transactionID = "");
+  DHTPingMessage(const SharedHandle<DHTNode>& localNode,
+		 const SharedHandle<DHTNode>& remoteNode,
+		 const std::string& transactionID = "");
 
   virtual ~DHTPingMessage();
 
@@ -49,9 +51,11 @@ public:
 
   virtual Dictionary* getArgument();
 
-  virtual string getMessageType() const;
+  virtual std::string getMessageType() const;
 
   virtual void validate() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_PING_MESSAGE_H_

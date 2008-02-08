@@ -36,9 +36,10 @@
 #define _D_P_STRING_NUM_LOOP_H_
 
 #include "PStringDatum.h"
-#include "Util.h"
 #include "PStringSegment.h"
 #include "NumberDecorator.h"
+
+namespace aria2 {
 
 class PStringNumLoop : public PStringDatum
 {
@@ -66,7 +67,7 @@ public:
 
   virtual ~PStringNumLoop() {}
 
-  virtual void accept(const PStringVisitorHandle& visitor)
+  virtual void accept(PStringVisitor* visitor)
   {
     for(int32_t i = _startValue; i <= _endValue; i += _step) {
       PStringSegment(_numberDecorator->decorate(i), _next).accept(visitor);
@@ -96,5 +97,7 @@ public:
 };
 
 typedef SharedHandle<PStringNumLoop> PStringNumLoopHandle;
+
+} // namespace aria2
 
 #endif // _D_P_STRING_NUM_LOOP_H_

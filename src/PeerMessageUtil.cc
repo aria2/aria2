@@ -34,8 +34,11 @@
 /* copyright --> */
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
-#include "Util.h"
 #include "a2netcompat.h"
+#include <cassert>
+#include <cstring>
+
+namespace aria2 {
 
 int8_t PeerMessageUtil::getId(const unsigned char* msg) {
   return msg[0];
@@ -90,7 +93,7 @@ void PeerMessageUtil::checkRange(int32_t begin, int32_t length, int32_t pieceLen
 void PeerMessageUtil::checkBitfield(const unsigned char* bitfield,
 				    int32_t bitfieldLength,
 				    int32_t pieces) {
-  if(!(bitfieldLength == BITFIELD_LEN_FROM_PIECES(pieces))) {
+  if(!(bitfieldLength == (pieces+7)/8)) {
     throw new DlAbortEx("Invalid bitfield length: %d",
 			bitfieldLength);
   }
@@ -122,7 +125,7 @@ void PeerMessageUtil::createPeerMessageString(unsigned char* msg,
   msg[4] = messageId;
 }
 
-bool PeerMessageUtil::createcompact(char* compact, const string& addr, uint16_t port)
+bool PeerMessageUtil::createcompact(char* compact, const std::string& addr, uint16_t port)
 {
   struct in_addr in;
   if(inet_aton(addr.c_str(), &in) == 0) {
@@ -135,11 +138,13 @@ bool PeerMessageUtil::createcompact(char* compact, const string& addr, uint16_t 
   return true;
 }
 
-pair<string, uint16_t> PeerMessageUtil::unpackcompact(const char* compact)
+std::pair<std::string, uint16_t> PeerMessageUtil::unpackcompact(const char* compact)
 {
   struct in_addr in;
   in.s_addr = *(uint32_t*)(compact);
-  string ipaddr = inet_ntoa(in);
+  std::string ipaddr = inet_ntoa(in);
   uint16_t port = ntohs(*(uint16_t*)(compact+sizeof(uint32_t)));
-  return pair<string, uint16_t>(ipaddr, port);
+  return std::pair<std::string, uint16_t>(ipaddr, port);
 }
+
+} // namespace aria2

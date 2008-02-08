@@ -35,16 +35,18 @@
 #ifndef _D_DHT_ABSTRACT_TASK_H_
 #define _D_DHT_ABSTRACT_TASK_H_
 
-#include "common.h"
-#include "DHTAbstractTaskDecl.h"
-#include "DHTNodeDecl.h"
-#include "DHTRoutingTableDecl.h"
-#include "DHTMessageDispatcherDecl.h"
-#include "DHTMessageFactoryDecl.h"
-#include "DHTConstants.h"
 #include "DHTTask.h"
-#include "DHTMessageDecl.h"
-#include "DHTTaskQueueDecl.h"
+#include "SharedHandle.h"
+#include "DHTConstants.h"
+
+namespace aria2 {
+
+class DHTNode;
+class DHTRoutingTable;
+class DHTMessageDispatcher;
+class DHTMessageFactory;
+class DHTMessage;
+class DHTTaskQueue;
 
 class Logger;
 
@@ -54,7 +56,7 @@ protected:
   
   const Logger* _logger;
   
-  DHTNodeHandle _localNode;
+  SharedHandle<DHTNode> _localNode;
 
   WeakHandle<DHTRoutingTable> _routingTable;
 
@@ -76,7 +78,9 @@ public:
 
   void setTaskQueue(const WeakHandle<DHTTaskQueue> taskQueue);
 
-  void setLocalNode(const DHTNodeHandle& localNode);
+  void setLocalNode(const SharedHandle<DHTNode>& localNode);
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_ABSTRACT_TASK_H_

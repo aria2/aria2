@@ -2,7 +2,10 @@
 #include "RequestGroup.h"
 #include "Option.h"
 #include "SingleFileDownloadContext.h"
+#include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class MetalinkPostDownloadHandlerTest:public CppUnit::TestFixture {
 
@@ -27,8 +30,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkPostDownloadHandlerTest );
 void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 {
   Option op;
-  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test.metalink");
-  RequestGroup rg(&op, Strings());
+  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test.metalink");
+  RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
   MetalinkPostDownloadHandler handler;
@@ -42,9 +45,9 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 {
   Option op;
-  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test");
+  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test");
   dctx->setContentType("application/metalink+xml");
-  RequestGroup rg(&op, Strings());
+  RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
   MetalinkPostDownloadHandler handler;
@@ -58,8 +61,8 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   Option op;
-  SingleFileDownloadContextHandle dctx = new SingleFileDownloadContext(0, 0, "test.xml");
-  RequestGroup rg(&op, Strings());
+  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test.xml");
+  RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();
 
@@ -71,3 +74,5 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
   CPPUNIT_ASSERT_EQUAL((size_t)5, groups.size());
 #endif // ENABLE_BITTORRENT
 }
+
+} // namespace aria2

@@ -37,17 +37,23 @@
 
 #include "DownloadCommand.h"
 
+namespace aria2 {
+
+class SocketCore;
+
 class FtpDownloadCommand : public DownloadCommand {
 private:
-  SocketHandle ctrlSocket;
+  SharedHandle<SocketCore> ctrlSocket;
 public:
   FtpDownloadCommand(int cuid,
-		     const RequestHandle req,
+		     const SharedHandle<Request> req,
 		     RequestGroup* requestGroup,
 		     DownloadEngine* e,
-		     const SocketHandle& dataSocket,
-		     const SocketHandle& ctrlSocket);
+		     const SharedHandle<SocketCore>& dataSocket,
+		     const SharedHandle<SocketCore>& ctrlSocket);
   virtual ~FtpDownloadCommand();
 };
+
+} // namespace aria2
 
 #endif // _D_FTP_DOWNLOAD_COMMAND_H_

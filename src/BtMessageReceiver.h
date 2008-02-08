@@ -36,20 +36,26 @@
 #define _D_BT_MESSAGE_RECEIVER_H_
 
 #include "common.h"
-#include "BtMessage.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
+
+class BtMessage;
 
 class BtMessageReceiver {
 public:
   virtual ~BtMessageReceiver() {}
 
-  virtual BtMessageHandle receiveHandshake(bool quickReply = false) = 0;
+  virtual SharedHandle<BtMessage> receiveHandshake(bool quickReply = false) = 0;
 
-  virtual BtMessageHandle receiveAndSendHandshake() = 0;
+  virtual SharedHandle<BtMessage> receiveAndSendHandshake() = 0;
 
-  virtual BtMessageHandle receiveMessage() = 0;
+  virtual SharedHandle<BtMessage> receiveMessage() = 0;
 };
 
 typedef SharedHandle<BtMessageReceiver> BtMessageReceiverHandle;
 typedef WeakHandle<BtMessageReceiver> BtMessageReceiverWeakHandle;
+
+} // namespace aria2
 
 #endif // _D_BT_MESSAGE_RECEIVER_H_

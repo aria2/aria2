@@ -36,6 +36,9 @@
 #define _D_RANDOMIZER_H_
 
 #include "common.h"
+#include "SharedHandle.h"
+
+namespace aria2 {
 
 class Randomizer {
 public:
@@ -52,4 +55,7 @@ public:
 };
 
 typedef SharedHandle<Randomizer> RandomizerHandle;
+
+} // namespace aria2
+
 #endif // _D_RANDOMIZER_H_

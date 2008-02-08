@@ -36,11 +36,15 @@
 #define _D_DHT_BUCKET_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include "DHTConstants.h"
-#include "DHTNodeDecl.h"
-#include "DHTBucketDecl.h"
 #include "TimeA2.h"
+#include <string>
+#include <deque>
 
+namespace aria2 {
+
+class DHTNode;
 class Logger;
 
 class DHTBucket {
@@ -52,22 +56,22 @@ private:
 
   unsigned char _max[DHT_ID_LENGTH];
 
-  DHTNodeHandle _localNode;
+  SharedHandle<DHTNode> _localNode;
 
   // sorted in ascending order
-  DHTNodes _nodes;
+  std::deque<SharedHandle<DHTNode> > _nodes;
 
-  DHTNodes _cachedNodes;
+  //std::deque<SharedHandle<DHTNode> > _cachedNodes;
 
   Time _lastUpdated;
 
   const Logger* _logger;
 public:
-  DHTBucket(const DHTNodeHandle& localNode);
+  DHTBucket(const SharedHandle<DHTNode>& localNode);
 
   DHTBucket(size_t prefixLength,
 	    const unsigned char* max, const unsigned char* min,
-	    const DHTNodeHandle& localNode);
+	    const SharedHandle<DHTNode>& localNode);
 
   ~DHTBucket();
 
@@ -77,13 +81,13 @@ public:
 
   void getRandomNodeID(unsigned char* nodeID) const;
 
-  DHTBucketHandle split();
+  SharedHandle<DHTBucket> split();
 
-  bool isInRange(const DHTNodeHandle& node) const;
+  bool isInRange(const SharedHandle<DHTNode>& node) const;
 
   bool isInRange(const unsigned char* nodeID) const;
 
-  bool addNode(const DHTNodeHandle& node);
+  bool addNode(const SharedHandle<DHTNode>& node);
 
   bool splitAllowed() const;
   
@@ -104,19 +108,19 @@ public:
 
   size_t countNode() const;
 
-  const DHTNodes& getNodes() const;
+  const std::deque<SharedHandle<DHTNode> >& getNodes() const;
 
-  DHTNodes getGoodNodes() const;
+  std::deque<SharedHandle<DHTNode> > getGoodNodes() const;
 
-  void dropNode(const DHTNodeHandle& node);
+  void dropNode(const SharedHandle<DHTNode>& node);
 
-  void moveToHead(const DHTNodeHandle& node);
+  void moveToHead(const SharedHandle<DHTNode>& node);
 
-  void moveToTail(const DHTNodeHandle& node);
+  void moveToTail(const SharedHandle<DHTNode>& node);
 
-  bool contains(const DHTNodeHandle& node) const;
+  bool contains(const SharedHandle<DHTNode>& node) const;
 
-  DHTNodeHandle getNode(const unsigned char* nodeID, const string& ipaddr, uint16_t port) const;
+  SharedHandle<DHTNode> getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const;
 
   bool operator==(const DHTBucket& bucket) const;
 
@@ -126,7 +130,9 @@ public:
 
   bool containsQuestionableNode() const;
 
-  DHTNodeHandle getLRUQuestionableNode() const;
+  SharedHandle<DHTNode> getLRUQuestionableNode() const;
 };
+
+} // namespace aria2
 
 #endif // _D_DHT_BUCKET_H_

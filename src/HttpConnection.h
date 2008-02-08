@@ -35,55 +35,52 @@
 #ifndef _D_HTTP_CONNECTION_H_
 #define _D_HTTP_CONNECTION_H_
 
-#include "Segment.h"
-#include "Socket.h"
-#include "Request.h"
-#include "Option.h"
-#include "Logger.h"
 #include "common.h"
-#include "Logger.h"
-#include "HttpResponse.h"
-#include "HttpHeaderProcessor.h"
+#include "SharedHandle.h"
+#include <string>
+#include <deque>
+
+namespace aria2 {
+
+class HttpRequest;
+class HttpResponse;
+class HttpHeaderProcessor;
+class Option;
+class Logger;
+class Segment;
+class SocketCore;
 
 class HttpRequestEntry {
 private:
-  HttpRequestHandle _httpRequest;
-  HttpHeaderProcessorHandle _proc;
+  SharedHandle<HttpRequest> _httpRequest;
+  SharedHandle<HttpHeaderProcessor> _proc;
 public:
-  HttpRequestEntry(const HttpRequestHandle& httpRequest,
-		   const HttpHeaderProcessorHandle& proc):
-    _httpRequest(httpRequest),
-    _proc(proc) {}
+  HttpRequestEntry(const SharedHandle<HttpRequest>& httpRequest,
+		   const SharedHandle<HttpHeaderProcessor>& proc);
 
-  ~HttpRequestEntry() {}
+  ~HttpRequestEntry();
 
-  HttpRequestHandle getHttpRequest() const
-  {
-    return _httpRequest;
-  }
+  SharedHandle<HttpRequest> getHttpRequest() const;
 
-  HttpHeaderProcessorHandle getHttpHeaderProcessor() const
-  {
-    return _proc;
-  }
+  SharedHandle<HttpHeaderProcessor> getHttpHeaderProcessor() const;
 };
 
 typedef SharedHandle<HttpRequestEntry> HttpRequestEntryHandle;
-typedef deque<HttpRequestEntryHandle> HttpRequestEntries;
+typedef std::deque<HttpRequestEntryHandle> HttpRequestEntries;
 
 class HttpConnection {
 private:
   int32_t cuid;
-  SocketHandle socket;
+  SharedHandle<SocketCore> socket;
   const Option* option;
   const Logger* logger;
 
   HttpRequestEntries outstandingHttpRequests;
 
-  string eraseConfidentialInfo(const string& request);
+  std::string eraseConfidentialInfo(const std::string& request);
 public:
   HttpConnection(int32_t cuid,
-		 const SocketHandle& socket,
+		 const SharedHandle<SocketCore>& socket,
 		 const Option* op);
 
   /**
@@ -93,12 +90,12 @@ public:
    * HTTP proxy(GET method).
    * @param segment indicates starting postion of the file for downloading
    */
-  void sendRequest(const HttpRequestHandle& httpRequest);
+  void sendRequest(const SharedHandle<HttpRequest>& httpRequest);
 
   /**
    * Sends Http proxy request using CONNECT method.
    */
-  void sendProxyRequest(const HttpRequestHandle& httpRequest);
+  void sendProxyRequest(const SharedHandle<HttpRequest>& httpRequest);
 
   /**
    * Receives HTTP response from the server and returns HttpResponseHandle
@@ -111,9 +108,9 @@ public:
    * 
    * @return HttpResponse or 0 if whole response header is not received
    */
-  HttpResponseHandle receiveResponse();
+  SharedHandle<HttpResponse> receiveResponse();
 
-  HttpRequestHandle getFirstHttpRequest() const
+  SharedHandle<HttpRequest> getFirstHttpRequest() const
   {
     if(outstandingHttpRequests.size() > 0) {
       return outstandingHttpRequests.front()->getHttpRequest();
@@ -122,9 +119,11 @@ public:
     }
   }
 
-  bool isIssued(const SegmentHandle& segment) const;
+  bool isIssued(const SharedHandle<Segment>& segment) const;
 };
 
 typedef SharedHandle<HttpConnection> HttpConnectionHandle;
+
+} // namespace aria2
 
 #endif // _D_HTTP_CONNECTION_H_

@@ -37,6 +37,8 @@
 
 #include "FileAllocationIterator.h"
 
+namespace aria2 {
+
 class BinaryStream;
 
 class SingleFileAllocationIterator:public FileAllocationIterator
@@ -75,5 +77,7 @@ public:
 };
 
 typedef SharedHandle<SingleFileAllocationIterator> SingleFileAllocationIteratorHandle;
+
+} // namespace aria2
 
 #endif // _D_SINGLE_FILE_ALLOCATION_ITERATOR_H_

@@ -42,17 +42,20 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
 #include "PeerMessageUtil.h"
+#include <cstring>
 
-DHTFindNodeReplyMessage::DHTFindNodeReplyMessage(const DHTNodeHandle& localNode,
-						 const DHTNodeHandle& remoteNode,
-						 const string& transactionID):
+namespace aria2 {
+
+DHTFindNodeReplyMessage::DHTFindNodeReplyMessage(const SharedHandle<DHTNode>& localNode,
+						 const SharedHandle<DHTNode>& remoteNode,
+						 const std::string& transactionID):
   DHTResponseMessage(localNode, remoteNode, transactionID) {}
 
 DHTFindNodeReplyMessage::~DHTFindNodeReplyMessage() {}
 
 void DHTFindNodeReplyMessage::doReceivedAction()
 {
-  for(DHTNodes::iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
+  for(std::deque<SharedHandle<DHTNode> >::iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
     if(memcmp((*i)->getID(), _localNode->getID(), DHT_ID_LENGTH) != 0) {
       _routingTable->addNode(*i);
     }
@@ -66,8 +69,8 @@ Dictionary* DHTFindNodeReplyMessage::getResponse()
 			DHT_ID_LENGTH));
   size_t offset = 0;
   char buffer[DHTBucket::K*26];
-  for(DHTNodes::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
-    DHTNodeHandle node = *i;
+  for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
+    SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);
     if(PeerMessageUtil::createcompact(buffer+20+offset, node->getIPAddress(), node->getPort())) {
       offset += 26;
@@ -77,19 +80,21 @@ Dictionary* DHTFindNodeReplyMessage::getResponse()
   return a;
 }
 
-string DHTFindNodeReplyMessage::getMessageType() const
+std::string DHTFindNodeReplyMessage::getMessageType() const
 {
   return "find_node";
 }
 
 void DHTFindNodeReplyMessage::validate() const {}
 
-const DHTNodes& DHTFindNodeReplyMessage::getClosestKNodes() const
+const std::deque<SharedHandle<DHTNode> >& DHTFindNodeReplyMessage::getClosestKNodes() const
 {
   return _closestKNodes;
 }
 
-void DHTFindNodeReplyMessage::setClosestKNodes(const DHTNodes& closestKNodes)
+void DHTFindNodeReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes)
 {
   _closestKNodes = closestKNodes;
 }
+
+} // namespace aria2

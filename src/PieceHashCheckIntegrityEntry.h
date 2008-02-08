@@ -37,6 +37,8 @@
 
 #include "CheckIntegrityEntry.h"
 
+namespace aria2 {
+
 class PieceHashCheckIntegrityEntry : public CheckIntegrityEntry
 {
 public:
@@ -48,5 +50,7 @@ public:
 
   virtual void initValidator();
 };
+
+} // namespace aria2
 
 #endif // _D_PIECE_HASH_CHECK_INTEGRITY_ENTRY_H_

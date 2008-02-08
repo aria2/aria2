@@ -38,26 +38,29 @@
 #include "PieceHashCheckIntegrityEntry.h"
 #include "TimeA2.h"
 
+namespace aria2 {
+
 class Request;
-typedef SharedHandle<Request> RequestHandle;
 
 class StreamCheckIntegrityEntry:public PieceHashCheckIntegrityEntry
 {
 private:
-  RequestHandle _currentRequest;
+  SharedHandle<Request> _currentRequest;
   Time _timer;
 public:
-  StreamCheckIntegrityEntry(const RequestHandle& currentRequest,
+  StreamCheckIntegrityEntry(const SharedHandle<Request>& currentRequest,
 			    RequestGroup* requestGroup,
 			    Command* nextCommand = 0);
 
   virtual ~StreamCheckIntegrityEntry();
 
-  virtual Commands onDownloadFinished(DownloadEngine* e);
+  virtual std::deque<Command*> onDownloadFinished(DownloadEngine* e);
 
-  virtual Commands onDownloadIncomplete(DownloadEngine* e);
+  virtual std::deque<Command*> onDownloadIncomplete(DownloadEngine* e);
 };
 
 typedef SharedHandle<StreamCheckIntegrityEntry> StreamCheckIntegrityEntryHandle;
+
+} // namespace aria2
 
 #endif // _D_STREAM_CHECK_INTEGRITY_ENTRY_H_

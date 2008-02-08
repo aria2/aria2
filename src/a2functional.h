@@ -32,8 +32,13 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
+#ifndef _D_A2_FUNCTIONAL_H_
+#define _D_A2_FUNCTIONAL_H_
+
 #include <functional>
 #include "SharedHandle.h"
+
+namespace aria2 {
 
 // mem_fun_t for SharedHandle
 template <class ReturnType, typename ClassType>
@@ -108,19 +113,31 @@ adopt2nd(const BinaryOp& binaryOp, const UnaryOp& unaryOp)
   return adopt2nd_t<BinaryOp, UnaryOp>(binaryOp, unaryOp);
 };
 
-template<typename T, std::size_t N>
-char (&char_array_ref(T (&)[N]))[N];
-
-template<typename T, std::size_t N>
-std::size_t
-arrayLength(T (&a)[N])
+template<typename Pair>
+class Ascend1st:public std::binary_function<Pair, Pair, bool>
 {
-  return sizeof(char_array_ref(a));
-}
+public:
+  bool operator()(const Pair& p1, const Pair& p2) const
+  {
+    return p1.first < p2.first;
+  }
+};
 
-template<typename T>
-std::size_t
-arrayLength(T (&a)[0u])
+template<typename Pair>
+class select2nd
 {
-  return 0;
-}
+public:
+  typename Pair::second_type operator()(const Pair& p) const
+  {
+    return p.second;
+  }
+
+  typename Pair::second_type operator()(Pair& p) const
+  {
+    return p.second;
+  }
+};
+
+} // namespace aria2
+
+#endif // _D_A2_FUNCTIONAL_H_

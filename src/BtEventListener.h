@@ -36,16 +36,23 @@
 #define _D_BT_EVENT_LISTENER_H_
 
 #include "common.h"
-#include "BtEvent.h"
+#include "SharedHandle.h"
+#include <deque>
+
+namespace aria2 {
+
+class BtEvent;
 
 class BtEventListener {
 public:
   virtual ~BtEventListener() {}
 
-  virtual void handleEvent(const BtEventHandle& event) = 0;
+  virtual void handleEvent(const SharedHandle<BtEvent>& event) = 0;
 };
 
 typedef SharedHandle<BtEventListener> BtEventListenerHandle;
-typedef deque<BtEventListenerHandle> BtEventListeners;
+typedef std::deque<BtEventListenerHandle> BtEventListeners;
+
+} // namespace aria2
 
 #endif // _D_BT_EVENT_LISTENER_H_

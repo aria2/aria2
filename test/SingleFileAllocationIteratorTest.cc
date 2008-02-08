@@ -1,12 +1,10 @@
 #include "SingleFileAllocationIterator.h"
 #include "File.h"
 #include "DefaultDiskWriter.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <fstream>
-#include <iomanip>
 #include <cppunit/extensions/HelperMacros.h>
+
+namespace aria2 {
 
 class SingleFileAllocationIteratorTest:public CppUnit::TestFixture {
 
@@ -26,10 +24,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SingleFileAllocationIteratorTest );
 
 void SingleFileAllocationIteratorTest::testAllocate()
 {
-  string dir = "/tmp";
-  string fname = "aria2_SingleFileAllocationIteratorTest_testAllocate";
-  string fn = dir+"/"+fname;
-  ofstream of(fn.c_str());
+  std::string dir = "/tmp";
+  std::string fname = "aria2_SingleFileAllocationIteratorTest_testAllocate";
+  std::string fn = dir+"/"+fname;
+  std::ofstream of(fn.c_str());
   of << "0123456789";
   of.close();
 
@@ -51,3 +49,5 @@ void SingleFileAllocationIteratorTest::testAllocate()
   File f(fn);
   CPPUNIT_ASSERT_EQUAL((int64_t)40960, f.size());
 }
+
+} // namespace aria2

@@ -42,9 +42,12 @@
 #include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "LogFactory.h"
+#include "Logger.h"
 #include "message.h"
 
-const string HandshakeExtensionMessage::EXTENSION_NAME = "handshake";
+namespace aria2 {
+
+const std::string HandshakeExtensionMessage::EXTENSION_NAME = "handshake";
 
 HandshakeExtensionMessage::HandshakeExtensionMessage():_tcpPort(0),
 						       _btContext(0),
@@ -54,7 +57,7 @@ HandshakeExtensionMessage::HandshakeExtensionMessage():_tcpPort(0),
 
 HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
-string HandshakeExtensionMessage::getBencodedData()
+std::string HandshakeExtensionMessage::getBencodedData()
 {
   SharedHandle<Dictionary> dic = new Dictionary();
   if(!_clientVersion.empty()) {
@@ -62,16 +65,16 @@ string HandshakeExtensionMessage::getBencodedData()
     dic->put("v", v);
   }
   if(_tcpPort > 0) {
-    string portStr = Util::itos(_tcpPort);
+    std::string portStr = Util::itos(_tcpPort);
     Data* p = new Data(portStr, true);
     dic->put("p", p);
   }
   Dictionary* exts = new Dictionary();
   dic->put("m", exts);
-  for(map<string, uint8_t>::const_iterator itr = _extensions.begin();
+  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
-    const map<string, uint8_t>::value_type& vt = *itr;
-    string idStr = Util::uitos((uint32_t)vt.second);
+    const std::map<std::string, uint8_t>::value_type& vt = *itr;
+    std::string idStr = Util::uitos((uint32_t)vt.second);
     exts->put(vt.first, new Data(idStr, true));
   }
   BencodeVisitor v;
@@ -79,18 +82,18 @@ string HandshakeExtensionMessage::getBencodedData()
   return v.getBencodedData();
 }
 
-string HandshakeExtensionMessage::toString() const
+std::string HandshakeExtensionMessage::toString() const
 {
-  string s = getExtensionName();
+  std::string s = getExtensionName();
   if(!_clientVersion.empty()) {
     s += " client="+Util::urlencode(_clientVersion);
   }
   if(_tcpPort > 0) {
     s += ", tcpPort="+Util::itos(_tcpPort);
   }
-  for(map<string, uint8_t>::const_iterator itr = _extensions.begin();
+  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
-    const map<string, uint8_t>::value_type& vt = *itr;
+    const std::map<std::string, uint8_t>::value_type& vt = *itr;
     s += ", "+vt.first+"="+Util::uitos((uint32_t)vt.second);
   }
   return s;
@@ -101,9 +104,9 @@ void HandshakeExtensionMessage::doReceivedAction()
   if(_tcpPort > 0) {
     _peer->port = _tcpPort;
   }
-  for(map<string, uint8_t>::const_iterator itr = _extensions.begin();
+  for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
-    const map<string, uint8_t>::value_type& vt = *itr;
+    const std::map<std::string, uint8_t>::value_type& vt = *itr;
     _peer->setExtension(vt.first, vt.second);
   }
 }
@@ -118,9 +121,9 @@ void HandshakeExtensionMessage::setBtContext(const BtContextHandle& btContext)
   _btContext = btContext;
 }
 
-uint8_t HandshakeExtensionMessage::getExtensionMessageID(const string& name) const
+uint8_t HandshakeExtensionMessage::getExtensionMessageID(const std::string& name) const
 {
-  map<string, uint8_t>::const_iterator i = _extensions.find(name);
+  std::map<std::string, uint8_t>::const_iterator i = _extensions.find(name);
   if(i == _extensions.end()) {
     return 0;
   } else {
@@ -153,8 +156,8 @@ HandshakeExtensionMessage::create(const char* data, size_t length)
   }
   const Dictionary* m = dynamic_cast<const Dictionary*>(d->get("m"));
   if(m) {
-    const Order& order = m->getOrder();
-    for(Order::const_iterator i = order.begin(); i != order.end(); ++i) {
+    const std::deque<std::string>& order = m->getOrder();
+    for(std::deque<std::string>::const_iterator i = order.begin(); i != order.end(); ++i) {
       const Data* e = dynamic_cast<const Data*>(m->get(*i));
       if(e) {
 	msg->_extensions[*i] = e->toInt();
@@ -163,3 +166,5 @@ HandshakeExtensionMessage::create(const char* data, size_t length)
   }
   return msg;
 }
+
+} // namespace aria2
