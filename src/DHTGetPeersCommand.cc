@@ -44,6 +44,7 @@
 #include "BtContext.h"
 #include "BtRuntime.h"
 #include "PeerStorage.h"
+#include "PieceStorage.h"
 #include "Peer.h"
 #include "Logger.h"
 
@@ -71,7 +72,7 @@ bool DHTGetPeersCommand::execute()
   if(btRuntime->isHalt()) {
     return true;
   }
-  if(_task.isNull() &&
+  if(!pieceStorage->downloadFinished() && _task.isNull() &&
      (_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL) ||
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
     logger->debug("Issuing PeerLookup for infoHash=%s",

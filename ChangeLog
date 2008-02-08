@@ -1,5 +1,10 @@
 2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Request peers thought DHT only when download hasn't finished.
+	* src/DHTGetPeersCommand.cc
+
+2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Force refresh bucket when startup if certain time has passed(currently 15 minutes).
 	* src/DHTBucketRefreshTask.{h, cc}
 	* src/DHTSetup.cc
