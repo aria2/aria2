@@ -53,14 +53,15 @@ private:
   int32_t interval; // UNIT: sec
   DownloadEngine* e;
   Time checkPoint;
-  int32_t _lowestSpeedLimit; // UNIT: byte/sec
+  int32_t _thresholdSpeed; // UNIT: byte/sec
   int32_t _numNewConnection; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(int cuid,
 			      RequestGroup* requestGroup,
 			      DownloadEngine* e,
 			      const SharedHandle<BtContext>& btContext,
-			      int32_t interval);
+			      int32_t interval,
+			      int32_t thresholdSpeed);
      
   virtual ~ActivePeerConnectionCommand();
 
@@ -68,9 +69,9 @@ public:
 
   void connectToPeer(const SharedHandle<Peer>& peer);
 
-  void setLowestSpeedLimit(int32_t speed)
+  void setThresholdSpeed(int32_t speed)
   {
-    _lowestSpeedLimit = speed;
+    _thresholdSpeed = speed;
   }
 
   void setNumNewConnection(int32_t numNewConnection)

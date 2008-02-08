@@ -50,13 +50,14 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
 							 RequestGroup* requestGroup,
 							 DownloadEngine* e,
 							 const BtContextHandle& btContext,
-							 int32_t interval)
+							 int32_t interval,
+							 int32_t thresholdSpeed)
   :Command(cuid),
    BtContextAwareCommand(btContext),
    RequestGroupAware(requestGroup),
    interval(interval),
    e(e),
-   _lowestSpeedLimit(50*1024),
+   _thresholdSpeed(thresholdSpeed),
    _numNewConnection(5)
 {}
 
@@ -70,7 +71,7 @@ bool ActivePeerConnectionCommand::execute() {
     checkPoint.reset();
     TransferStat tstat = peerStorage->calculateStat();
     size_t numAdd = btRuntime->lessThanEqMinPeer() ? MIN_PEERS-btRuntime->getConnections():_numNewConnection;
-    if(tstat.getDownloadSpeed() < _lowestSpeedLimit || btRuntime->lessThanEqMinPeer()) {
+    if(tstat.getDownloadSpeed() < _thresholdSpeed || btRuntime->lessThanEqMinPeer()) {
       for(; numAdd > 0 && peerStorage->isPeerAvailable(); --numAdd) {
 	PeerHandle peer = peerStorage->getUnusedPeer();
 	connectToPeer(peer);

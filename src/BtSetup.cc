@@ -80,11 +80,16 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
 					  e,
 					  btContext,
 					  10));
-  commands.push_back(new ActivePeerConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
-						     requestGroup,
-						     e,
-						     btContext,
-						     10));
+  {
+    int32_t thresholdSpeed = 50*1024;
+    int32_t maxDownloadSpeed = option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
+    if(maxDownloadSpeed > 0) {
+      thresholdSpeed = std::min(maxDownloadSpeed, thresholdSpeed);
+    }
+    commands.push_back(new ActivePeerConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
+						       requestGroup, e, btContext, 10,
+						       thresholdSpeed));
+  }
   if(!btContext->isPrivate() && DHTSetup::initialized()) {
     DHTRegistry::_peerAnnounceStorage->addPeerAnnounce(btContext);
     DHTGetPeersCommand* command = new DHTGetPeersCommand(CUIDCounterSingletonHolder::instance()->newID(),
