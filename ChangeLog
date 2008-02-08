@@ -1,5 +1,15 @@
 2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Only add socket to DownloadEngine's select routine when peer or
+	localhost is unchoked and interested. This lowers CPU usage a
+	little bit.
+	* src/PeerInteractionCommand.cc
+	* src/PeerAbstractCommand.{h, cc}
+	* src/BtInteractive.h
+	* src/DefaultBtInteractive.{h, cc}
+
+2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Revert previous change because get_peers message is needed for
 	announce_peer anyway.	
 	* src/DHTGetPeersCommand.cc

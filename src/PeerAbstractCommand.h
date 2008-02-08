@@ -68,6 +68,7 @@ protected:
   void setUploadLimit(int32_t uploadLimit);
   void setUploadLimitCheck(bool check);
   void setNoCheck(bool check);
+  void updateKeepAlive();
 private:
   bool checkSocketIsReadable;
   bool checkSocketIsWritable;

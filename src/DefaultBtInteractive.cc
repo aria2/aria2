@@ -75,7 +75,8 @@ DefaultBtInteractive::DefaultBtInteractive(const SharedHandle<BtContext>& btCont
   keepAliveInterval(120),
   maxDownloadSpeedLimit(0),
   _utPexEnabled(false),
-  _dhtEnabled(false)
+  _dhtEnabled(false),
+  _numReceivedMessage(0)
 {}
 
 DefaultBtInteractive::~DefaultBtInteractive() {}
@@ -222,7 +223,8 @@ void DefaultBtInteractive::sendKeepAlive() {
   }
 }
 
-void DefaultBtInteractive::receiveMessages() {
+size_t DefaultBtInteractive::receiveMessages() {
+  size_t msgcount = 0;
   for(int i = 0; i < 50; i++) {
     if(maxDownloadSpeedLimit > 0) {
       TransferStat stat = peerStorage->calculateStat();
@@ -234,6 +236,7 @@ void DefaultBtInteractive::receiveMessages() {
     if(message.isNull()) {
       break;
     }
+    ++msgcount;
     logger->info(MSG_RECEIVE_PEER_MESSAGE, cuid,
 		 peer->ipaddr.c_str(), peer->port,
 		 message->toString().c_str());
@@ -259,6 +262,7 @@ void DefaultBtInteractive::receiveMessages() {
       break;
     }
   }
+  return msgcount;
 }
 
 void DefaultBtInteractive::decideInterest() {
@@ -415,7 +419,7 @@ void DefaultBtInteractive::doInteractionProcessing() {
 
   sendKeepAlive();
 
-  receiveMessages();
+  _numReceivedMessage = receiveMessages();
   
   btRequestFactory->removeCompletedPiece();
 
@@ -444,6 +448,11 @@ int32_t DefaultBtInteractive::countPendingMessage()
 bool DefaultBtInteractive::isSendingMessageInProgress()
 {
   return dispatcher->isSendingInProgress();
+}
+
+size_t DefaultBtInteractive::countReceivedMessageInIteration() const
+{
+  return _numReceivedMessage;
 }
 
 void DefaultBtInteractive::setPeer(const SharedHandle<Peer>& peer)

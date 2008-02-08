@@ -63,6 +63,8 @@ public:
   virtual int32_t countPendingMessage() = 0;
 
   virtual bool isSendingMessageInProgress() = 0;
+
+  virtual size_t countReceivedMessageInIteration() const = 0;
 };
 
 typedef SharedHandle<BtInteractive> BtInteractiveHandle;

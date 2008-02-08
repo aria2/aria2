@@ -174,4 +174,9 @@ void PeerAbstractCommand::setNoCheck(bool check) {
   this->noCheck = check;
 }
 
+void PeerAbstractCommand::updateKeepAlive()
+{
+  checkPoint.reset();
+}
+
 } // namespace aria2

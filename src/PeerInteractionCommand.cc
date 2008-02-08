@@ -174,17 +174,15 @@ PeerInteractionCommand::~PeerInteractionCommand() {
 }
 
 bool PeerInteractionCommand::executeInternal() {
-  setReadCheckSocket(socket);
-  disableWriteCheckSocket();
   setUploadLimitCheck(false);
   setNoCheck(false);
   switch(sequence) {
   case INITIATOR_SEND_HANDSHAKE:
     if(!socket->isWritable(0)) {
-      disableReadCheckSocket();
-      setWriteCheckSocket(socket);
       break;
     }
+    disableWriteCheckSocket();
+    setReadCheckSocket(socket);
     socket->setBlockingMode();
     setTimeout(e->option->getAsInt(PREF_BT_TIMEOUT));
     btInteractive->initiateHandshake();
@@ -216,18 +214,29 @@ bool PeerInteractionCommand::executeInternal() {
   }
   case WIRED:
     btInteractive->doInteractionProcessing();
-
+    if(btInteractive->countReceivedMessageInIteration() > 0) {
+      updateKeepAlive();
+    }
+    if(peer->amInterested && !peer->peerChoking ||
+       peer->peerInterested && !peer->amChoking) {
+      if(maxDownloadSpeedLimit > 0) {
+	TransferStat stat = peerStorage->calculateStat();
+	if(maxDownloadSpeedLimit < stat.downloadSpeed) {
+	  disableReadCheckSocket();
+	  setNoCheck(true);
+	} else {
+	  setReadCheckSocket(socket);
+	}
+      } else {
+	setReadCheckSocket(socket);
+      }
+    } else {
+      disableReadCheckSocket();
+    }
     break;
   }
   if(btInteractive->countPendingMessage() > 0) {
     setNoCheck(true);
-  }
-  if(maxDownloadSpeedLimit > 0) {
-    TransferStat stat = peerStorage->calculateStat();
-    if(maxDownloadSpeedLimit < stat.downloadSpeed) {
-      disableReadCheckSocket();
-      setNoCheck(true);
-    }
   }
   e->commands.push_back(this);
   return false;

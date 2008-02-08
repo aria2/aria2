@@ -110,6 +110,8 @@ private:
   bool _utPexEnabled;
   bool _dhtEnabled;
 
+  size_t _numReceivedMessage;
+
   static const int32_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
@@ -146,11 +148,13 @@ public:
 
   virtual void sendPendingMessage();
 
-  void receiveMessages();
+  size_t receiveMessages();
 
   virtual int32_t countPendingMessage();
   
   virtual bool isSendingMessageInProgress();
+
+  virtual size_t countReceivedMessageInIteration() const;
 
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
