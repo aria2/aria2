@@ -40,12 +40,17 @@
 namespace aria2 {
 
 class DHTBucketRefreshTask:public DHTAbstractTask {
+private:
+  bool _forceRefresh;
+
 public:
   DHTBucketRefreshTask();
 
   virtual ~DHTBucketRefreshTask();
 
   virtual void startup();
+
+  void setForceRefresh(bool forceRefresh);
 };
 
 } // namespace aria2

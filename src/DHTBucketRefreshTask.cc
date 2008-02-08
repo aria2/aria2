@@ -44,7 +44,8 @@
 
 namespace aria2 {
 
-DHTBucketRefreshTask::DHTBucketRefreshTask() {}
+DHTBucketRefreshTask::DHTBucketRefreshTask():
+  _forceRefresh(false) {}
 
 DHTBucketRefreshTask::~DHTBucketRefreshTask() {}
 
@@ -52,7 +53,7 @@ void DHTBucketRefreshTask::startup()
 {
   std::deque<SharedHandle<DHTBucket> > buckets = _routingTable->getBuckets();
   for(std::deque<SharedHandle<DHTBucket> >::iterator i = buckets.begin(); i != buckets.end(); ++i) {
-    if((*i)->needsRefresh()) {
+    if(_forceRefresh || (*i)->needsRefresh()) {
       (*i)->notifyUpdate();
       unsigned char targetID[DHT_ID_LENGTH];
       (*i)->getRandomNodeID(targetID);
@@ -68,6 +69,11 @@ void DHTBucketRefreshTask::startup()
     }
   }
   _finished = true;
+}
+
+void DHTBucketRefreshTask::setForceRefresh(bool forceRefresh)
+{
+  _forceRefresh = forceRefresh;
 }
 
 } // namespace aria2

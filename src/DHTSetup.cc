@@ -57,6 +57,7 @@
 #include "DHTTask.h"
 #include "DHTRoutingTableDeserializer.h"
 #include "DHTRegistry.h"
+#include "DHTBucketRefreshTask.h"
 #include "CUIDCounter.h"
 #include "prefs.h"
 #include "Option.h"
@@ -175,7 +176,9 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
       routingTable->addNode(*i);
     }
     if(!desnodes.empty() && deserializer.getSerializedTime().elapsed(DHT_BUCKET_REFRESH_INTERVAL)) {
-      taskQueue->addPeriodicTask1(taskFactory->createBucketRefreshTask());
+      SharedHandle<DHTBucketRefreshTask> task = taskFactory->createBucketRefreshTask();
+      task->setForceRefresh(true);
+      taskQueue->addPeriodicTask1(task);
     }
 
     Commands commands;
