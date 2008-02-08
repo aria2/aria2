@@ -175,7 +175,7 @@ std::deque<SharedHandle<FileEntry> >
 MetalinkEntry::toFileEntry(const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries)
 {
   std::deque<SharedHandle<FileEntry> > entries;
-  std::transform(metalinkEntries.begin(), metalinkEntries.end(), back_inserter(entries),
+  std::transform(metalinkEntries.begin(), metalinkEntries.end(), std::back_inserter(entries),
 		 mem_fun_sh(&MetalinkEntry::getFile));
   return entries;
 }

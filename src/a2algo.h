@@ -35,6 +35,8 @@
 #ifndef _D_A2_ALGO_H_
 #define _D_A2_ALGO_H_
 
+#include <algorithm>
+
 namespace aria2 {
 
 template<typename InputIterator, typename OutputIterator>
@@ -43,7 +45,7 @@ OutputIterator ncopy(InputIterator first, InputIterator last,
 {
   OutputIterator x = destination;
   for(int32_t i = 0; i < count; ++i) {
-    x = copy(first, last, destination);
+    x = std::copy(first, last, destination);
   }
   return x;
 }

@@ -366,7 +366,7 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), Ascend1st<std::pair<int32_t, std::string> >());
     std::deque<std::string> checksums;
     std::transform(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
-		   back_inserter(checksums), select2nd<std::pair<int32_t, std::string> >());
+		   std::back_inserter(checksums), select2nd<std::pair<int32_t, std::string> >());
     _tChunkChecksum->setChecksums(checksums);
     _tEntry->chunkChecksum = _tChunkChecksum;
   }

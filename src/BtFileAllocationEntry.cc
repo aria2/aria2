@@ -37,6 +37,7 @@
 #include "RequestGroup.h"
 #include "Command.h"
 #include "DownloadEngine.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -50,7 +51,7 @@ Commands BtFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
   Commands commands = BtSetup().setup(_requestGroup, e, e->option);
   if(!_requestGroup->downloadFinished()) {
     Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, 0);
-    copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
+    std::copy(streamCommands.begin(), streamCommands.end(), std::back_inserter(commands));
   }
   return commands;
 }

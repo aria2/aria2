@@ -43,6 +43,7 @@
 #include "BtMessageFactory.h"
 #include "BtMessage.h"
 #include "BtRegistry.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -80,7 +81,7 @@ void DefaultBtRequestFactory::removeCompletedPiece() {
 
 void DefaultBtRequestFactory::removeTargetPiece(const PieceHandle& piece) {
   Pieces temp;
-  remove_copy(pieces.begin(), pieces.end(), back_inserter(temp), piece);
+  std::remove_copy(pieces.begin(), pieces.end(), std::back_inserter(temp), piece);
   pieces = temp;
   dispatcher->doAbortOutstandingRequestAction(piece);
   pieceStorage->cancelPiece(piece);

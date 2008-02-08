@@ -50,6 +50,7 @@
 #include "AutoSaveCommand.h"
 #include "HaveEraseCommand.h"
 #include "DownloadResult.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -63,9 +64,9 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   RequestGroups workingSet;
   RequestGroups reservedSet;
   if(op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS) < (int32_t)requestGroups.size()) {
-    copy(requestGroups.begin(), requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS), back_inserter(workingSet));
-    copy(requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS),
-	 requestGroups.end(), back_inserter(reservedSet));
+    std::copy(requestGroups.begin(), requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS), std::back_inserter(workingSet));
+    std::copy(requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS),
+	      requestGroups.end(), std::back_inserter(reservedSet));
   } else {
     workingSet = requestGroups;
   }

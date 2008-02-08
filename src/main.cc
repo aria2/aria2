@@ -127,7 +127,7 @@ void downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
   }
   std::deque<std::string> xargs;
   ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
-	back_inserter(xargs));
+	std::back_inserter(xargs));
   
   RequestGroupHandle rg = new RequestGroup(op, xargs);
   DefaultBtContextHandle btContext = new DefaultBtContext();
@@ -167,14 +167,14 @@ void downloadUriList(Option* op, std::istream& in)
       for(std::deque<std::string>::const_iterator itr = unfoldedURIs.begin();
 	  itr != unfoldedURIs.end(); ++itr) {
 	std::deque<std::string> xuris;
-	ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT), back_inserter(xuris));
+	ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT), std::back_inserter(xuris));
 	SharedHandle<RequestGroup> rg = createRequestGroup(op, xuris);
 	groups.push_back(rg);
       }
     } else if(uris.size() > 0) {
       std::deque<std::string> xuris;
       ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
-	    back_inserter(xuris));
+	    std::back_inserter(xuris));
       SharedHandle<RequestGroup> rg = createRequestGroup(op, xuris);
       groups.push_back(rg);
     }
@@ -209,14 +209,14 @@ void downloadUri(Option* op, const std::deque<std::string>& uris)
 	itr != nargs.end(); ++itr) {
       std::deque<std::string> xuris;
       ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT),
-	    back_inserter(xuris));
+	    std::back_inserter(xuris));
       RequestGroupHandle rg = createRequestGroup(op, xuris);
       groups.push_back(rg);
     }
   } else {
     std::deque<std::string> xargs;
     ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
-	  back_inserter(xargs));
+	  std::back_inserter(xargs));
     RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
     groups.push_back(rg);
   }

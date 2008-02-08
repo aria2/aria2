@@ -46,6 +46,7 @@
 #include "prefs.h"
 #include <iostream>
 #include <iterator>
+#include <algorithm>
 
 namespace aria2 {
 

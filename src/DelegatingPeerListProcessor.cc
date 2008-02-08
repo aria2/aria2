@@ -35,6 +35,7 @@
 #include "DefaultPeerListProcessor.h"
 #include "CompactPeerListProcessor.h"
 #include "Peer.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -55,7 +56,7 @@ Peers DelegatingPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
     PeerListProcessorHandle processor = *itr;
     if(processor->canHandle(peersEntry)) {
       Peers tempPeers = processor->extractPeer(peersEntry);
-      copy(tempPeers.begin(), tempPeers.end(), back_inserter(peers));
+      std::copy(tempPeers.begin(), tempPeers.end(), std::back_inserter(peers));
       break;
     }
   }

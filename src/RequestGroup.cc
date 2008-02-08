@@ -443,7 +443,7 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, 
       _logger->error(MSG_UNRECOGNIZED_URI, req->getUrl().c_str());
     }
   }
-  copy(pendingURIs.begin(), pendingURIs.end(), front_inserter(_uris));
+  std::copy(pendingURIs.begin(), pendingURIs.end(), std::front_inserter(_uris));
   return commands;
 }
 

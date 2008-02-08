@@ -45,6 +45,7 @@
 #include <iomanip>
 #include <sstream>
 #include <numeric>
+#include <algorithm>
 
 namespace aria2 {
 
@@ -119,7 +120,7 @@ void RequestGroupMan::removeStoppedGroup()
 	  RequestGroups nextGroups = (*itr)->postDownloadProcessing();
 	  if(nextGroups.size() > 0) {
 	    _logger->debug("Adding %d RequestGroups as a result of PostDownloadHandler.", (int32_t)nextGroups.size());
-	    copy(nextGroups.rbegin(), nextGroups.rend(), front_inserter(_reservedGroups));
+	    std::copy(nextGroups.rbegin(), nextGroups.rend(), std::front_inserter(_reservedGroups));
 	  }
 	} else {
 	  (*itr)->getProgressInfoFile()->save();
@@ -163,7 +164,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
   }
-  copy(temp.begin(), temp.end(), front_inserter(_reservedGroups));
+  std::copy(temp.begin(), temp.end(), std::front_inserter(_reservedGroups));
   if(count > 0) {
     _logger->debug("%d RequestGroup(s) added.", count);
   }
@@ -177,7 +178,7 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
     try {
       if((*itr)->isDependencyResolved()) {
 	Commands nextCommands = (*itr)->createInitialCommand(e);
-	copy(nextCommands.begin(), nextCommands.end(), back_inserter(commands));
+	std::copy(nextCommands.begin(), nextCommands.end(), std::back_inserter(commands));
 	++itr;
       } else {
 	_reservedGroups.push_front((*itr));

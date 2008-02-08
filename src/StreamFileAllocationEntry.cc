@@ -40,6 +40,7 @@
 #include "prefs.h"
 #include "RequestGroup.h"
 #include "InitiateConnectionCommandFactory.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -59,7 +60,7 @@ Commands StreamFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
     commands.push_back(popNextCommand());
     // try remaining uris
     Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);
-    copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
+    std::copy(streamCommands.begin(), streamCommands.end(), std::back_inserter(commands));
   } else {
     if(_currentRequest.isNull()) {
       commands = _requestGroup->createNextCommandWithAdj(e, 0);
@@ -69,7 +70,7 @@ Commands StreamFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
 											   _currentRequest, _requestGroup, e);
       
       commands.push_back(command);
-      copy(streamCommands.begin(), streamCommands.end(), back_inserter(commands));
+      std::copy(streamCommands.begin(), streamCommands.end(), std::back_inserter(commands));
     }
   }
   return commands;

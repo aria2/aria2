@@ -49,6 +49,7 @@
 #include "Piece.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -100,7 +101,7 @@ void DefaultBtMessageDispatcher::sendMessages() {
       break;
     }
   }
-  copy(tempQueue.begin(), tempQueue.end(), back_inserter(messageQueue));
+  std::copy(tempQueue.begin(), tempQueue.end(), std::back_inserter(messageQueue));
 }
 
 // Cancel sending piece message to peer.
@@ -254,7 +255,7 @@ DefaultBtMessageDispatcher::getOutstandingRequest(int32_t index, int32_t begin, 
 void DefaultBtMessageDispatcher::removeOutstandingRequest(const RequestSlot& slot)
 {
   RequestSlots temp;
-  std::remove_copy(requestSlots.begin(), requestSlots.end(), back_inserter(temp), slot);
+  std::remove_copy(requestSlots.begin(), requestSlots.end(), std::back_inserter(temp), slot);
   requestSlots = temp;
 }
 

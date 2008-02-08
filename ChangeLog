@@ -1,5 +1,36 @@
 2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added std namespace to copy, remove_copy, back_inserter,
+	front_inserter.
+	* src/RequestGroupMan.cc
+	* src/DefaultPieceStorage.cc
+	* src/StreamFileAllocationEntry.cc
+	* src/BtFileAllocationEntry.cc
+	* src/RequestGroup.cc
+	* src/MetalinkEntry.cc
+	* src/DelegatingPeerListProcessor.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/version_usage.cc: Included <algorithm>
+	* src/main.cc
+	* src/MetalinkParserController.cc
+	* src/DefaultBtContext.cc
+	* src/DownloadEngineFactory.cc
+	* src/a2algo.h
+
+	Removed.
+	* test/StreamUriListParserTest.cc
+	
+2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Use PREF_MAX_DOWNLOAD_LIMIT as a threshold for
+	ActivePeerConnectionCommand when it is given and
+	PREF_MAX_DOWNLOAD_LIMIT < default threshold.
+	* src/ActivePeerConnectionCommand.{h, cc}
+	* src/BtSetup.cc
+
+2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Only add socket to DownloadEngine's select routine when peer or
 	localhost is unchoked and interested. This lowers CPU usage a
 	little bit.

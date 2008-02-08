@@ -162,7 +162,7 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
       }
 
       std::deque<std::string> uris;
-      std::transform(urlList.begin(), urlList.end(), back_inserter(uris),
+      std::transform(urlList.begin(), urlList.end(), std::back_inserter(uris),
 		     std::bind2nd(std::plus<std::string>(), "/"+name+"/"+path));
       FileEntryHandle fileEntry(new FileEntry(path,
 					      lengthData->toLLInt(),
