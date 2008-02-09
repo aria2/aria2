@@ -1,4 +1,4 @@
-/* Copyright (C) 1996-1999, 2000-2002 Free Software Foundation, Inc.
+/* Copyright (C) 1996-1999, 2000-2003, 2005-2006 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
 
@@ -14,7 +14,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 #ifndef _LOADINFO_H
@@ -32,16 +32,12 @@
    in gettextP.h.
  */
 
-#ifndef PARAMS
-# if __STDC__ || defined __GNUC__ || defined __SUNPRO_C || defined __cplusplus || __PROTOTYPES
-#  define PARAMS(args) args
-# else
-#  define PARAMS(args) ()
-# endif
-#endif
-
 #ifndef internal_function
 # define internal_function
+#endif
+
+#ifndef LIBINTL_DLL_EXPORTED
+# define LIBINTL_DLL_EXPORTED
 #endif
 
 /* Tell the compiler when a conditional or integer expression is
@@ -51,7 +47,7 @@
 #endif
 
 /* Separator in PATH like lists of pathnames.  */
-#if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
+#if ((defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__) || defined __EMX__ || defined __DJGPP__
   /* Win32, OS/2, DOS */
 # define PATH_SEPARATOR ';'
 #else
@@ -60,17 +56,10 @@
 #endif
 
 /* Encoding of locale name parts.  */
-#define CEN_REVISION		1
-#define CEN_SPONSOR		2
-#define CEN_SPECIAL		4
-#define XPG_NORM_CODESET	8
-#define XPG_CODESET		16
-#define TERRITORY		32
-#define CEN_AUDIENCE		64
-#define XPG_MODIFIER		128
-
-#define CEN_SPECIFIC	(CEN_REVISION|CEN_SPONSOR|CEN_SPECIAL|CEN_AUDIENCE)
-#define XPG_SPECIFIC	(XPG_CODESET|XPG_NORM_CODESET|XPG_MODIFIER)
+#define XPG_NORM_CODESET	1
+#define XPG_CODESET		2
+#define XPG_TERRITORY		4
+#define XPG_MODIFIER		8
 
 
 struct loaded_l10nfile
@@ -89,17 +78,17 @@ struct loaded_l10nfile
    names.  Normalization allows the user to use any of the common
    names.  The return value is dynamically allocated and has to be
    freed by the caller.  */
-extern const char *_nl_normalize_codeset PARAMS ((const char *codeset,
-						  size_t name_len));
+extern const char *_nl_normalize_codeset (const char *codeset,
+					  size_t name_len);
 
 /* Lookup a locale dependent file.
    *L10NFILE_LIST denotes a pool of lookup results of locale dependent
    files of the same kind, sorted in decreasing order of ->filename.
    DIRLIST and DIRLIST_LEN are an argz list of directories in which to
    look, containing at least one directory (i.e. DIRLIST_LEN > 0).
-   MASK, LANGUAGE, TERRITORY, CODESET, NORMALIZED_CODESET, MODIFIER,
-   SPECIAL, SPONSOR, REVISION are the pieces of the locale name, as
-   produced by _nl_explode_name().  FILENAME is the filename suffix.
+   MASK, LANGUAGE, TERRITORY, CODESET, NORMALIZED_CODESET, MODIFIER
+   are the pieces of the locale name, as produced by _nl_explode_name().
+   FILENAME is the filename suffix.
    The return value is the lookup result, either found in *L10NFILE_LIST,
    or - if DO_ALLOCATE is nonzero - freshly allocated, or possibly NULL.
    If the return value is non-NULL, it is added to *L10NFILE_LIST, and
@@ -107,50 +96,37 @@ extern const char *_nl_normalize_codeset PARAMS ((const char *codeset,
    furthermore its ->successor[] field contains a list of other lookup
    results from which this lookup result inherits.  */
 extern struct loaded_l10nfile *
-_nl_make_l10nflist PARAMS ((struct loaded_l10nfile **l10nfile_list,
-			    const char *dirlist, size_t dirlist_len, int mask,
-			    const char *language, const char *territory,
-			    const char *codeset,
-			    const char *normalized_codeset,
-			    const char *modifier, const char *special,
-			    const char *sponsor, const char *revision,
-			    const char *filename, int do_allocate));
+_nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
+		    const char *dirlist, size_t dirlist_len, int mask,
+		    const char *language, const char *territory,
+		    const char *codeset, const char *normalized_codeset,
+		    const char *modifier,
+		    const char *filename, int do_allocate);
 
 /* Lookup the real locale name for a locale alias NAME, or NULL if
    NAME is not a locale alias (but possibly a real locale name).
    The return value is statically allocated and must not be freed.  */
-extern const char *_nl_expand_alias PARAMS ((const char *name));
+/* Part of the libintl ABI only for the sake of the gettext.m4 macro.  */
+extern LIBINTL_DLL_EXPORTED const char *_nl_expand_alias (const char *name);
 
 /* Split a locale name NAME into its pieces: language, modifier,
-   territory, codeset, special, sponsor, revision.
+   territory, codeset.
    NAME gets destructively modified: NUL bytes are inserted here and
    there.  *LANGUAGE gets assigned NAME.  Each of *MODIFIER, *TERRITORY,
-   *CODESET, *SPECIAL, *SPONSOR, *REVISION gets assigned either a
-   pointer into the old NAME string, or NULL.  *NORMALIZED_CODESET
-   gets assigned the expanded *CODESET, if it is different from *CODESET;
-   this one is dynamically allocated and has to be freed by the caller.
+   *CODESET gets assigned either a pointer into the old NAME string, or
+   NULL.  *NORMALIZED_CODESET gets assigned the expanded *CODESET, if it
+   is different from *CODESET; this one is dynamically allocated and has
+   to be freed by the caller.
    The return value is a bitmask, where each bit corresponds to one
    filled-in value:
-     XPG_MODIFIER, CEN_AUDIENCE  for *MODIFIER,
-     TERRITORY                   for *TERRITORY,
+     XPG_MODIFIER                for *MODIFIER,
+     XPG_TERRITORY               for *TERRITORY,
      XPG_CODESET                 for *CODESET,
-     XPG_NORM_CODESET            for *NORMALIZED_CODESET,
-     CEN_SPECIAL                 for *SPECIAL,
-     CEN_SPONSOR                 for *SPONSOR,
-     CEN_REVISION                for *REVISION.
+     XPG_NORM_CODESET            for *NORMALIZED_CODESET.
  */
-extern int _nl_explode_name PARAMS ((char *name, const char **language,
-				     const char **modifier,
-				     const char **territory,
-				     const char **codeset,
-				     const char **normalized_codeset,
-				     const char **special,
-				     const char **sponsor,
-				     const char **revision));
-
-/* Split a locale name NAME into a leading language part and all the
-   rest.  Return a pointer to the first character after the language,
-   i.e. to the first byte of the rest.  */
-extern char *_nl_find_language PARAMS ((const char *name));
+extern int _nl_explode_name (char *name, const char **language,
+			     const char **modifier, const char **territory,
+			     const char **codeset,
+			     const char **normalized_codeset);
 
 #endif	/* loadinfo.h */

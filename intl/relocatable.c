@@ -1,5 +1,5 @@
 /* Provide relocatable packages.
-   Copyright (C) 2003 Free Software Foundation, Inc.
+   Copyright (C) 2003-2006 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
    This program is free software; you can redistribute it and/or modify it
@@ -14,7 +14,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 
@@ -25,9 +25,7 @@
 # define _GNU_SOURCE	1
 #endif
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include <config.h>
 
 /* Specification.  */
 #include "relocatable.h"
@@ -42,7 +40,12 @@
 #ifdef NO_XMALLOC
 # define xmalloc malloc
 #else
-# include "xmalloc.h"
+# include "xalloc.h"
+#endif
+
+#if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
 #endif
 
 #if DEPENDS_ON_LIBCHARSET
@@ -67,20 +70,20 @@
    ISSLASH(C)           tests whether C is a directory separator character.
    IS_PATH_WITH_DIR(P)  tests whether P contains a directory specification.
  */
-#if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
-  /* Win32, OS/2, DOS */
+#if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__ || defined __EMX__ || defined __DJGPP__
+  /* Win32, Cygwin, OS/2, DOS */
 # define ISSLASH(C) ((C) == '/' || (C) == '\\')
 # define HAS_DEVICE(P) \
     ((((P)[0] >= 'A' && (P)[0] <= 'Z') || ((P)[0] >= 'a' && (P)[0] <= 'z')) \
      && (P)[1] == ':')
 # define IS_PATH_WITH_DIR(P) \
     (strchr (P, '/') != NULL || strchr (P, '\\') != NULL || HAS_DEVICE (P))
-# define FILESYSTEM_PREFIX_LEN(P) (HAS_DEVICE (P) ? 2 : 0)
+# define FILE_SYSTEM_PREFIX_LEN(P) (HAS_DEVICE (P) ? 2 : 0)
 #else
   /* Unix */
 # define ISSLASH(C) ((C) == '/')
 # define IS_PATH_WITH_DIR(P) (strchr (P, '/') != NULL)
-# define FILESYSTEM_PREFIX_LEN(P) 0
+# define FILE_SYSTEM_PREFIX_LEN(P) 0
 #endif
 
 /* Original installation prefix.  */
@@ -152,6 +155,8 @@ set_relocation_prefix (const char *orig_prefix_arg, const char *curr_prefix_arg)
 #endif
 }
 
+#if !defined IN_LIBRARY || (defined PIC && defined INSTALLDIR)
+
 /* Convenience function:
    Computes the current installation prefix, based on the original
    installation prefix, the original installation directory of a particular
@@ -182,7 +187,7 @@ compute_curr_prefix (const char *orig_installprefix,
 
   /* Determine the current installation directory.  */
   {
-    const char *p_base = curr_pathname + FILESYSTEM_PREFIX_LEN (curr_pathname);
+    const char *p_base = curr_pathname + FILE_SYSTEM_PREFIX_LEN (curr_pathname);
     const char *p = curr_pathname + strlen (curr_pathname);
     char *q;
 
@@ -209,7 +214,7 @@ compute_curr_prefix (const char *orig_installprefix,
     const char *rp = rel_installdir + strlen (rel_installdir);
     const char *cp = curr_installdir + strlen (curr_installdir);
     const char *cp_base =
-      curr_installdir + FILESYSTEM_PREFIX_LEN (curr_installdir);
+      curr_installdir + FILE_SYSTEM_PREFIX_LEN (curr_installdir);
 
     while (rp > rel_installdir && cp > cp_base)
       {
@@ -227,8 +232,11 @@ compute_curr_prefix (const char *orig_installprefix,
 		  same = true;
 		break;
 	      }
-#if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
-	    /* Win32, OS/2, DOS - case insignificant filesystem */
+	    /* Do case-insensitive comparison if the filesystem is always or
+	       often case-insensitive.  It's better to accept the comparison
+	       if the difference is only in case, rather than to fail.  */
+#if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__ || defined __EMX__ || defined __DJGPP__
+	    /* Win32, Cygwin, OS/2, DOS - case insignificant filesystem */
 	    if ((*rpi >= 'a' && *rpi <= 'z' ? *rpi - 'a' + 'A' : *rpi)
 		!= (*cpi >= 'a' && *cpi <= 'z' ? *cpi - 'a' + 'A' : *cpi))
 	      break;
@@ -266,12 +274,14 @@ compute_curr_prefix (const char *orig_installprefix,
   }
 }
 
+#endif /* !IN_LIBRARY || PIC */
+
 #if defined PIC && defined INSTALLDIR
 
 /* Full pathname of shared library, or NULL.  */
 static char *shared_library_fullname;
 
-#if defined _WIN32 || defined __WIN32__
+#if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__
 
 /* Determine the full pathname of the shared library when it is loaded.  */
 
@@ -293,18 +303,37 @@ DllMain (HINSTANCE module_handle, DWORD event, LPVOID reserved)
 	/* Shouldn't happen.  */
 	return FALSE;
 
-      shared_library_fullname = strdup (location);
+      {
+#if defined __CYGWIN__
+	/* On Cygwin, we need to convert paths coming from Win32 system calls
+	   to the Unix-like slashified notation.  */
+	static char location_as_posix_path[2 * MAX_PATH];
+	/* There's no error return defined for cygwin_conv_to_posix_path.
+	   See cygwin-api/func-cygwin-conv-to-posix-path.html.
+	   Does it overflow the buffer of expected size MAX_PATH or does it
+	   truncate the path?  I don't know.  Let's catch both.  */
+	cygwin_conv_to_posix_path (location, location_as_posix_path);
+	location_as_posix_path[MAX_PATH - 1] = '\0';
+	if (strlen (location_as_posix_path) >= MAX_PATH - 1)
+	  /* A sign of buffer overflow or path truncation.  */
+	  return FALSE;
+	shared_library_fullname = strdup (location_as_posix_path);
+#else
+	shared_library_fullname = strdup (location);
+#endif
+      }
     }
 
   return TRUE;
 }
 
-#else /* Unix */
+#else /* Unix except Cygwin */
 
 static void
 find_shared_library_fullname ()
 {
-#ifdef __linux__
+#if defined __linux__ && __GLIBC__ >= 2
+  /* Linux has /proc/self/maps. glibc 2 has the getline() function.  */
   FILE *fp;
 
   /* Open the current process' maps file.  It describes one VMA per line.  */
@@ -349,15 +378,15 @@ find_shared_library_fullname ()
 #endif
 }
 
-#endif /* WIN32 / Unix */
+#endif /* (WIN32 or Cygwin) / (Unix except Cygwin) */
 
 /* Return the full pathname of the current shared library.
    Return NULL if unknown.
-   Guaranteed to work only on Linux and Woe32.  */
+   Guaranteed to work only on Linux, Cygwin and Woe32.  */
 static char *
 get_shared_library_fullname ()
 {
-#if !(defined _WIN32 || defined __WIN32__)
+#if !(defined _WIN32 || defined __WIN32__ || defined __CYGWIN__)
   static bool tried_find_shared_library_fullname;
   if (!tried_find_shared_library_fullname)
     {

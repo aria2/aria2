@@ -43,6 +43,9 @@ AC_PROG_YACC
 # Setting language choice
 AC_LANG([C++])
 
+# Enable system extensions
+AC_USE_SYSTEM_EXTENSIONS
+
 # Checks for libraries.
 if test "x$with_libxml2" = "xyes"; then
    AM_PATH_XML2([2.6.24], [have_libxml2=yes])
@@ -131,7 +134,7 @@ AC_C_VOLATILE
 
 # Checks for library functions.
 AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.12.1)
+AM_GNU_GETTEXT_VERSION([0.17])
 AC_FUNC_ERROR_AT_LINE
 
 case "$target" in

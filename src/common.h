@@ -37,7 +37,7 @@
 // use C99 limit macros
 #define __STDC_LIMIT_MACROS
 #ifdef HAVE_CONFIG_H
-# include <config.h>
+# include "config.h"
 #endif
 
 #ifdef __MINGW32__
@@ -59,12 +59,8 @@
 #include <string>
 #include <deque>
 #include <algorithm>
-#if ENABLE_NLS
-#  include <gettext.h>
-#  define _(String) gettext (String)
-#else
-#  define _(String) (String)
-#endif
+#include "gettext.h"
+#define _(String) gettext(String)
 
 #define USER_AGENT "aria2"
 

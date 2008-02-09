@@ -1,6 +1,6 @@
 /* Determine a canonical name for the current locale's character encoding.
 
-   Copyright (C) 2000-2003 Free Software Foundation, Inc.
+   Copyright (C) 2000-2006 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU Library General Public License as published
@@ -14,35 +14,23 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>.  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 /* Specification.  */
 #include "localcharset.h"
 
-#if HAVE_STDDEF_H
-# include <stddef.h>
-#endif
-
+#include <stddef.h>
 #include <stdio.h>
-#if HAVE_STRING_H
-# include <string.h>
-#else
-# include <strings.h>
-#endif
-#if HAVE_STDLIB_H
-# include <stdlib.h>
-#endif
+#include <string.h>
+#include <stdlib.h>
 
 #if defined _WIN32 || defined __WIN32__
-# undef WIN32   /* avoid warning on mingw32 */
-# define WIN32
+# define WIN32_NATIVE
 #endif
 
 #if defined __EMX__
@@ -50,15 +38,19 @@
 # define OS2
 #endif
 
-#if !defined WIN32
+#if !defined WIN32_NATIVE
 # if HAVE_LANGINFO_CODESET
 #  include <langinfo.h>
 # else
-#  if HAVE_SETLOCALE
+#  if 0 /* see comment below */
 #   include <locale.h>
 #  endif
 # endif
-#elif defined WIN32
+# ifdef __CYGWIN__
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+# endif
+#elif defined WIN32_NATIVE
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #endif
@@ -73,8 +65,13 @@
 # define relocate(pathname) (pathname)
 #endif
 
-#if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
-  /* Win32, OS/2, DOS */
+/* Get LIBDIR.  */
+#ifndef LIBDIR
+# include "configmake.h"
+#endif
+
+#if defined _WIN32 || defined __WIN32__ || defined __CYGWIN__ || defined __EMX__ || defined __DJGPP__
+  /* Win32, Cygwin, OS/2, DOS */
 # define ISSLASH(C) ((C) == '/' || (C) == '\\')
 #endif
 
@@ -86,7 +83,7 @@
 # define ISSLASH(C) ((C) == DIRECTORY_SEPARATOR)
 #endif
 
-#ifdef HAVE_GETC_UNLOCKED
+#if HAVE_DECL_GETC_UNLOCKED
 # undef getc
 # define getc getc_unlocked
 #endif
@@ -107,18 +104,24 @@ static const char * volatile charset_aliases;
 
 /* Return a pointer to the contents of the charset.alias file.  */
 static const char *
-get_charset_aliases ()
+get_charset_aliases (void)
 {
   const char *cp;
 
   cp = charset_aliases;
   if (cp == NULL)
     {
-#if !(defined VMS || defined WIN32)
+#if !(defined VMS || defined WIN32_NATIVE || defined __CYGWIN__)
       FILE *fp;
-      const char *dir = relocate (LIBDIR);
+      const char *dir;
       const char *base = "charset.alias";
       char *file_name;
+
+      /* Make it possible to override the charset.alias location.  This is
+	 necessary for running the testsuite before "make install".  */
+      dir = getenv ("CHARSETALIASDIR");
+      if (dir == NULL || dir[0] == '\0')
+	dir = relocate (LIBDIR);
 
       /* Concatenate dir and base into freshly allocated file_name.  */
       {
@@ -141,15 +144,17 @@ get_charset_aliases ()
       else
 	{
 	  /* Parse the file's contents.  */
-	  int c;
-	  char buf1[50+1];
-	  char buf2[50+1];
 	  char *res_ptr = NULL;
 	  size_t res_size = 0;
-	  size_t l1, l2;
 
 	  for (;;)
 	    {
+	      int c;
+	      char buf1[50+1];
+	      char buf2[50+1];
+	      size_t l1, l2;
+	      char *old_res_ptr;
+
 	      c = getc (fp);
 	      if (c == EOF)
 		break;
@@ -170,6 +175,7 @@ get_charset_aliases ()
 		break;
 	      l1 = strlen (buf1);
 	      l2 = strlen (buf2);
+	      old_res_ptr = res_ptr;
 	      if (res_size == 0)
 		{
 		  res_size = l1 + 1 + l2 + 1;
@@ -184,6 +190,8 @@ get_charset_aliases ()
 		{
 		  /* Out of memory. */
 		  res_size = 0;
+		  if (old_res_ptr != NULL)
+		    free (old_res_ptr);
 		  break;
 		}
 	      strcpy (res_ptr + res_size - (l2 + 1) - (l1 + 1), buf1);
@@ -229,7 +237,7 @@ get_charset_aliases ()
 	   "DECKOREAN" "\0" "EUC-KR" "\0";
 # endif
 
-# if defined WIN32
+# if defined WIN32_NATIVE || defined __CYGWIN__
       /* To avoid the troubles of installing a separate file in the same
 	 directory as the DLL and of retrieving the DLL's directory at
 	 runtime, simply inline the aliases here.  */
@@ -238,6 +246,7 @@ get_charset_aliases ()
 	   "CP1361" "\0" "JOHAB" "\0"
 	   "CP20127" "\0" "ASCII" "\0"
 	   "CP20866" "\0" "KOI8-R" "\0"
+	   "CP20936" "\0" "GB2312" "\0"
 	   "CP21866" "\0" "KOI8-RU" "\0"
 	   "CP28591" "\0" "ISO-8859-1" "\0"
 	   "CP28592" "\0" "ISO-8859-2" "\0"
@@ -248,7 +257,14 @@ get_charset_aliases ()
 	   "CP28597" "\0" "ISO-8859-7" "\0"
 	   "CP28598" "\0" "ISO-8859-8" "\0"
 	   "CP28599" "\0" "ISO-8859-9" "\0"
-	   "CP28605" "\0" "ISO-8859-15" "\0";
+	   "CP28605" "\0" "ISO-8859-15" "\0"
+	   "CP38598" "\0" "ISO-8859-8" "\0"
+	   "CP51932" "\0" "EUC-JP" "\0"
+	   "CP51936" "\0" "GB2312" "\0"
+	   "CP51949" "\0" "EUC-KR" "\0"
+	   "CP51950" "\0" "EUC-TW" "\0"
+	   "CP54936" "\0" "GB18030" "\0"
+	   "CP65001" "\0" "UTF-8" "\0";
 # endif
 #endif
 
@@ -268,17 +284,64 @@ get_charset_aliases ()
 STATIC
 #endif
 const char *
-locale_charset ()
+locale_charset (void)
 {
   const char *codeset;
   const char *aliases;
 
-#if !(defined WIN32 || defined OS2)
+#if !(defined WIN32_NATIVE || defined OS2)
 
 # if HAVE_LANGINFO_CODESET
 
   /* Most systems support nl_langinfo (CODESET) nowadays.  */
   codeset = nl_langinfo (CODESET);
+
+#  ifdef __CYGWIN__
+  /* Cygwin 2006 does not have locales.  nl_langinfo (CODESET) always
+     returns "US-ASCII".  As long as this is not fixed, return the suffix
+     of the locale name from the environment variables (if present) or
+     the codepage as a number.  */
+  if (codeset != NULL && strcmp (codeset, "US-ASCII") == 0)
+    {
+      const char *locale;
+      static char buf[2 + 10 + 1];
+
+      locale = getenv ("LC_ALL");
+      if (locale == NULL || locale[0] == '\0')
+	{
+	  locale = getenv ("LC_CTYPE");
+	  if (locale == NULL || locale[0] == '\0')
+	    locale = getenv ("LANG");
+	}
+      if (locale != NULL && locale[0] != '\0')
+	{
+	  /* If the locale name contains an encoding after the dot, return
+	     it.  */
+	  const char *dot = strchr (locale, '.');
+
+	  if (dot != NULL)
+	    {
+	      const char *modifier;
+
+	      dot++;
+	      /* Look for the possible @... trailer and remove it, if any.  */
+	      modifier = strchr (dot, '@');
+	      if (modifier == NULL)
+		return dot;
+	      if (modifier - dot < sizeof (buf))
+		{
+		  memcpy (buf, dot, modifier - dot);
+		  buf [modifier - dot] = '\0';
+		  return buf;
+		}
+	    }
+	}
+
+      /* Woe32 has a function returning the locale's codepage as a number.  */
+      sprintf (buf, "CP%u", GetACP ());
+      codeset = buf;
+    }
+#  endif
 
 # else
 
@@ -289,7 +352,7 @@ locale_charset ()
      (like SunOS 4 or DJGPP) have only the C locale.  Therefore we don't
      use setlocale here; it would return "C" when it doesn't support the
      locale name the user has set.  */
-#  if HAVE_SETLOCALE && 0
+#  if 0
   locale = setlocale (LC_CTYPE, NULL);
 #  endif
   if (locale == NULL || locale[0] == '\0')
@@ -310,7 +373,7 @@ locale_charset ()
 
 # endif
 
-#elif defined WIN32
+#elif defined WIN32_NATIVE
 
   static char buf[2 + 10 + 1];
 

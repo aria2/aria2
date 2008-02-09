@@ -35,9 +35,7 @@
 #ifndef _D_PLATFORM_H_
 #define _D_PLATFORM_H_
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif // HAVE_CONFIG_H
+#include "common.h"
 
 #ifdef HAVE_WINSOCK2_H
 

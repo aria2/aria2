@@ -1,5 +1,5 @@
 /* Log file output.
-   Copyright (C) 2003 Free Software Foundation, Inc.
+   Copyright (C) 2003, 2005 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU Library General Public License as published
@@ -13,7 +13,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 /* Written by Bruno Haible <bruno@clisp.org>.  */
@@ -26,11 +26,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Handle multi-threaded applications.  */
+#ifdef _LIBC
+# include <bits/libc-lock.h>
+#else
+# include "lock.h"
+#endif
+
 /* Print an ASCII string with quotes and escape sequences where needed.  */
 static void
-print_escaped (stream, str)
-     FILE *stream;
-     const char *str;
+print_escaped (FILE *stream, const char *str)
 {
   putc ('"', stream);
   for (; *str != '\0'; str++)
@@ -50,17 +55,14 @@ print_escaped (stream, str)
   putc ('"', stream);
 }
 
-/* Add to the log file an entry denoting a failed translation.  */
-void
-_nl_log_untranslated (logfilename, domainname, msgid1, msgid2, plural)
-     const char *logfilename;
-     const char *domainname;
-     const char *msgid1;
-     const char *msgid2;
-     int plural;
+static char *last_logfilename = NULL;
+static FILE *last_logfile = NULL;
+__libc_lock_define_initialized (static, lock)
+
+static inline void
+_nl_log_untranslated_locked (const char *logfilename, const char *domainname,
+			     const char *msgid1, const char *msgid2, int plural)
 {
-  static char *last_logfilename = NULL;
-  static FILE *last_logfile = NULL;
   FILE *logfile;
 
   /* Can we reuse the last opened logfile?  */
@@ -101,4 +103,14 @@ _nl_log_untranslated (logfilename, domainname, msgid1, msgid2, plural)
   else
     fprintf (logfile, "\nmsgstr \"\"\n");
   putc ('\n', logfile);
+}
+
+/* Add to the log file an entry denoting a failed translation.  */
+void
+_nl_log_untranslated (const char *logfilename, const char *domainname,
+		      const char *msgid1, const char *msgid2, int plural)
+{
+  __libc_lock_lock (lock);
+  _nl_log_untranslated_locked (logfilename, domainname, msgid1, msgid2, plural);
+  __libc_lock_unlock (lock);
 }

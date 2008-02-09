@@ -1,5 +1,5 @@
 /* Implementation of the dngettext(3) function.
-   Copyright (C) 1995-1997, 2000, 2001, 2002 Free Software Foundation, Inc.
+   Copyright (C) 1995-1997, 2000-2003 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU Library General Public License as published
@@ -13,16 +13,17 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
+#include "gettextP.h"
+
 #include <locale.h>
 
-#include "gettextP.h"
 #ifdef _LIBC
 # include <libintl.h>
 #else
@@ -46,11 +47,8 @@
 /* Look up MSGID in the DOMAINNAME message catalog of the current
    LC_MESSAGES locale and skip message according to the plural form.  */
 char *
-DNGETTEXT (domainname, msgid1, msgid2, n)
-     const char *domainname;
-     const char *msgid1;
-     const char *msgid2;
-     unsigned long int n;
+DNGETTEXT (const char *domainname,
+	   const char *msgid1, const char *msgid2, unsigned long int n)
 {
   return DCNGETTEXT (domainname, msgid1, msgid2, n, LC_MESSAGES);
 }

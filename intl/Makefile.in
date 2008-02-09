@@ -1,5 +1,5 @@
 # Makefile for directory with message catalog handling library of GNU gettext
-# Copyright (C) 1995-1998, 2000-2003 Free Software Foundation, Inc.
+# Copyright (C) 1995-1998, 2000-2007 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Library General Public License as published
@@ -13,7 +13,7 @@
 #
 # You should have received a copy of the GNU Library General Public
 # License along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
 # USA.
 
 PACKAGE = @PACKAGE@
@@ -24,6 +24,17 @@ SHELL = /bin/sh
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 top_builddir = ..
+
+# The VPATH variables allows builds with $builddir != $srcdir, assuming a
+# 'make' program that supports VPATH (such as GNU make). This line is removed
+# by autoconf automatically when "$(srcdir)" = ".".
+# In this directory, the VPATH handling is particular:
+# 1. If INTL_LIBTOOL_SUFFIX_PREFIX is 'l' (indicating a build with libtool),
+#    the .c -> .lo rules carefully use $(srcdir), so that VPATH can be omitted.
+# 2. If PACKAGE = gettext-tools, VPATH _must_ be omitted, because otherwise
+#    'make' does the wrong thing if GNU gettext was configured with
+#    "./configure --srcdir=`pwd`", namely it gets confused by the .lo and .la
+#    files it finds in srcdir = ../../gettext-runtime/intl.
 VPATH = $(srcdir)
 
 prefix = @prefix@
@@ -31,6 +42,7 @@ exec_prefix = @exec_prefix@
 transform = @program_transform_name@
 libdir = @libdir@
 includedir = @includedir@
+datarootdir = @datarootdir@
 datadir = @datadir@
 localedir = $(datadir)/locale
 gettextsrcdir = $(datadir)/gettext/intl
@@ -39,8 +51,18 @@ subdir = intl
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-MKINSTALLDIRS = @MKINSTALLDIRS@
-mkinstalldirs = $(SHELL) $(MKINSTALLDIRS)
+
+# We use $(mkdir_p).
+# In automake <= 1.9.x, $(mkdir_p) is defined either as "mkdir -p --" or as
+# "$(mkinstalldirs)" or as "$(install_sh) -d". For these automake versions,
+# @install_sh@ does not start with $(SHELL), so we add it.
+# In automake >= 1.10, @mkdir_p@ is derived from ${MKDIR_P}, which is defined
+# either as "/path/to/mkdir -p" or ".../install-sh -c -d". For these automake
+# versions, $(mkinstalldirs) and $(install_sh) are unused.
+mkinstalldirs = $(SHELL) @install_sh@ -d
+install_sh = $(SHELL) @install_sh@
+MKDIR_P = @MKDIR_P@
+mkdir_p = @mkdir_p@
 
 l = @INTL_LIBTOOL_SUFFIX_PREFIX@
 
@@ -50,16 +72,21 @@ LIBTOOL = @LIBTOOL@
 RANLIB = @RANLIB@
 YACC = @INTLBISON@ -y -d
 YFLAGS = --name-prefix=__gettext
+WINDRES = @WINDRES@
 
+# -DBUILDING_LIBINTL: Change expansion of LIBINTL_DLL_EXPORTED macro.
+# -DBUILDING_DLL: Change expansion of RELOCATABLE_DLL_EXPORTED macro.
 DEFS = -DLOCALEDIR=\"$(localedir)\" -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" \
--DLIBDIR=\"$(libdir)\" -DIN_LIBINTL \
+-DLIBDIR=\"$(libdir)\" -DBUILDING_LIBINTL -DBUILDING_DLL -DIN_LIBINTL \
 -DENABLE_RELOCATABLE=1 -DIN_LIBRARY -DINSTALLDIR=\"$(libdir)\" -DNO_XMALLOC \
 -Dset_relocation_prefix=libintl_set_relocation_prefix \
 -Drelocate=libintl_relocate \
 -DDEPENDS_ON_LIBICONV=1 @DEFS@
 CPPFLAGS = @CPPFLAGS@
-CFLAGS = @CFLAGS@
-LDFLAGS = @LDFLAGS@
+CFLAGS = @CFLAGS@ @CFLAG_VISIBILITY@
+LDFLAGS = @LDFLAGS@ $(LDFLAGS_@WOE32DLL@)
+LDFLAGS_yes = -Wl,--export-all-symbols
+LDFLAGS_no =
 LIBS = @LIBS@
 
 COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS)
@@ -72,7 +99,13 @@ HEADERS = \
   plural-exp.h \
   eval-plural.h \
   localcharset.h \
+  lock.h \
   relocatable.h \
+  tsearch.h tsearch.c \
+  xsize.h \
+  printf-args.h printf-args.c \
+  printf-parse.h wprintf-parse.h printf-parse.c \
+  vasnprintf.h vasnwprintf.h vasnprintf.c \
   os2compat.h \
   libgnuintl.h.in
 SOURCES = \
@@ -81,6 +114,7 @@ SOURCES = \
   dgettext.c \
   gettext.c \
   finddomain.c \
+  hash-string.c \
   loadmsgcat.c \
   localealias.c \
   textdomain.c \
@@ -93,11 +127,16 @@ SOURCES = \
   plural.y \
   plural-exp.c \
   localcharset.c \
+  lock.c \
   relocatable.c \
+  langprefs.c \
   localename.c \
   log.c \
+  printf.c \
+  version.c \
   osdep.c \
   os2compat.c \
+  intl-exports.c \
   intl-compat.c
 OBJECTS = \
   bindtextdom.$lo \
@@ -105,6 +144,7 @@ OBJECTS = \
   dgettext.$lo \
   gettext.$lo \
   finddomain.$lo \
+  hash-string.$lo \
   loadmsgcat.$lo \
   localealias.$lo \
   textdomain.$lo \
@@ -117,19 +157,27 @@ OBJECTS = \
   plural.$lo \
   plural-exp.$lo \
   localcharset.$lo \
+  lock.$lo \
   relocatable.$lo \
+  langprefs.$lo \
   localename.$lo \
   log.$lo \
+  printf.$lo \
+  version.$lo \
   osdep.$lo \
   intl-compat.$lo
+OBJECTS_RES_yes = libintl.res
+OBJECTS_RES_no =
 DISTFILES.common = Makefile.in \
-config.charset locale.alias ref-add.sin ref-del.sin $(HEADERS) $(SOURCES)
+config.charset locale.alias ref-add.sin ref-del.sin export.h libintl.rc \
+$(HEADERS) $(SOURCES)
 DISTFILES.generated = plural.c
 DISTFILES.normal = VERSION
-DISTFILES.gettext = COPYING.LIB-2.0 COPYING.LIB-2.1 libintl.glibc \
-Makefile.vms libgnuintl.h.msvc-shared README.woe32 Makefile.msvc
+DISTFILES.gettext = COPYING.LIB-2.0 COPYING.LIB-2.1 libintl.glibc README.woe32
 DISTFILES.obsolete = xopen-msg.sed linux-msg.sed po2tbl.sed.in cat-compat.c \
-COPYING.LIB-2 gettext.h libgettext.h plural-eval.c libgnuintl.h
+COPYING.LIB-2 gettext.h libgettext.h plural-eval.c libgnuintl.h \
+libgnuintl.h_vms Makefile.vms libgnuintl.h.msvc-static \
+libgnuintl.h.msvc-shared Makefile.msvc
 
 all: all-@USE_INCLUDED_LIBINTL@
 all-yes: libintl.$la libintl.h charset.alias ref-add.sed ref-del.sed
@@ -142,10 +190,11 @@ libintl.a libgnuintl.a: $(OBJECTS)
 	$(AR) cru $@ $(OBJECTS)
 	$(RANLIB) $@
 
-libintl.la libgnuintl.la: $(OBJECTS)
+libintl.la libgnuintl.la: $(OBJECTS) $(OBJECTS_RES_@WOE32@)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS) $(LDFLAGS) -o $@ \
-	  $(OBJECTS) @LTLIBICONV@ $(LIBS) -lc \
+	  $(OBJECTS) @LTLIBICONV@ @INTL_MACOSX_LIBS@ $(LIBS) @LTLIBTHREAD@ @LTLIBC@ \
+	  $(OBJECTS_RES_@WOE32@) \
 	  -version-info $(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) \
 	  -rpath $(libdir) \
 	  -no-undefined
@@ -155,9 +204,9 @@ libintl.la libgnuintl.la: $(OBJECTS)
 # according to the libtool documentation, section "Library interface versions".
 # Maintainers of other packages that include the intl directory must *not*
 # change these values.
-LTV_CURRENT=5
-LTV_REVISION=0
-LTV_AGE=3
+LTV_CURRENT=8
+LTV_REVISION=2
+LTV_AGE=0
 
 .SUFFIXES:
 .SUFFIXES: .c .y .o .lo .sin .sed
@@ -179,6 +228,8 @@ gettext.lo: $(srcdir)/gettext.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/gettext.c
 finddomain.lo: $(srcdir)/finddomain.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/finddomain.c
+hash-string.lo: $(srcdir)/hash-string.c
+	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/hash-string.c
 loadmsgcat.lo: $(srcdir)/loadmsgcat.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/loadmsgcat.c
 localealias.lo: $(srcdir)/localealias.c
@@ -203,16 +254,42 @@ plural-exp.lo: $(srcdir)/plural-exp.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/plural-exp.c
 localcharset.lo: $(srcdir)/localcharset.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/localcharset.c
+lock.lo: $(srcdir)/lock.c
+	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/lock.c
 relocatable.lo: $(srcdir)/relocatable.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/relocatable.c
+langprefs.lo: $(srcdir)/langprefs.c
+	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/langprefs.c
 localename.lo: $(srcdir)/localename.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/localename.c
 log.lo: $(srcdir)/log.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/log.c
+printf.lo: $(srcdir)/printf.c
+	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/printf.c
+version.lo: $(srcdir)/version.c
+	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/version.c
 osdep.lo: $(srcdir)/osdep.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/osdep.c
 intl-compat.lo: $(srcdir)/intl-compat.c
 	$(LIBTOOL) --mode=compile $(COMPILE) $(srcdir)/intl-compat.c
+
+# This rule is executed only on Woe32 systems.
+# The following sed expressions come from the windres-options script. They are
+# inlined here, so that they can be written in a Makefile without requiring a
+# temporary file. They must contain literal newlines rather than semicolons,
+# so that they work with the sed-3.02 that is shipped with MSYS. We can use
+# GNU bash's $'\n' syntax to obtain such a newline.
+libintl.res: $(srcdir)/libintl.rc
+	nl=$$'\n'; \
+	sed_extract_major='/^[0-9]/{'$${nl}'s/^\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+	sed_extract_minor='/^[0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+	sed_extract_subminor='/^[0-9][0-9]*[.][0-9][0-9]*[.][0-9]/{'$${nl}'s/^[0-9]*[.][0-9]*[.]\([0-9]*\).*/\1/p'$${nl}q$${nl}'}'$${nl}'c\'$${nl}0$${nl}q; \
+	$(WINDRES) \
+	  "-DPACKAGE_VERSION_STRING=\\\"$(VERSION)\\\"" \
+	  "-DPACKAGE_VERSION_MAJOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_major"` \
+	  "-DPACKAGE_VERSION_MINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_minor"` \
+	  "-DPACKAGE_VERSION_SUBMINOR="`echo '$(VERSION)' | sed -n -e "$$sed_extract_subminor"` \
+	  -i $(srcdir)/libintl.rc -o libintl.res --output-format=coff
 
 ref-add.sed: $(srcdir)/ref-add.sin
 	sed -e '/^#/d' -e 's/@''PACKAGE''@/@PACKAGE@/g' $(srcdir)/ref-add.sin > t-ref-add.sed
@@ -224,10 +301,29 @@ ref-del.sed: $(srcdir)/ref-del.sin
 INCLUDES = -I. -I$(srcdir) -I..
 
 libgnuintl.h: $(srcdir)/libgnuintl.h.in
-	cp $(srcdir)/libgnuintl.h.in libgnuintl.h
+	sed -e '/IN_LIBGLOCALE/d' \
+	    -e 's,@''HAVE_POSIX_PRINTF''@,@HAVE_POSIX_PRINTF@,g' \
+	    -e 's,@''HAVE_ASPRINTF''@,@HAVE_ASPRINTF@,g' \
+	    -e 's,@''HAVE_SNPRINTF''@,@HAVE_SNPRINTF@,g' \
+	    -e 's,@''HAVE_WPRINTF''@,@HAVE_WPRINTF@,g' \
+	  < $(srcdir)/libgnuintl.h.in \
+	| if test '@WOE32DLL@' = yes; then \
+	    sed -e 's/extern \([^()]*\);/extern __declspec (dllimport) \1;/'; \
+	  else \
+	    cat; \
+	  fi \
+	| sed -e 's/extern \([^"]\)/extern LIBINTL_DLL_EXPORTED \1/' \
+	      -e "/#define _LIBINTL_H/r $(srcdir)/export.h" \
+	| sed -e 's,@''HAVE_VISIBILITY''@,@HAVE_VISIBILITY@,g' \
+	  > libgnuintl.h
 
-libintl.h: libgnuintl.h
-	cp libgnuintl.h libintl.h
+libintl.h: $(srcdir)/libgnuintl.h.in
+	sed -e '/IN_LIBGLOCALE/d' \
+	    -e 's,@''HAVE_POSIX_PRINTF''@,@HAVE_POSIX_PRINTF@,g' \
+	    -e 's,@''HAVE_ASPRINTF''@,@HAVE_ASPRINTF@,g' \
+	    -e 's,@''HAVE_SNPRINTF''@,@HAVE_SNPRINTF@,g' \
+	    -e 's,@''HAVE_WPRINTF''@,@HAVE_WPRINTF@,g' \
+	  < $(srcdir)/libgnuintl.h.in > libintl.h
 
 charset.alias: $(srcdir)/config.charset
 	$(SHELL) $(srcdir)/config.charset '@host@' > t-$@
@@ -244,13 +340,13 @@ install: install-exec install-data
 install-exec: all
 	if { test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools"; } \
 	   && test '@USE_INCLUDED_LIBINTL@' = yes; then \
-	  $(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir); \
+	  $(mkdir_p) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir); \
 	  $(INSTALL_DATA) libintl.h $(DESTDIR)$(includedir)/libintl.h; \
 	  $(LIBTOOL) --mode=install \
 	    $(INSTALL_DATA) libintl.$la $(DESTDIR)$(libdir)/libintl.$la; \
 	  if test "@RELOCATABLE@" = yes; then \
 	    dependencies=`sed -n -e 's,^dependency_libs=\(.*\),\1,p' < $(DESTDIR)$(libdir)/libintl.la | sed -e "s,^',," -e "s,'\$$,,"`; \
-	    if test -n "$dependencies"; then \
+	    if test -n "$$dependencies"; then \
 	      rm -f $(DESTDIR)$(libdir)/libintl.la; \
 	    fi; \
 	  fi; \
@@ -258,8 +354,9 @@ install-exec: all
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools" \
-	   && test '@USE_INCLUDED_LIBINTL@' = no; then \
-	  $(mkinstalldirs) $(DESTDIR)$(libdir); \
+	   && test '@USE_INCLUDED_LIBINTL@' = no \
+	   && test @GLIBC2@ != no; then \
+	  $(mkdir_p) $(DESTDIR)$(libdir); \
 	  $(LIBTOOL) --mode=install \
 	    $(INSTALL_DATA) libgnuintl.$la $(DESTDIR)$(libdir)/libgnuintl.$la; \
 	  rm -f $(DESTDIR)$(libdir)/preloadable_libintl.so; \
@@ -270,7 +367,7 @@ install-exec: all
 	  : ; \
 	fi
 	if test '@USE_INCLUDED_LIBINTL@' = yes; then \
-	  test @GLIBC21@ != no || $(mkinstalldirs) $(DESTDIR)$(libdir); \
+	  test @GLIBC21@ != no || $(mkdir_p) $(DESTDIR)$(libdir); \
 	  temp=$(DESTDIR)$(libdir)/t-charset.alias; \
 	  dest=$(DESTDIR)$(libdir)/charset.alias; \
 	  if test -f $(DESTDIR)$(libdir)/charset.alias; then \
@@ -286,7 +383,7 @@ install-exec: all
 	      rm -f $$temp; \
 	    fi; \
 	  fi; \
-	  $(mkinstalldirs) $(DESTDIR)$(localedir); \
+	  $(mkdir_p) $(DESTDIR)$(localedir); \
 	  test -f $(DESTDIR)$(localedir)/locale.alias \
 	    && orig=$(DESTDIR)$(localedir)/locale.alias \
 	    || orig=$(srcdir)/locale.alias; \
@@ -300,7 +397,7 @@ install-exec: all
 	fi
 install-data: all
 	if test "$(PACKAGE)" = "gettext-tools"; then \
-	  $(mkinstalldirs) $(DESTDIR)$(gettextsrcdir); \
+	  $(mkdir_p) $(DESTDIR)$(gettextsrcdir); \
 	  $(INSTALL_DATA) VERSION $(DESTDIR)$(gettextsrcdir)/VERSION; \
 	  $(INSTALL_DATA) ChangeLog.inst $(DESTDIR)$(gettextsrcdir)/ChangeLog; \
 	  dists="COPYING.LIB-2.0 COPYING.LIB-2.1 $(DISTFILES.common)"; \
@@ -325,27 +422,30 @@ install-data: all
 
 install-strip: install
 
+install-dvi install-html install-info install-ps install-pdf:
+
 installdirs:
 	if { test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools"; } \
 	   && test '@USE_INCLUDED_LIBINTL@' = yes; then \
-	  $(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir); \
+	  $(mkdir_p) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir); \
 	else \
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools" \
-	   && test '@USE_INCLUDED_LIBINTL@' = no; then \
-	  $(mkinstalldirs) $(DESTDIR)$(libdir); \
+	   && test '@USE_INCLUDED_LIBINTL@' = no \
+	   && test @GLIBC2@ != no; then \
+	  $(mkdir_p) $(DESTDIR)$(libdir); \
 	else \
 	  : ; \
 	fi
 	if test '@USE_INCLUDED_LIBINTL@' = yes; then \
-	  test @GLIBC21@ != no || $(mkinstalldirs) $(DESTDIR)$(libdir); \
-	  $(mkinstalldirs) $(DESTDIR)$(localedir); \
+	  test @GLIBC21@ != no || $(mkdir_p) $(DESTDIR)$(libdir); \
+	  $(mkdir_p) $(DESTDIR)$(localedir); \
 	else \
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools"; then \
-	  $(mkinstalldirs) $(DESTDIR)$(gettextsrcdir); \
+	  $(mkdir_p) $(DESTDIR)$(gettextsrcdir); \
 	else \
 	  : ; \
 	fi
@@ -363,7 +463,8 @@ uninstall:
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools" \
-	   && test '@USE_INCLUDED_LIBINTL@' = no; then \
+	   && test '@USE_INCLUDED_LIBINTL@' = no \
+	   && test @GLIBC2@ != no; then \
 	  rm -f $(DESTDIR)$(libdir)/preloadable_libintl.so; \
 	else \
 	  : ; \
@@ -406,12 +507,19 @@ info dvi ps pdf html:
 
 $(OBJECTS): ../config.h libgnuintl.h
 bindtextdom.$lo dcgettext.$lo dcigettext.$lo dcngettext.$lo dgettext.$lo dngettext.$lo finddomain.$lo gettext.$lo intl-compat.$lo loadmsgcat.$lo localealias.$lo ngettext.$lo textdomain.$lo: $(srcdir)/gettextP.h $(srcdir)/gmo.h $(srcdir)/loadinfo.h
-dcigettext.$lo loadmsgcat.$lo: $(srcdir)/hash-string.h
+hash-string.$lo dcigettext.$lo loadmsgcat.$lo: $(srcdir)/hash-string.h
 explodename.$lo l10nflist.$lo: $(srcdir)/loadinfo.h
 dcigettext.$lo loadmsgcat.$lo plural.$lo plural-exp.$lo: $(srcdir)/plural-exp.h
 dcigettext.$lo: $(srcdir)/eval-plural.h
 localcharset.$lo: $(srcdir)/localcharset.h
+bindtextdom.$lo dcigettext.$lo finddomain.$lo loadmsgcat.$lo localealias.$lo lock.$lo log.$lo: $(srcdir)/lock.h
 localealias.$lo localcharset.$lo relocatable.$lo: $(srcdir)/relocatable.h
+printf.$lo: $(srcdir)/printf-args.h $(srcdir)/printf-args.c $(srcdir)/printf-parse.h $(srcdir)/wprintf-parse.h $(srcdir)/xsize.h $(srcdir)/printf-parse.c $(srcdir)/vasnprintf.h $(srcdir)/vasnwprintf.h $(srcdir)/vasnprintf.c
+
+# A bison-2.1 generated plural.c includes <libintl.h> if ENABLE_NLS.
+PLURAL_DEPS_yes = libintl.h
+PLURAL_DEPS_no =
+plural.$lo: $(PLURAL_DEPS_@USE_INCLUDED_LIBINTL@)
 
 tags: TAGS
 
@@ -430,7 +538,7 @@ ID: $(HEADERS) $(SOURCES)
 
 
 mostlyclean:
-	rm -f *.a *.la *.o *.obj *.lo core core.*
+	rm -f *.a *.la *.o *.obj *.lo libintl.res core core.*
 	rm -f libgnuintl.h libintl.h charset.alias ref-add.sed ref-del.sed
 	rm -f -r .libs _libs
 
@@ -464,7 +572,7 @@ dist distdir: Makefile
 	  $(MAKE) $(DISTFILES.common) $(DISTFILES.generated) $$additional; \
 	  for file in ChangeLog $(DISTFILES.common) $(DISTFILES.generated) $$additional; do \
 	    if test -f $$file; then dir=.; else dir=$(srcdir); fi; \
-	    cp -p $$dir/$$file $(distdir); \
+	    cp -p $$dir/$$file $(distdir) || test $$file = Makefile.in || exit 1; \
 	  done; \
 	fi
 
@@ -472,7 +580,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status
 # This would be more efficient, but doesn't work any more with autoconf-2.57,
 # when AC_CONFIG_FILES([intl/Makefile:somedir/Makefile.in]) is used.
-#	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+#	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 
 # Tell versions [3.59,3.63) of GNU make not to export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
