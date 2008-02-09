@@ -56,6 +56,8 @@
 #include <limits.h>
 #include <unistd.h>
 #include <stdlib.h>
+// TODO this should be included where only it is need.
+#include <cstring>
 #include <string>
 #include <deque>
 #include <algorithm>
