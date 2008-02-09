@@ -73,10 +73,6 @@ void PeerMessageUtil::checkLength(int32_t length) {
   if(length <= 0) {
     throw new DlAbortEx("Invalid length: %d", length);
   }
-  if(!Util::isPowerOf(length, 2)) {
-    throw new DlAbortEx("Invalid length: %d It is not power of 2",
-			length);
-  }
 }
 
 void PeerMessageUtil::checkRange(int32_t begin, int32_t length, int32_t pieceLength) {

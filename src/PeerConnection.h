@@ -54,7 +54,7 @@ private:
   char resbuf[MAX_PAYLOAD_LEN];
   int32_t resbufLength;
   int32_t currentPayloadLength;
-  unsigned char lenbuf[4];
+  char lenbuf[4];
   int32_t lenbufLength;
 
 public:

@@ -118,16 +118,6 @@ bool DownloadCommand::executeInternal() {
     //segment->writtenLength += infbufSize;
     peerStat->updateDownloadLength(infbufSize);
   }
-  // calculate downloading speed
-  if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
-    int32_t nowSpeed = peerStat->calculateDownloadSpeed();
-    if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
-      throw new DlAbortEx(EX_TOO_SLOW_DOWNLOAD_SPEED,
-			  nowSpeed,
-			  lowestDownloadSpeedLimit,
-			  req->getHost().c_str());
-    }
-  }
   if(_requestGroup->getTotalLength() != 0 && bufSize == 0) {
     throw new DlRetryEx(EX_GOT_EOF);
   }
@@ -137,11 +127,27 @@ bool DownloadCommand::executeInternal() {
     if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);
     validatePieceHash(segment);
+    checkLowestDownloadSpeed();
     // this unit is going to download another segment.
     return prepareForNextSegment();
   } else {
+    checkLowestDownloadSpeed();
     e->commands.push_back(this);
     return false;
+  }
+}
+
+void DownloadCommand::checkLowestDownloadSpeed() const
+{
+  // calculate downloading speed
+  if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
+    int32_t nowSpeed = peerStat->calculateDownloadSpeed();
+    if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
+      throw new DlAbortEx(EX_TOO_SLOW_DOWNLOAD_SPEED,
+			  nowSpeed,
+			  lowestDownloadSpeedLimit,
+			  req->getHost().c_str());
+    }
   }
 }
 
@@ -179,7 +185,7 @@ void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
   if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
      !expectedPieceHash.empty()) {
     string actualPieceHash =
-      MessageDigestHelper::digest("sha1",
+      MessageDigestHelper::digest(_requestGroup->getDownloadContext()->getPieceHashAlgo(),
 				  _requestGroup->getPieceStorage()->getDiskAdaptor(),
 				  segment->getPosition(),
 				  segment->getLength());

@@ -4,8 +4,10 @@
 #include "Util.h"
 #include "SingleFileDownloadContext.h"
 #include "UnknownLengthPieceStorage.h"
+#include "DefaultPieceStorage.h"
 #include "Segment.h"
 #include "Option.h"
+#include "MockBtContext.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 using namespace std;
@@ -14,6 +16,7 @@ class SegmentManTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(SegmentManTest);
   CPPUNIT_TEST(testNullBitfield);
+  CPPUNIT_TEST(testCompleteSegment);
   CPPUNIT_TEST(testMarkPieceDone_usedSegment);
   CPPUNIT_TEST_SUITE_END();
 private:
@@ -23,6 +26,7 @@ public:
   }
 
   void testNullBitfield();
+  void testCompleteSegment();
   void testMarkPieceDone_usedSegment();
 };
 
@@ -48,6 +52,33 @@ void SegmentManTest::testNullBitfield()
 
   segmentMan.cancelSegment(1);
   CPPUNIT_ASSERT(!segmentMan.getSegment(2).isNull());
+}
+
+void SegmentManTest::testCompleteSegment()
+{
+  Option op;
+  int32_t pieceLength = 1024*1024;
+  int64_t totalLength = 64*1024*1024;
+  MockBtContextHandle dctx = new MockBtContext();
+  dctx->setPieceLength(pieceLength);
+  dctx->setTotalLength(totalLength);
+  dctx->setNumPieces((totalLength+pieceLength-1)/pieceLength);
+  DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, &op);
+
+  SegmentMan segmentMan(&op, dctx, ps);
+
+  CPPUNIT_ASSERT(!segmentMan.getSegment(1, 0).isNull());
+  SegmentHandle seg = segmentMan.getSegment(1, 1);
+  CPPUNIT_ASSERT(!seg.isNull());
+  CPPUNIT_ASSERT(!segmentMan.getSegment(1, 2).isNull());
+
+  seg->updateWrittenLength(pieceLength);
+  segmentMan.completeSegment(1, seg);
+  
+  Segments segments = segmentMan.getInFlightSegment(1);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, segments.size());
+  CPPUNIT_ASSERT_EQUAL(0, segments[0]->getIndex());
+  CPPUNIT_ASSERT_EQUAL(2, segments[1]->getIndex());
 }
 
 void SegmentManTest::testMarkPieceDone_usedSegment()

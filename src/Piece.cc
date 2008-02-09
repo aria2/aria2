@@ -105,6 +105,7 @@ string Piece::toString() const {
 
 void Piece::reconfigure(int32_t length)
 {
+  delete bitfield;
   this->length = length;
   bitfield =
     BitfieldManFactory::getFactoryInstance()->createBitfieldMan(_blockLength, length);

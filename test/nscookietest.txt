@@ -3,5 +3,6 @@ localhost	FALSE	/	TRUE	1181473200	JSESSIONID	123456789
 
 localhost	FALSE	/	FALSE	1181473200	user	me
 
-localhost	FALSE	/	FALSE	1181473200	passwd	secret
-localhost	FALSE	/	FALSE	1181473200	novalue	
+localhost	FALSE	/cgi-bin	FALSE	2147483647	passwd	secret
+overflow	FALSE	/	FALSE	FALSE	9223372036854775807	TAX	1000
+localhost	FALSE	/	FALSE	2147483648	novalue	

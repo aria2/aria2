@@ -146,19 +146,23 @@ MetalinkerHandle XML2SAXMetalinkProcessor::parseFromBinaryStream(const BinaryStr
 
   SessionDataHandle sessionData = new SessionData(_stm);
   xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt(&mySAXHandler, sessionData.get(), (const char*)buf, res, 0);
-
-  int64_t readOffset = res;
-  while(1) {
-    int32_t res = binaryStream->readData(buf, bufSize, readOffset);
-    if(res == 0) {
-      break;
+  try {
+    int64_t readOffset = res;
+    while(1) {
+      int32_t res = binaryStream->readData(buf, bufSize, readOffset);
+      if(res == 0) {
+	break;
+      }
+      if(xmlParseChunk(ctx, (const char*)buf, res, 0) != 0) {
+	throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+      }
+      readOffset += res;
     }
-    if(xmlParseChunk(ctx, (const char*)buf, res, 0) != 0) {
-      throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
-    }
-    readOffset += res;
+    xmlParseChunk(ctx, (const char*)buf, 0, 1);
+  } catch(Exception* e) {
+    xmlFreeParserCtxt(ctx);
+    throw e;
   }
-  xmlParseChunk(ctx, (const char*)buf, 0, 1);
   xmlFreeParserCtxt(ctx);
 
   if(!_stm->finished()) {

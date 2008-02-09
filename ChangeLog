@@ -1,3 +1,98 @@
+2008-01-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that EX_TOO_LONG_PAYLOAD exception is thrown if just
+	payload length(4bytes) are received. This happens because lenbufLength
+	is not updated in this particular case and successive call of
+	receiveMessage() overwrites payload length with bytes recieved which
+	are payload body.
+	* src/PeerConnection.{h, cc}
+	* src/message.h
+
+2008-01-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Removed a call to isPowerOf() because it is no longer necessary here
+	and a request block is not always power of 2.
+	BUG#1866924
+	* src/PeerMessageUtil.cc (checkLength)
+
+2008-01-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that always first found Segment is removed from
+	usedSegmentEntries. Removed unused functions.
+	* src/SegmentMan.{h, cc}
+	* test/SegmentManTest.cc
+
+2008-01-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that SegmentMan::completeSegment() is not called
+	even if Segment is complete when --lowest-speed-limit is enabled.
+	BUG#1864525
+	* src/DownloadCommand.{h, cc}
+
+2008-01-06  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed: hash algorithm 'sha1' is always used. 
+	* src/DownloadCommand.cc (validatePieceHash) 
+
+2007-12-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed memory leak
+	* src/Piece.cc
+	
+2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that causes aria2 not to finish download. BUG#1855875.
+	I could reproduce this bug in following procedure:
+	1. Stop the download at the very beginning(1% or 100KB downloaded).
+	2. Restart aria2.
+	3. You see the download stopped around 99%.
+	* src/HttpResponseCommand.cc (handleDefaultEncoding)
+	* src/StreamFileAllocationEntry.cc: Removed the timeout handling.
+	If timeout is reached, then _nextCommand is unused and it may contains
+	segments and they won't be canceled. Actually, timeout is not needed
+	here because if the server dropped connection, then retry is made.
+
+2007-12-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that returns incomplete data when it contains null
+	character. A convenient constructor was also added.
+	* src/Data.{h, cc}
+
+2007-12-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+	
+	Added "Status Legend" label to the explanation text of 'stat' in
+	download result and moved it to the last. BUG#1848214
+	* src/RequestGroupMan.cc
+
+2007-12-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that prevents aria2 from loading cookie file when expire
+	value is greater than 2^31-1. BUG#1851066
+	* src/CookieBoxFactory.cc
+	* test/CookieBoxFactoryTest.cc
+
+2007-12-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed possible memory leak when an exception is thrown.
+	* src/XML2SAXMetalinkProcessor.cc
+
+2007-12-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Compiler error fix: applied the patch by Tiziano Mueller
+	* src/RequestGroup.cc
+
+2007-12-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug: only first announce URL is tried in AnnounceTier,
+	in stopped and completed event.
+	* src/AnnounceList.{h, cc}
+	* test/AnnounceListTest.cc
+	* src/DefaultBtAnnounce.cc
+	* test/DefaultBtAnnounceTest.cc
+
+	Sorted URLs.
+	* test/Metalink2RequestGroupTest.cc
+
 2007-12-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Removed unnecessary string copy. Updated doc and corrected indentation.

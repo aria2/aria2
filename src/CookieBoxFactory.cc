@@ -35,6 +35,7 @@
 #include "CookieBoxFactory.h"
 #include "CookieParser.h"
 #include "Util.h"
+#include "RecoverableException.h"
 
 CookieBoxHandle CookieBoxFactory::createNewInstance()
 {
@@ -50,9 +51,15 @@ void CookieBoxFactory::loadDefaultCookie(istream& s)
     if(Util::startsWith(line, "#")) {
       continue;
     }
-    Cookie c = parseNsCookie(line);
-    if(c.good()) {
-      defaultCookies.push_back(c);
+    try {
+      Cookie c = parseNsCookie(line);
+      if(c.good()) {
+	defaultCookies.push_back(c);
+      }
+    } catch(RecoverableException* e) {
+      // ignore malformed cookie entry
+      // TODO better to log it
+      delete e;
     }
   }
 }
@@ -68,7 +75,12 @@ Cookie CookieBoxFactory::parseNsCookie(const string& nsCookieStr) const
   c.domain = vs[0];
   c.path = vs[2];
   c.secure = vs[3] == "TRUE" ? true : false;
-  c.expires = Util::parseInt(vs[4]);
+  int64_t expireDate = Util::parseLLInt(vs[4]);
+  // TODO assuming time_t is int32_t...
+  if(expireDate > INT32_MAX) {
+    expireDate = INT32_MAX;
+  }
+  c.expires = expireDate;
   c.name = vs[5];
   if(vs.size() >= 7) {
     c.value = vs[6];

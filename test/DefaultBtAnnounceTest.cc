@@ -19,6 +19,8 @@ class DefaultBtAnnounceTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetAnnounceUrl);
   CPPUNIT_TEST(testNoMoreAnnounce);
   CPPUNIT_TEST(testIsAllAnnounceFailed);
+  CPPUNIT_TEST(testURLOrderInStoppedEvent);
+  CPPUNIT_TEST(testURLOrderInCompletedEvent);
   CPPUNIT_TEST_SUITE_END();
 private:
   MockBtContextHandle _btContext;
@@ -74,6 +76,8 @@ public:
   void testGetAnnounceUrl();
   void testNoMoreAnnounce();
   void testIsAllAnnounceFailed();
+  void testURLOrderInStoppedEvent();
+  void testURLOrderInCompletedEvent();
 };
 
 
@@ -210,4 +214,64 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   btAnnounce.resetAnnounce();
 
   CPPUNIT_ASSERT(!btAnnounce.isAllAnnounceFailed());  
+}
+
+void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
+{
+  const char* urls[] = { "http://localhost1/announce",
+			 "http://localhost2/announce" };
+  AnnounceTierHandle announceTier = new AnnounceTier(Strings(&urls[0], &urls[2]));
+
+  _btContext->addAnnounceTier(announceTier);
+
+  DefaultBtAnnounce btAnnounce(_btContext, _option);
+  btAnnounce.setPieceStorage(_pieceStorage);
+  btAnnounce.setPeerStorage(_peerStorage);
+  btAnnounce.setBtRuntime(_btRuntime);
+  btAnnounce.setRandomizer(new FixedNumberRandomizer());
+  btAnnounce.generateKey();
+
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+
+  btAnnounce.announceSuccess();
+
+  _btRuntime->setHalt(true);
+
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
+
+  btAnnounce.announceFailure();
+
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost2/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=0&no_peer_id=1&port=6989&event=stopped"), btAnnounce.getAnnounceUrl());
+
+  btAnnounce.announceSuccess();
+}
+
+void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
+{
+  const char* urls[] = { "http://localhost1/announce",
+			 "http://localhost2/announce" };
+  AnnounceTierHandle announceTier = new AnnounceTier(Strings(&urls[0], &urls[2]));
+
+  _btContext->addAnnounceTier(announceTier);
+
+  DefaultBtAnnounce btAnnounce(_btContext, _option);
+  btAnnounce.setPieceStorage(_pieceStorage);
+  btAnnounce.setPeerStorage(_peerStorage);
+  btAnnounce.setBtRuntime(_btRuntime);
+  btAnnounce.setRandomizer(new FixedNumberRandomizer());
+  btAnnounce.generateKey();
+
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started"), btAnnounce.getAnnounceUrl());
+
+  btAnnounce.announceSuccess();
+
+  _pieceStorage->setAllDownloadFinished(true);
+
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
+
+  btAnnounce.announceFailure();
+
+  CPPUNIT_ASSERT_EQUAL(string("http://localhost2/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=completed"), btAnnounce.getAnnounceUrl());
+
+  btAnnounce.announceSuccess();
 }

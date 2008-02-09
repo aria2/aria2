@@ -46,21 +46,24 @@ Data::Data(const char* data, int32_t len, bool number):number(number) {
   }
 }
 
+Data::Data(const string& data, bool number):number(number)
+{
+  if(data.empty()) {
+    this->data = 0;
+    this->len = 0;
+  } else {
+    this->data = new char[data.size()];
+    memcpy(this->data, data.c_str(), data.size());
+    this->len = data.size();
+  }
+}
+
 Data::~Data() {
   delete [] data;
 }
 
 string Data::toString() const {
-  if(len == 0) {
-    return "";
-  } else {
-    char* temp = new char[len+1];
-    memcpy(temp, data, len);
-    temp[len] = '\0';
-    string str(temp);
-    delete [] temp;
-    return str;
-  }
+  return string(&data[0], &data[len]);
 }
 
 const char* Data::getData() const {

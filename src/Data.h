@@ -51,6 +51,9 @@ public:
    * memory of data.
    */
   Data(const char* data, int32_t len, bool number = false);
+
+  Data(const string& data, bool number = false);
+
   ~Data();
 
   string toString() const;
