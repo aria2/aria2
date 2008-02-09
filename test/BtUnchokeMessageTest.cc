@@ -63,24 +63,26 @@ void BtUnchokeMessageTest::testGetMessage() {
 
 void BtUnchokeMessageTest::testDoReceivedAction() {
   SharedHandle<Peer> peer = new Peer("host", 6969);
-  peer->peerChoking = true;
+  peer->allocateSessionResource(1024, 1024*1024);
+  peer->peerChoking(true);
   BtUnchokeMessage msg;
   msg.setPeer(peer);
 
-  CPPUNIT_ASSERT(peer->peerChoking);
+  CPPUNIT_ASSERT(peer->peerChoking());
   msg.doReceivedAction();
-  CPPUNIT_ASSERT(!peer->peerChoking);
+  CPPUNIT_ASSERT(!peer->peerChoking());
 }
 
 void BtUnchokeMessageTest::testOnSendComplete() {
   SharedHandle<Peer> peer = new Peer("host", 6969);
-  peer->amChoking = true;
+  peer->allocateSessionResource(1024, 1024*1024);
+  peer->amChoking(true);
   BtUnchokeMessage msg;
   msg.setPeer(peer);
 
-  CPPUNIT_ASSERT(peer->amChoking);
+  CPPUNIT_ASSERT(peer->amChoking());
   msg.onSendComplete();
-  CPPUNIT_ASSERT(!peer->amChoking);
+  CPPUNIT_ASSERT(!peer->amChoking());
 }
 
 void BtUnchokeMessageTest::testToString() {

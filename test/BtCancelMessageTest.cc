@@ -39,7 +39,7 @@ public:
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
   }
 
   void testCreate();

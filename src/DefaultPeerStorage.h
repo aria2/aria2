@@ -98,6 +98,9 @@ public:
   void deleteUnusedPeer(int32_t delSize);
   
   void onErasingPeer(const SharedHandle<Peer>& peer);
+
+  void onReturningPeer(const SharedHandle<Peer>& peer);
+
 };
 
 } // namespace aria2

@@ -134,6 +134,8 @@ public:
     btContext = new DefaultBtContext();
     btContext->load("test.torrent");
     peer = new Peer("192.168.0.1", 6969);
+    peer->allocateSessionResource(btContext->getPieceLength(),
+				  btContext->getTotalLength());
     peerStorage = new MockPeerStorage();
     pieceStorage = new MockPieceStorage();
     BtRegistry::unregisterAll();
@@ -147,7 +149,7 @@ public:
     SharedHandle<PeerObject> peerObject = new PeerObject();
     peerObject->btMessageFactory = new MockBtMessageFactory2();
 
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), peerObject);
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), peerObject);
 
     btMessageDispatcher = new DefaultBtMessageDispatcher();
     btMessageDispatcher->setCuid(1);
@@ -328,7 +330,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->getMessageQueue().size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->getRequestSlots().size());
   CPPUNIT_ASSERT_EQUAL(false, piece->isBlockUsed(0));
-  CPPUNIT_ASSERT_EQUAL(true, peer->snubbing);
+  CPPUNIT_ASSERT_EQUAL(true, peer->snubbing());
 }
 
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_completeBlock() {

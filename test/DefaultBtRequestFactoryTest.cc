@@ -97,7 +97,7 @@ public:
 					  new PeerObjectCluster());
     SharedHandle<PeerObject> peerObject = new PeerObject();
     peerObject->btMessageFactory = new MockBtMessageFactory2();
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), peerObject);
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), peerObject);
 
     btRequestFactory = new DefaultBtRequestFactory();
     btRequestFactory->setBtContext(btContext);

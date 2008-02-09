@@ -152,11 +152,10 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   peerObject->btRequestFactory = reqFactory;
   peerObject->peerConnection = peerConnection;
   
-  PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), peerObject);
+  PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), peerObject);
 
   setUploadLimit(e->option->getAsInt(PREF_MAX_UPLOAD_LIMIT));
-  peer->activate();
-  peer->allocateBitfield(btContext->getPieceLength(), btContext->getTotalLength());
+  peer->allocateSessionResource(btContext->getPieceLength(), btContext->getTotalLength());
 
   maxDownloadSpeedLimit = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
 
@@ -164,9 +163,8 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
-  peer->deallocateBitfield();
-  peer->deactivate();
-  PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getId());
+  peer->releaseSessionResource();
+  PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getID());
 					
   btRuntime->decreaseConnections();
   //logger->debug("CUID#%d - unregistered message factory using ID:%s",
@@ -217,8 +215,8 @@ bool PeerInteractionCommand::executeInternal() {
     if(btInteractive->countReceivedMessageInIteration() > 0) {
       updateKeepAlive();
     }
-    if(peer->amInterested && !peer->peerChoking ||
-       peer->peerInterested && !peer->amChoking) {
+    if(peer->amInterested() && !peer->peerChoking() ||
+       peer->peerInterested() && !peer->amChoking()) {
       if(maxDownloadSpeedLimit > 0) {
 	TransferStat stat = peerStorage->calculateStat();
 	if(maxDownloadSpeedLimit < stat.downloadSpeed) {
@@ -246,9 +244,9 @@ bool PeerInteractionCommand::executeInternal() {
 bool PeerInteractionCommand::prepareForNextPeer(int32_t wait) {
   if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
-    peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
+    peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(peer->cuid,
+      new PeerInitiateConnectionCommand(peer->usedBy(),
 					_requestGroup,
 					peer,
 					e,

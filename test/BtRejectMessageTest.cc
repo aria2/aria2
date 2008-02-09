@@ -76,12 +76,13 @@ public:
   void setUp() {
     BtRegistry::unregisterAll();
     peer = new Peer("host", 6969);
+    peer->allocateSessionResource(1024, 1024*1024);
 
     SharedHandle<MockBtContext> btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
     dispatcher = new MockBtMessageDispatcher2();
     PEER_OBJECT(btContext, peer)->btMessageDispatcher = dispatcher;
 

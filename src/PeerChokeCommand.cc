@@ -64,7 +64,7 @@ class ChokePeer {
 public:
   ChokePeer() {}
   void operator()(PeerHandle& peer) {
-    peer->chokingRequired = true;
+    peer->chokingRequired(true);
   }
 };
 
@@ -76,13 +76,13 @@ void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
   int32_t optUnchokCount = 1;
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peers::value_type peer = *itr;
-    if(optUnchokCount > 0 && !peer->snubbing) {
+    if(optUnchokCount > 0 && !peer->snubbing()) {
       optUnchokCount--;
-      peer->optUnchoking = true;
+      peer->optUnchoking(true);
       logger->debug("opt, unchoking %s, download speed=%d",
 		    peer->ipaddr.c_str(), peer->calculateDownloadSpeed());
     } else {
-      peer->optUnchoking = false;
+      peer->optUnchoking(false);
     }
   }
 }
@@ -125,10 +125,10 @@ bool PeerChokeCommand::execute() {
     int32_t unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
     for(Peers::iterator itr = peers.begin(); itr != peers.end() && unchokingCount > 0; ) {
       PeerHandle peer = *itr;
-      if(peer->peerInterested && !peer->snubbing) {
+      if(peer->peerInterested() && !peer->snubbing()) {
 	unchokingCount--;
-	peer->chokingRequired = false;
-	peer->optUnchoking = false;
+	peer->chokingRequired(false);
+	peer->optUnchoking(false);
 	itr = peers.erase(itr);
 	if(pieceStorage->downloadFinished()) {
 	  logger->debug("cat01, unchoking %s, upload speed=%d",
@@ -145,9 +145,9 @@ bool PeerChokeCommand::execute() {
     }
     for(Peers::iterator itr = peers.begin(); itr != peers.end(); ) {
       PeerHandle peer = *itr;
-      if(!peer->peerInterested && !peer->snubbing) {
-	peer->chokingRequired = false;
-	peer->optUnchoking = false;
+      if(!peer->peerInterested() && !peer->snubbing()) {
+	peer->chokingRequired(false);
+	peer->optUnchoking(false);
 	itr = peers.erase(itr);
 	if(pieceStorage->downloadFinished()) {
 	  logger->debug("cat02, unchoking %s, upload speed=%d",

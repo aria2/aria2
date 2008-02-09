@@ -84,7 +84,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   ps.addPeer(peer1);
   ps.addPeer(peer2);
 
-  peer2->cuid = 1;
+  peer2->usedBy(1);
 
   ps.deleteUnusedPeer(3);
 
@@ -117,7 +117,7 @@ void DefaultPeerStorageTest::testAddPeer() {
 
   SharedHandle<Peer> peer4(new Peer("192.168.0.4", 6889));
 
-  peer1->cuid = 1;
+  peer1->usedBy(1);
   CPPUNIT_ASSERT(ps.addPeer(peer4));
   // peer2 was deleted. While peer1 is oldest, its cuid is not 0.
   CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
@@ -142,7 +142,7 @@ void DefaultPeerStorageTest::testGetUnusedPeer() {
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"),
 		       ps.getUnusedPeer()->ipaddr);
 
-  peer1->cuid = 1;
+  peer1->usedBy(1);
 
   CPPUNIT_ASSERT(ps.getUnusedPeer().isNull());
 
@@ -164,7 +164,7 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
 
   CPPUNIT_ASSERT_EQUAL(true, ps.isPeerAvailable());
 
-  peer1->cuid = 1;
+  peer1->usedBy(1);
 
   CPPUNIT_ASSERT_EQUAL(false, ps.isPeerAvailable());
 
@@ -188,7 +188,8 @@ void DefaultPeerStorageTest::testActivatePeer() {
 
   CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getActivePeers().size());
 
-  peer1->activate();
+  peer1->allocateSessionResource(btContext->getPieceLength(),
+				 btContext->getTotalLength());
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getActivePeers().size());
 }
@@ -201,7 +202,11 @@ void DefaultPeerStorageTest::testReturnPeer()
   DefaultPeerStorage ps(btContext, option);
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 0));
+  peer1->allocateSessionResource(btContext->getPieceLength(),
+				 btContext->getTotalLength());
   SharedHandle<Peer> peer2(new Peer("192.168.0.2", 6889));
+  peer2->allocateSessionResource(btContext->getPieceLength(),
+				 btContext->getTotalLength());
   SharedHandle<Peer> peer3(new Peer("192.168.0.1", 6889));
   ps.addPeer(peer1);
   ps.addPeer(peer2);

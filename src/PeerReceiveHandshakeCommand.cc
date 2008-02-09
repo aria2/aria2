@@ -88,7 +88,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
        BT_RUNTIME(btContext)->getConnections() < MAX_PEERS) {
       if(PEER_STORAGE(btContext)->addPeer(peer)) {
 
-	peer->cuid = cuid;
+	peer->usedBy(cuid);
 	
 	PeerInteractionCommand* command =
 	  new PeerInteractionCommand(cuid,
@@ -100,7 +100,7 @@ bool PeerReceiveHandshakeCommand::executeInternal()
 				     PeerInteractionCommand::RECEIVER_WAIT_HANDSHAKE,
 				     _peerConnection);
 	e->commands.push_back(command);
-	logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->cuid);
+	logger->debug(MSG_INCOMING_PEER_CONNECTION, cuid, peer->usedBy());
       }
     }
     return true;

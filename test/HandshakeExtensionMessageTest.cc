@@ -74,6 +74,7 @@ void HandshakeExtensionMessageTest::testToString()
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
   SharedHandle<Peer> peer = new Peer("192.168.0.1", 0);
+  peer->allocateSessionResource(1024, 1024*1024);
   HandshakeExtensionMessage msg;
   msg.setClientVersion("aria2");
   msg.setTCPPort(6889);

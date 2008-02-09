@@ -137,7 +137,6 @@ public:
 };
 
 typedef SharedHandle<PeerStat> PeerStatHandle;
-typedef std::deque<PeerStatHandle> PeerStats;
 
 } // namespace aria2
 

@@ -91,9 +91,9 @@ bool PeerInitiateConnectionCommand::executeInternal() {
 bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
   if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
-    peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
+    peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(peer->cuid,
+      new PeerInitiateConnectionCommand(peer->usedBy(),
 					_requestGroup,
 					peer,
 					e,

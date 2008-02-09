@@ -40,6 +40,7 @@ public:
     _btContext = btContext;
 
     _peer = new Peer("192.168.0.1", 6969);
+    _peer->allocateSessionResource(1024, 1024*1024);
     _peer->setExtendedMessagingEnabled(true);
 
     SharedHandle<MockExtensionMessageFactory> exmsgFactory =
@@ -49,7 +50,7 @@ public:
     SharedHandle<PeerObject> peerObject = new PeerObject();
     peerObject->extensionMessageFactory = exmsgFactory;
 
-    PEER_OBJECT_CLUSTER(_btContext)->registerHandle(_peer->getId(), peerObject);
+    PEER_OBJECT_CLUSTER(_btContext)->registerHandle(_peer->getID(), peerObject);
   }
 
   void tearDown()

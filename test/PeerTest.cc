@@ -18,6 +18,7 @@ public:
 
   void setUp() {
     peer = new Peer("localhost", 6969);
+    peer->allocateSessionResource(1024, 1024*1024);
   }
 
   void testPeerAllowedIndexSet();
@@ -43,7 +44,7 @@ void PeerTest::testAmAllowedIndexSet() {
 
 void PeerTest::testGetId() {
   CPPUNIT_ASSERT_EQUAL(std::string("f05897fc14a41cb3400e283e189158656d7184da"),
-		       peer->getId());
+		       peer->getID());
 }
 
 void PeerTest::testOperatorEqual()

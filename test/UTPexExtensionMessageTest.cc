@@ -72,7 +72,7 @@ void UTPexExtensionMessageTest::testGetBencodedData()
 {
   UTPexExtensionMessage msg(1);
   SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
-  p1->allocateBitfield(256*1024, 1024*1024);
+  p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
   SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
@@ -105,7 +105,7 @@ void UTPexExtensionMessageTest::testToString()
 {
   UTPexExtensionMessage msg(1);
   SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
-  p1->allocateBitfield(256*1024, 1024*1024);
+  p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
   SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
@@ -121,7 +121,7 @@ void UTPexExtensionMessageTest::testDoReceivedAction()
 {
   UTPexExtensionMessage msg(1);
   SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
-  p1->allocateBitfield(256*1024, 1024*1024);
+  p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
   SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);

@@ -53,11 +53,11 @@ BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char*
 }
 
 void BtNotInterestedMessage::doReceivedAction() {
-  peer->peerInterested = false;
+  peer->peerInterested(false);
 }
 
 bool BtNotInterestedMessage::sendPredicate() const {
-  return peer->amInterested;
+  return peer->amInterested();
 }
 
 int32_t BtNotInterestedMessage::MESSAGE_LENGTH = 5;
@@ -80,7 +80,7 @@ int32_t BtNotInterestedMessage::getMessageLength() {
 }
 
 void BtNotInterestedMessage::onSendComplete() {
-  peer->amInterested = false;
+  peer->amInterested(false);
 }
 
 std::string BtNotInterestedMessage::toString() const {

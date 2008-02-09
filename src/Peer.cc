@@ -33,15 +33,13 @@
  */
 /* copyright --> */
 #include "Peer.h"
-#include "BitfieldManFactory.h"
-#include "BitfieldMan.h"
 #include "Util.h"
+#include "PeerSessionResource.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include <cstring>
 #include <cassert>
-#include <algorithm>
 
 namespace aria2 {
 
@@ -50,12 +48,9 @@ namespace aria2 {
 Peer::Peer(std::string ipaddr, uint16_t port):
   ipaddr(ipaddr),
   port(port),
-  _bitfield(0),
-  sessionUploadLength(0),
-  sessionDownloadLength(0),
-  active(false),
   _badConditionStartTime(0),
-  _seeder(false)
+  _seeder(false),
+  _res(0)
 {
   resetStatus();
   std::string idSeed = ipaddr+":"+Util::itos(port);
@@ -68,7 +63,7 @@ Peer::Peer(std::string ipaddr, uint16_t port):
 
 Peer::~Peer()
 {
-  delete _bitfield;
+  releaseSessionResource();
 }
 
 bool Peer::operator==(const Peer& p)
@@ -81,208 +76,303 @@ bool Peer::operator!=(const Peer& p)
   return !(*this == p);
 }
 
-void Peer::allocateBitfield(int32_t pieceLength, int64_t totalLength)
+const std::string& Peer::getID() const
 {
-  delete _bitfield;
-  _bitfield = BitfieldManFactory::getFactoryInstance()->createBitfieldMan(pieceLength, totalLength);  
+  return id;
 }
 
-void Peer::deallocateBitfield()
+void Peer::usedBy(int32_t cuid)
 {
-  delete _bitfield;
-  _bitfield = 0;
+  _cuid = cuid;
+}
+
+int32_t Peer::usedBy() const
+{
+  return _cuid;
+}
+
+bool Peer::unused() const
+{
+  return _cuid == 0;
+}
+
+void Peer::allocateSessionResource(int32_t pieceLength, int64_t totalLength)
+{
+  delete _res;
+  _res = new PeerSessionResource(pieceLength, totalLength);
+  _res->getPeerStat().downloadStart();
+}
+
+void Peer::releaseSessionResource()
+{
+  delete _res;
+  _res = 0;
+}
+
+bool Peer::isActive() const
+{
+  return _res != 0;
+}
+
+void Peer::setPeerId(const unsigned char* peerId)
+{
+  memcpy(_peerId, peerId, PEER_ID_LENGTH);
+}
+
+const unsigned char* Peer::getPeerId() const
+{
+  return _peerId;
+}
+
+void Peer::resetStatus() {
+  _cuid = 0;
+}
+
+bool Peer::amChoking() const
+{
+  assert(_res);
+  return _res->amChoking();
+}
+
+void Peer::amChoking(bool b) const
+{
+  assert(_res);
+  _res->amChoking(b);
+}
+
+// localhost is interested in this peer
+bool Peer::amInterested() const
+{
+  assert(_res);
+  return _res->amInterested();
+}
+
+void Peer::amInterested(bool b) const
+{
+  assert(_res);
+  _res->amInterested(b);
+}
+
+// this peer is choking localhost
+bool Peer::peerChoking() const
+{
+  assert(_res);
+  return _res->peerChoking();
+}
+
+void Peer::peerChoking(bool b) const
+{
+  assert(_res);
+  _res->peerChoking(b);
+}
+
+// this peer is interested in localhost
+bool Peer::peerInterested() const
+{
+  assert(_res);
+  return _res->peerInterested();
+}
+
+void Peer::peerInterested(bool b)
+{
+  assert(_res);
+  _res->peerInterested(b);
+}
+  
+  // this peer should be choked
+bool Peer::chokingRequired() const
+{
+  assert(_res);
+  return _res->chokingRequired();
+}
+
+void Peer::chokingRequired(bool b)
+{
+  assert(_res);
+  _res->chokingRequired(b);
+}
+
+// this peer is eligible for unchoking optionally.
+bool Peer::optUnchoking() const
+{
+  assert(_res);
+  return _res->optUnchoking();
+}
+
+void Peer::optUnchoking(bool b)
+{
+  assert(_res);
+  _res->optUnchoking(b);
+}
+
+// this peer is snubbing.
+bool Peer::snubbing() const
+{
+  assert(_res);
+  return _res->snubbing();
+}
+
+void Peer::snubbing(bool b)
+{
+  assert(_res);
+  _res->snubbing(b);
 }
 
 void Peer::updateUploadLength(int32_t bytes)
 {
-  peerStat.updateUploadLength(bytes);
-  sessionUploadLength += bytes;
+  assert(_res);
+  _res->updateUploadLength(bytes);
 }
 
 void Peer::updateDownloadLength(int32_t bytes)
 {
-  peerStat.updateDownloadLength(bytes);
-  sessionDownloadLength += bytes;
+  assert(_res);
+  _res->updateDownloadLength(bytes);
 }
 
 void Peer::updateSeeder()
 {
-  assert(_bitfield);
-  if(_bitfield->isAllBitSet()) {
+  assert(_res);
+  if(_res->hasAllPieces()) {
     _seeder = true;
   }  
 }
 
 void Peer::updateBitfield(int32_t index, int32_t operation) {
-  assert(_bitfield);
-  if(operation == 1) {
-    _bitfield->setBit(index);
-  } else if(operation == 0) {
-    _bitfield->unsetBit(index);
-  }
+  assert(_res);
+  _res->updateBitfield(index, operation);
   updateSeeder();
 }
 
 int32_t Peer::calculateUploadSpeed()
 {
-  return peerStat.calculateUploadSpeed();
+  assert(_res);
+  return _res->getPeerStat().calculateUploadSpeed();
 }
 
 int32_t Peer::calculateUploadSpeed(const struct timeval& now)
 {
-  return peerStat.calculateUploadSpeed(now);
+  assert(_res);
+  return _res->getPeerStat().calculateUploadSpeed(now);
 }
 
 int32_t Peer::calculateDownloadSpeed()
 {
-  return peerStat.calculateDownloadSpeed();
+  assert(_res);
+  return _res->getPeerStat().calculateDownloadSpeed();
 }
 
 int32_t Peer::calculateDownloadSpeed(const struct timeval& now)
 {
-  return peerStat.calculateDownloadSpeed(now);
+  assert(_res);
+  return _res->getPeerStat().calculateDownloadSpeed(now);
 }
 
 int64_t Peer::getSessionUploadLength() const
 {
-  return sessionUploadLength;
+  assert(_res);
+  return _res->uploadLength();
 }
 
 int64_t Peer::getSessionDownloadLength() const
 {
-  return sessionDownloadLength;
+  assert(_res);
+  return _res->downloadLength();
 }
 
-void Peer::activate()
-{
-  peerStat.downloadStart();
-  active = true;
-}
-
-void Peer::deactivate()
-{
-  peerStat.downloadStop();
-  active = false;
-}
-
-bool Peer::isActive() const
-{
-  return active;
-}
-
-void Peer::setPeerId(const unsigned char* peerId)
-{
-  memcpy(this->peerId, peerId, PEER_ID_LENGTH);
-}
-
-const unsigned char* Peer::getPeerId() const
-{
-  return this->peerId;
-}
-  
 void Peer::setBitfield(const unsigned char* bitfield, int32_t bitfieldLength)
 {
-  assert(_bitfield);
-  _bitfield->setBitfield(bitfield, bitfieldLength);
+  assert(_res);
+  _res->setBitfield(bitfield, bitfieldLength);
   updateSeeder();
 }
 
 const unsigned char* Peer::getBitfield() const
 {
-  assert(_bitfield);
-  return _bitfield->getBitfield();
+  assert(_res);
+  return _res->getBitfield();
 }
 
 int32_t Peer::getBitfieldLength() const
 {
-  assert(_bitfield);
-  return _bitfield->getBitfieldLength();
+  assert(_res);
+  return _res->getBitfieldLength();
 }
 
-#define THRESHOLD 1024*1024*2
-
 bool Peer::shouldBeChoking() const {
-  if(optUnchoking) {
-    return false;
-  }
-  return chokingRequired;
+  assert(_res);
+  return _res->shouldBeChoking();
 }
 
 bool Peer::hasPiece(int32_t index) const {
-  assert(_bitfield);
-  return _bitfield->isBitSet(index);
-}
-
-void Peer::resetStatus() {
-  tryCount = 0;
-  cuid = 0;
-  amChoking = true;
-  amInterested = false;
-  peerChoking = true;
-  peerInterested = false;
-  chokingRequired = true;
-  optUnchoking = false;
-  snubbing = false;
-  fastExtensionEnabled = false;
-  _extendedMessagingEnabled = false;
-  _extensions.clear();
-  _dhtEnabled = false;
-  latency = DEFAULT_LATENCY;
-  peerAllowedIndexSet.clear();
-  amAllowedIndexSet.clear();
-  peerStat.reset();
+  assert(_res);
+  return _res->hasPiece(index);
 }
 
 void Peer::setFastExtensionEnabled(bool enabled)
 {
-  fastExtensionEnabled = enabled;
+  assert(_res);
+  return _res->fastExtensionEnabled(enabled);
 }
 
 bool Peer::isFastExtensionEnabled() const
 {
-  return fastExtensionEnabled;
+  assert(_res);
+  return _res->fastExtensionEnabled();
 }
 
-int32_t Peer::countPeerAllowedIndexSet() const
+size_t Peer::countPeerAllowedIndexSet() const
 {
-  return peerAllowedIndexSet.size();
+  assert(_res);
+  return _res->peerAllowedIndexSet().size();
 }
 
 const std::deque<int32_t>& Peer::getPeerAllowedIndexSet() const
 {
-  return peerAllowedIndexSet;
+  assert(_res);
+  return _res->peerAllowedIndexSet();
 }
 
-bool Peer::isInPeerAllowedIndexSet(int32_t index) const {
-  return std::find(peerAllowedIndexSet.begin(), peerAllowedIndexSet.end(),
-		   index) != peerAllowedIndexSet.end();
+bool Peer::isInPeerAllowedIndexSet(int32_t index) const
+{
+  assert(_res);
+  return _res->peerAllowedIndexSetContains(index);
 }
 
-void Peer::addPeerAllowedIndex(int32_t index) {
-  if(!isInPeerAllowedIndexSet(index)) {
-    peerAllowedIndexSet.push_back(index);
-  }
+void Peer::addPeerAllowedIndex(int32_t index)
+{
+  assert(_res);
+  _res->addPeerAllowedIndex(index);
 }
 
-bool Peer::isInAmAllowedIndexSet(int32_t index) const {
-  return std::find(amAllowedIndexSet.begin(), amAllowedIndexSet.end(),
-		   index) != amAllowedIndexSet.end();
+bool Peer::isInAmAllowedIndexSet(int32_t index) const
+{
+  assert(_res);
+  return _res->amAllowedIndexSetContains(index);
 }
 
-void Peer::addAmAllowedIndex(int32_t index) {
-  if(!isInAmAllowedIndexSet(index)) {
-    amAllowedIndexSet.push_back(index);
-  }
+void Peer::addAmAllowedIndex(int32_t index)
+{
+  assert(_res);
+  _res->addAmAllowedIndex(index);
 }
 
 void Peer::setAllBitfield() {
-  assert(_bitfield);
-  _bitfield->setAllBit();
+  assert(_res);
+  _res->markSeeder();
   _seeder = true;
 }
 
-void Peer::updateLatency(int32_t latency) {
-  this->latency = (this->latency*20+latency*80)/200;
+void Peer::updateLatency(int32_t latency)
+{
+  assert(_res);
+  _res->updateLatency(latency);
+}
+
+int32_t Peer::getLatency() const
+{
+  assert(_res);
+  return _res->latency();
 }
 
 void Peer::startBadCondition()
@@ -295,31 +385,61 @@ bool Peer::isGood() const
   return _badConditionStartTime.elapsed(BAD_CONDITION_INTERVAL);
 }
 
-uint8_t Peer::getExtensionMessageID(const std::string& name)
+uint8_t Peer::getExtensionMessageID(const std::string& name) const
 {
-  Extensions::const_iterator itr = _extensions.find(name);
-  if(itr == _extensions.end()) {
-    return 0;
-  } else {
-    return (*itr).second;
-  }
+  assert(_res);
+  return _res->getExtensionMessageID(name);
 }
 
-std::string Peer::getExtensionName(uint8_t id)
+std::string Peer::getExtensionName(uint8_t id) const
 {
-  for(Extensions::const_iterator itr = _extensions.begin();
-      itr != _extensions.end(); ++itr) {
-    const Extensions::value_type& p = *itr;
-    if(p.second == id) {
-      return p.first;
-    }
-  }
-  return "";
+  assert(_res);
+  return _res->getExtensionName(id);
 }
 
 void Peer::setExtension(const std::string& name, uint8_t id)
 {
-  _extensions[name] = id;
+  assert(_res);
+  _res->addExtension(name, id);
+}
+
+void Peer::setExtendedMessagingEnabled(bool enabled)
+{
+  assert(_res);
+  _res->extendedMessagingEnabled(enabled);
+}
+
+bool Peer::isExtendedMessagingEnabled() const
+{
+  assert(_res);
+  return _res->extendedMessagingEnabled();
+}
+
+void Peer::setDHTEnabled(bool enabled)
+{
+  assert(_res);
+  _res->dhtEnabled(enabled);
+}
+
+bool Peer::isDHTEnabled() const
+{
+  assert(_res);
+  return _res->dhtEnabled();
+}
+
+bool Peer::isSeeder() const
+{
+  return _seeder;
+}
+
+const Time& Peer::getFirstContactTime() const
+{
+  return _firstContactTime;
+}
+
+const Time& Peer::getBadConditionStartTime() const
+{
+  return _badConditionStartTime;
 }
 
 } // namespace aria2

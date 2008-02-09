@@ -36,11 +36,12 @@ public:
   void setUp() {
     BtRegistry::unregisterAll();    
     peer = new Peer("host", 6969);
+    peer->allocateSessionResource(1024, 1024*1024);
     btContext = new MockBtContext();
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
   }
 
   void testCreate();
@@ -124,7 +125,7 @@ void BtChokeMessageTest::testDoReceivedAction() {
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT(dispatcher->doChokedActionCalled);
-  CPPUNIT_ASSERT(peer->peerChoking);
+  CPPUNIT_ASSERT(peer->peerChoking());
 }
 
 void BtChokeMessageTest::testOnSendComplete() {
@@ -138,7 +139,7 @@ void BtChokeMessageTest::testOnSendComplete() {
   msg.onSendComplete();
 
   CPPUNIT_ASSERT(dispatcher->doChokingActionCalled);
-  CPPUNIT_ASSERT(peer->amChoking);  
+  CPPUNIT_ASSERT(peer->amChoking());  
 }
 
 void BtChokeMessageTest::testToString() {

@@ -53,11 +53,11 @@ BtUnchokeMessageHandle BtUnchokeMessage::create(const unsigned char* data, int32
 }
 
 void BtUnchokeMessage::doReceivedAction() {
-  peer->peerChoking = false;
+  peer->peerChoking(false);
 }
 
 bool BtUnchokeMessage::sendPredicate() const {
-  return peer->amChoking;
+  return peer->amChoking();
 }
 
 int32_t BtUnchokeMessage::MESSAGE_LENGTH = 5;
@@ -80,7 +80,7 @@ int32_t BtUnchokeMessage::getMessageLength() {
 }
 
 void BtUnchokeMessage::onSendComplete() {
-  peer->amChoking = false;
+  peer->amChoking(false);
 }
 
 std::string BtUnchokeMessage::toString() const {

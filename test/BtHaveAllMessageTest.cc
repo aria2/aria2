@@ -61,7 +61,7 @@ void BtHaveAllMessageTest::testGetMessage() {
 void BtHaveAllMessageTest::testDoReceivedAction() {
   BtHaveAllMessage msg;
   SharedHandle<Peer> peer = new Peer("host", 6969);
-  peer->allocateBitfield(16*1024, 256*1024);
+  peer->allocateSessionResource(16*1024, 256*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
   

@@ -106,7 +106,7 @@ const Peers& DefaultPeerStorage::getPeers() {
 class FindFinePeer {
 public:
   bool operator()(const PeerHandle& peer) const {
-    return peer->cuid == 0 && peer->isGood();
+    return peer->unused() && peer->isGood();
   }
 };
 
@@ -184,9 +184,9 @@ public:
     if(peer->isActive()) {
       _stat.downloadSpeed += peer->calculateDownloadSpeed(_now);
       _stat.uploadSpeed += peer->calculateUploadSpeed(_now);
+      _stat.sessionDownloadLength += peer->getSessionDownloadLength();
+      _stat.sessionUploadLength += peer->getSessionUploadLength();    
     }
-    _stat.sessionDownloadLength += peer->getSessionDownloadLength();
-    _stat.sessionUploadLength += peer->getSessionUploadLength();    
   }
 
   const TransferStat& getTransferStat() { return _stat; }
@@ -206,7 +206,7 @@ void DefaultPeerStorage::deleteUnusedPeer(int32_t delSize) {
   for(Peers::reverse_iterator itr = peers.rbegin();
       itr != peers.rend(); ++itr) {
     const PeerHandle& p = *itr;
-    if(p->cuid == 0 && delSize > 0) {
+    if(p->unused() && delSize > 0) {
       // Update removedPeerSession******Length
       onErasingPeer(p);
       delSize--;
@@ -217,10 +217,14 @@ void DefaultPeerStorage::deleteUnusedPeer(int32_t delSize) {
   peers = temp;
 }
 
-void DefaultPeerStorage::onErasingPeer(const PeerHandle& peer)
+void DefaultPeerStorage::onErasingPeer(const SharedHandle<Peer>& peer) {}
+
+void DefaultPeerStorage::onReturningPeer(const SharedHandle<Peer>& peer)
 {
-  removedPeerSessionDownloadLength += peer->getSessionDownloadLength();
-  removedPeerSessionUploadLength += peer->getSessionUploadLength();
+  if(peer->isActive()) {
+    removedPeerSessionDownloadLength += peer->getSessionDownloadLength();
+    removedPeerSessionUploadLength += peer->getSessionUploadLength();
+  }
 }
 
 void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
@@ -229,6 +233,7 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
   if(itr == peers.end()) {
     logger->debug("Cannot find peer %s:%u in PeerStorage.", peer->ipaddr.c_str(), peer->port);
   } else {
+    onReturningPeer(peer);
     if((*itr)->port == 0) {
       onErasingPeer(*itr);
       peers.erase(itr);

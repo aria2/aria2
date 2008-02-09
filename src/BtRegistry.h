@@ -134,7 +134,7 @@ BtRegistry::getBtProgressInfoFile(btContext->getInfoHashAsString())
 BtRegistry::getPeerObjectCluster(btContext->getInfoHashAsString())
 
 #define PEER_OBJECT(btContext, peer) \
-PEER_OBJECT_CLUSTER(btContext)->getHandle(peer->getId())
+PEER_OBJECT_CLUSTER(btContext)->getHandle(peer->getID())
 
 #define BT_MESSAGE_DISPATCHER(btContext, peer) \
 PEER_OBJECT(btContext, peer)->btMessageDispatcher

@@ -197,7 +197,7 @@ void DefaultBtMessageDispatcher::checkRequestSlotAndDoNecessaryThing()
 		    cuid,
 		    slot.getBlockIndex());
       piece->cancelBlock(slot.getBlockIndex());
-      peer->snubbing = true;
+      peer->snubbing(true);
       itr = requestSlots.erase(itr);
     } else if(piece->hasBlock(slot.getBlockIndex())) {
       logger->debug(MSG_DELETING_REQUEST_SLOT_ACQUIRED,

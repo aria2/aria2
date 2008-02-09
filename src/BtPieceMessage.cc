@@ -82,7 +82,7 @@ void BtPieceMessage::doReceivedAction() {
 						       blockLength);
   peer->updateDownloadLength(blockLength);
   if(!RequestSlot::isNull(slot)) {
-    peer->snubbing = false;
+    peer->snubbing(false);
     peer->updateLatency(slot.getLatencyInMillis());
     PieceHandle piece = pieceStorage->getPiece(index);
     int64_t offset =

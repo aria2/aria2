@@ -45,7 +45,7 @@
 
 namespace aria2 {
 
-class BitfieldMan;
+class PeerSessionResource;
 
 class Peer {
 public:
@@ -54,36 +54,24 @@ public:
   // If it is unknown, for example, localhost accepted the incoming connection
   // from this peer, set port to 0.
   uint16_t port;
-  bool amChoking;
-  bool amInterested;
-  bool peerChoking;
-  bool peerInterested;
-  int32_t tryCount;
-  int32_t cuid;
-  bool chokingRequired;
-  bool optUnchoking;
-  bool snubbing;
 private:
-  unsigned char peerId[PEER_ID_LENGTH];
-  BitfieldMan* _bitfield;
-  bool fastExtensionEnabled;
-  // fast index set which a peer has sent to localhost.
-  std::deque<int32_t> peerAllowedIndexSet;
-  // fast index set which localhost has sent to a peer.
-  std::deque<int32_t> amAllowedIndexSet;
-  bool _extendedMessagingEnabled;
-  Extensions _extensions;
-  bool _dhtEnabled;
-  PeerStat peerStat;
-  int64_t sessionUploadLength;
-  int64_t sessionDownloadLength;
-  int32_t latency;
-  bool active;
   std::string id;
+
+  int32_t _cuid;
+
+  unsigned char _peerId[PEER_ID_LENGTH];
+
   Time _firstContactTime;
+
   Time _badConditionStartTime;
+
   bool _seeder;
 
+  PeerSessionResource* _res;
+
+  // Before calling updateSeeder(),  make sure that
+  // allocateSessionResource() is called and _res is created.
+  // Otherwise assertion fails.
   void updateSeeder();
 public:
   Peer(std::string ipaddr, uint16_t port);
@@ -95,6 +83,74 @@ public:
   bool operator!=(const Peer& p);
 
   void resetStatus();
+
+  void usedBy(int32_t cuid);
+
+  int32_t usedBy() const;
+
+  bool unused() const;
+
+  // Returns true iff _res != 0.
+  bool isActive() const;
+
+  void setPeerId(const unsigned char* peerId);
+
+  const unsigned char* getPeerId() const;
+
+  bool isSeeder() const;
+
+  const std::string& getID() const;
+
+  void startBadCondition();
+
+  bool isGood() const;
+
+  void allocateSessionResource(int32_t pieceLength, int64_t totalLength);
+
+  void releaseSessionResource();
+
+  const Time& getFirstContactTime() const;
+
+  const Time& getBadConditionStartTime() const;
+
+  // Before calling following member functions,  make sure that
+  // allocateSessionResource() is called and _res is created.
+  // Otherwise assertion fails.
+
+  // localhost is choking this peer
+  bool amChoking() const;
+
+  void amChoking(bool b) const;
+
+  // localhost is interested in this peer
+  bool amInterested() const;
+
+  void amInterested(bool b) const;
+
+  // this peer is choking localhost
+  bool peerChoking() const;
+
+  void peerChoking(bool b) const;
+
+  // this peer is interested in localhost
+  bool peerInterested() const;
+
+  void peerInterested(bool b);
+  
+  // this peer should be choked
+  bool chokingRequired() const;
+
+  void chokingRequired(bool b);
+
+  // this peer is eligible for unchoking optionally.
+  bool optUnchoking() const;
+
+  void optUnchoking(bool b);
+
+  // this peer is snubbing.
+  bool snubbing() const;
+
+  void snubbing(bool b);
 
   void updateUploadLength(int32_t bytes);
 
@@ -123,16 +179,6 @@ public:
    * Returns the number of bytes downloaded from the remote host.
    */
   int64_t getSessionDownloadLength() const;
-
-  void activate();
-
-  void deactivate();
-
-  bool isActive() const;
-
-  void setPeerId(const unsigned char* peerId);
-
-  const unsigned char* getPeerId() const;
   
   void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength);
 
@@ -153,73 +199,36 @@ public:
   bool isFastExtensionEnabled() const;
 
   void addPeerAllowedIndex(int32_t index);
+
   bool isInPeerAllowedIndexSet(int32_t index) const;
 
-  int32_t countPeerAllowedIndexSet() const;
+  size_t countPeerAllowedIndexSet() const;
 
   const std::deque<int32_t>& getPeerAllowedIndexSet() const;
 
   void addAmAllowedIndex(int32_t index);
+
   bool isInAmAllowedIndexSet(int32_t index) const;
 
-  void setExtendedMessagingEnabled(bool enabled)
-  {
-    _extendedMessagingEnabled = enabled;
-  }
+  void setExtendedMessagingEnabled(bool enabled);
 
-  bool isExtendedMessagingEnabled() const
-  {
-    return _extendedMessagingEnabled;
-  }
+  bool isExtendedMessagingEnabled() const;
 
-  void setDHTEnabled(bool enabled)
-  {
-    _dhtEnabled = enabled;
-  }
+  void setDHTEnabled(bool enabled);
 
-  bool isDHTEnabled() const
-  {
-    return _dhtEnabled;
-  }
+  bool isDHTEnabled() const;
 
   bool shouldBeChoking() const;
 
   bool hasPiece(int32_t index) const;
 
-  bool isSeeder() const
-  {
-    return _seeder;
-  }
-
   void updateLatency(int32_t latency);
 
-  int32_t getLatency() const { return latency; }
+  int32_t getLatency() const;
 
-  const std::string& getId() const {
-    return id;
-  }
+  uint8_t getExtensionMessageID(const std::string& name) const;
 
-  void startBadCondition();
-
-  bool isGood() const;
-
-  void allocateBitfield(int32_t pieceLength, int64_t totalLength);
-
-  void deallocateBitfield();
-
-  Time getFirstContactTime() const
-  {
-    return _firstContactTime;
-  }
-
-  Time getBadConditionStartTime() const
-  {
-    return _badConditionStartTime;
-  }
-
-  uint8_t getExtensionMessageID(const std::string& name);
-
-  std::string getExtensionName(uint8_t id);
+  std::string getExtensionName(uint8_t id) const;
 
   void setExtension(const std::string& name, uint8_t id);
 };

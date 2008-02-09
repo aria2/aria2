@@ -43,8 +43,8 @@ public:
     btContext = new DefaultBtContext();
     btContext->load("test.torrent");
     peer = new Peer("192.168.0.1", 6889);
-    peer->allocateBitfield(btContext->getPieceLength(),
-			   btContext->getTotalLength());
+    peer->allocateSessionResource(btContext->getPieceLength(),
+				  btContext->getTotalLength());
     option = new Option();
   }
 

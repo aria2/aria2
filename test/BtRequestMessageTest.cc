@@ -108,10 +108,11 @@ public:
 				     pieceStorage);
 
     peer = new Peer("host", 6969);
-
+    peer->allocateSessionResource(btContext->getPieceLength(),
+				  btContext->getTotalLength());
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
 
     dispatcher = new MockBtMessageDispatcher();
 
@@ -177,7 +178,7 @@ void BtRequestMessageTest::testGetMessage() {
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
-  peer->amChoking = false;
+  peer->amChoking(false);
   msg->doReceivedAction();
   
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher->messageQueue.size());
@@ -189,7 +190,7 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmNotChoking() {
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionEnabled() {
-  peer->amChoking = true;
+  peer->amChoking(true);
   peer->setFastExtensionEnabled(true);
   msg->doReceivedAction();
   
@@ -202,7 +203,7 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExten
 }
 
 void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExtensionDisabled() {
-  peer->amChoking = true;
+  peer->amChoking(true);
   msg->doReceivedAction();
   
   CPPUNIT_ASSERT_EQUAL((size_t)0, dispatcher->messageQueue.size());
@@ -210,7 +211,7 @@ void BtRequestMessageTest::testDoReceivedAction_hasPieceAndAmChokingAndFastExten
 
 void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionEnabled() {
   msg->setIndex(2);
-  peer->amChoking = false;
+  peer->amChoking(false);
   peer->setFastExtensionEnabled(true);
   msg->doReceivedAction();
   
@@ -224,7 +225,7 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionE
 
 void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionDisabled() {
   msg->setIndex(2);
-  peer->amChoking = false;
+  peer->amChoking(false);
   msg->doReceivedAction();
   
   CPPUNIT_ASSERT_EQUAL((size_t)0, dispatcher->messageQueue.size());

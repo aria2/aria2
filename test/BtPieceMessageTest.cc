@@ -88,9 +88,11 @@ public:
     btContext->setTotalLength(256*1024);
 
     peer = new Peer("host", 6969);
+    peer->allocateSessionResource(btContext->getPieceLength(),
+				  btContext->getTotalLength());
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
 					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getId(), new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
     btMessageDispatcher = new MockBtMessageDispatcher();
     PEER_OBJECT(btContext, peer)->btMessageDispatcher = btMessageDispatcher;
     PEER_OBJECT(btContext, peer)->btMessageFactory = new MockBtMessageFactory2();

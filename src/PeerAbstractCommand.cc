@@ -74,7 +74,7 @@ PeerAbstractCommand::~PeerAbstractCommand() {
 
 bool PeerAbstractCommand::execute() {
   if(exitBeforeExecute()) {
-    peer->resetStatus();
+    onAbort(0);
     return true;
   }
   try {

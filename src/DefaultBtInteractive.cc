@@ -188,11 +188,11 @@ void DefaultBtInteractive::addAllowedFastMessageToQueue() {
 
 void DefaultBtInteractive::decideChoking() {
   if(peer->shouldBeChoking()) {
-    if(!peer->amChoking) {
+    if(!peer->amChoking()) {
       dispatcher->addMessageToQueue(messageFactory->createChokeMessage());
     }
   } else {
-    if(peer->amChoking) {
+    if(peer->amChoking()) {
       dispatcher->addMessageToQueue(messageFactory->createUnchokeMessage());
     }
   }
@@ -247,12 +247,12 @@ size_t DefaultBtInteractive::receiveMessages() {
       floodingStat.incKeepAliveCount();
       break;
     case BtChokeMessage::ID:
-      if(!peer->peerChoking) {
+      if(!peer->peerChoking()) {
 	floodingStat.incChokeUnchokeCount();
       }
       break;
     case BtUnchokeMessage::ID:
-      if(peer->peerChoking) {
+      if(peer->peerChoking()) {
 	floodingStat.incChokeUnchokeCount();
       }
       break;
@@ -267,13 +267,13 @@ size_t DefaultBtInteractive::receiveMessages() {
 
 void DefaultBtInteractive::decideInterest() {
   if(pieceStorage->hasMissingPiece(peer)) {
-    if(!peer->amInterested) {
+    if(!peer->amInterested()) {
       logger->debug(MSG_PEER_INTERESTED, cuid);
       dispatcher->
 	addMessageToQueue(messageFactory->createInterestedMessage());
     }
   } else {
-    if(peer->amInterested) {
+    if(peer->amInterested()) {
       logger->debug(MSG_PEER_NOT_INTERESTED, cuid);
       dispatcher->
 	addMessageToQueue(messageFactory->createNotInterestedMessage());
@@ -283,7 +283,7 @@ void DefaultBtInteractive::decideInterest() {
 
 void DefaultBtInteractive::fillPiece(int maxPieceNum) {
   if(pieceStorage->hasMissingPiece(peer)) {
-    if(peer->peerChoking) {
+    if(peer->peerChoking()) {
       if(peer->isFastExtensionEnabled()) {
 	while(btRequestFactory->countTargetPiece() < maxPieceNum) {
 	  PieceHandle piece = pieceStorage->getMissingFastPiece(peer);

@@ -147,15 +147,15 @@ void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerRes
     if(peer.isNull()) {
       break;
     }
-    peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
+    peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
     PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(peer->cuid,
+      new PeerInitiateConnectionCommand(peer->usedBy(),
 					_requestGroup,
 					peer,
 					e,
 					btContext);
     e->commands.push_back(command);
-    logger->debug("CUID#%d - Adding new command CUID#%d", cuid, peer->cuid);
+    logger->debug("CUID#%d - Adding new command CUID#%d", cuid, peer->usedBy());
   }
 }
 

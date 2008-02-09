@@ -49,7 +49,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BtExtendedMessageTest);
 
 void BtExtendedMessageTest::testCreate() {
   SharedHandle<Peer> peer = new Peer("192.168.0.1", 6969);
-  peer->setExtension("charlie", 1);
+  peer->allocateSessionResource(1024, 1024*1024);
   SharedHandle<MockBtContext> ctx = new MockBtContext();
   unsigned char infohash[20];
   memset(infohash, 0, sizeof(infohash));
@@ -61,7 +61,7 @@ void BtExtendedMessageTest::testCreate() {
   SharedHandle<PeerObject> peerObject = new PeerObject();
   peerObject->extensionMessageFactory = exmsgFactory;
 
-  PEER_OBJECT_CLUSTER(ctx)->registerHandle(peer->getId(), peerObject);
+  PEER_OBJECT_CLUSTER(ctx)->registerHandle(peer->getID(), peerObject);
 
   // payload:{4:name3:foo}->11bytes
   std::string payload = "4:name3:foo";

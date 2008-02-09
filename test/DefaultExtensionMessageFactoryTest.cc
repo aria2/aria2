@@ -39,6 +39,7 @@ public:
 				  btRuntime);
 
     _peer = new Peer("192.168.0.1", 6969);
+    _peer->allocateSessionResource(1024, 1024*1024);
     _peer->setExtension("ut_pex", 1);
   }
 

@@ -71,7 +71,7 @@ void BtBitfieldMessageTest::testGetMessage() {
 
 void BtBitfieldMessageTest::testDoReceivedAction() {
   SharedHandle<Peer> peer = new Peer("host1", 6969);
-  peer->allocateBitfield(16*1024, 16*16*1024);
+  peer->allocateSessionResource(16*1024, 16*16*1024);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
   unsigned char bitfield[] = { 0xff, 0xff };

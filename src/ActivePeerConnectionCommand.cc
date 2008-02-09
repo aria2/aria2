@@ -87,9 +87,9 @@ void ActivePeerConnectionCommand::connectToPeer(const PeerHandle& peer)
   if(peer.isNull()) {
     return;
   }
-  peer->cuid = CUIDCounterSingletonHolder::instance()->newID();
+  peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
   PeerInitiateConnectionCommand* command =
-    new PeerInitiateConnectionCommand(peer->cuid, _requestGroup, peer, e, btContext);
+    new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e, btContext);
   e->commands.push_back(command);
   logger->info(MSG_CONNECTING_TO_PEER,
 	       cuid, peer->ipaddr.c_str());

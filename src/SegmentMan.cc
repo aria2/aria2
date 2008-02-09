@@ -250,7 +250,7 @@ void SegmentMan::registerPeerStat(const PeerStatHandle& peerStat) {
 
 PeerStatHandle SegmentMan::getPeerStat(int32_t cuid) const
 {
-  for(PeerStats::const_iterator itr = peerStats.begin(); itr != peerStats.end(); ++itr) {
+  for(std::deque<SharedHandle<PeerStat> >::const_iterator itr = peerStats.begin(); itr != peerStats.end(); ++itr) {
     const PeerStatHandle& peerStat = *itr;
     if(peerStat->getCuid() == cuid) {
       return peerStat;
@@ -261,8 +261,7 @@ PeerStatHandle SegmentMan::getPeerStat(int32_t cuid) const
 
 int32_t SegmentMan::calculateDownloadSpeed() const {
   int32_t speed = 0;
-  for(PeerStats::const_iterator itr = peerStats.begin();
-      itr != peerStats.end(); itr++) {
+  for(std::deque<SharedHandle<PeerStat> >::const_iterator itr = peerStats.begin(); itr != peerStats.end(); itr++) {
     const PeerStatHandle& peerStat = *itr;
     if(peerStat->getStatus() == PeerStat::ACTIVE) {
       speed += peerStat->calculateDownloadSpeed();

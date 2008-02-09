@@ -349,13 +349,13 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DiskAdaptor.cc DiskAdaptor.h AbstractSingleDiskAdaptor.cc \
 	AbstractSingleDiskAdaptor.h CopyDiskAdaptor.cc \
 	CopyDiskAdaptor.h DirectDiskAdaptor.cc DirectDiskAdaptor.h \
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc Peer.h \
-	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
-	MultiFileAllocationIterator.h PeerConnection.cc \
-	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	ByteArrayDiskWriterFactory.cc ServerHost.cc HelpItem.cc \
-	TaggedItem.cc TagContainer.cc HelpItemFactory.cc \
-	SingleFileDownloadContext.cc \
+	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc \
+	PeerSessionResource.cc BtRegistry.cc BtRegistry.h \
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
+	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
+	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
+	ServerHost.cc HelpItem.cc TaggedItem.cc TagContainer.cc \
+	HelpItemFactory.cc SingleFileDownloadContext.cc \
 	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
@@ -368,7 +368,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PeerMessageUtil.h PeerAbstractCommand.cc PeerAbstractCommand.h \
 	PeerInitiateConnectionCommand.cc \
 	PeerInitiateConnectionCommand.h PeerInteractionCommand.cc \
-	PeerInteractionCommand.h PeerListenCommand.cc \
+	PeerInteractionCommand.h Peer.h PeerListenCommand.cc \
 	PeerListenCommand.h RequestSlot.cc RequestSlot.h \
 	TrackerWatcherCommand.cc TrackerWatcherCommand.h \
 	PeerChokeCommand.cc PeerChokeCommand.h SeedCriteria.h \
@@ -670,9 +670,9 @@ am__objects_14 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	StreamCheckIntegrityEntry.$(OBJEXT) DiskAdaptor.$(OBJEXT) \
 	AbstractSingleDiskAdaptor.$(OBJEXT) CopyDiskAdaptor.$(OBJEXT) \
 	DirectDiskAdaptor.$(OBJEXT) MultiDiskAdaptor.$(OBJEXT) \
-	Peer.$(OBJEXT) BtRegistry.$(OBJEXT) \
-	MultiFileAllocationIterator.$(OBJEXT) PeerConnection.$(OBJEXT) \
-	ByteArrayDiskWriter.$(OBJEXT) \
+	Peer.$(OBJEXT) PeerSessionResource.$(OBJEXT) \
+	BtRegistry.$(OBJEXT) MultiFileAllocationIterator.$(OBJEXT) \
+	PeerConnection.$(OBJEXT) ByteArrayDiskWriter.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
 	HelpItem.$(OBJEXT) TaggedItem.$(OBJEXT) TagContainer.$(OBJEXT) \
 	HelpItemFactory.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
@@ -996,17 +996,18 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	DiskAdaptor.cc DiskAdaptor.h AbstractSingleDiskAdaptor.cc \
 	AbstractSingleDiskAdaptor.h CopyDiskAdaptor.cc \
 	CopyDiskAdaptor.h DirectDiskAdaptor.cc DirectDiskAdaptor.h \
-	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc Peer.h \
-	BtRegistry.cc BtRegistry.h MultiFileAllocationIterator.cc \
-	MultiFileAllocationIterator.h PeerConnection.cc \
-	PeerConnection.h ByteArrayDiskWriter.cc ByteArrayDiskWriter.h \
-	ByteArrayDiskWriterFactory.cc ServerHost.cc HelpItem.cc \
-	TaggedItem.cc TagContainer.cc HelpItemFactory.cc \
-	SingleFileDownloadContext.cc $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
-	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_12) $(am__append_13)
+	MultiDiskAdaptor.cc MultiDiskAdaptor.h Peer.cc \
+	PeerSessionResource.cc BtRegistry.cc BtRegistry.h \
+	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h \
+	PeerConnection.cc PeerConnection.h ByteArrayDiskWriter.cc \
+	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
+	ServerHost.cc HelpItem.cc TaggedItem.cc TagContainer.cc \
+	HelpItemFactory.cc SingleFileDownloadContext.cc \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9) \
+	$(am__append_10) $(am__append_11) $(am__append_12) \
+	$(am__append_13)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1306,6 +1307,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerListenCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerMessageUtil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerReceiveHandshakeCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerSessionResource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Piece.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceHashCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceHashMetalinkParserState.Po@am__quote@

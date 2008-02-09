@@ -1,3 +1,59 @@
+2008-02-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Extract the Peer class's member variables, which are only needed after
+	PeerInteractionCommand, into PeerSessionResource class.
+	This class is instantiated in PeerInteractionCommand class's ctor and
+	released in its dtor.
+	This will make Peer class lightweight and uses less memory for peers
+	which are not connected and wait in the queue.
+	* src/PeerChokeCommand.cc
+	* src/PeerSessionResource.{h, cc}
+	* src/PeerInteractionCommand.cc
+	* src/PeerAbstractCommand.cc: Note: 0 is given to onAbort() function.
+	* src/DefaultBtInteractive.cc
+	* src/BtPieceMessage.cc
+	* src/BtInterestedMessage.cc
+	* src/BtUnchokeMessage.cc
+	* src/DefaultPeerStorage.{h, cc}
+	* src/PeerInitiateConnectionCommand.cc
+	* src/ActivePeerConnectionCommand.cc
+	* src/BtNotInterestedMessage.cc
+	* src/DefaultBtMessageDispatcher.cc
+	* src/BtChokeMessage.cc
+	* src/BtRequestMessage.cc
+	* src/Peer.{h, cc}
+	* src/BtRegistry.h
+	* src/TrackerWatcherCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+	* test/BtExtendedMessageTest.cc
+	* test/BtAllowedFastMessageTest.cc
+	* test/BtCancelMessageTest.cc
+	* test/DefaultPieceStorageTest.cc
+	* test/BtBitfieldMessageTest.cc
+	* test/BtHaveMessageTest.cc
+	* test/BtNotInterestedMessageTest.cc
+	* test/BtRequestMessageTest.cc
+	* test/PeerSessionResourceTest.cc
+	* test/DefaultBtMessageDispatcherTest.cc
+	* test/PeerTest.cc
+	* test/BtInterestedMessageTest.cc
+	* test/BtRejectMessageTest.cc
+	* test/BtChokeMessageTest.cc
+	* test/DefaultPeerStorageTest.cc
+	* test/BtHaveNoneMessageTest.cc
+	* test/BtHaveAllMessageTest.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* test/BtUnchokeMessageTest.cc
+	* test/DefaultBtMessageFactoryTest.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* test/UTPexExtensionMessageTest.cc
+	* test/DefaultBtRequestFactoryTest.cc
+	* test/BtPieceMessageTest.cc
+	
+	Removed typedef PeerStats.
+	* src/PeerStat.h
+	* src/SegmentMan.cc
+
 2008-02-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added std namespace to copy, remove_copy, back_inserter,
