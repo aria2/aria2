@@ -46,6 +46,8 @@ class BtMessageDispatcher;
 class BtRequestFactory;
 class PeerConnection;
 class PieceStorage;
+class DHTNode;
+class DHTRoutingTable;
 class DHTTaskQueue;
 class DHTTaskFactory;
 
@@ -63,6 +65,10 @@ private:
   WeakHandle<BtRequestFactory> requestFactory;
 
   WeakHandle<PeerConnection> peerConnection;
+
+  WeakHandle<DHTNode> _localNode;
+
+  WeakHandle<DHTRoutingTable> _routingTable;
 
   WeakHandle<DHTTaskQueue> _taskQueue;
 
@@ -138,6 +144,10 @@ public:
   void setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory);
 
   void setPeerConnection(const WeakHandle<PeerConnection>& connection);
+
+  void setLocalNode(const WeakHandle<DHTNode>& localNode);
+
+  void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
   
   void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
 

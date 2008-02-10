@@ -40,6 +40,7 @@
 #include "Logger.h"
 #include "Peer.h"
 #include "DHTNode.h"
+#include "DHTRoutingTable.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
@@ -75,8 +76,15 @@ void BtPortMessage::doReceivedAction()
     SharedHandle<DHTNode> node = new DHTNode();
     node->setIPAddress(peer->ipaddr);
     node->setPort(_port);
-    SharedHandle<DHTTask> task = _taskFactory->createPingTask(node);
-    _taskQueue->addImmediateTask(task);
+    {
+      SharedHandle<DHTTask> task = _taskFactory->createPingTask(node);
+      _taskQueue->addImmediateTask(task);
+    }
+    if(_routingTable->countBucket() == 1) {
+      // initiate bootstrap
+      logger->info("Dispatch node_lookup since too few buckets.");
+      _taskQueue->addImmediateTask(_taskFactory->createNodeLookupTask(_localNode->getID()));
+    }
   } else {
     logger->info("DHT port message received while localhost didn't declare support it.");
   }
@@ -103,6 +111,16 @@ int32_t BtPortMessage::getMessageLength() {
 
 std::string BtPortMessage::toString() const {
   return "port port="+Util::uitos(_port);
+}
+
+void BtPortMessage::setLocalNode(const WeakHandle<DHTNode>& localNode)
+{
+  _localNode = localNode;
+}
+
+void BtPortMessage::setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable)
+{
+  _routingTable = routingTable;
 }
 
 void BtPortMessage::setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue)

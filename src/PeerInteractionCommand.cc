@@ -56,6 +56,7 @@
 #include "PeerConnection.h"
 #include "ExtensionMessageFactory.h"
 #include "CUIDCounter.h"
+#include "DHTRoutingTable.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTNode.h"
@@ -90,6 +91,8 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   factory->setCuid(cuid);
   factory->setBtContext(btContext);
   factory->setPeer(peer);
+  factory->setLocalNode(DHTRegistry::_localNode);
+  factory->setRoutingTable(DHTRegistry::_routingTable);
   factory->setTaskQueue(DHTRegistry::_taskQueue);
   factory->setTaskFactory(DHTRegistry::_taskFactory);
 

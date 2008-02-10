@@ -39,6 +39,8 @@
 
 namespace aria2 {
 
+class DHTNode;
+class DHTRoutingTable;
 class DHTTaskQueue;
 class DHTTaskFactory;
 
@@ -47,6 +49,10 @@ private:
   uint16_t _port;
   unsigned char* _msg;
   static const size_t MESSAGE_LENGTH = 7;
+
+  WeakHandle<DHTNode> _localNode;
+
+  WeakHandle<DHTRoutingTable> _routingTable;
 
   WeakHandle<DHTTaskQueue> _taskQueue;
 
@@ -71,6 +77,10 @@ public:
   virtual int32_t getMessageLength();
 
   virtual std::string toString() const;
+
+  void setLocalNode(const WeakHandle<DHTNode>& localNode);
+
+  void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
 
   void setTaskQueue(const WeakHandle<DHTTaskQueue>& taskQueue);
 

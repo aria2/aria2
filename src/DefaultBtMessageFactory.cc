@@ -178,6 +178,8 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t data
     }
     case BtPortMessage::ID: {
       SharedHandle<BtPortMessage> temp = BtPortMessage::create(data, dataLength);
+      temp->setLocalNode(_localNode);
+      temp->setRoutingTable(_routingTable);
       temp->setTaskQueue(_taskQueue);
       temp->setTaskFactory(_taskFactory);
       msg = temp;
@@ -422,7 +424,17 @@ void DefaultBtMessageFactory::setBtMessageDispatcher(const WeakHandle<BtMessageD
 {
   this->dispatcher = dispatcher;
 }
-  
+
+void DefaultBtMessageFactory::setLocalNode(const WeakHandle<DHTNode>& localNode)
+{
+  _localNode = localNode;
+}
+
+void DefaultBtMessageFactory::setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable)
+{
+  _routingTable = routingTable;
+}
+
 void DefaultBtMessageFactory::setBtRequestFactory(const WeakHandle<BtRequestFactory>& factory)
 {
   this->requestFactory = factory;

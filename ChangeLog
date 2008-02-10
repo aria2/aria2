@@ -1,3 +1,14 @@
+2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Bootstrap through node added by port message.
+	Currently bootstrap is executed if the number of buckets in routing
+	table is 1.
+	* src/BtPortMessage.{h, cc}
+	* src/DefaultBtMessageFactory.{h, cc}
+	* src/PeerInteractionCommand.cc
+	* test/BtPortMessageTest.cc
+	* test/MockDHTTask.h
+	
 2008-02-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Extract the Peer class's member variables, which are only needed after
