@@ -1,5 +1,11 @@
 2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added handling of dynamic cast failure.
+	* src/DHTNodeLookupTask.cc
+	* src/DHTPeerLookupTask.cc
+
+2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the ability to stop aria2 itself when given time has passed
 	from start. Use --stop option to specify time in minutes.
 	When 0 is given, this feature is disabled.

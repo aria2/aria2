@@ -59,13 +59,19 @@ DHTPeerLookupTask::DHTPeerLookupTask(const SharedHandle<BtContext>& btContext):
 std::deque<SharedHandle<DHTNode> > DHTPeerLookupTask::getNodesFromMessage(const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTGetPeersReplyMessage> m = message;
-  return m->getClosestKNodes();
+  if(m.isNull()) {
+    return std::deque<SharedHandle<DHTNode> >();
+  } else {
+    return m->getClosestKNodes();
+  }
 }
   
 void DHTPeerLookupTask::onReceivedInternal(const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTGetPeersReplyMessage> m = message;
-
+  if(m.isNull()) {
+    return;
+  }
   SharedHandle<DHTNode> remoteNode = m->getRemoteNode();
   _tokenStorage[Util::toHex(remoteNode->getID(), DHT_ID_LENGTH)] = m->getToken();
 

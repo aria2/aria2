@@ -50,7 +50,11 @@ std::deque<SharedHandle<DHTNode> >
 DHTNodeLookupTask::getNodesFromMessage(const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTFindNodeReplyMessage> m = message;
-  return m->getClosestKNodes();
+  if(m.isNull()) {
+    return std::deque<SharedHandle<DHTNode> >();
+  } else {
+    return m->getClosestKNodes();
+  }
 }
 
 SharedHandle<DHTMessage>
