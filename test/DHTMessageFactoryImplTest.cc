@@ -1,5 +1,5 @@
 #include "DHTMessageFactoryImpl.h"
-#include "Exception.h"
+#include "RecoverableException.h"
 #include "Util.h"
 #include "DHTNode.h"
 #include "DHTRoutingTable.h"
