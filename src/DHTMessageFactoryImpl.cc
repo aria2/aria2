@@ -57,6 +57,7 @@
 #include "BtRuntime.h"
 #include "Util.h"
 #include "Peer.h"
+#include "Logger.h"
 #include <cstring>
 #include <utility>
 
@@ -96,6 +97,17 @@ static const Data* getData(const Dictionary* d, const std::string& key)
     return c;
   } else {
     throw new DlAbortEx("Malformed DHT message. Missing %s", key.c_str());
+  }
+}
+
+static const Data* getData(const List* l, size_t index)
+{
+  const Data* c = dynamic_cast<const Data*>(l->getList()[index]);
+  if(c) {
+    return c;
+  } else {
+    throw new DlAbortEx("Malformed DHT message. element[%u] is not Data.",
+			index);
   }
 }
 
@@ -187,12 +199,22 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createResponseMessage(const std:
 {
   const Data* t = getData(d, "t");
   const Data* y = getData(d, "y");
-  const Dictionary* r = getDictionary(d, "r");
-  // TODO handle y == "e" case
-  if(y->toString() != "r") {
+  if(y->toString() == "e") {
+    // for now, just report error message arrived and throw exception.
+    const List* e = getList(d, "e");
+    if(e->getList().size() == 2) {
+      _logger->info("Received Error DHT message. code=%s, msg=%s",
+		    Util::urlencode(getData(e, 0)->toString()).c_str(),
+		    Util::urlencode(getData(e, 1)->toString()).c_str());
+    } else {
+      _logger->debug("e doesn't have 2 elements.");
+    }
+    throw new DlAbortEx("Received Error DHT message.");
+  } else if(y->toString() != "r") {
     throw new DlAbortEx("Malformed DHT message. y != r: y=%s",
 			Util::urlencode(y->toString()).c_str());
   }
+  const Dictionary* r = getDictionary(d, "r");
   const Data* id = getData(r, "id");
   validateID(id);
   validateIDMatch(remoteNode->getID(),

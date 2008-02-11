@@ -1,5 +1,12 @@
 2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Adding handling of DHT error message. Just log error message and
+	throw exception.
+	* src/DHTMessageFactoryImpl.cc
+	* test/DHTMessageFactoryImplTest.cc
+
+2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added handling of dynamic cast failure.
 	* src/DHTNodeLookupTask.cc
 	* src/DHTPeerLookupTask.cc

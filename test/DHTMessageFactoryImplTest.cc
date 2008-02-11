@@ -33,6 +33,7 @@ class DHTMessageFactoryImplTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateGetPeersReplyMessage_values);
   CPPUNIT_TEST(testCreateAnnouncePeerMessage);
   CPPUNIT_TEST(testCreateAnnouncePeerReplyMessage);
+  CPPUNIT_TEST(testReceivedErrorMessage);
   CPPUNIT_TEST_SUITE_END();
 public:
   DHTMessageFactoryImplTest():factory(0), routingTable(0), localNode(0) {}
@@ -72,6 +73,7 @@ public:
   void testCreateGetPeersReplyMessage_values();
   void testCreateAnnouncePeerMessage();
   void testCreateAnnouncePeerReplyMessage();
+  void testReceivedErrorMessage();
 };
 
 
@@ -360,6 +362,28 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerReplyMessage()
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 		       Util::toHex(m->getTransactionID()));
+}
+
+void DHTMessageFactoryImplTest::testReceivedErrorMessage()
+{
+  SharedHandle<Dictionary> d = new Dictionary();
+  d->put("t", new Data(transactionID, DHT_TRANSACTION_ID_LENGTH));
+  d->put("y", new Data("e"));
+  List* l = new List();
+  l->add(new Data("404"));
+  l->add(new Data("Not found"));
+  d->put("e", l);
+
+  SharedHandle<DHTNode> remoteNode = new DHTNode(remoteNodeID);
+  remoteNode->setIPAddress("192.168.0.1");
+  remoteNode->setPort(6881);
+
+  try {
+    factory->createResponseMessage("announce_peer", d.get(), remoteNode);
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(RecoverableException* e) {
+    std::cerr << *e << std::endl;
+  }
 }
 
 } // namespace aria2
