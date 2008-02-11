@@ -42,7 +42,7 @@
 #include "DHTRoutingTable.h"
 #include "DHTMessageFactoryImpl.h"
 #include "DHTMessageTracker.h"
-#include "DHTMessageDispatcher.h"
+#include "DHTMessageDispatcherImpl.h"
 #include "DHTMessageReceiver.h"
 #include "DHTTaskQueueImpl.h"
 #include "DHTTaskFactoryImpl.h"
@@ -120,7 +120,7 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
 
     SharedHandle<DHTMessageTracker> tracker = new DHTMessageTracker();
 
-    SharedHandle<DHTMessageDispatcher> dispatcher = new DHTMessageDispatcher(tracker);
+    SharedHandle<DHTMessageDispatcherImpl> dispatcher = new DHTMessageDispatcherImpl(tracker);
 
     SharedHandle<DHTMessageReceiver> receiver = new DHTMessageReceiver(tracker);
 

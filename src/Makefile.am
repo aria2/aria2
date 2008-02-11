@@ -266,7 +266,7 @@ SRCS += MetaEntry.h\
 	DHTBucket.cc\
 	DHTRoutingTable.cc\
 	DHTMessageEntry.cc\
-	DHTMessageDispatcher.cc\
+	DHTMessageDispatcherImpl.cc\
 	DHTMessageReceiver.cc\
 	DHTMessageTracker.cc\
 	DHTMessageTrackerEntry.cc\

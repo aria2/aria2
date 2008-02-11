@@ -144,7 +144,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DHTBucket.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcher.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcherImpl.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageReceiver.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageTracker.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntry.cc\
@@ -421,7 +421,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	BtExtendedMessage.cc DefaultExtensionMessageFactory.cc \
 	HandshakeExtensionMessage.cc UTPexExtensionMessage.cc \
 	DHTNode.cc DHTUtil.cc DHTBucket.cc DHTRoutingTable.cc \
-	DHTMessageEntry.cc DHTMessageDispatcher.cc \
+	DHTMessageEntry.cc DHTMessageDispatcherImpl.cc \
 	DHTMessageReceiver.cc DHTMessageTracker.cc \
 	DHTMessageTrackerEntry.cc DHTMessage.cc DHTConnectionImpl.cc \
 	DHTAbstractMessage.cc DHTQueryMessage.cc DHTResponseMessage.cc \
@@ -527,7 +527,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DHTBucket.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTable.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageEntry.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcher.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTMessageDispatcherImpl.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageReceiver.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageTracker.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTMessageTrackerEntry.$(OBJEXT) \
@@ -1172,7 +1172,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTInteractionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageCallbackImpl.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageDispatcher.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageDispatcherImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageFactoryImpl.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTMessageReceiver.Po@am__quote@

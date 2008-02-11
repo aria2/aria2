@@ -1,5 +1,13 @@
 2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added DHTMessageDispatcherImpl. Now DHTMessageDispatcher is pure
+	virtual.
+	* src/DHTMessageDispatcher.h
+	* src/DHTMessageDispatcherImpl.{h, cc}
+	* src/DHTSetup.cc
+
+2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Adding handling of DHT error message. Just log error message and
 	throw exception.
 	* src/DHTMessageFactoryImpl.cc

@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "DHTMessageDispatcher.h"
+#include "DHTMessageDispatcherImpl.h"
 #include "DHTMessage.h"
 #include "DHTMessageCallback.h"
 #include "DHTMessageEntry.h"
@@ -44,24 +44,29 @@
 
 namespace aria2 {
 
-DHTMessageDispatcher::DHTMessageDispatcher(const SharedHandle<DHTMessageTracker>& tracker):_tracker(tracker), _logger(LogFactory::getInstance()) {}
+DHTMessageDispatcherImpl::DHTMessageDispatcherImpl(const SharedHandle<DHTMessageTracker>& tracker):
+  _tracker(tracker),
+  _logger(LogFactory::getInstance()) {}
 
-DHTMessageDispatcher::~DHTMessageDispatcher() {}
+DHTMessageDispatcherImpl::~DHTMessageDispatcherImpl() {}
 
-void DHTMessageDispatcher::addMessageToQueue(const SharedHandle<DHTMessage>& message,
-					     time_t timeout,
-					     const SharedHandle<DHTMessageCallback>& callback)
+void
+DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& message,
+					    time_t timeout,
+					    const SharedHandle<DHTMessageCallback>& callback)
 {
   _messageQueue.push_back(new DHTMessageEntry(message, timeout, callback));
 }
 
-void DHTMessageDispatcher::addMessageToQueue(const SharedHandle<DHTMessage>& message,
-					     const SharedHandle<DHTMessageCallback>& callback)
+void
+DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& message,
+					    const SharedHandle<DHTMessageCallback>& callback)
 {
   addMessageToQueue(message, DHT_MESSAGE_TIMEOUT, callback);
 }
 
-void DHTMessageDispatcher::sendMessage(const SharedHandle<DHTMessageEntry>& entry)
+void
+DHTMessageDispatcherImpl::sendMessage(const SharedHandle<DHTMessageEntry>& entry)
 {
   try {
     entry->_message->send();
@@ -75,7 +80,7 @@ void DHTMessageDispatcher::sendMessage(const SharedHandle<DHTMessageEntry>& entr
   }
 }
 
-void DHTMessageDispatcher::sendMessages()
+void DHTMessageDispatcherImpl::sendMessages()
 {
   // TODO I can't use bind1st and mem_fun here because bind1st cannot bind a
   // function which takes a reference as an argument..
@@ -85,7 +90,7 @@ void DHTMessageDispatcher::sendMessages()
   _messageQueue.clear();
 }
 
-size_t DHTMessageDispatcher::countMessageInQueue() const
+size_t DHTMessageDispatcherImpl::countMessageInQueue() const
 {
   return _messageQueue.size();
 }
