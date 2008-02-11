@@ -10,7 +10,7 @@
 namespace aria2 {
 
 class MockDHTMessageFactory:public DHTMessageFactory {
-private:
+protected:
   SharedHandle<DHTNode> _localNode;
 public:
   MockDHTMessageFactory() {}
@@ -78,17 +78,18 @@ public:
   virtual SharedHandle<DHTMessage>
   createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
 			     const std::deque<SharedHandle<DHTNode> >& closestKNodes,
-			     const std::string& transactionID,
-			     const std::string& token = "")
+			     const std::string& token,
+			     const std::string& transactionID)
   {
     return 0;
   }
 
+
   virtual SharedHandle<DHTMessage>
   createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
 			     const std::deque<SharedHandle<Peer> >& peers,
-			     const std::string& transactionID,
-			     const std::string& token = "")
+			     const std::string& token,
+			     const std::string& transactionID)
   {
     return 0;
   }

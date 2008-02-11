@@ -1,5 +1,16 @@
 2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added test 'testDoReceivedAction' for DHTQueryMessage subclasses.
+	* test/DHTPingMessageTest.cc
+	* test/DHTGetPeersMessageTest.cc
+	* test/DHTFindNodeMessageTest.cc
+	* test/DHTAnnouncePeerMessageTest.cc
+	* test/MockDHTMessage.h
+	* test/MockDHTMessageFactory.h
+	* test/MockDHTMessageDispatcher.h: New class.
+	
+2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added DHTMessageDispatcherImpl. Now DHTMessageDispatcher is pure
 	virtual.
 	* src/DHTMessageDispatcher.h
