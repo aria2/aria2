@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-12-09 00:02+0900\n"
-"PO-Revision-Date: 2007-12-09 00:06+0900\n"
+"POT-Creation-Date: 2008-02-11 22:36+0900\n"
+"PO-Revision-Date: 2007-12-25 21:55+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Launchpad-Export-Date: 2008-02-09 17:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
@@ -29,16 +29,16 @@ msgstr ""
 #: src/OptionHandlerImpl.h:117
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr ""
+msgstr "moet kleiner dan of gelijk aan %s zijn."
 
 #: src/OptionHandlerImpl.h:123
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr ""
+msgstr "moet groter dan of gelijk aan %s zijn."
 
 #: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:172
 msgid "must be a number."
-msgstr ""
+msgstr "moet een nummer zijn"
 
 #: src/OptionHandlerImpl.h:163
 #, c-format
@@ -57,7 +57,7 @@ msgstr ""
 
 #: src/OptionHandlerImpl.h:230
 msgid "must be one of the following:"
-msgstr ""
+msgstr "moet een van de volgende zijn"
 
 #: src/OptionHandlerImpl.h:258
 msgid "unrecognized proxy format"
@@ -265,7 +265,7 @@ msgid ""
 msgstr ""
 
 #: src/message.h:80
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Fast extension enabled."
 msgstr "CUID#%d - Fast extension ingeschakeld."
 
@@ -481,6 +481,7 @@ msgstr ""
 "zijn. netrc ondersteuning uigeschakeld."
 
 #: src/message.h:124
+#, fuzzy
 msgid "Logging started."
 msgstr "Logging gestart."
 
@@ -863,7 +864,7 @@ msgstr ""
 
 #: src/message.h:207
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
+msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 
 #: src/message.h:208
@@ -883,6 +884,10 @@ msgstr ""
 
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
+msgstr ""
+
+#: src/RequestGroupMan.cc:240
+msgid "Status Legend:"
 msgstr ""
 
 #: src/Util.cc:701
@@ -931,7 +936,7 @@ msgstr ""
 
 #: src/version_usage.cc:84
 msgid "Contact Info:"
-msgstr "Contact informatie:"
+msgstr ""
 
 #: src/version_usage.cc:90
 #, c-format
@@ -1415,8 +1420,9 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version Toon het versie nummer en sluit."
 
 #: src/version_usage.cc:315
+#, fuzzy
 msgid " -h, --help                   Print this message and exit."
-msgstr " -h, --help Toon deze text en sluit."
+msgstr " -v, --version Toon het versie nummer en sluit."
 
 #: src/version_usage.cc:318
 msgid ""

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: aria2c 0.12.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-12-09 00:02+0900\n"
+"POT-Creation-Date: 2008-02-11 22:36+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -845,7 +845,7 @@ msgstr ""
 
 #: src/message.h:207
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
+msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 
 #: src/message.h:208
@@ -865,6 +865,10 @@ msgstr ""
 
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
+msgstr ""
+
+#: src/RequestGroupMan.cc:240
+msgid "Status Legend:"
 msgstr ""
 
 #: src/Util.cc:701

@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-12-09 00:02+0900\n"
-"PO-Revision-Date: 2007-11-30 20:08+0000\n"
+"POT-Creation-Date: 2008-02-11 22:36+0900\n"
+"PO-Revision-Date: 2008-01-17 10:45+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Launchpad-Export-Date: 2008-02-09 17:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
@@ -386,6 +386,10 @@ msgid ""
 "sure to download the file all over again, then delete it or add --allow-"
 "overwrite=true option and restart aria2."
 msgstr ""
+"El archivo %s existe, pero un archivo de control (*.aria2) no existe. La "
+"descarga ha sido canceleda para prevenir que su archivo sea truncado a 0. Si "
+"usted está seguro de que debe descargar el archivo de todas formas, entonces "
+"bórrelo o añada la opción --allow-overwrite=true y reinicie aria2."
 
 #: src/message.h:102
 #, c-format
@@ -540,6 +544,7 @@ msgstr "El archivo ya exixte. Renombrado a %s."
 #: src/message.h:133
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr ""
+"No se puede interpretar el archivo metalink XML. puede ser XML erróneo."
 
 #: src/message.h:135
 msgid "Timeout."
@@ -887,8 +892,8 @@ msgstr "Hemos encontrado una excepción."
 
 #: src/message.h:207
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
-msgstr "Longitud máxima de carga útil excedida o incorrecta. Longitud = %d"
+msgid "Max payload length exceeded or invalid. length = %u"
+msgstr ""
 
 #: src/message.h:208
 #, c-format
@@ -912,6 +917,10 @@ msgstr ""
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
 msgstr "Resultados de la descarga:"
+
+#: src/RequestGroupMan.cc:240
+msgid "Status Legend:"
+msgstr ""
 
 #: src/Util.cc:701
 msgid "Files:"
@@ -960,7 +969,7 @@ msgstr ""
 
 #: src/version_usage.cc:84
 msgid "Contact Info:"
-msgstr "Información de contacto:"
+msgstr ""
 
 #: src/version_usage.cc:90
 #, c-format
@@ -1644,8 +1653,9 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Escribir el número de versión y salir."
 
 #: src/version_usage.cc:315
+#, fuzzy
 msgid " -h, --help                   Print this message and exit."
-msgstr " -h, --help                   Escribir este mensaje y salir."
+msgstr " -v, --version                Escribir el número de versión y salir."
 
 #: src/version_usage.cc:318
 msgid ""

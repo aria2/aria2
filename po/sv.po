@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-12-09 00:02+0900\n"
-"PO-Revision-Date: 2007-12-09 00:07+0900\n"
+"POT-Creation-Date: 2008-02-11 22:36+0900\n"
+"PO-Revision-Date: 2008-02-11 22:30+0900\n"
 "Last-Translator: Hampus Wessman <hw@vox.nu>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Launchpad-Export-Date: 2008-02-09 17:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
@@ -854,7 +854,7 @@ msgstr "Undantag fångat"
 
 #: src/message.h:207
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
+msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 
 #: src/message.h:208
@@ -874,6 +874,10 @@ msgstr ""
 
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
+msgstr ""
+
+#: src/RequestGroupMan.cc:240
+msgid "Status Legend:"
 msgstr ""
 
 #: src/Util.cc:701
@@ -922,7 +926,7 @@ msgstr ""
 
 #: src/version_usage.cc:84
 msgid "Contact Info:"
-msgstr "Kontaktinfo:"
+msgstr ""
 
 #: src/version_usage.cc:90
 #, c-format
@@ -1444,8 +1448,9 @@ msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                Skriv ut versionsnumret och avsluta."
 
 #: src/version_usage.cc:315
+#, fuzzy
 msgid " -h, --help                   Print this message and exit."
-msgstr " -h, --help                   Skriv ut detta meddelande och avsluta."
+msgstr " -v, --version                Skriv ut versionsnumret och avsluta."
 
 #: src/version_usage.cc:318
 msgid ""

@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-12-09 00:02+0900\n"
-"PO-Revision-Date: 2007-12-09 00:05+0900\n"
+"POT-Creation-Date: 2008-02-11 22:36+0900\n"
+"PO-Revision-Date: 2007-12-28 10:41+0000\n"
 "Last-Translator: Tatsuhiro Tsujikawa <tujikawa@rednoah.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Launchpad-Export-Date: 2008-02-09 17:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
@@ -890,8 +890,8 @@ msgstr "例外発生"
 
 #: src/message.h:207
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
-msgstr "ペイロード長が既定値を越えているか, 不正です. length=%d"
+msgid "Max payload length exceeded or invalid. length = %u"
+msgstr ""
 
 #: src/message.h:208
 #, c-format
@@ -914,6 +914,10 @@ msgstr ""
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
 msgstr "ダウンロード結果:"
+
+#: src/RequestGroupMan.cc:240
+msgid "Status Legend:"
+msgstr ""
 
 #: src/Util.cc:701
 msgid "Files:"
@@ -1792,9 +1796,6 @@ msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
-" URL に \"&\" 等のシェルに対して特別な意味をもつキャラクターが含まれる場合"
-"は,\n"
-" ' または \" でクォートしてください."
 
 #: src/version_usage.cc:328
 msgid "Refer to man page for more information."
@@ -1835,6 +1836,9 @@ msgstr "ポートをバインド中にエラーが発生しました.\n"
 #~ "スク上のファイルの上書きを防ぐためダウンロードはキャンセルされました. 本当"
 #~ "に上書きダウンロードしてよいなら, --allow-overwrite=true を指定して aria2 "
 #~ "を実行してください."
+
+#~ msgid "Max payload length exceeded or invalid. length = %d"
+#~ msgstr "ペイロード長が既定値を越えているか, 不正です. length=%d"
 
 #~ msgid ""
 #~ " --check-integrity=true|false  Check file integrity by validating piece "

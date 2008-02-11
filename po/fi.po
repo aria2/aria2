@@ -1,4 +1,4 @@
-# Italian translation for aria2
+# Finnish translation for aria2
 # Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the aria2 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-02-11 22:36+0900\n"
-"PO-Revision-Date: 2007-12-23 22:42+0000\n"
+"PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Italian <it@li.org>\n"
+"Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,65 +19,64 @@ msgstr ""
 
 #: src/OptionHandlerImpl.h:66
 msgid "must be either 'true' or 'false'."
-msgstr "deve assumere il valore 'true'(vero) oppure 'false'(falso)"
+msgstr "täytyy olla joko 'true' tai 'false'."
 
 #: src/OptionHandlerImpl.h:87 src/OptionHandlerImpl.h:120
 #, c-format
 msgid "must be between %s and %s."
-msgstr "deve essere  tra %s e %s"
+msgstr "täytyy olla välillä %s ja %s."
 
 #: src/OptionHandlerImpl.h:117
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "deve essere piu` piccolo o uguale a %s."
+msgstr "täytyy olla pienempi tai yhtä suuri kuin %s."
 
 #: src/OptionHandlerImpl.h:123
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "deve essere piu` grande o uguale a %s."
+msgstr "täytyy olla suurempi tai yhtä suuri kuin %s."
 
 #: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:172
 msgid "must be a number."
-msgstr "deve essere un numero."
+msgstr "täytyy olla numero."
 
 #: src/OptionHandlerImpl.h:163
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "deve essere piu` piccolo o uguale a %.1f."
+msgstr "täytyy olla pienempi tai yhtä suuri kuin %.1f."
 
 #: src/OptionHandlerImpl.h:166
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "deve essere tra %.1f e %.1f."
+msgstr "täytyy olla välillä %.1f ja %.1f"
 
 #: src/OptionHandlerImpl.h:169
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "deve essere piu` grande o uguale a %.1f."
+msgstr "täytyy olla suurempi tai yhtä suuri kuin %.1f"
 
 #: src/OptionHandlerImpl.h:230
 msgid "must be one of the following:"
-msgstr "deve essere uno dei seguenti:"
+msgstr "täytyy olla yksi seuraavista:"
 
 #: src/OptionHandlerImpl.h:258
 msgid "unrecognized proxy format"
-msgstr "il formato del proxy non e` corretto"
+msgstr "tunnistamaton välityspalvelinmuoto"
 
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr ""
-"CUID#%d - Lo scaricamento di un segmento e` stato completato con successo."
+msgstr "CUID#%d - Yhden osan lataus valmistui onnistuneesti."
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - Nessun segmento disponibile."
+msgstr "CUID#%d - Osaa ei ole saatavilla."
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - Connessione a %s:%d"
+msgstr "CUID#%d - Yhdistää osoitteeseen %s:%d"
 
 #: src/message.h:43
 #, c-format
@@ -85,13 +84,12 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - Il segmento e` cambiato. Richiediamo una nuova richiesta con "
-"l'intestazione con il nuovo intervallo."
+"CUID#%d - Osa muuttui. Lähetämme pyynnön uudestaan uudella alue-otsikolla."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - Redirezione a %s"
+msgstr "CUID#%d - Uudelleenohjataan osoitteeseen %s"
 
 #: src/message.h:45
 #, c-format
@@ -99,7 +97,7 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - Richiedendo:\n"
+"CUID#%d - Lähetetään pyyntöä:\n"
 "%s"
 
 #: src/message.h:46
@@ -108,93 +106,93 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - Ricevuta risposta:\n"
+"CUID#%d - Vastaus saatu:\n"
 "%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - Scaricamento annullato. URI=%s"
+msgstr "CUID#%d - Lataus lopetettu kesken. URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "Cuid#%d - Rilanciato scaricamento. URI=%s"
+msgstr "CUID#%d - Aloitetaan lataus alusta. URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - Download annullato."
+msgstr "CUID#%d - Lataus lopetettu kesken."
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr "CUID#%d - provato %d volte, ma senza successo. Scaricamento annullato."
+msgstr "CUID#%d - yritetty %d kertaa, onnistumatta. Lataus lopetettu kesken."
 
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d -"
+msgstr "CUID#%d - poistetaan tämä cuid osamanagerista."
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - ottenuto un nuovo pezzo. indice=%d"
+msgstr "CUID#%d - saimme uuden osan. Indeksi=%d"
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - abbiamo ottenuto un pezzo errato. index=%d"
+msgstr "CUID#%d - saimme väärän osan. Indeksi=%d"
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - Scaricamento non completato: %s"
+msgstr "CUID#%d - Lataus ei ole valmis: %s"
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr "%#d - Lo scaricamento e` gia` stato completato: %s"
+msgstr "#%d - Lataus on jo valmistunut: %s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - Checksum corretto: %s"
+msgstr "CUID#%d - Checksum-tarkistus OK: %s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - Checksum errato: %s"
+msgstr "CUID#%d - Checksum-tarkistus epäonnistui: %s"
 
 #: src/message.h:63
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - Risolvendo il nome %s"
+msgstr "CUID#%d - Etsitään nimeä %s"
 
 #: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - La risoluzione del nome e` stata completata: %s -> %s"
+msgstr "CUID#%d - Nimen etsintä valmis: %s -> %s"
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - La risoluzione del nome %s e` fallita:%s"
+msgstr "CUID#%d - Nimen %s etsintä epäonnistui: %s"
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr ""
+msgstr "CUID #%d - DNS-välimuistin osuma: %s -> %s"
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - Richiesto annullamento."
+msgstr "CUID#%d - Lopetusta kesken pyydetty."
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - Connessione al peer %s"
+msgstr "CUID#%d - Yhdistetään koneeseen %s"
 
 #: src/message.h:69
 #, c-format
@@ -202,13 +200,13 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
-"CUID#%d - Pezzo ricevuto. indice=%d, inizio=%d, lunghezza=%d, offset=%llu, "
-"indiceDelBlocco=%d"
+"CUID#%d - Osa vastaanotettu. Indeksi=%d, alku=%d, pituus=%d, offset=%llu, "
+"block-indeksi=%d"
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr ""
+msgstr "CUID#%d - Palan bittikenttä %s"
 
 #: src/message.h:71
 #, c-format
@@ -216,6 +214,8 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - Hylätään palaviesti jonossa koska yksi käyttäjistä on kuristunut. "
+"Indeksi=%d, alku=%d, pituus=%d"
 
 #: src/message.h:72
 #, c-format
@@ -223,32 +223,28 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - Rifiutato pezzo di un messaggio in coda in quanto e` stato "
-"ricevuto un messaggio di cancellazione. indice=%d, inizio=%d, lunghezza=%d"
+"CUID#%d - Hylätään palaviesti jonossa koska saatiin peruutuspyyntö. Indeksi=%"
+"d, alku=%d, pituus=%d"
 
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr ""
-"CUID#%d - E` stata lanciata un'eccezione durante la validazione "
-"dell'integrita` del file."
+msgstr "CUID#%d - Poikkeus löydettiin tutkittaessa tiedoston eheyttä."
 
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - Interessato al peer"
+msgstr "CUID#%d - Kiinnostusta käyttäjään"
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - Non interessato al peer"
+msgstr "CUID#%d - Ei kiinnostusta käyttäjään"
 
 #: src/message.h:76
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr ""
-"CUID#%d - Cancellazione richiesta per lo slot con indice=%d, indiceDelBlocco="
-"%d"
+msgstr "CUID#%d - Poistetaan pyyntöpaikka indeksi=%d, block-indeksi=%d"
 
 #: src/message.h:77
 #, c-format
@@ -256,13 +252,15 @@ msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
 "got choked."
 msgstr ""
+"CUID#%d - Poistetaan pyyntöpaikka indeksi=%d, block-indeksi=%d koska "
+"localhost kuristui."
 
 #: src/message.h:78
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
 msgstr ""
-"CUID#%d - Cancellazione richiesta per lo slot con indiceDelBlocco=%d per via "
-"di un time out"
+"CUID#%d - Poistetaan pyyntöpaikka block-indeksi=%d koska aikaraja tuli "
+"vastaan."
 
 #: src/message.h:79
 #, c-format
@@ -270,112 +268,104 @@ msgid ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
 "acquired."
 msgstr ""
-"CUID#%d - Cancellazione richiesta per lo slot con indiceDelBlocco=%d in "
-"quanto il blocco e` stato ottenuto."
+"CUID#%d - Poistetaan pyyntöpaikka block-indeksi=%d koska se pala on jo saatu."
 
 #: src/message.h:80
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - Abilitata estensione veloce."
+msgstr "CUID#%d - Nopea laajennus päällä."
 
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
-msgstr ""
-"CUID#%d - Lanciata eccezione durante l'allocazione dello spazio per il file."
+msgstr "CUID#%d - Poikkeus saatu kiinni varatessa tilaa."
 
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-msgstr ""
-"CUID#%d - E` stato trovato Content-Disposition. Uso %s come nome di file"
+msgstr "CUID#%d - Sisällön epäjärjestys havaittu. Käytä %s tiedostonimenä"
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr ""
+msgstr "CUID#%d - Käyttäjä %s:%d bannattu."
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - Utilizzo porta %d per accettare nuove connessioni"
+msgstr "CUID#%d - Käytetään porttia %d uusiin yhteyksiin."
 
 #: src/message.h:85
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr ""
-"CUID#%d - E` stato riscontrato un errore durante il binding alla porta=%d"
+msgstr "CUID#%d - Virhe tapahtui sitoessa porttia %d"
 
 #: src/message.h:86
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-msgstr "CUID#%d - Connessione in entrata, aggiunta di un nuovo comando CUID#%d"
+msgstr "CUID#%d - Saapuva yhteys, lisätään uusi komento CUID#%d"
 
 #: src/message.h:87
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr ""
-"CUID#%d - E` stato riscontrato un errore nell'accettazione della connessione"
+msgstr "CUID#%d - Virhe yhteyden hyväksymisessä"
 
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr ""
-"CUID#%d - E` stato riscontrato un errore durante la gestione della risposta "
-"del tracker."
+msgstr "CUID#%d - Virhe tapahtui käsitellessä trackerin vastausta."
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - Non riesco a creare la richiesta per il tracker."
+msgstr "CUID#%d - Ei voi luoda tracker-pyytöä."
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr ""
-"CUID#%d - Creazione di un nuovo comando di richiesta per il tracker #%d"
+msgstr "CUID#%d - Luodaan uusi tracker-pyyntökäsky #%d"
 
 #: src/message.h:92
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr "URI non riconosciuta o protocollo non supportato: %s"
+msgstr "Tunnistamaton URI tai ei-tuettu protokolla: %s"
 
 #: src/message.h:93
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr "Il tracker ha riportato un messaggio di attenzione:%s"
+msgstr "Tracker palautti varoituksen: %s"
 
 #: src/message.h:94
 #, c-format
 msgid "The segment file %s exists."
-msgstr "Il file relativo al segmento %s esiste."
+msgstr "Osatiedosto %s on jo olemassa."
 
 #: src/message.h:95
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr "Il file relativo al segmento %s non esiste."
+msgstr "Osatiedostoa %s ei ole olemassa."
 
 #: src/message.h:96
 #, c-format
 msgid "Saving the segment file %s"
-msgstr "Salvataggio del file relativo al segmento %s"
+msgstr "Tallennetaan osatiedostoa %s"
 
 #: src/message.h:97
 msgid "The segment file was saved successfully."
-msgstr "Il file relativo al segmento e` stato salvato con successo."
+msgstr "Osatiedosto tallennettu onnistuneesti."
 
 #: src/message.h:98
 #, c-format
 msgid "Loading the segment file %s."
-msgstr "Caricamento del file relativo al segmento %s."
+msgstr "Ladataan osatiedostoa %s"
 
 #: src/message.h:99
 msgid "The segment file was loaded successfully."
-msgstr "Il file relativo al segmento e` stato caricato con successo."
+msgstr "Osatiedosto ladattu onnistuneesti."
 
 #: src/message.h:100
 msgid "No URI to download. Download aborted."
-msgstr "Nessuna URI da scaricare.Scaricamento annullato."
+msgstr "Ei URIa ladattavaksi. Lataus keskeytetty."
 
 #: src/message.h:101
 #, c-format
@@ -385,109 +375,108 @@ msgid ""
 "sure to download the file all over again, then delete it or add --allow-"
 "overwrite=true option and restart aria2."
 msgstr ""
-"Il file %s esiste, ma un fiel di controllo (*.aria2) non esiste. Lo "
-"scaricamento e` stato annullato per evitare che il tuo file venisse troncato "
-"a 0. Se sei sicuro di riscaricare il file da capo, allora cancellalo o "
-"aggiungi l'opzione --allow-overwrite=true e fai ripartire aria2."
+"Tiedosto %s on jo olemassa, mutta hallintatiedostoa (*.aria2) ei löydy. "
+"Lataus peruutettiin, jotta tiedostoasi ei tyhjennettäisi. Jos olet varma, "
+"että haluat ladata tiedoston uudestaan, joko poista se tai käytä --allow-"
+"overwrite=true valintaa."
 
 #: src/message.h:102
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr "Allocazione del file %s,%s bytes"
+msgstr "Varataan tilaa tiedostolla %s, %s tavua"
 
 #: src/message.h:103
 msgid "File not found"
-msgstr "FIle non trovato"
+msgstr "Tiedostoa ei löydy"
 
 #: src/message.h:104
 msgid "Not a directory"
-msgstr "Non è una directory"
+msgstr "Ei ole kansio"
 
 #: src/message.h:105
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr ""
+msgstr "Riittämättömät tarkistussummat. Pituus=%d, numero=%d"
 
 #: src/message.h:106
 #, c-format
 msgid "Writing file %s"
-msgstr "Scrittura file %s"
+msgstr "Kirjoitetaan tiedostoa %s"
 
 #: src/message.h:107
 msgid "No peer list received."
-msgstr "Non e` stata ricevuta la lista dei peer."
+msgstr "Ei saatu käyttäjälistaa."
 
 #: src/message.h:108
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr "Aggiunta peer %s:%d"
+msgstr "Lisätään käyttäjä %s:%d"
 
 #: src/message.h:109
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr ""
+msgstr "Poistetaan käytetty palaindeksi %d, täyttönopeus(%%)=%d<=%d"
 
 #: src/message.h:110
 msgid "Download of selected files was complete."
-msgstr "Scaricamento completato dei file selezionati."
+msgstr "Valittujen tiedostojen lataus on valmis."
 
 #: src/message.h:111
 msgid "The download was complete."
-msgstr "Scaricamento completato"
+msgstr "Lataus on valmis."
 
 #: src/message.h:112
 #, c-format
 msgid "Removed %d have entries."
-msgstr ""
+msgstr "Poistettiin %d kohtaa."
 
 #: src/message.h:113
 #, c-format
 msgid "Validating file %s"
-msgstr "Validazione del file %s"
+msgstr "Tarkistetaan tiedostoa %s"
 
 #: src/message.h:114
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr "%d secondi per allocare %s byte(s)"
+msgstr "%d sekuntia tilan %s varaamiseen"
 
 #: src/message.h:115
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr ""
+msgstr "Lähetetään FileAllocationCommand CUID#%d:lle"
 
 #: src/message.h:116
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr "Metalink: Accodando %s per lo scaricamento."
+msgstr "Metalink: Laitetaan %s jonoon latausta varten."
 
 #: src/message.h:117
 #, c-format
 msgid "Download complete: %s"
-msgstr "Scaricamento completato: %s"
+msgstr "Lataus on valmis: %s"
 
 #: src/message.h:118
 msgid "Seeding is over."
-msgstr ""
+msgstr "Jakaminen (seeding) lopetettu."
 
 #: src/message.h:119
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-msgstr ""
-"CUID#%d cancella l'indice di segmento=%d. CUID#%d lo gestisce al suo posto."
+msgstr "CUID#%d peruuttaa palan indeksillä %d. CUID#%d hoitaa sen sen sijaan."
 
 #: src/message.h:120
 msgid "No chunk to verify."
-msgstr "Nessun pezzo da verificare."
+msgstr "Ei palaa tarkistettavaksi."
 
 #: src/message.h:121
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr "Passato il controllo degli errori. hash=%s"
+msgstr "OK palan tarkistussumma. hash=%s"
 
 #: src/message.h:122
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr "Non e` stato possibile caricare i cookies da %s"
+msgstr "Cookien lataaminen epäonnistui tiedostosta %s"
 
 #: src/message.h:123
 #, c-format
@@ -495,92 +484,90 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
-"il file .netrc %s non ha i permessi corretti. Dovrebbe essere 600. Il "
-"supporto per il file .netrc e` stato disabilitato."
+".netrc-tiedostolla %s ei ole sopivia oikeuksia. Sen pitäisi olla 600. netrc-"
+"tuki pois päältä."
 
 #: src/message.h:124
 msgid "Logging started."
-msgstr "Iniziato tracciamento delle operazioni."
+msgstr "Loki aloitettu."
 
 #: src/message.h:125
 msgid "Specify at least one URL."
-msgstr "Specifica almeno una URL."
+msgstr "Anna ainakin yksi osoite."
 
 #: src/message.h:126
 msgid "daemon failed."
-msgstr "demone fallito."
+msgstr "daemon epäonnistui."
 
 #: src/message.h:127
 #, c-format
 msgid "Verification finished successfully. file=%s"
-msgstr "La verifica e` stata completata con successo. file=%s"
+msgstr "Tarkistus lopetettu onnistuneesti. Tiedosto=%s"
 
 #: src/message.h:128
 #, c-format
 msgid "Checksum error detected. file=%s"
-msgstr "Trovato errore nel checksum. file=%s"
+msgstr "Tarkistussumman virhe löydetty. Tiedosto=%s"
 
 #: src/message.h:129
 #, c-format
 msgid "Incomplete range specified. %s"
-msgstr "L'intervallo specificato e` incompleto. %s"
+msgstr "Väärä alue annettu: %s"
 
 #: src/message.h:130
 #, c-format
 msgid "Failed to convert string into value: %s"
-msgstr "Non e` stato possibile convertire la stringa in un valore: %s"
+msgstr "Merkkijonon muuttaminen arvoksi epäonnistui: %s"
 
 #: src/message.h:131
 msgid "Resource not found"
-msgstr "Risorsa non trovata"
+msgstr "Resurssia ei löydy"
 
 #: src/message.h:132
 #, c-format
 msgid "File already exists. Renamed to %s."
-msgstr "File gia` esistente. Rinominato in %s."
+msgstr "Tiedosto on jo olemassa. Nimettiin uudelleen %s:ksi"
 
 #: src/message.h:133
 msgid "Cannot parse metalink XML file. XML may be malformed."
-msgstr ""
-"Impossibile parsificare il file XML metalink. Il formato XML potrebbe essere "
-"errato."
+msgstr "Metalink-xml tiedostoa ei voi käsitellä. Tiedosto voi olla vioittunut."
 
 #: src/message.h:135
 msgid "Timeout."
-msgstr "Tempo scaduto."
+msgstr "Aikakatkaisu."
 
 #: src/message.h:136
 msgid "Invalid chunk size."
-msgstr "Dimensione del pezzo invalida."
+msgstr "Väärä palan koko."
 
 #: src/message.h:137
 #, c-format
 msgid "Too large chunk. size=%d"
-msgstr "Pezzo troppo grande. dimensione=%d"
+msgstr "Liian suuri pala. Koko %d"
 
 #: src/message.h:138
 msgid "Invalid header."
-msgstr "Intestazione non corretta."
+msgstr "Väärä otsake."
 
 #: src/message.h:139
 msgid "Invalid response."
-msgstr "Risposta non corretta."
+msgstr "Epäkelpo vastaus."
 
 #: src/message.h:140
 msgid "No header found."
-msgstr "Nessuna intestazione trovata."
+msgstr "Ei löydetty otsaketta."
 
 #: src/message.h:141
 msgid "No status header."
-msgstr "Nessuna intestazione relativa allo stato."
+msgstr "Ei tila-otsikkoa."
 
 #: src/message.h:142
 msgid "Proxy connection failed."
-msgstr "La connessione al proxy e` fallita."
+msgstr "Välityspalvelinyhteys epäonnistui."
 
 #: src/message.h:143
 msgid "Connection failed."
-msgstr "Connessione fallita."
+msgstr "Yhteys epäonnistui."
 
 #: src/message.h:144
 #, c-format
@@ -588,228 +575,226 @@ msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
 msgstr ""
-"Il nome di file richiesto e quello precedentemente registrato non sono lo "
-"stesso. Atteso:%s Attuale:%s"
+"Pyydetty tiedostonimi ja aiemmin rekisteröity eivät täsmää. Odotettu: %s  "
+"Oikea: %s"
 
 #: src/message.h:145
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr "Lo stato della risposta non e` positivo. stato=%d"
+msgstr "Vastauksen tila ei ole onnistunut. Tila=%d"
 
 #: src/message.h:146
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr "File troppo grande. dimensione=%s"
+msgstr "Tiedostokoko liian suuri. Koko=%s"
 
 #: src/message.h:147
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr "La codifica del trasferimento %s non e` supportata."
+msgstr "Siirron koodausta %s ei tueta."
 
 #: src/message.h:148
 #, c-format
 msgid "SSL initialization failed: %s"
-msgstr "Inizializzazione SSL fallita: %s"
+msgstr "SSL-aloitus epäonnistui: %s"
 
 #: src/message.h:149
 msgid "SSL I/O error"
-msgstr "Errore nell'I/O SSL"
+msgstr "SSL I/O-virhe"
 
 #: src/message.h:150
 msgid "SSL protocol error"
-msgstr "Errore col protocollo SSL"
+msgstr "SSL protokollavirhe"
 
 #: src/message.h:151
 #, c-format
 msgid "SSL unknown error %d"
-msgstr "Errore sconosciuto in SSL %d"
+msgstr "SSL: tuntematon virhe %d"
 
 #: src/message.h:152
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr "Inizializzazione SSL fallita: errore di connessione OpenSSL %d"
+msgstr "SSL valmistelu epäonnistui: OpenSSL yhdistysvirhe %d"
 
 #: src/message.h:153
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "Errore dovuto due dimensioni differenti: Atteso:%s Attuale:%s"
+msgstr "Koko ei täsmää. Odotettu:%s  Oikea:%s"
 
 #: src/message.h:154
 msgid "Authorization failed."
-msgstr "Autenticazione fallita."
+msgstr "Kirjautuminen epäonnistui."
 
 #: src/message.h:155
 msgid "Got EOF from the server."
-msgstr "Ricevuto EOF dal server."
+msgstr "Saatiin tiedoston lopetus palvelimelta."
 
 #: src/message.h:156
 msgid "Got EOF from peer."
-msgstr "Ricevuto EOF dal peer."
+msgstr "Saatiin tiedoston lopetus käyttäjältä."
 
 #: src/message.h:157
 msgid "Malformed meta info."
-msgstr "Metainformazioni non correttamente codificate."
+msgstr "Vioittunut metatieto."
 
 #: src/message.h:159
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
-msgstr "Impossibile aprire il file %s, causa: %s"
+msgstr "Tiedoston %s avaaminen epäonnistui, syy: %s"
 
 #: src/message.h:160
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
-msgstr "Scrittura fallita sul file %s, causa: %s"
+msgstr "Tiedostoon %s ei voi kirjoittaa, syy: %s"
 
 #: src/message.h:161
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
-msgstr "Lettura fallita dal file %s, causa: %s"
+msgstr "Tiedostosta %s ei voi lukea, syy: %s"
 
 #: src/message.h:162
 msgid "Failed to read data from disk."
-msgstr "Fallita lettura dei dati dal disco."
+msgstr "Lukeminen levyltä epäonnistui."
 
 #: src/message.h:163
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr ""
-"Il calcolo del digest SHA1 di una parte del file %s e` fallito, causa: %s"
+msgstr "SHA1-summaa ei voitu laskea tiedostosta tai sen osasta %s, syy: %s"
 
 #: src/message.h:164
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
-msgstr "E` fallito lo spostamento all'interno del file %s, causa: %s"
+msgstr "Tiedostoa %s ei löydy, syy: %s"
 
 #: src/message.h:165
 #, c-format
 msgid "The offset is out of range, offset=%s"
-msgstr "Lo scostamento e` fuori intervallo, scostamento=%s"
+msgstr "Offset on rajojen ulkopuolella, offset=%s"
 
 #: src/message.h:166
 #, c-format
 msgid "%s is not a directory."
-msgstr "%s non è una directory."
+msgstr "%s ei ole hakemisto."
 
 #: src/message.h:167
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
-msgstr "La creazione della directory %s e` fallita, causa: %s"
+msgstr "Hakemistoa %s ei voi luoda, syy: %s"
 
 #: src/message.h:168
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
-msgstr "Fallita l'apertura del file relativo al segmento %s, causa: %s"
+msgstr "Osatiedostoa %s ei voi avata, syy: %s"
 
 #: src/message.h:169
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
-msgstr "Fallita la scrittura sul file relativo al segmento %s, causa: %s"
+msgstr "Osatiedostoon %s ei voi kirjoittaa, syy: %s"
 
 #: src/message.h:170
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
-msgstr "Fallita la lettura dal file relativo al segmento %s, causa: %s"
+msgstr "Osatiedostosta %s ei voi lukea, syy: %s"
 
 #: src/message.h:172
 #, c-format
 msgid "Failed to open a socket, cause: %s"
-msgstr "Fallita l'apertura di un socket, causa: %s"
+msgstr "Sockettia ei voi avata, syy: %s"
 
 #: src/message.h:173
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
-msgstr "L'abilitazione di una opzione sul socket e` fallita, causa: %s"
+msgstr "Socket-asetuksen asetus epäonnistui, syy: %s"
 
 #: src/message.h:174
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
-msgstr "Il settaggio di un socket come bloccante e` fallita, causa: %s"
+msgstr "Socketin asetus estäväksi epäonnistui, syy: %s"
 
 #: src/message.h:175
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
-msgstr "Il settaggio di un socket come non-bloccante e` fallita, causa: %s"
+msgstr "Socketin asetus ei-estäväksi epäonnistui, syy: %s"
 
 #: src/message.h:176
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
-msgstr "Il binding di un socket e` fallito, causa: %s"
+msgstr "Socketin sitominen epäonnistui, syy: %s"
 
 #: src/message.h:177
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
-msgstr "Fallito l'ascolto su di un socket, causa: %s"
+msgstr "Socketin kuuntelu epäonnistui, syy: %s"
 
 #: src/message.h:178
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
-msgstr "L'accettazione di una connessione da un peer e` fallita, causa: %s"
+msgstr "Käyttäjäyhteyttä ei voitu hyväksyä, syy: %s"
 
 #: src/message.h:179
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
-msgstr "L'ottenimento del nome del socket e` fallito, causa: %s"
+msgstr "Socketin nimen saaminen epäonnistui, syy: %s"
 
 #: src/message.h:180
 #, c-format
 msgid "Failed to get the name of connected peer, cause: %s"
-msgstr ""
+msgstr "Yhdistyneen käyttäjän nimeä ei saatu, syy: %s"
 
 #: src/message.h:181
 #, c-format
 msgid "Failed to resolve the hostname %s, cause: %s"
-msgstr ""
+msgstr "Koneen %s osoitetta ei pystytty selvittämään, syy: %s"
 
 #: src/message.h:182
 #, c-format
 msgid "Failed to connect to the host %s, cause: %s"
-msgstr ""
+msgstr "Yhteyttä koneeseen %s ei saatu, syy: %s"
 
 #: src/message.h:183
 #, c-format
 msgid "Failed to check whether the socket is writable, cause: %s"
-msgstr ""
+msgstr "Socketin kirjoitettavuutta ei voitu tarkistaa, syy: %s"
 
 #: src/message.h:184
 #, c-format
 msgid "Failed to check whether the socket is readable, cause: %s"
-msgstr ""
+msgstr "Socketin luettavuutta ei voitu tarkistaa, syy: %s"
 
 #: src/message.h:185
 #, c-format
 msgid "Failed to send data, cause: %s"
-msgstr ""
+msgstr "Dataa ei voitu lähettää, syy: %s"
 
 #: src/message.h:186
 #, c-format
 msgid "Failed to receive data, cause: %s"
-msgstr ""
+msgstr "Dataa ei voitu vastaanottaa, syy: %s"
 
 #: src/message.h:187
 #, c-format
 msgid "Failed to peek data, cause: %s"
-msgstr ""
+msgstr "Dataa ei voitu katsoa, syy: %s"
 
 #: src/message.h:188
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
-msgstr "Errore sul socket sconosciuto %d (0x%x)"
+msgstr "Tuntematon socket-virhe %d (0x%x)"
 
 #: src/message.h:189
 #, c-format
 msgid "File %s exists, but %s does not exist."
-msgstr "Il file %s esiste, ma %s non esiste."
+msgstr "Tiedosto %s on olemassa, mutta %s ei."
 
 #: src/message.h:190
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
-msgstr ""
-"Errata dimensione del payload per %s, dimensione=%d. Avrebbe dovuto essere %d"
+msgstr "Väärä payload-koko %s:lla (%d), pitäisi olla %d."
 
 #: src/message.h:191
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
-msgstr "ID=%d errato per %s. Dovrebbe essere %d."
+msgstr "Epäkelpo ID=%d %s:lla. Pitäisi olla %d."
 
 #: src/message.h:192
 #, c-format
@@ -817,28 +802,30 @@ msgid ""
 "Chunk checksum validation failed. checksumIndex=%d, offset=%s, expectedHash=%"
 "s, actualHash=%s"
 msgstr ""
+"Palan tarkistussumma ei täsmää. checksumIndex=%d, offset=%s, expectedHash=%"
+"s, actualHash=%s"
 
 #: src/message.h:193
 msgid "Download aborted."
-msgstr "Scaricamento annullato."
+msgstr "Lataus keskeytettiin."
 
 #: src/message.h:194
 #, c-format
 msgid "File %s is being downloaded by other command."
-msgstr "Il file %s viene scaricato gia` da un altro comando."
+msgstr "Tiedostoa %s lataa joku toinen komento."
 
 #: src/message.h:195
 msgid "Insufficient checksums."
-msgstr "Checksum insufficienti."
+msgstr "Riittämättömät tarkistussummat."
 
 #: src/message.h:196
 #, c-format
 msgid "Tracker returned failure reason: %s"
-msgstr "Il tracker ha ritornato una ragione per il fallimento: %s"
+msgstr "Tracker palautti epäonnistumisen syyn: %s"
 
 #: src/message.h:197
 msgid "Flooding detected."
-msgstr ""
+msgstr "Tulva huomattu."
 
 #: src/message.h:198
 #, c-format
@@ -846,92 +833,87 @@ msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
-"La connessione e` stata annullata in quanto nessun messaggio di richiesta o "
-"pezzo sono stati scambiati in un certo periodo di tempo(%d secondi)."
+"Sulje yhteys koska yhtään pyyntöä/palaa ei vaihdettu tietyssä ajassa (%d "
+"sekunnissa)."
 
 #: src/message.h:199
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
-msgstr ""
-"Il campo infoHash nel file torrent e` diverso da quello nel file .aria2."
+msgstr "InfoHash torrent-tiedostossa ei täsmää .aria2-tiedostossa olevaan."
 
 #: src/message.h:200
 #, c-format
 msgid "No such file entry %s"
-msgstr "Nessun file con il nome %s"
+msgstr "Tiedostokohtaa %s ei ole."
 
 #: src/message.h:201
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr "Troppo lento: velocita` di scaricamento: %d <= %d(B/s), host:%s"
+msgstr "Liian hidas latausnopeus: %d <= %d(B/s), kone:%s"
 
 #: src/message.h:202
 msgid "No HttpRequestEntry found."
-msgstr "Non e` stata trovata la HttpRequestEntry."
+msgstr "HttpRequestEntry:ä ei löydy."
 
 #: src/message.h:203
 #, c-format
 msgid "Got %d status, but no location header provided."
-msgstr ""
-"Ho ricevuto lo stato %d, ma nessun header di locazione e` stato fornito."
+msgstr "Saatiin %d-tila, mutta ei osoiteotsaketta."
 
 #: src/message.h:204
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
-msgstr ""
-"Header con intervallo invalido. Richiesta: %s-%s/%s, Risposta: %s-%s/%s"
+msgstr "Epäkelpo rajaotsake. Pyyntö: %s-%s/%s, Vastaus %s-%s/%s"
 
 #: src/message.h:205
 msgid "No file matched with your preference."
-msgstr "Nessun file riconosciuto con le tue preferenze."
+msgstr "Yksikään tiedosto ei vastaa asetuksiasi."
 
 #: src/message.h:206
 msgid "Exception caught"
-msgstr "E` stata lanciata un'eccezione."
+msgstr "Poikkeus löytyi"
 
 #: src/message.h:207
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
-msgstr ""
+msgstr "Suurin payload-koko ylitetty tai väärä. Pituus = %u"
 
 #: src/message.h:208
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
-"La lunghezza del file e` invalida. Non posso continuare a scaricare %s: "
-"locale %s, remoto %s"
+"Epäkelpo tiedoston pituus. Latausta %s ei voi jatkaa: paikallinen %s, etä %s"
 
 #: src/MultiUrlRequestInfo.cc:74
 msgid "aria2 will resume download if the transfer is restarted."
-msgstr ""
-"aria2 ripristinera` lo scaricamento se la trasmissione viene fatta ripartire."
+msgstr "aria2 jatkaa latausta, jos siirto käynnistetään uudelleen."
 
 #: src/MultiUrlRequestInfo.cc:76
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
-"Se si dovessero riscontrare degli errori, leggere il file di log. Vedi "
-"l'opzione '-l' nella pagina di help/man per i dettagli."
+"Jos virheitä tapahtuu, katso lokitiedostoa. Ks. '-l' parametri ohjeessa/man-"
+"sivulla."
 
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
-msgstr "Risultati del download:"
+msgstr "Lataustulokset:"
 
 #: src/RequestGroupMan.cc:240
 msgid "Status Legend:"
-msgstr ""
+msgstr "Tilalegenda:"
 
 #: src/Util.cc:701
 msgid "Files:"
-msgstr "File:"
+msgstr "Tiedostot:"
 
 #: src/version_usage.cc:42
 msgid "                              Default: "
-msgstr "                              Default: "
+msgstr "                              Oletus: "
 
 #: src/version_usage.cc:45
 msgid " version "
-msgstr " versione "
+msgstr " versio "
 
 #: src/version_usage.cc:49
 msgid ""
@@ -950,6 +932,19 @@ msgid ""
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
 "USA\n"
 msgstr ""
+"Tämä ohjelma on vapaata ohjelmistoa; voit levittää ja/tai muokata\n"
+"sitä GNU General Public Licensen termien mukaan, kuten Free\n"
+"Software Foundation sen julkaisi; joko lisenssin version 2, tai\n"
+"(valintasi mukaan) minkä vain myöhemmän version.\n"
+"\n"
+"Tätä ohjelmaa levitetään siinä toivossa että se on hyödyllinen,\n"
+"mutta ILMAN TAKUUTA; ilman edes oletettua takuuta MARKKINOITAVUUDESTA\n"
+"tai SOPIVUUDESTA TIETTYYN TARKOITUKSEEN. Ks. GNU General\n"
+"Public License:stä lisätietoja.\n"
+"\n"
+"Sinun olisi pitänyt saada kopio GNU General Public Licensestä\n"
+"tämän ohjelman mukana; jos ei, kirjoita Free Software Foundation, Inc:lle,\n"
+"51 Franklin Streen, Fifth Floor, Boston, MA 02110-1301 USA\n"
 
 #: src/version_usage.cc:84
 msgid "Contact Info:"
@@ -958,42 +953,42 @@ msgstr ""
 #: src/version_usage.cc:90
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
-msgstr "Uso: %s [options] URL ...\n"
+msgstr "Käyttö: %s [parametrit] URL ...\n"
 
 #: src/version_usage.cc:92
 #, c-format
 msgid "       %s [options] -T TORRENT_FILE URL ...\n"
-msgstr "       %s [opzioni] -T FILE_TORRENT URL ...\n"
+msgstr "       %s [parametrit] -T TORRENT_TIEDOSTO URL ...\n"
 
 #: src/version_usage.cc:95
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
-msgstr "       %s [opzioni] -M FILE_METALINK\n"
+msgstr "       %s [parametrit] -M METALINK_TIEDOSTO\n"
 
 #: src/version_usage.cc:98
 msgid "Options:"
-msgstr "Opzioni:"
+msgstr "Asetukset:"
 
 #: src/version_usage.cc:99
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=DIR LA directory dove salvare il file scaricato."
+msgstr " -d, --dir=DIR Hakemisto jonne talletetaan ladattu tiedosto."
 
 #: src/version_usage.cc:100
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr " -o, --out=FILE Il nome del file scaricato."
+msgstr " -o, --out=FILE Ladatun tiedoston nimi."
 
 #: src/version_usage.cc:101
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG Il nome del file di log. Se '-' e`\n"
-"                              specificato, il log e` scritto su stdout."
+" -l, --log=LOKI Lokitiedoston nimi. Jos '-',\n"
+"                              loki kirjoitetaan stdout:iin."
 
 #: src/version_usage.cc:104
 msgid " -D, --daemon                 Run as daemon."
-msgstr " -D, --daemon Lancia come demone."
+msgstr " -D, --daemon Aja taustalla"
 
 #: src/version_usage.cc:106
 msgid ""
@@ -1005,6 +1000,12 @@ msgid ""
 "                              N connections.\n"
 "                              Default: 1"
 msgstr ""
+" -s, --split=N Lataa tiedosto käyttäen N yhteyttä. N täytyy olla\n"
+"                              väliltä 1-5. Tämä asetus vaikuttaa kaikkiin "
+"URL:hin.\n"
+"                              Joten aria2 yhdistää jokaiseen URL:iin\n"
+"                              N yhteydellä.\n"
+"                              Oletus: 1"
 
 #: src/version_usage.cc:111
 msgid ""
@@ -1014,39 +1015,52 @@ msgid ""
 "60.\n"
 "                              Default: 5"
 msgstr ""
+" --retry-wait=SEK Montako sekuntia odotetaan virheen jälkeen.\n"
+"                              Arvon oltava väliltä 0 ja 60.\n"
+"                              Oletus: 5"
 
 #: src/version_usage.cc:114
 msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
-msgstr " -t, --timeout=SEC Setta il timeout in secondi. Valore di default: 60"
+msgstr " -t, --timeout=SEK Aikakatkaisu sekunneissa. Oletus: 60"
 
 #: src/version_usage.cc:115
 msgid ""
 " -m, --max-tries=N            Set number of tries. 0 means unlimited.\n"
 "                              Default: 5"
 msgstr ""
+" -m, --max-tries=N Yritysten määrä. 0 on rajoittamaton.\n"
+"                              OIetus:5"
 
 #: src/version_usage.cc:123
 msgid ""
 " --http-proxy=HOST:PORT       Use HTTP proxy server. This affects all URLs."
 msgstr ""
+" --http-proxy=HOST:PORT Käytä http-välityspalvelinta. Tämä vaikuttaa "
+"kaikkiin URL:hin."
 
 #: src/version_usage.cc:124
 msgid " --http-user=USER             Set HTTP user. This affects all URLs."
 msgstr ""
+" -http-user=USER Aseta http-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin."
 
 #: src/version_usage.cc:125
 msgid " --http-passwd=PASSWD         Set HTTP password. This affects all URLs."
 msgstr ""
+" --http-passwd=SALASANA Aseta http-salasana. Tämä vaikuttaa kaikkiin URL:hin."
 
 #: src/version_usage.cc:126
 msgid ""
 " --http-proxy-user=USER       Set HTTP proxy user. This affects all URLs."
 msgstr ""
+" --http-proxy-user=USER Aseta http-välityspalvelin-käyttäjänimi. Tämä "
+"vaikuttaa kaikkiin URL:hin."
 
 #: src/version_usage.cc:127
 msgid ""
 " --http-proxy-passwd=PASSWD   Set HTTP proxy password. This affects all URLs."
 msgstr ""
+" --http-proxy-passwd=SALASANA Aseta http-välityspalvelin-salasana. Tämä "
+"vaikuttaa kaikkiin URL:hin."
 
 #: src/version_usage.cc:128
 msgid ""
@@ -1054,6 +1068,9 @@ msgid ""
 "                              METHOD is either 'get' or 'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --http-proxy-method=METODI Aseta välityspalvelinpyynnön tyyppi.\n"
+"                              METODI on joko 'get' tai 'tunnel'.\n"
+"                              Oletus: tunnel"
 
 #: src/version_usage.cc:131
 msgid ""
@@ -1062,24 +1079,29 @@ msgid ""
 "                              is the only supported scheme.\n"
 "                              Default: basic"
 msgstr ""
+" --http-auth-scheme=SCHEME Aseta http-tunnistustyyppi. Tällä hetkellä basic\n"
+"                              on ainoa tuettu tyyppi.\n"
+"                              Oletus: basic"
 
 #: src/version_usage.cc:134
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
-msgstr ""
-" --referer=RIFERIMENTO Imposta il Riferimento. Questo e` utilizzato per ogni "
-"URL."
+msgstr " --referer=REFERER Aseta viittaaja. Tämä vaikuttaa kaikkiin URL:hin."
 
 #: src/version_usage.cc:135
 msgid ""
 " --ftp-user=USER              Set FTP user. This affects all URLs.\n"
 "                              Default: anonymous"
 msgstr ""
+" --ftp-user=USER Aseta ftp-käyttäjänimi. Tämä vaikuttaa kaikkiin URL:hin.\n"
+"                              Oletus: anonymous"
 
 #: src/version_usage.cc:137
 msgid ""
 " --ftp-passwd=PASSWD          Set FTP password. This affects all URLs.\n"
 "                              Default: ARIA2USER@"
 msgstr ""
+" --ftp-passwd=SALASANA Aseta ftp-salasana. Tämä vaikuttaa kaikkiin URL:hin.\n"
+"                              Oletus: ARIA2USER@"
 
 #: src/version_usage.cc:139
 msgid ""
@@ -1088,14 +1110,13 @@ msgid ""
 "                              or 'ascii'.\n"
 "                              Default: binary"
 msgstr ""
-" --ftp-type=TIPO Indica il tipo di trasferimento FTP. 'TIPO' puo` essere "
-"'binary'(binario)\n"
-"          oppure 'ascii'.\n"
-"          Default: binary"
+" --ftp-type=TYYPPI Aseta ftp-siirron tyyppi. TYYPPI on joko 'binary'\n"
+"                              tai 'ascii'.\n"
+"                              Oletus: binary"
 
 #: src/version_usage.cc:142
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv Utilizza la modalita` passiva di FTP."
+msgstr " -p, --ftp-pasv Käytä passiivista tilaa ftp:ssä."
 
 #: src/version_usage.cc:143
 msgid ""
@@ -1104,6 +1125,10 @@ msgid ""
 "                              'tunnel'.\n"
 "                              Default: tunnel"
 msgstr ""
+" --ftp-via-http-proxy=METODI Käytä http-proxya ftp:ssä. METODI on joko 'get' "
+"tai\n"
+"                              'tunnel'.\n"
+"                              Oletus: tunnel"
 
 #: src/version_usage.cc:146
 msgid ""
@@ -1117,6 +1142,13 @@ msgid ""
 "downloads.\n"
 "                              Default: 0"
 msgstr ""
+" --lowest-speed-limit=NOPEUS Sulje yhteys jos latausnopeus on alempi tai\n"
+"                              yhtä suuri kuin tämä arvo (tavua/sek).\n"
+"                              0 tarkoittaa ettei aria2 käytä alarajaa.\n"
+"                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
+"= 1024K)\n"
+"                              Tämä asetus ei vaikuta BitTorrent-latauksiin.\n"
+"                              Oletus: 0"
 
 #: src/version_usage.cc:153
 msgid ""
@@ -1125,6 +1157,11 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
+" --max-download-limit=NOPEUS Aseta maksimilatausnopeus (tavua/sek).\n"
+"                              0 on rajoittamaton.\n"
+"                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
+"= 1024K)\n"
+"                              Oletus: 0"
 
 #: src/version_usage.cc:157
 msgid ""
@@ -1139,6 +1176,14 @@ msgid ""
 "                              depending on the size of the file.\n"
 "                              Default: prealloc"
 msgstr ""
+" --file-allocation=METODI Aseta tiedostojen varausmetodi. METODI on joko\n"
+"                              'none' tai 'prealloc'. 'none' ei varaa tilaa "
+"etukäteen.\n"
+"                              'prealloc' varaa tilan etukäteen, ennen "
+"latauksen alkua.\n"
+"                              Tämä voi viedä jonkin verran aikaa, riippuen "
+"tiedoston koosta.\n"
+"                              Oletus: prealloc"
 
 #: src/version_usage.cc:163
 msgid ""
@@ -1146,6 +1191,10 @@ msgid ""
 "                              size is smaller than SIZE.\n"
 "                              You can append K or M(1K = 1024, 1M = 1024K)."
 msgstr ""
+" --no-file-allocation-limit=KOKO Tilan varausta ei tehdä tiedostoille,\n"
+"                              joiden koko on pienempi kuin KOKO.\n"
+"                              Voit lisätä perään joko K tai M (1K = 1024, 1M "
+"= 1024K)"
 
 #: src/version_usage.cc:168
 msgid ""
@@ -1154,6 +1203,10 @@ msgid ""
 "                              allocating files.\n"
 "                              Turn off if you encounter any error"
 msgstr ""
+" --enable-direct-io[=true|false] Käyttää suoraa I/O:ta, joka laskee "
+"tehokäyttöä\n"
+"                              varatessa tilaa.\n"
+"                              Älä käytä, jos kohtaat virheitä"
 
 #: src/version_usage.cc:173
 msgid ""
@@ -1163,6 +1216,11 @@ msgid ""
 "                              doesn't exist.\n"
 "                              Default: false"
 msgstr ""
+" --allow-overwrite=true|false Jos false, aria2 ei lataa tiedostoa joka\n"
+"                              on jo olemassa mutta jonka vastaavaa .aria2-"
+"tiedostoa\n"
+"                              ei ole.\n"
+"                              Oletus: false"
 
 #: src/version_usage.cc:177
 msgid ""
@@ -1173,6 +1231,11 @@ msgid ""
 "proceed\n"
 "                              but some download progress will be lost."
 msgstr ""
+" --allow-piece-lenght-change=true|false Jos false, aria2 keskeyttää "
+"latauksen kun\n"
+"                             palan koko on eri kuin hallintatiedostossa. Jos "
+"true, voit jatkaa\n"
+"                             mutta hieman latausedistystä voidaan menettää."
 
 #: src/version_usage.cc:182
 msgid ""
@@ -1183,6 +1246,11 @@ msgid ""
 "                              the usual command-line download utilities.\n"
 "                              Default: false"
 msgstr ""
+" -Z, --force-sequential[=true|false] Hae osoitteet komentoriviltä "
+"lineaarisesti,\n"
+"                              ja lataa jokainen URI eri sessiossa, kuten\n"
+"                              tavalliset komentorivilatausapuohjelmat.\n"
+"                              Oletus: false"
 
 #: src/version_usage.cc:186
 msgid ""
@@ -1195,6 +1263,14 @@ msgid ""
 "                              appended.\n"
 "                              Default: true"
 msgstr ""
+" --auto-file-renaming[=true|false] Nimeä tiedosto uudelleen jos sama "
+"tiedosto on\n"
+"                              jo olemassa. Tämä asetus toimii vain http(s)/"
+"ftp-\n"
+"                              latauksissa. Uudessa tiedostonimessä on piste "
+"ja numero\n"
+"                              (1..9999) lisättynä.\n"
+"                              Oletus: true"
 
 #: src/version_usage.cc:192
 msgid ""
@@ -1212,6 +1288,17 @@ msgid ""
 "                              required.\n"
 "                              Default: false"
 msgstr ""
+" -P, --parameterized-uri[=true|false] Käytä paremeterisoituja URI:ja.\n"
+"                              Voit määrittää osia:\n"
+"                              http://{sv1,sv2,sv3}/foo.iso\n"
+"                              Voit myös käyttää numeerisia välejä askelin:\n"
+"                              http://host/img[000-100:2].img\n"
+"                              Askelmittarin voi jättää pois.\n"
+"                              Mikäli kaikki URI:t eivät osoita samaan "
+"tiedostoon,\n"
+"                              kuten toisessa esimerkissä, -Z parametri "
+"vaaditaan.\n"
+"                              Oletus: false"
 
 #: src/version_usage.cc:203
 msgid ""
@@ -1219,17 +1306,16 @@ msgid ""
 "connection.\n"
 "                              Default: false"
 msgstr ""
-" --enable-http-keep-alive[=true|false] Abilita connessioni HTTP/1.1 "
-"persistenti.\n"
-"                              Default: falso"
+" --enable-http-keep-alive[=true|false] Käytä HTTP/1.1 säilyvää yhteyttä.\n"
+"                              Oletus: false"
 
 #: src/version_usage.cc:205
 msgid ""
 " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
 "                              Default: false"
 msgstr ""
-" --enable-http-pipelining[=true|false] Abilita pipelining HTTP/1.1.\n"
-"                              Default: falso"
+" --enable-http-pipelining[=true|false] Käytä HTTP/1.1 pipeliningiä.\n"
+"                              Oletus: false"
 
 #: src/version_usage.cc:208
 msgid ""
@@ -1243,6 +1329,15 @@ msgid ""
 "                              of a file.\n"
 "                              Default: false"
 msgstr ""
+" --check-integrity=true|false Tarkista tiedoston eheys palojen "
+"tarkistussummasta.\n"
+"                              Tämä asetus vaikuttaa vain BitTorrent- ja\n"
+"                              Metalink-latauksiin joissa on palojen "
+"tarkistussumma.\n"
+"                              Käytä tätä asetusta ladataksesi uudestaan "
+"vahingoittunut osa\n"
+"                              tiedostoa.\n"
+"                              Oletus: false"
 
 #: src/version_usage.cc:214
 msgid ""
@@ -1253,6 +1348,12 @@ msgid ""
 "checksums.\n"
 "                              Default: true"
 msgstr ""
+" --realtime-chunk-checksum=true|false Tarkista palojen tarkistussummat\n"
+"                              ladatessasi tiedostoa Metalink-moodissa. Tämä\n"
+"                              vaikuttaa vain Metalink-latauksiin joissa on "
+"palojen\n"
+"                              tarkistussumma.\n"
+"                              Oletus: true"
 
 #: src/version_usage.cc:219
 msgid ""
@@ -1263,16 +1364,20 @@ msgid ""
 "                              beginning. Currently this option is only\n"
 "                              applicable to http(s)/ftp downloads."
 msgstr ""
+" -c, --continue Jatka osittain ladatun tiedoston latausta.\n"
+"                              Käytä tätä asetusta jatkaaksesi esim.\n"
+"                              web-selaimen latausta, joka lataa\n"
+"                              lineaarisesti alusta loppuun.\n"
+"                              Tällä hetkellä tämä vaikuttaa vain \n"
+"                              http(s)/ftp-latauksiin."
 
 #: src/version_usage.cc:225
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
-msgstr ""
-" -U, --user-agent=AGENTE_UTENTE Imposta l'agente per lo scaricamento via http"
-"(s)"
+msgstr " -U, --user-agent=USER_AGENT Aseta selaimen nimi http(s)-latauksiin."
 
 #: src/version_usage.cc:226
 msgid " -n, --no-netrc               Disables netrc support."
-msgstr " -n, --no-netrc Disabilita il supporto per netrc."
+msgstr " -n, --no-netrc Asettaa netrc-tuen pois päältä."
 
 #: src/version_usage.cc:227
 msgid ""
@@ -1282,6 +1387,10 @@ msgid ""
 "character.\n"
 "                              Reads input from stdin when '-' is specified."
 msgstr ""
+" -i, --input-file=FILE Lataa URI:t tiedostosta FILE. Voit antaa\n"
+"                              monta osoitetta yhdelle tiedostolle: erota\n"
+"                              URI:t yhdellä rivillä käyttäen TAB-nappia.\n"
+"                              Lukee stdin:stä jos käytät '-' FILE:nä."
 
 #: src/version_usage.cc:231
 msgid ""
@@ -1290,12 +1399,17 @@ msgid ""
 "                              It should be used with the -i option.\n"
 "                              Default: 5"
 msgstr ""
+" -j, --max-concurrent-downloads=N Aseta yhtäaikaisten latausten maksimi.\n"
+"                             Tätä pitäisi käyttää -i valinnan kanssa.\n"
+"                             Oletus: 5"
 
 #: src/version_usage.cc:234
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
 msgstr ""
+" --load-cookies=FILE Lataa cookiet tiedostosta. Tiedoston formaatti on\n"
+"                              sama kuin Netscapella ja Mozillalla."
 
 #: src/version_usage.cc:237
 msgid ""
@@ -1305,6 +1419,9 @@ msgid ""
 "listed\n"
 "                              in case of torrent file."
 msgstr ""
+" -S, --show-files Tulosta .torrent- tai .metalink-tiedoston tiedostolista ja "
+"lopeta.\n"
+"                              Torrent-tiedostot sisältävät enemmän tietoa."
 
 #: src/version_usage.cc:240
 msgid ""
@@ -1319,10 +1436,22 @@ msgid ""
 "                              depending on the query(see --metalink-* "
 "options)."
 msgstr ""
+" --select-file=INDEKSI... Valitse ladattavat tiedostot niiden indeksin "
+"perusteella.\n"
+"                              Voit nähdä indeksin käyttämällä --show-files "
+"valintaa.\n"
+"                              Monia indeksejä voi käyttää erottamalla ne "
+"pilkulla, esim '3,6'\n"
+"                              Voit myös käyttää '-' alueen merkitsemiseen, "
+"esim '1-5'\n"
+"                              Molempia voi käyttää myös yhtäaikaa.\n"
+"                              Käytettäessä -M valinnan kanssa, indeksit "
+"voivat vaihdella\n"
+"                              riippuen asetuksista (ks. --metalink-*)"
 
 #: src/version_usage.cc:250
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr " -T, --torrent-file=FILE_TORRENT Il percorso per il file .torrent."
+msgstr " -T, --torrent-file=TORRENT käytä ladattua .torrent-tiedostoa"
 
 #: src/version_usage.cc:251
 msgid ""
@@ -1339,6 +1468,15 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-torrent=true|false|mem Jos true tai mem, kun lataat tiedoston\n"
+"                              jonka pääte on .torrent tai tyyppi application/"
+"x-bittorrent,\n"
+"                              aria2 olettaa sen BitTorrent-tiedostoksi ja "
+"lataa kaiken\n"
+"                              siinä mainitun.\n"
+"                              Jos mem, torrent-tiedostoa ei kirjoiteta "
+"levylle, vaan\n"
+"                              pidetään muistissa."
 
 #: src/version_usage.cc:261
 msgid ""
@@ -1346,6 +1484,10 @@ msgid ""
 "                              mentioned in .torrent file.\n"
 "                              Default: true"
 msgstr ""
+" --direct-file-mapping=true|false Lue ja kirjoita suoraan jokaiseen "
+"tiedostoon\n"
+"                             joka mainitaan .torrent-tiedostossa\n"
+"                             Oletus: true"
 
 #: src/version_usage.cc:264
 msgid ""
@@ -1357,6 +1499,12 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
+" --listen-port=PORTTI ... Aseta TCP-portin numero BitTorrent-latauksiin.\n"
+"                            Monia portteja voi valita käyttämällä pilkkua, "
+"esim '6881,6885'\n"
+"                            Voit käyttää myös '-' alueen merkitsemiseen: "
+"'6881-6999'\n"
+"                            Molempia voi käyttää yhtäaikaa."
 
 #: src/version_usage.cc:270
 msgid ""
@@ -1365,12 +1513,19 @@ msgid ""
 "                              You can append K or M(1K = 1024, 1M = 1024K).\n"
 "                              Default: 0"
 msgstr ""
+" --max-upload-limit=NOPEUS Aseta maksimi-uploadnopeus (tavua/sek)\n"
+"                             0 on ei rajaa.\n"
+"                             Voit lisätä perään joko K tai M (1K = 1024, 1M "
+"= 1024K)\n"
+"                             Oletus: 0"
 
 #: src/version_usage.cc:274
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
 msgstr ""
+" --seed-time=MIN Aseta jakamisaika (seeding) minuuteissa. Ks. myös\n"
+"                             --seed-ratio valinta."
 
 #: src/version_usage.cc:276
 msgid ""
@@ -1383,6 +1538,13 @@ msgid ""
 "of\n"
 "                              the conditions is satisfied."
 msgstr ""
+" --seed-ratio=SUHDE Aseta jakamissuhde. Jaat valmistuneita torrentteja\n"
+"                              kunnes jaon suhde saavuttaa SUHTEEN. 1.0 on\n"
+"                              suositeltava. Käytä 0.0 jakaaksesi "
+"välittämättä suhteesta.\n"
+"                             Jos sekä tämä että --seed-time ovat käytössä, "
+"jakaminen\n"
+"                             päättyy kun toinen ehdoista täyttyy."
 
 #: src/version_usage.cc:284
 msgid ""
@@ -1395,10 +1557,16 @@ msgid ""
 "                              added to make it's length 20 bytes.\n"
 "                              Default: -aria2-"
 msgstr ""
+" --peer-id-prefix=TUNNUS Aseta peer ID-tunnus. Sen pituus on\n"
+"                              BitTorrentissa 20 tavua. Jos annat pidemmän,\n"
+"                              vain ensimmäiset 20 tavua käytetään, jos\n"
+"                              taas lyhyemmän, satunnaisia aakkosia "
+"lisätään.\n"
+"                              Oletus: -aria2-"
 
 #: src/version_usage.cc:293
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
-msgstr " -M, --metalink-file=FILE_METALINK Il percorso per il file .metalink."
+msgstr " -M, --metalink-file=METALINK Käytä ladattua .metalink-tiedostoa."
 
 #: src/version_usage.cc:294
 msgid ""
@@ -1406,19 +1574,23 @@ msgid ""
 "                              simultaneously.\n"
 "                              Default: 5"
 msgstr ""
+" -C, --metalink-servers=N Aseta yhtäaikaisten metalink-palvelinyhteyksien "
+"lukumäärä.\n"
+"                              Oletus: 5"
 
 #: src/version_usage.cc:297
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr " --metalink-version=VERSIONE La versione del file da scaricare"
+msgstr " --metalink-version=VERSIO Aseta minkä version tiedostosta haluat."
 
 #: src/version_usage.cc:298
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr " --metalink-language=LINGUa La lingua del file da scaricare."
+msgstr ""
+" --metalink-language=KIELI Aseta minkä kielisen version tiedostosta haluat."
 
 #: src/version_usage.cc:299
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
-msgstr " --metalink-os=SO Il sistema operativo del file da scaricare."
+msgstr " --metalink-os=OS Mille käyttöjärjestelmälle lataat tiedostoa."
 
 #: src/version_usage.cc:300
 msgid ""
@@ -1426,6 +1598,8 @@ msgid ""
 "                              A comma-deliminated list of locations is\n"
 "                              acceptable."
 msgstr ""
+" --metalink-location=SIJAINTI[,...] Suosittavan palvelimen sijainti.\n"
+"                              Pilkuilla erotettu lista on hyväksyttävä."
 
 #: src/version_usage.cc:303
 msgid ""
@@ -1442,24 +1616,31 @@ msgid ""
 "above\n"
 "                              is not taken."
 msgstr ""
+" --follow-metalink=true|false|mem Jos true tai mem, kun lataat tiedoston "
+"jonka\n"
+"                           pääte on .metalink tai tyyppi application/metalink"
+"+xml, aria2\n"
+"                           käsittelee sen metalink-tiedostona ja lataa siinä "
+"mainitut tiedostot.\n"
+"                           Jos mem, metalink-tiedostoa ei ladata levylle, "
+"vaan pidetään muistissa."
 
 #: src/version_usage.cc:314
 msgid " -v, --version                Print the version number and exit."
-msgstr " -v, --version Stampa il numero di versione ed esce."
+msgstr " -v, --version Tulosta versionumero ja lopeta."
 
 #: src/version_usage.cc:315
 #, fuzzy
 msgid " -h, --help                   Print this message and exit."
-msgstr " -v, --version Stampa il numero di versione ed esce."
+msgstr " -v, --version Tulosta versionumero ja lopeta."
 
 #: src/version_usage.cc:318
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 msgstr ""
-" Puoi specificare molte URL. A meno che sia specificata l'opzione -Z, tutte "
-"le URL\n"
-" devono puntare allo stesso file, altrimenti lo scaricamento fallira`."
+" Voit antaa useita osoitteita. Jos et käytä -Z valintaa, kaikkien\n"
+" osoitteiden täytyy johtaa samaan tiedostoon, tai lataaminen keskeytyy."
 
 #: src/version_usage.cc:320
 msgid ""
@@ -1469,22 +1650,143 @@ msgid ""
 " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
 " only single file torrent can be integrated with http/ftp."
 msgstr ""
+" Voit yhdistää torrent-tiedoston -T:llä osoitteiden kanssa. Näin\n"
+" lataat samaa tiedostoa sekä torrent-parvesta että http/ftp-palvelimelta\n"
+" samaan aikaan, ja jaat http/ftp:ltä saatua dataa torrent-parveen.\n"
+" HUOM: vain yhden tiedoston torrent-tiedostoa voi käyttää näin."
 
 #: src/version_usage.cc:325
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
+" Varmista että URL on eristetty joko yksittäis(') tai tupla(\")"
+"lainausmerkeillä jos\n"
+" siinä on \"&\" tai jokin muu merkki, jolla on erityismerkitys "
+"komentotulkille."
 
 #: src/version_usage.cc:328
 msgid "Refer to man page for more information."
-msgstr "Fare riferimento alla pagina di manuale per ulteriori informazioni"
+msgstr "Ks. man-sivulta lisätietoja."
 
 #: src/version_usage.cc:330
 #, c-format
 msgid "Report bugs to %s"
-msgstr ""
+msgstr "Ilmoita bugit %s:lle."
 
 #: src/BtSetup.cc:108
 msgid "Errors occurred while binding port.\n"
-msgstr "Ci sono stati degli errori durante il binding alla porta.\n"
+msgstr "Virheitä tapahtui sitoessa porttia.\n"
+
+#~ msgid "CUID#%d - Extended Messaging enabled."
+#~ msgstr "CUID#%d - Laajennettu viestitys käytössä"
+
+#~ msgid "Too small payload size for %s, size=%d."
+#~ msgstr "Liian pieni payload-koko %s:lle, koko=%d"
+
+#~ msgid ""
+#~ "Removed the defunct control file %s because the download file %s doesn't "
+#~ "exist."
+#~ msgstr ""
+#~ "Poistettiin vanha ohjaustiedosto %s koska lataustiedostoa %s ei ole."
+
+#~ msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
+#~ msgstr "Jakosuhteesi oli %.1f, upload/download=%sB/%sB"
+
+#~ msgid "Missing %s in torrent metainfo."
+#~ msgstr "Torrentin metatiedoista puuttuu %s."
+
+#~ msgid "Tracker returned null data."
+#~ msgstr "Tracker palautti tyhjän."
+
+#~ msgid "Windows socket library initialization failed"
+#~ msgstr "Windowsin socket-kirjaston alustus epäonnistui."
+
+#~ msgid " --enable-peer-exchange[=true|false] Enable peer exchange extension."
+#~ msgstr " --enable-peer-exchange[=true|false] Salli peer-vaihto"
+
+#~ msgid ""
+#~ " --metalink-preferred-protocol=PROTO Specify preferred protocol. The "
+#~ "possible\n"
+#~ "                              values are 'http', 'https', 'ftp' and "
+#~ "'none'.\n"
+#~ "                              Specifiy none to disable this feature."
+#~ msgstr ""
+#~ " --metalink-preferred-protocol=PROTO Valitse suositeltava protokolla. "
+#~ "Mahdollisia\n"
+#~ "                              valintoja ovat 'http', 'https', 'ftp', ja "
+#~ "'none'. Käytä 'none' poistaaksesi\n"
+#~ "                              tämä ominaisuus käytöstä."
+
+#~ msgid ""
+#~ " --metalink-enable-unique-protocol=true|false If true is given and "
+#~ "several\n"
+#~ "                              protocols are available for a mirror in a "
+#~ "metalink\n"
+#~ "                              file, aria2 uses one of them.\n"
+#~ "                              Use --metalink-preferred-protocol option "
+#~ "to\n"
+#~ "                              specify the preference of protocol."
+#~ msgstr ""
+#~ " --metalink-enable-unique-protocol=true|false Jos true, ja metalinkissä "
+#~ "on useita\n"
+#~ "                              protokollia valittavana, aria2 käyttää vain "
+#~ "yhtä.\n"
+#~ "                              Käytä --metalink-preferred-protocol -"
+#~ "vaihtoehtoa\n"
+#~ "                              valitaksesi mitä protokollaa käytetään."
+
+#~ msgid ""
+#~ " -h, --help[=CATEGORY]        Print usage and exit.\n"
+#~ "                              The help messages are classified in "
+#~ "several\n"
+#~ "                              categories. For example, type \"--help=http"
+#~ "\" for\n"
+#~ "                              detailed explanation for the options "
+#~ "related to\n"
+#~ "                              http. If no matching category is found, "
+#~ "search\n"
+#~ "                              option name in forward match and print the\n"
+#~ "                              result."
+#~ msgstr ""
+#~ " -h, --help[=CATEGORY] Tulosta ohje ja lopeta.\n"
+#~ "                              Ohjeet on ryhmitelty useisiin\n"
+#~ "                              osioihin. Esim. käytä --help=http\n"
+#~ "                              saadaksesi ohjeita http:stä.\n"
+#~ "                              Jos vastaavaa osiota ei ole,\n"
+#~ "                              etsitään valintaa hakusanalla."
+
+#~ msgid " --no-conf                    Disable loading aria2.conf file."
+#~ msgstr " --no-conf Estä aria2.conf -asetustiedoston käyttö."
+
+#~ msgid ""
+#~ " --conf-path=PATH             Change the configuration file path to PATH."
+#~ msgstr " --conf-path=POLKU Muuta asetustiedoston polkua."
+
+#~ msgid ""
+#~ "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
+#~ msgstr "Sammutus alkaa... Paina Ctrl-C uudestaan hätäsammutukselle."
+
+#~ msgid "Emergency shutdown sequence commencing..."
+#~ msgstr "Hätäsammutus alkaa..."
+
+#~ msgid "                              Tags: "
+#~ msgstr "                              Tagit: "
+
+#~ msgid "                              Available Values: "
+#~ msgstr "                              Mahdolliset arvot: "
+
+#~ msgid "Printing all options."
+#~ msgstr "Tulostetaan kaikki valinnat."
+
+#~ msgid "Printing options tagged with '%s'."
+#~ msgstr "Tulostetaan valinnat merkittynä '%s':llä."
+
+#~ msgid "See -h option to know other command-line options(%s)."
+#~ msgstr "Ks. -h valinta nähdäksesi muita valintoja (%s)"
+
+#~ msgid "Printing options whose name starts with '%s'."
+#~ msgstr "Tulostetaan valinnat, joiden nimi alkaa '%s'"
+
+#~ msgid "No help category or option name matching with '%s'."
+#~ msgstr "Ei ohjeosiota tai valintaa nimellä '%s'"

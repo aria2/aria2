@@ -1,16 +1,16 @@
-# Italian translation for aria2
-# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# Hebrew translation for aria2
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
 # This file is distributed under the same license as the aria2 package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
 "POT-Creation-Date: 2008-02-11 22:36+0900\n"
-"PO-Revision-Date: 2007-12-23 22:42+0000\n"
+"PO-Revision-Date: 2008-02-09 12:19+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Italian <it@li.org>\n"
+"Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,79 +19,76 @@ msgstr ""
 
 #: src/OptionHandlerImpl.h:66
 msgid "must be either 'true' or 'false'."
-msgstr "deve assumere il valore 'true'(vero) oppure 'false'(falso)"
+msgstr "מוכרח להיות 'אמת' או 'שקר'."
 
 #: src/OptionHandlerImpl.h:87 src/OptionHandlerImpl.h:120
 #, c-format
 msgid "must be between %s and %s."
-msgstr "deve essere  tra %s e %s"
+msgstr "מוכרח להיות בטווח שבין %s ל-%s."
 
 #: src/OptionHandlerImpl.h:117
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "deve essere piu` piccolo o uguale a %s."
+msgstr "מוכרח להיות קטן או שווה ל-%s."
 
 #: src/OptionHandlerImpl.h:123
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "deve essere piu` grande o uguale a %s."
+msgstr "מוכרח להיות גדול או שווה ל-%s."
 
 #: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:172
 msgid "must be a number."
-msgstr "deve essere un numero."
+msgstr "מוכרח להיות ערך מספרי."
 
 #: src/OptionHandlerImpl.h:163
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "deve essere piu` piccolo o uguale a %.1f."
+msgstr "מוכרח להיות קטן או שווה ל-%.1f."
 
 #: src/OptionHandlerImpl.h:166
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "deve essere tra %.1f e %.1f."
+msgstr "מוכרח להיות בטווח שבין %.1f ל- %.1f."
 
 #: src/OptionHandlerImpl.h:169
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "deve essere piu` grande o uguale a %.1f."
+msgstr "מוכרח להיות גדול או שווה ל-%.1f."
 
 #: src/OptionHandlerImpl.h:230
 msgid "must be one of the following:"
-msgstr "deve essere uno dei seguenti:"
+msgstr "מוכרח להיות אחד מהבאים:"
 
 #: src/OptionHandlerImpl.h:258
 msgid "unrecognized proxy format"
-msgstr "il formato del proxy non e` corretto"
+msgstr "תבנית מתווך לא מוכרת"
 
 #: src/message.h:40
 #, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr ""
-"CUID#%d - Lo scaricamento di un segmento e` stato completato con successo."
+msgstr "CUID#%d - הורדת מקטע אחד הושלמה בהצלחה."
 
 #: src/message.h:41
 #, c-format
 msgid "CUID#%d - No segment available."
-msgstr "CUID#%d - Nessun segmento disponibile."
+msgstr "CUID#%d - אין מקטעים זמינים."
 
 #: src/message.h:42
 #, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - Connessione a %s:%d"
+msgstr "CUID#%d - התחברות אל %s:%d"
 
 #: src/message.h:43
 #, c-format
 msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
-msgstr ""
-"CUID#%d - Il segmento e` cambiato. Richiediamo una nuova richiesta con "
-"l'intestazione con il nuovo intervallo."
+msgstr "CUID#%d - המקטע השתנה. הבקשה תשלח שוב עם כותרת טווח חדשה."
 
 #: src/message.h:44
 #, c-format
 msgid "CUID#%d - Redirecting to %s"
-msgstr "CUID#%d - Redirezione a %s"
+msgstr "CUID#%d - מפנה אל %s"
 
 #: src/message.h:45
 #, c-format
@@ -99,7 +96,7 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - Richiedendo:\n"
+"CUID#%d - מבקש:\n"
 "%s"
 
 #: src/message.h:46
@@ -108,93 +105,93 @@ msgid ""
 "CUID#%d - Response received:\n"
 "%s"
 msgstr ""
-"CUID#%d - Ricevuta risposta:\n"
+"CUID#%d - התקבלה תגובה:\n"
 "%s"
 
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - Scaricamento annullato. URI=%s"
+msgstr "CUID#%d - הורדה הופסקה. מיקום=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "Cuid#%d - Rilanciato scaricamento. URI=%s"
+msgstr "CUID#%d - מאתחל את ההורדה. מיקום=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - Download annullato."
+msgstr "CUID#%d - ההורדה בוטלה."
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr "CUID#%d - provato %d volte, ma senza successo. Scaricamento annullato."
+msgstr "CUID#%d - %d נסיונות, אך ללא הצלחה. ההורדה בוטלה."
 
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d -"
+msgstr "CUID#%d - cuidלא רשום ממנהל המקטעים."
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - ottenuto un nuovo pezzo. indice=%d"
+msgstr "CUID#%d - קיבלנו חלק חדש. מפתח=%d"
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - abbiamo ottenuto un pezzo errato. index=%d"
+msgstr "CUID#%d - קיבלנו חלק שגוי. מפתח=%d"
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - Scaricamento non completato: %s"
+msgstr "CUID#%d - ההורדה לא הושלמה: %s"
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr "%#d - Lo scaricamento e` gia` stato completato: %s"
+msgstr "#%d - ההורדה כבר הושלמה: %s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr "CUID#%d - Checksum corretto: %s"
+msgstr "CUID#%d - אימות תקין: %s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr "CUID#%d - Checksum errato: %s"
+msgstr "CUID#%d - אימות נכשל: %s"
 
 #: src/message.h:63
 #, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr "CUID#%d - Risolvendo il nome %s"
+msgstr "CUID#%d - מאחזר את שם המארח %s"
 
 #: src/message.h:64
 #, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr "CUID#%d - La risoluzione del nome e` stata completata: %s -> %s"
+msgstr "CUID#%d - איחזור שם המארח הושלם: %s -> %s"
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr "CUID#%d - La risoluzione del nome %s e` fallita:%s"
+msgstr "CUID#%d - איחזור השם עבור %s נכשל:%s"
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr ""
+msgstr "CUID#%d - תוצאות מטמון ה-DNS: %s -> %s"
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr "CUID#%d - Richiesto annullamento."
+msgstr "CUID#%d - נדרש ביטול."
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr "CUID#%d - Connessione al peer %s"
+msgstr "CUID#%d - מתחבר לעמית %s"
 
 #: src/message.h:69
 #, c-format
@@ -202,13 +199,12 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
-"CUID#%d - Pezzo ricevuto. indice=%d, inizio=%d, lunghezza=%d, offset=%llu, "
-"indiceDelBlocco=%d"
+"CUID#%d - התקבלה חתיכה. מפתח=%d, התחלה=%d, אורך=%d, קיזוז=%llu, מפתח קטע=%d"
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr ""
+msgstr "CUID#%d - שדה נתון לחתיכה %s"
 
 #: src/message.h:71
 #, c-format
@@ -216,6 +212,8 @@ msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - בטל את הודעות החתיכות שבתור מכיוון שהעמית נחנק. מפתח=%d, התחלה=%d, "
+"אורך=%d"
 
 #: src/message.h:72
 #, c-format
@@ -223,32 +221,28 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
-"CUID#%d - Rifiutato pezzo di un messaggio in coda in quanto e` stato "
-"ricevuto un messaggio di cancellazione. indice=%d, inizio=%d, lunghezza=%d"
+"CUID#%d - בטל את הודעות החתיכות שבתור מכיוון שהתקבלה הודעות ביטול. מפתח=%d, "
+"התחלה=%d, אורך=%d"
 
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr ""
-"CUID#%d - E` stata lanciata un'eccezione durante la validazione "
-"dell'integrita` del file."
+msgstr "CUID#%d - חריגת כלל נתגלתה בזמן וידוא רציפות הקובץ."
 
 #: src/message.h:74
 #, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr "CUID#%d - Interessato al peer"
+msgstr "CUID#%d - מעוניין בעמית"
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr "CUID#%d - Non interessato al peer"
+msgstr "CUID#%d - לא מעוניין בעמית"
 
 #: src/message.h:76
 #, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr ""
-"CUID#%d - Cancellazione richiesta per lo slot con indice=%d, indiceDelBlocco="
-"%d"
+msgstr "CUID#%d - מוח את חריץ הבקשה מפתח=%d, מפתח הקטע=%d"
 
 #: src/message.h:77
 #, c-format
@@ -256,126 +250,116 @@ msgid ""
 "CUID#%d - Deleting request slot index=%d, blockIndex=%d because localhost "
 "got choked."
 msgstr ""
+"CUID#%d - מוחק את חריץ הבקשה מפתח=%d, מפתח קטע=%d מכיוון שהמארח המקומי נחנק."
 
 #: src/message.h:78
 #, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr ""
-"CUID#%d - Cancellazione richiesta per lo slot con indiceDelBlocco=%d per via "
-"di un time out"
+msgstr "CUID#%d - מוחק את חריץ הבקשה מפתח קטע=%d עקב תפוגת זמן"
 
 #: src/message.h:79
 #, c-format
 msgid ""
 "CUID#%d - Deleting request slot blockIndex=%d because the block has been "
 "acquired."
-msgstr ""
-"CUID#%d - Cancellazione richiesta per lo slot con indiceDelBlocco=%d in "
-"quanto il blocco e` stato ottenuto."
+msgstr "CUID#%d - מוחק את חריץ הבקשה blockIndex=%d מכיוון שהקטע כבר התקבל."
 
 #: src/message.h:80
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr "CUID#%d - Abilitata estensione veloce."
+msgstr "CUID#%d - הרחבה מהירה הופעלה."
 
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
-msgstr ""
-"CUID#%d - Lanciata eccezione durante l'allocazione dello spazio per il file."
+msgstr "CUID#%d - התגלתה חריגה בזמן הקצאת נפח לקובץ."
 
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Content-Disposition detected. Use %s as filename"
-msgstr ""
-"CUID#%d - E` stato trovato Content-Disposition. Uso %s come nome di file"
+msgstr "CUID#%d - התגלה חוסר תיאום תוכן. השתמש ב- %s בתור שם הקובץ"
 
 #: src/message.h:83
 #, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr ""
+msgstr "CUID#%d - העמית %s:%d נחסם."
 
 #: src/message.h:84
 #, c-format
 msgid "CUID#%d - Using port %d for accepting new connections"
-msgstr "CUID#%d - Utilizzo porta %d per accettare nuove connessioni"
+msgstr "CUID#%d - משתמש בפותחה %d לקבלת חיבורים חדשים"
 
 #: src/message.h:85
 #, c-format
 msgid "CUID#%d - An error occurred while binding port=%d"
-msgstr ""
-"CUID#%d - E` stato riscontrato un errore durante il binding alla porta=%d"
+msgstr "CUID#%d - ארעה שגיאה בעת קישור לפותחה=%d"
 
 #: src/message.h:86
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-msgstr "CUID#%d - Connessione in entrata, aggiunta di un nuovo comando CUID#%d"
+msgstr "CUID#%d - חיבור נכנס, מוסיף פקודה חדשה CUID#%d"
 
 #: src/message.h:87
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr ""
-"CUID#%d - E` stato riscontrato un errore nell'accettazione della connessione"
+msgstr "CUID#%d - שגיאה בקבלת החיבור"
 
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr ""
-"CUID#%d - E` stato riscontrato un errore durante la gestione della risposta "
-"del tracker."
+msgstr "CUID#%d - ארעה שגיאה בת עיבוד בקשת העוקב."
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr "CUID#%d - Non riesco a creare la richiesta per il tracker."
+msgstr "CUID#%d - לא ניתן ליצור בקשת עוקב.."
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr ""
-"CUID#%d - Creazione di un nuovo comando di richiesta per il tracker #%d"
+msgstr "CUID#%d - יוצר פקודת בקשת עוקב חדשה #%d"
 
 #: src/message.h:92
 #, c-format
 msgid "Unrecognized URI or unsupported protocol: %s"
-msgstr "URI non riconosciuta o protocollo non supportato: %s"
+msgstr "מיקום לא מזוהה או פרוטוקול בחתי נתמך: %s"
 
 #: src/message.h:93
 #, c-format
 msgid "Tracker returned warning message: %s"
-msgstr "Il tracker ha riportato un messaggio di attenzione:%s"
+msgstr "העוקב החזיר הודעת שגיאה: %s"
 
 #: src/message.h:94
 #, c-format
 msgid "The segment file %s exists."
-msgstr "Il file relativo al segmento %s esiste."
+msgstr "קובץ המקטע %s קיים."
 
 #: src/message.h:95
 #, c-format
 msgid "The segment file %s does not exist."
-msgstr "Il file relativo al segmento %s non esiste."
+msgstr "קובץ המקטע %s אינו קיים."
 
 #: src/message.h:96
 #, c-format
 msgid "Saving the segment file %s"
-msgstr "Salvataggio del file relativo al segmento %s"
+msgstr "שומר את קובץ המקטע%s"
 
 #: src/message.h:97
 msgid "The segment file was saved successfully."
-msgstr "Il file relativo al segmento e` stato salvato con successo."
+msgstr "קובץ המקטע נשמר בהצלחה."
 
 #: src/message.h:98
 #, c-format
 msgid "Loading the segment file %s."
-msgstr "Caricamento del file relativo al segmento %s."
+msgstr "טוען את קובץ המקטע %s."
 
 #: src/message.h:99
 msgid "The segment file was loaded successfully."
-msgstr "Il file relativo al segmento e` stato caricato con successo."
+msgstr "קובץ המקטע נטען בהצלחה."
 
 #: src/message.h:100
 msgid "No URI to download. Download aborted."
-msgstr "Nessuna URI da scaricare.Scaricamento annullato."
+msgstr "אין מיקום להורדה. ההורדה בוטלה."
 
 #: src/message.h:101
 #, c-format
@@ -385,109 +369,107 @@ msgid ""
 "sure to download the file all over again, then delete it or add --allow-"
 "overwrite=true option and restart aria2."
 msgstr ""
-"Il file %s esiste, ma un fiel di controllo (*.aria2) non esiste. Lo "
-"scaricamento e` stato annullato per evitare che il tuo file venisse troncato "
-"a 0. Se sei sicuro di riscaricare il file da capo, allora cancellalo o "
-"aggiungi l'opzione --allow-overwrite=true e fai ripartire aria2."
+"הקובץ %s קיים, אך קובץ הבקרה(*.aria) אינו קיים. ההורדה בוטלה על מנת למנוע "
+"מהקובץ שלך להתקצץ לגודל 0. אם אתה בטוח שברצונך להוריד את הקובץ מחדש, מחק "
+"אותו או שתשנה בהגדרות ל- \"--allow-overwrite=true\" והתחל את aria2 מחדש."
 
 #: src/message.h:102
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr "Allocazione del file %s,%s bytes"
+msgstr "מקצה את הקובץ %s, %s בתים"
 
 #: src/message.h:103
 msgid "File not found"
-msgstr "FIle non trovato"
+msgstr "קובץ לא נמצא"
 
 #: src/message.h:104
 msgid "Not a directory"
-msgstr "Non è una directory"
+msgstr "אינה תיקיה"
 
 #: src/message.h:105
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr ""
+msgstr "בדיקות התקינות פסולות. אורך_הבדיקה=%d, מספר_הבדיקה=%d"
 
 #: src/message.h:106
 #, c-format
 msgid "Writing file %s"
-msgstr "Scrittura file %s"
+msgstr "כותב את הקובץ %s"
 
 #: src/message.h:107
 msgid "No peer list received."
-msgstr "Non e` stata ricevuta la lista dei peer."
+msgstr "לא התקבלה רשימת עמיתים."
 
 #: src/message.h:108
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr "Aggiunta peer %s:%d"
+msgstr "מוסיף את העמית %s:%d"
 
 #: src/message.h:109
 #, c-format
 msgid "Deleting used piece index=%d, fillRate(%%)=%d<=%d"
-msgstr ""
+msgstr "מוחק חתיכה בשימוש מפתח=%d, רמת_שלמות=(%%)=%d<=%d"
 
 #: src/message.h:110
 msgid "Download of selected files was complete."
-msgstr "Scaricamento completato dei file selezionati."
+msgstr "הורדת הקבצים הנבחרים הושלמה."
 
 #: src/message.h:111
 msgid "The download was complete."
-msgstr "Scaricamento completato"
+msgstr "ההורדה הושלמה."
 
 #: src/message.h:112
 #, c-format
 msgid "Removed %d have entries."
-msgstr ""
+msgstr "ל-%d שהוסר ישנן רשומות"
 
 #: src/message.h:113
 #, c-format
 msgid "Validating file %s"
-msgstr "Validazione del file %s"
+msgstr "מאמת את הקובץ %s"
 
 #: src/message.h:114
 #, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr "%d secondi per allocare %s byte(s)"
+msgstr "%d שניות להקצאת %s בית/בתים"
 
 #: src/message.h:115
 #, c-format
 msgid "Dispatching FileAllocationCommand for CUID#%d."
-msgstr ""
+msgstr "משלח פקודת_הקצאת_קובץ עבור CUID#%d."
 
 #: src/message.h:116
 #, c-format
 msgid "Metalink: Queueing %s for download."
-msgstr "Metalink: Accodando %s per lo scaricamento."
+msgstr "קישור-מטא: %s ממתין בתור להורדה."
 
 #: src/message.h:117
 #, c-format
 msgid "Download complete: %s"
-msgstr "Scaricamento completato: %s"
+msgstr "ההורדה הושלמה: %s"
 
 #: src/message.h:118
 msgid "Seeding is over."
-msgstr ""
+msgstr "הזריעה הושלמה."
 
 #: src/message.h:119
 #, c-format
 msgid "CUID#%d cancels segment index=%d. CUID#%d handles it instead."
-msgstr ""
-"CUID#%d cancella l'indice di segmento=%d. CUID#%d lo gestisce al suo posto."
+msgstr "CUID#%d מבטל את המקטע מפתח=%d. CUID#%d מטפל בו במקום."
 
 #: src/message.h:120
 msgid "No chunk to verify."
-msgstr "Nessun pezzo da verificare."
+msgstr "אין נתח לאימות."
 
 #: src/message.h:121
 #, c-format
 msgid "Good chunk checksum. hash=%s"
-msgstr "Passato il controllo degli errori. hash=%s"
+msgstr "נתח אומת. גיבוב=%s"
 
 #: src/message.h:122
 #, c-format
 msgid "Failed to load cookies from %s"
-msgstr "Non e` stato possibile caricare i cookies da %s"
+msgstr "נתח נכשל באימות מ-%s"
 
 #: src/message.h:123
 #, c-format
@@ -495,260 +477,255 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
-"il file .netrc %s non ha i permessi corretti. Dovrebbe essere 600. Il "
-"supporto per il file .netrc e` stato disabilitato."
+"לקובץ ה-.netrc %s אין את ההרשאות המתאימות. עליו להיות 600. תמיכה ב-netrc "
+"מבוטלת."
 
 #: src/message.h:124
 msgid "Logging started."
-msgstr "Iniziato tracciamento delle operazioni."
+msgstr "דיווח הופעל."
 
 #: src/message.h:125
 msgid "Specify at least one URL."
-msgstr "Specifica almeno una URL."
+msgstr "ציין לפחות קישור אחד."
 
 #: src/message.h:126
 msgid "daemon failed."
-msgstr "demone fallito."
+msgstr "ממשק סמוי נכשל."
 
 #: src/message.h:127
 #, c-format
 msgid "Verification finished successfully. file=%s"
-msgstr "La verifica e` stata completata con successo. file=%s"
+msgstr "האימות הושלם בהצלחה. קובץ=%s"
 
 #: src/message.h:128
 #, c-format
 msgid "Checksum error detected. file=%s"
-msgstr "Trovato errore nel checksum. file=%s"
+msgstr "התגלתה שגיאת אימות. קובץ=%s"
 
 #: src/message.h:129
 #, c-format
 msgid "Incomplete range specified. %s"
-msgstr "L'intervallo specificato e` incompleto. %s"
+msgstr "הטווח שצויין אינו שלם. %s"
 
 #: src/message.h:130
 #, c-format
 msgid "Failed to convert string into value: %s"
-msgstr "Non e` stato possibile convertire la stringa in un valore: %s"
+msgstr "נכשל בהמרת המחרוזת לערך: %s"
 
 #: src/message.h:131
 msgid "Resource not found"
-msgstr "Risorsa non trovata"
+msgstr "משאב לא נמצא"
 
 #: src/message.h:132
 #, c-format
 msgid "File already exists. Renamed to %s."
-msgstr "File gia` esistente. Rinominato in %s."
+msgstr "הקובץ כבר קיים. השם שונה ל-%s"
 
 #: src/message.h:133
 msgid "Cannot parse metalink XML file. XML may be malformed."
-msgstr ""
-"Impossibile parsificare il file XML metalink. Il formato XML potrebbe essere "
-"errato."
+msgstr "לא ניתן לעבד את קובץ ה-XML של קישור-המטא. קובץ ה-XML אינו תקני."
 
 #: src/message.h:135
 msgid "Timeout."
-msgstr "Tempo scaduto."
+msgstr "תם הזמן."
 
 #: src/message.h:136
 msgid "Invalid chunk size."
-msgstr "Dimensione del pezzo invalida."
+msgstr "גודל נתח בלתי חוקי."
 
 #: src/message.h:137
 #, c-format
 msgid "Too large chunk. size=%d"
-msgstr "Pezzo troppo grande. dimensione=%d"
+msgstr "נתח גדול מדי. גודל=%d"
 
 #: src/message.h:138
 msgid "Invalid header."
-msgstr "Intestazione non corretta."
+msgstr "כותרת בלתי חוקית."
 
 #: src/message.h:139
 msgid "Invalid response."
-msgstr "Risposta non corretta."
+msgstr "תגובה בלתי חוקית."
 
 #: src/message.h:140
 msgid "No header found."
-msgstr "Nessuna intestazione trovata."
+msgstr "לא נמצאה כותרת"
 
 #: src/message.h:141
 msgid "No status header."
-msgstr "Nessuna intestazione relativa allo stato."
+msgstr "אין כותרת מצב."
 
 #: src/message.h:142
 msgid "Proxy connection failed."
-msgstr "La connessione al proxy e` fallita."
+msgstr "החיבור למתווך נכשל."
 
 #: src/message.h:143
 msgid "Connection failed."
-msgstr "Connessione fallita."
+msgstr "החיבור נכשל."
 
 #: src/message.h:144
 #, c-format
 msgid ""
 "The requested filename and the previously registered one are not same. "
 "Expected:%s Actual:%s"
-msgstr ""
-"Il nome di file richiesto e quello precedentemente registrato non sono lo "
-"stesso. Atteso:%s Attuale:%s"
+msgstr "שם הקובץ המבוקש והשם הקודם שרשמת אינם זהים. צפוי:%s ממשי:%s"
 
 #: src/message.h:145
 #, c-format
 msgid "The response status is not successful. status=%d"
-msgstr "Lo stato della risposta non e` positivo. stato=%d"
+msgstr "מצב התגובה אינו מוצלח. מצב=%d"
 
 #: src/message.h:146
 #, c-format
 msgid "Too large file size. size=%s"
-msgstr "File troppo grande. dimensione=%s"
+msgstr "קובץ גדול מדי. גודל=%s"
 
 #: src/message.h:147
 #, c-format
 msgid "Transfer encoding %s is not supported."
-msgstr "La codifica del trasferimento %s non e` supportata."
+msgstr "קידוד ההעברה %s אינו נתמך."
 
 #: src/message.h:148
 #, c-format
 msgid "SSL initialization failed: %s"
-msgstr "Inizializzazione SSL fallita: %s"
+msgstr "הפעלת ה-SSL נכשלה: %s"
 
 #: src/message.h:149
 msgid "SSL I/O error"
-msgstr "Errore nell'I/O SSL"
+msgstr "שגיאת קלט/פלט עם SSL"
 
 #: src/message.h:150
 msgid "SSL protocol error"
-msgstr "Errore col protocollo SSL"
+msgstr "שגיאת פרוטוקול SSL"
 
 #: src/message.h:151
 #, c-format
 msgid "SSL unknown error %d"
-msgstr "Errore sconosciuto in SSL %d"
+msgstr "שגיאת SSL לא ידועה %d"
 
 #: src/message.h:152
 #, c-format
 msgid "SSL initialization failed: OpenSSL connect error %d"
-msgstr "Inizializzazione SSL fallita: errore di connessione OpenSSL %d"
+msgstr "הפעלת SSL נכשלה: שגיאת חיבור OpenSSL %d"
 
 #: src/message.h:153
 #, c-format
 msgid "Size mismatch Expected:%s Actual:%s"
-msgstr "Errore dovuto due dimensioni differenti: Atteso:%s Attuale:%s"
+msgstr "הגודל אינו תואם צפוי:%s ממשי:%s"
 
 #: src/message.h:154
 msgid "Authorization failed."
-msgstr "Autenticazione fallita."
+msgstr "אימות נכשל."
 
 #: src/message.h:155
 msgid "Got EOF from the server."
-msgstr "Ricevuto EOF dal server."
+msgstr "קבל את סיום הקובץ מהשרת."
 
 #: src/message.h:156
 msgid "Got EOF from peer."
-msgstr "Ricevuto EOF dal peer."
+msgstr "התקבל סיום הקובץ מהעמית."
 
 #: src/message.h:157
 msgid "Malformed meta info."
-msgstr "Metainformazioni non correttamente codificate."
+msgstr "מידע מטא לא תקני"
 
 #: src/message.h:159
 #, c-format
 msgid "Failed to open the file %s, cause: %s"
-msgstr "Impossibile aprire il file %s, causa: %s"
+msgstr "כשל בפתיחת הקובץ %s, סיבה: %s"
 
 #: src/message.h:160
 #, c-format
 msgid "Failed to write into the file %s, cause: %s"
-msgstr "Scrittura fallita sul file %s, causa: %s"
+msgstr "שגיאה בכתיבה לקובץ %s, סיבה: %s"
 
 #: src/message.h:161
 #, c-format
 msgid "Failed to read from the file %s, cause: %s"
-msgstr "Lettura fallita dal file %s, causa: %s"
+msgstr "שגיאה בקריאה מהקובץ %s, סיבה: %s"
 
 #: src/message.h:162
 msgid "Failed to read data from disk."
-msgstr "Fallita lettura dei dati dal disco."
+msgstr "שגיאה בעת קריאה מהכונן."
 
 #: src/message.h:163
 #, c-format
 msgid "Failed to calculate SHA1 digest of or a part of the file %s, cause: %s"
-msgstr ""
-"Il calcolo del digest SHA1 di una parte del file %s e` fallito, causa: %s"
+msgstr "שגיאה בחישוב תמצית SHA1 או חלק מהקובץ %s, סיבה: %s"
 
 #: src/message.h:164
 #, c-format
 msgid "Failed to seek the file %s, cause: %s"
-msgstr "E` fallito lo spostamento all'interno del file %s, causa: %s"
+msgstr "שגיאה בחיפוש אחר הקובץ %s, סיבה: %s"
 
 #: src/message.h:165
 #, c-format
 msgid "The offset is out of range, offset=%s"
-msgstr "Lo scostamento e` fuori intervallo, scostamento=%s"
+msgstr "הקיזוז הינו מחוץ לטווח, קיזוז=%s"
 
 #: src/message.h:166
 #, c-format
 msgid "%s is not a directory."
-msgstr "%s non è una directory."
+msgstr "%s אינו תיקיה."
 
 #: src/message.h:167
 #, c-format
 msgid "Failed to make the directory %s, cause: %s"
-msgstr "La creazione della directory %s e` fallita, causa: %s"
+msgstr "שגיאה ביצירת התיקיה %s, סיבה: %s"
 
 #: src/message.h:168
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
-msgstr "Fallita l'apertura del file relativo al segmento %s, causa: %s"
+msgstr "שגיאה בפתיחת קובץ המקטע %s, סיבה: %s"
 
 #: src/message.h:169
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
-msgstr "Fallita la scrittura sul file relativo al segmento %s, causa: %s"
+msgstr "שגיאה בכתיבה לקובץ המקטע %s, סיבה: %s"
 
 #: src/message.h:170
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
-msgstr "Fallita la lettura dal file relativo al segmento %s, causa: %s"
+msgstr "שגיאה בעת קריאה מקובץ המקטע %s, סיבה: %s"
 
 #: src/message.h:172
 #, c-format
 msgid "Failed to open a socket, cause: %s"
-msgstr "Fallita l'apertura di un socket, causa: %s"
+msgstr "שגיאה בפתיחת החיבור, סיבה: %s"
 
 #: src/message.h:173
 #, c-format
 msgid "Failed to set a socket option, cause: %s"
-msgstr "L'abilitazione di una opzione sul socket e` fallita, causa: %s"
+msgstr "שגיאה בהגדרת אפשרויות החיבור, סיבה: %s"
 
 #: src/message.h:174
 #, c-format
 msgid "Failed to set a socket as blocking, cause: %s"
-msgstr "Il settaggio di un socket come bloccante e` fallita, causa: %s"
+msgstr "שגיאה בהגדרת החיבור כחוסם, סיבה: %s"
 
 #: src/message.h:175
 #, c-format
 msgid "Failed to set a socket as non-blocking, cause: %s"
-msgstr "Il settaggio di un socket come non-bloccante e` fallita, causa: %s"
+msgstr "שגיאה בהגדרת החיבור כלא חוסם, סיבה: %s"
 
 #: src/message.h:176
 #, c-format
 msgid "Failed to bind a socket, cause: %s"
-msgstr "Il binding di un socket e` fallito, causa: %s"
+msgstr "שגיאה בקישור החיבור, סיבה: %s"
 
 #: src/message.h:177
 #, c-format
 msgid "Failed to listen to a socket, cause: %s"
-msgstr "Fallito l'ascolto su di un socket, causa: %s"
+msgstr "שגיאה בהאזנה לחיבור, סיבה: %s"
 
 #: src/message.h:178
 #, c-format
 msgid "Failed to accept a peer connection, cause: %s"
-msgstr "L'accettazione di una connessione da un peer e` fallita, causa: %s"
+msgstr "שגיאה בקבלת חיבור מהעמית, סיבה: %s"
 
 #: src/message.h:179
 #, c-format
 msgid "Failed to get the name of socket, cause: %s"
-msgstr "L'ottenimento del nome del socket e` fallito, causa: %s"
+msgstr "שגיאה בקבלת שם החיבור, סיבה: %s"
 
 #: src/message.h:180
 #, c-format
@@ -793,23 +770,22 @@ msgstr ""
 #: src/message.h:188
 #, c-format
 msgid "Unknown socket error %d (0x%x)"
-msgstr "Errore sul socket sconosciuto %d (0x%x)"
+msgstr "שגיאת חיבור לא ידועה %d (0x%x)"
 
 #: src/message.h:189
 #, c-format
 msgid "File %s exists, but %s does not exist."
-msgstr "Il file %s esiste, ma %s non esiste."
+msgstr ""
 
 #: src/message.h:190
 #, c-format
 msgid "Invalid payload size for %s, size=%d. It should be %d."
 msgstr ""
-"Errata dimensione del payload per %s, dimensione=%d. Avrebbe dovuto essere %d"
 
 #: src/message.h:191
 #, c-format
 msgid "Invalid ID=%d for %s. It should be %d."
-msgstr "ID=%d errato per %s. Dovrebbe essere %d."
+msgstr ""
 
 #: src/message.h:192
 #, c-format
@@ -820,21 +796,21 @@ msgstr ""
 
 #: src/message.h:193
 msgid "Download aborted."
-msgstr "Scaricamento annullato."
+msgstr ""
 
 #: src/message.h:194
 #, c-format
 msgid "File %s is being downloaded by other command."
-msgstr "Il file %s viene scaricato gia` da un altro comando."
+msgstr ""
 
 #: src/message.h:195
 msgid "Insufficient checksums."
-msgstr "Checksum insufficienti."
+msgstr ""
 
 #: src/message.h:196
 #, c-format
 msgid "Tracker returned failure reason: %s"
-msgstr "Il tracker ha ritornato una ragione per il fallimento: %s"
+msgstr ""
 
 #: src/message.h:197
 msgid "Flooding detected."
@@ -846,47 +822,42 @@ msgid ""
 "Drop connection because no request/piece messages were exchanged in a "
 "certain period(%d seconds)."
 msgstr ""
-"La connessione e` stata annullata in quanto nessun messaggio di richiesta o "
-"pezzo sono stati scambiati in un certo periodo di tempo(%d secondi)."
 
 #: src/message.h:199
 msgid "The infoHash in torrent file doesn't match to one in .aria2 file."
 msgstr ""
-"Il campo infoHash nel file torrent e` diverso da quello nel file .aria2."
 
 #: src/message.h:200
 #, c-format
 msgid "No such file entry %s"
-msgstr "Nessun file con il nome %s"
+msgstr ""
 
 #: src/message.h:201
 #, c-format
 msgid "Too slow Downloading speed: %d <= %d(B/s), host:%s"
-msgstr "Troppo lento: velocita` di scaricamento: %d <= %d(B/s), host:%s"
+msgstr ""
 
 #: src/message.h:202
 msgid "No HttpRequestEntry found."
-msgstr "Non e` stata trovata la HttpRequestEntry."
+msgstr ""
 
 #: src/message.h:203
 #, c-format
 msgid "Got %d status, but no location header provided."
 msgstr ""
-"Ho ricevuto lo stato %d, ma nessun header di locazione e` stato fornito."
 
 #: src/message.h:204
 #, c-format
 msgid "Invalid range header. Request: %s-%s/%s, Response: %s-%s/%s"
 msgstr ""
-"Header con intervallo invalido. Richiesta: %s-%s/%s, Risposta: %s-%s/%s"
 
 #: src/message.h:205
 msgid "No file matched with your preference."
-msgstr "Nessun file riconosciuto con le tue preferenze."
+msgstr ""
 
 #: src/message.h:206
 msgid "Exception caught"
-msgstr "E` stata lanciata un'eccezione."
+msgstr ""
 
 #: src/message.h:207
 #, c-format
@@ -897,25 +868,20 @@ msgstr ""
 #, c-format
 msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr ""
-"La lunghezza del file e` invalida. Non posso continuare a scaricare %s: "
-"locale %s, remoto %s"
 
 #: src/MultiUrlRequestInfo.cc:74
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
-"aria2 ripristinera` lo scaricamento se la trasmissione viene fatta ripartire."
 
 #: src/MultiUrlRequestInfo.cc:76
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
 msgstr ""
-"Se si dovessero riscontrare degli errori, leggere il file di log. Vedi "
-"l'opzione '-l' nella pagina di help/man per i dettagli."
 
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
-msgstr "Risultati del download:"
+msgstr ""
 
 #: src/RequestGroupMan.cc:240
 msgid "Status Legend:"
@@ -923,15 +889,15 @@ msgstr ""
 
 #: src/Util.cc:701
 msgid "Files:"
-msgstr "File:"
+msgstr ""
 
 #: src/version_usage.cc:42
 msgid "                              Default: "
-msgstr "                              Default: "
+msgstr ""
 
 #: src/version_usage.cc:45
 msgid " version "
-msgstr " versione "
+msgstr ""
 
 #: src/version_usage.cc:49
 msgid ""
@@ -958,42 +924,40 @@ msgstr ""
 #: src/version_usage.cc:90
 #, c-format
 msgid "Usage: %s [options] URL ...\n"
-msgstr "Uso: %s [options] URL ...\n"
+msgstr ""
 
 #: src/version_usage.cc:92
 #, c-format
 msgid "       %s [options] -T TORRENT_FILE URL ...\n"
-msgstr "       %s [opzioni] -T FILE_TORRENT URL ...\n"
+msgstr ""
 
 #: src/version_usage.cc:95
 #, c-format
 msgid "       %s [options] -M METALINK_FILE\n"
-msgstr "       %s [opzioni] -M FILE_METALINK\n"
+msgstr ""
 
 #: src/version_usage.cc:98
 msgid "Options:"
-msgstr "Opzioni:"
+msgstr ""
 
 #: src/version_usage.cc:99
 msgid ""
 " -d, --dir=DIR                The directory to store the downloaded file."
-msgstr " -d, --dir=DIR LA directory dove salvare il file scaricato."
+msgstr ""
 
 #: src/version_usage.cc:100
 msgid " -o, --out=FILE               The file name of the downloaded file."
-msgstr " -o, --out=FILE Il nome del file scaricato."
+msgstr ""
 
 #: src/version_usage.cc:101
 msgid ""
 " -l, --log=LOG                The file name of the log file. If '-' is\n"
 "                              specified, log is written to stdout."
 msgstr ""
-" -l, --log=LOG Il nome del file di log. Se '-' e`\n"
-"                              specificato, il log e` scritto su stdout."
 
 #: src/version_usage.cc:104
 msgid " -D, --daemon                 Run as daemon."
-msgstr " -D, --daemon Lancia come demone."
+msgstr ""
 
 #: src/version_usage.cc:106
 msgid ""
@@ -1017,7 +981,7 @@ msgstr ""
 
 #: src/version_usage.cc:114
 msgid " -t, --timeout=SEC            Set timeout in seconds. Default: 60"
-msgstr " -t, --timeout=SEC Setta il timeout in secondi. Valore di default: 60"
+msgstr ""
 
 #: src/version_usage.cc:115
 msgid ""
@@ -1066,8 +1030,6 @@ msgstr ""
 #: src/version_usage.cc:134
 msgid " --referer=REFERER            Set Referer. This affects all URLs."
 msgstr ""
-" --referer=RIFERIMENTO Imposta il Riferimento. Questo e` utilizzato per ogni "
-"URL."
 
 #: src/version_usage.cc:135
 msgid ""
@@ -1088,14 +1050,10 @@ msgid ""
 "                              or 'ascii'.\n"
 "                              Default: binary"
 msgstr ""
-" --ftp-type=TIPO Indica il tipo di trasferimento FTP. 'TIPO' puo` essere "
-"'binary'(binario)\n"
-"          oppure 'ascii'.\n"
-"          Default: binary"
 
 #: src/version_usage.cc:142
 msgid " -p, --ftp-pasv               Use passive mode in FTP."
-msgstr " -p, --ftp-pasv Utilizza la modalita` passiva di FTP."
+msgstr ""
 
 #: src/version_usage.cc:143
 msgid ""
@@ -1219,17 +1177,12 @@ msgid ""
 "connection.\n"
 "                              Default: false"
 msgstr ""
-" --enable-http-keep-alive[=true|false] Abilita connessioni HTTP/1.1 "
-"persistenti.\n"
-"                              Default: falso"
 
 #: src/version_usage.cc:205
 msgid ""
 " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
 "                              Default: false"
 msgstr ""
-" --enable-http-pipelining[=true|false] Abilita pipelining HTTP/1.1.\n"
-"                              Default: falso"
 
 #: src/version_usage.cc:208
 msgid ""
@@ -1267,12 +1220,10 @@ msgstr ""
 #: src/version_usage.cc:225
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
-" -U, --user-agent=AGENTE_UTENTE Imposta l'agente per lo scaricamento via http"
-"(s)"
 
 #: src/version_usage.cc:226
 msgid " -n, --no-netrc               Disables netrc support."
-msgstr " -n, --no-netrc Disabilita il supporto per netrc."
+msgstr ""
 
 #: src/version_usage.cc:227
 msgid ""
@@ -1322,7 +1273,7 @@ msgstr ""
 
 #: src/version_usage.cc:250
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
-msgstr " -T, --torrent-file=FILE_TORRENT Il percorso per il file .torrent."
+msgstr ""
 
 #: src/version_usage.cc:251
 msgid ""
@@ -1398,7 +1349,7 @@ msgstr ""
 
 #: src/version_usage.cc:293
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
-msgstr " -M, --metalink-file=FILE_METALINK Il percorso per il file .metalink."
+msgstr ""
 
 #: src/version_usage.cc:294
 msgid ""
@@ -1409,16 +1360,16 @@ msgstr ""
 
 #: src/version_usage.cc:297
 msgid " --metalink-version=VERSION   The version of the file to download."
-msgstr " --metalink-version=VERSIONE La versione del file da scaricare"
+msgstr ""
 
 #: src/version_usage.cc:298
 msgid " --metalink-language=LANGUAGE The language of the file to download."
-msgstr " --metalink-language=LINGUa La lingua del file da scaricare."
+msgstr ""
 
 #: src/version_usage.cc:299
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
-msgstr " --metalink-os=SO Il sistema operativo del file da scaricare."
+msgstr ""
 
 #: src/version_usage.cc:300
 msgid ""
@@ -1445,21 +1396,17 @@ msgstr ""
 
 #: src/version_usage.cc:314
 msgid " -v, --version                Print the version number and exit."
-msgstr " -v, --version Stampa il numero di versione ed esce."
+msgstr ""
 
 #: src/version_usage.cc:315
-#, fuzzy
 msgid " -h, --help                   Print this message and exit."
-msgstr " -v, --version Stampa il numero di versione ed esce."
+msgstr ""
 
 #: src/version_usage.cc:318
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 msgstr ""
-" Puoi specificare molte URL. A meno che sia specificata l'opzione -Z, tutte "
-"le URL\n"
-" devono puntare allo stesso file, altrimenti lo scaricamento fallira`."
 
 #: src/version_usage.cc:320
 msgid ""
@@ -1478,7 +1425,7 @@ msgstr ""
 
 #: src/version_usage.cc:328
 msgid "Refer to man page for more information."
-msgstr "Fare riferimento alla pagina di manuale per ulteriori informazioni"
+msgstr ""
 
 #: src/version_usage.cc:330
 #, c-format
@@ -1487,4 +1434,27 @@ msgstr ""
 
 #: src/BtSetup.cc:108
 msgid "Errors occurred while binding port.\n"
-msgstr "Ci sono stati degli errori durante il binding alla porta.\n"
+msgstr ""
+
+#~ msgid "CUID#%d - Extended Messaging enabled."
+#~ msgstr "CUID#%d - התכתבות מורחבת הופעלה."
+
+#~ msgid "Too small payload size for %s, size=%d."
+#~ msgstr "מטען תכליתי קטן מדי עבור %s, גודל=%d."
+
+#~ msgid ""
+#~ "Removed the defunct control file %s because the download file %s doesn't "
+#~ "exist."
+#~ msgstr "קובץ השליטה הנכחד %s הוסר מכיוון שקובץ ההורדה %s אינו נמצא."
+
+#~ msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
+#~ msgstr "יחס השיתוף שלך היה %.1f, נשלח/התקבל=%sב/%sב"
+
+#~ msgid "Missing %s in torrent metainfo."
+#~ msgstr "%s חסר במידע-מטא של הטורנט."
+
+#~ msgid "Tracker returned null data."
+#~ msgstr "העוקב החזיר מידע ריק."
+
+#~ msgid "Windows socket library initialization failed"
+#~ msgstr "הפעלת ספריית החיבורים של Windows נכשלה"

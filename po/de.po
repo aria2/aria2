@@ -7,61 +7,62 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-12-09 00:02+0900\n"
-"PO-Revision-Date: 2007-11-17 12:00+0000\n"
+"POT-Creation-Date: 2008-02-11 22:36+0900\n"
+"PO-Revision-Date: 2007-12-25 20:46+0000\n"
 "Last-Translator: Patrick Ruckstuhl <patrick@tario.org>\n"
 "Language-Team: deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Launchpad-Export-Date: 2008-02-09 17:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
 msgid "must be either 'true' or 'false'."
-msgstr ""
+msgstr "Es muss entweder \"wahr\" oder \"falsch\" sein"
 
 #: src/OptionHandlerImpl.h:87 src/OptionHandlerImpl.h:120
 #, c-format
 msgid "must be between %s and %s."
-msgstr ""
+msgstr "es muss zwischen %s und %s sein"
 
 #: src/OptionHandlerImpl.h:117
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr ""
+msgstr "es muss kleiner oder gleich %s sein"
 
 #: src/OptionHandlerImpl.h:123
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr ""
+msgstr "es muss größer oder gleich %s sein"
 
 #: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:172
 msgid "must be a number."
-msgstr ""
+msgstr "es muss eine Zahl sein"
 
 #: src/OptionHandlerImpl.h:163
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr ""
+msgstr "es muss kleiner oder gleich %.1f sein"
 
 #: src/OptionHandlerImpl.h:166
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr ""
+msgstr "es muss zwischen %.1f und %.1f sein"
 
 #: src/OptionHandlerImpl.h:169
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr ""
+msgstr "es muss größer oder gleich %.1f sein"
 
 #: src/OptionHandlerImpl.h:230
 msgid "must be one of the following:"
-msgstr ""
+msgstr "es muss eines der folgenden sein"
 
 #: src/OptionHandlerImpl.h:258
+#, fuzzy
 msgid "unrecognized proxy format"
-msgstr ""
+msgstr "unerkanntes proxy format"
 
 #: src/message.h:40
 #, c-format
@@ -409,7 +410,7 @@ msgstr "Lösche Teil index=%d, fillRate(%%)=%d<=%d"
 
 #: src/message.h:110
 msgid "Download of selected files was complete."
-msgstr ""
+msgstr "Download der ausgewählten Datei abgeschlossen"
 
 #: src/message.h:111
 msgid "The download was complete."
@@ -516,7 +517,7 @@ msgstr ""
 #: src/message.h:132
 #, c-format
 msgid "File already exists. Renamed to %s."
-msgstr ""
+msgstr "Datei existiert bereits. Umbenannt zu %s."
 
 #: src/message.h:133
 msgid "Cannot parse metalink XML file. XML may be malformed."
@@ -865,8 +866,8 @@ msgstr "Ausnahme aufgetreten"
 
 #: src/message.h:207
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
-msgstr "Maximale Payload Länge überschritten oder ungülitge Länge. length = %d"
+msgid "Max payload length exceeded or invalid. length = %u"
+msgstr ""
 
 #: src/message.h:208
 #, c-format
@@ -874,8 +875,11 @@ msgid "Invalid file length. Cannot continue download %s: local %s, remote %s"
 msgstr "Ungültige Dateigrösse. Download abgebrochen %s: local %s, remote %s"
 
 #: src/MultiUrlRequestInfo.cc:74
+#, fuzzy
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr ""
+"aria2 wird den download wiederaufnehmen wenn die Übertragung neugestartet "
+"wird."
 
 #: src/MultiUrlRequestInfo.cc:76
 msgid ""
@@ -884,7 +888,12 @@ msgid ""
 msgstr ""
 
 #: src/RequestGroupMan.cc:225
+#, fuzzy
 msgid "Download Results:"
+msgstr "Download Ergebnisse"
+
+#: src/RequestGroupMan.cc:240
+msgid "Status Legend:"
 msgstr ""
 
 #: src/Util.cc:701
@@ -1516,6 +1525,10 @@ msgstr "Fehler beim Binden an Port aufgetreten.\n"
 #~ "abgebrochen damit die Datei nicht zu 0 geschrumpft wird. Wenn sie sicher "
 #~ "sind die Datei neu herunterzuaden, löschen sie die Datei oder fügen sie "
 #~ "die --allow-overwrite=true option hinzu und starten sie aria2 neu."
+
+#~ msgid "Max payload length exceeded or invalid. length = %d"
+#~ msgstr ""
+#~ "Maximale Payload Länge überschritten oder ungülitge Länge. length = %d"
 
 #~ msgid ""
 #~ " -S, --show-files             Print file listing of .torrent or .metalink "

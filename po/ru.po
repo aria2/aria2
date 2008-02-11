@@ -10,57 +10,57 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2007-12-09 00:02+0900\n"
-"PO-Revision-Date: 2007-11-17 12:01+0000\n"
+"POT-Creation-Date: 2008-02-11 22:36+0900\n"
+"PO-Revision-Date: 2008-01-30 14:39+0000\n"
 "Last-Translator: Azamat H. Hackimov <azamat.hackimov@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2007-12-08 14:48+0000\n"
+"X-Launchpad-Export-Date: 2008-02-09 17:20+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:66
 msgid "must be either 'true' or 'false'."
-msgstr ""
+msgstr "должно быть 'true' или 'false'."
 
 #: src/OptionHandlerImpl.h:87 src/OptionHandlerImpl.h:120
 #, c-format
 msgid "must be between %s and %s."
-msgstr ""
+msgstr "должно быть между %s и %s."
 
 #: src/OptionHandlerImpl.h:117
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr ""
+msgstr "должно быть меньше или равно %s."
 
 #: src/OptionHandlerImpl.h:123
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr ""
+msgstr "должно быть больше или равно %s."
 
 #: src/OptionHandlerImpl.h:126 src/OptionHandlerImpl.h:172
 msgid "must be a number."
-msgstr ""
+msgstr "должно быть числом."
 
 #: src/OptionHandlerImpl.h:163
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr ""
+msgstr "должно быть меньше или равно %.1f."
 
 #: src/OptionHandlerImpl.h:166
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr ""
+msgstr "должно быть между %.1f и %.1f."
 
 #: src/OptionHandlerImpl.h:169
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr ""
+msgstr "должно быть больше или равно %.1f."
 
 #: src/OptionHandlerImpl.h:230
 msgid "must be one of the following:"
-msgstr ""
+msgstr "должно быть одним из следующих:"
 
 #: src/OptionHandlerImpl.h:258
 msgid "unrecognized proxy format"
@@ -77,9 +77,9 @@ msgid "CUID#%d - No segment available."
 msgstr "CUID#%d - Нет доступного сегмента."
 
 #: src/message.h:42
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Connecting to %s:%d"
-msgstr "CUID#%d - Соединение к %s:%d"
+msgstr "CUID#%d - Соединение c %s:%d"
 
 #: src/message.h:43
 #, c-format
@@ -87,7 +87,7 @@ msgid ""
 "CUID#%d - The segment changed. We send the request again with new Range "
 "header."
 msgstr ""
-"CUID#%d - Сегмент изменен. Отправляем новый запрос с новым заголовком "
+"CUID#%d - Сегмент изменен. Отправляем запрос повторно с новым заголовком "
 "диапазонов."
 
 #: src/message.h:44
@@ -116,17 +116,17 @@ msgstr ""
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr ""
+msgstr "CUID#%d - Скачивание прервано. URI=%s"
 
 #: src/message.h:48
 #, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr ""
+msgstr "CUID#%d - Перезапуск скачивания. URI=%s"
 
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - Скачивание отменено."
+msgstr "CUID#%d - Скачивание прервано."
 
 #: src/message.h:50
 #, c-format
@@ -136,67 +136,67 @@ msgstr "CUID#%d - Совершено %d безуспешных попыток. �
 #: src/message.h:51
 #, c-format
 msgid "CUID#%d - Unregistering cuid from segmentManager."
-msgstr "CUID#%d - Незарегестриованный cuid от segmentManager."
+msgstr "CUID#%d - Отмена регистрации cuid от segmentManager."
 
 #: src/message.h:57
 #, c-format
 msgid "CUID#%d - we got new piece. index=%d"
-msgstr "CUID#%d - получен новая часть. индекс=%d"
+msgstr "CUID#%d - получена новая часть. индекс=%d"
 
 #: src/message.h:58
 #, c-format
 msgid "CUID#%d - we got wrong piece. index=%d"
-msgstr "CUID#%d - получен неправильная часть. индекс=%d"
+msgstr "CUID#%d - получена неправильная часть. индекс=%d"
 
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr ""
+msgstr "CUID#%d - Скачивание не завершилось: %s"
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr ""
+msgstr "#%d - Скачивание уже завершилось: %s"
 
 #: src/message.h:61
 #, c-format
 msgid "CUID#%d - Good checksum: %s"
-msgstr ""
+msgstr "CUID#%d - Правильная контрольная сумма: %s"
 
 #: src/message.h:62
 #, c-format
 msgid "CUID#%d - Bad checksum: %s"
-msgstr ""
+msgstr "CUID#%d - Неправильная контрольная сумма: %s"
 
 #: src/message.h:63
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Resolving hostname %s"
-msgstr ""
+msgstr "CUID#%d - Поиск IP-адреса хоста %s"
 
 #: src/message.h:64
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Name resolution complete: %s -> %s"
-msgstr ""
+msgstr "CUID#%d - Поиск IP-адресов завершён: %s -> %s"
 
 #: src/message.h:65
 #, c-format
 msgid "CUID#%d - Name resolution for %s failed:%s"
-msgstr ""
+msgstr "CUID#%d - Не удалось найти IP-адрес %s:%s"
 
 #: src/message.h:66
 #, c-format
 msgid "CUID#%d - DNS cache hit: %s -> %s"
-msgstr ""
+msgstr "CUID#%d - Нашли в DNS-кэше: %s -> %s"
 
 #: src/message.h:67
 #, c-format
 msgid "CUID#%d - Abort requested."
-msgstr ""
+msgstr "CUID#%d - Запрошена отмена."
 
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr ""
+msgstr "CUID#%d - Соединение с хостом %s"
 
 #: src/message.h:69
 #, c-format
@@ -204,18 +204,22 @@ msgid ""
 "CUID#%d - Piece received. index=%d, begin=%d, length=%d, offset=%llu, "
 "blockIndex=%d"
 msgstr ""
+"CUID#%d - Получен сегмент. индекс=%d, начало=%d, длина=%d, отступ=%llu, "
+"индексБлока=%d"
 
 #: src/message.h:70
 #, c-format
 msgid "CUID#%d - Piece bitfield %s"
-msgstr ""
+msgstr "CUID#%d - Бит-поле сегмента %s"
 
 #: src/message.h:71
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "CUID#%d - Reject piece message in queue because the peer has been choked. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - Сообщение о сегменте в очереди удалено, так как хост загнулся. "
+"индекс=%d, начало=%d, длина=%d"
 
 #: src/message.h:72
 #, c-format
@@ -223,16 +227,18 @@ msgid ""
 "CUID#%d - Reject piece message in queue because cancel message received. "
 "index=%d, begin=%d, length=%d"
 msgstr ""
+"CUID#%d - Сообщение о сегменте в очереди удалено, так как получено сообщение "
+"отмены. индекс=%d, начало=%d, длина=%d"
 
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr ""
+msgstr "CUID#%d - Во время проверки целостности файла поймано исключение."
 
 #: src/message.h:74
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr ""
+msgstr "CUID#%d - Есть интерес к хосту"
 
 #: src/message.h:75
 #, c-format
@@ -855,7 +861,7 @@ msgstr ""
 
 #: src/message.h:207
 #, c-format
-msgid "Max payload length exceeded or invalid. length = %d"
+msgid "Max payload length exceeded or invalid. length = %u"
 msgstr ""
 
 #: src/message.h:208
@@ -875,6 +881,10 @@ msgstr ""
 
 #: src/RequestGroupMan.cc:225
 msgid "Download Results:"
+msgstr ""
+
+#: src/RequestGroupMan.cc:240
+msgid "Status Legend:"
 msgstr ""
 
 #: src/Util.cc:701
