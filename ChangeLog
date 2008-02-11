@@ -1,5 +1,24 @@
 2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added the ability to stop aria2 itself when given time has passed
+	from start. Use --stop option to specify time in minutes.
+	When 0 is given, this feature is disabled.
+	* src/OptionHandlerFactory.cc
+	* src/TimeBasedCommand.h: Make _interval protected scope.
+	* src/HelpItemFactory.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/FillRequestGroupCommand.cc: Evaluate _e->isHaltRequested()
+	before calling RequestGroupMan::fillRequestGroupFromReserver().
+	Without this modification, the result list shows "ERR" when aria2 is
+	stopped by --stop option. It should be "INPR".
+	* src/DownloadEngine.{h, cc}
+	* src/DownloadEngineFactory.cc
+	* src/usage_text.h
+	* src/TimedHaltCommand.{h, cc}: New class.
+	
+2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bootstrap through node added by port message.
 	Currently bootstrap is executed if the number of buckets in routing
 	table is 1.

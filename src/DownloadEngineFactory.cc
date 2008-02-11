@@ -49,6 +49,7 @@
 #include "FileAllocationDispatcherCommand.h"
 #include "AutoSaveCommand.h"
 #include "HaveEraseCommand.h"
+#include "TimedHaltCommand.h"
 #include "DownloadResult.h"
 #include <algorithm>
 
@@ -86,7 +87,12 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get()));
   e->commands.push_back(new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
   e->commands.push_back(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 10));
-
+  {
+    int32_t stopMin = op->getAsInt(PREF_STOP);
+    if(stopMin > 0) {
+      e->commands.push_back(new TimedHaltCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), stopMin*60));
+    }
+  }
   return e;
 }
 

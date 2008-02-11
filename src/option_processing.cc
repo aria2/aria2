@@ -200,6 +200,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_ALLOW_PIECE_LENGTH_CHANGE, required_argument, &lopt, 211 },
       { PREF_NO_CONF, no_argument, &lopt, 212 },
       { PREF_CONF_PATH, required_argument, &lopt, 213 },
+      { PREF_STOP, required_argument, &lopt, 214 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { "show-files", no_argument, NULL, 'S' },
       { "select-file", required_argument, &lopt, 21 },
@@ -386,6 +387,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 213:
 	ucfname = optarg;
+	break;
+      case 214:
+	cmdstream << PREF_STOP << "=" << optarg << "\n";
 	break;
       }
       break;

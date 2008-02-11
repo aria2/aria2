@@ -293,14 +293,19 @@ void DownloadEngine::afterEachIteration()
 {
   if(globalHaltRequested == 1) {
     logger->notice(_("Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."));
-    _haltRequested = true;
-    _requestGroupMan->halt();
+    requestHalt();
     globalHaltRequested = 2;
   } else if(globalHaltRequested == 3) {
     logger->notice(_("Emergency shutdown sequence commencing..."));
     _requestGroupMan->forceHalt();
     globalHaltRequested = 4;
   }
+}
+
+void DownloadEngine::requestHalt()
+{
+  _haltRequested = true;
+  _requestGroupMan->halt();
 }
 
 void DownloadEngine::fillCommand()

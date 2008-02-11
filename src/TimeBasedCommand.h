@@ -55,8 +55,9 @@ protected:
    * true.
    */
   bool _exit;
-private:
+
   int32_t _interval; // unit: sec
+private:
   Time _checkPoint;
 public:
   /**

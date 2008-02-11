@@ -155,7 +155,8 @@ SRCS =  Socket.h\
 	TaggedItem.cc\
 	TagContainer.cc\
 	HelpItemFactory.cc\
-	SingleFileDownloadContext.cc
+	SingleFileDownloadContext.cc\
+	TimedHaltCommand.cc
 #	debug_new.cpp
 
 if ENABLE_MESSAGE_DIGEST

@@ -124,6 +124,8 @@
 #define PREF_NO_CONF "no-conf"
 // value: string
 #define PREF_CONF_PATH "conf-path"
+// value: 1*digit
+#define PREF_STOP "stop"
 
 /**
  * FTP related preferences

@@ -317,3 +317,6 @@ _(" -h, --help[=CATEGORY]        Print usage and exit.\n"\
 _(" --no-conf                    Disable loading aria2.conf file.")
 #define TEXT_CONF_PATH \
 _(" --conf-path=PATH             Change the configuration file path to PATH.")
+#define TEXT_STOP \
+_(" --stop=MINUTES               Stop application after MINUTES minutes has passed.\n" \
+  "                              If 0 is given, this feature is disabled.")

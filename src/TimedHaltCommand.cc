@@ -32,44 +32,32 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FillRequestGroupCommand.h"
+#include "TimedHaltCommand.h"
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
-#include "RequestGroup.h"
-#include "RecoverableException.h"
-#include "message.h"
 #include "Logger.h"
 
 namespace aria2 {
 
-FillRequestGroupCommand::FillRequestGroupCommand(int32_t cuid,
-						 DownloadEngine* e,
-						 int32_t interval):
-  Command(cuid),
-  _e(e),
-  _interval(interval)
+TimedHaltCommand::TimedHaltCommand(int32_t cuid, DownloadEngine* e,
+				   int32_t secondsToHalt):
+  TimeBasedCommand(cuid, e, secondsToHalt) {}
+
+TimedHaltCommand::~TimedHaltCommand() {}
+
+void TimedHaltCommand::preProcess()
 {
-  setStatusRealtime();
+  if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
+    _exit = true;
+  }
 }
 
-FillRequestGroupCommand::~FillRequestGroupCommand() {}
-
-bool FillRequestGroupCommand::execute()
+void TimedHaltCommand::process()
 {
-  if(_e->isHaltRequested()) {
-    return true;
+  if(!_e->isHaltRequested()) {
+    logger->notice("%d minutes passed. Stopping application.", _interval/60);
+    _e->requestHalt();
   }
-  try {
-    _e->_requestGroupMan->fillRequestGroupFromReserver(_e);
-  } catch(RecoverableException* ex) {
-    logger->error(EX_EXCEPTION_CAUGHT, ex);
-    delete ex;
-  }
-  if(_e->_requestGroupMan->downloadFinished()) {
-    return true;
-  }
-  _e->commands.push_back(this);
-  return false;
 }
 
 } // namespace aria2

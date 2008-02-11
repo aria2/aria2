@@ -356,7 +356,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
 	ServerHost.cc HelpItem.cc TaggedItem.cc TagContainer.cc \
 	HelpItemFactory.cc SingleFileDownloadContext.cc \
-	IteratableChunkChecksumValidator.cc \
+	TimedHaltCommand.cc IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
@@ -676,11 +676,11 @@ am__objects_14 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
 	HelpItem.$(OBJEXT) TaggedItem.$(OBJEXT) TagContainer.$(OBJEXT) \
 	HelpItemFactory.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13)
+	TimedHaltCommand.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
+	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
+	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
+	$(am__objects_12) $(am__objects_13)
 am_libaria2c_a_OBJECTS = $(am__objects_14)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1003,11 +1003,11 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	ByteArrayDiskWriter.h ByteArrayDiskWriterFactory.cc \
 	ServerHost.cc HelpItem.cc TaggedItem.cc TagContainer.cc \
 	HelpItemFactory.cc SingleFileDownloadContext.cc \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13)
+	TimedHaltCommand.cc $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5) \
+	$(am__append_6) $(am__append_7) $(am__append_8) \
+	$(am__append_9) $(am__append_10) $(am__append_11) \
+	$(am__append_12) $(am__append_13)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1341,6 +1341,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaggedItem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeA2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeBasedCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimedHaltCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TrackerWatcherCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TransferStat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/URLMetalinkParserState.Po@am__quote@

@@ -32,44 +32,24 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FillRequestGroupCommand.h"
-#include "DownloadEngine.h"
-#include "RequestGroupMan.h"
-#include "RequestGroup.h"
-#include "RecoverableException.h"
-#include "message.h"
-#include "Logger.h"
+#ifndef _D_TIMED_HALT_COMMAND_H_
+#define _D_TIMED_HALT_COMMAND_H_
+
+#include "TimeBasedCommand.h"
 
 namespace aria2 {
 
-FillRequestGroupCommand::FillRequestGroupCommand(int32_t cuid,
-						 DownloadEngine* e,
-						 int32_t interval):
-  Command(cuid),
-  _e(e),
-  _interval(interval)
-{
-  setStatusRealtime();
-}
+class TimedHaltCommand:public TimeBasedCommand {
+public:
+  TimedHaltCommand(int32_t cuid, DownloadEngine* e, int32_t secondsToHalt);
 
-FillRequestGroupCommand::~FillRequestGroupCommand() {}
+  virtual ~TimedHaltCommand();
 
-bool FillRequestGroupCommand::execute()
-{
-  if(_e->isHaltRequested()) {
-    return true;
-  }
-  try {
-    _e->_requestGroupMan->fillRequestGroupFromReserver(_e);
-  } catch(RecoverableException* ex) {
-    logger->error(EX_EXCEPTION_CAUGHT, ex);
-    delete ex;
-  }
-  if(_e->_requestGroupMan->downloadFinished()) {
-    return true;
-  }
-  _e->commands.push_back(this);
-  return false;
-}
+  virtual void preProcess();
+
+  virtual void process();
+};
 
 } // namespace aria2
+
+#endif // _D_TIMED_HALT_COMMAND_H_

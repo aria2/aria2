@@ -118,7 +118,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(new HostPortOptionHandler(PREF_DHT_ENTRY_POINT,
 					       PREF_DHT_ENTRY_POINT_HOST,
 					       PREF_DHT_ENTRY_POINT_PORT));
-
+  handlers.push_back(new NumberOptionHandler(PREF_STOP, 0, 35000000));
+  
   return handlers;
 }
 

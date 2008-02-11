@@ -161,6 +161,8 @@ public:
   {
     return _haltRequested;
   }
+
+  void requestHalt();
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;
