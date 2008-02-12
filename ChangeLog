@@ -1,3 +1,9 @@
+2008-02-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed typo in log message and define the message in message.h
+	* src/TimedHaltCommand.cc
+	* src/message.h
+
 2008-02-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Included RecoverableException.h to fix compilation error.

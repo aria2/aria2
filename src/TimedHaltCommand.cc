@@ -36,6 +36,7 @@
 #include "DownloadEngine.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
+#include "message.h"
 
 namespace aria2 {
 
@@ -55,7 +56,7 @@ void TimedHaltCommand::preProcess()
 void TimedHaltCommand::process()
 {
   if(!_e->isHaltRequested()) {
-    logger->notice("%d minutes passed. Stopping application.", _interval/60);
+    logger->notice(MSG_TIME_HAS_PASSED, _interval/60);
     _e->requestHalt();
   }
 }
