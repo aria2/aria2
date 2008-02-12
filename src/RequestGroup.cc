@@ -609,7 +609,9 @@ void RequestGroup::releaseRuntimeResource()
        btContextInReg->getOwnerRequestGroup()->getGID() ==
 	btContext->getOwnerRequestGroup()->getGID()) {
       BtRegistry::unregister(btContext->getInfoHashAsString());
-      DHTRegistry::_peerAnnounceStorage->removePeerAnnounce(btContext);
+      if(!DHTRegistry::_peerAnnounceStorage.isNull()) {
+	DHTRegistry::_peerAnnounceStorage->removePeerAnnounce(btContext);
+      }
     }
   }
 #endif // ENABLE_BITTORRENT

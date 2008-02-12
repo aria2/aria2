@@ -1,5 +1,10 @@
 2008-02-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed segmentation fault bug when exiting if dht is disabled.
+	* src/RequestGroup.cc
+
+2008-02-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed typo in log message and define the message in message.h
 	* src/TimedHaltCommand.cc
 	* src/message.h
