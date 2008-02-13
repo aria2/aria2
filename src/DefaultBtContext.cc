@@ -48,7 +48,6 @@
 #include "Logger.h"
 #include "FileEntry.h"
 #include "message.h"
-#include <cassert>
 #include <cstring>
 #include <ostream>
 #include <functional>
@@ -101,11 +100,7 @@ void DefaultBtContext::clear() {
 void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
 					int32_t hashDataLength,
 					int32_t hashLength) {
-  assert(hashDataLength > 0);
-  assert(hashLength > 0);
   int32_t numPieces = hashDataLength/hashLength;
-  assert(numPieces > 0);
-
   for(int32_t i = 0; i < numPieces; i++) {
     pieceHashes.push_back(Util::toHex(&hashData[i*hashLength],
 				      hashLength));
@@ -233,6 +228,35 @@ std::deque<std::string> DefaultBtContext::extractUrlList(const MetaEntry* obj)
   return uris;
 }
 
+void DefaultBtContext::extractNodes(const List* nodes)
+{
+  
+  for(std::deque<MetaEntry*>::const_iterator i = nodes->getList().begin();
+      i != nodes->getList().end(); ++i) {
+    const List* addrPair = dynamic_cast<const List*>(*i);
+    if(!addrPair || addrPair->getList().size() != 2) {
+      continue;
+    }
+    const Data* hostname = dynamic_cast<const Data*>(addrPair->getList()[0]);
+    if(!hostname) {
+      continue;
+    }
+    std::string h = hostname->toString();
+    if(Util::trim(h).empty()) {
+      continue;
+    }
+    const Data* port = dynamic_cast<const Data*>(addrPair->getList()[1]);
+    if(!port) {
+      continue;
+    }
+    uint16_t p = port->toInt();
+    if(p == 0) {
+      continue;
+    }
+    _nodes.push_back(std::pair<std::string, uint16_t>(h, p));
+  }
+}
+
 void DefaultBtContext::loadFromMemory(const char* content, int32_t length, const std::string& defaultName)
 {
   SharedHandle<MetaEntry> rootEntry = MetaFileUtil::bdecoding(content, length);
@@ -271,7 +295,13 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   if(!pieceHashData) {
     throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "pieces");
   }
+  if(pieceHashData->getLen() == 0) {
+    throw new DlAbortEx("The length of piece hash is 0.");
+  }
   numPieces = pieceHashData->getLen()/PIECE_HASH_LENGTH;
+  if(numPieces == 0) {
+    throw new DlAbortEx("The number of pieces is 0.");
+  }
   // retrieve piece length
   const Data* pieceLengthData = dynamic_cast<const Data*>(infoDic->get("piece length"));
   if(!pieceLengthData) {
@@ -305,8 +335,10 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   } else if(announceData) {
     extractAnnounce(announceData);
   }
-  if(!announceTiers.size()) {
-    throw new DlAbortEx("No announce URL found.");
+  // retrieve nodes
+  const List* nodes = dynamic_cast<const List*>(rootDic->get("nodes"));
+  if(nodes) {
+    extractNodes(nodes);
   }
 }
 
@@ -413,6 +445,12 @@ std::ostream& operator<<(std::ostream& o, const DefaultBtContext& ctx)
 void DefaultBtContext::setRandomizer(const RandomizerHandle& randomizer)
 {
   _randomizer = randomizer;
+}
+
+std::deque<std::pair<std::string, uint16_t> >&
+DefaultBtContext::getNodes()
+{
+  return _nodes;
 }
 
 } // namespace aria2

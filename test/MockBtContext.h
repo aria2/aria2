@@ -19,6 +19,7 @@ private:
   unsigned char peerId[20];
   std::deque<SharedHandle<FileEntry> > fileEntries;
   std::deque<SharedHandle<AnnounceTier> > announceTiers;
+  std::deque<std::pair<std::string, uint16_t> > _nodes;
   std::deque<int32_t> fastSet;
 public:
   MockBtContext():totalLength(0),
@@ -145,6 +146,17 @@ public:
   {
     return 0;
   }
+
+  virtual std::deque<std::pair<std::string, uint16_t> >& getNodes()
+  {
+    return _nodes;
+  }
+
+  void setNodes(const std::deque<std::pair<std::string, uint16_t> >& nodes)
+  {
+    _nodes = nodes;
+  }
+
 };
 
 } // namespace aria2

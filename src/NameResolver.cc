@@ -84,6 +84,14 @@ void NameResolver::setAddr(const std::string& addrString)
   inet_aton(addrString.c_str(), &addr);
 }
  
+void NameResolver::reset()
+{
+  status = STATUS_READY;
+  ares_destroy(channel);
+  // TODO evaluate return value
+  ares_init(&channel);
+}
+
 #else // ENABLE_ASYNC_DNS
 
 #include "DlAbortEx.h"
@@ -117,6 +125,8 @@ void NameResolver::setAddr(const std::string& addrString)
 {
   inet_aton(addrString.c_str(), &_addr);
 }
+
+void NameResolver::reset() {}
 
 #endif // ENABLE_ASYNC_DNS
 

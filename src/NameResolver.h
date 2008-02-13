@@ -81,6 +81,7 @@ public:
   NameResolver():
     status(STATUS_READY)
   {
+    // TODO evaluate return value
     ares_init(&channel);
   }
 
@@ -117,6 +118,8 @@ public:
   }
 
   void setAddr(const std::string& addrString);
+
+  void reset();
 };
 
 #else // ENABLE_ASYNC_DNS
@@ -130,6 +133,8 @@ public:
   std::string getAddrString() const;
   
   void setAddr(const std::string& addrString);
+
+  void reset();
 };
 
 #endif // ENABLE_ASYNC_DNS

@@ -1,6 +1,6 @@
 #include "DefaultBtContext.h"
 #include "Util.h"
-#include "Exception.h"
+#include "RecoverableException.h"
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"
 #include "FileEntry.h"
@@ -31,6 +31,7 @@ class DefaultBtContextTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetFileEntries_singleFileUrlList);
   CPPUNIT_TEST(testLoadFromMemory);
   CPPUNIT_TEST(testLoadFromMemory_somethingMissing);
+  CPPUNIT_TEST(testGetNodes);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {
@@ -56,6 +57,7 @@ public:
   void testGetFileEntries_singleFileUrlList();
   void testLoadFromMemory();
   void testLoadFromMemory_somethingMissing();
+  void testGetNodes();
 };
 
 
@@ -341,6 +343,123 @@ void DefaultBtContextTest::testLoadFromMemory_somethingMissing()
     std::cerr << *e << std::endl;
     delete e;
   }
+}
+
+void DefaultBtContextTest::testGetNodes()
+{
+  {
+    std::string memory =
+      "d5:nodesl"
+      "l11:192.168.0.1i6881ee"
+      "l11:192.168.0.24:6882e"
+      "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
+      "12:piece lengthi262144e"
+      "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
+      "ee";
+    DefaultBtContext btContext;
+    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+
+    const std::deque<std::pair<std::string, uint16_t> >& nodes =
+      btContext.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)2, nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6881, nodes[0].second);
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[1].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, nodes[1].second);
+  }
+  {
+    // empty hostname
+    std::string memory =
+      "d5:nodesl"
+      "l1: i6881ee"
+      "l11:192.168.0.24:6882e"
+      "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
+      "12:piece lengthi262144e"
+      "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
+      "ee";
+    DefaultBtContext btContext;
+    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+
+    const std::deque<std::pair<std::string, uint16_t> >& nodes =
+      btContext.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, nodes[0].second);
+  }
+  {
+    // bad port 
+    std::string memory =
+      "d5:nodesl"
+      "l11:192.168.0.11:xe"
+      "l11:192.168.0.24:6882e"
+      "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
+      "12:piece lengthi262144e"
+      "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
+      "ee";
+    DefaultBtContext btContext;
+    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+
+    const std::deque<std::pair<std::string, uint16_t> >& nodes =
+      btContext.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, nodes[0].second);
+  }
+  {
+    // port missing
+    std::string memory =
+      "d5:nodesl"
+      "l11:192.168.0.1e"
+      "l11:192.168.0.24:6882e"
+      "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
+      "12:piece lengthi262144e"
+      "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
+      "ee";
+    DefaultBtContext btContext;
+    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+
+    const std::deque<std::pair<std::string, uint16_t> >& nodes =
+      btContext.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, nodes[0].second);
+  }
+  {
+    // nodes is not a list
+    std::string memory =
+      "d5:nodes"
+      "l11:192.168.0.1e"
+      "4:infod4:name13:aria2.tar.bz26:lengthi262144e"
+      "12:piece lengthi262144e"
+      "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
+      "ee";
+    DefaultBtContext btContext;
+    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+
+    const std::deque<std::pair<std::string, uint16_t> >& nodes =
+      btContext.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)0, nodes.size());
+  }
+  {
+    // the element of node is not Data
+    std::string memory =
+      "d5:nodesl"
+      "ll11:192.168.0.1i6881eee"
+      "l11:192.168.0.24:6882e"
+      "e4:infod4:name13:aria2.tar.bz26:lengthi262144e"
+      "12:piece lengthi262144e"
+      "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
+      "ee";
+    DefaultBtContext btContext;
+    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+
+    const std::deque<std::pair<std::string, uint16_t> >& nodes =
+      btContext.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)1, nodes.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"), nodes[0].first);
+    CPPUNIT_ASSERT_EQUAL((uint16_t)6882, nodes[0].second);
+  }
+
 }
 
 } // namespace aria2

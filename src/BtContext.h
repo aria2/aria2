@@ -37,6 +37,8 @@
 
 #include "DownloadContext.h"
 #include "BtContextDecl.h"
+#include <utility>
+#include <deque>
 
 namespace aria2 {
 
@@ -76,6 +78,8 @@ public:
   computeFastSet(const std::string& ipaddr, int32_t fastSetSize) = 0;
   
   virtual RequestGroup* getOwnerRequestGroup() = 0;
+
+  virtual std::deque<std::pair<std::string, uint16_t> >& getNodes() = 0;
 
 };
 

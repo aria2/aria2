@@ -44,19 +44,23 @@
 #include "DHTNode.h"
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
+#include "DHTRoutingTable.h"
 #include "DHTTask.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
 
 namespace aria2 {
 
-DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e):
+DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e, const std::deque<std::pair<std::string, uint16_t> >& entryPoints):
   Command(cuid),
   _e(e),
   _resolver(new NameResolver()),
   _taskQueue(0),
   _taskFactory(0),
-  _localNode(0)
+  _routingTable(0),
+  _localNode(0),
+  _entryPoints(entryPoints),
+  _bootstrapEnabled(false)
 {}
 
 DHTEntryPointNameResolveCommand::~DHTEntryPointNameResolveCommand()
@@ -71,30 +75,56 @@ bool DHTEntryPointNameResolveCommand::execute()
   if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-
   try {
-    std::string hostname = _e->option->get(PREF_DHT_ENTRY_POINT_HOST);
-    if(!Util::isNumbersAndDotsNotation(hostname)) {
-      if(resolveHostname(hostname, _resolver)) {
-	hostname = _resolver->getAddrString();
-      } else {
-	_e->commands.push_back(this);
-	return false;
+    while(_entryPoints.size()) {
+      std::string hostname = _entryPoints.front().first;
+      try {
+	if(Util::isNumbersAndDotsNotation(hostname)) {
+	  std::pair<std::string, uint16_t> p(hostname,
+					     _entryPoints.front().second);
+	  _resolvedEntryPoints.push_back(p);
+	  _entryPoints.erase(_entryPoints.begin());
+	  addPingTask(p);
+	} else {
+	  if(resolveHostname(hostname, _resolver)) {
+	    hostname = _resolver->getAddrString();
+	    _resolver->reset();
+	    std::pair<std::string, uint16_t> p(hostname,
+					       _entryPoints.front().second);
+	    _resolvedEntryPoints.push_back(p);
+	    _entryPoints.erase(_entryPoints.begin());
+	    addPingTask(p);
+	  } else {
+	    _e->commands.push_back(this);
+	    return false;
+	  }
+	}
+      } catch(RecoverableException* e) {
+	logger->error(EX_EXCEPTION_CAUGHT, e);
+	delete e;
+	_entryPoints.erase(_entryPoints.begin());
+	_resolver->reset();
       }
     }
-    
-    SharedHandle<DHTNode> entryNode = new DHTNode();
-    entryNode->setIPAddress(hostname);
-    entryNode->setPort(_e->option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
- 
-    _taskQueue->addPeriodicTask1(_taskFactory->createPingTask(entryNode, 10));
-    _taskQueue->addPeriodicTask1(_taskFactory->createNodeLookupTask(_localNode->getID()));
-    _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
+
+    if(_bootstrapEnabled && _resolvedEntryPoints.size()) {
+      _taskQueue->addPeriodicTask1(_taskFactory->createNodeLookupTask(_localNode->getID()));
+      _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
+    }
   } catch(RecoverableException* e) {
     logger->error(EX_EXCEPTION_CAUGHT, e);
     delete e;
   }
   return true;
+}
+
+void DHTEntryPointNameResolveCommand::addPingTask(const std::pair<std::string, uint16_t>& addr)
+{
+  SharedHandle<DHTNode> entryNode = new DHTNode();
+  entryNode->setIPAddress(addr.first);
+  entryNode->setPort(addr.second);
+  
+  _taskQueue->addPeriodicTask1(_taskFactory->createPingTask(entryNode, 10));
 }
 
 bool DHTEntryPointNameResolveCommand::resolveHostname(const std::string& hostname,
@@ -148,6 +178,11 @@ void DHTEntryPointNameResolveCommand::disableNameResolverCheck(const SharedHandl
 }
 #endif // ENABLE_ASYNC_DNS
 
+void DHTEntryPointNameResolveCommand::setBootstrapEnabled(bool f)
+{
+  _bootstrapEnabled = f;
+}
+
 void DHTEntryPointNameResolveCommand::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
 {
   _taskQueue = taskQueue;
@@ -156,6 +191,11 @@ void DHTEntryPointNameResolveCommand::setTaskQueue(const SharedHandle<DHTTaskQue
 void DHTEntryPointNameResolveCommand::setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory)
 {
   _taskFactory = taskFactory;
+}
+
+void DHTEntryPointNameResolveCommand::setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable)
+{
+  _routingTable = routingTable;
 }
 
 void DHTEntryPointNameResolveCommand::setLocalNode(const SharedHandle<DHTNode>& localNode)

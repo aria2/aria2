@@ -184,9 +184,15 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
     Commands commands;
     if(!option->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
       {
-	DHTEntryPointNameResolveCommand* command = new DHTEntryPointNameResolveCommand(CUIDCounterSingletonHolder::instance()->newID(), e);
+	std::pair<std::string, uint16_t> addr(option->get(PREF_DHT_ENTRY_POINT_HOST),
+					      option->getAsInt(PREF_DHT_ENTRY_POINT_PORT));
+	std::deque<std::pair<std::string, uint16_t> > entryPoints;
+	entryPoints.push_back(addr);
+	DHTEntryPointNameResolveCommand* command = new DHTEntryPointNameResolveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, entryPoints);
+	command->setBootstrapEnabled(true);
 	command->setTaskQueue(taskQueue);
 	command->setTaskFactory(taskFactory);
+	command->setRoutingTable(routingTable);
 	command->setLocalNode(localNode);
 	commands.push_back(command);
       }

@@ -37,11 +37,14 @@
 
 #include "Command.h"
 #include "SharedHandle.h"
+#include <utility>
+#include <deque>
 
 namespace aria2 {
 
 class DHTTaskQueue;
 class DHTTaskFactory;
+class DHTRoutingTable;
 class DHTNode;
 class DownloadEngine;
 class NameResolver;
@@ -56,7 +59,17 @@ private:
 
   SharedHandle<DHTTaskFactory> _taskFactory;
 
+  SharedHandle<DHTRoutingTable> _routingTable;
+
   SharedHandle<DHTNode> _localNode;
+
+  std::deque<std::pair<std::string, uint16_t> > _entryPoints;
+
+  std::deque<std::pair<std::string, uint16_t> > _resolvedEntryPoints;
+
+  bool _bootstrapEnabled;
+
+  void addPingTask(const std::pair<std::string, uint16_t>& addr);
 
   bool resolveHostname(const std::string& hostname,
 		       const SharedHandle<NameResolver>& resolver);
@@ -66,15 +79,20 @@ private:
   void disableNameResolverCheck(const SharedHandle<NameResolver>& resolver);
 
 public:
-  DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e);
+  DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e,
+				  const std::deque<std::pair<std:: string, uint16_t> >& entryPoints);
 
   virtual ~DHTEntryPointNameResolveCommand();
 
   virtual bool execute();
 
+  void setBootstrapEnabled(bool f);
+
   void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 
   void setTaskFactory(const SharedHandle<DHTTaskFactory>& taskFactory);
+
+  void setRoutingTable(const SharedHandle<DHTRoutingTable>& routingTable);
 
   void setLocalNode(const SharedHandle<DHTNode>& localNode);
 };

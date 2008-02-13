@@ -91,6 +91,7 @@
 # include "PeerConnection.h"
 # include "ExtensionMessageFactory.h"
 # include "DHTPeerAnnounceStorage.h"
+# include "DHTEntryPointNameResolveCommand.h"
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
 # include "MetalinkPostDownloadHandler.h"
@@ -243,6 +244,15 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 
       if(!btContext->isPrivate() && _option->getAsBool(PREF_ENABLE_DHT)) {
 	e->addCommand(DHTSetup().setup(e, _option));
+	if(btContext->getNodes().size() && DHTSetup::initialized()) {
+	  DHTEntryPointNameResolveCommand* command =
+	    new DHTEntryPointNameResolveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, btContext->getNodes());
+	  command->setTaskQueue(DHTRegistry::_taskQueue);
+	  command->setTaskFactory(DHTRegistry::_taskFactory);
+	  command->setRoutingTable(DHTRegistry::_routingTable);
+	  command->setLocalNode(DHTRegistry::_localNode);
+	  e->commands.push_back(command);
+	}
       }
       CheckIntegrityEntryHandle entry =	new BtCheckIntegrityEntry(this);
       

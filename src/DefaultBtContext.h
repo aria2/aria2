@@ -64,6 +64,7 @@ private:
   std::string peerId;
   std::string _peerIdPrefix;
   std::deque<SharedHandle<AnnounceTier> > announceTiers;
+  std::deque<std::pair<std::string, uint16_t> > _nodes;
   SharedHandle<Randomizer> _randomizer;
 
   RequestGroup* _ownerRequestGroup;
@@ -81,6 +82,8 @@ private:
   void extractAnnounceList(const List* announceListData);
 
   std::deque<std::string> extractUrlList(const MetaEntry* obj);
+
+  void extractNodes(const List* nodes);
 
   void processRootDictionary(const Dictionary* rootDic, const std::string& defaultName);
 
@@ -139,6 +142,8 @@ private:
   {
     return _ownerRequestGroup;
   }
+
+  virtual std::deque<std::pair<std::string, uint16_t> >& getNodes();
 
   std::string generatePeerId() const;
 
