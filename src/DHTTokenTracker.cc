@@ -67,7 +67,9 @@ std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
   }
   memcpy(src, infoHash, DHT_ID_LENGTH);
   memcpy(src+DHT_ID_LENGTH+6, secret, SECRET_SIZE);
-  return MessageDigestHelper::digest("sha1", src, sizeof(src));
+  unsigned char md[20];
+  MessageDigestHelper::digest(md, sizeof(md), "sha1", src, sizeof(src));
+  return std::string(&md[0], &md[sizeof(md)]);
 }
 
 std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,

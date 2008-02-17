@@ -1,4 +1,10 @@
-2008-02-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+2008-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Use raw message digest as a token instead of its hexadecimal
+	representation.
+	* src/DHTTokenTracker.cc (generateToken)
+
+2008-02-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added Message Stream Encryption(MSE) support.
 	Currently, aria2 accepts incoming connections with Obfuscation Header
