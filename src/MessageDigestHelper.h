@@ -46,15 +46,10 @@ class BinaryStream;
 class MessageDigestHelper {
 public:
   /**
-   * Returns message digest in hexadecimal notation.
+   * Returns message digest in hexadecimal representation.
    * Digest algorithm is specified by algo.
    */
   static std::string digest(const std::string& algo, const SharedHandle<BinaryStream>& bs, int64_t offset, int64_t length);
-
-  /**
-   * Calculates message digest of file denoted by filename.
-   */
-  static std::string digest(const std::string& algo, const std::string& filename);
 
   static std::string digest(const std::string& algo, const void* data, int32_t length);
 
@@ -62,6 +57,13 @@ public:
   {
     return digest(algo, data.c_str(), data.size());
   }
+
+  /**
+   * Calculates message digest of file denoted by filename.
+   * Returns message digest in hexadecimal representation.
+   * Digest algorithm is specified by algo.
+   */
+  static std::string digest(const std::string& algo, const std::string& filename);
 
   /**
    * Stores *raw* message digest into md.
