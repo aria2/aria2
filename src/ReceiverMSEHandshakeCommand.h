@@ -32,51 +32,45 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_INTERACTION_COMMAND_H_
-#define _D_PEER_INTERACTION_COMMAND_H_
+#ifndef _D_RECEIVER_MSE_HANDSHAKE_COMMAND_H_
+#define _D_RECEIVER_MSE_HANDSHAKE_COMMAND_H_
 
 #include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
 
 namespace aria2 {
 
-class BtInteractive;
-class PeerConnection;
+class MSEHandshake;
+class SocketCore;
+class Peer;
 
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
-			       public RequestGroupAware
+class ReceiverMSEHandshakeCommand:public PeerAbstractCommand
 {
 public:
   enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
+    RECEIVER_IDENTIFY_HANDSHAKE,
+    RECEIVER_WAIT_KEY,
+    RECEIVER_FIND_HASH_MARKER,
+    RECEIVER_RECEIVE_PAD_C_LENGTH,
+    RECEIVER_RECEIVE_PAD_C,
+    RECEIVER_RECEIVE_IA_LENGTH,
+    RECEIVER_RECEIVE_IA
+  };
 private:
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
-  int32_t maxDownloadSpeedLimit;
+  Seq _sequence;
+
+  MSEHandshake* _mseHandshake;
 protected:
   virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int32_t wait);
-  virtual void onAbort(Exception* ex);
   virtual bool exitBeforeExecute();
 public:
-  PeerInteractionCommand(int32_t cuid,
-			 RequestGroup* requestGroup,
-			 const SharedHandle<Peer>& peer,
-			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
-			 const SharedHandle<SocketCore>& s,
-			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
+  ReceiverMSEHandshakeCommand(int32_t cuid,
+			      const SharedHandle<Peer>& peer,
+			      DownloadEngine* e,
+			      const SharedHandle<SocketCore>& s);
 
-  virtual ~PeerInteractionCommand();
-
+  virtual ~ReceiverMSEHandshakeCommand();
 };
 
 } // namespace aria2
 
-#endif // _D_PEER_INTERACTION_COMMAND_H_
+#endif // _D_RECEIVER_MSE_HANDSHAKE_COMMAND_H_

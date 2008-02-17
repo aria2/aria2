@@ -32,51 +32,46 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_INTERACTION_COMMAND_H_
-#define _D_PEER_INTERACTION_COMMAND_H_
+#ifndef _D_LIBGCRYPT_ARC4_DECRYPTOR_H_
+#define _D_LIBGCRYPT_ARC4_DECRYPTOR_H_
 
-#include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
+#include "common.h"
+#include "DlAbortEx.h"
+#include "LibgcryptARC4Context.h"
+#include <gcrypt.h>
 
 namespace aria2 {
 
-class BtInteractive;
-class PeerConnection;
-
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
-			       public RequestGroupAware
-{
-public:
-  enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
+class ARC4Decryptor {
 private:
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
-  int32_t maxDownloadSpeedLimit;
-protected:
-  virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int32_t wait);
-  virtual void onAbort(Exception* ex);
-  virtual bool exitBeforeExecute();
+  LibgcryptARC4Context _ctx;
+
+  void handleError(gcry_error_t errno) const
+  {
+    throw new DlAbortEx("Exception in libgcrypt routine(ARC4Decryptor class): %s",
+			gcry_strerror(errno));
+  }
 public:
-  PeerInteractionCommand(int32_t cuid,
-			 RequestGroup* requestGroup,
-			 const SharedHandle<Peer>& peer,
-			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
-			 const SharedHandle<SocketCore>& s,
-			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
+  ARC4Decryptor() {}
 
-  virtual ~PeerInteractionCommand();
+  ~ARC4Decryptor() {}
 
+  void init(const unsigned char* key, size_t keyLength)
+  {
+    _ctx.init(key, keyLength);
+  }
+
+  void decrypt(unsigned char* out, size_t outLength,
+	       const unsigned char* in, size_t inLength)
+  {
+    gcry_error_t r = gcry_cipher_decrypt(_ctx.getCipherContext(),
+					 out, outLength, in, inLength);
+    if(r) {
+      handleError(r);
+    }
+  }
 };
 
 } // namespace aria2
 
-#endif // _D_PEER_INTERACTION_COMMAND_H_
+#endif // _D_LIBGCRYPT_ARC4_DECRYPTOR_H_

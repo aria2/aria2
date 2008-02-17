@@ -160,6 +160,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     url += std::string("&")+"trackerid="+Util::torrentUrlencode((const unsigned char*)trackerId.c_str(),
 							   trackerId.size());
   }
+  url += "&supportcrypto=1";
   return url;
 }
 

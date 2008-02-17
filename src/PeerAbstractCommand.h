@@ -57,7 +57,6 @@ protected:
 
   void setTimeout(int32_t timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(int32_t wait);
-  virtual bool prepareForRetry(int32_t wait);
   virtual void onAbort(Exception* ex) {};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;

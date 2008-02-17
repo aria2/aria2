@@ -61,7 +61,8 @@ public:
   PeerReceiveHandshakeCommand(int32_t cuid,
 			      const SharedHandle<Peer>& peer,
 			      DownloadEngine* e,
-			      const SharedHandle<SocketCore>& s);
+			      const SharedHandle<SocketCore>& s,
+			      const SharedHandle<PeerConnection>& peerConnection = 0);
 
   virtual ~PeerReceiveHandshakeCommand();
 

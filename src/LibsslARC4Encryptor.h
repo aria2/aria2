@@ -32,51 +32,46 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_INTERACTION_COMMAND_H_
-#define _D_PEER_INTERACTION_COMMAND_H_
+#ifndef _D_LIBSSL_ARC4_ENCRYPTOR_H_
+#define _D_LIBSSL_ARC4_ENCRYPTOR_H_
 
-#include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
+#include "common.h"
+#include "DlAbortEx.h"
+#include "LibsslARC4Context.h"
+#include <openssl/evp.h>
+#include <openssl/err.h>
 
 namespace aria2 {
 
-class BtInteractive;
-class PeerConnection;
-
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
-			       public RequestGroupAware
-{
-public:
-  enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
+class ARC4Encryptor {
 private:
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
-  int32_t maxDownloadSpeedLimit;
-protected:
-  virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int32_t wait);
-  virtual void onAbort(Exception* ex);
-  virtual bool exitBeforeExecute();
+  LibsslARC4Context _ctx;
+
+  void handleError() const
+  {
+    throw new DlAbortEx("Exception in libssl routine(ARC4Encryptor class): %s",
+			ERR_error_string(ERR_get_error(), 0));
+  }
 public:
-  PeerInteractionCommand(int32_t cuid,
-			 RequestGroup* requestGroup,
-			 const SharedHandle<Peer>& peer,
-			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
-			 const SharedHandle<SocketCore>& s,
-			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
+  ARC4Encryptor() {}
 
-  virtual ~PeerInteractionCommand();
+  ~ARC4Encryptor() {}
 
+  void init(const unsigned char* key, size_t keyLength)
+  {
+    _ctx.init(key, keyLength, 1);
+  }
+
+  void encrypt(unsigned char* out, size_t outLength,
+	       const unsigned char* in, size_t inLength)
+  {
+    int soutLength = outLength;
+    if(!EVP_CipherUpdate(_ctx.getCipherContext(), out, &soutLength, in, inLength)) {
+      handleError();
+    }
+  }
 };
 
 } // namespace aria2
 
-#endif // _D_PEER_INTERACTION_COMMAND_H_
+#endif // _D_LIBSSL_ARC4_ENCRYPTOR_H_

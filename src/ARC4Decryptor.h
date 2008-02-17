@@ -32,51 +32,14 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_INTERACTION_COMMAND_H_
-#define _D_PEER_INTERACTION_COMMAND_H_
+#ifndef _D_ARC4_DECRYPTOR_H_
+#define _D_ARC4_DECRYPTOR_H_
 
-#include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
+#include "common.h"
+#ifdef HAVE_LIBGCRYPT
+# include "LibgcryptARC4Decryptor.h"
+#elif HAVE_LIBSSL
+# include "LibsslARC4Decryptor.h"
+#endif // HAVE_LIBSSL
 
-namespace aria2 {
-
-class BtInteractive;
-class PeerConnection;
-
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
-			       public RequestGroupAware
-{
-public:
-  enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
-private:
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
-  int32_t maxDownloadSpeedLimit;
-protected:
-  virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int32_t wait);
-  virtual void onAbort(Exception* ex);
-  virtual bool exitBeforeExecute();
-public:
-  PeerInteractionCommand(int32_t cuid,
-			 RequestGroup* requestGroup,
-			 const SharedHandle<Peer>& peer,
-			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
-			 const SharedHandle<SocketCore>& s,
-			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
-
-  virtual ~PeerInteractionCommand();
-
-};
-
-} // namespace aria2
-
-#endif // _D_PEER_INTERACTION_COMMAND_H_
+#endif // _D_ARC4_DECRYPTOR_H_

@@ -99,6 +99,8 @@ public:
   static void registerBtProgressInfoFile(const std::string& key,
 					 const SharedHandle<BtProgressInfoFile>& btProgressInfoFile);
 
+  static std::deque<SharedHandle<BtContext> > getAllBtContext();
+
   // for PeerObject
   static PeerObjectClusterHandle
   getPeerObjectCluster(const std::string& key);

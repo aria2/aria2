@@ -32,51 +32,65 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_INTERACTION_COMMAND_H_
-#define _D_PEER_INTERACTION_COMMAND_H_
+#ifndef _D_LIBSSL_ARC4_CONTEXT_H_
+#define _D_LIBSSL_ARC4_CONTEXT_H_
 
-#include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
+#include "common.h"
+#include "DlAbortEx.h"
+#include <openssl/evp.h>
+#include <openssl/err.h>
 
 namespace aria2 {
 
-class BtInteractive;
-class PeerConnection;
-
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
-			       public RequestGroupAware
-{
-public:
-  enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
+class LibsslARC4Context {
 private:
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
-  int32_t maxDownloadSpeedLimit;
-protected:
-  virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int32_t wait);
-  virtual void onAbort(Exception* ex);
-  virtual bool exitBeforeExecute();
+  EVP_CIPHER_CTX* _cipherCtx;
+
+  void handleError() const
+  {
+    throw new DlAbortEx("Exception in libssl routine(ARC4Context class): %s",
+			ERR_error_string(ERR_get_error(), 0));
+  }
 public:
-  PeerInteractionCommand(int32_t cuid,
-			 RequestGroup* requestGroup,
-			 const SharedHandle<Peer>& peer,
-			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
-			 const SharedHandle<SocketCore>& s,
-			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
+  LibsslARC4Context():_cipherCtx(0) {}
 
-  virtual ~PeerInteractionCommand();
+  ~LibsslARC4Context()
+  {
+    if(_cipherCtx) {
+      EVP_CIPHER_CTX_cleanup(_cipherCtx);
+    }
+    delete _cipherCtx;
+  }
 
+  EVP_CIPHER_CTX* getCipherContext() const
+  {
+    return _cipherCtx;
+  }
+
+  // enc == 1: encryption
+  // enc == 0: decryption
+  void init(const unsigned char* key, size_t keyLength, int enc)
+  {
+    if(_cipherCtx) {
+      EVP_CIPHER_CTX_cleanup(_cipherCtx);
+    }
+    delete _cipherCtx;
+    _cipherCtx = new EVP_CIPHER_CTX;
+    EVP_CIPHER_CTX_init(_cipherCtx);
+
+    if(!EVP_CipherInit_ex(_cipherCtx, EVP_rc4(), 0, 0, 0, enc)) {
+      handleError();
+    }
+    if(!EVP_CIPHER_CTX_set_key_length(_cipherCtx, keyLength)) {
+      handleError();
+    }
+    if(!EVP_CipherInit_ex(_cipherCtx, 0, 0, key, 0, -1)) {
+      handleError();
+    }
+  }
+  
 };
 
 } // namespace aria2
 
-#endif // _D_PEER_INTERACTION_COMMAND_H_
+#endif // _D_LIBSSL_ARC4_CONTEXT_H_

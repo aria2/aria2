@@ -131,6 +131,11 @@ BtRegistry::registerBtContext(const std::string& key,
   btContextMap.registerHandle(key, btContext);
 }
 
+std::deque<SharedHandle<BtContext> > BtRegistry::getAllBtContext()
+{
+  return btContextMap.getAll();
+}
+
 PeerObjectClusterHandle
 BtRegistry::getPeerObjectCluster(const std::string& key)
 {

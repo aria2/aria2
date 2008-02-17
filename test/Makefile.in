@@ -113,7 +113,9 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	XORCloserTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.cc
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	ARC4Test.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -207,8 +209,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	DHTPeerAnnounceEntryTest.cc DHTPeerAnnounceStorageTest.cc \
 	DHTTokenTrackerTest.cc XORCloserTest.cc DHTIDCloserTest.cc \
 	DHTRoutingTableSerializerTest.cc \
-	DHTRoutingTableDeserializerTest.cc MetalinkerTest.cc \
-	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
+	DHTRoutingTableDeserializerTest.cc DHKeyExchangeTest.cc \
+	ARC4Test.cc MetalinkerTest.cc MetalinkEntryTest.cc \
+	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
@@ -284,7 +287,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	XORCloserTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTIDCloserTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableSerializerTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -619,6 +624,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ARC4Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AllTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AlphaNumberDecoratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceListTest.Po@am__quote@
@@ -653,6 +659,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxFactoryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieBoxTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CookieParserTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHKeyExchangeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTAnnouncePeerReplyMessageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTBucketTest.Po@am__quote@

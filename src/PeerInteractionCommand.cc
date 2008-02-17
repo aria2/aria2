@@ -259,11 +259,6 @@ bool PeerInteractionCommand::prepareForNextPeer(int32_t wait) {
   return true;
 }
 
-bool PeerInteractionCommand::prepareForRetry(int32_t wait) {
-  e->commands.push_back(this);
-  return false;
-}
-
 void PeerInteractionCommand::onAbort(Exception* ex) {
   btInteractive->cancelAllPiece();
   peerStorage->returnPeer(peer);

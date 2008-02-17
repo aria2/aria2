@@ -55,11 +55,16 @@ namespace aria2 {
 PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(int32_t cuid,
 							 const PeerHandle& peer,
 							 DownloadEngine* e,
-							 const SocketHandle& s):
+							 const SocketHandle& s,
+							 const SharedHandle<PeerConnection>& peerConnection):
   PeerAbstractCommand(cuid, peer, e, s),
-  _peerConnection(new PeerConnection(cuid, s, e->option)),
+  _peerConnection(peerConnection),
   _lowestSpeedLimit(20*1024)
-{}
+{
+  if(_peerConnection.isNull()) {
+    _peerConnection = new PeerConnection(cuid, socket, e->option);
+  }
+}
 
 PeerReceiveHandshakeCommand::~PeerReceiveHandshakeCommand() {}
 

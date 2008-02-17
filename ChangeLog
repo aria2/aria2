@@ -1,3 +1,43 @@
+2008-02-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added Message Stream Encryption(MSE) support.
+	Currently, aria2 accepts incoming connections with Obfuscation Header
+	and legacy BitTorrent Header and establishes connections with
+	Obfuscation Header first and if failed then retry with legacy
+	BitTorrent header. If plain text and ARC4 is provided, aria2 always
+	choose ARC4. The new option to change the default behavior is planned.
+	For tracker extension, "supportcrypto=1" is added statically.
+	* src/PeerInitiateConnectionCommand.{h, cc}
+	* src/PeerConnection.{h, cc}
+	* src/HandleRegistry.h
+	* src/SocketCore.h
+	* src/PeerReceiveHandshakeCommand.{h, cc}
+	* src/BtRegistry.{h, cc}
+	* src/PeerListenCommand.cc
+	* src/InitiatorMSEHandshakeCommand.{h, cc}
+	* src/ReceiverMSEHandshakeCommand.{h, cc}
+	* src/MSEHandshake.{h, cc}
+	* src/ARC4Encryptor.h
+	* src/ARC4Decryptor.h
+	* src/LibgcryptARC4Encryptor.h
+	* src/LibgcryptARC4Decryptor.h
+	* src/LibgcryptARC4Context.h
+	* src/LibsslARC4Encryptor.h
+	* src/LibsslARC4Decryptor.h
+	* src/LibsslARC4Context.h
+	* src/DHKeyExchange.h
+	* src/LibgcryptDHKeyExchange.h
+	* src/LibsslDHKeyExchange.h
+	* src/DefaultBtAnnounce.cc: Just added "supportcrypto=1" parameter.
+	* test/DefaultBtAnnounceTest.cc
+	* test/ARC4Test.cc
+	* test/DHKeyExchangeTest.cc
+	
+	Removed prepareForRetry() because it is not used.
+	* src/PeerAbstractCommand.{h, cc}
+	* src/PeerInteractionCommand.{h, cc}
+	* src/PeerInitiateConnectionCommand.{h, cc}
+
 2008-02-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added the ability to load nodes from torrent file. These nodes are

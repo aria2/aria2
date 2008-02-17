@@ -32,51 +32,65 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_INTERACTION_COMMAND_H_
-#define _D_PEER_INTERACTION_COMMAND_H_
+#ifndef _D_LIBGCRYPT_ARC4_CONTEXT_H_
+#define _D_LIBGCRYPT_ARC4_CONTEXT_H_
 
-#include "PeerAbstractCommand.h"
-#include "RequestGroupAware.h"
-#include "BtContextAwareCommand.h"
+#include "common.h"
+#include "DlAbortEx.h"
+#include <gcrypt.h>
 
 namespace aria2 {
 
-class BtInteractive;
-class PeerConnection;
-
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
-			       public RequestGroupAware
-{
-public:
-  enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
+class LibgcryptARC4Context {
 private:
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
-  int32_t maxDownloadSpeedLimit;
-protected:
-  virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int32_t wait);
-  virtual void onAbort(Exception* ex);
-  virtual bool exitBeforeExecute();
+  gcry_cipher_hd_t _cipherCtx;
+
+  void handleError(gcry_error_t errno) const
+  {
+    throw new DlAbortEx("Exception in libgcrypt routine(ARC4Context class): %s",
+			gcry_strerror(errno));
+  }
 public:
-  PeerInteractionCommand(int32_t cuid,
-			 RequestGroup* requestGroup,
-			 const SharedHandle<Peer>& peer,
-			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
-			 const SharedHandle<SocketCore>& s,
-			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
+  LibgcryptARC4Context():_cipherCtx(0) {}
 
-  virtual ~PeerInteractionCommand();
+  ~LibgcryptARC4Context()
+  {
+    gcry_cipher_close(_cipherCtx);
+  }
 
+  gcry_cipher_hd_t getCipherContext() const
+  {
+    return _cipherCtx;
+  }
+
+  void init(const unsigned char* key, size_t keyLength)
+  {
+    gcry_cipher_close(_cipherCtx);
+
+    int algo = GCRY_CIPHER_ARCFOUR;
+    int mode = GCRY_CIPHER_MODE_STREAM;
+    unsigned int flags = 0;
+    {
+      gcry_error_t r = gcry_cipher_open(&_cipherCtx, algo, mode, flags);
+      if(r) {
+	handleError(r);
+      }
+    }
+    {
+      gcry_error_t r = gcry_cipher_setkey(_cipherCtx, key, keyLength);
+      if(r) {
+	handleError(r);
+      }
+    }
+    {
+      gcry_error_t r = gcry_cipher_setiv(_cipherCtx, 0, 0);
+      if(r) {
+	handleError(r);
+      }
+    }
+  }
 };
 
 } // namespace aria2
 
-#endif // _D_PEER_INTERACTION_COMMAND_H_
+#endif // _D_LIBGCRYPT_ARC4_CONTEXT_H_

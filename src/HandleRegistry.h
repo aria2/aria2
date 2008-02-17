@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include <map>
+#include <deque>
 
 namespace aria2 {
 
@@ -64,6 +65,16 @@ public:
     } else {
       return itr->second;
     }
+  }
+
+  std::deque<SharedHandle<T> > getAll()
+  {
+    std::deque<SharedHandle<T> > l;
+    for(typename HandleMap::const_iterator itr = handleMap.begin(); itr != handleMap.end(); ++itr) {
+      const typename HandleMap::value_type& p = *itr;
+      l.push_back(p.second);
+    }
+    return l;
   }
 
   void clear() {

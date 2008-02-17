@@ -106,10 +106,6 @@ bool PeerAbstractCommand::prepareForNextPeer(int32_t wait) {
   return true;
 }
 
-bool PeerAbstractCommand::prepareForRetry(int32_t wait) {
-  return true;
-}
-
 void PeerAbstractCommand::disableReadCheckSocket() {
   if(checkSocketIsReadable) {
     e->deleteSocketForReadCheck(readCheckTarget, this);

@@ -310,7 +310,10 @@ SRCS += MetaEntry.h\
 	DHTRoutingTableSerializer.cc\
 	DHTRoutingTableDeserializer.cc\
 	DHTAutoSaveCommand.cc\
-	DHTRegistry.cc
+	DHTRegistry.cc\
+	InitiatorMSEHandshakeCommand.cc\
+	ReceiverMSEHandshakeCommand.cc\
+	MSEHandshake.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

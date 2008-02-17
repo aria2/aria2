@@ -33,8 +33,9 @@
  */
 /* copyright --> */
 #include "PeerInitiateConnectionCommand.h"
-#include "DownloadEngine.h"
+#include "InitiatorMSEHandshakeCommand.h"
 #include "PeerInteractionCommand.h"
+#include "DownloadEngine.h"
 #include "DlAbortEx.h"
 #include "message.h"
 #include "prefs.h"
@@ -56,10 +57,12 @@ PeerInitiateConnectionCommand::PeerInitiateConnectionCommand(int cuid,
 							     RequestGroup* requestGroup,
 							     const PeerHandle& peer,
 							     DownloadEngine* e,
-							     const BtContextHandle& btContext)
+							     const BtContextHandle& btContext,
+							     bool mseHandshakeEnabled)
   :PeerAbstractCommand(cuid, peer, e),
    BtContextAwareCommand(btContext),
-   RequestGroupAware(requestGroup)
+   RequestGroupAware(requestGroup),
+   _mseHandshakeEnabled(mseHandshakeEnabled)
 {
   btRuntime->increaseConnections();
 }
@@ -70,19 +73,19 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 }
 
 bool PeerInitiateConnectionCommand::executeInternal() {
-  Command* command;
   logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
 	       peer->port);
   socket->establishConnection(peer->ipaddr, peer->port);
-  command =
-    new PeerInteractionCommand(cuid,
-			       _requestGroup,
-			       peer,
-			       e,
-			       btContext,
-			       socket,
-			       PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
-
+  Command* command;
+  if(_mseHandshakeEnabled) {
+    command =
+      new InitiatorMSEHandshakeCommand(cuid, _requestGroup, peer, e, btContext,
+				       socket);
+  } else {
+    command =
+      new PeerInteractionCommand(cuid, _requestGroup, peer, e, btContext, socket,
+				 PeerInteractionCommand::INITIATOR_SEND_HANDSHAKE);
+  }
   e->commands.push_back(command);
   return true;
 }
@@ -92,25 +95,11 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(int wait) {
   if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
     PeerHandle peer = peerStorage->getUnusedPeer();
     peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
-    PeerInitiateConnectionCommand* command =
-      new PeerInitiateConnectionCommand(peer->usedBy(),
-					_requestGroup,
-					peer,
-					e,
+    Command* command =
+      new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
 					btContext);
     e->commands.push_back(command);
   }
-  return true;
-}
-
-bool PeerInitiateConnectionCommand::prepareForRetry(int wait) {
-  PeerInitiateConnectionCommand* command =
-    new PeerInitiateConnectionCommand(cuid,
-				      _requestGroup,
-				      peer,
-				      e,
-				      btContext);
-  e->commands.push_back(command);
   return true;
 }
 

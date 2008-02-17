@@ -40,7 +40,11 @@
 #include "BtHandshakeMessage.h"
 #include "Socket.h"
 #include "a2netcompat.h"
+#include "ARC4Encryptor.h"
+#include "ARC4Decryptor.h"
 #include <cstring>
+#include <cassert>
+#include <algorithm>
 
 namespace aria2 {
 
@@ -53,7 +57,10 @@ PeerConnection::PeerConnection(int32_t cuid,
    logger(LogFactory::getInstance()),
    resbufLength(0),
    currentPayloadLength(0),
-   lenbufLength(0)
+   lenbufLength(0),
+   _encryptionEnabled(false),
+   _encryptor(0),
+   _decryptor(0)
 {}
 
 PeerConnection::~PeerConnection() {}
@@ -62,7 +69,7 @@ int32_t PeerConnection::sendMessage(const unsigned char* data, int32_t dataLengt
   int32_t writtenLength = 0;
   if(socket->isWritable(0)) {
     // TODO fix this
-    socket->writeData((const char*)data, dataLength);
+    sendData(data, dataLength, _encryptionEnabled);
     writtenLength += dataLength;
   }
   return writtenLength;
@@ -76,7 +83,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
     // read payload size, 32bit unsigned integer
     int32_t remaining = 4-lenbufLength;
     int32_t temp = remaining;
-    socket->readData(lenbuf+lenbufLength, remaining);
+    readData(lenbuf+lenbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%d",
@@ -101,7 +108,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
   int32_t remaining = currentPayloadLength-resbufLength;
   int32_t temp = remaining;
   if(remaining > 0) {
-    socket->readData(resbuf+resbufLength, remaining);
+    readData(resbuf+resbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), payloadlen=%d, remaining=%d",
@@ -132,7 +139,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
   bool retval = true;
   if(remaining > 0) {
     int32_t temp = remaining;
-    socket->readData(resbuf+resbufLength, remaining);
+    readData(resbuf+resbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%d",
@@ -151,6 +158,53 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
     resbufLength = 0;
   }
   return retval;
+}
+
+void PeerConnection::readData(char* data, int32_t& length, bool encryption)
+{
+  if(encryption) {
+    unsigned char* cdata = reinterpret_cast<unsigned char*>(data);
+    unsigned char temp[MAX_PAYLOAD_LEN];
+    assert(MAX_PAYLOAD_LEN >= length);
+    socket->readData(temp, length);
+    _decryptor->decrypt(cdata, length, temp, length);
+  } else {
+    socket->readData(data, length);
+  }
+}
+
+void PeerConnection::sendData(const unsigned char* data, size_t length, bool encryption)
+{
+  if(encryption) {
+    unsigned char temp[4096];
+    const unsigned char* dptr = data;
+    size_t r = length;
+    while(r > 0) {
+      size_t s = std::min(r, sizeof(temp));
+      _encryptor->encrypt(temp, s, dptr, s);
+      socket->writeData(temp, s);
+      dptr += s;
+      r -= s;
+    }
+  } else {
+    socket->writeData(data, length);
+  }
+}
+
+void PeerConnection::enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,
+				      const SharedHandle<ARC4Decryptor>& decryptor)
+{
+  _encryptor = encryptor;
+  _decryptor = decryptor;
+
+  _encryptionEnabled = true;
+}
+
+void PeerConnection::presetBuffer(const unsigned char* data, size_t length)
+{
+  size_t nwrite = std::min((size_t)MAX_PAYLOAD_LEN, length);
+  memcpy(resbuf, data, nwrite);
+  resbufLength = length;
 }
 
 } // namespace aria2

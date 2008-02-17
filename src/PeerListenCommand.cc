@@ -39,7 +39,7 @@
 #include "RecoverableException.h"
 #include "CUIDCounter.h"
 #include "message.h"
-#include "PeerReceiveHandshakeCommand.h"
+#include "ReceiverMSEHandshakeCommand.h"
 #include "Logger.h"
 #include "Socket.h"
 #include <utility>
@@ -99,17 +99,19 @@ bool PeerListenCommand::execute() {
       if(peerInfo.first == localInfo.first) {
 	continue;
       }
+      // Since peerSocket may be in non-blocking mode, make it blocking mode
+      // here.
+      peerSocket->setBlockingMode();
+
       PeerHandle peer = new Peer(peerInfo.first, 0);
-      PeerReceiveHandshakeCommand* command =
-	new PeerReceiveHandshakeCommand(CUIDCounterSingletonHolder::instance()->newID(),
-					peer, e, peerSocket);
+      int32_t cuid = CUIDCounterSingletonHolder::instance()->newID();
+      Command* command =
+	new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);
       e->commands.push_back(command);
       logger->debug("Accepted the connection from %s:%u.",
 		    peer->ipaddr.c_str(),
 		    peer->port);
-      logger->debug("Added CUID#%d to receive Bt handshake.",
-		    command->getCuid());
-
+      logger->debug("Added CUID#%d to receive BitTorrent/MSE handshake.", cuid);
     } catch(RecoverableException* ex) {
       logger->debug(MSG_ACCEPT_FAILURE, ex, cuid);
       delete ex;

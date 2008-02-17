@@ -45,9 +45,10 @@ class PeerInitiateConnectionCommand : public PeerAbstractCommand,
 				      public BtContextAwareCommand,
 				      public RequestGroupAware
 {
+private:
+  bool _mseHandshakeEnabled;
 protected:
   virtual bool executeInternal();
-  virtual bool prepareForRetry(int wait);
   virtual bool prepareForNextPeer(int wait);
   virtual void onAbort(Exception* ex);
   virtual bool exitBeforeExecute();
@@ -57,7 +58,8 @@ public:
 				RequestGroup* requestGroup,
 				const SharedHandle<Peer>& peer,
 				DownloadEngine* e,
-				const SharedHandle<BtContext>& btContext);
+				const SharedHandle<BtContext>& btContext,
+				bool mseHandshakeEnabled = true);
 
   virtual ~PeerInitiateConnectionCommand();
 };

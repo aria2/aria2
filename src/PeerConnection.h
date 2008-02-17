@@ -43,6 +43,8 @@ namespace aria2 {
 class Option;
 class Logger;
 class SocketCore;
+class ARC4Encryptor;
+class ARC4Decryptor;
 
 // we assume maximum length of incoming message is "piece" message with 16KB
 // data. Messages beyond that size are dropped.
@@ -61,6 +63,14 @@ private:
   char lenbuf[4];
   int32_t lenbufLength;
 
+  bool _encryptionEnabled;
+  SharedHandle<ARC4Encryptor> _encryptor;
+  SharedHandle<ARC4Decryptor> _decryptor;
+
+  void readData(char* data, int32_t& length, bool encryption);
+
+  void sendData(const unsigned char* data, size_t length, bool encryption);
+
 public:
   PeerConnection(int32_t cuid, const SharedHandle<SocketCore>& socket, const Option* op);
 
@@ -78,6 +88,11 @@ public:
    * is assigned to 'length'.
    */
   bool receiveHandshake(unsigned char* data, int32_t& dataLength, bool peek = false);
+
+  void enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,
+			const SharedHandle<ARC4Decryptor>& decryptor);
+
+  void presetBuffer(const unsigned char* data, size_t length);
 };
 
 typedef SharedHandle<PeerConnection> PeerConnectionHandle;

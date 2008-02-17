@@ -180,6 +180,10 @@ public:
   {
     writeData(msg.c_str(), msg.size());
   }
+  void writeData(const unsigned char* data, int32_t len)
+  {
+    writeData(reinterpret_cast<const char*>(data), len);
+  }
 
   void writeData(const char* data, size_t len, const std::string& host, uint16_t port);
 
@@ -196,6 +200,11 @@ public:
    * the number of bytes read to len.
    */
   void readData(char* data, int32_t& len);
+
+  void readData(unsigned char* data, int32_t& len)
+  {
+    readData(reinterpret_cast<char*>(data), len);
+  }
 
   ssize_t readDataFrom(char* data, size_t len, struct sockaddr* sender,
 		       socklen_t* senderLength);
@@ -217,6 +226,11 @@ public:
    */
   void peekData(char* data, int32_t& len);
   
+  void peekData(unsigned char* data, int32_t& len)
+  {
+    peekData(reinterpret_cast<char*>(data), len);
+  }
+
   /**
    * Makes this socket secure.
    * If the system has not OpenSSL, then this method do nothing.

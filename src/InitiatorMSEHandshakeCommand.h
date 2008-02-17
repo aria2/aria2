@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_INTERACTION_COMMAND_H_
-#define _D_PEER_INTERACTION_COMMAND_H_
+#ifndef _D_INITIATOR_MSE_HANDSHAKE_COMMAND_H_
+#define _D_INITIATOR_MSE_HANDSHAKE_COMMAND_H_
 
 #include "PeerAbstractCommand.h"
 #include "RequestGroupAware.h"
@@ -41,42 +41,40 @@
 
 namespace aria2 {
 
-class BtInteractive;
-class PeerConnection;
+class MSEHandshake;
 
-class PeerInteractionCommand : public PeerAbstractCommand,
-			       public BtContextAwareCommand,
-			       public RequestGroupAware
+class InitiatorMSEHandshakeCommand : public PeerAbstractCommand,
+				     public BtContextAwareCommand,
+				     public RequestGroupAware
 {
 public:
   enum Seq {
-    INITIATOR_SEND_HANDSHAKE,
-    INITIATOR_WAIT_HANDSHAKE,
-    RECEIVER_WAIT_HANDSHAKE,
-    WIRED};
+    INITIATOR_SEND_KEY,
+    INITIATOR_WAIT_KEY,
+    INITIATOR_FIND_VC_MARKER,
+    INITIATOR_RECEIVE_PAD_D_LENGTH,
+    INITIATOR_RECEIVE_PAD_D,
+  };
 private:
-  Seq sequence;
-  SharedHandle<BtInteractive> btInteractive;
-  int32_t maxDownloadSpeedLimit;
+  Seq _sequence;
+  MSEHandshake* _mseHandshake;
 protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(int32_t wait);
   virtual void onAbort(Exception* ex);
   virtual bool exitBeforeExecute();
 public:
-  PeerInteractionCommand(int32_t cuid,
-			 RequestGroup* requestGroup,
-			 const SharedHandle<Peer>& peer,
-			 DownloadEngine* e,
-			 const SharedHandle<BtContext>& btContext,
-			 const SharedHandle<SocketCore>& s,
-			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
+  InitiatorMSEHandshakeCommand(int32_t cuid,
+			       RequestGroup* requestGroup,
+			       const SharedHandle<Peer>& peer,
+			       DownloadEngine* e,
+			       const SharedHandle<BtContext>& btContext,
+			       const SharedHandle<SocketCore>& s);
 
-  virtual ~PeerInteractionCommand();
+  virtual ~InitiatorMSEHandshakeCommand();
 
 };
 
 } // namespace aria2
 
-#endif // _D_PEER_INTERACTION_COMMAND_H_
+#endif // _D_INITIATOR_MSE_HANDSHAKE_COMMAND_H_
