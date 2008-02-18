@@ -60,8 +60,7 @@ public:
 			      RequestGroup* requestGroup,
 			      DownloadEngine* e,
 			      const SharedHandle<BtContext>& btContext,
-			      int32_t interval,
-			      int32_t thresholdSpeed);
+			      int32_t interval);
      
   virtual ~ActivePeerConnectionCommand();
 

@@ -48,7 +48,7 @@ class PeerReceiveHandshakeCommand:public PeerAbstractCommand
 private:
   SharedHandle<PeerConnection> _peerConnection;
 
-  int32_t _lowestSpeedLimit;
+  int32_t _thresholdSpeed;
 
 protected:
   virtual bool executeInternal();

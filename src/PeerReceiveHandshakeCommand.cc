@@ -49,6 +49,8 @@
 #include "message.h"
 #include "Socket.h"
 #include "Logger.h"
+#include "prefs.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -59,10 +61,14 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(int32_t cuid,
 							 const SharedHandle<PeerConnection>& peerConnection):
   PeerAbstractCommand(cuid, peer, e, s),
   _peerConnection(peerConnection),
-  _lowestSpeedLimit(20*1024)
+  _thresholdSpeed(SLOW_SPEED_THRESHOLD)
 {
   if(_peerConnection.isNull()) {
     _peerConnection = new PeerConnection(cuid, socket, e->option);
+  }
+  int32_t maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
+  if(maxDownloadSpeed > 0) {
+    _thresholdSpeed = std::min(maxDownloadSpeed, _thresholdSpeed);
   }
 }
 
@@ -89,7 +95,8 @@ bool PeerReceiveHandshakeCommand::executeInternal()
       throw new DlAbortEx("Unknown info hash %s", infoHash.c_str());
     }
     TransferStat tstat = PEER_STORAGE(btContext)->calculateStat();
-    if(!PIECE_STORAGE(btContext)->downloadFinished() && tstat.getDownloadSpeed() < _lowestSpeedLimit ||
+    if((!PIECE_STORAGE(btContext)->downloadFinished() &&
+       tstat.getDownloadSpeed() < _thresholdSpeed) ||
        BT_RUNTIME(btContext)->getConnections() < MAX_PEERS) {
       if(PEER_STORAGE(btContext)->addPeer(peer)) {
 
