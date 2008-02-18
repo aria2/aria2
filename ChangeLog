@@ -1,5 +1,9 @@
 2008-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/MSEHandshake.cc (encryptAndSendData): Use std::min().
+
+2008-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Determin _threadtholdSpeed in each constructor for
 	ActivePeerConnectionCommand and PeerReceiveHandshakeCommand.
 	* src/ActivePeerConnectionCommand.{h, cc}

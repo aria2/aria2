@@ -196,7 +196,7 @@ void MSEHandshake::encryptAndSendData(const unsigned char* data, size_t length)
   size_t s;
   size_t r = length;
   while(r > 0) {
-    s = r > sizeof(temp)?sizeof(temp):r;
+    s = std::min(r, sizeof(temp));
     _encryptor->encrypt(temp, s, dptr, s);
     _socket->writeData(temp, s);
     dptr += s;
