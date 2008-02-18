@@ -145,17 +145,34 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
 
 bool InitiatorMSEHandshakeCommand::prepareForNextPeer(int32_t wait)
 {
-  // try legacy BitTorrent handshake if preference allows it.
-  // TODO preference is not created yet.
-  logger->info("CUID#%d - Retry using legacy BitTorrent handshake.", cuid);
-  Command* command =
-    new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e, btContext,
-				      false);
-  e->commands.push_back(command);
-  return true;
+  if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+    logger->info("CUID#%d - Establishing connection using legacy BitTorrent handshake is disabled by preference.", cuid);
+    if(peerStorage->isPeerAvailable() && btRuntime->lessThanEqMinPeer()) {
+      SharedHandle<Peer> peer = peerStorage->getUnusedPeer();
+      peer->usedBy(CUIDCounterSingletonHolder::instance()->newID());
+      Command* command =
+	new PeerInitiateConnectionCommand(peer->usedBy(), _requestGroup, peer, e,
+					  btContext);
+      e->commands.push_back(command);
+    }
+    return true;
+  } else {
+    // try legacy BitTorrent handshake
+    logger->info("CUID#%d - Retry using legacy BitTorrent handshake.", cuid);
+    Command* command =
+      new PeerInitiateConnectionCommand(cuid, _requestGroup, peer, e, btContext,
+					false);
+    e->commands.push_back(command);
+    return true;
+  }
 }
 
-void InitiatorMSEHandshakeCommand::onAbort(Exception* ex) {}
+void InitiatorMSEHandshakeCommand::onAbort(Exception* ex)
+{
+  if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+    peerStorage->returnPeer(peer);
+  }
+}
 
 bool InitiatorMSEHandshakeCommand::exitBeforeExecute()
 {

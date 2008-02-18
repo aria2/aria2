@@ -1,5 +1,19 @@
 2008-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --bt-min-crypto-level and --bt-require-crypto options.
+	* src/OptionHandlerFactory.cc
+	* src/MSEHandshake.cc
+	* src/HelpItemFactory.cc
+	* src/option_processing.cc
+	* src/ReceiverMSEHandshakeCommand.cc
+	* src/prefs.h
+	* src/DefaultBtAnnounce.cc
+	* src/InitiatorMSEHandshakeCommand.cc
+	* src/usage_text.h
+	* test/MSEHandshakeTest.cc
+
+2008-02-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump version number to 0.13.0b
 	* configure.ac
 

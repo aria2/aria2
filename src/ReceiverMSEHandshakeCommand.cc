@@ -86,6 +86,9 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       _sequence = RECEIVER_WAIT_KEY;
       break;
     case MSEHandshake::HANDSHAKE_LEGACY: {
+      if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+	throw new DlAbortEx("The legacy BitTorrent handshake is not acceptable by the preference.");
+      }
       Command* c = new PeerReceiveHandshakeCommand(cuid, peer, e, socket);
       e->commands.push_back(c);
       return true;

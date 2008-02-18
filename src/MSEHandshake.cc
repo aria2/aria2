@@ -48,6 +48,8 @@
 #include "Util.h"
 #include "BtRegistry.h"
 #include "BtContext.h"
+#include "prefs.h"
+#include "Option.h"
 #include <cstring>
 #include <cassert>
 
@@ -256,7 +258,10 @@ void MSEHandshake::sendInitiatorStep2()
     // crypto_provide
     unsigned char cryptoProvide[4];
     memset(cryptoProvide, 0, sizeof(cryptoProvide));
-    cryptoProvide[3] = CRYPTO_PLAIN_TEXT | CRYPTO_ARC4;
+    if(_option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
+      cryptoProvide[3] = CRYPTO_PLAIN_TEXT;
+    }
+    cryptoProvide[3] |= CRYPTO_ARC4;
     memcpy(buffer+8, cryptoProvide, sizeof(cryptoProvide));
 
     // len(padC)
@@ -328,7 +333,8 @@ bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
     unsigned char cryptoSelect[CRYPTO_BITFIELD_LENGTH];
     _decryptor->decrypt(cryptoSelect, sizeof(cryptoSelect),
 			 rbufptr, sizeof(cryptoSelect));
-    if(cryptoSelect[3]&CRYPTO_PLAIN_TEXT) {
+    if(cryptoSelect[3]&CRYPTO_PLAIN_TEXT &&
+       _option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
       _logger->debug("CUID#%d - peer prefers plaintext.", _cuid);
       _negotiatedCryptoType = CRYPTO_PLAIN_TEXT;
     }
@@ -440,11 +446,11 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength()
 			 rbufptr, sizeof(cryptoProvide));
     // TODO choose the crypto type based on the preference.
     // For now, choose ARC4.
-    if(cryptoProvide[3]&CRYPTO_PLAIN_TEXT) {
+    if(cryptoProvide[3]&CRYPTO_PLAIN_TEXT &&
+       _option->get(PREF_BT_MIN_CRYPTO_LEVEL) == V_PLAIN) {
       _logger->debug("CUID#%d - peer provides plaintext.", _cuid);
       _negotiatedCryptoType = CRYPTO_PLAIN_TEXT;
-    }
-    if(cryptoProvide[3]&CRYPTO_ARC4) {
+    } else if(cryptoProvide[3]&CRYPTO_ARC4) {
       _logger->debug("CUID#%d - peer provides ARC4.", _cuid);
       _negotiatedCryptoType = CRYPTO_ARC4;
     }
@@ -476,6 +482,9 @@ bool MSEHandshake::receiveReceiverIALength()
 
 bool MSEHandshake::receiveReceiverIA()
 {
+  if(_iaLength == 0) {
+    return true;
+  }
   int32_t r = _iaLength-_rbufLength;
   if(r > receiveNBytes(r)) {
     return false;

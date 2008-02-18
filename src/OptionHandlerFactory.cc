@@ -119,6 +119,8 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 					       PREF_DHT_ENTRY_POINT_HOST,
 					       PREF_DHT_ENTRY_POINT_PORT));
   handlers.push_back(new NumberOptionHandler(PREF_STOP, 0, 35000000));
+  handlers.push_back(new ParameterOptionHandler(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN, V_ARC4));
+  handlers.push_back(new BooleanOptionHandler(PREF_BT_REQUIRE_CRYPTO));
   
   return handlers;
 }

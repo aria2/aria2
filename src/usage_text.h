@@ -267,6 +267,15 @@ _(" --dht-listen-port...         Set UDP listening port for DHT.\n"\
 #define TEXT_DHT_ENTRY_POINT \
 _(" --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"\
   "                              network.")
+#define TEXT_BT_MIN_CRYPTO_LEVEL \
+_(" --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"\
+  "                              If several encryption methods are provided by a\n"\
+  "                              peer, aria2 chooses a lowest one which satisfies\n"\
+  "                              given level.")
+#define TEXT_BT_REQUIRE_CRYPTO \
+_(" --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"\
+  "                              establish connection with legacy BitTorrent\n"\
+  "                              handshake. Thus always use Obfuscation handshake.")
 #define TEXT_METALINK_FILE \
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \

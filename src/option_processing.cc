@@ -140,6 +140,8 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_ENABLE_DHT, V_FALSE);
   op->put(PREF_DHT_LISTEN_PORT, "6881-6999");
   op->put(PREF_DHT_FILE_PATH, Util::getHomeDir()+"/.aria2/dht.dat");
+  op->put(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
+  op->put(PREF_BT_REQUIRE_CRYPTO, V_FALSE);
 
   // following options are not parsed by OptionHandler and not stored in Option.
   bool noConf = false;
@@ -221,6 +223,8 @@ Option* option_processing(int argc, char* const argv[])
       { "enable-dht", optional_argument, &lopt, 27 },
       { "dht-listen-port", required_argument, &lopt, 28 },
       { "dht-entry-point", required_argument, &lopt, 29 },
+      { PREF_BT_MIN_CRYPTO_LEVEL, required_argument, &lopt, 30 },
+      { PREF_BT_REQUIRE_CRYPTO, required_argument, &lopt, 31 },
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
       { "metalink-file", required_argument, NULL, 'M' },
@@ -324,6 +328,12 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 29:
 	cmdstream << PREF_DHT_ENTRY_POINT << "=" << optarg << "\n";
+	break;
+      case 30:
+	cmdstream << PREF_BT_MIN_CRYPTO_LEVEL << "=" << optarg << "\n";
+	break;
+      case 31:
+	cmdstream << PREF_BT_REQUIRE_CRYPTO << "=" << optarg << "\n";
 	break;
       case 100:
 	cmdstream << PREF_METALINK_VERSION << "=" << optarg << "\n";

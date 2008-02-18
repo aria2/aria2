@@ -130,7 +130,8 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	DHTRoutingTableSerializerTest.cc\
 	DHTRoutingTableDeserializerTest.cc\
 	DHKeyExchangeTest.cc\
-	ARC4Test.cc
+	ARC4Test.cc\
+	MSEHandshakeTest.cc
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

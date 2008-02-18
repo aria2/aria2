@@ -228,6 +228,12 @@
 #define PREF_DHT_ENTRY_POINT "dht-entry-point"
 // values: a string
 #define PREF_DHT_FILE_PATH "dht-file-path"
+// values: plain | arc4
+#define PREF_BT_MIN_CRYPTO_LEVEL "bt-min-crypto-level"
+#  define V_PLAIN "plain"
+#  define V_ARC4 "arc4"
+// values:: true | false
+#define PREF_BT_REQUIRE_CRYPTO "bt-require-crypto"
 
 /**
  * Metalink related preferences

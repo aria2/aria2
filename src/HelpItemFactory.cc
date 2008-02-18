@@ -351,6 +351,16 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
+  {
+    HelpItemHandle item = new HelpItem(PREF_BT_MIN_CRYPTO_LEVEL, TEXT_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
+  {
+    HelpItemHandle item = new HelpItem(PREF_BT_REQUIRE_CRYPTO, TEXT_BT_REQUIRE_CRYPTO, V_FALSE);
+    item->addTag(TAG_BITTORRENT);
+    tc->addItem(item);
+  }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
   {

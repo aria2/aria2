@@ -51,6 +51,7 @@
 #include "BtRuntime.h"
 #include "PeerStorage.h"
 #include "Peer.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -160,7 +161,11 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     url += std::string("&")+"trackerid="+Util::torrentUrlencode((const unsigned char*)trackerId.c_str(),
 							   trackerId.size());
   }
-  url += "&supportcrypto=1";
+  if(option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
+    url += "&requirecrypto=1";
+  } else {
+    url += "&supportcrypto=1";
+  }
   return url;
 }
 
