@@ -338,11 +338,13 @@ TagContainerHandle HelpItemFactory::createHelpItems()
   }
   {
     HelpItemHandle item = new HelpItem(PREF_ENABLE_DHT, TEXT_ENABLE_DHT, V_FALSE);
+    item->addTag(TAG_BASIC);
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
   {
     HelpItemHandle item = new HelpItem(PREF_DHT_LISTEN_PORT, TEXT_DHT_LISTEN_PORT, "6881-6999");
+    item->addTag(TAG_BASIC);
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
@@ -416,12 +418,12 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item = new HelpItem("no-conf", TEXT_NO_CONF);
+    HelpItemHandle item = new HelpItem(PREF_NO_CONF, TEXT_NO_CONF);
     item->addTag(TAG_ADVANCED);
     tc->addItem(item);
   }
   {
-    HelpItemHandle item = new HelpItem("conf-path", TEXT_CONF_PATH, "$HOME/.aria2/aria2.conf");
+    HelpItemHandle item = new HelpItem(PREF_CONF_PATH, TEXT_CONF_PATH, "$HOME/.aria2/aria2.conf");
     item->addTag(TAG_ADVANCED);
     tc->addItem(item);
   }

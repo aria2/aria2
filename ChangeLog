@@ -1,5 +1,10 @@
 2008-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added basic tag to --enable-dht, --dht-listen-port option.
+	* src/HelpItemFactory.cc (createHelpItems)
+
+2008-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated text.
 	* src/usage_text.h
 
