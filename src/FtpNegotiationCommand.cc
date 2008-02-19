@@ -246,7 +246,7 @@ bool FtpNegotiationCommand::recvSize() {
     
     sequence = SEQ_FILE_PREPARATION;
     disableReadCheckSocket();
-    setWriteCheckSocket(dataSocket);
+    //setWriteCheckSocket(dataSocket);
 
     //e->noWait = true;
     return false;
@@ -261,7 +261,13 @@ bool FtpNegotiationCommand::recvSize() {
   return true;
 }
 
+void FtpNegotiationCommand::afterFileAllocation()
+{
+  setReadCheckSocket(socket);
+}
+
 bool FtpNegotiationCommand::sendPort() {
+  afterFileAllocation();
   serverSocket = ftp->sendPort();
   sequence = SEQ_RECV_PORT;
   return false;
@@ -280,6 +286,7 @@ bool FtpNegotiationCommand::recvPort() {
 }
 
 bool FtpNegotiationCommand::sendPasv() {
+  afterFileAllocation();
   ftp->sendPasv();
   sequence = SEQ_RECV_PASV;
   return false;
@@ -347,12 +354,24 @@ bool FtpNegotiationCommand::recvRetr() {
   if(status != 150 && status != 125) {
     throw new DlAbortEx(EX_BAD_STATUS, status);
   }
-  if(e->option->get(PREF_FTP_PASV) != V_TRUE) {
-    assert(serverSocket->getSockfd() != -1);
-    dataSocket = serverSocket->acceptConnection();
+  if(e->option->getAsBool(PREF_FTP_PASV)) {
+    sequence = SEQ_NEGOTIATION_COMPLETED;
+    return false;
+  } else {
+    disableReadCheckSocket();
+    setReadCheckSocket(serverSocket);
+    sequence = SEQ_WAIT_CONNECTION;
+    return false;
   }
-  sequence = SEQ_NEGOTIATION_COMPLETED;
+}
 
+bool FtpNegotiationCommand::waitConnection()
+{
+  disableReadCheckSocket();
+  setReadCheckSocket(socket);
+  dataSocket = serverSocket->acceptConnection();
+  dataSocket->setBlockingMode();
+  sequence = SEQ_NEGOTIATION_COMPLETED;
   return false;
 }
 
@@ -399,6 +418,8 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
     return sendRetr();
   case SEQ_RECV_RETR:
     return recvRetr();
+  case SEQ_WAIT_CONNECTION:
+    return waitConnection();
   default:
     abort();
   }

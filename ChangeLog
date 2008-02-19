@@ -1,5 +1,15 @@
 2008-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Make listening socket non-block mode.
+	* src/FtpConnection.cc
+	* src/FtpNegotiationCommand.{h, cc}
+	* src/PeerListenCommand.cc
+	
+	Fixed the bug that cause slow ftp negotiation.
+	* src/FtpNegotiationCommand.{h, cc}
+	
+2008-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added basic tag to --enable-dht, --dht-listen-port option.
 	* src/HelpItemFactory.cc (createHelpItems)
 

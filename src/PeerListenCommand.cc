@@ -70,6 +70,7 @@ int32_t PeerListenCommand::bindPort(IntSequence& seq)
     try {
       socket->bind(port);
       socket->beginListen();
+      socket->setNonBlockingMode();
       logger->info(MSG_LISTENING_PORT,
 		   cuid, port);
       return port;

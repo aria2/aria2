@@ -65,6 +65,7 @@ private:
     SEQ_RECV_REST,
     SEQ_SEND_RETR,
     SEQ_RECV_RETR,
+    SEQ_WAIT_CONNECTION,
     SEQ_NEGOTIATION_COMPLETED,
     SEQ_RETRY,
     SEQ_HEAD_OK,
@@ -91,7 +92,10 @@ private:
   bool recvRest();
   bool sendRetr();
   bool recvRetr();
+  bool waitConnection();
   bool processSequence(const SharedHandle<Segment>& segment);
+
+  void afterFileAllocation();
 
   SharedHandle<SocketCore> dataSocket;
   SharedHandle<SocketCore> serverSocket;

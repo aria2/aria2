@@ -109,7 +109,8 @@ SocketHandle FtpConnection::sendPort() const
   SocketHandle serverSocket;
   serverSocket->bind(0);
   serverSocket->beginListen();
-  
+  serverSocket->setNonBlockingMode();
+
   std::pair<std::string, int32_t> addrinfo;
   socket->getAddrInfo(addrinfo);
   int32_t ipaddr[4]; 
