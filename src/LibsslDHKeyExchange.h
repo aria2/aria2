@@ -101,7 +101,7 @@ public:
       handleError();
     }
     _privateKey = BN_new();
-    if(!BN_rand(_privateKey, privateKeyBits, -1, false)) {
+    if(BN_rand(_privateKey, privateKeyBits, -1, false) == 0) {
       handleError();
     }
   }
@@ -120,12 +120,13 @@ public:
 
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
-    if(outLength < publicKeyLength()) {
+    size_t pubKeyLen = publicKeyLength();
+    if(outLength < pubKeyLen) {
       throw new DlAbortEx("Insufficient buffer for public key. expect:%u, actual:%u",
 			  publicKeyLength(), outLength);
     }
     size_t nwritten = BN_bn2bin(_publicKey, out);
-    if(!nwritten) {
+    if(nwritten != pubKeyLen) {
       handleError();
     }
     return nwritten;
@@ -133,7 +134,7 @@ public:
 
   void generateNonce(unsigned char* out, size_t outLength) const
   {
-    if(!RAND_bytes(out, outLength)) {
+    if(RAND_bytes(out, outLength) != 1) {
       handleError();
     }
   }
@@ -142,7 +143,8 @@ public:
 		       const unsigned char* peerPublicKeyData,
 		       size_t peerPublicKeyLength) const
   {
-    if(outLength < publicKeyLength()) {
+    size_t pubKeyLen = publicKeyLength();
+    if(outLength < pubKeyLen) {
       throw new DlAbortEx("Insufficient buffer for secret. expect:%u, actual:%u",
 			  publicKeyLength(), outLength);
     }
@@ -159,7 +161,7 @@ public:
 
     size_t nwritten = BN_bn2bin(secret, out);
     BN_free(secret);
-    if(!nwritten) {
+    if(nwritten != pubKeyLen) {
       handleError();
     }
     return nwritten;
