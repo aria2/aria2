@@ -37,6 +37,12 @@
 #include <cassert>
 #include <fstream>
 #include <iomanip>
+#ifdef HAVE_LIBGCRYPT
+# include <gcrypt.h>
+#elif HAVE_LIBSSL
+# include <openssl/rand.h>
+# include "SimpleRandomizer.h"
+#endif // HAVE_LIBSSL
 
 namespace aria2 {
 
@@ -47,10 +53,20 @@ void DHTUtil::generateRandomKey(unsigned char* key)
   MessageDigestHelper::digest(key, 20, "sha1", bytes, sizeof(bytes));
 }
 
-void DHTUtil::generateRandomData(char* data, size_t length)
+void DHTUtil::generateRandomData(unsigned char* data, size_t length)
 {
+#ifdef HAVE_LIBGCRYPT
+  gcry_randomize(data, length, GCRY_STRONG_RANDOM);
+#elif HAVE_LIBSSL
+  if(RAND_bytes(data, length) != 1) {
+    for(size_t i = 0; i < length; ++i) {
+      data[i] = SimpleRandomizer::getInstance()->getRandomNumber(UINT8_MAX+1);
+    }
+  }
+#else
   std::ifstream i("/dev/urandom");
   i.read(data, length);
+#endif // HAVE_LIBSSL
 }
 
 void DHTUtil::flipBit(unsigned char* data, size_t length, size_t bitIndex)

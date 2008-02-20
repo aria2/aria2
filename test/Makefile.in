@@ -116,7 +116,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.cc\
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.cc\
-@ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.cc
+@ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.cc\
+@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -211,8 +212,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	DHTTokenTrackerTest.cc XORCloserTest.cc DHTIDCloserTest.cc \
 	DHTRoutingTableSerializerTest.cc \
 	DHTRoutingTableDeserializerTest.cc DHKeyExchangeTest.cc \
-	ARC4Test.cc MSEHandshakeTest.cc MetalinkerTest.cc \
-	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
+	ARC4Test.cc MSEHandshakeTest.cc DHTUtilTest.cc \
+	MetalinkerTest.cc MetalinkEntryTest.cc \
+	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
@@ -291,7 +293,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	DHTRoutingTableDeserializerTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -684,6 +687,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTRoutingTableTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTTokenTrackerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUnknownMessageTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DHTUtilTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DataTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultAuthResolverTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultBtAnnounceTest.Po@am__quote@

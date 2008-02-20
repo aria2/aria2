@@ -1,5 +1,11 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Random bytes generation using libgcrypt and OpenSSL.
+	* src/DHTUtil.{h, cc}
+	* test/DHTUtilTest.cc
+
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed segmentation fault when a DHT message which doesn't have 'y' key
 	received.
 	* src/DHTMessageReceiver.cc (receiveMessage) 
