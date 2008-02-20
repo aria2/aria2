@@ -380,8 +380,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
 	  i != peers.end() && max; ++i) {
 	const PeerHandle& cpeer = *i;
 	if(peer->ipaddr != cpeer->ipaddr &&
-	   !cpeer->getFirstContactTime().elapsed(interval) &&
-	   Util::isNumbersAndDotsNotation(cpeer->ipaddr)) {
+	   !cpeer->getFirstContactTime().elapsed(interval)) {
 	  m->addFreshPeer(cpeer);
 	  --max;
 	}
@@ -393,8 +392,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
 	  i != peers.rend() && max; ++i) {
 	const PeerHandle& cpeer = *i;
 	if(peer->ipaddr != cpeer->ipaddr &&
-	   !cpeer->getBadConditionStartTime().elapsed(interval) &&
-	   Util::isNumbersAndDotsNotation(cpeer->ipaddr)) {
+	   !cpeer->getBadConditionStartTime().elapsed(interval)) {
 	  m->addDroppedPeer(cpeer);
 	  --max;
 	}

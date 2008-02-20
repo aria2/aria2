@@ -1,5 +1,14 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed abort when peer's ip address is IPv4-mapped address.
+	* src/DefaultBtContext.cc (computeFastSet)
+
+	Removed number-and-dots criteria, since Util::isNumberAndDotsNotation()
+	cannot handle IPv4-mapped addresses.
+	* src/DefaultBtInteractive.cc (addPeerExchangeMessage)
+	
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Proper return value handling for OpenSSL functions.
 	* src/LibsslDHKeyExchange.h
 

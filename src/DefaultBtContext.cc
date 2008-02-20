@@ -48,6 +48,7 @@
 #include "Logger.h"
 #include "FileEntry.h"
 #include "message.h"
+#include "PeerMessageUtil.h"
 #include <cstring>
 #include <ostream>
 #include <functional>
@@ -385,12 +386,10 @@ std::string DefaultBtContext::getActualBasePath() const
 std::deque<int32_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, int32_t fastSetSize)
 {
   std::deque<int32_t> fastSet;
-  struct in_addr saddr;
-  if(inet_aton(ipaddr.c_str(), &saddr) == 0) {
-    abort();
-  }
+  char compact[6];
+  PeerMessageUtil::createcompact(compact, ipaddr, 0);
   unsigned char tx[24];
-  memcpy(tx, (void*)&saddr.s_addr, 4);
+  memcpy(tx, compact, 4);
   if((tx[0] & 0x80) == 0 || (tx[0] & 0x40) == 0) {
     tx[2] = 0x00;
     tx[3] = 0x00;
