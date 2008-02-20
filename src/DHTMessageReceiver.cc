@@ -78,8 +78,13 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
     const Dictionary* d = dynamic_cast<const Dictionary*>(msgroot.get());
     if(d) {
       const Data* y = dynamic_cast<const Data*>(d->get("y"));
-      if(y->toString() == "r" || y->toString() == "e") {
-	isReply = true;
+      if(y) {
+	if(y->toString() == "r" || y->toString() == "e") {
+	  isReply = true;
+	}
+      } else {
+	_logger->info("Malformed DHT message. Missing 'y' key. From:%s:%u", remoteAddr.c_str(), remotePort);
+	return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
       }
     } else {
       _logger->info("Malformed DHT message. This is not a bencoded directory. From:%s:%u", remoteAddr.c_str(), remotePort);
