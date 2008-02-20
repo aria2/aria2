@@ -56,7 +56,7 @@ void TimedHaltCommand::preProcess()
 void TimedHaltCommand::process()
 {
   if(!_e->isHaltRequested()) {
-    logger->notice(MSG_TIME_HAS_PASSED, _interval/60);
+    logger->notice(MSG_TIME_HAS_PASSED, _interval);
     _e->requestHalt();
   }
 }

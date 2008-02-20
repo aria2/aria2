@@ -139,7 +139,7 @@
 #define MSG_SOMETHING_MISSING_IN_TORRENT _("Missing %s in torrent metainfo.")
 #define MSG_NULL_TRACKER_RESPONSE _("Tracker returned null data.")
 #define MSG_WINSOCK_INIT_FAILD _("Windows socket library initialization failed")
-#define MSG_TIME_HAS_PASSED _("%d minute(s) has passed. Stopping application.")
+#define MSG_TIME_HAS_PASSED _("%d second(s) has passed. Stopping application.")
 
 #define EX_TIME_OUT _("Timeout.")
 #define EX_INVALID_CHUNK_SIZE _("Invalid chunk size.")

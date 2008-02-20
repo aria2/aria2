@@ -1,3 +1,12 @@
+2008-02-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Change the unit of --stop option from a minute to a second.
+	* src/usage_text.h
+	* src/DownloadEngineFactory.cc
+	* src/OptionHandlerFactory.cc
+	* src/message.h
+	* src/TimedHaltCommand.cc
+	
 2008-02-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Make listening socket non-block mode.
