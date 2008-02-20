@@ -60,7 +60,10 @@ public:
   
   virtual ~MultiUrlRequestInfo();
 
-  void execute();
+  /**
+   * Returns 0 if all downloads have completed, otherwise returns 1.
+   */
+  int32_t execute();
 };
 
 typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;

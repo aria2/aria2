@@ -117,7 +117,7 @@ RequestGroupHandle createRequestGroup(const Option* op, const std::deque<std::st
 extern Option* option_processing(int argc, char* const argv[]);
 
 #ifdef ENABLE_BITTORRENT
-void downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
+int32_t downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
 {
   std::deque<std::string> nargs;
   if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
@@ -141,22 +141,22 @@ void downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
   
   RequestGroups groups;
   groups.push_back(rg);
-  MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op).execute();
 }
 #endif // ENABLE_BITTORRENT
 
 #ifdef ENABLE_METALINK
-void downloadMetalink(Option* op)
+int32_t downloadMetalink(Option* op)
 {
   RequestGroups groups = Metalink2RequestGroup(op).generate(op->get(PREF_METALINK_FILE));
   if(groups.empty()) {
     throw new FatalException("No files to download.");
   }
-  MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op).execute();
 }
 #endif // ENABLE_METALINK
 
-void downloadUriList(Option* op, std::istream& in)
+int32_t downloadUriList(Option* op, std::istream& in)
 {
   UriListParser p;
   RequestGroups groups;
@@ -179,23 +179,23 @@ void downloadUriList(Option* op, std::istream& in)
       groups.push_back(rg);
     }
   }
-  MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op).execute();
 }
 
-void downloadUriList(Option* op)
+int32_t downloadUriList(Option* op)
 {
   if(op->get(PREF_INPUT_FILE) == "-") {
-    downloadUriList(op, std::cin);
+    return downloadUriList(op, std::cin);
   } else {
     if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
       throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
     }
     std::ifstream f(op->get(PREF_INPUT_FILE).c_str());
-    downloadUriList(op, f);
+    return downloadUriList(op, f);
   }
 }
 
-void downloadUri(Option* op, const std::deque<std::string>& uris)
+int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
 {
   std::deque<std::string> nargs;
   if(op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
@@ -220,7 +220,7 @@ void downloadUri(Option* op, const std::deque<std::string>& uris)
     RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
     groups.push_back(rg);
   }
-  MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op).execute();
 }
 
 int main(int argc, char* argv[])
@@ -276,7 +276,7 @@ int main(int argc, char* argv[])
 #ifdef SIGPIPE
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
-
+    int32_t returnValue = 0;
 #ifdef ENABLE_BITTORRENT
     if(op->defined(PREF_TORRENT_FILE)) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
 	btContext->load(op->get(PREF_TORRENT_FILE));
 	std::cout << btContext << std::endl;
       } else {
-	downloadBitTorrent(op, args);
+	returnValue = downloadBitTorrent(op, args);
       }
     }
     else
@@ -294,20 +294,23 @@ int main(int argc, char* argv[])
 	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
 	  Util::toStream(std::cout, MetalinkEntry::toFileEntry(MetalinkHelper::parseAndQuery(op->get(PREF_METALINK_FILE), op)));
 	} else {
-	  downloadMetalink(op);
+	  returnValue = downloadMetalink(op);
 	}
       }
       else
 #endif // ENABLE_METALINK
 	if(op->defined(PREF_INPUT_FILE)) {
-	  downloadUriList(op);
+	  returnValue = downloadUriList(op);
 	} else {
-	  downloadUri(op, args);
+	  returnValue = downloadUri(op, args);
 	}
+    if(returnValue == 1) {
+      exitStatus = EXIT_FAILURE;
+    }
   } catch(Exception* ex) {
     std::cerr << EX_EXCEPTION_CAUGHT << "\n" << *ex << std::endl;
     delete ex;
-    exit(EXIT_FAILURE);
+    exitStatus = EXIT_FAILURE;
   }
   delete op;
   LogFactory::release();

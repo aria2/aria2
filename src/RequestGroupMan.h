@@ -98,6 +98,28 @@ public:
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
 
   TransferStat calculateStat();
+
+  class DownloadStat {
+  private:
+    size_t _completed;
+    size_t _error;
+    size_t _inProgress;
+    size_t _waiting;
+  public:
+    DownloadStat():_completed(0), _error(0), _inProgress(0), _waiting(0) {}
+
+    void setCompleted(size_t c) { _completed = c; }
+    void setError(size_t c) { _error = c; }
+    void setInProgress(size_t c) { _inProgress = c; }
+    void setWaiting(size_t c) { _waiting = c; }
+
+    bool allCompleted() const
+    {
+      return _error == 0 && _inProgress == 0 && _waiting == 0;
+    }
+  };
+
+  DownloadStat getDownloadStat() const;
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

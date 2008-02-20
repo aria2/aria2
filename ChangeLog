@@ -1,3 +1,12 @@
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that a return code is always 0. BUG#1897704
+	If error occurred during the download or there exist unfinished
+	downloads, aria2 returns with code 1.
+	* src/RequestGroupMan.{h, cc}
+	* src/MultiUrlRequestInfo.{h, cc}
+	* src/main.cc
+
 2008-02-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	IPv6 support for SocketCore class.

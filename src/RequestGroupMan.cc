@@ -219,6 +219,36 @@ void RequestGroupMan::closeFile()
   }
 }
 
+RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
+{
+  DownloadStat stat;
+  size_t finished = 0;
+  size_t error = 0;
+  size_t inprogress = 0;
+  for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
+      itr != _downloadResults.end(); ++itr) {
+    if((*itr)->result == DownloadResult::FINISHED) {
+      ++finished;
+    } else {
+      ++error;
+    }
+  }
+  for(RequestGroups::const_iterator itr = _requestGroups.begin();
+      itr != _requestGroups.end(); ++itr) {
+    DownloadResultHandle result = (*itr)->createDownloadResult();
+    if(result->result == DownloadResult::FINISHED) {
+      ++finished;
+    } else {
+      ++inprogress;
+    }
+  }
+  stat.setCompleted(finished);
+  stat.setError(error);
+  stat.setInProgress(inprogress);
+  stat.setWaiting(_reservedGroups.size());
+  return stat;
+}
+
 void RequestGroupMan::showDownloadResults(std::ostream& o) const
 {
   // Download Results:

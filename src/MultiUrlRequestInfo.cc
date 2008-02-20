@@ -81,13 +81,13 @@ void MultiUrlRequestInfo::printMessageForContinue()
 	    << "\n";
 }
 
-void MultiUrlRequestInfo::execute()
+int32_t MultiUrlRequestInfo::execute()
 {
   {
     DNSCacheHandle dnsCache = new SimpleDNSCache();
     DNSCacheSingletonHolder::instance(dnsCache);
   }
-
+  int32_t returnValue = 0;
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
@@ -110,8 +110,10 @@ void MultiUrlRequestInfo::execute()
     e->_requestGroupMan->showDownloadResults(std::cout);
     std::cout << std::flush;
 
-    if(!e->_requestGroupMan->downloadFinished()) {
+    RequestGroupMan::DownloadStat s = e->_requestGroupMan->getDownloadStat();
+    if(!s.allCompleted()) {
       printMessageForContinue();
+      returnValue = 1;
     }
   } catch(RecoverableException *ex) {
     _logger->error(EX_EXCEPTION_CAUGHT, ex);
@@ -119,6 +121,7 @@ void MultiUrlRequestInfo::execute()
   }
   Util::setGlobalSignalHandler(SIGINT, SIG_DFL, 0);
   Util::setGlobalSignalHandler(SIGTERM, SIG_DFL, 0);
+  return returnValue;
 }
 
 } // namespace aria2
