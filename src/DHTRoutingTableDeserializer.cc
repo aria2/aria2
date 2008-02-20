@@ -116,6 +116,11 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 	continue;
       }
       std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
+      if(peer.first.empty()) {
+	// skip this entry
+	in.read(buf, 26);
+	continue;
+      }
       // 2bytes reserved
       in.read(buf, 2);
       // localnode ID

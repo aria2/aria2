@@ -56,8 +56,7 @@ void DHTNode::generateID()
 
 bool DHTNode::operator==(const DHTNode& node) const
 {
-  return memcmp(_id, node._id, DHT_ID_LENGTH) == 0 &&
-    _ipaddr == node._ipaddr && _port == node._port;
+  return memcmp(_id, node._id, DHT_ID_LENGTH) == 0;
 }
 
 bool DHTNode::operator<(const DHTNode& node) const

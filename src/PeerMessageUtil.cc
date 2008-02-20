@@ -127,24 +127,40 @@ void PeerMessageUtil::createPeerMessageString(unsigned char* msg,
 
 bool PeerMessageUtil::createcompact(char* compact, const std::string& addr, uint16_t port)
 {
-  struct in_addr in;
-  if(inet_aton(addr.c_str(), &in) == 0) {
+  struct addrinfo hints;
+  struct addrinfo* res;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_INET; // since compact peer format is ipv4 only.
+  hints.ai_flags = AI_NUMERICHOST;
+  if(getaddrinfo(addr.c_str(), 0, &hints, &res)) {
     return false;
   }
+  struct sockaddr_in* in = reinterpret_cast<struct sockaddr_in*>(res->ai_addr);
   uint32_t* addrp = (uint32_t*)compact;
-  *addrp = in.s_addr;
+  *addrp = in->sin_addr.s_addr;
   uint16_t* portp = (uint16_t*)(compact+4);
   *portp = htons(port);
+  freeaddrinfo(res);
   return true;
 }
 
 std::pair<std::string, uint16_t> PeerMessageUtil::unpackcompact(const char* compact)
 {
-  struct in_addr in;
-  in.s_addr = *(uint32_t*)(compact);
-  std::string ipaddr = inet_ntoa(in);
+  struct sockaddr_in in;
+  memset(&in, 0, sizeof(in));
+  in.sin_family = AF_INET;
+  in.sin_addr.s_addr = *reinterpret_cast<const uint32_t*>(compact);
+  in.sin_port = 0;
+  char host[NI_MAXHOST];
+  int s;
+  s = getnameinfo(reinterpret_cast<const struct sockaddr*>(&in), sizeof(in),
+		  host, NI_MAXHOST, 0, NI_MAXSERV,
+		  NI_NUMERICHOST);
+  if(s) {
+    return std::pair<std::string, uint16_t>();
+  }
   uint16_t port = ntohs(*(uint16_t*)(compact+sizeof(uint32_t)));
-  return std::pair<std::string, uint16_t>(ipaddr, port);
+  return std::pair<std::string, uint16_t>(host, port);
 }
 
 } // namespace aria2

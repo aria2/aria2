@@ -87,6 +87,9 @@ private:
   static int error();
   static const char *errorMsg();
   static const char *errorMsg(const int err);
+
+  static std::pair<std::string, uint16_t>
+  getNameInfoInNumeric(const struct sockaddr* sockaddr, socklen_t len);
 public:
   SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();
@@ -206,14 +209,9 @@ public:
     readData(reinterpret_cast<char*>(data), len);
   }
 
-  ssize_t readDataFrom(char* data, size_t len, struct sockaddr* sender,
-		       socklen_t* senderLength);
-
   ssize_t readDataFrom(char*, size_t len,
 		       std::pair<std::string /* numerichost */,
 		       uint16_t /* port */>& sender);
-
-  ssize_t readDataFrom(char* data, size_t len);
 
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from

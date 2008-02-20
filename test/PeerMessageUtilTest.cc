@@ -9,6 +9,7 @@ namespace aria2 {
 class PeerMessageUtilTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(PeerMessageUtilTest);
+  CPPUNIT_TEST(testCreateCompact);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -16,6 +17,7 @@ public:
   void setUp() {
   }
 
+  void testCreateCompact();
 };
 
 
@@ -36,5 +38,16 @@ void createNLengthMessage(char* msg, int msgLen, int payloadLen, int id) {
   setIntParam(msg, payloadLen);
   msg[4] = (char)id;
 }
+
+void PeerMessageUtilTest::testCreateCompact()
+{
+  char compact[6];
+  CPPUNIT_ASSERT(PeerMessageUtil::createcompact(compact, "::ffff:127.0.0.1", 6881));
+
+  std::pair<std::string, uint16_t> p = PeerMessageUtil::unpackcompact(compact);
+  CPPUNIT_ASSERT_EQUAL(std::string("127.0.0.1"), p.first);
+  CPPUNIT_ASSERT_EQUAL((uint16_t)6881, p.second);
+}
+
 
 } // namespace aria2

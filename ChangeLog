@@ -1,5 +1,34 @@
 2008-02-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	IPv6 support for SocketCore class.
+	TODO: In SocketCore::establishConnection(), this is insufficient to
+	determin the failure of connect() here because the socket is
+	non-blocking state. The next addresses should be tried after select().
+	TODO: NameResolver still uses c-ares(<= 1.4) ares_gethostbyname().
+	If c-ares 1.5 or newer is installed, ares_getaddrinfo() should be used
+	instead which address family independent.
+	TODO: DHTRoutingTable{Deserializer,Serializer} currently saves peer
+	information in a compact peer format which is for IPv4 only.
+	
+	Some BitTorrent functions in PeerMessageUtil still depends on IPv4 but
+	this is a spec of BitTorrent protocol.
+	* src/SocketCore.{h, cc}
+	* src/PeerMessageUtil.cc
+	* test/SocketCoreTest.cc
+	* test/PeerMessageUtilTest.cc
+	* test/DHTConnectionImplTest.cc
+
+	Handle IPv4-mapped addresses.
+	* src/DHTNode.cc: Now identity is determined by node id.
+	* src/DHTMessageTrackerEntry.cc
+
+	Because now PeerMessageUtil::unpackcompact() could fail, the caller
+	should handle it.
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTMessageFactoryImpl.cc
+
+2008-02-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Change the unit of --stop option from a minute to a second.
 	* src/usage_text.h
 	* src/DownloadEngineFactory.cc

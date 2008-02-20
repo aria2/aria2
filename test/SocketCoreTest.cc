@@ -47,7 +47,7 @@ void SocketCoreTest::testWriteAndReadDatagram()
       CPPUNIT_ASSERT_EQUAL(message1, std::string(readbuffer));
     }
     {
-      ssize_t rlength = s.readDataFrom(readbuffer, sizeof(readbuffer));
+      ssize_t rlength = s.readDataFrom(readbuffer, sizeof(readbuffer), peer);
       CPPUNIT_ASSERT_EQUAL((ssize_t)message2.size(), rlength);
       readbuffer[rlength] = '\0';
       CPPUNIT_ASSERT_EQUAL(message2, std::string(readbuffer));

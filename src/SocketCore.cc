@@ -47,6 +47,18 @@
 # define SOCKET_ERRNO (WSAGetLastError())
 #endif // __MINGW32__
 
+#ifdef __MINGW32__
+# define A2_EINPROGRESS WSAEWOULDBLOCK
+#else
+# define A2_EINPROGRESS EINPROGRESS
+#endif // __MINGW32__
+
+#ifdef __MINGW32__
+# define CLOSE(X) ::closesocket(sockfd)
+#else
+# define CLOSE(X) while(close(X) == -1 && errno == EINTR)
+#endif // __MINGW32__
+
 namespace aria2 {
 
 SocketCore::SocketCore(int sockType):_sockType(sockType), sockfd(-1) {
@@ -83,33 +95,61 @@ SocketCore::~SocketCore() {
 #endif // HAVE_LIBGNUTLS
 }
 
+template<typename T>
+std::string uitos(T value)
+{
+  std::string str;
+  if(value == 0) {
+    str = "0";
+    return str;
+  }
+  int32_t count = 0;
+  while(value) {
+    ++count;
+    char digit = value%10+'0';
+    str.insert(str.begin(), digit);
+    value /= 10;
+  }
+  return str;
+}
+
 void SocketCore::bind(uint16_t port)
 {
   closeConnection();
-  //sockfd = socket(AF_UNSPEC, _sockType, PF_UNSPEC);
-  sockfd = socket(AF_INET, _sockType, 0);
-  if(sockfd == -1) {
-    throw new DlAbortEx(EX_SOCKET_OPEN, errorMsg());
-  }
-  SOCKOPT_T sockopt = 1;
-  if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
-#ifdef __MINGW32__
-    ::closesocket(sockfd);
-#else
-    while(close(sockfd) == -1 && errno == EINTR);
-#endif // __MINGW32__
-    sockfd = -1;
-    throw new DlAbortEx(EX_SOCKET_SET_OPT, errorMsg());
-  }
 
-  struct sockaddr_in sockaddr;
-  memset((char*)&sockaddr, 0, sizeof(sockaddr));
-  sockaddr.sin_family = AF_INET;
-  sockaddr.sin_addr.s_addr = INADDR_ANY;
-  sockaddr.sin_port = htons(port);
-  
-  if(::bind(sockfd, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1) {
-    throw new DlAbortEx(EX_SOCKET_BIND, errorMsg());
+  struct addrinfo hints;
+  struct addrinfo* res;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = _sockType;
+  hints.ai_flags = AI_PASSIVE;
+  hints.ai_protocol = 0;
+  int s;
+  s = getaddrinfo(0, uitos(port).c_str(), &hints, &res);
+  if(s) {
+    throw new DlAbortEx(EX_SOCKET_BIND, gai_strerror(s));
+  }
+  struct addrinfo* rp;
+  for(rp = res; rp; rp = rp->ai_next) {
+    int fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+    if(fd == -1) {
+      continue;
+    }
+    SOCKOPT_T sockopt = 1;
+    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
+      CLOSE(fd);
+      continue;
+    }
+    if(::bind(fd, rp->ai_addr, rp->ai_addrlen) == -1) {
+      CLOSE(fd);
+      continue;
+    }
+    sockfd = fd;
+    break;
+  }
+  freeaddrinfo(res);
+  if(sockfd == -1) {
+    throw new DlAbortEx(EX_SOCKET_BIND, "all addresses failed");
   }
 }
 
@@ -122,89 +162,95 @@ void SocketCore::beginListen()
 
 SocketCore* SocketCore::acceptConnection() const
 {
-  struct sockaddr_in sockaddr;
+  struct sockaddr_storage sockaddr;
   socklen_t len = sizeof(sockaddr);
-  memset((char*)&sockaddr, 0, sizeof(sockaddr));
-  int32_t fd;
-  while((fd = accept(sockfd, (struct sockaddr*)&sockaddr, &len)) == -1 && errno == EINTR);
+  int fd;
+  while((fd = accept(sockfd, reinterpret_cast<struct sockaddr*>(&sockaddr), &len)) == -1 && errno == EINTR);
   if(fd == -1) {
     throw new DlAbortEx(EX_SOCKET_ACCEPT, errorMsg());
   }
-  SocketCore* s = new SocketCore(fd, _sockType);
-  return s;
+  return new SocketCore(fd, _sockType);
+}
+
+std::pair<std::string, uint16_t>
+SocketCore::getNameInfoInNumeric(const struct sockaddr* sockaddr, socklen_t len)
+{
+  char host[NI_MAXHOST];
+  char service[NI_MAXSERV];
+  int s = getnameinfo(sockaddr, len, host, NI_MAXHOST, service, NI_MAXSERV,
+		      NI_NUMERICHOST|NI_NUMERICSERV);
+  if(s != 0) {
+    throw new DlAbortEx("Failed to get hostname and port. cause: %s",
+			gai_strerror(s));
+  }
+  return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
 }
 
 void SocketCore::getAddrInfo(std::pair<std::string, int32_t>& addrinfo) const
 {
-  struct sockaddr_in listenaddr;
-  memset((char*)&listenaddr, 0, sizeof(listenaddr));
-  socklen_t len = sizeof(listenaddr);
-  if(getsockname(sockfd, (struct sockaddr*)&listenaddr, &len) == -1) {
+  struct sockaddr_storage sockaddr;
+  socklen_t len = sizeof(sockaddr);
+  struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
+  if(getsockname(sockfd, addrp, &len) == -1) {
     throw new DlAbortEx(EX_SOCKET_GET_NAME, errorMsg());
   }
-  addrinfo.first = inet_ntoa(listenaddr.sin_addr);
-  addrinfo.second = ntohs(listenaddr.sin_port);
+  addrinfo = SocketCore::getNameInfoInNumeric(addrp, len);
 }
 
 void SocketCore::getPeerInfo(std::pair<std::string, int32_t>& peerinfo) const
 {
-  struct sockaddr_in peerin;
-  memset(&peerin, 0, sizeof(peerin));
-  int32_t len = sizeof(peerin);
-  if(getpeername(sockfd, (struct sockaddr*)&peerin, (socklen_t*)&len) < 0) {
-    throw new DlAbortEx(EX_SOCKET_GET_PEER, errorMsg());
+  struct sockaddr_storage sockaddr;
+  socklen_t len = sizeof(sockaddr);
+  struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
+  if(getpeername(sockfd, addrp, &len) == -1) {
+    throw new DlAbortEx(EX_SOCKET_GET_NAME, errorMsg());
   }
-  peerinfo.first = inet_ntoa(peerin.sin_addr);
-  peerinfo.second = ntohs(peerin.sin_port);
+  peerinfo = SocketCore::getNameInfoInNumeric(addrp, len);
 }
 
 void SocketCore::establishConnection(const std::string& host, int32_t port)
 {
   closeConnection();
-  sockfd = socket(AF_INET, _sockType, 0);
-  if(sockfd == -1) {
-      throw new DlAbortEx(EX_SOCKET_OPEN, errorMsg());
-  }
-  SOCKOPT_T sockopt = 1;
-  if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
-    while(close(sockfd) == -1 && errno == EINTR);
-    sockfd = -1;
-    throw new DlAbortEx(EX_SOCKET_SET_OPT, errorMsg());
-  }
 
-  struct sockaddr_in sockaddr;
-  memset((char*)&sockaddr, 0, sizeof(sockaddr));
-  sockaddr.sin_family = AF_INET;
-  sockaddr.sin_port = htons(port);
-  if(inet_aton(host.c_str(), &sockaddr.sin_addr)) {
-    // ok
-  } else {
-    struct addrinfo ai;
-    memset((char*)&ai, 0, sizeof(ai));
-    ai.ai_flags = 0;
-    ai.ai_family = PF_INET;
-    ai.ai_socktype = _sockType;
-    ai.ai_protocol = 0; 
-    struct addrinfo* res;
-    int32_t ec;
-    if((ec = getaddrinfo(host.c_str(), NULL, &ai, &res)) != 0) {
-      throw new DlAbortEx(EX_RESOLVE_HOSTNAME,
-			  host.c_str(), gai_strerror(ec));
-    }
-    sockaddr.sin_addr = ((struct sockaddr_in*)res->ai_addr)->sin_addr;
-    freeaddrinfo(res);
+  struct addrinfo hints;
+  struct addrinfo* res;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = _sockType;
+  hints.ai_flags = 0;
+  hints.ai_protocol = 0;
+  int s;
+  s = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &res);
+  if(s) {
+    throw new DlAbortEx(EX_RESOLVE_HOSTNAME, host.c_str(), gai_strerror(s));
   }
-  // make socket non-blocking mode
-  setNonBlockingMode();
-  // TODO handle EINTR
-  if(connect(sockfd, (struct sockaddr*)&sockaddr, (socklen_t)sizeof(sockaddr)) == -1 && SOCKET_ERRNO != 
-#ifndef __MINGW32__
-EINPROGRESS
-#else
-WSAEWOULDBLOCK
-#endif // __MINGW32__
-  ) {
-    throw new DlAbortEx(EX_SOCKET_CONNECT, host.c_str(), errorMsg());
+  struct addrinfo* rp;
+  for(rp = res; rp; rp = rp->ai_next) {
+    int fd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+    if(fd == -1) {
+      continue;
+    }
+    SOCKOPT_T sockopt = 1;
+    if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(socklen_t)) < 0) {
+      CLOSE(fd);
+      continue;
+    }
+    sockfd = fd;
+    // make socket non-blocking mode
+    setNonBlockingMode();
+    if(connect(fd, rp->ai_addr, rp->ai_addrlen) == -1 &&
+       SOCKET_ERRNO != A2_EINPROGRESS) {
+      CLOSE(sockfd);
+      sockfd = -1;
+      continue;
+    }
+    // TODO at this point, connection may not be established and it may fail
+    // later. In such case, next ai_addr should be tried.
+    break;
+  }
+  freeaddrinfo(res);
+  if(sockfd == -1) {
+    throw new DlAbortEx(EX_SOCKET_CONNECT, host.c_str(), "all addresses failed");
   }
 }
 
@@ -254,11 +300,7 @@ void SocketCore::closeConnection()
   }
 #endif // HAVE_LIBGNUTLS
   if(sockfd != -1) {
-#ifdef __MINGW32__
-    ::closesocket(sockfd);
-#else
-    while(close(sockfd) == -1 && errno == EINTR);
-#endif // __MINGW32__
+    CLOSE(sockfd);
     sockfd = -1;
   }
 #ifdef HAVE_LIBSSL
@@ -578,94 +620,51 @@ void SocketCore::initiateSecureConnection()
 #endif // __MINGW32__
 }
 
-template<typename T>
-std::string uitos(T value)
-{
-  std::string str;
-  if(value == 0) {
-    str = "0";
-    return str;
-  }
-  int32_t count = 0;
-  while(value) {
-    ++count;
-    char digit = value%10+'0';
-    str.insert(str.begin(), digit);
-    value /= 10;
-  }
-  return str;
-}
-
-void fillSockaddr(sockaddr* addr, int sockType, const std::string& host, uint16_t port)
-{
-  struct addrinfo hints;
-  struct addrinfo* result;
-  memset(&hints, 0, sizeof(struct addrinfo));
-  hints.ai_family = AF_INET;
-  hints.ai_socktype = sockType;
-  hints.ai_flags = 0;
-  hints.ai_protocol = 0;
-  {
-    int r = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &result);
-    if(r != 0) {
-      throw new DlAbortEx(EX_RESOLVE_HOSTNAME,
-			  host.c_str(), gai_strerror(r));
-    }
-  }
-  memcpy(addr, result->ai_addr, result->ai_addrlen);
-  freeaddrinfo(result);
-}
-
 void SocketCore::writeData(const char* data, size_t len, const std::string& host, uint16_t port)
 {
-  struct sockaddr_storage addrPeer;
-  fillSockaddr((struct sockaddr*)&addrPeer, _sockType, host, port);
-  ssize_t r;
-  while((r = sendto(sockfd, data, len, 0, (const sockaddr*)&addrPeer, sizeof(struct sockaddr_storage))) == -1 && EINTR == errno);
+
+  struct addrinfo hints;
+  struct addrinfo* res;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = _sockType;
+  hints.ai_flags = 0;
+  hints.ai_protocol = 0;
+  int s;
+  s = getaddrinfo(host.c_str(), uitos(port).c_str(), &hints, &res);
+  if(s) {
+    throw new DlAbortEx(EX_SOCKET_SEND, gai_strerror(s));
+  }
+  struct addrinfo* rp;
+  ssize_t r = -1;
+  for(rp = res; rp; rp = rp->ai_next) {
+    while((r = sendto(sockfd, data, len, 0, rp->ai_addr, rp->ai_addrlen)) == -1 && EINTR == errno);
+    if(r == static_cast<ssize_t>(len)) {
+      break;
+    }
+  }
+  freeaddrinfo(res);
   if(r == -1) {
     throw new DlAbortEx(EX_SOCKET_SEND, errorMsg());
   }
-}
-
-ssize_t SocketCore::readDataFrom(char* data, size_t len, struct sockaddr* sender, socklen_t* senderLength)
-{
-  ssize_t r;
-  while((r = recvfrom(sockfd, data, len, 0, sender, senderLength)) == -1 &&
-	EINTR == errno);
-  if(r == -1) {
-    throw new DlAbortEx(EX_SOCKET_RECV, errorMsg());
-  }
-  return r;
-}
-
-ssize_t SocketCore::readDataFrom(char* data, size_t len)
-{
-  
-  return readDataFrom(data, len, 0, 0);
 }
 
 ssize_t SocketCore::readDataFrom(char* data, size_t len,
 				 std::pair<std::string /* numerichost */,
 				 uint16_t /* port */>& sender)
 {
-  struct sockaddr_storage addrSender;
-  socklen_t addrSenderLength = sizeof(struct sockaddr_storage);
-  ssize_t rlength = readDataFrom(data, len, (struct sockaddr*)&addrSender, &addrSenderLength);
-
-  char host[NI_MAXHOST];
-  char service[NI_MAXSERV];
-  {
-    int s = getnameinfo((struct sockaddr*)&addrSender, addrSenderLength,
-			host, NI_MAXHOST, service, NI_MAXSERV,
-			NI_NUMERICHOST|NI_NUMERICSERV);
-    if(s != 0) {
-      throw new DlAbortEx("Failed to get peer's hostname and port. cause: %s",
-			  gai_strerror(s));
-    }
+  struct sockaddr_storage sockaddr;
+  socklen_t sockaddrlen = sizeof(struct sockaddr_storage);
+  struct sockaddr* addrp = reinterpret_cast<struct sockaddr*>(&sockaddr);
+  ssize_t r;
+  while((r = recvfrom(sockfd, data, len, 0, addrp, &sockaddrlen)) == -1 &&
+	EINTR == errno);
+  if(r == -1) {
+    throw new DlAbortEx(EX_SOCKET_RECV, errorMsg());
   }
-  sender.first = host;
-  sender.second = atoi(service); // TODO
-  return rlength;
+  sender = SocketCore::getNameInfoInNumeric(addrp, sockaddrlen);
+
+  return r;
 }
 
 } // namespace aria2

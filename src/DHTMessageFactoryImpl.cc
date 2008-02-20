@@ -299,6 +299,9 @@ std::deque<SharedHandle<DHTNode> > DHTMessageFactoryImpl::extractNodes(const cha
     SharedHandle<DHTNode> node = new DHTNode(reinterpret_cast<const unsigned char*>(src+offset));
     std::pair<std::string, uint16_t> addr =
       PeerMessageUtil::unpackcompact(src+offset+DHT_ID_LENGTH);
+    if(addr.first.empty()) {
+      continue;
+    }
     node->setIPAddress(addr.first);
     node->setPort(addr.second);
     nodes.push_back(node);

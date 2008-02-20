@@ -37,6 +37,7 @@
 #include "DHTMessage.h"
 #include "DHTMessageCallback.h"
 #include "DHTConstants.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -60,8 +61,18 @@ void DHTMessageTrackerEntry::extendTimeout()
 
 bool DHTMessageTrackerEntry::match(const std::string& transactionID, const std::string& ipaddr, uint16_t port) const
 {
-  return _transactionID == transactionID &&
-    _targetNode->getIPAddress() == ipaddr && _targetNode->getPort() == port;
+  if(_transactionID != transactionID || _targetNode->getPort() != port) {
+    return false;
+  }
+  if(_targetNode->getIPAddress() == ipaddr) {
+    return true;
+  }
+  if(Util::endsWith(_targetNode->getIPAddress(), ipaddr)) {
+    return _targetNode->getIPAddress() == "::ffff:"+ipaddr;
+  } else if(Util::endsWith(ipaddr, _targetNode->getIPAddress())) {
+    return ipaddr == "::ffff:"+_targetNode->getIPAddress();
+  }
+  return false;
 }
 
 SharedHandle<DHTMessageCallback> DHTMessageTrackerEntry::getCallback() const
