@@ -1,5 +1,12 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated man page and some usage text.
+	* doc/aria2c.1.txt
+	* src/usage_text.h
+	* po/*.{po, gmo}
+
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated translations. Added Finnish and Hebrew translations.
 	Great thanks to all translators!
 	* po/*.{po, gmo}

@@ -16,15 +16,7 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-aria2 is a utility for downloading files.
-The supported protocols are http(s)/ftp/BitTorrent/Metalink.
-aria2 has powerful segmented downloading ability, downloading a file
-from multiple sources and multiple protocols, utilizing your download bandwidth to the max.
-It even supports downloading a file from http(s)/ftp and BitTorrent at the same time, while the data downloaded from http(s)/ftp is uploaded to BitTorrent swarm.
-
-aria2 also provides most reliable http(s)/ftp downloading experience ever.
-Using Metalink's chunk checksums, aria2 automatically validates chunk of data
-while downloading a file like BitTorrent.
+aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.
 
 OPTIONS
 -------
@@ -109,7 +101,7 @@ OPTIONS
   Use passive mode in FTP.
 
 --ftp-via-http-proxy=METHOD::
-  Use HTTP proxy in 'FTP'. 'METHOD' is either 'get' or 'tunnel'.
+  Use HTTP proxy in FTP. METHOD is either 'get' or 'tunnel'.
   Default: 'tunnel'
 
 --lowest-speed-limit=SPEED::
@@ -148,7 +140,7 @@ OPTIONS
 --allow-overwrite='true'|'false'::
   If 'false' is given, aria2 doesn't download a file which already exists but
   the corresponding .aria2 file doesn't exist.
-  In http(s)/ftp download, if --auto-file-renaming='true' then,
+  In HTTP(S)/FTP download, if --auto-file-renaming='true' then,
   file name will be renamed. See --auto-file-renaming for details.
   Default: 'false'
 
@@ -165,7 +157,7 @@ OPTIONS
 
 --auto-file-renaming[='true'|'false']::
   Rename file name if the same file already exists.
-  This option works only in http(s)/ftp download.
+  This option works only in HTTP(S)/FTP download.
   The new file name has a dot and a number(1..9999) appended.
   Default: 'true'
 
@@ -204,10 +196,10 @@ OPTIONS
    Continue downloading a partially downloaded file.
    Use this option to resume a download started by a web browser or another
    program which downloads files sequentially from the beginning.
-   Currently this option is only applicable to http(s)/ftp downloads.
+   Currently this option is only applicable to HTTP(S)/FTP downloads.
 
 -U, --user-agent=USER_AGENT::
-  Set user agent for http(s) downloads.
+  Set user agent for HTTP(S) downloads.
 
 -n, --no-netrc::
   Disables netrc support. netrc support is enabled by default.
@@ -226,6 +218,18 @@ OPTIONS
   Load cookies from FILE.
   The format of FILE is the same used by Netscape and Mozilla.
 
+--no-conf::
+  Disable loading aria2.conf file.
+
+--conf-path=PATH::
+  Change the configuration file path to PATH.
+  Default: '$HOME/.aria2/aria2.conf'
+
+--stop=SEC::
+  Stop application after SEC seconds has passed.
+  If '0' is given, this feature is disabled.
+  Default: '0'
+ 
 -S, --show-files::
   Print file listing of .torrent or .metalink file and exit.
   In case of .torrent file, additional information
@@ -295,7 +299,39 @@ OPTIONS
   If less than 20 bytes are specified, the random alphabet characters are
   added to make it's length 20 bytes.
   Default: '-aria2-'
- 
+
+--enable-peer-exchange[='true'|'false']::
+  Enable Peer Exchange extension. If a private flag is set in a torrent, this
+  feature is disabled for that download even if 'true' is given.
+  Default: 'true'
+
+--enable-dht[='true'|'false']::
+  Enable DHT functionality. If a private flag is set in a torrent, aria2
+  doesn't use DHT for that download even if 'true' is given.
+  Default: 'false'
+
+--dht-listen-port=PORT...::
+  Set UDP listening port for DHT.
+  Multiple ports can be specified by using ",", for example: '6881,6885'.
+  You can also use "-" to specify a range: '6881-6999'. "," and "-" can be used
+  together.
+  Default: '6881-6999'
+
+--dht-entry-point=HOST:PORT::
+  Set host and port as an entry point to DHT network.
+
+--bt-min-crypto-level='plain'|'arc4'::
+  Set minimum level of encryption method.
+  If several encryption methods are provided by a peer, aria2 chooses a lowest
+  one which satisfies the given level.
+  Default: 'plain'
+
+--bt-require-crypto='true'|'false'::
+  If true is given, aria2 doesn't accept and establish connection with legacy
+  BitTorrent handshake(\19BitTorrent protocol).
+  Thus aria2 always uses Obfuscation handshake.
+  Default: 'false' 
+
 -M, --metalink-file=METALINK_FILE::
   The file path to .metalink file.
 
@@ -338,22 +374,29 @@ OPTIONS
   metalink file, aria2 uses one of them.
   Use --metalink-preferred-protocol option to specify the preference of
   protocol.
-  Default: true
+  Default: 'true'
 
 -v, --version::
   Print the version number, copyright and the configuration information and
   exit.
 
--h, --help::
-  Print this message and exit.
-
+-h, --help[=CATEGORY]::
+  Print usage and exit.
+  The help messages are classified in several categories.
+  For example, type "--help=http" for detailed explanation for the options
+  related to HTTP. If no matching category is found, search option name using
+  a given word in forward match and print the result.
+  Available Values: 'basic', 'advanced', 'http', 'ftp', 'metalink',
+  'bittorrent', 'all'
+  Default: 'basic'
+ 
 URL::
  You can specify multiple URLs. Unless you specify -Z option, all URLs must
  point to the same file or downloading will fail.
  You can specify both torrent file with -T option and URLs. By doing this,
- download a file from both torrent swarm and http(s)/ftp server at the same time,
- while the data from http(s)/ftp are uploaded to the torrent swarm. Note that
- only single file torrent can be integrated with http(s)/ftp.
+ download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
+ while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
+ only single file torrent can be integrated with HTTP(S)/FTP.
  Note;;
    Make sure that URL is quoted with single(\') or double(") quotation if it
    contains "&" or any characters that have special meaning in shell.
@@ -373,16 +416,16 @@ To pause a download, press Ctrl-C. You can resume the transfer by run aria2c wit
 Download a file using 2 connections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 --------------------------------
-aria2c -s 2 http://host/file.zip
+aria2c -s2 http://host/file.zip
 --------------------------------
 
-Download a file from 2 difference http servers
+Download a file from 2 difference HTTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------
 aria2c http://host1/file.zip ftp://host2/file.zip
 -------------------------------------------------
 
-Download a file from http and ftp servers
+Download a file from HTTP and FTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------
 aria2c http://host1/file.zip ftp://host2/file.zip
@@ -391,7 +434,7 @@ aria2c http://host1/file.zip ftp://host2/file.zip
 Download files listed in a file concurrently
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------
-aria2c -i files.txt -j 5
+aria2c -ifiles.txt -j5
 ------------------------
 [NOTE]
 -j option specifies the number of concurrent downloads.
@@ -407,7 +450,7 @@ aria2c --follow-metalink=mem http://host/file.metalink
 Download using a local metalink file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------------------
-aria2c -p -t 10 --lowest-speed-limit 4000 -M test.metalink
+aria2c -p -t10 --lowest-speed-limit=4000 -Mtest.metalink
 ----------------------------------------------------------
 [NOTE]
 To pause a download, press Ctrl-C.
@@ -417,7 +460,7 @@ directory.
 Download only selected files using index
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------
-aria2c -M test.metalink --select-file 1-4,8
+aria2c -Mtest.metalink --select-file=1-4,8
 -------------------------------------------
 [NOTE]
 The index is printed to the console using -S option.
@@ -425,7 +468,7 @@ The index is printed to the console using -S option.
 Download a file using a local .metalink file with user preference
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------------------------------------------
-aria2c -M test.metalink --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US
+aria2c -Mtest.metalink --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US
 ------------------------------------------------------------------------------
 
 BitTorrent Download
@@ -439,7 +482,7 @@ aria2c --follow-bittorrent=mem http://host/file.torrent
 Download using a local torrent file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ---------------------------------------------
-aria2c --max-upload-limit 40K -T file.torrent
+aria2c --max-upload-limit=40K -Tfile.torrent
 ---------------------------------------------
 [NOTE]
 --max-upload-limit specifies the max of upload rate.
@@ -447,18 +490,18 @@ aria2c --max-upload-limit 40K -T file.torrent
 [NOTE]
 To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument at the same directory.
 
-Download a file using torrent and http/ftp server
+Download a file using torrent and HTTP/FTP server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -----------------------------------------------------------
-aria2c -T test.torrent http://host1/file ftp://host2/file
+aria2c -Ttest.torrent http://host1/file ftp://host2/file
 -----------------------------------------------------------
 [NOTE]
-Downloading multi file torrent with http/ftp is not supported.
+Downloading multi file torrent with HTTP/FTP is not supported.
 
 Download only selected files using index(usually called "selectable download")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------
-aria2c -T test.torrent --select-file 1-4,8
+aria2c -Ttest.torrent --select-file=1-4,8
 ------------------------------------------
 [NOTE]
 The index is printed to the console using -S option.
@@ -466,13 +509,16 @@ The index is printed to the console using -S option.
 Change the listening port for incoming peer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ---------------------------------------------------
-aria2c -T test.torrent --listen-port 7000-7001,8000
+aria2c -Ttest.torrent --listen-port=7000-7001,8000
 ---------------------------------------------------
+[NOTE]
+Since aria2 doesn't configure firewall or router for port forwarding, it's up
+to you to do it manually.
 
 Specify the condition to stop program after torrent download finished
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------------
-aria2c -T test.torrent --seed-time 120 --seed-ratio 1.0
+aria2c -Ttest.torrent --seed-time=120 --seed-ratio=1.0
 -------------------------------------------------------
 
 [NOTE]
@@ -481,15 +527,24 @@ In the above example, the program exists when the 120 minutes has elapsed since 
 Throttle upload speed
 ^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------
-aria2c -T test.torrent --max-upload-limit 100K
+aria2c -Ttest.torrent --max-upload-limit=100K
 ---------------------------------------------- 
+
+Enable DHT
+^^^^^^^^^^
+---------------------------------------------------------
+aria2c -Ttest.torrent --enable-dht --dht-listen-port=6881
+---------------------------------------------------------
+[NOTE]
+DHT uses udp port. Since aria2 doesn't configure firewall or router for port
+forwarding, it's up to you to do it manually.
 
 More advanced HTTP features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Load cookies
 ^^^^^^^^^^^^
 ------------------------------------------------------
-aria2c --load-cookies cookies.txt http://host/file.zip
+aria2c --load-cookies=cookies.txt http://host/file.zip
 ------------------------------------------------------
 [NOTE]
 You can use Firefox/Mozilla's cookie file without modification.
@@ -497,7 +552,7 @@ You can use Firefox/Mozilla's cookie file without modification.
 Resume download started by web browsers or another programs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ---------------------------------------------------
-aria2c -c -s 2 http://host/partiallydownloadedfile.zip 
+aria2c -c -s2 http://host/partiallydownloadedfile.zip 
 ---------------------------------------------------
 
 And more advanced features
@@ -505,13 +560,13 @@ And more advanced features
 Throttle download speed
 ^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------
-aria2c -M test.metalink --max-download-limit 100K
+aria2c -Mtest.metalink --max-download-limit=100K
 -------------------------------------------------
 
 Repair a damaged download using --check-integrity option
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------
-aria2c -M test.metalink --check-integrity=true
+aria2c -Mtest.metalink --check-integrity=true
 ----------------------------------------------
 [NOTE]
 This option is only available used with BitTorrent or metalink with chunk
@@ -520,7 +575,7 @@ checksums.
 Drop connection if download speed is lower than specified value
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------------
-aria2c -M test.metalink --lowest-speed-limit 10K
+aria2c -Mtest.metalink --lowest-speed-limit=10K
 ------------------------------------------------
 
 Parameterized URI support
@@ -542,6 +597,13 @@ You can specify step counter:
 -----------------------------------------
 aria2c -Z -P http://host/image[A-Z:2].png 
 -----------------------------------------
+
+BitTorrent Encryption
+^^^^^^^^^^^^^^^^^^^^^
+Encrypt whole payload using ARC4:
+-------------------------------------------------------------------------
+aria2c -Tfile.torrent --bt-min-crypto-level=arc4 --bt-require-crypto=true
+-------------------------------------------------------------------------
 
 RESUME DOWNLOAD
 ---------------
@@ -565,7 +627,7 @@ The "top directory" name is a value of "name" key in "info" directory in a torre
 
 Usually a control file is deleted once download completed.
 If aria2 decides that download cannot be resumed(for example, when downloading
-a file from a http server which doesn't support resume), a control file is
+a file from a HTTP server which doesn't support resume), a control file is
 not created.
 
 Normally if you lose a control file, you cannot resume download.
@@ -585,7 +647,7 @@ FILES
 aria2.conf
 ~~~~~~~~~~
 User configuration file.
-It must be placed under ~/.aria2 and must be named as aria2.conf.
+It must be placed under $HOME/.aria2 and must be named as aria2.conf.
 In each line, there is 1 parameter whose syntax is name=value pair,
 where name is the long command-line option name without '--' prefix.
 The lines beginning '#' are treated as comments.
@@ -598,6 +660,10 @@ seed-ratio=1.0
 max-upload-limit=100K
 ftp-pasv=true
 --------------------------------------
+
+dht.dat
+~~~~~~~~
+The routing table of DHT is saved to the path $HOME/.aria2/dht.dat.
 
 RESOURCES
 ---------
@@ -615,7 +681,7 @@ Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>
 
 COPYRIGHT
 ---------
-Copyright (C) 2006, 2007 Tatsuhiro Tsujikawa
+Copyright (C) 2006, 2008 Tatsuhiro Tsujikawa
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

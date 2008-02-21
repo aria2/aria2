@@ -259,7 +259,7 @@ _(" --enable-peer-exchange[=true|false] Enable Peer Exchange extension.")
 #define TEXT_ENABLE_DHT \
 _(" --enable-dht[=true|false]    Enable DHT functionality.")
 #define TEXT_DHT_LISTEN_PORT \
-_(" --dht-listen-port...         Set UDP listening port for DHT.\n"\
+_(" --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"\
   "                              Multiple ports can be specified by using ',',\n"\
   "                              for example: \"6881,6885\". You can also use '-'\n"\
   "                              to specify a range: \"6881-6999\". ',' and '-' can\n"\
@@ -321,8 +321,8 @@ _(" -h, --help[=CATEGORY]        Print usage and exit.\n"\
   "                              categories. For example, type \"--help=http\" for\n"\
   "                              detailed explanation for the options related to\n"\
   "                              http. If no matching category is found, search\n"\
-  "                              option name in forward match and print the\n"\
-  "                              result.")
+  "                              option name using a given word, in forward match\n"\
+  "                              and print the result.")
 #define TEXT_NO_CONF \
 _(" --no-conf                    Disable loading aria2.conf file.")
 #define TEXT_CONF_PATH \
