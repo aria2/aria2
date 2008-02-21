@@ -70,9 +70,9 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
   header[2] = 0x02;
   // version
   header[6] = 0;
-  header[7] = 0x01;
+  header[7] = 0x02;
   
-  char zero[8];
+  char zero[16];
   memset(zero, 0, sizeof(zero));
   try {
     o.write(header, 8);
@@ -99,14 +99,22 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
     // nodes
     for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _nodes.begin(); i != _nodes.end(); ++i) {
       const SharedHandle<DHTNode>& node = *i;
+      // Currently, only IPv4 address and IPv4-mapped address are saved.
       // 6bytes: write IP address + port in Compact IP-address/port info form.
       char compactPeer[6];
       if(!PeerMessageUtil::createcompact(compactPeer, node->getIPAddress(), node->getPort())) {
 	memset(compactPeer, 0, 6);
       }
+      // 1byte compact peer format length
+      o << static_cast<uint8_t>(sizeof(compactPeer));
+      // 7bytes reserved
+      o.write(zero, 7);
+      // 6 bytes compact peer
       o.write(compactPeer, 6);
       // 2bytes reserved
       o.write(zero, 2);
+      // 16bytes reserved
+      o.write(zero, 16);
       // 20bytes: node ID
       o.write(reinterpret_cast<const char*>(node->getID()), DHT_ID_LENGTH);
       // 4bytes reserved

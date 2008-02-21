@@ -1,5 +1,14 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Make room for future enchancements for IPv6 addresses.
+	Bump up version number of dht.dat file format to 2.
+	Not compatible with previous version.
+	* src/DHTRoutingTableSerializer.cc
+	* src/DHTRoutingTableDeserializer.cc
+	* test/DHTRoutingTableSerializerTest.cc
+
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added handling for the return values from
 	PeerMessageUtil::createcompact().
 	* src/DefaultBtContext.cc (computeFastSet): 

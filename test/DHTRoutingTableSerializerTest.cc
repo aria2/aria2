@@ -48,7 +48,7 @@ void DHTRoutingTableSerializerTest::testSerialize()
   std::stringstream ss;
   s.serialize(ss);
 
-  char zero[8];
+  char zero[16];
   memset(zero, 0, sizeof(zero));
 
   char buf[20];
@@ -65,7 +65,7 @@ void DHTRoutingTableSerializerTest::testSerialize()
   CPPUNIT_ASSERT((char)0x00 == buf[5]);
   // version
   CPPUNIT_ASSERT((char)0x00 == buf[6]);
-  CPPUNIT_ASSERT((char)0x01 == buf[7]);
+  CPPUNIT_ASSERT((char)0x02 == buf[7]);
 
   // time
   ss.read(buf, 4);
@@ -95,6 +95,15 @@ void DHTRoutingTableSerializerTest::testSerialize()
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
 
   // node[0]
+  // 1byte compatc peer format length
+  {
+    uint8_t len;
+    ss >> len;
+    CPPUNIT_ASSERT_EQUAL((uint8_t)6, len);
+  }
+  // 7bytes reserved
+  ss.read(buf, 7);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 7) == 0);
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
@@ -105,6 +114,9 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 2bytes reserved
   ss.read(buf, 2);
   CPPUNIT_ASSERT(memcmp(zero, buf, 2) == 0);
+  // 16bytes reserved
+  ss.read(buf, 16);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 16) == 0);
   // localnode ID
   ss.read(buf, DHT_ID_LENGTH);
   CPPUNIT_ASSERT(memcmp(nodes[0]->getID(), buf, DHT_ID_LENGTH) == 0);
@@ -113,6 +125,15 @@ void DHTRoutingTableSerializerTest::testSerialize()
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
 
   // node[1]
+  // 1byte compatc peer format length
+  {
+    uint8_t len;
+    ss >> len;
+    CPPUNIT_ASSERT_EQUAL((uint8_t)6, len);
+  }
+  // 7bytes reserved
+  ss.read(buf, 7);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 7) == 0);
   // 6bytes compact peer info
   ss.read(buf, 6);
   // zero filled because node[1]'s hostname is not numerical form
@@ -121,6 +142,9 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 2bytes reserved
   ss.read(buf, 2);
   CPPUNIT_ASSERT(memcmp(zero, buf, 2) == 0);
+  // 16bytes reserved
+  ss.read(buf, 16);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 16) == 0);
   // localnode ID
   ss.read(buf, DHT_ID_LENGTH);
   CPPUNIT_ASSERT(memcmp(nodes[1]->getID(), buf, DHT_ID_LENGTH) == 0);
@@ -129,6 +153,15 @@ void DHTRoutingTableSerializerTest::testSerialize()
   CPPUNIT_ASSERT(memcmp(zero, buf, 4) == 0);
 
   // node[2]
+  // 1byte compatc peer format length
+  {
+    uint8_t len;
+    ss >> len;
+    CPPUNIT_ASSERT_EQUAL((uint8_t)6, len);
+  }
+  // 7bytes reserved
+  ss.read(buf, 7);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 7) == 0);
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
@@ -139,6 +172,9 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 2bytes reserved
   ss.read(buf, 2);
   CPPUNIT_ASSERT(memcmp(zero, buf, 2) == 0);
+  // 16bytes reserved
+  ss.read(buf, 16);
+  CPPUNIT_ASSERT(memcmp(zero, buf, 16) == 0);
   // localnode ID
   ss.read(buf, DHT_ID_LENGTH);
   CPPUNIT_ASSERT(memcmp(nodes[2]->getID(), buf, DHT_ID_LENGTH) == 0);

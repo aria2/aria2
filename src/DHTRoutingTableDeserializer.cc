@@ -73,7 +73,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     header[2] = 0x02;
     // version
     header[6] = 0;
-    header[7] = 0x01;
+    header[7] = 0x02;
 
     char zero[8];
     memset(zero, 0, sizeof(zero));
@@ -108,21 +108,34 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 
     // nodes
     for(size_t i = 0; i < numNodes; ++i) {
+      // Currently, only IPv4 addresses are supported.
+      // 1byte compact peer info length
+      uint8_t peerInfoLen;
+      in >> peerInfoLen;
+      if(peerInfoLen != 6) {
+	// skip this entry
+	in.read(buf, 42+7+6);
+	continue;
+      }
+      // 7bytes reserved
+      in.read(buf, 7);
       // 6bytes compact peer info
       in.read(buf, 6);
       if(memcmp(zero, buf, 6) == 0) {
 	// skip this entry
-	in.read(buf, 26);
+	in.read(buf, 42);
 	continue;
       }
       std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
       if(peer.first.empty()) {
 	// skip this entry
-	in.read(buf, 26);
+	in.read(buf, 42);
 	continue;
       }
       // 2bytes reserved
       in.read(buf, 2);
+      // 16byte reserved
+      in.read(buf, 16);
       // localnode ID
       in.read(buf, DHT_ID_LENGTH);
 
