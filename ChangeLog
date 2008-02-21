@@ -1,5 +1,12 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated translations. Added Finnish and Hebrew translations.
+	Great thanks to all translators!
+	* po/*.{po, gmo}
+	* po/LINGUAS
+
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Log more detailed information about each message.
 	* src/DHTQueryMessage.{h, cc}
 	* src/DHTGetPeersMessage.{h, cc}
