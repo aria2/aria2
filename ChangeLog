@@ -1,5 +1,11 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added handling for the return values from
+	PeerMessageUtil::createcompact().
+	* src/DefaultBtContext.cc (computeFastSet): 
+
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed abort when peer's ip address is IPv4-mapped address.
 	* src/DefaultBtContext.cc (computeFastSet)
 
