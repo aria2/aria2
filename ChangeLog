@@ -1,5 +1,10 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use constants defined in prefs.h
+	* src/option_processing.cc
+
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* test/AllTest.cc: Added OpenSSL, GNUTLS initialization code.
 
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
