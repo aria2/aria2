@@ -40,6 +40,7 @@
 #include "DHTMessageFactory.h"
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
+#include "Util.h"
 #include <cstring>
 
 namespace aria2 {
@@ -79,5 +80,10 @@ std::string DHTFindNodeMessage::getMessageType() const
 }
 
 void DHTFindNodeMessage::validate() const {}
+
+std::string DHTFindNodeMessage::toStringOptional() const
+{
+  return "targetNodeID="+Util::toHex(_targetNodeID, DHT_ID_LENGTH);
+}
 
 } // namespace aria2

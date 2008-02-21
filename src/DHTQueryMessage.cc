@@ -69,7 +69,8 @@ std::string DHTQueryMessage::toString() const
     " TransactionID="+Util::toHex(_transactionID)+
     " Remote:"+
     _remoteNode->getIPAddress()+":"+Util::itos(_remoteNode->getPort())+
-    ", id="+Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH);
+    ", id="+Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH)+
+    ", "+toStringOptional();
 }
 
 } // namespace aria2

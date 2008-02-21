@@ -42,6 +42,7 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageCallback.h"
 #include "PeerMessageUtil.h"
+#include "Util.h"
 #include <cstring>
 
 namespace aria2 {
@@ -95,6 +96,11 @@ const std::deque<SharedHandle<DHTNode> >& DHTFindNodeReplyMessage::getClosestKNo
 void DHTFindNodeReplyMessage::setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes)
 {
   _closestKNodes = closestKNodes;
+}
+
+std::string DHTFindNodeReplyMessage::toStringOptional() const
+{
+  return "nodes="+Util::uitos(_closestKNodes.size());
 }
 
 } // namespace aria2

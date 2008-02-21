@@ -44,6 +44,7 @@
 #include "DHTUtil.h"
 #include "Peer.h"
 #include "DHTTokenTracker.h"
+#include "Util.h"
 #include <cstring>
 
 namespace aria2 {
@@ -103,6 +104,11 @@ void DHTGetPeersMessage::setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounce
 void DHTGetPeersMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
   _tokenTracker = tokenTracker;
+}
+
+std::string DHTGetPeersMessage::toStringOptional() const
+{
+  return "info_hash="+Util::toHex(_infoHash, INFO_HASH_LENGTH);
 }
 
 } // namespace aria2

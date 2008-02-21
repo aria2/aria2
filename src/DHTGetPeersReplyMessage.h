@@ -50,6 +50,8 @@ private:
   std::deque<SharedHandle<DHTNode> > _closestKNodes;
 
   std::deque<SharedHandle<Peer> > _values;
+protected:
+  virtual std::string toStringOptional() const;
 public:
   DHTGetPeersReplyMessage(const SharedHandle<DHTNode>& localNode,
 			  const SharedHandle<DHTNode>& remoteNode,

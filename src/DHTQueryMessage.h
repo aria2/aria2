@@ -40,6 +40,8 @@
 namespace aria2 {
 
 class DHTQueryMessage:public DHTAbstractMessage {
+protected:
+  virtual std::string toStringOptional() const { return ""; }
 public:
   DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
 		  const SharedHandle<DHTNode>& remoteNode,

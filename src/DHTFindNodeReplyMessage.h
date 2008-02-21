@@ -43,6 +43,8 @@ namespace aria2 {
 class DHTFindNodeReplyMessage:public DHTResponseMessage {
 private:
   std::deque<SharedHandle<DHTNode> > _closestKNodes;
+protected:
+  virtual std::string toStringOptional() const;
 public:
   DHTFindNodeReplyMessage(const SharedHandle<DHTNode>& localNode,
 			  const SharedHandle<DHTNode>& remoteNode,

@@ -1,5 +1,16 @@
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Log more detailed information about each message.
+	* src/DHTQueryMessage.{h, cc}
+	* src/DHTGetPeersMessage.{h, cc}
+	* src/DHTFindNodeReplyMessage.{h, cc}
+	* src/DHTGetPeersReplyMessage.{h, cc}
+	* src/DHTAnnouncePeerMessage.{h, cc}
+	* src/DHTResponseMessage.{h, cc}
+	* src/DHTFindNodeMessage.{h, cc}
+
+2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use constants defined in prefs.h
 	* src/option_processing.cc
 

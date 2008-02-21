@@ -45,6 +45,7 @@
 #include "PeerMessageUtil.h"
 #include "Peer.h"
 #include "DHTUtil.h"
+#include "Util.h"
 #include <cstring>
 
 namespace aria2 {
@@ -119,6 +120,12 @@ const std::deque<SharedHandle<Peer> >& DHTGetPeersReplyMessage::getValues() cons
 void DHTGetPeersReplyMessage::setValues(const std::deque<SharedHandle<Peer> >& peers)
 {
   _values = peers;
+}
+
+std::string DHTGetPeersReplyMessage::toStringOptional() const
+{
+  return "token="+Util::toHex(_token)+", values="+Util::uitos(_values.size())+
+    ", nodes="+Util::uitos(_closestKNodes.size());
 }
 
 } // namespace aria2

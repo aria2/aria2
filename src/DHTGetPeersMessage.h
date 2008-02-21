@@ -50,6 +50,8 @@ private:
   WeakHandle<DHTPeerAnnounceStorage> _peerAnnounceStorage;
 
   WeakHandle<DHTTokenTracker> _tokenTracker;
+protected:
+  virtual std::string toStringOptional() const;
 public:
   DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
 		     const SharedHandle<DHTNode>& remoteNode,

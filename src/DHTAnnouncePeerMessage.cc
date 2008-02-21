@@ -44,6 +44,7 @@
 #include "DHTPeerAnnounceStorage.h"
 #include "DHTTokenTracker.h"
 #include "DlAbortEx.h"
+#include "BtConstants.h"
 #include <cstring>
 
 namespace aria2 {
@@ -113,6 +114,13 @@ void DHTAnnouncePeerMessage::setPeerAnnounceStorage(const WeakHandle<DHTPeerAnno
 void DHTAnnouncePeerMessage::setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker)
 {
   _tokenTracker = tokenTracker;
+}
+
+std::string DHTAnnouncePeerMessage::toStringOptional() const
+{
+  return "token="+Util::toHex(_token)+
+    ", info_hash="+Util::toHex(_infoHash, INFO_HASH_LENGTH)+
+    ", tcpPort="+Util::uitos(_tcpPort);
 }
 
 } // namespace aria2
