@@ -47,6 +47,7 @@
 #include "MSEHandshake.h"
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -70,7 +71,7 @@ ReceiverMSEHandshakeCommand::~ReceiverMSEHandshakeCommand()
 
 bool ReceiverMSEHandshakeCommand::exitBeforeExecute()
 {
-  return e->isHaltRequested();
+  return e->isHaltRequested() || e->_requestGroupMan->downloadFinished();
 }
 
 bool ReceiverMSEHandshakeCommand::executeInternal()

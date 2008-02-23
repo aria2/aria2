@@ -51,6 +51,7 @@
 #include "Logger.h"
 #include "prefs.h"
 #include "Option.h"
+#include "RequestGroupMan.h"
 
 namespace aria2 {
 
@@ -76,7 +77,7 @@ PeerReceiveHandshakeCommand::~PeerReceiveHandshakeCommand() {}
 
 bool PeerReceiveHandshakeCommand::exitBeforeExecute()
 {
-  return e->isHaltRequested();
+  return e->isHaltRequested() || e->_requestGroupMan->downloadFinished();
 }
 
 bool PeerReceiveHandshakeCommand::executeInternal()

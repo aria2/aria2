@@ -1,3 +1,13 @@
+2008-02-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that prevents aria2 from stopping other than by pressing
+	Ctrl-C in BitTorrent download. It is reproducible using --seed-time
+	option. aria2 doesn't stop even after --seed-time is satisfied and
+	continues to output blank lines in the console.
+	* src/ReceiverMSEHandshakeCommand.cc
+	* src/PeerReceiveHandshakeCommand.cc
+	* src/PeerListenCommand.cc
+
 2008-02-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Bump up version number to 0.13.0rc

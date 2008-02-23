@@ -85,7 +85,7 @@ int32_t PeerListenCommand::bindPort(IntSequence& seq)
 }
 
 bool PeerListenCommand::execute() {
-  if(e->isHaltRequested() || e->_requestGroupMan->countRequestGroup() == 0) {
+  if(e->isHaltRequested() || e->_requestGroupMan->downloadFinished()) {
     return true;
   }
   for(int32_t i = 0; i < 3 && socket->isReadable(0); i++) {
