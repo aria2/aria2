@@ -1,5 +1,13 @@
 2008-02-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed since they are not used.
+	* src/Xml2MetalinkProcessor.{h, cc}
+	* src/Socket.cc
+	* src/SegmentSplitter.{h, cc}
+	* test/Xml2MetalinkProcessorTest.cc
+	
+2008-02-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that prevents aria2 from stopping other than by pressing
 	Ctrl-C in BitTorrent download. It is reproducible using --seed-time
 	option. aria2 doesn't stop even after --seed-time is satisfied and
