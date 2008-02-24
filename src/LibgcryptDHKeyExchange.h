@@ -151,7 +151,7 @@ public:
     gcry_mpi_release(peerPublicKey);
 
     memset(out, 0, outLength);
-    size_t secretBytes = (gcry_mpi_get_nbits(secret)+7/8);
+    size_t secretBytes = (gcry_mpi_get_nbits(secret)+7)/8;
     size_t offset = _keyLength-secretBytes;
     size_t nwritten;
     {
