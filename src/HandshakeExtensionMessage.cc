@@ -65,7 +65,7 @@ std::string HandshakeExtensionMessage::getBencodedData()
     dic->put("v", v);
   }
   if(_tcpPort > 0) {
-    std::string portStr = Util::itos(_tcpPort);
+    std::string portStr = Util::uitos(_tcpPort);
     Data* p = new Data(portStr, true);
     dic->put("p", p);
   }
@@ -89,7 +89,7 @@ std::string HandshakeExtensionMessage::toString() const
     s += " client="+Util::urlencode(_clientVersion);
   }
   if(_tcpPort > 0) {
-    s += ", tcpPort="+Util::itos(_tcpPort);
+    s += ", tcpPort="+Util::uitos(_tcpPort);
   }
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {

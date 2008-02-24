@@ -88,7 +88,7 @@ DHTMessageTracker::messageArrived(const Dictionary* d,
       SharedHandle<DHTMessage> message = _factory->createResponseMessage(entry->getMessageType(),
 								 d, targetNode);
       int64_t rtt = entry->getElapsedMillis();
-      _logger->debug("RTT is %s", Util::llitos(rtt).c_str());
+      _logger->debug("RTT is %s", Util::itos(rtt).c_str());
       targetNode->updateRTT(rtt);
       SharedHandle<DHTMessageCallback> callback = entry->getCallback();
       return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >(message, callback);

@@ -66,12 +66,41 @@ public:
   static std::pair<std::string, std::string>
   split(const std::string& src, const std::string& delims);
 
-  static std::string llitos(int64_t value, bool comma = false);
-  static std::string ullitos(uint64_t value, bool comma = false);
-  static std::string itos(int32_t value, bool comma = false);
-  static std::string uitos(uint32_t value, bool comma = false);
-  static std::string itos(int16_t value, bool comma = false);
-  static std::string uitos(uint16_t value, bool comma = false);
+  template<typename T>
+  static std::string uitos(T value, bool comma = false)
+  {
+    std::string str;
+    if(value == 0) {
+      str = "0";
+      return str;
+    }
+    int32_t count = 0;
+    while(value) {
+      ++count;
+      char digit = value%10+'0';
+      str.insert(str.begin(), digit);
+      value /= 10;
+      if(comma && count > 3 && count%3 == 1) {
+	str.insert(str.begin()+1, ',');
+      }
+    }
+    return str;
+  }
+
+  template<typename T>
+  static std::string itos(T value, bool comma = false)
+  {
+    bool flag = false;
+    if(value < 0) {
+      flag = true;
+      value = -value;
+    }
+    std::string str = uitos(value, comma);
+    if(flag) {
+      str.insert(str.begin(), '-');
+    }
+    return str;
+  }
 
   /**
    * Computes difference in micro-seconds between tv1 and tv2,

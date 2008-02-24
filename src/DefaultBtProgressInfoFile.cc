@@ -206,8 +206,8 @@ void DefaultBtProgressInfoFile::load()
     in.read(reinterpret_cast<char*>(&totalLength), sizeof(totalLength));
     if(totalLength != _dctx->getTotalLength()) {
       throw new DlAbortEx("total length mismatch. expected: %s, actual: %s",
-			  Util::llitos(_dctx->getTotalLength()).c_str(),
-			  Util::llitos(totalLength).c_str());
+			  Util::itos(_dctx->getTotalLength()).c_str(),
+			  Util::itos(totalLength).c_str());
     }
     int64_t uploadLength;
     in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));

@@ -59,7 +59,7 @@ bool FileAllocationCommand::executeInternal()
   if(_fileAllocationEntry->finished()) {
     logger->debug(MSG_ALLOCATION_COMPLETED,
 		  _timer.difference(),
-		  Util::llitos(_requestGroup->getTotalLength(), true).c_str());
+		  Util::itos(_requestGroup->getTotalLength(), true).c_str());
     _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
     
     _e->addCommand(_fileAllocationEntry->prepareForNextAction(_e));

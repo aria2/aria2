@@ -215,7 +215,7 @@ bool FtpNegotiationCommand::recvSize() {
     throw new DlAbortEx(EX_BAD_STATUS, status);
   }
   if(size == INT64_MAX || size < 0) {
-    throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::llitos(size, true).c_str());
+    throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::itos(size, true).c_str());
   }
   if(_requestGroup->getPieceStorage().isNull()) {
     SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();

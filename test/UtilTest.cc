@@ -41,6 +41,8 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseInt);
   CPPUNIT_TEST(testParseLLInt);
   CPPUNIT_TEST(testToString_binaryStream);
+  CPPUNIT_TEST(testItos);
+  CPPUNIT_TEST(testUitos);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -75,6 +77,8 @@ public:
   void testParseInt();
   void testParseLLInt();
   void testToString_binaryStream();
+  void testItos();
+  void testUitos();
 };
 
 
@@ -595,6 +599,50 @@ void UtilTest::testToString_binaryStream()
   std::string readData = Util::toString(dw);
 
   CPPUNIT_ASSERT_EQUAL(data, readData);
+}
+
+void UtilTest::testItos()
+{
+  {
+    int32_t i = 0;
+    CPPUNIT_ASSERT_EQUAL(std::string("0"), Util::itos(i));
+  }
+  {
+    int32_t i = 100;
+    CPPUNIT_ASSERT_EQUAL(std::string("100"), Util::itos(i, true));
+  }
+  {
+    int32_t i = 100;
+    CPPUNIT_ASSERT_EQUAL(std::string("100"), Util::itos(i));
+  }
+  {
+    int32_t i = 12345;
+    CPPUNIT_ASSERT_EQUAL(std::string("12,345"), Util::itos(i, true));
+  }
+  {
+    int32_t i = 12345;
+    CPPUNIT_ASSERT_EQUAL(std::string("12345"), Util::itos(i));
+  }
+  {
+    int32_t i = -12345;
+    CPPUNIT_ASSERT_EQUAL(std::string("-12,345"), Util::itos(i, true));
+  }
+  {
+    int64_t i = INT64_MAX;
+    CPPUNIT_ASSERT_EQUAL(std::string("9,223,372,036,854,775,807"), Util::itos(i, true));
+  }  
+}
+
+void UtilTest::testUitos()
+{
+  {
+    uint16_t i = 12345;
+    CPPUNIT_ASSERT_EQUAL(std::string("12345"), Util::uitos(i));
+  }
+  {
+    int16_t i = -12345;
+    CPPUNIT_ASSERT_EQUAL(std::string("/.-,+"), Util::uitos(i));
+  }
 }
 
 } // namespace aria2

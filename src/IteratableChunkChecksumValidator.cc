@@ -87,7 +87,7 @@ void IteratableChunkChecksumValidator::validateChunk()
     } else {
       _logger->info(EX_INVALID_CHUNK_CHECKSUM,
 		    _currentIndex,
-		    Util::llitos(getCurrentOffset(), true).c_str(),
+		    Util::itos(getCurrentOffset(), true).c_str(),
 		    _dctx->getPieceHashes()[_currentIndex].c_str(),
 		    actualChecksum.c_str());
       _bitfield->unsetBit(_currentIndex);

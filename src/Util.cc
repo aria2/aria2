@@ -59,74 +59,6 @@
 
 namespace aria2 {
 
-template<typename T>
-std::string uint2str(T value, bool comma)
-{
-  std::string str;
-  if(value == 0) {
-    str = "0";
-    return str;
-  }
-  int32_t count = 0;
-  while(value) {
-    ++count;
-    char digit = value%10+'0';
-    str.insert(str.begin(), digit);
-    value /= 10;
-    if(comma && count > 3 && count%3 == 1) {
-      str.insert(str.begin()+1, ',');
-    }
-  }
-  return str;
-}
-
-template<typename T>
-std::string int2str(T value, bool comma)
-{
-  bool flag = false;
-  if(value < 0) {
-    flag = true;
-    value = -value;
-  }
-  std::string str = uint2str<T>(value, comma);
-  if(flag) {
-    str.insert(str.begin(), '-');
-  }
-  return str;
-}
-
-
-
-std::string Util::uitos(uint16_t value, bool comma)
-{
-  return uint2str<uint16_t>(value, comma);
-}
-
-std::string Util::itos(int16_t value, bool comma)
-{
-  return int2str<int16_t>(value, comma);
-}
-
-std::string Util::uitos(uint32_t value, bool comma)
-{
-  return uint2str<uint32_t>(value, comma);
-}
-
-std::string Util::itos(int32_t value, bool comma)
-{
-  return int2str<int32_t>(value, comma);
-}
-
-std::string Util::ullitos(uint64_t value, bool comma)
-{
-  return uint2str<uint64_t>(value, comma);
-}
-
-std::string Util::llitos(int64_t value, bool comma)
-{
-  return int2str<int64_t>(value, comma);
-}
-
 std::string Util::trim(const std::string& src, const std::string& trimCharset)
 {
   std::string::size_type sp = src.find_first_not_of(trimCharset);
@@ -674,7 +606,7 @@ int64_t Util::getRealSize(const std::string& sizeWithUnit)
 std::string Util::abbrevSize(int64_t size)
 {
   if(size < 1024) {
-    return Util::llitos(size, true);
+    return Util::itos(size, true);
   }
   char units[] = { 'K', 'M' };
   int32_t numUnit = sizeof(units)/sizeof(char);
@@ -685,7 +617,7 @@ std::string Util::abbrevSize(int64_t size)
     r = size&0x3ff;
     size >>= 10;
   }
-  return Util::llitos(size, true)+"."+Util::itos(r*10/1024)+units[i]+"i";
+  return Util::itos(size, true)+"."+Util::itos(r*10/1024)+units[i]+"i";
 }
 
 time_t Util::httpGMT(const std::string& httpStdTime)

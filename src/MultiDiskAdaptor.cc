@@ -201,7 +201,7 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, int32_t len,
     }
   }
   if(!writing) {
-    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, Util::llitos(offset, true).c_str());
+    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, Util::itos(offset, true).c_str());
   }
 }
 
@@ -244,7 +244,7 @@ int32_t MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t off
     }
   }
   if(!reading) {
-    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, Util::llitos(offset, true).c_str());
+    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, Util::itos(offset, true).c_str());
   }
   return totalReadLength;
 }

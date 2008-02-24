@@ -89,7 +89,7 @@ public:
       int32_t v = seq.next();
       if(v < _min || _max < v) {
 	std::string msg = _optName+" "+_("must be between %s and %s.");
-	throw new FatalException(msg.c_str(), Util::llitos(_min).c_str(), Util::llitos(_max).c_str());
+	throw new FatalException(msg.c_str(), Util::itos(_min).c_str(), Util::itos(_max).c_str());
       }
       option->put(_optName, optarg);
     }
@@ -114,18 +114,18 @@ public:
   void parseArg(Option* option, int64_t number)
   {
     if((_min == -1 || _min <= number) && (_max ==  -1 || number <= _max)) {
-      option->put(_optName, Util::llitos(number));
+      option->put(_optName, Util::itos(number));
     } else {
       std::string msg = _optName+" ";
       if(_min == -1 && _max != -1) {
 	msg += _("must be smaller than or equal to %s.");
-	throw new FatalException(msg.c_str(), Util::llitos(_max).c_str());
+	throw new FatalException(msg.c_str(), Util::itos(_max).c_str());
       } else if(_min != -1 && _max != -1) {
 	msg += _("must be between %s and %s.");
-	throw new FatalException(msg.c_str(), Util::llitos(_min).c_str(), Util::llitos(_max).c_str());
+	throw new FatalException(msg.c_str(), Util::itos(_min).c_str(), Util::itos(_max).c_str());
       } else if(_min != -1 && _max == -1) {
 	msg += _("must be greater than or equal to %s.");
-	throw new FatalException(msg.c_str(), Util::llitos(_min).c_str());
+	throw new FatalException(msg.c_str(), Util::itos(_min).c_str());
       } else {
 	msg += _("must be a number.");
 	throw new FatalException(msg.c_str());

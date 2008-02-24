@@ -128,7 +128,7 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
 
 std::string HttpRequest::getHostText(const std::string& host, int32_t port) const
 {
-  return  host+(port == 80 || port == 443 ? "" : ":"+Util::llitos(port));
+  return  host+(port == 80 || port == 443 ? "" : ":"+Util::itos(port));
 }
 
 std::string HttpRequest::createRequest() const
@@ -156,10 +156,10 @@ std::string HttpRequest::createRequest() const
   }
   if(!segment.isNull() && segment->getLength() > 0 &&
      (request->isKeepAlive() || getStartByte() > 0)) {
-    requestLine += "Range: bytes="+Util::llitos(getStartByte());
+    requestLine += "Range: bytes="+Util::itos(getStartByte());
     requestLine += "-";
     if(request->isKeepAlive()) {
-      requestLine += Util::llitos(getEndByte());
+      requestLine += Util::itos(getEndByte());
     }
     requestLine += "\r\n";
   }

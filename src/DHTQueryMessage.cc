@@ -68,7 +68,7 @@ std::string DHTQueryMessage::toString() const
   return "dht query "+getMessageType()+
     " TransactionID="+Util::toHex(_transactionID)+
     " Remote:"+
-    _remoteNode->getIPAddress()+":"+Util::itos(_remoteNode->getPort())+
+    _remoteNode->getIPAddress()+":"+Util::uitos(_remoteNode->getPort())+
     ", id="+Util::toHex(_remoteNode->getID(), DHT_ID_LENGTH)+
     ", "+toStringOptional();
 }

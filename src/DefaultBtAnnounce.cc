@@ -143,9 +143,9 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
 					btContext->getInfoHashLength())+"&"+
     "peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+"&"+
-    "uploaded="+Util::llitos(stat.getSessionUploadLength())+"&"+
-    "downloaded="+Util::llitos(stat.getSessionDownloadLength())+"&"+
-    "left="+Util::llitos(left)+"&"+
+    "uploaded="+Util::itos(stat.getSessionUploadLength())+"&"+
+    "downloaded="+Util::itos(stat.getSessionDownloadLength())+"&"+
+    "left="+Util::itos(left)+"&"+
     "compact=1"+"&"+
     "key="+key+"&"+
     "numwant="+Util::itos(numWant)+"&"+

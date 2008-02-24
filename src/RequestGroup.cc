@@ -360,8 +360,8 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 	if(getTotalLength() < outfile.size()) {
 	  throw new DlAbortEx(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
 			      getFilePath().c_str(),
-			      Util::llitos(outfile.size()).c_str(),
-			      Util::llitos(getTotalLength()).c_str());
+			      Util::itos(outfile.size()).c_str(),
+			      Util::itos(getTotalLength()).c_str());
 	}
 	_pieceStorage->getDiskAdaptor()->openExistingFile();
 	_pieceStorage->markPiecesDone(outfile.size());
@@ -514,8 +514,8 @@ void RequestGroup::validateTotalLength(int64_t expectedTotalLength,
   }
   if(expectedTotalLength != actualTotalLength) {
     throw new DlAbortEx(EX_SIZE_MISMATCH,
-			Util::llitos(expectedTotalLength, true).c_str(),
-			Util::llitos(actualTotalLength, true).c_str());
+			Util::itos(expectedTotalLength, true).c_str(),
+			Util::itos(actualTotalLength, true).c_str());
   }
 }
 
