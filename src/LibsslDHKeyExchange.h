@@ -48,6 +48,8 @@ private:
 
   BN_CTX* _bnCtx;
 
+  size_t _keyLength;
+
   BIGNUM* _prime;
 
   BIGNUM* _generator;
@@ -56,14 +58,14 @@ private:
 
   BIGNUM* _publicKey;
 
-  void handleError() const
+  void handleError(const std::string& funName) const
   {
-    throw new DlAbortEx("Exception in libssl routine(DHKeyExchange class): %s",
-			ERR_error_string(ERR_get_error(), 0));
+    throw new DlAbortEx("Exception in libssl routine %s(DHKeyExchange class): %s",
+			funName.c_str(), ERR_error_string(ERR_get_error(), 0));
   }
-
 public:
   DHKeyExchange():_bnCtx(0),
+		  _keyLength(0),
 		  _prime(0),
 		  _generator(0),
 		  _privateKey(0),
@@ -78,13 +80,14 @@ public:
     BN_free(_publicKey);
   }
 
-  void init(const unsigned char* prime, const unsigned char* generator,
+  void init(const unsigned char* prime, size_t primeBits,
+	    const unsigned char* generator,
 	    size_t privateKeyBits)
   {
     BN_CTX_free(_bnCtx);
     _bnCtx = BN_CTX_new();
     if(!_bnCtx) {
-      handleError();
+      handleError("BN_CTX_new in init");
     }
 
     BN_free(_prime);
@@ -95,15 +98,16 @@ public:
     _privateKey = 0;
 
     if(BN_hex2bn(&_prime, reinterpret_cast<const char*>(prime)) == 0) {
-      handleError();
+      handleError("BN_hex2bn in init");
     }
     if(BN_hex2bn(&_generator, reinterpret_cast<const char*>(generator)) == 0) {
-      handleError();
+      handleError("BN_hex2bn in init");
     }
     _privateKey = BN_new();
     if(BN_rand(_privateKey, privateKeyBits, -1, false) == 0) {
-      handleError();
+      handleError("BN_new in init");
     }
+    _keyLength = (primeBits+7)/8;
   }
 
   void generatePublicKey()
@@ -113,21 +117,18 @@ public:
     BN_mod_exp(_publicKey, _generator, _privateKey, _prime, _bnCtx);
   }
 
-  size_t publicKeyLength() const
-  {
-    return BN_num_bytes(_publicKey);
-  }
-
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
-    size_t pubKeyLen = publicKeyLength();
-    if(outLength < pubKeyLen) {
+    if(outLength < _keyLength) {
       throw new DlAbortEx("Insufficient buffer for public key. expect:%u, actual:%u",
-			  publicKeyLength(), outLength);
+			  _keyLength, outLength);
     }
-    size_t nwritten = BN_bn2bin(_publicKey, out);
-    if(nwritten != pubKeyLen) {
-      handleError();
+    memset(out, 0, outLength);
+    size_t publicKeyBytes = BN_num_bytes(_publicKey);
+    size_t offset = _keyLength-publicKeyBytes;
+    size_t nwritten = BN_bn2bin(_publicKey, out+offset);
+    if(nwritten != publicKeyBytes) {
+      throw new DlAbortEx("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes);
     }
     return nwritten;
   }
@@ -135,7 +136,7 @@ public:
   void generateNonce(unsigned char* out, size_t outLength) const
   {
     if(RAND_bytes(out, outLength) != 1) {
-      handleError();
+      handleError("RAND_bytes in generateNonce");
     }
   }
 
@@ -143,26 +144,28 @@ public:
 		       const unsigned char* peerPublicKeyData,
 		       size_t peerPublicKeyLength) const
   {
-    size_t pubKeyLen = publicKeyLength();
-    if(outLength < pubKeyLen) {
+    if(outLength < _keyLength) {
       throw new DlAbortEx("Insufficient buffer for secret. expect:%u, actual:%u",
-			  publicKeyLength(), outLength);
+			  _keyLength, outLength);
     }
 
 
     BIGNUM* peerPublicKey = BN_bin2bn(peerPublicKeyData, peerPublicKeyLength, 0);
     if(!peerPublicKey) {
-      handleError();
+      handleError("BN_bin2bn in computeSecret");
     }
 
     BIGNUM* secret = BN_new();
     BN_mod_exp(secret, peerPublicKey, _privateKey, _prime, _bnCtx);
     BN_free(peerPublicKey);
 
-    size_t nwritten = BN_bn2bin(secret, out);
+    memset(out, 0, outLength);
+    size_t secretBytes = BN_num_bytes(secret);
+    size_t offset = _keyLength-secretBytes;
+    size_t nwritten = BN_bn2bin(secret, out+offset);
     BN_free(secret);
-    if(nwritten != pubKeyLen) {
-      handleError();
+    if(nwritten != secretBytes) {
+      throw new DlAbortEx("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, secretBytes);
     }
     return nwritten;
   }

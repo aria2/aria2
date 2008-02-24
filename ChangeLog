@@ -1,5 +1,15 @@
 2008-02-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that DH key exchange sometimes fails due to bad handling
+	of the number of bytes required for storing public key and shared
+	secret.
+	* src/LibgcryptDHKeyExchange.h
+	* src/LibsslDHKeyExchange.h: Also added function name to handleError.
+	* src/MSEHandshake.cc
+	* test/DHKeyExchangeTest.cc
+
+2008-02-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed since they are not used.
 	* src/Xml2MetalinkProcessor.{h, cc}
 	* src/Socket.cc

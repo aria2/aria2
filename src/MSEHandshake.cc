@@ -110,7 +110,7 @@ void MSEHandshake::initEncryptionFacility(bool initiator)
 {
   delete _dh;
   _dh = new DHKeyExchange();
-  _dh->init(PRIME, GENERATOR, 160);
+  _dh->init(PRIME, PRIME_BITS, GENERATOR, 160);
   _dh->generatePublicKey();
   _logger->debug("CUID#%d - DH initialized.", _cuid);
 

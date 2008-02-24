@@ -43,6 +43,7 @@ namespace aria2 {
 
 class DHKeyExchange {
 private:
+  size_t _keyLength;
 
   gcry_mpi_t _prime;
 
@@ -57,12 +58,13 @@ private:
     throw new DlAbortEx("Exception in libgcrypt routine(DHKeyExchange class): %s",
 			gcry_strerror(errno));
   }
-
 public:
-  DHKeyExchange():_prime(0),
-		  _generator(0),
-		  _privateKey(0),
-		  _publicKey(0) {}
+  DHKeyExchange():
+    _keyLength(0),
+    _prime(0),
+    _generator(0),
+    _privateKey(0),
+    _publicKey(0) {}
 
   ~DHKeyExchange()
   {
@@ -72,7 +74,8 @@ public:
     gcry_mpi_release(_publicKey);
   }
 
-  void init(const unsigned char* prime, const unsigned char* generator,
+  void init(const unsigned char* prime, size_t primeBits,
+	    const unsigned char* generator,
 	    size_t privateKeyBits)
   {
     gcry_mpi_release(_prime);
@@ -94,6 +97,7 @@ public:
     }
     _privateKey = gcry_mpi_new(0);
     gcry_mpi_randomize(_privateKey, privateKeyBits, GCRY_STRONG_RANDOM);
+    _keyLength = (primeBits+7)/8;
   }
 
   void generatePublicKey()
@@ -103,19 +107,18 @@ public:
     gcry_mpi_powm(_publicKey, _generator, _privateKey, _prime);
   }
 
-  size_t publicKeyLength() const
-  {
-    return (gcry_mpi_get_nbits(_publicKey)+7)/8;
-  }
-
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
-    if(outLength < publicKeyLength()) {
+    if(outLength < _keyLength) {
       throw new DlAbortEx("Insufficient buffer for public key. expect:%u, actual:%u",
-			  publicKeyLength(), outLength);
+			  _keyLength, outLength);
     }
+    memset(out, 0, outLength);
+    size_t publicKeyBytes = (gcry_mpi_get_nbits(_publicKey)+7)/8;
+    size_t offset = _keyLength-publicKeyBytes;
     size_t nwritten;
-    gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out, outLength, &nwritten, _publicKey);
+    gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
+				    outLength-offset, &nwritten, _publicKey);
     if(r) {
       handleError(r);
     }
@@ -131,9 +134,9 @@ public:
 		       const unsigned char* peerPublicKeyData,
 		       size_t peerPublicKeyLength) const
   {
-    if(outLength < publicKeyLength()) {
+    if(outLength < _keyLength) {
       throw new DlAbortEx("Insufficient buffer for secret. expect:%u, actual:%u",
-			  publicKeyLength(), outLength);
+			  _keyLength, outLength);
     }
     gcry_mpi_t peerPublicKey;
     {
@@ -147,9 +150,13 @@ public:
     gcry_mpi_powm(secret, peerPublicKey, _privateKey, _prime);
     gcry_mpi_release(peerPublicKey);
 
+    memset(out, 0, outLength);
+    size_t secretBytes = (gcry_mpi_get_nbits(secret)+7/8);
+    size_t offset = _keyLength-secretBytes;
     size_t nwritten;
     {
-      gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out, outLength, &nwritten, secret);
+      gcry_error_t r = gcry_mpi_print(GCRYMPI_FMT_USG, out+offset,
+				      outLength-offset, &nwritten, secret);
       gcry_mpi_release(secret);
       if(r) {
 	handleError(r);
