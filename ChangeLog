@@ -1,3 +1,13 @@
+2008-02-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Updated README. Added html version of README and man page.
+	* README
+	* README.html
+	* readme2html: Shell script to generate README.html from README using
+	asciidoc.
+	* doc/aria2c.1.html
+	* doc/makeman: Added the line to generate aria2c.1.html
+
 2008-02-24  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed offset calculation.

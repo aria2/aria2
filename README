@@ -1,27 +1,29 @@
 aria2 - The ultra fast download utility
+=======================================
+:Author:    Tatsuhiro Tsujikawa
+:Email:     tujikawa_at_users_dot_sourceforge_dot_net
 
-1. Disclaimer
--------------
+Disclaimer
+----------
 This program comes with no warranty.
 You must use this program at your own risk.
 
-2. About aria2
---------------
-aria2 has segmented downloading engine in its core. By segmented downloading,
-it can download files very much faster than ordinary browsers.
+Introduction
+------------
+aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent. 
 
-aria2 is in very early development stage. Currently it has following features:
-* HTTP/HTTPS GET support
+Here is a list of features.
+
 * HTTP Proxy support
 * HTTP BASIC authentication support
 * HTTP Proxy authentication support
 * FTP support(active, passive mode)
 * FTP through HTTP proxy(GET command or tunneling)
-* Segmented download
+* Multi-source/segmented downloading ability
 * Cookie support
 * It can load cookies from file whose format is used by Netscape and Mozilla.
 * It can run as a daemon process.
-* BitTorrent protocol support with fast extension.
+* BitTorrent protocol support with fast extension, DHT, encryption, PEX enabled.
 * Selective download in multi-file torrent/metalink.
 * Metalink version 3.0 support(HTTP/FTP/BitTorrent).
 * Limits download/upload speed.
@@ -32,13 +34,19 @@ aria2 is in very early development stage. Currently it has following features:
 * Integrates HTTP/FTP/BitTorrent downloads; downloading a file from several
   different sources.
 
-3. Dependency
--------------
-In order to enable HTTPS support, you need GNU TLS or OpenSSL.
-In order to enable BitTorrent support, you need GNU TLS+libgcrypt or OpenSSL.
-In order to enable Metalink support, you need libxml2 or Expat. Optionally
-GNU TLS+libgcrypt or OpenSSL are required for checksum checking support(MD5,
-SHA1, SHA256).
+Dependency
+----------
+
+.External Library Dependency
+[frame="all", grid="all"]
+`---------`---------------------------
+features   dependency
+--------------------------------------
+HTTPS      GnuTLS or OpenSSL
+BitTorrent GnuTLS+Libgcrypt or OpenSSL
+Metalink   libxml2 or Expat.
+Checksum   GnuTLS+Libgcrypt or OpenSSL
+--------------------------------------
 
 Note;;
   GNU TLS has precedence over OpenSSL if both libraries are installed.
@@ -52,44 +60,52 @@ You can disable BitTorrent, Metalink support by providing --disable-bittorrent,
 --disable-metalink respectively to configure script.
 
 In order to enable async DNS support, you need c-ares or ares.
-c-ares: http://daniel.haxx.se/projects/c-ares/
-ares: ftp://athena-dist.mit.edu/pub/ATHENA/ares
 
-4. How to build
----------------
+* c-ares: http://daniel.haxx.se/projects/c-ares/
+* ares: ftp://athena-dist.mit.edu/pub/ATHENA/ares
+
+How to build
+------------
 In order to build aria2 from the source package, you need following development
 packages(package name may vary depending on the distribution you use):
 
-* libgnutls-dev    (Required for HTTPS, BitTorrent support)
-* libgpg-error-dev (Required for BitTorrent support)
-* libgcrypt-dev    (Required for BitTorrent support)
+* libgnutls-dev    (Required for HTTPS, BitTorrent, Checksum support)
+* libgpg-error-dev (Required for BitTorrent, Checksum support)
+* libgcrypt-dev    (Required for BitTorrent, Checksum support)
 * libares-dev      (Required for async DNS support)
 * libxml2-dev      (Required for Metalink support)
 
 You can use libssl-dev instead of libgnutls-dev,libgpg-error-dev,libgcrypt-dev:
-* libssl-dev       (Required for HTTPS, BitTorrent support)
+
+* libssl-dev       (Required for HTTPS, BitTorrent, Checksum support)
 
 You can use libexpat1-dev instead of libxml2-dev:
+
 * libexpat1-dev    (Required for Metalink support)
 
 The build process is fairly standard way for *nix programs:
 
+-------------
 $ ./configure
 $ make
+-------------
 
 The executable is aria2c in src directory.
 
-5. BitTorrrent
---------------
+BitTorrrent
+-----------
+About filename
+~~~~~~~~~~~~~~
 The filename of the downloaded file is determined as follows:
 
-single-file mode:
+single-file mode::
     If "name" key is present in .torrent file, filename is the value of "name"
     key. Otherwise, filename is the basename of .torrent file appended by
     ".file". For example, .torrent file is "test.torrrent", then filename is
     "test.torrent.file".
     The directory to store the downloaded file can be specified by -d option.
-multi-file mode:
+
+multi-file mode::
     The complete directory/file structure mentioned in .torrent file is
     created.
     The directory to store the top directory of downloaded files can be
@@ -107,16 +123,21 @@ size itself is required. Writing and reading is done against this file.
 After download completes, aria2 creates complete directory structure if needed,
 and copies whole file or a part of it to the destination.
 
-Note:
-*  -o option is used to change the filename of downloaded .torrent file.
-* The ports aria2c uses are 6881-6999.
+DHT
+~~~
+As of release 0.13.0, aria2 supports DHT. The routing table is saved to $HOME/.aria2/dht.dat.
+
+Note;;
+*  -o option is used to change the filename of .torrent file itself, not a filename of a file in .torrent file.
+* The port numbers that aria2 uses by default are 6881-6999 for TCP and UDP.
+* aria2 doesn't configure port-forwarding automatically. Please configure your router or firewall manually.
 * The maximum number of peers is 55. This limit may be exceeded when download
 rate is low.
 * As of release 0.10.0, aria2 stops sending request message after selective
   download completes,
 
-6. Metalink
------------
+Metalink
+--------
 The current implementation supports HTTP/FTP/BitTorrent.
 The other P2P protocols are ignored.
 
@@ -131,24 +152,25 @@ If chunk checksums are provided in Metalink file, aria2 automatically validate
 a chunk of file while downloading it. This behavior can be turned off by
 a command-line option.
 
-7. netrc
---------
+netrc
+-----
 netrc support is enabled by default in ftp.
 To disable netrc support, specify -n command-line option.
 Your .netrc file should have correct permissions(600).
 
-8. Configuration file
----------------------
-Configuration file must be placed under ~/.aria2 and must be named as aria2.conf.
+Configuration file
+------------------
+Configuration file must be placed under $HOME/.aria2 and must be named as aria2.conf.
 In each line, there is 1 parameter whose syntax is name=value pair,
 where name is the long command-line option name without '--' prefix.
 The lines beginning '#' are treated as comments.
 
 Example:
-
+--------------------------------------
 # sample configuration file for aria2c
 file-allocation=prealloc
 listen-port=60000
 seed-ratio=1.0
 max-upload-limit=40K
 ftp-pasv=true
+---------------------------------------

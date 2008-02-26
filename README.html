@@ -1,0 +1,678 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.2.2" />
+<style type="text/css">
+/* Debug borders */
+p, li, dt, dd, div, pre, h1, h2, h3, h4, h5, h6 {
+/*
+  border: 1px solid red;
+*/
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: bold;
+}
+
+tt {
+  color: navy;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  font-family: sans-serif;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  border-bottom: 2px solid silver;
+  padding-top: 0.5em;
+}
+
+div.sectionbody {
+  font-family: serif;
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+span#author {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+span#email {
+}
+span#revision {
+  font-family: sans-serif;
+}
+
+div#footer {
+  font-family: sans-serif;
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+div#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+div#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+div#preamble,
+div.tableblock, div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-right: 10%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.5em;
+  margin-bottom: 2.5em;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+
+div.listingblock {
+  margin-right: 0%;
+}
+div.listingblock > div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock > div.content {
+  padding-left: 2.0em;
+}
+
+div.attribution {
+  text-align: right;
+}
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 2px solid silver;
+}
+
+div.exampleblock > div.content {
+  border-left: 2px solid silver;
+  padding: 0.5em;
+}
+
+div.verseblock div.content {
+  white-space: pre;
+}
+
+div.imageblock div.content { padding-left: 0; }
+div.imageblock img { border: 1px solid silver; }
+span.image img { border-style: none; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: italic;
+}
+dd > *:first-child {
+  margin-top: 0;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.olist2 {
+  list-style-type: lower-alpha;
+}
+
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+tfoot {
+  font-weight: bold;
+}
+
+div.hlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hlist td {
+  padding-bottom: 5px;
+}
+td.hlist1 {
+  vertical-align: top;
+  font-style: italic;
+  padding-right: 0.8em;
+}
+td.hlist2 {
+  vertical-align: top;
+}
+
+@media print {
+  div#footer-badges { display: none; }
+}
+
+div#toctitle {
+  color: #527bbd;
+  font-family: sans-serif;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+/* Workarounds for IE6's broken and incomplete CSS2. */
+
+div.sidebar-content {
+  background: #ffffee;
+  border: 1px solid silver;
+  padding: 0.5em;
+}
+div.sidebar-title, div.image-title {
+  font-family: sans-serif;
+  font-weight: bold;
+  margin-top: 0.0em;
+  margin-bottom: 0.5em;
+}
+
+div.listingblock div.content {
+  border: 1px solid silver;
+  background: #f4f4f4;
+  padding: 0.5em;
+}
+
+div.quoteblock-content {
+  padding-left: 2.0em;
+}
+
+div.exampleblock-content {
+  border-left: 2px solid silver;
+  padding-left: 0.5em;
+}
+
+/* IE6 sets dynamically generated links as visited. */
+div#toc a:visited { color: blue; }
+</style>
+<title>aria2 - The ultra fast download utility</title>
+</head>
+<body>
+<div id="header">
+<h1>aria2 - The ultra fast download utility</h1>
+<span id="author">Tatsuhiro Tsujikawa</span><br />
+<span id="email"><tt>&lt;<a href="mailto:tujikawa_at_users_dot_sourceforge_dot_net">tujikawa_at_users_dot_sourceforge_dot_net</a>&gt;</tt></span><br />
+</div>
+<h2>1. Disclaimer</h2>
+<div class="sectionbody">
+<p>This program comes with no warranty.
+You must use this program at your own risk.</p>
+</div>
+<h2>2. Introduction</h2>
+<div class="sectionbody">
+<p>aria2 is a utility for downloading files. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm. Using Metalink's chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent.</p>
+<p>Here is a list of features.</p>
+<ul>
+<li>
+<p>
+HTTP Proxy support
+</p>
+</li>
+<li>
+<p>
+HTTP BASIC authentication support
+</p>
+</li>
+<li>
+<p>
+HTTP Proxy authentication support
+</p>
+</li>
+<li>
+<p>
+FTP support(active, passive mode)
+</p>
+</li>
+<li>
+<p>
+FTP through HTTP proxy(GET command or tunneling)
+</p>
+</li>
+<li>
+<p>
+Multi-source/segmented downloading ability
+</p>
+</li>
+<li>
+<p>
+Cookie support
+</p>
+</li>
+<li>
+<p>
+It can load cookies from file whose format is used by Netscape and Mozilla.
+</p>
+</li>
+<li>
+<p>
+It can run as a daemon process.
+</p>
+</li>
+<li>
+<p>
+BitTorrent protocol support with fast extension, DHT, encryption, PEX enabled.
+</p>
+</li>
+<li>
+<p>
+Selective download in multi-file torrent/metalink.
+</p>
+</li>
+<li>
+<p>
+Metalink version 3.0 support(HTTP/FTP/BitTorrent).
+</p>
+</li>
+<li>
+<p>
+Limits download/upload speed.
+</p>
+</li>
+<li>
+<p>
+Chunk checksum validation in Metalink.
+</p>
+</li>
+<li>
+<p>
+netrc support.
+</p>
+</li>
+<li>
+<p>
+Configuration file support.
+</p>
+</li>
+<li>
+<p>
+Downloads URIs found in a text file or stdin.
+</p>
+</li>
+<li>
+<p>
+Integrates HTTP/FTP/BitTorrent downloads; downloading a file from several
+  different sources.
+</p>
+</li>
+</ul>
+</div>
+<h2>3. Dependency</h2>
+<div class="sectionbody">
+<div class="tableblock">
+<table rules="all"
+frame="border"
+cellspacing="0" cellpadding="4">
+<caption class="title">Table: External Library Dependency</caption>
+<col width="114" />
+<col width="320" />
+<thead>
+  <tr>
+    <th align="left">
+    features
+    </th>
+    <th align="left">
+    dependency
+    </th>
+  </tr>
+</thead>
+<tbody valign="top">
+  <tr>
+    <td align="left">
+    HTTPS
+    </td>
+    <td align="left">
+    GnuTLS or OpenSSL
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+    BitTorrent
+    </td>
+    <td align="left">
+    GnuTLS+Libgcrypt or OpenSSL
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+    Metalink
+    </td>
+    <td align="left">
+    libxml2 or Expat.
+    </td>
+  </tr>
+  <tr>
+    <td align="left">
+    Checksum
+    </td>
+    <td align="left">
+    GnuTLS+Libgcrypt or OpenSSL
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+<dl>
+<dt>
+Note
+</dt>
+<dd>
+<p>
+  GNU TLS has precedence over OpenSSL if both libraries are installed.
+  If you prefer OpenSSL, run configure with "&#8212;without-gnutls".
+</p>
+</dd>
+<dt>
+Note
+</dt>
+<dd>
+<p>
+  libxml2 has precedence over Expat if both libraries are installed.
+  If you prefer Expat, run configure with "&#8212;without-libxml2".
+</p>
+</dd>
+</dl>
+<p>You can disable BitTorrent, Metalink support by providing &#8212;disable-bittorrent,
+&#8212;disable-metalink respectively to configure script.</p>
+<p>In order to enable async DNS support, you need c-ares or ares.</p>
+<ul>
+<li>
+<p>
+c-ares: http://daniel.haxx.se/projects/c-ares/
+</p>
+</li>
+<li>
+<p>
+ares: ftp://athena-dist.mit.edu/pub/ATHENA/ares
+</p>
+</li>
+</ul>
+</div>
+<h2>4. How to build</h2>
+<div class="sectionbody">
+<p>In order to build aria2 from the source package, you need following development
+packages(package name may vary depending on the distribution you use):</p>
+<ul>
+<li>
+<p>
+libgnutls-dev    (Required for HTTPS, BitTorrent, Checksum support)
+</p>
+</li>
+<li>
+<p>
+libgpg-error-dev (Required for BitTorrent, Checksum support)
+</p>
+</li>
+<li>
+<p>
+libgcrypt-dev    (Required for BitTorrent, Checksum support)
+</p>
+</li>
+<li>
+<p>
+libares-dev      (Required for async DNS support)
+</p>
+</li>
+<li>
+<p>
+libxml2-dev      (Required for Metalink support)
+</p>
+</li>
+</ul>
+<p>You can use libssl-dev instead of libgnutls-dev,libgpg-error-dev,libgcrypt-dev:</p>
+<ul>
+<li>
+<p>
+libssl-dev       (Required for HTTPS, BitTorrent, Checksum support)
+</p>
+</li>
+</ul>
+<p>You can use libexpat1-dev instead of libxml2-dev:</p>
+<ul>
+<li>
+<p>
+libexpat1-dev    (Required for Metalink support)
+</p>
+</li>
+</ul>
+<p>The build process is fairly standard way for *nix programs:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt>$ ./configure
+$ make</tt></pre>
+</div></div>
+<p>The executable is aria2c in src directory.</p>
+</div>
+<h2>5. BitTorrrent</h2>
+<div class="sectionbody">
+<h3>5.1. About filename</h3>
+<p>The filename of the downloaded file is determined as follows:</p>
+<dl>
+<dt>
+single-file mode
+</dt>
+<dd>
+<p>
+    If "name" key is present in .torrent file, filename is the value of "name"
+    key. Otherwise, filename is the basename of .torrent file appended by
+    ".file". For example, .torrent file is "test.torrrent", then filename is
+    "test.torrent.file".
+    The directory to store the downloaded file can be specified by -d option.
+</p>
+</dd>
+<dt>
+multi-file mode
+</dt>
+<dd>
+<p>
+    The complete directory/file structure mentioned in .torrent file is
+    created.
+    The directory to store the top directory of downloaded files can be
+    specified by -d option.
+</p>
+</dd>
+</dl>
+<p>In the default behavior, before download starts, complete directory structure
+is created if needed. Then aria2 opens all files mentioned in .torrent file,
+directly writes to and reads from these files.
+NOTE: Even in selective download, all files are opened.</p>
+<p>If "&#8212;direct-file-mapping" option set to be false, aria2 creates temporary
+file in the store directory. The length of this file is the sum of length of
+the files in .torrent file, so at least 2 times more disk space than the file
+size itself is required. Writing and reading is done against this file.
+After download completes, aria2 creates complete directory structure if needed,
+and copies whole file or a part of it to the destination.</p>
+<h3>5.2. DHT</h3>
+<p>As of release 0.13.0, aria2 supports DHT. The routing table is saved to $HOME/.aria2/dht.dat.</p>
+<dl>
+<dt>
+Note
+</dt>
+<dd>
+<ul>
+<li>
+<p>
+-o option is used to change the filename of .torrent file itself, not a filename of a file in .torrent file.
+</p>
+</li>
+<li>
+<p>
+The port numbers that aria2 uses by default are 6881-6999 for TCP and UDP.
+</p>
+</li>
+<li>
+<p>
+aria2 doesn't configure port-forwarding automatically. Please configure your router or firewall manually.
+</p>
+</li>
+<li>
+<p>
+The maximum number of peers is 55. This limit may be exceeded when download
+rate is low.
+</p>
+</li>
+<li>
+<p>
+As of release 0.10.0, aria2 stops sending request message after selective
+  download completes,
+</p>
+</li>
+</ul>
+</dd>
+</dl>
+</div>
+<h2>6. Metalink</h2>
+<div class="sectionbody">
+<p>The current implementation supports HTTP/FTP/BitTorrent.
+The other P2P protocols are ignored.</p>
+<p>For checksum checking, MD5, SHA1, SHA256 are supported. If multiple hash
+algorithms are provided, aria2 uses SHA1. If checksum checking is failed, aria2
+doesn't retry the download and just exits with non-zero return code.</p>
+<p>The supported user preferences are version, language, location, protocol and
+os.</p>
+<p>If chunk checksums are provided in Metalink file, aria2 automatically validate
+a chunk of file while downloading it. This behavior can be turned off by
+a command-line option.</p>
+</div>
+<h2>7. netrc</h2>
+<div class="sectionbody">
+<p>netrc support is enabled by default in ftp.
+To disable netrc support, specify -n command-line option.
+Your .netrc file should have correct permissions(600).</p>
+</div>
+<h2>8. Configuration file</h2>
+<div class="sectionbody">
+<p>Configuration file must be placed under $HOME/.aria2 and must be named as aria2.conf.
+In each line, there is 1 parameter whose syntax is name=value pair,
+where name is the long command-line option name without <em>&#8212;</em> prefix.
+The lines beginning <em>#</em> are treated as comments.</p>
+<p>Example:</p>
+<div class="listingblock">
+<div class="content">
+<pre><tt># sample configuration file for aria2c
+file-allocation=prealloc
+listen-port=60000
+seed-ratio=1.0
+max-upload-limit=40K
+ftp-pasv=true</tt></pre>
+</div></div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 26-Feb-2008 21:34:01 JST
+</div>
+</div>
+</body>
+</html>
