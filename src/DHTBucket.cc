@@ -46,7 +46,7 @@
 
 namespace aria2 {
 
-DHTBucket::DHTBucket(uint32_t prefixLength,
+DHTBucket::DHTBucket(size_t prefixLength,
 		     const unsigned char* max, const unsigned char* min,
 		     const SharedHandle<DHTNode>& localNode):
   _prefixLength(prefixLength),

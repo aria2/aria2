@@ -74,7 +74,7 @@ std::string HandshakeExtensionMessage::getBencodedData()
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    std::string idStr = Util::uitos((uint32_t)vt.second);
+    std::string idStr = Util::uitos(vt.second);
     exts->put(vt.first, new Data(idStr, true));
   }
   BencodeVisitor v;
@@ -94,7 +94,7 @@ std::string HandshakeExtensionMessage::toString() const
   for(std::map<std::string, uint8_t>::const_iterator itr = _extensions.begin();
       itr != _extensions.end(); ++itr) {
     const std::map<std::string, uint8_t>::value_type& vt = *itr;
-    s += ", "+vt.first+"="+Util::uitos((uint32_t)vt.second);
+    s += ", "+vt.first+"="+Util::uitos(vt.second);
   }
   return s;
 }
