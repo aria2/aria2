@@ -1,5 +1,11 @@
 2008-02-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that option handler for PREF_METALINK_ENABLE_UNIQUE_PROTOCOL.
+	is missing.
+	* src/OptionHandlerFactory.cc
+
+2008-02-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that HAVE message is not sent for a piece they are
 	downloaded fom http/ftp server before any BitTorrent handshake is done
 	with peers.

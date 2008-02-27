@@ -112,6 +112,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
     handlers.push_back(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
 						  std::deque<std::string>(&params[0], &params[arrayLength(params)])));
   }
+  handlers.push_back(new BooleanOptionHandler(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE));
   handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_DHT));
   handlers.push_back(new IntegerRangeOptionHandler(PREF_DHT_LISTEN_PORT, 1024, UINT16_MAX));
