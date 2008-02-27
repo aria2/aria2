@@ -33,35 +33,37 @@
  */
 /* copyright --> */
 #include "ExpatMetalinkProcessor.h"
-#include "BinaryStream.h"
+#include "DefaultDiskWriter.h"
 #include "MetalinkParserStateMachine.h"
+#include "Metalinker.h"
+#include "MetalinkEntry.h"
 #include "Util.h"
 #include "message.h"
-#include "DefaultDiskWriter.h"
+#include "DlAbortEx.h"
+
+namespace aria2 {
 
 class SessionData {
 public:
-  MetalinkParserStateMachineHandle _stm;
+  SharedHandle<MetalinkParserStateMachine> _stm;
 
-  Strings _charactersStack;
+  std::deque<std::string> _charactersStack;
 
-  SessionData(const MetalinkParserStateMachineHandle& stm):_stm(stm) {}
+  SessionData(const SharedHandle<MetalinkParserStateMachine>& stm):_stm(stm) {}
 };
-
-typedef SharedHandle<SessionData> SessionDataHandle;
 
 static void mlStartElement(void* userData, const char* name, const char** attrs)
 {
-  ((SessionData*)userData)->_charactersStack.push_front(string());
-  map<string, string> attrmap;
+  ((SessionData*)userData)->_charactersStack.push_front(std::string());
+  std::map<std::string, std::string> attrmap;
   if(attrs) {
     const char** p = attrs;
     while(*p != 0) {
-      string name = *p++;
+      std::string name = *p++;
       if(*p == 0) {
 	break;
       }
-      string value = Util::trim(*p++);
+      std::string value = Util::trim(*p++);
       attrmap[name] = value;
     }
   }
@@ -78,7 +80,7 @@ static void mlEndElement(void* userData, const char* name)
 
 static void mlCharacters(void* userData, const char* ch, int len)
 {
-  ((SessionData*)userData)->_charactersStack.front() += string(&ch[0], &ch[len]);
+  ((SessionData*)userData)->_charactersStack.front() += std::string(&ch[0], &ch[len]);
 }
 
 ExpatMetalinkProcessor::ExpatMetalinkProcessor():
@@ -86,21 +88,23 @@ ExpatMetalinkProcessor::ExpatMetalinkProcessor():
 {}
 	 
 	 
-MetalinkerHandle ExpatMetalinkProcessor::parseFile(const string& filename)
+SharedHandle<Metalinker>
+ExpatMetalinkProcessor::parseFile(const std::string& filename)
 {
-  DefaultDiskWriterHandle dw = new DefaultDiskWriter();
+  SharedHandle<DefaultDiskWriter> dw = new DefaultDiskWriter();
   dw->openExistingFile(filename);
 
   return parseFromBinaryStream(dw);
 }
 	 
-MetalinkerHandle ExpatMetalinkProcessor::parseFromBinaryStream(const BinaryStreamHandle& binaryStream)
+SharedHandle<Metalinker>
+ExpatMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
   _stm = new MetalinkParserStateMachine();
   int32_t bufSize = 4096;
   unsigned char buf[bufSize];
 
-  SessionDataHandle sessionData = new SessionData(_stm);
+  SharedHandle<SessionData> sessionData = new SessionData(_stm);
   XML_Parser parser = XML_ParserCreate(0);
   try {
     XML_SetUserData(parser, sessionData.get());
@@ -131,3 +135,5 @@ MetalinkerHandle ExpatMetalinkProcessor::parseFromBinaryStream(const BinaryStrea
   }
   return _stm->getResult();
 }
+
+} // namespace aria2
