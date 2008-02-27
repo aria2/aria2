@@ -56,14 +56,12 @@ SRCS =  Socket.h\
 	HandleRegistry.h\
 	FeatureConfig.cc FeatureConfig.h\
 	DownloadEngineFactory.cc DownloadEngineFactory.h\
-	RequestInfo.h\
 	SpeedCalc.cc SpeedCalc.h\
 	PeerStat.h\
 	BitfieldMan.cc BitfieldMan.h\
 	BitfieldManFactory.cc BitfieldManFactory.h\
 	Randomizer.h\
 	SimpleRandomizer.cc SimpleRandomizer.h\
-	FileAllocator.h\
 	HttpResponse.cc HttpResponse.h\
 	HttpRequest.cc HttpRequest.h\
 	Range.h\

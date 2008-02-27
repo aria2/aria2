@@ -293,20 +293,19 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	Base64.cc CookieBox.cc CookieBox.h LogFactory.cc LogFactory.h \
 	NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
 	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
-	BitfieldMan.h BitfieldManFactory.cc BitfieldManFactory.h \
-	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
-	FileAllocator.h HttpResponse.cc HttpResponse.h HttpRequest.cc \
-	HttpRequest.h Range.h AbstractProxyRequestCommand.cc \
-	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
-	AuthConfig.h AuthResolver.h AbstractAuthResolver.cc \
-	DefaultAuthResolver.cc DefaultAuthResolver.h \
-	NetrcAuthResolver.cc NetrcAuthResolver.h AuthConfigFactory.cc \
-	AuthConfigFactory.h OptionParser.cc OptionParser.h \
-	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
-	NameResolver.h RequestGroup.cc RequestGroup.h \
+	DownloadEngineFactory.cc DownloadEngineFactory.h SpeedCalc.cc \
+	SpeedCalc.h PeerStat.h BitfieldMan.cc BitfieldMan.h \
+	BitfieldManFactory.cc BitfieldManFactory.h Randomizer.h \
+	SimpleRandomizer.cc SimpleRandomizer.h HttpResponse.cc \
+	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
+	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
+	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
+	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
+	AbstractAuthResolver.cc DefaultAuthResolver.cc \
+	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
+	AuthConfigFactory.cc AuthConfigFactory.h OptionParser.cc \
+	OptionParser.h OptionHandlerFactory.cc OptionHandlerFactory.h \
+	NameResolver.cc NameResolver.h RequestGroup.cc RequestGroup.h \
 	RequestGroupAware.cc RequestGroupAware.h RequestGroupMan.cc \
 	RequestGroupMan.h FileAllocationMan.cc FileAllocationMan.h \
 	FileAllocationCommand.cc FileAllocationCommand.h \
@@ -944,20 +943,19 @@ SRCS = Socket.h SocketCore.cc SocketCore.h Command.cc Command.h \
 	Base64.cc CookieBox.cc CookieBox.h LogFactory.cc LogFactory.h \
 	NullLogger.h TimeA2.cc TimeA2.h SharedHandle.h \
 	HandleRegistry.h FeatureConfig.cc FeatureConfig.h \
-	DownloadEngineFactory.cc DownloadEngineFactory.h RequestInfo.h \
-	SpeedCalc.cc SpeedCalc.h PeerStat.h BitfieldMan.cc \
-	BitfieldMan.h BitfieldManFactory.cc BitfieldManFactory.h \
-	Randomizer.h SimpleRandomizer.cc SimpleRandomizer.h \
-	FileAllocator.h HttpResponse.cc HttpResponse.h HttpRequest.cc \
-	HttpRequest.h Range.h AbstractProxyRequestCommand.cc \
-	AbstractProxyRequestCommand.h AbstractProxyResponseCommand.cc \
-	AbstractProxyResponseCommand.h Netrc.cc Netrc.h AuthConfig.cc \
-	AuthConfig.h AuthResolver.h AbstractAuthResolver.cc \
-	DefaultAuthResolver.cc DefaultAuthResolver.h \
-	NetrcAuthResolver.cc NetrcAuthResolver.h AuthConfigFactory.cc \
-	AuthConfigFactory.h OptionParser.cc OptionParser.h \
-	OptionHandlerFactory.cc OptionHandlerFactory.h NameResolver.cc \
-	NameResolver.h RequestGroup.cc RequestGroup.h \
+	DownloadEngineFactory.cc DownloadEngineFactory.h SpeedCalc.cc \
+	SpeedCalc.h PeerStat.h BitfieldMan.cc BitfieldMan.h \
+	BitfieldManFactory.cc BitfieldManFactory.h Randomizer.h \
+	SimpleRandomizer.cc SimpleRandomizer.h HttpResponse.cc \
+	HttpResponse.h HttpRequest.cc HttpRequest.h Range.h \
+	AbstractProxyRequestCommand.cc AbstractProxyRequestCommand.h \
+	AbstractProxyResponseCommand.cc AbstractProxyResponseCommand.h \
+	Netrc.cc Netrc.h AuthConfig.cc AuthConfig.h AuthResolver.h \
+	AbstractAuthResolver.cc DefaultAuthResolver.cc \
+	DefaultAuthResolver.h NetrcAuthResolver.cc NetrcAuthResolver.h \
+	AuthConfigFactory.cc AuthConfigFactory.h OptionParser.cc \
+	OptionParser.h OptionHandlerFactory.cc OptionHandlerFactory.h \
+	NameResolver.cc NameResolver.h RequestGroup.cc RequestGroup.h \
 	RequestGroupAware.cc RequestGroupAware.h RequestGroupMan.cc \
 	RequestGroupMan.h FileAllocationMan.cc FileAllocationMan.h \
 	FileAllocationCommand.cc FileAllocationCommand.h \
