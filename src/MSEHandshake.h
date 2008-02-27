@@ -172,6 +172,10 @@ public:
   SharedHandle<ARC4Encryptor> getEncryptor() const;
 
   SharedHandle<ARC4Decryptor> getDecryptor() const;
+
+  const unsigned char* getBuffer() const;
+
+  size_t getBufferLength() const;
 };
 
 } // namespace aria2

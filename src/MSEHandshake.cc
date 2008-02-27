@@ -91,9 +91,10 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
   if(!_socket->isReadable(0)) {
     return HANDSHAKE_NOT_YET;
   }
-  int32_t bufLength = 20;
-  _socket->peekData(_rbuf, bufLength);
-  if(bufLength != 20) {
+  int32_t bufLength = 20-_rbufLength;
+  _socket->readData(_rbuf+_rbufLength, bufLength);
+  _rbufLength += bufLength;
+  if(_rbufLength < 20) {
     return HANDSHAKE_NOT_YET;
   }
   if(_rbuf[0] == BtHandshakeMessage::PSTR_LENGTH &&
@@ -595,6 +596,16 @@ SharedHandle<ARC4Encryptor> MSEHandshake::getEncryptor() const
 SharedHandle<ARC4Decryptor> MSEHandshake::getDecryptor() const
 {
   return _decryptor;
+}
+
+const unsigned char* MSEHandshake::getBuffer() const
+{
+  return _rbuf;
+}
+
+size_t MSEHandshake::getBufferLength() const
+{
+  return _rbufLength;
 }
 
 } // namespace aria2

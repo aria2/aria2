@@ -1,3 +1,10 @@
+2008-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed possible busy loop if first 20 bytes are not received for a few
+	minutes.
+	* src/MSEHandshake.{h, cc} (identifyHandshakeType)
+	* src/ReceiverMSEHandshakeCommand.cc
+
 2008-02-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed compilation error

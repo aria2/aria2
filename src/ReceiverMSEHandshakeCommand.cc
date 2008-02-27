@@ -90,7 +90,12 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
 	throw new DlAbortEx("The legacy BitTorrent handshake is not acceptable by the preference.");
       }
-      Command* c = new PeerReceiveHandshakeCommand(cuid, peer, e, socket);
+      SharedHandle<PeerConnection> peerConnection =
+	new PeerConnection(cuid, socket, e->option);
+      peerConnection->presetBuffer(_mseHandshake->getBuffer(),
+				   _mseHandshake->getBufferLength());
+      Command* c = new PeerReceiveHandshakeCommand(cuid, peer, e, socket,
+						   peerConnection);
       e->commands.push_back(c);
       return true;
     }
