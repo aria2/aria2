@@ -127,8 +127,8 @@ BtMessageHandle DefaultBtInteractive::receiveAndSendHandshake() {
 }
 
 void DefaultBtInteractive::doPostHandshakeProcessing() {
-  // TODO where is the valid place to rest haveCheckTime?
-  haveCheckPoint.reset();
+  // Set time 0 to haveCheckPoint to cache http/ftp download piece completion
+  haveCheckPoint.setTimeInSec(0);
   keepAliveCheckPoint.reset();
   floodingCheckPoint.reset();
   _pexCheckPoint.setTimeInSec(0);
