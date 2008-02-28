@@ -156,6 +156,8 @@ public:
 
   virtual size_t countReceivedMessageInIteration() const;
 
+  virtual size_t countOutstandingRequest();
+
   void setCuid(int32_t cuid) {
     this->cuid = cuid;
   }

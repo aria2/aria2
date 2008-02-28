@@ -453,6 +453,11 @@ size_t DefaultBtInteractive::countReceivedMessageInIteration() const
   return _numReceivedMessage;
 }
 
+size_t DefaultBtInteractive::countOutstandingRequest()
+{
+  return dispatcher->countOutstandingRequest();
+}
+
 void DefaultBtInteractive::setPeer(const SharedHandle<Peer>& peer)
 {
   this->peer = peer;

@@ -1,5 +1,13 @@
 2008-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Add a file descriptor which connected to fast peer(latency<1500) to
+	select(). This change reduced CPU load.
+	* src/PeerInteractionCommand.cc
+	* src/DefaultBtInteractive.{h, cc}
+	* src/BtInteractive.h
+
+2008-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the previous insufficient fix for possible busy loop.
 	* src/MSEHandshake.cc (identifyHandshakeType)
 
