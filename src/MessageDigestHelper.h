@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "messageDigest.h"
 #include <string>
 
 namespace aria2 {
@@ -44,6 +45,8 @@ namespace aria2 {
 class BinaryStream;
 
 class MessageDigestHelper {
+private:
+  static MessageDigestContext* _sha1Ctx;
 public:
   /**
    * Returns message digest in hexadecimal representation.
@@ -57,6 +60,30 @@ public:
   {
     return digest(algo, data.c_str(), data.size());
   }
+
+  /**
+   * staticSHA1DigestInit(), staticSHA1DigestFree(), staticSHA1Digest()
+   * use statically declared MessageDigestContext _sha1Ctx.
+   */
+  /**
+   * Initializes _sha1Ctx
+   */
+  static void staticSHA1DigestInit();
+
+  /**
+   * Frees allocated resources for _sha1Ctx
+   */
+  static void staticSHA1DigestFree();
+
+  static std::string staticSHA1Digest(const SharedHandle<BinaryStream>& bs,
+				      int64_t offset, int64_t length);
+
+  /**
+   * ctx must be initialized or reseted before calling this function.
+   */
+  static std::string digest(MessageDigestContext* ctx,
+			    const SharedHandle<BinaryStream>& bs,
+			    int64_t offset, int64_t length);
 
   /**
    * Calculates message digest of file denoted by filename.

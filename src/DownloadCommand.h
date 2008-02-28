@@ -41,6 +41,9 @@ namespace aria2 {
 
 class TransferEncoding;
 class PeerStat;
+#ifdef ENABLE_MESSAGE_DIGEST
+class MessageDigestContext;
+#endif // ENABLE_MESSAGE_DIGEST
 
 class DownloadCommand : public AbstractCommand {
 private:
@@ -48,6 +51,9 @@ private:
   int32_t startupIdleTime;
   int32_t lowestDownloadSpeedLimit;
   SharedHandle<PeerStat> peerStat;
+#ifdef ENABLE_MESSAGE_DIGEST
+  MessageDigestContext* _messageDigestContext;
+#endif // ENABLE_MESSAGE_DIGEST
 
   void validatePieceHash(const SharedHandle<Segment>& segment);
 

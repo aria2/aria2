@@ -42,6 +42,29 @@
 
 namespace aria2 {
 
+MessageDigestContext* MessageDigestHelper::_sha1Ctx = 0;
+
+void MessageDigestHelper::staticSHA1DigestInit()
+{
+  staticSHA1DigestFree();
+  _sha1Ctx = new MessageDigestContext();
+  _sha1Ctx->trySetAlgo("sha1");
+  _sha1Ctx->digestInit();
+}
+
+void MessageDigestHelper::staticSHA1DigestFree()
+{
+  delete _sha1Ctx;
+}
+
+std::string MessageDigestHelper::staticSHA1Digest(const BinaryStreamHandle& bs,
+						  int64_t offset,
+						  int64_t length)
+{
+  _sha1Ctx->digestReset();
+  return digest(_sha1Ctx, bs, offset, length);
+}
+
 std::string MessageDigestHelper::digest(const std::string& algo,
 					const BinaryStreamHandle& bs,
 					int64_t offset,
@@ -50,7 +73,13 @@ std::string MessageDigestHelper::digest(const std::string& algo,
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);
   ctx.digestInit();
+  return digest(&ctx, bs, offset, length);
+}
 
+std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
+					const SharedHandle<BinaryStream>& bs,
+					int64_t offset, int64_t length)
+{
   int32_t BUFSIZE = 4096;
   unsigned char BUF[BUFSIZE];
   int64_t iteration = length/BUFSIZE;
@@ -60,7 +89,7 @@ std::string MessageDigestHelper::digest(const std::string& algo,
     if(readLength != BUFSIZE) {
       throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
     }
-    ctx.digestUpdate(BUF, readLength);
+    ctx->digestUpdate(BUF, readLength);
     offset += readLength;
   }
   if(tail) {
@@ -68,9 +97,9 @@ std::string MessageDigestHelper::digest(const std::string& algo,
     if(readLength != tail) {
       throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
     }
-    ctx.digestUpdate(BUF, readLength);
+    ctx->digestUpdate(BUF, readLength);
   }
-  std::string rawMD = ctx.digestFinal();
+  std::string rawMD = ctx->digestFinal();
   return Util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
 }
 

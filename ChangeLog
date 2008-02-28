@@ -1,3 +1,17 @@
+2008-02-29  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Create MessageDigestHelper::staticSHA1DigestInit() which uses
+	statically declared sha1 MessageDigestContext.
+	* src/BtPieceMessage.cc: Use staticSHA1DigestInit() to avoid
+	initialization of short-lived MessageDigestContext.
+	* src/MessageDigestHelper.{h, cc}
+	* src/main.cc
+	
+	Now DownloadCommand has a reference to MessageDigestContext to avoid
+	the initialization of MessageDigestContext every time in validating
+	chunk checksum.
+	* src/DownloadCommand.{h, cc}
+	
 2008-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Add a file descriptor which connected to fast peer(latency<1500) to

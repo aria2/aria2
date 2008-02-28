@@ -55,7 +55,7 @@
 #include "message.h"
 #include "prefs.h"
 #ifdef ENABLE_MESSAGE_DIGEST
-#include "MessageDigestHelper.h"
+# include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
 #include <cassert>
 
@@ -68,8 +68,21 @@ DownloadCommand::DownloadCommand(int cuid,
 				 const SocketHandle& s):
   AbstractCommand(cuid, req, requestGroup, e, s),
   peerStat(0),
+#ifdef ENABLE_MESSAGE_DIGEST
+  _messageDigestContext(0),
+#endif // ENABLE_MESSAGE_DIGEST
   transferDecoder(0)
 {
+#ifdef ENABLE_MESSAGE_DIGEST
+  {
+    std::string algo = _requestGroup->getDownloadContext()->getPieceHashAlgo();
+    if(MessageDigestContext::supports(algo)) {
+      _messageDigestContext = new MessageDigestContext();
+      _messageDigestContext->trySetAlgo(algo);
+      _messageDigestContext->digestInit();
+    }
+  }
+#endif // ENABLE_MESSAGE_DIGEST
   peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
   if(peerStat.isNull()) {
     peerStat = new PeerStat(cuid);
@@ -81,6 +94,9 @@ DownloadCommand::DownloadCommand(int cuid,
 DownloadCommand::~DownloadCommand() {
   assert(peerStat.get());
   peerStat->downloadStop();
+#ifdef ENABLE_MESSAGE_DIGEST
+  delete _messageDigestContext;
+#endif // ENABLE_MESSAGE_DIGEST
 }
 
 bool DownloadCommand::executeInternal() {
@@ -187,10 +203,12 @@ void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
 #ifdef ENABLE_MESSAGE_DIGEST
   std::string expectedPieceHash =
     _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
-  if(e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
+  if(_messageDigestContext &&
+     e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
      !expectedPieceHash.empty()) {
+    _messageDigestContext->digestReset();
     std::string actualPieceHash =
-      MessageDigestHelper::digest(_requestGroup->getDownloadContext()->getPieceHashAlgo(),
+      MessageDigestHelper::digest(_messageDigestContext,
 				  _requestGroup->getPieceStorage()->getDiskAdaptor(),
 				  segment->getPosition(),
 				  segment->getLength());

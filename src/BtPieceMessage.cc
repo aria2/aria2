@@ -205,7 +205,7 @@ bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
   int64_t offset =
     ((int64_t)piece->getIndex())*btContext->getPieceLength();
   
-  return MessageDigestHelper::digest("sha1", pieceStorage->getDiskAdaptor(), offset, piece->getLength())
+  return MessageDigestHelper::staticSHA1Digest(pieceStorage->getDiskAdaptor(), offset, piece->getLength())
     == btContext->getPieceHash(piece->getIndex());
 }
 

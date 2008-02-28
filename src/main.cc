@@ -66,6 +66,9 @@
 # include "Metalink2RequestGroup.h"
 # include "MetalinkEntry.h"
 #endif // ENABLE_METALINK
+#ifdef ENABLE_MESSAGE_DIGEST
+# include "MessageDigestHelper.h"
+#endif // ENABLE_MESSAGE_DIGEST
 #include <deque>
 #include <signal.h>
 #include <unistd.h>
@@ -273,6 +276,10 @@ int main(int argc, char* argv[])
     AuthConfigFactorySingleton::instance(authConfigFactory);
     CUIDCounterHandle cuidCounter = new CUIDCounter();
     CUIDCounterSingletonHolder::instance(cuidCounter);
+#ifdef ENABLE_MESSAGE_DIGEST
+    MessageDigestHelper::staticSHA1DigestInit();
+#endif // ENABLE_MESSAGE_DIGEST
+
 #ifdef SIGPIPE
     Util::setGlobalSignalHandler(SIGPIPE, SIG_IGN, 0);
 #endif
