@@ -1,5 +1,13 @@
 2008-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the previous insufficient fix for possible busy loop.
+	* src/MSEHandshake.cc (identifyHandshakeType)
+
+	Removed unused functions.
+	* src/MSEHandshake.{h, cc} (readDataAndDecrypt)
+
+2008-02-28  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed possible busy loop if first 20 bytes are not received for a few
 	minutes.
 	* src/MSEHandshake.{h, cc} (identifyHandshakeType)

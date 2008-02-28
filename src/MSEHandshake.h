@@ -102,8 +102,6 @@ private:
 
   static const unsigned char VC[VC_LENGTH];
 
-  ssize_t readDataAndDecrypt(unsigned char* data, size_t length);
-
   void encryptAndSendData(const unsigned char* data, size_t length);
 
   void createReq1Hash(unsigned char* md) const;

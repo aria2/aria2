@@ -91,9 +91,12 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
   if(!_socket->isReadable(0)) {
     return HANDSHAKE_NOT_YET;
   }
-  int32_t bufLength = 20-_rbufLength;
-  _socket->readData(_rbuf+_rbufLength, bufLength);
-  _rbufLength += bufLength;
+  int32_t r = 20-_rbufLength;
+  _socket->readData(_rbuf+_rbufLength, r);
+  if(r == 0) {
+    throw new DlAbortEx(EX_EOF_FROM_PEER);
+  }
+  _rbufLength += r;
   if(_rbufLength < 20) {
     return HANDSHAKE_NOT_YET;
   }
@@ -178,16 +181,6 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
     enc.encrypt(to, 1024, from, 1024);
     enc.encrypt(_initiatorVCMarker, sizeof(_initiatorVCMarker),	VC, sizeof(VC));
   }
-}
-
-ssize_t MSEHandshake::readDataAndDecrypt(unsigned char* data, size_t length)
-{
-  unsigned char temp[MAX_BUFFER_LENGTH];
-  assert(MAX_BUFFER_LENGTH >= length);
-  int32_t rlength = length;
-  _socket->readData(temp, rlength);
-  _decryptor->decrypt(data, rlength, temp, rlength);
-  return rlength;
 }
 
 void MSEHandshake::encryptAndSendData(const unsigned char* data, size_t length)
