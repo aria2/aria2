@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "NameResolver.h"
+#include "DlAbortEx.h"
 #include <cstring>
 
 namespace aria2 {

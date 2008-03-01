@@ -50,7 +50,11 @@ extern "C" {
 } /* end of extern "C" */
 #endif
 
+#endif // ENABLE_ASYNC_DNS
+
 namespace aria2 {
+
+#ifdef ENABLE_ASYNC_DNS
 
 #ifdef HAVE_LIBCARES1_5
 void callback(void* arg, int status, int timeouts, struct hostent* host);
