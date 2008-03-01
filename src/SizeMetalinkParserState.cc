@@ -51,7 +51,7 @@ void SizeMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
 					 const std::string& characters)
 {
   try {
-    stm->setFileLengthOfEntry(Util::parseInt(characters));
+    stm->setFileLengthOfEntry(Util::parseLLInt(characters));
   } catch(RecoverableException* e) {
     delete e;
     // current metalink specification doesn't require size element.

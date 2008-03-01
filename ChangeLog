@@ -1,5 +1,10 @@
 2008-03-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that file size is ignored if size > INT32_MAX
+	* src/SizeMetalinkParserState.cc (endElement): 
+
+2008-03-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.13.0
 	* configure.ac
 	
