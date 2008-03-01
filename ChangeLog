@@ -1,5 +1,12 @@
 2008-03-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Bump up version number to 0.13.0
+	* configure.ac
+	
+	* Release 0.13.0
+
+2008-03-01  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated Makfefile.am to make 'make dist' work.
 	Now packaged filename is aria2c-VERSION.tar.bz2.
 	Added README, README.html, and aria2c.1.html to dist_doc_DATA.
