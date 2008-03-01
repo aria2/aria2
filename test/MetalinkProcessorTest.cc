@@ -34,6 +34,7 @@ class MetalinkProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testBadPieceLength);
   CPPUNIT_TEST(testUnsupportedType_piece);
 #endif // ENABLE_MESSAGE_DIGEST
+  CPPUNIT_TEST(testLargeFileSize);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -54,6 +55,7 @@ public:
   void testBadPieceLength();
   void testUnsupportedType_piece();
 #endif // ENABLE_MESSAGE_DIGEST
+  void testLargeFileSize();
 };
 
 
@@ -518,5 +520,32 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
   }
 }
 #endif // ENABLE_MESSAGE_DIGEST
+
+void MetalinkProcessorTest::testLargeFileSize()
+{
+  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  dw->setString("<metalink>"
+		"<files>"
+		"<file name=\"dvd.iso\">"
+		"  <size>9223372036854775807</size>"
+		"  <resources>"
+		"    <url type=\"http\">ftp://mirror/</url>"
+		"  </resources>"		
+		"</file>"
+		"</files>"
+		"</metalink>");
+
+  try {
+    SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
+    SharedHandle<MetalinkEntry> e = m->entries[0];
+    CPPUNIT_ASSERT_EQUAL(9223372036854775807LL, e->getLength());
+  } catch(Exception* e) {
+    std::cerr << *e << std::endl;
+    std::string m = e->getMsg();
+    delete e;
+    CPPUNIT_FAIL(m);
+  }
+}
 
 } // namespace aria2
