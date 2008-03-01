@@ -47,7 +47,8 @@ aria2c_SOURCES = AllTest.cc\
 	FeatureConfigTest.cc\
 	SpeedCalcTest.cc\
 	MultiDiskAdaptorTest.cc\
-	MultiFileAllocationIteratorTest.cc
+	MultiFileAllocationIteratorTest.cc\
+	FixedNumberRandomizer.h
 
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
@@ -132,7 +133,21 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	DHKeyExchangeTest.cc\
 	ARC4Test.cc\
 	MSEHandshakeTest.cc\
-	DHTUtilTest.cc
+	DHTUtilTest.cc\
+	MockBtAnnounce.h\
+	MockBtContext.h\
+	MockBtProgressInfoFile.h\
+	MockBtRequestFactory.h\
+	MockDHTMessage.h\
+	MockDHTMessageCallback.h\
+	MockDHTMessageDispatcher.h\
+	MockDHTMessageFactory.h\
+	MockDHTTask.h\
+	MockDHTTaskFactory.h\
+	MockDHTTaskQueue.h\
+	MockExtensionMessage.h\
+	MockExtensionMessageFactory.h\
+	MockPieceStorage.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
@@ -159,4 +174,23 @@ AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
+	-DLOCALEDIR=\"$(localedir)\" @DEFS@
+
+EXTRA_DIST = 4096chunk.txt\
+	chunkChecksumTestFile250.txt\
+	cookietest.txt\
+	emptyfile\
+	file1r.txt\
+	file2r.txt\
+	file3r.txt\
+	filelist1.txt\
+	load-nonBt.aria2\
+	load.aria2\
+	malformed.netrc\
+	nscookietest.txt\
+	sample.netrc\
+	single.torrent\
+	test.torrent\
+	test.xml\
+	url-list-multiFile.torrent\
+	url-list-singleFile.torrent

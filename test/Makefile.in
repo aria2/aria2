@@ -117,7 +117,21 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.cc\
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.cc\
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.cc
+@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.cc\
+@ENABLE_BITTORRENT_TRUE@	MockBtAnnounce.h\
+@ENABLE_BITTORRENT_TRUE@	MockBtContext.h\
+@ENABLE_BITTORRENT_TRUE@	MockBtProgressInfoFile.h\
+@ENABLE_BITTORRENT_TRUE@	MockBtRequestFactory.h\
+@ENABLE_BITTORRENT_TRUE@	MockDHTMessage.h\
+@ENABLE_BITTORRENT_TRUE@	MockDHTMessageCallback.h\
+@ENABLE_BITTORRENT_TRUE@	MockDHTMessageDispatcher.h\
+@ENABLE_BITTORRENT_TRUE@	MockDHTMessageFactory.h\
+@ENABLE_BITTORRENT_TRUE@	MockDHTTask.h\
+@ENABLE_BITTORRENT_TRUE@	MockDHTTaskFactory.h\
+@ENABLE_BITTORRENT_TRUE@	MockDHTTaskQueue.h\
+@ENABLE_BITTORRENT_TRUE@	MockExtensionMessage.h\
+@ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
+@ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h
 
 @ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -173,7 +187,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
-	MultiFileAllocationIteratorTest.cc MessageDigestHelperTest.cc \
+	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
+	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -213,6 +228,12 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	DHTRoutingTableSerializerTest.cc \
 	DHTRoutingTableDeserializerTest.cc DHKeyExchangeTest.cc \
 	ARC4Test.cc MSEHandshakeTest.cc DHTUtilTest.cc \
+	MockBtAnnounce.h MockBtContext.h MockBtProgressInfoFile.h \
+	MockBtRequestFactory.h MockDHTMessage.h \
+	MockDHTMessageCallback.h MockDHTMessageDispatcher.h \
+	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
+	MockDHTTaskQueue.h MockExtensionMessage.h \
+	MockExtensionMessageFactory.h MockPieceStorage.h \
 	MetalinkerTest.cc MetalinkEntryTest.cc \
 	Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
@@ -564,8 +585,8 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	HttpResponseTest.cc SharedHandleTest.cc ChunkedEncodingTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
-	MultiFileAllocationIteratorTest.cc $(am__append_1) \
-	$(am__append_2) $(am__append_3)
+	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
+	$(am__append_1) $(am__append_2) $(am__append_3)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -581,7 +602,26 @@ AM_CPPFLAGS = -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@
+	-DLOCALEDIR=\"$(localedir)\" @DEFS@
+
+EXTRA_DIST = 4096chunk.txt\
+	chunkChecksumTestFile250.txt\
+	cookietest.txt\
+	emptyfile\
+	file1r.txt\
+	file2r.txt\
+	file3r.txt\
+	filelist1.txt\
+	load-nonBt.aria2\
+	load.aria2\
+	malformed.netrc\
+	nscookietest.txt\
+	sample.netrc\
+	single.torrent\
+	test.torrent\
+	test.xml\
+	url-list-multiFile.torrent\
+	url-list-singleFile.torrent
 
 all: all-am
 

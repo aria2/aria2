@@ -4,6 +4,7 @@ aria2c_SOURCES = main.cc\
 	version_usage.cc
 SRCS =  Socket.h\
 	SocketCore.cc SocketCore.h\
+	BinaryStream.h\
 	Command.cc Command.h\
 	AbstractCommand.cc AbstractCommand.h\
 	InitiateConnectionCommandFactory.cc InitiateConnectionCommandFactory.h\
@@ -37,17 +38,19 @@ SRCS =  Socket.h\
 	RecoverableException.h\
 	DlAbortEx.h\
 	DlRetryEx.h\
+	DownloadFailureException.h\
 	Logger.h\
 	SimpleLogger.cc SimpleLogger.h\
 	TransferEncoding.h\
 	ChunkedEncoding.cc ChunkedEncoding.h\
 	DiskWriter.h\
+	DiskWriterFactory.h\
 	AbstractDiskWriter.cc AbstractDiskWriter.h\
 	DefaultDiskWriter.cc DefaultDiskWriter.h\
-	DefaultDiskWriterFactory.cc\
+	DefaultDiskWriterFactory.cc DefaultDiskWriterFactory.h\
 	File.cc File.h\
 	Option.cc Option.h\
-	Base64.cc\
+	Base64.cc Base64.h\
 	CookieBox.cc CookieBox.h\
 	LogFactory.cc LogFactory.h\
 	NullLogger.h\
@@ -70,12 +73,15 @@ SRCS =  Socket.h\
 	Netrc.cc Netrc.h\
 	AuthConfig.cc AuthConfig.h\
 	AuthResolver.h\
-	AbstractAuthResolver.cc\
+	AbstractAuthResolver.cc AbstractAuthResolver.h\
 	DefaultAuthResolver.cc DefaultAuthResolver.h\
 	NetrcAuthResolver.cc NetrcAuthResolver.h\
 	AuthConfigFactory.cc AuthConfigFactory.h\
 	OptionParser.cc OptionParser.h\
 	OptionHandlerFactory.cc OptionHandlerFactory.h\
+	OptionHandler.h\
+	OptionHandlerImpl.h\
+	NameMatchOptionHandler.h\
 	NameResolver.cc NameResolver.h\
 	RequestGroup.cc RequestGroup.h\
 	RequestGroupAware.cc RequestGroupAware.h\
@@ -124,6 +130,7 @@ SRCS =  Socket.h\
 	NullProgressInfoFile.h\
 	FileAllocationIterator.h\
 	SingleFileAllocationIterator.cc SingleFileAllocationIterator.h\
+	RequestGroupCriteria.h\
 	ContentTypeRequestGroupCriteria.cc ContentTypeRequestGroupCriteria.h\
 	DownloadHandler.cc DownloadHandler.h\
 	DownloadHandlerConstants.cc DownloadHandlerConstants.h\
@@ -142,20 +149,38 @@ SRCS =  Socket.h\
 	DirectDiskAdaptor.cc DirectDiskAdaptor.h\
 	MultiDiskAdaptor.cc MultiDiskAdaptor.h\
 	Peer.cc\
-	PeerSessionResource.cc\
+	PeerSessionResource.cc PeerSessionResource.h\
 	BtRegistry.cc BtRegistry.h\
 	MultiFileAllocationIterator.cc MultiFileAllocationIterator.h\
 	PeerConnection.cc PeerConnection.h\
 	ByteArrayDiskWriter.cc ByteArrayDiskWriter.h\
-	ByteArrayDiskWriterFactory.cc\
-	ServerHost.cc\
-	HelpItem.cc\
-	TaggedItem.cc\
-	TagContainer.cc\
-	HelpItemFactory.cc\
-	SingleFileDownloadContext.cc\
-	TimedHaltCommand.cc
-#	debug_new.cpp
+	ByteArrayDiskWriterFactory.cc ByteArrayDiskWriterFactory.h\
+	ServerHost.cc ServerHost.h\
+	HelpItem.cc HelpItem.h\
+	TaggedItem.cc TaggedItem.h\
+	TagContainer.cc TagContainer.h\
+	HelpItemFactory.cc HelpItemFactory.h\
+	DownloadContext.h\
+	SingleFileDownloadContext.cc SingleFileDownloadContext.h\
+	TimedHaltCommand.cc TimedHaltCommand.h\
+	CUIDCounter.h\
+	DNSCache.h\
+	DownloadResult.h\
+	Sequence.h\
+	IntSequence.h\
+	PostDownloadHandler.h\
+	PreDownloadHandler.h\
+	SingletonHolder.h\
+	TrueRequestGroupCriteria.h\
+	a2algo.h\
+	a2functional.h\
+	a2io.h\
+	a2netcompat.h\
+	a2time.h\
+	array_fun.h\
+	help_tags.h\
+	prefs.h\
+	usage_text.h
 
 if ENABLE_MESSAGE_DIGEST
 SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
@@ -163,7 +188,9 @@ SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
 	messageDigest.cc messageDigest.h\
-	MessageDigestHelper.cc MessageDigestHelper.h
+	MessageDigestHelper.cc MessageDigestHelper.h\
+	Checksum.h\
+	ChunkChecksum.h
 endif # ENABLE_MESSAGE_DIGEST
 
 if ENABLE_BITTORRENT
@@ -173,7 +200,7 @@ SRCS += MetaEntry.h\
 	List.cc List.h\
 	MetaFileUtil.cc MetaFileUtil.h\
 	MetaEntryVisitor.h\
-	BencodeVisitor.cc\
+	BencodeVisitor.cc BencodeVisitor.h\
 	PeerMessageUtil.cc PeerMessageUtil.h\
 	PeerAbstractCommand.cc PeerAbstractCommand.h\
 	PeerInitiateConnectionCommand.cc PeerInitiateConnectionCommand.h\
@@ -196,13 +223,14 @@ SRCS += MetaEntry.h\
 	AnnounceList.h AnnounceList.cc\
 	BtContext.h\
 	DefaultBtContext.cc DefaultBtContext.h\
+	PeerStorage.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
 	BtAnnounce.h\
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
 	BtRuntime.h\
 	BtContextAwareCommand.cc BtContextAwareCommand.h\
 	BtMessage.h\
-	AbstractBtMessage.cc\
+	AbstractBtMessage.cc AbstractBtMessage.h\
 	SimpleBtMessage.cc SimpleBtMessage.h\
 	BtAllowedFastMessage.cc BtAllowedFastMessage.h\
 	BtBitfieldMessage.cc BtBitfieldMessage.h\
@@ -241,6 +269,7 @@ SRCS += MetaEntry.h\
 	DefaultBtRequestFactory.cc DefaultBtRequestFactory.h\
 	BtEvent.h\
 	BtEventListener.h\
+	AbstractBtEventListener.h\
 	BtCancelSendingPieceEvent.h\
 	BtAbortOutstandingRequestEvent.h\
 	BtChokedEvent.h\
@@ -255,63 +284,90 @@ SRCS += MetaEntry.h\
 	BtFileAllocationEntry.cc BtFileAllocationEntry.h\
 	BtPostDownloadHandler.cc BtPostDownloadHandler.h\
 	BtCheckIntegrityEntry.cc BtCheckIntegrityEntry.h\
-	BtExtendedMessage.cc\
-	DefaultExtensionMessageFactory.cc\
-	HandshakeExtensionMessage.cc\
-	UTPexExtensionMessage.cc\
-	DHTNode.cc\
-	DHTUtil.cc\
-	DHTBucket.cc\
-	DHTRoutingTable.cc\
-	DHTMessageEntry.cc\
-	DHTMessageDispatcherImpl.cc\
-	DHTMessageReceiver.cc\
-	DHTMessageTracker.cc\
-	DHTMessageTrackerEntry.cc\
-	DHTMessage.cc\
-	DHTConnectionImpl.cc\
-	DHTAbstractMessage.cc\
-	DHTQueryMessage.cc\
-	DHTResponseMessage.cc\
-	DHTPingMessage.cc\
-	DHTPingReplyMessage.cc\
-	DHTFindNodeMessage.cc\
-	DHTFindNodeReplyMessage.cc\
-	DHTGetPeersMessage.cc\
-	DHTGetPeersReplyMessage.cc\
-	DHTAnnouncePeerMessage.cc\
-	DHTAnnouncePeerReplyMessage.cc\
-	DHTUnknownMessage.cc\
-	DHTMessageFactoryImpl.cc\
-	DHTNodeLookupTask.cc\
-	DHTNodeLookupEntry.cc\
-	BNode.cc\
-	DHTMessageCallbackImpl.cc\
-	DHTAbstractTask.cc\
-	DHTPingTask.cc\
-	DHTTaskQueueImpl.cc\
-	DHTBucketRefreshTask.cc\
-	DHTAbstractNodeLookupTask.cc\
-	DHTPeerLookupTask.cc\
-	DHTSetup.cc\
-	DHTTaskFactoryImpl.cc\
-	DHTInteractionCommand.cc\
-	DHTPeerAnnounceEntry.cc\
-	DHTPeerAnnounceStorage.cc\
-	DHTTokenTracker.cc\
-	DHTGetPeersCommand.cc\
-	DHTTokenUpdateCommand.cc\
-	DHTBucketRefreshCommand.cc\
-	DHTPeerAnnounceCommand.cc\
-	DHTReplaceNodeTask.cc\
-	DHTEntryPointNameResolveCommand.cc\
-	DHTRoutingTableSerializer.cc\
-	DHTRoutingTableDeserializer.cc\
-	DHTAutoSaveCommand.cc\
-	DHTRegistry.cc\
-	InitiatorMSEHandshakeCommand.cc\
-	ReceiverMSEHandshakeCommand.cc\
-	MSEHandshake.cc
+	BtExtendedMessage.cc BtExtendedMessage.h\
+	ExtensionMessage.h\
+	ExtensionMessageFactory.h\
+	DefaultExtensionMessageFactory.cc DefaultExtensionMessageFactory.h\
+	HandshakeExtensionMessage.cc HandshakeExtensionMessage.h\
+	UTPexExtensionMessage.cc UTPexExtensionMessage.h\
+	ExtendedMessagingAware.h\
+	DHTNode.cc DHTNode.h\
+	DHTUtil.cc DHTUtil.h\
+	DHTBucket.cc DHTBucket.h\
+	DHTRoutingTable.cc DHTRoutingTable.h\
+	DHTMessageEntry.cc DHTMessageEntry.h\
+	DHTMessageDispatcher.h\
+	DHTMessageDispatcherImpl.cc DHTMessageDispatcherImpl.h\
+	DHTMessageReceiver.cc DHTMessageReceiver.h\
+	DHTMessageTracker.cc DHTMessageTracker.h\
+	DHTMessageTrackerEntry.cc DHTMessageTrackerEntry.h\
+	DHTMessage.cc DHTMessage.h\
+	DHTConnection.h\
+	DHTConnectionImpl.cc DHTConnectionImpl.h\
+	DHTAbstractMessage.cc DHTAbstractMessage.h\
+	DHTQueryMessage.cc DHTQueryMessage.h\
+	DHTResponseMessage.cc DHTResponseMessage.h\
+	DHTPingMessage.cc DHTPingMessage.h\
+	DHTPingReplyMessage.cc DHTPingReplyMessage.h\
+	DHTFindNodeMessage.cc DHTFindNodeMessage.h\
+	DHTFindNodeReplyMessage.cc DHTFindNodeReplyMessage.h\
+	DHTGetPeersMessage.cc DHTGetPeersMessage.h\
+	DHTGetPeersReplyMessage.cc DHTGetPeersReplyMessage.h\
+	DHTAnnouncePeerMessage.cc DHTAnnouncePeerMessage.h\
+	DHTAnnouncePeerReplyMessage.cc DHTAnnouncePeerReplyMessage.h\
+	DHTUnknownMessage.cc DHTUnknownMessage.h\
+	DHTMessageFactory.h\
+	DHTMessageFactoryImpl.cc DHTMessageFactoryImpl.h\
+	DHTNodeLookupTask.cc DHTNodeLookupTask.h\
+	DHTNodeLookupEntry.cc DHTNodeLookupEntry.h\
+	BNode.cc BNode.h\
+	DHTMessageCallback.h\
+	DHTMessageCallbackImpl.cc DHTMessageCallbackImpl.h\
+	DHTMessageCallbackListener.h\
+	DHTAbstractTask.cc DHTAbstractTask.h\
+	DHTTask.h\
+	DHTPingTask.cc DHTPingTask.h\
+	DHTTaskQueue.h\
+	DHTTaskQueueImpl.cc DHTTaskQueueImpl.h\
+	DHTBucketRefreshTask.cc DHTBucketRefreshTask.h\
+	DHTAbstractNodeLookupTask.cc DHTAbstractNodeLookupTask.h\
+	DHTPeerLookupTask.cc DHTPeerLookupTask.h\
+	DHTSetup.cc DHTSetup.h\
+	DHTTaskFactory.h\
+	DHTTaskFactoryImpl.cc DHTTaskFactoryImpl.h\
+	DHTInteractionCommand.cc DHTInteractionCommand.h\
+	DHTPeerAnnounceEntry.cc DHTPeerAnnounceEntry.h\
+	DHTPeerAnnounceStorage.cc DHTPeerAnnounceStorage.h\
+	DHTTokenTracker.cc DHTTokenTracker.h\
+	DHTGetPeersCommand.cc DHTGetPeersCommand.h\
+	DHTTokenUpdateCommand.cc DHTTokenUpdateCommand.h\
+	DHTBucketRefreshCommand.cc DHTBucketRefreshCommand.h\
+	DHTPeerAnnounceCommand.cc DHTPeerAnnounceCommand.h\
+	DHTReplaceNodeTask.cc DHTReplaceNodeTask.h\
+	DHTEntryPointNameResolveCommand.cc DHTEntryPointNameResolveCommand.h\
+	DHTRoutingTableSerializer.cc DHTRoutingTableSerializer.h\
+	DHTRoutingTableDeserializer.cc DHTRoutingTableDeserializer.h\
+	DHTAutoSaveCommand.cc DHTAutoSaveCommand.h\
+	DHTRegistry.cc DHTRegistry.h\
+	DHTIDCloser.h\
+	DHTConstants.h\
+	XORCloser.h\
+	PeerAddrEntry.h\
+	InitiatorMSEHandshakeCommand.cc InitiatorMSEHandshakeCommand.h\
+	ReceiverMSEHandshakeCommand.cc ReceiverMSEHandshakeCommand.h\
+	MSEHandshake.cc MSEHandshake.h\
+	ARC4Decryptor.h\
+	ARC4Encryptor.h\
+	DHKeyExchange.h\
+	LibgcryptARC4Context.h\
+	LibgcryptARC4Decryptor.h\
+	LibgcryptARC4Encryptor.h\
+	LibgcryptDHKeyExchange.h\
+	LibsslARC4Context.h\
+	LibsslARC4Decryptor.h\
+	LibsslARC4Encryptor.h\
+	LibsslDHKeyExchange.h\
+	BtConstants.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK
@@ -319,36 +375,37 @@ SRCS += Metalinker.cc Metalinker.h\
 	MetalinkEntry.cc MetalinkEntry.h\
 	MetalinkResource.cc MetalinkResource.h\
 	MetalinkProcessor.h\
-	MetalinkProcessorFactory.cc\
-	MetalinkParserController.cc\
-	MetalinkParserStateMachine.cc\
-	InitialMetalinkParserState.cc\
-	MetalinkMetalinkParserState.cc\
-	FilesMetalinkParserState.cc\
-	FileMetalinkParserState.cc\
-	SizeMetalinkParserState.cc\
-	VersionMetalinkParserState.cc\
-	LanguageMetalinkParserState.cc\
-	OSMetalinkParserState.cc\
-	VerificationMetalinkParserState.cc\
-	HashMetalinkParserState.cc\
-	PiecesMetalinkParserState.cc\
-	PieceHashMetalinkParserState.cc\
-	ResourcesMetalinkParserState.cc\
-	URLMetalinkParserState.cc\
-	FinMetalinkParserState.cc\
-	SkipTagMetalinkParserState.cc\
+	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h\
+	MetalinkParserController.cc MetalinkParserController.h\
+	MetalinkParserStateMachine.cc MetalinkParserStateMachine.h\
+	MetalinkParserState.h\
+	InitialMetalinkParserState.cc InitialMetalinkParserState.h\
+	MetalinkMetalinkParserState.cc MetalinkMetalinkParserState.h\
+	FilesMetalinkParserState.cc FilesMetalinkParserState.h\
+	FileMetalinkParserState.cc FileMetalinkParserState.h\
+	SizeMetalinkParserState.cc SizeMetalinkParserState.h\
+	VersionMetalinkParserState.cc VersionMetalinkParserState.h\
+	LanguageMetalinkParserState.cc LanguageMetalinkParserState.h\
+	OSMetalinkParserState.cc OSMetalinkParserState.h\
+	VerificationMetalinkParserState.cc VerificationMetalinkParserState.h\
+	HashMetalinkParserState.cc HashMetalinkParserState.h\
+	PiecesMetalinkParserState.cc PiecesMetalinkParserState.h\
+	PieceHashMetalinkParserState.cc PieceHashMetalinkParserState.h\
+	ResourcesMetalinkParserState.cc ResourcesMetalinkParserState.h\
+	URLMetalinkParserState.cc URLMetalinkParserState.h\
+	FinMetalinkParserState.cc FinMetalinkParserState.h\
+	SkipTagMetalinkParserState.cc SkipTagMetalinkParserState.h\
 	Metalink2RequestGroup.cc Metalink2RequestGroup.h\
 	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 	MetalinkHelper.cc MetalinkHelper.h
 endif # ENABLE_METALINK
 
 if ENABLE_LIBXML2
-SRCS += XML2SAXMetalinkProcessor.cc
+SRCS += XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
 endif # ENABLE_LIBXML2
 
 if ENABLE_LIBEXPAT
-SRCS += ExpatMetalinkProcessor.cc
+SRCS += ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
 endif # ENABLE_LIBEXPAT
 
 if !HAVE_BASENAME
@@ -397,4 +454,4 @@ AM_CPPFLAGS =  -Wall\
 	-I../lib -I../intl -I$(top_srcdir)/intl\
 	@LIBGNUTLS_CFLAGS@ @LIBGCRYPT_CFLAGS@ @OPENSSL_CFLAGS@ @XML_CPPFLAGS@\
 	@LIBARES_CPPFLAGS@ @LIBCARES_CPPFLAGS@ @LIBEXPAT_CPPFLAGS@\
-	-D_FILE_OFFSET_BITS=64 -DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg
+	-DLOCALEDIR=\"$(localedir)\" @DEFS@ #-pg

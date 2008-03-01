@@ -36,7 +36,6 @@
 #define _D_BT_CONTEXT_H_
 
 #include "DownloadContext.h"
-#include "BtContextDecl.h"
 #include <utility>
 #include <deque>
 
@@ -82,6 +81,9 @@ public:
   virtual std::deque<std::pair<std::string, uint16_t> >& getNodes() = 0;
 
 };
+
+class BtContext;
+typedef SharedHandle<BtContext> BtContextHandle;
 
 } // namespace aria2
 

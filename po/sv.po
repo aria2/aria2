@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-02-21 23:22+0900\n"
+"POT-Creation-Date: 2008-03-01 01:55+0900\n"
 "PO-Revision-Date: 2007-12-09 00:07+0900\n"
 "Last-Translator: Hampus Wessman <hw@vox.nu>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -1544,7 +1544,7 @@ msgstr ""
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:702
+#: src/Util.cc:634
 msgid "Files:"
 msgstr ""
 

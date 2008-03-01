@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-02-21 23:22+0900\n"
-"PO-Revision-Date: 2007-12-28 10:41+0000\n"
+"POT-Creation-Date: 2008-03-01 01:55+0900\n"
+"PO-Revision-Date: 2008-02-26 15:36+0000\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-02-21 12:32+0000\n"
+"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:70
@@ -279,7 +279,7 @@ msgstr "CUID#%d - Fast extension が有効になりました."
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Extended Messaging enabled."
-msgstr ""
+msgstr "CUID#%d - Extended Messaging が有効になりました."
 
 #: src/message.h:82
 #, c-format
@@ -338,7 +338,7 @@ msgstr ""
 #: src/message.h:92
 #, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
-msgstr ""
+msgstr "CUID#%d - このピアは DHT 機能も持っています."
 
 #: src/message.h:94
 #, c-format
@@ -553,7 +553,7 @@ msgstr "metalink XML ファイルが壊れているので読めません."
 #: src/message.h:136
 #, c-format
 msgid "Too small payload size for %s, size=%d."
-msgstr ""
+msgstr "%s のペイロード長にしては短すぎます. ペイロード長=%d"
 
 #: src/message.h:137
 #, c-format
@@ -561,29 +561,31 @@ msgid ""
 "Removed the defunct control file %s because the download file %s doesn't "
 "exist."
 msgstr ""
+"無効なコントロールファイル %s を削除しました. 理由: 対象のダウンロードファイ"
+"ル %s が存在しないため."
 
 #: src/message.h:138
 #, c-format
 msgid "Your share ratio was %.1f, uploaded/downloaded=%sB/%sB"
-msgstr ""
+msgstr "シェアレシオは %.1f でした. uploaded/downloaded=%sB/%sB"
 
 #: src/message.h:139
 #, c-format
 msgid "Missing %s in torrent metainfo."
-msgstr ""
+msgstr "%s が torrent ファイルに存在しません."
 
 #: src/message.h:140
 msgid "Tracker returned null data."
-msgstr ""
+msgstr "トラッカーが null データを返しました."
 
 #: src/message.h:141
 msgid "Windows socket library initialization failed"
-msgstr ""
+msgstr "Windows ソケットライブラリの初期化に失敗しました."
 
 #: src/message.h:142
 #, c-format
 msgid "%d second(s) has passed. Stopping application."
-msgstr ""
+msgstr "%d 秒が経過したので, アプリケーションを停止します."
 
 #: src/message.h:144
 msgid "Timeout."
@@ -739,17 +741,17 @@ msgstr "ディレクトリ %s を作成できませんでした. 原因: %s"
 #: src/message.h:177
 #, c-format
 msgid "Failed to open the segment file %s, cause: %s"
-msgstr "セグメントファイル %s をオープンできませんでした. 原因: %s"
+msgstr "コントロールファイル %s をオープンできませんでした. 原因: %s"
 
 #: src/message.h:178
 #, c-format
 msgid "Failed to write into the segment file %s, cause: %s"
-msgstr "セグメントファイル %s への書き込みに失敗しました. 原因: %s"
+msgstr "コントロールファイル %s への書き込みに失敗しました. 原因: %s"
 
 #: src/message.h:179
 #, c-format
 msgid "Failed to read from the segment file %s, cause: %s"
-msgstr "セグメントファイル %s からの読み込みに失敗しました. 原因: %s"
+msgstr "コントロールファイル %s からの読み込みに失敗しました. 原因: %s"
 
 #: src/message.h:181
 #, c-format
@@ -936,7 +938,7 @@ msgstr "例外発生"
 #: src/message.h:216
 #, c-format
 msgid "Max payload length exceeded or invalid. length = %u"
-msgstr ""
+msgstr "ペイロード長が許容最大値を越えているか, 不正です. ペイロード長 = %u"
 
 #: src/message.h:217
 #, c-format
@@ -1571,10 +1573,10 @@ msgstr ""
 "範\n"
 "                              囲を指定します.\n"
 "                              複数のポートを ',' で区切って指定できます:\n"
-"                              \\\"6881,6885\\\". また, '-' を使って範囲指定も"
-"できま\n"
-"                              す: \\\"6881-6999\\\". ',' と '-' は組み合わせ"
-"て使う\n"
+"                              \"6881,6885\". また, '-' を使って範囲指定もでき"
+"ま\n"
+"                              す: \"6881-6999\". ',' と '-' は組み合わせて使"
+"う\n"
 "                              ことができます."
 
 #: src/usage_text.h:234
@@ -1648,14 +1650,13 @@ msgstr ""
 
 #: src/usage_text.h:258
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
-msgstr ""
+msgstr " --enable-peer-exchange[=true|false] Peer Exchange を有効にします."
 
 #: src/usage_text.h:260
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
-msgstr ""
+msgstr " --enable-dht[=true|false]    DHT を有効にします."
 
 #: src/usage_text.h:262
-#, fuzzy
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -1665,14 +1666,12 @@ msgid ""
 "can\n"
 "                              be used together."
 msgstr ""
-" --listen-port=PORT...        BitTorrent ダウンロードで使用する TCP ポートの"
-"範\n"
-"                              囲を指定します.\n"
+" --dht-listen-port=PORT...    DHT で使用する UDP ポートの範囲を指定します.\n"
 "                              複数のポートを ',' で区切って指定できます:\n"
-"                              \\\"6881,6885\\\". また, '-' を使って範囲指定も"
-"できま\n"
-"                              す: \\\"6881-6999\\\". ',' と '-' は組み合わせ"
-"て使う\n"
+"                              \"6881,6885\". また, '-' を使って範囲指定もでき"
+"ま\n"
+"                              す: \"6881-6999\". ',' と '-' は組み合わせて使"
+"う\n"
 "                              ことができます."
 
 #: src/usage_text.h:268
@@ -1680,6 +1679,9 @@ msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
 msgstr ""
+" --dht-entry-point=HOST:PORT  DHT ネットワークへのエントリーポイントとして使"
+"用\n"
+"                              するホストとポート番号を指定します."
 
 #: src/usage_text.h:271
 msgid ""
@@ -1690,6 +1692,13 @@ msgid ""
 "satisfies\n"
 "                              the given level."
 msgstr ""
+" --bt-min-crypto-level=plain|arc4 許容する暗号化レベルの最小値をセットしま"
+"す.\n"
+"                              いくつかの暗号化レベルがピアから提示された場"
+"合,\n"
+"                              その中からここで指定する最小値を満たす暗号化レ"
+"ベ\n"
+"                              ルを選択します."
 
 #: src/usage_text.h:276
 msgid ""
@@ -1698,6 +1707,13 @@ msgid ""
 "                              handshake. Thus aria2 always uses Obfuscation\n"
 "                              handshake."
 msgstr ""
+" --bt-require-crypto=true|false true を指定した場合, aria2 は従来の "
+"BitTorrent\n"
+"                              ハンドシェイクを拒否し, またそれを使って外部へ"
+"接\n"
+"                              続しません. つまり常に暗号化ハンドシェイクを使"
+"い\n"
+"                              ます."
 
 #: src/usage_text.h:281
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
@@ -1744,6 +1760,12 @@ msgid ""
 "                              values are 'http', 'https', 'ftp' and 'none'.\n"
 "                              Specifiy none to disable this feature."
 msgstr ""
+" --metalink-preferred-protocol=PROTO 優先的に使用するプロトコルを指定しま"
+"す.\n"
+"                              指定可能な値は, 'http', 'https', 'ftp', 'none' "
+"で\n"
+"                              す. 'none' を指定するとこの機能は無効になりま"
+"す."
 
 #: src/usage_text.h:301
 msgid ""
@@ -1787,13 +1809,23 @@ msgid ""
 "                              Use --metalink-preferred-protocol option to\n"
 "                              specify the preference of protocol."
 msgstr ""
+" --metalink-enable-unique-protocol=true|false true が指定された場合で同じホス"
+"ト\n"
+"                              で複数のプロトコルのリソースが metalink ファイ"
+"ル\n"
+"                              に記述されている場合, aria2 はいづれか一つだけ"
+"を\n"
+"                              使うようになります. どのプロトコルを優先的に使"
+"用\n"
+"                              するかを指定するには--metalink-preferred-"
+"protocol\n"
+"                              オプションを使ってください."
 
 #: src/usage_text.h:317
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version                バージョン番号を表示し, 終了します."
 
 #: src/usage_text.h:319
-#, fuzzy
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -1807,27 +1839,28 @@ msgid ""
 "match\n"
 "                              and print the result."
 msgstr ""
-" --seed-ratio=RATIO           シェアレシオを指定します. BitTorrent のダウン"
-"ロー\n"
-"                              ドが完了しても, シェアレシオが RATIO に達するま"
-"で\n"
-"                              シードを継続します. RATIO は 1.0 が推奨されてい"
-"ま\n"
-"                              す. 0.0 を指定すると, シェアレシオに関係なく, "
-"シ\n"
-"                              ードを継続します.\n"
-"                              --seed-time オプションと共に使用した場合, どち"
-"ら\n"
-"                              かの条件が成立した時点でシードは終了となります."
+" -h, --help[=CATEGORY]        ヘルプを表示して終了します.\n"
+"                              ヘルプはいくつかのカテゴリに分けられています.\n"
+"                              例えば, \"--help=http\" と指定すると, http に関"
+"する\n"
+"                              詳細なオプションのヘルプが表示されます.\n"
+"                              マッチするカテゴリが存在しない場合, 指定された"
+"キ\n"
+"                              ーワードを使って, オプション名について前方一致"
+"検\n"
+"                              索を行い, 該当するオプションのヘルプを表示しま"
+"す."
 
 #: src/usage_text.h:327
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr ""
+" --no-conf                    aria2.conf ファイルの読み込みを抑制します."
 
 #: src/usage_text.h:329
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
+" --conf-path=PATH             読み込む設定ファイルのパスを PATH に変更します."
 
 #: src/usage_text.h:331
 msgid ""
@@ -1835,6 +1868,9 @@ msgid ""
 "passed.\n"
 "                              If 0 is given, this feature is disabled."
 msgstr ""
+" --stop=SEC                   SEC 秒が経過した後, アプリケーションを停止しま"
+"す.\n"
+"                              0 を指定すると, この機能は無効になります."
 
 #: src/BtSetup.cc:120
 msgid "Errors occurred while binding port.\n"
@@ -1844,10 +1880,12 @@ msgstr "ポートをバインド中にエラーが発生しました.\n"
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
+"シャットダウン中です... 緊急時に即座にシャットダウンしたい場合は Ctrl-C をも"
+"う一度押してください."
 
 #: src/DownloadEngine.cc:299
 msgid "Emergency shutdown sequence commencing..."
-msgstr ""
+msgstr "緊急シャットダウン中です..."
 
 #: src/HelpItem.cc:40
 msgid "                              Default: "
@@ -1855,11 +1893,11 @@ msgstr "                              既定値: "
 
 #: src/HelpItem.cc:41
 msgid "                              Tags: "
-msgstr ""
+msgstr "                              タグ: "
 
 #: src/HelpItem.cc:42
 msgid "                              Available Values: "
-msgstr ""
+msgstr "                              値域: "
 
 #: src/MultiUrlRequestInfo.cc:78
 msgid "aria2 will resume download if the transfer is restarted."
@@ -1879,9 +1917,9 @@ msgstr "ダウンロード結果:"
 
 #: src/RequestGroupMan.cc:273
 msgid "Status Legend:"
-msgstr ""
+msgstr "凡例:"
 
-#: src/Util.cc:702
+#: src/Util.cc:634
 msgid "Files:"
 msgstr "ファイル:"
 
@@ -1944,17 +1982,19 @@ msgstr "       %s [オプション] -M METALINK_FILE\n"
 #: src/version_usage.cc:112
 #, c-format
 msgid "Printing all options."
-msgstr ""
+msgstr "すべてのオプションを表示します."
 
 #: src/version_usage.cc:114
 #, c-format
 msgid "Printing options tagged with '%s'."
-msgstr ""
+msgstr "'%s' タグが付いたオプションのみ表示します."
 
 #: src/version_usage.cc:116
 #, c-format
 msgid "See -h option to know other command-line options(%s)."
 msgstr ""
+"他のコマンドラインオプション(%s)について知るには, -h オプションを参照してくだ"
+"さい."
 
 #: src/version_usage.cc:120 src/version_usage.cc:127
 msgid "Options:"
@@ -1963,12 +2003,12 @@ msgstr "オプション:"
 #: src/version_usage.cc:125
 #, c-format
 msgid "Printing options whose name starts with '%s'."
-msgstr ""
+msgstr "'%s' で始まるオプションを表示しています."
 
 #: src/version_usage.cc:130
 #, c-format
 msgid "No help category or option name matching with '%s'."
-msgstr ""
+msgstr "'%s' のヘルプカテゴリや, それで始まるオプションはありません."
 
 #: src/version_usage.cc:138
 msgid ""
@@ -1998,6 +2038,9 @@ msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
 msgstr ""
+" URL に \"&\" やシェルにおいて特別な意味を持つ文字が含まれる場合, URL を ' ま"
+"たは\n"
+" \" で囲って(クォートして)ください."
 
 #: src/version_usage.cc:149
 msgid "Refer to man page for more information."

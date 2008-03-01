@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-02-21 23:22+0900\n"
+"POT-Creation-Date: 2008-03-01 01:55+0900\n"
 "PO-Revision-Date: 2007-12-23 22:42+0000\n"
 "Last-Translator: benazzo <Unknown>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-02-21 12:32+0000\n"
+"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:70
@@ -1556,7 +1556,7 @@ msgstr "Risultati del download:"
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:702
+#: src/Util.cc:634
 msgid "Files:"
 msgstr "File:"
 

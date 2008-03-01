@@ -36,7 +36,7 @@
 #define _D_PEER_H_
 
 #include "common.h"
-#include "PeerDecl.h"
+#include "SharedHandle.h"
 #include "TimeA2.h"
 #include "BtConstants.h"
 #include "PeerStat.h"
@@ -232,6 +232,9 @@ public:
 
   void setExtension(const std::string& name, uint8_t id);
 };
+
+typedef SharedHandle<Peer> PeerHandle;
+typedef std::deque<PeerHandle> Peers;
 
 } // namespace aria2
 

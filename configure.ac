@@ -142,6 +142,7 @@ AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 AC_C_VOLATILE
+AC_SYS_LARGEFILE
 
 # Checks for library functions.
 AM_GNU_GETTEXT
@@ -204,6 +205,7 @@ AC_CONFIG_FILES([Makefile
 		po/Makefile.in
 		m4/Makefile
 		intl/Makefile
+		lib/Makefile
 		doc/Makefile])
 AC_OUTPUT
 
