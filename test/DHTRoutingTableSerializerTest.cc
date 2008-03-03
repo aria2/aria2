@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <cstring>
 #include <sstream>
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

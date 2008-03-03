@@ -11,6 +11,7 @@
 # include "ChunkChecksum.h"
 # include "Checksum.h"
 #endif // ENABLE_MESSAGE_DIGEST
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

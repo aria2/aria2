@@ -1,5 +1,27 @@
 2008-03-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Included missing iostream.
+	* test/AllTest.cc
+	* test/BtDependencyTest.cc
+	* test/BtExtendedMessageTest.cc
+	* test/DHTConnectionImplTest.cc
+	* test/DHTMessageFactoryImplTest.cc
+	* test/DHTMessageTrackerEntryTest.cc
+	* test/DHTNodeTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DefaultBtAnnounceTest.cc
+	* test/DefaultBtContextTest.cc
+	* test/DefaultBtMessageFactoryTest.cc
+	* test/DefaultExtensionMessageFactoryTest.cc
+	* test/HandshakeExtensionMessageTest.cc
+	* test/HttpResponseTest.cc
+	* test/MetalinkProcessorTest.cc
+	* test/MultiFileAllocationIteratorTest.cc
+	* test/SocketCoreTest.cc
+	* test/UTPexExtensionMessageTest.cc
+
+2008-03-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Reorganized includes.
 	* src/NameResolver.cc
 

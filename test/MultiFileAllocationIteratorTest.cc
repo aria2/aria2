@@ -4,6 +4,7 @@
 #include "FileEntry.h"
 #include "Exception.h"
 #include <algorithm>
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

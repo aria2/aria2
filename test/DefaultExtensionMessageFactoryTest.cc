@@ -8,6 +8,7 @@
 #include "BtRegistry.h"
 #include "BtRuntime.h"
 #include "FileEntry.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

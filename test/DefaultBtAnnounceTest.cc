@@ -10,6 +10,7 @@
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"
 #include "FileEntry.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

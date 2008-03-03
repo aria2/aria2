@@ -13,6 +13,7 @@
 #include "Exception.h"
 #include "FileEntry.h"
 #include <cstring>
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

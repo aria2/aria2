@@ -7,6 +7,7 @@
 #include "Exception.h"
 #include "SegmentMan.h"
 #include "FileEntry.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

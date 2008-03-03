@@ -1,5 +1,6 @@
 #include "DHTConnectionImpl.h"
 #include "Exception.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

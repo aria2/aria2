@@ -7,6 +7,7 @@
 #include "HttpHeader.h"
 #include "HttpRequest.h"
 #include "Exception.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

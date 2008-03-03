@@ -5,6 +5,7 @@
 #include "DHTNode.h"
 #include "MetaEntry.h"
 #include "DHTMessageCallback.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
