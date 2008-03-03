@@ -40,6 +40,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#ifdef __MINGW32__
+# undef SIZE_MAX
+#endif // __MINGW32__
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif // HAVE_CONFIG_H

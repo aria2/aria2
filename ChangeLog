@@ -1,3 +1,22 @@
+2008-03-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Merged Ross's mingw patch.
+	* src/DHTRoutingTableDeserializer.cc
+	* src/DHTRoutingTableSerializer.cc
+	* src/Platform.{h, cc}
+	* src/timegm.h
+	* src/gettimeofday.h
+	* src/getaddrinfo.h
+	* src/SocketCore.h
+	* src/common.h
+	* src/inet_aton.h
+	* src/DownloadEngine.h
+	* src/gai_strerror.h
+	* src/a2netcompat.h
+	* configure.ac
+	* configure
+	* aclocal.m4
+	
 2008-03-03  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Included missing iostream.

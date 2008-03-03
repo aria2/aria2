@@ -180,7 +180,7 @@ AC_DEFUN([AM_PATH_LIBGCRYPT],
     fi
   fi
   if test $ok = yes; then
-    AC_MSG_RESULT(yes)
+    AC_MSG_RESULT([yes ($libgcrypt_config_version)])
   else
     AC_MSG_RESULT(no)
   fi
@@ -192,10 +192,10 @@ AC_DEFUN([AM_PATH_LIBGCRYPT],
         if test "$tmp" -gt 0 ; then
            AC_MSG_CHECKING([LIBGCRYPT API version])
            if test "$req_libgcrypt_api" -eq "$tmp" ; then
-             AC_MSG_RESULT(okay)
+             AC_MSG_RESULT([okay])
            else
              ok=no
-             AC_MSG_RESULT([does not match (want=$req_libgcrypt_api got=$tmp)])
+             AC_MSG_RESULT([does not match. want=$req_libgcrypt_api got=$tmp])
            fi
         fi
      fi

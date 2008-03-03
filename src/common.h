@@ -35,6 +35,10 @@
 #ifndef _D_COMMON_H_
 #define _D_COMMON_H_
 
+#ifdef __MINGW32__
+# undef SIZE_MAX
+#endif // __MINGW32__
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif

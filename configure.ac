@@ -12,7 +12,7 @@ AC_CONFIG_HEADERS([config.h])
 
 case "$target" in
 	*mingw*|*cygwin*)
-		WINSOCK_LIBS="-lws2_32"
+		WINSOCK_LIBS="-lws2_32 -lpthread"
 		AC_SUBST(WINSOCK_LIBS)
 		;;
 esac

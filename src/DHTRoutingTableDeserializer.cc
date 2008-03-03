@@ -38,7 +38,7 @@
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
 #include "Logger.h"
-#include <arpa/inet.h>
+#include "a2netcompat.h"
 #include <cerrno>
 #include <cstring>
 #include <istream>

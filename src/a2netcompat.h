@@ -91,4 +91,25 @@
 # include "gai_strerror.h"
 #endif // HAVE_GAI_STRERROR
 
+#ifdef __MINGW32__
+# ifndef AI_PASSIVE
+#  define AI_PASSIVE	0x0020
+# endif // AI_PASSIVE
+# ifndef AI_NUMERICHOST
+#  define AI_NUMERICHOST	0x0008
+# endif // AI_NUMERICHOST
+# ifndef NI_NUMERICHOST
+#  define NI_NUMERICHOST	0x0008
+# endif // NI_NUMERICHOST
+# ifndef NI_NUMERICSERV
+#  define NI_NUMERICSERV	0x0020
+# endif // NI_NUMERICSERV
+# ifndef NI_MAXHOST
+#  define NI_MAXHOST	1025
+# endif // NI_MAXHOST
+# ifndef NI_MAXSERV
+#  define NI_MAXSERV	32
+# endif // NI_MAXSERV
+#endif // __MINGW32__
+
 #endif // _D_A2NETCOMPAT_H_

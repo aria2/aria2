@@ -49,6 +49,8 @@
 #include <stdlib.h> /* _fmode */
 #include <fcntl.h> /*  _O_BINARY */
 
+namespace aria2 {
+
 Platform::Platform() {
   unsigned int _CRT_fmode = _O_BINARY;
   WSADATA wsaData;
@@ -61,5 +63,7 @@ Platform::Platform() {
 Platform::~Platform() {
   WSACleanup();
 }
+
+} // namespace aria2
 
 #endif // HAVE_WINSOCK2_H

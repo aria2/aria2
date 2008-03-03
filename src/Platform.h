@@ -37,6 +37,8 @@
 
 #include "common.h"
 
+namespace aria2 {
+
 #ifdef HAVE_WINSOCK2_H
 
 class Platform {
@@ -47,5 +49,7 @@ public:
 };
 
 #endif // HAVE_WINSOCK2_H
+
+} // namespace aria2
 
 #endif // _D_PLATFORM_H_

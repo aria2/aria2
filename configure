@@ -2633,7 +2633,7 @@ ac_config_headers="$ac_config_headers config.h"
 
 case "$target" in
 	*mingw*|*cygwin*)
-		WINSOCK_LIBS="-lws2_32"
+		WINSOCK_LIBS="-lws2_32 -lpthread"
 
 		;;
 esac
@@ -6220,8 +6220,8 @@ echo $ECHO_N "checking for LIBGCRYPT - version >= $min_libgcrypt_version... $ECH
     fi
   fi
   if test $ok = yes; then
-    { echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6; }
+    { echo "$as_me:$LINENO: result: yes ($libgcrypt_config_version)" >&5
+echo "${ECHO_T}yes ($libgcrypt_config_version)" >&6; }
   else
     { echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6; }
@@ -6239,8 +6239,8 @@ echo $ECHO_N "checking LIBGCRYPT API version... $ECHO_C" >&6; }
 echo "${ECHO_T}okay" >&6; }
            else
              ok=no
-             { echo "$as_me:$LINENO: result: does not match (want=$req_libgcrypt_api got=$tmp)" >&5
-echo "${ECHO_T}does not match (want=$req_libgcrypt_api got=$tmp)" >&6; }
+             { echo "$as_me:$LINENO: result: does not match. want=$req_libgcrypt_api got=$tmp" >&5
+echo "${ECHO_T}does not match. want=$req_libgcrypt_api got=$tmp" >&6; }
            fi
         fi
      fi

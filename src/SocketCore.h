@@ -36,7 +36,7 @@
 #define _D_SOCKET_CORE_H_
 
 #include "common.h"
-#include <sys/socket.h>
+#include "a2netcompat.h"
 #include <string>
 #include <utility>
 

@@ -34,6 +34,10 @@
 #ifndef _D_TIMEGM_H_
 #define _D_TIMEGM_H_
 
+#ifdef __MINGW32__
+# undef SIZE_MAX
+#endif // __MINGW32__
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif // HAVE_CONFIG_H

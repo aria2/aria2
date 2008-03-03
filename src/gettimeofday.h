@@ -36,6 +36,10 @@
 #ifndef _D_GETTIMEOFDAY_H
 #define _D_GETTIMEOFDAY_H 1
 
+#ifdef __MINGW32__
+# undef SIZE_MAX
+#endif // __MINGW32__
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif // HAVE_CONFIG_H

@@ -38,7 +38,7 @@
 #include "DHTConstants.h"
 #include "PeerMessageUtil.h"
 #include "Logger.h"
-#include <arpa/inet.h>
+#include "a2netcompat.h"
 #include <cerrno>
 #include <cstring>
 #include <ostream>

@@ -39,7 +39,7 @@
 #include "SharedHandle.h"
 #include "Command.h"
 #include <deque>
-#include <sys/select.h>
+#include "a2netcompat.h"
 
 namespace aria2 {
 
