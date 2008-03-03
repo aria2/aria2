@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "NameResolver.h"
 #include "DlAbortEx.h"
+#include "message.h"
 #include <cstring>
 
 namespace aria2 {
@@ -94,9 +95,6 @@ void NameResolver::reset()
 }
 
 #else // ENABLE_ASYNC_DNS
-
-#include "DlAbortEx.h"
-#include "message.h"
 
 void NameResolver::resolve(const std::string& hostname)
 {
