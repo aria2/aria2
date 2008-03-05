@@ -166,6 +166,18 @@ void DownloadEngine::waitData() {
   memcpy(&rfds, &rfdset, sizeof(fd_set));
   memcpy(&wfds, &wfdset, sizeof(fd_set));
   
+#ifdef ENABLE_ASYNC_DNS
+  for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
+      itr != nameResolverEntries.end(); ++itr) {
+    NameResolverEntry& entry = *itr;
+    int32_t fd = entry.nameResolver->getFds(&rfds, &wfds);
+    // TODO force error if fd == 0
+    if(fdmax < fd) {
+      fdmax = fd;
+    }
+  }
+#endif // ENABLE_ASYNC_DNS
+
   tv.tv_sec = noWait ? 0 : 1;
   tv.tv_usec = 0;
   retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
@@ -178,38 +190,28 @@ void DownloadEngine::waitData() {
 	entry.command->setStatusActive();
       }
     }
-#ifdef ENABLE_ASYNC_DNS
-    for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
-	itr != nameResolverEntries.end(); ++itr) {
-      NameResolverEntry& entry = *itr;
-      entry.nameResolver->process(&rfds, &wfds);
-      switch(entry.nameResolver->getStatus()) {
-      case NameResolver::STATUS_SUCCESS:
-      case NameResolver::STATUS_ERROR:
-	entry.command->setStatusActive();
-	break;
-      default:
-	break;
-      }
-    }
-#endif // ENABLE_ASYNC_DNS
   }
+#ifdef ENABLE_ASYNC_DNS
+  for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
+      itr != nameResolverEntries.end(); ++itr) {
+    NameResolverEntry& entry = *itr;
+    entry.nameResolver->process(&rfds, &wfds);
+    switch(entry.nameResolver->getStatus()) {
+    case NameResolver::STATUS_SUCCESS:
+    case NameResolver::STATUS_ERROR:
+      entry.command->setStatusActive();
+      break;
+    default:
+      break;
+    }
+  }
+#endif // ENABLE_ASYNC_DNS
 }
 
 void DownloadEngine::updateFdSet() {
   fdmax = 0;
   FD_ZERO(&rfdset);
   FD_ZERO(&wfdset);
-#ifdef ENABLE_ASYNC_DNS
-  for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
-      itr != nameResolverEntries.end(); ++itr) {
-    NameResolverEntry& entry = *itr;
-    int32_t fd = entry.nameResolver->getFds(&rfdset, &wfdset);
-    if(fdmax < fd) {
-      fdmax = fd;
-    }
-  }
-#endif // ENABLE_ASYNC_DNS
   for(SocketEntries::iterator itr = socketEntries.begin();
       itr != socketEntries.end(); ++itr) {
     SocketEntry& entry = *itr;
@@ -332,7 +334,6 @@ bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
 						entry);
   if(itr == nameResolverEntries.end()) {
     nameResolverEntries.push_back(entry);
-    updateFdSet();
     return true;
   } else {
     return false;
@@ -349,7 +350,6 @@ bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
     return false;
   } else {
     nameResolverEntries.erase(itr);
-    updateFdSet();
     return true;
   }
 }

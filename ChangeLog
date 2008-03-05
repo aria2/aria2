@@ -1,3 +1,13 @@
+2008-03-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that aria2 only uses first dns server in resolv.conf
+	when compiled with async DNS support.
+	* src/DownloadEngine.cc
+	* src/option_processing.cc: Lengthened DNS timeout to 30. I think old
+	value '10' will be a little bit short when some DNS servers are
+	offline and several DNS servers are tried. It should be configured
+	by command-line option.
+
 2008-03-04  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Merged Ross's mingw patch.
