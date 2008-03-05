@@ -361,9 +361,24 @@ void DefaultBtInteractive::detectMessageFlooding() {
 
 void DefaultBtInteractive::checkActiveInteraction()
 {
-  int32_t interval = 5*60;
-  if(inactiveCheckPoint.elapsed(interval)) {
-    throw new DlAbortEx(EX_DROP_INACTIVE_CONNECTION, interval);
+  // To allow aria2 to accept mutially interested peer, disconnect unintersted
+  // peer.
+  {
+    time_t interval = 30;
+    if(!peer->amInterested() && !peer->peerInterested() &&
+       inactiveCheckPoint.elapsed(interval)) {
+      // TODO change the message
+      throw new DlAbortEx("Disconnect peer because we are not interested each other after %u second(s).", interval);
+    }
+  }
+  // Since the peers which are *just* connected and do nothing to improve
+  // mutual download progress are completely waste of resources, those peers
+  // are disconnected in a certain time period.
+  {
+    time_t interval = 2*60;
+    if(inactiveCheckPoint.elapsed(interval)) {
+      throw new DlAbortEx(EX_DROP_INACTIVE_CONNECTION, interval);
+    }
   }
 }
 

@@ -1,5 +1,12 @@
 2008-03-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed inactive connection timeout to 120.
+	To accept more mulually interested peers, disconnect peer when there
+	is no interest between us after certain time passed.
+	* src/DefaultBtInteractive.cc (checkActiveInteraction)
+
+2008-03-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that aria2 only uses first dns server in resolv.conf
 	when compiled with async DNS support.
 	* src/DownloadEngine.cc
