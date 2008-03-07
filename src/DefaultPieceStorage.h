@@ -100,7 +100,6 @@ public:
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
 
   virtual SharedHandle<Piece> getMissingPiece();
-  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<FileEntry>& fileEntry);
 
   virtual SharedHandle<Piece> getMissingPiece(int32_t index);
 

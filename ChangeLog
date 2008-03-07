@@ -1,5 +1,13 @@
 2008-03-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed subPiece related functions.
+	* src/Piece.{h, cc} : Also rewritten getCompletedLength().
+	* src/DefaultPieceStorage.{h, cc}
+	* test/PieceTest.cc
+	* test/DefaultPieceStorageTest.cc
+	
+2008-03-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use unsigned char for data store.
 
 2008-03-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
