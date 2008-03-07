@@ -190,6 +190,12 @@ public:
 
   void writeData(const char* data, size_t len, const std::string& host, uint16_t port);
 
+  void writeData(const unsigned char* data, size_t len, const std::string& host,
+		 uint16_t port)
+  {
+    writeData(reinterpret_cast<const char*>(data), len, host, port);
+  }
+
   /**
    * Reads up to len bytes from this socket.
    * data is a pointer pointing the first
@@ -209,10 +215,17 @@ public:
     readData(reinterpret_cast<char*>(data), len);
   }
 
-  ssize_t readDataFrom(char*, size_t len,
+  ssize_t readDataFrom(char* data, size_t len,
 		       std::pair<std::string /* numerichost */,
 		       uint16_t /* port */>& sender);
 
+  ssize_t readDataFrom(unsigned char* data, size_t len,
+		       std::pair<std::string /* numerichost */,
+		       uint16_t /* port */>& sender)
+  {
+    return readDataFrom(reinterpret_cast<char*>(data), len, sender);
+  }
+			
   /**
    * Reads up to len bytes from this socket, but bytes are not removed from
    * this socket.

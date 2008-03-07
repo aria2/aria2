@@ -323,7 +323,7 @@ void DefaultBtContextTest::testLoadFromMemory()
   std::string memory = "d8:announce36:http://aria.rednoah.com/announce.php13:announce-listll16:http://tracker1 el15:http://tracker2el15:http://tracker3ee7:comment17:REDNOAH.COM RULES13:creation datei1123456789e4:infod5:filesld6:lengthi284e4:pathl5:aria23:src6:aria2ceed6:lengthi100e4:pathl19:aria2-0.2.2.tar.bz2eee4:name10:aria2-test12:piece lengthi128e6:pieces60:AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCee";
 
   DefaultBtContext btContext;
-  btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+  btContext.loadFromMemory(memory, "default");
 
   std::string correctHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
 
@@ -338,7 +338,7 @@ void DefaultBtContextTest::testLoadFromMemory_somethingMissing()
   try {
     std::string memory = "d8:announce36:http://aria.rednoah.com/announce.php4:infod4:name13:aria2.tar.bz26:lengthi262144eee";
     DefaultBtContext btContext;
-    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    btContext.loadFromMemory(memory, "default");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -358,7 +358,7 @@ void DefaultBtContextTest::testGetNodes()
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
       "ee";
     DefaultBtContext btContext;
-    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    btContext.loadFromMemory(memory, "default");
 
     const std::deque<std::pair<std::string, uint16_t> >& nodes =
       btContext.getNodes();
@@ -379,7 +379,7 @@ void DefaultBtContextTest::testGetNodes()
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
       "ee";
     DefaultBtContext btContext;
-    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    btContext.loadFromMemory(memory, "default");
 
     const std::deque<std::pair<std::string, uint16_t> >& nodes =
       btContext.getNodes();
@@ -398,7 +398,7 @@ void DefaultBtContextTest::testGetNodes()
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
       "ee";
     DefaultBtContext btContext;
-    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    btContext.loadFromMemory(memory, "default");
 
     const std::deque<std::pair<std::string, uint16_t> >& nodes =
       btContext.getNodes();
@@ -417,7 +417,7 @@ void DefaultBtContextTest::testGetNodes()
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
       "ee";
     DefaultBtContext btContext;
-    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    btContext.loadFromMemory(memory, "default");
 
     const std::deque<std::pair<std::string, uint16_t> >& nodes =
       btContext.getNodes();
@@ -435,7 +435,7 @@ void DefaultBtContextTest::testGetNodes()
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
       "ee";
     DefaultBtContext btContext;
-    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    btContext.loadFromMemory(memory, "default");
 
     const std::deque<std::pair<std::string, uint16_t> >& nodes =
       btContext.getNodes();
@@ -452,7 +452,7 @@ void DefaultBtContextTest::testGetNodes()
       "6:pieces20:AAAAAAAAAAAAAAAAAAAA"
       "ee";
     DefaultBtContext btContext;
-    btContext.loadFromMemory(memory.c_str(), memory.size(), "default");
+    btContext.loadFromMemory(memory, "default");
 
     const std::deque<std::pair<std::string, uint16_t> >& nodes =
       btContext.getNodes();

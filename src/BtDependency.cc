@@ -69,7 +69,7 @@ bool BtDependency::resolve()
       DiskAdaptorHandle diskAdaptor = dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
       std::string content = Util::toString(diskAdaptor);
-      btContext->loadFromMemory(content.c_str(), content.size(),
+      btContext->loadFromMemory(content,
 				File(dependee->getFilePath()).getBasename());
       if(_option->defined(PREF_PEER_ID_PREFIX)) {
 	btContext->setPeerIdPrefix(_option->get(PREF_PEER_ID_PREFIX));

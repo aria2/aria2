@@ -69,7 +69,7 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> localNode = new DHTNode();
   SharedHandle<DHTNode> remoteNode = new DHTNode();
 
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
@@ -86,7 +86,7 @@ void DHTGetPeersMessageTest::testGetBencodedMessage()
   cm->put("q", new Data("get_peers"));
   Dictionary* a = new Dictionary();
   cm->put("a", a);
-  a->put("id", new Data(reinterpret_cast<const char*>(localNode->getID()), DHT_ID_LENGTH));
+  a->put("id", new Data(localNode->getID(), DHT_ID_LENGTH));
   a->put("info_hash", new Data(infoHash, DHT_ID_LENGTH));
 
   BencodeVisitor v;
@@ -103,7 +103,7 @@ void DHTGetPeersMessageTest::testDoReceivedAction()
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 

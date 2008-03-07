@@ -78,12 +78,13 @@ void HttpHeaderProcessorTest::testGetPutBackDataLength()
 void HttpHeaderProcessorTest::testGetPutBackDataLength_nullChar()
 {
   HttpHeaderProcessor proc;
-  proc.update("HTTP/1.1 200 OK\r\n"
-	      "foo: foo\0bar\r\n"
-	      "\r\nputbackme", 35+7);
+  const char* x = "HTTP/1.1 200 OK\r\n"
+    "foo: foo\0bar\r\n"
+    "\r\nputbackme";
+  std::string hd1(&x[0], &x[42]);
+  proc.update(hd1);
   CPPUNIT_ASSERT(proc.eoh());
   CPPUNIT_ASSERT_EQUAL((int32_t)9, proc.getPutBackDataLength());
-  
 }
 
 void HttpHeaderProcessorTest::testGetHttpStatusHeader()

@@ -66,10 +66,10 @@ void DHTFindNodeReplyMessage::doReceivedAction()
 Dictionary* DHTFindNodeReplyMessage::getResponse()
 {
   Dictionary* a = new Dictionary();
-  a->put("id", new Data(reinterpret_cast<const char*>(_localNode->getID()),
-			DHT_ID_LENGTH));
+  a->put("id", new Data(_localNode->getID(), DHT_ID_LENGTH));
   size_t offset = 0;
-  char buffer[DHTBucket::K*26];
+  unsigned char buffer[DHTBucket::K*26];
+  // TODO if _closestKNodes.size() > DHTBucket::K ??
   for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
     SharedHandle<DHTNode> node = *i;
     memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);

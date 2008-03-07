@@ -58,9 +58,9 @@ public:
   
   uint16_t bind(uint16_t port);
 
-  virtual ssize_t receiveMessage(char* data, size_t len, std::string& host, uint16_t& port);
+  virtual ssize_t receiveMessage(unsigned char* data, size_t len, std::string& host, uint16_t& port);
 
-  virtual void sendMessage(const char* data, size_t len, const std::string& host, uint16_t port);
+  virtual void sendMessage(const unsigned char* data, size_t len, const std::string& host, uint16_t port);
 
   SharedHandle<SocketCore> getSocket() const;
 };

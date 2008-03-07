@@ -1,5 +1,9 @@
 2008-03-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use unsigned char for data store.
+
+2008-03-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.13.0+1
 	* configure.ac
 	

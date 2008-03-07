@@ -108,7 +108,8 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
-    std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
+    std::pair<std::string, uint16_t> peer =
+      PeerMessageUtil::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peer.second);
   }
@@ -166,7 +167,8 @@ void DHTRoutingTableSerializerTest::testSerialize()
   // 6bytes compact peer info
   ss.read(buf, 6);
   {
-    std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
+    std::pair<std::string, uint16_t> peer =
+      PeerMessageUtil::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peer.first);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6883, peer.second);
   }

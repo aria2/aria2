@@ -56,7 +56,7 @@ public:
 
   ~HttpHeaderProcessor();
 
-  void update(const char* data, int32_t length);
+  void update(const unsigned char* data, int32_t length);
 
   void update(const std::string& data);
 

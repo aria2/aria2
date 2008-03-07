@@ -52,7 +52,7 @@ DHTMessage::~DHTMessage() {}
 
 void DHTMessage::generateTransactionID()
 {
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   _transactionID = std::string(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 }

@@ -44,9 +44,9 @@ class DHTConnection {
 public:
   virtual ~DHTConnection() {}
 
-  virtual ssize_t receiveMessage(char* data, size_t len, std::string& host, uint16_t& port) = 0;
+  virtual ssize_t receiveMessage(unsigned char* data, size_t len, std::string& host, uint16_t& port) = 0;
 
-  virtual void sendMessage(const char* data, size_t len, const std::string& host, uint16_t port) = 0;
+  virtual void sendMessage(const unsigned char* data, size_t len, const std::string& host, uint16_t port) = 0;
 };
 
 } // namespace aria2

@@ -48,7 +48,7 @@ void DHTPingMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> localNode = new DHTNode();
   SharedHandle<DHTNode> remoteNode = new DHTNode();
 
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
@@ -62,7 +62,7 @@ void DHTPingMessageTest::testGetBencodedMessage()
   cm->put("q", new Data("ping"));
   Dictionary* a = new Dictionary();
   cm->put("a", a);
-  a->put("id", new Data(reinterpret_cast<const char*>(localNode->getID()), DHT_ID_LENGTH));
+  a->put("id", new Data(localNode->getID(), DHT_ID_LENGTH));
 
   BencodeVisitor v;
   cm->accept(&v);
@@ -75,7 +75,7 @@ void DHTPingMessageTest::testDoReceivedAction()
   SharedHandle<DHTNode> localNode = new DHTNode();
   SharedHandle<DHTNode> remoteNode = new DHTNode();
 
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 

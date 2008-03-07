@@ -48,7 +48,7 @@ namespace aria2 {
 
 void DHTUtil::generateRandomKey(unsigned char* key)
 {
-  char bytes[40];
+  unsigned char bytes[40];
   generateRandomData(bytes, sizeof(bytes));
   MessageDigestHelper::digest(key, 20, "sha1", bytes, sizeof(bytes));
 }

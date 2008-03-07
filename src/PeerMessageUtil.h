@@ -78,9 +78,9 @@ public:
    * The example of failure reason is that addr is not numbers-and-dots
    * notation.
    */
-  static bool createcompact(char* compact, const std::string& addr, uint16_t port);
+  static bool createcompact(unsigned char* compact, const std::string& addr, uint16_t port);
 
-  static std::pair<std::string, uint16_t> unpackcompact(const char* compact);
+  static std::pair<std::string, uint16_t> unpackcompact(const unsigned char* compact);
 };
 
 } // namespace aria2

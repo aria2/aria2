@@ -117,7 +117,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
   HttpRequestEntryHandle entry = outstandingHttpRequests.front();
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
 
-  char buf[512];
+  unsigned char buf[512];
   int32_t size = sizeof(buf);
   socket->peekData(buf, size);
   if(size == 0) {

@@ -258,7 +258,9 @@ void DefaultBtContext::extractNodes(const List* nodes)
   }
 }
 
-void DefaultBtContext::loadFromMemory(const char* content, int32_t length, const std::string& defaultName)
+void DefaultBtContext::loadFromMemory(const unsigned char* content,
+				      int32_t length,
+				      const std::string& defaultName)
 {
   SharedHandle<MetaEntry> rootEntry = MetaFileUtil::bdecoding(content, length);
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
@@ -310,8 +312,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   }
   pieceLength = pieceLengthData->toInt();
   // retrieve piece hashes
-  extractPieceHash((unsigned char*)pieceHashData->getData(),
-		   pieceHashData->getLen(),
+  extractPieceHash(pieceHashData->getData(), pieceHashData->getLen(),
 		   PIECE_HASH_LENGTH);
   const Data* privateFlag = dynamic_cast<const Data*>(infoDic->get("private"));
   if(privateFlag) {
@@ -386,7 +387,7 @@ std::string DefaultBtContext::getActualBasePath() const
 std::deque<int32_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, int32_t fastSetSize)
 {
   std::deque<int32_t> fastSet;
-  char compact[6];
+  unsigned char compact[6];
   if(!PeerMessageUtil::createcompact(compact, ipaddr, 0)) {
     return fastSet;
   }

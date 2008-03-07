@@ -35,8 +35,8 @@ void MetaFileUtilTest::testParseMetaFile() {
 
 void MetaFileUtilTest::testBdecoding() {
   try {
-    const char* str = "5:abcd";
-    MetaFileUtil::bdecoding(str, strlen(str));
+    std::string str = "5:abcd";
+    MetaFileUtil::bdecoding(str);
     CPPUNIT_FAIL("DlAbortEx exception must be thrown.");
   } catch(DlAbortEx* ex) {
     delete ex;
@@ -45,8 +45,8 @@ void MetaFileUtilTest::testBdecoding() {
   }
 
   try {
-    const char* str = "i1234";
-    MetaFileUtil::bdecoding(str, strlen(str));
+    std::string str = "i1234";
+    MetaFileUtil::bdecoding(str);
     CPPUNIT_FAIL("DlAbortEx exception must be thrown.");
   } catch(DlAbortEx* ex) {
     delete ex;
@@ -55,8 +55,8 @@ void MetaFileUtilTest::testBdecoding() {
   }
 
   try {
-    const char* str = "5abcd";
-    MetaFileUtil::bdecoding(str, strlen(str));
+    const std::string str = "5abcd";
+    MetaFileUtil::bdecoding(str);
     CPPUNIT_FAIL("DlAbortEx exception must be thrown.");
   } catch(DlAbortEx* ex) {
     delete ex;
@@ -65,8 +65,8 @@ void MetaFileUtilTest::testBdecoding() {
   }
 
   try {
-    const char* str = "d";
-    MetaFileUtil::bdecoding(str, strlen(str));
+    const std::string str = "d";
+    MetaFileUtil::bdecoding(str);
     CPPUNIT_FAIL("DlAbortEx exception must be thrown.");
   } catch(DlAbortEx* ex) {
     delete ex;

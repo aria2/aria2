@@ -66,7 +66,7 @@ void BtExtendedMessageTest::testCreate() {
 
   // payload:{4:name3:foo}->11bytes
   std::string payload = "4:name3:foo";
-  char msg[17];// 6+11bytes
+  unsigned char msg[17];// 6+11bytes
   PeerMessageUtil::createPeerMessageString((unsigned char*)msg, sizeof(msg), 13, 20);
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
@@ -77,8 +77,8 @@ void BtExtendedMessageTest::testCreate() {
   
   // case: payload size is wrong
   try {
-    char msg[5];
-    PeerMessageUtil::createPeerMessageString((unsigned char*)msg, sizeof(msg), 1, 20);
+    unsigned char msg[5];
+    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 20);
     BtExtendedMessage::create(ctx, peer, &msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
@@ -87,8 +87,8 @@ void BtExtendedMessageTest::testCreate() {
   }
   // case: id is wrong
   try {
-    char msg[6];
-    PeerMessageUtil::createPeerMessageString((unsigned char*)msg, sizeof(msg), 2, 21);
+    unsigned char msg[6];
+    PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 2, 21);
     BtExtendedMessage::create(ctx, peer, &msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
@@ -101,13 +101,11 @@ void BtExtendedMessageTest::testGetMessage() {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
   SharedHandle<MockExtensionMessage> exmsg =
-    new MockExtensionMessage("charlie", extendedMessageID,
-			     payload.c_str(),
-			     payload.size());
+    new MockExtensionMessage("charlie", extendedMessageID, payload);
   BtExtendedMessage msg(exmsg);
 
-  char data[17];
-  PeerMessageUtil::createPeerMessageString((unsigned char*)data, sizeof(data), 13, 20);
+  unsigned char data[17];
+  PeerMessageUtil::createPeerMessageString(data, sizeof(data), 13, 20);
   *(data+5) = extendedMessageID;
   memcpy(data+6, payload.c_str(), payload.size());
   CPPUNIT_ASSERT(memcmp(msg.getMessage(), data, 17) == 0);
@@ -115,7 +113,7 @@ void BtExtendedMessageTest::testGetMessage() {
 
 void BtExtendedMessageTest::testDoReceivedAction() {
   SharedHandle<MockExtensionMessage> exmsg =
-    new MockExtensionMessage("charlie", 1, "", 0);
+    new MockExtensionMessage("charlie", 1, "");
   BtExtendedMessage msg(exmsg);
   msg.doReceivedAction();
   CPPUNIT_ASSERT(exmsg->_doReceivedActionCalled);
@@ -125,9 +123,7 @@ void BtExtendedMessageTest::testToString() {
   std::string payload = "4:name3:foo";
   uint8_t extendedMessageID = 1;
   SharedHandle<MockExtensionMessage> exmsg =
-    new MockExtensionMessage("charlie", extendedMessageID,
-			     payload.c_str(),
-			     payload.size());
+    new MockExtensionMessage("charlie", extendedMessageID, payload);
   BtExtendedMessage msg(exmsg);
   CPPUNIT_ASSERT_EQUAL(std::string("extended charlie"), msg.toString());
 }

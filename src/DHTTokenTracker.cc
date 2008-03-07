@@ -48,7 +48,7 @@ DHTTokenTracker::DHTTokenTracker()
   memcpy(_secret[1], _secret[0], SECRET_SIZE);
 }
 
-DHTTokenTracker::DHTTokenTracker(const char* initialSecret)
+DHTTokenTracker::DHTTokenTracker(const unsigned char* initialSecret)
 {
   memcpy(_secret[0], initialSecret, SECRET_SIZE);
   memcpy(_secret[1], initialSecret, SECRET_SIZE);
@@ -58,9 +58,9 @@ DHTTokenTracker::~DHTTokenTracker() {}
 
 std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
 					   const std::string& ipaddr, uint16_t port,
-					   const char* secret) const
+					   const unsigned char* secret) const
 {
-  char src[DHT_ID_LENGTH+6+SECRET_SIZE];
+  unsigned char src[DHT_ID_LENGTH+6+SECRET_SIZE];
   if(!PeerMessageUtil::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
     throw new DlAbortEx("Token generation failed: ipaddr=%s, port=%u",
 			ipaddr.c_str(), port);

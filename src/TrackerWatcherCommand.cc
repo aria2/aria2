@@ -125,11 +125,11 @@ bool TrackerWatcherCommand::execute() {
 std::string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& requestGroup)
 {
   std::stringstream strm;
-  char data[2048];
+  unsigned char data[2048];
   requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
   while(1) {
-    int32_t dataLength = requestGroup->getPieceStorage()->getDiskAdaptor()->readData((unsigned char*)data, sizeof(data), strm.tellp());
-    strm.write(data, dataLength);
+    int32_t dataLength = requestGroup->getPieceStorage()->getDiskAdaptor()->readData(data, sizeof(data), strm.tellp());
+    strm.write(reinterpret_cast<const char*>(data), dataLength);
     if(dataLength == 0) {
       break;
     }
@@ -140,7 +140,7 @@ std::string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& 
 // TODO we have to deal with the exception thrown By BtAnnounce
 void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerResponse)
 {
-  btAnnounce->processAnnounceResponse(trackerResponse.c_str(),
+  btAnnounce->processAnnounceResponse(reinterpret_cast<const unsigned char*>(trackerResponse.c_str()),
 				      trackerResponse.size());
   while(!btRuntime->isHalt() && btRuntime->lessThanMinPeer()) {
     PeerHandle peer = peerStorage->getUnusedPeer();

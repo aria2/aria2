@@ -187,7 +187,7 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, int32_t data
     }
     case BtExtendedMessage::ID: {
       if(peer->isExtendedMessagingEnabled()) {
-	msg = BtExtendedMessage::create(btContext, peer, (const char*)data, dataLength);
+	msg = BtExtendedMessage::create(btContext, peer, data, dataLength);
       } else {
 	throw new DlAbortEx("Received extended message from peer during a session with extended messaging disabled.");
       }

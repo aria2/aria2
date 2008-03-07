@@ -73,7 +73,7 @@ uint16_t DHTConnectionImpl::bind(uint16_t port)
   return 0;
 }
 
-ssize_t DHTConnectionImpl::receiveMessage(char* data, size_t len, std::string& host, uint16_t& port)
+ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len, std::string& host, uint16_t& port)
 {
   if(_socket->isReadable(0)) {
     std::pair<std::string, uint16_t> remoteHost;
@@ -86,7 +86,7 @@ ssize_t DHTConnectionImpl::receiveMessage(char* data, size_t len, std::string& h
   }
 }
 
-void DHTConnectionImpl::sendMessage(const char* data, size_t len, const std::string& host, uint16_t port)
+void DHTConnectionImpl::sendMessage(const unsigned char* data, size_t len, const std::string& host, uint16_t port)
 {
   _socket->writeData(data, len, host, port);
 }

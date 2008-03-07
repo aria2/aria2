@@ -83,10 +83,10 @@ void UTPexExtensionMessageTest::testGetBencodedData()
   SharedHandle<Peer> p4 = new Peer("10.1.1.3", 10000);
   msg.addDroppedPeer(p4);
 
-  char c1[6];
-  char c2[6];
-  char c3[6];
-  char c4[6];
+  unsigned char c1[6];
+  unsigned char c2[6];
+  unsigned char c3[6];
+  unsigned char c4[6];
   PeerMessageUtil::createcompact(c1, p1->ipaddr, p1->port);
   PeerMessageUtil::createcompact(c2, p2->ipaddr, p2->port);
   PeerMessageUtil::createcompact(c3, p3->ipaddr, p3->port);
@@ -153,10 +153,10 @@ void UTPexExtensionMessageTest::testCreate()
   _btContext->setPieceLength(256*1024);
   _btContext->setTotalLength(1024*1024);
 
-  char c1[6];
-  char c2[6];
-  char c3[6];
-  char c4[6];
+  unsigned char c1[6];
+  unsigned char c2[6];
+  unsigned char c3[6];
+  unsigned char c4[6];
   PeerMessageUtil::createcompact(c1, "192.168.0.1", 6881);
   PeerMessageUtil::createcompact(c2, "10.1.1.2", 9999);
   PeerMessageUtil::createcompact(c3, "192.168.0.2", 6882);
@@ -171,7 +171,9 @@ void UTPexExtensionMessageTest::testCreate()
     "e";
   
   SharedHandle<UTPexExtensionMessage> msg =
-    UTPexExtensionMessage::create(_btContext, data.c_str(), data.size());
+    UTPexExtensionMessage::create(_btContext,
+				  reinterpret_cast<const unsigned char*>(data.c_str()),
+				  data.size());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, msg->getExtensionMessageID());
   CPPUNIT_ASSERT_EQUAL((size_t)2, msg->getFreshPeers().size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), msg->getFreshPeers()[0]->ipaddr);
@@ -186,7 +188,9 @@ void UTPexExtensionMessageTest::testCreate()
   try {
     // 0 length data
     std::string in = "";
-    UTPexExtensionMessage::create(_btContext, in.c_str(), in.size());
+    UTPexExtensionMessage::create(_btContext,
+				  reinterpret_cast<const unsigned char*>(in.c_str()),
+				  in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;

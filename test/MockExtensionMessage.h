@@ -14,11 +14,19 @@ public:
 public:
   MockExtensionMessage(const std::string& extensionName,
 		       uint8_t extensionMessageID,
-		       const char* data,
+		       const unsigned char* data,
 		       size_t length):_extensionName(extensionName),
 				      _extensionMessageID(extensionMessageID),
 				      _data(&data[0], &data[length]),
 				      _doReceivedActionCalled(false) {}
+
+  MockExtensionMessage(const std::string& extensionName,
+		       uint8_t extensionMessageID,
+		       const std::string& data):
+    _extensionName(extensionName),
+    _extensionMessageID(extensionMessageID),
+    _data(data),
+    _doReceivedActionCalled(false) {}
 
   virtual ~MockExtensionMessage() {}
 

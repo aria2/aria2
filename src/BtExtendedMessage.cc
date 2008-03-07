@@ -97,12 +97,12 @@ std::string BtExtendedMessage::toString() const {
 BtExtendedMessageHandle
 BtExtendedMessage::create(const BtContextHandle& btContext,
 			  const PeerHandle& peer,
-			  const char* data, size_t dataLength)
+			  const unsigned char* data, size_t dataLength)
 {
   if(dataLength < 2) {
     throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE, "extended", dataLength);
   }
-  int8_t id = PeerMessageUtil::getId((const unsigned char*)data);
+  int8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "extended", ID);
   }

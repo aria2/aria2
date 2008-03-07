@@ -31,14 +31,14 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> localNode = new DHTNode();
   SharedHandle<DHTNode> remoteNode = new DHTNode();
 
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
-  char id[DHT_ID_LENGTH];
+  unsigned char id[DHT_ID_LENGTH];
   DHTUtil::generateRandomData(id, DHT_ID_LENGTH);
 
-  DHTPingReplyMessage msg(localNode, remoteNode, (const unsigned char*)id, transactionID);
+  DHTPingReplyMessage msg(localNode, remoteNode, id, transactionID);
 
   std::string msgbody = msg.getBencodedMessage();
 

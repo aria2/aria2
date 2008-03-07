@@ -119,7 +119,14 @@ private:
 
   virtual void load(const std::string& torrentFile);
 
-  void loadFromMemory(const char* content, int32_t length, const std::string& defaultName);
+  void loadFromMemory(const unsigned char* content, int32_t length,
+		      const std::string& defaultName);
+
+  void loadFromMemory(const std::string& context, const std::string& defaultName)
+  {
+    loadFromMemory(reinterpret_cast<const unsigned char*>(context.c_str()),
+		   context.size(), defaultName);
+  }
 
   virtual std::string getName() const;
 
@@ -133,7 +140,7 @@ private:
     if(peerId == "") {
       peerId = generatePeerId();
     }
-    return (const unsigned char*)peerId.c_str();
+    return reinterpret_cast<const unsigned char*>(peerId.c_str());
   }
 
   virtual std::deque<int32_t> computeFastSet(const std::string& ipaddr, int32_t fastSetSize);

@@ -120,9 +120,8 @@ public:
 
   void setBtContext(const SharedHandle<BtContext>& btContext);
 
-  static HandshakeExtensionMessageHandle create(const char* data,
+  static HandshakeExtensionMessageHandle create(const unsigned char* data,
 						size_t dataLength);
-
 };
 
 typedef SharedHandle<HandshakeExtensionMessage> HandshakeExtensionMessageHandle;

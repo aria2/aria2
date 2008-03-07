@@ -40,7 +40,7 @@
 namespace aria2 {
 
 DHTUnknownMessage::DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
-				     const char* data, size_t length,
+				     const unsigned char* data, size_t length,
 				     const std::string& ipaddr, uint16_t port):
   DHTMessage(localNode, 0),
   _length(length),
@@ -50,7 +50,7 @@ DHTUnknownMessage::DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
   if(_length == 0) {
     _data = 0;
   } else {
-    _data = new char[length];
+    _data = new unsigned char[length];
     memcpy(_data, data, length);
   }
 }

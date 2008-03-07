@@ -65,7 +65,7 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
 {
   std::string remoteAddr;
   uint16_t remotePort;
-  char data[64*1024];
+  unsigned char data[64*1024];
   ssize_t length = _connection->receiveMessage(data, sizeof(data),
 					       remoteAddr,
 					       remotePort);
@@ -126,7 +126,8 @@ void DHTMessageReceiver::handleTimeout()
 }
 
 SharedHandle<DHTMessage>
-DHTMessageReceiver::handleUnknownMessage(const char* data, size_t length,
+DHTMessageReceiver::handleUnknownMessage(const unsigned char* data,
+					 size_t length,
 					 const std::string& remoteAddr,
 					 uint16_t remotePort)
 {

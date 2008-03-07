@@ -31,7 +31,7 @@ void DHTAnnouncePeerReplyMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> localNode = new DHTNode();
   SharedHandle<DHTNode> remoteNode = new DHTNode();
 
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 

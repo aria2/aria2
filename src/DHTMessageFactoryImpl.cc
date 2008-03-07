@@ -160,7 +160,7 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createQueryMessage(const Diction
   }
   const Data* id = getData(getDictionary(d, "a"), "id");
   validateID(id);
-  SharedHandle<DHTNode> remoteNode = getRemoteNode((const unsigned char*)id->toString().c_str(), ipaddr, port);
+  SharedHandle<DHTNode> remoteNode = getRemoteNode(id->getData(), ipaddr, port);
   std::string messageType = q->toString();
   std::string transactionID = t->toString();
   if(messageType == "ping") {
@@ -168,34 +168,31 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createQueryMessage(const Diction
   } else if(messageType == "find_node") {
     const Data* targetNodeID = getData(a, "target");
     validateID(targetNodeID);
-    return createFindNodeMessage(remoteNode,
-				 (const unsigned char*)targetNodeID->getData(),
+    return createFindNodeMessage(remoteNode, targetNodeID->getData(),
 				 transactionID);
   } else if(messageType == "get_peers") {
     const Data* infoHash = getData(a, "info_hash");
     validateID(infoHash);
     return createGetPeersMessage(remoteNode,
-				 (const unsigned char*)infoHash->getData(),
-				 transactionID);
+				 infoHash->getData(), transactionID);
   } else if(messageType == "announce_peer") {
     const Data* infoHash = getData(a, "info_hash");
     validateID(infoHash);
     const Data* port = getData(a, "port");
     validatePort(port);
     const Data* token = getData(a, "token");
-    return createAnnouncePeerMessage(remoteNode,
-				     (const unsigned char*)infoHash->getData(),
-				     (uint16_t)port->toInt(),
-				     token->toString(),
-				     transactionID);
+    return createAnnouncePeerMessage(remoteNode, infoHash->getData(),
+				     static_cast<uint16_t>(port->toInt()),
+				     token->toString(), transactionID);
   } else {
     throw new DlAbortEx("Unsupported message type: %s", messageType.c_str());
   }
 }
 
-SharedHandle<DHTMessage> DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
-							      const Dictionary* d,
-							      const SharedHandle<DHTNode>& remoteNode)
+SharedHandle<DHTMessage>
+DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
+					     const Dictionary* d,
+					     const SharedHandle<DHTNode>& remoteNode)
 {
   const Data* t = getData(d, "t");
   const Data* y = getData(d, "y");
@@ -217,11 +214,11 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createResponseMessage(const std:
   const Dictionary* r = getDictionary(d, "r");
   const Data* id = getData(r, "id");
   validateID(id);
-  validateIDMatch(remoteNode->getID(),
-		      (const unsigned char*)id->toString().c_str());
+  validateIDMatch(remoteNode->getID(), id->getData());
   std::string transactionID = t->toString();
   if(messageType == "ping") {
-    return createPingReplyMessage(remoteNode, (const unsigned char*)id->getData(), transactionID);
+    return createPingReplyMessage(remoteNode,
+				  id->getData(), transactionID);
   } else if(messageType == "find_node") {
     return createFindNodeReplyMessage(remoteNode, d, transactionID);
   } else if(messageType == "get_peers") {
@@ -289,14 +286,15 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage(const SharedHandle<DHTNode>& r
   return m;
 }
 
-std::deque<SharedHandle<DHTNode> > DHTMessageFactoryImpl::extractNodes(const char* src, size_t length)
+std::deque<SharedHandle<DHTNode> >
+DHTMessageFactoryImpl::extractNodes(const unsigned char* src, size_t length)
 {
   if(length%26 != 0) {
     throw new DlAbortEx("Nodes length is not multiple of 26");
   }
   std::deque<SharedHandle<DHTNode> > nodes;
   for(size_t offset = 0; offset < length; offset += 26) {
-    SharedHandle<DHTNode> node = new DHTNode(reinterpret_cast<const unsigned char*>(src+offset));
+    SharedHandle<DHTNode> node = new DHTNode(src+offset);
     std::pair<std::string, uint16_t> addr =
       PeerMessageUtil::unpackcompact(src+offset+DHT_ID_LENGTH);
     if(addr.first.empty()) {
@@ -419,7 +417,7 @@ DHTMessageFactoryImpl::createAnnouncePeerReplyMessage(const SharedHandle<DHTNode
 }
 
 SharedHandle<DHTMessage>
-DHTMessageFactoryImpl::createUnknownMessage(const char* data, size_t length,
+DHTMessageFactoryImpl::createUnknownMessage(const unsigned char* data, size_t length,
 					    const std::string& ipaddr, uint16_t port)
 
 {

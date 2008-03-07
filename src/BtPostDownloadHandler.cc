@@ -73,8 +73,7 @@ RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestG
     throw;
   }
   DefaultBtContextHandle btContext = new DefaultBtContext();
-  btContext->loadFromMemory(content.c_str(), content.size(),
-			    File(requestGroup->getFilePath()).getBasename());
+  btContext->loadFromMemory(content, File(requestGroup->getFilePath()).getBasename());
   if(op->defined(PREF_PEER_ID_PREFIX)) {
     btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
   }

@@ -43,7 +43,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AnnounceListTest );
 
 void AnnounceListTest::testSingleElementList() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -89,7 +89,7 @@ void AnnounceListTest::testSingleElementList() {
 
 void AnnounceListTest::testMultiElementList() {
   std::string peersString = "ll8:tracker18:tracker28:tracker3ee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2, tracker3 ] ]
   AnnounceList announceList(announces);
@@ -121,7 +121,7 @@ void AnnounceListTest::testMultiElementList() {
 
 void AnnounceListTest::testSingleAndMulti() {
   std::string peersString = "ll8:tracker18:tracker2el8:tracker3ee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1, tracker2 ], [ tracker3 ] ]
@@ -147,7 +147,7 @@ void AnnounceListTest::testSingleAndMulti() {
 
 void AnnounceListTest::testNoGroup() {
   std::string peersString = "llee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   AnnounceList announceList(announces);
 
@@ -156,7 +156,7 @@ void AnnounceListTest::testNoGroup() {
 
 void AnnounceListTest::testNextEventIfAfterStarted() {
   std::string peersString = "ll8:tracker1ee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ] ]
@@ -176,7 +176,7 @@ void AnnounceListTest::testNextEventIfAfterStarted() {
 
 void AnnounceListTest::testEvent() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -200,7 +200,7 @@ void AnnounceListTest::testEvent() {
 
 void AnnounceListTest::testCountStoppedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
@@ -227,7 +227,7 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
 
 void AnnounceListTest::testCountCompletedAllowedTier() {
   std::string peersString = "ll8:tracker1el8:tracker2el8:tracker3ee";
-  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* announces = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   // ANNOUNCE_LIST
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]

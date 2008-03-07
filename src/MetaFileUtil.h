@@ -49,16 +49,22 @@ class MetaFileUtil {
 private:
   MetaFileUtil() {}
 
-  static MetaEntry* bdecodingR(const char** pp, const char* end);
-  static Dictionary* parseDictionaryTree(const char** pp, const char* end);
-  static List* parseListTree(const char** pp, const char* end);
-  static Data* decodeWord(const char** pp, const char* end);
-  static Data* decodeInt(const char** pp, const char* end);
-  static std::string decodeWordAsString(const char** pp, const char* end);
+  static MetaEntry* bdecodingR(const unsigned char** pp, const unsigned char* end);
+  static Dictionary* parseDictionaryTree(const unsigned char** pp, const unsigned char* end);
+  static List* parseListTree(const unsigned char** pp, const unsigned char* end);
+  static Data* decodeWord(const unsigned char** pp, const unsigned char* end);
+  static Data* decodeInt(const unsigned char** pp, const unsigned char* end);
+  static std::string decodeWordAsString(const unsigned char** pp, const unsigned char* end);
 
 public:
   static MetaEntry* parseMetaFile(const std::string& file);
-  static MetaEntry* bdecoding(const char* buf, int32_t len);
+  static MetaEntry* bdecoding(const unsigned char* buf, size_t len);
+
+  static MetaEntry* bdecoding(const std::string& content)
+  {
+    return bdecoding(reinterpret_cast<const unsigned char*>(content.c_str()),
+		     content.size());
+  }
 };
 
 } // namespace aria2

@@ -125,7 +125,8 @@ void PeerMessageUtil::createPeerMessageString(unsigned char* msg,
   msg[4] = messageId;
 }
 
-bool PeerMessageUtil::createcompact(char* compact, const std::string& addr, uint16_t port)
+bool
+PeerMessageUtil::createcompact(unsigned char* compact, const std::string& addr, uint16_t port)
 {
   struct addrinfo hints;
   struct addrinfo* res;
@@ -144,7 +145,8 @@ bool PeerMessageUtil::createcompact(char* compact, const std::string& addr, uint
   return true;
 }
 
-std::pair<std::string, uint16_t> PeerMessageUtil::unpackcompact(const char* compact)
+std::pair<std::string, uint16_t>
+PeerMessageUtil::unpackcompact(const unsigned char* compact)
 {
   struct sockaddr_in in;
   memset(&in, 0, sizeof(in));

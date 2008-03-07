@@ -137,6 +137,12 @@ public:
 
   static std::string torrentUrlencode(const unsigned char* target, int32_t len);
 
+  static std::string torrentUrlencode(const std::string& target)
+  {
+    return torrentUrlencode(reinterpret_cast<const unsigned char*>(target.c_str()),
+			    target.size());
+  }
+
   static std::string toHex(const unsigned char* src, int32_t len);
 
   static std::string toHex(const std::string& src)

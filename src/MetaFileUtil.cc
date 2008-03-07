@@ -45,11 +45,11 @@ namespace aria2 {
 
 MetaEntry* MetaFileUtil::parseMetaFile(const std::string& file) {
   File f(file);
-  int32_t len = f.size();
-  char* buf = new char[len];
+  size_t len = f.size();
+  unsigned char* buf = new unsigned char[len];
   FILE* fp = fopen(file.c_str(), "r+b");
   try {
-    if(fp == NULL) {
+    if(!fp) {
       throw new DlAbortEx("cannot open metainfo file");
     }
     if(fread(buf, len, 1, fp) != 1) {
@@ -57,35 +57,29 @@ MetaEntry* MetaFileUtil::parseMetaFile(const std::string& file) {
       throw new DlAbortEx("cannot read metainfo");
     }
     fclose(fp);
-    fp = NULL;
+    fp = 0;
     MetaEntry* entry = bdecoding(buf, len);
     delete [] buf;
     return entry;
   } catch(RecoverableException* ex) {
     delete [] buf;
-    if(fp != NULL) {
+    if(fp) {
       fclose(fp);
     }
     throw;
   }
 }
 
-MetaEntry* MetaFileUtil::bdecoding(const char* buf, int32_t len) {
-  MetaEntry* entry = NULL;
-  try{
-    const char* p = buf;
-    const char* end = buf+len;
-    entry = bdecodingR(&p, end);
-    return entry;
-  } catch(RecoverableException* ex) {
-    if(entry != NULL) {
-      delete entry;
-    }
-    throw;
-  }
+MetaEntry* MetaFileUtil::bdecoding(const unsigned char* buf, size_t len)
+{
+  const unsigned char* p = buf;
+  const unsigned char* end = buf+len;
+  return bdecodingR(&p, end);
 }
 
-MetaEntry* MetaFileUtil::bdecodingR(const char** pp, const char* end) {
+MetaEntry*
+MetaFileUtil::bdecodingR(const unsigned char** pp, const unsigned char* end)
+{
   if(*pp >= end) {
     throw new DlAbortEx("Malformed metainfo");
   }
@@ -109,7 +103,9 @@ MetaEntry* MetaFileUtil::bdecodingR(const char** pp, const char* end) {
   return e;
 }
 
-Dictionary* MetaFileUtil::parseDictionaryTree(const char** pp, const char* end) {
+Dictionary*
+MetaFileUtil::parseDictionaryTree(const unsigned char** pp, const unsigned char* end)
+{
   if(*pp >= end) {
     throw new DlAbortEx("Malformed metainfo");
   }
@@ -131,7 +127,9 @@ Dictionary* MetaFileUtil::parseDictionaryTree(const char** pp, const char* end) 
   }
 }
 
-List* MetaFileUtil::parseListTree(const char** pp, const char* end) {
+List*
+MetaFileUtil::parseListTree(const unsigned char** pp, const unsigned char* end)
+{
   if(*pp >= end) {
     throw new DlAbortEx("Malformed metainfo");
   }
@@ -152,37 +150,42 @@ List* MetaFileUtil::parseListTree(const char** pp, const char* end) {
   }
 }
 
-Data* MetaFileUtil::decodeInt(const char** pp, const char* end) {
+Data*
+MetaFileUtil::decodeInt(const unsigned char** pp, const unsigned char* end)
+{
   if(*pp >= end) {
     throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }
-  char* endTerm = (char*)memchr(*pp, 'e', end-*pp);
+  unsigned char* endTerm = reinterpret_cast<unsigned char*>(memchr(*pp, 'e', end-*pp));
   // TODO if endTerm is null
-  if(endTerm == NULL) {
+  if(!endTerm) {
     throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }
-  int32_t numSize = endTerm-*pp;
+  size_t numSize = endTerm-*pp;
 
   Data* data = new Data(*pp, numSize, true);
   *pp += numSize+1;
   return data;
 }
 
-Data* MetaFileUtil::decodeWord(const char** pp, const char* end) {
+Data*
+MetaFileUtil::decodeWord(const unsigned char** pp, const unsigned char* end)
+{
   if(*pp >= end) {
     throw new DlAbortEx("Malformed metainfo");
   }
-  char* delim = (char*)memchr(*pp, ':', end-*pp);
+  unsigned char* delim = reinterpret_cast<unsigned char*>(memchr(*pp, ':', end-*pp));
   // TODO if delim is null
-  if(delim == *pp || delim == NULL) {
+  if(delim == *pp || !delim) {
     throw new DlAbortEx(EX_MALFORMED_META_INFO);
   }
-  int32_t numSize = delim-*pp;
-  char* temp = new char[numSize+1];
+  size_t numSize = delim-*pp;
+  unsigned char* temp = new unsigned char[numSize+1];
   memcpy(temp, *pp, numSize);
   temp[numSize] = '\0';
   char* endptr;
-  int32_t size = strtol(temp, &endptr, 10);
+  unsigned long int size = strtoul(reinterpret_cast<const char*>(temp),
+				   &endptr, 10);
   if(*endptr != '\0') {
     delete [] temp;
     throw new DlAbortEx(EX_MALFORMED_META_INFO);
@@ -198,7 +201,9 @@ Data* MetaFileUtil::decodeWord(const char** pp, const char* end) {
   return data;
 }
 
-std::string MetaFileUtil::decodeWordAsString(const char** pp, const char* end) {
+std::string
+MetaFileUtil::decodeWordAsString(const unsigned char** pp, const unsigned char* end)
+{
   Data* data = decodeWord(pp, end);
   std::string str = data->toString();
   delete data;

@@ -57,17 +57,17 @@ private:
   const Option* option;
   const Logger* logger;
 
-  char resbuf[MAX_PAYLOAD_LEN];
+  unsigned char resbuf[MAX_PAYLOAD_LEN];
   int32_t resbufLength;
   int32_t currentPayloadLength;
-  char lenbuf[4];
+  unsigned char lenbuf[4];
   int32_t lenbufLength;
 
   bool _encryptionEnabled;
   SharedHandle<ARC4Encryptor> _encryptor;
   SharedHandle<ARC4Decryptor> _decryptor;
 
-  void readData(char* data, int32_t& length, bool encryption);
+  void readData(unsigned char* data, int32_t& length, bool encryption);
 
   void sendData(const unsigned char* data, size_t length, bool encryption);
 

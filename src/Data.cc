@@ -38,23 +38,24 @@
 
 namespace aria2 {
 
-Data::Data(const char* data, int32_t len, bool number):number(number) {
+Data::Data(const unsigned char* data, int32_t len, bool number):number(number)
+{
   init(data, len);
 }
 
-Data::Data(const unsigned char* data, int32_t len, bool number):number(number) {
-  init(reinterpret_cast<const char*>(data), len);
+Data::Data(const char* data, int32_t len, bool number):number(number) {
+  init(reinterpret_cast<const unsigned char*>(data), len);
 }
 
 Data::Data(const std::string& data, bool number):number(number)
 {
-  init(data.c_str(), data.size());
+  init(reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
 }
 
-void Data::init(const char* src, int32_t slen)
+void Data::init(const unsigned char* src, int32_t slen)
 {
   if(src) {
-    data = new char[slen];
+    data = new unsigned char[slen];
     memcpy(data, src, slen);
     len = slen;
   } else { 
@@ -71,7 +72,7 @@ std::string Data::toString() const {
   return std::string(&data[0], &data[len]);
 }
 
-const char* Data::getData() const {
+const unsigned char* Data::getData() const {
   if(this->len == 0) {
     return NULL;
   } else {

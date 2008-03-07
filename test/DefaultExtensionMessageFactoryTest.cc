@@ -69,7 +69,8 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_unknown()
   std::string data = std::string(&id[0], &id[1]);
   try {
     // this test fails because localhost doesn't have extension id = 255.
-    factory.createMessage(data.c_str(), data.size());
+    factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
+			  data.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -87,7 +88,8 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_Handshake()
 
   std::string data = std::string(&id[0], &id[1])+"d1:v5:aria2e";
   SharedHandle<HandshakeExtensionMessage> m =
-    factory.createMessage(data.c_str(), data.size());
+    factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
+			  data.size());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
 }
 
@@ -97,10 +99,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
   factory.setBtContext(_btContext);
   factory.setPeer(_peer);
   
-  char c1[6];
-  char c2[6];
-  char c3[6];
-  char c4[6];
+  unsigned char c1[6];
+  unsigned char c2[6];
+  unsigned char c3[6];
+  unsigned char c4[6];
   PeerMessageUtil::createcompact(c1, "192.168.0.1", 6881);
   PeerMessageUtil::createcompact(c2, "10.1.1.2", 9999);
   PeerMessageUtil::createcompact(c3, "192.168.0.2", 6882);
@@ -115,7 +117,8 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
     "e";
 
   SharedHandle<UTPexExtensionMessage> m =
-    factory.createMessage(data.c_str(), data.size());
+    factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
+			  data.size());
   CPPUNIT_ASSERT_EQUAL(factory.getExtensionMessageID("ut_pex"),
 		       m->getExtensionMessageID());
 }

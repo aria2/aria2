@@ -45,10 +45,10 @@ HttpHeaderProcessor::HttpHeaderProcessor():_limit(4096) {}
 
 HttpHeaderProcessor::~HttpHeaderProcessor() {}
 
-void HttpHeaderProcessor::update(const char* data, int32_t length)
+void HttpHeaderProcessor::update(const unsigned char* data, int32_t length)
 {
   checkHeaderLimit(length);
-  strm.write(data, length);
+  strm.write(reinterpret_cast<const char*>(data), length);
 }
 
 void HttpHeaderProcessor::update(const std::string& data)

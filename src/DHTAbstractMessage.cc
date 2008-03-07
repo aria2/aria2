@@ -66,7 +66,7 @@ std::string DHTAbstractMessage::getBencodedMessage()
 void DHTAbstractMessage::send()
 {
   std::string message = getBencodedMessage();
-  _connection->sendMessage(message.c_str(),
+  _connection->sendMessage(reinterpret_cast<const unsigned char*>(message.c_str()),
 			   message.size(),
 			   _remoteNode->getIPAddress(),
 			   _remoteNode->getPort());

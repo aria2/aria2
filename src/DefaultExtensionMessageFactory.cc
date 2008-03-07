@@ -58,7 +58,7 @@ DefaultExtensionMessageFactory::DefaultExtensionMessageFactory(const BtContextHa
 DefaultExtensionMessageFactory::~DefaultExtensionMessageFactory() {}
 
 ExtensionMessageHandle
-DefaultExtensionMessageFactory::createMessage(const char* data, size_t length)
+DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t length)
 {
   uint8_t extensionMessageID = *data;
   if(extensionMessageID == 0) {

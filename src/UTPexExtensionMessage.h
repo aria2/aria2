@@ -93,7 +93,7 @@ public:
   void setBtContext(const SharedHandle<BtContext>& btContext);
 
   static UTPexExtensionMessageHandle create(const SharedHandle<BtContext>& btContext,
-					    const char* data, size_t len);
+					    const unsigned char* data, size_t len);
 };
 
 typedef SharedHandle<UTPexExtensionMessage> UTPexExtensionMessageHandle;

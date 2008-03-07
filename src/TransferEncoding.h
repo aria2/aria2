@@ -45,7 +45,8 @@ class TransferEncoding {
 public:
   virtual ~TransferEncoding() {}
   virtual void init() = 0;
-  virtual void inflate(char* outbuf, int32_t& outlen, const char* inbuf, int32_t inlen) = 0;
+  virtual void inflate(unsigned char* outbuf, int32_t& outlen,
+		       const unsigned char* inbuf, int32_t inlen) = 0;
   virtual bool finished() = 0;
   virtual void end() = 0;
 };

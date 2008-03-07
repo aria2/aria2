@@ -41,14 +41,14 @@ namespace aria2 {
 
 class DHTUnknownMessage:public DHTMessage {
 private:
-  char* _data;
+  unsigned char* _data;
   size_t _length;
   std::string _ipaddr;
   uint16_t _port;
 public:
   // _remoteNode is always null
   DHTUnknownMessage(const SharedHandle<DHTNode>& localNode,
-		    const char* data, size_t length,
+		    const unsigned char* data, size_t length,
 		    const std::string& ipaddr, uint16_t port);
 
   virtual ~DHTUnknownMessage();

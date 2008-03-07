@@ -108,8 +108,8 @@ public:
 				 const std::string& transactionID) = 0;
 
   virtual SharedHandle<DHTMessage>
-  createUnknownMessage(const char* data, size_t length, const std::string& ipaddr,
-		       uint16_t port) = 0;
+  createUnknownMessage(const unsigned char* data, size_t length,
+		       const std::string& ipaddr, uint16_t port) = 0;
 };
 
 } // namespace aria2

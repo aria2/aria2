@@ -67,22 +67,21 @@ void DHTGetPeersReplyMessage::doReceivedAction()
 Dictionary* DHTGetPeersReplyMessage::getResponse()
 {
   Dictionary* r = new Dictionary();
-  r->put("id", new Data(reinterpret_cast<const char*>(_localNode->getID()),
-			DHT_ID_LENGTH));
+  r->put("id", new Data(_localNode->getID(), DHT_ID_LENGTH));
   r->put("token", new Data(_token));
   if(_values.size()) {
     List* valuesList = new List();
     r->put("values", valuesList);
     for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin(); i != _values.end(); ++i) {
       const SharedHandle<Peer>& peer = *i;
-      char buffer[6];
+      unsigned char buffer[6];
       if(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port)) {
 	valuesList->add(new Data(buffer, sizeof(buffer)));
       }
     }
   } else {
     size_t offset = 0;
-    char buffer[DHTBucket::K*26];
+    unsigned char buffer[DHTBucket::K*26];
     for(std::deque<SharedHandle<DHTNode> >::const_iterator i = _closestKNodes.begin(); i != _closestKNodes.end(); ++i) {
       SharedHandle<DHTNode> node = *i;
       memcpy(buffer+offset, node->getID(), DHT_ID_LENGTH);

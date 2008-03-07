@@ -132,7 +132,7 @@ uint8_t HandshakeExtensionMessage::getExtensionMessageID(const std::string& name
 }
 
 HandshakeExtensionMessageHandle
-HandshakeExtensionMessage::create(const char* data, size_t length)
+HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 {
   if(length < 1) {
     throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE,
@@ -140,7 +140,7 @@ HandshakeExtensionMessage::create(const char* data, size_t length)
   }
   HandshakeExtensionMessageHandle msg = new HandshakeExtensionMessage();
   msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
-		      Util::urlencode((const unsigned char*)data, length).c_str());
+		      Util::urlencode(data, length).c_str());
   SharedHandle<MetaEntry> root = MetaFileUtil::bdecoding(data+1, length-1);
   Dictionary* d = dynamic_cast<Dictionary*>(root.get());
   if(d == 0) {

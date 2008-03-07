@@ -30,7 +30,7 @@ void DefaultPeerListProcessorTest::testExtractPeer() {
   DefaultPeerListProcessor proc(1024*1024, 10*1024*1024);
   std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
 
-  Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString);
   
   CPPUNIT_ASSERT(proc.canHandle(dic->get("peers")));
 
@@ -45,7 +45,7 @@ void DefaultPeerListProcessorTest::testExtract2Peers() {
   DefaultPeerListProcessor proc(1024*1024, 10*1024*1024);
   std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
 
-  Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString.c_str(), peersString.size());
+  Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString);
 
   std::deque<SharedHandle<Peer> > peers = proc.extractPeer(dic->get("peers"));
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());

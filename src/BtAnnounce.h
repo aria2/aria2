@@ -91,7 +91,7 @@ public:
   /**
    * Processes the repsponse from the tracker.
    */
-  virtual void processAnnounceResponse(const char* trackerResponse,
+  virtual void processAnnounceResponse(const unsigned char* trackerResponse,
 				       size_t trackerResponseLength) = 0;
 
   /**

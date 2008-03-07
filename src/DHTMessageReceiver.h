@@ -61,7 +61,7 @@ private:
   const Logger* _logger;
 
   SharedHandle<DHTMessage>
-  handleUnknownMessage(const char* data, size_t length,
+  handleUnknownMessage(const unsigned char* data, size_t length,
 		       const std::string& remoteAddr, uint16_t remotePort);
 public:
   DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker);

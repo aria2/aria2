@@ -43,10 +43,10 @@ namespace aria2 {
 class Data : public MetaEntry {
 private:
   int32_t len;
-  char* data;
+  unsigned char* data;
   bool number;
 
-  void init(const char* data, int32_t len);
+  void init(const unsigned char* data, int32_t len);
 public:
   /**
    * This class stores the copy of data. So caller must take care of freeing
@@ -64,7 +64,7 @@ public:
   int32_t toInt() const;
   int64_t toLLInt() const;
   
-  const char* getData() const;
+  const unsigned char* getData() const;
   int32_t getLen() const;
   bool isNumber() const;
 

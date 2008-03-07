@@ -42,7 +42,7 @@ public:
 
   virtual void resetAnnounce() {}
 
-  virtual void processAnnounceResponse(const char* trackerResponse,
+  virtual void processAnnounceResponse(const unsigned char* trackerResponse,
 				       size_t trackerResponseLength) {}
 
   virtual bool noMoreAnnounce() {

@@ -163,7 +163,7 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
       nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
       nodes[i]->setPort(6881+i);
 
-      char buf[6];
+      unsigned char buf[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
 	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
@@ -232,7 +232,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
       nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
       nodes[i]->setPort(6881+i);
 
-      char buf[6];
+      unsigned char buf[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
       compactNodeInfo +=
 	std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
@@ -276,7 +276,7 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
     r->put("values", values);
     for(size_t i = 0; i < 4; ++i) {
       SharedHandle<Peer> peer = new Peer("192.168.0."+Util::uitos(i+1), 6881+i);
-      char buffer[6];
+      unsigned char buffer[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port));
       values->add(new Data(buffer, sizeof(buffer)));
       peers.push_back(peer);

@@ -41,7 +41,7 @@ void createNLengthMessage(char* msg, int msgLen, int payloadLen, int id) {
 
 void PeerMessageUtilTest::testCreateCompact()
 {
-  char compact[6];
+  unsigned char compact[6];
   CPPUNIT_ASSERT(PeerMessageUtil::createcompact(compact, "::ffff:127.0.0.1", 6881));
 
   std::pair<std::string, uint16_t> p = PeerMessageUtil::unpackcompact(compact);

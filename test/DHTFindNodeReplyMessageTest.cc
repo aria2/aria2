@@ -33,7 +33,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   SharedHandle<DHTNode> localNode = new DHTNode();
   SharedHandle<DHTNode> remoteNode = new DHTNode();
 
-  char tid[DHT_TRANSACTION_ID_LENGTH];
+  unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
   std::string transactionID(&tid[0], &tid[DHT_TRANSACTION_ID_LENGTH]);
 
@@ -46,7 +46,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
     nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
     nodes[i]->setPort(6881+i);
 
-    char buf[6];
+    unsigned char buf[6];
     CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buf, nodes[i]->getIPAddress(), nodes[i]->getPort()));
     compactNodeInfo +=
       std::string(&nodes[i]->getID()[0], &nodes[i]->getID()[DHT_ID_LENGTH])+
@@ -61,7 +61,7 @@ void DHTFindNodeReplyMessageTest::testGetBencodedMessage()
   cm->put("y", new Data("r"));
   Dictionary* r = new Dictionary();
   cm->put("r", r);
-  r->put("id", new Data(reinterpret_cast<const char*>(localNode->getID()), DHT_ID_LENGTH));
+  r->put("id", new Data(localNode->getID(), DHT_ID_LENGTH));
   r->put("nodes", new Data(compactNodeInfo));
 
   BencodeVisitor v;

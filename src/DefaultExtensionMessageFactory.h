@@ -60,7 +60,7 @@ public:
   virtual ~DefaultExtensionMessageFactory();
 
   virtual SharedHandle<ExtensionMessage>
-  createMessage(const char* data, size_t length);
+  createMessage(const unsigned char* data, size_t length);
 
   void setBtContext(const SharedHandle<BtContext>& btContext);
 

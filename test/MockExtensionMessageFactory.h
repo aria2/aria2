@@ -10,7 +10,7 @@ class MockExtensionMessageFactory:public ExtensionMessageFactory {
 public:
   virtual ~MockExtensionMessageFactory() {}
 
-  virtual SharedHandle<ExtensionMessage> createMessage(const char* data,
+  virtual SharedHandle<ExtensionMessage> createMessage(const unsigned char* data,
 						       size_t length)
   {
     return new MockExtensionMessage("a2_mock", *data, data+1, length-1);

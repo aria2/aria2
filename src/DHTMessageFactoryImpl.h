@@ -74,7 +74,7 @@ private:
 
   void validatePort(const Data* i) const;
 
-  std::deque<SharedHandle<DHTNode> > extractNodes(const char* src, size_t length);
+  std::deque<SharedHandle<DHTNode> > extractNodes(const unsigned char* src, size_t length);
 
   void setCommonProperty(const SharedHandle<DHTAbstractMessage>& m);
 
@@ -156,8 +156,8 @@ public:
 				 const std::string& transactionID);
 
   virtual SharedHandle<DHTMessage>
-  createUnknownMessage(const char* data, size_t length, const std::string& ipaddr,
-		       uint16_t port);
+  createUnknownMessage(const unsigned char* data, size_t length,
+		       const std::string& ipaddr, uint16_t port);
 
   void setRoutingTable(const WeakHandle<DHTRoutingTable>& routingTable);
 

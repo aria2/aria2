@@ -160,14 +160,13 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
   return retval;
 }
 
-void PeerConnection::readData(char* data, int32_t& length, bool encryption)
+void PeerConnection::readData(unsigned char* data, int32_t& length, bool encryption)
 {
   if(encryption) {
-    unsigned char* cdata = reinterpret_cast<unsigned char*>(data);
     unsigned char temp[MAX_PAYLOAD_LEN];
     assert(MAX_PAYLOAD_LEN >= length);
     socket->readData(temp, length);
-    _decryptor->decrypt(cdata, length, temp, length);
+    _decryptor->decrypt(data, length, temp, length);
   } else {
     socket->readData(data, length);
   }

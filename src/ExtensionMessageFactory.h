@@ -47,7 +47,7 @@ public:
   virtual ~ExtensionMessageFactory() {}
 
   virtual SharedHandle<ExtensionMessage>
-  createMessage(const char* data, size_t length) = 0;
+  createMessage(const unsigned char* data, size_t length) = 0;
 };
 
 typedef SharedHandle<ExtensionMessageFactory> ExtensionMessageFactoryHandle;

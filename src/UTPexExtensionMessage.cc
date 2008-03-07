@@ -76,7 +76,7 @@ std::pair<std::string, std::string> UTPexExtensionMessage::createCompactPeerList
   std::string addrstring;
   std::string flagstring;
   for(Peers::const_iterator itr = peers.begin(); itr != peers.end(); ++itr) {
-    char compact[6];
+    unsigned char compact[6];
     if(PeerMessageUtil::createcompact(compact, (*itr)->ipaddr, (*itr)->port)) {
       addrstring.append(&compact[0], &compact[6]);
       flagstring += (*itr)->isSeeder() ? "2" : "0";
@@ -123,7 +123,7 @@ void UTPexExtensionMessage::setBtContext(const BtContextHandle& btContext)
 
 UTPexExtensionMessageHandle
 UTPexExtensionMessage::create(const BtContextHandle& btContext,
-			      const char* data, size_t len)
+			      const unsigned char* data, size_t len)
 {
   if(len < 1) {
     throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE,

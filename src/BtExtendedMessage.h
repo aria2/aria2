@@ -60,7 +60,7 @@ public:
 
   static BtExtendedMessageHandle create(const SharedHandle<BtContext>& btContext,
 					const SharedHandle<Peer>& peer,
-					const char* data,
+					const unsigned char* data,
 					size_t dataLength);
 
   virtual int8_t getId() { return ID; }

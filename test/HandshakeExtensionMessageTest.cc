@@ -95,7 +95,8 @@ void HandshakeExtensionMessageTest::testCreate()
 {
   std::string in = "0d1:pi6881e1:v5:aria21:md6:ut_pexi1eee";
   SharedHandle<HandshakeExtensionMessage> m =
-    HandshakeExtensionMessage::create(in.c_str(), in.size());
+    HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
+				      in.size());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getTCPPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, m->getExtensionMessageID("ut_pex"));
@@ -103,7 +104,8 @@ void HandshakeExtensionMessageTest::testCreate()
   try {
     // bad payload format
     std::string in = "011:hello world";
-    HandshakeExtensionMessage::create(in.c_str(), in.size());
+    HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
+				      in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -112,7 +114,8 @@ void HandshakeExtensionMessageTest::testCreate()
   try {
     // malformed dencoded message
     std::string in = "011:hello";
-    HandshakeExtensionMessage::create(in.c_str(), in.size());
+    HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
+				      in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -121,7 +124,8 @@ void HandshakeExtensionMessageTest::testCreate()
   try {
     // 0 length data
     std::string in = "";
-    HandshakeExtensionMessage::create(in.c_str(), in.size());
+    HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
+				      in.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -133,7 +137,8 @@ void HandshakeExtensionMessageTest::testCreate_stringnum()
 {
   std::string in = "0d1:p4:68811:v5:aria21:md6:ut_pex1:1ee";
   SharedHandle<HandshakeExtensionMessage> m =
-    HandshakeExtensionMessage::create(in.c_str(), in.size());
+    HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
+				      in.size());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getTCPPort());
   CPPUNIT_ASSERT_EQUAL((uint8_t)1, m->getExtensionMessageID("ut_pex"));

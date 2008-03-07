@@ -126,7 +126,8 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
 	in.read(buf, 42);
 	continue;
       }
-      std::pair<std::string, uint16_t> peer = PeerMessageUtil::unpackcompact(buf);
+      std::pair<std::string, uint16_t> peer =
+	PeerMessageUtil::unpackcompact(reinterpret_cast<const unsigned char*>(buf));
       if(peer.first.empty()) {
 	// skip this entry
 	in.read(buf, 42);

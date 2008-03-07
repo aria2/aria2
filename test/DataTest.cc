@@ -41,7 +41,7 @@ void DataTest::testGetData() {
   CPPUNIT_ASSERT_EQUAL((int32_t)5, data.getLen());  
 
   Data null(reinterpret_cast<const char*>(0), 0);
-  CPPUNIT_ASSERT_EQUAL((const char*)NULL, null.getData());
+  CPPUNIT_ASSERT(null.getData() == 0);
   CPPUNIT_ASSERT_EQUAL((int32_t)0, null.getLen());
 
 }

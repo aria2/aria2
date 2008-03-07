@@ -110,7 +110,7 @@ bool DownloadCommand::executeInternal() {
   SegmentHandle segment = _segments.front();
 
   int32_t BUFSIZE = 16*1024;
-  char buf[BUFSIZE];
+  unsigned char buf[BUFSIZE];
   int32_t bufSize;
   if(segment->getLength() > 0 && segment->getLength()-segment->getWrittenLength() < BUFSIZE) {
     bufSize = segment->getLength()-segment->getWrittenLength();
@@ -120,8 +120,8 @@ bool DownloadCommand::executeInternal() {
   socket->readData(buf, bufSize);
 
   if(transferDecoder.isNull()) {
-    _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData((const unsigned char*)buf, bufSize,
-								segment->getPositionToWrite());
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData(buf, bufSize,
+								  segment->getPositionToWrite());
     //logger->debug("bufSize = %d, posToWrite = %lld", bufSize, segment->getPositionToWrite());
     segment->updateWrittenLength(bufSize);
     //logger->debug("overflow length = %d, next posToWrite = %lld", segment->getOverflowLength(), segment->getPositionToWrite());
@@ -131,10 +131,10 @@ bool DownloadCommand::executeInternal() {
     peerStat->updateDownloadLength(bufSize);
   } else {
     int32_t infbufSize = 16*1024;
-    char infbuf[infbufSize];
+    unsigned char infbuf[infbufSize];
     transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
-    _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData((const unsigned char*)infbuf, infbufSize,
-								segment->getPositionToWrite());
+    _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData(infbuf, infbufSize,
+								  segment->getPositionToWrite());
     segment->updateWrittenLength(infbufSize);
     //segment->writtenLength += infbufSize;
     peerStat->updateDownloadLength(infbufSize);

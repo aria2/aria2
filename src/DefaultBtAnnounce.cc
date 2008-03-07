@@ -158,8 +158,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     url += std::string("&")+"event="+event;
   }
   if(!trackerId.empty()) {
-    url += std::string("&")+"trackerid="+Util::torrentUrlencode((const unsigned char*)trackerId.c_str(),
-							   trackerId.size());
+    url += std::string("&")+"trackerid="+Util::torrentUrlencode(trackerId);
   }
   if(option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     url += "&requirecrypto=1";
@@ -193,7 +192,7 @@ void DefaultBtAnnounce::resetAnnounce() {
 }
 
 void
-DefaultBtAnnounce::processAnnounceResponse(const char* trackerResponse,
+DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
 					   size_t trackerResponseLength)
 {
   SharedHandle<MetaEntry> entry(MetaFileUtil::bdecoding(trackerResponse,

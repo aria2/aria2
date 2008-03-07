@@ -46,12 +46,7 @@ public:
   static void generateRandomKey(unsigned char* key);
 
   static void generateRandomData(unsigned char* data, size_t length);
-
-  static void generateRandomData(char* data, size_t length)
-  {
-    return generateRandomData(reinterpret_cast<unsigned char*>(data), length);
-  }
-
+  
   static void flipBit(unsigned char* data, size_t length, size_t bitIndex);
 
 };

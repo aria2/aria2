@@ -57,7 +57,7 @@ public:
     _btContext->setInfoHash(infoHash);
     _btContext->setTotalLength(totalLength);
     _btContext->setPieceLength(pieceLength);
-    _btContext->setPeerId((const unsigned char*)peerId.c_str());
+    _btContext->setPeerId(reinterpret_cast<const unsigned char*>(peerId.c_str()));
 
     _pieceStorage = new MockPieceStorage();
     _pieceStorage->setTotalLength(totalLength);
@@ -288,7 +288,7 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_malformed()
 {
   try {
     std::string res = "i123e";
-    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(res.c_str(), res.size());
+    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -300,7 +300,7 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_failureReason()
 {
   try {
     std::string res = "d14:failure reason11:hello worlde";
-    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(res.c_str(), res.size());
+    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -320,7 +320,7 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
     "e";
   
   DefaultBtAnnounce an(new MockBtContext(), _option);
-  an.processAnnounceResponse(res.c_str(), res.size());
+  an.processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), an.getTrackerID());
   CPPUNIT_ASSERT_EQUAL(3000, an.getInterval());
   CPPUNIT_ASSERT_EQUAL(1800, an.getMinInterval());
