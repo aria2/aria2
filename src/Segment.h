@@ -50,21 +50,21 @@ public:
 
   virtual bool complete() const = 0;
 
-  virtual int32_t getIndex() const = 0;
+  virtual size_t getIndex() const = 0;
 
-  virtual int64_t getPosition() const = 0;
+  virtual off_t getPosition() const = 0;
   
-  virtual int64_t getPositionToWrite() const = 0;
+  virtual off_t getPositionToWrite() const = 0;
 
-  virtual int32_t getLength() const = 0;
+  virtual size_t getLength() const = 0;
 
-  virtual int32_t getSegmentLength() const = 0;
+  virtual size_t getSegmentLength() const = 0;
 
-  virtual int32_t getWrittenLength() const = 0;
+  virtual size_t getWrittenLength() const = 0;
 
-  virtual int32_t getOverflowLength() const = 0;
+  virtual size_t getOverflowLength() const = 0;
 
-  virtual void updateWrittenLength(int32_t bytes) = 0;
+  virtual void updateWrittenLength(size_t bytes) = 0;
 
   virtual void clear() = 0;
 

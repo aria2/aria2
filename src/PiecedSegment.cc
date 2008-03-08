@@ -34,12 +34,18 @@
 /* copyright --> */
 #include "PiecedSegment.h"
 #include "Piece.h"
+#include <cassert>
 
 namespace aria2 {
 
-PiecedSegment::PiecedSegment(int32_t pieceLength, const PieceHandle& piece):
-  _pieceLength(pieceLength), _overflowLength(0), _piece(piece),
-  _writtenLength(_piece->getFirstMissingBlockIndexWithoutLock()*_piece->getBlockLength()) {}
+PiecedSegment::PiecedSegment(size_t pieceLength, const PieceHandle& piece):
+  _pieceLength(pieceLength), _overflowLength(0), _piece(piece)
+{
+  size_t index;
+  bool t = _piece->getFirstMissingBlockIndexWithoutLock(index);
+  assert(t);
+  _writtenLength = index*_piece->getBlockLength();
+}
 
 PiecedSegment::~PiecedSegment() {}
 
@@ -48,34 +54,34 @@ bool PiecedSegment::complete() const
   return _piece->pieceComplete();
 }
 
-int32_t PiecedSegment::getIndex() const
+size_t PiecedSegment::getIndex() const
 {
   return _piece->getIndex();
 }
 
-int64_t PiecedSegment::getPosition() const
+off_t PiecedSegment::getPosition() const
 {
-  return ((int64_t)_piece->getIndex())*_pieceLength;
+  return ((off_t)_piece->getIndex())*_pieceLength;
 }
 
-int64_t PiecedSegment::getPositionToWrite() const
+off_t PiecedSegment::getPositionToWrite() const
 {
   return getPosition()+_writtenLength;
 }
 
-int32_t PiecedSegment::getLength() const
+size_t PiecedSegment::getLength() const
 {
   return _piece->getLength();
 }
 
-void PiecedSegment::updateWrittenLength(int32_t bytes)
+void PiecedSegment::updateWrittenLength(size_t bytes)
 {
-  int32_t newWrittenLength = _writtenLength+bytes;
+  size_t newWrittenLength = _writtenLength+bytes;
   if(newWrittenLength > _piece->getLength()) {
     _overflowLength = newWrittenLength-_piece->getLength();
     newWrittenLength = _piece->getLength();
   }
-  for(int32_t i = _writtenLength/_piece->getBlockLength(); i < newWrittenLength/_piece->getBlockLength(); ++i) {
+  for(size_t i = _writtenLength/_piece->getBlockLength(); i < newWrittenLength/_piece->getBlockLength(); ++i) {
     _piece->completeBlock(i);
   }
   if(newWrittenLength == _piece->getLength()) {

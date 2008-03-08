@@ -109,31 +109,32 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
   pieces.clear();
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessages(int32_t max) {
+BtMessages DefaultBtRequestFactory::createRequestMessages(size_t max)
+{
   BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
-      itr != pieces.end() && requests.size() < (size_t)max; itr++) {
+      itr != pieces.end() && requests.size() < max; itr++) {
     PieceHandle& piece = *itr;
-    int32_t blockIndex;
-    while(requests.size() < (size_t)max &&
-	  (blockIndex = piece->getMissingUnusedBlockIndex()) != -1) {
+    size_t blockIndex;
+    while(requests.size() < max &&
+	  piece->getMissingUnusedBlockIndex(blockIndex)) {
       requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
     }
   }
   return requests;
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(int32_t max) {
+BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
+{
   BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
-      itr != pieces.end() && requests.size() < (size_t)max; itr++) {
+      itr != pieces.end() && requests.size() < max; itr++) {
     PieceHandle& piece = *itr;
-    std::deque<int32_t> missingBlockIndexes = piece->getAllMissingBlockIndexes();
+    std::deque<size_t> missingBlockIndexes = piece->getAllMissingBlockIndexes();
     random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
-    for(std::deque<int32_t>::const_iterator bitr = missingBlockIndexes.begin();
-	bitr != missingBlockIndexes.end() && requests.size() < (size_t)max;
-	bitr++) {
-      int32_t blockIndex = *bitr;
+    for(std::deque<size_t>::const_iterator bitr = missingBlockIndexes.begin();
+	bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
+      size_t blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
 					   blockIndex)) {
 	requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));

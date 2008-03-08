@@ -43,10 +43,10 @@ void SegmentManTest::testNullBitfield()
 
   SharedHandle<Segment> segment = segmentMan.getSegment(1);
   CPPUNIT_ASSERT(!segment.isNull());
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->getLength());
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->getSegmentLength());
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, segment->getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getSegmentLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, segment->getWrittenLength());
 
   SharedHandle<Segment> segment2 = segmentMan.getSegment(2);
   CPPUNIT_ASSERT(segment2.isNull());
@@ -58,8 +58,8 @@ void SegmentManTest::testNullBitfield()
 void SegmentManTest::testCompleteSegment()
 {
   Option op;
-  int32_t pieceLength = 1024*1024;
-  int64_t totalLength = 64*1024*1024;
+  size_t pieceLength = 1024*1024;
+  uint64_t totalLength = 64*1024*1024;
   SharedHandle<MockBtContext> dctx = new MockBtContext();
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
@@ -78,8 +78,8 @@ void SegmentManTest::testCompleteSegment()
   
   std::deque<SharedHandle<Segment> > segments = segmentMan.getInFlightSegment(1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments.size());
-  CPPUNIT_ASSERT_EQUAL(0, segments[0]->getIndex());
-  CPPUNIT_ASSERT_EQUAL(2, segments[1]->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, segments[0]->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, segments[1]->getIndex());
 }
 
 void SegmentManTest::testMarkPieceDone_usedSegment()

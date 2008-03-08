@@ -39,10 +39,10 @@ public:
 
   class MockBtRequestMessage : public MockBtMessage {
   public:
-    int index;
-    int blockIndex;
+    size_t index;
+    size_t blockIndex;
 
-    MockBtRequestMessage(int index, int blockIndex):index(index), blockIndex(blockIndex) {}
+    MockBtRequestMessage(size_t index, size_t blockIndex):index(index), blockIndex(blockIndex) {}
   };
   
   typedef SharedHandle<MockBtRequestMessage> MockBtRequestMessageHandle;
@@ -126,7 +126,7 @@ void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
   CPPUNIT_ASSERT_EQUAL((int32_t)2, btRequestFactory->countTargetPiece());
   btRequestFactory->removeCompletedPiece();
   CPPUNIT_ASSERT_EQUAL((int32_t)1, btRequestFactory->countTargetPiece());
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, btRequestFactory->getTargetPieces().front()->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, btRequestFactory->getTargetPieces().front()->getIndex());
 }
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
@@ -141,16 +141,16 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
   std::deque<SharedHandle<BtMessage> >::iterator itr = msgs.begin();
   MockBtRequestMessage* msg = (MockBtRequestMessage*)itr->get();
-  CPPUNIT_ASSERT_EQUAL(0, msg->index);
-  CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
-  CPPUNIT_ASSERT_EQUAL(0, msg->index);
-  CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, msg->blockIndex);
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
-  CPPUNIT_ASSERT_EQUAL(1, msg->index);
-  CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, msg->index);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, btRequestFactory->createRequestMessages(3).size());
 }
@@ -173,16 +173,16 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
   std::deque<SharedHandle<BtMessage> >::iterator itr = msgs.begin();
   MockBtRequestMessage* msg = (MockBtRequestMessage*)itr->get();
-  CPPUNIT_ASSERT_EQUAL(0, msg->index);
-  CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, msg->index);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, msg->blockIndex);
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
-  CPPUNIT_ASSERT_EQUAL(1, msg->index);
-  CPPUNIT_ASSERT_EQUAL(0, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, msg->index);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
   ++itr;
   msg = (MockBtRequestMessage*)itr->get();
-  CPPUNIT_ASSERT_EQUAL(1, msg->index);
-  CPPUNIT_ASSERT_EQUAL(1, msg->blockIndex);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, msg->index);
+  CPPUNIT_ASSERT_EQUAL((size_t)1, msg->blockIndex);
 }
 
 void DefaultBtRequestFactoryTest::testRemoveTargetPiece() {

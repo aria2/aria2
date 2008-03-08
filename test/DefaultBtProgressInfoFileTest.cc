@@ -110,22 +110,22 @@ void DefaultBtProgressInfoFileTest::testLoad()
 		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
-  CPPUNIT_ASSERT_EQUAL((int32_t)2,
+  CPPUNIT_ASSERT_EQUAL((size_t)2,
 		       _pieceStorage->countInFlightPiece());
 
   // piece index 1
   std::deque<SharedHandle<Piece> > inFlightPieces = _pieceStorage->getInFlightPieces();
   SharedHandle<Piece> piece1 = inFlightPieces[0];
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, piece1->getLength());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getBitfieldLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)1024, piece1->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getBitfieldLength());
   CPPUNIT_ASSERT_EQUAL(std::string("00"), Util::toHex(piece1->getBitfield(),
 						 piece1->getBitfieldLength()));
 
   // piece index 2
   SharedHandle<Piece> piece2 = inFlightPieces[1];
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, piece2->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)512, piece2->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, piece2->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)512, piece2->getLength());
 }
 
 void DefaultBtProgressInfoFileTest::testLoad_nonBt()
@@ -146,22 +146,22 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
-  CPPUNIT_ASSERT_EQUAL((int32_t)2,
+  CPPUNIT_ASSERT_EQUAL((size_t)2,
 		       _pieceStorage->countInFlightPiece());
 
   // piece index 1
   std::deque<SharedHandle<Piece> > inFlightPieces = _pieceStorage->getInFlightPieces();
   SharedHandle<Piece> piece1 = inFlightPieces[0];
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, piece1->getLength());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, piece1->getBitfieldLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)1024, piece1->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getBitfieldLength());
   CPPUNIT_ASSERT_EQUAL(std::string("00"), Util::toHex(piece1->getBitfield(),
 						 piece1->getBitfieldLength()));
 
   // piece index 2
   SharedHandle<Piece> piece2 = inFlightPieces[1];
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, piece2->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)512, piece2->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, piece2->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)512, piece2->getLength());
 
 }
 
@@ -184,7 +184,7 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
 		       Util::toHex(_bitfield->getBitfield(), _bitfield->getBitfieldLength()));
 
   // the number of in-flight pieces
-  CPPUNIT_ASSERT_EQUAL((int32_t)0,
+  CPPUNIT_ASSERT_EQUAL((size_t)0,
 		       _pieceStorage->countInFlightPiece());
 }
 
@@ -224,47 +224,47 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
   in.read((char*)extension, sizeof(extension));
   CPPUNIT_ASSERT_EQUAL(std::string("00000000"), Util::toHex(extension, sizeof(extension)));
 
-  int32_t infoHashLength;
+  uint32_t infoHashLength;
   in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, infoHashLength);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)0, infoHashLength);
 
-  int32_t pieceLength;
+  uint32_t pieceLength;
   in.read((char*)&pieceLength, sizeof(pieceLength));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, pieceLength);
-
-  int64_t totalLength;
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pieceLength);
+  
+  uint64_t totalLength;
   in.read((char*)&totalLength, sizeof(totalLength));
-  CPPUNIT_ASSERT_EQUAL((int64_t)81920/* 80*1024 */, totalLength);
+  CPPUNIT_ASSERT_EQUAL((uint64_t)81920/* 80*1024 */, totalLength);
 
-  int64_t uploadLength;
+  uint64_t uploadLength;
   in.read((char*)&uploadLength, sizeof(uploadLength));
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, uploadLength);
+  CPPUNIT_ASSERT_EQUAL((uint64_t)0, uploadLength);
 
-  int32_t bitfieldLength;
+  uint32_t bitfieldLength;
   in.read((char*)&bitfieldLength, sizeof(bitfieldLength));
-  CPPUNIT_ASSERT_EQUAL((int32_t)10, bitfieldLength);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)10, bitfieldLength);
 
   unsigned char bitfieldRead[10];
   in.read((char*)bitfieldRead, sizeof(bitfieldRead));
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
 		       Util::toHex(bitfieldRead, sizeof(bitfieldRead)));
 
-  int32_t numInFlightPiece;
+  uint32_t numInFlightPiece;
   in.read((char*)&numInFlightPiece, sizeof(numInFlightPiece));
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, numInFlightPiece);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)2, numInFlightPiece);
 
   // piece index 1
-  int32_t index1;
+  uint32_t index1;
   in.read((char*)&index1, sizeof(index1));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, index1);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1, index1);
 
-  int32_t pieceLength1;
+  uint32_t pieceLength1;
   in.read((char*)&pieceLength1, sizeof(pieceLength1));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, pieceLength1);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pieceLength1);
 
-  int32_t pieceBitfieldLength1;
+  uint32_t pieceBitfieldLength1;
   in.read((char*)&pieceBitfieldLength1, sizeof(pieceBitfieldLength1));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, pieceBitfieldLength1);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1, pieceBitfieldLength1);
 
   unsigned char pieceBitfield1[1];
   in.read((char*)pieceBitfield1, sizeof(pieceBitfield1));
@@ -272,13 +272,13 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 		       Util::toHex(pieceBitfield1, sizeof(pieceBitfield1)));
 
   // piece index 2
-  int32_t index2;
+  uint32_t index2;
   in.read((char*)&index2, sizeof(index2));
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, index2);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)2, index2);
 
-  int32_t pieceLength2;
+  uint32_t pieceLength2;
   in.read((char*)&pieceLength2, sizeof(pieceLength2));
-  CPPUNIT_ASSERT_EQUAL((int32_t)512, pieceLength2);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)512, pieceLength2);
 
 }
 
@@ -321,52 +321,52 @@ void DefaultBtProgressInfoFileTest::testSave()
   in.read((char*)extension, sizeof(extension));
   CPPUNIT_ASSERT_EQUAL(std::string("00000001"), Util::toHex(extension, sizeof(extension)));
 
-  int32_t infoHashLength;
+  uint32_t infoHashLength;
   in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
-  CPPUNIT_ASSERT_EQUAL((int32_t)20, infoHashLength);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)20, infoHashLength);
 
   unsigned char infoHashRead[20];
   in.read((char*)infoHashRead, sizeof(infoHashRead));
   CPPUNIT_ASSERT_EQUAL(std::string("112233445566778899aabbccddeeff00ffffffff"),
 		       Util::toHex(infoHashRead, sizeof(infoHashRead)));
 
-  int32_t pieceLength;
+  uint32_t pieceLength;
   in.read((char*)&pieceLength, sizeof(pieceLength));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, pieceLength);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pieceLength);
 
-  int64_t totalLength;
+  uint64_t totalLength;
   in.read((char*)&totalLength, sizeof(totalLength));
-  CPPUNIT_ASSERT_EQUAL((int64_t)81920/* 80*1024 */, totalLength);
+  CPPUNIT_ASSERT_EQUAL((uint64_t)81920/* 80*1024 */, totalLength);
 
-  int64_t uploadLength;
+  uint64_t uploadLength;
   in.read((char*)&uploadLength, sizeof(uploadLength));
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024, uploadLength);
+  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, uploadLength);
 
-  int32_t bitfieldLength;
+  uint32_t bitfieldLength;
   in.read((char*)&bitfieldLength, sizeof(bitfieldLength));
-  CPPUNIT_ASSERT_EQUAL((int32_t)10, bitfieldLength);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)10, bitfieldLength);
 
   unsigned char bitfieldRead[10];
   in.read((char*)bitfieldRead, sizeof(bitfieldRead));
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),
 		       Util::toHex(bitfieldRead, sizeof(bitfieldRead)));
 
-  int32_t numInFlightPiece;
+  uint32_t numInFlightPiece;
   in.read((char*)&numInFlightPiece, sizeof(numInFlightPiece));
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, numInFlightPiece);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)2, numInFlightPiece);
 
   // piece index 1
-  int32_t index1;
+  uint32_t index1;
   in.read((char*)&index1, sizeof(index1));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, index1);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1, index1);
 
-  int32_t pieceLength1;
+  uint32_t pieceLength1;
   in.read((char*)&pieceLength1, sizeof(pieceLength1));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1024, pieceLength1);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1024, pieceLength1);
 
-  int32_t pieceBitfieldLength1;
+  uint32_t pieceBitfieldLength1;
   in.read((char*)&pieceBitfieldLength1, sizeof(pieceBitfieldLength1));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, pieceBitfieldLength1);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)1, pieceBitfieldLength1);
 
   unsigned char pieceBitfield1[1];
   in.read((char*)pieceBitfield1, sizeof(pieceBitfield1));
@@ -374,13 +374,13 @@ void DefaultBtProgressInfoFileTest::testSave()
 		       Util::toHex(pieceBitfield1, sizeof(pieceBitfield1)));
 
   // piece index 2
-  int32_t index2;
+  uint32_t index2;
   in.read((char*)&index2, sizeof(index2));
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, index2);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)2, index2);
 
-  int32_t pieceLength2;
+  uint32_t pieceLength2;
   in.read((char*)&pieceLength2, sizeof(pieceLength2));
-  CPPUNIT_ASSERT_EQUAL((int32_t)512, pieceLength2);
+  CPPUNIT_ASSERT_EQUAL((uint32_t)512, pieceLength2);
 
 
 }

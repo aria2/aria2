@@ -71,8 +71,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPieceStorageTest);
 void DefaultPieceStorageTest::testGetTotalLength() {
   DefaultPieceStorage pss(btContext, option);
 
-  CPPUNIT_ASSERT_EQUAL((long long int)384,
-		       pss.getTotalLength());
+  CPPUNIT_ASSERT_EQUAL(384ULL, pss.getTotalLength());
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece() {
@@ -126,26 +125,23 @@ void DefaultPieceStorageTest::testCompletePiece() {
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
 		       piece->toString());
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)0,
-		       pss.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL(0ULL, pss.getCompletedLength());
 
   pss.completePiece(piece);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)128,
-		       pss.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL(128ULL, pss.getCompletedLength());
 
   SharedHandle<Piece> incompletePiece = pss.getMissingPiece(peer);
   incompletePiece->completeBlock(0);
-  CPPUNIT_ASSERT_EQUAL((int64_t)256,
-		       pss.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL(256ULL, pss.getCompletedLength());
 }
 
 void DefaultPieceStorageTest::testGetPiece() {
   DefaultPieceStorage pss(btContext, option);
   
   SharedHandle<Piece> pieceGot = pss.getPiece(0);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(false, pieceGot->pieceComplete());
 }
 
@@ -155,9 +151,9 @@ void DefaultPieceStorageTest::testGetPieceInUsedPieces() {
   piece->completeBlock(0);
   pss.addUsedPiece(piece);
   SharedHandle<Piece> pieceGot = pss.getPiece(0);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, pieceGot->countCompleteBlock());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, pieceGot->countCompleteBlock());
 }
 
 void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
@@ -165,15 +161,15 @@ void DefaultPieceStorageTest::testGetPieceCompletedPiece() {
   SharedHandle<Piece> piece = SharedHandle<Piece>(new Piece(0, 128));
   pss.completePiece(piece);
   SharedHandle<Piece> pieceGot = pss.getPiece(0);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, pieceGot->getIndex());
-  CPPUNIT_ASSERT_EQUAL((int32_t)128, pieceGot->getLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, pieceGot->getIndex());
+  CPPUNIT_ASSERT_EQUAL((size_t)128, pieceGot->getLength());
   CPPUNIT_ASSERT_EQUAL(true, pieceGot->pieceComplete());
 }
 
 void DefaultPieceStorageTest::testCancelPiece()
 {
-  int32_t pieceLength = 256*1024;
-  int64_t totalLength = 32*pieceLength; // <-- make the number of piece greater than END_GAME_PIECE_NUM
+  size_t pieceLength = 256*1024;
+  uint64_t totalLength = 32*pieceLength; // <-- make the number of piece greater than END_GAME_PIECE_NUM
   std::deque<std::string> uris1;
   uris1.push_back("http://localhost/src/file1.txt");
   SharedHandle<FileEntry> file1 = new FileEntry("src/file1.txt", totalLength, 0 /*, uris1*/);
@@ -197,8 +193,8 @@ void DefaultPieceStorageTest::testCancelPiece()
 
 void DefaultPieceStorageTest::testMarkPiecesDone()
 {
-  int32_t pieceLength = 256*1024;
-  int64_t totalLength = 4*1024*1024;
+  size_t pieceLength = 256*1024;
+  uint64_t totalLength = 4*1024*1024;
   SharedHandle<MockBtContext> dctx = new MockBtContext();
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
@@ -207,17 +203,17 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 
   ps.markPiecesDone(pieceLength*10+16*1024*2+1);
 
-  for(int32_t i = 0; i < 10; ++i) {
+  for(size_t i = 0; i < 10; ++i) {
     CPPUNIT_ASSERT(ps.hasPiece(i));
   }
-  for(int32_t i = 10; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
+  for(size_t i = 10; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
     CPPUNIT_ASSERT(!ps.hasPiece(i));
   }
-  CPPUNIT_ASSERT_EQUAL((int64_t)pieceLength*10+16*1024*2, ps.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)pieceLength*10+16*1024*2, ps.getCompletedLength());
 
   ps.markPiecesDone(totalLength);
 
-  for(int32_t i = 0; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
+  for(size_t i = 0; i < (totalLength+pieceLength-1)/pieceLength; ++i) {
     CPPUNIT_ASSERT(ps.hasPiece(i));
   }
 }

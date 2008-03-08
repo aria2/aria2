@@ -45,121 +45,120 @@ class Randomizer;
 
 class BitfieldMan {
 private:
-  int32_t blockLength;
-  int64_t totalLength;
+  size_t blockLength;
+  uint64_t totalLength;
   unsigned char* bitfield;
   unsigned char* useBitfield;
   unsigned char* filterBitfield;
-  int32_t bitfieldLength;
-  int32_t blocks;
+  size_t bitfieldLength;
+  size_t blocks;
   bool filterEnabled;
   SharedHandle<Randomizer> randomizer;
 
   // for caching
-  int32_t cachedNumMissingBlock;
-  int32_t cachedNumFilteredBlock;
-  int64_t cachedCompletedLength;
-  int64_t cachedFilteredComletedLength;
-  int64_t cachedFilteredTotalLength;
+  size_t cachedNumMissingBlock;
+  size_t cachedNumFilteredBlock;
+  uint64_t cachedCompletedLength;
+  uint64_t cachedFilteredComletedLength;
+  uint64_t cachedFilteredTotalLength;
 
-  int32_t countSetBit(const unsigned char* bitfield, int32_t len) const;
-  int32_t getNthBitIndex(const unsigned char bit, int32_t nth) const;
-  int32_t getMissingIndexRandomly(const unsigned char* bitfield, int32_t len) const;
-
-  template<typename Array>
-  int32_t
-  getMissingIndexRandomly(const Array& bitfield,
-			  int32_t bitfieldLength) const;
-  template<typename Array>
-  int32_t getFirstMissingIndex(const Array& bitfield, int32_t bitfieldLength) const;
+  size_t countSetBit(const unsigned char* bitfield, size_t len) const;
+  size_t getNthBitIndex(const unsigned char bit, size_t nth) const;
+  bool getMissingIndexRandomly(size_t& index, const unsigned char* bitfield, size_t len) const;
 
   template<typename Array>
-  std::deque<int32_t> getAllMissingIndexes(const Array& bitfield, int32_t bitfieldLength) const;
+  bool getMissingIndexRandomly(size_t& index, const Array& bitfield,
+			       size_t bitfieldLength) const;
+  template<typename Array>
+  bool getFirstMissingIndex(size_t& index, const Array& bitfield, size_t bitfieldLength) const;
 
-  bool isBitSetInternal(const unsigned char* bitfield, int32_t index) const;
-  bool setBitInternal(unsigned char* bitfield, int32_t index, bool on);
-  bool setFilterBit(int32_t index);
+  template<typename Array>
+  std::deque<size_t> getAllMissingIndexes(const Array& bitfield, size_t bitfieldLength) const;
 
-  int32_t getStartIndex(int32_t index) const;
-  int32_t getEndIndex(int32_t index) const;
+  bool isBitSetInternal(const unsigned char* bitfield, size_t index) const;
+  bool setBitInternal(unsigned char* bitfield, size_t index, bool on);
+  bool setFilterBit(size_t index);
 
-  int64_t getCompletedLength(bool useFilter) const;
+  size_t getStartIndex(size_t index) const;
+  size_t getEndIndex(size_t index) const;
+
+  uint64_t getCompletedLength(bool useFilter) const;
 public:
-  BitfieldMan(int32_t blockLength, int64_t totalLength);
+  BitfieldMan(size_t blockLength, uint64_t totalLength);
   BitfieldMan(const BitfieldMan& bitfieldMan);
   ~BitfieldMan();
 
   BitfieldMan& operator=(const BitfieldMan& bitfieldMan);
 
-  int32_t getBlockLength() const;
+  size_t getBlockLength() const;
 
-  int32_t getLastBlockLength() const;
+  size_t getLastBlockLength() const;
 
-  int32_t getBlockLength(int32_t index) const;
+  size_t getBlockLength(size_t index) const;
 
-  int64_t getTotalLength() const { return totalLength; }
+  uint64_t getTotalLength() const { return totalLength; }
 
   /**
    * affected by filter
    */
-  bool hasMissingPiece(const unsigned char* bitfield, int32_t len) const;
+  bool hasMissingPiece(const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
-  int32_t getMissingIndex(const unsigned char* bitfield, int32_t len) const;
+  bool getMissingIndex(size_t& index, const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
-  int32_t getMissingIndex() const;
+  bool getMissingIndex(size_t& index) const;
   /**
    * affected by filter
    */
-  int32_t getFirstMissingUnusedIndex(const unsigned char* bitfield, int32_t len) const;
+  bool getFirstMissingUnusedIndex(size_t& index, const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
-  int32_t getFirstMissingUnusedIndex() const;
+  bool getFirstMissingUnusedIndex(size_t& index) const;
   /**
    * affected by filter
    */
-  int32_t getFirstMissingIndex() const;
+  bool getFirstMissingIndex(size_t& index) const;
   /**
    * affected by filter
    */
-  int32_t getMissingUnusedIndex(const unsigned char* bitfield, int32_t len) const;
+  bool getMissingUnusedIndex(size_t& index, const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
-  int32_t getMissingUnusedIndex() const;
+  bool getMissingUnusedIndex(size_t& index) const;
   /**
    * affected by filter
    */
-  int32_t getSparseMissingUnusedIndex() const;
+  bool getSparseMissingUnusedIndex(size_t& index) const;
   /**
    * affected by filter
    */
-  std::deque<int32_t> getAllMissingIndexes() const;
+  std::deque<size_t> getAllMissingIndexes() const;
   /**
    * affected by filter
    */
-  std::deque<int32_t> getAllMissingIndexes(const unsigned char* bitfield, int32_t len) const;
+  std::deque<size_t> getAllMissingIndexes(const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
-  int32_t countMissingBlock() const;
+  size_t countMissingBlock() const;
   /**
    * affected by filter
    */
-  int32_t countMissingBlockNow() const;
+  size_t countMissingBlockNow() const;
 
-  bool setUseBit(int32_t index);
-  bool unsetUseBit(int32_t index);
+  bool setUseBit(size_t index);
+  bool unsetUseBit(size_t index);
 
-  bool setBit(int32_t index);
-  bool unsetBit(int32_t index);
+  bool setBit(size_t index);
+  bool unsetBit(size_t index);
 
-  bool isBitSet(int32_t index) const;
-  bool isUseBitSet(int32_t index) const;
+  bool isBitSet(size_t index) const;
+  bool isUseBitSet(size_t index) const;
 
   /**
    * affected by filter
@@ -170,22 +169,22 @@ public:
 
   const unsigned char* getBitfield() const;
 
-  int32_t getBitfieldLength() const;
+  size_t getBitfieldLength() const;
 
   /**
    * affected by filter
    */
-  int32_t countFilteredBlock() const;
+  size_t countFilteredBlock() const;
 
-  int32_t countBlock() const;
+  size_t countBlock() const;
   /**
    * affected by filter
    */
-  int32_t countFilteredBlockNow() const;
+  size_t countFilteredBlockNow() const;
 
-  int32_t getMaxIndex() const;
+  size_t getMaxIndex() const;
 
-  void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength);
+  void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
   void clearAllBit();
   void setAllBit();
@@ -193,7 +192,7 @@ public:
   void clearAllUseBit();
   void setAllUseBit();
 
-  void addFilter(int64_t offset, int64_t length);
+  void addFilter(uint64_t offset, uint64_t length);
   /**
    * Clears filter and disables filter
    */
@@ -205,24 +204,24 @@ public:
   /**
    * affected by filter
    */
-  int64_t getFilteredTotalLength() const;
+  uint64_t getFilteredTotalLength() const;
   /**
    * affected by filter
    */
-  int64_t getFilteredTotalLengthNow() const;
+  uint64_t getFilteredTotalLengthNow() const;
 
-  int64_t getCompletedLength() const;
+  uint64_t getCompletedLength() const;
 
-  int64_t getCompletedLengthNow() const;
+  uint64_t getCompletedLengthNow() const;
 
   /**
    * affected by filter
    */
-  int64_t getFilteredCompletedLength() const;
+  uint64_t getFilteredCompletedLength() const;
   /**
    * affected by filter
    */
-  int64_t getFilteredCompletedLengthNow() const;
+  uint64_t getFilteredCompletedLengthNow() const;
 
   void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
@@ -230,15 +229,15 @@ public:
 
   void updateCache();
 
-  bool isBitRangeSet(int32_t startIndex, int32_t endIndex) const;
+  bool isBitRangeSet(size_t startIndex, size_t endIndex) const;
 
-  void unsetBitRange(int32_t startIndex, int32_t endIndex);
+  void unsetBitRange(size_t startIndex, size_t endIndex);
 
-  void setBitRange(int32_t startIndex, int32_t endIndex);
+  void setBitRange(size_t startIndex, size_t endIndex);
 
-  bool isBitSetOffsetRange(int64_t offset, int64_t length) const;
+  bool isBitSetOffsetRange(uint64_t offset, uint64_t length) const;
 
-  int64_t getMissingUnusedLength(int32_t startingIndex) const;
+  uint64_t getMissingUnusedLength(size_t startingIndex) const;
 
 };
 

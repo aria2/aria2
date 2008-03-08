@@ -54,7 +54,7 @@ public:
 
   class MockPieceStorage2 : public MockPieceStorage {
   public:
-    virtual bool hasPiece(int index) {
+    virtual bool hasPiece(size_t index) {
       return index == 1;
     }
   };

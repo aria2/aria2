@@ -233,26 +233,26 @@ void DefaultBtProgressInfoFile::load()
       delete [] savedBitfield;
       savedBitfield = 0;
 
-      int32_t numInFlightPiece;
+      uint32_t numInFlightPiece;
       in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
       
       Pieces inFlightPieces;
       while(numInFlightPiece--) {
-	int32_t index;
+	uint32_t index;
 	in.read(reinterpret_cast<char*>(&index), sizeof(index));
-	if(!(0 <= index && index < _dctx->getNumPieces())) {
-	  throw new DlAbortEx("piece index out of range: %d", index);
+	if(!(index < _dctx->getNumPieces())) {
+	  throw new DlAbortEx("piece index out of range: %u", index);
 	}
-	int32_t length;
+	uint32_t length;
 	in.read(reinterpret_cast<char*>(&length), sizeof(length));
-	if(!(0 < length && length <=_dctx->getPieceLength())) {
-	  throw new DlAbortEx("piece length out of range: %d", length);
+	if(!(length <=_dctx->getPieceLength())) {
+	  throw new DlAbortEx("piece length out of range: %u", length);
 	}
 	PieceHandle piece = new Piece(index, length);
-	int32_t bitfieldLength;
+	uint32_t bitfieldLength;
 	in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
 	if(piece->getBitfieldLength() != bitfieldLength) {
-	  throw new DlAbortEx("piece bitfield length mismatch. expected: %d actual: %d",
+	  throw new DlAbortEx("piece bitfield length mismatch. expected: %u actual: %u",
 			      piece->getBitfieldLength(), bitfieldLength);
 	}
 	savedBitfield = new unsigned char[bitfieldLength];
@@ -265,7 +265,7 @@ void DefaultBtProgressInfoFile::load()
       }
       _pieceStorage->addInFlightPiece(inFlightPieces);
     } else {
-      int32_t numInFlightPiece;
+      uint32_t numInFlightPiece;
       in.read(reinterpret_cast<char*>(&numInFlightPiece), sizeof(numInFlightPiece));
       BitfieldMan src(pieceLength, totalLength);
       src.setBitfield(savedBitfield, bitfieldLength);

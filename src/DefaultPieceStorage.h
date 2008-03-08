@@ -51,10 +51,10 @@ class FileEntry;
 class HaveEntry {
 private:
   int32_t cuid;
-  int32_t index;
+  size_t index;
   Time registeredTime;
 public:
-  HaveEntry(int32_t cuid, int32_t index):
+  HaveEntry(int32_t cuid, size_t index):
     cuid(cuid),
     index(index) {}
 
@@ -74,20 +74,20 @@ private:
   SharedHandle<DiskAdaptor> diskAdaptor;
   SharedHandle<DiskWriterFactory> _diskWriterFactory;
   std::deque<SharedHandle<Piece> > usedPieces;
-  int32_t endGamePieceNum;
+  size_t endGamePieceNum;
   Logger* logger;
   const Option* option;
   Haves haves;
-
-  int32_t getMissingPieceIndex(const SharedHandle<Peer>& peer);
-  int32_t getMissingFastPieceIndex(const SharedHandle<Peer>& peer);
-  SharedHandle<Piece> checkOutPiece(int32_t index);
-  int32_t deleteUsedPiecesByFillRate(int32_t fillRate, int32_t toDelete);
-  void reduceUsedPieces(int32_t delMax);
+  
+  bool getMissingPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
+  bool getMissingFastPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
+  SharedHandle<Piece> checkOutPiece(size_t index);
+  size_t deleteUsedPiecesByFillRate(int fillRate, size_t toDelete);
+  void reduceUsedPieces(size_t delMax);
   void deleteUsedPiece(const SharedHandle<Piece>& piece);
-  SharedHandle<Piece> findUsedPiece(int32_t index) const;
+  SharedHandle<Piece> findUsedPiece(size_t index) const;
 
-  int32_t getInFlightPieceCompletedLength() const;
+  size_t getInFlightPieceCompletedLength() const;
 
 public:
   DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext, const Option* option);
@@ -101,25 +101,25 @@ public:
 
   virtual SharedHandle<Piece> getMissingPiece();
 
-  virtual SharedHandle<Piece> getMissingPiece(int32_t index);
+  virtual SharedHandle<Piece> getMissingPiece(size_t index);
 
-  virtual SharedHandle<Piece> getPiece(int32_t index);
+  virtual SharedHandle<Piece> getPiece(size_t index);
 
   virtual void completePiece(const SharedHandle<Piece>& piece);
 
   virtual void cancelPiece(const SharedHandle<Piece>& piece);
 
-  virtual bool hasPiece(int32_t index);
+  virtual bool hasPiece(size_t index);
 
-  virtual bool isPieceUsed(int32_t index);
+  virtual bool isPieceUsed(size_t index);
 
-  virtual int64_t getTotalLength();
+  virtual uint64_t getTotalLength();
 
-  virtual int64_t getFilteredTotalLength();
+  virtual uint64_t getFilteredTotalLength();
 
-  virtual int64_t getCompletedLength();
+  virtual uint64_t getCompletedLength();
 
-  virtual int64_t getFilteredCompletedLength();
+  virtual uint64_t getFilteredCompletedLength();
 
   virtual void initStorage();
 
@@ -134,17 +134,17 @@ public:
   virtual bool allDownloadFinished();
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   int32_t bitfieldLength);
+			   size_t bitfieldLength);
   
-  virtual int32_t getBitfieldLength();
+  virtual size_t getBitfieldLength();
 
   virtual const unsigned char* getBitfield();
 
-  void setEndGamePieceNum(int32_t num) {
+  void setEndGamePieceNum(size_t num) {
     endGamePieceNum = num;
   }
 
-  int32_t getEndGamePieceNum() const {
+  size_t getEndGamePieceNum() const {
     return endGamePieceNum;
   }
 
@@ -156,24 +156,24 @@ public:
   
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
 
-  virtual int32_t getPieceLength(int32_t index);
+  virtual size_t getPieceLength(size_t index);
 
-  virtual void advertisePiece(int32_t cuid, int32_t index);
+  virtual void advertisePiece(int32_t cuid, size_t index);
 
-  virtual std::deque<int32_t> getAdvertisedPieceIndexes(int32_t myCuid,
-							const Time& lastCheckTime);
+  virtual std::deque<size_t>
+  getAdvertisedPieceIndexes(int32_t myCuid, const Time& lastCheckTime);
 
-  virtual void removeAdvertisedPiece(int32_t elapsed);
+  virtual void removeAdvertisedPiece(time_t elapsed);
 
   virtual void markAllPiecesDone();
 
-  virtual void markPiecesDone(int64_t length);
+  virtual void markPiecesDone(uint64_t length);
 
-  virtual void markPieceMissing(int32_t index);
+  virtual void markPieceMissing(size_t index);
 
   virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces);
 
-  virtual int32_t countInFlightPiece();
+  virtual size_t countInFlightPiece();
 
   virtual std::deque<SharedHandle<Piece> > getInFlightPieces();
 

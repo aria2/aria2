@@ -88,18 +88,18 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual SharedHandle<Piece> getMissingPiece(int32_t index) = 0;
+  virtual SharedHandle<Piece> getMissingPiece(size_t index) = 0;
 
   /**
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
-  virtual SharedHandle<Piece> getPiece(int32_t index) = 0;
+  virtual SharedHandle<Piece> getPiece(size_t index) = 0;
 
   /**
    * Marks the piece whose index is index as missing.
    */
-  virtual void markPieceMissing(int32_t index) = 0;
+  virtual void markPieceMissing(size_t index) = 0;
 
   /**
    * Tells that the download of the specfied piece completes.
@@ -115,17 +115,17 @@ public:
    * Returns true if the specified piece is already downloaded.
    * Otherwise returns false.
    */
-  virtual bool hasPiece(int32_t index) = 0;
+  virtual bool hasPiece(size_t index) = 0;
 
-  virtual bool isPieceUsed(int32_t index) = 0;
+  virtual bool isPieceUsed(size_t index) = 0;
 
-  virtual int64_t getTotalLength() = 0;
+  virtual uint64_t getTotalLength() = 0;
 
-  virtual int64_t getFilteredTotalLength() = 0;
+  virtual uint64_t getFilteredTotalLength() = 0;
 
-  virtual int64_t getCompletedLength() = 0;
+  virtual uint64_t getCompletedLength() = 0;
 
-  virtual int64_t getFilteredCompletedLength() = 0;
+  virtual uint64_t getFilteredCompletedLength() = 0;
   
   virtual void setFileFilter(const std::deque<std::string>& filePaths) = 0;
 
@@ -155,9 +155,9 @@ public:
   virtual const unsigned char* getBitfield() = 0;
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   int32_t bitfieldLength) = 0;
+			   size_t bitfieldLength) = 0;
   
-  virtual int32_t getBitfieldLength() = 0;
+  virtual size_t getBitfieldLength() = 0;
 
   virtual bool isSelectiveDownloadingMode() = 0;
 
@@ -167,26 +167,26 @@ public:
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor() = 0;
   
-  virtual int32_t getPieceLength(int32_t index) = 0;
+  virtual size_t getPieceLength(size_t index) = 0;
 
   /**
    * Adds piece index to advertise to other commands. They send have message
    * based on this information.
    */
-  virtual void advertisePiece(int32_t cuid, int32_t index) = 0;
+  virtual void advertisePiece(int32_t cuid, size_t index) = 0;
 
   /**
    * Returns piece index which is not advertised by the caller command and
    * newer than lastCheckTime.
    */
-  virtual std::deque<int32_t>
+  virtual std::deque<size_t>
   getAdvertisedPieceIndexes(int32_t myCuid, const Time& lastCheckTime) = 0;
 
   /**
    * Removes have entry if specified seconds have elapsed since its
    * registration.
    */
-  virtual void removeAdvertisedPiece(int32_t elapsed) = 0;
+  virtual void removeAdvertisedPiece(time_t elapsed) = 0;
 
   /**
    * Sets all bits in bitfield to 1.
@@ -196,12 +196,12 @@ public:
   /**
    * Sets all bits in bitfield(0 to length) to 1.
    */
-  virtual void markPiecesDone(int64_t length) = 0;
+  virtual void markPiecesDone(uint64_t length) = 0;
 
   virtual void
   addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces) = 0;
 
-  virtual int32_t countInFlightPiece() = 0;
+  virtual size_t countInFlightPiece() = 0;
 
   virtual std::deque<SharedHandle<Piece> > getInFlightPieces() = 0;
 };

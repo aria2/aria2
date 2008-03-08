@@ -111,7 +111,7 @@ public:
   private:
     SharedHandle<Piece> piece;
   public:
-    virtual SharedHandle<Piece> getPiece(int index) {
+    virtual SharedHandle<Piece> getPiece(size_t index) {
       return piece;
     }
 
@@ -281,7 +281,9 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
   
   SharedHandle<Piece> piece = new Piece(0, MY_PIECE_LENGTH);
-  assert(piece->getMissingUnusedBlockIndex() == 0);
+  size_t index;
+  CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
   SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
   pieceStorage->setPiece(piece);
@@ -308,7 +310,9 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   slot.setDispatchedTime(0);
 
   SharedHandle<Piece> piece = new Piece(0, MY_PIECE_LENGTH);
-  assert(piece->getMissingUnusedBlockIndex() == 0);
+  size_t index;
+  CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
+  CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
   SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
   pieceStorage->setPiece(piece);

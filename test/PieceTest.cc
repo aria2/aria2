@@ -42,7 +42,7 @@ void PieceTest::testGetCompletedLength()
   p.completeBlock(9);
   p.completeBlock(10); // <-- 100 bytes
   
-  CPPUNIT_ASSERT_EQUAL(blockLength*3+100, p.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)blockLength*3+100, p.getCompletedLength());
 }
 
 } // namespace aria2

@@ -1,5 +1,44 @@
 2008-03-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Type clarification: size_t for length or size, uint64_t for file
+	length, off_t for file offset.
+
+	* src/PiecedSegment.cc
+	* src/GrowSegment.h
+	* src/DefaultBtRequestFactory.h
+	* src/DefaultBtProgressInfoFile.cc
+	* src/UnknownLengthPieceStorage.h
+	* src/DefaultPieceStorage.cc
+	* src/UnknownLengthPieceStorage.cc
+	* src/DefaultBtInteractive.cc
+	* src/GrowSegment.cc
+	* src/BitfieldMan.h
+	* src/DownloadCommand.cc
+	* src/BtRequestFactory.h
+	* src/PiecedSegment.h
+	* src/DefaultPieceStorage.h
+	* src/Piece.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/PieceStorage.h
+	* src/Segment.h
+	* src/Piece.h
+	* src/BitfieldMan.cc
+	* src/Util.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/DefaultPieceStorageTest.cc
+	* test/MockPieceStorage.h
+	* test/BtRequestMessageTest.cc
+	* test/DefaultBtMessageDispatcherTest.cc
+	* test/BitfieldManTest.cc
+	* test/GrowSegmentTest.cc
+	* test/PieceTest.cc
+	* test/SegmentTest.cc
+	* test/SegmentManTest.cc
+	* test/DefaultBtRequestFactoryTest.cc
+	* test/MockBtRequestFactory.h
+
+2008-03-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed compilation error with --disable-nls
 	It seems that defining gettext(Msgid) to ((const char *) (Msgid))
 	in gettext.h causes the problem.

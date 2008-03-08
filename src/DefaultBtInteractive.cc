@@ -199,7 +199,7 @@ void DefaultBtInteractive::decideChoking() {
 }
 
 void DefaultBtInteractive::checkHave() {
-  std::deque<int32_t> indexes =
+  std::deque<size_t> indexes =
     pieceStorage->getAdvertisedPieceIndexes(cuid, haveCheckPoint);
   haveCheckPoint.reset();
   if(indexes.size() >= 20) {
@@ -209,7 +209,7 @@ void DefaultBtInteractive::checkHave() {
       dispatcher->addMessageToQueue(messageFactory->createBitfieldMessage());
     }
   } else {
-    for(std::deque<int32_t>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
+    for(std::deque<size_t>::iterator itr = indexes.begin(); itr != indexes.end(); itr++) {
       dispatcher->addMessageToQueue(messageFactory->createHaveMessage(*itr));
     }
   }

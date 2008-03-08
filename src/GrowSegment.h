@@ -42,7 +42,7 @@ namespace aria2 {
 class GrowSegment:public Segment {
 private:
   SharedHandle<Piece> _piece;
-  int32_t _writtenLength;
+  size_t _writtenLength;
 public:
   GrowSegment(const SharedHandle<Piece>& piece);
 
@@ -53,42 +53,42 @@ public:
     return false;
   }
 
-  virtual int32_t getIndex() const
+  virtual size_t getIndex() const
   {
     return 0;
   }
 
-  virtual int64_t getPosition() const
+  virtual off_t getPosition() const
   {
     return 0;
   }
   
-  virtual int64_t getPositionToWrite() const
+  virtual off_t getPositionToWrite() const
   {
     return _writtenLength;
   }
 
-  virtual int32_t getLength() const
+  virtual size_t getLength() const
   {
     return 0;
   }
 
-  virtual int32_t getSegmentLength() const
+  virtual size_t getSegmentLength() const
   {
     return 0;
   }
 
-  virtual int32_t getWrittenLength() const
+  virtual size_t getWrittenLength() const
   {
     return _writtenLength;
   }
 
-  virtual int32_t getOverflowLength() const
+  virtual size_t getOverflowLength() const
   {
     return 0;
   }
 
-  virtual void updateWrittenLength(int32_t bytes);
+  virtual void updateWrittenLength(size_t bytes);
 
   virtual void clear();
 

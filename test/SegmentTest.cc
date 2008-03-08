@@ -32,7 +32,7 @@ void SegmentTest::testUpdateWrittenLength()
 {
   SharedHandle<Piece> p = new Piece(0, 16*1024*10);
   PiecedSegment s(16*1024*10, p);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, s.getWrittenLength());
 
   s.updateWrittenLength(16*1024);
   CPPUNIT_ASSERT(p->hasBlock(0));
@@ -49,7 +49,7 @@ void SegmentTest::testUpdateWrittenLength_overflow()
 
   s.updateWrittenLength(16*1024*11);
   CPPUNIT_ASSERT(p->pieceComplete());
-  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024, s.getOverflowLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)16*1024, s.getOverflowLength());
 }
 
 void SegmentTest::testUpdateWrittenLength_lastPiece()
@@ -77,11 +77,11 @@ void SegmentTest::testClear()
   SharedHandle<Piece> p = new Piece(0, 16*1024*10);
   PiecedSegment s(16*1024*10, p);
   s.updateWrittenLength(16*1024*11);
-  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024*10, s.getWrittenLength());
-  CPPUNIT_ASSERT_EQUAL((int32_t)16*1024, s.getOverflowLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)16*1024*10, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)16*1024, s.getOverflowLength());
   s.clear();
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, s.getWrittenLength());
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, s.getOverflowLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, s.getWrittenLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, s.getOverflowLength());
 }
 
 } // namespace aria2

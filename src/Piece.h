@@ -47,17 +47,17 @@ class BitfieldMan;
 
 class Piece {
 private:
-  int32_t index;
-  int32_t length;
-  int32_t _blockLength;
+  size_t index;
+  size_t length;
+  size_t _blockLength;
   BitfieldMan* bitfield;
 public:
 
-  static const int32_t BLOCK_LENGTH  = 16*1024;
+  static const size_t BLOCK_LENGTH  = 16*1024;
 
   Piece();
 
-  Piece(int32_t index, int32_t length, int32_t blockLength = BLOCK_LENGTH);
+  Piece(size_t index, size_t length, size_t blockLength = BLOCK_LENGTH);
 
   Piece(const Piece& piece);
 
@@ -67,16 +67,16 @@ public:
   
   bool operator==(const Piece& piece) const;
 
-  int32_t getMissingUnusedBlockIndex() const;
-  int32_t getMissingBlockIndex() const;
-  int32_t getFirstMissingBlockIndexWithoutLock() const;
-  std::deque<int32_t> getAllMissingBlockIndexes() const;
-  void completeBlock(int32_t blockIndex);
-  void cancelBlock(int32_t blockIndex);
+  bool getMissingUnusedBlockIndex(size_t& index) const;
+  bool getMissingBlockIndex(size_t& index) const;
+  bool getFirstMissingBlockIndexWithoutLock(size_t& index) const;
+  std::deque<size_t> getAllMissingBlockIndexes() const;
+  void completeBlock(size_t blockIndex);
+  void cancelBlock(size_t blockIndex);
 
-  int32_t countCompleteBlock() const;
+  size_t countCompleteBlock() const;
 
-  bool hasBlock(int32_t blockIndex) const;
+  bool hasBlock(size_t blockIndex) const;
 
   /**
    * Returns true if all blocks of this piece have been downloaded, otherwise
@@ -84,40 +84,40 @@ public:
    */
   bool pieceComplete() const;
 
-  int32_t countBlock() const;
+  size_t countBlock() const;
 
-  int32_t getBlockLength(int32_t index) const;
+  size_t getBlockLength(size_t index) const;
 
-  int32_t getBlockLength() const;
+  size_t getBlockLength() const;
 
-  int32_t getIndex() const { return index; }
+  size_t getIndex() const { return index; }
 
-  void setIndex(int32_t index) { this->index = index; }
+  void setIndex(size_t index) { this->index = index; }
 
-  int32_t getLength() const { return length; }
+  size_t getLength() const { return length; }
 
-  void setLength(int32_t index) { this->length = length; }
+  void setLength(size_t index) { this->length = length; }
 
   const unsigned char* getBitfield() const;
 
-  void setBitfield(const unsigned char* bitfield, int32_t len);
+  void setBitfield(const unsigned char* bitfield, size_t len);
 
-  int32_t getBitfieldLength() const;
+  size_t getBitfieldLength() const;
 
   void clearAllBlock();
   void setAllBlock();
 
   std::string toString() const;
 
-  bool isBlockUsed(int32_t index) const;
+  bool isBlockUsed(size_t index) const;
 
   // Calculates completed length
-  int32_t getCompletedLength();
+  size_t getCompletedLength();
 
   /**
    * Loses current bitfield state.
    */
-  void reconfigure(int32_t length);
+  void reconfigure(size_t length);
 };
 
 typedef SharedHandle<Piece> PieceHandle;

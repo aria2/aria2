@@ -66,14 +66,14 @@ public:
    * The number of objects returned is capped by max.
    */
   virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessages(int32_t max) = 0;
+  createRequestMessages(size_t max) = 0;
 
   /**
    * Use this method in end game mode.
    *
    */
   virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessagesOnEndGame(int32_t max) = 0;
+  createRequestMessagesOnEndGame(size_t max) = 0;
 };
 
 typedef SharedHandle<BtRequestFactory> BtRequestFactoryHandle;

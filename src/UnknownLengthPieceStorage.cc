@@ -83,7 +83,7 @@ PieceHandle UnknownLengthPieceStorage::getMissingPiece()
   }
 }
 
-PieceHandle UnknownLengthPieceStorage::getMissingPiece(int32_t index)
+PieceHandle UnknownLengthPieceStorage::getMissingPiece(size_t index)
 {
   if(index == 0) {
     return getMissingPiece();
@@ -92,7 +92,7 @@ PieceHandle UnknownLengthPieceStorage::getMissingPiece(int32_t index)
   }
 }
 
-PieceHandle UnknownLengthPieceStorage::getPiece(int32_t index)
+PieceHandle UnknownLengthPieceStorage::getPiece(size_t index)
 {
   if(index == 0) {
     if(_piece.isNull()) {
@@ -122,7 +122,7 @@ void UnknownLengthPieceStorage::cancelPiece(const PieceHandle& piece)
   }
 }
 
-bool UnknownLengthPieceStorage::hasPiece(int32_t index)
+bool UnknownLengthPieceStorage::hasPiece(size_t index)
 {
   if(index == 0 && _downloadFinished) {
     return true;
@@ -131,7 +131,7 @@ bool UnknownLengthPieceStorage::hasPiece(int32_t index)
   }
 }
 
-bool UnknownLengthPieceStorage::isPieceUsed(int32_t index)
+bool UnknownLengthPieceStorage::isPieceUsed(size_t index)
 {
   if(index == 0 && !_piece.isNull()) {
     return true;
@@ -145,7 +145,7 @@ DiskAdaptorHandle UnknownLengthPieceStorage::getDiskAdaptor()
   return _diskAdaptor;
 }
 
-int32_t UnknownLengthPieceStorage::getPieceLength(int32_t index)
+size_t UnknownLengthPieceStorage::getPieceLength(size_t index)
 {
   if(index == 0) {
     return _totalLength;

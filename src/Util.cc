@@ -762,8 +762,9 @@ void Util::mkdirs(const std::string& dirpath)
 
 void Util::convertBitfield(BitfieldMan* dest, const BitfieldMan* src)
 {
-  for(int32_t index = 0; index < dest->countBlock(); ++index) {
-    if(src->isBitSetOffsetRange((int64_t)index*dest->getBlockLength(),
+  size_t numBlock = dest->countBlock();
+  for(size_t index = 0; index < numBlock; ++index) {
+    if(src->isBitSetOffsetRange((uint64_t)index*dest->getBlockLength(),
 				dest->getBlockLength())) {
       dest->setBit(index);
     }

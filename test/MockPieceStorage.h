@@ -11,15 +11,15 @@ namespace aria2 {
 
 class MockPieceStorage : public PieceStorage {
 private:
-  int64_t totalLength;
-  int64_t filteredTotalLength;
-  int64_t completedLength;
-  int64_t filteredCompletedLength;
+  uint64_t totalLength;
+  uint64_t filteredTotalLength;
+  uint64_t completedLength;
+  uint64_t filteredCompletedLength;
   BitfieldMan* bitfieldMan;
   bool selectiveDownloadingMode;
   bool endGame;
   SharedHandle<DiskAdaptor> diskAdaptor;
-  std::deque<int32_t> pieceLengthList;
+  std::deque<size_t> pieceLengthList;
   std::deque<SharedHandle<Piece> > inFlightPieces;
   bool _allDownloadFinished;
 public:
@@ -52,21 +52,21 @@ public:
     return new Piece();
   }
 
-  virtual SharedHandle<Piece> getMissingPiece(int32_t index)
+  virtual SharedHandle<Piece> getMissingPiece(size_t index)
   {
     return new Piece();
   }
 
-  virtual bool isPieceUsed(int32_t index)
+  virtual bool isPieceUsed(size_t index)
   {
     return false;
   }
 
-  virtual void markPieceMissing(int32_t index) {}
+  virtual void markPieceMissing(size_t index) {}
 
-  virtual void markPiecesDone(int64_t) {}
+  virtual void markPiecesDone(uint64_t) {}
 
-  virtual SharedHandle<Piece> getPiece(int32_t index) {
+  virtual SharedHandle<Piece> getPiece(size_t index) {
     return new Piece();
   }
 
@@ -74,39 +74,39 @@ public:
 
   virtual void cancelPiece(const SharedHandle<Piece>& piece) {}
 
-  virtual bool hasPiece(int32_t index) {
+  virtual bool hasPiece(size_t index) {
     return false;
   }
 
-  virtual int64_t getTotalLength() {
+  virtual uint64_t getTotalLength() {
     return totalLength;
   }
 
-  void setTotalLength(int64_t totalLength) {
+  void setTotalLength(uint64_t totalLength) {
     this->totalLength = totalLength;
   }
 
-  virtual int64_t getFilteredTotalLength() {
+  virtual uint64_t getFilteredTotalLength() {
     return filteredTotalLength;
   }
 
-  void setFilteredTotalLength(int64_t totalLength) {
+  void setFilteredTotalLength(uint64_t totalLength) {
     this->filteredTotalLength = totalLength;
   }
 
-  virtual int64_t getCompletedLength() {
+  virtual uint64_t getCompletedLength() {
     return completedLength;
   }
 
-  void setCompletedLength(int64_t completedLength) {
+  void setCompletedLength(uint64_t completedLength) {
     this->completedLength = completedLength;
   }
 
-  virtual int64_t getFilteredCompletedLength() {
+  virtual uint64_t getFilteredCompletedLength() {
     return filteredCompletedLength;
   }
 
-  void setFilteredCompletedLength(int64_t completedLength) {
+  void setFilteredCompletedLength(uint64_t completedLength) {
     this->filteredCompletedLength = completedLength;
   }
   
@@ -136,11 +136,11 @@ public:
   }
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   int32_t bitfieldLength) {
+			   size_t bitfieldLength) {
     bitfieldMan->setBitfield(bitfield, bitfieldLength);
   }
   
-  virtual int32_t getBitfieldLength() {
+  virtual size_t getBitfieldLength() {
     return bitfieldMan->getBitfieldLength();
   }
 
@@ -174,22 +174,22 @@ public:
     this->diskAdaptor = adaptor;
   }
   
-  virtual int32_t getPieceLength(int32_t index) {
+  virtual size_t getPieceLength(size_t index) {
     return pieceLengthList.at(index);
   }
 
-  void addPieceLengthList(int32_t length) {
+  void addPieceLengthList(size_t length) {
     pieceLengthList.push_back(length);
   }
 
-  virtual void advertisePiece(int32_t cuid, int32_t index) {}
+  virtual void advertisePiece(int32_t cuid, size_t index) {}
 
-  virtual std::deque<int32_t> getAdvertisedPieceIndexes(int32_t myCuid,
-							const Time& lastCheckTime) {
-    return std::deque<int32_t>();
+  virtual std::deque<size_t> getAdvertisedPieceIndexes(int32_t myCuid,
+						       const Time& lastCheckTime) {
+    return std::deque<size_t>();
   }
 
-  virtual void removeAdvertisedPiece(int32_t elapsed) {}
+  virtual void removeAdvertisedPiece(time_t elapsed) {}
 
   virtual void markAllPiecesDone() {}
 
@@ -198,7 +198,7 @@ public:
     std::copy(pieces.begin(), pieces.end(), back_inserter(inFlightPieces));
   }
 
-  virtual int32_t countInFlightPiece()
+  virtual size_t countInFlightPiece()
   {
     return inFlightPieces.size();
   }

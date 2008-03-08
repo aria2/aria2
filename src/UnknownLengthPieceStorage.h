@@ -54,7 +54,7 @@ private:
 
   SharedHandle<DiskWriterFactory> _diskWriterFactory;
 
-  int64_t _totalLength;
+  uint64_t _totalLength;
 
   bool _downloadFinished;
 
@@ -106,13 +106,13 @@ public:
    * then returns 0.
    * Also returns 0 if any of missing piece is not available.
    */
-  virtual SharedHandle<Piece> getMissingPiece(int32_t index);
+  virtual SharedHandle<Piece> getMissingPiece(size_t index);
 
   /**
    * Returns the piece denoted by index.
    * No status of the piece is changed in this method.
    */
-  virtual SharedHandle<Piece> getPiece(int32_t index);
+  virtual SharedHandle<Piece> getPiece(size_t index);
 
   /**
    * Tells that the download of the specfied piece completes.
@@ -128,27 +128,27 @@ public:
    * Returns true if the specified piece is already downloaded.
    * Otherwise returns false.
    */
-  virtual bool hasPiece(int32_t index);
+  virtual bool hasPiece(size_t index);
 
-  virtual bool isPieceUsed(int32_t index);
+  virtual bool isPieceUsed(size_t index);
 
-  virtual int64_t getTotalLength()
+  virtual uint64_t getTotalLength()
   {
     return _totalLength;
   }
 
-  virtual int64_t getFilteredTotalLength()
+  virtual uint64_t getFilteredTotalLength()
   {
     return _totalLength;
   }
 
-  virtual int64_t getCompletedLength()
+  virtual uint64_t getCompletedLength()
   {
     // TODO we have to return actual completed length here?
     return _totalLength;
   }
 
-  virtual int64_t getFilteredCompletedLength()
+  virtual uint64_t getFilteredCompletedLength()
   {
     return getCompletedLength();
   }
@@ -190,9 +190,9 @@ public:
   }
 
   virtual void setBitfield(const unsigned char* bitfield,
-			   int32_t bitfieldLength) {}
+			   size_t bitfieldLength) {}
   
-  virtual int32_t getBitfieldLength()
+  virtual size_t getBitfieldLength()
   {
     return 0;
   }
@@ -211,42 +211,42 @@ public:
 
   virtual SharedHandle<DiskAdaptor> getDiskAdaptor();
   
-  virtual int32_t getPieceLength(int32_t index);
+  virtual size_t getPieceLength(size_t index);
 
   /**
    * Adds piece index to advertise to other commands. They send have message
    * based on this information.
    */
-  virtual void advertisePiece(int32_t cuid, int32_t index) {}
+  virtual void advertisePiece(int32_t cuid, size_t index) {}
 
   /**
    * Returns piece index which is not advertised by the caller command and
    * newer than lastCheckTime.
    */
-  virtual std::deque<int32_t>
+  virtual std::deque<size_t>
   getAdvertisedPieceIndexes(int32_t myCuid, const Time& lastCheckTime)
   {
-    return std::deque<int32_t>();
+    return std::deque<size_t>();
   }
 
   /**
    * Removes have entry if specified seconds have elapsed since its
    * registration.
    */
-  virtual void removeAdvertisedPiece(int32_t elapsed) {}
+  virtual void removeAdvertisedPiece(time_t elapsed) {}
 
   /**
    * Sets all bits in bitfield to 1.
    */
   virtual void markAllPiecesDone();
 
-  virtual void markPiecesDone(int64_t length)
+  virtual void markPiecesDone(uint64_t length)
   {
     // TODO not implemented yet
     abort();
   }
 
-  virtual void markPieceMissing(int32_t index)
+  virtual void markPieceMissing(size_t index)
   {
     // TODO not implemented yet
     abort();
@@ -258,7 +258,7 @@ public:
    */
   virtual void addInFlightPiece(const std::deque<SharedHandle<Piece> >& pieces) {}
 
-  virtual int32_t countInFlightPiece()
+  virtual size_t countInFlightPiece()
   {
     return 0;
   }

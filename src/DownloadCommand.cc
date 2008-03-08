@@ -109,7 +109,7 @@ bool DownloadCommand::executeInternal() {
   setReadCheckSocket(socket);
   SegmentHandle segment = _segments.front();
 
-  int32_t BUFSIZE = 16*1024;
+  size_t BUFSIZE = 16*1024;
   unsigned char buf[BUFSIZE];
   int32_t bufSize;
   if(segment->getLength() > 0 && segment->getLength()-segment->getWrittenLength() < BUFSIZE) {
