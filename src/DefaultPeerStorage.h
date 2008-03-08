@@ -52,11 +52,11 @@ private:
   SharedHandle<BtContext> btContext;
   const Option* option;
   std::deque<SharedHandle<Peer> > peers;
-  int32_t maxPeerListSize;
+  size_t maxPeerListSize;
   Logger* logger;
   SharedHandle<BtRuntime> btRuntime;
-  int64_t removedPeerSessionDownloadLength;
-  int64_t removedPeerSessionUploadLength;
+  uint64_t removedPeerSessionDownloadLength;
+  uint64_t removedPeerSessionUploadLength;
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:
@@ -73,11 +73,11 @@ public:
 
   virtual bool addPeer(const SharedHandle<Peer>& peer);
 
-  int32_t countPeer() const;
+  size_t countPeer() const;
 
   virtual SharedHandle<Peer> getUnusedPeer();
 
-  SharedHandle<Peer> getPeer(const std::string& ipaddr, int32_t port) const;
+  SharedHandle<Peer> getPeer(const std::string& ipaddr, uint16_t port) const;
 
   virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers);
 
@@ -91,11 +91,11 @@ public:
 
   virtual void returnPeer(const SharedHandle<Peer>& peer);
 
-  void setMaxPeerListSize(int32_t size) { this->maxPeerListSize = size; }
+  void setMaxPeerListSize(size_t size) { this->maxPeerListSize = size; }
  
-  int32_t getMaxPeerListSize() const { return maxPeerListSize; }
+  size_t getMaxPeerListSize() const { return maxPeerListSize; }
 
-  void deleteUnusedPeer(int32_t delSize);
+  void deleteUnusedPeer(size_t delSize);
   
   void onErasingPeer(const SharedHandle<Peer>& peer);
 

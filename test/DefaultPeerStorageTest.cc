@@ -54,14 +54,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultPeerStorageTest);
 void DefaultPeerStorageTest::testCountPeer() {
   DefaultPeerStorage ps(btContext, option);
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)0,
-		       ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.countPeer());
 
   SharedHandle<Peer> peer(new Peer("192.168.0.1", 6889));
 
   ps.addPeer(peer);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1,
-		       ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
 }
 
 void DefaultPeerStorageTest::testDeleteUnusedPeer() {
@@ -77,7 +75,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
 
   ps.deleteUnusedPeer(2);
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"),
 		       ps.getPeer("192.168.0.3", 6889)->ipaddr);
 
@@ -89,7 +87,7 @@ void DefaultPeerStorageTest::testDeleteUnusedPeer() {
   ps.deleteUnusedPeer(3);
 
   // peer2 has been in use, so it did't deleted.
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.countPeer());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.2"),
 		       ps.getPeer("192.168.0.2", 6889)->ipaddr);
   
@@ -106,12 +104,12 @@ void DefaultPeerStorageTest::testAddPeer() {
   ps.addPeer(peer2);
   ps.addPeer(peer3);
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, ps.countPeer());
 
   // this returns false, because peer1 is already in the container
   CPPUNIT_ASSERT_EQUAL(false, ps.addPeer(peer1));
   // the number of peers doesn't change.
-  CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, ps.countPeer());
 
   ps.setMaxPeerListSize(3);
 
@@ -120,7 +118,7 @@ void DefaultPeerStorageTest::testAddPeer() {
   peer1->usedBy(1);
   CPPUNIT_ASSERT(ps.addPeer(peer4));
   // peer2 was deleted. While peer1 is oldest, its cuid is not 0.
-  CPPUNIT_ASSERT_EQUAL((int32_t)3, ps.countPeer());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, ps.countPeer());
   CPPUNIT_ASSERT(std::find(ps.getPeers().begin(), ps.getPeers().end(), peer2) == ps.getPeers().end());
 
   SharedHandle<Peer> peer5(new Peer("192.168.0.4", 0));

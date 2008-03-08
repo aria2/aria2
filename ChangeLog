@@ -1,5 +1,11 @@
 2008-03-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Type clarification
+	* src/DefaultPeerStorage.{h, cc}
+	* test/DefaultPeerStorageTest.cc
+	
+2008-03-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Type clarification: size_t for length or size, uint64_t for file
 	length, off_t for file offset.
 	* src/DefaultBtProgressInfoFile.cc
