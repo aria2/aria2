@@ -60,7 +60,7 @@ public:
 
   int32_t getCuid() const { return cuid; }
 
-  int32_t getIndex() const { return index; }
+  size_t getIndex() const { return index; }
 
   const Time& getRegisteredTime() const { return registeredTime; }
 };

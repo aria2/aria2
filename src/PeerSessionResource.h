@@ -65,21 +65,21 @@ private:
   BitfieldMan* _bitfieldMan;
   bool _fastExtensionEnabled;
   // fast index set which a peer has sent to localhost.
-  std::deque<int32_t> _peerAllowedIndexSet;
+  std::deque<size_t> _peerAllowedIndexSet;
   // fast index set which localhost has sent to a peer.
-  std::deque<int32_t> _amAllowedIndexSet;
+  std::deque<size_t> _amAllowedIndexSet;
   bool _extendedMessagingEnabled;
   Extensions _extensions;
   bool _dhtEnabled;
   PeerStat _peerStat;
-  int32_t _latency;
-  int64_t _uploadLength;
-  int64_t _downloadLength;
+  unsigned int _latency;
+  uint64_t _uploadLength;
+  uint64_t _downloadLength;
 
   template<typename T>
   bool indexIncluded(const std::deque<T>& c, T index) const;
 public:
-  PeerSessionResource(int32_t pieceLength, int64_t totalLength);
+  PeerSessionResource(size_t pieceLength, uint64_t totalLength);
 
   ~PeerSessionResource();
 
@@ -122,7 +122,7 @@ public:
 
   bool hasAllPieces() const;
 
-  void updateBitfield(int32_t index, int32_t operation);
+  void updateBitfield(size_t index, int operation);
   
   void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
@@ -130,7 +130,7 @@ public:
 
   size_t getBitfieldLength() const;
 
-  bool hasPiece(int32_t index) const;
+  bool hasPiece(size_t index) const;
 
   void markSeeder();
 
@@ -139,18 +139,18 @@ public:
   void fastExtensionEnabled(bool b);
 
   // fast index set which a peer has sent to localhost.
-  const std::deque<int32_t>& peerAllowedIndexSet() const;
+  const std::deque<size_t>& peerAllowedIndexSet() const;
 
-  void addPeerAllowedIndex(int32_t index);
+  void addPeerAllowedIndex(size_t index);
 
-  bool peerAllowedIndexSetContains(int32_t index) const;
+  bool peerAllowedIndexSetContains(size_t index) const;
 
   // fast index set which localhost has sent to a peer.
-  const std::deque<int32_t>& amAllowedIndexSet() const;
+  const std::deque<size_t>& amAllowedIndexSet() const;
 
-  void addAmAllowedIndex(int32_t index);
+  void addAmAllowedIndex(size_t index);
 
-  bool amAllowedIndexSetContains(int32_t index) const;
+  bool amAllowedIndexSetContains(size_t index) const;
 
   bool extendedMessagingEnabled() const;
 
@@ -168,17 +168,17 @@ public:
 
   PeerStat& getPeerStat();
 
-  int32_t latency() const;
+  unsigned int latency() const;
 
-  void updateLatency(int32_t l);
+  void updateLatency(unsigned int latency);
 
-  int64_t uploadLength() const;
+  uint64_t uploadLength() const;
 
-  void updateUploadLength(int32_t bytes);
+  void updateUploadLength(size_t bytes);
 
-  int64_t downloadLength() const;
+  uint64_t downloadLength() const;
 
-  void updateDownloadLength(int32_t bytes);
+  void updateDownloadLength(size_t bytes);
 };
 
 } // namespace aria2

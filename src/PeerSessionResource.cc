@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-PeerSessionResource::PeerSessionResource(int32_t pieceLength, int64_t totalLength):
+PeerSessionResource::PeerSessionResource(size_t pieceLength, uint64_t totalLength):
   _amChoking(true),
   _amInterested(false),
   _peerChoking(true),
@@ -144,7 +144,7 @@ bool PeerSessionResource::hasAllPieces() const
   return _bitfieldMan->isAllBitSet();
 }
 
-void PeerSessionResource::updateBitfield(int32_t index, int32_t operation)
+void PeerSessionResource::updateBitfield(size_t index, int operation)
 {
   if(operation == 1) {
     _bitfieldMan->setBit(index);
@@ -168,7 +168,7 @@ size_t PeerSessionResource::getBitfieldLength() const
   return _bitfieldMan->getBitfieldLength();
 }
 
-bool PeerSessionResource::hasPiece(int32_t index) const
+bool PeerSessionResource::hasPiece(size_t index) const
 {
   return _bitfieldMan->isBitSet(index);
 }
@@ -188,7 +188,7 @@ void PeerSessionResource::fastExtensionEnabled(bool b)
   _fastExtensionEnabled = b;
 }
 
-const std::deque<int32_t>& PeerSessionResource::peerAllowedIndexSet() const
+const std::deque<size_t>& PeerSessionResource::peerAllowedIndexSet() const
 {
   return _peerAllowedIndexSet;
 }
@@ -199,31 +199,31 @@ bool PeerSessionResource::indexIncluded(const std::deque<T>& c, T index) const
   return std::find(c.begin(), c.end(), index) != c.end();
 }
 
-void PeerSessionResource::addPeerAllowedIndex(int32_t index)
+void PeerSessionResource::addPeerAllowedIndex(size_t index)
 {
   if(!indexIncluded(_peerAllowedIndexSet, index)) {
     _peerAllowedIndexSet.push_back(index);
   }
 }
 
-bool PeerSessionResource::peerAllowedIndexSetContains(int32_t index) const
+bool PeerSessionResource::peerAllowedIndexSetContains(size_t index) const
 {
   return indexIncluded(_peerAllowedIndexSet, index);
 }
 
-const std::deque<int32_t>& PeerSessionResource::amAllowedIndexSet() const
+const std::deque<size_t>& PeerSessionResource::amAllowedIndexSet() const
 {
   return _amAllowedIndexSet;
 }
 
-void PeerSessionResource::addAmAllowedIndex(int32_t index)
+void PeerSessionResource::addAmAllowedIndex(size_t index)
 {
   if(!indexIncluded(_amAllowedIndexSet, index)) {
     _amAllowedIndexSet.push_back(index);
   }
 }
 
-bool PeerSessionResource::amAllowedIndexSetContains(int32_t index) const
+bool PeerSessionResource::amAllowedIndexSetContains(size_t index) const
 {
   return indexIncluded(_amAllowedIndexSet, index);
 }
@@ -281,33 +281,33 @@ PeerStat& PeerSessionResource::getPeerStat()
   return _peerStat;
 }
 
-int32_t PeerSessionResource::latency() const
+unsigned int PeerSessionResource::latency() const
 {
   return _latency;
 }
 
-void PeerSessionResource::updateLatency(int32_t latency)
+void PeerSessionResource::updateLatency(unsigned int latency)
 {
   _latency = _latency*0.2+latency*0.8;
 }
 
-int64_t PeerSessionResource::uploadLength() const
+uint64_t PeerSessionResource::uploadLength() const
 {
   return _uploadLength;
 }
 
-void PeerSessionResource::updateUploadLength(int32_t bytes)
+void PeerSessionResource::updateUploadLength(size_t bytes)
 {
   _peerStat.updateUploadLength(bytes);
   _uploadLength += bytes;
 }
 
-int64_t PeerSessionResource::downloadLength() const
+uint64_t PeerSessionResource::downloadLength() const
 {
   return _downloadLength;
 }
 
-void PeerSessionResource::updateDownloadLength(int32_t bytes)
+void PeerSessionResource::updateDownloadLength(size_t bytes)
 {
   _peerStat.updateDownloadLength(bytes);
   _downloadLength += bytes;

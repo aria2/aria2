@@ -105,7 +105,7 @@ public:
 
   bool isGood() const;
 
-  void allocateSessionResource(int32_t pieceLength, int64_t totalLength);
+  void allocateSessionResource(size_t pieceLength, uint64_t totalLength);
 
   void releaseSessionResource();
 
@@ -152,39 +152,39 @@ public:
 
   void snubbing(bool b);
 
-  void updateUploadLength(int32_t bytes);
+  void updateUploadLength(size_t bytes);
 
-  void updateDownloadLength(int32_t bytes);
+  void updateDownloadLength(size_t bytes);
 
   /**
    * Returns the transfer rate from localhost to remote host.
    */
-  int32_t calculateUploadSpeed();
+  unsigned int calculateUploadSpeed();
 
-  int32_t calculateUploadSpeed(const struct timeval& now);
+  unsigned int calculateUploadSpeed(const struct timeval& now);
 
   /**
    * Returns the transfer rate from remote host to localhost.
    */
-  int32_t calculateDownloadSpeed();
+  unsigned int calculateDownloadSpeed();
 
-  int32_t calculateDownloadSpeed(const struct timeval& now);
+  unsigned int calculateDownloadSpeed(const struct timeval& now);
 
   /**
    * Returns the number of bytes uploaded to the remote host.
    */
-  int64_t getSessionUploadLength() const;
+  uint64_t getSessionUploadLength() const;
 
   /**
    * Returns the number of bytes downloaded from the remote host.
    */
-  int64_t getSessionDownloadLength() const;
+  uint64_t getSessionDownloadLength() const;
   
-  void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength);
+  void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
   const unsigned char* getBitfield() const;
 
-  int32_t getBitfieldLength() const;
+  size_t getBitfieldLength() const;
 
   void setAllBitfield();
 
@@ -192,23 +192,23 @@ public:
    * operation = 1: set index-th bit to 1
    * operation = 0: set index-th bit to 0
    */
-  void updateBitfield(int32_t index, int32_t operation);
+  void updateBitfield(size_t index, int operation);
   
   void setFastExtensionEnabled(bool enabled);
 
   bool isFastExtensionEnabled() const;
 
-  void addPeerAllowedIndex(int32_t index);
+  void addPeerAllowedIndex(size_t index);
 
-  bool isInPeerAllowedIndexSet(int32_t index) const;
+  bool isInPeerAllowedIndexSet(size_t index) const;
 
   size_t countPeerAllowedIndexSet() const;
 
-  const std::deque<int32_t>& getPeerAllowedIndexSet() const;
+  const std::deque<size_t>& getPeerAllowedIndexSet() const;
 
-  void addAmAllowedIndex(int32_t index);
+  void addAmAllowedIndex(size_t index);
 
-  bool isInAmAllowedIndexSet(int32_t index) const;
+  bool isInAmAllowedIndexSet(size_t index) const;
 
   void setExtendedMessagingEnabled(bool enabled);
 
@@ -220,11 +220,11 @@ public:
 
   bool shouldBeChoking() const;
 
-  bool hasPiece(int32_t index) const;
+  bool hasPiece(size_t index) const;
 
-  void updateLatency(int32_t latency);
+  void updateLatency(unsigned int latency);
 
-  int32_t getLatency() const;
+  unsigned int getLatency() const;
 
   uint8_t getExtensionMessageID(const std::string& name) const;
 

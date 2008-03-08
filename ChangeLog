@@ -1,6 +1,17 @@
 2008-03-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Type clarification
+	* src/PeerSessionResource.{h, cc}
+	* src/DefaultPieceStorage.{h, cc}
+	* src/Peer.{h, cc}
+	* test/PeerSessionResourceTest.cc
+
+	Use div function
+	* src/BtPieceMessage.cc (erasePieceOnDisk)
+
+2008-03-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Type clarification
 	* src/DefaultPeerStorage.{h, cc}
 	* test/DefaultPeerStorageTest.cc
 	

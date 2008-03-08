@@ -223,18 +223,17 @@ void BtPieceMessage::onWrongPiece(const PieceHandle& piece) {
 }
 
 void BtPieceMessage::erasePieceOnDisk(const PieceHandle& piece) {
-  int32_t BUFSIZE = 4096;
+  size_t BUFSIZE = 4096;
   unsigned char buf[BUFSIZE];
   memset(buf, 0, BUFSIZE);
-  int64_t offset =
-    ((int64_t)piece->getIndex())*btContext->getPieceLength();
-  for(int32_t i = 0; i < piece->getLength()/BUFSIZE; i++) {
+  off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();
+  div_t res = div(piece->getLength(), BUFSIZE);
+  for(int i = 0; i < res.quot; i++) {
     pieceStorage->getDiskAdaptor()->writeData(buf, BUFSIZE, offset);
     offset += BUFSIZE;
   }
-  int32_t r = piece->getLength()%BUFSIZE;
-  if(r > 0) {
-    pieceStorage->getDiskAdaptor()->writeData(buf, r, offset);
+  if(res.rem > 0) {
+    pieceStorage->getDiskAdaptor()->writeData(buf, res.rem, offset);
   }
 }
 

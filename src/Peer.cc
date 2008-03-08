@@ -96,7 +96,7 @@ bool Peer::unused() const
   return _cuid == 0;
 }
 
-void Peer::allocateSessionResource(int32_t pieceLength, int64_t totalLength)
+void Peer::allocateSessionResource(size_t pieceLength, uint64_t totalLength)
 {
   delete _res;
   _res = new PeerSessionResource(pieceLength, totalLength);
@@ -218,13 +218,13 @@ void Peer::snubbing(bool b)
   _res->snubbing(b);
 }
 
-void Peer::updateUploadLength(int32_t bytes)
+void Peer::updateUploadLength(size_t bytes)
 {
   assert(_res);
   _res->updateUploadLength(bytes);
 }
 
-void Peer::updateDownloadLength(int32_t bytes)
+void Peer::updateDownloadLength(size_t bytes)
 {
   assert(_res);
   _res->updateDownloadLength(bytes);
@@ -238,49 +238,49 @@ void Peer::updateSeeder()
   }  
 }
 
-void Peer::updateBitfield(int32_t index, int32_t operation) {
+void Peer::updateBitfield(size_t index, int operation) {
   assert(_res);
   _res->updateBitfield(index, operation);
   updateSeeder();
 }
 
-int32_t Peer::calculateUploadSpeed()
+unsigned int Peer::calculateUploadSpeed()
 {
   assert(_res);
   return _res->getPeerStat().calculateUploadSpeed();
 }
 
-int32_t Peer::calculateUploadSpeed(const struct timeval& now)
+unsigned int Peer::calculateUploadSpeed(const struct timeval& now)
 {
   assert(_res);
   return _res->getPeerStat().calculateUploadSpeed(now);
 }
 
-int32_t Peer::calculateDownloadSpeed()
+unsigned int Peer::calculateDownloadSpeed()
 {
   assert(_res);
   return _res->getPeerStat().calculateDownloadSpeed();
 }
 
-int32_t Peer::calculateDownloadSpeed(const struct timeval& now)
+unsigned int Peer::calculateDownloadSpeed(const struct timeval& now)
 {
   assert(_res);
   return _res->getPeerStat().calculateDownloadSpeed(now);
 }
 
-int64_t Peer::getSessionUploadLength() const
+uint64_t Peer::getSessionUploadLength() const
 {
   assert(_res);
   return _res->uploadLength();
 }
 
-int64_t Peer::getSessionDownloadLength() const
+uint64_t Peer::getSessionDownloadLength() const
 {
   assert(_res);
   return _res->downloadLength();
 }
 
-void Peer::setBitfield(const unsigned char* bitfield, int32_t bitfieldLength)
+void Peer::setBitfield(const unsigned char* bitfield, size_t bitfieldLength)
 {
   assert(_res);
   _res->setBitfield(bitfield, bitfieldLength);
@@ -293,7 +293,7 @@ const unsigned char* Peer::getBitfield() const
   return _res->getBitfield();
 }
 
-int32_t Peer::getBitfieldLength() const
+size_t Peer::getBitfieldLength() const
 {
   assert(_res);
   return _res->getBitfieldLength();
@@ -304,7 +304,7 @@ bool Peer::shouldBeChoking() const {
   return _res->shouldBeChoking();
 }
 
-bool Peer::hasPiece(int32_t index) const {
+bool Peer::hasPiece(size_t index) const {
   assert(_res);
   return _res->hasPiece(index);
 }
@@ -327,31 +327,31 @@ size_t Peer::countPeerAllowedIndexSet() const
   return _res->peerAllowedIndexSet().size();
 }
 
-const std::deque<int32_t>& Peer::getPeerAllowedIndexSet() const
+const std::deque<size_t>& Peer::getPeerAllowedIndexSet() const
 {
   assert(_res);
   return _res->peerAllowedIndexSet();
 }
 
-bool Peer::isInPeerAllowedIndexSet(int32_t index) const
+bool Peer::isInPeerAllowedIndexSet(size_t index) const
 {
   assert(_res);
   return _res->peerAllowedIndexSetContains(index);
 }
 
-void Peer::addPeerAllowedIndex(int32_t index)
+void Peer::addPeerAllowedIndex(size_t index)
 {
   assert(_res);
   _res->addPeerAllowedIndex(index);
 }
 
-bool Peer::isInAmAllowedIndexSet(int32_t index) const
+bool Peer::isInAmAllowedIndexSet(size_t index) const
 {
   assert(_res);
   return _res->amAllowedIndexSetContains(index);
 }
 
-void Peer::addAmAllowedIndex(int32_t index)
+void Peer::addAmAllowedIndex(size_t index)
 {
   assert(_res);
   _res->addAmAllowedIndex(index);
@@ -363,13 +363,13 @@ void Peer::setAllBitfield() {
   _seeder = true;
 }
 
-void Peer::updateLatency(int32_t latency)
+void Peer::updateLatency(unsigned int latency)
 {
   assert(_res);
   _res->updateLatency(latency);
 }
 
-int32_t Peer::getLatency() const
+unsigned int Peer::getLatency() const
 {
   assert(_res);
   return _res->latency();
