@@ -54,7 +54,7 @@ public:
 
   virtual const unsigned char* getInfoHash() const = 0;
 
-  virtual int32_t getInfoHashLength() const = 0;
+  virtual size_t getInfoHashLength() const = 0;
 
   virtual std::string getInfoHashAsString() const = 0;
 
@@ -73,8 +73,8 @@ public:
     return _private;
   }
 
-  virtual std::deque<int32_t>
-  computeFastSet(const std::string& ipaddr, int32_t fastSetSize) = 0;
+  virtual std::deque<size_t>
+  computeFastSet(const std::string& ipaddr, size_t fastSetSize) = 0;
   
   virtual RequestGroup* getOwnerRequestGroup() = 0;
 

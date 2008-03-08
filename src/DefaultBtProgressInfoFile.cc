@@ -83,8 +83,8 @@ void DefaultBtProgressInfoFile::save() {
     bool torrentDownload = isTorrentDownload();
     // file version: 16 bits
     // value: '0'
-    int16_t version = 0;
-    o.write(reinterpret_cast<const char*>(&version), sizeof(int16_t));
+    uint16_t version = 0;
+    o.write(reinterpret_cast<const char*>(&version), sizeof(version));
     // extension: 32 bits
     // If this is BitTorrent download, then 0x00000001
     // Otherwise, 0x00000000
@@ -98,49 +98,49 @@ void DefaultBtProgressInfoFile::save() {
       // infoHashLength:
       // length: 32 bits
       BtContextHandle btContext = _dctx;
-      int32_t infoHashLength = btContext->getInfoHashLength();
-      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(int32_t));
+      uint32_t infoHashLength = btContext->getInfoHashLength();
+      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(infoHashLength));
       // infoHash:
       o.write(reinterpret_cast<const char*>(btContext->getInfoHash()),
 	      btContext->getInfoHashLength());
     } else {
       // infoHashLength:
       // length: 32 bits
-      int32_t infoHashLength = 0;
-      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(int32_t));
+      uint32_t infoHashLength = 0;
+      o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(infoHashLength));
     }
     // pieceLength: 32 bits
-    int32_t pieceLength = _dctx->getPieceLength();
-    o.write(reinterpret_cast<const char*>(&pieceLength), sizeof(int32_t));
+    uint32_t pieceLength = _dctx->getPieceLength();
+    o.write(reinterpret_cast<const char*>(&pieceLength), sizeof(pieceLength));
     // totalLength: 64 bits
-    int64_t totalLength = _dctx->getTotalLength();
-    o.write(reinterpret_cast<const char*>(&totalLength), sizeof(int64_t));
+    uint64_t totalLength = _dctx->getTotalLength();
+    o.write(reinterpret_cast<const char*>(&totalLength), sizeof(totalLength));
     // uploadLength: 64 bits
-    int64_t uploadLength = 0;
+    uint64_t uploadLength = 0;
     if(torrentDownload) {
       BtContextHandle btContext = _dctx;
       TransferStat stat = PEER_STORAGE(btContext)->calculateStat();
       uploadLength = stat.getAllTimeUploadLength();
     }
-    o.write(reinterpret_cast<const char*>(&uploadLength), sizeof(int64_t));
+    o.write(reinterpret_cast<const char*>(&uploadLength), sizeof(uploadLength));
     // bitfieldLength: 32 bits
-    int32_t bitfieldLength = _pieceStorage->getBitfieldLength();
-    o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(int32_t));
+    uint32_t bitfieldLength = _pieceStorage->getBitfieldLength();
+    o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(bitfieldLength));
     // bitfield
     o.write(reinterpret_cast<const char*>(_pieceStorage->getBitfield()), _pieceStorage->getBitfieldLength());
     // the number of in-flight piece: 32 bits
     // TODO implement this
-    int32_t numInFlightPiece = _pieceStorage->countInFlightPiece();
-    o.write(reinterpret_cast<const char*>(&numInFlightPiece), sizeof(int32_t));
+    uint32_t numInFlightPiece = _pieceStorage->countInFlightPiece();
+    o.write(reinterpret_cast<const char*>(&numInFlightPiece), sizeof(numInFlightPiece));
     Pieces inFlightPieces = _pieceStorage->getInFlightPieces();
     for(Pieces::const_iterator itr = inFlightPieces.begin();
 	itr != inFlightPieces.end(); ++itr) {
-      int32_t index = (*itr)->getIndex();
-      o.write(reinterpret_cast<const char*>(&index), sizeof(int32_t));
-      int32_t length = (*itr)->getLength();
-      o.write(reinterpret_cast<const char*>(&length), sizeof(int32_t));
-      int32_t bitfieldLength = (*itr)->getBitfieldLength();
-      o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(int32_t));
+      uint32_t index = (*itr)->getIndex();
+      o.write(reinterpret_cast<const char*>(&index), sizeof(index));
+      uint32_t length = (*itr)->getLength();
+      o.write(reinterpret_cast<const char*>(&length), sizeof(length));
+      uint32_t bitfieldLength = (*itr)->getBitfieldLength();
+      o.write(reinterpret_cast<const char*>(&bitfieldLength), sizeof(bitfieldLength));
       o.write(reinterpret_cast<const char*>((*itr)->getBitfield()), bitfieldLength);
     }
 
@@ -180,7 +180,7 @@ void DefaultBtProgressInfoFile::load()
       _logger->debug("InfoHash checking enabled.");
     }
 
-    int32_t infoHashLength;
+    uint32_t infoHashLength;
     in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
     if(infoHashLength < 0 || infoHashLength == 0 && infoHashCheckEnabled) {
       throw new DlAbortEx("Invalid info hash length: %d", infoHashLength);
@@ -199,26 +199,26 @@ void DefaultBtProgressInfoFile::load()
       savedInfoHash = 0;
     }
 
-    int32_t pieceLength;
+    uint32_t pieceLength;
     in.read(reinterpret_cast<char*>(&pieceLength), sizeof(pieceLength));
 
-    int64_t totalLength;
+    uint64_t totalLength;
     in.read(reinterpret_cast<char*>(&totalLength), sizeof(totalLength));
     if(totalLength != _dctx->getTotalLength()) {
       throw new DlAbortEx("total length mismatch. expected: %s, actual: %s",
 			  Util::itos(_dctx->getTotalLength()).c_str(),
 			  Util::itos(totalLength).c_str());
     }
-    int64_t uploadLength;
+    uint64_t uploadLength;
     in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
     if(isTorrentDownload()) {
       BT_RUNTIME(BtContextHandle(_dctx))->setUploadLengthAtStartup(uploadLength);
     }
 
     // TODO implement the conversion mechanism between different piece length.
-    int32_t bitfieldLength;
+    uint32_t bitfieldLength;
     in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
-    int32_t expectedBitfieldLength = ((totalLength+pieceLength-1)/pieceLength+7)/8;
+    uint32_t expectedBitfieldLength = ((totalLength+pieceLength-1)/pieceLength+7)/8;
     if(expectedBitfieldLength != bitfieldLength) {
       throw new DlAbortEx("bitfield length mismatch. expected: %d, actual: %d",
 			  expectedBitfieldLength,

@@ -44,7 +44,7 @@ namespace aria2 {
 class SingleFileDownloadContext:public DownloadContext
 {
 private:
-  int32_t _pieceLength;
+  size_t _pieceLength;
   /**
    * Actual file path is _dir + _filename.
    * If _ufilename is not zero-length string, then _dir + _ufilename.
@@ -67,24 +67,25 @@ private:
 
   void updateFileEntry();
 public:
-  SingleFileDownloadContext(int32_t pieceLength,
-			    int64_t totalLength,
+  SingleFileDownloadContext(size_t pieceLength,
+			    uint64_t totalLength,
 			    const std::string& filename,
 			    const std::string& ufilename = "");
 
   virtual ~SingleFileDownloadContext() {}
 
-  virtual std::string getPieceHash(int32_t index) const
+  virtual std::string getPieceHash(size_t index) const
   {
-    if(index < 0 || _pieceHashes.size() <= (size_t)index) {
+    if(index < _pieceHashes.size()) {
+      return _pieceHashes[index];
+    } else {
       return "";
     }
-    return _pieceHashes[index];
   }
   
   virtual const std::deque<std::string>& getPieceHashes() const;
 
-  virtual int64_t getTotalLength() const;
+  virtual uint64_t getTotalLength() const;
 
   virtual FILE_MODE getFileMode() const
   {
@@ -98,12 +99,12 @@ public:
     return _filename;
   }
   
-  virtual int32_t getPieceLength() const
+  virtual size_t getPieceLength() const
   {
     return _pieceLength;
   }
 
-  virtual int32_t getNumPieces() const;
+  virtual size_t getNumPieces() const;
 
   virtual std::string getActualBasePath() const;
 
@@ -149,7 +150,7 @@ public:
     updateFileEntry();
   }
 
-  void setTotalLength(int64_t totalLength);
+  void setTotalLength(uint64_t totalLength);
 
   void setPieceHashAlgo(const std::string& algo)
   {

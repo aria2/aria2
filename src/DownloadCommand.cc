@@ -162,7 +162,7 @@ void DownloadCommand::checkLowestDownloadSpeed() const
 {
   // calculate downloading speed
   if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
-    int32_t nowSpeed = peerStat->calculateDownloadSpeed();
+    unsigned int nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
       throw new DlAbortEx(EX_TOO_SLOW_DOWNLOAD_SPEED,
 			  nowSpeed,

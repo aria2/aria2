@@ -70,7 +70,7 @@ void DefaultBtContextTest::testGetInfoHash() {
 
   std::string correctHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)20, btContext.getInfoHashLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)20, btContext.getInfoHashLength());
   CPPUNIT_ASSERT_EQUAL(correctHash, Util::toHex(btContext.getInfoHash(),
 						btContext.getInfoHashLength()));
 }
@@ -127,48 +127,42 @@ void DefaultBtContextTest::testGetTotalLength() {
   DefaultBtContext btContext;
   btContext.load("test.torrent");
 
-  CPPUNIT_ASSERT_EQUAL((long long int)384,
-		       btContext.getTotalLength());
+  CPPUNIT_ASSERT_EQUAL(384ULL, btContext.getTotalLength());
 }
 
 void DefaultBtContextTest::testGetTotalLengthSingle() {
   DefaultBtContext btContext;
   btContext.load("single.torrent");
 
-  CPPUNIT_ASSERT_EQUAL((long long int)384,
-		       btContext.getTotalLength());
+  CPPUNIT_ASSERT_EQUAL(384ULL, btContext.getTotalLength());
 }
 
 void DefaultBtContextTest::testGetFileModeMulti() {
   DefaultBtContext btContext;
   btContext.load("test.torrent");
 
-  CPPUNIT_ASSERT_EQUAL(BtContext::MULTI,
-		       btContext.getFileMode());
+  CPPUNIT_ASSERT_EQUAL(BtContext::MULTI, btContext.getFileMode());
 }
 
 void DefaultBtContextTest::testGetFileModeSingle() {
   DefaultBtContext btContext;
   btContext.load("single.torrent");
 
-  CPPUNIT_ASSERT_EQUAL(BtContext::SINGLE,
-		       btContext.getFileMode());
+  CPPUNIT_ASSERT_EQUAL(BtContext::SINGLE, btContext.getFileMode());
 }
 
 void DefaultBtContextTest::testGetNameMulti() {
   DefaultBtContext btContext;
   btContext.load("test.torrent");
 
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"),
-		       btContext.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-test"), btContext.getName());
 }
 
 void DefaultBtContextTest::testGetNameSingle() {
   DefaultBtContext btContext;
   btContext.load("single.torrent");
 
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"),
-		       btContext.getName());
+  CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.8.2.tar.bz2"), btContext.getName());
 }
 
 void DefaultBtContextTest::testGetAnnounceTier() {
@@ -178,13 +172,11 @@ void DefaultBtContextTest::testGetAnnounceTier() {
   std::deque<SharedHandle<AnnounceTier> > tiers = btContext.getAnnounceTiers();
   
   // There is 1 tier.
-  CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       tiers.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, tiers.size());
 
   std::deque<SharedHandle<AnnounceTier> >::iterator itr = tiers.begin();
   SharedHandle<AnnounceTier> tier1 = *itr;
-  CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       tier1->urls.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, tier1->urls.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/announce.php"),
 		       tier1->urls.at(0));
 
@@ -197,35 +189,27 @@ void DefaultBtContextTest::testGetAnnounceTierAnnounceList() {
   std::deque<SharedHandle<AnnounceTier> > tiers = btContext.getAnnounceTiers();
   
   // There are 3 tiers.
-  CPPUNIT_ASSERT_EQUAL((size_t)3,
-		       tiers.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, tiers.size());
 
   SharedHandle<AnnounceTier> tier1 = tiers.at(0);
-  CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       tier1->urls.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, tier1->urls.size());
   CPPUNIT_ASSERT_EQUAL(std::string("http://tracker1"),
 		       tier1->urls.at(0));
 
   SharedHandle<AnnounceTier> tier2 = tiers.at(1);
-  CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       tier2->urls.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"),
-		       tier2->urls.at(0));
+  CPPUNIT_ASSERT_EQUAL((size_t)1, tier2->urls.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker2"), tier2->urls.at(0));
 
   SharedHandle<AnnounceTier> tier3 = tiers.at(2);
-  CPPUNIT_ASSERT_EQUAL((size_t)1,
-		       tier3->urls.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"),
-		       tier3->urls.at(0));
-  
+  CPPUNIT_ASSERT_EQUAL((size_t)1, tier3->urls.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://tracker3"), tier3->urls.at(0));
 }
 
 void DefaultBtContextTest::testGetPieceLength() {
   DefaultBtContext btContext;
   btContext.load("test.torrent");
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)128,
-		       btContext.getPieceLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)128, btContext.getPieceLength());
 }
 
 void DefaultBtContextTest::testGetInfoHashAsString() {
@@ -256,18 +240,18 @@ void DefaultBtContextTest::testComputeFastSet()
   btContext.setInfoHash(infoHash);
   btContext.setNumPieces(pieces);
 
-  std::deque<int32_t> fastSet = btContext.computeFastSet(ipaddr, fastSetSize);
+  std::deque<size_t> fastSet = btContext.computeFastSet(ipaddr, fastSetSize);
   //for_each(fastSet.begin(), fastSet.end(), Printer());
   //cerr << endl;
-  int ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
-  std::deque<int32_t> ansSet1(&ans1[0], &ans1[10]);
-  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
+  size_t ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
+  std::deque<size_t> ansSet1(&ans1[0], &ans1[10]);
+  CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
 
   ipaddr = "10.0.0.1";
   fastSet = btContext.computeFastSet(ipaddr, fastSetSize);
-  int ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
-  std::deque<int32_t> ansSet2(&ans2[0], &ans2[10]);
-  CPPUNIT_ASSERT(equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
+  size_t ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
+  std::deque<size_t> ansSet2(&ans2[0], &ans2[10]);
+  CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
 }
 
 void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {
@@ -327,7 +311,7 @@ void DefaultBtContextTest::testLoadFromMemory()
 
   std::string correctHash = "248d0a1cd08284299de78d5c1ed359bb46717d8c";
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)20, btContext.getInfoHashLength());
+  CPPUNIT_ASSERT_EQUAL((size_t)20, btContext.getInfoHashLength());
   CPPUNIT_ASSERT_EQUAL(correctHash, Util::toHex(btContext.getInfoHash(),
 						btContext.getInfoHashLength()));
 }

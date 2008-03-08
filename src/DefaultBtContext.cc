@@ -76,7 +76,7 @@ const unsigned char* DefaultBtContext::getInfoHash() const {
   return infoHash;
 }
 
-int32_t DefaultBtContext::getInfoHashLength() const {
+size_t DefaultBtContext::getInfoHashLength() const {
   return INFO_HASH_LENGTH;
 }
 
@@ -99,8 +99,8 @@ void DefaultBtContext::clear() {
 }
 
 void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
-					int32_t hashDataLength,
-					int32_t hashLength) {
+					size_t hashDataLength,
+					size_t hashLength) {
   int32_t numPieces = hashDataLength/hashLength;
   for(int32_t i = 0; i < numPieces; i++) {
     pieceHashes.push_back(Util::toHex(&hashData[i*hashLength],
@@ -119,8 +119,8 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
   }
   const List* files = dynamic_cast<const List*>(infoDic->get("files"));
   if(files) {
-    int64_t length = 0;
-    int64_t offset = 0;
+    uint64_t length = 0;
+    off_t offset = 0;
     // multi-file mode
     fileMode = BtContext::MULTI;
     const std::deque<MetaEntry*>& metaList = files->getList();
@@ -142,7 +142,7 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
       }
       const std::deque<MetaEntry*>& paths = pathList->getList();
       std::string path;
-      for(int32_t i = 0; i < (int32_t)paths.size()-1; i++) {
+      for(size_t i = 0; i < paths.size()-1; i++) {
 	const Data* subpath = dynamic_cast<const Data*>(paths[i]);
 	if(subpath) {
 	  path += subpath->toString()+"/";
@@ -259,7 +259,7 @@ void DefaultBtContext::extractNodes(const List* nodes)
 }
 
 void DefaultBtContext::loadFromMemory(const unsigned char* content,
-				      int32_t length,
+				      size_t length,
 				      const std::string& defaultName)
 {
   SharedHandle<MetaEntry> rootEntry = MetaFileUtil::bdecoding(content, length);
@@ -344,14 +344,15 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   }
 }
 
-std::string DefaultBtContext::getPieceHash(int32_t index) const {
-  if(index < 0 || numPieces <= index) {
+std::string DefaultBtContext::getPieceHash(size_t index) const {
+  if(index < numPieces) {
+    return pieceHashes[index];
+  } else {
     return "";
   }
-  return pieceHashes[index];
 }
 
-int64_t DefaultBtContext::getTotalLength() const {
+uint64_t DefaultBtContext::getTotalLength() const {
   return totalLength;
 }
 
@@ -371,11 +372,11 @@ std::string DefaultBtContext::getName() const {
   return name;
 }
 
-int32_t DefaultBtContext::getPieceLength() const {
+size_t DefaultBtContext::getPieceLength() const {
   return pieceLength;
 }
 
-int32_t DefaultBtContext::getNumPieces() const {
+size_t DefaultBtContext::getNumPieces() const {
   return numPieces;
 }
 
@@ -384,9 +385,9 @@ std::string DefaultBtContext::getActualBasePath() const
   return _dir+"/"+name;
 }
 
-std::deque<int32_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, int32_t fastSetSize)
+std::deque<size_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, size_t fastSetSize)
 {
-  std::deque<int32_t> fastSet;
+  std::deque<size_t> fastSet;
   unsigned char compact[6];
   if(!PeerMessageUtil::createcompact(compact, ipaddr, 0)) {
     return fastSet;
@@ -402,13 +403,13 @@ std::deque<int32_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, 
   memcpy(tx+4, infoHash, 20);
   unsigned char x[20];
   MessageDigestHelper::digest(x, sizeof(x), "sha1", tx, 24);
-  while((int32_t)fastSet.size() < fastSetSize) {
-    for(int32_t i = 0; i < 5 && (int32_t)fastSet.size() < fastSetSize; i++) {
-      int32_t j = i*4;
+  while(fastSet.size() < fastSetSize) {
+    for(size_t i = 0; i < 5 && fastSet.size() < fastSetSize; i++) {
+      size_t j = i*4;
       uint32_t ny;
       memcpy(&ny, x+j, 4);
       uint32_t y = ntohl(ny);
-      int32_t index = y%numPieces;
+      size_t index = y%numPieces;
       if(std::find(fastSet.begin(), fastSet.end(), index) == fastSet.end()) {
 	fastSet.push_back(index);
       }

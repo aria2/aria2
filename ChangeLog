@@ -2,6 +2,26 @@
 
 	Type clarification: size_t for length or size, uint64_t for file
 	length, off_t for file offset.
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultBtContext.{h, cc}
+	* src/DefaultBtInteractive.cc
+	* src/DownloadCommand.{h, cc}
+	* src/IteratableChunkChecksumValidator.{h, cc}
+	* src/SegmentMan.{h, cc}
+	* src/SingleFileDownloadContext.{h, cc}
+	* src/IteratableChecksumValidator.{h, cc}
+	* src/BtContext.h
+	* src/IteratableValidator.h
+	* src/DownloadContext.h
+	* test/SingleFileDownloadContextTest.cc
+	* test/DefaultBtContextTest.cc
+	* test/MockBtContext.h
+	* test/Metalink2RequestGroupTest.cc
+
+2008-03-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Type clarification: size_t for length or size, uint64_t for file
+	length, off_t for file offset.
 
 	* src/PiecedSegment.cc
 	* src/GrowSegment.h

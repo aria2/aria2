@@ -66,9 +66,9 @@ IteratableChecksumValidator::~IteratableChecksumValidator()
 void IteratableChecksumValidator::validateChunk()
 {
   if(!finished()) {
-    int32_t length = _pieceStorage->getDiskAdaptor()->readData(_buffer,
-							       BUFSIZE,
-							       _currentOffset);
+    size_t length = _pieceStorage->getDiskAdaptor()->readData(_buffer,
+							      BUFSIZE,
+							      _currentOffset);
     _ctx->digestUpdate(_buffer, length);
     _currentOffset += length;
     if(finished()) {
@@ -85,7 +85,7 @@ void IteratableChecksumValidator::validateChunk()
 
 bool IteratableChecksumValidator::finished() const
 {
-  if(_currentOffset >= _dctx->getTotalLength()) {
+  if((uint16_t)_currentOffset >= _dctx->getTotalLength()) {
     _pieceStorage->getDiskAdaptor()->disableDirectIO();
     return true;
   } else {
@@ -93,7 +93,7 @@ bool IteratableChecksumValidator::finished() const
   }
 }
 
-int64_t IteratableChecksumValidator::getTotalLength() const
+uint64_t IteratableChecksumValidator::getTotalLength() const
 {
   return _dctx->getTotalLength();
 }

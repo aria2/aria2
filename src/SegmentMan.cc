@@ -78,7 +78,7 @@ void SegmentMan::init()
   // TODO Do we have to do something about DownloadContext and PieceStorage here?  
 }
 
-int64_t SegmentMan::getTotalLength() const
+uint64_t SegmentMan::getTotalLength() const
 {
   if(_pieceStorage.isNull()) {
     return 0;
@@ -123,7 +123,7 @@ SegmentHandle SegmentMan::checkoutSegment(int32_t cuid,
 }
 
 SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peerStat) const {
-  int32_t speed = (int32_t)(peerStat->getAvgDownloadSpeed()*0.8);
+  unsigned int speed = peerStat->getAvgDownloadSpeed()*0.8;
   SegmentEntryHandle slowSegmentEntry(0);
   for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end(); ++itr) {
@@ -137,7 +137,7 @@ SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peer
        !p->getDownloadStartTime().elapsed(_option->getAsInt(PREF_STARTUP_IDLE_TIME))) {
       continue;
     }
-    int32_t pSpeed = p->calculateDownloadSpeed(); 
+    unsigned int pSpeed = p->calculateDownloadSpeed(); 
     if(pSpeed < speed) {
       speed = pSpeed;
       slowSegmentEntry = segmentEntry;
@@ -184,8 +184,8 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid) {
   }
 }
 
-SegmentHandle SegmentMan::getSegment(int32_t cuid, int32_t index) {
-  if(index < 0 || _downloadContext->getNumPieces() <= index) {
+SegmentHandle SegmentMan::getSegment(int32_t cuid, size_t index) {
+  if(_downloadContext->getNumPieces() <= index) {
     return 0;
   }
   return checkoutSegment(cuid, _pieceStorage->getMissingPiece(index));
@@ -229,11 +229,11 @@ bool SegmentMan::completeSegment(int32_t cuid, const SegmentHandle& segment) {
   }
 }
 
-bool SegmentMan::hasSegment(int32_t index) const {
+bool SegmentMan::hasSegment(size_t index) const {
   return _pieceStorage->hasPiece(index);
 }
 
-int64_t SegmentMan::getDownloadLength() const {
+uint64_t SegmentMan::getDownloadLength() const {
   if(_pieceStorage.isNull()) {
     return 0;
   } else {
@@ -259,8 +259,8 @@ PeerStatHandle SegmentMan::getPeerStat(int32_t cuid) const
   return 0;
 }
 
-int32_t SegmentMan::calculateDownloadSpeed() const {
-  int32_t speed = 0;
+unsigned int SegmentMan::calculateDownloadSpeed() const {
+  unsigned int speed = 0;
   for(std::deque<SharedHandle<PeerStat> >::const_iterator itr = peerStats.begin(); itr != peerStats.end(); itr++) {
     const PeerStatHandle& peerStat = *itr;
     if(peerStat->getStatus() == PeerStat::ACTIVE) {
@@ -270,9 +270,10 @@ int32_t SegmentMan::calculateDownloadSpeed() const {
   return speed;
 }
 
-int32_t SegmentMan::countFreePieceFrom(int32_t index) const
+size_t SegmentMan::countFreePieceFrom(size_t index) const
 {
-  for(int32_t i = index; i < _downloadContext->getNumPieces(); ++i) {
+  size_t numPieces = _downloadContext->getNumPieces();
+  for(size_t i = index; i < numPieces; ++i) {
     if(_pieceStorage->hasPiece(i) || _pieceStorage->isPieceUsed(i)) {
       return i-index;
     }

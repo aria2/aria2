@@ -101,10 +101,10 @@ void IteratableChunkChecksumValidator::validateChunk()
 
 std::string IteratableChunkChecksumValidator::calculateActualChecksum()
 {
-  int64_t offset = getCurrentOffset();
-  int32_t length;
+  off_t offset = getCurrentOffset();
+  size_t length;
   // When validating last piece
-  if(_currentIndex+1 == (uint32_t)_dctx->getNumPieces()) {
+  if(_currentIndex+1 == _dctx->getNumPieces()) {
     length = _dctx->getTotalLength()-offset;
   } else {
     length = _dctx->getPieceLength();
@@ -129,25 +129,25 @@ void IteratableChunkChecksumValidator::init()
   _currentIndex = 0;
 }
 
-std::string IteratableChunkChecksumValidator::digest(int64_t offset, int32_t length)
+std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length)
 {
   _ctx->digestReset();
-  int64_t curoffset = offset/ALIGNMENT*ALIGNMENT;
-  int64_t max = offset+length;
-  int32_t woffset;
+  off_t curoffset = offset/ALIGNMENT*ALIGNMENT;
+  off_t max = offset+length;
+  off_t woffset;
   if(curoffset < offset) {
     woffset = offset-curoffset;
   } else {
     woffset = 0;
   }
   while(curoffset < max) {
-    int32_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
-							  curoffset);
+    size_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
+							 curoffset);
     if(r == 0) {
       throw new DlAbortEx(EX_FILE_READ, _dctx->getActualBasePath().c_str(),
 			  strerror(errno));
     }
-    int32_t wlength;
+    size_t wlength;
     if(max < curoffset+r) {
       wlength = max-curoffset-woffset;
     } else {
@@ -163,7 +163,7 @@ std::string IteratableChunkChecksumValidator::digest(int64_t offset, int32_t len
 
 bool IteratableChunkChecksumValidator::finished() const
 {
-  if(_currentIndex >= (uint32_t)_dctx->getNumPieces()) {
+  if(_currentIndex >= _dctx->getNumPieces()) {
     _pieceStorage->getDiskAdaptor()->disableDirectIO();
     return true;
   } else {
@@ -171,12 +171,12 @@ bool IteratableChunkChecksumValidator::finished() const
   }
 }
 
-int64_t IteratableChunkChecksumValidator::getCurrentOffset() const
+off_t IteratableChunkChecksumValidator::getCurrentOffset() const
 {
-  return (int64_t)_currentIndex*_dctx->getPieceLength();
+  return (off_t)_currentIndex*_dctx->getPieceLength();
 }
 
-int64_t IteratableChunkChecksumValidator::getTotalLength() const
+uint64_t IteratableChunkChecksumValidator::getTotalLength() const
 {
   return _dctx->getTotalLength();
 }

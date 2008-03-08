@@ -40,7 +40,7 @@ void SingleFileDownloadContextTest::testGetPieceHash()
 void SingleFileDownloadContextTest::testGetNumPieces()
 {
   SingleFileDownloadContext ctx(345, 9889, "");
-  CPPUNIT_ASSERT_EQUAL((int32_t)29, ctx.getNumPieces());
+  CPPUNIT_ASSERT_EQUAL((size_t)29, ctx.getNumPieces());
 }
 
 void SingleFileDownloadContextTest::testGetActualBasePath()

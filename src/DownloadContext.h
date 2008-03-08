@@ -60,11 +60,11 @@ public:
     MULTI
   };
 
-  virtual std::string getPieceHash(int32_t index) const = 0;
+  virtual std::string getPieceHash(size_t index) const = 0;
   
   virtual const std::deque<std::string>& getPieceHashes() const = 0;
 
-  virtual int64_t getTotalLength() const = 0;
+  virtual uint64_t getTotalLength() const = 0;
 
   virtual FILE_MODE getFileMode() const = 0;
 
@@ -72,9 +72,9 @@ public:
 
   virtual std::string getName() const = 0;
   
-  virtual int32_t getPieceLength() const = 0;
+  virtual size_t getPieceLength() const = 0;
 
-  virtual int32_t getNumPieces() const = 0;
+  virtual size_t getNumPieces() const = 0;
 
   virtual std::string getPieceHashAlgo() const = 0;
 

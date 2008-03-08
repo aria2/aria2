@@ -11,16 +11,16 @@ class MockBtContext : public BtContext  {
 private:
   unsigned char infoHash[20];
   std::deque<std::string> pieceHashes;
-  int64_t totalLength;
+  uint64_t totalLength;
   FILE_MODE fileMode;
   std::string name;
-  int32_t pieceLength;
-  int32_t numPieces;
+  size_t pieceLength;
+  size_t numPieces;
   unsigned char peerId[20];
   std::deque<SharedHandle<FileEntry> > fileEntries;
   std::deque<SharedHandle<AnnounceTier> > announceTiers;
   std::deque<std::pair<std::string, uint16_t> > _nodes;
-  std::deque<int32_t> fastSet;
+  std::deque<size_t> fastSet;
 public:
   MockBtContext():totalLength(0),
 		  pieceLength(0),
@@ -36,7 +36,7 @@ public:
     memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
   }
 
-  virtual int32_t getInfoHashLength() const {
+  virtual size_t getInfoHashLength() const {
     return sizeof(infoHash);
   }
 
@@ -44,7 +44,7 @@ public:
     return Util::toHex(infoHash, sizeof(infoHash));
   }
 
-  virtual std::string getPieceHash(int32_t index) const {
+  virtual std::string getPieceHash(size_t index) const {
     return pieceHashes.at(index);
   }
   
@@ -56,11 +56,11 @@ public:
     pieceHashes.push_back(pieceHash);
   }
 
-  virtual int64_t getTotalLength() const {
+  virtual uint64_t getTotalLength() const {
     return totalLength;
   }
 
-  void setTotalLength(int64_t length) {
+  void setTotalLength(uint64_t length) {
     this->totalLength = length;
   }
 
@@ -98,19 +98,19 @@ public:
     this->name = name;
   }
   
-  virtual int32_t getPieceLength() const {
+  virtual size_t getPieceLength() const {
     return pieceLength;
   }
 
-  void setPieceLength(int32_t pieceLength) {
+  void setPieceLength(size_t pieceLength) {
     this->pieceLength = pieceLength;
   }
 
-  virtual int32_t getNumPieces() const {
+  virtual size_t getNumPieces() const {
     return numPieces;
   }
 
-  void setNumPieces(int32_t numPieces) {
+  void setNumPieces(size_t numPieces) {
     this->numPieces = numPieces;
   }
 
@@ -122,12 +122,12 @@ public:
     memcpy(this->peerId, peerId, sizeof(this->peerId));
   }
 
-  virtual std::deque<int32_t> computeFastSet(const std::string& ipaddr, int32_t fastSetSize)
+  virtual std::deque<size_t> computeFastSet(const std::string& ipaddr, size_t fastSetSize)
   {
     return fastSet;
   }
 
-  void setFastSet(const std::deque<int32_t>& fastSet)
+  void setFastSet(const std::deque<size_t>& fastSet)
   {
     this->fastSet = fastSet;
   }

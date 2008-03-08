@@ -37,8 +37,8 @@
 
 namespace aria2 {
 
-SingleFileDownloadContext::SingleFileDownloadContext(int32_t pieceLength,
-						     int64_t totalLength,
+SingleFileDownloadContext::SingleFileDownloadContext(size_t pieceLength,
+						     uint64_t totalLength,
 						     const std::string& filename,
 						     const std::string& ufilename):
   _pieceLength(pieceLength),
@@ -66,7 +66,7 @@ SingleFileDownloadContext::getPieceHashes() const
   return _pieceHashes;
 }
 
-int64_t SingleFileDownloadContext::getTotalLength() const
+uint64_t SingleFileDownloadContext::getTotalLength() const
 {
   return _fileEntry->getLength();
 }
@@ -79,7 +79,7 @@ SingleFileDownloadContext::getFileEntries() const
   return fs;
 }
 
-int32_t SingleFileDownloadContext::getNumPieces() const
+size_t SingleFileDownloadContext::getNumPieces() const
 {
   return (_fileEntry->getLength()+_pieceLength-1)/_pieceLength;
 }
@@ -89,7 +89,7 @@ std::string SingleFileDownloadContext::getActualBasePath() const
   return _dir+"/"+_fileEntry->getPath();
 }
 
-void SingleFileDownloadContext::setTotalLength(int64_t totalLength)
+void SingleFileDownloadContext::setTotalLength(uint64_t totalLength)
 {
   _fileEntry->setLength(totalLength);
 }

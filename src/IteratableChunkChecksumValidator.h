@@ -51,14 +51,14 @@ private:
   SharedHandle<DownloadContext> _dctx;
   SharedHandle<PieceStorage> _pieceStorage;
   BitfieldMan* _bitfield;
-  uint32_t _currentIndex;
+  size_t _currentIndex;
   const Logger* _logger;
   SharedHandle<MessageDigestContext> _ctx;
   unsigned char* _buffer;
 
   std::string calculateActualChecksum();
 
-  std::string digest(int64_t offset, int32_t length);
+  std::string digest(off_t offset, size_t length);
 
 public:
   IteratableChunkChecksumValidator(const SharedHandle<DownloadContext>& dctx,
@@ -72,9 +72,9 @@ public:
 
   virtual bool finished() const;
 
-  virtual int64_t getCurrentOffset() const;
+  virtual off_t getCurrentOffset() const;
 
-  virtual int64_t getTotalLength() const;
+  virtual uint64_t getTotalLength() const;
 };
 
 typedef SharedHandle<IteratableChunkChecksumValidator> IteratableChunkChecksumValidatorHandle;

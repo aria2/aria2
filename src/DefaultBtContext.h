@@ -57,10 +57,10 @@ private:
   std::deque<std::string> pieceHashes;
   std::deque<SharedHandle<FileEntry> > fileEntries;
   FILE_MODE fileMode;
-  int64_t totalLength;
-  int32_t pieceLength;
+  uint64_t totalLength;
+  size_t pieceLength;
   std::string name;
-  int32_t numPieces;
+  size_t numPieces;
   std::string peerId;
   std::string _peerIdPrefix;
   std::deque<SharedHandle<AnnounceTier> > announceTiers;
@@ -73,8 +73,8 @@ private:
 
   void clear();
   void extractPieceHash(const unsigned char* hashData,
-			int32_t hashDataLength,
-			int32_t hashLength);
+			size_t hashDataLength,
+			size_t hashLength);
   void extractFileEntries(const Dictionary* infoDic,
 			  const std::string& defaultName,
 			  const std::deque<std::string>& urlList);
@@ -93,18 +93,18 @@ private:
 
   virtual const unsigned char* getInfoHash() const;
 
-  virtual int32_t getInfoHashLength() const;
+  virtual size_t getInfoHashLength() const;
 
   virtual std::string getInfoHashAsString() const;
 
-  virtual std::string getPieceHash(int32_t index) const;
+  virtual std::string getPieceHash(size_t index) const;
 
   virtual const std::deque<std::string>& getPieceHashes() const
   {
     return pieceHashes;
   }
 
-  virtual int64_t getTotalLength() const;
+  virtual uint64_t getTotalLength() const;
 
   virtual FILE_MODE getFileMode() const;
 
@@ -119,7 +119,7 @@ private:
 
   virtual void load(const std::string& torrentFile);
 
-  void loadFromMemory(const unsigned char* content, int32_t length,
+  void loadFromMemory(const unsigned char* content, size_t length,
 		      const std::string& defaultName);
 
   void loadFromMemory(const std::string& context, const std::string& defaultName)
@@ -130,9 +130,9 @@ private:
 
   virtual std::string getName() const;
 
-  virtual int32_t getPieceLength() const;
+  virtual size_t getPieceLength() const;
   
-  virtual int32_t getNumPieces() const;
+  virtual size_t getNumPieces() const;
 
   virtual std::string getActualBasePath() const;
 
@@ -143,7 +143,7 @@ private:
     return reinterpret_cast<const unsigned char*>(peerId.c_str());
   }
 
-  virtual std::deque<int32_t> computeFastSet(const std::string& ipaddr, int32_t fastSetSize);
+  virtual std::deque<size_t> computeFastSet(const std::string& ipaddr, size_t fastSetSize);
 
   virtual RequestGroup* getOwnerRequestGroup()
   {
@@ -165,7 +165,7 @@ private:
     memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
   }
 
-  void setNumPieces(int32_t numPieces)
+  void setNumPieces(size_t numPieces)
   {
     this->numPieces = numPieces;
   }

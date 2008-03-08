@@ -100,7 +100,7 @@ public:
    * If Transfer-Encoding is Chunked or Content-Length header is not provided,
    * then this value is set to be 0.
    */
-  int64_t getTotalLength() const;
+  uint64_t getTotalLength() const;
 
   /**
    * Returs true when the download has finished.
@@ -124,7 +124,7 @@ public:
    * to another cuid or has been downloaded, then returns a segment instance
    * whose isNull call is true.
    */
-  SharedHandle<Segment> getSegment(int32_t cuid, int32_t index);
+  SharedHandle<Segment> getSegment(int32_t cuid, size_t index);
   /**
    * Updates download status.
    */
@@ -152,11 +152,11 @@ public:
   /**
    * Returns true if the segment whose index is index has been downloaded.
    */
-  bool hasSegment(int32_t index) const;
+  bool hasSegment(size_t index) const;
   /**
    * Returns the length of bytes downloaded.
    */
-  int64_t getDownloadLength() const;
+  uint64_t getDownloadLength() const;
 
   /**
    * Registers given peerStat if it has not been registerd.
@@ -173,9 +173,9 @@ public:
   /**
    * Returns current download speed in bytes per sec. 
    */
-  int32_t calculateDownloadSpeed() const;
+  unsigned int calculateDownloadSpeed() const;
 
-  int32_t countFreePieceFrom(int32_t index) const;
+  size_t countFreePieceFrom(size_t index) const;
 };
 
 typedef SharedHandle<SegmentMan> SegmentManHandle;
