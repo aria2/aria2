@@ -46,37 +46,42 @@ private:
 
   size_t _width;
 
-  std::string _zero;
+  char _zero;
 
   std::string widen(const std::string& s, size_t width)
   {
     std::string t = s;
+    std::string zero(1, _zero);
     while(t.size() < width) {
-      t.insert(0, _zero);
+      t.insert(0, zero);
     }
     return t;
   }
 
 public:
   AlphaNumberDecorator(size_t width, bool uppercase = false):
-    _width(width), _zero(uppercase?"A":"a") {}
+    _width(width), _zero(uppercase?'A':'a') {}
 
   virtual ~AlphaNumberDecorator() {}
 
   virtual std::string decorate(unsigned int number)
   {
     if(number == 0) {
-      return widen(_zero, _width);
+      return widen(std::string(1, _zero), _width);
     }
+
     int base = 26;
-    std::string x;
-    while(number > 0) {
-      int r = number%base;
-      char alpha = _zero[0]+r;
-      x.insert(0, std::string(1, alpha));
-      number /= base;
-    }
-    return widen(x, _width);
+    char u[14]; // because if unsigned int is 64bit, which is the biggest integer for the time being and number is UINT64_MAX, you get "HLHXCZMXSYUMQP"
+    size_t index = 0;
+    do {
+      unsigned int quot = number/base;
+      unsigned int rem = number%base;
+      u[index++] = _zero+rem;
+      number = quot;
+    } while(number);
+    std::reverse(&u[0], &u[index]);
+
+    return widen(std::string(&u[0], &u[index]), _width);
   }
 };
 

@@ -113,7 +113,6 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   std::string::size_type colonIndex = loopStr.find(":");
   if(colonIndex != std::string::npos) {
     std::string stepStr = loopStr.substr(colonIndex+1);
-    int sstep;
     if(Util::isNumber(stepStr)) {
       step = Util::parseUInt(stepStr);
     } else {
