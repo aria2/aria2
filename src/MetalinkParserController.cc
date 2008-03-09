@@ -87,7 +87,7 @@ void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
   }
 }
 
-void MetalinkParserController::setFileLengthOfEntry(int64_t length)
+void MetalinkParserController::setFileLengthOfEntry(uint64_t length)
 {
   if(_tEntry.isNull()) {
     return;
@@ -123,7 +123,7 @@ void MetalinkParserController::setOSOfEntry(const std::string& os)
   _tEntry->os = os;
 }
 
-void MetalinkParserController::setMaxConnectionsOfEntry(int32_t maxConnections)
+void MetalinkParserController::setMaxConnectionsOfEntry(int maxConnections)
 {
   if(_tEntry.isNull()) {
     return;
@@ -193,7 +193,7 @@ void MetalinkParserController::setLocationOfResource(const std::string& location
   _tResource->location = location;
 }
 
-void MetalinkParserController::setPreferenceOfResource(int32_t preference)
+void MetalinkParserController::setPreferenceOfResource(int preference)
 {
   if(_tResource.isNull()) {
     return;
@@ -201,7 +201,7 @@ void MetalinkParserController::setPreferenceOfResource(int32_t preference)
   _tResource->preference = preference;
 }
 
-void MetalinkParserController::setMaxConnectionsOfResource(int32_t maxConnections)
+void MetalinkParserController::setMaxConnectionsOfResource(int maxConnections)
 {
   if(_tResource.isNull()) {
     return;
@@ -302,7 +302,7 @@ void MetalinkParserController::setTypeOfChunkChecksum(const std::string& type)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::setLengthOfChunkChecksum(int32_t length)
+void MetalinkParserController::setLengthOfChunkChecksum(size_t length)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
@@ -316,17 +316,17 @@ void MetalinkParserController::setLengthOfChunkChecksum(int32_t length)
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::addHashOfChunkChecksum(int32_t order, const std::string& md)
+void MetalinkParserController::addHashOfChunkChecksum(size_t order, const std::string& md)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  _tempChunkChecksums.push_back(std::pair<int32_t, std::string>(order, md));
+  _tempChunkChecksums.push_back(std::pair<size_t, std::string>(order, md));
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
-void MetalinkParserController::createNewHashOfChunkChecksum(int32_t order)
+void MetalinkParserController::createNewHashOfChunkChecksum(size_t order)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(_tChunkChecksum.isNull()) {
@@ -363,10 +363,10 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     return;
   }
   if(_tEntry->chunkChecksum.isNull() || _tEntry->chunkChecksum->getAlgo() != "sha1") {
-    std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), Ascend1st<std::pair<int32_t, std::string> >());
+    std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), Ascend1st<std::pair<size_t, std::string> >());
     std::deque<std::string> checksums;
     std::transform(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),
-		   std::back_inserter(checksums), select2nd<std::pair<int32_t, std::string> >());
+		   std::back_inserter(checksums), select2nd<std::pair<size_t, std::string> >());
     _tChunkChecksum->setChecksums(checksums);
     _tEntry->chunkChecksum = _tChunkChecksum;
   }

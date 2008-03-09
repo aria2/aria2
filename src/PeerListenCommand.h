@@ -48,9 +48,9 @@ class PeerListenCommand : public Command {
 private:
   DownloadEngine* e;
   SharedHandle<SocketCore> socket;
-  int32_t _lowestSpeedLimit;
+  unsigned int _lowestSpeedLimit;
 
-  static int32_t __numInstance;
+  static unsigned int __numInstance;
 
   static PeerListenCommand* __instance;
 
@@ -63,14 +63,14 @@ public:
 
   int32_t bindPort(IntSequence& seq);
 
-  void setLowestSpeedLimit(int32_t speed)
+  void setLowestSpeedLimit(unsigned int speed)
   {
     _lowestSpeedLimit = speed;
   }
 
   static PeerListenCommand* getInstance(DownloadEngine* e);
 
-  static int32_t getNumInstance()
+  static unsigned int getNumInstance()
   {
     return __numInstance;
   }

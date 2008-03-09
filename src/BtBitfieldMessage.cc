@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, int32_t bitfieldLength) {
+void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, size_t bitfieldLength) {
   if(this->bitfield == bitfield) {
     return;
   }
@@ -54,12 +54,12 @@ void BtBitfieldMessage::setBitfield(const unsigned char* bitfield, int32_t bitfi
 }
 
 BtBitfieldMessageHandle
-BtBitfieldMessage::create(const unsigned char* data, int32_t dataLength)
+BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
 {
   if(dataLength <= 1) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "bitfield", dataLength, 1);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "bitfield", ID);
   }
@@ -89,7 +89,7 @@ const unsigned char* BtBitfieldMessage::getMessage() {
   return msg;
 }
 
-int32_t BtBitfieldMessage::getMessageLength() {
+size_t BtBitfieldMessage::getMessageLength() {
   getMessage();
   return msgLength;
 }

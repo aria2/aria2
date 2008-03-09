@@ -60,7 +60,7 @@ private:
   MSEHandshake* _mseHandshake;
 protected:
   virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int32_t wait);
+  virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort(Exception* ex);
   virtual bool exitBeforeExecute();
 public:

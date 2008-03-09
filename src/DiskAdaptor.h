@@ -68,10 +68,10 @@ public:
 
   virtual std::string getFilePath() = 0;
 
-  virtual int64_t size() const = 0;
+  virtual uint64_t size() const = 0;
 
   // optional behavior
-  virtual void truncate(int64_t length) {}
+  virtual void truncate(uint64_t length) {}
 
   void setFileEntries(const std::deque<SharedHandle<FileEntry> >& fileEntries);
 
@@ -81,7 +81,7 @@ public:
 
   bool addDownloadEntry(const std::string& fileEntryPath);
 
-  bool addDownloadEntry(int index);
+  bool addDownloadEntry(size_t index);
 
   void addAllDownloadEntry();
 

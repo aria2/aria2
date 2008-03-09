@@ -41,7 +41,7 @@ namespace aria2 {
 
 class SimpleBtMessage : public AbstractBtMessage {
 private:
-  int32_t leftDataLength;
+  size_t leftDataLength;
 public:
   SimpleBtMessage();
 
@@ -51,7 +51,7 @@ public:
 
   virtual const unsigned char* getMessage() = 0;
 
-  virtual int32_t getMessageLength() = 0;
+  virtual size_t getMessageLength() = 0;
 
   virtual void onSendComplete() {};
 

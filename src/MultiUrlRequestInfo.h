@@ -63,7 +63,7 @@ public:
   /**
    * Returns 0 if all downloads have completed, otherwise returns 1.
    */
-  int32_t execute();
+  int execute();
 };
 
 typedef SharedHandle<MultiUrlRequestInfo> MultiUrlRequestInfoHandle;

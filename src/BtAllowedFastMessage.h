@@ -45,12 +45,12 @@ typedef SharedHandle<BtAllowedFastMessage> BtAllowedFastMessageHandle;
 
 class BtAllowedFastMessage : public SimpleBtMessage {
 private:
-  int32_t index;
+  size_t index;
   unsigned char* msg;
 
-  static int32_t MESSAGE_LENGTH;
+  static size_t MESSAGE_LENGTH;
 public:
-  BtAllowedFastMessage(int32_t index = 0)
+  BtAllowedFastMessage(size_t index = 0)
     :SimpleBtMessage(),
      index(index),
      msg(0) {}
@@ -59,22 +59,22 @@ public:
     delete [] msg;
   }
 
-  static const int8_t ID = 17;
+  static const uint8_t ID = 17;
 
-  void setIndex(int32_t index) {
+  void setIndex(size_t index) {
     this->index = index;
   }
-  int32_t getIndex() const { return index; }
+  size_t getIndex() const { return index; }
 
-  static BtAllowedFastMessageHandle create(const unsigned char* data, int32_t dataLength);
+  static BtAllowedFastMessageHandle create(const unsigned char* data, size_t dataLength);
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual int32_t getMessageLength();
+  virtual size_t getMessageLength();
 
   virtual std::string toString() const;
 

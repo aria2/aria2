@@ -42,14 +42,14 @@ namespace aria2 {
 
 class SpeedCalc {
 private:
-  int64_t lengthArray[2];
-  int32_t sw;
+  uint64_t lengthArray[2];
+  int sw;
   Time cpArray[2];
-  int32_t maxSpeed;
-  int32_t prevSpeed;
+  unsigned int maxSpeed;
+  unsigned int prevSpeed;
   Time start;
-  int64_t accumulatedLength;
-  int32_t nextInterval;
+  uint64_t accumulatedLength;
+  time_t nextInterval;
 
   bool isIntervalOver() const;
   void changeSw();
@@ -63,17 +63,17 @@ public:
   /**
    * Returns download/upload speed in byte per sec
    */
-  int32_t calculateSpeed();
+  unsigned int calculateSpeed();
 
-  int32_t calculateSpeed(const struct timeval& now);
+  unsigned int calculateSpeed(const struct timeval& now);
 
-  int32_t getMaxSpeed() const {
+  unsigned int getMaxSpeed() const {
     return maxSpeed;
   }
 
-  int32_t getAvgSpeed() const;
+  unsigned int getAvgSpeed() const;
 
-  void update(int bytes);
+  void update(size_t bytes);
 
   void reset();
 };

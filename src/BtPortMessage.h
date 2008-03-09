@@ -62,19 +62,19 @@ public:
 
   virtual ~BtPortMessage();
 
-  static const int8_t ID = 9;
+  static const uint8_t ID = 9;
 
   uint16_t getPort() const { return _port; }
 
-  static SharedHandle<BtPortMessage> create(const unsigned char* data, int32_t dataLength);
+  static SharedHandle<BtPortMessage> create(const unsigned char* data, size_t dataLength);
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual int32_t getMessageLength();
+  virtual size_t getMessageLength();
 
   virtual std::string toString() const;
 

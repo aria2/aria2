@@ -43,15 +43,7 @@ void AlphaNumberDecoratorTest::testDecorate_uppercase()
 
 void AlphaNumberDecoratorTest::testDecorate_minus()
 {
-  try {
-    AlphaNumberDecorator(1, true).decorate(-1);
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
-  } catch(...) {
-    CPPUNIT_FAIL("DlAbortEx must be thrown.");
-  }
+  CPPUNIT_ASSERT_EQUAL(std::string("NXMRLXV"), AlphaNumberDecorator(1, true).decorate(-1));
 }
 
 } // namespace aria2

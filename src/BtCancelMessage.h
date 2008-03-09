@@ -45,14 +45,14 @@ typedef SharedHandle<BtCancelMessage> BtCancelMessageHandle;
 
 class BtCancelMessage : public SimpleBtMessage {
 private:
-  int32_t index;
-  int32_t begin;
-  int32_t length;
+  size_t index;
+  uint32_t begin;
+  size_t length;
   unsigned char* msg;
 
-  static int32_t MESSAGE_LENGTH;
+  static size_t MESSAGE_LENGTH;
 public:
-  BtCancelMessage(int32_t index = 0, int32_t begin = 0, int32_t length = 0)
+  BtCancelMessage(size_t index = 0, uint32_t begin = 0, size_t length = 0)
     :SimpleBtMessage(),
      index(index),
      begin(begin),
@@ -65,27 +65,27 @@ public:
 
   static const int8_t ID = 8;
 
-  int32_t getIndex() const { return index; }
+  size_t getIndex() const { return index; }
 
-  void setIndex(int32_t index) { this->index = index; }
+  void setIndex(size_t index) { this->index = index; }
 
-  int32_t getBegin() const { return begin; }
+  uint32_t getBegin() const { return begin; }
 
-  void setBegin(int32_t begin) { this->begin = begin; }
+  void setBegin(uint32_t begin) { this->begin = begin; }
 
-  int32_t getLength() const { return length; }
+  size_t getLength() const { return length; }
 
-  void setLength(int32_t length) { this->length = length; }
+  void setLength(size_t length) { this->length = length; }
 
-  static BtCancelMessageHandle create(const unsigned char* data, int32_t dataLength);
+  static BtCancelMessageHandle create(const unsigned char* data, size_t dataLength);
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual int32_t getMessageLength();
+  virtual size_t getMessageLength();
 
   virtual std::string toString() const;
 };

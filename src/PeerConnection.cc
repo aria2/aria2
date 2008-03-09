@@ -65,28 +65,28 @@ PeerConnection::PeerConnection(int32_t cuid,
 
 PeerConnection::~PeerConnection() {}
 
-int32_t PeerConnection::sendMessage(const unsigned char* data, int32_t dataLength) {
-  int32_t writtenLength = 0;
+ssize_t PeerConnection::sendMessage(const unsigned char* data, size_t dataLength) {
   if(socket->isWritable(0)) {
     // TODO fix this
     sendData(data, dataLength, _encryptionEnabled);
-    writtenLength += dataLength;
+    return dataLength;
+  } else {
+    return 0;
   }
-  return writtenLength;
 }
 
-bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
+bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
   if(resbufLength == 0 && 4 > lenbufLength) {
     if(!socket->isReadable(0)) {
       return false;
     }
     // read payload size, 32bit unsigned integer
-    int32_t remaining = 4-lenbufLength;
-    int32_t temp = remaining;
+    size_t remaining = 4-lenbufLength;
+    size_t temp = remaining;
     readData(lenbuf+lenbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%d",
+      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%zu",
 		    cuid, temp);
       throw new DlAbortEx(EX_EOF_FROM_PEER);
     }
@@ -105,13 +105,13 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
     return false;
   }
   // we have currentPayloadLen-resbufLen bytes to read
-  int32_t remaining = currentPayloadLength-resbufLength;
-  int32_t temp = remaining;
+  size_t remaining = currentPayloadLength-resbufLength;
+  size_t temp = remaining;
   if(remaining > 0) {
     readData(resbuf+resbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), payloadlen=%d, remaining=%d",
+      logger->debug("CUID#%d - In PeerConnection::receiveMessage(), payloadlen=%zu, remaining=%zu",
 		    cuid, currentPayloadLength, temp);
       throw new DlAbortEx(EX_EOF_FROM_PEER);
     }
@@ -129,20 +129,20 @@ bool PeerConnection::receiveMessage(unsigned char* data, int32_t& dataLength) {
   return true;
 }
 
-bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
+bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
 				      bool peek) {
-  int32_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
+  size_t remaining = BtHandshakeMessage::MESSAGE_LENGTH-resbufLength;
   if(remaining > 0 && !socket->isReadable(0)) {
     dataLength = 0;
     return false;
   }
   bool retval = true;
   if(remaining > 0) {
-    int32_t temp = remaining;
+    size_t temp = remaining;
     readData(resbuf+resbufLength, remaining, _encryptionEnabled);
     if(remaining == 0) {
       // we got EOF
-      logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%d",
+      logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%zu",
 		    cuid, temp);
       throw new DlAbortEx(EX_EOF_FROM_PEER);
     }
@@ -151,7 +151,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
       retval = false;
     }
   }
-  int32_t writeLength = resbufLength > dataLength ? dataLength : resbufLength;
+  size_t writeLength = std::min(resbufLength, dataLength);
   memcpy(data, resbuf, writeLength);
   dataLength = writeLength;
   if(retval && !peek) {
@@ -160,7 +160,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, int32_t& dataLength,
   return retval;
 }
 
-void PeerConnection::readData(unsigned char* data, int32_t& length, bool encryption)
+void PeerConnection::readData(unsigned char* data, size_t& length, bool encryption)
 {
   if(encryption) {
     unsigned char temp[MAX_PAYLOAD_LEN];

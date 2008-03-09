@@ -50,14 +50,14 @@ public:
   class MockBtMessageFactory2 : public MockBtMessageFactory {
   public:
     virtual SharedHandle<BtMessage>
-    createRequestMessage(const SharedHandle<Piece>& piece, int32_t blockIndex) {
+    createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex) {
       return new MockBtRequestMessage(piece->getIndex(), blockIndex);
     }
   };
 
   class MockBtMessageDispatcher2 : public MockBtMessageDispatcher {
   public:
-    virtual bool isOutstandingRequest(int32_t index, int32_t blockIndex) {
+    virtual bool isOutstandingRequest(size_t index, size_t blockIndex) {
       return index == 0 && blockIndex == 0;
     }
   };
@@ -114,7 +114,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtRequestFactoryTest);
 void DefaultBtRequestFactoryTest::testAddTargetPiece() {
   SharedHandle<Piece> piece = new Piece(0, 16*1024);
   btRequestFactory->addTargetPiece(piece);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, btRequestFactory->countTargetPiece());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, btRequestFactory->countTargetPiece());
 }
 
 void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
@@ -123,9 +123,9 @@ void DefaultBtRequestFactoryTest::testRemoveCompletedPiece() {
   piece2->setAllBlock();
   btRequestFactory->addTargetPiece(piece1);
   btRequestFactory->addTargetPiece(piece2);
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, btRequestFactory->countTargetPiece());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, btRequestFactory->countTargetPiece());
   btRequestFactory->removeCompletedPiece();
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, btRequestFactory->countTargetPiece());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, btRequestFactory->countTargetPiece());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btRequestFactory->getTargetPieces().front()->getIndex());
 }
 

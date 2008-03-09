@@ -136,8 +136,7 @@ UTPexExtensionMessage::create(const BtContextHandle& btContext,
   }
   const Dictionary* d = dynamic_cast<const Dictionary*>(root.get());
   if(d) {
-    CompactPeerListProcessor proc(btContext->getPieceLength(),
-				  btContext->getTotalLength());
+    CompactPeerListProcessor proc;
     const Data* added = dynamic_cast<const Data*>(d->get("added"));
     if(added) {
       msg->_freshPeers = proc.extractPeer(added);

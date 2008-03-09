@@ -281,7 +281,7 @@ void DefaultBtInteractive::decideInterest() {
   }
 }
 
-void DefaultBtInteractive::fillPiece(int maxPieceNum) {
+void DefaultBtInteractive::fillPiece(size_t maxPieceNum) {
   if(pieceStorage->hasMissingPiece(peer)) {
     if(peer->peerChoking()) {
       if(peer->isFastExtensionEnabled()) {
@@ -308,7 +308,7 @@ void DefaultBtInteractive::fillPiece(int maxPieceNum) {
 }
 
 void DefaultBtInteractive::addRequests() {
-  int32_t MAX_PENDING_REQUEST;
+  size_t MAX_PENDING_REQUEST;
   if(peer->getLatency() < 500) {
     MAX_PENDING_REQUEST = 24;
   } else if(peer->getLatency() < 1500) {
@@ -316,16 +316,16 @@ void DefaultBtInteractive::addRequests() {
   } else {
     MAX_PENDING_REQUEST = 6;
   }
-  int32_t pieceNum;
+  size_t pieceNum;
   if(pieceStorage->isEndGame()) {
     pieceNum = 1;
   } else {
-    int32_t blocks = DIV_FLOOR(btContext->getPieceLength(), Piece::BLOCK_LENGTH);
+    size_t blocks = DIV_FLOOR(btContext->getPieceLength(), Piece::BLOCK_LENGTH);
     pieceNum = DIV_FLOOR(MAX_PENDING_REQUEST, blocks);
   }
   fillPiece(pieceNum);
 
-  int32_t reqNumToCreate =
+  size_t reqNumToCreate =
     MAX_PENDING_REQUEST <= dispatcher->countOutstandingRequest() ?
     0 : MAX_PENDING_REQUEST-dispatcher->countOutstandingRequest();
   if(reqNumToCreate > 0) {
@@ -453,7 +453,7 @@ void DefaultBtInteractive::setLocalNode(const WeakHandle<DHTNode>& node)
   _localNode = node;
 }
 
-int32_t DefaultBtInteractive::countPendingMessage()
+size_t DefaultBtInteractive::countPendingMessage()
 {
   return dispatcher->countMessageInQueue();
 }

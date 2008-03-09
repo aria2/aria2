@@ -129,7 +129,7 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
     useIndex = false;
   }
   std::deque<SharedHandle<RequestGroup> > groups;
-  int32_t count = 0;
+  unsigned int count = 0;
   for(std::deque<SharedHandle<MetalinkEntry> >::iterator itr = entries.begin(); itr != entries.end();
       itr++, ++count) {
     SharedHandle<MetalinkEntry>& entry = *itr;
@@ -183,7 +183,7 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
     SharedHandle<RequestGroup> rg = new RequestGroup(_option, uris);
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.
-    int32_t pieceLength;
+    size_t pieceLength;
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
       pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
@@ -213,7 +213,7 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
     rg->setDownloadContext(dctx);
     rg->setNumConcurrentCommand(entry->maxConnections < 0 ?
 				_option->getAsInt(PREF_METALINK_SERVERS) :
-				std::min<int32_t>(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
+				std::min(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
     // In metalink, multi connection to a single host is not allowed by default.
     rg->setSingleHostMultiConnectionEnabled(!_option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
     

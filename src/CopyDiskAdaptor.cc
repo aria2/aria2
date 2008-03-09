@@ -49,7 +49,7 @@ void CopyDiskAdaptor::onDownloadComplete()
 
 void CopyDiskAdaptor::fixFilename()
 {
-  int64_t offset = 0;
+  off_t offset = 0;
   for(FileEntries::iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
     if(!(*itr)->isExtracted() && (*itr)->isRequested()) {

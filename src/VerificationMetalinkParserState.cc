@@ -56,7 +56,7 @@ void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* s
   } else if(name == "pieces") {
     stm->setPiecesState();
     try {
-      int32_t length;
+      size_t length;
       {
 	std::map<std::string, std::string>::const_iterator itr = attrs.find("length");
 	if(itr == attrs.end()) {

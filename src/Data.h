@@ -42,19 +42,19 @@ namespace aria2 {
 
 class Data : public MetaEntry {
 private:
-  int32_t len;
+  size_t len;
   unsigned char* data;
   bool number;
 
-  void init(const unsigned char* data, int32_t len);
+  void init(const unsigned char* data, size_t len);
 public:
   /**
    * This class stores the copy of data. So caller must take care of freeing
    * memory of data.
    */
-  Data(const char* data, int32_t len, bool number = false);
+  Data(const char* data, size_t len, bool number = false);
 
-  Data(const unsigned char* data, int32_t len, bool number = false);
+  Data(const unsigned char* data, size_t len, bool number = false);
 
   Data(const std::string& data, bool number = false);
 
@@ -65,7 +65,7 @@ public:
   int64_t toLLInt() const;
   
   const unsigned char* getData() const;
-  int32_t getLen() const;
+  size_t getLen() const;
   bool isNumber() const;
 
   void accept(MetaEntryVisitor* v) const;

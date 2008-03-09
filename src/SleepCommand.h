@@ -46,13 +46,13 @@ class SleepCommand:public Command {
 private:
   DownloadEngine* engine;
   Command* nextCommand;
-  int32_t wait;
+  time_t wait;
   Time checkPoint;
 
   bool isHaltRequested() const;
 
 public:
-  SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, int32_t wait);
+  SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, time_t wait);
   virtual ~SleepCommand();
   bool execute();
 };

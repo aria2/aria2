@@ -41,12 +41,12 @@ namespace aria2 {
 
 class BtHandshakeMessage : public SimpleBtMessage {
 public:
-  static const int32_t PSTR_LENGTH = 19;
+  static const size_t PSTR_LENGTH = 19;
   static const unsigned char* BT_PSTR;
-  static const int32_t RESERVED_LENGTH = 8;
-  static const int32_t MESSAGE_LENGTH = 68;
+  static const size_t RESERVED_LENGTH = 8;
+  static const size_t MESSAGE_LENGTH = 68;
 private:
-  int8_t pstrlen;
+  uint8_t pstrlen;
   unsigned char* pstr;
   unsigned char* reserved;
   unsigned char* infoHash;
@@ -62,7 +62,7 @@ public:
   BtHandshakeMessage(const unsigned char* infoHash, const unsigned char* peerId);
 
   static SharedHandle<BtHandshakeMessage>
-  create(const unsigned char* data, int32_t dataLength);
+  create(const unsigned char* data, size_t dataLength);
 
   virtual ~BtHandshakeMessage() {
     delete [] msg;
@@ -72,15 +72,15 @@ public:
     delete [] peerId;
   }
 
-  static const int8_t ID = INT8_MAX;
+  static const uint8_t ID = INT8_MAX;
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction() {};
 
   virtual const unsigned char* getMessage();
 
-  virtual int32_t getMessageLength();
+  virtual size_t getMessageLength();
 
   virtual std::string toString() const;
 
@@ -99,7 +99,7 @@ public:
     }
   }
 
-  int8_t getPstrlen() const {
+  uint8_t getPstrlen() const {
     return pstrlen;
   }
 

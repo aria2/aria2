@@ -56,9 +56,9 @@ public:
    * If the file exists, then it is truncated to 0 length.
    * @param filename the file name to be opened.
    */
-  virtual void initAndOpenFile(const std::string& filename, int64_t totalLength = 0)  = 0;
+  virtual void initAndOpenFile(const std::string& filename, uint64_t totalLength = 0)  = 0;
   
-  virtual void openFile(const std::string& filename, int64_t totalLength = 0) = 0;
+  virtual void openFile(const std::string& filename, uint64_t totalLength = 0) = 0;
 
   /**
    * Closes this output stream.
@@ -72,12 +72,12 @@ public:
    *
    * @param filename the file name to be opened.
    */
-  virtual void openExistingFile(const std::string& filename, int64_t totalLength = 0) = 0;
+  virtual void openExistingFile(const std::string& filename, uint64_t totalLength = 0) = 0;
 
-  virtual void truncate(int64_t length) = 0;
+  virtual void truncate(uint64_t length) = 0;
 
   // Returns file length
-  virtual int64_t size() const = 0;
+  virtual uint64_t size() const = 0;
 
   virtual void enableDirectIO() = 0;
 

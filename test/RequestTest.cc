@@ -74,7 +74,7 @@ void RequestTest::testSetUrl1() {
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com/"), req.getCurrentUrl());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
@@ -94,7 +94,7 @@ void RequestTest::testSetUrl2() {
   // previousUrl must equal to referer;
   CPPUNIT_ASSERT_EQUAL(req.getReferer(), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)8080, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
@@ -106,7 +106,7 @@ void RequestTest::testSetUrl3() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
@@ -118,7 +118,7 @@ void RequestTest::testSetUrl4() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2/aria3"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
@@ -130,7 +130,7 @@ void RequestTest::testSetUrl5() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2/aria3"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
@@ -142,7 +142,7 @@ void RequestTest::testSetUrl6() {
 
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria3"), req.getFile());
@@ -216,7 +216,7 @@ void RequestTest::testSetUrl14() {
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL((int32_t)8080, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("abc?query"), req.getFile());
 }
@@ -274,7 +274,7 @@ void RequestTest::testRedirectUrl() {
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPreviousUrl());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.co.jp"), req.getHost());
-  CPPUNIT_ASSERT_EQUAL((int32_t)80, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
 }
@@ -315,7 +315,7 @@ void RequestTest::testResetUrl() {
   // referer is unchanged
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080/"), req.getReferer());
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)8080, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
@@ -333,7 +333,7 @@ void RequestTest::testSetUrl_zeroUsername()
   Request req;
   CPPUNIT_ASSERT(req.setUrl("ftp://@localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)21, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());
@@ -342,7 +342,7 @@ void RequestTest::testSetUrl_zeroUsername()
 
   CPPUNIT_ASSERT(req.setUrl("ftp://:@localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)21, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());
@@ -351,7 +351,7 @@ void RequestTest::testSetUrl_zeroUsername()
 
   CPPUNIT_ASSERT(req.setUrl("ftp://:pass@localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)21, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());
@@ -365,7 +365,7 @@ void RequestTest::testSetUrl_username()
   Request req;
   CPPUNIT_ASSERT(req.setUrl("ftp://aria2user@localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)21, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());
@@ -378,7 +378,7 @@ void RequestTest::testSetUrl_usernamePassword()
   Request req;
   CPPUNIT_ASSERT(req.setUrl("ftp://aria2user%40:aria2pass%40@localhost/download/aria2-1.0.0.tar.bz2"));
   CPPUNIT_ASSERT_EQUAL(std::string("ftp"), req.getProtocol());
-  CPPUNIT_ASSERT_EQUAL((int32_t)21, req.getPort());
+  CPPUNIT_ASSERT_EQUAL((uint16_t)21, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("localhost"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/download"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria2-1.0.0.tar.bz2"), req.getFile());

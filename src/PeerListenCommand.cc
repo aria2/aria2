@@ -46,7 +46,7 @@
 
 namespace aria2 {
 
-int32_t PeerListenCommand::__numInstance = 0;
+unsigned int PeerListenCommand::__numInstance = 0;
 
 PeerListenCommand* PeerListenCommand::__instance = 0;
 
@@ -88,13 +88,13 @@ bool PeerListenCommand::execute() {
   if(e->isHaltRequested() || e->_requestGroupMan->downloadFinished()) {
     return true;
   }
-  for(int32_t i = 0; i < 3 && socket->isReadable(0); i++) {
+  for(int i = 0; i < 3 && socket->isReadable(0); i++) {
     SocketHandle peerSocket;
     try {
       peerSocket = socket->acceptConnection();
-      std::pair<std::string, int32_t> peerInfo;
+      std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
-      std::pair<std::string, int32_t> localInfo;
+      std::pair<std::string, uint16_t> localInfo;
       peerSocket->getAddrInfo(localInfo);
 
       if(peerInfo.first == localInfo.first) {

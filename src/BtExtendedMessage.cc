@@ -80,7 +80,7 @@ const unsigned char* BtExtendedMessage::getMessage() {
   return _msg;
 }
 
-int32_t BtExtendedMessage::getMessageLength() {
+size_t BtExtendedMessage::getMessageLength() {
   getMessage();
   return _msgLength;
 }
@@ -102,7 +102,7 @@ BtExtendedMessage::create(const BtContextHandle& btContext,
   if(dataLength < 2) {
     throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE, "extended", dataLength);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "extended", ID);
   }

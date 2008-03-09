@@ -52,9 +52,9 @@ private:
   uint16_t _port;
 
   // in milli sec
-  int32_t _rtt;
+  unsigned int _rtt;
 
-  uint32_t _condition;
+  unsigned int _condition;
 
   Time _lastContact;
 public:
@@ -72,7 +72,7 @@ public:
     return _id;
   }
 
-  void updateRTT(int32_t millisec)
+  void updateRTT(unsigned int millisec)
   {
     _rtt = millisec;
   }

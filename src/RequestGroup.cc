@@ -413,8 +413,8 @@ bool RequestGroup::tryAutoFileRenaming()
   if(filepath.empty()) {
     return false;
   }
-  for(int32_t i = 1; i < 10000; ++i) {
-    File newfile(filepath+"."+Util::itos(i));
+  for(unsigned int i = 1; i < 10000; ++i) {
+    File newfile(filepath+"."+Util::uitos(i));
     if(!newfile.exists()) {
       SingleFileDownloadContextHandle(_downloadContext)->setUFilename(newfile.getBasename());
       return true;
@@ -423,13 +423,23 @@ bool RequestGroup::tryAutoFileRenaming()
   return false;
 }
 
-Commands RequestGroup::createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj)
+Commands RequestGroup::createNextCommandWithAdj(DownloadEngine* e, int numAdj)
 {
-  int32_t numCommand = _numConcurrentCommand == 0 ? _uris.size() : _numConcurrentCommand+numAdj;
+  unsigned int numCommand;
+  if(_numConcurrentCommand == 0) {
+    numCommand = _uris.size();
+  } else {
+    int n = _numConcurrentCommand+numAdj;
+    if(n <= 0) {
+      return Commands();
+    } else {
+      numCommand = n;
+    }
+  }
   return createNextCommand(e, numCommand, "GET");
 }
 
-Commands RequestGroup::createNextCommand(DownloadEngine* e, int32_t numCommand, const std::string& method)
+Commands RequestGroup::createNextCommand(DownloadEngine* e, unsigned int numCommand, const std::string& method)
 {
   Commands commands;
   std::deque<std::string> pendingURIs;
@@ -467,7 +477,7 @@ std::string RequestGroup::getFilePath() const
   }
 }
 
-int64_t RequestGroup::getTotalLength() const
+uint64_t RequestGroup::getTotalLength() const
 {
   if(_pieceStorage.isNull()) {
     return 0;
@@ -480,7 +490,7 @@ int64_t RequestGroup::getTotalLength() const
   }
 }
 
-int64_t RequestGroup::getCompletedLength() const
+uint64_t RequestGroup::getCompletedLength() const
 {
   if(_pieceStorage.isNull()) {
     return 0;
@@ -506,8 +516,8 @@ void RequestGroup::validateFilename(const std::string& expectedFilename,
   }
 }
 
-void RequestGroup::validateTotalLength(int64_t expectedTotalLength,
-				       int64_t actualTotalLength) const
+void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
+				       uint64_t actualTotalLength) const
 {
   if(expectedTotalLength <= 0) {
     return;
@@ -524,7 +534,7 @@ void RequestGroup::validateFilename(const std::string& actualFilename) const
   validateFilename(_downloadContext->getFileEntries().front()->getBasename(), actualFilename);
 }
 
-void RequestGroup::validateTotalLength(int64_t actualTotalLength) const
+void RequestGroup::validateTotalLength(uint64_t actualTotalLength) const
 {
   validateTotalLength(getTotalLength(), actualTotalLength);
 }
@@ -539,9 +549,9 @@ void RequestGroup::decreaseStreamConnection()
   --_numStreamConnection;
 }
 
-int32_t RequestGroup::getNumConnection() const
+unsigned int RequestGroup::getNumConnection() const
 {
-  int32_t numConnection = _numStreamConnection;
+  unsigned int numConnection = _numStreamConnection;
 #ifdef ENABLE_BITTORRENT
   {
     BtContextHandle btContext = _downloadContext;
@@ -792,7 +802,7 @@ void RequestGroup::setProgressInfoFile(const BtProgressInfoFileHandle& progressI
 bool RequestGroup::needsFileAllocation() const
 {
   return isFileAllocationEnabled() &&
-    _option->getAsLLInt(PREF_NO_FILE_ALLOCATION_LIMIT) <= getTotalLength() &&
+    (uint64_t)_option->getAsLLInt(PREF_NO_FILE_ALLOCATION_LIMIT) <= getTotalLength() &&
     !_pieceStorage->getDiskAdaptor()->fileAllocationIterator()->finished();
 }
 

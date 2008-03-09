@@ -51,7 +51,8 @@ class BitfieldMan;
 class BinaryStream;
 class FileEntry;
 
-#define STRTOLL(X) strtoll(X, (char**)NULL, 10)
+#define STRTOLL(X) strtoll(X, (char**)0, 10)
+#define STRTOULL(X) strtoull(X, (char**)0, 10)
 
 #define START_INDEX(OFFSET, PIECE_LENGTH) ((OFFSET)/(PIECE_LENGTH))
 #define END_INDEX(OFFSET, LENGTH, PIECE_LENGTH) (((OFFSET)+(LENGTH)-1)/(PIECE_LENGTH))
@@ -74,7 +75,7 @@ public:
       str = "0";
       return str;
     }
-    int32_t count = 0;
+    unsigned int count = 0;
     while(value) {
       ++count;
       char digit = value%10+'0';
@@ -124,7 +125,7 @@ public:
 
   static std::string replace(const std::string& target, const std::string& oldstr, const std::string& newstr);
 
-  static std::string urlencode(const unsigned char* target, int32_t len);
+  static std::string urlencode(const unsigned char* target, size_t len);
 
   static std::string urlencode(const std::string& target)
   {
@@ -135,7 +136,7 @@ public:
 
   static std::string urldecode(const std::string& target);
 
-  static std::string torrentUrlencode(const unsigned char* target, int32_t len);
+  static std::string torrentUrlencode(const unsigned char* target, size_t len);
 
   static std::string torrentUrlencode(const std::string& target)
   {
@@ -143,7 +144,7 @@ public:
 			    target.size());
   }
 
-  static std::string toHex(const unsigned char* src, int32_t len);
+  static std::string toHex(const unsigned char* src, size_t len);
 
   static std::string toHex(const std::string& src)
   {
@@ -154,15 +155,15 @@ public:
 
   static void fileCopy(const std::string& destFile, const std::string& src);
 
-  static void rangedFileCopy(const std::string& destFile, const std::string& src, int64_t srcOffset, int64_t length);
+  static void rangedFileCopy(const std::string& destFile, const std::string& src, off_t srcOffset, uint64_t length);
 
-  static bool isPowerOf(int32_t num, int32_t base);
+  static bool isPowerOf(int num, int base);
 
-  static std::string secfmt(int32_t sec);
+  static std::string secfmt(time_t sec);
 
-  static int32_t expandBuffer(char** pbuf, int32_t curLength, int32_t newLength);
+  static size_t expandBuffer(char** pbuf, size_t curLength, size_t newLength);
 
-  static void unfoldRange(const std::string& src, std::deque<int32_t>& range);
+  static void unfoldRange(const std::string& src, std::deque<int>& range);
 
   static int32_t parseInt(const std::string& s, int32_t base = 10);
 
@@ -173,9 +174,9 @@ public:
   // this function temporarily put here
   static std::string getContentDispositionFilename(const std::string& header);
 
-  static int32_t countBit(uint32_t n);
+  static unsigned int countBit(uint32_t n);
   
-  static std::string randomAlpha(int32_t length,
+  static std::string randomAlpha(size_t length,
 				 const SharedHandle<Randomizer>& randomizer);
   
   static std::string toUpper(const std::string& src);
@@ -184,11 +185,11 @@ public:
 
   static bool isNumbersAndDotsNotation(const std::string& name);
 
-  static void setGlobalSignalHandler(int32_t signal, void (*handler)(int), int32_t flags);
+  static void setGlobalSignalHandler(int signal, void (*handler)(int), int flags);
 
-  static void indexRange(int32_t& startIndex, int32_t& endIndex,
-			 int64_t offset,
-			 int32_t srcLength, int32_t destLength);
+  static void indexRange(size_t& startIndex, size_t& endIndex,
+			 off_t offset,
+			 size_t srcLength, size_t destLength);
 
   static std::string getHomeDir();
 
@@ -211,7 +212,7 @@ public:
 
   static bool isUppercase(const std::string& what);
 
-  static int32_t alphaToNum(const std::string& alphabets);
+  static int alphaToNum(const std::string& alphabets);
 
   static void mkdirs(const std::string& dirpath);
 

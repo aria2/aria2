@@ -42,7 +42,7 @@ namespace aria2 {
 class AutoSaveCommand : public TimeBasedCommand
 {
 public:
-  AutoSaveCommand(int32_t cuid, DownloadEngine* e, int32_t interval);
+  AutoSaveCommand(int32_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~AutoSaveCommand();
 

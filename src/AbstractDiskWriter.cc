@@ -54,7 +54,7 @@ AbstractDiskWriter::~AbstractDiskWriter()
   closeFile();
 }
 
-void AbstractDiskWriter::openFile(const std::string& filename, int64_t totalLength)
+void AbstractDiskWriter::openFile(const std::string& filename, uint64_t totalLength)
 {
   File f(filename);
   if(f.exists()) {
@@ -73,7 +73,7 @@ void AbstractDiskWriter::closeFile()
 }
 
 void AbstractDiskWriter::openExistingFile(const std::string& filename,
-					  int64_t totalLength)
+					  uint64_t totalLength)
 {
   this->filename = filename;
   File f(filename);
@@ -86,7 +86,7 @@ void AbstractDiskWriter::openExistingFile(const std::string& filename,
   }
 }
 
-void AbstractDiskWriter::createFile(const std::string& filename, int32_t addFlags)
+void AbstractDiskWriter::createFile(const std::string& filename, int addFlags)
 {
   this->filename = filename;
   assert(filename.size());
@@ -96,11 +96,11 @@ void AbstractDiskWriter::createFile(const std::string& filename, int32_t addFlag
   }  
 }
 
-int32_t AbstractDiskWriter::writeDataInternal(const unsigned char* data, int32_t len)
+ssize_t AbstractDiskWriter::writeDataInternal(const unsigned char* data, size_t len)
 {
-  int32_t writtenLength = 0;
-  while(writtenLength < len) {
-    int32_t ret = 0;
+  ssize_t writtenLength = 0;
+  while((size_t)writtenLength < len) {
+    ssize_t ret = 0;
     while((ret = write(fd, data+writtenLength, len-writtenLength)) == -1 && errno == EINTR);
     if(ret == -1) {
       return -1;
@@ -110,21 +110,21 @@ int32_t AbstractDiskWriter::writeDataInternal(const unsigned char* data, int32_t
   return writtenLength;
 }
 
-int32_t AbstractDiskWriter::readDataInternal(unsigned char* data, int32_t len)
+ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len)
 {
-  int32_t ret = 0;
+  ssize_t ret = 0;
   while((ret = read(fd, data, len)) == -1 && errno == EINTR);
   return ret;
 }
 
-void AbstractDiskWriter::seek(int64_t offset)
+void AbstractDiskWriter::seek(off_t offset)
 {
   if(offset != lseek(fd, offset, SEEK_SET)) {
     throw new DlAbortEx(EX_FILE_SEEK, filename.c_str(), strerror(errno));
   }
 }
 
-void AbstractDiskWriter::writeData(const unsigned char* data, int32_t len, int64_t offset)
+void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t offset)
 {
   seek(offset);
   if(writeDataInternal(data, len) < 0) {
@@ -132,9 +132,9 @@ void AbstractDiskWriter::writeData(const unsigned char* data, int32_t len, int64
   }
 }
 
-int32_t AbstractDiskWriter::readData(unsigned char* data, int32_t len, int64_t offset)
+ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offset)
 {
-  int32_t ret;
+  ssize_t ret;
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {
     throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
@@ -142,7 +142,7 @@ int32_t AbstractDiskWriter::readData(unsigned char* data, int32_t len, int64_t o
   return ret;
 }
 
-void AbstractDiskWriter::truncate(int64_t length)
+void AbstractDiskWriter::truncate(uint64_t length)
 {
   if(fd == -1) {
     throw new DlAbortEx("File not opened.");
@@ -151,7 +151,7 @@ void AbstractDiskWriter::truncate(int64_t length)
 }
 
 // TODO the file descriptor fd must be opened before calling this function.
-int64_t AbstractDiskWriter::size() const
+uint64_t AbstractDiskWriter::size() const
 {
   if(fd == -1) {
     throw new DlAbortEx("File not opened.");
@@ -167,7 +167,7 @@ void AbstractDiskWriter::enableDirectIO()
 {
 #ifdef ENABLE_DIRECT_IO
   if(_directIOAllowed) {
-    int32_t flg;
+    int flg;
     while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
     while(fcntl(fd, F_SETFL, flg|O_DIRECT) == -1 && errno == EINTR);
   }
@@ -177,7 +177,7 @@ void AbstractDiskWriter::enableDirectIO()
 void AbstractDiskWriter::disableDirectIO()
 {
 #ifdef ENABLE_DIRECT_IO
-  int32_t flg;
+  int flg;
   while((flg = fcntl(fd, F_GETFL)) == -1 && errno == EINTR);
   while(fcntl(fd, F_SETFL, flg&(~O_DIRECT)) == -1 && errno == EINTR);
 #endif // ENABLE_DIRECT_IO

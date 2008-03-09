@@ -39,7 +39,7 @@ namespace aria2 {
 
 RequestSlot RequestSlot::nullSlot(0, 0, 0, 0);
 
-RequestSlot::RequestSlot(int32_t index, int32_t begin, int32_t length, int32_t blockIndex)
+RequestSlot::RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex)
   :index(index), begin(begin), length(length), blockIndex(blockIndex) {}
 
 RequestSlot::RequestSlot(const RequestSlot& requestSlot) {
@@ -81,7 +81,7 @@ bool RequestSlot::isTimeout(time_t timeoutSec) const {
   return dispatchedTime.elapsed(timeoutSec);
 }
 
-int32_t RequestSlot::getLatencyInMillis() const {
+unsigned int RequestSlot::getLatencyInMillis() const {
   return dispatchedTime.differenceInMillis();
 }
 

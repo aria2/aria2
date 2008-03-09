@@ -39,12 +39,10 @@
 
 namespace aria2 {
 
-DelegatingPeerListProcessor::DelegatingPeerListProcessor(int32_t pieceLength, int64_t totalLength):
-  pieceLength(pieceLength),
-  totalLength(totalLength)
+DelegatingPeerListProcessor::DelegatingPeerListProcessor()
 {
-  processors.push_back(new DefaultPeerListProcessor(pieceLength, totalLength));
-  processors.push_back(new CompactPeerListProcessor(pieceLength, totalLength));
+  processors.push_back(new DefaultPeerListProcessor());
+  processors.push_back(new CompactPeerListProcessor());
 }
 
 DelegatingPeerListProcessor::~DelegatingPeerListProcessor() {}

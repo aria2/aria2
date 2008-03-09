@@ -305,8 +305,8 @@ void UtilTest::testUrldecode() {
 }
 
 void UtilTest::testCountBit() {
-  CPPUNIT_ASSERT_EQUAL((int32_t)32, Util::countBit(UINT32_MAX));
-  CPPUNIT_ASSERT_EQUAL((int32_t)8, Util::countBit(255));
+  CPPUNIT_ASSERT_EQUAL((unsigned int)32, Util::countBit(UINT32_MAX));
+  CPPUNIT_ASSERT_EQUAL((unsigned int)8, Util::countBit(255));
 }
 
 void UtilTest::testGetRealSize()
@@ -412,12 +412,12 @@ void UtilTest::testIsUppercase()
 
 void UtilTest::testAlphaToNum()
 {
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, Util::alphaToNum("a"));
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, Util::alphaToNum("aa"));
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, Util::alphaToNum("b"));
-  CPPUNIT_ASSERT_EQUAL((int32_t)675, Util::alphaToNum("zz")); // 25*26+25
-  CPPUNIT_ASSERT_EQUAL((int32_t)675, Util::alphaToNum("ZZ")); // 25*26+25
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, Util::alphaToNum(""));
+  CPPUNIT_ASSERT_EQUAL(0, Util::alphaToNum("a"));
+  CPPUNIT_ASSERT_EQUAL(0, Util::alphaToNum("aa"));
+  CPPUNIT_ASSERT_EQUAL(1, Util::alphaToNum("b"));
+  CPPUNIT_ASSERT_EQUAL(675, Util::alphaToNum("zz")); // 25*26+25
+  CPPUNIT_ASSERT_EQUAL(675, Util::alphaToNum("ZZ")); // 25*26+25
+  CPPUNIT_ASSERT_EQUAL(0, Util::alphaToNum(""));
 }
 
 void UtilTest::testMkdirs()
@@ -604,27 +604,27 @@ void UtilTest::testToString_binaryStream()
 void UtilTest::testItos()
 {
   {
-    int32_t i = 0;
+    int i = 0;
     CPPUNIT_ASSERT_EQUAL(std::string("0"), Util::itos(i));
   }
   {
-    int32_t i = 100;
+    int i = 100;
     CPPUNIT_ASSERT_EQUAL(std::string("100"), Util::itos(i, true));
   }
   {
-    int32_t i = 100;
+    int i = 100;
     CPPUNIT_ASSERT_EQUAL(std::string("100"), Util::itos(i));
   }
   {
-    int32_t i = 12345;
+    int i = 12345;
     CPPUNIT_ASSERT_EQUAL(std::string("12,345"), Util::itos(i, true));
   }
   {
-    int32_t i = 12345;
+    int i = 12345;
     CPPUNIT_ASSERT_EQUAL(std::string("12345"), Util::itos(i));
   }
   {
-    int32_t i = -12345;
+    int i = -12345;
     CPPUNIT_ASSERT_EQUAL(std::string("-12,345"), Util::itos(i, true));
   }
   {

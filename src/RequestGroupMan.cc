@@ -50,7 +50,7 @@
 namespace aria2 {
 
 RequestGroupMan::RequestGroupMan(const RequestGroups& requestGroups,
-				 int32_t maxSimultaneousDownloads):
+				 unsigned int maxSimultaneousDownloads):
   _requestGroups(requestGroups),
   _logger(LogFactory::getInstance()),
   _maxSimultaneousDownloads(maxSimultaneousDownloads),
@@ -85,14 +85,14 @@ void RequestGroupMan::addReservedGroup(const RequestGroupHandle& group)
   _reservedGroups.push_back(group);
 }
 
-int32_t RequestGroupMan::countRequestGroup() const
+size_t RequestGroupMan::countRequestGroup() const
 {
   return _requestGroups.size();
 }
 
-RequestGroupHandle RequestGroupMan::getRequestGroup(int32_t index) const
+RequestGroupHandle RequestGroupMan::getRequestGroup(size_t index) const
 {
-  if(index < (int32_t)_requestGroups.size()) {
+  if(index < _requestGroups.size()) {
     return _requestGroups[index];
   } else {
     return 0;
@@ -101,7 +101,7 @@ RequestGroupHandle RequestGroupMan::getRequestGroup(int32_t index) const
 
 void RequestGroupMan::removeStoppedGroup()
 {
-  int32_t count = 0;
+  unsigned int count = 0;
   RequestGroups temp;
   for(RequestGroups::iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
@@ -119,7 +119,7 @@ void RequestGroupMan::removeStoppedGroup()
 	  }
 	  RequestGroups nextGroups = (*itr)->postDownloadProcessing();
 	  if(nextGroups.size() > 0) {
-	    _logger->debug("Adding %d RequestGroups as a result of PostDownloadHandler.", (int32_t)nextGroups.size());
+	    _logger->debug("Adding %u RequestGroups as a result of PostDownloadHandler.", nextGroups.size());
 	    std::copy(nextGroups.rbegin(), nextGroups.rend(), std::front_inserter(_reservedGroups));
 	  }
 	} else {
@@ -136,7 +136,7 @@ void RequestGroupMan::removeStoppedGroup()
   }
   _requestGroups = temp;
   if(count > 0) {
-    _logger->debug("%d RequestGroup(s) deleted.", count);
+    _logger->debug("%u RequestGroup(s) deleted.", count);
   }
 }
 
@@ -144,8 +144,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 {
   RequestGroups temp;
   removeStoppedGroup();
-  int32_t count = 0;
-  for(int32_t num = _maxSimultaneousDownloads-_requestGroups.size();
+  unsigned int count = 0;
+  for(int num = _maxSimultaneousDownloads-_requestGroups.size();
       num > 0 && _reservedGroups.size() > 0; --num) {
     RequestGroupHandle groupToAdd = _reservedGroups.front();
     _reservedGroups.pop_front();

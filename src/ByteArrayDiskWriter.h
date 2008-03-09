@@ -49,21 +49,21 @@ public:
   ByteArrayDiskWriter();
   virtual ~ByteArrayDiskWriter();
 
-  virtual void initAndOpenFile(const std::string& filename, int64_t totalLength = 0);
+  virtual void initAndOpenFile(const std::string& filename, uint64_t totalLength = 0);
 
-  virtual void openFile(const std::string& filename, int64_t totalLength = 0);
+  virtual void openFile(const std::string& filename, uint64_t totalLength = 0);
 
   virtual void closeFile();
 
-  virtual void openExistingFile(const std::string& filename, int64_t totalLength = 0);
+  virtual void openExistingFile(const std::string& filename, uint64_t totalLength = 0);
 
-  virtual void writeData(const unsigned char* data, int32_t len, int64_t position);
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t position);
+  virtual void writeData(const unsigned char* data, size_t len, off_t position);
+  virtual ssize_t readData(unsigned char* data, size_t len, off_t position);
 
   // Not implemented yet
-  virtual void truncate(int64_t length) {}
+  virtual void truncate(uint64_t length) {}
 
-  virtual int64_t size() const
+  virtual uint64_t size() const
   {
     return buf.str().size();
   }

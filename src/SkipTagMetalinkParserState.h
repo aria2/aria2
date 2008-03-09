@@ -43,7 +43,7 @@ class SkipTagMetalinkParserState:public MetalinkParserState
 {
 private:
   MetalinkParserState* _prevState;
-  int32_t _depth;
+  unsigned int _depth;
 public:
   SkipTagMetalinkParserState(MetalinkParserState* prevState);
 

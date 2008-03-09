@@ -122,7 +122,7 @@ private:
 
   void verifyReq1Hash(const unsigned char* req1buf);
 
-  ssize_t receiveNBytes(size_t bytes);
+  size_t receiveNBytes(size_t bytes);
 
 public:
   MSEHandshake(int32_t cuid, const SharedHandle<SocketCore>& socket,

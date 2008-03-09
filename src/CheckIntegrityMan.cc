@@ -68,7 +68,7 @@ CheckIntegrityEntryHandle CheckIntegrityMan::getFirstCheckIntegrityEntry() const
   }
 }
 
-int32_t CheckIntegrityMan::countCheckIntegrityEntry() const
+size_t CheckIntegrityMan::countCheckIntegrityEntry() const
 {
   return _checkIntegrityEntries.size();
 }

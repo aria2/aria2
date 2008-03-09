@@ -54,12 +54,12 @@ BtPortMessage::~BtPortMessage()
   delete [] _msg;
 }
 
-SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, int32_t dataLength)
+SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, size_t dataLength)
 {
   if(dataLength != 3) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "port", dataLength, 3);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
   }
@@ -105,7 +105,7 @@ const unsigned char* BtPortMessage::getMessage() {
   return _msg;
 }
 
-int32_t BtPortMessage::getMessageLength() {
+size_t BtPortMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

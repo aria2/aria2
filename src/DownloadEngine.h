@@ -96,7 +96,7 @@ private:
 #endif // ENABLE_ASYNC_DNS
   fd_set rfdset;
   fd_set wfdset;
-  int32_t fdmax;
+  int fdmax;
 
   const Logger* logger;
   

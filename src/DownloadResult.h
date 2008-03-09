@@ -54,19 +54,19 @@ public:
  
   std::string filePath;
 
-  int64_t totalLength;
+  uint64_t totalLength;
 
   std::string uri;
 
-  int32_t numUri;
+  size_t numUri;
 
   RESULT result;
 
   DownloadResult(int32_t gid,
 		 const std::string& filePath,
-		 int64_t totalLength,
+		 uint64_t totalLength,
 		 const std::string& uri,
-		 int32_t numUri,
+		 size_t numUri,
 		 RESULT result):
     gid(gid),
     filePath(filePath),

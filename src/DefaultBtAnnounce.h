@@ -54,12 +54,12 @@ class Randomizer;
 class DefaultBtAnnounce : public BtAnnounce {
 private:
   SharedHandle<BtContext> btContext;
-  int32_t trackers;
+  unsigned int trackers;
   Time prevAnnounceTime;
-  int32_t interval;
-  int32_t minInterval;
-  int32_t complete;
-  int32_t incomplete;
+  time_t interval;
+  time_t minInterval;
+  unsigned int complete;
+  unsigned int incomplete;
   AnnounceList announceList;
   std::string trackerId;
   std::string key;
@@ -118,22 +118,22 @@ public:
 
   void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
-  int32_t getInterval() const
+  time_t getInterval() const
   {
     return interval;
   }
 
-  int32_t getMinInterval() const
+  time_t getMinInterval() const
   {
     return minInterval;
   }
 
-  int32_t getComplete() const
+  unsigned int getComplete() const
   {
     return complete;
   }
 
-  int32_t getIncomplete() const
+  unsigned int getIncomplete() const
   {
     return incomplete;
   }

@@ -53,9 +53,9 @@ public:
 
   virtual ~CheckIntegrityEntry();
 
-  virtual int64_t getTotalLength();
+  virtual uint64_t getTotalLength();
 
-  virtual int64_t getCurrentLength();
+  virtual off_t getCurrentLength();
 
   virtual void validateChunk();
 

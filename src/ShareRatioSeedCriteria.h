@@ -68,7 +68,7 @@ public:
       return false;
     }
     TransferStat stat = peerStorage->calculateStat();
-    int64_t allTimeUploadLength =
+    uint64_t allTimeUploadLength =
       btRuntime->getUploadLengthAtStartup()+stat.getSessionUploadLength();
     return ratio <=
       ((double)allTimeUploadLength)/pieceStorage->getCompletedLength();

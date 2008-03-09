@@ -47,11 +47,11 @@
 
 namespace aria2 {
 
-BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, int32_t dataLength) {
+BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 13) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "request", dataLength, 13);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "request", ID);
   }
@@ -80,7 +80,7 @@ void BtRequestMessage::doReceivedAction() {
   }
 }
 
-int32_t BtRequestMessage::MESSAGE_LENGTH = 17;
+size_t BtRequestMessage::MESSAGE_LENGTH = 17;
 
 const unsigned char* BtRequestMessage::getMessage() {
   if(!msg) {
@@ -101,13 +101,13 @@ const unsigned char* BtRequestMessage::getMessage() {
   return msg;
 }
 
-int32_t BtRequestMessage::getMessageLength() {
+size_t BtRequestMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
 std::string BtRequestMessage::toString() const {
-  return "request index="+Util::itos(index)+", begin="+Util::itos(begin)+
-    ", length="+Util::itos(length);
+  return "request index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
+    ", length="+Util::uitos(length);
 }
 
 void BtRequestMessage::onQueued() {

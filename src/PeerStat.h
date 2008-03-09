@@ -63,43 +63,43 @@ public:
   /**
    * Returns current download speed in byte per sec.
    */
-  int32_t calculateDownloadSpeed() {
+  unsigned int calculateDownloadSpeed() {
     return downloadSpeed.calculateSpeed();
   }
 
-  int32_t calculateDownloadSpeed(const struct timeval& now) {
+  unsigned int calculateDownloadSpeed(const struct timeval& now) {
     return downloadSpeed.calculateSpeed(now);
   }
 
-  int32_t calculateUploadSpeed() {
+  unsigned int calculateUploadSpeed() {
     return uploadSpeed.calculateSpeed();
   }
 
-  int32_t calculateUploadSpeed(const struct timeval& now) {
+  unsigned int calculateUploadSpeed(const struct timeval& now) {
     return uploadSpeed.calculateSpeed(now);
   }
 
-  void updateDownloadLength(int32_t bytes) {
+  void updateDownloadLength(size_t bytes) {
     downloadSpeed.update(bytes);
   }
 
-  void updateUploadLength(int32_t bytes) {
+  void updateUploadLength(size_t bytes) {
     uploadSpeed.update(bytes);
   }
 
-  int32_t getMaxDownloadSpeed() const {
+  unsigned int getMaxDownloadSpeed() const {
     return downloadSpeed.getMaxSpeed();
   }
 
-  int32_t getMaxUploadSpeed() const {
+  unsigned int getMaxUploadSpeed() const {
     return uploadSpeed.getMaxSpeed();
   }
 
-  int32_t getAvgDownloadSpeed() const {
+  unsigned int getAvgDownloadSpeed() const {
     return downloadSpeed.getAvgSpeed();
   }
 
-  int32_t getAvgUploadSpeed() const {
+  unsigned int getAvgUploadSpeed() const {
     return uploadSpeed.getAvgSpeed();
   }
 

@@ -41,36 +41,36 @@ namespace aria2 {
 
 class BtCancelSendingPieceEvent : public BtEvent {
 private:
-  int32_t index;
-  int32_t begin;
-  int32_t length;
+  size_t index;
+  uint32_t begin;
+  size_t length;
 public:
-  BtCancelSendingPieceEvent(int32_t index, int32_t begin, int32_t length):
+  BtCancelSendingPieceEvent(size_t index, uint32_t begin, size_t length):
     index(index), begin(begin), length(length) {}
 
   virtual ~BtCancelSendingPieceEvent() {}
 
-  void setIndex(int32_t index) {
+  void setIndex(size_t index) {
     this->index = index;
   }
 
-  int32_t getIndex() const {
+  size_t getIndex() const {
     return index;
   }
 
-  void setBegin(int32_t begin) {
+  void setBegin(uint32_t begin) {
     this->begin = begin;
   }
 
-  int32_t getBegin() const {
+  uint32_t getBegin() const {
     return begin;
   }
 
-  void setLength(int32_t length) {
+  void setLength(size_t length) {
     this->length = length;
   }
 
-  int32_t getLength() const {
+  size_t getLength() const {
     return length;
   }
 };

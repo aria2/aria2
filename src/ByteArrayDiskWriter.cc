@@ -47,27 +47,27 @@ void ByteArrayDiskWriter::clear()
 }
 
 void ByteArrayDiskWriter::initAndOpenFile(const std::string& filename,
-					  int64_t totalLength)
+					  uint64_t totalLength)
 {
   clear();
 }
 
 void ByteArrayDiskWriter::openFile(const std::string& filename,
-				   int64_t totalLength) {}
+				   uint64_t totalLength) {}
 
 void ByteArrayDiskWriter::closeFile() {}
 
 void ByteArrayDiskWriter::openExistingFile(const std::string& filename,
-					   int64_t totalLength)
+					   uint64_t totalLength)
 {
   openFile(filename);
 }
 
-void ByteArrayDiskWriter::writeData(const unsigned char* data, int32_t dataLength, int64_t position)
+void ByteArrayDiskWriter::writeData(const unsigned char* data, size_t dataLength, off_t position)
 {
-  if(size() < position) {
+  if(size() < (uint64_t)position) {
     buf.seekp(size(), std::ios::beg);
-    for(int64_t i = size(); i < position; ++i) {
+    for(uint64_t i = size(); i < (uint64_t)position; ++i) {
       buf.put('\0');
     }
   } else {
@@ -76,7 +76,7 @@ void ByteArrayDiskWriter::writeData(const unsigned char* data, int32_t dataLengt
   buf.write(reinterpret_cast<const char*>(data), dataLength);
 }
 
-int32_t ByteArrayDiskWriter::readData(unsigned char* data, int32_t len, int64_t position)
+ssize_t ByteArrayDiskWriter::readData(unsigned char* data, size_t len, off_t position)
 {
   buf.seekg(position, std::ios::beg);
   buf.read(reinterpret_cast<char*>(data), len);

@@ -42,13 +42,13 @@ namespace aria2 {
 
 class ParameterizedStringParser {
 private:
-  SharedHandle<PStringDatum> diggPString(const std::string& src, int32_t& offset);
+  SharedHandle<PStringDatum> diggPString(const std::string& src, int& offset);
 
-  SharedHandle<PStringDatum> createSegment(const std::string& src, int32_t& offset);
+  SharedHandle<PStringDatum> createSegment(const std::string& src, int& offset);
 
-  SharedHandle<PStringDatum> createLoop(const std::string& src, int32_t& offset);
+  SharedHandle<PStringDatum> createLoop(const std::string& src, int& offset);
 
-  SharedHandle<PStringDatum> createSelect(const std::string& src, int32_t& offset);
+  SharedHandle<PStringDatum> createSelect(const std::string& src, int& offset);
 
 
 public:

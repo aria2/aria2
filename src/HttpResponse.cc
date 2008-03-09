@@ -82,10 +82,10 @@ void HttpResponse::validateResponse() const
 	throw new DlAbortEx(EX_INVALID_RANGE_HEADER,
 			    Util::itos(httpRequest->getStartByte(), true).c_str(),
 			    Util::itos(httpRequest->getEndByte(), true).c_str(),
-			    Util::itos(httpRequest->getEntityLength(), true).c_str(),
+			    Util::uitos(httpRequest->getEntityLength(), true).c_str(),
 			    Util::itos(responseRange->getStartByte(), true).c_str(),
 			    Util::itos(responseRange->getEndByte(), true).c_str(),
-			    Util::itos(responseRange->getEntityLength(), true).c_str());
+			    Util::uitos(responseRange->getEntityLength(), true).c_str());
       }
     }
   }
@@ -150,7 +150,7 @@ TransferEncodingHandle HttpResponse::getTransferDecoder() const
   return 0;
 }
 
-int64_t HttpResponse::getContentLength() const
+uint64_t HttpResponse::getContentLength() const
 {
   if(httpHeader.isNull()) {
     return 0;
@@ -159,7 +159,7 @@ int64_t HttpResponse::getContentLength() const
   }
 }
 
-int64_t HttpResponse::getEntityLength() const
+uint64_t HttpResponse::getEntityLength() const
 {
   if(httpHeader.isNull()) {
     return 0;

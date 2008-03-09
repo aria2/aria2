@@ -43,16 +43,16 @@ namespace aria2 {
 class FixedWidthNumberDecorator : public NumberDecorator
 {
 private:
-  int32_t _width;
+  size_t _width;
 public:
-  FixedWidthNumberDecorator(int32_t width):_width(width) {}
+  FixedWidthNumberDecorator(size_t width):_width(width) {}
 
   virtual ~FixedWidthNumberDecorator() {}
 
-  virtual std::string decorate(int32_t number)
+  virtual std::string decorate(unsigned int number)
   {
-    std::string s = Util::itos(number);
-    while(s.size() < (size_t)_width) {
+    std::string s = Util::uitos(number);
+    while(s.size() < _width) {
       s.insert(0, "0");
     }
     return s;

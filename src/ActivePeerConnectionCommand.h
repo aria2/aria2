@@ -50,17 +50,17 @@ class ActivePeerConnectionCommand : public Command,
 				    public RequestGroupAware
 {
 private:
-  int32_t interval; // UNIT: sec
+  time_t interval; // UNIT: sec
   DownloadEngine* e;
   Time checkPoint;
-  int32_t _thresholdSpeed; // UNIT: byte/sec
-  int32_t _numNewConnection; // the number of the connection to establish.
+  unsigned int _thresholdSpeed; // UNIT: byte/sec
+  size_t _numNewConnection; // the number of the connection to establish.
 public:
   ActivePeerConnectionCommand(int cuid,
 			      RequestGroup* requestGroup,
 			      DownloadEngine* e,
 			      const SharedHandle<BtContext>& btContext,
-			      int32_t interval);
+			      time_t interval);
      
   virtual ~ActivePeerConnectionCommand();
 
@@ -68,12 +68,12 @@ public:
 
   void connectToPeer(const SharedHandle<Peer>& peer);
 
-  void setThresholdSpeed(int32_t speed)
+  void setThresholdSpeed(unsigned int speed)
   {
     _thresholdSpeed = speed;
   }
 
-  void setNumNewConnection(int32_t numNewConnection)
+  void setNumNewConnection(size_t numNewConnection)
   {
     _numNewConnection = numNewConnection;
   }

@@ -50,9 +50,9 @@ class PeerChokeCommand : public Command,
 			 public RequestGroupAware
 {
 private:
-  int32_t interval;
+  time_t interval;
   DownloadEngine* e;
-  int32_t rotate;
+  unsigned int rotate;
   Time checkPoint;
 
   void orderByUploadRate(std::deque<SharedHandle<Peer> >& peers) const;
@@ -64,7 +64,7 @@ public:
 		   RequestGroup* requestGroup,
 		   DownloadEngine* e,
 		   const SharedHandle<BtContext>& btContext,
-		   int32_t interval);
+		   time_t interval);
 
   virtual ~PeerChokeCommand();
 

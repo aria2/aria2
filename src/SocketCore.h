@@ -59,9 +59,7 @@ private:
   // socket type defined in <sys/socket.h>
   int _sockType;
   // socket endpoint descriptor
-  int32_t sockfd;
-  // reference counter for this object.
-  int32_t use;
+  int sockfd;
   bool blocking;
   bool secure;
 #ifdef HAVE_LIBSSL
@@ -73,17 +71,17 @@ private:
   gnutls_session_t sslSession;
   gnutls_certificate_credentials_t sslXcred;
   char* peekBuf;
-  int32_t peekBufLength;
-  int32_t peekBufMax;
+  size_t peekBufLength;
+  size_t peekBufMax;
 
-  int32_t shiftPeekData(char* data, int32_t len);
-  void addPeekData(char* data, int32_t len);
-  int32_t gnutlsRecv(char* data, int32_t len);
-  int32_t gnutlsPeek(char* data, int32_t len);
+  size_t shiftPeekData(char* data, size_t len);
+  void addPeekData(char* data, size_t len);
+  ssize_t gnutlsRecv(char* data, size_t len);
+  ssize_t gnutlsPeek(char* data, size_t len);
 #endif // HAVE_LIBGNUTLS
 
   void init();
-  SocketCore(int32_t sockfd, int sockType);
+  SocketCore(int sockfd, int sockType);
   static int error();
   static const char *errorMsg();
   static const char *errorMsg(const int err);
@@ -94,7 +92,7 @@ public:
   SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();
 
-  int32_t getSockfd() const { return sockfd; }
+  int getSockfd() const { return sockfd; }
 
   bool isOpen() const { return sockfd != -1; }
 
@@ -115,13 +113,13 @@ public:
    * Stores host address and port of this socket to addrinfo.
    * @param addrinfo placeholder to store host address and port.
    */
-  void getAddrInfo(std::pair<std::string, int32_t>& addrinfo) const;
+  void getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const;
   
   /**
    * Stores peer's address and port to peerinfo.
    * @param peerinfo placeholder to store peer's address and port.
    */
-  void getPeerInfo(std::pair<std::string, int32_t>& peerinfo) const;
+  void getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const;
 
   /**
    * Accepts incoming connection on this socket.
@@ -138,7 +136,7 @@ public:
    * @param host hostname or ip address to connect to
    * @param port service port number to connect to
    */
-  void establishConnection(const std::string& host, int32_t port);
+  void establishConnection(const std::string& host, uint16_t port);
 
   void setNonBlockingMode();
 
@@ -159,7 +157,7 @@ public:
    * @return true if the socket is available for writing,
    * otherwise returns false.
    */
-  bool isWritable(int32_t timeout) const;
+  bool isWritable(time_t timeout) const;
 
   /**
    * Checks whether this socket is available for reading.
@@ -168,7 +166,7 @@ public:
    * @return true if the socket is available for reading,
    * otherwise returns false.
    */
-  bool isReadable(int32_t timeout) const;
+  bool isReadable(time_t timeout) const;
 
   /**
    * Writes characters into this socket. data is a pointer pointing the first
@@ -178,12 +176,12 @@ public:
    * @param data data to write
    * @param len length of data
    */
-  void writeData(const char* data, int32_t len);
+  void writeData(const char* data, size_t len);
   void writeData(const std::string& msg)
   {
     writeData(msg.c_str(), msg.size());
   }
-  void writeData(const unsigned char* data, int32_t len)
+  void writeData(const unsigned char* data, size_t len)
   {
     writeData(reinterpret_cast<const char*>(data), len);
   }
@@ -208,9 +206,9 @@ public:
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
    */
-  void readData(char* data, int32_t& len);
+  void readData(char* data, size_t& len);
 
-  void readData(unsigned char* data, int32_t& len)
+  void readData(unsigned char* data, size_t& len)
   {
     readData(reinterpret_cast<char*>(data), len);
   }
@@ -235,9 +233,9 @@ public:
    * @param len the maximum size data can store. This method assigns
    * the number of bytes read to len.
    */
-  void peekData(char* data, int32_t& len);
+  void peekData(char* data, size_t& len);
   
-  void peekData(unsigned char* data, int32_t& len)
+  void peekData(unsigned char* data, size_t& len)
   {
     peekData(reinterpret_cast<char*>(data), len);
   }

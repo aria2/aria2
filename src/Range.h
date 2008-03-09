@@ -43,13 +43,13 @@ namespace aria2 {
 
 class Range {
 private:
-  int64_t startByte;
-  int64_t endByte;
-  int64_t entityLength;
+  off_t startByte;
+  off_t endByte;
+  uint64_t entityLength;
 public:
   Range():startByte(0), endByte(0), entityLength(0) {}
 
-  Range(int64_t startByte, int64_t endByte, int64_t entityLength):
+  Range(off_t startByte, off_t endByte, uint64_t entityLength):
     startByte(startByte), endByte(endByte), entityLength(entityLength) {}
 
   bool operator==(const Range& range) const
@@ -64,22 +64,22 @@ public:
     return !(*this == range);
   }
 
-  int64_t getStartByte() const
+  off_t getStartByte() const
   {
     return startByte;
   }
 
-  int64_t getEndByte() const
+  off_t getEndByte() const
   {
     return endByte;
   }
 
-  int64_t getEntityLength() const
+  uint64_t getEntityLength() const
   {
     return entityLength;
   }
 
-  int64_t getContentLength() const
+  uint64_t getContentLength() const
   {
     if(endByte >= startByte) {
       return endByte-startByte+1;

@@ -178,7 +178,7 @@ void MetalinkParserStateMachine::setFileNameOfEntry(const std::string& filename)
   _ctrl->setFileNameOfEntry(filename);
 }
 
-void MetalinkParserStateMachine::setFileLengthOfEntry(int64_t length)
+void MetalinkParserStateMachine::setFileLengthOfEntry(uint64_t length)
 {
   _ctrl->setFileLengthOfEntry(length);
 }
@@ -198,7 +198,7 @@ void MetalinkParserStateMachine::setOSOfEntry(const std::string& os)
   _ctrl->setOSOfEntry(os);
 }
 
-void MetalinkParserStateMachine::setMaxConnectionsOfEntry(int32_t maxConnections)
+void MetalinkParserStateMachine::setMaxConnectionsOfEntry(int maxConnections)
 {
   _ctrl->setMaxConnectionsOfEntry(maxConnections);
 }
@@ -228,12 +228,12 @@ void MetalinkParserStateMachine::setLocationOfResource(const std::string& locati
   _ctrl->setLocationOfResource(location);
 }
 
-void MetalinkParserStateMachine::setPreferenceOfResource(int32_t preference)
+void MetalinkParserStateMachine::setPreferenceOfResource(int preference)
 {
   _ctrl->setPreferenceOfResource(preference);
 }
 
-void MetalinkParserStateMachine::setMaxConnectionsOfResource(int32_t maxConnections)
+void MetalinkParserStateMachine::setMaxConnectionsOfResource(int maxConnections)
 {
   _ctrl->setMaxConnectionsOfResource(maxConnections);
 }
@@ -278,7 +278,7 @@ void MetalinkParserStateMachine::newChunkChecksumTransaction()
   _ctrl->newChunkChecksumTransaction();
 }
 
-void MetalinkParserStateMachine::setLengthOfChunkChecksum(int32_t length)
+void MetalinkParserStateMachine::setLengthOfChunkChecksum(size_t length)
 {
   _ctrl->setLengthOfChunkChecksum(length);
 }
@@ -288,7 +288,7 @@ void MetalinkParserStateMachine::setTypeOfChunkChecksum(const std::string& type)
   _ctrl->setTypeOfChunkChecksum(type);
 }
 
-void MetalinkParserStateMachine::createNewHashOfChunkChecksum(int32_t order)
+void MetalinkParserStateMachine::createNewHashOfChunkChecksum(size_t order)
 {
   _ctrl->createNewHashOfChunkChecksum(order);
 }

@@ -57,7 +57,7 @@ void FileMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 #endif // ENABLE_MESSAGE_DIGEST
   } else if(name == "resources") {
     stm->setResourcesState();
-    int32_t maxConnections;
+    int maxConnections;
     {
       std::map<std::string, std::string>::const_iterator itr = attrs.find("maxconnections");
       if(itr == attrs.end()) {

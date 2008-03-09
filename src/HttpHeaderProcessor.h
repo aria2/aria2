@@ -47,16 +47,16 @@ class HttpHeader;
 class HttpHeaderProcessor {
 private:
   std::stringstream strm;
-  int32_t _limit;
+  size_t _limit;
 
-  void checkHeaderLimit(int32_t incomingLength);
+  void checkHeaderLimit(size_t incomingLength);
 
 public:
   HttpHeaderProcessor();
 
   ~HttpHeaderProcessor();
 
-  void update(const unsigned char* data, int32_t length);
+  void update(const unsigned char* data, size_t length);
 
   void update(const std::string& data);
 
@@ -68,7 +68,7 @@ public:
   /**
    * Retruns the number of bytes beyond the end of header.
    */
-  int32_t getPutBackDataLength() const;
+  size_t getPutBackDataLength() const;
 
   std::pair<std::string, SharedHandle<HttpHeader> > getHttpStatusHeader();
 
@@ -76,7 +76,7 @@ public:
 
   void clear();
 
-  void setHeaderLimit(int32_t limit)
+  void setHeaderLimit(size_t limit)
   {
     _limit = limit;
   }

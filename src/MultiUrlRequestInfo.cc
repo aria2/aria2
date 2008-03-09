@@ -81,13 +81,13 @@ void MultiUrlRequestInfo::printMessageForContinue()
 	    << "\n";
 }
 
-int32_t MultiUrlRequestInfo::execute()
+int MultiUrlRequestInfo::execute()
 {
   {
     DNSCacheHandle dnsCache = new SimpleDNSCache();
     DNSCacheSingletonHolder::instance(dnsCache);
   }
-  int32_t returnValue = 0;
+  int returnValue = 0;
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);

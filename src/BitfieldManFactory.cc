@@ -53,7 +53,7 @@ BitfieldManFactory::BitfieldManFactory():randomizer(0) {}
 BitfieldManFactory::~BitfieldManFactory() {}
 
 BitfieldMan*
-BitfieldManFactory::createBitfieldMan(int32_t blockLength, int64_t totalLength)
+BitfieldManFactory::createBitfieldMan(size_t blockLength, uint64_t totalLength)
 {
   BitfieldMan* bitfieldMan = new BitfieldMan(blockLength, totalLength);
   bitfieldMan->setRandomizer(randomizer);

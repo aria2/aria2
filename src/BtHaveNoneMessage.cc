@@ -40,11 +40,11 @@
 
 namespace aria2 {
 
-BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, int32_t dataLength) {
+BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "have none", dataLength, 1);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have none", ID);
   }
@@ -59,7 +59,7 @@ void BtHaveNoneMessage::doReceivedAction() {
   }
 }
 
-int32_t BtHaveNoneMessage::MESSAGE_LENGTH = 5;
+size_t BtHaveNoneMessage::MESSAGE_LENGTH = 5;
 
 const unsigned char* BtHaveNoneMessage::getMessage() {
   if(!msg) {
@@ -74,7 +74,7 @@ const unsigned char* BtHaveNoneMessage::getMessage() {
   return msg;
 }
 
-int32_t BtHaveNoneMessage::getMessageLength() {
+size_t BtHaveNoneMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

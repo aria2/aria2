@@ -29,7 +29,7 @@ void SocketCoreTest::testWriteAndReadDatagram()
     SocketCore c(SOCK_DGRAM);
     c.bind(0);
 
-    std::pair<std::string, int32_t> svaddr;
+    std::pair<std::string, uint16_t> svaddr;
     s.getAddrInfo(svaddr);
 
     std::string message1 = "hello world.";

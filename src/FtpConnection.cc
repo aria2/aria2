@@ -111,16 +111,16 @@ SocketHandle FtpConnection::sendPort() const
   serverSocket->beginListen();
   serverSocket->setNonBlockingMode();
 
-  std::pair<std::string, int32_t> addrinfo;
+  std::pair<std::string, uint16_t> addrinfo;
   socket->getAddrInfo(addrinfo);
-  int32_t ipaddr[4]; 
-  sscanf(addrinfo.first.c_str(), "%d.%d.%d.%d",
+  unsigned int ipaddr[4]; 
+  sscanf(addrinfo.first.c_str(), "%u.%u.%u.%u",
 	 &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
   serverSocket->getAddrInfo(addrinfo);
   std::string request = "PORT "+
-    Util::itos(ipaddr[0])+","+Util::itos(ipaddr[1])+","+
-    Util::itos(ipaddr[2])+","+Util::itos(ipaddr[3])+","+
-    Util::itos(addrinfo.second/256)+","+Util::itos(addrinfo.second%256)+"\r\n";
+    Util::uitos(ipaddr[0])+","+Util::uitos(ipaddr[1])+","+
+    Util::uitos(ipaddr[2])+","+Util::uitos(ipaddr[3])+","+
+    Util::uitos(addrinfo.second/256)+","+Util::uitos(addrinfo.second%256)+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
   return serverSocket;
@@ -140,23 +140,23 @@ void FtpConnection::sendRetr() const
   socket->writeData(request);
 }
 
-int32_t FtpConnection::getStatus(const std::string& response) const
+unsigned int FtpConnection::getStatus(const std::string& response) const
 {
-  int32_t status;
-  // When the response is not like "%d %*s",
+  unsigned int status;
+  // When the response is not like "%u %*s",
   // we return 0.
   if(response.find_first_not_of("0123456789") != 3
      || !(response.find(" ") == 3 || response.find("-") == 3)) {
     return 0;
   }
-  if(sscanf(response.c_str(), "%d %*s", &status) == 1) {
+  if(sscanf(response.c_str(), "%u %*s", &status) == 1) {
     return status;
   } else {
     return 0;
   }
 }
 
-bool FtpConnection::isEndOfResponse(int32_t status, const std::string& response) const
+bool FtpConnection::isEndOfResponse(unsigned int status, const std::string& response) const
 {
   if(response.size() <= 4) {
     return false;
@@ -165,7 +165,7 @@ bool FtpConnection::isEndOfResponse(int32_t status, const std::string& response)
   if(response.at(3) == '-') {
     // multi line response
     std::string::size_type p;
-    p = response.find("\r\n"+Util::itos(status)+" ");
+    p = response.find("\r\n"+Util::uitos(status)+" ");
     if(p == std::string::npos) {
       return false;
     }
@@ -177,11 +177,11 @@ bool FtpConnection::isEndOfResponse(int32_t status, const std::string& response)
   }
 }
 
-bool FtpConnection::bulkReceiveResponse(std::pair<int32_t, std::string>& response)
+bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& response)
 {
   char buf[1024];  
   while(socket->isReadable(0)) {
-    int32_t size = sizeof(buf)-1;
+    size_t size = sizeof(buf)-1;
     socket->readData(buf, size);
     if(size == 0) {
       throw new DlRetryEx(EX_GOT_EOF);
@@ -189,7 +189,7 @@ bool FtpConnection::bulkReceiveResponse(std::pair<int32_t, std::string>& respons
     buf[size] = '\0';
     strbuf += buf;
   }
-  int32_t status;
+  unsigned int status;
   if(strbuf.size() >= 4) {
     status = getStatus(strbuf);
     if(status == 0) {
@@ -210,9 +210,9 @@ bool FtpConnection::bulkReceiveResponse(std::pair<int32_t, std::string>& respons
   }
 }
 
-int32_t FtpConnection::receiveResponse()
+unsigned int FtpConnection::receiveResponse()
 {
-  std::pair<int32_t, std::string> response;
+  std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     return response.first;
   } else {
@@ -232,12 +232,12 @@ int32_t FtpConnection::receiveResponse()
 # define ULONGLONG_SCANF "%Lu"
 #endif // __MINGW32__
 
-int32_t FtpConnection::receiveSizeResponse(int64_t& size)
+unsigned int FtpConnection::receiveSizeResponse(uint64_t& size)
 {
-  std::pair<int32_t, std::string> response;
+  std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 213) {
-      sscanf(response.second.c_str(), "%*d " LONGLONG_SCANF, &size);
+      sscanf(response.second.c_str(), "%*u " LONGLONG_SCANF, &size);
     }
     return response.first;
   } else {
@@ -245,20 +245,20 @@ int32_t FtpConnection::receiveSizeResponse(int64_t& size)
   }
 }
 
-int32_t FtpConnection::receivePasvResponse(std::pair<std::string, int32_t>& dest)
+unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>& dest)
 {
-  std::pair<int32_t, std::string> response;
+  std::pair<unsigned int, std::string> response;
   if(bulkReceiveResponse(response)) {
     if(response.first == 227) {
       // we assume the format of response is "227 Entering Passive Mode (h1,h2,h3,h4,p1,p2)."
-      int32_t h1, h2, h3, h4, p1, p2;
+      unsigned int h1, h2, h3, h4, p1, p2;
       std::string::size_type p = response.second.find("(");
       if(p >= 4) {
 	sscanf(response.second.substr(response.second.find("(")).c_str(),
-	       "(%d,%d,%d,%d,%d,%d).",
+	       "(%u,%u,%u,%u,%u,%u).",
 	       &h1, &h2, &h3, &h4, &p1, &p2);
 	// ip address
-	dest.first = Util::itos(h1)+"."+Util::itos(h2)+"."+Util::itos(h3)+"."+Util::itos(h4);
+	dest.first = Util::uitos(h1)+"."+Util::uitos(h2)+"."+Util::uitos(h3)+"."+Util::uitos(h4);
 	// port number
 	dest.second = 256*p1+p2;
       } else {

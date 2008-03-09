@@ -206,22 +206,22 @@ void AnnounceListTest::testCountStoppedAllowedTier() {
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
   AnnounceList announceList(announces);
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::HALTED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countStoppedAllowedTier());
 
   announceList.setEvent(AnnounceTier::DOWNLOADING);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::STOPPED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::COMPLETED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, announceList.countStoppedAllowedTier());
   announceList.setEvent(AnnounceTier::SEEDING);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, announceList.countStoppedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, announceList.countStoppedAllowedTier());
 
 }
 
@@ -233,22 +233,22 @@ void AnnounceListTest::testCountCompletedAllowedTier() {
   // [ [ tracker1 ], [ tracker2 ], [ tracker3 ] ]
   AnnounceList announceList(announces);
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::STOPPED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::SEEDING);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::HALTED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, announceList.countCompletedAllowedTier());
 
   announceList.setEvent(AnnounceTier::DOWNLOADING);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, announceList.countCompletedAllowedTier());
   announceList.setEvent(AnnounceTier::COMPLETED);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, announceList.countCompletedAllowedTier());
+  CPPUNIT_ASSERT_EQUAL((size_t)1, announceList.countCompletedAllowedTier());
 
 }
 

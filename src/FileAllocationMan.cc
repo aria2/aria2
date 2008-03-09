@@ -77,7 +77,7 @@ void FileAllocationMan::pushFileAllocationEntry(const FileAllocationEntryHandle&
   _fileAllocationEntries.push_back(entry);
 }
 
-int32_t FileAllocationMan::countFileAllocationEntryInQueue() const
+size_t FileAllocationMan::countFileAllocationEntryInQueue() const
 {
   return _fileAllocationEntries.size();
 }

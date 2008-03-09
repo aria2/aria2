@@ -58,8 +58,8 @@ void MessageDigestHelper::staticSHA1DigestFree()
 }
 
 std::string MessageDigestHelper::staticSHA1Digest(const BinaryStreamHandle& bs,
-						  int64_t offset,
-						  int64_t length)
+						  off_t offset,
+						  uint64_t length)
 {
   _sha1Ctx->digestReset();
   return digest(_sha1Ctx, bs, offset, length);
@@ -67,8 +67,8 @@ std::string MessageDigestHelper::staticSHA1Digest(const BinaryStreamHandle& bs,
 
 std::string MessageDigestHelper::digest(const std::string& algo,
 					const BinaryStreamHandle& bs,
-					int64_t offset,
-					int64_t length)
+					off_t offset,
+					uint64_t length)
 {
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);
@@ -78,23 +78,24 @@ std::string MessageDigestHelper::digest(const std::string& algo,
 
 std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
 					const SharedHandle<BinaryStream>& bs,
-					int64_t offset, int64_t length)
+					off_t offset, uint64_t length)
 {
-  int32_t BUFSIZE = 4096;
+  size_t BUFSIZE = 4096;
   unsigned char BUF[BUFSIZE];
-  int64_t iteration = length/BUFSIZE;
-  int32_t tail = length%BUFSIZE;
-  for(int64_t i = 0; i < iteration; ++i) {
-    int32_t readLength = bs->readData(BUF, BUFSIZE, offset);
-    if(readLength != BUFSIZE) {
+  lldiv_t res = lldiv(length, BUFSIZE);
+  uint64_t iteration = res.quot;
+  size_t tail = res.rem;
+  for(uint64_t i = 0; i < iteration; ++i) {
+    ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
+    if((size_t)readLength != BUFSIZE) {
       throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
     }
     ctx->digestUpdate(BUF, readLength);
     offset += readLength;
   }
   if(tail) {
-    int32_t readLength = bs->readData(BUF, tail, offset);
-    if(readLength != tail) {
+    ssize_t readLength = bs->readData(BUF, tail, offset);
+    if((size_t)readLength != tail) {
       throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
     }
     ctx->digestUpdate(BUF, readLength);
@@ -110,7 +111,7 @@ std::string MessageDigestHelper::digest(const std::string& algo, const std::stri
   return digest(algo, writer, 0, writer->size());
 }
 
-std::string MessageDigestHelper::digest(const std::string& algo, const void* data, int32_t length)
+std::string MessageDigestHelper::digest(const std::string& algo, const void* data, size_t length)
 {
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);
@@ -120,8 +121,8 @@ std::string MessageDigestHelper::digest(const std::string& algo, const void* dat
   return Util::toHex((const unsigned char*)rawMD.c_str(), rawMD.size());
 }
 
-void MessageDigestHelper::digest(unsigned char* md, int32_t mdLength,
-				 const std::string& algo, const void* data, int32_t length)
+void MessageDigestHelper::digest(unsigned char* md, size_t mdLength,
+				 const std::string& algo, const void* data, size_t length)
 {
   if(mdLength < MessageDigestContext::digestLength(algo)) {
     throw new DlAbortEx("Insufficient space for storing message digest: %d required, but only %d is allocated", MessageDigestContext::digestLength(algo), mdLength);

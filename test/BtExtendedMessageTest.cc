@@ -73,7 +73,7 @@ void BtExtendedMessageTest::testCreate() {
   SharedHandle<BtExtendedMessage> pm = BtExtendedMessage::create(ctx,
 								 peer,
 								 &msg[4], 13);
-  CPPUNIT_ASSERT_EQUAL((int8_t)20, pm->getId());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)20, pm->getId());
   
   // case: payload size is wrong
   try {

@@ -51,14 +51,14 @@ void SimpleBtMessage::send() {
   }
   if(sendPredicate() || sendingInProgress) {
     const unsigned char* msg = getMessage();
-    int32_t msgLength = getMessageLength();
+    size_t msgLength = getMessageLength();
     if(!sendingInProgress) {
       logger->info(MSG_SEND_PEER_MESSAGE,
 		   cuid, peer->ipaddr.c_str(), peer->port, toString().c_str());
       leftDataLength = getMessageLength();
     }
     sendingInProgress = false;
-    int32_t writtenLength = peerConnection->sendMessage(msg+msgLength-leftDataLength, leftDataLength);
+    size_t writtenLength = peerConnection->sendMessage(msg+msgLength-leftDataLength, leftDataLength);
     if(writtenLength == leftDataLength) {
       onSendComplete();
     } else {

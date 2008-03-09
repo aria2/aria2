@@ -128,8 +128,8 @@ XML2SAXMetalinkProcessor::parseFile(const std::string& filename)
 {
   _stm = new MetalinkParserStateMachine();
   SharedHandle<SessionData> sessionData = new SessionData(_stm);
-  int32_t retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
-				       filename.c_str());
+  int retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
+				   filename.c_str());
   if(retval != 0) {
     throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
   }
@@ -140,10 +140,10 @@ SharedHandle<Metalinker>
 XML2SAXMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
   _stm = new MetalinkParserStateMachine();
-  int32_t bufSize = 4096;
+  size_t bufSize = 4096;
   unsigned char buf[bufSize];
 
-  int32_t res = binaryStream->readData(buf, 4, 0);
+  ssize_t res = binaryStream->readData(buf, 4, 0);
   if(res != 4) {
     throw new DlAbortEx("Too small data for parsing XML.");
   }
@@ -151,9 +151,9 @@ XML2SAXMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>
   SharedHandle<SessionData> sessionData = new SessionData(_stm);
   xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt(&mySAXHandler, sessionData.get(), (const char*)buf, res, 0);
   try {
-    int64_t readOffset = res;
+    off_t readOffset = res;
     while(1) {
-      int32_t res = binaryStream->readData(buf, bufSize, readOffset);
+      ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
       if(res == 0) {
 	break;
       }

@@ -56,8 +56,8 @@ void MetalinkParserControllerTest::testEntryTransaction()
     CPPUNIT_ASSERT_EQUAL((size_t)1, m->entries.size());
     SharedHandle<MetalinkEntry> e = m->entries.front();
     CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), e->file->getPath());
-    CPPUNIT_ASSERT_EQUAL((int64_t)1024*1024, e->file->getLength());
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, e->file->getOffset());
+    CPPUNIT_ASSERT_EQUAL(1024*1024ULL, e->file->getLength());
+    CPPUNIT_ASSERT_EQUAL((off_t)0, e->file->getOffset());
     CPPUNIT_ASSERT_EQUAL(std::string("1.0"), e->version);
     CPPUNIT_ASSERT_EQUAL(std::string("ja_JP"), e->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux"), e->os);
@@ -134,8 +134,8 @@ void MetalinkParserControllerTest::testChunkChecksumTransaction()
     SharedHandle<Metalinker> m = ctrl.getResult();
     SharedHandle<ChunkChecksum> md = m->entries.front()->chunkChecksum;
     CPPUNIT_ASSERT_EQUAL(std::string("md5"), md->getAlgo());
-    CPPUNIT_ASSERT_EQUAL(256*1024, md->getChecksumLength());
-    CPPUNIT_ASSERT_EQUAL(5, md->countChecksum());
+    CPPUNIT_ASSERT_EQUAL((size_t)256*1024, md->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)5, md->countChecksum());
     CPPUNIT_ASSERT_EQUAL(std::string("hash1"), md->getChecksums()[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("hash2"), md->getChecksums()[1]);
     CPPUNIT_ASSERT_EQUAL(std::string("hash3"), md->getChecksums()[2]);

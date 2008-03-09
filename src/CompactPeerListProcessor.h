@@ -39,11 +39,8 @@
 namespace aria2 {
 
 class CompactPeerListProcessor : public PeerListProcessor {
-private:
-  int32_t pieceLength;
-  int64_t totalLength;
 public:
-  CompactPeerListProcessor(int32_t pieceLength, int64_t totalLength);
+  CompactPeerListProcessor();
 
   virtual ~CompactPeerListProcessor();
 

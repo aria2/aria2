@@ -42,11 +42,11 @@ namespace aria2 {
 
 class TransferStat {
 public:
-  int32_t downloadSpeed;
-  int32_t uploadSpeed;
-  int64_t sessionDownloadLength;
-  int64_t sessionUploadLength;
-  int64_t allTimeUploadLength;
+  unsigned int downloadSpeed;
+  unsigned int uploadSpeed;
+  uint64_t sessionDownloadLength;
+  uint64_t sessionUploadLength;
+  uint64_t allTimeUploadLength;
 
   void copy(const TransferStat& stat)
   {
@@ -76,44 +76,44 @@ public:
 
   friend TransferStat operator+(const TransferStat& a, const TransferStat& b);
 
-  int32_t getDownloadSpeed() const {
+  unsigned int getDownloadSpeed() const {
     return downloadSpeed;
   }
 
-  void setDownloadSpeed(int32_t s) { downloadSpeed = s; }
+  void setDownloadSpeed(unsigned int s) { downloadSpeed = s; }
 
-  int32_t getUploadSpeed() const {
+  unsigned int getUploadSpeed() const {
     return uploadSpeed;
   }
 
-  void setUploadSpeed(int32_t s) { uploadSpeed = s; }
+  void setUploadSpeed(unsigned int s) { uploadSpeed = s; }
 
   /**
    * Returns the number of bytes downloaded since the program started.
    * This is not the total number of bytes downloaded.
    */
-  int64_t getSessionDownloadLength() const {
+  uint64_t getSessionDownloadLength() const {
     return sessionDownloadLength;
   }
 
-  void setSessionDownloadLength(int64_t s) { sessionDownloadLength = s; }
+  void setSessionDownloadLength(uint64_t s) { sessionDownloadLength = s; }
 
   /**
    * Returns the number of bytes uploaded since the program started.
    * This is not the total number of bytes uploaded.
    */
-  int64_t getSessionUploadLength() const {
+  uint64_t getSessionUploadLength() const {
     return sessionUploadLength;
   }
 
-  void setSessionUploadLength(int64_t s) { sessionUploadLength = s; }
+  void setSessionUploadLength(uint64_t s) { sessionUploadLength = s; }
 
-  void setAllTimeUploadLength(int64_t s)
+  void setAllTimeUploadLength(uint64_t s)
   {
     allTimeUploadLength = s;
   }
 
-  int64_t getAllTimeUploadLength() const
+  uint64_t getAllTimeUploadLength() const
   {
     return allTimeUploadLength;
   }

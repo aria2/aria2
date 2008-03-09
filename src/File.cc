@@ -51,7 +51,7 @@ File::File(const std::string& name):name(name) {}
 
 File::~File() {}
 
-int32_t File::fillStat(struct stat& fstat) {
+int File::fillStat(struct stat& fstat) {
   return stat(name.c_str(), &fstat);
 }
 
@@ -86,7 +86,7 @@ bool File::remove() {
   }
 }
 
-int64_t File::size() {
+uint64_t File::size() {
   struct stat fstat;
   if(fillStat(fstat) < 0) {
     return 0;

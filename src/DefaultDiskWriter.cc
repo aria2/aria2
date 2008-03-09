@@ -41,7 +41,7 @@ DefaultDiskWriter::DefaultDiskWriter():AbstractDiskWriter() {}
 DefaultDiskWriter::~DefaultDiskWriter() {}
 
 void DefaultDiskWriter::initAndOpenFile(const std::string& filename,
-					int64_t totalLength)
+					uint64_t totalLength)
 {
   createFile(filename);
 }

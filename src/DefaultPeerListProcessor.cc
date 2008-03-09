@@ -40,9 +40,7 @@
 
 namespace aria2 {
 
-DefaultPeerListProcessor::DefaultPeerListProcessor(int32_t pieceLength, int64_t totalLength):
-  pieceLength(pieceLength),
-  totalLength(totalLength) {}
+DefaultPeerListProcessor::DefaultPeerListProcessor() {}
 
 DefaultPeerListProcessor::~DefaultPeerListProcessor() {}
 

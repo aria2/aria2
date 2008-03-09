@@ -53,12 +53,12 @@ FileAllocationEntry:: ~FileAllocationEntry()
   _requestGroup->getPieceStorage()->getDiskAdaptor()->disableDirectIO();
 }
 
-int64_t FileAllocationEntry::getCurrentLength()
+off_t FileAllocationEntry::getCurrentLength()
 {
   return _fileAllocationIterator->getCurrentLength();
 }
 
-int64_t FileAllocationEntry::getTotalLength()
+uint64_t FileAllocationEntry::getTotalLength()
 {
   return _fileAllocationIterator->getTotalLength();
 }

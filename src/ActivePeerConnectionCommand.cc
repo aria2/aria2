@@ -53,7 +53,7 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
 							 RequestGroup* requestGroup,
 							 DownloadEngine* e,
 							 const BtContextHandle& btContext,
-							 int32_t interval)
+							 time_t interval)
   :Command(cuid),
    BtContextAwareCommand(btContext),
    RequestGroupAware(requestGroup),
@@ -62,7 +62,7 @@ ActivePeerConnectionCommand::ActivePeerConnectionCommand(int cuid,
    _thresholdSpeed(SLOW_SPEED_THRESHOLD),
    _numNewConnection(5)
 {
-  int32_t maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
+  unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
   if(maxDownloadSpeed > 0) {
     _thresholdSpeed = std::min(maxDownloadSpeed, _thresholdSpeed);
   }

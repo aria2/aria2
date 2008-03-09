@@ -45,7 +45,7 @@ class NumberDecorator {
 public:
   virtual ~NumberDecorator() {}
 
-  virtual std::string decorate(int32_t number) = 0;
+  virtual std::string decorate(unsigned int number) = 0;
 };
 
 typedef SharedHandle<NumberDecorator> NumberDecoratorHandle;

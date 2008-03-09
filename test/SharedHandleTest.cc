@@ -35,23 +35,23 @@ void SharedHandleTest::testSharedHandle() {
   std::cerr << "xh:" << std::endl;
   SharedHandle<int> xh = new int(1);
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, xh.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, xh.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, xh.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, xh.getRefCount()->strongRefCount);
 
   std::cerr << "nullHandle:" << std::endl;
   SharedHandle<int> nullHandle = 0;
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, nullHandle.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, nullHandle.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, nullHandle.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, nullHandle.getRefCount()->strongRefCount);
 
   std::cerr << "staticHandle:" << std::endl;
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, staticHandle.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL((int32_t)1, staticHandle.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, staticHandle.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)1, staticHandle.getRefCount()->strongRefCount);
 
   SharedHandle<int> localStaticHandle = getInstance();
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, localStaticHandle.getRefCount()->totalRefCount);
-  CPPUNIT_ASSERT_EQUAL((int32_t)2, localStaticHandle.getRefCount()->strongRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)2, localStaticHandle.getRefCount()->totalRefCount);
+  CPPUNIT_ASSERT_EQUAL((unsigned int)2, localStaticHandle.getRefCount()->strongRefCount);
 }
 
 } // namespace aria2

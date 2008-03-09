@@ -45,7 +45,7 @@ class FileAllocationIterator;
 class AbstractSingleDiskAdaptor : public DiskAdaptor {
 protected:
   SharedHandle<DiskWriter> diskWriter;
-  int64_t totalLength;
+  uint64_t totalLength;
 public:
   AbstractSingleDiskAdaptor();
 
@@ -59,16 +59,16 @@ public:
 
   virtual void openExistingFile();
 
-  virtual void writeData(const unsigned char* data, int32_t len,
-			 int64_t offset);
+  virtual void writeData(const unsigned char* data, size_t len,
+			 off_t offset);
 
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset);
 
   virtual bool fileExists();
 
-  virtual int64_t size() const;
+  virtual uint64_t size() const;
 
-  virtual void truncate(int64_t length);
+  virtual void truncate(uint64_t length);
   
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 
@@ -82,9 +82,9 @@ public:
 
   SharedHandle<DiskWriter> getDiskWriter() const;
 
-  void setTotalLength(const int64_t& totalLength);
+  void setTotalLength(const uint64_t& totalLength);
 
-  int64_t getTotalLength() const;
+  uint64_t getTotalLength() const;
 };
 
 } // namespace aria2

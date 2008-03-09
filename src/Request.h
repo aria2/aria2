@@ -74,10 +74,10 @@ private:
   std::string referer;
   std::string protocol;
   std::string host;
-  int32_t port;
+  uint16_t port;
   std::string dir;
   std::string file;
-  int32_t tryCount;
+  unsigned int tryCount;
   TRACKER_EVENT trackerEvent;
   bool keepAlive;
   std::string method;
@@ -108,7 +108,7 @@ public:
   bool resetUrl();
   void resetTryCount() { tryCount = 0; }
   void addTryCount() { tryCount++; }
-  int32_t getTryCount() const { return tryCount; }
+  unsigned int getTryCount() const { return tryCount; }
   //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
 
   std::string getUrl() const { return url; }
@@ -118,7 +118,7 @@ public:
   void setReferer(const std::string& url) { referer = previousUrl = url; }
   std::string getProtocol() const { return protocol; }
   std::string getHost() const { return host; }
-  int32_t getPort() const { return port; }
+  uint16_t getPort() const { return port; }
   std::string getDir() const { return dir; }
   std::string getFile() const { return file;}
   bool isKeepAlive() const { return keepAlive; }

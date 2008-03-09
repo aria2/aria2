@@ -45,7 +45,7 @@ HttpHeaderProcessor::HttpHeaderProcessor():_limit(4096) {}
 
 HttpHeaderProcessor::~HttpHeaderProcessor() {}
 
-void HttpHeaderProcessor::update(const unsigned char* data, int32_t length)
+void HttpHeaderProcessor::update(const unsigned char* data, size_t length)
 {
   checkHeaderLimit(length);
   strm.write(reinterpret_cast<const char*>(data), length);
@@ -57,10 +57,10 @@ void HttpHeaderProcessor::update(const std::string& data)
   strm << data;
 }
 
-void HttpHeaderProcessor::checkHeaderLimit(int32_t incomingLength)
+void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
 {
   strm.seekg(0, std::ios::end);
-  if((int32_t)strm.tellg()+incomingLength > _limit) {
+  if((size_t)strm.tellg()+incomingLength > _limit) {
     throw new DlAbortEx("Too large http header");
   }
 }
@@ -75,7 +75,7 @@ bool HttpHeaderProcessor::eoh() const
   }
 }
 
-int32_t HttpHeaderProcessor::getPutBackDataLength() const
+size_t HttpHeaderProcessor::getPutBackDataLength() const
 {
   std::string str = strm.str();
   std::string::size_type delimpos = std::string::npos;

@@ -49,14 +49,14 @@ class SocketCore;
 class PeerAbstractCommand : public Command {
 private:
   Time checkPoint;
-  int32_t timeout;
+  time_t timeout;
 protected:
   DownloadEngine* e;
   SharedHandle<SocketCore> socket;
   SharedHandle<Peer> peer;
 
-  void setTimeout(int32_t timeout) { this->timeout = timeout; }
-  virtual bool prepareForNextPeer(int32_t wait);
+  void setTimeout(time_t timeout) { this->timeout = timeout; }
+  virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort(Exception* ex) {};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
@@ -64,7 +64,7 @@ protected:
   void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
-  void setUploadLimit(int32_t uploadLimit);
+  void setUploadLimit(unsigned int uploadLimit);
   void setUploadLimitCheck(bool check);
   void setNoCheck(bool check);
   void updateKeepAlive();
@@ -74,7 +74,7 @@ private:
   SharedHandle<SocketCore> readCheckTarget;
   SharedHandle<SocketCore> writeCheckTarget;
   bool uploadLimitCheck;
-  int32_t uploadLimit;
+  unsigned int uploadLimit;
   bool noCheck;
 public:
   PeerAbstractCommand(int32_t cuid,

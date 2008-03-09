@@ -61,7 +61,7 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 	location = Util::toUpper((*itr).second);
       }
     }
-    int32_t preference;
+    int preference;
     {
       std::map<std::string, std::string>::const_iterator itr = attrs.find("preference");
       if(itr == attrs.end()) {
@@ -75,7 +75,7 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 	}
       }
     }
-    int32_t maxConnections;
+    int maxConnections;
     {
       std::map<std::string, std::string>::const_iterator itr = attrs.find("maxconnections");
       if(itr == attrs.end()) {

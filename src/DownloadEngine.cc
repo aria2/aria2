@@ -111,8 +111,8 @@ void DownloadEngine::cleanQueue() {
 
 void DownloadEngine::executeCommand(Command::STATUS statusFilter)
 {
-  int32_t max = commands.size();
-  for(int32_t i = 0; i < max; i++) {
+  size_t max = commands.size();
+  for(size_t i = 0; i < max; i++) {
     Command* com = commands.front();
     commands.pop_front();
     if(com->statusMatch(statusFilter)) {
@@ -160,7 +160,6 @@ void DownloadEngine::shortSleep() const {
 void DownloadEngine::waitData() {
   fd_set rfds;
   fd_set wfds;
-  int32_t retval = 0;
   struct timeval tv;
   
   memcpy(&rfds, &rfdset, sizeof(fd_set));
@@ -170,7 +169,7 @@ void DownloadEngine::waitData() {
   for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
       itr != nameResolverEntries.end(); ++itr) {
     NameResolverEntry& entry = *itr;
-    int32_t fd = entry.nameResolver->getFds(&rfds, &wfds);
+    int fd = entry.nameResolver->getFds(&rfds, &wfds);
     // TODO force error if fd == 0
     if(fdmax < fd) {
       fdmax = fd;
@@ -180,7 +179,7 @@ void DownloadEngine::waitData() {
 
   tv.tv_sec = noWait ? 0 : 1;
   tv.tv_usec = 0;
-  retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
+  int retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
   if(retval > 0) {
     for(SocketEntries::iterator itr = socketEntries.begin();
 	itr != socketEntries.end(); ++itr) {
@@ -215,7 +214,7 @@ void DownloadEngine::updateFdSet() {
   for(SocketEntries::iterator itr = socketEntries.begin();
       itr != socketEntries.end(); ++itr) {
     SocketEntry& entry = *itr;
-    int32_t fd = entry.socket->getSockfd();
+    int fd = entry.socket->getSockfd();
     switch(entry.type) {
     case SocketEntry::TYPE_RD:
       FD_SET(fd, &rfdset);

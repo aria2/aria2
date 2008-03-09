@@ -40,11 +40,11 @@
 
 namespace aria2 {
 
-BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* data, int32_t dataLength) {
+BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 5) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "suggest piece", dataLength, 5);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "suggest piece", ID);
   }
@@ -53,7 +53,7 @@ BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* d
   return message;
 }
 
-int32_t BtSuggestPieceMessage::MESSAGE_LENGTH = 9;
+size_t BtSuggestPieceMessage::MESSAGE_LENGTH = 9;
 
 const unsigned char* BtSuggestPieceMessage::getMessage() {
   if(!msg) {
@@ -70,7 +70,7 @@ const unsigned char* BtSuggestPieceMessage::getMessage() {
   return msg;
 }
 
-int32_t BtSuggestPieceMessage::getMessageLength() {
+size_t BtSuggestPieceMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

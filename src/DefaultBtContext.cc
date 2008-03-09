@@ -101,8 +101,8 @@ void DefaultBtContext::clear() {
 void DefaultBtContext::extractPieceHash(const unsigned char* hashData,
 					size_t hashDataLength,
 					size_t hashLength) {
-  int32_t numPieces = hashDataLength/hashLength;
-  for(int32_t i = 0; i < numPieces; i++) {
+  size_t numPieces = hashDataLength/hashLength;
+  for(size_t i = 0; i < numPieces; i++) {
     pieceHashes.push_back(Util::toHex(&hashData[i*hashLength],
 				      hashLength));
   }

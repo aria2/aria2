@@ -42,7 +42,7 @@ namespace aria2 {
 #define BUFSIZE (256*1024)
 #define ALIGNMENT 512
 
-SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, int64_t offset, int64_t totalLength):_stream(stream), _offset(offset), _totalLength(totalLength), _buffer(0)
+SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream, off_t offset, uint64_t totalLength):_stream(stream), _offset(offset), _totalLength(totalLength), _buffer(0)
 {
   if(_offset%ALIGNMENT != 0) {
     _stream->disableDirectIO();
@@ -69,7 +69,7 @@ void SingleFileAllocationIterator::allocateChunk()
   _stream->writeData(_buffer, BUFSIZE, _offset);
   _offset += BUFSIZE;
 
-  if(_totalLength < _offset) {
+  if(_totalLength < (uint64_t)_offset) {
     _stream->truncate(_totalLength);
     _offset = _totalLength;
   }
@@ -77,7 +77,7 @@ void SingleFileAllocationIterator::allocateChunk()
 
 bool SingleFileAllocationIterator::finished()
 {
-  return _offset >= _totalLength;
+  return (uint64_t)_offset >= _totalLength;
 }
 
 } // namespace aria2

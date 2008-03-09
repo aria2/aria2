@@ -40,11 +40,11 @@
 
 namespace aria2 {
 
-BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char* data, int32_t dataLength) {
+BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "not interested", dataLength, 1);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "not interested", ID);
   }
@@ -60,7 +60,7 @@ bool BtNotInterestedMessage::sendPredicate() const {
   return peer->amInterested();
 }
 
-int32_t BtNotInterestedMessage::MESSAGE_LENGTH = 5;
+size_t BtNotInterestedMessage::MESSAGE_LENGTH = 5;
 
 const unsigned char* BtNotInterestedMessage::getMessage() {
   if(!msg) {
@@ -75,7 +75,7 @@ const unsigned char* BtNotInterestedMessage::getMessage() {
   return msg;
 }
 
-int32_t BtNotInterestedMessage::getMessageLength() {
+size_t BtNotInterestedMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

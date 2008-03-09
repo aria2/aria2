@@ -40,85 +40,86 @@
 
 namespace aria2 {
 
-int8_t PeerMessageUtil::getId(const unsigned char* msg) {
+uint8_t PeerMessageUtil::getId(const unsigned char* msg) {
   return msg[0];
 }
 
-int32_t PeerMessageUtil::getIntParam(const unsigned char* msg, int32_t offset) {
-  int32_t nParam;
-  memcpy(&nParam, msg+offset, sizeof(int32_t));
+uint32_t PeerMessageUtil::getIntParam(const unsigned char* msg, size_t pos)
+{
+  uint32_t nParam;
+  memcpy(&nParam, msg+pos, sizeof(nParam));
   return ntohl(nParam);
 }
 
-int16_t PeerMessageUtil::getShortIntParam(const unsigned char* msg, int32_t offset) {
-  int16_t nParam;
-  memcpy(&nParam, msg+offset, sizeof(int16_t));
+uint16_t PeerMessageUtil::getShortIntParam(const unsigned char* msg, size_t pos) {
+  uint16_t nParam;
+  memcpy(&nParam, msg+pos, sizeof(nParam));
   return ntohs(nParam);
 }
 
-void PeerMessageUtil::checkIndex(int32_t index, int32_t pieces) {
-  if(!(0 <= index && index < (int32_t)pieces)) {
-    throw new DlAbortEx("Invalid index: %d", index);
+void PeerMessageUtil::checkIndex(size_t index, size_t pieces) {
+  if(!(index < pieces)) {
+    throw new DlAbortEx("Invalid index: %zu", index);
   }
 }
 
-void PeerMessageUtil::checkBegin(int32_t begin, int32_t pieceLength) {
-  if(!(0 <= begin && begin < (int32_t)pieceLength)) {
-    throw new DlAbortEx("Invalid begin: %d", begin);
+void PeerMessageUtil::checkBegin(uint32_t begin, size_t pieceLength) {
+  if(!(begin < pieceLength)) {
+    throw new DlAbortEx("Invalid begin: %u", begin);
   }  
 }
 
-void PeerMessageUtil::checkLength(int32_t length) {
+void PeerMessageUtil::checkLength(size_t length) {
   if(length > MAX_BLOCK_LENGTH) {
-    throw new DlAbortEx("Length too long: %d > %dKB", length,
+    throw new DlAbortEx("Length too long: %zu > %uKB", length,
 			MAX_BLOCK_LENGTH/1024);
   }
-  if(length <= 0) {
-    throw new DlAbortEx("Invalid length: %d", length);
+  if(length == 0) {
+    throw new DlAbortEx("Invalid length: %zu", length);
   }
 }
 
-void PeerMessageUtil::checkRange(int32_t begin, int32_t length, int32_t pieceLength) {
-  if(!(0 <= begin && 0 < length)) {
-    throw new DlAbortEx("Invalid range: begin=%d, length=%d",
+void PeerMessageUtil::checkRange(uint32_t begin, size_t length, size_t pieceLength) {
+  if(!(0 < length)) {
+    throw new DlAbortEx("Invalid range: begin=%u, length=%zu",
 			begin, length);
   }
-  int32_t end = begin+length;
-  if(!(0 < end && end <= pieceLength)) {
-    throw new DlAbortEx("Invalid range: begin=%d, length=%d",
+  uint32_t end = begin+length;
+  if(!(end <= pieceLength)) {
+    throw new DlAbortEx("Invalid range: begin=%u, length=%zu",
 			begin, length);
   }
 }
 
 void PeerMessageUtil::checkBitfield(const unsigned char* bitfield,
-				    int32_t bitfieldLength,
-				    int32_t pieces) {
+				    size_t bitfieldLength,
+				    size_t pieces) {
   if(!(bitfieldLength == (pieces+7)/8)) {
-    throw new DlAbortEx("Invalid bitfield length: %d",
+    throw new DlAbortEx("Invalid bitfield length: %zu",
 			bitfieldLength);
   }
   char lastbyte = bitfield[bitfieldLength-1];
-  for(int32_t i = 0; i < 8-pieces%8 && pieces%8 != 0; ++i) {
+  for(size_t i = 0; i < 8-pieces%8 && pieces%8 != 0; ++i) {
     if(!(((lastbyte >> i) & 1) == 0)) {
       throw new DlAbortEx("Invalid bitfield");
     }
   }
 }
 
-void PeerMessageUtil::setIntParam(unsigned char* dest, int32_t param) {
-  int32_t nParam = htonl(param);
-  memcpy(dest, &nParam, sizeof(int32_t));
+void PeerMessageUtil::setIntParam(unsigned char* dest, uint32_t param) {
+  uint32_t nParam = htonl(param);
+  memcpy(dest, &nParam, sizeof(nParam));
 }
 
-void PeerMessageUtil::setShortIntParam(unsigned char* dest, int16_t param) {
-  int16_t nParam = htons(param);
-  memcpy(dest, &nParam, sizeof(int16_t));
+void PeerMessageUtil::setShortIntParam(unsigned char* dest, uint16_t param) {
+  uint16_t nParam = htons(param);
+  memcpy(dest, &nParam, sizeof(nParam));
 }
 
 void PeerMessageUtil::createPeerMessageString(unsigned char* msg,
-					      int32_t msgLength,
-					      int32_t payloadLength,
-					      int8_t messageId) {
+					      size_t msgLength,
+					      size_t payloadLength,
+					      uint8_t messageId) {
   assert(msgLength >= 5);
   memset(msg, 0, msgLength);
   setIntParam(msg, payloadLength);

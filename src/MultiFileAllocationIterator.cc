@@ -79,7 +79,7 @@ bool MultiFileAllocationIterator::finished()
   return _entries.empty() && (_fileAllocationIterator.isNull() || _fileAllocationIterator->finished());
 }
 
-int64_t MultiFileAllocationIterator::getCurrentLength()
+off_t MultiFileAllocationIterator::getCurrentLength()
 {
   if(_fileAllocationIterator.isNull()) {
     return 0;
@@ -88,7 +88,7 @@ int64_t MultiFileAllocationIterator::getCurrentLength()
   }
 }
 
-int64_t MultiFileAllocationIterator::getTotalLength()
+uint64_t MultiFileAllocationIterator::getTotalLength()
 {
   if(_fileAllocationIterator.isNull()) {
     return 0;
@@ -102,7 +102,7 @@ const DiskWriterEntries& MultiFileAllocationIterator::getDiskWriterEntries() con
   return _entries;
 }
 
-DiskWriterEntries MultiFileAllocationIterator::makeDiskWriterEntries(const DiskWriterEntries& srcEntries, int32_t pieceLength) const
+DiskWriterEntries MultiFileAllocationIterator::makeDiskWriterEntries(const DiskWriterEntries& srcEntries, size_t pieceLength) const
 {
   if(pieceLength == 0) {
     DiskWriterEntries entries;
@@ -122,9 +122,9 @@ DiskWriterEntries MultiFileAllocationIterator::makeDiskWriterEntries(const DiskW
     if(!fileEntry->isRequested()) {
       continue;
     }
-    int64_t pieceStartOffset = (fileEntry->getOffset()/pieceLength)*pieceLength;
+    off_t pieceStartOffset = (fileEntry->getOffset()/pieceLength)*pieceLength;
     for(DiskWriterEntries::const_iterator i = itr-1; i != done; --i) {
-      if(pieceStartOffset < (*i)->getFileEntry()->getOffset()+(*i)->getFileEntry()->getLength()) {
+      if((uint64_t)pieceStartOffset < (*i)->getFileEntry()->getOffset()+(*i)->getFileEntry()->getLength()) {
 	entries.push_back(*i);
       } else {
 	break;

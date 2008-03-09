@@ -50,7 +50,7 @@ private:
 		const char* msg, va_list ap,
 		Exception* e = 0, bool printHeader = true) const;
   FILE* file;
-  int32_t stdoutField;
+  int stdoutField;
 public:
   SimpleLogger(FILE* logfile = 0);
   ~SimpleLogger();

@@ -56,7 +56,7 @@ private:
   std::deque<SharedHandle<RequestGroup> > _reservedGroups;
   std::deque<SharedHandle<DownloadResult> > _downloadResults;
   const Logger* _logger;
-  int32_t _maxSimultaneousDownloads;
+  unsigned int _maxSimultaneousDownloads;
   int32_t _gidCounter;
 
   std::string
@@ -65,7 +65,7 @@ private:
 
 public:
   RequestGroupMan(const std::deque<SharedHandle<RequestGroup> >& requestGroups,
-		  int32_t maxSimultaneousDownloads = 1);
+		  unsigned int maxSimultaneousDownloads = 1);
 
   bool downloadFinished();
 
@@ -89,9 +89,9 @@ public:
 
   void addReservedGroup(const SharedHandle<RequestGroup>& group);
 
-  int32_t countRequestGroup() const;
+  size_t countRequestGroup() const;
 		  
-  SharedHandle<RequestGroup> getRequestGroup(int32_t index) const;
+  SharedHandle<RequestGroup> getRequestGroup(size_t index) const;
 		  
   void showDownloadResults(std::ostream& o) const;
 

@@ -44,13 +44,13 @@ namespace aria2 {
 class RequestSlot {
 private:
   Time dispatchedTime;
-  int32_t index;
-  int32_t begin;
-  int32_t length;
-  int32_t blockIndex;
+  size_t index;
+  uint32_t begin;
+  size_t length;
+  size_t blockIndex;
   void copy(const RequestSlot& requestSlot);
 public:
-  RequestSlot(int32_t index, int32_t begin, int32_t length, int32_t blockIndex);
+  RequestSlot(size_t index, uint32_t begin, size_t length, size_t blockIndex);
   RequestSlot(const RequestSlot& requestSlot);
 
   ~RequestSlot() {}
@@ -63,19 +63,19 @@ public:
   void setDispatchedTime(time_t secFromEpoch);
 
   bool isTimeout(time_t timeoutSec) const;
-  int32_t getLatencyInMillis() const;
+  unsigned int getLatencyInMillis() const;
 
-  int32_t getIndex() const { return index; }
-  void setIndex(int32_t index) { this->index = index; }
+  size_t getIndex() const { return index; }
+  void setIndex(size_t index) { this->index = index; }
 
-  int32_t getBegin() const { return begin; }
-  void setBegin(int32_t begin) { this->begin = begin; }
+  uint32_t getBegin() const { return begin; }
+  void setBegin(uint32_t begin) { this->begin = begin; }
 
-  int32_t getLength() const { return length; }
-  void setLength(int32_t length) { this->length = length; }
+  size_t getLength() const { return length; }
+  void setLength(size_t length) { this->length = length; }
 
-  int32_t getBlockIndex() const { return blockIndex; }
-  void setBlockIndex(int32_t blockIndex) { this->blockIndex = blockIndex; }
+  size_t getBlockIndex() const { return blockIndex; }
+  void setBlockIndex(size_t blockIndex) { this->blockIndex = blockIndex; }
 
   static RequestSlot nullSlot;
 

@@ -128,11 +128,11 @@ std::string TrackerWatcherCommand::getTrackerResponse(const RequestGroupHandle& 
   unsigned char data[2048];
   requestGroup->getPieceStorage()->getDiskAdaptor()->openFile();
   while(1) {
-    int32_t dataLength = requestGroup->getPieceStorage()->getDiskAdaptor()->readData(data, sizeof(data), strm.tellp());
-    strm.write(reinterpret_cast<const char*>(data), dataLength);
+    ssize_t dataLength = requestGroup->getPieceStorage()->getDiskAdaptor()->readData(data, sizeof(data), strm.tellp());
     if(dataLength == 0) {
       break;
     }
+    strm.write(reinterpret_cast<const char*>(data), dataLength);
   }
   return strm.str();
 }

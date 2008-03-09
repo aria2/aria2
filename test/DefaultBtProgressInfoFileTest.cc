@@ -103,7 +103,7 @@ void DefaultBtProgressInfoFileTest::testLoad()
   // check the contents of objects
 
   // upload length
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024, BT_RUNTIME(_btContext)->getUploadLengthAtStartup());
+  CPPUNIT_ASSERT_EQUAL((uint64_t)1024, BT_RUNTIME(_btContext)->getUploadLengthAtStartup());
 
   // bitfield
   CPPUNIT_ASSERT_EQUAL(std::string("fffffffffffffffffffe"),

@@ -38,11 +38,11 @@ void DataTest::testToString() {
 void DataTest::testGetData() {
   Data data("aria2", 5);
   CPPUNIT_ASSERT_EQUAL(0, memcmp("aria2", data.getData(), 5));
-  CPPUNIT_ASSERT_EQUAL((int32_t)5, data.getLen());  
+  CPPUNIT_ASSERT_EQUAL((size_t)5, data.getLen());  
 
   Data null(reinterpret_cast<const char*>(0), 0);
   CPPUNIT_ASSERT(null.getData() == 0);
-  CPPUNIT_ASSERT_EQUAL((int32_t)0, null.getLen());
+  CPPUNIT_ASSERT_EQUAL((size_t)0, null.getLen());
 
 }
 

@@ -53,7 +53,7 @@ static std::pair<SocketCore*, SocketCore*> createSocketPair()
   receiverServerSock.bind(0);
   receiverServerSock.beginListen();
 
-  std::pair<std::string, int32_t> receiverAddrInfo;
+  std::pair<std::string, uint16_t> receiverAddrInfo;
   receiverServerSock.getAddrInfo(receiverAddrInfo);
   initiatorSock->establishConnection("127.0.0.1", receiverAddrInfo.second);
   initiatorSock->setBlockingMode();

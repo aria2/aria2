@@ -129,13 +129,12 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   } else {
     return "";
   }
-  int32_t numWant = 50;
-  if(!btRuntime->lessThanEqMinPeer() ||
-     btRuntime->isHalt()) {
+  unsigned int numWant = 50;
+  if(!btRuntime->lessThanEqMinPeer() || btRuntime->isHalt()) {
     numWant = 0;
   }
   TransferStat stat = peerStorage->calculateStat();
-  int64_t left = pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
+  uint64_t left = pieceStorage->getTotalLength()-pieceStorage->getCompletedLength();
   if(left < 0) {
     left = 0;
   }
@@ -143,15 +142,15 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
     "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
 					btContext->getInfoHashLength())+"&"+
     "peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+"&"+
-    "uploaded="+Util::itos(stat.getSessionUploadLength())+"&"+
-    "downloaded="+Util::itos(stat.getSessionDownloadLength())+"&"+
-    "left="+Util::itos(left)+"&"+
+    "uploaded="+Util::uitos(stat.getSessionUploadLength())+"&"+
+    "downloaded="+Util::uitos(stat.getSessionDownloadLength())+"&"+
+    "left="+Util::uitos(left)+"&"+
     "compact=1"+"&"+
     "key="+key+"&"+
-    "numwant="+Util::itos(numWant)+"&"+
+    "numwant="+Util::uitos(numWant)+"&"+
     "no_peer_id=1";
   if(btRuntime->getListenPort() > 0) {
-    url += std::string("&")+"port="+Util::itos(btRuntime->getListenPort());
+    url += std::string("&")+"port="+Util::uitos(btRuntime->getListenPort());
   }
   std::string event = announceList.getEventString();
   if(!event.empty()) {
@@ -218,7 +217,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   }
   const Data* intervalData = dynamic_cast<const Data*>(response->get("interval"));
   if(intervalData) {
-    int32_t t = intervalData->toInt();
+    time_t t = intervalData->toInt();
     if(t > 0) {
       interval = intervalData->toInt();
       logger->debug("Interval:%d", interval);
@@ -226,7 +225,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   }
   const Data* minIntervalData = dynamic_cast<const Data*>(response->get("min interval"));
   if(minIntervalData) {
-    int32_t t = minIntervalData->toInt();
+    time_t t = minIntervalData->toInt();
     if(t > 0) {
       minInterval = minIntervalData->toInt();
       logger->debug("Min interval:%d", minInterval);
@@ -249,8 +248,7 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   if(peersEntry &&
      !btRuntime->isHalt() &&
      btRuntime->lessThanMinPeer()) {
-    DelegatingPeerListProcessor proc(btContext->getPieceLength(),
-				     btContext->getTotalLength());
+    DelegatingPeerListProcessor proc;
     Peers peers = proc.extractPeer(peersEntry);
     peerStorage->addPeer(peers);
   }

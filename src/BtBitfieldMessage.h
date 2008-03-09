@@ -46,9 +46,9 @@ typedef SharedHandle<BtBitfieldMessage> BtBitfieldMessageHandle;
 class BtBitfieldMessage : public SimpleBtMessage {
 private:
   unsigned char* bitfield;
-  int32_t bitfieldLength;
+  size_t bitfieldLength;
   unsigned char* msg;
-  int32_t msgLength;
+  size_t msgLength;
 
   void init() {
     bitfield = 0;
@@ -63,7 +63,7 @@ public:
   }
 
   BtBitfieldMessage(const unsigned char* bitfield,
-		    int32_t bitfieldLength):SimpleBtMessage()
+		    size_t bitfieldLength):SimpleBtMessage()
   {
     init();
     setBitfield(bitfield, bitfieldLength);
@@ -74,23 +74,23 @@ public:
     delete [] msg;
   }
 
-  static const int8_t ID = 5;
+  static const uint8_t ID = 5;
 
-  void setBitfield(const unsigned char* bitfield, int32_t bitfieldLength);
+  void setBitfield(const unsigned char* bitfield, size_t bitfieldLength);
 
   const unsigned char* getBitfield() const { return bitfield; }
 
-  int32_t getBitfieldLength() const { return bitfieldLength; }
+  size_t getBitfieldLength() const { return bitfieldLength; }
 
-  static BtBitfieldMessageHandle create(const unsigned char* data, int32_t dataLength);
+  static BtBitfieldMessageHandle create(const unsigned char* data, size_t dataLength);
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual int32_t getMessageLength();
+  virtual size_t getMessageLength();
 
   virtual std::string toString() const;
 };

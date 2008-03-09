@@ -41,11 +41,11 @@
 
 namespace aria2 {
 
-BtAllowedFastMessageHandle BtAllowedFastMessage::create(const unsigned char* data, int32_t dataLength) {
+BtAllowedFastMessageHandle BtAllowedFastMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 5) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "allowed fast", dataLength, 5);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "allowed fast", ID);
   }
@@ -62,7 +62,7 @@ void BtAllowedFastMessage::doReceivedAction() {
   peer->addPeerAllowedIndex(index);
 }
 
-int32_t BtAllowedFastMessage::MESSAGE_LENGTH = 9;
+size_t BtAllowedFastMessage::MESSAGE_LENGTH = 9;
 
 const unsigned char* BtAllowedFastMessage::getMessage() {
   if(!msg) {
@@ -79,7 +79,7 @@ const unsigned char* BtAllowedFastMessage::getMessage() {
   return msg;
 }
 
-int32_t BtAllowedFastMessage::getMessageLength() {
+size_t BtAllowedFastMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

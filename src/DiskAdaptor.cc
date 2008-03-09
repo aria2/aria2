@@ -68,9 +68,9 @@ bool DiskAdaptor::addDownloadEntry(const std::string& fileEntryPath)
   return false;
 }
 
-bool DiskAdaptor::addDownloadEntry(int index)
+bool DiskAdaptor::addDownloadEntry(size_t index)
 {
-  if(fileEntries.size() <= (unsigned int)index) {
+  if(fileEntries.size() <= index) {
     return false;
   }
   fileEntries[index]->setRequested(true);

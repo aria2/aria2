@@ -111,7 +111,7 @@ bool DownloadCommand::executeInternal() {
 
   size_t BUFSIZE = 16*1024;
   unsigned char buf[BUFSIZE];
-  int32_t bufSize;
+  size_t bufSize;
   if(segment->getLength() > 0 && segment->getLength()-segment->getWrittenLength() < BUFSIZE) {
     bufSize = segment->getLength()-segment->getWrittenLength();
   } else {
@@ -130,7 +130,7 @@ bool DownloadCommand::executeInternal() {
     //segment->writtenLength += bufSize;
     peerStat->updateDownloadLength(bufSize);
   } else {
-    int32_t infbufSize = 16*1024;
+    size_t infbufSize = 16*1024;
     unsigned char infbuf[infbufSize];
     transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
     _requestGroup->getPieceStorage()->getDiskAdaptor()->writeData(infbuf, infbufSize,

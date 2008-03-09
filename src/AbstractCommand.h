@@ -53,7 +53,7 @@ class SocketCore;
 class AbstractCommand : public Command, public RequestGroupAware {
 private:
   Time checkPoint;
-  int32_t timeout;
+  time_t timeout;
 protected:
   SharedHandle<Request> req;
   DownloadEngine* e;
@@ -61,7 +61,7 @@ protected:
   std::deque<SharedHandle<Segment> > _segments;
 
   void tryReserved();
-  virtual bool prepareForRetry(int32_t wait);
+  virtual bool prepareForRetry(time_t wait);
   virtual void onAbort(Exception* ex);
   virtual bool executeInternal() = 0;
 
@@ -76,7 +76,7 @@ protected:
   void disableNameResolverCheck(const SharedHandle<NameResolver>& resolver);
   virtual bool nameResolveFinished() const;
 #endif // ENABLE_ASYNC_DNS
-  void setTimeout(int32_t timeout) { this->timeout = timeout; }
+  void setTimeout(time_t timeout) { this->timeout = timeout; }
 
   void prepareForNextAction(Command* nextCommand = 0);
 

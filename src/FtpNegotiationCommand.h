@@ -99,7 +99,7 @@ private:
 
   SharedHandle<SocketCore> dataSocket;
   SharedHandle<SocketCore> serverSocket;
-  int32_t sequence;
+  Seq sequence;
   FtpConnection* ftp;
 protected:
   virtual bool executeInternal();

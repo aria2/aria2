@@ -41,10 +41,10 @@ namespace aria2 {
 
 template<typename InputIterator, typename OutputIterator>
 OutputIterator ncopy(InputIterator first, InputIterator last,
-		     int32_t count, OutputIterator destination)
+		     size_t count, OutputIterator destination)
 {
   OutputIterator x = destination;
-  for(int32_t i = 0; i < count; ++i) {
+  while(count--) {
     x = std::copy(first, last, destination);
   }
   return x;

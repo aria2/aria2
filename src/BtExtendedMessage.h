@@ -63,13 +63,13 @@ public:
 					const unsigned char* data,
 					size_t dataLength);
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual int32_t getMessageLength();
+  virtual size_t getMessageLength();
 
   virtual bool sendPredicate() const;
 

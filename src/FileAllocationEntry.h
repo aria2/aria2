@@ -53,9 +53,9 @@ public:
 
   ~FileAllocationEntry();
 
-  virtual int64_t getCurrentLength();
+  virtual off_t getCurrentLength();
 
-  virtual int64_t getTotalLength();
+  virtual uint64_t getTotalLength();
 
   virtual bool finished();
 

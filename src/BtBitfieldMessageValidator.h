@@ -43,10 +43,10 @@ namespace aria2 {
 class BtBitfieldMessageValidator : public BtMessageValidator {
 private:
   const BtBitfieldMessage* message;
-  int32_t numPiece;
+  size_t numPiece;
 public:
   BtBitfieldMessageValidator(const BtBitfieldMessage* message,
-			     int32_t numPiece):
+			     size_t numPiece):
     message(message),
     numPiece(numPiece) {}
 

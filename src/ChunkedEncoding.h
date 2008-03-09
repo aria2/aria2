@@ -46,21 +46,21 @@ private:
     READ_DATA,
     FINISH
   };
-  int32_t chunkSize;
-  int32_t state;
+  size_t chunkSize;
+  STATE state;
   unsigned char* strbuf;
-  int32_t strbufSize;
+  size_t strbufSize;
   unsigned char* strbufTail;
 
   /**
    * Returns 0 if the size of chunk is retrieved successfully,
    * otherwise returns non-zero value.
    */
-  int32_t readChunkSize(unsigned char** pp);
-  int32_t readData(unsigned char** pp, unsigned char* buf, int32_t& len,
-		   int32_t maxlen);
-  void addBuffer(const unsigned char* inbuf, int32_t inlen);
-  int32_t readDataEOL(unsigned char** pp);
+  int readChunkSize(unsigned char** pp);
+  int readData(unsigned char** pp, unsigned char* buf, size_t& len,
+	       size_t maxlen);
+  void addBuffer(const unsigned char* inbuf, size_t inlen);
+  int readDataEOL(unsigned char** pp);
 
 
 public:
@@ -68,8 +68,8 @@ public:
   ~ChunkedEncoding();
 
   void init();
-  void inflate(unsigned char* outbuf, int32_t& outlen,
-	       const unsigned char* inbuf, int32_t inlen);
+  void inflate(unsigned char* outbuf, size_t& outlen,
+	       const unsigned char* inbuf, size_t inlen);
   bool finished();
   void end();
 };

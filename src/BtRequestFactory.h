@@ -54,7 +54,7 @@ public:
 
   virtual void removeAllTargetPiece() = 0;
 
-  virtual int32_t countTargetPiece() = 0;
+  virtual size_t countTargetPiece() = 0;
 
   virtual void removeCompletedPiece() = 0;
 

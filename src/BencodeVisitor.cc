@@ -68,7 +68,7 @@ void BencodeVisitor::visit(const Dictionary* d)
   _bencodedData += "d";
 
   for(std::deque<std::string>::const_iterator itr = d->getOrder().begin(); itr != d->getOrder().end(); ++itr) {
-    _bencodedData += Util::itos((int32_t)(*itr).size());
+    _bencodedData += Util::uitos((*itr).size());
     _bencodedData += ":";
     _bencodedData += *itr;
     d->get(*itr)->accept(this);

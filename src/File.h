@@ -51,7 +51,7 @@ private:
   /**
    * Returns the return value of stat(...)
    */
-  int32_t fillStat(struct stat& fstat);
+  int fillStat(struct stat& fstat);
 public:
   File(const std::string& name);
   ~File();
@@ -86,7 +86,7 @@ public:
    */
   bool mkdirs();
 
-  int64_t size();
+  uint64_t size();
 
   mode_t mode();
 

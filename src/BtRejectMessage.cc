@@ -43,11 +43,11 @@
 
 namespace aria2 {
 
-BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, int32_t dataLength) {
+BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 13) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "reject", dataLength, 13);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "reject", ID);
   }
@@ -74,7 +74,7 @@ void BtRejectMessage::doReceivedAction() {
 
 }
 
-int32_t BtRejectMessage::MESSAGE_LENGTH = 17;
+size_t BtRejectMessage::MESSAGE_LENGTH = 17;
 
 const unsigned char* BtRejectMessage::getMessage() {
   if(!msg) {
@@ -95,13 +95,13 @@ const unsigned char* BtRejectMessage::getMessage() {
   return msg;
 }
 
-int32_t BtRejectMessage::getMessageLength() {
+size_t BtRejectMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
 std::string BtRejectMessage::toString() const {
-  return "reject index="+Util::itos(index)+", begin="+Util::itos(begin)+
-    ", length="+Util::itos(length);
+  return "reject index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
+    ", length="+Util::uitos(length);
 }
 
 } // namespace aria2

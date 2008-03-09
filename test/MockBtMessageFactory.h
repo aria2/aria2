@@ -14,12 +14,12 @@ public:
   virtual ~MockBtMessageFactory() {}
 
   virtual SharedHandle<BtMessage>
-  createBtMessage(const unsigned char* msg, int32_t msgLength) {
+  createBtMessage(const unsigned char* msg, size_t msgLength) {
     return SharedHandle<BtMessage>(0);
   };
 
   virtual SharedHandle<BtMessage>
-  createHandshakeMessage(const unsigned char* msg, int32_t msgLength) {
+  createHandshakeMessage(const unsigned char* msg, size_t msgLength) {
     return SharedHandle<BtMessage>(0);
   }
 
@@ -30,21 +30,21 @@ public:
   }
 
   virtual SharedHandle<BtMessage>
-  createRequestMessage(const SharedHandle<Piece>& piece, int32_t blockIndex) {
+  createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex) {
     return SharedHandle<BtMessage>(0);
   }
 
   virtual SharedHandle<BtMessage>
-  createCancelMessage(int32_t index, int32_t begin, int32_t length) {
+  createCancelMessage(size_t index, uint32_t begin, size_t length) {
     return SharedHandle<BtMessage>(0);
   }
 
   virtual SharedHandle<BtMessage>
-  createPieceMessage(int32_t index, int32_t begin, int32_t length) {
+  createPieceMessage(size_t index, uint32_t begin, size_t length) {
     return SharedHandle<BtMessage>(0);
   }
 
-  virtual SharedHandle<BtMessage> createHaveMessage(int32_t index) {
+  virtual SharedHandle<BtMessage> createHaveMessage(size_t index) {
     return SharedHandle<BtMessage>(0);
   }
 
@@ -81,11 +81,11 @@ public:
   }
 
   virtual SharedHandle<BtMessage>
-  createRejectMessage(int32_t index, int32_t begin, int32_t length) {
+  createRejectMessage(size_t index, uint32_t begin, size_t length) {
     return SharedHandle<BtMessage>(0);
   }
 
-  virtual SharedHandle<BtMessage> createAllowedFastMessage(int32_t index) {
+  virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index) {
     return SharedHandle<BtMessage>(0);
   }
 

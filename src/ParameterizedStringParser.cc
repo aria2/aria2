@@ -52,7 +52,7 @@ PStringDatumHandle ParameterizedStringParser::parse(const std::string& src)
 }
 
 PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src,
-							  int32_t& offset)
+							  int& offset)
 {
   if(src.size() == (size_t)offset) {
     return 0;
@@ -68,7 +68,7 @@ PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src
 }
 
 PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& src,
-							    int32_t& offset)
+							    int& offset)
 {
   std::string::size_type nextDelimiterIndex = src.find_first_of("[{", offset);
   if(nextDelimiterIndex == std::string::npos) {
@@ -81,7 +81,7 @@ PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& s
 }
 
 PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& src,
-							   int32_t& offset)
+							   int& offset)
 {
   ++offset;
   std::string::size_type rightParenIndex = src.find("}", offset);
@@ -99,7 +99,7 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
 }
 
 PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
-							 int32_t& offset)
+							 int& offset)
 {
   ++offset;
   std::string::size_type rightParenIndex = src.find("]", offset);
@@ -109,7 +109,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   std::string loopStr = src.substr(offset, rightParenIndex-offset);
   offset = rightParenIndex+1;
 
-  int32_t step = 1;
+  unsigned int step = 1;
   std::string::size_type colonIndex = loopStr.find(":");
   if(colonIndex != std::string::npos) {
     std::string stepStr = loopStr.substr(colonIndex+1);
@@ -125,8 +125,8 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     throw new FatalException("Loop range missing.");
   }
   NumberDecoratorHandle nd = 0;
-  int32_t start;
-  int32_t end;
+  int start;
+  int end;
   if(Util::isNumber(range.first) && Util::isNumber(range.second)) {
     nd = new FixedWidthNumberDecorator(range.first.size());
     start = Util::parseInt(range.first);

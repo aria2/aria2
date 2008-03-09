@@ -56,8 +56,8 @@ void BtHandshakeMessageTest::testCreate() {
   unsigned char msg[68];
   createHandshakeMessageData(msg);
   SharedHandle<BtHandshakeMessage> message = BtHandshakeMessage::create(&msg[0], sizeof(msg));
-  CPPUNIT_ASSERT_EQUAL((int8_t)INT8_MAX, message->getId());
-  CPPUNIT_ASSERT_EQUAL((int8_t)19, message->getPstrlen());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)INT8_MAX, message->getId());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)19, message->getPstrlen());
   CPPUNIT_ASSERT_EQUAL(Util::toHex((const unsigned char*)BTPSTR.c_str(), BTPSTR.size()),
 		       Util::toHex(message->getPstr(), BtHandshakeMessage::PSTR_LENGTH));
   CPPUNIT_ASSERT_EQUAL(std::string("0000000000100004"),

@@ -101,7 +101,7 @@ SharedHandle<Metalinker>
 ExpatMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
   _stm = new MetalinkParserStateMachine();
-  int32_t bufSize = 4096;
+  ssize_t bufSize = 4096;
   unsigned char buf[bufSize];
 
   SharedHandle<SessionData> sessionData = new SessionData(_stm);
@@ -111,9 +111,9 @@ ExpatMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& 
     XML_SetElementHandler(parser, &mlStartElement, &mlEndElement);
     XML_SetCharacterDataHandler(parser, &mlCharacters);
 
-    int64_t readOffset = 0;
+    off_t readOffset = 0;
     while(1) {
-      int32_t res = binaryStream->readData(buf, bufSize, readOffset);
+      ssize_t res = binaryStream->readData(buf, bufSize, readOffset);
       if(res == 0) {
 	break;
       }

@@ -102,7 +102,7 @@ bool PeerAbstractCommand::execute() {
 }
 
 // TODO this method removed when PeerBalancerCommand is implemented
-bool PeerAbstractCommand::prepareForNextPeer(int32_t wait) {
+bool PeerAbstractCommand::prepareForNextPeer(time_t wait) {
   return true;
 }
 
@@ -158,7 +158,7 @@ void PeerAbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
-void PeerAbstractCommand::setUploadLimit(int32_t uploadLimit) {
+void PeerAbstractCommand::setUploadLimit(unsigned int uploadLimit) {
   this->uploadLimit = uploadLimit;
 }
 

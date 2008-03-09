@@ -40,7 +40,7 @@
 
 namespace aria2 {
 
-HaveEraseCommand::HaveEraseCommand(int32_t cuid, DownloadEngine* e, int32_t interval)
+HaveEraseCommand::HaveEraseCommand(int32_t cuid, DownloadEngine* e, time_t interval)
   :TimeBasedCommand(cuid, e, interval) {}
 
 HaveEraseCommand::~HaveEraseCommand() {}
@@ -54,7 +54,8 @@ void HaveEraseCommand::preProcess()
 
 void HaveEraseCommand::process()
 {
-  for(int32_t i = 0; i < _e->_requestGroupMan->countRequestGroup(); ++i) {
+  size_t numLoop = _e->_requestGroupMan->countRequestGroup();
+  for(size_t i = 0; i < numLoop; ++i) {
     PieceStorageHandle ps = _e->_requestGroupMan->getRequestGroup(i)->getPieceStorage();
     if(!ps.isNull()) {
       ps->removeAdvertisedPiece(5);

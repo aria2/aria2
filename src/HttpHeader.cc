@@ -64,16 +64,16 @@ std::deque<std::string> HttpHeader::get(const std::string& name) const {
   return v;
 }
 
-int32_t HttpHeader::getFirstAsInt(const std::string& name) const {
-  return getFirstAsLLInt(name);
+unsigned int HttpHeader::getFirstAsUInt(const std::string& name) const {
+  return getFirstAsULLInt(name);
 }
 
-int64_t HttpHeader::getFirstAsLLInt(const std::string& name) const {
+uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
   std::string value = getFirst(name);
   if(value == "") {
     return 0;
   } else {
-    return strtoll(value.c_str(), 0, 10);
+    return strtoull(value.c_str(), 0, 10);
   }
 }
 
@@ -85,8 +85,12 @@ RangeHandle HttpHeader::getRange() const
     if(contentLengthStr == "") {
       return new Range(0, 0, 0);
     } else {
-      int64_t contentLength = strtoll(contentLengthStr.c_str(), 0, 10);
-      return new Range(0, contentLength-1, contentLength);
+      uint64_t contentLength = strtoull(contentLengthStr.c_str(), 0, 10);
+      if(contentLength == 0) {
+	return new Range(0, 0, 0);
+      } else {
+	return new Range(0, contentLength-1, contentLength);
+      }
     }
   }
   std::string::size_type rangeSpecIndex = rangeStr.find("bytes ");
@@ -98,9 +102,9 @@ RangeHandle HttpHeader::getRange() const
   std::pair<std::string, std::string> startEndBytePair;
   Util::split(startEndBytePair, rangePair.first, '-');
 
-  int64_t startByte = STRTOLL(startEndBytePair.first.c_str());
-  int64_t endByte = STRTOLL(startEndBytePair.second.c_str());
-  int64_t entityLength = STRTOLL(rangePair.second.c_str());
+  uint64_t startByte = STRTOULL(startEndBytePair.first.c_str());
+  uint64_t endByte = STRTOULL(startEndBytePair.second.c_str());
+  uint64_t entityLength = STRTOULL(rangePair.second.c_str());
 
   return new Range(startByte, endByte, entityLength);
 }

@@ -50,7 +50,7 @@ bool PieceHashCheckIntegrityEntry::isValidationReady()
 {
   DownloadContextHandle dctx = _requestGroup->getDownloadContext();
   return dctx->getPieceHashes().size() > 0 &&
-    dctx->getPieceHashes().size() == (uint32_t)dctx->getNumPieces();
+    dctx->getPieceHashes().size() == dctx->getNumPieces();
 }
 
 void PieceHashCheckIntegrityEntry::initValidator()

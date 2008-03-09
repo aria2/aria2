@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "SpeedCalc.h"
 #include <algorithm>
+#include <functional>
 
 namespace aria2 {
 
@@ -57,10 +58,10 @@ void SpeedCalc::reset() {
   nextInterval = CHANGE_INTERVAL_SEC;
 }
 
-int32_t SpeedCalc::calculateSpeed() {
-  int32_t milliElapsed = cpArray[sw].differenceInMillis();
+unsigned int SpeedCalc::calculateSpeed() {
+  uint64_t milliElapsed = cpArray[sw].differenceInMillis();
   if(milliElapsed) {
-    int32_t speed = lengthArray[sw]*1000/milliElapsed;
+    unsigned int speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
     maxSpeed = std::max(speed, maxSpeed);
     return speed;
@@ -69,10 +70,10 @@ int32_t SpeedCalc::calculateSpeed() {
   }
 }
 
-int32_t SpeedCalc::calculateSpeed(const struct timeval& now) {
-  int64_t milliElapsed = cpArray[sw].differenceInMillis(now);
+unsigned int SpeedCalc::calculateSpeed(const struct timeval& now) {
+  uint64_t milliElapsed = cpArray[sw].differenceInMillis(now);
   if(milliElapsed) {
-    int32_t speed = lengthArray[sw]*1000/milliElapsed;
+    unsigned int speed = lengthArray[sw]*1000/milliElapsed;
     prevSpeed = speed;
     maxSpeed = std::max(speed, maxSpeed);
     return speed;
@@ -81,20 +82,10 @@ int32_t SpeedCalc::calculateSpeed(const struct timeval& now) {
   }
 }
 
-class Plus {
-private:
-  int32_t d;
-public:
-  Plus(int32_t d):d(d) {}
-
-  void operator()(int64_t& length) {
-    length += d;
-  }
-};
-
-void SpeedCalc::update(int bytes) {
+void SpeedCalc::update(size_t bytes) {
   accumulatedLength += bytes;
-  std::for_each(&lengthArray[0], &lengthArray[2], Plus(bytes));
+  std::transform(&lengthArray[0], &lengthArray[2], &lengthArray[0],
+		 std::bind1st(std::plus<uint64_t>(), (uint64_t)bytes));
   if(isIntervalOver()) {
     changeSw();
   }
@@ -111,10 +102,10 @@ void SpeedCalc::changeSw() {
   nextInterval = cpArray[sw].difference()+CHANGE_INTERVAL_SEC;
 }
 
-int32_t SpeedCalc::getAvgSpeed() const {
-  int32_t milliElapsed = start.differenceInMillis();
+unsigned int SpeedCalc::getAvgSpeed() const {
+  uint64_t milliElapsed = start.differenceInMillis();
   if(milliElapsed) {
-    int32_t speed = accumulatedLength*1000/milliElapsed;
+    unsigned int speed = accumulatedLength*1000/milliElapsed;
     return speed;
   } else {
     return 0;

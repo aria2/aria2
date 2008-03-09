@@ -58,9 +58,9 @@ private:
 
   std::string strbuf;
 
-  int32_t getStatus(const std::string& response) const;
-  bool isEndOfResponse(int32_t status, const std::string& response) const;
-  bool bulkReceiveResponse(std::pair<int32_t, std::string>& response);
+  unsigned int getStatus(const std::string& response) const;
+  bool isEndOfResponse(unsigned int status, const std::string& response) const;
+  bool bulkReceiveResponse(std::pair<unsigned int, std::string>& response);
 public:
   FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
 		const SharedHandle<Request>& req, const Option* op);
@@ -75,9 +75,9 @@ public:
   void sendRest(const SharedHandle<Segment>& segment) const;
   void sendRetr() const;
 
-  int32_t receiveResponse();
-  int32_t receiveSizeResponse(int64_t& size);
-  int32_t receivePasvResponse(std::pair<std::string, int32_t>& dest);
+  unsigned int receiveResponse();
+  unsigned int receiveSizeResponse(uint64_t& size);
+  unsigned int receivePasvResponse(std::pair<std::string, uint16_t>& dest);
 };
 
 } // namespace aria2

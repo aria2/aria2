@@ -98,7 +98,7 @@ bool HttpResponseCommand::executeInternal()
     _requestGroup->removeURIWhoseHostnameIs(_requestGroup->searchServerHost(cuid)->getHostname());
   }
   if(_requestGroup->getPieceStorage().isNull()) {
-    int64_t totalLength = httpResponse->getEntityLength();
+    uint64_t totalLength = httpResponse->getEntityLength();
     SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
     dctx->setTotalLength(totalLength);
     dctx->setFilename(httpResponse->determinFilename());

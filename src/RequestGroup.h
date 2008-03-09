@@ -70,14 +70,14 @@ private:
   std::deque<std::string> _uris;
   std::deque<std::string> _spentUris;
 
-  int32_t _numConcurrentCommand;
+  unsigned int _numConcurrentCommand;
 
   /**
    * This is the number of connections used in streaming protocol(http/ftp)
    */
-  int32_t _numStreamConnection;
+  unsigned int _numStreamConnection;
 
-  int32_t _numCommand;
+  unsigned int _numCommand;
 
   SharedHandle<SegmentMan> _segmentMan;
   SharedHandle<SegmentManFactory> _segmentManFactory;
@@ -115,8 +115,8 @@ private:
   void validateFilename(const std::string& expectedFilename,
 			const std::string& actualFilename) const;
 
-  void validateTotalLength(int64_t expectedTotalLength,
-			   int64_t actualTotalLength) const;
+  void validateTotalLength(uint64_t expectedTotalLength,
+			   uint64_t actualTotalLength) const;
 
   void initializePreDownloadHandler();
 
@@ -138,9 +138,9 @@ public:
 
   std::deque<Command*> createInitialCommand(DownloadEngine* e);
 
-  std::deque<Command*> createNextCommandWithAdj(DownloadEngine* e, int32_t numAdj);
+  std::deque<Command*> createNextCommandWithAdj(DownloadEngine* e, int numAdj);
 
-  std::deque<Command*> createNextCommand(DownloadEngine* e, int32_t numCommand, const std::string& method = "GET");
+  std::deque<Command*> createNextCommand(DownloadEngine* e, unsigned int numCommand, const std::string& method = "GET");
   
   void addURI(const std::string& uri)
   {
@@ -157,9 +157,9 @@ public:
 
   std::string getDir() const;
 
-  int64_t getTotalLength() const;
+  uint64_t getTotalLength() const;
 
-  int64_t getCompletedLength() const;
+  uint64_t getCompletedLength() const;
 
   const std::deque<std::string>& getRemainingUris() const
   {
@@ -180,11 +180,11 @@ public:
    */
   void validateFilename(const std::string& actualFilename) const;
 
-  void validateTotalLength(int64_t actualTotalLength) const;
+  void validateTotalLength(uint64_t actualTotalLength) const;
 
   void setSegmentManFactory(const SharedHandle<SegmentManFactory>& segmentManFactory);
 
-  void setNumConcurrentCommand(int32_t num)
+  void setNumConcurrentCommand(unsigned int num)
   {
     _numConcurrentCommand = num;
   }
@@ -212,13 +212,13 @@ public:
 
   void decreaseStreamConnection();
 
-  int32_t getNumConnection() const;
+  unsigned int getNumConnection() const;
 
   void increaseNumCommand();
 
   void decreaseNumCommand();
 
-  int32_t getNumCommand() const
+  unsigned int getNumCommand() const
   {
     return _numCommand;
   }

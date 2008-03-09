@@ -201,9 +201,9 @@ bool Util::shouldUrlencode(const char c)
 	   '@' == c || '&' == c || '=' == c || '+' == c);	   
 }
 
-std::string Util::urlencode(const unsigned char* target, int32_t len) {
+std::string Util::urlencode(const unsigned char* target, size_t len) {
   std::string dest;
-  for(int32_t i = 0; i < len; i++) {
+  for(size_t i = 0; i < len; i++) {
     if(shouldUrlencode(target[i])) {
       char temp[4];
       sprintf(temp, "%%%02x", target[i]);
@@ -216,9 +216,9 @@ std::string Util::urlencode(const unsigned char* target, int32_t len) {
   return dest;
 }
 
-std::string Util::torrentUrlencode(const unsigned char* target, int32_t len) {
+std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
   std::string dest;
-  for(int32_t i = 0; i < len; i++) {
+  for(size_t i = 0; i < len; i++) {
     if('0' <= target[i] && target[i] <= '9' ||
        'A' <= target[i] && target[i] <= 'Z' ||
        'a' <= target[i] && target[i] <= 'z') {
@@ -252,9 +252,9 @@ std::string Util::urldecode(const std::string& target) {
   return result;
 }
 
-std::string Util::toHex(const unsigned char* src, int32_t len) {
+std::string Util::toHex(const unsigned char* src, size_t len) {
   char* temp = new char[len*2+1];
-  for(int32_t i = 0; i < len; i++) {
+  for(size_t i = 0; i < len; i++) {
     sprintf(temp+i*2, "%02x", src[i]);
   }
   temp[len*2] = '\0';
@@ -273,9 +273,9 @@ void Util::fileCopy(const std::string& dest, const std::string& src) {
   rangedFileCopy(dest, src, 0, file.size());
 }
 
-void Util::rangedFileCopy(const std::string& dest, const std::string& src, int64_t srcOffset, int64_t length)
+void Util::rangedFileCopy(const std::string& dest, const std::string& src, off_t srcOffset, uint64_t length)
 {
-  int32_t bufSize = 4096;
+  size_t bufSize = 4096;
   unsigned char buf[bufSize];
   DefaultDiskWriter srcdw;
   DefaultDiskWriter destdw;
@@ -283,23 +283,24 @@ void Util::rangedFileCopy(const std::string& dest, const std::string& src, int64
   srcdw.openExistingFile(src);
   destdw.initAndOpenFile(dest);
 
-  int32_t x = length/bufSize;
-  int32_t r = length%bufSize;
+  lldiv_t res = lldiv(length, bufSize);
+  unsigned int x = res.quot;
+  unsigned int r = res.rem;
 
-  int64_t initialOffset = srcOffset;
-  for(int32_t i = 0; i < x; ++i) {
-    int32_t readLength = 0;
+  off_t initialOffset = srcOffset;
+  for(unsigned int i = 0; i < x; ++i) {
+    size_t readLength = 0;
     while(readLength < bufSize) {
-      int32_t ret = srcdw.readData(buf, bufSize-readLength, srcOffset);
+      ssize_t ret = srcdw.readData(buf, bufSize-readLength, srcOffset);
       destdw.writeData(buf, ret, srcOffset-initialOffset);
       srcOffset += ret;
       readLength += ret;
     }
   }
   if(r > 0) {
-    int32_t readLength = 0;
+    size_t readLength = 0;
     while(readLength < r) { 
-      int32_t ret = srcdw.readData(buf, r-readLength, srcOffset);
+      ssize_t ret = srcdw.readData(buf, r-readLength, srcOffset);
       destdw.writeData(buf, ret, srcOffset-initialOffset);
       srcOffset += ret;
       readLength += ret;
@@ -307,7 +308,7 @@ void Util::rangedFileCopy(const std::string& dest, const std::string& src, int64
   }     
 }
 
-bool Util::isPowerOf(int32_t num, int32_t base) {
+bool Util::isPowerOf(int num, int base) {
   if(base <= 0) { return false; }
   if(base == 1) { return true; }
 
@@ -320,14 +321,14 @@ bool Util::isPowerOf(int32_t num, int32_t base) {
   return false;
 }
 
-std::string Util::secfmt(int32_t sec) {
+std::string Util::secfmt(time_t sec) {
   std::string str;
   if(sec >= 3600) {
     str = itos(sec/3600)+"h";
     sec %= 3600;
   }
   if(sec >= 60) {
-    int32_t min = sec/60;
+    int min = sec/60;
     if(min < 10) {
       str += "0";
     }
@@ -341,7 +342,7 @@ std::string Util::secfmt(int32_t sec) {
   return str;
 }
 
-int32_t Util::expandBuffer(char** pbuf, int32_t curLength, int32_t newLength) {
+size_t Util::expandBuffer(char** pbuf, size_t curLength, size_t newLength) {
   char* newbuf = new char[newLength];
   memcpy(newbuf, *pbuf, curLength);
   delete [] *pbuf;
@@ -349,16 +350,16 @@ int32_t Util::expandBuffer(char** pbuf, int32_t curLength, int32_t newLength) {
   return newLength;
 }
 
-int32_t getNum(const char* buf, int32_t offset, int32_t length) {
+int getNum(const char* buf, int offset, size_t length) {
   char* temp = new char[length+1];
   memcpy(temp, buf+offset, length);
   temp[length] = '\0';
-  int32_t x = strtol(temp, NULL, 10);
+  int x = strtol(temp, 0, 10);
   delete [] temp;
   return x;
 }
 
-void unfoldSubRange(const std::string& src, std::deque<int32_t>& range) {
+void unfoldSubRange(const std::string& src, std::deque<int>& range) {
   if(src.empty()) {
     return;
   }
@@ -369,18 +370,18 @@ void unfoldSubRange(const std::string& src, std::deque<int32_t>& range) {
     range.push_back(atoi(src.c_str()));
   } else {
     if(src.at(p) == ',') {
-      int32_t num = getNum(src.c_str(), 0, p);
+      int num = getNum(src.c_str(), 0, p);
       range.push_back(num);
       unfoldSubRange(src.substr(p+1), range);
     } else if(src.at(p) == '-') {
-      int32_t rightNumBegin = p+1;
+      std::string::size_type rightNumBegin = p+1;
       std::string::size_type nextDelim = src.find_first_of(",", rightNumBegin);
       if(nextDelim == std::string::npos) {
 	nextDelim = src.size();
       }
-      int32_t left = getNum(src.c_str(), 0, p);
-      int32_t right = getNum(src.c_str(), rightNumBegin, nextDelim-rightNumBegin);
-      for(int32_t i = left; i <= right; i++) {
+      int left = getNum(src.c_str(), 0, p);
+      int right = getNum(src.c_str(), rightNumBegin, nextDelim-rightNumBegin);
+      for(int i = left; i <= right; i++) {
 	range.push_back(i);
       }
       if(src.size() > nextDelim) {
@@ -390,7 +391,7 @@ void unfoldSubRange(const std::string& src, std::deque<int32_t>& range) {
   }
 }
 
-void Util::unfoldRange(const std::string& src, std::deque<int32_t>& range) {
+void Util::unfoldRange(const std::string& src, std::deque<int>& range) {
   unfoldSubRange(src, range);
   std::sort(range.begin(), range.end());
   range.erase(std::unique(range.begin(), range.end()), range.end());
@@ -486,7 +487,7 @@ std::string Util::getContentDispositionFilename(const std::string& header) {
   return trim(header.substr(filenamesp, filenameep-filenamesp), "\r\n '\"");
 }
 
-static int32_t nbits[] = {
+static int nbits[] = {
   0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 
   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 
   1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 
@@ -505,7 +506,7 @@ static int32_t nbits[] = {
   4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8, 
 };
 
-int32_t Util::countBit(uint32_t n) {
+unsigned int Util::countBit(uint32_t n) {
   return
     nbits[n&0xffu]+
     nbits[(n >> 8)&0xffu]+
@@ -513,11 +514,11 @@ int32_t Util::countBit(uint32_t n) {
     nbits[(n >> 24)&0xffu];
 }
 
-std::string Util::randomAlpha(int32_t length, const RandomizerHandle& randomizer) {
+std::string Util::randomAlpha(size_t length, const RandomizerHandle& randomizer) {
   static const char *random_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   std::string str;
-  for(int32_t i = 0; i < length; i++) {
-    int32_t index = randomizer->getRandomNumber(strlen(random_chars));
+  for(size_t i = 0; i < length; i++) {
+    size_t index = randomizer->getRandomNumber(strlen(random_chars));
     str += random_chars[index];
   }
   return str;
@@ -544,7 +545,7 @@ bool Util::isNumbersAndDotsNotation(const std::string& name) {
   }
 }
 
-void Util::setGlobalSignalHandler(int32_t sig, void (*handler)(int), int32_t flags) {
+void Util::setGlobalSignalHandler(int sig, void (*handler)(int), int flags) {
 #ifdef HAVE_SIGACTION
   struct sigaction sigact;
   sigact.sa_handler = handler;
@@ -556,8 +557,8 @@ void Util::setGlobalSignalHandler(int32_t sig, void (*handler)(int), int32_t fla
 #endif // HAVE_SIGACTION
 }
 
-void Util::indexRange(int32_t& startIndex, int32_t& endIndex,
-		      int64_t offset, int32_t srcLength, int32_t destLength)
+void Util::indexRange(size_t& startIndex, size_t& endIndex,
+		      off_t offset, size_t srcLength, size_t destLength)
 {
   int64_t _startIndex = offset/destLength;
   int64_t _endIndex = (offset+srcLength-1)/destLength;
@@ -609,9 +610,9 @@ std::string Util::abbrevSize(int64_t size)
     return Util::itos(size, true);
   }
   char units[] = { 'K', 'M' };
-  int32_t numUnit = sizeof(units)/sizeof(char);
-  int32_t i = 0;
-  int32_t r = size&0x3ff;
+  size_t numUnit = sizeof(units)/sizeof(char);
+  size_t i = 0;
+  int r = size&0x3ff;
   size >>= 10;
   for(; i < numUnit-1 && size >= 1024; ++i) {
     r = size&0x3ff;
@@ -729,7 +730,7 @@ bool Util::isUppercase(const std::string& what)
   return true;
 }
 
-int32_t Util::alphaToNum(const std::string& alphabets)
+int Util::alphaToNum(const std::string& alphabets)
 {
   if(alphabets.empty()) {
     return 0;
@@ -740,9 +741,9 @@ int32_t Util::alphaToNum(const std::string& alphabets)
   } else {
     base = 'A';
   }
-  int32_t num = 0;
-  for(uint32_t i = 0; i < alphabets.size(); ++i) {
-    int32_t v = alphabets[i]-base;
+  int num = 0;
+  for(size_t i = 0; i < alphabets.size(); ++i) {
+    int v = alphabets[i]-base;
     num = num*26+v;
   }
   return num;
@@ -792,7 +793,7 @@ std::string Util::toString(const BinaryStreamHandle& binaryStream)
 void* Util::allocateAlignedMemory(size_t alignment, size_t size)
 {
   void* buffer;
-  int32_t res;
+  int res;
   if((res = posix_memalign(&buffer, alignment, size)) != 0) {
     throw new FatalException("Error in posix_memalign: %s", strerror(res));
   }

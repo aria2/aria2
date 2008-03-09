@@ -63,11 +63,11 @@ bool ChunkedEncoding::finished() {
 
 void ChunkedEncoding::end() {}
 
-void ChunkedEncoding::inflate(unsigned char* outbuf, int32_t& outlen,
-			      const unsigned char* inbuf, int32_t inlen) {
+void ChunkedEncoding::inflate(unsigned char* outbuf, size_t& outlen,
+			      const unsigned char* inbuf, size_t inlen) {
   addBuffer(inbuf, inlen);
   unsigned char* p = strbuf;
-  int32_t clen = 0;
+  size_t clen = 0;
   while(1) {
     if(state == READ_SIZE) {
       if(readChunkSize(&p) == 0) {
@@ -98,7 +98,7 @@ void ChunkedEncoding::inflate(unsigned char* outbuf, int32_t& outlen,
     strbufTail = strbuf;
   } else {
     // copy string between [p, strbufTail]
-    int32_t unreadSize = strbufTail-p;
+    size_t unreadSize = strbufTail-p;
     unsigned char* temp = new unsigned char[strbufSize];
     memcpy(temp, p, unreadSize);
     delete [] strbuf;
@@ -108,9 +108,9 @@ void ChunkedEncoding::inflate(unsigned char* outbuf, int32_t& outlen,
   outlen = clen;
 }
 
-int32_t ChunkedEncoding::readData(unsigned char** pp,
-				  unsigned char* buf, int32_t& len,
-				  int32_t maxlen)
+int ChunkedEncoding::readData(unsigned char** pp,
+			      unsigned char* buf, size_t& len,
+			      size_t maxlen)
 {
   if(buf+len == buf+maxlen) {
     return -1;
@@ -118,11 +118,11 @@ int32_t ChunkedEncoding::readData(unsigned char** pp,
   if(chunkSize == 0) {
     return readDataEOL(pp);
   }
-  int32_t wsize;
-  if(strbufTail-*pp < chunkSize) {
-    wsize = strbufTail-*pp <= maxlen-len ? strbufTail-*pp : maxlen-len;
+  size_t wsize;
+  if((size_t)(strbufTail-*pp) < chunkSize) {
+    wsize = std::min((size_t)(strbufTail-*pp), maxlen-len);
   } else {
-    wsize = chunkSize <= maxlen-len ? chunkSize : maxlen-len;
+    wsize = std::min(chunkSize, maxlen-len);
   }
   memcpy(buf+len, *pp, wsize);
   chunkSize -= wsize;
@@ -135,7 +135,7 @@ int32_t ChunkedEncoding::readData(unsigned char** pp,
   }
 }
 
-int32_t ChunkedEncoding::readDataEOL(unsigned char** pp) {
+int ChunkedEncoding::readDataEOL(unsigned char** pp) {
   unsigned char* np = reinterpret_cast<unsigned char*>(memchr(*pp, '\n', strbufTail-*pp));
   unsigned char* rp = reinterpret_cast<unsigned char*>(memchr(*pp, '\r', strbufTail-*pp));
   if(np != NULL && rp != NULL && np-rp == 1 && *pp == rp) {
@@ -148,7 +148,7 @@ int32_t ChunkedEncoding::readDataEOL(unsigned char** pp) {
   }  
 }
 
-int32_t ChunkedEncoding::readChunkSize(unsigned char** pp) {
+int ChunkedEncoding::readChunkSize(unsigned char** pp) {
   // we read chunk-size from *pp
   unsigned char* p;
   unsigned char* np = reinterpret_cast<unsigned char*>(memchr(*pp, '\n', strbufTail-*pp));
@@ -172,8 +172,8 @@ int32_t ChunkedEncoding::readChunkSize(unsigned char** pp) {
   return 0;
 }
 
-void ChunkedEncoding::addBuffer(const unsigned char* inbuf, int32_t inlen) {
-  int32_t realbufSize = strbufTail-strbuf;
+void ChunkedEncoding::addBuffer(const unsigned char* inbuf, size_t inlen) {
+  size_t realbufSize = strbufTail-strbuf;
   if(realbufSize+inlen >= strbufSize) {
     if(realbufSize+inlen > MAX_BUFSIZE) {
       throw new DlAbortEx(EX_TOO_LARGE_CHUNK, realbufSize+inlen);

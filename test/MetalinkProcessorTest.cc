@@ -72,11 +72,11 @@ void MetalinkProcessorTest::testParseFile()
 
     SharedHandle<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, entry1->getLength());
+    CPPUNIT_ASSERT_EQUAL(0ULL, entry1->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), entry1->version);
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entry1->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entry1->os);
-    CPPUNIT_ASSERT_EQUAL((int32_t)1, entry1->maxConnections);
+    CPPUNIT_ASSERT_EQUAL(1, entry1->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("a96cf3f0266b91d87d5124cf94326422800b627d"),
 			 entry1->checksum->getMessageDigest());
@@ -86,10 +86,10 @@ void MetalinkProcessorTest::testParseFile()
     SharedHandle<MetalinkResource> resource1 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_FTP, resource1->type);
     CPPUNIT_ASSERT_EQUAL(std::string("JP"), resource1->location);
-    CPPUNIT_ASSERT_EQUAL((int32_t)100, resource1->preference);
+    CPPUNIT_ASSERT_EQUAL(100, resource1->preference);
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"),
 			 resource1->url);
-    CPPUNIT_ASSERT_EQUAL((int32_t)1, resource1->maxConnections);
+    CPPUNIT_ASSERT_EQUAL(1, resource1->maxConnections);
 
     resourceItr1++;
     SharedHandle<MetalinkResource> resource2 = *resourceItr1;
@@ -98,22 +98,22 @@ void MetalinkProcessorTest::testParseFile()
     CPPUNIT_ASSERT_EQUAL((int32_t)100, resource2->preference);
     CPPUNIT_ASSERT_EQUAL(std::string("http://httphost/aria2-0.5.2.tar.bz2"),
 			 resource2->url);
-    CPPUNIT_ASSERT_EQUAL((int32_t)-1, resource2->maxConnections);
+    CPPUNIT_ASSERT_EQUAL(-1, resource2->maxConnections);
 
     entryItr++;
 
     SharedHandle<MetalinkEntry> entry2 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.1.tar.bz2"), entry2->getPath());
-    CPPUNIT_ASSERT_EQUAL((int64_t)345689, entry2->getLength());
+    CPPUNIT_ASSERT_EQUAL(345689ULL, entry2->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), entry2->version);
     CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entry2->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entry2->os);
-    CPPUNIT_ASSERT_EQUAL((int32_t)-1, entry2->maxConnections);
+    CPPUNIT_ASSERT_EQUAL(-1, entry2->maxConnections);
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("4c255b0ed130f5ea880f0aa061c3da0487e251cc"),
 			 entry2->checksum->getMessageDigest());
-    CPPUNIT_ASSERT_EQUAL((int32_t)2, entry2->chunkChecksum->countChecksum());
-    CPPUNIT_ASSERT_EQUAL((int32_t)262144, entry2->chunkChecksum->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)2, entry2->chunkChecksum->countChecksum());
+    CPPUNIT_ASSERT_EQUAL((size_t)262144, entry2->chunkChecksum->getChecksumLength());
     CPPUNIT_ASSERT_EQUAL(std::string("179463a88d79cbf0b1923991708aead914f26142"),
 			 entry2->chunkChecksum->getChecksum(0));
     CPPUNIT_ASSERT_EQUAL(std::string("fecf8bc9a1647505fe16746f94e97a477597dbf3"),
@@ -221,7 +221,7 @@ void MetalinkProcessorTest::testBadSize()
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, e->getLength());
+    CPPUNIT_ASSERT_EQUAL(0ULL, e->getLength());
     CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), e->version);
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), e->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), e->os);
@@ -253,7 +253,7 @@ void MetalinkProcessorTest::testBadMaxConn()
 
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
-    CPPUNIT_ASSERT_EQUAL((int64_t)43743838, e->getLength());
+    CPPUNIT_ASSERT_EQUAL(43743838ULL, e->getLength());
   } catch(Exception* e) {
     CPPUNIT_FAIL(e->getMsg());
     delete e;
@@ -420,7 +420,7 @@ void MetalinkProcessorTest::testMultiplePieces()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), c->getAlgo());
-    CPPUNIT_ASSERT_EQUAL(1024, c->getChecksumLength());
+    CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
   } catch(Exception* e) {
     CPPUNIT_FAIL(e->getMsg());
     delete e;
@@ -540,7 +540,7 @@ void MetalinkProcessorTest::testLargeFileSize()
   try {
     SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
-    CPPUNIT_ASSERT_EQUAL(9223372036854775807LL, e->getLength());
+    CPPUNIT_ASSERT_EQUAL(9223372036854775807ULL, e->getLength());
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
     std::string m = e->getMsg();

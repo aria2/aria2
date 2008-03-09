@@ -118,7 +118,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
 
   unsigned char buf[512];
-  int32_t size = sizeof(buf);
+  size_t size = sizeof(buf);
   socket->peekData(buf, size);
   if(size == 0) {
     throw new DlRetryEx(EX_INVALID_RESPONSE);
@@ -128,7 +128,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
     socket->readData(buf, size);
     return 0;
   }
-  int32_t putbackDataLength = proc->getPutBackDataLength();
+  size_t putbackDataLength = proc->getPutBackDataLength();
   size -= putbackDataLength;
   socket->readData(buf, size);
 

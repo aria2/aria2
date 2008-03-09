@@ -40,11 +40,9 @@ namespace aria2 {
 
 class DelegatingPeerListProcessor : public PeerListProcessor {
 private:
-  int32_t pieceLength;
-  int64_t totalLength;
   std::deque<SharedHandle<PeerListProcessor> > processors;
 public:
-  DelegatingPeerListProcessor(int32_t pieceLength, int64_t totalLength);
+  DelegatingPeerListProcessor();
 
   virtual ~DelegatingPeerListProcessor();
 

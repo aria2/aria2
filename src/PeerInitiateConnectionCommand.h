@@ -49,7 +49,7 @@ private:
   bool _mseHandshakeEnabled;
 protected:
   virtual bool executeInternal();
-  virtual bool prepareForNextPeer(int wait);
+  virtual bool prepareForNextPeer(time_t wait);
   virtual void onAbort(Exception* ex);
   virtual bool exitBeforeExecute();
 

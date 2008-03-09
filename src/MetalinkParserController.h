@@ -65,9 +65,9 @@ private:
 
   SharedHandle<ChunkChecksum> _tChunkChecksum;
 
-  std::deque<std::pair<int32_t, std::string> > _tempChunkChecksums;
+  std::deque<std::pair<size_t, std::string> > _tempChunkChecksums;
   
-  std::pair<int32_t, std::string> _tempHashPair;
+  std::pair<size_t, std::string> _tempHashPair;
 #endif // ENABLE_MESSAGE_DIGEST
 
 public:
@@ -81,7 +81,7 @@ public:
 
   void setFileNameOfEntry(const std::string& filename);
 
-  void setFileLengthOfEntry(int64_t length);
+  void setFileLengthOfEntry(uint64_t length);
 
   void setVersionOfEntry(const std::string& version);
 
@@ -89,7 +89,7 @@ public:
 
   void setOSOfEntry(const std::string& os);
 
-  void setMaxConnectionsOfEntry(int32_t maxConnections);
+  void setMaxConnectionsOfEntry(int maxConnections);
 
   void commitEntryTransaction();
 
@@ -103,9 +103,9 @@ public:
 
   void setLocationOfResource(const std::string& location);
 
-  void setPreferenceOfResource(int32_t preference);
+  void setPreferenceOfResource(int preference);
 
-  void setMaxConnectionsOfResource(int32_t maxConnections);
+  void setMaxConnectionsOfResource(int maxConnections);
 
   void commitResourceTransaction();
 
@@ -125,11 +125,11 @@ public:
 
   void setTypeOfChunkChecksum(const std::string& type);
 
-  void setLengthOfChunkChecksum(int32_t length);
+  void setLengthOfChunkChecksum(size_t length);
 
-  void addHashOfChunkChecksum(int32_t order, const std::string& md);
+  void addHashOfChunkChecksum(size_t order, const std::string& md);
 
-  void createNewHashOfChunkChecksum(int32_t order);
+  void createNewHashOfChunkChecksum(size_t order);
 
   void setMessageDigestOfChunkChecksum(const std::string& md);
 

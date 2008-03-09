@@ -47,28 +47,28 @@ class PeerMessageUtil {
 private:
   PeerMessageUtil() {}
 public:
-  static int32_t getIntParam(const unsigned char* msg, int32_t offset);
+  static uint32_t getIntParam(const unsigned char* msg, size_t pos);
 
-  static int16_t getShortIntParam(const unsigned char* msg, int32_t offset);
+  static uint16_t getShortIntParam(const unsigned char* msg, size_t pos);
 
-  static void setIntParam(unsigned char* dest, int32_t param);
+  static void setIntParam(unsigned char* dest, uint32_t param);
 
-  static void setShortIntParam(unsigned char* dest, int16_t param);
+  static void setShortIntParam(unsigned char* dest, uint16_t param);
 
-  static int8_t getId(const unsigned char* msg);
+  static uint8_t getId(const unsigned char* msg);
   
-  static void checkIndex(int32_t index, int32_t pieces);
-  static void checkBegin(int32_t begin, int32_t pieceLength);
-  static void checkLength(int32_t length);
-  static void checkRange(int32_t begin, int32_t length, int32_t pieceLength);
+  static void checkIndex(size_t index, size_t pieces);
+  static void checkBegin(uint32_t begin, size_t pieceLength);
+  static void checkLength(size_t length);
+  static void checkRange(uint32_t begin, size_t length, size_t pieceLength);
   static void checkBitfield(const unsigned char* bitfield,
-			    int32_t bitfieldLength,
-			    int32_t pieces);
+			    size_t bitfieldLength,
+			    size_t pieces);
 
   static void createPeerMessageString(unsigned char* msg,
-				      int32_t msgLength,
-				      int32_t payloadLength,
-				      int8_t messageId);
+				      size_t msgLength,
+				      size_t payloadLength,
+				      uint8_t messageId);
 
   /**
    * Creates compact tracker format(6bytes for ipv4 address and port)

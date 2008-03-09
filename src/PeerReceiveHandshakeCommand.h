@@ -48,14 +48,10 @@ class PeerReceiveHandshakeCommand:public PeerAbstractCommand
 private:
   SharedHandle<PeerConnection> _peerConnection;
 
-  int32_t _thresholdSpeed;
+  unsigned int _thresholdSpeed;
 
 protected:
   virtual bool executeInternal();
-  /*
-  virtual bool prepareForRetry(int32_t wait);
-  virtual bool prepareForNextPeer(int32_t wait);
-  */
   virtual bool exitBeforeExecute();
 public:
   PeerReceiveHandshakeCommand(int32_t cuid,

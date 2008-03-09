@@ -105,7 +105,7 @@ void DefaultBtMessageDispatcher::sendMessages() {
 }
 
 // Cancel sending piece message to peer.
-void DefaultBtMessageDispatcher::doCancelSendingPieceAction(int32_t index, int32_t begin, int32_t length)
+void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32_t begin, size_t length)
 {
   BtCancelSendingPieceEventHandle event =
     new BtCancelSendingPieceEvent(index, begin, length);
@@ -222,12 +222,12 @@ bool DefaultBtMessageDispatcher::isSendingInProgress()
   }
 }
 
-int32_t DefaultBtMessageDispatcher::countOutstandingRequest()
+size_t DefaultBtMessageDispatcher::countOutstandingRequest()
 {
   return requestSlots.size();
 }
 
-bool DefaultBtMessageDispatcher::isOutstandingRequest(int32_t index, int32_t blockIndex) {
+bool DefaultBtMessageDispatcher::isOutstandingRequest(size_t index, size_t blockIndex) {
   for(RequestSlots::const_iterator itr = requestSlots.begin();
       itr != requestSlots.end(); itr++) {
     const RequestSlot& slot = *itr;
@@ -239,7 +239,7 @@ bool DefaultBtMessageDispatcher::isOutstandingRequest(int32_t index, int32_t blo
 }
 
 RequestSlot
-DefaultBtMessageDispatcher::getOutstandingRequest(int32_t index, int32_t begin, int32_t length)
+DefaultBtMessageDispatcher::getOutstandingRequest(size_t index, uint32_t begin, size_t length)
 {
   for(RequestSlots::iterator itr = requestSlots.begin();
       itr != requestSlots.end(); itr++) {

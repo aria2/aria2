@@ -91,7 +91,7 @@ MSEHandshake::HANDSHAKE_TYPE MSEHandshake::identifyHandshakeType()
   if(!_socket->isReadable(0)) {
     return HANDSHAKE_NOT_YET;
   }
-  int32_t r = 20-_rbufLength;
+  size_t r = 20-_rbufLength;
   _socket->readData(_rbuf+_rbufLength, r);
   if(r == 0) {
     throw new DlAbortEx(EX_EOF_FROM_PEER);
@@ -134,7 +134,7 @@ void MSEHandshake::sendPublicKey()
 
 bool MSEHandshake::receivePublicKey()
 {
-  int32_t r = KEY_LENGTH-_rbufLength;
+  size_t r = KEY_LENGTH-_rbufLength;
   if(r > receiveNBytes(r)) {
     return false;
   }
@@ -281,7 +281,7 @@ void MSEHandshake::sendInitiatorStep2()
 bool MSEHandshake::findInitiatorVCMarker()
 {
   // 616 is synchronization point of initiator
-  int32_t r = 616-KEY_LENGTH-_rbufLength;
+  size_t r = 616-KEY_LENGTH-_rbufLength;
   if(!_socket->isReadable(0)) {
     return false;
   }
@@ -303,8 +303,8 @@ bool MSEHandshake::findInitiatorVCMarker()
       }
     }
   }
-  assert(_markerIndex+VC_LENGTH-_rbufLength <= (size_t)r);
-  int32_t toRead = _markerIndex+VC_LENGTH-_rbufLength;
+  assert(_markerIndex+VC_LENGTH-_rbufLength <= r);
+  size_t toRead = _markerIndex+VC_LENGTH-_rbufLength;
   _socket->readData(_rbuf+_rbufLength, toRead);
   _rbufLength += toRead;
 
@@ -317,7 +317,7 @@ bool MSEHandshake::findInitiatorVCMarker()
 
 bool MSEHandshake::receiveInitiatorCryptoSelectAndPadDLength()
 {
-  int32_t r = CRYPTO_BITFIELD_LENGTH+2/* PadD length*/-_rbufLength;
+  size_t r = CRYPTO_BITFIELD_LENGTH+2/* PadD length*/-_rbufLength;
   if(r > receiveNBytes(r)) {
     return false;
   }
@@ -353,7 +353,7 @@ bool MSEHandshake::receivePad()
   if(_padLength == 0) {
     return true;
   }
-  int32_t r = _padLength-_rbufLength;
+  size_t r = _padLength-_rbufLength;
   if(r > receiveNBytes(r)) {
     return false;
   }
@@ -367,7 +367,7 @@ bool MSEHandshake::receivePad()
 bool MSEHandshake::findReceiverHashMarker()
 {
   // 628 is synchronization limit of receiver.
-  int32_t r = 628-KEY_LENGTH-_rbufLength;
+  size_t r = 628-KEY_LENGTH-_rbufLength;
   if(!_socket->isReadable(0)) {
     return false;
   }
@@ -391,8 +391,8 @@ bool MSEHandshake::findReceiverHashMarker()
       }
     }
   }
-  assert(_markerIndex+20-_rbufLength <= (size_t)r);
-  int32_t toRead = _markerIndex+20-_rbufLength;
+  assert(_markerIndex+20-_rbufLength <= r);
+  size_t toRead = _markerIndex+20-_rbufLength;
   _socket->readData(_rbuf+_rbufLength, toRead);
   _rbufLength += toRead;
 
@@ -405,7 +405,7 @@ bool MSEHandshake::findReceiverHashMarker()
 
 bool MSEHandshake::receiveReceiverHashAndPadCLength()
 {
-  int32_t r = 20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/-_rbufLength;
+  size_t r = 20+VC_LENGTH+CRYPTO_BITFIELD_LENGTH+2/*PadC length*/-_rbufLength;
   if(r > receiveNBytes(r)) {
     return false;
   }
@@ -462,7 +462,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength()
 
 bool MSEHandshake::receiveReceiverIALength()
 {
-  int32_t r = 2-_rbufLength;
+  size_t r = 2-_rbufLength;
   assert(r > 0);
   if(r > receiveNBytes(r)) {
     return false;
@@ -479,7 +479,7 @@ bool MSEHandshake::receiveReceiverIA()
   if(_iaLength == 0) {
     return true;
   }
-  int32_t r = _iaLength-_rbufLength;
+  size_t r = _iaLength-_rbufLength;
   if(r > receiveNBytes(r)) {
     return false;
   }
@@ -545,9 +545,9 @@ void MSEHandshake::verifyReq1Hash(const unsigned char* req1buf)
   }
 }
 
-ssize_t MSEHandshake::receiveNBytes(size_t bytes)
+size_t MSEHandshake::receiveNBytes(size_t bytes)
 {
-  int32_t r = bytes;
+  size_t r = bytes;
   if(r > 0) {
     if(!_socket->isReadable(0)) {
       return 0;

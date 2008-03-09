@@ -49,7 +49,7 @@ PeerChokeCommand::PeerChokeCommand(int32_t cuid,
 				   RequestGroup* requestGroup,
 				   DownloadEngine* e,
 				   const BtContextHandle& btContext,
-				   int32_t interval):
+				   time_t interval):
   Command(cuid),
   BtContextAwareCommand(btContext),
   RequestGroupAware(requestGroup),
@@ -73,7 +73,7 @@ void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
     return;
   }
   std::random_shuffle(peers.begin(), peers.end());
-  int32_t optUnchokCount = 1;
+  unsigned int optUnchokCount = 1;
   for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
     Peers::value_type peer = *itr;
     if(optUnchokCount > 0 && !peer->snubbing()) {
@@ -122,7 +122,7 @@ bool PeerChokeCommand::execute() {
     } else {
       orderByDownloadRate(peers);
     }
-    int32_t unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
+    unsigned int unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
     for(Peers::iterator itr = peers.begin(); itr != peers.end() && unchokingCount > 0; ) {
       PeerHandle peer = *itr;
       if(peer->peerInterested() && !peer->snubbing()) {

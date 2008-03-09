@@ -64,7 +64,7 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 {
   RequestGroups workingSet;
   RequestGroups reservedSet;
-  if(op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS) < (int32_t)requestGroups.size()) {
+  if((size_t)op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS) < requestGroups.size()) {
     std::copy(requestGroups.begin(), requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS), std::back_inserter(workingSet));
     std::copy(requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS),
 	      requestGroups.end(), std::back_inserter(reservedSet));
@@ -88,7 +88,7 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   e->commands.push_back(new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
   e->commands.push_back(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 10));
   {
-    int32_t stopSec = op->getAsInt(PREF_STOP);
+    time_t stopSec = op->getAsInt(PREF_STOP);
     if(stopSec > 0) {
       e->commands.push_back(new TimedHaltCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), stopSec));
     }

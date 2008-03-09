@@ -322,10 +322,10 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
   DefaultBtAnnounce an(new MockBtContext(), _option);
   an.processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), an.getTrackerID());
-  CPPUNIT_ASSERT_EQUAL(3000, an.getInterval());
-  CPPUNIT_ASSERT_EQUAL(1800, an.getMinInterval());
-  CPPUNIT_ASSERT_EQUAL(100, an.getComplete());
-  CPPUNIT_ASSERT_EQUAL(200, an.getIncomplete());
+  CPPUNIT_ASSERT_EQUAL((time_t)3000, an.getInterval());
+  CPPUNIT_ASSERT_EQUAL((time_t)1800, an.getMinInterval());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)100, an.getComplete());
+  CPPUNIT_ASSERT_EQUAL((unsigned int)200, an.getIncomplete());
 }
 
 } // namespace aria2

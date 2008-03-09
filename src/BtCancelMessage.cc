@@ -41,11 +41,11 @@
 
 namespace aria2 {
 
-BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, int32_t dataLength) {
+BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 13) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "cancel", dataLength, 13);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "cancel", ID);
   }
@@ -60,7 +60,7 @@ void BtCancelMessage::doReceivedAction() {
   dispatcher->doCancelSendingPieceAction(index, begin, length);
 }
 
-int32_t BtCancelMessage::MESSAGE_LENGTH = 17;
+size_t BtCancelMessage::MESSAGE_LENGTH = 17;
 
 const unsigned char* BtCancelMessage::getMessage() {
   if(!msg) {
@@ -81,13 +81,13 @@ const unsigned char* BtCancelMessage::getMessage() {
   return msg;
 }
 
-int32_t BtCancelMessage::getMessageLength() {
+size_t BtCancelMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 
 std::string BtCancelMessage::toString() const {
-  return "cancel index="+Util::itos(index)+", begin="+Util::itos(begin)+
-    ", length="+Util::itos(length);
+  return "cancel index="+Util::uitos(index)+", begin="+Util::uitos(begin)+
+    ", length="+Util::uitos(length);
 }
 
 } // namespace aria2

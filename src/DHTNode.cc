@@ -113,7 +113,7 @@ std::string DHTNode::toString() const
   return "DHTNode ID="+Util::toHex(_id, DHT_ID_LENGTH)+
     ", Host="+_ipaddr+":"+Util::uitos(_port)+
     ", Condition="+Util::uitos(_condition)+
-    ", RTT="+Util::itos(_rtt);
+    ", RTT="+Util::uitos(_rtt);
 }
 
 } // namespace aria2

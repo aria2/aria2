@@ -119,13 +119,13 @@ bool AbstractCommand::execute() {
       checkPoint.reset();
       if(!_requestGroup->getPieceStorage().isNull()) {
 	_segments = _requestGroup->getSegmentMan()->getInFlightSegment(cuid);
-	int32_t maxSegments;
+	size_t maxSegments;
 	if(req->isKeepAlive() && e->option->get(PREF_ENABLE_HTTP_PIPELINING) == V_TRUE) {
 	  maxSegments = e->option->getAsInt(PREF_MAX_HTTP_PIPELINING);
 	} else {
 	  maxSegments = 1;
 	}
-	while((int32_t)_segments.size() < maxSegments) {
+	while(_segments.size() < maxSegments) {
 	  SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid);
 	  if(segment.isNull()) {
 	    break;
@@ -156,7 +156,7 @@ bool AbstractCommand::execute() {
     logger->info(MSG_RESTARTING_DOWNLOAD, err, cuid, req->getUrl().c_str());
     req->addTryCount();
     bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
-      req->getTryCount() >= e->option->getAsInt(PREF_MAX_TRIES);
+      req->getTryCount() >= (unsigned int)e->option->getAsInt(PREF_MAX_TRIES);
     if(isAbort) {
       onAbort(err);
     }
@@ -184,7 +184,7 @@ void AbstractCommand::tryReserved() {
   e->addCommand(commands);
 }
 
-bool AbstractCommand::prepareForRetry(int32_t wait) {
+bool AbstractCommand::prepareForRetry(time_t wait) {
   if(!_requestGroup->getPieceStorage().isNull()) {
     _requestGroup->getSegmentMan()->cancelSegment(cuid);
   }

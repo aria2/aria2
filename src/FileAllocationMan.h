@@ -64,7 +64,7 @@ public:
 
   void pushFileAllocationEntry(const SharedHandle<FileAllocationEntry>& entry);
 
-  int32_t countFileAllocationEntryInQueue() const;
+  size_t countFileAllocationEntryInQueue() const;
 };
 
 typedef SharedHandle<FileAllocationMan> FileAllocationManHandle;

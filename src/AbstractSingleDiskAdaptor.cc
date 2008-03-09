@@ -65,12 +65,12 @@ void AbstractSingleDiskAdaptor::openExistingFile()
   diskWriter->openExistingFile(getFilePath(), totalLength);
 }
 
-void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, int32_t len, int64_t offset)
+void AbstractSingleDiskAdaptor::writeData(const unsigned char* data, size_t len, off_t offset)
 {
   diskWriter->writeData(data, len, offset);
 }
 
-int32_t AbstractSingleDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
+ssize_t AbstractSingleDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset)
 {
   return diskWriter->readData(data, len, offset);
 }
@@ -80,12 +80,12 @@ bool AbstractSingleDiskAdaptor::fileExists()
   return File(getFilePath()).exists();
 }
 
-int64_t AbstractSingleDiskAdaptor::size() const
+uint64_t AbstractSingleDiskAdaptor::size() const
 {
   return diskWriter->size();
 }
 
-void AbstractSingleDiskAdaptor::truncate(int64_t length)
+void AbstractSingleDiskAdaptor::truncate(uint64_t length)
 {
   diskWriter->truncate(length);
 }
@@ -123,12 +123,12 @@ DiskWriterHandle AbstractSingleDiskAdaptor::getDiskWriter() const
   return diskWriter;
 }
 
-void AbstractSingleDiskAdaptor::setTotalLength(const int64_t& totalLength)
+void AbstractSingleDiskAdaptor::setTotalLength(const uint64_t& totalLength)
 {
   this->totalLength = totalLength;
 }
 
-int64_t AbstractSingleDiskAdaptor::getTotalLength() const
+uint64_t AbstractSingleDiskAdaptor::getTotalLength() const
 {
   return totalLength;
 }

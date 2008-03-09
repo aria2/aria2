@@ -56,8 +56,8 @@ public:
   bool defined(const std::string& name) const;
   std::string getFirst(const std::string& name) const;
   std::deque<std::string> get(const std::string& name) const;
-  int32_t getFirstAsInt(const std::string& name) const;
-  int64_t getFirstAsLLInt(const std::string& name) const;
+  unsigned int getFirstAsUInt(const std::string& name) const;
+  uint64_t getFirstAsULLInt(const std::string& name) const;
 
   SharedHandle<Range> getRange() const;
 };

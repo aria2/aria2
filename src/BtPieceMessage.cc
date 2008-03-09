@@ -54,18 +54,18 @@
 
 namespace aria2 {
 
-void BtPieceMessage::setBlock(const unsigned char* block, int32_t blockLength) {
+void BtPieceMessage::setBlock(const unsigned char* block, size_t blockLength) {
   delete [] this->block;
   this->blockLength = blockLength;
   this->block = new unsigned char[this->blockLength];
   memcpy(this->block, block, this->blockLength);
 }
 
-BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, int32_t dataLength) {
+BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength <= 9) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "piece", dataLength, 9);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
   }
@@ -85,16 +85,12 @@ void BtPieceMessage::doReceivedAction() {
     peer->snubbing(false);
     peer->updateLatency(slot.getLatencyInMillis());
     PieceHandle piece = pieceStorage->getPiece(index);
-    int64_t offset =
-      ((int64_t)index)*btContext->getPieceLength()+begin;
+    off_t offset = (off_t)index*btContext->getPieceLength()+begin;
     logger->debug(MSG_PIECE_RECEIVED,
 		  cuid, index, begin, blockLength, offset, slot.getBlockIndex());
-    pieceStorage->getDiskAdaptor()->writeData(block,
-					      blockLength,
-					      offset);
+    pieceStorage->getDiskAdaptor()->writeData(block, blockLength, offset);
     piece->completeBlock(slot.getBlockIndex());
-    logger->debug(MSG_PIECE_BITFIELD,
-		  cuid,
+    logger->debug(MSG_PIECE_BITFIELD, cuid,
 		  Util::toHex(piece->getBitfield(),
 			      piece->getBitfieldLength()).c_str());
     dispatcher->removeOutstandingRequest(slot);
@@ -108,7 +104,7 @@ void BtPieceMessage::doReceivedAction() {
   }
 }
 
-int32_t BtPieceMessage::MESSAGE_HEADER_LENGTH = 13;
+size_t BtPieceMessage::MESSAGE_HEADER_LENGTH = 13;
 
 const unsigned char* BtPieceMessage::getMessageHeader() {
   if(!msgHeader) {
@@ -128,7 +124,7 @@ const unsigned char* BtPieceMessage::getMessageHeader() {
   return msgHeader;
 }
 
-int32_t BtPieceMessage::getMessageHeaderLength() {
+size_t BtPieceMessage::getMessageHeaderLength() {
   return MESSAGE_HEADER_LENGTH;
 }
 
@@ -145,7 +141,7 @@ void BtPieceMessage::send() {
       leftDataLength = getMessageHeaderLength();
       sendingInProgress = true;
     }
-    int32_t writtenLength
+    size_t writtenLength
       = peerConnection->sendMessage(msgHeader+getMessageHeaderLength()-leftDataLength,
 				    leftDataLength);
     if(writtenLength == leftDataLength) {
@@ -157,10 +153,9 @@ void BtPieceMessage::send() {
   }
   if(headerSent) {
     sendingInProgress = false;
-    int64_t pieceDataOffset =
-      ((int64_t)index)*btContext->getPieceLength()+begin+blockLength-leftDataLength;
-    int32_t writtenLength =
-      sendPieceData(pieceDataOffset, leftDataLength);
+    off_t pieceDataOffset =
+      (off_t)index*btContext->getPieceLength()+begin+blockLength-leftDataLength;
+    size_t writtenLength = sendPieceData(pieceDataOffset, leftDataLength);
     peer->updateUploadLength(writtenLength);
     if(writtenLength < leftDataLength) {
       sendingInProgress = true;
@@ -169,28 +164,26 @@ void BtPieceMessage::send() {
   }
 }
 
-int32_t BtPieceMessage::sendPieceData(int64_t offset, int32_t length) const {
-  int32_t BUF_SIZE = 256;
+size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
+  size_t BUF_SIZE = 256;
   unsigned char buf[BUF_SIZE];
-  int32_t iteration = length/BUF_SIZE;
-  int32_t writtenLength = 0;
-  for(int32_t i = 0; i < iteration; i++) {
-    if(pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
+  div_t res = div(length, BUF_SIZE);
+  size_t writtenLength = 0;
+  for(int i = 0; i < res.quot; i++) {
+    if((size_t)pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
       throw new DlAbortEx(EX_DATA_READ);
     }
-    int32_t ws = peerConnection->sendMessage(buf, BUF_SIZE);
+    size_t ws = peerConnection->sendMessage(buf, BUF_SIZE);
     writtenLength += ws;
     if(ws != BUF_SIZE) {
       return writtenLength;
     }
   }
-
-  int32_t rem = length%BUF_SIZE;
-  if(rem > 0) {
-    if(pieceStorage->getDiskAdaptor()->readData(buf, rem, offset+iteration*BUF_SIZE) < rem) {
+  if(res.rem > 0) {
+    if(pieceStorage->getDiskAdaptor()->readData(buf, res.rem, offset+res.quot*BUF_SIZE) < res.rem) {
       throw new DlAbortEx(EX_DATA_READ);
     }
-    int32_t ws = peerConnection->sendMessage(buf, rem);
+    size_t ws = peerConnection->sendMessage(buf, res.rem);
     writtenLength += ws;
   }
   return writtenLength;
@@ -202,8 +195,7 @@ std::string BtPieceMessage::toString() const {
 }
 
 bool BtPieceMessage::checkPieceHash(const PieceHandle& piece) {
-  int64_t offset =
-    ((int64_t)piece->getIndex())*btContext->getPieceLength();
+  off_t offset = (off_t)piece->getIndex()*btContext->getPieceLength();
   
   return MessageDigestHelper::staticSHA1Digest(pieceStorage->getDiskAdaptor(), offset, piece->getLength())
     == btContext->getPieceHash(piece->getIndex());

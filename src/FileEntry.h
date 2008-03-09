@@ -47,14 +47,14 @@ class FileEntry {
 private:
   std::string path;
   std::deque<std::string> _uris;
-  int64_t length;
-  int64_t offset;
+  uint64_t length;
+  off_t offset;
   bool extracted;
   bool requested;
 public:
   FileEntry():length(0), offset(0), extracted(false), requested(false) {}
 
-  FileEntry(const std::string& path, int64_t length, int64_t offset,
+  FileEntry(const std::string& path, uint64_t length, off_t offset,
 	    const std::deque<std::string>& uris = std::deque<std::string>());
 
   ~FileEntry();
@@ -75,13 +75,13 @@ public:
 
   void setPath(const std::string& path) { this->path = path; }
 
-  int64_t getLength() const { return length; }
+  uint64_t getLength() const { return length; }
 
-  void setLength(int64_t length) { this->length = length; }
+  void setLength(uint64_t length) { this->length = length; }
 
-  int64_t getOffset() const { return offset; }
+  off_t getOffset() const { return offset; }
 
-  void setOffset(int64_t offset) { this->offset = offset; }
+  void setOffset(off_t offset) { this->offset = offset; }
 
   bool isExtracted() const { return extracted; }
 

@@ -48,15 +48,15 @@ typedef SharedHandle<BtPieceMessage> BtPieceMessageHandle;
 
 class BtPieceMessage : public AbstractBtMessage {
 private:
-  int32_t index;
-  int32_t begin;
-  int32_t blockLength;
+  size_t index;
+  uint32_t begin;
+  uint32_t blockLength;
   unsigned char* block;
-  int32_t leftDataLength;
+  size_t leftDataLength;
   bool headerSent;
   unsigned char* msgHeader;
 
-  static int32_t MESSAGE_HEADER_LENGTH;
+  static size_t MESSAGE_HEADER_LENGTH;
 
   bool checkPieceHash(const SharedHandle<Piece>& piece);
 
@@ -66,7 +66,7 @@ private:
 
   void erasePieceOnDisk(const SharedHandle<Piece>& piece);
 
-  int32_t sendPieceData(int64_t offset, int32_t length) const;
+  size_t sendPieceData(off_t offset, size_t length) const;
 
   class BtChokingEventListener : public AbstractBtEventListener {
   private:
@@ -94,7 +94,7 @@ private:
 
   typedef SharedHandle<BtCancelSendingPieceEventListener> BtCancelSendingPieceEventListenerHandle;
 public:
-  BtPieceMessage(int32_t index = 0, int32_t begin = 0, int32_t blockLength = 0)
+  BtPieceMessage(size_t index = 0, uint32_t begin = 0, size_t blockLength = 0)
     :index(index),
      begin(begin),
      blockLength(blockLength),
@@ -113,33 +113,33 @@ public:
     delete []  block;
   }
 
-  static const int8_t ID = 7;
+  static const uint8_t ID = 7;
 
-  int32_t getIndex() const { return index; }
+  size_t getIndex() const { return index; }
 
-  void setIndex(int32_t index) { this->index = index; }
+  void setIndex(size_t index) { this->index = index; }
 
-  int32_t getBegin() const { return begin; }
+  uint32_t getBegin() const { return begin; }
 
-  void setBegin(int32_t begin) { this->begin = begin; }
+  void setBegin(uint32_t begin) { this->begin = begin; }
 
   const unsigned char* getBlock() const { return block; }
 
-  void setBlock(const unsigned char* block, int32_t blockLength);
+  void setBlock(const unsigned char* block, size_t blockLength);
 
-  int32_t getBlockLength() const { return blockLength; }
+  size_t getBlockLength() const { return blockLength; }
 
-  void setBlockLength(int32_t blockLength) { this->blockLength = blockLength; }
+  void setBlockLength(size_t blockLength) { this->blockLength = blockLength; }
 
-  static BtPieceMessageHandle create(const unsigned char* data, int32_t dataLength);
+  static BtPieceMessageHandle create(const unsigned char* data, size_t dataLength);
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   const unsigned char* getMessageHeader();
 
-  int32_t getMessageHeaderLength();
+  size_t getMessageHeaderLength();
 
   virtual void send();
 

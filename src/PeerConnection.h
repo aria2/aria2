@@ -58,16 +58,16 @@ private:
   const Logger* logger;
 
   unsigned char resbuf[MAX_PAYLOAD_LEN];
-  int32_t resbufLength;
-  int32_t currentPayloadLength;
+  size_t resbufLength;
+  size_t currentPayloadLength;
   unsigned char lenbuf[4];
-  int32_t lenbufLength;
+  size_t lenbufLength;
 
   bool _encryptionEnabled;
   SharedHandle<ARC4Encryptor> _encryptor;
   SharedHandle<ARC4Decryptor> _decryptor;
 
-  void readData(unsigned char* data, int32_t& length, bool encryption);
+  void readData(unsigned char* data, size_t& length, bool encryption);
 
   void sendData(const unsigned char* data, size_t length, bool encryption);
 
@@ -77,9 +77,9 @@ public:
   ~PeerConnection();
   
   // Returns the number of bytes written
-  int32_t sendMessage(const unsigned char* data, int32_t dataLength);
+  ssize_t sendMessage(const unsigned char* data, size_t dataLength);
 
-  bool receiveMessage(unsigned char* data, int32_t& dataLength);
+  bool receiveMessage(unsigned char* data, size_t& dataLength);
 
   /**
    * Returns true if a handshake message is fully received, otherwise returns
@@ -87,7 +87,7 @@ public:
    * In both cases, 'msg' is filled with received bytes and the filled length
    * is assigned to 'length'.
    */
-  bool receiveHandshake(unsigned char* data, int32_t& dataLength, bool peek = false);
+  bool receiveHandshake(unsigned char* data, size_t& dataLength, bool peek = false);
 
   void enableEncryption(const SharedHandle<ARC4Encryptor>& encryptor,
 			const SharedHandle<ARC4Decryptor>& decryptor);

@@ -109,7 +109,7 @@ public:
     return status;
   }
 
-  int32_t getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const {
+  int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const {
     return ares_fds(channel, rfdsPtr, wfdsPtr);
   }
 

@@ -78,7 +78,7 @@ SharedHandle<Request> HttpRequest::getRequest() const
   return request;
 }
 
-int64_t HttpRequest::getStartByte() const
+off_t HttpRequest::getStartByte() const
 {
   if(segment.isNull()) {
     return 0;
@@ -87,7 +87,7 @@ int64_t HttpRequest::getStartByte() const
   }
 }
 
-int64_t HttpRequest::getEndByte() const
+off_t HttpRequest::getEndByte() const
 {
   if(segment.isNull() || request.isNull()) {
     return 0;
@@ -126,9 +126,9 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
   }  
 }
 
-std::string HttpRequest::getHostText(const std::string& host, int32_t port) const
+std::string HttpRequest::getHostText(const std::string& host, uint16_t port) const
 {
-  return  host+(port == 80 || port == 443 ? "" : ":"+Util::itos(port));
+  return  host+(port == 80 || port == 443 ? "" : ":"+Util::uitos(port));
 }
 
 std::string HttpRequest::createRequest() const
@@ -199,10 +199,10 @@ std::string HttpRequest::createRequest() const
 std::string HttpRequest::createProxyRequest() const
 {
   std::string requestLine =
-    std::string("CONNECT ")+getHost()+":"+Util::itos(getPort())+
+    std::string("CONNECT ")+getHost()+":"+Util::uitos(getPort())+
     std::string(" HTTP/1.1\r\n")+
     "User-Agent: "+userAgent+"\r\n"+
-    "Host: "+getHost()+":"+Util::itos(getPort())+"\r\n";
+    "Host: "+getHost()+":"+Util::uitos(getPort())+"\r\n";
   if(request->isKeepAlive()) {
     requestLine += "Proxy-Connection: Keep-Alive\r\n";
   }else {
@@ -239,7 +239,7 @@ std::string HttpRequest::getHost() const
   return request->getHost();
 }
 
-int32_t HttpRequest::getPort() const
+uint16_t HttpRequest::getPort() const
 {
   return request->getPort();
 }

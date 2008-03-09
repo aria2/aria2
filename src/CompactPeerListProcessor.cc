@@ -38,9 +38,7 @@
 
 namespace aria2 {
 
-CompactPeerListProcessor::CompactPeerListProcessor(int32_t pieceLength, int64_t totalLength):
-  pieceLength(pieceLength),
-  totalLength(totalLength) {}
+CompactPeerListProcessor::CompactPeerListProcessor() {}
 
 CompactPeerListProcessor::~CompactPeerListProcessor() {}
 
@@ -55,7 +53,7 @@ Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
     return peers;
   }
   if(peersData->getLen()%6 == 0) {
-    for(int32_t i = 0; i < peersData->getLen(); i += 6) {
+    for(size_t i = 0; i < peersData->getLen(); i += 6) {
       struct in_addr in;
       in.s_addr = *(uint32_t*)(peersData->getData()+i);
       std::string ipaddr = inet_ntoa(in);

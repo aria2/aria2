@@ -38,6 +38,7 @@
 #include "BtInteractive.h"
 #include "BtContextAwareCommand.h"
 #include "TimeA2.h"
+#include  <limits.h>
 
 namespace aria2 {
 
@@ -53,28 +54,28 @@ class Logger;
 
 class FloodingStat {
 private:
-  int32_t chokeUnchokeCount;
-  int32_t keepAliveCount;
+  unsigned int chokeUnchokeCount;
+  unsigned int keepAliveCount;
 public:
   FloodingStat():chokeUnchokeCount(0), keepAliveCount(0) {}
   
   void incChokeUnchokeCount() {
-    if(chokeUnchokeCount < INT32_MAX) {
+    if(chokeUnchokeCount < UINT_MAX) {
       chokeUnchokeCount++;
     }
   }
 
   void incKeepAliveCount() {
-    if(keepAliveCount < INT32_MAX) {
+    if(keepAliveCount < UINT_MAX) {
       keepAliveCount++;
     }
   }
 
-  int32_t getChokeUnchokeCount() const {
+  unsigned int getChokeUnchokeCount() const {
     return chokeUnchokeCount;
   }
 
-  int32_t getKeepAliveCount() const {
+  unsigned int getKeepAliveCount() const {
     return keepAliveCount;
   }
 
@@ -98,21 +99,21 @@ private:
   WeakHandle<DHTNode> _localNode;
 
   const Logger* logger;
-  int32_t allowedFastSetSize;
+  size_t allowedFastSetSize;
   Time haveCheckPoint;
   Time keepAliveCheckPoint;
   Time floodingCheckPoint;
   FloodingStat floodingStat;
   Time inactiveCheckPoint;
   Time _pexCheckPoint;
-  int32_t keepAliveInterval;
-  int32_t maxDownloadSpeedLimit;
+  time_t keepAliveInterval;
+  unsigned int maxDownloadSpeedLimit;
   bool _utPexEnabled;
   bool _dhtEnabled;
 
   size_t _numReceivedMessage;
 
-  static const int32_t FLOODING_CHECK_INTERVAL = 5;
+  static const time_t FLOODING_CHECK_INTERVAL = 5;
 
   void addBitfieldMessageToQueue();
   void addAllowedFastMessageToQueue();
@@ -121,7 +122,7 @@ private:
   void checkHave();
   void sendKeepAlive();
   void decideInterest();
-  void fillPiece(int maxPieceNum);
+  void fillPiece(size_t maxPieceNum);
   void addRequests();
   void detectMessageFlooding();
   void checkActiveInteraction();
@@ -150,7 +151,7 @@ public:
 
   size_t receiveMessages();
 
-  virtual int32_t countPendingMessage();
+  virtual size_t countPendingMessage();
   
   virtual bool isSendingMessageInProgress();
 
@@ -174,11 +175,11 @@ public:
 
   void setBtMessageFactory(const WeakHandle<BtMessageFactory>& factory);
 
-  void setKeepAliveInterval(int32_t keepAliveInterval) {
+  void setKeepAliveInterval(time_t keepAliveInterval) {
     this->keepAliveInterval = keepAliveInterval;
   }
 
-  void setMaxDownloadSpeedLimit(int32_t maxDownloadSpeedLimit) {
+  void setMaxDownloadSpeedLimit(unsigned int maxDownloadSpeedLimit) {
     this->maxDownloadSpeedLimit = maxDownloadSpeedLimit;
   }
 

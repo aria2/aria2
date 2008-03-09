@@ -62,7 +62,7 @@ uint16_t DHTConnectionImpl::bind(uint16_t port)
 {
   try {
     _socket->bind(port);
-    std::pair<std::string, int32_t> svaddr;
+    std::pair<std::string, uint16_t> svaddr;
     _socket->getAddrInfo(svaddr);
     _logger->info("Bind socket for DHT. port=%u", port);
     return svaddr.second;

@@ -25,9 +25,9 @@ void HttpHeaderTest::testGetRange()
 
   SharedHandle<Range> range = httpHeader.getRange();
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)1, range->getStartByte());
-  CPPUNIT_ASSERT_EQUAL((int64_t)499, range->getEndByte());
-  CPPUNIT_ASSERT_EQUAL((int64_t)1234, range->getEntityLength());
+  CPPUNIT_ASSERT_EQUAL(1LL, range->getStartByte());
+  CPPUNIT_ASSERT_EQUAL(499LL, range->getEndByte());
+  CPPUNIT_ASSERT_EQUAL(1234ULL, range->getEntityLength());
 }
 
 } // namespace aria2

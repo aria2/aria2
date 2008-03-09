@@ -44,10 +44,10 @@ namespace aria2 {
 class BtHaveMessageValidator : public BtMessageValidator {
 private:
   const BtHaveMessage* message;
-  int32_t numPiece;
+  size_t numPiece;
 public:
   BtHaveMessageValidator(const BtHaveMessage* message,
-			 int32_t numPiece):
+			 size_t numPiece):
     message(message),
     numPiece(numPiece) {}
 

@@ -40,11 +40,8 @@
 namespace aria2 {
 
 class DefaultPeerListProcessor : public PeerListProcessor {
-private:
-  int32_t pieceLength;
-  int64_t totalLength;
 public:
-  DefaultPeerListProcessor(int32_t pieceLength, int64_t totalLength);
+  DefaultPeerListProcessor();
 
   virtual ~DefaultPeerListProcessor();
 

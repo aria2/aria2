@@ -42,11 +42,11 @@
 
 namespace aria2 {
 
-BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, int32_t dataLength) {
+BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "choke", dataLength, 1);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "choke", ID);
   }
@@ -64,7 +64,7 @@ bool BtChokeMessage::sendPredicate() const {
   return !peer->amChoking();
 }
 
-int32_t BtChokeMessage::MESSAGE_LENGTH = 5;
+size_t BtChokeMessage::MESSAGE_LENGTH = 5;
 
 const unsigned char* BtChokeMessage::getMessage() {
   if(!msg) {
@@ -79,7 +79,7 @@ const unsigned char* BtChokeMessage::getMessage() {
   return msg;
 }
 
-int32_t BtChokeMessage::getMessageLength() {
+size_t BtChokeMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

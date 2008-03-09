@@ -45,33 +45,33 @@ typedef SharedHandle<BtHaveMessage> BtHaveMessageHandle;
 
 class BtHaveMessage : public SimpleBtMessage {
 private:
-  int32_t index;
+  size_t index;
   unsigned char* msg;
-  static int32_t MESSAGE_LENGTH;
+  static size_t MESSAGE_LENGTH;
 public:
-  BtHaveMessage(int32_t index = 0):index(index), msg(0) {}
+  BtHaveMessage(size_t index = 0):index(index), msg(0) {}
 
   virtual ~BtHaveMessage() {
     delete [] msg;
   }
 
-  static const int8_t ID = 4;
+  static const uint8_t ID = 4;
 
-  void setIndex(int32_t index) {
+  void setIndex(size_t index) {
     this->index = index;
   }
 
-  int32_t getIndex() const { return index; }
+  size_t getIndex() const { return index; }
 
-  static BtHaveMessageHandle create(const unsigned char* data, int32_t dataLength);
+  static BtHaveMessageHandle create(const unsigned char* data, size_t dataLength);
 
-  virtual int8_t getId() { return ID; }
+  virtual uint8_t getId() { return ID; }
 
   virtual void doReceivedAction();
 
   virtual const unsigned char* getMessage();
 
-  virtual int32_t getMessageLength();
+  virtual size_t getMessageLength();
 
   virtual std::string toString() const;
 };

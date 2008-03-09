@@ -80,7 +80,7 @@ bool DiskWriterEntry::fileExists(const std::string& topDir)
   return File(getFilePath(topDir)).exists();
 }
 
-int64_t DiskWriterEntry::size() const
+uint64_t DiskWriterEntry::size() const
 {
   return diskWriter->size();
 }
@@ -182,16 +182,16 @@ void MultiDiskAdaptor::onDownloadComplete()
   openFile();
 }
 
-void MultiDiskAdaptor::writeData(const unsigned char* data, int32_t len,
-				 int64_t offset)
+void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
+				 off_t offset)
 {
-  int64_t fileOffset = offset;
+  off_t fileOffset = offset;
   bool writing = false;
-  int32_t rem = len;
+  size_t rem = len;
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || writing) {
-      int32_t writeLength = calculateLength(*itr, fileOffset, rem);
+      size_t writeLength = calculateLength(*itr, fileOffset, rem);
       (*itr)->getDiskWriter()->writeData(data+(len-rem), writeLength, fileOffset);
       rem -= writeLength;
       writing = true;
@@ -206,18 +206,18 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, int32_t len,
 }
 
 bool MultiDiskAdaptor::isInRange(const DiskWriterEntryHandle entry,
-				 int64_t offset) const
+				 off_t offset) const
 {
   return entry->getFileEntry()->getOffset() <= offset &&
-    offset < entry->getFileEntry()->getOffset()+entry->getFileEntry()->getLength();
+    (uint64_t)offset < entry->getFileEntry()->getOffset()+entry->getFileEntry()->getLength();
 }
 
-int32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
-					  int64_t fileOffset,
-					  int32_t rem) const
+size_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
+					 off_t fileOffset,
+					 size_t rem) const
 {
-  int32_t length;
-  if(entry->getFileEntry()->getLength() < fileOffset+rem) {
+  size_t length;
+  if(entry->getFileEntry()->getLength() < (uint64_t)fileOffset+rem) {
     length = entry->getFileEntry()->getLength()-fileOffset;
   } else {
     length = rem;
@@ -225,16 +225,16 @@ int32_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
   return length;
 }
 
-int32_t MultiDiskAdaptor::readData(unsigned char* data, int32_t len, int64_t offset)
+ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset)
 {
-  int64_t fileOffset = offset;
+  off_t fileOffset = offset;
   bool reading = false;
-  int32_t rem = len;
-  int32_t totalReadLength = 0;
+  size_t rem = len;
+  size_t totalReadLength = 0;
   for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end() && rem != 0; itr++) {
     if(isInRange(*itr, offset) || reading) {
-      int32_t readLength = calculateLength((*itr), fileOffset, rem);
+      size_t readLength = calculateLength((*itr), fileOffset, rem);
       totalReadLength += (*itr)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
       rem -= readLength;
       reading = true;
@@ -264,9 +264,9 @@ bool MultiDiskAdaptor::fileExists()
 }
 
 // TODO call DiskWriter::openFile() before calling this function.
-int64_t MultiDiskAdaptor::size() const
+uint64_t MultiDiskAdaptor::size() const
 {
-  int64_t size = 0;
+  uint64_t size = 0;
   for(DiskWriterEntries::const_iterator itr = diskWriterEntries.begin();
       itr != diskWriterEntries.end(); itr++) {
     size += (*itr)->size();

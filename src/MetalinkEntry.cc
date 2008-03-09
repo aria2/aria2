@@ -60,9 +60,9 @@ MetalinkEntry::~MetalinkEntry() {}
 class AddLocationPreference {
 private:
   std::deque<std::string> _locations;
-  int32_t _preferenceToAdd;
+  int _preferenceToAdd;
 public:
-  AddLocationPreference(const std::deque<std::string>& locations, int32_t preferenceToAdd):
+  AddLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd):
     _locations(locations), _preferenceToAdd(preferenceToAdd)
   {
     std::transform(_locations.begin(), _locations.end(), _locations.begin(), Util::toUpper);
@@ -97,13 +97,13 @@ std::string MetalinkEntry::getPath() const
   return file->getPath();
 }
 
-int64_t MetalinkEntry::getLength() const
+uint64_t MetalinkEntry::getLength() const
 {
   return file->getLength();
 }
 
 void MetalinkEntry::setLocationPreference(const std::deque<std::string>& locations,
-					  int32_t preferenceToAdd)
+					  int preferenceToAdd)
 {
   std::for_each(resources.begin(), resources.end(),
 		AddLocationPreference(locations, preferenceToAdd));
@@ -112,9 +112,9 @@ void MetalinkEntry::setLocationPreference(const std::deque<std::string>& locatio
 class AddProtocolPreference {
 private:
   const std::string& _protocol;
-  int32_t _preferenceToAdd;
+  int _preferenceToAdd;
 public:
-  AddProtocolPreference(const std::string& protocol, int32_t prefToAdd):
+  AddProtocolPreference(const std::string& protocol, int prefToAdd):
     _protocol(protocol), _preferenceToAdd(prefToAdd) {}
 
   void operator()(const SharedHandle<MetalinkResource>& res) const
@@ -126,7 +126,7 @@ public:
 };
 
 void MetalinkEntry::setProtocolPreference(const std::string& protocol,
-					  int32_t preferenceToAdd)
+					  int preferenceToAdd)
 {
   std::for_each(resources.begin(), resources.end(),
 		AddProtocolPreference(protocol, preferenceToAdd));

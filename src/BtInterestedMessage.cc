@@ -40,11 +40,11 @@
 
 namespace aria2 {
 
-BtInterestedMessageHandle BtInterestedMessage::create(const unsigned char* data, int32_t dataLength) {
+BtInterestedMessageHandle BtInterestedMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "interested", dataLength, 1);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "interested", ID);
   }
@@ -60,7 +60,7 @@ bool BtInterestedMessage::sendPredicate() const {
   return !peer->amInterested();
 }
 
-int32_t BtInterestedMessage::MESSAGE_LENGTH = 5;
+size_t BtInterestedMessage::MESSAGE_LENGTH = 5;
 
 const unsigned char* BtInterestedMessage::getMessage() {
   if(!msg) {
@@ -75,7 +75,7 @@ const unsigned char* BtInterestedMessage::getMessage() {
   return msg;
 }
 
-int32_t BtInterestedMessage::getMessageLength() {
+size_t BtInterestedMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

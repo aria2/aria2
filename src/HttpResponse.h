@@ -49,7 +49,7 @@ class Logger;
 class HttpResponse {
 private:
   int32_t cuid;
-  int32_t status;
+  unsigned int status;
   SharedHandle<HttpRequest> httpRequest;
   SharedHandle<HttpHeader> httpHeader;
   const Logger* logger;
@@ -85,9 +85,9 @@ public:
 
   SharedHandle<TransferEncoding> getTransferDecoder() const;
 
-  int64_t getContentLength() const;
+  uint64_t getContentLength() const;
 
-  int64_t getEntityLength() const;
+  uint64_t getEntityLength() const;
 
   std::string getContentType() const;
 
@@ -95,12 +95,12 @@ public:
 
   SharedHandle<HttpHeader> getHttpHeader() const;
 
-  void setStatus(int32_t status)
+  void setStatus(unsigned int status)
   {
     this->status = status;
   }
 
-  int32_t getStatus() const
+  unsigned int getStatus() const
   {
     return status;
   }

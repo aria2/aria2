@@ -49,16 +49,16 @@ class FillRequestGroupCommand : public Command {
 private:
   std::deque<SharedHandle<RequestGroup> > _reservedRequestGroups;
   DownloadEngine* _e;
-  int32_t _interval;
+  time_t _interval;
   Time _checkPoint;
 public:
-  FillRequestGroupCommand(int32_t cuid, DownloadEngine* e, int32_t interval);
+  FillRequestGroupCommand(int32_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~FillRequestGroupCommand();
 
   virtual bool execute();
 
-  void setInterval(int32_t interval)
+  void setInterval(time_t interval)
   {
     _interval = interval;
   }

@@ -39,8 +39,8 @@
 namespace aria2 {
 
 FileEntry::FileEntry(const std::string& path,
-		     int64_t length,
-		     int64_t offset,
+		     uint64_t length,
+		     off_t offset,
 		     const std::deque<std::string>& uris):
   path(path), _uris(uris), length(length), offset(offset),
   extracted(false), requested(true) {}

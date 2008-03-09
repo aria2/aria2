@@ -55,8 +55,8 @@ public:
   std::string url;
   TYPE type;
   std::string location;
-  int32_t preference;
-  int32_t maxConnections;
+  int preference;
+  int maxConnections;
 public:
   MetalinkResource();
   ~MetalinkResource();

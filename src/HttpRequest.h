@@ -56,7 +56,7 @@ private:
 
   SharedHandle<Segment> segment;
 
-  int64_t entityLength;
+  uint64_t entityLength;
 
   bool authEnabled;
 
@@ -66,7 +66,7 @@ private:
 
   std::string userAgent;
 
-  std::string getHostText(const std::string& host, int32_t port) const;
+  std::string getHostText(const std::string& host, uint16_t port) const;
 
   std::string getProxyAuthString() const;
 
@@ -82,19 +82,19 @@ public:
   /**
    * entityLength is used in isRangeSatisfied() method.
    */
-  void setEntityLength(int64_t entityLength)
+  void setEntityLength(uint64_t entityLength)
   {
     this->entityLength = entityLength;
   }
 
-  int64_t getEntityLength() const
+  uint64_t getEntityLength() const
   {
     return entityLength;
   }
 
   std::string getHost() const;
 
-  int32_t getPort() const;
+  uint16_t getPort() const;
 
   std::string getMethod() const;
 
@@ -118,9 +118,9 @@ public:
 
   SharedHandle<Request> getRequest() const;
 
-  int64_t getStartByte() const;
+  off_t getStartByte() const;
 
-  int64_t getEndByte() const;
+  off_t getEndByte() const;
 
   /**
    * Returns string representation of http request.

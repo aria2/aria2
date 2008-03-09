@@ -93,7 +93,7 @@ bool Request::parseUrl(const std::string& url) {
   std::string::size_type hp = tempUrl.find("://");
   if(hp == std::string::npos) return false;
   protocol = tempUrl.substr(0, hp);
-  int32_t defPort;
+  uint16_t defPort;
   if((defPort = FeatureConfig::getInstance()->getDefaultPort(protocol)) == 0) {
     return false;
   }
@@ -120,9 +120,6 @@ bool Request::parseUrl(const std::string& url) {
   if(hostAndPort.second != "") {
     try {
       port = Util::parseInt(hostAndPort.second);
-      if(!(0 < port && port <= 65535)) {
-	return false;
-      }
     } catch(RecoverableException* e) {
       delete e;
       return false;
@@ -162,9 +159,13 @@ bool Request::isHexNumber(const char c) const
 
 std::string Request::urlencode(const std::string& src) const
 {
-  int32_t lastIndex = src.size()-1;
+  if(src.empty()) {
+    return "";
+  }
+  size_t lastIndex = src.size()-1;
   std::string result = src+"  ";
-  for(int32_t index = lastIndex; index >= 0; --index) {
+  size_t index = lastIndex;
+  while(index-- > 0) {
     const char c = result[index];
     // '/' is not urlencoded because src is expected to be a path.
     if(Util::shouldUrlencode(c)) {

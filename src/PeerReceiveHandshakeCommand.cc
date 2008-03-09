@@ -67,7 +67,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(int32_t cuid,
   if(_peerConnection.isNull()) {
     _peerConnection = new PeerConnection(cuid, socket, e->option);
   }
-  int32_t maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
+  unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
   if(maxDownloadSpeed > 0) {
     _thresholdSpeed = std::min(maxDownloadSpeed, _thresholdSpeed);
   }
@@ -83,7 +83,7 @@ bool PeerReceiveHandshakeCommand::exitBeforeExecute()
 bool PeerReceiveHandshakeCommand::executeInternal()
 {
   unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
-  int32_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
+  size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
   // ignore return value. The received data is kept in PeerConnection object
   // because of peek = true.
   _peerConnection->receiveHandshake(data, dataLength, true);

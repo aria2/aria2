@@ -55,7 +55,7 @@ public:
 
   static SharedHandle<BitfieldManFactory> getFactoryInstance();
 
-  BitfieldMan* createBitfieldMan(int32_t blockLength, int64_t totalLength);
+  BitfieldMan* createBitfieldMan(size_t blockLength, uint64_t totalLength);
 
   static void setDefaultRandomizer(const SharedHandle<Randomizer>& randomizer);
 

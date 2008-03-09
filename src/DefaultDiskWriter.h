@@ -45,7 +45,7 @@ public:
 
   virtual ~DefaultDiskWriter();
 
-  virtual void initAndOpenFile(const std::string& filename, int64_t totalLength = 0);
+  virtual void initAndOpenFile(const std::string& filename, uint64_t totalLength = 0);
 };
 
 typedef SharedHandle<DefaultDiskWriter> DefaultDiskWriterHandle;

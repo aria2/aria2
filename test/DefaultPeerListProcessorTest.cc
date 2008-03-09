@@ -27,7 +27,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( DefaultPeerListProcessorTest );
 
 void DefaultPeerListProcessorTest::testExtractPeer() {
-  DefaultPeerListProcessor proc(1024*1024, 10*1024*1024);
+  DefaultPeerListProcessor proc;
   std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eeee";
 
   Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString);
@@ -42,7 +42,7 @@ void DefaultPeerListProcessorTest::testExtractPeer() {
 }
 
 void DefaultPeerListProcessorTest::testExtract2Peers() {
-  DefaultPeerListProcessor proc(1024*1024, 10*1024*1024);
+  DefaultPeerListProcessor proc;
   std::string peersString = "d5:peersld2:ip11:192.168.0.17:peer id20:aria2-000000000000004:porti2006eed2:ip11:192.168.0.27:peer id20:aria2-000000000000004:porti2007eeee";
 
   Dictionary* dic = (Dictionary*)MetaFileUtil::bdecoding(peersString);

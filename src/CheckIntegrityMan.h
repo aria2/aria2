@@ -57,7 +57,7 @@ public:
 
   SharedHandle<CheckIntegrityEntry> getFirstCheckIntegrityEntry() const;
 
-  int32_t countCheckIntegrityEntry() const;
+  size_t countCheckIntegrityEntry() const;
 };
 
 typedef SharedHandle<CheckIntegrityMan> CheckIntegrityManHandle;

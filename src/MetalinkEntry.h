@@ -56,7 +56,7 @@ public:
   std::string language;
   std::string os;
   std::deque<SharedHandle<MetalinkResource> > resources;
-  int32_t maxConnections;
+  int maxConnections;
 #ifdef ENABLE_MESSAGE_DIGEST
   SharedHandle<Checksum> checksum;
   SharedHandle<ChunkChecksum> chunkChecksum;
@@ -70,7 +70,7 @@ public:
 
   std::string getPath() const;
 
-  int64_t getLength() const;
+  uint64_t getLength() const;
 
   SharedHandle<FileEntry> getFile() const;
 
@@ -78,8 +78,8 @@ public:
 
   void reorderResourcesByPreference();
   
-  void setLocationPreference(const std::deque<std::string>& locations, int32_t preferenceToAdd);
-  void setProtocolPreference(const std::string& protocol, int32_t preferenceToAdd);
+  void setLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd);
+  void setProtocolPreference(const std::string& protocol, int preferenceToAdd);
 
   static std::deque<SharedHandle<FileEntry> >
   toFileEntry(const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);

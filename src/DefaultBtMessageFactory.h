@@ -81,25 +81,25 @@ public:
   virtual ~DefaultBtMessageFactory();
 
   virtual SharedHandle<BtMessage>
-  createBtMessage(const unsigned char* msg, int32_t msgLength);
+  createBtMessage(const unsigned char* msg, size_t msgLength);
 
   virtual SharedHandle<BtMessage>
-  createHandshakeMessage(const unsigned char* msg, int32_t msgLength);
+  createHandshakeMessage(const unsigned char* msg, size_t msgLength);
 
   virtual SharedHandle<BtMessage>
   createHandshakeMessage(const unsigned char* infoHash,
 			 const unsigned char* peerId);
 
   virtual SharedHandle<BtMessage>
-  createRequestMessage(const SharedHandle<Piece>& piece, int32_t blockIndex);
+  createRequestMessage(const SharedHandle<Piece>& piece, size_t blockIndex);
 
   virtual SharedHandle<BtMessage>
-  createCancelMessage(int32_t index, int32_t begin, int32_t length);
+  createCancelMessage(size_t index, uint32_t begin, size_t length);
 
   virtual SharedHandle<BtMessage>
-  createPieceMessage(int32_t index, int32_t begin, int32_t length);
+  createPieceMessage(size_t index, uint32_t begin, size_t length);
 
-  virtual SharedHandle<BtMessage> createHaveMessage(int32_t index);
+  virtual SharedHandle<BtMessage> createHaveMessage(size_t index);
 
   virtual SharedHandle<BtMessage> createChokeMessage();
 
@@ -118,9 +118,9 @@ public:
   virtual SharedHandle<BtMessage> createHaveNoneMessage();
 
   virtual SharedHandle<BtMessage>
-  createRejectMessage(int32_t index, int32_t begin, int32_t length);
+  createRejectMessage(size_t index, uint32_t begin, size_t length);
 
-  virtual SharedHandle<BtMessage> createAllowedFastMessage(int32_t index);
+  virtual SharedHandle<BtMessage> createAllowedFastMessage(size_t index);
 
   virtual SharedHandle<BtMessage> createPortMessage(uint16_t port);
 

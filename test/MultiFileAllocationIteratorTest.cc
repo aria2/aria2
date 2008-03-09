@@ -140,12 +140,12 @@ void MultiFileAllocationIteratorTest::testAllocate()
     while(!itr->finished()) {
       itr->allocateChunk();
     }
-    CPPUNIT_ASSERT_EQUAL((int64_t)length1, File(dir+"/"+topDir+"/"+fname1).size());
-    CPPUNIT_ASSERT_EQUAL((int64_t)length2, File(dir+"/"+topDir+"/"+fname2).size());
-    CPPUNIT_ASSERT_EQUAL((int64_t)length3, File(dir+"/"+topDir+"/"+fname3).size());
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, File(dir+"/"+topDir+"/"+fname4).size());
-    CPPUNIT_ASSERT_EQUAL((int64_t)length5, File(dir+"/"+topDir+"/"+fname5).size());
-    CPPUNIT_ASSERT_EQUAL((int64_t)0, File(dir+"/"+topDir+"/"+fname6).size());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length1, File(dir+"/"+topDir+"/"+fname1).size());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length2, File(dir+"/"+topDir+"/"+fname2).size());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length3, File(dir+"/"+topDir+"/"+fname3).size());
+    CPPUNIT_ASSERT_EQUAL(0ULL, File(dir+"/"+topDir+"/"+fname4).size());
+    CPPUNIT_ASSERT_EQUAL((uint64_t)length5, File(dir+"/"+topDir+"/"+fname5).size());
+    CPPUNIT_ASSERT_EQUAL(0ULL, File(dir+"/"+topDir+"/"+fname6).size());
 
   } catch(Exception* e) {
     std::cerr << *e << std::endl;

@@ -52,9 +52,9 @@ public:
    * Returns message digest in hexadecimal representation.
    * Digest algorithm is specified by algo.
    */
-  static std::string digest(const std::string& algo, const SharedHandle<BinaryStream>& bs, int64_t offset, int64_t length);
+  static std::string digest(const std::string& algo, const SharedHandle<BinaryStream>& bs, off_t offset, uint64_t length);
 
-  static std::string digest(const std::string& algo, const void* data, int32_t length);
+  static std::string digest(const std::string& algo, const void* data, size_t length);
 
   static std::string digestString(const std::string& algo, const std::string& data)
   {
@@ -76,14 +76,14 @@ public:
   static void staticSHA1DigestFree();
 
   static std::string staticSHA1Digest(const SharedHandle<BinaryStream>& bs,
-				      int64_t offset, int64_t length);
+				      off_t offset, uint64_t length);
 
   /**
    * ctx must be initialized or reseted before calling this function.
    */
   static std::string digest(MessageDigestContext* ctx,
 			    const SharedHandle<BinaryStream>& bs,
-			    int64_t offset, int64_t length);
+			    off_t offset, uint64_t length);
 
   /**
    * Calculates message digest of file denoted by filename.
@@ -96,8 +96,8 @@ public:
    * Stores *raw* message digest into md.
    * Throws exception when mdLength is less than the size of message digest.
    */
-  static void digest(unsigned char* md, int32_t mdLength,
-		     const std::string& algo, const void* data, int32_t length);
+  static void digest(unsigned char* md, size_t mdLength,
+		     const std::string& algo, const void* data, size_t length);
 };
 
 } // namespace aria2

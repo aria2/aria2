@@ -143,7 +143,7 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   return false;
 }
 
-bool InitiatorMSEHandshakeCommand::prepareForNextPeer(int32_t wait)
+bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
 {
   if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     logger->info("CUID#%d - Establishing connection using legacy BitTorrent handshake is disabled by preference.", cuid);

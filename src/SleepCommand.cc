@@ -39,7 +39,7 @@
 
 namespace aria2 {
 
-SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, int32_t wait):
+SleepCommand::SleepCommand(int32_t cuid, DownloadEngine* e, Command* nextCommand, time_t wait):
   Command(cuid), engine(e), nextCommand(nextCommand), wait(wait) {}
 
 SleepCommand::~SleepCommand() {

@@ -56,7 +56,7 @@ MessageDigestContext::digestAlgos(&digests[0],
 
 std::string MessageDigestContext::digestFinal()
 {
-  int32_t length = digestLength(algo);
+  size_t length = digestLength(algo);
   unsigned char* rawMD = new unsigned char[length];
   digestFinal(rawMD);
   std::string rawMDString(&rawMD[0], &rawMD[length]);

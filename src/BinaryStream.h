@@ -44,11 +44,11 @@ class BinaryStream {
 public:
   virtual ~BinaryStream() {}
   
-  virtual void writeData(const unsigned char* data, int32_t len, int64_t offset) = 0;
+  virtual void writeData(const unsigned char* data, size_t len, off_t offset) = 0;
 
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset) = 0;
+  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset) = 0;
 
-  virtual void truncate(int64_t length) = 0;
+  virtual void truncate(uint64_t length) = 0;
 
   virtual void enableDirectIO() = 0;
 

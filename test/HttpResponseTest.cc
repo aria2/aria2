@@ -66,7 +66,7 @@ void HttpResponseTest::testGetContentLength_null()
 {
   HttpResponse httpResponse;
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, httpResponse.getContentLength());
+  CPPUNIT_ASSERT_EQUAL(0ULL, httpResponse.getContentLength());
 }
 
 void HttpResponseTest::testGetContentLength_contentLength()
@@ -78,7 +78,7 @@ void HttpResponseTest::testGetContentLength_contentLength()
 
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, httpResponse.getContentLength());
+  CPPUNIT_ASSERT_EQUAL(4294967296ULL, httpResponse.getContentLength());
 }
 
 void HttpResponseTest::testGetEntityLength()
@@ -90,11 +90,11 @@ void HttpResponseTest::testGetEntityLength()
 
   httpResponse.setHttpHeader(httpHeader);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)4294967296LL, httpResponse.getEntityLength());
+  CPPUNIT_ASSERT_EQUAL(4294967296ULL, httpResponse.getEntityLength());
 
   httpHeader->put("Content-Range", "bytes 1-4294967296/4294967297");
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)4294967297LL, httpResponse.getEntityLength());
+  CPPUNIT_ASSERT_EQUAL(4294967297ULL, httpResponse.getEntityLength());
 
 }
 

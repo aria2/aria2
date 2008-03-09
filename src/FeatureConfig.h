@@ -42,7 +42,7 @@
 
 namespace aria2 {
 
-typedef std::map<std::string, int32_t> PortMap;
+typedef std::map<std::string, uint16_t> PortMap;
 typedef std::map<std::string, bool> FeatureMap;
 
 class FeatureConfig {
@@ -68,7 +68,7 @@ public:
     featureConfig = 0;
   }
 
-  int32_t getDefaultPort(const std::string& protocol) const {
+  uint16_t getDefaultPort(const std::string& protocol) const {
     PortMap::const_iterator itr = defaultPorts.find(protocol);
     if(itr == defaultPorts.end()) {
       return 0;

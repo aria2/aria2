@@ -64,7 +64,7 @@ public:
 
   bool fileExists(const std::string& topDir);
 
-  int64_t size() const;
+  uint64_t size() const;
 
   SharedHandle<FileEntry> getFileEntry() const;
 
@@ -83,7 +83,7 @@ class MultiDiskAdaptor : public DiskAdaptor {
   friend class MultiFileAllocationIterator;
 private:
   std::string topDir;
-  int32_t pieceLength;
+  size_t pieceLength;
   DiskWriterEntries diskWriterEntries;
 
   bool _directIOAllowed;
@@ -92,11 +92,11 @@ private:
 
   void mkdir() const;
 
-  bool isInRange(const DiskWriterEntryHandle entry, int64_t offset) const;
+  bool isInRange(const DiskWriterEntryHandle entry, off_t offset) const;
 
-  int32_t calculateLength(const DiskWriterEntryHandle entry,
-			  int64_t fileOffset,
-			  int32_t rem) const;
+  size_t calculateLength(const DiskWriterEntryHandle entry,
+			 off_t fileOffset,
+			 size_t rem) const;
 
   std::string getTopDirPath() const;
 public:
@@ -114,10 +114,10 @@ public:
 
   virtual void onDownloadComplete();
 
-  virtual void writeData(const unsigned char* data, int32_t len,
-			 int64_t offset);
+  virtual void writeData(const unsigned char* data, size_t len,
+			 off_t offset);
 
-  virtual int32_t readData(unsigned char* data, int32_t len, int64_t offset);
+  virtual ssize_t readData(unsigned char* data, size_t len, off_t offset);
 
   virtual bool fileExists();
 
@@ -126,7 +126,7 @@ public:
     return getTopDirPath();
   }
 
-  virtual int64_t size() const;
+  virtual uint64_t size() const;
 
   virtual SharedHandle<FileAllocationIterator> fileAllocationIterator();
 
@@ -142,11 +142,11 @@ public:
     return topDir;
   }
 
-  void setPieceLength(int32_t pieceLength) {
+  void setPieceLength(size_t pieceLength) {
     this->pieceLength = pieceLength;
   }
 
-  int32_t getPieceLength() const {
+  size_t getPieceLength() const {
     return pieceLength;
   }
 

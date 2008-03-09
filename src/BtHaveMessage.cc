@@ -41,11 +41,11 @@
 
 namespace aria2 {
 
-BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, int32_t dataLength) {
+BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 5) {
     throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "have", dataLength, 5);
   }
-  int8_t id = PeerMessageUtil::getId(data);
+  uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have", ID);
   }
@@ -58,7 +58,7 @@ void BtHaveMessage::doReceivedAction() {
   peer->updateBitfield(index, 1);
 }
 
-int32_t BtHaveMessage::MESSAGE_LENGTH = 9;
+size_t BtHaveMessage::MESSAGE_LENGTH = 9;
 
 const unsigned char* BtHaveMessage::getMessage() {
   if(!msg) {
@@ -75,7 +75,7 @@ const unsigned char* BtHaveMessage::getMessage() {
   return msg;
 }
 
-int32_t BtHaveMessage::getMessageLength() {
+size_t BtHaveMessage::getMessageLength() {
   return MESSAGE_LENGTH;
 }
 

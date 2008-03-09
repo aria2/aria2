@@ -26,8 +26,8 @@ void BtKeepAliveMessageTest::testGetMessage() {
   char msg[4];
   memset(msg, 0, sizeof(msg));
   BtKeepAliveMessage message;
-  CPPUNIT_ASSERT_EQUAL((int8_t)99, message.getId());
-  CPPUNIT_ASSERT_EQUAL((int32_t)4, message.getMessageLength());
+  CPPUNIT_ASSERT_EQUAL((uint8_t)99, message.getId());
+  CPPUNIT_ASSERT_EQUAL((size_t)4, message.getMessageLength());
   CPPUNIT_ASSERT(memcmp(msg, message.getMessage(), 4) == 0);
 }
 

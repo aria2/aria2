@@ -56,7 +56,7 @@ protected:
    */
   bool _exit;
 
-  int32_t _interval; // unit: sec
+  time_t _interval; // unit: sec
 private:
   Time _checkPoint;
 public:
@@ -77,7 +77,7 @@ public:
   virtual void postProcess() {};
 
 public:
-  TimeBasedCommand(int32_t cuid, DownloadEngine* e, int32_t interval);
+  TimeBasedCommand(int32_t cuid, DownloadEngine* e, time_t interval);
 
   virtual ~TimeBasedCommand();
 

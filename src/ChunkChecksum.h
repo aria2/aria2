@@ -46,40 +46,40 @@ class ChunkChecksum {
 private:
   std::string _algo;
   std::deque<std::string> _checksums;
-  int32_t _checksumLength;
+  size_t _checksumLength;
 public:
   ChunkChecksum():_checksumLength(0) {}    
 
   ChunkChecksum(const std::string& algo,
 		const std::deque<std::string>& checksums,
-		int32_t checksumLength):
+		size_t checksumLength):
     _algo(algo),
     _checksums(checksums),
     _checksumLength(checksumLength) {}
 
   bool validateChunk(const std::string& actualChecksum,
-		     int32_t checksumIndex) const
+		     size_t checksumIndex) const
   {
-    if(checksumIndex < (int32_t)_checksums.size()) {
+    if(checksumIndex < _checksums.size()) {
       return actualChecksum == getChecksum(checksumIndex);
     } else {
       return false;
     }
   }
 
-  int64_t getEstimatedDataLength() const
+  uint64_t getEstimatedDataLength() const
   {
-    return ((int64_t)_checksumLength)*_checksums.size();
+    return ((uint64_t)_checksumLength)*_checksums.size();
   }
 
-  int32_t countChecksum() const
+  size_t countChecksum() const
   {
     return _checksums.size();
   }
 
-  std::string getChecksum(int32_t index) const
+  std::string getChecksum(size_t index) const
   {
-    if(index < (int32_t)_checksums.size()) {
+    if(index < _checksums.size()) {
       return _checksums[index];
     } else {
       return "";
@@ -91,7 +91,7 @@ public:
     return _checksums;
   }
 
-  int32_t getChecksumLength() const
+  size_t getChecksumLength() const
   {
     return _checksumLength;
   }
@@ -106,7 +106,7 @@ public:
     _algo = algo;
   }
 
-  void setChecksumLength(int32_t length)
+  void setChecksumLength(size_t length)
   {
     _checksumLength = length;
   }
