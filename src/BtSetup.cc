@@ -115,13 +115,13 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
   if(PeerListenCommand::getNumInstance() == 0) {
     PeerListenCommand* listenCommand = PeerListenCommand::getInstance(e);
     IntSequence seq = Util::parseIntRange(option->get(PREF_LISTEN_PORT));
-    int32_t port = listenCommand->bindPort(seq);
-    if(port == -1) {
-      _logger->error(_("Errors occurred while binding port.\n"));
-      delete listenCommand;
-    } else {
+    uint16_t port;
+    if(listenCommand->bindPort(port, seq)) {
       BT_RUNTIME(btContext)->setListenPort(port);
       commands.push_back(listenCommand);
+    } else {
+      _logger->error(_("Errors occurred while binding port.\n"));
+      delete listenCommand;
     }
   }
 

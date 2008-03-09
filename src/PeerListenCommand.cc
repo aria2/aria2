@@ -63,25 +63,27 @@ PeerListenCommand::~PeerListenCommand()
   --__numInstance;
 }
 
-int32_t PeerListenCommand::bindPort(IntSequence& seq)
+bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
   while(seq.hasNext()) {
-    int32_t port = seq.next();
+    int sport = seq.next();
+    if(!(0 < sport && sport <= UINT16_MAX)) {
+      continue;
+    }
+    port = sport;
     try {
       socket->bind(port);
       socket->beginListen();
       socket->setNonBlockingMode();
-      logger->info(MSG_LISTENING_PORT,
-		   cuid, port);
-      return port;
+      logger->info(MSG_LISTENING_PORT, cuid, port);
+      return true;
     } catch(RecoverableException* ex) {
-      logger->error(MSG_BIND_FAILURE,
-		    ex, cuid, port);
+      logger->error(MSG_BIND_FAILURE, ex, cuid, port);
       socket->closeConnection();
       delete ex;
     }
   }
-  return -1;
+  return false;
 }
 
 bool PeerListenCommand::execute() {

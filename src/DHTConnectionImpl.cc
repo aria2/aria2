@@ -47,30 +47,35 @@ DHTConnectionImpl::DHTConnectionImpl():_socket(new SocketCore(SOCK_DGRAM)),
 
 DHTConnectionImpl::~DHTConnectionImpl() {}
 
-uint16_t DHTConnectionImpl::bind(IntSequence& ports)
+bool DHTConnectionImpl::bind(uint16_t& port, IntSequence& ports)
 {
   while(ports.hasNext()) {
-    uint16_t port = bind(ports.next());
-    if(port > 0) {
-      return port;
+    int sport = ports.next();
+    if(!(0 < sport && 0 <= UINT16_MAX)) {
+      continue;
+    }
+    port = sport;
+    if(bind(port)) {
+      return true;
     }
   }
-  return 0;
+  return false;
 }
 
-uint16_t DHTConnectionImpl::bind(uint16_t port)
+bool DHTConnectionImpl::bind(uint16_t& port)
 {
   try {
     _socket->bind(port);
     std::pair<std::string, uint16_t> svaddr;
     _socket->getAddrInfo(svaddr);
+    port = svaddr.second;
     _logger->info("Bind socket for DHT. port=%u", port);
-    return svaddr.second;
+    return true;
   } catch(RecoverableException* e) {
     _logger->error("Failed to bind for DHT. port=%u", e, port);
     delete e;
   }
-  return 0;
+  return false;
 }
 
 ssize_t DHTConnectionImpl::receiveMessage(unsigned char* data, size_t len, std::string& host, uint16_t& port)

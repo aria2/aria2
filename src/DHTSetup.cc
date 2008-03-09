@@ -105,8 +105,8 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
     SharedHandle<DHTConnectionImpl> connection = new DHTConnectionImpl();
     {
       IntSequence seq = Util::parseIntRange(option->get(PREF_DHT_LISTEN_PORT));
-      uint16_t port = connection->bind(seq);
-      if(port == 0) {
+      uint16_t port;
+      if(!connection->bind(port, seq)) {
 	throw new DlAbortEx("Error occurred while binding port for DHT");
       }
       localNode->setPort(port);

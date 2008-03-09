@@ -25,9 +25,12 @@ void DHTConnectionImplTest::testWriteAndReadData()
 {
   try {
     DHTConnectionImpl con1;
-    /*uint16_t con1port =*/ con1.bind(0);
+    uint16_t con1port = 0;
+    CPPUNIT_ASSERT(con1.bind(con1port));
+
     DHTConnectionImpl con2;
-    uint16_t con2port = con2.bind(0);
+    uint16_t con2port = 0;
+    CPPUNIT_ASSERT(con2.bind(con2port));
 
     std::string message1 = "hello world.";
     con1.sendMessage(reinterpret_cast<const unsigned char*>(message1.c_str()),
@@ -43,9 +46,10 @@ void DHTConnectionImplTest::testWriteAndReadData()
 			   std::string(&readbuffer[0], &readbuffer[rlength]));
     }
   } catch(Exception* e) {
+    std::string m = e->getMsg();
     std::cerr << *e << std::endl;
     delete e;
-    CPPUNIT_FAIL("exception thrown");
+    CPPUNIT_FAIL(m);
   }
 }
 

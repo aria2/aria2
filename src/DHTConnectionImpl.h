@@ -54,9 +54,22 @@ public:
 
   virtual ~DHTConnectionImpl();
 
-  uint16_t bind(IntSequence& ports);
+  /**
+   * Binds port. All number in ports are tried.
+   * If successful, the binded port is assigned to port and returns true.
+   * Otherwise return false and port is undefined in this case.
+   */
+  bool bind(uint16_t& port, IntSequence& ports);
   
-  uint16_t bind(uint16_t port);
+  /**
+   * Binds port. The port number specified by port is used to bind.
+   * If successful, the binded port is assigned to port and returns true.
+   * Otherwise return false and port is undefined in this case.
+   *
+   * If you want to bind arbitrary port, give 0 as port and if successful,
+   * the binded port is assigned to port.
+   */
+  bool bind(uint16_t& port);
 
   virtual ssize_t receiveMessage(unsigned char* data, size_t len, std::string& host, uint16_t& port);
 

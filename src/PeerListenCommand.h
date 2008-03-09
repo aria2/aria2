@@ -61,7 +61,11 @@ public:
   
   virtual bool execute();
 
-  int32_t bindPort(IntSequence& seq);
+  /**
+   * Binds port. If successful, the binded port number is assinged to port and
+   * returns true, otherwise port is undefined and returns false.
+   */
+  bool bindPort(uint16_t& port, IntSequence& seq);
 
   void setLowestSpeedLimit(unsigned int speed)
   {
