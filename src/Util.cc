@@ -417,6 +417,31 @@ int32_t Util::parseInt(const std::string& s, int32_t base)
   return v;
 }
 
+uint32_t Util::parseUInt(const std::string& s, int base)
+{
+  std::string trimed = Util::trim(s);
+  if(trimed.empty()) {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"empty string");
+  }
+  // We don't allow negative number.
+  if(trimed[0] == '-') {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			trimed.c_str());
+  }
+  char* stop;
+  errno = 0;
+  unsigned long int v = strtoul(trimed.c_str(), &stop, base);
+  if(*stop != '\0') {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			trimed.c_str());
+  } else if((v == ULONG_MAX) && errno == ERANGE || v > UINT32_MAX) {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			trimed.c_str());
+  }
+  return v;
+}
+
 int64_t Util::parseLLInt(const std::string& s, int32_t base)
 {
   std::string trimed = Util::trim(s);
@@ -730,7 +755,7 @@ bool Util::isUppercase(const std::string& what)
   return true;
 }
 
-int Util::alphaToNum(const std::string& alphabets)
+unsigned int Util::alphaToNum(const std::string& alphabets)
 {
   if(alphabets.empty()) {
     return 0;
@@ -741,10 +766,13 @@ int Util::alphaToNum(const std::string& alphabets)
   } else {
     base = 'A';
   }
-  int num = 0;
+  uint64_t num = 0;
   for(size_t i = 0; i < alphabets.size(); ++i) {
-    int v = alphabets[i]-base;
+    unsigned int v = alphabets[i]-base;
     num = num*26+v;
+    if(num > UINT32_MAX) {
+      return 0;
+    }
   }
   return num;
 }

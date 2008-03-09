@@ -45,9 +45,9 @@ class PStringNumLoop : public PStringDatum
 {
 private:
   
-  int _startValue;
+  unsigned int _startValue;
 
-  int _endValue;
+  unsigned int _endValue;
 
   unsigned int _step;
 
@@ -56,7 +56,8 @@ private:
   PStringDatumHandle _next;
 
 public:
-  PStringNumLoop(int startValue, int endValue, unsigned int step,
+  PStringNumLoop(unsigned int startValue, unsigned int endValue,
+		 unsigned int step,
 		 const NumberDecoratorHandle& nd,
 		 const PStringDatumHandle& next = 0):
     _startValue(startValue),
@@ -69,7 +70,7 @@ public:
 
   virtual void accept(PStringVisitor* visitor)
   {
-    for(int i = _startValue; i <= _endValue; i += _step) {
+    for(unsigned int i = _startValue; i <= _endValue; i += _step) {
       PStringSegment(_numberDecorator->decorate(i), _next).accept(visitor);
     }
   }
@@ -79,12 +80,12 @@ public:
     return _next;
   }
 
-  int getStartValue() const
+  unsigned int getStartValue() const
   {
     return _startValue;
   }
 
-  int getEndValue() const
+  unsigned int getEndValue() const
   {
     return _endValue;
   }

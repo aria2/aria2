@@ -167,6 +167,8 @@ public:
 
   static int32_t parseInt(const std::string& s, int32_t base = 10);
 
+  static unsigned int parseUInt(const std::string& s, int base = 10);
+  
   static int64_t parseLLInt(const std::string& s, int32_t base = 10);
 
   static IntSequence parseIntRange(const std::string& src);
@@ -205,14 +207,21 @@ public:
   static void sleep(long seconds);
 
   static void usleep(long microseconds);
-
+  
   static bool isNumber(const std::string& what);
-
+  
   static bool isLowercase(const std::string& what);
-
+  
   static bool isUppercase(const std::string& what);
-
-  static int alphaToNum(const std::string& alphabets);
+  
+  /**
+   * Converts alphabets to unsigned int, assuming alphabets as a base 26
+   * integer and 'a' or 'A' is 0.
+   * This function assumes alphabets includes only a-z.
+   * Upper case are allowed but all letters must be upper case.
+   * If overflow occurs, returns 0.
+   */
+  static unsigned int alphaToNum(const std::string& alphabets);
 
   static void mkdirs(const std::string& dirpath);
 

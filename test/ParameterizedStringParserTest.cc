@@ -126,9 +126,9 @@ void ParameterizedStringParserTest::testParse_loop()
 
   SharedHandle<PStringNumLoop> loop1 = ls;
   CPPUNIT_ASSERT(!loop1.isNull());
-  CPPUNIT_ASSERT_EQUAL(1, loop1->getStartValue());
-  CPPUNIT_ASSERT_EQUAL(10, loop1->getEndValue());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)2, loop1->getStep());
+  CPPUNIT_ASSERT_EQUAL(1U, loop1->getStartValue());
+  CPPUNIT_ASSERT_EQUAL(10U, loop1->getEndValue());
+  CPPUNIT_ASSERT_EQUAL(2U, loop1->getStep());
 }
 
 void ParameterizedStringParserTest::testParse_loop_empty()
@@ -189,9 +189,9 @@ void ParameterizedStringParserTest::testParse_alphaLoop()
 
   SharedHandle<PStringNumLoop> loop1 = ls;
   CPPUNIT_ASSERT(!loop1.isNull());
-  CPPUNIT_ASSERT_EQUAL(0, loop1->getStartValue());
-  CPPUNIT_ASSERT_EQUAL(25, loop1->getEndValue());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)2, loop1->getStep());
+  CPPUNIT_ASSERT_EQUAL(0U, loop1->getStartValue());
+  CPPUNIT_ASSERT_EQUAL(25U, loop1->getEndValue());
+  CPPUNIT_ASSERT_EQUAL(2U, loop1->getStep());
 }
 
 void ParameterizedStringParserTest::testParse_loop_mixedChar()
@@ -230,9 +230,9 @@ void ParameterizedStringParserTest::testParse_segment_loop()
 
   SharedHandle<PStringNumLoop> loop1 = segment1->getNext();
   CPPUNIT_ASSERT(!loop1.isNull());
-  CPPUNIT_ASSERT_EQUAL(1, loop1->getStartValue());
-  CPPUNIT_ASSERT_EQUAL(3, loop1->getEndValue());
-  CPPUNIT_ASSERT_EQUAL((unsigned int)1, loop1->getStep());
+  CPPUNIT_ASSERT_EQUAL(1U, loop1->getStartValue());
+  CPPUNIT_ASSERT_EQUAL(3U, loop1->getEndValue());
+  CPPUNIT_ASSERT_EQUAL(1U, loop1->getStep());
 
   SharedHandle<PStringSegment> segment2 = loop1->getNext();
   CPPUNIT_ASSERT(!segment2.isNull());

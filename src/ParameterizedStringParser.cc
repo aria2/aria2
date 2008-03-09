@@ -113,10 +113,11 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   std::string::size_type colonIndex = loopStr.find(":");
   if(colonIndex != std::string::npos) {
     std::string stepStr = loopStr.substr(colonIndex+1);
+    int sstep;
     if(Util::isNumber(stepStr)) {
-      step = Util::parseInt(stepStr);
+      step = Util::parseUInt(stepStr);
     } else {
-      throw new FatalException("A step count must be a number.");
+      throw new FatalException("A step count must be a positive number.");
     }
     loopStr.erase(colonIndex);
   }
@@ -125,12 +126,12 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     throw new FatalException("Loop range missing.");
   }
   NumberDecoratorHandle nd = 0;
-  int start;
-  int end;
+  unsigned int start;
+  unsigned int end;
   if(Util::isNumber(range.first) && Util::isNumber(range.second)) {
     nd = new FixedWidthNumberDecorator(range.first.size());
-    start = Util::parseInt(range.first);
-    end = Util::parseInt(range.second);
+    start = Util::parseUInt(range.first);
+    end = Util::parseUInt(range.second);
   } else if(Util::isLowercase(range.first) && Util::isLowercase(range.second)) {
     nd = new AlphaNumberDecorator(range.first.size());
     start = Util::alphaToNum(range.first);

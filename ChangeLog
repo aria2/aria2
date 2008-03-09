@@ -1,5 +1,19 @@
 2008-03-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/Util.{h, cc}
+	(parseUInt): New function.
+	(alphaToNum): Now returns unsigned int and 0 when overflow detected.
+	The actual range is uint32_t.
+	* test/UtilTest.cc
+	
+	* src/ParameterizedStringParser.cc:
+	Use Util::parseUInt() for loop variables.
+	* test/ParameterizedStringParserTest.cc
+	
+	* src/PStringNumLoop.h: Make _startValue and _endValue unsigned int.
+
+2008-03-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten the functions for binding port.
 	* src/DHTConnectionImpl.{h, cc}
 	* src/PeerListenCommand.{h, cc}

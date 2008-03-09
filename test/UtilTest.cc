@@ -39,6 +39,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseIntRange);
   CPPUNIT_TEST(testParseIntRange_invalidRange);
   CPPUNIT_TEST(testParseInt);
+  CPPUNIT_TEST(testParseUInt);
   CPPUNIT_TEST(testParseLLInt);
   CPPUNIT_TEST(testToString_binaryStream);
   CPPUNIT_TEST(testItos);
@@ -75,6 +76,7 @@ public:
   void testParseIntRange();
   void testParseIntRange_invalidRange();
   void testParseInt();
+  void testParseUInt();
   void testParseLLInt();
   void testToString_binaryStream();
   void testItos();
@@ -412,12 +414,14 @@ void UtilTest::testIsUppercase()
 
 void UtilTest::testAlphaToNum()
 {
-  CPPUNIT_ASSERT_EQUAL(0, Util::alphaToNum("a"));
-  CPPUNIT_ASSERT_EQUAL(0, Util::alphaToNum("aa"));
-  CPPUNIT_ASSERT_EQUAL(1, Util::alphaToNum("b"));
-  CPPUNIT_ASSERT_EQUAL(675, Util::alphaToNum("zz")); // 25*26+25
-  CPPUNIT_ASSERT_EQUAL(675, Util::alphaToNum("ZZ")); // 25*26+25
-  CPPUNIT_ASSERT_EQUAL(0, Util::alphaToNum(""));
+  CPPUNIT_ASSERT_EQUAL(0U, Util::alphaToNum("a"));
+  CPPUNIT_ASSERT_EQUAL(0U, Util::alphaToNum("aa"));
+  CPPUNIT_ASSERT_EQUAL(1U, Util::alphaToNum("b"));
+  CPPUNIT_ASSERT_EQUAL(675U, Util::alphaToNum("zz")); // 25*26+25
+  CPPUNIT_ASSERT_EQUAL(675U, Util::alphaToNum("ZZ")); // 25*26+25
+  CPPUNIT_ASSERT_EQUAL(0U, Util::alphaToNum(""));
+  CPPUNIT_ASSERT_EQUAL(4294967295U, Util::alphaToNum("NXMRLXV"));
+  CPPUNIT_ASSERT_EQUAL(0U, Util::alphaToNum("NXMRLXW")); // uint32_t overflow
 }
 
 void UtilTest::testMkdirs()
@@ -522,8 +526,8 @@ void UtilTest::testParseIntRange_invalidRange()
 
 void UtilTest::testParseInt()
 {
-  CPPUNIT_ASSERT_EQUAL((int32_t)-1, Util::parseInt(" -1 "));
-  CPPUNIT_ASSERT_EQUAL((int32_t)2147483647, Util::parseInt("2147483647"));
+  CPPUNIT_ASSERT_EQUAL(-1, Util::parseInt(" -1 "));
+  CPPUNIT_ASSERT_EQUAL(2147483647, Util::parseInt("2147483647"));
   try {
     Util::parseInt("2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
@@ -554,10 +558,29 @@ void UtilTest::testParseInt()
   }
 }
 
+void UtilTest::testParseUInt()
+{
+  CPPUNIT_ASSERT_EQUAL(4294967295U, Util::parseUInt(" 4294967295 "));
+  try {
+    Util::parseUInt("-1");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    std::cerr << *e;
+    delete e;
+  }
+  try {
+    Util::parseUInt("4294967296");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    std::cerr << *e;
+    delete e;
+  }
+}
+
 void UtilTest::testParseLLInt()
 {
-  CPPUNIT_ASSERT_EQUAL((int64_t)-1, Util::parseLLInt(" -1 "));
-  CPPUNIT_ASSERT_EQUAL((int64_t)9223372036854775807LL,
+  CPPUNIT_ASSERT_EQUAL(-1LL, Util::parseLLInt(" -1 "));
+  CPPUNIT_ASSERT_EQUAL(9223372036854775807LL,
 		       Util::parseLLInt("9223372036854775807"));
   try {
     Util::parseLLInt("9223372036854775808");
