@@ -17,6 +17,8 @@ class DHTBucketTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testMoveToHead);
   CPPUNIT_TEST(testMoveToTail);
   CPPUNIT_TEST(testGetGoodNodes);
+  CPPUNIT_TEST(testCacheNode);
+  CPPUNIT_TEST(testDropNode);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp() {}
@@ -31,6 +33,8 @@ public:
   void testMoveToHead();
   void testMoveToTail();
   void testGetGoodNodes();
+  void testCacheNode();
+  void testDropNode();
 };
 
 
@@ -335,6 +339,69 @@ void DHTBucketTest::testGetGoodNodes()
   CPPUNIT_ASSERT_EQUAL((uint16_t)6885, goodNodes[3]->getPort());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6887, goodNodes[4]->getPort());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6888, goodNodes[5]->getPort());
+}
+
+void DHTBucketTest::testCacheNode()
+{
+  unsigned char localNodeID[DHT_ID_LENGTH];
+  memset(localNodeID, 0, DHT_ID_LENGTH);
+  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
+  DHTBucket bucket(localNode);
+
+  SharedHandle<DHTNode> n1 = new DHTNode();
+  SharedHandle<DHTNode> n2 = new DHTNode();
+  SharedHandle<DHTNode> n3 = new DHTNode();
+
+  bucket.cacheNode(n1);
+  bucket.cacheNode(n2);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, bucket.getCachedNodes().size());
+  CPPUNIT_ASSERT(n2 == bucket.getCachedNodes()[0]);
+
+  bucket.cacheNode(n3);
+  CPPUNIT_ASSERT_EQUAL((size_t)2, bucket.getCachedNodes().size());
+  CPPUNIT_ASSERT(n3 == bucket.getCachedNodes()[0]);
+  CPPUNIT_ASSERT(n2 == bucket.getCachedNodes()[1]);
+}
+
+void DHTBucketTest::testDropNode()
+{
+  unsigned char localNodeID[DHT_ID_LENGTH];
+  memset(localNodeID, 0, DHT_ID_LENGTH);
+  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
+  DHTBucket bucket(localNode);
+
+  unsigned char id[DHT_ID_LENGTH];
+  SharedHandle<DHTNode> nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  for(size_t i = 0; i < DHTBucket::K; ++i) {
+    createID(id, 0xf0, i);
+    nodes[i] = new DHTNode(id);
+    nodes[i]->setPort(6881+i);
+    CPPUNIT_ASSERT(bucket.addNode(nodes[i]));
+  }
+
+  SharedHandle<DHTNode> cachedNode1 = new DHTNode();
+  SharedHandle<DHTNode> cachedNode2 = new DHTNode();
+
+  bucket.dropNode(nodes[3]);
+  // nothing happens because the replacement cache is empty.
+  {
+    std::deque<SharedHandle<DHTNode> > tnodes = bucket.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)8, tnodes.size());
+    CPPUNIT_ASSERT(nodes[3] == tnodes[3]);
+  }
+
+  bucket.cacheNode(cachedNode1);
+  bucket.cacheNode(cachedNode2);
+
+  bucket.dropNode(nodes[3]);
+  {
+    std::deque<SharedHandle<DHTNode> > tnodes = bucket.getNodes();
+    CPPUNIT_ASSERT_EQUAL((size_t)8, tnodes.size());
+    CPPUNIT_ASSERT(tnodes.end() == std::find(tnodes.begin(), tnodes.end(), nodes[3]));
+    CPPUNIT_ASSERT(cachedNode2 == tnodes[7]);
+  }
+  CPPUNIT_ASSERT_EQUAL((size_t)1, bucket.getCachedNodes().size());
+  CPPUNIT_ASSERT(cachedNode1 == bucket.getCachedNodes()[0]);
 }
 
 } // namespace aria2

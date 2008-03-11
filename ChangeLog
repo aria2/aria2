@@ -1,5 +1,23 @@
 2008-03-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed high memory footprint when DHT is enabled.
+	This is not a memory leak, but DHTReplaceNodeTask is more frequently
+	queued than it is processed and the queue is getting longer. As a
+	consequence, momory usage is increased.
+	As for a fix, instead of issuing DHTReplaceNodeTask, I've implemented
+	replacement cache in DHTBucket which is described in Kademlia paper.
+	* src/DHTRoutingTable.cc (addNode): Removed the issuing of
+	DHTReplaceNodeTask.
+	* src/DHTBucket.{h, cc}
+	(cacheNode): New function.
+	(getCachedNodes): New function.
+	(dropNode): Push back cached node to _nodes.
+	* test/DHTBucketTest.cc
+	(testCacheNode): New test
+	(testDropNode): New test
+	
+2008-03-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Allocate memory for peekBuf in initiateSecureConnection() to avoid
 	the unused 4KB memory when ssl is not used.
 	* src/SocketCore.cc
