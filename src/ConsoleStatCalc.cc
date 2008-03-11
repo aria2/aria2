@@ -43,6 +43,9 @@
 #ifdef ENABLE_BITTORRENT
 # include "BtContext.h"
 #endif // ENABLE_BITTORRENT
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #include <iomanip>
 #include <iostream>
 
@@ -57,9 +60,14 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
     return;
   }
   _cp.reset();
-
-  std::cout << "\r                                                                             ";
-  std::cout << "\r";
+  bool isTTY = isatty(STDOUT_FILENO) == 1;
+  if(isTTY) {
+    struct winsize size;
+    if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &size) == -1) {
+      size.ws_col = 80;
+    }
+    std::cout << '\r' << std::setw(size.ws_col) << ' ' << '\r';
+  }
   if(requestGroupMan->countRequestGroup() > 0) {
     RequestGroupHandle firstRequestGroup = requestGroupMan->getRequestGroup(0);
     TransferStat stat = firstRequestGroup->calculateStat();
@@ -177,7 +185,11 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
     }
   }
 #endif // ENABLE_MESSAGE_DIGEST
-  std::cout << std::flush;
+  if(isTTY) {
+    std::cout << std::flush;
+  } else {
+    std::cout << std::endl;
+  }
 }
 
 } // namespace aria2

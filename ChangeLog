@@ -1,3 +1,11 @@
+2008-03-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Now download line is printed nicely with no garbage at the end of
+	line. I use ioctl to get the columns of terminal.
+	If stdout is redirected to another device, instead of carriage return,
+	end of line '\n' character is used. This is feature request#1909659
+	* src/ConsoleStatCalc.cc (calculateStat)
+
 2008-03-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Included a2time.h
