@@ -82,7 +82,7 @@ void SocketCore::init()
   sslSession = NULL;
   sslXcred = NULL;
   peekBufMax = 4096;
-  peekBuf = new char[peekBufMax];
+  peekBuf = 0;
   peekBufLength = 0;
 #endif //HAVE_LIBGNUTLS
 }
@@ -581,6 +581,7 @@ void SocketCore::initiateSecureConnection()
     if(ret < 0) {
       throw new DlAbortEx(EX_SSL_INIT_FAILURE, gnutls_strerror(ret));
     }
+    peekBuf = new char[peekBufMax];
   }
 #endif // HAVE_LIBGNUTLS
 
