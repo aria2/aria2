@@ -132,6 +132,7 @@ Peers DHTPeerAnnounceStorage::getPeers(const unsigned char* infoHash)
 void DHTPeerAnnounceStorage::handleTimeout()
 {
   _logger->debug("Now purge peer announces which are timed out.");
+  size_t numPeerAddr = 0;
   for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = _entries.begin(); i != _entries.end();) {
     (*i)->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
     if((*i)->empty()) {
@@ -139,9 +140,12 @@ void DHTPeerAnnounceStorage::handleTimeout()
 		     Util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
       i = _entries.erase(i);
     } else {
+      numPeerAddr += (*i)->countPeerAddrEntry();
       ++i;
     }
   }
+  _logger->debug("Currently %zu peer announce entries, %zu PeerAddr entries",
+		 _entries.size(), numPeerAddr);
 }
 
 void DHTPeerAnnounceStorage::announcePeer()

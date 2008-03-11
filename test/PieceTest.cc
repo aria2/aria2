@@ -24,7 +24,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( PieceTest );
 
 void PieceTest::testCompleteBlock()
 {
-  int32_t blockLength = 32*1024;
+  size_t blockLength = 32*1024;
   Piece p(0, blockLength*10, blockLength);
   
   p.completeBlock(5);
@@ -34,7 +34,7 @@ void PieceTest::testCompleteBlock()
 
 void PieceTest::testGetCompletedLength()
 {
-  int32_t blockLength = 16*1024;
+  size_t blockLength = 16*1024;
   Piece p(0, blockLength*10+100, blockLength);
   
   p.completeBlock(1);
@@ -42,7 +42,7 @@ void PieceTest::testGetCompletedLength()
   p.completeBlock(9);
   p.completeBlock(10); // <-- 100 bytes
   
-  CPPUNIT_ASSERT_EQUAL((size_t)blockLength*3+100, p.getCompletedLength());
+  CPPUNIT_ASSERT_EQUAL(blockLength*3+100, p.getCompletedLength());
 }
 
 } // namespace aria2

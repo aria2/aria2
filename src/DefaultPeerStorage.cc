@@ -81,7 +81,7 @@ bool DefaultPeerStorage::addPeer(const PeerHandle& peer) {
     logger->debug("Adding %s:%u is rejected because it has been already added.", peer->ipaddr.c_str(), peer->port);
     return false;
   }
-  if(peers.size() >= (size_t)maxPeerListSize) {
+  if(peers.size() >= maxPeerListSize) {
     deleteUnusedPeer(peers.size()-maxPeerListSize+1);
   }
   peers.push_front(peer);

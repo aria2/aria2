@@ -70,11 +70,11 @@ void MetalinkEntryTest::testDropUnsupportedResource() {
 
   entry->dropUnsupportedResource();
 #if defined ENABLE_SSL && ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL(4, (int)entry->resources.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)4, entry->resources.size());
 #elif defined ENABLE_SSL || ENABLE_BITTORRENT
-  CPPUNIT_ASSERT_EQUAL(3, (int)entry->resources.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)3, entry->resources.size());
 #else
-  CPPUNIT_ASSERT_EQUAL(2, (int)entry->resources.size());
+  CPPUNIT_ASSERT_EQUAL((size_t)2, entry->resources.size());
 #endif // ENABLE_MESSAGE_DIGEST
   
   std::deque<SharedHandle<MetalinkResource> >::const_iterator itr =
@@ -99,11 +99,11 @@ void MetalinkEntryTest::testReorderResourcesByPreference() {
   
   entry->reorderResourcesByPreference();
 
-  CPPUNIT_ASSERT_EQUAL((int32_t)100, entry->resources.at(0)->preference);
-  CPPUNIT_ASSERT_EQUAL((int32_t)90, entry->resources.at(1)->preference);
-  CPPUNIT_ASSERT_EQUAL((int32_t)60, entry->resources.at(2)->preference);
-  CPPUNIT_ASSERT_EQUAL((int32_t)50, entry->resources.at(3)->preference);
-  CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources.at(4)->preference);
+  CPPUNIT_ASSERT_EQUAL(100, entry->resources.at(0)->preference);
+  CPPUNIT_ASSERT_EQUAL(90, entry->resources.at(1)->preference);
+  CPPUNIT_ASSERT_EQUAL(60, entry->resources.at(2)->preference);
+  CPPUNIT_ASSERT_EQUAL(50, entry->resources.at(3)->preference);
+  CPPUNIT_ASSERT_EQUAL(10, entry->resources.at(4)->preference);
 
   delete entry;
 }
@@ -119,15 +119,15 @@ void MetalinkEntryTest::testSetLocationPreference()
   entry->setLocationPreference(locations, 100);
 
   CPPUNIT_ASSERT_EQUAL(std::string("RO"), entry->resources[0]->location);
-  CPPUNIT_ASSERT_EQUAL((int32_t)150, entry->resources[0]->preference);
+  CPPUNIT_ASSERT_EQUAL(150, entry->resources[0]->preference);
   CPPUNIT_ASSERT_EQUAL(std::string("AT"), entry->resources[1]->location);
-  CPPUNIT_ASSERT_EQUAL((int32_t)100, entry->resources[1]->preference);
+  CPPUNIT_ASSERT_EQUAL(100, entry->resources[1]->preference);
   CPPUNIT_ASSERT_EQUAL(std::string("AL"), entry->resources[2]->location);
-  CPPUNIT_ASSERT_EQUAL((int32_t)160, entry->resources[2]->preference);
+  CPPUNIT_ASSERT_EQUAL(160, entry->resources[2]->preference);
   CPPUNIT_ASSERT_EQUAL(std::string("AD"), entry->resources[3]->location);
-  CPPUNIT_ASSERT_EQUAL((int32_t)10, entry->resources[3]->preference);
+  CPPUNIT_ASSERT_EQUAL(10, entry->resources[3]->preference);
   CPPUNIT_ASSERT_EQUAL(std::string("JP"), entry->resources[4]->location);
-  CPPUNIT_ASSERT_EQUAL((int32_t)190, entry->resources[4]->preference);
+  CPPUNIT_ASSERT_EQUAL(190, entry->resources[4]->preference);
 
   delete entry;
 }

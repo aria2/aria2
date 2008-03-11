@@ -95,7 +95,7 @@ void MetalinkProcessorTest::testParseFile()
     SharedHandle<MetalinkResource> resource2 = *resourceItr1;
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, resource2->type);
     CPPUNIT_ASSERT_EQUAL(std::string("US"), resource2->location);
-    CPPUNIT_ASSERT_EQUAL((int32_t)100, resource2->preference);
+    CPPUNIT_ASSERT_EQUAL(100, resource2->preference);
     CPPUNIT_ASSERT_EQUAL(std::string("http://httphost/aria2-0.5.2.tar.bz2"),
 			 resource2->url);
     CPPUNIT_ASSERT_EQUAL(-1, resource2->maxConnections);

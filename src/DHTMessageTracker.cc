@@ -121,8 +121,8 @@ void DHTMessageTracker::handleTimeout()
 	  callback->onTimeout(node);
 	}
       } catch(RecoverableException* e) {
+	_logger->info("Exception thrown while handling timeouts.", e);
 	delete e;
-	_logger->info("Exception thrown while handling timeouts.");
       }
     } else {
       ++i;

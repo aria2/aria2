@@ -46,43 +46,43 @@ void HttpRequestTest::testGetStartByte()
   HttpRequest httpRequest;
   SharedHandle<Segment> segment = new PiecedSegment(1024, new Piece(1, 1024));
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getStartByte());
+  CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getStartByte());
 
   httpRequest.setSegment(segment);
   
-  CPPUNIT_ASSERT_EQUAL((int64_t)1024, httpRequest.getStartByte());
+  CPPUNIT_ASSERT_EQUAL(1024LL, httpRequest.getStartByte());
 
 }
 
 void HttpRequestTest::testGetEndByte()
 {
-  int32_t index = 1;
-  int32_t length = 1024*1024-1024;
-  int32_t segmentLength = 1024*1024;
+  size_t index = 1;
+  size_t length = 1024*1024-1024;
+  size_t segmentLength = 1024*1024;
 
   HttpRequest httpRequest;
   SharedHandle<Segment> segment = new PiecedSegment(segmentLength,
 					    new Piece(index, length));
   
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getEndByte());
+  CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getEndByte());
 
   httpRequest.setSegment(segment);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getEndByte());
+  CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getEndByte());
 
   SharedHandle<Request> request = new Request();
   request->setKeepAlive(true);
 
   httpRequest.setRequest(request);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)segmentLength*index+length-1,
+  CPPUNIT_ASSERT_EQUAL((off_t)segmentLength*index+length-1,
 		       httpRequest.getEndByte());
 
 
   request->setKeepAlive(false);
 
-  CPPUNIT_ASSERT_EQUAL((int64_t)0, httpRequest.getEndByte());
+  CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getEndByte());
 }
 
 void HttpRequestTest::testCreateRequest()
@@ -475,7 +475,7 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
-  int64_t entityLength = segment->getSegmentLength()*10;
+  uint64_t entityLength = segment->getSegmentLength()*10;
 
   range = new Range(segment->getPosition(), 0, entityLength);
 
