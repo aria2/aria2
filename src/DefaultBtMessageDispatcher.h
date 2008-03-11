@@ -36,6 +36,7 @@
 #define _D_DEFAULT_BT_MESSAGE_DISPATCHER_H_
 
 #include "BtMessageDispatcher.h"
+#include "a2time.h"
 
 namespace aria2 {
 

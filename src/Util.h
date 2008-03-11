@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "IntSequence.h"
+#include "a2time.h"
 #include <sys/time.h>
 #include <string>
 #include <utility>

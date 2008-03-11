@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "a2netcompat.h"
+#include "a2time.h"
 #include <string>
 #include <utility>
 

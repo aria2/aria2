@@ -35,7 +35,6 @@
 #include "SocketCore.h"
 #include "message.h"
 #include "a2netcompat.h"
-#include "a2time.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include <unistd.h>

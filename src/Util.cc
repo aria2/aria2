@@ -37,7 +37,6 @@
 #include "message.h"
 #include "Randomizer.h"
 #include "a2netcompat.h"
-#include "a2time.h"
 #include "DlAbortEx.h"
 #include "BitfieldMan.h"
 #include "DefaultDiskWriter.h"

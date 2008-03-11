@@ -1,5 +1,20 @@
 2008-03-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Included a2time.h
+	* src/DHTMessageDispatcher.h
+	* src/DHTMessageEntry.h
+	* src/DHTReplaceNodeTask.h
+	* src/DHTMessageTracker.h
+	* src/Util.h
+	* src/CookieBox.h
+	* src/SocketCore.h
+	* src/DefaultBtMessageDispatcher.h
+	* src/SocketCore.cc
+	* src/Util.cc
+	* src/DHTPingTask.h
+
+2008-03-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed high memory footprint when DHT is enabled.
 	This is not a memory leak, but DHTReplaceNodeTask is more frequently
 	queued than it is processed and the queue is getting longer. As a
