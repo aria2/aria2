@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <iterator>
 #include <cppunit/extensions/HelperMacros.h>
 

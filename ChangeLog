@@ -1,3 +1,11 @@
+2008-03-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added missing include files for MinGW
+	* test/HttpHeaderProcessorTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DHTRoutingTableDeserializerTest.cc
+	* test/UriListParserTest.cc
+
 2008-03-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Now download line is printed nicely with no garbage at the end of

@@ -2,6 +2,7 @@
 #include "HttpHeader.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
+#include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
