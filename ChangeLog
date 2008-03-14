@@ -1,5 +1,13 @@
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added missing include files for MinGW
+	* test/HttpHeaderProcessorTest.cc
+	* test/DHTRoutingTableSerializerTest.cc
+	* test/DHTRoutingTableDeserializerTest.cc
+	* test/UriListParserTest.cc
+
+2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed subPiece related functions. This is back port from trunk.
 	* src/Piece.{h, cc} : Also rewritten getCompletedLength().
 	* src/DefaultPieceStorage.{h, cc}

@@ -5,7 +5,7 @@
 #include "array_fun.h"
 #include "DHTConstants.h"
 #include "PeerMessageUtil.h"
-#include <arpa/inet.h>
+#include "a2netcompat.h"
 #include <cstring>
 #include <sstream>
 #include <iostream>
