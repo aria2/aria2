@@ -51,8 +51,6 @@ private:
   int32_t length;
   int32_t _blockLength;
   BitfieldMan* bitfield;
-
-  std::deque<SharedHandle<Piece> > _subPieces;
 public:
 
   static const int32_t BLOCK_LENGTH  = 16*1024;
@@ -113,18 +111,7 @@ public:
 
   bool isBlockUsed(int32_t index) const;
 
-  void addSubPiece(const SharedHandle<Piece>& subPiece);
-
-  SharedHandle<Piece> getSubPiece(int32_t blockIndex);
-  
-  void removeSubPiece(int32_t blockIndex);
-
-  std::deque<SharedHandle<Piece> >::iterator
-  getSubPieceIterator(int32_t blockIndex);
-
-  bool isRangeComplete(int32_t offset, int32_t length);
-
-  // Calculates completed length, taking into account SubPieces
+  // Calculates completed length
   int32_t getCompletedLength();
 
   /**

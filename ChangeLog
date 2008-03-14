@@ -1,5 +1,13 @@
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed subPiece related functions. This is back port from trunk.
+	* src/Piece.{h, cc} : Also rewritten getCompletedLength().
+	* src/DefaultPieceStorage.{h, cc}
+	* test/PieceTest.cc
+	* test/DefaultPieceStorageTest.cc
+
+2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Merged aria2-0.13.0+1-console.patch, PATCH#1912040
 
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
