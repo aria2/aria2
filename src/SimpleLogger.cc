@@ -40,6 +40,7 @@
 #include "a2time.h"
 #include <cstdarg>
 #include <cerrno>
+#include <cstring>
 
 namespace aria2 {
 

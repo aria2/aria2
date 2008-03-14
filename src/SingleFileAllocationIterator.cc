@@ -36,6 +36,7 @@
 #include "BinaryStream.h"
 #include "Util.h"
 #include "a2io.h"
+#include <cstring>
 
 namespace aria2 {
 

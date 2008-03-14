@@ -110,12 +110,12 @@ bool AbstractCommand::execute() {
 	return true;
       }
     }
-    if(checkSocketIsReadable && readCheckTarget->isReadable(0) ||
-       checkSocketIsWritable && writeCheckTarget->isWritable(0) ||
+    if((checkSocketIsReadable && readCheckTarget->isReadable(0)) ||
+       (checkSocketIsWritable && writeCheckTarget->isWritable(0)) ||
 #ifdef ENABLE_ASYNC_DNS
-       nameResolverCheck && nameResolveFinished() ||
+       (nameResolverCheck && nameResolveFinished()) ||
 #endif // ENABLE_ASYNC_DNS
-       !checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck) {
+       (!checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck)) {
       checkPoint.reset();
       if(!_requestGroup->getPieceStorage().isNull()) {
 	_segments = _requestGroup->getSegmentMan()->getInFlightSegment(cuid);

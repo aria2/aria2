@@ -1,5 +1,6 @@
 #include "BitfieldMan.h"
 #include "FixedNumberRandomizer.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

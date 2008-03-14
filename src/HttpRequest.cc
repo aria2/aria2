@@ -115,11 +115,11 @@ bool HttpRequest::isRangeSatisfied(const RangeHandle& range) const
   if(segment.isNull()) {
     return true;
   }
-  if(getStartByte() == range->getStartByte() &&
-     (getEndByte() == 0 ||
-      getEndByte() > 0 && getEndByte() == range->getEndByte()) &&
-     (entityLength == 0 ||
-      entityLength > 0 && entityLength == range->getEntityLength())) {
+  if((getStartByte() == range->getStartByte()) &&
+     ((getEndByte() == 0) ||
+      ((getEndByte() > 0) && (getEndByte() == range->getEndByte()))) &&
+     ((entityLength == 0) ||
+      ((entityLength > 0) && (entityLength == range->getEntityLength())))) {
     return true;
   } else {
     return false;

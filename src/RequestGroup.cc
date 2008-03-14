@@ -321,9 +321,9 @@ bool RequestGroup::downloadFinishedByFileLength()
 {
   // assuming that a control file doesn't exist.
   if(!isPreLocalFileCheckEnabled() ||
-     _option->get(PREF_ALLOW_OVERWRITE) == V_TRUE ||
-     _option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
-     !_downloadContext->getPieceHashes().empty()) {
+     (_option->get(PREF_ALLOW_OVERWRITE) == V_TRUE) ||
+     ((_option->get(PREF_CHECK_INTEGRITY) == V_TRUE) &&
+      !_downloadContext->getPieceHashes().empty())) {
     return false;
   }
   // TODO consider the case when the getFilePath() returns dir path. 
@@ -872,8 +872,8 @@ void RequestGroup::removeURIWhoseHostnameIs(const std::string& hostname)
   std::deque<std::string> newURIs;
   Request req;
   for(std::deque<std::string>::const_iterator itr = _uris.begin(); itr != _uris.end(); ++itr) {
-    if((*itr).find(hostname) == std::string::npos ||
-       req.setUrl(*itr) && req.getHost() != hostname) {
+    if(((*itr).find(hostname) == std::string::npos) ||
+       (req.setUrl(*itr) && (req.getHost() != hostname))) {
       newURIs.push_back(*itr);
     }
   }

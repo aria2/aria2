@@ -44,6 +44,7 @@
 #include "a2io.h"
 #include "help_tags.h"
 #include "File.h"
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <iostream>

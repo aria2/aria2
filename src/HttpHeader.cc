@@ -35,6 +35,7 @@
 #include "HttpHeader.h"
 #include "Range.h"
 #include "Util.h"
+#include <cstdlib>
 
 namespace aria2 {
 

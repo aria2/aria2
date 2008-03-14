@@ -454,4 +454,9 @@ DefaultBtContext::getNodes()
   return _nodes;
 }
 
+void DefaultBtContext::setInfoHash(const unsigned char* infoHash)
+{
+  memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
+}
+
 } // namespace aria2

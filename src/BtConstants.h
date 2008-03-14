@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include <map>
+#include <string>
 
 typedef std::map<std::string, uint8_t> Extensions;
 

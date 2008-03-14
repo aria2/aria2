@@ -69,10 +69,7 @@ public:
    * Returns true if the peer has a piece that localhost doesn't have.
    * Otherwise returns false.
    */
-  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer)
-  {
-    abort();
-  }
+  virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);
 
   /**
    * Returns a piece that the peer has but localhost doesn't.
@@ -80,10 +77,8 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer)
-  {
-    abort();
-  }
+  virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer);
+
   /**
    * Returns a piece that the peer has but localhost doesn't.
    * Only pieces that declared as "fast" are returned.
@@ -91,10 +86,8 @@ public:
    * from get the same piece. But in end game mode, same piece may be returned
    * to several commands.
    */
-  virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer)
-  {
-    abort();
-  }
+  virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer);
+
   /**
    * Returns a missing piece if available. Otherwise returns 0;
    */
@@ -240,17 +233,9 @@ public:
    */
   virtual void markAllPiecesDone();
 
-  virtual void markPiecesDone(int64_t length)
-  {
-    // TODO not implemented yet
-    abort();
-  }
+  virtual void markPiecesDone(int64_t length);
 
-  virtual void markPieceMissing(int32_t index)
-  {
-    // TODO not implemented yet
-    abort();
-  }
+  virtual void markPieceMissing(int32_t index);
 
   /**
    * Do nothing because loading in-flight piece is not supported for this

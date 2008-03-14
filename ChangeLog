@@ -1,5 +1,9 @@
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed compilation error with g++-4.3
+	
+2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added missing include files for MinGW
 	* test/HttpHeaderProcessorTest.cc
 	* test/DHTRoutingTableSerializerTest.cc

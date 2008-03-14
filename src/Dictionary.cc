@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Dictionary.h"
 #include "MetaEntryVisitor.h"
+#include <algorithm>
 
 namespace aria2 {
 

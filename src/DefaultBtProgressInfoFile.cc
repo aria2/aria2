@@ -53,6 +53,7 @@
 #include "DownloadFailureException.h"
 #include <fstream>
 #include <cerrno>
+#include <cstring>
 
 namespace aria2 {
 
@@ -182,7 +183,7 @@ void DefaultBtProgressInfoFile::load()
 
     int32_t infoHashLength;
     in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
-    if(infoHashLength < 0 || infoHashLength == 0 && infoHashCheckEnabled) {
+    if((infoHashLength < 0) || ((infoHashLength == 0) && infoHashCheckEnabled)) {
       throw new DlAbortEx("Invalid info hash length: %d", infoHashLength);
     }
     if(infoHashLength > 0) {

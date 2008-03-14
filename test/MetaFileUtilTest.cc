@@ -3,6 +3,7 @@
 #include "Dictionary.h"
 #include "List.h"
 #include "DlAbortEx.h"
+#include <cstring>
 #include <string>
 #include <cppunit/extensions/HelperMacros.h>
 

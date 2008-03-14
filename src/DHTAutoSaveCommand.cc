@@ -48,6 +48,7 @@
 #include "Logger.h"
 #include <cerrno>
 #include <fstream>
+#include <cstring>
 
 namespace aria2 {
 

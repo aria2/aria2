@@ -35,6 +35,7 @@
 #include "Data.h"
 #include "MetaEntryVisitor.h"
 #include <cstring>
+#include <cstdlib> // <-- TODO remove this if strtoll is replaced with Util::parseLLInt()
 
 namespace aria2 {
 

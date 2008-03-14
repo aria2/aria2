@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "a2time.h"
 
 namespace aria2 {
 

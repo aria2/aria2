@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include <stdint.h>
+#include <unistd.h>
 
 namespace aria2 {
 

@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "CookieParser.h"
 #include "Util.h"
+#include <strings.h>
 #include <utility>
 #include <istream>
 

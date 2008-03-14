@@ -36,6 +36,7 @@
 #define _D_COMMAND_H_
 
 #include "common.h"
+#include <stdint.h>
 #include <deque>
 
 namespace aria2 {

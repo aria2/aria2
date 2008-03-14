@@ -2,6 +2,8 @@
 #include "FileEntry.h"
 #include "Exception.h"
 #include <string>
+#include <cerrno>
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -48,12 +50,12 @@ std::deque<SharedHandle<FileEntry> > createEntries() {
 void readFile(const std::string& filename, char* buf, int bufLength) {
   FILE* f = fopen(filename.c_str(), "r");
   if(f == NULL) {
-    abort();
+    CPPUNIT_FAIL(strerror(errno));
   }
   int retval = fread(buf, bufLength, 1, f);
   fclose(f);
   if(retval != 1) {
-    abort();
+    CPPUNIT_FAIL("return value is not 1");
   }
 }
 

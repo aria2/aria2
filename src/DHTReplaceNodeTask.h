@@ -37,6 +37,7 @@
 
 #include "DHTAbstractTask.h"
 #include "DHTMessageCallbackListener.h"
+#include "a2time.h"
 
 namespace aria2 {
 

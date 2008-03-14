@@ -153,10 +153,7 @@ private:
   }
 
   // for unit test
-  void setInfoHash(const unsigned char* infoHash)
-  {
-    memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
-  }
+  void setInfoHash(const unsigned char* infoHash);
 
   void setNumPieces(int32_t numPieces)
   {

@@ -86,10 +86,10 @@ bool Cookie::good() const
 
 bool Cookie::match(const std::string& host, const std::string& dir, time_t date, bool secure) const
 {
-  if((secure || !this->secure && !secure) &&
+  if((secure || (!this->secure && !secure)) &&
      Util::endsWith("."+host, this->domain) &&
      Util::startsWith(dir, this->path) &&
-     (this->onetime || date < this->expires)) {
+     (this->onetime || (date < this->expires))) {
     return true;
   } else {
     return false;

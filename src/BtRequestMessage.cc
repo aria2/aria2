@@ -65,7 +65,7 @@ BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, int32
 void BtRequestMessage::doReceivedAction() {
   if(pieceStorage->hasPiece(index) &&
      (!peer->amChoking() ||
-      peer->amChoking() && peer->isInAmAllowedIndexSet(index))) {
+      (peer->amChoking() && peer->isInAmAllowedIndexSet(index)))) {
     BtMessageHandle msg = messageFactory->createPieceMessage(index,
 							     begin,
 							     length);
