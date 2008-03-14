@@ -1,5 +1,9 @@
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Merged aria2-0.13.0+1-dht.patch, PATCH#1911900
+
+2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Merged aria2-0.13.0+1-nls.patch, PATCH#1909984
 
 2008-03-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>

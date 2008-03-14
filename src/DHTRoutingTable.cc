@@ -98,9 +98,9 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
 	bnode = lbnode;
       }
     } else {
-      if(good && bucket->containsQuestionableNode()) {
-	_logger->debug("Issuing ReplaceNodeTask: new node=%s", node->toString().c_str());
-	_taskQueue->addImmediateTask(_taskFactory->createReplaceNodeTask(bucket, node));
+      if(good) {
+	bucket->cacheNode(node);
+	_logger->debug("Cached node=%s", node->toString().c_str());
       }
       return false;
     }

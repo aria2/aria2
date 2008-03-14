@@ -61,7 +61,9 @@ private:
   // sorted in ascending order
   std::deque<SharedHandle<DHTNode> > _nodes;
 
-  //std::deque<SharedHandle<DHTNode> > _cachedNodes;
+  // a replacement cache. The maximum size is specified by CACHE_SIZE.
+  // This is sorted by last time seen.
+  std::deque<SharedHandle<DHTNode> > _cachedNodes;
 
   Time _lastUpdated;
 
@@ -88,6 +90,8 @@ public:
   bool isInRange(const unsigned char* nodeID) const;
 
   bool addNode(const SharedHandle<DHTNode>& node);
+
+  void cacheNode(const SharedHandle<DHTNode>& node);
 
   bool splitAllowed() const;
   
@@ -131,6 +135,8 @@ public:
   bool containsQuestionableNode() const;
 
   SharedHandle<DHTNode> getLRUQuestionableNode() const;
+
+  const std::deque<SharedHandle<DHTNode> >& getCachedNodes() const;
 };
 
 } // namespace aria2

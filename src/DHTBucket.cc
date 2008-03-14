@@ -119,23 +119,6 @@ bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
       } else {
 	return false;
       }
-	/*
-      } else if(splitAllowed()) {
-	return false;
-      } else {
-	std::deque<SharedHandle<DHTNode> >::iterator ci = find(_cachedNodes.begin(), _cachedNodes.end(), node);
-	if(ci == _cachedNodes.end()) {
-	  _cachedNodes.push_back(node);
-	  if(_cachedNodes.size() > CACHE_SIZE) {
-	    _cachedNodes.erase(_cachedNodes.begin(), _cachedNodes().begin()+CACHE_SIZE-_cachedNodes.size());
-	  }
-	} else {
-	  _cachedNodes.erase(ci);
-	  _cachedNodes.push_back(node);
-	}
-	return true;
-      }
-	*/
     }
   } else {
     _nodes.erase(itr);
@@ -144,19 +127,25 @@ bool DHTBucket::addNode(const SharedHandle<DHTNode>& node)
   }
 }
 
+void DHTBucket::cacheNode(const SharedHandle<DHTNode>& node)
+{
+  // _cachedNodes are sorted by last time seen
+  _cachedNodes.push_front(node);
+  if(_cachedNodes.size() > CACHE_SIZE) {
+    _cachedNodes.resize(CACHE_SIZE, 0);
+  }
+}
+
 void DHTBucket::dropNode(const SharedHandle<DHTNode>& node)
 {
-  return;
-  /*
-  std::deque<SharedHandle<DHTNode> >::iterator itr = find(_nodes.begin(), _nodes.end(), node);
-  if(itr != _nodes.end()) {
-    _nodes.erase(itr);
-    if(_cachedNodes.size()) {
-      _nodes.push_back(_cachedNodes.back());
-      _cachedNodes.erase(_cachedNodes.begin()+_cachedNodes.size()-1);
+  if(_cachedNodes.size()) {
+    std::deque<SharedHandle<DHTNode> >::iterator itr = find(_nodes.begin(), _nodes.end(), node);
+    if(itr != _nodes.end()) {
+      _nodes.erase(itr);
+      _nodes.push_back(_cachedNodes.front());
+      _cachedNodes.erase(_cachedNodes.begin());
     }
   }
-  */
 }
 
 void DHTBucket::moveToHead(const SharedHandle<DHTNode>& node)
@@ -289,6 +278,11 @@ SharedHandle<DHTNode> DHTBucket::getLRUQuestionableNode() const
   } else {
     return *i;
   }
+}
+
+const std::deque<SharedHandle<DHTNode> >& DHTBucket::getCachedNodes() const
+{
+  return _cachedNodes;
 }
 
 } // namespace aria2
