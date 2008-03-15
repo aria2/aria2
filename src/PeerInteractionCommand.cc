@@ -218,8 +218,8 @@ bool PeerInteractionCommand::executeInternal() {
     if(btInteractive->countReceivedMessageInIteration() > 0) {
       updateKeepAlive();
     }
-    if(peer->amInterested() && !peer->peerChoking() && peer->getLatency() < 1500 ||
-       peer->peerInterested() && !peer->amChoking()) {
+    if((peer->amInterested() && !peer->peerChoking() && (peer->getLatency() < 1500)) ||
+       (peer->peerInterested() && !peer->amChoking())) {
       if(maxDownloadSpeedLimit > 0) {
 	TransferStat stat = peerStorage->calculateStat();
 	if(maxDownloadSpeedLimit < stat.downloadSpeed) {

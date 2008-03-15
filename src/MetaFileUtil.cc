@@ -40,6 +40,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include <cstring>
+#include <cstdlib> // <-- TODO remove this if strtoul is replaced with Util::parseUInt()
 
 namespace aria2 {
 

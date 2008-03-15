@@ -4,6 +4,7 @@
 #include "BtContext.h"
 #include "Util.h"
 #include "AnnounceTier.h"
+#include <cstring>
 
 namespace aria2 {
 

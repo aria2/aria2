@@ -37,6 +37,7 @@
 
 #include "NumberDecorator.h"
 #include "DlAbortEx.h"
+#include <algorithm>
 
 namespace aria2 {
 

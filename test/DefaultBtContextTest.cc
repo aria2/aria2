@@ -4,6 +4,7 @@
 #include "AnnounceTier.h"
 #include "FixedNumberRandomizer.h"
 #include "FileEntry.h"
+#include <cstring>
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 

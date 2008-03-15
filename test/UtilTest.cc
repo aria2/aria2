@@ -41,6 +41,7 @@ class UtilTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testParseInt);
   CPPUNIT_TEST(testParseUInt);
   CPPUNIT_TEST(testParseLLInt);
+  CPPUNIT_TEST(testParseULLInt);
   CPPUNIT_TEST(testToString_binaryStream);
   CPPUNIT_TEST(testItos);
   CPPUNIT_TEST(testUitos);
@@ -78,6 +79,7 @@ public:
   void testParseInt();
   void testParseUInt();
   void testParseLLInt();
+  void testParseULLInt();
   void testToString_binaryStream();
   void testItos();
   void testUitos();
@@ -605,6 +607,26 @@ void UtilTest::testParseLLInt()
   }
   try {
     Util::parseLLInt("");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    std::cerr << *e;
+    delete e;
+  }
+}
+
+void UtilTest::testParseULLInt()
+{
+  CPPUNIT_ASSERT_EQUAL(18446744073709551615ULL,
+		       Util::parseULLInt("18446744073709551615"));
+  try {
+    Util::parseUInt("-1");
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    std::cerr << *e;
+    delete e;
+  }
+  try {
+    Util::parseLLInt("18446744073709551616");
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e;

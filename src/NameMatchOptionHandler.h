@@ -37,6 +37,7 @@
 
 #include "OptionHandler.h"
 #include "DlAbortEx.h"
+#include <strings.h>
 
 namespace aria2 {
 

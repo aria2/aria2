@@ -40,6 +40,7 @@
 #include "DownloadContext.h"
 #include "Piece.h"
 #include "FileEntry.h"
+#include <stdlib.h>
 
 namespace aria2 {
 
@@ -68,6 +69,21 @@ void UnknownLengthPieceStorage::initStorage()
 //   }
   _diskAdaptor->setStoreDir(storeDir);
   _diskAdaptor->setFileEntries(_downloadContext->getFileEntries());
+}
+
+bool UnknownLengthPieceStorage::hasMissingPiece(const SharedHandle<Peer>& peer)
+{
+  abort();
+}
+
+SharedHandle<Piece> UnknownLengthPieceStorage::getMissingPiece(const SharedHandle<Peer>& peer)
+{
+  abort();
+}
+
+SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece(const SharedHandle<Peer>& peer)
+{
+  abort();
 }
 
 PieceHandle UnknownLengthPieceStorage::getMissingPiece()
@@ -161,6 +177,18 @@ void UnknownLengthPieceStorage::markAllPiecesDone()
     _piece = 0;
   }
   _downloadFinished = true;
+}
+
+void UnknownLengthPieceStorage::markPiecesDone(uint64_t length)
+{
+  // TODO not implemented yet
+  abort();
+}
+
+void UnknownLengthPieceStorage::markPieceMissing(size_t index)
+{
+  // TODO not implemented yet
+  abort();
 }
 
 Pieces UnknownLengthPieceStorage::getInFlightPieces()

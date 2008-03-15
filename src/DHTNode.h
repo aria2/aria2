@@ -87,10 +87,7 @@ public:
     _ipaddr = ipaddr;
   }
 
-  void setID(const unsigned char* id)
-  {
-    memcpy(_id, id, DHT_ID_LENGTH);
-  }
+  void setID(const unsigned char* id);
 
   uint16_t getPort() const
   {

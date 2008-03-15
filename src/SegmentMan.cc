@@ -45,6 +45,7 @@
 #include "Option.h"
 #include "DownloadContext.h"
 #include "Piece.h"
+#include <algorithm>
 
 namespace aria2 {
 

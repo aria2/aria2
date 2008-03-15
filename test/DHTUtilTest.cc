@@ -1,6 +1,7 @@
 #include "DHTUtil.h"
 #include "Exception.h"
 #include "Util.h"
+#include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

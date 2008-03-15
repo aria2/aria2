@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "BtKeepAliveMessage.h"
+#include <cstring>
 
 namespace aria2 {
 

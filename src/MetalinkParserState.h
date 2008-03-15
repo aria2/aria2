@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include <map>
+#include <string>
 
 namespace aria2 {
 

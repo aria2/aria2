@@ -168,9 +168,11 @@ public:
 
   static int32_t parseInt(const std::string& s, int32_t base = 10);
 
-  static unsigned int parseUInt(const std::string& s, int base = 10);
+  static uint32_t parseUInt(const std::string& s, int base = 10);
   
   static int64_t parseLLInt(const std::string& s, int32_t base = 10);
+
+  static uint64_t parseULLInt(const std::string& s, int base = 10);
 
   static IntSequence parseIntRange(const std::string& src);
 

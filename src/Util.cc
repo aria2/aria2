@@ -100,7 +100,8 @@ std::pair<std::string, std::string> Util::split(const std::string& src, const st
 }
 
 int64_t Util::difftv(struct timeval tv1, struct timeval tv2) {
-  if(tv1.tv_sec < tv2.tv_sec || tv1.tv_sec == tv2.tv_sec && tv1.tv_usec < tv2.tv_usec) {
+  if((tv1.tv_sec < tv2.tv_sec) ||
+     ((tv1.tv_sec == tv2.tv_sec) && (tv1.tv_usec < tv2.tv_usec))) {
     return 0;
   }
   return ((int64_t)(tv1.tv_sec-tv2.tv_sec)*1000000+
@@ -187,9 +188,9 @@ std::string Util::replace(const std::string& target, const std::string& oldstr, 
 bool Util::shouldUrlencode(const char c)
 {
   return !(// ALPHA
-	   'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z' ||
+	   ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') ||
 	   // DIGIT
-	   '0' <= c && c <= '9' ||
+	   ('0' <= c && c <= '9') ||
 	   // safe
 	   '$' == c || '-' == c || '_' == c || '.' == c ||
 	   // extra
@@ -218,9 +219,9 @@ std::string Util::urlencode(const unsigned char* target, size_t len) {
 std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; i++) {
-    if('0' <= target[i] && target[i] <= '9' ||
-       'A' <= target[i] && target[i] <= 'Z' ||
-       'a' <= target[i] && target[i] <= 'z') {
+    if(('0' <= target[i] && target[i] <= '9') ||
+       ('A' <= target[i] && target[i] <= 'Z') ||
+       ('a' <= target[i] && target[i] <= 'z')) {
       dest += target[i];
     } else {
       char temp[4];
@@ -409,7 +410,9 @@ int32_t Util::parseInt(const std::string& s, int32_t base)
   if(*stop != '\0') {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			trimed.c_str());
-  } else if((v == LONG_MIN || v == LONG_MAX) && errno == ERANGE || v > INT32_MAX || v < INT32_MIN) {
+  } else if((((v == LONG_MIN) || (v == LONG_MAX)) && (errno == ERANGE)) ||
+	    (v > INT32_MAX) ||
+	    (v < INT32_MIN)) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			trimed.c_str());
   }
@@ -434,7 +437,7 @@ uint32_t Util::parseUInt(const std::string& s, int base)
   if(*stop != '\0') {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			trimed.c_str());
-  } else if((v == ULONG_MAX) && errno == ERANGE || v > UINT32_MAX) {
+  } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			trimed.c_str());
   }
@@ -454,7 +457,32 @@ int64_t Util::parseLLInt(const std::string& s, int32_t base)
   if(*stop != '\0') {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			trimed.c_str());
-  } else if((v == INT64_MIN || v == INT64_MAX) && errno == ERANGE) {
+  } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			trimed.c_str());
+  }
+  return v;
+}
+
+uint64_t Util::parseULLInt(const std::string& s, int base)
+{
+  std::string trimed = Util::trim(s);
+  if(trimed.empty()) {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			"empty string");
+  }
+  // We don't allow negative number.
+  if(trimed[0] == '-') {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			trimed.c_str());
+  }
+  char* stop;
+  errno = 0;
+  uint64_t v = strtoull(trimed.c_str(), &stop, base);
+  if(*stop != '\0') {
+    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+			trimed.c_str());
+  } else if((v == ULLONG_MAX) && (errno == ERANGE)) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			trimed.c_str());
   }
@@ -621,7 +649,7 @@ int64_t Util::getRealSize(const std::string& sizeWithUnit)
 
   if(v < 0) {
     throw new DlAbortEx("Negative value detected: %s", sizeWithUnit.c_str());
-  } else if(v*mult < 0) {
+  } else if(INT64_MAX/mult < v) {
     throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
 			"overflow/underflow");
   }

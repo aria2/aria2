@@ -142,8 +142,8 @@ bool DownloadCommand::executeInternal() {
   if(_requestGroup->getTotalLength() != 0 && bufSize == 0) {
     throw new DlRetryEx(EX_GOT_EOF);
   }
-  if(!transferDecoder.isNull() && transferDecoder->finished()
-     || transferDecoder.isNull() && segment->complete()
+  if((!transferDecoder.isNull() && transferDecoder->finished())
+     || (transferDecoder.isNull() && segment->complete())
      || bufSize == 0) {
     if(!transferDecoder.isNull()) transferDecoder->end();
     logger->info(MSG_SEGMENT_DOWNLOAD_COMPLETED, cuid);

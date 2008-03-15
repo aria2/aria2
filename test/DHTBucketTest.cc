@@ -2,6 +2,8 @@
 #include "DHTNode.h"
 #include "Exception.h"
 #include "Util.h"
+#include <cstring>
+#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {

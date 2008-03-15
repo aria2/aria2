@@ -73,7 +73,7 @@ uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
   if(value == "") {
     return 0;
   } else {
-    return strtoull(value.c_str(), 0, 10);
+    return Util::parseULLInt(value);
   }
 }
 
@@ -85,7 +85,7 @@ RangeHandle HttpHeader::getRange() const
     if(contentLengthStr == "") {
       return new Range(0, 0, 0);
     } else {
-      uint64_t contentLength = strtoull(contentLengthStr.c_str(), 0, 10);
+      uint64_t contentLength = Util::parseULLInt(contentLengthStr);
       if(contentLength == 0) {
 	return new Range(0, 0, 0);
       } else {
@@ -102,9 +102,9 @@ RangeHandle HttpHeader::getRange() const
   std::pair<std::string, std::string> startEndBytePair;
   Util::split(startEndBytePair, rangePair.first, '-');
 
-  uint64_t startByte = STRTOULL(startEndBytePair.first.c_str());
-  uint64_t endByte = STRTOULL(startEndBytePair.second.c_str());
-  uint64_t entityLength = STRTOULL(rangePair.second.c_str());
+  off_t startByte = Util::parseLLInt(startEndBytePair.first);
+  off_t endByte = Util::parseLLInt(startEndBytePair.second);
+  uint64_t entityLength = Util::parseULLInt(rangePair.second);
 
   return new Range(startByte, endByte, entityLength);
 }

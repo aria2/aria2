@@ -154,7 +154,7 @@ bool Request::parseUrl(const std::string& url) {
 
 bool Request::isHexNumber(const char c) const
 {
-  return '0' <= c && c <= '9' || 'A' <= c && c <= 'F' || 'a' <= c && c <= 'f';
+  return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f');
 }
 
 std::string Request::urlencode(const std::string& src) const

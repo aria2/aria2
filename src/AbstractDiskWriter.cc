@@ -41,6 +41,7 @@
 #include "DlAbortEx.h"
 #include "a2io.h"
 #include <cerrno>
+#include <cstring>
 #include <cassert>
 
 namespace aria2 {

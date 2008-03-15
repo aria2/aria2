@@ -66,8 +66,8 @@ public:
   FindIdenticalPeer(const PeerHandle& peer):_peer(peer) {}
 
   bool operator()(const PeerHandle& peer) const {
-    return _peer == peer ||
-      _peer->ipaddr == peer->ipaddr && _peer->port == peer->port;
+    return (_peer == peer) ||
+      ((_peer->ipaddr == peer->ipaddr) && (_peer->port == peer->port));
   }
 };
 

@@ -38,6 +38,7 @@
 #include "common.h"
 #include "a2netcompat.h"
 #include "a2time.h"
+#include <cstdlib>
 #include <string>
 #include <utility>
 

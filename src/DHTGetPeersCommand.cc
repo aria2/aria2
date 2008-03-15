@@ -72,7 +72,7 @@ bool DHTGetPeersCommand::execute()
     return true;
   }
   if(_task.isNull() &&
-     (_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL) ||
+     ((_numRetry > 0 && _lastGetPeerTime.elapsed(RETRY_INTERVAL)) ||
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
     logger->debug("Issuing PeerLookup for infoHash=%s",
 		  btContext->getInfoHashAsString().c_str());

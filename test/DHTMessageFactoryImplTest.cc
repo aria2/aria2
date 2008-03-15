@@ -17,6 +17,7 @@
 #include "DHTGetPeersReplyMessage.h"
 #include "DHTAnnouncePeerMessage.h"
 #include "DHTAnnouncePeerReplyMessage.h"
+#include <cstring>
 #include <iostream>
 #include <cppunit/extensions/HelperMacros.h>
 

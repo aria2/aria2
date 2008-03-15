@@ -2,6 +2,7 @@
 #define _D_FIXED_NUMBER_RANDOMIZER_H_
 
 #include "Randomizer.h"
+#include <cstdlib>
 
 namespace aria2 {
 

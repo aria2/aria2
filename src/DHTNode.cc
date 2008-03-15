@@ -116,4 +116,9 @@ std::string DHTNode::toString() const
     ", RTT="+Util::uitos(_rtt);
 }
 
+void DHTNode::setID(const unsigned char* id)
+{
+  memcpy(_id, id, DHT_ID_LENGTH);
+}
+
 } // namespace aria2

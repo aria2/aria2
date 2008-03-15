@@ -35,6 +35,7 @@
 #ifndef _D_ARRAY_FUN_H_
 #define _D_ARRAY_FUN_H_
 
+#include <cstdlib>
 #include <functional>
 
 namespace aria2 {
@@ -62,7 +63,7 @@ class array_function_base {
 public:
   virtual ~array_function_base() {}
 
-  virtual R operator[](std::size_t index) const = 0;
+  virtual R operator[](size_t index) const = 0;
 
   virtual array_function_base* clone() const = 0;
 };
@@ -75,7 +76,7 @@ private:
 public:
   array_unary_function(A a, F f):_a(a), _f(f) {}
 
-  virtual typename F::result_type operator[](std::size_t index) const
+  virtual typename F::result_type operator[](size_t index) const
   {
     return _f(_a[index]);
   }
@@ -95,7 +96,7 @@ private:
 public:
   array_binary_function(A a, B b, F f):_a(a), _b(b), _f(f) {}
 
-  virtual typename F::result_type operator[](std::size_t index) const
+  virtual typename F::result_type operator[](size_t index) const
   {
     return _f(_a[index], _b[index]);
   }
@@ -133,7 +134,7 @@ public:
     return *this;
   }
 
-  R operator[](std::size_t index) const
+  R operator[](size_t index) const
   {
     return (*_p)[index];
   }
@@ -199,19 +200,17 @@ array_and(A a, B b)
 
 // calculate length of array
 
-template<typename T, std::size_t N>
+template<typename T, size_t N>
 char (&char_array_ref(T (&)[N]))[N];
 
-template<typename T, std::size_t N>
-std::size_t
-arrayLength(T (&a)[N])
+template<typename T, size_t N>
+size_t arrayLength(T (&a)[N])
 {
   return sizeof(char_array_ref(a));
 }
 
 template<typename T>
-std::size_t
-arrayLength(T (&a)[0u])
+size_t arrayLength(T (&a)[0u])
 {
   return 0;
 }

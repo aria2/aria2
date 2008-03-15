@@ -34,10 +34,12 @@
 /* copyright --> */
 #include "File.h"
 #include "Util.h"
+#define basename posix_basename
 #include <libgen.h>
 // use GNU version basename
 #undef basename
 #include <cstring>
+#include <stdlib.h>
 #include <deque>
 
 namespace aria2 {
