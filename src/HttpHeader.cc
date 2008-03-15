@@ -93,18 +93,29 @@ RangeHandle HttpHeader::getRange() const
       }
     }
   }
-  std::string::size_type rangeSpecIndex = rangeStr.find("bytes ");
-  if(rangeSpecIndex == std::string::npos) {
-    return new Range(0, 0, 0);
+  std::string byteRangeSpec;
+  {
+    // we expect that rangeStr looks like 'bytes 100-199/100'
+    // but some server returns '100-199/100', omitting bytes-unit sepcifier
+    // 'bytes'.
+    std::pair<std::string, std::string> splist;
+    Util::split(splist, rangeStr, ' ');
+    if(splist.second.empty()) {
+      // we assume bytes-unit specifier omitted.
+      byteRangeSpec = splist.first;
+    } else {
+      byteRangeSpec = splist.second;
+    }
   }
-  std::pair<std::string, std::string> rangePair;
-  Util::split(rangePair, rangeStr.substr(rangeSpecIndex+6), '/');
-  std::pair<std::string, std::string> startEndBytePair;
-  Util::split(startEndBytePair, rangePair.first, '-');
+  std::pair<std::string, std::string> byteRangeSpecPair;
+  Util::split(byteRangeSpecPair, byteRangeSpec, '/');
 
-  off_t startByte = Util::parseLLInt(startEndBytePair.first);
-  off_t endByte = Util::parseLLInt(startEndBytePair.second);
-  uint64_t entityLength = Util::parseULLInt(rangePair.second);
+  std::pair<std::string, std::string> byteRangeRespSpecPair;
+  Util::split(byteRangeRespSpecPair, byteRangeSpecPair.first, '-');
+
+  off_t startByte = Util::parseLLInt(byteRangeRespSpecPair.first);
+  off_t endByte = Util::parseLLInt(byteRangeRespSpecPair.second);
+  uint64_t entityLength = Util::parseULLInt(byteRangeSpecPair.second);
 
   return new Range(startByte, endByte, entityLength);
 }
