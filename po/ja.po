@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-01 01:55+0900\n"
+"POT-Creation-Date: 2008-03-15 20:03+0900\n"
 "PO-Revision-Date: 2008-02-26 15:36+0000\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1872,18 +1872,18 @@ msgstr ""
 "す.\n"
 "                              0 を指定すると, この機能は無効になります."
 
-#: src/BtSetup.cc:120
+#: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "ポートをバインド中にエラーが発生しました.\n"
 
-#: src/DownloadEngine.cc:295
+#: src/DownloadEngine.cc:296
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "シャットダウン中です... 緊急時に即座にシャットダウンしたい場合は Ctrl-C をも"
 "う一度押してください."
 
-#: src/DownloadEngine.cc:299
+#: src/DownloadEngine.cc:300
 msgid "Emergency shutdown sequence commencing..."
 msgstr "緊急シャットダウン中です..."
 
@@ -1919,7 +1919,7 @@ msgstr "ダウンロード結果:"
 msgid "Status Legend:"
 msgstr "凡例:"
 
-#: src/Util.cc:634
+#: src/Util.cc:687
 msgid "Files:"
 msgstr "ファイル:"
 

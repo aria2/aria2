@@ -7,67 +7,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-01 01:55+0900\n"
-"PO-Revision-Date: 2008-02-29 16:42+0000\n"
-"Last-Translator: BoomerBoss <dev@breuer-pascal.de>\n"
+"POT-Creation-Date: 2008-03-15 20:03+0900\n"
+"PO-Revision-Date: 2008-03-01 19:48+0000\n"
+"Last-Translator: MarcoHuenseler <marco.robotangel@googlemail.com>\n"
 "Language-Team: deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
+"X-Launchpad-Export-Date: 2008-03-15 07:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:70
 msgid "must be either 'true' or 'false'."
-msgstr "Es muss entweder \"wahr\" oder \"falsch\" sein"
+msgstr "muss entweder \"true\" (wahr) oder \"false\" (falsch) sein"
 
 #: src/OptionHandlerImpl.h:91 src/OptionHandlerImpl.h:124
 #, c-format
 msgid "must be between %s and %s."
-msgstr "es muss zwischen %s und %s sein"
+msgstr "muss zwischen %s und %s sein"
 
 #: src/OptionHandlerImpl.h:121
 #, c-format
 msgid "must be smaller than or equal to %s."
-msgstr "es muss kleiner oder gleich %s sein"
+msgstr "must be smaller than or equal to %s."
 
 #: src/OptionHandlerImpl.h:127
 #, c-format
 msgid "must be greater than or equal to %s."
-msgstr "es muss größer oder gleich %s sein"
+msgstr "muss größer oder gleich %s sein"
 
 #: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:176
 msgid "must be a number."
-msgstr "es muss eine Zahl sein"
+msgstr "muss eine Zahl sein"
 
 #: src/OptionHandlerImpl.h:167
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr "es muss kleiner oder gleich %.1f sein"
+msgstr "muss kleiner oder gleich %.1f sein"
 
 #: src/OptionHandlerImpl.h:170
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr "es muss zwischen %.1f und %.1f sein"
+msgstr "muss zwischen %.1f und %.1f sein"
 
 #: src/OptionHandlerImpl.h:173
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr "es muss größer oder gleich %.1f sein"
+msgstr "muss größer oder gleich %.1f sein"
 
 #: src/OptionHandlerImpl.h:235
 msgid "must be one of the following:"
-msgstr "es muss eines der folgenden sein"
+msgstr "muss eines der folgenden sein"
 
 #: src/OptionHandlerImpl.h:272
-#, fuzzy
 msgid "unrecognized proxy format"
-msgstr "unerkanntes proxy format"
+msgstr "unbekanntes Proxy-Format"
 
 #: src/message.h:40
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - The download for one segment completed successfully."
-msgstr "CUID#%d - Abruf eines Segments erfolgreich beendet."
+msgstr "CUID#%d - Download eines Segments erfolgreich beendet."
 
 #: src/message.h:41
 #, c-format
@@ -99,7 +98,7 @@ msgid ""
 "CUID#%d - Requesting:\n"
 "%s"
 msgstr ""
-"CUID#%d - Anforderung von:\n"
+"CUID#%d - Anfordern:\n"
 "%s"
 
 #: src/message.h:46
@@ -112,24 +111,24 @@ msgstr ""
 "%s"
 
 #: src/message.h:47
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - Abruf abgebrochen. URI=%s"
+msgstr "CUID#%d - Download abgebrochen. URI=%s"
 
 #: src/message.h:48
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Restarting the download. URI=%s"
-msgstr "CUID#%d - Abruf wird erneut gestartet. URI=%s"
+msgstr "CUID#%d - Download wird erneut gestartet. URI=%s"
 
 #: src/message.h:49
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - Abruf abgebrochen."
+msgstr "CUID#%d - Download abgebrochen."
 
 #: src/message.h:50
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr "CUID#%d - %d Versuche, aber kein Erfolg. Abruf abgebrochen."
+msgstr "CUID#%d - %d Versuche, aber kein Erfolg. Download abgebrochen."
 
 #: src/message.h:51
 #, c-format
@@ -147,9 +146,9 @@ msgid "CUID#%d - we got wrong piece. index=%d"
 msgstr "CUID#%d - falsches Teilstück erhalten. Index=%d"
 
 #: src/message.h:59
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - Abruf abgebrochen. %s"
+msgstr "CUID#%d - Download abgebrochen. %s"
 
 #: src/message.h:60
 #, c-format
@@ -194,7 +193,7 @@ msgstr "CUID#%d - Abbruch angefordert."
 #: src/message.h:68
 #, c-format
 msgid "CUID#%d - Connecting to the peer %s"
-msgstr ""
+msgstr "CUID#%d - Verbinde zu Peer %s"
 
 #: src/message.h:69
 #, c-format
@@ -229,22 +228,22 @@ msgstr ""
 #: src/message.h:73
 #, c-format
 msgid "CUID#%d - Exception caught while validating file integrity."
-msgstr ""
+msgstr "CUID#%d - Ausnahmefehler beim Prüfen der Datei-Integrität."
 
 #: src/message.h:74
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Interested in the peer"
-msgstr ""
+msgstr "CUID#%d - Interesse am Peer"
 
 #: src/message.h:75
 #, c-format
 msgid "CUID#%d - Not interested in the peer"
-msgstr ""
+msgstr "CUID#%d - Kein Interesse am Peer"
 
 #: src/message.h:76
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Deleting request slot index=%d, blockIndex=%d"
-msgstr ""
+msgstr "CUID#%d - Entferne Anforderungs-Slot index=%d, blockIndex=%d"
 
 #: src/message.h:77
 #, c-format
@@ -254,9 +253,9 @@ msgid ""
 msgstr ""
 
 #: src/message.h:78
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Deleting request slot blockIndex=%d because of time out"
-msgstr ""
+msgstr "CUID#%d - Entferne Anforderungs-Slot blockIndex=%d wegen Timeout."
 
 #: src/message.h:79
 #, c-format
@@ -273,12 +272,12 @@ msgstr ""
 #: src/message.h:81
 #, c-format
 msgid "CUID#%d - Extended Messaging enabled."
-msgstr ""
+msgstr "CUID#%d - Erweitertes Messaging aktiviert"
 
 #: src/message.h:82
 #, c-format
 msgid "CUID#%d - Exception caught while allocating file space."
-msgstr ""
+msgstr "CUID#%d - Ausnahmefehler beim Reservieren des Speicherplatzes"
 
 #: src/message.h:83
 #, fuzzy, c-format
@@ -287,9 +286,9 @@ msgstr ""
 "CUID#%d - Content-Disposition Header gefunden. Benutze %s als Dateiname"
 
 #: src/message.h:84
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Peer %s:%d banned."
-msgstr ""
+msgstr "CUID#%d - Peer %s:%d gebannt."
 
 #: src/message.h:85
 #, fuzzy, c-format
@@ -304,32 +303,32 @@ msgstr ""
 #: src/message.h:87
 #, c-format
 msgid "CUID#%d - Incoming connection, adding new command CUID#%d"
-msgstr ""
+msgstr "CUID#%d - Eingehende Verbindung, füge neuen Befehl CUID#%d hinzu"
 
 #: src/message.h:88
 #, c-format
 msgid "CUID#%d - Error in accepting connection"
-msgstr ""
+msgstr "CUID#%d - Fehler beim Akzeptieren der Verbindung"
 
 #: src/message.h:89
 #, c-format
 msgid "CUID#%d - Error occurred while processing tracker response."
-msgstr ""
+msgstr "CUID#%d - Fehler beim Verarbeiten der Antwort des Trackers"
 
 #: src/message.h:90
 #, c-format
 msgid "CUID#%d - Cannot create tracker request."
-msgstr ""
+msgstr "CUID#%d - Konnte keinen Tracker-Request erstellen."
 
 #: src/message.h:91
-#, c-format
+#, fuzzy, c-format
 msgid "CUID#%d - Creating new tracker request command #%d"
-msgstr ""
+msgstr "CUID#%d - Erstelle neuen Tracker-Request-Befehl #%d"
 
 #: src/message.h:92
 #, c-format
 msgid "CUID#%d - The peer is DHT-enabled."
-msgstr ""
+msgstr "CUID#%d - Der Peer unterstützt DHT."
 
 #: src/message.h:94
 #, c-format
@@ -354,7 +353,7 @@ msgstr "Die Segmentdatei %s ist nicht vorhanden."
 #: src/message.h:98
 #, c-format
 msgid "Saving the segment file %s"
-msgstr "Speicherung der Segmentdatei %s"
+msgstr "Speichern der Segmentdatei %s"
 
 #: src/message.h:99
 msgid "The segment file was saved successfully."
@@ -372,7 +371,7 @@ msgstr "Die Segmentdatei wurde fehlerfrei geladen."
 #: src/message.h:102
 #, fuzzy
 msgid "No URI to download. Download aborted."
-msgstr "Keine URI zum herunterladen angegeben. Download abgebrochen."
+msgstr "Keine URI zum Herunterladen angegeben. Download abgebrochen."
 
 #: src/message.h:103
 #, fuzzy, c-format
@@ -391,20 +390,20 @@ msgstr ""
 #: src/message.h:104
 #, c-format
 msgid "Allocating file %s, %s bytes"
-msgstr "Alloziiere Datei  %s, %s bytes"
+msgstr "Reserviere Datei  %s, %s bytes"
 
 #: src/message.h:105
 msgid "File not found"
-msgstr "Datei nicht vorhanden"
+msgstr "Datei nicht gefunden"
 
 #: src/message.h:106
 msgid "Not a directory"
-msgstr "Kein Verzeichnis"
+msgstr "Ist kein Verzeichnis"
 
 #: src/message.h:107
 #, c-format
 msgid "Insufficient checksums. checksumLength=%d, numChecksum=%d"
-msgstr "Ungenügende Prüfsumme. checksumLength=%d, numChecksum=%d"
+msgstr "Ungültige Prüfsumme. checksumLength=%d, numChecksum=%d"
 
 #: src/message.h:108
 #, c-format
@@ -418,7 +417,7 @@ msgstr "Keine Peer-Liste erhalten."
 #: src/message.h:110
 #, c-format
 msgid "Adding peer %s:%d"
-msgstr "Füge Peer hinzu %s:%d"
+msgstr "Füge Peer %s:%d hinzu"
 
 #: src/message.h:111
 #, c-format
@@ -427,7 +426,7 @@ msgstr "Lösche Teil index=%d, fillRate(%%)=%d<=%d"
 
 #: src/message.h:112
 msgid "Download of selected files was complete."
-msgstr "Download der ausgewählten Datei abgeschlossen"
+msgstr "Download der ausgewählten Dateien abgeschlossen"
 
 #: src/message.h:113
 msgid "The download was complete."
@@ -439,14 +438,14 @@ msgid "Removed %d have entries."
 msgstr "Entfernte %d Einträge."
 
 #: src/message.h:115
-#, c-format
+#, fuzzy, c-format
 msgid "Validating file %s"
-msgstr "Validiere Datei %s"
+msgstr "Prüfe Datei %s"
 
 #: src/message.h:116
-#, c-format
+#, fuzzy, c-format
 msgid "%d seconds to allocate %s byte(s)"
-msgstr "%d Sekunden um %s byte(s) zu alloziieren"
+msgstr "%d Sekunden um %s byte(s) zu reservieren"
 
 #: src/message.h:117
 #, c-format
@@ -465,7 +464,7 @@ msgstr "Download fertig: %s"
 
 #: src/message.h:120
 msgid "Seeding is over."
-msgstr "Seeding beendet."
+msgstr "Verteilen beendet."
 
 #: src/message.h:121
 #, c-format
@@ -474,7 +473,7 @@ msgstr ""
 
 #: src/message.h:122
 msgid "No chunk to verify."
-msgstr "Kein Chunk zu verifizieren."
+msgstr "Kein Chunk zum überprüfen."
 
 #: src/message.h:123
 #, c-format
@@ -492,12 +491,12 @@ msgid ""
 ".netrc file %s does not have correct permissions. It should be 600. netrc "
 "support disabled."
 msgstr ""
-".netrc Datei %s hat ungültige Zugriffsrechte. Korret ist 600. netrc Support "
+".netrc Datei %s hat ungültige Zugriffsrechte. Sollte 600 sein. netrc Support "
 "abgeschaltet."
 
 #: src/message.h:126
 msgid "Logging started."
-msgstr "Log gestartet."
+msgstr "Loggen gestartet."
 
 #: src/message.h:127
 msgid "Specify at least one URL."
@@ -510,12 +509,12 @@ msgstr "Daemon-Start nicht erfolgreich"
 #: src/message.h:129
 #, c-format
 msgid "Verification finished successfully. file=%s"
-msgstr ""
+msgstr "Verifizierung erfolgreich abgeschlossen. file=%s"
 
 #: src/message.h:130
 #, c-format
 msgid "Checksum error detected. file=%s"
-msgstr ""
+msgstr "Prüfsummen-Fehler entdeckt. file=%s"
 
 #: src/message.h:131
 #, c-format
@@ -525,11 +524,11 @@ msgstr ""
 #: src/message.h:132
 #, c-format
 msgid "Failed to convert string into value: %s"
-msgstr ""
+msgstr "Fehler beim Versuch Zeichenkette in Wert zu konvertieren: %s"
 
 #: src/message.h:133
 msgid "Resource not found"
-msgstr ""
+msgstr "Ressource nicht gefunden"
 
 #: src/message.h:134
 #, c-format
@@ -539,6 +538,7 @@ msgstr "Datei existiert bereits. Umbenannt zu %s."
 #: src/message.h:135
 msgid "Cannot parse metalink XML file. XML may be malformed."
 msgstr ""
+"Konnte Metalink-XML-Datei nicht verarbeiten. Syntax könnte falsch sein."
 
 #: src/message.h:136
 #, c-format
@@ -1539,16 +1539,16 @@ msgid ""
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/BtSetup.cc:120
+#: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "Fehler beim Binden an Port aufgetreten.\n"
 
-#: src/DownloadEngine.cc:295
+#: src/DownloadEngine.cc:296
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:299
+#: src/DownloadEngine.cc:300
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
@@ -1586,7 +1586,7 @@ msgstr "Download Ergebnisse"
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:634
+#: src/Util.cc:687
 msgid "Files:"
 msgstr ""
 

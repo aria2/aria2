@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-01 01:55+0900\n"
-"PO-Revision-Date: 2008-02-23 17:00+0000\n"
-"Last-Translator: Sinless Man <sinlessman@gmail.com>\n"
+"POT-Creation-Date: 2008-03-15 20:03+0900\n"
+"PO-Revision-Date: 2008-03-05 11:38+0000\n"
+"Last-Translator: Maciej Habant <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
+"X-Launchpad-Export-Date: 2008-03-15 07:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:70
@@ -1466,16 +1466,16 @@ msgid ""
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/BtSetup.cc:120
+#: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/DownloadEngine.cc:295
+#: src/DownloadEngine.cc:296
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:299
+#: src/DownloadEngine.cc:300
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
@@ -1509,7 +1509,7 @@ msgstr ""
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:634
+#: src/Util.cc:687
 msgid "Files:"
 msgstr ""
 
@@ -1580,15 +1580,18 @@ msgid "Printing options whose name starts with '%s'."
 msgstr ""
 
 #: src/version_usage.cc:130
-#, c-format
+#, fuzzy, c-format
 msgid "No help category or option name matching with '%s'."
-msgstr ""
+msgstr "Brak kategorii pomocy lub opcji zgodnej nazwą z '%s'"
 
 #: src/version_usage.cc:138
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
 msgstr ""
+" Możesz sprecyzować wiele URLi. Dopóki nie sprecyzujesz opcji -Z, wszystkie "
+"URLe muszą\n"
+" wskazywać na ten sam plik lub pobieranie nie powiedzie się."
 
 #: src/version_usage.cc:140
 msgid ""
@@ -1606,5 +1609,6 @@ msgid ""
 msgstr ""
 
 #: src/version_usage.cc:149
+#, fuzzy
 msgid "Refer to man page for more information."
-msgstr ""
+msgstr "Zajrzyj na stronę man (podręcznika) po więcej informacji."

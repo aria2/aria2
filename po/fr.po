@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-01 01:55+0900\n"
+"POT-Creation-Date: 2008-03-15 20:03+0900\n"
 "PO-Revision-Date: 2008-02-29 12:51+0000\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
@@ -1825,18 +1825,18 @@ msgstr ""
 "                              Si la valeur est égale à 0 cette fonction est "
 "inactive."
 
-#: src/BtSetup.cc:120
+#: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
 
-#: src/DownloadEngine.cc:295
+#: src/DownloadEngine.cc:296
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Séquence d'arrêt débutée... Pressez Ctrl-C une nouvelle fois pour un arrêt "
 "d'urgence."
 
-#: src/DownloadEngine.cc:299
+#: src/DownloadEngine.cc:300
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Séquence d'arrêt d'urgence débutée..."
 
@@ -1872,7 +1872,7 @@ msgstr "Résultats du ou des téléchargements:"
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 
-#: src/Util.cc:634
+#: src/Util.cc:687
 msgid "Files:"
 msgstr "Fichiers:"
 

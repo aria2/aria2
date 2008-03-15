@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: aria2c 0.13.0rc\n"
+"Project-Id-Version: aria2c 0.13.0+1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-01 01:55+0900\n"
+"POT-Creation-Date: 2008-03-15 20:03+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1448,16 +1448,16 @@ msgid ""
 "                              If 0 is given, this feature is disabled."
 msgstr ""
 
-#: src/BtSetup.cc:120
+#: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/DownloadEngine.cc:295
+#: src/DownloadEngine.cc:296
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:299
+#: src/DownloadEngine.cc:300
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
@@ -1491,7 +1491,7 @@ msgstr ""
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:634
+#: src/Util.cc:687
 msgid "Files:"
 msgstr ""
 
