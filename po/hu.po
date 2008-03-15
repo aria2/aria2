@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-01 01:55+0900\n"
+"POT-Creation-Date: 2008-03-15 18:24+0900\n"
 "PO-Revision-Date: 2008-01-24 14:58+0000\n"
 "Last-Translator: Juhász József <juhasz.jozsef@gmail.com>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -1459,12 +1459,12 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/DownloadEngine.cc:295
+#: src/DownloadEngine.cc:297
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:299
+#: src/DownloadEngine.cc:301
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
@@ -1498,7 +1498,7 @@ msgstr ""
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:634
+#: src/Util.cc:637
 msgid "Files:"
 msgstr ""
 

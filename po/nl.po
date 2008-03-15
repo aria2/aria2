@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-01 01:55+0900\n"
-"PO-Revision-Date: 2007-12-25 21:55+0000\n"
-"Last-Translator: Jelle Lampaert <crazed007@gmail.com>\n"
+"POT-Creation-Date: 2008-03-15 18:24+0900\n"
+"PO-Revision-Date: 2008-03-03 14:10+0000\n"
+"Last-Translator: Joram Pereira <joramrp@gmail.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
+"X-Launchpad-Export-Date: 2008-03-15 07:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: src/OptionHandlerImpl.h:70
@@ -24,7 +24,7 @@ msgstr ""
 #: src/OptionHandlerImpl.h:91 src/OptionHandlerImpl.h:124
 #, c-format
 msgid "must be between %s and %s."
-msgstr ""
+msgstr "moet tussen %s en %s zitten."
 
 #: src/OptionHandlerImpl.h:121
 #, c-format
@@ -43,17 +43,17 @@ msgstr "moet een nummer zijn"
 #: src/OptionHandlerImpl.h:167
 #, c-format
 msgid "must be smaller than or equal to %.1f."
-msgstr ""
+msgstr "moet kleiner of gelijk aan %.1f zijn."
 
 #: src/OptionHandlerImpl.h:170
 #, c-format
 msgid "must be between %.1f and %.1f."
-msgstr ""
+msgstr "moet tussen %.1f en %.1f zitten."
 
 #: src/OptionHandlerImpl.h:173
 #, c-format
 msgid "must be greater than or equal to %.1f."
-msgstr ""
+msgstr "moet groter of gelijk aan %.1f zijn."
 
 #: src/OptionHandlerImpl.h:235
 msgid "must be one of the following:"
@@ -113,7 +113,7 @@ msgstr ""
 #: src/message.h:47
 #, c-format
 msgid "CUID#%d - Download aborted. URI=%s"
-msgstr "CUID#%d - Download afgelast. URI=%s"
+msgstr "CUID#%d - Download afgebroken. URI=%s"
 
 #: src/message.h:48
 #, c-format
@@ -123,12 +123,12 @@ msgstr "CUID#%d - Herstart de download. URI=%s"
 #: src/message.h:49
 #, c-format
 msgid "CUID#%d - Download aborted."
-msgstr "CUID#%d - Download afgelast."
+msgstr "CUID#%d - Download afgebroken."
 
 #: src/message.h:50
 #, c-format
 msgid "CUID#%d - %d times attempted, but no success. Download aborted."
-msgstr "CUID#%d - %d maal geprobeerd, zonder success. Download afgelast."
+msgstr "CUID#%d - %d maal geprobeerd, zonder success. Download afgebroken."
 
 #: src/message.h:51
 #, c-format
@@ -148,12 +148,12 @@ msgstr "CUID#%d - verkeerde stuk ontvangen. index=%d"
 #: src/message.h:59
 #, c-format
 msgid "CUID#%d - Download not complete: %s"
-msgstr "CUID#%d - Download afgerond: %s"
+msgstr "CUID#%d - Download niet voltooid: %s"
 
 #: src/message.h:60
 #, c-format
 msgid "#%d - Download has already completed: %s"
-msgstr ""
+msgstr "#%d - Download is al voltooid: %s"
 
 #: src/message.h:61
 #, c-format
@@ -1475,12 +1475,12 @@ msgstr ""
 msgid "Errors occurred while binding port.\n"
 msgstr ""
 
-#: src/DownloadEngine.cc:295
+#: src/DownloadEngine.cc:297
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:299
+#: src/DownloadEngine.cc:301
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
@@ -1514,7 +1514,7 @@ msgstr ""
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:634
+#: src/Util.cc:637
 msgid "Files:"
 msgstr ""
 
