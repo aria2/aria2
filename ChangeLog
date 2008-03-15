@@ -1,5 +1,12 @@
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Bump up version number to 0.13.1
+	* configure.ac
+	
+	* Release 0.13.1
+	
+2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added Simplified Chinese translation. Also updated the following
 	translations: Polish, Dutch, German. Great thanks to all translators.
 	
