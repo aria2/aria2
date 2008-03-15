@@ -1,5 +1,12 @@
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Suppress content-range error when 'Content-Range' response header
+	doesn't contains bytes-unit specifier 'bytes'
+	* src/HttpHeader.cc (getRange)
+	* test/HttpHeaderTest.cc
+
+2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed compilation error with g++-4.3
 	
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
