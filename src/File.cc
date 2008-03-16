@@ -34,10 +34,6 @@
 /* copyright --> */
 #include "File.h"
 #include "Util.h"
-#define basename posix_basename
-#include <libgen.h>
-// use GNU version basename
-#undef basename
 #include <cstring>
 #include <stdlib.h>
 #include <deque>
@@ -134,18 +130,28 @@ mode_t File::mode()
 
 std::string File::getBasename() const
 {
-  char* s = strdup(name.c_str());
-  std::string bname = basename(s);
-  free(s);
-  return bname;
+  std::string::size_type lastSlashIndex = name.find_last_of("/");
+  if(lastSlashIndex == std::string::npos) {
+    return name;
+  } else {
+    return name.substr(lastSlashIndex+1);
+  }
 }
 
 std::string File::getDirname() const
 {
-  char* s = strdup(name.c_str());
-  std::string dname = dirname(s);
-  free(s);
-  return dname;
+  std::string::size_type lastSlashIndex = name.find_last_of("/");
+  if(lastSlashIndex == std::string::npos) {
+    if(name == "") {
+      return "";
+    } else {
+      return ".";
+    }
+  } else if(lastSlashIndex == 0) {
+    return "/";
+  } else {
+    return name.substr(0, lastSlashIndex);
+  }
 }
 
 bool File::isDir(const std::string& filename)
