@@ -126,14 +126,66 @@ void FileTest::testMkdir() {
 
 void FileTest::testGetDirname()
 {
-  File f("/tmp/dist/aria2.tar.bz2");
-  CPPUNIT_ASSERT_EQUAL(std::string("/tmp/dist"), f.getDirname());
+  {
+    File f("/usr/lib");
+    CPPUNIT_ASSERT_EQUAL(std::string("/usr"), f.getDirname());
+  }
+  {
+    File f("/usr/");
+    CPPUNIT_ASSERT_EQUAL(std::string("/usr"), f.getDirname());
+  }
+  {
+    File f("usr");
+    CPPUNIT_ASSERT_EQUAL(std::string("."), f.getDirname());
+  }
+  {
+    File f("/");
+    CPPUNIT_ASSERT_EQUAL(std::string("/"), f.getDirname());
+  }
+  {
+    File f(".");
+    CPPUNIT_ASSERT_EQUAL(std::string("."), f.getDirname());
+  }
+  {
+    File f("..");
+    CPPUNIT_ASSERT_EQUAL(std::string("."), f.getDirname());
+  }
+  {
+    File f("");
+    CPPUNIT_ASSERT_EQUAL(std::string(""), f.getDirname());
+  }  
 }
 
 void FileTest::testGetBasename()
 {
-  File f("/tmp/dist/aria2.tar.bz2");
-  CPPUNIT_ASSERT_EQUAL(std::string("aria2.tar.bz2"), f.getBasename());
+  {
+    File f("/usr/lib");
+    CPPUNIT_ASSERT_EQUAL(std::string("lib"), f.getBasename());
+  }
+  {
+    File f("/usr/");
+    CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
+  }
+  {
+    File f("usr");
+    CPPUNIT_ASSERT_EQUAL(std::string("usr"), f.getBasename());
+  }
+  {
+    File f("/");
+    CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
+  }
+  {
+    File f(".");
+    CPPUNIT_ASSERT_EQUAL(std::string("."), f.getBasename());
+  }
+  {
+    File f("..");
+    CPPUNIT_ASSERT_EQUAL(std::string(".."), f.getBasename());
+  }
+  {
+    File f("");
+    CPPUNIT_ASSERT_EQUAL(std::string(""), f.getBasename());
+  }
 }
 
 void FileTest::testRenameTo()

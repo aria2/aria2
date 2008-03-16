@@ -1,3 +1,10 @@
+2008-03-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Rewritten getBasename() and getDirname(), without standard library
+	basename(), dirname().
+	* src/File.cc
+	* test/FileTest.cc
+
 2008-03-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added Simplified Chinese translation. Also updated the following
