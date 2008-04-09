@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "AuthConfig.h"
+#include <ostream>
 
 namespace aria2 {
 
