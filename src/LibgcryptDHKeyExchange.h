@@ -53,10 +53,10 @@ private:
 
   gcry_mpi_t _publicKey;
 
-  void handleError(int errno) const
+  void handleError(gcry_error_t err) const
   {
     throw new DlAbortEx("Exception in libgcrypt routine(DHKeyExchange class): %s",
-			gcry_strerror(errno));
+			gcry_strerror(err));
   }
 public:
   DHKeyExchange():

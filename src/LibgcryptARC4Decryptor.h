@@ -46,10 +46,10 @@ class ARC4Decryptor {
 private:
   LibgcryptARC4Context _ctx;
 
-  void handleError(gcry_error_t errno) const
+  void handleError(gcry_error_t err) const
   {
     throw new DlAbortEx("Exception in libgcrypt routine(ARC4Decryptor class): %s",
-			gcry_strerror(errno));
+			gcry_strerror(err));
   }
 public:
   ARC4Decryptor() {}

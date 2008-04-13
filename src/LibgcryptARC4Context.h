@@ -45,10 +45,10 @@ class LibgcryptARC4Context {
 private:
   gcry_cipher_hd_t _cipherCtx;
 
-  void handleError(gcry_error_t errno) const
+  void handleError(gcry_error_t err) const
   {
     throw new DlAbortEx("Exception in libgcrypt routine(ARC4Context class): %s",
-			gcry_strerror(errno));
+			gcry_strerror(err));
   }
 public:
   LibgcryptARC4Context():_cipherCtx(0) {}

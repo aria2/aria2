@@ -1,5 +1,14 @@
 2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+        Renamed argument from 'errno' to 'err', since errno is confused with
+        errno defined in errno.h.
+        * src/LibgcryptARC4Decryptor.h
+        * src/LibgcryptARC4Context.h
+        * src/LibgcryptDHKeyExchange.h
+        * src/LibgcryptARC4Encryptor.h
+
+2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten choking algorithm.
 	* src/PeerChokeCommand.{cc, h}
 	* src/BtInterestedMessage.cc
