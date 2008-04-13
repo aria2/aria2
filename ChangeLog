@@ -1,5 +1,10 @@
 2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Merged Ross's 0.13.1+1 Cygwin compile fix patch.
+	* src/SimpleLogger.{cc, h}
+
+2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Implemented auto protocol detection.
 	Now you can do:
 	aria2c -Z http://host/file file1.torrent file2.metalink

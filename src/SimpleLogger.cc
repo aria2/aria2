@@ -38,7 +38,6 @@
 #include "message.h"
 #include "a2io.h"
 #include "a2time.h"
-#include <cstdarg>
 #include <cerrno>
 #include <cstring>
 

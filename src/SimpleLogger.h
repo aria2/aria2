@@ -37,6 +37,7 @@
 
 #include "Logger.h"
 #include <cstdio>
+#include <cstdarg>
 #include <string>
 
 namespace aria2 {
