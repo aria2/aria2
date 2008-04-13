@@ -41,6 +41,9 @@
 #include "Peer.h"
 #include "BtContext.h"
 #include "BtRuntime.h"
+#include "BtSeederStateChoke.h"
+#include "BtLeecherStateChoke.h"
+#include "PieceStorage.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -52,12 +55,18 @@ DefaultPeerStorage::DefaultPeerStorage(const BtContextHandle& btContext,
   maxPeerListSize(MAX_PEER_LIST_SIZE),
   btRuntime(BT_RUNTIME(btContext)),
   removedPeerSessionDownloadLength(0),
-  removedPeerSessionUploadLength(0)
+  removedPeerSessionUploadLength(0),
+  _seederStateChoke(new BtSeederStateChoke(btContext)),
+  _leecherStateChoke(new BtLeecherStateChoke())
 {
   logger = LogFactory::getInstance();
 }
 
-DefaultPeerStorage::~DefaultPeerStorage() {}
+DefaultPeerStorage::~DefaultPeerStorage()
+{
+  delete _seederStateChoke;
+  delete _leecherStateChoke;
+}
 
 class FindIdenticalPeer {
 private:
@@ -243,6 +252,25 @@ void DefaultPeerStorage::returnPeer(const PeerHandle& peer)
       peers.erase(itr);
       peers.push_back(peer);
     }
+  }
+}
+
+bool DefaultPeerStorage::chokeRoundIntervalElapsed()
+{
+  const time_t CHOKE_ROUND_INTERVAL = 10;
+  if(PIECE_STORAGE(btContext)->downloadFinished()) {
+    return _seederStateChoke->getLastRound().elapsed(CHOKE_ROUND_INTERVAL);
+  } else {
+    return _leecherStateChoke->getLastRound().elapsed(CHOKE_ROUND_INTERVAL);
+  }
+}
+
+void DefaultPeerStorage::executeChoke()
+{
+  if(PIECE_STORAGE(btContext)->downloadFinished()) {
+    return _seederStateChoke->executeChoke(getActivePeers());
+  } else {
+    return _leecherStateChoke->executeChoke(getActivePeers());
   }
 }
 

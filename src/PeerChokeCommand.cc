@@ -33,141 +33,29 @@
  */
 /* copyright --> */
 #include "PeerChokeCommand.h"
-#include "Util.h"
-#include "Peer.h"
 #include "DownloadEngine.h"
 #include "BtContext.h"
 #include "BtRuntime.h"
-#include "PieceStorage.h"
 #include "PeerStorage.h"
-#include "Logger.h"
-#include <algorithm>
 
 namespace aria2 {
 
 PeerChokeCommand::PeerChokeCommand(int32_t cuid,
-				   RequestGroup* requestGroup,
 				   DownloadEngine* e,
-				   const BtContextHandle& btContext,
-				   time_t interval):
+				   const BtContextHandle& btContext):
   Command(cuid),
   BtContextAwareCommand(btContext),
-  RequestGroupAware(requestGroup),
-  interval(interval),
-  e(e),
-  rotate(0)
+  e(e)
 {}
 
 PeerChokeCommand::~PeerChokeCommand() {}
-
-class ChokePeer {
-public:
-  ChokePeer() {}
-  void operator()(PeerHandle& peer) {
-    peer->chokingRequired(true);
-  }
-};
-
-void PeerChokeCommand::optUnchokingPeer(Peers& peers) const {
-  if(peers.empty()) {
-    return;
-  }
-  std::random_shuffle(peers.begin(), peers.end());
-  unsigned int optUnchokCount = 1;
-  for(Peers::iterator itr = peers.begin(); itr != peers.end(); itr++) {
-    Peers::value_type peer = *itr;
-    if(optUnchokCount > 0 && !peer->snubbing()) {
-      optUnchokCount--;
-      peer->optUnchoking(true);
-      logger->debug("opt, unchoking %s, download speed=%d",
-		    peer->ipaddr.c_str(), peer->calculateDownloadSpeed());
-    } else {
-      peer->optUnchoking(false);
-    }
-  }
-}
-
-class UploadFaster {
-public:
-  bool operator() (const PeerHandle& left, const PeerHandle& right) const {
-    return left->calculateUploadSpeed() > right->calculateUploadSpeed();
-  }
-};
-
-void PeerChokeCommand::orderByUploadRate(Peers& peers) const {
-  std::sort(peers.begin(), peers.end(), UploadFaster());
-}
-
-class DownloadFaster {
-public:
-  bool operator() (const PeerHandle& left, const PeerHandle& right) const {
-    return left->calculateDownloadSpeed() > right->calculateDownloadSpeed();
-  }
-};
-
-void PeerChokeCommand::orderByDownloadRate(Peers& peers) const {
-  std::sort(peers.begin(), peers.end(), DownloadFaster());
-}
 
 bool PeerChokeCommand::execute() {
   if(btRuntime->isHalt()) {
     return true;
   }
-  if(checkPoint.elapsed(interval)) {
-    checkPoint.reset();
-    Peers peers = peerStorage->getActivePeers();
-    std::for_each(peers.begin(), peers.end(), ChokePeer());
-    if(pieceStorage->downloadFinished()) {
-      orderByUploadRate(peers);
-    } else {
-      orderByDownloadRate(peers);
-    }
-    unsigned int unchokingCount = 4;//peers.size() >= 4 ? 4 : peers.size();
-    for(Peers::iterator itr = peers.begin(); itr != peers.end() && unchokingCount > 0; ) {
-      PeerHandle peer = *itr;
-      if(peer->peerInterested() && !peer->snubbing()) {
-	unchokingCount--;
-	peer->chokingRequired(false);
-	peer->optUnchoking(false);
-	itr = peers.erase(itr);
-	if(pieceStorage->downloadFinished()) {
-	  logger->debug("cat01, unchoking %s, upload speed=%d",
-			peer->ipaddr.c_str(),
-			peer->calculateUploadSpeed());
-	} else {
-	  logger->debug("cat01, unchoking %s, download speed=%d",
-			peer->ipaddr.c_str(),
-			peer->calculateDownloadSpeed());
-	}
-      } else {
-	itr++;
-      }
-    }
-    for(Peers::iterator itr = peers.begin(); itr != peers.end(); ) {
-      PeerHandle peer = *itr;
-      if(!peer->peerInterested() && !peer->snubbing()) {
-	peer->chokingRequired(false);
-	peer->optUnchoking(false);
-	itr = peers.erase(itr);
-	if(pieceStorage->downloadFinished()) {
-	  logger->debug("cat02, unchoking %s, upload speed=%d",
-			peer->ipaddr.c_str(),
-			peer->calculateUploadSpeed());
-	} else {
-	  logger->debug("cat02, unchoking %s, download speed=%d",
-			peer->ipaddr.c_str(),
-			peer->calculateDownloadSpeed());
-	}
-	break;
-      } else {
-	itr++;
-      }
-    }
-    if(rotate%3 == 0) {
-      optUnchokingPeer(peers);
-      rotate = 0;
-    }
-    rotate++;
+  if(peerStorage->chokeRoundIntervalElapsed()) {
+    peerStorage->executeChoke();
   }
   e->commands.push_back(this);
   return false;

@@ -367,7 +367,9 @@ SRCS += MetaEntry.h\
 	LibsslARC4Decryptor.h\
 	LibsslARC4Encryptor.h\
 	LibsslDHKeyExchange.h\
-	BtConstants.h
+	BtConstants.h\
+	BtLeecherStateChoke.cc BtLeecherStateChoke.h\
+	BtSeederStateChoke.cc BtSeederStateChoke.h
 endif # ENABLE_BITTORRENT
 
 if ENABLE_METALINK

@@ -38,6 +38,7 @@
 #include "common.h"
 #include "BtConstants.h"
 #include "PeerStat.h"
+#include "TimeA2.h"
 #include <string>
 #include <deque>
 
@@ -75,6 +76,10 @@ private:
   unsigned int _latency;
   uint64_t _uploadLength;
   uint64_t _downloadLength;
+
+  Time _lastDownloadUpdate;
+
+  Time _lastAmUnchoking;
 
   template<typename T>
   bool indexIncluded(const std::deque<T>& c, T index) const;
@@ -179,6 +184,10 @@ public:
   uint64_t downloadLength() const;
 
   void updateDownloadLength(size_t bytes);
+
+  const Time& getLastDownloadUpdate() const;
+
+  const Time& getLastAmUnchoking() const;
 };
 
 } // namespace aria2

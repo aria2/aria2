@@ -76,10 +76,8 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
 					       e,
 					       btContext));
   commands.push_back(new PeerChokeCommand(CUIDCounterSingletonHolder::instance()->newID(),
-					  requestGroup,
 					  e,
-					  btContext,
-					  10));
+					  btContext));
 
   commands.push_back(new ActivePeerConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
 						     requestGroup, e, btContext, 10));

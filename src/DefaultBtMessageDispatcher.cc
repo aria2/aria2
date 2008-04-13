@@ -49,6 +49,7 @@
 #include "Piece.h"
 #include "LogFactory.h"
 #include "Logger.h"
+#include "a2functional.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -264,6 +265,12 @@ void DefaultBtMessageDispatcher::addOutstandingRequest(const RequestSlot& reques
   if(!isOutstandingRequest(requestSlot.getIndex(), requestSlot.getBlockIndex())) {
     requestSlots.push_back(requestSlot);
   }
+}
+
+size_t DefaultBtMessageDispatcher::countOutstandingUpload()
+{
+  return std::count_if(messageQueue.begin(), messageQueue.end(),
+		       mem_fun_sh(&BtMessage::isUploading));
 }
 
 std::deque<SharedHandle<BtMessage> >&

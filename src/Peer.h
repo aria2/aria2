@@ -231,6 +231,10 @@ public:
   std::string getExtensionName(uint8_t id) const;
 
   void setExtension(const std::string& name, uint8_t id);
+
+  const Time& getLastDownloadUpdate() const;
+
+  const Time& getLastAmUnchoking() const;
 };
 
 typedef SharedHandle<Peer> PeerHandle;

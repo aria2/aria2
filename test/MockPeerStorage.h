@@ -56,6 +56,13 @@ public:
   virtual void returnPeer(const SharedHandle<Peer>& peer)
   {
   }
+
+  virtual bool chokeRoundIntervalElapsed()
+  {
+    return false;
+  }
+
+  virtual void executeChoke() {}
 };
 
 #endif // _D_MOCK_PEER_STORAGE_H_

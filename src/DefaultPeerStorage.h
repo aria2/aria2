@@ -46,6 +46,8 @@ class BtContext;
 class Option;
 class Logger;
 class BtRuntime;
+class BtSeederStateChoke;
+class BtLeecherStateChoke;
 
 class DefaultPeerStorage : public PeerStorage {
 private:
@@ -57,6 +59,9 @@ private:
   SharedHandle<BtRuntime> btRuntime;
   uint64_t removedPeerSessionDownloadLength;
   uint64_t removedPeerSessionUploadLength;
+
+  BtSeederStateChoke* _seederStateChoke;
+  BtLeecherStateChoke* _leecherStateChoke;
 
   bool isPeerAlreadyAdded(const SharedHandle<Peer>& peer);
 public:
@@ -90,6 +95,10 @@ public:
   virtual TransferStat calculateStat();
 
   virtual void returnPeer(const SharedHandle<Peer>& peer);
+
+  virtual bool chokeRoundIntervalElapsed();
+
+  virtual void executeChoke();
 
   void setMaxPeerListSize(size_t size) { this->maxPeerListSize = size; }
  

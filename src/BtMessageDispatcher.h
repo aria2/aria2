@@ -81,6 +81,8 @@ public:
   virtual void removeOutstandingRequest(const RequestSlot& slot) = 0;
 
   virtual void addOutstandingRequest(const RequestSlot& slot) = 0;
+
+  virtual size_t countOutstandingUpload() = 0;
 };
 
 typedef SharedHandle<BtMessageDispatcher> BtMessageDispatcherHandle;

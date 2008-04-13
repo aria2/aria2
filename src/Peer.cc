@@ -442,4 +442,16 @@ const Time& Peer::getBadConditionStartTime() const
   return _badConditionStartTime;
 }
 
+const Time& Peer::getLastDownloadUpdate() const
+{
+  assert(_res);
+  return _res->getLastDownloadUpdate();
+}
+
+const Time& Peer::getLastAmUnchoking() const
+{
+  assert(_res);
+  return _res->getLastAmUnchoking();
+}
+
 } // namespace aria2

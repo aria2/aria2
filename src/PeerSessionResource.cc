@@ -53,7 +53,9 @@ PeerSessionResource::PeerSessionResource(size_t pieceLength, uint64_t totalLengt
   _dhtEnabled(false),
   _latency(DEFAULT_LATENCY),
   _uploadLength(0),
-  _downloadLength(0)
+  _downloadLength(0),
+  _lastDownloadUpdate(0),
+  _lastAmUnchoking(0)
 {}
 
 PeerSessionResource::~PeerSessionResource()
@@ -69,6 +71,9 @@ bool PeerSessionResource::amChoking() const
 void PeerSessionResource::amChoking(bool b)
 {
   _amChoking = b;
+  if(!b) {
+    _lastAmUnchoking.reset();
+  }
 }
 
 bool PeerSessionResource::amInterested() const
@@ -137,6 +142,10 @@ bool PeerSessionResource::snubbing() const
 void PeerSessionResource::snubbing(bool b)
 {
   _snubbing = b;
+  if(_snubbing) {
+    chokingRequired(true);
+    optUnchoking(false);
+  }
 }
 
 bool PeerSessionResource::hasAllPieces() const
@@ -311,6 +320,18 @@ void PeerSessionResource::updateDownloadLength(size_t bytes)
 {
   _peerStat.updateDownloadLength(bytes);
   _downloadLength += bytes;
+
+  _lastDownloadUpdate.reset();
+}
+
+const Time& PeerSessionResource::getLastDownloadUpdate() const
+{
+  return _lastDownloadUpdate;
+}
+
+const Time& PeerSessionResource::getLastAmUnchoking() const
+{
+  return _lastAmUnchoking;
 }
 
 } // namespace aria2

@@ -37,34 +37,21 @@
 
 #include "Command.h"
 #include "BtContextAwareCommand.h"
-#include "RequestGroupAware.h"
-#include "TimeA2.h"
 
 namespace aria2 {
 
 class DownloadEngine;
-class Peer;
 
 class PeerChokeCommand : public Command,
-			 public BtContextAwareCommand,
-			 public RequestGroupAware
+			 public BtContextAwareCommand
 {
 private:
-  time_t interval;
   DownloadEngine* e;
-  unsigned int rotate;
-  Time checkPoint;
-
-  void orderByUploadRate(std::deque<SharedHandle<Peer> >& peers) const;
-  void orderByDownloadRate(std::deque<SharedHandle<Peer> >& peers) const;
-  void optUnchokingPeer(std::deque<SharedHandle<Peer> >& peers) const;
 
 public:
   PeerChokeCommand(int32_t cuid,
-		   RequestGroup* requestGroup,
 		   DownloadEngine* e,
-		   const SharedHandle<BtContext>& btContext,
-		   time_t interval);
+		   const SharedHandle<BtContext>& btContext);
 
   virtual ~PeerChokeCommand();
 

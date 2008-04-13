@@ -221,7 +221,9 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	LibsslARC4Decryptor.h\
 @ENABLE_BITTORRENT_TRUE@	LibsslARC4Encryptor.h\
 @ENABLE_BITTORRENT_TRUE@	LibsslDHKeyExchange.h\
-@ENABLE_BITTORRENT_TRUE@	BtConstants.h
+@ENABLE_BITTORRENT_TRUE@	BtConstants.h\
+@ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.cc BtLeecherStateChoke.h\
+@ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.cc BtSeederStateChoke.h
 
 @ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
@@ -522,7 +524,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	LibgcryptARC4Decryptor.h LibgcryptARC4Encryptor.h \
 	LibgcryptDHKeyExchange.h LibsslARC4Context.h \
 	LibsslARC4Decryptor.h LibsslARC4Encryptor.h \
-	LibsslDHKeyExchange.h BtConstants.h Metalinker.cc Metalinker.h \
+	LibsslDHKeyExchange.h BtConstants.h BtLeecherStateChoke.cc \
+	BtLeecherStateChoke.h BtSeederStateChoke.cc \
+	BtSeederStateChoke.h Metalinker.cc Metalinker.h \
 	MetalinkEntry.cc MetalinkEntry.h MetalinkResource.cc \
 	MetalinkResource.h MetalinkProcessor.h \
 	MetalinkProcessorFactory.cc MetalinkProcessorFactory.h \
@@ -667,7 +671,9 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	DHTRegistry.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	InitiatorMSEHandshakeCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ReceiverMSEHandshakeCommand.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	MSEHandshake.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	MSEHandshake.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
@@ -1234,6 +1240,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtHaveNoneMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtInterestedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtKeepAliveMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtLeecherStateChoke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtNotInterestedMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtPortMessage.Po@am__quote@
@@ -1241,6 +1248,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRegistry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRejectMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtRequestMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSeederStateChoke.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSetup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtSuggestPieceMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtUnchokeMessage.Po@am__quote@

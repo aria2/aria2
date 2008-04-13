@@ -32,71 +32,41 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_PEER_STORAGE_H_
-#define _D_PEER_STORAGE_H_
+#ifndef _D_BT_LEECHER_STATE_CHOKE_H_
+#define _D_BT_LEECHER_STATE_CHOKE_H_
 
 #include "common.h"
 #include "SharedHandle.h"
-#include "TransferStat.h"
+#include "TimeA2.h"
 #include <deque>
 
 namespace aria2 {
 
 class Peer;
+class Logger;
 
-class PeerStorage {
+class BtLeecherStateChoke {
+private:
+  int _round;
+
+  Time _lastRound;
+
+  const Logger* _logger;
+
+  void plannedOptimisticUnchoke(std::deque<Peer*>& peers);
+
+  void regularUnchoke(std::deque<Peer*>& peers);
+
 public:
-  virtual ~PeerStorage() {}
+  BtLeecherStateChoke();
 
-  /**
-   * Adds new peer to the internal peer list.
-   * If the peer is added successfully, returns true. Otherwise returns false.
-   */
-  virtual bool addPeer(const SharedHandle<Peer>& peer) = 0;
+  ~BtLeecherStateChoke();
 
-  /**
-   * Adds all peers in peers to internal peer list.
-   */
-  virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers) = 0;
+  void executeChoke(const std::deque<SharedHandle<Peer> >& peerSet);
 
-  /**
-   * Returns internal peer list.
-   */
-  virtual const std::deque<SharedHandle<Peer> >& getPeers() = 0;
-
-  /**
-   * Returns one of the unused peers.
-   */
-  virtual SharedHandle<Peer> getUnusedPeer() = 0;
-
-  /**
-   * Returns true if at least one unused peer exists.
-   * Otherwise returns false.
-   */
-  virtual bool isPeerAvailable() = 0;
-  
-  /**
-   * Returns the list of peers which are currently connected from localhost.
-   */
-  virtual std::deque<SharedHandle<Peer> > getActivePeers() = 0;
-
-  /**
-   * Calculates current download/upload statistics.
-   */
-  virtual TransferStat calculateStat() = 0;
-
-  /**
-   * Tells PeerStorage object that peer is no longer used in the session.
-   */
-  virtual void returnPeer(const SharedHandle<Peer>& peer) = 0;
-
-  virtual bool chokeRoundIntervalElapsed() = 0;
-
-  virtual void executeChoke() = 0;
+  const Time& getLastRound() const;
 };
-
-typedef SharedHandle<PeerStorage> PeerStorageHandle;
 
 } // namespace aria2
 
-#endif // _D_PEER_STORAGE_H_
+#endif // _D_BT_LEECHER_STATE_CHOKE_H_

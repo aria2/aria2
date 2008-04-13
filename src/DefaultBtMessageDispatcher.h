@@ -101,6 +101,8 @@ public:
 
   virtual void addOutstandingRequest(const RequestSlot& requestSlot);
 
+  virtual size_t countOutstandingUpload();
+
   std::deque<SharedHandle<BtMessage> >& getMessageQueue();
 
   RequestSlots& getRequestSlots();
