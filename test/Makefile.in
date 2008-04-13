@@ -188,7 +188,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	MessageDigestHelperTest.cc \
+	ProtocolDetectorTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -349,7 +349,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	FileTest.$(OBJEXT) OptionTest.$(OBJEXT) \
 	DefaultDiskWriterTest.$(OBJEXT) FeatureConfigTest.$(OBJEXT) \
 	SpeedCalcTest.$(OBJEXT) MultiDiskAdaptorTest.$(OBJEXT) \
-	MultiFileAllocationIteratorTest.$(OBJEXT) $(am__objects_1) \
+	MultiFileAllocationIteratorTest.$(OBJEXT) \
+	ProtocolDetectorTest.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -586,7 +587,8 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	$(am__append_1) $(am__append_2) $(am__append_3)
+	ProtocolDetectorTest.cc $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -778,6 +780,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerSessionResourceTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolDetectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@
