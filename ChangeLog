@@ -1,5 +1,27 @@
 2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Implemented auto protocol detection.
+	Now you can do:
+	aria2c -Z http://host/file file1.torrent file2.metalink
+	(Note: -Z option is required for auto protcol detection.)
+	Then aria2c downloads 3 files simultaneously:
+	1. http://host/file
+	2. file1.torrent <-- read local torrent file
+	3. file2.metalink <-- read local Metalink file.
+
+	Same thing goes with -i option. Assume your uris.txt contans:
+	http://host/file
+	file1.torrent
+	file2.metalink
+	Then you can do: aria2c -i uris.txt
+	(Note: -Z option is not needed if -i option is given.)
+	
+	* src/main.cc
+	* src/ProtocolDetector.{cc, h}
+	* test/ProtocolDetectorTest.cc
+	
+2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
         Fixed compile error without gnutls/libgcrypt/libgpg-error and openSSL
         installed
         * src/ARC4Encryptor.h

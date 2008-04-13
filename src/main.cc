@@ -61,6 +61,7 @@
 #include "DefaultBtContext.h"
 #include "FileEntry.h"
 #include "RequestGroup.h"
+#include "ProtocolDetector.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "Metalink2RequestGroup.h"
@@ -74,6 +75,7 @@
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 extern char* optarg;
 extern int optind, opterr, optopt;
 #include <getopt.h>
@@ -120,6 +122,24 @@ RequestGroupHandle createRequestGroup(const Option* op, const std::deque<std::st
 extern Option* option_processing(int argc, char* const argv[]);
 
 #ifdef ENABLE_BITTORRENT
+
+SharedHandle<RequestGroup>
+createBtRequestGroup(const std::string& torrentFilePath,
+		     Option* op,
+		     const std::deque<std::string>& auxUris)
+{
+  SharedHandle<RequestGroup> rg = new RequestGroup(op, auxUris);
+  SharedHandle<DefaultBtContext> btContext = new DefaultBtContext();
+  btContext->load(torrentFilePath);// may throw exception
+  if(op->defined(PREF_PEER_ID_PREFIX)) {
+    btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
+  }
+  btContext->setDir(op->get(PREF_DIR));
+  rg->setDownloadContext(btContext);
+  btContext->setOwnerRequestGroup(rg.get());
+  return rg;
+}
+
 int32_t downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
 {
   std::deque<std::string> nargs;
@@ -132,15 +152,8 @@ int32_t downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
   ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
 	std::back_inserter(xargs));
   
-  RequestGroupHandle rg = new RequestGroup(op, xargs);
-  DefaultBtContextHandle btContext = new DefaultBtContext();
-  btContext->load(op->get(PREF_TORRENT_FILE));
-  if(op->defined(PREF_PEER_ID_PREFIX)) {
-    btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
-  }
-  btContext->setDir(op->get(PREF_DIR));
-  rg->setDownloadContext(btContext);
-  btContext->setOwnerRequestGroup(rg.get());
+  RequestGroupHandle rg = createBtRequestGroup(op->get(PREF_TORRENT_FILE),
+					       op, xargs);
   
   RequestGroups groups;
   groups.push_back(rg);
@@ -159,6 +172,55 @@ int32_t downloadMetalink(Option* op)
 }
 #endif // ENABLE_METALINK
 
+class AccRequestGroup {
+private:
+  ProtocolDetector _detector;
+  Option* _op;
+public:
+  AccRequestGroup(Option* op):_op(op) {}
+
+  std::deque<SharedHandle<RequestGroup> >&
+  operator()(std::deque<SharedHandle<RequestGroup> >& groups,
+	     const std::string& uri)
+  {
+    if(_detector.isStreamProtocol(uri)) {
+      std::deque<std::string> xuris;
+      for(size_t count = _op->getAsInt(PREF_SPLIT); count; --count) {
+	xuris.push_back(uri);
+      }
+      RequestGroupHandle rg = createRequestGroup(_op, xuris);
+      groups.push_back(rg);
+    }
+#ifdef ENABLE_BITTORRENT
+    else if(_detector.guessTorrentFile(uri)) {
+      try {
+	groups.push_back(createBtRequestGroup(uri, _op,
+					      std::deque<std::string>()));
+      } catch(RecoverableException* e) {
+	// error occurred while parsing torrent file.
+	// We simply ignore it.	
+      }
+    }
+#endif // ENABLE_BITTORRENT
+#ifdef ENABLE_METALINK
+    else if(_detector.guessMetalinkFile(uri)) {
+      try {
+	std::deque<SharedHandle<RequestGroup> > metalinkGroups =
+	  Metalink2RequestGroup(_op).generate(uri);
+	groups.insert(groups.end(), metalinkGroups.begin(), metalinkGroups.end());
+      } catch(RecoverableException* e) {
+	// error occurred while parsing metalink file.
+	// We simply ignore it.
+      }
+    }
+#endif // ENABLE_METALINK
+    else {
+      LogFactory::getInstance()->error(MSG_UNRECOGNIZED_URI, (uri).c_str());
+    }
+    return groups;
+  }
+};
+
 int32_t downloadUriList(Option* op, std::istream& in)
 {
   UriListParser p;
@@ -167,13 +229,17 @@ int32_t downloadUriList(Option* op, std::istream& in)
     std::deque<std::string> uris = p.parseNext(in);
     if(uris.size() == 1 && op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
       std::deque<std::string> unfoldedURIs = unfoldURI(uris);
-      for(std::deque<std::string>::const_iterator itr = unfoldedURIs.begin();
-	  itr != unfoldedURIs.end(); ++itr) {
-	std::deque<std::string> xuris;
-	ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT), std::back_inserter(xuris));
-	SharedHandle<RequestGroup> rg = createRequestGroup(op, xuris);
-	groups.push_back(rg);
-      }
+      std::deque<SharedHandle<RequestGroup> > thisGroups =
+	std::accumulate(unfoldedURIs.begin(), unfoldedURIs.end(),
+			std::deque<SharedHandle<RequestGroup> >(),
+			AccRequestGroup(op));
+      groups.insert(groups.end(), thisGroups.begin(), thisGroups.end());
+    } else if(uris.size() == 1) {
+      std::deque<SharedHandle<RequestGroup> > thisGroups =
+	std::accumulate(uris.begin(), uris.end(),
+			std::deque<SharedHandle<RequestGroup> >(),
+			AccRequestGroup(op));
+      groups.insert(groups.end(), thisGroups.begin(), thisGroups.end());
     } else if(uris.size() > 0) {
       std::deque<std::string> xuris;
       ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
@@ -208,14 +274,9 @@ int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
   }
   RequestGroups groups;
   if(op->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
-    for(std::deque<std::string>::const_iterator itr = nargs.begin();
-	itr != nargs.end(); ++itr) {
-      std::deque<std::string> xuris;
-      ncopy(itr, itr+1, op->getAsInt(PREF_SPLIT),
-	    std::back_inserter(xuris));
-      RequestGroupHandle rg = createRequestGroup(op, xuris);
-      groups.push_back(rg);
-    }
+    groups = std::accumulate(nargs.begin(), nargs.end(),
+			     std::deque<SharedHandle<RequestGroup> >(),
+			     AccRequestGroup(op));
   } else {
     std::deque<std::string> xargs;
     ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),

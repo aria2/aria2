@@ -403,7 +403,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.h \
-	usage_text.h IteratableChunkChecksumValidator.cc \
+	usage_text.h ProtocolDetector.cc ProtocolDetector.h \
+	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
 	CheckIntegrityCommand.cc CheckIntegrityCommand.h \
@@ -778,11 +779,12 @@ am__objects_14 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	ByteArrayDiskWriterFactory.$(OBJEXT) ServerHost.$(OBJEXT) \
 	HelpItem.$(OBJEXT) TaggedItem.$(OBJEXT) TagContainer.$(OBJEXT) \
 	HelpItemFactory.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
-	TimedHaltCommand.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9) $(am__objects_10) $(am__objects_11) \
-	$(am__objects_12) $(am__objects_13)
+	TimedHaltCommand.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
+	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
+	$(am__objects_13)
 am_libaria2c_a_OBJECTS = $(am__objects_14)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -1116,7 +1118,8 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	PostDownloadHandler.h PreDownloadHandler.h SingletonHolder.h \
 	TrueRequestGroupCriteria.h a2algo.h a2functional.h a2io.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.h \
-	usage_text.h $(am__append_1) $(am__append_2) $(am__append_3) \
+	usage_text.h ProtocolDetector.cc ProtocolDetector.h \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
@@ -1431,6 +1434,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PiecedSegment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PiecesMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Platform.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolDetector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RealtimeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReceiverMSEHandshakeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Request.Po@am__quote@
