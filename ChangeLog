@@ -1,5 +1,12 @@
 2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+        Fixed compile error without gnutls/libgcrypt/libgpg-error and openSSL
+        installed
+        * src/ARC4Encryptor.h
+        * src/ARC4Decryptor.h
+
+2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
         Renamed argument from 'errno' to 'err', since errno is confused with
         errno defined in errno.h.
         * src/LibgcryptARC4Decryptor.h

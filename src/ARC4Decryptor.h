@@ -40,6 +40,26 @@
 # include "LibgcryptARC4Decryptor.h"
 #elif HAVE_LIBSSL
 # include "LibsslARC4Decryptor.h"
-#endif // HAVE_LIBSSL
+#else
+
+// provide empty implementation to compile sources without both libgcrypt and
+// openssl installed
+namespace aria2 {
+
+class ARC4Decryptor {
+public:
+  ARC4Decryptor() {}
+
+  ~ARC4Decryptor() {}
+
+  void init(const unsigned char* key, size_t keyLength) {}
+
+  void decrypt(unsigned char* out, size_t outLength,
+	       const unsigned char* in, size_t inLength) {}
+};
+
+} // namespace aria2
+
+#endif
 
 #endif // _D_ARC4_DECRYPTOR_H_
