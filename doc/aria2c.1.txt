@@ -419,11 +419,11 @@ Download a file using 2 connections
 aria2c -s2 http://host/file.zip
 --------------------------------
 
-Download a file from 2 difference HTTP servers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
--------------------------------------------------
-aria2c http://host1/file.zip ftp://host2/file.zip
--------------------------------------------------
+Download a file from 2 different HTTP servers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------------
+aria2c http://host/file.zip http://mirror/file.zip
+--------------------------------------------------
 
 Download a file from HTTP and FTP servers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

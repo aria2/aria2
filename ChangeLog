@@ -1,3 +1,8 @@
+2008-04-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed type in man page.
+	* doc/aria2c.1.txt
+
 2008-04-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Merged Ross's 0.13.1+1 Cygwin compile fix patch.
