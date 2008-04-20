@@ -57,6 +57,8 @@ Commands StreamFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
 {
   Commands commands;
   if(_nextCommand) {
+    // give _nextCommand a chance to execute in the next execution loop.
+    _nextCommand->setStatus(Command::STATUS_ONESHOT_REALTIME);
     commands.push_back(popNextCommand());
     // try remaining uris
     Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);

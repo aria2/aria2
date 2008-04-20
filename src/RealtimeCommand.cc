@@ -41,7 +41,7 @@ namespace aria2 {
 bool RealtimeCommand::execute()
 {
   setStatusRealtime();
-  _e->noWait = true;
+  _e->setNoWait(true);
   try {
     return executeInternal();
   } catch(Exception* e) {

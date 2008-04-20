@@ -68,10 +68,10 @@ bool FileAllocationDispatcherCommand::execute()
 				_e,
 				entry);
     _e->commands.push_back(command);
-    _e->noWait = true;
+    _e->setNoWait(true);
   }
 
-  _e->commands.push_back(this);
+  _e->addRoutineCommand(this);
 
   return false;
 }

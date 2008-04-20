@@ -83,14 +83,14 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 #ifdef ENABLE_MESSAGE_DIGEST
   e->_checkIntegrityMan.reset(new CheckIntegrityMan());
 #endif // ENABLE_MESSAGE_DIGEST
-  e->commands.push_back(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 1));
-  e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get()));
-  e->commands.push_back(new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
-  e->commands.push_back(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 10));
+  e->addRoutineCommand(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 1));
+  e->addRoutineCommand(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get()));
+  e->addRoutineCommand(new AutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), op->getAsInt(PREF_AUTO_SAVE_INTERVAL)));
+  e->addRoutineCommand(new HaveEraseCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 10));
   {
     time_t stopSec = op->getAsInt(PREF_STOP);
     if(stopSec > 0) {
-      e->commands.push_back(new TimedHaltCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), stopSec));
+      e->addRoutineCommand(new TimedHaltCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), stopSec));
     }
   }
   return e;

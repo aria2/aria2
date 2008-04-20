@@ -41,7 +41,7 @@
 namespace aria2 {
 
 HaveEraseCommand::HaveEraseCommand(int32_t cuid, DownloadEngine* e, time_t interval)
-  :TimeBasedCommand(cuid, e, interval) {}
+  :TimeBasedCommand(cuid, e, interval, true) {}
 
 HaveEraseCommand::~HaveEraseCommand() {}
 

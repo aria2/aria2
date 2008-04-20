@@ -68,7 +68,7 @@ bool FillRequestGroupCommand::execute()
   if(_e->_requestGroupMan->downloadFinished()) {
     return true;
   }
-  _e->commands.push_back(this);
+  _e->addRoutineCommand(this);
   return false;
 }
 

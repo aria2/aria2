@@ -190,6 +190,7 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
   }
   Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(cuid, req, _requestGroup, e);
   if(wait == 0) {
+    e->setNoWait(true);
     e->commands.push_back(command);
   } else {
     SleepCommand* scom = new SleepCommand(cuid, e, command, wait);
@@ -318,6 +319,7 @@ void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
   CheckIntegrityEntryHandle entry(new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand));
   e->addCommand(_requestGroup->processCheckIntegrityEntry(entry, e));
+  e->setNoWait(true);
 }
 
 } // namespace aria2

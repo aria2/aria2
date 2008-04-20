@@ -107,7 +107,6 @@ private:
   void shortSleep() const;
   bool addSocket(const SocketEntry& socketEntry);
   bool deleteSocket(const SocketEntry& socketEntry);
-  void executeCommand(Command::STATUS statusFilter);
 
   /**
    * Delegates to StatCalc
@@ -118,8 +117,12 @@ private:
 
   void afterEachIteration();
 
+private:
+  bool _noWait;
+
+  std::deque<Command*> _routineCommands;
+
 public:
-  bool noWait;
   std::deque<Command*> commands;
   SharedHandle<RequestGroupMan> _requestGroupMan;
   SharedHandle<FileAllocationMan> _fileAllocationMan;
@@ -163,6 +166,10 @@ public:
   }
 
   void requestHalt();
+
+  void setNoWait(bool b);
+
+  void addRoutineCommand(Command* command);
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

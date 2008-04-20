@@ -91,7 +91,6 @@ bool HttpResponseCommand::executeInternal()
   if(httpResponse->isRedirect()) {
     httpResponse->processRedirect();
     logger->info(MSG_REDIRECT, cuid, httpResponse->getRedirectURI().c_str());
-    e->noWait = true;
     return prepareForRetry(0);
   }
   if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
@@ -152,7 +151,6 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
       _requestGroup->getSegmentMan()->cancelSegment(cuid);
     }
     prepareForNextAction(command);
-    e->noWait = true;
   } catch(Exception* e) {
     delete command;
     throw;

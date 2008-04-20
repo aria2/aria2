@@ -85,7 +85,7 @@ bool NameResolverEntry::operator==(const NameResolverEntry& entry)
 
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 _haltRequested(false),
-				 noWait(false)
+				 _noWait(false)
 {}
 
 DownloadEngine::~DownloadEngine() {
@@ -105,7 +105,8 @@ void DownloadEngine::cleanQueue() {
   commands.clear();
 }
 
-void DownloadEngine::executeCommand(Command::STATUS statusFilter)
+static void executeCommand(std::deque<Command*>& commands,
+			   Command::STATUS statusFilter)
 {
   size_t max = commands.size();
   for(size_t i = 0; i < max; i++) {
@@ -126,19 +127,19 @@ void DownloadEngine::executeCommand(Command::STATUS statusFilter)
 void DownloadEngine::run() {
   Time cp;
   cp.setTimeInSec(0);
-  Commands activeCommands;
   while(!commands.empty()) {
     if(cp.elapsed(1)) {
       cp.reset();
-      executeCommand(Command::STATUS_ALL);
+      executeCommand(commands, Command::STATUS_ALL);
     } else {
-      executeCommand(Command::STATUS_ACTIVE);
+      executeCommand(commands, Command::STATUS_ACTIVE);
     }
+    executeCommand(_routineCommands, Command::STATUS_ALL);
     afterEachIteration();
     if(!commands.empty()) {
       waitData();
     }
-    noWait = false;
+    _noWait = false;
     calculateStatistics();
   }
   onEndOfRun();
@@ -173,7 +174,7 @@ void DownloadEngine::waitData() {
   }
 #endif // ENABLE_ASYNC_DNS
 
-  tv.tv_sec = noWait ? 0 : 1;
+  tv.tv_sec = _noWait ? 0 : 1;
   tv.tv_usec = 0;
   int retval = select(fdmax+1, &rfds, &wfds, NULL, &tv);
   if(retval > 0) {
@@ -349,5 +350,15 @@ bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
   }
 }
 #endif // ENABLE_ASYNC_DNS
+
+void DownloadEngine::setNoWait(bool b)
+{
+  _noWait = b;
+}
+
+void DownloadEngine::addRoutineCommand(Command* command)
+{
+  _routineCommands.push_back(command);
+}
 
 } // namespace aria2

@@ -1,5 +1,33 @@
 2008-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Eliminates the time lag between sequential downloads and commands in
+	the same RequestGroup.
+	In old implementation, aria2 occasionally waits 1 seconds before
+	executing next command or RequestGroup.
+	This is really a waste of time, and new implementation eliminates
+	this unnecessary time lag.
+	* src/AbstractCommand.cc
+	* src/AutoSaveCommand.cc
+	* src/CheckIntegrityCommand.cc
+	* src/Command.{cc, h}
+	* src/DownloadEngine.{cc, h}
+	* src/DownloadEngineFactory.cc
+	* src/FileAllocationCommand.cc
+	* src/FileAllocationDispatcherCommand.cc
+	* src/FillRequestGroupCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/HaveEraseCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/RealtimeCommand.cc
+	* src/RequestGroup.cc
+	* src/RequestGroupMan.cc
+	* src/StreamFileAllocationEntry.cc
+	* src/TimeBasedCommand.{cc, h}
+	* src/TimedHaltCommand.cc
+
+2008-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten SharedHandle. Now copy constructor taking raw pointer has
 	keyword explicit and SharedHandle's default constructor initializes
 	its internal obj to null, old implementation initializes it using

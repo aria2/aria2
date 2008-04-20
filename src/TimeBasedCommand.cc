@@ -37,8 +37,11 @@
 
 namespace aria2 {
 
-TimeBasedCommand::TimeBasedCommand(int32_t cuid, DownloadEngine* e, time_t interval):
-  Command(cuid), _e(e),_exit(false), _interval(interval) {}
+TimeBasedCommand::TimeBasedCommand(int32_t cuid, DownloadEngine* e,
+				   time_t interval,
+				   bool routineCommand):
+  Command(cuid), _e(e),_exit(false), _interval(interval),
+  _routineCommand(routineCommand) {}
 
 TimeBasedCommand::~TimeBasedCommand() {}
 
@@ -59,7 +62,11 @@ bool TimeBasedCommand::execute()
   if(_exit) {
     return true;
   }
-  _e->commands.push_back(this);
+  if(_routineCommand) {
+    _e->addRoutineCommand(this);
+  } else {
+    _e->commands.push_back(this);
+  }
   return false;
 }
 

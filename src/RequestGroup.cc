@@ -460,6 +460,8 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, unsigned int numComm
 	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e);
 	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
 	registerServerHost(sv);
+	// give a chance to be executed in the next loop in DownloadEngine
+	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
 	commands.push_back(command);
       } else {
 	pendingURIs.push_front(uri);

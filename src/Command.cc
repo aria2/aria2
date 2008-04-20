@@ -55,4 +55,9 @@ void Command::transitStatus()
     }
 }
 
+void Command::setStatus(STATUS status)
+{
+  this->status = status;
+}
+
 } // namespace aria2

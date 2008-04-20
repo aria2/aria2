@@ -51,7 +51,8 @@ public:
     STATUS_ALL,
     STATUS_INACTIVE,
     STATUS_ACTIVE,
-    STATUS_REALTIME
+    STATUS_REALTIME,
+    STATUS_ONESHOT_REALTIME
   };
 private:
   CommandUuid uuid;
@@ -76,6 +77,8 @@ public:
   void setStatusInactive() { this->status = STATUS_INACTIVE; }
 
   void setStatusRealtime() { this->status = STATUS_REALTIME; }
+
+  void setStatus(STATUS status);
 
   bool statusMatch(Command::STATUS statusFilter) const
   {

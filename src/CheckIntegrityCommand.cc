@@ -71,6 +71,7 @@ bool CheckIntegrityCommand::executeInternal()
 		    _requestGroup->getFilePath().c_str());
       _e->addCommand(_entry->onDownloadIncomplete(_e));
     }
+    _e->setNoWait(true);
     return true;
   } else {
     _e->commands.push_back(this);

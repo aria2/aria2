@@ -59,7 +59,7 @@ HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
   nameResolver(new NameResolver())
 {
   setTimeout(e->option->getAsInt(PREF_DNS_TIMEOUT));
-  setStatusActive();
+  setStatus(Command::STATUS_ONESHOT_REALTIME);
   disableReadCheckSocket();
   disableWriteCheckSocket();
 }

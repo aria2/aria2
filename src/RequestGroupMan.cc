@@ -166,6 +166,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
   std::copy(temp.begin(), temp.end(), std::front_inserter(_reservedGroups));
   if(count > 0) {
+    e->setNoWait(true);
     _logger->debug("%d RequestGroup(s) added.", count);
   }
 }

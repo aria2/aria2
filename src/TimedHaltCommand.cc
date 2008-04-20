@@ -42,7 +42,7 @@ namespace aria2 {
 
 TimedHaltCommand::TimedHaltCommand(int32_t cuid, DownloadEngine* e,
 				   time_t secondsToHalt):
-  TimeBasedCommand(cuid, e, secondsToHalt) {}
+  TimeBasedCommand(cuid, e, secondsToHalt, true) {}
 
 TimedHaltCommand::~TimedHaltCommand() {}
 

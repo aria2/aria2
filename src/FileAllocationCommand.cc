@@ -63,7 +63,7 @@ bool FileAllocationCommand::executeInternal()
     _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
     
     _e->addCommand(_fileAllocationEntry->prepareForNextAction(_e));
-    
+    _e->setNoWait(true);
     return true;
   } else {
     _e->commands.push_back(this);
