@@ -192,6 +192,25 @@ public:
   }
 };
 
+class CumulativeOptionHandler : public NameMatchOptionHandler {
+private:
+  std::string _delim;
+public:
+  CumulativeOptionHandler(const std::string& optName,
+			  const std::string& delim):
+    NameMatchOptionHandler(optName),
+    _delim(delim) {}
+
+  virtual ~CumulativeOptionHandler() {}
+
+  virtual void parseArg(Option* option, const std::string& optarg)
+  {
+    std::string value = option->get(_optName);
+    value += optarg+_delim;
+    option->put(_optName, value);
+  }
+};
+
 class ParameterOptionHandler : public NameMatchOptionHandler {
 private:
   std::deque<std::string> _validParamValues;

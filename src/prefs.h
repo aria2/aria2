@@ -163,6 +163,8 @@
 #define PREF_ENABLE_HTTP_PIPELINING "enable-http-pipelining"
 // value: 1*digit
 #define PREF_MAX_HTTP_PIPELINING "max-http-pipelining"
+// value: string
+#define PREF_HEADER "header"
 
 /** 
  * HTTP proxy related preferences

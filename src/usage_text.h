@@ -330,3 +330,9 @@ _(" --conf-path=PATH             Change the configuration file path to PATH.")
 #define TEXT_STOP \
 _(" --stop=SEC                   Stop application after SEC seconds has passed.\n" \
   "                              If 0 is given, this feature is disabled.")
+#define TEXT_HEADER \
+_(" --header=HEADER              Append HEADER to HTTP request header. You can use\n"\
+  "                              this option repeatedly to specify more than one\n"\
+  "                              header:\n"\
+  "                              aria2c --header=\"X-A: b78\" --header=\"X-B: 9J1\"\n"\
+  "                              http://host/file")

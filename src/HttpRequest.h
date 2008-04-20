@@ -66,6 +66,8 @@ private:
 
   std::string userAgent;
 
+  std::deque<std::string> _userHeaders;
+
   std::string getHostText(const std::string& host, uint16_t port) const;
 
   std::string getProxyAuthString() const;
@@ -164,6 +166,8 @@ public:
   {
     this->userAgent = userAgent;
   }
+
+  void setUserHeaders(const std::string& userHeaders);
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

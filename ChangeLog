@@ -1,5 +1,21 @@
 2008-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --header option. You can specify any number of additional HTTP headers
+	like:
+	aria2 --header="X-A: 300" --header="X-B: 900" http://host/file
+	Unlike other commad-line option, you can use --header option multiple times.
+	* src/HelpItemFactory.cc
+	* src/HttpRequest.{cc, h}
+	* src/HttpRequestCommand.cc
+	* src/OptionHandlerFactory.cc
+	* src/OptionHandlerImpl.h
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/usage_text.h
+	* test/HttpRequestTest.cc (testUserHeaders)
+
+2008-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Eliminates the time lag between sequential downloads and commands in
 	the same RequestGroup.
 	In old implementation, aria2 occasionally waits 1 seconds before

@@ -204,6 +204,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_NO_CONF, no_argument, &lopt, 212 },
       { PREF_CONF_PATH, required_argument, &lopt, 213 },
       { PREF_STOP, required_argument, &lopt, 214 },
+      { PREF_HEADER, required_argument, &lopt, 215 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { PREF_SHOW_FILES, no_argument, NULL, 'S' },
       { PREF_SELECT_FILE, required_argument, &lopt, 21 },
@@ -401,6 +402,9 @@ Option* option_processing(int argc, char* const argv[])
 	break;
       case 214:
 	cmdstream << PREF_STOP << "=" << optarg << "\n";
+	break;
+      case 215:
+	cmdstream << PREF_HEADER << "=" << optarg << "\n";
 	break;
       }
       break;

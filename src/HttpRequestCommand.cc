@@ -84,6 +84,7 @@ bool HttpRequestCommand::executeInternal() {
     httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
     httpRequest->setRequest(req);
     httpRequest->setEntityLength(_requestGroup->getTotalLength());
+    httpRequest->setUserHeaders(e->option->get(PREF_HEADER));
     httpRequest->configure(e->option);
     
     _httpConnection->sendRequest(httpRequest);

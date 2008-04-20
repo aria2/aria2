@@ -44,6 +44,7 @@
 #include "prefs.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include <numeric>
 
 namespace aria2 {
 
@@ -190,6 +191,12 @@ std::string HttpRequest::createRequest() const
   if(cookiesValue.size()) {
     requestLine += std::string("Cookie: ")+cookiesValue+"\r\n";
   }
+  // append additional headers given by user.
+  for(std::deque<std::string>::const_iterator i = _userHeaders.begin();
+      i != _userHeaders.end(); ++i) {
+    requestLine += (*i)+"\r\n";
+  }
+
   requestLine += "\r\n";
   return requestLine;
 }
@@ -216,6 +223,13 @@ std::string HttpRequest::createProxyRequest() const
 std::string HttpRequest::getProxyAuthString() const {
   return "Proxy-Authorization: Basic "+
     Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfigForHttpProxy(request)->getAuthText())+"\r\n";
+}
+
+void HttpRequest::setUserHeaders(const std::string& userHeadersString)
+{
+  std::deque<std::string> headers;
+  Util::slice(headers, userHeadersString, '\n', true);
+  _userHeaders = headers;
 }
 
 void HttpRequest::configure(const Option* option)
