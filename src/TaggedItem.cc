@@ -74,4 +74,23 @@ bool TaggedItem::operator==(const TaggedItem& item) const
   return _name == item._name;
 }
 
+std::string TaggedItem::toString() const
+{
+  return toTagString();
+}
+
+std::ostream&
+operator<<(std::ostream& o, const TaggedItem& item)
+{
+  o << item.toString();
+  return o;
+}
+
+std::ostream&
+operator<<(std::ostream& o, const SharedHandle<TaggedItem>& item)
+{
+  o << (*item.get()).toString();
+  return o;
+}
+
 } // namespace aria2

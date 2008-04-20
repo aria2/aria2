@@ -56,7 +56,7 @@ AuthConfigHandle NetrcAuthResolver::findNetrcAuthenticator(const std::string& ho
     if(auth.isNull()) {
       return _defaultAuthConfig;
     } else {
-      return new AuthConfig(auth->getLogin(), auth->getPassword());
+      return SharedHandle<AuthConfig>(new AuthConfig(auth->getLogin(), auth->getPassword()));
     }
   }
 }

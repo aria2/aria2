@@ -32,16 +32,17 @@ private:
   SharedHandle<Peer> peer;
   Option* option;
 public:
-  DefaultPieceStorageTest():btContext(0), peer(0) {
-    FixedNumberRandomizer* randomizer = new FixedNumberRandomizer();
+  DefaultPieceStorageTest() {
+    SharedHandle<FixedNumberRandomizer> randomizer
+      (new FixedNumberRandomizer());
     randomizer->setFixedNumber(0);
     BitfieldManFactory::setDefaultRandomizer(randomizer);
   }
 
   void setUp() {
-    btContext = new DefaultBtContext();
+    btContext.reset(new DefaultBtContext());
     btContext->load("test.torrent");
-    peer = new Peer("192.168.0.1", 6889);
+    peer.reset(new Peer("192.168.0.1", 6889));
     peer->allocateSessionResource(btContext->getPieceLength(),
 				  btContext->getTotalLength());
     option = new Option();
@@ -172,14 +173,14 @@ void DefaultPieceStorageTest::testCancelPiece()
   uint64_t totalLength = 32*pieceLength; // <-- make the number of piece greater than END_GAME_PIECE_NUM
   std::deque<std::string> uris1;
   uris1.push_back("http://localhost/src/file1.txt");
-  SharedHandle<FileEntry> file1 = new FileEntry("src/file1.txt", totalLength, 0 /*, uris1*/);
+  SharedHandle<FileEntry> file1(new FileEntry("src/file1.txt", totalLength, 0 /*, uris1*/));
 
-  SharedHandle<MockBtContext> dctx = new MockBtContext();
+  SharedHandle<MockBtContext> dctx(new MockBtContext());
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
   dctx->addFileEntry(file1);
 
-  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, option);
+  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, option));
 
   SharedHandle<Piece> p = ps->getMissingPiece();
   p->completeBlock(0);
@@ -195,7 +196,7 @@ void DefaultPieceStorageTest::testMarkPiecesDone()
 {
   size_t pieceLength = 256*1024;
   uint64_t totalLength = 4*1024*1024;
-  SharedHandle<MockBtContext> dctx = new MockBtContext();
+  SharedHandle<MockBtContext> dctx(new MockBtContext());
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
 

@@ -30,7 +30,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkPostDownloadHandlerTest );
 void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 {
   Option op;
-  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test.metalink");
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(0, 0, "test.metalink"));
   RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
 
@@ -45,7 +46,8 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_extension()
 void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 {
   Option op;
-  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test");
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(0, 0, "test"));
   dctx->setContentType("application/metalink+xml");
   RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
@@ -61,7 +63,8 @@ void MetalinkPostDownloadHandlerTest::testCanHandle_contentType()
 void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
 {
   Option op;
-  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "test.xml");
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(0, 0, "test.xml"));
   RequestGroup rg(&op, std::deque<std::string>());
   rg.setDownloadContext(dctx);
   rg.initPieceStorage();

@@ -129,7 +129,7 @@ SharedHandle<DHTBucket> BNode::findBucketFor(BNode* b, const unsigned char* key)
   if(bnode) {
     return bnode->getBucket();
   } else {
-    return 0;
+    return SharedHandle<DHTBucket>();
   }
 }
 

@@ -42,8 +42,7 @@
 
 namespace aria2 {
 
-DHTPeerAnnounceEntry::DHTPeerAnnounceEntry(const unsigned char* infoHash):
-  _btCtx(0)
+DHTPeerAnnounceEntry::DHTPeerAnnounceEntry(const unsigned char* infoHash)
 {
   memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
 }
@@ -108,7 +107,8 @@ Peers DHTPeerAnnounceEntry::getPeers() const
   std::deque<SharedHandle<Peer> > peers;
   for(std::deque<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin();
       i != _peerAddrEntries.end(); ++i) {
-    peers.push_back(new Peer((*i).getIPAddress(), (*i).getPort()));
+    SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
+    peers.push_back(peer);
   }
   if(!_btCtx.isNull()) {
     SharedHandle<PeerStorage> peerStorage = PEER_STORAGE(_btCtx);

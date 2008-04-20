@@ -111,7 +111,7 @@ BtExtendedMessage::create(const BtContextHandle& btContext,
   assert(!factory.isNull());
   ExtensionMessageHandle extmsg = factory->createMessage(data+1,
 							 dataLength-1);
-  BtExtendedMessageHandle message = new BtExtendedMessage(extmsg);
+  BtExtendedMessageHandle message(new BtExtendedMessage(extmsg));
   return message;
 }
 

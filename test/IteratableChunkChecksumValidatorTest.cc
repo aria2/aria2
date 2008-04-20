@@ -32,11 +32,12 @@ const char* IteratableChunkChecksumValidatorTest::csArray[] = { "29b0e7878271645
 
 void IteratableChunkChecksumValidatorTest::testValidate() {
   Option option;
-  SharedHandle<SingleFileDownloadContext> dctx =
-    new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt");
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(100, 250, "chunkChecksumTestFile250.txt"));
   dctx->setPieceHashes(std::deque<std::string>(&csArray[0], &csArray[3]));
   dctx->setPieceHashAlgo("sha1");
-  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, &option);
+  SharedHandle<DefaultPieceStorage> ps
+    (new DefaultPieceStorage(dctx, &option));
   ps->initStorage();
   ps->getDiskAdaptor()->openFile();
 

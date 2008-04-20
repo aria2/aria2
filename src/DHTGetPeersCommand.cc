@@ -57,9 +57,6 @@ DHTGetPeersCommand::DHTGetPeersCommand(int32_t cuid,
   BtContextAwareCommand(ctx),
   RequestGroupAware(requestGroup),
   _e(e),
-  _taskQueue(0),
-  _taskFactory(0),
-  _task(0),
   _numRetry(0),
   _lastGetPeerTime(0)
 {}
@@ -76,7 +73,7 @@ bool DHTGetPeersCommand::execute()
       _lastGetPeerTime.elapsed(GET_PEER_INTERVAL))) {
     logger->debug("Issuing PeerLookup for infoHash=%s",
 		  btContext->getInfoHashAsString().c_str());
-    _task = _taskFactory->createPeerLookupTask(btContext);
+    _task = dynamic_pointer_cast<DHTPeerLookupTask>(_taskFactory->createPeerLookupTask(btContext));
     _taskQueue->addPeriodicTask2(_task);
   } else if(!_task.isNull() && _task->finished()) {
     _lastGetPeerTime.reset();
@@ -85,7 +82,7 @@ bool DHTGetPeersCommand::execute()
     } else {
       _numRetry = 0;
     }
-    _task = 0;
+    _task.reset();
   }
 
   _e->commands.push_back(this);

@@ -49,7 +49,7 @@ BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, size_t data
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have", ID);
   }
-  BtHaveMessageHandle message = new BtHaveMessage();
+  BtHaveMessageHandle message(new BtHaveMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   return message;
 }

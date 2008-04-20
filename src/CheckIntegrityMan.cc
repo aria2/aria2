@@ -62,7 +62,7 @@ bool CheckIntegrityMan::removeCheckIntegrityEntry(const CheckIntegrityEntryHandl
 CheckIntegrityEntryHandle CheckIntegrityMan::getFirstCheckIntegrityEntry() const
 {
   if(_checkIntegrityEntries.empty()) {
-    return 0;
+    return SharedHandle<CheckIntegrityEntry>();
   } else {
     return _checkIntegrityEntries.front();
   }

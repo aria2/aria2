@@ -63,9 +63,9 @@ public:
 
   virtual ~DefaultBtMessageReceiver();
 
-  virtual SharedHandle<BtMessage> receiveHandshake(bool quickReply = false);
+  virtual SharedHandle<BtHandshakeMessage> receiveHandshake(bool quickReply = false);
 
-  virtual SharedHandle<BtMessage> receiveAndSendHandshake();
+  virtual SharedHandle<BtHandshakeMessage> receiveAndSendHandshake();
 
   virtual SharedHandle<BtMessage> receiveMessage();
 

@@ -47,12 +47,12 @@ namespace aria2 {
 
 DHTRoutingTable::DHTRoutingTable(const SharedHandle<DHTNode>& localNode):
   _localNode(localNode),
-  _root(new BNode(new DHTBucket(localNode))),
   _numBucket(1),
-  _taskQueue(0),
-  _taskFactory(0),
   _logger(LogFactory::getInstance())
-{}
+{
+  SharedHandle<DHTBucket> bucket(new DHTBucket(_localNode));
+  _root = new BNode(bucket);
+}
 
 DHTRoutingTable::~DHTRoutingTable()
 {
@@ -84,7 +84,7 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
 		     Util::toHex(bucket->getMaxID(), DHT_ID_LENGTH).c_str());
       SharedHandle<DHTBucket> r = bucket->split();
 
-      bnode->setBucket(0);
+      bnode->setBucket(SharedHandle<DHTBucket>());
       BNode* lbnode = new BNode(bucket);
       BNode* rbnode = new BNode(r);
       bnode->setLeft(lbnode);

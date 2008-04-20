@@ -27,7 +27,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION( MessageDigestHelperTest );
 
 void MessageDigestHelperTest::testDigestDiskWriter() {
-  SharedHandle<DefaultDiskWriter> diskio = new DefaultDiskWriter();
+  SharedHandle<DefaultDiskWriter> diskio(new DefaultDiskWriter());
   diskio->openExistingFile("4096chunk.txt");
   CPPUNIT_ASSERT_EQUAL(std::string("608cabc0f2fa18c260cafd974516865c772363d5"),
 		       MessageDigestHelper::digest("sha1", diskio, 0, 4096));

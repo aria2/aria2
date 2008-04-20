@@ -57,9 +57,7 @@ DHTAnnouncePeerMessage::DHTAnnouncePeerMessage(const SharedHandle<DHTNode>& loca
 					       const std::string& transactionID):
   DHTQueryMessage(localNode, remoteNode, transactionID),
   _token(token),
-  _tcpPort(tcpPort),
-  _peerAnnounceStorage(0),
-  _tokenTracker(0)
+  _tcpPort(tcpPort)
 {
   memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
 }

@@ -24,22 +24,20 @@ private:
   SharedHandle<MockBtContext> _btContext;
   SharedHandle<Peer> _peer;
 public:
-  DefaultExtensionMessageFactoryTest():_btContext(0), _peer(0) {}
-
   void setUp()
   {
     BtRegistry::unregisterAll();
-    SharedHandle<MockBtContext> btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext(new MockBtContext());
     unsigned char infohash[20];
     memset(infohash, 0, sizeof(infohash));
     btContext->setInfoHash(infohash);
     _btContext = btContext;
 
-    SharedHandle<BtRuntime> btRuntime = new BtRuntime();
+    SharedHandle<BtRuntime> btRuntime(new BtRuntime());
     BtRegistry::registerBtRuntime(_btContext->getInfoHashAsString(),
 				  btRuntime);
 
-    _peer = new Peer("192.168.0.1", 6969);
+    _peer.reset(new Peer("192.168.0.1", 6969));
     _peer->allocateSessionResource(1024, 1024*1024);
     _peer->setExtension("ut_pex", 1);
   }
@@ -87,9 +85,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_Handshake()
   char id[1] = { 0 };
 
   std::string data = std::string(&id[0], &id[1])+"d1:v5:aria2e";
-  SharedHandle<HandshakeExtensionMessage> m =
-    factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
-			  data.size());
+  SharedHandle<HandshakeExtensionMessage> m
+    (dynamic_pointer_cast<HandshakeExtensionMessage>
+     (factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
+			    data.size())));
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), m->getClientVersion());
 }
 
@@ -116,9 +115,10 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_UTPex()
     std::string(&c3[0], &c3[6])+std::string(&c4[0], &c4[6])+
     "e";
 
-  SharedHandle<UTPexExtensionMessage> m =
-    factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
-			  data.size());
+  SharedHandle<UTPexExtensionMessage> m
+    (dynamic_pointer_cast<UTPexExtensionMessage>
+     (factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
+			    data.size())));
   CPPUNIT_ASSERT_EQUAL(factory.getExtensionMessageID("ut_pex"),
 		       m->getExtensionMessageID());
 }

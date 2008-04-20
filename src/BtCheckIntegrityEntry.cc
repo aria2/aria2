@@ -50,7 +50,7 @@ BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 Commands BtCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
 {
   Commands commands;
-  FileAllocationEntryHandle entry = new BtFileAllocationEntry(_requestGroup);
+  FileAllocationEntryHandle entry(new BtFileAllocationEntry(_requestGroup));
   if(_requestGroup->needsFileAllocation()) {
     e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {

@@ -13,8 +13,8 @@ public:
   virtual SharedHandle<ExtensionMessage> createMessage(const unsigned char* data,
 						       size_t length)
   {
-    return new MockExtensionMessage("a2_mock", *data, data+1, length-1);
-				    
+    return SharedHandle<ExtensionMessage>
+      (new MockExtensionMessage("a2_mock", *data, data+1, length-1));
   }
 };
 

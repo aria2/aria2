@@ -30,16 +30,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MultiFileAllocationIteratorTest );
 void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
 {
   SharedHandle<FileEntry> fs[] = {
-    new FileEntry("file1", 1536, 0),
-    new FileEntry("file2", 2048, 1536),
-    new FileEntry("file3", 1024, 3584),
-    new FileEntry("file4", 1024, 4608),
-    new FileEntry("file5", 1024, 5632),
-    new FileEntry("file6", 1024, 6656),
-    new FileEntry("file7",  256, 7680),
-    new FileEntry("file8",  768, 7936),
-    new FileEntry("file9",  256, 8704),
-    new FileEntry("fileA",  256, 8960),
+    SharedHandle<FileEntry>(new FileEntry("file1", 1536, 0)),
+    SharedHandle<FileEntry>(new FileEntry("file2", 2048, 1536)),
+    SharedHandle<FileEntry>(new FileEntry("file3", 1024, 3584)),
+    SharedHandle<FileEntry>(new FileEntry("file4", 1024, 4608)),
+    SharedHandle<FileEntry>(new FileEntry("file5", 1024, 5632)),
+    SharedHandle<FileEntry>(new FileEntry("file6", 1024, 6656)),
+    SharedHandle<FileEntry>(new FileEntry("file7",  256, 7680)),
+    SharedHandle<FileEntry>(new FileEntry("file8",  768, 7936)),
+    SharedHandle<FileEntry>(new FileEntry("file9",  256, 8704)),
+    SharedHandle<FileEntry>(new FileEntry("fileA",  256, 8960)),
   };
   fs[1]->setRequested(false);
   fs[3]->setRequested(false);
@@ -50,13 +50,14 @@ void MultiFileAllocationIteratorTest::testMakeDiskWriterEntries()
   fs[9]->setRequested(false);
   
   std::string storeDir = "/tmp/aria2_MultiFileAllocationIteratorTest_testMakeDiskWriterEntries";
-  SharedHandle<MultiDiskAdaptor> diskAdaptor = new MultiDiskAdaptor();
+  SharedHandle<MultiDiskAdaptor> diskAdaptor(new MultiDiskAdaptor());
   diskAdaptor->setFileEntries(std::deque<SharedHandle<FileEntry> >(&fs[0], &fs[10]));
   diskAdaptor->setPieceLength(1024);
   diskAdaptor->setStoreDir(storeDir);
   diskAdaptor->openFile();
 
-  SharedHandle<MultiFileAllocationIterator> itr = diskAdaptor->fileAllocationIterator();
+  SharedHandle<MultiFileAllocationIterator> itr
+    (dynamic_pointer_cast<MultiFileAllocationIterator>(diskAdaptor->fileAllocationIterator()));
 
   DiskWriterEntries entries = itr->getDiskWriterEntries();
 
@@ -90,39 +91,39 @@ void MultiFileAllocationIteratorTest::testAllocate()
   int64_t length6 = 30;
 
   try {
-    SharedHandle<MultiDiskAdaptor> diskAdaptor = new MultiDiskAdaptor();
+    SharedHandle<MultiDiskAdaptor> diskAdaptor(new MultiDiskAdaptor());
     diskAdaptor->setStoreDir(dir);
     diskAdaptor->setTopDir(topDir);
 
     int64_t offset = 0;
-    SharedHandle<FileEntry> fileEntry1 = new FileEntry(fname1,
-						       length1,
-						       offset);
+    SharedHandle<FileEntry> fileEntry1(new FileEntry(fname1,
+						     length1,
+						     offset));
     offset += length1;
-    SharedHandle<FileEntry> fileEntry2 = new FileEntry(fname2,
-						       length2,
-						       offset);
+    SharedHandle<FileEntry> fileEntry2(new FileEntry(fname2,
+						     length2,
+						     offset));
 
     offset += length2;
-    SharedHandle<FileEntry> fileEntry3 = new FileEntry(fname3,
-						       length3,
-						       offset);
+    SharedHandle<FileEntry> fileEntry3(new FileEntry(fname3,
+						     length3,
+						     offset));
 
     offset += length3;
-    SharedHandle<FileEntry> fileEntry4 = new FileEntry(fname4,
-						       length4,
-						       offset);
+    SharedHandle<FileEntry> fileEntry4(new FileEntry(fname4,
+						     length4,
+						     offset));
     fileEntry4->setRequested(false);
 
     offset += length4;
-    SharedHandle<FileEntry> fileEntry5 = new FileEntry(fname5,
-						       length5,
-						       offset);
+    SharedHandle<FileEntry> fileEntry5(new FileEntry(fname5,
+						     length5,
+						     offset));
 
     offset += length5;
-    SharedHandle<FileEntry> fileEntry6 = new FileEntry(fname6,
-						       length6,
-						       offset);
+    SharedHandle<FileEntry> fileEntry6(new FileEntry(fname6,
+						     length6,
+						     offset));
     fileEntry6->setRequested(false);
 
     std::deque<SharedHandle<FileEntry> > fs;
@@ -136,7 +137,8 @@ void MultiFileAllocationIteratorTest::testAllocate()
 
     // we have to open file first.
     diskAdaptor->initAndOpenFile();
-    SharedHandle<MultiFileAllocationIterator> itr = diskAdaptor->fileAllocationIterator();
+    SharedHandle<MultiFileAllocationIterator> itr
+      (dynamic_pointer_cast<MultiFileAllocationIterator>(diskAdaptor->fileAllocationIterator()));
     while(!itr->finished()) {
       itr->allocateChunk();
     }

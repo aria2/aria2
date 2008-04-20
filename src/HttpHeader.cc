@@ -83,13 +83,13 @@ RangeHandle HttpHeader::getRange() const
   if(rangeStr == "") {
     std::string contentLengthStr = getFirst("Content-Length");
     if(contentLengthStr == "") {
-      return new Range(0, 0, 0);
+      return SharedHandle<Range>(new Range());
     } else {
       uint64_t contentLength = Util::parseULLInt(contentLengthStr);
       if(contentLength == 0) {
-	return new Range(0, 0, 0);
+	return SharedHandle<Range>(new Range());
       } else {
-	return new Range(0, contentLength-1, contentLength);
+	return SharedHandle<Range>(new Range(0, contentLength-1, contentLength));
       }
     }
   }
@@ -117,7 +117,7 @@ RangeHandle HttpHeader::getRange() const
   off_t endByte = Util::parseLLInt(byteRangeRespSpecPair.second);
   uint64_t entityLength = Util::parseULLInt(byteRangeSpecPair.second);
 
-  return new Range(startByte, endByte, entityLength);
+  return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
 }
 
 } // namespace aria2

@@ -80,7 +80,7 @@ ConsoleStatCalc::calculateStat(const RequestGroupManHandle& requestGroupMan,
 	      << "#" << firstRequestGroup->getGID() << " ";
 #ifdef ENABLE_BITTORRENT
     if(firstRequestGroup->downloadFinished() &&
-       !BtContextHandle(firstRequestGroup->getDownloadContext()).isNull()) {
+       !dynamic_pointer_cast<BtContext>(firstRequestGroup->getDownloadContext()).isNull()) {
       std::cout << "SEEDING" << "(" << "ratio:"
 		<< std::fixed << std::setprecision(1)
 		<< ((stat.getAllTimeUploadLength()*10)/firstRequestGroup->getCompletedLength())/10.0

@@ -50,7 +50,7 @@ AbstractProxyRequestCommand::AbstractProxyRequestCommand(int cuid,
 							 RequestGroup* requestGroup,
 							 DownloadEngine* e,
 							 const SocketHandle& s)
-  :AbstractCommand(cuid, req, requestGroup, e, s), httpConnection(0) {
+  :AbstractCommand(cuid, req, requestGroup, e, s) {
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
@@ -60,12 +60,12 @@ AbstractProxyRequestCommand::~AbstractProxyRequestCommand() {}
 bool AbstractProxyRequestCommand::executeInternal() {
   socket->setBlockingMode();
 
-  HttpRequestHandle httpRequest = new HttpRequest();
+  HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->configure(e->option);
 
-  httpConnection= new HttpConnection(cuid, socket, e->option);
+  httpConnection.reset(new HttpConnection(cuid, socket, e->option));
 
   httpConnection->sendProxyRequest(httpRequest);
 

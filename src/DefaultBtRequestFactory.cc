@@ -48,11 +48,7 @@
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory():
-  cuid(0),
-  btContext(0),
-  pieceStorage(0),
-  peer(0),
-  dispatcher(0)
+  cuid(0)
 {
   LogFactory::getInstance()->debug("DefaultBtRequestFactory::instantiated");
 }

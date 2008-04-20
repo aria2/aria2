@@ -51,9 +51,13 @@ private:
   PStringDatumHandle _next;
 
 public:
-  PStringSelect(const std::deque<std::string>& values, const PStringDatumHandle& next = 0):
+  PStringSelect(const std::deque<std::string>& values,
+		const PStringDatumHandle& next):
     _values(values),
     _next(next) {}
+
+  PStringSelect(const std::deque<std::string>& values):
+    _values(values) {}
 
   virtual ~PStringSelect() {}
 

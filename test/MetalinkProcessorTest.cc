@@ -64,7 +64,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( MetalinkProcessorTest );
 
 void MetalinkProcessorTest::testParseFile()
 {
-  SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
+  SharedHandle<MetalinkProcessor> proc(MetalinkProcessorFactory::newInstance());
   try {
     SharedHandle<Metalinker> metalinker = proc->parseFile("test.xml");
 
@@ -155,7 +155,7 @@ void MetalinkProcessorTest::testParseFile()
 void MetalinkProcessorTest::testParseFromBinaryStream()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  DefaultDiskWriterHandle dw = new DefaultDiskWriter();
+  DefaultDiskWriterHandle dw(new DefaultDiskWriter());
   dw->openExistingFile("test.xml");
   
   try {
@@ -173,7 +173,7 @@ void MetalinkProcessorTest::testParseFromBinaryStream()
 void MetalinkProcessorTest::testMalformedXML()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink><files></file></metalink>");
 
   try {
@@ -188,7 +188,7 @@ void MetalinkProcessorTest::testMalformedXML()
 void MetalinkProcessorTest::testMalformedXML2()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink><files></files>");
 
   try {
@@ -203,7 +203,7 @@ void MetalinkProcessorTest::testMalformedXML2()
 void MetalinkProcessorTest::testBadSize()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2-0.5.2.tar.bz2\">"
@@ -235,7 +235,7 @@ void MetalinkProcessorTest::testBadSize()
 void MetalinkProcessorTest::testBadMaxConn()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2-0.5.2.tar.bz2\">"
@@ -263,7 +263,7 @@ void MetalinkProcessorTest::testBadMaxConn()
 void MetalinkProcessorTest::testNoName()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file>"
@@ -296,7 +296,7 @@ void MetalinkProcessorTest::testNoName()
 void MetalinkProcessorTest::testBadURLPrefs()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2-0.5.2.tar.bz2\">"
@@ -328,7 +328,7 @@ void MetalinkProcessorTest::testBadURLPrefs()
 void MetalinkProcessorTest::testBadURLMaxConn()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2-0.5.2.tar.bz2\">"
@@ -361,7 +361,7 @@ void MetalinkProcessorTest::testBadURLMaxConn()
 void MetalinkProcessorTest::testUnsupportedType()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2-0.5.2.tar.bz2\">"
@@ -397,7 +397,7 @@ void MetalinkProcessorTest::testUnsupportedType()
 void MetalinkProcessorTest::testMultiplePieces()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2.tar.bz2\">"
@@ -430,7 +430,7 @@ void MetalinkProcessorTest::testMultiplePieces()
 void MetalinkProcessorTest::testBadPieceNo()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2.tar.bz2\">"
@@ -462,7 +462,7 @@ void MetalinkProcessorTest::testBadPieceNo()
 void MetalinkProcessorTest::testBadPieceLength()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2.tar.bz2\">"
@@ -493,7 +493,7 @@ void MetalinkProcessorTest::testBadPieceLength()
 void MetalinkProcessorTest::testUnsupportedType_piece()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"aria2.tar.bz2\">"
@@ -525,7 +525,7 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
 void MetalinkProcessorTest::testLargeFileSize()
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
-  SharedHandle<ByteArrayDiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<ByteArrayDiskWriter> dw(new ByteArrayDiskWriter());
   dw->setString("<metalink>"
 		"<files>"
 		"<file name=\"dvd.iso\">"

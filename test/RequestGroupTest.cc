@@ -27,9 +27,9 @@ void RequestGroupTest::testRegisterSearchRemove()
 {
   Option op;
   RequestGroup rg(&op, std::deque<std::string>());
-  SharedHandle<ServerHost> sv1 = new ServerHost(1, "localhost1");
-  SharedHandle<ServerHost> sv2 = new ServerHost(2, "localhost2");
-  SharedHandle<ServerHost> sv3 = new ServerHost(3, "localhost3");
+  SharedHandle<ServerHost> sv1(new ServerHost(1, "localhost1"));
+  SharedHandle<ServerHost> sv2(new ServerHost(2, "localhost2"));
+  SharedHandle<ServerHost> sv3(new ServerHost(3, "localhost3"));
 
   rg.registerServerHost(sv3);
   rg.registerServerHost(sv1);

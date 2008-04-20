@@ -55,10 +55,6 @@ DHTEntryPointNameResolveCommand::DHTEntryPointNameResolveCommand(int32_t cuid, D
   Command(cuid),
   _e(e),
   _resolver(new NameResolver()),
-  _taskQueue(0),
-  _taskFactory(0),
-  _routingTable(0),
-  _localNode(0),
   _entryPoints(entryPoints),
   _bootstrapEnabled(false)
 {}
@@ -120,7 +116,7 @@ bool DHTEntryPointNameResolveCommand::execute()
 
 void DHTEntryPointNameResolveCommand::addPingTask(const std::pair<std::string, uint16_t>& addr)
 {
-  SharedHandle<DHTNode> entryNode = new DHTNode();
+  SharedHandle<DHTNode> entryNode(new DHTNode());
   entryNode->setIPAddress(addr.first);
   entryNode->setPort(addr.second);
   

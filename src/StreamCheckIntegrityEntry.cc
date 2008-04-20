@@ -53,9 +53,9 @@ StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 Commands StreamCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
 {
   Commands commands;
-  FileAllocationEntryHandle entry =
-    new StreamFileAllocationEntry(_currentRequest, _requestGroup,
-				  popNextCommand());
+  FileAllocationEntryHandle entry
+    (new StreamFileAllocationEntry(_currentRequest, _requestGroup,
+				   popNextCommand()));
   if(_requestGroup->needsFileAllocation()) {
     e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {

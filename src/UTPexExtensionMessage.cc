@@ -52,14 +52,13 @@ namespace aria2 {
 const std::string UTPexExtensionMessage::EXTENSION_NAME = "ut_pex";
 
 UTPexExtensionMessage::UTPexExtensionMessage(uint8_t extensionMessageID):
-  _extensionMessageID(extensionMessageID),
-  _btContext(0) {}
+  _extensionMessageID(extensionMessageID) {}
 
 UTPexExtensionMessage::~UTPexExtensionMessage() {}
 
 std::string UTPexExtensionMessage::getBencodedData()
 {
-  SharedHandle<Dictionary> d = new Dictionary();
+  SharedHandle<Dictionary> d(new Dictionary());
   std::pair<std::string, std::string> freshPeerPair = createCompactPeerListAndFlag(_freshPeers);
   std::pair<std::string, std::string> droppedPeerPair = createCompactPeerListAndFlag(_droppedPeers);
   d->put("added", new Data(freshPeerPair.first));
@@ -129,8 +128,8 @@ UTPexExtensionMessage::create(const BtContextHandle& btContext,
     throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE,
 			EXTENSION_NAME.c_str(), len);
   }
-  UTPexExtensionMessageHandle msg = new UTPexExtensionMessage(*data);
-  SharedHandle<MetaEntry> root = MetaFileUtil::bdecoding(data+1, len-1);
+  UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
+  SharedHandle<MetaEntry> root(MetaFileUtil::bdecoding(data+1, len-1));
   if(root.isNull()) {
     return msg;
   }

@@ -24,9 +24,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TagContainerTest);
 void TagContainerTest::testSearch()
 {
   TaggedItemHandle items[] = {
-    new TaggedItem("alpha"),
-    new TaggedItem("bravo"),
-    new TaggedItem("charlie"),
+    SharedHandle<TaggedItem>(new TaggedItem("alpha")),
+    SharedHandle<TaggedItem>(new TaggedItem("bravo")),
+    SharedHandle<TaggedItem>(new TaggedItem("charlie"))
   };
   items[0]->addTag("foo");
   items[1]->addTag("foo");
@@ -52,10 +52,10 @@ void TagContainerTest::testSearch()
 void TagContainerTest::testNameMatch()
 {
   TaggedItemHandle items[] = {
-    new TaggedItem("alpha"),
-    new TaggedItem("bravo"),
-    new TaggedItem("charlie"),
-    new TaggedItem("bravo")
+    SharedHandle<TaggedItem>(new TaggedItem("alpha")),
+    SharedHandle<TaggedItem>(new TaggedItem("bravo")),
+    SharedHandle<TaggedItem>(new TaggedItem("charlie")),
+    SharedHandle<TaggedItem>(new TaggedItem("bravo"))
   };
   items[1]->addTag("foo");
   TagContainer tc(TaggedItems(&items[0], &items[3]));

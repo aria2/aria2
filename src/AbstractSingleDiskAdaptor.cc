@@ -39,9 +39,7 @@
 
 namespace aria2 {
 
-AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor():
-  diskWriter(0),
-  totalLength(0) {}
+AbstractSingleDiskAdaptor::AbstractSingleDiskAdaptor():totalLength(0) {}
 
 AbstractSingleDiskAdaptor::~AbstractSingleDiskAdaptor() {}
 
@@ -92,8 +90,8 @@ void AbstractSingleDiskAdaptor::truncate(uint64_t length)
 
 FileAllocationIteratorHandle AbstractSingleDiskAdaptor::fileAllocationIterator()
 {
-  SingleFileAllocationIteratorHandle h =
-    new SingleFileAllocationIterator(this, size(), totalLength);
+  SingleFileAllocationIteratorHandle h
+    (new SingleFileAllocationIterator(this, size(), totalLength));
   h->init();
   return h;
 }

@@ -31,8 +31,6 @@ private:
   SharedHandle<Option> _option;
   SharedHandle<BitfieldMan> _bitfield;
 public:
-  DefaultBtProgressInfoFileTest():_btContext(0), _pieceStorage(0), _option(0), _bitfield(0) {}
-
   void setUp() {
     BtRegistry::unregisterAll();
   }
@@ -44,20 +42,20 @@ public:
       0xbb, 0xcc, 0xdd, 0xee, 0xff, 0x00, 0xff, 0xff, 0xff, 0xff,
     };
   
-    _option = new Option();
+    _option.reset(new Option());
     _option->put(PREF_DIR, ".");
 
-    _btContext = new MockBtContext();
+    _btContext.reset(new MockBtContext());
     _btContext->setInfoHash(infoHash);
 
-    _bitfield = new BitfieldMan(pieceLength, totalLength);
+    _bitfield.reset(new BitfieldMan(pieceLength, totalLength));
 
-    _pieceStorage = new MockPieceStorage();
+    _pieceStorage.reset(new MockPieceStorage());
     _pieceStorage->setBitfield(_bitfield.get());
 
-    SharedHandle<MockPeerStorage> peerStorage = new MockPeerStorage();
+    SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
 
-    SharedHandle<BtRuntime> btRuntime = new BtRuntime();
+    SharedHandle<BtRuntime> btRuntime(new BtRuntime());
 
     BtRegistry::registerBtContext(_btContext->getInfoHashAsString(),
 				  _btContext);
@@ -132,8 +130,8 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 {
   initializeMembers(1024, 81920);
 
-  SharedHandle<SingleFileDownloadContext> dctx =
-    new SingleFileDownloadContext(1024, 81920, "load-nonBt");
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(1024, 81920, "load-nonBt"));
   
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
   CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt.aria2"), infoFile.getFilename());
@@ -170,8 +168,8 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt_pieceLengthShorter()
   initializeMembers(512, 81920);
   _option->put(PREF_ALLOW_PIECE_LENGTH_CHANGE, V_TRUE);
 
-  SharedHandle<SingleFileDownloadContext> dctx =
-    new SingleFileDownloadContext(512, 81920, "load-nonBt");
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(512, 81920, "load-nonBt"));
 
   DefaultBtProgressInfoFile infoFile(dctx, _pieceStorage, _option.get());
   CPPUNIT_ASSERT_EQUAL(std::string("./load-nonBt.aria2"), infoFile.getFilename());
@@ -192,15 +190,15 @@ void DefaultBtProgressInfoFileTest::testSave_nonBt()
 {
   initializeMembers(1024, 81920);
 
-  SharedHandle<SingleFileDownloadContext> dctx =
-    new SingleFileDownloadContext(1024, 81920, "save-temp");
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(1024, 81920, "save-temp"));
 
   _bitfield->setAllBit();
   _bitfield->unsetBit(79);
   _pieceStorage->setCompletedLength(80896);
 
-  SharedHandle<Piece> p1 = new Piece(1, 1024);
-  SharedHandle<Piece> p2 = new Piece(2, 512);
+  SharedHandle<Piece> p1(new Piece(1, 1024));
+  SharedHandle<Piece> p2(new Piece(2, 512));
   std::deque<SharedHandle<Piece> > inFlightPieces;
   inFlightPieces.push_back(p1);
   inFlightPieces.push_back(p2);
@@ -294,10 +292,10 @@ void DefaultBtProgressInfoFileTest::testSave()
   _pieceStorage->setCompletedLength(80896);
   TransferStat stat;
   stat.setAllTimeUploadLength(1024);
-  SharedHandle<MockPeerStorage>(PEER_STORAGE(_btContext))->setStat(stat);
+  dynamic_pointer_cast<MockPeerStorage>(PEER_STORAGE(_btContext))->setStat(stat);
 
-  SharedHandle<Piece> p1 = new Piece(1, 1024);
-  SharedHandle<Piece> p2 = new Piece(2, 512);
+  SharedHandle<Piece> p1(new Piece(1, 1024));
+  SharedHandle<Piece> p2(new Piece(2, 512));
   std::deque<SharedHandle<Piece> > inFlightPieces;
   inFlightPieces.push_back(p1);
   inFlightPieces.push_back(p2);

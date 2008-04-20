@@ -64,10 +64,7 @@ TrackerWatcherCommand::TrackerWatcherCommand(int32_t cuid,
   Command(cuid),
   BtContextAwareCommand(btContext),
   RequestGroupAware(requestGroup),
-  e(e),
-  _trackerRequestGroup(0)
-{
-}
+  e(e) {}
 
 TrackerWatcherCommand::~TrackerWatcherCommand() {}
 
@@ -109,11 +106,11 @@ bool TrackerWatcherCommand::execute() {
 	btAnnounce->resetAnnounce();
       }
     }
-    _trackerRequestGroup = 0;
+    _trackerRequestGroup.reset();
   } else if(_trackerRequestGroup->getNumCommand() == 0){
     // handle errors here
     btAnnounce->announceFailure(); // inside it, trackers = 0.
-    _trackerRequestGroup = 0;
+    _trackerRequestGroup.reset();
     if(btAnnounce->isAllAnnounceFailed()) {
       btAnnounce->resetAnnounce();
     }
@@ -160,7 +157,7 @@ void TrackerWatcherCommand::processTrackerResponse(const std::string& trackerRes
 }
 
 RequestGroupHandle TrackerWatcherCommand::createAnnounce() {
-  RequestGroupHandle rg = 0;
+  RequestGroupHandle rg;
   if(btAnnounce->isAnnounceReady()) {
     rg = createRequestGroup(btAnnounce->getAnnounceUrl());
     btAnnounce->announceStart(); // inside it, trackers++.
@@ -173,16 +170,17 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
 {
   std::deque<std::string> uris;
   uris.push_back(uri);
-  RequestGroupHandle rg = new RequestGroup(e->option, uris);
+  RequestGroupHandle rg(new RequestGroup(e->option, uris));
 
-  SingleFileDownloadContextHandle dctx =
-    new SingleFileDownloadContext(e->option->getAsInt(PREF_SEGMENT_SIZE),
-				  0,
-				  "",
-				  "[tracker.announce]");
+  SingleFileDownloadContextHandle dctx
+    (new SingleFileDownloadContext(e->option->getAsInt(PREF_SEGMENT_SIZE),
+				   0,
+				   "",
+				   "[tracker.announce]"));
   dctx->setDir("");
   rg->setDownloadContext(dctx);
-  rg->setDiskWriterFactory(new ByteArrayDiskWriterFactory());
+  SharedHandle<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());
+  rg->setDiskWriterFactory(dwf);
   rg->setFileAllocationEnabled(false);
   rg->setPreLocalFileCheckEnabled(false);
   logger->info("Creating tracker request group GID#%d", rg->getGID());

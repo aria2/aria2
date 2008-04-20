@@ -102,17 +102,17 @@ SegmentHandle SegmentMan::checkoutSegment(int32_t cuid,
 					  const PieceHandle& piece)
 {
   if(piece.isNull()) {
-    return 0;
+    return SharedHandle<Segment>();
   }
   logger->debug("Attach segment#%d to CUID#%d.", piece->getIndex(), cuid);
 
-  SegmentHandle segment = 0;
+  SegmentHandle segment;
   if(piece->getLength() == 0) {
-    segment = new GrowSegment(piece);
+    segment.reset(new GrowSegment(piece));
   } else {
-    segment = new PiecedSegment(_downloadContext->getPieceLength(), piece);
+    segment.reset(new PiecedSegment(_downloadContext->getPieceLength(), piece));
   }
-  SegmentEntryHandle entry = new SegmentEntry(cuid, segment);
+  SegmentEntryHandle entry(new SegmentEntry(cuid, segment));
   usedSegmentEntries.push_back(entry);
 
   logger->debug("index=%d, length=%d, segmentLength=%d, writtenLength=%d",
@@ -125,7 +125,7 @@ SegmentHandle SegmentMan::checkoutSegment(int32_t cuid,
 
 SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peerStat) const {
   unsigned int speed = peerStat->getAvgDownloadSpeed()*0.8;
-  SegmentEntryHandle slowSegmentEntry(0);
+  SegmentEntryHandle slowSegmentEntry;
   for(SegmentEntries::const_iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end(); ++itr) {
     const SegmentEntryHandle& segmentEntry = *itr;
@@ -165,7 +165,7 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid) {
   if(piece.isNull()) {
     PeerStatHandle myPeerStat = getPeerStat(cuid);
     if(myPeerStat.isNull()) {
-      return 0;
+      return SharedHandle<Segment>();
     }
     SegmentEntryHandle slowSegmentEntry = findSlowerSegmentEntry(myPeerStat);
     if(slowSegmentEntry.get()) {
@@ -178,7 +178,7 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid) {
       cancelSegment(slowSegmentEntry->cuid);
       return checkoutSegment(cuid, slowSegmentEntry->segment->getPiece());
     } else {
-      return 0;
+      return SharedHandle<Segment>();
     }
   } else {
     return checkoutSegment(cuid, piece);
@@ -187,7 +187,7 @@ SegmentHandle SegmentMan::getSegment(int32_t cuid) {
 
 SegmentHandle SegmentMan::getSegment(int32_t cuid, size_t index) {
   if(_downloadContext->getNumPieces() <= index) {
-    return 0;
+    return SharedHandle<Segment>();
   }
   return checkoutSegment(cuid, _pieceStorage->getMissingPiece(index));
 }
@@ -257,7 +257,7 @@ PeerStatHandle SegmentMan::getPeerStat(int32_t cuid) const
       return peerStat;
     }
   }
-  return 0;
+  return SharedHandle<PeerStat>();
 }
 
 unsigned int SegmentMan::calculateDownloadSpeed() const {

@@ -12,39 +12,39 @@ public:
   virtual SharedHandle<DHTTask> createPingTask(const SharedHandle<DHTNode>& remoteNode,
 				       size_t numRetry = 0)
   {
-    return 0;
+    return SharedHandle<DHTTask>();
   }
 
   virtual SharedHandle<DHTTask> createGetIDTask(const SharedHandle<DHTNode>& remoteNode,
 					size_t numRetry = 0)
   {
-    return 0;
+    return SharedHandle<DHTTask>();
   }
 
   virtual SharedHandle<DHTTask> createNodeLookupTask(const unsigned char* targetID)
   {
-    return 0;
+    return SharedHandle<DHTTask>();
   }
 
   virtual SharedHandle<DHTTask> createBucketRefreshTask()
   {
-    return 0;
+    return SharedHandle<DHTTask>();
   }
 
   virtual SharedHandle<DHTTask> createPeerLookupTask(const SharedHandle<BtContext>& ctx)
   {
-    return 0;
+    return SharedHandle<DHTTask>();
   }
   
   virtual SharedHandle<DHTTask> createPeerAnnounceTask(const unsigned char* infoHash)
   {
-    return 0;
+    return SharedHandle<DHTTask>();
   }
 
   virtual SharedHandle<DHTTask> createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
 						      const SharedHandle<DHTNode>& newNode)
   {
-    return 0;
+    return SharedHandle<DHTTask>();
   }
 };
 

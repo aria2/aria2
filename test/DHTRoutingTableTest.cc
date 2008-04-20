@@ -31,12 +31,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTRoutingTableTest);
 
 void DHTRoutingTableTest::testAddNode()
 {
-  DHTRoutingTable table(new DHTNode());
-  table.setTaskFactory(new MockDHTTaskFactory());
-  table.setTaskQueue(new MockDHTTaskQueue());
+  SharedHandle<DHTNode> localNode(new DHTNode());
+  DHTRoutingTable table(localNode);
+  SharedHandle<MockDHTTaskFactory> taskFactory(new MockDHTTaskFactory());
+  table.setTaskFactory(taskFactory);
+  SharedHandle<MockDHTTaskQueue> taskQueue(new MockDHTTaskQueue());
+  table.setTaskQueue(taskQueue);
   uint32_t count = 0;
   for(int i = 0; i < 100; ++i) {
-    if(table.addNode(new DHTNode())) {
+    SharedHandle<DHTNode> node(new DHTNode());
+    if(table.addNode(node)) {
       ++count;
     }
   }
@@ -54,26 +58,26 @@ void DHTRoutingTableTest::testGetClosestKNodes()
 {
   unsigned char id[DHT_ID_LENGTH];
   createID(id, 0x81, 0);
-  SharedHandle<DHTNode> localNode = new DHTNode(id);
+  SharedHandle<DHTNode> localNode(new DHTNode(id));
 
   DHTRoutingTable table(localNode);
 
-  SharedHandle<DHTNode> nodes1[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-  SharedHandle<DHTNode> nodes2[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-  SharedHandle<DHTNode> nodes3[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+  SharedHandle<DHTNode> nodes1[8];
+  SharedHandle<DHTNode> nodes2[8];
+  SharedHandle<DHTNode> nodes3[8];
   for(size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0xf0, i);
-    nodes1[i] = new DHTNode(id);
+    nodes1[i].reset(new DHTNode(id));
     CPPUNIT_ASSERT(table.addNode(nodes1[i]));
   }
   for(size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0x80, i);
-    nodes2[i] = new DHTNode(id);
+    nodes2[i].reset(new DHTNode(id));
     CPPUNIT_ASSERT(table.addNode(nodes2[i]));
   }
   for(size_t i = 0; i < DHTBucket::K; ++i) {
     createID(id, 0x70, i);
-    nodes3[i] = new DHTNode(id);
+    nodes3[i].reset(new DHTNode(id));
     CPPUNIT_ASSERT(table.addNode(nodes3[i]));
   }
   {

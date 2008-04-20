@@ -30,7 +30,6 @@ public:
 		     bitfieldMan(0),
 		     selectiveDownloadingMode(false),
 		     endGame(false),
-		     diskAdaptor(0),
 		     _allDownloadFinished(false) {}
 
   virtual ~MockPieceStorage() {}
@@ -40,21 +39,21 @@ public:
   }
 
   virtual SharedHandle<Piece> getMissingPiece(const SharedHandle<Peer>& peer) {
-    return new Piece();
+    return SharedHandle<Piece>(new Piece());
   }
 
   virtual SharedHandle<Piece> getMissingFastPiece(const SharedHandle<Peer>& peer) {
-    return new Piece();
+    return SharedHandle<Piece>(new Piece());
   }
 
   virtual SharedHandle<Piece> getMissingPiece()
   {
-    return new Piece();
+    return SharedHandle<Piece>(new Piece());
   }
 
   virtual SharedHandle<Piece> getMissingPiece(size_t index)
   {
-    return new Piece();
+    return SharedHandle<Piece>(new Piece());
   }
 
   virtual bool isPieceUsed(size_t index)
@@ -67,7 +66,7 @@ public:
   virtual void markPiecesDone(uint64_t) {}
 
   virtual SharedHandle<Piece> getPiece(size_t index) {
-    return new Piece();
+    return SharedHandle<Piece>(new Piece());
   }
 
   virtual void completePiece(const SharedHandle<Piece>& piece) {}

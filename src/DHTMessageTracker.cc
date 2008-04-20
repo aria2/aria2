@@ -51,15 +51,14 @@
 namespace aria2 {
 
 DHTMessageTracker::DHTMessageTracker():
-  _routingTable(0),
-  _factory(0),
   _logger(LogFactory::getInstance()) {}
 
 DHTMessageTracker::~DHTMessageTracker() {}
 
 void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, time_t timeout, const SharedHandle<DHTMessageCallback>& callback)
 {
-  _entries.push_back(new DHTMessageTrackerEntry(message, timeout, callback));
+  SharedHandle<DHTMessageTrackerEntry> e(new DHTMessageTrackerEntry(message, timeout, callback));
+  _entries.push_back(e);
 }
 
 void DHTMessageTracker::addMessage(const SharedHandle<DHTMessage>& message, const SharedHandle<DHTMessageCallback>& callback)
@@ -95,7 +94,7 @@ DHTMessageTracker::messageArrived(const Dictionary* d,
     }
   }
   _logger->debug("Tracker entry not found.");
-  return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >(0, 0);
+  return std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >();
 }
 
 void DHTMessageTracker::handleTimeout()
@@ -139,7 +138,7 @@ DHTMessageTracker::getEntryFor(const SharedHandle<DHTMessage>& message) const
       return *i;
     }
   }
-  return 0;
+  return SharedHandle<DHTMessageTrackerEntry>();
 }
 
 size_t DHTMessageTracker::countEntry() const

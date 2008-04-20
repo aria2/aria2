@@ -20,7 +20,7 @@ private:
 public:
   void setUp()
   {
-    _option = new Option();
+    _option.reset(new Option());
     _option->put(PREF_SPLIT, "1");
   }
 
@@ -42,7 +42,8 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"), uris[0]);
     CPPUNIT_ASSERT_EQUAL(std::string("http://httphost/aria2-0.5.2.tar.bz2"), uris[1]);
-    SharedHandle<SingleFileDownloadContext> dctx = rg->getDownloadContext();
+    SharedHandle<SingleFileDownloadContext> dctx
+      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL(0ULL, dctx->getTotalLength());
 #ifdef ENABLE_MESSAGE_DIGEST
@@ -56,7 +57,8 @@ void Metalink2RequestGroupTest::testGenerate()
     SharedHandle<RequestGroup> rg = groups[1];
     std::deque<std::string> uris = rg->getUris();
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
-    SharedHandle<SingleFileDownloadContext> dctx = rg->getDownloadContext();
+    SharedHandle<SingleFileDownloadContext> dctx
+      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
 #ifdef ENABLE_MESSAGE_DIGEST
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), dctx->getPieceHashAlgo());
@@ -75,7 +77,8 @@ void Metalink2RequestGroupTest::testGenerate()
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://host/torrent-http.integrated.torrent"),
 			 uris[0]);
-    SharedHandle<SingleFileDownloadContext> dctx = rg->getDownloadContext();
+    SharedHandle<SingleFileDownloadContext> dctx
+      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
   }
 #endif // ENABLE_BITTORRENT
@@ -90,7 +93,8 @@ void Metalink2RequestGroupTest::testGenerate()
     std::deque<std::string> uris = rg->getUris();
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://host/torrent-http.integrated"), uris[0]);
-    SharedHandle<SingleFileDownloadContext> dctx = rg->getDownloadContext();
+    SharedHandle<SingleFileDownloadContext> dctx
+      (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
   }
 }

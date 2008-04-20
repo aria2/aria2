@@ -22,8 +22,6 @@ class HandshakeExtensionMessageTest:public CppUnit::TestFixture {
 private:
   SharedHandle<BtContext> _btContext;
 public:
-  HandshakeExtensionMessageTest():_btContext(0) {}
-
   void setUp() {}
 
   void tearDown() {}
@@ -74,7 +72,7 @@ void HandshakeExtensionMessageTest::testToString()
 
 void HandshakeExtensionMessageTest::testDoReceivedAction()
 {
-  SharedHandle<Peer> peer = new Peer("192.168.0.1", 0);
+  SharedHandle<Peer> peer(new Peer("192.168.0.1", 0));
   peer->allocateSessionResource(1024, 1024*1024);
   HandshakeExtensionMessage msg;
   msg.setClientVersion("aria2");

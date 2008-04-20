@@ -55,8 +55,7 @@ private:
   SharedHandle<HttpRequest> _httpRequest;
   SharedHandle<HttpHeaderProcessor> _proc;
 public:
-  HttpRequestEntry(const SharedHandle<HttpRequest>& httpRequest,
-		   const SharedHandle<HttpHeaderProcessor>& proc);
+  HttpRequestEntry(const SharedHandle<HttpRequest>& httpRequest);
 
   ~HttpRequestEntry();
 
@@ -115,7 +114,7 @@ public:
     if(outstandingHttpRequests.size() > 0) {
       return outstandingHttpRequests.front()->getHttpRequest();
     } else {
-      return 0;
+      return SharedHandle<HttpRequest>();
     }
   }
 

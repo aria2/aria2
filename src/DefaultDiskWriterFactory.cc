@@ -39,7 +39,7 @@ namespace aria2 {
 
 SharedHandle<DiskWriter> DefaultDiskWriterFactory::newDiskWriter()
 {
-  return new DefaultDiskWriter();
+  return SharedHandle<DiskWriter>(new DefaultDiskWriter());
 }
 
 } // namespace aria2

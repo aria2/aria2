@@ -25,7 +25,7 @@ private:
 public:
   void setUp()
   {
-    _btctx = new MockBtContext();
+    _btctx.reset(new MockBtContext());
     unsigned char infoHash[20];
     memset(infoHash, 0, sizeof(infoHash));
     _btctx->setInfoHash(infoHash);
@@ -45,9 +45,10 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MSEHandshakeTest);
 
-static std::pair<SocketCore*, SocketCore*> createSocketPair()
+static std::pair<SharedHandle<SocketCore>,
+		 SharedHandle<SocketCore> > createSocketPair()
 {
-  SocketCore* initiatorSock = new SocketCore();
+  SharedHandle<SocketCore> initiatorSock(new SocketCore());
 
   SocketCore receiverServerSock;
   receiverServerSock.bind(0);
@@ -58,10 +59,11 @@ static std::pair<SocketCore*, SocketCore*> createSocketPair()
   initiatorSock->establishConnection("127.0.0.1", receiverAddrInfo.second);
   initiatorSock->setBlockingMode();
 
-  SocketCore* receiverSock = receiverServerSock.acceptConnection();
+  SharedHandle<SocketCore> receiverSock(receiverServerSock.acceptConnection());
   receiverSock->setBlockingMode();
 
-  return std::pair<SocketCore*, SocketCore*>(initiatorSock, receiverSock);
+  return std::pair<SharedHandle<SocketCore>,
+    SharedHandle<SocketCore> >(initiatorSock, receiverSock);
 }
 
 void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, const SharedHandle<MSEHandshake>& receiver)
@@ -87,9 +89,11 @@ void MSEHandshakeTest::doHandshake(const SharedHandle<MSEHandshake>& initiator, 
   while(!initiator->receivePad());
 }
 
-static MSEHandshake* createMSEHandshake(SocketCore* socket, bool initiator, const Option* option)
+static SharedHandle<MSEHandshake>
+createMSEHandshake(SharedHandle<SocketCore> socket, bool initiator,
+		   const Option* option)
 {
-  MSEHandshake* h = new MSEHandshake(1, socket, option);
+  SharedHandle<MSEHandshake> h(new MSEHandshake(1, socket, option));
   h->initEncryptionFacility(initiator);
   return h;
 }
@@ -100,7 +104,8 @@ void MSEHandshakeTest::testHandshake()
     Option op;
     op.put(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
 
-    std::pair<SocketCore*, SocketCore*> sockPair = createSocketPair();
+    std::pair<SharedHandle<SocketCore>, SharedHandle<SocketCore> > sockPair =
+      createSocketPair();
     SharedHandle<MSEHandshake> initiator = createMSEHandshake(sockPair.first, true, &op);
     SharedHandle<MSEHandshake> receiver = createMSEHandshake(sockPair.second, false, &op);
 
@@ -113,7 +118,8 @@ void MSEHandshakeTest::testHandshake()
     Option op;
     op.put(PREF_BT_MIN_CRYPTO_LEVEL, V_ARC4);
 
-    std::pair<SocketCore*, SocketCore*> sockPair = createSocketPair();
+    std::pair<SharedHandle<SocketCore>, SharedHandle<SocketCore> > sockPair =
+      createSocketPair();
     SharedHandle<MSEHandshake> initiator = createMSEHandshake(sockPair.first, true, &op);
     SharedHandle<MSEHandshake> receiver = createMSEHandshake(sockPair.second, false, &op);
 

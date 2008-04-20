@@ -66,7 +66,7 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
 			const Option* option)
 {
   Commands commands;
-  BtContextHandle btContext = requestGroup->getDownloadContext();
+  BtContextHandle btContext(dynamic_pointer_cast<BtContext>(requestGroup->getDownloadContext()));
   if(btContext.isNull()) {
     return commands;
   }
@@ -92,14 +92,16 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
     command->setTaskFactory(DHTRegistry::_taskFactory);
     commands.push_back(command);
   }
-  SharedHandle<UnionSeedCriteria> unionCri = new UnionSeedCriteria();
+  SharedHandle<UnionSeedCriteria> unionCri(new UnionSeedCriteria());
   if(option->defined(PREF_SEED_TIME)) {
-    unionCri->addSeedCriteria(new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
+    SharedHandle<SeedCriteria> cri(new TimeSeedCriteria(option->getAsInt(PREF_SEED_TIME)*60));
+    unionCri->addSeedCriteria(cri);
   }
   {
     double ratio = option->getAsDouble(PREF_SEED_RATIO);
     if(ratio > 0.0) {
-      unionCri->addSeedCriteria(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO), btContext));
+      SharedHandle<SeedCriteria> cri(new ShareRatioSeedCriteria(option->getAsDouble(PREF_SEED_RATIO), btContext));
+      unionCri->addSeedCriteria(cri);
     }
   }
   if(unionCri->getSeedCriterion().size() > 0) {

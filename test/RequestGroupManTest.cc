@@ -21,7 +21,7 @@ private:
 public:
   void setUp()
   {
-    SharedHandle<CUIDCounter> counter = new CUIDCounter();
+    SharedHandle<CUIDCounter> counter(new CUIDCounter());
     SingletonHolder<SharedHandle<CUIDCounter> >::instance(counter);
   }
 
@@ -38,13 +38,13 @@ void RequestGroupManTest::testIsSameFileBeingDownloaded()
 
   std::deque<std::string> uris;
   uris.push_back("http://localhost/aria2.tar.bz2");
-  SharedHandle<RequestGroup> rg1 = new RequestGroup(&option, uris);
-  SharedHandle<RequestGroup> rg2 = new RequestGroup(&option, uris);
+  SharedHandle<RequestGroup> rg1(new RequestGroup(&option, uris));
+  SharedHandle<RequestGroup> rg2(new RequestGroup(&option, uris));
 
-  SharedHandle<SingleFileDownloadContext> dctx1 =
-    new SingleFileDownloadContext(0, 0, "aria2.tar.bz2");
-  SharedHandle<SingleFileDownloadContext> dctx2 =
-    new SingleFileDownloadContext(0, 0, "aria2.tar.bz2");
+  SharedHandle<SingleFileDownloadContext> dctx1
+    (new SingleFileDownloadContext(0, 0, "aria2.tar.bz2"));
+  SharedHandle<SingleFileDownloadContext> dctx2
+    (new SingleFileDownloadContext(0, 0, "aria2.tar.bz2"));
 
   rg1->setDownloadContext(dctx1);
   rg2->setDownloadContext(dctx2);

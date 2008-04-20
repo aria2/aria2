@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "HelpItem.h"
-#include <ostream>
 
 namespace aria2 {
 
@@ -41,23 +40,22 @@ namespace aria2 {
 #define    TAGS_MSG   _("                              Tags: ")
 #define AVAILABLE_MSG _("                              Available Values: ")
 
-std::ostream& operator<<(std::ostream& o, const HelpItem& helpItem)
+std::string HelpItem::toString() const
 {
-  o << helpItem._usageText << "\n";
-  if(!helpItem._availableValues.empty()) {
-    o << AVAILABLE_MSG << helpItem._availableValues << "\n";
+  std::string s(_usageText+"\n");
+  if(!_availableValues.empty()) {
+    s += AVAILABLE_MSG;
+    s += _availableValues;
+    s += "\n";
   }
-  if(!helpItem._defaultValue.empty()) {
-    o << DEFAULT_MSG << helpItem._defaultValue << "\n";
+  if(!_defaultValue.empty()) {
+    s += DEFAULT_MSG;
+    s += _defaultValue;
+    s += "\n";
   }
-  o << TAGS_MSG << helpItem.toTagString();
-  return o;
-}
-
-std::ostream& operator<<(std::ostream& o, const HelpItemHandle& helpItem)
-{
-  o << *helpItem.get();
-  return o;
+  s += TAGS_MSG;
+  s += toTagString();
+  return s;
 }
 
 } // namespace aria2

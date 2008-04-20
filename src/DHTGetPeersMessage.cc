@@ -67,7 +67,7 @@ void DHTGetPeersMessage::doReceivedAction()
 					      _remoteNode->getPort());
   // Check to see localhost has the contents which has same infohash
   Peers peers = _peerAnnounceStorage->getPeers(_infoHash);
-  SharedHandle<DHTMessage> reply = 0;
+  SharedHandle<DHTMessage> reply;
   if(peers.empty()) {
     std::deque<SharedHandle<DHTNode> > nodes = _routingTable->getClosestKNodes(_infoHash);
     reply =

@@ -65,6 +65,7 @@ PeerListenCommand::~PeerListenCommand()
 
 bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
 {
+  socket.reset(new SocketCore());
   while(seq.hasNext()) {
     int sport = seq.next();
     if(!(0 < sport && sport <= UINT16_MAX)) {
@@ -93,7 +94,7 @@ bool PeerListenCommand::execute() {
   for(int i = 0; i < 3 && socket->isReadable(0); i++) {
     SocketHandle peerSocket;
     try {
-      peerSocket = socket->acceptConnection();
+      peerSocket.reset(socket->acceptConnection());
       std::pair<std::string, uint16_t> peerInfo;
       peerSocket->getPeerInfo(peerInfo);
       std::pair<std::string, uint16_t> localInfo;
@@ -106,7 +107,7 @@ bool PeerListenCommand::execute() {
       // here.
       peerSocket->setBlockingMode();
 
-      PeerHandle peer = new Peer(peerInfo.first, 0);
+      PeerHandle peer(new Peer(peerInfo.first, 0));
       int32_t cuid = CUIDCounterSingletonHolder::instance()->newID();
       Command* command =
 	new ReceiverMSEHandshakeCommand(cuid, peer, e, peerSocket);

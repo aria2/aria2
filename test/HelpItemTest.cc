@@ -7,20 +7,20 @@ namespace aria2 {
 class HelpItemTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HelpItemTest);
-  CPPUNIT_TEST(testOperatorStreamOut);
+  CPPUNIT_TEST(testToString);
   CPPUNIT_TEST_SUITE_END();
 private:
 
 public:
   void setUp() {}
 
-  void testOperatorStreamOut();
+  void testToString();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(HelpItemTest);
 
-void HelpItemTest::testOperatorStreamOut()
+void HelpItemTest::testToString()
 {
   std::string usage =
     " -m, --max-tries=N            Set number of tries. 0 means unlimited.";
@@ -31,7 +31,7 @@ void HelpItemTest::testOperatorStreamOut()
   item.addTag("ftp");
   
   std::stringstream s;
-  s << item;
+  s << item.toString();
 
   CPPUNIT_ASSERT_EQUAL(usage+"\n"+
 		       "                              Available Values: 0,5,10\n"

@@ -15,6 +15,7 @@
 #include "BtRequestFactory.h"
 #include "PeerConnection.h"
 #include "ExtensionMessageFactory.h"
+#include "BtHandshakeMessage.h"
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -36,10 +37,9 @@ class BtPieceMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testCancelSendingPieceEvent_invalidate);
   CPPUNIT_TEST(testCancelSendingPieceEvent_sendingInProgress);
   CPPUNIT_TEST(testToString);
+
   CPPUNIT_TEST_SUITE_END();
 public:
-  BtPieceMessageTest():btMessageDispatcher(0), peer(0), msg(0) {}
-
   void testCreate();
   void testGetMessageHeader();
   void testChokingEvent();
@@ -70,7 +70,7 @@ public:
     createRejectMessage(size_t index,
 			uint32_t begin,
 			size_t length) {
-      SharedHandle<MockBtMessage2> msg = new MockBtMessage2(index, begin, length);
+      SharedHandle<MockBtMessage2> msg(new MockBtMessage2(index, begin, length));
       return msg;
     }
   };
@@ -81,23 +81,24 @@ public:
 
   void setUp() {
     BtRegistry::unregisterAll();
-
-    SharedHandle<MockBtContext> btContext;
+    SharedHandle<MockBtContext> btContext(new MockBtContext());
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     btContext->setPieceLength(16*1024);
     btContext->setTotalLength(256*1024);
 
-    peer = new Peer("host", 6969);
+    peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(btContext->getPieceLength(),
 				  btContext->getTotalLength());
+    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
-    btMessageDispatcher = new MockBtMessageDispatcher();
+					  cluster);
+    SharedHandle<PeerObject> po(new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
+    btMessageDispatcher.reset(new MockBtMessageDispatcher());
     PEER_OBJECT(btContext, peer)->btMessageDispatcher = btMessageDispatcher;
-    PEER_OBJECT(btContext, peer)->btMessageFactory = new MockBtMessageFactory2();
+    PEER_OBJECT(btContext, peer)->btMessageFactory.reset(new MockBtMessageFactory2());
 
-    msg = new BtPieceMessage();
+    msg.reset(new BtPieceMessage());
     msg->setIndex(1);
     msg->setBegin(1024);
     msg->setBlockLength(16*1024);
@@ -162,7 +163,7 @@ void BtPieceMessageTest::testChokingEvent() {
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtChokingEvent());
+  msg->handleEvent(SharedHandle<BtEvent>(new BtChokingEvent()));
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
@@ -176,7 +177,7 @@ void BtPieceMessageTest::testChokingEvent_allowedFastEnabled() {
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
   CPPUNIT_ASSERT(peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtChokingEvent());
+  msg->handleEvent(SharedHandle<BtEvent>(new BtChokingEvent()));
 
   CPPUNIT_ASSERT(msg->isInvalidate());  
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
@@ -195,7 +196,7 @@ void BtPieceMessageTest::testChokingEvent_inAmAllowedIndexSet() {
   CPPUNIT_ASSERT(peer->isInAmAllowedIndexSet(1));
   CPPUNIT_ASSERT(peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtChokingEvent());
+  msg->handleEvent(SharedHandle<BtEvent>(new BtChokingEvent()));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());  
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
@@ -208,7 +209,7 @@ void BtPieceMessageTest::testChokingEvent_invalidate() {
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtChokingEvent());
+  msg->handleEvent(SharedHandle<BtEvent>(new BtChokingEvent()));
 
   CPPUNIT_ASSERT(msg->isInvalidate());  
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
@@ -221,7 +222,7 @@ void BtPieceMessageTest::testChokingEvent_sendingInProgress() {
   CPPUNIT_ASSERT(!peer->isInAmAllowedIndexSet(1));
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtChokingEvent());
+  msg->handleEvent(SharedHandle<BtEvent>(new BtChokingEvent()));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());  
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
@@ -232,7 +233,8 @@ void BtPieceMessageTest::testCancelSendingPieceEvent() {
   CPPUNIT_ASSERT(!msg->isSendingInProgress());
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtCancelSendingPieceEvent(1, 1024, 16*1024));
+  msg->handleEvent
+    (SharedHandle<BtEvent>(new BtCancelSendingPieceEvent(1, 1024, 16*1024)));
 
   CPPUNIT_ASSERT(msg->isInvalidate());
 }
@@ -242,15 +244,18 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_noMatch() {
   CPPUNIT_ASSERT(!msg->isSendingInProgress());
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtCancelSendingPieceEvent(0, 1024, 16*1024));
+  msg->handleEvent
+    (SharedHandle<BtEvent>(new BtCancelSendingPieceEvent(0, 1024, 16*1024)));
+
+  CPPUNIT_ASSERT(!msg->isInvalidate());
+  
+  msg->handleEvent
+    (SharedHandle<BtEvent>(new BtCancelSendingPieceEvent(1, 0, 16*1024)));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
 
-  msg->handleEvent(new BtCancelSendingPieceEvent(1, 0, 16*1024));
-
-  CPPUNIT_ASSERT(!msg->isInvalidate());
-
-  msg->handleEvent(new BtCancelSendingPieceEvent(1, 1024, 0));
+  msg->handleEvent
+    (SharedHandle<BtEvent>(new BtCancelSendingPieceEvent(1, 1024, 0)));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
@@ -261,7 +266,8 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_allowedFastEnabled() {
   CPPUNIT_ASSERT(!msg->isSendingInProgress());
   CPPUNIT_ASSERT(peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtCancelSendingPieceEvent(1, 1024, 16*1024));
+  msg->handleEvent
+    (SharedHandle<BtEvent>(new BtCancelSendingPieceEvent(1, 1024, 16*1024)));
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)1, btMessageDispatcher->messageQueue.size());
@@ -278,7 +284,8 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_invalidate() {
   CPPUNIT_ASSERT(!msg->isSendingInProgress());
   CPPUNIT_ASSERT(peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtCancelSendingPieceEvent(1, 1024, 16*1024));
+  msg->handleEvent
+    (SharedHandle<BtEvent>(new BtCancelSendingPieceEvent(1, 1024, 16*1024)));
 
   CPPUNIT_ASSERT(msg->isInvalidate());
   CPPUNIT_ASSERT_EQUAL((size_t)0, btMessageDispatcher->messageQueue.size());
@@ -290,14 +297,15 @@ void BtPieceMessageTest::testCancelSendingPieceEvent_sendingInProgress() {
   CPPUNIT_ASSERT(msg->isSendingInProgress());
   CPPUNIT_ASSERT(!peer->isFastExtensionEnabled());
 
-  msg->handleEvent(new BtCancelSendingPieceEvent(1, 1024, 16*1024));
+  msg->handleEvent
+    (SharedHandle<BtEvent>(new BtCancelSendingPieceEvent(1, 1024, 16*1024)));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
 }
 
 void BtPieceMessageTest::testToString() {
   CPPUNIT_ASSERT_EQUAL(std::string("piece index=1, begin=1024, length=16384"),
-		 msg->toString());
+		       msg->toString());
 }
 
 } // namespace aria2

@@ -55,7 +55,9 @@ DHTPingTask::~DHTPingTask() {}
 void DHTPingTask::startup()
 {
   SharedHandle<DHTMessage> m = _factory->createPingMessage(_remoteNode);
-  _dispatcher->addMessageToQueue(m, _timeout, new DHTMessageCallbackImpl(this));
+  WeakHandle<DHTMessageCallbackListener> listener(this);
+  SharedHandle<DHTMessageCallback> callback(new DHTMessageCallbackImpl(listener));
+  _dispatcher->addMessageToQueue(m, _timeout, callback);
 }
 
 void DHTPingTask::onReceived(const SharedHandle<DHTMessage>& message)
@@ -72,7 +74,9 @@ void DHTPingTask::onTimeout(const SharedHandle<DHTNode>& node)
     _finished = true;
   } else {
     SharedHandle<DHTMessage> m = _factory->createPingMessage(_remoteNode);
-    _dispatcher->addMessageToQueue(m, _timeout, new DHTMessageCallbackImpl(this));
+    WeakHandle<DHTMessageCallbackListener> listener(this);
+    SharedHandle<DHTMessageCallback> callback(new DHTMessageCallbackImpl(listener));
+    _dispatcher->addMessageToQueue(m, _timeout, callback);
   }
 }
 

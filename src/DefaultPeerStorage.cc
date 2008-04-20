@@ -123,7 +123,7 @@ PeerHandle DefaultPeerStorage::getUnusedPeer() {
   Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
 					   FindFinePeer());
   if(itr == peers.end()) {
-    return 0;
+    return SharedHandle<Peer>();
   } else {
     return *itr;
   }
@@ -146,7 +146,7 @@ PeerHandle DefaultPeerStorage::getPeer(const std::string& ipaddr,
   Peers::const_iterator itr = std::find_if(peers.begin(), peers.end(),
 					   FindPeer(ipaddr, port));
   if(itr == peers.end()) {
-    return 0;
+    return SharedHandle<Peer>();
   } else {
     return *itr;
   }

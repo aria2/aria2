@@ -30,19 +30,24 @@ void DHTIDCloserTest::testOperator()
   unsigned char id[DHT_ID_LENGTH];
   memset(id, 0xf0, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNodeLookupEntry> e1 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e1
+    (new DHTNodeLookupEntry(SharedHandle<DHTNode>(new DHTNode(id))));
 
   id[0] = 0xb0;
-  SharedHandle<DHTNodeLookupEntry> e2 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e2
+    (new DHTNodeLookupEntry(SharedHandle<DHTNode>(new DHTNode(id))));
 
   id[0] = 0xa0;
-  SharedHandle<DHTNodeLookupEntry> e3 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e3
+    (new DHTNodeLookupEntry(SharedHandle<DHTNode>(new DHTNode(id))));
 
   id[0] = 0x80;
-  SharedHandle<DHTNodeLookupEntry> e4 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e4
+    (new DHTNodeLookupEntry(SharedHandle<DHTNode>(new DHTNode(id))));
 
   id[0] = 0x00;
-  SharedHandle<DHTNodeLookupEntry> e5 = new DHTNodeLookupEntry(new DHTNode(id));
+  SharedHandle<DHTNodeLookupEntry> e5
+    (new DHTNodeLookupEntry(SharedHandle<DHTNode>(new DHTNode(id))));
 
   std::deque<SharedHandle<DHTNodeLookupEntry> > entries;
   entries.push_back(e1);

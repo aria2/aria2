@@ -55,10 +55,10 @@ void DHTPeerAnnounceStorageTest::testRemovePeerAnnounce()
   memset(infohash2, 0xf0, DHT_ID_LENGTH);
   DHTPeerAnnounceStorage storage;
 
-  SharedHandle<MockBtContext> ctx1 = new MockBtContext();
+  SharedHandle<MockBtContext> ctx1(new MockBtContext());
   ctx1->setInfoHash(infohash1);
 
-  SharedHandle<MockBtContext> ctx2 = new MockBtContext();
+  SharedHandle<MockBtContext> ctx2(new MockBtContext());
   ctx2->setInfoHash(infohash2);
 
   storage.addPeerAnnounce(infohash1, "192.168.0.1", 6881);

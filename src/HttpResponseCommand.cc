@@ -99,7 +99,8 @@ bool HttpResponseCommand::executeInternal()
   }
   if(_requestGroup->getPieceStorage().isNull()) {
     uint64_t totalLength = httpResponse->getEntityLength();
-    SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
+    SingleFileDownloadContextHandle dctx =
+      dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
     dctx->setTotalLength(totalLength);
     dctx->setFilename(httpResponse->determinFilename());
     dctx->setContentType(httpResponse->getContentType());
@@ -134,7 +135,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     return true;
   }
 
-  BtProgressInfoFileHandle infoFile = new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
+  BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
   if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
     return true;
   }
@@ -176,7 +177,7 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
 
 HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& httpResponse)
 {
-  TransferEncodingHandle enc = 0;
+  TransferEncodingHandle enc;
   if(httpResponse->isTransferEncodingSpecified()) {
     enc = httpResponse->getTransferDecoder();
     if(enc.isNull()) {

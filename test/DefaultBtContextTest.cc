@@ -223,7 +223,7 @@ void DefaultBtContextTest::testGetInfoHashAsString() {
 
 void DefaultBtContextTest::testGetPeerId() {
   DefaultBtContext btContext;
-  btContext.setRandomizer(new FixedNumberRandomizer());
+  btContext.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
   CPPUNIT_ASSERT_EQUAL(std::string("%2daria2%2dAAAAAAAAAAAAA"), Util::torrentUrlencode(btContext.getPeerId(), 20));
 }
 

@@ -51,7 +51,7 @@ BtInterestedMessageHandle BtInterestedMessage::create(const unsigned char* data,
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "interested", ID);
   }
-  BtInterestedMessageHandle message = new BtInterestedMessage();
+  BtInterestedMessageHandle message(new BtInterestedMessage());
   return message;
 }
 

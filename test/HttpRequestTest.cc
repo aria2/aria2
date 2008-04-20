@@ -44,7 +44,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( HttpRequestTest );
 void HttpRequestTest::testGetStartByte()
 {
   HttpRequest httpRequest;
-  SharedHandle<Segment> segment = new PiecedSegment(1024, new Piece(1, 1024));
+  SharedHandle<Piece> p(new Piece(1, 1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024, p));
 
   CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getStartByte());
 
@@ -61,9 +62,8 @@ void HttpRequestTest::testGetEndByte()
   size_t segmentLength = 1024*1024;
 
   HttpRequest httpRequest;
-  SharedHandle<Segment> segment = new PiecedSegment(segmentLength,
-					    new Piece(index, length));
-  
+  SharedHandle<Piece> piece(new Piece(index, length));
+  SharedHandle<Segment> segment(new PiecedSegment(segmentLength, piece));
 
   CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getEndByte());
 
@@ -71,7 +71,7 @@ void HttpRequestTest::testGetEndByte()
 
   CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getEndByte());
 
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setKeepAlive(true);
 
   httpRequest.setRequest(request);
@@ -87,6 +87,8 @@ void HttpRequestTest::testGetEndByte()
 
 void HttpRequestTest::testCreateRequest()
 {
+  SharedHandle<Piece> p;
+
   Option option;
   option.put(PREF_HTTP_AUTH_ENABLED, V_FALSE);
   option.put(PREF_HTTP_PROXY_ENABLED, V_FALSE);
@@ -97,13 +99,14 @@ void HttpRequestTest::testCreateRequest()
   option.put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
   option.put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
-  SharedHandle<AuthConfigFactory> authConfigFactory = new AuthConfigFactory(&option);
+  SharedHandle<AuthConfigFactory> authConfigFactory(new AuthConfigFactory(&option));
   SingletonHolder<SharedHandle<AuthConfigFactory> >::instance(authConfigFactory);
 
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SharedHandle<Segment> segment = new PiecedSegment(1024, new Piece(0, 1024));
+  p.reset(new Piece(0, 1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024, p));
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
@@ -135,7 +138,8 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  p.reset(new Piece(1, 1024*1024));
+  segment.reset(new PiecedSegment(1024*1024, p));
   httpRequest.setSegment(segment);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -181,7 +185,8 @@ void HttpRequestTest::testCreateRequest()
   
   request->resetUrl();
 
-  segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  p.reset(new Piece(0, 1024*1024));
+  segment.reset(new PiecedSegment(1024*1024, p));
   httpRequest.setSegment(segment);
 
   // enable http auth
@@ -300,14 +305,17 @@ void HttpRequestTest::testCreateRequest_ftp()
   option.put(PREF_HTTP_PROXY_USER, "aria2proxyuser");
   option.put(PREF_HTTP_PROXY_PASSWD, "aria2proxypasswd");
 
-  SharedHandle<AuthConfigFactory> authConfigFactory = new AuthConfigFactory(&option);
+  SharedHandle<AuthConfigFactory> authConfigFactory
+    (new AuthConfigFactory(&option));
   SingletonHolder<SharedHandle<AuthConfigFactory> >::instance(authConfigFactory);
 
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("ftp://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
-  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Piece> p(new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment
+    (new PiecedSegment(1024*1024, p));
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
@@ -348,9 +356,11 @@ void HttpRequestTest::testCreateRequest_ftp()
 
 void HttpRequestTest::testCreateRequest_with_cookie()
 {
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Piece> p(new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment
+    (new PiecedSegment(1024*1024, p));
 
   Cookie cookie1("name1", "value1", "/archives", "localhost", false);
   Cookie cookie2("name2", "value2", "/archives/download", "localhost", false);
@@ -425,9 +435,10 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
 void HttpRequestTest::testCreateProxyRequest()
 {
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Piece> p(new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
 
   HttpRequest httpRequest;
 
@@ -456,28 +467,30 @@ void HttpRequestTest::testCreateProxyRequest()
 
 void HttpRequestTest::testIsRangeSatisfied()
 {
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
-  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(0, 1024*1024));
+  SharedHandle<Piece> p(new Piece(0, 1024*1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
 
   HttpRequest httpRequest;
 
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
-  SharedHandle<Range> range = new Range(0, 0, 0);
+  SharedHandle<Range> range(new Range());
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  p.reset(new Piece(1, 1024*1024));
+  segment.reset(new PiecedSegment(1024*1024, p));
   httpRequest.setSegment(segment);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
   uint64_t entityLength = segment->getSegmentLength()*10;
 
-  range = new Range(segment->getPosition(), 0, entityLength);
+  range.reset(new Range(segment->getPosition(), 0, entityLength));
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
@@ -493,14 +506,14 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 
-  range = new Range(segment->getPosition(),
-		    segment->getPosition()+segment->getLength()-1,
-		    entityLength);
+  range.reset(new Range(segment->getPosition(),
+			segment->getPosition()+segment->getLength()-1,
+			entityLength));
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  range = new Range(0, segment->getPosition()+segment->getLength()-1,
-		    entityLength);
+  range.reset(new Range(0, segment->getPosition()+segment->getLength()-1,
+			entityLength));
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 }
@@ -509,13 +522,15 @@ void HttpRequestTest::testUserAgent()
 {
   Option option;
 
-  SharedHandle<AuthConfigFactory> authConfigFactory = new AuthConfigFactory(&option);
+  SharedHandle<AuthConfigFactory> authConfigFactory
+    (new AuthConfigFactory(&option));
   SingletonHolder<SharedHandle<AuthConfigFactory> >::instance(authConfigFactory);
 
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
-  SharedHandle<Segment> segment = new PiecedSegment(1024, new Piece(0, 1024));
+  SharedHandle<Piece> p(new Piece(0, 1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024, p));
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);

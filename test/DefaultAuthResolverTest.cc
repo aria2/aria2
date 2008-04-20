@@ -20,9 +20,10 @@ public:
   {
     //_netrc = new Netrc();
     //_option = new Option();
-    _resolver = new DefaultAuthResolver();
+    _resolver.reset(new DefaultAuthResolver());
     //_factory->setOption(_option.get());
-    _resolver->setDefaultAuthConfig(new AuthConfig("foo", "bar"));
+    _resolver->setDefaultAuthConfig
+      (SharedHandle<AuthConfig>(new AuthConfig("foo", "bar")));
   }
 
   void testResolveAuthConfig_without_userDefined();
@@ -40,7 +41,8 @@ void DefaultAuthResolverTest::testResolveAuthConfig_without_userDefined()
 
 void DefaultAuthResolverTest::testResolveAuthConfig_with_userDefined()
 {
-  _resolver->setUserDefinedAuthConfig(new AuthConfig("myname", "mypasswd"));
+  _resolver->setUserDefinedAuthConfig
+    (SharedHandle<AuthConfig>(new AuthConfig("myname", "mypasswd")));
   SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 }

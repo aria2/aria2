@@ -36,9 +36,9 @@ void BNodeTest::testIsInRange()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xff, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
   SharedHandle<DHTBucket> bucket2 = bucket1->split();
   SharedHandle<DHTBucket> bucket3 = bucket1->split();
 
@@ -57,9 +57,9 @@ void BNodeTest::testFindBucketFor()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
   SharedHandle<DHTBucket> bucket2 = bucket1->split();
   SharedHandle<DHTBucket> bucket3 = bucket1->split();
   SharedHandle<DHTBucket> bucket4 = bucket3->split();
@@ -107,9 +107,9 @@ void BNodeTest::testFindClosestKNodes()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
   SharedHandle<DHTBucket> bucket2 = bucket1->split();
   SharedHandle<DHTBucket> bucket3 = bucket1->split();
   SharedHandle<DHTBucket> bucket4 = bucket3->split();
@@ -142,15 +142,15 @@ void BNodeTest::testFindClosestKNodes()
 
     for(size_t i = 0; i < 2; ++i) {
       bucket1->getRandomNodeID(id);
-      bucket1->addNode(new DHTNode(id));
+      bucket1->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
       bucket2->getRandomNodeID(id);
-      bucket2->addNode(new DHTNode(id));
+      bucket2->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
       bucket3->getRandomNodeID(id);
-      bucket3->addNode(new DHTNode(id));
+      bucket3->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
       bucket4->getRandomNodeID(id);
-      bucket4->addNode(new DHTNode(id));
+      bucket4->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
       bucket5->getRandomNodeID(id);
-      bucket5->addNode(new DHTNode(id));
+      bucket5->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
     }
     {
       unsigned char targetID[DHT_ID_LENGTH];
@@ -183,7 +183,7 @@ void BNodeTest::testFindClosestKNodes()
     {
       for(size_t i = 0; i < 6; ++i) {
 	bucket4->getRandomNodeID(id);
-	bucket4->addNode(new DHTNode(id));
+	bucket4->addNode(SharedHandle<DHTNode>(new DHTNode(id)));
       }
       unsigned char targetID[DHT_ID_LENGTH];
       memset(targetID, 0x80, DHT_ID_LENGTH);
@@ -203,9 +203,9 @@ void BNodeTest::testEnumerateBucket()
   unsigned char localNodeID[DHT_ID_LENGTH];
   memset(localNodeID, 0xaa, DHT_ID_LENGTH);
 
-  SharedHandle<DHTNode> localNode = new DHTNode(localNodeID);
+  SharedHandle<DHTNode> localNode(new DHTNode(localNodeID));
 
-  SharedHandle<DHTBucket> bucket1 = new DHTBucket(localNode);
+  SharedHandle<DHTBucket> bucket1(new DHTBucket(localNode));
   SharedHandle<DHTBucket> bucket2 = bucket1->split();
   SharedHandle<DHTBucket> bucket3 = bucket1->split();
   SharedHandle<DHTBucket> bucket4 = bucket3->split();

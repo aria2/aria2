@@ -31,10 +31,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTMessageTrackerEntryTest);
 
 void DHTMessageTrackerEntryTest::testMatch()
 {
-  SharedHandle<DHTNode> localNode = new DHTNode();
+  SharedHandle<DHTNode> localNode(new DHTNode());
   try {
-    SharedHandle<MockDHTMessage> msg1 = new MockDHTMessage(localNode, new DHTNode());
-    SharedHandle<MockDHTMessage> msg2 = new MockDHTMessage(localNode, new DHTNode());
+    SharedHandle<DHTNode> node1(new DHTNode());
+    SharedHandle<MockDHTMessage> msg1(new MockDHTMessage(localNode, node1));
+    SharedHandle<DHTNode> node2(new DHTNode());
+    SharedHandle<MockDHTMessage> msg2(new MockDHTMessage(localNode, node2));
     
     DHTMessageTrackerEntry entry(msg1, 30);
     

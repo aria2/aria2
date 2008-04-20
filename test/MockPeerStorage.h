@@ -3,6 +3,7 @@
 
 #include "PeerStorage.h"
 #include "Peer.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -21,7 +22,7 @@ public:
   }
 
   virtual void addPeer(const std::deque<SharedHandle<Peer> >& peers) {
-    copy(peers.begin(), peers.end(), back_inserter(this->peers));
+    std::copy(peers.begin(), peers.end(), back_inserter(this->peers));
   }
 
   virtual const std::deque<SharedHandle<Peer> >& getPeers() {
@@ -29,7 +30,7 @@ public:
   }
 
   virtual SharedHandle<Peer> getUnusedPeer() {
-    return 0;
+    return SharedHandle<Peer>();
   }
 
   virtual bool isPeerAvailable() {

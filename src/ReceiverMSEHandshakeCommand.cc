@@ -90,8 +90,8 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
       if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
 	throw new DlAbortEx("The legacy BitTorrent handshake is not acceptable by the preference.");
       }
-      SharedHandle<PeerConnection> peerConnection =
-	new PeerConnection(cuid, socket, e->option);
+      SharedHandle<PeerConnection> peerConnection
+	(new PeerConnection(cuid, socket, e->option));
       peerConnection->presetBuffer(_mseHandshake->getBuffer(),
 				   _mseHandshake->getBufferLength());
       Command* c = new PeerReceiveHandshakeCommand(cuid, peer, e, socket,
@@ -138,8 +138,8 @@ bool ReceiverMSEHandshakeCommand::executeInternal()
   case RECEIVER_RECEIVE_IA: {
     if(_mseHandshake->receiveReceiverIA()) {
       _mseHandshake->sendReceiverStep2();
-      SharedHandle<PeerConnection> peerConnection =
-	new PeerConnection(cuid, socket, e->option);
+      SharedHandle<PeerConnection> peerConnection
+	(new PeerConnection(cuid, socket, e->option));
       if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
 	peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
 					 _mseHandshake->getDecryptor());

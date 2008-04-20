@@ -48,7 +48,7 @@ BtHaveAllMessageHandle BtHaveAllMessage::create(const unsigned char* data, size_
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have all", ID);
   }
-  BtHaveAllMessageHandle message = new BtHaveAllMessage();
+  BtHaveAllMessageHandle message(new BtHaveAllMessage());
   return message;
 }
 

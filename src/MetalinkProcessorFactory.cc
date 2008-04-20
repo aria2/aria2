@@ -45,11 +45,11 @@ namespace aria2 {
 SharedHandle<MetalinkProcessor> MetalinkProcessorFactory::newInstance()
 {
 #ifdef HAVE_LIBXML2
-  return new XML2SAXMetalinkProcessor();
+  return SharedHandle<MetalinkProcessor>(new XML2SAXMetalinkProcessor());
 #elif HAVE_LIBEXPAT
-  return new ExpatMetalinkProcessor();
+  return SharedHandle<MetalinkProcessor>(new ExpatMetalinkProcessor());
 #else
-  return 0;
+  return SharedHandle<MetalinkProcessor>();
 #endif
 }
 

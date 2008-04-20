@@ -48,9 +48,8 @@
 
 namespace aria2 {
 
-DHTPeerAnnounceStorage::DHTPeerAnnounceStorage():_taskQueue(0),
-						 _taskFactory(0),
-						 _logger(LogFactory::getInstance()) {}
+DHTPeerAnnounceStorage::DHTPeerAnnounceStorage():
+  _logger(LogFactory::getInstance()) {}
 
 DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
 
@@ -74,9 +73,9 @@ DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
 {
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
     std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash));
-  SharedHandle<DHTPeerAnnounceEntry> entry = 0;
+  SharedHandle<DHTPeerAnnounceEntry> entry;
   if(i == _entries.end()) {
-    entry = new DHTPeerAnnounceEntry(infoHash);
+    entry.reset(new DHTPeerAnnounceEntry(infoHash));
     _entries.push_back(entry);
   } else {
     entry = *i;
@@ -106,7 +105,7 @@ void DHTPeerAnnounceStorage::removePeerAnnounce(const BtContextHandle& ctx)
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
     std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(ctx->getInfoHash()));
   if(i != _entries.end()) {
-    (*i)->setBtContext(0);
+    (*i)->setBtContext(SharedHandle<BtContext>());
     if((*i)->empty()) {
       _entries.erase(i);
     }

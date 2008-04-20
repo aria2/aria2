@@ -49,7 +49,7 @@ BtAllowedFastMessageHandle BtAllowedFastMessage::create(const unsigned char* dat
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "allowed fast", ID);
   }
-  BtAllowedFastMessageHandle message = new BtAllowedFastMessage();
+  BtAllowedFastMessageHandle message(new BtAllowedFastMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   return message;
 }

@@ -48,18 +48,16 @@ UnknownLengthPieceStorage::UnknownLengthPieceStorage(const DownloadContextHandle
 						     const Option* option):
   _downloadContext(downloadContext),
   _option(option),
-  _diskAdaptor(0),
   _diskWriterFactory(new DefaultDiskWriterFactory()),
   _totalLength(0),
-  _downloadFinished(false),
-  _piece(0) {}
+  _downloadFinished(false) {}
 
 UnknownLengthPieceStorage::~UnknownLengthPieceStorage() {}
 
 void UnknownLengthPieceStorage::initStorage()
 {
   DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
-  DirectDiskAdaptorHandle directDiskAdaptor = new DirectDiskAdaptor();
+  DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
   directDiskAdaptor->setDiskWriter(writer);
   directDiskAdaptor->setTotalLength(_downloadContext->getTotalLength());
   _diskAdaptor = directDiskAdaptor;
@@ -89,13 +87,13 @@ SharedHandle<Piece> UnknownLengthPieceStorage::getMissingFastPiece(const SharedH
 PieceHandle UnknownLengthPieceStorage::getMissingPiece()
 {
   if(_downloadFinished) {
-    return 0;
+    return SharedHandle<Piece>();
   }
   if(_piece.isNull()) {
-    _piece = new Piece();
+    _piece.reset(new Piece());
     return _piece;
   } else {
-    return 0;
+    return SharedHandle<Piece>();
   }
 }
 
@@ -104,7 +102,7 @@ PieceHandle UnknownLengthPieceStorage::getMissingPiece(size_t index)
   if(index == 0) {
     return getMissingPiece();
   } else {
-    return 0;
+    return SharedHandle<Piece>();
   }
 }
 
@@ -112,12 +110,12 @@ PieceHandle UnknownLengthPieceStorage::getPiece(size_t index)
 {
   if(index == 0) {
     if(_piece.isNull()) {
-      return new Piece();
+      return SharedHandle<Piece>(new Piece());
     } else {
       return _piece;
     }
   } else {
-    return 0;
+    return SharedHandle<Piece>();
   }
 }
 
@@ -127,14 +125,14 @@ void UnknownLengthPieceStorage::completePiece(const PieceHandle& piece)
     _downloadFinished = true;
     _totalLength = _piece->getLength();
     _diskAdaptor->setTotalLength(_totalLength);
-    _piece = 0;
+    _piece.reset();
   }
 }
 
 void UnknownLengthPieceStorage::cancelPiece(const PieceHandle& piece)
 {
   if(_piece == piece) {
-    _piece = 0;
+    _piece.reset();
   }
 }
 
@@ -174,7 +172,7 @@ void UnknownLengthPieceStorage::markAllPiecesDone()
 {
   if(!_piece.isNull()) {
     _totalLength = _piece->getLength();
-    _piece = 0;
+    _piece.reset();
   }
   _downloadFinished = true;
 }

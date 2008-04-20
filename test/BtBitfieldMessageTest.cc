@@ -70,7 +70,7 @@ void BtBitfieldMessageTest::testGetMessage() {
 }
 
 void BtBitfieldMessageTest::testDoReceivedAction() {
-  SharedHandle<Peer> peer = new Peer("host1", 6969);
+  SharedHandle<Peer> peer(new Peer("host1", 6969));
   peer->allocateSessionResource(16*1024, 16*16*1024);
   BtBitfieldMessage msg;
   msg.setPeer(peer);

@@ -97,7 +97,7 @@ bool AbstractCommand::execute() {
       //logger->debug("CUID#%d - finished.", cuid);
       return true;
     }
-    PeerStatHandle peerStat = 0;
+    PeerStatHandle peerStat;
     if(!_requestGroup->getSegmentMan().isNull()) {
       peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
     }
@@ -316,8 +316,7 @@ bool AbstractCommand::nameResolveFinished() const {
 
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
-  CheckIntegrityEntryHandle entry =
-    new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand);
+  CheckIntegrityEntryHandle entry(new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand));
   e->addCommand(_requestGroup->processCheckIntegrityEntry(entry, e));
 }
 

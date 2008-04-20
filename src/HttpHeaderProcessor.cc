@@ -103,7 +103,7 @@ std::pair<std::string, HttpHeaderHandle> HttpHeaderProcessor::getHttpStatusHeade
     throw new DlRetryEx(EX_NO_STATUS_HEADER);
   }
   std::string status = line.substr(9, 3);
-  HttpHeaderHandle httpHeader = new HttpHeader();
+  HttpHeaderHandle httpHeader(new HttpHeader());
   while(getline(strm, line)) {
     line = Util::trim(line);
     if(line.empty()) {

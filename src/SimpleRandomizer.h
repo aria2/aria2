@@ -50,7 +50,7 @@ public:
 
   static RandomizerHandle getInstance() {
     if(randomizer.isNull()) {
-      randomizer = new SimpleRandomizer();
+      randomizer.reset(new SimpleRandomizer());
     }
     return randomizer;
   }

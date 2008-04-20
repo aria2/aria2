@@ -49,9 +49,7 @@ namespace aria2 {
 
 std::string HttpRequest::USER_AGENT = "aria2";
 
-HttpRequest::HttpRequest():request(0),
-			   segment(0),
-			   entityLength(0),
+HttpRequest::HttpRequest():entityLength(0),
 			   authEnabled(false),
 			   proxyEnabled(false),
 			   proxyAuthEnabled(false),
@@ -104,9 +102,9 @@ RangeHandle HttpRequest::getRange() const
 {
   // content-length is always 0
   if(segment.isNull()) {
-    return new Range(0, 0, 0);
+    return SharedHandle<Range>(new Range());
   } else {
-    return new Range(getStartByte(), getEndByte(), entityLength);
+    return SharedHandle<Range>(new Range(getStartByte(), getEndByte(), entityLength));
   }
 }
 

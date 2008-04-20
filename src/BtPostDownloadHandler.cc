@@ -50,8 +50,10 @@ namespace aria2 {
 
 BtPostDownloadHandler::BtPostDownloadHandler()
 {
-  setCriteria(new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getBtContentTypes(),
-						  DownloadHandlerConstants::getBtExtensions()));
+  SharedHandle<RequestGroupCriteria> cri
+    (new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getBtContentTypes(),
+					 DownloadHandlerConstants::getBtExtensions()));
+  setCriteria(cri);
 }
 
 BtPostDownloadHandler::~BtPostDownloadHandler() {}
@@ -61,7 +63,7 @@ RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestG
   const Option* op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Torrent file %s",
 		 requestGroup->getFilePath().c_str());
-  RequestGroupHandle rg = new RequestGroup(op, std::deque<std::string>());
+  RequestGroupHandle rg(new RequestGroup(op, std::deque<std::string>()));
 
   std::string content;
   try {
@@ -72,7 +74,7 @@ RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestG
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
     throw;
   }
-  DefaultBtContextHandle btContext = new DefaultBtContext();
+  DefaultBtContextHandle btContext(new DefaultBtContext());
   btContext->loadFromMemory(content, File(requestGroup->getFilePath()).getBasename());
   if(op->defined(PREF_PEER_ID_PREFIX)) {
     btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));

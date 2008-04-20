@@ -26,17 +26,15 @@ class UTPexExtensionMessageTest:public CppUnit::TestFixture {
 private:
   SharedHandle<MockBtContext> _btContext;
 public:
-  UTPexExtensionMessageTest():_btContext(0) {}
-
   void setUp()
   {
     BtRegistry::unregisterAll();
-    SharedHandle<MockBtContext> btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext(new MockBtContext());
     unsigned char infohash[20];
     memset(infohash, 0, sizeof(infohash));
     btContext->setInfoHash(infohash);
     _btContext = btContext;
-    SharedHandle<MockPeerStorage> peerStorage = new MockPeerStorage();
+    SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
     BtRegistry::registerPeerStorage(_btContext->getInfoHashAsString(),
 				    peerStorage);
   }
@@ -72,15 +70,15 @@ void UTPexExtensionMessageTest::testGetExtensionName()
 void UTPexExtensionMessageTest::testGetBencodedData()
 {
   UTPexExtensionMessage msg(1);
-  SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
+  SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
   msg.addFreshPeer(p2);
-  SharedHandle<Peer> p3 = new Peer("192.168.0.2", 6882);
+  SharedHandle<Peer> p3(new Peer("192.168.0.2", 6882));
   msg.addDroppedPeer(p3);
-  SharedHandle<Peer> p4 = new Peer("10.1.1.3", 10000);
+  SharedHandle<Peer> p4(new Peer("10.1.1.3", 10000));
   msg.addDroppedPeer(p4);
 
   unsigned char c1[6];
@@ -105,15 +103,15 @@ void UTPexExtensionMessageTest::testGetBencodedData()
 void UTPexExtensionMessageTest::testToString()
 {
   UTPexExtensionMessage msg(1);
-  SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
+  SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
   msg.addFreshPeer(p2);
-  SharedHandle<Peer> p3 = new Peer("192.168.0.2", 6882);
+  SharedHandle<Peer> p3(new Peer("192.168.0.2", 6882));
   msg.addDroppedPeer(p3);
-  SharedHandle<Peer> p4 = new Peer("10.1.1.3", 10000);
+  SharedHandle<Peer> p4(new Peer("10.1.1.3", 10000));
   msg.addDroppedPeer(p4);
   CPPUNIT_ASSERT_EQUAL(std::string("ut_pex added=2, dropped=2"), msg.toString());
 }
@@ -121,15 +119,15 @@ void UTPexExtensionMessageTest::testToString()
 void UTPexExtensionMessageTest::testDoReceivedAction()
 {
   UTPexExtensionMessage msg(1);
-  SharedHandle<Peer> p1 = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> p1(new Peer("192.168.0.1", 6881));
   p1->allocateSessionResource(256*1024, 1024*1024);
   p1->setAllBitfield();
   msg.addFreshPeer(p1);// added seeder, check add.f flag
-  SharedHandle<Peer> p2 = new Peer("10.1.1.2", 9999);
+  SharedHandle<Peer> p2(new Peer("10.1.1.2", 9999));
   msg.addFreshPeer(p2);
-  SharedHandle<Peer> p3 = new Peer("192.168.0.2", 6882);
+  SharedHandle<Peer> p3(new Peer("192.168.0.2", 6882));
   msg.addDroppedPeer(p3);
-  SharedHandle<Peer> p4 = new Peer("10.1.1.3", 10000);
+  SharedHandle<Peer> p4(new Peer("10.1.1.3", 10000));
   msg.addDroppedPeer(p4);
   msg.setBtContext(_btContext);
 

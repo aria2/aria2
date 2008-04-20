@@ -31,11 +31,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTRoutingTableSerializerTest);
 
 void DHTRoutingTableSerializerTest::testSerialize()
 {
-  SharedHandle<DHTNode> localNode = new DHTNode();
+  SharedHandle<DHTNode> localNode(new DHTNode());
 
-  SharedHandle<DHTNode> nodesSrc[] = { 0, 0, 0 };
+  SharedHandle<DHTNode> nodesSrc[3];
   for(size_t i = 0; i < arrayLength(nodesSrc); ++i) {
-    nodesSrc[i] = new DHTNode();
+    nodesSrc[i].reset(new DHTNode());
     nodesSrc[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
     nodesSrc[i]->setPort(6881+i);
   }

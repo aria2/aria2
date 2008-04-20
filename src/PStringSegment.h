@@ -52,7 +52,9 @@ private:
 
 public:
   PStringSegment(const std::string& value,
-		 const SharedHandle<PStringDatum>& next = 0);
+		 const SharedHandle<PStringDatum>& next);
+
+  PStringSegment(const std::string& value);
 
   virtual ~PStringSegment();
 

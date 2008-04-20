@@ -49,7 +49,7 @@ BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, size_t 
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "cancel", ID);
   }
-  BtCancelMessageHandle message = new BtCancelMessage();
+  BtCancelMessageHandle message(new BtCancelMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   message->setBegin(PeerMessageUtil::getIntParam(data, 5));
   message->setLength(PeerMessageUtil::getIntParam(data, 9));

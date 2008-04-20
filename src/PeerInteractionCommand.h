@@ -71,7 +71,7 @@ public:
 			 const SharedHandle<BtContext>& btContext,
 			 const SharedHandle<SocketCore>& s,
 			 Seq sequence,
-			 const SharedHandle<PeerConnection>& peerConnection = 0);
+			 const SharedHandle<PeerConnection>& peerConnection = SharedHandle<PeerConnection>());
 
   virtual ~PeerInteractionCommand();
 

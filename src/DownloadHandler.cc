@@ -40,9 +40,7 @@
 
 namespace aria2 {
 
-DownloadHandler::DownloadHandler():
-  _criteria(0),
-  _logger(LogFactory::getInstance()) {}
+DownloadHandler::DownloadHandler():_logger(LogFactory::getInstance()) {}
 
 DownloadHandler::~DownloadHandler() {}
 

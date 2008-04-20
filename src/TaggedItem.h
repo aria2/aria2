@@ -69,6 +69,14 @@ public:
   bool operator<(const TaggedItem& item) const;
 
   bool operator==(const TaggedItem& item) const;
+
+  virtual std::string toString() const;
+
+  friend std::ostream&
+  operator<<(std::ostream& o, const TaggedItem& item);
+
+  friend std::ostream&
+  operator<<(std::ostream& o, const SharedHandle<TaggedItem>& item);
 };
 
 typedef SharedHandle<TaggedItem> TaggedItemHandle;

@@ -218,7 +218,8 @@ bool FtpNegotiationCommand::recvSize() {
     throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::uitos(size, true).c_str());
   }
   if(_requestGroup->getPieceStorage().isNull()) {
-    SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
+    SingleFileDownloadContextHandle dctx =
+      dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext());
     dctx->setTotalLength(size);
     dctx->setFilename(Util::urldecode(req->getFile()));
     _requestGroup->preDownloadProcessing();
@@ -235,7 +236,7 @@ bool FtpNegotiationCommand::recvSize() {
       return false;
     }
 
-    BtProgressInfoFileHandle infoFile = new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option);
+    BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
       return false;
@@ -305,6 +306,7 @@ bool FtpNegotiationCommand::recvPasv() {
   logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 	       dest.first.c_str(),
 	       dest.second);
+  dataSocket.reset(new SocketCore());
   dataSocket->establishConnection(dest.first, dest.second);
 
   disableReadCheckSocket();
@@ -369,7 +371,7 @@ bool FtpNegotiationCommand::waitConnection()
 {
   disableReadCheckSocket();
   setReadCheckSocket(socket);
-  dataSocket = serverSocket->acceptConnection();
+  dataSocket.reset(serverSocket->acceptConnection());
   dataSocket->setBlockingMode();
   sequence = SEQ_NEGOTIATION_COMPLETED;
   return false;

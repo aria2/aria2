@@ -54,7 +54,6 @@ IteratableChecksumValidator::IteratableChecksumValidator(const SingleFileDownloa
   _dctx(dctx),
   _pieceStorage(pieceStorage),
   _currentOffset(0),
-  _ctx(0),
   _logger(LogFactory::getInstance()),
   _buffer(0) {}
 
@@ -107,7 +106,7 @@ void IteratableChecksumValidator::init()
 #endif // HAVE_POSIX_MEMALIGN
   _pieceStorage->getDiskAdaptor()->enableDirectIO();
   _currentOffset = 0;
-  _ctx = new MessageDigestContext();
+  _ctx.reset(new MessageDigestContext());
   _ctx->trySetAlgo(_dctx->getChecksumHashAlgo());
   _ctx->digestInit();
 }

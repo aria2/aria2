@@ -38,17 +38,17 @@
 
 namespace aria2 {
 
-BitfieldManFactoryHandle BitfieldManFactory::factory = 0;
+BitfieldManFactoryHandle BitfieldManFactory::factory;
 
 BitfieldManFactoryHandle BitfieldManFactory::getFactoryInstance()
 {
   if(factory.isNull()) {
-    factory = new BitfieldManFactory();
+    factory.reset(new BitfieldManFactory());
   }
   return factory;
 }
 
-BitfieldManFactory::BitfieldManFactory():randomizer(0) {}
+BitfieldManFactory::BitfieldManFactory() {}
 
 BitfieldManFactory::~BitfieldManFactory() {}
 

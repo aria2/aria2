@@ -33,9 +33,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( NetrcTest );
 void NetrcTest::testFindAuthenticator()
 {
   Netrc netrc;
-  netrc.addAuthenticator(new Authenticator("host1", "tujikawa", "tujikawapasswd", "tujikawaaccount"));
-  netrc.addAuthenticator(new Authenticator("host2", "aria2", "aria2password", "aria2account"));
-  netrc.addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
+  netrc.addAuthenticator
+    (SharedHandle<Authenticator>(new Authenticator("host1", "tujikawa", "tujikawapasswd", "tujikawaaccount")));
+  netrc.addAuthenticator
+    (SharedHandle<Authenticator>(new Authenticator("host2", "aria2", "aria2password", "aria2account")));
+  netrc.addAuthenticator
+    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
 
   SharedHandle<Authenticator> aria2auth = netrc.findAuthenticator("host2");
   CPPUNIT_ASSERT(!aria2auth.isNull());

@@ -28,8 +28,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTPingReplyMessageTest);
 
 void DHTPingReplyMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode = new DHTNode();
-  SharedHandle<DHTNode> remoteNode = new DHTNode();
+  SharedHandle<DHTNode> localNode(new DHTNode());
+  SharedHandle<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -42,7 +42,7 @@ void DHTPingReplyMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  SharedHandle<Dictionary> cm = new Dictionary();
+  SharedHandle<Dictionary> cm(new Dictionary());
   cm->put("t", new Data(transactionID));
   cm->put("y", new Data("r"));
   Dictionary* r = new Dictionary();

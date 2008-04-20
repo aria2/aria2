@@ -269,7 +269,8 @@ public:
 };
 
 void UtilTest::testRandomAlpha() {
-  std::string s = Util::randomAlpha(8, new FixedNumberRandomizer());
+  SharedHandle<Randomizer> rand(new FixedNumberRandomizer());
+  std::string s = Util::randomAlpha(8, rand);
   CPPUNIT_ASSERT_EQUAL(std::string("AAAAAAAA"), s);
 }
 
@@ -368,8 +369,8 @@ void UtilTest::testAbbrevSize()
 void UtilTest::testToStream()
 {
   std::ostringstream os;
-  SharedHandle<FileEntry> f1 = new FileEntry("aria2.tar.bz2", 12300, 0);
-  SharedHandle<FileEntry> f2 = new FileEntry("aria2.txt", 556, 0);
+  SharedHandle<FileEntry> f1(new FileEntry("aria2.tar.bz2", 12300, 0));
+  SharedHandle<FileEntry> f2(new FileEntry("aria2.txt", 556, 0));
   std::deque<SharedHandle<FileEntry> > entries;
   entries.push_back(f1);
   entries.push_back(f2);
@@ -636,7 +637,7 @@ void UtilTest::testParseULLInt()
 
 void UtilTest::testToString_binaryStream()
 {
-  SharedHandle<DiskWriter> dw = new ByteArrayDiskWriter();
+  SharedHandle<DiskWriter> dw(new ByteArrayDiskWriter());
   std::string data(16*1024+256, 'a');
   dw->initAndOpenFile("dummy");
   dw->writeData((const unsigned char*)data.c_str(), data.size(), 0);

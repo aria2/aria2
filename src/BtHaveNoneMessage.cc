@@ -48,7 +48,7 @@ BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, siz
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have none", ID);
   }
-  BtHaveNoneMessageHandle message = new BtHaveNoneMessage();
+  BtHaveNoneMessageHandle message(new BtHaveNoneMessage());
   return message;
 }
 

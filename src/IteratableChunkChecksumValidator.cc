@@ -60,7 +60,6 @@ IteratableChunkChecksumValidator(const DownloadContextHandle& dctx,
   _bitfield(new BitfieldMan(_dctx->getPieceLength(), _dctx->getTotalLength())),
   _currentIndex(0),
   _logger(LogFactory::getInstance()),
-  _ctx(0),
   _buffer(0) {}
 
 IteratableChunkChecksumValidator::~IteratableChunkChecksumValidator()
@@ -122,7 +121,7 @@ void IteratableChunkChecksumValidator::init()
   if(_dctx->getFileEntries().size() == 1) {
     _pieceStorage->getDiskAdaptor()->enableDirectIO();
   }
-  _ctx = new MessageDigestContext();
+  _ctx.reset(new MessageDigestContext());
   _ctx->trySetAlgo(_dctx->getPieceHashAlgo());
   _ctx->digestInit();
   _bitfield->clearAllBit();

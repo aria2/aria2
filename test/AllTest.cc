@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
   gnutls_global_init();
 #endif // HAVE_LIBGNUTLS
 
-  SharedHandle<aria2::CookieBoxFactory> cookieBoxFactory = new aria2::CookieBoxFactory();
+  SharedHandle<aria2::CookieBoxFactory> cookieBoxFactory
+    (new aria2::CookieBoxFactory());
   SingletonHolder<SharedHandle<aria2::CookieBoxFactory> >::instance(cookieBoxFactory);
 
   // Run the tests.

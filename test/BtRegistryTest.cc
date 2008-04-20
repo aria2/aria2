@@ -57,7 +57,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( BtRegistryTest );
 void BtRegistryTest::testGetBtContext()
 {
   CPPUNIT_ASSERT(BtRegistry::getBtContext("test").isNull());
-  SharedHandle<BtContext> btContext = new MockBtContext();
+  SharedHandle<BtContext> btContext(new MockBtContext());
   BtRegistry::registerBtContext("test", btContext);
   CPPUNIT_ASSERT_EQUAL(btContext.get(),
 		       BtRegistry::getBtContext("test").get());
@@ -116,7 +116,8 @@ void BtRegistryTest::testGetBtProgressInfoFile() {
 void BtRegistryTest::testGetPeerObjectCluster() {
   CPPUNIT_ASSERT(!BtRegistry::getPeerObjectCluster("test").get());
 
-  BtRegistry::registerPeerObjectCluster("test", new PeerObjectCluster());
+  SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
+  BtRegistry::registerPeerObjectCluster("test", cluster);
 
   CPPUNIT_ASSERT(BtRegistry::getPeerObjectCluster("test").get());
   

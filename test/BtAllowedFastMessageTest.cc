@@ -70,7 +70,7 @@ void BtAllowedFastMessageTest::testGetMessage() {
 void BtAllowedFastMessageTest::testDoReceivedAction() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  SharedHandle<Peer> peer = new Peer("localhost", 6969);
+  SharedHandle<Peer> peer(new Peer("localhost", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
@@ -88,7 +88,7 @@ void BtAllowedFastMessageTest::testDoReceivedAction() {
 void BtAllowedFastMessageTest::testOnSendComplete() {
   BtAllowedFastMessage msg;
   msg.setIndex(1);
-  SharedHandle<Peer> peer = new Peer("localhost", 6969);
+  SharedHandle<Peer> peer(new Peer("localhost", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);

@@ -78,7 +78,7 @@ void BtHandshakeMessageTest::testGetMessage() {
 			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0,
 			     0xf0, 0xf0, 0xf0, 0xf0, 0xf0 };
 
-  SharedHandle<BtHandshakeMessage> msg = new BtHandshakeMessage();
+  SharedHandle<BtHandshakeMessage> msg(new BtHandshakeMessage());
   msg->setInfoHash(infoHash);
   msg->setPeerId(peerId);
 

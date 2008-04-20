@@ -53,9 +53,6 @@ namespace aria2 {
 
 DHTMessageReceiver::DHTMessageReceiver(const SharedHandle<DHTMessageTracker>& tracker):
   _tracker(tracker),
-  _connection(0),
-  _factory(0),
-  _routingTable(0),
   _logger(LogFactory::getInstance())
 {}
 
@@ -70,11 +67,11 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
 					       remoteAddr,
 					       remotePort);
   if(length <= 0) {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
   try {
     bool isReply = false;
-    MetaEntryHandle msgroot = MetaFileUtil::bdecoding(data, length);
+    MetaEntryHandle msgroot(MetaFileUtil::bdecoding(data, length));
     const Dictionary* d = dynamic_cast<const Dictionary*>(msgroot.get());
     if(d) {
       const Data* y = dynamic_cast<const Data*>(d->get("y"));
@@ -90,8 +87,8 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       _logger->info("Malformed DHT message. This is not a bencoded directory. From:%s:%u", remoteAddr.c_str(), remotePort);
       return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
     }
-    SharedHandle<DHTMessage> message = 0;
-    SharedHandle<DHTMessageCallback> callback = 0;
+    SharedHandle<DHTMessage> message;
+    SharedHandle<DHTMessageCallback> callback;
     if(isReply) {
       std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> > p = _tracker->messageArrived(d, remoteAddr, remotePort);
       message = p.first;

@@ -84,12 +84,8 @@ bool NameResolverEntry::operator==(const NameResolverEntry& entry)
 #endif // ENABLE_ASYNC_DNS
 
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
-				 _statCalc(0),
 				 _haltRequested(false),
-				 noWait(false),
-				 _requestGroupMan(0),
-				 _fileAllocationMan(0),
-				 _checkIntegrityMan(0)
+				 noWait(false)
 {}
 
 DownloadEngine::~DownloadEngine() {

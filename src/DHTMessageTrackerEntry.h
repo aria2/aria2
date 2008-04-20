@@ -63,7 +63,8 @@ private:
 public:
   DHTMessageTrackerEntry(const SharedHandle<DHTMessage>& sentMessage,
 			 time_t timeout,
-			 const SharedHandle<DHTMessageCallback>& callback = 0);
+			 const SharedHandle<DHTMessageCallback>& callback =
+			 SharedHandle<DHTMessageCallback>());
 
   bool isTimeout() const;
 

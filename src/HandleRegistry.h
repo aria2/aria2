@@ -61,7 +61,7 @@ public:
   SharedHandle<T> getHandle(const K& key) {
     typename HandleMap::const_iterator itr = handleMap.find(key);
     if(itr == handleMap.end()) {
-      return 0;
+      return SharedHandle<T>();
     } else {
       return itr->second;
     }

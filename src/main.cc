@@ -108,12 +108,12 @@ std::deque<std::string> unfoldURI(const std::deque<std::string>& args)
 RequestGroupHandle createRequestGroup(const Option* op, const std::deque<std::string>& uris,
 				      const std::string& ufilename = "")
 {
-  RequestGroupHandle rg = new RequestGroup(op, uris);
-  SingleFileDownloadContextHandle dctx =
-    new SingleFileDownloadContext(op->getAsInt(PREF_SEGMENT_SIZE),
+  RequestGroupHandle rg(new RequestGroup(op, uris));
+  SingleFileDownloadContextHandle dctx
+    (new SingleFileDownloadContext(op->getAsInt(PREF_SEGMENT_SIZE),
 				  0,
 				  "",
-				  ufilename);
+				  ufilename));
   dctx->setDir(op->get(PREF_DIR));
   rg->setDownloadContext(dctx);
   return rg;
@@ -128,8 +128,8 @@ createBtRequestGroup(const std::string& torrentFilePath,
 		     Option* op,
 		     const std::deque<std::string>& auxUris)
 {
-  SharedHandle<RequestGroup> rg = new RequestGroup(op, auxUris);
-  SharedHandle<DefaultBtContext> btContext = new DefaultBtContext();
+  SharedHandle<RequestGroup> rg(new RequestGroup(op, auxUris));
+  SharedHandle<DefaultBtContext> btContext(new DefaultBtContext());
   btContext->load(torrentFilePath);// may throw exception
   if(op->defined(PREF_PEER_ID_PREFIX)) {
     btContext->setPeerIdPrefix(op->get(PREF_PEER_ID_PREFIX));
@@ -307,7 +307,7 @@ int main(int argc, char* argv[])
     logger->info("%s %s %s", PACKAGE, PACKAGE_VERSION, TARGET);
     logger->info(MSG_LOGGING_STARTED);
 
-    AuthConfigFactoryHandle authConfigFactory = new AuthConfigFactory(op);
+    AuthConfigFactoryHandle authConfigFactory(new AuthConfigFactory(op));
     File netrccf(op->get(PREF_NETRC_PATH));
     if(!op->getAsBool(PREF_NO_NETRC) && netrccf.isFile()) {
       mode_t mode = netrccf.mode();
@@ -315,13 +315,13 @@ int main(int argc, char* argv[])
 	logger->notice(MSG_INCORRECT_NETRC_PERMISSION,
 		       op->get(PREF_NETRC_PATH).c_str());
       } else {
-	NetrcHandle netrc = new Netrc();
+	NetrcHandle netrc(new Netrc());
 	netrc->parse(op->get(PREF_NETRC_PATH));
 	authConfigFactory->setNetrc(netrc);
       }
     }
 
-    CookieBoxFactoryHandle cookieBoxFactory = new CookieBoxFactory();
+    CookieBoxFactoryHandle cookieBoxFactory(new CookieBoxFactory());
     CookieBoxFactorySingletonHolder::instance(cookieBoxFactory);
     if(op->defined(PREF_LOAD_COOKIES)) {
       File cookieFile(op->get(PREF_LOAD_COOKIES));
@@ -335,7 +335,7 @@ int main(int argc, char* argv[])
     }
 
     AuthConfigFactorySingleton::instance(authConfigFactory);
-    CUIDCounterHandle cuidCounter = new CUIDCounter();
+    CUIDCounterHandle cuidCounter(new CUIDCounter());
     CUIDCounterSingletonHolder::instance(cuidCounter);
 #ifdef ENABLE_MESSAGE_DIGEST
     MessageDigestHelper::staticSHA1DigestInit();
@@ -348,7 +348,7 @@ int main(int argc, char* argv[])
 #ifdef ENABLE_BITTORRENT
     if(op->defined(PREF_TORRENT_FILE)) {
       if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	DefaultBtContextHandle btContext = new DefaultBtContext();
+	DefaultBtContextHandle btContext(new DefaultBtContext());
 	btContext->load(op->get(PREF_TORRENT_FILE));
 	std::cout << btContext << std::endl;
       } else {

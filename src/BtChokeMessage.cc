@@ -50,7 +50,7 @@ BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, size_t da
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "choke", ID);
   }
-  BtChokeMessageHandle chokeMessage = new BtChokeMessage();
+  BtChokeMessageHandle chokeMessage(new BtChokeMessage());
   return chokeMessage;
 }
 

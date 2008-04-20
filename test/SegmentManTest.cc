@@ -37,8 +37,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SegmentManTest );
 void SegmentManTest::testNullBitfield()
 {
   Option op;
-  SharedHandle<SingleFileDownloadContext> dctx = new SingleFileDownloadContext(0, 0, "aria2.tar.bz2");
-  SharedHandle<UnknownLengthPieceStorage> ps = new UnknownLengthPieceStorage(dctx, &op);
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(0, 0, "aria2.tar.bz2"));
+  SharedHandle<UnknownLengthPieceStorage> ps
+    (new UnknownLengthPieceStorage(dctx, &op));
   SegmentMan segmentMan(&op, dctx, ps);
 
   SharedHandle<Segment> segment = segmentMan.getSegment(1);
@@ -60,11 +62,11 @@ void SegmentManTest::testCompleteSegment()
   Option op;
   size_t pieceLength = 1024*1024;
   uint64_t totalLength = 64*1024*1024;
-  SharedHandle<MockBtContext> dctx = new MockBtContext();
+  SharedHandle<MockBtContext> dctx(new MockBtContext());
   dctx->setPieceLength(pieceLength);
   dctx->setTotalLength(totalLength);
   dctx->setNumPieces((totalLength+pieceLength-1)/pieceLength);
-  SharedHandle<DefaultPieceStorage> ps = new DefaultPieceStorage(dctx, &op);
+  SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
 
   SegmentMan segmentMan(&op, dctx, ps);
 

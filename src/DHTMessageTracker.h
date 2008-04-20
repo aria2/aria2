@@ -67,10 +67,12 @@ public:
 
   void addMessage(const SharedHandle<DHTMessage>& message,
 		  time_t timeout,
-		  const SharedHandle<DHTMessageCallback>& callback = 0);
+		  const SharedHandle<DHTMessageCallback>& callback =
+		  SharedHandle<DHTMessageCallback>());
 
   void addMessage(const SharedHandle<DHTMessage>& message,
-		  const SharedHandle<DHTMessageCallback>& callback = 0);
+		  const SharedHandle<DHTMessageCallback>& callback =
+		  SharedHandle<DHTMessageCallback>());
 
   std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
   messageArrived(const Dictionary* d, const std::string& ipaddr, uint16_t port);

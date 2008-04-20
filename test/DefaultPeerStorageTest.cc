@@ -28,13 +28,11 @@ private:
   SharedHandle<BtRuntime> btRuntime;
   Option* option;
 public:
-  DefaultPeerStorageTest():btContext(0) {}
-
   void setUp() {
-    btContext = new DefaultBtContext();
+    btContext.reset(new DefaultBtContext());
     btContext->load("test.torrent");
     option = new Option();
-    btRuntime = SharedHandle<BtRuntime>(new BtRuntime());
+    btRuntime.reset(new BtRuntime());
   }
 
   void testCountPeer();

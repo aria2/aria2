@@ -45,8 +45,7 @@
 namespace aria2 {
 
 DiskWriterEntry::DiskWriterEntry(const SharedHandle<FileEntry>& fileEntry):
-  fileEntry(fileEntry),
-  diskWriter(0) {}
+  fileEntry(fileEntry) {}
 
 DiskWriterEntry::~DiskWriterEntry() {}
 
@@ -115,11 +114,12 @@ void MultiDiskAdaptor::resetDiskWriterEntries()
   diskWriterEntries.clear();
   for(FileEntries::const_iterator itr = fileEntries.begin();
       itr != fileEntries.end(); itr++) {
-    DiskWriterEntryHandle entry = new DiskWriterEntry(*itr);
+    DiskWriterEntryHandle entry(new DiskWriterEntry(*itr));
     if((*itr)->isRequested()) {
       entry->setDiskWriter(DefaultDiskWriterFactory().newDiskWriter());
     } else {
-      entry->setDiskWriter(new DefaultDiskWriter());
+      SharedHandle<DiskWriter> dw(new DefaultDiskWriter());
+      entry->setDiskWriter(dw);
     }
     entry->getDiskWriter()->setDirectIOAllowed(_directIOAllowed);
     diskWriterEntries.push_back(entry);
@@ -276,7 +276,7 @@ uint64_t MultiDiskAdaptor::size() const
 
 FileAllocationIteratorHandle MultiDiskAdaptor::fileAllocationIterator()
 {
-  return new MultiFileAllocationIterator(this);
+  return SharedHandle<FileAllocationIterator>(new MultiFileAllocationIterator(this));
 }
 
 void MultiDiskAdaptor::enableDirectIO()

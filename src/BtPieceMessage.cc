@@ -69,7 +69,7 @@ BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t da
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
   }
-  BtPieceMessageHandle message = new BtPieceMessage();
+  BtPieceMessageHandle message(new BtPieceMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   message->setBegin(PeerMessageUtil::getIntParam(data, 5));
   message->setBlock(data+9, dataLength-9);

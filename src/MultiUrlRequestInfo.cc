@@ -84,14 +84,15 @@ void MultiUrlRequestInfo::printMessageForContinue()
 int MultiUrlRequestInfo::execute()
 {
   {
-    DNSCacheHandle dnsCache = new SimpleDNSCache();
+    DNSCacheHandle dnsCache(new SimpleDNSCache());
     DNSCacheSingletonHolder::instance(dnsCache);
   }
   int returnValue = 0;
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
-    e->setStatCalc(new ConsoleStatCalc());
+    SharedHandle<StatCalc> statCalc(new ConsoleStatCalc());
+    e->setStatCalc(statCalc);
 
     e->fillCommand();
 

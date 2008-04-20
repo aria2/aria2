@@ -80,10 +80,9 @@ bool HttpRequestCommand::executeInternal() {
   }
 
   if(_segments.empty()) {
-    HttpRequestHandle httpRequest = new HttpRequest();
+    HttpRequestHandle httpRequest(new HttpRequest());
     httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
     httpRequest->setRequest(req);
-    httpRequest->setSegment(0);
     httpRequest->setEntityLength(_requestGroup->getTotalLength());
     httpRequest->configure(e->option);
     
@@ -92,7 +91,7 @@ bool HttpRequestCommand::executeInternal() {
     for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
       SegmentHandle segment = *itr;
       if(!_httpConnection->isIssued(segment)) {
-	HttpRequestHandle httpRequest = new HttpRequest();
+	HttpRequestHandle httpRequest(new HttpRequest());
 	httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
 	httpRequest->setRequest(req);
 	httpRequest->setSegment(segment);

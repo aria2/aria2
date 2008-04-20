@@ -37,91 +37,95 @@
 #include "OptionHandlerImpl.h"
 #include "array_fun.h"
 
+#define SH(X) SharedHandle<OptionHandler>(X)
+
 namespace aria2 {
 
 OptionHandlers OptionHandlerFactory::createOptionHandlers()
 {
   OptionHandlers handlers;
-  handlers.push_back(new HttpProxyOptionHandler(PREF_HTTP_PROXY,
-						PREF_HTTP_PROXY_HOST,
-						PREF_HTTP_PROXY_PORT));
-  handlers.push_back(new DefaultOptionHandler(PREF_HTTP_USER));
-  handlers.push_back(new DefaultOptionHandler(PREF_HTTP_PASSWD));
-  handlers.push_back(new DefaultOptionHandler(PREF_HTTP_PROXY_USER));
-  handlers.push_back(new DefaultOptionHandler(PREF_HTTP_PROXY_PASSWD));
-  handlers.push_back(new ParameterOptionHandler(PREF_HTTP_AUTH_SCHEME, V_BASIC));
-  handlers.push_back(new DefaultOptionHandler(PREF_REFERER));
-  handlers.push_back(new NumberOptionHandler(PREF_RETRY_WAIT, 0, 60));
-  handlers.push_back(new DefaultOptionHandler(PREF_FTP_USER));
-  handlers.push_back(new DefaultOptionHandler(PREF_FTP_PASSWD));
-  handlers.push_back(new ParameterOptionHandler(PREF_FTP_TYPE, V_BINARY, V_ASCII));
-  handlers.push_back(new ParameterOptionHandler(PREF_FTP_VIA_HTTP_PROXY,
-						V_GET, V_TUNNEL));
-  handlers.push_back(new UnitNumberOptionHandler(PREF_MIN_SEGMENT_SIZE, 1024));
-  handlers.push_back(new ParameterOptionHandler(PREF_HTTP_PROXY_METHOD,
-						V_GET, V_TUNNEL));
-  handlers.push_back(new IntegerRangeOptionHandler(PREF_LISTEN_PORT, 1024, UINT16_MAX));
-  handlers.push_back(new ParameterOptionHandler(PREF_FOLLOW_TORRENT, V_TRUE, V_MEM, V_FALSE));
-  handlers.push_back(new BooleanOptionHandler(PREF_NO_PREALLOCATION));
-  handlers.push_back(new BooleanOptionHandler(PREF_DIRECT_FILE_MAPPING));
-  handlers.push_back(new IntegerRangeOptionHandler(PREF_SELECT_FILE, 1, INT32_MAX));
-  handlers.push_back(new NumberOptionHandler(PREF_SEED_TIME, 0));
-  handlers.push_back(new FloatNumberOptionHandler(PREF_SEED_RATIO, 0.0));
-  handlers.push_back(new UnitNumberOptionHandler(PREF_MAX_UPLOAD_LIMIT, 0));
-  handlers.push_back(new DefaultOptionHandler(PREF_METALINK_VERSION));
-  handlers.push_back(new DefaultOptionHandler(PREF_METALINK_LANGUAGE));
-  handlers.push_back(new DefaultOptionHandler(PREF_METALINK_OS));
-  handlers.push_back(new ParameterOptionHandler(PREF_FOLLOW_METALINK, V_TRUE, V_MEM, V_FALSE));
-  handlers.push_back(new DefaultOptionHandler(PREF_METALINK_LOCATION));
-  handlers.push_back(new UnitNumberOptionHandler(PREF_LOWEST_SPEED_LIMIT, 0));
-  handlers.push_back(new UnitNumberOptionHandler(PREF_MAX_DOWNLOAD_LIMIT, 0));
-  handlers.push_back(new BooleanOptionHandler(PREF_ALLOW_OVERWRITE));
-  handlers.push_back(new BooleanOptionHandler(PREF_CHECK_INTEGRITY));
-  handlers.push_back(new BooleanOptionHandler(PREF_REALTIME_CHUNK_CHECKSUM));
-  handlers.push_back(new BooleanOptionHandler(PREF_DAEMON));
-  handlers.push_back(new DefaultOptionHandler(PREF_DIR));
-  handlers.push_back(new DefaultOptionHandler(PREF_OUT));
-  handlers.push_back(new LogOptionHandler(PREF_LOG));
-  handlers.push_back(new NumberOptionHandler(PREF_SPLIT, 1, 5));
-  handlers.push_back(new NumberOptionHandler(PREF_TIMEOUT, 1, 600));
-  handlers.push_back(new NumberOptionHandler(PREF_MAX_TRIES, 0));
-  handlers.push_back(new BooleanOptionHandler(PREF_FTP_PASV));
-  handlers.push_back(new BooleanOptionHandler(PREF_SHOW_FILES));
-  handlers.push_back(new DefaultOptionHandler(PREF_TORRENT_FILE));
-  handlers.push_back(new DefaultOptionHandler(PREF_METALINK_FILE));
-  handlers.push_back(new NumberOptionHandler(PREF_METALINK_SERVERS, 1));
-  handlers.push_back(new ParameterOptionHandler(PREF_FILE_ALLOCATION,
-						V_NONE, V_PREALLOC));
-  handlers.push_back(new BooleanOptionHandler(PREF_CONTINUE));
-  handlers.push_back(new DefaultOptionHandler(PREF_USER_AGENT));
-  handlers.push_back(new BooleanOptionHandler(PREF_NO_NETRC));
-  handlers.push_back(new DefaultOptionHandler(PREF_INPUT_FILE));
-  handlers.push_back(new NumberOptionHandler(PREF_MAX_CONCURRENT_DOWNLOADS, 1, 45));
-  handlers.push_back(new DefaultOptionHandler(PREF_LOAD_COOKIES));
-  handlers.push_back(new DefaultOptionHandler(PREF_PEER_ID_PREFIX));
-  handlers.push_back(new BooleanOptionHandler(PREF_FORCE_SEQUENTIAL));  
-  handlers.push_back(new BooleanOptionHandler(PREF_AUTO_FILE_RENAMING));  
-  handlers.push_back(new BooleanOptionHandler(PREF_PARAMETERIZED_URI));  
-  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_HTTP_KEEP_ALIVE));
-  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_HTTP_PIPELINING));
-  handlers.push_back(new UnitNumberOptionHandler(PREF_NO_FILE_ALLOCATION_LIMIT, 0));
-  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_DIRECT_IO));
-  handlers.push_back(new BooleanOptionHandler(PREF_ALLOW_PIECE_LENGTH_CHANGE));
+
+
+  handlers.push_back(SH(new HttpProxyOptionHandler(PREF_HTTP_PROXY,
+						   PREF_HTTP_PROXY_HOST,
+						   PREF_HTTP_PROXY_PORT)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_USER)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_PASSWD)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_PROXY_USER)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_HTTP_PROXY_PASSWD)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_HTTP_AUTH_SCHEME, V_BASIC)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_REFERER)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_RETRY_WAIT, 0, 60)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_FTP_USER)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_FTP_PASSWD)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_FTP_TYPE, V_BINARY, V_ASCII)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_FTP_VIA_HTTP_PROXY,
+						V_GET, V_TUNNEL)));
+  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_MIN_SEGMENT_SIZE, 1024)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_HTTP_PROXY_METHOD,
+						V_GET, V_TUNNEL)));
+  handlers.push_back(SH(new IntegerRangeOptionHandler(PREF_LISTEN_PORT, 1024, UINT16_MAX)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_FOLLOW_TORRENT, V_TRUE, V_MEM, V_FALSE)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_NO_PREALLOCATION)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_DIRECT_FILE_MAPPING)));
+  handlers.push_back(SH(new IntegerRangeOptionHandler(PREF_SELECT_FILE, 1, INT32_MAX)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_SEED_TIME, 0)));
+  handlers.push_back(SH(new FloatNumberOptionHandler(PREF_SEED_RATIO, 0.0)));
+  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_MAX_UPLOAD_LIMIT, 0)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_VERSION)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_LANGUAGE)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_OS)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_FOLLOW_METALINK, V_TRUE, V_MEM, V_FALSE)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_LOCATION)));
+  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_LOWEST_SPEED_LIMIT, 0)));
+  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_MAX_DOWNLOAD_LIMIT, 0)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ALLOW_OVERWRITE)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_CHECK_INTEGRITY)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_REALTIME_CHUNK_CHECKSUM)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_DAEMON)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_DIR)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_OUT)));
+  handlers.push_back(SH(new LogOptionHandler(PREF_LOG)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_SPLIT, 1, 5)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_TIMEOUT, 1, 600)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_MAX_TRIES, 0)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_FTP_PASV)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_SHOW_FILES)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_TORRENT_FILE)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_METALINK_FILE)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_METALINK_SERVERS, 1)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_FILE_ALLOCATION,
+						V_NONE, V_PREALLOC)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_CONTINUE)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_USER_AGENT)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_NO_NETRC)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_INPUT_FILE)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_MAX_CONCURRENT_DOWNLOADS, 1, 45)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_LOAD_COOKIES)));
+  handlers.push_back(SH(new DefaultOptionHandler(PREF_PEER_ID_PREFIX)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_FORCE_SEQUENTIAL)));  
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_AUTO_FILE_RENAMING)));  
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_PARAMETERIZED_URI)));  
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_HTTP_KEEP_ALIVE)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_HTTP_PIPELINING)));
+  handlers.push_back(SH(new UnitNumberOptionHandler(PREF_NO_FILE_ALLOCATION_LIMIT, 0)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_DIRECT_IO)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ALLOW_PIECE_LENGTH_CHANGE)));
   {
     const char* params[] = { V_HTTP, V_HTTPS, V_FTP, V_NONE };
-    handlers.push_back(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
-						  std::deque<std::string>(&params[0], &params[arrayLength(params)])));
+    handlers.push_back(SH(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
+						  std::deque<std::string>(&params[0], &params[arrayLength(params)]))));
   }
-  handlers.push_back(new BooleanOptionHandler(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
-  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE));
-  handlers.push_back(new BooleanOptionHandler(PREF_ENABLE_DHT));
-  handlers.push_back(new IntegerRangeOptionHandler(PREF_DHT_LISTEN_PORT, 1024, UINT16_MAX));
-  handlers.push_back(new HostPortOptionHandler(PREF_DHT_ENTRY_POINT,
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_DHT)));
+  handlers.push_back(SH(new IntegerRangeOptionHandler(PREF_DHT_LISTEN_PORT, 1024, UINT16_MAX)));
+  handlers.push_back(SH(new HostPortOptionHandler(PREF_DHT_ENTRY_POINT,
 					       PREF_DHT_ENTRY_POINT_HOST,
-					       PREF_DHT_ENTRY_POINT_PORT));
-  handlers.push_back(new NumberOptionHandler(PREF_STOP, 0, INT32_MAX));
-  handlers.push_back(new ParameterOptionHandler(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN, V_ARC4));
-  handlers.push_back(new BooleanOptionHandler(PREF_BT_REQUIRE_CRYPTO));
+					       PREF_DHT_ENTRY_POINT_PORT)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_STOP, 0, INT32_MAX)));
+  handlers.push_back(SH(new ParameterOptionHandler(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN, V_ARC4)));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_REQUIRE_CRYPTO)));
   
   return handlers;
 }

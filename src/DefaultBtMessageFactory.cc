@@ -72,9 +72,6 @@
 namespace aria2 {
 
 DefaultBtMessageFactory::DefaultBtMessageFactory():cuid(0),
-						   btContext(0),
-						   pieceStorage(0),
-						   peer(0),
 						   _dhtEnabled(false)
 {}
 
@@ -83,10 +80,10 @@ DefaultBtMessageFactory::~DefaultBtMessageFactory() {}
 BtMessageHandle
 DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataLength)
 {
-  AbstractBtMessageHandle msg(0);
+  AbstractBtMessageHandle msg;
   if(dataLength == 0) {
     // keep-alive
-    msg = new BtKeepAliveMessage();
+    msg.reset(new BtKeepAliveMessage());
   } else {
     uint8_t id = PeerMessageUtil::getId(data);
     switch(id) {
@@ -104,40 +101,48 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       break;
     case BtHaveMessage::ID:
       msg = BtHaveMessage::create(data, dataLength);
-      msg->setBtMessageValidator(new BtHaveMessageValidator((BtHaveMessage*)msg.get(),
-							    btContext->getNumPieces()));
+      {
+	SharedHandle<BtMessageValidator> v
+	  (new BtHaveMessageValidator((BtHaveMessage*)msg.get(),
+				      btContext->getNumPieces()));
+	msg->setBtMessageValidator(v);
+      }
       break;
     case BtBitfieldMessage::ID:
       msg = BtBitfieldMessage::create(data, dataLength);
-      msg->setBtMessageValidator(new BtBitfieldMessageValidator((BtBitfieldMessage*)msg.get(),
-								btContext->getNumPieces()));
+      {
+	SharedHandle<BtMessageValidator> v
+	  (new BtBitfieldMessageValidator((BtBitfieldMessage*)msg.get(),
+					  btContext->getNumPieces()));
+	msg->setBtMessageValidator(v);
+      }
       break;
     case BtRequestMessage::ID: {
       BtRequestMessageHandle temp = BtRequestMessage::create(data, dataLength);
-      BtMessageValidatorHandle validator =
-	new BtRequestMessageValidator(temp.get(),
+      BtMessageValidatorHandle validator
+	(new BtRequestMessageValidator(temp.get(),
 				      btContext->getNumPieces(),
-				      pieceStorage->getPieceLength(temp->getIndex()));
+				       pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
     }
     case BtCancelMessage::ID: {
       BtCancelMessageHandle temp = BtCancelMessage::create(data, dataLength);
-      BtMessageValidatorHandle validator =
-	new BtCancelMessageValidator(temp.get(),
+      BtMessageValidatorHandle validator
+	(new BtCancelMessageValidator(temp.get(),
 				     btContext->getNumPieces(),
-				     pieceStorage->getPieceLength(temp->getIndex()));
+				      pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
     }
     case BtPieceMessage::ID: {
       BtPieceMessageHandle temp = BtPieceMessage::create(data, dataLength);
-      BtMessageValidatorHandle validator =
-	new BtPieceMessageValidator(temp.get(),
-				    btContext->getNumPieces(),
-				    pieceStorage->getPieceLength(temp->getIndex()));
+      BtMessageValidatorHandle validator
+	(new BtPieceMessageValidator(temp.get(),
+				     btContext->getNumPieces(),
+				     pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
@@ -150,28 +155,28 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       break;
     case BtRejectMessage::ID: {
       BtRejectMessageHandle temp = BtRejectMessage::create(data, dataLength);
-      BtMessageValidatorHandle validator =
-	new BtRejectMessageValidator(temp.get(),
-				     btContext->getNumPieces(),
-				     pieceStorage->getPieceLength(temp->getIndex()));
+      BtMessageValidatorHandle validator
+	(new BtRejectMessageValidator(temp.get(),
+				      btContext->getNumPieces(),
+				      pieceStorage->getPieceLength(temp->getIndex())));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
     }
     case BtSuggestPieceMessage::ID: {
       BtSuggestPieceMessageHandle temp = BtSuggestPieceMessage::create(data, dataLength);
-      BtMessageValidatorHandle validator =
-	new BtSuggestPieceMessageValidator(temp.get(),
-					   btContext->getNumPieces());
+      BtMessageValidatorHandle validator
+	(new BtSuggestPieceMessageValidator(temp.get(),
+					    btContext->getNumPieces()));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
     }
     case BtAllowedFastMessage::ID: {
       BtAllowedFastMessageHandle temp = BtAllowedFastMessage::create(data, dataLength);
-      BtMessageValidatorHandle validator =
-	new BtAllowedFastMessageValidator(temp.get(),
-					  btContext->getNumPieces());
+      BtMessageValidatorHandle validator
+	(new BtAllowedFastMessageValidator(temp.get(),
+					  btContext->getNumPieces()));
       temp->setBtMessageValidator(validator);
       msg = temp;
       break;
@@ -207,30 +212,30 @@ void DefaultBtMessageFactory::setCommonProperty(const AbstractBtMessageHandle& m
   msg->setBtContext(btContext);
   msg->setBtMessageDispatcher(dispatcher);
   msg->setBtRequestFactory(requestFactory);
-  msg->setBtMessageFactory(this);
+  msg->setBtMessageFactory(WeakHandle<BtMessageFactory>(this));
   msg->setPeerConnection(peerConnection);
 }
 
-BtMessageHandle
+SharedHandle<BtHandshakeMessage>
 DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* data, size_t dataLength)
 {
   SharedHandle<BtHandshakeMessage> msg = BtHandshakeMessage::create(data, dataLength);
-  BtMessageValidatorHandle validator =
-    new BtHandshakeMessageValidator(msg.get(),
-				    btContext->getInfoHash());
+  BtMessageValidatorHandle validator
+    (new BtHandshakeMessageValidator(msg.get(),
+				     btContext->getInfoHash()));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
 }
 
-BtMessageHandle
+SharedHandle<BtHandshakeMessage>
 DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
 						const unsigned char* peerId)
 {
-  SharedHandle<BtHandshakeMessage> msg = new BtHandshakeMessage(infoHash, peerId);
-  BtMessageValidatorHandle validator =
-    new BtHandshakeMessageValidator(msg.get(),
-				    btContext->getInfoHash());
+  SharedHandle<BtHandshakeMessage> msg(new BtHandshakeMessage(infoHash, peerId));
+  BtMessageValidatorHandle validator
+    (new BtHandshakeMessageValidator(msg.get(),
+				     btContext->getInfoHash()));
   msg->setBtMessageValidator(validator);
   msg->setDHTEnabled(_dhtEnabled);
   setCommonProperty(msg);
@@ -240,15 +245,15 @@ DefaultBtMessageFactory::createHandshakeMessage(const unsigned char* infoHash,
 BtMessageHandle
 DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, size_t blockIndex)
 {
-  BtRequestMessageHandle msg =
-    new BtRequestMessage(piece->getIndex(),
-			 blockIndex*piece->getBlockLength(),
-			 piece->getBlockLength(blockIndex),
-			 blockIndex);
-  BtMessageValidatorHandle validator =
-    new BtRequestMessageValidator(msg.get(),
-				  btContext->getNumPieces(),
-				  pieceStorage->getPieceLength(msg->getIndex()));
+  BtRequestMessageHandle msg
+    (new BtRequestMessage(piece->getIndex(),
+			  blockIndex*piece->getBlockLength(),
+			  piece->getBlockLength(blockIndex),
+			  blockIndex));
+  BtMessageValidatorHandle validator
+    (new BtRequestMessageValidator(msg.get(),
+				   btContext->getNumPieces(),
+				   pieceStorage->getPieceLength(msg->getIndex())));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -257,11 +262,11 @@ DefaultBtMessageFactory::createRequestMessage(const PieceHandle& piece, size_t b
 BtMessageHandle
 DefaultBtMessageFactory::createCancelMessage(size_t index, uint32_t begin, size_t length)
 {
-  BtCancelMessageHandle msg = new BtCancelMessage(index, begin, length);
-  BtMessageValidatorHandle validator =
-    new BtCancelMessageValidator(msg.get(),
-				 btContext->getNumPieces(),
-				 pieceStorage->getPieceLength(index));
+  BtCancelMessageHandle msg(new BtCancelMessage(index, begin, length));
+  BtMessageValidatorHandle validator
+    (new BtCancelMessageValidator(msg.get(),
+				  btContext->getNumPieces(),
+				  pieceStorage->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -270,11 +275,11 @@ DefaultBtMessageFactory::createCancelMessage(size_t index, uint32_t begin, size_
 BtMessageHandle
 DefaultBtMessageFactory::createPieceMessage(size_t index, uint32_t begin, size_t length)
 {
-  BtPieceMessageHandle msg = new BtPieceMessage(index, begin, length);
-  BtMessageValidatorHandle validator =
-    new BtPieceMessageValidator(msg.get(),
+  BtPieceMessageHandle msg(new BtPieceMessage(index, begin, length));
+  BtMessageValidatorHandle validator
+    (new BtPieceMessageValidator(msg.get(),
 				btContext->getNumPieces(),
-				pieceStorage->getPieceLength(index));
+				pieceStorage->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -283,9 +288,11 @@ DefaultBtMessageFactory::createPieceMessage(size_t index, uint32_t begin, size_t
 BtMessageHandle
 DefaultBtMessageFactory::createHaveMessage(size_t index)
 {
-  BtHaveMessageHandle msg = new BtHaveMessage(index);
-  msg->setBtMessageValidator(new BtHaveMessageValidator(msg.get(),
-							btContext->getNumPieces()));
+  BtHaveMessageHandle msg(new BtHaveMessage(index));
+  SharedHandle<BtMessageValidator> v
+    (new BtHaveMessageValidator(msg.get(),
+				btContext->getNumPieces()));
+  msg->setBtMessageValidator(v);
   setCommonProperty(msg);
   return msg;
 }
@@ -293,7 +300,7 @@ DefaultBtMessageFactory::createHaveMessage(size_t index)
 BtMessageHandle
 DefaultBtMessageFactory::createChokeMessage()
 {
-  BtChokeMessageHandle msg = new BtChokeMessage();
+  BtChokeMessageHandle msg(new BtChokeMessage());
   setCommonProperty(msg);
   return msg;
 }
@@ -301,7 +308,7 @@ DefaultBtMessageFactory::createChokeMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createUnchokeMessage()
 {
-  BtUnchokeMessageHandle msg = new BtUnchokeMessage();
+  BtUnchokeMessageHandle msg(new BtUnchokeMessage());
   setCommonProperty(msg);
   return msg;
 }
@@ -309,7 +316,7 @@ DefaultBtMessageFactory::createUnchokeMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createInterestedMessage()
 {
-  BtInterestedMessageHandle msg = new BtInterestedMessage();
+  BtInterestedMessageHandle msg(new BtInterestedMessage());
   setCommonProperty(msg);
   return msg;
 }
@@ -317,7 +324,7 @@ DefaultBtMessageFactory::createInterestedMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createNotInterestedMessage()
 {
-  BtNotInterestedMessageHandle msg = new BtNotInterestedMessage();
+  BtNotInterestedMessageHandle msg(new BtNotInterestedMessage());
   setCommonProperty(msg);
   return msg;
 }
@@ -325,11 +332,13 @@ DefaultBtMessageFactory::createNotInterestedMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createBitfieldMessage()
 {
-  BtBitfieldMessageHandle msg =
-    new BtBitfieldMessage(pieceStorage->getBitfield(),
-			  pieceStorage->getBitfieldLength());
-  msg->setBtMessageValidator(new BtBitfieldMessageValidator(msg.get(),
-							    btContext->getNumPieces()));
+  BtBitfieldMessageHandle msg
+    (new BtBitfieldMessage(pieceStorage->getBitfield(),
+			   pieceStorage->getBitfieldLength()));
+  SharedHandle<BtMessageValidator> v
+    (new BtBitfieldMessageValidator(msg.get(),
+				    btContext->getNumPieces()));
+  msg->setBtMessageValidator(v);
   setCommonProperty(msg);
   return msg;
 }
@@ -337,7 +346,7 @@ DefaultBtMessageFactory::createBitfieldMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createKeepAliveMessage()
 {
-  BtKeepAliveMessageHandle msg = new BtKeepAliveMessage();
+  BtKeepAliveMessageHandle msg(new BtKeepAliveMessage());
   setCommonProperty(msg);
   return msg;
 } 
@@ -345,7 +354,7 @@ DefaultBtMessageFactory::createKeepAliveMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createHaveAllMessage()
 {
-  BtHaveAllMessageHandle msg = new BtHaveAllMessage();
+  BtHaveAllMessageHandle msg(new BtHaveAllMessage());
   setCommonProperty(msg);
   return msg;
 }
@@ -353,7 +362,7 @@ DefaultBtMessageFactory::createHaveAllMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createHaveNoneMessage()
 {
-  BtHaveNoneMessageHandle msg = new BtHaveNoneMessage();
+  BtHaveNoneMessageHandle msg(new BtHaveNoneMessage());
   setCommonProperty(msg);
   return msg;
 }
@@ -361,11 +370,11 @@ DefaultBtMessageFactory::createHaveNoneMessage()
 BtMessageHandle
 DefaultBtMessageFactory::createRejectMessage(size_t index, uint32_t begin, size_t length)
 {
-  BtRejectMessageHandle msg = new BtRejectMessage(index, begin, length);
-  BtMessageValidatorHandle validator =
-    new BtRejectMessageValidator(msg.get(),
-				 btContext->getNumPieces(),
-				 pieceStorage->getPieceLength(index));
+  BtRejectMessageHandle msg(new BtRejectMessage(index, begin, length));
+  BtMessageValidatorHandle validator
+    (new BtRejectMessageValidator(msg.get(),
+				  btContext->getNumPieces(),
+				  pieceStorage->getPieceLength(index)));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -374,10 +383,10 @@ DefaultBtMessageFactory::createRejectMessage(size_t index, uint32_t begin, size_
 BtMessageHandle
 DefaultBtMessageFactory::createAllowedFastMessage(size_t index)
 {
-  BtAllowedFastMessageHandle msg = new BtAllowedFastMessage(index);
-  BtMessageValidatorHandle validator =
-    new BtAllowedFastMessageValidator(msg.get(),
-				      btContext->getNumPieces());
+  BtAllowedFastMessageHandle msg(new BtAllowedFastMessage(index));
+  BtMessageValidatorHandle validator
+    (new BtAllowedFastMessageValidator(msg.get(),
+				       btContext->getNumPieces()));
   msg->setBtMessageValidator(validator);
   setCommonProperty(msg);
   return msg;
@@ -386,7 +395,7 @@ DefaultBtMessageFactory::createAllowedFastMessage(size_t index)
 BtMessageHandle
 DefaultBtMessageFactory::createPortMessage(uint16_t port)
 {
-  SharedHandle<BtPortMessage> msg = new BtPortMessage(port);
+  SharedHandle<BtPortMessage> msg(new BtPortMessage(port));
   setCommonProperty(msg);
   return msg;
 }
@@ -394,7 +403,7 @@ DefaultBtMessageFactory::createPortMessage(uint16_t port)
 BtMessageHandle
 DefaultBtMessageFactory::createBtExtendedMessage(const ExtensionMessageHandle& msg)
 {
-  BtExtendedMessageHandle m = new BtExtendedMessage(msg);
+  BtExtendedMessageHandle m(new BtExtendedMessage(msg));
   setCommonProperty(m);
   return m;
 }

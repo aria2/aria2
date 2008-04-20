@@ -155,23 +155,26 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
       std::find_if(entry->resources.begin(), entry->resources.end(), FindBitTorrentUrl());
 
 #ifdef ENABLE_BITTORRENT
-    SharedHandle<RequestGroup> torrentRg = 0;
+    SharedHandle<RequestGroup> torrentRg;
     // there is torrent entry
     if(itr != entry->resources.end()) {
       std::deque<std::string> uris;
       uris.push_back((*itr)->url);
-      torrentRg = new RequestGroup(_option, uris);
-      SharedHandle<SingleFileDownloadContext> dctx =
-	new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
-				      0,
-				      "");
+      torrentRg.reset(new RequestGroup(_option, uris));
+      SharedHandle<SingleFileDownloadContext> dctx
+	(new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
+				       0,
+				       ""));
       //dctx->setDir(_option->get(PREF_DIR));
       torrentRg->setDownloadContext(dctx);
       torrentRg->clearPreDowloadHandler();
       torrentRg->clearPostDowloadHandler();
       // make it in-memory download
-      SharedHandle<PreDownloadHandler> preh = new MemoryBufferPreDownloadHandler();
-      preh->setCriteria(new TrueRequestGroupCriteria());
+      SharedHandle<PreDownloadHandler> preh(new MemoryBufferPreDownloadHandler());
+      {
+	SharedHandle<RequestGroupCriteria> cri(new TrueRequestGroupCriteria());
+	preh->setCriteria(cri);
+      }
       torrentRg->addPreDownloadHandler(preh);
       groups.push_back(torrentRg);
     }
@@ -180,7 +183,7 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
     std::deque<std::string> uris;
     std::for_each(entry->resources.begin(), entry->resources.end(),
 		  AccumulateNonP2PUrl(uris));
-    SharedHandle<RequestGroup> rg = new RequestGroup(_option, uris);
+    SharedHandle<RequestGroup> rg(new RequestGroup(_option, uris));
     // If piece hash is specified in the metalink,
     // make segment size equal to piece hash size.
     size_t pieceLength;
@@ -193,11 +196,11 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
 #else
     pieceLength = _option->getAsInt(PREF_SEGMENT_SIZE);
 #endif // ENABLE_MESSAGE_DIGEST
-    SharedHandle<SingleFileDownloadContext> dctx =
-      new SingleFileDownloadContext(pieceLength,
-				    entry->getLength(),
-				    "",
-				    entry->file->getPath());
+    SharedHandle<SingleFileDownloadContext> dctx
+      (new SingleFileDownloadContext(pieceLength,
+				     entry->getLength(),
+				     "",
+				     entry->file->getPath()));
     dctx->setDir(_option->get(PREF_DIR));
 #ifdef ENABLE_MESSAGE_DIGEST
     if(entry->chunkChecksum.isNull()) {
@@ -220,7 +223,8 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
     if(!torrentRg.isNull()) {
-      rg->dependsOn(new BtDependency(rg, torrentRg, _option));
+      SharedHandle<Dependency> dep(new BtDependency(rg, torrentRg, _option));
+      rg->dependsOn(dep);
     }
 #endif // ENABLE_BITTORRENT
     groups.push_back(rg);

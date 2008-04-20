@@ -69,7 +69,7 @@ void DHTPeerAnnounceEntryTest::testEmpty()
   }
   {
     DHTPeerAnnounceEntry entry(infohash);
-    entry.setBtContext(new MockBtContext());
+    entry.setBtContext(SharedHandle<BtContext>(new MockBtContext()));
     CPPUNIT_ASSERT(!entry.empty());
   }
   {
@@ -100,12 +100,14 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
   unsigned char infohash[DHT_ID_LENGTH];
   memset(infohash, 0xff, DHT_ID_LENGTH);
 
-  SharedHandle<MockBtContext> ctx = new MockBtContext();
+  SharedHandle<MockBtContext> ctx(new MockBtContext());
   ctx->setInfoHash(infohash);
-  SharedHandle<MockPeerStorage> peerStorage = new MockPeerStorage();
+  SharedHandle<MockPeerStorage> peerStorage(new MockPeerStorage());
   {
-    SharedHandle<Peer> activePeers[] = { new Peer("192.168.0.3", 6883),
-				 new Peer("192.168.0.4", 6884) };
+    SharedHandle<Peer> activePeers[2];
+    activePeers[0].reset(new Peer("192.168.0.3", 6883));
+    activePeers[1].reset(new Peer("192.168.0.4", 6884));
+
     peerStorage->setActivePeers(std::deque<SharedHandle<Peer> >(&activePeers[0],
 								&activePeers[2]));
   }

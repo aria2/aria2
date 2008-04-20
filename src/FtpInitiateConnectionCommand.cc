@@ -57,7 +57,8 @@ FtpInitiateConnectionCommand::FtpInitiateConnectionCommand(int cuid,
 							   const RequestHandle& req,
 							   RequestGroup* requestGroup,
 							   DownloadEngine* e)
-  :AbstractCommand(cuid, req, requestGroup, e)
+  :AbstractCommand(cuid, req, requestGroup, e),
+   nameResolver(new NameResolver())
 {
   setTimeout(e->option->getAsInt(PREF_DNS_TIMEOUT));
   setStatusActive();
@@ -95,7 +96,8 @@ bool FtpInitiateConnectionCommand::executeInternal() {
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     
     if(useHttpProxyGet()) {
-      command = new HttpRequestCommand(cuid, req, _requestGroup, new HttpConnection(cuid, socket, e->option), e, socket);
+      SharedHandle<HttpConnection> hc(new HttpConnection(cuid, socket, e->option));
+      command = new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
     } else if(useHttpProxyConnect()) {
       command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e, socket);
     } else {

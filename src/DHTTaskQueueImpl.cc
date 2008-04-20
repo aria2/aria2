@@ -37,9 +37,7 @@
 
 namespace aria2 {
 
-DHTTaskQueueImpl::DHTTaskQueueImpl():_periodicTask1(0),
-				     _periodicTask2(0),
-				     _immediateTask(0) {}
+DHTTaskQueueImpl::DHTTaskQueueImpl() {}
 
 DHTTaskQueueImpl::~DHTTaskQueueImpl() {}
 
@@ -48,7 +46,7 @@ void DHTTaskQueueImpl::executeTask(SharedHandle<DHTTask>& task,
 {
   while(1) {
     if(task.isNull() || task->finished()) {
-      task = 0;
+      task.reset();
       if(taskQueue.empty()) {
 	break;
       }

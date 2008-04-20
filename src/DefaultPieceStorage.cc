@@ -59,7 +59,6 @@ namespace aria2 {
 
 DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option):
   downloadContext(downloadContext),
-  diskAdaptor(0),
   _diskWriterFactory(new DefaultDiskWriterFactory()),
   endGamePieceNum(END_GAME_PIECE_NUM),
   option(option)
@@ -103,7 +102,7 @@ PieceHandle DefaultPieceStorage::checkOutPiece(size_t index)
 
   PieceHandle piece = findUsedPiece(index);
   if(piece.isNull()) {
-    piece = new Piece(index, bitfieldMan->getBlockLength(index));
+    piece.reset(new Piece(index, bitfieldMan->getBlockLength(index)));
     addUsedPiece(piece);
     return piece;
   } else {
@@ -117,18 +116,17 @@ PieceHandle DefaultPieceStorage::checkOutPiece(size_t index)
  */
 PieceHandle DefaultPieceStorage::getPiece(size_t index)
 {
+  PieceHandle piece;
   if(0 <= index && index <= bitfieldMan->getMaxIndex()) {
-    PieceHandle piece = findUsedPiece(index);
+    piece = findUsedPiece(index);
     if(piece.isNull()) {
-      piece = new Piece(index, bitfieldMan->getBlockLength(index));
+      piece.reset(new Piece(index, bitfieldMan->getBlockLength(index)));
       if(hasPiece(index)) {
 	piece->setAllBlock();
       }
     }
-    return piece;
-  } else {
-    return 0;
   }
+  return piece;
 }
 
 void DefaultPieceStorage::addUsedPiece(const PieceHandle& piece)
@@ -153,7 +151,7 @@ PieceHandle DefaultPieceStorage::findUsedPiece(size_t index) const
 					    usedPieces.end(),
 					    FindPiece(index));
   if(itr == usedPieces.end()) {
-    return 0;
+    return SharedHandle<Piece>();
   } else {
     return *itr;
   }
@@ -165,7 +163,7 @@ PieceHandle DefaultPieceStorage::getMissingPiece(const PeerHandle& peer)
   if(getMissingPieceIndex(index, peer)) {
     return checkOutPiece(index);
   } else {
-    return 0;
+    return SharedHandle<Piece>();
   }
 }
 
@@ -199,7 +197,7 @@ PieceHandle DefaultPieceStorage::getMissingFastPiece(const PeerHandle& peer)
   if(getMissingFastPieceIndex(index, peer)) {
     return checkOutPiece(index);
   } else {
-    return 0;
+    return SharedHandle<Piece>();
   }
 }
 
@@ -209,14 +207,14 @@ PieceHandle DefaultPieceStorage::getMissingPiece()
   if(bitfieldMan->getSparseMissingUnusedIndex(index)) {
     return checkOutPiece(index);
   } else {
-    return 0;
+    return SharedHandle<Piece>();
   }
 }
 
 PieceHandle DefaultPieceStorage::getMissingPiece(size_t index)
 {
   if(hasPiece(index) || isPieceUsed(index)) {
-    return 0;
+    return SharedHandle<Piece>();
   } else {
     return checkOutPiece(index);
   }
@@ -421,7 +419,7 @@ void DefaultPieceStorage::initStorage()
     logger->debug("Instantiating DirectDiskAdaptor");
     DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
     writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
-    DirectDiskAdaptorHandle directDiskAdaptor = new DirectDiskAdaptor();
+    DirectDiskAdaptorHandle directDiskAdaptor(new DirectDiskAdaptor());
     directDiskAdaptor->setDiskWriter(writer);
     directDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
     this->diskAdaptor = directDiskAdaptor;
@@ -429,7 +427,7 @@ void DefaultPieceStorage::initStorage()
     // file mode == DownloadContext::MULTI
     if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
       logger->debug("Instantiating MultiDiskAdaptor");
-      MultiDiskAdaptorHandle multiDiskAdaptor = new MultiDiskAdaptor();
+      MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
       multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
       multiDiskAdaptor->setPieceLength(downloadContext->getPieceLength());
       multiDiskAdaptor->setTopDir(downloadContext->getName());
@@ -438,7 +436,7 @@ void DefaultPieceStorage::initStorage()
       logger->debug("Instantiating CopyDiskAdaptor");
       DiskWriterHandle writer = _diskWriterFactory->newDiskWriter();
       writer->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));
-      CopyDiskAdaptorHandle copyDiskAdaptor = new CopyDiskAdaptor();
+      CopyDiskAdaptorHandle copyDiskAdaptor(new CopyDiskAdaptor());
       copyDiskAdaptor->setDiskWriter(writer);
       copyDiskAdaptor->setTempFilename(downloadContext->getName()+".a2tmp");
       copyDiskAdaptor->setTotalLength(downloadContext->getTotalLength());
@@ -543,7 +541,7 @@ void DefaultPieceStorage::markPiecesDone(uint64_t length)
     }
     size_t r = (length%bitfieldMan->getBlockLength())/Piece::BLOCK_LENGTH;
     if(r > 0) {
-      PieceHandle p = new Piece(numPiece, bitfieldMan->getBlockLength(numPiece));
+      PieceHandle p(new Piece(numPiece, bitfieldMan->getBlockLength(numPiece)));
       for(size_t i = 0; i < r; ++i) {
 	p->completeBlock(i);
       }

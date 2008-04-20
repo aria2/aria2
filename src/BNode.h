@@ -55,7 +55,7 @@ private:
   BNode* _right;
 
 public:
-  BNode(const SharedHandle<DHTBucket>& bucket = 0);
+  BNode(const SharedHandle<DHTBucket>& bucket = SharedHandle<DHTBucket>());
 
   ~BNode();
 

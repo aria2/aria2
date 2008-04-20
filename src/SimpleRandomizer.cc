@@ -36,6 +36,6 @@
 
 namespace aria2 {
 
-RandomizerHandle SimpleRandomizer::randomizer = 0;
+RandomizerHandle SimpleRandomizer::randomizer;
 
 } // namespace aria2

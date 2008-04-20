@@ -65,7 +65,9 @@ void DHTReplaceNodeTask::sendMessage()
     _finished = true;
   } else {
     SharedHandle<DHTMessage> m = _factory->createPingMessage(questionableNode);
-    _dispatcher->addMessageToQueue(m, _timeout, new DHTMessageCallbackImpl(this));
+    WeakHandle<DHTMessageCallbackListener> listener(this);
+    SharedHandle<DHTMessageCallback> callback(new DHTMessageCallbackImpl(listener));
+    _dispatcher->addMessageToQueue(m, _timeout, callback);
   }
 }
 

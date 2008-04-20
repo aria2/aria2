@@ -119,15 +119,13 @@ static xmlSAXHandler mySAXHandler =
   0, //   xmlStructuredErrorFunc
 };
 
-XML2SAXMetalinkProcessor::XML2SAXMetalinkProcessor():
-  _stm(0)
-{}
+XML2SAXMetalinkProcessor::XML2SAXMetalinkProcessor() {}
 
 SharedHandle<Metalinker>
 XML2SAXMetalinkProcessor::parseFile(const std::string& filename)
 {
-  _stm = new MetalinkParserStateMachine();
-  SharedHandle<SessionData> sessionData = new SessionData(_stm);
+  _stm.reset(new MetalinkParserStateMachine());
+  SharedHandle<SessionData> sessionData(new SessionData(_stm));
   int retval = xmlSAXUserParseFile(&mySAXHandler, sessionData.get(),
 				   filename.c_str());
   if(retval != 0) {
@@ -139,7 +137,7 @@ XML2SAXMetalinkProcessor::parseFile(const std::string& filename)
 SharedHandle<Metalinker>
 XML2SAXMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
-  _stm = new MetalinkParserStateMachine();
+  _stm.reset(new MetalinkParserStateMachine());
   size_t bufSize = 4096;
   unsigned char buf[bufSize];
 
@@ -148,7 +146,7 @@ XML2SAXMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>
     throw new DlAbortEx("Too small data for parsing XML.");
   }
 
-  SharedHandle<SessionData> sessionData = new SessionData(_stm);
+  SharedHandle<SessionData> sessionData(new SessionData(_stm));
   xmlParserCtxtPtr ctx = xmlCreatePushParserCtxt(&mySAXHandler, sessionData.get(), (const char*)buf, res, 0);
   try {
     off_t readOffset = res;

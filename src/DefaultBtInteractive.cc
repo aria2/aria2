@@ -83,7 +83,7 @@ DefaultBtInteractive::~DefaultBtInteractive() {}
 
 
 void DefaultBtInteractive::initiateHandshake() {
-  SharedHandle<BtHandshakeMessage> message =
+  SharedHandle<BtMessage> message =
     messageFactory->createHandshakeMessage(btContext->getInfoHash(),
 					   btContext->getPeerId());
   dispatcher->addMessageToQueue(message);
@@ -94,7 +94,7 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   SharedHandle<BtHandshakeMessage> message =
     btMessageReceiver->receiveHandshake(quickReply);
   if(message.isNull()) {
-    return 0;
+    return SharedHandle<BtMessage>();
   }
   peer->setPeerId(message->getPeerId());
     
@@ -104,8 +104,8 @@ BtMessageHandle DefaultBtInteractive::receiveHandshake(bool quickReply) {
   }
   if(message->isExtendedMessagingEnabled()) {
     peer->setExtendedMessagingEnabled(true);
-    DefaultExtensionMessageFactoryHandle factory = 
-      new DefaultExtensionMessageFactory(btContext, peer);
+    DefaultExtensionMessageFactoryHandle factory
+      (new DefaultExtensionMessageFactory(btContext, peer));
     if(!_utPexEnabled) {
       factory->removeExtension("ut_pex");
     }
@@ -150,12 +150,12 @@ void DefaultBtInteractive::addPortMessageToQueue()
 
 void DefaultBtInteractive::addHandshakeExtendedMessageToQueue()
 {
-  HandshakeExtensionMessageHandle m = new HandshakeExtensionMessage();
+  HandshakeExtensionMessageHandle m(new HandshakeExtensionMessage());
   m->setClientVersion("aria2");
   m->setTCPPort(btRuntime->getListenPort());
   m->setExtensions(EXTENSION_MESSAGE_FACTORY(btContext, peer)->getExtensions());
   
-  BtExtendedMessageHandle msg = messageFactory->createBtExtendedMessage(m);
+  SharedHandle<BtMessage> msg = messageFactory->createBtExtendedMessage(m);
   dispatcher->addMessageToQueue(msg);
 }
 
@@ -386,8 +386,8 @@ void DefaultBtInteractive::addPeerExchangeMessage()
 {
   time_t interval = 60;
   if(_pexCheckPoint.elapsed(interval)) {
-    UTPexExtensionMessageHandle m =
-      new UTPexExtensionMessage(peer->getExtensionMessageID("ut_pex"));
+    UTPexExtensionMessageHandle m
+      (new UTPexExtensionMessage(peer->getExtensionMessageID("ut_pex")));
     const Peers& peers = peerStorage->getPeers();
     {
       size_t max = 30;
@@ -413,7 +413,7 @@ void DefaultBtInteractive::addPeerExchangeMessage()
 	}
       }
     }
-    BtExtendedMessageHandle msg = messageFactory->createBtExtendedMessage(m);
+    BtMessageHandle msg = messageFactory->createBtExtendedMessage(m);
     dispatcher->addMessageToQueue(msg);
     _pexCheckPoint.reset();
   }

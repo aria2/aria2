@@ -51,8 +51,6 @@ namespace aria2 {
 
 HttpResponse::HttpResponse():cuid(0),
 			     status(0),
-			     httpRequest(0),
-			     httpHeader(0),
 			     logger(LogFactory::getInstance())
 {}
 
@@ -144,10 +142,10 @@ TransferEncodingHandle HttpResponse::getTransferDecoder() const
 {
   if(isTransferEncodingSpecified()) {
     if(getTransferEncoding() == "chunked") {
-      return new ChunkedEncoding();
+      return SharedHandle<TransferEncoding>(new ChunkedEncoding());
     }
   }
-  return 0;
+  return SharedHandle<TransferEncoding>();
 }
 
 uint64_t HttpResponse::getContentLength() const

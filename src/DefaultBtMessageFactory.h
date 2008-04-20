@@ -83,10 +83,10 @@ public:
   virtual SharedHandle<BtMessage>
   createBtMessage(const unsigned char* msg, size_t msgLength);
 
-  virtual SharedHandle<BtMessage>
+  virtual SharedHandle<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength);
 
-  virtual SharedHandle<BtMessage>
+  virtual SharedHandle<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
 			 const unsigned char* peerId);
 

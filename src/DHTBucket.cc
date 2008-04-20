@@ -132,7 +132,7 @@ void DHTBucket::cacheNode(const SharedHandle<DHTNode>& node)
   // _cachedNodes are sorted by last time seen
   _cachedNodes.push_front(node);
   if(_cachedNodes.size() > CACHE_SIZE) {
-    _cachedNodes.resize(CACHE_SIZE, 0);
+    _cachedNodes.resize(CACHE_SIZE, SharedHandle<DHTNode>());
   }
 }
 
@@ -182,8 +182,8 @@ SharedHandle<DHTBucket> DHTBucket::split()
   memcpy(rMax, _max, DHT_ID_LENGTH);
   DHTUtil::flipBit(rMax, DHT_ID_LENGTH, _prefixLength);
 
-  SharedHandle<DHTBucket> rBucket = new DHTBucket(newPrefixLength,
-						  rMax, _min, _localNode);
+  SharedHandle<DHTBucket> rBucket(new DHTBucket(newPrefixLength,
+						rMax, _min, _localNode));
   std::deque<SharedHandle<DHTNode> > tempNodes = _nodes;
   for(std::deque<SharedHandle<DHTNode> >::iterator i = tempNodes.begin();
       i != tempNodes.end();) {
@@ -228,13 +228,13 @@ std::deque<SharedHandle<DHTNode> > DHTBucket::getGoodNodes() const
 
 SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const
 {
-  SharedHandle<DHTNode> node = new DHTNode(nodeID);
+  SharedHandle<DHTNode> node(new DHTNode(nodeID));
   node->setIPAddress(ipaddr);
   node->setPort(port);
   std::deque<SharedHandle<DHTNode> >::const_iterator itr =
     std::find(_nodes.begin(), _nodes.end(), node);
   if(itr == _nodes.end()) {
-    return 0;
+    return SharedHandle<DHTNode>();
   } else {
     return *itr;
   }
@@ -274,7 +274,7 @@ SharedHandle<DHTNode> DHTBucket::getLRUQuestionableNode() const
   std::deque<SharedHandle<DHTNode> >::const_iterator i =
     std::find_if(_nodes.begin(), _nodes.end(), FindQuestionableNode());
   if(i == _nodes.end()) {
-    return 0;
+    return SharedHandle<DHTNode>();
   } else {
     return *i;
   }

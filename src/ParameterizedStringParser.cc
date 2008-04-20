@@ -55,7 +55,7 @@ PStringDatumHandle ParameterizedStringParser::diggPString(const std::string& src
 							  int& offset)
 {
   if(src.size() == (size_t)offset) {
-    return 0;
+    return SharedHandle<PStringDatum>();
   }
   switch(src[offset]) {
   case '[':
@@ -77,7 +77,7 @@ PStringDatumHandle ParameterizedStringParser::createSegment(const std::string& s
   std::string value = src.substr(offset, nextDelimiterIndex-offset);
   offset = nextDelimiterIndex;
   PStringDatumHandle next = diggPString(src, offset);
-  return new PStringSegment(value, next);
+  return SharedHandle<PStringDatum>(new PStringSegment(value, next));
 }
 
 PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& src,
@@ -95,7 +95,7 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
   }
   offset = rightParenIndex+1;
   PStringDatumHandle next = diggPString(src, offset);
-  return new PStringSelect(values, next);
+  return SharedHandle<PStringDatum>(new PStringSelect(values, next));
 }
 
 PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
@@ -124,27 +124,27 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   if(range.first == "" || range.second == "") {
     throw new FatalException("Loop range missing.");
   }
-  NumberDecoratorHandle nd = 0;
+  NumberDecoratorHandle nd;
   unsigned int start;
   unsigned int end;
   if(Util::isNumber(range.first) && Util::isNumber(range.second)) {
-    nd = new FixedWidthNumberDecorator(range.first.size());
+    nd.reset(new FixedWidthNumberDecorator(range.first.size()));
     start = Util::parseUInt(range.first);
     end = Util::parseUInt(range.second);
   } else if(Util::isLowercase(range.first) && Util::isLowercase(range.second)) {
-    nd = new AlphaNumberDecorator(range.first.size());
+    nd.reset(new AlphaNumberDecorator(range.first.size()));
     start = Util::alphaToNum(range.first);
     end = Util::alphaToNum(range.second);
   } else if(Util::isUppercase(range.first) && Util::isUppercase(range.second)) {
-    nd = new AlphaNumberDecorator(range.first.size(), true);
+    nd.reset(new AlphaNumberDecorator(range.first.size(), true));
     start = Util::alphaToNum(range.first);
     end = Util::alphaToNum(range.second);
   } else {
     throw new FatalException("Invalid loop range.");
   }
 
-  PStringDatumHandle next = diggPString(src, offset);
-  return new PStringNumLoop(start, end, step, nd, next);
+  PStringDatumHandle next(diggPString(src, offset));
+  return SharedHandle<PStringDatum>(new PStringNumLoop(start, end, step, nd, next));
 }
 
 } // namespace aria2

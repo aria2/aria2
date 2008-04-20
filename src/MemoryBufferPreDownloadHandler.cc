@@ -45,7 +45,8 @@ MemoryBufferPreDownloadHandler::~MemoryBufferPreDownloadHandler() {}
 
 void MemoryBufferPreDownloadHandler::execute(RequestGroup* requestGroup)
 {
-  requestGroup->setDiskWriterFactory(new ByteArrayDiskWriterFactory());
+  SharedHandle<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());
+  requestGroup->setDiskWriterFactory(dwf);
   requestGroup->setFileAllocationEnabled(false);
   requestGroup->setPreLocalFileCheckEnabled(false);
 

@@ -50,15 +50,11 @@
 #include "BtContext.h"
 #include "PeerStorage.h"
 #include "BtRuntime.h"
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
 
-DHTTaskFactoryImpl::DHTTaskFactoryImpl():_localNode(0),
-					 _routingTable(0),
-					 _dispatcher(0),
-					 _factory(0),
-					 _taskQueue(0),
-					 _logger(LogFactory::getInstance()) {}
+DHTTaskFactoryImpl::DHTTaskFactoryImpl():_logger(LogFactory::getInstance()) {}
 
 DHTTaskFactoryImpl::~DHTTaskFactoryImpl() {}
 
@@ -66,7 +62,7 @@ SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
 				   size_t numRetry)
 {
-  SharedHandle<DHTPingTask> task = new DHTPingTask(remoteNode, numRetry);
+  SharedHandle<DHTPingTask> task(new DHTPingTask(remoteNode, numRetry));
   setCommonProperty(task);
   return task;
 }
@@ -74,7 +70,7 @@ DHTTaskFactoryImpl::createPingTask(const SharedHandle<DHTNode>& remoteNode,
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
 {
-  SharedHandle<DHTNodeLookupTask> task = new DHTNodeLookupTask(targetID);
+  SharedHandle<DHTNodeLookupTask> task(new DHTNodeLookupTask(targetID));
   setCommonProperty(task);
   return task;
 }
@@ -82,7 +78,7 @@ DHTTaskFactoryImpl::createNodeLookupTask(const unsigned char* targetID)
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createBucketRefreshTask()
 {
-  SharedHandle<DHTBucketRefreshTask> task = new DHTBucketRefreshTask();
+  SharedHandle<DHTBucketRefreshTask> task(new DHTBucketRefreshTask());
   setCommonProperty(task);
   return task;
 }
@@ -90,7 +86,7 @@ DHTTaskFactoryImpl::createBucketRefreshTask()
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createPeerLookupTask(const SharedHandle<BtContext>& ctx)
 {
-  SharedHandle<DHTPeerLookupTask> task = new DHTPeerLookupTask(ctx);
+  SharedHandle<DHTPeerLookupTask> task(new DHTPeerLookupTask(ctx));
   setCommonProperty(task);
   return task;
 }
@@ -99,14 +95,14 @@ SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createPeerAnnounceTask(const unsigned char* infoHash)
 {
   // TODO
-  return 0;
+  return SharedHandle<DHTTask>();
 }
 
 SharedHandle<DHTTask>
 DHTTaskFactoryImpl::createReplaceNodeTask(const SharedHandle<DHTBucket>& bucket,
 					  const SharedHandle<DHTNode>& newNode)
 {
-  SharedHandle<DHTReplaceNodeTask> task = new DHTReplaceNodeTask(bucket, newNode);
+  SharedHandle<DHTReplaceNodeTask> task(new DHTReplaceNodeTask(bucket, newNode));
   setCommonProperty(task);
   return task;
 }

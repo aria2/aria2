@@ -113,23 +113,26 @@ void showUsage(const std::string& category) {
     } else {
       printf(_("Printing options tagged with '%s'."), category.c_str());
       std::cout << "\n";
+      SharedHandle<HelpItem> helpItem
+	(dynamic_pointer_cast<HelpItem>(tc->nameMatch("help")));
       printf(_("See -h option to know other command-line options(%s)."),
-	     SharedHandle<HelpItem>(tc->nameMatch("help"))->getAvailableValues().c_str());
+	     helpItem->getAvailableValues().c_str());
     }
     std::cout << "\n"
 	      << _("Options:") << "\n";
-    std::copy(items.begin(), items.end(), std::ostream_iterator<SharedHandle<HelpItem> >(std::cout, "\n"));
+
+    std::copy(items.begin(), items.end(), std::ostream_iterator<SharedHandle<TaggedItem> >(std::cout, "\n"));
+
   } else {
     std::deque<SharedHandle<TaggedItem> > items = tc->nameMatchForward(category);
     if(items.size() > 0) {
       printf(_("Printing options whose name starts with '%s'."), category.c_str());
       std::cout << "\n"
 		<< _("Options:") << "\n";
-      std::copy(items.begin(), items.end(), std::ostream_iterator<SharedHandle<HelpItem> >(std::cout, "\n"));
+      std::copy(items.begin(), items.end(), std::ostream_iterator<SharedHandle<TaggedItem> >(std::cout, "\n"));
     } else {
       printf(_("No help category or option name matching with '%s'."), category.c_str());
-      std::cout << "\n"
-		<< SharedHandle<HelpItem>(tc->nameMatch("help")) << "\n";
+      std::cout << "\n" << tc->nameMatch("help") << "\n";
     }
   }
   if(category == TAG_BASIC) {

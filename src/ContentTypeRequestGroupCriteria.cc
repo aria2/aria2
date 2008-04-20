@@ -52,7 +52,7 @@ bool ContentTypeRequestGroupCriteria::match(const RequestGroup* requestGroup) co
   if(forwardMatch(requestGroup->getFilePath(), _extensions)) {
     return true;
   } else {
-    SingleFileDownloadContextHandle dctx = requestGroup->getDownloadContext();
+    SingleFileDownloadContextHandle dctx(dynamic_pointer_cast<SingleFileDownloadContext>(requestGroup->getDownloadContext()));
     if(dctx.isNull()) {
       return false;
     } else {

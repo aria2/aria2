@@ -58,7 +58,7 @@ DHTPeerLookupTask::DHTPeerLookupTask(const SharedHandle<BtContext>& btContext):
 
 std::deque<SharedHandle<DHTNode> > DHTPeerLookupTask::getNodesFromMessage(const SharedHandle<DHTMessage>& message)
 {
-  SharedHandle<DHTGetPeersReplyMessage> m = message;
+  SharedHandle<DHTGetPeersReplyMessage> m(dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
   if(m.isNull()) {
     return std::deque<SharedHandle<DHTNode> >();
   } else {
@@ -68,7 +68,7 @@ std::deque<SharedHandle<DHTNode> > DHTPeerLookupTask::getNodesFromMessage(const 
   
 void DHTPeerLookupTask::onReceivedInternal(const SharedHandle<DHTMessage>& message)
 {
-  SharedHandle<DHTGetPeersReplyMessage> m = message;
+  SharedHandle<DHTGetPeersReplyMessage> m(dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
   if(m.isNull()) {
     return;
   }

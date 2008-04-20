@@ -27,7 +27,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( AuthConfigFactoryTest );
 
 void AuthConfigFactoryTest::testCreateAuthConfig_http()
 {
-  SharedHandle<Request> req = new Request();
+  SharedHandle<Request> req(new Request());
   req->setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
@@ -40,8 +40,9 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
 		       factory.createAuthConfig(req)->getAuthText());
 
   // with Netrc: disabled by default
-  SharedHandle<Netrc> netrc = new Netrc();
-  netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
+  SharedHandle<Netrc> netrc(new Netrc());
+  netrc->addAuthenticator
+    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
   factory.setNetrc(netrc);
   CPPUNIT_ASSERT_EQUAL(std::string(":"),
 		       factory.createAuthConfig(req)->getAuthText());
@@ -63,11 +64,12 @@ void AuthConfigFactoryTest::testCreateAuthConfig_http()
 
 void AuthConfigFactoryTest::testCreateAuthConfigForHttpProxy()
 {
-  SharedHandle<Request> req = new Request();
+  SharedHandle<Request> req(new Request());
   req->setUrl("http://localhost/download/aria2-1.0.0.tar.bz2");
   // with Netrc
-  SharedHandle<Netrc> netrc = new Netrc();
-  netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
+  SharedHandle<Netrc> netrc(new Netrc());
+  netrc->addAuthenticator
+    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
 
   Option option;
   option.put(PREF_NO_NETRC, V_FALSE);
@@ -88,7 +90,7 @@ void AuthConfigFactoryTest::testCreateAuthConfigForHttpProxy()
 
 void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
 {
-  SharedHandle<Request> req = new Request();
+  SharedHandle<Request> req(new Request());
   req->setUrl("ftp://localhost/download/aria2-1.0.0.tar.bz2");
 
   Option option;
@@ -101,8 +103,9 @@ void AuthConfigFactoryTest::testCreateAuthConfig_ftp()
 		       factory.createAuthConfig(req)->getAuthText());
 
   // with Netrc
-  SharedHandle<Netrc> netrc = new Netrc();
-  netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount"));
+  SharedHandle<Netrc> netrc(new Netrc());
+  netrc->addAuthenticator
+    (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpassword", "defaultaccount")));
   factory.setNetrc(netrc);
   CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpassword"),
 		       factory.createAuthConfig(req)->getAuthText());

@@ -48,11 +48,6 @@ namespace aria2 {
 MetalinkEntry::MetalinkEntry():
   file(0),
   maxConnections(-1)
-#ifdef ENABLE_MESSAGE_DIGEST
-  ,
-  checksum(0),
-  chunkChecksum(0)
-#endif // ENABLE_MESSAGE_DIGEST
 {}
 
 MetalinkEntry::~MetalinkEntry() {}

@@ -44,20 +44,20 @@ namespace aria2 {
 #ifdef ENABLE_METALINK
 
 MemoryBufferPreDownloadHandlerHandle
-DownloadHandlerFactory::_metalinkPreDownloadHandler = 0;
+DownloadHandlerFactory::_metalinkPreDownloadHandler;
 
 MetalinkPostDownloadHandlerHandle
-DownloadHandlerFactory::_metalinkPostDownloadHandler = 0;
+DownloadHandlerFactory::_metalinkPostDownloadHandler;
 
 #endif // ENABLE_METALINK
 
 #ifdef ENABLE_BITTORRENT
 
 MemoryBufferPreDownloadHandlerHandle
-DownloadHandlerFactory::_btPreDownloadHandler = 0;
+DownloadHandlerFactory::_btPreDownloadHandler;
 
 BtPostDownloadHandlerHandle
-DownloadHandlerFactory::_btPostDownloadHandler = 0;
+DownloadHandlerFactory::_btPostDownloadHandler;
 
 #endif // ENABLE_BITTORRENT
 
@@ -67,11 +67,11 @@ MemoryBufferPreDownloadHandlerHandle
 DownloadHandlerFactory::getMetalinkPreDownloadHandler()
 {
   if(_metalinkPreDownloadHandler.isNull()) {
-    _metalinkPreDownloadHandler = new MemoryBufferPreDownloadHandler();
+    _metalinkPreDownloadHandler.reset(new MemoryBufferPreDownloadHandler());
 
-    RequestGroupCriteriaHandle criteria = 
-      new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getMetalinkContentTypes(),
-					  DownloadHandlerConstants::getMetalinkExtensions());
+    RequestGroupCriteriaHandle criteria
+      (new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getMetalinkContentTypes(),
+					   DownloadHandlerConstants::getMetalinkExtensions()));
     _metalinkPreDownloadHandler->setCriteria(criteria);
   }
   return _metalinkPreDownloadHandler;
@@ -81,7 +81,7 @@ MetalinkPostDownloadHandlerHandle
 DownloadHandlerFactory::getMetalinkPostDownloadHandler()
 {
   if(_metalinkPostDownloadHandler.isNull()) {
-    _metalinkPostDownloadHandler = new MetalinkPostDownloadHandler();
+    _metalinkPostDownloadHandler.reset(new MetalinkPostDownloadHandler());
   }
   return _metalinkPostDownloadHandler;
 }
@@ -94,11 +94,11 @@ MemoryBufferPreDownloadHandlerHandle
 DownloadHandlerFactory::getBtPreDownloadHandler()
 {
   if(_btPreDownloadHandler.isNull()) {
-    _btPreDownloadHandler = new MemoryBufferPreDownloadHandler();
+    _btPreDownloadHandler.reset(new MemoryBufferPreDownloadHandler());
 
-    RequestGroupCriteriaHandle criteria = 
-      new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getBtContentTypes(),
-					  DownloadHandlerConstants::getBtExtensions());
+    RequestGroupCriteriaHandle criteria
+      (new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getBtContentTypes(),
+					   DownloadHandlerConstants::getBtExtensions()));
     _btPreDownloadHandler->setCriteria(criteria);
   }
   return _btPreDownloadHandler;
@@ -107,7 +107,7 @@ DownloadHandlerFactory::getBtPreDownloadHandler()
 BtPostDownloadHandlerHandle DownloadHandlerFactory::getBtPostDownloadHandler()
 {
   if(_btPostDownloadHandler.isNull()) {
-    _btPostDownloadHandler = new BtPostDownloadHandler();
+    _btPostDownloadHandler.reset(new BtPostDownloadHandler());
   }
   return _btPostDownloadHandler;
 }

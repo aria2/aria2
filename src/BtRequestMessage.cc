@@ -55,7 +55,7 @@ BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, size_
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "request", ID);
   }
-  BtRequestMessageHandle message = new BtRequestMessage();
+  BtRequestMessageHandle message(new BtRequestMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   message->setBegin(PeerMessageUtil::getIntParam(data, 5));
   message->setLength(PeerMessageUtil::getIntParam(data, 9));

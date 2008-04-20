@@ -63,8 +63,8 @@ bool BtDependency::resolve()
   if(_dependee->getNumCommand() == 0 && _dependee->downloadFinished()) {
     RequestGroupHandle dependee = _dependee;
     // cut reference here
-    _dependee = 0;
-    DefaultBtContextHandle btContext = new DefaultBtContext();
+    _dependee.reset();
+    DefaultBtContextHandle btContext(new DefaultBtContext());
     try {
       DiskAdaptorHandle diskAdaptor = dependee->getPieceStorage()->getDiskAdaptor();
       diskAdaptor->openExistingFile();
@@ -89,7 +89,7 @@ bool BtDependency::resolve()
   } else if(_dependee->getNumCommand() == 0) {
     // _dependee's download failed.
     // cut reference here
-    _dependee = 0;
+    _dependee.reset();
     _logger->debug("BtDependency for GID#%d failed. Go without Bt.",
 		   _dependant->getGID());    
     return true;

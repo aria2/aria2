@@ -262,7 +262,7 @@ void DefaultBtContext::loadFromMemory(const unsigned char* content,
 				      size_t length,
 				      const std::string& defaultName)
 {
-  SharedHandle<MetaEntry> rootEntry = MetaFileUtil::bdecoding(content, length);
+  SharedHandle<MetaEntry> rootEntry(MetaFileUtil::bdecoding(content, length));
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
   if(!rootDic) {
     throw new DlAbortEx("torrent file does not contain a root dictionary .");
@@ -271,7 +271,7 @@ void DefaultBtContext::loadFromMemory(const unsigned char* content,
 }
 
 void DefaultBtContext::load(const std::string& torrentFile) {
-  SharedHandle<MetaEntry> rootEntry = MetaFileUtil::parseMetaFile(torrentFile);
+  SharedHandle<MetaEntry> rootEntry(MetaFileUtil::parseMetaFile(torrentFile));
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
   if(!rootDic) {
     throw new DlAbortEx("torrent file does not contain a root dictionary .");

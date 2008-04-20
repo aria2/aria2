@@ -56,9 +56,9 @@ bool PieceHashCheckIntegrityEntry::isValidationReady()
 void PieceHashCheckIntegrityEntry::initValidator()
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  IteratableChunkChecksumValidatorHandle validator =
-    new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
-					 _requestGroup->getPieceStorage());
+  IteratableChunkChecksumValidatorHandle validator
+    (new IteratableChunkChecksumValidator(_requestGroup->getDownloadContext(),
+					  _requestGroup->getPieceStorage()));
   validator->init();
   _validator = validator;
 #endif // ENABLE_MESSAGE_DIGEST

@@ -43,17 +43,13 @@
 #include "message.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
 
 DHTInteractionCommand::DHTInteractionCommand(int32_t cuid, DownloadEngine* e):
   Command(cuid),
-  _e(e),
-  _dispatcher(0),
-  _receiver(0),
-  _taskQueue(0),
-  _readCheckSocket(0)
-{}
+  _e(e) {}
 
 DHTInteractionCommand::~DHTInteractionCommand()
 {

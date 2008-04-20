@@ -106,7 +106,7 @@ void FtpConnection::sendPasv() const
 
 SocketHandle FtpConnection::sendPort() const
 {
-  SocketHandle serverSocket;
+  SocketHandle serverSocket(new SocketCore());
   serverSocket->bind(0);
   serverSocket->beginListen();
   serverSocket->setNonBlockingMode();

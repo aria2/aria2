@@ -64,7 +64,7 @@ void BtInterestedMessageTest::testGetMessage() {
 
 void BtInterestedMessageTest::testDoReceivedAction() {
   BtInterestedMessage msg;
-  SharedHandle<Peer> peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->peerInterested());
@@ -74,7 +74,7 @@ void BtInterestedMessageTest::testDoReceivedAction() {
 
 void BtInterestedMessageTest::testOnSendComplete() {
   BtInterestedMessage msg;
-  SharedHandle<Peer> peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   msg.setPeer(peer);
   CPPUNIT_ASSERT(!peer->amInterested());

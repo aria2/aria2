@@ -73,7 +73,7 @@ void HttpResponseTest::testGetContentLength_contentLength()
 {
   HttpResponse httpResponse;
 
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("Content-Length", "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -85,7 +85,7 @@ void HttpResponseTest::testGetEntityLength()
 {
   HttpResponse httpResponse;
 
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("Content-Length", "4294967296");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -101,7 +101,7 @@ void HttpResponseTest::testGetEntityLength()
 void HttpResponseTest::testGetContentType()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("content-type", "application/octet-stream");
   httpResponse.setHttpHeader(httpHeader);
   CPPUNIT_ASSERT_EQUAL(std::string("application/octet-stream"),
@@ -111,9 +111,9 @@ void HttpResponseTest::testGetContentType()
 void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
-  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
-  SharedHandle<Request> request = new Request();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
@@ -127,10 +127,10 @@ void HttpResponseTest::testDeterminFilename_without_ContentDisposition()
 void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("Content-Disposition", "attachment; filename=\"\"");
-  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
-  SharedHandle<Request> request = new Request();
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
@@ -144,10 +144,10 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition_zero_length(
 void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("Content-Disposition", "attachment; filename=\"aria2-current.tar.bz2\"");
-  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
-  SharedHandle<Request> request = new Request();
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   httpRequest->setRequest(request);
 
@@ -161,7 +161,7 @@ void HttpResponseTest::testDeterminFilename_with_ContentDisposition()
 void HttpResponseTest::testGetRedirectURI_without_Location()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -172,7 +172,7 @@ void HttpResponseTest::testGetRedirectURI_without_Location()
 void HttpResponseTest::testGetRedirectURI_with_Location()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
   httpResponse.setHttpHeader(httpHeader);
 
@@ -183,7 +183,7 @@ void HttpResponseTest::testGetRedirectURI_with_Location()
 void HttpResponseTest::testIsRedirect()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
 
   httpResponse.setHttpHeader(httpHeader);
@@ -199,7 +199,7 @@ void HttpResponseTest::testIsRedirect()
 void HttpResponseTest::testIsTransferEncodingSpecified()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -213,7 +213,7 @@ void HttpResponseTest::testIsTransferEncodingSpecified()
 void HttpResponseTest::testGetTransferEncoding()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -227,7 +227,7 @@ void HttpResponseTest::testGetTransferEncoding()
 void HttpResponseTest::testGetTransferDecoder()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
 
   httpResponse.setHttpHeader(httpHeader);
 
@@ -261,7 +261,7 @@ void HttpResponseTest::testValidateResponse()
   }
 
   httpResponse.setStatus(304);
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
   try {
     httpResponse.validateResponse();
@@ -283,13 +283,14 @@ void HttpResponseTest::testValidateResponse()
 void HttpResponseTest::testValidateResponse_good_range()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
-  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Piece> p(new Piece(1, 1024*1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
@@ -309,13 +310,14 @@ void HttpResponseTest::testValidateResponse_good_range()
 void HttpResponseTest::testValidateResponse_bad_range()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
-  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Piece> p(new Piece(1, 1024*1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
@@ -334,13 +336,14 @@ void HttpResponseTest::testValidateResponse_bad_range()
 void HttpResponseTest::testValidateResponse_chunked()
 {
   HttpResponse httpResponse;
-  SharedHandle<HttpHeader> httpHeader = new HttpHeader();
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
   httpResponse.setHttpHeader(httpHeader);
 
-  SharedHandle<HttpRequest> httpRequest = new HttpRequest();
-  SharedHandle<Segment> segment = new PiecedSegment(1024*1024, new Piece(1, 1024*1024));
+  SharedHandle<HttpRequest> httpRequest(new HttpRequest());
+  SharedHandle<Piece> p(new Piece(1, 1024*1024));
+  SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
   httpRequest->setSegment(segment);
-  SharedHandle<Request> request = new Request();
+  SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
   request->setKeepAlive(false);
   httpRequest->setRequest(request);

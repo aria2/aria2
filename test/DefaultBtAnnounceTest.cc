@@ -34,11 +34,6 @@ private:
   SharedHandle<BtRuntime> _btRuntime;
   Option* _option;
 public:
-  DefaultBtAnnounceTest():_btContext(0),
-			  _pieceStorage(0),
-			  _peerStorage(0),
-			  _btRuntime(0) {}
-
   void setUp() {
     _option = new Option();
 
@@ -53,23 +48,23 @@ public:
     
     std::string peerId = "-aria2-ultrafastdltl";
 
-    _btContext = new MockBtContext();
+    _btContext.reset(new MockBtContext());
     _btContext->setInfoHash(infoHash);
     _btContext->setTotalLength(totalLength);
     _btContext->setPieceLength(pieceLength);
     _btContext->setPeerId(reinterpret_cast<const unsigned char*>(peerId.c_str()));
 
-    _pieceStorage = new MockPieceStorage();
+    _pieceStorage.reset(new MockPieceStorage());
     _pieceStorage->setTotalLength(totalLength);
     _pieceStorage->setCompletedLength(pieceLength*10);
 
-    _peerStorage = new MockPeerStorage();
+    _peerStorage.reset(new MockPeerStorage());
     TransferStat stat;
     stat.setSessionDownloadLength(pieceLength*5);
     stat.setSessionUploadLength(pieceLength*6);
     _peerStorage->setStat(stat);
 
-    _btRuntime = new BtRuntime();
+    _btRuntime.reset(new BtRuntime());
     _btRuntime->setListenPort(6989);
   }
 
@@ -96,12 +91,12 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   std::string trackerURI1 = "http://localhost/announce";
   std::deque<std::string> uris1;
   uris1.push_back(trackerURI1);
-  SharedHandle<AnnounceTier> announceTier1 = new AnnounceTier(uris1);
+  SharedHandle<AnnounceTier> announceTier1(new AnnounceTier(uris1));
 
   std::string trackerURI2 = "http://backup/announce";
   std::deque<std::string> uris2;
   uris2.push_back(trackerURI2);
-  SharedHandle<AnnounceTier> announceTier2 = new AnnounceTier(uris2);
+  SharedHandle<AnnounceTier> announceTier2(new AnnounceTier(uris2));
 
 
   _btContext->addAnnounceTier(announceTier1);
@@ -111,7 +106,7 @@ void DefaultBtAnnounceTest::testNoMoreAnnounce()
   btAnnounce.setPieceStorage(_pieceStorage);
   btAnnounce.setPeerStorage(_peerStorage);
   btAnnounce.setBtRuntime(_btRuntime);
-  btAnnounce.setRandomizer(new FixedNumberRandomizer());
+  btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
   btAnnounce.generateKey();
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
@@ -154,7 +149,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   std::string trackerURI = "http://localhost/announce";
   std::deque<std::string> uris;
   uris.push_back(trackerURI);
-  SharedHandle<AnnounceTier> announceTier = new AnnounceTier(uris);
+  SharedHandle<AnnounceTier> announceTier(new AnnounceTier(uris));
 
   _btContext->addAnnounceTier(announceTier);
 
@@ -162,7 +157,7 @@ void DefaultBtAnnounceTest::testGetAnnounceUrl()
   btAnnounce.setPieceStorage(_pieceStorage);
   btAnnounce.setPeerStorage(_peerStorage);
   btAnnounce.setBtRuntime(_btRuntime);
-  btAnnounce.setRandomizer(new FixedNumberRandomizer());
+  btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
   btAnnounce.generateKey();
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
@@ -189,12 +184,12 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   std::string trackerURI1 = "http://localhost/announce";
   std::deque<std::string> uris1;
   uris1.push_back(trackerURI1);
-  SharedHandle<AnnounceTier> announceTier1 = new AnnounceTier(uris1);
+  SharedHandle<AnnounceTier> announceTier1(new AnnounceTier(uris1));
 
   std::string trackerURI2 = "http://backup/announce";
   std::deque<std::string> uris2;
   uris2.push_back(trackerURI2);
-  SharedHandle<AnnounceTier> announceTier2 = new AnnounceTier(uris2);
+  SharedHandle<AnnounceTier> announceTier2(new AnnounceTier(uris2));
 
 
   _btContext->addAnnounceTier(announceTier1);
@@ -204,7 +199,7 @@ void DefaultBtAnnounceTest::testIsAllAnnounceFailed()
   btAnnounce.setPieceStorage(_pieceStorage);
   btAnnounce.setPeerStorage(_peerStorage);
   btAnnounce.setBtRuntime(_btRuntime);
-  btAnnounce.setRandomizer(new FixedNumberRandomizer());
+  btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
   btAnnounce.generateKey();
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
@@ -228,7 +223,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
 {
   const char* urls[] = { "http://localhost1/announce",
 			 "http://localhost2/announce" };
-  SharedHandle<AnnounceTier> announceTier = new AnnounceTier(std::deque<std::string>(&urls[0], &urls[2]));
+  SharedHandle<AnnounceTier> announceTier(new AnnounceTier(std::deque<std::string>(&urls[0], &urls[2])));
 
   _btContext->addAnnounceTier(announceTier);
 
@@ -236,7 +231,7 @@ void DefaultBtAnnounceTest::testURLOrderInStoppedEvent()
   btAnnounce.setPieceStorage(_pieceStorage);
   btAnnounce.setPeerStorage(_peerStorage);
   btAnnounce.setBtRuntime(_btRuntime);
-  btAnnounce.setRandomizer(new FixedNumberRandomizer());
+  btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
   btAnnounce.generateKey();
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
@@ -258,7 +253,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
 {
   const char* urls[] = { "http://localhost1/announce",
 			 "http://localhost2/announce" };
-  SharedHandle<AnnounceTier> announceTier = new AnnounceTier(std::deque<std::string>(&urls[0], &urls[2]));
+  SharedHandle<AnnounceTier> announceTier(new AnnounceTier(std::deque<std::string>(&urls[0], &urls[2])));
 
   _btContext->addAnnounceTier(announceTier);
 
@@ -266,7 +261,7 @@ void DefaultBtAnnounceTest::testURLOrderInCompletedEvent()
   btAnnounce.setPieceStorage(_pieceStorage);
   btAnnounce.setPeerStorage(_peerStorage);
   btAnnounce.setBtRuntime(_btRuntime);
-  btAnnounce.setRandomizer(new FixedNumberRandomizer());
+  btAnnounce.setRandomizer(SharedHandle<Randomizer>(new FixedNumberRandomizer()));
   btAnnounce.generateKey();
 
   CPPUNIT_ASSERT_EQUAL(std::string("http://localhost1/announce?info_hash=%01%23Eg%89%ab%cd%ef%01%23Eg%89%ab%cd%ef%01%23Eg&peer_id=%2daria2%2dultrafastdltl&uploaded=1572864&downloaded=1310720&left=1572864&compact=1&key=AAAAAAAA&numwant=50&no_peer_id=1&port=6989&event=started&supportcrypto=1"), btAnnounce.getAnnounceUrl());
@@ -288,7 +283,8 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_malformed()
 {
   try {
     std::string res = "i123e";
-    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
+    SharedHandle<MockBtContext> ctx(new MockBtContext());
+    DefaultBtAnnounce(ctx, _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -300,7 +296,8 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_failureReason()
 {
   try {
     std::string res = "d14:failure reason11:hello worlde";
-    DefaultBtAnnounce(new MockBtContext(), _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
+    SharedHandle<MockBtContext> ctx(new MockBtContext());
+    DefaultBtAnnounce(ctx, _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
   } catch(Exception* e) {
     std::cerr << *e << std::endl;
@@ -319,7 +316,8 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse()
     "10:incompletei200e"
     "e";
   
-  DefaultBtAnnounce an(new MockBtContext(), _option);
+  SharedHandle<MockBtContext> ctx(new MockBtContext());
+  DefaultBtAnnounce an(ctx, _option);
   an.processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
   CPPUNIT_ASSERT_EQUAL(std::string("foo"), an.getTrackerID());
   CPPUNIT_ASSERT_EQUAL((time_t)3000, an.getInterval());

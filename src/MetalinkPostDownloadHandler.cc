@@ -46,8 +46,10 @@ namespace aria2 {
 
 MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 {
-  setCriteria(new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getMetalinkContentTypes(),
-						  DownloadHandlerConstants::getMetalinkExtensions()));
+  SharedHandle<RequestGroupCriteria> cri
+    (new ContentTypeRequestGroupCriteria(DownloadHandlerConstants::getMetalinkContentTypes(),
+					 DownloadHandlerConstants::getMetalinkExtensions()));
+  setCriteria(cri);
 }
 
 MetalinkPostDownloadHandler::~MetalinkPostDownloadHandler() {}

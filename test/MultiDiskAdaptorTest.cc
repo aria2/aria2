@@ -17,10 +17,8 @@ class MultiDiskAdaptorTest:public CppUnit::TestFixture {
 private:
   SharedHandle<MultiDiskAdaptor> adaptor;
 public:
-  MultiDiskAdaptorTest():adaptor(0) {}
-
   void setUp() {
-    adaptor = new MultiDiskAdaptor();
+    adaptor.reset(new MultiDiskAdaptor());
     adaptor->setPieceLength(2);
     adaptor->setStoreDir(".");
     adaptor->setTopDir(".");

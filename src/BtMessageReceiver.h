@@ -41,14 +41,15 @@
 namespace aria2 {
 
 class BtMessage;
+class BtHandshakeMessage;
 
 class BtMessageReceiver {
 public:
   virtual ~BtMessageReceiver() {}
 
-  virtual SharedHandle<BtMessage> receiveHandshake(bool quickReply = false) = 0;
+  virtual SharedHandle<BtHandshakeMessage> receiveHandshake(bool quickReply = false) = 0;
 
-  virtual SharedHandle<BtMessage> receiveAndSendHandshake() = 0;
+  virtual SharedHandle<BtHandshakeMessage> receiveAndSendHandshake() = 0;
 
   virtual SharedHandle<BtMessage> receiveMessage() = 0;
 };

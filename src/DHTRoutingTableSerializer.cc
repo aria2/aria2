@@ -45,7 +45,7 @@
 
 namespace aria2 {
 
-DHTRoutingTableSerializer::DHTRoutingTableSerializer():_localNode(0) {}
+DHTRoutingTableSerializer::DHTRoutingTableSerializer() {}
 
 DHTRoutingTableSerializer::~DHTRoutingTableSerializer() {}
 

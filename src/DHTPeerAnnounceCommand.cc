@@ -43,9 +43,7 @@
 namespace aria2 {
 
 DHTPeerAnnounceCommand::DHTPeerAnnounceCommand(int32_t cuid, DownloadEngine* e, time_t interval):
-  TimeBasedCommand(cuid, e, interval),
-  _peerAnnounceStorage(0)
-{}
+  TimeBasedCommand(cuid, e, interval) {}
 
 DHTPeerAnnounceCommand::~DHTPeerAnnounceCommand() {}
 

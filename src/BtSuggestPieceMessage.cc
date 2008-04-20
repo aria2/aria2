@@ -48,7 +48,7 @@ BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* d
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "suggest piece", ID);
   }
-  BtSuggestPieceMessageHandle message = new BtSuggestPieceMessage();
+  BtSuggestPieceMessageHandle message(new BtSuggestPieceMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
   return message;
 }

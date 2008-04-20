@@ -23,9 +23,9 @@ class BtDependencyTest:public CppUnit::TestFixture {
 
   SharedHandle<RequestGroup> createDependant(const Option* option)
   {
-    SharedHandle<RequestGroup> dependant = new RequestGroup(option, std::deque<std::string>());
-    SharedHandle<SingleFileDownloadContext> dctx =
-      new SingleFileDownloadContext(0, 0, "");
+    SharedHandle<RequestGroup> dependant(new RequestGroup(option, std::deque<std::string>()));
+    SharedHandle<SingleFileDownloadContext> dctx
+      (new SingleFileDownloadContext(0, 0, ""));
     dctx->setDir("/tmp");
     dependant->setDownloadContext(dctx);
     return dependant;
@@ -34,12 +34,13 @@ class BtDependencyTest:public CppUnit::TestFixture {
   SharedHandle<RequestGroup>
   createDependee(const Option* option, const std::string& torrentFile, int64_t length)
   {
-    SharedHandle<RequestGroup> dependee = new RequestGroup(option, std::deque<std::string>());
-    SharedHandle<SingleFileDownloadContext> dctx =
-      new SingleFileDownloadContext(1024*1024, length, torrentFile);
+    SharedHandle<RequestGroup> dependee
+      (new RequestGroup(option, std::deque<std::string>()));
+    SharedHandle<SingleFileDownloadContext> dctx
+      (new SingleFileDownloadContext(1024*1024, length, torrentFile));
     dctx->setDir(".");
     dependee->setDownloadContext(dctx);
-    DefaultPieceStorageHandle ps = new DefaultPieceStorage(dctx, option);
+    DefaultPieceStorageHandle ps(new DefaultPieceStorage(dctx, option));
     dependee->setPieceStorage(ps);
     ps->initStorage();
     dependee->initSegmentMan();
@@ -69,7 +70,8 @@ void BtDependencyTest::testResolve()
   BtDependency dep(dependant, dependee, &option);
   CPPUNIT_ASSERT(dep.resolve());
   
-  SharedHandle<BtContext> btContext = dependant->getDownloadContext();
+  SharedHandle<BtContext> btContext
+    (dynamic_pointer_cast<BtContext>(dependant->getDownloadContext()));
   CPPUNIT_ASSERT(!btContext.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/aria2-test"), btContext->getActualBasePath());
 }
@@ -85,7 +87,8 @@ void BtDependencyTest::testResolve_loadError()
     BtDependency dep(dependant, dependee, &option);
     CPPUNIT_ASSERT(dep.resolve());
     
-    SharedHandle<SingleFileDownloadContext> dctx = dependant->getDownloadContext();
+    SharedHandle<SingleFileDownloadContext> dctx
+      (dynamic_pointer_cast<SingleFileDownloadContext>(dependant->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/index.html"), dctx->getActualBasePath());
   } catch(Exception* e) {
@@ -104,7 +107,8 @@ void BtDependencyTest::testResolve_dependeeFailure()
   BtDependency dep(dependant, dependee, &option);
   CPPUNIT_ASSERT(dep.resolve());
   
-  SharedHandle<SingleFileDownloadContext> dctx = dependant->getDownloadContext();
+  SharedHandle<SingleFileDownloadContext> dctx
+    (dynamic_pointer_cast<SingleFileDownloadContext>(dependant->getDownloadContext()));
   CPPUNIT_ASSERT(!dctx.isNull());
   CPPUNIT_ASSERT_EQUAL(std::string("/tmp/index.html"), dctx->getActualBasePath());
 }

@@ -102,7 +102,7 @@ TaggedItemHandle TagContainer::nameMatch(const std::string& name) const
 {
   TaggedItems::const_iterator itr = std::find(_taggedItems.begin(), _taggedItems.end(), TaggedItemHandle(new TaggedItem(name)));
   if(itr == _taggedItems.end()) {
-    return 0;
+    return SharedHandle<TaggedItem>();
   } else {
     return *itr;
   }

@@ -32,14 +32,14 @@ void BencodeVisitorTest::testVisit_data()
   {
     BencodeVisitor v;
     std::string str = "apple";
-    MetaEntryHandle m = new Data(str.c_str(), str.size());
+    MetaEntryHandle m(new Data(str.c_str(), str.size()));
     m->accept(&v);
     CPPUNIT_ASSERT_EQUAL(std::string("5:apple"), v.getBencodedData());
   }
   {
     BencodeVisitor v;
     std::string str = "123";
-    MetaEntryHandle m = new Data(str.c_str(), str.size(), true);
+    MetaEntryHandle m(new Data(str.c_str(), str.size(), true));
     m->accept(&v);
     CPPUNIT_ASSERT_EQUAL(std::string("i123e"), v.getBencodedData());
   }

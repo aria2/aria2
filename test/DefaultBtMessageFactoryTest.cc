@@ -29,26 +29,25 @@ private:
   SharedHandle<MockBtContext> _btContext;
   SharedHandle<Peer> _peer;
 public:
-  DefaultBtMessageFactoryTest():_btContext(0), _peer(0) {}
-
   void setUp()
   {
     BtRegistry::unregisterAll();
-    SharedHandle<MockBtContext> btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext(new MockBtContext());
     unsigned char infohash[20];
     memset(infohash, 0, sizeof(infohash));
     btContext->setInfoHash(infohash);
     _btContext = btContext;
 
-    _peer = new Peer("192.168.0.1", 6969);
+    _peer.reset(new Peer("192.168.0.1", 6969));
     _peer->allocateSessionResource(1024, 1024*1024);
     _peer->setExtendedMessagingEnabled(true);
 
-    SharedHandle<MockExtensionMessageFactory> exmsgFactory =
-      new MockExtensionMessageFactory();
+    SharedHandle<MockExtensionMessageFactory> exmsgFactory
+      (new MockExtensionMessageFactory());
+    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
     BtRegistry::registerPeerObjectCluster(_btContext->getInfoHashAsString(),
-					  new PeerObjectCluster());
-    SharedHandle<PeerObject> peerObject = new PeerObject();
+					  cluster);
+    SharedHandle<PeerObject> peerObject(new PeerObject());
     peerObject->extensionMessageFactory = exmsgFactory;
 
     PEER_OBJECT_CLUSTER(_btContext)->registerHandle(_peer->getID(), peerObject);
@@ -80,8 +79,9 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
   msg[5] = 1; // Set dummy extended message ID 1
   memcpy(msg+6, payload.c_str(), payload.size());
   
-  SharedHandle<BtExtendedMessage> m =
-    factory.createBtMessage((const unsigned char*)msg+4, sizeof(msg));
+  SharedHandle<BtExtendedMessage> m
+    (dynamic_pointer_cast<BtExtendedMessage>
+     (factory.createBtMessage((const unsigned char*)msg+4, sizeof(msg))));
 
   try {
     // disable extended messaging
@@ -105,7 +105,9 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
     PeerMessageUtil::createPeerMessageString(data, sizeof(data), 3, 9);
     PeerMessageUtil::setShortIntParam(&data[5], 6881);
     try {
-      SharedHandle<BtPortMessage> m = factory.createBtMessage(&data[4], sizeof(data)-4);
+      SharedHandle<BtPortMessage> m
+	(dynamic_pointer_cast<BtPortMessage>
+	 (factory.createBtMessage(&data[4], sizeof(data)-4)));
       CPPUNIT_ASSERT(!m.isNull());
       CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
     } catch(Exception* e) {
@@ -116,7 +118,8 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
     }
   }
   {
-    SharedHandle<BtPortMessage> m = factory.createPortMessage(6881);
+    SharedHandle<BtPortMessage> m
+      (dynamic_pointer_cast<BtPortMessage>(factory.createPortMessage(6881)));
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
   }
 }

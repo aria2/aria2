@@ -71,8 +71,6 @@ MSEHandshake::MSEHandshake(int32_t cuid,
   _rbufLength(0),
   _negotiatedCryptoType(CRYPTO_NONE),
   _dh(0),
-  _encryptor(0),
-  _decryptor(0),
   _initiator(true),
   _markerIndex(0),
   _padLength(0),
@@ -158,14 +156,14 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   unsigned char localCipherKey[20];
   MessageDigestHelper::digest(localCipherKey, sizeof(localCipherKey), "sha1",
 			      s, sizeof(s));
-  _encryptor = new ARC4Encryptor();
+  _encryptor.reset(new ARC4Encryptor());
   _encryptor->init(localCipherKey, sizeof(localCipherKey));
 
   unsigned char peerCipherKey[20];
   memcpy(s, _initiator?"keyB":"keyA", 4);
   MessageDigestHelper::digest(peerCipherKey, sizeof(peerCipherKey), "sha1",
 			      s, sizeof(s));
-  _decryptor = new ARC4Decryptor();
+  _decryptor.reset(new ARC4Decryptor());
   _decryptor->init(peerCipherKey, sizeof(peerCipherKey));
 
   // discard first 1024 bytes ARC4 output.
@@ -413,7 +411,7 @@ bool MSEHandshake::receiveReceiverHashAndPadCLength()
   std::deque<SharedHandle<BtContext> > btContexts = BtRegistry::getAllBtContext();
   // pointing to the position of HASH('req2', SKEY) xor HASH('req3', S)
   unsigned char* rbufptr = _rbuf;
-  SharedHandle<BtContext> btContext = 0;
+  SharedHandle<BtContext> btContext;
   for(std::deque<SharedHandle<BtContext> >::const_iterator i = btContexts.begin();
       i != btContexts.end(); ++i) {
     unsigned char md[20];

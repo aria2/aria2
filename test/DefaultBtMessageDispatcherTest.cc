@@ -14,6 +14,7 @@
 #include "BtMessageReceiver.h"
 #include "ExtensionMessageFactory.h"
 #include "PeerConnection.h"
+#include "BtHandshakeMessage.h"
 #include <cppunit/extensions/HelperMacros.h>
 #include <cassert>
 
@@ -44,8 +45,6 @@ private:
   SharedHandle<MockPeerStorage> peerStorage;
   SharedHandle<MockPieceStorage> pieceStorage;
 public:
-  DefaultBtMessageDispatcherTest():btContext(0), peer(0), btMessageDispatcher(0) {}
-
   void tearDown() {}
 
   void testAddMessage();
@@ -124,34 +123,35 @@ public:
   public:
     virtual SharedHandle<BtMessage>
     createCancelMessage(size_t index, uint32_t begin, size_t length) {
-      SharedHandle<MockBtMessage2> btMsg = new MockBtMessage2();
+      SharedHandle<MockBtMessage2> btMsg(new MockBtMessage2());
       btMsg->type = "cancel";
       return btMsg;
     }
   };
 
   void setUp() {
-    btContext = new DefaultBtContext();
+    btContext.reset(new DefaultBtContext());
     btContext->load("test.torrent");
-    peer = new Peer("192.168.0.1", 6969);
+    peer.reset(new Peer("192.168.0.1", 6969));
     peer->allocateSessionResource(btContext->getPieceLength(),
 				  btContext->getTotalLength());
-    peerStorage = new MockPeerStorage();
-    pieceStorage = new MockPieceStorage();
+    peerStorage.reset(new MockPeerStorage());
+    pieceStorage.reset(new MockPieceStorage());
     BtRegistry::unregisterAll();
     BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(),
 				    peerStorage);
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				     pieceStorage);
+    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  new PeerObjectCluster());
+					  cluster);
 
-    SharedHandle<PeerObject> peerObject = new PeerObject();
-    peerObject->btMessageFactory = new MockBtMessageFactory2();
+    SharedHandle<PeerObject> peerObject(new PeerObject());
+    peerObject->btMessageFactory.reset(new MockBtMessageFactory2());
 
     PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), peerObject);
 
-    btMessageDispatcher = new DefaultBtMessageDispatcher();
+    btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
     btMessageDispatcher->setCuid(1);
     btMessageDispatcher->setBtContext(btContext);
     btMessageDispatcher->setPeer(peer);
@@ -164,7 +164,7 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(DefaultBtMessageDispatcherTest);
 
 void DefaultBtMessageDispatcherTest::testAddMessage() {
-  SharedHandle<MockBtMessage2> msg = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg(new MockBtMessage2());
   CPPUNIT_ASSERT_EQUAL(false, msg->isOnQueuedCalled());
   btMessageDispatcher->addMessageToQueue(msg);
   CPPUNIT_ASSERT_EQUAL(true, msg->isOnQueuedCalled());
@@ -177,10 +177,10 @@ void DefaultBtMessageDispatcherTest::testSendMessages() {
   stat.setUploadSpeed(0);
   peerStorage->setStat(stat);
 
-  SharedHandle<MockBtMessage2> msg1 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setSendingInProgress(false);
   msg1->setUploading(false);
-  SharedHandle<MockBtMessage2> msg2 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
   msg2->setSendingInProgress(false);
   msg2->setUploading(false);
   btMessageDispatcher->addMessageToQueue(msg1);
@@ -196,10 +196,10 @@ void DefaultBtMessageDispatcherTest::testSendMessages_underUploadLimit() {
   stat.setUploadSpeed(0);
   peerStorage->setStat(stat);
 
-  SharedHandle<MockBtMessage2> msg1 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setSendingInProgress(false);
   msg1->setUploading(true);
-  SharedHandle<MockBtMessage2> msg2 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
   msg2->setSendingInProgress(false);
   msg2->setUploading(true);
   btMessageDispatcher->addMessageToQueue(msg1);
@@ -216,13 +216,13 @@ void DefaultBtMessageDispatcherTest::testSendMessages_overUploadLimit() {
   stat.setUploadSpeed(150);
   peerStorage->setStat(stat);
 
-  SharedHandle<MockBtMessage2> msg1 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setSendingInProgress(false);
   msg1->setUploading(true);
-  SharedHandle<MockBtMessage2> msg2 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
   msg2->setSendingInProgress(false);
   msg2->setUploading(true);
-  SharedHandle<MockBtMessage2> msg3 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg3(new MockBtMessage2());
   msg3->setSendingInProgress(false);
   msg3->setUploading(false);
 
@@ -239,13 +239,13 @@ void DefaultBtMessageDispatcherTest::testSendMessages_overUploadLimit() {
 }
 
 void DefaultBtMessageDispatcherTest::testSendMessages_sendingInProgress() {
-  SharedHandle<MockBtMessage2> msg1 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
   msg1->setSendingInProgress(false);
   msg1->setUploading(false);
-  SharedHandle<MockBtMessage2> msg2 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
   msg2->setSendingInProgress(true);
   msg2->setUploading(false);
-  SharedHandle<MockBtMessage2> msg3 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg3(new MockBtMessage2());
   msg3->setSendingInProgress(false);
   msg3->setUploading(false);
 
@@ -263,8 +263,8 @@ void DefaultBtMessageDispatcherTest::testSendMessages_sendingInProgress() {
 }
 
 void DefaultBtMessageDispatcherTest::testDoCancelSendingPieceAction() {
-  SharedHandle<MockBtMessage2> msg1 = new MockBtMessage2();
-  SharedHandle<MockBtMessage2> msg2 = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg1(new MockBtMessage2());
+  SharedHandle<MockBtMessage2> msg2(new MockBtMessage2());
 
   btMessageDispatcher->addMessageToQueue(msg1);
   btMessageDispatcher->addMessageToQueue(msg2);
@@ -280,17 +280,17 @@ int MY_PIECE_LENGTH = 16*1024;
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing() {
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
   
-  SharedHandle<Piece> piece = new Piece(0, MY_PIECE_LENGTH);
+  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
+  SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
   BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				   pieceStorage);
 
-  btMessageDispatcher = new DefaultBtMessageDispatcher();
+  btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
   btMessageDispatcher->setCuid(1);
   btMessageDispatcher->setBtContext(btContext);
   btMessageDispatcher->setPeer(peer);
@@ -309,17 +309,17 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
   // make this slot timeout
   slot.setDispatchedTime(0);
 
-  SharedHandle<Piece> piece = new Piece(0, MY_PIECE_LENGTH);
+  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   size_t index;
   CPPUNIT_ASSERT(piece->getMissingUnusedBlockIndex(index));
   CPPUNIT_ASSERT_EQUAL((size_t)0, index);
 
-  SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
+  SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
   BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				   pieceStorage);
 
-  btMessageDispatcher = new DefaultBtMessageDispatcher();
+  btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
   btMessageDispatcher->setCuid(1);
   btMessageDispatcher->setBtContext(btContext);
   btMessageDispatcher->setPeer(peer);
@@ -340,16 +340,16 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_tim
 void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_completeBlock() {
   RequestSlot slot(0, 0, MY_PIECE_LENGTH, 0);
   
-  SharedHandle<Piece> piece = new Piece(0, MY_PIECE_LENGTH);
+  SharedHandle<Piece> piece(new Piece(0, MY_PIECE_LENGTH));
   piece->completeBlock(0);
 
-  SharedHandle<MockPieceStorage2> pieceStorage = new MockPieceStorage2();
+  SharedHandle<MockPieceStorage2> pieceStorage(new MockPieceStorage2());
   pieceStorage->setPiece(piece);
   BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				   pieceStorage);
 
 
-  btMessageDispatcher = new DefaultBtMessageDispatcher();
+  btMessageDispatcher.reset(new DefaultBtMessageDispatcher());
   btMessageDispatcher->setCuid(1);
   btMessageDispatcher->setBtContext(btContext);
   btMessageDispatcher->setPeer(peer);
@@ -367,7 +367,7 @@ void DefaultBtMessageDispatcherTest::testCheckRequestSlotAndDoNecessaryThing_com
 
 void DefaultBtMessageDispatcherTest::testIsSendingInProgress() {
   CPPUNIT_ASSERT(!btMessageDispatcher->isSendingInProgress());
-  SharedHandle<MockBtMessage2> msg = new MockBtMessage2();
+  SharedHandle<MockBtMessage2> msg(new MockBtMessage2());
   msg->setSendingInProgress(false);
   btMessageDispatcher->addMessageToQueue(msg);
   CPPUNIT_ASSERT(!btMessageDispatcher->isSendingInProgress());

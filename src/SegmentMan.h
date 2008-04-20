@@ -85,8 +85,8 @@ private:
   SegmentEntryHandle findSlowerSegmentEntry(const SharedHandle<PeerStat>& peerStat) const;
 public:
   SegmentMan(const Option* option,
-	     const SharedHandle<DownloadContext>& downloadContext = 0,
-	     const SharedHandle<PieceStorage>& pieceStorage = 0);
+	     const SharedHandle<DownloadContext>& downloadContext,
+	     const SharedHandle<PieceStorage>& pieceStorage);
 
   ~SegmentMan();
 

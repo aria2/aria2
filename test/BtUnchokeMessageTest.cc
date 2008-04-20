@@ -62,7 +62,7 @@ void BtUnchokeMessageTest::testGetMessage() {
 }
 
 void BtUnchokeMessageTest::testDoReceivedAction() {
-  SharedHandle<Peer> peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->peerChoking(true);
   BtUnchokeMessage msg;
@@ -74,7 +74,7 @@ void BtUnchokeMessageTest::testDoReceivedAction() {
 }
 
 void BtUnchokeMessageTest::testOnSendComplete() {
-  SharedHandle<Peer> peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->amChoking(true);
   BtUnchokeMessage msg;

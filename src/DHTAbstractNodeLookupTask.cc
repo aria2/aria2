@@ -118,7 +118,9 @@ void DHTAbstractNodeLookupTask::sendMessage()
       ++_inFlightMessage;
       (*i)->_used = true;
       SharedHandle<DHTMessage> m = createMessage((*i)->_node);
-      _dispatcher->addMessageToQueue(m, new DHTMessageCallbackImpl(this));
+      WeakHandle<DHTMessageCallbackListener> listener(this);
+      SharedHandle<DHTMessageCallback> callback(new DHTMessageCallbackImpl(listener));
+      _dispatcher->addMessageToQueue(m, callback);
     }
   }
 }
@@ -149,7 +151,7 @@ DHTAbstractNodeLookupTask::toEntries(const std::deque<SharedHandle<DHTNode> >& n
 {
   std::deque<SharedHandle<DHTNodeLookupEntry> > entries;
   for(std::deque<SharedHandle<DHTNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
-    SharedHandle<DHTNodeLookupEntry> e = new DHTNodeLookupEntry(*i);
+    SharedHandle<DHTNodeLookupEntry> e(new DHTNodeLookupEntry(*i));
     entries.push_back(e);
   }
   return entries;

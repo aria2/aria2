@@ -32,8 +32,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTGetPeersReplyMessageTest);
 
 void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode = new DHTNode();
-  SharedHandle<DHTNode> remoteNode = new DHTNode();
+  SharedHandle<DHTNode> localNode(new DHTNode());
+  SharedHandle<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -43,7 +43,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 
   DHTGetPeersReplyMessage msg(localNode, remoteNode, token, transactionID);
 
-  SharedHandle<Dictionary> cm = new Dictionary();
+  SharedHandle<Dictionary> cm(new Dictionary());
   cm->put("t", new Data(transactionID));
   cm->put("y", new Data("r"));
   Dictionary* r = new Dictionary();
@@ -53,9 +53,9 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
 
   {
     std::string compactNodeInfo;
-    SharedHandle<DHTNode> nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    SharedHandle<DHTNode> nodes[8];
     for(size_t i = 0; i < DHTBucket::K; ++i) {
-      nodes[i] = new DHTNode();
+      nodes[i].reset(new DHTNode());
       nodes[i]->setIPAddress("192.168.0."+Util::uitos(i+1));
       nodes[i]->setPort(6881+i);
       
@@ -83,7 +83,7 @@ void DHTGetPeersReplyMessageTest::testGetBencodedMessage()
     List* values = new List();
     r->put("values", values);
     for(size_t i = 0; i < 4; ++i) {
-      SharedHandle<Peer> peer = new Peer("192.168.0."+Util::uitos(i+1), 6881+i);
+      SharedHandle<Peer> peer(new Peer("192.168.0."+Util::uitos(i+1), 6881+i));
       unsigned char buffer[6];
       CPPUNIT_ASSERT(PeerMessageUtil::createcompact(buffer, peer->ipaddr, peer->port));
       values->add(new Data(buffer, sizeof(buffer)));

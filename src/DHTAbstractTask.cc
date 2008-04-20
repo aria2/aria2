@@ -48,8 +48,7 @@ namespace aria2 {
 
 DHTAbstractTask::DHTAbstractTask():
   _finished(false),
-  _logger(LogFactory::getInstance()),
-  _localNode(0)
+  _logger(LogFactory::getInstance())
 {}
 
 bool DHTAbstractTask::finished()

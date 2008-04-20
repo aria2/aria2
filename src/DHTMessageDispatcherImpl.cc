@@ -55,7 +55,8 @@ DHTMessageDispatcherImpl::addMessageToQueue(const SharedHandle<DHTMessage>& mess
 					    time_t timeout,
 					    const SharedHandle<DHTMessageCallback>& callback)
 {
-  _messageQueue.push_back(new DHTMessageEntry(message, timeout, callback));
+  SharedHandle<DHTMessageEntry> e(new DHTMessageEntry(message, timeout, callback));
+  _messageQueue.push_back(e);
 }
 
 void

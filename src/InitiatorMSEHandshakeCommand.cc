@@ -122,8 +122,8 @@ bool InitiatorMSEHandshakeCommand::executeInternal() {
   }
   case INITIATOR_RECEIVE_PAD_D: {
     if(_mseHandshake->receivePad()) {
-      SharedHandle<PeerConnection> peerConnection =
-	new PeerConnection(cuid, socket, e->option);
+      SharedHandle<PeerConnection> peerConnection
+	(new PeerConnection(cuid, socket, e->option));
       if(_mseHandshake->getNegotiatedCryptoType() == MSEHandshake::CRYPTO_ARC4) {
 	peerConnection->enableEncryption(_mseHandshake->getEncryptor(),
 					 _mseHandshake->getDecryptor());

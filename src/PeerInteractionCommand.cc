@@ -78,7 +78,6 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
    BtContextAwareCommand(btContext),
    RequestGroupAware(requestGroup),
    sequence(sequence),
-   btInteractive(0),
    maxDownloadSpeedLimit(0)
 {
   // TODO move following bunch of processing to separate method, like init()
@@ -87,7 +86,7 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
     setWriteCheckSocket(socket);
     setTimeout(e->option->getAsInt(PREF_PEER_CONNECTION_TIMEOUT));
   }
-  DefaultBtMessageFactoryHandle factory = new DefaultBtMessageFactory();
+  DefaultBtMessageFactoryHandle factory(new DefaultBtMessageFactory());
   factory->setCuid(cuid);
   factory->setBtContext(btContext);
   factory->setPeer(peer);
@@ -96,10 +95,14 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   factory->setTaskQueue(DHTRegistry::_taskQueue);
   factory->setTaskFactory(DHTRegistry::_taskFactory);
 
-  PeerConnectionHandle peerConnection = passedPeerConnection.isNull() ?
-    new PeerConnection(cuid, socket, e->option) : passedPeerConnection;
+  PeerConnectionHandle peerConnection;
+  if(passedPeerConnection.isNull()) {
+    peerConnection.reset(new PeerConnection(cuid, socket, e->option));
+  } else {
+    peerConnection = passedPeerConnection;
+  }
 
-  DefaultBtMessageDispatcherHandle dispatcher = new DefaultBtMessageDispatcher();
+  DefaultBtMessageDispatcherHandle dispatcher(new DefaultBtMessageDispatcher());
   dispatcher->setCuid(cuid);
   dispatcher->setPeer(peer);
   dispatcher->setBtContext(btContext);
@@ -107,7 +110,7 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   dispatcher->setRequestTimeout(e->option->getAsInt(PREF_BT_REQUEST_TIMEOUT));
   dispatcher->setBtMessageFactory(factory);
 
-  DefaultBtMessageReceiverHandle receiver = new DefaultBtMessageReceiver();
+  DefaultBtMessageReceiverHandle receiver(new DefaultBtMessageReceiver());
   receiver->setCuid(cuid);
   receiver->setPeer(peer);
   receiver->setBtContext(btContext);
@@ -115,14 +118,14 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   receiver->setDispatcher(dispatcher);
   receiver->setBtMessageFactory(factory);
 
-  DefaultBtRequestFactoryHandle reqFactory = new DefaultBtRequestFactory();
+  DefaultBtRequestFactoryHandle reqFactory(new DefaultBtRequestFactory());
   reqFactory->setCuid(cuid);
   reqFactory->setPeer(peer);
   reqFactory->setBtContext(btContext);
   reqFactory->setBtMessageDispatcher(dispatcher);
   reqFactory->setBtMessageFactory(factory);
 
-  DefaultBtInteractiveHandle btInteractive = new DefaultBtInteractive(btContext, peer);
+  DefaultBtInteractiveHandle btInteractive(new DefaultBtInteractive(btContext, peer));
   btInteractive->setCuid(cuid);
   btInteractive->setBtMessageReceiver(receiver);
   btInteractive->setDispatcher(dispatcher);
@@ -148,7 +151,7 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
   factory->setBtRequestFactory(reqFactory);
   factory->setPeerConnection(peerConnection);
 
-  PeerObjectHandle peerObject = new PeerObject();
+  PeerObjectHandle peerObject(new PeerObject());
   peerObject->btMessageDispatcher = dispatcher;
   peerObject->btMessageReceiver = receiver;
   peerObject->btMessageFactory = factory;

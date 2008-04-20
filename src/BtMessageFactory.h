@@ -41,6 +41,7 @@
 namespace aria2 {
 
 class BtMessage;
+class BtHandshakeMessage;
 class Piece;
 class ExtensionMessage;
 
@@ -51,10 +52,10 @@ public:
   virtual SharedHandle<BtMessage>
   createBtMessage(const unsigned char* msg, size_t msgLength) = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual SharedHandle<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* msg, size_t msgLength) = 0;
 
-  virtual SharedHandle<BtMessage>
+  virtual SharedHandle<BtHandshakeMessage>
   createHandshakeMessage(const unsigned char* infoHash,
 			 const unsigned char* peerId) = 0;
 

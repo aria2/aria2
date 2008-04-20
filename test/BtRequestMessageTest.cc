@@ -15,6 +15,7 @@
 #include "PeerConnection.h"
 #include "ExtensionMessageFactory.h"
 #include "FileEntry.h"
+#include "BtHandshakeMessage.h"
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -75,13 +76,13 @@ public:
   public:
     virtual SharedHandle<BtMessage>
     createPieceMessage(size_t index, uint32_t begin, size_t length) {
-      SharedHandle<MockBtMessage2> btMsg = new MockBtMessage2("piece", index, begin, length);
+      SharedHandle<MockBtMessage2> btMsg(new MockBtMessage2("piece", index, begin, length));
       return btMsg;
     }
 
     virtual SharedHandle<BtMessage>
     createRejectMessage(size_t index, uint32_t begin, size_t length) {
-      SharedHandle<MockBtMessage2> btMsg = new MockBtMessage2("reject", index, begin, length);
+      SharedHandle<MockBtMessage2> btMsg(new MockBtMessage2("reject", index, begin, length));
       return btMsg;
     }
   };
@@ -92,34 +93,34 @@ public:
   SharedHandle<MockBtMessageDispatcher> dispatcher;
   SharedHandle<BtRequestMessage> msg;
 
-  BtRequestMessageTest():peer(0), dispatcher(0), msg(0) {}
-
   void setUp() {
     BtRegistry::unregisterAll();
 
-    SharedHandle<MockBtContext> btContext = new MockBtContext();
+    SharedHandle<MockBtContext> btContext(new MockBtContext());
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
     btContext->setPieceLength(16*1024);
     btContext->setTotalLength(256*1024);
 
-    SharedHandle<MockPieceStorage> pieceStorage = new MockPieceStorage2();
+    SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage2());
 
     BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
 				     pieceStorage);
 
-    peer = new Peer("host", 6969);
+    peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(btContext->getPieceLength(),
 				  btContext->getTotalLength());
+    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
+					  cluster);
+    SharedHandle<PeerObject> po(new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
 
-    dispatcher = new MockBtMessageDispatcher();
+    dispatcher.reset(new MockBtMessageDispatcher());
 
     PEER_OBJECT(btContext, peer)->btMessageDispatcher = dispatcher;
-    PEER_OBJECT(btContext, peer)->btMessageFactory = new MockBtMessageFactory2();
+    PEER_OBJECT(btContext, peer)->btMessageFactory.reset(new MockBtMessageFactory2());
 
-    msg = new BtRequestMessage();
+    msg.reset(new BtRequestMessage());
     msg->setBtContext(btContext);
     msg->setPeer(peer);
     msg->setIndex(1);
@@ -232,9 +233,9 @@ void BtRequestMessageTest::testDoReceivedAction_doesntHavePieceAndFastExtensionD
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent() {
-  SharedHandle<Piece> piece = new Piece(1, 16*1024);
-  SharedHandle<BtAbortOutstandingRequestEvent> event =
-    new BtAbortOutstandingRequestEvent(piece);
+  SharedHandle<Piece> piece(new Piece(1, 16*1024));
+  SharedHandle<BtAbortOutstandingRequestEvent> event
+    (new BtAbortOutstandingRequestEvent(piece));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
   msg->handleEvent(event);
@@ -243,9 +244,9 @@ void BtRequestMessageTest::testHandleAbortRequestEvent() {
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
-  SharedHandle<Piece> piece = new Piece(2, 16*1024);
-  SharedHandle<BtAbortOutstandingRequestEvent> event =
-    new BtAbortOutstandingRequestEvent(piece);
+  SharedHandle<Piece> piece(new Piece(2, 16*1024));
+  SharedHandle<BtAbortOutstandingRequestEvent> event
+    (new BtAbortOutstandingRequestEvent(piece));
 
   CPPUNIT_ASSERT(!msg->isInvalidate());
   CPPUNIT_ASSERT(!msg->isSendingInProgress());
@@ -254,9 +255,9 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_indexNoMatch() {
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
-  SharedHandle<Piece> piece = new Piece(1, 16*1024);
-  SharedHandle<BtAbortOutstandingRequestEvent> event =
-    new BtAbortOutstandingRequestEvent(piece);
+  SharedHandle<Piece> piece(new Piece(1, 16*1024));
+  SharedHandle<BtAbortOutstandingRequestEvent> event
+    (new BtAbortOutstandingRequestEvent(piece));
   msg->setInvalidate(true);
 
   CPPUNIT_ASSERT(msg->isInvalidate());
@@ -266,9 +267,9 @@ void BtRequestMessageTest::testHandleAbortRequestEvent_alreadyInvalidated() {
 }
 
 void BtRequestMessageTest::testHandleAbortRequestEvent_sendingInProgress() {
-  SharedHandle<Piece> piece = new Piece(1, 16*1024);
-  SharedHandle<BtAbortOutstandingRequestEvent> event =
-    new BtAbortOutstandingRequestEvent(piece);
+  SharedHandle<Piece> piece(new Piece(1, 16*1024));
+  SharedHandle<BtAbortOutstandingRequestEvent> event
+    (new BtAbortOutstandingRequestEvent(piece));
   msg->setSendingInProgress(true);
 
   CPPUNIT_ASSERT(!msg->isInvalidate());

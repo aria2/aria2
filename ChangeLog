@@ -1,3 +1,13 @@
+2008-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Rewritten SharedHandle. Now copy constructor taking raw pointer has
+	keyword explicit and SharedHandle's default constructor initializes
+	its internal obj to null, old implementation initializes it using
+	obj's default constructor.
+	To assign null, write SharedHandle<T> x(...); x.reset();
+	TODO: test/SharedHandleTest.cc needs more tests.
+	* src/SharedHandle.h
+
 2008-04-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed type in man page.

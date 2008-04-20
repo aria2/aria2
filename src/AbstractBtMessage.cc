@@ -48,10 +48,6 @@ AbstractBtMessage::AbstractBtMessage():sendingInProgress(false),
 				       invalidate(false),
 				       uploading(false),
 				       cuid(0),
-				       btContext(0),
-				       pieceStorage(0),
-				       peer(0),
-				       validator(0),
 				       logger(LogFactory::getInstance())
 {}
 

@@ -33,7 +33,7 @@ public:
     createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
 				   const std::string& transactionID)
     {
-      return new MockDHTMessage(_localNode, remoteNode, "announce_peer", transactionID);
+      return SharedHandle<DHTMessage>(new MockDHTMessage(_localNode, remoteNode, "announce_peer", transactionID));
     }
   };
 };
@@ -43,8 +43,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(DHTAnnouncePeerMessageTest);
 
 void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 {
-  SharedHandle<DHTNode> localNode = new DHTNode();
-  SharedHandle<DHTNode> remoteNode = new DHTNode();
+  SharedHandle<DHTNode> localNode(new DHTNode());
+  SharedHandle<DHTNode> remoteNode(new DHTNode());
 
   unsigned char tid[DHT_TRANSACTION_ID_LENGTH];
   DHTUtil::generateRandomData(tid, DHT_TRANSACTION_ID_LENGTH);
@@ -60,7 +60,7 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 
   std::string msgbody = msg.getBencodedMessage();
 
-  SharedHandle<Dictionary> cm = new Dictionary();
+  SharedHandle<Dictionary> cm(new Dictionary());
   cm->put("t", new Data(transactionID));
   cm->put("y", new Data("q"));
   cm->put("q", new Data("announce_peer"));
@@ -80,8 +80,8 @@ void DHTAnnouncePeerMessageTest::testGetBencodedMessage()
 
 void DHTAnnouncePeerMessageTest::testDoReceivedAction()
 {
-  SharedHandle<DHTNode> localNode = new DHTNode();
-  SharedHandle<DHTNode> remoteNode = new DHTNode();
+  SharedHandle<DHTNode> localNode(new DHTNode());
+  SharedHandle<DHTNode> remoteNode(new DHTNode());
   remoteNode->setIPAddress("192.168.0.1");
   remoteNode->setPort(6881);
 
@@ -101,14 +101,16 @@ void DHTAnnouncePeerMessageTest::testDoReceivedAction()
   MockDHTMessageDispatcher dispatcher;
 
   DHTAnnouncePeerMessage msg(localNode, remoteNode, infoHash, port, token, transactionID);
-  msg.setPeerAnnounceStorage(&peerAnnounceStorage);
-  msg.setMessageFactory(&factory);
-  msg.setMessageDispatcher(&dispatcher);
+  msg.setPeerAnnounceStorage(WeakHandle<DHTPeerAnnounceStorage>
+			     (&peerAnnounceStorage));
+  msg.setMessageFactory(WeakHandle<DHTMessageFactory>(&factory));
+  msg.setMessageDispatcher(WeakHandle<DHTMessageDispatcher>(&dispatcher));
 
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, dispatcher._messageQueue.size());
-  SharedHandle<MockDHTMessage> m = dispatcher._messageQueue[0]._message;
+  SharedHandle<MockDHTMessage> m
+    (dynamic_pointer_cast<MockDHTMessage>(dispatcher._messageQueue[0]._message));
   CPPUNIT_ASSERT(localNode == m->getLocalNode());
   CPPUNIT_ASSERT(remoteNode == m->getRemoteNode());
   CPPUNIT_ASSERT_EQUAL(std::string("announce_peer"), m->getMessageType());

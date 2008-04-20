@@ -30,10 +30,10 @@ private:
   SharedHandle<Randomizer> fixedNumberRandomizer;
 
 public:
-  BitfieldManTest():fixedNumberRandomizer(0) {
+  BitfieldManTest() {
     FixedNumberRandomizer* randomizer = new FixedNumberRandomizer();
     randomizer->setFixedNumber(0);
-    this->fixedNumberRandomizer = randomizer;
+    this->fixedNumberRandomizer.reset(randomizer);
   }
 
   void setUp() {

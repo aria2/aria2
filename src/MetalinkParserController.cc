@@ -48,14 +48,7 @@
 namespace aria2 {
 
 MetalinkParserController::MetalinkParserController():
-  _metalinker(new Metalinker()),
-  _tEntry(0),
-  _tResource(0)
-#ifdef ENABLE_MESSAGE_DIGEST
-  ,
-  _tChecksum(0),
-  _tChunkChecksum(0)
-#endif // ENABLE_MESSAGE_DIGEST
+  _metalinker(new Metalinker())
 {}
 
 MetalinkParserController::~MetalinkParserController() {}
@@ -67,11 +60,11 @@ SharedHandle<Metalinker> MetalinkParserController::getResult() const
 
 void MetalinkParserController::newEntryTransaction()
 {
-  _tEntry = new MetalinkEntry();
-  _tResource = 0;
+  _tEntry.reset(new MetalinkEntry());
+  _tResource.reset();
 #ifdef ENABLE_MESSAGE_DIGEST
-  _tChecksum = 0;
-  _tChunkChecksum = 0;
+  _tChecksum.reset();
+  _tChunkChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
@@ -81,7 +74,7 @@ void MetalinkParserController::setFileNameOfEntry(const std::string& filename)
     return;
   }
   if(_tEntry->file.isNull()) {
-    _tEntry->file = new FileEntry(filename, 0, 0);
+    _tEntry->file.reset(new FileEntry(filename, 0, 0));
   } else {
     _tEntry->file->setPath(filename);
   }
@@ -93,7 +86,7 @@ void MetalinkParserController::setFileLengthOfEntry(uint64_t length)
     return;
   }
   if(_tEntry->file.isNull()) {
-    _tEntry->file = new FileEntry("", length, 0);
+    _tEntry->file.reset(new FileEntry("", length, 0));
   } else {
     _tEntry->file->setLength(length);
   }
@@ -140,7 +133,7 @@ void MetalinkParserController::commitEntryTransaction()
   commitChecksumTransaction();
   commitChunkChecksumTransaction();
   _metalinker->entries.push_back(_tEntry);
-  _tEntry = 0;
+  _tEntry.reset();
 }
 
 void MetalinkParserController::cancelEntryTransaction()
@@ -148,7 +141,7 @@ void MetalinkParserController::cancelEntryTransaction()
   cancelResourceTransaction();
   cancelChecksumTransaction();
   cancelChunkChecksumTransaction();
-  _tEntry = 0;
+  _tEntry.reset();
 }
 
 void MetalinkParserController::newResourceTransaction()
@@ -156,7 +149,7 @@ void MetalinkParserController::newResourceTransaction()
   if(_tEntry.isNull()) {
     return;
   }
-  _tResource = new MetalinkResource();
+  _tResource.reset(new MetalinkResource());
 }
 
 void MetalinkParserController::setURLOfResource(const std::string& url)
@@ -215,12 +208,12 @@ void MetalinkParserController::commitResourceTransaction()
     return;
   }
   _tEntry->resources.push_back(_tResource);
-  _tResource = 0;
+  _tResource.reset();
 }
 
 void MetalinkParserController::cancelResourceTransaction()
 {
-  _tResource = 0;
+  _tResource.reset();
 }
 
 void MetalinkParserController::newChecksumTransaction()
@@ -229,7 +222,7 @@ void MetalinkParserController::newChecksumTransaction()
   if(_tEntry.isNull()) {
     return;
   }
-  _tChecksum = new Checksum();
+  _tChecksum.reset(new Checksum());
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
@@ -266,14 +259,14 @@ void MetalinkParserController::commitChecksumTransaction()
   if(_tEntry->checksum.isNull() || _tEntry->checksum->getAlgo() != "sha1") {
     _tEntry->checksum = _tChecksum;
   }
-  _tChecksum = 0;
+  _tChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::cancelChecksumTransaction()
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  _tChecksum = 0;
+  _tChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
 }
   
@@ -283,7 +276,7 @@ void MetalinkParserController::newChunkChecksumTransaction()
   if(_tEntry.isNull()) {
     return;
   }
-  _tChunkChecksum = new ChunkChecksum();
+  _tChunkChecksum.reset(new ChunkChecksum());
   _tempChunkChecksums.clear();
 #endif // ENABLE_MESSAGE_DIGEST
 }
@@ -370,14 +363,14 @@ void MetalinkParserController::commitChunkChecksumTransaction()
     _tChunkChecksum->setChecksums(checksums);
     _tEntry->chunkChecksum = _tChunkChecksum;
   }
-  _tChunkChecksum = 0;
+  _tChunkChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
 }
 
 void MetalinkParserController::cancelChunkChecksumTransaction()
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  _tChunkChecksum = 0;
+  _tChunkChecksum.reset();
 #endif // ENABLE_MESSAGE_DIGEST
 }
 

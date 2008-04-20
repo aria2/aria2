@@ -25,21 +25,23 @@ class BtCancelMessageTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testDoReceivedAction);
   CPPUNIT_TEST_SUITE_END();
 private:
-
-public:
-  BtCancelMessageTest():peer(0), btContext(0) {}
-
   SharedHandle<Peer> peer;
   SharedHandle<MockBtContext> btContext;
-
+public:
   void setUp() {
     BtRegistry::unregisterAll();    
-    peer = new Peer("host", 6969);
-    btContext = new MockBtContext();
+    peer.reset(new Peer("host", 6969));
+    btContext.reset(new MockBtContext());
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
+    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
+					  cluster);
+    SharedHandle<PeerObject> po(new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
+  }
+
+  void tearDown() {
+    BtRegistry::unregisterAll();
   }
 
   void testCreate();
@@ -117,7 +119,7 @@ void BtCancelMessageTest::testDoReceivedAction() {
   msg.setLength(16*1024);
   msg.setBtContext(btContext);
   msg.setPeer(peer);
-  SharedHandle<MockBtMessageDispatcher2> dispatcher = new MockBtMessageDispatcher2();
+  SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher);
 
   msg.doReceivedAction();

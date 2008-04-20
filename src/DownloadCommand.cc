@@ -67,11 +67,9 @@ DownloadCommand::DownloadCommand(int cuid,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
   AbstractCommand(cuid, req, requestGroup, e, s),
-  peerStat(0),
 #ifdef ENABLE_MESSAGE_DIGEST
-  _messageDigestContext(0),
+  _messageDigestContext(0)
 #endif // ENABLE_MESSAGE_DIGEST
-  transferDecoder(0)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   {
@@ -85,7 +83,7 @@ DownloadCommand::DownloadCommand(int cuid,
 #endif // ENABLE_MESSAGE_DIGEST
   peerStat = _requestGroup->getSegmentMan()->getPeerStat(cuid);
   if(peerStat.isNull()) {
-    peerStat = new PeerStat(cuid);
+    peerStat.reset(new PeerStat(cuid));
     _requestGroup->getSegmentMan()->registerPeerStat(peerStat);
   }
   peerStat->downloadStart();
@@ -175,7 +173,7 @@ void DownloadCommand::checkLowestDownloadSpeed() const
 bool DownloadCommand::prepareForNextSegment() {
   if(_requestGroup->downloadFinished()) {
 #ifdef ENABLE_MESSAGE_DIGEST
-    CheckIntegrityEntryHandle entry = new ChecksumCheckIntegrityEntry(_requestGroup);
+    CheckIntegrityEntryHandle entry(new ChecksumCheckIntegrityEntry(_requestGroup));
     if(entry->isValidationReady()) {
       entry->initValidator();
       CheckIntegrityCommand* command =

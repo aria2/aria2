@@ -51,11 +51,13 @@ public:
   virtual void
   addMessageToQueue(const SharedHandle<DHTMessage>& message,
 		    time_t timeout,
-		    const SharedHandle<DHTMessageCallback>& callback = 0) = 0;
+		    const SharedHandle<DHTMessageCallback>& callback =
+		    SharedHandle<DHTMessageCallback>()) = 0;
 
   virtual void
   addMessageToQueue(const SharedHandle<DHTMessage>& message,
-		    const SharedHandle<DHTMessageCallback>& callback = 0) = 0;
+		    const SharedHandle<DHTMessageCallback>& callback =
+		    SharedHandle<DHTMessageCallback>()) = 0;
 
   virtual void sendMessages() = 0;
 

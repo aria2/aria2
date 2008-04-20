@@ -42,38 +42,39 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageReceiver.h"
 #include "DHTMessageFactory.h"
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
 
-SharedHandle<DHTNode> DHTRegistry::_localNode = 0;
+SharedHandle<DHTNode> DHTRegistry::_localNode;
 
-SharedHandle<DHTRoutingTable> DHTRegistry::_routingTable = 0;
+SharedHandle<DHTRoutingTable> DHTRegistry::_routingTable;
 
-SharedHandle<DHTTaskQueue> DHTRegistry::_taskQueue = 0;
+SharedHandle<DHTTaskQueue> DHTRegistry::_taskQueue;
 
-SharedHandle<DHTTaskFactory> DHTRegistry::_taskFactory = 0;
+SharedHandle<DHTTaskFactory> DHTRegistry::_taskFactory;
 
-SharedHandle<DHTPeerAnnounceStorage> DHTRegistry::_peerAnnounceStorage = 0;
+SharedHandle<DHTPeerAnnounceStorage> DHTRegistry::_peerAnnounceStorage;
 
-SharedHandle<DHTTokenTracker> DHTRegistry::_tokenTracker = 0;
+SharedHandle<DHTTokenTracker> DHTRegistry::_tokenTracker;
 
-SharedHandle<DHTMessageDispatcher> DHTRegistry::_messageDispatcher = 0;
+SharedHandle<DHTMessageDispatcher> DHTRegistry::_messageDispatcher;
 
-SharedHandle<DHTMessageReceiver> DHTRegistry::_messageReceiver = 0;
+SharedHandle<DHTMessageReceiver> DHTRegistry::_messageReceiver;
 
-SharedHandle<DHTMessageFactory> DHTRegistry::_messageFactory = 0;
+SharedHandle<DHTMessageFactory> DHTRegistry::_messageFactory;
 
 void DHTRegistry::clear()
 {
-  _localNode = 0;
-  _routingTable = 0;
-  _taskQueue = 0;
-  _taskFactory = 0;
-  _peerAnnounceStorage = 0;
-  _tokenTracker = 0;
-  _messageDispatcher = 0;
-  _messageReceiver = 0;
-  _messageFactory = 0;
+  _localNode.reset();
+  _routingTable.reset();
+  _taskQueue.reset();
+  _taskFactory.reset();
+  _peerAnnounceStorage.reset();
+  _tokenTracker.reset();
+  _messageDispatcher.reset();
+  _messageReceiver.reset();
+  _messageFactory.reset();
 }
 
 } // namespace aria2

@@ -45,12 +45,7 @@ SegmentManHandle
 DefaultSegmentManFactory::createNewInstance(const DownloadContextHandle& dctx,
 					    const PieceStorageHandle& ps)
 {
-  SegmentManHandle segmentMan = new SegmentMan(_option, dctx, ps);
-  //segmentMan->diskWriter = new DefaultDiskWriter();
-  //segmentMan->dir = _option->get(PREF_DIR);
-  // TODO disable this in multi-simultaneous download mode.
-  //segmentMan->ufilename = _option->get(PREF_OUT);
-  //segmentMan->option = _option;
+  SegmentManHandle segmentMan(new SegmentMan(_option, dctx, ps));
   return segmentMan;
 }
 

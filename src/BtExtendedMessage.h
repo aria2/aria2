@@ -52,7 +52,8 @@ private:
 
   size_t _msgLength;
 public:
-  BtExtendedMessage(const SharedHandle<ExtensionMessage>& extensionMessage = 0);
+  BtExtendedMessage(const SharedHandle<ExtensionMessage>& extensionMessage =
+		    SharedHandle<ExtensionMessage>());
 
   virtual ~BtExtendedMessage();
 

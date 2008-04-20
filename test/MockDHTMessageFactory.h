@@ -21,7 +21,7 @@ public:
   createQueryMessage(const Dictionary* d,
 		     const std::string& ipaddr, uint16_t port)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
@@ -29,9 +29,9 @@ public:
 			const Dictionary* d,
 			const SharedHandle<DHTNode>& remoteNode)
   {
-    SharedHandle<MockDHTMessage> m =
-      new MockDHTMessage(_localNode, remoteNode,
-			 reinterpret_cast<const Data*>(d->get("t"))->toString());
+    SharedHandle<MockDHTMessage> m
+      (new MockDHTMessage(_localNode, remoteNode,
+			  reinterpret_cast<const Data*>(d->get("t"))->toString()));
     m->setReply(true);
     return m;
   }
@@ -40,7 +40,7 @@ public:
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,
 		    const std::string& transactionID = "")
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
@@ -48,7 +48,7 @@ public:
 			 const unsigned char* remoteNodeID,
 			 const std::string& transactionID)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
@@ -56,7 +56,7 @@ public:
 			const unsigned char* targetNodeID,
 			const std::string& transactionID = "")
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
@@ -64,7 +64,7 @@ public:
 			     const std::deque<SharedHandle<DHTNode> >& closestKNodes,
 			     const std::string& transactionID)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
@@ -72,7 +72,7 @@ public:
 			const unsigned char* infoHash,
 			const std::string& transactionID)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
@@ -81,7 +81,7 @@ public:
 			     const std::string& token,
 			     const std::string& transactionID)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
 
@@ -91,7 +91,7 @@ public:
 			     const std::string& token,
 			     const std::string& transactionID)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
   
   virtual SharedHandle<DHTMessage>
@@ -101,21 +101,21 @@ public:
 			    const std::string& token,
 			    const std::string& transactionID = "")
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
   createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,
 				 const std::string& transactionID)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   virtual SharedHandle<DHTMessage>
   createUnknownMessage(const unsigned char* data, size_t length,
 		       const std::string& ipaddr, uint16_t port)
   {
-    return 0;
+    return SharedHandle<DHTMessage>();
   }
 
   void setLocalNode(const SharedHandle<DHTNode>& node)

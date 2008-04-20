@@ -83,10 +83,7 @@ static void mlCharacters(void* userData, const char* ch, int len)
   ((SessionData*)userData)->_charactersStack.front() += std::string(&ch[0], &ch[len]);
 }
 
-ExpatMetalinkProcessor::ExpatMetalinkProcessor():
-  _stm(0)
-{}
-	 
+ExpatMetalinkProcessor::ExpatMetalinkProcessor() {}
 	 
 SharedHandle<Metalinker>
 ExpatMetalinkProcessor::parseFile(const std::string& filename)

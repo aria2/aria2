@@ -41,6 +41,7 @@
 #include "DHTMessageDispatcher.h"
 #include "DHTMessageFactory.h"
 #include "DHTRoutingTable.h"
+#include "DHTMessageCallback.h"
 
 namespace aria2 {
 
@@ -53,7 +54,7 @@ DHTAbstractMessage::~DHTAbstractMessage() {}
 
 std::string DHTAbstractMessage::getBencodedMessage()
 {
-  SharedHandle<Dictionary> msg = new Dictionary();
+  SharedHandle<Dictionary> msg(new Dictionary());
   msg->put(std::string("t"), new Data(_transactionID));
   msg->put(std::string("y"), new Data(getType()));
   fillMessage(msg.get());

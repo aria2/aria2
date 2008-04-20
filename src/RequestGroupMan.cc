@@ -95,7 +95,7 @@ RequestGroupHandle RequestGroupMan::getRequestGroup(size_t index) const
   if(index < _requestGroups.size()) {
     return _requestGroups[index];
   } else {
-    return 0;
+    return SharedHandle<RequestGroup>();
   }
 }
 

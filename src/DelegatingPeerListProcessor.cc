@@ -41,8 +41,14 @@ namespace aria2 {
 
 DelegatingPeerListProcessor::DelegatingPeerListProcessor()
 {
-  processors.push_back(new DefaultPeerListProcessor());
-  processors.push_back(new CompactPeerListProcessor());
+  {
+    SharedHandle<PeerListProcessor> proc(new DefaultPeerListProcessor);
+    processors.push_back(proc);
+  }
+  {
+    SharedHandle<PeerListProcessor> proc(new CompactPeerListProcessor);
+    processors.push_back(proc);
+  }
 }
 
 DelegatingPeerListProcessor::~DelegatingPeerListProcessor() {}

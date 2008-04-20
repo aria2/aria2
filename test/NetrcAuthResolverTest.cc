@@ -19,14 +19,17 @@ private:
 public:
   void setUp()
   {
-    _netrc = new Netrc();
-    _netrc->addAuthenticator(new Authenticator("localhost", "name", "passwd", "account"));
-    _netrc->addAuthenticator(new DefaultAuthenticator("default", "defaultpasswd", "defaultaccount"));
+    _netrc.reset(new Netrc());
+    _netrc->addAuthenticator
+      (SharedHandle<Authenticator>(new Authenticator("localhost", "name", "passwd", "account")));
+    _netrc->addAuthenticator
+      (SharedHandle<Authenticator>(new DefaultAuthenticator("default", "defaultpasswd", "defaultaccount")));
 
     //_option = new Option();
-    _resolver = new NetrcAuthResolver();
+    _resolver.reset(new NetrcAuthResolver());
     _resolver->setNetrc(_netrc);
-    _resolver->setDefaultAuthConfig(new AuthConfig("foo", "bar"));
+    _resolver->setDefaultAuthConfig
+      (SharedHandle<AuthConfig>(new AuthConfig("foo", "bar")));
   }
 
   void testResolveAuthConfig_without_userDefined();
@@ -44,7 +47,7 @@ void NetrcAuthResolverTest::testResolveAuthConfig_without_userDefined()
   authConfig = _resolver->resolveAuthConfig("mymachine");
   CPPUNIT_ASSERT_EQUAL(std::string("default:defaultpasswd"), authConfig->getAuthText());
 
-  _resolver->setNetrc(0);
+  _resolver->setNetrc(SharedHandle<Netrc>());
   authConfig = _resolver->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("foo:bar"), authConfig->getAuthText());
 
@@ -52,14 +55,15 @@ void NetrcAuthResolverTest::testResolveAuthConfig_without_userDefined()
 
 void NetrcAuthResolverTest::testResolveAuthConfig_with_userDefined()
 {
-  _resolver->setUserDefinedAuthConfig(new AuthConfig("myname", "mypasswd"));
+  _resolver->setUserDefinedAuthConfig
+    (SharedHandle<AuthConfig>(new AuthConfig("myname", "mypasswd")));
   SharedHandle<AuthConfig> authConfig = _resolver->resolveAuthConfig("localhost");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 
   authConfig = _resolver->resolveAuthConfig("mymachine");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 
-  _resolver->setNetrc(0);
+  _resolver->setNetrc(SharedHandle<Netrc>());
   authConfig = _resolver->resolveAuthConfig("mymachine");
   CPPUNIT_ASSERT_EQUAL(std::string("myname:mypasswd"), authConfig->getAuthText());
 }

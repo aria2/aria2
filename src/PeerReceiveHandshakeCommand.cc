@@ -65,7 +65,7 @@ PeerReceiveHandshakeCommand::PeerReceiveHandshakeCommand(int32_t cuid,
   _thresholdSpeed(SLOW_SPEED_THRESHOLD)
 {
   if(_peerConnection.isNull()) {
-    _peerConnection = new PeerConnection(cuid, socket, e->option);
+    _peerConnection.reset(new PeerConnection(cuid, socket, e->option));
   }
   unsigned int maxDownloadSpeed = e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT);
   if(maxDownloadSpeed > 0) {

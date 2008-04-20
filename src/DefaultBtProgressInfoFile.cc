@@ -72,7 +72,7 @@ DefaultBtProgressInfoFile::~DefaultBtProgressInfoFile() {}
 
 bool DefaultBtProgressInfoFile::isTorrentDownload()
 {
-  return !BtContextHandle(_dctx).isNull();
+  return !dynamic_pointer_cast<BtContext>(_dctx).isNull();
 }
 
 void DefaultBtProgressInfoFile::save() {
@@ -98,7 +98,7 @@ void DefaultBtProgressInfoFile::save() {
     if(torrentDownload) {
       // infoHashLength:
       // length: 32 bits
-      BtContextHandle btContext = _dctx;
+      BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       uint32_t infoHashLength = btContext->getInfoHashLength();
       o.write(reinterpret_cast<const char*>(&infoHashLength), sizeof(infoHashLength));
       // infoHash:
@@ -119,7 +119,7 @@ void DefaultBtProgressInfoFile::save() {
     // uploadLength: 64 bits
     uint64_t uploadLength = 0;
     if(torrentDownload) {
-      BtContextHandle btContext = _dctx;
+      BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       TransferStat stat = PEER_STORAGE(btContext)->calculateStat();
       uploadLength = stat.getAllTimeUploadLength();
     }
@@ -189,7 +189,7 @@ void DefaultBtProgressInfoFile::load()
     if(infoHashLength > 0) {
       savedInfoHash = new unsigned char[infoHashLength];
       in.read(reinterpret_cast<char*>(savedInfoHash), infoHashLength);
-      BtContextHandle btContext = _dctx;
+      BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       if(infoHashCheckEnabled &&
 	 Util::toHex(savedInfoHash, infoHashLength) != btContext->getInfoHashAsString()) {
 	throw new DlAbortEx("info hash mismatch. expected: %s, actual: %s",
@@ -213,7 +213,7 @@ void DefaultBtProgressInfoFile::load()
     uint64_t uploadLength;
     in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
     if(isTorrentDownload()) {
-      BT_RUNTIME(BtContextHandle(_dctx))->setUploadLengthAtStartup(uploadLength);
+      BT_RUNTIME(dynamic_pointer_cast<BtContext>(_dctx))->setUploadLengthAtStartup(uploadLength);
     }
 
     // TODO implement the conversion mechanism between different piece length.
@@ -249,7 +249,7 @@ void DefaultBtProgressInfoFile::load()
 	if(!(length <=_dctx->getPieceLength())) {
 	  throw new DlAbortEx("piece length out of range: %u", length);
 	}
-	PieceHandle piece = new Piece(index, length);
+	PieceHandle piece(new Piece(index, length));
 	uint32_t bitfieldLength;
 	in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
 	if(piece->getBitfieldLength() != bitfieldLength) {

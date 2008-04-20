@@ -62,7 +62,7 @@ void BtHaveNoneMessageTest::testGetMessage() {
 
 void BtHaveNoneMessageTest::testDoReceivedAction() {
   BtHaveNoneMessage msg;
-  SharedHandle<Peer> peer = new Peer("host", 6969);
+  SharedHandle<Peer> peer(new Peer("host", 6969));
   peer->allocateSessionResource(1024, 1024*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);

@@ -64,7 +64,7 @@ OptionHandlerHandle OptionParser::getOptionHandlerByName(const std::string& optN
       return *itr;
     }
   }
-  return new NullOptionHandler();
+  return SharedHandle<OptionHandler>(new NullOptionHandler());
 }
 
 void OptionParser::setOptionHandlers(const std::deque<SharedHandle<OptionHandler> >& optionHandlers)

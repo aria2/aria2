@@ -44,7 +44,6 @@ MultiFileAllocationIterator::MultiFileAllocationIterator(MultiDiskAdaptor* diskA
   _diskAdaptor(diskAdaptor),
   _entries(makeDiskWriterEntries(diskAdaptor->diskWriterEntries,
 				 diskAdaptor->getPieceLength())),
-  _fileAllocationIterator(0),
   _offset(0)
 {}
 
@@ -61,10 +60,10 @@ void MultiFileAllocationIterator::allocateChunk()
     FileEntryHandle fileEntry = entry->getFileEntry();
     if(entry->size() < fileEntry->getLength()) {
       entry->getDiskWriter()->enableDirectIO();
-      _fileAllocationIterator =
-	new SingleFileAllocationIterator(entry->getDiskWriter().get(),
-					 entry->size(),
-					 fileEntry->getLength());
+      _fileAllocationIterator.reset
+	(new SingleFileAllocationIterator(entry->getDiskWriter().get(),
+					  entry->size(),
+					  fileEntry->getLength()));
       _fileAllocationIterator->init();
     }
   }
@@ -114,7 +113,11 @@ DiskWriterEntries MultiFileAllocationIterator::makeDiskWriterEntries(const DiskW
     return entries;
   }
   DiskWriterEntries temp(srcEntries);
-  temp.push_front(new DiskWriterEntry(new FileEntry()));
+  {
+    SharedHandle<FileEntry> f(new FileEntry());
+    SharedHandle<DiskWriterEntry> e(new DiskWriterEntry(f));
+    temp.push_front(e);
+  }
   DiskWriterEntries entries;
   DiskWriterEntries::const_iterator done = temp.begin();
   for(DiskWriterEntries::const_iterator itr = temp.begin()+1; itr != temp.end(); ++itr) {

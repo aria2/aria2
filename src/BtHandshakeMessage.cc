@@ -72,7 +72,7 @@ void BtHandshakeMessage::init() {
 SharedHandle<BtHandshakeMessage>
 BtHandshakeMessage::create(const unsigned char* data, size_t dataLength)
 {
-  SharedHandle<BtHandshakeMessage> message = new BtHandshakeMessage();
+  SharedHandle<BtHandshakeMessage> message(new BtHandshakeMessage());
   message->pstrlen = data[0];
   memcpy(message->pstr, &data[1], PSTR_LENGTH);
   memcpy(message->reserved, &data[20], RESERVED_LENGTH);

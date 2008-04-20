@@ -50,10 +50,6 @@ namespace aria2 {
 DefaultBtMessageReceiver::DefaultBtMessageReceiver():
   cuid(0),
   handshakeSent(false),
-  btContext(0),
-  peer(0),
-  peerConnection(0),
-  dispatcher(0),
   logger(LogFactory::getInstance())
 {
   logger->debug("DefaultBtMessageReceiver::instantiated");
@@ -64,7 +60,9 @@ DefaultBtMessageReceiver::~DefaultBtMessageReceiver()
   logger->debug("DefaultBtMessageReceiver::deleted");
 }
 
-BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
+SharedHandle<BtHandshakeMessage>
+DefaultBtMessageReceiver::receiveHandshake(bool quickReply)
+{
   unsigned char data[BtHandshakeMessage::MESSAGE_LENGTH];
   size_t dataLength = BtHandshakeMessage::MESSAGE_LENGTH;
   bool retval = peerConnection->receiveHandshake(data, dataLength);
@@ -77,7 +75,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
     }
   }
   if(!retval) {
-    return 0;
+    return SharedHandle<BtHandshakeMessage>();
   }
   SharedHandle<BtHandshakeMessage> msg = messageFactory->createHandshakeMessage(data, dataLength);
   std::deque<std::string> errors;
@@ -85,12 +83,14 @@ BtMessageHandle DefaultBtMessageReceiver::receiveHandshake(bool quickReply) {
   return msg;
 }
 
-BtMessageHandle DefaultBtMessageReceiver::receiveAndSendHandshake() {
+SharedHandle<BtHandshakeMessage>
+DefaultBtMessageReceiver::receiveAndSendHandshake()
+{
   return receiveHandshake(true);
 }
 
 void DefaultBtMessageReceiver::sendHandshake() {
-  SharedHandle<BtHandshakeMessage> msg =
+  SharedHandle<BtMessage> msg =
     messageFactory->createHandshakeMessage(btContext->getInfoHash(),
 					   btContext->getPeerId());
   dispatcher->addMessageToQueue(msg);
@@ -101,7 +101,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
   unsigned char data[MAX_PAYLOAD_LEN];
   size_t dataLength = 0;
   if(!peerConnection->receiveMessage(data, dataLength)) {
-    return 0;
+    return SharedHandle<BtMessage>();
   }
   BtMessageHandle msg = messageFactory->createBtMessage(data, dataLength);
   std::deque<std::string> errors;
@@ -109,7 +109,7 @@ BtMessageHandle DefaultBtMessageReceiver::receiveMessage() {
     return msg;
   } else {
     // TODO throw exception here based on errors;
-    return 0;
+    return SharedHandle<BtMessage>();
   }
 }
 

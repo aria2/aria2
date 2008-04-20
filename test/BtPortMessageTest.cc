@@ -39,13 +39,13 @@ public:
     virtual SharedHandle<DHTTask>
     createPingTask(const SharedHandle<DHTNode>& remoteNode, size_t numRetry)
     {
-      return new MockDHTTask(remoteNode);
+      return SharedHandle<DHTTask>(new MockDHTTask(remoteNode));
     }
 
     virtual SharedHandle<DHTTask>
     createNodeLookupTask(const unsigned char* targetID)
     {
-      MockDHTTask* task = new MockDHTTask(0);
+      SharedHandle<MockDHTTask> task(new MockDHTTask(SharedHandle<DHTNode>()));
       task->setTargetID(targetID);
       return task;
     }
@@ -98,14 +98,14 @@ void BtPortMessageTest::testDoReceivedAction()
 {
   unsigned char nodeID[DHT_ID_LENGTH];
   memset(nodeID, 0, DHT_ID_LENGTH);
-  SharedHandle<DHTNode> localNode = new DHTNode(nodeID);
+  SharedHandle<DHTNode> localNode(new DHTNode(nodeID));
 
   // 9 nodes to create at least 2 buckets.
-  SharedHandle<DHTNode> nodes[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  SharedHandle<DHTNode> nodes[9];
   for(size_t i = 0; i < arrayLength(nodes); ++i) {
     memset(nodeID, 0, DHT_ID_LENGTH);
     nodeID[DHT_ID_LENGTH-1] = i;
-    nodes[i] = new DHTNode(nodeID);
+    nodes[i].reset(new DHTNode(nodeID));
   }
 
   DHTRoutingTable routingTable(localNode);
@@ -113,20 +113,23 @@ void BtPortMessageTest::testDoReceivedAction()
     routingTable.addNode(nodes[i]);
   }
 
-  SharedHandle<Peer> peer = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> peer(new Peer("192.168.0.1", 6881));
   BtPortMessage msg(6881);
   MockDHTTaskQueue taskQueue;
   MockDHTTaskFactory2 taskFactory;
   msg.setLocalNode(localNode);
-  msg.setRoutingTable(&routingTable);
-  msg.setTaskQueue(&taskQueue);
-  msg.setTaskFactory(&taskFactory);
+  msg.setRoutingTable(WeakHandle<DHTRoutingTable>(&routingTable));
+  msg.setTaskQueue(WeakHandle<DHTTaskQueue>(&taskQueue));
+  msg.setTaskFactory(WeakHandle<DHTTaskFactory>(&taskFactory));
   msg.setPeer(peer);
 
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)1, taskQueue._immediateTaskQueue.size());
-  SharedHandle<DHTNode> node = SharedHandle<MockDHTTask>(taskQueue._immediateTaskQueue.front())->_remoteNode;
+
+  SharedHandle<MockDHTTask> task
+    (dynamic_pointer_cast<MockDHTTask>(taskQueue._immediateTaskQueue[0]));
+  SharedHandle<DHTNode> node = task->_remoteNode;
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), node->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, node->getPort());
 }
@@ -136,27 +139,30 @@ void BtPortMessageTest::testDoReceivedAction_bootstrap()
   unsigned char nodeID[DHT_ID_LENGTH];
   memset(nodeID, 0, DHT_ID_LENGTH);
   nodeID[0] = 0xff;
-  SharedHandle<DHTNode> localNode = new DHTNode(nodeID);
+  SharedHandle<DHTNode> localNode(new DHTNode(nodeID));
   DHTRoutingTable routingTable(localNode); // no nodes , 1 bucket.
 
-  SharedHandle<Peer> peer = new Peer("192.168.0.1", 6881);
+  SharedHandle<Peer> peer(new Peer("192.168.0.1", 6881));
   BtPortMessage msg(6881);
   MockDHTTaskQueue taskQueue;
   MockDHTTaskFactory2 taskFactory;
   msg.setLocalNode(localNode);
-  msg.setRoutingTable(&routingTable);
-  msg.setTaskQueue(&taskQueue);
-  msg.setTaskFactory(&taskFactory);
+  msg.setRoutingTable(WeakHandle<DHTRoutingTable>(&routingTable));
+  msg.setTaskQueue(WeakHandle<DHTTaskQueue>(&taskQueue));
+  msg.setTaskFactory(WeakHandle<DHTTaskFactory>(&taskFactory));
   msg.setPeer(peer);
 
   msg.doReceivedAction();
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, taskQueue._immediateTaskQueue.size());
-  SharedHandle<DHTNode> node = SharedHandle<MockDHTTask>(taskQueue._immediateTaskQueue[0])->_remoteNode;
+  SharedHandle<MockDHTTask> task
+    (dynamic_pointer_cast<MockDHTTask>(taskQueue._immediateTaskQueue[0]));
+  SharedHandle<DHTNode> node(task->_remoteNode);
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), node->getIPAddress());
   CPPUNIT_ASSERT_EQUAL((uint16_t)6881, node->getPort());
 
-  SharedHandle<MockDHTTask> task2 = taskQueue._immediateTaskQueue[1];
+  SharedHandle<MockDHTTask> task2
+    (dynamic_pointer_cast<MockDHTTask>(taskQueue._immediateTaskQueue[1]));
   CPPUNIT_ASSERT(memcmp(nodeID, task2->_targetID, DHT_ID_LENGTH) == 0);
 }
 

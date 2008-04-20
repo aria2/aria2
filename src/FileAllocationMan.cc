@@ -37,7 +37,7 @@
 
 namespace aria2 {
 
-FileAllocationMan::FileAllocationMan():_currentFileAllocationEntry(0) {}
+FileAllocationMan::FileAllocationMan() {}
 
 FileAllocationMan::~FileAllocationMan() {}
 
@@ -53,7 +53,7 @@ FileAllocationEntryHandle FileAllocationMan::getCurrentFileAllocationEntry()
 
 void FileAllocationMan::markCurrentFileAllocationEntryDone()
 {
-  _currentFileAllocationEntry = 0;
+  _currentFileAllocationEntry.reset();
 }
 
 bool FileAllocationMan::nextFileAllocationEntryExists() const
@@ -64,7 +64,7 @@ bool FileAllocationMan::nextFileAllocationEntryExists() const
 FileAllocationEntryHandle FileAllocationMan::popNextFileAllocationEntry()
 {
   if(!nextFileAllocationEntryExists()) {
-    return 0;
+    return SharedHandle<FileAllocationEntry>();
   }
   FileAllocationEntryHandle entry = _fileAllocationEntries.front();
   _fileAllocationEntries.pop_front();

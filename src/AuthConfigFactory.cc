@@ -44,11 +44,12 @@
 namespace aria2 {
 
 AuthConfigFactory::AuthConfigFactory(const Option* option):
-  _option(option), _netrc(0) {}
+  _option(option) {}
 
 AuthConfigFactory::~AuthConfigFactory() {}
 
-AuthConfigHandle AuthConfigFactory::createAuthConfig(const RequestHandle& request) const
+AuthConfigHandle
+AuthConfigFactory::createAuthConfig(const RequestHandle& request) const
 {
   if(request->getProtocol() == "http" || request->getProtocol() == "https") {
     return createHttpAuthResolver()->resolveAuthConfig(request->getHost());
@@ -59,31 +60,33 @@ AuthConfigHandle AuthConfigFactory::createAuthConfig(const RequestHandle& reques
       return createFtpAuthResolver()->resolveAuthConfig(request->getHost());
     }
   } else {
-    return new AuthConfig();
+    return SharedHandle<AuthConfig>(new AuthConfig());
   }
 }
 
-AuthConfigHandle AuthConfigFactory::createAuthConfigForHttpProxy(const RequestHandle& request) const
+AuthConfigHandle
+AuthConfigFactory::createAuthConfigForHttpProxy(const RequestHandle& request) const
 {
   return createHttpProxyAuthResolver()->resolveAuthConfig(request->getHost());
 }
 
-AuthConfigHandle AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& password) const
+AuthConfigHandle
+AuthConfigFactory::createAuthConfig(const std::string& user, const std::string& password) const
 {
+  SharedHandle<AuthConfig> ac;
   if(user.length() > 0) {
-    return new AuthConfig(user, password);
-  } else {
-    return 0;
+    ac.reset(new AuthConfig(user, password));
   }
+  return ac;
 }
 
 AuthResolverHandle AuthConfigFactory::createHttpAuthResolver() const
 {
-  AbstractAuthResolverHandle resolver = 0;
+  AbstractAuthResolverHandle resolver;
   if(true || _option->getAsBool(PREF_NO_NETRC)) {
-    resolver = new DefaultAuthResolver();
+    resolver.reset(new DefaultAuthResolver());
   } else {
-    NetrcAuthResolverHandle authResolver = new NetrcAuthResolver();
+    NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
     authResolver->setNetrc(_netrc);
     resolver = authResolver;
   }
@@ -93,26 +96,27 @@ AuthResolverHandle AuthConfigFactory::createHttpAuthResolver() const
 
 AuthResolverHandle AuthConfigFactory::createFtpAuthResolver() const
 {
-  AbstractAuthResolverHandle resolver = 0;
+  AbstractAuthResolverHandle resolver;
   if(_option->getAsBool(PREF_NO_NETRC)) {
-    resolver = new DefaultAuthResolver();
+    resolver.reset(new DefaultAuthResolver());
   } else {
-    NetrcAuthResolverHandle authResolver = new NetrcAuthResolver();
+    NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
     authResolver->setNetrc(_netrc);
     resolver = authResolver;
   }
   resolver->setUserDefinedAuthConfig(createAuthConfig(_option->get(PREF_FTP_USER), _option->get(PREF_FTP_PASSWD)));
-  resolver->setDefaultAuthConfig(new AuthConfig("anonymous", "ARIA2USER@"));
+  SharedHandle<AuthConfig> defaultAuthConfig(new AuthConfig("anonymous", "ARIA2USER@"));
+  resolver->setDefaultAuthConfig(defaultAuthConfig);
   return resolver;
 }
 
 AuthResolverHandle AuthConfigFactory::createHttpProxyAuthResolver() const
 {
-  AbstractAuthResolverHandle resolver = 0;
+  AbstractAuthResolverHandle resolver;
   if(true || _option->getAsBool(PREF_NO_NETRC)) {
-    resolver = new DefaultAuthResolver();
+    resolver.reset(new DefaultAuthResolver());
   } else {
-    NetrcAuthResolverHandle authResolver = new NetrcAuthResolver();
+    NetrcAuthResolverHandle authResolver(new NetrcAuthResolver());
     authResolver->setNetrc(_netrc);
     resolver = authResolver;
   }

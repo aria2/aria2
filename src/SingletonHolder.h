@@ -58,7 +58,7 @@ public:
 };
 
 template<typename T>
-T SingletonHolder<T>::_instance = 0;
+T SingletonHolder<T>::_instance;
 
 } // namespace aria2
 

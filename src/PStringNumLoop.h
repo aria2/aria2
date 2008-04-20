@@ -59,12 +59,20 @@ public:
   PStringNumLoop(unsigned int startValue, unsigned int endValue,
 		 unsigned int step,
 		 const NumberDecoratorHandle& nd,
-		 const PStringDatumHandle& next = 0):
+		 const PStringDatumHandle& next):
     _startValue(startValue),
     _endValue(endValue),
     _step(step),
     _numberDecorator(nd),
     _next(next) {}
+
+  PStringNumLoop(unsigned int startValue, unsigned int endValue,
+		 unsigned int step,
+		 const NumberDecoratorHandle& nd):
+    _startValue(startValue),
+    _endValue(endValue),
+    _step(step),
+    _numberDecorator(nd) {}
 
   virtual ~PStringNumLoop() {}
 

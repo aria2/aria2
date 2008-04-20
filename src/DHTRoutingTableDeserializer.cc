@@ -46,8 +46,7 @@
 
 namespace aria2 {
 
-DHTRoutingTableDeserializer::DHTRoutingTableDeserializer():
-  _localNode(0) {}
+DHTRoutingTableDeserializer::DHTRoutingTableDeserializer() {}
 
 DHTRoutingTableDeserializer::~DHTRoutingTableDeserializer() {}
 
@@ -96,7 +95,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     in.read(buf, 8);
     // localnode ID
     in.read(buf, DHT_ID_LENGTH);
-    SharedHandle<DHTNode> localNode = new DHTNode(reinterpret_cast<const unsigned char*>(buf));
+    SharedHandle<DHTNode> localNode(new DHTNode(reinterpret_cast<const unsigned char*>(buf)));
     // 4bytes reserved
     in.read(buf, 4);
 
@@ -140,7 +139,7 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
       // localnode ID
       in.read(buf, DHT_ID_LENGTH);
 
-      SharedHandle<DHTNode> node = new DHTNode(reinterpret_cast<const unsigned char*>(buf));
+      SharedHandle<DHTNode> node(new DHTNode(reinterpret_cast<const unsigned char*>(buf)));
       node->setIPAddress(peer.first);
       node->setPort(peer.second);
       // 4bytes reserved

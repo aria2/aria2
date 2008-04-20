@@ -104,8 +104,14 @@ public:
      msgHeader(0)
   {
     uploading = true;
-    addEventListener(new BtChokingEventListener(this));
-    addEventListener(new BtCancelSendingPieceEventListener(this));
+    {
+      SharedHandle<BtEventListener> listener(new BtChokingEventListener(this));
+      addEventListener(listener);
+    }
+    {
+      SharedHandle<BtEventListener> listener(new BtCancelSendingPieceEventListener(this));
+      addEventListener(listener);
+    }
   }
 
   virtual ~BtPieceMessage() {

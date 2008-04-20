@@ -65,11 +65,7 @@ public:
     return _availableValues;
   }
 
-  friend std::ostream&
-  operator<<(std::ostream& o, const HelpItem& helpItem);
-
-  friend std::ostream&
-  operator<<(std::ostream& o, const SharedHandle<HelpItem>& helpItem);
+  virtual std::string toString() const;
 };
 
 typedef SharedHandle<HelpItem> HelpItemHandle;

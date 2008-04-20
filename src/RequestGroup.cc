@@ -110,13 +110,8 @@ RequestGroup::RequestGroup(const Option* option,
   _numConcurrentCommand(0),
   _numStreamConnection(0),
   _numCommand(0),
-  _segmentMan(0),
   _segmentManFactory(new DefaultSegmentManFactory(option)),
-  _downloadContext(0),
-  _pieceStorage(0),
   _progressInfoFile(new NullProgressInfoFile()),
-  _diskWriterFactory(0),
-  _dependency(0),
   _preLocalFileCheckEnabled(true),
   _haltRequested(false),
   _forceHaltRequested(false),
@@ -171,7 +166,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   {
-    BtContextHandle btContext = _downloadContext;
+    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
     if(!btContext.isNull()) {
       if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
 	throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
@@ -188,10 +183,10 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	_pieceStorage->setFileFilter(Util::parseIntRange(_option->get(PREF_SELECT_FILE)));
       }
       
-      BtProgressInfoFileHandle progressInfoFile =
-	new DefaultBtProgressInfoFile(_downloadContext,
-				      _pieceStorage,
-				      _option);
+      BtProgressInfoFileHandle
+	progressInfoFile(new DefaultBtProgressInfoFile(_downloadContext,
+						       _pieceStorage,
+						       _option));
       
       BtRegistry::registerBtContext(btContext->getInfoHashAsString(), btContext);
       BtRegistry::registerPieceStorage(btContext->getInfoHashAsString(),
@@ -200,19 +195,22 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 					     progressInfoFile);
 
   
-      BtRuntimeHandle btRuntime = new BtRuntime();
+      BtRuntimeHandle btRuntime(new BtRuntime());
       btRuntime->setListenPort(_option->getAsInt(PREF_LISTEN_PORT));
       BtRegistry::registerBtRuntime(btContext->getInfoHashAsString(), btRuntime);
 
-      PeerStorageHandle peerStorage = new DefaultPeerStorage(btContext, _option);
+      PeerStorageHandle peerStorage(new DefaultPeerStorage(btContext, _option));
       BtRegistry::registerPeerStorage(btContext->getInfoHashAsString(), peerStorage);
 
-      BtAnnounceHandle btAnnounce = new DefaultBtAnnounce(btContext, _option);
+      BtAnnounceHandle btAnnounce(new DefaultBtAnnounce(btContext, _option));
       BtRegistry::registerBtAnnounce(btContext->getInfoHashAsString(), btAnnounce);
       btAnnounce->shuffleAnnounce();
       
-      BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					    new PeerObjectCluster());
+      {
+	SharedHandle<PeerObjectCluster> po(new PeerObjectCluster());
+	BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
+					      po);
+      }
 
       // Remove the control file if download file doesn't exist
       if(progressInfoFile->exists() && !_pieceStorage->getDiskAdaptor()->fileExists()) {
@@ -254,7 +252,7 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	  e->commands.push_back(command);
 	}
       }
-      CheckIntegrityEntryHandle entry =	new BtCheckIntegrityEntry(this);
+      CheckIntegrityEntryHandle entry(new BtCheckIntegrityEntry(this));
       
       return processCheckIntegrityEntry(entry, e);
     }
@@ -270,13 +268,15 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 					 getFilePath().c_str());
     }
     initPieceStorage();
-    BtProgressInfoFileHandle infoFile =
-      new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option);
+    BtProgressInfoFileHandle
+      infoFile(new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option));
     if(!infoFile->exists() && downloadFinishedByFileLength()) {
       return Commands();
     }
     loadAndOpenFile(infoFile);
-    return processCheckIntegrityEntry(new StreamCheckIntegrityEntry(0, this), e);
+    SharedHandle<CheckIntegrityEntry>
+      checkIntegrityEntry(new StreamCheckIntegrityEntry(SharedHandle<Request>(), this));
+    return processCheckIntegrityEntry(checkIntegrityEntry, e);
   }
 }
 
@@ -301,13 +301,13 @@ Commands RequestGroup::processCheckIntegrityEntry(const CheckIntegrityEntryHandl
 void RequestGroup::initPieceStorage()
 {
   if(_downloadContext->getTotalLength() == 0) {
-    UnknownLengthPieceStorageHandle ps = new UnknownLengthPieceStorage(_downloadContext, _option);
+    UnknownLengthPieceStorageHandle ps(new UnknownLengthPieceStorage(_downloadContext, _option));
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }
     _pieceStorage = ps;
   } else {
-    DefaultPieceStorageHandle ps = new DefaultPieceStorage(_downloadContext, _option);
+    DefaultPieceStorageHandle ps(new DefaultPieceStorage(_downloadContext, _option));
     if(!_diskWriterFactory.isNull()) {
       ps->setDiskWriterFactory(_diskWriterFactory);
     }
@@ -416,7 +416,9 @@ bool RequestGroup::tryAutoFileRenaming()
   for(unsigned int i = 1; i < 10000; ++i) {
     File newfile(filepath+"."+Util::uitos(i));
     if(!newfile.exists()) {
-      SingleFileDownloadContextHandle(_downloadContext)->setUFilename(newfile.getBasename());
+      SingleFileDownloadContextHandle ctx =
+	dynamic_pointer_cast<SingleFileDownloadContext>(_downloadContext);
+      ctx->setUFilename(newfile.getBasename());
       return true;
     }
   }
@@ -445,15 +447,18 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, unsigned int numComm
   std::deque<std::string> pendingURIs;
   for(;!_uris.empty() && numCommand--; _uris.pop_front()) {
     std::string uri = _uris.front();
-    RequestHandle req = new Request();
+    RequestHandle req(new Request());
     if(req->setUrl(uri)) {
-      ServerHostHandle sv = _singleHostMultiConnectionEnabled ? 0 : searchServerHost(req->getHost());
+      ServerHostHandle sv;
+      if(!_singleHostMultiConnectionEnabled){
+	sv = searchServerHost(req->getHost());
+      }
       if(sv.isNull()) {
 	_spentUris.push_back(uri);
 	req->setReferer(_option->get(PREF_REFERER));
 	req->setMethod(method);
 	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e);
-	ServerHostHandle sv = new ServerHost(command->getCuid(), req->getHost());
+	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
 	registerServerHost(sv);
 	commands.push_back(command);
       } else {
@@ -554,7 +559,7 @@ unsigned int RequestGroup::getNumConnection() const
   unsigned int numConnection = _numStreamConnection;
 #ifdef ENABLE_BITTORRENT
   {
-    BtContextHandle btContext = _downloadContext;
+    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
     if(!btContext.isNull()) {
       BtRuntimeHandle btRuntime = BT_RUNTIME(btContext);
       if(!btRuntime.isNull()) {
@@ -582,7 +587,7 @@ TransferStat RequestGroup::calculateStat()
   TransferStat stat;
 #ifdef ENABLE_BITTORRENT
   {
-    BtContextHandle btContext = _downloadContext;
+    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
     if(!btContext.isNull()) {
       PeerStorageHandle peerStorage = PEER_STORAGE(btContext);
       if(!peerStorage.isNull()) {
@@ -602,7 +607,7 @@ void RequestGroup::setHaltRequested(bool f)
   _haltRequested = f;
 #ifdef ENABLE_BITTORRENT
   {
-    BtContextHandle btContext = _downloadContext;
+    BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
     if(!btContext.isNull()) {
       BtRuntimeHandle btRuntime = BT_RUNTIME(btContext);
       if(!btRuntime.isNull()) {
@@ -622,7 +627,7 @@ void RequestGroup::setForceHaltRequested(bool f)
 void RequestGroup::releaseRuntimeResource()
 {
 #ifdef ENABLE_BITTORRENT
-  BtContextHandle btContext = _downloadContext;
+  BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
   if(!btContext.isNull()) {
     BtContextHandle btContextInReg = BtRegistry::getBtContext(btContext->getInfoHashAsString());
     if(!btContextInReg.isNull() &&
@@ -809,14 +814,15 @@ bool RequestGroup::needsFileAllocation() const
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
   std::deque<std::string> uris = getUris();
-  return new DownloadResult(_gid,
-			    getFilePath(),
-			    getTotalLength(),
-			    uris.empty() ? "":uris.front(),
-			    uris.size(),
-			    downloadFinished()?
-			    DownloadResult::FINISHED :
-			    DownloadResult::NOT_YET);
+  return
+    SharedHandle<DownloadResult>(new DownloadResult(_gid,
+						    getFilePath(),
+						    getTotalLength(),
+						    uris.empty() ? "":uris.front(),
+						    uris.size(),
+						    downloadFinished()?
+						    DownloadResult::FINISHED :
+						    DownloadResult::NOT_YET));
 }
 
 void RequestGroup::registerServerHost(const ServerHostHandle& serverHost)
@@ -842,7 +848,7 @@ ServerHostHandle RequestGroup::searchServerHost(int32_t cuid) const
   std::deque<SharedHandle<ServerHost> >::const_iterator itr =
     std::find_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByCUID(cuid));
   if(itr == _serverHosts.end()) {
-    return 0;
+    return SharedHandle<ServerHost>();
   } else {
     return *itr;
   }
@@ -866,7 +872,7 @@ ServerHostHandle RequestGroup::searchServerHost(const std::string& hostname) con
   std::deque<SharedHandle<ServerHost> >::const_iterator itr =
     std::find_if(_serverHosts.begin(), _serverHosts.end(), FindServerHostByHostname(hostname));
   if(itr == _serverHosts.end()) {
-    return 0;
+    return SharedHandle<ServerHost>();
   } else {
     return *itr;
   }
@@ -898,7 +904,8 @@ void RequestGroup::reportDownloadFinished()
 		  getFilePath().c_str());
 #ifdef ENABLE_BITTORRENT
   TransferStat stat = calculateStat();
-  if(!BtContextHandle(_downloadContext).isNull()) {
+  SharedHandle<BtContext> ctx = dynamic_pointer_cast<BtContext>(_downloadContext);
+  if(!ctx.isNull()) {
     double shareRatio = ((stat.getAllTimeUploadLength()*10)/getCompletedLength())/10.0;
     _logger->notice(MSG_SHARE_RATIO_REPORT,
 		    shareRatio,

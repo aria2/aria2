@@ -35,13 +35,15 @@ public:
 
   void setUp() {
     BtRegistry::unregisterAll();    
-    peer = new Peer("host", 6969);
+    peer.reset(new Peer("host", 6969));
     peer->allocateSessionResource(1024, 1024*1024);
-    btContext = new MockBtContext();
+    btContext.reset(new MockBtContext());
     btContext->setInfoHash((const unsigned char*)"12345678901234567890");
+    SharedHandle<PeerObjectCluster> cluster(new PeerObjectCluster());
     BtRegistry::registerPeerObjectCluster(btContext->getInfoHashAsString(),
-					  new PeerObjectCluster());
-    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), new PeerObject());
+					  cluster);
+    SharedHandle<PeerObject> po(new PeerObject());
+    PEER_OBJECT_CLUSTER(btContext)->registerHandle(peer->getID(), po);
   }
 
   void testCreate();
@@ -117,9 +119,9 @@ void BtChokeMessageTest::testDoReceivedAction() {
   msg.setPeer(peer);
   msg.setBtContext(btContext);
 
-  SharedHandle<MockBtMessageDispatcher2> dispatcher = new MockBtMessageDispatcher2();
+  SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher);
-  SharedHandle<MockBtRequestFactory2> requestFactory = new MockBtRequestFactory2();
+  SharedHandle<MockBtRequestFactory2> requestFactory(new MockBtRequestFactory2());
   msg.setBtRequestFactory(requestFactory);
 
   msg.doReceivedAction();
@@ -133,7 +135,7 @@ void BtChokeMessageTest::testOnSendComplete() {
   msg.setPeer(peer);
   msg.setBtContext(btContext);
 
-  SharedHandle<MockBtMessageDispatcher2> dispatcher = new MockBtMessageDispatcher2();
+  SharedHandle<MockBtMessageDispatcher2> dispatcher(new MockBtMessageDispatcher2());
   msg.setBtMessageDispatcher(dispatcher);
 
   msg.onSendComplete();

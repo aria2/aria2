@@ -64,7 +64,7 @@ SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, siz
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
   }
   uint16_t port = PeerMessageUtil::getShortIntParam(data, 1);
-  SharedHandle<BtPortMessage> message = new BtPortMessage(port);
+  SharedHandle<BtPortMessage> message(new BtPortMessage(port));
   return message;
 }
 
@@ -73,7 +73,7 @@ void BtPortMessage::doReceivedAction()
   if(!_taskFactory.isNull() && !_taskQueue.isNull()) {
     // node id is random at this point. When ping reply received, new DHTNode
     // instance created with proper node ID and is added to a routing table.
-    SharedHandle<DHTNode> node = new DHTNode();
+    SharedHandle<DHTNode> node(new DHTNode());
     node->setIPAddress(peer->ipaddr);
     node->setPort(_port);
     {

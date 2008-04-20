@@ -40,7 +40,7 @@ typedef SharedHandle<int> IntHandle;
 
 void SingletonHolderTest::testInstance()
 {
-  MHandle m = new M("Hello world.");
+  MHandle m(new M("Hello world."));
   SingletonHolder<MHandle>::instance(m);
 
   std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
@@ -49,7 +49,7 @@ void SingletonHolderTest::testInstance()
 
   std::cerr << SingletonHolder<MHandle>::instance()->greeting() << std::endl;
 
-  IntHandle i = new int(100);
+  IntHandle i(new int(100));
   SingletonHolder<IntHandle>::instance(i);
   std::cerr << SingletonHolder<IntHandle>::instance() << std::endl;
 

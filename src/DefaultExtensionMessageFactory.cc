@@ -45,8 +45,6 @@
 namespace aria2 {
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory():
-  _btContext(0),
-  _peer(0),
   _logger(LogFactory::getInstance()) {}
 
 DefaultExtensionMessageFactory::DefaultExtensionMessageFactory(const BtContextHandle& btContext,

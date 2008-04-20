@@ -58,9 +58,7 @@ PeerConnection::PeerConnection(int32_t cuid,
    resbufLength(0),
    currentPayloadLength(0),
    lenbufLength(0),
-   _encryptionEnabled(false),
-   _encryptor(0),
-   _decryptor(0)
+   _encryptionEnabled(false)
 {}
 
 PeerConnection::~PeerConnection() {}

@@ -77,7 +77,8 @@ public:
      blockIndex(blockIndex),
      msg(0)
   {
-    addEventListener(new BtAbortOutstandingRequestEventListener(this));
+    SharedHandle<BtEventListener> listener(new BtAbortOutstandingRequestEventListener(this));
+    addEventListener(listener);
   }
 
   virtual ~BtRequestMessage() {

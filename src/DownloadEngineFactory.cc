@@ -72,16 +72,16 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
     workingSet = requestGroups;
   }
 
-  DownloadEngineHandle e = new DownloadEngine();
+  DownloadEngineHandle e(new DownloadEngine());
   e->option = op;
-  RequestGroupManHandle requestGroupMan =
-    new RequestGroupMan(workingSet,
-			op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS));
+  RequestGroupManHandle
+    requestGroupMan(new RequestGroupMan(workingSet,
+					op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS)));
   requestGroupMan->addReservedGroup(reservedSet);
   e->_requestGroupMan = requestGroupMan;
-  e->_fileAllocationMan = new FileAllocationMan();
+  e->_fileAllocationMan.reset(new FileAllocationMan());
 #ifdef ENABLE_MESSAGE_DIGEST
-  e->_checkIntegrityMan = new CheckIntegrityMan();
+  e->_checkIntegrityMan.reset(new CheckIntegrityMan());
 #endif // ENABLE_MESSAGE_DIGEST
   e->commands.push_back(new FillRequestGroupCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get(), 1));
   e->commands.push_back(new FileAllocationDispatcherCommand(CUIDCounterSingletonHolder::instance()->newID(), e.get()));

@@ -47,7 +47,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(a2functionalTest);
 
 void a2functionalTest::testMemFunSh()
 {
-  GreetingHandle greeting = new JapaneseGreeting();
+  GreetingHandle greeting(new JapaneseGreeting());
 
   CPPUNIT_ASSERT_EQUAL(std::string("HAROO WAARUDO"), mem_fun_sh(&Greeting::sayGreeting)(greeting));
 
@@ -57,7 +57,7 @@ void a2functionalTest::testMemFunSh()
 
 void a2functionalTest::testAdopt2nd()
 {
-  GreetingHandle greeting = new JapaneseGreeting();
+  GreetingHandle greeting(new JapaneseGreeting());
 
   CPPUNIT_ASSERT_EQUAL(std::string("A Japanese said:HAROO WAARUDO"),
 		       adopt2nd(std::plus<std::string>(), mem_fun_sh(&Greeting::sayGreeting))("A Japanese said:", greeting));

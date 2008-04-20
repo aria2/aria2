@@ -58,7 +58,7 @@ Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
       in.s_addr = *(uint32_t*)(peersData->getData()+i);
       std::string ipaddr = inet_ntoa(in);
       uint16_t port = ntohs(*(uint16_t*)(peersData->getData()+i+4));
-      PeerHandle peer = new Peer(ipaddr, port);      
+      PeerHandle peer(new Peer(ipaddr, port));
       peers.push_back(peer);
     }
   }

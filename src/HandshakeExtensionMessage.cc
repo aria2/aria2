@@ -49,17 +49,15 @@ namespace aria2 {
 
 const std::string HandshakeExtensionMessage::EXTENSION_NAME = "handshake";
 
-HandshakeExtensionMessage::HandshakeExtensionMessage():_tcpPort(0),
-						       _btContext(0),
-						       _peer(0),
-						       _logger(LogFactory::getInstance())
-{}
+HandshakeExtensionMessage::HandshakeExtensionMessage():
+  _tcpPort(0),
+  _logger(LogFactory::getInstance()) {}
 
 HandshakeExtensionMessage::~HandshakeExtensionMessage() {}
 
 std::string HandshakeExtensionMessage::getBencodedData()
 {
-  SharedHandle<Dictionary> dic = new Dictionary();
+  SharedHandle<Dictionary> dic(new Dictionary());
   if(!_clientVersion.empty()) {
     Data* v = new Data(_clientVersion);
     dic->put("v", v);
@@ -138,10 +136,10 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
     throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE,
 			EXTENSION_NAME.c_str(), length);
   }
-  HandshakeExtensionMessageHandle msg = new HandshakeExtensionMessage();
+  HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
 		      Util::urlencode(data, length).c_str());
-  SharedHandle<MetaEntry> root = MetaFileUtil::bdecoding(data+1, length-1);
+  SharedHandle<MetaEntry> root(MetaFileUtil::bdecoding(data+1, length-1));
   Dictionary* d = dynamic_cast<Dictionary*>(root.get());
   if(d == 0) {
     throw new DlAbortEx("Unexpected payload format for extended message handshake");

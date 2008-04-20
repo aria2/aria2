@@ -14,10 +14,8 @@ class PeerTest:public CppUnit::TestFixture {
 private:
   SharedHandle<Peer> peer;
 public:
-  PeerTest():peer(0) {}
-
   void setUp() {
-    peer = new Peer("localhost", 6969);
+    peer.reset(new Peer("localhost", 6969));
     peer->allocateSessionResource(1024, 1024*1024);
   }
 

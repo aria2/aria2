@@ -56,10 +56,6 @@ namespace aria2 {
 
 DefaultBtMessageDispatcher::DefaultBtMessageDispatcher():
   cuid(0),
-  btContext(0),
-  peerStorage(0),
-  pieceStorage(0),
-  peer(0),
   maxUploadSpeedLimit(0),
   requestTimeout(0),
   logger(LogFactory::getInstance()) {}
@@ -108,8 +104,8 @@ void DefaultBtMessageDispatcher::sendMessages() {
 // Cancel sending piece message to peer.
 void DefaultBtMessageDispatcher::doCancelSendingPieceAction(size_t index, uint32_t begin, size_t length)
 {
-  BtCancelSendingPieceEventHandle event =
-    new BtCancelSendingPieceEvent(index, begin, length);
+  BtCancelSendingPieceEventHandle event
+    (new BtCancelSendingPieceEvent(index, begin, length));
 
   BtMessages tempQueue = messageQueue;
   for(BtMessages::iterator itr = tempQueue.begin(); itr != tempQueue.end(); itr++) {
@@ -140,8 +136,8 @@ void DefaultBtMessageDispatcher::doAbortOutstandingRequestAction(const PieceHand
     }
   }
 
-  BtAbortOutstandingRequestEventHandle event =
-    new BtAbortOutstandingRequestEvent(piece);
+  BtAbortOutstandingRequestEventHandle event
+    (new BtAbortOutstandingRequestEvent(piece));
 
   BtMessages tempQueue = messageQueue;
   for(BtMessages::iterator itr = tempQueue.begin(); itr != tempQueue.end(); ++itr) {
@@ -168,7 +164,7 @@ void DefaultBtMessageDispatcher::doChokedAction()
     }
   }
 
-  BtChokedEventHandle event = new BtChokedEvent();
+  BtChokedEventHandle event(new BtChokedEvent());
 
   BtMessages tempQueue = messageQueue;
   for(BtMessages::iterator itr = tempQueue.begin(); itr != tempQueue.end(); ++itr) {
@@ -179,7 +175,7 @@ void DefaultBtMessageDispatcher::doChokedAction()
 // localhost dispatched choke message to the peer.
 void DefaultBtMessageDispatcher::doChokingAction()
 {
-  BtChokingEventHandle event = new BtChokingEvent();
+  BtChokingEventHandle event(new BtChokingEvent());
 
   BtMessages tempQueue = messageQueue;
   for(BtMessages::iterator itr = tempQueue.begin(); itr != tempQueue.end(); ++itr) {

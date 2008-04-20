@@ -69,16 +69,16 @@ void Netrc::parse(const std::string& path)
     throw new RecoverableException("File not found: %s", path.c_str());
   }
 
-  AuthenticatorHandle authenticator = 0;
+  AuthenticatorHandle authenticator;
   std::string token;
   while(f >> token) {
     if(token == "machine") {
       storeAuthenticator(authenticator);
-      authenticator = new Authenticator();
+      authenticator.reset(new Authenticator());
       authenticator->setMachine(getRequiredNextToken(f));
     } else if(token == "default") {
       storeAuthenticator(authenticator);
-      authenticator = new DefaultAuthenticator();
+      authenticator.reset(new DefaultAuthenticator());
     } else {
       if(authenticator.isNull()) {
 	throw new RecoverableException("Netrc:parse error. %s encounterd where 'machine' or 'default' expected.");
@@ -123,7 +123,7 @@ AuthenticatorHandle Netrc::findAuthenticator(const std::string& hostname) const
     std::find_if(authenticators.begin(), authenticators.end(),
 		 AuthHostMatch(hostname));
   if(itr == authenticators.end()) {
-    return 0;
+    return SharedHandle<Authenticator>();
   } else {
     return *itr;
   }

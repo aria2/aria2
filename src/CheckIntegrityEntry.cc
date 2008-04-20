@@ -39,8 +39,7 @@ namespace aria2 {
 
 CheckIntegrityEntry::CheckIntegrityEntry(RequestGroup* requestGroup,
 					 Command* nextCommand):
-  RequestGroupEntry(requestGroup, nextCommand),
-  _validator(0)
+  RequestGroupEntry(requestGroup, nextCommand)
 {}
 
 CheckIntegrityEntry::~CheckIntegrityEntry() {}

@@ -48,13 +48,6 @@ class PeerConnection;
 
 class PeerObject {
 public:
-  PeerObject():btMessageFactory(0),
-	       btRequestFactory(0),
-	       btMessageDispatcher(0),
-	       btMessageReceiver(0),
-	       peerConnection(0),
-	       extensionMessageFactory(0) {}
-  
   SharedHandle<BtMessageFactory> btMessageFactory;
   SharedHandle<BtRequestFactory> btRequestFactory;
   SharedHandle<BtMessageDispatcher> btMessageDispatcher;

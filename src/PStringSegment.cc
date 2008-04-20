@@ -42,6 +42,9 @@ PStringSegment::PStringSegment(const std::string& value,
 			       const SharedHandle<PStringDatum>& next):
   _value(value), _next(next) {}
 
+PStringSegment::PStringSegment(const std::string& value):
+  _value(value) {}
+
 PStringSegment::~PStringSegment() {}
 
 void PStringSegment::accept(PStringVisitor* visitor)

@@ -45,9 +45,7 @@ namespace aria2 {
 DHTTokenUpdateCommand::DHTTokenUpdateCommand(int32_t cuid,
 					     DownloadEngine* e,
 					     time_t interval):
-  TimeBasedCommand(cuid, e, interval),
-  _tokenTracker(0)
-{}
+  TimeBasedCommand(cuid, e, interval) {}
 
 DHTTokenUpdateCommand::~DHTTokenUpdateCommand() {}
 

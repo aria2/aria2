@@ -30,12 +30,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION( PStringBuildVisitorTest );
 
 void PStringBuildVisitorTest::testVisit_select()
 {
-  SharedHandle<PStringSegment> segment1 = new PStringSegment("/tango");
+  SharedHandle<PStringSegment> segment1(new PStringSegment("/tango"));
 
   const char* select1data[] = { "alpha", "bravo", "charlie" };
   
-  SharedHandle<PStringSelect> select1 =
-    new PStringSelect(std::deque<std::string>(&select1data[0], &select1data[3]), segment1);
+  SharedHandle<PStringSelect> select1
+    (new PStringSelect(std::deque<std::string>(&select1data[0], &select1data[3]), segment1));
 
   PStringBuildVisitor v;
 
@@ -49,10 +49,11 @@ void PStringBuildVisitorTest::testVisit_select()
 
 void PStringBuildVisitorTest::testVisit_numLoop()
 {
-  SharedHandle<PStringSegment> segment1 = new PStringSegment("/tango");
+  SharedHandle<PStringSegment> segment1(new PStringSegment("/tango"));
 
-  SharedHandle<PStringNumLoop> loop1 =
-    new PStringNumLoop(0, 5, 2, new FixedWidthNumberDecorator(2), segment1);
+  SharedHandle<NumberDecorator> decorator(new FixedWidthNumberDecorator(2));
+  SharedHandle<PStringNumLoop> loop1
+    (new PStringNumLoop(0, 5, 2, decorator, segment1));
 
   PStringBuildVisitor v;
 
@@ -66,15 +67,16 @@ void PStringBuildVisitorTest::testVisit_numLoop()
 
 void PStringBuildVisitorTest::testVisit_select_numLoop()
 {
-  SharedHandle<PStringSegment> segment1 = new PStringSegment("/tango");
+  SharedHandle<PStringSegment> segment1(new PStringSegment("/tango"));
 
   const char* select1data[] = { "alpha", "bravo", "charlie" };
   
-  SharedHandle<PStringSelect> select1 =
-    new PStringSelect(std::deque<std::string>(&select1data[0], &select1data[3]), segment1);
+  SharedHandle<PStringSelect> select1
+    (new PStringSelect(std::deque<std::string>(&select1data[0], &select1data[3]), segment1));
 
-  SharedHandle<PStringNumLoop> loop1 =
-    new PStringNumLoop(0, 5, 2, new FixedWidthNumberDecorator(2), select1);
+  SharedHandle<NumberDecorator> decorator(new FixedWidthNumberDecorator(2));
+  SharedHandle<PStringNumLoop> loop1
+    (new PStringNumLoop(0, 5, 2, decorator, select1));
 
   PStringBuildVisitor v;
 

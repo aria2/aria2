@@ -49,15 +49,18 @@ ChecksumCheckIntegrityEntry::~ChecksumCheckIntegrityEntry() {}
 
 bool ChecksumCheckIntegrityEntry::isValidationReady()
 {
-  SingleFileDownloadContextHandle dctx = _requestGroup->getDownloadContext();
+  SingleFileDownloadContextHandle dctx
+    (dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext()));
   return !dctx.isNull() && dctx->getChecksum().size() > 0 &&
     dctx->getChecksumHashAlgo().size() > 0;
 }
 
 void ChecksumCheckIntegrityEntry::initValidator()
 {
-  _validator = new IteratableChecksumValidator(_requestGroup->getDownloadContext(),
-					       _requestGroup->getPieceStorage());
+  SingleFileDownloadContextHandle dctx
+    (dynamic_pointer_cast<SingleFileDownloadContext>(_requestGroup->getDownloadContext()));
+  _validator.reset(new IteratableChecksumValidator(dctx,
+						   _requestGroup->getPieceStorage()));
   _validator->init();
 }
 

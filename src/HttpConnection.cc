@@ -51,10 +51,9 @@
 
 namespace aria2 {
 
-HttpRequestEntry::HttpRequestEntry(const HttpRequestHandle& httpRequest,
-				   const HttpHeaderProcessorHandle& proc):
+HttpRequestEntry::HttpRequestEntry(const HttpRequestHandle& httpRequest):
   _httpRequest(httpRequest),
-  _proc(proc) {}
+  _proc(new HttpHeaderProcessor()) {}
 
 HttpRequestEntry::~HttpRequestEntry() {}
 
@@ -96,8 +95,8 @@ void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
   std::string request = httpRequest->createRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
-  outstandingHttpRequests.push_back(new HttpRequestEntry(httpRequest,
-							 new HttpHeaderProcessor()));
+  SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
+  outstandingHttpRequests.push_back(entry);
 }
 
 void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
@@ -105,8 +104,8 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
   std::string request = httpRequest->createProxyRequest();
   logger->info(MSG_SENDING_REQUEST, cuid, eraseConfidentialInfo(request).c_str());
   socket->writeData(request.c_str(), request.size());
-  outstandingHttpRequests.push_back(new HttpRequestEntry(httpRequest,
-							 new HttpHeaderProcessor()));
+  SharedHandle<HttpRequestEntry> entry(new HttpRequestEntry(httpRequest));
+  outstandingHttpRequests.push_back(entry);
 }
 
 HttpResponseHandle HttpConnection::receiveResponse()
@@ -126,7 +125,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
   proc->update(buf, size);
   if(!proc->eoh()) {
     socket->readData(buf, size);
-    return 0;
+    return SharedHandle<HttpResponse>();
   }
   size_t putbackDataLength = proc->getPutBackDataLength();
   size -= putbackDataLength;
@@ -140,7 +139,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
     entry->getHttpRequest()->getRequest()->setKeepAlive(false);
   }
 
-  HttpResponseHandle httpResponse = new HttpResponse();
+  HttpResponseHandle httpResponse(new HttpResponse());
   httpResponse->setCuid(cuid);
   httpResponse->setStatus(Util::parseInt(httpStatusHeader.first));
   httpResponse->setHttpHeader(httpStatusHeader.second);

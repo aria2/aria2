@@ -63,7 +63,7 @@ BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
   if(id != ID) {
     throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "bitfield", ID);
   }
-  BtBitfieldMessageHandle message = new BtBitfieldMessage();
+  BtBitfieldMessageHandle message(new BtBitfieldMessage());
   message->setBitfield((unsigned char*)data+1, dataLength-1);
   return message;
 }

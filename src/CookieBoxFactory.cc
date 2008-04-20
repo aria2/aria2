@@ -43,7 +43,7 @@ namespace aria2 {
 
 CookieBoxHandle CookieBoxFactory::createNewInstance()
 {
-  CookieBoxHandle box = new CookieBox();
+  CookieBoxHandle box(new CookieBox());
   box->add(defaultCookies);
   return box;
 }
