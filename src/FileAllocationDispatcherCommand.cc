@@ -57,8 +57,8 @@ bool FileAllocationDispatcherCommand::execute()
   if(_e->_requestGroupMan->downloadFinished() || _e->isHaltRequested()) {
     return true;
   }
-  if(!_e->_fileAllocationMan->isFileAllocationBeingExecuted() &&
-     _e->_fileAllocationMan->nextFileAllocationEntryExists()) {
+  if(_e->_fileAllocationMan->nextFileAllocationEntryExists() &&
+     !_e->_fileAllocationMan->isFileAllocationBeingExecuted()) {
     FileAllocationEntryHandle entry = _e->_fileAllocationMan->popNextFileAllocationEntry();
     int32_t newCUID = CUIDCounterSingletonHolder::instance()->newID();
     logger->info(MSG_FILE_ALLOCATION_DISPATCH, newCUID);

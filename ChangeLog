@@ -1,5 +1,12 @@
 2008-04-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Call FileAllocationMan::nextFileAllocationEntryExists() first.
+	Calling FileAllocationMan::isFileAllocationBeingExecuted() is somwhat
+	waste of time because it is more likey false.
+	* src/FileAllocationDispatcherCommand.cc (execute)
+
+2008-04-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Now HTTP status and version are a member variable of HttpHeader.
 	HTTP status is processed as a string, not integer.
 	* src/AbstractProxyResponseCommand.cc
