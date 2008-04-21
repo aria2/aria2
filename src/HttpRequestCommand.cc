@@ -97,6 +97,7 @@ bool HttpRequestCommand::executeInternal() {
 	httpRequest->setRequest(req);
 	httpRequest->setSegment(segment);
 	httpRequest->setEntityLength(_requestGroup->getTotalLength());
+	httpRequest->setUserHeaders(e->option->get(PREF_HEADER));
 	httpRequest->configure(e->option);
 
 	_httpConnection->sendRequest(httpRequest);
