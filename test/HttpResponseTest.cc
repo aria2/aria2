@@ -184,14 +184,14 @@ void HttpResponseTest::testIsRedirect()
 {
   HttpResponse httpResponse;
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpHeader->setResponseStatus("200");
   httpHeader->put("Location", "http://localhost/download/aria2-1.0.0.tar.bz2");
 
   httpResponse.setHttpHeader(httpHeader);
-  httpResponse.setStatus(200);
 
   CPPUNIT_ASSERT(!httpResponse.isRedirect());
 
-  httpResponse.setStatus(304);
+  httpHeader->setResponseStatus("304");
 
   CPPUNIT_ASSERT(httpResponse.isRedirect());  
 }
@@ -242,27 +242,28 @@ void HttpResponseTest::testValidateResponse()
 {
   HttpResponse httpResponse;
 
-  httpResponse.setStatus(401);
-
-  try {
-    httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    delete e;
-  }
-
-  httpResponse.setStatus(505);
-
-  try {
-    httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    delete e;
-  }
-
-  httpResponse.setStatus(304);
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpHeader->setResponseStatus("401");
   httpResponse.setHttpHeader(httpHeader);
+
+  try {
+    httpResponse.validateResponse();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    delete e;
+  }
+
+  httpHeader->setResponseStatus("505");
+
+  try {
+    httpResponse.validateResponse();
+    CPPUNIT_FAIL("exception must be thrown.");
+  } catch(Exception* e) {
+    delete e;
+  }
+
+  httpHeader->setResponseStatus("304");
+
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
@@ -295,7 +296,7 @@ void HttpResponseTest::testValidateResponse_good_range()
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
-  httpResponse.setStatus(206);
+  httpHeader->setResponseStatus("206");
   httpHeader->put("Content-Range", "bytes 1048576-10485760/10485761");
   
   try {
@@ -322,7 +323,7 @@ void HttpResponseTest::testValidateResponse_bad_range()
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
-  httpResponse.setStatus(206);
+  httpHeader->setResponseStatus("206");
   httpHeader->put("Content-Range", "bytes 0-10485760/10485761");
 
   try {
@@ -348,7 +349,7 @@ void HttpResponseTest::testValidateResponse_chunked()
   request->setKeepAlive(false);
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
-  httpResponse.setStatus(206);
+  httpHeader->setResponseStatus("206");
   httpHeader->put("Content-Range", "bytes 0-10485760/10485761");
   httpHeader->put("Transfer-Encoding", "chunked");
 

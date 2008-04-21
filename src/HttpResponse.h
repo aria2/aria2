@@ -49,7 +49,6 @@ class Logger;
 class HttpResponse {
 private:
   int32_t cuid;
-  unsigned int status;
   SharedHandle<HttpRequest> httpRequest;
   SharedHandle<HttpHeader> httpHeader;
   const Logger* logger;
@@ -95,15 +94,7 @@ public:
 
   SharedHandle<HttpHeader> getHttpHeader() const;
 
-  void setStatus(unsigned int status)
-  {
-    this->status = status;
-  }
-
-  unsigned int getStatus() const
-  {
-    return status;
-  }
+  const std::string& getResponseStatus() const;
 
   void setHttpRequest(const SharedHandle<HttpRequest>& httpRequest);
 

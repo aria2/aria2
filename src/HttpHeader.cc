@@ -35,6 +35,7 @@
 #include "HttpHeader.h"
 #include "Range.h"
 #include "Util.h"
+#include <istream>
 
 namespace aria2 {
 
@@ -118,6 +119,40 @@ RangeHandle HttpHeader::getRange() const
   uint64_t entityLength = Util::parseULLInt(byteRangeSpecPair.second);
 
   return SharedHandle<Range>(new Range(startByte, endByte, entityLength));
+}
+
+const std::string& HttpHeader::getResponseStatus() const
+{
+  return _responseStatus;
+}
+
+void HttpHeader::setResponseStatus(const std::string& responseStatus)
+{
+  _responseStatus = responseStatus;
+}
+
+const std::string& HttpHeader::getVersion() const
+{
+  return _version;
+}
+
+void HttpHeader::setVersion(const std::string& version)
+{
+  _version = version;
+}
+
+void HttpHeader::fill(std::istream& in)
+{
+  std::string line;
+  while(std::getline(in, line)) {
+    line = Util::trim(line);
+    if(line.empty()) {
+      break;
+    }
+    std::pair<std::string, std::string> hp;
+    Util::split(hp, line, ':');
+    put(hp.first, hp.second);
+  }
 }
 
 } // namespace aria2

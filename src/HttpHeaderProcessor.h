@@ -70,7 +70,11 @@ public:
    */
   size_t getPutBackDataLength() const;
 
-  std::pair<std::string, SharedHandle<HttpHeader> > getHttpStatusHeader();
+  /**
+   * Processes the recieved header as a http response header and returns
+   * HttpHeader object.
+   */
+   SharedHandle<HttpHeader> getHttpResponseHeader();
 
   std::string getHeaderString() const;
 

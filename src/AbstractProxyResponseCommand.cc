@@ -65,7 +65,7 @@ bool AbstractProxyResponseCommand::executeInternal() {
     e->commands.push_back(this);
     return false;
   }
-  if(httpResponse->getStatus() != 200) {
+  if(httpResponse->getResponseStatus() != "200") {
     throw new DlRetryEx(EX_PROXY_CONNECTION_FAILED);
   }
   e->commands.push_back(getNextCommand());

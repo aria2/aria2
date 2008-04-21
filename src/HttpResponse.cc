@@ -50,7 +50,6 @@
 namespace aria2 {
 
 HttpResponse::HttpResponse():cuid(0),
-			     status(0),
 			     logger(LogFactory::getInstance())
 {}
 
@@ -58,19 +57,19 @@ HttpResponse::~HttpResponse() {}
 
 void HttpResponse::validateResponse() const
 {
-  if(status == 401) {
+  const std::string& status = getResponseStatus();
+  if(status == "401") {
     throw new DlAbortEx(EX_AUTH_FAILED);
   }
-  if(status == 404) {
+  if(status == "404") {
     throw new DlAbortEx(MSG_RESOURCE_NOT_FOUND);
   }
-  if(status >= 400) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+  if(status >= "400") {
+    throw new DlAbortEx(EX_BAD_STATUS, Util::parseUInt(status));
   }
-  if(status >= 300) {
+  if(status >= "300") {
     if(!httpHeader->defined("Location")) {
-      throw new DlAbortEx(EX_LOCATION_HEADER_REQUIRED,
-			  status);
+      throw new DlAbortEx(EX_LOCATION_HEADER_REQUIRED, Util::parseUInt(status));
     }
   } else {
     if(!httpHeader->defined("Transfer-Encoding")) {
@@ -114,7 +113,8 @@ void HttpResponse::retrieveCookie()
 
 bool HttpResponse::isRedirect() const
 {
-  return 300 <= status && status < 400 && httpHeader->defined("Location");
+  const std::string& status = getResponseStatus();
+  return "300" <= status && status < "400" && httpHeader->defined("Location");
 }
 
 void HttpResponse::processRedirect()
@@ -193,6 +193,12 @@ void HttpResponse::setHttpRequest(const SharedHandle<HttpRequest>& httpRequest)
 SharedHandle<HttpRequest> HttpResponse::getHttpRequest() const
 {
   return httpRequest;
+}
+
+// TODO return std::string
+const std::string& HttpResponse::getResponseStatus() const
+{
+  return httpHeader->getResponseStatus();
 }
 
 } // namespace aria2

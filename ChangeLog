@@ -1,3 +1,18 @@
+2008-04-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Now HTTP status and version are a member variable of HttpHeader.
+	HTTP status is processed as a string, not integer.
+	* src/AbstractProxyResponseCommand.cc
+	* src/HttpConnection.cc
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpHeaderProcessor.cc
+	* src/HttpHeaderProcessor.h
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* test/HttpHeaderProcessorTest.cc
+	* test/HttpResponseTest.cc
+
 2008-04-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added --header option. You can specify any number of additional HTTP headers

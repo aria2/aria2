@@ -40,6 +40,7 @@
 #include <map>
 #include <deque>
 #include <string>
+#include <iosfwd>
 
 namespace aria2 {
 
@@ -48,6 +49,13 @@ class Range;
 class HttpHeader {
 private:
   std::multimap<std::string, std::string> table;
+
+  // for HTTP response header only
+  // response status, e.g. "200"
+  std::string _responseStatus;
+
+  // HTTP version, e.g. HTTP/1.1
+  std::string _version;
 public:
   HttpHeader() {}
   ~HttpHeader() {}
@@ -60,6 +68,16 @@ public:
   uint64_t getFirstAsULLInt(const std::string& name) const;
 
   SharedHandle<Range> getRange() const;
+
+  const std::string& getResponseStatus() const;
+
+  void setResponseStatus(const std::string& responseStatus);
+
+  const std::string& getVersion() const;
+
+  void setVersion(const std::string& version);
+
+  void fill(std::istream& in);
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;

@@ -14,10 +14,10 @@ class HttpHeaderProcessorTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testUpdate2);
   CPPUNIT_TEST(testGetPutBackDataLength);
   CPPUNIT_TEST(testGetPutBackDataLength_nullChar);
-  CPPUNIT_TEST(testGetHttpStatusHeader);
-  CPPUNIT_TEST(testGetHttpStatusHeader_empty);
-  CPPUNIT_TEST(testGetHttpStatusHeader_statusOnly);
-  CPPUNIT_TEST(testGetHttpStatusHeader_insufficientStatusLength);
+  CPPUNIT_TEST(testGetHttpResponseHeader);
+  CPPUNIT_TEST(testGetHttpResponseHeader_empty);
+  CPPUNIT_TEST(testGetHttpResponseHeader_statusOnly);
+  CPPUNIT_TEST(testGetHttpResponseHeader_insufficientStatusLength);
   CPPUNIT_TEST(testBeyondLimit);
   CPPUNIT_TEST(testGetHeaderString);
   CPPUNIT_TEST_SUITE_END();
@@ -27,12 +27,13 @@ public:
   void testUpdate2();
   void testGetPutBackDataLength();
   void testGetPutBackDataLength_nullChar();
-  void testGetHttpStatusHeader();
-  void testGetHttpStatusHeader_empty();
-  void testGetHttpStatusHeader_statusOnly();
-  void testGetHttpStatusHeader_insufficientStatusLength();
+  void testGetHttpResponseHeader();
+  void testGetHttpResponseHeader_empty();
+  void testGetHttpResponseHeader_statusOnly();
+  void testGetHttpResponseHeader_insufficientStatusLength();
   void testBeyondLimit();
   void testGetHeaderString();
+  void testGetHttpRequestHeader();
 };
 
 
@@ -88,7 +89,7 @@ void HttpHeaderProcessorTest::testGetPutBackDataLength_nullChar()
   CPPUNIT_ASSERT_EQUAL((size_t)9, proc.getPutBackDataLength());
 }
 
-void HttpHeaderProcessorTest::testGetHttpStatusHeader()
+void HttpHeaderProcessorTest::testGetHttpResponseHeader()
 {
   HttpHeaderProcessor proc;
   std::string hd = "HTTP/1.1 200 OK\r\n"
@@ -104,22 +105,24 @@ void HttpHeaderProcessorTest::testGetHttpStatusHeader()
 
   proc.update(hd);
 
-  std::pair<std::string, SharedHandle<HttpHeader> > statusHeader = proc.getHttpStatusHeader();
-  std::string status = statusHeader.first;
-  SharedHandle<HttpHeader> header = statusHeader.second;
-  CPPUNIT_ASSERT_EQUAL(std::string("200"), status);
-  CPPUNIT_ASSERT_EQUAL(std::string("Mon, 25 Jun 2007 16:04:59 GMT"), header->getFirst("Date"));
-  CPPUNIT_ASSERT_EQUAL(std::string("Apache/2.2.3 (Debian)"), header->getFirst("Server"));
+  SharedHandle<HttpHeader> header = proc.getHttpResponseHeader();
+  CPPUNIT_ASSERT_EQUAL(std::string("200"), header->getResponseStatus());
+  CPPUNIT_ASSERT_EQUAL(std::string("HTTP/1.1"), header->getVersion());
+  CPPUNIT_ASSERT_EQUAL(std::string("Mon, 25 Jun 2007 16:04:59 GMT"),
+		       header->getFirst("Date"));
+  CPPUNIT_ASSERT_EQUAL(std::string("Apache/2.2.3 (Debian)"),
+		       header->getFirst("Server"));
   CPPUNIT_ASSERT_EQUAL(9187ULL, header->getFirstAsULLInt("Content-Length"));
-  CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"), header->getFirst("Content-Type"));
+  CPPUNIT_ASSERT_EQUAL(std::string("text/html; charset=UTF-8"),
+		       header->getFirst("Content-Type"));
 }
 
-void HttpHeaderProcessorTest::testGetHttpStatusHeader_empty()
+void HttpHeaderProcessorTest::testGetHttpResponseHeader_empty()
 {
   HttpHeaderProcessor proc;
 
   try {
-    std::pair<std::string, SharedHandle<HttpHeader> > statusHeader = proc.getHttpStatusHeader();
+    proc.getHttpResponseHeader();
     CPPUNIT_FAIL("Exception must be thrown.");
   } catch(DlRetryEx* ex) {
     std::cout << ex->getMsg() << std::endl;
@@ -128,25 +131,24 @@ void HttpHeaderProcessorTest::testGetHttpStatusHeader_empty()
   
 }
 
-void HttpHeaderProcessorTest::testGetHttpStatusHeader_statusOnly()
+void HttpHeaderProcessorTest::testGetHttpResponseHeader_statusOnly()
 {
   HttpHeaderProcessor proc;
 
   std::string hd = "HTTP/1.1 200\r\n\r\n";
   proc.update(hd);
-  std::pair<std::string, SharedHandle<HttpHeader> > statusHeader = proc.getHttpStatusHeader();
-  CPPUNIT_ASSERT_EQUAL(std::string("200"), statusHeader.first);
-  CPPUNIT_ASSERT(!statusHeader.second.isNull());
+  SharedHandle<HttpHeader> header = proc.getHttpResponseHeader();
+  CPPUNIT_ASSERT_EQUAL(std::string("200"), header->getResponseStatus());
 }
 
-void HttpHeaderProcessorTest::testGetHttpStatusHeader_insufficientStatusLength()
+void HttpHeaderProcessorTest::testGetHttpResponseHeader_insufficientStatusLength()
 {
   HttpHeaderProcessor proc;
 
   std::string hd = "HTTP/1.1 20\r\n\r\n";
   proc.update(hd);  
   try {
-    std::pair<std::string, SharedHandle<HttpHeader> > statusHeader = proc.getHttpStatusHeader();
+    proc.getHttpResponseHeader();
     CPPUNIT_FAIL("Exception must be thrown.");
   } catch(DlRetryEx* ex) {
     std::cout << ex->getMsg() << std::endl;

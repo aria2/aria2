@@ -134,15 +134,14 @@ HttpResponseHandle HttpConnection::receiveResponse()
   // OK, we got all headers.
   logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
 
-  std::pair<std::string, HttpHeaderHandle> httpStatusHeader = proc->getHttpStatusHeader();
-  if(Util::toLower(httpStatusHeader.second->getFirst("Connection")).find("close") != std::string::npos) {
+  SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
+  if(Util::toLower(httpHeader->getFirst("Connection")).find("close") != std::string::npos) {
     entry->getHttpRequest()->getRequest()->setKeepAlive(false);
   }
 
   HttpResponseHandle httpResponse(new HttpResponse());
   httpResponse->setCuid(cuid);
-  httpResponse->setStatus(Util::parseInt(httpStatusHeader.first));
-  httpResponse->setHttpHeader(httpStatusHeader.second);
+  httpResponse->setHttpHeader(httpHeader);
   httpResponse->setHttpRequest(entry->getHttpRequest());
 
   outstandingHttpRequests.pop_front();

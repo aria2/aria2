@@ -77,7 +77,7 @@ bool HttpHeaderProcessor::eoh() const
 
 size_t HttpHeaderProcessor::getPutBackDataLength() const
 {
-  std::string str = strm.str();
+  const std::string& str = strm.str();
   std::string::size_type delimpos = std::string::npos;
   if((delimpos = str.find("\r\n\r\n")) != std::string::npos) {
     return str.size()-(delimpos+4);
@@ -93,7 +93,7 @@ void HttpHeaderProcessor::clear()
   strm.str("");
 }
 
-std::pair<std::string, HttpHeaderHandle> HttpHeaderProcessor::getHttpStatusHeader()
+SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
 {
   strm.seekg(0, std::ios::beg);
   std::string line;
@@ -102,19 +102,11 @@ std::pair<std::string, HttpHeaderHandle> HttpHeaderProcessor::getHttpStatusHeade
   if(line.size() <= 12) {
     throw new DlRetryEx(EX_NO_STATUS_HEADER);
   }
-  std::string status = line.substr(9, 3);
   HttpHeaderHandle httpHeader(new HttpHeader());
-  while(getline(strm, line)) {
-    line = Util::trim(line);
-    if(line.empty()) {
-      break;
-    }
-    std::pair<std::string, std::string> hp;
-    Util::split(hp, line, ':');
-    httpHeader->put(hp.first, hp.second);
-  }
-  
-  return std::pair<std::string, HttpHeaderHandle>(status, httpHeader);
+  httpHeader->setResponseStatus(line.substr(9, 3));
+  httpHeader->setVersion(line.substr(0, 8));
+  httpHeader->fill(strm);
+  return httpHeader;
 }
 
 std::string HttpHeaderProcessor::getHeaderString() const
