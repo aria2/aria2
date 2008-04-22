@@ -336,3 +336,5 @@ _(" --header=HEADER              Append HEADER to HTTP request header. You can u
   "                              header:\n"\
   "                              aria2c --header=\"X-A: b78\" --header=\"X-B: 9J1\"\n"\
   "                              http://host/file")
+#define TEXT_QUIET \
+_(" -q, --quiet[=true|false]     Make aria2 quite (no console output).")

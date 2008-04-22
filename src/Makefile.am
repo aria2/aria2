@@ -181,7 +181,8 @@ SRCS =  Socket.h\
 	help_tags.h\
 	prefs.h\
 	usage_text.h\
-	ProtocolDetector.cc ProtocolDetector.h
+	ProtocolDetector.cc ProtocolDetector.h\
+	NullStatCalc.h
 
 if ENABLE_MESSAGE_DIGEST
 SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\

@@ -32,49 +32,23 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_LOG_FACTORY_H_
-#define _D_LOG_FACTORY_H_
+#ifndef _D_NULL_STAT_CALC_H_
+#define _D_NULL_STAT_CALC_H_
 
-#include "common.h"
-#include <string>
+#include "StatCalc.h"
 
 namespace aria2 {
 
-class Logger;
-
-class LogFactory {
-private:
-  static std::string filename;
-  static Logger* logger;
-  static bool _consoleOutput;
+class NullStatCalc:public StatCalc {
 public:
-  /**
-   * Get logger instance. Returned logger is singleton.
-   * This function is not thread-safe.
-   */
-  static Logger* getInstance();
+  virtual ~NullStatCalc() {}
 
-  /**
-   * Set a filename to write log.
-   */
-  static void setLogFile(const std::string& name) {
-    filename = name;
-  }
-
-  /**
-   * Set flag whether the log is printed in console.
-   * If f is false, log is not printed in console.
-   */
-  static void setConsoleOutput(bool f) {
-    _consoleOutput = f;
-  }
-
-  /**
-   * Releases used resources
-   */
-  static void release();
+  virtual void 
+  calculateStat(const SharedHandle<RequestGroupMan>& requestGroupMan,
+		const SharedHandle<FileAllocationMan>& fileAllocationMan,
+		const SharedHandle<CheckIntegrityMan>& checkIntegrityMan) {}
 };
 
 } // namespace aria2
 
-#endif // _D_LOG_FACTORY_H_
+#endif // _D_NULL_STAT_CALC_H_

@@ -44,9 +44,10 @@
 #include "message.h"
 #include "DNSCache.h"
 #include "Util.h"
-#include "ConsoleStatCalc.h"
+#include "Option.h"
+#include "StatCalc.h"
 #include <signal.h>
-#include <iostream>
+#include <ostream>
 
 namespace aria2 {
 
@@ -64,9 +65,16 @@ static void handler(int signal) {
   }
 }
 
-MultiUrlRequestInfo::MultiUrlRequestInfo(const RequestGroups& requestGroups, Option* op):
+MultiUrlRequestInfo::MultiUrlRequestInfo
+(const RequestGroups& requestGroups,
+ Option* op,
+ const SharedHandle<StatCalc>& statCalc,
+ std::ostream& summaryOut)
+  :
   _requestGroups(requestGroups),
   _option(op),
+  _statCalc(statCalc),
+  _summaryOut(summaryOut),
   _logger(LogFactory::getInstance())
 {}
 
@@ -74,11 +82,11 @@ MultiUrlRequestInfo::~MultiUrlRequestInfo() {}
 
 void MultiUrlRequestInfo::printMessageForContinue()
 {
-  std::cout << "\n"
-	    << _("aria2 will resume download if the transfer is restarted.")
-	    << "\n"
-	    << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
-	    << "\n";
+  _summaryOut << "\n"
+	      << _("aria2 will resume download if the transfer is restarted.")
+	      << "\n"
+	      << _("If there are any errors, then see the log file. See '-l' option in help/man page for details.")
+	      << "\n";
 }
 
 int MultiUrlRequestInfo::execute()
@@ -91,9 +99,8 @@ int MultiUrlRequestInfo::execute()
   try {
     DownloadEngineHandle e =
       DownloadEngineFactory().newDownloadEngine(_option, _requestGroups);
-    SharedHandle<StatCalc> statCalc(new ConsoleStatCalc());
-    e->setStatCalc(statCalc);
 
+    e->setStatCalc(_statCalc);
     e->fillCommand();
 
     // The number of simultaneous download is specified by PREF_MAX_CONCURRENT_DOWNLOADS.
@@ -108,8 +115,8 @@ int MultiUrlRequestInfo::execute()
     
     e->run();
     
-    e->_requestGroupMan->showDownloadResults(std::cout);
-    std::cout << std::flush;
+    e->_requestGroupMan->showDownloadResults(_summaryOut);
+    _summaryOut << std::flush;
 
     RequestGroupMan::DownloadStat s = e->_requestGroupMan->getDownloadStat();
     if(!s.allCompleted()) {

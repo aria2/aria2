@@ -1,5 +1,21 @@
 2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added --quiet option to make aria2 quiet (no console output).
+	--quiet option is tagged with ADVANCED.
+	* src/HelpItemFactory.cc
+	* src/LogFactory.cc
+	* src/LogFactory.h
+	* src/MultiUrlRequestInfo.cc
+	* src/MultiUrlRequestInfo.h
+	* src/NullStatCalc.h: New class. This class prints nothing.
+	* src/OptionHandlerFactory.cc
+	* src/main.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Add HTTP tag to --header option. Removed ADVANCED tag instead.
 	* src/HelpItemFactory.cc (createHelpItems): 
 

@@ -62,6 +62,8 @@
 #include "FileEntry.h"
 #include "RequestGroup.h"
 #include "ProtocolDetector.h"
+#include "ConsoleStatCalc.h"
+#include "NullStatCalc.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "Metalink2RequestGroup.h"
@@ -91,6 +93,9 @@ extern int optind, opterr, optopt;
 
 namespace aria2 {
 
+// output stream to /dev/null
+std::ofstream nullout(DEV_NULL);
+
 std::deque<std::string> unfoldURI(const std::deque<std::string>& args)
 {
   std::deque<std::string> nargs;
@@ -117,6 +122,26 @@ RequestGroupHandle createRequestGroup(const Option* op, const std::deque<std::st
   dctx->setDir(op->get(PREF_DIR));
   rg->setDownloadContext(dctx);
   return rg;
+}
+
+SharedHandle<StatCalc> getStatCalc(const Option* op)
+{
+  SharedHandle<StatCalc> statCalc;
+  if(op->getAsBool(PREF_QUIET)) {
+    statCalc.reset(new NullStatCalc());
+  } else {
+    statCalc.reset(new ConsoleStatCalc());
+  }
+  return statCalc;
+}
+
+std::ostream& getSummaryOut(const Option* op)
+{
+  if(op->getAsBool(PREF_QUIET)) {
+    return nullout;
+  } else {
+    return std::cout;
+  }
 }
 
 extern Option* option_processing(int argc, char* const argv[]);
@@ -157,7 +182,7 @@ int32_t downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
   
   RequestGroups groups;
   groups.push_back(rg);
-  return MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
 #endif // ENABLE_BITTORRENT
 
@@ -168,7 +193,7 @@ int32_t downloadMetalink(Option* op)
   if(groups.empty()) {
     throw new FatalException("No files to download.");
   }
-  return MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
 #endif // ENABLE_METALINK
 
@@ -248,7 +273,7 @@ int32_t downloadUriList(Option* op, std::istream& in)
       groups.push_back(rg);
     }
   }
-  return MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
 
 int32_t downloadUriList(Option* op)
@@ -284,7 +309,7 @@ int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
     RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
     groups.push_back(rg);
   }
-  return MultiUrlRequestInfo(groups, op).execute();
+  return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
 
 int main(int argc, char* argv[])
@@ -300,6 +325,9 @@ int main(int argc, char* argv[])
     LogFactory::setLogFile(op->get(PREF_LOG));
   } else {
     LogFactory::setLogFile(DEV_NULL);
+  }
+  if(op->getAsBool(PREF_QUIET)) {
+    LogFactory::setConsoleOutput(false);
   }
   int32_t exitStatus = EXIT_SUCCESS;
   try {

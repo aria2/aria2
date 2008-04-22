@@ -126,6 +126,8 @@
 #define PREF_CONF_PATH "conf-path"
 // value: 1*digit
 #define PREF_STOP "stop"
+// value: true | false
+#define PREF_QUIET "quiet"
 
 /**
  * FTP related preferences

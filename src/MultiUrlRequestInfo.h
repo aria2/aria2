@@ -38,12 +38,14 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include <deque>
+#include <iosfwd>
 
 namespace aria2 {
 
 class RequestGroup;
 class Option;
 class Logger;
+class StatCalc;
 
 class MultiUrlRequestInfo {
 private:
@@ -51,12 +53,20 @@ private:
 
   Option* _option;
 
+  SharedHandle<StatCalc> _statCalc;
+
+  std::ostream& _summaryOut;
+
   const Logger* _logger;
 
   void printMessageForContinue();
 
 public:
-  MultiUrlRequestInfo(const std::deque<SharedHandle<RequestGroup> >& requestGroups, Option* op);
+  MultiUrlRequestInfo
+  (const std::deque<SharedHandle<RequestGroup> >& requestGroups,
+   Option* op,
+   const SharedHandle<StatCalc>& statCalc,
+   std::ostream& summaryOut);
   
   virtual ~MultiUrlRequestInfo();
 

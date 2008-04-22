@@ -40,14 +40,17 @@ namespace aria2 {
 
 std::string LogFactory::filename = DEV_NULL;
 Logger* LogFactory::logger = 0;
+bool LogFactory::_consoleOutput = true;
 
 Logger* LogFactory::getInstance() {
   if(logger == NULL) {
     SimpleLogger* slogger = new SimpleLogger();
     slogger->openFile(filename);
-    slogger->setStdout(Logger::NOTICE, true);
-    slogger->setStdout(Logger::WARN, true);
-    slogger->setStdout(Logger::ERROR, true);
+    if(_consoleOutput) {
+      slogger->setStdout(Logger::NOTICE, true);
+      slogger->setStdout(Logger::WARN, true);
+      slogger->setStdout(Logger::ERROR, true);
+    }
     logger = slogger;
   }
   return logger;

@@ -127,6 +127,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new ParameterOptionHandler(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN, V_ARC4)));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_REQUIRE_CRYPTO)));
   handlers.push_back(SH(new CumulativeOptionHandler(PREF_HEADER, "\n")));
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_QUIET)));
   return handlers;
 }
 

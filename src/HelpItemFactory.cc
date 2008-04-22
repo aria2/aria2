@@ -438,6 +438,11 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
+    HelpItemHandle item(new HelpItem(PREF_QUIET, TEXT_QUIET, V_FALSE));
+    item->addTag(TAG_ADVANCED);
+    tc->addItem(item);
+  }
+  {
     HelpItemHandle item(new HelpItem("help", TEXT_HELP, TAG_BASIC));
     char buf[64];
     snprintf(buf, sizeof(buf), "%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT);

@@ -143,6 +143,7 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_DHT_FILE_PATH, Util::getHomeDir()+"/.aria2/dht.dat");
   op->put(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
   op->put(PREF_BT_REQUIRE_CRYPTO, V_FALSE);
+  op->put(PREF_QUIET, V_FALSE);
 
   // following options are not parsed by OptionHandler and not stored in Option.
   bool noConf = false;
@@ -205,6 +206,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_CONF_PATH, required_argument, &lopt, 213 },
       { PREF_STOP, required_argument, &lopt, 214 },
       { PREF_HEADER, required_argument, &lopt, 215 },
+      { PREF_QUIET, optional_argument, 0, 'q' },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { PREF_SHOW_FILES, no_argument, NULL, 'S' },
       { PREF_SELECT_FILE, required_argument, &lopt, 21 },
@@ -243,7 +245,7 @@ Option* option_processing(int argc, char* const argv[])
       { "help", optional_argument, NULL, 'h' },
       { 0, 0, 0, 0 }
     };
-    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::", longOpts, &optIndex);
+    c = getopt_long(argc, argv, "Dd:o:l:s:pt:m:vh::ST:M:C:a:cU:ni:j:Z::P::q::", longOpts, &optIndex);
     if(c == -1) {
       break;
     }
@@ -470,6 +472,9 @@ Option* option_processing(int argc, char* const argv[])
       break;
     case 'P':
       cmdstream << PREF_PARAMETERIZED_URI << "=" << toBoolArg(optarg) << "\n";
+      break;
+    case 'q':
+      cmdstream << PREF_QUIET << "=" << toBoolArg(optarg) << "\n";
       break;
     case 'v':
       showVersion();
