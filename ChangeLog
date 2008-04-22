@@ -1,5 +1,10 @@
 2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Add HTTP tag to --header option. Removed ADVANCED tag instead.
+	* src/HelpItemFactory.cc (createHelpItems): 
+
+2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed compilation error in ExpatMetalinkProcessor.cc
 	* src/ExpatMetalinkProcessor.cc
 

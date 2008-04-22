@@ -434,7 +434,7 @@ TagContainerHandle HelpItemFactory::createHelpItems()
   }
   {
     HelpItemHandle item(new HelpItem(PREF_HEADER, TEXT_HEADER));
-    item->addTag(TAG_ADVANCED);
+    item->addTag(TAG_HTTP);
     tc->addItem(item);
   }
   {
