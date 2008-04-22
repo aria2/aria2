@@ -120,7 +120,7 @@ bool AbstractCommand::execute() {
       if(!_requestGroup->getPieceStorage().isNull()) {
 	_segments = _requestGroup->getSegmentMan()->getInFlightSegment(cuid);
 	size_t maxSegments;
-	if(req->isKeepAlive() && e->option->get(PREF_ENABLE_HTTP_PIPELINING) == V_TRUE) {
+	if(req->isPipeliningEnabled()) {
 	  maxSegments = e->option->getAsInt(PREF_MAX_HTTP_PIPELINING);
 	} else {
 	  maxSegments = 1;

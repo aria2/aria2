@@ -91,7 +91,7 @@ off_t HttpRequest::getEndByte() const
   if(segment.isNull() || request.isNull()) {
     return 0;
   } else {
-    if(request->isKeepAlive()) {
+    if(request->isPipeliningEnabled()) {
       return segment->getPosition()+segment->getLength()-1;
     } else {
       return 0;
@@ -150,20 +150,20 @@ std::string HttpRequest::createRequest() const
     "Host: "+getHostText(getHost(), getPort())+"\r\n"+
     "Pragma: no-cache\r\n"+
     "Cache-Control: no-cache\r\n";
-  if(!request->isKeepAlive()) {
+  if(!request->isKeepAliveEnabled() && !request->isPipeliningEnabled()) {
     requestLine += "Connection: close\r\n";
   }
-  if(!segment.isNull() && segment->getLength() > 0 &&
-     (request->isKeepAlive() || getStartByte() > 0)) {
+  if(!segment.isNull() && segment->getLength() > 0 && 
+     (request->isPipeliningEnabled() || getStartByte() > 0)) {
     requestLine += "Range: bytes="+Util::itos(getStartByte());
     requestLine += "-";
-    if(request->isKeepAlive()) {
+    if(request->isPipeliningEnabled()) {
       requestLine += Util::itos(getEndByte());
     }
     requestLine += "\r\n";
   }
   if(proxyEnabled) {
-    if(request->isKeepAlive()) {
+    if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
       requestLine += "Proxy-Connection: Keep-Alive\r\n";
     } else {
       requestLine += "Proxy-Connection: close\r\n";
@@ -208,7 +208,7 @@ std::string HttpRequest::createProxyRequest() const
     std::string(" HTTP/1.1\r\n")+
     "User-Agent: "+userAgent+"\r\n"+
     "Host: "+getHost()+":"+Util::uitos(getPort())+"\r\n";
-  if(request->isKeepAlive()) {
+  if(request->isKeepAliveEnabled() || request->isPipeliningEnabled()) {
     requestLine += "Proxy-Connection: Keep-Alive\r\n";
   }else {
     requestLine += "Proxy-Connection: close\r\n";

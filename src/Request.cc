@@ -46,8 +46,14 @@ const std::string Request::METHOD_GET = "get";
 
 const std::string Request::METHOD_HEAD = "head";
 
-Request::Request():port(0), tryCount(0), keepAlive(false), method(METHOD_GET),
-		   cookieBox(CookieBoxFactorySingletonHolder::instance()->createNewInstance()) {}
+Request::Request():
+  port(0), tryCount(0),
+  _supportsPersistentConnection(false),
+  _keepAliveHint(false),
+  _pipeliningHint(false),
+  method(METHOD_GET),
+  cookieBox(CookieBoxFactorySingletonHolder::instance()->createNewInstance())
+{}
 
 Request::~Request() {}
 
@@ -63,7 +69,7 @@ bool Request::resetUrl() {
 
 bool Request::redirectUrl(const std::string& url) {
   previousUrl = "";
-  keepAlive = false;
+  _supportsPersistentConnection = false;
   return parseUrl(url);
 }
 

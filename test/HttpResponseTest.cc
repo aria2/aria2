@@ -293,7 +293,6 @@ void HttpResponseTest::testValidateResponse_good_range()
   httpRequest->setSegment(segment);
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  request->setKeepAlive(false);
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setResponseStatus("206");
@@ -320,7 +319,6 @@ void HttpResponseTest::testValidateResponse_bad_range()
   httpRequest->setSegment(segment);
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  request->setKeepAlive(false);
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setResponseStatus("206");
@@ -346,7 +344,6 @@ void HttpResponseTest::testValidateResponse_chunked()
   httpRequest->setSegment(segment);
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
-  request->setKeepAlive(false);
   httpRequest->setRequest(request);
   httpResponse.setHttpRequest(httpRequest);
   httpHeader->setResponseStatus("206");

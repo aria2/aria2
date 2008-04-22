@@ -47,6 +47,7 @@
 #include "HttpHeader.h"
 #include "Logger.h"
 #include "Socket.h"
+#include "Option.h"
 #include <sstream>
 
 namespace aria2 {
@@ -136,7 +137,9 @@ HttpResponseHandle HttpConnection::receiveResponse()
 
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
   if(Util::toLower(httpHeader->getFirst("Connection")).find("close") != std::string::npos) {
-    entry->getHttpRequest()->getRequest()->setKeepAlive(false);
+    entry->getHttpRequest()->getRequest()->supportsPersistentConnection(false);
+  } else {
+    entry->getHttpRequest()->getRequest()->supportsPersistentConnection(true);
   }
 
   HttpResponseHandle httpResponse(new HttpResponse());

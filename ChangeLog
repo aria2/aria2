@@ -1,3 +1,19 @@
+2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Rewritten HTTP keep-alive and pipelining routine.
+	* src/AbstractCommand.cc
+	* src/HttpConnection.cc
+	* src/HttpDownloadCommand.cc
+	* src/HttpRequest.cc
+	* src/HttpRequestCommand.cc
+	* src/HttpResponseCommand.cc
+	* src/Request.cc
+	* src/Request.h
+	* src/RequestGroup.cc
+	* test/HttpRequestTest.cc
+	* test/HttpResponseTest.cc
+	* test/RequestTest.cc
+
 2008-04-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Added missing setUserHeaders call

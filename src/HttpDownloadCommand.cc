@@ -56,7 +56,7 @@ HttpDownloadCommand::HttpDownloadCommand(int cuid,
 HttpDownloadCommand::~HttpDownloadCommand() {}
 
 bool HttpDownloadCommand::prepareForNextSegment() {
-  if(!_requestGroup->downloadFinished() && req->isKeepAlive()) {
+  if(req->isPipeliningEnabled() && !_requestGroup->downloadFinished()) {
     Command* command = new HttpRequestCommand(cuid, req, _requestGroup, _httpConnection, e, socket);
     e->commands.push_back(command);
     return true;

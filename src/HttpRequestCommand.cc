@@ -47,12 +47,13 @@
 
 namespace aria2 {
 
-HttpRequestCommand::HttpRequestCommand(int cuid,
-				       const RequestHandle& req,
-				       RequestGroup* requestGroup,
-				       const HttpConnectionHandle& httpConnection,
-				       DownloadEngine* e,
-				       const SocketHandle& s)
+HttpRequestCommand::HttpRequestCommand
+(int cuid,
+ const RequestHandle& req,
+ RequestGroup* requestGroup,
+ const HttpConnectionHandle& httpConnection,
+ DownloadEngine* e,
+ const SocketHandle& s)
   :AbstractCommand(cuid, req, requestGroup, e, s),
    _httpConnection(httpConnection)
 {
@@ -62,44 +63,41 @@ HttpRequestCommand::HttpRequestCommand(int cuid,
 
 HttpRequestCommand::~HttpRequestCommand() {}
 
+static SharedHandle<HttpRequest>
+createHttpRequest(const SharedHandle<Request>& req,
+		  const SharedHandle<Segment>& segment,
+		  uint64_t totalLength,
+		  const Option* option)
+{
+  HttpRequestHandle httpRequest(new HttpRequest());
+  httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
+  httpRequest->setRequest(req);
+  httpRequest->setSegment(segment);
+  httpRequest->setEntityLength(totalLength);
+  httpRequest->setUserHeaders(option->get(PREF_HEADER));
+  httpRequest->configure(option);
+
+  return httpRequest;
+}
+
 bool HttpRequestCommand::executeInternal() {
   socket->setBlockingMode();
   if(req->getProtocol() == "https") {
     socket->initiateSecureConnection();
   }
-  if(e->option->get(PREF_ENABLE_HTTP_PIPELINING) == V_TRUE) {
-    req->setKeepAlive(true);
-  } else if(e->option->get(PREF_ENABLE_HTTP_KEEP_ALIVE) == V_TRUE &&
-	    !_requestGroup->getSegmentMan().isNull() &&
-	    _requestGroup->getSegmentMan()->countFreePieceFrom(_segments.front()->getIndex()+1) <= 4) {
-    // TODO Do we need to consider the case where content-length is unknown?
-    // TODO parameterize the value which enables keep-alive, '4'
-    req->setKeepAlive(true);
-  } else {
-    req->setKeepAlive(false);
-  }
 
   if(_segments.empty()) {
-    HttpRequestHandle httpRequest(new HttpRequest());
-    httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
-    httpRequest->setRequest(req);
-    httpRequest->setEntityLength(_requestGroup->getTotalLength());
-    httpRequest->setUserHeaders(e->option->get(PREF_HEADER));
-    httpRequest->configure(e->option);
-    
+    HttpRequestHandle httpRequest
+      (createHttpRequest(req, SharedHandle<Segment>(),
+			 _requestGroup->getTotalLength(), e->option));    
     _httpConnection->sendRequest(httpRequest);
   } else {
     for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
-      SegmentHandle segment = *itr;
+      const SegmentHandle& segment = *itr;
       if(!_httpConnection->isIssued(segment)) {
-	HttpRequestHandle httpRequest(new HttpRequest());
-	httpRequest->setUserAgent(e->option->get(PREF_USER_AGENT));
-	httpRequest->setRequest(req);
-	httpRequest->setSegment(segment);
-	httpRequest->setEntityLength(_requestGroup->getTotalLength());
-	httpRequest->setUserHeaders(e->option->get(PREF_HEADER));
-	httpRequest->configure(e->option);
-
+	HttpRequestHandle httpRequest
+	  (createHttpRequest(req, segment,
+			     _requestGroup->getTotalLength(), e->option));    
 	_httpConnection->sendRequest(httpRequest);
       }
     }

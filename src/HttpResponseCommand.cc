@@ -164,8 +164,6 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   if(httpRequest->getMethod() == Request::METHOD_HEAD) {
     return true;
   }
-  // disable keep-alive
-  req->setKeepAlive(false);
   _requestGroup->initPieceStorage();
   _requestGroup->shouldCancelDownloadForSafety();
   _requestGroup->getPieceStorage()->getDiskAdaptor()->initAndOpenFile();

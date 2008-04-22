@@ -53,14 +53,6 @@ namespace aria2 {
 class CookieBox;
 
 class Request {
-public:
-  enum TRACKER_EVENT {
-    AUTO,
-    STARTED,
-    STOPPED,
-    COMPLETED,
-    AFTER_COMPLETED
-  };
 private:
   std::string url;
   std::string currentUrl;
@@ -78,8 +70,14 @@ private:
   std::string dir;
   std::string file;
   unsigned int tryCount;
-  TRACKER_EVENT trackerEvent;
-  bool keepAlive;
+
+  // whether or not the server supports persistent connection
+  bool _supportsPersistentConnection;
+  // enable keep-alive if possible.
+  bool _keepAliveHint;
+  // enable pipelining if possible.
+  bool _pipeliningHint;
+
   std::string method;
 
   std::string _username;
@@ -121,10 +119,36 @@ public:
   uint16_t getPort() const { return port; }
   std::string getDir() const { return dir; }
   std::string getFile() const { return file;}
-  bool isKeepAlive() const { return keepAlive; }
-  void setKeepAlive(bool keepAlive) { this->keepAlive = keepAlive; }
-  void setTrackerEvent(TRACKER_EVENT event) { trackerEvent = event; }
-  TRACKER_EVENT getTrackerEvent() const { return trackerEvent; }
+
+  void supportsPersistentConnection(bool f)
+  {
+    _supportsPersistentConnection = f;
+  }
+
+  bool supportsPersistentConnection()
+  {
+    return _supportsPersistentConnection;
+  }
+
+  bool isKeepAliveEnabled() const
+  {
+    return _supportsPersistentConnection && _keepAliveHint;
+  }
+
+  void setKeepAliveHint(bool keepAliveHint)
+  {
+    _keepAliveHint = keepAliveHint;
+  }
+
+  bool isPipeliningEnabled()
+  {
+    return _supportsPersistentConnection && _pipeliningHint;
+  }
+
+  void setPipeliningHint(bool pipeliningHint)
+  {
+    _pipeliningHint = pipeliningHint;
+  }
 
   void setMethod(const std::string& method) {
     this->method = method;

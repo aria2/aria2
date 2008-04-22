@@ -74,7 +74,8 @@ void HttpRequestTest::testGetEndByte()
   CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getEndByte());
 
   SharedHandle<Request> request(new Request());
-  request->setKeepAlive(true);
+  request->supportsPersistentConnection(true);
+  request->setPipeliningHint(true);
 
   httpRequest.setRequest(request);
 
@@ -82,7 +83,7 @@ void HttpRequestTest::testGetEndByte()
 		       httpRequest.getEndByte());
 
 
-  request->setKeepAlive(false);
+  request->setPipeliningHint(false);
 
   CPPUNIT_ASSERT_EQUAL(0LL, httpRequest.getEndByte());
 }
@@ -105,6 +106,8 @@ void HttpRequestTest::testCreateRequest()
   SingletonHolder<SharedHandle<AuthConfigFactory> >::instance(authConfigFactory);
 
   SharedHandle<Request> request(new Request());
+  request->supportsPersistentConnection(true);
+
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
 
   p.reset(new Piece(0, 1024));
@@ -114,7 +117,8 @@ void HttpRequestTest::testCreateRequest()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
-  request->setKeepAlive(true);
+  // remove "Connection: close" and add end byte range
+  request->setPipeliningHint(true);  
   
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -127,7 +131,7 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setKeepAlive(false);
+  request->setPipeliningHint(false);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -156,7 +160,7 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setKeepAlive(true);
+  request->setPipeliningHint(true);
 
   expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -169,8 +173,7 @@ void HttpRequestTest::testCreateRequest()
   
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setKeepAlive(false);
-
+  // redirection clears persistent connection falg
   request->redirectUrl("http://localhost:8080/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -184,7 +187,26 @@ void HttpRequestTest::testCreateRequest()
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
-  
+
+  request->supportsPersistentConnection(true);
+  request->setPipeliningHint(false);
+
+  // this only removes "Connection: close".
+  request->setKeepAliveHint(true);
+
+  expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: localhost:8080\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Range: bytes=1048576-\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+
+  request->setKeepAliveHint(false);
+
   request->resetUrl();
 
   p.reset(new Piece(0, 1024*1024));
@@ -259,7 +281,7 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setKeepAlive(true);
+  request->setPipeliningHint(true);
 
   expectedText = "GET http://localhost:8080/archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -275,7 +297,7 @@ void HttpRequestTest::testCreateRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  request->setKeepAlive(false);
+  request->setPipeliningHint(false);
 
   option.put(PREF_HTTP_PROXY_AUTH_ENABLED, V_FALSE);
 
@@ -447,6 +469,8 @@ void HttpRequestTest::testCreateProxyRequest()
   httpRequest.setRequest(request);
   httpRequest.setSegment(segment);
 
+  request->supportsPersistentConnection(true);
+
   std::string expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
     "Host: localhost:80\r\n"
@@ -455,7 +479,8 @@ void HttpRequestTest::testCreateProxyRequest()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
 
-  request->setKeepAlive(true);
+  // adds Keep-Alive header.
+  request->setKeepAliveHint(true);
 
   expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"
@@ -464,14 +489,26 @@ void HttpRequestTest::testCreateProxyRequest()
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());
-  
+
+  request->setKeepAliveHint(false);
+  // pipelining also adds Keep-Alive header.
+  request->setPipeliningHint(true);
+
+  expectedText = "CONNECT localhost:80 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Host: localhost:80\r\n"
+    "Proxy-Connection: Keep-Alive\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createProxyRequest());  
 }
 
 void HttpRequestTest::testIsRangeSatisfied()
 {
   SharedHandle<Request> request(new Request());
+  request->supportsPersistentConnection(true);
   request->setUrl("http://localhost:8080/archives/aria2-1.0.0.tar.bz2");
-  request->setKeepAlive(false);
+  request->setPipeliningHint(false); // default: false
   SharedHandle<Piece> p(new Piece(0, 1024*1024));
   SharedHandle<Segment> segment(new PiecedSegment(1024*1024, p));
 
@@ -504,7 +541,7 @@ void HttpRequestTest::testIsRangeSatisfied()
 
   CPPUNIT_ASSERT(httpRequest.isRangeSatisfied(range));
 
-  request->setKeepAlive(true);
+  request->setPipeliningHint(true);
 
   CPPUNIT_ASSERT(!httpRequest.isRangeSatisfied(range));
 

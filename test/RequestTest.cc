@@ -258,13 +258,13 @@ void RequestTest::testSetUrl17()
 
 void RequestTest::testRedirectUrl() {
   Request req;
-  req.setKeepAlive(true);
+  req.supportsPersistentConnection(true);
   req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
   
   bool v2 = req.redirectUrl("http://aria.rednoah.co.jp/");
   CPPUNIT_ASSERT(v2);
-  // keep-alive set to be false after redirection
-  CPPUNIT_ASSERT(!req.isKeepAlive());
+  // persistent connection flag is set to be false after redirection
+  CPPUNIT_ASSERT(!req.supportsPersistentConnection());
   // url must be the same
   CPPUNIT_ASSERT_EQUAL(std::string("http://aria.rednoah.com:8080/aria2/index.html"),
 		       req.getUrl());
