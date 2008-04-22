@@ -56,7 +56,7 @@ extern int optind, opterr, optopt;
 namespace aria2 {
 
 extern void showVersion();
-extern void showUsage(const std::string& category);
+extern void showUsage(const std::string& category, const Option* option);
 
 static std::string toBoolArg(const char* optarg)
 {
@@ -69,10 +69,8 @@ static std::string toBoolArg(const char* optarg)
   return arg;
 }
 
-Option* option_processing(int argc, char* const argv[])
+Option* createDefaultOption()
 {
-  std::stringstream cmdstream;
-  int32_t c;
   Option* op = new Option();
   op->put(PREF_STDOUT_LOG, V_FALSE);
   op->put(PREF_DIR, ".");
@@ -144,6 +142,15 @@ Option* option_processing(int argc, char* const argv[])
   op->put(PREF_BT_MIN_CRYPTO_LEVEL, V_PLAIN);
   op->put(PREF_BT_REQUIRE_CRYPTO, V_FALSE);
   op->put(PREF_QUIET, V_FALSE);
+  op->put(PREF_STOP, "0");
+  return op;
+}
+
+Option* option_processing(int argc, char* const argv[])
+{
+  std::stringstream cmdstream;
+  int32_t c;
+  Option* op = createDefaultOption();
 
   // following options are not parsed by OptionHandler and not stored in Option.
   bool noConf = false;
@@ -487,7 +494,7 @@ Option* option_processing(int argc, char* const argv[])
 	} else {
 	  category = optarg;
 	}
-	showUsage(category);
+	showUsage(category, createDefaultOption());
 	exit(EXIT_SUCCESS);
       }
     default:

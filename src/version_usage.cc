@@ -94,7 +94,7 @@ void showVersion() {
   std::cout << std::endl;
 }
 
-void showUsage(const std::string& category) {
+void showUsage(const std::string& category, const Option* option) {
   printf(_("Usage: %s [options] URL ...\n"), PACKAGE_NAME);
 #ifdef ENABLE_BITTORRENT
   printf(_("       %s [options] -T TORRENT_FILE URL ...\n"), PACKAGE_NAME);
@@ -104,7 +104,7 @@ void showUsage(const std::string& category) {
 #endif // ENABLE_METALINK
   std::cout << "\n";
 
-  SharedHandle<TagContainer> tc = HelpItemFactory::createHelpItems();
+  SharedHandle<TagContainer> tc = HelpItemFactory::createHelpItems(option);
   std::deque<SharedHandle<TaggedItem> > items =
     category == V_ALL ? tc->getAllItems() : tc->search(category);
   if(items.size() > 0) {

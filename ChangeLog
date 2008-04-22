@@ -1,5 +1,14 @@
 2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use the default value pulled from Option object in HelpItemFactory.
+	except options whose defualt value is embedded in a usage text.
+	* src/HelpItemFactory.cc
+	* src/HelpItemFactory.h
+	* src/option_processing.cc
+	* src/version_usage.cc
+	
+2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added --quiet option to make aria2 quiet (no console output).
 	--quiet option is tagged with ADVANCED.
 	* src/HelpItemFactory.cc

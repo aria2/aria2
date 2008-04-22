@@ -41,12 +41,13 @@
 namespace aria2 {
 
 class TagContainer;
+class Option;
 
 class HelpItemFactory {
 private:
   HelpItemFactory();
 public:
-  static SharedHandle<TagContainer> createHelpItems();
+  static SharedHandle<TagContainer> createHelpItems(const Option* option);
 };
 
 } // namespace aria2

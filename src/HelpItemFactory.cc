@@ -39,12 +39,13 @@
 #include "prefs.h"
 #include "a2io.h"
 #include "help_tags.h"
+#include "Option.h"
 
 namespace aria2 {
 
 HelpItemFactory::HelpItemFactory() {}
 
-TagContainerHandle HelpItemFactory::createHelpItems()
+TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
 {
   TagContainerHandle tc(new TagContainer());
   {
@@ -185,7 +186,8 @@ TagContainerHandle HelpItemFactory::createHelpItems()
   }
 #ifdef ENABLE_DIRECT_IO
   {
-    HelpItemHandle item(new HelpItem(PREF_ENABLE_DIRECT_IO, TEXT_ENABLE_DIRECT_IO, V_TRUE));
+    HelpItemHandle item(new HelpItem(PREF_ENABLE_DIRECT_IO, TEXT_ENABLE_DIRECT_IO,
+				     op->get(PREF_ENABLE_DIRECT_IO)));
     item->addTag(TAG_ADVANCED);
     tc->addItem(item);
   }
@@ -196,7 +198,8 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_ALLOW_PIECE_LENGTH_CHANGE, TEXT_ALLOW_PIECE_LENGTH_CHANGE, V_FALSE));
+    HelpItemHandle item(new HelpItem(PREF_ALLOW_PIECE_LENGTH_CHANGE, TEXT_ALLOW_PIECE_LENGTH_CHANGE,
+				     op->get(PREF_ALLOW_PIECE_LENGTH_CHANGE)));
     item->addTag(TAG_ADVANCED);
     tc->addItem(item);
   }
@@ -295,7 +298,7 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_FOLLOW_TORRENT, TEXT_FOLLOW_TORRENT, V_TRUE));
+    HelpItemHandle item(new HelpItem(PREF_FOLLOW_TORRENT, TEXT_FOLLOW_TORRENT, op->get(PREF_FOLLOW_TORRENT)));
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
@@ -305,7 +308,8 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_LISTEN_PORT, TEXT_LISTEN_PORT, "6881-6999"));
+    HelpItemHandle item(new HelpItem(PREF_LISTEN_PORT, TEXT_LISTEN_PORT,
+				     op->get(PREF_LISTEN_PORT)));
     item->addTag(TAG_BASIC);
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
@@ -322,7 +326,8 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_SEED_RATIO, TEXT_SEED_RATIO, "1.0"));
+    HelpItemHandle item(new HelpItem(PREF_SEED_RATIO, TEXT_SEED_RATIO,
+				     op->get(PREF_SEED_RATIO)));
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
@@ -332,18 +337,21 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_ENABLE_PEER_EXCHANGE, TEXT_ENABLE_PEER_EXCHANGE, V_TRUE));
+    HelpItemHandle item(new HelpItem(PREF_ENABLE_PEER_EXCHANGE, TEXT_ENABLE_PEER_EXCHANGE,
+				     op->get(PREF_ENABLE_PEER_EXCHANGE)));
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_ENABLE_DHT, TEXT_ENABLE_DHT, V_FALSE));
+    HelpItemHandle item(new HelpItem(PREF_ENABLE_DHT, TEXT_ENABLE_DHT,
+				     op->get(PREF_ENABLE_DHT)));
     item->addTag(TAG_BASIC);
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_DHT_LISTEN_PORT, TEXT_DHT_LISTEN_PORT, "6881-6999"));
+    HelpItemHandle item(new HelpItem(PREF_DHT_LISTEN_PORT, TEXT_DHT_LISTEN_PORT,
+				     op->get(PREF_DHT_LISTEN_PORT)));
     item->addTag(TAG_BASIC);
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
@@ -354,12 +362,14 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_BT_MIN_CRYPTO_LEVEL, TEXT_BT_MIN_CRYPTO_LEVEL, V_PLAIN));
+    HelpItemHandle item(new HelpItem(PREF_BT_MIN_CRYPTO_LEVEL, TEXT_BT_MIN_CRYPTO_LEVEL,
+				     op->get(PREF_BT_MIN_CRYPTO_LEVEL)));
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_BT_REQUIRE_CRYPTO, TEXT_BT_REQUIRE_CRYPTO, V_FALSE));
+    HelpItemHandle item(new HelpItem(PREF_BT_REQUIRE_CRYPTO, TEXT_BT_REQUIRE_CRYPTO,
+				     op->get(PREF_BT_REQUIRE_CRYPTO)));
     item->addTag(TAG_BITTORRENT);
     tc->addItem(item);
   }
@@ -397,17 +407,22 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_METALINK_PREFERRED_PROTOCOL, TEXT_METALINK_PREFERRED_PROTOCOL, V_NONE));
+    HelpItemHandle item(new HelpItem(PREF_METALINK_PREFERRED_PROTOCOL, TEXT_METALINK_PREFERRED_PROTOCOL,
+				     op->get(PREF_METALINK_PREFERRED_PROTOCOL)));
     item->addTag(TAG_METALINK);
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_FOLLOW_METALINK, TEXT_FOLLOW_METALINK, V_TRUE));
+    HelpItemHandle item(new HelpItem(PREF_FOLLOW_METALINK,
+				     TEXT_FOLLOW_METALINK,
+				     op->get(PREF_FOLLOW_METALINK)));
     item->addTag(TAG_METALINK);
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL, TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL, V_TRUE));
+    HelpItemHandle item(new HelpItem(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL,
+				     TEXT_METALINK_ENABLE_UNIQUE_PROTOCOL,
+				     op->get(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)));
     item->addTag(TAG_METALINK);
     tc->addItem(item);
   }
@@ -428,7 +443,7 @@ TagContainerHandle HelpItemFactory::createHelpItems()
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_STOP, TEXT_STOP, "0"));
+    HelpItemHandle item(new HelpItem(PREF_STOP, TEXT_STOP, op->get(PREF_STOP)));
     item->addTag(TAG_ADVANCED);
     tc->addItem(item);
   }
