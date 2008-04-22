@@ -88,7 +88,7 @@ ExpatMetalinkProcessor::ExpatMetalinkProcessor() {}
 SharedHandle<Metalinker>
 ExpatMetalinkProcessor::parseFile(const std::string& filename)
 {
-  SharedHandle<DefaultDiskWriter> dw = new DefaultDiskWriter();
+  SharedHandle<DefaultDiskWriter> dw(new DefaultDiskWriter());
   dw->openExistingFile(filename);
 
   return parseFromBinaryStream(dw);
@@ -97,11 +97,11 @@ ExpatMetalinkProcessor::parseFile(const std::string& filename)
 SharedHandle<Metalinker>
 ExpatMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& binaryStream)
 {
-  _stm = new MetalinkParserStateMachine();
+  _stm.reset(new MetalinkParserStateMachine());
   ssize_t bufSize = 4096;
   unsigned char buf[bufSize];
 
-  SharedHandle<SessionData> sessionData = new SessionData(_stm);
+  SharedHandle<SessionData> sessionData(new SessionData(_stm));
   XML_Parser parser = XML_ParserCreate(0);
   try {
     XML_SetUserData(parser, sessionData.get());
