@@ -41,6 +41,8 @@
 #include "HttpRequest.h"
 #include "Segment.h"
 #include "Socket.h"
+#include "prefs.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -61,6 +63,17 @@ bool HttpDownloadCommand::prepareForNextSegment() {
     e->commands.push_back(command);
     return true;
   } else {
+    if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED)) {
+      if(req->isPipeliningEnabled() ||
+	 (req->isKeepAliveEnabled() &&
+	  ((!transferDecoder.isNull() && _requestGroup->downloadFinished()) ||
+	   (uint64_t)_segments.front()->getPositionToWrite() == _requestGroup->getTotalLength()))) {
+	std::pair<std::string, uint16_t> peerInfo;
+	socket->getPeerInfo(peerInfo);
+	e->poolSocket(peerInfo.first, peerInfo.second, socket);
+      }
+    }
+
     return DownloadCommand::prepareForNextSegment();
   }
 }

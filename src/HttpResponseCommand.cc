@@ -145,7 +145,13 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
     File file(_requestGroup->getFilePath());
 
     SegmentHandle segment = _requestGroup->getSegmentMan()->getSegment(cuid, 0);
-    if(!segment.isNull() && segment->getPositionToWrite() == 0) {
+    // pipelining requires implicit range specified. But the request for
+    // this response most likely dones't contains range header. This means
+    // we can't continue to use this socket because server sends all entity
+    // body instead of a segment.
+    // Therefore, we shutdown the socket here if pipelining is enabled.
+    if(!segment.isNull() && segment->getPositionToWrite() == 0 &&
+       !req->isPipeliningEnabled()) {
       command = createHttpDownloadCommand(httpResponse);
     } else {
       _requestGroup->getSegmentMan()->cancelSegment(cuid);

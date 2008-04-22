@@ -133,6 +133,7 @@ bool AbstractCommand::execute() {
 	  _segments.push_back(segment);
 	}
 	if(_segments.empty()) {
+	  // TODO socket could be pooled here if pipelining is enabled...
 	  logger->info(MSG_NO_SEGMENT_AVAILABLE, cuid);
 	  return prepareForRetry(1);
 	}

@@ -1,5 +1,19 @@
 2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Reuse socket if the origin server supports HTTP keep-alive and
+	--enable-http-keep-alive or --enable-http-pipelining is given.
+	The current implementation doesn't reuse the connections established
+	against proxy server.
+
+	* src/AbstractCommand.cc
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/HttpDownloadCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpResponseCommand.cc
+
+2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten HTTP keep-alive and pipelining routine.
 	* src/AbstractCommand.cc
 	* src/HttpConnection.cc

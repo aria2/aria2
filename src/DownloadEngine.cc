@@ -46,6 +46,7 @@
 #include "TimeA2.h"
 #include "a2time.h"
 #include "Socket.h"
+#include "Util.h"
 #include <signal.h>
 #include <cstring>
 #include <algorithm>
@@ -359,6 +360,32 @@ void DownloadEngine::setNoWait(bool b)
 void DownloadEngine::addRoutineCommand(Command* command)
 {
   _routineCommands.push_back(command);
+}
+
+void DownloadEngine::poolSocket(const std::string& ipaddr, uint16_t port,
+                               const SharedHandle<SocketCore>& sock)
+{
+  std::string addr = ipaddr+":"+Util::uitos(port);
+  logger->info("Pool socket for %s", addr.c_str());
+  std::multimap<std::string, SharedHandle<SocketCore> >::value_type newPair
+    (addr, sock);
+  _socketPool.insert(newPair);
+}
+
+SharedHandle<SocketCore>
+DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
+{
+  std::string addr = ipaddr+":"+Util::uitos(port);
+  std::multimap<std::string, SharedHandle<SocketCore> >::iterator i =
+    _socketPool.find(addr);
+  if(i == _socketPool.end()) {
+    return SharedHandle<SocketCore>();
+  } else {
+    logger->info("Reuse socket for %s", addr.c_str());
+    SharedHandle<SocketCore> s = (*i).second;
+    _socketPool.erase(i);
+    return s;
+  }
 }
 
 } // namespace aria2

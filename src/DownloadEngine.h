@@ -39,6 +39,7 @@
 #include "SharedHandle.h"
 #include "Command.h"
 #include <deque>
+#include <map>
 #include "a2netcompat.h"
 
 namespace aria2 {
@@ -104,6 +105,9 @@ private:
 
   bool _haltRequested;
 
+  // key = IP address:port, value = Socket
+  std::multimap<std::string, SharedHandle<SocketCore> > _socketPool;
+ 
   void shortSleep() const;
   bool addSocket(const SocketEntry& socketEntry);
   bool deleteSocket(const SocketEntry& socketEntry);
@@ -170,6 +174,12 @@ public:
   void setNoWait(bool b);
 
   void addRoutineCommand(Command* command);
+
+  void poolSocket(const std::string& ipaddr, uint16_t port,
+		  const SharedHandle<SocketCore>& sock);
+
+  SharedHandle<SocketCore> popPooledSocket(const std::string& ipaddr,
+					   uint16_t port);
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

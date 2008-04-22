@@ -103,9 +103,16 @@ bool HttpInitiateConnectionCommand::executeInternal() {
       throw new DlAbortEx("ERROR");
     }
   } else {
-    logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
-		 req->getPort());
-    socket->establishConnection(hostname, req->getPort());
+    SharedHandle<SocketCore> pooledSocket =
+      e->popPooledSocket(hostname, req->getPort());
+
+    if(pooledSocket.isNull()) {
+      logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
+		   req->getPort());
+      socket->establishConnection(hostname, req->getPort());
+    } else {
+      socket = pooledSocket;
+    }
     SharedHandle<HttpConnection> httpConnection(new HttpConnection(cuid, socket, e->option));
     command = new HttpRequestCommand(cuid, req, _requestGroup, httpConnection,
 				     e, socket);
