@@ -128,7 +128,7 @@ static void executeCommand(std::deque<Command*>& commands,
 void DownloadEngine::run() {
   Time cp;
   cp.setTimeInSec(0);
-  while(!commands.empty()) {
+  while(!commands.empty() || !_routineCommands.empty()) {
     if(cp.elapsed(1)) {
       cp.reset();
       executeCommand(commands, Command::STATUS_ALL);

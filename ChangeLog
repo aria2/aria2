@@ -1,3 +1,9 @@
+2008-04-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed the bug that aria2 exits when commands is empty() but
+	_routineCommands are not.
+	* src/DownloadEngine.cc
+
 2008-04-22  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Use the default value pulled from Option object in HelpItemFactory.
