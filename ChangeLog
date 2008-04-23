@@ -1,5 +1,11 @@
 2008-04-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added getDownloadResults() method
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+
+2008-04-23  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that aria2 exits when commands is empty() but
 	_routineCommands are not.
 	* src/DownloadEngine.cc

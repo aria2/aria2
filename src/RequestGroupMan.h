@@ -120,6 +120,10 @@ public:
   };
 
   DownloadStat getDownloadStat() const;
+
+  const std::deque<SharedHandle<DownloadResult> >&
+  getDownloadResults() const;
+
 };
 
 typedef SharedHandle<RequestGroupMan> RequestGroupManHandle;

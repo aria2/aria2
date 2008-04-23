@@ -337,4 +337,10 @@ TransferStat RequestGroupMan::calculateStat()
 			 adopt2nd(std::plus<TransferStat>(), mem_fun_sh(&RequestGroup::calculateStat)));
 }
 
+const std::deque<SharedHandle<DownloadResult> >&
+RequestGroupMan::getDownloadResults() const
+{
+  return _downloadResults;
+}
+
 } // namespace aria2
