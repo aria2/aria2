@@ -1,18 +1,19 @@
 2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Added build-in "Accept-Feature" support. For now only "metalink" is
+	Added build-in "Accept-Features" support. For now only "metalink" is
 	used in this header field.
 	This "metalink" value is removed from the list when connecting URLs
 	fed by metalink file to avoid loop in "transparent" metlaink.
 	* src/HttpRequest.cc
-	* src/HttpRequest.h: Renamed _userHeaders as _headers. Accept-Feature
+	* src/HttpRequest.h: Renamed _userHeaders as _headers. Accept-Features
 	header is also held in this variable. Also renamed setUserHeaders as
 	addHeader and it was rewritten to add header not just to clear the old
 	value.
 	* src/HttpRequestCommand.cc
 	* src/Metalink2RequestGroup.cc: Added the code to remove "metalink"
-	from "Accept-Feature" list.
-	* src/RequestGroup.cc: Added "metalink" to "Accept-Feature" by default.
+	from "Accept-Features" list.
+	* src/RequestGroup.cc: Added "metalink" to "Accept-Features" by
+	default.
 	* src/RequestGroup.h
 	* src/TaggedItem.cc: Moved Concat class to a2functional.h.
 	* src/a2functional.h: Included <string> because Concat class depends on
