@@ -103,6 +103,8 @@ namespace aria2 {
 
 int32_t RequestGroup::_gidCounter = 0;
 
+const std::string RequestGroup::FEATURE_METALINK = "metalink";
+
 RequestGroup::RequestGroup(const Option* option,
 			   const std::deque<std::string>& uris):
   _gid(++_gidCounter),
@@ -124,6 +126,12 @@ RequestGroup::RequestGroup(const Option* option,
   } else {
     _fileAllocationEnabled = false;
   }
+  // For now, only supported 'Accept-Features' is "metalink" used for
+  // transparent metalink.
+  // It would be good to put this value in Option so that user can tweak
+  // and add this list.
+  _acceptFeatures.push_back(FEATURE_METALINK);
+
   initializePreDownloadHandler();
   initializePostDownloadHandler();
 }
@@ -931,6 +939,26 @@ void RequestGroup::reportDownloadFinished()
 		    Util::abbrevSize(getCompletedLength()).c_str());
   }
 #endif // ENABLE_BITTORRENT
+}
+
+const std::deque<std::string>& RequestGroup::getAcceptFeatures() const
+{
+  return _acceptFeatures;
+}
+
+void RequestGroup::addAcceptFeatureHeader(const std::string& feature)
+{
+  if(std::find(_acceptFeatures.begin(), _acceptFeatures.end(), feature) == _acceptFeatures.end()) {
+    _acceptFeatures.push_back(feature);
+  }
+}
+
+void RequestGroup::removeAcceptFeatureHeader(const std::string& feature)
+{
+  std::deque<std::string>::iterator i = std::find(_acceptFeatures.begin(), _acceptFeatures.end(), feature);
+  if(i != _acceptFeatures.end()) {
+    _acceptFeatures.erase(i);
+  }
 }
 
 } // namespace aria2

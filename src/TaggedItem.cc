@@ -33,22 +33,11 @@
  */
 /* copyright --> */
 #include "TaggedItem.h"
+#include "a2functional.h"
 #include <numeric>
 #include <algorithm>
 
 namespace aria2 {
-
-class Concat {
-private:
-  std::string _delim;
-public:
-  Concat(const std::string& delim = ""):_delim(delim) {}
-
-  std::string operator()(const std::string& s1, const std::string& s2) const
-  {
-    return s1+_delim+s2;
-  }
-};
 
 std::string TaggedItem::toTagString() const
 {

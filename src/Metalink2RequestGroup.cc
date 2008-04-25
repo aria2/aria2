@@ -169,6 +169,9 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
       torrentRg->setDownloadContext(dctx);
       torrentRg->clearPreDowloadHandler();
       torrentRg->clearPostDowloadHandler();
+      // remove "metalink" from Accept-Feature list to avoid loop in tranparent
+      // metalink
+      torrentRg->removeAcceptFeatureHeader(RequestGroup::FEATURE_METALINK);
       // make it in-memory download
       SharedHandle<PreDownloadHandler> preh(new MemoryBufferPreDownloadHandler());
       {
@@ -219,7 +222,10 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
 				std::min(_option->getAsInt(PREF_METALINK_SERVERS), entry->maxConnections));
     // In metalink, multi connection to a single host is not allowed by default.
     rg->setSingleHostMultiConnectionEnabled(!_option->getAsBool(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL));
-    
+    // remove "metalink" from Accept-Feature list to avoid loop in tranparent
+    // metalink
+    rg->removeAcceptFeatureHeader(RequestGroup::FEATURE_METALINK);
+
 #ifdef ENABLE_BITTORRENT
     // Inject depenency between rg and torrentRg here if torrentRg.isNull() == false
     if(!torrentRg.isNull()) {

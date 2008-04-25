@@ -192,8 +192,8 @@ std::string HttpRequest::createRequest() const
     requestLine += std::string("Cookie: ")+cookiesValue+"\r\n";
   }
   // append additional headers given by user.
-  for(std::deque<std::string>::const_iterator i = _userHeaders.begin();
-      i != _userHeaders.end(); ++i) {
+  for(std::deque<std::string>::const_iterator i = _headers.begin();
+      i != _headers.end(); ++i) {
     requestLine += (*i)+"\r\n";
   }
 
@@ -225,11 +225,11 @@ std::string HttpRequest::getProxyAuthString() const {
     Base64::encode(AuthConfigFactorySingleton::instance()->createAuthConfigForHttpProxy(request)->getAuthText())+"\r\n";
 }
 
-void HttpRequest::setUserHeaders(const std::string& userHeadersString)
+void HttpRequest::addHeader(const std::string& headersString)
 {
   std::deque<std::string> headers;
-  Util::slice(headers, userHeadersString, '\n', true);
-  _userHeaders = headers;
+  Util::slice(headers, headersString, '\n', true);
+  _headers.insert(_headers.end(), headers.begin(), headers.end());
 }
 
 void HttpRequest::configure(const Option* option)

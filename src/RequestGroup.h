@@ -108,6 +108,8 @@ private:
 
   std::deque<SharedHandle<PostDownloadHandler> > _postDownloadHandlers;
 
+  std::deque<std::string> _acceptFeatures;
+
   const Option* _option;
 
   const Logger* _logger;
@@ -334,6 +336,14 @@ public:
   void removeURIWhoseHostnameIs(const std::string& hostname);
 
   void reportDownloadFinished();
+
+  const std::deque<std::string>& getAcceptFeatures() const;
+
+  void addAcceptFeatureHeader(const std::string& feature);
+
+  void removeAcceptFeatureHeader(const std::string& feature);
+
+  static const std::string FEATURE_METALINK;
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

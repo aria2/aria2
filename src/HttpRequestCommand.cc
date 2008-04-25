@@ -44,6 +44,9 @@
 #include "Option.h"
 #include "Socket.h"
 #include "prefs.h"
+#include "a2functional.h"
+#include "Util.h"
+#include <numeric>
 
 namespace aria2 {
 
@@ -67,14 +70,24 @@ static SharedHandle<HttpRequest>
 createHttpRequest(const SharedHandle<Request>& req,
 		  const SharedHandle<Segment>& segment,
 		  uint64_t totalLength,
-		  const Option* option)
+		  const Option* option,
+		  const std::deque<std::string>& acceptFeatures)
 {
   HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
   httpRequest->setRequest(req);
   httpRequest->setSegment(segment);
   httpRequest->setEntityLength(totalLength);
-  httpRequest->setUserHeaders(option->get(PREF_HEADER));
+  httpRequest->addHeader(option->get(PREF_HEADER));
+  if(acceptFeatures.size()) {
+    std::string acceptFeaturesHeader = "Accept-Features: "+
+      Util::trim
+      (std::accumulate(acceptFeatures.begin()+1, acceptFeatures.end(),
+		       *acceptFeatures.begin(),
+		       Concat(",")),
+       ",");
+    httpRequest->addHeader(acceptFeaturesHeader);
+  }
   httpRequest->configure(option);
 
   return httpRequest;
@@ -89,7 +102,8 @@ bool HttpRequestCommand::executeInternal() {
   if(_segments.empty()) {
     HttpRequestHandle httpRequest
       (createHttpRequest(req, SharedHandle<Segment>(),
-			 _requestGroup->getTotalLength(), e->option));    
+			 _requestGroup->getTotalLength(), e->option,
+			 _requestGroup->getAcceptFeatures()));
     _httpConnection->sendRequest(httpRequest);
   } else {
     for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
@@ -97,7 +111,8 @@ bool HttpRequestCommand::executeInternal() {
       if(!_httpConnection->isIssued(segment)) {
 	HttpRequestHandle httpRequest
 	  (createHttpRequest(req, segment,
-			     _requestGroup->getTotalLength(), e->option));    
+			     _requestGroup->getTotalLength(), e->option,
+			     _requestGroup->getAcceptFeatures()));
 	_httpConnection->sendRequest(httpRequest);
       }
     }

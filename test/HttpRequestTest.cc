@@ -22,7 +22,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
   CPPUNIT_TEST(testUserAgent);
-  CPPUNIT_TEST(testUserHeaders);
+  CPPUNIT_TEST(testAddHeader);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -37,7 +37,7 @@ public:
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
   void testUserAgent();
-  void testUserHeaders();
+  void testAddHeader();
 };
 
 
@@ -596,14 +596,14 @@ void HttpRequestTest::testUserAgent()
   CPPUNIT_ASSERT_EQUAL(expectedTextForProxy, httpRequest.createProxyRequest());
 }
 
-void HttpRequestTest::testUserHeaders()
+void HttpRequestTest::testAddHeader()
 {
   SharedHandle<Request> request(new Request());
   request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   HttpRequest httpRequest;
   httpRequest.setRequest(request);
-  httpRequest.setUserHeaders("X-ARIA2: v0.13\nX-ARIA2-DISTRIBUTE: enabled\n");
+  httpRequest.addHeader("X-ARIA2: v0.13\nX-ARIA2-DISTRIBUTE: enabled\n");
 
   std::string expectedText = "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
     "User-Agent: aria2\r\n"

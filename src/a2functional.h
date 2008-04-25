@@ -37,6 +37,7 @@
 
 #include <functional>
 #include "SharedHandle.h"
+#include <string>
 
 namespace aria2 {
 
@@ -135,6 +136,18 @@ public:
   typename Pair::second_type operator()(Pair& p) const
   {
     return p.second;
+  }
+};
+
+class Concat {
+private:
+  std::string _delim;
+public:
+  Concat(const std::string& delim = ""):_delim(delim) {}
+
+  std::string operator()(const std::string& s1, const std::string& s2) const
+  {
+    return s1+_delim+s2;
   }
 };
 

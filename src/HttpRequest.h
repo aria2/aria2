@@ -66,7 +66,7 @@ private:
 
   std::string userAgent;
 
-  std::deque<std::string> _userHeaders;
+  std::deque<std::string> _headers;
 
   std::string getHostText(const std::string& host, uint16_t port) const;
 
@@ -166,8 +166,9 @@ public:
   {
     this->userAgent = userAgent;
   }
-
-  void setUserHeaders(const std::string& userHeaders);
+  
+  // accepts multiline headers, deliminated by LF
+  void addHeader(const std::string& headers);
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;
