@@ -42,9 +42,9 @@
 
 namespace aria2 {
 
-const std::string Request::METHOD_GET = "get";
+const std::string Request::METHOD_GET = "GET";
 
-const std::string Request::METHOD_HEAD = "head";
+const std::string Request::METHOD_HEAD = "HEAD";
 
 Request::Request():
   port(0), tryCount(0),
