@@ -1,5 +1,10 @@
 2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added comment
+	* src/RequestGroup.cc (createNextCommand)
+
+2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Capitalized METHOD_GET and METHOD_HEAD
 	* src/Request.cc
 
