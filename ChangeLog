@@ -1,5 +1,28 @@
 2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Now auto protocol detection is enabled without -Z option.
+	But there is a important difference between with/without -Z optoin.
+
+	For example, if you type:
+	aria2c http://host/file file1.torrent file2.metalink http://mirror/file
+	then, aria2 interprets there are 3 request groups:
+	(1) http://host/file, http://mirror/file  <-- multi-source download
+	(2) file1.torrent
+	(3) file2.metalink
+
+	On the other hand, if you invoke above command with -Z option, it is
+	interpreted as 4 request groups:
+	(1) http://host/file
+	(2) file1.torrent
+	(3) file2.metalink
+	(4) http://mirror/file
+
+	I think usually user don't mix multi-source URLs and torrent files, so
+	there is no big problem here.
+	* src/main.cc
+
+2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed the bug that causes segmentaion fault when reading XML containing
 	unescapsed character like '&'.
 	Also a modification was made which avoids adding unnecessary

@@ -293,6 +293,15 @@ int32_t downloadUriList(Option* op)
   }
 }
 
+class StreamProtocolFilter {
+private:
+  ProtocolDetector _detector;
+public:
+  bool operator()(const std::string& uri) {
+    return _detector.isStreamProtocol(uri);
+  }
+};
+
 int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
 {
   std::deque<std::string> nargs;
@@ -307,11 +316,22 @@ int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
 			     std::deque<SharedHandle<RequestGroup> >(),
 			     AccRequestGroup(op));
   } else {
+    std::deque<std::string>::iterator strmProtoEnd =
+      std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
+    // let's process http/ftp protocols first.
     std::deque<std::string> xargs;
-    ncopy(nargs.begin(), nargs.end(), op->getAsInt(PREF_SPLIT),
+    ncopy(nargs.begin(), strmProtoEnd, op->getAsInt(PREF_SPLIT),
 	  std::back_inserter(xargs));
-    RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
-    groups.push_back(rg);
+    if(xargs.size()) {
+      RequestGroupHandle rg = createRequestGroup(op, xargs, op->get(PREF_OUT));
+      groups.push_back(rg);
+    }
+    // process remaining URIs(local metalink, BitTorrent files)
+    std::deque<SharedHandle<RequestGroup> > remGroups =
+      std::accumulate(strmProtoEnd, nargs.end(),
+		      std::deque<SharedHandle<RequestGroup> >(),
+		      AccRequestGroup(op));
+    groups.insert(groups.end(), remGroups.begin(), remGroups.end());
   }
   return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
