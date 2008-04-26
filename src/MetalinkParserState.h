@@ -51,6 +51,8 @@ public:
   
   virtual void endElement(MetalinkParserStateMachine* stm,
 			  const std::string& name, const std::string& characters) = 0;
+
+  virtual bool needsCharactersBuffering() const = 0;
 };
 
 } // namespace aria2

@@ -324,6 +324,11 @@ void MetalinkParserStateMachine::endElement(const std::string& name, const std::
   _state->endElement(this, name, characters);
 }
 
+bool MetalinkParserStateMachine::needsCharactersBuffering() const
+{
+  return _state->needsCharactersBuffering();
+}
+
 SharedHandle<Metalinker> MetalinkParserStateMachine::getResult() const
 {
   return _ctrl->getResult();

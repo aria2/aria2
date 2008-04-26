@@ -54,7 +54,8 @@ public:
 
 static void mlStartElement(void* userData, const char* name, const char** attrs)
 {
-  ((SessionData*)userData)->_charactersStack.push_front(std::string());
+  SessionData* sd = reinterpret_cast<SessionData*>(userData);
+
   std::map<std::string, std::string> attrmap;
   if(attrs) {
     const char** p = attrs;
@@ -67,20 +68,29 @@ static void mlStartElement(void* userData, const char* name, const char** attrs)
       attrmap[name] = value;
     }
   }
-  ((SessionData*)userData)->_stm->beginElement(name, attrmap);
+  sd->_stm->beginElement(name, attrmap);
+  if(sd->_stm->needsCharactersBuffering()) {
+    sd->_charactersStack.push_front(std::string());
+  }
 }
 
 static void mlEndElement(void* userData, const char* name)
 {
-  SessionData* sd = (SessionData*)userData;
-
-  sd->_stm->endElement(name, Util::trim(sd->_charactersStack.front()));
-  sd->_charactersStack.pop_front();
+  SessionData* sd = reinterpret_cast<SessionData*>(userData);
+  std::string characters;
+  if(sd->_stm->needsCharactersBuffering()) {
+    characters = Util::trim(sd->_charactersStack.front());
+    sd->_charactersStack.pop_front();
+  }
+  sd->_stm->endElement(name, characters);
 }
 
 static void mlCharacters(void* userData, const char* ch, int len)
 {
-  ((SessionData*)userData)->_charactersStack.front() += std::string(&ch[0], &ch[len]);
+  SessionData* sd = reinterpret_cast<SessionData*>(userData);
+  if(sd->_stm->needsCharactersBuffering()) {
+    sd->_charactersStack.front() += std::string(&ch[0], &ch[len]);
+  }
 }
 
 ExpatMetalinkProcessor::ExpatMetalinkProcessor() {}

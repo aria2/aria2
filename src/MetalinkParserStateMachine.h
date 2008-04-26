@@ -173,6 +173,8 @@ public:
 
   void cancelChunkChecksumTransaction();
 
+  bool needsCharactersBuffering() const;
+
   SharedHandle<Metalinker> getResult() const;
 };
 

@@ -53,6 +53,11 @@ public:
   void endElement(MetalinkParserStateMachine* stm,
 		  const std::string& name, const std::string& characters);
 
+  virtual bool needsCharactersBuffering() const
+  {
+    return false;
+  }
+
   MetalinkParserState* getPreviousState() const
   {
     return _prevState;

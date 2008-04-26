@@ -54,7 +54,7 @@ public:
 
 static void mlStartElement(void* userData, const xmlChar* name, const xmlChar** attrs)
 {
-  ((SessionData*)userData)->_charactersStack.push_front(std::string());
+  SessionData* sd = reinterpret_cast<SessionData*>(userData);
   std::map<std::string, std::string> attrmap;
   if(attrs) {
     const xmlChar** p = attrs;
@@ -67,20 +67,29 @@ static void mlStartElement(void* userData, const xmlChar* name, const xmlChar** 
       attrmap[name] = value;
     }
   }
-  ((SessionData*)userData)->_stm->beginElement((const char*)name, attrmap);
+  sd->_stm->beginElement((const char*)name, attrmap);
+  if(sd->_stm->needsCharactersBuffering()) {
+    sd->_charactersStack.push_front(std::string());
+  }
 }
 
 static void mlEndElement(void* userData, const xmlChar* name)
 {
-  SessionData* sd = (SessionData*)userData;
-
-  sd->_stm->endElement((const char*)name, Util::trim(sd->_charactersStack.front()));
-  sd->_charactersStack.pop_front();
+  SessionData* sd = reinterpret_cast<SessionData*>(userData);
+  std::string characters;
+  if(sd->_stm->needsCharactersBuffering()) {
+    characters = Util::trim(sd->_charactersStack.front());
+    sd->_charactersStack.pop_front();
+  }
+  sd->_stm->endElement((const char*)name, characters);
 }
 
 static void mlCharacters(void* userData, const xmlChar* ch, int len)
 {
-  ((SessionData*)userData)->_charactersStack.front() += std::string(&ch[0], &ch[len]);
+  SessionData* sd = reinterpret_cast<SessionData*>(userData);
+  if(sd->_stm->needsCharactersBuffering()) {
+    sd->_charactersStack.front() += std::string(&ch[0], &ch[len]);
+  }
 }
 
 static xmlSAXHandler mySAXHandler =

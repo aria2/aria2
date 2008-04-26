@@ -1,5 +1,33 @@
 2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that causes segmentaion fault when reading XML containing
+	unescapsed character like '&'.
+	Also a modification was made which avoids adding unnecessary
+	characters stack and appending unused string.
+	* src/ExpatMetalinkProcessor.cc
+	* src/FileMetalinkParserState.h
+	* src/FilesMetalinkParserState.h
+	* src/FinMetalinkParserState.h
+	* src/HashMetalinkParserState.h
+	* src/InitialMetalinkParserState.h
+	* src/LanguageMetalinkParserState.h
+	* src/MetalinkMetalinkParserState.h
+	* src/MetalinkParserState.h
+	* src/MetalinkParserStateMachine.cc
+	* src/MetalinkParserStateMachine.h
+	* src/OSMetalinkParserState.h
+	* src/PieceHashMetalinkParserState.h
+	* src/PiecesMetalinkParserState.h
+	* src/ResourcesMetalinkParserState.h
+	* src/SizeMetalinkParserState.h
+	* src/SkipTagMetalinkParserState.h
+	* src/URLMetalinkParserState.h
+	* src/VerificationMetalinkParserState.h
+	* src/VersionMetalinkParserState.h
+	* src/XML2SAXMetalinkProcessor.cc
+
+2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added StringFormat class, which internally calls vasprintf.
 	operator<< is defined for this class, so it can be used with iostream
 	classes nicely. SimpleLogger and following functions are rewritten
