@@ -224,6 +224,8 @@ public:
       } catch(RecoverableException* e) {
 	// error occurred while parsing torrent file.
 	// We simply ignore it.	
+	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+	delete e;
       }
     }
 #endif // ENABLE_BITTORRENT
@@ -236,6 +238,8 @@ public:
       } catch(RecoverableException* e) {
 	// error occurred while parsing metalink file.
 	// We simply ignore it.
+	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
+	delete e;
       }
     }
 #endif // ENABLE_METALINK

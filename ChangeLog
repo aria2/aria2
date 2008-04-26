@@ -1,5 +1,11 @@
 2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Log error in AccRequestGroup when reading BitTorrent/Metalink file is
+	failed. Also fixed memory link when exception is thrown there.
+	* src/main.cc (AccRequestGroup)
+
+2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added build-in "Accept-Features" support. For now only "metalink" is
 	used in this header field.
 	This "metalink" value is removed from the list when connecting URLs
