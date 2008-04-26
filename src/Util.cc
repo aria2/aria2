@@ -42,6 +42,7 @@
 #include "DefaultDiskWriter.h"
 #include "FatalException.h"
 #include "FileEntry.h"
+#include "StringFormat.h"
 #include <signal.h>
 #include <cerrno>
 #include <cassert>
@@ -205,10 +206,7 @@ std::string Util::urlencode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; i++) {
     if(shouldUrlencode(target[i])) {
-      char temp[4];
-      sprintf(temp, "%%%02x", target[i]);
-      temp[sizeof(temp)-1] = '\0';
-      dest.append(temp);
+      dest.append(StringFormat("%%%02x", target[i]).toString());
     } else {
       dest += target[i];
     }
@@ -224,10 +222,7 @@ std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
        ('a' <= target[i] && target[i] <= 'z')) {
       dest += target[i];
     } else {
-      char temp[4];
-      sprintf(temp, "%%%02x", target[i]);
-      temp[sizeof(temp)-1] = '\0';
-      dest.append(temp);
+      dest.append(StringFormat("%%%02x", target[i]).toString());
     }
   }
   return dest;

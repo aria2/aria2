@@ -51,7 +51,7 @@ private:
 
   Time _lastRound;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   void plannedOptimisticUnchoke(std::deque<Peer*>& peers);
 

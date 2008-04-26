@@ -38,8 +38,11 @@
 #include "message.h"
 #include "a2io.h"
 #include "a2time.h"
+#include "StringFormat.h"
 #include <cerrno>
 #include <cstring>
+#include <iostream>
+#include <cstdlib>
 
 namespace aria2 {
 
@@ -63,22 +66,22 @@ va_start(ap, EX);\
 writeFile(Logger::LEVEL, MSG, ap, EX);\
 va_end(ap);
 
-SimpleLogger::SimpleLogger(FILE* logfile):file(logfile), stdoutField(0) {}
+SimpleLogger::SimpleLogger():stdoutField(0) {}
 
 SimpleLogger::~SimpleLogger() {
   closeFile();
 }
 
 void SimpleLogger::openFile(const std::string& filename) {
-  file = fopen(filename.c_str(), "ab");
-  if(file == NULL) {
+  file.open(filename.c_str(), std::ios::app|std::ios::binary);
+  if(!file) {
     throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
   }
 }
 
 void SimpleLogger::closeFile() {
-  if(file != NULL) {
-    fclose(file);
+  if(file.is_open()) {
+    file.close();
   }
 }
 
@@ -90,13 +93,15 @@ void SimpleLogger::setStdout(Logger::LEVEL level, bool enabled) {
   }
 }
 
-void SimpleLogger::writeHeader(FILE* file,
-			       const std::string& date, const std::string& level) const
+void SimpleLogger::writeHeader(std::ostream& o, const std::string& date,
+			       const std::string& level)
 {
-  fprintf(file, "%s %s - ", date.c_str(), level.c_str());
+  o << StringFormat("%s %s - ", date.c_str(), level.c_str());
 }
 
-void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va_list ap, Exception* e, bool printHeader) const
+void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
+			    const char* msg, va_list ap, Exception* e,
+			    bool printHeader)
 {
   va_list apCopy;
   va_copy(apCopy, ap);
@@ -126,65 +131,74 @@ void SimpleLogger::writeLog(FILE* file, Logger::LEVEL level, const char* msg, va
 
   // TODO a quick hack not to print header in console
   if(printHeader) {
-    writeHeader(file, datestr, levelStr);
+    writeHeader(o, datestr, levelStr);
   }
-  vfprintf(file, std::string(Util::replace(msg, "\r", "")+"\n").c_str(), apCopy);
+  {
+    char* res;
+    if(vasprintf(&res, std::string(Util::replace(msg, "\r", "")+"\n").c_str(), apCopy) == -1) {
+      o << "SimpleLogger error, cannot allocate memory.\n";
+    } else {
+      o << res;
+      free(res);
+    }
+  }
   for(Exception* nestedEx = e; nestedEx; nestedEx = nestedEx->getCause()) {
     // TODO a quick hack not to print header in console
     if(printHeader) {
-      writeHeader(file, datestr, levelStr);
+      writeHeader(o, datestr, levelStr);
     }
-    fprintf(file, "exception: %s\n", Util::replace(nestedEx->getMsg(), "\r", "").c_str());
+    o << StringFormat("exception: %s\n", Util::replace(nestedEx->getMsg(), "\r", "").c_str());
   }
-  fflush(file);
+  o << std::flush;
   va_end(apCopy);
 }
 
-void SimpleLogger::writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e) const {
+void SimpleLogger::writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e)
+{
   writeLog(file, level, msg, ap, e);
   if(stdoutField&level) {
-    fprintf(stdout, "\n");
-    writeLog(stdout, level, msg, ap, e);
+    std::cout << "\n";
+    writeLog(std::cout, level, msg, ap, e);
   }
 }
 
-void SimpleLogger::debug(const char* msg, ...) const {
+void SimpleLogger::debug(const char* msg, ...) {
   WRITE_LOG(DEBUG, msg);
 }
 
-void SimpleLogger::debug(const char* msg, Exception* e, ...) const {
+void SimpleLogger::debug(const char* msg, Exception* e, ...) {
   WRITE_LOG_EX(DEBUG, msg, e);
 }
 
-void SimpleLogger::info(const char* msg, ...) const {
+void SimpleLogger::info(const char* msg, ...) {
   WRITE_LOG(INFO, msg);
 }
 
-void SimpleLogger::info(const char* msg, Exception* e, ...) const {
+void SimpleLogger::info(const char* msg, Exception* e, ...) {
   WRITE_LOG_EX(INFO, msg, e);
 }
 
-void SimpleLogger::notice(const char* msg, ...) const {
+void SimpleLogger::notice(const char* msg, ...) {
   WRITE_LOG(NOTICE, msg);
 }
 
-void SimpleLogger::notice(const char* msg, Exception* e, ...) const {
+void SimpleLogger::notice(const char* msg, Exception* e, ...) {
   WRITE_LOG_EX(INFO, msg, e);
 }
 
-void SimpleLogger::warn(const char* msg, ...) const {
+void SimpleLogger::warn(const char* msg, ...) {
   WRITE_LOG(WARN, msg);
 }
 
-void SimpleLogger::warn(const char* msg, Exception* e, ...) const {
+void SimpleLogger::warn(const char* msg, Exception* e, ...) {
   WRITE_LOG_EX(WARN, msg, e);
 }
 
-void SimpleLogger::error(const char* msg, ...) const {
+void SimpleLogger::error(const char* msg, ...) {
   WRITE_LOG(ERROR, msg);
 }
 
-void SimpleLogger::error(const char* msg, Exception* e, ...) const {
+void SimpleLogger::error(const char* msg, Exception* e, ...) {
   WRITE_LOG_EX(ERROR, msg, e);
 }
 

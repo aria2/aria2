@@ -54,7 +54,7 @@ private:
   SharedHandle<SocketCore> socket;
   SharedHandle<Request> req;
   const Option* option;
-  const Logger* logger;
+  Logger* logger;
 
   std::string strbuf;
 

@@ -59,7 +59,7 @@ private:
   
   WeakHandle<DHTTaskQueue> _taskQueue;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   void setCommonProperty(const SharedHandle<DHTAbstractTask>& task);
 public:

@@ -63,7 +63,7 @@ private:
 
   WeakHandle<DHTTokenTracker> _tokenTracker;
 
-  const Logger* _logger;
+  Logger* _logger;
   
   // search node in routingTable. If it is not found, create new one.
   SharedHandle<DHTNode> getRemoteNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;

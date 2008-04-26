@@ -69,7 +69,7 @@ private:
 
   RequestGroup* _ownerRequestGroup;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   void clear();
   void extractPieceHash(const unsigned char* hashData,

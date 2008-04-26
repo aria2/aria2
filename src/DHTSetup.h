@@ -48,7 +48,7 @@ class DHTSetup {
 private:
   static size_t _initialized;
 
-  const Logger* _logger;
+  Logger* _logger;
 
 public:
   DHTSetup();

@@ -51,7 +51,7 @@ class DownloadHandler
 protected:
   SharedHandle<RequestGroupCriteria> _criteria;
 
-  const Logger* _logger;
+  Logger* _logger;
 public:
   DownloadHandler();
 

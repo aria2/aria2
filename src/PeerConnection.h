@@ -56,7 +56,7 @@ private:
   int32_t cuid;
   SharedHandle<SocketCore> socket;
   const Option* option;
-  const Logger* logger;
+  Logger* logger;
 
   unsigned char resbuf[MAX_PAYLOAD_LEN];
   size_t resbufLength;

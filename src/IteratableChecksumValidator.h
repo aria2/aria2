@@ -55,7 +55,7 @@ private:
 
   SharedHandle<MessageDigestContext> _ctx;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   unsigned char* _buffer;
 

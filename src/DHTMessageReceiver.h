@@ -58,7 +58,7 @@ private:
 
   SharedHandle<DHTRoutingTable> _routingTable;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   SharedHandle<DHTMessage>
   handleUnknownMessage(const unsigned char* data, size_t length,

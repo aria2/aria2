@@ -76,7 +76,7 @@ protected:
 
   std::deque<SharedHandle<BtEventListener> > listeners;
 
-  const Logger* logger;
+  Logger* logger;
 public:
   AbstractBtMessage();
 

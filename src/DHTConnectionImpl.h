@@ -48,7 +48,7 @@ class DHTConnectionImpl:public DHTConnection {
 private:
   SharedHandle<SocketCore> _socket;
 
-  const Logger* _logger;
+  Logger* _logger;
 public:
   DHTConnectionImpl();
 

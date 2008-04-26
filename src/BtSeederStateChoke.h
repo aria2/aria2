@@ -54,7 +54,7 @@ private:
 
   Time _lastRound;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   void unchoke(std::deque<Peer*>& peers);
 public:

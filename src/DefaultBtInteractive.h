@@ -98,7 +98,7 @@ private:
 
   WeakHandle<DHTNode> _localNode;
 
-  const Logger* logger;
+  Logger* logger;
   size_t allowedFastSetSize;
   Time haveCheckPoint;
   Time keepAliveCheckPoint;

@@ -36,38 +36,39 @@
 #define _D_SIMPLE_LOGGER_H_
 
 #include "Logger.h"
-#include <cstdio>
 #include <cstdarg>
 #include <string>
+#include <fstream>
 
 namespace aria2 {
 
 class SimpleLogger:public Logger {
 private:
-  void writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e = 0) const;
-  void writeHeader(FILE* file,
-		   const std::string& date, const std::string& level) const;
-  void writeLog(FILE* file, Logger::LEVEL level,
+  void writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e = 0);
+  void writeHeader(std::ostream& out,
+		   const std::string& date, const std::string& level);
+  void writeLog(std::ostream& out, Logger::LEVEL level,
 		const char* msg, va_list ap,
-		Exception* e = 0, bool printHeader = true) const;
-  FILE* file;
+		Exception* e = 0, bool printHeader = true);
+
+  std::ofstream file;
   int stdoutField;
 public:
-  SimpleLogger(FILE* logfile = 0);
+  SimpleLogger();
   ~SimpleLogger();
 
   void openFile(const std::string& filename);
   void closeFile();
-  virtual void debug(const char* msg, ...) const;
-  virtual void debug(const char* msg, Exception* ex, ...) const;
-  virtual void info(const char* msg, ...) const;
-  virtual void info(const char* msg, Exception* ex, ...) const;
-  virtual void notice(const char* msg, ...) const;
-  virtual void notice(const char* msg, Exception* ex, ...) const;
-  virtual void warn(const char* msg, ...) const;
-  virtual void warn(const char* msg, Exception* ex, ...) const;
-  virtual void error(const char* msg, ...) const;
-  virtual void error(const char* msg, Exception* ex, ...) const;
+  virtual void debug(const char* msg, ...);
+  virtual void debug(const char* msg, Exception* ex, ...);
+  virtual void info(const char* msg, ...);
+  virtual void info(const char* msg, Exception* ex, ...);
+  virtual void notice(const char* msg, ...);
+  virtual void notice(const char* msg, Exception* ex, ...);
+  virtual void warn(const char* msg, ...);
+  virtual void warn(const char* msg, Exception* ex, ...);
+  virtual void error(const char* msg, ...);
+  virtual void error(const char* msg, Exception* ex, ...);
 
   void setStdout(Logger::LEVEL level, bool enabled);
 };

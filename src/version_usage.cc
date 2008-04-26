@@ -44,6 +44,7 @@
 #include "HelpItemFactory.h"
 #include "help_tags.h"
 #include "prefs.h"
+#include "StringFormat.h"
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -89,34 +90,34 @@ void showVersion() {
 #ifdef ENABLE_MESSAGE_DIGEST
 	    << "message digest algorithms: " << MessageDigestContext::getSupportedAlgoString() << "\n"
 #endif // ENABLE_MESSAGE_DIGEST
-	    << "\n";
-  printf(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>");
-  std::cout << std::endl;
+	    << "\n"
+	    << StringFormat(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>")
+	    << std::endl;
 }
 
 void showUsage(const std::string& category, const Option* option) {
-  printf(_("Usage: %s [options] URL ...\n"), PACKAGE_NAME);
+  std::cout << StringFormat(_("Usage: %s [options] URL ...\n"), PACKAGE_NAME)
 #ifdef ENABLE_BITTORRENT
-  printf(_("       %s [options] -T TORRENT_FILE URL ...\n"), PACKAGE_NAME);
+	    << StringFormat(_("       %s [options] -T TORRENT_FILE URL ...\n"), PACKAGE_NAME)
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-  printf(_("       %s [options] -M METALINK_FILE\n"), PACKAGE_NAME);
+	    << StringFormat(_("       %s [options] -M METALINK_FILE\n"), PACKAGE_NAME)
 #endif // ENABLE_METALINK
-  std::cout << "\n";
+	    << "\n";
 
   SharedHandle<TagContainer> tc = HelpItemFactory::createHelpItems(option);
   std::deque<SharedHandle<TaggedItem> > items =
     category == V_ALL ? tc->getAllItems() : tc->search(category);
   if(items.size() > 0) {
     if(category == V_ALL) {
-      printf(_("Printing all options."));
+      std::cout << _("Printing all options.");
     } else {
-      printf(_("Printing options tagged with '%s'."), category.c_str());
+      std::cout << StringFormat(_("Printing options tagged with '%s'."), category.c_str());
       std::cout << "\n";
       SharedHandle<HelpItem> helpItem
 	(dynamic_pointer_cast<HelpItem>(tc->nameMatch("help")));
-      printf(_("See -h option to know other command-line options(%s)."),
-	     helpItem->getAvailableValues().c_str());
+      std::cout << StringFormat(_("See -h option to know other command-line options(%s)."),
+				helpItem->getAvailableValues().c_str());
     }
     std::cout << "\n"
 	      << _("Options:") << "\n";
@@ -126,13 +127,13 @@ void showUsage(const std::string& category, const Option* option) {
   } else {
     std::deque<SharedHandle<TaggedItem> > items = tc->nameMatchForward(category);
     if(items.size() > 0) {
-      printf(_("Printing options whose name starts with '%s'."), category.c_str());
-      std::cout << "\n"
+      std::cout << StringFormat(_("Printing options whose name starts with '%s'."), category.c_str())
+		<< "\n"
 		<< _("Options:") << "\n";
       std::copy(items.begin(), items.end(), std::ostream_iterator<SharedHandle<TaggedItem> >(std::cout, "\n"));
     } else {
-      printf(_("No help category or option name matching with '%s'."), category.c_str());
-      std::cout << "\n" << tc->nameMatch("help") << "\n";
+      std::cout << StringFormat(_("No help category or option name matching with '%s'."), category.c_str())
+		<< "\n" << tc->nameMatch("help") << "\n";
     }
   }
   if(category == TAG_BASIC) {

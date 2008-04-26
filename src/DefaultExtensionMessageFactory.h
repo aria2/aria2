@@ -49,7 +49,7 @@ private:
 
   SharedHandle<Peer> _peer;
 
-  const Logger* _logger;
+  Logger* _logger;
 
 public:
   DefaultExtensionMessageFactory();

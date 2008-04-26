@@ -44,6 +44,7 @@
 #include "a2io.h"
 #include "help_tags.h"
 #include "File.h"
+#include "StringFormat.h"
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
@@ -523,8 +524,8 @@ Option* option_processing(int argc, char* const argv[])
 	  exit(EXIT_FAILURE);
 	}
       } else if(ucfname.size()) {
-	printf("Configuration file %s is not found.", cfname.c_str());
-	std::cout << "\n";
+	std::cout << StringFormat("Configuration file %s is not found.", cfname.c_str())
+		  << "\n";
       }
     }
     try {

@@ -55,7 +55,7 @@ private:
   WeakHandle<PeerConnection> peerConnection;
   WeakHandle<BtMessageDispatcher> dispatcher;
   WeakHandle<BtMessageFactory> messageFactory;
-  const Logger* logger;
+  Logger* logger;
 
   void sendHandshake();
 public:

@@ -112,7 +112,7 @@ private:
 
   const Option* _option;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   void validateFilename(const std::string& expectedFilename,
 			const std::string& actualFilename) const;

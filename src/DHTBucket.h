@@ -67,7 +67,7 @@ private:
 
   Time _lastUpdated;
 
-  const Logger* _logger;
+  Logger* _logger;
 public:
   DHTBucket(const SharedHandle<DHTNode>& localNode);
 

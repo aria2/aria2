@@ -78,7 +78,7 @@ private:
   int32_t _cuid;
   SharedHandle<SocketCore> _socket;
   const Option* _option;
-  const Logger* _logger;
+  Logger* _logger;
 
   unsigned char _rbuf[MAX_BUFFER_LENGTH];
   size_t _rbufLength;

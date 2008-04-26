@@ -55,7 +55,7 @@ private:
   std::deque<SharedHandle<RequestGroup> > _requestGroups;
   std::deque<SharedHandle<RequestGroup> > _reservedGroups;
   std::deque<SharedHandle<DownloadResult> > _downloadResults;
-  const Logger* _logger;
+  Logger* _logger;
   unsigned int _maxSimultaneousDownloads;
   int32_t _gidCounter;
 

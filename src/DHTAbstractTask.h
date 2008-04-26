@@ -54,7 +54,7 @@ class DHTAbstractTask:public DHTTask {
 protected:
   bool _finished;
   
-  const Logger* _logger;
+  Logger* _logger;
   
   SharedHandle<DHTNode> _localNode;
 

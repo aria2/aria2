@@ -57,7 +57,7 @@ private:
 
   std::ostream& _summaryOut;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   void printMessageForContinue();
 

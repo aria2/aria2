@@ -60,7 +60,7 @@ private:
   STATUS status;
 protected:
   int32_t cuid;
-  const Logger* logger;
+  Logger* logger;
 public:
   Command(int32_t cuid);
 

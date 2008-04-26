@@ -99,7 +99,7 @@ private:
   fd_set wfdset;
   int fdmax;
 
-  const Logger* logger;
+  Logger* logger;
   
   SharedHandle<StatCalc> _statCalc;
 

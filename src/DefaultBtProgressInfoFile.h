@@ -49,7 +49,7 @@ private:
   SharedHandle<DownloadContext> _dctx;
   SharedHandle<PieceStorage> _pieceStorage;
   const Option* _option;
-  const Logger* _logger;
+  Logger* _logger;
   std::string _filename;
 
   bool isTorrentDownload();

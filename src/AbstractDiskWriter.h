@@ -46,7 +46,7 @@ class AbstractDiskWriter : public DiskWriter {
 protected:
   std::string filename;
   int fd;
-  const Logger* logger;
+  Logger* logger;
 
   void createFile(const std::string& filename, int addFlags = 0);
 

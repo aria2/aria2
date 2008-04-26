@@ -49,7 +49,7 @@ class DiskAdaptor:public BinaryStream {
 protected:
   std::string storeDir;
   std::deque<SharedHandle<FileEntry> > fileEntries;
-  const Logger* logger;
+  Logger* logger;
 public:
   DiskAdaptor();
   virtual ~DiskAdaptor();

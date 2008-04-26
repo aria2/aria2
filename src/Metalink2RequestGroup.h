@@ -52,7 +52,7 @@ class Metalink2RequestGroup {
 private:
   const Option* _option;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   std::deque<SharedHandle<RequestGroup> >
   createRequestGroup(std::deque<SharedHandle<MetalinkEntry> > entries);

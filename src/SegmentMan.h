@@ -69,7 +69,7 @@ class SegmentMan {
 private:
   const Option* _option;
 
-  const Logger* logger;
+  Logger* logger;
 
   SharedHandle<DownloadContext> _downloadContext;
 

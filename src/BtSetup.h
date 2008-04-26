@@ -48,7 +48,7 @@ class Command;
 
 class BtSetup {
 private:
-  const Logger* _logger;
+  Logger* _logger;
 public:
   BtSetup();
 

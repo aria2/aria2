@@ -59,7 +59,7 @@ private:
 
   SharedHandle<DHTMessageFactory> _factory;
 
-  const Logger* _logger;
+  Logger* _logger;
 public:
   DHTMessageTracker();
 

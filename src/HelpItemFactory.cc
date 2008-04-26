@@ -40,6 +40,7 @@
 #include "a2io.h"
 #include "help_tags.h"
 #include "Option.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -459,9 +460,8 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
   }
   {
     HelpItemHandle item(new HelpItem("help", TEXT_HELP, TAG_BASIC));
-    char buf[64];
-    snprintf(buf, sizeof(buf), "%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT);
-    item->setAvailableValues(buf);
+    item->setAvailableValues
+      (StringFormat("%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT).toString());
     item->addTag(TAG_BASIC);
     tc->addItem(item);
   }

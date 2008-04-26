@@ -48,7 +48,7 @@ class DownloadEngine;
 
 class DownloadEngineFactory {
 private:
-  const Logger* _logger;
+  Logger* _logger;
 public:
   DownloadEngineFactory();
 

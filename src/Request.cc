@@ -38,6 +38,7 @@
 #include "CookieBoxFactory.h"
 #include "CookieBox.h"
 #include "RecoverableException.h"
+#include "StringFormat.h"
 #include <utility>
 
 namespace aria2 {
@@ -180,10 +181,7 @@ std::string Request::urlencode(const std::string& src) const
 	  result.replace(index, 1, "%25");
 	}
       } else {
-	char temp[4];
-	sprintf(temp, "%%%02x", c);
-	temp[3] = '\0';
-	result.replace(index, 1, temp);
+	result.replace(index, 1, StringFormat("%%%02x", c).toString());
       }
     }
   }

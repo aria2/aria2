@@ -52,7 +52,7 @@ private:
   SharedHandle<PieceStorage> _pieceStorage;
   BitfieldMan* _bitfield;
   size_t _currentIndex;
-  const Logger* _logger;
+  Logger* _logger;
   SharedHandle<MessageDigestContext> _ctx;
   unsigned char* _buffer;
 

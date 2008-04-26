@@ -72,7 +72,7 @@ private:
   int32_t cuid;
   SharedHandle<SocketCore> socket;
   const Option* option;
-  const Logger* logger;
+  Logger* logger;
 
   HttpRequestEntries outstandingHttpRequests;
 

@@ -32,82 +32,36 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_RESPONSE_H_
-#define _D_HTTP_RESPONSE_H_
-
-#include "common.h"
-#include "SharedHandle.h"
-#include <stdint.h>
+#include "StringFormat.h"
+#include <ostream>
+#include <cstring>
+#include <cstdio>
+#include <cstdarg>
+#include <cstdlib>
 
 namespace aria2 {
 
-class HttpRequest;
-class HttpHeader;
-class TransferEncoding;
-class Logger;
-
-class HttpResponse {
-private:
-  int32_t cuid;
-  SharedHandle<HttpRequest> httpRequest;
-  SharedHandle<HttpHeader> httpHeader;
-  Logger* logger;
-public:
-  HttpResponse();
-  
-  ~HttpResponse();
-
-  void validateResponse() const;
-
-  /**
-   * Returns filename.
-   * If content-disposition header is privided in response header,
-   * this function returns the filename from it.
-   * If it is not there, returns the part of filename from the request URL.
-   */
-  std::string determinFilename() const;
-
-  void retrieveCookie();
-
-  /**
-   * Returns true if the response header indicates redirection.
-   */
-  bool isRedirect() const;
-
-  void processRedirect();
-
-  std::string getRedirectURI() const;
-
-  bool isTransferEncodingSpecified() const;
-
-  std::string getTransferEncoding() const;
-
-  SharedHandle<TransferEncoding> getTransferDecoder() const;
-
-  uint64_t getContentLength() const;
-
-  uint64_t getEntityLength() const;
-
-  std::string getContentType() const;
-
-  void setHttpHeader(const SharedHandle<HttpHeader>& httpHeader);
-
-  SharedHandle<HttpHeader> getHttpHeader() const;
-
-  const std::string& getResponseStatus() const;
-
-  void setHttpRequest(const SharedHandle<HttpRequest>& httpRequest);
-
-  SharedHandle<HttpRequest> getHttpRequest() const;
-
-  void setCuid(int32_t cuid)
-  {
-    this->cuid = cuid;
+StringFormat::StringFormat(const char* fmt, ...)
+{
+  va_list ap;
+  va_start(ap, fmt);
+  char* strp;
+  if(vasprintf(&strp, fmt, ap) != -1) {
+    _msg.assign(&strp[0], &strp[strlen(strp)]);
+    free(strp);
   }
-};
+  va_end(ap);
+}
 
-typedef SharedHandle<HttpResponse> HttpResponseHandle;
+const std::string& StringFormat::toString() const
+{
+  return _msg;
+}
+
+std::ostream& operator<<(std::ostream& o, const StringFormat& fmt)
+{
+  o << fmt.toString();
+  return o;
+}
 
 } // namespace aria2
-
-#endif // _D_HTTP_RESPONSE_H_

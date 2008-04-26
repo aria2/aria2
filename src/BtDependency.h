@@ -49,7 +49,7 @@ private:
   WeakHandle<RequestGroup> _dependant;
   SharedHandle<RequestGroup> _dependee;
   const Option* _option;
-  const Logger* _logger;
+  Logger* _logger;
 public:
   BtDependency(const WeakHandle<RequestGroup>& dependant,
 	       const SharedHandle<RequestGroup>& dependee,

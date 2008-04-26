@@ -50,7 +50,7 @@ private:
 
   std::deque<SharedHandle<DHTMessageEntry> > _messageQueue;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   void sendMessage(const SharedHandle<DHTMessageEntry>& msg);
 public:

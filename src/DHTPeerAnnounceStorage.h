@@ -58,7 +58,7 @@ private:
 
   SharedHandle<DHTTaskFactory> _taskFactory;
 
-  const Logger* _logger;
+  Logger* _logger;
 public:
   DHTPeerAnnounceStorage();
 

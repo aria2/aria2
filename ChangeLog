@@ -1,5 +1,25 @@
 2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added StringFormat class, which internally calls vasprintf.
+	operator<< is defined for this class, so it can be used with iostream
+	classes nicely. SimpleLogger and following functions are rewritten
+	using StringFormat class.
+	Besides, now Logger class's methods are non-const, many classes
+	that has a const Logger* as a member variable are modified to remove
+	const qualifier from the variable declaration.
+	* src/HelpItemFactory.cc
+	* src/Request.cc
+	* src/SimpleLogger.cc
+	* src/StringFormat.cc
+	* src/StringFormat.h
+	* src/Util.cc
+	* src/option_processing.cc
+	* src/version_usage.cc
+	* test/StringFormatTest.cc
+	* src/*.h: The classes that has const Logger* as a member variable.
+
+2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Log error in AccRequestGroup when reading BitTorrent/Metalink file is
 	failed. Also fixed memory link when exception is thrown there.
 	* src/main.cc (AccRequestGroup)

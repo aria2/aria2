@@ -61,7 +61,7 @@ private:
   SharedHandle<Peer> peer;
   unsigned int maxUploadSpeedLimit;
   time_t requestTimeout;
-  const Logger* logger;
+  Logger* logger;
 public:
   DefaultBtMessageDispatcher();
 

@@ -61,7 +61,7 @@ private:
 
   SharedHandle<DHTTaskFactory> _taskFactory;
 
-  const Logger* _logger;
+  Logger* _logger;
 
   bool addNode(const SharedHandle<DHTNode>& node, bool good);
 public:
