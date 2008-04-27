@@ -1,5 +1,11 @@
 2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed compilation error without gcrypt/openssl.
+	* src/DownloadCommand.cc
+	* src/DownloadCommand.h
+
+2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Reorganized version information so that it can be displayed in a
 	standard terminal screen without scrolling.
 	Removed http, ftp from Configuration section, because they are always

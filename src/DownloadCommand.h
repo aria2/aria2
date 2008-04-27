@@ -52,7 +52,7 @@ private:
   unsigned int lowestDownloadSpeedLimit;
   SharedHandle<PeerStat> peerStat;
 #ifdef ENABLE_MESSAGE_DIGEST
-  MessageDigestContext* _messageDigestContext;
+  SharedHandle<MessageDigestContext> _messageDigestContext;
 #endif // ENABLE_MESSAGE_DIGEST
 
   void validatePieceHash(const SharedHandle<Segment>& segment);

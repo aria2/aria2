@@ -67,16 +67,13 @@ DownloadCommand::DownloadCommand(int cuid,
 				 RequestGroup* requestGroup,
 				 DownloadEngine* e,
 				 const SocketHandle& s):
-  AbstractCommand(cuid, req, requestGroup, e, s),
-#ifdef ENABLE_MESSAGE_DIGEST
-  _messageDigestContext(0)
-#endif // ENABLE_MESSAGE_DIGEST
+  AbstractCommand(cuid, req, requestGroup, e, s)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   {
     std::string algo = _requestGroup->getDownloadContext()->getPieceHashAlgo();
     if(MessageDigestContext::supports(algo)) {
-      _messageDigestContext = new MessageDigestContext();
+      _messageDigestContext.reset(new MessageDigestContext());
       _messageDigestContext->trySetAlgo(algo);
       _messageDigestContext->digestInit();
     }
@@ -93,9 +90,6 @@ DownloadCommand::DownloadCommand(int cuid,
 DownloadCommand::~DownloadCommand() {
   assert(peerStat.get());
   peerStat->downloadStop();
-#ifdef ENABLE_MESSAGE_DIGEST
-  delete _messageDigestContext;
-#endif // ENABLE_MESSAGE_DIGEST
 }
 
 bool DownloadCommand::executeInternal() {
@@ -202,12 +196,12 @@ void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
 #ifdef ENABLE_MESSAGE_DIGEST
   std::string expectedPieceHash =
     _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
-  if(_messageDigestContext &&
+  if(!_messageDigestContext.isNull() &&
      e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
      !expectedPieceHash.empty()) {
     _messageDigestContext->digestReset();
     std::string actualPieceHash =
-      MessageDigestHelper::digest(_messageDigestContext,
+      MessageDigestHelper::digest(_messageDigestContext.get(),
 				  _requestGroup->getPieceStorage()->getDiskAdaptor(),
 				  segment->getPosition(),
 				  segment->getLength());
