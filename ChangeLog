@@ -1,5 +1,10 @@
 2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated configure.ac using the result of autoscan.
+	* configure.ac
+
+2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed compilation error without gcrypt/openssl.
 	* src/DownloadCommand.cc
 	* src/DownloadCommand.h

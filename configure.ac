@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 #
-AC_PREREQ(2.59)
+AC_PREREQ(2.61)
 AC_INIT(aria2c, 0.13.0+1, t-tujikawa@users.sourceforge.net)
 AC_CANONICAL_HOST
 AC_CANONICAL_SYSTEM
@@ -38,6 +38,7 @@ AC_ARG_ENABLE([metalink], [ --enable-metalink          enable Metalink support. 
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_MKDIR_P
 AC_PROG_RANLIB
 AC_PROG_YACC
 
@@ -131,39 +132,56 @@ fi
 
 # Checks for header files.
 AC_FUNC_ALLOCA
-#AC_HEADER_STDC
-AC_CHECK_HEADERS([winsock2.h ws2tcpip.h argz.h arpa/inet.h fcntl.h inttypes.h io.h langinfo.h libgen.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/param.h sys/socket.h sys/time.h unistd.h])
+AC_HEADER_STDC
+AC_CHECK_HEADERS([winsock2.h ws2tcpip.h argz.h arpa/inet.h fcntl.h float.h inttypes.h io.h langinfo.h libintl.h limits.h locale.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdio_ext.h stdlib.h string.h strings.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h termios.h unistd.h wchar.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
+AC_TYPE_INT64_T
+AC_TYPE_INT8_T
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
+AC_TYPE_UINT8_T
 AC_C_VOLATILE
+AC_CHECK_TYPES([ptrdiff_t])
+
 AC_SYS_LARGEFILE
 
 # Checks for library functions.
 AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION([0.17])
 AC_FUNC_ERROR_AT_LINE
+AC_PROG_GCC_TRADITIONAL
 
 case "$target" in
 	*mingw*)
 		;;
 	*)
-AC_FUNC_MALLOC
+		AC_FUNC_MALLOC
 		AC_FUNC_REALLOC
 		;;
 esac
 
 AC_FUNC_MEMCMP
+AC_FUNC_MKTIME
 AC_FUNC_MMAP
 AC_FUNC_SELECT_ARGTYPES
+AC_TYPE_SIGNAL
 AC_FUNC_STAT
+AC_FUNC_STRFTIME
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify daemon ftruncate getcwd getpagesize inet_ntoa memchr mempcpy memset mkdir munmap nl_langinfo posix_memalign random rmdir select setlocale sigaction sleep socket srandom stpcpy strcasecmp strchr strcspn strdup strerror strstr strtol strtoul unsetenv usleep])
+AC_CHECK_FUNCS([__argz_count __argz_next __argz_stringify atexit daemon ftruncate getcwd gethostbyaddr gethostbyname getpagesize inet_ntoa memchr memmove mempcpy memset mkdir munmap nl_langinfo posix_memalign putenv rmdir select setlocale sleep socket stpcpy strcasecmp strchr strcspn strdup strerror strncasecmp strstr strtol strtoul strtoull tzset unsetenv usleep])
 
 AC_CHECK_FUNCS([basename],
 	[AM_CONDITIONAL([HAVE_BASENAME], true)],
