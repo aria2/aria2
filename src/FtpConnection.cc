@@ -59,7 +59,7 @@ FtpConnection::~FtpConnection() {}
 void FtpConnection::sendUser() const
 {
   std::string request = "USER "+AuthConfigFactorySingleton::instance()->createAuthConfig(req)->getUser()+"\r\n";
-  logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
+  logger->info(MSG_SENDING_REQUEST, cuid, "USER ********");
   socket->writeData(request);
 }
 

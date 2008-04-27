@@ -1,5 +1,10 @@
 2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Masked user ID in log.
+	* src/FtpConnection.cc (sendUser)
+
+2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed query part from filename in HTTP download. The query part means
 	the substring after "?" in URL. Firefox seems do the same thing.
 	A query part is sometimes very long and not suitable to filename,
