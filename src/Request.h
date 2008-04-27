@@ -69,6 +69,8 @@ private:
   uint16_t port;
   std::string dir;
   std::string file;
+  /* after ? mark(includes '?' itself) */
+  std::string _query;
   unsigned int tryCount;
 
   // whether or not the server supports persistent connection
@@ -119,6 +121,7 @@ public:
   uint16_t getPort() const { return port; }
   std::string getDir() const { return dir; }
   std::string getFile() const { return file;}
+  std::string getQuery() const { return _query; }
 
   void supportsPersistentConnection(bool f)
   {

@@ -19,6 +19,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testCreateRequest);
   CPPUNIT_TEST(testCreateRequest_ftp);
   CPPUNIT_TEST(testCreateRequest_with_cookie);
+  CPPUNIT_TEST(testCreateRequest_query);
   CPPUNIT_TEST(testCreateProxyRequest);
   CPPUNIT_TEST(testIsRangeSatisfied);
   CPPUNIT_TEST(testUserAgent);
@@ -34,6 +35,7 @@ public:
   void testCreateRequest();
   void testCreateRequest_ftp();
   void testCreateRequest_with_cookie();
+  void testCreateRequest_query();
   void testCreateProxyRequest();
   void testIsRangeSatisfied();
   void testUserAgent();
@@ -455,6 +457,26 @@ void HttpRequestTest::testCreateRequest_with_cookie()
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
   
+}
+
+void HttpRequestTest::testCreateRequest_query()
+{
+  SharedHandle<Request> request(new Request());
+  request->setUrl("http://localhost/wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138");
+  HttpRequest httpRequest;
+  httpRequest.setRequest(request);
+
+  std::string expectedText =
+    "GET /wiki?id=9ad5109a-b8a5-4edf-9373-56a1c34ae138 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*\r\n"
+    "Host: localhost\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+  
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }
 
 void HttpRequestTest::testCreateProxyRequest()

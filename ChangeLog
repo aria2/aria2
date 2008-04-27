@@ -1,5 +1,18 @@
 2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed query part from filename in HTTP download. The query part means
+	the substring after "?" in URL. Firefox seems do the same thing.
+	A query part is sometimes very long and not suitable to filename,
+	so I think it is better to remove it from filename.
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+	* src/Request.cc
+	* src/Request.h
+	* test/HttpRequestTest.cc
+	* test/RequestTest.cc
+
+2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten Exception class. Throw exception object, not its pointer and
 	catch by reference, so that remove problematic delete operator for
 	catched exception.

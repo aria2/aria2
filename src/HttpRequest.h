@@ -108,6 +108,8 @@ public:
 
   std::string getFile() const;
 
+  std::string getQuery() const;
+
   std::string getPreviousURI() const;
 
   SharedHandle<Range> getRange() const;

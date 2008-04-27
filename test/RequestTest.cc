@@ -78,6 +78,7 @@ void RequestTest::testSetUrl1() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getUsername());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getPassword());
 }
@@ -98,6 +99,7 @@ void RequestTest::testSetUrl2() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl3() {
@@ -110,6 +112,7 @@ void RequestTest::testSetUrl3() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl4() {
@@ -122,6 +125,7 @@ void RequestTest::testSetUrl4() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2/aria3"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl5() {
@@ -134,6 +138,7 @@ void RequestTest::testSetUrl5() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2/aria3"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl6() {
@@ -146,6 +151,7 @@ void RequestTest::testSetUrl6() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("aria3"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl7() {
@@ -184,7 +190,8 @@ void RequestTest::testSetUrl11() {
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("?query/"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("?query/"), req.getQuery());
 }
 
 void RequestTest::testSetUrl12() {
@@ -195,7 +202,8 @@ void RequestTest::testSetUrl12() {
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("?query"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("?query"), req.getQuery());
 }
 
 void RequestTest::testSetUrl13() {
@@ -206,7 +214,8 @@ void RequestTest::testSetUrl13() {
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("?query"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("?query"), req.getQuery());
 }
 
 void RequestTest::testSetUrl14() {
@@ -218,7 +227,8 @@ void RequestTest::testSetUrl14() {
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL((uint16_t)8080, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("abc?query"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("abc"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("?query"), req.getQuery());
 }
 
 void RequestTest::testSetUrl15()
@@ -231,6 +241,7 @@ void RequestTest::testSetUrl15()
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/dir1/dir2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("file"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl16()
@@ -243,6 +254,7 @@ void RequestTest::testSetUrl16()
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("file"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl17()
@@ -253,7 +265,8 @@ void RequestTest::testSetUrl17()
   CPPUNIT_ASSERT_EQUAL(std::string("http"), req.getProtocol());
   CPPUNIT_ASSERT_EQUAL(std::string("host"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/file%3cwith%252%20%20space"), req.getDir());
-  CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param?a=/?"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("file%20with%20space;param"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string("?a=/?"), req.getQuery());
 }
 
 void RequestTest::testRedirectUrl() {
@@ -277,6 +290,7 @@ void RequestTest::testRedirectUrl() {
   CPPUNIT_ASSERT_EQUAL((uint16_t)80, req.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("/"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string(""), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testRedirectUrl2() {
@@ -303,7 +317,7 @@ void RequestTest::testResetUrl() {
   Request req;
   req.setUrl("http://aria.rednoah.com:8080/aria2/index.html");
   req.setReferer("http://aria.rednoah.com:8080/");
-  req.redirectUrl("ftp://aria.rednoah.co.jp/");
+  req.redirectUrl("ftp://aria.rednoah.co.jp/index_en.html?view=wide");
 
   bool v3 = req.resetUrl();
   CPPUNIT_ASSERT(v3);
@@ -319,6 +333,7 @@ void RequestTest::testResetUrl() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria.rednoah.com"), req.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("/aria2"), req.getDir());
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testInnerLink() {
@@ -326,6 +341,7 @@ void RequestTest::testInnerLink() {
   bool v = req.setUrl("http://aria.rednoah.com/index.html#download");
   CPPUNIT_ASSERT(v);
   CPPUNIT_ASSERT_EQUAL(std::string("index.html"), req.getFile());
+  CPPUNIT_ASSERT_EQUAL(std::string(""), req.getQuery());
 }
 
 void RequestTest::testSetUrl_zeroUsername()

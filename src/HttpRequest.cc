@@ -141,7 +141,7 @@ std::string HttpRequest::createRequest() const
     } else {
       requestLine += getDir()+"/";
     }
-    requestLine += getFile();
+    requestLine += getFile()+getQuery();
   }
   requestLine +=
     std::string(" HTTP/1.1\r\n")+
@@ -279,6 +279,11 @@ std::string HttpRequest::getDir() const
 std::string HttpRequest::getFile() const
 {
   return request->getFile();
+}
+
+std::string HttpRequest::getQuery() const
+{
+  return request->getQuery();
 }
 
 } // namespace aria2

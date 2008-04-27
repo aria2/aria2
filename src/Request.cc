@@ -88,12 +88,14 @@ bool Request::parseUrl(const std::string& url) {
   port = 0;
   dir = "";
   file = "";
+  _query = "";
   _username = "";
   _password = "";
   // find query part
+  std::string queryTemp;
   std::string::size_type startQueryIndex = tempUrl.find("?");
   if(startQueryIndex != std::string::npos) {
-    query = tempUrl.substr(startQueryIndex);
+    queryTemp = tempUrl.substr(startQueryIndex);
     tempUrl.erase(startQueryIndex);
   }
   // find protocol
@@ -154,7 +156,7 @@ bool Request::parseUrl(const std::string& url) {
   if(tempUrl.size() > direp+1) {
     file = tempUrl.substr(direp+1);
   }
-  file += query;
+  _query = queryTemp;
   return true;
 }
 
