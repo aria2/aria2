@@ -56,39 +56,17 @@ void showVersion() {
 	    << "Copyright (C) 2006, 2008 Tatsuhiro Tsujikawa" << "\n"
 	    << "\n"
 	    <<
-    _("This program is free software; you can redistribute it and/or modify\n"
-      "it under the terms of the GNU General Public License as published by\n"
-      "the Free Software Foundation; either version 2 of the License, or\n"
-      "(at your option) any later version.\n"
-      "\n"
       "This program is distributed in the hope that it will be useful,\n"
       "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
       "GNU General Public License for more details.\n"
-      "\n"
-      "You should have received a copy of the GNU General Public License\n"
-      "along with this program; if not, write to the Free Software\n"
-      "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n")
-	    << "\n"
-
-	    <<
-    "In addition, as a special exception, the copyright holders give\n"
-    "permission to link the code of portions of this program with the\n"
-    "OpenSSL library under certain conditions as described in each\n"
-    "individual source file, and distribute linked combinations\n"
-    "including the two.\n"
-    "You must obey the GNU General Public License in all respects\n"
-    "for all of the code used other than OpenSSL.  If you modify\n"
-    "file(s) with this exception, you may extend this exception to your\n"
-    "version of the file(s), but you are not obligated to do so.  If you\n"
-    "do not wish to do so, delete this exception statement from your\n"
-    "version.  If you delete this exception statement from all source\n"
-    "files in the program, then also delete it here.\n"
 	    << "\n"
 	    << "** Configuration **" << "\n"
-	    << FeatureConfig::getInstance()->getConfigurationSummary()
+	    << "Enabled Features: "
+	    << FeatureConfig::getInstance()->featureSummary() << "\n"
 #ifdef ENABLE_MESSAGE_DIGEST
-	    << "message digest algorithms: " << MessageDigestContext::getSupportedAlgoString() << "\n"
+	    << "Hash Algorithms: "
+	    << MessageDigestContext::getSupportedAlgoString() << "\n"
 #endif // ENABLE_MESSAGE_DIGEST
 	    << "\n"
 	    << StringFormat(_("Report bugs to %s"), "<tujikawa at users dot sourceforge dot net>")

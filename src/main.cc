@@ -434,7 +434,6 @@ int main(int argc, char* argv[])
   }
   delete op;
   LogFactory::release();
-  FeatureConfig::release();
   return exitStatus;
 }
 

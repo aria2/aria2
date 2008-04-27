@@ -33,6 +33,7 @@
  */
 /* copyright --> */
 #include "messageDigest.h"
+#include "Util.h"
 
 namespace aria2 {
 
@@ -62,6 +63,16 @@ std::string MessageDigestContext::digestFinal()
   std::string rawMDString(&rawMD[0], &rawMD[length]);
   delete [] rawMD;
   return rawMDString;
+}
+
+std::string MessageDigestContext::getSupportedAlgoString()
+{
+  std::string algos;
+  for(DigestAlgoMap::const_iterator itr = digestAlgos.begin();
+      itr != digestAlgos.end(); ++itr) {
+    algos += (*itr).first+", ";
+  }
+  return Util::trim(algos, ", ");
 }
 
 } // namespace aria2

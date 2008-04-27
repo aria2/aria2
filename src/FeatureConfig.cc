@@ -33,76 +33,110 @@
  */
 /* copyright --> */
 #include "FeatureConfig.h"
+#include "array_fun.h"
+#include "Util.h"
+#include <numeric>
 
 namespace aria2 {
 
-FeatureConfig* FeatureConfig::featureConfig = 0;
+SharedHandle<FeatureConfig> FeatureConfig::_featureConfig;
 
-#define FEATURE_HTTP "http"
-#define FEATURE_HTTPS "https"
-#define FEATURE_FTP "ftp"
-#define FEATURE_BITTORRENT "bittorrent"
-#define FEATURE_METALINK "metalink"
-#define FEATURE_MESSAGE_DIGEST "message digest"
-#define FEATURE_ASYNC_DNS "async dns"
+const std::string FeatureConfig::FEATURE_HTTPS("HTTPS");
+const std::string FeatureConfig::FEATURE_BITTORRENT("BitTorrent");
+const std::string FeatureConfig::FEATURE_METALINK("Metalink");
+const std::string FeatureConfig::FEATURE_MESSAGE_DIGEST("Message Digest");
+const std::string FeatureConfig::FEATURE_ASYNC_DNS("Async DNS");
+
+#ifdef ENABLE_SSL
+# define HTTPS_ENABLED true
+#else
+# define HTTPS_ENABLED false
+#endif // ENABLE_SSL
+
+#ifdef ENABLE_BITTORRENT
+# define BITTORRENT_ENABLED true
+#else
+# define BITTORRENT_ENABLED false
+#endif // ENABLE_BITTORRENT
+
+#ifdef ENABLE_METALINK
+# define METALINK_ENABLED true
+#else
+# define METALINK_ENABLED false
+#endif // ENABLE_METALINK
+
+#ifdef ENABLE_MESSAGE_DIGEST
+# define MESSAGE_DIGEST_ENABLED true
+#else
+# define MESSAGE_DIGEST_ENABLED false
+#endif // ENABLE_MESSAGE_DIGEST
+
+#ifdef ENABLE_ASYNC_DNS
+# define ASYNC_DNS_ENABLED true
+#else
+# define ASYNC_DNS_ENABLED false
+#endif // ENABLE_ASYNC_DNS
 
 FeatureConfig::FeatureConfig() {
-  static PortMap::value_type portArray[] = {
-    PortMap::value_type("http", 80),
-    PortMap::value_type("https", 443),
-    PortMap::value_type("ftp", 21),
-  };
-  size_t portArraySize = sizeof(portArray)/sizeof(PortMap::value_type);
-  defaultPorts.insert(&portArray[0],
-		      &portArray[portArraySize]);
+  _defaultPorts.insert(PortMap::value_type("http", 80));
+  _defaultPorts.insert(PortMap::value_type("https", 443));
+  _defaultPorts.insert(PortMap::value_type("ftp", 21));
 
-  static FeatureMap::value_type featureArray[] = {
-    FeatureMap::value_type(FEATURE_HTTP, true),
-    FeatureMap::value_type(FEATURE_HTTPS,
-#ifdef ENABLE_SSL
-			   true
-#else
-			   false
-#endif // ENABLE_SSL
-			   ),
-    FeatureMap::value_type(FEATURE_FTP, true),
-    FeatureMap::value_type(FEATURE_BITTORRENT,
-#ifdef ENABLE_BITTORRENT
-			   true
-#else
-			   false
-#endif // ENABLE_BITTORRENT
-			   ),
-    FeatureMap::value_type(FEATURE_METALINK,
-#ifdef ENABLE_METALINK
-			   true
-#else
-			   false
-#endif // ENABLE_METALINK
-			   ),
-    FeatureMap::value_type(FEATURE_MESSAGE_DIGEST,
-#ifdef ENABLE_MESSAGE_DIGEST
-			   true
-#else
-			   false
-#endif // ENABLE_MESSAGE_DIGEST
-			   ),
-    FeatureMap::value_type(FEATURE_ASYNC_DNS,
-#ifdef ENABLE_ASYNC_DNS
-			   true
-#else
-			   false
-#endif // ENABLE_ASYNC_DNS
-			   ),
+  FeatureMap::value_type featureArray[] = {
+    FeatureMap::value_type(FEATURE_HTTPS, HTTPS_ENABLED),
+    FeatureMap::value_type(FEATURE_BITTORRENT, BITTORRENT_ENABLED),
+    FeatureMap::value_type(FEATURE_METALINK, METALINK_ENABLED),
+    FeatureMap::value_type(FEATURE_MESSAGE_DIGEST, MESSAGE_DIGEST_ENABLED),
+    FeatureMap::value_type(FEATURE_ASYNC_DNS, ASYNC_DNS_ENABLED)
   };
 
-  size_t featureArraySize = sizeof(featureArray)/sizeof(FeatureMap::value_type);
-  supportedFeatures.insert(&featureArray[0],
-			   &featureArray[featureArraySize]);
+  _features.insert(&featureArray[0], &featureArray[arrayLength(featureArray)]);
+}
 
-  for(size_t i = 0; i < featureArraySize; i++) {
-    features.push_back(featureArray[i].first);
+SharedHandle<FeatureConfig> FeatureConfig::getInstance()
+{
+  if(_featureConfig.isNull()) {
+    _featureConfig.reset(new FeatureConfig());
   }
+  return _featureConfig;
+}
+
+uint16_t FeatureConfig::getDefaultPort(const std::string& protocol) const
+{
+  PortMap::const_iterator itr = _defaultPorts.find(protocol);
+  if(itr == _defaultPorts.end()) {
+    return 0;
+  } else {
+    return itr->second;
+  }
+}
+
+bool FeatureConfig::isSupported(const std::string& feature) const
+{
+  FeatureMap::const_iterator itr = _features.find(feature);
+  if(itr == _features.end()) {
+    return false;
+  } else {
+    return itr->second;
+  }
+}
+
+class AccFeature {
+public:
+  std::string operator()(std::string line, const FeatureMap::value_type& v)
+  {
+    if(v.second) {
+      line += v.first+", ";
+    }
+    return line;
+  }
+};
+
+std::string FeatureConfig::featureSummary() const
+{
+  return Util::trim
+    (std::accumulate(_features.begin(), _features.end(), std::string(),
+		     AccFeature()), ", ");
 }
 
 } // namespace aria2

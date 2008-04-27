@@ -36,9 +36,9 @@
 #define _D_FEATURE_CONFIG_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include <map>
 #include <string>
-#include <deque>
 
 namespace aria2 {
 
@@ -47,63 +47,26 @@ typedef std::map<std::string, bool> FeatureMap;
 
 class FeatureConfig {
 private:
-  static FeatureConfig* featureConfig;
+  static SharedHandle<FeatureConfig> _featureConfig;
 
-  PortMap defaultPorts;
-  FeatureMap supportedFeatures;
-  std::deque<std::string> features;
+  PortMap _defaultPorts;
+  FeatureMap _features;
 
   FeatureConfig();
-  ~FeatureConfig() {}
 public:
-  static FeatureConfig* getInstance() {
-    if(!featureConfig) {
-      featureConfig = new FeatureConfig();
-    }
-    return featureConfig;
-  }
+  static SharedHandle<FeatureConfig> getInstance();
 
-  static void release() {
-    delete featureConfig;
-    featureConfig = 0;
-  }
+  uint16_t getDefaultPort(const std::string& protocol) const;
 
-  uint16_t getDefaultPort(const std::string& protocol) const {
-    PortMap::const_iterator itr = defaultPorts.find(protocol);
-    if(itr == defaultPorts.end()) {
-      return 0;
-    } else {
-      return itr->second;
-    }
-  }
+  bool isSupported(const std::string& feature) const;
 
-  bool isSupported(const std::string& feature) const {
-    FeatureMap::const_iterator itr = supportedFeatures.find(feature);
-    if(itr == supportedFeatures.end()) {
-      return false;
-    } else {
-      return itr->second;
-    }
-  }
+  std::string featureSummary() const;
 
-  const std::deque<std::string>& getFeatures() const {
-    return features;
-  }
-
-  std::string getConfigurationSummary() const {
-    std::string summary;
-    for(std::deque<std::string>::const_iterator itr = features.begin();
-	itr != features.end(); itr++) {
-      summary += *itr;
-      if(isSupported(*itr)) {
-	summary += ": yes";
-      } else {
-	summary += ": no";
-      }
-      summary += "\n";
-    }
-    return summary;
-  }
+  static const std::string FEATURE_HTTPS;
+  static const std::string FEATURE_BITTORRENT;
+  static const std::string FEATURE_METALINK;
+  static const std::string FEATURE_MESSAGE_DIGEST;
+  static const std::string FEATURE_ASYNC_DNS;
 };
 
 } // namespace aria2

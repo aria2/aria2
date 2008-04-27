@@ -1,5 +1,19 @@
 2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Reorganized version information so that it can be displayed in a
+	standard terminal screen without scrolling.
+	Removed http, ftp from Configuration section, because they are always
+	enabled.
+	* src/FeatureConfig.cc
+	* src/FeatureConfig.h
+	* src/main.cc
+	* src/messageDigest.cc
+	* src/messageDigest.h
+	* src/version_usage.cc
+	* test/FeatureConfigTest.cc
+
+2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Masked user ID in log.
 	* src/FtpConnection.cc (sendUser)
 
