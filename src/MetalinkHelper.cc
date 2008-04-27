@@ -72,7 +72,7 @@ std::deque<SharedHandle<MetalinkEntry> >
 MetalinkHelper::query(const SharedHandle<Metalinker>& metalinker, const Option* option)
 {
   if(metalinker->entries.empty()) {
-    throw new DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
+    throw DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
   }
   std::deque<SharedHandle<MetalinkEntry> > entries =
     metalinker->queryEntry(option->get(PREF_METALINK_VERSION),

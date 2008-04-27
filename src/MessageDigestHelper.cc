@@ -38,6 +38,7 @@
 #include "message.h"
 #include "DefaultDiskWriter.h"
 #include "Util.h"
+#include "StringFormat.h"
 #include <cerrno>
 
 namespace aria2 {
@@ -88,7 +89,8 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
   for(uint64_t i = 0; i < iteration; ++i) {
     ssize_t readLength = bs->readData(BUF, BUFSIZE, offset);
     if((size_t)readLength != BUFSIZE) {
-      throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
+      throw DlAbortEx
+	(StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
     }
     ctx->digestUpdate(BUF, readLength);
     offset += readLength;
@@ -96,7 +98,8 @@ std::string MessageDigestHelper::digest(MessageDigestContext* ctx,
   if(tail) {
     ssize_t readLength = bs->readData(BUF, tail, offset);
     if((size_t)readLength != tail) {
-      throw new DlAbortEx(EX_FILE_READ, "n/a", strerror(errno));
+      throw DlAbortEx
+	(StringFormat(EX_FILE_READ, "n/a", strerror(errno)).str());
     }
     ctx->digestUpdate(BUF, readLength);
   }
@@ -125,7 +128,9 @@ void MessageDigestHelper::digest(unsigned char* md, size_t mdLength,
 				 const std::string& algo, const void* data, size_t length)
 {
   if(mdLength < MessageDigestContext::digestLength(algo)) {
-    throw new DlAbortEx("Insufficient space for storing message digest: %d required, but only %d is allocated", MessageDigestContext::digestLength(algo), mdLength);
+    throw DlAbortEx
+      (StringFormat("Insufficient space for storing message digest: %d required, but only %d is allocated",
+		    MessageDigestContext::digestLength(algo), mdLength).str());
   }
   MessageDigestContext ctx;
   ctx.trySetAlgo(algo);

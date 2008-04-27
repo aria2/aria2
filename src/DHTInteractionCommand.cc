@@ -84,9 +84,8 @@ bool DHTInteractionCommand::execute()
   _receiver->handleTimeout();
   try {
     _dispatcher->sendMessages();
-  } catch(RecoverableException* e) {
+  } catch(RecoverableException& e) {
     logger->error(EX_EXCEPTION_CAUGHT, e);
-    delete e;
   }
   _e->commands.push_back(this);
   return false;

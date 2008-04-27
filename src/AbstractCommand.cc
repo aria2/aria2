@@ -53,6 +53,7 @@
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -104,7 +105,7 @@ bool AbstractCommand::execute() {
     if(!peerStat.isNull()) {
       if(peerStat->getStatus() == PeerStat::REQUEST_IDLE) {
 	logger->info(MSG_ABORT_REQUESTED, cuid);
-	onAbort(0);
+	onAbort();
 	req->resetUrl();
 	tryReserved();
 	return true;
@@ -141,39 +142,35 @@ bool AbstractCommand::execute() {
       return executeInternal();
     } else {
       if(checkPoint.elapsed(timeout)) {
-	throw new DlRetryEx(EX_TIME_OUT);
+	throw DlRetryEx(EX_TIME_OUT);
       }
       e->commands.push_back(this);
       return false;
     }
-  } catch(DlAbortEx* err) {
+  } catch(DlAbortEx& err) {
     logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
-    onAbort(err);
-    delete(err);
+    onAbort();
     req->resetUrl();
     tryReserved();
     return true;
-  } catch(DlRetryEx* err) {
+  } catch(DlRetryEx& err) {
     logger->info(MSG_RESTARTING_DOWNLOAD, err, cuid, req->getUrl().c_str());
     req->addTryCount();
     bool isAbort = e->option->getAsInt(PREF_MAX_TRIES) != 0 &&
       req->getTryCount() >= (unsigned int)e->option->getAsInt(PREF_MAX_TRIES);
     if(isAbort) {
-      onAbort(err);
+      onAbort();
     }
     if(isAbort) {
       logger->info(MSG_MAX_TRY, cuid, req->getTryCount());
       logger->error(MSG_DOWNLOAD_ABORTED, err, cuid, req->getUrl().c_str());
-      delete(err);
       tryReserved();
       return true;
     } else {
-      delete(err);
       return prepareForRetry(e->option->getAsInt(PREF_RETRY_WAIT));
     }
-  } catch(DownloadFailureException* err) {
+  } catch(DownloadFailureException& err) {
     logger->error(EX_EXCEPTION_CAUGHT, err);
-    delete(err);
     _requestGroup->setHaltRequested(true);
     return true;
   }
@@ -200,7 +197,7 @@ bool AbstractCommand::prepareForRetry(time_t wait) {
   return true;
 }
 
-void AbstractCommand::onAbort(Exception* ex) {
+void AbstractCommand::onAbort() {
   logger->debug(MSG_UNREGISTER_CUID, cuid);
   //_segmentMan->unregisterId(cuid);
   if(!_requestGroup->getPieceStorage().isNull()) {
@@ -278,9 +275,9 @@ bool AbstractCommand::resolveHostname(const std::string& hostname,
       return true;
       break;
     case NameResolver::STATUS_ERROR:
-      throw new DlAbortEx(MSG_NAME_RESOLUTION_FAILED, cuid,
-			  hostname.c_str(),
-			  resolver->getError().c_str());
+      throw DlAbortEx(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
+				   hostname.c_str(),
+				   resolver->getError().c_str()).str());
     default:
       return false;
     }

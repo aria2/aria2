@@ -51,18 +51,18 @@ MetaEntry* MetaFileUtil::parseMetaFile(const std::string& file) {
   FILE* fp = fopen(file.c_str(), "r+b");
   try {
     if(!fp) {
-      throw new DlAbortEx("cannot open metainfo file");
+      throw DlAbortEx("cannot open metainfo file");
     }
     if(fread(buf, len, 1, fp) != 1) {
       fclose(fp);
-      throw new DlAbortEx("cannot read metainfo");
+      throw DlAbortEx("cannot read metainfo");
     }
     fclose(fp);
     fp = 0;
     MetaEntry* entry = bdecoding(buf, len);
     delete [] buf;
     return entry;
-  } catch(RecoverableException* ex) {
+  } catch(RecoverableException& ex) {
     delete [] buf;
     if(fp) {
       fclose(fp);
@@ -82,7 +82,7 @@ MetaEntry*
 MetaFileUtil::bdecodingR(const unsigned char** pp, const unsigned char* end)
 {
   if(*pp >= end) {
-    throw new DlAbortEx("Malformed metainfo");
+    throw DlAbortEx("Malformed metainfo");
   }
   MetaEntry* e;
   switch(**pp) {
@@ -108,7 +108,7 @@ Dictionary*
 MetaFileUtil::parseDictionaryTree(const unsigned char** pp, const unsigned char* end)
 {
   if(*pp >= end) {
-    throw new DlAbortEx("Malformed metainfo");
+    throw DlAbortEx("Malformed metainfo");
   }
   Dictionary* dic = new Dictionary();
   try {
@@ -122,7 +122,7 @@ MetaFileUtil::parseDictionaryTree(const unsigned char** pp, const unsigned char*
       dic->put(name, e);
     }
     return dic;
-  } catch(RecoverableException* ex) {
+  } catch(RecoverableException& ex) {
     delete dic;
     throw;
   }
@@ -132,7 +132,7 @@ List*
 MetaFileUtil::parseListTree(const unsigned char** pp, const unsigned char* end)
 {
   if(*pp >= end) {
-    throw new DlAbortEx("Malformed metainfo");
+    throw DlAbortEx("Malformed metainfo");
   }
   List* lis = new List();
   try {
@@ -145,7 +145,7 @@ MetaFileUtil::parseListTree(const unsigned char** pp, const unsigned char* end)
       lis->add(e);
     }
     return lis;
-  } catch(RecoverableException* ex) {
+  } catch(RecoverableException& ex) {
     delete lis;
     throw;
   }
@@ -155,12 +155,12 @@ Data*
 MetaFileUtil::decodeInt(const unsigned char** pp, const unsigned char* end)
 {
   if(*pp >= end) {
-    throw new DlAbortEx(EX_MALFORMED_META_INFO);
+    throw DlAbortEx(EX_MALFORMED_META_INFO);
   }
   unsigned char* endTerm = reinterpret_cast<unsigned char*>(memchr(*pp, 'e', end-*pp));
   // TODO if endTerm is null
   if(!endTerm) {
-    throw new DlAbortEx(EX_MALFORMED_META_INFO);
+    throw DlAbortEx(EX_MALFORMED_META_INFO);
   }
   size_t numSize = endTerm-*pp;
 
@@ -173,12 +173,12 @@ Data*
 MetaFileUtil::decodeWord(const unsigned char** pp, const unsigned char* end)
 {
   if(*pp >= end) {
-    throw new DlAbortEx("Malformed metainfo");
+    throw DlAbortEx("Malformed metainfo");
   }
   unsigned char* delim = reinterpret_cast<unsigned char*>(memchr(*pp, ':', end-*pp));
   // TODO if delim is null
   if(delim == *pp || !delim) {
-    throw new DlAbortEx(EX_MALFORMED_META_INFO);
+    throw DlAbortEx(EX_MALFORMED_META_INFO);
   }
   size_t numSize = delim-*pp;
   unsigned char* temp = new unsigned char[numSize+1];
@@ -189,12 +189,12 @@ MetaFileUtil::decodeWord(const unsigned char** pp, const unsigned char* end)
 				   &endptr, 10);
   if(*endptr != '\0') {
     delete [] temp;
-    throw new DlAbortEx(EX_MALFORMED_META_INFO);
+    throw DlAbortEx(EX_MALFORMED_META_INFO);
   }    
   delete [] temp;
 
   if(delim+1+size > end) {
-    throw new DlAbortEx(EX_MALFORMED_META_INFO);
+    throw DlAbortEx(EX_MALFORMED_META_INFO);
   }
 
   Data* data = new Data(delim+1, size);

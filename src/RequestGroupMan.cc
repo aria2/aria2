@@ -125,9 +125,8 @@ void RequestGroupMan::removeStoppedGroup()
 	} else {
 	  (*itr)->getProgressInfoFile()->save();
 	}
-      } catch(RecoverableException* ex) {
+      } catch(RecoverableException& ex) {
 	_logger->error(EX_EXCEPTION_CAUGHT, ex);
-	delete ex;
       }
       (*itr)->releaseRuntimeResource();
       ++count;
@@ -158,9 +157,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
-    } catch(RecoverableException* ex) {
+    } catch(RecoverableException& ex) {
       _logger->error(EX_EXCEPTION_CAUGHT, ex);
-      delete ex;
       _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
   }
@@ -185,9 +183,8 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
 	_reservedGroups.push_front((*itr));
 	itr = _requestGroups.erase(itr);
       }
-    } catch(RecoverableException* e) {
+    } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);
-      delete e;
       _downloadResults.push_back((*itr)->createDownloadResult());
       itr = _requestGroups.erase(itr);
     }  
@@ -204,9 +201,8 @@ void RequestGroupMan::save()
     } else {
       try {
 	(*itr)->getProgressInfoFile()->save();
-      } catch(RecoverableException* e) {
+      } catch(RecoverableException& e) {
 	_logger->error(EX_EXCEPTION_CAUGHT, e);
-	delete e;
       }
     }
   }

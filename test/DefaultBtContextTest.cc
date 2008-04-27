@@ -325,9 +325,8 @@ void DefaultBtContextTest::testLoadFromMemory_somethingMissing()
     DefaultBtContext btContext;
     btContext.loadFromMemory(memory, "default");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 

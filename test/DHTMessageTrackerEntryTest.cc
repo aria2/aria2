@@ -46,11 +46,8 @@ void DHTMessageTrackerEntryTest::testMatch()
     CPPUNIT_ASSERT(!entry.match(msg2->getTransactionID(),
 				msg2->getRemoteNode()->getIPAddress(),
 				msg2->getRemoteNode()->getPort()));
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    std::string msg = e->getMsg();
-    delete e;
-    CPPUNIT_FAIL(msg);
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 

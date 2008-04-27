@@ -71,9 +71,8 @@ void OptionHandlerTest::testBooleanOptionHandler()
   try {
     handler.parse(&option, "hello");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -96,9 +95,8 @@ void OptionHandlerTest::testNumberOptionHandler_min()
   try {
     handler.parse(&option, "0");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 
 }
@@ -112,9 +110,8 @@ void OptionHandlerTest::testNumberOptionHandler_max()
   try {
     handler.parse(&option, "101");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -129,16 +126,14 @@ void OptionHandlerTest::testNumberOptionHandler_min_max()
   try {
     handler.parse(&option, "0");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     handler.parse(&option, "101");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -157,22 +152,19 @@ void OptionHandlerTest::testUnitNumberOptionHandler()
   try {
     handler.parse(&option, "K");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     handler.parse(&option, "M");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     handler.parse(&option, "");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
 }
 
@@ -187,9 +179,8 @@ void OptionHandlerTest::testParameterOptionHandler_1argInit()
   try {
     handler.parse(&option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -206,9 +197,8 @@ void OptionHandlerTest::testParameterOptionHandler_2argsInit()
   try {
     handler.parse(&option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -229,9 +219,8 @@ void OptionHandlerTest::testParameterOptionHandler_listInit()
   try {
     handler.parse(&option, "value3");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -266,9 +255,8 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min()
   try {
     handler.parse(&option, "-0.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -281,9 +269,8 @@ void OptionHandlerTest::testFloatNumberOptionHandler_max()
   try {
     handler.parse(&option, "10.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -298,16 +285,14 @@ void OptionHandlerTest::testFloatNumberOptionHandler_min_max()
   try {
     handler.parse(&option, "-0.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     handler.parse(&option, "10.1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -344,37 +329,32 @@ void OptionHandlerTest::testHttpProxyOptionHandler()
   try {
     handler.parse(&option, "bar");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     handler.parse(&option, "bar:");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     handler.parse(&option, ":");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     handler.parse(&option, ":80");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     handler.parse(&option, "foo:bar");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 

@@ -40,6 +40,7 @@
 #include "Logger.h"
 #include "DlAbortEx.h"
 #include "a2io.h"
+#include "StringFormat.h"
 #include <cerrno>
 #include <cstring>
 #include <cassert>
@@ -79,11 +80,13 @@ void AbstractDiskWriter::openExistingFile(const std::string& filename,
   this->filename = filename;
   File f(filename);
   if(!f.isFile()) {
-    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), MSG_FILE_NOT_FOUND);
+    throw DlAbortEx
+      (StringFormat(EX_FILE_OPEN, filename.c_str(), MSG_FILE_NOT_FOUND).str());
   }
 
   if((fd = open(filename.c_str(), O_RDWR|O_BINARY, OPEN_MODE)) < 0) {
-    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
+    throw DlAbortEx
+      (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -93,7 +96,7 @@ void AbstractDiskWriter::createFile(const std::string& filename, int addFlags)
   assert(filename.size());
   Util::mkdirs(File(filename).getDirname());
   if((fd = open(filename.c_str(), O_CREAT|O_RDWR|O_TRUNC|O_BINARY|addFlags, OPEN_MODE)) < 0) {
-    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
+    throw DlAbortEx(StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
   }  
 }
 
@@ -121,7 +124,8 @@ ssize_t AbstractDiskWriter::readDataInternal(unsigned char* data, size_t len)
 void AbstractDiskWriter::seek(off_t offset)
 {
   if(offset != lseek(fd, offset, SEEK_SET)) {
-    throw new DlAbortEx(EX_FILE_SEEK, filename.c_str(), strerror(errno));
+    throw DlAbortEx
+      (StringFormat(EX_FILE_SEEK, filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -129,7 +133,7 @@ void AbstractDiskWriter::writeData(const unsigned char* data, size_t len, off_t 
 {
   seek(offset);
   if(writeDataInternal(data, len) < 0) {
-    throw new DlAbortEx(EX_FILE_WRITE, filename.c_str(), strerror(errno));
+    throw DlAbortEx(StringFormat(EX_FILE_WRITE, filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -138,7 +142,7 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
   ssize_t ret;
   seek(offset);
   if((ret = readDataInternal(data, len)) < 0) {
-    throw new DlAbortEx(EX_FILE_READ, filename.c_str(), strerror(errno));
+    throw DlAbortEx(StringFormat(EX_FILE_READ, filename.c_str(), strerror(errno)).str());
   }
   return ret;
 }
@@ -146,7 +150,7 @@ ssize_t AbstractDiskWriter::readData(unsigned char* data, size_t len, off_t offs
 void AbstractDiskWriter::truncate(uint64_t length)
 {
   if(fd == -1) {
-    throw new DlAbortEx("File not opened.");
+    throw DlAbortEx("File not opened.");
   }
   ftruncate(fd, length);
 }
@@ -155,7 +159,7 @@ void AbstractDiskWriter::truncate(uint64_t length)
 uint64_t AbstractDiskWriter::size() const
 {
   if(fd == -1) {
-    throw new DlAbortEx("File not opened.");
+    throw DlAbortEx("File not opened.");
   }
   struct stat fileStat;
   if(fstat(fd, &fileStat) < 0) {

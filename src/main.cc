@@ -64,6 +64,7 @@
 #include "ProtocolDetector.h"
 #include "ConsoleStatCalc.h"
 #include "NullStatCalc.h"
+#include "StringFormat.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "Metalink2RequestGroup.h"
@@ -191,7 +192,7 @@ int32_t downloadMetalink(Option* op)
 {
   RequestGroups groups = Metalink2RequestGroup(op).generate(op->get(PREF_METALINK_FILE));
   if(groups.empty()) {
-    throw new FatalException("No files to download.");
+    throw FatalException("No files to download.");
   }
   return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
@@ -221,11 +222,10 @@ public:
       try {
 	groups.push_back(createBtRequestGroup(uri, _op,
 					      std::deque<std::string>()));
-      } catch(RecoverableException* e) {
+      } catch(RecoverableException& e) {
 	// error occurred while parsing torrent file.
 	// We simply ignore it.	
 	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
-	delete e;
       }
     }
 #endif // ENABLE_BITTORRENT
@@ -235,11 +235,10 @@ public:
 	std::deque<SharedHandle<RequestGroup> > metalinkGroups =
 	  Metalink2RequestGroup(_op).generate(uri);
 	groups.insert(groups.end(), metalinkGroups.begin(), metalinkGroups.end());
-      } catch(RecoverableException* e) {
+      } catch(RecoverableException& e) {
 	// error occurred while parsing metalink file.
 	// We simply ignore it.
 	LogFactory::getInstance()->error(EX_EXCEPTION_CAUGHT, e);
-	delete e;
       }
     }
 #endif // ENABLE_METALINK
@@ -286,7 +285,9 @@ int32_t downloadUriList(Option* op)
     return downloadUriList(op, std::cin);
   } else {
     if(!File(op->get(PREF_INPUT_FILE)).isFile()) {
-      throw new FatalException(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(), "No such file");
+      throw FatalException
+	(StringFormat(EX_FILE_OPEN, op->get(PREF_INPUT_FILE).c_str(),
+		      "No such file").str());
     }
     std::ifstream f(op->get(PREF_INPUT_FILE).c_str());
     return downloadUriList(op, f);
@@ -427,9 +428,8 @@ int main(int argc, char* argv[])
     if(returnValue == 1) {
       exitStatus = EXIT_FAILURE;
     }
-  } catch(Exception* ex) {
-    std::cerr << EX_EXCEPTION_CAUGHT << "\n" << *ex << std::endl;
-    delete ex;
+  } catch(Exception& ex) {
+    std::cerr << EX_EXCEPTION_CAUGHT << "\n" << ex.stackTrace() << std::endl;
     exitStatus = EXIT_FAILURE;
   }
   delete op;

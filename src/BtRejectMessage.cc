@@ -40,16 +40,19 @@
 #include "Peer.h"
 #include "RequestSlot.h"
 #include "BtMessageDispatcher.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 13) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "reject", dataLength, 13);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "reject", dataLength, 13).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "reject", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "reject", ID).str());
   }
   BtRejectMessageHandle message(new BtRejectMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
@@ -60,14 +63,15 @@ BtRejectMessageHandle BtRejectMessage::create(const unsigned char* data, size_t 
 
 void BtRejectMessage::doReceivedAction() {
   if(!peer->isFastExtensionEnabled()) {
-    throw new DlAbortEx("%s received while fast extension is disabled.",
-			toString().c_str());
+    throw DlAbortEx
+      (StringFormat("%s received while fast extension is disabled.",
+		    toString().c_str()).str());
   }
   // TODO Current implementation does not close a connection even if
   // a request for this reject message has never sent.
   RequestSlot slot = dispatcher->getOutstandingRequest(index, begin, length);
   if(RequestSlot::isNull(slot)) {
-    //throw new DlAbortEx("reject recieved, but it is not in the request slots.");
+    //throw DlAbortEx("reject recieved, but it is not in the request slots.");
   } else {
     dispatcher->removeOutstandingRequest(slot);
   }

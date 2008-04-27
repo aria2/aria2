@@ -321,37 +321,32 @@ void UtilTest::testGetRealSize()
   try {
     Util::getRealSize("");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::getRealSize("foo");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::getRealSize("-1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::getRealSize("9223372036854775807K");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::getRealSize("9223372036854775807M");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
 }
 
@@ -444,9 +439,8 @@ void UtilTest::testMkdirs()
   try {
     Util::mkdirs(file);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(DlAbortEx* ex) {
-    std::cerr << ex->getMsg() << std::endl;
-    delete ex;
+  } catch(DlAbortEx& ex) {
+    std::cerr << ex.stackTrace() << std::endl;
   }
 }
 
@@ -493,37 +487,32 @@ void UtilTest::testParseIntRange_invalidRange()
   try {
     IntSequence seq = Util::parseIntRange("-1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     IntSequence seq = Util::parseIntRange("2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     IntSequence seq = Util::parseIntRange("2147483647-2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     IntSequence seq = Util::parseIntRange("1-2x");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     IntSequence seq = Util::parseIntRange("3x-4");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
 }
 
@@ -534,30 +523,26 @@ void UtilTest::testParseInt()
   try {
     Util::parseInt("2147483648");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseInt("-2147483649");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseInt("12x");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseInt("");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
 }
 
@@ -567,16 +552,14 @@ void UtilTest::testParseUInt()
   try {
     Util::parseUInt("-1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseUInt("4294967296");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
 }
 
@@ -588,30 +571,26 @@ void UtilTest::testParseLLInt()
   try {
     Util::parseLLInt("9223372036854775808");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseLLInt("-9223372036854775809");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseLLInt("12x");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseLLInt("");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
 }
 
@@ -622,16 +601,14 @@ void UtilTest::testParseULLInt()
   try {
     Util::parseUInt("-1");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
   try {
     Util::parseLLInt("18446744073709551616");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace();
   }
 }
 

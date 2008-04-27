@@ -70,9 +70,8 @@ void DefaultExtensionMessageFactoryTest::testCreateMessage_unknown()
     factory.createMessage(reinterpret_cast<const unsigned char*>(data.c_str()),
 			  data.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 

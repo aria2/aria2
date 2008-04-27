@@ -78,10 +78,9 @@ bool PeerListenCommand::bindPort(uint16_t& port, IntSequence& seq)
       socket->setNonBlockingMode();
       logger->info(MSG_LISTENING_PORT, cuid, port);
       return true;
-    } catch(RecoverableException* ex) {
+    } catch(RecoverableException& ex) {
       logger->error(MSG_BIND_FAILURE, ex, cuid, port);
       socket->closeConnection();
-      delete ex;
     }
   }
   return false;
@@ -116,9 +115,8 @@ bool PeerListenCommand::execute() {
 		    peer->ipaddr.c_str(),
 		    peer->port);
       logger->debug("Added CUID#%d to receive BitTorrent/MSE handshake.", cuid);
-    } catch(RecoverableException* ex) {
+    } catch(RecoverableException& ex) {
       logger->debug(MSG_ACCEPT_FAILURE, ex, cuid);
-      delete ex;
     }		    
   }
   e->commands.push_back(this);

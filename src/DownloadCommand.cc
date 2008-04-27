@@ -54,6 +54,7 @@
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
+#include "StringFormat.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "MessageDigestHelper.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -138,7 +139,7 @@ bool DownloadCommand::executeInternal() {
     peerStat->updateDownloadLength(infbufSize);
   }
   if(_requestGroup->getTotalLength() != 0 && bufSize == 0) {
-    throw new DlRetryEx(EX_GOT_EOF);
+    throw DlRetryEx(EX_GOT_EOF);
   }
   if((!transferDecoder.isNull() && transferDecoder->finished())
      || (transferDecoder.isNull() && segment->complete())
@@ -162,10 +163,10 @@ void DownloadCommand::checkLowestDownloadSpeed() const
   if(peerStat->getDownloadStartTime().elapsed(startupIdleTime)) {
     unsigned int nowSpeed = peerStat->calculateDownloadSpeed();
     if(lowestDownloadSpeedLimit > 0 &&  nowSpeed <= lowestDownloadSpeedLimit) {
-      throw new DlAbortEx(EX_TOO_SLOW_DOWNLOAD_SPEED,
-			  nowSpeed,
-			  lowestDownloadSpeedLimit,
-			  req->getHost().c_str());
+      throw DlAbortEx(StringFormat(EX_TOO_SLOW_DOWNLOAD_SPEED,
+				   nowSpeed,
+				   lowestDownloadSpeedLimit,
+				   req->getHost().c_str()).str());
     }
   }
 }
@@ -221,7 +222,8 @@ void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
 		   actualPieceHash.c_str());
       segment->clear();
       _requestGroup->getSegmentMan()->cancelSegment(cuid);
-      throw new DlRetryEx("Invalid checksum index=%d", segment->getIndex());
+      throw DlRetryEx
+	(StringFormat("Invalid checksum index=%d", segment->getIndex()).str());
     }
   } else
 #endif // ENABLE_MESSAGE_DIGEST

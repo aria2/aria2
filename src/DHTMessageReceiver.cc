@@ -110,9 +110,8 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
       callback->onReceived(message);
     }
     return message;
-  } catch(RecoverableException* e) {
+  } catch(RecoverableException& e) {
     _logger->info("Exception thrown while receiving DHT message.", e);
-    delete e;
     return handleUnknownMessage(data, sizeof(data), remoteAddr, remotePort);
   }
 }

@@ -41,6 +41,7 @@
 #include "DefaultDiskWriterFactory.h"
 #include "DlAbortEx.h"
 #include "File.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -201,7 +202,9 @@ void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
     }
   }
   if(!writing) {
-    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, Util::itos(offset, true).c_str());
+    throw DlAbortEx
+      (StringFormat(EX_FILE_OFFSET_OUT_OF_RANGE,
+		    Util::itos(offset, true).c_str()).str());
   }
 }
 
@@ -244,7 +247,9 @@ ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset
     }
   }
   if(!reading) {
-    throw new DlAbortEx(EX_FILE_OFFSET_OUT_OF_RANGE, Util::itos(offset, true).c_str());
+    throw DlAbortEx
+      (StringFormat(EX_FILE_OFFSET_OUT_OF_RANGE,
+		    Util::itos(offset, true).c_str()).str());
   }
   return totalReadLength;
 }

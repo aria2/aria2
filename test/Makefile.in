@@ -188,7 +188,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	ProtocolDetectorTest.cc StringFormatTest.cc \
+	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
 	MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
@@ -352,7 +352,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	SpeedCalcTest.$(OBJEXT) MultiDiskAdaptorTest.$(OBJEXT) \
 	MultiFileAllocationIteratorTest.$(OBJEXT) \
 	ProtocolDetectorTest.$(OBJEXT) StringFormatTest.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3)
+	ExceptionTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
+	$(am__objects_3)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -588,8 +589,8 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	FileTest.cc OptionTest.cc DefaultDiskWriterTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
-	ProtocolDetectorTest.cc StringFormatTest.cc $(am__append_1) \
-	$(am__append_2) $(am__append_3)
+	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
+	$(am__append_1) $(am__append_2) $(am__append_3)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
@@ -746,6 +747,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DefaultPieceStorageTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DictionaryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DownloadHandlerFactoryTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ExceptionTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FeatureConfigTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileEntryTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FileTest.Po@am__quote@

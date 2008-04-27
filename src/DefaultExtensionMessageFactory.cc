@@ -41,6 +41,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "BtRegistry.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -68,8 +69,9 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
   } else {
     std::string extensionName = getExtensionName(extensionMessageID);
     if(extensionName.empty()) {
-      throw new DlAbortEx("No extension registered for extended message ID %u",
-			  extensionMessageID);
+      throw DlAbortEx
+	(StringFormat("No extension registered for extended message ID %u",
+		      extensionMessageID).str());
     }
     if(extensionName == "ut_pex") {
       // uTorrent compatible Peer-Exchange
@@ -78,7 +80,9 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data, size_t 
       m->setBtContext(_btContext);
       return m;
     } else {
-      throw new DlAbortEx("Unsupported extension message received. extensionMessageID=%u, extensionName=%s", extensionMessageID, extensionName.c_str());
+      throw DlAbortEx
+	(StringFormat("Unsupported extension message received. extensionMessageID=%u, extensionName=%s",
+		      extensionMessageID, extensionName.c_str()).str());
     }
   }
 }

@@ -53,6 +53,7 @@
 #include "DownloadFailureException.h"
 #include "ServerHost.h"
 #include "Socket.h"
+#include "StringFormat.h"
 #include <stdint.h>
 #include <cassert>
 #include <utility>
@@ -115,7 +116,7 @@ bool FtpNegotiationCommand::recvGreeting() {
     return false;
   }
   if(status != 220) {
-    throw new DlAbortEx(EX_CONNECTION_FAILED);
+    throw DlAbortEx(EX_CONNECTION_FAILED);
   }
   sequence = SEQ_SEND_USER;
 
@@ -140,7 +141,7 @@ bool FtpNegotiationCommand::recvUser() {
     sequence = SEQ_SEND_PASS;
     break;
   default:
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   return true;
 }
@@ -157,7 +158,7 @@ bool FtpNegotiationCommand::recvPass() {
     return false;
   }
   if(status != 230) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   sequence = SEQ_SEND_TYPE;
   return true;
@@ -175,7 +176,7 @@ bool FtpNegotiationCommand::recvType() {
     return false;
   }
   if(status != 200) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   sequence = SEQ_SEND_CWD;
   return true;
@@ -193,7 +194,7 @@ bool FtpNegotiationCommand::recvCwd() {
     return false;
   }
   if(status != 250) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   sequence = SEQ_SEND_SIZE;
   return true;
@@ -212,10 +213,11 @@ bool FtpNegotiationCommand::recvSize() {
     return false;
   }
   if(status != 213) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   if(size > INT64_MAX) {
-    throw new DlAbortEx(EX_TOO_LARGE_FILE, Util::uitos(size, true).c_str());
+    throw DlAbortEx
+      (StringFormat(EX_TOO_LARGE_FILE, Util::uitos(size, true).c_str()).str());
   }
   if(_requestGroup->getPieceStorage().isNull()) {
     SingleFileDownloadContextHandle dctx =
@@ -224,8 +226,9 @@ bool FtpNegotiationCommand::recvSize() {
     dctx->setFilename(Util::urldecode(req->getFile()));
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
-      throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
-					 _requestGroup->getFilePath().c_str());
+      throw DownloadFailureException
+	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+		      _requestGroup->getFilePath().c_str()).str());
     }
 
     _requestGroup->initPieceStorage();
@@ -280,7 +283,7 @@ bool FtpNegotiationCommand::recvPort() {
     return false;
   }
   if(status != 200) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   sequence = SEQ_SEND_REST;
   return true;
@@ -300,7 +303,7 @@ bool FtpNegotiationCommand::recvPasv() {
     return false;
   }
   if(status != 227) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   // make a data connection to the server.
   logger->info(MSG_CONNECTING_TO_SERVER, cuid,
@@ -336,7 +339,7 @@ bool FtpNegotiationCommand::recvRest() {
   }
   // TODO if we recieve negative response, then we set _requestGroup->getSegmentMan()->splittable = false, and continue.
   if(status != 350) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   sequence = SEQ_SEND_RETR;
   return true;
@@ -354,7 +357,7 @@ bool FtpNegotiationCommand::recvRetr() {
     return false;
   }
   if(status != 150 && status != 125) {
-    throw new DlAbortEx(EX_BAD_STATUS, status);
+    throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   if(e->option->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_NEGOTIATION_COMPLETED;

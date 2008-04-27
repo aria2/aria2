@@ -38,23 +38,18 @@
 
 namespace aria2 {
 
-class FatalException : public Exception {
+class FatalException:public Exception {
+protected:
+  virtual SharedHandle<Exception> copy() const
+  {
+    SharedHandle<Exception> e(new FatalException(*this));
+    return e;
+  }
 public:
-  FatalException(Exception* cause = 0):Exception(cause) {}
-
-  FatalException(const char* msg, ...):Exception() {
-    va_list ap;
-    va_start(ap, msg);
-    setMsg(msg, ap);
-    va_end(ap);
-  }
-
-  FatalException(Exception* cause, const char* msg, ...):Exception(cause) {
-    va_list ap;
-    va_start(ap, msg);
-    setMsg(msg, ap);
-    va_end(ap);
-  }
+  FatalException(const std::string& msg):Exception(msg) {}
+  FatalException(const std::string& msg,
+		 const Exception& cause):Exception(msg, cause) {}
+  FatalException(const FatalException& e):Exception(e) {}
 };
 
 } // namespace aria2

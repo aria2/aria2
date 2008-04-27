@@ -103,7 +103,7 @@ bool PeerInitiateConnectionCommand::prepareForNextPeer(time_t wait) {
   return true;
 }
 
-void PeerInitiateConnectionCommand::onAbort(Exception* ex) {
+void PeerInitiateConnectionCommand::onAbort() {
   peerStorage->returnPeer(peer);
 }
 

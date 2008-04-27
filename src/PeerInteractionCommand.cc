@@ -262,10 +262,9 @@ bool PeerInteractionCommand::prepareForNextPeer(time_t wait) {
   return true;
 }
 
-void PeerInteractionCommand::onAbort(Exception* ex) {
+void PeerInteractionCommand::onAbort() {
   btInteractive->cancelAllPiece();
   peerStorage->returnPeer(peer);
-  //PeerAbstractCommand::onAbort(ex);
 }
 
 bool PeerInteractionCommand::exitBeforeExecute()

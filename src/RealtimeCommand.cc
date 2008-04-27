@@ -44,9 +44,8 @@ bool RealtimeCommand::execute()
   _e->setNoWait(true);
   try {
     return executeInternal();
-  } catch(Exception* e) {
+  } catch(Exception& e) {
     bool r =  handleException(e);
-    delete e;
     return r;
   }
 }

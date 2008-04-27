@@ -35,6 +35,7 @@
 #include "NameResolver.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "StringFormat.h"
 #include <cstring>
 
 namespace aria2 {
@@ -108,8 +109,8 @@ void NameResolver::resolve(const std::string& hostname)
   struct addrinfo* res;
   int ec;
   if((ec = getaddrinfo(hostname.c_str(), 0, &ai, &res)) != 0) {
-    throw new DlAbortEx(EX_RESOLVE_HOSTNAME,
-			hostname.c_str(), gai_strerror(ec));
+    throw DlAbortEx(StringFormat(EX_RESOLVE_HOSTNAME,
+				 hostname.c_str(), gai_strerror(ec)).str());
   }
   _addr = ((struct sockaddr_in*)res->ai_addr)->sin_addr;
   freeaddrinfo(res);

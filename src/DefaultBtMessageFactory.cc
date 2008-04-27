@@ -68,6 +68,7 @@
 #include "BtRegistry.h"
 #include "BtContext.h"
 #include "PieceStorage.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -194,12 +195,12 @@ DefaultBtMessageFactory::createBtMessage(const unsigned char* data, size_t dataL
       if(peer->isExtendedMessagingEnabled()) {
 	msg = BtExtendedMessage::create(btContext, peer, data, dataLength);
       } else {
-	throw new DlAbortEx("Received extended message from peer during a session with extended messaging disabled.");
+	throw DlAbortEx("Received extended message from peer during a session with extended messaging disabled.");
       }
       break;
     }
     default:
-      throw new DlAbortEx("Invalid message ID. id=%u", id);
+      throw DlAbortEx(StringFormat("Invalid message ID. id=%u", id).str());
     }
   }
   setCommonProperty(msg);

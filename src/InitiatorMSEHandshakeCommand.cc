@@ -167,7 +167,7 @@ bool InitiatorMSEHandshakeCommand::prepareForNextPeer(time_t wait)
   }
 }
 
-void InitiatorMSEHandshakeCommand::onAbort(Exception* ex)
+void InitiatorMSEHandshakeCommand::onAbort()
 {
   if(e->option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     peerStorage->returnPeer(peer);

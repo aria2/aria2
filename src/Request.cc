@@ -127,8 +127,7 @@ bool Request::parseUrl(const std::string& url) {
   if(hostAndPort.second != "") {
     try {
       port = Util::parseInt(hostAndPort.second);
-    } catch(RecoverableException* e) {
-      delete e;
+    } catch(RecoverableException& e) {
       return false;
     }
   } else {
@@ -181,7 +180,7 @@ std::string Request::urlencode(const std::string& src) const
 	  result.replace(index, 1, "%25");
 	}
       } else {
-	result.replace(index, 1, StringFormat("%%%02x", c).toString());
+	result.replace(index, 1, StringFormat("%%%02x", c).str());
       }
     }
   }

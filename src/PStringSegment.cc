@@ -51,7 +51,7 @@ void PStringSegment::accept(PStringVisitor* visitor)
 {
   PStringSegmentVisitor* v = dynamic_cast<PStringSegmentVisitor*>(visitor);
   if(!v) {
-    throw new FatalException("Class cast exception");
+    throw FatalException("Class cast exception");
   }
   v->hello(this);
   if(!_next.isNull()) {

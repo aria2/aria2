@@ -50,6 +50,7 @@
 #include "BtMessageFactory.h"
 #include "BtRequestFactory.h"
 #include "PeerConnection.h"
+#include "StringFormat.h"
 #include <cstring>
 
 namespace aria2 {
@@ -63,11 +64,13 @@ void BtPieceMessage::setBlock(const unsigned char* block, size_t blockLength) {
 
 BtPieceMessageHandle BtPieceMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength <= 9) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "piece", dataLength, 9);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "piece", dataLength, 9).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID).str());
   }
   BtPieceMessageHandle message(new BtPieceMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));
@@ -171,7 +174,7 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
   size_t writtenLength = 0;
   for(int i = 0; i < res.quot; i++) {
     if((size_t)pieceStorage->getDiskAdaptor()->readData(buf, BUF_SIZE, offset+i*BUF_SIZE) < BUF_SIZE) {
-      throw new DlAbortEx(EX_DATA_READ);
+      throw DlAbortEx(EX_DATA_READ);
     }
     size_t ws = peerConnection->sendMessage(buf, BUF_SIZE);
     writtenLength += ws;
@@ -181,7 +184,7 @@ size_t BtPieceMessage::sendPieceData(off_t offset, size_t length) const {
   }
   if(res.rem > 0) {
     if(pieceStorage->getDiskAdaptor()->readData(buf, res.rem, offset+res.quot*BUF_SIZE) < res.rem) {
-      throw new DlAbortEx(EX_DATA_READ);
+      throw DlAbortEx(EX_DATA_READ);
     }
     size_t ws = peerConnection->sendMessage(buf, res.rem);
     writtenLength += ws;

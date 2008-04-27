@@ -47,7 +47,7 @@ private:
 public:
   StringFormat(const char* fmt, ...);
 
-  const std::string& toString() const;
+  const std::string& str() const;
 };
 
 std::ostream& operator<<(std::ostream& o, const StringFormat& fmt);

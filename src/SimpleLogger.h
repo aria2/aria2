@@ -44,12 +44,18 @@ namespace aria2 {
 
 class SimpleLogger:public Logger {
 private:
-  void writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e = 0);
+  void writeFile(Logger::LEVEL level, const char* msg, va_list ap);
+
+  void writeStackTrace(Logger::LEVEL level, const Exception& e);
+
+  void flush();
+
   void writeHeader(std::ostream& out,
 		   const std::string& date, const std::string& level);
+
   void writeLog(std::ostream& out, Logger::LEVEL level,
 		const char* msg, va_list ap,
-		Exception* e = 0, bool printHeader = true);
+		bool printHeader = true);
 
   std::ofstream file;
   int stdoutField;
@@ -60,15 +66,15 @@ public:
   void openFile(const std::string& filename);
   void closeFile();
   virtual void debug(const char* msg, ...);
-  virtual void debug(const char* msg, Exception* ex, ...);
+  virtual void debug(const char* msg, Exception& ex, ...);
   virtual void info(const char* msg, ...);
-  virtual void info(const char* msg, Exception* ex, ...);
+  virtual void info(const char* msg, Exception& ex, ...);
   virtual void notice(const char* msg, ...);
-  virtual void notice(const char* msg, Exception* ex, ...);
+  virtual void notice(const char* msg, Exception& ex, ...);
   virtual void warn(const char* msg, ...);
-  virtual void warn(const char* msg, Exception* ex, ...);
+  virtual void warn(const char* msg, Exception& ex, ...);
   virtual void error(const char* msg, ...);
-  virtual void error(const char* msg, Exception* ex, ...);
+  virtual void error(const char* msg, Exception& ex, ...);
 
   void setStdout(Logger::LEVEL level, bool enabled);
 };

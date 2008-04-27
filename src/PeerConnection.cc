@@ -42,6 +42,7 @@
 #include "a2netcompat.h"
 #include "ARC4Encryptor.h"
 #include "ARC4Decryptor.h"
+#include "StringFormat.h"
 #include <cstring>
 #include <cassert>
 #include <algorithm>
@@ -86,7 +87,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), remain=%zu",
 		    cuid, temp);
-      throw new DlAbortEx(EX_EOF_FROM_PEER);
+      throw DlAbortEx(EX_EOF_FROM_PEER);
     }
     lenbufLength += remaining;
     if(4 > lenbufLength) {
@@ -95,7 +96,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
     }
     uint32_t payloadLength = ntohl(*(reinterpret_cast<uint32_t*>(lenbuf)));
     if(payloadLength > MAX_PAYLOAD_LEN) {
-      throw new DlAbortEx(EX_TOO_LONG_PAYLOAD, payloadLength);
+      throw DlAbortEx(StringFormat(EX_TOO_LONG_PAYLOAD, payloadLength).str());
     }
     currentPayloadLength = payloadLength;
   }
@@ -111,7 +112,7 @@ bool PeerConnection::receiveMessage(unsigned char* data, size_t& dataLength) {
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveMessage(), payloadlen=%zu, remaining=%zu",
 		    cuid, currentPayloadLength, temp);
-      throw new DlAbortEx(EX_EOF_FROM_PEER);
+      throw DlAbortEx(EX_EOF_FROM_PEER);
     }
     resbufLength += remaining;
     if(currentPayloadLength > resbufLength) {
@@ -142,7 +143,7 @@ bool PeerConnection::receiveHandshake(unsigned char* data, size_t& dataLength,
       // we got EOF
       logger->debug("CUID#%d - In PeerConnection::receiveHandshake(), remain=%zu",
 		    cuid, temp);
-      throw new DlAbortEx(EX_EOF_FROM_PEER);
+      throw DlAbortEx(EX_EOF_FROM_PEER);
     }
     resbufLength += remaining;
     if(BtHandshakeMessage::MESSAGE_LENGTH > resbufLength) {

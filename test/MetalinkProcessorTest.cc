@@ -146,9 +146,8 @@ void MetalinkProcessorTest::testParseFile()
 #endif // ENABLE_MESSAGE_DIGEST
 
 
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -164,9 +163,8 @@ void MetalinkProcessorTest::testParseFromBinaryStream()
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> entry1 = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), entry1->getPath());
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -179,9 +177,8 @@ void MetalinkProcessorTest::testMalformedXML()
   try {
     SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -194,9 +191,8 @@ void MetalinkProcessorTest::testMalformedXML2()
   try {
     SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -226,9 +222,8 @@ void MetalinkProcessorTest::testBadSize()
     CPPUNIT_ASSERT_EQUAL(std::string("en-US"), e->language);
     CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), e->os);
 
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -254,9 +249,8 @@ void MetalinkProcessorTest::testBadMaxConn()
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(43743838ULL, e->getLength());
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -287,9 +281,8 @@ void MetalinkProcessorTest::testNoName()
     std::deque<SharedHandle<MetalinkEntry> >::iterator entryItr = m->entries.begin();
     SharedHandle<MetalinkEntry> e = *entryItr;
     CPPUNIT_ASSERT_EQUAL(std::string("aria2-0.5.2.tar.bz2"), e->getPath());
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -319,9 +312,8 @@ void MetalinkProcessorTest::testBadURLPrefs()
     CPPUNIT_ASSERT_EQUAL(0, r->preference);
     CPPUNIT_ASSERT_EQUAL(1, r->maxConnections);
     CPPUNIT_ASSERT_EQUAL(std::string("JP"), r->location);
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -351,9 +343,8 @@ void MetalinkProcessorTest::testBadURLMaxConn()
     CPPUNIT_ASSERT_EQUAL(100, r->preference);
     CPPUNIT_ASSERT_EQUAL(-1, r->maxConnections);
     CPPUNIT_ASSERT_EQUAL(std::string("JP"), r->location);
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -388,9 +379,8 @@ void MetalinkProcessorTest::testUnsupportedType()
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_NOT_SUPPORTED, r2->type);
     SharedHandle<MetalinkResource> r3 = e->resources[2];
     CPPUNIT_ASSERT_EQUAL(MetalinkResource::TYPE_HTTP, r3->type);
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -421,9 +411,8 @@ void MetalinkProcessorTest::testMultiplePieces()
  
     CPPUNIT_ASSERT_EQUAL(std::string("sha1"), c->getAlgo());
     CPPUNIT_ASSERT_EQUAL((size_t)1024, c->getChecksumLength());
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -453,9 +442,8 @@ void MetalinkProcessorTest::testBadPieceNo()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
     CPPUNIT_ASSERT_EQUAL(std::string("sha256"), c->getAlgo());
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -484,9 +472,8 @@ void MetalinkProcessorTest::testBadPieceLength()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
     CPPUNIT_ASSERT_EQUAL(std::string("sha256"), c->getAlgo());
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -515,9 +502,8 @@ void MetalinkProcessorTest::testUnsupportedType_piece()
     SharedHandle<ChunkChecksum> c = e->chunkChecksum;
  
     CPPUNIT_ASSERT_EQUAL(std::string("sha256"), c->getAlgo());
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
-    delete e;
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 #endif // ENABLE_MESSAGE_DIGEST
@@ -541,11 +527,8 @@ void MetalinkProcessorTest::testLargeFileSize()
     SharedHandle<Metalinker> m = proc->parseFromBinaryStream(dw);
     SharedHandle<MetalinkEntry> e = m->entries[0];
     CPPUNIT_ASSERT_EQUAL(9223372036854775807ULL, e->getLength());
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    std::string m = e->getMsg();
-    delete e;
-    CPPUNIT_FAIL(m);
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 

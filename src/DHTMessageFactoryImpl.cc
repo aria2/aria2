@@ -59,6 +59,7 @@
 #include "Util.h"
 #include "Peer.h"
 #include "Logger.h"
+#include "StringFormat.h"
 #include <cstring>
 #include <utility>
 
@@ -87,7 +88,8 @@ static const Dictionary* getDictionary(const Dictionary* d, const std::string& k
   if(c) {
     return c;
   } else {
-    throw new DlAbortEx("Malformed DHT message. Missing %s", key.c_str());
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. Missing %s", key.c_str()).str());
   }
 }
 
@@ -97,7 +99,8 @@ static const Data* getData(const Dictionary* d, const std::string& key)
   if(c) {
     return c;
   } else {
-    throw new DlAbortEx("Malformed DHT message. Missing %s", key.c_str());
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. Missing %s", key.c_str()).str());
   }
 }
 
@@ -107,8 +110,9 @@ static const Data* getData(const List* l, size_t index)
   if(c) {
     return c;
   } else {
-    throw new DlAbortEx("Malformed DHT message. element[%u] is not Data.",
-			index);
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. element[%u] is not Data.",
+		    index).str());
   }
 }
 
@@ -118,33 +122,37 @@ static const List* getList(const Dictionary* d, const std::string& key)
   if(l) {
     return l;
   } else {
-    throw new DlAbortEx("Malformed DHT message. Missing %s", key.c_str());
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. Missing %s", key.c_str()).str());
   }
 }
 
 void DHTMessageFactoryImpl::validateID(const Data* id) const
 {
   if(id->getLen() != DHT_ID_LENGTH) {
-    throw new DlAbortEx("Malformed DHT message. Invalid ID length. Expected:%d, Actual:%d", DHT_ID_LENGTH, id->getLen());
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. Invalid ID length. Expected:%d, Actual:%d", DHT_ID_LENGTH, id->getLen()).str());
   }
 }
 
 void DHTMessageFactoryImpl::validateIDMatch(const unsigned char* expected, const unsigned char* actual) const
 {
   if(memcmp(expected, actual, DHT_ID_LENGTH) != 0) {
-    //throw new DlAbortEx("Different ID received.");
+    //throw DlAbortEx("Different ID received.");
   }
 }
 
 void DHTMessageFactoryImpl::validatePort(const Data* i) const
 {
   if(!i->isNumber()) {
-    throw new DlAbortEx("Malformed DHT message. Invalid port=%s",
-			Util::toHex(i->toString()).c_str());
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. Invalid port=%s",
+		    Util::toHex(i->toString()).c_str()).str());
   }
   uint32_t port = i->toInt();
   if(UINT16_MAX < port) {
-    throw new DlAbortEx("Malformed DHT message. Invalid port=%u", port);
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. Invalid port=%u", port).str());
   }
 }
 
@@ -157,7 +165,7 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createQueryMessage(const Diction
   const Data* y = getData(d, "y");
   const Dictionary* a = getDictionary(d, "a");
   if(y->toString() != "q") {
-    throw new DlAbortEx("Malformed DHT message. y != q");
+    throw DlAbortEx("Malformed DHT message. y != q");
   }
   const Data* id = getData(getDictionary(d, "a"), "id");
   validateID(id);
@@ -186,7 +194,8 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createQueryMessage(const Diction
 				     static_cast<uint16_t>(port->toInt()),
 				     token->toString(), transactionID);
   } else {
-    throw new DlAbortEx("Unsupported message type: %s", messageType.c_str());
+    throw DlAbortEx
+      (StringFormat("Unsupported message type: %s", messageType.c_str()).str());
   }
 }
 
@@ -207,10 +216,11 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
     } else {
       _logger->debug("e doesn't have 2 elements.");
     }
-    throw new DlAbortEx("Received Error DHT message.");
+    throw DlAbortEx("Received Error DHT message.");
   } else if(y->toString() != "r") {
-    throw new DlAbortEx("Malformed DHT message. y != r: y=%s",
-			Util::urlencode(y->toString()).c_str());
+    throw DlAbortEx
+      (StringFormat("Malformed DHT message. y != r: y=%s",
+		    Util::urlencode(y->toString()).c_str()).str());
   }
   const Dictionary* r = getDictionary(d, "r");
   const Data* id = getData(r, "id");
@@ -231,13 +241,14 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
       if(nodes) {
 	return createGetPeersReplyMessageWithNodes(remoteNode, d, transactionID);
       } else {
-	throw new DlAbortEx("Malformed DHT message: missing nodes/values");
+	throw DlAbortEx("Malformed DHT message: missing nodes/values");
       }
     }
   } else if(messageType == "announce_peer") {
     return createAnnouncePeerReplyMessage(remoteNode, transactionID);
   } else {
-    throw new DlAbortEx("Unsupported message type: %s", messageType.c_str());
+    throw DlAbortEx
+      (StringFormat("Unsupported message type: %s", messageType.c_str()).str());
   }
 }
 
@@ -292,7 +303,7 @@ std::deque<SharedHandle<DHTNode> >
 DHTMessageFactoryImpl::extractNodes(const unsigned char* src, size_t length)
 {
   if(length%26 != 0) {
-    throw new DlAbortEx("Nodes length is not multiple of 26");
+    throw DlAbortEx("Nodes length is not multiple of 26");
   }
   std::deque<SharedHandle<DHTNode> > nodes;
   for(size_t offset = 0; offset < length; offset += 26) {

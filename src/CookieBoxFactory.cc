@@ -60,10 +60,9 @@ void CookieBoxFactory::loadDefaultCookie(std::istream& s)
       if(c.good()) {
 	defaultCookies.push_back(c);
       }
-    } catch(RecoverableException* e) {
+    } catch(RecoverableException& e) {
       // ignore malformed cookie entry
       // TODO better to log it
-      delete e;
     }
   }
 }

@@ -112,7 +112,7 @@ void HttpConnection::sendProxyRequest(const HttpRequestHandle& httpRequest)
 HttpResponseHandle HttpConnection::receiveResponse()
 {
   if(outstandingHttpRequests.size() == 0) {
-    throw new DlAbortEx(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
+    throw DlAbortEx(EX_NO_HTTP_REQUEST_ENTRY_FOUND);
   }
   HttpRequestEntryHandle entry = outstandingHttpRequests.front();
   HttpHeaderProcessorHandle proc = entry->getHttpHeaderProcessor();
@@ -121,7 +121,7 @@ HttpResponseHandle HttpConnection::receiveResponse()
   size_t size = sizeof(buf);
   socket->peekData(buf, size);
   if(size == 0) {
-    throw new DlRetryEx(EX_INVALID_RESPONSE);
+    throw DlRetryEx(EX_INVALID_RESPONSE);
   }
   proc->update(buf, size);
   if(!proc->eoh()) {

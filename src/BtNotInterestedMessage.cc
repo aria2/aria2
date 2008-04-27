@@ -40,16 +40,19 @@
 #include "BtRegistry.h"
 #include "BtContext.h"
 #include "PeerStorage.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtNotInterestedMessageHandle BtNotInterestedMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "not interested", dataLength, 1);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "not interested", dataLength, 1).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "not interested", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "not interested", ID).str());
   }
   BtNotInterestedMessageHandle message(new BtNotInterestedMessage());
   return message;

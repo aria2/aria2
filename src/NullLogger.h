@@ -42,15 +42,15 @@ public:
   NullLogger() {}
   virtual ~NullLogger() {}
   virtual void debug(const char* msg, ...) const {}
-  virtual void debug(const char* msg, Exception* ex, ...) const {}
+  virtual void debug(const char* msg, Exception& ex, ...) const {}
   virtual void info(const char* msg, ...) const {}
-  virtual void info(const char* msg, Exception* ex, ...) const {}
+  virtual void info(const char* msg, Exception& ex, ...) const {}
   virtual void notice(const char* msg, ...) const {}
-  virtual void notice(const char* msg, Exception* ex, ...) const {}
+  virtual void notice(const char* msg, Exception& ex, ...) const {}
   virtual void warn(const char* msg, ...) const {}
-  virtual void warn(const char* msg, Exception* ex, ...) const {}
+  virtual void warn(const char* msg, Exception& ex, ...) const {}
   virtual void error(const char*  msg, ...) const {}
-  virtual void error(const char* msg, Exception* ex, ...) const {}
+  virtual void error(const char* msg, Exception& ex, ...) const {}
 };
 
 #endif // _D_NULL_LOGGER_H_

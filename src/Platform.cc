@@ -56,7 +56,7 @@ Platform::Platform() {
   WSADATA wsaData;
   memset((char*)&wsaData, 0, sizeof(wsaData));
   if (WSAStartup(MAKEWORD(1, 1), &wsaData)) {
-    throw new DlAbortEx(MSG_WINSOCK_INIT_FAILD);
+    throw DlAbortEx(MSG_WINSOCK_INIT_FAILD);
   }
 }
 

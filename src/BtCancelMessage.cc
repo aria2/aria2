@@ -38,16 +38,19 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "BtMessageDispatcher.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtCancelMessageHandle BtCancelMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 13) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "cancel", dataLength, 13);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "cancel", dataLength, 13).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "cancel", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "cancel", ID).str());
   }
   BtCancelMessageHandle message(new BtCancelMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));

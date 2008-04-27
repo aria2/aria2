@@ -57,7 +57,7 @@ protected:
 
   void setTimeout(time_t timeout) { this->timeout = timeout; }
   virtual bool prepareForNextPeer(time_t wait);
-  virtual void onAbort(Exception* ex) {};
+  virtual void onAbort() {};
   virtual bool exitBeforeExecute() = 0;
   virtual bool executeInternal() = 0;
   void setReadCheckSocket(const SharedHandle<SocketCore>& socket);

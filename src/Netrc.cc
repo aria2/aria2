@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Netrc.h"
 #include "RecoverableException.h"
+#include "StringFormat.h"
 #include <fstream>
 #include <algorithm>
 
@@ -45,7 +46,8 @@ std::string Netrc::getRequiredNextToken(std::ifstream& f) const
   if(f >> token) {
     return token;
   } else {
-    throw new RecoverableException("Netrc:parse error. EOF reached where a token expected.");
+    throw RecoverableException
+      ("Netrc:parse error. EOF reached where a token expected.");
   }
 }
 
@@ -66,7 +68,8 @@ void Netrc::parse(const std::string& path)
   std::ifstream f(path.c_str());
   
   if(!f) {
-    throw new RecoverableException("File not found: %s", path.c_str());
+    throw RecoverableException
+      (StringFormat("File not found: %s", path.c_str()).str());
   }
 
   AuthenticatorHandle authenticator;
@@ -81,7 +84,8 @@ void Netrc::parse(const std::string& path)
       authenticator.reset(new DefaultAuthenticator());
     } else {
       if(authenticator.isNull()) {
-	throw new RecoverableException("Netrc:parse error. %s encounterd where 'machine' or 'default' expected.");
+	throw RecoverableException
+	  ("Netrc:parse error. %s encounterd where 'machine' or 'default' expected.");
       }
       if(token == "login") {
 	authenticator->setLogin(getRequiredNextToken(f));

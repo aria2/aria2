@@ -91,9 +91,8 @@ void BtDependencyTest::testResolve_loadError()
       (dynamic_pointer_cast<SingleFileDownloadContext>(dependant->getDownloadContext()));
     CPPUNIT_ASSERT(!dctx.isNull());
     CPPUNIT_ASSERT_EQUAL(std::string("/tmp/index.html"), dctx->getActualBasePath());
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
     CPPUNIT_FAIL("an exception was thrown.");
   }
 }

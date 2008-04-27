@@ -51,8 +51,7 @@ void PiecesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
     } else {
       try {
 	stm->createNewHashOfChunkChecksum(Util::parseInt((*itr).second));
-      } catch(RecoverableException* e) {
-	delete e;
+      } catch(RecoverableException& e) {
 	stm->cancelChunkChecksumTransaction();
       }
     }

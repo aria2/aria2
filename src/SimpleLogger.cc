@@ -58,12 +58,15 @@ namespace aria2 {
 va_list ap;\
 va_start(ap, MSG);\
 writeFile(Logger::LEVEL, MSG, ap);\
+flush();\
 va_end(ap);
 
 #define WRITE_LOG_EX(LEVEL, MSG, EX) \
 va_list ap;\
 va_start(ap, EX);\
-writeFile(Logger::LEVEL, MSG, ap, EX);\
+writeFile(Logger::LEVEL, MSG, ap);\
+writeStackTrace(Logger::LEVEL, EX);\
+flush();\
 va_end(ap);
 
 SimpleLogger::SimpleLogger():stdoutField(0) {}
@@ -75,7 +78,8 @@ SimpleLogger::~SimpleLogger() {
 void SimpleLogger::openFile(const std::string& filename) {
   file.open(filename.c_str(), std::ios::app|std::ios::binary);
   if(!file) {
-    throw new DlAbortEx(EX_FILE_OPEN, filename.c_str(), strerror(errno));
+    throw DlAbortEx
+      (StringFormat(EX_FILE_OPEN, filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -100,7 +104,7 @@ void SimpleLogger::writeHeader(std::ostream& o, const std::string& date,
 }
 
 void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
-			    const char* msg, va_list ap, Exception* e,
+			    const char* msg, va_list ap,
 			    bool printHeader)
 {
   va_list apCopy;
@@ -142,31 +146,37 @@ void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
       free(res);
     }
   }
-  for(Exception* nestedEx = e; nestedEx; nestedEx = nestedEx->getCause()) {
-    // TODO a quick hack not to print header in console
-    if(printHeader) {
-      writeHeader(o, datestr, levelStr);
-    }
-    o << StringFormat("exception: %s\n", Util::replace(nestedEx->getMsg(), "\r", "").c_str());
-  }
-  o << std::flush;
   va_end(apCopy);
 }
 
-void SimpleLogger::writeFile(Logger::LEVEL level, const char* msg, va_list ap, Exception* e)
+void SimpleLogger::writeFile(Logger::LEVEL level, const char* msg, va_list ap)
 {
-  writeLog(file, level, msg, ap, e);
+  writeLog(file, level, msg, ap);
   if(stdoutField&level) {
     std::cout << "\n";
-    writeLog(std::cout, level, msg, ap, e);
+    writeLog(std::cout, level, msg, ap);
   }
+}
+
+void SimpleLogger::writeStackTrace(Logger::LEVEL level, const Exception& e)
+{
+  file << e.stackTrace();
+  if(stdoutField&level) {
+    std::cout << e.stackTrace();
+  }
+}
+
+void SimpleLogger::flush()
+{
+  file << std::flush;
+  std::cout << std::flush;
 }
 
 void SimpleLogger::debug(const char* msg, ...) {
   WRITE_LOG(DEBUG, msg);
 }
 
-void SimpleLogger::debug(const char* msg, Exception* e, ...) {
+void SimpleLogger::debug(const char* msg, Exception& e, ...) {
   WRITE_LOG_EX(DEBUG, msg, e);
 }
 
@@ -174,7 +184,7 @@ void SimpleLogger::info(const char* msg, ...) {
   WRITE_LOG(INFO, msg);
 }
 
-void SimpleLogger::info(const char* msg, Exception* e, ...) {
+void SimpleLogger::info(const char* msg, Exception& e, ...) {
   WRITE_LOG_EX(INFO, msg, e);
 }
 
@@ -182,7 +192,7 @@ void SimpleLogger::notice(const char* msg, ...) {
   WRITE_LOG(NOTICE, msg);
 }
 
-void SimpleLogger::notice(const char* msg, Exception* e, ...) {
+void SimpleLogger::notice(const char* msg, Exception& e, ...) {
   WRITE_LOG_EX(INFO, msg, e);
 }
 
@@ -190,7 +200,7 @@ void SimpleLogger::warn(const char* msg, ...) {
   WRITE_LOG(WARN, msg);
 }
 
-void SimpleLogger::warn(const char* msg, Exception* e, ...) {
+void SimpleLogger::warn(const char* msg, Exception& e, ...) {
   WRITE_LOG_EX(WARN, msg, e);
 }
 
@@ -198,7 +208,7 @@ void SimpleLogger::error(const char* msg, ...) {
   WRITE_LOG(ERROR, msg);
 }
 
-void SimpleLogger::error(const char* msg, Exception* e, ...) {
+void SimpleLogger::error(const char* msg, Exception& e, ...) {
   WRITE_LOG_EX(ERROR, msg, e);
 }
 

@@ -48,6 +48,7 @@
 #include "DHTTask.h"
 #include "RequestGroupMan.h"
 #include "Logger.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -95,9 +96,8 @@ bool DHTEntryPointNameResolveCommand::execute()
 	    return false;
 	  }
 	}
-      } catch(RecoverableException* e) {
+      } catch(RecoverableException& e) {
 	logger->error(EX_EXCEPTION_CAUGHT, e);
-	delete e;
 	_entryPoints.erase(_entryPoints.begin());
 	_resolver->reset();
       }
@@ -107,9 +107,8 @@ bool DHTEntryPointNameResolveCommand::execute()
       _taskQueue->addPeriodicTask1(_taskFactory->createNodeLookupTask(_localNode->getID()));
       _taskQueue->addPeriodicTask1(_taskFactory->createBucketRefreshTask());
     }
-  } catch(RecoverableException* e) {
+  } catch(RecoverableException& e) {
     logger->error(EX_EXCEPTION_CAUGHT, e);
-    delete e;
   }
   return true;
 }
@@ -142,9 +141,10 @@ bool DHTEntryPointNameResolveCommand::resolveHostname(const std::string& hostnam
       return true;
       break;
     case NameResolver::STATUS_ERROR:
-      throw new DlAbortEx(MSG_NAME_RESOLUTION_FAILED, cuid,
-			  hostname.c_str(),
-			  resolver->getError().c_str());
+      throw DlAbortEx
+	(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
+		      hostname.c_str(),
+		      resolver->getError().c_str()).str());
     default:
       return false;
     }

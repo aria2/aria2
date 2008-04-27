@@ -88,9 +88,8 @@ void DefaultBtMessageFactoryTest::testCreateBtMessage_BtExtendedMessage()
     _peer->setExtendedMessagingEnabled(false);
     factory.createBtMessage((const unsigned char*)msg+4, sizeof(msg));
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -110,11 +109,8 @@ void DefaultBtMessageFactoryTest::testCreatePortMessage()
 	 (factory.createBtMessage(&data[4], sizeof(data)-4)));
       CPPUNIT_ASSERT(!m.isNull());
       CPPUNIT_ASSERT_EQUAL((uint16_t)6881, m->getPort());
-    } catch(Exception* e) {
-      std::cerr << *e << std::endl;
-      std::string msg = e->getMsg();
-      delete e;
-      CPPUNIT_FAIL(msg);
+    } catch(Exception& e) {
+      CPPUNIT_FAIL(e.stackTrace());
     }
   }
   {

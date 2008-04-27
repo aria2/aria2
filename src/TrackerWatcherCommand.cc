@@ -98,9 +98,8 @@ bool TrackerWatcherCommand::execute() {
       processTrackerResponse(trackerResponse);
       btAnnounce->announceSuccess();
       btAnnounce->resetAnnounce();
-    } catch(RecoverableException* ex) {
+    } catch(RecoverableException& ex) {
       logger->error(EX_EXCEPTION_CAUGHT, ex);      
-      delete ex;
       btAnnounce->announceFailure();
       if(btAnnounce->isAllAnnounceFailed()) {
 	btAnnounce->resetAnnounce();

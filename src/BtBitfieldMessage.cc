@@ -38,6 +38,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Peer.h"
+#include "StringFormat.h"
 #include <cstring>
 
 namespace aria2 {
@@ -57,11 +58,13 @@ BtBitfieldMessageHandle
 BtBitfieldMessage::create(const unsigned char* data, size_t dataLength)
 {
   if(dataLength <= 1) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "bitfield", dataLength, 1);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "bitfield", dataLength, 1).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "bitfield", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "bitfield", ID).str());
   }
   BtBitfieldMessageHandle message(new BtBitfieldMessage());
   message->setBitfield((unsigned char*)data+1, dataLength-1);

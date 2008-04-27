@@ -64,6 +64,7 @@
 #include "BtRegistry.h"
 #include "Logger.h"
 #include "LogFactory.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -351,7 +352,7 @@ void DefaultBtInteractive::detectMessageFlooding() {
   if(floodingCheckPoint.elapsed(FLOODING_CHECK_INTERVAL)) {
     if(floodingStat.getChokeUnchokeCount() >= 2 ||
        floodingStat.getKeepAliveCount() >= 2) {
-      throw new DlAbortEx(EX_FLOODING_DETECTED);
+      throw DlAbortEx(EX_FLOODING_DETECTED);
     } else {
       floodingStat.reset();
     }
@@ -368,7 +369,8 @@ void DefaultBtInteractive::checkActiveInteraction()
     if(!peer->amInterested() && !peer->peerInterested() &&
        inactiveCheckPoint.elapsed(interval)) {
       // TODO change the message
-      throw new DlAbortEx("Disconnect peer because we are not interested each other after %u second(s).", interval);
+      throw DlAbortEx
+	(StringFormat("Disconnect peer because we are not interested each other after %u second(s).", interval).str());
     }
   }
   // Since the peers which are *just* connected and do nothing to improve
@@ -377,7 +379,8 @@ void DefaultBtInteractive::checkActiveInteraction()
   {
     time_t interval = 2*60;
     if(inactiveCheckPoint.elapsed(interval)) {
-      throw new DlAbortEx(EX_DROP_INACTIVE_CONNECTION, interval);
+      throw DlAbortEx
+	(StringFormat(EX_DROP_INACTIVE_CONNECTION, interval).str());
     }
   }
 }

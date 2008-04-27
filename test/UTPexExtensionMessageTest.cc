@@ -190,9 +190,8 @@ void UTPexExtensionMessageTest::testCreate()
 				  reinterpret_cast<const unsigned char*>(in.c_str()),
 				  in.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }    
 }
 

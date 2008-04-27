@@ -61,7 +61,7 @@ private:
 protected:
   virtual bool executeInternal();
   virtual bool prepareForNextPeer(time_t wait);
-  virtual void onAbort(Exception* ex);
+  virtual void onAbort();
   virtual bool exitBeforeExecute();
 public:
   InitiatorMSEHandshakeCommand(int32_t cuid,

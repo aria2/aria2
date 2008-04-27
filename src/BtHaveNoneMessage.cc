@@ -37,16 +37,19 @@
 #include "PeerMessageUtil.h"
 #include "message.h"
 #include "Peer.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "have none", dataLength, 1);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "have none", dataLength, 1).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have none", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "have none", ID).str());
   }
   BtHaveNoneMessageHandle message(new BtHaveNoneMessage());
   return message;
@@ -54,8 +57,9 @@ BtHaveNoneMessageHandle BtHaveNoneMessage::create(const unsigned char* data, siz
 
 void BtHaveNoneMessage::doReceivedAction() {
   if(!peer->isFastExtensionEnabled()) {
-    throw new DlAbortEx("%s received while fast extension is disabled",
-			toString().c_str());
+    throw DlAbortEx
+      (StringFormat("%s received while fast extension is disabled",
+		    toString().c_str()).str());
   }
 }
 

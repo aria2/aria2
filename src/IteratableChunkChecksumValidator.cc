@@ -45,6 +45,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "messageDigest.h"
+#include "StringFormat.h"
 #include <cerrno>
 
 namespace aria2 {
@@ -74,9 +75,8 @@ void IteratableChunkChecksumValidator::validateChunk()
     std::string actualChecksum;
     try {
       actualChecksum = calculateActualChecksum();
-    } catch(RecoverableException* ex) {
+    } catch(RecoverableException& ex) {
       _logger->debug("Caught exception while validating piece index=%d. Some part of file may be missing. Continue operation.", ex, _currentIndex);
-      delete ex;
       _bitfield->unsetBit(_currentIndex);
       _currentIndex++;
       return;
@@ -143,8 +143,9 @@ std::string IteratableChunkChecksumValidator::digest(off_t offset, size_t length
     size_t r = _pieceStorage->getDiskAdaptor()->readData(_buffer, BUFSIZE,
 							 curoffset);
     if(r == 0) {
-      throw new DlAbortEx(EX_FILE_READ, _dctx->getActualBasePath().c_str(),
-			  strerror(errno));
+      throw DlAbortEx
+	(StringFormat(EX_FILE_READ, _dctx->getActualBasePath().c_str(),
+		      strerror(errno)).str());
     }
     size_t wlength;
     if(max < curoffset+r) {

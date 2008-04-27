@@ -70,9 +70,8 @@ void ParameterizedStringParserTest::testParse_select_empty()
   try {
     SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("{}");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("unexpected exception thrown.");
   }
@@ -83,9 +82,8 @@ void ParameterizedStringParserTest::testParse_select_missingParen()
   try {
     SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("{alpha");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("unexpected exception was thrown.");
   }
@@ -139,9 +137,8 @@ void ParameterizedStringParserTest::testParse_loop_empty()
   try {
     SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("[]");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("unexpected exception was thrown.");
   }
@@ -152,9 +149,8 @@ void ParameterizedStringParserTest::testParse_loop_missingParen()
   try {
     SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("[");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("unexpected exception was thrown.");
   }
@@ -165,9 +161,8 @@ void ParameterizedStringParserTest::testParse_loop_missingStep()
   try {
     SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("[1-10:]");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("unexpected exception was thrown.");
   }
@@ -178,9 +173,8 @@ void ParameterizedStringParserTest::testParse_loop_missingRange()
   try {
     SharedHandle<PStringDatum> ls = ParameterizedStringParser().parse("[1-]");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("unexpected exception was thrown.");
   }
@@ -202,9 +196,8 @@ void ParameterizedStringParserTest::testParse_loop_mixedChar()
   try {
     ParameterizedStringParser().parse("[1-z:2]");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("FatalException must be thrown.");
   }
@@ -215,9 +208,8 @@ void ParameterizedStringParserTest::testParse_loop_mixedCase()
   try {
     ParameterizedStringParser().parse("[a-Z:2]");
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(FatalException* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(FatalException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   } catch(...) {
     CPPUNIT_FAIL("FatalException must be thrown.");
   }

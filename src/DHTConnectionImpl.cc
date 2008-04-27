@@ -71,9 +71,8 @@ bool DHTConnectionImpl::bind(uint16_t& port)
     port = svaddr.second;
     _logger->info("Bind socket for DHT. port=%u", port);
     return true;
-  } catch(RecoverableException* e) {
+  } catch(RecoverableException& e) {
     _logger->error("Failed to bind for DHT. port=%u", e, port);
-    delete e;
   }
   return false;
 }

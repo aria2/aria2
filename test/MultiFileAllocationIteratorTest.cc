@@ -149,11 +149,8 @@ void MultiFileAllocationIteratorTest::testAllocate()
     CPPUNIT_ASSERT_EQUAL((uint64_t)length5, File(dir+"/"+topDir+"/"+fname5).size());
     CPPUNIT_ASSERT_EQUAL(0ULL, File(dir+"/"+topDir+"/"+fname6).size());
 
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    std::string m = e->getMsg();
-    delete e;
-    CPPUNIT_FAIL(m);
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 

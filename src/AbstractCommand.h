@@ -62,7 +62,7 @@ protected:
 
   void tryReserved();
   virtual bool prepareForRetry(time_t wait);
-  virtual void onAbort(Exception* ex);
+  virtual void onAbort();
   virtual bool executeInternal() = 0;
 
   void setReadCheckSocket(const SharedHandle<SocketCore>& socket);

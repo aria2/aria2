@@ -48,6 +48,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"
+#include "StringFormat.h"
 #include <cassert>
 #include <cstring>
 
@@ -100,11 +101,13 @@ BtExtendedMessage::create(const BtContextHandle& btContext,
 			  const unsigned char* data, size_t dataLength)
 {
   if(dataLength < 2) {
-    throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE, "extended", dataLength);
+    throw DlAbortEx
+      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE, "extended", dataLength).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "extended", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "extended", ID).str());
   }
   ExtensionMessageFactoryHandle factory = EXTENSION_MESSAGE_FACTORY(btContext,
 								    peer);

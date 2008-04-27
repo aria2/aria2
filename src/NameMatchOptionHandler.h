@@ -37,6 +37,7 @@
 
 #include "OptionHandler.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 #include <strings.h>
 
 namespace aria2 {
@@ -62,8 +63,10 @@ public:
   {
     try {
       parseArg(option, arg);
-    } catch(Exception* e) {
-      throw new DlAbortEx(e, "Exception occurred while processing option %s", _optName.c_str());
+    } catch(Exception& e) {
+      throw DlAbortEx
+	(StringFormat("Exception occurred while processing option %s",
+		      _optName.c_str()).str(), e);
     }
   }
 };

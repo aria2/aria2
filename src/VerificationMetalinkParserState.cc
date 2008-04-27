@@ -77,8 +77,7 @@ void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* s
       stm->newChunkChecksumTransaction();
       stm->setLengthOfChunkChecksum(length);
       stm->setTypeOfChunkChecksum(type);
-    } catch(RecoverableException* e) {
-      delete e;
+    } catch(RecoverableException& e) {
       stm->cancelChunkChecksumTransaction();
     }
   } else {

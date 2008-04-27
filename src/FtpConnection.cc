@@ -184,7 +184,7 @@ bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& re
     size_t size = sizeof(buf)-1;
     socket->readData(buf, size);
     if(size == 0) {
-      throw new DlRetryEx(EX_GOT_EOF);
+      throw DlRetryEx(EX_GOT_EOF);
     }
     buf[size] = '\0';
     strbuf += buf;
@@ -193,7 +193,7 @@ bool FtpConnection::bulkReceiveResponse(std::pair<unsigned int, std::string>& re
   if(strbuf.size() >= 4) {
     status = getStatus(strbuf);
     if(status == 0) {
-      throw new DlAbortEx(EX_INVALID_RESPONSE);
+      throw DlAbortEx(EX_INVALID_RESPONSE);
     }
   } else {
     return false;
@@ -262,7 +262,7 @@ unsigned int FtpConnection::receivePasvResponse(std::pair<std::string, uint16_t>
 	// port number
 	dest.second = 256*p1+p2;
       } else {
-	throw new DlRetryEx(EX_INVALID_RESPONSE);
+	throw DlRetryEx(EX_INVALID_RESPONSE);
       }
     }
     return response.first;

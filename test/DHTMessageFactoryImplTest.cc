@@ -185,9 +185,8 @@ void DHTMessageFactoryImplTest::testCreateFindNodeReplyMessage()
     CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 			 Util::toHex(m->getTransactionID()));
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    CPPUNIT_FAIL("exception thrown.");
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -258,9 +257,8 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_nodes()
     CPPUNIT_ASSERT(nodes[7] == m->getClosestKNodes()[7]);
     CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 			 Util::toHex(m->getTransactionID()));
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    CPPUNIT_FAIL("exception thrown.");
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -302,9 +300,8 @@ void DHTMessageFactoryImplTest::testCreateGetPeersReplyMessage_values()
     CPPUNIT_ASSERT(peers[3] == m->getValues()[3]);
     CPPUNIT_ASSERT_EQUAL(Util::toHex(transactionID, DHT_TRANSACTION_ID_LENGTH),
 			 Util::toHex(m->getTransactionID()));
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    CPPUNIT_FAIL("exception thrown.");
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -340,11 +337,8 @@ void DHTMessageFactoryImplTest::testCreateAnnouncePeerMessage()
     CPPUNIT_ASSERT_EQUAL(Util::toHex(infoHash, DHT_ID_LENGTH),
 			 Util::toHex(m->getInfoHash(), DHT_ID_LENGTH));
     CPPUNIT_ASSERT_EQUAL(port, m->getTCPPort());
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    std::string msg = e->getMsg();
-    delete e;
-    CPPUNIT_FAIL(msg);
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 
@@ -387,8 +381,8 @@ void DHTMessageFactoryImplTest::testReceivedErrorMessage()
   try {
     factory->createResponseMessage("announce_peer", d.get(), remoteNode);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(RecoverableException* e) {
-    std::cerr << *e << std::endl;
+  } catch(RecoverableException& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 

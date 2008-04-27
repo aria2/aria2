@@ -71,7 +71,7 @@ bool FileAllocationCommand::executeInternal()
   }
 }
 
-bool FileAllocationCommand::handleException(Exception* e)
+bool FileAllocationCommand::handleException(Exception& e)
 {
   _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
   logger->error(MSG_FILE_ALLOCATION_FAILURE, e, cuid);

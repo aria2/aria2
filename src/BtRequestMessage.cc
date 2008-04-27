@@ -44,16 +44,19 @@
 #include "PieceStorage.h"
 #include "BtMessageDispatcher.h"
 #include "BtMessageFactory.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtRequestMessageHandle BtRequestMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 13) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "request", dataLength, 13);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "request", dataLength, 13).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "request", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "request", ID).str());
   }
   BtRequestMessageHandle message(new BtRequestMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));

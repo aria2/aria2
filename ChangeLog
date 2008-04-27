@@ -1,3 +1,14 @@
+2008-04-27  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Rewritten Exception class. Throw exception object, not its pointer and
+	catch by reference, so that remove problematic delete operator for
+	catched exception.
+	* src/Exception.cc
+	* src/Exception.h
+	* test/ExceptionTest.cc
+	* src/*: All files throwing/catching exception.
+	* test/*: All files throwing/catching exception.
+
 2008-04-26  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Now auto protocol detection is enabled without -Z option.

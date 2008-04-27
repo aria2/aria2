@@ -66,7 +66,7 @@ MetalinkPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
     std::deque<SharedHandle<RequestGroup> > rgs = Metalink2RequestGroup(op).generate(diskAdaptor);
     diskAdaptor->closeFile();
     return rgs;
-  } catch(Exception* e) {
+  } catch(Exception& e) {
     diskAdaptor->closeFile();
     throw;
   }

@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 #include <openssl/dh.h>
 #include <openssl/rand.h>
 #include <openssl/err.h>
@@ -60,8 +61,9 @@ private:
 
   void handleError(const std::string& funName) const
   {
-    throw new DlAbortEx("Exception in libssl routine %s(DHKeyExchange class): %s",
-			funName.c_str(), ERR_error_string(ERR_get_error(), 0));
+    throw DlAbortEx
+      (StringFormat("Exception in libssl routine %s(DHKeyExchange class): %s",
+		    funName.c_str(), ERR_error_string(ERR_get_error(), 0)).str());
   }
 public:
   DHKeyExchange():_bnCtx(0),
@@ -120,15 +122,17 @@ public:
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
     if(outLength < _keyLength) {
-      throw new DlAbortEx("Insufficient buffer for public key. expect:%u, actual:%u",
-			  _keyLength, outLength);
+      throw DlAbortEx
+	(StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
+		      _keyLength, outLength).str());
     }
     memset(out, 0, outLength);
     size_t publicKeyBytes = BN_num_bytes(_publicKey);
     size_t offset = _keyLength-publicKeyBytes;
     size_t nwritten = BN_bn2bin(_publicKey, out+offset);
     if(nwritten != publicKeyBytes) {
-      throw new DlAbortEx("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes);
+      throw DlAbortEx
+	(StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, publicKeyBytes).str());
     }
     return nwritten;
   }
@@ -145,8 +149,9 @@ public:
 		       size_t peerPublicKeyLength) const
   {
     if(outLength < _keyLength) {
-      throw new DlAbortEx("Insufficient buffer for secret. expect:%u, actual:%u",
-			  _keyLength, outLength);
+      throw DlAbortEx
+	(StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
+		      _keyLength, outLength).str());
     }
 
 
@@ -165,7 +170,8 @@ public:
     size_t nwritten = BN_bn2bin(secret, out+offset);
     BN_free(secret);
     if(nwritten != secretBytes) {
-      throw new DlAbortEx("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, secretBytes);
+      throw DlAbortEx
+	(StringFormat("BN_bn2bin in DHKeyExchange::getPublicKey, %u bytes written, but %u bytes expected.", nwritten, secretBytes).str());
     }
     return nwritten;
   }

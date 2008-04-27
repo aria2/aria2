@@ -45,11 +45,8 @@ void DHTConnectionImplTest::testWriteAndReadData()
       CPPUNIT_ASSERT_EQUAL(message1,
 			   std::string(&readbuffer[0], &readbuffer[rlength]));
     }
-  } catch(Exception* e) {
-    std::string m = e->getMsg();
-    std::cerr << *e << std::endl;
-    delete e;
-    CPPUNIT_FAIL(m);
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 

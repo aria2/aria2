@@ -75,9 +75,8 @@ bool BtDependency::resolve()
 	btContext->setPeerIdPrefix(_option->get(PREF_PEER_ID_PREFIX));
       }
       btContext->setDir(_dependant->getDownloadContext()->getDir());
-    } catch(RecoverableException* e) {
+    } catch(RecoverableException& e) {
       _logger->error(EX_EXCEPTION_CAUGHT, e);
-      delete e;
       _logger->debug("BtDependency for GID#%d failed. Go without Bt.",
 		     _dependant->getGID());
       return true;

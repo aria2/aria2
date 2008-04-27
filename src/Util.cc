@@ -206,7 +206,7 @@ std::string Util::urlencode(const unsigned char* target, size_t len) {
   std::string dest;
   for(size_t i = 0; i < len; i++) {
     if(shouldUrlencode(target[i])) {
-      dest.append(StringFormat("%%%02x", target[i]).toString());
+      dest.append(StringFormat("%%%02x", target[i]).str());
     } else {
       dest += target[i];
     }
@@ -222,7 +222,7 @@ std::string Util::torrentUrlencode(const unsigned char* target, size_t len) {
        ('a' <= target[i] && target[i] <= 'z')) {
       dest += target[i];
     } else {
-      dest.append(StringFormat("%%%02x", target[i]).toString());
+      dest.append(StringFormat("%%%02x", target[i]).str());
     }
   }
   return dest;
@@ -396,20 +396,20 @@ int32_t Util::parseInt(const std::string& s, int32_t base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"empty string");
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 "empty string").str());
   }
   char* stop;
   errno = 0;
   long int v = strtol(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   } else if((((v == LONG_MIN) || (v == LONG_MAX)) && (errno == ERANGE)) ||
 	    (v > INT32_MAX) ||
 	    (v < INT32_MIN)) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   }
   return v;
 }
@@ -418,23 +418,23 @@ uint32_t Util::parseUInt(const std::string& s, int base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"empty string");
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 "empty string").str());
   }
   // We don't allow negative number.
   if(trimed[0] == '-') {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   }
   char* stop;
   errno = 0;
   unsigned long int v = strtoul(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   } else if(((v == ULONG_MAX) && (errno == ERANGE)) || (v > UINT32_MAX)) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   }
   return v;
 }
@@ -443,18 +443,18 @@ int64_t Util::parseLLInt(const std::string& s, int32_t base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"empty string");
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 "empty string").str());
   }
   char* stop;
   errno = 0;
   int64_t v = strtoll(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   } else if(((v == INT64_MIN) || (v == INT64_MAX)) && (errno == ERANGE)) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   }
   return v;
 }
@@ -463,23 +463,23 @@ uint64_t Util::parseULLInt(const std::string& s, int base)
 {
   std::string trimed = Util::trim(s);
   if(trimed.empty()) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"empty string");
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 "empty string").str());
   }
   // We don't allow negative number.
   if(trimed[0] == '-') {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   }
   char* stop;
   errno = 0;
   uint64_t v = strtoull(trimed.c_str(), &stop, base);
   if(*stop != '\0') {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   } else if((v == ULLONG_MAX) && (errno == ERANGE)) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			trimed.c_str());
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 trimed.c_str()).str());
   }
   return v;
 }
@@ -500,7 +500,8 @@ IntSequence Util::parseIntRange(const std::string& src)
     } else {
       std::pair<std::string, std::string> vp = Util::split(p.first.c_str(), "-");
       if(vp.first.empty() || vp.second.empty()) {
-	throw new DlAbortEx(MSG_INCOMPLETE_RANGE, p.first.c_str());
+	throw DlAbortEx
+	  (StringFormat(MSG_INCOMPLETE_RANGE, p.first.c_str()).str());
       }
       int32_t v1 = Util::parseInt(vp.first.c_str());
       int32_t v2 = Util::parseInt(vp.second.c_str());
@@ -643,10 +644,11 @@ int64_t Util::getRealSize(const std::string& sizeWithUnit)
   int64_t v = Util::parseLLInt(size);
 
   if(v < 0) {
-    throw new DlAbortEx("Negative value detected: %s", sizeWithUnit.c_str());
+    throw DlAbortEx
+      (StringFormat("Negative value detected: %s", sizeWithUnit.c_str()).str());
   } else if(INT64_MAX/mult < v) {
-    throw new DlAbortEx(MSG_STRING_INTEGER_CONVERSION_FAILURE,
-			"overflow/underflow");
+    throw DlAbortEx(StringFormat(MSG_STRING_INTEGER_CONVERSION_FAILURE,
+				 "overflow/underflow").str());
   }
   return v*mult;
 }
@@ -805,9 +807,13 @@ void Util::mkdirs(const std::string& dirpath)
   if(dir.isDir()) {
     // do nothing
   } else if(dir.exists()) {
-    throw new DlAbortEx(EX_MAKE_DIR, dir.getPath().c_str(), "File already exists.");
+    throw DlAbortEx
+      (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
+		    "File already exists.").str());
   } else if(!dir.mkdirs()) {
-    throw new DlAbortEx(EX_MAKE_DIR, dir.getPath().c_str(), strerror(errno));
+    throw DlAbortEx
+      (StringFormat(EX_MAKE_DIR, dir.getPath().c_str(),
+		    strerror(errno)).str());
   }
 }
 
@@ -845,7 +851,8 @@ void* Util::allocateAlignedMemory(size_t alignment, size_t size)
   void* buffer;
   int res;
   if((res = posix_memalign(&buffer, alignment, size)) != 0) {
-    throw new FatalException("Error in posix_memalign: %s", strerror(res));
+    throw FatalException
+      (StringFormat("Error in posix_memalign: %s", strerror(res)).str());
   }
   return buffer;
 }

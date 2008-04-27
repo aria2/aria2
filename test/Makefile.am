@@ -50,7 +50,8 @@ aria2c_SOURCES = AllTest.cc\
 	MultiFileAllocationIteratorTest.cc\
 	FixedNumberRandomizer.h\
 	ProtocolDetectorTest.cc\
-	StringFormatTest.cc
+	StringFormatTest.cc\
+	ExceptionTest.cc
 
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\

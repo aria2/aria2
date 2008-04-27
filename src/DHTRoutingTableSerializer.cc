@@ -39,6 +39,7 @@
 #include "PeerMessageUtil.h"
 #include "Logger.h"
 #include "a2netcompat.h"
+#include "StringFormat.h"
 #include <cerrno>
 #include <cstring>
 #include <ostream>
@@ -121,8 +122,9 @@ void DHTRoutingTableSerializer::serialize(std::ostream& o)
       o.write(zero, 4);
     }
   } catch(std::ios::failure const& exception) {
-    throw new DlAbortEx("Failed to save DHT routing table. cause:%s",
-			strerror(errno));
+    throw DlAbortEx
+      (StringFormat("Failed to save DHT routing table. cause:%s",
+		    strerror(errno)).str());
   }
 }
 

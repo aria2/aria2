@@ -69,8 +69,7 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
       } else {
 	try {
 	  preference = Util::parseInt((*itr).second);
-	} catch(RecoverableException* e) {
-	  delete e;
+	} catch(RecoverableException& e) {
 	  preference = 0;
 	}
       }
@@ -83,8 +82,7 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
       } else {
 	try {
 	  maxConnections = Util::parseInt((*itr).second);
-	} catch(RecoverableException* e) {
-	  delete e;
+	} catch(RecoverableException& e) {
 	  maxConnections = -1;
 	}
       }

@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 #include <map>
 
 #ifdef HAVE_LIBSSL
@@ -97,7 +98,9 @@ public:
   {
     DigestAlgoMap::const_iterator itr = digestAlgos.find(algostring);
     if(itr == digestAlgos.end()) {
-      throw new DlAbortEx("Digest algorithm %s is not supported.", algostring.c_str());
+      throw DlAbortEx
+	(StringFormat("Digest algorithm %s is not supported.",
+		      algostring.c_str()).str());
     }
     return (*itr).second;
   }

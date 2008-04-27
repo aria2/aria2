@@ -37,16 +37,19 @@
 #include "PeerMessageUtil.h"
 #include "message.h"
 #include "Peer.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtHaveAllMessageHandle BtHaveAllMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "have all", dataLength, 1);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "have all", dataLength, 1).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have all", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "have all", ID).str());
   }
   BtHaveAllMessageHandle message(new BtHaveAllMessage());
   return message;
@@ -54,8 +57,9 @@ BtHaveAllMessageHandle BtHaveAllMessage::create(const unsigned char* data, size_
 
 void BtHaveAllMessage::doReceivedAction() {
   if(!peer->isFastExtensionEnabled()) {
-    throw new DlAbortEx("%s received while fast extension is disabled",
-			toString().c_str());
+    throw DlAbortEx
+      (StringFormat("%s received while fast extension is disabled",
+		    toString().c_str()).str());
   }
   peer->setAllBitfield();
 }

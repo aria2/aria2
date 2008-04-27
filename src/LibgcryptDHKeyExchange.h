@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 #include <gcrypt.h>
 
 namespace aria2 {
@@ -55,8 +56,9 @@ private:
 
   void handleError(gcry_error_t err) const
   {
-    throw new DlAbortEx("Exception in libgcrypt routine(DHKeyExchange class): %s",
-			gcry_strerror(err));
+    throw DlAbortEx
+      (StringFormat("Exception in libgcrypt routine(DHKeyExchange class): %s",
+		    gcry_strerror(err)).str());
   }
 public:
   DHKeyExchange():
@@ -110,8 +112,9 @@ public:
   size_t getPublicKey(unsigned char* out, size_t outLength) const
   {
     if(outLength < _keyLength) {
-      throw new DlAbortEx("Insufficient buffer for public key. expect:%u, actual:%u",
-			  _keyLength, outLength);
+      throw DlAbortEx
+	(StringFormat("Insufficient buffer for public key. expect:%u, actual:%u",
+		      _keyLength, outLength).str());
     }
     memset(out, 0, outLength);
     size_t publicKeyBytes = (gcry_mpi_get_nbits(_publicKey)+7)/8;
@@ -135,8 +138,9 @@ public:
 		       size_t peerPublicKeyLength) const
   {
     if(outLength < _keyLength) {
-      throw new DlAbortEx("Insufficient buffer for secret. expect:%u, actual:%u",
-			  _keyLength, outLength);
+      throw DlAbortEx
+	(StringFormat("Insufficient buffer for secret. expect:%u, actual:%u",
+		      _keyLength, outLength).str());
     }
     gcry_mpi_t peerPublicKey;
     {

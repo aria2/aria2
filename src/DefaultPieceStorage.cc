@@ -52,6 +52,7 @@
 #include "Util.h"
 #include "a2functional.h"
 #include "Option.h"
+#include "StringFormat.h"
 #include <numeric>
 #include <algorithm>
 
@@ -367,7 +368,7 @@ void DefaultPieceStorage::setFileFilter(const std::deque<std::string>& filePaths
   for(std::deque<std::string>::const_iterator pitr = filePaths.begin();
       pitr != filePaths.end(); pitr++) {
     if(!diskAdaptor->addDownloadEntry(*pitr)) {
-      throw new DlAbortEx(EX_NO_SUCH_FILE_ENTRY, (*pitr).c_str());
+      throw DlAbortEx(StringFormat(EX_NO_SUCH_FILE_ENTRY, (*pitr).c_str()).str());
     }
     FileEntryHandle fileEntry = diskAdaptor->getFileEntryFromPath(*pitr);
     bitfieldMan->addFilter(fileEntry->getOffset(), fileEntry->getLength());

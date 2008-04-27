@@ -124,9 +124,8 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_empty()
   try {
     proc.getHttpResponseHeader();
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlRetryEx* ex) {
-    std::cout << ex->getMsg() << std::endl;
-    delete ex;
+  } catch(DlRetryEx& ex) {
+    std::cout << ex.stackTrace() << std::endl;
   }
   
 }
@@ -150,9 +149,8 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_insufficientStatusLength
   try {
     proc.getHttpResponseHeader();
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlRetryEx* ex) {
-    std::cout << ex->getMsg() << std::endl;
-    delete ex;
+  } catch(DlRetryEx& ex) {
+    std::cout << ex.stackTrace() << std::endl;
   }
   
 }
@@ -170,9 +168,8 @@ void HttpHeaderProcessorTest::testBeyondLimit()
   try {
     proc.update(hd2);
     CPPUNIT_FAIL("Exception must be thrown.");
-  } catch(DlAbortEx* ex) {
-    std::cout << ex->getMsg() << std::endl;
-    delete ex;
+  } catch(DlAbortEx& ex) {
+    std::cout << ex.stackTrace() << std::endl;
   }
 }
 

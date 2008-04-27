@@ -53,14 +53,14 @@ StringFormat::StringFormat(const char* fmt, ...)
   va_end(ap);
 }
 
-const std::string& StringFormat::toString() const
+const std::string& StringFormat::str() const
 {
   return _msg;
 }
 
 std::ostream& operator<<(std::ostream& o, const StringFormat& fmt)
 {
-  o << fmt.toString();
+  o << fmt.str();
   return o;
 }
 

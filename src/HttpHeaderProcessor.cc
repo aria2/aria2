@@ -61,7 +61,7 @@ void HttpHeaderProcessor::checkHeaderLimit(size_t incomingLength)
 {
   strm.seekg(0, std::ios::end);
   if((size_t)strm.tellg()+incomingLength > _limit) {
-    throw new DlAbortEx("Too large http header");
+    throw DlAbortEx("Too large http header");
   }
 }
 
@@ -100,7 +100,7 @@ SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()
   getline(strm, line);  
   // check HTTP status value
   if(line.size() <= 12) {
-    throw new DlRetryEx(EX_NO_STATUS_HEADER);
+    throw DlRetryEx(EX_NO_STATUS_HEADER);
   }
   HttpHeaderHandle httpHeader(new HttpHeader());
   httpHeader->setResponseStatus(line.substr(9, 3));

@@ -100,7 +100,7 @@ bool HttpInitiateConnectionCommand::executeInternal() {
 				       httpConnection, e, socket);
     } else {
       // TODO
-      throw new DlAbortEx("ERROR");
+      throw DlAbortEx("ERROR");
     }
   } else {
     SharedHandle<SocketCore> pooledSocket =

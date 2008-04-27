@@ -125,20 +125,20 @@ ExpatMetalinkProcessor::parseFromBinaryStream(const SharedHandle<BinaryStream>& 
 	break;
       }
       if(XML_Parse(parser, (const char*)buf, res, 0) == XML_STATUS_ERROR) {
-	throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+	throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
       }
       readOffset += res;
     }
     if(XML_Parse(parser, 0, 0, 1) == XML_STATUS_ERROR) {
-      throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+      throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
     }
-  } catch(Exception* e) {
+  } catch(Exception& e) {
     XML_ParserFree(parser);
     throw;
   }
   XML_ParserFree(parser);
   if(!_stm->finished()) {
-    throw new DlAbortEx(MSG_CANNOT_PARSE_METALINK);
+    throw DlAbortEx(MSG_CANNOT_PARSE_METALINK);
   }
   return _stm->getResult();
 }

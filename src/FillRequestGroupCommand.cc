@@ -61,9 +61,8 @@ bool FillRequestGroupCommand::execute()
   }
   try {
     _e->_requestGroupMan->fillRequestGroupFromReserver(_e);
-  } catch(RecoverableException* ex) {
+  } catch(RecoverableException& ex) {
     logger->error(EX_EXCEPTION_CAUGHT, ex);
-    delete ex;
   }
   if(_e->_requestGroupMan->downloadFinished()) {
     return true;

@@ -49,6 +49,7 @@
 #include "FileEntry.h"
 #include "message.h"
 #include "PeerMessageUtil.h"
+#include "StringFormat.h"
 #include <cstring>
 #include <ostream>
 #include <functional>
@@ -134,11 +135,13 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
       if(lengthData) {
 	length += lengthData->toLLInt();
       } else {
-	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file length");
+	throw DlAbortEx
+	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file length").str());
       }
       const List* pathList = dynamic_cast<const List*>(fileDic->get("path"));
       if(!pathList) {
-	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path list");
+	throw DlAbortEx
+	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file path list").str());
       }
       const std::deque<MetaEntry*>& paths = pathList->getList();
       std::string path;
@@ -147,14 +150,16 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
 	if(subpath) {
 	  path += subpath->toString()+"/";
 	} else {
-	  throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element");
+	  throw DlAbortEx
+	    (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element").str());
 	}
       }
       const Data* lastPath = dynamic_cast<const Data*>(paths.back());
       if(lastPath) {
 	path += lastPath->toString();
       } else {
-	throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element");
+	throw DlAbortEx
+	  (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file path element").str());
       }
 
       std::deque<std::string> uris;
@@ -175,7 +180,8 @@ void DefaultBtContext::extractFileEntries(const Dictionary* infoDic,
     if(length) {
       totalLength = length->toLLInt();
     } else {
-      throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "file length");
+      throw DlAbortEx
+	(StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "file length").str());
     }
     FileEntryHandle fileEntry(new FileEntry(name, totalLength, 0, urlList));
     fileEntries.push_back(fileEntry);
@@ -265,7 +271,8 @@ void DefaultBtContext::loadFromMemory(const unsigned char* content,
   SharedHandle<MetaEntry> rootEntry(MetaFileUtil::bdecoding(content, length));
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
   if(!rootDic) {
-    throw new DlAbortEx("torrent file does not contain a root dictionary .");
+    throw DlAbortEx
+      (StringFormat("torrent file does not contain a root dictionary .").str());
   }
   processRootDictionary(rootDic, defaultName);
 }
@@ -274,7 +281,8 @@ void DefaultBtContext::load(const std::string& torrentFile) {
   SharedHandle<MetaEntry> rootEntry(MetaFileUtil::parseMetaFile(torrentFile));
   const Dictionary* rootDic = dynamic_cast<const Dictionary*>(rootEntry.get());
   if(!rootDic) {
-    throw new DlAbortEx("torrent file does not contain a root dictionary .");
+    throw DlAbortEx
+      (StringFormat("torrent file does not contain a root dictionary .").str());
   }
   processRootDictionary(rootDic, torrentFile);
 }
@@ -284,7 +292,8 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   clear();
   const Dictionary* infoDic = dynamic_cast<const Dictionary*>(rootDic->get("info"));
   if(!infoDic) {
-    throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "info directory");
+    throw DlAbortEx
+      (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "info directory").str());
   }
   // retrieve infoHash
   BencodeVisitor v;
@@ -296,19 +305,21 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   // calculate the number of pieces
   const Data* pieceHashData = dynamic_cast<const Data*>(infoDic->get("pieces"));
   if(!pieceHashData) {
-    throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "pieces");
+    throw DlAbortEx
+      (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "pieces").str());
   }
   if(pieceHashData->getLen() == 0) {
-    throw new DlAbortEx("The length of piece hash is 0.");
+    throw DlAbortEx("The length of piece hash is 0.");
   }
   numPieces = pieceHashData->getLen()/PIECE_HASH_LENGTH;
   if(numPieces == 0) {
-    throw new DlAbortEx("The number of pieces is 0.");
+    throw DlAbortEx("The number of pieces is 0.");
   }
   // retrieve piece length
   const Data* pieceLengthData = dynamic_cast<const Data*>(infoDic->get("piece length"));
   if(!pieceLengthData) {
-    throw new DlAbortEx(MSG_SOMETHING_MISSING_IN_TORRENT, "piece length");
+    throw DlAbortEx
+      (StringFormat(MSG_SOMETHING_MISSING_IN_TORRENT, "piece length").str());
   }
   pieceLength = pieceLengthData->toInt();
   // retrieve piece hashes
@@ -327,7 +338,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   // retrieve file entries
   extractFileEntries(infoDic, defaultName, urlList);
   if((totalLength+pieceLength-1)/pieceLength != numPieces) {
-    throw new DlAbortEx("Too few/many piece hash.");
+    throw DlAbortEx("Too few/many piece hash.");
   }
   // retrieve announce
   const Data* announceData = dynamic_cast<const Data*>(rootDic->get("announce"));

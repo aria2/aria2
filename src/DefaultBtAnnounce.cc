@@ -52,6 +52,7 @@
 #include "PeerStorage.h"
 #include "Peer.h"
 #include "Option.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -198,12 +199,13 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
 							trackerResponseLength));
   const Dictionary* response = dynamic_cast<const Dictionary*>(entry.get());
   if(!response) {
-    throw new DlAbortEx(MSG_NULL_TRACKER_RESPONSE);
+    throw DlAbortEx(MSG_NULL_TRACKER_RESPONSE);
   }
   const Data* failureReasonData = dynamic_cast<const Data*>(response->get("failure reason"));
   if(failureReasonData) {
-    throw new DlAbortEx(EX_TRACKER_FAILURE,
-			failureReasonData->toString().c_str());
+    throw DlAbortEx
+      (StringFormat(EX_TRACKER_FAILURE,
+		    failureReasonData->toString().c_str()).str());
   }
   const Data* warningMessageData = dynamic_cast<const Data*>(response->get("warning message"));
   if(warningMessageData) {

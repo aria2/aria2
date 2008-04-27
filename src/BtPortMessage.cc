@@ -44,6 +44,7 @@
 #include "DHTTaskQueue.h"
 #include "DHTTaskFactory.h"
 #include "DHTTask.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -57,11 +58,13 @@ BtPortMessage::~BtPortMessage()
 SharedHandle<BtPortMessage> BtPortMessage::create(const unsigned char* data, size_t dataLength)
 {
   if(dataLength != 3) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "port", dataLength, 3);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "port", dataLength, 3).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "piece", ID).str());
   }
   uint16_t port = PeerMessageUtil::getShortIntParam(data, 1);
   SharedHandle<BtPortMessage> message(new BtPortMessage(port));

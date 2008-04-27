@@ -52,6 +52,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "RequestGroupMan.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -93,7 +94,8 @@ bool PeerReceiveHandshakeCommand::executeInternal()
     std::string infoHash = Util::toHex(&data[28], INFO_HASH_LENGTH);
     BtContextHandle btContext = BtRegistry::getBtContext(infoHash);
     if(btContext.isNull() || !BT_RUNTIME(btContext)->ready()) {
-      throw new DlAbortEx("Unknown info hash %s", infoHash.c_str());
+      throw DlAbortEx
+	(StringFormat("Unknown info hash %s", infoHash.c_str()).str());
     }
     TransferStat tstat = PEER_STORAGE(btContext)->calculateStat();
     if((!PIECE_STORAGE(btContext)->downloadFinished() &&

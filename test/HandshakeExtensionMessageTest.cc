@@ -105,9 +105,8 @@ void HandshakeExtensionMessageTest::testCreate()
     HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
 				      in.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     // malformed dencoded message
@@ -115,9 +114,8 @@ void HandshakeExtensionMessageTest::testCreate()
     HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
 				      in.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   try {
     // 0 length data
@@ -125,9 +123,8 @@ void HandshakeExtensionMessageTest::testCreate()
     HandshakeExtensionMessage::create(reinterpret_cast<const unsigned char*>(in.c_str()),
 				      in.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }    
 }
 

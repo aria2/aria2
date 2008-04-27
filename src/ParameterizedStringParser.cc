@@ -86,12 +86,12 @@ PStringDatumHandle ParameterizedStringParser::createSelect(const std::string& sr
   ++offset;
   std::string::size_type rightParenIndex = src.find("}", offset);
   if(rightParenIndex == std::string::npos) {
-    throw new FatalException("Missing '}' in the parameterized string.");
+    throw FatalException("Missing '}' in the parameterized string.");
   }
   std::deque<std::string> values;
   Util::slice(values, src.substr(offset, rightParenIndex-offset), ',', true);
   if(values.empty()) {
-    throw new FatalException("Empty {} is not allowed.");
+    throw FatalException("Empty {} is not allowed.");
   }
   offset = rightParenIndex+1;
   PStringDatumHandle next = diggPString(src, offset);
@@ -104,7 +104,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
   ++offset;
   std::string::size_type rightParenIndex = src.find("]", offset);
   if(rightParenIndex == std::string::npos) {
-    throw new FatalException("Missing ']' in the parameterized string.");
+    throw FatalException("Missing ']' in the parameterized string.");
   }
   std::string loopStr = src.substr(offset, rightParenIndex-offset);
   offset = rightParenIndex+1;
@@ -116,13 +116,13 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     if(Util::isNumber(stepStr)) {
       step = Util::parseUInt(stepStr);
     } else {
-      throw new FatalException("A step count must be a positive number.");
+      throw FatalException("A step count must be a positive number.");
     }
     loopStr.erase(colonIndex);
   }
   std::pair<std::string, std::string> range = Util::split(loopStr, "-");
   if(range.first == "" || range.second == "") {
-    throw new FatalException("Loop range missing.");
+    throw FatalException("Loop range missing.");
   }
   NumberDecoratorHandle nd;
   unsigned int start;
@@ -140,7 +140,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     start = Util::alphaToNum(range.first);
     end = Util::alphaToNum(range.second);
   } else {
-    throw new FatalException("Invalid loop range.");
+    throw FatalException("Invalid loop range.");
   }
 
   PStringDatumHandle next(diggPString(src, offset));

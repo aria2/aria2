@@ -249,8 +249,7 @@ void HttpResponseTest::testValidateResponse()
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    delete e;
+  } catch(Exception& e) {
   }
 
   httpHeader->setResponseStatus("505");
@@ -258,8 +257,7 @@ void HttpResponseTest::testValidateResponse()
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    delete e;
+  } catch(Exception& e) {
   }
 
   httpHeader->setResponseStatus("304");
@@ -267,16 +265,14 @@ void HttpResponseTest::testValidateResponse()
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    delete e;
+  } catch(Exception& e) {
   }
 
   httpHeader->put("Location", "http://localhost/archives/aria2-1.0.0.tar.bz2");
 
   try {
     httpResponse.validateResponse();
-  } catch(Exception* e) {
-    delete e;
+  } catch(Exception& e) {
     CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
@@ -300,9 +296,8 @@ void HttpResponseTest::testValidateResponse_good_range()
   
   try {
     httpResponse.validateResponse();
-  } catch(Exception* e) {
-    std::cerr << e->getMsg() << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
     CPPUNIT_FAIL("exception must not be thrown.");
   }
 }
@@ -327,8 +322,7 @@ void HttpResponseTest::testValidateResponse_bad_range()
   try {
     httpResponse.validateResponse();
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    delete e;
+  } catch(Exception& e) {
   }
 }
 
@@ -353,8 +347,7 @@ void HttpResponseTest::testValidateResponse_chunked()
   // if transfer-encoding is specified, then range validation is skipped.
   try {
     httpResponse.validateResponse();
-  } catch(Exception* e) {
-    delete e;
+  } catch(Exception& e) {
     CPPUNIT_FAIL("exception must not be thrown.");
   }
 }

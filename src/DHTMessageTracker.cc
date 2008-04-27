@@ -46,6 +46,7 @@
 #include "Data.h"
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
+#include "StringFormat.h"
 #include <utility>
 
 namespace aria2 {
@@ -72,7 +73,8 @@ DHTMessageTracker::messageArrived(const Dictionary* d,
 {
   const Data* tid = dynamic_cast<const Data*>(d->get("t"));
   if(!tid) {
-    throw new DlAbortEx("Malformed DHT message. From:%s:%u", ipaddr.c_str(), port);
+    throw DlAbortEx(StringFormat("Malformed DHT message. From:%s:%u",
+				 ipaddr.c_str(), port).str());
   }
   _logger->debug("Searching tracker entry for TransactionID=%s, Remote=%s:%u",
 		 Util::toHex(tid->toString()).c_str(), ipaddr.c_str(), port);
@@ -119,9 +121,8 @@ void DHTMessageTracker::handleTimeout()
 	if(!callback.isNull()) {
 	  callback->onTimeout(node);
 	}
-      } catch(RecoverableException* e) {
+      } catch(RecoverableException& e) {
 	_logger->info("Exception thrown while handling timeouts.", e);
-	delete e;
       }
     } else {
       ++i;

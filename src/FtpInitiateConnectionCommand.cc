@@ -102,7 +102,7 @@ bool FtpInitiateConnectionCommand::executeInternal() {
       command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e, socket);
     } else {
       // TODO
-      throw new DlAbortEx("ERROR");
+      throw DlAbortEx("ERROR");
     }
   } else {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),

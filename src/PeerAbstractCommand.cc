@@ -74,7 +74,7 @@ PeerAbstractCommand::~PeerAbstractCommand() {
 
 bool PeerAbstractCommand::execute() {
   if(exitBeforeExecute()) {
-    onAbort(0);
+    onAbort();
     return true;
   }
   try {
@@ -88,15 +88,14 @@ bool PeerAbstractCommand::execute() {
       checkPoint.reset();
     }
     if(checkPoint.elapsed(timeout)) {
-      throw new DlAbortEx(EX_TIME_OUT);
+      throw DlAbortEx(EX_TIME_OUT);
     }
     return executeInternal();
-  } catch(RecoverableException* err) {
+  } catch(RecoverableException& err) {
     logger->debug(MSG_TORRENT_DOWNLOAD_ABORTED, err, cuid);
     logger->debug(MSG_PEER_BANNED,
 		  cuid, peer->ipaddr.c_str(), peer->port);
-    onAbort(err);
-    delete err;
+    onAbort();
     return prepareForNextPeer(0);
   }
 }

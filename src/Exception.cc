@@ -33,17 +33,38 @@
  */
 /* copyright --> */
 #include "Exception.h"
-#include <ostream>
 
 namespace aria2 {
 
-std::ostream& operator<<(std::ostream& o, const Exception& e)
+Exception::Exception(const std::string& msg):exception(), _msg(msg) {}
+
+Exception::Exception(const std::string& msg,
+		     const Exception& cause):
+  exception(), _msg(msg), _cause(cause.copy()) {}
+
+Exception::Exception(const Exception& e):_msg(e._msg), _cause(e._cause)
+{}
+
+Exception::~Exception() throw() {}
+
+const char* Exception::what() const throw()
 {
-  o << e.getMsg() << "\n";
-  for(Exception* cause = e.getCause(); cause; cause = cause->getCause()) {
-    o << "Cause: " << cause->getMsg() << "\n";
+  return _msg.c_str();
+}
+
+std::string Exception::stackTrace() const throw()
+{
+  std::string stackTrace = "Exception: ";
+  stackTrace += what();
+  stackTrace += "\n";
+  SharedHandle<Exception> e = _cause;
+  while(!e.isNull()) {
+    stackTrace += "  -> ";
+    stackTrace += e->what();
+    stackTrace += "\n";
+    e = e->_cause;
   }
-  return o;
+  return stackTrace;
 }
 
 } // namespace aria2

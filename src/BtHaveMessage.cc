@@ -38,16 +38,19 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Peer.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 5) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "have", dataLength, 5);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "have", dataLength, 5).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "have", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "have", ID).str());
   }
   BtHaveMessageHandle message(new BtHaveMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));

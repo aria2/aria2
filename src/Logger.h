@@ -45,15 +45,15 @@ class Logger {
 public:
   virtual ~Logger() {}
   virtual void debug(const char* msg, ...) = 0;
-  virtual void debug(const char* msg, Exception* ex, ...) = 0;
+  virtual void debug(const char* msg, Exception& ex, ...) = 0;
   virtual void info(const char* msg, ...) = 0;
-  virtual void info(const char* msg, Exception* ex, ...) = 0;
+  virtual void info(const char* msg, Exception& ex, ...) = 0;
   virtual void notice(const char* msg, ...) = 0;
-  virtual void notice(const char* msg, Exception* ex, ...) = 0;
+  virtual void notice(const char* msg, Exception& ex, ...) = 0;
   virtual void warn(const char* msg, ...) = 0;
-  virtual void warn(const char* msg, Exception* ex, ...) = 0;
+  virtual void warn(const char* msg, Exception& ex, ...) = 0;
   virtual void error(const char*  msg, ...) = 0;
-  virtual void error(const char* msg, Exception* ex, ...) = 0;
+  virtual void error(const char* msg, Exception& ex, ...) = 0;
 
   enum LEVEL {
     DEBUG  = 1 << 0,

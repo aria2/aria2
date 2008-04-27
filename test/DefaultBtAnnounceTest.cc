@@ -286,9 +286,8 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_malformed()
     SharedHandle<MockBtContext> ctx(new MockBtContext());
     DefaultBtAnnounce(ctx, _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 
@@ -299,9 +298,8 @@ void DefaultBtAnnounceTest::testProcessAnnounceResponse_failureReason()
     SharedHandle<MockBtContext> ctx(new MockBtContext());
     DefaultBtAnnounce(ctx, _option).processAnnounceResponse(reinterpret_cast<const unsigned char*>(res.c_str()), res.size());
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 

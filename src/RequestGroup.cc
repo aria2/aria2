@@ -70,6 +70,7 @@
 #include "FileEntry.h"
 #include "Request.h"
 #include "FileAllocationIterator.h"
+#include "StringFormat.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -177,8 +178,9 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
     BtContextHandle btContext = dynamic_pointer_cast<BtContext>(_downloadContext);
     if(!btContext.isNull()) {
       if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
-	throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
-					   getFilePath().c_str());
+	throw DownloadFailureException
+	  (StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+			getFilePath().c_str()).str());
       }
       initPieceStorage();
       if(btContext->getFileEntries().size() > 1) {
@@ -237,8 +239,10 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 	  if(_option->get(PREF_CHECK_INTEGRITY) != V_TRUE &&
 	     _option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
 	    // TODO we need this->haltRequested = true?
-	    throw new DownloadFailureException(MSG_FILE_ALREADY_EXISTS,
-					       _pieceStorage->getDiskAdaptor()->getFilePath().c_str());
+	    throw DownloadFailureException
+	      (StringFormat(MSG_FILE_ALREADY_EXISTS,
+			    _pieceStorage->getDiskAdaptor()->getFilePath().c_str()
+			    ).str());
 	  } else {
 	    _pieceStorage->getDiskAdaptor()->openFile();
 	  }
@@ -272,8 +276,9 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
     return createNextCommand(e, 1);
   }else {
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
-      throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
-					 getFilePath().c_str());
+      throw DownloadFailureException
+	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+		      getFilePath().c_str()).str());
     }
     initPieceStorage();
     BtProgressInfoFileHandle
@@ -366,10 +371,11 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
       File outfile(getFilePath());    
       if(outfile.exists() && _option->get(PREF_CONTINUE) == V_TRUE) {
 	if(getTotalLength() < outfile.size()) {
-	  throw new DlAbortEx(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
-			      getFilePath().c_str(),
-			      Util::itos(outfile.size()).c_str(),
-			      Util::itos(getTotalLength()).c_str());
+	  throw DlAbortEx
+	    (StringFormat(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
+			  getFilePath().c_str(),
+			  Util::itos(outfile.size()).c_str(),
+			  Util::itos(getTotalLength()).c_str()).str());
 	}
 	_pieceStorage->getDiskAdaptor()->openExistingFile();
 	_pieceStorage->markPiecesDone(outfile.size());
@@ -388,8 +394,9 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
       }
     }
     setProgressInfoFile(progressInfoFile);
-  } catch(RecoverableException* e) {
-    throw new DownloadFailureException(e, EX_DOWNLOAD_ABORTED);
+  } catch(RecoverableException& e) {
+    throw DownloadFailureException
+      (StringFormat(EX_DOWNLOAD_ABORTED).str(), e);
   }
 }
 
@@ -405,12 +412,14 @@ void RequestGroup::shouldCancelDownloadForSafety()
       if(tryAutoFileRenaming()) {
 	_logger->notice(MSG_FILE_RENAMED, getFilePath().c_str());
       } else {
-	throw new DownloadFailureException("File renaming failed: %s",
-					   getFilePath().c_str());
+	throw DownloadFailureException
+	  (StringFormat("File renaming failed: %s",
+			getFilePath().c_str()).str());
       }
     } else {
-      throw new DownloadFailureException(MSG_FILE_ALREADY_EXISTS,
-					 getFilePath().c_str());
+      throw DownloadFailureException
+	(StringFormat(MSG_FILE_ALREADY_EXISTS,
+		      getFilePath().c_str()).str());
     }
   }
 }
@@ -541,9 +550,9 @@ void RequestGroup::validateFilename(const std::string& expectedFilename,
     return;
   }
   if(expectedFilename != actualFilename) {
-    throw new DlAbortEx(EX_FILENAME_MISMATCH,
-			expectedFilename.c_str(),
-			actualFilename.c_str());
+    throw DlAbortEx(StringFormat(EX_FILENAME_MISMATCH,
+				 expectedFilename.c_str(),
+				 actualFilename.c_str()).str());
   }
 }
 
@@ -554,9 +563,10 @@ void RequestGroup::validateTotalLength(uint64_t expectedTotalLength,
     return;
   }
   if(expectedTotalLength != actualTotalLength) {
-    throw new DlAbortEx(EX_SIZE_MISMATCH,
-			Util::itos(expectedTotalLength, true).c_str(),
-			Util::itos(actualTotalLength, true).c_str());
+    throw DlAbortEx
+      (StringFormat(EX_SIZE_MISMATCH,
+		    Util::itos(expectedTotalLength, true).c_str(),
+		    Util::itos(actualTotalLength, true).c_str()).str());
   }
 }
 
@@ -682,9 +692,8 @@ void RequestGroup::preDownloadProcessing()
 	return;
       }
     }
-  } catch(RecoverableException* ex) {
+  } catch(RecoverableException& ex) {
     _logger->error(EX_EXCEPTION_CAUGHT, ex);
-    delete ex;
     return;
   }
   _logger->debug("No PreDownloadHandler found.");
@@ -701,9 +710,8 @@ RequestGroups RequestGroup::postDownloadProcessing()
 	return (*itr)->getNextRequestGroups(this);
       }
     }
-  } catch(RecoverableException* ex) {
+  } catch(RecoverableException& ex) {
     _logger->error(EX_EXCEPTION_CAUGHT, ex);
-    delete ex;
     return RequestGroups();
   }
   _logger->debug("No PostDownloadHandler found.");

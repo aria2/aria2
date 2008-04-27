@@ -82,9 +82,8 @@ void BtExtendedMessageTest::testCreate() {
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 1, 20);
     BtExtendedMessage::create(ctx, peer, &msg[4], 1);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
   // case: id is wrong
   try {
@@ -92,9 +91,8 @@ void BtExtendedMessageTest::testCreate() {
     PeerMessageUtil::createPeerMessageString(msg, sizeof(msg), 2, 21);
     BtExtendedMessage::create(ctx, peer, &msg[4], 2);
     CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
   }
 }
 

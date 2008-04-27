@@ -37,16 +37,19 @@
 #include "Util.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtSuggestPieceMessageHandle BtSuggestPieceMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 5) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "suggest piece", dataLength, 5);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "suggest piece", dataLength, 5).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "suggest piece", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "suggest piece", ID).str());
   }
   BtSuggestPieceMessageHandle message(new BtSuggestPieceMessage());
   message->setIndex(PeerMessageUtil::getIntParam(data, 1));

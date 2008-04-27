@@ -52,8 +52,7 @@ void SizeMetalinkParserState::endElement(MetalinkParserStateMachine* stm,
 {
   try {
     stm->setFileLengthOfEntry(Util::parseLLInt(characters));
-  } catch(RecoverableException* e) {
-    delete e;
+  } catch(RecoverableException& e) {
     // current metalink specification doesn't require size element.
   }
   stm->setFileState();

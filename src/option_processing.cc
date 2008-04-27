@@ -517,10 +517,9 @@ Option* option_processing(int argc, char* const argv[])
 	std::ifstream cfstream(cfname.c_str());
 	try {
 	  oparser.parse(op, cfstream);
-	} catch(Exception* e) {
+	} catch(Exception& e) {
 	  std::cerr << "Parse error in " << cfname << "\n"
-		    << *e << std::endl;
-	  delete e;
+		    << e.stackTrace() << std::endl;
 	  exit(EXIT_FAILURE);
 	}
       } else if(ucfname.size()) {
@@ -530,9 +529,8 @@ Option* option_processing(int argc, char* const argv[])
     }
     try {
       oparser.parse(op, cmdstream);
-    } catch(Exception* e) {
-      std::cerr << *e << std::endl;
-      delete e;
+    } catch(Exception& e) {
+      std::cerr << e.stackTrace() << std::endl;
       exit(EXIT_FAILURE);
     }
   }

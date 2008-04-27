@@ -45,6 +45,7 @@
 #include "DHTTokenTracker.h"
 #include "DlAbortEx.h"
 #include "BtConstants.h"
+#include "StringFormat.h"
 #include <cstring>
 
 namespace aria2 {
@@ -97,10 +98,11 @@ void DHTAnnouncePeerMessage::validate() const
   if(!_tokenTracker->validateToken(_token, _infoHash,
 				   _remoteNode->getIPAddress(),
 				   _remoteNode->getPort())) {
-    throw new DlAbortEx("Invalid token=%s from %s:%u",
-			Util::toHex(_token).c_str(),
-			_remoteNode->getIPAddress().c_str(),
-			_remoteNode->getPort());
+    throw DlAbortEx
+      (StringFormat("Invalid token=%s from %s:%u",
+		    Util::toHex(_token).c_str(),
+		    _remoteNode->getIPAddress().c_str(),
+		    _remoteNode->getPort()).str());
   }
 }
 

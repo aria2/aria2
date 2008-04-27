@@ -41,6 +41,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "DHTConstants.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -75,9 +76,8 @@ DHTMessageDispatcherImpl::sendMessage(const SharedHandle<DHTMessageEntry>& entry
       _tracker->addMessage(entry->_message, entry->_timeout, entry->_callback);
     }
     _logger->info("Message sent: %s", entry->_message->toString().c_str());
-  } catch(RecoverableException* e) {
+  } catch(RecoverableException& e) {
     _logger->error("Failed to send message: %s", e, entry->_message->toString().c_str());
-    delete e;
   }
 }
 

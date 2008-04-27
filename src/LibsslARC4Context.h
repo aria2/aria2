@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 #include <openssl/evp.h>
 #include <openssl/err.h>
 
@@ -48,8 +49,9 @@ private:
 
   void handleError() const
   {
-    throw new DlAbortEx("Exception in libssl routine(ARC4Context class): %s",
-			ERR_error_string(ERR_get_error(), 0));
+    throw DlAbortEx
+      (StringFormat("Exception in libssl routine(ARC4Context class): %s",
+		    ERR_error_string(ERR_get_error(), 0)).str());
   }
 public:
   LibsslARC4Context():_cipherCtx(0) {}

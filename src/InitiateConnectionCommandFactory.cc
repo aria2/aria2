@@ -39,6 +39,7 @@
 #include "RequestGroup.h"
 #include "DownloadEngine.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -55,7 +56,9 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, 
     return new FtpInitiateConnectionCommand(cuid, req, requestGroup, e);
   } else {
     // these protocols are not supported yet
-    throw new DlAbortEx("%s is not supported yet.", req->getProtocol().c_str());
+    throw DlAbortEx
+      (StringFormat("%s is not supported yet.",
+		    req->getProtocol().c_str()).str());
   }
 }
 

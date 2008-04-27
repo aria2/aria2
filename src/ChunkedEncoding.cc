@@ -36,6 +36,7 @@
 #include "DlAbortEx.h"
 #include "message.h"
 #include "Util.h"
+#include "StringFormat.h"
 #include <cstring>
 
 namespace aria2 {
@@ -144,7 +145,7 @@ int ChunkedEncoding::readDataEOL(unsigned char** pp) {
   } else if(strbufTail-*pp < 2) {
     return -1;
   } else {
-    throw new DlAbortEx(EX_INVALID_CHUNK_SIZE);
+    throw DlAbortEx(EX_INVALID_CHUNK_SIZE);
   }  
 }
 
@@ -166,7 +167,7 @@ int ChunkedEncoding::readChunkSize(unsigned char** pp) {
   std::string temp(*pp, exsp);
   chunkSize = Util::parseInt(temp, 16);
   if(chunkSize < 0) {
-    throw new DlAbortEx(EX_INVALID_CHUNK_SIZE);
+    throw DlAbortEx(EX_INVALID_CHUNK_SIZE);
   }
   *pp = p+2;
   return 0;
@@ -176,7 +177,8 @@ void ChunkedEncoding::addBuffer(const unsigned char* inbuf, size_t inlen) {
   size_t realbufSize = strbufTail-strbuf;
   if(realbufSize+inlen >= strbufSize) {
     if(realbufSize+inlen > MAX_BUFSIZE) {
-      throw new DlAbortEx(EX_TOO_LARGE_CHUNK, realbufSize+inlen);
+      throw DlAbortEx
+	(StringFormat(EX_TOO_LARGE_CHUNK, realbufSize+inlen).str());
     }
     strbufSize = realbufSize+inlen;
     unsigned char* temp = new unsigned char[strbufSize];

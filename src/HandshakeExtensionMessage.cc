@@ -44,6 +44,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "message.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -133,8 +134,9 @@ HandshakeExtensionMessageHandle
 HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
 {
   if(length < 1) {
-    throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE,
-			EXTENSION_NAME.c_str(), length);
+    throw DlAbortEx
+      (StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
+		    EXTENSION_NAME.c_str(), length).str());
   }
   HandshakeExtensionMessageHandle msg(new HandshakeExtensionMessage());
   msg->_logger->debug("Creating HandshakeExtensionMessage from %s",
@@ -142,7 +144,7 @@ HandshakeExtensionMessage::create(const unsigned char* data, size_t length)
   SharedHandle<MetaEntry> root(MetaFileUtil::bdecoding(data+1, length-1));
   Dictionary* d = dynamic_cast<Dictionary*>(root.get());
   if(d == 0) {
-    throw new DlAbortEx("Unexpected payload format for extended message handshake");
+    throw DlAbortEx("Unexpected payload format for extended message handshake");
   }
   const Data* p = dynamic_cast<const Data*>(d->get("p"));
   if(p) {

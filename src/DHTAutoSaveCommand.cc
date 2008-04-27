@@ -117,10 +117,9 @@ void DHTAutoSaveCommand::save()
   } catch(std::ios::failure const& e) {
     logger->error("Failed to save DHT routing table to %s. cause:%s",
 		  tempFile.c_str(), strerror(errno));
-  } catch(RecoverableException* e) {
+  } catch(RecoverableException& e) {
     logger->error("Exception caught while saving DHT routing table to %s",
 		  e, tempFile.c_str());
-    delete e;
   }
 }
 

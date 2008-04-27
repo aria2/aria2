@@ -93,10 +93,9 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
 	in.exceptions(std::ios::failbit);
 	deserializer.deserialize(in);
 	localNode = deserializer.getLocalNode();
-      } catch(RecoverableException* e) {
+      } catch(RecoverableException& e) {
 	_logger->error("Exception caught while loading DHT routing table from %s",
 		       e, dhtFile.c_str());
-	delete e;
       }
     }
     if(localNode.isNull()) {
@@ -108,7 +107,7 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
       IntSequence seq = Util::parseIntRange(option->get(PREF_DHT_LISTEN_PORT));
       uint16_t port;
       if(!connection->bind(port, seq)) {
-	throw new DlAbortEx("Error occurred while binding port for DHT");
+	throw DlAbortEx("Error occurred while binding port for DHT");
       }
       localNode->setPort(port);
     }
@@ -235,9 +234,8 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
     _initialized = true;
 
     return commands;
-  } catch(RecoverableException* e) {
+  } catch(RecoverableException& e) {
     _logger->error("Exception caught while initializing DHT functionality. DHT is disabled.", e);
-    delete e;
     DHTRegistry::clear();
     return Commands();
   }

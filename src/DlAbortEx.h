@@ -38,23 +38,18 @@
 
 namespace aria2 {
 
-class DlAbortEx : public RecoverableException {
+class DlAbortEx:public RecoverableException {
+protected:
+  virtual SharedHandle<Exception> copy() const
+  {
+    SharedHandle<Exception> e(new DlAbortEx(*this));
+    return e;
+  }
 public:
-  DlAbortEx(Exception* cause = 0):RecoverableException(cause) {}
-
-  DlAbortEx(const char* msg, ...) {
-    va_list ap;
-    va_start(ap, msg);
-    setMsg(msg, ap);
-    va_end(ap);
-  }
-
-  DlAbortEx(Exception* cause, const char* msg, ...):RecoverableException(cause) {
-    va_list ap;
-    va_start(ap, msg);
-    setMsg(msg, ap);
-    va_end(ap);
-  }
+  DlAbortEx(const std::string& msg):RecoverableException(msg) {}
+  DlAbortEx(const std::string& msg,
+	    const Exception& cause):RecoverableException(msg, cause) {}
+  DlAbortEx(const RecoverableException& e):RecoverableException(e) {}
 };
 
 } // namespace aria2

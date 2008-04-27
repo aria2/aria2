@@ -53,9 +53,8 @@ void SocketCoreTest::testWriteAndReadDatagram()
       readbuffer[rlength] = '\0';
       CPPUNIT_ASSERT_EQUAL(message2, std::string(readbuffer));
     }
-  } catch(Exception* e) {
-    std::cerr << *e << std::endl;
-    delete e;
+  } catch(Exception& e) {
+    std::cerr << e.stackTrace() << std::endl;
     CPPUNIT_FAIL("exception thrown");
   }
 }

@@ -59,6 +59,7 @@
 #include "Socket.h"
 #include "message.h"
 #include "prefs.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -105,8 +106,9 @@ bool HttpResponseCommand::executeInternal()
     dctx->setContentType(httpResponse->getContentType());
     _requestGroup->preDownloadProcessing();
     if(e->_requestGroupMan->isSameFileBeingDownloaded(_requestGroup)) {
-      throw new DownloadFailureException(EX_DUPLICATE_FILE_DOWNLOAD,
-					 _requestGroup->getFilePath().c_str());
+      throw DownloadFailureException
+	(StringFormat(EX_DUPLICATE_FILE_DOWNLOAD,
+		      _requestGroup->getFilePath().c_str()).str());
     }
     if(totalLength == 0 || httpResponse->isTransferEncodingSpecified()) {
       // we ignore content-length when transfer-encoding is set
@@ -157,7 +159,7 @@ bool HttpResponseCommand::handleDefaultEncoding(const HttpResponseHandle& httpRe
       _requestGroup->getSegmentMan()->cancelSegment(cuid);
     }
     prepareForNextAction(command);
-  } catch(Exception* e) {
+  } catch(Exception& e) {
     delete command;
     throw;
   }
@@ -183,8 +185,9 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpRe
   if(httpResponse->isTransferEncodingSpecified()) {
     enc = httpResponse->getTransferDecoder();
     if(enc.isNull()) {
-      throw new DlAbortEx(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
-			  httpResponse->getTransferEncoding().c_str());
+      throw DlAbortEx
+	(StringFormat(EX_TRANSFER_ENCODING_NOT_SUPPORTED,
+		      httpResponse->getTransferEncoding().c_str()).str());
     }
     enc->init();
   }

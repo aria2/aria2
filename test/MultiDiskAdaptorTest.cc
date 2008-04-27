@@ -97,8 +97,8 @@ void MultiDiskAdaptorTest::testWriteData() {
   readFile("file3.txt", buf, 2);
   buf[2] = '\0';
   CPPUNIT_ASSERT_EQUAL(std::string("12"), std::string(buf));
-  } catch(Exception* e) {
-    CPPUNIT_FAIL(e->getMsg());
+  } catch(Exception& e) {
+    CPPUNIT_FAIL(e.stackTrace());
   }
 }
 

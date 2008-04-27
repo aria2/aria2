@@ -56,7 +56,7 @@ public:
 
   virtual bool executeInternal();
 
-  virtual bool handleException(Exception* e);
+  virtual bool handleException(Exception& e);
 };
 
 } // namespace aria2

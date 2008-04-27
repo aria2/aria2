@@ -35,6 +35,7 @@
 #include "PeerMessageUtil.h"
 #include "DlAbortEx.h"
 #include "a2netcompat.h"
+#include "StringFormat.h"
 #include <cassert>
 #include <cstring>
 
@@ -59,35 +60,35 @@ uint16_t PeerMessageUtil::getShortIntParam(const unsigned char* msg, size_t pos)
 
 void PeerMessageUtil::checkIndex(size_t index, size_t pieces) {
   if(!(index < pieces)) {
-    throw new DlAbortEx("Invalid index: %zu", index);
+    throw DlAbortEx(StringFormat("Invalid index: %zu", index).str());
   }
 }
 
 void PeerMessageUtil::checkBegin(uint32_t begin, size_t pieceLength) {
   if(!(begin < pieceLength)) {
-    throw new DlAbortEx("Invalid begin: %u", begin);
+    throw DlAbortEx(StringFormat("Invalid begin: %u", begin).str());
   }  
 }
 
 void PeerMessageUtil::checkLength(size_t length) {
   if(length > MAX_BLOCK_LENGTH) {
-    throw new DlAbortEx("Length too long: %zu > %uKB", length,
-			MAX_BLOCK_LENGTH/1024);
+    throw DlAbortEx(StringFormat("Length too long: %zu > %uKB", length,
+				 MAX_BLOCK_LENGTH/1024).str());
   }
   if(length == 0) {
-    throw new DlAbortEx("Invalid length: %zu", length);
+    throw DlAbortEx(StringFormat("Invalid length: %zu", length).str());
   }
 }
 
 void PeerMessageUtil::checkRange(uint32_t begin, size_t length, size_t pieceLength) {
   if(!(0 < length)) {
-    throw new DlAbortEx("Invalid range: begin=%u, length=%zu",
-			begin, length);
+    throw DlAbortEx(StringFormat("Invalid range: begin=%u, length=%zu",
+				 begin, length).str());
   }
   uint32_t end = begin+length;
   if(!(end <= pieceLength)) {
-    throw new DlAbortEx("Invalid range: begin=%u, length=%zu",
-			begin, length);
+    throw DlAbortEx(StringFormat("Invalid range: begin=%u, length=%zu",
+				 begin, length).str());
   }
 }
 
@@ -95,13 +96,13 @@ void PeerMessageUtil::checkBitfield(const unsigned char* bitfield,
 				    size_t bitfieldLength,
 				    size_t pieces) {
   if(!(bitfieldLength == (pieces+7)/8)) {
-    throw new DlAbortEx("Invalid bitfield length: %zu",
-			bitfieldLength);
+    throw DlAbortEx(StringFormat("Invalid bitfield length: %zu",
+				 bitfieldLength).str());
   }
   char lastbyte = bitfield[bitfieldLength-1];
   for(size_t i = 0; i < 8-pieces%8 && pieces%8 != 0; ++i) {
     if(!(((lastbyte >> i) & 1) == 0)) {
-      throw new DlAbortEx("Invalid bitfield");
+      throw DlAbortEx("Invalid bitfield");
     }
   }
 }

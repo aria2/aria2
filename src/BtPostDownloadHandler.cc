@@ -70,7 +70,7 @@ RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestG
     requestGroup->getPieceStorage()->getDiskAdaptor()->openExistingFile();
     content = Util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();    
-  } catch(Exception* e) {
+  } catch(Exception& e) {
     requestGroup->getPieceStorage()->getDiskAdaptor()->closeFile();
     throw;
   }

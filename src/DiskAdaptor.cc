@@ -38,6 +38,7 @@
 #include "Logger.h"
 #include "message.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -53,7 +54,7 @@ FileEntryHandle DiskAdaptor::getFileEntryFromPath(const std::string& fileEntryPa
       return *itr;
     }
   }
-  throw new DlAbortEx(EX_NO_SUCH_FILE_ENTRY, fileEntryPath.c_str());
+  throw DlAbortEx(StringFormat(EX_NO_SUCH_FILE_ENTRY, fileEntryPath.c_str()).str());
 }
 
 bool DiskAdaptor::addDownloadEntry(const std::string& fileEntryPath)

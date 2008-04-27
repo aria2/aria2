@@ -39,16 +39,19 @@
 #include "Peer.h"
 #include "BtMessageDispatcher.h"
 #include "BtRequestFactory.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
 BtChokeMessageHandle BtChokeMessage::create(const unsigned char* data, size_t dataLength) {
   if(dataLength != 1) {
-    throw new DlAbortEx(EX_INVALID_PAYLOAD_SIZE, "choke", dataLength, 1);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_PAYLOAD_SIZE, "choke", dataLength, 1).str());
   }
   uint8_t id = PeerMessageUtil::getId(data);
   if(id != ID) {
-    throw new DlAbortEx(EX_INVALID_BT_MESSAGE_ID, id, "choke", ID);
+    throw DlAbortEx
+      (StringFormat(EX_INVALID_BT_MESSAGE_ID, id, "choke", ID).str());
   }
   BtChokeMessageHandle chokeMessage(new BtChokeMessage());
   return chokeMessage;

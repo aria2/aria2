@@ -36,36 +36,32 @@
 #define _D_EXCEPTION_H_
 
 #include "common.h"
+#include "SharedHandle.h"
 #include <string>
-#include <cstdio>
-#include <cstdarg>
-#include <iosfwd>
 
 namespace aria2 {
 
-class Exception {
+class Exception:public std::exception {
 private:
-  std::string msg;
+  std::string _msg;
+
+  SharedHandle<Exception> _cause;
+
 protected:
-  Exception* cause;
+  virtual SharedHandle<Exception> copy() const = 0;
 
-  void setMsg(const std::string& msgsrc, va_list ap) {
-    char buf[1024];
-    vsnprintf(buf, sizeof(buf), msgsrc.c_str(), ap);
-    msg = buf;
-  }
 public:
-  Exception(Exception* cause = 0):cause(cause) {}
+  Exception(const std::string& msg);
 
-  virtual ~Exception() {
-    delete cause;
-  }
+  Exception(const std::string& msg, const Exception& cause);
 
-  const std::string& getMsg() const { return msg; }
+  Exception(const Exception& e);
 
-  Exception* getCause() const { return cause; }
+  virtual ~Exception() throw();
 
-  friend std::ostream& operator<<(std::ostream& o, const Exception& e);
+  virtual const char* what() const throw();
+
+  std::string stackTrace() const throw();
 };
 
 } // namespace aria2

@@ -45,6 +45,7 @@
 #include "Util.h"
 #include "message.h"
 #include "DlAbortEx.h"
+#include "StringFormat.h"
 #include <deque>
 
 namespace aria2 {
@@ -59,30 +60,35 @@ void HttpResponse::validateResponse() const
 {
   const std::string& status = getResponseStatus();
   if(status == "401") {
-    throw new DlAbortEx(EX_AUTH_FAILED);
+    throw DlAbortEx(EX_AUTH_FAILED);
   }
   if(status == "404") {
-    throw new DlAbortEx(MSG_RESOURCE_NOT_FOUND);
+    throw DlAbortEx(MSG_RESOURCE_NOT_FOUND);
   }
   if(status >= "400") {
-    throw new DlAbortEx(EX_BAD_STATUS, Util::parseUInt(status));
+    throw DlAbortEx
+      (StringFormat(EX_BAD_STATUS, Util::parseUInt(status)).str());
   }
   if(status >= "300") {
     if(!httpHeader->defined("Location")) {
-      throw new DlAbortEx(EX_LOCATION_HEADER_REQUIRED, Util::parseUInt(status));
+      throw DlAbortEx
+	(StringFormat(EX_LOCATION_HEADER_REQUIRED,
+		      Util::parseUInt(status)).str());
     }
   } else {
     if(!httpHeader->defined("Transfer-Encoding")) {
       // compare the received range against the requested range
       RangeHandle responseRange = httpHeader->getRange();
       if(!httpRequest->isRangeSatisfied(responseRange)) {
-	throw new DlAbortEx(EX_INVALID_RANGE_HEADER,
-			    Util::itos(httpRequest->getStartByte(), true).c_str(),
-			    Util::itos(httpRequest->getEndByte(), true).c_str(),
-			    Util::uitos(httpRequest->getEntityLength(), true).c_str(),
-			    Util::itos(responseRange->getStartByte(), true).c_str(),
-			    Util::itos(responseRange->getEndByte(), true).c_str(),
-			    Util::uitos(responseRange->getEntityLength(), true).c_str());
+	throw DlAbortEx
+	  (StringFormat(EX_INVALID_RANGE_HEADER,
+			Util::itos(httpRequest->getStartByte(), true).c_str(),
+			Util::itos(httpRequest->getEndByte(), true).c_str(),
+			Util::uitos(httpRequest->getEntityLength(), true).c_str(),
+			Util::itos(responseRange->getStartByte(), true).c_str(),
+			Util::itos(responseRange->getEndByte(), true).c_str(),
+			Util::uitos(responseRange->getEntityLength(), true).c_str()
+			).str());
       }
     }
   }

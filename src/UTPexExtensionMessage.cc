@@ -46,6 +46,7 @@
 #include "MetaFileUtil.h"
 #include "DlAbortEx.h"
 #include "message.h"
+#include "StringFormat.h"
 
 namespace aria2 {
 
@@ -125,8 +126,8 @@ UTPexExtensionMessage::create(const BtContextHandle& btContext,
 			      const unsigned char* data, size_t len)
 {
   if(len < 1) {
-    throw new DlAbortEx(MSG_TOO_SMALL_PAYLOAD_SIZE,
-			EXTENSION_NAME.c_str(), len);
+    throw DlAbortEx(StringFormat(MSG_TOO_SMALL_PAYLOAD_SIZE,
+				 EXTENSION_NAME.c_str(), len).str());
   }
   UTPexExtensionMessageHandle msg(new UTPexExtensionMessage(*data));
   SharedHandle<MetaEntry> root(MetaFileUtil::bdecoding(data+1, len-1));

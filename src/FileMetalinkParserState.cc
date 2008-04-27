@@ -65,8 +65,7 @@ void FileMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
       } else {
 	try {
 	  maxConnections = Util::parseInt((*itr).second);
-	} catch(RecoverableException* e) {
-	  delete e;
+	} catch(RecoverableException& e) {
 	  maxConnections = -1;
 	}
       }

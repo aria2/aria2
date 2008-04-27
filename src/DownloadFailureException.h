@@ -42,23 +42,18 @@ namespace aria2 {
  * Throw this exception when a RequestGroup should aborted.
  * FYI, DlAbortEx is the exception to abort 1 Request.
  */
-class DownloadFailureException : public RecoverableException {
+class DownloadFailureException:public RecoverableException {
+protected:
+  virtual SharedHandle<Exception> copy() const
+  {
+    SharedHandle<Exception> e(new DownloadFailureException(*this));
+    return e;
+  }
 public:
-  DownloadFailureException(Exception* cause = 0):RecoverableException(cause) {}
-
-  DownloadFailureException(const char* msg, ...) {
-    va_list ap;
-    va_start(ap, msg);
-    setMsg(msg, ap);
-    va_end(ap);
-  }
-
-  DownloadFailureException(Exception* cause, const char* msg, ...):RecoverableException(cause) {
-    va_list ap;
-    va_start(ap, msg);
-    setMsg(msg, ap);
-    va_end(ap);
-  }
+  DownloadFailureException(const std::string& msg):RecoverableException(msg) {}
+  DownloadFailureException(const std::string& msg,
+			   const Exception& cause):RecoverableException(msg, cause) {}
+  DownloadFailureException(const DownloadFailureException& e):RecoverableException(e) {}
 };
 
 } // namespace aria2

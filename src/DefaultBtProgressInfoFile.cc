@@ -51,6 +51,7 @@
 #include "Util.h"
 #include "a2io.h"
 #include "DownloadFailureException.h"
+#include "StringFormat.h"
 #include <fstream>
 #include <cerrno>
 #include <cstring>
@@ -149,12 +150,12 @@ void DefaultBtProgressInfoFile::save() {
     _logger->info(MSG_SAVED_SEGMENT_FILE);
   } catch(std::ios::failure const& exception) {
     // TODO std::ios::failure doesn't give us the reasons of failure...
-    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
-			_filename.c_str(), strerror(errno));
+    throw DlAbortEx(StringFormat(EX_SEGMENT_FILE_WRITE,
+				 _filename.c_str(), strerror(errno)).str());
   }
   if(!File(filenameTemp).renameTo(_filename)) {
-    throw new DlAbortEx(EX_SEGMENT_FILE_WRITE,
-			_filename.c_str(), strerror(errno));
+    throw DlAbortEx(StringFormat(EX_SEGMENT_FILE_WRITE,
+				 _filename.c_str(), strerror(errno)).str());
   }
 }
 
@@ -169,8 +170,9 @@ void DefaultBtProgressInfoFile::load()
     unsigned char version[2];
     in.read((char*)version, sizeof(version));
     if(std::string("0000") != Util::toHex(version, sizeof(version))) {
-      throw new DlAbortEx("Unsupported ctrl file version: %s",
-			  Util::toHex(version, sizeof(version)).c_str());
+      throw DlAbortEx
+	(StringFormat("Unsupported ctrl file version: %s",
+		      Util::toHex(version, sizeof(version)).c_str()).str());
     }
     unsigned char extension[4];
     in.read((char*)extension, sizeof(extension));
@@ -184,7 +186,8 @@ void DefaultBtProgressInfoFile::load()
     uint32_t infoHashLength;
     in.read(reinterpret_cast<char*>(&infoHashLength), sizeof(infoHashLength));
     if((infoHashLength < 0) || ((infoHashLength == 0) && infoHashCheckEnabled)) {
-      throw new DlAbortEx("Invalid info hash length: %d", infoHashLength);
+      throw DlAbortEx
+	(StringFormat("Invalid info hash length: %d", infoHashLength).str());
     }
     if(infoHashLength > 0) {
       savedInfoHash = new unsigned char[infoHashLength];
@@ -192,9 +195,10 @@ void DefaultBtProgressInfoFile::load()
       BtContextHandle btContext(dynamic_pointer_cast<BtContext>(_dctx));
       if(infoHashCheckEnabled &&
 	 Util::toHex(savedInfoHash, infoHashLength) != btContext->getInfoHashAsString()) {
-	throw new DlAbortEx("info hash mismatch. expected: %s, actual: %s",
-			    btContext->getInfoHashAsString().c_str(),
-			    Util::toHex(savedInfoHash, infoHashLength).c_str());
+	throw DlAbortEx
+	  (StringFormat("info hash mismatch. expected: %s, actual: %s",
+			btContext->getInfoHashAsString().c_str(),
+			Util::toHex(savedInfoHash, infoHashLength).c_str()).str());
       }
       delete [] savedInfoHash;
       savedInfoHash = 0;
@@ -206,9 +210,10 @@ void DefaultBtProgressInfoFile::load()
     uint64_t totalLength;
     in.read(reinterpret_cast<char*>(&totalLength), sizeof(totalLength));
     if(totalLength != _dctx->getTotalLength()) {
-      throw new DlAbortEx("total length mismatch. expected: %s, actual: %s",
-			  Util::itos(_dctx->getTotalLength()).c_str(),
-			  Util::itos(totalLength).c_str());
+      throw DlAbortEx
+	(StringFormat("total length mismatch. expected: %s, actual: %s",
+		      Util::itos(_dctx->getTotalLength()).c_str(),
+		      Util::itos(totalLength).c_str()).str());
     }
     uint64_t uploadLength;
     in.read(reinterpret_cast<char*>(&uploadLength), sizeof(uploadLength));
@@ -221,9 +226,10 @@ void DefaultBtProgressInfoFile::load()
     in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
     uint32_t expectedBitfieldLength = ((totalLength+pieceLength-1)/pieceLength+7)/8;
     if(expectedBitfieldLength != bitfieldLength) {
-      throw new DlAbortEx("bitfield length mismatch. expected: %d, actual: %d",
-			  expectedBitfieldLength,
-			  bitfieldLength);
+      throw DlAbortEx
+	(StringFormat("bitfield length mismatch. expected: %d, actual: %d",
+		      expectedBitfieldLength,
+		      bitfieldLength).str());
     }
 
     savedBitfield = new unsigned char[bitfieldLength];
@@ -242,19 +248,22 @@ void DefaultBtProgressInfoFile::load()
 	uint32_t index;
 	in.read(reinterpret_cast<char*>(&index), sizeof(index));
 	if(!(index < _dctx->getNumPieces())) {
-	  throw new DlAbortEx("piece index out of range: %u", index);
+	  throw DlAbortEx
+	    (StringFormat("piece index out of range: %u", index).str());
 	}
 	uint32_t length;
 	in.read(reinterpret_cast<char*>(&length), sizeof(length));
 	if(!(length <=_dctx->getPieceLength())) {
-	  throw new DlAbortEx("piece length out of range: %u", length);
+	  throw DlAbortEx
+	    (StringFormat("piece length out of range: %u", length).str());
 	}
 	PieceHandle piece(new Piece(index, length));
 	uint32_t bitfieldLength;
 	in.read(reinterpret_cast<char*>(&bitfieldLength), sizeof(bitfieldLength));
 	if(piece->getBitfieldLength() != bitfieldLength) {
-	  throw new DlAbortEx("piece bitfield length mismatch. expected: %u actual: %u",
-			      piece->getBitfieldLength(), bitfieldLength);
+	  throw DlAbortEx
+	    (StringFormat("piece bitfield length mismatch. expected: %u actual: %u",
+			  piece->getBitfieldLength(), bitfieldLength).str());
 	}
 	savedBitfield = new unsigned char[bitfieldLength];
 	in.read(reinterpret_cast<char*>(savedBitfield), bitfieldLength);
@@ -272,7 +281,8 @@ void DefaultBtProgressInfoFile::load()
       src.setBitfield(savedBitfield, bitfieldLength);
       if((src.getCompletedLength() || numInFlightPiece) &&
 	 !_option->getAsBool(PREF_ALLOW_PIECE_LENGTH_CHANGE)) {
-	throw new DownloadFailureException("WARNING: Detected a change in piece length. You can proceed with --allow-piece-length-change=true, but you may lose some download progress.");
+	throw DownloadFailureException
+	  ("WARNING: Detected a change in piece length. You can proceed with --allow-piece-length-change=true, but you may lose some download progress.");
       }
       BitfieldMan dest(_dctx->getPieceLength(), totalLength);
       Util::convertBitfield(&dest, &src);
@@ -285,8 +295,8 @@ void DefaultBtProgressInfoFile::load()
     delete [] savedBitfield;
     delete [] savedInfoHash;
     // TODO std::ios::failure doesn't give us the reasons of failure...
-    throw new DlAbortEx(EX_SEGMENT_FILE_READ,
-			_filename.c_str(), strerror(errno));
+    throw DlAbortEx(StringFormat(EX_SEGMENT_FILE_READ,
+				 _filename.c_str(), strerror(errno)).str());
   } 
 }
 

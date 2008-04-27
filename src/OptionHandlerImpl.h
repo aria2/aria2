@@ -41,6 +41,7 @@
 #include "FatalException.h"
 #include "prefs.h"
 #include "Option.h"
+#include "StringFormat.h"
 #include <utility>
 #include <algorithm>
 
@@ -68,7 +69,7 @@ public:
       option->put(_optName, V_FALSE);
     } else {
       std::string msg = _optName+" "+_("must be either 'true' or 'false'.");
-      throw new FatalException(msg.c_str());
+      throw FatalException(msg);
     }
   }
 };
@@ -89,7 +90,9 @@ public:
       int32_t v = seq.next();
       if(v < _min || _max < v) {
 	std::string msg = _optName+" "+_("must be between %s and %s.");
-	throw new FatalException(msg.c_str(), Util::itos(_min).c_str(), Util::itos(_max).c_str());
+	throw FatalException
+	  (StringFormat(msg.c_str(), Util::itos(_min).c_str(),
+			Util::itos(_max).c_str()).str());
       }
       option->put(_optName, optarg);
     }
@@ -118,18 +121,18 @@ public:
     } else {
       std::string msg = _optName+" ";
       if(_min == -1 && _max != -1) {
-	msg += _("must be smaller than or equal to %s.");
-	throw new FatalException(msg.c_str(), Util::itos(_max).c_str());
+	msg += StringFormat(_("must be smaller than or equal to %s."),
+			    Util::itos(_max).c_str()).str();
       } else if(_min != -1 && _max != -1) {
-	msg += _("must be between %s and %s.");
-	throw new FatalException(msg.c_str(), Util::itos(_min).c_str(), Util::itos(_max).c_str());
+	msg += StringFormat(_("must be between %s and %s."),
+			    Util::itos(_min).c_str(), Util::itos(_max).c_str()).str();
       } else if(_min != -1 && _max == -1) {
-	msg += _("must be greater than or equal to %s.");
-	throw new FatalException(msg.c_str(), Util::itos(_min).c_str());
+	msg += StringFormat(_("must be greater than or equal to %s."),
+			    Util::itos(_min).c_str()).str();
       } else {
 	msg += _("must be a number.");
-	throw new FatalException(msg.c_str());
       }
+      throw FatalException(msg);
     }
   }
 };
@@ -164,18 +167,18 @@ public:
     } else {
       std::string msg = _optName+" ";
       if(_min < 0 && _max >= 0) {
-	msg += _("must be smaller than or equal to %.1f.");
-	throw new FatalException(msg.c_str(), _max);
+	msg += StringFormat(_("must be smaller than or equal to %.1f."),
+			    _max).str();
       } else if(_min >= 0 && _max >= 0) {
-	msg += _("must be between %.1f and %.1f.");
-	throw new FatalException(msg.c_str(), _min, _max);
+	msg += StringFormat(_("must be between %.1f and %.1f."),
+			    _min, _max).str();
       } else if(_min >= 0 && _max < 0) {
-	msg += _("must be greater than or equal to %.1f.");
-	throw new FatalException(msg.c_str(), _min);
+	msg += StringFormat(_("must be greater than or equal to %.1f."),
+			    _min).str();
       } else {
 	msg += _("must be a number.");
-	throw new FatalException(msg.c_str());
       }
+      throw FatalException(msg);
     }
   }
 };
@@ -260,7 +263,7 @@ public:
 	  msg += "'"+*itr+"' ";
 	}
       }
-      throw new FatalException(msg.c_str());
+      throw FatalException(msg);
     } else {
       option->put(_optName, optarg);
     }
@@ -288,7 +291,7 @@ public:
     int32_t port = Util::parseInt(proxy.second);
     if(proxy.first.empty() || proxy.second.empty() ||
        port <= 0 || 65535 < port) {
-      throw new FatalException(_("unrecognized proxy format"));
+      throw FatalException(_("unrecognized proxy format"));
     }
     option->put(_optName, optarg);
     setHostAndPort(option, proxy.first, port);

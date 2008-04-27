@@ -39,6 +39,7 @@
 #include "DlAbortEx.h"
 #include "Logger.h"
 #include "a2netcompat.h"
+#include "StringFormat.h"
 #include <cerrno>
 #include <cstring>
 #include <istream>
@@ -81,8 +82,9 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     // header
     in.read(buf, 8);
     if(memcmp(header, buf, 8) != 0) {
-      throw new DlAbortEx("Failed to load DHT routing table. cause:%s",
-			  "bad header");
+      throw DlAbortEx
+	(StringFormat("Failed to load DHT routing table. cause:%s",
+		      "bad header").str());
     }
     // time
     in.read(buf, 4);
@@ -150,8 +152,9 @@ void DHTRoutingTableDeserializer::deserialize(std::istream& in)
     _localNode = localNode;
   } catch(std::ios::failure const& exception) {
     _nodes.clear();
-    throw new DlAbortEx("Failed to load DHT routing table. cause:%s",
-			strerror(errno));
+    throw DlAbortEx
+      (StringFormat("Failed to load DHT routing table. cause:%s",
+		    strerror(errno)).str());
   }
 }
 

@@ -38,6 +38,7 @@
 #include "DlAbortEx.h"
 #include "DHTConstants.h"
 #include "MessageDigestHelper.h"
+#include "StringFormat.h"
 #include <cstring>
 
 namespace aria2 {
@@ -62,8 +63,9 @@ std::string DHTTokenTracker::generateToken(const unsigned char* infoHash,
 {
   unsigned char src[DHT_ID_LENGTH+6+SECRET_SIZE];
   if(!PeerMessageUtil::createcompact(src+DHT_ID_LENGTH, ipaddr, port)) {
-    throw new DlAbortEx("Token generation failed: ipaddr=%s, port=%u",
-			ipaddr.c_str(), port);
+    throw DlAbortEx
+      (StringFormat("Token generation failed: ipaddr=%s, port=%u",
+		    ipaddr.c_str(), port).str());
   }
   memcpy(src, infoHash, DHT_ID_LENGTH);
   memcpy(src+DHT_ID_LENGTH+6, secret, SECRET_SIZE);
