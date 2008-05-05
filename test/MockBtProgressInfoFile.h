@@ -29,6 +29,8 @@ public:
   virtual void load() {}
 
   virtual void removeFile() {}
+
+  virtual void updateFilename() {}
 };
 
 } // namespace aria2

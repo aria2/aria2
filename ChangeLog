@@ -1,5 +1,21 @@
 2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed the bug that the control file(.aria2 file) is not renamed
+	according to tryAutoFileRenaming().
+	tryAutoFileRenaming() was rewritten so that if both renamed file and
+	its control file exist, use them and continue download.
+	The old implementation didn't take into account of control file's
+	existence, so basically you couldn't continue download of renamed file.
+	* src/BtProgressInfoFile.h
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultBtProgressInfoFile.h
+	* src/NullProgressInfoFile.h
+	* src/RequestGroup.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/MockBtProgressInfoFile.h
+	
+2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Change the default value of --metalink-servers option from `5' to `1'.
 	* src/HelpItemFactory.cc
 	* src/option_processing.cc

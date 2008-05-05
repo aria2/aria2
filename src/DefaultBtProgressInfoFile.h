@@ -71,6 +71,9 @@ public:
 
   virtual void removeFile();
 
+  // re-set filename using current _dctx.
+  virtual void updateFilename();
+
 };
 
 } // namespace aria2

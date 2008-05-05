@@ -24,6 +24,7 @@ class DefaultBtProgressInfoFileTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testLoad);
   CPPUNIT_TEST(testLoad_nonBt);
   CPPUNIT_TEST(testLoad_nonBt_pieceLengthShorter);
+  CPPUNIT_TEST(testUpdateFilename);
   CPPUNIT_TEST_SUITE_END();
 private:
   SharedHandle<MockBtContext> _btContext;
@@ -77,6 +78,7 @@ public:
   void testSave_nonBt();
   void testLoad_nonBt();
   void testLoad_nonBt_pieceLengthShorter();
+  void testUpdateFilename();
 };
 
 #undef BLOCK_LENGTH
@@ -381,6 +383,23 @@ void DefaultBtProgressInfoFileTest::testSave()
   CPPUNIT_ASSERT_EQUAL((uint32_t)512, pieceLength2);
 
 
+}
+
+void DefaultBtProgressInfoFileTest::testUpdateFilename()
+{
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(1024, 81920, "file1"));
+
+  DefaultBtProgressInfoFile infoFile(dctx, SharedHandle<MockPieceStorage>(), 0);
+  CPPUNIT_ASSERT_EQUAL(std::string("./file1.aria2"), infoFile.getFilename());
+
+  dctx->setUFilename("file1.1");
+
+  CPPUNIT_ASSERT_EQUAL(std::string("./file1.aria2"), infoFile.getFilename());
+
+  infoFile.updateFilename();
+
+  CPPUNIT_ASSERT_EQUAL(std::string("./file1.1.aria2"), infoFile.getFilename());
 }
 
 } // namespace aria2

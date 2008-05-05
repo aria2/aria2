@@ -364,36 +364,44 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 		      progressInfoFile->getFilename().c_str(),
 		      _pieceStorage->getDiskAdaptor()->getFilePath().c_str());
     }
-    if(progressInfoFile->exists()) {
-      progressInfoFile->load();
-      _pieceStorage->getDiskAdaptor()->openExistingFile();
-    } else {
-      File outfile(getFilePath());    
-      if(outfile.exists() && _option->get(PREF_CONTINUE) == V_TRUE) {
-	if(getTotalLength() < outfile.size()) {
-	  throw DlAbortEx
-	    (StringFormat(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
-			  getFilePath().c_str(),
-			  Util::itos(outfile.size()).c_str(),
-			  Util::itos(getTotalLength()).c_str()).str());
-	}
+    while(1) {
+      if(progressInfoFile->exists()) {
+	progressInfoFile->load();
 	_pieceStorage->getDiskAdaptor()->openExistingFile();
-	_pieceStorage->markPiecesDone(outfile.size());
       } else {
-#ifdef ENABLE_MESSAGE_DIGEST
-	if(outfile.exists() && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+	File outfile(getFilePath());    
+	if(outfile.exists() && _option->get(PREF_CONTINUE) == V_TRUE) {
+	  if(getTotalLength() < outfile.size()) {
+	    throw DlAbortEx
+	      (StringFormat(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
+			    getFilePath().c_str(),
+			    Util::itos(outfile.size()).c_str(),
+			    Util::itos(getTotalLength()).c_str()).str());
+	  }
 	  _pieceStorage->getDiskAdaptor()->openExistingFile();
+	  _pieceStorage->markPiecesDone(outfile.size());
 	} else {
-	  shouldCancelDownloadForSafety();
-	  _pieceStorage->getDiskAdaptor()->initAndOpenFile();
-	}
-#else // ENABLE_MESSAGE_DIGEST
-	shouldCancelDownloadForSafety();
-	_pieceStorage->getDiskAdaptor()->initAndOpenFile();
+#ifdef ENABLE_MESSAGE_DIGEST
+	  if(outfile.exists() && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+	    _pieceStorage->getDiskAdaptor()->openExistingFile();
+	  } else {
 #endif // ENABLE_MESSAGE_DIGEST
+	    shouldCancelDownloadForSafety();
+	    // call updateFilename here in case when filename is renamed
+	    // by tryAutoFileRenaming()
+	    progressInfoFile->updateFilename();
+	    if(progressInfoFile->exists()) {
+	      continue;
+	    }
+	    _pieceStorage->getDiskAdaptor()->initAndOpenFile();
+#ifdef ENABLE_MESSAGE_DIGEST
+	  }
+#endif // ENABLE_MESSAGE_DIGEST
+	}
       }
+      setProgressInfoFile(progressInfoFile);
+      break;
     }
-    setProgressInfoFile(progressInfoFile);
   } catch(RecoverableException& e) {
     throw DownloadFailureException
       (StringFormat(EX_DOWNLOAD_ABORTED).str(), e);
@@ -430,12 +438,20 @@ bool RequestGroup::tryAutoFileRenaming()
   if(filepath.empty()) {
     return false;
   }
+  SingleFileDownloadContextHandle ctx =
+    dynamic_pointer_cast<SingleFileDownloadContext>(_downloadContext);
+  // Make a copy of ctx.
+  SingleFileDownloadContextHandle tempCtx(new SingleFileDownloadContext(*ctx.get()));
+
+  DefaultBtProgressInfoFile tempInfoFile(tempCtx, SharedHandle<PieceStorage>(), 0);
+
   for(unsigned int i = 1; i < 10000; ++i) {
     File newfile(filepath+"."+Util::uitos(i));
-    if(!newfile.exists()) {
-      SingleFileDownloadContextHandle ctx =
-	dynamic_pointer_cast<SingleFileDownloadContext>(_downloadContext);
-      ctx->setUFilename(newfile.getBasename());
+    std::string newFilename = newfile.getBasename();
+    tempCtx->setUFilename(newFilename);
+    tempInfoFile.updateFilename();
+    if(!newfile.exists() || (newfile.exists() && tempInfoFile.exists())) {
+      ctx->setUFilename(newFilename);
       return true;
     }
   }

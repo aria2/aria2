@@ -54,6 +54,9 @@ public:
   virtual void load() = 0;
 
   virtual void removeFile() = 0;
+
+  // re-set filename
+  virtual void updateFilename() = 0;
 };
 
 typedef SharedHandle<BtProgressInfoFile> BtProgressInfoFileHandle;

@@ -55,6 +55,8 @@ public:
   virtual void load() {}
 
   virtual void removeFile() {}
+
+  virtual void updateFilename() {}
 };
 
 typedef SharedHandle<NullProgressInfoFile> NullProgressInfoFileHandle;
