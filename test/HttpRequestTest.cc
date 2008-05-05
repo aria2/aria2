@@ -7,6 +7,7 @@
 #include "Request.h"
 #include "CookieBox.h"
 #include "Option.h"
+#include "array_fun.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -24,6 +25,7 @@ class HttpRequestTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testIsRangeSatisfied);
   CPPUNIT_TEST(testUserAgent);
   CPPUNIT_TEST(testAddHeader);
+  CPPUNIT_TEST(testAddAcceptType);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -40,6 +42,7 @@ public:
   void testIsRangeSatisfied();
   void testUserAgent();
   void testAddHeader();
+  void testAddAcceptType();
 };
 
 
@@ -641,5 +644,29 @@ void HttpRequestTest::testAddHeader()
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 }
 
+void HttpRequestTest::testAddAcceptType()
+{
+  std::string acceptTypes[] = { "cream/custard",
+				"muffin/chocolate" };
+
+  SharedHandle<Request> request(new Request());
+  request->setUrl("http://localhost/archives/aria2-1.0.0.tar.bz2");
+
+  HttpRequest httpRequest;
+  httpRequest.setRequest(request);
+  httpRequest.addAcceptType(&acceptTypes[0], &acceptTypes[arrayLength(acceptTypes)]);
+
+  std::string expectedText =
+    "GET /archives/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
+    "User-Agent: aria2\r\n"
+    "Accept: */*,cream/custard,muffin/chocolate\r\n"
+    "Host: localhost\r\n"
+    "Pragma: no-cache\r\n"
+    "Cache-Control: no-cache\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+
+  CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
+}
 
 } // namespace aria2

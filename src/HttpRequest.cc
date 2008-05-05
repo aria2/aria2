@@ -44,6 +44,7 @@
 #include "prefs.h"
 #include "AuthConfigFactory.h"
 #include "AuthConfig.h"
+#include "a2functional.h"
 #include <numeric>
 
 namespace aria2 {
@@ -145,11 +146,17 @@ std::string HttpRequest::createRequest() const
   }
   requestLine +=
     std::string(" HTTP/1.1\r\n")+
-    "User-Agent: "+userAgent+"\r\n"+
-    "Accept: */*\r\n"+        /* */
+    "User-Agent: "+userAgent+"\r\n";
+  
+  requestLine +=
+    std::accumulate(_acceptTypes.begin(), _acceptTypes.end(),
+		    std::string("Accept: */*"), Concat(","))+"\r\n"; /* */
+
+  requestLine +=
     "Host: "+getHostText(getHost(), getPort())+"\r\n"+
     "Pragma: no-cache\r\n"+
     "Cache-Control: no-cache\r\n";
+
   if(!request->isKeepAliveEnabled() && !request->isPipeliningEnabled()) {
     requestLine += "Connection: close\r\n";
   }
@@ -230,6 +237,11 @@ void HttpRequest::addHeader(const std::string& headersString)
   std::deque<std::string> headers;
   Util::slice(headers, headersString, '\n', true);
   _headers.insert(_headers.end(), headers.begin(), headers.end());
+}
+
+void HttpRequest::addAcceptType(const std::string& type)
+{
+  _acceptTypes.push_back(type);
 }
 
 void HttpRequest::configure(const Option* option)

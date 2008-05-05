@@ -110,6 +110,8 @@ private:
 
   std::deque<std::string> _acceptFeatures;
 
+  std::deque<std::string> _acceptTypes;
+
   const Option* _option;
 
   Logger* _logger;
@@ -343,7 +345,13 @@ public:
 
   void removeAcceptFeatureHeader(const std::string& feature);
 
-  static const std::string FEATURE_METALINK;
+  const std::deque<std::string>& getAcceptTypes() const;
+
+  void addAcceptType(const std::string& type);
+
+  void removeAcceptType(const std::string& type);
+
+  static const std::string ACCEPT_METALINK;
 };
 
 typedef SharedHandle<RequestGroup> RequestGroupHandle;

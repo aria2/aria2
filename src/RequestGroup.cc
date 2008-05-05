@@ -104,7 +104,7 @@ namespace aria2 {
 
 int32_t RequestGroup::_gidCounter = 0;
 
-const std::string RequestGroup::FEATURE_METALINK = "metalink";
+const std::string RequestGroup::ACCEPT_METALINK = "application/metalink+xml";
 
 RequestGroup::RequestGroup(const Option* option,
 			   const std::deque<std::string>& uris):
@@ -127,11 +127,11 @@ RequestGroup::RequestGroup(const Option* option,
   } else {
     _fileAllocationEnabled = false;
   }
-  // For now, only supported 'Accept-Features' is "metalink" used for
-  // transparent metalink.
+  // Add types to be sent as a Accept header value here.
   // It would be good to put this value in Option so that user can tweak
   // and add this list.
-  _acceptFeatures.push_back(FEATURE_METALINK);
+  // ACCEPT_METALINK is used for `transparent metalink'.
+  addAcceptType(ACCEPT_METALINK);
 
   initializePreDownloadHandler();
   initializePostDownloadHandler();
@@ -967,6 +967,24 @@ void RequestGroup::removeAcceptFeatureHeader(const std::string& feature)
   if(i != _acceptFeatures.end()) {
     _acceptFeatures.erase(i);
   }
+}
+
+const std::deque<std::string>& RequestGroup::getAcceptTypes() const
+{
+  return _acceptTypes;
+}
+
+void RequestGroup::addAcceptType(const std::string& type)
+{
+  if(std::find(_acceptTypes.begin(), _acceptTypes.end(), type) == _acceptTypes.end()) {
+    _acceptTypes.push_back(type);
+  }
+}
+
+void RequestGroup::removeAcceptType(const std::string& type)
+{
+  _acceptTypes.erase(std::remove(_acceptTypes.begin(), _acceptTypes.end(), type),
+		     _acceptTypes.end());
 }
 
 } // namespace aria2

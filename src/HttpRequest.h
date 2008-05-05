@@ -68,6 +68,8 @@ private:
 
   std::deque<std::string> _headers;
 
+  std::deque<std::string> _acceptTypes;
+
   std::string getHostText(const std::string& host, uint16_t port) const;
 
   std::string getProxyAuthString() const;
@@ -171,6 +173,14 @@ public:
   
   // accepts multiline headers, deliminated by LF
   void addHeader(const std::string& headers);
+
+  void addAcceptType(const std::string& type);
+
+  template<typename InputIterator>
+  void addAcceptType(InputIterator first, InputIterator last)
+  {
+    _acceptTypes.insert(_acceptTypes.end(), first, last);
+  }
 };
 
 typedef SharedHandle<HttpRequest> HttpRequestHandle;

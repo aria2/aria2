@@ -71,7 +71,7 @@ createHttpRequest(const SharedHandle<Request>& req,
 		  const SharedHandle<Segment>& segment,
 		  uint64_t totalLength,
 		  const Option* option,
-		  const std::deque<std::string>& acceptFeatures)
+		  const RequestGroup* rg)
 {
   HttpRequestHandle httpRequest(new HttpRequest());
   httpRequest->setUserAgent(option->get(PREF_USER_AGENT));
@@ -79,7 +79,8 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setSegment(segment);
   httpRequest->setEntityLength(totalLength);
   httpRequest->addHeader(option->get(PREF_HEADER));
-  if(acceptFeatures.size()) {
+  if(rg->getAcceptFeatures().size()) {
+    const std::deque<std::string>& acceptFeatures = rg->getAcceptFeatures();
     std::string acceptFeaturesHeader = "Accept-Features: "+
       Util::trim
       (std::accumulate(acceptFeatures.begin()+1, acceptFeatures.end(),
@@ -88,6 +89,8 @@ createHttpRequest(const SharedHandle<Request>& req,
        ",");
     httpRequest->addHeader(acceptFeaturesHeader);
   }
+  httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
+			     rg->getAcceptTypes().end());
   httpRequest->configure(option);
 
   return httpRequest;
@@ -103,7 +106,7 @@ bool HttpRequestCommand::executeInternal() {
     HttpRequestHandle httpRequest
       (createHttpRequest(req, SharedHandle<Segment>(),
 			 _requestGroup->getTotalLength(), e->option,
-			 _requestGroup->getAcceptFeatures()));
+			 _requestGroup));
     _httpConnection->sendRequest(httpRequest);
   } else {
     for(Segments::iterator itr = _segments.begin(); itr != _segments.end(); ++itr) {
@@ -112,7 +115,7 @@ bool HttpRequestCommand::executeInternal() {
 	HttpRequestHandle httpRequest
 	  (createHttpRequest(req, segment,
 			     _requestGroup->getTotalLength(), e->option,
-			     _requestGroup->getAcceptFeatures()));
+			     _requestGroup));
 	_httpConnection->sendRequest(httpRequest);
       }
     }
