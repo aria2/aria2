@@ -1,5 +1,12 @@
 2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Change the default value of --metalink-servers option from `5' to `1'.
+	* src/HelpItemFactory.cc
+	* src/option_processing.cc
+	* src/usage_text.h
+	
+2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Reimplemented transparent metalink using Accept request header.
 	* src/HttpRequest.cc
 	* src/HttpRequest.h

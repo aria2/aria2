@@ -79,7 +79,7 @@ Option* createDefaultOption()
   op->put(PREF_DAEMON, V_FALSE);
   op->put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
   op->put(PREF_LISTEN_PORT, "6881-6999");
-  op->put(PREF_METALINK_SERVERS, "5");
+  op->put(PREF_METALINK_SERVERS, "1");
   op->put(PREF_FOLLOW_TORRENT,
 #ifdef ENABLE_BITTORRENT
 	  V_TRUE

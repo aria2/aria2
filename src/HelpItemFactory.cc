@@ -383,7 +383,7 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_METALINK_SERVERS, TEXT_METALINK_SERVERS));
+    HelpItemHandle item(new HelpItem(PREF_METALINK_SERVERS, TEXT_METALINK_SERVERS, op->get(PREF_METALINK_SERVERS)));
     item->addTag(TAG_METALINK);
     tc->addItem(item);
   }

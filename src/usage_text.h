@@ -281,8 +281,7 @@ _(" --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 _(" -M, --metalink-file=METALINK_FILE The file path to the .metalink file.")
 #define TEXT_METALINK_SERVERS \
 _(" -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"\
-  "                              simultaneously.\n"\
-  "                              Default: 5")
+  "                              simultaneously.")
 #define TEXT_METALINK_VERSION \
 _(" --metalink-version=VERSION   The version of the file to download.")
 #define TEXT_METALINK_LANGUAGE \
