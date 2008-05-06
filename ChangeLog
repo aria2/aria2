@@ -1,5 +1,13 @@
 2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated man page: --quiet, --header were added.
+	--metalink-servers and --enable-http-keep-alive option were updated.
+	* doc/aria2c.1
+	* doc/aria2c.1.html
+	* doc/aria2c.1.txt
+
+2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Enable HTTP keep-alive by default.
 	* src/HelpItemFactory.cc
 	* src/option_processing.cc

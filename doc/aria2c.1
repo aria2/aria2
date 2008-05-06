@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 04/15/2008
+.\"      Date: 05/07/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "04/15/2008" "" ""
+.TH "ARIA2C" "1" "05/07/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -260,7 +260,7 @@ Enable parameterized URI support\. You can specify set of parts:
 \-\-enable\-http\-keep\-alive[=\fItrue\fR|\fIfalse\fR]
 .RS 4
 Enable HTTP/1\.1 persistent connection\. Default:
-\fIfalse\fR
+\fItrue\fR
 .RE
 .PP
 \-\-enable\-http\-pipelining[=\fItrue\fR|\fIfalse\fR]
@@ -471,7 +471,7 @@ The file path to \.metalink file\.
 \-C, \-\-metalink\-servers=NUM_SERVERS
 .RS 4
 The number of servers to connect to simultaneously\. Some metalinks regulates the number of servers to connect\. aria2 respects them\. Default:
-\fI5\fR
+\fI1\fR
 .RE
 .PP
 \-\-metalink\-version=VERSION
@@ -528,6 +528,17 @@ If
 \fItrue\fR
 is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them\. Use \-\-metalink\-preferred\-protocol option to specify the preference of protocol\. Default:
 \fItrue\fR
+.RE
+.PP
+\-\-header=HEADER
+.RS 4
+Append HEADER to HTTP request header\. You can use this option repeatedly to specify more than one header: aria2c \-\-header="X\-A: b78" \-\-header="X\-B: 9J1" http://host/file
+.RE
+.PP
+\-q, \-\-quiet[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Make aria2 quite (no console output)\. Default:
+\fIfalse\fR
 .RE
 .PP
 \-v, \-\-version

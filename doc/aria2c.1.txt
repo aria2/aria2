@@ -173,7 +173,7 @@ OPTIONS
 
 --enable-http-keep-alive[='true'|'false']::
   Enable HTTP/1.1 persistent connection.
-  Default: 'false'
+  Default: 'true'
 
 --enable-http-pipelining[='true'|'false']::
   Enable HTTP/1.1 pipelining.
@@ -339,7 +339,7 @@ OPTIONS
   The number of servers to connect to simultaneously.
   Some metalinks regulates the number of servers to connect.
   aria2 respects them.
-  Default: '5'
+  Default: '1'
 
 --metalink-version=VERSION::
   The version of the file to download.
@@ -375,6 +375,15 @@ OPTIONS
   Use --metalink-preferred-protocol option to specify the preference of
   protocol.
   Default: 'true'
+
+--header=HEADER::
+  Append HEADER to HTTP request header.
+  You can use this option repeatedly to specify more than one header:
+  aria2c --header="X-A: b78" --header="X-B: 9J1" http://host/file
+
+-q, --quiet[='true'|'false']::
+  Make aria2 quite (no console output).
+  Default: 'false'
 
 -v, --version::
   Print the version number, copyright and the configuration information and

@@ -651,7 +651,7 @@ Note
 <dd>
 <p>
   Enable HTTP/1.1 persistent connection.
-  Default: <em>false</em>
+  Default: <em>true</em>
 </p>
 </dd>
 <dt>
@@ -983,7 +983,7 @@ Note
   The number of servers to connect to simultaneously.
   Some metalinks regulates the number of servers to connect.
   aria2 respects them.
-  Default: <em>5</em>
+  Default: <em>1</em>
 </p>
 </dd>
 <dt>
@@ -1054,6 +1054,25 @@ Note
   Use &#8212;metalink-preferred-protocol option to specify the preference of
   protocol.
   Default: <em>true</em>
+</p>
+</dd>
+<dt>
+&#8212;header=HEADER
+</dt>
+<dd>
+<p>
+  Append HEADER to HTTP request header.
+  You can use this option repeatedly to specify more than one header:
+  aria2c &#8212;header="X-A: b78" &#8212;header="X-B: 9J1" http://host/file
+</p>
+</dd>
+<dt>
+-q, &#8212;quiet[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Make aria2 quite (no console output).
+  Default: <em>false</em>
 </p>
 </dd>
 <dt>
@@ -1460,7 +1479,7 @@ files in the program, then also delete it here.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 15-Apr-2008 21:31:14 JST
+Last updated 07-May-2008 00:39:10 JST
 </div>
 </div>
 </body>
