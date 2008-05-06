@@ -47,7 +47,7 @@
 namespace aria2 {
 
 HttpDownloadCommand::HttpDownloadCommand(int cuid,
-					 const RequestHandle req,
+					 const RequestHandle& req,
 					 RequestGroup* requestGroup,
 					 const HttpConnectionHandle& httpConnection,
 					 DownloadEngine* e,

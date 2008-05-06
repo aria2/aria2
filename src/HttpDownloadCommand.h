@@ -49,7 +49,7 @@ protected:
   virtual bool prepareForNextSegment();
 public:
   HttpDownloadCommand(int cuid,
-		      const SharedHandle<Request> req,
+		      const SharedHandle<Request>& req,
 		      RequestGroup* requestGroup,
 		      const SharedHandle<HttpConnection>& httpConnection,
 		      DownloadEngine* e,

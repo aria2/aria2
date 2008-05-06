@@ -39,7 +39,7 @@
 namespace aria2 {
 
 FtpDownloadCommand::FtpDownloadCommand(int cuid,
-				       const RequestHandle req,
+				       const RequestHandle& req,
 				       RequestGroup* requestGroup,
 				       DownloadEngine* e,
 				       const SocketHandle& dataSocket,

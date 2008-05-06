@@ -46,7 +46,7 @@ private:
   SharedHandle<SocketCore> ctrlSocket;
 public:
   FtpDownloadCommand(int cuid,
-		     const SharedHandle<Request> req,
+		     const SharedHandle<Request>& req,
 		     RequestGroup* requestGroup,
 		     DownloadEngine* e,
 		     const SharedHandle<SocketCore>& dataSocket,

@@ -1,3 +1,16 @@
+2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	const SharedHandle<Request> -> const SharedHandle<Request>&
+	* src/FtpDowndloadCommand.cc
+	* src/FtpDowndloadCommand.h
+	* src/HttpDownloadCommand.cc
+	* src/HttpDownloadCommand.h
+
+2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Enabled --enable-http-keep-alive by default.
+	* src/option_processing.cc
+
 2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Fixed the bug that the control file(.aria2 file) is not renamed
