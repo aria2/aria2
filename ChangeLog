@@ -1,5 +1,14 @@
 2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Receive content body of 302 response so that the connection can be
+	reused later when http keep-alive is enabled.
+	* src/HttpNullDownloadCommand.cc
+	* src/HttpNullDownloadCommand.h
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+
+2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	const SharedHandle<Request> -> const SharedHandle<Request>&
 	* src/FtpDowndloadCommand.cc
 	* src/FtpDowndloadCommand.h

@@ -60,6 +60,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "StringFormat.h"
+#include "HttpNullDownloadCommand.h"
 
 namespace aria2 {
 
@@ -88,11 +89,24 @@ bool HttpResponseCommand::executeInternal()
   httpResponse->retrieveCookie();
   // check whether Location header exists. If it does, update request object
   // with redirected URL.
-  // then establish a connection to the new host and port
   if(httpResponse->isRedirect()) {
-    httpResponse->processRedirect();
-    logger->info(MSG_REDIRECT, cuid, httpResponse->getRedirectURI().c_str());
-    return prepareForRetry(0);
+    // To reuse a connection, a response body must be received.
+    if(req->supportsPersistentConnection() &&
+       (httpResponse->getEntityLength() > 0 ||
+	httpResponse->isTransferEncodingSpecified())) {
+      return handleRedirect(httpResponse);
+    } else {
+      // Response body is 0 length or a response header shows that a persistent
+      // connection is not enabled.
+      if(req->supportsPersistentConnection()) {
+	std::pair<std::string, uint16_t> peerInfo;
+	socket->getPeerInfo(peerInfo);
+	e->poolSocket(peerInfo.first, peerInfo.second, socket);
+      }
+      httpResponse->processRedirect();
+      logger->info(MSG_REDIRECT, cuid, httpResponse->getRedirectURI().c_str());
+      return prepareForRetry(0);
+    }
   }
   if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
     _requestGroup->removeURIWhoseHostnameIs(_requestGroup->searchServerHost(cuid)->getHostname());
@@ -179,7 +193,8 @@ bool HttpResponseCommand::handleOtherEncoding(const HttpResponseHandle& httpResp
   return true;
 }
 
-HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& httpResponse)
+static SharedHandle<TransferEncoding> getTransferEncoding
+(const SharedHandle<HttpResponse>& httpResponse)
 {
   TransferEncodingHandle enc;
   if(httpResponse->isTransferEncodingSpecified()) {
@@ -191,6 +206,23 @@ HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpRe
     }
     enc->init();
   }
+  return enc;
+}
+
+bool HttpResponseCommand::handleRedirect
+(const SharedHandle<HttpResponse>& httpResponse)
+{
+  SharedHandle<TransferEncoding> enc(getTransferEncoding(httpResponse));
+  HttpNullDownloadCommand* command = new HttpNullDownloadCommand
+    (cuid, req, _requestGroup, httpConnection, httpResponse, e, socket);
+  command->setTransferDecoder(enc);
+  e->commands.push_back(command);
+  return true;
+}
+
+HttpDownloadCommand* HttpResponseCommand::createHttpDownloadCommand(const HttpResponseHandle& httpResponse)
+{
+  TransferEncodingHandle enc(getTransferEncoding(httpResponse));
   HttpDownloadCommand* command =
     new HttpDownloadCommand(cuid, req, _requestGroup, httpConnection, e, socket);
   command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));

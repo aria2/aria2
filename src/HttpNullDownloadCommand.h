@@ -32,39 +32,44 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_RESPONSE_COMMAND_H_
-#define _D_HTTP_RESPONSE_COMMAND_H_
+#ifndef _D_HTTP_NULL_DOWNLOAD_COMMAND_H_
+#define _D_HTTP_NULL_DOWNLOAD_COMMAND_H_
 
 #include "AbstractCommand.h"
 
 namespace aria2 {
 
 class HttpConnection;
-class HttpDownloadCommand;
 class HttpResponse;
-class SocketCore;
+class TransferEncoding;
 
-class HttpResponseCommand : public AbstractCommand {
+class HttpNullDownloadCommand : public AbstractCommand {
 private:
-  SharedHandle<HttpConnection> httpConnection;
+  SharedHandle<HttpConnection> _httpConnection;
 
-  bool handleDefaultEncoding(const SharedHandle<HttpResponse>& httpResponse);
-  bool handleOtherEncoding(const SharedHandle<HttpResponse>& httpResponse);
-  bool handleRedirect(const SharedHandle<HttpResponse>& httpResponse);
+  SharedHandle<HttpResponse> _httpResponse;
 
-  HttpDownloadCommand* createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse);
+  SharedHandle<TransferEncoding> _transferDecoder;
+
+  uint64_t _totalLength;
+
+  uint64_t _receivedBytes;
 protected:
-  bool executeInternal();
+  virtual bool executeInternal();
 public:
-  HttpResponseCommand(int32_t cuid,
-		      const SharedHandle<Request>& req,
-		      RequestGroup* requestGroup,
-		      const SharedHandle<HttpConnection>& httpConnection,
-		      DownloadEngine* e,
-		      const SharedHandle<SocketCore>& s);
-  ~HttpResponseCommand();
+  HttpNullDownloadCommand(int cuid,
+			  const SharedHandle<Request>& req,
+			  RequestGroup* requestGroup,
+			  const SharedHandle<HttpConnection>& httpConnection,
+			  const SharedHandle<HttpResponse>& httpResponse,
+			  DownloadEngine* e,
+			  const SharedHandle<SocketCore>& s);
+
+  virtual ~HttpNullDownloadCommand();
+
+  void setTransferDecoder(const SharedHandle<TransferEncoding>& transferDecoder);
 };
 
 } // namespace aria2
 
-#endif // _D_HTTP_RESPONSE_COMMAND_H_
+#endif // _D_HTTP_NULL_DOWNLOAD_COMMAND_H_
