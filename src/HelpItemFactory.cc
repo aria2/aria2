@@ -220,7 +220,7 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_ENABLE_HTTP_KEEP_ALIVE, TEXT_ENABLE_HTTP_KEEP_ALIVE));
+    HelpItemHandle item(new HelpItem(PREF_ENABLE_HTTP_KEEP_ALIVE, TEXT_ENABLE_HTTP_KEEP_ALIVE, op->get(PREF_ENABLE_HTTP_KEEP_ALIVE)));
     item->addTag(TAG_HTTP);
     tc->addItem(item);
   }

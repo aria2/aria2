@@ -155,8 +155,7 @@ _(" -P, --parameterized-uri[=true|false] Enable parameterized URI support.\n"\
   "                              required.\n"\
   "                              Default: false")
 #define TEXT_ENABLE_HTTP_KEEP_ALIVE \
-_(" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection.\n"\
-  "                              Default: false")
+_(" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection.")
 #define TEXT_ENABLE_HTTP_PIPELINING \
 _(" --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"\
   "                              Default: false")
