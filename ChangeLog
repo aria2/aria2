@@ -29,11 +29,6 @@
 
 2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
-	Enabled --enable-http-keep-alive by default.
-	* src/option_processing.cc
-
-2008-05-05  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
-
 	Fixed the bug that the control file(.aria2 file) is not renamed
 	according to tryAutoFileRenaming().
 	tryAutoFileRenaming() was rewritten so that if both renamed file and
