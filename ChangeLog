@@ -1,5 +1,10 @@
 2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Disable http keep-alive if the remote server is not HTTP/1.1.
+	* src/HttpConnection.cc
+
+2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Receive content body of 302 response so that the connection can be
 	reused later when http keep-alive is enabled.
 	* src/HttpNullDownloadCommand.cc

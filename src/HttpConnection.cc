@@ -134,9 +134,12 @@ HttpResponseHandle HttpConnection::receiveResponse()
 
   // OK, we got all headers.
   logger->info(MSG_RECEIVE_RESPONSE, cuid, proc->getHeaderString().c_str());
-
+  // Disable persistent connection if:
+  //   Connection: close is received or the remote server is not HTTP/1.1.
+  // We don't care whether non-HTTP/1.1 server returns Connection: keep-alive.
   SharedHandle<HttpHeader> httpHeader = proc->getHttpResponseHeader();
-  if(Util::toLower(httpHeader->getFirst("Connection")).find("close") != std::string::npos) {
+  if(Util::toLower(httpHeader->getFirst("Connection")).find("close") != std::string::npos
+     || httpHeader->getVersion() != "HTTP/1.1") {
     entry->getHttpRequest()->getRequest()->supportsPersistentConnection(false);
   } else {
     entry->getHttpRequest()->getRequest()->supportsPersistentConnection(true);
