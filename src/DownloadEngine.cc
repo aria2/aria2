@@ -368,29 +368,36 @@ void DownloadEngine::addRoutineCommand(Command* command)
 }
 
 void DownloadEngine::poolSocket(const std::string& ipaddr, uint16_t port,
-                               const SharedHandle<SocketCore>& sock)
+				const SharedHandle<SocketCore>& sock,
+				time_t timeout)
 {
   std::string addr = ipaddr+":"+Util::uitos(port);
   logger->info("Pool socket for %s", addr.c_str());
-  std::multimap<std::string, SharedHandle<SocketCore> >::value_type newPair
-    (addr, sock);
-  _socketPool.insert(newPair);
+
+  SocketPoolEntry e(sock, timeout);
+  std::multimap<std::string, SocketPoolEntry>::value_type p(addr, e);
+  _socketPool.insert(p);
 }
 
 SharedHandle<SocketCore>
 DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
 {
+  SharedHandle<SocketCore> s;
   std::string addr = ipaddr+":"+Util::uitos(port);
-  std::multimap<std::string, SharedHandle<SocketCore> >::iterator i =
-    _socketPool.find(addr);
-  if(i == _socketPool.end()) {
-    return SharedHandle<SocketCore>();
-  } else {
-    logger->info("Reuse socket for %s", addr.c_str());
-    SharedHandle<SocketCore> s = (*i).second;
-    _socketPool.erase(i);
-    return s;
+
+  std::multimap<std::string, SocketPoolEntry>::iterator first = _socketPool.find(addr);
+  
+  for(std::multimap<std::string, SocketPoolEntry>::iterator i = first;
+      i != _socketPool.end() && (*i).first == addr; ++i) {
+    const SocketPoolEntry& e = (*i).second;
+    if(!e.isTimeout()) {
+      logger->info("Reuse socket for %s", addr.c_str());
+      s = e.getSocket();
+      _socketPool.erase(first, ++i);
+      break;
+    }
   }
+  return s;
 }
 
 SharedHandle<SocketCore>
@@ -405,6 +412,24 @@ DownloadEngine::popPooledSocket
     }
   }
   return SharedHandle<SocketCore>();
+}
+
+DownloadEngine::SocketPoolEntry::SocketPoolEntry
+(const SharedHandle<SocketCore>& socket,
+ time_t timeout):
+  _socket(socket),
+  _timeout(timeout) {}
+
+DownloadEngine::SocketPoolEntry::~SocketPoolEntry() {}
+
+bool DownloadEngine::SocketPoolEntry::isTimeout() const
+{
+  return _registeredTime.elapsed(_timeout);
+}
+
+SharedHandle<SocketCore> DownloadEngine::SocketPoolEntry::getSocket() const
+{
+  return _socket;
 }
 
 } // namespace aria2

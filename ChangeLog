@@ -1,5 +1,18 @@
 2008-05-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added timeout to socket pool. The default timeout is 15 seconds,
+	which is the same value Apache uses.
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+
+2008-05-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed misuse of multimap::find()
+	* src/HttpHeader.cc
+	* test/HttpHeaderTest.cc
+	
+2008-05-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten name resolver. Now async DNS can be disabled by --async-dns
 	option.
 	The asynchronous DNS is not capable of IPv6 yet.

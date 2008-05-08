@@ -39,6 +39,7 @@
 #include "SharedHandle.h"
 #include "Command.h"
 #include "a2netcompat.h"
+#include "TimeA2.h"
 #include <deque>
 #include <map>
 
@@ -107,8 +108,26 @@ private:
 
   bool _haltRequested;
 
-  // key = IP address:port, value = Socket
-  std::multimap<std::string, SharedHandle<SocketCore> > _socketPool;
+  class SocketPoolEntry {
+  private:
+    SharedHandle<SocketCore> _socket;
+
+    time_t _timeout;
+
+    Time _registeredTime;
+  public:
+    SocketPoolEntry(const SharedHandle<SocketCore>& socket,
+		    time_t timeout);
+
+    ~SocketPoolEntry();
+
+    bool isTimeout() const;
+
+    SharedHandle<SocketCore> getSocket() const;
+  };
+
+  // key = IP address:port, value = SocketPoolEntry
+  std::multimap<std::string, SocketPoolEntry> _socketPool;
  
   void shortSleep() const;
   bool addSocket(const SocketEntry& socketEntry);
@@ -178,7 +197,7 @@ public:
   void addRoutineCommand(Command* command);
 
   void poolSocket(const std::string& ipaddr, uint16_t port,
-		  const SharedHandle<SocketCore>& sock);
+		  const SharedHandle<SocketCore>& sock, time_t timeout = 15);
 
   SharedHandle<SocketCore> popPooledSocket(const std::string& ipaddr,
 					   uint16_t port);
