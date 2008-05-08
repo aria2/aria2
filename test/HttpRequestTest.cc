@@ -178,7 +178,7 @@ void HttpRequestTest::testCreateRequest()
   
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());
 
-  // redirection clears persistent connection falg
+  // redirection set persistent connection flag to true
   request->redirectUrl("http://localhost:8080/archives/download/aria2-1.0.0.tar.bz2");
 
   expectedText = "GET /archives/download/aria2-1.0.0.tar.bz2 HTTP/1.1\r\n"
@@ -187,8 +187,7 @@ void HttpRequestTest::testCreateRequest()
     "Host: localhost:8080\r\n"
     "Pragma: no-cache\r\n"
     "Cache-Control: no-cache\r\n"
-    "Connection: close\r\n"
-    "Range: bytes=1048576-\r\n"
+    "Range: bytes=1048576-2097151\r\n"
     "\r\n";
 
   CPPUNIT_ASSERT_EQUAL(expectedText, httpRequest.createRequest());

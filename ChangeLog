@@ -1,5 +1,13 @@
 2008-05-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Set _supportsPersistentConnection to true by default.
+	* src/Request.cc
+	* src/RequestGroup.cc
+	* test/HttpRequestTest.cc
+	* test/RequestTest.cc
+
+2008-05-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added timeout to socket pool. The default timeout is 15 seconds,
 	which is the same value Apache uses.
 	* src/DownloadEngine.cc

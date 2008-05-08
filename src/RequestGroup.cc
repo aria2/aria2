@@ -498,14 +498,6 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, unsigned int numComm
 	  req->setPipeliningHint(true);
 	}
 
-	if(req->getProtocol() == "http" || req->getProtocol() == "https") {
-	  // we set supportsPersistentConnection true here. When HTTP response
-	  // is returned and it turns out that the remote server doesn't
-	  // support persistent connection, then this value will be set to
-	  // false.
-	  req->supportsPersistentConnection(true);
-	}
-
 	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e);
 	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
 	registerServerHost(sv);

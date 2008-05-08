@@ -49,7 +49,7 @@ const std::string Request::METHOD_HEAD = "HEAD";
 
 Request::Request():
   port(0), tryCount(0),
-  _supportsPersistentConnection(false),
+  _supportsPersistentConnection(true),
   _keepAliveHint(false),
   _pipeliningHint(false),
   method(METHOD_GET),
@@ -70,7 +70,7 @@ bool Request::resetUrl() {
 
 bool Request::redirectUrl(const std::string& url) {
   previousUrl = "";
-  _supportsPersistentConnection = false;
+  _supportsPersistentConnection = true;
   return parseUrl(url);
 }
 
