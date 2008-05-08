@@ -8,11 +8,12 @@ class HttpHeaderTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(HttpHeaderTest);
   CPPUNIT_TEST(testGetRange);
+  CPPUNIT_TEST(testGet);
   CPPUNIT_TEST_SUITE_END();
   
 public:
   void testGetRange();
-
+  void testGet();
 };
 
 
@@ -42,6 +43,19 @@ void HttpHeaderTest::testGetRange()
     CPPUNIT_ASSERT_EQUAL(9223372036854775801LL, range->getEndByte());
     CPPUNIT_ASSERT_EQUAL(9223372036854775807ULL, range->getEntityLength());
   }
+}
+
+void HttpHeaderTest::testGet()
+{
+  HttpHeader h;
+  h.put("A", "100");
+  h.put("a", "101");
+  h.put("B", "200");
+  
+  std::deque<std::string> r(h.get("A"));
+  CPPUNIT_ASSERT_EQUAL((size_t)2, r.size());
+  CPPUNIT_ASSERT_EQUAL(std::string("100"), r[0]);
+  CPPUNIT_ASSERT_EQUAL(std::string("101"), r[1]);
 }
 
 } // namespace aria2

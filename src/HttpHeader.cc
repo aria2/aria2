@@ -59,8 +59,10 @@ std::string HttpHeader::getFirst(const std::string& name) const {
 
 std::deque<std::string> HttpHeader::get(const std::string& name) const {
   std::deque<std::string> v;
-  for(std::multimap<std::string, std::string>::const_iterator itr = table.find(Util::toLower(name)); itr != table.end(); itr++) {
-    v.push_back((*itr).second);
+  std::string n(Util::toLower(name));
+  for(std::multimap<std::string, std::string>::const_iterator i = table.find(n);
+      i != table.end() && (*i).first == n; ++i) {
+    v.push_back((*i).second);
   }
   return v;
 }
