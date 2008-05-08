@@ -184,7 +184,12 @@ SRCS =  Socket.h\
 	ProtocolDetector.cc ProtocolDetector.h\
 	NullStatCalc.h\
 	StringFormat.cc StringFormat.h\
-	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h
+	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h\
+	InitiateConnectionCommand.cc InitiateConnectionCommand.h
+
+if ENABLE_ASYNC_DNS
+SRCS += AsyncNameResolver.cc AsyncNameResolver.h
+endif # ENABLE_ASYNC_DNS
 
 if ENABLE_MESSAGE_DIGEST
 SRCS += IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\

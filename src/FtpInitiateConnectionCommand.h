@@ -35,21 +35,17 @@
 #ifndef _D_FTP_INITIATE_CONNECTION_COMMAND_H_
 #define _D_FTP_INITIATE_CONNECTION_COMMAND_H_
 
-#include "AbstractCommand.h"
+#include "InitiateConnectionCommand.h"
 
 namespace aria2 {
 
-class FtpInitiateConnectionCommand : public AbstractCommand {
+class FtpInitiateConnectionCommand : public InitiateConnectionCommand {
 private:
-  SharedHandle<NameResolver> nameResolver;
-  bool useHttpProxy() const;
-  bool useHttpProxyGet() const;
-  bool useHttpProxyConnect() const;
-#ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const;
-#endif // ENABLE_ASYNC_DNS
+  bool useHTTPProxyGet() const;
+  bool useHTTPProxyConnect() const;
 protected:
-  virtual bool executeInternal();
+  virtual Command* createNextCommand
+  (const std::deque<std::string>& resolvedAddresses);
 public:
   FtpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
 			       RequestGroup* requestGroup, DownloadEngine* e);

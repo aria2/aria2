@@ -32,47 +32,72 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "NameResolver.h"
-#include "DlAbortEx.h"
-#include "message.h"
-#include "StringFormat.h"
-#include "Util.h"
-#include <cstring>
+#ifndef _D_ASYNC_NAME_RESOLVER_H_
+#define _D_ASYNC_NAME_RESOLVER_H_
+
+#include "common.h"
+#include "SharedHandle.h"
+#include "a2netcompat.h"
+#include <string>
+#include <deque>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <ares.h>
+#ifdef __cplusplus
+} /* end of extern "C" */
+#endif
 
 namespace aria2 {
 
-NameResolver::NameResolver():_socktype(0) {}
+class AsyncNameResolver {
+#ifdef HAVE_LIBCARES1_5
+  friend void callback(void* arg, int status, int timeouts, struct hostent* host);
+#else
+  friend void callback(void* arg, int status, struct hostent* host);
+#endif // HAVE_LIBCARES1_5
 
-std::deque<std::string> NameResolver::resolve(const std::string& hostname)
-{
-  struct addrinfo hints;
-  struct addrinfo* res;
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = _socktype;
-  hints.ai_flags = 0;
-  hints.ai_protocol = 0;
-  int s;
-  s = getaddrinfo(hostname.c_str(), "0", &hints, &res);
-  if(s) {
-    throw DlAbortEx(StringFormat(EX_RESOLVE_HOSTNAME,
-				 hostname.c_str(), gai_strerror(s)).str());
-  }
-  std::deque<std::string> addrs;
-  struct addrinfo* rp;
-  for(rp = res; rp; rp = rp->ai_next) {
-    std::pair<std::string, uint16_t> addressPort
-      = Util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
-    addrs.push_back(addressPort.first);
-  }
-  freeaddrinfo(res);
+public:
+  enum STATUS {
+    STATUS_READY,
+    STATUS_QUERYING,
+    STATUS_SUCCESS,
+    STATUS_ERROR,
+  };
+private:
+  STATUS status;
+  ares_channel channel;
 
-  return addrs;
-}
+  std::deque<std::string> _resolvedAddresses;
+  std::string error;
+  std::string _hostname;
+public:
+  AsyncNameResolver();
 
-void NameResolver::setSocktype(int socktype)
-{
-  _socktype = socktype;
-}
+  ~AsyncNameResolver();
+
+  void resolve(const std::string& name);
+
+  const std::deque<std::string>& getResolvedAddresses() const;
+
+  const std::string& getError() const;
+
+  STATUS getStatus() const;
+
+  int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const;
+
+  void process(fd_set* rfdsPtr, fd_set* wfdsPtr);
+
+  bool operator==(const AsyncNameResolver& resolver) const;
+
+  void setAddr(const std::string& addrString);
+
+  void reset();
+
+  const std::string& getHostname() const;
+};
 
 } // namespace aria2
+
+#endif // _D_ASYNC_NAME_RESOLVER_H_

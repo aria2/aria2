@@ -33,7 +33,6 @@
  */
 /* copyright --> */
 #include "HttpInitiateConnectionCommand.h"
-#include "NameResolver.h"
 #include "Request.h"
 #include "DownloadEngine.h"
 #include "HttpConnection.h"
@@ -43,7 +42,6 @@
 #include "HttpProxyRequestCommand.h"
 #include "DlAbortEx.h"
 #include "Option.h"
-#include "Util.h"
 #include "Logger.h"
 #include "Socket.h"
 #include "message.h"
@@ -51,46 +49,24 @@
 
 namespace aria2 {
 
-HttpInitiateConnectionCommand::HttpInitiateConnectionCommand(int cuid,
-							     const RequestHandle& req,
-							     RequestGroup* requestGroup,
-							     DownloadEngine* e):
-  AbstractCommand(cuid, req, requestGroup, e),
-  nameResolver(new NameResolver())
+HttpInitiateConnectionCommand::HttpInitiateConnectionCommand
+(int cuid,
+ const RequestHandle& req,
+ RequestGroup* requestGroup,
+ DownloadEngine* e):
+  InitiateConnectionCommand(cuid, req, requestGroup, e) {}
+
+HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {}
+
+Command* HttpInitiateConnectionCommand::createNextCommand
+(const std::deque<std::string>& resolvedAddresses)
 {
-  setTimeout(e->option->getAsInt(PREF_DNS_TIMEOUT));
-  setStatus(Command::STATUS_ONESHOT_REALTIME);
-  disableReadCheckSocket();
-  disableWriteCheckSocket();
-}
-
-HttpInitiateConnectionCommand::~HttpInitiateConnectionCommand() {
-#ifdef ENABLE_ASYNC_DNS
-  disableNameResolverCheck(nameResolver);
-#endif // ENABLE_ASYNC_DNS
-}
-
-bool HttpInitiateConnectionCommand::executeInternal() {
-  std::string hostname;
-  if(useProxy()) {
-    hostname = e->option->get(PREF_HTTP_PROXY_HOST);
-  } else {
-    hostname = req->getHost();
-  }
-  if(!Util::isNumbersAndDotsNotation(hostname)) {
-    if(resolveHostname(hostname, nameResolver)) {
-      hostname = nameResolver->getAddrString();
-    } else {
-      e->commands.push_back(this);
-      return false;
-    }
-  }
   Command* command;
-  if(useProxy()) {
+  if(useHTTPProxy()) {
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
 		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
-    socket->establishConnection(hostname,
+    socket->establishConnection(resolvedAddresses.front(),
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     if(useProxyTunnel()) {
       command = new HttpProxyRequestCommand(cuid, req, _requestGroup, e, socket);
@@ -104,12 +80,11 @@ bool HttpInitiateConnectionCommand::executeInternal() {
     }
   } else {
     SharedHandle<SocketCore> pooledSocket =
-      e->popPooledSocket(hostname, req->getPort());
-
+      e->popPooledSocket(resolvedAddresses, req->getPort());
     if(pooledSocket.isNull()) {
       logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		   req->getPort());
-      socket->establishConnection(hostname, req->getPort());
+      socket->establishConnection(resolvedAddresses.front(), req->getPort());
     } else {
       socket = pooledSocket;
     }
@@ -117,27 +92,17 @@ bool HttpInitiateConnectionCommand::executeInternal() {
     command = new HttpRequestCommand(cuid, req, _requestGroup, httpConnection,
 				     e, socket);
   }
-  e->commands.push_back(command);
-  return true;
+  return command;
 }
 
-bool HttpInitiateConnectionCommand::useProxy() {
-  return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
-}
-
-bool HttpInitiateConnectionCommand::useProxyGet() {
+bool HttpInitiateConnectionCommand::useProxyGet() const
+{
   return e->option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
 }
 
-bool HttpInitiateConnectionCommand::useProxyTunnel() {
+bool HttpInitiateConnectionCommand::useProxyTunnel() const
+{
   return e->option->get(PREF_HTTP_PROXY_METHOD) == V_TUNNEL;
 }
-
-#ifdef ENABLE_ASYNC_DNS
-bool HttpInitiateConnectionCommand::nameResolveFinished() const {
-  return nameResolver->getStatus() ==  NameResolver::STATUS_SUCCESS ||
-    nameResolver->getStatus() == NameResolver::STATUS_ERROR;
-}
-#endif // ENABLE_ASYNC_DNS
 
 } // namespace aria2

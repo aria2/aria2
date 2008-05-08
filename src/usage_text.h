@@ -336,3 +336,5 @@ _(" --header=HEADER              Append HEADER to HTTP request header. You can u
   "                              http://host/file")
 #define TEXT_QUIET \
 _(" -q, --quiet[=true|false]     Make aria2 quite (no console output).")
+#define TEXT_ASYNC_DNS \
+_(" --async-dns[=true|false]     Enable asynchronous DNS.")

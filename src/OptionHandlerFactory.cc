@@ -128,6 +128,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new BooleanOptionHandler(PREF_BT_REQUIRE_CRYPTO)));
   handlers.push_back(SH(new CumulativeOptionHandler(PREF_HEADER, "\n")));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_QUIET)));
+#ifdef ENABLE_ASYNC_DNS
+  handlers.push_back(SH(new BooleanOptionHandler(PREF_ASYNC_DNS)));
+#endif // ENABLE_ASYNC_DNS
   return handlers;
 }
 

@@ -1,3 +1,38 @@
+2008-05-08  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Rewritten name resolver. Now async DNS can be disabled by --async-dns
+	option.
+	The asynchronous DNS is not capable of IPv6 yet.
+	By disabling asynchronous DNS, aria2 is IPv6 enabled application, at
+	least for HTTP download.
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/AsyncNameResolver.cc
+	* src/AsyncNameResolver.h
+	* src/DHTEntryPointNameResolveCommand.cc
+	* src/DHTEntryPointNameResolveCommand.h
+	* src/DownloadEngine.cc
+	* src/DownloadEngine.h
+	* src/FtpInitiateConnectionCommand.cc
+	* src/FtpInitiateConnectionCommand.h
+	* src/HelpItemFactory.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/HttpInitiateConnectionCommand.h
+	* src/InitiateConnectionCommand.cc
+	* src/InitiateConnectionCommand.h
+	* src/Makefile.am
+	* src/Makefile.in
+	* src/NameResolver.cc
+	* src/NameResolver.h
+	* src/OptionHandlerFactory.cc
+	* src/SocketCore.cc
+	* src/SocketCore.h
+	* src/Util.cc
+	* src/Util.h
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2008-05-07  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Updated man page: --quiet, --header were added.

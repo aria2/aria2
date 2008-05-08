@@ -858,4 +858,18 @@ void* Util::allocateAlignedMemory(size_t alignment, size_t size)
 }
 #endif // HAVE_POSIX_MEMALIGN
 
+std::pair<std::string, uint16_t>
+Util::getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len)
+{
+  char host[NI_MAXHOST];
+  char service[NI_MAXSERV];
+  int s = getnameinfo(sockaddr, len, host, NI_MAXHOST, service, NI_MAXSERV,
+		      NI_NUMERICHOST|NI_NUMERICSERV);
+  if(s != 0) {
+    throw DlAbortEx(StringFormat("Failed to get hostname and port. cause: %s",
+				 gai_strerror(s)).str());
+  }
+  return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
+}
+
 } // namespace aria2

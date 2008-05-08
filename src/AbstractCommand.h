@@ -46,9 +46,11 @@ class Request;
 class DownloadEngine;
 class RequestGroup;
 class Segment;
-class NameResolver;
 class Exception;
 class SocketCore;
+#ifdef ENABLE_ASYNC_DNS
+class AsyncNameResolver;
+#endif // ENABLE_ASYNC_DNS
 
 class AbstractCommand : public Command, public RequestGroupAware {
 private:
@@ -60,6 +62,18 @@ protected:
   SharedHandle<SocketCore> socket;
   std::deque<SharedHandle<Segment> > _segments;
 
+#ifdef ENABLE_ASYNC_DNS
+  SharedHandle<AsyncNameResolver> _asyncNameResolver;
+
+  bool isAsyncNameResolverInitialized() const;
+
+  void initAsyncNameResolver(const std::string& hostname);
+
+  bool asyncResolveHostname();
+
+  const std::deque<std::string>& getResolvedAddresses();
+#endif // ENABLE_ASYNC_DNS
+
   void tryReserved();
   virtual bool prepareForRetry(time_t wait);
   virtual void onAbort();
@@ -69,13 +83,7 @@ protected:
   void setWriteCheckSocket(const SharedHandle<SocketCore>& socket);
   void disableReadCheckSocket();
   void disableWriteCheckSocket();
-  bool resolveHostname(const std::string& hostname,
-		       const SharedHandle<NameResolver>& nameResolver);
-#ifdef ENABLE_ASYNC_DNS
-  void setNameResolverCheck(const SharedHandle<NameResolver>& resolver);
-  void disableNameResolverCheck(const SharedHandle<NameResolver>& resolver);
-  virtual bool nameResolveFinished() const;
-#endif // ENABLE_ASYNC_DNS
+
   void setTimeout(time_t timeout) { this->timeout = timeout; }
 
   void prepareForNextAction(Command* nextCommand = 0);
@@ -87,6 +95,14 @@ private:
   SharedHandle<SocketCore> writeCheckTarget;
   bool nameResolverCheck;
 
+#ifdef ENABLE_ASYNC_DNS
+
+  void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
+
+  void disableNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
+  bool nameResolveFinished() const;
+
+#endif // ENABLE_ASYNC_DNS
 public:
   AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
 		  RequestGroup* requestGroup, DownloadEngine* e,

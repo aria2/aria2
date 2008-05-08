@@ -38,15 +38,17 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "Command.h"
+#include "a2netcompat.h"
 #include <deque>
 #include <map>
-#include "a2netcompat.h"
 
 namespace aria2 {
 
 class Logger;
 class Option;
-class NameResolver;
+#ifdef ENABLE_ASYNC_DNS
+class AsyncNameResolver;
+#endif // ENABLE_ASYNC_DNS
 class RequestGroupMan;
 class FileAllocationMan;
 class StatCalc;
@@ -74,18 +76,18 @@ public:
 typedef std::deque<SocketEntry> SocketEntries;
 
 #ifdef ENABLE_ASYNC_DNS
-class NameResolverEntry {
+class AsyncNameResolverEntry {
 public:
-  SharedHandle<NameResolver> nameResolver;
+  SharedHandle<AsyncNameResolver> nameResolver;
   Command* command;
 public:
-  NameResolverEntry(const SharedHandle<NameResolver>& nameResolver,
-		    Command* command);
+  AsyncNameResolverEntry(const SharedHandle<AsyncNameResolver>& nameResolver,
+			 Command* command);
 
-  bool operator==(const NameResolverEntry& entry);
+  bool operator==(const AsyncNameResolverEntry& entry);
 };
 
-typedef std::deque<NameResolverEntry> NameResolverEntries;
+typedef std::deque<AsyncNameResolverEntry> AsyncNameResolverEntries;
 #endif // ENABLE_ASYNC_DNS
 
 class DownloadEngine {
@@ -93,7 +95,7 @@ private:
   void waitData();
   SocketEntries socketEntries;
 #ifdef ENABLE_ASYNC_DNS
-  NameResolverEntries nameResolverEntries;
+  AsyncNameResolverEntries nameResolverEntries;
 #endif // ENABLE_ASYNC_DNS
   fd_set rfdset;
   fd_set wfdset;
@@ -152,9 +154,9 @@ public:
   bool deleteSocketForWriteCheck(const SharedHandle<SocketCore>& socket,
 				 Command* command);
 #ifdef ENABLE_ASYNC_DNS
-  bool addNameResolverCheck(const SharedHandle<NameResolver>& resolver,
+  bool addNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver,
 			    Command* command);
-  bool deleteNameResolverCheck(const SharedHandle<NameResolver>& resolver,
+  bool deleteNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver,
 			       Command* command);
 #endif // ENABLE_ASYNC_DNS
 
@@ -180,6 +182,10 @@ public:
 
   SharedHandle<SocketCore> popPooledSocket(const std::string& ipaddr,
 					   uint16_t port);
+
+
+  SharedHandle<SocketCore>
+  popPooledSocket(const std::deque<std::string>& ipaddrs, uint16_t port);
 };
 
 typedef SharedHandle<DownloadEngine> DownloadEngineHandle;

@@ -33,7 +33,9 @@
  */
 /* copyright --> */
 #include "DownloadEngine.h"
-#include "NameResolver.h"
+#ifdef ENABLE_ASYNC_DNS
+#include "AsyncNameResolver.h"
+#endif // ENABLE_ASYNC_DNS
 #include "StatCalc.h"
 #include "RequestGroup.h"
 #include "RequestGroupMan.h"
@@ -73,11 +75,12 @@ bool SocketEntry::operator==(const SocketEntry& entry)
 }
 
 #ifdef ENABLE_ASYNC_DNS
-NameResolverEntry::NameResolverEntry(const NameResolverHandle& nameResolver,
-					     Command* command):
+AsyncNameResolverEntry::AsyncNameResolverEntry
+(const SharedHandle<AsyncNameResolver>& nameResolver,
+ Command* command):
   nameResolver(nameResolver), command(command) {}
 
-bool NameResolverEntry::operator==(const NameResolverEntry& entry)
+bool AsyncNameResolverEntry::operator==(const AsyncNameResolverEntry& entry)
 {
   return nameResolver == entry.nameResolver &&
     command == entry.command;
@@ -164,9 +167,9 @@ void DownloadEngine::waitData() {
   memcpy(&wfds, &wfdset, sizeof(fd_set));
   
 #ifdef ENABLE_ASYNC_DNS
-  for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
+  for(AsyncNameResolverEntries::iterator itr = nameResolverEntries.begin();
       itr != nameResolverEntries.end(); ++itr) {
-    NameResolverEntry& entry = *itr;
+    AsyncNameResolverEntry& entry = *itr;
     int fd = entry.nameResolver->getFds(&rfds, &wfds);
     // TODO force error if fd == 0
     if(fdmax < fd) {
@@ -189,13 +192,13 @@ void DownloadEngine::waitData() {
     }
   }
 #ifdef ENABLE_ASYNC_DNS
-  for(NameResolverEntries::iterator itr = nameResolverEntries.begin();
+  for(AsyncNameResolverEntries::iterator itr = nameResolverEntries.begin();
       itr != nameResolverEntries.end(); ++itr) {
-    NameResolverEntry& entry = *itr;
+    AsyncNameResolverEntry& entry = *itr;
     entry.nameResolver->process(&rfds, &wfds);
     switch(entry.nameResolver->getStatus()) {
-    case NameResolver::STATUS_SUCCESS:
-    case NameResolver::STATUS_ERROR:
+    case AsyncNameResolver::STATUS_SUCCESS:
+    case AsyncNameResolver::STATUS_ERROR:
       entry.command->setStatusActive();
       break;
     default:
@@ -323,12 +326,13 @@ void DownloadEngine::addCommand(const Commands& commands)
 }
 
 #ifdef ENABLE_ASYNC_DNS
-bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
-					  Command* command) {
-  NameResolverEntry entry(resolver, command);
-  NameResolverEntries::iterator itr = std::find(nameResolverEntries.begin(),
-						nameResolverEntries.end(),
-						entry);
+bool DownloadEngine::addNameResolverCheck
+(const SharedHandle<AsyncNameResolver>& resolver,
+ Command* command)
+{
+  AsyncNameResolverEntry entry(resolver, command);
+  AsyncNameResolverEntries::iterator itr =
+    std::find(nameResolverEntries.begin(), nameResolverEntries.end(), entry);
   if(itr == nameResolverEntries.end()) {
     nameResolverEntries.push_back(entry);
     return true;
@@ -337,12 +341,13 @@ bool DownloadEngine::addNameResolverCheck(const NameResolverHandle& resolver,
   }
 }
 
-bool DownloadEngine::deleteNameResolverCheck(const NameResolverHandle& resolver,
-					     Command* command) {
-  NameResolverEntry entry(resolver, command);
-  NameResolverEntries::iterator itr = std::find(nameResolverEntries.begin(),
-						nameResolverEntries.end(),
-						entry);
+bool DownloadEngine::deleteNameResolverCheck
+(const SharedHandle<AsyncNameResolver>& resolver,
+ Command* command)
+{
+  AsyncNameResolverEntry entry(resolver, command);
+  AsyncNameResolverEntries::iterator itr =
+    std::find(nameResolverEntries.begin(), nameResolverEntries.end(), entry);
   if(itr == nameResolverEntries.end()) {
     return false;
   } else {
@@ -386,6 +391,20 @@ DownloadEngine::popPooledSocket(const std::string& ipaddr, uint16_t port)
     _socketPool.erase(i);
     return s;
   }
+}
+
+SharedHandle<SocketCore>
+DownloadEngine::popPooledSocket
+(const std::deque<std::string>& ipaddrs, uint16_t port)
+{
+  for(std::deque<std::string>::const_iterator i = ipaddrs.begin();
+      i != ipaddrs.end(); ++i) {
+    SharedHandle<SocketCore> s = popPooledSocket(*i, port);
+    if(!s.isNull()) {
+      return s;
+    }
+  }
+  return SharedHandle<SocketCore>();
 }
 
 } // namespace aria2

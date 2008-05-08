@@ -39,6 +39,7 @@
 #include "SharedHandle.h"
 #include "IntSequence.h"
 #include "a2time.h"
+#include "a2netcompat.h"
 #include <sys/time.h>
 #include <string>
 #include <utility>
@@ -236,6 +237,9 @@ public:
 #ifdef HAVE_POSIX_MEMALIGN
   static void* allocateAlignedMemory(size_t alignment, size_t size);
 #endif // HAVE_POSIX_MEMALIGN
+
+  static std::pair<std::string, uint16_t>
+  getNumericNameInfo(const struct sockaddr* sockaddr, socklen_t len);
 };
 
 } // namespace aria2

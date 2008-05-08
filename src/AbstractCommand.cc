@@ -46,8 +46,9 @@
 #include "DownloadFailureException.h"
 #include "InitiateConnectionCommandFactory.h"
 #include "SleepCommand.h"
-#include "NameResolver.h"
-#include "DNSCache.h"
+#ifdef ENABLE_ASYNC_DNS
+#include "AsyncNameResolver.h"
+#endif // ENABLE_ASYNC_DNS
 #include "StreamCheckIntegrityEntry.h"
 #include "PieceStorage.h"
 #include "Socket.h"
@@ -57,6 +58,8 @@
 
 namespace aria2 {
 
+// TODO $$$$$$$$$$$ fix two nearly identical constructor. $$$$$$$$$$$$$$
+// Modify two constructor at the same time!
 AbstractCommand::AbstractCommand(int32_t cuid,
 				 const SharedHandle<Request>& req,
 				 RequestGroup* requestGroup,
@@ -89,6 +92,9 @@ AbstractCommand::AbstractCommand(int32_t cuid,
 AbstractCommand::~AbstractCommand() {
   disableReadCheckSocket();
   disableWriteCheckSocket();
+#ifdef ENABLE_ASYNC_DNS
+  disableNameResolverCheck(_asyncNameResolver);
+#endif // ENABLE_ASYNC_DNS
   _requestGroup->decreaseStreamConnection();
 }
 
@@ -257,59 +263,64 @@ void AbstractCommand::setWriteCheckSocket(const SocketHandle& socket) {
   }
 }
 
-bool AbstractCommand::resolveHostname(const std::string& hostname,
-				      const NameResolverHandle& resolver) {
-  std::string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
-  if(ipaddr.empty()) {
 #ifdef ENABLE_ASYNC_DNS
-    switch(resolver->getStatus()) {
-    case NameResolver::STATUS_READY:
-      logger->info(MSG_RESOLVING_HOSTNAME, cuid, hostname.c_str());
-      resolver->resolve(hostname);
-      setNameResolverCheck(resolver);
-      return false;
-    case NameResolver::STATUS_SUCCESS:
-      logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
-		   hostname.c_str(), resolver->getAddrString().c_str());
-      DNSCacheSingletonHolder::instance()->put(hostname, resolver->getAddrString());
-      return true;
-      break;
-    case NameResolver::STATUS_ERROR:
-      throw DlAbortEx(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
-				   hostname.c_str(),
-				   resolver->getError().c_str()).str());
-    default:
-      return false;
-    }
-#else
-    logger->info(MSG_RESOLVING_HOSTNAME, cuid, hostname.c_str());
-    resolver->resolve(hostname);
+
+bool AbstractCommand::isAsyncNameResolverInitialized() const
+{
+  return !_asyncNameResolver.isNull();
+}
+
+void AbstractCommand::initAsyncNameResolver(const std::string& hostname)
+{
+  _asyncNameResolver.reset(new AsyncNameResolver());
+  logger->info(MSG_RESOLVING_HOSTNAME, cuid, hostname.c_str());
+  _asyncNameResolver->resolve(hostname);
+  setNameResolverCheck(_asyncNameResolver);
+}
+
+bool AbstractCommand::asyncResolveHostname()
+{
+  switch(_asyncNameResolver->getStatus()) {
+  case AsyncNameResolver::STATUS_SUCCESS:
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
-		 hostname.c_str(), resolver->getAddrString().c_str());
-    DNSCacheSingletonHolder::instance()->put(hostname, resolver->getAddrString());
+		 _asyncNameResolver->getHostname().c_str(),
+		 _asyncNameResolver->getResolvedAddresses().front().c_str());
     return true;
-#endif // ENABLE_ASYNC_DNS
-  } else {
-    logger->info(MSG_DNS_CACHE_HIT, cuid,
-		 hostname.c_str(), ipaddr.c_str());
-    resolver->setAddr(ipaddr);
-    return true;
+    break;
+  case AsyncNameResolver::STATUS_ERROR:
+    throw DlAbortEx(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
+				 _asyncNameResolver->getHostname().c_str(),
+				 _asyncNameResolver->getError().c_str()).str());
+  default:
+    return false;
   }
 }
 
-#ifdef ENABLE_ASYNC_DNS
-void AbstractCommand::setNameResolverCheck(const NameResolverHandle& resolver) {
-  nameResolverCheck = true;
-  e->addNameResolverCheck(resolver, this);
+const std::deque<std::string>& AbstractCommand::getResolvedAddresses()
+{
+  return _asyncNameResolver->getResolvedAddresses();
 }
 
-void AbstractCommand::disableNameResolverCheck(const NameResolverHandle& resolver) {
-  nameResolverCheck = false;
-  e->deleteNameResolverCheck(resolver, this);
+void AbstractCommand::setNameResolverCheck
+(const SharedHandle<AsyncNameResolver>& resolver) {
+  if(!resolver.isNull()) {
+    nameResolverCheck = true;
+    e->addNameResolverCheck(resolver, this);
+  }
+}
+
+void AbstractCommand::disableNameResolverCheck
+(const SharedHandle<AsyncNameResolver>& resolver) {
+  if(!resolver.isNull()) {
+    nameResolverCheck = false;
+    e->deleteNameResolverCheck(resolver, this);
+  }
 }
 
 bool AbstractCommand::nameResolveFinished() const {
-  return false;
+  return
+    _asyncNameResolver->getStatus() ==  AsyncNameResolver::STATUS_SUCCESS ||
+    _asyncNameResolver->getStatus() == AsyncNameResolver::STATUS_ERROR;
 }
 #endif // ENABLE_ASYNC_DNS
 

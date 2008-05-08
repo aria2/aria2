@@ -35,29 +35,17 @@
 #ifndef _D_HTTP_INITIATE_CONNECTION_COMMAND_H_
 #define _D_HTTP_INITIATE_CONNECTION_COMMAND_H_
 
-#include "AbstractCommand.h"
+#include "InitiateConnectionCommand.h"
 
 namespace aria2 {
 
-class HttpInitiateConnectionCommand : public AbstractCommand {
+class HttpInitiateConnectionCommand : public InitiateConnectionCommand {
 private:
-  SharedHandle<NameResolver> nameResolver;
-  bool useProxy();
-  bool useProxyGet();
-  bool useProxyTunnel();
+  bool useProxyGet() const;
+  bool useProxyTunnel() const;
 protected:
-  /**
-   * Connect to the server.
-   * This method just send connection request to the server.
-   * Using nonblocking mode of socket, this funtion returns immediately
-   * after send connection packet to the server.
-   * Whether or not the connection is established successfully is
-   * evaluated by RequestCommand.
-   */
-  virtual bool executeInternal();
-#ifdef ENABLE_ASYNC_DNS
-  virtual bool nameResolveFinished() const;
-#endif // ENABLE_ASYNC_DNS
+  virtual Command* createNextCommand
+  (const std::deque<std::string>& resolvedAddresses);
 public:
   HttpInitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
 				RequestGroup* requestGroup,

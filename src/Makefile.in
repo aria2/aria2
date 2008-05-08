@@ -39,7 +39,8 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = aria2c$(EXEEXT)
-@ENABLE_MESSAGE_DIGEST_TRUE@am__append_1 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
+@ENABLE_ASYNC_DNS_TRUE@am__append_1 = AsyncNameResolver.cc AsyncNameResolver.h
+@ENABLE_MESSAGE_DIGEST_TRUE@am__append_2 = IteratableChunkChecksumValidator.cc IteratableChunkChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.cc IteratableChecksumValidator.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.cc CheckIntegrityCommand.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.cc ChecksumCheckIntegrityEntry.h\
@@ -48,7 +49,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_MESSAGE_DIGEST_TRUE@	Checksum.h\
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChunkChecksum.h
 
-@ENABLE_BITTORRENT_TRUE@am__append_2 = MetaEntry.h\
+@ENABLE_BITTORRENT_TRUE@am__append_3 = MetaEntry.h\
 @ENABLE_BITTORRENT_TRUE@	Data.cc Data.h\
 @ENABLE_BITTORRENT_TRUE@	Dictionary.cc Dictionary.h\
 @ENABLE_BITTORRENT_TRUE@	List.cc List.h\
@@ -225,7 +226,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.cc BtLeecherStateChoke.h\
 @ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.cc BtSeederStateChoke.h
 
-@ENABLE_METALINK_TRUE@am__append_3 = Metalinker.cc Metalinker.h\
+@ENABLE_METALINK_TRUE@am__append_4 = Metalinker.cc Metalinker.h\
 @ENABLE_METALINK_TRUE@	MetalinkEntry.cc MetalinkEntry.h\
 @ENABLE_METALINK_TRUE@	MetalinkResource.cc MetalinkResource.h\
 @ENABLE_METALINK_TRUE@	MetalinkProcessor.h\
@@ -253,17 +254,17 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.cc MetalinkPostDownloadHandler.h\
 @ENABLE_METALINK_TRUE@	MetalinkHelper.cc MetalinkHelper.h
 
-@ENABLE_LIBXML2_TRUE@am__append_4 = XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
-@ENABLE_LIBEXPAT_TRUE@am__append_5 = ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
-@HAVE_BASENAME_FALSE@am__append_6 = libgen.c libgen.h
-@HAVE_GETADDRINFO_FALSE@am__append_7 = getaddrinfo.c getaddrinfo.h
-@HAVE_GAI_STRERROR_FALSE@am__append_8 = gai_strerror.c gai_strerror.h
-@HAVE_GETTIMEOFDAY_FALSE@am__append_9 = gettimeofday.c gettimeofday.h \
+@ENABLE_LIBXML2_TRUE@am__append_5 = XML2SAXMetalinkProcessor.cc XML2SAXMetalinkProcessor.h
+@ENABLE_LIBEXPAT_TRUE@am__append_6 = ExpatMetalinkProcessor.cc ExpatMetalinkProcessor.h
+@HAVE_BASENAME_FALSE@am__append_7 = libgen.c libgen.h
+@HAVE_GETADDRINFO_FALSE@am__append_8 = getaddrinfo.c getaddrinfo.h
+@HAVE_GAI_STRERROR_FALSE@am__append_9 = gai_strerror.c gai_strerror.h
+@HAVE_GETTIMEOFDAY_FALSE@am__append_10 = gettimeofday.c gettimeofday.h \
 @HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.c gettimeofday.h
-@HAVE_INET_ATON_FALSE@am__append_10 = inet_aton.c inet_aton.h
-@HAVE_LOCALTIME_R_FALSE@am__append_11 = localtime_r.c localtime_r.h
-@HAVE_STRPTIME_FALSE@am__append_12 = strptime.c strptime.h
-@HAVE_TIMEGM_FALSE@am__append_13 = timegm.c timegm.h
+@HAVE_INET_ATON_FALSE@am__append_11 = inet_aton.c inet_aton.h
+@HAVE_LOCALTIME_R_FALSE@am__append_12 = localtime_r.c localtime_r.h
+@HAVE_STRPTIME_FALSE@am__append_13 = strptime.c strptime.h
+@HAVE_TIMEGM_FALSE@am__append_14 = timegm.c timegm.h
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in alloca.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -406,6 +407,8 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	usage_text.h ProtocolDetector.cc ProtocolDetector.h \
 	NullStatCalc.h StringFormat.cc StringFormat.h \
 	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h \
+	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
+	AsyncNameResolver.cc AsyncNameResolver.h \
 	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
 	IteratableChecksumValidator.cc IteratableChecksumValidator.h \
@@ -560,13 +563,14 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	getaddrinfo.h gai_strerror.c gai_strerror.h gettimeofday.c \
 	gettimeofday.h inet_aton.c inet_aton.h localtime_r.c \
 	localtime_r.h strptime.c strptime.h timegm.c timegm.h
-@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 = IteratableChunkChecksumValidator.$(OBJEXT) \
+@ENABLE_ASYNC_DNS_TRUE@am__objects_1 = AsyncNameResolver.$(OBJEXT)
+@ENABLE_MESSAGE_DIGEST_TRUE@am__objects_2 = IteratableChunkChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	IteratableChecksumValidator.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	CheckIntegrityCommand.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	ChecksumCheckIntegrityEntry.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	messageDigest.$(OBJEXT) \
 @ENABLE_MESSAGE_DIGEST_TRUE@	MessageDigestHelper.$(OBJEXT)
-@ENABLE_BITTORRENT_TRUE@am__objects_2 = Data.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@am__objects_3 = Data.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	Dictionary.$(OBJEXT) List.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MetaFileUtil.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BencodeVisitor.$(OBJEXT) \
@@ -677,7 +681,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshake.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtLeecherStateChoke.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtSeederStateChoke.$(OBJEXT)
-@ENABLE_METALINK_TRUE@am__objects_3 = Metalinker.$(OBJEXT) \
+@ENABLE_METALINK_TRUE@am__objects_4 = Metalinker.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntry.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkResource.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkProcessorFactory.$(OBJEXT) \
@@ -702,20 +706,20 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroup.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkPostDownloadHandler.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkHelper.$(OBJEXT)
-@ENABLE_LIBXML2_TRUE@am__objects_4 =  \
+@ENABLE_LIBXML2_TRUE@am__objects_5 =  \
 @ENABLE_LIBXML2_TRUE@	XML2SAXMetalinkProcessor.$(OBJEXT)
-@ENABLE_LIBEXPAT_TRUE@am__objects_5 =  \
+@ENABLE_LIBEXPAT_TRUE@am__objects_6 =  \
 @ENABLE_LIBEXPAT_TRUE@	ExpatMetalinkProcessor.$(OBJEXT)
-@HAVE_BASENAME_FALSE@am__objects_6 = libgen.$(OBJEXT)
-@HAVE_GETADDRINFO_FALSE@am__objects_7 = getaddrinfo.$(OBJEXT)
-@HAVE_GAI_STRERROR_FALSE@am__objects_8 = gai_strerror.$(OBJEXT)
-@HAVE_GETTIMEOFDAY_FALSE@am__objects_9 = gettimeofday.$(OBJEXT) \
+@HAVE_BASENAME_FALSE@am__objects_7 = libgen.$(OBJEXT)
+@HAVE_GETADDRINFO_FALSE@am__objects_8 = getaddrinfo.$(OBJEXT)
+@HAVE_GAI_STRERROR_FALSE@am__objects_9 = gai_strerror.$(OBJEXT)
+@HAVE_GETTIMEOFDAY_FALSE@am__objects_10 = gettimeofday.$(OBJEXT) \
 @HAVE_GETTIMEOFDAY_FALSE@	gettimeofday.$(OBJEXT)
-@HAVE_INET_ATON_FALSE@am__objects_10 = inet_aton.$(OBJEXT)
-@HAVE_LOCALTIME_R_FALSE@am__objects_11 = localtime_r.$(OBJEXT)
-@HAVE_STRPTIME_FALSE@am__objects_12 = strptime.$(OBJEXT)
-@HAVE_TIMEGM_FALSE@am__objects_13 = timegm.$(OBJEXT)
-am__objects_14 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
+@HAVE_INET_ATON_FALSE@am__objects_11 = inet_aton.$(OBJEXT)
+@HAVE_LOCALTIME_R_FALSE@am__objects_12 = localtime_r.$(OBJEXT)
+@HAVE_STRPTIME_FALSE@am__objects_13 = strptime.$(OBJEXT)
+@HAVE_TIMEGM_FALSE@am__objects_14 = timegm.$(OBJEXT)
+am__objects_15 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	AbstractCommand.$(OBJEXT) \
 	InitiateConnectionCommandFactory.$(OBJEXT) \
 	DownloadCommand.$(OBJEXT) \
@@ -783,12 +787,13 @@ am__objects_14 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	HelpItemFactory.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
 	TimedHaltCommand.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
 	StringFormat.$(OBJEXT) HttpNullDownloadCommand.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13)
-am_libaria2c_a_OBJECTS = $(am__objects_14)
+	InitiateConnectionCommand.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
+	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
+	$(am__objects_14)
+am_libaria2c_a_OBJECTS = $(am__objects_15)
 libaria2c_a_OBJECTS = $(am_libaria2c_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
@@ -1124,11 +1129,12 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	usage_text.h ProtocolDetector.cc ProtocolDetector.h \
 	NullStatCalc.h StringFormat.cc StringFormat.h \
 	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h \
+	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
-	$(am__append_13)
+	$(am__append_13) $(am__append_14)
 noinst_LIBRARIES = libaria2c.a
 libaria2c_a_SOURCES = $(SRCS)
 aria2c_LDADD = libaria2c.a @LIBINTL@ @ALLOCA@ @LIBGNUTLS_LIBS@\
@@ -1225,6 +1231,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AbstractSingleDiskAdaptor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ActivePeerConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AnnounceList.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AsyncNameResolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfig.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthConfigFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AutoSaveCommand.Po@am__quote@
@@ -1390,6 +1397,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitialMetalinkParserState.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiatorMSEHandshakeCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratableChecksumValidator.Po@am__quote@

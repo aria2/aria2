@@ -458,6 +458,13 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     item->addTag(TAG_ADVANCED);
     tc->addItem(item);
   }
+#ifdef ENABLE_ASYNC_DNS
+  {
+    HelpItemHandle item(new HelpItem(PREF_ASYNC_DNS, TEXT_ASYNC_DNS, op->get(PREF_ASYNC_DNS)));
+    item->addTag(TAG_ADVANCED);
+    tc->addItem(item);
+  }
+#endif // ENABLE_ASYNC_DNS
   {
     HelpItemHandle item(new HelpItem("help", TEXT_HELP, TAG_BASIC));
     item->setAvailableValues

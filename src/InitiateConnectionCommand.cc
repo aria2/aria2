@@ -32,68 +32,78 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "FtpInitiateConnectionCommand.h"
+#include "InitiateConnectionCommand.h"
+#include "Request.h"
 #include "DownloadEngine.h"
 #include "Option.h"
-#include "Request.h"
-#include "FtpNegotiationCommand.h"
-#include "HttpRequest.h"
-#include "Segment.h"
-#include "HttpRequestCommand.h"
-#include "FtpTunnelRequestCommand.h"
-#include "DlAbortEx.h"
 #include "Logger.h"
 #include "message.h"
 #include "prefs.h"
-#include "HttpConnection.h"
-#include "Socket.h"
+#include "NameResolver.h"
+#include "DNSCache.h"
 
 namespace aria2 {
 
-FtpInitiateConnectionCommand::FtpInitiateConnectionCommand
+InitiateConnectionCommand::InitiateConnectionCommand
 (int cuid,
  const RequestHandle& req,
  RequestGroup* requestGroup,
- DownloadEngine* e)
-  :InitiateConnectionCommand(cuid, req, requestGroup, e) {}
-
-FtpInitiateConnectionCommand::~FtpInitiateConnectionCommand() {}
-
-Command* FtpInitiateConnectionCommand::createNextCommand
-(const std::deque<std::string>& resolvedAddresses)
+ DownloadEngine* e):
+  AbstractCommand(cuid, req, requestGroup, e)
 {
-  Command* command;
+  setTimeout(e->option->getAsInt(PREF_DNS_TIMEOUT));
+  setStatus(Command::STATUS_ONESHOT_REALTIME);
+  disableReadCheckSocket();
+  disableWriteCheckSocket();
+}
+
+InitiateConnectionCommand::~InitiateConnectionCommand() {}
+
+bool InitiateConnectionCommand::executeInternal() {
+  std::string hostname;
   if(useHTTPProxy()) {
-    logger->info(MSG_CONNECTING_TO_SERVER, cuid,
-		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
-		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
-    socket->establishConnection(resolvedAddresses.front(),
-				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
-    
-    if(useHTTPProxyGet()) {
-      SharedHandle<HttpConnection> hc(new HttpConnection(cuid, socket, e->option));
-      command = new HttpRequestCommand(cuid, req, _requestGroup, hc, e, socket);
-    } else if(useHTTPProxyConnect()) {
-      command = new FtpTunnelRequestCommand(cuid, req, _requestGroup, e, socket);
-    } else {
-      // TODO
-      throw DlAbortEx("ERROR");
-    }
+    hostname = e->option->get(PREF_HTTP_PROXY_HOST);
   } else {
-    logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
-		 req->getPort());
-    socket->establishConnection(resolvedAddresses.front(), req->getPort());
-    command = new FtpNegotiationCommand(cuid, req, _requestGroup, e, socket);
+    hostname = req->getHost();
   }
-  return command;
+  std::deque<std::string> addrs;
+  std::string ipaddr = DNSCacheSingletonHolder::instance()->find(hostname);
+  if(ipaddr.empty()) {
+#ifdef ENABLE_ASYNC_DNS
+    if(e->option->getAsBool(PREF_ASYNC_DNS)) {
+      if(!isAsyncNameResolverInitialized()) {
+	initAsyncNameResolver(hostname);
+      }
+      if(asyncResolveHostname()) {
+	addrs = getResolvedAddresses();
+      } else {
+	e->commands.push_back(this);
+	return false;
+      }
+    } else
+#endif // ENABLE_ASYNC_DNS
+      {
+	NameResolver res;
+	res.setSocktype(SOCK_STREAM);
+	addrs = res.resolve(hostname);
+      }
+    logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
+		 hostname.c_str(),
+		 addrs.front().c_str());
+    DNSCacheSingletonHolder::instance()->put(hostname, addrs.front());
+  } else {
+    logger->info(MSG_DNS_CACHE_HIT, cuid, hostname.c_str(), ipaddr.c_str());
+    addrs.push_back(ipaddr);
+  }
+
+  Command* command = createNextCommand(addrs);
+  e->commands.push_back(command);
+  return true;
 }
 
-bool FtpInitiateConnectionCommand::useHTTPProxyGet() const {
-  return useHTTPProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_GET;
-}
-
-bool FtpInitiateConnectionCommand::useHTTPProxyConnect() const {
-  return useHTTPProxy() && e->option->get(PREF_FTP_VIA_HTTP_PROXY) == V_TUNNEL;
+bool InitiateConnectionCommand::useHTTPProxy() const
+{
+  return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
 }
 
 } // namespace aria2

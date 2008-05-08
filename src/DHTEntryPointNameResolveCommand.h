@@ -47,13 +47,17 @@ class DHTTaskFactory;
 class DHTRoutingTable;
 class DHTNode;
 class DownloadEngine;
-class NameResolver;
+#ifdef ENABLE_ASYNC_DNS
+class AsyncNameResolver;
+#endif // ENABLE_ASYNC_DNS
 
 class DHTEntryPointNameResolveCommand:public Command {
 protected:
   DownloadEngine* _e;
 private:
-  SharedHandle<NameResolver> _resolver;
+#ifdef ENABLE_ASYNC_DNS
+  SharedHandle<AsyncNameResolver> _resolver;
+#endif // ENABLE_ASYNC_DNS
 
   SharedHandle<DHTTaskQueue> _taskQueue;
 
@@ -71,12 +75,14 @@ private:
 
   void addPingTask(const std::pair<std::string, uint16_t>& addr);
 
+#ifdef ENABLE_ASYNC_DNS
   bool resolveHostname(const std::string& hostname,
-		       const SharedHandle<NameResolver>& resolver);
+		       const SharedHandle<AsyncNameResolver>& resolver);
 
-  void setNameResolverCheck(const SharedHandle<NameResolver>& resolver);
+  void setNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
 
-  void disableNameResolverCheck(const SharedHandle<NameResolver>& resolver);
+  void disableNameResolverCheck(const SharedHandle<AsyncNameResolver>& resolver);
+#endif // ENABLE_ASYNC_DNS
 
 public:
   DHTEntryPointNameResolveCommand(int32_t cuid, DownloadEngine* e,

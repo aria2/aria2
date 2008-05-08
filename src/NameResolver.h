@@ -36,114 +36,22 @@
 #define _D_NAME_RESOLVER_H_
 
 #include "common.h"
-#include "SharedHandle.h"
-#include "a2netcompat.h"
 #include <string>
-
-#ifdef ENABLE_ASYNC_DNS
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <ares.h>
-#ifdef __cplusplus
-} /* end of extern "C" */
-#endif
-
-#endif // ENABLE_ASYNC_DNS
+#include <deque>
 
 namespace aria2 {
 
-#ifdef ENABLE_ASYNC_DNS
-
-#ifdef HAVE_LIBCARES1_5
-void callback(void* arg, int status, int timeouts, struct hostent* host);
-#else
-void callback(void* arg, int status, struct hostent* host);
-#endif // HAVE_LIBCARES1_5
-
-class NameResolver {
-#ifdef HAVE_LIBCARES1_5
-  friend void callback(void* arg, int status, int timeouts, struct hostent* host);
-#else
-  friend void callback(void* arg, int status, struct hostent* host);
-#endif // HAVE_LIBCARES1_5
-
-public:
-  enum STATUS {
-    STATUS_READY,
-    STATUS_QUERYING,
-    STATUS_SUCCESS,
-    STATUS_ERROR,
-  };
-private:
-  STATUS status;
-  ares_channel channel;
-  struct in_addr addr;
-  std::string error;
-public:
-  NameResolver():
-    status(STATUS_READY)
-  {
-    // TODO evaluate return value
-    ares_init(&channel);
-  }
-
-  ~NameResolver() {
-    ares_destroy(channel);
-  }
-
-  void resolve(const std::string& name);
-
-  std::string getAddrString() const;
-
-  const struct in_addr& getAddr() const {
-    return addr;
-  }
-
-  const std::string& getError() const {
-    return error;
-  }
-
-  STATUS getStatus() const {
-    return status;
-  }
-
-  int getFds(fd_set* rfdsPtr, fd_set* wfdsPtr) const {
-    return ares_fds(channel, rfdsPtr, wfdsPtr);
-  }
-
-  void process(fd_set* rfdsPtr, fd_set* wfdsPtr) {
-    ares_process(channel, rfdsPtr, wfdsPtr);
-  }
-
-  bool operator==(const NameResolver& resolver) {
-    return this == &resolver;
-  }
-
-  void setAddr(const std::string& addrString);
-
-  void reset();
-};
-
-#else // ENABLE_ASYNC_DNS
-
 class NameResolver {
 private:
-  struct in_addr _addr;
+  int _socktype;
 public:
-  void resolve(const std::string& hostname);
+  NameResolver();
 
-  std::string getAddrString() const;
-  
-  void setAddr(const std::string& addrString);
+  std::deque<std::string> resolve(const std::string& hostname);
 
-  void reset();
+  // specify SOCK_STREAM or SOCK_DGRAM
+  void setSocktype(int socktype);
 };
-
-#endif // ENABLE_ASYNC_DNS
-
-typedef SharedHandle<NameResolver> NameResolverHandle;
 
 } // namespace aria2
 

@@ -144,6 +144,11 @@ Option* createDefaultOption()
   op->put(PREF_BT_REQUIRE_CRYPTO, V_FALSE);
   op->put(PREF_QUIET, V_FALSE);
   op->put(PREF_STOP, "0");
+#ifdef ENABLE_ASYNC_DNS
+  op->put(PREF_ASYNC_DNS, V_TRUE);
+#else
+  op->put(PREF_ASYNC_DNS, V_FALSE);
+#endif // ENABLE_ASYNC_DNS
   return op;
 }
 
@@ -215,6 +220,9 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_STOP, required_argument, &lopt, 214 },
       { PREF_HEADER, required_argument, &lopt, 215 },
       { PREF_QUIET, optional_argument, 0, 'q' },
+#ifdef ENABLE_ASYNC_DNS
+      { PREF_ASYNC_DNS, optional_argument, &lopt, 216 },
+#endif // ENABLE_ASYNC_DNS
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { PREF_SHOW_FILES, no_argument, NULL, 'S' },
       { PREF_SELECT_FILE, required_argument, &lopt, 21 },
@@ -416,6 +424,11 @@ Option* option_processing(int argc, char* const argv[])
       case 215:
 	cmdstream << PREF_HEADER << "=" << optarg << "\n";
 	break;
+#ifdef ENABLE_ASYNC_DNS
+      case 216:
+	cmdstream << PREF_ASYNC_DNS << "=" << toBoolArg(optarg) << "\n";
+	break;
+#endif // ENABLE_ASYNC_DNS
       }
       break;
     }

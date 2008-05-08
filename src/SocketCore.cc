@@ -38,6 +38,7 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "Util.h"
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
@@ -169,20 +170,6 @@ SocketCore* SocketCore::acceptConnection() const
   return new SocketCore(fd, _sockType);
 }
 
-std::pair<std::string, uint16_t>
-SocketCore::getNameInfoInNumeric(const struct sockaddr* sockaddr, socklen_t len)
-{
-  char host[NI_MAXHOST];
-  char service[NI_MAXSERV];
-  int s = getnameinfo(sockaddr, len, host, NI_MAXHOST, service, NI_MAXSERV,
-		      NI_NUMERICHOST|NI_NUMERICSERV);
-  if(s != 0) {
-    throw DlAbortEx(StringFormat("Failed to get hostname and port. cause: %s",
-				 gai_strerror(s)).str());
-  }
-  return std::pair<std::string, uint16_t>(host, atoi(service)); // TODO
-}
-
 void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
 {
   struct sockaddr_storage sockaddr;
@@ -191,7 +178,7 @@ void SocketCore::getAddrInfo(std::pair<std::string, uint16_t>& addrinfo) const
   if(getsockname(sockfd, addrp, &len) == -1) {
     throw DlAbortEx(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
-  addrinfo = SocketCore::getNameInfoInNumeric(addrp, len);
+  addrinfo = Util::getNumericNameInfo(addrp, len);
 }
 
 void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
@@ -202,7 +189,7 @@ void SocketCore::getPeerInfo(std::pair<std::string, uint16_t>& peerinfo) const
   if(getpeername(sockfd, addrp, &len) == -1) {
     throw DlAbortEx(StringFormat(EX_SOCKET_GET_NAME, errorMsg()).str());
   }
-  peerinfo = SocketCore::getNameInfoInNumeric(addrp, len);
+  peerinfo = Util::getNumericNameInfo(addrp, len);
 }
 
 void SocketCore::establishConnection(const std::string& host, uint16_t port)
@@ -679,7 +666,7 @@ ssize_t SocketCore::readDataFrom(char* data, size_t len,
   if(r == -1) {
     throw DlAbortEx(StringFormat(EX_SOCKET_RECV, errorMsg()).str());
   }
-  sender = SocketCore::getNameInfoInNumeric(addrp, sockaddrlen);
+  sender = Util::getNumericNameInfo(addrp, sockaddrlen);
 
   return r;
 }

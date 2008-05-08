@@ -32,47 +32,35 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "NameResolver.h"
-#include "DlAbortEx.h"
-#include "message.h"
-#include "StringFormat.h"
-#include "Util.h"
-#include <cstring>
+#ifndef _D_INITIATE_CONNECTION_COMMAND_H_
+#define _D_INITIATE_CONNECTION_COMMAND_H_
+
+#include "AbstractCommand.h"
 
 namespace aria2 {
 
-NameResolver::NameResolver():_socktype(0) {}
+class InitiateConnectionCommand : public AbstractCommand {
+protected:
+  bool useHTTPProxy() const;
 
-std::deque<std::string> NameResolver::resolve(const std::string& hostname)
-{
-  struct addrinfo hints;
-  struct addrinfo* res;
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = _socktype;
-  hints.ai_flags = 0;
-  hints.ai_protocol = 0;
-  int s;
-  s = getaddrinfo(hostname.c_str(), "0", &hints, &res);
-  if(s) {
-    throw DlAbortEx(StringFormat(EX_RESOLVE_HOSTNAME,
-				 hostname.c_str(), gai_strerror(s)).str());
-  }
-  std::deque<std::string> addrs;
-  struct addrinfo* rp;
-  for(rp = res; rp; rp = rp->ai_next) {
-    std::pair<std::string, uint16_t> addressPort
-      = Util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
-    addrs.push_back(addressPort.first);
-  }
-  freeaddrinfo(res);
+  /**
+   * Connect to the server.
+   * This method just send connection request to the server.
+   * Using nonblocking mode of socket, this funtion returns immediately
+   * after send connection packet to the server.
+   */
+  virtual bool executeInternal();
 
-  return addrs;
-}
+  virtual Command* createNextCommand
+  (const std::deque<std::string>& resolvedAddresses) = 0;
+public:
+  InitiateConnectionCommand(int cuid, const SharedHandle<Request>& req,
+			    RequestGroup* requestGroup,
+			    DownloadEngine* e);
 
-void NameResolver::setSocktype(int socktype)
-{
-  _socktype = socktype;
-}
+  virtual ~InitiateConnectionCommand();
+};
 
 } // namespace aria2
+
+#endif // _D_INITIATE_CONNECTION_COMMAND_H_

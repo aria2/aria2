@@ -87,9 +87,6 @@ private:
   static int error();
   static const char *errorMsg();
   static const char *errorMsg(const int err);
-
-  static std::pair<std::string, uint16_t>
-  getNameInfoInNumeric(const struct sockaddr* sockaddr, socklen_t len);
 public:
   SocketCore(int sockType = SOCK_STREAM);
   ~SocketCore();
