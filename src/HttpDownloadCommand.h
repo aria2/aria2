@@ -40,7 +40,6 @@
 namespace aria2 {
 
 class HttpConnection;
-class SocketCore;
 
 class HttpDownloadCommand : public DownloadCommand {
 private:
