@@ -1,5 +1,12 @@
 2008-05-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed the default value of -j option to 1.
+	* src/HelpItemFactory.cc
+	* src/option_processing.cc
+	* src/usage_text.h
+
+2008-05-09  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the ability to reuse connection in FTP and it is enabled by
 	default. It can be disabled by --ftp-reuse-connection=false option.
 	* src/Command.cc

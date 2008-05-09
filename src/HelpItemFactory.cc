@@ -266,8 +266,8 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);
   }
   {
-    HelpItemHandle item(new HelpItem(PREF_MAX_CONCURRENT_DOWNLOADS, TEXT_MAX_CONCURRENT_DOWNLOADS));
-    item->addTag(TAG_ADVANCED);
+    HelpItemHandle item(new HelpItem(PREF_MAX_CONCURRENT_DOWNLOADS, TEXT_MAX_CONCURRENT_DOWNLOADS, op->get(PREF_MAX_CONCURRENT_DOWNLOADS)));
+    item->addTag(TAG_BASIC);
     tc->addItem(item);
   }
   {
