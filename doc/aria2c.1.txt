@@ -8,11 +8,7 @@ aria2c - The ultra fast download utility
 
 SYNOPSIS
 --------
-'aria2c' [OPTIONS] URL ...
-
-'aria2c' [OPTIONS] -T TORRENT_FILE [URL ...]
-
-'aria2c' [OPTIONS] -M METALINK_FILE
+'aria2c' [OPTIONS] URL|TORRENT_FILE|METALINK_FILE ...
 
 DESCRIPTION
 -----------
@@ -103,6 +99,10 @@ OPTIONS
 --ftp-via-http-proxy=METHOD::
   Use HTTP proxy in FTP. METHOD is either 'get' or 'tunnel'.
   Default: 'tunnel'
+
+--ftp-reuse-connection[='true'|'false']::
+  Reuse connection in FTP.
+  Default: 'true'
 
 --lowest-speed-limit=SPEED::
   Close connection if download speed is lower than or equal to this
@@ -210,9 +210,8 @@ OPTIONS
   Reads input from stdin when '-' is specified.
 
 -j, --max-concurrent-downloads=N::
-  Set maximum number of concurrent downloads.
-  It should be used with the -i option.
-  Default: '5'
+  Set maximum number of parallel downloads.
+  Default: '1'
 
 --load-cookies=FILE::
   Load cookies from FILE.
@@ -251,6 +250,7 @@ OPTIONS
 
 -T, --torrent-file=TORRENT_FILE::
   The path to the .torrent file.
+  You may not use this option because you can specify torrent file without -T.
 
 --follow-torrent='true'|'false'|'mem'::
   If 'true' or 'mem' is specified, when a file whose suffix is ".torrent" or content
@@ -333,7 +333,8 @@ OPTIONS
   Default: 'false' 
 
 -M, --metalink-file=METALINK_FILE::
-  The file path to .metalink file.
+  The file path to .metalink file. You may not use this option because you can
+  specify metalink file without -M.
 
 -C, --metalink-servers=NUM_SERVERS::
   The number of servers to connect to simultaneously.
@@ -385,6 +386,10 @@ OPTIONS
   Make aria2 quite (no console output).
   Default: 'false'
 
+--async-dns[='true'|'false']::
+  Enable asynchronous DNS.
+  Default: 'true'
+
 -v, --version::
   Print the version number, copyright and the configuration information and
   exit.
@@ -399,9 +404,12 @@ OPTIONS
   'bittorrent', 'all'
   Default: 'basic'
  
-URL::
+URL, TORRENT_FILE, METALINK_FILE::
  You can specify multiple URLs. Unless you specify -Z option, all URLs must
  point to the same file or downloading will fail.
+ You can also specify arbitrary number of torrent files and metalink files
+ stored in a local drive. Please note that they are always treated as a
+ separate download.
  You can specify both torrent file with -T option and URLs. By doing this,
  download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
  while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
@@ -443,10 +451,10 @@ aria2c http://host1/file.zip ftp://host2/file.zip
 Download files listed in a file concurrently
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------
-aria2c -ifiles.txt -j5
+aria2c -ifiles.txt -j2
 ------------------------
 [NOTE]
--j option specifies the number of concurrent downloads.
+-j option specifies the number of parallel downloads.
 
 Metalink Download
 ~~~~~~~~~~~~~~~~~
@@ -459,17 +467,23 @@ aria2c --follow-metalink=mem http://host/file.metalink
 Download using a local metalink file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------------------
-aria2c -p -t10 --lowest-speed-limit=4000 -Mtest.metalink
+aria2c -p --lowest-speed-limit=4000 file.metalink
 ----------------------------------------------------------
 [NOTE]
 To pause a download, press Ctrl-C.
 You can resume the transfer by run aria2c with the same argument at the same
 directory.
 
+Download several local metalink files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
+aria2c -j2 file1.metalink file2.metalink
+----------------------------------------
+
 Download only selected files using index
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------
-aria2c -Mtest.metalink --select-file=1-4,8
+aria2c --select-file=1-4,8 file.metalink
 -------------------------------------------
 [NOTE]
 The index is printed to the console using -S option.
@@ -477,7 +491,7 @@ The index is printed to the console using -S option.
 Download a file using a local .metalink file with user preference
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------------------------------------------
-aria2c -Mtest.metalink --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US
+aria2c --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US -C2 file.metalink
 ------------------------------------------------------------------------------
 
 BitTorrent Download
@@ -491,13 +505,19 @@ aria2c --follow-bittorrent=mem http://host/file.torrent
 Download using a local torrent file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ---------------------------------------------
-aria2c --max-upload-limit=40K -Tfile.torrent
+aria2c --max-upload-limit=40K file.torrent
 ---------------------------------------------
 [NOTE]
 --max-upload-limit specifies the max of upload rate.
 
 [NOTE]
 To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument at the same directory.
+
+Download 2 torrents
+^^^^^^^^^^^^^^^^^^^
+--------------------------------------
+aria2c -j2 file1.torrent file2.torrent
+--------------------------------------
 
 Download a file using torrent and HTTP/FTP server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -509,16 +529,16 @@ Downloading multi file torrent with HTTP/FTP is not supported.
 
 Download only selected files using index(usually called "selectable download")
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-------------------------------------------
-aria2c -Ttest.torrent --select-file=1-4,8
-------------------------------------------
+---------------------------------------
+aria2c --select-file=1-4,8 file.torrent
+---------------------------------------
 [NOTE]
 The index is printed to the console using -S option.
 
 Change the listening port for incoming peer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ---------------------------------------------------
-aria2c -Ttest.torrent --listen-port=7000-7001,8000
+aria2c --listen-port=7000-7001,8000 file.torrent
 ---------------------------------------------------
 [NOTE]
 Since aria2 doesn't configure firewall or router for port forwarding, it's up
@@ -527,7 +547,7 @@ to you to do it manually.
 Specify the condition to stop program after torrent download finished
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------------
-aria2c -Ttest.torrent --seed-time=120 --seed-ratio=1.0
+aria2c --seed-time=120 --seed-ratio=1.0 file.torrent
 -------------------------------------------------------
 
 [NOTE]
@@ -536,13 +556,13 @@ In the above example, the program exists when the 120 minutes has elapsed since 
 Throttle upload speed
 ^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------
-aria2c -Ttest.torrent --max-upload-limit=100K
+aria2c --max-upload-limit=100K file.torrent
 ---------------------------------------------- 
 
 Enable DHT
 ^^^^^^^^^^
 ---------------------------------------------------------
-aria2c -Ttest.torrent --enable-dht --dht-listen-port=6881
+aria2c --enable-dht --dht-listen-port=6881 file.torrent
 ---------------------------------------------------------
 [NOTE]
 DHT uses udp port. Since aria2 doesn't configure firewall or router for port
@@ -569,13 +589,13 @@ And more advanced features
 Throttle download speed
 ^^^^^^^^^^^^^^^^^^^^^^^
 -------------------------------------------------
-aria2c -Mtest.metalink --max-download-limit=100K
+aria2c --max-download-limit=100K file.metalink
 -------------------------------------------------
 
 Repair a damaged download using --check-integrity option
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ----------------------------------------------
-aria2c -Mtest.metalink --check-integrity=true
+aria2c --check-integrity=true file.metalink
 ----------------------------------------------
 [NOTE]
 This option is only available used with BitTorrent or metalink with chunk
@@ -584,7 +604,7 @@ checksums.
 Drop connection if download speed is lower than specified value
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------------
-aria2c -Mtest.metalink --lowest-speed-limit=10K
+aria2c --lowest-speed-limit=10K file.metalink
 ------------------------------------------------
 
 Parameterized URI support
@@ -607,11 +627,17 @@ You can specify step counter:
 aria2c -Z -P http://host/image[A-Z:2].png 
 -----------------------------------------
 
+Parallel downloads of arbitrary number of URL,metalink,torrent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------------------
+aria2c -j3 -Z http://host/file1 file2.torrent file3.metalink
+------------------------------------------------------------
+
 BitTorrent Encryption
 ^^^^^^^^^^^^^^^^^^^^^
 Encrypt whole payload using ARC4:
 -------------------------------------------------------------------------
-aria2c -Tfile.torrent --bt-min-crypto-level=arc4 --bt-require-crypto=true
+aria2c --bt-min-crypto-level=arc4 --bt-require-crypto=true file.torrent
 -------------------------------------------------------------------------
 
 RESUME DOWNLOAD
@@ -648,7 +674,7 @@ SEEDING DOWNLOADED FILE IN BITTORRENT
 -------------------------------------
 You can seed downloaded file using --check-integrity=true option.
 ---------------------------------------------
-aria2c --check-integrity=true -T file.torrent
+aria2c --check-integrity=true file.torrent
 ---------------------------------------------
 
 FILES
@@ -663,10 +689,9 @@ The lines beginning '#' are treated as comments.
 
 --------------------------------------
 # sample configuration file for aria2c
-file-allocation=prealloc
 listen-port=60000
 seed-ratio=1.0
-max-upload-limit=100K
+max-upload-limit=50K
 ftp-pasv=true
 --------------------------------------
 

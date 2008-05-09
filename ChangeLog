@@ -1,5 +1,15 @@
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated man page: --async-dns and --ftp-reuse-connection were added.
+	Changed -j option's default value from 5 to 1.
+	Added new examples using protocol auto detection feature.
+	Removed -T, -M usage where it can be omitted.
+	* doc/aria2c.1.txt
+	* doc/aria2c.1.html
+	* doc/aria2c.1.txt
+
+2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated command-line usage text, so that it tells users that they
 	can specify any number of torrent files and metalink files in
 	command-line.

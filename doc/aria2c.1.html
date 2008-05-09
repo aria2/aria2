@@ -312,9 +312,7 @@ div#toc a:visited { color: blue; }
 </div>
 <h2>SYNOPSIS</h2>
 <div class="sectionbody">
-<p><em>aria2c</em> [OPTIONS] URL &#8230;</p>
-<p><em>aria2c</em> [OPTIONS] -T TORRENT_FILE [URL &#8230;]</p>
-<p><em>aria2c</em> [OPTIONS] -M METALINK_FILE</p>
+<p><em>aria2c</em> [OPTIONS] URL|TORRENT_FILE|METALINK_FILE &#8230;</p>
 </div>
 <h2>DESCRIPTION</h2>
 <div class="sectionbody">
@@ -518,6 +516,15 @@ Note
 <p>
   Use HTTP proxy in FTP. METHOD is either <em>get</em> or <em>tunnel</em>.
   Default: <em>tunnel</em>
+</p>
+</dd>
+<dt>
+&#8212;ftp-reuse-connection[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Reuse connection in FTP.
+  Default: <em>true</em>
 </p>
 </dd>
 <dt>
@@ -728,9 +735,8 @@ Note
 </dt>
 <dd>
 <p>
-  Set maximum number of concurrent downloads.
-  It should be used with the -i option.
-  Default: <em>5</em>
+  Set maximum number of parallel downloads.
+  Default: <em>1</em>
 </p>
 </dd>
 <dt>
@@ -812,6 +818,7 @@ Note
 <dd>
 <p>
   The path to the .torrent file.
+  You may not use this option because you can specify torrent file without -T.
 </p>
 </dd>
 <dt>
@@ -972,7 +979,8 @@ Note
 </dt>
 <dd>
 <p>
-  The file path to .metalink file.
+  The file path to .metalink file. You may not use this option because you can
+  specify metalink file without -M.
 </p>
 </dd>
 <dt>
@@ -1076,6 +1084,15 @@ Note
 </p>
 </dd>
 <dt>
+&#8212;async-dns[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Enable asynchronous DNS.
+  Default: <em>true</em>
+</p>
+</dd>
+<dt>
 -v, &#8212;version
 </dt>
 <dd>
@@ -1100,12 +1117,15 @@ Note
 </p>
 </dd>
 <dt>
-URL
+URL, TORRENT_FILE, METALINK_FILE
 </dt>
 <dd>
 <p>
  You can specify multiple URLs. Unless you specify -Z option, all URLs must
  point to the same file or downloading will fail.
+ You can also specify arbitrary number of torrent files and metalink files
+ stored in a local drive. Please note that they are always treated as a
+ separate download.
  You can specify both torrent file with -T option and URLs. By doing this,
  download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
  while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
@@ -1159,14 +1179,14 @@ Note
 <h4>Download files listed in a file concurrently</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -ifiles.txt -j5</tt></pre>
+<pre><tt>aria2c -ifiles.txt -j2</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">-j option specifies the number of concurrent downloads.</td>
+<td class="content">-j option specifies the number of parallel downloads.</td>
 </tr></table>
 </div>
 <h3>Metalink Download</h3>
@@ -1178,7 +1198,7 @@ Note
 <h4>Download using a local metalink file</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -p -t10 --lowest-speed-limit=4000 -Mtest.metalink</tt></pre>
+<pre><tt>aria2c -p --lowest-speed-limit=4000 file.metalink</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1190,10 +1210,15 @@ You can resume the transfer by run aria2c with the same argument at the same
 directory.</td>
 </tr></table>
 </div>
+<h4>Download several local metalink files</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c -j2 file1.metalink file2.metalink</tt></pre>
+</div></div>
 <h4>Download only selected files using index</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Mtest.metalink --select-file=1-4,8</tt></pre>
+<pre><tt>aria2c --select-file=1-4,8 file.metalink</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1206,7 +1231,7 @@ directory.</td>
 <h4>Download a file using a local .metalink file with user preference</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Mtest.metalink --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US</tt></pre>
+<pre><tt>aria2c --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US -C2 file.metalink</tt></pre>
 </div></div>
 <h3>BitTorrent Download</h3>
 <h4>Download files from remote BitTorrent file</h4>
@@ -1217,7 +1242,7 @@ directory.</td>
 <h4>Download using a local torrent file</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --max-upload-limit=40K -Tfile.torrent</tt></pre>
+<pre><tt>aria2c --max-upload-limit=40K file.torrent</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1235,6 +1260,11 @@ directory.</td>
 <td class="content">To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument at the same directory.</td>
 </tr></table>
 </div>
+<h4>Download 2 torrents</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c -j2 file1.torrent file2.torrent</tt></pre>
+</div></div>
 <h4>Download a file using torrent and HTTP/FTP server</h4>
 <div class="listingblock">
 <div class="content">
@@ -1251,7 +1281,7 @@ directory.</td>
 <h4>Download only selected files using index(usually called "selectable download")</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Ttest.torrent --select-file=1-4,8</tt></pre>
+<pre><tt>aria2c --select-file=1-4,8 file.torrent</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1264,7 +1294,7 @@ directory.</td>
 <h4>Change the listening port for incoming peer</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Ttest.torrent --listen-port=7000-7001,8000</tt></pre>
+<pre><tt>aria2c --listen-port=7000-7001,8000 file.torrent</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1278,7 +1308,7 @@ to you to do it manually.</td>
 <h4>Specify the condition to stop program after torrent download finished</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Ttest.torrent --seed-time=120 --seed-ratio=1.0</tt></pre>
+<pre><tt>aria2c --seed-time=120 --seed-ratio=1.0 file.torrent</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1291,12 +1321,12 @@ to you to do it manually.</td>
 <h4>Throttle upload speed</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Ttest.torrent --max-upload-limit=100K</tt></pre>
+<pre><tt>aria2c --max-upload-limit=100K file.torrent</tt></pre>
 </div></div>
 <h4>Enable DHT</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Ttest.torrent --enable-dht --dht-listen-port=6881</tt></pre>
+<pre><tt>aria2c --enable-dht --dht-listen-port=6881 file.torrent</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1330,12 +1360,12 @@ forwarding, it's up to you to do it manually.</td>
 <h4>Throttle download speed</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Mtest.metalink --max-download-limit=100K</tt></pre>
+<pre><tt>aria2c --max-download-limit=100K file.metalink</tt></pre>
 </div></div>
 <h4>Repair a damaged download using &#8212;check-integrity option</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Mtest.metalink --check-integrity=true</tt></pre>
+<pre><tt>aria2c --check-integrity=true file.metalink</tt></pre>
 </div></div>
 <div class="admonitionblock">
 <table><tr>
@@ -1349,7 +1379,7 @@ checksums.</td>
 <h4>Drop connection if download speed is lower than specified value</h4>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Mtest.metalink --lowest-speed-limit=10K</tt></pre>
+<pre><tt>aria2c --lowest-speed-limit=10K file.metalink</tt></pre>
 </div></div>
 <h4>Parameterized URI support</h4>
 <p>You can specify set of parts:</p>
@@ -1375,11 +1405,16 @@ checksums.</td>
 <div class="content">
 <pre><tt>aria2c -Z -P http://host/image[A-Z:2].png</tt></pre>
 </div></div>
+<h4>Parallel downloads of arbitrary number of URL,metalink,torrent</h4>
+<div class="listingblock">
+<div class="content">
+<pre><tt>aria2c -j3 -Z http://host/file1 file2.torrent file3.metalink</tt></pre>
+</div></div>
 <h4>BitTorrent Encryption</h4>
 <p>Encrypt whole payload using ARC4:</p>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c -Tfile.torrent --bt-min-crypto-level=arc4 --bt-require-crypto=true</tt></pre>
+<pre><tt>aria2c --bt-min-crypto-level=arc4 --bt-require-crypto=true file.torrent</tt></pre>
 </div></div>
 </div>
 <h2>RESUME DOWNLOAD</h2>
@@ -1414,7 +1449,7 @@ you can resume the download without a control file by giving
 <p>You can seed downloaded file using &#8212;check-integrity=true option.</p>
 <div class="listingblock">
 <div class="content">
-<pre><tt>aria2c --check-integrity=true -T file.torrent</tt></pre>
+<pre><tt>aria2c --check-integrity=true file.torrent</tt></pre>
 </div></div>
 </div>
 <h2>FILES</h2>
@@ -1428,10 +1463,9 @@ The lines beginning <em>#</em> are treated as comments.</p>
 <div class="listingblock">
 <div class="content">
 <pre><tt># sample configuration file for aria2c
-file-allocation=prealloc
 listen-port=60000
 seed-ratio=1.0
-max-upload-limit=100K
+max-upload-limit=50K
 ftp-pasv=true</tt></pre>
 </div></div>
 <h3>dht.dat</h3>
@@ -1479,7 +1513,7 @@ files in the program, then also delete it here.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 07-May-2008 00:39:10 JST
+Last updated 10-May-2008 00:23:19 JST
 </div>
 </div>
 </body>

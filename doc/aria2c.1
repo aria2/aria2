@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 05/07/2008
+.\"      Date: 05/10/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "05/07/2008" "" ""
+.TH "ARIA2C" "1" "05/10/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -13,11 +13,7 @@
 .SH "NAME"
 aria2c - The ultra fast download utility
 .SH "SYNOPSIS"
-\fIaria2c\fR [OPTIONS] URL \&...
-.sp
-\fIaria2c\fR [OPTIONS] \-T TORRENT_FILE [URL \&...]
-.sp
-\fIaria2c\fR [OPTIONS] \-M METALINK_FILE
+\fIaria2c\fR [OPTIONS] URL|TORRENT_FILE|METALINK_FILE \&...
 .sp
 .SH "DESCRIPTION"
 aria2 is a utility for downloading files\. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink\. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum\. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm\. Using Metalink\'s chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent\.
@@ -167,6 +163,12 @@ or
 \fItunnel\fR
 .RE
 .PP
+\-\-ftp\-reuse\-connection[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Reuse connection in FTP\. Default:
+\fItrue\fR
+.RE
+.PP
 \-\-lowest\-speed\-limit=SPEED
 .RS 4
 Close connection if download speed is lower than or equal to this value(bytes per sec)\.
@@ -305,8 +307,8 @@ is specified\.
 .PP
 \-j, \-\-max\-concurrent\-downloads=N
 .RS 4
-Set maximum number of concurrent downloads\. It should be used with the \-i option\. Default:
-\fI5\fR
+Set maximum number of parallel downloads\. Default:
+\fI1\fR
 .RE
 .PP
 \-\-load\-cookies=FILE
@@ -353,7 +355,7 @@ In multi file torrent, the adjacent files specified by this option may also be d
 .PP
 \-T, \-\-torrent\-file=TORRENT_FILE
 .RS 4
-The path to the \.torrent file\.
+The path to the \.torrent file\. You may not use this option because you can specify torrent file without \-T\.
 .RE
 .PP
 \-\-follow\-torrent=\fItrue\fR|\fIfalse\fR|\fImem\fR
@@ -465,7 +467,7 @@ If true is given, aria2 doesn\'t accept and establish connection with legacy Bit
 .PP
 \-M, \-\-metalink\-file=METALINK_FILE
 .RS 4
-The file path to \.metalink file\.
+The file path to \.metalink file\. You may not use this option because you can specify metalink file without \-M\.
 .RE
 .PP
 \-C, \-\-metalink\-servers=NUM_SERVERS
@@ -541,6 +543,12 @@ Make aria2 quite (no console output)\. Default:
 \fIfalse\fR
 .RE
 .PP
+\-\-async\-dns[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable asynchronous DNS\. Default:
+\fItrue\fR
+.RE
+.PP
 \-v, \-\-version
 .RS 4
 Print the version number, copyright and the configuration information and exit\.
@@ -560,9 +568,9 @@ Default:
 \fIbasic\fR
 .RE
 .PP
-URL
+URL, TORRENT_FILE, METALINK_FILE
 .RS 4
-You can specify multiple URLs\. Unless you specify \-Z option, all URLs must point to the same file or downloading will fail\. You can specify both torrent file with \-T option and URLs\. By doing this, download a file from both torrent swarm and HTTP(S)/FTP server at the same time, while the data from HTTP(S)/FTP are uploaded to the torrent swarm\. Note that only single file torrent can be integrated with HTTP(S)/FTP\.
+You can specify multiple URLs\. Unless you specify \-Z option, all URLs must point to the same file or downloading will fail\. You can also specify arbitrary number of torrent files and metalink files stored in a local drive\. Please note that they are always treated as a separate download\. You can specify both torrent file with \-T option and URLs\. By doing this, download a file from both torrent swarm and HTTP(S)/FTP server at the same time, while the data from HTTP(S)/FTP are uploaded to the torrent swarm\. Note that only single file torrent can be integrated with HTTP(S)/FTP\.
 .PP
 Note
 .RS 4
@@ -645,7 +653,7 @@ Download files listed in a file concurrently
 .sp
 .RS 4
 .nf
-aria2c \-ifiles\.txt \-j5
+aria2c \-ifiles\.txt \-j2
 .fi
 .RE
 .sp
@@ -654,7 +662,7 @@ aria2c \-ifiles\.txt \-j5
 .nr an-break-flag 1
 .br
 Note
-\-j option specifies the number of concurrent downloads\.
+\-j option specifies the number of parallel downloads\.
 .sp
 .RE
 .SS "Metalink Download"
@@ -682,7 +690,7 @@ Download using a local metalink file
 .sp
 .RS 4
 .nf
-aria2c \-p \-t10 \-\-lowest\-speed\-limit=4000 \-Mtest\.metalink
+aria2c \-p \-\-lowest\-speed\-limit=4000 file\.metalink
 .fi
 .RE
 .sp
@@ -699,12 +707,26 @@ To pause a download, press Ctrl\-C\. You can resume the transfer by run aria2c w
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
+Download several local metalink files
+.RS
+.sp
+.RS 4
+.nf
+aria2c \-j2 file1\.metalink file2\.metalink
+.fi
+.RE
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
 Download only selected files using index
 .RS
 .sp
 .RS 4
 .nf
-aria2c \-Mtest\.metalink \-\-select\-file=1\-4,8
+aria2c \-\-select\-file=1\-4,8 file\.metalink
 .fi
 .RE
 .sp
@@ -726,7 +748,7 @@ Download a file using a local .metalink file with user preference
 .sp
 .RS 4
 .nf
-aria2c \-Mtest\.metalink \-\-metalink\-location=JP,US \-\-metalink\-version=1\.1 \-\-metalink\-language=en\-US
+aria2c \-\-metalink\-location=JP,US \-\-metalink\-version=1\.1 \-\-metalink\-language=en\-US \-C2 file\.metalink
 .fi
 .RE
 .RE
@@ -755,7 +777,7 @@ Download using a local torrent file
 .sp
 .RS 4
 .nf
-aria2c \-\-max\-upload\-limit=40K \-Tfile\.torrent
+aria2c \-\-max\-upload\-limit=40K file\.torrent
 .fi
 .RE
 .sp
@@ -774,6 +796,20 @@ Note
 Note
 To pause a download, press Ctrl\-C\. You can resume the transfer by run aria2c with the same argument at the same directory\.
 .sp
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Download 2 torrents
+.RS
+.sp
+.RS 4
+.nf
+aria2c \-j2 file1\.torrent file2\.torrent
+.fi
+.RE
 .RE
 .sp
 .it 1 an-trap
@@ -807,7 +843,7 @@ Download only selected files using index(usually called "selectable download")
 .sp
 .RS 4
 .nf
-aria2c \-Ttest\.torrent \-\-select\-file=1\-4,8
+aria2c \-\-select\-file=1\-4,8 file\.torrent
 .fi
 .RE
 .sp
@@ -829,7 +865,7 @@ Change the listening port for incoming peer
 .sp
 .RS 4
 .nf
-aria2c \-Ttest\.torrent \-\-listen\-port=7000\-7001,8000
+aria2c \-\-listen\-port=7000\-7001,8000 file\.torrent
 .fi
 .RE
 .sp
@@ -851,7 +887,7 @@ Specify the condition to stop program after torrent download finished
 .sp
 .RS 4
 .nf
-aria2c \-Ttest\.torrent \-\-seed\-time=120 \-\-seed\-ratio=1\.0
+aria2c \-\-seed\-time=120 \-\-seed\-ratio=1\.0 file\.torrent
 .fi
 .RE
 .sp
@@ -873,7 +909,7 @@ Throttle upload speed
 .sp
 .RS 4
 .nf
-aria2c \-Ttest\.torrent \-\-max\-upload\-limit=100K
+aria2c \-\-max\-upload\-limit=100K file\.torrent
 .fi
 .RE
 .RE
@@ -887,7 +923,7 @@ Enable DHT
 .sp
 .RS 4
 .nf
-aria2c \-Ttest\.torrent \-\-enable\-dht \-\-dht\-listen\-port=6881
+aria2c \-\-enable\-dht \-\-dht\-listen\-port=6881 file\.torrent
 .fi
 .RE
 .sp
@@ -947,7 +983,7 @@ Throttle download speed
 .sp
 .RS 4
 .nf
-aria2c \-Mtest\.metalink \-\-max\-download\-limit=100K
+aria2c \-\-max\-download\-limit=100K file\.metalink
 .fi
 .RE
 .RE
@@ -961,7 +997,7 @@ Repair a damaged download using --check-integrity option
 .sp
 .RS 4
 .nf
-aria2c \-Mtest\.metalink \-\-check\-integrity=true
+aria2c \-\-check\-integrity=true file\.metalink
 .fi
 .RE
 .sp
@@ -983,7 +1019,7 @@ Drop connection if download speed is lower than specified value
 .sp
 .RS 4
 .nf
-aria2c \-Mtest\.metalink \-\-lowest\-speed\-limit=10K
+aria2c \-\-lowest\-speed\-limit=10K file\.metalink
 .fi
 .RE
 .RE
@@ -1033,6 +1069,20 @@ aria2c \-Z \-P http://host/image[A\-Z:2]\.png
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
+Parallel downloads of arbitrary number of URL,metalink,torrent
+.RS
+.sp
+.RS 4
+.nf
+aria2c \-j3 \-Z http://host/file1 file2\.torrent file3\.metalink
+.fi
+.RE
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
 BitTorrent Encryption
 .RS
 Encrypt whole payload using ARC4:
@@ -1040,7 +1090,7 @@ Encrypt whole payload using ARC4:
 .sp
 .RS 4
 .nf
-aria2c \-Tfile\.torrent \-\-bt\-min\-crypto\-level=arc4 \-\-bt\-require\-crypto=true
+aria2c \-\-bt\-min\-crypto\-level=arc4 \-\-bt\-require\-crypto=true file\.torrent
 .fi
 .RE
 .RE
@@ -1062,7 +1112,7 @@ You can seed downloaded file using \-\-check\-integrity=true option\.
 .sp
 .RS 4
 .nf
-aria2c \-\-check\-integrity=true \-T file\.torrent
+aria2c \-\-check\-integrity=true file\.torrent
 .fi
 .RE
 .SH "FILES"
@@ -1073,10 +1123,9 @@ User configuration file\. It must be placed under $HOME/\.aria2 and must be name
 .RS 4
 .nf
 # sample configuration file for aria2c
-file\-allocation=prealloc
 listen\-port=60000
 seed\-ratio=1\.0
-max\-upload\-limit=100K
+max\-upload\-limit=50K
 ftp\-pasv=true
 .fi
 .RE
