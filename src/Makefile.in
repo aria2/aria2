@@ -408,6 +408,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	NullStatCalc.h StringFormat.cc StringFormat.h \
 	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h \
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
+	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
 	AsyncNameResolver.cc AsyncNameResolver.h \
 	IteratableChunkChecksumValidator.cc \
 	IteratableChunkChecksumValidator.h \
@@ -787,7 +788,8 @@ am__objects_15 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	HelpItemFactory.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
 	TimedHaltCommand.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
 	StringFormat.$(OBJEXT) HttpNullDownloadCommand.$(OBJEXT) \
-	InitiateConnectionCommand.$(OBJEXT) $(am__objects_1) \
+	InitiateConnectionCommand.$(OBJEXT) \
+	FtpFinishDownloadCommand.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
@@ -1130,6 +1132,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	NullStatCalc.h StringFormat.cc StringFormat.h \
 	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h \
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
+	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
@@ -1374,6 +1377,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FinMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpDownloadCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpFinishDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpInitiateConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpNegotiationCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FtpTunnelRequestCommand.Po@am__quote@

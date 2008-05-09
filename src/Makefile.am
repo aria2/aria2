@@ -185,7 +185,8 @@ SRCS =  Socket.h\
 	NullStatCalc.h\
 	StringFormat.cc StringFormat.h\
 	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h\
-	InitiateConnectionCommand.cc InitiateConnectionCommand.h
+	InitiateConnectionCommand.cc InitiateConnectionCommand.h\
+	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h
 
 if ENABLE_ASYNC_DNS
 SRCS += AsyncNameResolver.cc AsyncNameResolver.h

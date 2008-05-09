@@ -178,13 +178,17 @@ bool DownloadCommand::prepareForNextSegment() {
 #endif // ENABLE_MESSAGE_DIGEST
     return true;
   } else {
-    SegmentHandle tempSegment = _segments.front();
-    SegmentHandle nextSegment =
-      _requestGroup->getSegmentMan()->getSegment(cuid,
-						 tempSegment->getIndex()+1);
-    if(!nextSegment.isNull() && nextSegment->getWrittenLength() == 0) {
-      e->commands.push_back(this);
-      return false;
+    if(_segments.size()) {
+      SegmentHandle tempSegment = _segments.front();
+      SegmentHandle nextSegment =
+	_requestGroup->getSegmentMan()->getSegment(cuid,
+						   tempSegment->getIndex()+1);
+      if(!nextSegment.isNull() && nextSegment->getWrittenLength() == 0) {
+	e->commands.push_back(this);
+	return false;
+      } else {
+	return prepareForRetry(0);
+      }
     } else {
       return prepareForRetry(0);
     }

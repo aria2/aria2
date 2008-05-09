@@ -43,7 +43,7 @@ class FtpConnection;
 class SocketCore;
 
 class FtpNegotiationCommand : public AbstractCommand {
-private:
+public:
   enum Seq {
     SEQ_RECV_GREETING,
     SEQ_SEND_USER,
@@ -72,6 +72,7 @@ private:
     SEQ_DOWNLOAD_ALREADY_COMPLETED,
     SEQ_FILE_PREPARATION
   };
+private:
   bool recvGreeting();
   bool sendUser();
   bool recvUser();
@@ -100,7 +101,7 @@ private:
   SharedHandle<SocketCore> dataSocket;
   SharedHandle<SocketCore> serverSocket;
   Seq sequence;
-  FtpConnection* ftp;
+  SharedHandle<FtpConnection> ftp;
 protected:
   virtual bool executeInternal();
 public:
@@ -108,7 +109,8 @@ public:
 			const SharedHandle<Request>& req,
 			RequestGroup* requestGroup,
 			DownloadEngine* e,
-			const SharedHandle<SocketCore>& s);
+			const SharedHandle<SocketCore>& s,
+			Seq seq = SEQ_RECV_GREETING);
   virtual ~FtpNegotiationCommand();
 };
 

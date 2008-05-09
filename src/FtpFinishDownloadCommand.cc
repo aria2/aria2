@@ -32,32 +32,71 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Command.h"
-#include "LogFactory.h"
+#include "FtpFinishDownloadCommand.h"
+#include "Request.h"
+#include "DownloadEngine.h"
+#include "prefs.h"
+#include "Option.h"
+#include "FtpConnection.h"
+#include "message.h"
+#include "StringFormat.h"
+#include "DlAbortEx.h"
+#include "SocketCore.h"
+#include "RequestGroup.h"
 #include "Logger.h"
 
 namespace aria2 {
 
-int32_t Command::uuidGen = 0;
-
-Command::Command(int32_t cuid):uuid(uuidGen++),
-			       status(STATUS_INACTIVE),
-			       cuid(cuid),
-			       logger(LogFactory::getInstance()) {}
-
-void Command::transitStatus()
+FtpFinishDownloadCommand::FtpFinishDownloadCommand
+(int cuid,
+ const RequestHandle& req,
+ RequestGroup* requestGroup,
+ const SharedHandle<FtpConnection>& ftpConnection,
+ DownloadEngine* e,
+ const SharedHandle<SocketCore>& socket)
+  :AbstractCommand(cuid, req, requestGroup, e, socket),
+   _ftpConnection(ftpConnection)
 {
-  switch(status) {
-  case STATUS_REALTIME:
-    break;
-  default:
-    status = STATUS_INACTIVE;
+  e->addSocketForReadCheck(socket, this);
+}
+
+FtpFinishDownloadCommand::~FtpFinishDownloadCommand()
+{
+  e->deleteSocketForReadCheck(socket, this);
+}
+
+// overrides AbstractCommand::execute().
+// AbstractCommand::_segments is empty.
+bool FtpFinishDownloadCommand::execute()
+{
+  if(_requestGroup->isHaltRequested()) {
+    return true;
+  }
+  try {
+    unsigned int status = _ftpConnection->receiveResponse();
+    if(status == 0) {
+      e->commands.push_back(this);
+      return false;
+    }
+    if(status != 226) {
+      throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
+    }
+    if(e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+      std::pair<std::string, uint16_t> peerInfo;
+      socket->getPeerInfo(peerInfo);
+      e->poolSocket(peerInfo.first, peerInfo.second, socket);
+    }
+  } catch(RecoverableException& e) {
+    logger->info(EX_EXCEPTION_CAUGHT, e);
+  }
+  if(_requestGroup->downloadFinished()) {
+    return true;
+  } else {
+    return prepareForRetry(0);
   }
 }
 
-void Command::setStatus(STATUS status)
-{
-  this->status = status;
-}
+// This function never be called.
+bool FtpFinishDownloadCommand::executeInternal() { return true; }
 
 } // namespace aria2

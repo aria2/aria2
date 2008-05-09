@@ -35,18 +35,47 @@
 #include "FtpDownloadCommand.h"
 #include "Request.h"
 #include "Socket.h"
+#include "Segment.h"
+#include "DownloadEngine.h"
+#include "RequestGroup.h"
+#include "prefs.h"
+#include "Option.h"
+#include "FtpFinishDownloadCommand.h"
+#include "FtpConnection.h"
+#include "Logger.h"
 
 namespace aria2 {
 
-FtpDownloadCommand::FtpDownloadCommand(int cuid,
-				       const RequestHandle& req,
-				       RequestGroup* requestGroup,
-				       DownloadEngine* e,
-				       const SocketHandle& dataSocket,
-				       const SocketHandle& ctrlSocket)
+FtpDownloadCommand::FtpDownloadCommand
+(int cuid,
+ const RequestHandle& req,
+ RequestGroup* requestGroup,
+ const SharedHandle<FtpConnection>& ftpConnection,
+ DownloadEngine* e,
+ const SocketHandle& dataSocket,
+ const SocketHandle& ctrlSocket)
   :DownloadCommand(cuid, req, requestGroup, e, dataSocket),
+   _ftpConnection(ftpConnection),
    ctrlSocket(ctrlSocket) {}
 
 FtpDownloadCommand::~FtpDownloadCommand() {}
+
+
+bool FtpDownloadCommand::prepareForNextSegment()
+{
+  if(e->option->getAsBool(PREF_FTP_REUSE_CONNECTION) &&
+     (uint64_t)_segments.front()->getPositionToWrite() == _requestGroup->getTotalLength()) {
+    Command* command = new FtpFinishDownloadCommand(cuid, req, _requestGroup, _ftpConnection, e, ctrlSocket);
+    e->commands.push_back(command);
+
+    if(_requestGroup->downloadFinished()) {
+      // To run checksum checking, we had to call following function here.
+      DownloadCommand::prepareForNextSegment();
+    }
+    return true;
+  } else {
+    return DownloadCommand::prepareForNextSegment();
+  }
+}
 
 } // namespace aria2

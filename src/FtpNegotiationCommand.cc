@@ -64,17 +64,16 @@ FtpNegotiationCommand::FtpNegotiationCommand(int32_t cuid,
 					     const RequestHandle& req,
 					     RequestGroup* requestGroup,
 					     DownloadEngine* e,
-					     const SocketHandle& s):
-  AbstractCommand(cuid, req, requestGroup, e, s), sequence(SEQ_RECV_GREETING)
+					     const SocketHandle& s,
+					     Seq seq):
+  AbstractCommand(cuid, req, requestGroup, e, s), sequence(seq),
+  ftp(new FtpConnection(cuid, socket, req, e->option))
 {
-  ftp = new FtpConnection(cuid, socket, req, e->option);
   disableReadCheckSocket();
   setWriteCheckSocket(socket);
 }
 
-FtpNegotiationCommand::~FtpNegotiationCommand() {
-  delete ftp;
-}
+FtpNegotiationCommand::~FtpNegotiationCommand() {}
 
 bool FtpNegotiationCommand::executeInternal() {
   while(processSequence(_segments.front()));
@@ -82,7 +81,7 @@ bool FtpNegotiationCommand::executeInternal() {
     return prepareForRetry(0);
   } else if(sequence == SEQ_NEGOTIATION_COMPLETED) {
     FtpDownloadCommand* command =
-      new FtpDownloadCommand(cuid, req, _requestGroup, e, dataSocket, socket);
+      new FtpDownloadCommand(cuid, req, _requestGroup, ftp, e, dataSocket, socket);
     command->setMaxDownloadSpeedLimit(e->option->getAsInt(PREF_MAX_DOWNLOAD_LIMIT));
     command->setStartupIdleTime(e->option->getAsInt(PREF_STARTUP_IDLE_TIME));
     command->setLowestDownloadSpeedLimit(e->option->getAsInt(PREF_LOWEST_SPEED_LIMIT));
@@ -242,6 +241,11 @@ bool FtpNegotiationCommand::recvSize() {
     BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
+      // We can pool socket here
+      std::pair<std::string, uint16_t> peerInfo;
+      socket->getPeerInfo(peerInfo);
+      e->poolSocket(peerInfo.first, peerInfo.second, socket);
+
       return false;
     }
     _requestGroup->loadAndOpenFile(infoFile);
@@ -250,6 +254,7 @@ bool FtpNegotiationCommand::recvSize() {
     
     sequence = SEQ_FILE_PREPARATION;
     disableReadCheckSocket();
+
     //setWriteCheckSocket(dataSocket);
 
     //e->noWait = true;

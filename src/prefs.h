@@ -146,6 +146,8 @@
 #  define V_TUNNEL "tunnel"
 // values: true | false
 #define PREF_FTP_PASV "ftp-pasv"
+// values: true | false
+#define PREF_FTP_REUSE_CONNECTION "ftp-reuse-connection"
 
 /**
  * HTTP related preferences

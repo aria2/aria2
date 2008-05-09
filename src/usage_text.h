@@ -338,3 +338,5 @@ _(" --header=HEADER              Append HEADER to HTTP request header. You can u
 _(" -q, --quiet[=true|false]     Make aria2 quite (no console output).")
 #define TEXT_ASYNC_DNS \
 _(" --async-dns[=true|false]     Enable asynchronous DNS.")
+#define TEXT_FTP_REUSE_CONNECTION \
+_(" --ftp-reuse-connection[=true|false] Reuse connection in FTP.")

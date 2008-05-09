@@ -32,32 +32,33 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "Command.h"
-#include "LogFactory.h"
-#include "Logger.h"
+#ifndef _D_FTP_FINISH_DOWNLOAD_COMMAND_H_
+#define _D_FTP_FINISH_DOWNLOAD_COMMAND_H_
+
+#include "AbstractCommand.h"
 
 namespace aria2 {
 
-int32_t Command::uuidGen = 0;
+class FtpConnection;
 
-Command::Command(int32_t cuid):uuid(uuidGen++),
-			       status(STATUS_INACTIVE),
-			       cuid(cuid),
-			       logger(LogFactory::getInstance()) {}
+class FtpFinishDownloadCommand : public AbstractCommand {
+private:
+  SharedHandle<FtpConnection> _ftpConnection;
+protected:
+  virtual bool execute();
 
-void Command::transitStatus()
-{
-  switch(status) {
-  case STATUS_REALTIME:
-    break;
-  default:
-    status = STATUS_INACTIVE;
-  }
-}
+  virtual bool executeInternal();
+public:
+  FtpFinishDownloadCommand(int cuid,
+			   const SharedHandle<Request>& req,
+			   RequestGroup* requestGroup,
+			   const SharedHandle<FtpConnection>& ftpConnection,
+			   DownloadEngine* e,
+			   const SharedHandle<SocketCore>& socket);
 
-void Command::setStatus(STATUS status)
-{
-  this->status = status;
-}
+  virtual ~FtpFinishDownloadCommand();
+};
 
 } // namespace aria2
+
+#endif // _D_FTP_FINISH_DOWNLOAD_COMMAND_H_

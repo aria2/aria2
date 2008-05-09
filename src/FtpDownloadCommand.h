@@ -39,15 +39,20 @@
 
 namespace aria2 {
 
-class SocketCore;
+class FtpConnection;
 
 class FtpDownloadCommand : public DownloadCommand {
 private:
+  SharedHandle<FtpConnection> _ftpConnection;
+
   SharedHandle<SocketCore> ctrlSocket;
+protected:
+  virtual bool prepareForNextSegment();
 public:
   FtpDownloadCommand(int cuid,
 		     const SharedHandle<Request>& req,
 		     RequestGroup* requestGroup,
+		     const SharedHandle<FtpConnection>& ftpConnection,
 		     DownloadEngine* e,
 		     const SharedHandle<SocketCore>& dataSocket,
 		     const SharedHandle<SocketCore>& ctrlSocket);
