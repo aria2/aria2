@@ -117,10 +117,9 @@ static void executeCommand(std::deque<Command*>& commands,
     Command* com = commands.front();
     commands.pop_front();
     if(com->statusMatch(statusFilter)) {
+      com->transitStatus();
       if(com->execute()) {
 	delete com;
-      } else {
-	com->transitStatus();
       }
     } else {
       commands.push_back(com);
