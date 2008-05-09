@@ -74,13 +74,7 @@ void showVersion() {
 }
 
 void showUsage(const std::string& category, const Option* option) {
-  std::cout << StringFormat(_("Usage: %s [options] URL ...\n"), PACKAGE_NAME)
-#ifdef ENABLE_BITTORRENT
-	    << StringFormat(_("       %s [options] -T TORRENT_FILE URL ...\n"), PACKAGE_NAME)
-#endif // ENABLE_BITTORRENT
-#ifdef ENABLE_METALINK
-	    << StringFormat(_("       %s [options] -M METALINK_FILE\n"), PACKAGE_NAME)
-#endif // ENABLE_METALINK
+  std::cout << StringFormat(_("Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ...\n"), PACKAGE_NAME)
 	    << "\n";
 
   SharedHandle<TagContainer> tc = HelpItemFactory::createHelpItems(option);
@@ -116,9 +110,14 @@ void showUsage(const std::string& category, const Option* option) {
   }
   if(category == TAG_BASIC) {
     std::cout << "\n"
-	      << "URL:" << "\n"
+	      << "URL, TORRENT_FILE, METALINK_FILE:" << "\n"
 	      << _(" You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 		   " point to the same file or downloading will fail.") << "\n"
+	      << _(" You can also specify arbitrary number of torrent files and metalink files\n"
+		   " stored in a local drive. Please note that they are always treated as a\n"
+		   " separate download.") << "\n"
+
+	      << "\n"
 	      << _(" You can specify both torrent file with -T option and URLs. By doing this,\n"
 		   " download a file from both torrent swarm and http/ftp server at the same time,\n"
 		   " while the data from http/ftp are uploaded to the torrent swarm. Note that\n"
