@@ -84,7 +84,7 @@ void IteratableChecksumValidator::validateChunk()
 
 bool IteratableChecksumValidator::finished() const
 {
-  if((uint16_t)_currentOffset >= _dctx->getTotalLength()) {
+  if((uint64_t)_currentOffset >= _dctx->getTotalLength()) {
     _pieceStorage->getDiskAdaptor()->disableDirectIO();
     return true;
   } else {
