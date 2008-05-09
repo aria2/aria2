@@ -491,13 +491,6 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, unsigned int numComm
 	req->setReferer(_option->get(PREF_REFERER));
 	req->setMethod(method);
 
-	if(_option->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
-	  req->setKeepAliveHint(true);
-	}
-	if(_option->getAsBool(PREF_ENABLE_HTTP_PIPELINING)) {
-	  req->setPipeliningHint(true);
-	}
-
 	Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(), req, this, e);
 	ServerHostHandle sv(new ServerHost(command->getCuid(), req->getHost()));
 	registerServerHost(sv);

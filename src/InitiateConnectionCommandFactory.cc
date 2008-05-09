@@ -40,6 +40,8 @@
 #include "DownloadEngine.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "Option.h"
+#include "prefs.h"
 
 namespace aria2 {
 
@@ -51,6 +53,14 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, 
      || req->getProtocol() == "https"
 #endif // ENABLE_SSL
      ) {
+    
+    if(e->option->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
+      req->setKeepAliveHint(true);
+    }
+    if(e->option->getAsBool(PREF_ENABLE_HTTP_PIPELINING)) {
+      req->setPipeliningHint(true);
+    }
+
     return new HttpInitiateConnectionCommand(cuid, req, requestGroup, e);
   } else if(req->getProtocol() == "ftp") {
     return new FtpInitiateConnectionCommand(cuid, req, requestGroup, e);
