@@ -1,5 +1,10 @@
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Move \n out of the message "Usage: ...".
+	* src/version_usage.cc
+
+2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.13.2b.
 	* configure.ac
 

@@ -74,7 +74,7 @@ void showVersion() {
 }
 
 void showUsage(const std::string& category, const Option* option) {
-  std::cout << StringFormat(_("Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ...\n"), PACKAGE_NAME)
+  std::cout << StringFormat(_("Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."), PACKAGE_NAME) << "\n"
 	    << "\n";
 
   SharedHandle<TagContainer> tc = HelpItemFactory::createHelpItems(option);
