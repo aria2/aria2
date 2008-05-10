@@ -282,11 +282,7 @@ bool AbstractCommand::asyncResolveHostname()
 {
   switch(_asyncNameResolver->getStatus()) {
   case AsyncNameResolver::STATUS_SUCCESS:
-    logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
-		 _asyncNameResolver->getHostname().c_str(),
-		 _asyncNameResolver->getResolvedAddresses().front().c_str());
     return true;
-    break;
   case AsyncNameResolver::STATUS_ERROR:
     throw DlAbortEx(StringFormat(MSG_NAME_RESOLUTION_FAILED, cuid,
 				 _asyncNameResolver->getHostname().c_str(),

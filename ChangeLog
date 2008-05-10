@@ -1,5 +1,10 @@
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed duplicate log message.
+	* src/AbstractCommand.cc (asyncResolveHostname)
+
+2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated man page: --async-dns and --ftp-reuse-connection were added.
 	Changed -j option's default value from 5 to 1.
 	Added new examples using protocol auto detection feature.
