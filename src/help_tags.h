@@ -41,5 +41,6 @@
 #define TAG_FTP "ftp"
 #define TAG_METALINK "metalink"
 #define TAG_BITTORRENT "bittorrent"
+#define TAG_HELP "help"
 
 #endif // _D_HELP_TAGS_H_

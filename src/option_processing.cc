@@ -517,6 +517,7 @@ Option* option_processing(int argc, char* const argv[])
 	exit(EXIT_SUCCESS);
       }
     default:
+      showUsage(TAG_HELP, op);
       exit(EXIT_FAILURE);
     }
   }
@@ -549,6 +550,7 @@ Option* option_processing(int argc, char* const argv[])
       oparser.parse(op, cmdstream);
     } catch(Exception& e) {
       std::cerr << e.stackTrace() << std::endl;
+      showUsage(TAG_HELP, op);
       exit(EXIT_FAILURE);
     }
   }
@@ -568,6 +570,7 @@ Option* option_processing(int argc, char* const argv[])
      !op->defined(PREF_INPUT_FILE)) {
     if(optind == argc) {
       std::cerr << MSG_URI_REQUIRED << std::endl;
+      showUsage(TAG_HELP, op);
       exit(EXIT_FAILURE);
     }
   }

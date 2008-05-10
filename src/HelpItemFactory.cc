@@ -473,8 +473,9 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
   {
     HelpItemHandle item(new HelpItem("help", TEXT_HELP, TAG_BASIC));
     item->setAvailableValues
-      (StringFormat("%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT).str());
+      (StringFormat("%s,%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT,TAG_HELP).str());
     item->addTag(TAG_BASIC);
+    item->addTag(TAG_HELP);
     tc->addItem(item);
   }
   return tc;

@@ -1,5 +1,13 @@
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Print usage when no URL is specifed or bad command-line option is
+	specified.
+	* src/HelpItemFactory.cc
+	* src/help_tags.h
+	* src/option_processing.cc
+
+2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed duplicate log message.
 	* src/AbstractCommand.cc (asyncResolveHostname)
 
