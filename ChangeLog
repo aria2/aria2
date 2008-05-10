@@ -1,5 +1,12 @@
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Added const qualifier to argument Exception& e.
+	* src/Logger.h
+	* src/SimpleLogger.cc
+	* src/SimpleLogger.h
+	
+2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Pool connection when CWD, SIZE command fails.
 	* src/FtpNegotiationCommand.cc
 	* src/FtpNegotiationCommand.h

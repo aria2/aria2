@@ -66,15 +66,15 @@ public:
   void openFile(const std::string& filename);
   void closeFile();
   virtual void debug(const char* msg, ...);
-  virtual void debug(const char* msg, Exception& ex, ...);
+  virtual void debug(const char* msg, const Exception& ex, ...);
   virtual void info(const char* msg, ...);
-  virtual void info(const char* msg, Exception& ex, ...);
+  virtual void info(const char* msg, const Exception& ex, ...);
   virtual void notice(const char* msg, ...);
-  virtual void notice(const char* msg, Exception& ex, ...);
+  virtual void notice(const char* msg, const Exception& ex, ...);
   virtual void warn(const char* msg, ...);
-  virtual void warn(const char* msg, Exception& ex, ...);
+  virtual void warn(const char* msg, const Exception& ex, ...);
   virtual void error(const char* msg, ...);
-  virtual void error(const char* msg, Exception& ex, ...);
+  virtual void error(const char* msg, const Exception& ex, ...);
 
   void setStdout(Logger::LEVEL level, bool enabled);
 };

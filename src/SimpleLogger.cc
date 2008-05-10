@@ -176,7 +176,7 @@ void SimpleLogger::debug(const char* msg, ...) {
   WRITE_LOG(DEBUG, msg);
 }
 
-void SimpleLogger::debug(const char* msg, Exception& e, ...) {
+void SimpleLogger::debug(const char* msg, const Exception& e, ...) {
   WRITE_LOG_EX(DEBUG, msg, e);
 }
 
@@ -184,7 +184,7 @@ void SimpleLogger::info(const char* msg, ...) {
   WRITE_LOG(INFO, msg);
 }
 
-void SimpleLogger::info(const char* msg, Exception& e, ...) {
+void SimpleLogger::info(const char* msg, const Exception& e, ...) {
   WRITE_LOG_EX(INFO, msg, e);
 }
 
@@ -192,7 +192,7 @@ void SimpleLogger::notice(const char* msg, ...) {
   WRITE_LOG(NOTICE, msg);
 }
 
-void SimpleLogger::notice(const char* msg, Exception& e, ...) {
+void SimpleLogger::notice(const char* msg, const Exception& e, ...) {
   WRITE_LOG_EX(INFO, msg, e);
 }
 
@@ -200,7 +200,7 @@ void SimpleLogger::warn(const char* msg, ...) {
   WRITE_LOG(WARN, msg);
 }
 
-void SimpleLogger::warn(const char* msg, Exception& e, ...) {
+void SimpleLogger::warn(const char* msg, const Exception& e, ...) {
   WRITE_LOG_EX(WARN, msg, e);
 }
 
@@ -208,7 +208,7 @@ void SimpleLogger::error(const char* msg, ...) {
   WRITE_LOG(ERROR, msg);
 }
 
-void SimpleLogger::error(const char* msg, Exception& e, ...) {
+void SimpleLogger::error(const char* msg, const Exception& e, ...) {
   WRITE_LOG_EX(ERROR, msg, e);
 }
 
