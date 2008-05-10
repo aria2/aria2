@@ -32,8 +32,8 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_HTTP_NULL_DOWNLOAD_COMMAND_H_
-#define _D_HTTP_NULL_DOWNLOAD_COMMAND_H_
+#ifndef _D_HTTP_SKIP_RESPONSE_COMMAND_H_
+#define _D_HTTP_SKIP_RESPONSE_COMMAND_H_
 
 #include "AbstractCommand.h"
 
@@ -43,7 +43,7 @@ class HttpConnection;
 class HttpResponse;
 class TransferEncoding;
 
-class HttpNullDownloadCommand : public AbstractCommand {
+class HttpSkipResponseCommand : public AbstractCommand {
 private:
   SharedHandle<HttpConnection> _httpConnection;
 
@@ -59,7 +59,7 @@ private:
 protected:
   virtual bool executeInternal();
 public:
-  HttpNullDownloadCommand(int cuid,
+  HttpSkipResponseCommand(int cuid,
 			  const SharedHandle<Request>& req,
 			  RequestGroup* requestGroup,
 			  const SharedHandle<HttpConnection>& httpConnection,
@@ -67,11 +67,11 @@ public:
 			  DownloadEngine* e,
 			  const SharedHandle<SocketCore>& s);
 
-  virtual ~HttpNullDownloadCommand();
+  virtual ~HttpSkipResponseCommand();
 
   void setTransferDecoder(const SharedHandle<TransferEncoding>& transferDecoder);
 };
 
 } // namespace aria2
 
-#endif // _D_HTTP_NULL_DOWNLOAD_COMMAND_H_
+#endif // _D_HTTP_SKIP_RESPONSE_COMMAND_H_

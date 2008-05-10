@@ -60,7 +60,7 @@
 #include "message.h"
 #include "prefs.h"
 #include "StringFormat.h"
-#include "HttpNullDownloadCommand.h"
+#include "HttpSkipResponseCommand.h"
 
 namespace aria2 {
 
@@ -197,7 +197,7 @@ bool HttpResponseCommand::skipResponseBody
 (const SharedHandle<HttpResponse>& httpResponse)
 {
   SharedHandle<TransferEncoding> enc(getTransferEncoding(httpResponse));
-  HttpNullDownloadCommand* command = new HttpNullDownloadCommand
+  HttpSkipResponseCommand* command = new HttpSkipResponseCommand
     (cuid, req, _requestGroup, httpConnection, httpResponse, e, socket);
   command->setTransferDecoder(enc);
 

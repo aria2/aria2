@@ -1,5 +1,12 @@
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Renamed HttpNullDownloadCommand as HttpSkipResponseCommand
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+	* src/HttpSkipResponseCommand.h
+
+2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Pool connection when a server returns 4xx, 5xx responses.
 	* src/HttpNullDownloadCommand.cc
 	* src/HttpNullDownloadCommand.h

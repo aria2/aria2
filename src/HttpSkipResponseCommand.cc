@@ -32,7 +32,7 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "HttpNullDownloadCommand.h"
+#include "HttpSkipResponseCommand.h"
 #include "HttpConnection.h"
 #include "HttpResponse.h"
 #include "message.h"
@@ -50,7 +50,7 @@
 
 namespace aria2 {
 
-HttpNullDownloadCommand::HttpNullDownloadCommand
+HttpSkipResponseCommand::HttpSkipResponseCommand
 (int cuid,
  const SharedHandle<Request>& req,
  RequestGroup* requestGroup,
@@ -65,15 +65,15 @@ HttpNullDownloadCommand::HttpNullDownloadCommand
   _receivedBytes(0)
 {}
 
-HttpNullDownloadCommand::~HttpNullDownloadCommand() {}
+HttpSkipResponseCommand::~HttpSkipResponseCommand() {}
 
-void HttpNullDownloadCommand::setTransferDecoder
+void HttpSkipResponseCommand::setTransferDecoder
 (const SharedHandle<TransferEncoding>& transferDecoder)
 {
   _transferDecoder = transferDecoder;
 }
 
-bool HttpNullDownloadCommand::executeInternal()
+bool HttpSkipResponseCommand::executeInternal()
 {
   if(_totalLength == 0 && _transferDecoder.isNull()) {
     return processResponse();
@@ -122,7 +122,7 @@ bool HttpNullDownloadCommand::executeInternal()
   }
 }
 
-bool HttpNullDownloadCommand::processResponse()
+bool HttpSkipResponseCommand::processResponse()
 {
   if(_httpResponse->isRedirect()) {
     _httpResponse->processRedirect();

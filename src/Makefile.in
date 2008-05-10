@@ -406,7 +406,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.h \
 	usage_text.h ProtocolDetector.cc ProtocolDetector.h \
 	NullStatCalc.h StringFormat.cc StringFormat.h \
-	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h \
+	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h \
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
 	AsyncNameResolver.cc AsyncNameResolver.h \
@@ -787,7 +787,7 @@ am__objects_15 = SocketCore.$(OBJEXT) Command.$(OBJEXT) \
 	HelpItem.$(OBJEXT) TaggedItem.$(OBJEXT) TagContainer.$(OBJEXT) \
 	HelpItemFactory.$(OBJEXT) SingleFileDownloadContext.$(OBJEXT) \
 	TimedHaltCommand.$(OBJEXT) ProtocolDetector.$(OBJEXT) \
-	StringFormat.$(OBJEXT) HttpNullDownloadCommand.$(OBJEXT) \
+	StringFormat.$(OBJEXT) HttpSkipResponseCommand.$(OBJEXT) \
 	InitiateConnectionCommand.$(OBJEXT) \
 	FtpFinishDownloadCommand.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
@@ -1130,7 +1130,7 @@ SRCS = Socket.h SocketCore.cc SocketCore.h BinaryStream.h Command.cc \
 	a2netcompat.h a2time.h array_fun.h help_tags.h prefs.h \
 	usage_text.h ProtocolDetector.cc ProtocolDetector.h \
 	NullStatCalc.h StringFormat.cc StringFormat.h \
-	HttpNullDownloadCommand.cc HttpNullDownloadCommand.h \
+	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h \
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h \
 	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
@@ -1393,13 +1393,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpHeaderProcessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpInitiateConnectionCommand.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpNullDownloadCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpProxyResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpRequestCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpResponseCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HttpSkipResponseCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitialMetalinkParserState.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InitiateConnectionCommandFactory.Po@am__quote@
