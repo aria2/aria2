@@ -50,7 +50,7 @@ private:
 
   bool handleDefaultEncoding(const SharedHandle<HttpResponse>& httpResponse);
   bool handleOtherEncoding(const SharedHandle<HttpResponse>& httpResponse);
-  bool handleRedirect(const SharedHandle<HttpResponse>& httpResponse);
+  bool skipResponseBody(const SharedHandle<HttpResponse>& httpResponse);
 
   HttpDownloadCommand* createHttpDownloadCommand(const SharedHandle<HttpResponse>& httpResponse);
 protected:

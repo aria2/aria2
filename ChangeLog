@@ -1,5 +1,16 @@
 2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Pool connection when a server returns 4xx, 5xx responses.
+	* src/HttpNullDownloadCommand.cc
+	* src/HttpNullDownloadCommand.h
+	* src/HttpResponse.cc
+	* src/HttpResponse.h
+	* src/HttpResponseCommand.cc
+	* src/HttpResponseCommand.h
+	* test/HttpResponseTest.cc
+
+2008-05-10  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Print usage when no URL is specifed or bad command-line option is
 	specified.
 	* src/HelpItemFactory.cc

@@ -33,6 +33,7 @@ class HttpResponseTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testValidateResponse_good_range);
   CPPUNIT_TEST(testValidateResponse_bad_range);
   CPPUNIT_TEST(testValidateResponse_chunked);
+  CPPUNIT_TEST(testHasRetryAfter);
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -57,6 +58,7 @@ public:
   void testValidateResponse_good_range();
   void testValidateResponse_bad_range();
   void testValidateResponse_chunked();
+  void testHasRetryAfter();
 };
 
 
@@ -241,24 +243,8 @@ void HttpResponseTest::testGetTransferDecoder()
 void HttpResponseTest::testValidateResponse()
 {
   HttpResponse httpResponse;
-
   SharedHandle<HttpHeader> httpHeader(new HttpHeader());
-  httpHeader->setResponseStatus("401");
   httpResponse.setHttpHeader(httpHeader);
-
-  try {
-    httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
-
-  httpHeader->setResponseStatus("505");
-
-  try {
-    httpResponse.validateResponse();
-    CPPUNIT_FAIL("exception must be thrown.");
-  } catch(Exception& e) {
-  }
 
   httpHeader->setResponseStatus("304");
 
@@ -269,7 +255,6 @@ void HttpResponseTest::testValidateResponse()
   }
 
   httpHeader->put("Location", "http://localhost/archives/aria2-1.0.0.tar.bz2");
-
   try {
     httpResponse.validateResponse();
   } catch(Exception& e) {
@@ -350,6 +335,18 @@ void HttpResponseTest::testValidateResponse_chunked()
   } catch(Exception& e) {
     CPPUNIT_FAIL("exception must not be thrown.");
   }
+}
+
+void HttpResponseTest::testHasRetryAfter()
+{
+  HttpResponse httpResponse;
+  SharedHandle<HttpHeader> httpHeader(new HttpHeader());
+  httpResponse.setHttpHeader(httpHeader);
+
+  httpHeader->put("Retry-After", "60");
+
+  CPPUNIT_ASSERT(httpResponse.hasRetryAfter());
+  CPPUNIT_ASSERT_EQUAL((time_t)60, httpResponse.getRetryAfter());
 }
 
 } // namespace aria2

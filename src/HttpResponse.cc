@@ -59,15 +59,8 @@ HttpResponse::~HttpResponse() {}
 void HttpResponse::validateResponse() const
 {
   const std::string& status = getResponseStatus();
-  if(status == "401") {
-    throw DlAbortEx(EX_AUTH_FAILED);
-  }
-  if(status == "404") {
-    throw DlAbortEx(MSG_RESOURCE_NOT_FOUND);
-  }
   if(status >= "400") {
-    throw DlAbortEx
-      (StringFormat(EX_BAD_STATUS, Util::parseUInt(status)).str());
+    return;
   }
   if(status >= "300") {
     if(!httpHeader->defined("Location")) {
@@ -205,6 +198,16 @@ SharedHandle<HttpRequest> HttpResponse::getHttpRequest() const
 const std::string& HttpResponse::getResponseStatus() const
 {
   return httpHeader->getResponseStatus();
+}
+
+bool HttpResponse::hasRetryAfter() const
+{
+  return httpHeader->defined("Retry-After");
+}
+
+time_t HttpResponse::getRetryAfter() const
+{
+  return httpHeader->getFirstAsUInt("Retry-After");
 }
 
 } // namespace aria2

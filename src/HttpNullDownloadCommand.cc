@@ -44,6 +44,9 @@
 #include "Logger.h"
 #include "HttpRequest.h"
 #include "Segment.h"
+#include "Util.h"
+#include "StringFormat.h"
+#include "DlAbortEx.h"
 
 namespace aria2 {
 
@@ -72,21 +75,30 @@ void HttpNullDownloadCommand::setTransferDecoder
 
 bool HttpNullDownloadCommand::executeInternal()
 {
+  if(_totalLength == 0 && _transferDecoder.isNull()) {
+    return processResponse();
+  }
   const size_t BUFSIZE = 16*1024;
   unsigned char buf[BUFSIZE];
   size_t bufSize = BUFSIZE;
-  socket->readData(buf, bufSize);
 
-  if(_transferDecoder.isNull()) {
-    _receivedBytes += bufSize;
-  } else {
-    // _receivedBytes is not updated if transferEncoding is set.
-    size_t infbufSize = 16*1024;
-    unsigned char infbuf[infbufSize];
-    _transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
-  }
-  if(_totalLength != 0 && bufSize == 0) {
-    throw DlRetryEx(EX_GOT_EOF);
+  try {
+    socket->readData(buf, bufSize);
+
+    if(_transferDecoder.isNull()) {
+      _receivedBytes += bufSize;
+    } else {
+      // _receivedBytes is not updated if transferEncoding is set.
+      size_t infbufSize = 16*1024;
+      unsigned char infbuf[infbufSize];
+      _transferDecoder->inflate(infbuf, infbufSize, buf, bufSize);
+    }
+    if(_totalLength != 0 && bufSize == 0) {
+      throw DlRetryEx(EX_GOT_EOF);
+    }
+  } catch(RecoverableException& e) {
+    logger->debug(EX_EXCEPTION_CAUGHT, e);
+    return processResponse();
   }
 
   if(bufSize == 0) {
@@ -103,12 +115,31 @@ bool HttpNullDownloadCommand::executeInternal()
       socket->getPeerInfo(peerInfo);
       e->poolSocket(peerInfo.first, peerInfo.second, socket);
     }
-    _httpResponse->processRedirect();
-    logger->info(MSG_REDIRECT, cuid, _httpResponse->getRedirectURI().c_str());
-    return prepareForRetry(0);
+    return processResponse();
   } else {
     e->commands.push_back(this);
     return false;
+  }
+}
+
+bool HttpNullDownloadCommand::processResponse()
+{
+  if(_httpResponse->isRedirect()) {
+    _httpResponse->processRedirect();
+    logger->info(MSG_REDIRECT, cuid, _httpResponse->getRedirectURI().c_str());
+    return prepareForRetry(0);
+  } else if(_httpResponse->hasRetryAfter()) {
+    return prepareForRetry(_httpResponse->getRetryAfter());
+  } else if(_httpResponse->getResponseStatus() >= "400") {
+    if(_httpResponse->getResponseStatus() == "401") {
+      throw DlAbortEx(EX_AUTH_FAILED);
+    }else if(_httpResponse->getResponseStatus() == "404") {
+      throw DlAbortEx(MSG_RESOURCE_NOT_FOUND);
+    } else {
+      throw DlAbortEx(StringFormat(EX_BAD_STATUS, Util::parseUInt(_httpResponse->getResponseStatus())).str());
+    }
+  } else {
+    return prepareForRetry(0);
   }
 }
 

@@ -54,6 +54,8 @@ private:
   uint64_t _totalLength;
 
   uint64_t _receivedBytes;
+
+  bool processResponse();
 protected:
   virtual bool executeInternal();
 public:

@@ -87,27 +87,11 @@ bool HttpResponseCommand::executeInternal()
   // check HTTP status number
   httpResponse->validateResponse();
   httpResponse->retrieveCookie();
-  // check whether Location header exists. If it does, update request object
-  // with redirected URL.
-  if(httpResponse->isRedirect()) {
-    // To reuse a connection, a response body must be received.
-    if(req->supportsPersistentConnection() &&
-       (httpResponse->getEntityLength() > 0 ||
-	httpResponse->isTransferEncodingSpecified())) {
-      return handleRedirect(httpResponse);
-    } else {
-      // Response body is 0 length or a response header shows that a persistent
-      // connection is not enabled.
-      if(req->supportsPersistentConnection()) {
-	std::pair<std::string, uint16_t> peerInfo;
-	socket->getPeerInfo(peerInfo);
-	e->poolSocket(peerInfo.first, peerInfo.second, socket);
-      }
-      httpResponse->processRedirect();
-      logger->info(MSG_REDIRECT, cuid, httpResponse->getRedirectURI().c_str());
-      return prepareForRetry(0);
-    }
+
+  if(httpResponse->getResponseStatus() >= "300") {
+    return skipResponseBody(httpResponse);
   }
+
   if(!_requestGroup->isSingleHostMultiConnectionEnabled()) {
     _requestGroup->removeURIWhoseHostnameIs(_requestGroup->searchServerHost(cuid)->getHostname());
   }
@@ -209,13 +193,22 @@ static SharedHandle<TransferEncoding> getTransferEncoding
   return enc;
 }
 
-bool HttpResponseCommand::handleRedirect
+bool HttpResponseCommand::skipResponseBody
 (const SharedHandle<HttpResponse>& httpResponse)
 {
   SharedHandle<TransferEncoding> enc(getTransferEncoding(httpResponse));
   HttpNullDownloadCommand* command = new HttpNullDownloadCommand
     (cuid, req, _requestGroup, httpConnection, httpResponse, e, socket);
   command->setTransferDecoder(enc);
+
+  // If the response body is zero-length, set command's status to real time
+  // so that avoid read check blocking
+  if(httpResponse->getEntityLength() == 0 &&
+     !httpResponse->isTransferEncodingSpecified()) {
+    command->setStatusRealtime();
+    e->setNoWait(true);
+  }
+
   e->commands.push_back(command);
   return true;
 }

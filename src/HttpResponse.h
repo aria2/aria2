@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "a2time.h"
 #include <stdint.h>
 
 namespace aria2 {
@@ -104,6 +105,10 @@ public:
   {
     this->cuid = cuid;
   }
+
+  bool hasRetryAfter() const;
+
+  time_t getRetryAfter() const;
 };
 
 typedef SharedHandle<HttpResponse> HttpResponseHandle;
