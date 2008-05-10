@@ -98,6 +98,8 @@ private:
 
   void afterFileAllocation();
 
+  void poolConnection() const;
+
   SharedHandle<SocketCore> dataSocket;
   SharedHandle<SocketCore> serverSocket;
   Seq sequence;

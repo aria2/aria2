@@ -193,6 +193,7 @@ bool FtpNegotiationCommand::recvCwd() {
     return false;
   }
   if(status != 250) {
+    poolConnection();
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   sequence = SEQ_SEND_SIZE;
@@ -212,6 +213,7 @@ bool FtpNegotiationCommand::recvSize() {
     return false;
   }
   if(status != 213) {
+    poolConnection();
     throw DlAbortEx(StringFormat(EX_BAD_STATUS, status).str());
   }
   if(size > INT64_MAX) {
@@ -241,10 +243,8 @@ bool FtpNegotiationCommand::recvSize() {
     BtProgressInfoFileHandle infoFile(new DefaultBtProgressInfoFile(_requestGroup->getDownloadContext(), _requestGroup->getPieceStorage(), e->option));
     if(!infoFile->exists() && _requestGroup->downloadFinishedByFileLength()) {
       sequence = SEQ_DOWNLOAD_ALREADY_COMPLETED;
-      // We can pool socket here
-      std::pair<std::string, uint16_t> peerInfo;
-      socket->getPeerInfo(peerInfo);
-      e->poolSocket(peerInfo.first, peerInfo.second, socket);
+
+      poolConnection();
 
       return false;
     }
@@ -434,6 +434,15 @@ bool FtpNegotiationCommand::processSequence(const SegmentHandle& segment) {
     abort();
   }
   return doNextSequence;
+}
+
+void FtpNegotiationCommand::poolConnection() const
+{
+  if(e->option->getAsBool(PREF_FTP_REUSE_CONNECTION)) {
+    std::pair<std::string, uint16_t> peerInfo;
+    socket->getPeerInfo(peerInfo);
+    e->poolSocket(peerInfo.first, peerInfo.second, socket);
+  }
 }
 
 } // namespace aria2
