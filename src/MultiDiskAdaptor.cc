@@ -42,6 +42,7 @@
 #include "DlAbortEx.h"
 #include "File.h"
 #include "StringFormat.h"
+#include <algorithm>
 
 namespace aria2 {
 
@@ -183,41 +184,14 @@ void MultiDiskAdaptor::onDownloadComplete()
   openFile();
 }
 
-void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
-				 off_t offset)
-{
-  off_t fileOffset = offset;
-  bool writing = false;
-  size_t rem = len;
-  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end() && rem != 0; itr++) {
-    if(isInRange(*itr, offset) || writing) {
-      size_t writeLength = calculateLength(*itr, fileOffset, rem);
-      (*itr)->getDiskWriter()->writeData(data+(len-rem), writeLength, fileOffset);
-      rem -= writeLength;
-      writing = true;
-      fileOffset = 0;
-    } else {
-      fileOffset -= (*itr)->getFileEntry()->getLength();
-    }
-  }
-  if(!writing) {
-    throw DlAbortEx
-      (StringFormat(EX_FILE_OFFSET_OUT_OF_RANGE,
-		    Util::itos(offset, true).c_str()).str());
-  }
-}
-
-bool MultiDiskAdaptor::isInRange(const DiskWriterEntryHandle entry,
-				 off_t offset) const
+static bool isInRange(const DiskWriterEntryHandle entry, off_t offset)
 {
   return entry->getFileEntry()->getOffset() <= offset &&
     (uint64_t)offset < entry->getFileEntry()->getOffset()+entry->getFileEntry()->getLength();
 }
 
-size_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
-					 off_t fileOffset,
-					 size_t rem) const
+static size_t calculateLength(const DiskWriterEntryHandle entry,
+			      off_t fileOffset, size_t rem)
 {
   size_t length;
   if(entry->getFileEntry()->getLength() < (uint64_t)fileOffset+rem) {
@@ -228,28 +202,66 @@ size_t MultiDiskAdaptor::calculateLength(const DiskWriterEntryHandle entry,
   return length;
 }
 
-ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset)
-{
-  off_t fileOffset = offset;
-  bool reading = false;
-  size_t rem = len;
-  size_t totalReadLength = 0;
-  for(DiskWriterEntries::iterator itr = diskWriterEntries.begin();
-      itr != diskWriterEntries.end() && rem != 0; itr++) {
-    if(isInRange(*itr, offset) || reading) {
-      size_t readLength = calculateLength((*itr), fileOffset, rem);
-      totalReadLength += (*itr)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
-      rem -= readLength;
-      reading = true;
-      fileOffset = 0;
-    } else {
-      fileOffset -= (*itr)->getFileEntry()->getLength();
-    }
+class OffsetCompare {
+public:
+  bool operator()(off_t offset, const SharedHandle<DiskWriterEntry>& dwe)
+  {
+    return offset < dwe->getFileEntry()->getOffset();
   }
-  if(!reading) {
+};
+
+static DiskWriterEntries::const_iterator
+findFirstDiskWriterEntry(const DiskWriterEntries& diskWriterEntries, off_t offset)
+{
+  DiskWriterEntries::const_iterator first =
+    std::upper_bound(diskWriterEntries.begin(), diskWriterEntries.end(),
+		     offset, OffsetCompare());
+
+  --first;
+
+  // In case when offset is out-of-range
+  if(!isInRange(*first, offset)) {
     throw DlAbortEx
       (StringFormat(EX_FILE_OFFSET_OUT_OF_RANGE,
 		    Util::itos(offset, true).c_str()).str());
+  }
+  return first;
+}
+
+void MultiDiskAdaptor::writeData(const unsigned char* data, size_t len,
+				 off_t offset)
+{
+  DiskWriterEntries::const_iterator first = findFirstDiskWriterEntry(diskWriterEntries, offset);
+
+  size_t rem = len;
+  off_t fileOffset = offset-(*first)->getFileEntry()->getOffset();
+  for(DiskWriterEntries::const_iterator i = first; i != diskWriterEntries.end(); ++i) {
+    size_t writeLength = calculateLength(*i, fileOffset, rem);
+    (*i)->getDiskWriter()->writeData(data+(len-rem), writeLength, fileOffset);
+    rem -= writeLength;
+    fileOffset = 0;
+    if(rem == 0) {
+      break;
+    }
+  }
+}
+
+ssize_t MultiDiskAdaptor::readData(unsigned char* data, size_t len, off_t offset)
+{
+  DiskWriterEntries::const_iterator first = findFirstDiskWriterEntry(diskWriterEntries, offset);
+
+  size_t rem = len;
+  size_t totalReadLength = 0;
+  off_t fileOffset = offset-(*first)->getFileEntry()->getOffset();
+  for(DiskWriterEntries::const_iterator i = first; i != diskWriterEntries.end(); ++i) {
+    size_t readLength = calculateLength(*i, fileOffset, rem);
+    totalReadLength +=
+      (*i)->getDiskWriter()->readData(data+(len-rem), readLength, fileOffset);
+    rem -= readLength;
+    fileOffset = 0;
+    if(rem == 0) {
+      break;
+    }
   }
   return totalReadLength;
 }

@@ -92,12 +92,6 @@ private:
 
   void mkdir() const;
 
-  bool isInRange(const DiskWriterEntryHandle entry, off_t offset) const;
-
-  size_t calculateLength(const DiskWriterEntryHandle entry,
-			 off_t fileOffset,
-			 size_t rem) const;
-
   std::string getTopDirPath() const;
 public:
   MultiDiskAdaptor();
