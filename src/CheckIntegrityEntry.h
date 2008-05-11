@@ -65,9 +65,11 @@ public:
 
   virtual void initValidator() = 0;
 
-  virtual std::deque<Command*> onDownloadFinished(DownloadEngine* e) = 0;
+  virtual void onDownloadFinished(std::deque<Command*>& commands,
+				  DownloadEngine* e) = 0;
 
-  virtual std::deque<Command*> onDownloadIncomplete(DownloadEngine* e) = 0;
+  virtual void onDownloadIncomplete(std::deque<Command*>& commands,
+				    DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<CheckIntegrityEntry> CheckIntegrityEntryHandle;

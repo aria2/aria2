@@ -61,7 +61,8 @@ public:
 
   void allocateChunk();
 
-  virtual std::deque<Command*> prepareForNextAction(DownloadEngine* e) = 0;
+  virtual void prepareForNextAction(std::deque<Command*>& commands,
+				    DownloadEngine* e) = 0;
 };
 
 typedef SharedHandle<FileAllocationEntry> FileAllocationEntryHandle;

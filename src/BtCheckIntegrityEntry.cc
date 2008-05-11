@@ -47,26 +47,26 @@ BtCheckIntegrityEntry::BtCheckIntegrityEntry(RequestGroup* requestGroup):
 
 BtCheckIntegrityEntry::~BtCheckIntegrityEntry() {}
 
-Commands BtCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
+void BtCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
+						 DownloadEngine* e)
 {
-  Commands commands;
   FileAllocationEntryHandle entry(new BtFileAllocationEntry(_requestGroup));
   if(_requestGroup->needsFileAllocation()) {
     e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {
-    commands = entry->prepareForNextAction(e);
+    entry->prepareForNextAction(commands, e);
   }
-  return commands;
 }
 
-Commands BtCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
+void BtCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
+					       DownloadEngine* e)
 {
   _requestGroup->getPieceStorage()->getDiskAdaptor()->onDownloadComplete();
   // TODO Currently,when all the checksums
   // are valid, then aira2 goes to seeding mode. Sometimes it is better
   // to exit rather than doing seeding. So, it would be good to toggle this
   // behavior.
-  return onDownloadIncomplete(e);
+  onDownloadIncomplete(commands, e);
 }
 
 } // namespace aria2

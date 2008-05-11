@@ -61,14 +61,14 @@ namespace aria2 {
 
 BtSetup::BtSetup():_logger(LogFactory::getInstance()) {}
 
-Commands BtSetup::setup(RequestGroup* requestGroup,
-			DownloadEngine* e,
-			const Option* option)
+void BtSetup::setup(std::deque<Command*>& commands,
+		    RequestGroup* requestGroup,
+		    DownloadEngine* e,
+		    const Option* option)
 {
-  Commands commands;
   BtContextHandle btContext(dynamic_pointer_cast<BtContext>(requestGroup->getDownloadContext()));
   if(btContext.isNull()) {
-    return commands;
+    return;
   }
   // commands
   commands.push_back(new TrackerWatcherCommand(CUIDCounterSingletonHolder::instance()->newID(),
@@ -126,7 +126,6 @@ Commands BtSetup::setup(RequestGroup* requestGroup,
   }
 
   BT_RUNTIME(btContext)->setReady(true);
-  return commands;
 }
 
 } // namespace aria2

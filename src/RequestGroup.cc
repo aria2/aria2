@@ -171,7 +171,8 @@ void RequestGroup::closeFile()
   }
 }
 
-Commands RequestGroup::createInitialCommand(DownloadEngine* e)
+void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
+					DownloadEngine* e)
 {
 #ifdef ENABLE_BITTORRENT
   {
@@ -253,7 +254,9 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
       _progressInfoFile = progressInfoFile;
 
       if(!btContext->isPrivate() && _option->getAsBool(PREF_ENABLE_DHT)) {
-	e->addCommand(DHTSetup().setup(e, _option));
+	std::deque<Command*> commands;
+	DHTSetup().setup(commands, e, _option);
+	e->addCommand(commands);
 	if(btContext->getNodes().size() && DHTSetup::initialized()) {
 	  DHTEntryPointNameResolveCommand* command =
 	    new DHTEntryPointNameResolveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, btContext->getNodes());
@@ -266,14 +269,15 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
       }
       CheckIntegrityEntryHandle entry(new BtCheckIntegrityEntry(this));
       
-      return processCheckIntegrityEntry(entry, e);
+      processCheckIntegrityEntry(commands, entry, e);
+      return;
     }
   }
 #endif // ENABLE_BITTORRENT
   // TODO I assume here when totallength is set to DownloadContext and it is
   // not 0, then filepath is also set DownloadContext correctly....
   if(_downloadContext->getTotalLength() == 0) {
-    return createNextCommand(e, 1);
+    createNextCommand(commands, e, 1);
   }else {
     if(e->_requestGroupMan->isSameFileBeingDownloaded(this)) {
       throw DownloadFailureException
@@ -281,19 +285,20 @@ Commands RequestGroup::createInitialCommand(DownloadEngine* e)
 		      getFilePath().c_str()).str());
     }
     initPieceStorage();
-    BtProgressInfoFileHandle
-      infoFile(new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option));
-    if(!infoFile->exists() && downloadFinishedByFileLength()) {
-      return Commands();
+    BtProgressInfoFileHandle infoFile
+      (new DefaultBtProgressInfoFile(_downloadContext, _pieceStorage, _option));
+    if(infoFile->exists() || !downloadFinishedByFileLength()) {
+      loadAndOpenFile(infoFile);
+      SharedHandle<CheckIntegrityEntry> checkIntegrityEntry
+	(new StreamCheckIntegrityEntry(SharedHandle<Request>(), this));
+      processCheckIntegrityEntry(commands, checkIntegrityEntry, e);
     }
-    loadAndOpenFile(infoFile);
-    SharedHandle<CheckIntegrityEntry>
-      checkIntegrityEntry(new StreamCheckIntegrityEntry(SharedHandle<Request>(), this));
-    return processCheckIntegrityEntry(checkIntegrityEntry, e);
   }
 }
 
-Commands RequestGroup::processCheckIntegrityEntry(const CheckIntegrityEntryHandle& entry, DownloadEngine* e)
+void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
+					      const CheckIntegrityEntryHandle& entry,
+					      DownloadEngine* e)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
   if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
@@ -301,13 +306,11 @@ Commands RequestGroup::processCheckIntegrityEntry(const CheckIntegrityEntryHandl
     entry->initValidator();
     CheckIntegrityCommand* command =
       new CheckIntegrityCommand(CUIDCounterSingletonHolder::instance()->newID(), this, e, entry);
-    Commands commands;
     commands.push_back(command);
-    return commands;
   } else
 #endif // ENABLE_MESSAGE_DIGEST
     {
-      return entry->onDownloadIncomplete(e);
+      entry->onDownloadIncomplete(commands, e);
     }
 }
 
@@ -458,25 +461,28 @@ bool RequestGroup::tryAutoFileRenaming()
   return false;
 }
 
-Commands RequestGroup::createNextCommandWithAdj(DownloadEngine* e, int numAdj)
+void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
+					    DownloadEngine* e, int numAdj)
 {
   unsigned int numCommand;
   if(_numConcurrentCommand == 0) {
     numCommand = _uris.size();
   } else {
     int n = _numConcurrentCommand+numAdj;
-    if(n <= 0) {
-      return Commands();
-    } else {
+    if(n > 0) {
       numCommand = n;
+    } else {
+      return;
     }
   }
-  return createNextCommand(e, numCommand, "GET");
+  createNextCommand(commands, e, numCommand, "GET");
 }
 
-Commands RequestGroup::createNextCommand(DownloadEngine* e, unsigned int numCommand, const std::string& method)
+void RequestGroup::createNextCommand(std::deque<Command*>& commands,
+				     DownloadEngine* e,
+				     unsigned int numCommand,
+				     const std::string& method)
 {
-  Commands commands;
   std::deque<std::string> pendingURIs;
   for(;!_uris.empty() && numCommand--; _uris.pop_front()) {
     std::string uri = _uris.front();
@@ -505,7 +511,6 @@ Commands RequestGroup::createNextCommand(DownloadEngine* e, unsigned int numComm
     }
   }
   std::copy(pendingURIs.begin(), pendingURIs.end(), std::front_inserter(_uris));
-  return commands;
 }
 
 std::string RequestGroup::getFilePath() const

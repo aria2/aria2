@@ -49,6 +49,7 @@
 #include "a2time.h"
 #include "Socket.h"
 #include "Util.h"
+#include "a2functional.h"
 #include <signal.h>
 #include <cstring>
 #include <algorithm>
@@ -95,14 +96,6 @@ DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 DownloadEngine::~DownloadEngine() {
   cleanQueue();
 }
-
-class Deleter {
-public:
-  template<class T>
-  void operator()(T* ptr) {
-    delete ptr;
-  }
-};
 
 void DownloadEngine::cleanQueue() {
   std::for_each(commands.begin(), commands.end(), Deleter());
@@ -311,7 +304,9 @@ void DownloadEngine::requestHalt()
 
 void DownloadEngine::fillCommand()
 {
-  addCommand(_requestGroupMan->getInitialCommands(this));
+  std::deque<Command*> commands;
+  _requestGroupMan->getInitialCommands(commands, this);
+  addCommand(commands);
 }
 
 void DownloadEngine::setStatCalc(const StatCalcHandle& statCalc)

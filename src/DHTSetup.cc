@@ -65,7 +65,9 @@
 #include "SocketCore.h"
 #include "DlAbortEx.h"
 #include "RecoverableException.h"
+#include "a2functional.h"
 #include <fstream>
+#include <algorithm>
 
 namespace aria2 {
 
@@ -75,11 +77,13 @@ DHTSetup::DHTSetup():_logger(LogFactory::getInstance()) {}
 
 DHTSetup::~DHTSetup() {}
 
-Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
+void DHTSetup::setup(std::deque<Command*>& commands,
+		     DownloadEngine* e, const Option* option)
 {
   if(_initialized) {
-    return Commands();
+    return;
   }
+  std::deque<Command*> tempCommands;
   try {
     // load routing table and localnode id here
 
@@ -182,7 +186,6 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
       taskQueue->addPeriodicTask1(task);
     }
 
-    Commands commands;
     if(!option->get(PREF_DHT_ENTRY_POINT_HOST).empty()) {
       {
 	std::pair<std::string, uint16_t> addr(option->get(PREF_DHT_ENTRY_POINT_HOST),
@@ -195,7 +198,7 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
 	command->setTaskFactory(taskFactory);
 	command->setRoutingTable(routingTable);
 	command->setLocalNode(localNode);
-	commands.push_back(command);
+	tempCommands.push_back(command);
       }
     } else {
       _logger->info("No DHT entry point specified.");
@@ -206,38 +209,37 @@ Commands DHTSetup::setup(DownloadEngine* e, const Option* option)
       command->setMessageReceiver(receiver);
       command->setTaskQueue(taskQueue);
       command->setReadCheckSocket(connection->getSocket());
-      commands.push_back(command);
+      tempCommands.push_back(command);
     }
     {
       DHTTokenUpdateCommand* command = new DHTTokenUpdateCommand(CUIDCounterSingletonHolder::instance()->newID(), e, DHT_TOKEN_UPDATE_INTERVAL);
       command->setTokenTracker(tokenTracker);
-      commands.push_back(command);
+      tempCommands.push_back(command);
     }
     {
       DHTBucketRefreshCommand* command = new DHTBucketRefreshCommand(CUIDCounterSingletonHolder::instance()->newID(), e, DHT_BUCKET_REFRESH_CHECK_INTERVAL);
       command->setTaskQueue(taskQueue);
       command->setRoutingTable(routingTable);
       command->setTaskFactory(taskFactory);
-      commands.push_back(command);
+      tempCommands.push_back(command);
     }
     {
       DHTPeerAnnounceCommand* command = new DHTPeerAnnounceCommand(CUIDCounterSingletonHolder::instance()->newID(), e, DHT_PEER_ANNOUNCE_CHECK_INTERVAL);
       command->setPeerAnnounceStorage(peerAnnounceStorage);
-      commands.push_back(command);
+      tempCommands.push_back(command);
     }
     {
       DHTAutoSaveCommand* command = new DHTAutoSaveCommand(CUIDCounterSingletonHolder::instance()->newID(), e, 30*60);
       command->setLocalNode(localNode);
       command->setRoutingTable(routingTable);
-      commands.push_back(command);
+      tempCommands.push_back(command);
     }
     _initialized = true;
-
-    return commands;
+    commands.insert(commands.end(), tempCommands.begin(), tempCommands.end());
   } catch(RecoverableException& e) {
     _logger->error("Exception caught while initializing DHT functionality. DHT is disabled.", e);
     DHTRegistry::clear();
-    return Commands();
+    std::for_each(tempCommands.begin(), tempCommands.end(), Deleter());
   }
 }
 

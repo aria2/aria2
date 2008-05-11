@@ -55,7 +55,8 @@ public:
 
   ~DHTSetup();
 
-  std::deque<Command*> setup(DownloadEngine* e, const Option* option);
+  void setup(std::deque<Command*>& commands,
+	     DownloadEngine* e, const Option* option);
 
   static bool initialized();
 };

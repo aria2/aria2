@@ -1,5 +1,35 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Pass std::deque<Command*> by reference to avoid unnecessary coping.
+	* src/AbstractCommand.cc
+	* src/BtCheckIntegrityEntry.cc
+	* src/BtCheckIntegrityEntry.h
+	* src/BtFileAllocationEntry.cc
+	* src/BtFileAllocationEntry.h
+	* src/BtSetup.cc
+	* src/BtSetup.h
+	* src/CheckIntegrityCommand.cc
+	* src/CheckIntegrityEntry.h
+	* src/ChecksumCheckIntegrityEntry.cc
+	* src/ChecksumCheckIntegrityEntry.h
+	* src/DHTSetup.cc
+	* src/DHTSetup.h
+	* src/DownloadEngine.cc
+	* src/FileAllocationCommand.cc
+	* src/FileAllocationEntry.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/StreamCheckIntegrityEntry.cc
+	* src/StreamCheckIntegrityEntry.h
+	* src/StreamFileAllocationEntry.cc
+	* src/StreamFileAllocationEntry.h
+	* src/TrackerWatcherCommand.cc
+	* src/a2functional.h
+	
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Changed method signature:
 	BNode::findClosestKNodes, BNode:: enumerateBucket,
 	DHTBucket::getGoodNodes,

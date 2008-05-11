@@ -184,7 +184,8 @@ bool AbstractCommand::execute() {
 
 void AbstractCommand::tryReserved() {
   _requestGroup->removeServerHost(cuid);
-  Commands commands = _requestGroup->createNextCommand(e, 1);
+  Commands commands;
+  _requestGroup->createNextCommand(commands, e, 1);
   e->addCommand(commands);
 }
 
@@ -323,7 +324,11 @@ bool AbstractCommand::nameResolveFinished() const {
 void AbstractCommand::prepareForNextAction(Command* nextCommand)
 {
   CheckIntegrityEntryHandle entry(new StreamCheckIntegrityEntry(req, _requestGroup, nextCommand));
-  e->addCommand(_requestGroup->processCheckIntegrityEntry(entry, e));
+
+  std::deque<Command*> commands;
+  _requestGroup->processCheckIntegrityEntry(commands, entry, e);
+
+  e->addCommand(commands);
   e->setNoWait(true);
 }
 

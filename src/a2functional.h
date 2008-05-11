@@ -151,6 +151,14 @@ public:
   }
 };
 
+class Deleter {
+public:
+  template<class T>
+  void operator()(T* ptr) {
+    delete ptr;
+  }
+};
+
 } // namespace aria2
 
 #endif // _D_A2_FUNCTIONAL_H_

@@ -77,7 +77,7 @@ public:
 
   void forceHalt();
 
-  std::deque<Command*> getInitialCommands(DownloadEngine* e);
+  void getInitialCommands(std::deque<Command*>& commands, DownloadEngine* e);
 
   void removeStoppedGroup();
 

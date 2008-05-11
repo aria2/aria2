@@ -46,14 +46,13 @@ BtFileAllocationEntry::BtFileAllocationEntry(RequestGroup* requestGroup):
 
 BtFileAllocationEntry::~BtFileAllocationEntry() {}
 
-Commands BtFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
+void BtFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
+						 DownloadEngine* e)
 {
-  Commands commands = BtSetup().setup(_requestGroup, e, e->option);
+  BtSetup().setup(commands, _requestGroup, e, e->option);
   if(!_requestGroup->downloadFinished()) {
-    Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, 0);
-    std::copy(streamCommands.begin(), streamCommands.end(), std::back_inserter(commands));
+    _requestGroup->createNextCommandWithAdj(commands, e, 0);
   }
-  return commands;
 }
 
 } // namespace aria2

@@ -53,29 +53,29 @@ StreamFileAllocationEntry::StreamFileAllocationEntry(const RequestHandle& curren
 
 StreamFileAllocationEntry::~StreamFileAllocationEntry() {}
 
-Commands StreamFileAllocationEntry::prepareForNextAction(DownloadEngine* e)
+void StreamFileAllocationEntry::prepareForNextAction(std::deque<Command*>& commands,
+						     DownloadEngine* e)
 {
-  Commands commands;
   if(_nextCommand) {
     // give _nextCommand a chance to execute in the next execution loop.
     _nextCommand->setStatus(Command::STATUS_ONESHOT_REALTIME);
     commands.push_back(popNextCommand());
     // try remaining uris
-    Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);
-    std::copy(streamCommands.begin(), streamCommands.end(), std::back_inserter(commands));
+    _requestGroup->createNextCommandWithAdj(commands, e, -1);
   } else {
     if(_currentRequest.isNull()) {
-      commands = _requestGroup->createNextCommandWithAdj(e, 0);
+      _requestGroup->createNextCommandWithAdj(commands, e, 0);
     } else {
-      Commands streamCommands = _requestGroup->createNextCommandWithAdj(e, -1);
-      Command* command = InitiateConnectionCommandFactory::createInitiateConnectionCommand(CUIDCounterSingletonHolder::instance()->newID(),
-											   _currentRequest, _requestGroup, e);
-      
+      Command* command =
+	InitiateConnectionCommandFactory::createInitiateConnectionCommand
+	(CUIDCounterSingletonHolder::instance()->newID(),
+	 _currentRequest, _requestGroup, e);
+
       commands.push_back(command);
-      std::copy(streamCommands.begin(), streamCommands.end(), std::back_inserter(commands));
+
+      _requestGroup->createNextCommandWithAdj(commands, e, -1);
     }
   }
-  return commands;
 }
 
 } // namespace aria2

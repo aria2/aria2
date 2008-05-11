@@ -153,7 +153,8 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 	temp.push_front(groupToAdd);
 	continue;
       }
-      Commands commands = groupToAdd->createInitialCommand(e);
+      Commands commands;
+      groupToAdd->createInitialCommand(commands, e);
       _requestGroups.push_back(groupToAdd);
       ++count;
       e->addCommand(commands);
@@ -169,15 +170,14 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
   }
 }
 
-Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
+void RequestGroupMan::getInitialCommands(std::deque<Command*>& commands,
+					 DownloadEngine* e)
 {
-  Commands commands;
   for(RequestGroups::iterator itr = _requestGroups.begin();
 	itr != _requestGroups.end();) {
     try {
       if((*itr)->isDependencyResolved()) {
-	Commands nextCommands = (*itr)->createInitialCommand(e);
-	std::copy(nextCommands.begin(), nextCommands.end(), std::back_inserter(commands));
+	(*itr)->createInitialCommand(commands, e);
 	++itr;
       } else {
 	_reservedGroups.push_front((*itr));
@@ -189,7 +189,6 @@ Commands RequestGroupMan::getInitialCommands(DownloadEngine* e)
       itr = _requestGroups.erase(itr);
     }  
   }
-  return commands;
 }
 
 void RequestGroupMan::save()

@@ -88,7 +88,9 @@ bool TrackerWatcherCommand::execute() {
   if(_trackerRequestGroup.isNull()) {
     _trackerRequestGroup = createAnnounce();
     if(!_trackerRequestGroup.isNull()) {
-      e->addCommand(_trackerRequestGroup->createInitialCommand(e));
+      std::deque<Command*> commands;
+      _trackerRequestGroup->createInitialCommand(commands, e);
+      e->addCommand(commands);
       logger->debug("added tracker request command");
     }
   } else if(_trackerRequestGroup->downloadFinished()){

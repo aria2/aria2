@@ -52,9 +52,10 @@ private:
 public:
   BtSetup();
 
-  std::deque<Command*> setup(RequestGroup* requestGroup,
-			     DownloadEngine* e,
-			     const Option* option);
+  void setup(std::deque<Command*>& commands,
+	     RequestGroup* requestGroup,
+	     DownloadEngine* e,
+	     const Option* option);
 };
 
 } // namespace aria2

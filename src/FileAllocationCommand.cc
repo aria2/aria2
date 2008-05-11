@@ -62,7 +62,9 @@ bool FileAllocationCommand::executeInternal()
 		  Util::itos(_requestGroup->getTotalLength(), true).c_str());
     _e->_fileAllocationMan->markCurrentFileAllocationEntryDone();
     
-    _e->addCommand(_fileAllocationEntry->prepareForNextAction(_e));
+    std::deque<Command*> commands;
+    _fileAllocationEntry->prepareForNextAction(commands, _e);
+    _e->addCommand(commands);
     _e->setNoWait(true);
     return true;
   } else {

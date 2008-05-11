@@ -140,11 +140,15 @@ public:
 
   SharedHandle<SegmentMan> getSegmentMan() const;
 
-  std::deque<Command*> createInitialCommand(DownloadEngine* e);
+  void createInitialCommand(std::deque<Command*>& commands,
+			    DownloadEngine* e);
 
-  std::deque<Command*> createNextCommandWithAdj(DownloadEngine* e, int numAdj);
+  void createNextCommandWithAdj(std::deque<Command*>& commands,
+				DownloadEngine* e, int numAdj);
 
-  std::deque<Command*> createNextCommand(DownloadEngine* e, unsigned int numCommand, const std::string& method = "GET");
+  void createNextCommand(std::deque<Command*>& commands,
+			 DownloadEngine* e, unsigned int numCommand,
+			 const std::string& method = "GET");
   
   void addURI(const std::string& uri)
   {
@@ -291,9 +295,9 @@ public:
 
   void clearPreDowloadHandler();
 
-  std::deque<Command*>
-  processCheckIntegrityEntry(const SharedHandle<CheckIntegrityEntry>& entry,
-			     DownloadEngine* e);
+  void processCheckIntegrityEntry(std::deque<Command*>& commands,
+				  const SharedHandle<CheckIntegrityEntry>& entry,
+				  DownloadEngine* e);
 
   void initPieceStorage();
 

@@ -53,7 +53,8 @@ public:
 
   virtual ~StreamFileAllocationEntry();
 
-  virtual std::deque<Command*> prepareForNextAction(DownloadEngine* e);
+  virtual void prepareForNextAction(std::deque<Command*>& commands,
+				    DownloadEngine* e);
 };
 
 typedef SharedHandle<StreamFileAllocationEntry> StreamFileAllocationEntryHandle;

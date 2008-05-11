@@ -50,23 +50,21 @@ StreamCheckIntegrityEntry::StreamCheckIntegrityEntry(const RequestHandle& curren
 
 StreamCheckIntegrityEntry::~StreamCheckIntegrityEntry() {}
 
-Commands StreamCheckIntegrityEntry::onDownloadIncomplete(DownloadEngine* e)
+void StreamCheckIntegrityEntry::onDownloadIncomplete(std::deque<Command*>& commands,
+						     DownloadEngine* e)
 {
-  Commands commands;
   FileAllocationEntryHandle entry
     (new StreamFileAllocationEntry(_currentRequest, _requestGroup,
 				   popNextCommand()));
   if(_requestGroup->needsFileAllocation()) {
     e->_fileAllocationMan->pushFileAllocationEntry(entry);
   } else {
-    commands = entry->prepareForNextAction(e);
+    entry->prepareForNextAction(commands, e);
   }
-  return commands;
 }
 
-Commands StreamCheckIntegrityEntry::onDownloadFinished(DownloadEngine* e)
-{
-  return Commands();
-}
+void StreamCheckIntegrityEntry::onDownloadFinished(std::deque<Command*>& commands,
+						   DownloadEngine* e)
+{}
 
 } // namespace aria2

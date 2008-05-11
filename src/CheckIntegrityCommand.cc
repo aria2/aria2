@@ -65,11 +65,15 @@ bool CheckIntegrityCommand::executeInternal()
     if(_requestGroup->downloadFinished()) {
       logger->notice(MSG_VERIFICATION_SUCCESSFUL,
 		     _requestGroup->getFilePath().c_str());
-      _e->addCommand(_entry->onDownloadFinished(_e));
+      std::deque<Command*> commands;
+      _entry->onDownloadFinished(commands, _e);
+      _e->addCommand(commands);
     } else {
       logger->error(MSG_VERIFICATION_FAILED,
 		    _requestGroup->getFilePath().c_str());
-      _e->addCommand(_entry->onDownloadIncomplete(_e));
+      std::deque<Command*> commands;
+      _entry->onDownloadIncomplete(commands,_e);
+      _e->addCommand(commands);
     }
     _e->setNoWait(true);
     return true;

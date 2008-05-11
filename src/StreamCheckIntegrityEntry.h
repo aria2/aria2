@@ -54,9 +54,11 @@ public:
 
   virtual ~StreamCheckIntegrityEntry();
 
-  virtual std::deque<Command*> onDownloadFinished(DownloadEngine* e);
+  virtual void onDownloadFinished(std::deque<Command*>& commands,
+				  DownloadEngine* e);
 
-  virtual std::deque<Command*> onDownloadIncomplete(DownloadEngine* e);
+  virtual void onDownloadIncomplete(std::deque<Command*>& commands,
+				    DownloadEngine* e);
 };
 
 typedef SharedHandle<StreamCheckIntegrityEntry> StreamCheckIntegrityEntryHandle;
