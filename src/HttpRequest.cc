@@ -148,9 +148,12 @@ std::string HttpRequest::createRequest() const
     std::string(" HTTP/1.1\r\n")+
     "User-Agent: "+userAgent+"\r\n";
   
-  requestLine +=
-    std::accumulate(_acceptTypes.begin(), _acceptTypes.end(),
-		    std::string("Accept: */*"), Concat(","))+"\r\n"; /* */
+  requestLine += "Accept: */*"; /* */
+  for(std::deque<std::string>::const_iterator i = _acceptTypes.begin();
+      i != _acceptTypes.end(); ++i) {
+    requestLine += ","+(*i);
+  }
+  requestLine += "\r\n";
 
   requestLine +=
     "Host: "+getHostText(getHost(), getPort())+"\r\n"+
