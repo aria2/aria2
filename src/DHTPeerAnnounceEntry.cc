@@ -112,8 +112,7 @@ void DHTPeerAnnounceEntry::getPeers(std::deque<SharedHandle<Peer> >& peers) cons
   if(!_btCtx.isNull()) {
     SharedHandle<PeerStorage> peerStorage = PEER_STORAGE(_btCtx);
     if(!peerStorage.isNull()) {
-      const Peers& activePeers = peerStorage->getActivePeers();
-      peers.insert(peers.end(), activePeers.begin(), activePeers.end());
+      peerStorage->getActivePeers(peers);
     }
   }
 }

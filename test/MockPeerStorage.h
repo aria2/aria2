@@ -42,8 +42,8 @@ public:
     this->activePeers = activePeers;
   }
 
-  virtual std::deque<SharedHandle<Peer> > getActivePeers() {
-    return activePeers;
+  virtual void getActivePeers(std::deque<SharedHandle<Peer> >& peers) {
+    peers.insert(peers.end(), activePeers.begin(), activePeers.end());
   }
 
   virtual TransferStat calculateStat() {

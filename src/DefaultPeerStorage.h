@@ -90,7 +90,7 @@ public:
 
   virtual bool isPeerAvailable();
 
-  virtual std::deque<SharedHandle<Peer> > getActivePeers();
+  virtual void getActivePeers(std::deque<SharedHandle<Peer> >& peers);
 
   virtual TransferStat calculateStat();
 

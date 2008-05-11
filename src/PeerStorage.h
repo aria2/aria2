@@ -78,7 +78,7 @@ public:
   /**
    * Returns the list of peers which are currently connected from localhost.
    */
-  virtual std::deque<SharedHandle<Peer> > getActivePeers() = 0;
+  virtual void getActivePeers(std::deque<SharedHandle<Peer> >& peers) = 0;
 
   /**
    * Calculates current download/upload statistics.

@@ -162,20 +162,22 @@ bool DefaultPeerStorage::isPeerAvailable() {
 
 class CollectActivePeer {
 private:
-  Peers _activePeers;
+  std::deque<SharedHandle<Peer> >& _activePeers;
 public:
-  void operator()(const PeerHandle& peer)
+  CollectActivePeer(std::deque<SharedHandle<Peer> >& activePeers):
+    _activePeers(activePeers) {}
+
+  void operator()(const SharedHandle<Peer>& peer)
   {
     if(peer->isActive()) {
       _activePeers.push_back(peer);
     }
   }
-
-  const Peers& getActivePeers() { return _activePeers; }
 };
 
-Peers DefaultPeerStorage::getActivePeers() {
-  return std::for_each(peers.begin(), peers.end(), CollectActivePeer()).getActivePeers();
+void DefaultPeerStorage::getActivePeers(std::deque<SharedHandle<Peer> >& activePeers)
+{
+  std::for_each(peers.begin(), peers.end(), CollectActivePeer(activePeers));
 }
 
 class CalculateStat {
@@ -267,10 +269,12 @@ bool DefaultPeerStorage::chokeRoundIntervalElapsed()
 
 void DefaultPeerStorage::executeChoke()
 {
+  std::deque<SharedHandle<Peer> > activePeers;
+  getActivePeers(activePeers);
   if(PIECE_STORAGE(btContext)->downloadFinished()) {
-    return _seederStateChoke->executeChoke(getActivePeers());
+    return _seederStateChoke->executeChoke(activePeers);
   } else {
-    return _leecherStateChoke->executeChoke(getActivePeers());
+    return _leecherStateChoke->executeChoke(activePeers);
   }
 }
 

@@ -174,20 +174,31 @@ void DefaultPeerStorageTest::testIsPeerAvailable() {
 void DefaultPeerStorageTest::testActivatePeer() {
   DefaultPeerStorage ps(btContext, option);
 
-  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getActivePeers().size());
+  {
+    std::deque<SharedHandle<Peer> > peers;
+    ps.getActivePeers(peers);
+    CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
+  }
 
   SharedHandle<Peer> peer1(new Peer("192.168.0.1", 6889));
 
   ps.addPeer(peer1);
 
-  std::deque<SharedHandle<Peer> > activePeer = ps.getActivePeers();
+  {
+    std::deque<SharedHandle<Peer> > activePeers;
+    ps.getActivePeers(activePeers);
 
-  CPPUNIT_ASSERT_EQUAL((size_t)0, ps.getActivePeers().size());
+    CPPUNIT_ASSERT_EQUAL((size_t)0, activePeers.size());
+  }
+  {
+    peer1->allocateSessionResource(btContext->getPieceLength(),
+				   btContext->getTotalLength());
 
-  peer1->allocateSessionResource(btContext->getPieceLength(),
-				 btContext->getTotalLength());
-
-  CPPUNIT_ASSERT_EQUAL((size_t)1, ps.getActivePeers().size());
+    std::deque<SharedHandle<Peer> > activePeers;
+    ps.getActivePeers(activePeers);
+    
+    CPPUNIT_ASSERT_EQUAL((size_t)1, activePeers.size());
+  }
 }
 
 void DefaultPeerStorageTest::testCalculateStat() {

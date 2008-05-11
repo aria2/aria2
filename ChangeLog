@@ -1,6 +1,17 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed method signature:
+	PeerStorage::getActivePeers
+	* src/DHTPeerAnnounceEntry.cc
+	* src/DefaultPeerStorage.cc
+	* src/DefaultPeerStorage.h
+	* src/PeerStorage.h
+	* test/DefaultPeerStorageTest.cc
+	* test/MockPeerStorage.h
+
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed method signature:
 	DHTPeerAnnounceStorage::getPeers,
 	DHTPeerAnnounceEntry::getPeers
 	* src/DHTGetPeersMessage.cc
