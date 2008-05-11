@@ -79,14 +79,15 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->setSegment(segment);
   httpRequest->setEntityLength(totalLength);
   httpRequest->addHeader(option->get(PREF_HEADER));
-  if(rg->getAcceptFeatures().size()) {
+  if(!rg->getAcceptFeatures().empty()) {
     const std::deque<std::string>& acceptFeatures = rg->getAcceptFeatures();
-    std::string acceptFeaturesHeader = "Accept-Features: "+
-      Util::trim
-      (std::accumulate(acceptFeatures.begin()+1, acceptFeatures.end(),
-		       *acceptFeatures.begin(),
-		       Concat(",")),
-       ",");
+
+    std::string acceptFeaturesHeader = "Accept-Features: "+*acceptFeatures.begin();
+    for(std::deque<std::string>::const_iterator i = acceptFeatures.begin()+1;
+	i != acceptFeatures.end(); ++i) {
+	  acceptFeaturesHeader += ","+(*i);
+    }
+
     httpRequest->addHeader(acceptFeaturesHeader);
   }
   httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
