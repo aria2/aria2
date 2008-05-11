@@ -200,14 +200,16 @@ int32_t downloadMetalink(Option* op)
 
 class AccRequestGroup {
 private:
+  std::deque<SharedHandle<RequestGroup> >& _requestGroups;
   ProtocolDetector _detector;
   Option* _op;
 public:
-  AccRequestGroup(Option* op):_op(op) {}
+  AccRequestGroup(std::deque<SharedHandle<RequestGroup> >& requestGroups,
+		  Option* op):
+    _requestGroups(requestGroups), _op(op) {}
 
-  std::deque<SharedHandle<RequestGroup> >&
-  operator()(std::deque<SharedHandle<RequestGroup> >& groups,
-	     const std::string& uri)
+  void
+  operator()(const std::string& uri)
   {
     if(_detector.isStreamProtocol(uri)) {
       std::deque<std::string> xuris;
@@ -215,13 +217,13 @@ public:
 	xuris.push_back(uri);
       }
       RequestGroupHandle rg = createRequestGroup(_op, xuris);
-      groups.push_back(rg);
+      _requestGroups.push_back(rg);
     }
 #ifdef ENABLE_BITTORRENT
     else if(_detector.guessTorrentFile(uri)) {
       try {
-	groups.push_back(createBtRequestGroup(uri, _op,
-					      std::deque<std::string>()));
+	_requestGroups.push_back(createBtRequestGroup(uri, _op,
+						      std::deque<std::string>()));
       } catch(RecoverableException& e) {
 	// error occurred while parsing torrent file.
 	// We simply ignore it.	
@@ -234,7 +236,7 @@ public:
       try {
 	std::deque<SharedHandle<RequestGroup> > metalinkGroups =
 	  Metalink2RequestGroup(_op).generate(uri);
-	groups.insert(groups.end(), metalinkGroups.begin(), metalinkGroups.end());
+	_requestGroups.insert(_requestGroups.end(), metalinkGroups.begin(), metalinkGroups.end());
       } catch(RecoverableException& e) {
 	// error occurred while parsing metalink file.
 	// We simply ignore it.
@@ -245,7 +247,6 @@ public:
     else {
       LogFactory::getInstance()->error(MSG_UNRECOGNIZED_URI, (uri).c_str());
     }
-    return groups;
   }
 };
 
@@ -257,17 +258,10 @@ int32_t downloadUriList(Option* op, std::istream& in)
     std::deque<std::string> uris = p.parseNext(in);
     if(uris.size() == 1 && op->get(PREF_PARAMETERIZED_URI) == V_TRUE) {
       std::deque<std::string> unfoldedURIs = unfoldURI(uris);
-      std::deque<SharedHandle<RequestGroup> > thisGroups =
-	std::accumulate(unfoldedURIs.begin(), unfoldedURIs.end(),
-			std::deque<SharedHandle<RequestGroup> >(),
-			AccRequestGroup(op));
-      groups.insert(groups.end(), thisGroups.begin(), thisGroups.end());
+      std::for_each(unfoldedURIs.begin(), unfoldedURIs.end(),
+		    AccRequestGroup(groups, op));
     } else if(uris.size() == 1) {
-      std::deque<SharedHandle<RequestGroup> > thisGroups =
-	std::accumulate(uris.begin(), uris.end(),
-			std::deque<SharedHandle<RequestGroup> >(),
-			AccRequestGroup(op));
-      groups.insert(groups.end(), thisGroups.begin(), thisGroups.end());
+      std::for_each(uris.begin(), uris.end(), AccRequestGroup(groups, op));
     } else if(uris.size() > 0) {
       std::deque<std::string> xuris;
       ncopy(uris.begin(), uris.end(), op->getAsInt(PREF_SPLIT),
@@ -313,9 +307,7 @@ int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
   }
   RequestGroups groups;
   if(op->get(PREF_FORCE_SEQUENTIAL) == V_TRUE) {
-    groups = std::accumulate(nargs.begin(), nargs.end(),
-			     std::deque<SharedHandle<RequestGroup> >(),
-			     AccRequestGroup(op));
+    std::for_each(nargs.begin(), nargs.end(), AccRequestGroup(groups, op));
   } else {
     std::deque<std::string>::iterator strmProtoEnd =
       std::stable_partition(nargs.begin(), nargs.end(), StreamProtocolFilter());
@@ -328,11 +320,7 @@ int32_t downloadUri(Option* op, const std::deque<std::string>& uris)
       groups.push_back(rg);
     }
     // process remaining URIs(local metalink, BitTorrent files)
-    std::deque<SharedHandle<RequestGroup> > remGroups =
-      std::accumulate(strmProtoEnd, nargs.end(),
-		      std::deque<SharedHandle<RequestGroup> >(),
-		      AccRequestGroup(op));
-    groups.insert(groups.end(), remGroups.begin(), remGroups.end());
+    std::for_each(strmProtoEnd, nargs.end(), AccRequestGroup(groups, op));
   }
   return MultiUrlRequestInfo(groups, op, getStatCalc(op), getSummaryOut(op)).execute();
 }
