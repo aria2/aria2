@@ -143,7 +143,8 @@ void DefaultBtProgressInfoFile::save() {
     // TODO implement this
     uint32_t numInFlightPiece = _pieceStorage->countInFlightPiece();
     o.write(reinterpret_cast<const char*>(&numInFlightPiece), sizeof(numInFlightPiece));
-    Pieces inFlightPieces = _pieceStorage->getInFlightPieces();
+    Pieces inFlightPieces;
+    _pieceStorage->getInFlightPieces(inFlightPieces);
     for(Pieces::const_iterator itr = inFlightPieces.begin();
 	itr != inFlightPieces.end(); ++itr) {
       uint32_t index = (*itr)->getIndex();

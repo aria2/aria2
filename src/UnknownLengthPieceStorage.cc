@@ -189,10 +189,8 @@ void UnknownLengthPieceStorage::markPieceMissing(size_t index)
   abort();
 }
 
-Pieces UnknownLengthPieceStorage::getInFlightPieces()
-{
-  return Pieces();
-}
+void UnknownLengthPieceStorage::getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces)
+{}
 
 void UnknownLengthPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory)
 {

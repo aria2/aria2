@@ -1,6 +1,19 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed method signature:
+	PieceStorage::getInFlightPieces
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.cc
+	* src/UnknownLengthPieceStorage.h
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/MockPieceStorage.h
+
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed method signature:
 	PostDownloadHandler::getNextRequestGroups
 	Metalink2RequestGroup::generate
 	RequestGroup::postDownloadProcessing

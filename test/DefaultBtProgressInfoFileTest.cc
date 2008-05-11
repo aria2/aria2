@@ -114,7 +114,9 @@ void DefaultBtProgressInfoFileTest::testLoad()
 		       _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  std::deque<SharedHandle<Piece> > inFlightPieces = _pieceStorage->getInFlightPieces();
+  std::deque<SharedHandle<Piece> > inFlightPieces;
+  _pieceStorage->getInFlightPieces(inFlightPieces);
+
   SharedHandle<Piece> piece1 = inFlightPieces[0];
   CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)1024, piece1->getLength());
@@ -150,7 +152,9 @@ void DefaultBtProgressInfoFileTest::testLoad_nonBt()
 		       _pieceStorage->countInFlightPiece());
 
   // piece index 1
-  std::deque<SharedHandle<Piece> > inFlightPieces = _pieceStorage->getInFlightPieces();
+  std::deque<SharedHandle<Piece> > inFlightPieces;
+  _pieceStorage->getInFlightPieces(inFlightPieces);
+
   SharedHandle<Piece> piece1 = inFlightPieces[0];
   CPPUNIT_ASSERT_EQUAL((size_t)1, piece1->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)1024, piece1->getLength());

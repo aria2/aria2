@@ -197,7 +197,7 @@ public:
 
   virtual size_t countInFlightPiece();
 
-  virtual std::deque<SharedHandle<Piece> > getInFlightPieces();
+  virtual void getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces);
 
   virtual void addPieceStats(size_t index);
 

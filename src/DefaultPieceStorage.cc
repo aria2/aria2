@@ -635,9 +635,9 @@ size_t DefaultPieceStorage::countInFlightPiece()
   return usedPieces.size();
 }
 
-Pieces DefaultPieceStorage::getInFlightPieces()
+void DefaultPieceStorage::getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces)
 {
-  return usedPieces;
+  pieces.insert(pieces.end(), usedPieces.begin(), usedPieces.end());
 }
 
 void DefaultPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHandle& diskWriterFactory)

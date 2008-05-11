@@ -202,9 +202,9 @@ public:
     return inFlightPieces.size();
   }
 
-  virtual std::deque<SharedHandle<Piece> > getInFlightPieces()
+  virtual void getInFlightPieces(std::deque<SharedHandle<Piece> >& pieces)
   {
-    return inFlightPieces;
+    pieces.insert(pieces.end(), inFlightPieces.begin(), inFlightPieces.end());
   }
 
   virtual void addPieceStats(size_t index) {}
