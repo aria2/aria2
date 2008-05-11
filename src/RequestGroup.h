@@ -283,7 +283,7 @@ public:
 
   void releaseRuntimeResource();
 
-  std::deque<SharedHandle<RequestGroup> > postDownloadProcessing();
+  void postDownloadProcessing(std::deque<SharedHandle<RequestGroup> >& groups);
 
   void addPostDownloadHandler(const SharedHandle<PostDownloadHandler>& handler);
 

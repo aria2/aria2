@@ -54,16 +54,19 @@ private:
 
   Logger* _logger;
 
-  std::deque<SharedHandle<RequestGroup> >
-  createRequestGroup(std::deque<SharedHandle<MetalinkEntry> > entries);
+  void
+  createRequestGroup(std::deque<SharedHandle<RequestGroup> >& groups,
+		     std::deque<SharedHandle<MetalinkEntry> > entries);
 public:
   Metalink2RequestGroup(const Option* option);
 
   ~Metalink2RequestGroup();
 
-  std::deque<SharedHandle<RequestGroup> > generate(const std::string& metalinkFile);
+  void generate(std::deque<SharedHandle<RequestGroup> >& groups,
+		const std::string& metalinkFile);
 
-  std::deque<SharedHandle<RequestGroup> > generate(const SharedHandle<BinaryStream>& binaryStream);
+  void generate(std::deque<SharedHandle<RequestGroup> >& groups,
+		const SharedHandle<BinaryStream>& binaryStream);
 };
 
 } // namespace aria2

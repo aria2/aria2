@@ -1,5 +1,26 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed method signature:
+	PostDownloadHandler::getNextRequestGroups
+	Metalink2RequestGroup::generate
+	RequestGroup::postDownloadProcessing
+	* src/BtPostDownloadHandler.cc
+	* src/BtPostDownloadHandler.h
+	* src/Metalink2RequestGroup.cc
+	* src/Metalink2RequestGroup.h
+	* src/MetalinkPostDownloadHandler.cc
+	* src/MetalinkPostDownloadHandler.h
+	* src/PostDownloadHandler.h
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* src/RequestGroupMan.cc
+	* src/main.cc
+	* test/BtPostDownloadHandlerTest.cc
+	* test/Metalink2RequestGroupTest.cc
+	* test/MetalinkPostDownloadHandlerTest.cc
+	
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten AccRequestGroup
 	* src/main.cc
 

@@ -46,8 +46,9 @@ public:
 
   virtual ~MetalinkPostDownloadHandler();
 
-  virtual std::deque<SharedHandle<RequestGroup> >
-  getNextRequestGroups(RequestGroup* requestGroup);
+  virtual void
+  getNextRequestGroups(std::deque<SharedHandle<RequestGroup> >& groups,
+		       RequestGroup* requestGroup);
 };
 
 typedef SharedHandle<MetalinkPostDownloadHandler> MetalinkPostDownloadHandlerHandle;

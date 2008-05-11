@@ -117,7 +117,8 @@ void RequestGroupMan::removeStoppedGroup()
 	  } else {
 	    (*itr)->getProgressInfoFile()->save();
 	  }
-	  RequestGroups nextGroups = (*itr)->postDownloadProcessing();
+	  RequestGroups nextGroups;
+	  (*itr)->postDownloadProcessing(nextGroups);
 	  if(nextGroups.size() > 0) {
 	    _logger->debug("Adding %u RequestGroups as a result of PostDownloadHandler.", nextGroups.size());
 	    std::copy(nextGroups.rbegin(), nextGroups.rend(), std::front_inserter(_reservedGroups));

@@ -58,7 +58,9 @@ BtPostDownloadHandler::BtPostDownloadHandler()
 
 BtPostDownloadHandler::~BtPostDownloadHandler() {}
 
-RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
+void BtPostDownloadHandler::getNextRequestGroups
+(std::deque<SharedHandle<RequestGroup> >& groups,
+ RequestGroup* requestGroup)
 {
   const Option* op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Torrent file %s",
@@ -83,9 +85,7 @@ RequestGroups BtPostDownloadHandler::getNextRequestGroups(RequestGroup* requestG
   rg->setDownloadContext(btContext);
   btContext->setOwnerRequestGroup(rg.get());
   
-  RequestGroups groups;
   groups.push_back(rg);
-  return groups;
 }
 
 } // namespace aria2

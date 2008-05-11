@@ -98,28 +98,32 @@ public:
   }
 };
 
-std::deque<SharedHandle<RequestGroup> >
-Metalink2RequestGroup::generate(const std::string& metalinkFile)
+void
+Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
+				const std::string& metalinkFile)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries = MetalinkHelper::parseAndQuery(metalinkFile,
 							  _option);
-  return createRequestGroup(entries);
+  createRequestGroup(groups, entries);
 }
 
-std::deque<SharedHandle<RequestGroup> >
-Metalink2RequestGroup::generate(const SharedHandle<BinaryStream>& binaryStream)
+void
+Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
+				const SharedHandle<BinaryStream>& binaryStream)
 {
   std::deque<SharedHandle<MetalinkEntry> > entries = MetalinkHelper::parseAndQuery(binaryStream,
 							  _option);
-  return createRequestGroup(entries);
+  createRequestGroup(groups, entries);
 }
 
-std::deque<SharedHandle<RequestGroup> >
-Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry> > entries)
+void
+Metalink2RequestGroup::createRequestGroup
+(std::deque<SharedHandle<RequestGroup> >& groups,
+ std::deque<SharedHandle<MetalinkEntry> > entries)
 {
   if(entries.size() == 0) {
     _logger->notice(EX_NO_RESULT_WITH_YOUR_PREFS);
-    return std::deque<SharedHandle<RequestGroup> >();
+    return;
   }
   std::deque<int32_t> selectIndexes = Util::parseIntRange(_option->get(PREF_SELECT_FILE)).flush();
   bool useIndex;
@@ -128,7 +132,6 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
   } else {
     useIndex = false;
   }
-  std::deque<SharedHandle<RequestGroup> > groups;
   unsigned int count = 0;
   for(std::deque<SharedHandle<MetalinkEntry> >::iterator itr = entries.begin(); itr != entries.end();
       itr++, ++count) {
@@ -235,7 +238,6 @@ Metalink2RequestGroup::createRequestGroup(std::deque<SharedHandle<MetalinkEntry>
 #endif // ENABLE_BITTORRENT
     groups.push_back(rg);
   }
-  return groups;
 }
 
 } // namespace aria2

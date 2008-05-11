@@ -46,8 +46,9 @@ public:
 
   virtual ~PostDownloadHandler() {}
 
-  virtual std::deque<SharedHandle<RequestGroup> >
-  getNextRequestGroups(RequestGroup* requestGroup) = 0;
+  virtual void
+  getNextRequestGroups(std::deque<SharedHandle<RequestGroup> >& groups,
+		       RequestGroup* requestGroup) = 0;
 };
 
 typedef SharedHandle<PostDownloadHandler> PostDownloadHandlerHandle;

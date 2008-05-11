@@ -32,8 +32,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION( Metalink2RequestGroupTest );
 
 void Metalink2RequestGroupTest::testGenerate()
 {
-  std::deque<SharedHandle<RequestGroup> > groups =
-    Metalink2RequestGroup(_option.get()).generate("test.xml");
+  std::deque<SharedHandle<RequestGroup> > groups;
+  Metalink2RequestGroup(_option.get()).generate(groups, "test.xml");
   // first file
   {
     SharedHandle<RequestGroup> rg = groups[0];

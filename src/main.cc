@@ -190,7 +190,8 @@ int32_t downloadBitTorrent(Option* op, const std::deque<std::string>& uri)
 #ifdef ENABLE_METALINK
 int32_t downloadMetalink(Option* op)
 {
-  RequestGroups groups = Metalink2RequestGroup(op).generate(op->get(PREF_METALINK_FILE));
+  RequestGroups groups;
+  Metalink2RequestGroup(op).generate(groups, op->get(PREF_METALINK_FILE));
   if(groups.empty()) {
     throw FatalException("No files to download.");
   }
@@ -234,9 +235,7 @@ public:
 #ifdef ENABLE_METALINK
     else if(_detector.guessMetalinkFile(uri)) {
       try {
-	std::deque<SharedHandle<RequestGroup> > metalinkGroups =
-	  Metalink2RequestGroup(_op).generate(uri);
-	_requestGroups.insert(_requestGroups.end(), metalinkGroups.begin(), metalinkGroups.end());
+	Metalink2RequestGroup(_op).generate(_requestGroups, uri);
       } catch(RecoverableException& e) {
 	// error occurred while parsing metalink file.
 	// We simply ignore it.

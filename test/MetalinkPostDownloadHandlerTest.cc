@@ -70,7 +70,8 @@ void MetalinkPostDownloadHandlerTest::testGetNextRequestGroups()
   rg.initPieceStorage();
 
   MetalinkPostDownloadHandler handler;
-  RequestGroups groups = handler.getNextRequestGroups(&rg);
+  RequestGroups groups;
+  handler.getNextRequestGroups(groups, &rg);
 #ifdef ENABLE_BITTORRENT
   CPPUNIT_ASSERT_EQUAL((size_t)6/* 5 + 1 torrent file download */, groups.size());
 #else

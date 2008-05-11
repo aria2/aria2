@@ -54,8 +54,9 @@ MetalinkPostDownloadHandler::MetalinkPostDownloadHandler()
 
 MetalinkPostDownloadHandler::~MetalinkPostDownloadHandler() {}
 
-std::deque<SharedHandle<RequestGroup> >
-MetalinkPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
+void MetalinkPostDownloadHandler::getNextRequestGroups
+(std::deque<SharedHandle<RequestGroup> >& groups,
+ RequestGroup* requestGroup)
 {
   const Option* op = requestGroup->getOption();
   _logger->debug("Generating RequestGroups for Metalink file %s",
@@ -63,9 +64,8 @@ MetalinkPostDownloadHandler::getNextRequestGroups(RequestGroup* requestGroup)
   SharedHandle<DiskAdaptor> diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor();
   try {
     diskAdaptor->openExistingFile();
-    std::deque<SharedHandle<RequestGroup> > rgs = Metalink2RequestGroup(op).generate(diskAdaptor);
+    Metalink2RequestGroup(op).generate(groups, diskAdaptor);
     diskAdaptor->closeFile();
-    return rgs;
   } catch(Exception& e) {
     diskAdaptor->closeFile();
     throw;
