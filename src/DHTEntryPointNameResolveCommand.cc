@@ -108,7 +108,8 @@ bool DHTEntryPointNameResolveCommand::execute()
 	while(_entryPoints.size()) {
 	  std::string hostname = _entryPoints.front().first;
 	  try {
-	    std::deque<std::string> addrs(res.resolve(hostname));
+	    std::deque<std::string> addrs;
+	    res.resolve(addrs, hostname);
 	  
 	    std::pair<std::string, uint16_t> p(addrs.front(),
 					       _entryPoints.front().second);

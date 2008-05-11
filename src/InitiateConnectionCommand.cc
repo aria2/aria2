@@ -85,7 +85,7 @@ bool InitiateConnectionCommand::executeInternal() {
       {
 	NameResolver res;
 	res.setSocktype(SOCK_STREAM);
-	addrs = res.resolve(hostname);
+	res.resolve(addrs, hostname);
       }
     logger->info(MSG_NAME_RESOLUTION_COMPLETE, cuid,
 		 hostname.c_str(),

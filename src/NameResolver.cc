@@ -43,7 +43,8 @@ namespace aria2 {
 
 NameResolver::NameResolver():_socktype(0) {}
 
-std::deque<std::string> NameResolver::resolve(const std::string& hostname)
+void NameResolver::resolve(std::deque<std::string>& resolvedAddresses,
+			   const std::string& hostname)
 {
   struct addrinfo hints;
   struct addrinfo* res;
@@ -58,16 +59,13 @@ std::deque<std::string> NameResolver::resolve(const std::string& hostname)
     throw DlAbortEx(StringFormat(EX_RESOLVE_HOSTNAME,
 				 hostname.c_str(), gai_strerror(s)).str());
   }
-  std::deque<std::string> addrs;
   struct addrinfo* rp;
   for(rp = res; rp; rp = rp->ai_next) {
     std::pair<std::string, uint16_t> addressPort
       = Util::getNumericNameInfo(rp->ai_addr, rp->ai_addrlen);
-    addrs.push_back(addressPort.first);
+    resolvedAddresses.push_back(addressPort.first);
   }
   freeaddrinfo(res);
-
-  return addrs;
 }
 
 void NameResolver::setSocktype(int socktype)

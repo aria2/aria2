@@ -47,7 +47,11 @@ private:
 public:
   NameResolver();
 
-  std::deque<std::string> resolve(const std::string& hostname);
+  /**
+   * Reolved addresses are pushed into addresses.
+   */
+  void resolve(std::deque<std::string>& resolvedAddresses,
+	       const std::string& hostname);
 
   // specify SOCK_STREAM or SOCK_DGRAM
   void setSocktype(int socktype);
