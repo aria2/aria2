@@ -121,22 +121,16 @@ bool FeatureConfig::isSupported(const std::string& feature) const
   }
 }
 
-class AccFeature {
-public:
-  std::string operator()(std::string line, const FeatureMap::value_type& v)
-  {
-    if(v.second) {
-      line += v.first+", ";
-    }
-    return line;
-  }
-};
-
 std::string FeatureConfig::featureSummary() const
 {
-  return Util::trim
-    (std::accumulate(_features.begin(), _features.end(), std::string(),
-		     AccFeature()), ", ");
+  std::string s;
+  for(FeatureMap::const_iterator i = _features.begin();
+      i != _features.end(); ++i) {
+    if((*i).second) {
+      s += (*i).first+", ";
+    }
+  }
+  return Util::trim(s, ", ");
 }
 
 } // namespace aria2
