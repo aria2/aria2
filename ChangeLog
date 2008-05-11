@@ -1,6 +1,17 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed method signature:
+	PieceStorage::getAdvertisedPieceIndexes
+	* src/DefaultBtInteractive.cc
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.h
+	* test/MockPieceStorage.h
+	
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed method signature:
 	SegmentMan::getInFlightSegment
 	* src/AbstractCommand.cc
 	* src/SegmentMan.cc

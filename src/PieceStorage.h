@@ -176,11 +176,12 @@ public:
   virtual void advertisePiece(int32_t cuid, size_t index) = 0;
 
   /**
-   * Returns piece index which is not advertised by the caller command and
-   * newer than lastCheckTime.
+   * indexes is filled with piece index which is not advertised by the caller
+   * command and newer than lastCheckTime.
    */
-  virtual std::deque<size_t>
-  getAdvertisedPieceIndexes(int32_t myCuid, const Time& lastCheckTime) = 0;
+  virtual void getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+					 int32_t myCuid,
+					 const Time& lastCheckTime) = 0;
 
   /**
    * Removes have entry if specified seconds have elapsed since its

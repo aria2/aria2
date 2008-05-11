@@ -200,8 +200,8 @@ void DefaultBtInteractive::decideChoking() {
 }
 
 void DefaultBtInteractive::checkHave() {
-  std::deque<size_t> indexes =
-    pieceStorage->getAdvertisedPieceIndexes(cuid, haveCheckPoint);
+  std::deque<size_t> indexes;
+  pieceStorage->getAdvertisedPieceIndexes(indexes, cuid, haveCheckPoint);
   haveCheckPoint.reset();
   if(indexes.size() >= 20) {
     if(peer->isFastExtensionEnabled() && pieceStorage->allDownloadFinished()) {

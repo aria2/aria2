@@ -552,11 +552,11 @@ void DefaultPieceStorage::advertisePiece(int32_t cuid, size_t index)
   haves.push_front(entry);
 }
 
-std::deque<size_t>
-DefaultPieceStorage::getAdvertisedPieceIndexes(int32_t myCuid,
+void
+DefaultPieceStorage::getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+					       int32_t myCuid,
 					       const Time& lastCheckTime)
 {
-  std::deque<size_t> indexes;
   for(Haves::const_iterator itr = haves.begin(); itr != haves.end(); itr++) {
     const Haves::value_type& have = *itr;
     if(have.getCuid() == myCuid) {
@@ -567,7 +567,6 @@ DefaultPieceStorage::getAdvertisedPieceIndexes(int32_t myCuid,
     }
     indexes.push_back(have.getIndex());
   }
-  return indexes;
 }
 
 class FindElapsedHave

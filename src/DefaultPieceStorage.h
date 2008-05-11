@@ -181,8 +181,9 @@ public:
 
   virtual void advertisePiece(int32_t cuid, size_t index);
 
-  virtual std::deque<size_t>
-  getAdvertisedPieceIndexes(int32_t myCuid, const Time& lastCheckTime);
+  virtual void
+  getAdvertisedPieceIndexes(std::deque<size_t>& indexes,
+			    int32_t myCuid, const Time& lastCheckTime);
 
   virtual void removeAdvertisedPiece(time_t elapsed);
 
