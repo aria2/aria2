@@ -115,7 +115,8 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
 
   DHTPeerAnnounceEntry entry(infohash);
   {
-    std::deque<SharedHandle<Peer> > peers = entry.getPeers();
+    std::deque<SharedHandle<Peer> > peers;
+    entry.getPeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)0, peers.size());
   }
 
@@ -123,7 +124,8 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
   entry.addPeerAddrEntry(PeerAddrEntry("192.168.0.2", 6882));
 
   {
-    std::deque<SharedHandle<Peer> > peers = entry.getPeers();
+    std::deque<SharedHandle<Peer> > peers;
+    entry.getPeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->ipaddr);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->port);
@@ -132,7 +134,8 @@ void DHTPeerAnnounceEntryTest::testGetPeers()
   }
   entry.setBtContext(ctx);
   {
-    std::deque<SharedHandle<Peer> > peers = entry.getPeers();
+    std::deque<SharedHandle<Peer> > peers;
+    entry.getPeers(peers);
     CPPUNIT_ASSERT_EQUAL((size_t)4, peers.size());
     CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.1"), peers[0]->ipaddr);
     CPPUNIT_ASSERT_EQUAL((uint16_t)6881, peers[0]->port);

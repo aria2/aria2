@@ -76,7 +76,8 @@ public:
 
   bool contains(const unsigned char* infoHash) const;
 
-  std::deque<SharedHandle<Peer> > getPeers(const unsigned char* infoHash);
+  void getPeers(std::deque<SharedHandle<Peer> >& peers,
+		const unsigned char* infoHash);
 
   // drop peer announce entry which is not updated in the past
   // DHT_PEER_ANNOUNCE_PURGE_INTERVAL seconds.

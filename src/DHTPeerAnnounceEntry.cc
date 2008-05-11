@@ -102,9 +102,8 @@ bool DHTPeerAnnounceEntry::empty() const
   return _peerAddrEntries.empty() && _btCtx.isNull();
 }
 
-Peers DHTPeerAnnounceEntry::getPeers() const
+void DHTPeerAnnounceEntry::getPeers(std::deque<SharedHandle<Peer> >& peers) const
 {
-  std::deque<SharedHandle<Peer> > peers;
   for(std::deque<PeerAddrEntry>::const_iterator i = _peerAddrEntries.begin();
       i != _peerAddrEntries.end(); ++i) {
     SharedHandle<Peer> peer(new Peer((*i).getIPAddress(), (*i).getPort()));
@@ -117,7 +116,6 @@ Peers DHTPeerAnnounceEntry::getPeers() const
       peers.insert(peers.end(), activePeers.begin(), activePeers.end());
     }
   }
-  return peers;
 }
 
 void DHTPeerAnnounceEntry::notifyUpdate()

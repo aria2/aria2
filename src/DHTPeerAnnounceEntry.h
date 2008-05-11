@@ -87,7 +87,7 @@ public:
     return _infoHash;
   }
 
-  std::deque<SharedHandle<Peer> > getPeers() const;
+  void getPeers(std::deque<SharedHandle<Peer> >& peers) const;
 
 };
 

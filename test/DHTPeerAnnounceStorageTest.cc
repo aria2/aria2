@@ -40,7 +40,8 @@ void DHTPeerAnnounceStorageTest::testAddAnnounce()
   storage.addPeerAnnounce(infohash2, "192.168.0.3", 6883);
   storage.addPeerAnnounce(infohash2, "192.168.0.4", 6884);
   
-  std::deque<SharedHandle<Peer> > peers = storage.getPeers(infohash2);
+  std::deque<SharedHandle<Peer> > peers;
+  storage.getPeers(peers, infohash2);
 
   CPPUNIT_ASSERT_EQUAL((size_t)2, peers.size());
   CPPUNIT_ASSERT_EQUAL(std::string("192.168.0.3"), peers[0]->ipaddr);

@@ -118,14 +118,14 @@ bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
     std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash)) != _entries.end();
 }
 
-Peers DHTPeerAnnounceStorage::getPeers(const unsigned char* infoHash)
+void DHTPeerAnnounceStorage::getPeers(std::deque<SharedHandle<Peer> >& peers,
+				      const unsigned char* infoHash)
 {
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
     std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash));
-  if(i == _entries.end() || (*i)->empty()) {
-    return Peers();
+  if(i != _entries.end() && !(*i)->empty()) {
+    (*i)->getPeers(peers);
   }
-  return (*i)->getPeers();
 }
 
 void DHTPeerAnnounceStorage::handleTimeout()
