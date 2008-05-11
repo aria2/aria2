@@ -34,7 +34,6 @@
 /* copyright --> */
 #include "TaggedItem.h"
 #include "a2functional.h"
-#include <numeric>
 #include <algorithm>
 
 namespace aria2 {
@@ -42,7 +41,12 @@ namespace aria2 {
 std::string TaggedItem::toTagString() const
 {
   if(_tags.size()) {
-    return std::accumulate(_tags.begin()+1, _tags.end(), _tags.front(), Concat(","));
+    std::string s(*_tags.begin());
+    for(std::deque<std::string>::const_iterator i = _tags.begin()+1;
+	i != _tags.end(); ++i) {
+      s += ","+(*i);
+    }
+    return s;
   } else {
     return "";
   }
