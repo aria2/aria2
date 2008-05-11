@@ -1,6 +1,7 @@
 #include "BtHaveMessage.h"
 #include "PeerMessageUtil.h"
 #include "Peer.h"
+#include "MockPieceStorage.h"
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -70,6 +71,8 @@ void BtHaveMessageTest::testDoReceivedAction() {
   BtHaveMessage msg;
   msg.setIndex(1);
   msg.setPeer(peer);
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  msg.setPieceStorage(pieceStorage);
 
   CPPUNIT_ASSERT(!peer->hasPiece(msg.getIndex()));
 

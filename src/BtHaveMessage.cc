@@ -39,6 +39,7 @@
 #include "message.h"
 #include "Peer.h"
 #include "StringFormat.h"
+#include "PieceStorage.h"
 
 namespace aria2 {
 
@@ -59,6 +60,7 @@ BtHaveMessageHandle BtHaveMessage::create(const unsigned char* data, size_t data
 
 void BtHaveMessage::doReceivedAction() {
   peer->updateBitfield(index, 1);
+  pieceStorage->addPieceStats(index);
 }
 
 size_t BtHaveMessage::MESSAGE_LENGTH = 9;

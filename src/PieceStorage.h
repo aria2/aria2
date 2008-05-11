@@ -204,6 +204,19 @@ public:
   virtual size_t countInFlightPiece() = 0;
 
   virtual std::deque<SharedHandle<Piece> > getInFlightPieces() = 0;
+
+  virtual void addPieceStats(size_t index) = 0;
+
+  virtual void addPieceStats(const unsigned char* bitfield,
+			     size_t bitfieldLength) = 0;
+
+  virtual void subtractPieceStats(const unsigned char* bitfield,
+				  size_t bitfieldLength) = 0;
+
+  virtual void updatePieceStats(const unsigned char* newBitfield,
+				size_t newBitfieldLength,
+				const unsigned char* oldBitfield) = 0;
+
 };
 
 typedef SharedHandle<PieceStorage> PieceStorageHandle;

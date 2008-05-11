@@ -62,6 +62,7 @@
 #include "DHTNode.h"
 #include "DHTSetup.h"
 #include "DHTRegistry.h"
+#include "PieceStorage.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -169,6 +170,8 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
+  pieceStorage->subtractPieceStats(peer->getBitfield(),
+				   peer->getBitfieldLength());
   peer->releaseSessionResource();
   PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getID());
 					

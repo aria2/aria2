@@ -207,6 +207,17 @@ public:
     return inFlightPieces;
   }
 
+  virtual void addPieceStats(size_t index) {}
+
+  virtual void addPieceStats(const unsigned char* bitfield,
+			     size_t bitfieldLength) {}
+
+  virtual void subtractPieceStats(const unsigned char* bitfield,
+				  size_t bitfieldLength) {}
+
+  virtual void updatePieceStats(const unsigned char* newBitfield,
+				size_t newBitfieldLength,
+				const unsigned char* oldBitfield) {}
 };
 
 } // namespace aria2

@@ -1,5 +1,21 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Implemented rarest piece first piece selection strategy.
+	* src/AbstractBtMessage.cc
+	* src/AbstractBtMessage.h
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/BtBitfieldMessage.cc
+	* src/BtHaveAllMessage.cc
+	* src/BtHaveMessage.cc
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/PeerInteractionCommand.cc
+	* src/PieceStorage.h
+	* src/UnknownLengthPieceStorage.h
+
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten readData and writeData.
 	* src/MultiDiskAdaptor.cc
 	* src/MultiDiskAdaptor.h

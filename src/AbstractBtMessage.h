@@ -136,6 +136,8 @@ public:
 
   SharedHandle<BtContext> getBtContext() const;
 
+  void setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage);
+
   void setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher);
 
   void setPeerConnection(const WeakHandle<PeerConnection>& peerConnection);

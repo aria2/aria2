@@ -38,6 +38,7 @@
 #include "message.h"
 #include "Peer.h"
 #include "StringFormat.h"
+#include "PieceStorage.h"
 
 namespace aria2 {
 
@@ -61,7 +62,9 @@ void BtHaveAllMessage::doReceivedAction() {
       (StringFormat("%s received while fast extension is disabled",
 		    toString().c_str()).str());
   }
+  pieceStorage->subtractPieceStats(peer->getBitfield(), peer->getBitfieldLength());
   peer->setAllBitfield();
+  pieceStorage->addPieceStats(peer->getBitfield(), peer->getBitfieldLength());
 }
 
 size_t BtHaveAllMessage::MESSAGE_LENGTH = 5;

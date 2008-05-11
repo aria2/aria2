@@ -1,6 +1,7 @@
 #include "BtHaveAllMessage.h"
 #include "PeerMessageUtil.h"
 #include "Peer.h"
+#include "MockPieceStorage.h"
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -64,7 +65,9 @@ void BtHaveAllMessageTest::testDoReceivedAction() {
   peer->allocateSessionResource(16*1024, 256*1024);
   peer->setFastExtensionEnabled(true);
   msg.setPeer(peer);
-  
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  msg.setPieceStorage(pieceStorage);
+
   msg.doReceivedAction();
   
   CPPUNIT_ASSERT(peer->isSeeder());

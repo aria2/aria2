@@ -107,6 +107,11 @@ SharedHandle<BtContext> AbstractBtMessage::getBtContext() const
   return btContext;
 }
 
+void AbstractBtMessage::setPieceStorage(const SharedHandle<PieceStorage>& pieceStorage)
+{
+  this->pieceStorage = pieceStorage;
+}
+
 void AbstractBtMessage::setBtMessageDispatcher(const WeakHandle<BtMessageDispatcher>& dispatcher)
 {
   this->dispatcher = dispatcher;

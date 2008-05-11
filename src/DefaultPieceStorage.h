@@ -67,6 +67,23 @@ public:
 
 typedef std::deque<HaveEntry> Haves;
 
+class PieceStat {
+private:
+  size_t _order;
+  size_t _index;
+  size_t _count;
+public:
+  PieceStat(size_t index);
+
+  void addCount();
+  void subCount();
+
+  size_t getOrder() const;
+  void setOrder(size_t order);
+  size_t getIndex() const;
+  size_t getCount() const;
+};
+
 class DefaultPieceStorage : public PieceStorage {
 private:
   SharedHandle<DownloadContext> downloadContext;
@@ -74,10 +91,14 @@ private:
   SharedHandle<DiskAdaptor> diskAdaptor;
   SharedHandle<DiskWriterFactory> _diskWriterFactory;
   std::deque<SharedHandle<Piece> > usedPieces;
+
   size_t endGamePieceNum;
   Logger* logger;
   const Option* option;
   Haves haves;
+
+  std::deque<SharedHandle<PieceStat> > _pieceStats;
+  std::deque<SharedHandle<PieceStat> > _sortedPieceStats;
   
   bool getMissingPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
   bool getMissingFastPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
@@ -176,6 +197,18 @@ public:
   virtual size_t countInFlightPiece();
 
   virtual std::deque<SharedHandle<Piece> > getInFlightPieces();
+
+  virtual void addPieceStats(size_t index);
+
+  virtual void addPieceStats(const unsigned char* bitfield,
+			     size_t bitfieldLength);
+  
+  virtual void subtractPieceStats(const unsigned char* bitfield,
+				  size_t bitfieldLength);
+
+  virtual void updatePieceStats(const unsigned char* newBitfield,
+				size_t newBitfieldLength,
+				const unsigned char* oldBitfield);
 
   /**
    * This method is made private for test purpose only.

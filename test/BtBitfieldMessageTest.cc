@@ -2,6 +2,7 @@
 #include "PeerMessageUtil.h"
 #include "Util.h"
 #include "Peer.h"
+#include "MockPieceStorage.h"
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -74,6 +75,8 @@ void BtBitfieldMessageTest::testDoReceivedAction() {
   peer->allocateSessionResource(16*1024, 16*16*1024);
   BtBitfieldMessage msg;
   msg.setPeer(peer);
+  SharedHandle<MockPieceStorage> pieceStorage(new MockPieceStorage());
+  msg.setPieceStorage(pieceStorage);
   unsigned char bitfield[] = { 0xff, 0xff };
   msg.setBitfield(bitfield, sizeof(bitfield));
   

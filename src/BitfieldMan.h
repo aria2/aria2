@@ -145,6 +145,11 @@ public:
   /**
    * affected by filter
    */
+  std::deque<size_t> getAllMissingUnusedIndexes(const unsigned char* bitfield,
+						size_t len) const;
+  /**
+   * affected by filter
+   */
   size_t countMissingBlock() const;
   /**
    * affected by filter

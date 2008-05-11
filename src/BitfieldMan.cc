@@ -424,6 +424,19 @@ std::deque<size_t> BitfieldMan::getAllMissingIndexes(const unsigned char* peerBi
   return getAllMissingIndexes(bf, bitfieldLength);
 }
 
+std::deque<size_t> BitfieldMan::getAllMissingUnusedIndexes(const unsigned char* peerBitfield, size_t peerBitfieldLength) const {
+  if(bitfieldLength != peerBitfieldLength) {
+    return std::deque<size_t>();
+  }
+  array_fun<unsigned char> bf = array_and(array_and(array_negate(bitfield),
+						    array_negate(useBitfield)),
+					  peerBitfield);
+  if(filterEnabled) {
+    bf = array_and(bf, filterBitfield);
+  }
+  return getAllMissingIndexes(bf, bitfieldLength);
+}
+
 size_t BitfieldMan::countMissingBlock() const {
   return cachedNumMissingBlock;
 }
