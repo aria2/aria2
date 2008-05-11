@@ -142,23 +142,26 @@ public:
 
 bool DefaultPieceStorage::getMissingPieceIndex(size_t& index, const PeerHandle& peer)
 {
+  std::deque<size_t> indexes;
+  bool r;
   if(isEndGame()) {
-    return bitfieldMan->getMissingIndex(index, peer->getBitfield(),
-					peer->getBitfieldLength());
+    r = bitfieldMan->getAllMissingIndexes(indexes, peer->getBitfield(),
+					  peer->getBitfieldLength());
   } else {
-    std::deque<size_t> indexes =
-      bitfieldMan->getAllMissingUnusedIndexes(peer->getBitfield(),
-					      peer->getBitfieldLength());
-    if(indexes.empty()) {
-      return false;
-    } else {
-      std::sort(indexes.begin(), indexes.end());
-      std::deque<SharedHandle<PieceStat> >::const_iterator i =
-	std::find_if(_sortedPieceStats.begin(), _sortedPieceStats.end(),
-		     FindRarestPiece(indexes));
-      index = (*i)->getIndex();
-      return true;
-    }
+    r = bitfieldMan->getAllMissingUnusedIndexes(indexes,
+						peer->getBitfield(),
+						peer->getBitfieldLength());
+  }
+  if(r) {
+    // We assume indexes is sorted using comparator less.
+    //std::sort(indexes.begin(), indexes.end());
+    std::deque<SharedHandle<PieceStat> >::const_iterator i =
+      std::find_if(_sortedPieceStats.begin(), _sortedPieceStats.end(),
+		   FindRarestPiece(indexes));
+    index = (*i)->getIndex();
+    return true;
+  } else {
+    return false;
   }
 }
 

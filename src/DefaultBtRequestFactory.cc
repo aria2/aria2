@@ -126,7 +126,8 @@ BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < max; itr++) {
     PieceHandle& piece = *itr;
-    std::deque<size_t> missingBlockIndexes = piece->getAllMissingBlockIndexes();
+    std::deque<size_t> missingBlockIndexes;
+    piece->getAllMissingBlockIndexes(missingBlockIndexes);
     random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
     for(std::deque<size_t>::const_iterator bitr = missingBlockIndexes.begin();
 	bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {

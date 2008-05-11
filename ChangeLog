@@ -1,5 +1,17 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	In piece selection functions, Pass std::deque<...> by reference rather
+	than returning it.
+	* src/BitfieldMan.cc
+	* src/BitfieldMan.h
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultPieceStorage.cc
+	* src/Piece.cc
+	* src/Piece.h
+	* test/BitfieldManTest.cc
+
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Implemented rarest piece first piece selection strategy.
 	* src/AbstractBtMessage.cc
 	* src/AbstractBtMessage.h

@@ -70,7 +70,7 @@ public:
   bool getMissingUnusedBlockIndex(size_t& index) const;
   bool getMissingBlockIndex(size_t& index) const;
   bool getFirstMissingBlockIndexWithoutLock(size_t& index) const;
-  std::deque<size_t> getAllMissingBlockIndexes() const;
+  bool getAllMissingBlockIndexes(std::deque<size_t>& indexes) const;
   void completeBlock(size_t blockIndex);
   void cancelBlock(size_t blockIndex);
 

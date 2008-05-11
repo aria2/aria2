@@ -388,45 +388,52 @@ bool BitfieldMan::getSparseMissingUnusedIndex(size_t& index) const {
 }
 
 template<typename Array>
-std::deque<size_t>
-BitfieldMan::getAllMissingIndexes(const Array& bitfield, size_t bitfieldLength) const
+bool BitfieldMan::getAllMissingIndexes(std::deque<size_t>& indexes,
+				       const Array& bitfield,
+				       size_t bitfieldLength) const
 {
-  std::deque<size_t> missingIndexes;
   for(size_t i = 0; i < bitfieldLength; ++i) {
     size_t base = i*8;
     for(size_t bi = 0; bi < 8 && base+bi < blocks; ++bi) {
       unsigned char mask = 128 >> bi;
       if(bitfield[i] & mask) {
-	missingIndexes.push_back(base+bi);
+	indexes.push_back(base+bi);
       }
     }
   }
-  return missingIndexes;
+  return !indexes.empty();
 }
 
-std::deque<size_t> BitfieldMan::getAllMissingIndexes() const {
+bool BitfieldMan::getAllMissingIndexes(std::deque<size_t>& indexes) const
+{
   array_fun<unsigned char> bf = array_negate(bitfield);
   if(filterEnabled) {
     bf = array_and(bf, filterBitfield);
   }
-  return getAllMissingIndexes(bf, bitfieldLength);
+  return getAllMissingIndexes(indexes, bf, bitfieldLength);
 }
 
-std::deque<size_t> BitfieldMan::getAllMissingIndexes(const unsigned char* peerBitfield, size_t peerBitfieldLength) const {
+bool BitfieldMan::getAllMissingIndexes(std::deque<size_t>& indexes,
+				       const unsigned char* peerBitfield,
+				       size_t peerBitfieldLength) const
+{
   if(bitfieldLength != peerBitfieldLength) {
-    return std::deque<size_t>();
+    return false;
   }
   array_fun<unsigned char> bf = array_and(array_negate(bitfield),
 					  peerBitfield);
   if(filterEnabled) {
     bf = array_and(bf, filterBitfield);
   }
-  return getAllMissingIndexes(bf, bitfieldLength);
+  return getAllMissingIndexes(indexes, bf, bitfieldLength);
 }
 
-std::deque<size_t> BitfieldMan::getAllMissingUnusedIndexes(const unsigned char* peerBitfield, size_t peerBitfieldLength) const {
+bool BitfieldMan::getAllMissingUnusedIndexes(std::deque<size_t>& indexes,
+					     const unsigned char* peerBitfield,
+					     size_t peerBitfieldLength) const
+{
   if(bitfieldLength != peerBitfieldLength) {
-    return std::deque<size_t>();
+    return false;
   }
   array_fun<unsigned char> bf = array_and(array_and(array_negate(bitfield),
 						    array_negate(useBitfield)),
@@ -434,7 +441,7 @@ std::deque<size_t> BitfieldMan::getAllMissingUnusedIndexes(const unsigned char* 
   if(filterEnabled) {
     bf = array_and(bf, filterBitfield);
   }
-  return getAllMissingIndexes(bf, bitfieldLength);
+  return getAllMissingIndexes(indexes, bf, bitfieldLength);
 }
 
 size_t BitfieldMan::countMissingBlock() const {

@@ -73,7 +73,9 @@ private:
   bool getFirstMissingIndex(size_t& index, const Array& bitfield, size_t bitfieldLength) const;
 
   template<typename Array>
-  std::deque<size_t> getAllMissingIndexes(const Array& bitfield, size_t bitfieldLength) const;
+  bool getAllMissingIndexes(std::deque<size_t>& indexes,
+			    const Array& bitfield,
+			    size_t bitfieldLength) const;
 
   bool isBitSetInternal(const unsigned char* bitfield, size_t index) const;
   bool setBitInternal(unsigned char* bitfield, size_t index, bool on);
@@ -137,16 +139,18 @@ public:
   /**
    * affected by filter
    */
-  std::deque<size_t> getAllMissingIndexes() const;
+  bool getAllMissingIndexes(std::deque<size_t>&indexes) const;
   /**
    * affected by filter
    */
-  std::deque<size_t> getAllMissingIndexes(const unsigned char* bitfield, size_t len) const;
+  bool getAllMissingIndexes(std::deque<size_t>& indexes,
+			    const unsigned char* bitfield, size_t len) const;
   /**
    * affected by filter
    */
-  std::deque<size_t> getAllMissingUnusedIndexes(const unsigned char* bitfield,
-						size_t len) const;
+  bool getAllMissingUnusedIndexes(std::deque<size_t>& indexes,
+				  const unsigned char* bitfield,
+				  size_t len) const;
   /**
    * affected by filter
    */

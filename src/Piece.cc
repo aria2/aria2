@@ -169,8 +169,8 @@ bool Piece::getFirstMissingBlockIndexWithoutLock(size_t& index) const
   return bitfield->getFirstMissingIndex(index);
 }
 
-std::deque<size_t> Piece::getAllMissingBlockIndexes() const {
-  return bitfield->getAllMissingIndexes();
+bool Piece::getAllMissingBlockIndexes(std::deque<size_t>& indexes) const {
+  return bitfield->getAllMissingIndexes(indexes);
 }
 
 std::string Piece::toString() const {
