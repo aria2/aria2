@@ -56,13 +56,14 @@ DHTPeerLookupTask::DHTPeerLookupTask(const SharedHandle<BtContext>& btContext):
   _peerStorage(PEER_STORAGE(btContext)),
   _btRuntime(BT_RUNTIME(btContext)) {}
 
-std::deque<SharedHandle<DHTNode> > DHTPeerLookupTask::getNodesFromMessage(const SharedHandle<DHTMessage>& message)
+void
+DHTPeerLookupTask::getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
+				       const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTGetPeersReplyMessage> m(dynamic_pointer_cast<DHTGetPeersReplyMessage>(message));
-  if(m.isNull()) {
-    return std::deque<SharedHandle<DHTNode> >();
-  } else {
-    return m->getClosestKNodes();
+  if(!m.isNull()) {
+    const std::deque<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
+    nodes.insert(nodes.end(), knodes.begin(), knodes.end());
   }
 }
   

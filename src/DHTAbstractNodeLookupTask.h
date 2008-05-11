@@ -72,7 +72,8 @@ public:
 
   virtual void onTimeout(const SharedHandle<DHTNode>& node);
 
-  virtual std::deque<SharedHandle<DHTNode> > getNodesFromMessage(const SharedHandle<DHTMessage>& message) = 0;
+  virtual void getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
+				   const SharedHandle<DHTMessage>& message) = 0;
   
   virtual void onReceivedInternal(const SharedHandle<DHTMessage>& message) {}
   

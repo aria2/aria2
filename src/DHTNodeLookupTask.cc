@@ -47,15 +47,15 @@ DHTNodeLookupTask::DHTNodeLookupTask(const unsigned char* targetNodeID):
   DHTAbstractNodeLookupTask(targetNodeID)
 {}
 
-std::deque<SharedHandle<DHTNode> >
-DHTNodeLookupTask::getNodesFromMessage(const SharedHandle<DHTMessage>& message)
+void
+DHTNodeLookupTask::getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
+				       const SharedHandle<DHTMessage>& message)
 {
   SharedHandle<DHTFindNodeReplyMessage> m
     (dynamic_pointer_cast<DHTFindNodeReplyMessage>(message));
-  if(m.isNull()) {
-    return std::deque<SharedHandle<DHTNode> >();
-  } else {
-    return m->getClosestKNodes();
+  if(!m.isNull()) {
+    const std::deque<SharedHandle<DHTNode> >& knodes = m->getClosestKNodes();
+    nodes.insert(nodes.end(), knodes.begin(), knodes.end());
   }
 }
 

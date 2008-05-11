@@ -60,7 +60,10 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
 {
   --_inFlightMessage;
   onReceivedInternal(message);
-  std::deque<SharedHandle<DHTNodeLookupEntry> > newEntries = toEntries(getNodesFromMessage(message));
+  std::deque<SharedHandle<DHTNode> > nodes;
+  getNodesFromMessage(nodes, message);
+  std::deque<SharedHandle<DHTNodeLookupEntry> > newEntries = toEntries(nodes);
+
   size_t count = 0;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i = newEntries.begin();
       i != newEntries.end(); ++i) {
@@ -69,6 +72,7 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
       ++count;
     }
   }
+
   _logger->debug("%u node lookup entries added.", count);
   std::stable_sort(_entries.begin(), _entries.end(), DHTIDCloser(_targetID));
   _entries.erase(std::unique(_entries.begin(), _entries.end()), _entries.end());

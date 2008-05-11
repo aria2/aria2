@@ -43,7 +43,8 @@ class DHTNodeLookupTask:public DHTAbstractNodeLookupTask {
 public:
   DHTNodeLookupTask(const unsigned char* targetNodeID);
 
-  virtual std::deque<SharedHandle<DHTNode> > getNodesFromMessage(const SharedHandle<DHTMessage>& message);
+  virtual void getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
+				   const SharedHandle<DHTMessage>& message);
 
   virtual SharedHandle<DHTMessage> createMessage(const SharedHandle<DHTNode>& remoteNode);
 };

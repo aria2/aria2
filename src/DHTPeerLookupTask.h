@@ -59,7 +59,8 @@ private:
 public:
   DHTPeerLookupTask(const SharedHandle<BtContext>& btContext);
 
-  virtual std::deque<SharedHandle<DHTNode> > getNodesFromMessage(const SharedHandle<DHTMessage>& message);
+  virtual void getNodesFromMessage(std::deque<SharedHandle<DHTNode> >& nodes,
+				   const SharedHandle<DHTMessage>& message);
   
   virtual void onReceivedInternal(const SharedHandle<DHTMessage>& message);
   
