@@ -147,17 +147,16 @@ SegmentEntryHandle SegmentMan::findSlowerSegmentEntry(const PeerStatHandle& peer
   return slowSegmentEntry;
 }
 
-Segments SegmentMan::getInFlightSegment(int32_t cuid)
+void SegmentMan::getInFlightSegment(std::deque<SharedHandle<Segment> >& segments,
+				    int32_t cuid)
 {
-  Segments temp;
   for(SegmentEntries::iterator itr = usedSegmentEntries.begin();
       itr != usedSegmentEntries.end(); ++itr) {
     const SegmentEntryHandle& segmentEntry = *itr;
     if(segmentEntry->cuid == cuid) {
-      temp.push_back(segmentEntry->segment);
+      segments.push_back(segmentEntry->segment);
     }
   }
-  return temp;
 }
 
 SegmentHandle SegmentMan::getSegment(int32_t cuid) {

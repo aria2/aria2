@@ -78,7 +78,8 @@ void SegmentManTest::testCompleteSegment()
   seg->updateWrittenLength(pieceLength);
   segmentMan.completeSegment(1, seg);
   
-  std::deque<SharedHandle<Segment> > segments = segmentMan.getInFlightSegment(1);
+  std::deque<SharedHandle<Segment> > segments;
+  segmentMan.getInFlightSegment(segments, 1);
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments.size());
   CPPUNIT_ASSERT_EQUAL((size_t)0, segments[0]->getIndex());
   CPPUNIT_ASSERT_EQUAL((size_t)2, segments[1]->getIndex());

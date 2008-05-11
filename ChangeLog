@@ -1,6 +1,15 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed method signature:
+	SegmentMan::getInFlightSegment
+	* src/AbstractCommand.cc
+	* src/SegmentMan.cc
+	* src/SegmentMan.h
+	* test/SegmentManTest.cc
+
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed method signature:
 	DHTAbstractNodeLookupTask::getNodesFromMessage
 	* src/DHTAbstractNodeLookupTask.cc
 	* src/DHTAbstractNodeLookupTask.h

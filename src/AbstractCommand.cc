@@ -125,7 +125,8 @@ bool AbstractCommand::execute() {
        (!checkSocketIsReadable && !checkSocketIsWritable && !nameResolverCheck)) {
       checkPoint.reset();
       if(!_requestGroup->getPieceStorage().isNull()) {
-	_segments = _requestGroup->getSegmentMan()->getInFlightSegment(cuid);
+	_segments.clear();
+	_requestGroup->getSegmentMan()->getInFlightSegment(_segments, cuid);
 	size_t maxSegments;
 	if(req->isPipeliningEnabled()) {
 	  maxSegments = e->option->getAsInt(PREF_MAX_HTTP_PIPELINING);

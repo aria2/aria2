@@ -110,11 +110,11 @@ public:
   bool downloadFinished() const;
 
   /**
-   * Returns a vacant segment.
-   * If there is no vacant segment, then returns a segment instance whose
-   * isNull call is true.
+   * Fill segments which are assigned to the command whose CUID is cuid.
+   * This function doesn't clear passed segments.
    */
-  std::deque<SharedHandle<Segment> > getInFlightSegment(int32_t cuid);
+  void getInFlightSegment(std::deque<SharedHandle<Segment> >& segments,
+			  int32_t cuid);
 
   SharedHandle<Segment> getSegment(int32_t cuid);
 
