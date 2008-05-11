@@ -58,7 +58,8 @@ DHTFindNodeMessage::~DHTFindNodeMessage() {}
 
 void DHTFindNodeMessage::doReceivedAction()
 {
-  std::deque<SharedHandle<DHTNode> > nodes = _routingTable->getClosestKNodes(_targetNodeID);
+  std::deque<SharedHandle<DHTNode> > nodes;
+  _routingTable->getClosestKNodes(nodes, _targetNodeID);
   SharedHandle<DHTMessage> reply =
     _factory->createFindNodeReplyMessage(_remoteNode, nodes, _transactionID);
   _dispatcher->addMessageToQueue(reply);

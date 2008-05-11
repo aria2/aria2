@@ -218,12 +218,11 @@ const std::deque<SharedHandle<DHTNode> >& DHTBucket::getNodes() const
   return _nodes;
 }
 
-std::deque<SharedHandle<DHTNode> > DHTBucket::getGoodNodes() const
+void DHTBucket::getGoodNodes(std::deque<SharedHandle<DHTNode> >& goodNodes) const
 {
-  std::deque<SharedHandle<DHTNode> > goodNodes = _nodes;
+  goodNodes = _nodes;
   goodNodes.erase(std::remove_if(goodNodes.begin(), goodNodes.end(),
 				 mem_fun_sh(&DHTNode::isBad)), goodNodes.end());
-  return goodNodes;
 }
 
 SharedHandle<DHTNode> DHTBucket::getNode(const unsigned char* nodeID, const std::string& ipaddr, uint16_t port) const

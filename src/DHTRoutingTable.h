@@ -73,7 +73,8 @@ public:
 
   bool addGoodNode(const SharedHandle<DHTNode>& node);
 
-  std::deque<SharedHandle<DHTNode> > getClosestKNodes(const unsigned char* key) const;
+  void getClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
+			const unsigned char* key) const;
 
   size_t countBucket() const;
 
@@ -91,7 +92,7 @@ public:
 
   SharedHandle<DHTNode> getNode(const unsigned char* id, const std::string& ipaddr, uint16_t port) const;
   
-  std::deque<SharedHandle<DHTBucket> > getBuckets() const;
+  void getBuckets(std::deque<SharedHandle<DHTBucket> >& buckets) const;
 
   void setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue);
 

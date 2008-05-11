@@ -132,7 +132,9 @@ void DHTAbstractNodeLookupTask::updateBucket()
 
 void DHTAbstractNodeLookupTask::startup()
 {
-  _entries = toEntries(_routingTable->getClosestKNodes(_targetID));
+  std::deque<SharedHandle<DHTNode> > nodes;
+  _routingTable->getClosestKNodes(nodes, _targetID);
+  _entries = toEntries(nodes);
   if(_entries.empty()) {
     _finished = true;
   } else {

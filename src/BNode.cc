@@ -134,27 +134,26 @@ SharedHandle<DHTBucket> BNode::findBucketFor(BNode* b, const unsigned char* key)
 }
 
 
-std::deque<SharedHandle<DHTNode> > BNode::findClosestKNodes(BNode* b, const unsigned char* key)
+void BNode::findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
+			      BNode* b, const unsigned char* key)
 {
   BNode* bnode = findBNodeFor(b, key);
-  std::deque<SharedHandle<DHTNode> > nodes;
   if(!bnode) {
-    return nodes;
+    return;
   }
   {
     SharedHandle<DHTBucket> bucket = bnode->getBucket();
-    std::deque<SharedHandle<DHTNode> > goodNodes = bucket->getGoodNodes();
-    nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
+    bucket->getGoodNodes(nodes);
   }
   if(nodes.size() >= DHTBucket::K) {
-    return nodes;
+    return;
   }
   std::deque<const BNode*> visited;
   visited.push_back(bnode);
 
   BNode* up = bnode->getUp();
   if(!up) {
-    return nodes;
+    return;
   }
   bool leftFirst = false;
   if(up->getLeft() == bnode) {
@@ -184,7 +183,8 @@ std::deque<SharedHandle<DHTNode> > BNode::findClosestKNodes(BNode* b, const unsi
     {
       SharedHandle<DHTBucket> bucket = bnode->getBucket();
       if(!bucket.isNull()) {
-	std::deque<SharedHandle<DHTNode> > goodNodes = bucket->getGoodNodes();
+	std::deque<SharedHandle<DHTNode> > goodNodes;
+	bucket->getGoodNodes(goodNodes);
 	size_t r = DHTBucket::K-nodes.size();
 	if(goodNodes.size() <= r) {
 	  nodes.insert(nodes.end(), goodNodes.begin(), goodNodes.end());
@@ -194,12 +194,12 @@ std::deque<SharedHandle<DHTNode> > BNode::findClosestKNodes(BNode* b, const unsi
       }
     }
   }
-  return nodes;
+  return;
 }
 
-std::deque<SharedHandle<DHTBucket> > BNode::enumerateBucket(const BNode* b)
+void BNode::enumerateBucket(std::deque<SharedHandle<DHTBucket> >& buckets,
+			    const BNode* b)
 {
-  std::deque<SharedHandle<DHTBucket> > buckets;
   std::deque<const BNode*> visited;
   visited.push_back(b);
   while(1) {
@@ -219,7 +219,7 @@ std::deque<SharedHandle<DHTBucket> > BNode::enumerateBucket(const BNode* b)
       b = b->getUp();
     }
   }
-  return buckets;
+  return;
 }
 
 } // namespace aria2

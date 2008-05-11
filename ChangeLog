@@ -1,5 +1,26 @@
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed method signature:
+	BNode::findClosestKNodes, BNode:: enumerateBucket,
+	DHTBucket::getGoodNodes,
+	DHTRoutingTable::getClosestKNodes, DHTRoutingTable::getBuckets
+	* src/BNode.cc
+	* src/BNode.h
+	* src/DHTAbstractNodeLookupTask.cc
+	* src/DHTAutoSaveCommand.cc
+	* src/DHTBucket.cc
+	* src/DHTBucket.h
+	* src/DHTBucketRefreshTask.cc
+	* src/DHTFindNodeMessage.cc
+	* src/DHTGetPeersMessage.cc
+	* src/DHTRoutingTable.cc
+	* src/DHTRoutingTable.h
+	* test/BNodeTest.cc
+	* test/DHTBucketTest.cc
+	* test/DHTRoutingTableTest.cc
+
+2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	In piece selection functions, Pass std::deque<...> by reference rather
 	than returning it.
 	* src/BitfieldMan.cc

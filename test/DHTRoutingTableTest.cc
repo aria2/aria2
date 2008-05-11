@@ -82,7 +82,8 @@ void DHTRoutingTableTest::testGetClosestKNodes()
   }
   {
     createID(id, 0x80, 0x10);
-    std::deque<SharedHandle<DHTNode> > nodes = table.getClosestKNodes(id);
+    std::deque<SharedHandle<DHTNode> > nodes;
+    table.getClosestKNodes(nodes, id);
     CPPUNIT_ASSERT_EQUAL((size_t)8, nodes.size());
     for(size_t i = 0; i < nodes.size(); ++i) {
       CPPUNIT_ASSERT(memcmp(nodes2[0]->getID(), nodes[0]->getID(), DHT_ID_LENGTH) == 0);

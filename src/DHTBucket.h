@@ -114,7 +114,7 @@ public:
 
   const std::deque<SharedHandle<DHTNode> >& getNodes() const;
 
-  std::deque<SharedHandle<DHTNode> > getGoodNodes() const;
+  void getGoodNodes(std::deque<SharedHandle<DHTNode> >& nodes) const;
 
   void dropNode(const SharedHandle<DHTNode>& node);
 

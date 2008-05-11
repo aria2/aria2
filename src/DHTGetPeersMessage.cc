@@ -69,7 +69,8 @@ void DHTGetPeersMessage::doReceivedAction()
   Peers peers = _peerAnnounceStorage->getPeers(_infoHash);
   SharedHandle<DHTMessage> reply;
   if(peers.empty()) {
-    std::deque<SharedHandle<DHTNode> > nodes = _routingTable->getClosestKNodes(_infoHash);
+    std::deque<SharedHandle<DHTNode> > nodes;
+    _routingTable->getClosestKNodes(nodes, _infoHash);
     reply =
       _factory->createGetPeersReplyMessage(_remoteNode, nodes, token,
 					   _transactionID);

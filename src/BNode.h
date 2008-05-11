@@ -81,9 +81,11 @@ public:
 
   static SharedHandle<DHTBucket> findBucketFor(BNode* b, const unsigned char* key);
 
-  static std::deque<SharedHandle<DHTNode> > findClosestKNodes(BNode* b, const unsigned char* key);
+  static void findClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
+				BNode* b, const unsigned char* key);
 
-  static std::deque<SharedHandle<DHTBucket> > enumerateBucket(const BNode* b);
+  static void enumerateBucket(std::deque<SharedHandle<DHTBucket> >& buckets,
+			      const BNode* b);
 };
 
 } // namespace aria2

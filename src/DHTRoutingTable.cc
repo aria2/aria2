@@ -108,9 +108,10 @@ bool DHTRoutingTable::addNode(const SharedHandle<DHTNode>& node, bool good)
   return false;
 }
 
-std::deque<SharedHandle<DHTNode> > DHTRoutingTable::getClosestKNodes(const unsigned char* key) const
+void DHTRoutingTable::getClosestKNodes(std::deque<SharedHandle<DHTNode> >& nodes,
+				       const unsigned char* key) const
 {
-  return BNode::findClosestKNodes(_root, key);
+  BNode::findClosestKNodes(nodes, _root, key);
 }
 
 size_t DHTRoutingTable::countBucket() const
@@ -158,9 +159,9 @@ void DHTRoutingTable::moveBucketTail(const SharedHandle<DHTNode>& node)
   getBucketFor(node)->moveToTail(node);
 }
 
-std::deque<SharedHandle<DHTBucket> > DHTRoutingTable::getBuckets() const
+void DHTRoutingTable::getBuckets(std::deque<SharedHandle<DHTBucket> >& buckets) const
 {
-  return BNode::enumerateBucket(_root);
+  BNode::enumerateBucket(buckets, _root);
 }
 
 void DHTRoutingTable::setTaskQueue(const SharedHandle<DHTTaskQueue>& taskQueue)
