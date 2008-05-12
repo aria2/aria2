@@ -159,6 +159,23 @@ public:
   }
 };
 
+template<typename T>
+class Append {
+private:
+  T& _to;
+  T _delim;
+public:
+  template<typename S>
+  Append(T& to, const S& delim):_to(to), _delim(delim) {}
+
+  template<typename S>
+  void operator()(const S& s) {
+    _to += s+_delim;
+  }
+};
+
+typedef Append<std::string> StringAppend;
+
 } // namespace aria2
 
 #endif // _D_A2_FUNCTIONAL_H_

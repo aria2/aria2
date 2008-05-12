@@ -2,6 +2,7 @@
 
 	Rewritten Accept-Features handling.
 	* src/HttpRequestCommand.cc (createHttpRequest)
+	* src/a2functional.h
 
 2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
