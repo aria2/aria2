@@ -179,7 +179,7 @@ public:
     return _spentUris;
   }
 
-  std::deque<std::string> getUris() const;
+  void getURIs(std::deque<std::string>& uris) const;
 
   /**
    * Compares expected filename with specified actualFilename.

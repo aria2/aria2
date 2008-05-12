@@ -1,5 +1,13 @@
 2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed method sinature:
+	RequestGroup::getURIs
+	* src/RequestGroup.cc
+	* src/RequestGroup.h
+	* test/Metalink2RequestGroupTest.cc
+
+2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Changed method signature:
 	PeerListProcessor::extractPeer
 	* src/CompactPeerListProcessor.cc

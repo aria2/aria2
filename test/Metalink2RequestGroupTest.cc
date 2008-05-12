@@ -37,7 +37,8 @@ void Metalink2RequestGroupTest::testGenerate()
   // first file
   {
     SharedHandle<RequestGroup> rg = groups[0];
-    std::deque<std::string> uris = rg->getUris();
+    std::deque<std::string> uris;
+    rg->getURIs(uris);
     std::sort(uris.begin(), uris.end());
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("ftp://ftphost/aria2-0.5.2.tar.bz2"), uris[0]);
@@ -55,7 +56,8 @@ void Metalink2RequestGroupTest::testGenerate()
   // second file
   {
     SharedHandle<RequestGroup> rg = groups[1];
-    std::deque<std::string> uris = rg->getUris();
+    std::deque<std::string> uris;
+    rg->getURIs(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)2, uris.size());
     SharedHandle<SingleFileDownloadContext> dctx
       (dynamic_pointer_cast<SingleFileDownloadContext>(rg->getDownloadContext()));
@@ -73,7 +75,8 @@ void Metalink2RequestGroupTest::testGenerate()
   // fifth file <- downloading .torrent file
   {
     SharedHandle<RequestGroup> rg = groups[4];
-    std::deque<std::string> uris = rg->getUris();
+    std::deque<std::string> uris;
+    rg->getURIs(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://host/torrent-http.integrated.torrent"),
 			 uris[0]);
@@ -90,7 +93,8 @@ void Metalink2RequestGroupTest::testGenerate()
 #else
     SharedHandle<RequestGroup> rg = groups[4];
 #endif // ENABLE_BITTORRENT
-    std::deque<std::string> uris = rg->getUris();
+    std::deque<std::string> uris;
+    rg->getURIs(uris);
     CPPUNIT_ASSERT_EQUAL((size_t)1, uris.size());
     CPPUNIT_ASSERT_EQUAL(std::string("http://host/torrent-http.integrated"), uris[0]);
     SharedHandle<SingleFileDownloadContext> dctx

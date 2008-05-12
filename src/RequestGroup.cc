@@ -754,11 +754,10 @@ void RequestGroup::initializePostDownloadHandler()
 #endif // ENABLE_METALINK
 }
 
-std::deque<std::string> RequestGroup::getUris() const
+void RequestGroup::getURIs(std::deque<std::string>& uris) const
 {
-  std::deque<std::string> temp(_spentUris.begin(), _spentUris.end());
-  temp.insert(temp.end(), _uris.begin(), _uris.end());
-  return temp;
+  uris.insert(uris.end(), _spentUris.begin(), _spentUris.end());
+  uris.insert(uris.end(), _uris.begin(), _uris.end());
 }
 
 bool RequestGroup::isDependencyResolved()
@@ -853,7 +852,8 @@ bool RequestGroup::needsFileAllocation() const
 
 DownloadResultHandle RequestGroup::createDownloadResult() const
 {
-  std::deque<std::string> uris = getUris();
+  std::deque<std::string> uris;
+  getURIs(uris);
   return
     SharedHandle<DownloadResult>(new DownloadResult(_gid,
 						    getFilePath(),
