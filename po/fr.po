@@ -7,59 +7,59 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-03-15 20:03+0900\n"
-"PO-Revision-Date: 2008-02-29 12:51+0000\n"
+"POT-Creation-Date: 2008-05-13 00:34+0900\n"
+"PO-Revision-Date: 2008-05-10 11:06+0000\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2008-03-01 03:48+0000\n"
+"X-Launchpad-Export-Date: 2008-05-12 14:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: src/OptionHandlerImpl.h:70
+#: src/OptionHandlerImpl.h:71
 msgid "must be either 'true' or 'false'."
 msgstr "doit contenir comme valeur soit \"true\" ou \"false\""
 
-#: src/OptionHandlerImpl.h:91 src/OptionHandlerImpl.h:124
+#: src/OptionHandlerImpl.h:92 src/OptionHandlerImpl.h:127
 #, c-format
 msgid "must be between %s and %s."
 msgstr "doit être compris entre %s et %s"
 
-#: src/OptionHandlerImpl.h:121
+#: src/OptionHandlerImpl.h:124
 #, c-format
 msgid "must be smaller than or equal to %s."
 msgstr "doit être plus petit ou égal à %s"
 
-#: src/OptionHandlerImpl.h:127
+#: src/OptionHandlerImpl.h:130
 #, c-format
 msgid "must be greater than or equal to %s."
 msgstr "doit être plus grand ou égal à %s"
 
-#: src/OptionHandlerImpl.h:130 src/OptionHandlerImpl.h:176
+#: src/OptionHandlerImpl.h:133 src/OptionHandlerImpl.h:179
 msgid "must be a number."
 msgstr "doit être un nombre"
 
-#: src/OptionHandlerImpl.h:167
+#: src/OptionHandlerImpl.h:170
 #, c-format
 msgid "must be smaller than or equal to %.1f."
 msgstr "doit être plus petit ou égal à %.1f."
 
-#: src/OptionHandlerImpl.h:170
+#: src/OptionHandlerImpl.h:173
 #, c-format
 msgid "must be between %.1f and %.1f."
 msgstr "doit être compris entre %.1f et %.1f."
 
-#: src/OptionHandlerImpl.h:173
+#: src/OptionHandlerImpl.h:176
 #, c-format
 msgid "must be greater than or equal to %.1f."
 msgstr "doit être plus grand ou égal à %.1f."
 
-#: src/OptionHandlerImpl.h:235
+#: src/OptionHandlerImpl.h:257
 msgid "must be one of the following:"
 msgstr "doit être l'une de ces valeurs suivantes:"
 
-#: src/OptionHandlerImpl.h:272
+#: src/OptionHandlerImpl.h:294
 msgid "unrecognized proxy format"
 msgstr "format de proxy non reconnu"
 
@@ -1324,15 +1324,12 @@ msgstr ""
 
 #: src/usage_text.h:158
 msgid ""
-" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent "
-"connection.\n"
-"                              Default: false"
+" --enable-http-keep-alive[=true|false] Enable HTTP/1.1 persistent connection."
 msgstr ""
-" --enable-http-keep-alive[=true|false] Active une connexion HTTP/1.1 "
-"persistante.\n"
-"                              Par défaut: false"
+" --enable-http-keep-alive[=true|false] Active ou non les connexions "
+"persistantes de HTTP/1.1"
 
-#: src/usage_text.h:161
+#: src/usage_text.h:160
 msgid ""
 " --enable-http-pipelining[=true|false] Enable HTTP/1.1 pipelining.\n"
 "                              Default: false"
@@ -1340,7 +1337,7 @@ msgstr ""
 " --enable-http-pipelining[=true|false] Active le pipeline HTTP/1.1 .\n"
 "                              Par défaut: false"
 
-#: src/usage_text.h:164
+#: src/usage_text.h:163
 msgid ""
 " --check-integrity=true|false  Check file integrity by validating piece "
 "hash.\n"
@@ -1363,7 +1360,7 @@ msgstr ""
 "                              d'un fichier.\n"
 "                              Par défaut: false"
 
-#: src/usage_text.h:171
+#: src/usage_text.h:170
 msgid ""
 " --realtime-chunk-checksum=true|false  Validate chunk checksum while\n"
 "                              downloading a file in Metalink mode. This "
@@ -1379,7 +1376,7 @@ msgstr ""
 "                              Metalink avec vérification d'intégrité.\n"
 "                              Défaut: true"
 
-#: src/usage_text.h:176
+#: src/usage_text.h:175
 msgid ""
 " -c, --continue               Continue downloading a partially downloaded\n"
 "                              file. Use this option to resume a download\n"
@@ -1399,17 +1396,17 @@ msgstr ""
 "                              En ce moment cette option s'applique aux\n"
 "                              téléchargements http(s)/ftp."
 
-#: src/usage_text.h:183
+#: src/usage_text.h:182
 msgid " -U, --user-agent=USER_AGENT  Set user agent for http(s) downloads."
 msgstr ""
 " -U, --user-agent=USER_AGENT  Définit le nom du programme pour les "
 "téléchargements http(s)."
 
-#: src/usage_text.h:185
+#: src/usage_text.h:184
 msgid " -n, --no-netrc               Disables netrc support."
 msgstr " -n, --no-netrc               Désactiver le support netrc."
 
-#: src/usage_text.h:187
+#: src/usage_text.h:186
 msgid ""
 " -i, --input-file=FILE        Downloads URIs found in FILE. You can specify\n"
 "                              multiple URIs for a single entity: separate\n"
@@ -1424,19 +1421,14 @@ msgstr ""
 "                              URIs par des tabulations sur une seule ligne.\n"
 "                              Lit la sortie de stdin quand '-' est spécifié."
 
-#: src/usage_text.h:192
+#: src/usage_text.h:191
 msgid ""
-" -j, --max-concurrent-downloads=N Set maximum number of concurrent "
-"downloads.\n"
-"                              It should be used with the -i option.\n"
-"                              Default: 5"
+" -j, --max-concurrent-downloads=N Set maximum number of parallel downloads."
 msgstr ""
-" -j, --max-concurrent-downloads=N Définit le nombre maximum de "
-"téléchargements simultanés.\n"
-"                              Doit être utilisé avec l'option -i.\n"
-"                              Défaut: 5"
+" -j, --max-concurrent-downloads=N Indique le nombre maximal de "
+"téléchargements en parallèle."
 
-#: src/usage_text.h:196
+#: src/usage_text.h:193
 msgid ""
 " --load-cookies=FILE          Load cookies from FILE. The format of FILE is\n"
 "                              the same used by Netscape and Mozilla."
@@ -1445,7 +1437,7 @@ msgstr ""
 "est\n"
 "                              celui utilisé par Netscape et Mozilla."
 
-#: src/usage_text.h:199
+#: src/usage_text.h:196
 msgid ""
 " -S, --show-files             Print file listing of .torrent or .metalink "
 "file\n"
@@ -1458,7 +1450,7 @@ msgstr ""
 "seront listées\n"
 "                              dans le cas de fichier torrent."
 
-#: src/usage_text.h:203
+#: src/usage_text.h:200
 msgid ""
 " --select-file=INDEX...       Set file to download by specifing its index.\n"
 "                              You can find the file index using the\n"
@@ -1485,12 +1477,12 @@ msgstr ""
 "varier selon\n"
 "                              la requête (consultez l'option --metalink-*)."
 
-#: src/usage_text.h:212
+#: src/usage_text.h:209
 msgid " -T, --torrent-file=TORRENT_FILE  The path to the .torrent file."
 msgstr ""
 " -T, --torrent-file=TORRENT_FILE  Le chemin complet du fichier .torrent."
 
-#: src/usage_text.h:214
+#: src/usage_text.h:211
 msgid ""
 " --follow-torrent=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .torrent or content type is\n"
@@ -1521,7 +1513,7 @@ msgstr ""
 "dessus\n"
 "                              n'est pas appliquée."
 
-#: src/usage_text.h:224
+#: src/usage_text.h:221
 msgid ""
 " --direct-file-mapping=true|false Directly read from and write to each file\n"
 "                              mentioned in .torrent file.\n"
@@ -1532,7 +1524,7 @@ msgstr ""
 "                              mentioné dans le fichier .torrent.\n"
 "                              Défaut: true"
 
-#: src/usage_text.h:228
+#: src/usage_text.h:225
 msgid ""
 " --listen-port=PORT...        Set TCP port number for BitTorrent downloads.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -1552,7 +1544,7 @@ msgstr ""
 "et '-' peuvent\n"
 "                              être utilisés ensemble."
 
-#: src/usage_text.h:234
+#: src/usage_text.h:231
 msgid ""
 " --max-upload-limit=SPEED     Set max upload speed in bytes per sec.\n"
 "                              0 means unrestricted.\n"
@@ -1566,7 +1558,7 @@ msgstr ""
 "1024K).\n"
 "                              Défaut: 0"
 
-#: src/usage_text.h:239
+#: src/usage_text.h:236
 msgid ""
 " --seed-time=MINUTES          Specify seeding time in minutes. Also see the\n"
 "                              --seed-ratio option."
@@ -1575,7 +1567,7 @@ msgstr ""
 "Consultez aussi\n"
 "                              l'option --seed-ratio."
 
-#: src/usage_text.h:242
+#: src/usage_text.h:239
 msgid ""
 " --seed-ratio=RATIO           Specify share ratio. Seed completed torrents\n"
 "                              until share ratio reaches RATIO. 1.0 is\n"
@@ -1598,7 +1590,7 @@ msgstr ""
 "une des\n"
 "                              conditions est satisfaite."
 
-#: src/usage_text.h:250
+#: src/usage_text.h:247
 msgid ""
 " --peer-id-prefix=PEERI_ID_PREFIX Specify the prefix of peer ID. The peer ID "
 "in\n"
@@ -1620,17 +1612,17 @@ msgstr ""
 "                              ajoutés pour avoir une longueur de 20 bytes.\n"
 "                              Default: -aria2-"
 
-#: src/usage_text.h:258
+#: src/usage_text.h:255
 msgid " --enable-peer-exchange[=true|false] Enable Peer Exchange extension."
 msgstr ""
 " --enable-peer-exchange[=true|false] Active ou non le \"Peer Exchange"
 "\" (PEX)."
 
-#: src/usage_text.h:260
+#: src/usage_text.h:257
 msgid " --enable-dht[=true|false]    Enable DHT functionality."
 msgstr " --enable-dht[=true|false] Active ou non la fonctionnalité \"DHT\"."
 
-#: src/usage_text.h:262
+#: src/usage_text.h:259
 msgid ""
 " --dht-listen-port=PORT...    Set UDP listening port for DHT.\n"
 "                              Multiple ports can be specified by using ',',\n"
@@ -1649,7 +1641,7 @@ msgstr ""
 "et '-' peuvent\n"
 "                              être utilisée simultanément."
 
-#: src/usage_text.h:268
+#: src/usage_text.h:265
 msgid ""
 " --dht-entry-point=HOST:PORT  Set host and port as an entry point to DHT\n"
 "                              network."
@@ -1657,7 +1649,7 @@ msgstr ""
 " --dht-entry-point=HOST:PORT  Configure le host et le port comme un point  "
 "d'entrée au réseau DHT."
 
-#: src/usage_text.h:271
+#: src/usage_text.h:268
 msgid ""
 " --bt-min-crypto-level=plain|arc4 Set minimum level of encryption method.\n"
 "                              If several encryption methods are provided by "
@@ -1666,47 +1658,55 @@ msgid ""
 "satisfies\n"
 "                              the given level."
 msgstr ""
+" --bt-min-crypto-level=plain|arc4 Indique le niveau minimal de la méthode\n"
+"                              d'encryptage. Si plusieurs méthodes sont "
+"proposés par le \n"
+"                              \"peer\" distant, aria2 s'adapte en utilisant "
+"le niveau le plus\n"
+"                              bas que vous avez en commun avec le peer "
+"distant."
 
-#: src/usage_text.h:276
+#: src/usage_text.h:273
 msgid ""
 " --bt-require-crypto=true|false If true is given, aria2 doesn't accept and\n"
 "                              establish connection with legacy BitTorrent\n"
 "                              handshake. Thus aria2 always uses Obfuscation\n"
 "                              handshake."
 msgstr ""
+" --bt-require-crypto=true|false Si \"true\" est choisit, aria2 n'accepte\n"
+"                              et n'établit pas de connexions non cryptées.\n"
+"                              Sinon aria2 utilise toujours des connexions "
+"cryptées."
 
-#: src/usage_text.h:281
+#: src/usage_text.h:278
 msgid " -M, --metalink-file=METALINK_FILE The file path to the .metalink file."
 msgstr ""
 " -M, --metalink-file=METALINK_FILE Le chemin vers le fichier .metalink."
 
-#: src/usage_text.h:283
+#: src/usage_text.h:280
 msgid ""
 " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
-"                              simultaneously.\n"
-"                              Default: 5"
+"                              simultaneously."
 msgstr ""
-" -C, --metalink-servers=NUM_SERVERS Le nombre de serveurs auxquels se "
-"connecter\n"
-"                              simultanément.\n"
-"                              Défaut: 5"
+" -C, --metalink-servers=NUM_SERVERS Indique le nombre de serveurs à utiliser "
+"en parallèle."
 
-#: src/usage_text.h:287
+#: src/usage_text.h:283
 msgid " --metalink-version=VERSION   The version of the file to download."
 msgstr " --metalink-version=VERSION   La version du fichier à télécharger."
 
-#: src/usage_text.h:289
+#: src/usage_text.h:285
 msgid " --metalink-language=LANGUAGE The language of the file to download."
 msgstr " --metalink-language=LANGUAGE La langua du fichier à télécharger."
 
-#: src/usage_text.h:291
+#: src/usage_text.h:287
 msgid ""
 " --metalink-os=OS             The operating system of the file to download."
 msgstr ""
 " --metalink-os=OS             Le système d'exploitation auquel est destiné "
 "le fichier."
 
-#: src/usage_text.h:293
+#: src/usage_text.h:289
 msgid ""
 " --metalink-location=LOCATION[,...] The location of the preferred server.\n"
 "                              A comma-deliminated list of locations is\n"
@@ -1715,7 +1715,7 @@ msgstr ""
 " --metalink-location=LOCATION[,...] L'emplacement du serveur préféré.\n"
 "La liste (délimité par des virgules) est"
 
-#: src/usage_text.h:297
+#: src/usage_text.h:293
 msgid ""
 " --metalink-preferred-protocol=PROTO Specify preferred protocol. The "
 "possible\n"
@@ -1729,7 +1729,7 @@ msgstr ""
 "                              Spécifiez none pour désactiver cette "
 "fonctionnalité."
 
-#: src/usage_text.h:301
+#: src/usage_text.h:297
 msgid ""
 " --follow-metalink=true|false|mem If true or mem is specified, when a file\n"
 "                              whose suffix is .metaink or content type is\n"
@@ -1761,7 +1761,7 @@ msgstr ""
 "ci-dessus\n"
 "                              n'est pas prise en compte."
 
-#: src/usage_text.h:311
+#: src/usage_text.h:307
 msgid ""
 " --metalink-enable-unique-protocol=true|false If true is given and several\n"
 "                              protocols are available for a mirror in a "
@@ -1779,11 +1779,11 @@ msgstr ""
 "protocol pour\n"
 "                              spécifier les préférences du protocole."
 
-#: src/usage_text.h:317
+#: src/usage_text.h:313
 msgid " -v, --version                Print the version number and exit."
 msgstr " -v, --version"
 
-#: src/usage_text.h:319
+#: src/usage_text.h:315
 msgid ""
 " -h, --help[=CATEGORY]        Print usage and exit.\n"
 "                              The help messages are classified in several\n"
@@ -1804,17 +1804,17 @@ msgstr ""
 "et les \n"
 "                              options concernant le HTTP."
 
-#: src/usage_text.h:327
+#: src/usage_text.h:323
 msgid " --no-conf                    Disable loading aria2.conf file."
 msgstr " --no-conf Désactive le chargement du fichier aria2.conf ."
 
-#: src/usage_text.h:329
+#: src/usage_text.h:325
 msgid ""
 " --conf-path=PATH             Change the configuration file path to PATH."
 msgstr ""
 " --conf-path=PATH Change l'emplacement du fichier de configuration vers PATH."
 
-#: src/usage_text.h:331
+#: src/usage_text.h:327
 msgid ""
 " --stop=SEC                   Stop application after SEC seconds has "
 "passed.\n"
@@ -1825,38 +1825,73 @@ msgstr ""
 "                              Si la valeur est égale à 0 cette fonction est "
 "inactive."
 
+#: src/usage_text.h:330
+msgid ""
+" --header=HEADER              Append HEADER to HTTP request header. You can "
+"use\n"
+"                              this option repeatedly to specify more than "
+"one\n"
+"                              header:\n"
+"                              aria2c --header=\"X-A: b78\" --header=\"X-B: "
+"9J1\"\n"
+"                              http://host/file"
+msgstr ""
+" --header=HEADER              Ajoute l'en-tête \"HEADER\" à l'en-tête HTTP.\n"
+"                             Vous pouvez utiliser cette option autant de "
+"fois que \n"
+"                              nécessaire en fonction de vos besoins.\n"
+"                              aria2c --header=\"X-A: b78\" --header=\"X-B: "
+"9J1\"\n"
+"                              http://host/file"
+
+#: src/usage_text.h:336
+msgid " -q, --quiet[=true|false]     Make aria2 quite (no console output)."
+msgstr ""
+" -q, --quiet[=true|false]     N'affiche aucune information(s) sur la console "
+"(\"mode silencieux\")."
+
+#: src/usage_text.h:338
+msgid " --async-dns[=true|false]     Enable asynchronous DNS."
+msgstr ""
+" --async-dns[=true|false]     Active ou non la fonction \"asynchronous DNS"
+"\" (\"requetes DNS en mode multithread\")."
+
+#: src/usage_text.h:340
+msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
+msgstr " --ftp-reuse-connection[=true|false] Réutilise la connexion en FTP."
+
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
 
-#: src/DownloadEngine.cc:296
+#: src/DownloadEngine.cc:289
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Séquence d'arrêt débutée... Pressez Ctrl-C une nouvelle fois pour un arrêt "
 "d'urgence."
 
-#: src/DownloadEngine.cc:300
+#: src/DownloadEngine.cc:293
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Séquence d'arrêt d'urgence débutée..."
 
-#: src/HelpItem.cc:40
+#: src/HelpItem.cc:39
 msgid "                              Default: "
 msgstr "                              Par défaut: "
 
-#: src/HelpItem.cc:41
+#: src/HelpItem.cc:40
 msgid "                              Tags: "
 msgstr "                              Signets: "
 
-#: src/HelpItem.cc:42
+#: src/HelpItem.cc:41
 msgid "                              Available Values: "
 msgstr "                              Valeurs disponibles: "
 
-#: src/MultiUrlRequestInfo.cc:78
+#: src/MultiUrlRequestInfo.cc:86
 msgid "aria2 will resume download if the transfer is restarted."
 msgstr "aria2c va recommencer ce téléchargement si le transfert est relancé."
 
-#: src/MultiUrlRequestInfo.cc:80
+#: src/MultiUrlRequestInfo.cc:88
 msgid ""
 "If there are any errors, then see the log file. See '-l' option in help/man "
 "page for details."
@@ -1864,108 +1899,63 @@ msgstr ""
 "En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
 "d'informations."
 
-#: src/RequestGroupMan.cc:258
+#: src/RequestGroupMan.cc:255
 msgid "Download Results:"
 msgstr "Résultats du ou des téléchargements:"
 
-#: src/RequestGroupMan.cc:273
+#: src/RequestGroupMan.cc:270
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 
-#: src/Util.cc:687
+#: src/Util.cc:684
 msgid "Files:"
 msgstr "Fichiers:"
 
-#: src/version_usage.cc:54
+#: src/version_usage.cc:55
 msgid " version "
 msgstr " version "
 
-#: src/version_usage.cc:58
-msgid ""
-"This program is free software; you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation; either version 2 of the License, or\n"
-"(at your option) any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful,\n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-"GNU General Public License for more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License\n"
-"along with this program; if not, write to the Free Software\n"
-"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
-"USA\n"
-msgstr ""
-"Ce programme est un logiciel libre et gratuit; vous pouvez le redistribuer "
-"et/ou le modifier\n"
-"selon les termes de la Licence Publique Générale GNU telle qu'elle est "
-"publiée par la Free Software Foundation; soit la version 2 de la License, "
-"ou \n"
-"(comme vous le souhaitez) n'importe quelle nouvelle version.\n"
-"[\n"
-"Ce programme est distribué en espérant être utile,\n"
-"mais SANS AUCUNE GARANTIE que ce soit; ni même la garantie implicite de\n"
-"VENTE ou CORRESPONDANCE DANS UN BUT PARTICULIER. Consultez la\n"
-"Licence Publique Générale GNU pour plus d'informations.\n"
-"\n"
-"Vous devez avoir une copie de la  Licence Publique Générale GNU\n"
-"avec ce programme; sinon écrivez à la Free Software\n"
-"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  "
-"USA\n"
-
-#: src/version_usage.cc:93
+#: src/version_usage.cc:72
 #, c-format
 msgid "Report bugs to %s"
 msgstr "Faire part des bugs à %s"
 
-#: src/version_usage.cc:98
+#: src/version_usage.cc:77
 #, c-format
-msgid "Usage: %s [options] URL ...\n"
-msgstr "Utilisation: %s [options] URL ...\n"
+msgid "Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."
+msgstr "Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."
 
-#: src/version_usage.cc:100
-#, c-format
-msgid "       %s [options] -T TORRENT_FILE URL ...\n"
-msgstr "       %s [options] -T TORRENT_FILE URL ...\n"
-
-#: src/version_usage.cc:103
-#, c-format
-msgid "       %s [options] -M METALINK_FILE\n"
-msgstr "       %s [options] -M FICHIER_METALINK\n"
-
-#: src/version_usage.cc:112
-#, c-format
+#: src/version_usage.cc:85
 msgid "Printing all options."
 msgstr "Afficher toutes les options."
 
-#: src/version_usage.cc:114
+#: src/version_usage.cc:87
 #, c-format
 msgid "Printing options tagged with '%s'."
 msgstr "Afficher toutes les options marquées avec '%s'."
 
-#: src/version_usage.cc:116
+#: src/version_usage.cc:91
 #, c-format
 msgid "See -h option to know other command-line options(%s)."
 msgstr ""
 "Regardez l'option -h pour connaître les autres options en ligne de commande(%"
 "s)."
 
-#: src/version_usage.cc:120 src/version_usage.cc:127
+#: src/version_usage.cc:95 src/version_usage.cc:104
 msgid "Options:"
 msgstr "Options:"
 
-#: src/version_usage.cc:125
+#: src/version_usage.cc:102
 #, c-format
 msgid "Printing options whose name starts with '%s'."
 msgstr "Afficher toutes les options dont le nom commence par '%s'."
 
-#: src/version_usage.cc:130
+#: src/version_usage.cc:107
 #, c-format
 msgid "No help category or option name matching with '%s'."
 msgstr "Aucune catégories d'aide ou de nom d'option correspondent pour '%s'."
 
-#: src/version_usage.cc:138
+#: src/version_usage.cc:114
 msgid ""
 " You can specify multiple URLs. Unless you specify -Z option, all URLs must\n"
 " point to the same file or downloading will fail."
@@ -1974,7 +1964,17 @@ msgstr ""
 "l'option -Z, toutes les URLs doivent\n"
 " faire référence au même fichier ou sinon le téléchargement échouera."
 
-#: src/version_usage.cc:140
+#: src/version_usage.cc:116
+msgid ""
+" You can also specify arbitrary number of torrent files and metalink files\n"
+" stored in a local drive. Please note that they are always treated as a\n"
+" separate download."
+msgstr ""
+" Vous pouvez spécifier un nombre infini de fichiers torrent ou metalink \n"
+"Notez bien qu'ils seront toujours traités comme des téléchargements \n"
+"séparés."
+
+#: src/version_usage.cc:121
 msgid ""
 " You can specify both torrent file with -T option and URLs. By doing this,\n"
 " download a file from both torrent swarm and http/ftp server at the same "
@@ -1990,7 +1990,7 @@ msgstr ""
 "torrent. Notez que\n"
 " seulement un seul fichier torrent peut être intégré avec http/ftp."
 
-#: src/version_usage.cc:145
+#: src/version_usage.cc:126
 msgid ""
 " Make sure that URL is quoted with single(') or double(\") quotation if it\n"
 " contains \"&\" or any characters that have special meaning in shell."
@@ -1999,7 +1999,7 @@ msgstr ""
 "surtout si elle\n"
 " contient \"&\" ou tout autre caractère ayant un sens dans le shell."
 
-#: src/version_usage.cc:149
+#: src/version_usage.cc:130
 msgid "Refer to man page for more information."
 msgstr "Merci de vous reférer au manuel pour plus d'information."
 
@@ -2014,8 +2014,47 @@ msgstr "Merci de vous reférer au manuel pour plus d'information."
 #~ "retélécharger le fichier, supprimez-le ou ajouter l'option --allow-"
 #~ "overwrite=true et redémarrez aria2"
 
+#~ msgid ""
+#~ "This program is free software; you can redistribute it and/or modify\n"
+#~ "it under the terms of the GNU General Public License as published by\n"
+#~ "the Free Software Foundation; either version 2 of the License, or\n"
+#~ "(at your option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful,\n"
+#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+#~ "GNU General Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License\n"
+#~ "along with this program; if not, write to the Free Software\n"
+#~ "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-"
+#~ "1301  USA\n"
+#~ msgstr ""
+#~ "Ce programme est un logiciel libre et gratuit; vous pouvez le "
+#~ "redistribuer et/ou le modifier\n"
+#~ "selon les termes de la Licence Publique Générale GNU telle qu'elle est "
+#~ "publiée par la Free Software Foundation; soit la version 2 de la License, "
+#~ "ou \n"
+#~ "(comme vous le souhaitez) n'importe quelle nouvelle version.\n"
+#~ "[\n"
+#~ "Ce programme est distribué en espérant être utile,\n"
+#~ "mais SANS AUCUNE GARANTIE que ce soit; ni même la garantie implicite de\n"
+#~ "VENTE ou CORRESPONDANCE DANS UN BUT PARTICULIER. Consultez la\n"
+#~ "Licence Publique Générale GNU pour plus d'informations.\n"
+#~ "\n"
+#~ "Vous devez avoir une copie de la  Licence Publique Générale GNU\n"
+#~ "avec ce programme; sinon écrivez à la Free Software\n"
+#~ "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-"
+#~ "1301  USA\n"
+
 #~ msgid "Contact Info:"
 #~ msgstr "Informations de Contact:"
+
+#~ msgid "Usage: %s [options] URL ...\n"
+#~ msgstr "Utilisation: %s [options] URL ...\n"
+
+#~ msgid "       %s [options] -M METALINK_FILE\n"
+#~ msgstr "       %s [options] -M FICHIER_METALINK\n"
 
 #~ msgid ""
 #~ " --check-integrity=true|false  Check file integrity by validating piece "
@@ -2044,6 +2083,17 @@ msgstr "Merci de vous reférer au manuel pour plus d'information."
 #~ "l'option --allow-overwrite=true\n"
 #~ "                              si le fichier .aria2 n'existe pas.\n"
 #~ "                              Défaut: false"
+
+#~ msgid ""
+#~ " -j, --max-concurrent-downloads=N Set maximum number of concurrent "
+#~ "downloads.\n"
+#~ "                              It should be used with the -i option.\n"
+#~ "                              Default: 5"
+#~ msgstr ""
+#~ " -j, --max-concurrent-downloads=N Définit le nombre maximum de "
+#~ "téléchargements simultanés.\n"
+#~ "                              Doit être utilisé avec l'option -i.\n"
+#~ "                              Défaut: 5"
 
 #~ msgid ""
 #~ " -S, --show-files             Print file listing of .torrent or .metalink "
@@ -2097,6 +2147,16 @@ msgstr "Merci de vous reférer au manuel pour plus d'information."
 #~ "                              le partage s'arrête dès qu'une des deux "
 #~ "conditions\n"
 #~ "                              est satisfaite."
+
+#~ msgid ""
+#~ " -C, --metalink-servers=NUM_SERVERS The number of servers to connect to\n"
+#~ "                              simultaneously.\n"
+#~ "                              Default: 5"
+#~ msgstr ""
+#~ " -C, --metalink-servers=NUM_SERVERS Le nombre de serveurs auxquels se "
+#~ "connecter\n"
+#~ "                              simultanément.\n"
+#~ "                              Défaut: 5"
 
 #~ msgid ""
 #~ " --follow-metalink=true|false Set to false to prevent aria2 from\n"

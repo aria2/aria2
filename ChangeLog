@@ -1,5 +1,16 @@
 2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Updated translations. Great thanks to translators.
+	* po/ca.po
+	* po/de.po
+	* po/fr.po
+	* po/it.po
+	* po/ja.po
+	* po/ru.po
+	* po/zh_CN.po
+
+2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated man page; categorized options and fixed typo.
 	* doc/aria2c.1.txt
 	* doc/aria2c.1.html
