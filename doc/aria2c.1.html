@@ -320,6 +320,7 @@ div#toc a:visited { color: blue; }
 </div>
 <h2>OPTIONS</h2>
 <div class="sectionbody">
+<h3>Basic Options</h3>
 <dl>
 <dt>
 -d, &#8212;dir=DIR
@@ -330,25 +331,14 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--o, &#8212;out=FILE
+-i, &#8212;input-file=FILE
 </dt>
 <dd>
 <p>
-  The file name of the downloaded file.
+  Downloads URIs found in FILE. You can specify multiple URIs for a single
+  entity: separate URIs on a single line using the TAB character.
+  Reads input from stdin when <em>-</em> is specified.
 </p>
-<dl>
-<dt>
-Note
-</dt>
-<dd>
-<p>
-    In Metalink, BitTorrent download you cannot specify file name.
-    The file name specified here is only used when the URLs fed to aria2
-    is done by command line without -i option, like this:
-    aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip
-</p>
-</dd>
-</dl>
 </dd>
 <dt>
 -l, &#8212;log=LOG
@@ -360,11 +350,106 @@ Note
 </p>
 </dd>
 <dt>
--D, &#8212;daemon
+-j, &#8212;max-concurrent-downloads=N
 </dt>
 <dd>
 <p>
-  Run as daemon.
+  Set maximum number of parallel downloads.
+  Default: <em>1</em>
+</p>
+</dd>
+<dt>
+&#8212;check-integrity=<em>true</em>|<em>false</em>
+</dt>
+<dd>
+<p>
+  Check file integrity by validating piece hash.
+  This option only affects in BitTorrent downloads and Metalink downloads with
+  chunk checksums.
+  Use this option to re-download a damaged portion of a file.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt>
+-c, &#8212;continue
+</dt>
+<dd>
+<p>
+   Continue downloading a partially downloaded file.
+   Use this option to resume a download started by a web browser or another
+   program which downloads files sequentially from the beginning.
+   Currently this option is only applicable to HTTP(S)/FTP downloads.
+</p>
+</dd>
+<dt>
+-h, &#8212;help[=CATEGORY]
+</dt>
+<dd>
+<p>
+  Print usage and exit.
+  The help messages are classified in several categories.
+  For example, type "&#8212;help=http" for detailed explanation for the options
+  related to HTTP. If no matching category is found, search option name using
+  a given word in forward match and print the result.
+  Available Values: <em>basic</em>, <em>advanced</em>, <em>http</em>, <em>ftp</em>, <em>metalink</em>,
+  <em>bittorrent</em>, <em>all</em>
+  Default: <em>basic</em>
+</p>
+</dd>
+</dl>
+<h3>HTTP/FTP Options</h3>
+<dl>
+<dt>
+&#8212;lowest-speed-limit=SPEED
+</dt>
+<dd>
+<p>
+  Close connection if download speed is lower than or equal to this
+  value(bytes per sec).
+  <em>0</em> means aria2 does not have a lowest speed limit.
+  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+  This option does not affect BitTorrent downloads.
+  Default: <em>0</em>
+</p>
+</dd>
+<dt>
+-m, &#8212;max-tries=N
+</dt>
+<dd>
+<p>
+  Set number of tries. <em>0</em> means unlimited.
+  Default: <em>5</em>
+</p>
+</dd>
+<dt>
+-o, &#8212;out=FILE
+</dt>
+<dd>
+<p>
+  The file name of the downloaded file.
+</p>
+</dd>
+</dl>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">In Metalink, BitTorrent download you cannot specify file name.
+The file name specified here is only used when the URLs fed to aria2
+is done by command line without -i, -Z option, like this:
+aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
+</tr></table>
+</div>
+<dl>
+<dt>
+&#8212;retry-wait=SEC
+</dt>
+<dd>
+<p>
+  Set the seconds to wait to retry after an error has occured.
+  Specify a value between <em>0</em> and <em>60</em>.
+  Default: <em>5</em>
 </p>
 </dd>
 <dt>
@@ -379,16 +464,6 @@ Note
 </p>
 </dd>
 <dt>
-&#8212;retry-wait=SEC
-</dt>
-<dd>
-<p>
-  Set the seconds to wait to retry after an error has occured.
-  Specify a value between <em>0</em> and <em>60</em>.
-  Default: <em>5</em>
-</p>
-</dd>
-<dt>
 -t, &#8212;timeout=SEC
 </dt>
 <dd>
@@ -397,21 +472,17 @@ Note
   Default: <em>60</em>
 </p>
 </dd>
+</dl>
+<h3>HTTP Specific Options</h3>
+<dl>
 <dt>
--m, &#8212;max-tries=N
+&#8212;http-auth-scheme=SCHEME
 </dt>
 <dd>
 <p>
-  Set number of tries. <em>0</em> means unlimited.
-  Default: <em>5</em>
-</p>
-</dd>
-<dt>
-&#8212;http-proxy=HOST:PORT
-</dt>
-<dd>
-<p>
-  Use HTTP proxy server. This affects all URLs.
+  Set HTTP authentication scheme.
+  Currently, <em>basic</em> is the only supported scheme.
+  Default: <em>basic</em>
 </p>
 </dd>
 <dt>
@@ -428,6 +499,14 @@ Note
 <dd>
 <p>
   Set HTTP password. This affects all URLs.
+</p>
+</dd>
+<dt>
+&#8212;http-proxy=HOST:PORT
+</dt>
+<dd>
+<p>
+  Use HTTP proxy server. This affects all URLs.
 </p>
 </dd>
 <dt>
@@ -457,16 +536,6 @@ Note
 </p>
 </dd>
 <dt>
-&#8212;http-auth-scheme=SCHEME
-</dt>
-<dd>
-<p>
-  Set HTTP authentication scheme.
-  Currently, <em>basic</em> is the only supported scheme.
-  Default: <em>basic</em>
-</p>
-</dd>
-<dt>
 &#8212;referer=REFERER
 </dt>
 <dd>
@@ -474,6 +543,54 @@ Note
   Set Referer. This affects all URLs.
 </p>
 </dd>
+<dt>
+&#8212;enable-http-keep-alive[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Enable HTTP/1.1 persistent connection.
+  Default: <em>true</em>
+</p>
+</dd>
+<dt>
+&#8212;enable-http-pipelining[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Enable HTTP/1.1 pipelining.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt>
+&#8212;header=HEADER
+</dt>
+<dd>
+<p>
+  Append HEADER to HTTP request header.
+  You can use this option repeatedly to specify more than one header:
+  aria2c &#8212;header="X-A: b78" &#8212;header="X-B: 9J1" http://host/file
+</p>
+</dd>
+<dt>
+&#8212;load-cookies=FILE
+</dt>
+<dd>
+<p>
+  Load cookies from FILE.
+  The format of FILE is the same used by Netscape and Mozilla.
+</p>
+</dd>
+<dt>
+-U, &#8212;user-agent=USER_AGENT
+</dt>
+<dd>
+<p>
+  Set user agent for HTTP(S) downloads.
+</p>
+</dd>
+</dl>
+<h3>FTP Specific Options</h3>
+<dl>
 <dt>
 &#8212;ftp-user=USER
 </dt>
@@ -493,15 +610,6 @@ Note
 </p>
 </dd>
 <dt>
-&#8212;ftp-type=TYPE
-</dt>
-<dd>
-<p>
-  Set FTP transfer type. TYPE is either <em>binary</em> or <em>ascii</em>.
-  Default: <em>binary</em>
-</p>
-</dd>
-<dt>
 -p, &#8212;ftp-pasv
 </dt>
 <dd>
@@ -510,12 +618,12 @@ Note
 </p>
 </dd>
 <dt>
-&#8212;ftp-via-http-proxy=METHOD
+&#8212;ftp-type=TYPE
 </dt>
 <dd>
 <p>
-  Use HTTP proxy in FTP. METHOD is either <em>get</em> or <em>tunnel</em>.
-  Default: <em>tunnel</em>
+  Set FTP transfer type. TYPE is either <em>binary</em> or <em>ascii</em>.
+  Default: <em>binary</em>
 </p>
 </dd>
 <dt>
@@ -528,71 +636,323 @@ Note
 </p>
 </dd>
 <dt>
-&#8212;lowest-speed-limit=SPEED
+&#8212;ftp-via-http-proxy=METHOD
 </dt>
 <dd>
 <p>
-  Close connection if download speed is lower than or equal to this
-  value(bytes per sec).
-  <em>0</em> means aria2 does not have a lowest speed limit.
+  Use HTTP proxy in FTP. METHOD is either <em>get</em> or <em>tunnel</em>.
+  Default: <em>tunnel</em>
+</p>
+</dd>
+<dt>
+-n, &#8212;no-netrc
+</dt>
+<dd>
+<p>
+  Disables netrc support. netrc support is enabled by default.
+</p>
+</dd>
+</dl>
+<h3>BitTorrent/Metalink Options</h3>
+<dl>
+<dt>
+&#8212;select-file=INDEX&#8230;
+</dt>
+<dd>
+<p>
+  Set file to download by specifing its index.
+  You can find the file index using the &#8212;show-files option.
+  Multiple indexes can be specified by using ",", for example: <em>3,6</em>.
+  You can also use "-" to specify a range: <em>1-5</em>.
+  "," and "-" can be used together: <em>1-5,8,9</em>.
+  When used with the -M option, index may vary depending on the query
+  (see &#8212;metalink-* options).
+</p>
+</dd>
+</dl>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">In multi file torrent, the adjacent files specified by this option may
+also be downloaded. This is by design, not a bug.
+A single piece may include several files or part of files, and aria2
+writes the piece to the appropriate files.</td>
+</tr></table>
+</div>
+<dl>
+<dt>
+-S, &#8212;show-files
+</dt>
+<dd>
+<p>
+  Print file listing of .torrent or .metalink file and exit.
+  In case of .torrent file, additional information
+  (infohash, piece length, etc) is also printed.
+</p>
+</dd>
+</dl>
+<h3>BitTorrent Specific Options</h3>
+<dl>
+<dt>
+&#8212;bt-min-crypto-level=<em>plain</em>|<em>arc4</em>
+</dt>
+<dd>
+<p>
+  Set minimum level of encryption method.
+  If several encryption methods are provided by a peer, aria2 chooses a lowest
+  one which satisfies the given level.
+  Default: <em>plain</em>
+</p>
+</dd>
+<dt>
+&#8212;bt-require-crypto=<em>true</em>|<em>false</em>
+</dt>
+<dd>
+<p>
+  If true is given, aria2 doesn't accept and establish connection with legacy
+  BitTorrent handshake(\19BitTorrent protocol).
+  Thus aria2 always uses Obfuscation handshake.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt>
+&#8212;dht-entry-point=HOST:PORT
+</dt>
+<dd>
+<p>
+  Set host and port as an entry point to DHT network.
+</p>
+</dd>
+<dt>
+&#8212;dht-listen-port=PORT&#8230;
+</dt>
+<dd>
+<p>
+  Set UDP listening port for DHT.
+  Multiple ports can be specified by using ",", for example: <em>6881,6885</em>.
+  You can also use "-" to specify a range: <em>6881-6999</em>. "," and "-" can be used
+  together.
+  Default: <em>6881-6999</em>
+</p>
+</dd>
+<dt>
+&#8212;direct-file-mapping=<em>true</em>|<em>false</em>
+</dt>
+<dd>
+<p>
+  Directly read from and write to each file mentioned in .torrent file.
+  Use this option if lots of files are listed in .torrent file and aria2
+  complains it cannot open files anymore.
+  Default: <em>true</em>
+</p>
+</dd>
+<dt>
+&#8212;enable-dht[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Enable DHT functionality. If a private flag is set in a torrent, aria2
+  doesn't use DHT for that download even if <em>true</em> is given.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt>
+&#8212;enable-peer-exchange[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Enable Peer Exchange extension. If a private flag is set in a torrent, this
+  feature is disabled for that download even if <em>true</em> is given.
+  Default: <em>true</em>
+</p>
+</dd>
+<dt>
+&#8212;follow-torrent=<em>true</em>|<em>false</em>|<em>mem</em>
+</dt>
+<dd>
+<p>
+  If <em>true</em> or <em>mem</em> is specified, when a file whose suffix is ".torrent" or content
+  type is "application/x-bittorrent" is downloaded, aria2 parses it as a torrent
+  file and downloads files mentioned in it.
+  If <em>mem</em> is specified, a torrent file is not written to the disk, but is just
+  kept in memory.
+  If <em>false</em> is specified, the action mentioned above is not taken.
+  Default: <em>true</em>
+</p>
+</dd>
+<dt>
+&#8212;listen-port=PORT&#8230;
+</dt>
+<dd>
+<p>
+  Set TCP port number for BitTorrent downloads.
+  Multiple ports can be specified by using ",",  for example: <em>6881,6885</em>.
+  You can also use "-" to specify a range: <em>6881-6999</em>.
+  "," and "-" can be used together: <em>6881-6889,6999</em>.
+  Default: <em>6881-6999</em>
+</p>
+</dd>
+</dl>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Make sure that the specified ports are open for incoming TCP traffic.</td>
+</tr></table>
+</div>
+<dl>
+<dt>
+&#8212;max-upload-limit=SPEED
+</dt>
+<dd>
+<p>
+  Set max upload speed in bytes per sec. <em>0</em> means unrestricted.
   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-  This option does not affect BitTorrent downloads.
   Default: <em>0</em>
 </p>
 </dd>
 <dt>
-&#8212;max-download-limit=SPEED
+&#8212;peer-id-prefix=PEERI_ID_PREFIX
 </dt>
 <dd>
 <p>
-   Set max download speed in bytes per sec. <em>0</em> means unrestricted.
-   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-   Default: <em>0</em>
+  Specify the prefix of peer ID. The peer ID in BitTorrent is 20 byte length.
+  If more than 20 bytes are specified, only first 20 bytes are used.
+  If less than 20 bytes are specified, the random alphabet characters are
+  added to make it's length 20 bytes.
+  Default: <em>-aria2-</em>
 </p>
 </dd>
 <dt>
-&#8212;file-allocation=METHOD
+&#8212;seed-ratio=RATIO
 </dt>
 <dd>
 <p>
-  Specify file allocation method. METHOD is either <em>none</em> or <em>prealloc</em>.
-  <em>none</em> doesn't pre-allocate file space. <em>prealloc</em> pre-allocates file space
-  before download begins. This may take some time depending on the size of the
-  file.
-  Default: <em>prealloc</em>
+  Specify share ratio. Seed completed torrents until share ratio reaches]
+  RATIO.
+  I strongly encourages you to specify equals or more than <em>1.0</em> here.
+  Specify <em>0.0</em> if you intend to do seeding regardless of share ratio.
+  If &#8212;seed-time option is specified along with this option, seeding ends when
+  at least one of the conditions is satisfied.
+  Default: <em>1.0</em>
 </p>
-<dl>
+</dd>
 <dt>
-Note
+&#8212;seed-time=MINUTES
 </dt>
 <dd>
 <p>
-    In multi file torrent, the files adjacent forward to the specified files
-    are also allocated if they share a same piece.
+  Specify seeding time in minutes. Also see the &#8212;seed-ratio option.
+</p>
+</dd>
+<dt>
+-T, &#8212;torrent-file=TORRENT_FILE
+</dt>
+<dd>
+<p>
+  The path to the .torrent file.
+  You may not use this option because you can specify torrent file without -T.
 </p>
 </dd>
 </dl>
-</dd>
+<h3>Metalink Specific Options</h3>
+<dl>
 <dt>
-&#8212;no-file-allocation-limit=SIZE
+&#8212;follow-metalink=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
 <dd>
 <p>
-  No file allocation is made for files whose size is smaller than SIZE.
-  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-  Default: <em>5M</em>
+  If <em>true</em> or <em>mem</em> is specified, when a file whose suffix is ".metaink" or content
+  type is "application/metalink+xml" is downloaded, aria2 parses it as a metalink
+  file and downloads files mentioned in it.
+  If <em>mem</em> is specified, a metalink file is not written to the disk, but is just
+  kept in memory.
+  If <em>false</em> is specified, the action mentioned above is not taken.
+  Default: <em>true</em>
 </p>
 </dd>
 <dt>
-&#8212;enable-direct-io[=<em>true</em>|<em>false</em>]
+-M, &#8212;metalink-file=METALINK_FILE
 </dt>
 <dd>
 <p>
-  Enable directI/O, which lowers cpu usage while allocating/checking files.
-  Turn off if you encounter any error.
-  Default: <em>false</em>
+  The file path to .metalink file. You may not use this option because you can
+  specify metalink file without -M.
 </p>
 </dd>
+<dt>
+-C, &#8212;metalink-servers=NUM_SERVERS
+</dt>
+<dd>
+<p>
+  The number of servers to connect to simultaneously.
+  Some metalinks regulates the number of servers to connect.
+  aria2 respects them.
+  Default: <em>1</em>
+</p>
+</dd>
+<dt>
+&#8212;metalink-language=LANGUAGE
+</dt>
+<dd>
+<p>
+  The language of the file to download.
+</p>
+</dd>
+<dt>
+&#8212;metalink-location=LOCATION[,&#8230;]
+</dt>
+<dd>
+<p>
+  The location of the preferred server.
+  A comma-deliminated list of locations is acceptable, for example, <em>JP,US</em>.
+</p>
+</dd>
+<dt>
+&#8212;metalink-os=OS
+</dt>
+<dd>
+<p>
+  The operating system of the file to download.
+</p>
+</dd>
+<dt>
+&#8212;metalink-version=VERSION
+</dt>
+<dd>
+<p>
+  The version of the file to download.
+</p>
+</dd>
+<dt>
+&#8212;metalink-preferred-protocol=PROTO
+</dt>
+<dd>
+<p>
+  Specify preferred protocol.
+  The possible values are <em>http</em>, <em>https</em>, <em>ftp</em> and <em>none</em>.
+  Specifiy <em>none</em> to disable this feature.
+  Default: <em>none</em>
+</p>
+</dd>
+<dt>
+&#8212;metalink-enable-unique-protocol=<em>true</em>|<em>false</em>
+</dt>
+<dd>
+<p>
+  If <em>true</em> is given and several protocols are available for a mirror in a
+  metalink file, aria2 uses one of them.
+  Use &#8212;metalink-preferred-protocol option to specify the preference of
+  protocol.
+  Default: <em>true</em>
+</p>
+</dd>
+</dl>
+<h3>Advanced Options</h3>
+<dl>
 <dt>
 &#8212;allow-overwrite=<em>true</em>|<em>false</em>
 </dt>
@@ -617,13 +977,12 @@ Note
 </p>
 </dd>
 <dt>
--Z, &#8212;force-sequential[=<em>true</em>|<em>false</em>]
+&#8212;async-dns[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
-  Fetch URIs in the command-line sequentially and download each URI in a
-  separate session, like the usual command-line download utilities.
-  Default: <em>false</em>
+  Enable asynchronous DNS.
+  Default: <em>true</em>
 </p>
 </dd>
 <dt>
@@ -635,6 +994,94 @@ Note
   This option works only in HTTP(S)/FTP download.
   The new file name has a dot and a number(1..9999) appended.
   Default: <em>true</em>
+</p>
+</dd>
+<dt>
+&#8212;conf-path=PATH
+</dt>
+<dd>
+<p>
+  Change the configuration file path to PATH.
+  Default: <em>$HOME/.aria2/aria2.conf</em>
+</p>
+</dd>
+<dt>
+-D, &#8212;daemon
+</dt>
+<dd>
+<p>
+  Run as daemon.
+</p>
+</dd>
+<dt>
+&#8212;enable-direct-io[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Enable directI/O, which lowers cpu usage while allocating/checking files.
+  Turn off if you encounter any error.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt>
+&#8212;file-allocation=METHOD
+</dt>
+<dd>
+<p>
+  Specify file allocation method. METHOD is either <em>none</em> or <em>prealloc</em>.
+  <em>none</em> doesn't pre-allocate file space. <em>prealloc</em> pre-allocates file space
+  before download begins. This may take some time depending on the size of the
+  file.
+  Default: <em>prealloc</em>
+</p>
+</dd>
+</dl>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">In multi file torrent, the files adjacent forward to the specified files
+are also allocated if they share a same piece.</td>
+</tr></table>
+</div>
+<dl>
+<dt>
+-Z, &#8212;force-sequential[=<em>true</em>|<em>false</em>]
+</dt>
+<dd>
+<p>
+  Fetch URIs in the command-line sequentially and download each URI in a
+  separate session, like the usual command-line download utilities.
+  Default: <em>false</em>
+</p>
+</dd>
+<dt>
+&#8212;max-download-limit=SPEED
+</dt>
+<dd>
+<p>
+   Set max download speed in bytes per sec. <em>0</em> means unrestricted.
+   You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+   Default: <em>0</em>
+</p>
+</dd>
+<dt>
+&#8212;no-conf
+</dt>
+<dd>
+<p>
+  Disable loading aria2.conf file.
+</p>
+</dd>
+<dt>
+&#8212;no-file-allocation-limit=SIZE
+</dt>
+<dd>
+<p>
+  No file allocation is made for files whose size is smaller than SIZE.
+  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
+  Default: <em>5M</em>
 </p>
 </dd>
 <dt>
@@ -653,32 +1100,11 @@ Note
 </p>
 </dd>
 <dt>
-&#8212;enable-http-keep-alive[=<em>true</em>|<em>false</em>]
+-q, &#8212;quiet[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
-  Enable HTTP/1.1 persistent connection.
-  Default: <em>true</em>
-</p>
-</dd>
-<dt>
-&#8212;enable-http-pipelining[=<em>true</em>|<em>false</em>]
-</dt>
-<dd>
-<p>
-  Enable HTTP/1.1 pipelining.
-  Default: <em>false</em>
-</p>
-</dd>
-<dt>
-&#8212;check-integrity=<em>true</em>|<em>false</em>
-</dt>
-<dd>
-<p>
-  Check file integrity by validating piece hash.
-  This option only affects in BitTorrent downloads and Metalink downloads with
-  chunk checksums.
-  Use this option to re-download a damaged portion of a file.
+  Make aria2 quite (no console output).
   Default: <em>false</em>
 </p>
 </dd>
@@ -694,78 +1120,6 @@ Note
 </p>
 </dd>
 <dt>
--c, &#8212;continue
-</dt>
-<dd>
-<p>
-   Continue downloading a partially downloaded file.
-   Use this option to resume a download started by a web browser or another
-   program which downloads files sequentially from the beginning.
-   Currently this option is only applicable to HTTP(S)/FTP downloads.
-</p>
-</dd>
-<dt>
--U, &#8212;user-agent=USER_AGENT
-</dt>
-<dd>
-<p>
-  Set user agent for HTTP(S) downloads.
-</p>
-</dd>
-<dt>
--n, &#8212;no-netrc
-</dt>
-<dd>
-<p>
-  Disables netrc support. netrc support is enabled by default.
-</p>
-</dd>
-<dt>
--i, &#8212;input-file=FILE
-</dt>
-<dd>
-<p>
-  Downloads URIs found in FILE. You can specify multiple URIs for a single
-  entity: separate URIs on a single line using the TAB character.
-  Reads input from stdin when <em>-</em> is specified.
-</p>
-</dd>
-<dt>
--j, &#8212;max-concurrent-downloads=N
-</dt>
-<dd>
-<p>
-  Set maximum number of parallel downloads.
-  Default: <em>1</em>
-</p>
-</dd>
-<dt>
-&#8212;load-cookies=FILE
-</dt>
-<dd>
-<p>
-  Load cookies from FILE.
-  The format of FILE is the same used by Netscape and Mozilla.
-</p>
-</dd>
-<dt>
-&#8212;no-conf
-</dt>
-<dd>
-<p>
-  Disable loading aria2.conf file.
-</p>
-</dd>
-<dt>
-&#8212;conf-path=PATH
-</dt>
-<dd>
-<p>
-  Change the configuration file path to PATH.
-  Default: <em>$HOME/.aria2/aria2.conf</em>
-</p>
-</dd>
-<dt>
 &#8212;stop=SEC
 </dt>
 <dd>
@@ -773,323 +1127,6 @@ Note
   Stop application after SEC seconds has passed.
   If <em>0</em> is given, this feature is disabled.
   Default: <em>0</em>
-</p>
-</dd>
-<dt>
--S, &#8212;show-files
-</dt>
-<dd>
-<p>
-  Print file listing of .torrent or .metalink file and exit.
-  In case of .torrent file, additional information
-  (infohash, piece length, etc) is also printed.
-</p>
-</dd>
-<dt>
-&#8212;select-file=INDEX&#8230;
-</dt>
-<dd>
-<p>
-  Set file to download by specifing its index.
-  You can find the file index using the &#8212;show-files option.
-  Multiple indexes can be specified by using ",", for example: <em>3,6</em>.
-  You can also use "-" to specify a range: <em>1-5</em>.
-  "," and "-" can be used together: <em>1-5,8,9</em>.
-  When used with the -M option, index may vary depending on the query
-  (see &#8212;metalink-* options).
-</p>
-<dl>
-<dt>
-Note
-</dt>
-<dd>
-<p>
-    In multi file torrent, the adjacent files specified by this option may
-    also be downloaded. This is by design, not a bug.
-    A single piece may include several files or part of files, and aria2
-    writes the piece to the appropriate files.
-</p>
-</dd>
-</dl>
-</dd>
-<dt>
--T, &#8212;torrent-file=TORRENT_FILE
-</dt>
-<dd>
-<p>
-  The path to the .torrent file.
-  You may not use this option because you can specify torrent file without -T.
-</p>
-</dd>
-<dt>
-&#8212;follow-torrent=<em>true</em>|<em>false</em>|<em>mem</em>
-</dt>
-<dd>
-<p>
-  If <em>true</em> or <em>mem</em> is specified, when a file whose suffix is ".torrent" or content
-  type is "application/x-bittorrent" is downloaded, aria2 parses it as a torrent
-  file and downloads files mentioned in it.
-  If <em>mem</em> is specified, a torrent file is not written to the disk, but is just
-  kept in memory.
-  If <em>false</em> is specified, the action mentioned above is not taken.
-  Default: <em>true</em>
-</p>
-</dd>
-<dt>
-&#8212;direct-file-mapping=<em>true</em>|<em>false</em>
-</dt>
-<dd>
-<p>
-  Directly read from and write to each file mentioned in .torrent file.
-  Use this option if lots of files are listed in .torrent file and aria2
-  complains it cannot open files anymore.
-  Default: <em>true</em>
-</p>
-</dd>
-<dt>
-&#8212;listen-port=PORT&#8230;
-</dt>
-<dd>
-<p>
-  Set TCP port number for BitTorrent downloads.
-  Multiple ports can be specified by using ",",  for example: <em>6881,6885</em>.
-  You can also use "-" to specify a range: <em>6881-6999</em>.
-  "," and "-" can be used together: <em>6881-6889,6999</em>.
-  Default: <em>6881-6999</em>
-</p>
-<dl>
-<dt>
-Note
-</dt>
-<dd>
-<p>
-    Make sure that the specified ports are open for incoming TCP traffic.
-</p>
-</dd>
-</dl>
-</dd>
-<dt>
-&#8212;max-upload-limit=SPEED
-</dt>
-<dd>
-<p>
-  Set max upload speed in bytes per sec. <em>0</em> means unrestricted.
-  You can append <em>K</em> or <em>M</em>(1K = 1024, 1M = 1024K).
-  Default: <em>0</em>
-</p>
-</dd>
-<dt>
-&#8212;seed-time=MINUTES
-</dt>
-<dd>
-<p>
-  Specify seeding time in minutes. Also see the &#8212;seed-ratio option.
-</p>
-</dd>
-<dt>
-&#8212;seed-ratio=RATIO
-</dt>
-<dd>
-<p>
-  Specify share ratio. Seed completed torrents until share ratio reaches]
-  RATIO.
-  I strongly encourages you to specify equals or more than <em>1.0</em> here.
-  Specify <em>0.0</em> if you intend to do seeding regardless of share ratio.
-  If &#8212;seed-time option is specified along with this option, seeding ends when
-  at least one of the conditions is satisfied.
-  Default: <em>1.0</em>
-</p>
-</dd>
-<dt>
-&#8212;peer-id-prefix=PEERI_ID_PREFIX
-</dt>
-<dd>
-<p>
-  Specify the prefix of peer ID. The peer ID in BitTorrent is 20 byte length.
-  If more than 20 bytes are specified, only first 20 bytes are used.
-  If less than 20 bytes are specified, the random alphabet characters are
-  added to make it's length 20 bytes.
-  Default: <em>-aria2-</em>
-</p>
-</dd>
-<dt>
-&#8212;enable-peer-exchange[=<em>true</em>|<em>false</em>]
-</dt>
-<dd>
-<p>
-  Enable Peer Exchange extension. If a private flag is set in a torrent, this
-  feature is disabled for that download even if <em>true</em> is given.
-  Default: <em>true</em>
-</p>
-</dd>
-<dt>
-&#8212;enable-dht[=<em>true</em>|<em>false</em>]
-</dt>
-<dd>
-<p>
-  Enable DHT functionality. If a private flag is set in a torrent, aria2
-  doesn't use DHT for that download even if <em>true</em> is given.
-  Default: <em>false</em>
-</p>
-</dd>
-<dt>
-&#8212;dht-listen-port=PORT&#8230;
-</dt>
-<dd>
-<p>
-  Set UDP listening port for DHT.
-  Multiple ports can be specified by using ",", for example: <em>6881,6885</em>.
-  You can also use "-" to specify a range: <em>6881-6999</em>. "," and "-" can be used
-  together.
-  Default: <em>6881-6999</em>
-</p>
-</dd>
-<dt>
-&#8212;dht-entry-point=HOST:PORT
-</dt>
-<dd>
-<p>
-  Set host and port as an entry point to DHT network.
-</p>
-</dd>
-<dt>
-&#8212;bt-min-crypto-level=<em>plain</em>|<em>arc4</em>
-</dt>
-<dd>
-<p>
-  Set minimum level of encryption method.
-  If several encryption methods are provided by a peer, aria2 chooses a lowest
-  one which satisfies the given level.
-  Default: <em>plain</em>
-</p>
-</dd>
-<dt>
-&#8212;bt-require-crypto=<em>true</em>|<em>false</em>
-</dt>
-<dd>
-<p>
-  If true is given, aria2 doesn't accept and establish connection with legacy
-  BitTorrent handshake(\19BitTorrent protocol).
-  Thus aria2 always uses Obfuscation handshake.
-  Default: <em>false</em>
-</p>
-</dd>
-<dt>
--M, &#8212;metalink-file=METALINK_FILE
-</dt>
-<dd>
-<p>
-  The file path to .metalink file. You may not use this option because you can
-  specify metalink file without -M.
-</p>
-</dd>
-<dt>
--C, &#8212;metalink-servers=NUM_SERVERS
-</dt>
-<dd>
-<p>
-  The number of servers to connect to simultaneously.
-  Some metalinks regulates the number of servers to connect.
-  aria2 respects them.
-  Default: <em>1</em>
-</p>
-</dd>
-<dt>
-&#8212;metalink-version=VERSION
-</dt>
-<dd>
-<p>
-  The version of the file to download.
-</p>
-</dd>
-<dt>
-&#8212;metalink-language=LANGUAGE
-</dt>
-<dd>
-<p>
-  The language of the file to download.
-</p>
-</dd>
-<dt>
-&#8212;metalink-os=OS
-</dt>
-<dd>
-<p>
-  The operating system of the file to download.
-</p>
-</dd>
-<dt>
-&#8212;metalink-location=LOCATION[,&#8230;]
-</dt>
-<dd>
-<p>
-  The location of the preferred server.
-  A comma-deliminated list of locations is acceptable, for example, <em>JP,US</em>.
-</p>
-</dd>
-<dt>
-&#8212;metalink-preferred-protocol=PROTO
-</dt>
-<dd>
-<p>
-  Specify preferred protocol.
-  The possible values are <em>http</em>, <em>https</em>, <em>ftp</em> and <em>none</em>.
-  Specifiy <em>none</em> to disable this feature.
-  Default: <em>none</em>
-</p>
-</dd>
-<dt>
-&#8212;follow-metalink=<em>true</em>|<em>false</em>|<em>mem</em>
-</dt>
-<dd>
-<p>
-  If <em>true</em> or <em>mem</em> is specified, when a file whose suffix is ".metaink" or content
-  type is "application/metalink+xml" is downloaded, aria2 parses it as a metalink
-  file and downloads files mentioned in it.
-  If <em>mem</em> is specified, a metalink file is not written to the disk, but is just
-  kept in memory.
-  If <em>false</em> is specified, the action mentioned above is not taken.
-  Default: <em>true</em>
-</p>
-</dd>
-<dt>
-&#8212;metalink-enable-unique-protocol=<em>true</em>|<em>false</em>
-</dt>
-<dd>
-<p>
-  If <em>true</em> is given and several protocols are available for a mirror in a
-  metalink file, aria2 uses one of them.
-  Use &#8212;metalink-preferred-protocol option to specify the preference of
-  protocol.
-  Default: <em>true</em>
-</p>
-</dd>
-<dt>
-&#8212;header=HEADER
-</dt>
-<dd>
-<p>
-  Append HEADER to HTTP request header.
-  You can use this option repeatedly to specify more than one header:
-  aria2c &#8212;header="X-A: b78" &#8212;header="X-B: 9J1" http://host/file
-</p>
-</dd>
-<dt>
--q, &#8212;quiet[=<em>true</em>|<em>false</em>]
-</dt>
-<dd>
-<p>
-  Make aria2 quite (no console output).
-  Default: <em>false</em>
-</p>
-</dd>
-<dt>
-&#8212;async-dns[=<em>true</em>|<em>false</em>]
-</dt>
-<dd>
-<p>
-  Enable asynchronous DNS.
-  Default: <em>true</em>
 </p>
 </dd>
 <dt>
@@ -1101,49 +1138,26 @@ Note
   exit.
 </p>
 </dd>
-<dt>
--h, &#8212;help[=CATEGORY]
-</dt>
-<dd>
-<p>
-  Print usage and exit.
-  The help messages are classified in several categories.
-  For example, type "&#8212;help=http" for detailed explanation for the options
-  related to HTTP. If no matching category is found, search option name using
-  a given word in forward match and print the result.
-  Available Values: <em>basic</em>, <em>advanced</em>, <em>http</em>, <em>ftp</em>, <em>metalink</em>,
-  <em>bittorrent</em>, <em>all</em>
-  Default: <em>basic</em>
-</p>
-</dd>
-<dt>
-URL, TORRENT_FILE, METALINK_FILE
-</dt>
-<dd>
-<p>
- You can specify multiple URLs. Unless you specify -Z option, all URLs must
- point to the same file or downloading will fail.
- You can also specify arbitrary number of torrent files and metalink files
- stored in a local drive. Please note that they are always treated as a
- separate download.
- You can specify both torrent file with -T option and URLs. By doing this,
- download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
- while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
- only single file torrent can be integrated with HTTP(S)/FTP.
-</p>
-<dl>
-<dt>
-Note
-</dt>
-<dd>
-<p>
-   Make sure that URL is quoted with single(') or double(") quotation if it
-   contains "&amp;" or any characters that have special meaning in shell.
-</p>
-</dd>
 </dl>
-</dd>
-</dl>
+<h3>URL, TORRENT_FILE, METALINK_FILE</h3>
+<p>You can specify multiple URLs in command-line.
+Unless you specify -Z option, all URLs must point to the same file or downloading will fail.</p>
+<p>You can also specify arbitrary number of torrent files and metalink files
+stored in a local drive. Please note that they are always treated as a
+separate download.</p>
+<p>You can specify both torrent file with -T option and URLs. By doing this,
+download a file from both torrent swarm and HTTP(S)/FTP server at the same time,
+while the data from HTTP(S)/FTP are uploaded to the torrent swarm. Note that
+only single file torrent can be integrated with HTTP(S)/FTP.</p>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Make sure that URL is quoted with single(') or double(") quotation if it
+contains "&amp;" or any characters that have special meaning in shell.</td>
+</tr></table>
+</div>
 </div>
 <h2>EXAMPLES</h2>
 <div class="sectionbody">
@@ -1158,7 +1172,7 @@ Note
 <td class="icon">
 <div class="title">Note</div>
 </td>
-<td class="content">To pause a download, press Ctrl-C. You can resume the transfer by run aria2c with the same argument at the same directory. You can change URLs as long as they are pointing to the same file.</td>
+<td class="content">To pause a download, press Ctrl-C. You can resume the transfer by running aria2c with the same argument at the same directory. You can change URLs as long as they are pointing to the same file.</td>
 </tr></table>
 </div>
 <h4>Download a file using 2 connections</h4>
@@ -1206,7 +1220,7 @@ Note
 <div class="title">Note</div>
 </td>
 <td class="content">To pause a download, press Ctrl-C.
-You can resume the transfer by run aria2c with the same argument at the same
+You can resume the transfer by running aria2c with the same argument at the same
 directory.</td>
 </tr></table>
 </div>
@@ -1464,6 +1478,7 @@ The lines beginning <em>#</em> are treated as comments.</p>
 <div class="content">
 <pre><tt># sample configuration file for aria2c
 listen-port=60000
+dht-listen-port=60000
 seed-ratio=1.0
 max-upload-limit=50K
 ftp-pasv=true</tt></pre>
@@ -1513,7 +1528,7 @@ files in the program, then also delete it here.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 10-May-2008 00:23:19 JST
+Last updated 13-May-2008 00:26:12 JST
 </div>
 </div>
 </body>

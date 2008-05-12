@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 05/10/2008
+.\"      Date: 05/13/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "05/10/2008" "" ""
+.TH "ARIA2C" "1" "05/13/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -19,20 +19,18 @@ aria2c - The ultra fast download utility
 aria2 is a utility for downloading files\. The supported protocols are HTTP(S), FTP, BitTorrent, and Metalink\. It has a powerful segmented downloading ability, downloading a file from multiple sources and multiple protocols and utilizing your download bandwidth to the maximum\. It supports downloading a file from HTTP(S)/FTP and BitTorrent at the same time, while the data downloaded from HTTP(S)/FTP is uploaded to the BitTorrent swarm\. Using Metalink\'s chunk checksums, aria2 automatically validates chunks of data while downloading a file like BitTorrent\.
 .sp
 .SH "OPTIONS"
+.SS "Basic Options"
 .PP
 \-d, \-\-dir=DIR
 .RS 4
 The directory to store the downloaded file\.
 .RE
 .PP
-\-o, \-\-out=FILE
+\-i, \-\-input\-file=FILE
 .RS 4
-The file name of the downloaded file\.
-.PP
-Note
-.RS 4
-In Metalink, BitTorrent download you cannot specify file name\. The file name specified here is only used when the URLs fed to aria2 is done by command line without \-i option, like this: aria2c \-o myfile\.zip http://mirror1/file\.zip http://mirror2/file\.zip
-.RE
+Downloads URIs found in FILE\. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\. Reads input from stdin when
+\fI\-\fR
+is specified\.
 .RE
 .PP
 \-l, \-\-log=LOG
@@ -42,9 +40,76 @@ The file name of the log file\. If
 is specified, log is written to stdout\.
 .RE
 .PP
-\-D, \-\-daemon
+\-j, \-\-max\-concurrent\-downloads=N
 .RS 4
-Run as daemon\.
+Set maximum number of parallel downloads\. Default:
+\fI1\fR
+.RE
+.PP
+\-\-check\-integrity=\fItrue\fR|\fIfalse\fR
+.RS 4
+Check file integrity by validating piece hash\. This option only affects in BitTorrent downloads and Metalink downloads with chunk checksums\. Use this option to re\-download a damaged portion of a file\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-c, \-\-continue
+.RS 4
+Continue downloading a partially downloaded file\. Use this option to resume a download started by a web browser or another program which downloads files sequentially from the beginning\. Currently this option is only applicable to HTTP(S)/FTP downloads\.
+.RE
+.PP
+\-h, \-\-help[=CATEGORY]
+.RS 4
+Print usage and exit\. The help messages are classified in several categories\. For example, type "\-\-help=http" for detailed explanation for the options related to HTTP\. If no matching category is found, search option name using a given word in forward match and print the result\. Available Values:
+\fIbasic\fR,
+\fIadvanced\fR,
+\fIhttp\fR,
+\fIftp\fR,
+\fImetalink\fR,
+\fIbittorrent\fR,
+\fIall\fR
+Default:
+\fIbasic\fR
+.RE
+.SS "HTTP/FTP Options"
+.PP
+\-\-lowest\-speed\-limit=SPEED
+.RS 4
+Close connection if download speed is lower than or equal to this value(bytes per sec)\.
+\fI0\fR
+means aria2 does not have a lowest speed limit\. You can append
+\fIK\fR
+or
+\fIM\fR(1K = 1024, 1M = 1024K)\. This option does not affect BitTorrent downloads\. Default:
+\fI0\fR
+.RE
+.PP
+\-m, \-\-max\-tries=N
+.RS 4
+Set number of tries\.
+\fI0\fR
+means unlimited\. Default:
+\fI5\fR
+.RE
+.PP
+\-o, \-\-out=FILE
+.RS 4
+The file name of the downloaded file\.
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+In Metalink, BitTorrent download you cannot specify file name\. The file name specified here is only used when the URLs fed to aria2 is done by command line without \-i, \-Z option, like this: aria2c \-o myfile\.zip http://mirror1/file\.zip http://mirror2/file\.zip
+.PP
+\-\-retry\-wait=SEC
+.RS 4
+Set the seconds to wait to retry after an error has occured\. Specify a value between
+\fI0\fR
+and
+\fI60\fR\. Default:
+\fI5\fR
 .RE
 .PP
 \-s, \-\-split=N
@@ -56,32 +121,19 @@ and
 \fI1\fR
 .RE
 .PP
-\-\-retry\-wait=SEC
-.RS 4
-Set the seconds to wait to retry after an error has occured\. Specify a value between
-\fI0\fR
-and
-\fI60\fR\. Default:
-\fI5\fR
-.RE
-.PP
 \-t, \-\-timeout=SEC
 .RS 4
 Set timeout in seconds\. Default:
 \fI60\fR
 .RE
+.SS "HTTP Specific Options"
 .PP
-\-m, \-\-max\-tries=N
+\-\-http\-auth\-scheme=SCHEME
 .RS 4
-Set number of tries\.
-\fI0\fR
-means unlimited\. Default:
-\fI5\fR
-.RE
-.PP
-\-\-http\-proxy=HOST:PORT
-.RS 4
-Use HTTP proxy server\. This affects all URLs\.
+Set HTTP authentication scheme\. Currently,
+\fIbasic\fR
+is the only supported scheme\. Default:
+\fIbasic\fR
 .RE
 .PP
 \-\-http\-user=USER
@@ -92,6 +144,11 @@ Set HTTP user\. This affects all URLs\.
 \-\-http\-passwd=PASSWD
 .RS 4
 Set HTTP password\. This affects all URLs\.
+.RE
+.PP
+\-\-http\-proxy=HOST:PORT
+.RS 4
+Use HTTP proxy server\. This affects all URLs\.
 .RE
 .PP
 \-\-http\-proxy\-user=USER
@@ -115,148 +172,9 @@ or
 \fItunnel\fR
 .RE
 .PP
-\-\-http\-auth\-scheme=SCHEME
-.RS 4
-Set HTTP authentication scheme\. Currently,
-\fIbasic\fR
-is the only supported scheme\. Default:
-\fIbasic\fR
-.RE
-.PP
 \-\-referer=REFERER
 .RS 4
 Set Referer\. This affects all URLs\.
-.RE
-.PP
-\-\-ftp\-user=USER
-.RS 4
-Set FTP user\. This affects all URLs\. Default:
-\fIanonymous\fR
-.RE
-.PP
-\-\-ftp\-passwd=PASSWD
-.RS 4
-Set FTP password\. This affects all URLs\. Default:
-\fIARIA2USER@\fR
-.RE
-.PP
-\-\-ftp\-type=TYPE
-.RS 4
-Set FTP transfer type\. TYPE is either
-\fIbinary\fR
-or
-\fIascii\fR\. Default:
-\fIbinary\fR
-.RE
-.PP
-\-p, \-\-ftp\-pasv
-.RS 4
-Use passive mode in FTP\.
-.RE
-.PP
-\-\-ftp\-via\-http\-proxy=METHOD
-.RS 4
-Use HTTP proxy in FTP\. METHOD is either
-\fIget\fR
-or
-\fItunnel\fR\. Default:
-\fItunnel\fR
-.RE
-.PP
-\-\-ftp\-reuse\-connection[=\fItrue\fR|\fIfalse\fR]
-.RS 4
-Reuse connection in FTP\. Default:
-\fItrue\fR
-.RE
-.PP
-\-\-lowest\-speed\-limit=SPEED
-.RS 4
-Close connection if download speed is lower than or equal to this value(bytes per sec)\.
-\fI0\fR
-means aria2 does not have a lowest speed limit\. You can append
-\fIK\fR
-or
-\fIM\fR(1K = 1024, 1M = 1024K)\. This option does not affect BitTorrent downloads\. Default:
-\fI0\fR
-.RE
-.PP
-\-\-max\-download\-limit=SPEED
-.RS 4
-Set max download speed in bytes per sec\.
-\fI0\fR
-means unrestricted\. You can append
-\fIK\fR
-or
-\fIM\fR(1K = 1024, 1M = 1024K)\. Default:
-\fI0\fR
-.RE
-.PP
-\-\-file\-allocation=METHOD
-.RS 4
-Specify file allocation method\. METHOD is either
-\fInone\fR
-or
-\fIprealloc\fR\.
-\fInone\fR
-doesn\'t pre\-allocate file space\.
-\fIprealloc\fR
-pre\-allocates file space before download begins\. This may take some time depending on the size of the file\. Default:
-\fIprealloc\fR
-.PP
-Note
-.RS 4
-In multi file torrent, the files adjacent forward to the specified files are also allocated if they share a same piece\.
-.RE
-.RE
-.PP
-\-\-no\-file\-allocation\-limit=SIZE
-.RS 4
-No file allocation is made for files whose size is smaller than SIZE\. You can append
-\fIK\fR
-or
-\fIM\fR(1K = 1024, 1M = 1024K)\. Default:
-\fI5M\fR
-.RE
-.PP
-\-\-enable\-direct\-io[=\fItrue\fR|\fIfalse\fR]
-.RS 4
-Enable directI/O, which lowers cpu usage while allocating/checking files\. Turn off if you encounter any error\. Default:
-\fIfalse\fR
-.RE
-.PP
-\-\-allow\-overwrite=\fItrue\fR|\fIfalse\fR
-.RS 4
-If
-\fIfalse\fR
-is given, aria2 doesn\'t download a file which already exists but the corresponding \.aria2 file doesn\'t exist\. In HTTP(S)/FTP download, if \-\-auto\-file\-renaming=\fItrue\fR
-then, file name will be renamed\. See \-\-auto\-file\-renaming for details\. Default:
-\fIfalse\fR
-.RE
-.PP
-\-\-allow\-piece\-length\-change=\fItrue\fR|\fIfalse\fR
-.RS 4
-If false is given, aria2 aborts download when a piece length is different from one in a control file\. If true is given, you can proceed but some download progress will be lost\. Default:
-\fIfalse\fR
-.RE
-.PP
-\-Z, \-\-force\-sequential[=\fItrue\fR|\fIfalse\fR]
-.RS 4
-Fetch URIs in the command\-line sequentially and download each URI in a separate session, like the usual command\-line download utilities\. Default:
-\fIfalse\fR
-.RE
-.PP
-\-\-auto\-file\-renaming[=\fItrue\fR|\fIfalse\fR]
-.RS 4
-Rename file name if the same file already exists\. This option works only in HTTP(S)/FTP download\. The new file name has a dot and a number(1\.\.9999) appended\. Default:
-\fItrue\fR
-.RE
-.PP
-\-P, \-\-parameterized\-uri[=\fItrue\fR|\fIfalse\fR]
-.RS 4
-Enable parameterized URI support\. You can specify set of parts:
-\fIhttp://{sv1,sv2,sv3}/foo\.iso\fR\. Also you can specify numeric sequences with step counter:
-\fIhttp://host/image[000\-100:2]\.img\fR\. A step counter can be omitted\. If all URIs do not point to the same file, such as the second example above, \-Z option is required\. Default:
-\fIfalse\fR
 .RE
 .PP
 \-\-enable\-http\-keep\-alive[=\fItrue\fR|\fIfalse\fR]
@@ -271,44 +189,9 @@ Enable HTTP/1\.1 pipelining\. Default:
 \fIfalse\fR
 .RE
 .PP
-\-\-check\-integrity=\fItrue\fR|\fIfalse\fR
+\-\-header=HEADER
 .RS 4
-Check file integrity by validating piece hash\. This option only affects in BitTorrent downloads and Metalink downloads with chunk checksums\. Use this option to re\-download a damaged portion of a file\. Default:
-\fIfalse\fR
-.RE
-.PP
-\-\-realtime\-chunk\-checksum=\fItrue\fR|\fIfalse\fR
-.RS 4
-Validate chunk of data by calculating checkusm while download a file if chunk checksums are provided\. Currently Metalink is the only way to to provide chunk checksums\. Default:
-\fItrue\fR
-.RE
-.PP
-\-c, \-\-continue
-.RS 4
-Continue downloading a partially downloaded file\. Use this option to resume a download started by a web browser or another program which downloads files sequentially from the beginning\. Currently this option is only applicable to HTTP(S)/FTP downloads\.
-.RE
-.PP
-\-U, \-\-user\-agent=USER_AGENT
-.RS 4
-Set user agent for HTTP(S) downloads\.
-.RE
-.PP
-\-n, \-\-no\-netrc
-.RS 4
-Disables netrc support\. netrc support is enabled by default\.
-.RE
-.PP
-\-i, \-\-input\-file=FILE
-.RS 4
-Downloads URIs found in FILE\. You can specify multiple URIs for a single entity: separate URIs on a single line using the TAB character\. Reads input from stdin when
-\fI\-\fR
-is specified\.
-.RE
-.PP
-\-j, \-\-max\-concurrent\-downloads=N
-.RS 4
-Set maximum number of parallel downloads\. Default:
-\fI1\fR
+Append HEADER to HTTP request header\. You can use this option repeatedly to specify more than one header: aria2c \-\-header="X\-A: b78" \-\-header="X\-B: 9J1" http://host/file
 .RE
 .PP
 \-\-load\-cookies=FILE
@@ -316,29 +199,58 @@ Set maximum number of parallel downloads\. Default:
 Load cookies from FILE\. The format of FILE is the same used by Netscape and Mozilla\.
 .RE
 .PP
-\-\-no\-conf
+\-U, \-\-user\-agent=USER_AGENT
 .RS 4
-Disable loading aria2\.conf file\.
+Set user agent for HTTP(S) downloads\.
+.RE
+.SS "FTP Specific Options"
+.PP
+\-\-ftp\-user=USER
+.RS 4
+Set FTP user\. This affects all URLs\. Default:
+\fIanonymous\fR
 .RE
 .PP
-\-\-conf\-path=PATH
+\-\-ftp\-passwd=PASSWD
 .RS 4
-Change the configuration file path to PATH\. Default:
-\fI$HOME/\.aria2/aria2\.conf\fR
+Set FTP password\. This affects all URLs\. Default:
+\fIARIA2USER@\fR
 .RE
 .PP
-\-\-stop=SEC
+\-p, \-\-ftp\-pasv
 .RS 4
-Stop application after SEC seconds has passed\. If
-\fI0\fR
-is given, this feature is disabled\. Default:
-\fI0\fR
+Use passive mode in FTP\.
 .RE
 .PP
-\-S, \-\-show\-files
+\-\-ftp\-type=TYPE
 .RS 4
-Print file listing of \.torrent or \.metalink file and exit\. In case of \.torrent file, additional information (infohash, piece length, etc) is also printed\.
+Set FTP transfer type\. TYPE is either
+\fIbinary\fR
+or
+\fIascii\fR\. Default:
+\fIbinary\fR
 .RE
+.PP
+\-\-ftp\-reuse\-connection[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Reuse connection in FTP\. Default:
+\fItrue\fR
+.RE
+.PP
+\-\-ftp\-via\-http\-proxy=METHOD
+.RS 4
+Use HTTP proxy in FTP\. METHOD is either
+\fIget\fR
+or
+\fItunnel\fR\. Default:
+\fItunnel\fR
+.RE
+.PP
+\-n, \-\-no\-netrc
+.RS 4
+Disables netrc support\. netrc support is enabled by default\.
+.RE
+.SS "BitTorrent/Metalink Options"
 .PP
 \-\-select\-file=INDEX\&...
 .RS 4
@@ -346,16 +258,66 @@ Set file to download by specifing its index\. You can find the file index using 
 \fI3,6\fR\. You can also use "\-" to specify a range:
 \fI1\-5\fR\. "," and "\-" can be used together:
 \fI1\-5,8,9\fR\. When used with the \-M option, index may vary depending on the query (see \-\-metalink\-* options)\.
-.PP
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
 Note
-.RS 4
 In multi file torrent, the adjacent files specified by this option may also be downloaded\. This is by design, not a bug\. A single piece may include several files or part of files, and aria2 writes the piece to the appropriate files\.
+.PP
+\-S, \-\-show\-files
+.RS 4
+Print file listing of \.torrent or \.metalink file and exit\. In case of \.torrent file, additional information (infohash, piece length, etc) is also printed\.
 .RE
+.SS "BitTorrent Specific Options"
+.PP
+\-\-bt\-min\-crypto\-level=\fIplain\fR|\fIarc4\fR
+.RS 4
+Set minimum level of encryption method\. If several encryption methods are provided by a peer, aria2 chooses a lowest one which satisfies the given level\. Default:
+\fIplain\fR
 .RE
 .PP
-\-T, \-\-torrent\-file=TORRENT_FILE
+\-\-bt\-require\-crypto=\fItrue\fR|\fIfalse\fR
 .RS 4
-The path to the \.torrent file\. You may not use this option because you can specify torrent file without \-T\.
+If true is given, aria2 doesn\'t accept and establish connection with legacy BitTorrent handshake(\e19BitTorrent protocol)\. Thus aria2 always uses Obfuscation handshake\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-\-dht\-entry\-point=HOST:PORT
+.RS 4
+Set host and port as an entry point to DHT network\.
+.RE
+.PP
+\-\-dht\-listen\-port=PORT\&...
+.RS 4
+Set UDP listening port for DHT\. Multiple ports can be specified by using ",", for example:
+\fI6881,6885\fR\. You can also use "\-" to specify a range:
+\fI6881\-6999\fR\. "," and "\-" can be used together\. Default:
+\fI6881\-6999\fR
+.RE
+.PP
+\-\-direct\-file\-mapping=\fItrue\fR|\fIfalse\fR
+.RS 4
+Directly read from and write to each file mentioned in \.torrent file\. Use this option if lots of files are listed in \.torrent file and aria2 complains it cannot open files anymore\. Default:
+\fItrue\fR
+.RE
+.PP
+\-\-enable\-dht[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable DHT functionality\. If a private flag is set in a torrent, aria2 doesn\'t use DHT for that download even if
+\fItrue\fR
+is given\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-\-enable\-peer\-exchange[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable Peer Exchange extension\. If a private flag is set in a torrent, this feature is disabled for that download even if
+\fItrue\fR
+is given\. Default:
+\fItrue\fR
 .RE
 .PP
 \-\-follow\-torrent=\fItrue\fR|\fIfalse\fR|\fImem\fR
@@ -372,12 +334,6 @@ is specified, the action mentioned above is not taken\. Default:
 \fItrue\fR
 .RE
 .PP
-\-\-direct\-file\-mapping=\fItrue\fR|\fIfalse\fR
-.RS 4
-Directly read from and write to each file mentioned in \.torrent file\. Use this option if lots of files are listed in \.torrent file and aria2 complains it cannot open files anymore\. Default:
-\fItrue\fR
-.RE
-.PP
 \-\-listen\-port=PORT\&...
 .RS 4
 Set TCP port number for BitTorrent downloads\. Multiple ports can be specified by using ",", for example:
@@ -385,12 +341,14 @@ Set TCP port number for BitTorrent downloads\. Multiple ports can be specified b
 \fI6881\-6999\fR\. "," and "\-" can be used together:
 \fI6881\-6889,6999\fR\. Default:
 \fI6881\-6999\fR
-.PP
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
 Note
-.RS 4
 Make sure that the specified ports are open for incoming TCP traffic\.
-.RE
-.RE
 .PP
 \-\-max\-upload\-limit=SPEED
 .RS 4
@@ -403,9 +361,10 @@ or
 \fI0\fR
 .RE
 .PP
-\-\-seed\-time=MINUTES
+\-\-peer\-id\-prefix=PEERI_ID_PREFIX
 .RS 4
-Specify seeding time in minutes\. Also see the \-\-seed\-ratio option\.
+Specify the prefix of peer ID\. The peer ID in BitTorrent is 20 byte length\. If more than 20 bytes are specified, only first 20 bytes are used\. If less than 20 bytes are specified, the random alphabet characters are added to make it\'s length 20 bytes\. Default:
+\fI\-aria2\-\fR
 .RE
 .PP
 \-\-seed\-ratio=RATIO
@@ -418,97 +377,16 @@ if you intend to do seeding regardless of share ratio\. If \-\-seed\-time option
 \fI1\.0\fR
 .RE
 .PP
-\-\-peer\-id\-prefix=PEERI_ID_PREFIX
+\-\-seed\-time=MINUTES
 .RS 4
-Specify the prefix of peer ID\. The peer ID in BitTorrent is 20 byte length\. If more than 20 bytes are specified, only first 20 bytes are used\. If less than 20 bytes are specified, the random alphabet characters are added to make it\'s length 20 bytes\. Default:
-\fI\-aria2\-\fR
+Specify seeding time in minutes\. Also see the \-\-seed\-ratio option\.
 .RE
 .PP
-\-\-enable\-peer\-exchange[=\fItrue\fR|\fIfalse\fR]
+\-T, \-\-torrent\-file=TORRENT_FILE
 .RS 4
-Enable Peer Exchange extension\. If a private flag is set in a torrent, this feature is disabled for that download even if
-\fItrue\fR
-is given\. Default:
-\fItrue\fR
+The path to the \.torrent file\. You may not use this option because you can specify torrent file without \-T\.
 .RE
-.PP
-\-\-enable\-dht[=\fItrue\fR|\fIfalse\fR]
-.RS 4
-Enable DHT functionality\. If a private flag is set in a torrent, aria2 doesn\'t use DHT for that download even if
-\fItrue\fR
-is given\. Default:
-\fIfalse\fR
-.RE
-.PP
-\-\-dht\-listen\-port=PORT\&...
-.RS 4
-Set UDP listening port for DHT\. Multiple ports can be specified by using ",", for example:
-\fI6881,6885\fR\. You can also use "\-" to specify a range:
-\fI6881\-6999\fR\. "," and "\-" can be used together\. Default:
-\fI6881\-6999\fR
-.RE
-.PP
-\-\-dht\-entry\-point=HOST:PORT
-.RS 4
-Set host and port as an entry point to DHT network\.
-.RE
-.PP
-\-\-bt\-min\-crypto\-level=\fIplain\fR|\fIarc4\fR
-.RS 4
-Set minimum level of encryption method\. If several encryption methods are provided by a peer, aria2 chooses a lowest one which satisfies the given level\. Default:
-\fIplain\fR
-.RE
-.PP
-\-\-bt\-require\-crypto=\fItrue\fR|\fIfalse\fR
-.RS 4
-If true is given, aria2 doesn\'t accept and establish connection with legacy BitTorrent handshake(\e19BitTorrent protocol)\. Thus aria2 always uses Obfuscation handshake\. Default:
-\fIfalse\fR
-.RE
-.PP
-\-M, \-\-metalink\-file=METALINK_FILE
-.RS 4
-The file path to \.metalink file\. You may not use this option because you can specify metalink file without \-M\.
-.RE
-.PP
-\-C, \-\-metalink\-servers=NUM_SERVERS
-.RS 4
-The number of servers to connect to simultaneously\. Some metalinks regulates the number of servers to connect\. aria2 respects them\. Default:
-\fI1\fR
-.RE
-.PP
-\-\-metalink\-version=VERSION
-.RS 4
-The version of the file to download\.
-.RE
-.PP
-\-\-metalink\-language=LANGUAGE
-.RS 4
-The language of the file to download\.
-.RE
-.PP
-\-\-metalink\-os=OS
-.RS 4
-The operating system of the file to download\.
-.RE
-.PP
-\-\-metalink\-location=LOCATION[,\&...]
-.RS 4
-The location of the preferred server\. A comma\-deliminated list of locations is acceptable, for example,
-\fIJP,US\fR\.
-.RE
-.PP
-\-\-metalink\-preferred\-protocol=PROTO
-.RS 4
-Specify preferred protocol\. The possible values are
-\fIhttp\fR,
-\fIhttps\fR,
-\fIftp\fR
-and
-\fInone\fR\. Specifiy
-\fInone\fR
-to disable this feature\. Default:
-\fInone\fR
-.RE
+.SS "Metalink Specific Options"
 .PP
 \-\-follow\-metalink=\fItrue\fR|\fIfalse\fR|\fImem\fR
 .RS 4
@@ -524,6 +402,51 @@ is specified, the action mentioned above is not taken\. Default:
 \fItrue\fR
 .RE
 .PP
+\-M, \-\-metalink\-file=METALINK_FILE
+.RS 4
+The file path to \.metalink file\. You may not use this option because you can specify metalink file without \-M\.
+.RE
+.PP
+\-C, \-\-metalink\-servers=NUM_SERVERS
+.RS 4
+The number of servers to connect to simultaneously\. Some metalinks regulates the number of servers to connect\. aria2 respects them\. Default:
+\fI1\fR
+.RE
+.PP
+\-\-metalink\-language=LANGUAGE
+.RS 4
+The language of the file to download\.
+.RE
+.PP
+\-\-metalink\-location=LOCATION[,\&...]
+.RS 4
+The location of the preferred server\. A comma\-deliminated list of locations is acceptable, for example,
+\fIJP,US\fR\.
+.RE
+.PP
+\-\-metalink\-os=OS
+.RS 4
+The operating system of the file to download\.
+.RE
+.PP
+\-\-metalink\-version=VERSION
+.RS 4
+The version of the file to download\.
+.RE
+.PP
+\-\-metalink\-preferred\-protocol=PROTO
+.RS 4
+Specify preferred protocol\. The possible values are
+\fIhttp\fR,
+\fIhttps\fR,
+\fIftp\fR
+and
+\fInone\fR\. Specifiy
+\fInone\fR
+to disable this feature\. Default:
+\fInone\fR
+.RE
+.PP
 \-\-metalink\-enable\-unique\-protocol=\fItrue\fR|\fIfalse\fR
 .RS 4
 If
@@ -531,15 +454,20 @@ If
 is given and several protocols are available for a mirror in a metalink file, aria2 uses one of them\. Use \-\-metalink\-preferred\-protocol option to specify the preference of protocol\. Default:
 \fItrue\fR
 .RE
+.SS "Advanced Options"
 .PP
-\-\-header=HEADER
+\-\-allow\-overwrite=\fItrue\fR|\fIfalse\fR
 .RS 4
-Append HEADER to HTTP request header\. You can use this option repeatedly to specify more than one header: aria2c \-\-header="X\-A: b78" \-\-header="X\-B: 9J1" http://host/file
+If
+\fIfalse\fR
+is given, aria2 doesn\'t download a file which already exists but the corresponding \.aria2 file doesn\'t exist\. In HTTP(S)/FTP download, if \-\-auto\-file\-renaming=\fItrue\fR
+then, file name will be renamed\. See \-\-auto\-file\-renaming for details\. Default:
+\fIfalse\fR
 .RE
 .PP
-\-q, \-\-quiet[=\fItrue\fR|\fIfalse\fR]
+\-\-allow\-piece\-length\-change=\fItrue\fR|\fIfalse\fR
 .RS 4
-Make aria2 quite (no console output)\. Default:
+If false is given, aria2 aborts download when a piece length is different from one in a control file\. If true is given, you can proceed but some download progress will be lost\. Default:
 \fIfalse\fR
 .RE
 .PP
@@ -549,34 +477,127 @@ Enable asynchronous DNS\. Default:
 \fItrue\fR
 .RE
 .PP
+\-\-auto\-file\-renaming[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Rename file name if the same file already exists\. This option works only in HTTP(S)/FTP download\. The new file name has a dot and a number(1\.\.9999) appended\. Default:
+\fItrue\fR
+.RE
+.PP
+\-\-conf\-path=PATH
+.RS 4
+Change the configuration file path to PATH\. Default:
+\fI$HOME/\.aria2/aria2\.conf\fR
+.RE
+.PP
+\-D, \-\-daemon
+.RS 4
+Run as daemon\.
+.RE
+.PP
+\-\-enable\-direct\-io[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable directI/O, which lowers cpu usage while allocating/checking files\. Turn off if you encounter any error\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-\-file\-allocation=METHOD
+.RS 4
+Specify file allocation method\. METHOD is either
+\fInone\fR
+or
+\fIprealloc\fR\.
+\fInone\fR
+doesn\'t pre\-allocate file space\.
+\fIprealloc\fR
+pre\-allocates file space before download begins\. This may take some time depending on the size of the file\. Default:
+\fIprealloc\fR
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Note
+In multi file torrent, the files adjacent forward to the specified files are also allocated if they share a same piece\.
+.PP
+\-Z, \-\-force\-sequential[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Fetch URIs in the command\-line sequentially and download each URI in a separate session, like the usual command\-line download utilities\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-\-max\-download\-limit=SPEED
+.RS 4
+Set max download speed in bytes per sec\.
+\fI0\fR
+means unrestricted\. You can append
+\fIK\fR
+or
+\fIM\fR(1K = 1024, 1M = 1024K)\. Default:
+\fI0\fR
+.RE
+.PP
+\-\-no\-conf
+.RS 4
+Disable loading aria2\.conf file\.
+.RE
+.PP
+\-\-no\-file\-allocation\-limit=SIZE
+.RS 4
+No file allocation is made for files whose size is smaller than SIZE\. You can append
+\fIK\fR
+or
+\fIM\fR(1K = 1024, 1M = 1024K)\. Default:
+\fI5M\fR
+.RE
+.PP
+\-P, \-\-parameterized\-uri[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Enable parameterized URI support\. You can specify set of parts:
+\fIhttp://{sv1,sv2,sv3}/foo\.iso\fR\. Also you can specify numeric sequences with step counter:
+\fIhttp://host/image[000\-100:2]\.img\fR\. A step counter can be omitted\. If all URIs do not point to the same file, such as the second example above, \-Z option is required\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-q, \-\-quiet[=\fItrue\fR|\fIfalse\fR]
+.RS 4
+Make aria2 quite (no console output)\. Default:
+\fIfalse\fR
+.RE
+.PP
+\-\-realtime\-chunk\-checksum=\fItrue\fR|\fIfalse\fR
+.RS 4
+Validate chunk of data by calculating checkusm while download a file if chunk checksums are provided\. Currently Metalink is the only way to to provide chunk checksums\. Default:
+\fItrue\fR
+.RE
+.PP
+\-\-stop=SEC
+.RS 4
+Stop application after SEC seconds has passed\. If
+\fI0\fR
+is given, this feature is disabled\. Default:
+\fI0\fR
+.RE
+.PP
 \-v, \-\-version
 .RS 4
 Print the version number, copyright and the configuration information and exit\.
 .RE
-.PP
-\-h, \-\-help[=CATEGORY]
-.RS 4
-Print usage and exit\. The help messages are classified in several categories\. For example, type "\-\-help=http" for detailed explanation for the options related to HTTP\. If no matching category is found, search option name using a given word in forward match and print the result\. Available Values:
-\fIbasic\fR,
-\fIadvanced\fR,
-\fIhttp\fR,
-\fIftp\fR,
-\fImetalink\fR,
-\fIbittorrent\fR,
-\fIall\fR
-Default:
-\fIbasic\fR
-.RE
-.PP
-URL, TORRENT_FILE, METALINK_FILE
-.RS 4
-You can specify multiple URLs\. Unless you specify \-Z option, all URLs must point to the same file or downloading will fail\. You can also specify arbitrary number of torrent files and metalink files stored in a local drive\. Please note that they are always treated as a separate download\. You can specify both torrent file with \-T option and URLs\. By doing this, download a file from both torrent swarm and HTTP(S)/FTP server at the same time, while the data from HTTP(S)/FTP are uploaded to the torrent swarm\. Note that only single file torrent can be integrated with HTTP(S)/FTP\.
-.PP
+.SS "URL, TORRENT_FILE, METALINK_FILE"
+You can specify multiple URLs in command\-line\. Unless you specify \-Z option, all URLs must point to the same file or downloading will fail\.
+.sp
+You can also specify arbitrary number of torrent files and metalink files stored in a local drive\. Please note that they are always treated as a separate download\.
+.sp
+You can specify both torrent file with \-T option and URLs\. By doing this, download a file from both torrent swarm and HTTP(S)/FTP server at the same time, while the data from HTTP(S)/FTP are uploaded to the torrent swarm\. Note that only single file torrent can be integrated with HTTP(S)/FTP\.
+.sp
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
 Note
-.RS 4
 Make sure that URL is quoted with single(\') or double(") quotation if it contains "&" or any characters that have special meaning in shell\.
-.RE
-.RE
+.sp
 .SH "EXAMPLES"
 .SS "HTTP/FTP Segmented Download"
 .sp
@@ -598,7 +619,7 @@ aria2c http://host/file\.zip
 .nr an-break-flag 1
 .br
 Note
-To pause a download, press Ctrl\-C\. You can resume the transfer by run aria2c with the same argument at the same directory\. You can change URLs as long as they are pointing to the same file\.
+To pause a download, press Ctrl\-C\. You can resume the transfer by running aria2c with the same argument at the same directory\. You can change URLs as long as they are pointing to the same file\.
 .sp
 .RE
 .sp
@@ -699,7 +720,7 @@ aria2c \-p \-\-lowest\-speed\-limit=4000 file\.metalink
 .nr an-break-flag 1
 .br
 Note
-To pause a download, press Ctrl\-C\. You can resume the transfer by run aria2c with the same argument at the same directory\.
+To pause a download, press Ctrl\-C\. You can resume the transfer by running aria2c with the same argument at the same directory\.
 .sp
 .RE
 .sp
@@ -1124,6 +1145,7 @@ User configuration file\. It must be placed under $HOME/\.aria2 and must be name
 .nf
 # sample configuration file for aria2c
 listen\-port=60000
+dht\-listen\-port=60000
 seed\-ratio=1\.0
 max\-upload\-limit=50K
 ftp\-pasv=true
