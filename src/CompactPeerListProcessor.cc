@@ -46,11 +46,12 @@ bool CompactPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
   return dynamic_cast<const Data*>(peersEntry) != 0;
 }
 
-Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
-  Peers peers;
+void CompactPeerListProcessor::extractPeer
+(std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry)
+{
   const Data* peersData = dynamic_cast<const Data*>(peersEntry);
   if(!peersData) {
-    return peers;
+    return;
   }
   if(peersData->getLen()%6 == 0) {
     for(size_t i = 0; i < peersData->getLen(); i += 6) {
@@ -62,7 +63,6 @@ Peers CompactPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
       peers.push_back(peer);
     }
   }
-  return peers;
 }
 
 } // namespace aria2

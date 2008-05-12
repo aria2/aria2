@@ -139,11 +139,11 @@ UTPexExtensionMessage::create(const BtContextHandle& btContext,
     CompactPeerListProcessor proc;
     const Data* added = dynamic_cast<const Data*>(d->get("added"));
     if(added) {
-      msg->_freshPeers = proc.extractPeer(added);
+      proc.extractPeer(msg->_freshPeers, added);
     }
     const Data* dropped = dynamic_cast<const Data*>(d->get("dropped"));
     if(dropped) {
-      msg->_droppedPeers = proc.extractPeer(dropped);
+      proc.extractPeer(msg->_droppedPeers, dropped);
     }
   }
   return msg;

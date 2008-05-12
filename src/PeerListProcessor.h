@@ -48,8 +48,8 @@ class PeerListProcessor {
 public:
   virtual ~PeerListProcessor() {}
 
-  virtual std::deque<SharedHandle<Peer> >
-  extractPeer(const MetaEntry* peersEntry) = 0;
+  virtual void extractPeer
+  (std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry) = 0;
 
   virtual bool canHandle(const MetaEntry* peersEntry) const = 0;
 };

@@ -49,11 +49,12 @@ bool DefaultPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
   return peersList != 0;
 }
 
-Peers DefaultPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
-  Peers peers;
+void DefaultPeerListProcessor::extractPeer
+(std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry)
+{
   const List* peersList = dynamic_cast<const List*>(peersEntry);
   if(!peersList) {
-    return peers;
+    return;
   }
   const std::deque<MetaEntry*>& metaList = peersList->getList();
   for(std::deque<MetaEntry*>::const_iterator itr = metaList.begin();
@@ -70,7 +71,6 @@ Peers DefaultPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
     PeerHandle peer(new Peer(ip->toString(), port->toInt()));
     peers.push_back(peer);
   }
-  return peers;
 }
 
 } // namespace aria2

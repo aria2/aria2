@@ -251,7 +251,8 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
      !btRuntime->isHalt() &&
      btRuntime->lessThanMinPeer()) {
     DelegatingPeerListProcessor proc;
-    Peers peers = proc.extractPeer(peersEntry);
+    std::deque<SharedHandle<Peer> > peers;
+    proc.extractPeer(peers, peersEntry);
     peerStorage->addPeer(peers);
   }
   if(!peersEntry) {

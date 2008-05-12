@@ -1,6 +1,21 @@
 2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed method signature:
+	PeerListProcessor::extractPeer
+	* src/CompactPeerListProcessor.cc
+	* src/CompactPeerListProcessor.h
+	* src/DefaultBtAnnounce.cc
+	* src/DefaultPeerListProcessor.cc
+	* src/DefaultPeerListProcessor.h
+	* src/DelegatingPeerListProcessor.cc
+	* src/DelegatingPeerListProcessor.h
+	* src/PeerListProcessor.h
+	* src/UTPexExtensionMessage.cc
+	* test/DefaultPeerListProcessorTest.cc
+
+2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed method signature:
 	BtRequestFactory::createRequestMessages,
 	BtRequestFactory::createRequestMessagesOnEndGame
 	* src/BtRequestFactory.h

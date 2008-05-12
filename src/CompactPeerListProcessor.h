@@ -44,8 +44,8 @@ public:
 
   virtual ~CompactPeerListProcessor();
 
-  virtual std::deque<SharedHandle<Peer> >
-  extractPeer(const MetaEntry* peersEntry);
+  virtual void extractPeer
+  (std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry);
 
   virtual bool canHandle(const MetaEntry* peersEntry) const;
 };

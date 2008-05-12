@@ -53,18 +53,17 @@ DelegatingPeerListProcessor::DelegatingPeerListProcessor()
 
 DelegatingPeerListProcessor::~DelegatingPeerListProcessor() {}
 
-Peers DelegatingPeerListProcessor::extractPeer(const MetaEntry* peersEntry) {
-  Peers peers;
+void DelegatingPeerListProcessor::extractPeer
+(std::deque<SharedHandle<Peer> >& peers, const MetaEntry* peersEntry)
+{
   for(std::deque<SharedHandle<PeerListProcessor> >::iterator itr = processors.begin();
       itr != processors.end(); itr++) {
     PeerListProcessorHandle processor = *itr;
     if(processor->canHandle(peersEntry)) {
-      Peers tempPeers = processor->extractPeer(peersEntry);
-      std::copy(tempPeers.begin(), tempPeers.end(), std::back_inserter(peers));
+      processor->extractPeer(peers, peersEntry);
       break;
     }
   }
-  return peers;
 }
 
 bool DelegatingPeerListProcessor::canHandle(const MetaEntry* peersEntry) const {
