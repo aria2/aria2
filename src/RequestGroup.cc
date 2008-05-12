@@ -897,7 +897,7 @@ ServerHostHandle RequestGroup::searchServerHost(int32_t cuid) const
 class FindServerHostByHostname
 {
 private:
-  const std::string& _hostname;
+  std::string _hostname;
 public:
   FindServerHostByHostname(const std::string& hostname):_hostname(hostname) {}
 

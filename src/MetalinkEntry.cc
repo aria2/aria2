@@ -106,7 +106,7 @@ void MetalinkEntry::setLocationPreference(const std::deque<std::string>& locatio
 
 class AddProtocolPreference {
 private:
-  const std::string& _protocol;
+  std::string _protocol;
   int _preferenceToAdd;
 public:
   AddProtocolPreference(const std::string& protocol, int prefToAdd):

@@ -1,5 +1,11 @@
 2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Removed const ref
+	* src/MetalinkEntry.cc (AddProtocolPreference)
+	* src/RequestGroup.cc (FindServerHostByHostname)
+
+2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Rewritten Accept-Features handling.
 	* src/HttpRequestCommand.cc (createHttpRequest)
 	* src/a2functional.h
