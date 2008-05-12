@@ -73,8 +73,8 @@ public:
     return _private;
   }
 
-  virtual std::deque<size_t>
-  computeFastSet(const std::string& ipaddr, size_t fastSetSize) = 0;
+  virtual void computeFastSet
+  (std::deque<size_t>& fastSet, const std::string& ipaddr, size_t fastSetSize) = 0;
   
   virtual RequestGroup* getOwnerRequestGroup() = 0;
 

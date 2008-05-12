@@ -216,9 +216,9 @@ void DefaultBtContext::extractAnnounceList(const List* announceListData) {
   }
 }
 
-std::deque<std::string> DefaultBtContext::extractUrlList(const MetaEntry* obj)
+void DefaultBtContext::extractUrlList(std::deque<std::string>& uris,
+				      const MetaEntry* obj)
 {
-  std::deque<std::string> uris;
   if(dynamic_cast<const List*>(obj)) {
     const List* urlList = reinterpret_cast<const List*>(obj);
     for(std::deque<MetaEntry*>::const_iterator itr = urlList->getList().begin();
@@ -232,7 +232,6 @@ std::deque<std::string> DefaultBtContext::extractUrlList(const MetaEntry* obj)
     const Data* urlData = reinterpret_cast<const Data*>(obj);
     uris.push_back(urlData->toString());
   }
-  return uris;
 }
 
 void DefaultBtContext::extractNodes(const List* nodes)
@@ -334,7 +333,8 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   // retrieve uri-list.
   // This implemantation obeys HTTP-Seeding specification:
   // see http://www.getright.com/seedtorrent.html
-  std::deque<std::string> urlList = extractUrlList(rootDic->get("url-list"));
+  std::deque<std::string> urlList;
+  extractUrlList(urlList, rootDic->get("url-list"));
   // retrieve file entries
   extractFileEntries(infoDic, defaultName, urlList);
   if((totalLength+pieceLength-1)/pieceLength != numPieces) {
@@ -396,12 +396,12 @@ std::string DefaultBtContext::getActualBasePath() const
   return _dir+"/"+name;
 }
 
-std::deque<size_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, size_t fastSetSize)
+void DefaultBtContext::computeFastSet
+(std::deque<size_t>& fastSet, const std::string& ipaddr, size_t fastSetSize)
 {
-  std::deque<size_t> fastSet;
   unsigned char compact[6];
   if(!PeerMessageUtil::createcompact(compact, ipaddr, 0)) {
-    return fastSet;
+    return;
   }
   unsigned char tx[24];
   memcpy(tx, compact, 4);
@@ -429,7 +429,6 @@ std::deque<size_t> DefaultBtContext::computeFastSet(const std::string& ipaddr, s
     MessageDigestHelper::digest(temp, sizeof(temp), "sha1", x, sizeof(x));
     memcpy(x, temp, sizeof(x));
   }
-  return fastSet;
 }
 
 std::ostream& operator<<(std::ostream& o, const DefaultBtContext& ctx)

@@ -81,7 +81,7 @@ private:
   void extractAnnounce(const Data* announceData);
   void extractAnnounceList(const List* announceListData);
 
-  std::deque<std::string> extractUrlList(const MetaEntry* obj);
+  void extractUrlList(std::deque<std::string>& uris, const MetaEntry* obj);
 
   void extractNodes(const List* nodes);
 
@@ -143,7 +143,8 @@ private:
     return reinterpret_cast<const unsigned char*>(peerId.c_str());
   }
 
-  virtual std::deque<size_t> computeFastSet(const std::string& ipaddr, size_t fastSetSize);
+  virtual void computeFastSet
+  (std::deque<size_t>& fastSet, const std::string& ipaddr, size_t fastSetSize);
 
   virtual RequestGroup* getOwnerRequestGroup()
   {

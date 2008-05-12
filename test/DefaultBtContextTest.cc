@@ -241,18 +241,23 @@ void DefaultBtContextTest::testComputeFastSet()
   btContext.setInfoHash(infoHash);
   btContext.setNumPieces(pieces);
 
-  std::deque<size_t> fastSet = btContext.computeFastSet(ipaddr, fastSetSize);
-  //for_each(fastSet.begin(), fastSet.end(), Printer());
-  //cerr << endl;
-  size_t ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
-  std::deque<size_t> ansSet1(&ans1[0], &ans1[10]);
-  CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
-
+  {
+    std::deque<size_t> fastSet;
+    btContext.computeFastSet(fastSet, ipaddr, fastSetSize);
+    //for_each(fastSet.begin(), fastSet.end(), Printer());
+    //cerr << endl;
+    size_t ans1[] = { 686, 459, 278, 200, 404, 834, 64, 203, 760, 950 };
+    std::deque<size_t> ansSet1(&ans1[0], &ans1[10]);
+    CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet1.begin()));
+  }
   ipaddr = "10.0.0.1";
-  fastSet = btContext.computeFastSet(ipaddr, fastSetSize);
-  size_t ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
-  std::deque<size_t> ansSet2(&ans2[0], &ans2[10]);
-  CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
+  {
+    std::deque<size_t> fastSet;
+    btContext.computeFastSet(fastSet, ipaddr, fastSetSize);
+    size_t ans2[] = { 568, 188, 466, 452, 550, 662, 109, 226, 398, 11 };
+    std::deque<size_t> ansSet2(&ans2[0], &ans2[10]);
+    CPPUNIT_ASSERT(std::equal(fastSet.begin(), fastSet.end(), ansSet2.begin()));
+  }
 }
 
 void DefaultBtContextTest::testGetFileEntries_multiFileUrlList() {

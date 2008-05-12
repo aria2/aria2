@@ -123,9 +123,10 @@ public:
     memcpy(this->peerId, peerId, sizeof(this->peerId));
   }
 
-  virtual std::deque<size_t> computeFastSet(const std::string& ipaddr, size_t fastSetSize)
+  virtual void computeFastSet
+  (std::deque<size_t>& fastSet, const std::string& ipaddr, size_t fastSetSize)
   {
-    return fastSet;
+    fastSet.insert(fastSet.end(), this->fastSet.begin(), this->fastSet.end());
   }
 
   void setFastSet(const std::deque<size_t>& fastSet)

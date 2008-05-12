@@ -178,8 +178,8 @@ void DefaultBtInteractive::addBitfieldMessageToQueue() {
 
 void DefaultBtInteractive::addAllowedFastMessageToQueue() {
   if(peer->isFastExtensionEnabled()) {
-    std::deque<size_t> fastSet = btContext->computeFastSet(peer->ipaddr,
-						 allowedFastSetSize);
+    std::deque<size_t> fastSet;
+    btContext->computeFastSet(fastSet, peer->ipaddr, allowedFastSetSize);
     for(std::deque<size_t>::const_iterator itr = fastSet.begin();
 	itr != fastSet.end(); itr++) {
       dispatcher->addMessageToQueue(messageFactory->createAllowedFastMessage(*itr));
