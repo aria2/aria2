@@ -46,7 +46,7 @@
 #include "prefs.h"
 #include "a2functional.h"
 #include "Util.h"
-#include <numeric>
+#include <algorithm>
 
 namespace aria2 {
 
@@ -81,14 +81,10 @@ createHttpRequest(const SharedHandle<Request>& req,
   httpRequest->addHeader(option->get(PREF_HEADER));
   if(!rg->getAcceptFeatures().empty()) {
     const std::deque<std::string>& acceptFeatures = rg->getAcceptFeatures();
-
-    std::string acceptFeaturesHeader = "Accept-Features: "+*acceptFeatures.begin();
-    for(std::deque<std::string>::const_iterator i = acceptFeatures.begin()+1;
-	i != acceptFeatures.end(); ++i) {
-	  acceptFeaturesHeader += ","+(*i);
-    }
-
-    httpRequest->addHeader(acceptFeaturesHeader);
+    std::string acceptFeaturesHeader = "Accept-Features: ";
+    std::for_each(acceptFeatures.begin(), acceptFeatures.end(),
+		  StringAppend(acceptFeaturesHeader, ","));
+    httpRequest->addHeader(Util::trim(acceptFeaturesHeader, ","));
   }
   httpRequest->addAcceptType(rg->getAcceptTypes().begin(),
 			     rg->getAcceptTypes().end());

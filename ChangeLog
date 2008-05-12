@@ -1,5 +1,10 @@
 2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Rewritten Accept-Features handling.
+	* src/HttpRequestCommand.cc (createHttpRequest)
+
+2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Changed method signature:
 	DHTAbstractNodeLookupTask::toEntries
 	* src/DHTAbstractNodeLookupTask.cc
