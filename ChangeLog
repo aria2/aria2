@@ -1,5 +1,12 @@
 2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed method signature:
+	MultiFileAllocationIterator::makeDiskWriterEntries
+	* src/MultiFileAllocationIterator.cc
+	* src/MultiFileAllocationIterator.h
+
+2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Changed method sinature:
 	MetalinkEntry::toFileEntry,
 	MetalinkHelper::query, MetalinkHelper::parseAndQuery,
