@@ -21,11 +21,11 @@ public:
 
   virtual void doChokedAction() {}
 
-  virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessages(size_t max) { return std::deque<SharedHandle<BtMessage> >(); }
+  virtual void createRequestMessages
+  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) {}
 
-  virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessagesOnEndGame(size_t max) { return std::deque<SharedHandle<BtMessage> >(); }
+  virtual void createRequestMessagesOnEndGame
+  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) {}
 };
 
 } // namespace aria2

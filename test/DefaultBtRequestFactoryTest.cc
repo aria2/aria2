@@ -147,7 +147,8 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
   btRequestFactory->addTargetPiece(piece1);
   btRequestFactory->addTargetPiece(piece2);
 
-  std::deque<SharedHandle<BtMessage> > msgs = btRequestFactory->createRequestMessages(3);
+  std::deque<SharedHandle<BtMessage> > msgs;
+  btRequestFactory->createRequestMessages(msgs, 3);
 
   CPPUNIT_ASSERT_EQUAL((size_t)3, msgs.size());
   std::deque<SharedHandle<BtMessage> >::iterator itr = msgs.begin();
@@ -163,7 +164,11 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages() {
   CPPUNIT_ASSERT_EQUAL((size_t)1, msg->index);
   CPPUNIT_ASSERT_EQUAL((size_t)0, msg->blockIndex);
 
-  CPPUNIT_ASSERT_EQUAL((size_t)1, btRequestFactory->createRequestMessages(3).size());
+  {
+    std::deque<SharedHandle<BtMessage> > msgs;
+    btRequestFactory->createRequestMessages(msgs, 3);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, msgs.size());
+  }
 }
 
 void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
@@ -178,7 +183,8 @@ void DefaultBtRequestFactoryTest::testCreateRequestMessages_onEndGame() {
   btRequestFactory->addTargetPiece(piece1);
   btRequestFactory->addTargetPiece(piece2);
 
-  std::deque<SharedHandle<BtMessage> > msgs = btRequestFactory->createRequestMessagesOnEndGame(3);
+  std::deque<SharedHandle<BtMessage> > msgs;
+  btRequestFactory->createRequestMessagesOnEndGame(msgs, 3);
 
   std::deque<SharedHandle<MockBtRequestMessage> > mmsgs;
   for(std::deque<SharedHandle<BtMessage> >::iterator i = msgs.begin();

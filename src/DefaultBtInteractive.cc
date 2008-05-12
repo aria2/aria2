@@ -332,9 +332,9 @@ void DefaultBtInteractive::addRequests() {
   if(reqNumToCreate > 0) {
     BtMessages requests;
     if(pieceStorage->isEndGame()) {
-      requests = btRequestFactory->createRequestMessagesOnEndGame(reqNumToCreate);
+      btRequestFactory->createRequestMessagesOnEndGame(requests, reqNumToCreate);
     } else {
-      requests = btRequestFactory->createRequestMessages(reqNumToCreate);
+      btRequestFactory->createRequestMessages(requests, reqNumToCreate);
     }
     dispatcher->addMessageToQueue(requests);
   }

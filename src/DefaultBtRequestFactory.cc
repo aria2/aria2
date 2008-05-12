@@ -105,9 +105,9 @@ void DefaultBtRequestFactory::removeAllTargetPiece() {
   pieces.clear();
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessages(size_t max)
+void DefaultBtRequestFactory::createRequestMessages
+(std::deque<SharedHandle<BtMessage> >& requests, size_t max)
 {
-  BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < max; itr++) {
     PieceHandle& piece = *itr;
@@ -117,12 +117,11 @@ BtMessages DefaultBtRequestFactory::createRequestMessages(size_t max)
       requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
     }
   }
-  return requests;
 }
 
-BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
+void DefaultBtRequestFactory::createRequestMessagesOnEndGame
+(std::deque<SharedHandle<BtMessage> >& requests, size_t max)
 {
-  BtMessages requests;
   for(Pieces::iterator itr = pieces.begin();
       itr != pieces.end() && requests.size() < max; itr++) {
     PieceHandle& piece = *itr;
@@ -138,7 +137,6 @@ BtMessages DefaultBtRequestFactory::createRequestMessagesOnEndGame(size_t max)
       }
     }
   }
-  return requests;
 }
 
 std::deque<SharedHandle<Piece> >& DefaultBtRequestFactory::getTargetPieces()

@@ -65,15 +65,15 @@ public:
    * addTargetPiece() and returns them.
    * The number of objects returned is capped by max.
    */
-  virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessages(size_t max) = 0;
+  virtual void createRequestMessages
+  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) = 0;
 
   /**
    * Use this method in end game mode.
    *
    */
-  virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessagesOnEndGame(size_t max) = 0;
+  virtual void createRequestMessagesOnEndGame
+  (std::deque<SharedHandle<BtMessage> >& requests, size_t max) = 0;
 };
 
 typedef SharedHandle<BtRequestFactory> BtRequestFactoryHandle;

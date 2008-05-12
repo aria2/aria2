@@ -74,11 +74,11 @@ public:
 
   virtual void doChokedAction();
 
-  virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessages(size_t max);
+  virtual void createRequestMessages
+  (std::deque<SharedHandle<BtMessage> >& requests, size_t max);
 
-  virtual std::deque<SharedHandle<BtMessage> >
-  createRequestMessagesOnEndGame(size_t max);
+  virtual void createRequestMessagesOnEndGame
+  (std::deque<SharedHandle<BtMessage> >& requests, size_t max);
 
   std::deque<SharedHandle<Piece> >& getTargetPieces();
 

@@ -1,3 +1,15 @@
+2008-05-12  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Changed method signature:
+	BtRequestFactory::createRequestMessages,
+	BtRequestFactory::createRequestMessagesOnEndGame
+	* src/BtRequestFactory.h
+	* src/DefaultBtInteractive.cc
+	* src/DefaultBtRequestFactory.cc
+	* src/DefaultBtRequestFactory.h
+	* test/DefaultBtRequestFactoryTest.cc
+	* test/MockBtRequestFactory.h
+
 2008-05-11  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Changed method signature:
