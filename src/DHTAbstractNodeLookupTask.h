@@ -53,9 +53,9 @@ protected:
   std::deque<SharedHandle<DHTNodeLookupEntry> > _entries;
   
   size_t _inFlightMessage;
-
-  std::deque<SharedHandle<DHTNodeLookupEntry> >
-  toEntries(const std::deque<SharedHandle<DHTNode> >& nodes) const;
+  
+  void toEntries(std::deque<SharedHandle<DHTNodeLookupEntry> >& entries,
+		 const std::deque<SharedHandle<DHTNode> >& nodes) const;
 
   void sendMessage();
 

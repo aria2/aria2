@@ -62,7 +62,8 @@ void DHTAbstractNodeLookupTask::onReceived(const SharedHandle<DHTMessage>& messa
   onReceivedInternal(message);
   std::deque<SharedHandle<DHTNode> > nodes;
   getNodesFromMessage(nodes, message);
-  std::deque<SharedHandle<DHTNodeLookupEntry> > newEntries = toEntries(nodes);
+  std::deque<SharedHandle<DHTNodeLookupEntry> > newEntries;
+  toEntries(newEntries, nodes);
 
   size_t count = 0;
   for(std::deque<SharedHandle<DHTNodeLookupEntry> >::const_iterator i = newEntries.begin();
@@ -138,7 +139,8 @@ void DHTAbstractNodeLookupTask::startup()
 {
   std::deque<SharedHandle<DHTNode> > nodes;
   _routingTable->getClosestKNodes(nodes, _targetID);
-  _entries = toEntries(nodes);
+  _entries.clear();
+  toEntries(_entries, nodes);
   if(_entries.empty()) {
     _finished = true;
   } else {
@@ -152,15 +154,14 @@ void DHTAbstractNodeLookupTask::startup()
   }
 }
 
-std::deque<SharedHandle<DHTNodeLookupEntry> >
-DHTAbstractNodeLookupTask::toEntries(const std::deque<SharedHandle<DHTNode> >& nodes) const
+void DHTAbstractNodeLookupTask::toEntries
+(std::deque<SharedHandle<DHTNodeLookupEntry> >& entries,
+ const std::deque<SharedHandle<DHTNode> >& nodes) const
 {
-  std::deque<SharedHandle<DHTNodeLookupEntry> > entries;
   for(std::deque<SharedHandle<DHTNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
     SharedHandle<DHTNodeLookupEntry> e(new DHTNodeLookupEntry(*i));
     entries.push_back(e);
   }
-  return entries;
 }
 
 } // namespace aria2
