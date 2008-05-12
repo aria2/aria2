@@ -58,9 +58,11 @@ public:
     return *this;
   }
 
-  std::deque<SharedHandle<MetalinkEntry> >
-  queryEntry(const std::string& version, const std::string& language,
-	     const std::string& os) const;
+  void queryEntry
+  (std::deque<SharedHandle<MetalinkEntry> >& queryResult,
+   const std::string& version,
+   const std::string& language,
+   const std::string& os) const;
 };
 
 } // namespace aria2

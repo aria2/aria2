@@ -43,27 +43,34 @@ void MetalinkerTest::testQueryEntry() {
   version = "0.5.1";
   language = "ja-JP";
   os = "Linux-m68k";
-  std::deque<SharedHandle<MetalinkEntry> > entries =
-    metalinker->queryEntry(version, language, os);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, entries.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), entries.at(0)->version);
-  CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), entries.at(0)->language);
-  CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), entries.at(0)->os);
-
+  {
+    std::deque<SharedHandle<MetalinkEntry> > result;
+    metalinker->queryEntry(result, version, language, os);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("0.5.1"), result.at(0)->version);
+    CPPUNIT_ASSERT_EQUAL(std::string("ja-JP"), result.at(0)->language);
+    CPPUNIT_ASSERT_EQUAL(std::string("Linux-m68k"), result.at(0)->os);
+  }
   version = "0.6.0";
   language = "";
   os = "";
-  CPPUNIT_ASSERT_EQUAL((size_t)0,
-		       metalinker->queryEntry(version, language, os).size());
+  {
+    std::deque<SharedHandle<MetalinkEntry> > result;
+    metalinker->queryEntry(result, version, language, os);
+    CPPUNIT_ASSERT_EQUAL((size_t)0, result.size());
+  }
 
   version = "0.5.2";
   language = "";
   os = "";
-  entries = metalinker->queryEntry(version, language, os);
-  CPPUNIT_ASSERT_EQUAL((size_t)1, entries.size());
-  CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), entries.at(0)->version);
-  CPPUNIT_ASSERT_EQUAL(std::string("en-US"), entries.at(0)->language);
-  CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), entries.at(0)->os);
+  {
+    std::deque<SharedHandle<MetalinkEntry> > result;
+    metalinker->queryEntry(result, version, language, os);
+    CPPUNIT_ASSERT_EQUAL((size_t)1, result.size());
+    CPPUNIT_ASSERT_EQUAL(std::string("0.5.2"), result.at(0)->version);
+    CPPUNIT_ASSERT_EQUAL(std::string("en-US"), result.at(0)->language);
+    CPPUNIT_ASSERT_EQUAL(std::string("Linux-x86"), result.at(0)->os);
+  }
 }
 
 } // namespace aria2

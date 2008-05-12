@@ -166,13 +166,13 @@ void MetalinkEntry::dropUnsupportedResource() {
 		  resources.end());
 }
 
-std::deque<SharedHandle<FileEntry> >
-MetalinkEntry::toFileEntry(const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries)
+void MetalinkEntry::toFileEntry
+(std::deque<SharedHandle<FileEntry> >& fileEntries,
+ const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries)
 {
-  std::deque<SharedHandle<FileEntry> > entries;
-  std::transform(metalinkEntries.begin(), metalinkEntries.end(), std::back_inserter(entries),
+  std::transform(metalinkEntries.begin(), metalinkEntries.end(),
+		 std::back_inserter(fileEntries),
 		 mem_fun_sh(&MetalinkEntry::getFile));
-  return entries;
 }
 
 SharedHandle<FileEntry> MetalinkEntry::getFile() const

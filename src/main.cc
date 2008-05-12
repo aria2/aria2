@@ -400,7 +400,12 @@ int main(int argc, char* argv[])
 #ifdef ENABLE_METALINK
       if(op->defined(PREF_METALINK_FILE)) {
 	if(op->get(PREF_SHOW_FILES) == V_TRUE) {
-	  Util::toStream(std::cout, MetalinkEntry::toFileEntry(MetalinkHelper::parseAndQuery(op->get(PREF_METALINK_FILE), op)));
+	  std::deque<SharedHandle<MetalinkEntry> > metalinkEntries;
+	  MetalinkHelper::parseAndQuery(metalinkEntries,
+					op->get(PREF_METALINK_FILE), op);
+	  std::deque<SharedHandle<FileEntry> > fileEntries;
+	  MetalinkEntry::toFileEntry(fileEntries, metalinkEntries);
+	  Util::toStream(std::cout, fileEntries);
 	} else {
 	  returnValue = downloadMetalink(op);
 	}

@@ -50,35 +50,37 @@ MetalinkHelper::MetalinkHelper() {}
 
 MetalinkHelper::~MetalinkHelper() {}
 
-std::deque<SharedHandle<MetalinkEntry> >
-MetalinkHelper::parseAndQuery(const std::string& filename, const Option* option)
+void MetalinkHelper::parseAndQuery
+(std::deque<SharedHandle<MetalinkEntry> >& result,
+ const std::string& filename, const Option* option)
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
 
   SharedHandle<Metalinker> metalinker = proc->parseFile(filename);
-  return query(metalinker, option);
+  query(result, metalinker, option);
 }
 
-std::deque<SharedHandle<MetalinkEntry> >
-MetalinkHelper::parseAndQuery(const SharedHandle<BinaryStream>& binaryStream, const Option* option)
+void MetalinkHelper::parseAndQuery
+(std::deque<SharedHandle<MetalinkEntry> >& result,
+ const SharedHandle<BinaryStream>& binaryStream, const Option* option)
 {
   SharedHandle<MetalinkProcessor> proc = MetalinkProcessorFactory::newInstance();
 
   SharedHandle<Metalinker> metalinker = proc->parseFromBinaryStream(binaryStream);
-  return query(metalinker, option);
+  query(result, metalinker, option);
 }
 
-std::deque<SharedHandle<MetalinkEntry> >
-MetalinkHelper::query(const SharedHandle<Metalinker>& metalinker, const Option* option)
+void MetalinkHelper::query
+(std::deque<SharedHandle<MetalinkEntry> >& result,
+ const SharedHandle<Metalinker>& metalinker, const Option* option)
 {
   if(metalinker->entries.empty()) {
     throw DlAbortEx("No file entry found. Probably, the metalink file is not configured properly or broken.");
   }
-  std::deque<SharedHandle<MetalinkEntry> > entries =
-    metalinker->queryEntry(option->get(PREF_METALINK_VERSION),
-			   option->get(PREF_METALINK_LANGUAGE),
-			   option->get(PREF_METALINK_OS));
-  return entries;
+  metalinker->queryEntry(result,
+			 option->get(PREF_METALINK_VERSION),
+			 option->get(PREF_METALINK_LANGUAGE),
+			 option->get(PREF_METALINK_OS));
 }
 
 } // namespace aria2

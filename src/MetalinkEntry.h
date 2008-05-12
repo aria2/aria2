@@ -81,8 +81,9 @@ public:
   void setLocationPreference(const std::deque<std::string>& locations, int preferenceToAdd);
   void setProtocolPreference(const std::string& protocol, int preferenceToAdd);
 
-  static std::deque<SharedHandle<FileEntry> >
-  toFileEntry(const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);
+  static void toFileEntry
+  (std::deque<SharedHandle<FileEntry> >& fileEntries,
+   const std::deque<SharedHandle<MetalinkEntry> >& metalinkEntries);
 };
 
 } // namespace aria2

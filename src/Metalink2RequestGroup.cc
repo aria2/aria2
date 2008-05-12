@@ -102,8 +102,8 @@ void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
 				const std::string& metalinkFile)
 {
-  std::deque<SharedHandle<MetalinkEntry> > entries = MetalinkHelper::parseAndQuery(metalinkFile,
-							  _option);
+  std::deque<SharedHandle<MetalinkEntry> > entries;
+  MetalinkHelper::parseAndQuery(entries, metalinkFile, _option);
   createRequestGroup(groups, entries);
 }
 
@@ -111,8 +111,8 @@ void
 Metalink2RequestGroup::generate(std::deque<SharedHandle<RequestGroup> >& groups,
 				const SharedHandle<BinaryStream>& binaryStream)
 {
-  std::deque<SharedHandle<MetalinkEntry> > entries = MetalinkHelper::parseAndQuery(binaryStream,
-							  _option);
+  std::deque<SharedHandle<MetalinkEntry> > entries;
+  MetalinkHelper::parseAndQuery(entries, binaryStream, _option);
   createRequestGroup(groups, entries);
 }
 

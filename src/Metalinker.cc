@@ -75,17 +75,15 @@ public:
   }
 };
 
-std::deque<SharedHandle<MetalinkEntry> >
-Metalinker::queryEntry(const std::string& version,
-		       const std::string& language,
-		       const std::string& os) const
+void Metalinker::queryEntry
+(std::deque<SharedHandle<MetalinkEntry> >& queryResult,
+ const std::string& version,
+ const std::string& language,
+ const std::string& os) const
 {
-  std::deque<SharedHandle<MetalinkEntry> > resultEntries(entries);
-  resultEntries.erase(std::remove_if(resultEntries.begin(),
-				     resultEntries.end(),
-				     std::not1(EntryQuery(version, language, os))),
-		      resultEntries.end());
-  return resultEntries;
+  std::remove_copy_if(entries.begin(), entries.end(),
+		      std::back_inserter(queryResult),
+		      std::not1(EntryQuery(version, language, os)));
 }
 
 } // namespace aria2
