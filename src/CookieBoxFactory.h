@@ -65,6 +65,9 @@ public:
   {
     return defaultCookies;
   }
+
+private:
+  static const std::string TRUE;
 };
 
 typedef SharedHandle<CookieBoxFactory> CookieBoxFactoryHandle;

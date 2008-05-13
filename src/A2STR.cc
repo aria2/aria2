@@ -38,4 +38,6 @@ namespace aria2 {
 
 const std::string A2STR::NIL("");
 
+const std::string A2STR::SHARP_C("#");
+
 } // namespace aria2

@@ -45,6 +45,7 @@ private:
 public:
   static const std::string NIL;
 
+  static const std::string SHARP_C;
 };
 } // namespace aria2
 

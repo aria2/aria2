@@ -37,9 +37,12 @@
 #include "CookieBox.h"
 #include "Util.h"
 #include "RecoverableException.h"
+#include "A2STR.h"
 #include <istream>
 
 namespace aria2 {
+
+const std::string CookieBoxFactory::TRUE("TRUE");
 
 CookieBoxHandle CookieBoxFactory::createNewInstance()
 {
@@ -52,7 +55,7 @@ void CookieBoxFactory::loadDefaultCookie(std::istream& s)
 {
   std::string line;
   while(getline(s, line)) {
-    if(Util::startsWith(line, "#")) {
+    if(Util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
     try {
@@ -77,7 +80,7 @@ Cookie CookieBoxFactory::parseNsCookie(const std::string& nsCookieStr) const
   }
   c.domain = vs[0];
   c.path = vs[2];
-  c.secure = vs[3] == "TRUE" ? true : false;
+  c.secure = vs[3] == TRUE ? true : false;
   int64_t expireDate = Util::parseLLInt(vs[4]);
   // TODO assuming time_t is int32_t...
   if(expireDate > INT32_MAX) {

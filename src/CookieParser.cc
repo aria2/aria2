@@ -41,16 +41,23 @@
 
 namespace aria2 {
 
+const std::string CookieParser::SECURE("secure");
+
+const std::string CookieParser::DOMAIN("domain");
+
+const std::string CookieParser::PATH("path");
+
+const std::string CookieParser::EXPIRES("expires");
+
 void CookieParser::setField(Cookie& cookie, const std::string& name, const std::string& value) const
 {
-  if(name.size() == std::string("secure").size() &&
-     strcasecmp(name.c_str(), "secure") == 0) {
+  if(name == SECURE) {
     cookie.secure = true;
-  } else if(name.size() == std::string("domain").size() && strcasecmp(name.c_str(), "domain") == 0) {
+  } else if(name == DOMAIN) {
     cookie.domain = value;
-  } else if(name.size() == std::string("path").size() && strcasecmp(name.c_str(), "path") == 0) {
+  } else if(name == PATH) {
     cookie.path = value;
-  } else if(name.size() == std::string("expires").size() && strcasecmp(name.c_str(), "expires") == 0) {
+  } else if(name == EXPIRES) {
     cookie.expires = Util::httpGMT(value);
     cookie.onetime = false;
   } else {
@@ -85,7 +92,7 @@ Cookies CookieParser::parse(std::istream& s) const
   Cookies cookies;
   std::string line;
   while(getline(s, line)) {
-    if(Util::trim(line).empty() || Util::startsWith(line, "#")) {
+    if(Util::trim(line).empty() || Util::startsWith(line, A2STR::SHARP_C)) {
       continue;
     }
     Cookie cookie = parse(line);
