@@ -1,3 +1,11 @@
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Made string listeral to static const std::string.
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/SimpleLogger.cc
+	* src/SimpleLogger.h
+
 2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Made string literal to static const std::string.

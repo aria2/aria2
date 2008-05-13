@@ -59,6 +59,16 @@ private:
 
   std::ofstream file;
   int stdoutField;
+
+  static const std::string DEBUG;
+
+  static const std::string NOTICE;
+
+  static const std::string WARN;
+
+  static const std::string ERROR;
+
+  static const std::string INFO;
 public:
   SimpleLogger();
   ~SimpleLogger();

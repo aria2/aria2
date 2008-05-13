@@ -40,4 +40,8 @@ const std::string A2STR::NIL("");
 
 const std::string A2STR::SHARP_C("#");
 
+const std::string A2STR::CR_C("\r");
+
+const std::string A2STR::LF_C("\n");
+
 } // namespace aria2

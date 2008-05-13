@@ -39,6 +39,7 @@
 #include "a2io.h"
 #include "a2time.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #include <cerrno>
 #include <cstring>
 #include <iostream>
@@ -68,6 +69,16 @@ writeFile(Logger::LEVEL, MSG, ap);\
 writeStackTrace(Logger::LEVEL, EX);\
 flush();\
 va_end(ap);
+
+const std::string SimpleLogger::DEBUG("DEBUG");
+
+const std::string SimpleLogger::NOTICE("NOTICE");
+
+const std::string SimpleLogger::WARN("WARN");
+
+const std::string SimpleLogger::ERROR("ERROR");
+
+const std::string SimpleLogger::INFO("INFO");
 
 SimpleLogger::SimpleLogger():stdoutField(0) {}
 
@@ -112,20 +123,20 @@ void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
   std::string levelStr;
   switch(level) {
   case Logger::DEBUG:
-    levelStr = "DEBUG";
+    levelStr = DEBUG;
     break;
   case Logger::NOTICE:
-    levelStr = "NOTICE";
+    levelStr = NOTICE;
     break;
   case Logger::WARN:
-    levelStr = "WARN";
+    levelStr = WARN;
     break;
   case Logger::ERROR:
-    levelStr = "ERROR";
+    levelStr = ERROR;
     break;
   case Logger::INFO:
   default:
-    levelStr = "INFO";
+    levelStr = INFO;
   }
   time_t now = time(NULL);
   char datestr[20];
@@ -139,7 +150,7 @@ void SimpleLogger::writeLog(std::ostream& o, Logger::LEVEL level,
   }
   {
     char* res;
-    if(vasprintf(&res, std::string(Util::replace(msg, "\r", "")+"\n").c_str(), apCopy) == -1) {
+    if(vasprintf(&res, std::string(Util::replace(msg, A2STR::CR_C, A2STR::NIL)+A2STR::LF_C).c_str(), apCopy) == -1) {
       o << "SimpleLogger error, cannot allocate memory.\n";
     } else {
       o << res;
