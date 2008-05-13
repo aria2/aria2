@@ -160,36 +160,36 @@ SharedHandle<DHTMessage> DHTMessageFactoryImpl::createQueryMessage(const Diction
 							   const std::string& ipaddr,
 							   uint16_t port)
 {
-  const Data* q = getData(d, "q");
-  const Data* t = getData(d, "t");
-  const Data* y = getData(d, "y");
-  const Dictionary* a = getDictionary(d, "a");
-  if(y->toString() != "q") {
+  const Data* q = getData(d, DHTQueryMessage::Q);
+  const Data* t = getData(d, DHTMessage::T);
+  const Data* y = getData(d, DHTMessage::Y);
+  const Dictionary* a = getDictionary(d, DHTQueryMessage::A);
+  if(y->toString() != DHTQueryMessage::Q) {
     throw DlAbortEx("Malformed DHT message. y != q");
   }
-  const Data* id = getData(getDictionary(d, "a"), "id");
+  const Data* id = getData(getDictionary(d, DHTQueryMessage::A), DHTMessage::ID);
   validateID(id);
   SharedHandle<DHTNode> remoteNode = getRemoteNode(id->getData(), ipaddr, port);
   std::string messageType = q->toString();
   std::string transactionID = t->toString();
-  if(messageType == "ping") {
+  if(messageType == DHTPingMessage::PING) {
     return createPingMessage(remoteNode, transactionID);
-  } else if(messageType == "find_node") {
-    const Data* targetNodeID = getData(a, "target");
+  } else if(messageType == DHTFindNodeMessage::FIND_NODE) {
+    const Data* targetNodeID = getData(a, DHTFindNodeMessage::TARGET_NODE);
     validateID(targetNodeID);
     return createFindNodeMessage(remoteNode, targetNodeID->getData(),
 				 transactionID);
-  } else if(messageType == "get_peers") {
-    const Data* infoHash = getData(a, "info_hash");
+  } else if(messageType == DHTGetPeersMessage::GET_PEERS) {
+    const Data* infoHash = getData(a, DHTGetPeersMessage::INFO_HASH);
     validateID(infoHash);
     return createGetPeersMessage(remoteNode,
 				 infoHash->getData(), transactionID);
-  } else if(messageType == "announce_peer") {
-    const Data* infoHash = getData(a, "info_hash");
+  } else if(messageType == DHTAnnouncePeerMessage::ANNOUNCE_PEER) {
+    const Data* infoHash = getData(a, DHTAnnouncePeerMessage::INFO_HASH);
     validateID(infoHash);
-    const Data* port = getData(a, "port");
+    const Data* port = getData(a, DHTAnnouncePeerMessage::PORT);
     validatePort(port);
-    const Data* token = getData(a, "token");
+    const Data* token = getData(a, DHTAnnouncePeerMessage::TOKEN);
     return createAnnouncePeerMessage(remoteNode, infoHash->getData(),
 				     static_cast<uint16_t>(port->toInt()),
 				     token->toString(), transactionID);
@@ -204,11 +204,11 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
 					     const Dictionary* d,
 					     const SharedHandle<DHTNode>& remoteNode)
 {
-  const Data* t = getData(d, "t");
-  const Data* y = getData(d, "y");
-  if(y->toString() == "e") {
+  const Data* t = getData(d, DHTMessage::T);
+  const Data* y = getData(d, DHTMessage::Y);
+  if(y->toString() == DHTUnknownMessage::E) {
     // for now, just report error message arrived and throw exception.
-    const List* e = getList(d, "e");
+    const List* e = getList(d, DHTUnknownMessage::E);
     if(e->getList().size() == 2) {
       _logger->info("Received Error DHT message. code=%s, msg=%s",
 		    Util::urlencode(getData(e, 0)->toString()).c_str(),
@@ -217,34 +217,35 @@ DHTMessageFactoryImpl::createResponseMessage(const std::string& messageType,
       _logger->debug("e doesn't have 2 elements.");
     }
     throw DlAbortEx("Received Error DHT message.");
-  } else if(y->toString() != "r") {
+  } else if(y->toString() != DHTResponseMessage::R) {
     throw DlAbortEx
       (StringFormat("Malformed DHT message. y != r: y=%s",
 		    Util::urlencode(y->toString()).c_str()).str());
   }
-  const Dictionary* r = getDictionary(d, "r");
-  const Data* id = getData(r, "id");
+  const Dictionary* r = getDictionary(d, DHTResponseMessage::R);
+  const Data* id = getData(r, DHTMessage::ID);
   validateID(id);
   validateIDMatch(remoteNode->getID(), id->getData());
   std::string transactionID = t->toString();
-  if(messageType == "ping") {
+  if(messageType == DHTPingReplyMessage::PING) {
     return createPingReplyMessage(remoteNode,
 				  id->getData(), transactionID);
-  } else if(messageType == "find_node") {
+  } else if(messageType == DHTFindNodeReplyMessage::FIND_NODE) {
     return createFindNodeReplyMessage(remoteNode, d, transactionID);
-  } else if(messageType == "get_peers") {
-    const List* values = dynamic_cast<const List*>(r->get("values"));
+  } else if(messageType == DHTGetPeersReplyMessage::GET_PEERS) {
+    const List* values =
+      dynamic_cast<const List*>(r->get(DHTGetPeersReplyMessage::VALUES));
     if(values) {
       return createGetPeersReplyMessageWithValues(remoteNode, d, transactionID);
     } else {
-      const Data* nodes = dynamic_cast<const Data*>(r->get("nodes"));
+      const Data* nodes = dynamic_cast<const Data*>(r->get(DHTGetPeersReplyMessage::NODES));
       if(nodes) {
 	return createGetPeersReplyMessageWithNodes(remoteNode, d, transactionID);
       } else {
 	throw DlAbortEx("Malformed DHT message: missing nodes/values");
       }
     }
-  } else if(messageType == "announce_peer") {
+  } else if(messageType == DHTAnnouncePeerReplyMessage::ANNOUNCE_PEER) {
     return createAnnouncePeerReplyMessage(remoteNode, transactionID);
   } else {
     throw DlAbortEx
@@ -325,7 +326,7 @@ DHTMessageFactoryImpl::createFindNodeReplyMessage(const SharedHandle<DHTNode>& r
 						  const Dictionary* d,
 						  const std::string& transactionID)
 {
-  const Data* nodesData = getData(getDictionary(d, "r"), "nodes");
+  const Data* nodesData = getData(getDictionary(d, DHTResponseMessage::R), DHTFindNodeReplyMessage::NODES);
   std::deque<SharedHandle<DHTNode> > nodes = extractNodes(nodesData->getData(), nodesData->getLen());
   return createFindNodeReplyMessage(remoteNode, nodes, transactionID);
 }
@@ -350,10 +351,10 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithNodes(const SharedHandle<DH
 							   const Dictionary* d,
 							   const std::string& transactionID)
 {
-  const Dictionary* r = getDictionary(d, "r");
-  const Data* nodesData = getData(r, "nodes");
+  const Dictionary* r = getDictionary(d, DHTResponseMessage::R);
+  const Data* nodesData = getData(r, DHTGetPeersReplyMessage::NODES);
   std::deque<SharedHandle<DHTNode> > nodes = extractNodes(nodesData->getData(), nodesData->getLen());
-  const Data* token = getData(r, "token");
+  const Data* token = getData(r, DHTGetPeersReplyMessage::TOKEN);
   return createGetPeersReplyMessage(remoteNode, nodes, token->toString(),
 				    transactionID);
 }
@@ -376,8 +377,8 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues(const SharedHandle<D
 							    const Dictionary* d,
 							    const std::string& transactionID)
 {
-  const Dictionary* r = getDictionary(d, "r");
-  const List* valuesList = getList(r, "values");
+  const Dictionary* r = getDictionary(d, DHTResponseMessage::R);
+  const List* valuesList = getList(r, DHTGetPeersReplyMessage::VALUES);
   std::deque<SharedHandle<Peer> > peers;
   for(std::deque<MetaEntry*>::const_iterator i = valuesList->getList().begin(); i != valuesList->getList().end(); ++i) {
     const Data* data = dynamic_cast<const Data*>(*i);
@@ -387,7 +388,7 @@ DHTMessageFactoryImpl::createGetPeersReplyMessageWithValues(const SharedHandle<D
       peers.push_back(peer);
     }
   }
-  const Data* token = getData(r, "token");
+  const Data* token = getData(r, DHTGetPeersReplyMessage::TOKEN);
   return createGetPeersReplyMessage(remoteNode, peers, token->toString(),
 				    transactionID);
 }

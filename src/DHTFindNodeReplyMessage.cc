@@ -47,6 +47,10 @@
 
 namespace aria2 {
 
+const std::string DHTFindNodeReplyMessage::FIND_NODE("find_node");
+
+const std::string DHTFindNodeReplyMessage::NODES("nodes");
+
 DHTFindNodeReplyMessage::DHTFindNodeReplyMessage(const SharedHandle<DHTNode>& localNode,
 						 const SharedHandle<DHTNode>& remoteNode,
 						 const std::string& transactionID):
@@ -66,7 +70,7 @@ void DHTFindNodeReplyMessage::doReceivedAction()
 Dictionary* DHTFindNodeReplyMessage::getResponse()
 {
   Dictionary* a = new Dictionary();
-  a->put("id", new Data(_localNode->getID(), DHT_ID_LENGTH));
+  a->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
   size_t offset = 0;
   unsigned char buffer[DHTBucket::K*26];
   // TODO if _closestKNodes.size() > DHTBucket::K ??
@@ -77,13 +81,13 @@ Dictionary* DHTFindNodeReplyMessage::getResponse()
       offset += 26;
     }
   }
-  a->put("nodes", new Data(buffer, offset));
+  a->put(NODES, new Data(buffer, offset));
   return a;
 }
 
 std::string DHTFindNodeReplyMessage::getMessageType() const
 {
-  return "find_node";
+  return FIND_NODE;
 }
 
 void DHTFindNodeReplyMessage::validate() const {}

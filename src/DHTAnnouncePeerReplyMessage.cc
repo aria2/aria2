@@ -39,6 +39,8 @@
 
 namespace aria2 {
 
+const std::string DHTAnnouncePeerReplyMessage::ANNOUNCE_PEER("announce_peer");
+
 DHTAnnouncePeerReplyMessage::DHTAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& localNode,
 							 const SharedHandle<DHTNode>& remoteNode,
 							 const std::string& transactionID):
@@ -51,13 +53,13 @@ void DHTAnnouncePeerReplyMessage::doReceivedAction() {}
 Dictionary* DHTAnnouncePeerReplyMessage::getResponse()
 {
   Dictionary* r = new Dictionary();
-  r->put("id", new Data(_localNode->getID(), DHT_ID_LENGTH));
+  r->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
   return r;
 }
 
 std::string DHTAnnouncePeerReplyMessage::getMessageType() const
 {
-  return "announce_peer";
+  return ANNOUNCE_PEER;
 }
 
 void DHTAnnouncePeerReplyMessage::validate() const {}

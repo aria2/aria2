@@ -38,6 +38,12 @@
 
 namespace aria2 {
 
+const std::string DHTMessage::Y("y");
+
+const std::string DHTMessage::T("t");
+
+const std::string DHTMessage::ID("id");
+
 DHTMessage::DHTMessage(const SharedHandle<DHTNode>& localNode,
 		       const SharedHandle<DHTNode>& remoteNode,
 		       const std::string& transactionID):
@@ -66,6 +72,5 @@ SharedHandle<DHTNode> DHTMessage::getRemoteNode() const
 {
   return _remoteNode;
 }
-
 
 } // namespace aria2

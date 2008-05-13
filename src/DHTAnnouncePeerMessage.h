@@ -93,6 +93,14 @@ public:
   void setPeerAnnounceStorage(const WeakHandle<DHTPeerAnnounceStorage>& storage);
 
   void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
+
+  static const std::string ANNOUNCE_PEER;
+
+  static const std::string INFO_HASH;
+
+  static const std::string PORT;
+
+  static const std::string TOKEN;
 };
 
 } // namespace aria2

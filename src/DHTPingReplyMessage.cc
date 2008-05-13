@@ -40,6 +40,8 @@
 
 namespace aria2 {
 
+const std::string DHTPingReplyMessage::PING("ping");
+
 DHTPingReplyMessage::DHTPingReplyMessage(const SharedHandle<DHTNode>& localNode,
 					 const SharedHandle<DHTNode>& remoteNode,
 					 const unsigned char* id,
@@ -56,13 +58,13 @@ void DHTPingReplyMessage::doReceivedAction() {}
 Dictionary* DHTPingReplyMessage::getResponse()
 {
   Dictionary* r = new Dictionary();
-  r->put("id", new Data(_id, DHT_ID_LENGTH));
+  r->put(DHTMessage::ID, new Data(_id, DHT_ID_LENGTH));
   return r;
 }
 
 std::string DHTPingReplyMessage::getMessageType() const
 {
-  return "ping";
+  return PING;
 }
 
 void DHTPingReplyMessage::validate() const {}

@@ -40,6 +40,8 @@
 
 namespace aria2 {
 
+const std::string DHTResponseMessage::R("r");
+
 DHTResponseMessage::DHTResponseMessage(const SharedHandle<DHTNode>& localNode,
 				       const SharedHandle<DHTNode>& remoteNode,
 				       const std::string& transactionID):
@@ -49,12 +51,12 @@ DHTResponseMessage::~DHTResponseMessage() {}
 
 std::string DHTResponseMessage::getType() const
 {
-  return "r";
+  return R;
 }
 
 void DHTResponseMessage::fillMessage(Dictionary* message)
 {
-  message->put("r", getResponse());
+  message->put(R, getResponse());
 }
 
 bool DHTResponseMessage::isReply() const

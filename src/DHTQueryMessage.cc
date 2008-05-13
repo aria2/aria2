@@ -40,6 +40,10 @@
 
 namespace aria2 {
 
+const std::string DHTQueryMessage::Q("q");
+
+const std::string DHTQueryMessage::A("a");
+
 DHTQueryMessage::DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
 				 const SharedHandle<DHTNode>& remoteNode,
 				 const std::string& transactionID):
@@ -49,13 +53,13 @@ DHTQueryMessage::~DHTQueryMessage() {}
 
 std::string DHTQueryMessage::getType() const
 {
-  return "q";
+  return Q;
 }
 
 void DHTQueryMessage::fillMessage(Dictionary* message)
 {
-  message->put("q", new Data(getMessageType()));
-  message->put("a", getArgument());
+  message->put(Q, new Data(getMessageType()));
+  message->put(A, getArgument());
 }
 
 bool DHTQueryMessage::isReply() const

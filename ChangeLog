@@ -1,6 +1,37 @@
 2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Made string literal to static const std::string
+	* src/DHTAbstractMessage.cc
+	* src/DHTAnnouncePeerMessage.cc
+	* src/DHTAnnouncePeerMessage.h
+	* src/DHTAnnouncePeerReplyMessage.cc
+	* src/DHTAnnouncePeerReplyMessage.h
+	* src/DHTFindNodeMessage.cc
+	* src/DHTFindNodeMessage.h
+	* src/DHTFindNodeReplyMessage.cc
+	* src/DHTFindNodeReplyMessage.h
+	* src/DHTGetPeersMessage.cc
+	* src/DHTGetPeersMessage.h
+	* src/DHTGetPeersReplyMessage.cc
+	* src/DHTGetPeersReplyMessage.h
+	* src/DHTMessage.cc
+	* src/DHTMessage.h
+	* src/DHTMessageFactoryImpl.cc
+	* src/DHTMessageReceiver.cc
+	* src/DHTPingMessage.cc
+	* src/DHTPingMessage.h
+	* src/DHTPingReplyMessage.cc
+	* src/DHTPingReplyMessage.h
+	* src/DHTQueryMessage.cc
+	* src/DHTQueryMessage.h
+	* src/DHTResponseMessage.cc
+	* src/DHTResponseMessage.h
+	* src/DHTUnknownMessage.cc
+	* src/DHTUnknownMessage.h
+
+2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Made string literal to static const std::string
 	* src/BtChokeMessage.cc (toString)
 	* src/BtHaveAllMessage.cc (toString)
 	* src/BtHaveNoneMessage.cc (toString)

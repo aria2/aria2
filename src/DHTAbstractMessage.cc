@@ -55,8 +55,8 @@ DHTAbstractMessage::~DHTAbstractMessage() {}
 std::string DHTAbstractMessage::getBencodedMessage()
 {
   SharedHandle<Dictionary> msg(new Dictionary());
-  msg->put(std::string("t"), new Data(_transactionID));
-  msg->put(std::string("y"), new Data(getType()));
+  msg->put(DHTMessage::T, new Data(_transactionID));
+  msg->put(DHTMessage::Y, new Data(getType()));
   fillMessage(msg.get());
   
   BencodeVisitor v;

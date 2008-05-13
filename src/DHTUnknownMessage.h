@@ -69,6 +69,10 @@ public:
 
   // show some sample bytes
   virtual std::string toString() const;
+
+  static const std::string E;
+
+  static const std::string UNKNOWN;
 };
 
 } // namespace aria2

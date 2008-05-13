@@ -63,6 +63,8 @@ public:
   {
     return _id;
   }
+
+  static const std::string PING;
 };
 
 } // namespace aria2

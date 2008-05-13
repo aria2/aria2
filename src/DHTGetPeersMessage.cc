@@ -49,6 +49,10 @@
 
 namespace aria2 {
 
+const std::string DHTGetPeersMessage::GET_PEERS("get_peers");
+
+const std::string DHTGetPeersMessage::INFO_HASH("info_hash");
+
 DHTGetPeersMessage::DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
 				       const SharedHandle<DHTNode>& remoteNode,
 				       const unsigned char* infoHash,
@@ -86,14 +90,14 @@ void DHTGetPeersMessage::doReceivedAction()
 Dictionary* DHTGetPeersMessage::getArgument()
 {
   Dictionary* a = new Dictionary();
-  a->put("id", new Data(_localNode->getID(), DHT_ID_LENGTH));
-  a->put("info_hash", new Data(_infoHash, DHT_ID_LENGTH));
+  a->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
+  a->put(INFO_HASH, new Data(_infoHash, DHT_ID_LENGTH));
   return a;
 }
 
 std::string DHTGetPeersMessage::getMessageType() const
 {
-  return "get_peers";
+  return GET_PEERS;
 }
 
 void DHTGetPeersMessage::validate() const {}

@@ -59,6 +59,8 @@ public:
   virtual bool isReply() const;
 
   virtual std::string toString() const;
+
+  static const std::string R;
 };
 
 } // namespace aria2

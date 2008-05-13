@@ -50,6 +50,14 @@
 
 namespace aria2 {
 
+const std::string DHTAnnouncePeerMessage::ANNOUNCE_PEER("announce_peer");
+
+const std::string DHTAnnouncePeerMessage::INFO_HASH("info_hash");
+
+const std::string DHTAnnouncePeerMessage::PORT("port");
+
+const std::string DHTAnnouncePeerMessage::TOKEN("token");
+
 DHTAnnouncePeerMessage::DHTAnnouncePeerMessage(const SharedHandle<DHTNode>& localNode,
 					       const SharedHandle<DHTNode>& remoteNode,
 					       const unsigned char* infoHash,
@@ -78,19 +86,19 @@ void DHTAnnouncePeerMessage::doReceivedAction()
 Dictionary* DHTAnnouncePeerMessage::getArgument()
 {
   Dictionary* a = new Dictionary();
-  a->put("id", new Data(reinterpret_cast<const char*>(_localNode->getID()),
+  a->put(DHTMessage::ID, new Data(reinterpret_cast<const char*>(_localNode->getID()),
 			DHT_ID_LENGTH));
-  a->put("info_hash", new Data(reinterpret_cast<const char*>(_infoHash),
+  a->put(INFO_HASH, new Data(reinterpret_cast<const char*>(_infoHash),
 			       DHT_ID_LENGTH));
-  a->put("port", new Data(Util::uitos(_tcpPort), true));
-  a->put("token", new Data(_token));
+  a->put(PORT, new Data(Util::uitos(_tcpPort), true));
+  a->put(TOKEN, new Data(_token));
   
   return a;
 }
 
 std::string DHTAnnouncePeerMessage::getMessageType() const
 {
-  return "announce_peer";
+  return ANNOUNCE_PEER;
 }
 
 void DHTAnnouncePeerMessage::validate() const

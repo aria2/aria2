@@ -80,6 +80,14 @@ public:
   {
     return _token;
   }
+
+  static const std::string GET_PEERS;
+
+  static const std::string TOKEN;
+
+  static const std::string VALUES;
+
+  static const std::string NODES;
 };
 
 } // namespace aria2

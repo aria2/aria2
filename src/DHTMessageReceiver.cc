@@ -36,6 +36,8 @@
 #include "DHTMessageTracker.h"
 #include "DHTConnection.h"
 #include "DHTMessage.h"
+#include "DHTResponseMessage.h"
+#include "DHTUnknownMessage.h"
 #include "DHTMessageFactory.h"
 #include "DHTRoutingTable.h"
 #include "DHTNode.h"
@@ -74,9 +76,10 @@ SharedHandle<DHTMessage> DHTMessageReceiver::receiveMessage()
     MetaEntryHandle msgroot(MetaFileUtil::bdecoding(data, length));
     const Dictionary* d = dynamic_cast<const Dictionary*>(msgroot.get());
     if(d) {
-      const Data* y = dynamic_cast<const Data*>(d->get("y"));
+      const Data* y = dynamic_cast<const Data*>(d->get(DHTMessage::Y));
       if(y) {
-	if(y->toString() == "r" || y->toString() == "e") {
+	if(y->toString() == DHTResponseMessage::R ||
+	   y->toString() == DHTUnknownMessage::E) {
 	  isReply = true;
 	}
       } else {

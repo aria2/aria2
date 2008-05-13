@@ -54,6 +54,8 @@ public:
   virtual std::string getMessageType() const;
 
   virtual void validate() const;
+
+  static const std::string ANNOUNCE_PEER;
 };
 
 } // namespace aria2

@@ -80,6 +80,12 @@ public:
   virtual std::string getMessageType() const = 0;
 
   virtual std::string toString() const = 0;
+
+  static const std::string Y;
+
+  static const std::string T;
+
+  static const std::string ID;
 };
 
 } // namespace aria2

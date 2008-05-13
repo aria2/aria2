@@ -63,6 +63,10 @@ public:
   const std::deque<SharedHandle<DHTNode> >& getClosestKNodes() const;
 
   void setClosestKNodes(const std::deque<SharedHandle<DHTNode> >& closestKNodes);
+
+  static const std::string FIND_NODE;
+  
+  static const std::string NODES;
 };
 
 } // namespace aria2

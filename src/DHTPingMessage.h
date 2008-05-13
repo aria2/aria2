@@ -55,6 +55,8 @@ public:
   virtual std::string getMessageType() const;
 
   virtual void validate() const;
+
+  static const std::string PING;
 };
 
 } // namespace aria2

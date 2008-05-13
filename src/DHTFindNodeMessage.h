@@ -65,6 +65,11 @@ public:
   {
     return _targetNodeID;
   }
+
+  static const std::string FIND_NODE;
+
+  // We want "TARGET", but it is defined by macro.
+  static const std::string TARGET_NODE;
 };
 
 } // namespace aria2

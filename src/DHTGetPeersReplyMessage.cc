@@ -50,6 +50,14 @@
 
 namespace aria2 {
 
+const std::string DHTGetPeersReplyMessage::GET_PEERS("get_peers");
+
+const std::string DHTGetPeersReplyMessage::TOKEN("token");
+
+const std::string DHTGetPeersReplyMessage::VALUES("values");
+
+const std::string DHTGetPeersReplyMessage::NODES("nodes");
+
 DHTGetPeersReplyMessage::DHTGetPeersReplyMessage(const SharedHandle<DHTNode>& localNode,
 						 const SharedHandle<DHTNode>& remoteNode,
 						 const std::string& token,
@@ -67,11 +75,11 @@ void DHTGetPeersReplyMessage::doReceivedAction()
 Dictionary* DHTGetPeersReplyMessage::getResponse()
 {
   Dictionary* r = new Dictionary();
-  r->put("id", new Data(_localNode->getID(), DHT_ID_LENGTH));
-  r->put("token", new Data(_token));
+  r->put(DHTMessage::ID, new Data(_localNode->getID(), DHT_ID_LENGTH));
+  r->put(TOKEN, new Data(_token));
   if(_values.size()) {
     List* valuesList = new List();
-    r->put("values", valuesList);
+    r->put(VALUES, valuesList);
     for(std::deque<SharedHandle<Peer> >::const_iterator i = _values.begin(); i != _values.end(); ++i) {
       const SharedHandle<Peer>& peer = *i;
       unsigned char buffer[6];
@@ -89,14 +97,14 @@ Dictionary* DHTGetPeersReplyMessage::getResponse()
 	offset += 26;
       }
     }
-    r->put("nodes", new Data(buffer, offset));
+    r->put(NODES, new Data(buffer, offset));
   }
   return r;
 }
 
 std::string DHTGetPeersReplyMessage::getMessageType() const
 {
-  return "get_peers";
+  return GET_PEERS;
 }
 
 void DHTGetPeersReplyMessage::validate() const {}

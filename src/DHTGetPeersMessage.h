@@ -78,6 +78,11 @@ public:
 
 
   void setTokenTracker(const WeakHandle<DHTTokenTracker>& tokenTracker);
+
+  static const std::string GET_PEERS;
+
+  static const std::string INFO_HASH;
+
 };
 
 } // namespace aria2
