@@ -1,6 +1,14 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Made string listeral to static const std::string.
+	* src/HttpConnection.cc
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpResponse.cc
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Made string listeral to static const std::string.
 	* src/A2STR.cc
 	* src/A2STR.h
 	* src/SimpleLogger.cc

@@ -64,13 +64,13 @@ void HttpResponse::validateResponse() const
     return;
   }
   if(status >= "300") {
-    if(!httpHeader->defined("Location")) {
+    if(!httpHeader->defined(HttpHeader::LOCATION)) {
       throw DlAbortEx
 	(StringFormat(EX_LOCATION_HEADER_REQUIRED,
 		      Util::parseUInt(status)).str());
     }
   } else {
-    if(!httpHeader->defined("Transfer-Encoding")) {
+    if(!httpHeader->defined(HttpHeader::TRANSFER_ENCODING)) {
       // compare the received range against the requested range
       RangeHandle responseRange = httpHeader->getRange();
       if(!httpRequest->isRangeSatisfied(responseRange)) {
@@ -91,7 +91,8 @@ void HttpResponse::validateResponse() const
 std::string HttpResponse::determinFilename() const
 {
   std::string contentDisposition =
-    Util::getContentDispositionFilename(httpHeader->getFirst("Content-Disposition"));
+    Util::getContentDispositionFilename
+    (httpHeader->getFirst(HttpHeader::CONTENT_DISPOSITION));
   if(contentDisposition.empty()) {
     return Util::urldecode(httpRequest->getFile());
   } else {
@@ -103,7 +104,7 @@ std::string HttpResponse::determinFilename() const
 
 void HttpResponse::retrieveCookie()
 {
-  std::deque<std::string> v = httpHeader->get("Set-Cookie");
+  std::deque<std::string> v = httpHeader->get(HttpHeader::SET_COOKIE);
   for(std::deque<std::string>::const_iterator itr = v.begin(); itr != v.end(); itr++) {
     std::string domain = httpRequest->getHost();
     std::string path = httpRequest->getDir();
@@ -114,7 +115,7 @@ void HttpResponse::retrieveCookie()
 bool HttpResponse::isRedirect() const
 {
   const std::string& status = getResponseStatus();
-  return "300" <= status && status < "400" && httpHeader->defined("Location");
+  return "300" <= status && status < "400" && httpHeader->defined(HttpHeader::LOCATION);
 }
 
 void HttpResponse::processRedirect()
@@ -125,23 +126,23 @@ void HttpResponse::processRedirect()
 
 std::string HttpResponse::getRedirectURI() const
 {
-  return httpHeader->getFirst("Location");
+  return httpHeader->getFirst(HttpHeader::LOCATION);
 }
 
 bool HttpResponse::isTransferEncodingSpecified() const
 {
-  return httpHeader->defined("Transfer-Encoding");
+  return httpHeader->defined(HttpHeader::TRANSFER_ENCODING);
 }
 
 std::string HttpResponse::getTransferEncoding() const
 {
-  return httpHeader->getFirst("Transfer-Encoding");
+  return httpHeader->getFirst(HttpHeader::TRANSFER_ENCODING);
 }
 
 TransferEncodingHandle HttpResponse::getTransferDecoder() const
 {
   if(isTransferEncodingSpecified()) {
-    if(getTransferEncoding() == "chunked") {
+    if(getTransferEncoding() == HttpHeader::CHUNKED) {
       return SharedHandle<TransferEncoding>(new ChunkedEncoding());
     }
   }
@@ -171,7 +172,7 @@ std::string HttpResponse::getContentType() const
   if(httpHeader.isNull()) {
     return A2STR::NIL;
   } else {
-    return httpHeader->getFirst("Content-Type");
+    return httpHeader->getFirst(HttpHeader::CONTENT_TYPE);
   }
 }
 
@@ -203,12 +204,12 @@ const std::string& HttpResponse::getResponseStatus() const
 
 bool HttpResponse::hasRetryAfter() const
 {
-  return httpHeader->defined("Retry-After");
+  return httpHeader->defined(HttpHeader::RETRY_AFTER);
 }
 
 time_t HttpResponse::getRetryAfter() const
 {
-  return httpHeader->getFirstAsUInt("Retry-After");
+  return httpHeader->getFirstAsUInt(HttpHeader::RETRY_AFTER);
 }
 
 } // namespace aria2

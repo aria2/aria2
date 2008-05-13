@@ -40,6 +40,26 @@
 
 namespace aria2 {
 
+const std::string HttpHeader::LOCATION("Location");
+
+const std::string HttpHeader::TRANSFER_ENCODING("Transfer-Encoding");
+
+const std::string HttpHeader::CONTENT_DISPOSITION("Content-Disposition");
+
+const std::string HttpHeader::SET_COOKIE("Set-Cookie");
+
+const std::string HttpHeader::CHUNKED("chunked");
+
+const std::string HttpHeader::CONTENT_TYPE("Content-Type");
+
+const std::string HttpHeader::RETRY_AFTER("Retry-After");
+
+const std::string HttpHeader::CONNECTION("Connection");
+
+const std::string HttpHeader::CLOSE("close");
+
+const std::string HttpHeader::HTTP_1_1("HTTP/1.1");
+
 void HttpHeader::put(const std::string& name, const std::string& value) {
   std::multimap<std::string, std::string>::value_type vt(Util::toLower(name), value);
   table.insert(vt);

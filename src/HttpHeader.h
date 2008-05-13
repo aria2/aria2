@@ -78,6 +78,26 @@ public:
   void setVersion(const std::string& version);
 
   void fill(std::istream& in);
+
+  static const std::string LOCATION;
+
+  static const std::string TRANSFER_ENCODING;
+  
+  static const std::string CONTENT_DISPOSITION;
+  
+  static const std::string SET_COOKIE;
+  
+  static const std::string CHUNKED;
+  
+  static const std::string CONTENT_TYPE;
+  
+  static const std::string RETRY_AFTER;
+  
+  static const std::string CONNECTION;
+
+  static const std::string CLOSE;
+
+  static const std::string HTTP_1_1;
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;
