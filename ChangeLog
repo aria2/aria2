@@ -1,5 +1,12 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made string listeral to static const std::string:
+	"Content-Range", "Content-Length"
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made string listeral to static const std::string.
 	* src/HttpConnection.cc
 	* src/HttpHeader.cc

@@ -97,6 +97,10 @@ public:
 
   static const std::string CLOSE;
 
+  static const std::string CONTENT_LENGTH;
+
+  static const std::string CONTENT_RANGE;
+
   static const std::string HTTP_1_1;
 };
 

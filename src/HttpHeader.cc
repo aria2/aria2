@@ -58,6 +58,10 @@ const std::string HttpHeader::CONNECTION("Connection");
 
 const std::string HttpHeader::CLOSE("close");
 
+const std::string HttpHeader::CONTENT_LENGTH("Content-Length");
+
+const std::string HttpHeader::CONTENT_RANGE("Content-Range");
+
 const std::string HttpHeader::HTTP_1_1("HTTP/1.1");
 
 void HttpHeader::put(const std::string& name, const std::string& value) {
@@ -103,9 +107,9 @@ uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
 
 RangeHandle HttpHeader::getRange() const
 {
-  std::string rangeStr = getFirst("Content-Range");
+  std::string rangeStr = getFirst(CONTENT_RANGE);
   if(rangeStr.empty()) {
-    std::string contentLengthStr = getFirst("Content-Length");
+    std::string contentLengthStr = getFirst(CONTENT_LENGTH);
     if(contentLengthStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
