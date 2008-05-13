@@ -513,12 +513,12 @@ IntSequence Util::parseIntRange(const std::string& src)
 }
 
 std::string Util::getContentDispositionFilename(const std::string& header) {
-  std::string keyName = "filename=";
+  static const std::string keyName = "filename=";
   std::string::size_type attributesp = header.find(keyName);
   if(attributesp == std::string::npos) {
     return A2STR::NIL;
   }
-  std::string::size_type filenamesp = attributesp+strlen(keyName.c_str());
+  std::string::size_type filenamesp = attributesp+keyName.size();
   std::string::size_type filenameep;
   if(filenamesp == header.size()) {
     return A2STR::NIL;
@@ -533,7 +533,8 @@ std::string Util::getContentDispositionFilename(const std::string& header) {
   if(filenameep == std::string::npos) {
     filenameep = header.size();
   }
-  return trim(header.substr(filenamesp, filenameep-filenamesp), "\r\n '\"");
+  static const std::string TRIMMED("\r\n '\"");
+  return trim(header.substr(filenamesp, filenameep-filenamesp), TRIMMED);
 }
 
 static int nbits[] = {

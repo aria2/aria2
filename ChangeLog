@@ -1,5 +1,11 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made keyName static const. Made trimmed charset static const
+	std::string.
+	* src/Util.cc (getContentDispositionFilename)
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made USER_AGENT const. Made "/" static const std::string.
 	* src/A2STR.cc
 	* src/A2STR.h
