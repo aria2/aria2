@@ -49,7 +49,7 @@
 
 namespace aria2 {
 
-std::string HttpRequest::USER_AGENT = "aria2";
+const std::string HttpRequest::USER_AGENT("aria2");
 
 HttpRequest::HttpRequest():entityLength(0),
 			   authEnabled(false),
@@ -137,10 +137,10 @@ std::string HttpRequest::createRequest() const
   if(getProtocol() == Request::PROTO_FTP || proxyEnabled) {
     requestLine += getCurrentURI();
   } else {
-    if(getDir() == "/") {
+    if(getDir() == A2STR::SLASH_C) {
       requestLine += getDir();
     } else {
-      requestLine += getDir()+"/";
+      requestLine += getDir()+A2STR::SLASH_C;
     }
     requestLine += getFile()+getQuery();
   }

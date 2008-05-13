@@ -50,7 +50,7 @@ class Option;
 class HttpRequest {
 private:
   
-  static std::string USER_AGENT;
+  static const std::string USER_AGENT;
 
   SharedHandle<Request> request;
 

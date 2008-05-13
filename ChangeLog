@@ -1,5 +1,13 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made USER_AGENT const. Made "/" static const std::string.
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made string listeral to static const std::string:
 	"Content-Range", "Content-Length"
 	* src/HttpHeader.cc

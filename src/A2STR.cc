@@ -44,4 +44,6 @@ const std::string A2STR::CR_C("\r");
 
 const std::string A2STR::LF_C("\n");
 
+const std::string A2STR::SLASH_C("/");
+
 } // namespace aria2

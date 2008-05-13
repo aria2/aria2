@@ -51,6 +51,7 @@ public:
 
   static const std::string LF_C;
 
+  static const std::string SLASH_C;
 };
 } // namespace aria2
 
