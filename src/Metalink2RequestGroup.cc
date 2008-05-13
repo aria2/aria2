@@ -48,6 +48,7 @@
 #include "MetalinkEntry.h"
 #include "MetalinkResource.h"
 #include "FileEntry.h"
+#include "A2STR.h"
 #ifdef ENABLE_BITTORRENT
 # include "BtDependency.h"
 #endif // ENABLE_BITTORRENT
@@ -167,7 +168,7 @@ Metalink2RequestGroup::createRequestGroup
       SharedHandle<SingleFileDownloadContext> dctx
 	(new SingleFileDownloadContext(_option->getAsInt(PREF_SEGMENT_SIZE),
 				       0,
-				       ""));
+				       A2STR::NIL));
       //dctx->setDir(_option->get(PREF_DIR));
       torrentRg->setDownloadContext(dctx);
       torrentRg->clearPreDowloadHandler();
@@ -205,7 +206,7 @@ Metalink2RequestGroup::createRequestGroup
     SharedHandle<SingleFileDownloadContext> dctx
       (new SingleFileDownloadContext(pieceLength,
 				     entry->getLength(),
-				     "",
+				     A2STR::NIL,
 				     entry->file->getPath()));
     dctx->setDir(_option->get(PREF_DIR));
 #ifdef ENABLE_MESSAGE_DIGEST

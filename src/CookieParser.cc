@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "CookieParser.h"
 #include "Util.h"
+#include "A2STR.h"
 #include <strings.h>
 #include <utility>
 #include <istream>
@@ -60,7 +61,7 @@ void CookieParser::setField(Cookie& cookie, const std::string& name, const std::
 
 Cookie CookieParser::parse(const std::string& cookieStr) const
 {
-  return parse(cookieStr, "", "");
+  return parse(cookieStr, A2STR::NIL, A2STR::NIL);
 }
 
 Cookie CookieParser::parse(const std::string& cookieStr, const std::string& defaultDomain, const std::string& defaultPath) const
@@ -84,7 +85,7 @@ Cookies CookieParser::parse(std::istream& s) const
   Cookies cookies;
   std::string line;
   while(getline(s, line)) {
-    if(Util::trim(line) == "" || Util::startsWith(line, "#")) {
+    if(Util::trim(line).empty() || Util::startsWith(line, "#")) {
       continue;
     }
     Cookie cookie = parse(line);

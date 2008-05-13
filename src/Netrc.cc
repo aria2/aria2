@@ -56,7 +56,7 @@ void Netrc::skipMacdef(std::ifstream& f) const
   std::string line;
   getline(f, line);
   while(getline(f, line)) {
-    if(line == "\r" || line == "") {
+    if(line == "\r" || line.empty()) {
       break;
     }
   }

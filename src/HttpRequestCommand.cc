@@ -95,7 +95,7 @@ createHttpRequest(const SharedHandle<Request>& req,
 
 bool HttpRequestCommand::executeInternal() {
   socket->setBlockingMode();
-  if(req->getProtocol() == "https") {
+  if(req->getProtocol() == Request::PROTO_HTTPS) {
     socket->initiateSecureConnection();
   }
 

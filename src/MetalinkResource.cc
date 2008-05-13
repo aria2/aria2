@@ -40,6 +40,14 @@ std::string MetalinkResource::type2String[] = {
   "ftp", "http", "https", "bittorrent", "not_supported"
 };
 
+const std::string MetalinkResource::HTTP("http");
+
+const std::string MetalinkResource::HTTPS("https");
+
+const std::string MetalinkResource::FTP("ftp");
+
+const std::string MetalinkResource::BITTORRENT("bittorrent");
+
 MetalinkResource::MetalinkResource():
   maxConnections(-1)
 {}

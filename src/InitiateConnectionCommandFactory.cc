@@ -47,10 +47,10 @@ namespace aria2 {
 
 Command*
 InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, const RequestHandle& req, RequestGroup* requestGroup, DownloadEngine* e) {
-  if(req->getProtocol() == "http"
+  if(req->getProtocol() == Request::PROTO_HTTP
 #ifdef ENABLE_SSL
      // for SSL
-     || req->getProtocol() == "https"
+     || req->getProtocol() == Request::PROTO_HTTPS
 #endif // ENABLE_SSL
      ) {
     
@@ -62,7 +62,7 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(int32_t cuid, 
     }
 
     return new HttpInitiateConnectionCommand(cuid, req, requestGroup, e);
-  } else if(req->getProtocol() == "ftp") {
+  } else if(req->getProtocol() == Request::PROTO_FTP) {
     return new FtpInitiateConnectionCommand(cuid, req, requestGroup, e);
   } else {
     // these protocols are not supported yet

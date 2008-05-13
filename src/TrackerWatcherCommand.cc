@@ -53,6 +53,7 @@
 #include "Option.h"
 #include "DlAbortEx.h"
 #include "Logger.h"
+#include "A2STR.h"
 #include <sstream>
 
 namespace aria2 {
@@ -176,9 +177,9 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   SingleFileDownloadContextHandle dctx
     (new SingleFileDownloadContext(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				   0,
-				   "",
+				   A2STR::NIL,
 				   "[tracker.announce]"));
-  dctx->setDir("");
+  dctx->setDir(A2STR::NIL);
   rg->setDownloadContext(dctx);
   SharedHandle<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());
   rg->setDiskWriterFactory(dwf);

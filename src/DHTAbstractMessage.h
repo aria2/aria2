@@ -36,6 +36,7 @@
 #define _D_DHT_ABSTRACT_MESSAGE_H_
 
 #include "DHTMessage.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -57,7 +58,7 @@ protected:
 public:
   DHTAbstractMessage(const SharedHandle<DHTNode>& localNode,
 		     const SharedHandle<DHTNode>& remoteNode,
-		     const std::string& transactionID = "");
+		     const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTAbstractMessage();
 

@@ -36,6 +36,7 @@
 #define _D_DHT_MESSAGE_FACTORY_IMPL_H_
 
 #include "DHTMessageFactory.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -94,7 +95,7 @@ public:
 
   virtual SharedHandle<DHTMessage>
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,
-		    const std::string& transactionID = "");
+		    const std::string& transactionID = A2STR::NIL);
 
   virtual SharedHandle<DHTMessage>
   createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -104,7 +105,7 @@ public:
   virtual SharedHandle<DHTMessage>
   createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
 			const unsigned char* targetNodeID,
-			const std::string& transactionID = "");
+			const std::string& transactionID = A2STR::NIL);
 
   SharedHandle<DHTMessage>
   createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -120,7 +121,7 @@ public:
   virtual SharedHandle<DHTMessage>
   createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
 			const unsigned char* infoHash,
-			const std::string& transactionID = "");
+			const std::string& transactionID = A2STR::NIL);
 
   virtual SharedHandle<DHTMessage>
   createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -149,7 +150,7 @@ public:
 			    const unsigned char* infoHash,
 			    uint16_t tcpPort,
 			    const std::string& token,
-			    const std::string& transactionID = "");
+			    const std::string& transactionID = A2STR::NIL);
 
   virtual SharedHandle<DHTMessage>
   createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,

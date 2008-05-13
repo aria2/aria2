@@ -35,6 +35,7 @@
 #include "PeerSessionResource.h"
 #include "BitfieldManFactory.h"
 #include "BitfieldMan.h"
+#include "A2STR.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -267,7 +268,7 @@ std::string PeerSessionResource::getExtensionName(uint8_t id) const
       return p.first;
     }
   }
-  return "";
+  return A2STR::NIL;
 }
 
 void PeerSessionResource::addExtension(const std::string& name, uint8_t id)

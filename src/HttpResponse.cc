@@ -46,6 +46,7 @@
 #include "message.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #include <deque>
 
 namespace aria2 {
@@ -168,7 +169,7 @@ uint64_t HttpResponse::getEntityLength() const
 std::string HttpResponse::getContentType() const
 {
   if(httpHeader.isNull()) {
-    return "";
+    return A2STR::NIL;
   } else {
     return httpHeader->getFirst("Content-Type");
   }

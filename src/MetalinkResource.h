@@ -51,6 +51,15 @@ public:
   };
 
   static std::string type2String[];
+
+  static const std::string HTTP;
+
+  static const std::string HTTPS;
+
+  static const std::string FTP;
+
+  static const std::string BITTORRENT;
+
 public:
   std::string url;
   TYPE type;

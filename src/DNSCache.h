@@ -38,6 +38,7 @@
 #include "common.h"
 #include "SharedHandle.h"
 #include "SingletonHolder.h"
+#include "A2STR.h"
 #include <string>
 #include <map>
 
@@ -79,7 +80,7 @@ class NullDNSCache : public DNSCache {
 public:
   virtual ~NullDNSCache() {}
 
-  virtual std::string find(const std::string& hostname) { return ""; }
+  virtual std::string find(const std::string& hostname) { return A2STR::NIL; }
 
   virtual void put(const std::string& hostname, const std::string& ipaddr) {}
 };

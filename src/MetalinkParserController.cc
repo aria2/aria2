@@ -38,6 +38,7 @@
 #include "MetalinkResource.h"
 #include "FileEntry.h"
 #include "a2functional.h"
+#include "A2STR.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "Checksum.h"
 # include "ChunkChecksum.h"
@@ -86,7 +87,7 @@ void MetalinkParserController::setFileLengthOfEntry(uint64_t length)
     return;
   }
   if(_tEntry->file.isNull()) {
-    _tEntry->file.reset(new FileEntry("", length, 0));
+    _tEntry->file.reset(new FileEntry(A2STR::NIL, length, 0));
   } else {
     _tEntry->file->setLength(length);
   }
@@ -165,13 +166,13 @@ void MetalinkParserController::setTypeOfResource(const std::string& type)
   if(_tResource.isNull()) {
     return;
   }
-  if(type == "ftp") {
+  if(type == MetalinkResource::FTP) {
     _tResource->type = MetalinkResource::TYPE_FTP;
-  } else if(type == "http") {
+  } else if(type == MetalinkResource::HTTP) {
     _tResource->type = MetalinkResource::TYPE_HTTP;
-  } else if(type == "https") {
+  } else if(type == MetalinkResource::HTTPS) {
     _tResource->type = MetalinkResource::TYPE_HTTPS;
-  } else if(type == "bittorrent") {
+  } else if(type == MetalinkResource::BITTORRENT) {
     _tResource->type = MetalinkResource::TYPE_BITTORRENT;
   } else {
     _tResource->type = MetalinkResource::TYPE_NOT_SUPPORTED;

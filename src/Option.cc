@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Option.h"
 #include "prefs.h"
+#include "A2STR.h"
 #include <cstdlib>
 
 namespace aria2 {
@@ -53,7 +54,7 @@ bool Option::defined(const std::string& name) const {
 std::string Option::get(const std::string& name) const {
   std::map<std::string, std::string>::const_iterator itr = table.find(name);
   if(itr == table.end()) {
-    return "";
+    return A2STR::NIL;
   } else {
     return (*itr).second;
   }
@@ -61,7 +62,7 @@ std::string Option::get(const std::string& name) const {
 
 int32_t Option::getAsInt(const std::string& name) const {
   std::string value = get(name);
-  if(value == "") {
+  if(value.empty()) {
     return 0;
   } else {
     return strtol(value.c_str(), NULL, 10);
@@ -70,7 +71,7 @@ int32_t Option::getAsInt(const std::string& name) const {
 
 int64_t Option::getAsLLInt(const std::string& name) const {
   std::string value = get(name);
-  if(value == "") {
+  if(value.empty()) {
     return 0;
   } else {
     return strtoll(value.c_str(), NULL, 10);
@@ -88,7 +89,7 @@ bool Option::getAsBool(const std::string& name) const {
 
 double Option::getAsDouble(const std::string& name) const {
   std::string value = get(name);
-  if(value == "") {
+  if(value.empty()) {
     return 0.0;
   } else {
     return strtod(value.c_str(), 0);

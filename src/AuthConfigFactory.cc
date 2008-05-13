@@ -51,9 +51,10 @@ AuthConfigFactory::~AuthConfigFactory() {}
 AuthConfigHandle
 AuthConfigFactory::createAuthConfig(const RequestHandle& request) const
 {
-  if(request->getProtocol() == "http" || request->getProtocol() == "https") {
+  if(request->getProtocol() == Request::PROTO_HTTP ||
+     request->getProtocol() == Request::PROTO_HTTPS) {
     return createHttpAuthResolver()->resolveAuthConfig(request->getHost());
-  } else if(request->getProtocol() == "ftp") {
+  } else if(request->getProtocol() == Request::PROTO_FTP) {
     if(!request->getUsername().empty()) {
       return createAuthConfig(request->getUsername(), request->getPassword());
     } else {

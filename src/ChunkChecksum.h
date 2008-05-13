@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "A2STR.h"
 #include <string>
 #include <deque>
 
@@ -82,7 +83,7 @@ public:
     if(index < _checksums.size()) {
       return _checksums[index];
     } else {
-      return "";
+      return A2STR::NIL;
     }
   }
   

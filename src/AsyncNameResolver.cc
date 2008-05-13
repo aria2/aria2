@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "AsyncNameResolver.h"
 #include "Util.h"
+#include "A2STR.h"
 #include <cstring>
 
 namespace aria2 {
@@ -121,7 +122,7 @@ bool AsyncNameResolver::operator==(const AsyncNameResolver& resolver) const
 
 void AsyncNameResolver::reset()
 {
-  _hostname = "";
+  _hostname = A2STR::NIL;
   _resolvedAddresses.clear();
   status = STATUS_READY;
   ares_destroy(channel);

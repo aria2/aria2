@@ -36,16 +36,17 @@
 #define _D_DHT_QUERY_MESSAGE_H_
 
 #include "DHTAbstractMessage.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
 class DHTQueryMessage:public DHTAbstractMessage {
 protected:
-  virtual std::string toStringOptional() const { return ""; }
+  virtual std::string toStringOptional() const { return A2STR::NIL; }
 public:
   DHTQueryMessage(const SharedHandle<DHTNode>& localNode,
 		  const SharedHandle<DHTNode>& remoteNode,
-		  const std::string& transactionID = "");
+		  const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTQueryMessage();
 

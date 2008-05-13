@@ -37,6 +37,7 @@
 
 #include "DHTQueryMessage.h"
 #include "DHTConstants.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -62,7 +63,7 @@ public:
 			 const unsigned char* infoHash,
 			 uint16_t tcpPort,
 			 const std::string& token,
-			 const std::string& transactionID = "");
+			 const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTAnnouncePeerMessage();
 

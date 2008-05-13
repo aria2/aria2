@@ -46,6 +46,7 @@
 #include "File.h"
 #include "StringFormat.h"
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -62,7 +63,7 @@ extern void showUsage(const std::string& category, const Option* option);
 static std::string toBoolArg(const char* optarg)
 {
   std::string arg;
-  if(!optarg || std::string(optarg) == "") {
+  if(!optarg || strlen(optarg) == 0) {
     arg = V_TRUE;
   } else {
     arg = optarg;
@@ -508,7 +509,7 @@ Option* option_processing(int argc, char* const argv[])
     case 'h':
       {
 	std::string category;
-	if(optarg == 0 || std::string(optarg) == "") {
+	if(optarg == 0 || strlen(optarg) == 0) {
 	  category = TAG_BASIC;
 	} else {
 	  category = optarg;

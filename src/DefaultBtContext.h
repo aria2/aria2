@@ -36,6 +36,7 @@
 #define _D_DEFAULT_BT_CONTEXT_H_
 
 #include "BtContext.h"
+#include "A2STR.h"
 #include <iosfwd>
 
 namespace aria2 {
@@ -137,7 +138,7 @@ private:
   virtual std::string getActualBasePath() const;
 
   virtual const unsigned char* getPeerId() {
-    if(peerId == "") {
+    if(peerId.empty()) {
       peerId = generatePeerId();
     }
     return reinterpret_cast<const unsigned char*>(peerId.c_str());

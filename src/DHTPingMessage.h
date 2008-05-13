@@ -36,6 +36,7 @@
 #define _D_DHT_PING_MESSAGE_H_
 
 #include "DHTQueryMessage.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -43,7 +44,7 @@ class DHTPingMessage:public DHTQueryMessage {
 public:
   DHTPingMessage(const SharedHandle<DHTNode>& localNode,
 		 const SharedHandle<DHTNode>& remoteNode,
-		 const std::string& transactionID = "");
+		 const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTPingMessage();
 

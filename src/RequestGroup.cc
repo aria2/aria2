@@ -71,6 +71,7 @@
 #include "Request.h"
 #include "FileAllocationIterator.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #ifdef ENABLE_MESSAGE_DIGEST
 # include "CheckIntegrityCommand.h"
 #endif // ENABLE_MESSAGE_DIGEST
@@ -517,7 +518,7 @@ std::string RequestGroup::getFilePath() const
 {
   assert(!_downloadContext.isNull());
   if(_downloadContext.isNull()) {
-    return "";
+    return A2STR::NIL;
   } else {
     return _downloadContext->getActualBasePath();
   }
@@ -858,7 +859,7 @@ DownloadResultHandle RequestGroup::createDownloadResult() const
     SharedHandle<DownloadResult>(new DownloadResult(_gid,
 						    getFilePath(),
 						    getTotalLength(),
-						    uris.empty() ? "":uris.front(),
+						    uris.empty() ? A2STR::NIL:uris.front(),
 						    uris.size(),
 						    downloadFinished()?
 						    DownloadResult::FINISHED :

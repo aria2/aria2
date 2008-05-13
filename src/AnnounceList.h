@@ -127,6 +127,12 @@ public:
   bool currentTierAcceptsStoppedEvent() const;
 
   bool currentTierAcceptsCompletedEvent() const;
+
+  static const std::string STARTED;
+
+  static const std::string STOPPED;
+
+  static const std::string COMPLETED;
 };
 
 } // namespace aria2

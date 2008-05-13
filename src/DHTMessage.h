@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "A2STR.h"
 #include <string>
 
 namespace aria2 {
@@ -55,7 +56,7 @@ protected:
 public:
   DHTMessage(const SharedHandle<DHTNode>& localNode,
 	     const SharedHandle<DHTNode>& remoteNode,
-	     const std::string& transactionID = "");
+	     const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTMessage();
 

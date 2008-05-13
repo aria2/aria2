@@ -38,6 +38,7 @@
 #include "Util.h"
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -90,7 +91,7 @@ size_t HttpHeaderProcessor::getPutBackDataLength() const
 
 void HttpHeaderProcessor::clear()
 {
-  strm.str("");
+  strm.str(A2STR::NIL);
 }
 
 SharedHandle<HttpHeader> HttpHeaderProcessor::getHttpResponseHeader()

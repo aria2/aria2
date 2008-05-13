@@ -37,6 +37,7 @@
 
 #include <functional>
 #include "SharedHandle.h"
+#include "A2STR.h"
 #include <string>
 
 namespace aria2 {
@@ -143,7 +144,7 @@ class Concat {
 private:
   std::string _delim;
 public:
-  Concat(const std::string& delim = ""):_delim(delim) {}
+  Concat(const std::string& delim = A2STR::NIL):_delim(delim) {}
 
   std::string operator()(const std::string& s1, const std::string& s2) const
   {

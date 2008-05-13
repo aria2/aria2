@@ -36,6 +36,7 @@
 #define _D_HELP_ITEM_H_
 
 #include "TaggedItem.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -48,7 +49,7 @@ private:
   std::string _defaultValue;
 
 public:
-  HelpItem(const std::string& name, const std::string& usageText, const std::string& defaultValue = ""):
+  HelpItem(const std::string& name, const std::string& usageText, const std::string& defaultValue = A2STR::NIL):
     TaggedItem(name),
     _usageText(usageText),
     _defaultValue(defaultValue) {}

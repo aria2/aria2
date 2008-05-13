@@ -53,6 +53,7 @@
 #include "Peer.h"
 #include "Option.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -128,7 +129,7 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
       announceList.setEvent(AnnounceTier::STARTED_AFTER_COMPLETION);
     }
   } else {
-    return "";
+    return A2STR::NIL;
   }
   unsigned int numWant = 50;
   if(!btRuntime->lessThanEqMinPeer() || btRuntime->isHalt()) {

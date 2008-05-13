@@ -36,12 +36,13 @@
 #define _D_DHT_RESPONSE_MESSAGE_H_
 
 #include "DHTAbstractMessage.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
 class DHTResponseMessage:public DHTAbstractMessage {
 protected:
-  virtual std::string toStringOptional() const { return ""; }
+  virtual std::string toStringOptional() const { return A2STR::NIL; }
 public:
   DHTResponseMessage(const SharedHandle<DHTNode>& localNode,
 		     const SharedHandle<DHTNode>& remoteNode,

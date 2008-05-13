@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "A2STR.h"
 #include <string>
 #include <deque>
 
@@ -62,7 +63,7 @@ public:
 
   virtual SharedHandle<DHTMessage>
   createPingMessage(const SharedHandle<DHTNode>& remoteNode,
-		    const std::string& transactionID = "") = 0;
+		    const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createPingReplyMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -72,7 +73,7 @@ public:
   virtual SharedHandle<DHTMessage>
   createFindNodeMessage(const SharedHandle<DHTNode>& remoteNode,
 			const unsigned char* targetNodeID,
-			const std::string& transactionID = "") = 0;
+			const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createFindNodeReplyMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -82,7 +83,7 @@ public:
   virtual SharedHandle<DHTMessage>
   createGetPeersMessage(const SharedHandle<DHTNode>& remoteNode,
 			const unsigned char* infoHash,
-			const std::string& transactionID = "") = 0;
+			const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createGetPeersReplyMessage(const SharedHandle<DHTNode>& remoteNode,
@@ -101,7 +102,7 @@ public:
 			    const unsigned char* infoHash,
 			    uint16_t tcpPort,
 			    const std::string& token,
-			    const std::string& transactionID = "") = 0;
+			    const std::string& transactionID = A2STR::NIL) = 0;
 
   virtual SharedHandle<DHTMessage>
   createAnnouncePeerReplyMessage(const SharedHandle<DHTNode>& remoteNode,

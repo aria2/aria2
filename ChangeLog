@@ -1,5 +1,14 @@
 2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Replaced "" with static const variable A2STR::NIL.
+	Replaced string comparison against "" with std::string::empty().
+	Added PROTO_* to Request class and use them as a protocol string
+	constant.
+	Made "started", "stopped", "completed" static const variable in
+	AnnounceList class.
+	
+2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Updated translations. Great thanks to translators.
 	* po/ca.po
 	* po/de.po

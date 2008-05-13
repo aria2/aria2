@@ -37,6 +37,7 @@
 
 #include "DHTQueryMessage.h"
 #include "DHTConstants.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -56,7 +57,7 @@ public:
   DHTGetPeersMessage(const SharedHandle<DHTNode>& localNode,
 		     const SharedHandle<DHTNode>& remoteNode,
 		     const unsigned char* infoHash,
-		     const std::string& transactionID = "");
+		     const std::string& transactionID = A2STR::NIL);
 
   virtual ~DHTGetPeersMessage();
 

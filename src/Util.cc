@@ -43,6 +43,7 @@
 #include "FatalException.h"
 #include "FileEntry.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #include <signal.h>
 #include <cerrno>
 #include <cassert>
@@ -64,7 +65,7 @@ std::string Util::trim(const std::string& src, const std::string& trimCharset)
   std::string::size_type sp = src.find_first_not_of(trimCharset);
   std::string::size_type ep = src.find_last_not_of(trimCharset);
   if(sp == std::string::npos || ep == std::string::npos) {
-    return "";
+    return A2STR::NIL;
   } else {
     return src.substr(sp, ep-sp+1);
   }
@@ -72,12 +73,12 @@ std::string Util::trim(const std::string& src, const std::string& trimCharset)
 
 void Util::split(std::pair<std::string, std::string>& hp, const std::string& src, char delim)
 {
-  hp.first = "";
-  hp.second = "";
+  hp.first = A2STR::NIL;
+  hp.second = A2STR::NIL;
   std::string::size_type p = src.find(delim);
   if(p == std::string::npos) {
     hp.first = src;
-    hp.second = "";
+    hp.second = A2STR::NIL;
   } else {
     hp.first = trim(src.substr(0, p));
     hp.second = trim(src.substr(p+1));
@@ -87,12 +88,12 @@ void Util::split(std::pair<std::string, std::string>& hp, const std::string& src
 std::pair<std::string, std::string> Util::split(const std::string& src, const std::string& delims)
 {
   std::pair<std::string, std::string> hp;
-  hp.first = "";
-  hp.second = "";
+  hp.first = A2STR::NIL;
+  hp.second = A2STR::NIL;
   std::string::size_type p = src.find_first_of(delims);
   if(p == std::string::npos) {
     hp.first = src;
-    hp.second = "";
+    hp.second = A2STR::NIL;
   } else {
     hp.first = trim(src.substr(0, p));
     hp.second = trim(src.substr(p+1));
@@ -145,7 +146,7 @@ bool Util::startsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;
   }
-  if(part == "") {
+  if(part.empty()) {
     return true;
   }
   if(target.find(part) == 0) {
@@ -159,7 +160,7 @@ bool Util::endsWith(const std::string& target, const std::string& part) {
   if(target.size() < part.size()) {
     return false;
   }
-  if(part == "") {
+  if(part.empty()) {
     return true;
   }
   if(target.rfind(part) == target.size()-part.size()) {
@@ -170,7 +171,7 @@ bool Util::endsWith(const std::string& target, const std::string& part) {
 }
 
 std::string Util::replace(const std::string& target, const std::string& oldstr, const std::string& newstr) {
-  if(target == "" || oldstr == "" ) {
+  if(target.empty() || oldstr.empty()) {
     return target;
   }
   std::string result;
@@ -515,12 +516,12 @@ std::string Util::getContentDispositionFilename(const std::string& header) {
   std::string keyName = "filename=";
   std::string::size_type attributesp = header.find(keyName);
   if(attributesp == std::string::npos) {
-    return "";
+    return A2STR::NIL;
   }
   std::string::size_type filenamesp = attributesp+strlen(keyName.c_str());
   std::string::size_type filenameep;
   if(filenamesp == header.size()) {
-    return "";
+    return A2STR::NIL;
   }
   
   if(header[filenamesp] == '\'' || header[filenamesp] == '"') {
@@ -622,7 +623,7 @@ std::string Util::getHomeDir()
   if(p) {
     return p;
   } else {
-    return "";
+    return A2STR::NIL;
   }
 }
 

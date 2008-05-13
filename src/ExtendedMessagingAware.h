@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "BtConstants.h"
+#include "A2STR.h"
 #include <string>
 
 namespace aria2 {
@@ -76,7 +77,7 @@ public:
 	return p.first;
       }
     }
-    return "";
+    return A2STR::NIL;
   }
 
   void removeExtension(const std::string& name)

@@ -32,57 +32,10 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#include "ByteArrayDiskWriter.h"
-#include "Util.h"
 #include "A2STR.h"
 
 namespace aria2 {
 
-ByteArrayDiskWriter::ByteArrayDiskWriter() {}
-
-ByteArrayDiskWriter::~ByteArrayDiskWriter() {}
-
-void ByteArrayDiskWriter::clear()
-{
-  buf.str(A2STR::NIL);
-}
-
-void ByteArrayDiskWriter::initAndOpenFile(const std::string& filename,
-					  uint64_t totalLength)
-{
-  clear();
-}
-
-void ByteArrayDiskWriter::openFile(const std::string& filename,
-				   uint64_t totalLength) {}
-
-void ByteArrayDiskWriter::closeFile() {}
-
-void ByteArrayDiskWriter::openExistingFile(const std::string& filename,
-					   uint64_t totalLength)
-{
-  openFile(filename);
-}
-
-void ByteArrayDiskWriter::writeData(const unsigned char* data, size_t dataLength, off_t position)
-{
-  if(size() < (uint64_t)position) {
-    buf.seekp(size(), std::ios::beg);
-    for(uint64_t i = size(); i < (uint64_t)position; ++i) {
-      buf.put('\0');
-    }
-  } else {
-    buf.seekp(position, std::ios::beg);
-  }
-  buf.write(reinterpret_cast<const char*>(data), dataLength);
-}
-
-ssize_t ByteArrayDiskWriter::readData(unsigned char* data, size_t len, off_t position)
-{
-  buf.seekg(position, std::ios::beg);
-  buf.read(reinterpret_cast<char*>(data), len);
-  buf.clear();
-  return buf.gcount();
-}
+const std::string A2STR::NIL("");
 
 } // namespace aria2

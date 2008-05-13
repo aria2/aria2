@@ -36,6 +36,7 @@
 #define _D_SINGLE_FILE_DOWNLOAD_CONTEXT_H_
 
 #include "DownloadContext.h"
+#include "A2STR.h"
 #include <string>
 #include <deque>
 
@@ -70,7 +71,7 @@ public:
   SingleFileDownloadContext(size_t pieceLength,
 			    uint64_t totalLength,
 			    const std::string& filename,
-			    const std::string& ufilename = "");
+			    const std::string& ufilename = A2STR::NIL);
 
   virtual ~SingleFileDownloadContext() {}
 
@@ -79,7 +80,7 @@ public:
     if(index < _pieceHashes.size()) {
       return _pieceHashes[index];
     } else {
-      return "";
+      return A2STR::NIL;
     }
   }
   

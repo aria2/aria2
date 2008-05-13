@@ -121,7 +121,7 @@ PStringDatumHandle ParameterizedStringParser::createLoop(const std::string& src,
     loopStr.erase(colonIndex);
   }
   std::pair<std::string, std::string> range = Util::split(loopStr, "-");
-  if(range.first == "" || range.second == "") {
+  if(range.first.empty() || range.second.empty()) {
     throw FatalException("Loop range missing.");
   }
   NumberDecoratorHandle nd;

@@ -186,7 +186,8 @@ SRCS =  Socket.h\
 	StringFormat.cc StringFormat.h\
 	HttpSkipResponseCommand.cc HttpSkipResponseCommand.h\
 	InitiateConnectionCommand.cc InitiateConnectionCommand.h\
-	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h
+	FtpFinishDownloadCommand.cc FtpFinishDownloadCommand.h\
+	A2STR.cc A2STR.h
 
 if ENABLE_ASYNC_DNS
 SRCS += AsyncNameResolver.cc AsyncNameResolver.h

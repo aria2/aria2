@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "File.h"
 #include "Util.h"
+#include "A2STR.h"
 #include <cstring>
 #include <stdlib.h>
 #include <deque>
@@ -142,8 +143,8 @@ std::string File::getDirname() const
 {
   std::string::size_type lastSlashIndex = name.find_last_of("/");
   if(lastSlashIndex == std::string::npos) {
-    if(name == "") {
-      return "";
+    if(name.empty()) {
+      return A2STR::NIL;
     } else {
       return ".";
     }

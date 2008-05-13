@@ -47,7 +47,7 @@ std::deque<std::string> UriListParser::parseNext(std::istream& in)
   std::deque<std::string> uris;
   std::string line;
   while(getline(in, line)) {
-    if(Util::trim(line) != "") {
+    if(!Util::trim(line).empty()) {
       Util::slice(uris, line, '\t', true);
       return uris;
     }

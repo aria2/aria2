@@ -35,6 +35,7 @@
 #include "FeatureConfig.h"
 #include "array_fun.h"
 #include "Util.h"
+#include "Request.h"
 #include <numeric>
 
 namespace aria2 {
@@ -78,9 +79,9 @@ const std::string FeatureConfig::FEATURE_ASYNC_DNS("Async DNS");
 #endif // ENABLE_ASYNC_DNS
 
 FeatureConfig::FeatureConfig() {
-  _defaultPorts.insert(PortMap::value_type("http", 80));
-  _defaultPorts.insert(PortMap::value_type("https", 443));
-  _defaultPorts.insert(PortMap::value_type("ftp", 21));
+  _defaultPorts.insert(PortMap::value_type(Request::PROTO_HTTP, 80));
+  _defaultPorts.insert(PortMap::value_type(Request::PROTO_HTTPS, 443));
+  _defaultPorts.insert(PortMap::value_type(Request::PROTO_FTP, 21));
 
   FeatureMap::value_type featureArray[] = {
     FeatureMap::value_type(FEATURE_HTTPS, HTTPS_ENABLED),

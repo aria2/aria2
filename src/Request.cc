@@ -39,6 +39,7 @@
 #include "CookieBox.h"
 #include "RecoverableException.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #include <utility>
 
 namespace aria2 {
@@ -46,6 +47,12 @@ namespace aria2 {
 const std::string Request::METHOD_GET = "GET";
 
 const std::string Request::METHOD_HEAD = "HEAD";
+
+const std::string Request::PROTO_HTTP("http");
+
+const std::string Request::PROTO_HTTPS("https");
+
+const std::string Request::PROTO_FTP("ftp");
 
 Request::Request():
   port(0), tryCount(0),
@@ -69,7 +76,7 @@ bool Request::resetUrl() {
 }
 
 bool Request::redirectUrl(const std::string& url) {
-  previousUrl = "";
+  previousUrl = A2STR::NIL;
   _supportsPersistentConnection = true;
   return parseUrl(url);
 }
@@ -84,13 +91,13 @@ bool Request::parseUrl(const std::string& url) {
   }
   currentUrl = tempUrl;
   std::string query;
-  host = "";
+  host = A2STR::NIL;
   port = 0;
-  dir = "";
-  file = "";
-  _query = "";
-  _username = "";
-  _password = "";
+  dir = A2STR::NIL;
+  file = A2STR::NIL;
+  _query = A2STR::NIL;
+  _username = A2STR::NIL;
+  _password = A2STR::NIL;
   // find query part
   std::string queryTemp;
   std::string::size_type startQueryIndex = tempUrl.find("?");
@@ -126,7 +133,7 @@ bool Request::parseUrl(const std::string& url) {
   std::pair<std::string, std::string> hostAndPort;
   Util::split(hostAndPort, hostPart, ':');
   host = hostAndPort.first;
-  if(hostAndPort.second != "") {
+  if(hostAndPort.second != A2STR::NIL) {
     try {
       port = Util::parseInt(hostAndPort.second);
     } catch(RecoverableException& e) {
@@ -168,7 +175,7 @@ bool Request::isHexNumber(const char c) const
 std::string Request::urlencode(const std::string& src) const
 {
   if(src.empty()) {
-    return "";
+    return A2STR::NIL;
   }
   size_t lastIndex = src.size()-1;
   std::string result = src+"  ";

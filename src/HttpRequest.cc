@@ -134,7 +134,7 @@ std::string HttpRequest::getHostText(const std::string& host, uint16_t port) con
 std::string HttpRequest::createRequest() const
 {
   std::string requestLine = "GET ";
-  if(getProtocol() == "ftp" || proxyEnabled) {
+  if(getProtocol() == Request::PROTO_FTP || proxyEnabled) {
     requestLine += getCurrentURI();
   } else {
     if(getDir() == "/") {
@@ -193,7 +193,7 @@ std::string HttpRequest::createRequest() const
   Cookies cookies = request->cookieBox->criteriaFind(getHost(),
 						     getDir(),
 						     time(0),
-						     getProtocol() == "https" ?
+						     getProtocol() == Request::PROTO_HTTPS ?
 						     true : false);
   for(Cookies::const_iterator itr = cookies.begin(); itr != cookies.end(); itr++) {
     cookiesValue += (*itr).toString()+";";

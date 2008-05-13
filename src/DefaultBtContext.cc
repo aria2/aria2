@@ -50,6 +50,7 @@
 #include "message.h"
 #include "PeerMessageUtil.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #include <cstring>
 #include <ostream>
 #include <functional>
@@ -87,14 +88,14 @@ std::string DefaultBtContext::getInfoHashAsString() const {
 
 void DefaultBtContext::clear() {
   memset(infoHash, 0, INFO_HASH_LENGTH);
-  infoHashString = "";
+  infoHashString = A2STR::NIL;
   pieceHashes.clear();
   fileEntries.clear();
   totalLength = 0;
   pieceLength = 0;
   fileMode = BtContext::SINGLE;
   numPieces = 0;
-  name = "";
+  name = A2STR::NIL;
   announceTiers.clear();
   _private = false;
 }
@@ -359,7 +360,7 @@ std::string DefaultBtContext::getPieceHash(size_t index) const {
   if(index < numPieces) {
     return pieceHashes[index];
   } else {
-    return "";
+    return A2STR::NIL;
   }
 }
 

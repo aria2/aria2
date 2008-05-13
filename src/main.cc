@@ -65,6 +65,7 @@
 #include "ConsoleStatCalc.h"
 #include "NullStatCalc.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "Metalink2RequestGroup.h"
@@ -112,13 +113,13 @@ std::deque<std::string> unfoldURI(const std::deque<std::string>& args)
 }
 
 RequestGroupHandle createRequestGroup(const Option* op, const std::deque<std::string>& uris,
-				      const std::string& ufilename = "")
+				      const std::string& ufilename = A2STR::NIL)
 {
   RequestGroupHandle rg(new RequestGroup(op, uris));
   SingleFileDownloadContextHandle dctx
     (new SingleFileDownloadContext(op->getAsInt(PREF_SEGMENT_SIZE),
 				  0,
-				  "",
+				  A2STR::NIL,
 				  ufilename));
   dctx->setDir(op->get(PREF_DIR));
   rg->setDownloadContext(dctx);

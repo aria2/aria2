@@ -51,9 +51,9 @@ SingleFileDownloadContext::SingleFileDownloadContext(size_t pieceLength,
 
 void SingleFileDownloadContext::updateFileEntry()
 {
-  if(_ufilename != "") {
+  if(!_ufilename.empty()) {
     _fileEntry->setPath(_ufilename);
-  } else if(_filename != "") {
+  } else if(!_filename.empty()) {
     _fileEntry->setPath(_filename);
   } else {
     _fileEntry->setPath("index.html");

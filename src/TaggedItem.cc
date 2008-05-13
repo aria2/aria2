@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "TaggedItem.h"
 #include "a2functional.h"
+#include "A2STR.h"
 #include <algorithm>
 
 namespace aria2 {
@@ -48,7 +49,7 @@ std::string TaggedItem::toTagString() const
     }
     return s;
   } else {
-    return "";
+    return A2STR::NIL;
   }
 }
 

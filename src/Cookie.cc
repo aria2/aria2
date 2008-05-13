@@ -34,6 +34,7 @@
 /* copyright --> */
 #include "Cookie.h"
 #include "Util.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -74,7 +75,7 @@ std::string Cookie::toString() const
 
 void Cookie::clear()
 {
-  name = value = path = domain = "";
+  name = value = path = domain = A2STR::NIL;
   expires = 0;
   secure = false;
 }

@@ -37,6 +37,7 @@
 
 #include "common.h"
 #include "SharedHandle.h"
+#include "A2STR.h"
 #include <string>
 #include <deque>
 #include <iosfwd>
@@ -116,7 +117,7 @@ public:
   DefaultAuthenticator(const std::string& login,
 		       const std::string& password,
 		       const std::string& account)
-    :Authenticator("", login, password, account) {}
+    :Authenticator(A2STR::NIL, login, password, account) {}
 
   virtual ~DefaultAuthenticator() {}
 

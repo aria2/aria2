@@ -35,6 +35,7 @@
 #include "HttpHeader.h"
 #include "Range.h"
 #include "Util.h"
+#include "A2STR.h"
 #include <istream>
 
 namespace aria2 {
@@ -51,7 +52,7 @@ bool HttpHeader::defined(const std::string& name) const {
 std::string HttpHeader::getFirst(const std::string& name) const {
   std::multimap<std::string, std::string>::const_iterator itr = table.find(Util::toLower(name));
   if(itr == table.end()) {
-    return "";
+    return A2STR::NIL;
   } else {
     return (*itr).second;
   }
@@ -73,7 +74,7 @@ unsigned int HttpHeader::getFirstAsUInt(const std::string& name) const {
 
 uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
   std::string value = getFirst(name);
-  if(value == "") {
+  if(value.empty()) {
     return 0;
   } else {
     return Util::parseULLInt(value);
@@ -83,9 +84,9 @@ uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
 RangeHandle HttpHeader::getRange() const
 {
   std::string rangeStr = getFirst("Content-Range");
-  if(rangeStr == "") {
+  if(rangeStr.empty()) {
     std::string contentLengthStr = getFirst("Content-Length");
-    if(contentLengthStr == "") {
+    if(contentLengthStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
       uint64_t contentLength = Util::parseULLInt(contentLengthStr);

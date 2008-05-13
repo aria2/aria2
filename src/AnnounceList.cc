@@ -35,9 +35,16 @@
 #include "AnnounceList.h"
 #include "List.h"
 #include "Data.h"
+#include "A2STR.h"
 #include <algorithm>
 
 namespace aria2 {
+
+const std::string AnnounceList::STARTED("started");
+
+const std::string AnnounceList::STOPPED("stopped");
+
+const std::string AnnounceList::COMPLETED("completed");
 
 AnnounceList::AnnounceList(const MetaEntry* announceListEntry):
   currentTrackerInitialized(false) {
@@ -96,7 +103,7 @@ std::string AnnounceList::getAnnounce() const {
   if(currentTrackerInitialized) {
     return *currentTracker;
   } else {
-    return "";
+    return A2STR::NIL;
   }
 }
 
@@ -146,16 +153,16 @@ std::string AnnounceList::getEventString() const {
     switch((*currentTier)->event) {
     case AnnounceTier::STARTED:
     case AnnounceTier::STARTED_AFTER_COMPLETION:
-      return "started";
+      return STARTED;
     case AnnounceTier::STOPPED:
-      return "stopped";
+      return STOPPED;
     case AnnounceTier::COMPLETED:
-      return "completed";
+      return COMPLETED;
     default:
-      return "";
+      return A2STR::NIL;
     }
   } else {
-    return "";
+    return A2STR::NIL;
   }
 }
 

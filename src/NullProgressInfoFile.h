@@ -36,6 +36,7 @@
 #define _D_NULL_PROGRESS_INFO_FILE_H_
 
 #include "BtProgressInfoFile.h"
+#include "A2STR.h"
 
 namespace aria2 {
 
@@ -45,7 +46,7 @@ public:
 
   virtual std::string getFilename()
   {
-    return "";
+    return A2STR::NIL;
   }
 
   virtual bool exists() { return false; }
