@@ -92,7 +92,8 @@ void BtChokeMessage::onSendComplete() {
 }
 
 std::string BtChokeMessage::toString() const {
-  return "choke";
+  static const std::string CHOKE("choke");
+  return CHOKE;
 }
 
 } // namespace aria2

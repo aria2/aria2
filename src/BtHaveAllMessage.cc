@@ -87,7 +87,8 @@ size_t BtHaveAllMessage::getMessageLength() {
 }
 
 std::string BtHaveAllMessage::toString() const {
-  return "have all";
+  static const std::string HAVE_ALL("have all");
+  return HAVE_ALL;
 }
 
 } // namespace aria2

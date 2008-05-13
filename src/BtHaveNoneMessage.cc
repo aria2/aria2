@@ -83,7 +83,8 @@ size_t BtHaveNoneMessage::getMessageLength() {
 }
 
 std::string BtHaveNoneMessage::toString() const {
-  return "have none";
+  static const std::string HAVE_NONE("have none");
+  return HAVE_NONE;
 }
 
 } // namespace aria2

@@ -87,7 +87,8 @@ void BtUnchokeMessage::onSendComplete() {
 }
 
 std::string BtUnchokeMessage::toString() const {
-  return "unchoke";
+  static const std::string UNCHOKE("unchoke");
+  return UNCHOKE;
 }
 
 } // namespace aria2

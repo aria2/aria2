@@ -1,5 +1,15 @@
 2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made string literal to static const std::string
+	* src/BtChokeMessage.cc (toString)
+	* src/BtHaveAllMessage.cc (toString)
+	* src/BtHaveNoneMessage.cc (toString)
+	* src/BtInterestedMessage.cc (toString)
+	* src/BtNotInterestedMessage.cc (toString)
+	* src/BtUnchokeMessage.cc (toString)
+
+2008-05-13  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Replaced "" with static const variable A2STR::NIL.
 	Replaced string comparison against "" with std::string::empty().
 	Added PROTO_* to Request class and use them as a protocol string

@@ -93,7 +93,8 @@ void BtInterestedMessage::onSendComplete() {
 }
 
 std::string BtInterestedMessage::toString() const {
-  return "interested";
+  static const std::string INTERESTED("interested");
+  return INTERESTED;
 }
 
 } // namespace aria2

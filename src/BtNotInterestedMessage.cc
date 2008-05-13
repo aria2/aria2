@@ -93,7 +93,8 @@ void BtNotInterestedMessage::onSendComplete() {
 }
 
 std::string BtNotInterestedMessage::toString() const {
-  return "not interested";
+  static const std::string NOT_INTERESTED("not interested");
+  return NOT_INTERESTED;
 }
 
 } // namespace aria2
