@@ -1,5 +1,10 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined fake filename `[tracker.announce]' as static const std::string.
+	* src/TrackerWatcherCommand.cc (createRequestGroup)
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined default filename `index.html' as static const std::string
 	* src/SingleFileDownloadContext.cc
 	* src/SingleFileDownloadContext.h

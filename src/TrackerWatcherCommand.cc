@@ -174,11 +174,12 @@ TrackerWatcherCommand::createRequestGroup(const std::string& uri)
   uris.push_back(uri);
   RequestGroupHandle rg(new RequestGroup(e->option, uris));
 
+  static const std::string TRACKER_ANNOUNCE_FILE("[tracker.announce]");
   SingleFileDownloadContextHandle dctx
     (new SingleFileDownloadContext(e->option->getAsInt(PREF_SEGMENT_SIZE),
 				   0,
 				   A2STR::NIL,
-				   "[tracker.announce]"));
+				   TRACKER_ANNOUNCE_FILE));
   dctx->setDir(A2STR::NIL);
   rg->setDownloadContext(dctx);
   SharedHandle<DiskWriterFactory> dwf(new ByteArrayDiskWriterFactory());
