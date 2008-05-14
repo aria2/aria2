@@ -46,8 +46,13 @@
 #include "DlRetryEx.h"
 #include "DlAbortEx.h"
 #include "Socket.h"
+#include "A2STR.h"
 
 namespace aria2 {
+
+const std::string FtpConnection::A("A");
+
+const std::string FtpConnection::I("I");
 
 FtpConnection::FtpConnection(int32_t cuid, const SocketHandle& socket,
 			     const RequestHandle& req, const Option* op):
@@ -74,9 +79,9 @@ void FtpConnection::sendType() const
 {
   std::string type;
   if(option->get(PREF_FTP_TYPE) == V_ASCII) {
-    type = "A";
+    type = FtpConnection::A;
   } else {
-    type = "I";
+    type = FtpConnection::I;
   }
   std::string request = "TYPE "+type+"\r\n";
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
@@ -99,7 +104,7 @@ void FtpConnection::sendSize() const
 
 void FtpConnection::sendPasv() const
 {
-  std::string request = "PASV\r\n";
+  static const std::string request("PASV\r\n");
   logger->info(MSG_SENDING_REQUEST, cuid, request.c_str());
   socket->writeData(request);
 }
@@ -170,7 +175,7 @@ bool FtpConnection::isEndOfResponse(unsigned int status, const std::string& resp
       return false;
     }
   }
-  if(Util::endsWith(response, "\r\n")) {
+  if(Util::endsWith(response, A2STR::CRLF)) {
     return true;
   } else {
     return false;

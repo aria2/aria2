@@ -1,5 +1,13 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined "\r\n", "A", "I" as static const std::string
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/FtpConnection.cc
+	* src/FtpConnection.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added COLON_C(".") and used it in Request::parseUrl()
 	* src/A2STR.cc
 	* src/A2STR.h

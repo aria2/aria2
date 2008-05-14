@@ -61,6 +61,11 @@ private:
   unsigned int getStatus(const std::string& response) const;
   bool isEndOfResponse(unsigned int status, const std::string& response) const;
   bool bulkReceiveResponse(std::pair<unsigned int, std::string>& response);
+
+  static const std::string A;
+
+  static const std::string I;
+
 public:
   FtpConnection(int32_t cuid, const SharedHandle<SocketCore>& socket,
 		const SharedHandle<Request>& req, const Option* op);
