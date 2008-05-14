@@ -1,5 +1,12 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use A2STR::SLASH_C, A2STR::DOT_C instead of "/", "." respectively.
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/File.cc
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined static const std::string IP("ip"), PORT("port") and use them
 	instead of string literals.
 	* src/DefaultPeerListProcessor.cc

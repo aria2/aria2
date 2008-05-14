@@ -46,4 +46,6 @@ const std::string A2STR::LF_C("\n");
 
 const std::string A2STR::SLASH_C("/");
 
+const std::string A2STR::DOT_C(".");
+
 } // namespace aria2

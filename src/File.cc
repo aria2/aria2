@@ -104,11 +104,11 @@ bool File::mkdirs() {
   }
 
   std::string accDir;
-  if(Util::startsWith(name, "/")) {
-    accDir = "/";
+  if(Util::startsWith(name, A2STR::SLASH_C)) {
+    accDir = A2STR::SLASH_C;
   }
   for(std::deque<std::string>::const_iterator itr = dirs.begin(); itr != dirs.end();
-      itr++, accDir += "/") {
+      itr++, accDir += A2STR::SLASH_C) {
     accDir += *itr;
     if(File(accDir).isDir()) {
       continue;
@@ -131,7 +131,7 @@ mode_t File::mode()
 
 std::string File::getBasename() const
 {
-  std::string::size_type lastSlashIndex = name.find_last_of("/");
+  std::string::size_type lastSlashIndex = name.find_last_of(A2STR::SLASH_C);
   if(lastSlashIndex == std::string::npos) {
     return name;
   } else {
@@ -141,15 +141,15 @@ std::string File::getBasename() const
 
 std::string File::getDirname() const
 {
-  std::string::size_type lastSlashIndex = name.find_last_of("/");
+  std::string::size_type lastSlashIndex = name.find_last_of(A2STR::SLASH_C);
   if(lastSlashIndex == std::string::npos) {
     if(name.empty()) {
       return A2STR::NIL;
     } else {
-      return ".";
+      return A2STR::DOT_C;
     }
   } else if(lastSlashIndex == 0) {
-    return "/";
+    return A2STR::SLASH_C;
   } else {
     return name.substr(0, lastSlashIndex);
   }
