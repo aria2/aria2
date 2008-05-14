@@ -37,6 +37,7 @@
 #include "Util.h"
 #include "a2io.h"
 #include <cstring>
+#include <cstdlib>
 
 namespace aria2 {
 
@@ -52,7 +53,11 @@ SingleFileAllocationIterator::SingleFileAllocationIterator(BinaryStream* stream,
 
 SingleFileAllocationIterator::~SingleFileAllocationIterator()
 {
+#ifdef HAVE_POSIX_MEMALIGN
+  free(_buffer);
+#else
   delete [] _buffer;
+#endif // HAVE_POSIX_MEMALIGN
 }
 
 void SingleFileAllocationIterator::init()

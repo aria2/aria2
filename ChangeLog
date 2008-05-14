@@ -1,5 +1,11 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use free() to deallocate memory for _buffer if HAVE_POSIX_MEMALIGN is
+	defined.
+	* src/SingleFileAllocationIterator.cc (~SingleFileAllocationIterator)
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use erase+lower_bound+insert instead of sort.
 	* src/DefaultPieceStorage.cc (addPieceStats) 
 
