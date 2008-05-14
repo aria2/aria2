@@ -1,5 +1,10 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use erase+lower_bound+insert instead of sort.
+	* src/DefaultPieceStorage.cc (addPieceStats) 
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use A2STR::SHARP_C and A2STR::EQUAL_C.
 	* src/A2STR.cc
 	* src/A2STR.h

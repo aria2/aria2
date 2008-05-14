@@ -701,19 +701,24 @@ void DefaultPieceStorage::updatePieceStats(const unsigned char* newBitfield,
 
 void DefaultPieceStorage::addPieceStats(size_t index)
 {
-  std::deque<SharedHandle<PieceStat> >::iterator cur =
+  SharedHandle<PieceStat> pieceStat(_pieceStats[index]);
+  {
+    std::deque<SharedHandle<PieceStat> >::iterator cur =
+      std::lower_bound(_sortedPieceStats.begin(), _sortedPieceStats.end(),
+		       pieceStat, PieceRarer());
+    _sortedPieceStats.erase(cur);
+  }
+  pieceStat->addCount();
+
+  std::deque<SharedHandle<PieceStat> >::iterator to =
     std::lower_bound(_sortedPieceStats.begin(), _sortedPieceStats.end(),
-		     _pieceStats[index], PieceRarer());
+		     pieceStat, PieceRarer());
 
-  (*cur)->addCount();
+  _sortedPieceStats.insert(to, pieceStat);
 
-  std::deque<SharedHandle<PieceStat> >::iterator last =
-    std::upper_bound(cur+1, _sortedPieceStats.end(), *cur, PieceRarer());
-
-  std::sort(cur, last, PieceRarer());
-//   for(std::deque<SharedHandle<PieceStat> >::const_iterator i = _sortedPieceStats.begin(); i != _sortedPieceStats.end(); ++i) {
-//     logger->debug("index = %u, count = %u", (*i)->getIndex(), (*i)->getCount());
-//   }
+//    for(std::deque<SharedHandle<PieceStat> >::const_iterator i = _sortedPieceStats.begin(); i != _sortedPieceStats.end(); ++i) {
+//      logger->debug("index = %u, count = %u", (*i)->getIndex(), (*i)->getCount());
+//    }
 }
 
 PieceStat::PieceStat(size_t index):_order(0), _index(index), _count(0) {}
