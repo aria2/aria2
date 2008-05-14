@@ -48,6 +48,8 @@
 
 namespace aria2 {
 
+const std::string MetalinkParserController::SHA1("sha1");
+
 MetalinkParserController::MetalinkParserController():
   _metalinker(new Metalinker())
 {}
@@ -257,7 +259,8 @@ void MetalinkParserController::commitChecksumTransaction()
   if(_tChecksum.isNull()) {
     return;
   }
-  if(_tEntry->checksum.isNull() || _tEntry->checksum->getAlgo() != "sha1") {
+  if(_tEntry->checksum.isNull() ||
+     _tEntry->checksum->getAlgo() != MetalinkParserController::SHA1) {
     _tEntry->checksum = _tChecksum;
   }
   _tChecksum.reset();
@@ -356,7 +359,8 @@ void MetalinkParserController::commitChunkChecksumTransaction()
   if(_tChunkChecksum.isNull()) {
     return;
   }
-  if(_tEntry->chunkChecksum.isNull() || _tEntry->chunkChecksum->getAlgo() != "sha1") {
+  if(_tEntry->chunkChecksum.isNull() ||
+     _tEntry->chunkChecksum->getAlgo() != MetalinkParserController::SHA1) {
     std::sort(_tempChunkChecksums.begin(), _tempChunkChecksums.end(), Ascend1st<std::pair<size_t, std::string> >());
     std::deque<std::string> checksums;
     std::transform(_tempChunkChecksums.begin(), _tempChunkChecksums.end(),

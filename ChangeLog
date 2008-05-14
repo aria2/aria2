@@ -1,5 +1,11 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined "sha1" as static const std::string.
+	* src/MetalinkParserController.cc
+	* src/MetalinkParserController.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined message digest algorithm name as static const std::string
 	* src/DHTTokenTracker.cc
 	* src/DHTUtil.cc

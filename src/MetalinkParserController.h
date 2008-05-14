@@ -70,6 +70,7 @@ private:
   std::pair<size_t, std::string> _tempHashPair;
 #endif // ENABLE_MESSAGE_DIGEST
 
+  static const std::string SHA1;
 public:
   MetalinkParserController();
 
