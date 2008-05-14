@@ -91,7 +91,9 @@ bool AsyncNameResolverEntry::operator==(const AsyncNameResolverEntry& entry)
 DownloadEngine::DownloadEngine():logger(LogFactory::getInstance()),
 				 _haltRequested(false),
 				 _noWait(false)
-{}
+{
+  updateFdSet();
+}
 
 DownloadEngine::~DownloadEngine() {
   cleanQueue();
