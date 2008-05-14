@@ -1,5 +1,11 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined default ftp user and password as static const std::string
+	* src/AuthConfigFactory.cc
+	* src/AuthConfigFactory.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined strings used in netrc as static const std::string
 	* src/Netrc.cc
 	* src/Netrc.h

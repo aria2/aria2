@@ -73,6 +73,10 @@ public:
   SharedHandle<AuthConfig> createAuthConfigForHttpProxy(const SharedHandle<Request>& request) const;
 
   void setNetrc(const SharedHandle<Netrc>& netrc);
+
+  static const std::string ANONYMOUS;
+
+  static const std::string ARIA2USER_AT;
 };
 
 typedef SharedHandle<AuthConfigFactory> AuthConfigFactoryHandle;
