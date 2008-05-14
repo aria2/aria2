@@ -1,5 +1,11 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined default filename `index.html' as static const std::string
+	* src/SingleFileDownloadContext.cc
+	* src/SingleFileDownloadContext.h
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined "[MEMORY]" as static const std::string.
 	* src/MemoryBufferPreDownloadHandler.cc (execute)
 

@@ -167,6 +167,8 @@ public:
   {
     return _contentType;
   }
+
+  static const std::string DEFAULT_FILENAME;
 };
 
 typedef SharedHandle<SingleFileDownloadContext> SingleFileDownloadContextHandle;

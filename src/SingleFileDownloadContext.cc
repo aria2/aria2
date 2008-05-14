@@ -37,6 +37,8 @@
 
 namespace aria2 {
 
+const std::string SingleFileDownloadContext::DEFAULT_FILENAME("index.html");
+
 SingleFileDownloadContext::SingleFileDownloadContext(size_t pieceLength,
 						     uint64_t totalLength,
 						     const std::string& filename,
@@ -56,7 +58,7 @@ void SingleFileDownloadContext::updateFileEntry()
   } else if(!_filename.empty()) {
     _fileEntry->setPath(_filename);
   } else {
-    _fileEntry->setPath("index.html");
+    _fileEntry->setPath(DEFAULT_FILENAME);
   }
 }
 
