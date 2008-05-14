@@ -60,6 +60,12 @@ public:
   typedef int DigestAlgo;
 #endif // HAVE_LIBGCRYPT
   typedef std::map<std::string, MessageDigestContext::DigestAlgo> DigestAlgoMap;
+
+  static const std::string SHA1;
+
+  static const std::string SHA256;
+
+  static const std::string MD5;
 private:
 #ifdef HAVE_LIBSSL
   EVP_MD_CTX ctx;
@@ -71,7 +77,7 @@ private:
 
   static DigestAlgoMap digestAlgos;
 public:
-  MessageDigestContext():algo(getDigestAlgo("sha1"))
+  MessageDigestContext():algo(getDigestAlgo(MessageDigestContext::SHA1))
   {}
 
   ~MessageDigestContext()

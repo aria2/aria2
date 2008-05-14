@@ -304,7 +304,8 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   // retrieve infoHash
   BencodeVisitor v;
   infoDic->accept(&v);
-  MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH, "sha1",
+  MessageDigestHelper::digest(infoHash, INFO_HASH_LENGTH,
+			      MessageDigestContext::SHA1,
 			      v.getBencodedData().c_str(),
 			      v.getBencodedData().size());
   infoHashString = Util::toHex(infoHash, INFO_HASH_LENGTH);
@@ -426,7 +427,7 @@ void DefaultBtContext::computeFastSet
   }
   memcpy(tx+4, infoHash, 20);
   unsigned char x[20];
-  MessageDigestHelper::digest(x, sizeof(x), "sha1", tx, 24);
+  MessageDigestHelper::digest(x, sizeof(x), MessageDigestContext::SHA1, tx, 24);
   while(fastSet.size() < fastSetSize) {
     for(size_t i = 0; i < 5 && fastSet.size() < fastSetSize; i++) {
       size_t j = i*4;
@@ -439,7 +440,7 @@ void DefaultBtContext::computeFastSet
       }
     }
     unsigned char temp[20];
-    MessageDigestHelper::digest(temp, sizeof(temp), "sha1", x, sizeof(x));
+    MessageDigestHelper::digest(temp, sizeof(temp), MessageDigestContext::SHA1, x, sizeof(x));
     memcpy(x, temp, sizeof(x));
   }
 }

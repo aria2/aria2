@@ -155,14 +155,16 @@ void MSEHandshake::initCipher(const unsigned char* infoHash)
   memcpy(s+4+KEY_LENGTH, infoHash, INFO_HASH_LENGTH);
   
   unsigned char localCipherKey[20];
-  MessageDigestHelper::digest(localCipherKey, sizeof(localCipherKey), "sha1",
+  MessageDigestHelper::digest(localCipherKey, sizeof(localCipherKey),
+			      MessageDigestContext::SHA1,
 			      s, sizeof(s));
   _encryptor.reset(new ARC4Encryptor());
   _encryptor->init(localCipherKey, sizeof(localCipherKey));
 
   unsigned char peerCipherKey[20];
   memcpy(s, _initiator?"keyB":"keyA", 4);
-  MessageDigestHelper::digest(peerCipherKey, sizeof(peerCipherKey), "sha1",
+  MessageDigestHelper::digest(peerCipherKey, sizeof(peerCipherKey),
+			      MessageDigestContext::SHA1,
 			      s, sizeof(s));
   _decryptor.reset(new ARC4Decryptor());
   _decryptor->init(peerCipherKey, sizeof(peerCipherKey));
@@ -202,7 +204,8 @@ void MSEHandshake::createReq1Hash(unsigned char* md) const
   unsigned char buffer[100];
   memcpy(buffer, "req1", 4);
   memcpy(buffer+4, _secret, KEY_LENGTH);
-  MessageDigestHelper::digest(md, 20, "sha1", buffer, 4+KEY_LENGTH);
+  MessageDigestHelper::digest(md, 20, MessageDigestContext::SHA1,
+			      buffer, 4+KEY_LENGTH);
 }
 
 void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoHash) const
@@ -211,13 +214,15 @@ void MSEHandshake::createReq23Hash(unsigned char* md, const unsigned char* infoH
   memcpy(x, "req2", 4);
   memcpy(x+4, infoHash, INFO_HASH_LENGTH);
   unsigned char xh[20];
-  MessageDigestHelper::digest(xh, sizeof(xh), "sha1", x, sizeof(x));
+  MessageDigestHelper::digest(xh, sizeof(xh), MessageDigestContext::SHA1,
+			      x, sizeof(x));
 
   unsigned char y[4+96];
   memcpy(y, "req3", 4);
   memcpy(y+4, _secret, KEY_LENGTH);
   unsigned char yh[20];
-  MessageDigestHelper::digest(yh, sizeof(yh), "sha1", y, sizeof(y));
+  MessageDigestHelper::digest(yh, sizeof(yh), MessageDigestContext::SHA1,
+			      y, sizeof(y));
   
   for(size_t i = 0; i < 20; ++i) {
     md[i] = xh[i]^yh[i];

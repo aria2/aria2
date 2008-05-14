@@ -49,7 +49,7 @@ void MessageDigestHelper::staticSHA1DigestInit()
 {
   staticSHA1DigestFree();
   _sha1Ctx = new MessageDigestContext();
-  _sha1Ctx->trySetAlgo("sha1");
+  _sha1Ctx->trySetAlgo(MessageDigestContext::SHA1);
   _sha1Ctx->digestInit();
 }
 

@@ -37,6 +37,12 @@
 
 namespace aria2 {
 
+const std::string MessageDigestContext::SHA1("sha1");
+
+const std::string MessageDigestContext::SHA256("sha256");
+
+const std::string MessageDigestContext::MD5("md5");
+
 static MessageDigestContext::DigestAlgoMap::value_type digests[] = {
 #ifdef HAVE_LIBSSL
   MessageDigestContext::DigestAlgoMap::value_type("md5", EVP_md5()),

@@ -55,7 +55,7 @@ Peer::Peer(std::string ipaddr, uint16_t port):
   resetStatus();
   std::string idSeed = ipaddr+":"+Util::uitos(port);
 #ifdef ENABLE_MESSAGE_DIGEST
-  id = MessageDigestHelper::digestString("sha1", idSeed);
+  id = MessageDigestHelper::digestString(MessageDigestContext::SHA1, idSeed);
 #else
   id = idSeed;
 #endif // ENABLE_MESSAGE_DIGEST

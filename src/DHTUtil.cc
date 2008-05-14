@@ -50,7 +50,7 @@ void DHTUtil::generateRandomKey(unsigned char* key)
 {
   unsigned char bytes[40];
   generateRandomData(bytes, sizeof(bytes));
-  MessageDigestHelper::digest(key, 20, "sha1", bytes, sizeof(bytes));
+  MessageDigestHelper::digest(key, 20, MessageDigestContext::SHA1, bytes, sizeof(bytes));
 }
 
 void DHTUtil::generateRandomData(unsigned char* data, size_t length)
