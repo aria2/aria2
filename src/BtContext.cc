@@ -32,86 +32,34 @@
  * files in the program, then also delete it here.
  */
 /* copyright --> */
-#ifndef _D_BT_CONTEXT_H_
-#define _D_BT_CONTEXT_H_
-
-#include "DownloadContext.h"
-#include <utility>
-#include <deque>
+#include "BtContext.h"
 
 namespace aria2 {
 
-class AnnounceTier;
-class RequestGroup;
+const std::string BtContext::NAME("name");
 
-class BtContext:public DownloadContext {
-protected:
-  bool _private;
-public:
-  BtContext():_private(false) {}
-  
-  virtual ~BtContext() {}
+const std::string BtContext::FILES("files");
 
-  virtual const unsigned char* getInfoHash() const = 0;
+const std::string BtContext::LENGTH("length");
 
-  virtual size_t getInfoHashLength() const = 0;
+const std::string BtContext::PATH("path");
 
-  virtual std::string getInfoHashAsString() const = 0;
+const std::string BtContext::INFO("info");
 
-  virtual std::deque<SharedHandle<AnnounceTier> >
-  getAnnounceTiers() const = 0;
+const std::string BtContext::PIECES("pieces");
 
-  virtual void load(const std::string& torrentFile) = 0;
+const std::string BtContext::PIECE_LENGTH("piece length");
 
-  /**
-   * Returns the peer id of localhost, 20 byte length
-   */
-  virtual const unsigned char* getPeerId() = 0;
+const std::string BtContext::PRIVATE("private");
 
-  bool isPrivate() const
-  {
-    return _private;
-  }
+const std::string BtContext::PRIVATE_ON("1");
 
-  virtual void computeFastSet
-  (std::deque<size_t>& fastSet, const std::string& ipaddr, size_t fastSetSize) = 0;
-  
-  virtual RequestGroup* getOwnerRequestGroup() = 0;
+const std::string BtContext::URL_LIST("url-list");
 
-  virtual std::deque<std::pair<std::string, uint16_t> >& getNodes() = 0;
+const std::string BtContext::ANNOUNCE("announce");
 
-  static const std::string NAME;
+const std::string BtContext::ANNOUNCE_LIST("announce-list");
 
-  static const std::string FILES;
-
-  static const std::string LENGTH;
-
-  static const std::string PATH;
-
-  static const std::string INFO;
-
-  static const std::string PIECES;
-
-  static const std::string PIECE_LENGTH;
-
-  static const std::string PRIVATE;
-
-  // This is just a string "1". Used as a value of "private" flag.
-  static const std::string PRIVATE_ON;
-
-  static const std::string URL_LIST;
-
-  static const std::string ANNOUNCE;
-
-  static const std::string ANNOUNCE_LIST;
-
-  static const std::string NODES;
-
-};
-
-class BtContext;
-typedef SharedHandle<BtContext> BtContextHandle;
+const std::string BtContext::NODES("nodes");
 
 } // namespace aria2
-
-#endif // _D_BT_CONTEXT_H_

@@ -76,7 +76,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceTier.h\
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.h AnnounceList.cc\
-@ENABLE_BITTORRENT_TRUE@	BtContext.h\
+@ENABLE_BITTORRENT_TRUE@	BtContext.cc BtContext.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.cc DefaultBtContext.h\
 @ENABLE_BITTORRENT_TRUE@	PeerStorage.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.cc DefaultPeerStorage.h\
@@ -433,7 +433,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DefaultPeerListProcessor.h CompactPeerListProcessor.cc \
 	CompactPeerListProcessor.h DelegatingPeerListProcessor.cc \
 	DelegatingPeerListProcessor.h AnnounceTier.h AnnounceList.h \
-	AnnounceList.cc BtContext.h DefaultBtContext.cc \
+	AnnounceList.cc BtContext.cc BtContext.h DefaultBtContext.cc \
 	DefaultBtContext.h PeerStorage.h DefaultPeerStorage.cc \
 	DefaultPeerStorage.h BtAnnounce.cc BtAnnounce.h \
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h BtRuntime.h \
@@ -590,6 +590,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	CompactPeerListProcessor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DelegatingPeerListProcessor.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtContext.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtAnnounce.$(OBJEXT) \
@@ -1252,6 +1253,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCancelMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCheckIntegrityEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtChokeMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtContext.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtContextAwareCommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtDependency.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtExtendedMessage.Po@am__quote@

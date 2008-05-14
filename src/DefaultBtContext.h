@@ -177,6 +177,8 @@ private:
   void setRandomizer(const SharedHandle<Randomizer>& randomizer);
 
   friend std::ostream& operator<<(std::ostream& o, const DefaultBtContext& ctx);
+
+  static const std::string DEFAULT_PEER_ID_PREFIX;
 };
 
 typedef SharedHandle<DefaultBtContext> DefaultBtContextHandle;

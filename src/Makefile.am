@@ -232,7 +232,7 @@ SRCS += MetaEntry.h\
 	DelegatingPeerListProcessor.cc DelegatingPeerListProcessor.h\
 	AnnounceTier.h\
 	AnnounceList.h AnnounceList.cc\
-	BtContext.h\
+	BtContext.cc BtContext.h\
 	DefaultBtContext.cc DefaultBtContext.h\
 	PeerStorage.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
