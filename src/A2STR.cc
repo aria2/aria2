@@ -48,4 +48,6 @@ const std::string A2STR::SLASH_C("/");
 
 const std::string A2STR::DOT_C(".");
 
+const std::string A2STR::COLON_C(":");
+
 } // namespace aria2

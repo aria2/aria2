@@ -54,6 +54,8 @@ public:
   static const std::string SLASH_C;
 
   static const std::string DOT_C;
+
+  static const std::string COLON_C;
 };
 } // namespace aria2
 
