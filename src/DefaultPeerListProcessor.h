@@ -40,6 +40,10 @@
 namespace aria2 {
 
 class DefaultPeerListProcessor : public PeerListProcessor {
+private:
+  static const std::string IP;
+
+  static const std::string PORT;
 public:
   DefaultPeerListProcessor();
 

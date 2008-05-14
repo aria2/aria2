@@ -1,5 +1,12 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined static const std::string IP("ip"), PORT("port") and use them
+	instead of string literals.
+	* src/DefaultPeerListProcessor.cc
+	* src/DefaultPeerListProcessor.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made string literals for torrent file processing static const
 	std::string.
 	* src/BtContext.cc

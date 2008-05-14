@@ -40,6 +40,10 @@
 
 namespace aria2 {
 
+const std::string DefaultPeerListProcessor::IP("ip");
+
+const std::string DefaultPeerListProcessor::PORT("port");
+
 DefaultPeerListProcessor::DefaultPeerListProcessor() {}
 
 DefaultPeerListProcessor::~DefaultPeerListProcessor() {}
@@ -63,8 +67,8 @@ void DefaultPeerListProcessor::extractPeer
     if(!peerDic) {
       break;
     }
-    const Data* ip = dynamic_cast<const Data*>(peerDic->get("ip"));
-    const Data* port = dynamic_cast<const Data*>(peerDic->get("port"));
+    const Data* ip = dynamic_cast<const Data*>(peerDic->get(IP));
+    const Data* port = dynamic_cast<const Data*>(peerDic->get(PORT));
     if(!ip || !port || !port->isNumber()) {
       continue;
     }
