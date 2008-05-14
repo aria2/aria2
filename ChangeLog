@@ -1,5 +1,12 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made string literal for tracker response static const std::string
+	* src/BtAnnounce.cc
+	* src/BtAnnounce.h
+	* src/DefaultBtAnnounce.cc
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use DHTMessage::T instead of "t".
 	* src/DHTMessageTracker.cc (messageArrived)
 

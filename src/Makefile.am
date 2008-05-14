@@ -236,7 +236,7 @@ SRCS += MetaEntry.h\
 	DefaultBtContext.cc DefaultBtContext.h\
 	PeerStorage.h\
 	DefaultPeerStorage.cc DefaultPeerStorage.h\
-	BtAnnounce.h\
+	BtAnnounce.cc BtAnnounce.h\
 	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
 	BtRuntime.h\
 	BtContextAwareCommand.cc BtContextAwareCommand.h\

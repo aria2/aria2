@@ -80,7 +80,7 @@ bin_PROGRAMS = aria2c$(EXEEXT)
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.cc DefaultBtContext.h\
 @ENABLE_BITTORRENT_TRUE@	PeerStorage.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.cc DefaultPeerStorage.h\
-@ENABLE_BITTORRENT_TRUE@	BtAnnounce.h\
+@ENABLE_BITTORRENT_TRUE@	BtAnnounce.cc BtAnnounce.h\
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.cc DefaultBtAnnounce.h\
 @ENABLE_BITTORRENT_TRUE@	BtRuntime.h\
 @ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.cc BtContextAwareCommand.h\
@@ -435,15 +435,16 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 	DelegatingPeerListProcessor.h AnnounceTier.h AnnounceList.h \
 	AnnounceList.cc BtContext.h DefaultBtContext.cc \
 	DefaultBtContext.h PeerStorage.h DefaultPeerStorage.cc \
-	DefaultPeerStorage.h BtAnnounce.h DefaultBtAnnounce.cc \
-	DefaultBtAnnounce.h BtRuntime.h BtContextAwareCommand.cc \
-	BtContextAwareCommand.h BtMessage.h AbstractBtMessage.cc \
-	AbstractBtMessage.h SimpleBtMessage.cc SimpleBtMessage.h \
-	BtAllowedFastMessage.cc BtAllowedFastMessage.h \
-	BtBitfieldMessage.cc BtBitfieldMessage.h BtCancelMessage.cc \
-	BtCancelMessage.h BtChokeMessage.cc BtChokeMessage.h \
-	BtHaveAllMessage.cc BtHaveAllMessage.h BtHaveMessage.cc \
-	BtHaveMessage.h BtHaveNoneMessage.cc BtHaveNoneMessage.h \
+	DefaultPeerStorage.h BtAnnounce.cc BtAnnounce.h \
+	DefaultBtAnnounce.cc DefaultBtAnnounce.h BtRuntime.h \
+	BtContextAwareCommand.cc BtContextAwareCommand.h BtMessage.h \
+	AbstractBtMessage.cc AbstractBtMessage.h SimpleBtMessage.cc \
+	SimpleBtMessage.h BtAllowedFastMessage.cc \
+	BtAllowedFastMessage.h BtBitfieldMessage.cc \
+	BtBitfieldMessage.h BtCancelMessage.cc BtCancelMessage.h \
+	BtChokeMessage.cc BtChokeMessage.h BtHaveAllMessage.cc \
+	BtHaveAllMessage.h BtHaveMessage.cc BtHaveMessage.h \
+	BtHaveNoneMessage.cc BtHaveNoneMessage.h \
 	BtInterestedMessage.cc BtInterestedMessage.h \
 	BtKeepAliveMessage.cc BtKeepAliveMessage.h \
 	BtNotInterestedMessage.cc BtNotInterestedMessage.h \
@@ -591,6 +592,7 @@ am__libaria2c_a_SOURCES_DIST = Socket.h SocketCore.cc SocketCore.h \
 @ENABLE_BITTORRENT_TRUE@	AnnounceList.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtContext.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultPeerStorage.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	BtAnnounce.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	DefaultBtAnnounce.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtContextAwareCommand.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	AbstractBtMessage.$(OBJEXT) \
@@ -1245,6 +1247,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldMan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitfieldManFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAllowedFastMessage.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtAnnounce.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtBitfieldMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCancelMessage.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BtCheckIntegrityEntry.Po@am__quote@

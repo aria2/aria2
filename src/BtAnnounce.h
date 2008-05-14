@@ -103,6 +103,22 @@ public:
    * Shuffles the URLs in each announce tier.
    */
   virtual void shuffleAnnounce() = 0;
+
+  static const std::string FAILURE_REASON;
+
+  static const std::string WARNING_MESSAGE;
+
+  static const std::string TRACKER_ID;
+
+  static const std::string INTERVAL;
+
+  static const std::string MIN_INTERVAL;
+
+  static const std::string COMPLETE;
+
+  static const std::string INCOMPLETE;
+
+  static const std::string PEERS;
 };
 
 typedef SharedHandle<BtAnnounce> BtAnnounceHandle;

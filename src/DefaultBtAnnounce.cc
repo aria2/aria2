@@ -140,26 +140,26 @@ std::string DefaultBtAnnounce::getAnnounceUrl() {
   if(left < 0) {
     left = 0;
   }
-  std::string url = announceList.getAnnounce()+"?"+
-    "info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
-					btContext->getInfoHashLength())+"&"+
-    "peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+"&"+
-    "uploaded="+Util::uitos(stat.getSessionUploadLength())+"&"+
-    "downloaded="+Util::uitos(stat.getSessionDownloadLength())+"&"+
-    "left="+Util::uitos(left)+"&"+
-    "compact=1"+"&"+
-    "key="+key+"&"+
-    "numwant="+Util::uitos(numWant)+"&"+
-    "no_peer_id=1";
+  std::string url = announceList.getAnnounce()+
+    "?info_hash="+Util::torrentUrlencode(btContext->getInfoHash(),
+					btContext->getInfoHashLength())+
+    "&peer_id="+Util::torrentUrlencode(btContext->getPeerId(), 20)+
+    "&uploaded="+Util::uitos(stat.getSessionUploadLength())+
+    "&downloaded="+Util::uitos(stat.getSessionDownloadLength())+
+    "&left="+Util::uitos(left)+
+    "&compact=1"+
+    "&key="+key+
+    "&numwant="+Util::uitos(numWant)+
+    "&no_peer_id=1";
   if(btRuntime->getListenPort() > 0) {
-    url += std::string("&")+"port="+Util::uitos(btRuntime->getListenPort());
+    url += "&port="+Util::uitos(btRuntime->getListenPort());
   }
   std::string event = announceList.getEventString();
   if(!event.empty()) {
-    url += std::string("&")+"event="+event;
+    url += "&event="+event;
   }
   if(!trackerId.empty()) {
-    url += std::string("&")+"trackerid="+Util::torrentUrlencode(trackerId);
+    url += "&trackerid="+Util::torrentUrlencode(trackerId);
   }
   if(option->getAsBool(PREF_BT_REQUIRE_CRYPTO)) {
     url += "&requirecrypto=1";
@@ -202,23 +202,27 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   if(!response) {
     throw DlAbortEx(MSG_NULL_TRACKER_RESPONSE);
   }
-  const Data* failureReasonData = dynamic_cast<const Data*>(response->get("failure reason"));
+  const Data* failureReasonData =
+    dynamic_cast<const Data*>(response->get(BtAnnounce::FAILURE_REASON));
   if(failureReasonData) {
     throw DlAbortEx
       (StringFormat(EX_TRACKER_FAILURE,
 		    failureReasonData->toString().c_str()).str());
   }
-  const Data* warningMessageData = dynamic_cast<const Data*>(response->get("warning message"));
+  const Data* warningMessageData =
+    dynamic_cast<const Data*>(response->get(BtAnnounce::WARNING_MESSAGE));
   if(warningMessageData) {
     logger->warn(MSG_TRACKER_WARNING_MESSAGE,
 		 warningMessageData->toString().c_str());
   }
-  const Data* trackerIdData = dynamic_cast<const Data*>(response->get("tracker id"));
+  const Data* trackerIdData =
+    dynamic_cast<const Data*>(response->get(BtAnnounce::TRACKER_ID));
   if(trackerIdData) {
     trackerId = trackerIdData->toString();
     logger->debug("Tracker ID:%s", trackerId.c_str());
   }
-  const Data* intervalData = dynamic_cast<const Data*>(response->get("interval"));
+  const Data* intervalData =
+    dynamic_cast<const Data*>(response->get(BtAnnounce::INTERVAL));
   if(intervalData) {
     time_t t = intervalData->toInt();
     if(t > 0) {
@@ -226,7 +230,8 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
       logger->debug("Interval:%d", interval);
     }
   }
-  const Data* minIntervalData = dynamic_cast<const Data*>(response->get("min interval"));
+  const Data* minIntervalData =
+    dynamic_cast<const Data*>(response->get(BtAnnounce::MIN_INTERVAL));
   if(minIntervalData) {
     time_t t = minIntervalData->toInt();
     if(t > 0) {
@@ -237,17 +242,19 @@ DefaultBtAnnounce::processAnnounceResponse(const unsigned char* trackerResponse,
   if(minInterval > interval) {
     minInterval = interval;
   }
-  const Data* completeData = dynamic_cast<const Data*>(response->get("complete"));
+  const Data* completeData =
+    dynamic_cast<const Data*>(response->get(BtAnnounce::COMPLETE));
   if(completeData) {
     complete = completeData->toInt();
     logger->debug("Complete:%d", complete);
   }
-  const Data* incompleteData = dynamic_cast<const Data*>(response->get("incomplete"));
+  const Data* incompleteData =
+    dynamic_cast<const Data*>(response->get(BtAnnounce::INCOMPLETE));
   if(incompleteData) {
     incomplete = incompleteData->toInt();
     logger->debug("Incomplete:%d", incomplete);
   }
-  const MetaEntry* peersEntry = response->get("peers");
+  const MetaEntry* peersEntry = response->get(BtAnnounce::PEERS);
   if(peersEntry &&
      !btRuntime->isHalt() &&
      btRuntime->lessThanMinPeer()) {
