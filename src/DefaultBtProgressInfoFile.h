@@ -54,6 +54,7 @@ private:
 
   bool isTorrentDownload();
 
+  static const std::string V0000;
 public:
   DefaultBtProgressInfoFile(const SharedHandle<DownloadContext>& btContext,
 			    const SharedHandle<PieceStorage>& pieceStorage,

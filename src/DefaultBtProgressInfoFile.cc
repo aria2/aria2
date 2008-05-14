@@ -58,6 +58,8 @@
 
 namespace aria2 {
 
+const std::string DefaultBtProgressInfoFile::V0000("0000");
+
 static std::string createFilename(const SharedHandle<DownloadContext>& dctx)
 {
   return dctx->getActualBasePath()+".aria2";
@@ -179,7 +181,7 @@ void DefaultBtProgressInfoFile::load()
   try {
     unsigned char version[2];
     in.read((char*)version, sizeof(version));
-    if(std::string("0000") != Util::toHex(version, sizeof(version))) {
+    if(DefaultBtProgressInfoFile::V0000 != Util::toHex(version, sizeof(version))) {
       throw DlAbortEx
 	(StringFormat("Unsupported ctrl file version: %s",
 		      Util::toHex(version, sizeof(version)).c_str()).str());

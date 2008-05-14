@@ -1,5 +1,11 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined control file's version number as static const std::string.
+	* src/DefaultBtProgressInfoFile.cc
+	* src/DefaultBtProgressInfoFile.h
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use Request::METHOD_GET
 	* src/RequestGroup.cc (createNextCommandWithAdj)
 
