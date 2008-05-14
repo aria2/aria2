@@ -248,6 +248,10 @@ RequestGroupMan::DownloadStat RequestGroupMan::getDownloadStat() const
 
 void RequestGroupMan::showDownloadResults(std::ostream& o) const
 {
+  static const std::string MARK_OK("OK");
+  static const std::string MARK_ERR("ERR");
+  static const std::string MARK_INPR("INPR");
+
   // Download Results:
   // idx|stat|path/length
   // ===+====+=======================================================================
@@ -257,14 +261,14 @@ void RequestGroupMan::showDownloadResults(std::ostream& o) const
     << "===+====+======================================================================" << "\n";
   for(std::deque<SharedHandle<DownloadResult> >::const_iterator itr = _downloadResults.begin();
       itr != _downloadResults.end(); ++itr) {
-    std::string status = (*itr)->result == DownloadResult::FINISHED ? "OK" : "ERR";
-    o << formatDownloadResult(status, *itr) << "\n";
+    o << formatDownloadResult((*itr)->result == DownloadResult::FINISHED ?
+			      MARK_OK : MARK_ERR, *itr) << "\n";
   }
   for(RequestGroups::const_iterator itr = _requestGroups.begin();
       itr != _requestGroups.end(); ++itr) {
     DownloadResultHandle result = (*itr)->createDownloadResult();
-    std::string status = result->result == DownloadResult::FINISHED ? "OK" : "INPR";
-    o << formatDownloadResult(status, result) << "\n";
+    o << formatDownloadResult(result->result == DownloadResult::FINISHED ?
+			      MARK_OK : MARK_INPR, result) << "\n";
   }
   o << "\n"
     << _("Status Legend:") << "\n"
