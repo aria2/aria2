@@ -1,5 +1,10 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use Request::METHOD_GET
+	* src/RequestGroup.cc (createNextCommandWithAdj)
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined "OK", "ERR", "INPR" as static const std::string
 	* src/RequestGroupMan.cc (showDownloadResults)
 

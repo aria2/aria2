@@ -476,7 +476,7 @@ void RequestGroup::createNextCommandWithAdj(std::deque<Command*>& commands,
       return;
     }
   }
-  createNextCommand(commands, e, numCommand, "GET");
+  createNextCommand(commands, e, numCommand, Request::METHOD_GET);
 }
 
 void RequestGroup::createNextCommand(std::deque<Command*>& commands,
