@@ -71,7 +71,7 @@ std::pair<SharedHandle<DHTMessage>, SharedHandle<DHTMessageCallback> >
 DHTMessageTracker::messageArrived(const Dictionary* d,
 				  const std::string& ipaddr, uint16_t port)
 {
-  const Data* tid = dynamic_cast<const Data*>(d->get("t"));
+  const Data* tid = dynamic_cast<const Data*>(d->get(DHTMessage::T));
   if(!tid) {
     throw DlAbortEx(StringFormat("Malformed DHT message. From:%s:%u",
 				 ipaddr.c_str(), port).str());
