@@ -47,6 +47,7 @@
 #include "Util.h"
 #include "StringFormat.h"
 #include "DlAbortEx.h"
+#include "HttpHeader.h"
 
 namespace aria2 {
 
@@ -130,10 +131,10 @@ bool HttpSkipResponseCommand::processResponse()
     return prepareForRetry(0);
   } else if(_httpResponse->hasRetryAfter()) {
     return prepareForRetry(_httpResponse->getRetryAfter());
-  } else if(_httpResponse->getResponseStatus() >= "400") {
-    if(_httpResponse->getResponseStatus() == "401") {
+  } else if(_httpResponse->getResponseStatus() >= HttpHeader::S400) {
+    if(_httpResponse->getResponseStatus() == HttpHeader::S401) {
       throw DlAbortEx(EX_AUTH_FAILED);
-    }else if(_httpResponse->getResponseStatus() == "404") {
+    }else if(_httpResponse->getResponseStatus() == HttpHeader::S404) {
       throw DlAbortEx(MSG_RESOURCE_NOT_FOUND);
     } else {
       throw DlAbortEx(StringFormat(EX_BAD_STATUS, Util::parseUInt(_httpResponse->getResponseStatus())).str());

@@ -1,5 +1,15 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined HTTP status as static const std::string
+	* src/AbstractProxyResponseCommand.cc
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+	* src/HttpResponse.cc
+	* src/HttpResponseCommand.cc
+	* src/HttpSkipResponseCommand.cc
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined "\r\n", "A", "I" as static const std::string
 	* src/A2STR.cc
 	* src/A2STR.h

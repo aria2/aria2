@@ -64,6 +64,16 @@ const std::string HttpHeader::CONTENT_RANGE("Content-Range");
 
 const std::string HttpHeader::HTTP_1_1("HTTP/1.1");
 
+const std::string HttpHeader::S200("200");
+
+const std::string HttpHeader::S300("300");
+
+const std::string HttpHeader::S400("400");
+
+const std::string HttpHeader::S401("401");
+  
+const std::string HttpHeader::S404("404");
+
 void HttpHeader::put(const std::string& name, const std::string& value) {
   std::multimap<std::string, std::string>::value_type vt(Util::toLower(name), value);
   table.insert(vt);

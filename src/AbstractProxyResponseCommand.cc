@@ -44,6 +44,7 @@
 #include "Socket.h"
 #include "DlRetryEx.h"
 #include "message.h"
+#include "HttpHeader.h"
 
 namespace aria2 {
 
@@ -65,7 +66,7 @@ bool AbstractProxyResponseCommand::executeInternal() {
     e->commands.push_back(this);
     return false;
   }
-  if(httpResponse->getResponseStatus() != "200") {
+  if(httpResponse->getResponseStatus() != HttpHeader::S200) {
     throw DlRetryEx(EX_PROXY_CONNECTION_FAILED);
   }
   e->commands.push_back(getNextCommand());

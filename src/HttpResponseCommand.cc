@@ -61,6 +61,7 @@
 #include "prefs.h"
 #include "StringFormat.h"
 #include "HttpSkipResponseCommand.h"
+#include "HttpHeader.h"
 
 namespace aria2 {
 
@@ -88,7 +89,7 @@ bool HttpResponseCommand::executeInternal()
   httpResponse->validateResponse();
   httpResponse->retrieveCookie();
 
-  if(httpResponse->getResponseStatus() >= "300") {
+  if(httpResponse->getResponseStatus() >= HttpHeader::S300) {
     return skipResponseBody(httpResponse);
   }
 

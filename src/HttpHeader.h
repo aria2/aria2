@@ -102,6 +102,16 @@ public:
   static const std::string CONTENT_RANGE;
 
   static const std::string HTTP_1_1;
+
+  static const std::string S200;
+
+  static const std::string S300;
+
+  static const std::string S400;
+
+  static const std::string S401;
+  
+  static const std::string S404;
 };
 
 typedef SharedHandle<HttpHeader> HttpHeaderHandle;

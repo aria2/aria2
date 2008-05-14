@@ -60,10 +60,10 @@ HttpResponse::~HttpResponse() {}
 void HttpResponse::validateResponse() const
 {
   const std::string& status = getResponseStatus();
-  if(status >= "400") {
+  if(status >= HttpHeader::S400) {
     return;
   }
-  if(status >= "300") {
+  if(status >= HttpHeader::S300) {
     if(!httpHeader->defined(HttpHeader::LOCATION)) {
       throw DlAbortEx
 	(StringFormat(EX_LOCATION_HEADER_REQUIRED,
@@ -115,7 +115,8 @@ void HttpResponse::retrieveCookie()
 bool HttpResponse::isRedirect() const
 {
   const std::string& status = getResponseStatus();
-  return "300" <= status && status < "400" && httpHeader->defined(HttpHeader::LOCATION);
+  return HttpHeader::S300 <= status && status < HttpHeader::S400 &&
+    httpHeader->defined(HttpHeader::LOCATION);
 }
 
 void HttpResponse::processRedirect()
