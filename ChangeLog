@@ -1,5 +1,11 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined strings used in netrc as static const std::string
+	* src/Netrc.cc
+	* src/Netrc.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined HTTP status as static const std::string
 	* src/AbstractProxyResponseCommand.cc
 	* src/HttpHeader.cc

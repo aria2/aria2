@@ -154,6 +154,18 @@ public:
   {
     authenticators.push_back(authenticator);
   }
+
+  static const std::string MACHINE;
+
+  static const std::string DEFAULT;
+
+  static const std::string LOGIN;
+
+  static const std::string PASSWORD;
+
+  static const std::string ACCOUNT;
+
+  static const std::string MACDEF;
 };
 
 typedef SharedHandle<Netrc> NetrcHandle;

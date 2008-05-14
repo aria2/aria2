@@ -35,10 +35,23 @@
 #include "Netrc.h"
 #include "RecoverableException.h"
 #include "StringFormat.h"
+#include "A2STR.h"
 #include <fstream>
 #include <algorithm>
 
 namespace aria2 {
+
+const std::string Netrc::MACHINE("machine");
+
+const std::string Netrc::DEFAULT("default");
+
+const std::string Netrc::LOGIN("login");
+
+const std::string Netrc::PASSWORD("password");
+
+const std::string Netrc::ACCOUNT("account");
+
+const std::string Netrc::MACDEF("macdef");
 
 std::string Netrc::getRequiredNextToken(std::ifstream& f) const
 {
@@ -56,7 +69,7 @@ void Netrc::skipMacdef(std::ifstream& f) const
   std::string line;
   getline(f, line);
   while(getline(f, line)) {
-    if(line == "\r" || line.empty()) {
+    if(line == A2STR::CR_C || line.empty()) {
       break;
     }
   }
@@ -75,11 +88,11 @@ void Netrc::parse(const std::string& path)
   AuthenticatorHandle authenticator;
   std::string token;
   while(f >> token) {
-    if(token == "machine") {
+    if(token == Netrc::MACHINE) {
       storeAuthenticator(authenticator);
       authenticator.reset(new Authenticator());
       authenticator->setMachine(getRequiredNextToken(f));
-    } else if(token == "default") {
+    } else if(token == Netrc::DEFAULT) {
       storeAuthenticator(authenticator);
       authenticator.reset(new DefaultAuthenticator());
     } else {
@@ -87,13 +100,13 @@ void Netrc::parse(const std::string& path)
 	throw RecoverableException
 	  ("Netrc:parse error. %s encounterd where 'machine' or 'default' expected.");
       }
-      if(token == "login") {
+      if(token == Netrc::LOGIN) {
 	authenticator->setLogin(getRequiredNextToken(f));
-      } else if(token == "password") {
+      } else if(token == Netrc::PASSWORD) {
 	authenticator->setPassword(getRequiredNextToken(f));
-      } else if(token == "account") {
+      } else if(token == Netrc::ACCOUNT) {
 	authenticator->setAccount(getRequiredNextToken(f));
-      } else if(token == "macdef") {
+      } else if(token == Netrc::MACDEF) {
 	getRequiredNextToken(f);
 	skipMacdef(f);
       }
