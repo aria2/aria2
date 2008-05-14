@@ -39,13 +39,18 @@
 
 namespace aria2 {
 
+const std::string PiecesMetalinkParserState::HASH("hash");
+
+const std::string PiecesMetalinkParserState::PIECE("piece");
+
 void PiecesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 					     const std::string& name,
 					     const std::map<std::string, std::string>& attrs)
 {
-  if(name == "hash") {
+  if(name == PiecesMetalinkParserState::HASH) {
     stm->setPieceHashState();
-    std::map<std::string, std::string>::const_iterator itr = attrs.find("piece");
+    std::map<std::string, std::string>::const_iterator itr =
+      attrs.find(PiecesMetalinkParserState::PIECE);
     if(itr == attrs.end()) {
       stm->cancelChunkChecksumTransaction();
     } else {

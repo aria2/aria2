@@ -39,27 +39,42 @@
 
 namespace aria2 {
 
+const std::string FileMetalinkParserState::SIZE("size");
+
+const std::string FileMetalinkParserState::METALINK_VERSION("version");
+
+const std::string FileMetalinkParserState::LANGUAGE("language");
+
+const std::string FileMetalinkParserState::OS("os");
+
+const std::string FileMetalinkParserState::VERIFICATION("verification");
+
+const std::string FileMetalinkParserState::RESOURCES("resources");
+
+const std::string FileMetalinkParserState::MAXCONNECTIONS("maxconnections");
+
 void FileMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 					   const std::string& name,
 					   const std::map<std::string, std::string>& attrs)
 {
-  if(name == "size") {
+  if(name == FileMetalinkParserState::SIZE) {
     stm->setSizeState();
-  } else if(name == "version") {
+  } else if(name == FileMetalinkParserState::METALINK_VERSION) {
     stm->setVersionState();
-  } else if(name == "language") {
+  } else if(name == FileMetalinkParserState::LANGUAGE) {
     stm->setLanguageState();
-  } else if(name == "os") {
+  } else if(name == FileMetalinkParserState::OS) {
     stm->setOSState();
 #ifdef ENABLE_MESSAGE_DIGEST
-  } else if(name == "verification") {
+  } else if(name == FileMetalinkParserState::VERIFICATION) {
     stm->setVerificationState();
 #endif // ENABLE_MESSAGE_DIGEST
-  } else if(name == "resources") {
+  } else if(name == FileMetalinkParserState::RESOURCES) {
     stm->setResourcesState();
     int maxConnections;
     {
-      std::map<std::string, std::string>::const_iterator itr = attrs.find("maxconnections");
+      std::map<std::string, std::string>::const_iterator itr =
+	attrs.find(FileMetalinkParserState::MAXCONNECTIONS);
       if(itr == attrs.end()) {
 	maxConnections = -1;
       } else {

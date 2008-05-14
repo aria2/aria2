@@ -39,15 +39,26 @@
 
 namespace aria2 {
 
+const std::string ResourcesMetalinkParserState::URL("url");
+
+const std::string ResourcesMetalinkParserState::TYPE("type");
+
+const std::string ResourcesMetalinkParserState::LOCATION("location");
+
+const std::string ResourcesMetalinkParserState::PREFERENCE("preference");
+
+const std::string ResourcesMetalinkParserState::MAXCONNECTIONS("maxconnections");
+
 void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 						const std::string& name,
 						const std::map<std::string, std::string>& attrs)
 {
-  if(name == "url") {
+  if(name == ResourcesMetalinkParserState::URL) {
     stm->setURLState();
     std::string type;
     {
-      std::map<std::string, std::string>::const_iterator itr = attrs.find("type");
+      std::map<std::string, std::string>::const_iterator itr =
+	attrs.find(ResourcesMetalinkParserState::TYPE);
       if(itr == attrs.end()) {
 	return;
       } else {
@@ -56,14 +67,16 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
     }
     std::string location;
     {
-      std::map<std::string, std::string>::const_iterator itr = attrs.find("location");
+      std::map<std::string, std::string>::const_iterator itr =
+	attrs.find(ResourcesMetalinkParserState::LOCATION);
       if(itr != attrs.end()) {
 	location = Util::toUpper((*itr).second);
       }
     }
     int preference;
     {
-      std::map<std::string, std::string>::const_iterator itr = attrs.find("preference");
+      std::map<std::string, std::string>::const_iterator itr =
+	attrs.find(ResourcesMetalinkParserState::PREFERENCE);
       if(itr == attrs.end()) {
 	preference = 0;
       } else {
@@ -76,7 +89,8 @@ void ResourcesMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
     }
     int maxConnections;
     {
-      std::map<std::string, std::string>::const_iterator itr = attrs.find("maxconnections");
+      std::map<std::string, std::string>::const_iterator itr =
+	attrs.find(ResourcesMetalinkParserState::MAXCONNECTIONS);
       if(itr == attrs.end()) {
 	maxConnections = -1;
       } else {

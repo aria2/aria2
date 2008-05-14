@@ -39,13 +39,22 @@
 
 namespace aria2 {
 
+const std::string VerificationMetalinkParserState::HASH("hash");
+
+const std::string VerificationMetalinkParserState::TYPE("type");
+
+const std::string VerificationMetalinkParserState::PIECES("pieces");
+
+const std::string VerificationMetalinkParserState::LENGTH("length");
+
 void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 						   const std::string& name,
 						   const std::map<std::string, std::string>& attrs)
 {
-  if(name == "hash") {
+  if(name == VerificationMetalinkParserState::HASH) {
     stm->setHashState();
-    std::map<std::string, std::string>::const_iterator itr = attrs.find("type");
+    std::map<std::string, std::string>::const_iterator itr =
+      attrs.find(VerificationMetalinkParserState::TYPE);
     if(itr == attrs.end()) {
       return;
     } else {
@@ -53,12 +62,13 @@ void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* s
       stm->newChecksumTransaction();
       stm->setTypeOfChecksum(type);
     }
-  } else if(name == "pieces") {
+  } else if(name == VerificationMetalinkParserState::PIECES) {
     stm->setPiecesState();
     try {
       size_t length;
       {
-	std::map<std::string, std::string>::const_iterator itr = attrs.find("length");
+	std::map<std::string, std::string>::const_iterator itr =
+	  attrs.find(VerificationMetalinkParserState::LENGTH);
 	if(itr == attrs.end()) {
 	  return;
 	} else {
@@ -67,7 +77,8 @@ void VerificationMetalinkParserState::beginElement(MetalinkParserStateMachine* s
       }
       std::string type;
       {
-	std::map<std::string, std::string>::const_iterator itr = attrs.find("type");
+	std::map<std::string, std::string>::const_iterator itr =
+	  attrs.find(VerificationMetalinkParserState::TYPE);
 	if(itr == attrs.end()) {
 	  return;
 	} else {

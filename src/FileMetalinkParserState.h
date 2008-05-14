@@ -41,6 +41,21 @@ namespace aria2 {
 
 class FileMetalinkParserState:public MetalinkParserState
 {
+private:
+  static const std::string SIZE;
+
+  // VERSION is not allowed here because it is defined in macro.
+  static const std::string METALINK_VERSION;
+
+  static const std::string LANGUAGE;
+
+  static const std::string OS;
+
+  static const std::string VERIFICATION;
+
+  static const std::string RESOURCES;
+
+  static const std::string MAXCONNECTIONS;
 public:
   void beginElement(MetalinkParserStateMachine* stm,
 		    const std::string& name, const std::map<std::string, std::string>& attrs);

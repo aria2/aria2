@@ -41,6 +41,10 @@ namespace aria2 {
 
 class FilesMetalinkParserState:public MetalinkParserState
 {
+private:
+  static const std::string FILE;
+  
+  static const std::string NAME;
 public:
   void beginElement(MetalinkParserStateMachine* stm,
 		    const std::string& name, const std::map<std::string, std::string>& attrs);

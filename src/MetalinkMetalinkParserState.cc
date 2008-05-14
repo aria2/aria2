@@ -37,11 +37,13 @@
 
 namespace aria2 {
 
+const std::string MetalinkMetalinkParserState::FILES("files");
+
 void MetalinkMetalinkParserState::beginElement(MetalinkParserStateMachine* stm,
 					       const std::string& name,
 					       const std::map<std::string, std::string>& attrs)
 {
-  if(name == "files") {
+  if(name == MetalinkMetalinkParserState::FILES) {
     stm->setFilesState();
   } else {
     stm->setSkipTagState(this);

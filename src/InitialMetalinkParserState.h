@@ -41,6 +41,8 @@ namespace aria2 {
 
 class InitialMetalinkParserState:public MetalinkParserState
 {
+private:
+  static const std::string METALINK;
 public:
   void beginElement(MetalinkParserStateMachine* stm,
 		    const std::string& name, const std::map<std::string, std::string>& attrs);

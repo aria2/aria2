@@ -1,5 +1,23 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Made string literals used in SAX parser static const std::string.
+	* src/FileMetalinkParserState.cc
+	* src/FileMetalinkParserState.h
+	* src/FilesMetalinkParserState.cc
+	* src/FilesMetalinkParserState.h
+	* src/InitialMetalinkParserState.cc
+	* src/InitialMetalinkParserState.h
+	* src/MetalinkMetalinkParserState.cc
+	* src/MetalinkMetalinkParserState.h
+	* src/PiecesMetalinkParserState.cc
+	* src/PiecesMetalinkParserState.h
+	* src/ResourcesMetalinkParserState.cc
+	* src/ResourcesMetalinkParserState.h
+	* src/VerificationMetalinkParserState.cc
+	* src/VerificationMetalinkParserState.h
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use A2STR::SLASH_C, A2STR::DOT_C instead of "/", "." respectively.
 	* src/A2STR.cc
 	* src/A2STR.h
