@@ -1,5 +1,11 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Defined default client used in extended handshake as static const
+	std::string
+	* src/DefaultBtInteractive.cc (addHandshakeExtendedMessageToQueue)
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined AUTH_HEADER, PROXY_AUTH_HEADER as static const std::string
 	* src/HttpConnection.cc (eraseConfidentialInfo)
 
