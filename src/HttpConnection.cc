@@ -48,7 +48,6 @@
 #include "Logger.h"
 #include "Socket.h"
 #include "Option.h"
-#include <sstream>
 
 namespace aria2 {
 
@@ -77,18 +76,20 @@ HttpConnection::HttpConnection(int32_t cuid,
 std::string HttpConnection::eraseConfidentialInfo(const std::string& request)
 {
   std::istringstream istr(request);
-  std::ostringstream ostr;
+  std::string result;
   std::string line;
   while(getline(istr, line)) {
-    if(Util::startsWith(line, "Authorization: Basic")) {
-      ostr << "Authorization: Basic ********\n";
-    } else if(Util::startsWith(line, "Proxy-Authorization: Basic")) {
-      ostr << "Proxy-Authorization: Basic ********\n";
+    static const std::string AUTH_HEADER("Authorization: Basic");
+    static const std::string PROXY_AUTH_HEADER("Proxy-Authorization: Basic");
+    if(Util::startsWith(line, AUTH_HEADER)) {
+      result += "Authorization: Basic ********\n";
+    } else if(Util::startsWith(line, PROXY_AUTH_HEADER)) {
+      result += "Proxy-Authorization: Basic ********\n";
     } else {
-      ostr << line << "\n";
+      result += line+"\n";
     }
   }
-  return ostr.str();
+  return result;
 }
 
 void HttpConnection::sendRequest(const HttpRequestHandle& httpRequest)
