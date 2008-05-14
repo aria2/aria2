@@ -58,6 +58,8 @@ public:
   static const std::string DOT_C;
 
   static const std::string COLON_C;
+
+  static const std::string EQUAL_C;
 };
 } // namespace aria2
 

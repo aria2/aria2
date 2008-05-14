@@ -1,5 +1,12 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use A2STR::SHARP_C and A2STR::EQUAL_C.
+	* src/A2STR.cc
+	* src/A2STR.h
+	* src/OptionParser.cc (parse)
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined fake filename `[tracker.announce]' as static const std::string.
 	* src/TrackerWatcherCommand.cc (createRequestGroup)
 
