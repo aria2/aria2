@@ -1,5 +1,10 @@
 2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Changed the type of padName from `const std::string&' to `const char*'.
+	* src/MSEHandshake.cc (verifyPadLength)
+
+2008-05-14  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined "sha1" as static const std::string.
 	* src/MetalinkParserController.cc
 	* src/MetalinkParserController.h

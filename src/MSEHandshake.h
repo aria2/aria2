@@ -116,7 +116,7 @@ private:
   }
 
   uint16_t verifyPadLength(const unsigned char* padlenbuf,
-			   const std::string& padName);
+			   const char* padName);
 
   void verifyVC(const unsigned char* vcbuf);
 

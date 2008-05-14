@@ -519,15 +519,15 @@ void MSEHandshake::sendReceiverStep2()
   encryptAndSendData(buffer, 8+4+2+padDLength);
 }
 
-uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const std::string& padName)
+uint16_t MSEHandshake::verifyPadLength(const unsigned char* padlenbuf, const char* padName)
 {
-  _logger->debug("CUID#%d - Veryfying Pad length for %s", _cuid, padName.c_str());
+  _logger->debug("CUID#%d - Veryfying Pad length for %s", _cuid, padName);
 
   uint16_t padLength = decodeLength16(padlenbuf);
-  _logger->debug("CUID#%d - len(%s)=%u", _cuid, padName.c_str(), padLength);
+  _logger->debug("CUID#%d - len(%s)=%u", _cuid, padName, padLength);
   if(padLength > 512) {
     throw DlAbortEx
-      (StringFormat("Too large %s length: %u", padName.c_str(), padLength).str());
+      (StringFormat("Too large %s length: %u", padName, padLength).str());
   }
   return padLength;
 }
