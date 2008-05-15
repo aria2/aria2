@@ -62,6 +62,8 @@ public:
     WARN   = 1 << 3,
     ERROR  = 1 << 4,
   };
+
+  virtual void setLogLevel(LEVEL level) = 0;
 };
 
 } // namespace aria2

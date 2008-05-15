@@ -60,6 +60,8 @@ private:
   std::ofstream file;
   int stdoutField;
 
+  Logger::LEVEL _logLevel;
+
   static const std::string DEBUG;
 
   static const std::string NOTICE;
@@ -85,6 +87,8 @@ public:
   virtual void warn(const char* msg, const Exception& ex, ...);
   virtual void error(const char* msg, ...);
   virtual void error(const char* msg, const Exception& ex, ...);
+
+  virtual void setLogLevel(Logger::LEVEL level);
 
   void setStdout(Logger::LEVEL level, bool enabled);
 };

@@ -339,6 +339,7 @@ int main(int argc, char* argv[])
   } else {
     LogFactory::setLogFile(DEV_NULL);
   }
+  LogFactory::setLogLevel(op->get(PREF_LOG_LEVEL));
   if(op->getAsBool(PREF_QUIET)) {
     LogFactory::setConsoleOutput(false);
   }

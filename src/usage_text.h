@@ -341,3 +341,5 @@ _(" --ftp-reuse-connection[=true|false] Reuse connection in FTP.")
 #define TEXT_SUMMARY_INTERVAL \
 _(" --summary-interval=SEC       Set interval to output download progress summary.\n"\
   "                              Setting 0 suppresses the output.")
+#define TEXT_LOG_LEVEL \
+_(" --log-level=LEVEL            Set log level to output.")

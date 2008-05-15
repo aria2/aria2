@@ -35,17 +35,21 @@
 #include "LogFactory.h"
 #include "SimpleLogger.h"
 #include "a2io.h"
+#include "prefs.h"
+#include <cstring>
 
 namespace aria2 {
 
 std::string LogFactory::filename = DEV_NULL;
 Logger* LogFactory::logger = 0;
 bool LogFactory::_consoleOutput = true;
+Logger::LEVEL LogFactory::_logLevel = Logger::DEBUG;
 
 Logger* LogFactory::getInstance() {
   if(logger == NULL) {
     SimpleLogger* slogger = new SimpleLogger();
     slogger->openFile(filename);
+    slogger->setLogLevel(_logLevel);
     if(_consoleOutput) {
       slogger->setStdout(Logger::NOTICE, true);
       slogger->setStdout(Logger::WARN, true);
@@ -54,6 +58,26 @@ Logger* LogFactory::getInstance() {
     logger = slogger;
   }
   return logger;
+}
+
+void LogFactory::setLogLevel(Logger::LEVEL level)
+{
+  _logLevel = level;
+}
+
+void LogFactory::setLogLevel(const std::string& level)
+{
+  if(strcmp(level.c_str(), V_DEBUG) == 0) {
+    _logLevel = Logger::DEBUG;
+  } else if(strcmp(level.c_str(), V_INFO) == 0) {
+    _logLevel = Logger::INFO;
+  } else if(strcmp(level.c_str(), V_NOTICE) == 0) {
+    _logLevel = Logger::NOTICE;
+  } else if(strcmp(level.c_str(), V_WARN) == 0) {
+    _logLevel = Logger::WARN;
+  } else if(strcmp(level.c_str(), V_ERROR) == 0) {
+    _logLevel = Logger::ERROR;
+  }
 }
 
 void LogFactory::release() {

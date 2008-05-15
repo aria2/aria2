@@ -132,6 +132,13 @@
 #define PREF_ASYNC_DNS "async-dns"
 // value: 1*digit
 #define PREF_SUMMARY_INTERVAL "summary-interval"
+// value: debug, info, notice, warn, error
+#define PREF_LOG_LEVEL "log-level"
+#  define V_DEBUG "debug"
+#  define V_INFO "info"
+#  define V_NOTICE "notice"
+#  define V_WARN "warn"
+#  define V_ERROR "error"
 
 /**
  * FTP related preferences

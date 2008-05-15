@@ -56,19 +56,23 @@ namespace aria2 {
 #endif
 
 #define WRITE_LOG(LEVEL, MSG) \
+if(LEVEL >= _logLevel){\
 va_list ap;\
 va_start(ap, MSG);\
-writeFile(Logger::LEVEL, MSG, ap);\
+writeFile(LEVEL, MSG, ap);\
 flush();\
-va_end(ap);
+va_end(ap);\
+}
 
 #define WRITE_LOG_EX(LEVEL, MSG, EX) \
+if(LEVEL >= _logLevel) {\
 va_list ap;\
 va_start(ap, EX);\
-writeFile(Logger::LEVEL, MSG, ap);\
-writeStackTrace(Logger::LEVEL, EX);\
+writeFile(LEVEL, MSG, ap);\
+writeStackTrace(LEVEL, EX);\
 flush();\
-va_end(ap);
+va_end(ap);\
+}
 
 const std::string SimpleLogger::DEBUG("DEBUG");
 
@@ -80,7 +84,7 @@ const std::string SimpleLogger::ERROR("ERROR");
 
 const std::string SimpleLogger::INFO("INFO");
 
-SimpleLogger::SimpleLogger():stdoutField(0) {}
+SimpleLogger::SimpleLogger():stdoutField(0), _logLevel(Logger::DEBUG) {}
 
 SimpleLogger::~SimpleLogger() {
   closeFile();
@@ -184,43 +188,48 @@ void SimpleLogger::flush()
 }
 
 void SimpleLogger::debug(const char* msg, ...) {
-  WRITE_LOG(DEBUG, msg);
+  WRITE_LOG(Logger::DEBUG, msg);
 }
 
 void SimpleLogger::debug(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(DEBUG, msg, e);
+  WRITE_LOG_EX(Logger::DEBUG, msg, e);
 }
 
 void SimpleLogger::info(const char* msg, ...) {
-  WRITE_LOG(INFO, msg);
+  WRITE_LOG(Logger::INFO, msg);
 }
 
 void SimpleLogger::info(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(INFO, msg, e);
+  WRITE_LOG_EX(Logger::INFO, msg, e);
 }
 
 void SimpleLogger::notice(const char* msg, ...) {
-  WRITE_LOG(NOTICE, msg);
+  WRITE_LOG(Logger::NOTICE, msg);
 }
 
 void SimpleLogger::notice(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(INFO, msg, e);
+  WRITE_LOG_EX(Logger::INFO, msg, e);
 }
 
 void SimpleLogger::warn(const char* msg, ...) {
-  WRITE_LOG(WARN, msg);
+  WRITE_LOG(Logger::WARN, msg);
 }
 
 void SimpleLogger::warn(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(WARN, msg, e);
+  WRITE_LOG_EX(Logger::WARN, msg, e);
 }
 
 void SimpleLogger::error(const char* msg, ...) {
-  WRITE_LOG(ERROR, msg);
+  WRITE_LOG(Logger::ERROR, msg);
 }
 
 void SimpleLogger::error(const char* msg, const Exception& e, ...) {
-  WRITE_LOG_EX(ERROR, msg, e);
+  WRITE_LOG_EX(Logger::ERROR, msg, e);
+}
+
+void SimpleLogger::setLogLevel(Logger::LEVEL level)
+{
+  _logLevel = level;
 }
 
 } // namespace aria2

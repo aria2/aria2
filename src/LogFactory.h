@@ -36,17 +36,17 @@
 #define _D_LOG_FACTORY_H_
 
 #include "common.h"
+#include "Logger.h"
 #include <string>
 
 namespace aria2 {
-
-class Logger;
 
 class LogFactory {
 private:
   static std::string filename;
   static Logger* logger;
   static bool _consoleOutput;
+  static Logger::LEVEL _logLevel;
 public:
   /**
    * Get logger instance. Returned logger is singleton.
@@ -68,6 +68,18 @@ public:
   static void setConsoleOutput(bool f) {
     _consoleOutput = f;
   }
+
+
+  /**
+   * Set log level to output.
+   */
+  static void setLogLevel(Logger::LEVEL level);
+
+  /**
+   * Set log level to output by string represention of log level.
+   * Possible values are: debug, info, notice, warn, error
+   */
+  static void setLogLevel(const std::string& level);
 
   /**
    * Releases used resources

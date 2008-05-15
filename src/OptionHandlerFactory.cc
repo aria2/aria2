@@ -133,6 +133,13 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
 #endif // ENABLE_ASYNC_DNS
   handlers.push_back(SH(new BooleanOptionHandler(PREF_FTP_REUSE_CONNECTION)));
   handlers.push_back(SH(new NumberOptionHandler(PREF_SUMMARY_INTERVAL, 0, INT32_MAX)));
+  {
+    const char* params[] = { V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR };
+    handlers.push_back(SH(new ParameterOptionHandler
+			  (PREF_LOG_LEVEL,
+			   std::deque<std::string>(&params[0],
+						   &params[arrayLength(params)]))));
+  }
   return handlers;
 }
 

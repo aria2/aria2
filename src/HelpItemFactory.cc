@@ -478,6 +478,15 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);
   }
   {
+    HelpItemHandle item(new HelpItem(PREF_LOG_LEVEL,
+				     TEXT_LOG_LEVEL,
+				     op->get(PREF_LOG_LEVEL)));
+    item->addTag(TAG_ADVANCED);
+    item->setAvailableValues
+      (StringFormat("%s,%s,%s,%s,%s", V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR).str());
+    tc->addItem(item);
+  }
+  {
     HelpItemHandle item(new HelpItem("help", TEXT_HELP, TAG_BASIC));
     item->setAvailableValues
       (StringFormat("%s,%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT,TAG_HELP).str());

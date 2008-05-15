@@ -1,3 +1,19 @@
+2008-05-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Added --log-level option to specify log level. Log messages under
+	the specified level are not output. Default value is `debug'.
+	* src/HelpItemFactory.cc
+	* src/LogFactory.cc
+	* src/LogFactory.h
+	* src/Logger.h
+	* src/OptionHandlerFactory.cc
+	* src/SimpleLogger.cc
+	* src/SimpleLogger.h
+	* src/main.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/usage_text.h
+
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Print download progress summary of all parallel downloads in specified
