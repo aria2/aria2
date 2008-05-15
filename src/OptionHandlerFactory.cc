@@ -132,6 +132,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new BooleanOptionHandler(PREF_ASYNC_DNS)));
 #endif // ENABLE_ASYNC_DNS
   handlers.push_back(SH(new BooleanOptionHandler(PREF_FTP_REUSE_CONNECTION)));
+  handlers.push_back(SH(new NumberOptionHandler(PREF_SUMMARY_INTERVAL, 0, INT32_MAX)));
   return handlers;
 }
 

@@ -1,5 +1,28 @@
 2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Print download progress summary of all parallel downloads in specified
+	interval, default 60 secs. While aria2 could download several files
+	in parallel (see -j option), it displayed just first download progress,
+	and the other downloads are hidden from the users. This new feature
+	prints all downloads currently in-progress to the console so that you
+	can check the status of all downloads. The interval can be adjusted
+	by --summary-interval option.
+	
+	The progress readout is now cut so that all fits in the one line of
+	console.
+	* src/ConsoleStatCalc.cc
+	* src/ConsoleStatCalc.h
+	* src/HelpItemFactory.cc
+	* src/OptionHandlerFactory.cc
+	* src/RequestGroupMan.cc
+	* src/RequestGroupMan.h
+	* src/main.cc
+	* src/option_processing.cc
+	* src/prefs.h
+	* src/usage_text.h
+
+2008-05-15  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Call updateFdSet() to initialize rfdset, wfdset fdmax.
 	* src/DownloadEngine.cc (DownloadEngine)
 

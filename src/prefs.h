@@ -130,6 +130,8 @@
 #define PREF_QUIET "quiet"
 // value: true | false
 #define PREF_ASYNC_DNS "async-dns"
+// value: 1*digit
+#define PREF_SUMMARY_INTERVAL "summary-interval"
 
 /**
  * FTP related preferences

@@ -471,6 +471,13 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
     tc->addItem(item);
   }
   {
+    HelpItemHandle item(new HelpItem(PREF_SUMMARY_INTERVAL,
+				     TEXT_SUMMARY_INTERVAL,
+				     op->get(PREF_SUMMARY_INTERVAL)));
+    item->addTag(TAG_ADVANCED);
+    tc->addItem(item);
+  }
+  {
     HelpItemHandle item(new HelpItem("help", TEXT_HELP, TAG_BASIC));
     item->setAvailableValues
       (StringFormat("%s,%s,%s,%s,%s,%s,%s,all", TAG_BASIC, TAG_ADVANCED, TAG_HTTP, TAG_FTP, TAG_METALINK, TAG_BITTORRENT,TAG_HELP).str());

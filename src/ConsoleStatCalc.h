@@ -44,7 +44,13 @@ class ConsoleStatCalc:public StatCalc
 {
 private:
   Time _cp;
+
+  time_t _summaryInterval;
+
+  time_t _summaryIntervalCount;
 public:
+  ConsoleStatCalc(time_t summaryInterval);
+
   virtual ~ConsoleStatCalc() {}
 
   virtual void

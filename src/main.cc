@@ -132,7 +132,7 @@ SharedHandle<StatCalc> getStatCalc(const Option* op)
   if(op->getAsBool(PREF_QUIET)) {
     statCalc.reset(new NullStatCalc());
   } else {
-    statCalc.reset(new ConsoleStatCalc());
+    statCalc.reset(new ConsoleStatCalc(op->getAsInt(PREF_SUMMARY_INTERVAL)));
   }
   return statCalc;
 }

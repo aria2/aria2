@@ -151,6 +151,7 @@ Option* createDefaultOption()
   op->put(PREF_ASYNC_DNS, V_FALSE);
 #endif // ENABLE_ASYNC_DNS
   op->put(PREF_FTP_REUSE_CONNECTION, V_TRUE);
+  op->put(PREF_SUMMARY_INTERVAL, "60");
   return op;
 }
 
@@ -226,6 +227,7 @@ Option* option_processing(int argc, char* const argv[])
       { PREF_ASYNC_DNS, optional_argument, &lopt, 216 },
 #endif // ENABLE_ASYNC_DNS
       { PREF_FTP_REUSE_CONNECTION, optional_argument, &lopt, 217 },
+      { PREF_SUMMARY_INTERVAL, required_argument, &lopt, 218 },
 #if defined ENABLE_BITTORRENT || ENABLE_METALINK
       { PREF_SHOW_FILES, no_argument, NULL, 'S' },
       { PREF_SELECT_FILE, required_argument, &lopt, 21 },
@@ -434,6 +436,9 @@ Option* option_processing(int argc, char* const argv[])
 #endif // ENABLE_ASYNC_DNS
       case 217:
 	cmdstream << PREF_FTP_REUSE_CONNECTION << "=" << toBoolArg(optarg) << "\n";
+	break;
+      case 218:
+	cmdstream << PREF_SUMMARY_INTERVAL << "=" << optarg << "\n";
 	break;
       }
       break;

@@ -99,6 +99,12 @@ RequestGroupHandle RequestGroupMan::getRequestGroup(size_t index) const
   }
 }
 
+const std::deque<SharedHandle<RequestGroup> >&
+RequestGroupMan::getRequestGroups() const
+{
+  return _requestGroups;
+}
+
 void RequestGroupMan::removeStoppedGroup()
 {
   unsigned int count = 0;

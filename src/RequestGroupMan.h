@@ -92,7 +92,9 @@ public:
   size_t countRequestGroup() const;
 		  
   SharedHandle<RequestGroup> getRequestGroup(size_t index) const;
-		  
+  
+  const std::deque<SharedHandle<RequestGroup> >& getRequestGroups() const;
+
   void showDownloadResults(std::ostream& o) const;
 
   bool isSameFileBeingDownloaded(RequestGroup* requestGroup) const;
