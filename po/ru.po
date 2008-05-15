@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-13 00:34+0900\n"
-"PO-Revision-Date: 2008-04-15 21:49+0000\n"
+"POT-Creation-Date: 2008-05-16 01:05+0900\n"
+"PO-Revision-Date: 2008-05-16 01:07+0900\n"
 "Last-Translator: hm <colimit@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -274,9 +274,7 @@ msgstr "CUID#%d - Удаляется запрос blockIndex=%d, блок пол
 #: src/message.h:80
 #, c-format
 msgid "CUID#%d - Fast extension enabled."
-msgstr ""
-"Copy text   \t\r\n"
-"CUID#%d - Ускорение включено."
+msgstr "CUID#%d - Ускорение включено."
 
 #: src/message.h:81
 #, c-format
@@ -1550,16 +1548,27 @@ msgstr ""
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
+#: src/usage_text.h:342
+msgid ""
+" --summary-interval=SEC       Set interval to output download progress "
+"summary.\n"
+"                              Setting 0 suppresses the output."
+msgstr ""
+
+#: src/usage_text.h:345
+msgid " --log-level=LEVEL            Set log level to output."
+msgstr ""
+
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "Ошибка при открытии порта.\n"
 
-#: src/DownloadEngine.cc:289
+#: src/DownloadEngine.cc:291
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 
-#: src/DownloadEngine.cc:293
+#: src/DownloadEngine.cc:295
 msgid "Emergency shutdown sequence commencing..."
 msgstr ""
 
@@ -1585,15 +1594,15 @@ msgid ""
 "page for details."
 msgstr ""
 
-#: src/RequestGroupMan.cc:255
+#: src/RequestGroupMan.cc:265
 msgid "Download Results:"
 msgstr "Результаты скачивания:"
 
-#: src/RequestGroupMan.cc:270
+#: src/RequestGroupMan.cc:280
 msgid "Status Legend:"
 msgstr "Использованные обозначения:"
 
-#: src/Util.cc:684
+#: src/Util.cc:686
 msgid "Files:"
 msgstr "Файлы:"
 

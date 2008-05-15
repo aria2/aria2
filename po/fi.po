@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-13 00:34+0900\n"
+"POT-Creation-Date: 2008-05-16 01:05+0900\n"
 "PO-Revision-Date: 2008-01-27 16:49+0000\n"
 "Last-Translator: Curaga <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -1709,16 +1709,27 @@ msgstr ""
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr ""
 
+#: src/usage_text.h:342
+msgid ""
+" --summary-interval=SEC       Set interval to output download progress "
+"summary.\n"
+"                              Setting 0 suppresses the output."
+msgstr ""
+
+#: src/usage_text.h:345
+msgid " --log-level=LEVEL            Set log level to output."
+msgstr ""
+
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "Virheitä tapahtui sitoessa porttia.\n"
 
-#: src/DownloadEngine.cc:289
+#: src/DownloadEngine.cc:291
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr "Sammutus alkaa... Paina Ctrl-C uudestaan hätäsammutukselle."
 
-#: src/DownloadEngine.cc:293
+#: src/DownloadEngine.cc:295
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Hätäsammutus alkaa..."
 
@@ -1746,15 +1757,15 @@ msgstr ""
 "Jos virheitä tapahtuu, katso lokitiedostoa. Ks. '-l' parametri ohjeessa/man-"
 "sivulla."
 
-#: src/RequestGroupMan.cc:255
+#: src/RequestGroupMan.cc:265
 msgid "Download Results:"
 msgstr "Lataustulokset:"
 
-#: src/RequestGroupMan.cc:270
+#: src/RequestGroupMan.cc:280
 msgid "Status Legend:"
 msgstr "Tilalegenda:"
 
-#: src/Util.cc:684
+#: src/Util.cc:686
 msgid "Files:"
 msgstr "Tiedostot:"
 

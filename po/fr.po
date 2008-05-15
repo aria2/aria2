@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2 0.11.2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-13 00:34+0900\n"
+"POT-Creation-Date: 2008-05-16 01:05+0900\n"
 "PO-Revision-Date: 2008-05-10 11:06+0000\n"
 "Last-Translator: willemijns <Unknown>\n"
 "Language-Team: Fran&ccedil;ais\n"
@@ -1860,18 +1860,29 @@ msgstr ""
 msgid " --ftp-reuse-connection[=true|false] Reuse connection in FTP."
 msgstr " --ftp-reuse-connection[=true|false] Réutilise la connexion en FTP."
 
+#: src/usage_text.h:342
+msgid ""
+" --summary-interval=SEC       Set interval to output download progress "
+"summary.\n"
+"                              Setting 0 suppresses the output."
+msgstr ""
+
+#: src/usage_text.h:345
+msgid " --log-level=LEVEL            Set log level to output."
+msgstr ""
+
 #: src/BtSetup.cc:123
 msgid "Errors occurred while binding port.\n"
 msgstr "La jonction du port a engendré des erreurs.\n"
 
-#: src/DownloadEngine.cc:289
+#: src/DownloadEngine.cc:291
 msgid ""
 "Shutdown sequence commencing... Press Ctrl-C again for emergency shutdown."
 msgstr ""
 "Séquence d'arrêt débutée... Pressez Ctrl-C une nouvelle fois pour un arrêt "
 "d'urgence."
 
-#: src/DownloadEngine.cc:293
+#: src/DownloadEngine.cc:295
 msgid "Emergency shutdown sequence commencing..."
 msgstr "Séquence d'arrêt d'urgence débutée..."
 
@@ -1899,15 +1910,15 @@ msgstr ""
 "En cas d'érreurs, merci de lire le fichier log. Voir l'option '-l' pour plus "
 "d'informations."
 
-#: src/RequestGroupMan.cc:255
+#: src/RequestGroupMan.cc:265
 msgid "Download Results:"
 msgstr "Résultats du ou des téléchargements:"
 
-#: src/RequestGroupMan.cc:270
+#: src/RequestGroupMan.cc:280
 msgid "Status Legend:"
 msgstr "Légende du statut:"
 
-#: src/Util.cc:684
+#: src/Util.cc:686
 msgid "Files:"
 msgstr "Fichiers:"
 
