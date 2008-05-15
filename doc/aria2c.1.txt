@@ -374,6 +374,16 @@ Advanced Options
   file.
   Default: 'prealloc'
 
+--log-level=LEVEL::
+  Set log level to output.
+  LEVEL is either 'debug', 'info', 'notice', 'warn' or 'error'.
+  Default: 'debug'
+
+--summary-interval=SEC::
+  Set interval in seconds to output download progress summary.
+  Setting '0' suppresses the output.
+  Default: '60'
+
 [NOTE]
 In multi file torrent, the files adjacent forward to the specified files
 are also allocated if they share a same piece.
