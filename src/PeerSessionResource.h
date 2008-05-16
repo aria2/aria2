@@ -80,9 +80,6 @@ private:
   Time _lastDownloadUpdate;
 
   Time _lastAmUnchoking;
-
-  template<typename T>
-  bool indexIncluded(const std::deque<T>& c, T index) const;
 public:
   PeerSessionResource(size_t pieceLength, uint64_t totalLength);
 

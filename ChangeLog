@@ -1,5 +1,11 @@
 2008-05-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Rewritten the portion of the code that mangaes allowed fast indexes.
+	* src/PeerSessionResource.cc
+	* src/PeerSessionResource.h
+	
+2008-05-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Removed the invalid string including '\r' from ru.po and
 	did make update-po.
 

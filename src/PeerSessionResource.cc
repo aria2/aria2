@@ -203,22 +203,24 @@ const std::deque<size_t>& PeerSessionResource::peerAllowedIndexSet() const
   return _peerAllowedIndexSet;
 }
 
-template<typename T>
-bool PeerSessionResource::indexIncluded(const std::deque<T>& c, T index) const
+static void updateIndexSet(std::deque<size_t>& c, size_t index)
 {
-  return std::find(c.begin(), c.end(), index) != c.end();
+  std::deque<size_t>::iterator i = std::lower_bound(c.begin(), c.end(), index);
+  if(i == c.end() || (*i) != index) {
+    c.insert(i, index);
+  } 
 }
 
 void PeerSessionResource::addPeerAllowedIndex(size_t index)
 {
-  if(!indexIncluded(_peerAllowedIndexSet, index)) {
-    _peerAllowedIndexSet.push_back(index);
-  }
+  updateIndexSet(_peerAllowedIndexSet, index);
 }
 
 bool PeerSessionResource::peerAllowedIndexSetContains(size_t index) const
 {
-  return indexIncluded(_peerAllowedIndexSet, index);
+  return std::binary_search(_peerAllowedIndexSet.begin(),
+			    _peerAllowedIndexSet.end(),
+			    index);
 }
 
 const std::deque<size_t>& PeerSessionResource::amAllowedIndexSet() const
@@ -228,14 +230,14 @@ const std::deque<size_t>& PeerSessionResource::amAllowedIndexSet() const
 
 void PeerSessionResource::addAmAllowedIndex(size_t index)
 {
-  if(!indexIncluded(_amAllowedIndexSet, index)) {
-    _amAllowedIndexSet.push_back(index);
-  }
+  updateIndexSet(_amAllowedIndexSet, index);
 }
 
 bool PeerSessionResource::amAllowedIndexSetContains(size_t index) const
 {
-  return indexIncluded(_amAllowedIndexSet, index);
+  return std::binary_search(_amAllowedIndexSet.begin(),
+			    _amAllowedIndexSet.end(),
+			    index);
 }
 
 bool PeerSessionResource::extendedMessagingEnabled() const
