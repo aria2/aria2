@@ -131,7 +131,8 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	MockDHTTaskQueue.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessage.h\
 @ENABLE_BITTORRENT_TRUE@	MockExtensionMessageFactory.h\
-@ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h
+@ENABLE_BITTORRENT_TRUE@	MockPieceStorage.h\
+@ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.cc
 
 @ENABLE_METALINK_TRUE@am__append_3 = MetalinkerTest.cc\
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.cc\
@@ -235,8 +236,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	MockDHTMessageFactory.h MockDHTTask.h MockDHTTaskFactory.h \
 	MockDHTTaskQueue.h MockExtensionMessage.h \
 	MockExtensionMessageFactory.h MockPieceStorage.h \
-	MetalinkerTest.cc MetalinkEntryTest.cc \
-	Metalink2RequestGroupTest.cc \
+	RarestPieceSelectorTest.cc MetalinkerTest.cc \
+	MetalinkEntryTest.cc Metalink2RequestGroupTest.cc \
 	MetalinkPostDownloadHandlerTest.cc MetalinkHelperTest.cc \
 	MetalinkParserControllerTest.cc MetalinkProcessorTest.cc
 @ENABLE_MESSAGE_DIGEST_TRUE@am__objects_1 =  \
@@ -316,7 +317,8 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	DHKeyExchangeTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	ARC4Test.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	MSEHandshakeTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT)
+@ENABLE_BITTORRENT_TRUE@	DHTUtilTest.$(OBJEXT) \
+@ENABLE_BITTORRENT_TRUE@	RarestPieceSelectorTest.$(OBJEXT)
 @ENABLE_METALINK_TRUE@am__objects_3 = MetalinkerTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	MetalinkEntryTest.$(OBJEXT) \
 @ENABLE_METALINK_TRUE@	Metalink2RequestGroupTest.$(OBJEXT) \
@@ -784,6 +786,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PeerTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PieceTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ProtocolDetectorTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RarestPieceSelectorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupManTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestGroupTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RequestTest.Po@am__quote@
