@@ -454,4 +454,10 @@ const Time& Peer::getLastAmUnchoking() const
   return _res->getLastAmUnchoking();
 }
 
+uint64_t Peer::getCompletedLength() const
+{
+  assert(_res);
+  return _res->getCompletedLength();
+}
+
 } // namespace aria2

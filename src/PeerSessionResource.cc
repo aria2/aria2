@@ -337,4 +337,9 @@ const Time& PeerSessionResource::getLastAmUnchoking() const
   return _lastAmUnchoking;
 }
 
+uint64_t PeerSessionResource::getCompletedLength() const
+{
+  return _bitfieldMan->getCompletedLength();
+}
+
 } // namespace aria2

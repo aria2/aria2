@@ -170,8 +170,10 @@ PeerInteractionCommand::PeerInteractionCommand(int32_t cuid,
 }
 
 PeerInteractionCommand::~PeerInteractionCommand() {
-  pieceStorage->subtractPieceStats(peer->getBitfield(),
-				   peer->getBitfieldLength());
+  if(peer->getCompletedLength() > 0) {
+    pieceStorage->subtractPieceStats(peer->getBitfield(),
+				     peer->getBitfieldLength());
+  }
   peer->releaseSessionResource();
   PEER_OBJECT_CLUSTER(btContext)->unregisterHandle(peer->getID());
 					

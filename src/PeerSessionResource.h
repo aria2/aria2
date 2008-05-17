@@ -185,6 +185,8 @@ public:
   const Time& getLastDownloadUpdate() const;
 
   const Time& getLastAmUnchoking() const;
+
+  uint64_t getCompletedLength() const;
 };
 
 } // namespace aria2
