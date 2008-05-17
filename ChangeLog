@@ -1,4 +1,4 @@
-2008-05-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Call subtractPieceStats from ~PeerInteractionCommand only when the
 	peer has at least one completed piece.
@@ -8,7 +8,7 @@
 	* src/PeerSessionResource.cc
 	* src/PeerSessionResource.h
 
-2008-05-16  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Removed unnecessary sorting
 	* src/DefaultPieceStorage (DefaultPieceStorage)
