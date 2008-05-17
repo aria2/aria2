@@ -107,7 +107,6 @@ DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadCo
       (*i)->setOrder(order++);
     }
   }
-  std::sort(_sortedPieceStats.begin(), _sortedPieceStats.end(), PieceRarer());
 
   logger = LogFactory::getInstance();
 }
