@@ -104,6 +104,9 @@ void BtPieceMessage::doReceivedAction() {
 	onWrongPiece(piece);
       }
     }
+  } else {
+    logger->debug("CUID#%d - RequestSlot not found, index=%d, begin=%d",
+		  cuid, index, begin);
   }
 }
 
