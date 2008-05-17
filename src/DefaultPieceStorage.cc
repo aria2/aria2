@@ -53,63 +53,24 @@
 #include "a2functional.h"
 #include "Option.h"
 #include "StringFormat.h"
+#include "RarestPieceSelector.h"
 #include <numeric>
 #include <algorithm>
 
 namespace aria2 {
 
-class GenPieceStat {
-private:
-  size_t _index;
-public:
-  GenPieceStat():_index(0) {}
-
-  SharedHandle<PieceStat> operator()()
-  {
-    return SharedHandle<PieceStat>(new PieceStat(_index++));
-  }
-};
-
-class PieceRarer
-{
-public:
-  bool operator()(const SharedHandle<PieceStat>& left,
-		  const SharedHandle<PieceStat>& right)
-  {
-    if(left->getCount() == right->getCount()) {
-      return left->getOrder() < right->getOrder();
-    } else {
-      return left->getCount() < right->getCount();
-    }
-  }
-};
-
-DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option):
+DefaultPieceStorage::DefaultPieceStorage(const DownloadContextHandle& downloadContext, const Option* option, bool randomPieceStatsOrdering):
   downloadContext(downloadContext),
+  bitfieldMan(BitfieldManFactory::getFactoryInstance()->
+	      createBitfieldMan(downloadContext->getPieceLength(),
+				downloadContext->getTotalLength())),
   _diskWriterFactory(new DefaultDiskWriterFactory()),
   endGamePieceNum(END_GAME_PIECE_NUM),
+  logger(LogFactory::getInstance()),
   option(option),
-  _pieceStats(downloadContext->getNumPieces())
-{
-  bitfieldMan =
-    BitfieldManFactory::getFactoryInstance()->
-    createBitfieldMan(downloadContext->getPieceLength(),
-		      downloadContext->getTotalLength());
-
-  std::generate(_pieceStats.begin(), _pieceStats.end(), GenPieceStat());
-  _sortedPieceStats = _pieceStats;
-  // we need some randomness in ordering.
-  std::random_shuffle(_sortedPieceStats.begin(), _sortedPieceStats.end());
-  {
-    size_t order = 0;
-    for(std::deque<SharedHandle<PieceStat> >::iterator i = _sortedPieceStats.begin();
-	i != _sortedPieceStats.end(); ++i) {
-      (*i)->setOrder(order++);
-    }
-  }
-
-  logger = LogFactory::getInstance();
-}
+  _pieceSelector(new RarestPieceSelector(downloadContext->getNumPieces(),
+					 randomPieceStatsOrdering))
+{}
 
 DefaultPieceStorage::~DefaultPieceStorage() {
   delete bitfieldMan;
@@ -126,19 +87,6 @@ bool DefaultPieceStorage::isEndGame()
   return bitfieldMan->countMissingBlock() <= endGamePieceNum;
 }
 
-class FindRarestPiece
-{
-private:
-  const std::deque<size_t>& _indexes;
-public:
-  FindRarestPiece(const std::deque<size_t>& indexes):_indexes(indexes) {}
-
-  bool operator()(const SharedHandle<PieceStat>& pieceStat)
-  {
-    return std::binary_search(_indexes.begin(), _indexes.end(), pieceStat->getIndex());
-  }
-};
-
 bool DefaultPieceStorage::getMissingPieceIndex(size_t& index, const PeerHandle& peer)
 {
   std::deque<size_t> indexes;
@@ -153,11 +101,7 @@ bool DefaultPieceStorage::getMissingPieceIndex(size_t& index, const PeerHandle& 
   }
   if(r) {
     // We assume indexes is sorted using comparator less.
-    //std::sort(indexes.begin(), indexes.end());
-    std::deque<SharedHandle<PieceStat> >::const_iterator i =
-      std::find_if(_sortedPieceStats.begin(), _sortedPieceStats.end(),
-		   FindRarestPiece(indexes));
-    index = (*i)->getIndex();
+    _pieceSelector->select(index, indexes);
     return true;
   } else {
     return false;
@@ -647,113 +591,26 @@ void DefaultPieceStorage::setDiskWriterFactory(const DiskWriterFactoryHandle& di
 void DefaultPieceStorage::addPieceStats(const unsigned char* bitfield,
 					size_t bitfieldLength)
 {
-  size_t index = 0;
-  for(size_t bi = 0; bi < bitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if(bitfield[bi]&mask) {
-	_pieceStats[index]->addCount();
-      }
-    }
-
-  }
-  std::sort(_sortedPieceStats.begin(), _sortedPieceStats.end(), PieceRarer());
+  _pieceSelector->addPieceStats(bitfield, bitfieldLength);
 }
 
 void DefaultPieceStorage::subtractPieceStats(const unsigned char* bitfield,
 					     size_t bitfieldLength)
 {
-  size_t index = 0;
-  for(size_t bi = 0; bi < bitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if(bitfield[bi]&mask) {
-	_pieceStats[index]->subCount();
-      }
-    }
-
-  }
-  std::sort(_sortedPieceStats.begin(), _sortedPieceStats.end(), PieceRarer());
+  _pieceSelector->subtractPieceStats(bitfield, bitfieldLength);
 }
 
 void DefaultPieceStorage::updatePieceStats(const unsigned char* newBitfield,
 					   size_t newBitfieldLength,
 					   const unsigned char* oldBitfield)
 {
-  size_t index = 0;
-  for(size_t bi = 0; bi < newBitfieldLength; ++bi) {
-    
-    for(size_t i = 0; i < 8; ++i, ++index) {
-      unsigned char mask = 128 >> i;
-      if((newBitfield[bi]&mask) && !(oldBitfield[bi]&mask)) {
-	_pieceStats[index]->addCount();
-      } else if(!(newBitfield[bi]&mask) && (oldBitfield[bi]&mask)) {
-	_pieceStats[index]->subCount();
-      }
-    }
-
-  }
-  std::sort(_sortedPieceStats.begin(), _sortedPieceStats.end(), PieceRarer());
+  _pieceSelector->updatePieceStats(newBitfield, newBitfieldLength,
+				   oldBitfield);
 }
 
 void DefaultPieceStorage::addPieceStats(size_t index)
 {
-  SharedHandle<PieceStat> pieceStat(_pieceStats[index]);
-  {
-    std::deque<SharedHandle<PieceStat> >::iterator cur =
-      std::lower_bound(_sortedPieceStats.begin(), _sortedPieceStats.end(),
-		       pieceStat, PieceRarer());
-    _sortedPieceStats.erase(cur);
-  }
-  pieceStat->addCount();
-
-  std::deque<SharedHandle<PieceStat> >::iterator to =
-    std::lower_bound(_sortedPieceStats.begin(), _sortedPieceStats.end(),
-		     pieceStat, PieceRarer());
-
-  _sortedPieceStats.insert(to, pieceStat);
-
-//    for(std::deque<SharedHandle<PieceStat> >::const_iterator i = _sortedPieceStats.begin(); i != _sortedPieceStats.end(); ++i) {
-//      logger->debug("index = %u, count = %u", (*i)->getIndex(), (*i)->getCount());
-//    }
-}
-
-PieceStat::PieceStat(size_t index):_order(0), _index(index), _count(0) {}
-
-void PieceStat::addCount()
-{
-  if(_count < SIZE_MAX) {
-    ++_count;
-  }
-}
-
-void PieceStat::subCount()
-{
-  if(_count > 0) {
-    --_count;
-  }
-}
-
-size_t PieceStat::getIndex() const
-{
-  return _index;
-}
-
-size_t PieceStat::getCount() const
-{
-  return _count;
-}
-
-void PieceStat::setOrder(size_t order)
-{
-  _order = order;
-}
-
-size_t PieceStat::getOrder() const
-{
-  return _order;
+  _pieceSelector->addPieceStats(index);
 }
 
 } // namespace aria2

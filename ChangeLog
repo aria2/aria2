@@ -1,5 +1,17 @@
 2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Put piece selection strategy algorithm to RarestPieceSelector class,
+	Added a switch to choose whether randomized selection so that unit
+	tests emit same results in, possibly, win32.
+	* src/DefaultPieceStorage.cc
+	* src/DefaultPieceStorage.h
+	* src/RarestPieceSelector.cc
+	* src/RarestPieceSelector.h
+	* test/DefaultPieceStorageTest.cc
+	* test/RarestPieceSelectorTest.cc
+
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Don't pool connection if HTTP proxy is enabled.
 	* src/FtpFinishDownloadCommand.cc
 	* src/FtpNegotiationCommand.cc

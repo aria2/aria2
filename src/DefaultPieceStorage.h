@@ -45,6 +45,7 @@ class Logger;
 class Option;
 class DiskWriterFactory;
 class FileEntry;
+class RarestPieceSelector;
 
 #define END_GAME_PIECE_NUM 20
 
@@ -67,23 +68,6 @@ public:
 
 typedef std::deque<HaveEntry> Haves;
 
-class PieceStat {
-private:
-  size_t _order;
-  size_t _index;
-  size_t _count;
-public:
-  PieceStat(size_t index);
-
-  void addCount();
-  void subCount();
-
-  size_t getOrder() const;
-  void setOrder(size_t order);
-  size_t getIndex() const;
-  size_t getCount() const;
-};
-
 class DefaultPieceStorage : public PieceStorage {
 private:
   SharedHandle<DownloadContext> downloadContext;
@@ -97,9 +81,8 @@ private:
   const Option* option;
   Haves haves;
 
-  std::deque<SharedHandle<PieceStat> > _pieceStats;
-  std::deque<SharedHandle<PieceStat> > _sortedPieceStats;
-  
+  SharedHandle<RarestPieceSelector> _pieceSelector;
+
   bool getMissingPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
   bool getMissingFastPieceIndex(size_t& index, const SharedHandle<Peer>& peer);
   SharedHandle<Piece> checkOutPiece(size_t index);
@@ -111,7 +94,13 @@ private:
   size_t getInFlightPieceCompletedLength() const;
 
 public:
-  DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext, const Option* option);
+  // Setting randomPieceStatsOrdering to true means a piece is chosen in
+  // random when more than 2 pieces has the same rarity.
+  // If it is set to false, a piece whose index is smallest has the highest
+  // priority.
+  DefaultPieceStorage(const SharedHandle<DownloadContext>& downloadContext,
+		      const Option* option,
+		      bool randomPieceStatsOrdering = true);
   virtual ~DefaultPieceStorage();
 
   virtual bool hasMissingPiece(const SharedHandle<Peer>& peer);

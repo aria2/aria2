@@ -76,20 +76,19 @@ void DefaultPieceStorageTest::testGetTotalLength() {
 }
 
 void DefaultPieceStorageTest::testGetMissingPiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(btContext, option, false);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
-  // TODO the ordering of piece may vary depending on the system, so the test
-  // may fail.
+
   SharedHandle<Piece> piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
 		       piece->toString());
   piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT_EQUAL(std::string("piece: index=1, length=128"),
 		       piece->toString());
   piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
 		       piece->toString());
   piece = pss.getMissingPiece(peer);
   CPPUNIT_ASSERT(piece.isNull());
@@ -119,15 +118,13 @@ void DefaultPieceStorageTest::testHasMissingPiece() {
 }
 
 void DefaultPieceStorageTest::testCompletePiece() {
-  DefaultPieceStorage pss(btContext, option);
+  DefaultPieceStorage pss(btContext, option, true);
   pss.setEndGamePieceNum(0);
 
   peer->setAllBitfield();
 
-  // TODO the ordering of piece may vary depending on the system, so the test
-  // may fail.
   SharedHandle<Piece> piece = pss.getMissingPiece(peer);
-  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=2, length=128"),
+  CPPUNIT_ASSERT_EQUAL(std::string("piece: index=0, length=128"),
 		       piece->toString());
 
   CPPUNIT_ASSERT_EQUAL(0ULL, pss.getCompletedLength());
