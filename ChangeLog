@@ -1,5 +1,12 @@
 2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Don't pool connection if HTTP proxy is enabled.
+	* src/FtpFinishDownloadCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpSkipResponseCommand.cc
+
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Don't add closed socket to DownloadEngine::addSocketForReadCheck()
 	* src/AbstractCommand.cc
 	* src/AbstractCommand.h

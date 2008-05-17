@@ -48,6 +48,8 @@
 #include "StringFormat.h"
 #include "DlAbortEx.h"
 #include "HttpHeader.h"
+#include "prefs.h"
+#include "Option.h"
 
 namespace aria2 {
 
@@ -111,7 +113,8 @@ bool HttpSkipResponseCommand::executeInternal()
 	    || (_transferDecoder.isNull() && _totalLength == _receivedBytes)) {
     if(!_transferDecoder.isNull()) _transferDecoder->end();
 
-    if(req->supportsPersistentConnection()) {
+    if(!e->option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
+       req->supportsPersistentConnection()) {
       std::pair<std::string, uint16_t> peerInfo;
       socket->getPeerInfo(peerInfo);
       e->poolSocket(peerInfo.first, peerInfo.second, socket);
