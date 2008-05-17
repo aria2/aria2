@@ -1,5 +1,11 @@
 2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Sorted DHTPeerAnnounceEntry in a ascending order of info hash and
+	used lower_bound to process them rather than linear search.
+	* src/DHTPeerAnnounceStorage.cc
+
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Call subtractPieceStats from ~PeerInteractionCommand only when the
 	peer has at least one completed piece.
 	* src/Peer.cc

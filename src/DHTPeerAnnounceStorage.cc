@@ -43,6 +43,7 @@
 #include "LogFactory.h"
 #include "Logger.h"
 #include "Util.h"
+#include "a2functional.h"
 #include <cstring>
 #include <algorithm>
 
@@ -53,32 +54,29 @@ DHTPeerAnnounceStorage::DHTPeerAnnounceStorage():
 
 DHTPeerAnnounceStorage::~DHTPeerAnnounceStorage() {}
 
-class FindPeerAnnounceEntry {
-private:
-  unsigned char _infoHash[DHT_ID_LENGTH];
+class InfoHashLess
+{
 public:
-  FindPeerAnnounceEntry(const unsigned char* infoHash)
+  bool operator()(const SharedHandle<DHTPeerAnnounceEntry>& lhs,
+		  const SharedHandle<DHTPeerAnnounceEntry>& rhs)
   {
-    memcpy(_infoHash, infoHash, DHT_ID_LENGTH);
-  }
-
-  bool operator()(const SharedHandle<DHTPeerAnnounceEntry>& entry) const
-  {
-    return memcmp(_infoHash, entry->getInfoHash(), DHT_ID_LENGTH) == 0;
+    return memcmp(lhs->getInfoHash(), rhs->getInfoHash(), DHT_ID_LENGTH) < 0;
   }
 };
 
 SharedHandle<DHTPeerAnnounceEntry>
 DHTPeerAnnounceStorage::getPeerAnnounceEntry(const unsigned char* infoHash)
 {
+  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash));
-  SharedHandle<DHTPeerAnnounceEntry> entry;
-  if(i == _entries.end()) {
-    entry.reset(new DHTPeerAnnounceEntry(infoHash));
-    _entries.push_back(entry);
-  } else {
+    std::lower_bound(_entries.begin(), _entries.end(), entry, InfoHashLess());
+
+  if(i != _entries.end() &&
+     memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0) {
     entry = *i;
+  } else {
+    _entries.insert(i, entry);
   }
   return entry;
 }
@@ -102,9 +100,14 @@ void DHTPeerAnnounceStorage::addPeerAnnounce(const BtContextHandle& ctx)
 
 void DHTPeerAnnounceStorage::removePeerAnnounce(const BtContextHandle& ctx)
 {
+  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(
+					   ctx->getInfoHash()));
+
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(ctx->getInfoHash()));
-  if(i != _entries.end()) {
+    std::lower_bound(_entries.begin(), _entries.end(), entry, InfoHashLess());
+
+  if(i != _entries.end() &&
+     memcmp(ctx->getInfoHash(), (*i)->getInfoHash(), DHT_ID_LENGTH) == 0) {
     (*i)->setBtContext(SharedHandle<BtContext>());
     if((*i)->empty()) {
       _entries.erase(i);
@@ -114,37 +117,44 @@ void DHTPeerAnnounceStorage::removePeerAnnounce(const BtContextHandle& ctx)
 
 bool DHTPeerAnnounceStorage::contains(const unsigned char* infoHash) const
 {
+  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
   return 
-    std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash)) != _entries.end();
+    std::binary_search(_entries.begin(), _entries.end(), entry, InfoHashLess());
 }
 
 void DHTPeerAnnounceStorage::getPeers(std::deque<SharedHandle<Peer> >& peers,
 				      const unsigned char* infoHash)
 {
+  SharedHandle<DHTPeerAnnounceEntry> entry(new DHTPeerAnnounceEntry(infoHash));
+
   std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = 
-    std::find_if(_entries.begin(), _entries.end(), FindPeerAnnounceEntry(infoHash));
-  if(i != _entries.end() && !(*i)->empty()) {
+    std::lower_bound(_entries.begin(), _entries.end(), entry, InfoHashLess());
+  if(i != _entries.end() &&
+     memcmp(infoHash, (*i)->getInfoHash(), DHT_ID_LENGTH) == 0 &&
+     !(*i)->empty()) {
     (*i)->getPeers(peers);
   }
 }
 
+class RemoveStalePeerAddrEntry
+{
+public:
+  void operator()(const SharedHandle<DHTPeerAnnounceEntry>& e)
+  {
+    e->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
+  }
+};
+
 void DHTPeerAnnounceStorage::handleTimeout()
 {
-  _logger->debug("Now purge peer announces which are timed out.");
-  size_t numPeerAddr = 0;
-  for(std::deque<SharedHandle<DHTPeerAnnounceEntry> >::iterator i = _entries.begin(); i != _entries.end();) {
-    (*i)->removeStalePeerAddrEntry(DHT_PEER_ANNOUNCE_PURGE_INTERVAL);
-    if((*i)->empty()) {
-      _logger->debug("1 entry purged: infoHash=%s",
-		     Util::toHex((*i)->getInfoHash(), DHT_ID_LENGTH).c_str());
-      i = _entries.erase(i);
-    } else {
-      numPeerAddr += (*i)->countPeerAddrEntry();
-      ++i;
-    }
-  }
-  _logger->debug("Currently %zu peer announce entries, %zu PeerAddr entries",
-		 _entries.size(), numPeerAddr);
+  _logger->debug("Now purge peer announces(%zu entries) which are timed out.",
+		 _entries.size());
+
+  std::for_each(_entries.begin(), _entries.end(), RemoveStalePeerAddrEntry());
+  _entries.erase(std::remove_if(_entries.begin(), _entries.end(),
+				mem_fun_sh(&DHTPeerAnnounceEntry::empty)),
+		 _entries.end());
+  _logger->debug("Currently %zu peer announce entries", _entries.size());
 }
 
 void DHTPeerAnnounceStorage::announcePeer()
