@@ -59,6 +59,10 @@ public:
 
   bool operator==(const RequestSlot& requestSlot) const;
 
+  bool operator!=(const RequestSlot& requestSlot) const;
+
+  bool operator<(const RequestSlot& requestSlot) const;
+
   void setDispatchedTime();
   void setDispatchedTime(time_t secFromEpoch);
 

@@ -64,9 +64,21 @@ RequestSlot& RequestSlot::operator=(const RequestSlot& requestSlot)
 
 bool RequestSlot::operator==(const RequestSlot& requestSlot) const
 {
-  return index == requestSlot.index &&
-    begin == requestSlot.begin &&
-    length == requestSlot.length;
+  return index == requestSlot.index && begin == requestSlot.begin;
+}
+
+bool RequestSlot::operator!=(const RequestSlot& requestSlot) const
+{
+  return !(*this == requestSlot);
+}
+
+bool RequestSlot::operator<(const RequestSlot& requestSlot) const
+{
+  if(index == requestSlot.index) {
+    return begin < requestSlot.begin;
+  } else {
+    return index < requestSlot.index;
+  }
 }
 
 void RequestSlot::setDispatchedTime() {

@@ -103,9 +103,9 @@ public:
 
   virtual size_t countOutstandingUpload();
 
-  std::deque<SharedHandle<BtMessage> >& getMessageQueue();
+  const std::deque<SharedHandle<BtMessage> >& getMessageQueue();
 
-  RequestSlots& getRequestSlots();
+  const RequestSlots& getRequestSlots();
 
   void setPeer(const SharedHandle<Peer>& peer);
 

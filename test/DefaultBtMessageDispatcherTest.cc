@@ -399,7 +399,7 @@ void DefaultBtMessageDispatcherTest::testGetOutstandingRequest() {
   CPPUNIT_ASSERT(!RequestSlot::isNull(s2));
 
   RequestSlot s3 = btMessageDispatcher->getOutstandingRequest(1, 1024, 17*1024);
-  CPPUNIT_ASSERT(RequestSlot::isNull(s3));
+  CPPUNIT_ASSERT(!RequestSlot::isNull(s3));
 
   RequestSlot s4 = btMessageDispatcher->getOutstandingRequest(1, 2*1024, 16*1024);
   CPPUNIT_ASSERT(RequestSlot::isNull(s4));

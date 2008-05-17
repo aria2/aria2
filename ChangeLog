@@ -1,5 +1,28 @@
 2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Sort RequestSlot in ascending order and manipulate them using
+	lower_bound.
+	* src/DefaultBtMessageDispatcher.cc
+	* src/DefaultBtMessageDispatcher.h
+	(getMessageQueue): Added const qualifier.
+	(getRequestSlots): Added const qualifier.
+	(sendMessages): Use empty() instead of size().
+	(doCancelSendingPieceAction): Use HandleEvent object.
+	(doAbortOutstandingRequestAction): Rewritten.
+	(doChokedAction): Rewritten.
+	(checkRequestSlotAndDoNecessaryThing): Rewritten.
+	(isOutstandingRequest): Rewritten.
+	(getOutstandingRequest): Rewritten.
+	(removeOutstandingRequest): Rewritten.
+	(addOutstandingRequest): Rewritten.
+	* src/RequestSlot.cc
+	* src/RequestSlot.h
+	(operator=): Rewritten.
+	(operator!=): New function.
+	(operator<): New function.
+	
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/DefaultBtRequestFactory.cc
 	(doChokedAction): Rewritten.
 	(removeCompletedPiece): Rewritten.
