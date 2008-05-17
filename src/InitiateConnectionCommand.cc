@@ -41,6 +41,7 @@
 #include "prefs.h"
 #include "NameResolver.h"
 #include "DNSCache.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 
