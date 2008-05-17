@@ -58,8 +58,6 @@
 
 namespace aria2 {
 
-// TODO $$$$$$$$$$$ fix two nearly identical constructor. $$$$$$$$$$$$$$
-// Modify two constructor at the same time!
 AbstractCommand::AbstractCommand(int32_t cuid,
 				 const SharedHandle<Request>& req,
 				 RequestGroup* requestGroup,
@@ -69,22 +67,10 @@ AbstractCommand::AbstractCommand(int32_t cuid,
   req(req), e(e), socket(s),
   checkSocketIsReadable(false), checkSocketIsWritable(false),
   nameResolverCheck(false)
-{ 
-  setReadCheckSocket(socket);
-  timeout = this->e->option->getAsInt(PREF_TIMEOUT);
-  _requestGroup->increaseStreamConnection();
-}
-
-AbstractCommand::AbstractCommand(int32_t cuid,
-				 const SharedHandle<Request>& req,
-				 RequestGroup* requestGroup,
-				 DownloadEngine* e):
-  Command(cuid), RequestGroupAware(requestGroup),
-  req(req), e(e), socket(new SocketCore()),
-  checkSocketIsReadable(false), checkSocketIsWritable(false),
-  nameResolverCheck(false)
-{ 
-  setReadCheckSocket(socket);
+{
+  if(!socket.isNull() && socket->isOpen()) {
+    setReadCheckSocket(socket);
+  }
   timeout = this->e->option->getAsInt(PREF_TIMEOUT);
   _requestGroup->increaseStreamConnection();
 }

@@ -42,6 +42,7 @@
 #include "StringFormat.h"
 #include "Option.h"
 #include "prefs.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 

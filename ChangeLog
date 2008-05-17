@@ -1,5 +1,19 @@
 2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Don't add closed socket to DownloadEngine::addSocketForReadCheck()
+	* src/AbstractCommand.cc
+	* src/AbstractCommand.h
+	* src/ActivePeerConnectionCommand.cc
+	* src/FtpInitiateConnectionCommand.cc
+	* src/HttpInitiateConnectionCommand.cc
+	* src/InitiateConnectionCommandFactory.cc
+	* src/PeerAbstractCommand.cc
+	* src/PeerAbstractCommand.h
+	* src/PeerInitiateConnectionCommand.cc
+	* src/TrackerWatcherCommand.cc
+
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Sort RequestSlot in ascending order and manipulate them using
 	lower_bound.
 	* src/DefaultBtMessageDispatcher.cc

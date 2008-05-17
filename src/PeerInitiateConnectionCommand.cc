@@ -75,6 +75,7 @@ PeerInitiateConnectionCommand::~PeerInitiateConnectionCommand()
 bool PeerInitiateConnectionCommand::executeInternal() {
   logger->info(MSG_CONNECTING_TO_SERVER, cuid, peer->ipaddr.c_str(),
 	       peer->port);
+  socket.reset(new SocketCore());
   socket->establishConnection(peer->ipaddr, peer->port);
   Command* command;
   if(_mseHandshakeEnabled) {

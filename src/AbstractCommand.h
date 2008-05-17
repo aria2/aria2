@@ -106,10 +106,7 @@ private:
 public:
   AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
 		  RequestGroup* requestGroup, DownloadEngine* e,
-		  const SharedHandle<SocketCore>& s);
-
-  AbstractCommand(int32_t cuid, const SharedHandle<Request>& req,
-		  RequestGroup* requestGroup, DownloadEngine* e);
+		  const SharedHandle<SocketCore>& s = SharedHandle<SocketCore>());
 
   virtual ~AbstractCommand();
   bool execute();

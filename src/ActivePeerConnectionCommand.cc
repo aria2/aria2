@@ -46,6 +46,7 @@
 #include "prefs.h"
 #include "Option.h"
 #include "BtConstants.h"
+#include "SocketCore.h"
 
 namespace aria2 {
 

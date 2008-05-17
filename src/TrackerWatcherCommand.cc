@@ -54,6 +54,7 @@
 #include "DlAbortEx.h"
 #include "Logger.h"
 #include "A2STR.h"
+#include "SocketCore.h"
 #include <sstream>
 
 namespace aria2 {

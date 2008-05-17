@@ -67,6 +67,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
     logger->info(MSG_CONNECTING_TO_SERVER, cuid,
 		 e->option->get(PREF_HTTP_PROXY_HOST).c_str(),
 		 e->option->getAsInt(PREF_HTTP_PROXY_PORT));
+    socket.reset(new SocketCore());
     socket->establishConnection(resolvedAddresses.front(),
 				e->option->getAsInt(PREF_HTTP_PROXY_PORT));
     
@@ -86,6 +87,7 @@ Command* FtpInitiateConnectionCommand::createNextCommand
 
       logger->info(MSG_CONNECTING_TO_SERVER, cuid, req->getHost().c_str(),
 		   req->getPort());
+      socket.reset(new SocketCore());
       socket->establishConnection(resolvedAddresses.front(), req->getPort());
       command = new FtpNegotiationCommand(cuid, req, _requestGroup, e, socket);
     } else {

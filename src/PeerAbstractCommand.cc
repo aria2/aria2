@@ -52,18 +52,9 @@ PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
    checkSocketIsReadable(false), checkSocketIsWritable(false),
    uploadLimitCheck(false), uploadLimit(0), noCheck(false)
 {
-  setReadCheckSocket(socket);
-  timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
-}
-
-PeerAbstractCommand::PeerAbstractCommand(int32_t cuid,
-					 const PeerHandle& peer,
-					 DownloadEngine* e)
-  :Command(cuid), e(e), socket(new SocketCore()), peer(peer),
-   checkSocketIsReadable(false), checkSocketIsWritable(false),
-   uploadLimitCheck(false), uploadLimit(0), noCheck(false)
-{
-  setReadCheckSocket(socket);
+  if(!socket.isNull() && socket->isOpen()) {
+    setReadCheckSocket(socket);
+  }
   timeout = e->option->getAsInt(PREF_BT_TIMEOUT);
 }
 
