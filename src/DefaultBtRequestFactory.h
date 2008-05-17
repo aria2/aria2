@@ -45,6 +45,7 @@ class Peer;
 class BtMessageDispatcher;
 class BtMessageFactory;
 class Piece;
+class Logger;
 
 class DefaultBtRequestFactory : public BtRequestFactory {
 private:
@@ -55,6 +56,7 @@ private:
   WeakHandle<BtMessageDispatcher> dispatcher;
   WeakHandle<BtMessageFactory> messageFactory;
   std::deque<SharedHandle<Piece> > pieces;
+  Logger* _logger;
 public:
   DefaultBtRequestFactory();
 

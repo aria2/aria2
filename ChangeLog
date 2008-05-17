@@ -1,5 +1,14 @@
 2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/DefaultBtRequestFactory.cc
+	(doChokedAction): Rewritten.
+	(removeCompletedPiece): Rewritten.
+	(removeTargetPiece): Rewritten.
+	(createRequestMessages): Added the debug log.
+	(createRequestMessagesOnEndGame: Added the debug log.
+
+2008-05-17  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added the debug log message.
 	* src/BtPieceMessage.cc (doReceivedAction)
 

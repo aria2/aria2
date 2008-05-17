@@ -43,12 +43,14 @@
 #include "BtMessageFactory.h"
 #include "BtMessage.h"
 #include "BtRegistry.h"
+#include "a2functional.h"
 #include <algorithm>
 
 namespace aria2 {
 
 DefaultBtRequestFactory::DefaultBtRequestFactory():
-  cuid(0)
+  cuid(0),
+  _logger(LogFactory::getInstance())
 {
   LogFactory::getInstance()->debug("DefaultBtRequestFactory::instantiated");
 }
@@ -63,42 +65,78 @@ void DefaultBtRequestFactory::addTargetPiece(const PieceHandle& piece)
   pieces.push_back(piece);
 }
 
-void DefaultBtRequestFactory::removeCompletedPiece() {
-  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end();) {
-    PieceHandle& piece = *itr;
+class AbortCompletedPieceRequest
+{
+private:
+  WeakHandle<BtMessageDispatcher> _dispatcher;
+public:
+  AbortCompletedPieceRequest(const WeakHandle<BtMessageDispatcher>& dispatcher):
+    _dispatcher(dispatcher) {}
+
+  void operator()(const SharedHandle<Piece>& piece)
+  {
     if(piece->pieceComplete()) {
-      dispatcher->doAbortOutstandingRequestAction(piece);
-      itr = pieces.erase(itr);
-    } else {
-      itr++;
+      _dispatcher->doAbortOutstandingRequestAction(piece);
     }
   }
+};
+
+void DefaultBtRequestFactory::removeCompletedPiece() {
+  std::for_each(pieces.begin(), pieces.end(),
+		AbortCompletedPieceRequest(dispatcher));
+  pieces.erase(std::remove_if(pieces.begin(), pieces.end(),
+			      mem_fun_sh(&Piece::pieceComplete)),
+	       pieces.end());
 }
 
 void DefaultBtRequestFactory::removeTargetPiece(const PieceHandle& piece) {
-  Pieces temp;
-  std::remove_copy(pieces.begin(), pieces.end(), std::back_inserter(temp), piece);
-  pieces = temp;
+  pieces.erase(std::remove(pieces.begin(), pieces.end(), piece),
+	       pieces.end());
   dispatcher->doAbortOutstandingRequestAction(piece);
   pieceStorage->cancelPiece(piece);
 }
 
-void DefaultBtRequestFactory::doChokedAction()
-{
-  Pieces temp;
-  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
-    PieceHandle& piece = *itr;
-    if(peer->isInPeerAllowedIndexSet(piece->getIndex())) {
-      temp.push_back(piece);
-    } else {
-      pieceStorage->cancelPiece(*itr);
+class ProcessChokedPiece {
+private:
+  SharedHandle<Peer> _peer;
+  WeakHandle<PieceStorage> _pieceStorage;
+public:
+  ProcessChokedPiece(const SharedHandle<Peer>& peer,
+		     const WeakHandle<PieceStorage>& pieceStorage):
+    _peer(peer),
+    _pieceStorage(pieceStorage) {}
+
+  void operator()(const SharedHandle<Piece>& piece)
+  {
+    if(!_peer->isInPeerAllowedIndexSet(piece->getIndex())) {
+      _pieceStorage->cancelPiece(piece);
     }
   }
-  pieces = temp;
+};
+
+class FindChokedPiece {
+private:
+  SharedHandle<Peer> _peer;
+public:
+  FindChokedPiece(const SharedHandle<Peer>& peer):_peer(peer) {}
+
+  bool operator()(const SharedHandle<Piece>& piece)
+  {
+    return !_peer->isInPeerAllowedIndexSet(piece->getIndex());
+  }
+};
+
+void DefaultBtRequestFactory::doChokedAction()
+{
+  std::for_each(pieces.begin(), pieces.end(),
+		ProcessChokedPiece(peer, pieceStorage));
+  pieces.erase(std::remove_if(pieces.begin(), pieces.end(),
+			      FindChokedPiece(peer)),
+	       pieces.end());
 }
 
 void DefaultBtRequestFactory::removeAllTargetPiece() {
-  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); itr++) {
+  for(Pieces::iterator itr = pieces.begin(); itr != pieces.end(); ++itr) {
     dispatcher->doAbortOutstandingRequestAction(*itr);
     pieceStorage->cancelPiece(*itr);
   }
@@ -109,11 +147,16 @@ void DefaultBtRequestFactory::createRequestMessages
 (std::deque<SharedHandle<BtMessage> >& requests, size_t max)
 {
   for(Pieces::iterator itr = pieces.begin();
-      itr != pieces.end() && requests.size() < max; itr++) {
+      itr != pieces.end() && requests.size() < max; ++itr) {
     PieceHandle& piece = *itr;
     size_t blockIndex;
     while(requests.size() < max &&
 	  piece->getMissingUnusedBlockIndex(blockIndex)) {
+      _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",
+		    piece->getIndex(),
+		    blockIndex*piece->getBlockLength(),
+		    blockIndex);
+
       requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
     }
   }
@@ -123,16 +166,20 @@ void DefaultBtRequestFactory::createRequestMessagesOnEndGame
 (std::deque<SharedHandle<BtMessage> >& requests, size_t max)
 {
   for(Pieces::iterator itr = pieces.begin();
-      itr != pieces.end() && requests.size() < max; itr++) {
+      itr != pieces.end() && requests.size() < max; ++itr) {
     PieceHandle& piece = *itr;
     std::deque<size_t> missingBlockIndexes;
     piece->getAllMissingBlockIndexes(missingBlockIndexes);
-    random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
+    std::random_shuffle(missingBlockIndexes.begin(), missingBlockIndexes.end());
     for(std::deque<size_t>::const_iterator bitr = missingBlockIndexes.begin();
 	bitr != missingBlockIndexes.end() && requests.size() < max; bitr++) {
       size_t blockIndex = *bitr;
       if(!dispatcher->isOutstandingRequest(piece->getIndex(),
 					   blockIndex)) {
+      _logger->debug("Creating RequestMessage index=%u, begin=%u, blockIndex=%u",
+		    piece->getIndex(),
+		    blockIndex*piece->getBlockLength(),
+		    blockIndex);
 	requests.push_back(messageFactory->createRequestMessage(piece, blockIndex));
       }
     }
