@@ -201,7 +201,7 @@ void DownloadCommand::validatePieceHash(const SegmentHandle& segment)
   std::string expectedPieceHash =
     _requestGroup->getDownloadContext()->getPieceHash(segment->getIndex());
   if(!_messageDigestContext.isNull() &&
-     e->option->get(PREF_REALTIME_CHUNK_CHECKSUM) == V_TRUE &&
+     e->option->getAsBool(PREF_REALTIME_CHUNK_CHECKSUM) &&
      !expectedPieceHash.empty()) {
     _messageDigestContext->digestReset();
     std::string actualPieceHash =

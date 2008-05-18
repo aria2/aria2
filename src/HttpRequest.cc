@@ -249,11 +249,11 @@ void HttpRequest::addAcceptType(const std::string& type)
 
 void HttpRequest::configure(const Option* option)
 {
-  authEnabled = option->get(PREF_HTTP_AUTH_ENABLED) == V_TRUE;
+  authEnabled = option->getAsBool(PREF_HTTP_AUTH_ENABLED);
   proxyEnabled =
-    option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE &&
+    option->getAsBool(PREF_HTTP_PROXY_ENABLED) &&
     option->get(PREF_HTTP_PROXY_METHOD) == V_GET;
-  proxyAuthEnabled = option->get(PREF_HTTP_PROXY_AUTH_ENABLED) == V_TRUE;
+  proxyAuthEnabled = option->getAsBool(PREF_HTTP_PROXY_AUTH_ENABLED);
 }
 
 std::string HttpRequest::getPreviousURI() const

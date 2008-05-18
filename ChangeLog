@@ -1,5 +1,16 @@
 2008-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Use Option::getAsBool(...) instead of Option::get(...) and compare
+	it with V_TRUE.
+	* src/DefaultPieceStorage.cc
+	* src/DownloadCommand.cc
+	* src/FtpNegotiationCommand.cc
+	* src/HttpRequest.cc
+	* src/InitiateConnectionCommand.cc
+	* src/RequestGroup.cc
+	
+2008-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Made Option::get(...) return const reference of std::string.
 	* src/Option.cc
 	* src/Option.h

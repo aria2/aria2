@@ -93,7 +93,7 @@ bool FtpNegotiationCommand::executeInternal() {
   } else if(sequence == SEQ_HEAD_OK || sequence == SEQ_DOWNLOAD_ALREADY_COMPLETED) {
     return true;
   } else if(sequence == SEQ_FILE_PREPARATION) {
-    if(e->option->get(PREF_FTP_PASV) == V_TRUE) {
+    if(e->option->getAsBool(PREF_FTP_PASV)) {
       sequence = SEQ_SEND_PASV;
     } else {
       sequence = SEQ_SEND_PORT;
@@ -262,7 +262,7 @@ bool FtpNegotiationCommand::recvSize() {
   } else {
     _requestGroup->validateTotalLength(size);
   }
-  if(e->option->get(PREF_FTP_PASV) == V_TRUE) {
+  if(e->option->getAsBool(PREF_FTP_PASV)) {
     sequence = SEQ_SEND_PASV;
   } else {
     sequence = SEQ_SEND_PORT;

@@ -238,8 +238,8 @@ void RequestGroup::createInitialCommand(std::deque<Command*>& commands,
 	_pieceStorage->getDiskAdaptor()->openFile();
       } else {
 	if(_pieceStorage->getDiskAdaptor()->fileExists()) {
-	  if(_option->get(PREF_CHECK_INTEGRITY) != V_TRUE &&
-	     _option->get(PREF_ALLOW_OVERWRITE) != V_TRUE) {
+	  if(!_option->getAsBool(PREF_CHECK_INTEGRITY) &&
+	     !_option->getAsBool(PREF_ALLOW_OVERWRITE)) {
 	    // TODO we need this->haltRequested = true?
 	    throw DownloadFailureException
 	      (StringFormat(MSG_FILE_ALREADY_EXISTS,
@@ -302,7 +302,7 @@ void RequestGroup::processCheckIntegrityEntry(std::deque<Command*>& commands,
 					      DownloadEngine* e)
 {
 #ifdef ENABLE_MESSAGE_DIGEST
-  if(e->option->get(PREF_CHECK_INTEGRITY) == V_TRUE &&
+  if(e->option->getAsBool(PREF_CHECK_INTEGRITY) &&
      entry->isValidationReady()) {
     entry->initValidator();
     CheckIntegrityCommand* command =
@@ -338,8 +338,8 @@ bool RequestGroup::downloadFinishedByFileLength()
 {
   // assuming that a control file doesn't exist.
   if(!isPreLocalFileCheckEnabled() ||
-     (_option->get(PREF_ALLOW_OVERWRITE) == V_TRUE) ||
-     ((_option->get(PREF_CHECK_INTEGRITY) == V_TRUE) &&
+     _option->getAsBool(PREF_ALLOW_OVERWRITE) ||
+     (_option->getAsBool(PREF_CHECK_INTEGRITY) &&
       !_downloadContext->getPieceHashes().empty())) {
     return false;
   }
@@ -374,7 +374,7 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 	_pieceStorage->getDiskAdaptor()->openExistingFile();
       } else {
 	File outfile(getFilePath());    
-	if(outfile.exists() && _option->get(PREF_CONTINUE) == V_TRUE) {
+	if(outfile.exists() && _option->getAsBool(PREF_CONTINUE)) {
 	  if(getTotalLength() < outfile.size()) {
 	    throw DlAbortEx
 	      (StringFormat(EX_FILE_LENGTH_MISMATCH_BETWEEN_LOCAL_AND_REMOTE,
@@ -386,7 +386,7 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 	  _pieceStorage->markPiecesDone(outfile.size());
 	} else {
 #ifdef ENABLE_MESSAGE_DIGEST
-	  if(outfile.exists() && _option->get(PREF_CHECK_INTEGRITY) == V_TRUE) {
+	  if(outfile.exists() && _option->getAsBool(PREF_CHECK_INTEGRITY)) {
 	    _pieceStorage->getDiskAdaptor()->openExistingFile();
 	  } else {
 #endif // ENABLE_MESSAGE_DIGEST
@@ -415,12 +415,12 @@ void RequestGroup::loadAndOpenFile(const BtProgressInfoFileHandle& progressInfoF
 // assuming that a control file does not exist
 void RequestGroup::shouldCancelDownloadForSafety()
 {
-  if(_option->get(PREF_ALLOW_OVERWRITE) == V_TRUE) {
+  if(_option->getAsBool(PREF_ALLOW_OVERWRITE)) {
     return;
   }
   File outfile(getFilePath());
   if(outfile.exists()) {
-    if(_option->get(PREF_AUTO_FILE_RENAMING) == V_TRUE) {
+    if(_option->getAsBool(PREF_AUTO_FILE_RENAMING)) {
       if(tryAutoFileRenaming()) {
 	_logger->notice(MSG_FILE_RENAMED, getFilePath().c_str());
       } else {
@@ -742,13 +742,13 @@ void RequestGroup::initializePreDownloadHandler()
 void RequestGroup::initializePostDownloadHandler()
 {
 #ifdef ENABLE_BITTORRENT
-  if(_option->get(PREF_FOLLOW_TORRENT) == V_TRUE ||
+  if(_option->getAsBool(PREF_FOLLOW_TORRENT) ||
      _option->get(PREF_FOLLOW_TORRENT) == V_MEM) {
     _postDownloadHandlers.push_back(DownloadHandlerFactory::getBtPostDownloadHandler());
   }
 #endif // ENABLE_BITTORRENT
 #ifdef ENABLE_METALINK
-  if(_option->get(PREF_FOLLOW_METALINK) == V_TRUE ||
+  if(_option->getAsBool(PREF_FOLLOW_METALINK) ||
      _option->get(PREF_FOLLOW_METALINK) == V_MEM) {
     _postDownloadHandlers.push_back(DownloadHandlerFactory::getMetalinkPostDownloadHandler());
   }

@@ -438,7 +438,7 @@ void DefaultPieceStorage::initStorage()
     this->diskAdaptor = directDiskAdaptor;
   } else {
     // file mode == DownloadContext::MULTI
-    if(option->get(PREF_DIRECT_FILE_MAPPING) == V_TRUE) {
+    if(option->getAsBool(PREF_DIRECT_FILE_MAPPING)) {
       logger->debug("Instantiating MultiDiskAdaptor");
       MultiDiskAdaptorHandle multiDiskAdaptor(new MultiDiskAdaptor());
       multiDiskAdaptor->setDirectIOAllowed(option->getAsBool(PREF_ENABLE_DIRECT_IO));

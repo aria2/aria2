@@ -104,7 +104,7 @@ bool InitiateConnectionCommand::executeInternal() {
 
 bool InitiateConnectionCommand::useHTTPProxy() const
 {
-  return e->option->get(PREF_HTTP_PROXY_ENABLED) == V_TRUE;
+  return e->option->getAsBool(PREF_HTTP_PROXY_ENABLED);
 }
 
 } // namespace aria2
