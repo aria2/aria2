@@ -1,5 +1,9 @@
 2008-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/HttpHeader.cc (get): Rewritten.
+
+2008-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Make HttpHeader::getFirst(...) return const reference.
 	* src/HttpHeader.cc
 	* src/HttpHeader.h
