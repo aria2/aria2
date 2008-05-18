@@ -49,28 +49,36 @@ const char* DownloadHandlerConstants::BT_CONTENT_TYPES[] = {
   "application/x-bittorrent"
 };
 
-std::deque<std::string> DownloadHandlerConstants::getMetalinkExtensions()
+const std::deque<std::string>& DownloadHandlerConstants::getMetalinkExtensions()
 {
-  return std::deque<std::string>(&METALINK_EXTENSIONS[0],
-				 &METALINK_EXTENSIONS[arrayLength(METALINK_EXTENSIONS)]);
+  static const std::deque<std::string> l
+    (&METALINK_EXTENSIONS[0],
+     &METALINK_EXTENSIONS[arrayLength(METALINK_EXTENSIONS)]);
+  return l;
 }
 
-std::deque<std::string> DownloadHandlerConstants::getMetalinkContentTypes()
+const std::deque<std::string>& DownloadHandlerConstants::getMetalinkContentTypes()
 {
-  return std::deque<std::string>(&METALINK_CONTENT_TYPES[0],
-				 &METALINK_CONTENT_TYPES[arrayLength(METALINK_CONTENT_TYPES)]);
+  static const std::deque<std::string> l
+    (&METALINK_CONTENT_TYPES[0],
+     &METALINK_CONTENT_TYPES[arrayLength(METALINK_CONTENT_TYPES)]);
+  return l;
 }
 
-std::deque<std::string> DownloadHandlerConstants::getBtExtensions()
+const std::deque<std::string>& DownloadHandlerConstants::getBtExtensions()
 {
-  return std::deque<std::string>(&BT_EXTENSIONS[0],
-				 &BT_EXTENSIONS[arrayLength(BT_EXTENSIONS)]);
+  static const std::deque<std::string> l
+    (&BT_EXTENSIONS[0],
+     &BT_EXTENSIONS[arrayLength(BT_EXTENSIONS)]);
+  return l;
 }
 
-std::deque<std::string> DownloadHandlerConstants::getBtContentTypes()
+const std::deque<std::string>& DownloadHandlerConstants::getBtContentTypes()
 {
-  return std::deque<std::string>(&BT_CONTENT_TYPES[0],
-				 &BT_CONTENT_TYPES[arrayLength(BT_CONTENT_TYPES)]);
+  static const std::deque<std::string> l
+    (&BT_CONTENT_TYPES[0],
+     &BT_CONTENT_TYPES[arrayLength(BT_CONTENT_TYPES)]);
+  return l;
 }
 
 } // namespace aria2

@@ -46,19 +46,19 @@ class DownloadHandlerConstants
 public:
   static const char* METALINK_EXTENSIONS[];
 
-  static std::deque<std::string> getMetalinkExtensions();
+  static const std::deque<std::string>& getMetalinkExtensions();
 
   static const char* METALINK_CONTENT_TYPES[];
 
-  static std::deque<std::string> getMetalinkContentTypes();
+  static const std::deque<std::string>& getMetalinkContentTypes();
 
   static const char* BT_EXTENSIONS[];
 
-  static std::deque<std::string> getBtExtensions();
+  static const std::deque<std::string>& getBtExtensions();
 
   static const char* BT_CONTENT_TYPES[];
 
-  static std::deque<std::string> getBtContentTypes();
+  static const std::deque<std::string>& getBtContentTypes();
 };
 
 } // namespace aria2
