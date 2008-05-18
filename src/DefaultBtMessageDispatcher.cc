@@ -98,7 +98,7 @@ void DefaultBtMessageDispatcher::sendMessages() {
       break;
     }
   }
-  std::copy(tempQueue.begin(), tempQueue.end(), std::back_inserter(messageQueue));
+  messageQueue.insert(messageQueue.end(), tempQueue.begin(), tempQueue.end());
 }
 
 class HandleEvent {

@@ -505,13 +505,13 @@ void RequestGroup::createNextCommand(std::deque<Command*>& commands,
 	command->setStatus(Command::STATUS_ONESHOT_REALTIME);
 	commands.push_back(command);
       } else {
-	pendingURIs.push_front(uri);
+	pendingURIs.push_back(uri);
       }
     } else {
       _logger->error(MSG_UNRECOGNIZED_URI, req->getUrl().c_str());
     }
   }
-  std::copy(pendingURIs.begin(), pendingURIs.end(), std::front_inserter(_uris));
+  _uris.insert(_uris.begin(), pendingURIs.begin(), pendingURIs.end());
 }
 
 std::string RequestGroup::getFilePath() const

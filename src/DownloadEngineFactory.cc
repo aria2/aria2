@@ -64,10 +64,15 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
 {
   RequestGroups workingSet;
   RequestGroups reservedSet;
-  if((size_t)op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS) < requestGroups.size()) {
-    std::copy(requestGroups.begin(), requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS), std::back_inserter(workingSet));
-    std::copy(requestGroups.begin()+op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS),
-	      requestGroups.end(), std::back_inserter(reservedSet));
+  const size_t MAX_CONCURRENT_DOWNLOADS = op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS);
+  if(MAX_CONCURRENT_DOWNLOADS < requestGroups.size()) {
+    workingSet.insert(workingSet.end(),
+		      requestGroups.begin(),
+		      requestGroups.begin()+MAX_CONCURRENT_DOWNLOADS);
+
+    reservedSet.insert(reservedSet.end(),
+		       requestGroups.begin()+MAX_CONCURRENT_DOWNLOADS,
+		       requestGroups.end());
   } else {
     workingSet = requestGroups;
   }
@@ -75,8 +80,7 @@ DownloadEngineFactory::newDownloadEngine(Option* op,
   DownloadEngineHandle e(new DownloadEngine());
   e->option = op;
   RequestGroupManHandle
-    requestGroupMan(new RequestGroupMan(workingSet,
-					op->getAsInt(PREF_MAX_CONCURRENT_DOWNLOADS)));
+    requestGroupMan(new RequestGroupMan(workingSet, MAX_CONCURRENT_DOWNLOADS));
   requestGroupMan->addReservedGroup(reservedSet);
   e->_requestGroupMan = requestGroupMan;
   e->_fileAllocationMan.reset(new FileAllocationMan());

@@ -570,7 +570,7 @@ void DefaultPieceStorage::markPieceMissing(size_t index)
 
 void DefaultPieceStorage::addInFlightPiece(const Pieces& pieces)
 {
-  std::copy(pieces.begin(), pieces.end(), std::back_inserter(usedPieces));
+  usedPieces.insert(usedPieces.end(), pieces.begin(), pieces.end());
 }
 
 size_t DefaultPieceStorage::countInFlightPiece()
