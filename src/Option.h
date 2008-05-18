@@ -50,7 +50,7 @@ public:
 
   void put(const std::string& name, const std::string& value);
   bool defined(const std::string& name) const;
-  std::string get(const std::string& name) const;
+  const std::string& get(const std::string& name) const;
   int getAsInt(const std::string& name) const;
   int64_t getAsLLInt(const std::string& name) const;
   bool getAsBool(const std::string& name) const;

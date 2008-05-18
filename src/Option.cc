@@ -36,6 +36,7 @@
 #include "prefs.h"
 #include "A2STR.h"
 #include <cstdlib>
+#include <cstring>
 
 namespace aria2 {
 
@@ -51,7 +52,7 @@ bool Option::defined(const std::string& name) const {
   return table.count(name) == 1;
 }
 
-std::string Option::get(const std::string& name) const {
+const std::string& Option::get(const std::string& name) const {
   std::map<std::string, std::string>::const_iterator itr = table.find(name);
   if(itr == table.end()) {
     return A2STR::NIL;
@@ -61,26 +62,26 @@ std::string Option::get(const std::string& name) const {
 }
 
 int32_t Option::getAsInt(const std::string& name) const {
-  std::string value = get(name);
+  const std::string& value = get(name);
   if(value.empty()) {
     return 0;
   } else {
-    return strtol(value.c_str(), NULL, 10);
+    return strtol(value.c_str(), 0, 10);
   }
 }
 
 int64_t Option::getAsLLInt(const std::string& name) const {
-  std::string value = get(name);
+  const std::string& value = get(name);
   if(value.empty()) {
     return 0;
   } else {
-    return strtoll(value.c_str(), NULL, 10);
+    return strtoll(value.c_str(), 0, 10);
   }
 }
 
 bool Option::getAsBool(const std::string& name) const {
-  std::string value = get(name);
-  if(value == V_TRUE) {
+  const std::string& value = get(name);
+  if(strcmp(value.c_str(), V_TRUE) == 0) {
     return true;
   } else {
     return false;
@@ -88,7 +89,7 @@ bool Option::getAsBool(const std::string& name) const {
 }
 
 double Option::getAsDouble(const std::string& name) const {
-  std::string value = get(name);
+  const std::string& value = get(name);
   if(value.empty()) {
     return 0.0;
   } else {
