@@ -1,5 +1,11 @@
 2008-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Make HttpHeader::getFirst(...) return const reference.
+	* src/HttpHeader.cc
+	* src/HttpHeader.h
+
+2008-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Use Option::getAsBool(...) instead of Option::get(...) and compare
 	it with V_TRUE.
 	* src/DefaultPieceStorage.cc

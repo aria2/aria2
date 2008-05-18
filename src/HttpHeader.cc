@@ -83,7 +83,7 @@ bool HttpHeader::defined(const std::string& name) const {
   return table.count(Util::toLower(name)) >= 1;
 }
 
-std::string HttpHeader::getFirst(const std::string& name) const {
+const std::string& HttpHeader::getFirst(const std::string& name) const {
   std::multimap<std::string, std::string>::const_iterator itr = table.find(Util::toLower(name));
   if(itr == table.end()) {
     return A2STR::NIL;
@@ -107,7 +107,7 @@ unsigned int HttpHeader::getFirstAsUInt(const std::string& name) const {
 }
 
 uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
-  std::string value = getFirst(name);
+  const std::string& value = getFirst(name);
   if(value.empty()) {
     return 0;
   } else {
@@ -117,9 +117,9 @@ uint64_t HttpHeader::getFirstAsULLInt(const std::string& name) const {
 
 RangeHandle HttpHeader::getRange() const
 {
-  std::string rangeStr = getFirst(CONTENT_RANGE);
+  const std::string& rangeStr = getFirst(CONTENT_RANGE);
   if(rangeStr.empty()) {
-    std::string contentLengthStr = getFirst(CONTENT_LENGTH);
+    const std::string& contentLengthStr = getFirst(CONTENT_LENGTH);
     if(contentLengthStr.empty()) {
       return SharedHandle<Range>(new Range());
     } else {
