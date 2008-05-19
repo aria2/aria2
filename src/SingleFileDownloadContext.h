@@ -75,7 +75,7 @@ public:
 
   virtual ~SingleFileDownloadContext() {}
 
-  virtual std::string getPieceHash(size_t index) const
+  virtual const std::string& getPieceHash(size_t index) const
   {
     if(index < _pieceHashes.size()) {
       return _pieceHashes[index];
@@ -95,7 +95,7 @@ public:
 
   virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;
 
-  virtual std::string getName() const
+  virtual const std::string& getName() const
   {
     return _filename;
   }
@@ -109,7 +109,7 @@ public:
 
   virtual std::string getActualBasePath() const;
 
-  virtual std::string getPieceHashAlgo() const
+  virtual const std::string& getPieceHashAlgo() const
   {
     return _pieceHashAlgo;
   }

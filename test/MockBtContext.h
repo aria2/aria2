@@ -4,6 +4,7 @@
 #include "BtContext.h"
 #include "Util.h"
 #include "AnnounceTier.h"
+#include "messageDigest.h"
 #include <cstring>
 
 namespace aria2 {
@@ -11,6 +12,7 @@ namespace aria2 {
 class MockBtContext : public BtContext  {
 private:
   unsigned char infoHash[20];
+  std::string _infoHashString;
   std::deque<std::string> pieceHashes;
   uint64_t totalLength;
   FILE_MODE fileMode;
@@ -35,17 +37,18 @@ public:
 
   void setInfoHash(const unsigned char* infoHash) {
     memcpy(this->infoHash, infoHash, sizeof(this->infoHash));
+    _infoHashString = Util::toHex(this->infoHash, sizeof(this->infoHash));
   }
 
   virtual size_t getInfoHashLength() const {
     return sizeof(infoHash);
   }
 
-  virtual std::string getInfoHashAsString() const {
-    return Util::toHex(infoHash, sizeof(infoHash));
+  virtual const std::string& getInfoHashAsString() const {
+    return _infoHashString;
   }
 
-  virtual std::string getPieceHash(size_t index) const {
+  virtual const std::string& getPieceHash(size_t index) const {
     return pieceHashes.at(index);
   }
   
@@ -91,7 +94,7 @@ public:
 
   virtual void load(const std::string& torrentFile) {}
 
-  virtual std::string getName() const {
+  virtual const std::string& getName() const {
     return name;
   }
 
@@ -134,9 +137,9 @@ public:
     this->fastSet = fastSet;
   }
 
-  virtual std::string getPieceHashAlgo() const
+  virtual const std::string& getPieceHashAlgo() const
   {
-    return "sha1";
+    return MessageDigestContext::SHA1;
   }
 
   virtual std::string getActualBasePath() const

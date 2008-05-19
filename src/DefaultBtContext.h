@@ -96,9 +96,9 @@ private:
 
   virtual size_t getInfoHashLength() const;
 
-  virtual std::string getInfoHashAsString() const;
+  virtual const std::string& getInfoHashAsString() const;
 
-  virtual std::string getPieceHash(size_t index) const;
+  virtual const std::string& getPieceHash(size_t index) const;
 
   virtual const std::deque<std::string>& getPieceHashes() const
   {
@@ -111,10 +111,7 @@ private:
 
   virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const;
 
-  virtual std::string getPieceHashAlgo() const
-  {
-    return "sha1";
-  }
+  virtual const std::string& getPieceHashAlgo() const;
 
   virtual std::deque<SharedHandle<AnnounceTier> > getAnnounceTiers() const;
 
@@ -129,7 +126,7 @@ private:
 		   context.size(), defaultName);
   }
 
-  virtual std::string getName() const;
+  virtual const std::string& getName() const;
 
   virtual size_t getPieceLength() const;
   

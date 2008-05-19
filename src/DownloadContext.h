@@ -60,7 +60,7 @@ public:
     MULTI
   };
 
-  virtual std::string getPieceHash(size_t index) const = 0;
+  virtual const std::string& getPieceHash(size_t index) const = 0;
   
   virtual const std::deque<std::string>& getPieceHashes() const = 0;
 
@@ -70,13 +70,13 @@ public:
 
   virtual std::deque<SharedHandle<FileEntry> > getFileEntries() const = 0;
 
-  virtual std::string getName() const = 0;
+  virtual const std::string& getName() const = 0;
   
   virtual size_t getPieceLength() const = 0;
 
   virtual size_t getNumPieces() const = 0;
 
-  virtual std::string getPieceHashAlgo() const = 0;
+  virtual const std::string& getPieceHashAlgo() const = 0;
 
   /**
    * Returns an actual file path.
@@ -88,7 +88,7 @@ public:
    */
   virtual std::string getActualBasePath() const = 0;
 
-  std::string getDir() const
+  const std::string& getDir() const
   {
     return _dir;
   }

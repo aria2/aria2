@@ -1,5 +1,18 @@
 2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Returns const reference:
+	DownloadContext::getPieceHash, DownloadContext::getName,
+	DownloadContext::getPieceHashAlgo, DownloadContext::getDir,
+	BtContext::getInfoHashAsString,
+	* src/BtContext.h
+	* src/DefaultBtContext.cc
+	* src/DefaultBtContext.h
+	* src/DownloadContext.h
+	* src/SingleFileDownloadContext.h
+	* test/MockBtContext.h
+
+2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	* src/RequestGroup.h (getDir): Removed.
 	
 2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>

@@ -84,7 +84,7 @@ size_t DefaultBtContext::getInfoHashLength() const {
   return INFO_HASH_LENGTH;
 }
 
-std::string DefaultBtContext::getInfoHashAsString() const {
+const std::string& DefaultBtContext::getInfoHashAsString() const {
   return infoHashString;
 }
 
@@ -369,7 +369,7 @@ void DefaultBtContext::processRootDictionary(const Dictionary* rootDic, const st
   }
 }
 
-std::string DefaultBtContext::getPieceHash(size_t index) const {
+const std::string& DefaultBtContext::getPieceHash(size_t index) const {
   if(index < numPieces) {
     return pieceHashes[index];
   } else {
@@ -389,11 +389,16 @@ FileEntries DefaultBtContext::getFileEntries() const {
   return fileEntries;
 }
 
+const std::string& DefaultBtContext::getPieceHashAlgo() const
+{
+  return MessageDigestContext::SHA1;
+}
+
 AnnounceTiers DefaultBtContext::getAnnounceTiers() const {
   return announceTiers;
 }
 
-std::string DefaultBtContext::getName() const {
+const std::string& DefaultBtContext::getName() const {
   return name;
 }
 
