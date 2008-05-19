@@ -112,9 +112,9 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_DIRECT_IO)));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_ALLOW_PIECE_LENGTH_CHANGE)));
   {
-    const char* params[] = { V_HTTP, V_HTTPS, V_FTP, V_NONE };
+    const std::string params[] = { V_HTTP, V_HTTPS, V_FTP, V_NONE };
     handlers.push_back(SH(new ParameterOptionHandler(PREF_METALINK_PREFERRED_PROTOCOL,
-						  std::deque<std::string>(&params[0], &params[arrayLength(params)]))));
+						     std::deque<std::string>(&params[0], &params[arrayLength(params)]))));
   }
   handlers.push_back(SH(new BooleanOptionHandler(PREF_METALINK_ENABLE_UNIQUE_PROTOCOL)));
   handlers.push_back(SH(new BooleanOptionHandler(PREF_ENABLE_PEER_EXCHANGE)));
@@ -134,7 +134,7 @@ OptionHandlers OptionHandlerFactory::createOptionHandlers()
   handlers.push_back(SH(new BooleanOptionHandler(PREF_FTP_REUSE_CONNECTION)));
   handlers.push_back(SH(new NumberOptionHandler(PREF_SUMMARY_INTERVAL, 0, INT32_MAX)));
   {
-    const char* params[] = { V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR };
+    const std::string params[] = { V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR };
     handlers.push_back(SH(new ParameterOptionHandler
 			  (PREF_LOG_LEVEL,
 			   std::deque<std::string>(&params[0],

@@ -67,15 +67,15 @@ void LogFactory::setLogLevel(Logger::LEVEL level)
 
 void LogFactory::setLogLevel(const std::string& level)
 {
-  if(strcmp(level.c_str(), V_DEBUG) == 0) {
+  if(level == V_DEBUG) {
     _logLevel = Logger::DEBUG;
-  } else if(strcmp(level.c_str(), V_INFO) == 0) {
+  } else if(level == V_INFO) {
     _logLevel = Logger::INFO;
-  } else if(strcmp(level.c_str(), V_NOTICE) == 0) {
+  } else if(level == V_NOTICE) {
     _logLevel = Logger::NOTICE;
-  } else if(strcmp(level.c_str(), V_WARN) == 0) {
+  } else if(level == V_WARN) {
     _logLevel = Logger::WARN;
-  } else if(strcmp(level.c_str(), V_ERROR) == 0) {
+  } else if(level == V_ERROR) {
     _logLevel = Logger::ERROR;
   }
 }

@@ -80,12 +80,7 @@ int64_t Option::getAsLLInt(const std::string& name) const {
 }
 
 bool Option::getAsBool(const std::string& name) const {
-  const std::string& value = get(name);
-  if(strcmp(value.c_str(), V_TRUE) == 0) {
-    return true;
-  } else {
-    return false;
-  }
+  return get(name) == V_TRUE;
 }
 
 double Option::getAsDouble(const std::string& name) const {

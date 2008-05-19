@@ -1,3 +1,15 @@
+2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Defined option name and possible values as std::string to reduce
+	temporary string object creation in runtime.
+	* src/HelpItemFactory.cc
+	* src/LogFactory.cc
+	* src/Option.cc
+	* src/OptionHandlerFactory.cc
+	* src/option_processing.cc
+	* src/prefs.cc
+	* src/prefs.h
+
 2008-05-18  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Return const reference.

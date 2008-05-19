@@ -36,245 +36,247 @@
 #define _D_PREFS_H_
 
 #include "common.h"
+#include <string>
+
+namespace aria2 {
 
 /**
  * Constants
  */
-#undef V_TRUE
-#define V_TRUE "true"
-#undef V_FALSE
-#define V_FALSE "false"
-#undef V_NONE
-#define V_NONE "none"
-#define V_MEM "mem"
-#define V_ALL "all"
+extern const std::string V_TRUE;
+extern const std::string V_FALSE;
+extern const std::string V_NONE;
+extern const std::string V_MEM;
+extern const std::string V_ALL;
 /**
  * General preferences
  */
 // values: 1*digit
-#define PREF_RETRY_WAIT "retry-wait"
+extern const std::string PREF_RETRY_WAIT;
 // values: 1*digit
-#define PREF_TIMEOUT "timeout"
+extern const std::string PREF_TIMEOUT;
 // values: 1*digit
-#define PREF_DNS_TIMEOUT "dns-timeout"
+extern const std::string PREF_DNS_TIMEOUT;
 // values: 1*digit
-#define PREF_MAX_TRIES "max-tries"
+extern const std::string PREF_MAX_TRIES;
 // values: 1*digit
-#define PREF_MIN_SEGMENT_SIZE "min-segment-size"
+extern const std::string PREF_MIN_SEGMENT_SIZE;
 // values: 1*digit
-#define PREF_AUTO_SAVE_INTERVAL "auto-save-interval"
+extern const std::string PREF_AUTO_SAVE_INTERVAL;
 // values: true | false
-#define PREF_STDOUT_LOG "stdout-log"
+extern const std::string PREF_STDOUT_LOG;
 // values: a string that your file system recognizes as a file name.
-#define PREF_LOG "log"
+extern const std::string PREF_LOG;
 // values: a string that your file system recognizes as a directory.
-#define PREF_DIR "dir"
+extern const std::string PREF_DIR;
 // values: a string that your file system recognizes as a file name.
-#define PREF_OUT "out"
+extern const std::string PREF_OUT;
 // values: 1*digit
-#define PREF_SPLIT "split"
+extern const std::string PREF_SPLIT;
 // value: true | false
-#define PREF_DAEMON "daemon"
+extern const std::string PREF_DAEMON;
 // value: a string
-#define PREF_REFERER "referer"
+extern const std::string PREF_REFERER;
 // value: 1*digit
-#define PREF_LOWEST_SPEED_LIMIT "lowest-speed-limit"
+extern const std::string PREF_LOWEST_SPEED_LIMIT;
 // value: 1*digit
-#define PREF_SEGMENT_SIZE "segment-size"
+extern const std::string PREF_SEGMENT_SIZE;
 // value: 1*digit
-#define PREF_MAX_DOWNLOAD_LIMIT "max-download-limit"
+extern const std::string PREF_MAX_DOWNLOAD_LIMIT;
 // value: 1*digit
-#define PREF_STARTUP_IDLE_TIME "startup-idle-time"
+extern const std::string PREF_STARTUP_IDLE_TIME;
 // value: prealloc | none
-#define PREF_FILE_ALLOCATION "file-allocation"
-#  define V_PREALLOC "prealloc"
+extern const std::string PREF_FILE_ALLOCATION;
+extern const std::string V_PREALLOC;
 #// value: 1*digit
-#define PREF_NO_FILE_ALLOCATION_LIMIT "no-file-allocation-limit"
+extern const std::string PREF_NO_FILE_ALLOCATION_LIMIT;
 // value: true | false
-#define PREF_ALLOW_OVERWRITE "allow-overwrite"
+extern const std::string PREF_ALLOW_OVERWRITE;
 // value: true | false
-#define PREF_REALTIME_CHUNK_CHECKSUM "realtime-chunk-checksum"
+extern const std::string PREF_REALTIME_CHUNK_CHECKSUM;
 // value: true | false
-#define PREF_CHECK_INTEGRITY "check-integrity"
+extern const std::string PREF_CHECK_INTEGRITY;
 // value: string that your file system recognizes as a file name.
-#define PREF_NETRC_PATH "netrc-path"
+extern const std::string PREF_NETRC_PATH;
 // value:
-#define PREF_CONTINUE "continue"
+extern const std::string PREF_CONTINUE;
 // value:
-#define PREF_NO_NETRC "no-netrc"
+extern const std::string PREF_NO_NETRC;
 // value: 1*digit
-#define PREF_MAX_DOWNLOADS "max-downloads"
+extern const std::string PREF_MAX_DOWNLOADS;
 // value: string that your file system recognizes as a file name.
-#define PREF_INPUT_FILE "input-file"
+extern const std::string PREF_INPUT_FILE;
 // value: 1*digit
-#define PREF_MAX_CONCURRENT_DOWNLOADS "max-concurrent-downloads"
+extern const std::string PREF_MAX_CONCURRENT_DOWNLOADS;
 // value: 1*digit
-#define PREF_DIRECT_DOWNLOAD_TIMEOUT "direct-download-timeout"
+extern const std::string PREF_DIRECT_DOWNLOAD_TIMEOUT;
 // value: true | false
-#define PREF_FORCE_SEQUENTIAL "force-sequential"
+extern const std::string PREF_FORCE_SEQUENTIAL;
 // value: true | false
-#define PREF_AUTO_FILE_RENAMING "auto-file-renaming"
+extern const std::string PREF_AUTO_FILE_RENAMING;
 // value: true | false
-#define PREF_PARAMETERIZED_URI "parameterized-uri"
+extern const std::string PREF_PARAMETERIZED_URI;
 // value: true | false
-#define PREF_ENABLE_DIRECT_IO "enable-direct-io"
+extern const std::string PREF_ENABLE_DIRECT_IO;
 // value: true | false
-#define PREF_ALLOW_PIECE_LENGTH_CHANGE "allow-piece-length-change"
+extern const std::string PREF_ALLOW_PIECE_LENGTH_CHANGE;
 // value: true | false
-#define PREF_NO_CONF "no-conf"
+extern const std::string PREF_NO_CONF;
 // value: string
-#define PREF_CONF_PATH "conf-path"
+extern const std::string PREF_CONF_PATH;
 // value: 1*digit
-#define PREF_STOP "stop"
+extern const std::string PREF_STOP;
 // value: true | false
-#define PREF_QUIET "quiet"
+extern const std::string PREF_QUIET;
 // value: true | false
-#define PREF_ASYNC_DNS "async-dns"
+extern const std::string PREF_ASYNC_DNS;
 // value: 1*digit
-#define PREF_SUMMARY_INTERVAL "summary-interval"
+extern const std::string PREF_SUMMARY_INTERVAL;
 // value: debug, info, notice, warn, error
-#define PREF_LOG_LEVEL "log-level"
-#  define V_DEBUG "debug"
-#  define V_INFO "info"
-#  define V_NOTICE "notice"
-#  define V_WARN "warn"
-#  define V_ERROR "error"
+extern const std::string PREF_LOG_LEVEL;
+extern const std::string V_DEBUG;
+extern const std::string V_INFO;
+extern const std::string V_NOTICE;
+extern const std::string V_WARN;
+extern const std::string V_ERROR;
 
 /**
  * FTP related preferences
  */
-#define PREF_FTP_USER "ftp-user"
-#define PREF_FTP_PASSWD "ftp-passwd"
+extern const std::string PREF_FTP_USER;
+extern const std::string PREF_FTP_PASSWD;
 // values: binary | ascii
-#define PREF_FTP_TYPE "ftp-type"
-#  define V_BINARY "binary"
-#  define V_ASCII "ascii"
+extern const std::string PREF_FTP_TYPE;
+extern const std::string V_BINARY;
+extern const std::string V_ASCII;
 // values: get | tunnel
-#define PREF_FTP_VIA_HTTP_PROXY "ftp-via-http-proxy"
-#  define V_GET "get"
-#  define V_TUNNEL "tunnel"
+extern const std::string PREF_FTP_VIA_HTTP_PROXY;
+extern const std::string V_GET;
+extern const std::string V_TUNNEL;
 // values: true | false
-#define PREF_FTP_PASV "ftp-pasv"
+extern const std::string PREF_FTP_PASV;
 // values: true | false
-#define PREF_FTP_REUSE_CONNECTION "ftp-reuse-connection"
+extern const std::string PREF_FTP_REUSE_CONNECTION;
 
 /**
  * HTTP related preferences
  */
-#define PREF_HTTP_USER "http-user"
-#define PREF_HTTP_PASSWD "http-passwd"
+extern const std::string PREF_HTTP_USER;
+extern const std::string PREF_HTTP_PASSWD;
 // values: basic
-#define PREF_HTTP_AUTH_SCHEME "http-auth-scheme"
-#  define V_BASIC "basic"
+extern const std::string PREF_HTTP_AUTH_SCHEME;
+extern const std::string V_BASIC;
 // values: true | false
-#define PREF_HTTP_AUTH_ENABLED "http-auth-enabled"
+extern const std::string PREF_HTTP_AUTH_ENABLED;
 // values: string
-#define PREF_USER_AGENT "user-agent"
+extern const std::string PREF_USER_AGENT;
 // value: string that your file system recognizes as a file name.
-#define PREF_LOAD_COOKIES "load-cookies"
+extern const std::string PREF_LOAD_COOKIES;
 // values: true | false
-#define PREF_ENABLE_HTTP_KEEP_ALIVE "enable-http-keep-alive"
+extern const std::string PREF_ENABLE_HTTP_KEEP_ALIVE;
 // values: true | false
-#define PREF_ENABLE_HTTP_PIPELINING "enable-http-pipelining"
+extern const std::string PREF_ENABLE_HTTP_PIPELINING;
 // value: 1*digit
-#define PREF_MAX_HTTP_PIPELINING "max-http-pipelining"
+extern const std::string PREF_MAX_HTTP_PIPELINING;
 // value: string
-#define PREF_HEADER "header"
+extern const std::string PREF_HEADER;
 
-/** 
+/**;
  * HTTP proxy related preferences
  */
-#define PREF_HTTP_PROXY "http-proxy"
-#define PREF_HTTP_PROXY_USER "http-proxy-user"
-#define PREF_HTTP_PROXY_PASSWD "http-proxy-passwd"
-#define PREF_HTTP_PROXY_HOST "http-proxy-host"
-#define PREF_HTTP_PROXY_PORT "http-proxy-port"
+extern const std::string PREF_HTTP_PROXY;
+extern const std::string PREF_HTTP_PROXY_USER;
+extern const std::string PREF_HTTP_PROXY_PASSWD;
+extern const std::string PREF_HTTP_PROXY_HOST;
+extern const std::string PREF_HTTP_PROXY_PORT;
 // values: get | tunnel
-#define PREF_HTTP_PROXY_METHOD "http-proxy-method"
+extern const std::string PREF_HTTP_PROXY_METHOD;
 // values: true | false
-#define PREF_HTTP_PROXY_ENABLED "http-proxy-enabled"
+extern const std::string PREF_HTTP_PROXY_ENABLED;
 // values: true | false
-#define PREF_HTTP_PROXY_AUTH_ENABLED "http-proxy-auth-enabled"
+extern const std::string PREF_HTTP_PROXY_AUTH_ENABLED;
 
 /**
  * BitTorrent related preferences
  */
 // values: 1*digit
-#define PREF_PEER_CONNECTION_TIMEOUT "peer-connection-timeout"
+extern const std::string PREF_PEER_CONNECTION_TIMEOUT;
 // values: 1*digit
-#define PREF_BT_TIMEOUT "bt-timeout"
+extern const std::string PREF_BT_TIMEOUT;
 // values: 1*digit
-#define PREF_BT_REQUEST_TIMEOUT "bt-request-timeout"
+extern const std::string PREF_BT_REQUEST_TIMEOUT;
 // values: true | false
-#define PREF_SHOW_FILES "show-files"
+extern const std::string PREF_SHOW_FILES;
 // values: true | false
-#define PREF_NO_PREALLOCATION "no-preallocation"
+extern const std::string PREF_NO_PREALLOCATION;
 // values: true | false
-#define PREF_DIRECT_FILE_MAPPING "direct-file-mapping"
+extern const std::string PREF_DIRECT_FILE_MAPPING;
 // values: 1*digit
-#define PREF_MAX_UPLOAD_LIMIT "max-upload-limit"
+extern const std::string PREF_MAX_UPLOAD_LIMIT;
 // values: a string that your file system recognizes as a file name.
-#define PREF_TORRENT_FILE "torrent-file"
+extern const std::string PREF_TORRENT_FILE;
 // values: 1*digit
-#define PREF_LISTEN_PORT "listen-port"
+extern const std::string PREF_LISTEN_PORT;
 // values: true | false | mem
-#define PREF_FOLLOW_TORRENT "follow-torrent"
+extern const std::string PREF_FOLLOW_TORRENT;
 // values: 1*digit *( (,|-) 1*digit)
-#define PREF_SELECT_FILE "select-file"
+extern const std::string PREF_SELECT_FILE;
 // values: 1*digit
-#define PREF_SEED_TIME "seed-time"
+extern const std::string PREF_SEED_TIME;
 // values: 1*digit ['.' [ 1*digit ] ]
-#define PREF_SEED_RATIO "seed-ratio"
+extern const std::string PREF_SEED_RATIO;
 // values: 1*digit
-#define PREF_TRACKER_MAX_TRIES "tracker-max-tries"
+extern const std::string PREF_TRACKER_MAX_TRIES;
 // values: 1*digit
-#define PREF_BT_KEEP_ALIVE_INTERVAL "bt-keep-alive-interval"
+extern const std::string PREF_BT_KEEP_ALIVE_INTERVAL;
 // values: a string, less than or equals to 20 bytes length
-#define PREF_PEER_ID_PREFIX "peer-id-prefix"
+extern const std::string PREF_PEER_ID_PREFIX;
 // values: true | false
-#define PREF_ENABLE_PEER_EXCHANGE "enable-peer-exchange"
+extern const std::string PREF_ENABLE_PEER_EXCHANGE;
 // values: true | false
-#define PREF_ENABLE_DHT "enable-dht"
+extern const std::string PREF_ENABLE_DHT;
 // values: 1*digit
-#define PREF_DHT_LISTEN_PORT "dht-listen-port"
+extern const std::string PREF_DHT_LISTEN_PORT;
 // values: a string
-#define PREF_DHT_ENTRY_POINT_HOST "dht-entry-point-host"
+extern const std::string PREF_DHT_ENTRY_POINT_HOST;
 // values: 1*digit
-#define PREF_DHT_ENTRY_POINT_PORT "dht-entry-point-port"
+extern const std::string PREF_DHT_ENTRY_POINT_PORT;
 // values: a string (hostname:port)
-#define PREF_DHT_ENTRY_POINT "dht-entry-point"
+extern const std::string PREF_DHT_ENTRY_POINT;
 // values: a string
-#define PREF_DHT_FILE_PATH "dht-file-path"
+extern const std::string PREF_DHT_FILE_PATH;
 // values: plain | arc4
-#define PREF_BT_MIN_CRYPTO_LEVEL "bt-min-crypto-level"
-#  define V_PLAIN "plain"
-#  define V_ARC4 "arc4"
+extern const std::string PREF_BT_MIN_CRYPTO_LEVEL;
+extern const std::string V_PLAIN;
+extern const std::string V_ARC4;
 // values:: true | false
-#define PREF_BT_REQUIRE_CRYPTO "bt-require-crypto"
+extern const std::string PREF_BT_REQUIRE_CRYPTO;
 
 /**
  * Metalink related preferences
  */
 // values: a string that your file system recognizes as a file name.
-#define PREF_METALINK_FILE "metalink-file"
+extern const std::string PREF_METALINK_FILE;
 // values: a string
-#define PREF_METALINK_VERSION "metalink-version"
+extern const std::string PREF_METALINK_VERSION;
 // values: a string
-#define PREF_METALINK_LANGUAGE "metalink-language"
+extern const std::string PREF_METALINK_LANGUAGE;
 // values: a string
-#define PREF_METALINK_OS "metalink-os"
+extern const std::string PREF_METALINK_OS;
 // values: a string
-#define PREF_METALINK_LOCATION "metalink-location"
+extern const std::string PREF_METALINK_LOCATION;
 // values: 1*digit
-#define PREF_METALINK_SERVERS "metalink-servers"
+extern const std::string PREF_METALINK_SERVERS;
 // values: true | false | mem
-#define PREF_FOLLOW_METALINK "follow-metalink"
+extern const std::string PREF_FOLLOW_METALINK;
 // values: http | https | ftp | none
-#define PREF_METALINK_PREFERRED_PROTOCOL "metalink-preferred-protocol"
-#  define V_HTTP "http"
-#  define V_HTTPS "https"
-#  define V_FTP "ftp"
+extern const std::string PREF_METALINK_PREFERRED_PROTOCOL;
+extern const std::string V_HTTP;
+extern const std::string V_HTTPS;
+extern const std::string V_FTP;
 // values: true | false
-#define PREF_METALINK_ENABLE_UNIQUE_PROTOCOL "metalink-enable-unique-protocol"
+extern const std::string PREF_METALINK_ENABLE_UNIQUE_PROTOCOL;
+
+} // namespace aria2
 
 #endif // _D_PREFS_H_

@@ -483,7 +483,9 @@ TagContainerHandle HelpItemFactory::createHelpItems(const Option* op)
 				     op->get(PREF_LOG_LEVEL)));
     item->addTag(TAG_ADVANCED);
     item->setAvailableValues
-      (StringFormat("%s,%s,%s,%s,%s", V_DEBUG, V_INFO, V_NOTICE, V_WARN, V_ERROR).str());
+      (StringFormat("%s,%s,%s,%s,%s",
+		    V_DEBUG.c_str(), V_INFO.c_str(), V_NOTICE.c_str(),
+		    V_WARN.c_str(), V_ERROR.c_str()).str());
     tc->addItem(item);
   }
   {
