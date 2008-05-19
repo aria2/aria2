@@ -256,12 +256,12 @@ void HttpRequest::configure(const Option* option)
   proxyAuthEnabled = option->getAsBool(PREF_HTTP_PROXY_AUTH_ENABLED);
 }
 
-std::string HttpRequest::getPreviousURI() const
+const std::string& HttpRequest::getPreviousURI() const
 {
   return request->getPreviousUrl();
 }
 
-std::string HttpRequest::getHost() const
+const std::string& HttpRequest::getHost() const
 {
   return request->getHost();
 }
@@ -271,32 +271,32 @@ uint16_t HttpRequest::getPort() const
   return request->getPort();
 }
 
-std::string HttpRequest::getMethod() const
+const std::string& HttpRequest::getMethod() const
 {
   return request->getMethod();
 }
 
-std::string HttpRequest::getProtocol() const
+const std::string& HttpRequest::getProtocol() const
 {
   return request->getProtocol();
 }
 
-std::string HttpRequest::getCurrentURI() const
+const std::string& HttpRequest::getCurrentURI() const
 {
   return request->getCurrentUrl();
 }
   
-std::string HttpRequest::getDir() const
+const std::string& HttpRequest::getDir() const
 {
   return request->getDir();
 }
 
-std::string HttpRequest::getFile() const
+const std::string& HttpRequest::getFile() const
 {
   return request->getFile();
 }
 
-std::string HttpRequest::getQuery() const
+const std::string& HttpRequest::getQuery() const
 {
   return request->getQuery();
 }

@@ -85,9 +85,9 @@ bool Request::parseUrl(const std::string& url) {
   std::string tempUrl;
   std::string::size_type sharpIndex = url.find("#");
   if(sharpIndex != std::string::npos) {
-    tempUrl = urlencode(url.substr(0, sharpIndex));
+    urlencode(tempUrl, url.substr(0, sharpIndex));
   } else {
-    tempUrl = urlencode(url);
+    urlencode(tempUrl, url);
   }
   currentUrl = tempUrl;
   std::string query;
@@ -173,13 +173,14 @@ bool Request::isHexNumber(const char c) const
   return ('0' <= c && c <= '9') || ('A' <= c && c <= 'F') || ('a' <= c && c <= 'f');
 }
 
-std::string Request::urlencode(const std::string& src) const
+void Request::urlencode(std::string& result, const std::string& src) const
 {
   if(src.empty()) {
-    return A2STR::NIL;
+    result = A2STR::NIL;
+    return;
   }
   size_t lastIndex = src.size()-1;
-  std::string result = src+"  ";
+  result = src+"  ";
   size_t index = lastIndex;
   while(index-- > 0) {
     const char c = result[index];
@@ -194,7 +195,7 @@ std::string Request::urlencode(const std::string& src) const
       }
     }
   }
-  return result.substr(0, result.size()-2);
+  result.erase(result.size()-2);
 }
 
 } // namespace aria2

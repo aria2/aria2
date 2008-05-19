@@ -96,23 +96,23 @@ public:
     return entityLength;
   }
 
-  std::string getHost() const;
+  const std::string& getHost() const;
 
   uint16_t getPort() const;
 
-  std::string getMethod() const;
+  const std::string& getMethod() const;
 
-  std::string getProtocol() const;
+  const std::string& getProtocol() const;
 
-  std::string getCurrentURI() const;
+  const std::string& getCurrentURI() const;
   
-  std::string getDir() const;
+  const std::string& getDir() const;
 
-  std::string getFile() const;
+  const std::string& getFile() const;
 
-  std::string getQuery() const;
+  const std::string& getQuery() const;
 
-  std::string getPreviousURI() const;
+  const std::string& getPreviousURI() const;
 
   SharedHandle<Range> getRange() const;
 

@@ -1,5 +1,14 @@
 2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Returns const reference. The internal urlencode function was optimized
+	a little bit.
+	* src/Request.cc
+	* src/Request.h
+	* src/HttpRequest.cc
+	* src/HttpRequest.h
+
+2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Defined option name and possible values as std::string to reduce
 	temporary string object creation in runtime.
 	* src/HelpItemFactory.cc

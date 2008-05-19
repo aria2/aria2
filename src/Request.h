@@ -90,7 +90,7 @@ private:
 
   bool isHexNumber(const char c) const;
 
-  std::string urlencode(const std::string& src) const;
+  void urlencode(std::string& result, const std::string& src) const;
 
 public:
   SharedHandle<CookieBox> cookieBox;
@@ -111,17 +111,17 @@ public:
   unsigned int getTryCount() const { return tryCount; }
   //bool noMoreTry() const { return tryCount >= PREF_MAX_TRY; }
 
-  std::string getUrl() const { return url; }
-  std::string getCurrentUrl() const { return currentUrl; }
-  std::string getPreviousUrl() const { return previousUrl; }
-  std::string getReferer() const { return referer; }
+  const std::string& getUrl() const { return url; }
+  const std::string& getCurrentUrl() const { return currentUrl; }
+  const std::string& getPreviousUrl() const { return previousUrl; }
+  const std::string& getReferer() const { return referer; }
   void setReferer(const std::string& url) { referer = previousUrl = url; }
-  std::string getProtocol() const { return protocol; }
-  std::string getHost() const { return host; }
+  const std::string& getProtocol() const { return protocol; }
+  const std::string& getHost() const { return host; }
   uint16_t getPort() const { return port; }
-  std::string getDir() const { return dir; }
-  std::string getFile() const { return file;}
-  std::string getQuery() const { return _query; }
+  const std::string& getDir() const { return dir; }
+  const std::string& getFile() const { return file;}
+  const std::string& getQuery() const { return _query; }
 
   void supportsPersistentConnection(bool f)
   {
