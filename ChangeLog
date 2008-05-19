@@ -1,5 +1,9 @@
 2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	* src/RequestGroup.h (getDir): Removed.
+	
+2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Returns const reference. The internal urlencode function was optimized
 	a little bit.
 	* src/Request.cc

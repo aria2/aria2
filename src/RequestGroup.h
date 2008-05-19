@@ -163,8 +163,6 @@ public:
 
   std::string getFilePath() const;
 
-  std::string getDir() const;
-
   uint64_t getTotalLength() const;
 
   uint64_t getCompletedLength() const;
