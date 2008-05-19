@@ -33,7 +33,7 @@ Basic Options
 
 -j, --max-concurrent-downloads=N::
   Set maximum number of parallel downloads.
-  Default: '1'
+  Default: '5'
 
 --check-integrity='true'|'false'::
   Check file integrity by validating piece hash.
@@ -302,7 +302,7 @@ Metalink Specific Options
   The number of servers to connect to simultaneously.
   Some metalinks regulates the number of servers to connect.
   aria2 respects them.
-  Default: '1'
+  Default: '5'
 
 --metalink-language=LANGUAGE::
   The language of the file to download.
@@ -526,7 +526,7 @@ The index is printed to the console using -S option.
 Download a file using a local .metalink file with user preference
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ------------------------------------------------------------------------------
-aria2c --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US -C2 file.metalink
+aria2c --metalink-location=JP,US --metalink-version=1.1 --metalink-language=en-US file.metalink
 ------------------------------------------------------------------------------
 
 BitTorrent Download

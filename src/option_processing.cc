@@ -80,7 +80,7 @@ Option* createDefaultOption()
   op->put(PREF_DAEMON, V_FALSE);
   op->put(PREF_SEGMENT_SIZE, Util::itos((int32_t)(1024*1024)));
   op->put(PREF_LISTEN_PORT, "6881-6999");
-  op->put(PREF_METALINK_SERVERS, "1");
+  op->put(PREF_METALINK_SERVERS, "5");
   op->put(PREF_FOLLOW_TORRENT,
 #ifdef ENABLE_BITTORRENT
 	  V_TRUE
@@ -124,7 +124,7 @@ Option* createDefaultOption()
   op->put(PREF_CONTINUE, V_FALSE);
   op->put(PREF_USER_AGENT, "aria2");
   op->put(PREF_NO_NETRC, V_FALSE);
-  op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "1");
+  op->put(PREF_MAX_CONCURRENT_DOWNLOADS, "5");
   op->put(PREF_DIRECT_DOWNLOAD_TIMEOUT, "300");
   op->put(PREF_FORCE_SEQUENTIAL, V_FALSE);
   op->put(PREF_AUTO_FILE_RENAMING, V_TRUE);

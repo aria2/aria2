@@ -1,11 +1,11 @@
 .\"     Title: aria2c
 .\"    Author: 
 .\" Generator: DocBook XSL Stylesheets v1.73.1 <http://docbook.sf.net/>
-.\"      Date: 05/16/2008
+.\"      Date: 05/19/2008
 .\"    Manual: 
 .\"    Source: 
 .\"
-.TH "ARIA2C" "1" "05/16/2008" "" ""
+.TH "ARIA2C" "1" "05/19/2008" "" ""
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
@@ -43,7 +43,7 @@ is specified, log is written to stdout\.
 \-j, \-\-max\-concurrent\-downloads=N
 .RS 4
 Set maximum number of parallel downloads\. Default:
-\fI1\fR
+\fI5\fR
 .RE
 .PP
 \-\-check\-integrity=\fItrue\fR|\fIfalse\fR
@@ -410,7 +410,7 @@ The file path to \.metalink file\. You may not use this option because you can s
 \-C, \-\-metalink\-servers=NUM_SERVERS
 .RS 4
 The number of servers to connect to simultaneously\. Some metalinks regulates the number of servers to connect\. aria2 respects them\. Default:
-\fI1\fR
+\fI5\fR
 .RE
 .PP
 \-\-metalink\-language=LANGUAGE
@@ -789,7 +789,7 @@ Download a file using a local .metalink file with user preference
 .sp
 .RS 4
 .nf
-aria2c \-\-metalink\-location=JP,US \-\-metalink\-version=1\.1 \-\-metalink\-language=en\-US \-C2 file\.metalink
+aria2c \-\-metalink\-location=JP,US \-\-metalink\-version=1\.1 \-\-metalink\-language=en\-US file\.metalink
 .fi
 .RE
 .RE
