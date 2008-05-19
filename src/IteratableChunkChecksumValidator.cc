@@ -47,6 +47,7 @@
 #include "messageDigest.h"
 #include "StringFormat.h"
 #include <cerrno>
+#include <cstring>
 
 namespace aria2 {
 

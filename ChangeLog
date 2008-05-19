@@ -1,3 +1,10 @@
+2008-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
+	Fixed compile error with OpenSSL.
+	* src/IteratableChunkChecksumValidator.cc
+	* src/LibsslDHKeyExchange.h
+	* src/MessageDigestHelper.cc
+
 2008-05-19  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
 	Revert the default value of --max-concurrent-downloads to 5.

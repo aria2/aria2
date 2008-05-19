@@ -38,6 +38,7 @@
 #include "common.h"
 #include "DlAbortEx.h"
 #include "StringFormat.h"
+#include <cstring>
 #include <openssl/dh.h>
 #include <openssl/rand.h>
 #include <openssl/err.h>
