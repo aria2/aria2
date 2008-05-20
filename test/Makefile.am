@@ -51,7 +51,8 @@ aria2c_SOURCES = AllTest.cc\
 	FixedNumberRandomizer.h\
 	ProtocolDetectorTest.cc\
 	StringFormatTest.cc\
-	ExceptionTest.cc
+	ExceptionTest.cc\
+	DownloadHandlerFactoryTest.cc
 
 if ENABLE_MESSAGE_DIGEST
 aria2c_SOURCES += MessageDigestHelperTest.cc\
@@ -101,7 +102,6 @@ aria2c_SOURCES += BtAllowedFastMessageTest.cc\
 	BtRegistryTest.cc\
 	BtDependencyTest.cc\
 	BtPostDownloadHandlerTest.cc\
-	DownloadHandlerFactoryTest.cc\
 	TimeSeedCriteriaTest.cc\
 	BencodeVisitorTest.cc\
 	BtExtendedMessageTest.cc\

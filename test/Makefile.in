@@ -82,7 +82,6 @@ check_PROGRAMS = $(am__EXEEXT_1)
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.cc\
-@ENABLE_BITTORRENT_TRUE@	DownloadHandlerFactoryTest.cc\
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BencodeVisitorTest.cc\
 @ENABLE_BITTORRENT_TRUE@	BtExtendedMessageTest.cc\
@@ -190,7 +189,7 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
 	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
-	MessageDigestHelperTest.cc \
+	DownloadHandlerFactoryTest.cc MessageDigestHelperTest.cc \
 	IteratableChunkChecksumValidatorTest.cc \
 	IteratableChecksumValidatorTest.cc BtAllowedFastMessageTest.cc \
 	BtBitfieldMessageTest.cc BtCancelMessageTest.cc \
@@ -212,10 +211,9 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 	PeerSessionResourceTest.cc PeerMessageUtilTest.cc \
 	ShareRatioSeedCriteriaTest.cc BtRegistryTest.cc \
 	BtDependencyTest.cc BtPostDownloadHandlerTest.cc \
-	DownloadHandlerFactoryTest.cc TimeSeedCriteriaTest.cc \
-	BencodeVisitorTest.cc BtExtendedMessageTest.cc \
-	HandshakeExtensionMessageTest.cc UTPexExtensionMessageTest.cc \
-	DefaultBtMessageFactoryTest.cc \
+	TimeSeedCriteriaTest.cc BencodeVisitorTest.cc \
+	BtExtendedMessageTest.cc HandshakeExtensionMessageTest.cc \
+	UTPexExtensionMessageTest.cc DefaultBtMessageFactoryTest.cc \
 	DefaultExtensionMessageFactoryTest.cc DHTNodeTest.cc \
 	DHTBucketTest.cc DHTRoutingTableTest.cc \
 	DHTMessageTrackerEntryTest.cc DHTMessageTrackerTest.cc \
@@ -282,7 +280,6 @@ am__aria2c_SOURCES_DIST = AllTest.cc SocketCoreTest.cc \
 @ENABLE_BITTORRENT_TRUE@	BtRegistryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtDependencyTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtPostDownloadHandlerTest.$(OBJEXT) \
-@ENABLE_BITTORRENT_TRUE@	DownloadHandlerFactoryTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	TimeSeedCriteriaTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BencodeVisitorTest.$(OBJEXT) \
 @ENABLE_BITTORRENT_TRUE@	BtExtendedMessageTest.$(OBJEXT) \
@@ -354,8 +351,8 @@ am_aria2c_OBJECTS = AllTest.$(OBJEXT) SocketCoreTest.$(OBJEXT) \
 	SpeedCalcTest.$(OBJEXT) MultiDiskAdaptorTest.$(OBJEXT) \
 	MultiFileAllocationIteratorTest.$(OBJEXT) \
 	ProtocolDetectorTest.$(OBJEXT) StringFormatTest.$(OBJEXT) \
-	ExceptionTest.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3)
+	ExceptionTest.$(OBJEXT) DownloadHandlerFactoryTest.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3)
 aria2c_OBJECTS = $(am_aria2c_OBJECTS)
 am__DEPENDENCIES_1 =
 aria2c_DEPENDENCIES = ../src/libaria2c.a $(am__DEPENDENCIES_1)
@@ -592,7 +589,8 @@ aria2c_SOURCES = AllTest.cc SocketCoreTest.cc array_funTest.cc \
 	FeatureConfigTest.cc SpeedCalcTest.cc MultiDiskAdaptorTest.cc \
 	MultiFileAllocationIteratorTest.cc FixedNumberRandomizer.h \
 	ProtocolDetectorTest.cc StringFormatTest.cc ExceptionTest.cc \
-	$(am__append_1) $(am__append_2) $(am__append_3)
+	DownloadHandlerFactoryTest.cc $(am__append_1) $(am__append_2) \
+	$(am__append_3)
 
 #aria2c_CXXFLAGS = ${CPPUNIT_CFLAGS} -I../src -I../lib -Wall -D_FILE_OFFSET_BITS=64
 #aria2c_LDFLAGS = ${CPPUNIT_LIBS}
