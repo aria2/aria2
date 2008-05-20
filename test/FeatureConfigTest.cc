@@ -1,4 +1,8 @@
 #include "FeatureConfig.h"
+#include "a2functional.h"
+#include "array_fun.h"
+#include "Util.h"
+#include <algorithm>
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace aria2 {
@@ -44,33 +48,38 @@ void FeatureConfigTest::testIsSupported() {
 }
 
 void FeatureConfigTest::testFeatureSummary() {
-  CPPUNIT_ASSERT_EQUAL(
+  const std::string features[] = {
+
 #ifdef ENABLE_ASYNC_DNS
-		       std::string("Async DNS, ")
-#else
-		       std::string()
+    "Async DNS",
 #endif // ENABLE_ASYNC_DNS
+
 #ifdef ENABLE_BITTORRENT
-		       +std::string("BitTorrent, ")
-#else
-		       +std::string()
+    "BitTorrent",
 #endif // ENABLE_BITTORRENT
+
 #ifdef ENABLE_SSL
-		       +std::string("HTTPS, ")
-#else
-		       +std::string()
+    "HTTPS",
 #endif // ENABLE_SSL
+
 #ifdef ENABLE_MESSAGE_DIGEST
-		       +std::string("Message Digest, ")
-#else
-		       +std::string()
+    "Message Digest",
 #endif // ENABLE_MESSAGE_DIGEST
+
 #ifdef ENABLE_METALINK
-		       +std::string("Metalink")
-#else
-		       +std::string()
+    "Metalink",
 #endif // ENABLE_METALINK
-		       ,
+
+  };
+
+  std::string featuresString;
+  const std::string delim(", ");
+  std::for_each(&features[0], &features[arrayLength(features)],
+		StringAppend(featuresString, delim));
+  // USE Util::trimSelf(featureString);
+  featuresString = Util::trim(featuresString, delim);
+  
+  CPPUNIT_ASSERT_EQUAL(featuresString,
 		       FeatureConfig::getInstance()->featureSummary());
 }
 

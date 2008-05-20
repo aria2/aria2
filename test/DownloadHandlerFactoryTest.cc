@@ -11,8 +11,10 @@ namespace aria2 {
 class DownloadHandlerFactoryTest:public CppUnit::TestFixture {
 
   CPPUNIT_TEST_SUITE(DownloadHandlerFactoryTest);
+#ifdef ENABLE_METALINK
   CPPUNIT_TEST(testGetMetalinkPreDownloadHandler_extension);
   CPPUNIT_TEST(testGetMetalinkPreDownloadHandler_contentType);
+#endif // ENABLE_METALINK
   CPPUNIT_TEST(testGetBtPreDownloadHandler_extension);
   CPPUNIT_TEST(testGetBtPreDownloadHandler_contentType);
   CPPUNIT_TEST_SUITE_END();
@@ -21,14 +23,19 @@ private:
 public:
   void setUp() {}
 
+#ifdef ENABLE_METALINK
   void testGetMetalinkPreDownloadHandler_extension();
   void testGetMetalinkPreDownloadHandler_contentType();
+#endif // ENABLE_METALINK
+
   void testGetBtPreDownloadHandler_extension();
   void testGetBtPreDownloadHandler_contentType();
 };
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( DownloadHandlerFactoryTest );
+
+#ifdef ENABLE_METALINK
 
 void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_extension()
 {
@@ -62,6 +69,8 @@ void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_contentType()
   dctx->setContentType("application/octet-stream");
   CPPUNIT_ASSERT(!handler->canHandle(&rg));
 }
+
+#endif // ENABLE_METALINK
 
 void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 {
