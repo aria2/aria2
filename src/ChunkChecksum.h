@@ -78,7 +78,7 @@ public:
     return _checksums.size();
   }
 
-  std::string getChecksum(size_t index) const
+  const std::string& getChecksum(size_t index) const
   {
     if(index < _checksums.size()) {
       return _checksums[index];
