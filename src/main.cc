@@ -66,6 +66,7 @@
 #include "NullStatCalc.h"
 #include "StringFormat.h"
 #include "A2STR.h"
+#include "RecoverableException.h"
 #ifdef ENABLE_METALINK
 # include "MetalinkHelper.h"
 # include "Metalink2RequestGroup.h"

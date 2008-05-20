@@ -7,7 +7,6 @@
 #include "DefaultPieceStorage.h"
 #include "Segment.h"
 #include "Option.h"
-#include "MockBtContext.h"
 #include "FileEntry.h"
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -62,10 +61,8 @@ void SegmentManTest::testCompleteSegment()
   Option op;
   size_t pieceLength = 1024*1024;
   uint64_t totalLength = 64*1024*1024;
-  SharedHandle<MockBtContext> dctx(new MockBtContext());
-  dctx->setPieceLength(pieceLength);
-  dctx->setTotalLength(totalLength);
-  dctx->setNumPieces((totalLength+pieceLength-1)/pieceLength);
+  SharedHandle<SingleFileDownloadContext> dctx
+    (new SingleFileDownloadContext(pieceLength, totalLength, "aria2.tar.bz2"));
   SharedHandle<DefaultPieceStorage> ps(new DefaultPieceStorage(dctx, &op));
 
   SegmentMan segmentMan(&op, dctx, ps);

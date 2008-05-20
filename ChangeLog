@@ -1,5 +1,13 @@
 2008-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed compile error when configured with --without-gnutls
+	--without-openssl
+	* src/main.cc
+	* test/DefaultBtProgressInfoFileTest.cc
+	* test/SegmentManTest.cc
+
+2008-05-20  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Fixed compile error with OpenSSL.
 	* src/IteratableChunkChecksumValidator.cc
 	* src/LibsslDHKeyExchange.h
