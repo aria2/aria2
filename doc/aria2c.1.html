@@ -312,7 +312,7 @@ div#toc a:visited { color: blue; }
 </div>
 <h2>SYNOPSIS</h2>
 <div class="sectionbody">
-<p><em>aria2c</em> [OPTIONS] URL|TORRENT_FILE|METALINK_FILE &#8230;</p>
+<p>aria2c [<em>OPTIONS</em>] [<em>URL</em> | <em>TORRENT_FILE</em> | <em>METALINK_FILE</em>]&#8230;</p>
 </div>
 <h2>DESCRIPTION</h2>
 <div class="sectionbody">
@@ -323,7 +323,7 @@ div#toc a:visited { color: blue; }
 <h3>Basic Options</h3>
 <dl>
 <dt>
--d, &#8212;dir=DIR
+<strong>-d</strong>, <strong>&#8212;dir</strong>=DIR
 </dt>
 <dd>
 <p>
@@ -331,7 +331,7 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--i, &#8212;input-file=FILE
+<strong>-i</strong>, <strong>&#8212;input-file</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -341,7 +341,7 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--l, &#8212;log=LOG
+<strong>-l</strong>, <strong>&#8212;log</strong>=LOG
 </dt>
 <dd>
 <p>
@@ -350,7 +350,7 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--j, &#8212;max-concurrent-downloads=N
+<strong>-j</strong>, <strong>&#8212;max-concurrent-downloads</strong>=N
 </dt>
 <dd>
 <p>
@@ -359,7 +359,7 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
-&#8212;check-integrity=<em>true</em>|<em>false</em>
+<strong>&#8212;check-integrity</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -371,7 +371,7 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--c, &#8212;continue
+<strong>-c</strong>, <strong>&#8212;continue</strong>
 </dt>
 <dd>
 <p>
@@ -382,13 +382,13 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--h, &#8212;help[=CATEGORY]
+<strong>-h</strong>, <strong>&#8212;help</strong>[=CATEGORY]
 </dt>
 <dd>
 <p>
   Print usage and exit.
   The help messages are classified in several categories.
-  For example, type "&#8212;help=http" for detailed explanation for the options
+  For example, type "<strong>&#8212;help</strong>=http" for detailed explanation for the options
   related to HTTP. If no matching category is found, search option name using
   a given word in forward match and print the result.
   Available Values: <em>basic</em>, <em>advanced</em>, <em>http</em>, <em>ftp</em>, <em>metalink</em>,
@@ -400,7 +400,7 @@ div#toc a:visited { color: blue; }
 <h3>HTTP/FTP Options</h3>
 <dl>
 <dt>
-&#8212;lowest-speed-limit=SPEED
+<strong>&#8212;lowest-speed-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -413,7 +413,7 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--m, &#8212;max-tries=N
+<strong>-m</strong>, <strong>&#8212;max-tries</strong>=N
 </dt>
 <dd>
 <p>
@@ -422,7 +422,7 @@ div#toc a:visited { color: blue; }
 </p>
 </dd>
 <dt>
--o, &#8212;out=FILE
+<strong>-o</strong>, <strong>&#8212;out</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -437,13 +437,13 @@ div#toc a:visited { color: blue; }
 </td>
 <td class="content">In Metalink, BitTorrent download you cannot specify file name.
 The file name specified here is only used when the URLs fed to aria2
-is done by command line without -i, -Z option, like this:
+is done by command line without <strong>-i</strong>, -Z option, like this:
 aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </tr></table>
 </div>
 <dl>
 <dt>
-&#8212;retry-wait=SEC
+<strong>&#8212;retry-wait</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -453,7 +453,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
--s, &#8212;split=N
+<strong>-s</strong>, <strong>&#8212;split</strong>=N
 </dt>
 <dd>
 <p>
@@ -464,7 +464,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
--t, &#8212;timeout=SEC
+<strong>-t</strong>, <strong>&#8212;timeout</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -476,7 +476,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <h3>HTTP Specific Options</h3>
 <dl>
 <dt>
-&#8212;http-auth-scheme=SCHEME
+<strong>&#8212;http-auth-scheme</strong>=SCHEME
 </dt>
 <dd>
 <p>
@@ -486,7 +486,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;http-user=USER
+<strong>&#8212;http-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -494,7 +494,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;http-passwd=PASSWD
+<strong>&#8212;http-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -502,7 +502,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;http-proxy=HOST:PORT
+<strong>&#8212;http-proxy</strong>=HOST:PORT
 </dt>
 <dd>
 <p>
@@ -510,7 +510,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;http-proxy-user=USER
+<strong>&#8212;http-proxy-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -518,7 +518,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;http-proxy-passwd=PASSWD
+<strong>&#8212;http-proxy-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -526,7 +526,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;http-proxy-method=METHOD
+<strong>&#8212;http-proxy-method</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -536,7 +536,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;referer=REFERER
+<strong>&#8212;referer</strong>=REFERER
 </dt>
 <dd>
 <p>
@@ -544,7 +544,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;enable-http-keep-alive[=<em>true</em>|<em>false</em>]
+<strong>&#8212;enable-http-keep-alive</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -553,7 +553,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;enable-http-pipelining[=<em>true</em>|<em>false</em>]
+<strong>&#8212;enable-http-pipelining</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -562,17 +562,17 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;header=HEADER
+<strong>&#8212;header</strong>=HEADER
 </dt>
 <dd>
 <p>
   Append HEADER to HTTP request header.
   You can use this option repeatedly to specify more than one header:
-  aria2c &#8212;header="X-A: b78" &#8212;header="X-B: 9J1" http://host/file
+  aria2c <strong>&#8212;header</strong>="X-A: b78" <strong>&#8212;header</strong>="X-B: 9J1" http://host/file
 </p>
 </dd>
 <dt>
-&#8212;load-cookies=FILE
+<strong>&#8212;load-cookies</strong>=FILE
 </dt>
 <dd>
 <p>
@@ -581,7 +581,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
--U, &#8212;user-agent=USER_AGENT
+<strong>-U</strong>, <strong>&#8212;user-agent</strong>=USER_AGENT
 </dt>
 <dd>
 <p>
@@ -592,7 +592,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <h3>FTP Specific Options</h3>
 <dl>
 <dt>
-&#8212;ftp-user=USER
+<strong>&#8212;ftp-user</strong>=USER
 </dt>
 <dd>
 <p>
@@ -601,7 +601,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;ftp-passwd=PASSWD
+<strong>&#8212;ftp-passwd</strong>=PASSWD
 </dt>
 <dd>
 <p>
@@ -610,7 +610,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
--p, &#8212;ftp-pasv
+<strong>-p</strong>, <strong>&#8212;ftp-pasv</strong>
 </dt>
 <dd>
 <p>
@@ -618,7 +618,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;ftp-type=TYPE
+<strong>&#8212;ftp-type</strong>=TYPE
 </dt>
 <dd>
 <p>
@@ -627,7 +627,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;ftp-reuse-connection[=<em>true</em>|<em>false</em>]
+<strong>&#8212;ftp-reuse-connection</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -636,7 +636,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
-&#8212;ftp-via-http-proxy=METHOD
+<strong>&#8212;ftp-via-http-proxy</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -645,7 +645,7 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 </p>
 </dd>
 <dt>
--n, &#8212;no-netrc
+<strong>-n</strong>, <strong>&#8212;no-netrc</strong>
 </dt>
 <dd>
 <p>
@@ -656,17 +656,17 @@ aria2c -o myfile.zip http://mirror1/file.zip http://mirror2/file.zip</td>
 <h3>BitTorrent/Metalink Options</h3>
 <dl>
 <dt>
-&#8212;select-file=INDEX&#8230;
+<strong>&#8212;select-file</strong>=INDEX&#8230;
 </dt>
 <dd>
 <p>
   Set file to download by specifing its index.
-  You can find the file index using the &#8212;show-files option.
+  You can find the file index using the <strong>&#8212;show-files</strong> option.
   Multiple indexes can be specified by using ",", for example: <em>3,6</em>.
   You can also use "-" to specify a range: <em>1-5</em>.
   "," and "-" can be used together: <em>1-5,8,9</em>.
   When used with the -M option, index may vary depending on the query
-  (see &#8212;metalink-* options).
+  (see <strong>&#8212;metalink-</strong>* options).
 </p>
 </dd>
 </dl>
@@ -683,7 +683,7 @@ writes the piece to the appropriate files.</td>
 </div>
 <dl>
 <dt>
--S, &#8212;show-files
+<strong>-S</strong>, <strong>&#8212;show-files</strong>
 </dt>
 <dd>
 <p>
@@ -696,7 +696,7 @@ writes the piece to the appropriate files.</td>
 <h3>BitTorrent Specific Options</h3>
 <dl>
 <dt>
-&#8212;bt-min-crypto-level=<em>plain</em>|<em>arc4</em>
+<strong>&#8212;bt-min-crypto-level</strong>=<em>plain</em>|<em>arc4</em>
 </dt>
 <dd>
 <p>
@@ -707,7 +707,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;bt-require-crypto=<em>true</em>|<em>false</em>
+<strong>&#8212;bt-require-crypto</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -718,7 +718,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;dht-entry-point=HOST:PORT
+<strong>&#8212;dht-entry-point</strong>=HOST:PORT
 </dt>
 <dd>
 <p>
@@ -726,7 +726,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;dht-listen-port=PORT&#8230;
+<strong>&#8212;dht-listen-port</strong>=PORT&#8230;
 </dt>
 <dd>
 <p>
@@ -738,7 +738,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;direct-file-mapping=<em>true</em>|<em>false</em>
+<strong>&#8212;direct-file-mapping</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -749,7 +749,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;enable-dht[=<em>true</em>|<em>false</em>]
+<strong>&#8212;enable-dht</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -759,7 +759,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;enable-peer-exchange[=<em>true</em>|<em>false</em>]
+<strong>&#8212;enable-peer-exchange</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -769,7 +769,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;follow-torrent=<em>true</em>|<em>false</em>|<em>mem</em>
+<strong>&#8212;follow-torrent</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
 <dd>
 <p>
@@ -783,7 +783,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;listen-port=PORT&#8230;
+<strong>&#8212;listen-port</strong>=PORT&#8230;
 </dt>
 <dd>
 <p>
@@ -805,7 +805,7 @@ writes the piece to the appropriate files.</td>
 </div>
 <dl>
 <dt>
-&#8212;max-upload-limit=SPEED
+<strong>&#8212;max-upload-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -815,7 +815,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;peer-id-prefix=PEERI_ID_PREFIX
+<strong>&#8212;peer-id-prefix</strong>=PEERI_ID_PREFIX
 </dt>
 <dd>
 <p>
@@ -827,7 +827,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;seed-ratio=RATIO
+<strong>&#8212;seed-ratio</strong>=RATIO
 </dt>
 <dd>
 <p>
@@ -835,21 +835,21 @@ writes the piece to the appropriate files.</td>
   RATIO.
   I strongly encourages you to specify equals or more than <em>1.0</em> here.
   Specify <em>0.0</em> if you intend to do seeding regardless of share ratio.
-  If &#8212;seed-time option is specified along with this option, seeding ends when
+  If <strong>&#8212;seed-time</strong> option is specified along with this option, seeding ends when
   at least one of the conditions is satisfied.
   Default: <em>1.0</em>
 </p>
 </dd>
 <dt>
-&#8212;seed-time=MINUTES
+<strong>&#8212;seed-time</strong>=MINUTES
 </dt>
 <dd>
 <p>
-  Specify seeding time in minutes. Also see the &#8212;seed-ratio option.
+  Specify seeding time in minutes. Also see the <strong>&#8212;seed-ratio</strong> option.
 </p>
 </dd>
 <dt>
--T, &#8212;torrent-file=TORRENT_FILE
+<strong>-T</strong>, <strong>&#8212;torrent-file</strong>=TORRENT_FILE
 </dt>
 <dd>
 <p>
@@ -861,7 +861,7 @@ writes the piece to the appropriate files.</td>
 <h3>Metalink Specific Options</h3>
 <dl>
 <dt>
-&#8212;follow-metalink=<em>true</em>|<em>false</em>|<em>mem</em>
+<strong>&#8212;follow-metalink</strong>=<em>true</em>|<em>false</em>|<em>mem</em>
 </dt>
 <dd>
 <p>
@@ -875,7 +875,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
--M, &#8212;metalink-file=METALINK_FILE
+<strong>-M</strong>, <strong>&#8212;metalink-file</strong>=METALINK_FILE
 </dt>
 <dd>
 <p>
@@ -884,7 +884,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
--C, &#8212;metalink-servers=NUM_SERVERS
+<strong>-C</strong>, <strong>&#8212;metalink-servers</strong>=NUM_SERVERS
 </dt>
 <dd>
 <p>
@@ -895,7 +895,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;metalink-language=LANGUAGE
+<strong>&#8212;metalink-language</strong>=LANGUAGE
 </dt>
 <dd>
 <p>
@@ -903,7 +903,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;metalink-location=LOCATION[,&#8230;]
+<strong>&#8212;metalink-location</strong>=LOCATION[,&#8230;]
 </dt>
 <dd>
 <p>
@@ -912,7 +912,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;metalink-os=OS
+<strong>&#8212;metalink-os</strong>=OS
 </dt>
 <dd>
 <p>
@@ -920,7 +920,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;metalink-version=VERSION
+<strong>&#8212;metalink-version</strong>=VERSION
 </dt>
 <dd>
 <p>
@@ -928,7 +928,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;metalink-preferred-protocol=PROTO
+<strong>&#8212;metalink-preferred-protocol</strong>=PROTO
 </dt>
 <dd>
 <p>
@@ -939,13 +939,13 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;metalink-enable-unique-protocol=<em>true</em>|<em>false</em>
+<strong>&#8212;metalink-enable-unique-protocol</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
   If <em>true</em> is given and several protocols are available for a mirror in a
   metalink file, aria2 uses one of them.
-  Use &#8212;metalink-preferred-protocol option to specify the preference of
+  Use <strong>&#8212;metalink-preferred-protocol</strong> option to specify the preference of
   protocol.
   Default: <em>true</em>
 </p>
@@ -954,19 +954,19 @@ writes the piece to the appropriate files.</td>
 <h3>Advanced Options</h3>
 <dl>
 <dt>
-&#8212;allow-overwrite=<em>true</em>|<em>false</em>
+<strong>&#8212;allow-overwrite</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
   If <em>false</em> is given, aria2 doesn't download a file which already exists but
   the corresponding .aria2 file doesn't exist.
-  In HTTP(S)/FTP download, if &#8212;auto-file-renaming=<em>true</em> then,
-  file name will be renamed. See &#8212;auto-file-renaming for details.
+  In HTTP(S)/FTP download, if <strong>&#8212;auto-file-renaming</strong>=<em>true</em> then,
+  file name will be renamed. See <strong>&#8212;auto-file-renaming</strong> for details.
   Default: <em>false</em>
 </p>
 </dd>
 <dt>
-&#8212;allow-piece-length-change=<em>true</em>|<em>false</em>
+<strong>&#8212;allow-piece-length-change</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -977,7 +977,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;async-dns[=<em>true</em>|<em>false</em>]
+<strong>&#8212;async-dns</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -986,7 +986,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;auto-file-renaming[=<em>true</em>|<em>false</em>]
+<strong>&#8212;auto-file-renaming</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -997,7 +997,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;conf-path=PATH
+<strong>&#8212;conf-path</strong>=PATH
 </dt>
 <dd>
 <p>
@@ -1006,7 +1006,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
--D, &#8212;daemon
+<strong>-D</strong>, <strong>&#8212;daemon</strong>
 </dt>
 <dd>
 <p>
@@ -1014,7 +1014,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;enable-direct-io[=<em>true</em>|<em>false</em>]
+<strong>&#8212;enable-direct-io</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1024,7 +1024,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;file-allocation=METHOD
+<strong>&#8212;file-allocation</strong>=METHOD
 </dt>
 <dd>
 <p>
@@ -1036,7 +1036,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;log-level=LEVEL
+<strong>&#8212;log-level</strong>=LEVEL
 </dt>
 <dd>
 <p>
@@ -1046,7 +1046,7 @@ writes the piece to the appropriate files.</td>
 </p>
 </dd>
 <dt>
-&#8212;summary-interval=SEC
+<strong>&#8212;summary-interval</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1067,7 +1067,7 @@ are also allocated if they share a same piece.</td>
 </div>
 <dl>
 <dt>
--Z, &#8212;force-sequential[=<em>true</em>|<em>false</em>]
+<strong>-Z</strong>, <strong>&#8212;force-sequential</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1077,7 +1077,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-&#8212;max-download-limit=SPEED
+<strong>&#8212;max-download-limit</strong>=SPEED
 </dt>
 <dd>
 <p>
@@ -1087,7 +1087,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-&#8212;no-conf
+<strong>&#8212;no-conf</strong>
 </dt>
 <dd>
 <p>
@@ -1095,7 +1095,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-&#8212;no-file-allocation-limit=SIZE
+<strong>&#8212;no-file-allocation-limit</strong>=SIZE
 </dt>
 <dd>
 <p>
@@ -1105,7 +1105,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
--P, &#8212;parameterized-uri[=<em>true</em>|<em>false</em>]
+<strong>-P</strong>, <strong>&#8212;parameterized-uri</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1120,7 +1120,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
--q, &#8212;quiet[=<em>true</em>|<em>false</em>]
+<strong>-q</strong>, <strong>&#8212;quiet</strong>[=<em>true</em>|<em>false</em>]
 </dt>
 <dd>
 <p>
@@ -1129,7 +1129,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-&#8212;realtime-chunk-checksum=<em>true</em>|<em>false</em>
+<strong>&#8212;realtime-chunk-checksum</strong>=<em>true</em>|<em>false</em>
 </dt>
 <dd>
 <p>
@@ -1140,7 +1140,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
-&#8212;stop=SEC
+<strong>&#8212;stop</strong>=SEC
 </dt>
 <dd>
 <p>
@@ -1150,7 +1150,7 @@ are also allocated if they share a same piece.</td>
 </p>
 </dd>
 <dt>
--v, &#8212;version
+<strong>-v</strong>, <strong>&#8212;version</strong>
 </dt>
 <dd>
 <p>
@@ -1548,7 +1548,7 @@ files in the program, then also delete it here.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 19-May-2008 21:34:04 JST
+Last updated 21-May-2008 16:44:28 JST
 </div>
 </div>
 </body>
