@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ(2.61)
-AC_INIT(aria2c, 0.13.2b, t-tujikawa@users.sourceforge.net)
+AC_INIT(aria2c, 0.13.2rc, t-tujikawa@users.sourceforge.net)
 AC_CANONICAL_HOST
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE()
