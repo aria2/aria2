@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-16 01:05+0900\n"
+"POT-Creation-Date: 2008-05-21 16:55+0900\n"
 "PO-Revision-Date: 2008-03-01 13:38+0900\n"
 "Last-Translator: Jordi Pujol <Unknown>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1773,7 +1773,7 @@ msgstr "Resultados de la descarga:"
 msgid "Status Legend:"
 msgstr ""
 
-#: src/Util.cc:686
+#: src/Util.cc:696
 msgid "Files:"
 msgstr "Ficheros:"
 
@@ -1788,7 +1788,7 @@ msgstr "Informar de errores a %s"
 
 #: src/version_usage.cc:77
 #, fuzzy, c-format
-msgid "Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."
+msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr "Uso: %s [opciones] URL ...\n"
 
 #: src/version_usage.cc:85

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aria2c 0.2.1\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-16 01:05+0900\n"
+"POT-Creation-Date: 2008-05-21 16:55+0900\n"
 "PO-Revision-Date: 2008-05-10 07:34+0000\n"
 "Last-Translator: Tatsuhiro Tsujikawa <t-tujikawa@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1951,7 +1951,7 @@ msgstr "ダウンロード結果:"
 msgid "Status Legend:"
 msgstr "凡例:"
 
-#: src/Util.cc:686
+#: src/Util.cc:696
 msgid "Files:"
 msgstr "ファイル:"
 
@@ -1965,8 +1965,8 @@ msgid "Report bugs to %s"
 msgstr "バグレポートはこちらへ: %s"
 
 #: src/version_usage.cc:77
-#, c-format
-msgid "Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."
+#, fuzzy, c-format
+msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr "使い方: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."
 
 #: src/version_usage.cc:85

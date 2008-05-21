@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: http://aria2.sourceforge.net/\n"
-"POT-Creation-Date: 2008-05-16 01:05+0900\n"
+"POT-Creation-Date: 2008-05-21 16:55+0900\n"
 "PO-Revision-Date: 2008-05-16 01:07+0900\n"
 "Last-Translator: hm <colimit@gmail.com>\n"
 "Language-Team: <ru@li.org>\n"
@@ -1602,7 +1602,7 @@ msgstr "Результаты скачивания:"
 msgid "Status Legend:"
 msgstr "Использованные обозначения:"
 
-#: src/Util.cc:686
+#: src/Util.cc:696
 msgid "Files:"
 msgstr "Файлы:"
 
@@ -1617,7 +1617,7 @@ msgstr "Сообщения об ошибках направляйте на ад�
 
 #: src/version_usage.cc:77
 #, c-format
-msgid "Usage: %s [options] URL|TORRENT_FILE|METALINK_FILE ..."
+msgid "Usage: %s [OPTIONS] [URL | TORRENT_FILE | METALINK_FILE]..."
 msgstr ""
 
 #: src/version_usage.cc:85

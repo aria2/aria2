@@ -1,5 +1,12 @@
 2008-05-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Done make update-po
+	* po/aria2c.pot
+	* po/*.po
+	* po/*.gmo
+
+2008-05-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Bump up version number to 0.13.2rc.
 	* src/configure.ac
 	
