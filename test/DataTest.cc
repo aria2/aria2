@@ -1,4 +1,5 @@
 #include "Data.h"
+#include "A2STR.h"
 #include <cstring>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -32,7 +33,10 @@ void DataTest::testToString() {
   CPPUNIT_ASSERT_EQUAL(std::string("aria2"), data.toString());
 
   Data null(reinterpret_cast<const char*>(0), 0);
-  CPPUNIT_ASSERT_EQUAL(std::string(""), null.toString());
+  CPPUNIT_ASSERT_EQUAL(A2STR::NIL, null.toString());
+
+  Data zeroLengthString(A2STR::NIL);
+  CPPUNIT_ASSERT_EQUAL(A2STR::NIL, zeroLengthString.toString());
 }
 
 void DataTest::testGetData() {
@@ -44,6 +48,9 @@ void DataTest::testGetData() {
   CPPUNIT_ASSERT(null.getData() == 0);
   CPPUNIT_ASSERT_EQUAL((size_t)0, null.getLen());
 
+  Data zeroLengthString(A2STR::NIL);
+  CPPUNIT_ASSERT(zeroLengthString.getData() == 0);
+  CPPUNIT_ASSERT_EQUAL((size_t)0, zeroLengthString.getLen());
 }
 
 void DataTest::testToInt() {
@@ -55,6 +62,9 @@ void DataTest::testToInt() {
 
   Data alpha("abc", 3);
   CPPUNIT_ASSERT_EQUAL((int32_t)0, alpha.toInt());
+  
+  Data zeroLengthString("");
+  CPPUNIT_ASSERT_EQUAL(0, (int)zeroLengthString.toLLInt());
 }
 
 void DataTest::testToLLInt() {

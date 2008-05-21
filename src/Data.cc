@@ -39,50 +39,32 @@
 
 namespace aria2 {
 
-Data::Data(const unsigned char* data, size_t len, bool number):number(number)
-{
-  init(data, len);
-}
+Data::Data(const unsigned char* data, size_t len, bool number):
+  _data(reinterpret_cast<const char*>(data), len),
+  number(number) {}
 
-Data::Data(const char* data, size_t len, bool number):number(number) {
-  init(reinterpret_cast<const unsigned char*>(data), len);
-}
+Data::Data(const char* data, size_t len, bool number):
+  _data(data, len),
+  number(number) {}
 
-Data::Data(const std::string& data, bool number):number(number)
-{
-  init(reinterpret_cast<const unsigned char*>(data.c_str()), data.size());
-}
+Data::Data(const std::string& data, bool number):_data(data), number(number) {}
 
-void Data::init(const unsigned char* src, size_t slen)
-{
-  if(src) {
-    data = new unsigned char[slen];
-    memcpy(data, src, slen);
-    len = slen;
-  } else { 
-    data = 0;
-    len = 0;
-  }  
-}
+Data::~Data() {}
 
-Data::~Data() {
-  delete [] data;
-}
-
-std::string Data::toString() const {
-  return std::string(&data[0], &data[len]);
+const std::string& Data::toString() const {
+  return _data;
 }
 
 const unsigned char* Data::getData() const {
-  if(this->len == 0) {
-    return NULL;
+  if(_data.empty()) {
+    return 0;
   } else {
-    return data;
+    return reinterpret_cast<const unsigned char*>(_data.c_str());
   }
 }
 
 size_t Data::getLen() const {
-  return len;
+  return _data.size();
 }
 
 int32_t Data::toInt() const {
@@ -90,11 +72,7 @@ int32_t Data::toInt() const {
 }
 
 int64_t Data::toLLInt() const {
-  if(len == 0) {
-    return 0;
-  } else {
-    return strtoll(toString().c_str(), NULL, 10);
-  }
+  return strtoll(_data.c_str(), 0, 10);
 }
 
 bool Data::isNumber() const {

@@ -1,5 +1,12 @@
 2008-05-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Refactored. Use std::string instead of size and char*.
+	* Data.cc
+	* Data.h
+	* test/Data.cc
+
+2008-05-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Added trimSelf(). Rewritten trim() to use trimSelf().
 	* Util.cc
 	* Util.h

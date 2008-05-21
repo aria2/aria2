@@ -42,8 +42,7 @@ namespace aria2 {
 
 class Data : public MetaEntry {
 private:
-  size_t len;
-  unsigned char* data;
+  std::string _data;
   bool number;
 
   void init(const unsigned char* data, size_t len);
@@ -58,9 +57,9 @@ public:
 
   Data(const std::string& data, bool number = false);
 
-  ~Data();
+  virtual ~Data();
 
-  std::string toString() const;
+  const std::string& toString() const;
   int32_t toInt() const;
   int64_t toLLInt() const;
   
