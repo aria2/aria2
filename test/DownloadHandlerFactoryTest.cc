@@ -15,8 +15,12 @@ class DownloadHandlerFactoryTest:public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetMetalinkPreDownloadHandler_extension);
   CPPUNIT_TEST(testGetMetalinkPreDownloadHandler_contentType);
 #endif // ENABLE_METALINK
+
+#ifdef ENABLE_BITTORRENT
   CPPUNIT_TEST(testGetBtPreDownloadHandler_extension);
   CPPUNIT_TEST(testGetBtPreDownloadHandler_contentType);
+#endif // ENABLE_BITTORRENT
+
   CPPUNIT_TEST_SUITE_END();
 private:
 
@@ -28,8 +32,11 @@ public:
   void testGetMetalinkPreDownloadHandler_contentType();
 #endif // ENABLE_METALINK
 
+#ifdef ENABLE_BITTORRENT
   void testGetBtPreDownloadHandler_extension();
   void testGetBtPreDownloadHandler_contentType();
+#endif // ENABLE_BITTORRENT
+
 };
 
 
@@ -72,6 +79,8 @@ void DownloadHandlerFactoryTest::testGetMetalinkPreDownloadHandler_contentType()
 
 #endif // ENABLE_METALINK
 
+#ifdef ENABLE_BITTORRENT
+
 void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_extension()
 {
   Option op;
@@ -104,5 +113,7 @@ void DownloadHandlerFactoryTest::testGetBtPreDownloadHandler_contentType()
   dctx->setContentType("application/octet-stream");
   CPPUNIT_ASSERT(!handler->canHandle(&rg));
 }
+
+#endif // ENABLE_BITTORRENT
 
 } // namespace aria2

@@ -1,5 +1,10 @@
 2008-05-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
 
+	Fixed compile error when configured with --disable-bittorrent
+	* test/DownloadHandlerFactoryTest.cc
+	
+2008-05-21  Tatsuhiro Tsujikawa  <tujikawa at rednoah dot com>
+
 	Done make update-po
 	* po/aria2c.pot
 	* po/*.po
