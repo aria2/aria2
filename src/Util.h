@@ -119,7 +119,13 @@ public:
   static void slice(std::deque<std::string>& result, const std::string& src,
 		    char delim, bool trim = false);
   
-  static std::string trim(const std::string& src, const std::string& trimCharset = "\r\n\t ");
+  static const std::string DEFAULT_TRIM_CHARSET;
+
+  static std::string trim(const std::string& src,
+			  const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
+
+  static void trimSelf(std::string& str,
+		       const std::string& trimCharset = DEFAULT_TRIM_CHARSET);
 
   static bool startsWith(const std::string& target, const std::string& part);
 

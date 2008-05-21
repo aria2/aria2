@@ -60,14 +60,24 @@
 
 namespace aria2 {
 
+const std::string Util::DEFAULT_TRIM_CHARSET("\r\n\t ");
+
 std::string Util::trim(const std::string& src, const std::string& trimCharset)
 {
-  std::string::size_type sp = src.find_first_not_of(trimCharset);
-  std::string::size_type ep = src.find_last_not_of(trimCharset);
-  if(sp == std::string::npos || ep == std::string::npos) {
-    return A2STR::NIL;
+  std::string temp(src);
+  trimSelf(temp, trimCharset);
+  return temp;
+}
+
+void Util::trimSelf(std::string& str, const std::string& trimCharset)
+{
+  std::string::size_type first = str.find_first_not_of(trimCharset);
+  if(first == std::string::npos) {
+    str.clear();
   } else {
-    return src.substr(sp, ep-sp+1);
+    std::string::size_type last = str.find_last_not_of(trimCharset)+1;
+    str.erase(last);
+    str.erase(0, first);
   }
 }
 
