@@ -105,44 +105,73 @@ RequestGroupMan::getRequestGroups() const
   return _requestGroups;
 }
 
-void RequestGroupMan::removeStoppedGroup()
-{
-  unsigned int count = 0;
-  RequestGroups temp;
-  for(RequestGroups::iterator itr = _requestGroups.begin();
-      itr != _requestGroups.end(); ++itr) {
-    if((*itr)->getNumCommand() > 0) {
-      temp.push_back(*itr);
-    } else {
+class ProcessStoppedRequestGroup {
+private:
+  std::deque<SharedHandle<RequestGroup> >& _reservedGroups;
+  std::deque<SharedHandle<DownloadResult> >& _downloadResults;
+  Logger* _logger;
+public:
+  ProcessStoppedRequestGroup
+  (std::deque<SharedHandle<RequestGroup> >& reservedGroups,
+   std::deque<SharedHandle<DownloadResult> >& downloadResults):
+    _reservedGroups(reservedGroups),
+    _downloadResults(downloadResults),
+    _logger(LogFactory::getInstance()) {}
+
+  void operator()(const SharedHandle<RequestGroup>& group)
+  {
+    if(group->getNumCommand() == 0) {
       try {
-	(*itr)->closeFile();      
-	if((*itr)->downloadFinished()) {
-	  (*itr)->reportDownloadFinished();
-	  if((*itr)->allDownloadFinished()) {
-	    (*itr)->getProgressInfoFile()->removeFile();
+	group->closeFile();      
+	if(group->downloadFinished()) {
+	  group->reportDownloadFinished();
+	  if(group->allDownloadFinished()) {
+	    group->getProgressInfoFile()->removeFile();
 	  } else {
-	    (*itr)->getProgressInfoFile()->save();
+	    group->getProgressInfoFile()->save();
 	  }
 	  RequestGroups nextGroups;
-	  (*itr)->postDownloadProcessing(nextGroups);
-	  if(nextGroups.size() > 0) {
-	    _logger->debug("Adding %u RequestGroups as a result of PostDownloadHandler.", nextGroups.size());
-	    std::copy(nextGroups.rbegin(), nextGroups.rend(), std::front_inserter(_reservedGroups));
+	  group->postDownloadProcessing(nextGroups);
+	  if(!nextGroups.empty()) {
+	    _logger->debug("Adding %zu RequestGroups as a result of PostDownloadHandler.", nextGroups.size());
+	    _reservedGroups.insert(_reservedGroups.begin(),
+				   nextGroups.begin(), nextGroups.end());
 	  }
 	} else {
-	  (*itr)->getProgressInfoFile()->save();
+	  group->getProgressInfoFile()->save();
 	}
       } catch(RecoverableException& ex) {
 	_logger->error(EX_EXCEPTION_CAUGHT, ex);
       }
-      (*itr)->releaseRuntimeResource();
-      ++count;
-      _downloadResults.push_back((*itr)->createDownloadResult());
+      group->releaseRuntimeResource();
+      _downloadResults.push_back(group->createDownloadResult());
     }
   }
-  _requestGroups = temp;
-  if(count > 0) {
-    _logger->debug("%u RequestGroup(s) deleted.", count);
+
+};
+
+class FindStoppedRequestGroup {
+public:
+  bool operator()(const SharedHandle<RequestGroup>& group) {
+    return group->getNumCommand() == 0;
+  }
+};
+
+void RequestGroupMan::removeStoppedGroup()
+{
+  size_t numPrev = _requestGroups.size();
+
+  std::for_each(_requestGroups.begin(), _requestGroups.end(),
+		ProcessStoppedRequestGroup(_reservedGroups, _downloadResults));
+
+  _requestGroups.erase(std::remove_if(_requestGroups.begin(),
+				      _requestGroups.end(),
+				      FindStoppedRequestGroup()),
+		       _requestGroups.end());
+
+  size_t numRemoved = numPrev-_requestGroups.size();
+  if(numRemoved > 0) {
+    _logger->debug("%zu RequestGroup(s) deleted.", numRemoved);
   }
 }
 
@@ -157,7 +186,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
     _reservedGroups.pop_front();
     try {
       if(!groupToAdd->isDependencyResolved()) {
-	temp.push_front(groupToAdd);
+	temp.push_back(groupToAdd);
 	continue;
       }
       Commands commands;
@@ -170,7 +199,7 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
       _downloadResults.push_back(groupToAdd->createDownloadResult());
     }
   }
-  std::copy(temp.begin(), temp.end(), std::front_inserter(_reservedGroups));
+  _reservedGroups.insert(_reservedGroups.begin(), temp.begin(), temp.end());
   if(count > 0) {
     e->setNoWait(true);
     _logger->debug("%d RequestGroup(s) added.", count);
