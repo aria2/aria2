@@ -45,9 +45,12 @@
 #include "StringFormat.h"
 #include "A2STR.h"
 #include <signal.h>
+#include <limits.h>
+#include <stdint.h>
 #include <cerrno>
 #include <cassert>
 #include <cstring>
+#include <cstdlib>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>

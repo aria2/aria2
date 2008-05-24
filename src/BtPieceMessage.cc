@@ -52,6 +52,7 @@
 #include "PeerConnection.h"
 #include "StringFormat.h"
 #include <cstring>
+#include <cstdlib>
 
 namespace aria2 {
 

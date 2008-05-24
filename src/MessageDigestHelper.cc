@@ -41,6 +41,7 @@
 #include "StringFormat.h"
 #include <cerrno>
 #include <cstring>
+#include <cstdlib>
 
 namespace aria2 {
 
